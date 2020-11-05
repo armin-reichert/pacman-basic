@@ -24,8 +24,6 @@ import static de.amr.games.pacman.World.TOTAL_FOOD_COUNT;
 import static de.amr.games.pacman.World.WORLD_HEIGHT_TILES;
 import static de.amr.games.pacman.World.WORLD_WIDTH_TILES;
 
-import java.awt.EventQueue;
-import java.awt.event.KeyEvent;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -39,15 +37,6 @@ import java.util.Random;
  * @author Armin Reichert
  */
 public class PacManGame implements Runnable {
-
-	public static void main(String[] args) {
-		PacManGame game = new PacManGame();
-		EventQueue.invokeLater(() -> {
-			game.ui = new PacManGameUI(game, 2);
-			game.initGame();
-			new Thread(game, "GameLoop").start();
-		});
-	}
 
 	private static final int BLINKY = 0, PINKY = 1, INKY = 2, CLYDE = 3;
 
@@ -123,7 +112,7 @@ public class PacManGame implements Runnable {
 	public final Ghost[] ghosts = new Ghost[4];
 
 	public GameState state;
-	public PacManGameUI ui;
+	public PacManGameSwingUI ui;
 	public long fps;
 	public long framesTotal;
 	public int level;
@@ -210,6 +199,11 @@ public class PacManGame implements Runnable {
 		bonusConsumedTimer = 0;
 	}
 
+	public void start() {
+		initGame();
+		new Thread(this, "GameLoop").start();
+	}
+
 	@Override
 	public void run() {
 		final long intendedFrameDuration = 1_000_000_000 / FPS;
@@ -241,19 +235,19 @@ public class PacManGame implements Runnable {
 	}
 
 	private void readInput() {
-		if (ui.keyPressed(KeyEvent.VK_LEFT)) {
+		if (ui.keyPressed("left")) {
 			pacMan.wishDir = LEFT;
-		} else if (ui.keyPressed(KeyEvent.VK_RIGHT)) {
+		} else if (ui.keyPressed("right")) {
 			pacMan.wishDir = RIGHT;
-		} else if (ui.keyPressed(KeyEvent.VK_UP)) {
+		} else if (ui.keyPressed("up")) {
 			pacMan.wishDir = UP;
-		} else if (ui.keyPressed(KeyEvent.VK_DOWN)) {
+		} else if (ui.keyPressed("down")) {
 			pacMan.wishDir = DOWN;
-		} else if (ui.keyPressed(KeyEvent.VK_D)) {
+		} else if (ui.keyPressed("d")) {
 			ui.debugDraw = !ui.debugDraw;
-		} else if (ui.keyPressed(KeyEvent.VK_E)) {
+		} else if (ui.keyPressed("e")) {
 			eatAllFood();
-		} else if (ui.keyPressed(KeyEvent.VK_X)) {
+		} else if (ui.keyPressed("x")) {
 			ghostsKilledUsingEnergizer = 0;
 			for (Ghost ghost : ghosts) {
 				killGhost(ghost);
@@ -413,7 +407,7 @@ public class PacManGame implements Runnable {
 	}
 
 	private void runGameOverState() {
-		if (ui.keyPressed(KeyEvent.VK_SPACE)) {
+		if (ui.keyPressed("space")) {
 			exitGameOverState();
 		}
 	}
