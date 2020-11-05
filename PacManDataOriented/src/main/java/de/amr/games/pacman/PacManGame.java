@@ -680,7 +680,7 @@ public class PacManGame implements Runnable {
 		if (ghost.frightened && world.isIntersectionTile(x, y)) {
 			return Optional.of(randomMoveDir(ghost));
 		}
-
+		// compute direction to neighbor with minimal distance to target
 		double minDist = Double.MAX_VALUE;
 		Direction minDistDir = null;
 		for (Direction dir : List.of(RIGHT, DOWN, LEFT, UP) /* order matters! */) {
@@ -695,7 +695,7 @@ public class PacManGame implements Runnable {
 				continue;
 			}
 			double dist = neighbor.distance(ghost.targetTile);
-			// if more than neighbor tile has minimum target distance, most-right in list above wins!
+			// if different neighbor tiles have minimum distance to target, right-most in list wins!
 			if (dist <= minDist) {
 				minDistDir = dir;
 				minDist = dist;
