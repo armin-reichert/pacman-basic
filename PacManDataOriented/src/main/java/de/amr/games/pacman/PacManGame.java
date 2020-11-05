@@ -103,7 +103,7 @@ public class PacManGame implements Runnable {
 		//@formatter:on
 	};
 
-	private static int waveTimes(int level) {
+	private static int timesRow(int level) {
 		return level == 1 ? 0 : level <= 4 ? 1 : 2;
 	}
 
@@ -112,7 +112,6 @@ public class PacManGame implements Runnable {
 	public final Ghost[] ghosts = new Ghost[4];
 
 	public GameState state;
-	public PacManGameUI ui;
 	public long fps;
 	public long framesTotal;
 	public int level;
@@ -131,6 +130,8 @@ public class PacManGame implements Runnable {
 	public long bonusAvailableTimer;
 	public long bonusConsumedTimer;
 
+	public PacManGameUI ui;
+
 	public PacManGame() {
 		pacMan = new Creature("Pac-Man", PACMAN_HOME);
 		ghosts[BLINKY] = new Ghost("Blinky", OIKAKE, HOUSE_ENTRY, BLINKY_CORNER);
@@ -139,7 +140,7 @@ public class PacManGame implements Runnable {
 		ghosts[CLYDE] = new Ghost("Clyde", OTOBOKE, HOUSE_RIGHT, CLYDE_CORNER);
 	}
 
-	private void initGame() {
+	private void reset() {
 		points = 0;
 		lives = 3;
 		initLevel(1);
@@ -163,17 +164,20 @@ public class PacManGame implements Runnable {
 		bonusConsumedTimer = 0;
 	}
 
-	private void initEntities() {
+	private void resetGuys() {
+		pacMan.visible = true;
 		pacMan.speed = 0;
 		pacMan.dir = pacMan.wishDir = RIGHT;
 		pacMan.tile = pacMan.homeTile;
 		pacMan.offset = new V2f(HTS, 0);
+		pacMan.changedTile = true;
 		pacMan.stuck = false;
-		pacMan.dead = false;
-		pacMan.visible = true;
 		pacMan.forcedOnTrack = true;
+		pacMan.forcedTurningBack = false;
+		pacMan.dead = false;
 
 		for (Ghost ghost : ghosts) {
+			ghost.visible = true;
 			ghost.speed = 0;
 			ghost.tile = ghost.homeTile;
 			ghost.offset = new V2f(HTS, 0);
@@ -184,7 +188,6 @@ public class PacManGame implements Runnable {
 			ghost.forcedOnTrack = false;
 			ghost.dead = false;
 			ghost.frightened = false;
-			ghost.visible = true;
 			ghost.enteringHouse = false;
 			ghost.leavingHouse = false;
 			ghost.bounty = 0;
@@ -200,7 +203,7 @@ public class PacManGame implements Runnable {
 	}
 
 	public void start() {
-		initGame();
+		reset();
 		new Thread(this, "GameLoop").start();
 	}
 
@@ -257,18 +260,27 @@ public class PacManGame implements Runnable {
 
 	private void update() {
 		readInput();
-		if (state == GameState.READY) {
+		switch (state) {
+		case READY:
 			runReadyState();
-		} else if (state == GameState.CHASING) {
+			return;
+		case CHASING:
 			runChasingState();
-		} else if (state == GameState.SCATTERING) {
+			return;
+		case SCATTERING:
 			runScatteringState();
-		} else if (state == GameState.CHANGING_LEVEL) {
+			return;
+		case CHANGING_LEVEL:
 			runChangingLevelState();
-		} else if (state == GameState.PACMAN_DYING) {
+			return;
+		case PACMAN_DYING:
 			runPacManDyingState();
-		} else if (state == GameState.GAME_OVER) {
+			return;
+		case GAME_OVER:
 			runGameOverState();
+			return;
+		default:
+			throw new IllegalStateException("Illegal state: " + state);
 		}
 	}
 
@@ -288,7 +300,7 @@ public class PacManGame implements Runnable {
 		state = GameState.READY;
 		readyStateTimer = sec(3);
 		ui.yellowMessage("Ready!");
-		initEntities();
+		resetGuys();
 	}
 
 	private void exitReadyState() {
@@ -323,7 +335,7 @@ public class PacManGame implements Runnable {
 
 	private void enterScatteringState() {
 		state = GameState.SCATTERING;
-		scatteringStateTimer = SCATTERING_TIMES[waveTimes(level)][attackWave];
+		scatteringStateTimer = SCATTERING_TIMES[timesRow(level)][attackWave];
 		forceLivingGhostsTurningBack();
 	}
 
@@ -351,7 +363,7 @@ public class PacManGame implements Runnable {
 
 	private void enterChasingState() {
 		state = GameState.CHASING;
-		chasingStateTimer = CHASING_TIMES[waveTimes(level)][attackWave];
+		chasingStateTimer = CHASING_TIMES[timesRow(level)][attackWave];
 		forceLivingGhostsTurningBack();
 	}
 
@@ -420,7 +432,7 @@ public class PacManGame implements Runnable {
 
 	private void exitGameOverState() {
 		ui.clearMessage();
-		initGame();
+		reset();
 		log("Left game over state");
 	}
 
