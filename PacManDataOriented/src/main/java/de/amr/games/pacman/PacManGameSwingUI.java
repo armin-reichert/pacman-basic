@@ -38,7 +38,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 		});
 	}
 
-	public boolean debugDraw = true;
+	private boolean debugMode;
 
 	private final PacManGame game;
 	private final float scaling;
@@ -96,6 +96,16 @@ public class PacManGameSwingUI implements PacManGameUI {
 		window.requestFocus();
 
 		canvas.createBufferStrategy(2);
+	}
+
+	@Override
+	public boolean isDebugMode() {
+		return debugMode;
+	}
+
+	@Override
+	public void setDebugMode(boolean debug) {
+		debugMode = debug;
 	}
 
 	@Override
@@ -223,7 +233,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 	}
 
 	private void drawDebugInfo(Graphics2D g) {
-		if (debugDraw) {
+		if (debugMode) {
 			g.setColor(Color.WHITE);
 			g.setFont(new Font("Arial", Font.PLAIN, 6));
 			g.drawString(String.format("%d frames/sec", game.fps), 1 * TS, 3 * TS);

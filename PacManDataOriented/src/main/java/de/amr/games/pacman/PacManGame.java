@@ -112,7 +112,7 @@ public class PacManGame implements Runnable {
 	public final Ghost[] ghosts = new Ghost[4];
 
 	public GameState state;
-	public PacManGameSwingUI ui;
+	public PacManGameUI ui;
 	public long fps;
 	public long framesTotal;
 	public int level;
@@ -244,7 +244,7 @@ public class PacManGame implements Runnable {
 		} else if (ui.keyPressed("down")) {
 			pacMan.wishDir = DOWN;
 		} else if (ui.keyPressed("d")) {
-			ui.debugDraw = !ui.debugDraw;
+			ui.setDebugMode(!ui.isDebugMode());
 		} else if (ui.keyPressed("e")) {
 			eatAllFood();
 		} else if (ui.keyPressed("x")) {
