@@ -293,12 +293,12 @@ public class PacManGame implements Runnable {
 	private void enterReadyState() {
 		state = GameState.READY;
 		readyStateTimer = sec(3);
-		ui.setMessage("Ready!", false);
+		ui.yellowMessage("Ready!");
 		initEntities();
 	}
 
 	private void exitReadyState() {
-		ui.setMessage(null, false);
+		ui.clearMessage();
 		for (Ghost ghost : ghosts) {
 			ghost.leavingHouse = true;
 		}
@@ -415,18 +415,18 @@ public class PacManGame implements Runnable {
 	private void runGameOverState() {
 		if (ui.keyPressed(KeyEvent.VK_SPACE)) {
 			exitGameOverState();
-			initGame();
 		}
 	}
 
 	private void enterGameOverState() {
 		state = GameState.GAME_OVER;
-		ui.setMessage("Game Over!", true);
+		ui.redMessage("Game Over!");
 		log("Entered game over state");
 	}
 
 	private void exitGameOverState() {
-		ui.setMessage(null, false);
+		ui.clearMessage();
+		initGame();
 		log("Left game over state");
 	}
 

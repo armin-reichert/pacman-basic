@@ -104,9 +104,18 @@ public class PacManGameUI {
 		} while (strategy.contentsLost());
 	}
 
-	public void setMessage(String text, boolean red) {
-		messageColor = red ? Color.RED : Color.YELLOW;
+	public void redMessage(String text) {
 		messageText = text;
+		messageColor = Color.RED;
+	}
+
+	public void yellowMessage(String text) {
+		messageText = text;
+		messageColor = Color.YELLOW;
+	}
+
+	public void clearMessage() {
+		messageText = null;
 	}
 
 	public boolean keyPressed(int keyCode) {
