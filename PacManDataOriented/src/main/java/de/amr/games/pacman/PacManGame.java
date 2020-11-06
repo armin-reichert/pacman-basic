@@ -510,14 +510,16 @@ public class PacManGame implements Runnable {
 	}
 
 	private void killGhost(Ghost ghost) {
-		ghost.dead = true;
-		ghost.frightened = false;
-		ghost.targetTile = HOUSE_ENTRY;
-		ghostsKilledUsingEnergizer++;
-		ghost.bounty = (int) Math.pow(2, ghostsKilledUsingEnergizer) * 100;
-		ghost.bountyTimer = sec(0.5f);
-		log("Ghost %s killed at tile (%d,%d), Pac-Man wins %d points", ghost.name, ghost.tile.x, ghost.tile.y,
-				ghost.bounty);
+		if (!ghost.dead) {
+			ghost.dead = true;
+			ghost.frightened = false;
+			ghost.targetTile = HOUSE_ENTRY;
+			ghostsKilledUsingEnergizer++;
+			ghost.bounty = (int) Math.pow(2, ghostsKilledUsingEnergizer) * 100;
+			ghost.bountyTimer = sec(0.5f);
+			log("Ghost %s killed at tile (%d,%d), Pac-Man wins %d points", ghost.name, ghost.tile.x, ghost.tile.y,
+					ghost.bounty);
+		}
 	}
 
 	private void updateGhosts() {
