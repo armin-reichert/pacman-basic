@@ -1,9 +1,5 @@
 package de.amr.games.pacman;
 
-import static de.amr.games.pacman.Direction.DOWN;
-import static de.amr.games.pacman.Direction.LEFT;
-import static de.amr.games.pacman.Direction.RIGHT;
-import static de.amr.games.pacman.Direction.UP;
 import static de.amr.games.pacman.GhostCharacter.KIMAGURE;
 import static de.amr.games.pacman.GhostCharacter.MACHIBUSE;
 import static de.amr.games.pacman.GhostCharacter.OIKAKE;
@@ -23,6 +19,10 @@ import static de.amr.games.pacman.World.PORTAL_RIGHT_ENTRY;
 import static de.amr.games.pacman.World.TOTAL_FOOD_COUNT;
 import static de.amr.games.pacman.World.WORLD_HEIGHT_TILES;
 import static de.amr.games.pacman.World.WORLD_WIDTH_TILES;
+import static de.amr.games.pacman.common.Direction.DOWN;
+import static de.amr.games.pacman.common.Direction.LEFT;
+import static de.amr.games.pacman.common.Direction.RIGHT;
+import static de.amr.games.pacman.common.Direction.UP;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -30,6 +30,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+
+import de.amr.games.pacman.common.Direction;
+import de.amr.games.pacman.common.V2f;
+import de.amr.games.pacman.common.V2i;
 
 /**
  * A simple Pac-Man game with faithful behavior.

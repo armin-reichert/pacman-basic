@@ -1,4 +1,4 @@
-package de.amr.games.pacman;
+package de.amr.games.pacman.ui.swing;
 
 import static de.amr.games.pacman.PacManGame.levelData;
 import static de.amr.games.pacman.PacManGame.log;
@@ -27,6 +27,15 @@ import java.util.Map;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
+
+import de.amr.games.pacman.Creature;
+import de.amr.games.pacman.GameState;
+import de.amr.games.pacman.Ghost;
+import de.amr.games.pacman.GhostCharacter;
+import de.amr.games.pacman.PacManGame;
+import de.amr.games.pacman.PacManGameUI;
+import de.amr.games.pacman.common.Direction;
+import de.amr.games.pacman.common.V2f;
 
 public class PacManGameSwingUI implements PacManGameUI {
 

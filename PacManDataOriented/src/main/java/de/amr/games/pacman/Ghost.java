@@ -1,5 +1,7 @@
 package de.amr.games.pacman;
 
+import de.amr.games.pacman.common.V2i;
+
 public class Ghost extends Creature {
 
 	public final GhostCharacter character;

@@ -1,5 +1,9 @@
 package de.amr.games.pacman;
 
+import de.amr.games.pacman.common.Direction;
+import de.amr.games.pacman.common.V2f;
+import de.amr.games.pacman.common.V2i;
+
 public class Creature {
 
 	public final String name;

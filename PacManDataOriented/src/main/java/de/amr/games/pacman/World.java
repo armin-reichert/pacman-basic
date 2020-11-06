@@ -2,6 +2,10 @@ package de.amr.games.pacman;
 
 import java.util.BitSet;
 
+import de.amr.games.pacman.common.Direction;
+import de.amr.games.pacman.common.V2f;
+import de.amr.games.pacman.common.V2i;
+
 public class World {
 
 	public static final int TS = 8;
