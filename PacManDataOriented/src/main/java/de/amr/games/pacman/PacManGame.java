@@ -32,7 +32,7 @@ import java.util.Optional;
 import java.util.Random;
 
 /**
- * My attempt at writing a minimal Pac-Man game with faithful behavior.
+ * A simple Pac-Man game with faithful behavior.
  * 
  * @author Armin Reichert
  */
@@ -112,8 +112,6 @@ public class PacManGame implements Runnable {
 	public final Ghost[] ghosts = new Ghost[4];
 
 	public GameState state;
-	public long fps;
-	public long framesTotal;
 	public int level;
 	public int attackWave;
 	public int foodRemaining;
@@ -131,6 +129,9 @@ public class PacManGame implements Runnable {
 	public long bonusConsumedTimer;
 
 	public PacManGameUI ui;
+
+	public long fps;
+	public long framesTotal;
 
 	public PacManGame() {
 		pacMan = new Creature("Pac-Man", PACMAN_HOME);
@@ -185,7 +186,7 @@ public class PacManGame implements Runnable {
 			ghost.changedTile = true;
 			ghost.stuck = false;
 			ghost.forcedTurningBack = false;
-			ghost.forcedOnTrack = false;
+			ghost.forcedOnTrack = ghost == ghosts[BLINKY];
 			ghost.dead = false;
 			ghost.frightened = false;
 			ghost.enteringHouse = false;
@@ -290,9 +291,9 @@ public class PacManGame implements Runnable {
 			enterScatteringState();
 			return;
 		}
-		for (int i = 1; i <= 3; ++i) {
-			letGhostBounce(ghosts[i]);
-		}
+		letGhostBounce(ghosts[INKY]);
+		letGhostBounce(ghosts[PINKY]);
+		letGhostBounce(ghosts[CLYDE]);
 		--readyStateTimer;
 	}
 
@@ -305,11 +306,8 @@ public class PacManGame implements Runnable {
 
 	private void exitReadyState() {
 		ui.clearMessage();
-		for (Ghost ghost : ghosts) {
-			ghost.leavingHouse = true;
-		}
+		ghosts[INKY].leavingHouse = ghosts[PINKY].leavingHouse = ghosts[CLYDE].leavingHouse = true;
 		ghosts[BLINKY].leavingHouse = false;
-		ghosts[BLINKY].forcedOnTrack = true;
 	}
 
 	private void runScatteringState() {
