@@ -609,7 +609,7 @@ public class PacManGame implements Runnable {
 			ghost.dir = ghost.wishDir = ghost.homeTile.x < HOUSE_CENTER.x ? LEFT : RIGHT;
 		}
 		updateGhostSpeed(ghost);
-		move(ghost, ghost.wishDir);
+		ghost.couldMove = tryMoving(ghost, ghost.wishDir);
 		log("%s is entering house", ghost);
 	}
 
@@ -727,7 +727,7 @@ public class PacManGame implements Runnable {
 			ghost.dir = ghost.wishDir = ghost.wishDir.inverse();
 		}
 		ghost.speed = levelData().ghostSpeed();
-		move(ghost, ghost.wishDir);
+		ghost.couldMove = tryMoving(ghost, ghost.wishDir);
 	}
 
 	private void move(Creature guy) {
@@ -747,27 +747,25 @@ public class PacManGame implements Runnable {
 			return;
 		}
 
-		move(guy, guy.wishDir);
+		guy.couldMove = tryMoving(guy, guy.wishDir);
 		if (guy.couldMove) {
 			guy.dir = guy.wishDir;
 		} else {
-			move(guy, guy.dir);
+			guy.couldMove = tryMoving(guy, guy.dir);
 		}
 	}
 
-	private void move(Creature guy, Direction dir) {
+	private boolean tryMoving(Creature guy, Direction dir) {
 		// turns
 		if (guy.forcedOnTrack && canAccessTile(guy, guy.tile.x + dir.vec.x, guy.tile.y + dir.vec.y)) {
 			if (dir.equals(LEFT) || dir.equals(RIGHT)) {
 				if (Math.abs(guy.offset.y) > 1) {
-					guy.couldMove = false;
-					return;
+					return false;
 				}
 				guy.offset = new V2f(guy.offset.x, 0);
 			} else if (dir.equals(UP) || dir.equals(DOWN)) {
 				if (Math.abs(guy.offset.x) > 1) {
-					guy.couldMove = false;
-					return;
+					return false;
 				}
 				guy.offset = new V2f(0, guy.offset.y);
 			}
@@ -780,8 +778,7 @@ public class PacManGame implements Runnable {
 		V2f newOffset = world.offset(newPosition, newTile);
 
 		if (!canAccessTile(guy, newTile.x, newTile.y)) {
-			guy.couldMove = false;
-			return;
+			return false;
 		}
 
 		// avoid moving (partially) into inaccessible tile
@@ -789,20 +786,18 @@ public class PacManGame implements Runnable {
 			if (!canAccessTile(guy, guy.tile.x + dir.vec.x, guy.tile.y + dir.vec.y)) {
 				if (dir.equals(RIGHT) && newOffset.x > 0 || dir.equals(LEFT) && newOffset.x < 0) {
 					guy.offset = new V2f(0, guy.offset.y);
-					guy.couldMove = false;
-					return;
+					return false;
 				}
 				if (dir.equals(DOWN) && newOffset.y > 0 || dir.equals(UP) && newOffset.y < 0) {
 					guy.offset = new V2f(guy.offset.x, 0);
-					guy.couldMove = false;
-					return;
+					return false;
 				}
 			}
 		}
 		guy.changedTile = !guy.at(newTile);
 		guy.tile = newTile;
 		guy.offset = newOffset;
-		guy.couldMove = true;
+		return true;
 	}
 
 	private void eatAllFood() {
