@@ -176,7 +176,7 @@ public class PacManGame implements Runnable {
 		pacMan.tile = pacMan.homeTile;
 		pacMan.offset = new V2f(HTS, 0);
 		pacMan.changedTile = true;
-		pacMan.stuck = false;
+		pacMan.couldMove = true;
 		pacMan.forcedOnTrack = true;
 		pacMan.forcedTurningBack = false;
 		pacMan.dead = false;
@@ -188,7 +188,7 @@ public class PacManGame implements Runnable {
 			ghost.offset = new V2f(HTS, 0);
 			ghost.targetTile = null;
 			ghost.changedTile = true;
-			ghost.stuck = false;
+			ghost.couldMove = true;
 			ghost.forcedTurningBack = false;
 			ghost.forcedOnTrack = ghost == ghosts[BLINKY];
 			ghost.dead = false;
@@ -723,7 +723,7 @@ public class PacManGame implements Runnable {
 	}
 
 	private void letGhostBounce(Ghost ghost) {
-		if (ghost.stuck) {
+		if (!ghost.couldMove) {
 			ghost.dir = ghost.wishDir = ghost.wishDir.inverse();
 		}
 		ghost.speed = levelData().ghostSpeed();
@@ -748,7 +748,7 @@ public class PacManGame implements Runnable {
 		}
 
 		move(guy, guy.wishDir);
-		if (!guy.stuck) {
+		if (guy.couldMove) {
 			guy.dir = guy.wishDir;
 		} else {
 			move(guy, guy.dir);
@@ -760,13 +760,13 @@ public class PacManGame implements Runnable {
 		if (guy.forcedOnTrack && canAccessTile(guy, guy.tile.x + dir.vec.x, guy.tile.y + dir.vec.y)) {
 			if (dir.equals(LEFT) || dir.equals(RIGHT)) {
 				if (Math.abs(guy.offset.y) > 1) {
-					guy.stuck = true;
+					guy.couldMove = false;
 					return;
 				}
 				guy.offset = new V2f(guy.offset.x, 0);
 			} else if (dir.equals(UP) || dir.equals(DOWN)) {
 				if (Math.abs(guy.offset.x) > 1) {
-					guy.stuck = true;
+					guy.couldMove = false;
 					return;
 				}
 				guy.offset = new V2f(0, guy.offset.y);
@@ -780,7 +780,7 @@ public class PacManGame implements Runnable {
 		V2f newOffset = world.offset(newPosition, newTile);
 
 		if (!canAccessTile(guy, newTile.x, newTile.y)) {
-			guy.stuck = true;
+			guy.couldMove = false;
 			return;
 		}
 
@@ -789,12 +789,12 @@ public class PacManGame implements Runnable {
 			if (!canAccessTile(guy, guy.tile.x + dir.vec.x, guy.tile.y + dir.vec.y)) {
 				if (dir.equals(RIGHT) && newOffset.x > 0 || dir.equals(LEFT) && newOffset.x < 0) {
 					guy.offset = new V2f(0, guy.offset.y);
-					guy.stuck = true;
+					guy.couldMove = false;
 					return;
 				}
 				if (dir.equals(DOWN) && newOffset.y > 0 || dir.equals(UP) && newOffset.y < 0) {
 					guy.offset = new V2f(guy.offset.x, 0);
-					guy.stuck = true;
+					guy.couldMove = false;
 					return;
 				}
 			}
@@ -802,7 +802,7 @@ public class PacManGame implements Runnable {
 		guy.changedTile = !guy.at(newTile);
 		guy.tile = newTile;
 		guy.offset = newOffset;
-		guy.stuck = false;
+		guy.couldMove = true;
 	}
 
 	private void eatAllFood() {

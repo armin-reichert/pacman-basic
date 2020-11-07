@@ -16,7 +16,7 @@ public class Creature {
 	public V2i tile;
 	public V2f offset;
 	public boolean changedTile;
-	public boolean stuck;
+	public boolean couldMove;
 	public boolean forcedOnTrack;
 	public boolean forcedTurningBack;
 	public boolean dead;

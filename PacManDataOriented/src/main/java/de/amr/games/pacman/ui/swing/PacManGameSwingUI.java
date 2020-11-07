@@ -380,7 +380,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 		} else if (game.state == GameState.READY || game.state == GameState.CHANGING_LEVEL) {
 			// full sprite
 			sprite = sheet(2, 0);
-		} else if (pacMan.stuck) {
+		} else if (!pacMan.couldMove) {
 			// wide open mouth
 			sprite = sheet(0, directionFrame(pacMan.dir));
 		} else {
