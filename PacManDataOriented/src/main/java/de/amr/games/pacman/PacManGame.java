@@ -26,10 +26,11 @@ import static de.amr.games.pacman.common.Direction.UP;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import de.amr.games.pacman.common.Direction;
 import de.amr.games.pacman.common.V2f;
@@ -145,6 +146,41 @@ public class PacManGame implements Runnable {
 		ghosts[CLYDE] = new Ghost("Clyde", OTOBOKE, HOUSE_RIGHT, CLYDE_CORNER);
 	}
 
+	public void start() {
+		reset();
+		new Thread(this, "GameLoop").start();
+	}
+
+	@Override
+	public void run() {
+		final long intendedFrameDuration = 1_000_000_000 / FPS;
+		long fpsCountStart = 0;
+		long frames = 0;
+		while (true) {
+			long frameStartTime = System.nanoTime();
+			update();
+			ui.render();
+			long frameEndTime = System.nanoTime();
+			long frameDuration = frameEndTime - frameStartTime;
+			long sleep = Math.max(intendedFrameDuration - frameDuration, 0);
+			if (sleep > 0) {
+				try {
+					Thread.sleep(sleep / 1_000_000); // milliseconds
+				} catch (InterruptedException x) {
+					x.printStackTrace();
+				}
+			}
+
+			++frames;
+			++framesTotal;
+			if (frameEndTime - fpsCountStart >= 1_000_000_000) {
+				fps = frames;
+				frames = 0;
+				fpsCountStart = System.nanoTime();
+			}
+		}
+	}
+
 	private void reset() {
 		points = 0;
 		lives = 3;
@@ -205,41 +241,6 @@ public class PacManGame implements Runnable {
 
 		bonusAvailableTimer = 0;
 		bonusConsumedTimer = 0;
-	}
-
-	public void start() {
-		reset();
-		new Thread(this, "GameLoop").start();
-	}
-
-	@Override
-	public void run() {
-		final long intendedFrameDuration = 1_000_000_000 / FPS;
-		long fpsCountStart = 0;
-		long frames = 0;
-		while (true) {
-			long frameStartTime = System.nanoTime();
-			update();
-			ui.render();
-			long frameEndTime = System.nanoTime();
-			long frameDuration = frameEndTime - frameStartTime;
-			long sleep = Math.max(intendedFrameDuration - frameDuration, 0);
-			if (sleep > 0) {
-				try {
-					Thread.sleep(sleep / 1_000_000); // milliseconds
-				} catch (InterruptedException x) {
-					x.printStackTrace();
-				}
-			}
-
-			++frames;
-			++framesTotal;
-			if (frameEndTime - fpsCountStart >= 1_000_000_000) {
-				fps = frames;
-				frames = 0;
-				fpsCountStart = System.nanoTime();
-			}
-		}
 	}
 
 	private void readInput() {
@@ -794,6 +795,7 @@ public class PacManGame implements Runnable {
 				}
 			}
 		}
+
 		guy.changedTile = !guy.at(newTile);
 		guy.tile = newTile;
 		guy.offset = newOffset;
@@ -826,16 +828,15 @@ public class PacManGame implements Runnable {
 	}
 
 	private Direction randomMoveDir(Creature guy) {
-		List<Direction> dirs = new ArrayList<>(3);
-		for (Direction dir : Direction.values()) {
-			if (dir.equals(guy.dir.inverse())) {
-				continue;
-			}
-			V2i neighbor = guy.tile.sum(dir.vec);
-			if (world.isAccessibleTile(neighbor.x, neighbor.y)) {
-				dirs.add(dir);
-			}
-		}
+		//@formatter:off
+		List<Direction> dirs = Stream.of(Direction.values())
+				.filter(dir -> dir != guy.dir.inverse())
+				.filter(dir -> {
+					V2i neighbor = guy.tile.sum(dir.vec);
+					return world.isAccessibleTile(neighbor.x, neighbor.y);
+				})
+				.collect(Collectors.toList());
+		//@formatter:on
 		return dirs.get(new Random().nextInt(dirs.size()));
 	}
 }

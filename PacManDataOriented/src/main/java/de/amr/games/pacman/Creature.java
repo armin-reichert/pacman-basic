@@ -32,6 +32,6 @@ public class Creature {
 
 	@Override
 	public String toString() {
-		return String.format("%-8s tile=%s offset=%s", name, tile, offset);
+		return String.format("%-8s tile=%s offset=%s dir=%s wishDir=%s", name, tile, offset, dir, wishDir);
 	}
 }
