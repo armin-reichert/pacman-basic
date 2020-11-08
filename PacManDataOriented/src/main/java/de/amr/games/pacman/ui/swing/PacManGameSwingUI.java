@@ -9,6 +9,7 @@ import static de.amr.games.pacman.World.WORLD_HEIGHT;
 import static de.amr.games.pacman.World.WORLD_HEIGHT_TILES;
 import static de.amr.games.pacman.World.WORLD_WIDTH;
 import static de.amr.games.pacman.World.WORLD_WIDTH_TILES;
+import static de.amr.games.pacman.World.position;
 
 import java.awt.Canvas;
 import java.awt.Color;
@@ -387,7 +388,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 			// closed mouth or open mouth pointing to move direction
 			sprite = mouthFrame == 2 ? sheet(mouthFrame, 0) : sheet(mouthFrame, directionFrame(pacMan.dir));
 		}
-		V2f position = game.world.position(pacMan);
+		V2f position = position(pacMan);
 		g.drawImage(sprite, (int) position.x - HTS, (int) position.y - HTS, null);
 	}
 
@@ -414,7 +415,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 			int walkingFrame = game.framesTotal % 60 < 30 ? 0 : 1;
 			sprite = sheet(2 * directionFrame(ghost.dir) + walkingFrame, 4 + ghostIndex);
 		}
-		V2f position = game.world.position(ghost);
+		V2f position = position(ghost);
 		g.drawImage(sprite, (int) position.x - HTS, (int) position.y - HTS, null);
 	}
 

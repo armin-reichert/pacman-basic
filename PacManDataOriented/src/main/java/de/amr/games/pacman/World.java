@@ -34,7 +34,23 @@ public class World {
 
 	public static final int TOTAL_FOOD_COUNT = 244;
 
-	private static final String[] MAP = {
+	private static int index(int x, int y) {
+		return y * WORLD_WIDTH_TILES + x;
+	}
+
+	public static V2i tile(V2f position) {
+		return new V2i((int) position.x / TS, (int) position.y / TS);
+	}
+
+	public static V2f offset(V2f position, V2i tile) {
+		return new V2f(position.x - tile.x * TS, position.y - tile.y * TS);
+	}
+
+	public static V2f position(Creature guy) {
+		return new V2f(guy.tile.x * TS + guy.offset.x, guy.tile.y * TS + guy.offset.y);
+	}
+
+	private final String[] map = {
 			//@formatter:off
 			"1111111111111111111111111111",
 			"1111111111111111111111111111",
@@ -78,23 +94,7 @@ public class World {
 	private final BitSet eatenFood = new BitSet(244);
 
 	public char map(int x, int y) {
-		return MAP[y].charAt(x);
-	}
-
-	private int index(int x, int y) {
-		return y * WORLD_WIDTH_TILES + x;
-	}
-
-	public V2i tile(V2f position) {
-		return new V2i((int) position.x / TS, (int) position.y / TS);
-	}
-
-	public V2f offset(V2f position, V2i tile) {
-		return new V2f(position.x - tile.x * TS, position.y - tile.y * TS);
-	}
-
-	public V2f position(Creature guy) {
-		return new V2f(guy.tile.x * TS + guy.offset.x, guy.tile.y * TS + guy.offset.y);
+		return map[y].charAt(x);
 	}
 
 	public boolean inMapRange(int x, int y) {

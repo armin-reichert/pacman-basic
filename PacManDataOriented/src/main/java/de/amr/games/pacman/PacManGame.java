@@ -19,6 +19,9 @@ import static de.amr.games.pacman.World.PORTAL_RIGHT_ENTRY;
 import static de.amr.games.pacman.World.TOTAL_FOOD_COUNT;
 import static de.amr.games.pacman.World.WORLD_HEIGHT_TILES;
 import static de.amr.games.pacman.World.WORLD_WIDTH_TILES;
+import static de.amr.games.pacman.World.offset;
+import static de.amr.games.pacman.World.position;
+import static de.amr.games.pacman.World.tile;
 import static de.amr.games.pacman.common.Direction.DOWN;
 import static de.amr.games.pacman.common.Direction.LEFT;
 import static de.amr.games.pacman.common.Direction.RIGHT;
@@ -774,9 +777,9 @@ public class PacManGame implements Runnable {
 
 		// 100% speed corresponds to 1.25 pixels/tick
 		V2f velocity = new V2f(dir.vec).scaled(1.25f * guy.speed);
-		V2f newPosition = world.position(guy).sum(velocity);
-		V2i newTile = world.tile(newPosition);
-		V2f newOffset = world.offset(newPosition, newTile);
+		V2f newPosition = position(guy).sum(velocity);
+		V2i newTile = tile(newPosition);
+		V2f newOffset = offset(newPosition, newTile);
 
 		if (!canAccessTile(guy, newTile.x, newTile.y)) {
 			return false;
