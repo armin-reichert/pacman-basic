@@ -1,6 +1,7 @@
 package de.amr.games.pacman;
 
 import java.util.BitSet;
+import java.util.stream.Stream;
 
 import de.amr.games.pacman.common.Direction;
 import de.amr.games.pacman.common.V2f;
@@ -134,13 +135,10 @@ public class World {
 	}
 
 	public boolean isIntersectionTile(int x, int y) {
-		int accessibleNeighbors = 0;
-		for (Direction dir : Direction.values()) {
-			if (isAccessibleTile(x + dir.vec.x, y + dir.vec.y)) {
-				++accessibleNeighbors;
-			}
+		if (isInsideGhostHouse(x, y) || isGhostHouseDoor(x, y + 1)) {
+			return false;
 		}
-		return accessibleNeighbors >= 3;
+		return Stream.of(Direction.values()).filter(dir -> isAccessibleTile(x + dir.vec.x, y + dir.vec.y)).count() >= 3;
 	}
 
 	public boolean isAccessibleTile(int x, int y) {

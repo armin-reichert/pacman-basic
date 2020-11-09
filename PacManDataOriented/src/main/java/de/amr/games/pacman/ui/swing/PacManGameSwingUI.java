@@ -11,6 +11,7 @@ import static de.amr.games.pacman.World.WORLD_WIDTH;
 import static de.amr.games.pacman.World.WORLD_WIDTH_TILES;
 import static de.amr.games.pacman.World.position;
 
+import java.awt.BasicStroke;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.EventQueue;
@@ -359,6 +360,18 @@ public class PacManGameSwingUI implements PacManGameUI {
 			g.setColor(messageColor);
 			int textLength = g.getFontMetrics().stringWidth(messageText);
 			g.drawString(messageText, WORLD_WIDTH / 2 - textLength / 2, 21 * TS);
+		}
+
+		if (debugMode) {
+			for (int x = 0; x < WORLD_WIDTH_TILES; ++x) {
+				for (int y = 0; y < WORLD_HEIGHT_TILES; ++y) {
+					if (game.world.isIntersectionTile(x, y)) {
+						g.setColor(Color.RED);
+						g.setStroke(new BasicStroke(0.1f));
+						g.drawRect(x * TS, y * TS, TS, TS);
+					}
+				}
+			}
 		}
 	}
 
