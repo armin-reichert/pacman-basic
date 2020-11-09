@@ -823,7 +823,10 @@ public class PacManGame implements Runnable {
 		if (y < 0 || y >= WORLD_HEIGHT_TILES) {
 			return false;
 		}
-		if (guy instanceof Ghost && world.isGhostHouseDoor(x, y)) {
+		if (world.isGhostHouseDoor(x, y)) {
+			if (guy.name.equals("Pac-Man")) {
+				return false;
+			}
 			Ghost ghost = (Ghost) guy;
 			return ghost.enteringHouse || ghost.leavingHouse;
 		}

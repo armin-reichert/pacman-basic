@@ -102,7 +102,7 @@ public class World {
 	}
 
 	public boolean isWall(int x, int y) {
-		return map(x, y) == '1';
+		return inMapRange(x, y) && map(x, y) == '1';
 	}
 
 	public boolean isGhostHouseDoor(int x, int y) {
@@ -150,7 +150,7 @@ public class World {
 	}
 
 	public boolean isAccessibleTile(int x, int y) {
-		return inMapRange(x, y) && !isWall(x, y) || isPortalTile(x, y);
+		return !isWall(x, y) || isPortalTile(x, y);
 	}
 
 	public boolean isPortalTile(int x, int y) {
