@@ -827,7 +827,7 @@ public class PacManGame implements Runnable {
 			Ghost ghost = (Ghost) guy;
 			return ghost.enteringHouse || ghost.leavingHouse;
 		}
-		return world.map(x, y) != '1';
+		return !world.isWall(x, y);
 	}
 
 	private Direction randomMoveDir(Creature guy) {

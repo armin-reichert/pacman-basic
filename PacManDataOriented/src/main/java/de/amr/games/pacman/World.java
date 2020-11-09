@@ -93,12 +93,16 @@ public class World {
 
 	private final BitSet eatenFood = new BitSet(244);
 
-	public char map(int x, int y) {
+	private char map(int x, int y) {
 		return map[y].charAt(x);
 	}
 
 	public boolean inMapRange(int x, int y) {
 		return 0 <= x && x < WORLD_WIDTH_TILES && 0 <= y && y < WORLD_HEIGHT_TILES;
+	}
+
+	public boolean isWall(int x, int y) {
+		return map(x, y) == '1';
 	}
 
 	public boolean isGhostHouseDoor(int x, int y) {
