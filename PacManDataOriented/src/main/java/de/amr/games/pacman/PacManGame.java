@@ -14,8 +14,8 @@ import static de.amr.games.pacman.World.HTS;
 import static de.amr.games.pacman.World.INKY_CORNER;
 import static de.amr.games.pacman.World.PACMAN_HOME;
 import static de.amr.games.pacman.World.PINKY_CORNER;
-import static de.amr.games.pacman.World.PORTAL_LEFT_ENTRY;
-import static de.amr.games.pacman.World.PORTAL_RIGHT_ENTRY;
+import static de.amr.games.pacman.World.PORTAL_LEFT;
+import static de.amr.games.pacman.World.PORTAL_RIGHT;
 import static de.amr.games.pacman.World.TOTAL_FOOD_COUNT;
 import static de.amr.games.pacman.World.WORLD_HEIGHT_TILES;
 import static de.amr.games.pacman.World.WORLD_WIDTH_TILES;
@@ -740,13 +740,13 @@ public class PacManGame implements Runnable {
 		}
 
 		// portal
-		if (guy.at(PORTAL_RIGHT_ENTRY) && guy.dir.equals(RIGHT)) {
-			guy.tile = PORTAL_LEFT_ENTRY;
+		if (guy.at(PORTAL_RIGHT) && guy.dir.equals(RIGHT)) {
+			guy.tile = PORTAL_LEFT;
 			guy.offset = V2f.NULL;
 			return;
 		}
-		if (guy.at(PORTAL_LEFT_ENTRY) && guy.dir.equals(LEFT)) {
-			guy.tile = PORTAL_RIGHT_ENTRY;
+		if (guy.at(PORTAL_LEFT) && guy.dir.equals(LEFT)) {
+			guy.tile = PORTAL_RIGHT;
 			guy.offset = V2f.NULL;
 			return;
 		}

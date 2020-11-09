@@ -17,8 +17,8 @@ public class World {
 	public static final int WORLD_WIDTH = WORLD_WIDTH_TILES * TS;
 	public static final int WORLD_HEIGHT = WORLD_HEIGHT_TILES * TS;
 
-	public static final V2i PORTAL_LEFT_ENTRY = new V2i(-1, 17);
-	public static final V2i PORTAL_RIGHT_ENTRY = new V2i(WORLD_WIDTH_TILES, 17);
+	public static final V2i PORTAL_LEFT = new V2i(-1, 17);
+	public static final V2i PORTAL_RIGHT = new V2i(WORLD_WIDTH_TILES, 17);
 
 	public static final V2i PACMAN_HOME = new V2i(13, 26);
 
@@ -36,6 +36,10 @@ public class World {
 
 	private static int index(int x, int y) {
 		return y * WORLD_WIDTH_TILES + x;
+	}
+
+	private static boolean is(int x, int y, int xx, int yy) {
+		return x == xx & y == yy;
 	}
 
 	public static V2i tile(V2f position) {
@@ -106,7 +110,7 @@ public class World {
 	}
 
 	public boolean isGhostHouseDoor(int x, int y) {
-		return y == 15 && (x == 13 || x == 14);
+		return is(x, y, 13, 15) || is(x, y, 14, 15);
 	}
 
 	public boolean isInsideGhostHouse(int x, int y) {
@@ -118,12 +122,7 @@ public class World {
 	}
 
 	public boolean isUpwardsBlocked(int x, int y) {
-		//@formatter:off
-		return x == 12 && y == 13
-			|| x == 15 && y == 13
-			|| x == 12 && y == 25
-			|| x == 15 && y == 25;
-		//@formatter:on
+		return is(x, y, 12, 13) || is(x, y, 15, 13) || is(x, y, 12, 25) || is(x, y, 15, 15);
 	}
 
 	public boolean isFoodTile(int x, int y) {
@@ -131,12 +130,7 @@ public class World {
 	}
 
 	public boolean isEnergizerTile(int x, int y) {
-		//@formatter:off
-		return x == 1  && y == 6
-			|| x == 26 && y == 6
-			|| x == 1  && y == 26
-			|| x == 26 && y == 26;
-		//@formatter:on
+		return is(x, y, 1, 6) || is(x, y, 26, 6) || is(x, y, 1, 26) || is(x, y, 26, 26);
 	}
 
 	public boolean isIntersectionTile(int x, int y) {
@@ -154,12 +148,11 @@ public class World {
 	}
 
 	public boolean isPortalTile(int x, int y) {
-		return x == PORTAL_RIGHT_ENTRY.x && y == PORTAL_RIGHT_ENTRY.y
-				|| x == PORTAL_LEFT_ENTRY.x && y == PORTAL_LEFT_ENTRY.y;
+		return is(x, y, PORTAL_LEFT.x, PORTAL_LEFT.y) || is(x, y, PORTAL_RIGHT.x, PORTAL_RIGHT.y);
 	}
 
 	public boolean isBonusTile(int x, int y) {
-		return x == 13 && y == 20;
+		return is(x, y, 13, 20);
 	}
 
 	public boolean hasEatenFood(int x, int y) {
