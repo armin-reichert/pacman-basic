@@ -310,6 +310,7 @@ public class PacManGame implements Runnable {
 		readyStateTimer = sec(3);
 		ui.yellowMessage("Ready!");
 		resetGuys();
+		log("Game entered %s state", state);
 	}
 
 	private void exitReadyState() {
@@ -343,6 +344,7 @@ public class PacManGame implements Runnable {
 		state = GameState.SCATTERING;
 		scatteringStateTimer = SCATTERING_TIMES[timesRow(level)][attackWave];
 		forceLivingGhostsTurningBack();
+		log("Game entered %s state", state);
 	}
 
 	private void runChasingState() {
@@ -371,6 +373,7 @@ public class PacManGame implements Runnable {
 		state = GameState.CHASING;
 		chasingStateTimer = CHASING_TIMES[timesRow(level)][attackWave];
 		forceLivingGhostsTurningBack();
+		log("Game entered %s state", state);
 	}
 
 	private void runPacManDyingState() {
@@ -396,6 +399,7 @@ public class PacManGame implements Runnable {
 		state = GameState.PACMAN_DYING;
 		// 11 animation frames, 8 ticks each, 2 seconds before animation, 2 seconds after
 		pacManDyingStateTimer = sec(2) + 88 + sec(2);
+		log("Game entered %s state", state);
 	}
 
 	private void exitPacManDyingState() {
@@ -422,6 +426,7 @@ public class PacManGame implements Runnable {
 		for (Creature ghost : ghosts) {
 			ghost.visible = false;
 		}
+		log("Game entered %s state", state);
 	}
 
 	private void runGameOverState() {
@@ -433,7 +438,7 @@ public class PacManGame implements Runnable {
 	private void enterGameOverState() {
 		state = GameState.GAME_OVER;
 		ui.redMessage("Game Over!");
-		log("Entered game over state");
+		log("Game entered %s state", state);
 	}
 
 	private void exitGameOverState() {
@@ -614,7 +619,7 @@ public class PacManGame implements Runnable {
 		}
 		updateGhostSpeed(ghost);
 		ghost.couldMove = tryMoving(ghost, ghost.wishDir);
-		log("%s is entering house", ghost);
+//		log("%s is entering house", ghost);
 	}
 
 	private void letGhostLeaveHouse(Ghost ghost) {
@@ -647,7 +652,7 @@ public class PacManGame implements Runnable {
 		}
 		updateGhostSpeed(ghost);
 		move(ghost);
-		log("%s is leaving house", ghost);
+//		log("%s is leaving house", ghost);
 	}
 
 	private void updateGhostSpeed(Ghost ghost) {

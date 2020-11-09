@@ -123,7 +123,7 @@ public class World {
 	}
 
 	public boolean isUpwardsBlocked(int x, int y) {
-		return is(x, y, 12, 13) || is(x, y, 15, 13) || is(x, y, 12, 25) || is(x, y, 15, 15);
+		return is(x, y, 12, 13) || is(x, y, 15, 13) || is(x, y, 12, 25) || is(x, y, 15, 25);
 	}
 
 	public boolean isFoodTile(int x, int y) {
