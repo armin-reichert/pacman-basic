@@ -150,13 +150,7 @@ public class World {
 	}
 
 	public boolean isAccessibleTile(int x, int y) {
-		if (isPortalTile(x, y)) {
-			return true;
-		}
-		if (inMapRange(x, y)) {
-			return map(x, y) != '1';
-		}
-		return false;
+		return inMapRange(x, y) && !isWall(x, y) || isPortalTile(x, y);
 	}
 
 	public boolean isPortalTile(int x, int y) {
