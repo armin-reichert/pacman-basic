@@ -154,7 +154,7 @@ public class World {
 	}
 
 	public boolean isPortalTile(int x, int y) {
-		return x == PORTAL_RIGHT_ENTRY.x && y == PORTAL_RIGHT_ENTRY.x
+		return x == PORTAL_RIGHT_ENTRY.x && y == PORTAL_RIGHT_ENTRY.y
 				|| x == PORTAL_LEFT_ENTRY.x && y == PORTAL_LEFT_ENTRY.y;
 	}
 

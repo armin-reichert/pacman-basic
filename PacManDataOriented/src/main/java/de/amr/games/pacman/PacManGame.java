@@ -817,10 +817,10 @@ public class PacManGame implements Runnable {
 	}
 
 	private boolean canAccessTile(Creature guy, int x, int y) {
-		if (x < 0 || x >= WORLD_WIDTH_TILES) {
-			return y == PORTAL_LEFT_ENTRY.y;
+		if (world.isPortalTile(x, y)) {
+			return true;
 		}
-		if (y < 0 || y >= WORLD_HEIGHT_TILES) {
+		if (!world.inMapRange(x, y)) {
 			return false;
 		}
 		if (world.isGhostHouseDoor(x, y)) {
