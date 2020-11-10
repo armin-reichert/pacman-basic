@@ -411,6 +411,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 		if (!ghost.visible) {
 			return;
 		}
+
 		if (ghost.dead) {
 			// number (bounty) or eyes looking into move direction
 			sprite = ghost.bountyTimer > 0 ? bountyNumbers.get(ghost.bounty) : sheet(8 + directionFrame(ghost.dir), 5);
@@ -430,6 +431,12 @@ public class PacManGameSwingUI implements PacManGameUI {
 		}
 		V2f position = position(ghost);
 		g.drawImage(sprite, (int) position.x - HTS, (int) position.y - HTS, null);
+
+		if (debugMode) {
+			g.setColor(Color.WHITE);
+			g.drawRect((int) position.x, (int) position.y, TS, TS);
+		}
+
 	}
 
 	private int directionFrame(Direction dir) {
