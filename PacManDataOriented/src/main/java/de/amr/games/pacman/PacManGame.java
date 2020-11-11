@@ -822,18 +822,15 @@ public class PacManGame implements Runnable {
 	}
 
 	private boolean canAccessTile(Creature guy, int x, int y) {
-		if (world.isPortalTile(x, y)) {
-			return true;
-		}
 		if (!world.inMapRange(x, y)) {
-			return false;
+			return world.isPortalTile(x, y);
 		}
 		if (world.isGhostHouseDoor(x, y)) {
-			if (guy.name.equals("Pac-Man")) {
-				return false;
+			if (guy instanceof Ghost) {
+				Ghost ghost = (Ghost) guy;
+				return ghost.enteringHouse || ghost.leavingHouse;
 			}
-			Ghost ghost = (Ghost) guy;
-			return ghost.enteringHouse || ghost.leavingHouse;
+			return false;
 		}
 		return !world.isWall(x, y);
 	}
