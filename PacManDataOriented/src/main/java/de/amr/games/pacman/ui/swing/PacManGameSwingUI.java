@@ -9,7 +9,6 @@ import static de.amr.games.pacman.World.WORLD_HEIGHT;
 import static de.amr.games.pacman.World.WORLD_HEIGHT_TILES;
 import static de.amr.games.pacman.World.WORLD_WIDTH;
 import static de.amr.games.pacman.World.WORLD_WIDTH_TILES;
-import static de.amr.games.pacman.World.position;
 
 import java.awt.BasicStroke;
 import java.awt.Canvas;
@@ -37,7 +36,6 @@ import de.amr.games.pacman.GhostCharacter;
 import de.amr.games.pacman.PacManGame;
 import de.amr.games.pacman.PacManGameUI;
 import de.amr.games.pacman.common.Direction;
-import de.amr.games.pacman.common.V2f;
 
 public class PacManGameSwingUI implements PacManGameUI {
 
@@ -401,8 +399,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 			// closed mouth or open mouth pointing to move direction
 			sprite = mouthFrame == 2 ? sheet(mouthFrame, 0) : sheet(mouthFrame, directionFrame(pacMan.dir));
 		}
-		V2f position = position(pacMan);
-		g.drawImage(sprite, (int) position.x - HTS, (int) position.y - HTS, null);
+		g.drawImage(sprite, (int) pacMan.position.x - HTS, (int) pacMan.position.y - HTS, null);
 	}
 
 	private void drawGhost(Graphics2D g, int ghostIndex) {
@@ -429,14 +426,12 @@ public class PacManGameSwingUI implements PacManGameUI {
 			int walkingFrame = game.framesTotal % 60 < 30 ? 0 : 1;
 			sprite = sheet(2 * directionFrame(ghost.dir) + walkingFrame, 4 + ghostIndex);
 		}
-		V2f position = position(ghost);
-		g.drawImage(sprite, (int) position.x - HTS, (int) position.y - HTS, null);
+		g.drawImage(sprite, (int) ghost.position.x - HTS, (int) ghost.position.y - HTS, null);
 
 		if (debugMode) {
 			g.setColor(Color.WHITE);
-			g.drawRect((int) position.x, (int) position.y, TS, TS);
+			g.drawRect((int) ghost.position.x, (int) ghost.position.y, TS, TS);
 		}
-
 	}
 
 	private int directionFrame(Direction dir) {

@@ -4,7 +4,6 @@ import java.util.BitSet;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.common.Direction;
-import de.amr.games.pacman.common.V2f;
 import de.amr.games.pacman.common.V2i;
 
 public class World {
@@ -41,18 +40,6 @@ public class World {
 
 	private static boolean is(int x, int y, int xx, int yy) {
 		return x == xx & y == yy;
-	}
-
-	public static V2i tile(V2f position) {
-		return new V2i((int) position.x / TS, (int) position.y / TS);
-	}
-
-	public static V2f offset(V2f position, V2i tile) {
-		return new V2f(position.x - tile.x * TS, position.y - tile.y * TS);
-	}
-
-	public static V2f position(Creature guy) {
-		return new V2f(guy.tile.x * TS + guy.offset.x, guy.tile.y * TS + guy.offset.y);
 	}
 
 	private final String[] map = {
