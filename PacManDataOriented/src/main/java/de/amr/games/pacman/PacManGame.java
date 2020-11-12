@@ -543,32 +543,32 @@ public class PacManGame implements Runnable {
 				ghost.targetTile = ghost.scatterTile;
 				letGhostHeadForTargetTile(ghost);
 			} else if (state == GameState.CHASING) {
-				ghost.targetTile = computeChasingTarget(ghostIndex);
+				ghost.targetTile = currentChasingTarget(ghost.character);
 				letGhostHeadForTargetTile(ghost);
 			}
 		}
 	}
 
-	private V2i computeChasingTarget(int ghostIndex) {
-		switch (ghostIndex) {
-		case BLINKY: {
+	private V2i currentChasingTarget(GhostCharacter character) {
+		switch (character) {
+		case OIKAKE: {
 			return pacMan.tile();
 		}
-		case PINKY: {
+		case MACHIBUSE: {
 			V2i p = pacMan.tile().sum(pacMan.dir.vec.scaled(4));
 			// simulate offset bug when Pac-Man is looking UP
 			return pacMan.dir.equals(UP) ? p.sum(LEFT.vec.scaled(4)) : p;
 		}
-		case INKY: {
+		case KIMAGURE: {
 			V2i b = ghosts[BLINKY].tile();
 			V2i p = pacMan.tile().sum(pacMan.dir.vec.scaled(2));
 			return p.scaled(2).sum(b.scaled(-1));
 		}
-		case CLYDE: {
+		case OTOBOKE: {
 			return ghosts[CLYDE].tile().distance(pacMan.tile()) < 8 ? ghosts[CLYDE].scatterTile : pacMan.tile();
 		}
 		default:
-			throw new IllegalArgumentException("Unknown ghost index: " + ghostIndex);
+			throw new IllegalArgumentException("Unknown ghost character: " + character);
 		}
 	}
 
