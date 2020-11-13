@@ -2,10 +2,6 @@ package de.amr.games.pacman;
 
 import static de.amr.games.pacman.Creature.offset;
 import static de.amr.games.pacman.Creature.tile;
-import static de.amr.games.pacman.GhostCharacter.KIMAGURE;
-import static de.amr.games.pacman.GhostCharacter.MACHIBUSE;
-import static de.amr.games.pacman.GhostCharacter.OIKAKE;
-import static de.amr.games.pacman.GhostCharacter.OTOBOKE;
 import static de.amr.games.pacman.World.BLINKY_CORNER;
 import static de.amr.games.pacman.World.CLYDE_CORNER;
 import static de.amr.games.pacman.World.HOUSE_CENTER;
@@ -142,10 +138,10 @@ public class PacManGame implements Runnable {
 
 	public PacManGame() {
 		pacMan = new Creature("Pac-Man", PACMAN_HOME);
-		ghosts[BLINKY] = new Ghost("Blinky", OIKAKE, HOUSE_ENTRY, BLINKY_CORNER);
-		ghosts[PINKY] = new Ghost("Pinky", MACHIBUSE, HOUSE_CENTER, PINKY_CORNER);
-		ghosts[INKY] = new Ghost("Inky", KIMAGURE, HOUSE_LEFT, INKY_CORNER);
-		ghosts[CLYDE] = new Ghost("Clyde", OTOBOKE, HOUSE_RIGHT, CLYDE_CORNER);
+		ghosts[BLINKY] = new Ghost("Blinky", HOUSE_ENTRY, BLINKY_CORNER);
+		ghosts[PINKY] = new Ghost("Pinky", HOUSE_CENTER, PINKY_CORNER);
+		ghosts[INKY] = new Ghost("Inky", HOUSE_LEFT, INKY_CORNER);
+		ghosts[CLYDE] = new Ghost("Clyde", HOUSE_RIGHT, CLYDE_CORNER);
 	}
 
 	public void start() {
@@ -543,32 +539,32 @@ public class PacManGame implements Runnable {
 				ghost.targetTile = ghost.scatterTile;
 				letGhostHeadForTargetTile(ghost);
 			} else if (state == GameState.CHASING) {
-				ghost.targetTile = currentChasingTarget(ghost.character);
+				ghost.targetTile = currentChasingTarget(ghost);
 				letGhostHeadForTargetTile(ghost);
 			}
 		}
 	}
 
-	private V2i currentChasingTarget(GhostCharacter character) {
-		switch (character) {
-		case OIKAKE: {
+	private V2i currentChasingTarget(Ghost ghost) {
+		switch (ghost.name) {
+		case "Blinky": {
 			return pacMan.tile();
 		}
-		case MACHIBUSE: {
+		case "Pinky": {
 			V2i p = pacMan.tile().sum(pacMan.dir.vec.scaled(4));
 			// simulate offset bug when Pac-Man is looking UP
 			return pacMan.dir.equals(UP) ? p.sum(LEFT.vec.scaled(4)) : p;
 		}
-		case KIMAGURE: {
+		case "Inky": {
 			V2i b = ghosts[BLINKY].tile();
 			V2i p = pacMan.tile().sum(pacMan.dir.vec.scaled(2));
 			return p.scaled(2).sum(b.scaled(-1));
 		}
-		case OTOBOKE: {
+		case "Clyde": {
 			return ghosts[CLYDE].tile().distance(pacMan.tile()) < 8 ? ghosts[CLYDE].scatterTile : pacMan.tile();
 		}
 		default:
-			throw new IllegalArgumentException("Unknown ghost character: " + character);
+			throw new IllegalArgumentException("Unknown ghost: " + ghost);
 		}
 	}
 

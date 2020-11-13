@@ -32,7 +32,6 @@ import javax.swing.JFrame;
 import de.amr.games.pacman.Creature;
 import de.amr.games.pacman.GameState;
 import de.amr.games.pacman.Ghost;
-import de.amr.games.pacman.GhostCharacter;
 import de.amr.games.pacman.PacManGame;
 import de.amr.games.pacman.PacManGameUI;
 import de.amr.games.pacman.common.Direction;
@@ -264,23 +263,23 @@ public class PacManGameSwingUI implements PacManGameUI {
 			g.drawString(text, 8 * TS, 3 * TS);
 			for (Ghost ghost : game.ghosts) {
 				if (ghost.targetTile != null) {
-					g.setColor(color(ghost.character));
+					g.setColor(color(ghost));
 					g.fillRect(ghost.targetTile.x * TS + HTS / 2, ghost.targetTile.y * TS + HTS / 2, HTS, HTS);
 				}
 			}
 		}
 	}
 
-	private Color color(GhostCharacter character) {
-		switch (character) {
-		case KIMAGURE:
-			return Color.CYAN;
-		case OTOBOKE:
-			return Color.ORANGE;
-		case OIKAKE:
+	private Color color(Ghost ghost) {
+		switch (ghost.name) {
+		case "Blinky":
 			return Color.RED;
-		case MACHIBUSE:
+		case "Pinky":
 			return Color.PINK;
+		case "Inky":
+			return Color.CYAN;
+		case "Clyde":
+			return Color.ORANGE;
 		default:
 			throw new IllegalArgumentException();
 		}
