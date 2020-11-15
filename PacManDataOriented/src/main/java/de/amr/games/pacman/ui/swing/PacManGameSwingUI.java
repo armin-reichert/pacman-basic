@@ -5,9 +5,7 @@ import static de.amr.games.pacman.PacManGame.log;
 import static de.amr.games.pacman.PacManGame.sec;
 import static de.amr.games.pacman.World.HTS;
 import static de.amr.games.pacman.World.TS;
-import static de.amr.games.pacman.World.WORLD_HEIGHT;
 import static de.amr.games.pacman.World.WORLD_HEIGHT_TILES;
-import static de.amr.games.pacman.World.WORLD_WIDTH;
 import static de.amr.games.pacman.World.WORLD_WIDTH_TILES;
 
 import java.awt.BasicStroke;
@@ -94,7 +92,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 		});
 
 		canvas = new Canvas();
-		canvas.setSize((int) (WORLD_WIDTH * scaling), (int) (WORLD_HEIGHT * scaling));
+		canvas.setSize((int) (WORLD_WIDTH_TILES * TS * scaling), (int) (WORLD_HEIGHT_TILES * TS * scaling));
 		canvas.setFocusable(false);
 
 		window.add(canvas);
@@ -294,16 +292,16 @@ public class PacManGameSwingUI implements PacManGameUI {
 	private void drawLivesCounter(Graphics2D g) {
 		BufferedImage sprite = sheet(8, 1);
 		for (int i = 0; i < game.lives; ++i) {
-			g.drawImage(sprite, 2 * (i + 1) * TS, WORLD_HEIGHT - 2 * TS, null);
+			g.drawImage(sprite, 2 * (i + 1) * TS, (WORLD_HEIGHT_TILES - 2) * TS, null);
 		}
 	}
 
 	private void drawLevelCounter(Graphics2D g) {
-		int x = WORLD_WIDTH - 4 * TS;
+		int x = (WORLD_WIDTH_TILES - 4) * TS;
 		int first = Math.max(1, game.level - 6);
 		for (int level = first; level <= game.level; ++level) {
 			BufferedImage symbol = symbols.get(levelData(level).bonusSymbol());
-			g.drawImage(symbol, x, WORLD_HEIGHT - 2 * TS, null);
+			g.drawImage(symbol, x, (WORLD_HEIGHT_TILES - 2) * TS, null);
 			x -= 2 * TS;
 		}
 	}
@@ -356,7 +354,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 			g.setFont(scoreFont);
 			g.setColor(messageColor);
 			int textLength = g.getFontMetrics().stringWidth(messageText);
-			g.drawString(messageText, WORLD_WIDTH / 2 - textLength / 2, 21 * TS);
+			g.drawString(messageText, WORLD_WIDTH_TILES * TS / 2 - textLength / 2, 21 * TS);
 		}
 
 		if (debugMode) {

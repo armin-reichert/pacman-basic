@@ -14,9 +14,6 @@ public class World {
 	public static final int WORLD_WIDTH_TILES = 28;
 	public static final int WORLD_HEIGHT_TILES = 36;
 
-	public static final int WORLD_WIDTH = WORLD_WIDTH_TILES * TS;
-	public static final int WORLD_HEIGHT = WORLD_HEIGHT_TILES * TS;
-
 	public static final V2i PORTAL_LEFT = new V2i(-1, 17);
 	public static final V2i PORTAL_RIGHT = new V2i(WORLD_WIDTH_TILES, 17);
 
