@@ -524,9 +524,8 @@ public class PacManGame implements Runnable {
 	}
 
 	private void updateGhosts() {
-		for (int ghostIndex = 0; ghostIndex < 4; ++ghostIndex) {
-			Ghost ghost = ghosts[ghostIndex];
-//			log("%s", ghost);
+		for (int i = 0; i < 4; ++i) {
+			Ghost ghost = ghosts[i];
 			if (ghost.bountyTimer > 0) {
 				--ghost.bountyTimer;
 			} else if (ghost.enteringHouse) {
@@ -536,13 +535,21 @@ public class PacManGame implements Runnable {
 			} else if (ghost.dead) {
 				letGhostReturnHome(ghost);
 			} else if (state == GameState.SCATTERING) {
-				ghost.targetTile = ghost.scatterTile;
-				letGhostHeadForTargetTile(ghost);
+				letGhostScatter(ghost);
 			} else if (state == GameState.CHASING) {
-				ghost.targetTile = currentChasingTarget(ghost);
-				letGhostHeadForTargetTile(ghost);
+				letGhostChase(ghost);
 			}
 		}
+	}
+
+	private void letGhostScatter(Ghost ghost) {
+		ghost.targetTile = ghost.scatterTile;
+		letGhostHeadForTargetTile(ghost);
+	}
+
+	private void letGhostChase(Ghost ghost) {
+		ghost.targetTile = currentChasingTarget(ghost);
+		letGhostHeadForTargetTile(ghost);
 	}
 
 	private V2i currentChasingTarget(Ghost ghost) {
