@@ -43,7 +43,7 @@ public class PacManGame implements Runnable {
 
 	private static final int BLINKY = 0, PINKY = 1, INKY = 2, CLYDE = 3;
 
-	public static final int FPS = 60;
+	public static int FPS = 60;
 
 	public static int sec(float seconds) {
 		return (int) (seconds * FPS);
@@ -151,10 +151,10 @@ public class PacManGame implements Runnable {
 
 	@Override
 	public void run() {
-		final long intendedFrameDuration = 1_000_000_000 / FPS;
 		long fpsCountStart = 0;
 		long frames = 0;
 		while (true) {
+			final long intendedFrameDuration = 1_000_000_000 / FPS;
 			long frameStartTime = System.nanoTime();
 			update();
 			ui.render();
@@ -257,6 +257,8 @@ public class PacManGame implements Runnable {
 			for (Ghost ghost : ghosts) {
 				killGhost(ghost);
 			}
+		} else if (ui.keyPressed("s")) {
+			FPS = FPS == 60 ? 30 : 60;
 		}
 	}
 
