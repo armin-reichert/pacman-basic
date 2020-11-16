@@ -441,7 +441,6 @@ public class PacManGame implements Runnable {
 	}
 
 	private void updatePacMan() {
-		pacMan.speed = levelData().pacManSpeed();
 		move(pacMan);
 
 		// Pac-man power expiring?
@@ -577,7 +576,6 @@ public class PacManGame implements Runnable {
 
 	private void letGhostHeadForTargetTile(Ghost ghost) {
 		newWishDir(ghost).ifPresent(dir -> ghost.wishDir = dir);
-		updateGhostSpeed(ghost);
 		move(ghost);
 	}
 
@@ -623,20 +621,19 @@ public class PacManGame implements Runnable {
 
 	private void letGhostLeaveHouse(Ghost ghost) {
 		V2f offset = ghost.offset();
-		// has left house?
+		// house left?
 		if (ghost.at(HOUSE_ENTRY) && differsAtMost(offset.y, 0, 1)) {
-			ghost.leavingHouse = false;
+			ghost.setOffset(HTS, 0);
 			ghost.wishDir = LEFT;
 			ghost.forcedOnTrack = true;
-			ghost.setOffset(HTS, 0);
+			ghost.leavingHouse = false;
 			log("%s has left house", ghost);
 			return;
 		}
-		// has reached middle of house?
+		// center of house reached?
 		if (ghost.at(HOUSE_CENTER) && differsAtMost(offset.x, 3, 1)) {
-			ghost.wishDir = UP;
 			ghost.setOffset(HTS, 0);
-			updateGhostSpeed(ghost);
+			ghost.wishDir = UP;
 			move(ghost);
 			return;
 		}
@@ -645,14 +642,21 @@ public class PacManGame implements Runnable {
 			if (ghost.at(ghost.homeTile)) {
 				ghost.setOffset(HTS, 0);
 				ghost.wishDir = ghost.homeTile.x < HOUSE_CENTER.x ? RIGHT : LEFT;
-				return;
+			} else {
+				letGhostBounce(ghost);
 			}
-			letGhostBounce(ghost);
 			return;
 		}
 		updateGhostSpeed(ghost);
 		move(ghost);
-//		log("%s is leaving house", ghost);
+	}
+
+	private void updateSpeed(Creature guy) {
+		if (guy.name.equals("Pac-Man")) {
+			pacMan.speed = levelData().pacManSpeed();
+		} else {
+			updateGhostSpeed((Ghost) guy);
+		}
 	}
 
 	private void updateGhostSpeed(Ghost ghost) {
@@ -739,6 +743,7 @@ public class PacManGame implements Runnable {
 	}
 
 	private void move(Creature guy) {
+		updateSpeed(guy);
 		if (guy.speed == 0) {
 			return;
 		}
