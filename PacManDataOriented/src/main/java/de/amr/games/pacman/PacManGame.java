@@ -840,12 +840,12 @@ public class PacManGame implements Runnable {
 	private Direction randomMoveDir(Creature guy) {
 		//@formatter:off
 		List<Direction> dirs = Stream.of(Direction.values())
-				.filter(dir -> dir != guy.dir.inverse())
-				.filter(dir -> {
-					V2i neighbor = guy.tile().sum(dir.vec);
-					return world.isAccessibleTile(neighbor.x, neighbor.y);
-				})
-				.collect(Collectors.toList());
+			.filter(dir -> dir != guy.dir.inverse())
+			.filter(dir -> {
+				V2i neighbor = guy.tile().sum(dir.vec);
+				return world.isAccessibleTile(neighbor.x, neighbor.y);
+			})
+			.collect(Collectors.toList());
 		//@formatter:on
 		return dirs.get(new Random().nextInt(dirs.size()));
 	}
