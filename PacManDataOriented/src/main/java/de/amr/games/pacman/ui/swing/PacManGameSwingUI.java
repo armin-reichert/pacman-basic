@@ -15,13 +15,10 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.Graphics2D;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.BitSet;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
@@ -34,7 +31,7 @@ import de.amr.games.pacman.PacManGame;
 import de.amr.games.pacman.PacManGameUI;
 import de.amr.games.pacman.common.Direction;
 
-public class PacManGameSwingUI implements PacManGameUI {
+public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 
 	public static void main(String[] args) {
 		PacManGame game = new PacManGame();
@@ -49,7 +46,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 	private final PacManGame game;
 	private final float scaling;
 	private final Canvas canvas;
-	private final BitSet pressedKeys = new BitSet(256);
+	private final Keyboard keyboard;
 
 	private BufferedImage imageMazeFull;
 	private BufferedImage imageMazeEmpty;
@@ -65,7 +62,6 @@ public class PacManGameSwingUI implements PacManGameUI {
 	public PacManGameSwingUI(PacManGame game, float scaling) {
 		this.game = game;
 		this.scaling = scaling;
-
 		messageText = null;
 		messageColor = Color.YELLOW;
 
@@ -75,32 +71,21 @@ public class PacManGameSwingUI implements PacManGameUI {
 			x.printStackTrace();
 		}
 
-		JFrame window = new JFrame("Pac-Man");
-		window.setResizable(false);
-		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		window.addKeyListener(new KeyAdapter() {
-
-			@Override
-			public void keyPressed(KeyEvent e) {
-				pressedKeys.set(e.getKeyCode());
-			}
-
-			@Override
-			public void keyReleased(KeyEvent e) {
-				pressedKeys.clear(e.getKeyCode());
-			}
-		});
+		keyboard = new Keyboard(this);
 
 		canvas = new Canvas();
 		canvas.setSize((int) (WORLD_WIDTH_TILES * TS * scaling), (int) (WORLD_HEIGHT_TILES * TS * scaling));
 		canvas.setFocusable(false);
 
-		window.add(canvas);
-		window.pack();
-		window.setLocationRelativeTo(null);
-		window.setVisible(true);
-		window.requestFocus();
+		setTitle("Pac-Man");
+		setResizable(false);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+		add(canvas);
+		pack();
+		setLocationRelativeTo(null);
+		setVisible(true);
+		requestFocus();
 		canvas.createBufferStrategy(2);
 	}
 
@@ -149,38 +134,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 	@Override
 	public boolean keyPressed(String keySpec) {
-		return pressedKeys.get(keyCode(keySpec));
-	}
-
-	private int keyCode(String keySpec) {
-		keySpec = keySpec.toLowerCase();
-		if (keySpec.length() == 1) {
-			int c = keySpec.charAt(0);
-			int index = "abcdefghijklmnopqrstuvwxyz".indexOf(c);
-			if (index != -1) {
-				return KeyEvent.VK_A + index;
-			}
-			index = "0123456789".indexOf(c);
-			if (index != -1) {
-				return KeyEvent.VK_0 + index;
-			}
-		}
-		switch (keySpec) {
-		case "up":
-			return KeyEvent.VK_UP;
-		case "down":
-			return KeyEvent.VK_DOWN;
-		case "left":
-			return KeyEvent.VK_LEFT;
-		case "right":
-			return KeyEvent.VK_RIGHT;
-		case "space":
-			return KeyEvent.VK_SPACE;
-		case "escape":
-			return KeyEvent.VK_ESCAPE;
-		default:
-			throw new IllegalArgumentException("Unknown key: " + keySpec);
-		}
+		return keyboard.keyPressed(keySpec);
 	}
 
 	private void loadResources() throws IOException, FontFormatException {
