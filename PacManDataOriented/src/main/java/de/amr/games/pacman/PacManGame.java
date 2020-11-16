@@ -583,11 +583,11 @@ public class PacManGame implements Runnable {
 
 	private void letGhostReturnHome(Ghost ghost) {
 		if (atGhostHouseDoor(ghost)) {
-			ghost.targetTile = ghost == ghosts[BLINKY] ? HOUSE_CENTER : ghost.homeTile;
 			ghost.setOffset(HTS, 0);
 			ghost.dir = ghost.wishDir = DOWN;
 			ghost.forcedOnTrack = false;
 			ghost.enteringHouse = true;
+			ghost.targetTile = ghost == ghosts[BLINKY] ? HOUSE_CENTER : ghost.homeTile;
 			log("%s starts entering house", ghost);
 			return;
 		}
@@ -598,16 +598,15 @@ public class PacManGame implements Runnable {
 		return guy.at(HOUSE_ENTRY) && differsAtMost(guy.offset().x, HTS, 2);
 	}
 
-	private boolean differsAtMost(float value, float target, float deviation) {
+	private static boolean differsAtMost(float value, float target, float deviation) {
 		return Math.abs(value - target) <= deviation;
 	}
 
 	private void letGhostEnterHouse(Ghost ghost) {
-		// reached target inside house?
 		V2f offset = ghost.offset();
-		if (ghost.at(ghost.targetTile) && offset.y >= 0 && differsAtMost(offset.x, HTS, 2)) {
+		if (ghost.at(ghost.targetTile) && offset.y >= 0) {
 			ghost.dead = false;
-			ghost.dir = ghost.wishDir = ghost.wishDir.inverse();
+			ghost.dir = ghost.wishDir = ghost.dir.inverse();
 			ghost.enteringHouse = false;
 			ghost.leavingHouse = true;
 			log("%s starts leaving house", ghost);
@@ -703,7 +702,7 @@ public class PacManGame implements Runnable {
 		// compute direction to neighbor with minimal distance to target
 		double minDist = Double.MAX_VALUE;
 		Direction minDistDir = null;
-		for (Direction dir : List.of(RIGHT, DOWN, LEFT, UP) /* order matters! */) {
+		for (Direction dir : List.of(UP, LEFT, DOWN, RIGHT) /* order matters! */) {
 			if (dir.equals(ghost.dir.inverse())) {
 				continue;
 			}
@@ -711,12 +710,11 @@ public class PacManGame implements Runnable {
 			if (!canAccessTile(ghost, neighbor.x, neighbor.y)) {
 				continue;
 			}
-			if (dir.equals(UP) && world.isUpwardsBlocked(neighbor.x, neighbor.y) && !ghost.dead) {
+			if (dir.equals(UP) && !ghost.dead && world.isUpwardsBlocked(neighbor.x, neighbor.y)) {
 				continue;
 			}
 			double dist = neighbor.distance(ghost.targetTile);
-			// if different neighbor tiles have minimum distance to target, right-most in list wins!
-			if (dist <= minDist) {
+			if (dist < minDist) {
 				minDistDir = dir;
 				minDist = dist;
 			}
