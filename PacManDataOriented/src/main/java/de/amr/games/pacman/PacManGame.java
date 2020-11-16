@@ -42,6 +42,7 @@ import de.amr.games.pacman.common.V2i;
 public class PacManGame implements Runnable {
 
 	private static final int BLINKY = 0, PINKY = 1, INKY = 2, CLYDE = 3;
+	private static final List<Direction> DIRECTION_PRIORITY = List.of(UP, LEFT, DOWN, RIGHT);
 
 	public static int FPS = 60;
 
@@ -595,11 +596,11 @@ public class PacManGame implements Runnable {
 	}
 
 	private boolean atGhostHouseDoor(Creature guy) {
-		return guy.at(HOUSE_ENTRY) && differsAtMost(guy.offset().x, HTS, 2);
+		return guy.at(HOUSE_ENTRY) && diffMax(guy.offset().x, HTS, 2);
 	}
 
-	private static boolean differsAtMost(float value, float target, float deviation) {
-		return Math.abs(value - target) <= deviation;
+	private static boolean diffMax(float value, float target, float maxDiff) {
+		return Math.abs(value - target) <= maxDiff;
 	}
 
 	private void letGhostEnterHouse(Ghost ghost) {
@@ -622,7 +623,7 @@ public class PacManGame implements Runnable {
 	private void letGhostLeaveHouse(Ghost ghost) {
 		V2f offset = ghost.offset();
 		// house left?
-		if (ghost.at(HOUSE_ENTRY) && differsAtMost(offset.y, 0, 1)) {
+		if (ghost.at(HOUSE_ENTRY) && diffMax(offset.y, 0, 1)) {
 			ghost.setOffset(HTS, 0);
 			ghost.wishDir = LEFT;
 			ghost.forcedOnTrack = true;
@@ -631,7 +632,7 @@ public class PacManGame implements Runnable {
 			return;
 		}
 		// center of house reached?
-		if (ghost.at(HOUSE_CENTER) && differsAtMost(offset.x, 3, 1)) {
+		if (ghost.at(HOUSE_CENTER) && diffMax(offset.x, 3, 1)) {
 			ghost.setOffset(HTS, 0);
 			ghost.wishDir = UP;
 			tryMoving(ghost);
@@ -705,7 +706,7 @@ public class PacManGame implements Runnable {
 		// use direction to neighbor with minimal distance to target
 		double minDist = Double.MAX_VALUE;
 		Direction minDistDir = null;
-		for (Direction dir : List.of(UP, LEFT, DOWN, RIGHT) /* order matters! */) {
+		for (Direction dir : DIRECTION_PRIORITY) {
 			if (dir.equals(ghost.dir.inverse())) {
 				continue;
 			}
