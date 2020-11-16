@@ -441,7 +441,7 @@ public class PacManGame implements Runnable {
 	}
 
 	private void updatePacMan() {
-		move(pacMan);
+		tryMoving(pacMan);
 
 		// Pac-man power expiring?
 		if (pacManPowerTimer > 0) {
@@ -576,7 +576,7 @@ public class PacManGame implements Runnable {
 
 	private void letGhostHeadForTargetTile(Ghost ghost) {
 		newWishDir(ghost).ifPresent(dir -> ghost.wishDir = dir);
-		move(ghost);
+		tryMoving(ghost);
 	}
 
 	private void letGhostReturnHome(Ghost ghost) {
@@ -603,20 +603,18 @@ public class PacManGame implements Runnable {
 	private void letGhostEnterHouse(Ghost ghost) {
 		V2f offset = ghost.offset();
 		if (ghost.at(ghost.targetTile) && offset.y >= 0) {
+			ghost.wishDir = ghost.dir.inverse();
 			ghost.dead = false;
-			ghost.dir = ghost.wishDir = ghost.dir.inverse();
 			ghost.enteringHouse = false;
 			ghost.leavingHouse = true;
-			log("%s starts leaving house", ghost);
+			log("%s reached ghost house target and starts leaving house", ghost);
 			return;
 		}
-		// have Inky or Clyde reached the house position where they start moving sidewards?
+		// should ghost move sidewards towards home tile?
 		if (ghost.at(HOUSE_CENTER) && offset.y >= 0) {
-			ghost.dir = ghost.wishDir = ghost.homeTile.x < HOUSE_CENTER.x ? LEFT : RIGHT;
+			ghost.wishDir = ghost.targetTile.x < HOUSE_CENTER.x ? LEFT : RIGHT;
 		}
-		updateGhostSpeed(ghost);
 		ghost.couldMove = tryMoving(ghost, ghost.wishDir);
-//		log("%s is entering house", ghost);
 	}
 
 	private void letGhostLeaveHouse(Ghost ghost) {
@@ -634,7 +632,7 @@ public class PacManGame implements Runnable {
 		if (ghost.at(HOUSE_CENTER) && differsAtMost(offset.x, 3, 1)) {
 			ghost.setOffset(HTS, 0);
 			ghost.wishDir = UP;
-			move(ghost);
+			tryMoving(ghost);
 			return;
 		}
 		// keep bouncing until ghost can move towards middle of house
@@ -647,8 +645,7 @@ public class PacManGame implements Runnable {
 			}
 			return;
 		}
-		updateGhostSpeed(ghost);
-		move(ghost);
+		tryMoving(ghost);
 	}
 
 	private void updateSpeed(Creature guy) {
@@ -689,21 +686,21 @@ public class PacManGame implements Runnable {
 	}
 
 	private Optional<Direction> newWishDir(Ghost ghost) {
-		V2i tile = ghost.tile();
 		if (!ghost.changedTile) {
-			return Optional.empty();
-		}
-		if (world.isPortalTile(tile.x, tile.y)) {
 			return Optional.empty();
 		}
 		if (ghost.forcedTurningBack) {
 			ghost.forcedTurningBack = false;
 			return Optional.of(ghost.wishDir.inverse());
 		}
+		V2i tile = ghost.tile();
+		if (world.isPortalTile(tile.x, tile.y)) {
+			return Optional.empty();
+		}
 		if (ghost.frightened && world.isIntersectionTile(tile.x, tile.y)) {
 			return Optional.of(randomMoveDir(ghost));
 		}
-		// compute direction to neighbor with minimal distance to target
+		// use direction to neighbor with minimal distance to target
 		double minDist = Double.MAX_VALUE;
 		Direction minDistDir = null;
 		for (Direction dir : List.of(UP, LEFT, DOWN, RIGHT) /* order matters! */) {
@@ -736,19 +733,18 @@ public class PacManGame implements Runnable {
 
 	private void letGhostBounce(Ghost ghost) {
 		if (!ghost.couldMove) {
-			ghost.dir = ghost.wishDir = ghost.wishDir.inverse();
+			ghost.wishDir = ghost.wishDir.inverse();
 		}
-		ghost.speed = levelData().ghostSpeed();
-		ghost.couldMove = tryMoving(ghost, ghost.wishDir);
+		tryMoving(ghost);
 	}
 
-	private void move(Creature guy) {
+	private void tryMoving(Creature guy) {
 		updateSpeed(guy);
 		if (guy.speed == 0) {
 			return;
 		}
 
-		// portal
+		// entering portal?
 		if (guy.at(PORTAL_RIGHT) && guy.dir.equals(RIGHT)) {
 			guy.placeAt(PORTAL_LEFT.x, PORTAL_LEFT.y, 0, 0);
 			return;
