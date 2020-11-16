@@ -155,9 +155,14 @@ public class PacManGameSwingUI implements PacManGameUI {
 	private int keyCode(String keySpec) {
 		keySpec = keySpec.toLowerCase();
 		if (keySpec.length() == 1) {
-			int index = "abcdefghijklmnopqrstuvwxyz".indexOf(keySpec.charAt(0));
+			int c = keySpec.charAt(0);
+			int index = "abcdefghijklmnopqrstuvwxyz".indexOf(c);
 			if (index != -1) {
 				return KeyEvent.VK_A + index;
+			}
+			index = "0123456789".indexOf(c);
+			if (index != -1) {
+				return KeyEvent.VK_0 + index;
 			}
 		}
 		switch (keySpec) {
@@ -171,6 +176,8 @@ public class PacManGameSwingUI implements PacManGameUI {
 			return KeyEvent.VK_RIGHT;
 		case "space":
 			return KeyEvent.VK_SPACE;
+		case "escape":
+			return KeyEvent.VK_ESCAPE;
 		default:
 			throw new IllegalArgumentException("Unknown key: " + keySpec);
 		}
