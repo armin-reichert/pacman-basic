@@ -44,6 +44,10 @@ public class PacManGame implements Runnable {
 	private static final int BLINKY = 0, PINKY = 1, INKY = 2, CLYDE = 3;
 	private static final List<Direction> DIRECTION_PRIORITY = List.of(UP, LEFT, DOWN, RIGHT);
 
+	private static boolean differsAtMost(float value, float target, float tolerance) {
+		return Math.abs(value - target) <= tolerance;
+	}
+
 	public static int FPS = 60;
 
 	public static int sec(float seconds) {
@@ -107,7 +111,7 @@ public class PacManGame implements Runnable {
 		//@formatter:on
 	};
 
-	private static int timesRow(int level) {
+	private static int timesTableRow(int level) {
 		return level == 1 ? 0 : level <= 4 ? 1 : 2;
 	}
 
@@ -145,13 +149,10 @@ public class PacManGame implements Runnable {
 		ghosts[CLYDE] = new Ghost("Clyde", HOUSE_RIGHT, CLYDE_CORNER);
 	}
 
-	public void start() {
-		reset();
-		new Thread(this, "GameLoop").start();
-	}
-
 	@Override
 	public void run() {
+		reset();
+		enterReadyState();
 		long fpsCountStart = 0;
 		long frames = 0;
 		while (true) {
@@ -183,11 +184,10 @@ public class PacManGame implements Runnable {
 	private void reset() {
 		points = 0;
 		lives = 3;
-		initLevel(1);
-		enterReadyState();
+		setLevel(1);
 	}
 
-	private void initLevel(int n) {
+	private void setLevel(int n) {
 		level = n;
 		world.restoreFood();
 		foodRemaining = TOTAL_FOOD_COUNT;
@@ -301,18 +301,18 @@ public class PacManGame implements Runnable {
 		--readyStateTimer;
 	}
 
-	private void enterReadyState() {
+	public void enterReadyState() {
 		state = GameState.READY;
 		readyStateTimer = sec(3);
-		ui.yellowMessage("Ready!");
 		resetGuys();
+		ui.yellowMessage("Ready!");
 		log("Game entered %s state", state);
 	}
 
 	private void exitReadyState() {
-		ui.clearMessage();
 		ghosts[INKY].leavingHouse = ghosts[PINKY].leavingHouse = ghosts[CLYDE].leavingHouse = true;
 		ghosts[BLINKY].leavingHouse = false;
+		ui.clearMessage();
 	}
 
 	private void runScatteringState() {
@@ -338,7 +338,7 @@ public class PacManGame implements Runnable {
 
 	private void enterScatteringState() {
 		state = GameState.SCATTERING;
-		scatteringStateTimer = SCATTERING_TIMES[timesRow(level)][attackWave];
+		scatteringStateTimer = SCATTERING_TIMES[timesTableRow(level)][attackWave];
 		forceLivingGhostsTurningBack();
 		log("Game entered %s state", state);
 	}
@@ -367,7 +367,7 @@ public class PacManGame implements Runnable {
 
 	private void enterChasingState() {
 		state = GameState.CHASING;
-		chasingStateTimer = CHASING_TIMES[timesRow(level)][attackWave];
+		chasingStateTimer = CHASING_TIMES[timesTableRow(level)][attackWave];
 		forceLivingGhostsTurningBack();
 		log("Game entered %s state", state);
 	}
@@ -384,7 +384,7 @@ public class PacManGame implements Runnable {
 			}
 		}
 		if (pacManDyingStateTimer == sec(2.5f) + 88) {
-			for (Creature ghost : ghosts) {
+			for (Ghost ghost : ghosts) {
 				ghost.visible = false;
 			}
 		}
@@ -399,7 +399,7 @@ public class PacManGame implements Runnable {
 	}
 
 	private void exitPacManDyingState() {
-		for (Creature ghost : ghosts) {
+		for (Ghost ghost : ghosts) {
 			ghost.visible = true;
 		}
 	}
@@ -407,7 +407,7 @@ public class PacManGame implements Runnable {
 	private void runChangingLevelState() {
 		if (changingLevelStateTimer == 0) {
 			log("Level %d complete, entering level %d", level, level + 1);
-			initLevel(++level);
+			setLevel(++level);
 			enterReadyState();
 			return;
 		}
@@ -418,8 +418,7 @@ public class PacManGame implements Runnable {
 		state = GameState.CHANGING_LEVEL;
 		changingLevelStateTimer = sec(7);
 		mazeFlashes = levelData().numFlashes();
-		log("Maze flashes: %d", mazeFlashes);
-		for (Creature ghost : ghosts) {
+		for (Ghost ghost : ghosts) {
 			ghost.visible = false;
 		}
 		log("Game entered %s state", state);
@@ -428,6 +427,7 @@ public class PacManGame implements Runnable {
 	private void runGameOverState() {
 		if (ui.keyPressed("space")) {
 			exitGameOverState();
+			enterReadyState();
 		}
 	}
 
@@ -438,8 +438,8 @@ public class PacManGame implements Runnable {
 	}
 
 	private void exitGameOverState() {
-		ui.clearMessage();
 		reset();
+		ui.clearMessage();
 		log("Left game over state");
 	}
 
@@ -473,11 +473,13 @@ public class PacManGame implements Runnable {
 				ghostsKilledUsingEnergizer = 0;
 				forceLivingGhostsTurningBack();
 			}
+
 			// bonus reached?
 			if (bonusAvailableTimer == 0 && (foodRemaining == 70 || foodRemaining == 170)) {
-				bonusAvailableTimer = sec(9) + new Random().nextInt(FPS);
+				bonusAvailableTimer = sec(9 + new Random().nextInt(1));
 			}
 		}
+
 		// bonus found?
 		if (bonusAvailableTimer > 0 && world.isBonusTile(tile.x, tile.y)) {
 			bonusAvailableTimer = 0;
@@ -485,7 +487,8 @@ public class PacManGame implements Runnable {
 			points += levelData().bonusPoints();
 			log("Pac-Man found bonus %s of value %d", levelData().bonusSymbol(), levelData().bonusPoints());
 		}
-		// meeting ghost?
+
+		// ghost at current tile?
 		for (Ghost ghost : ghosts) {
 			if (!pacMan.tile().equals(ghost.tile())) {
 				continue;
@@ -496,12 +499,25 @@ public class PacManGame implements Runnable {
 			}
 			// getting killed by ghost?
 			if (pacManPowerTimer == 0 && !ghost.dead) {
-				log("Pac-Man killed by %s at tile %s", ghost.name, ghost.tile());
 				pacMan.dead = true;
 				--lives;
+				log("Pac-Man killed by %s at tile %s", ghost.name, ghost.tile());
 				break;
 			}
 		}
+	}
+
+	private void killGhost(Ghost ghost) {
+		if (ghost.dead) {
+			return;
+		}
+		ghost.dead = true;
+		ghost.frightened = false;
+		ghost.targetTile = HOUSE_ENTRY;
+		ghostsKilledUsingEnergizer++;
+		ghost.bounty = (int) Math.pow(2, ghostsKilledUsingEnergizer) * 100;
+		ghost.bountyTimer = sec(0.5f);
+		log("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name, ghost.tile(), ghost.bounty);
 	}
 
 	private void updateBonus() {
@@ -510,18 +526,6 @@ public class PacManGame implements Runnable {
 		}
 		if (bonusConsumedTimer > 0) {
 			--bonusConsumedTimer;
-		}
-	}
-
-	private void killGhost(Ghost ghost) {
-		if (!ghost.dead) {
-			ghost.dead = true;
-			ghost.frightened = false;
-			ghost.targetTile = HOUSE_ENTRY;
-			ghostsKilledUsingEnergizer++;
-			ghost.bounty = (int) Math.pow(2, ghostsKilledUsingEnergizer) * 100;
-			ghost.bountyTimer = sec(0.5f);
-			log("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name, ghost.tile(), ghost.bounty);
 		}
 	}
 
@@ -560,20 +564,20 @@ public class PacManGame implements Runnable {
 			return pacMan.tile();
 		}
 		case "Pinky": {
-			V2i p = pacMan.tile().sum(pacMan.dir.vec.scaled(4));
+			V2i fourTilesAheadPacMan = pacMan.tile().sum(pacMan.dir.vec.scaled(4));
 			// simulate offset bug when Pac-Man is looking UP
-			return pacMan.dir.equals(UP) ? p.sum(LEFT.vec.scaled(4)) : p;
+			return pacMan.dir.equals(UP) ? fourTilesAheadPacMan.sum(LEFT.vec.scaled(4)) : fourTilesAheadPacMan;
 		}
 		case "Inky": {
-			V2i b = ghosts[BLINKY].tile();
-			V2i p = pacMan.tile().sum(pacMan.dir.vec.scaled(2));
-			return p.scaled(2).sum(b.scaled(-1));
+			V2i blinkyTile = ghosts[BLINKY].tile();
+			V2i twoTilesAheadPacMan = pacMan.tile().sum(pacMan.dir.vec.scaled(2));
+			return twoTilesAheadPacMan.scaled(2).sum(blinkyTile.scaled(-1));
 		}
 		case "Clyde": {
 			return ghosts[CLYDE].tile().distance(pacMan.tile()) < 8 ? ghosts[CLYDE].scatterTile : pacMan.tile();
 		}
 		default:
-			throw new IllegalArgumentException("Unknown ghost: " + ghost);
+			throw new IllegalArgumentException("Unknown ghost name: " + ghost.name);
 		}
 	}
 
@@ -596,15 +600,12 @@ public class PacManGame implements Runnable {
 	}
 
 	private boolean atGhostHouseDoor(Creature guy) {
-		return guy.at(HOUSE_ENTRY) && diffMax(guy.offset().x, HTS, 2);
-	}
-
-	private static boolean diffMax(float value, float target, float maxDiff) {
-		return Math.abs(value - target) <= maxDiff;
+		return guy.at(HOUSE_ENTRY) && differsAtMost(guy.offset().x, HTS, 2);
 	}
 
 	private void letGhostEnterHouse(Ghost ghost) {
 		V2f offset = ghost.offset();
+		// target reached?
 		if (ghost.at(ghost.targetTile) && offset.y >= 0) {
 			ghost.wishDir = ghost.dir.inverse();
 			ghost.dead = false;
@@ -613,7 +614,7 @@ public class PacManGame implements Runnable {
 			log("%s reached ghost house target and starts leaving house", ghost);
 			return;
 		}
-		// should ghost move sidewards towards home tile?
+		// move sidewards towards target tile?
 		if (ghost.at(HOUSE_CENTER) && offset.y >= 0) {
 			ghost.wishDir = ghost.targetTile.x < HOUSE_CENTER.x ? LEFT : RIGHT;
 		}
@@ -623,7 +624,7 @@ public class PacManGame implements Runnable {
 	private void letGhostLeaveHouse(Ghost ghost) {
 		V2f offset = ghost.offset();
 		// house left?
-		if (ghost.at(HOUSE_ENTRY) && diffMax(offset.y, 0, 1)) {
+		if (ghost.at(HOUSE_ENTRY) && differsAtMost(offset.y, 0, 1)) {
 			ghost.setOffset(HTS, 0);
 			ghost.wishDir = LEFT;
 			ghost.forcedOnTrack = true;
@@ -632,7 +633,7 @@ public class PacManGame implements Runnable {
 			return;
 		}
 		// center of house reached?
-		if (ghost.at(HOUSE_CENTER) && diffMax(offset.x, 3, 1)) {
+		if (ghost.at(HOUSE_CENTER) && differsAtMost(offset.x, 3, 1)) {
 			ghost.setOffset(HTS, 0);
 			ghost.wishDir = UP;
 			tryMoving(ghost);
