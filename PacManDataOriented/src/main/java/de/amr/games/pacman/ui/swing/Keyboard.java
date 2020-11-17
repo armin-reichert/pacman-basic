@@ -50,13 +50,12 @@ public class Keyboard {
 			return KeyEvent.VK_LEFT;
 		case "right":
 			return KeyEvent.VK_RIGHT;
-		case "space":
-			return KeyEvent.VK_SPACE;
 		case "escape":
 			return KeyEvent.VK_ESCAPE;
+		case "space":
+			return KeyEvent.VK_SPACE;
 		default:
-			throw new IllegalArgumentException("Unknown key: " + keySpec);
+			throw new IllegalArgumentException(String.format("Unknown key specification: %s", keySpec));
 		}
 	}
-
 }
