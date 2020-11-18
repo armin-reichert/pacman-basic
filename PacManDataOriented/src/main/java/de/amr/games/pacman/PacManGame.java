@@ -566,7 +566,7 @@ public class PacManGame implements Runnable {
 		case "Pinky": {
 			V2i fourTilesAheadPacMan = pacMan.tile().sum(pacMan.dir.vec.scaled(4));
 			// simulate offset bug when Pac-Man is looking UP
-			return pacMan.dir.equals(UP) ? fourTilesAheadPacMan.sum(LEFT.vec.scaled(4)) : fourTilesAheadPacMan;
+			return pacMan.dir == UP ? fourTilesAheadPacMan.sum(LEFT.vec.scaled(4)) : fourTilesAheadPacMan;
 		}
 		case "Inky": {
 			V2i blinkyTile = ghosts[BLINKY].tile();
@@ -640,7 +640,7 @@ public class PacManGame implements Runnable {
 			return;
 		}
 		// keep bouncing until ghost can move towards middle of house
-		if (ghost.wishDir.equals(UP) || ghost.wishDir.equals(DOWN)) {
+		if (ghost.wishDir == UP || ghost.wishDir == DOWN) {
 			if (ghost.at(ghost.homeTile)) {
 				ghost.setOffset(HTS, 0);
 				ghost.wishDir = ghost.homeTile.x < HOUSE_CENTER.x ? RIGHT : LEFT;
@@ -652,15 +652,15 @@ public class PacManGame implements Runnable {
 		tryMoving(ghost);
 	}
 
-	private void updateSpeed(Creature guy) {
+	private void setSpeed(Creature guy) {
 		if (guy.name.equals("Pac-Man")) {
-			pacMan.speed = levelData().pacManSpeed();
+			guy.speed = levelData().pacManSpeed();
 		} else {
-			updateGhostSpeed((Ghost) guy);
+			setGhostSpeed((Ghost) guy);
 		}
 	}
 
-	private void updateGhostSpeed(Ghost ghost) {
+	private void setGhostSpeed(Ghost ghost) {
 		if (ghost.bountyTimer > 0) {
 			ghost.speed = 0;
 		} else if (ghost.enteringHouse) {
@@ -676,12 +676,12 @@ public class PacManGame implements Runnable {
 		} else {
 			ghost.speed = levelData().ghostSpeed();
 			if (ghost == ghosts[BLINKY]) {
-				updateElroySpeed(ghost);
+				maybeSetElroySpeed(ghost);
 			}
 		}
 	}
 
-	private void updateElroySpeed(Ghost blinky) {
+	private void maybeSetElroySpeed(Ghost blinky) {
 		if (foodRemaining <= levelData().elroy2DotsLeft()) {
 			blinky.speed = levelData().elroy2Speed();
 		} else if (foodRemaining <= levelData().elroy1DotsLeft()) {
@@ -708,14 +708,14 @@ public class PacManGame implements Runnable {
 		double minDist = Double.MAX_VALUE;
 		Direction minDistDir = null;
 		for (Direction dir : DIRECTION_PRIORITY) {
-			if (dir.equals(ghost.dir.inverse())) {
+			if (dir == ghost.dir.inverse()) {
 				continue;
 			}
 			V2i neighbor = tile.sum(dir.vec);
 			if (!canAccessTile(ghost, neighbor.x, neighbor.y)) {
 				continue;
 			}
-			if (dir.equals(UP) && !ghost.dead && world.isUpwardsBlocked(neighbor.x, neighbor.y)) {
+			if (dir == UP && !ghost.dead && world.isUpwardsBlocked(neighbor.x, neighbor.y)) {
 				continue;
 			}
 			double dist = neighbor.distance(ghost.targetTile);
@@ -743,17 +743,17 @@ public class PacManGame implements Runnable {
 	}
 
 	private void tryMoving(Creature guy) {
-		updateSpeed(guy);
+		setSpeed(guy);
 		if (guy.speed == 0) {
 			return;
 		}
 
 		// entering portal?
-		if (guy.at(PORTAL_RIGHT) && guy.dir.equals(RIGHT)) {
+		if (guy.at(PORTAL_RIGHT) && guy.dir == RIGHT) {
 			guy.placeAt(PORTAL_LEFT.x, PORTAL_LEFT.y, 0, 0);
 			return;
 		}
-		if (guy.at(PORTAL_LEFT) && guy.dir.equals(LEFT)) {
+		if (guy.at(PORTAL_LEFT) && guy.dir == LEFT) {
 			guy.placeAt(PORTAL_RIGHT.x, PORTAL_RIGHT.y, 0, 0);
 			return;
 		}
@@ -771,12 +771,12 @@ public class PacManGame implements Runnable {
 		V2f offset = guy.offset();
 		// turns
 		if (guy.forcedOnTrack && canAccessTile(guy, tile.x + dir.vec.x, tile.y + dir.vec.y)) {
-			if (dir.equals(LEFT) || dir.equals(RIGHT)) {
+			if (dir == LEFT || dir == RIGHT) {
 				if (Math.abs(offset.y) > 1) {
 					return false;
 				}
 				guy.setOffset(offset.x, 0);
-			} else if (dir.equals(UP) || dir.equals(DOWN)) {
+			} else if (dir == UP || dir == DOWN) {
 				if (Math.abs(offset.x) > 1) {
 					return false;
 				}
@@ -797,11 +797,11 @@ public class PacManGame implements Runnable {
 		// avoid moving (partially) into inaccessible tile
 		if (guy.at(newTile)) {
 			if (!canAccessTile(guy, tile.x + dir.vec.x, tile.y + dir.vec.y)) {
-				if (dir.equals(RIGHT) && newOffset.x > 0 || dir.equals(LEFT) && newOffset.x < 0) {
+				if (dir == RIGHT && newOffset.x > 0 || dir == LEFT && newOffset.x < 0) {
 					guy.setOffset(0, offset.y);
 					return false;
 				}
-				if (dir.equals(DOWN) && newOffset.y > 0 || dir.equals(UP) && newOffset.y < 0) {
+				if (dir == DOWN && newOffset.y > 0 || dir == UP && newOffset.y < 0) {
 					guy.setOffset(offset.x, 0);
 					return false;
 				}
