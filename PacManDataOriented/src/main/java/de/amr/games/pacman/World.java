@@ -19,10 +19,10 @@ public class World {
 
 	public static final V2i PACMAN_HOME = new V2i(13, 26);
 
-	public static final V2i BLINKY_CORNER = new V2i(WORLD_WIDTH_TILES - 3, 0);
-	public static final V2i PINKY_CORNER = new V2i(2, 0);
-	public static final V2i INKY_CORNER = new V2i(WORLD_WIDTH_TILES - 1, WORLD_HEIGHT_TILES - 1);
-	public static final V2i CLYDE_CORNER = new V2i(0, WORLD_HEIGHT_TILES - 1);
+	public static final V2i UPPER_RIGHT_CORNER = new V2i(WORLD_WIDTH_TILES - 3, 0);
+	public static final V2i UPPER_LEFT_CORNER = new V2i(2, 0);
+	public static final V2i LOWER_RIGHT_CORNER = new V2i(WORLD_WIDTH_TILES - 1, WORLD_HEIGHT_TILES - 1);
+	public static final V2i LOWER_LEFT_CORNER = new V2i(0, WORLD_HEIGHT_TILES - 1);
 
 	public static final V2i HOUSE_ENTRY = new V2i(13, 14);
 	public static final V2i HOUSE_CENTER = new V2i(13, 17);

@@ -2,16 +2,16 @@ package de.amr.games.pacman;
 
 import static de.amr.games.pacman.Creature.offset;
 import static de.amr.games.pacman.Creature.tile;
-import static de.amr.games.pacman.World.BLINKY_CORNER;
-import static de.amr.games.pacman.World.CLYDE_CORNER;
+import static de.amr.games.pacman.World.UPPER_RIGHT_CORNER;
+import static de.amr.games.pacman.World.LOWER_LEFT_CORNER;
 import static de.amr.games.pacman.World.HOUSE_CENTER;
 import static de.amr.games.pacman.World.HOUSE_ENTRY;
 import static de.amr.games.pacman.World.HOUSE_LEFT;
 import static de.amr.games.pacman.World.HOUSE_RIGHT;
 import static de.amr.games.pacman.World.HTS;
-import static de.amr.games.pacman.World.INKY_CORNER;
+import static de.amr.games.pacman.World.LOWER_RIGHT_CORNER;
 import static de.amr.games.pacman.World.PACMAN_HOME;
-import static de.amr.games.pacman.World.PINKY_CORNER;
+import static de.amr.games.pacman.World.UPPER_LEFT_CORNER;
 import static de.amr.games.pacman.World.PORTAL_LEFT;
 import static de.amr.games.pacman.World.PORTAL_RIGHT;
 import static de.amr.games.pacman.World.TOTAL_FOOD_COUNT;
@@ -143,10 +143,10 @@ public class PacManGame implements Runnable {
 
 	public PacManGame() {
 		pacMan = new Creature("Pac-Man", PACMAN_HOME);
-		ghosts[BLINKY] = new Ghost("Blinky", HOUSE_ENTRY, BLINKY_CORNER);
-		ghosts[PINKY] = new Ghost("Pinky", HOUSE_CENTER, PINKY_CORNER);
-		ghosts[INKY] = new Ghost("Inky", HOUSE_LEFT, INKY_CORNER);
-		ghosts[CLYDE] = new Ghost("Clyde", HOUSE_RIGHT, CLYDE_CORNER);
+		ghosts[BLINKY] = new Ghost("Blinky", HOUSE_ENTRY, UPPER_RIGHT_CORNER);
+		ghosts[PINKY] = new Ghost("Pinky", HOUSE_CENTER, UPPER_LEFT_CORNER);
+		ghosts[INKY] = new Ghost("Inky", HOUSE_LEFT, LOWER_RIGHT_CORNER);
+		ghosts[CLYDE] = new Ghost("Clyde", HOUSE_RIGHT, LOWER_LEFT_CORNER);
 	}
 
 	@Override
