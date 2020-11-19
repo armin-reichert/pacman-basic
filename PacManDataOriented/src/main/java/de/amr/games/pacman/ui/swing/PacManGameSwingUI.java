@@ -67,8 +67,9 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 
 		try {
 			loadResources();
-		} catch (IOException | FontFormatException x) {
+		} catch (Exception x) {
 			x.printStackTrace();
+			throw new RuntimeException("Resource loading failed");
 		}
 
 		keyboard = new Keyboard(this);
@@ -137,13 +138,19 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 		return keyboard.keyPressed(keySpec);
 	}
 
-	private void loadResources() throws IOException, FontFormatException {
+	private void loadResources() {
 		spriteSheet = image("/sprites.png");
 		imageMazeFull = image("/maze_full.png");
 		imageMazeEmpty = image("/maze_empty.png");
 		imageMazeEmptyWhite = image("/maze_empty_white.png");
-		try (InputStream fontData = getClass().getResourceAsStream("/PressStart2P-Regular.ttf")) {
+
+		String fontPath = "/PressStart2P-Regular.ttf";
+		try (InputStream fontData = getClass().getResourceAsStream(fontPath)) {
 			scoreFont = Font.createFont(Font.TRUETYPE_FONT, fontData).deriveFont((float) TS);
+		} catch (IOException x) {
+			throw new RuntimeException(String.format("Could not access font, path='%s'", fontPath));
+		} catch (FontFormatException x) {
+			throw new RuntimeException(String.format("Could not create font, path='%s'", fontPath));
 		}
 		//@formatter:off
 		symbols = Map.of(
@@ -183,8 +190,16 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 		return sheet(x, y, 1, 1);
 	}
 
-	private BufferedImage image(String path) throws IOException {
-		return ImageIO.read(getClass().getResourceAsStream(path));
+	private BufferedImage image(String path) {
+		InputStream is = getClass().getResourceAsStream(path);
+		if (is == null) {
+			throw new RuntimeException(String.format("Could not access resource, path='%s'", path));
+		}
+		try {
+			return ImageIO.read(is);
+		} catch (IOException x) {
+			throw new RuntimeException(String.format("Could not load image, path='%s'", path));
+		}
 	}
 
 	private void drawGame(Graphics2D g) {
