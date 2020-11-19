@@ -102,18 +102,18 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 
 	@Override
 	public void render() {
-		BufferStrategy strategy = canvas.getBufferStrategy();
+		BufferStrategy buffers = canvas.getBufferStrategy();
 		do {
 			do {
-				Graphics2D g = (Graphics2D) strategy.getDrawGraphics();
+				Graphics2D g = (Graphics2D) buffers.getDrawGraphics();
 				g.setColor(Color.BLACK);
 				g.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 				g.scale(scaling, scaling);
 				drawGame(g);
 				g.dispose();
-			} while (strategy.contentsRestored());
-			strategy.show();
-		} while (strategy.contentsLost());
+			} while (buffers.contentsRestored());
+			buffers.show();
+		} while (buffers.contentsLost());
 	}
 
 	@Override
@@ -154,40 +154,40 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 		}
 		//@formatter:off
 		symbols = Map.of(
-			"Cherries",   sheet(2, 3),
-			"Strawberry", sheet(3, 3),
-			"Peach",      sheet(4, 3),
-			"Apple",      sheet(5, 3),
-			"Grapes",     sheet(6, 3),
-			"Galaxian",   sheet(7, 3),
-			"Bell",       sheet(8, 3),
-			"Key",        sheet(9, 3)
+			"Cherries",   section(2, 3),
+			"Strawberry", section(3, 3),
+			"Peach",      section(4, 3),
+			"Apple",      section(5, 3),
+			"Grapes",     section(6, 3),
+			"Galaxian",   section(7, 3),
+			"Bell",       section(8, 3),
+			"Key",        section(9, 3)
 		);
 		numbers = Map.of(
-			100,  sheet(0, 9),
-			300,  sheet(1, 9),
-			500,  sheet(2, 9),
-			700,  sheet(3, 9),
-			1000, sheet(4, 9, 2, 1),
-			2000, sheet(4, 10, 2, 1),
-			3000, sheet(4, 11, 2, 1),
-			5000, sheet(4, 12, 2, 1)
+			100,  section(0, 9),
+			300,  section(1, 9),
+			500,  section(2, 9),
+			700,  section(3, 9),
+			1000, section(4, 9, 2, 1),
+			2000, section(4, 10, 2, 1),
+			3000, section(4, 11, 2, 1),
+			5000, section(4, 12, 2, 1)
 		);
 		bountyNumbers = Map.of(
-			200,  sheet(0, 8),
-			400,  sheet(1, 8),
-			800,  sheet(2, 8),
-			1600, sheet(3, 8)
+			200,  section(0, 8),
+			400,  section(1, 8),
+			800,  section(2, 8),
+			1600, section(3, 8)
 		);
 		//@formatter:on
 	}
 
-	private BufferedImage sheet(int x, int y, int w, int h) {
+	private BufferedImage section(int x, int y, int w, int h) {
 		return spriteSheet.getSubimage(x * 16, y * 16, w * 16, h * 16);
 	}
 
-	private BufferedImage sheet(int x, int y) {
-		return sheet(x, y, 1, 1);
+	private BufferedImage section(int x, int y) {
+		return section(x, y, 1, 1);
 	}
 
 	private BufferedImage image(String path) {
@@ -266,7 +266,7 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 	}
 
 	private void drawLivesCounter(Graphics2D g) {
-		BufferedImage sprite = sheet(8, 1);
+		BufferedImage sprite = section(8, 1);
 		for (int i = 0; i < game.lives; ++i) {
 			g.drawImage(sprite, 2 * (i + 1) * TS, (WORLD_HEIGHT_TILES - 2) * TS, null);
 		}
@@ -353,24 +353,24 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 		if (pacMan.dead) {
 			// 2 seconds full sprite before collapsing animation starts
 			if (game.pacManDyingStateTimer >= sec(2) + 11 * 8) {
-				sprite = sheet(2, 0);
+				sprite = section(2, 0);
 			} else if (game.pacManDyingStateTimer >= sec(2)) {
 				// collapsing animation
 				int frame = (int) (game.pacManDyingStateTimer - sec(2)) / 8;
-				sprite = sheet(13 - frame, 0);
+				sprite = section(13 - frame, 0);
 			} else {
 				// collapsed sprite after collapsing
-				sprite = sheet(13, 0);
+				sprite = section(13, 0);
 			}
 		} else if (game.state == GameState.READY || game.state == GameState.CHANGING_LEVEL) {
 			// full sprite
-			sprite = sheet(2, 0);
+			sprite = section(2, 0);
 		} else if (!pacMan.couldMove) {
 			// wide open mouth
-			sprite = sheet(0, directionFrame(pacMan.dir));
+			sprite = section(0, directionFrame(pacMan.dir));
 		} else {
 			// closed mouth or open mouth pointing to move direction
-			sprite = mouthFrame == 2 ? sheet(mouthFrame, 0) : sheet(mouthFrame, directionFrame(pacMan.dir));
+			sprite = mouthFrame == 2 ? section(mouthFrame, 0) : section(mouthFrame, directionFrame(pacMan.dir));
 		}
 		g.drawImage(sprite, (int) pacMan.position.x - HTS, (int) pacMan.position.y - HTS, null);
 	}
@@ -384,20 +384,20 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 
 		if (ghost.dead) {
 			// number (bounty) or eyes looking into move direction
-			sprite = ghost.bountyTimer > 0 ? bountyNumbers.get(ghost.bounty) : sheet(8 + directionFrame(ghost.dir), 5);
+			sprite = ghost.bountyTimer > 0 ? bountyNumbers.get(ghost.bounty) : section(8 + directionFrame(ghost.dir), 5);
 		} else if (ghost.frightened) {
 			int walkingFrame = game.framesTotal % 60 < 30 ? 0 : 1;
 			if (game.pacManPowerTimer < sec(2)) {
 				// flashing blue/white, walking
 				int flashingFrame = game.framesTotal % 20 < 10 ? 8 : 10;
-				sprite = sheet(flashingFrame + walkingFrame, 4);
+				sprite = section(flashingFrame + walkingFrame, 4);
 			} else {
 				// blue, walking
-				sprite = sheet(8 + walkingFrame, 4);
+				sprite = section(8 + walkingFrame, 4);
 			}
 		} else {
 			int walkingFrame = game.framesTotal % 60 < 30 ? 0 : 1;
-			sprite = sheet(2 * directionFrame(ghost.dir) + walkingFrame, 4 + ghostIndex);
+			sprite = section(2 * directionFrame(ghost.dir) + walkingFrame, 4 + ghostIndex);
 		}
 		g.drawImage(sprite, (int) ghost.position.x - HTS, (int) ghost.position.y - HTS, null);
 
