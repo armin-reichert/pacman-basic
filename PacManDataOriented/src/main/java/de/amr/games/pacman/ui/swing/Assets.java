@@ -25,19 +25,13 @@ public class Assets {
 
 	public Assets() {
 		spriteSheet = image("/sprites.png");
+
 		imageMazeFull = image("/maze_full.png");
 		imageMazeEmpty = image("/maze_empty.png");
 		imageMazeEmptyWhite = image("/maze_empty_white.png");
 		imageLive = section(8, 1);
 
-		String fontPath = "/PressStart2P-Regular.ttf";
-		try (InputStream fontData = getClass().getResourceAsStream(fontPath)) {
-			scoreFont = Font.createFont(Font.TRUETYPE_FONT, fontData).deriveFont((float) TS);
-		} catch (IOException x) {
-			throw new RuntimeException(String.format("Could not access font, path='%s'", fontPath));
-		} catch (FontFormatException x) {
-			throw new RuntimeException(String.format("Could not create font, path='%s'", fontPath));
-		}
+		scoreFont = font("/PressStart2P-Regular.ttf", TS);
 
 		//@formatter:off
 		symbols = Map.of(
@@ -88,6 +82,16 @@ public class Assets {
 			return ImageIO.read(is);
 		} catch (IOException x) {
 			throw new RuntimeException(String.format("Could not load image, path='%s'", path));
+		}
+	}
+
+	public Font font(String fontPath, int size) {
+		try (InputStream fontData = getClass().getResourceAsStream(fontPath)) {
+			return Font.createFont(Font.TRUETYPE_FONT, fontData).deriveFont((float) size);
+		} catch (IOException x) {
+			throw new RuntimeException(String.format("Could not access font, path='%s'", fontPath));
+		} catch (FontFormatException x) {
+			throw new RuntimeException(String.format("Could not create font, path='%s'", fontPath));
 		}
 	}
 }
