@@ -129,7 +129,7 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 		drawDebugInfo(g);
 		g.setColor(Color.WHITE);
 		g.setFont(new Font("Arial", Font.PLAIN, 6));
-		g.drawString(String.format("%d frames/sec", game.fpsCount.fps), 1 * TS, 3 * TS);
+		g.drawString(String.format("%d frames/sec", game.timing.fps), 1 * TS, 3 * TS);
 	}
 
 	private void drawDebugInfo(Graphics2D g) {
@@ -203,9 +203,9 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 	}
 
 	private void drawMazeFlashing(Graphics2D g) {
-		if (game.mazeFlashes > 0 && game.fpsCount.framesTotal % 30 < 15) {
+		if (game.mazeFlashes > 0 && game.timing.framesTotal % 30 < 15) {
 			g.drawImage(assets.imageMazeEmptyWhite, 0, 3 * TS, null);
-			if (game.fpsCount.framesTotal % 30 == 14) {
+			if (game.timing.framesTotal % 30 == 14) {
 				--game.mazeFlashes;
 				log("Maze flashes: %d", game.mazeFlashes);
 			}
@@ -227,7 +227,7 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 					continue;
 				}
 				// energizer blinking
-				if (game.world.isEnergizerTile(x, y) && game.fpsCount.framesTotal % 20 < 10
+				if (game.world.isEnergizerTile(x, y) && game.timing.framesTotal % 20 < 10
 						&& (game.state == GameState.CHASING || game.state == GameState.SCATTERING)) {
 					hideTile(g, x, y);
 				}
@@ -264,7 +264,7 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 	private void drawPacMan(Graphics2D g) {
 		Creature pacMan = game.pacMan;
 		BufferedImage sprite;
-		int mouthFrame = (int) game.fpsCount.framesTotal % 15 / 5;
+		int mouthFrame = (int) game.timing.framesTotal % 15 / 5;
 		if (pacMan.dead) {
 			// 2 seconds full sprite before collapsing animation starts
 			if (game.pacManDyingStateTimer >= sec(2) + 11 * 8) {
@@ -302,17 +302,17 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 			sprite = ghost.bountyTimer > 0 ? assets.bountyNumbers.get(ghost.bounty)
 					: assets.section(8 + directionFrame(ghost.dir), 5);
 		} else if (ghost.frightened) {
-			int walkingFrame = game.fpsCount.framesTotal % 60 < 30 ? 0 : 1;
+			int walkingFrame = game.timing.framesTotal % 60 < 30 ? 0 : 1;
 			if (game.pacManPowerTimer < sec(2)) {
 				// flashing blue/white, walking
-				int flashingFrame = game.fpsCount.framesTotal % 20 < 10 ? 8 : 10;
+				int flashingFrame = game.timing.framesTotal % 20 < 10 ? 8 : 10;
 				sprite = assets.section(flashingFrame + walkingFrame, 4);
 			} else {
 				// blue, walking
 				sprite = assets.section(8 + walkingFrame, 4);
 			}
 		} else {
-			int walkingFrame = game.fpsCount.framesTotal % 60 < 30 ? 0 : 1;
+			int walkingFrame = game.timing.framesTotal % 60 < 30 ? 0 : 1;
 			sprite = assets.section(2 * directionFrame(ghost.dir) + walkingFrame, 4 + ghostIndex);
 		}
 		g.drawImage(sprite, (int) ghost.position.x - HTS, (int) ghost.position.y - HTS, null);

@@ -106,7 +106,7 @@ public class PacManGame implements Runnable {
 	public final World world = new World();
 	public final Creature pacMan;
 	public final Ghost[] ghosts = new Ghost[4];
-	public final Timing fpsCount = new Timing();
+	public final Timing timing = new Timing();
 
 	public GameState state;
 	public int level;
@@ -140,22 +140,10 @@ public class PacManGame implements Runnable {
 		reset();
 		enterReadyState();
 		while (true) {
-			fpsCount.beginFrame();
+			timing.beginFrame();
 			update();
 			ui.render();
-			long frameDuration = fpsCount.endFrame();
-			adjustSpeed(frameDuration);
-		}
-	}
-
-	private void adjustSpeed(long frameDuration) {
-		long sleepTime = Math.max(1_000_000_000 / FPS - frameDuration, 0);
-		if (sleepTime > 0) {
-			try {
-				Thread.sleep(sleepTime / 1_000_000); // milliseconds
-			} catch (InterruptedException x) {
-				x.printStackTrace();
-			}
+			timing.endFrame();
 		}
 	}
 

@@ -20,7 +20,7 @@ public class Timing {
 		frameStartTime = System.nanoTime();
 	}
 
-	public long endFrame() {
+	public void endFrame() {
 		frameEndTime = System.nanoTime();
 		frameDuration = frameEndTime - frameStartTime;
 		++frames;
@@ -30,6 +30,13 @@ public class Timing {
 			frames = 0;
 			fpsCountStartTime = System.nanoTime();
 		}
-		return frameDuration;
+		long sleepTime = Math.max(1_000_000_000 / FPS - frameDuration, 0);
+		if (sleepTime > 0) {
+			try {
+				Thread.sleep(sleepTime / 1_000_000); // milliseconds
+			} catch (InterruptedException x) {
+				x.printStackTrace();
+			}
+		}
 	}
 }
