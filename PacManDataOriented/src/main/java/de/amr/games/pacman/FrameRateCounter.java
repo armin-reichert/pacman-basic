@@ -10,7 +10,13 @@ public class FrameRateCounter {
 	public long frameEndTime;
 	public long frameDuration;
 
-	public void update() {
+	public void beginFrame() {
+		frameStartTime = System.nanoTime();
+	}
+
+	public long endFrame() {
+		frameEndTime = System.nanoTime();
+		frameDuration = frameEndTime - frameStartTime;
 		++frames;
 		++framesTotal;
 		if (frameEndTime - fpsCountStartTime >= 1_000_000_000) {
@@ -18,5 +24,6 @@ public class FrameRateCounter {
 			frames = 0;
 			fpsCountStartTime = System.nanoTime();
 		}
+		return frameDuration;
 	}
 }

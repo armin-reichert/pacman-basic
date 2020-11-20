@@ -32,6 +32,7 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 		PacManGame game = new PacManGame();
 		EventQueue.invokeLater(() -> {
 			game.ui = new PacManGameSwingUI(game, 2);
+			game.ui.setDebugMode(false);
 			new Thread(game, "GameLoop").start();
 		});
 	}
@@ -126,14 +127,15 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 			drawGhost(g, i);
 		}
 		drawDebugInfo(g);
+		g.setColor(Color.WHITE);
+		g.setFont(new Font("Arial", Font.PLAIN, 6));
+		g.drawString(String.format("%d frames/sec", game.fpsCount.fps), 1 * TS, 3 * TS);
 	}
 
 	private void drawDebugInfo(Graphics2D g) {
 		if (debugMode) {
 			g.setColor(Color.WHITE);
 			g.setFont(new Font("Arial", Font.PLAIN, 6));
-			g.drawString(String.format("%d frames/sec", game.fpsCount.fps), 1 * TS, 3 * TS);
-
 			String text = "";
 			if (game.state == GameState.READY) {
 				text = String.format("%s %d ticks remaining", game.state, game.readyStateTimer);

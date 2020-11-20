@@ -152,20 +152,22 @@ public class PacManGame implements Runnable {
 		reset();
 		enterReadyState();
 		while (true) {
-			fpsCount.frameStartTime = System.nanoTime();
+			fpsCount.beginFrame();
 			update();
 			ui.render();
-			fpsCount.frameEndTime = System.nanoTime();
-			fpsCount.frameDuration = fpsCount.frameEndTime - fpsCount.frameStartTime;
-			long sleepTime = Math.max(1_000_000_000 / FPS - fpsCount.frameDuration, 0);
-			if (sleepTime > 0) {
-				try {
-					Thread.sleep(sleepTime / 1_000_000); // milliseconds
-				} catch (InterruptedException x) {
-					x.printStackTrace();
-				}
+			long frameDuration = fpsCount.endFrame();
+			adjustSpeed(frameDuration);
+		}
+	}
+
+	private void adjustSpeed(long frameDuration) {
+		long sleepTime = Math.max(1_000_000_000 / FPS - frameDuration, 0);
+		if (sleepTime > 0) {
+			try {
+				Thread.sleep(sleepTime / 1_000_000); // milliseconds
+			} catch (InterruptedException x) {
+				x.printStackTrace();
 			}
-			fpsCount.update();
 		}
 	}
 
