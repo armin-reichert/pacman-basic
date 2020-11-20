@@ -1,6 +1,12 @@
 package de.amr.games.pacman;
 
-public class FrameRateCounter {
+public class Timing {
+
+	public static int FPS = 60;
+
+	public static int sec(float seconds) {
+		return (int) (seconds * FPS);
+	}
 
 	public long fps;
 	public long frames;

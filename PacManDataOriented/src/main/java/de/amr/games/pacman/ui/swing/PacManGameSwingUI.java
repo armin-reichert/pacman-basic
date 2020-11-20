@@ -1,12 +1,12 @@
 package de.amr.games.pacman.ui.swing;
 
 import static de.amr.games.pacman.PacManGame.levelData;
-import static de.amr.games.pacman.PacManGame.log;
-import static de.amr.games.pacman.PacManGame.sec;
+import static de.amr.games.pacman.Timing.sec;
 import static de.amr.games.pacman.World.HTS;
 import static de.amr.games.pacman.World.TS;
 import static de.amr.games.pacman.World.WORLD_HEIGHT_TILES;
 import static de.amr.games.pacman.World.WORLD_WIDTH_TILES;
+import static de.amr.games.pacman.common.Logging.log;
 
 import java.awt.BasicStroke;
 import java.awt.Canvas;

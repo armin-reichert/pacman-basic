@@ -2,6 +2,8 @@ package de.amr.games.pacman;
 
 import static de.amr.games.pacman.Creature.offset;
 import static de.amr.games.pacman.Creature.tile;
+import static de.amr.games.pacman.Timing.FPS;
+import static de.amr.games.pacman.Timing.sec;
 import static de.amr.games.pacman.World.HOUSE_CENTER;
 import static de.amr.games.pacman.World.HOUSE_ENTRY;
 import static de.amr.games.pacman.World.HOUSE_LEFT;
@@ -21,9 +23,8 @@ import static de.amr.games.pacman.common.Direction.DOWN;
 import static de.amr.games.pacman.common.Direction.LEFT;
 import static de.amr.games.pacman.common.Direction.RIGHT;
 import static de.amr.games.pacman.common.Direction.UP;
+import static de.amr.games.pacman.common.Logging.log;
 
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -46,19 +47,6 @@ public class PacManGame implements Runnable {
 
 	private static boolean differsAtMost(float value, float target, float tolerance) {
 		return Math.abs(value - target) <= tolerance;
-	}
-
-	public static int FPS = 60;
-
-	public static int sec(float seconds) {
-		return (int) (seconds * FPS);
-	}
-
-	private static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
-
-	public static void log(String msg, Object... args) {
-		String timestamp = TIME_FORMAT.format(LocalTime.now());
-		System.err.println(String.format("[%s] %s", timestamp, String.format(msg, args)));
 	}
 
 	private static final List<LevelData> LEVEL_DATA = List.of(
@@ -118,7 +106,7 @@ public class PacManGame implements Runnable {
 	public final World world = new World();
 	public final Creature pacMan;
 	public final Ghost[] ghosts = new Ghost[4];
-	public final FrameRateCounter fpsCount = new FrameRateCounter();
+	public final Timing fpsCount = new Timing();
 
 	public GameState state;
 	public int level;
