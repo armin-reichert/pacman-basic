@@ -2,19 +2,19 @@ package de.amr.games.pacman;
 
 import static de.amr.games.pacman.Creature.offset;
 import static de.amr.games.pacman.Creature.tile;
-import static de.amr.games.pacman.World.UPPER_RIGHT_CORNER;
-import static de.amr.games.pacman.World.LOWER_LEFT_CORNER;
 import static de.amr.games.pacman.World.HOUSE_CENTER;
 import static de.amr.games.pacman.World.HOUSE_ENTRY;
 import static de.amr.games.pacman.World.HOUSE_LEFT;
 import static de.amr.games.pacman.World.HOUSE_RIGHT;
 import static de.amr.games.pacman.World.HTS;
+import static de.amr.games.pacman.World.LOWER_LEFT_CORNER;
 import static de.amr.games.pacman.World.LOWER_RIGHT_CORNER;
 import static de.amr.games.pacman.World.PACMAN_HOME;
-import static de.amr.games.pacman.World.UPPER_LEFT_CORNER;
 import static de.amr.games.pacman.World.PORTAL_LEFT;
 import static de.amr.games.pacman.World.PORTAL_RIGHT;
 import static de.amr.games.pacman.World.TOTAL_FOOD_COUNT;
+import static de.amr.games.pacman.World.UPPER_LEFT_CORNER;
+import static de.amr.games.pacman.World.UPPER_RIGHT_CORNER;
 import static de.amr.games.pacman.World.WORLD_HEIGHT_TILES;
 import static de.amr.games.pacman.World.WORLD_WIDTH_TILES;
 import static de.amr.games.pacman.common.Direction.DOWN;
@@ -139,7 +139,12 @@ public class PacManGame implements Runnable {
 	public PacManGameUI ui;
 
 	public long fps;
+	public long frames;
 	public long framesTotal;
+	public long fpsCountStartTime;
+	public long frameStartTime;
+	public long frameEndTime;
+	public long frameDuration;
 
 	public PacManGame() {
 		pacMan = new Creature("Pac-Man", PACMAN_HOME);
@@ -153,31 +158,31 @@ public class PacManGame implements Runnable {
 	public void run() {
 		reset();
 		enterReadyState();
-		long fpsCountStart = 0;
-		long frames = 0;
 		while (true) {
-			final long intendedFrameDuration = 1_000_000_000 / FPS;
-			long frameStartTime = System.nanoTime();
+			frameStartTime = System.nanoTime();
 			update();
 			ui.render();
-			long frameEndTime = System.nanoTime();
-			long frameDuration = frameEndTime - frameStartTime;
-			long sleep = Math.max(intendedFrameDuration - frameDuration, 0);
-			if (sleep > 0) {
+			frameEndTime = System.nanoTime();
+			frameDuration = frameEndTime - frameStartTime;
+			long sleepTime = Math.max(1_000_000_000 / FPS - frameDuration, 0);
+			if (sleepTime > 0) {
 				try {
-					Thread.sleep(sleep / 1_000_000); // milliseconds
+					Thread.sleep(sleepTime / 1_000_000); // milliseconds
 				} catch (InterruptedException x) {
 					x.printStackTrace();
 				}
 			}
+			measureFrameRate();
+		}
+	}
 
-			++frames;
-			++framesTotal;
-			if (frameEndTime - fpsCountStart >= 1_000_000_000) {
-				fps = frames;
-				frames = 0;
-				fpsCountStart = System.nanoTime();
-			}
+	private void measureFrameRate() {
+		++frames;
+		++framesTotal;
+		if (frameEndTime - fpsCountStartTime >= 1_000_000_000) {
+			fps = frames;
+			frames = 0;
+			fpsCountStartTime = System.nanoTime();
 		}
 	}
 
