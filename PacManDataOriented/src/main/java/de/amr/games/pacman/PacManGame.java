@@ -118,6 +118,7 @@ public class PacManGame implements Runnable {
 	public final World world = new World();
 	public final Creature pacMan;
 	public final Ghost[] ghosts = new Ghost[4];
+	public final FrameRateCounter fpsCount = new FrameRateCounter();
 
 	public GameState state;
 	public int level;
@@ -138,14 +139,6 @@ public class PacManGame implements Runnable {
 
 	public PacManGameUI ui;
 
-	public long fps;
-	public long frames;
-	public long framesTotal;
-	public long fpsCountStartTime;
-	public long frameStartTime;
-	public long frameEndTime;
-	public long frameDuration;
-
 	public PacManGame() {
 		pacMan = new Creature("Pac-Man", PACMAN_HOME);
 		ghosts[BLINKY] = new Ghost("Blinky", HOUSE_ENTRY, UPPER_RIGHT_CORNER);
@@ -159,12 +152,12 @@ public class PacManGame implements Runnable {
 		reset();
 		enterReadyState();
 		while (true) {
-			frameStartTime = System.nanoTime();
+			fpsCount.frameStartTime = System.nanoTime();
 			update();
 			ui.render();
-			frameEndTime = System.nanoTime();
-			frameDuration = frameEndTime - frameStartTime;
-			long sleepTime = Math.max(1_000_000_000 / FPS - frameDuration, 0);
+			fpsCount.frameEndTime = System.nanoTime();
+			fpsCount.frameDuration = fpsCount.frameEndTime - fpsCount.frameStartTime;
+			long sleepTime = Math.max(1_000_000_000 / FPS - fpsCount.frameDuration, 0);
 			if (sleepTime > 0) {
 				try {
 					Thread.sleep(sleepTime / 1_000_000); // milliseconds
@@ -172,17 +165,7 @@ public class PacManGame implements Runnable {
 					x.printStackTrace();
 				}
 			}
-			measureFrameRate();
-		}
-	}
-
-	private void measureFrameRate() {
-		++frames;
-		++framesTotal;
-		if (frameEndTime - fpsCountStartTime >= 1_000_000_000) {
-			fps = frames;
-			frames = 0;
-			fpsCountStartTime = System.nanoTime();
+			fpsCount.update();
 		}
 	}
 
