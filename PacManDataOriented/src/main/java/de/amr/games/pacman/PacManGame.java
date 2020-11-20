@@ -2,7 +2,8 @@ package de.amr.games.pacman;
 
 import static de.amr.games.pacman.Creature.offset;
 import static de.amr.games.pacman.Creature.tile;
-import static de.amr.games.pacman.Timing.FPS;
+import static de.amr.games.pacman.Timing.targetFPS;
+import static de.amr.games.pacman.Timing.forever;
 import static de.amr.games.pacman.Timing.sec;
 import static de.amr.games.pacman.World.HOUSE_CENTER;
 import static de.amr.games.pacman.World.HOUSE_ENTRY;
@@ -106,7 +107,6 @@ public class PacManGame implements Runnable {
 	public final World world = new World();
 	public final Creature pacMan;
 	public final Ghost[] ghosts = new Ghost[4];
-	public final Timing timing = new Timing();
 
 	public GameState state;
 	public int level;
@@ -139,12 +139,10 @@ public class PacManGame implements Runnable {
 	public void run() {
 		reset();
 		enterReadyState();
-		while (true) {
-			timing.beginFrame();
+		forever(() -> {
 			update();
 			ui.render();
-			timing.endFrame();
-		}
+		});
 	}
 
 	private void reset() {
@@ -225,7 +223,7 @@ public class PacManGame implements Runnable {
 				killGhost(ghost);
 			}
 		} else if (ui.keyPressed("s")) {
-			FPS = FPS == 60 ? 30 : 60;
+			targetFPS = targetFPS == 60 ? 30 : 60;
 		}
 	}
 
