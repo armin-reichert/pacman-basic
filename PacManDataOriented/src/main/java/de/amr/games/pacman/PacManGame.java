@@ -2,9 +2,9 @@ package de.amr.games.pacman;
 
 import static de.amr.games.pacman.Creature.offset;
 import static de.amr.games.pacman.Creature.tile;
-import static de.amr.games.pacman.Timing.targetFPS;
 import static de.amr.games.pacman.Timing.forever;
 import static de.amr.games.pacman.Timing.sec;
+import static de.amr.games.pacman.Timing.targetFPS;
 import static de.amr.games.pacman.World.HOUSE_CENTER;
 import static de.amr.games.pacman.World.HOUSE_ENTRY;
 import static de.amr.games.pacman.World.HOUSE_LEFT;
@@ -50,7 +50,7 @@ public class PacManGame implements Runnable {
 		return Math.abs(value - target) <= tolerance;
 	}
 
-	private static final List<LevelData> LEVEL_DATA = List.of(
+	private static final List<LevelData> LEVELS = List.of(
 	/*@formatter:off*/
 	LevelData.of("Cherries",   100,  80,  71,  75, 40,  20,  80, 10,  85,  90, 79, 50, 6, 5),
 	LevelData.of("Strawberry", 300,  90,  79,  85, 45,  30,  90, 15,  95,  95, 83, 55, 5, 5),
@@ -77,7 +77,7 @@ public class PacManGame implements Runnable {
 	);
 
 	public static LevelData levelData(int level) {
-		return level <= 21 ? LEVEL_DATA.get(level - 1) : LEVEL_DATA.get(20);
+		return level <= 21 ? LEVELS.get(level - 1) : LEVELS.get(20);
 	}
 
 	public LevelData levelData() {
@@ -494,8 +494,7 @@ public class PacManGame implements Runnable {
 	}
 
 	private void updateGhosts() {
-		for (int i = 0; i < 4; ++i) {
-			Ghost ghost = ghosts[i];
+		for (Ghost ghost : ghosts) {
 			if (ghost.bountyTimer > 0) {
 				--ghost.bountyTimer;
 			} else if (ghost.enteringHouse) {
@@ -505,21 +504,13 @@ public class PacManGame implements Runnable {
 			} else if (ghost.dead) {
 				letGhostReturnHome(ghost);
 			} else if (state == GameState.SCATTERING) {
-				letGhostScatter(ghost);
+				ghost.targetTile = ghost.scatterTile;
+				letGhostHeadForTargetTile(ghost);
 			} else if (state == GameState.CHASING) {
-				letGhostChase(ghost);
+				ghost.targetTile = currentChasingTarget(ghost);
+				letGhostHeadForTargetTile(ghost);
 			}
 		}
-	}
-
-	private void letGhostScatter(Ghost ghost) {
-		ghost.targetTile = ghost.scatterTile;
-		letGhostHeadForTargetTile(ghost);
-	}
-
-	private void letGhostChase(Ghost ghost) {
-		ghost.targetTile = currentChasingTarget(ghost);
-		letGhostHeadForTargetTile(ghost);
 	}
 
 	private V2i currentChasingTarget(Ghost ghost) {
