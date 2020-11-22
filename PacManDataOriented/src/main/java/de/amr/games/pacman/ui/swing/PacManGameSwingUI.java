@@ -21,11 +21,11 @@ import javax.swing.JFrame;
 
 import de.amr.games.pacman.GameState;
 import de.amr.games.pacman.PacManGame;
-import de.amr.games.pacman.PacManGameUI;
 import de.amr.games.pacman.Timing;
 import de.amr.games.pacman.common.Direction;
 import de.amr.games.pacman.entities.Creature;
 import de.amr.games.pacman.entities.Ghost;
+import de.amr.games.pacman.ui.PacManGameUI;
 
 public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 

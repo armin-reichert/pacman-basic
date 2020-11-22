@@ -37,6 +37,7 @@ import de.amr.games.pacman.common.V2f;
 import de.amr.games.pacman.common.V2i;
 import de.amr.games.pacman.entities.Creature;
 import de.amr.games.pacman.entities.Ghost;
+import de.amr.games.pacman.ui.PacManGameUI;
 
 /**
  * A simple Pac-Man game with faithful behavior.
