@@ -475,10 +475,10 @@ public class PacManGame implements Runnable {
 		if (ghost.dead) {
 			return;
 		}
+		ghostsKilledUsingEnergizer++;
 		ghost.dead = true;
 		ghost.frightened = false;
 		ghost.targetTile = HOUSE_ENTRY;
-		ghostsKilledUsingEnergizer++;
 		ghost.bounty = (int) Math.pow(2, ghostsKilledUsingEnergizer) * 100;
 		ghost.bountyTimer = sec(0.5f);
 		log("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name, ghost.tile(), ghost.bounty);
@@ -623,7 +623,7 @@ public class PacManGame implements Runnable {
 		} else if (ghost.leavingHouse) {
 			ghost.speed = 0.5f * levelData().ghostSpeed();
 		} else if (ghost.dead) {
-			ghost.speed = 1f * levelData().ghostSpeed();
+			ghost.speed = 2f * levelData().ghostSpeed();
 		} else if (world.isInsideTunnel(ghost.tile().x, ghost.tile().y)) {
 			ghost.speed = levelData().ghostTunnelSpeed();
 		} else if (ghost.frightened) {
@@ -724,15 +724,17 @@ public class PacManGame implements Runnable {
 	private boolean tryMoving(Creature guy, Direction dir) {
 		V2i tile = guy.tile();
 		V2f offset = guy.offset();
+		float pixelsMoving = guy.speed * 1.25f;
+
 		// turns
 		if (guy.forcedOnTrack && canAccessTile(guy, tile.x + dir.vec.x, tile.y + dir.vec.y)) {
 			if (dir == LEFT || dir == RIGHT) {
-				if (Math.abs(offset.y) > 1) {
+				if (Math.abs(offset.y) > pixelsMoving) {
 					return false;
 				}
 				guy.setOffset(offset.x, 0);
 			} else if (dir == UP || dir == DOWN) {
-				if (Math.abs(offset.x) > 1) {
+				if (Math.abs(offset.x) > pixelsMoving) {
 					return false;
 				}
 				guy.setOffset(0, offset.y);
@@ -740,7 +742,7 @@ public class PacManGame implements Runnable {
 		}
 
 		// 100% speed corresponds to 1.25 pixels/tick
-		V2f velocity = new V2f(dir.vec).scaled(1.25f * guy.speed);
+		V2f velocity = new V2f(dir.vec).scaled(pixelsMoving);
 		V2f newPosition = guy.position.sum(velocity);
 		V2i newTile = tile(newPosition);
 		V2f newOffset = offset(newPosition);
