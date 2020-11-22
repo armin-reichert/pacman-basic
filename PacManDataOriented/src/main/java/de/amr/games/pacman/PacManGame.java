@@ -1,7 +1,5 @@
 package de.amr.games.pacman;
 
-import static de.amr.games.pacman.Creature.offset;
-import static de.amr.games.pacman.Creature.tile;
 import static de.amr.games.pacman.Timing.forever;
 import static de.amr.games.pacman.Timing.sec;
 import static de.amr.games.pacman.Timing.targetFPS;
@@ -25,6 +23,8 @@ import static de.amr.games.pacman.common.Direction.LEFT;
 import static de.amr.games.pacman.common.Direction.RIGHT;
 import static de.amr.games.pacman.common.Direction.UP;
 import static de.amr.games.pacman.common.Logging.log;
+import static de.amr.games.pacman.entities.Creature.offset;
+import static de.amr.games.pacman.entities.Creature.tile;
 
 import java.util.List;
 import java.util.Optional;
@@ -35,6 +35,8 @@ import java.util.stream.Stream;
 import de.amr.games.pacman.common.Direction;
 import de.amr.games.pacman.common.V2f;
 import de.amr.games.pacman.common.V2i;
+import de.amr.games.pacman.entities.Creature;
+import de.amr.games.pacman.entities.Ghost;
 
 /**
  * A simple Pac-Man game with faithful behavior.

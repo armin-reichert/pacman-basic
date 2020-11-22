@@ -1,4 +1,4 @@
-package de.amr.games.pacman;
+package de.amr.games.pacman.entities;
 
 import de.amr.games.pacman.common.V2i;
 
