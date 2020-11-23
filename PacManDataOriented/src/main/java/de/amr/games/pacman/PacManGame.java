@@ -283,6 +283,9 @@ public class PacManGame implements Runnable {
 		state = GameState.READY;
 		readyStateTimer = sec(3);
 		resetGuys();
+		scatteringStateTimer = 0;
+		chasingStateTimer = 0;
+		attackWave = 0;
 		ui.yellowMessage("Ready!");
 		log("Game entered %s state", state);
 	}
