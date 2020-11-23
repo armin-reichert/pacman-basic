@@ -446,7 +446,7 @@ public class PacManGame implements Runnable {
 		// bonus found?
 		if (bonusAvailableTimer > 0 && world.isBonusTile(tile.x, tile.y)) {
 			bonusAvailableTimer = 0;
-			bonusConsumedTimer = sec(3);
+			bonusConsumedTimer = sec(2);
 			points += levelData().bonusPoints();
 			log("Pac-Man found bonus %s of value %d", levelData().bonusSymbol(), levelData().bonusPoints());
 		}
