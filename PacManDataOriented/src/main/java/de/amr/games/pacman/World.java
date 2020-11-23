@@ -81,6 +81,7 @@ public class World {
 	};
 
 	private final BitSet eatenFood = new BitSet(244);
+	public int foodRemaining;
 
 	private char map(int x, int y) {
 		return map[y].charAt(x);
@@ -143,9 +144,11 @@ public class World {
 
 	public void restoreFood() {
 		eatenFood.clear();
+		foodRemaining = TOTAL_FOOD_COUNT;
 	}
 
 	public void eatFood(int x, int y) {
 		eatenFood.set(index(x, y));
+		--foodRemaining;
 	}
 }

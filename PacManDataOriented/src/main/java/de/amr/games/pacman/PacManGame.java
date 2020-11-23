@@ -13,7 +13,6 @@ import static de.amr.games.pacman.World.LOWER_RIGHT_CORNER;
 import static de.amr.games.pacman.World.PACMAN_HOME;
 import static de.amr.games.pacman.World.PORTAL_LEFT;
 import static de.amr.games.pacman.World.PORTAL_RIGHT;
-import static de.amr.games.pacman.World.TOTAL_FOOD_COUNT;
 import static de.amr.games.pacman.World.UPPER_LEFT_CORNER;
 import static de.amr.games.pacman.World.UPPER_RIGHT_CORNER;
 import static de.amr.games.pacman.World.WORLD_HEIGHT_TILES;
@@ -114,7 +113,6 @@ public class PacManGame implements Runnable {
 	public GameState state;
 	public int level;
 	public int attackWave;
-	public int foodRemaining;
 	public int lives;
 	public int points;
 	public int ghostsKilledUsingEnergizer;
@@ -158,7 +156,6 @@ public class PacManGame implements Runnable {
 	private void setLevel(int n) {
 		level = n;
 		world.restoreFood();
-		foodRemaining = TOTAL_FOOD_COUNT;
 		attackWave = 0;
 		mazeFlashes = 0;
 		ghostsKilledUsingEnergizer = 0;
@@ -287,7 +284,7 @@ public class PacManGame implements Runnable {
 			enterPacManDyingState();
 			return;
 		}
-		if (foodRemaining == 0) {
+		if (world.foodRemaining == 0) {
 			enterChangingLevelState();
 			return;
 		}
@@ -315,7 +312,7 @@ public class PacManGame implements Runnable {
 			enterPacManDyingState();
 			return;
 		}
-		if (foodRemaining == 0) {
+		if (world.foodRemaining == 0) {
 			enterChangingLevelState();
 			return;
 		}
@@ -427,7 +424,6 @@ public class PacManGame implements Runnable {
 		V2i tile = pacMan.tile();
 		if (world.isFoodTile(tile.x, tile.y) && !world.hasEatenFood(tile.x, tile.y)) {
 			world.eatFood(tile.x, tile.y);
-			foodRemaining--;
 			points += 10;
 			// energizer found?
 			if (world.isEnergizerTile(tile.x, tile.y)) {
@@ -442,7 +438,7 @@ public class PacManGame implements Runnable {
 			}
 
 			// bonus reached?
-			if (bonusAvailableTimer == 0 && (foodRemaining == 70 || foodRemaining == 170)) {
+			if (bonusAvailableTimer == 0 && (world.foodRemaining == 70 || world.foodRemaining == 170)) {
 				bonusAvailableTimer = sec(9 + new Random().nextInt(1));
 			}
 		}
@@ -640,9 +636,9 @@ public class PacManGame implements Runnable {
 	}
 
 	private void maybeSetElroySpeed(Ghost blinky) {
-		if (foodRemaining <= levelData().elroy2DotsLeft()) {
+		if (world.foodRemaining <= levelData().elroy2DotsLeft()) {
 			blinky.speed = levelData().elroy2Speed();
-		} else if (foodRemaining <= levelData().elroy1DotsLeft()) {
+		} else if (world.foodRemaining <= levelData().elroy1DotsLeft()) {
 			blinky.speed = levelData().elroy1Speed();
 		}
 	}
@@ -778,7 +774,6 @@ public class PacManGame implements Runnable {
 			for (int y = 0; y < WORLD_HEIGHT_TILES; ++y) {
 				if (world.isFoodTile(x, y) && !world.hasEatenFood(x, y)) {
 					world.eatFood(x, y);
-					foodRemaining = 0;
 				}
 			}
 		}
