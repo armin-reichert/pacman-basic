@@ -307,7 +307,7 @@ public class PacManGame implements Runnable {
 	private void enterScatteringState() {
 		state = GameState.SCATTERING;
 		scatteringStateTimer = SCATTERING_TIMES[timesTableRow(level)][attackWave];
-		forceLivingGhostsTurningBack();
+		forceGhostsTurningBack();
 		log("Game entered %s state", state);
 	}
 
@@ -336,7 +336,7 @@ public class PacManGame implements Runnable {
 	private void enterChasingState() {
 		state = GameState.CHASING;
 		chasingStateTimer = CHASING_TIMES[timesTableRow(level)][attackWave];
-		forceLivingGhostsTurningBack();
+		forceGhostsTurningBack();
 		log("Game entered %s state", state);
 	}
 
@@ -438,7 +438,7 @@ public class PacManGame implements Runnable {
 					for (Ghost ghost : ghosts) {
 						ghost.frightened = !ghost.dead;
 					}
-					forceLivingGhostsTurningBack();
+					forceGhostsTurningBack();
 				}
 				ghostsKilledUsingEnergizer = 0;
 			}
@@ -687,9 +687,9 @@ public class PacManGame implements Runnable {
 		return Optional.ofNullable(minDistDir);
 	}
 
-	private void forceLivingGhostsTurningBack() {
+	private void forceGhostsTurningBack() {
 		for (Ghost ghost : ghosts) {
-			if (!ghost.dead) {
+			if (!ghost.dead && !ghost.enteringHouse && !ghost.leavingHouse) {
 				ghost.forcedTurningBack = true;
 			}
 		}
