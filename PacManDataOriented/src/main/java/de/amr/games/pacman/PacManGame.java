@@ -281,7 +281,7 @@ public class PacManGame implements Runnable {
 
 	public void enterReadyState() {
 		state = GameState.READY;
-		readyStateTimer = sec(3);
+		readyStateTimer = sec(4);
 		resetGuys();
 		scatteringStateTimer = 0;
 		chasingStateTimer = 0;
