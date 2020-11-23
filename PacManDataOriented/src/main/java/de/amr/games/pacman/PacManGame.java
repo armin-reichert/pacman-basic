@@ -225,6 +225,10 @@ public class PacManGame implements Runnable {
 			}
 		} else if (ui.keyPressed("s")) {
 			targetFPS = targetFPS == 60 ? 30 : 60;
+		} else if (ui.keyPressed("plus")) {
+			setLevel(++level);
+			log("Enter level %d", level);
+			enterReadyState();
 		}
 	}
 
@@ -429,12 +433,14 @@ public class PacManGame implements Runnable {
 			if (world.isEnergizerTile(tile.x, tile.y)) {
 				points += 40;
 				pacManPowerTimer = sec(levelData().ghostFrightenedSeconds());
-				log("Pac-Man got power for %d seconds", levelData().ghostFrightenedSeconds());
-				for (Ghost ghost : ghosts) {
-					ghost.frightened = !ghost.dead;
+				if (levelData().ghostFrightenedSeconds() > 0) {
+					log("Pac-Man got power for %d seconds", levelData().ghostFrightenedSeconds());
+					for (Ghost ghost : ghosts) {
+						ghost.frightened = !ghost.dead;
+					}
+					forceLivingGhostsTurningBack();
 				}
 				ghostsKilledUsingEnergizer = 0;
-				forceLivingGhostsTurningBack();
 			}
 
 			// bonus reached?

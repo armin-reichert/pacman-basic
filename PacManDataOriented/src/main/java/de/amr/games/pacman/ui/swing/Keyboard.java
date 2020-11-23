@@ -28,6 +28,10 @@ public class Keyboard {
 		return pressedKeys.get(keyCode(keySpec));
 	}
 
+	public void clearKey(String keySpec) {
+		pressedKeys.clear(keyCode(keySpec));
+	}
+
 	private int keyCode(String keySpec) {
 		keySpec = keySpec.toLowerCase();
 		if (keySpec.length() == 1) {
@@ -54,6 +58,10 @@ public class Keyboard {
 			return KeyEvent.VK_ESCAPE;
 		case "space":
 			return KeyEvent.VK_SPACE;
+		case "plus":
+			return KeyEvent.VK_PLUS;
+		case "minus":
+			return KeyEvent.VK_MINUS;
 		default:
 			throw new IllegalArgumentException(String.format("Unknown key specification: %s", keySpec));
 		}

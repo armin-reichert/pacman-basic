@@ -115,7 +115,9 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 
 	@Override
 	public boolean keyPressed(String keySpec) {
-		return keyboard.keyPressed(keySpec);
+		boolean pressed = keyboard.keyPressed(keySpec);
+		keyboard.clearKey(keySpec);
+		return pressed;
 	}
 
 	private void drawGame(Graphics2D g) {
@@ -304,7 +306,7 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 					: assets.section(8 + directionFrame(ghost.dir), 5);
 		} else if (ghost.frightened) {
 			int walkingFrame = Timing.framesTotal % 60 < 30 ? 0 : 1;
-			if (game.pacManPowerTimer < sec(2)) {
+			if (game.pacManPowerTimer < sec(2)) { // TODO
 				// flashing blue/white, walking
 				int flashingFrame = Timing.framesTotal % 20 < 10 ? 8 : 10;
 				sprite = assets.section(flashingFrame + walkingFrame, 4);
