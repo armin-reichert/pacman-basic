@@ -127,6 +127,7 @@ public class PacManGame implements Runnable {
 	public long bonusConsumedTimer;
 
 	public PacManGameUI ui;
+	public boolean paused;
 
 	public PacManGame() {
 		pacMan = new Creature("Pac-Man", PACMAN_HOME);
@@ -142,7 +143,9 @@ public class PacManGame implements Runnable {
 		enterReadyState();
 		forever(() -> {
 			readInput();
-			update();
+			if (!paused) {
+				update();
+			}
 			ui.render();
 		});
 	}
@@ -229,6 +232,8 @@ public class PacManGame implements Runnable {
 			setLevel(++level);
 			log("Enter level %d", level);
 			enterReadyState();
+		} else if (ui.keyPressed("p")) {
+			paused = !paused;
 		}
 	}
 
