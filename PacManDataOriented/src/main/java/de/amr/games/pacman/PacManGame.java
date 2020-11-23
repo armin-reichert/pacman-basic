@@ -143,6 +143,7 @@ public class PacManGame implements Runnable {
 		reset();
 		enterReadyState();
 		forever(() -> {
+			readInput();
 			update();
 			ui.render();
 		});
@@ -231,7 +232,6 @@ public class PacManGame implements Runnable {
 	}
 
 	private void update() {
-		readInput();
 		switch (state) {
 		case READY:
 			runReadyState();
