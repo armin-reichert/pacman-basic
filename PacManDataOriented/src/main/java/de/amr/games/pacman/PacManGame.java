@@ -13,6 +13,7 @@ import static de.amr.games.pacman.World.LOWER_RIGHT_CORNER;
 import static de.amr.games.pacman.World.PACMAN_HOME;
 import static de.amr.games.pacman.World.PORTAL_LEFT;
 import static de.amr.games.pacman.World.PORTAL_RIGHT;
+import static de.amr.games.pacman.World.TOTAL_FOOD_COUNT;
 import static de.amr.games.pacman.World.UPPER_LEFT_CORNER;
 import static de.amr.games.pacman.World.UPPER_RIGHT_CORNER;
 import static de.amr.games.pacman.World.WORLD_HEIGHT_TILES;
@@ -447,11 +448,6 @@ public class PacManGame implements Runnable {
 				}
 				ghostsKilledUsingEnergizer = 0;
 			}
-
-			// bonus reached?
-			if (bonusAvailableTimer == 0 && (world.foodRemaining == 70 || world.foodRemaining == 170)) {
-				bonusAvailableTimer = sec(9 + new Random().nextInt(1));
-			}
 		}
 
 		// bonus found?
@@ -495,11 +491,18 @@ public class PacManGame implements Runnable {
 	}
 
 	private void updateBonus() {
+		// bonus active and not consumed
 		if (bonusAvailableTimer > 0) {
 			--bonusAvailableTimer;
 		}
+		// bonus active and consumed
 		if (bonusConsumedTimer > 0) {
 			--bonusConsumedTimer;
+		}
+		// bonus score reached?
+		int eaten = TOTAL_FOOD_COUNT - world.foodRemaining;
+		if (bonusAvailableTimer == 0 && (eaten == 70 || eaten == 170)) {
+			bonusAvailableTimer = sec(9 + new Random().nextInt(1));
 		}
 	}
 
