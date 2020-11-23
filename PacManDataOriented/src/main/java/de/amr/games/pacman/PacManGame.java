@@ -269,6 +269,10 @@ public class PacManGame implements Runnable {
 			enterScatteringState();
 			return;
 		}
+		if (readyStateTimer > sec(2.5f)) {
+			--readyStateTimer;
+			return;
+		}
 		letGhostBounce(ghosts[INKY]);
 		letGhostBounce(ghosts[PINKY]);
 		letGhostBounce(ghosts[CLYDE]);
@@ -594,7 +598,7 @@ public class PacManGame implements Runnable {
 		// house left?
 		if (ghost.at(HOUSE_ENTRY) && differsAtMost(offset.y, 0, 1)) {
 			ghost.setOffset(HTS, 0);
-			ghost.wishDir = LEFT;
+			ghost.dir = ghost.wishDir = LEFT;
 			ghost.forcedOnTrack = true;
 			ghost.leavingHouse = false;
 			log("%s has left house", ghost);
