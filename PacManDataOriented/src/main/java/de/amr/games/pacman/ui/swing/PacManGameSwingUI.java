@@ -181,7 +181,8 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 	private void drawScore(Graphics2D g) {
 		g.setFont(assets.scoreFont);
 		g.setColor(Color.WHITE);
-		g.drawString(String.format("SCORE %d", game.points), 16, 16);
+		g.drawString(String.format("SCORE %d", game.points), 2 * TS, 2 * TS);
+		g.drawString(String.format("LEVEL %02d", game.level), 17 * TS, 2 * TS);
 	}
 
 	private void drawLivesCounter(Graphics2D g) {
