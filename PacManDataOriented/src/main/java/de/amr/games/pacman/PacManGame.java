@@ -43,6 +43,9 @@ import de.amr.games.pacman.ui.PacManGameUI;
  * A simple Pac-Man game with faithful behavior.
  * 
  * @author Armin Reichert
+ * 
+ * @see https://gameinternals.com/understanding-pac-man-ghost-behavior
+ * @see https://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php
  */
 public class PacManGame implements Runnable {
 
@@ -644,8 +647,6 @@ public class PacManGame implements Runnable {
 	private void setGhostSpeed(Ghost ghost) {
 		if (ghost.bountyTimer > 0) {
 			ghost.speed = 0;
-		} else if (ghost.enteringHouse) {
-			ghost.speed = levelData().ghostSpeed();
 		} else if (ghost.leavingHouse) {
 			ghost.speed = 0.5f * levelData().ghostSpeed();
 		} else if (ghost.dead) {
