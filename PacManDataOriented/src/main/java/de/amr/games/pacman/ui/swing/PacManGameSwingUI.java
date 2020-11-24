@@ -282,6 +282,9 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 
 	private void drawPacMan(Graphics2D g) {
 		Creature pacMan = game.pacMan;
+		if (!pacMan.visible) {
+			return;
+		}
 		BufferedImage sprite;
 		int mouthFrame = (int) Timing.framesTotal % 15 / 5;
 		if (pacMan.dead) {
@@ -317,8 +320,8 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 		}
 
 		if (ghost.dead) {
-			// number (bounty) or eyes looking into move direction
-			sprite = ghost.bountyTimer > 0 ? assets.bountyNumbers.get(ghost.bounty)
+			// show as number (bounty) or as eyes
+			sprite = ghost.bounty > 0 ? assets.bountyNumbers.get(ghost.bounty)
 					: assets.section(8 + directionFrame(ghost.dir), 5);
 		} else if (ghost.frightened) {
 			int walkingFrame = Timing.framesTotal % 60 < 30 ? 0 : 1;

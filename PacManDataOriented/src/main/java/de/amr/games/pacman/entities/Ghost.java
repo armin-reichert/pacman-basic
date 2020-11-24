@@ -10,7 +10,6 @@ public class Ghost extends Creature {
 	public boolean enteringHouse;
 	public boolean leavingHouse;
 	public int bounty;
-	public long bountyTimer;
 
 	public Ghost(String name, V2i homeTile, V2i scatterTile) {
 		super(name, homeTile);

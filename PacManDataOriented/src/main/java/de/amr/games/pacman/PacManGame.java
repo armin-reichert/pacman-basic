@@ -127,6 +127,7 @@ public class PacManGame implements Runnable {
 	public long chasingStateTimer;
 	public long changingLevelStateTimer;
 	public long pacManDyingStateTimer;
+	public long ghostDyingStateTimer;
 	public long bonusAvailableTimer;
 	public long bonusConsumedTimer;
 
@@ -172,6 +173,7 @@ public class PacManGame implements Runnable {
 		chasingStateTimer = 0;
 		changingLevelStateTimer = 0;
 		pacManDyingStateTimer = 0;
+		ghostDyingStateTimer = 0;
 		bonusAvailableTimer = 0;
 		bonusConsumedTimer = 0;
 	}
@@ -201,7 +203,6 @@ public class PacManGame implements Runnable {
 			ghost.enteringHouse = false;
 			ghost.leavingHouse = false;
 			ghost.bounty = 0;
-			ghost.bountyTimer = 0;
 		}
 		ghosts[BLINKY].dir = ghosts[BLINKY].wishDir = LEFT;
 		ghosts[PINKY].dir = ghosts[PINKY].wishDir = DOWN;
@@ -257,6 +258,9 @@ public class PacManGame implements Runnable {
 			return;
 		case PACMAN_DYING:
 			runPacManDyingState();
+			return;
+		case GHOST_DYING:
+			runGhostDyingState();
 			return;
 		case GAME_OVER:
 			runGameOverState();
@@ -316,7 +320,9 @@ public class PacManGame implements Runnable {
 			--scatteringStateTimer;
 		}
 		updatePacMan();
-		updateGhosts();
+		for (Ghost ghost : ghosts) {
+			updateGhost(ghost);
+		}
 		updateBonus();
 	}
 
@@ -345,7 +351,9 @@ public class PacManGame implements Runnable {
 			--chasingStateTimer;
 		}
 		updatePacMan();
-		updateGhosts();
+		for (Ghost ghost : ghosts) {
+			updateGhost(ghost);
+		}
 		updateBonus();
 	}
 
@@ -386,6 +394,39 @@ public class PacManGame implements Runnable {
 		for (Ghost ghost : ghosts) {
 			ghost.visible = true;
 		}
+	}
+
+	private GameState savedState;
+
+	private void runGhostDyingState() {
+		if (ghostDyingStateTimer == 0) {
+			exitGhostDyingState();
+			return;
+		}
+		for (Ghost ghost : ghosts) {
+			if (ghost.dead && ghost.bounty == 0) {
+				updateGhost(ghost);
+			}
+		}
+		--ghostDyingStateTimer;
+	}
+
+	private void enterGhostDyingState() {
+		savedState = state;
+		state = GameState.GHOST_DYING;
+		ghostDyingStateTimer = sec(0.5f);
+		pacMan.visible = false;
+		log("Game entered %s state", state);
+	}
+
+	private void exitGhostDyingState() {
+		for (Ghost ghost : ghosts) {
+			if (ghost.dead && ghost.bounty > 0) {
+				ghost.bounty = 0;
+			}
+		}
+		pacMan.visible = true;
+		state = savedState;
 	}
 
 	private void runChangingLevelState() {
@@ -440,24 +481,6 @@ public class PacManGame implements Runnable {
 			}
 		}
 
-		// ghost at current tile?
-		for (Ghost ghost : ghosts) {
-			if (!pacMan.tile().equals(ghost.tile())) {
-				continue;
-			}
-			// killing ghost?
-			if (ghost.frightened) {
-				killGhost(ghost);
-			}
-			// getting killed by ghost?
-			if (pacManPowerTimer == 0 && !ghost.dead) {
-				pacMan.dead = true;
-				--lives;
-				log("Pac-Man killed by %s at tile %s", ghost.name, ghost.tile());
-				return;
-			}
-		}
-
 		// food found?
 		V2i tile = pacMan.tile();
 		if (world.isFoodTile(tile.x, tile.y) && !world.hasEatenFood(tile.x, tile.y)) {
@@ -485,6 +508,26 @@ public class PacManGame implements Runnable {
 			points += levelData().bonusPoints();
 			log("Pac-Man found bonus %s of value %d", levelData().bonusSymbol(), levelData().bonusPoints());
 		}
+
+		// ghost at current tile?
+		for (Ghost ghost : ghosts) {
+			if (!pacMan.tile().equals(ghost.tile())) {
+				continue;
+			}
+			// killing ghost?
+			if (ghost.frightened) {
+				killGhost(ghost);
+				enterGhostDyingState();
+				return;
+			}
+			// getting killed by ghost?
+			if (pacManPowerTimer == 0 && !ghost.dead) {
+				pacMan.dead = true;
+				--lives;
+				log("Pac-Man killed by %s at tile %s", ghost.name, ghost.tile());
+				return;
+			}
+		}
 	}
 
 	private void killGhost(Ghost ghost) {
@@ -496,7 +539,6 @@ public class PacManGame implements Runnable {
 		ghost.frightened = false;
 		ghost.targetTile = HOUSE_ENTRY;
 		ghost.bounty = (int) Math.pow(2, ghostsKilledUsingEnergizer) * 100;
-		ghost.bountyTimer = sec(0.5f);
 		log("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name, ghost.tile(), ghost.bounty);
 	}
 
@@ -516,23 +558,19 @@ public class PacManGame implements Runnable {
 		}
 	}
 
-	private void updateGhosts() {
-		for (Ghost ghost : ghosts) {
-			if (ghost.bountyTimer > 0) {
-				--ghost.bountyTimer;
-			} else if (ghost.enteringHouse) {
-				letGhostEnterHouse(ghost);
-			} else if (ghost.leavingHouse) {
-				letGhostLeaveHouse(ghost);
-			} else if (ghost.dead) {
-				letGhostReturnHome(ghost);
-			} else if (state == GameState.SCATTERING) {
-				ghost.targetTile = ghost.scatterTile;
-				letGhostHeadForTargetTile(ghost);
-			} else if (state == GameState.CHASING) {
-				ghost.targetTile = currentChasingTarget(ghost);
-				letGhostHeadForTargetTile(ghost);
-			}
+	private void updateGhost(Ghost ghost) {
+		if (ghost.enteringHouse) {
+			letGhostEnterHouse(ghost);
+		} else if (ghost.leavingHouse) {
+			letGhostLeaveHouse(ghost);
+		} else if (ghost.dead) {
+			letGhostReturnHome(ghost);
+		} else if (state == GameState.SCATTERING) {
+			ghost.targetTile = ghost.scatterTile;
+			letGhostHeadForTargetTile(ghost);
+		} else if (state == GameState.CHASING) {
+			ghost.targetTile = currentChasingTarget(ghost);
+			letGhostHeadForTargetTile(ghost);
 		}
 	}
 
@@ -645,9 +683,7 @@ public class PacManGame implements Runnable {
 	}
 
 	private void setGhostSpeed(Ghost ghost) {
-		if (ghost.bountyTimer > 0) {
-			ghost.speed = 0;
-		} else if (ghost.leavingHouse) {
+		if (ghost.leavingHouse) {
 			ghost.speed = 0.5f * levelData().ghostSpeed();
 		} else if (ghost.dead) {
 			ghost.speed = 2f * levelData().ghostSpeed();
