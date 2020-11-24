@@ -437,6 +437,24 @@ public class PacManGame implements Runnable {
 			}
 		}
 
+		// ghost at current tile?
+		for (Ghost ghost : ghosts) {
+			if (!pacMan.tile().equals(ghost.tile())) {
+				continue;
+			}
+			// killing ghost?
+			if (ghost.frightened) {
+				killGhost(ghost);
+			}
+			// getting killed by ghost?
+			if (pacManPowerTimer == 0 && !ghost.dead) {
+				pacMan.dead = true;
+				--lives;
+				log("Pac-Man killed by %s at tile %s", ghost.name, ghost.tile());
+				return;
+			}
+		}
+
 		// food found?
 		V2i tile = pacMan.tile();
 		if (world.isFoodTile(tile.x, tile.y) && !world.hasEatenFood(tile.x, tile.y)) {
@@ -463,24 +481,6 @@ public class PacManGame implements Runnable {
 			bonusConsumedTimer = sec(2);
 			points += levelData().bonusPoints();
 			log("Pac-Man found bonus %s of value %d", levelData().bonusSymbol(), levelData().bonusPoints());
-		}
-
-		// ghost at current tile?
-		for (Ghost ghost : ghosts) {
-			if (!pacMan.tile().equals(ghost.tile())) {
-				continue;
-			}
-			// killing ghost?
-			if (ghost.frightened) {
-				killGhost(ghost);
-			}
-			// getting killed by ghost?
-			if (pacManPowerTimer == 0 && !ghost.dead) {
-				pacMan.dead = true;
-				--lives;
-				log("Pac-Man killed by %s at tile %s", ghost.name, ghost.tile());
-				break;
-			}
 		}
 	}
 
