@@ -539,14 +539,20 @@ public class PacManGame implements Runnable {
 			return pacMan.tile();
 		}
 		case "Pinky": {
-			V2i fourTilesAheadPacMan = pacMan.tile().sum(pacMan.dir.vec.scaled(4));
+			V2i pacManTilePlus4 = pacMan.tile().sum(pacMan.dir.vec.scaled(4));
 			// simulate offset bug when Pac-Man is looking UP
-			return pacMan.dir == UP ? fourTilesAheadPacMan.sum(LEFT.vec.scaled(4)) : fourTilesAheadPacMan;
+			if (pacMan.dir == UP) {
+				pacManTilePlus4 = pacManTilePlus4.sum(LEFT.vec.scaled(4));
+			}
+			return pacManTilePlus4;
 		}
 		case "Inky": {
-			V2i blinkyTile = ghosts[BLINKY].tile();
-			V2i twoTilesAheadPacMan = pacMan.tile().sum(pacMan.dir.vec.scaled(2));
-			return twoTilesAheadPacMan.scaled(2).sum(blinkyTile.scaled(-1));
+			V2i pacManTilePlus2 = pacMan.tile().sum(pacMan.dir.vec.scaled(2));
+			// simulate offset bug when Pac-Man is looking UP
+			if (pacMan.dir == UP) {
+				pacManTilePlus2 = pacManTilePlus2.sum(LEFT.vec.scaled(2));
+			}
+			return pacManTilePlus2.scaled(2).sum(ghosts[BLINKY].tile().scaled(-1));
 		}
 		case "Clyde": {
 			return ghosts[CLYDE].tile().distance(pacMan.tile()) < 8 ? ghosts[CLYDE].scatterTile : pacMan.tile();
