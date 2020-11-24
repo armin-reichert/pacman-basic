@@ -221,7 +221,7 @@ public class PacManGame implements Runnable {
 		} else if (ui.keyPressed("d")) {
 			ui.setDebugMode(!ui.isDebugMode());
 		} else if (ui.keyPressed("e")) {
-			eatAllFood();
+			eatAllPellets();
 		} else if (ui.keyPressed("x")) {
 			ghostsKilledUsingEnergizer = 0;
 			for (Ghost ghost : ghosts) {
@@ -790,10 +790,10 @@ public class PacManGame implements Runnable {
 		return true;
 	}
 
-	private void eatAllFood() {
+	private void eatAllPellets() {
 		for (int x = 0; x < WORLD_WIDTH_TILES; ++x) {
 			for (int y = 0; y < WORLD_HEIGHT_TILES; ++y) {
-				if (world.isFoodTile(x, y) && !world.hasEatenFood(x, y)) {
+				if (world.isFoodTile(x, y) && !world.hasEatenFood(x, y) && !world.isEnergizerTile(x, y)) {
 					world.eatFood(x, y);
 				}
 			}

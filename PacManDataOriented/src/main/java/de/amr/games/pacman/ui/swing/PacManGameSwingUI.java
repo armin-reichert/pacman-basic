@@ -14,6 +14,7 @@ import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.Polygon;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 
@@ -37,6 +38,8 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 			new Thread(game, "GameLoop").start();
 		});
 	}
+
+	private static final Polygon TRIANGLE = new Polygon(new int[] { -4, 4, 0 }, new int[] { 0, 0, 4 }, 3);
 
 	private final Assets assets;
 	private final PacManGame game;
@@ -248,17 +251,24 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 		if (messageText != null) {
 			g.setFont(assets.scoreFont);
 			g.setColor(messageColor);
-			int textLength = g.getFontMetrics().stringWidth(messageText);
-			g.drawString(messageText, WORLD_WIDTH_TILES * TS / 2 - textLength / 2, 21 * TS);
+			int textWidth = g.getFontMetrics().stringWidth(messageText);
+			g.drawString(messageText, WORLD_WIDTH_TILES * TS / 2 - textWidth / 2, 21 * TS);
 		}
 
 		if (debugMode) {
 			for (int x = 0; x < WORLD_WIDTH_TILES; ++x) {
 				for (int y = 0; y < WORLD_HEIGHT_TILES; ++y) {
 					if (game.world.isIntersectionTile(x, y)) {
-						g.setColor(Color.RED);
+						g.setColor(new Color(100, 100, 100));
 						g.setStroke(new BasicStroke(0.1f));
-						g.drawRect(x * TS, y * TS, TS, TS);
+						g.drawLine(x * TS, y * TS + HTS, (x + 1) * TS, y * TS + HTS);
+						g.drawLine(x * TS + HTS, y * TS, x * TS + HTS, (y + 1) * TS);
+					} else if (game.world.isUpwardsBlocked(x, y)) {
+						g.setColor(new Color(100, 100, 100));
+						g.setStroke(new BasicStroke(0.1f));
+						g.translate(x * TS + HTS, y * TS);
+						g.fillPolygon(TRIANGLE);
+						g.translate(-(x * TS + HTS), -y * TS);
 					}
 				}
 			}
