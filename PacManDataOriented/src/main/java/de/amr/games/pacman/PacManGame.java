@@ -231,6 +231,7 @@ public class PacManGame implements Runnable {
 			for (Ghost ghost : ghosts) {
 				killGhost(ghost);
 			}
+			enterGhostDyingState();
 		} else if (ui.keyPressed("s")) {
 			targetFPS = targetFPS == 60 ? 30 : 60;
 		} else if (ui.keyPressed("plus")) {
