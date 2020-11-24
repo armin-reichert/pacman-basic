@@ -49,9 +49,9 @@ public class Assets {
 			500,  section(2, 9),
 			700,  section(3, 9),
 			1000, section(4, 9, 2, 1),
-			2000, section(4, 10, 2, 1),
-			3000, section(4, 11, 2, 1),
-			5000, section(4, 12, 2, 1)
+			2000, section(3, 10, 3, 1),
+			3000, section(3, 11, 3, 1),
+			5000, section(3, 12, 3, 1)
 		);
 	
 		bountyNumbers = Map.of(

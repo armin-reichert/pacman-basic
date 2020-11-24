@@ -245,8 +245,13 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 			g.drawImage(assets.symbols.get(symbolName), 13 * TS, 20 * TS - HTS, null);
 		}
 		if (game.bonusConsumedTimer > 0) {
-			int bonusPoints = game.levelData().bonusPoints();
-			g.drawImage(assets.numbers.get(bonusPoints), 13 * TS, 20 * TS - HTS, null);
+			int number = game.levelData().bonusPoints();
+			BufferedImage image = assets.numbers.get(number);
+			if (number < 2000) {
+				g.drawImage(image, 13 * TS, 20 * TS - HTS, null);
+			} else {
+				g.drawImage(image, (WORLD_WIDTH_TILES * TS - image.getWidth()) / 2, 20 * TS - HTS, null);
+			}
 		}
 		if (messageText != null) {
 			g.setFont(assets.scoreFont);
