@@ -1,7 +1,5 @@
 package de.amr.games.pacman.ui.swing;
 
-import static de.amr.games.pacman.World.TS;
-
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.image.BufferedImage;
@@ -31,7 +29,7 @@ public class Assets {
 		imageMazeEmptyWhite = image("/maze_empty_white.png");
 		imageLive = section(8, 1);
 
-		scoreFont = font("/PressStart2P-Regular.ttf", TS);
+		scoreFont = font("/PressStart2P-Regular.ttf", 8);
 
 		//@formatter:off
 		symbols = Map.of(
