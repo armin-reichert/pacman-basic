@@ -576,28 +576,29 @@ public class PacManGame implements Runnable {
 	}
 
 	private V2i currentChasingTarget(Ghost ghost) {
+		V2i pacManTile = pacMan.tile();
 		switch (ghost.name) {
 		case "Blinky": {
-			return pacMan.tile();
+			return pacManTile;
 		}
 		case "Pinky": {
-			V2i pacManTilePlus4 = pacMan.tile().sum(pacMan.dir.vec.scaled(4));
-			// simulate overflow bug when Pac-Man is looking UP
+			V2i pacManTileAhead4 = pacManTile.sum(pacMan.dir.vec.scaled(4));
 			if (pacMan.dir == UP) {
-				pacManTilePlus4 = pacManTilePlus4.sum(LEFT.vec.scaled(4));
+				// simulate overflow bug when Pac-Man is looking UP
+				pacManTileAhead4 = pacManTileAhead4.sum(LEFT.vec.scaled(4));
 			}
-			return pacManTilePlus4;
+			return pacManTileAhead4;
 		}
 		case "Inky": {
-			V2i pacManTilePlus2 = pacMan.tile().sum(pacMan.dir.vec.scaled(2));
-			// simulate overflow bug when Pac-Man is looking UP
+			V2i pacManTileAhead2 = pacManTile.sum(pacMan.dir.vec.scaled(2));
 			if (pacMan.dir == UP) {
-				pacManTilePlus2 = pacManTilePlus2.sum(LEFT.vec.scaled(2));
+				// simulate overflow bug when Pac-Man is looking UP
+				pacManTileAhead2 = pacManTileAhead2.sum(LEFT.vec.scaled(2));
 			}
-			return pacManTilePlus2.scaled(2).sum(ghosts[BLINKY].tile().scaled(-1));
+			return ghosts[BLINKY].tile().scaled(-1).sum(pacManTileAhead2.scaled(2));
 		}
 		case "Clyde": {
-			return ghosts[CLYDE].tile().distance(pacMan.tile()) < 8 ? ghosts[CLYDE].scatterTile : pacMan.tile();
+			return ghosts[CLYDE].tile().distance(pacManTile) < 8 ? ghosts[CLYDE].scatterTile : pacManTile;
 		}
 		default:
 			throw new IllegalArgumentException("Unknown ghost name: " + ghost.name);
