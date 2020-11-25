@@ -9,6 +9,11 @@ import java.util.Map;
 
 import javax.imageio.ImageIO;
 
+/**
+ * Assets used in Pac-Man game.
+ * 
+ * @author Armin Reichert
+ */
 public class Assets {
 
 	public final BufferedImage imageMazeFull;

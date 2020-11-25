@@ -5,6 +5,11 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.BitSet;
 
+/**
+ * Keyboard handler.
+ * 
+ * @author Armin Reichert
+ */
 public class Keyboard {
 
 	private final BitSet pressedKeys = new BitSet(256);

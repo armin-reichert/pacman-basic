@@ -30,6 +30,11 @@ import de.amr.games.pacman.entities.Creature;
 import de.amr.games.pacman.entities.Ghost;
 import de.amr.games.pacman.ui.PacManGameUI;
 
+/**
+ * Swing UI for Pac-Man game.
+ * 
+ * @author Armin Reichert
+ */
 public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 
 	public static void main(String[] args) {
