@@ -130,7 +130,7 @@ public class PacManGame implements Runnable {
 	public int points;
 	public int hiscore;
 	public int ghostsKilledUsingEnergizer;
-	public int mazeFlashes;
+	public int mazeFlashesRemaining;
 	public long pacManPowerTimer;
 	public long readyStateTimer;
 	public long scatteringStateTimer;
@@ -180,7 +180,7 @@ public class PacManGame implements Runnable {
 		level = n;
 		world.restoreFood();
 		attackWave = 0;
-		mazeFlashes = 0;
+		mazeFlashesRemaining = 0;
 		ghostsKilledUsingEnergizer = 0;
 		pacManPowerTimer = 0;
 		readyStateTimer = 0;
@@ -451,17 +451,23 @@ public class PacManGame implements Runnable {
 			enterReadyState();
 			return;
 		}
+		if (changingLevelStateTimer == sec(2 + levelData().numFlashes())) {
+			for (Ghost ghost : ghosts) {
+				ghost.visible = false;
+			}
+		}
 		--changingLevelStateTimer;
 	}
 
 	private void enterChangingLevelState() {
 		state = GameState.CHANGING_LEVEL;
-		changingLevelStateTimer = sec(7);
-		mazeFlashes = levelData().numFlashes();
-		for (Ghost ghost : ghosts) {
-			ghost.visible = false;
-		}
+		changingLevelStateTimer = sec(4 + levelData().numFlashes());
 		saveHiscore();
+		mazeFlashesRemaining = levelData().numFlashes();
+		for (Ghost ghost : ghosts) {
+			ghost.frightened = false;
+			ghost.dead = false;
+		}
 		log("Game entered %s state", state);
 	}
 

@@ -230,10 +230,10 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 	}
 
 	private void drawMazeFlashing(Graphics2D g) {
-		if (game.mazeFlashes > 0 && Timing.framesTotal % 30 < 15) {
+		if (game.mazeFlashesRemaining > 0 && Timing.framesTotal % 30 < 15) {
 			g.drawImage(assets.imageMazeEmptyWhite, 0, 3 * TS, null);
 			if (Timing.framesTotal % 30 == 14) {
-				--game.mazeFlashes;
+				--game.mazeFlashesRemaining;
 			}
 		} else {
 			g.drawImage(assets.imageMazeEmpty, 0, 3 * TS, null);
