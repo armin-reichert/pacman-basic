@@ -18,6 +18,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
+import java.util.Map;
 
 import javax.swing.JFrame;
 
@@ -40,7 +41,19 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 		});
 	}
 
-	private static final Polygon TRIANGLE = new Polygon(new int[] { -4, 4, 0 }, new int[] { 0, 0, 4 }, 3);
+	//@formatter:off
+	private static final Polygon TRIANGLE = new Polygon(
+		new int[] { -4, 4, 0 }, 
+		new int[] { 0, 0, 4 },
+		3);
+	
+	private static final Map<String, Color> GHOST_COLORS = Map.of(
+		"Blinky", Color.RED, 
+		"Pinky",  Color.PINK, 
+		"Inky",	  Color.CYAN, 
+		"Clyde",  Color.ORANGE
+		);
+	//@formatter:on
 
 	private final Assets assets;
 	private final PacManGame game;
@@ -172,25 +185,10 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 			g.drawString(text, 8 * TS, 3 * TS);
 			for (Ghost ghost : game.ghosts) {
 				if (ghost.targetTile != null) {
-					g.setColor(color(ghost));
+					g.setColor(GHOST_COLORS.get(ghost.name));
 					g.fillRect(ghost.targetTile.x * TS + HTS / 2, ghost.targetTile.y * TS + HTS / 2, HTS, HTS);
 				}
 			}
-		}
-	}
-
-	private Color color(Ghost ghost) {
-		switch (ghost.name) {
-		case "Blinky":
-			return Color.RED;
-		case "Pinky":
-			return Color.PINK;
-		case "Inky":
-			return Color.CYAN;
-		case "Clyde":
-			return Color.ORANGE;
-		default:
-			throw new IllegalArgumentException();
 		}
 	}
 
