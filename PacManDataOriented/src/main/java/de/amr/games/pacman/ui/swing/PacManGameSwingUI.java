@@ -42,6 +42,13 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 	}
 
 	//@formatter:off
+	private static final Map<Direction,Integer> DIR_INDEX = Map.of(
+		Direction.RIGHT, 0,
+		Direction.LEFT,  1,
+		Direction.UP,    2,
+		Direction.DOWN,  3
+	);
+	
 	private static final Polygon TRIANGLE = new Polygon(
 		new int[] { -4, 4, 0 }, 
 		new int[] { 0, 0, 4 },
@@ -321,10 +328,10 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 			sprite = assets.section(2, 0);
 		} else if (!pacMan.couldMove) {
 			// wide open mouth
-			sprite = assets.section(0, directionFrame(pacMan.dir));
+			sprite = assets.section(0, DIR_INDEX.get(pacMan.dir));
 		} else {
 			// closed mouth or open mouth pointing to move direction
-			sprite = mouthFrame == 2 ? assets.section(mouthFrame, 0) : assets.section(mouthFrame, directionFrame(pacMan.dir));
+			sprite = mouthFrame == 2 ? assets.section(mouthFrame, 0) : assets.section(mouthFrame, DIR_INDEX.get(pacMan.dir));
 		}
 		g.drawImage(sprite, (int) pacMan.position.x - HTS, (int) pacMan.position.y - HTS, null);
 	}
@@ -339,7 +346,7 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 		if (ghost.dead) {
 			// show as number (bounty) or as eyes
 			sprite = ghost.bounty > 0 ? assets.bountyNumbers.get(ghost.bounty)
-					: assets.section(8 + directionFrame(ghost.dir), 5);
+					: assets.section(8 + DIR_INDEX.get(ghost.dir), 5);
 		} else if (ghost.frightened) {
 			int walkingFrame = Timing.framesTotal % 60 < 30 ? 0 : 1;
 			if (game.pacManPowerTimer < sec(2)) { // TODO
@@ -352,28 +359,13 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 			}
 		} else {
 			int walkingFrame = Timing.framesTotal % 60 < 30 ? 0 : 1;
-			sprite = assets.section(2 * directionFrame(ghost.dir) + walkingFrame, 4 + ghostIndex);
+			sprite = assets.section(2 * DIR_INDEX.get(ghost.dir) + walkingFrame, 4 + ghostIndex);
 		}
 		g.drawImage(sprite, (int) ghost.position.x - HTS, (int) ghost.position.y - HTS, null);
 
 		if (debugMode) {
 			g.setColor(Color.WHITE);
 			g.drawRect((int) ghost.position.x, (int) ghost.position.y, TS, TS);
-		}
-	}
-
-	private int directionFrame(Direction dir) {
-		switch (dir) {
-		case RIGHT:
-			return 0;
-		case LEFT:
-			return 1;
-		case UP:
-			return 2;
-		case DOWN:
-			return 3;
-		default:
-			throw new IllegalStateException();
 		}
 	}
 }
