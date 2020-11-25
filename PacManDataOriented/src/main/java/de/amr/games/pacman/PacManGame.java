@@ -582,7 +582,7 @@ public class PacManGame implements Runnable {
 		}
 		case "Pinky": {
 			V2i pacManTilePlus4 = pacMan.tile().sum(pacMan.dir.vec.scaled(4));
-			// simulate offset bug when Pac-Man is looking UP
+			// simulate overflow bug when Pac-Man is looking UP
 			if (pacMan.dir == UP) {
 				pacManTilePlus4 = pacManTilePlus4.sum(LEFT.vec.scaled(4));
 			}
@@ -590,7 +590,7 @@ public class PacManGame implements Runnable {
 		}
 		case "Inky": {
 			V2i pacManTilePlus2 = pacMan.tile().sum(pacMan.dir.vec.scaled(2));
-			// simulate offset bug when Pac-Man is looking UP
+			// simulate overflow bug when Pac-Man is looking UP
 			if (pacMan.dir == UP) {
 				pacManTilePlus2 = pacManTilePlus2.sum(LEFT.vec.scaled(2));
 			}
