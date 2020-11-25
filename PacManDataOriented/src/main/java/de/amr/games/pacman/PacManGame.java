@@ -123,6 +123,7 @@ public class PacManGame implements Runnable {
 	public final Ghost[] ghosts = new Ghost[4];
 
 	public GameState state;
+	public GameState savedState;
 	public int level;
 	public int attackWave;
 	public int lives;
@@ -411,8 +412,6 @@ public class PacManGame implements Runnable {
 			ghost.visible = true;
 		}
 	}
-
-	private GameState savedState;
 
 	private void runGhostDyingState() {
 		if (ghostDyingStateTimer == 0) {
