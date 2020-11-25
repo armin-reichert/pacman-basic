@@ -15,6 +15,8 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 
@@ -65,6 +67,13 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 		setTitle("Pac-Man");
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		addWindowListener(new WindowAdapter() {
+
+			@Override
+			public void windowClosing(WindowEvent e) {
+				onExit();
+			}
+		});
 		pack();
 		setLocationRelativeTo(null);
 		setVisible(true);
@@ -121,6 +130,11 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 		boolean pressed = keyboard.keyPressed(keySpec);
 		keyboard.clearKey(keySpec);
 		return pressed;
+	}
+
+	@Override
+	public void onExit() {
+		game.exit();
 	}
 
 	private void drawGame(Graphics2D g) {

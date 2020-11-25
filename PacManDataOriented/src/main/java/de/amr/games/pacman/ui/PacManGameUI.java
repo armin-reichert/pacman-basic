@@ -15,4 +15,6 @@ public interface PacManGameUI {
 	void clearMessage();
 
 	boolean keyPressed(String keySpec);
+
+	void onExit();
 }

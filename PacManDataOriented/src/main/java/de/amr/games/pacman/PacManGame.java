@@ -164,6 +164,10 @@ public class PacManGame implements Runnable {
 		});
 	}
 
+	public void exit() {
+		saveHiscore();
+	}
+
 	private void reset() {
 		loadHiscore();
 		points = 0;
@@ -590,6 +594,7 @@ public class PacManGame implements Runnable {
 		content.setProperty("date", ZonedDateTime.now().format(ISO_DATE_TIME));
 		try (FileOutputStream out = new FileOutputStream(HISCORE_FILE)) {
 			content.storeToXML(out, "Pac-Man Hiscore");
+			log("Hiscore has been saved");
 		} catch (Exception x) {
 			log("Could not save hiscore");
 			x.printStackTrace(System.err);
