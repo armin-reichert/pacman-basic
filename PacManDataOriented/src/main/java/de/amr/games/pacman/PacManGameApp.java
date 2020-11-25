@@ -4,6 +4,11 @@ import java.awt.EventQueue;
 
 import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
 
+/**
+ * The Pac-Man game app.
+ * 
+ * @author Armin Reichert
+ */
 public class PacManGameApp {
 
 	public static void main(String[] args) {
