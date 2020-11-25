@@ -25,9 +25,15 @@ import static de.amr.games.pacman.common.Direction.UP;
 import static de.amr.games.pacman.common.Logging.log;
 import static de.amr.games.pacman.entities.Creature.offset;
 import static de.amr.games.pacman.entities.Creature.tile;
+import static java.time.format.DateTimeFormatter.ISO_DATE_TIME;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -51,6 +57,8 @@ public class PacManGame implements Runnable {
 
 	private static final int BLINKY = 0, PINKY = 1, INKY = 2, CLYDE = 3;
 	private static final List<Direction> DIRECTION_PRIORITY = List.of(UP, LEFT, DOWN, RIGHT);
+	private static final File HISCORE_DIR = new File(System.getProperty("user.home"));
+	private static final File HISCORE_FILE = new File(HISCORE_DIR, "pacman-basic-hiscore.xml");
 
 	private static boolean differsAtMost(float value, float target, float tolerance) {
 		return Math.abs(value - target) <= tolerance;
@@ -119,6 +127,7 @@ public class PacManGame implements Runnable {
 	public int attackWave;
 	public int lives;
 	public int points;
+	public int hiscore;
 	public int ghostsKilledUsingEnergizer;
 	public int mazeFlashes;
 	public long pacManPowerTimer;
@@ -156,6 +165,7 @@ public class PacManGame implements Runnable {
 	}
 
 	private void reset() {
+		loadHiscore();
 		points = 0;
 		lives = 3;
 		setLevel(1);
@@ -325,6 +335,7 @@ public class PacManGame implements Runnable {
 			updateGhost(ghost);
 		}
 		updateBonus();
+		updateHiscore();
 	}
 
 	private void enterScatteringState() {
@@ -356,6 +367,7 @@ public class PacManGame implements Runnable {
 			updateGhost(ghost);
 		}
 		updateBonus();
+		updateHiscore();
 	}
 
 	private void enterChasingState() {
@@ -447,6 +459,7 @@ public class PacManGame implements Runnable {
 		for (Ghost ghost : ghosts) {
 			ghost.visible = false;
 		}
+		saveHiscore();
 		log("Game entered %s state", state);
 	}
 
@@ -556,6 +569,36 @@ public class PacManGame implements Runnable {
 		int eaten = TOTAL_FOOD_COUNT - world.foodRemaining;
 		if (bonusAvailableTimer == 0 && (eaten == 70 || eaten == 170)) {
 			bonusAvailableTimer = sec(9 + new Random().nextInt(1));
+		}
+	}
+
+	private void loadHiscore() {
+		Properties content = new Properties();
+		try (FileInputStream in = new FileInputStream(HISCORE_FILE)) {
+			content.loadFromXML(in);
+			hiscore = Integer.parseInt(content.getProperty("points"));
+		} catch (Exception x) {
+			log("Could not load hiscore");
+			x.printStackTrace(System.err);
+		}
+	}
+
+	private void saveHiscore() {
+		Properties content = new Properties();
+		content.setProperty("points", String.valueOf(hiscore));
+		content.setProperty("level", String.valueOf(level));
+		content.setProperty("date", ZonedDateTime.now().format(ISO_DATE_TIME));
+		try (FileOutputStream out = new FileOutputStream(HISCORE_FILE)) {
+			content.storeToXML(out, "Pac-Man Hiscore");
+		} catch (Exception x) {
+			log("Could not save hiscore");
+			x.printStackTrace(System.err);
+		}
+	}
+
+	private void updateHiscore() {
+		if (points > hiscore) {
+			hiscore = points;
 		}
 	}
 
