@@ -6,7 +6,6 @@ import static de.amr.games.pacman.World.HTS;
 import static de.amr.games.pacman.World.TS;
 import static de.amr.games.pacman.World.WORLD_HEIGHT_TILES;
 import static de.amr.games.pacman.World.WORLD_WIDTH_TILES;
-import static de.amr.games.pacman.common.Logging.log;
 
 import java.awt.BasicStroke;
 import java.awt.Canvas;
@@ -235,7 +234,6 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 			g.drawImage(assets.imageMazeEmptyWhite, 0, 3 * TS, null);
 			if (Timing.framesTotal % 30 == 14) {
 				--game.mazeFlashes;
-				log("Maze flashes: %d", game.mazeFlashes);
 			}
 		} else {
 			g.drawImage(assets.imageMazeEmpty, 0, 3 * TS, null);

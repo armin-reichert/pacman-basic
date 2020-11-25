@@ -250,7 +250,6 @@ public class PacManGame implements Runnable {
 			targetFPS = targetFPS == 60 ? 30 : 60;
 		} else if (ui.keyPressed("plus")) {
 			setLevel(++level);
-			log("Enter level %d", level);
 			enterReadyState();
 		} else if (ui.keyPressed("p")) {
 			paused = !paused;
@@ -581,6 +580,7 @@ public class PacManGame implements Runnable {
 		try (FileInputStream in = new FileInputStream(HISCORE_FILE)) {
 			content.loadFromXML(in);
 			hiscore = Integer.parseInt(content.getProperty("points"));
+			log("Hiscore has been loaded from %s", HISCORE_FILE);
 		} catch (Exception x) {
 			log("Could not load hiscore");
 			x.printStackTrace(System.err);
@@ -594,7 +594,7 @@ public class PacManGame implements Runnable {
 		content.setProperty("date", ZonedDateTime.now().format(ISO_DATE_TIME));
 		try (FileOutputStream out = new FileOutputStream(HISCORE_FILE)) {
 			content.storeToXML(out, "Pac-Man Hiscore");
-			log("Hiscore has been saved");
+			log("Hiscore has been saved to %s", HISCORE_FILE);
 		} catch (Exception x) {
 			log("Could not save hiscore");
 			x.printStackTrace(System.err);
@@ -665,7 +665,6 @@ public class PacManGame implements Runnable {
 			ghost.forcedOnTrack = false;
 			ghost.enteringHouse = true;
 			ghost.targetTile = ghost == ghosts[BLINKY] ? HOUSE_CENTER : ghost.homeTile;
-			log("%s starts entering house", ghost);
 			return;
 		}
 		letGhostHeadForTargetTile(ghost);
@@ -683,7 +682,6 @@ public class PacManGame implements Runnable {
 			ghost.dead = false;
 			ghost.enteringHouse = false;
 			ghost.leavingHouse = true;
-			log("%s reached ghost house target and starts leaving house", ghost);
 			return;
 		}
 		// move sidewards towards target tile?
@@ -701,7 +699,6 @@ public class PacManGame implements Runnable {
 			ghost.dir = ghost.wishDir = LEFT;
 			ghost.forcedOnTrack = true;
 			ghost.leavingHouse = false;
-			log("%s has left house", ghost);
 			return;
 		}
 		// center of house reached?
