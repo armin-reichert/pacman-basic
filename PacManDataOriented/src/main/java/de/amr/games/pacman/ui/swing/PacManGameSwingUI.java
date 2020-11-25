@@ -10,7 +10,6 @@ import static de.amr.games.pacman.World.WORLD_WIDTH_TILES;
 import java.awt.BasicStroke;
 import java.awt.Canvas;
 import java.awt.Color;
-import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
@@ -36,15 +35,6 @@ import de.amr.games.pacman.ui.PacManGameUI;
  * @author Armin Reichert
  */
 public class PacManGameSwingUI extends JFrame implements PacManGameUI {
-
-	public static void main(String[] args) {
-		PacManGame game = new PacManGame();
-		EventQueue.invokeLater(() -> {
-			game.ui = new PacManGameSwingUI(game, 2);
-			game.ui.setDebugMode(false);
-			new Thread(game, "GameLoop").start();
-		});
-	}
 
 	//@formatter:off
 	private static final Map<Direction,Integer> DIR_INDEX = Map.of(
