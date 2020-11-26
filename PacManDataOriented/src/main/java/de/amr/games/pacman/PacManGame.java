@@ -595,9 +595,9 @@ public class PacManGame {
 			Properties content = new Properties();
 			content.loadFromXML(in);
 			hiscore = Integer.parseInt(content.getProperty("points"));
-			log("Hiscore has been loaded from %s", HISCORE_FILE);
+			log("Hiscore file loaded: %s", HISCORE_FILE);
 		} catch (Exception x) {
-			log("Could not load hiscore");
+			log("Could not load hiscore file");
 			x.printStackTrace(System.err);
 		}
 	}
@@ -609,7 +609,7 @@ public class PacManGame {
 		content.setProperty("date", ZonedDateTime.now().format(ISO_DATE_TIME));
 		try (FileOutputStream out = new FileOutputStream(HISCORE_FILE)) {
 			content.storeToXML(out, "Pac-Man Hiscore");
-			log("Hiscore has been saved to %s", HISCORE_FILE);
+			log("Hiscore file saved: %s", HISCORE_FILE);
 		} catch (Exception x) {
 			log("Could not save hiscore");
 			x.printStackTrace(System.err);
