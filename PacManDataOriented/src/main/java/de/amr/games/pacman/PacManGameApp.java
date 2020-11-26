@@ -15,8 +15,7 @@ public class PacManGameApp {
 		PacManGame game = new PacManGame();
 		EventQueue.invokeLater(() -> {
 			game.ui = new PacManGameSwingUI(game, 2);
-			game.ui.setDebugMode(false);
-			new Thread(game, "GameLoop").start();
+			game.start();
 		});
 	}
 }

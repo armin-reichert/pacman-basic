@@ -53,7 +53,7 @@ import de.amr.games.pacman.ui.PacManGameUI;
  * @see https://gameinternals.com/understanding-pac-man-ghost-behavior
  * @see https://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php
  */
-public class PacManGame implements Runnable {
+public class PacManGame {
 
 	private static final int BLINKY = 0, PINKY = 1, INKY = 2, CLYDE = 3;
 	private static final List<Direction> DIRECTION_PRIORITY = List.of(UP, LEFT, DOWN, RIGHT);
@@ -152,8 +152,15 @@ public class PacManGame implements Runnable {
 		ghosts[CLYDE] = new Ghost("Clyde", HOUSE_RIGHT, LOWER_LEFT_CORNER);
 	}
 
-	@Override
-	public void run() {
+	public void start() {
+		new Thread(this::run, "GameLoop").start();
+	}
+
+	public void exit() {
+		saveHiscore();
+	}
+
+	private void run() {
 		reset();
 		enterReadyState();
 		forever(() -> {
@@ -163,10 +170,6 @@ public class PacManGame implements Runnable {
 			}
 			ui.render();
 		});
-	}
-
-	public void exit() {
-		saveHiscore();
 	}
 
 	private void reset() {
@@ -921,4 +924,5 @@ public class PacManGame implements Runnable {
 		//@formatter:on
 		return dirs.get(new Random().nextInt(dirs.size()));
 	}
+
 }
