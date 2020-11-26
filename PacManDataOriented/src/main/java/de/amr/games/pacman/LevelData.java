@@ -43,21 +43,21 @@ public class LevelData {
 		return ((int) value) / 100f;
 	}
 
-	public LevelData(Object... values) {
-		bonusSymbol = (String) values[0];
-		bonusPoints = (int) values[1];
-		pacManSpeed = percent(values[2]);
-		pacManDotsSpeed = percent(values[3]);
-		ghostSpeed = percent(values[4]);
-		ghostTunnelSpeed = percent(values[5]);
-		elroy1DotsLeft = (int) values[6];
-		elroy1Speed = percent(values[7]);
-		elroy2DotsLeft = (int) values[8];
-		elroy2Speed = percent(values[9]);
-		pacManPowerSpeed = percent(values[10]);
-		pacManPowerDotsSpeed = percent(values[11]);
-		frightenedGhostSpeed = percent(values[12]);
-		ghostFrightenedSeconds = (int) values[13];
-		numFlashes = (int) values[14];
+	public LevelData(String symbolName, int... values) {
+		bonusSymbol = symbolName;
+		bonusPoints = values[0];
+		pacManSpeed = percent(values[1]);
+		pacManDotsSpeed = percent(values[2]);
+		ghostSpeed = percent(values[3]);
+		ghostTunnelSpeed = percent(values[4]);
+		elroy1DotsLeft = values[5];
+		elroy1Speed = percent(values[6]);
+		elroy2DotsLeft = values[7];
+		elroy2Speed = percent(values[8]);
+		pacManPowerSpeed = percent(values[9]);
+		pacManPowerDotsSpeed = percent(values[10]);
+		frightenedGhostSpeed = percent(values[11]);
+		ghostFrightenedSeconds = values[12];
+		numFlashes = values[13];
 	}
 }
