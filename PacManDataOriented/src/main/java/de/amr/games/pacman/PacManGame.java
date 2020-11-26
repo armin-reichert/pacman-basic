@@ -129,6 +129,7 @@ public class PacManGame {
 	public int lives;
 	public int points;
 	public int hiscore;
+	public boolean newHiscore;
 	public int ghostsKilledUsingEnergizer;
 	public int mazeFlashesRemaining;
 	public long pacManPowerTimer;
@@ -157,7 +158,9 @@ public class PacManGame {
 	}
 
 	public void exit() {
-		saveHiscore();
+		if (newHiscore) {
+			saveHiscore();
+		}
 	}
 
 	private void run() {
@@ -174,6 +177,7 @@ public class PacManGame {
 
 	private void reset() {
 		loadHiscore();
+		newHiscore = false;
 		points = 0;
 		lives = 3;
 		setLevel(1);
@@ -465,7 +469,6 @@ public class PacManGame {
 	private void enterChangingLevelState() {
 		state = GameState.CHANGING_LEVEL;
 		changingLevelStateTimer = sec(4 + levelData().numFlashes());
-		saveHiscore();
 		mazeFlashesRemaining = levelData().numFlashes();
 		for (Ghost ghost : ghosts) {
 			ghost.frightened = false;
@@ -584,8 +587,12 @@ public class PacManGame {
 	}
 
 	private void loadHiscore() {
-		Properties content = new Properties();
+		if (!HISCORE_FILE.exists()) {
+			hiscore = 0;
+			return;
+		}
 		try (FileInputStream in = new FileInputStream(HISCORE_FILE)) {
+			Properties content = new Properties();
 			content.loadFromXML(in);
 			hiscore = Integer.parseInt(content.getProperty("points"));
 			log("Hiscore has been loaded from %s", HISCORE_FILE);
@@ -612,6 +619,7 @@ public class PacManGame {
 	private void updateHiscore() {
 		if (points > hiscore) {
 			hiscore = points;
+			newHiscore = true;
 		}
 	}
 
