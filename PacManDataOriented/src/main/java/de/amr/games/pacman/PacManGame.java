@@ -487,6 +487,9 @@ public class PacManGame {
 	private void enterGameOverState() {
 		state = GameState.GAME_OVER;
 		ui.redMessage("Game Over!");
+		if (newHiscore) {
+			saveHiscore();
+		}
 		log("Game entered %s state", state);
 	}
 
