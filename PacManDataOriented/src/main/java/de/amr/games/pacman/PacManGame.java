@@ -66,27 +66,27 @@ public class PacManGame {
 
 	private static final List<LevelData> LEVELS = List.of(
 	/*@formatter:off*/
-	LevelData.of("Cherries",   100,  80,  71,  75, 40,  20,  80, 10,  85,  90, 79, 50, 6, 5),
-	LevelData.of("Strawberry", 300,  90,  79,  85, 45,  30,  90, 15,  95,  95, 83, 55, 5, 5),
-	LevelData.of("Peach",      500,  90,  79,  85, 45,  40,  90, 20,  95,  95, 83, 55, 4, 5),
-	LevelData.of("Peach",      500,  90,  79,  85, 50,  40, 100, 20,  95,  95, 83, 55, 3, 5),
-	LevelData.of("Apple",      700, 100,  87,  95, 50,  40, 100, 20, 105, 100, 87, 60, 2, 5),
-	LevelData.of("Apple",      700, 100,  87,  95, 50,  50, 100, 25, 105, 100, 87, 60, 5, 5),
-	LevelData.of("Grapes",    1000, 100,  87,  95, 50,  50, 100, 25, 105, 100, 87, 60, 2, 5),
-	LevelData.of("Grapes",    1000, 100,  87,  95, 50,  50, 100, 25, 105, 100, 87, 60, 2, 5),
-	LevelData.of("Galaxian",  2000, 100,  87,  95, 50,  60, 100, 30, 105, 100, 87, 60, 1, 3),
-	LevelData.of("Galaxian",  2000, 100,  87,  95, 50,  60, 100, 30, 105, 100, 87, 60, 5, 5),
-	LevelData.of("Bell",      3000, 100,  87,  95, 50,  60, 100, 30, 105, 100, 87, 60, 2, 5),
-	LevelData.of("Bell",      3000, 100,  87,  95, 50,  80, 100, 40, 105, 100, 87, 60, 1, 3),
-	LevelData.of("Key",       5000, 100,  87,  95, 50,  80, 100, 40, 105, 100, 87, 60, 1, 3),
-	LevelData.of("Key",       5000, 100,  87,  95, 50,  80, 100, 40, 105, 100, 87, 60, 3, 5),
-	LevelData.of("Key",       5000, 100,  87,  95, 50, 100, 100, 50, 105, 100, 87, 60, 1, 3),
-	LevelData.of("Key",       5000, 100,  87,  95, 50, 100, 100, 50, 105,   0,  0,  0, 1, 3),
-	LevelData.of("Key",       5000, 100,  87,  95, 50, 100, 100, 50, 105, 100, 87, 60, 0, 0),
-	LevelData.of("Key",       5000, 100,  87,  95, 50, 100, 100, 50, 105,   0,   0, 0, 1, 0),
-	LevelData.of("Key",       5000, 100,  87,  95, 50, 120, 100, 60, 105,   0,   0, 0, 0, 0),
-	LevelData.of("Key",       5000, 100,  87,  95, 50, 120, 100, 60, 105,   0,   0, 0, 0, 0),
-	LevelData.of("Key",       5000,  90,  79,  95, 50, 120, 100, 60, 105,   0,   0, 0, 0, 0)
+	new LevelData("Cherries",   100,  80,  71,  75, 40,  20,  80, 10,  85,  90, 79, 50, 6, 5),
+	new LevelData("Strawberry", 300,  90,  79,  85, 45,  30,  90, 15,  95,  95, 83, 55, 5, 5),
+	new LevelData("Peach",      500,  90,  79,  85, 45,  40,  90, 20,  95,  95, 83, 55, 4, 5),
+	new LevelData("Peach",      500,  90,  79,  85, 50,  40, 100, 20,  95,  95, 83, 55, 3, 5),
+	new LevelData("Apple",      700, 100,  87,  95, 50,  40, 100, 20, 105, 100, 87, 60, 2, 5),
+	new LevelData("Apple",      700, 100,  87,  95, 50,  50, 100, 25, 105, 100, 87, 60, 5, 5),
+	new LevelData("Grapes",    1000, 100,  87,  95, 50,  50, 100, 25, 105, 100, 87, 60, 2, 5),
+	new LevelData("Grapes",    1000, 100,  87,  95, 50,  50, 100, 25, 105, 100, 87, 60, 2, 5),
+	new LevelData("Galaxian",  2000, 100,  87,  95, 50,  60, 100, 30, 105, 100, 87, 60, 1, 3),
+	new LevelData("Galaxian",  2000, 100,  87,  95, 50,  60, 100, 30, 105, 100, 87, 60, 5, 5),
+	new LevelData("Bell",      3000, 100,  87,  95, 50,  60, 100, 30, 105, 100, 87, 60, 2, 5),
+	new LevelData("Bell",      3000, 100,  87,  95, 50,  80, 100, 40, 105, 100, 87, 60, 1, 3),
+	new LevelData("Key",       5000, 100,  87,  95, 50,  80, 100, 40, 105, 100, 87, 60, 1, 3),
+	new LevelData("Key",       5000, 100,  87,  95, 50,  80, 100, 40, 105, 100, 87, 60, 3, 5),
+	new LevelData("Key",       5000, 100,  87,  95, 50, 100, 100, 50, 105, 100, 87, 60, 1, 3),
+	new LevelData("Key",       5000, 100,  87,  95, 50, 100, 100, 50, 105,   0,  0,  0, 1, 3),
+	new LevelData("Key",       5000, 100,  87,  95, 50, 100, 100, 50, 105, 100, 87, 60, 0, 0),
+	new LevelData("Key",       5000, 100,  87,  95, 50, 100, 100, 50, 105,   0,   0, 0, 1, 0),
+	new LevelData("Key",       5000, 100,  87,  95, 50, 120, 100, 60, 105,   0,   0, 0, 0, 0),
+	new LevelData("Key",       5000, 100,  87,  95, 50, 120, 100, 60, 105,   0,   0, 0, 0, 0),
+	new LevelData("Key",       5000,  90,  79,  95, 50, 120, 100, 60, 105,   0,   0, 0, 0, 0)
 	//@formatter:on
 	);
 
@@ -458,7 +458,7 @@ public class PacManGame {
 			enterReadyState();
 			return;
 		}
-		if (changingLevelStateTimer == sec(2 + levelData().numFlashes())) {
+		if (changingLevelStateTimer == sec(2 + levelData().numFlashes)) {
 			for (Ghost ghost : ghosts) {
 				ghost.visible = false;
 			}
@@ -468,8 +468,8 @@ public class PacManGame {
 
 	private void enterChangingLevelState() {
 		state = GameState.CHANGING_LEVEL;
-		changingLevelStateTimer = sec(4 + levelData().numFlashes());
-		mazeFlashesRemaining = levelData().numFlashes();
+		changingLevelStateTimer = sec(4 + levelData().numFlashes);
+		mazeFlashesRemaining = levelData().numFlashes;
 		for (Ghost ghost : ghosts) {
 			ghost.frightened = false;
 			ghost.dead = false;
@@ -520,9 +520,9 @@ public class PacManGame {
 			// energizer found?
 			if (world.isEnergizerTile(tile.x, tile.y)) {
 				points += 40;
-				pacManPowerTimer = sec(levelData().ghostFrightenedSeconds());
-				if (levelData().ghostFrightenedSeconds() > 0) {
-					log("Pac-Man got power for %d seconds", levelData().ghostFrightenedSeconds());
+				pacManPowerTimer = sec(levelData().ghostFrightenedSeconds);
+				if (levelData().ghostFrightenedSeconds > 0) {
+					log("Pac-Man got power for %d seconds", levelData().ghostFrightenedSeconds);
 					for (Ghost ghost : ghosts) {
 						ghost.frightened = !ghost.dead;
 					}
@@ -536,8 +536,8 @@ public class PacManGame {
 		if (bonusAvailableTimer > 0 && world.isBonusTile(tile.x, tile.y)) {
 			bonusAvailableTimer = 0;
 			bonusConsumedTimer = sec(2);
-			points += levelData().bonusPoints();
-			log("Pac-Man found bonus %s of value %d", levelData().bonusSymbol(), levelData().bonusPoints());
+			points += levelData().bonusPoints;
+			log("Pac-Man found bonus %s of value %d", levelData().bonusSymbol, levelData().bonusPoints);
 		}
 
 		// ghost at current tile?
@@ -742,7 +742,7 @@ public class PacManGame {
 
 	private void setSpeed(Creature guy) {
 		if (guy.name.equals("Pac-Man")) {
-			guy.speed = levelData().pacManSpeed();
+			guy.speed = levelData().pacManSpeed;
 		} else {
 			setGhostSpeed((Ghost) guy);
 		}
@@ -750,15 +750,15 @@ public class PacManGame {
 
 	private void setGhostSpeed(Ghost ghost) {
 		if (ghost.leavingHouse) {
-			ghost.speed = 0.5f * levelData().ghostSpeed();
+			ghost.speed = 0.5f * levelData().ghostSpeed;
 		} else if (ghost.dead) {
-			ghost.speed = 2f * levelData().ghostSpeed();
+			ghost.speed = 2f * levelData().ghostSpeed;
 		} else if (world.isInsideTunnel(ghost.tile().x, ghost.tile().y)) {
-			ghost.speed = levelData().ghostTunnelSpeed();
+			ghost.speed = levelData().ghostTunnelSpeed;
 		} else if (ghost.frightened) {
-			ghost.speed = levelData().frightenedGhostSpeed();
+			ghost.speed = levelData().frightenedGhostSpeed;
 		} else {
-			ghost.speed = levelData().ghostSpeed();
+			ghost.speed = levelData().ghostSpeed;
 			if (ghost == ghosts[BLINKY]) {
 				maybeSetElroySpeed(ghost);
 			}
@@ -766,10 +766,10 @@ public class PacManGame {
 	}
 
 	private void maybeSetElroySpeed(Ghost blinky) {
-		if (world.foodRemaining <= levelData().elroy2DotsLeft()) {
-			blinky.speed = levelData().elroy2Speed();
-		} else if (world.foodRemaining <= levelData().elroy1DotsLeft()) {
-			blinky.speed = levelData().elroy1Speed();
+		if (world.foodRemaining <= levelData().elroy2DotsLeft) {
+			blinky.speed = levelData().elroy2Speed;
+		} else if (world.foodRemaining <= levelData().elroy1DotsLeft) {
+			blinky.speed = levelData().elroy1Speed;
 		}
 	}
 

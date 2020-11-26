@@ -218,7 +218,7 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 		int x = (WORLD_WIDTH_TILES - 4) * TS;
 		int first = Math.max(1, game.level - 6);
 		for (int level = first; level <= game.level; ++level) {
-			BufferedImage symbol = assets.symbols.get(levelData(level).bonusSymbol());
+			BufferedImage symbol = assets.symbols.get(levelData(level).bonusSymbol);
 			g.drawImage(symbol, x, (WORLD_HEIGHT_TILES - 2) * TS, null);
 			x -= 2 * TS;
 		}
@@ -260,11 +260,11 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 			}
 		}
 		if (game.bonusAvailableTimer > 0) {
-			String symbolName = game.levelData().bonusSymbol();
+			String symbolName = game.levelData().bonusSymbol;
 			g.drawImage(assets.symbols.get(symbolName), 13 * TS, 20 * TS - HTS, null);
 		}
 		if (game.bonusConsumedTimer > 0) {
-			int number = game.levelData().bonusPoints();
+			int number = game.levelData().bonusPoints;
 			BufferedImage image = assets.numbers.get(number);
 			if (number < 2000) {
 				g.drawImage(image, 13 * TS, 20 * TS - HTS, null);
