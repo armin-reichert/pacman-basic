@@ -161,9 +161,9 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 			drawGhost(g, i);
 		}
 		drawDebugInfo(g);
-		g.setColor(Color.WHITE);
+		g.setColor(Color.LIGHT_GRAY);
 		g.setFont(new Font("Arial", Font.PLAIN, 6));
-		g.drawString(String.format("%d frames/sec", Timing.fps), 1 * TS, 3 * TS);
+		g.drawString(String.format("%d fps", Timing.fps), 1 * TS, 3 * TS);
 	}
 
 	private void drawDebugInfo(Graphics2D g) {
