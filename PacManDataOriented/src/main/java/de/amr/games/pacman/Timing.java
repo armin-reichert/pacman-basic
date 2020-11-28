@@ -15,26 +15,24 @@ public class Timing {
 		return (int) (seconds * targetFPS);
 	}
 
-	public static void forever(Runnable frame) {
-		while (true) {
-			frameStartTime = System.nanoTime();
-			frame.run();
-			frameEndTime = System.nanoTime();
-			frameDuration = frameEndTime - frameStartTime;
-			++frames;
-			++framesTotal;
-			if (frameEndTime - fpsCountStartTime >= 1_000_000_000) {
-				fps = frames;
-				frames = 0;
-				fpsCountStartTime = System.nanoTime();
-			}
-			long sleepTime = Math.max(1_000_000_000 / targetFPS - frameDuration, 0);
-			if (sleepTime > 0) {
-				try {
-					Thread.sleep(sleepTime / 1_000_000); // milliseconds
-				} catch (InterruptedException x) {
-					x.printStackTrace();
-				}
+	public static void runFrame(Runnable frame) {
+		frameStartTime = System.nanoTime();
+		frame.run();
+		frameEndTime = System.nanoTime();
+		frameDuration = frameEndTime - frameStartTime;
+		++frames;
+		++framesTotal;
+		if (frameEndTime - fpsCountStartTime >= 1_000_000_000) {
+			fps = frames;
+			frames = 0;
+			fpsCountStartTime = System.nanoTime();
+		}
+		long sleepTime = Math.max(1_000_000_000 / targetFPS - frameDuration, 0);
+		if (sleepTime > 0) {
+			try {
+				Thread.sleep(sleepTime / 1_000_000); // milliseconds
+			} catch (InterruptedException x) {
+				x.printStackTrace();
 			}
 		}
 	}

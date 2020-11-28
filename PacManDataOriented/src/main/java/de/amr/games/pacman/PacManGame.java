@@ -1,6 +1,6 @@
 package de.amr.games.pacman;
 
-import static de.amr.games.pacman.Timing.forever;
+import static de.amr.games.pacman.Timing.runFrame;
 import static de.amr.games.pacman.Timing.sec;
 import static de.amr.games.pacman.Timing.targetFPS;
 import static de.amr.games.pacman.World.HOUSE_CENTER;
@@ -165,13 +165,15 @@ public class PacManGame {
 	private void run() {
 		reset();
 		enterReadyState();
-		forever(() -> {
-			readInput();
-			if (!paused) {
-				update();
-			}
-			ui.render();
-		});
+		while (true) {
+			runFrame(() -> {
+				readInput();
+				if (!paused) {
+					update();
+				}
+				ui.render();
+			});
+		}
 	}
 
 	private void reset() {
