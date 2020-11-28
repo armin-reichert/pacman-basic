@@ -307,25 +307,25 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 		BufferedImage sprite;
 		int mouthFrame = (int) Timing.framesTotal % 15 / 5;
 		if (pacMan.dead) {
-			// 2 seconds full sprite before collapsing animation starts
 			if (game.pacManDyingStateTimer >= sec(2) + 11 * 8) {
+				// for 2 seconds, show full sprite before animation starts
 				sprite = assets.section(2, 0);
 			} else if (game.pacManDyingStateTimer >= sec(2)) {
-				// collapsing animation
+				// run collapsing animation
 				int frame = (int) (game.pacManDyingStateTimer - sec(2)) / 8;
 				sprite = assets.section(13 - frame, 0);
 			} else {
-				// collapsed sprite after collapsing
+				// show collapsed sprite after collapsing
 				sprite = assets.section(13, 0);
 			}
 		} else if (game.state == GameState.READY || game.state == GameState.CHANGING_LEVEL) {
-			// full sprite
+			// show full sprite
 			sprite = assets.section(2, 0);
 		} else if (!pacMan.couldMove) {
-			// wide open mouth
+			// show mouth wide open
 			sprite = assets.section(0, DIR_INDEX.get(pacMan.dir));
 		} else {
-			// closed mouth or open mouth pointing to move direction
+			// switch between mouth closed and mouth open
 			sprite = mouthFrame == 2 ? assets.section(mouthFrame, 0) : assets.section(mouthFrame, DIR_INDEX.get(pacMan.dir));
 		}
 		g.drawImage(sprite, (int) pacMan.position.x - HTS, (int) pacMan.position.y - HTS, null);

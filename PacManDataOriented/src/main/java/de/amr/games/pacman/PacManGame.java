@@ -54,6 +54,7 @@ import de.amr.games.pacman.ui.PacManGameUI;
  */
 public class PacManGame {
 
+	private static final float READY_STATE_SECONDS = 4;
 	private static final int BLINKY = 0, PINKY = 1, INKY = 2, CLYDE = 3;
 	private static final List<Direction> DIRECTION_PRIORITY = List.of(UP, LEFT, DOWN, RIGHT);
 	private static final File HISCORE_DIR = new File(System.getProperty("user.home"));
@@ -113,7 +114,7 @@ public class PacManGame {
 		//@formatter:on
 	};
 
-	private static int timesTableRow(int level) {
+	private static int timesByLevel(int level) {
 		return level == 1 ? 0 : level <= 4 ? 1 : 2;
 	}
 
@@ -269,25 +270,25 @@ public class PacManGame {
 		switch (state) {
 		case READY:
 			runReadyState();
-			return;
+			break;
 		case CHASING:
 			runChasingState();
-			return;
+			break;
 		case SCATTERING:
 			runScatteringState();
-			return;
+			break;
 		case CHANGING_LEVEL:
 			runChangingLevelState();
-			return;
+			break;
 		case PACMAN_DYING:
 			runPacManDyingState();
-			return;
+			break;
 		case GHOST_DYING:
 			runGhostDyingState();
-			return;
+			break;
 		case GAME_OVER:
 			runGameOverState();
-			return;
+			break;
 		default:
 			throw new IllegalStateException("Illegal state: " + state);
 		}
@@ -299,7 +300,7 @@ public class PacManGame {
 			enterScatteringState();
 			return;
 		}
-		if (readyStateTimer > sec(2.5f)) {
+		if (readyStateTimer > sec(READY_STATE_SECONDS - 1.5f)) {
 			--readyStateTimer;
 			return;
 		}
@@ -311,11 +312,11 @@ public class PacManGame {
 
 	public void enterReadyState() {
 		state = GameState.READY;
-		readyStateTimer = sec(4);
-		resetGuys();
+		readyStateTimer = sec(READY_STATE_SECONDS);
 		scatteringStateTimer = 0;
 		chasingStateTimer = 0;
 		attackWave = 0;
+		resetGuys();
 		ui.yellowMessage("Ready!");
 		log("Game entered %s state", state);
 	}
@@ -352,7 +353,7 @@ public class PacManGame {
 
 	private void enterScatteringState() {
 		state = GameState.SCATTERING;
-		scatteringStateTimer = SCATTERING_TIMES[timesTableRow(level)][attackWave];
+		scatteringStateTimer = SCATTERING_TIMES[timesByLevel(level)][attackWave];
 		forceGhostsTurningBack();
 		log("Game entered %s state", state);
 	}
@@ -384,7 +385,7 @@ public class PacManGame {
 
 	private void enterChasingState() {
 		state = GameState.CHASING;
-		chasingStateTimer = CHASING_TIMES[timesTableRow(level)][attackWave];
+		chasingStateTimer = CHASING_TIMES[timesByLevel(level)][attackWave];
 		forceGhostsTurningBack();
 		log("Game entered %s state", state);
 	}
