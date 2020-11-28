@@ -94,7 +94,7 @@ public class PacManGame {
 		return level <= 21 ? LEVELS.get(level - 1) : LEVELS.get(20);
 	}
 
-	public LevelData levelData() {
+	public LevelData level() {
 		return levelData(level);
 	}
 
@@ -114,7 +114,7 @@ public class PacManGame {
 		//@formatter:on
 	};
 
-	private static int timesByLevel(int level) {
+	private static int timesRowByLevel(int level) {
 		return level == 1 ? 0 : level <= 4 ? 1 : 2;
 	}
 
@@ -249,7 +249,7 @@ public class PacManGame {
 		} else if (ui.keyPressed("d")) {
 			ui.setDebugMode(!ui.isDebugMode());
 		} else if (ui.keyPressed("e")) {
-			eatAllPellets();
+			eatAllNormalPellets();
 		} else if (ui.keyPressed("x")) {
 			ghostsKilledUsingEnergizer = 0;
 			for (Ghost ghost : ghosts) {
@@ -353,7 +353,7 @@ public class PacManGame {
 
 	private void enterScatteringState() {
 		state = GameState.SCATTERING;
-		scatteringStateTimer = SCATTERING_TIMES[timesByLevel(level)][attackWave];
+		scatteringStateTimer = SCATTERING_TIMES[timesRowByLevel(level)][attackWave];
 		forceGhostsTurningBack();
 		log("Game entered %s state", state);
 	}
@@ -385,7 +385,7 @@ public class PacManGame {
 
 	private void enterChasingState() {
 		state = GameState.CHASING;
-		chasingStateTimer = CHASING_TIMES[timesByLevel(level)][attackWave];
+		chasingStateTimer = CHASING_TIMES[timesRowByLevel(level)][attackWave];
 		forceGhostsTurningBack();
 		log("Game entered %s state", state);
 	}
@@ -460,7 +460,7 @@ public class PacManGame {
 			enterReadyState();
 			return;
 		}
-		if (changingLevelStateTimer == sec(2 + levelData().numFlashes)) {
+		if (changingLevelStateTimer == sec(2 + level().numFlashes)) {
 			for (Ghost ghost : ghosts) {
 				ghost.visible = false;
 			}
@@ -470,8 +470,8 @@ public class PacManGame {
 
 	private void enterChangingLevelState() {
 		state = GameState.CHANGING_LEVEL;
-		changingLevelStateTimer = sec(4 + levelData().numFlashes);
-		mazeFlashesRemaining = levelData().numFlashes;
+		changingLevelStateTimer = sec(4 + level().numFlashes);
+		mazeFlashesRemaining = level().numFlashes;
 		for (Ghost ghost : ghosts) {
 			ghost.frightened = false;
 			ghost.dead = false;
@@ -522,9 +522,9 @@ public class PacManGame {
 			// energizer found?
 			if (world.isEnergizerTile(tile.x, tile.y)) {
 				points += 40;
-				pacManPowerTimer = sec(levelData().ghostFrightenedSeconds);
-				if (levelData().ghostFrightenedSeconds > 0) {
-					log("Pac-Man got power for %d seconds", levelData().ghostFrightenedSeconds);
+				pacManPowerTimer = sec(level().ghostFrightenedSeconds);
+				if (level().ghostFrightenedSeconds > 0) {
+					log("Pac-Man got power for %d seconds", level().ghostFrightenedSeconds);
 					for (Ghost ghost : ghosts) {
 						ghost.frightened = !ghost.dead;
 					}
@@ -538,8 +538,8 @@ public class PacManGame {
 		if (bonusAvailableTimer > 0 && world.isBonusTile(tile.x, tile.y)) {
 			bonusAvailableTimer = 0;
 			bonusConsumedTimer = sec(2);
-			points += levelData().bonusPoints;
-			log("Pac-Man found bonus %s of value %d", levelData().bonusSymbol, levelData().bonusPoints);
+			points += level().bonusPoints;
+			log("Pac-Man found bonus %s of value %d", level().bonusSymbol, level().bonusPoints);
 		}
 		// ghost at current tile?
 		for (Ghost ghost : ghosts) {
@@ -743,7 +743,7 @@ public class PacManGame {
 
 	private void setSpeed(Creature guy) {
 		if (guy.name.equals("Pac-Man")) {
-			guy.speed = levelData().pacManSpeed;
+			guy.speed = level().pacManSpeed;
 		} else {
 			setGhostSpeed((Ghost) guy);
 		}
@@ -751,15 +751,15 @@ public class PacManGame {
 
 	private void setGhostSpeed(Ghost ghost) {
 		if (ghost.leavingHouse) {
-			ghost.speed = 0.5f * levelData().ghostSpeed;
+			ghost.speed = 0.5f * level().ghostSpeed;
 		} else if (ghost.dead) {
-			ghost.speed = 2f * levelData().ghostSpeed;
+			ghost.speed = 2f * level().ghostSpeed;
 		} else if (world.isInsideTunnel(ghost.tile().x, ghost.tile().y)) {
-			ghost.speed = levelData().ghostTunnelSpeed;
+			ghost.speed = level().ghostTunnelSpeed;
 		} else if (ghost.frightened) {
-			ghost.speed = levelData().frightenedGhostSpeed;
+			ghost.speed = level().frightenedGhostSpeed;
 		} else {
-			ghost.speed = levelData().ghostSpeed;
+			ghost.speed = level().ghostSpeed;
 			if (ghost == ghosts[BLINKY]) {
 				maybeSetElroySpeed(ghost);
 			}
@@ -767,10 +767,10 @@ public class PacManGame {
 	}
 
 	private void maybeSetElroySpeed(Ghost blinky) {
-		if (world.foodRemaining <= levelData().elroy2DotsLeft) {
-			blinky.speed = levelData().elroy2Speed;
-		} else if (world.foodRemaining <= levelData().elroy1DotsLeft) {
-			blinky.speed = levelData().elroy1Speed;
+		if (world.foodRemaining <= level().elroy2DotsLeft) {
+			blinky.speed = level().elroy2Speed;
+		} else if (world.foodRemaining <= level().elroy1DotsLeft) {
+			blinky.speed = level().elroy1Speed;
 		}
 	}
 
@@ -821,10 +821,10 @@ public class PacManGame {
 	}
 
 	private void letGhostBounce(Ghost ghost) {
+		tryMoving(ghost);
 		if (!ghost.couldMove) {
 			ghost.wishDir = ghost.wishDir.inverse();
 		}
-		tryMoving(ghost);
 	}
 
 	private void tryMoving(Creature guy) {
@@ -900,7 +900,7 @@ public class PacManGame {
 		return true;
 	}
 
-	private void eatAllPellets() {
+	private void eatAllNormalPellets() {
 		for (int x = 0; x < WORLD_WIDTH_TILES; ++x) {
 			for (int y = 0; y < WORLD_HEIGHT_TILES; ++y) {
 				if (world.isFoodTile(x, y) && !world.hasEatenFood(x, y) && !world.isEnergizerTile(x, y)) {

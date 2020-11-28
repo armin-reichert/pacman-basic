@@ -260,11 +260,11 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 			}
 		}
 		if (game.bonusAvailableTimer > 0) {
-			String symbolName = game.levelData().bonusSymbol;
+			String symbolName = game.level().bonusSymbol;
 			g.drawImage(assets.symbols.get(symbolName), 13 * TS, 20 * TS - HTS, null);
 		}
 		if (game.bonusConsumedTimer > 0) {
-			int number = game.levelData().bonusPoints;
+			int number = game.level().bonusPoints;
 			BufferedImage image = assets.numbers.get(number);
 			if (number < 2000) {
 				g.drawImage(image, 13 * TS, 20 * TS - HTS, null);
