@@ -1,6 +1,6 @@
 package de.amr.games.pacman.ui.swing;
 
-import static de.amr.games.pacman.PacManGame.levelData;
+import static de.amr.games.pacman.PacManGame.level;
 import static de.amr.games.pacman.Timing.sec;
 import static de.amr.games.pacman.World.HTS;
 import static de.amr.games.pacman.World.TS;
@@ -218,7 +218,7 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 		int x = (WORLD_WIDTH_TILES - 4) * TS;
 		int first = Math.max(1, game.level - 6);
 		for (int level = first; level <= game.level; ++level) {
-			BufferedImage symbol = assets.symbols.get(levelData(level).bonusSymbol);
+			BufferedImage symbol = assets.symbols.get(level(level).bonusSymbol);
 			g.drawImage(symbol, x, (WORLD_HEIGHT_TILES - 2) * TS, null);
 			x -= 2 * TS;
 		}

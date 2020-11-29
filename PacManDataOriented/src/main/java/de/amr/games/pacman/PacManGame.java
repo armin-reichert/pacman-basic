@@ -52,7 +52,7 @@ import de.amr.games.pacman.ui.PacManGameUI;
  * @see https://gameinternals.com/understanding-pac-man-ghost-behavior
  * @see https://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php
  */
-public class PacManGame {
+public class PacManGame implements Runnable {
 
 	private static final float READY_STATE_SECONDS = 4;
 	private static final int BLINKY = 0, PINKY = 1, INKY = 2, CLYDE = 3;
@@ -90,15 +90,7 @@ public class PacManGame {
 	//@formatter:on
 	);
 
-	public static GameLevel levelData(int level) {
-		return level <= 21 ? LEVELS.get(level - 1) : LEVELS.get(20);
-	}
-
-	public GameLevel level() {
-		return levelData(level);
-	}
-
-	private static final long[][] SCATTERING_TIMES = {
+	private static final long[][] SCATTERING_DURATION = {
 		//@formatter:off
 		{ sec(7), sec(7), sec(5), sec(5) },
 		{ sec(7), sec(7), sec(5), 1      },
@@ -106,7 +98,7 @@ public class PacManGame {
 		//@formatter:on
 	};
 
-	private static final long[][] CHASING_TIMES = {
+	private static final long[][] CHASING_DURATION = {
 		//@formatter:off
 		{ sec(20), sec(20), sec(20),   Long.MAX_VALUE },
 		{ sec(20), sec(20), sec(1033), Long.MAX_VALUE },
@@ -114,8 +106,16 @@ public class PacManGame {
 		//@formatter:on
 	};
 
-	private static int timesRowByLevel(int level) {
+	private static int durationRowByLevel(int level) {
 		return level == 1 ? 0 : level <= 4 ? 1 : 2;
+	}
+
+	public static GameLevel level(int level) {
+		return level <= 21 ? LEVELS.get(level - 1) : LEVELS.get(20);
+	}
+
+	public GameLevel level() {
+		return level(level);
 	}
 
 	public final World world = new World();
@@ -153,17 +153,14 @@ public class PacManGame {
 		ghosts[CLYDE] = new Ghost("Clyde", HOUSE_RIGHT, LOWER_LEFT_CORNER);
 	}
 
-	public void start() {
-		new Thread(this::run, "GameLoop").start();
-	}
-
 	public void exit() {
 		if (newHiscore) {
 			saveHiscore();
 		}
 	}
 
-	private void run() {
+	@Override
+	public void run() {
 		reset();
 		enterReadyState();
 		while (true) {
@@ -353,7 +350,7 @@ public class PacManGame {
 
 	private void enterScatteringState() {
 		state = GameState.SCATTERING;
-		scatteringStateTimer = SCATTERING_TIMES[timesRowByLevel(level)][attackWave];
+		scatteringStateTimer = SCATTERING_DURATION[durationRowByLevel(level)][attackWave];
 		forceGhostsTurningBack();
 		log("Game entered %s state", state);
 	}
@@ -385,7 +382,7 @@ public class PacManGame {
 
 	private void enterChasingState() {
 		state = GameState.CHASING;
-		chasingStateTimer = CHASING_TIMES[timesRowByLevel(level)][attackWave];
+		chasingStateTimer = CHASING_DURATION[durationRowByLevel(level)][attackWave];
 		forceGhostsTurningBack();
 		log("Game entered %s state", state);
 	}
