@@ -191,12 +191,9 @@ public class PacManGame implements Runnable {
 		pacManPowerTimer = 0;
 		bonusAvailableTimer = 0;
 		bonusConsumedTimer = 0;
-		READY.timer = 0;
-		SCATTERING.timer = 0;
-		CHASING.timer = 0;
-		CHANGING_LEVEL.timer = 0;
-		PACMAN_DYING.timer = 0;
-		GHOST_DYING.timer = 0;
+		for (GameState state : GameState.values()) {
+			state.timer = 0;
+		}
 	}
 
 	private void resetGuys() {
