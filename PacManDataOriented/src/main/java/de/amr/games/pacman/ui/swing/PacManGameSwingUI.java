@@ -170,20 +170,7 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 		if (debugMode) {
 			g.setColor(Color.WHITE);
 			g.setFont(new Font("Arial", Font.PLAIN, 6));
-			String text = "";
-			if (game.state == GameState.READY) {
-				text = String.format("%s %d ticks remaining", game.state, game.readyStateTimer);
-			} else if (game.state == GameState.CHANGING_LEVEL) {
-				text = String.format("%s %d ticks remaining", game.state, game.changingLevelStateTimer);
-			} else if (game.state == GameState.SCATTERING) {
-				text = String.format("%d. %s %d ticks remaining", game.attackWave + 1, game.state, game.scatteringStateTimer);
-			} else if (game.state == GameState.CHASING) {
-				text = String.format("%d. %s %d ticks remaining", game.attackWave + 1, game.state, game.chasingStateTimer);
-			} else if (game.state == GameState.PACMAN_DYING) {
-				text = String.format("%s %d ticks remaining", game.state, game.pacManDyingStateTimer);
-			} else if (game.state == GameState.GAME_OVER) {
-				text = String.format("%s", game.state);
-			}
+			String text = String.format("%s %d ticks remaining", game.state, game.state.timer);
 			g.drawString(text, 8 * TS, 3 * TS);
 			for (Ghost ghost : game.ghosts) {
 				if (ghost.targetTile != null) {
@@ -241,12 +228,14 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 	}
 
 	private void drawMaze(Graphics2D g) {
-		if (game.changingLevelStateTimer > 0 && game.changingLevelStateTimer <= sec(4f)) {
+		if (game.state == GameState.CHANGING_LEVEL && game.state.timer <= sec(4f)) {
 			drawMazeFlashing(g);
 			return;
 		}
 		g.drawImage(assets.imageMazeFull, 0, 3 * TS, null);
-		for (int x = 0; x < WORLD_WIDTH_TILES; ++x) {
+		for (
+
+				int x = 0; x < WORLD_WIDTH_TILES; ++x) {
 			for (int y = 0; y < WORLD_HEIGHT_TILES; ++y) {
 				if (game.world.hasEatenFood(x, y)) {
 					hideTile(g, x, y);
@@ -306,19 +295,20 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 		}
 		BufferedImage sprite;
 		int mouthFrame = (int) Timing.framesTotal % 15 / 5;
-		if (pacMan.dead) {
-			if (game.pacManDyingStateTimer >= sec(2) + 11 * 8) {
+		if (game.state == GameState.PACMAN_DYING) {
+			if (game.state.timer >= sec(2) + 11 * 8) {
 				// for 2 seconds, show full sprite before animation starts
 				sprite = assets.section(2, 0);
-			} else if (game.pacManDyingStateTimer >= sec(2)) {
+			} else if (game.state.timer >= sec(2)) {
 				// run collapsing animation
-				int frame = (int) (game.pacManDyingStateTimer - sec(2)) / 8;
+				int frame = (int) (game.state.timer - sec(2)) / 8;
 				sprite = assets.section(13 - frame, 0);
 			} else {
 				// show collapsed sprite after collapsing
 				sprite = assets.section(13, 0);
 			}
-		} else if (game.state == GameState.READY || game.state == GameState.CHANGING_LEVEL) {
+		} else if (game.state == GameState.READY || game.state == GameState.CHANGING_LEVEL
+				|| game.state == GameState.GAME_OVER) {
 			// show full sprite
 			sprite = assets.section(2, 0);
 		} else if (!pacMan.couldMove) {

@@ -1,5 +1,11 @@
 package de.amr.games.pacman;
 
+import static de.amr.games.pacman.GameState.CHANGING_LEVEL;
+import static de.amr.games.pacman.GameState.CHASING;
+import static de.amr.games.pacman.GameState.GHOST_DYING;
+import static de.amr.games.pacman.GameState.PACMAN_DYING;
+import static de.amr.games.pacman.GameState.READY;
+import static de.amr.games.pacman.GameState.SCATTERING;
 import static de.amr.games.pacman.Timing.runFrame;
 import static de.amr.games.pacman.Timing.sec;
 import static de.amr.games.pacman.Timing.targetFPS;
@@ -133,12 +139,6 @@ public class PacManGame implements Runnable {
 	public int ghostsKilledUsingEnergizer;
 	public int mazeFlashesRemaining;
 	public long pacManPowerTimer;
-	public long readyStateTimer;
-	public long scatteringStateTimer;
-	public long chasingStateTimer;
-	public long changingLevelStateTimer;
-	public long pacManDyingStateTimer;
-	public long ghostDyingStateTimer;
 	public long bonusAvailableTimer;
 	public long bonusConsumedTimer;
 
@@ -189,14 +189,14 @@ public class PacManGame implements Runnable {
 		mazeFlashesRemaining = 0;
 		ghostsKilledUsingEnergizer = 0;
 		pacManPowerTimer = 0;
-		readyStateTimer = 0;
-		scatteringStateTimer = 0;
-		chasingStateTimer = 0;
-		changingLevelStateTimer = 0;
-		pacManDyingStateTimer = 0;
-		ghostDyingStateTimer = 0;
 		bonusAvailableTimer = 0;
 		bonusConsumedTimer = 0;
+		READY.timer = 0;
+		SCATTERING.timer = 0;
+		CHASING.timer = 0;
+		CHANGING_LEVEL.timer = 0;
+		PACMAN_DYING.timer = 0;
+		GHOST_DYING.timer = 0;
 	}
 
 	private void resetGuys() {
@@ -292,26 +292,26 @@ public class PacManGame implements Runnable {
 	}
 
 	private void runReadyState() {
-		if (readyStateTimer == 0) {
+		if (READY.timer == 0) {
 			exitReadyState();
 			enterScatteringState();
 			return;
 		}
-		if (readyStateTimer > sec(READY_STATE_SECONDS - 1.5f)) {
-			--readyStateTimer;
+		if (READY.timer > sec(READY_STATE_SECONDS - 1.5f)) {
+			--READY.timer;
 			return;
 		}
 		letGhostBounce(ghosts[INKY]);
 		letGhostBounce(ghosts[PINKY]);
 		letGhostBounce(ghosts[CLYDE]);
-		--readyStateTimer;
+		--READY.timer;
 	}
 
 	public void enterReadyState() {
 		state = GameState.READY;
-		readyStateTimer = sec(READY_STATE_SECONDS);
-		scatteringStateTimer = 0;
-		chasingStateTimer = 0;
+		READY.timer = sec(READY_STATE_SECONDS);
+		SCATTERING.timer = 0;
+		CHASING.timer = 0;
 		attackWave = 0;
 		resetGuys();
 		ui.yellowMessage("Ready!");
@@ -333,12 +333,12 @@ public class PacManGame implements Runnable {
 			enterChangingLevelState();
 			return;
 		}
-		if (scatteringStateTimer == 0) {
+		if (SCATTERING.timer == 0) {
 			enterChasingState();
 			return;
 		}
 		if (pacManPowerTimer == 0) {
-			--scatteringStateTimer;
+			--SCATTERING.timer;
 		}
 		updatePacMan();
 		for (Ghost ghost : ghosts) {
@@ -350,7 +350,7 @@ public class PacManGame implements Runnable {
 
 	private void enterScatteringState() {
 		state = GameState.SCATTERING;
-		scatteringStateTimer = SCATTERING_DURATION[durationRowByLevel(level)][attackWave];
+		SCATTERING.timer = SCATTERING_DURATION[durationRowByLevel(level)][attackWave];
 		forceGhostsTurningBack();
 		log("Game entered %s state", state);
 	}
@@ -364,13 +364,13 @@ public class PacManGame implements Runnable {
 			enterChangingLevelState();
 			return;
 		}
-		if (chasingStateTimer == 0) {
+		if (CHASING.timer == 0) {
 			++attackWave;
 			enterScatteringState();
 			return;
 		}
 		if (pacManPowerTimer == 0) {
-			--chasingStateTimer;
+			--CHASING.timer;
 		}
 		updatePacMan();
 		for (Ghost ghost : ghosts) {
@@ -382,13 +382,13 @@ public class PacManGame implements Runnable {
 
 	private void enterChasingState() {
 		state = GameState.CHASING;
-		chasingStateTimer = CHASING_DURATION[durationRowByLevel(level)][attackWave];
+		CHASING.timer = CHASING_DURATION[durationRowByLevel(level)][attackWave];
 		forceGhostsTurningBack();
 		log("Game entered %s state", state);
 	}
 
 	private void runPacManDyingState() {
-		if (pacManDyingStateTimer == 0) {
+		if (PACMAN_DYING.timer == 0) {
 			exitPacManDyingState();
 			if (lives > 0) {
 				enterReadyState();
@@ -398,18 +398,18 @@ public class PacManGame implements Runnable {
 				return;
 			}
 		}
-		if (pacManDyingStateTimer == sec(2.5f) + 88) {
+		if (PACMAN_DYING.timer == sec(2.5f) + 88) {
 			for (Ghost ghost : ghosts) {
 				ghost.visible = false;
 			}
 		}
-		pacManDyingStateTimer--;
+		PACMAN_DYING.timer--;
 	}
 
 	private void enterPacManDyingState() {
 		state = GameState.PACMAN_DYING;
 		// 11 animation frames, 8 ticks each, 2 seconds before animation, 2 seconds after
-		pacManDyingStateTimer = sec(2) + 88 + sec(2);
+		PACMAN_DYING.timer = sec(2) + 88 + sec(2);
 		log("Game entered %s state", state);
 	}
 
@@ -420,7 +420,7 @@ public class PacManGame implements Runnable {
 	}
 
 	private void runGhostDyingState() {
-		if (ghostDyingStateTimer == 0) {
+		if (GHOST_DYING.timer == 0) {
 			exitGhostDyingState();
 			return;
 		}
@@ -429,13 +429,13 @@ public class PacManGame implements Runnable {
 				updateGhost(ghost);
 			}
 		}
-		--ghostDyingStateTimer;
+		--GHOST_DYING.timer;
 	}
 
 	private void enterGhostDyingState() {
 		savedState = state;
 		state = GameState.GHOST_DYING;
-		ghostDyingStateTimer = sec(0.5f);
+		GHOST_DYING.timer = sec(0.5f);
 		pacMan.visible = false;
 		log("Game entered %s state", state);
 	}
@@ -451,23 +451,23 @@ public class PacManGame implements Runnable {
 	}
 
 	private void runChangingLevelState() {
-		if (changingLevelStateTimer == 0) {
+		if (CHANGING_LEVEL.timer == 0) {
 			log("Level %d complete, entering level %d", level, level + 1);
 			setLevel(++level);
 			enterReadyState();
 			return;
 		}
-		if (changingLevelStateTimer == sec(2 + level().numFlashes)) {
+		if (CHANGING_LEVEL.timer == sec(2 + level().numFlashes)) {
 			for (Ghost ghost : ghosts) {
 				ghost.visible = false;
 			}
 		}
-		--changingLevelStateTimer;
+		--CHANGING_LEVEL.timer;
 	}
 
 	private void enterChangingLevelState() {
 		state = GameState.CHANGING_LEVEL;
-		changingLevelStateTimer = sec(4 + level().numFlashes);
+		CHANGING_LEVEL.timer = sec(4 + level().numFlashes);
 		mazeFlashesRemaining = level().numFlashes;
 		for (Ghost ghost : ghosts) {
 			ghost.frightened = false;
