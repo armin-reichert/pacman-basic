@@ -194,7 +194,7 @@ public class PacManGame implements Runnable {
 		bonusAvailableTimer = 0;
 		bonusConsumedTimer = 0;
 		for (GameState state : GameState.values()) {
-			state.timer = 0;
+			state.setTimer(0);
 		}
 	}
 
@@ -292,30 +292,28 @@ public class PacManGame implements Runnable {
 
 	private void enterState(GameState newState, long duration) {
 		state = newState;
-		state.timer = duration;
-		log("Game entered %s state for %d ticks", state, state.timer);
+		state.setTimer(duration);
+		log("Game entered %s state for %d ticks", state, duration);
 	}
 
 	private void runReadyState() {
-		if (state.timer == 0) {
+		if (state.ticksRemaining() == 0) {
 			exitReadyState();
 			enterScatteringState();
 			return;
 		}
-		if (state.timer > sec(READY_STATE_SECONDS - 1.5f)) {
-			--state.timer;
-			return;
+		if (state.ticksRemaining() <= sec(READY_STATE_SECONDS - 1.5f)) {
+			letGhostBounce(ghosts[INKY]);
+			letGhostBounce(ghosts[PINKY]);
+			letGhostBounce(ghosts[CLYDE]);
 		}
-		letGhostBounce(ghosts[INKY]);
-		letGhostBounce(ghosts[PINKY]);
-		letGhostBounce(ghosts[CLYDE]);
-		--state.timer;
+		state.tick();
 	}
 
 	public void enterReadyState() {
 		enterState(READY, sec(READY_STATE_SECONDS));
-		SCATTERING.timer = 0;
-		CHASING.timer = 0;
+		SCATTERING.setTimer(0);
+		CHASING.setTimer(0);
 		attackWave = 0;
 		resetGuys();
 		ui.yellowMessage("Ready!");
@@ -336,12 +334,12 @@ public class PacManGame implements Runnable {
 			enterChangingLevelState();
 			return;
 		}
-		if (state.timer == 0) {
+		if (state.ticksRemaining() == 0) {
 			enterChasingState();
 			return;
 		}
 		if (pacManPowerTimer == 0) {
-			--state.timer;
+			state.tick();
 		}
 		updatePacMan();
 		for (Ghost ghost : ghosts) {
@@ -365,13 +363,13 @@ public class PacManGame implements Runnable {
 			enterChangingLevelState();
 			return;
 		}
-		if (state.timer == 0) {
+		if (state.ticksRemaining() == 0) {
 			++attackWave;
 			enterScatteringState();
 			return;
 		}
 		if (pacManPowerTimer == 0) {
-			--state.timer;
+			state.tick();
 		}
 		updatePacMan();
 		for (Ghost ghost : ghosts) {
@@ -387,7 +385,7 @@ public class PacManGame implements Runnable {
 	}
 
 	private void runPacManDyingState() {
-		if (state.timer == 0) {
+		if (state.ticksRemaining() == 0) {
 			exitPacManDyingState();
 			if (lives > 0) {
 				enterReadyState();
@@ -397,12 +395,12 @@ public class PacManGame implements Runnable {
 				return;
 			}
 		}
-		if (state.timer == sec(2.5f) + 88) {
+		if (state.ticksRemaining() == sec(2.5f) + 88) {
 			for (Ghost ghost : ghosts) {
 				ghost.visible = false;
 			}
 		}
-		state.timer--;
+		state.tick();
 	}
 
 	private void enterPacManDyingState() {
@@ -417,7 +415,7 @@ public class PacManGame implements Runnable {
 	}
 
 	private void runGhostDyingState() {
-		if (state.timer == 0) {
+		if (state.ticksRemaining() == 0) {
 			exitGhostDyingState();
 			return;
 		}
@@ -426,7 +424,7 @@ public class PacManGame implements Runnable {
 				updateGhost(ghost);
 			}
 		}
-		--state.timer;
+		state.tick();
 	}
 
 	private void enterGhostDyingState() {
@@ -446,18 +444,18 @@ public class PacManGame implements Runnable {
 	}
 
 	private void runChangingLevelState() {
-		if (state.timer == 0) {
+		if (state.ticksRemaining() == 0) {
 			log("Level %d complete, entering level %d", level, level + 1);
 			setLevel(++level);
 			enterReadyState();
 			return;
 		}
-		if (state.timer == sec(2 + level().numFlashes)) {
+		if (state.ticksRemaining() == sec(2 + level().numFlashes)) {
 			for (Ghost ghost : ghosts) {
 				ghost.visible = false;
 			}
 		}
-		--state.timer;
+		state.tick();
 	}
 
 	private void enterChangingLevelState() {

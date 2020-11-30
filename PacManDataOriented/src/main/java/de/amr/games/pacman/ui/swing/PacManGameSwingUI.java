@@ -176,7 +176,7 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 		if (debugMode) {
 			g.setColor(Color.WHITE);
 			g.setFont(new Font("Arial", Font.PLAIN, 6));
-			String text = String.format("%s %d ticks remaining", game.state, game.state.timer);
+			String text = String.format("%s %d ticks remaining", game.state, game.state.ticksRemaining());
 			g.drawString(text, 8 * TS, 3 * TS);
 			for (Ghost ghost : game.ghosts) {
 				if (ghost.targetTile != null) {
@@ -237,7 +237,7 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 	}
 
 	private void drawMaze(Graphics2D g) {
-		if (game.state == GameState.CHANGING_LEVEL && game.state.timer <= sec(4f)) {
+		if (game.state == GameState.CHANGING_LEVEL && game.state.ticksRemaining() <= sec(4f)) {
 			drawMazeFlashing(g);
 			return;
 		}
@@ -305,12 +305,12 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 		BufferedImage sprite;
 		int mouthFrame = (int) Timing.framesTotal % 15 / 5;
 		if (game.state == GameState.PACMAN_DYING) {
-			if (game.state.timer >= sec(2) + 11 * 8) {
+			if (game.state.ticksRemaining() >= sec(2) + 11 * 8) {
 				// for 2 seconds, show full sprite before animation starts
 				sprite = assets.section(2, 0);
-			} else if (game.state.timer >= sec(2)) {
+			} else if (game.state.ticksRemaining() >= sec(2)) {
 				// run collapsing animation
-				int frame = (int) (game.state.timer - sec(2)) / 8;
+				int frame = (int) (game.state.ticksRemaining() - sec(2)) / 8;
 				sprite = assets.section(13 - frame, 0);
 			} else {
 				// show collapsed sprite after collapsing
@@ -343,7 +343,7 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 					: assets.section(8 + DIR_INDEX.get(ghost.dir), 5);
 		} else if (ghost.frightened) {
 			int walkingFrame = Timing.framesTotal % 60 < 30 ? 0 : 1;
-			if (game.pacManPowerTimer < sec(2)) { // TODO
+			if (game.pacManPowerTimer < sec(2)) { // TODO flash exactly n times
 				// flashing blue/white, walking
 				int flashingFrame = Timing.framesTotal % 20 < 10 ? 8 : 10;
 				sprite = assets.section(flashingFrame + walkingFrame, 4);

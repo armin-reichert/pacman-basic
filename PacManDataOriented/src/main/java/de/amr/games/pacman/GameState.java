@@ -4,5 +4,19 @@ public enum GameState {
 
 	READY, SCATTERING, CHASING, CHANGING_LEVEL, PACMAN_DYING, GHOST_DYING, GAME_OVER;
 
-	public long timer;
+	private long timer;
+
+	public void tick() {
+		if (timer != Long.MAX_VALUE) {
+			--timer;
+		}
+	}
+
+	public void setTimer(long duration) {
+		timer = duration;
+	}
+
+	public long ticksRemaining() {
+		return timer;
+	}
 }
