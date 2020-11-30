@@ -578,11 +578,8 @@ public class PacManGame implements Runnable {
 	}
 
 	private void loadHiscore() {
-		if (!HISCORE_FILE.exists()) {
-			hiscore = 0;
-			hiscoreLevel = 1;
-			return;
-		}
+		hiscore = 0;
+		hiscoreLevel = 1;
 		try (FileInputStream in = new FileInputStream(HISCORE_FILE)) {
 			Properties content = new Properties();
 			content.loadFromXML(in);
@@ -591,7 +588,6 @@ public class PacManGame implements Runnable {
 			log("Hiscore file loaded: %s", HISCORE_FILE);
 		} catch (Exception x) {
 			log("Could not load hiscore file");
-			x.printStackTrace(System.err);
 		}
 	}
 
