@@ -138,6 +138,7 @@ public class PacManGame implements Runnable {
 	public int hiscore;
 	public int hiscoreLevel;
 	public boolean newHiscore;
+	public boolean extraLife;
 	public int ghostsKilledUsingEnergizer;
 	public int ghostsKilledInLevel;
 	public int mazeFlashesRemaining;
@@ -180,6 +181,7 @@ public class PacManGame implements Runnable {
 	private void reset() {
 		loadHiscore();
 		newHiscore = false;
+		extraLife = false;
 		points = 0;
 		lives = 3;
 		setLevel(1);
@@ -507,10 +509,10 @@ public class PacManGame implements Runnable {
 		V2i tile = pacMan.tile();
 		if (world.isFoodTile(tile.x, tile.y) && !world.hasEatenFood(tile.x, tile.y)) {
 			world.eatFood(tile.x, tile.y);
-			points += 10;
+			score(10);
 			// energizer found?
 			if (world.isEnergizerTile(tile.x, tile.y)) {
-				points += 40;
+				score(40);
 				pacManPowerTimer = sec(level().ghostFrightenedSeconds);
 				if (level().ghostFrightenedSeconds > 0) {
 					log("Pac-Man got power for %d seconds", level().ghostFrightenedSeconds);
@@ -527,7 +529,7 @@ public class PacManGame implements Runnable {
 		if (bonusAvailableTimer > 0 && world.isBonusTile(tile.x, tile.y)) {
 			bonusAvailableTimer = 0;
 			bonusConsumedTimer = sec(2);
-			points += level().bonusPoints;
+			score(level().bonusPoints);
 			log("Pac-Man found bonus %s of value %d", level().bonusSymbol, level().bonusPoints);
 		}
 		// ghost at current tile?
@@ -561,9 +563,9 @@ public class PacManGame implements Runnable {
 		ghost.frightened = false;
 		ghost.targetTile = HOUSE_ENTRY;
 		ghost.bounty = (int) Math.pow(2, ghostsKilledUsingEnergizer) * 100;
-		points += ghost.bounty;
+		score(ghost.bounty);
 		if (ghostsKilledInLevel == 16) {
-			points += 12000;
+			score(12000);
 		}
 		log("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name, ghost.tile(), ghost.bounty);
 	}
@@ -581,6 +583,15 @@ public class PacManGame implements Runnable {
 		// bonus active and consumed
 		if (bonusConsumedTimer > 0) {
 			--bonusConsumedTimer;
+		}
+	}
+
+	private void score(int n) {
+		int oldPoints = points;
+		points += n;
+		if (oldPoints < 10000 && points >= 10000) {
+			lives++;
+			extraLife = true;
 		}
 	}
 
