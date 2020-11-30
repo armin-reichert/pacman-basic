@@ -139,6 +139,7 @@ public class PacManGame implements Runnable {
 	public int hiscoreLevel;
 	public boolean newHiscore;
 	public int ghostsKilledUsingEnergizer;
+	public int ghostsKilledInLevel;
 	public int mazeFlashesRemaining;
 	public long pacManPowerTimer;
 	public long bonusAvailableTimer;
@@ -190,6 +191,7 @@ public class PacManGame implements Runnable {
 		attackWave = 0;
 		mazeFlashesRemaining = 0;
 		ghostsKilledUsingEnergizer = 0;
+		ghostsKilledInLevel = 0;
 		pacManPowerTimer = 0;
 		bonusAvailableTimer = 0;
 		bonusConsumedTimer = 0;
@@ -554,10 +556,15 @@ public class PacManGame implements Runnable {
 			return;
 		}
 		ghostsKilledUsingEnergizer++;
+		ghostsKilledInLevel++;
 		ghost.dead = true;
 		ghost.frightened = false;
 		ghost.targetTile = HOUSE_ENTRY;
 		ghost.bounty = (int) Math.pow(2, ghostsKilledUsingEnergizer) * 100;
+		points += ghost.bounty;
+		if (ghostsKilledInLevel == 16) {
+			points += 12000;
+		}
 		log("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name, ghost.tile(), ghost.bounty);
 	}
 
