@@ -136,6 +136,7 @@ public class PacManGame implements Runnable {
 	public int lives;
 	public int points;
 	public int hiscore;
+	public int hiscoreLevel;
 	public boolean newHiscore;
 	public int ghostsKilledUsingEnergizer;
 	public int mazeFlashesRemaining;
@@ -581,12 +582,14 @@ public class PacManGame implements Runnable {
 	private void loadHiscore() {
 		if (!HISCORE_FILE.exists()) {
 			hiscore = 0;
+			hiscoreLevel = 1;
 			return;
 		}
 		try (FileInputStream in = new FileInputStream(HISCORE_FILE)) {
 			Properties content = new Properties();
 			content.loadFromXML(in);
 			hiscore = Integer.parseInt(content.getProperty("points"));
+			hiscoreLevel = Integer.parseInt(content.getProperty("level"));
 			log("Hiscore file loaded: %s", HISCORE_FILE);
 		} catch (Exception x) {
 			log("Could not load hiscore file");
@@ -597,7 +600,7 @@ public class PacManGame implements Runnable {
 	private void saveHiscore() {
 		Properties content = new Properties();
 		content.setProperty("points", String.valueOf(hiscore));
-		content.setProperty("level", String.valueOf(level));
+		content.setProperty("level", String.valueOf(hiscoreLevel));
 		content.setProperty("date", ZonedDateTime.now().format(ISO_DATE_TIME));
 		try (FileOutputStream out = new FileOutputStream(HISCORE_FILE)) {
 			content.storeToXML(out, "Pac-Man Hiscore");
@@ -611,6 +614,7 @@ public class PacManGame implements Runnable {
 	private void updateHiscore() {
 		if (points > hiscore) {
 			hiscore = points;
+			hiscoreLevel = level;
 			newHiscore = true;
 		}
 	}
