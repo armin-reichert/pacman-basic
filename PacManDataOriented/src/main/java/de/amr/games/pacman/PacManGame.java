@@ -2,6 +2,7 @@ package de.amr.games.pacman;
 
 import static de.amr.games.pacman.GameState.CHANGING_LEVEL;
 import static de.amr.games.pacman.GameState.CHASING;
+import static de.amr.games.pacman.GameState.GAME_OVER;
 import static de.amr.games.pacman.GameState.GHOST_DYING;
 import static de.amr.games.pacman.GameState.PACMAN_DYING;
 import static de.amr.games.pacman.GameState.READY;
@@ -129,7 +130,7 @@ public class PacManGame implements Runnable {
 	public final Ghost[] ghosts = new Ghost[4];
 
 	public GameState state;
-	public GameState savedState;
+	public GameState previousState;
 	public int level;
 	public int attackWave;
 	public int lives;
@@ -288,31 +289,35 @@ public class PacManGame implements Runnable {
 		}
 	}
 
+	private void enterState(GameState newState, long duration) {
+		state = newState;
+		state.timer = duration;
+		log("Game entered %s state for %d ticks", state, state.timer);
+	}
+
 	private void runReadyState() {
-		if (READY.timer == 0) {
+		if (state.timer == 0) {
 			exitReadyState();
 			enterScatteringState();
 			return;
 		}
-		if (READY.timer > sec(READY_STATE_SECONDS - 1.5f)) {
-			--READY.timer;
+		if (state.timer > sec(READY_STATE_SECONDS - 1.5f)) {
+			--state.timer;
 			return;
 		}
 		letGhostBounce(ghosts[INKY]);
 		letGhostBounce(ghosts[PINKY]);
 		letGhostBounce(ghosts[CLYDE]);
-		--READY.timer;
+		--state.timer;
 	}
 
 	public void enterReadyState() {
-		state = GameState.READY;
-		READY.timer = sec(READY_STATE_SECONDS);
+		enterState(READY, sec(READY_STATE_SECONDS));
 		SCATTERING.timer = 0;
 		CHASING.timer = 0;
 		attackWave = 0;
 		resetGuys();
 		ui.yellowMessage("Ready!");
-		log("Game entered %s state", state);
 	}
 
 	private void exitReadyState() {
@@ -330,12 +335,12 @@ public class PacManGame implements Runnable {
 			enterChangingLevelState();
 			return;
 		}
-		if (SCATTERING.timer == 0) {
+		if (state.timer == 0) {
 			enterChasingState();
 			return;
 		}
 		if (pacManPowerTimer == 0) {
-			--SCATTERING.timer;
+			--state.timer;
 		}
 		updatePacMan();
 		for (Ghost ghost : ghosts) {
@@ -346,10 +351,8 @@ public class PacManGame implements Runnable {
 	}
 
 	private void enterScatteringState() {
-		state = GameState.SCATTERING;
-		SCATTERING.timer = SCATTERING_DURATION[durationRowByLevel(level)][attackWave];
+		enterState(SCATTERING, SCATTERING_DURATION[durationRowByLevel(level)][attackWave]);
 		forceGhostsTurningBack();
-		log("Game entered %s state", state);
 	}
 
 	private void runChasingState() {
@@ -361,13 +364,13 @@ public class PacManGame implements Runnable {
 			enterChangingLevelState();
 			return;
 		}
-		if (CHASING.timer == 0) {
+		if (state.timer == 0) {
 			++attackWave;
 			enterScatteringState();
 			return;
 		}
 		if (pacManPowerTimer == 0) {
-			--CHASING.timer;
+			--state.timer;
 		}
 		updatePacMan();
 		for (Ghost ghost : ghosts) {
@@ -378,14 +381,12 @@ public class PacManGame implements Runnable {
 	}
 
 	private void enterChasingState() {
-		state = GameState.CHASING;
-		CHASING.timer = CHASING_DURATION[durationRowByLevel(level)][attackWave];
+		enterState(CHASING, CHASING_DURATION[durationRowByLevel(level)][attackWave]);
 		forceGhostsTurningBack();
-		log("Game entered %s state", state);
 	}
 
 	private void runPacManDyingState() {
-		if (PACMAN_DYING.timer == 0) {
+		if (state.timer == 0) {
 			exitPacManDyingState();
 			if (lives > 0) {
 				enterReadyState();
@@ -395,19 +396,17 @@ public class PacManGame implements Runnable {
 				return;
 			}
 		}
-		if (PACMAN_DYING.timer == sec(2.5f) + 88) {
+		if (state.timer == sec(2.5f) + 88) {
 			for (Ghost ghost : ghosts) {
 				ghost.visible = false;
 			}
 		}
-		PACMAN_DYING.timer--;
+		state.timer--;
 	}
 
 	private void enterPacManDyingState() {
-		state = GameState.PACMAN_DYING;
 		// 11 animation frames, 8 ticks each, 2 seconds before animation, 2 seconds after
-		PACMAN_DYING.timer = sec(2) + 88 + sec(2);
-		log("Game entered %s state", state);
+		enterState(PACMAN_DYING, sec(2) + 88 + sec(2));
 	}
 
 	private void exitPacManDyingState() {
@@ -417,7 +416,7 @@ public class PacManGame implements Runnable {
 	}
 
 	private void runGhostDyingState() {
-		if (GHOST_DYING.timer == 0) {
+		if (state.timer == 0) {
 			exitGhostDyingState();
 			return;
 		}
@@ -426,15 +425,13 @@ public class PacManGame implements Runnable {
 				updateGhost(ghost);
 			}
 		}
-		--GHOST_DYING.timer;
+		--state.timer;
 	}
 
 	private void enterGhostDyingState() {
-		savedState = state;
-		state = GameState.GHOST_DYING;
-		GHOST_DYING.timer = sec(0.5f);
+		previousState = state;
+		enterState(GHOST_DYING, sec(0.5f));
 		pacMan.visible = false;
-		log("Game entered %s state", state);
 	}
 
 	private void exitGhostDyingState() {
@@ -444,33 +441,31 @@ public class PacManGame implements Runnable {
 			}
 		}
 		pacMan.visible = true;
-		state = savedState;
+		state = previousState;
 	}
 
 	private void runChangingLevelState() {
-		if (CHANGING_LEVEL.timer == 0) {
+		if (state.timer == 0) {
 			log("Level %d complete, entering level %d", level, level + 1);
 			setLevel(++level);
 			enterReadyState();
 			return;
 		}
-		if (CHANGING_LEVEL.timer == sec(2 + level().numFlashes)) {
+		if (state.timer == sec(2 + level().numFlashes)) {
 			for (Ghost ghost : ghosts) {
 				ghost.visible = false;
 			}
 		}
-		--CHANGING_LEVEL.timer;
+		--state.timer;
 	}
 
 	private void enterChangingLevelState() {
-		state = GameState.CHANGING_LEVEL;
-		CHANGING_LEVEL.timer = sec(4 + level().numFlashes);
+		enterState(CHANGING_LEVEL, sec(4 + level().numFlashes));
 		mazeFlashesRemaining = level().numFlashes;
 		for (Ghost ghost : ghosts) {
 			ghost.frightened = false;
 			ghost.dead = false;
 		}
-		log("Game entered %s state", state);
 	}
 
 	private void runGameOverState() {
@@ -481,12 +476,11 @@ public class PacManGame implements Runnable {
 	}
 
 	private void enterGameOverState() {
-		state = GameState.GAME_OVER;
+		enterState(GAME_OVER, Long.MAX_VALUE);
 		ui.redMessage("Game Over!");
 		if (newHiscore) {
 			saveHiscore();
 		}
-		log("Game entered %s state", state);
 	}
 
 	private void exitGameOverState() {
@@ -628,10 +622,10 @@ public class PacManGame implements Runnable {
 			letGhostLeaveHouse(ghost);
 		} else if (ghost.dead) {
 			letGhostReturnHome(ghost);
-		} else if (state == GameState.SCATTERING) {
+		} else if (state == SCATTERING) {
 			ghost.targetTile = ghost.scatterTile;
 			letGhostHeadForTargetTile(ghost);
-		} else if (state == GameState.CHASING) {
+		} else if (state == CHASING) {
 			ghost.targetTile = currentChasingTarget(ghost);
 			letGhostHeadForTargetTile(ghost);
 		}
