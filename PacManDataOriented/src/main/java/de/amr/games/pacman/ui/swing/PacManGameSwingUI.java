@@ -164,6 +164,12 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 		g.setColor(Color.LIGHT_GRAY);
 		g.setFont(new Font("Arial", Font.PLAIN, 6));
 		g.drawString(String.format("%d fps", Timing.fps), 1 * TS, 3 * TS);
+		if (game.paused) {
+			g.setColor(Color.WHITE);
+			g.setFont(new Font(Font.MONOSPACED, Font.BOLD, 16));
+			int textWidth = g.getFontMetrics().stringWidth("PAUSED");
+			g.drawString("PAUSED", WORLD_WIDTH_TILES * TS / 2 - textWidth / 2, 10 * TS);
+		}
 	}
 
 	private void drawDebugInfo(Graphics2D g) {
