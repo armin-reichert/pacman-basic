@@ -281,7 +281,10 @@ public class PacManGame implements Runnable {
 	private void enterState(GameState newState, long duration) {
 		state = newState;
 		state.setTimer(duration);
-		log("Game entered %s state for %d ticks", state, duration);
+		String phaseText = (huntingPhase % 2 == 0 ? "Scattering #" : "Chasing #") + huntingPhase / 2;
+		String stateText = state != HUNTING ? state.name() : state.name() + " (" + phaseText + ")";
+		String durationText = duration == Long.MAX_VALUE ? "forever" : duration + " ticks";
+		log("Game entered state %s for %s", stateText, durationText);
 	}
 
 	private void runReadyState() {
