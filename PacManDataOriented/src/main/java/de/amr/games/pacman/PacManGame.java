@@ -332,16 +332,6 @@ public class PacManGame implements Runnable {
 		return huntingPhase.name().startsWith("C");
 	}
 
-//	private void enterScatteringState() {
-//		enterState(SCATTERING, SCATTERING_DURATION[durationRowByLevel(level)][huntingPhase.ordinal() / 2]);
-//		forceGhostsTurningBack();
-//	}
-//
-//	private void enterChasingState() {
-//		enterState(CHASING, CHASING_DURATION[durationRowByLevel(level)][huntingPhase.ordinal() / 2 + 1]);
-//		forceGhostsTurningBack();
-//	}
-
 	private void nextHuntingPhase() {
 		huntingPhase = HuntingPhase.values()[huntingPhase.ordinal() + 1];
 		if (isChasing()) {
