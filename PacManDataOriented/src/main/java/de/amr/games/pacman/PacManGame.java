@@ -97,6 +97,10 @@ public class PacManGame implements Runnable {
 	//@formatter:on
 	);
 
+	private enum HuntingPhase {
+		S1, C1, S2, C2, S3, C3, S4, C4
+	}
+
 	private static final long[][] SCATTERING_DURATION = {
 		//@formatter:off
 		{ sec(7), sec(7), sec(5), sec(5) },
@@ -132,7 +136,7 @@ public class PacManGame implements Runnable {
 	public GameState state;
 	public GameState previousState;
 	public int level;
-	public int attackWave;
+	public HuntingPhase huntingPhase;
 	public int lives;
 	public int points;
 	public int hiscore;
@@ -190,7 +194,7 @@ public class PacManGame implements Runnable {
 	private void setLevel(int n) {
 		level = n;
 		world.restoreFood();
-		attackWave = 0;
+		huntingPhase = HuntingPhase.S1;
 		mazeFlashesRemaining = 0;
 		ghostsKilledUsingEnergizer = 0;
 		ghostsKilledInLevel = 0;
@@ -318,7 +322,7 @@ public class PacManGame implements Runnable {
 		enterState(READY, sec(READY_STATE_SECONDS));
 		SCATTERING.setTimer(0);
 		CHASING.setTimer(0);
-		attackWave = 0;
+		huntingPhase = HuntingPhase.S1;
 		resetGuys();
 		ui.yellowMessage("Ready!");
 	}
@@ -334,7 +338,7 @@ public class PacManGame implements Runnable {
 	}
 
 	private void enterScatteringState() {
-		enterState(SCATTERING, SCATTERING_DURATION[durationRowByLevel(level)][attackWave]);
+		enterState(SCATTERING, SCATTERING_DURATION[durationRowByLevel(level)][huntingPhase.ordinal() / 2]);
 		forceGhostsTurningBack();
 	}
 
@@ -343,7 +347,7 @@ public class PacManGame implements Runnable {
 	}
 
 	private void enterChasingState() {
-		enterState(CHASING, CHASING_DURATION[durationRowByLevel(level)][attackWave]);
+		enterState(CHASING, CHASING_DURATION[durationRowByLevel(level)][huntingPhase.ordinal() / 2 + 1]);
 		forceGhostsTurningBack();
 	}
 
@@ -361,7 +365,10 @@ public class PacManGame implements Runnable {
 				enterChasingState();
 				return;
 			} else if (state == CHASING) {
-				++attackWave;
+				HuntingPhase[] phases = HuntingPhase.values();
+				if (huntingPhase.ordinal() < phases.length) {
+					huntingPhase = phases[huntingPhase.ordinal() + 1];
+				}
 				enterScatteringState();
 			}
 		}
