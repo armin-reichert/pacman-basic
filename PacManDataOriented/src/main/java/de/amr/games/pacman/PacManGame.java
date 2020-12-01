@@ -330,27 +330,7 @@ public class PacManGame implements Runnable {
 	}
 
 	private void runScatteringState() {
-		if (pacMan.dead) {
-			enterPacManDyingState();
-			return;
-		}
-		if (world.foodRemaining == 0) {
-			enterChangingLevelState();
-			return;
-		}
-		if (state.ticksRemaining() == 0) {
-			enterChasingState();
-			return;
-		}
-		if (pacManPowerTimer == 0) {
-			state.tick();
-		}
-		updatePacMan();
-		for (Ghost ghost : ghosts) {
-			updateGhost(ghost);
-		}
-		updateBonus();
-		updateHiscore();
+		runChasingOrScattering();
 	}
 
 	private void enterScatteringState() {
@@ -359,6 +339,15 @@ public class PacManGame implements Runnable {
 	}
 
 	private void runChasingState() {
+		runChasingOrScattering();
+	}
+
+	private void enterChasingState() {
+		enterState(CHASING, CHASING_DURATION[durationRowByLevel(level)][attackWave]);
+		forceGhostsTurningBack();
+	}
+
+	private void runChasingOrScattering() {
 		if (pacMan.dead) {
 			enterPacManDyingState();
 			return;
@@ -368,9 +357,13 @@ public class PacManGame implements Runnable {
 			return;
 		}
 		if (state.ticksRemaining() == 0) {
-			++attackWave;
-			enterScatteringState();
-			return;
+			if (state == SCATTERING) {
+				enterChasingState();
+				return;
+			} else if (state == CHASING) {
+				++attackWave;
+				enterScatteringState();
+			}
 		}
 		if (pacManPowerTimer == 0) {
 			state.tick();
@@ -381,11 +374,6 @@ public class PacManGame implements Runnable {
 		}
 		updateBonus();
 		updateHiscore();
-	}
-
-	private void enterChasingState() {
-		enterState(CHASING, CHASING_DURATION[durationRowByLevel(level)][attackWave]);
-		forceGhostsTurningBack();
 	}
 
 	private void runPacManDyingState() {
