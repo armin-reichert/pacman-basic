@@ -324,6 +324,8 @@ public class PacManGame implements Runnable {
 		huntingPhase++;
 		state.setTimer(huntingPhaseDuration());
 		forceGhostsTurningBack();
+		String phaseText = (huntingPhase % 2 == 0 ? "Scattering #" : "Chasing #") + huntingPhase / 2;
+		log("Game state HUNTING entered phase " + phaseText);
 	}
 
 	private void runHuntingState() {

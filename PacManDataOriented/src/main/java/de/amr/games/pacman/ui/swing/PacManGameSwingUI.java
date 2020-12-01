@@ -177,7 +177,7 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 			g.setColor(Color.WHITE);
 			g.setFont(new Font("Arial", Font.PLAIN, 6));
 			boolean chasing = game.huntingPhase % 2 != 0;
-			int step = game.huntingPhase / 2 + 1;
+			int step = game.huntingPhase / 2;
 			String hunting = game.state == GameState.HUNTING ? (chasing ? "chasing #" : "scattering #") + step : "";
 			String remaining = game.state.ticksRemaining() == Long.MAX_VALUE ? "forever"
 					: game.state.ticksRemaining() + " ticks remaining";
