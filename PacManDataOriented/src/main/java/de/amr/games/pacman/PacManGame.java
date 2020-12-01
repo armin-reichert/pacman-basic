@@ -96,29 +96,13 @@ public class PacManGame implements Runnable {
 	//@formatter:on
 	);
 
-	public enum HuntingPhase {
-		S1, C1, S2, C2, S3, C3, S4, C4
-	}
-
-	private static final long[][] SCATTERING_DURATION = {
-		//@formatter:off
-		{ sec(7), sec(7), sec(5), sec(5) },
-		{ sec(7), sec(7), sec(5), 1      },
-		{ sec(5), sec(5), sec(5), 1      },
-		//@formatter:on
+	private static final long[][] HUNTING_PHASE_DURATION = {
+	//@formatter:off
+	{ sec(7), sec(20), sec(7), sec(20), sec(5), sec(20),   sec(5), Long.MAX_VALUE },
+	{ sec(7), sec(20), sec(7), sec(20), sec(5), sec(1033), 1,      Long.MAX_VALUE },
+	{ sec(5), sec(5),  sec(5), sec(5),  sec(5), sec(1037), 1,      Long.MAX_VALUE },
+	//@formatter:on
 	};
-
-	private static final long[][] CHASING_DURATION = {
-		//@formatter:off
-		{ sec(20), sec(20), sec(20),   Long.MAX_VALUE },
-		{ sec(20), sec(20), sec(1033), Long.MAX_VALUE },
-		{ sec(5),  sec(5),  sec(1037), Long.MAX_VALUE },
-		//@formatter:on
-	};
-
-	private static int durationRowByLevel(int level) {
-		return level == 1 ? 0 : level <= 4 ? 1 : 2;
-	}
 
 	public static GameLevel level(int level) {
 		return level <= 21 ? LEVELS.get(level - 1) : LEVELS.get(20);
@@ -135,7 +119,7 @@ public class PacManGame implements Runnable {
 	public GameState state;
 	public GameState previousState;
 	public int level;
-	public HuntingPhase huntingPhase;
+	public int huntingPhase;
 	public int lives;
 	public int points;
 	public int hiscore;
@@ -193,7 +177,7 @@ public class PacManGame implements Runnable {
 	private void setLevel(int n) {
 		level = n;
 		world.restoreFood();
-		huntingPhase = HuntingPhase.S1;
+		huntingPhase = 0;
 		mazeFlashesRemaining = 0;
 		ghostsKilledUsingEnergizer = 0;
 		ghostsKilledInLevel = 0;
@@ -317,7 +301,7 @@ public class PacManGame implements Runnable {
 	public void enterReadyState() {
 		enterState(READY, sec(READY_STATE_SECONDS));
 		HUNTING.setTimer(0);
-		huntingPhase = HuntingPhase.S1;
+		huntingPhase = 0;
 		resetGuys();
 		ui.yellowMessage("Ready!");
 	}
@@ -328,17 +312,14 @@ public class PacManGame implements Runnable {
 		ui.clearMessage();
 	}
 
-	private boolean isChasing() {
-		return huntingPhase.name().startsWith("C");
+	private long huntingPhaseDuration() {
+		int row = level == 1 ? 0 : level <= 4 ? 1 : 2;
+		return HUNTING_PHASE_DURATION[row][huntingPhase];
 	}
 
 	private void nextHuntingPhase() {
-		huntingPhase = HuntingPhase.values()[huntingPhase.ordinal() + 1];
-		if (isChasing()) {
-			state.setTimer(CHASING_DURATION[durationRowByLevel(level)][huntingPhase.ordinal() / 2 + 1]);
-		} else {
-			state.setTimer(SCATTERING_DURATION[durationRowByLevel(level)][huntingPhase.ordinal() / 2]);
-		}
+		huntingPhase++;
+		state.setTimer(huntingPhaseDuration());
 		forceGhostsTurningBack();
 	}
 
@@ -366,8 +347,8 @@ public class PacManGame implements Runnable {
 	}
 
 	private void enterHuntingState() {
-		huntingPhase = HuntingPhase.S1;
-		enterState(HUNTING, SCATTERING_DURATION[durationRowByLevel(level)][0]);
+		huntingPhase = 0;
+		enterState(HUNTING, huntingPhaseDuration());
 	}
 
 	private void runPacManDyingState() {
@@ -621,7 +602,8 @@ public class PacManGame implements Runnable {
 		} else if (ghost.dead) {
 			letGhostReturnHome(ghost);
 		} else if (state == HUNTING) {
-			ghost.targetTile = isChasing() ? currentChasingTarget(ghost) : ghost.scatterTile;
+			boolean chasing = huntingPhase % 2 != 0;
+			ghost.targetTile = chasing ? currentChasingTarget(ghost) : ghost.scatterTile;
 			letGhostHeadForTargetTile(ghost);
 		}
 	}
