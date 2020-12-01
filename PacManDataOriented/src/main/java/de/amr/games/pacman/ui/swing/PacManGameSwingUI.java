@@ -176,7 +176,10 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 		if (debugMode) {
 			g.setColor(Color.WHITE);
 			g.setFont(new Font("Arial", Font.PLAIN, 6));
-			String text = String.format("%s %d ticks remaining", game.state, game.state.ticksRemaining());
+			String hunting = game.state == GameState.HUNTING ? game.huntingPhase.name() : "";
+			String remaining = game.state.ticksRemaining() == Long.MAX_VALUE ? "forever"
+					: game.state.ticksRemaining() + " ticks remaining";
+			String text = String.format("%s %s %s", game.state, hunting, remaining);
 			g.drawString(text, 8 * TS, 3 * TS);
 			for (Ghost ghost : game.ghosts) {
 				if (ghost.targetTile != null) {
@@ -251,8 +254,7 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 					continue;
 				}
 				// energizer blinking
-				if (game.world.isEnergizerTile(x, y) && Timing.framesTotal % 20 < 10
-						&& (game.state == GameState.CHASING || game.state == GameState.SCATTERING)) {
+				if (game.world.isEnergizerTile(x, y) && Timing.framesTotal % 20 < 10 && (game.state == GameState.HUNTING)) {
 					hideTile(g, x, y);
 				}
 			}

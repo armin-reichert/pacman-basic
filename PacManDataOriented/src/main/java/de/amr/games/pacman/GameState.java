@@ -2,7 +2,7 @@ package de.amr.games.pacman;
 
 public enum GameState {
 
-	READY, SCATTERING, CHASING, CHANGING_LEVEL, PACMAN_DYING, GHOST_DYING, GAME_OVER;
+	READY, HUNTING, CHANGING_LEVEL, PACMAN_DYING, GHOST_DYING, GAME_OVER;
 
 	private long timer;
 

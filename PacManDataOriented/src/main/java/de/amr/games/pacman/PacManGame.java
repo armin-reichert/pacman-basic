@@ -1,12 +1,11 @@
 package de.amr.games.pacman;
 
 import static de.amr.games.pacman.GameState.CHANGING_LEVEL;
-import static de.amr.games.pacman.GameState.CHASING;
 import static de.amr.games.pacman.GameState.GAME_OVER;
 import static de.amr.games.pacman.GameState.GHOST_DYING;
+import static de.amr.games.pacman.GameState.HUNTING;
 import static de.amr.games.pacman.GameState.PACMAN_DYING;
 import static de.amr.games.pacman.GameState.READY;
-import static de.amr.games.pacman.GameState.SCATTERING;
 import static de.amr.games.pacman.Timing.runFrame;
 import static de.amr.games.pacman.Timing.sec;
 import static de.amr.games.pacman.Timing.targetFPS;
@@ -97,7 +96,7 @@ public class PacManGame implements Runnable {
 	//@formatter:on
 	);
 
-	private enum HuntingPhase {
+	public enum HuntingPhase {
 		S1, C1, S2, C2, S3, C3, S4, C4
 	}
 
@@ -275,11 +274,8 @@ public class PacManGame implements Runnable {
 		case READY:
 			runReadyState();
 			break;
-		case CHASING:
-			runChasingState();
-			break;
-		case SCATTERING:
-			runScatteringState();
+		case HUNTING:
+			runHuntingState();
 			break;
 		case CHANGING_LEVEL:
 			runChangingLevelState();
@@ -307,7 +303,7 @@ public class PacManGame implements Runnable {
 	private void runReadyState() {
 		if (state.ticksRemaining() == 0) {
 			exitReadyState();
-			enterScatteringState();
+			enterHuntingState();
 			return;
 		}
 		if (state.ticksRemaining() <= sec(READY_STATE_SECONDS - 1.5f)) {
@@ -320,8 +316,7 @@ public class PacManGame implements Runnable {
 
 	public void enterReadyState() {
 		enterState(READY, sec(READY_STATE_SECONDS));
-		SCATTERING.setTimer(0);
-		CHASING.setTimer(0);
+		HUNTING.setTimer(0);
 		huntingPhase = HuntingPhase.S1;
 		resetGuys();
 		ui.yellowMessage("Ready!");
@@ -333,25 +328,31 @@ public class PacManGame implements Runnable {
 		ui.clearMessage();
 	}
 
-	private void runScatteringState() {
-		runChasingOrScattering();
+	private boolean isChasing() {
+		return huntingPhase.name().startsWith("C");
 	}
 
-	private void enterScatteringState() {
-		enterState(SCATTERING, SCATTERING_DURATION[durationRowByLevel(level)][huntingPhase.ordinal() / 2]);
+//	private void enterScatteringState() {
+//		enterState(SCATTERING, SCATTERING_DURATION[durationRowByLevel(level)][huntingPhase.ordinal() / 2]);
+//		forceGhostsTurningBack();
+//	}
+//
+//	private void enterChasingState() {
+//		enterState(CHASING, CHASING_DURATION[durationRowByLevel(level)][huntingPhase.ordinal() / 2 + 1]);
+//		forceGhostsTurningBack();
+//	}
+
+	private void nextHuntingPhase() {
+		huntingPhase = HuntingPhase.values()[huntingPhase.ordinal() + 1];
+		if (isChasing()) {
+			state.setTimer(CHASING_DURATION[durationRowByLevel(level)][huntingPhase.ordinal() / 2 + 1]);
+		} else {
+			state.setTimer(SCATTERING_DURATION[durationRowByLevel(level)][huntingPhase.ordinal() / 2]);
+		}
 		forceGhostsTurningBack();
 	}
 
-	private void runChasingState() {
-		runChasingOrScattering();
-	}
-
-	private void enterChasingState() {
-		enterState(CHASING, CHASING_DURATION[durationRowByLevel(level)][huntingPhase.ordinal() / 2 + 1]);
-		forceGhostsTurningBack();
-	}
-
-	private void runChasingOrScattering() {
+	private void runHuntingState() {
 		if (pacMan.dead) {
 			enterPacManDyingState();
 			return;
@@ -361,16 +362,7 @@ public class PacManGame implements Runnable {
 			return;
 		}
 		if (state.ticksRemaining() == 0) {
-			if (state == SCATTERING) {
-				enterChasingState();
-				return;
-			} else if (state == CHASING) {
-				HuntingPhase[] phases = HuntingPhase.values();
-				if (huntingPhase.ordinal() < phases.length) {
-					huntingPhase = phases[huntingPhase.ordinal() + 1];
-				}
-				enterScatteringState();
-			}
+			nextHuntingPhase();
 		}
 		if (pacManPowerTimer == 0) {
 			state.tick();
@@ -381,6 +373,11 @@ public class PacManGame implements Runnable {
 		}
 		updateBonus();
 		updateHiscore();
+	}
+
+	private void enterHuntingState() {
+		huntingPhase = HuntingPhase.S1;
+		enterState(HUNTING, SCATTERING_DURATION[durationRowByLevel(level)][0]);
 	}
 
 	private void runPacManDyingState() {
@@ -633,11 +630,8 @@ public class PacManGame implements Runnable {
 			letGhostLeaveHouse(ghost);
 		} else if (ghost.dead) {
 			letGhostReturnHome(ghost);
-		} else if (state == SCATTERING) {
-			ghost.targetTile = ghost.scatterTile;
-			letGhostHeadForTargetTile(ghost);
-		} else if (state == CHASING) {
-			ghost.targetTile = currentChasingTarget(ghost);
+		} else if (state == HUNTING) {
+			ghost.targetTile = isChasing() ? currentChasingTarget(ghost) : ghost.scatterTile;
 			letGhostHeadForTargetTile(ghost);
 		}
 	}
