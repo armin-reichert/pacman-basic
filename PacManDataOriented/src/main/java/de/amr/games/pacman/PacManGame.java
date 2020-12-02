@@ -547,11 +547,6 @@ public class PacManGame implements Runnable {
 	}
 
 	private void updateBonus() {
-		// bonus score reached?
-		int eaten = World.TOTAL_FOOD_COUNT - world.foodRemaining;
-		if (bonusAvailableTimer == 0 && (eaten == 70 || eaten == 170)) {
-			bonusAvailableTimer = clock.sec(9 + new Random().nextInt(1));
-		}
 		// bonus active and not consumed
 		if (bonusAvailableTimer > 0) {
 			--bonusAvailableTimer;
@@ -568,6 +563,11 @@ public class PacManGame implements Runnable {
 		if (oldPoints < 10000 && points >= 10000) {
 			lives++;
 			extraLife = true;
+		}
+		// bonus score reached?
+		int eaten = World.TOTAL_FOOD_COUNT - world.foodRemaining;
+		if (bonusAvailableTimer == 0 && (eaten == 70 || eaten == 170)) {
+			bonusAvailableTimer = clock.sec(9 + new Random().nextInt(1));
 		}
 	}
 
