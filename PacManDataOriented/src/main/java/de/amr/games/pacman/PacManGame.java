@@ -101,6 +101,7 @@ public class PacManGame implements Runnable {
 		return level(level);
 	}
 
+	public final GameClock clock = new GameClock();
 	public final World world = new World();
 	public final Creature pacMan;
 	public final Ghost[] ghosts = new Ghost[4];
@@ -122,7 +123,6 @@ public class PacManGame implements Runnable {
 	public long bonusAvailableTimer;
 	public long bonusConsumedTimer;
 
-	public final GameClock clock = new GameClock();
 	public PacManGameUI ui;
 	public boolean paused;
 
