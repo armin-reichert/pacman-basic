@@ -1,7 +1,6 @@
 package de.amr.games.pacman.ui.swing;
 
 import static de.amr.games.pacman.PacManGame.level;
-import static de.amr.games.pacman.Timing.sec;
 import static de.amr.games.pacman.World.HTS;
 import static de.amr.games.pacman.World.TS;
 import static de.amr.games.pacman.World.WORLD_HEIGHT_TILES;
@@ -23,7 +22,6 @@ import javax.swing.JFrame;
 
 import de.amr.games.pacman.GameState;
 import de.amr.games.pacman.PacManGame;
-import de.amr.games.pacman.Timing;
 import de.amr.games.pacman.common.Direction;
 import de.amr.games.pacman.entities.Creature;
 import de.amr.games.pacman.entities.Ghost;
@@ -163,7 +161,7 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 		drawDebugInfo(g);
 		g.setColor(Color.LIGHT_GRAY);
 		g.setFont(new Font("Arial", Font.PLAIN, 6));
-		g.drawString(String.format("%d fps", Timing.fps), 1 * TS, 3 * TS);
+		g.drawString(String.format("%d fps", game.clock.fps), 1 * TS, 3 * TS);
 		if (game.paused) {
 			g.setColor(Color.WHITE);
 			g.setFont(new Font(Font.MONOSPACED, Font.BOLD, 16));
@@ -231,9 +229,9 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 	}
 
 	private void drawMazeFlashing(Graphics2D g) {
-		if (game.mazeFlashesRemaining > 0 && Timing.framesTotal % 30 < 15) {
+		if (game.mazeFlashesRemaining > 0 && game.clock.framesTotal % 30 < 15) {
 			g.drawImage(assets.imageMazeEmptyWhite, 0, 3 * TS, null);
-			if (Timing.framesTotal % 30 == 14) {
+			if (game.clock.framesTotal % 30 == 14) {
 				--game.mazeFlashesRemaining;
 			}
 		} else {
@@ -242,21 +240,19 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 	}
 
 	private void drawMaze(Graphics2D g) {
-		if (game.state == GameState.CHANGING_LEVEL && game.state.ticksRemaining() <= sec(4f)) {
+		if (game.state == GameState.CHANGING_LEVEL && game.state.ticksRemaining() <= game.clock.sec(4f)) {
 			drawMazeFlashing(g);
 			return;
 		}
 		g.drawImage(assets.imageMazeFull, 0, 3 * TS, null);
-		for (
-
-				int x = 0; x < WORLD_WIDTH_TILES; ++x) {
+		for (int x = 0; x < WORLD_WIDTH_TILES; ++x) {
 			for (int y = 0; y < WORLD_HEIGHT_TILES; ++y) {
 				if (game.world.hasEatenFood(x, y)) {
 					hideTile(g, x, y);
 					continue;
 				}
 				// energizer blinking
-				if (game.world.isEnergizerTile(x, y) && Timing.framesTotal % 20 < 10 && (game.state == GameState.HUNTING)) {
+				if (game.world.isEnergizerTile(x, y) && game.clock.framesTotal % 20 < 10 && (game.state == GameState.HUNTING)) {
 					hideTile(g, x, y);
 				}
 			}
@@ -307,14 +303,14 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 			return;
 		}
 		BufferedImage sprite;
-		int mouthFrame = (int) Timing.framesTotal % 15 / 5;
+		int mouthFrame = (int) game.clock.framesTotal % 15 / 5;
 		if (game.state == GameState.PACMAN_DYING) {
-			if (game.state.ticksRemaining() >= sec(2) + 11 * 8) {
+			if (game.state.ticksRemaining() >= game.clock.sec(2) + 11 * 8) {
 				// for 2 seconds, show full sprite before animation starts
 				sprite = assets.section(2, 0);
-			} else if (game.state.ticksRemaining() >= sec(2)) {
+			} else if (game.state.ticksRemaining() >= game.clock.sec(2)) {
 				// run collapsing animation
-				int frame = (int) (game.state.ticksRemaining() - sec(2)) / 8;
+				int frame = (int) (game.state.ticksRemaining() - game.clock.sec(2)) / 8;
 				sprite = assets.section(13 - frame, 0);
 			} else {
 				// show collapsed sprite after collapsing
@@ -346,17 +342,17 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 			sprite = ghost.bounty > 0 ? assets.bountyNumbers.get(ghost.bounty)
 					: assets.section(8 + DIR_INDEX.get(ghost.dir), 5);
 		} else if (ghost.frightened) {
-			int walkingFrame = Timing.framesTotal % 60 < 30 ? 0 : 1;
-			if (game.pacManPowerTimer < sec(2)) { // TODO flash exactly n times
+			int walkingFrame = game.clock.framesTotal % 60 < 30 ? 0 : 1;
+			if (game.pacManPowerTimer < game.clock.sec(2)) { // TODO flash exactly n times
 				// flashing blue/white, walking
-				int flashingFrame = Timing.framesTotal % 20 < 10 ? 8 : 10;
+				int flashingFrame = game.clock.framesTotal % 20 < 10 ? 8 : 10;
 				sprite = assets.section(flashingFrame + walkingFrame, 4);
 			} else {
 				// blue, walking
 				sprite = assets.section(8 + walkingFrame, 4);
 			}
 		} else {
-			int walkingFrame = Timing.framesTotal % 60 < 30 ? 0 : 1;
+			int walkingFrame = game.clock.framesTotal % 60 < 30 ? 0 : 1;
 			sprite = assets.section(2 * DIR_INDEX.get(ghost.dir) + walkingFrame, 4 + ghostIndex);
 		}
 		g.drawImage(sprite, (int) ghost.position.x - HTS, (int) ghost.position.y - HTS, null);

@@ -6,9 +6,6 @@ import static de.amr.games.pacman.GameState.GHOST_DYING;
 import static de.amr.games.pacman.GameState.HUNTING;
 import static de.amr.games.pacman.GameState.PACMAN_DYING;
 import static de.amr.games.pacman.GameState.READY;
-import static de.amr.games.pacman.Timing.runFrame;
-import static de.amr.games.pacman.Timing.sec;
-import static de.amr.games.pacman.Timing.targetFPS;
 import static de.amr.games.pacman.World.HOUSE_CENTER;
 import static de.amr.games.pacman.World.HOUSE_ENTRY;
 import static de.amr.games.pacman.World.HOUSE_LEFT;
@@ -96,14 +93,6 @@ public class PacManGame implements Runnable {
 	//@formatter:on
 	);
 
-	private static final long[][] HUNTING_PHASE_DURATION = {
-	//@formatter:off
-	{ sec(7), sec(20), sec(7), sec(20), sec(5), sec(20),   sec(5), Long.MAX_VALUE },
-	{ sec(7), sec(20), sec(7), sec(20), sec(5), sec(1033), 1,      Long.MAX_VALUE },
-	{ sec(5), sec(5),  sec(5), sec(5),  sec(5), sec(1037), 1,      Long.MAX_VALUE },
-	//@formatter:on
-	};
-
 	public static GameLevel level(int level) {
 		return level <= 21 ? LEVELS.get(level - 1) : LEVELS.get(20);
 	}
@@ -133,6 +122,7 @@ public class PacManGame implements Runnable {
 	public long bonusAvailableTimer;
 	public long bonusConsumedTimer;
 
+	public final GameClock clock = new GameClock();
 	public PacManGameUI ui;
 	public boolean paused;
 
@@ -155,7 +145,7 @@ public class PacManGame implements Runnable {
 		reset();
 		enterReadyState();
 		while (true) {
-			runFrame(() -> {
+			clock.tick(() -> {
 				readInput();
 				if (!paused) {
 					update();
@@ -244,7 +234,7 @@ public class PacManGame implements Runnable {
 			}
 			enterGhostDyingState();
 		} else if (ui.keyPressed("s")) {
-			targetFPS = targetFPS == 60 ? 30 : 60;
+			clock.targetFPS = clock.targetFPS == 60 ? 30 : 60;
 		} else if (ui.keyPressed("plus")) {
 			setLevel(++level);
 			enterReadyState();
@@ -293,7 +283,7 @@ public class PacManGame implements Runnable {
 			enterHuntingState();
 			return;
 		}
-		if (state.ticksRemaining() <= sec(READY_STATE_SECONDS - 1.5f)) {
+		if (state.ticksRemaining() <= clock.sec(READY_STATE_SECONDS - 1.5f)) {
 			letGhostBounce(ghosts[INKY]);
 			letGhostBounce(ghosts[PINKY]);
 			letGhostBounce(ghosts[CLYDE]);
@@ -302,7 +292,7 @@ public class PacManGame implements Runnable {
 	}
 
 	public void enterReadyState() {
-		enterState(READY, sec(READY_STATE_SECONDS));
+		enterState(READY, clock.sec(READY_STATE_SECONDS));
 		HUNTING.setTimer(0);
 		huntingPhase = 0;
 		resetGuys();
@@ -315,9 +305,27 @@ public class PacManGame implements Runnable {
 		ui.clearMessage();
 	}
 
+	private static final long[][] HUNTING_PHASE_DURATION = {
+		//@formatter:off
+		{ 7, 20, 7, 20, 5,   20,  5, Long.MAX_VALUE },
+		{ 7, 20, 7, 20, 5, 1033, -1, Long.MAX_VALUE },
+		{ 5,  5, 5,  5, 5, 1037, -1, Long.MAX_VALUE },
+		//@formatter:on
+	};
+
+	private long ticks(long spec) {
+		if (spec == -1) {
+			return 1;
+		}
+		if (spec == Long.MAX_VALUE) {
+			return Long.MAX_VALUE;
+		}
+		return clock.sec(spec);
+	}
+
 	private long huntingPhaseDuration() {
-		int row = level == 1 ? 0 : level <= 4 ? 1 : 2;
-		return HUNTING_PHASE_DURATION[row][huntingPhase];
+		int index = level == 1 ? 0 : level <= 4 ? 1 : 2;
+		return ticks(HUNTING_PHASE_DURATION[index][huntingPhase]);
 	}
 
 	private void nextHuntingPhase() {
@@ -367,7 +375,7 @@ public class PacManGame implements Runnable {
 				return;
 			}
 		}
-		if (state.ticksRemaining() == sec(2.5f) + 88) {
+		if (state.ticksRemaining() == clock.sec(2.5f) + 88) {
 			for (Ghost ghost : ghosts) {
 				ghost.visible = false;
 			}
@@ -377,7 +385,7 @@ public class PacManGame implements Runnable {
 
 	private void enterPacManDyingState() {
 		// 11 animation frames, 8 ticks each, 2 seconds before animation, 2 seconds after
-		enterState(PACMAN_DYING, sec(2) + 88 + sec(2));
+		enterState(PACMAN_DYING, clock.sec(2) + 88 + clock.sec(2));
 	}
 
 	private void exitPacManDyingState() {
@@ -401,7 +409,7 @@ public class PacManGame implements Runnable {
 
 	private void enterGhostDyingState() {
 		previousState = state;
-		enterState(GHOST_DYING, sec(0.5f));
+		enterState(GHOST_DYING, clock.sec(0.5f));
 		pacMan.visible = false;
 	}
 
@@ -422,7 +430,7 @@ public class PacManGame implements Runnable {
 			enterReadyState();
 			return;
 		}
-		if (state.ticksRemaining() == sec(2 + level().numFlashes)) {
+		if (state.ticksRemaining() == clock.sec(2 + level().numFlashes)) {
 			for (Ghost ghost : ghosts) {
 				ghost.visible = false;
 			}
@@ -431,7 +439,7 @@ public class PacManGame implements Runnable {
 	}
 
 	private void enterChangingLevelState() {
-		enterState(CHANGING_LEVEL, sec(4 + level().numFlashes));
+		enterState(CHANGING_LEVEL, clock.sec(4 + level().numFlashes));
 		mazeFlashesRemaining = level().numFlashes;
 		for (Ghost ghost : ghosts) {
 			ghost.frightened = false;
@@ -481,7 +489,7 @@ public class PacManGame implements Runnable {
 			// energizer found?
 			if (world.isEnergizerTile(tile.x, tile.y)) {
 				score(40);
-				pacManPowerTimer = sec(level().ghostFrightenedSeconds);
+				pacManPowerTimer = clock.sec(level().ghostFrightenedSeconds);
 				if (level().ghostFrightenedSeconds > 0) {
 					log("Pac-Man got power for %d seconds", level().ghostFrightenedSeconds);
 					for (Ghost ghost : ghosts) {
@@ -496,7 +504,7 @@ public class PacManGame implements Runnable {
 		// bonus found?
 		if (bonusAvailableTimer > 0 && world.isBonusTile(tile.x, tile.y)) {
 			bonusAvailableTimer = 0;
-			bonusConsumedTimer = sec(2);
+			bonusConsumedTimer = clock.sec(2);
 			score(level().bonusPoints);
 			log("Pac-Man found bonus %s of value %d", level().bonusSymbol, level().bonusPoints);
 		}
@@ -542,7 +550,7 @@ public class PacManGame implements Runnable {
 		// bonus score reached?
 		int eaten = World.TOTAL_FOOD_COUNT - world.foodRemaining;
 		if (bonusAvailableTimer == 0 && (eaten == 70 || eaten == 170)) {
-			bonusAvailableTimer = sec(9 + new Random().nextInt(1));
+			bonusAvailableTimer = clock.sec(9 + new Random().nextInt(1));
 		}
 		// bonus active and not consumed
 		if (bonusAvailableTimer > 0) {

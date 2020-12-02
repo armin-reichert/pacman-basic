@@ -1,21 +1,21 @@
 package de.amr.games.pacman;
 
-public class Timing {
+public class GameClock {
 
-	public static int targetFPS = 60;
-	public static long fps;
-	public static long frames;
-	public static long framesTotal;
-	public static long fpsCountStartTime;
-	public static long frameStartTime;
-	public static long frameEndTime;
-	public static long frameDuration;
+	public int targetFPS = 60;
+	public long fps;
+	public long frames;
+	public long framesTotal;
+	public long fpsCountStartTime;
+	public long frameStartTime;
+	public long frameEndTime;
+	public long frameDuration;
 
-	public static int sec(float seconds) {
+	public int sec(float seconds) {
 		return (int) (seconds * targetFPS);
 	}
 
-	public static void runFrame(Runnable frame) {
+	public void tick(Runnable frame) {
 		frameStartTime = System.nanoTime();
 		frame.run();
 		frameEndTime = System.nanoTime();
