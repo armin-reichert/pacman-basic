@@ -4,6 +4,7 @@ import static de.amr.games.pacman.GameState.CHANGING_LEVEL;
 import static de.amr.games.pacman.GameState.GAME_OVER;
 import static de.amr.games.pacman.GameState.GHOST_DYING;
 import static de.amr.games.pacman.GameState.HUNTING;
+import static de.amr.games.pacman.GameState.INTRO;
 import static de.amr.games.pacman.GameState.PACMAN_DYING;
 import static de.amr.games.pacman.GameState.READY;
 import static de.amr.games.pacman.World.HOUSE_CENTER;
@@ -139,7 +140,7 @@ public class PacManGame implements Runnable {
 	@Override
 	public void run() {
 		reset();
-		enterReadyState();
+		enterIntroState();
 		while (true) {
 			clock.tick(() -> {
 				readInput();
@@ -260,6 +261,9 @@ public class PacManGame implements Runnable {
 
 	private void updateState() {
 		switch (state) {
+		case INTRO:
+			runIntroState();
+			break;
 		case READY:
 			runReadyState();
 			break;
@@ -283,9 +287,22 @@ public class PacManGame implements Runnable {
 		}
 	}
 
+	// INTRO
+
+	private void enterIntroState() {
+		enterState(INTRO, Long.MAX_VALUE);
+	}
+
+	private void runIntroState() {
+		if (ui.keyPressed("space")) {
+			enterReadyState();
+		}
+		state.tick();
+	}
+
 	// READY
 
-	public void enterReadyState() {
+	private void enterReadyState() {
 		enterState(READY, clock.sec(4));
 		HUNTING.setTimer(0);
 		huntingPhase = 0;

@@ -9,6 +9,7 @@ import static de.amr.games.pacman.World.WORLD_WIDTH_TILES;
 import java.awt.BasicStroke;
 import java.awt.Canvas;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
@@ -60,6 +61,7 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 	private final float scaling;
 	private final Canvas canvas;
 	private final Keyboard keyboard;
+	private final Dimension unscaledSize;
 
 	private boolean debugMode;
 	private String messageText;
@@ -68,12 +70,13 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 	public PacManGameSwingUI(PacManGame game, float scaling) {
 		this.game = game;
 		this.scaling = scaling;
+		unscaledSize = new Dimension(WORLD_WIDTH_TILES * TS, WORLD_HEIGHT_TILES * TS);
 		messageText = null;
 		messageColor = Color.YELLOW;
 		assets = new Assets();
 		keyboard = new Keyboard(this);
 		canvas = new Canvas();
-		canvas.setSize((int) (WORLD_WIDTH_TILES * TS * scaling), (int) (WORLD_HEIGHT_TILES * TS * scaling));
+		canvas.setSize((int) (unscaledSize.width * scaling), (int) (unscaledSize.height * scaling));
 		canvas.setFocusable(false);
 		add(canvas);
 		setTitle("Pac-Man");
@@ -113,7 +116,7 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 				g.setColor(Color.BLACK);
 				g.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 				g.scale(scaling, scaling);
-				drawGame(g);
+				drawCurrentScene(g);
 				g.dispose();
 			} while (buffers.contentsRestored());
 			buffers.show();
@@ -149,6 +152,31 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 		game.exit();
 	}
 
+	private void drawCurrentScene(Graphics2D g) {
+		switch (game.state) {
+		case INTRO:
+			drawIntroScene(g);
+			break;
+		default:
+			drawGame(g);
+			break;
+		}
+	}
+
+	private void drawIntroScene(Graphics2D g) {
+		int w = assets.imageLogo.getWidth();
+		g.drawImage(assets.imageLogo, (unscaledSize.width - w) / 2, 0, null);
+		g.setColor(Color.WHITE);
+		g.setFont(assets.scoreFont);
+		drawCenteredText(g, "Press SPACE to play!", unscaledSize.height - 20);
+	}
+
+	private void drawFPS(Graphics2D g) {
+		g.setColor(Color.GRAY);
+		g.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 8));
+		drawCenteredText(g, String.format("%d fps", game.clock.fps), unscaledSize.height - 3);
+	}
+
 	private void drawGame(Graphics2D g) {
 		drawScore(g);
 		drawLivesCounter(g);
@@ -159,15 +187,18 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 			drawGhost(g, i);
 		}
 		drawDebugInfo(g);
-		g.setColor(Color.LIGHT_GRAY);
-		g.setFont(new Font("Arial", Font.PLAIN, 6));
-		g.drawString(String.format("%d fps", game.clock.fps), 1 * TS, 3 * TS);
+		drawFPS(g);
 		if (game.paused) {
 			g.setColor(Color.WHITE);
 			g.setFont(new Font(Font.MONOSPACED, Font.BOLD, 16));
-			int textWidth = g.getFontMetrics().stringWidth("PAUSED");
-			g.drawString("PAUSED", WORLD_WIDTH_TILES * TS / 2 - textWidth / 2, 10 * TS);
+			drawCenteredText(g, "PAUSED", 10 * TS);
 		}
+	}
+
+	private void drawCenteredText(Graphics2D g, String text, int y) {
+		int textWidth = g.getFontMetrics().stringWidth(text);
+		g.drawString(text, (unscaledSize.width - textWidth) / 2, y);
+
 	}
 
 	private void drawDebugInfo(Graphics2D g) {
@@ -210,7 +241,7 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 
 	private void drawLivesCounter(Graphics2D g) {
 		for (int i = 0; i < game.lives; ++i) {
-			g.drawImage(assets.imageLive, 2 * (i + 1) * TS, (WORLD_HEIGHT_TILES - 2) * TS, null);
+			g.drawImage(assets.imageLive, 2 * (i + 1) * TS, unscaledSize.height - 2 * TS, null);
 		}
 	}
 
@@ -219,7 +250,7 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 		int first = Math.max(1, game.level - 6);
 		for (int level = first; level <= game.level; ++level) {
 			BufferedImage symbol = assets.symbols.get(level(level).bonusSymbol);
-			g.drawImage(symbol, x, (WORLD_HEIGHT_TILES - 2) * TS, null);
+			g.drawImage(symbol, x, unscaledSize.height - 2 * TS, null);
 			x -= 2 * TS;
 		}
 	}
@@ -268,14 +299,13 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 			if (number < 2000) {
 				g.drawImage(image, 13 * TS, 20 * TS - HTS, null);
 			} else {
-				g.drawImage(image, (WORLD_WIDTH_TILES * TS - image.getWidth()) / 2, 20 * TS - HTS, null);
+				g.drawImage(image, (unscaledSize.width - image.getWidth()) / 2, 20 * TS - HTS, null);
 			}
 		}
 		if (messageText != null) {
 			g.setFont(assets.scoreFont);
 			g.setColor(messageColor);
-			int textWidth = g.getFontMetrics().stringWidth(messageText);
-			g.drawString(messageText, WORLD_WIDTH_TILES * TS / 2 - textWidth / 2, 21 * TS);
+			drawCenteredText(g, messageText, 21 * TS);
 		}
 
 		if (debugMode) {

@@ -16,6 +16,7 @@ import javax.imageio.ImageIO;
  */
 public class Assets {
 
+	public final BufferedImage imageLogo;
 	public final BufferedImage imageMazeFull;
 	public final BufferedImage imageMazeEmpty;
 	public final BufferedImage imageMazeEmptyWhite;
@@ -27,8 +28,10 @@ public class Assets {
 	public final Font scoreFont;
 
 	public Assets() {
+
 		spriteSheet = image("/sprites.png");
 
+		imageLogo = image("/logo.png");
 		imageMazeFull = image("/maze_full.png");
 		imageMazeEmpty = image("/maze_empty.png");
 		imageMazeEmptyWhite = image("/maze_empty_white.png");
