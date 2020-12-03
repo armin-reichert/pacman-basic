@@ -171,61 +171,70 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 	}
 
 	private void drawIntroScene(Graphics2D g) {
-		++introTimer;
+		int t = 0;
 
-		if (introTimer >= game.clock.sec(1)) {
+		t += 1;
+		if (introTimer >= game.clock.sec(t)) {
 			int w = assets.imageLogo.getWidth();
 			g.drawImage(assets.imageLogo, (unscaledSize.width - w) / 2, 0, null);
 			g.setFont(assets.scoreFont);
 		}
 
-		if (introTimer >= game.clock.sec(2)) {
+		t += 1;
+		if (introTimer >= game.clock.sec(t)) {
 			g.setColor(Color.WHITE);
 			drawCenteredText(g, "CHARACTER / NICKNAME", 8 * TS);
 		}
 
-		if (introTimer >= game.clock.sec(4)) {
+		t += 2;
+		if (introTimer >= game.clock.sec(t)) {
 			g.drawImage(assets.section(0, 4), 2 * TS, 10 * TS, 12, 12, null);
 		}
-		if (introTimer >= game.clock.sec(4.5f)) {
+		if (introTimer >= game.clock.sec(t + 0.5f)) {
 			g.setColor(Color.RED);
-			String ghostText = introTimer > game.clock.sec(5) ? "OIKAKE....\"BLINKY\"" : "OIKAKE";
+			String ghostText = introTimer > game.clock.sec(t + 1) ? "OIKAKE....\"BLINKY\"" : "OIKAKE";
 			g.drawString(ghostText, 6 * TS, 10 * TS + 10);
 		}
 
-		if (introTimer >= game.clock.sec(6)) {
+		t += 2;
+		if (introTimer >= game.clock.sec(t)) {
 			g.drawImage(assets.section(0, 5), 2 * TS, 12 * TS, 12, 12, null);
 		}
-		if (introTimer >= game.clock.sec(6.5f)) {
+		if (introTimer >= game.clock.sec(t + 0.5f)) {
 			g.setColor(Color.PINK);
-			String ghostText = introTimer > game.clock.sec(7) ? "MACHIBUSE..\"PINKY\"" : "MACHIBUSE";
+			String ghostText = introTimer > game.clock.sec(t + 1) ? "MACHIBUSE..\"PINKY\"" : "MACHIBUSE";
 			g.drawString(ghostText, 6 * TS, 12 * TS + 10);
 		}
 
-		if (introTimer >= game.clock.sec(8)) {
+		t += 2;
+		if (introTimer >= game.clock.sec(t)) {
 			g.drawImage(assets.section(0, 6), 2 * TS, 14 * TS, 12, 12, null);
 		}
-		if (introTimer >= game.clock.sec(8.5f)) {
+		if (introTimer >= game.clock.sec(t + 0.5f)) {
 			g.setColor(Color.CYAN);
-			String ghostText = introTimer > game.clock.sec(9) ? "KIMAGURE....\"INKY\"" : "KIMAGURE";
+			String ghostText = introTimer > game.clock.sec(t + 1) ? "KIMAGURE....\"INKY\"" : "KIMAGURE";
 			g.drawString(ghostText, 6 * TS, 14 * TS + 10);
 		}
 
-		if (introTimer >= game.clock.sec(10)) {
+		t += 2;
+		if (introTimer >= game.clock.sec(t)) {
 			g.drawImage(assets.section(0, 7), 2 * TS, 16 * TS, 12, 12, null);
 		}
-		if (introTimer >= game.clock.sec(10.5f)) {
+		if (introTimer >= game.clock.sec(t + 0.5f)) {
 			g.setColor(Color.ORANGE);
-			String ghostText = introTimer > game.clock.sec(11) ? "OTOBOKE....\"CLYDE\"" : "OTOBOKE";
+			String ghostText = introTimer > game.clock.sec(t + 1) ? "OTOBOKE....\"CLYDE\"" : "OTOBOKE";
 			g.drawString(ghostText, 6 * TS, 16 * TS + 10);
 		}
 
-		if (introTimer >= game.clock.sec(12)) {
+		t += 2;
+		if (introTimer >= game.clock.sec(t)) {
 			g.setColor(Color.WHITE);
 			if (game.clock.framesTotal % 60 < 30) {
 				drawCenteredText(g, "Press SPACE to play!", unscaledSize.height - 20);
 			}
 		}
+
+		++introTimer;
 	}
 
 	private void drawFPS(Graphics2D g) {
