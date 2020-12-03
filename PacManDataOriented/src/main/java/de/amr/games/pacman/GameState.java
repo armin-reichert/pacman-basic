@@ -19,4 +19,8 @@ public enum GameState {
 	public long ticksRemaining() {
 		return timer;
 	}
+
+	public boolean expired() {
+		return timer == 0;
+	}
 }
