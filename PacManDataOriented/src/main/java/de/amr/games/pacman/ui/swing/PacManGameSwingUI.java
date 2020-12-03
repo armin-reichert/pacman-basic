@@ -405,7 +405,7 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 			return;
 		}
 		BufferedImage sprite;
-		int mouthFrame = (int) game.clock.framesTotal % 15 / 5;
+		int mouthFrame = alternating(5, 3);
 		if (game.state == GameState.PACMAN_DYING) {
 			if (game.state.ticksRemaining() >= game.clock.sec(2) + 11 * 8) {
 				// for 2 seconds, show full sprite before animation starts
@@ -439,22 +439,23 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 			return;
 		}
 
+		boolean frozen = game.state == GameState.GAME_OVER || ghost.speed == 0;
 		if (ghost.dead) {
 			// show as number (bounty) or as eyes
 			sprite = ghost.bounty > 0 ? assets.bountyNumbers.get(ghost.bounty)
 					: assets.section(8 + DIR_INDEX.get(ghost.dir), 5);
 		} else if (ghost.frightened) {
-			int walkingFrame = game.clock.framesTotal % 60 < 30 ? 0 : 1;
+			int walkingFrame = frozen ? 0 : alternating(5, 2);
 			if (game.pacManPowerTimer < game.clock.sec(2)) { // TODO flash exactly n times
 				// flashing blue/white, walking
-				int flashingFrame = game.clock.framesTotal % 20 < 10 ? 8 : 10;
+				int flashingFrame = frozen ? 8 : alternating(10, 2) == 0 ? 8 : 10;
 				sprite = assets.section(flashingFrame + walkingFrame, 4);
 			} else {
 				// blue, walking
 				sprite = assets.section(8 + walkingFrame, 4);
 			}
 		} else {
-			int walkingFrame = game.clock.framesTotal % 60 < 30 ? 0 : 1;
+			int walkingFrame = frozen ? 0 : alternating(5, 2);
 			sprite = assets.section(2 * DIR_INDEX.get(ghost.dir) + walkingFrame, 4 + ghostIndex);
 		}
 		g.drawImage(sprite, (int) ghost.position.x - HTS, (int) ghost.position.y - HTS, null);
@@ -463,5 +464,9 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 			g.setColor(Color.WHITE);
 			g.drawRect((int) ghost.position.x, (int) ghost.position.y, TS, TS);
 		}
+	}
+
+	private int alternating(int ticks, int intervals) {
+		return (int) (game.clock.framesTotal / ticks) % intervals;
 	}
 }
