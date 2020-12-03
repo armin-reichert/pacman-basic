@@ -173,7 +173,7 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 	private void drawIntroScene(Graphics2D g) {
 		int t = 0;
 
-		t += 1;
+		t = 1;
 		if (introTimer >= game.clock.sec(t)) {
 			int w = assets.imageLogo.getWidth();
 			g.drawImage(assets.imageLogo, (unscaledSize.width - w) / 2, 0, null);
@@ -186,7 +186,7 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 			drawCenteredText(g, "CHARACTER / NICKNAME", 8 * TS);
 		}
 
-		t += 2;
+		t += 1;
 		if (introTimer >= game.clock.sec(t)) {
 			g.drawImage(assets.section(0, 4), 2 * TS, 10 * TS, 12, 12, null);
 		}
