@@ -284,8 +284,13 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 					if (game.world.isIntersectionTile(x, y)) {
 						g.setColor(new Color(100, 100, 100));
 						g.setStroke(new BasicStroke(0.1f));
-						g.drawLine(x * TS, y * TS + HTS, (x + 1) * TS, y * TS + HTS);
-						g.drawLine(x * TS + HTS, y * TS, x * TS + HTS, (y + 1) * TS);
+						for (Direction dir : Direction.values()) {
+							int nx = x + dir.vec.x, ny = y + dir.vec.y;
+							if (game.world.isWall(nx, ny)) {
+								continue;
+							}
+							g.drawLine(x * TS + HTS, y * TS + HTS, nx * TS + HTS, ny * TS + HTS);
+						}
 					} else if (game.world.isUpwardsBlocked(x, y)) {
 						g.setColor(new Color(100, 100, 100));
 						g.setStroke(new BasicStroke(0.1f));
