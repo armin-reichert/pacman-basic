@@ -166,8 +166,28 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 	private void drawIntroScene(Graphics2D g) {
 		int w = assets.imageLogo.getWidth();
 		g.drawImage(assets.imageLogo, (unscaledSize.width - w) / 2, 0, null);
-		g.setColor(Color.WHITE);
 		g.setFont(assets.scoreFont);
+
+		g.setColor(Color.WHITE);
+		drawCenteredText(g, "CHARACTER / NICKNAME", 8 * TS);
+
+		g.drawImage(assets.section(0, 4), 2 * TS, 10 * TS, 12, 12, null);
+		g.setColor(Color.RED);
+		g.drawString("OIKAKE....\"BLINKY\"", 6 * TS, 10 * TS + 10);
+
+		g.drawImage(assets.section(0, 5), 2 * TS, 12 * TS, 12, 12, null);
+		g.setColor(Color.PINK);
+		g.drawString("MACHIBUSE..\"PINKY\"", 6 * TS, 12 * TS + 10);
+
+		g.drawImage(assets.section(0, 6), 2 * TS, 14 * TS, 12, 12, null);
+		g.setColor(Color.CYAN);
+		g.drawString("KIMAGURE....\"INKY\"", 6 * TS, 14 * TS + 10);
+
+		g.drawImage(assets.section(0, 7), 2 * TS, 16 * TS, 12, 12, null);
+		g.setColor(Color.ORANGE);
+		g.drawString("OTOBOKE....\"CLYDE\"", 6 * TS, 16 * TS + 10);
+
+		g.setColor(Color.WHITE);
 		drawCenteredText(g, "Press SPACE to play!", unscaledSize.height - 20);
 	}
 
