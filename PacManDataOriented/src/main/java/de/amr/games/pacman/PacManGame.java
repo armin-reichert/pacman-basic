@@ -491,7 +491,7 @@ public class PacManGame implements Runnable {
 	// GAME_OVER
 
 	private void enterGameOverState() {
-		enterState(GAME_OVER, Long.MAX_VALUE);
+		enterState(GAME_OVER, clock.sec(30));
 		for (Ghost ghost : ghosts) {
 			ghost.speed = 0;
 		}
@@ -503,10 +503,11 @@ public class PacManGame implements Runnable {
 	}
 
 	private void runGameOverState() {
-		if (ui.keyPressed("space")) {
+		if (state.expired() || ui.keyPressed("space")) {
 			exitGameOverState();
-			enterReadyState();
+			enterIntroState();
 		}
+		state.tick();
 	}
 
 	private void exitGameOverState() {

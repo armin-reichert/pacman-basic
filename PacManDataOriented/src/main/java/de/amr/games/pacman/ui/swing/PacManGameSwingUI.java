@@ -171,13 +171,13 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 	}
 
 	private void drawIntroScene(Graphics2D g) {
+		g.setFont(assets.scoreFont);
 		int t = 0;
 
 		t = 1;
 		if (introTimer >= game.clock.sec(t)) {
 			int w = assets.imageLogo.getWidth();
-			g.drawImage(assets.imageLogo, (unscaledSize.width - w) / 2, 0, null);
-			g.setFont(assets.scoreFont);
+			g.drawImage(assets.imageLogo, (unscaledSize.width - w) / 2, 3, null);
 		}
 
 		t += 1;
