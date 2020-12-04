@@ -194,9 +194,8 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 		}
 
 		t += 1;
-
 		for (int ghost = 0; ghost <= 3; ++ghost) {
-			int y = (10 + 2 * ghost) * TS;
+			int y = (10 + 2 * ghost) * TS + 12;
 			if (introTimer >= game.clock.sec(t)) {
 				g.drawImage(assets.sheet(0, 4 + ghost), 2 * TS, y, 12, 12, null);
 			}
@@ -204,9 +203,9 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 				String character = (String) GHOST_INTRO_TEXTS[ghost][0];
 				String nickname = (String) GHOST_INTRO_TEXTS[ghost][1];
 				Color color = (Color) GHOST_INTRO_TEXTS[ghost][2];
-				g.setColor(color);
 				String text = introTimer > game.clock.sec(t + 1) ? character + "    " + nickname : character;
-				g.drawString(text, 4 * TS, y + 12);
+				g.setColor(color);
+				g.drawString(text, 4 * TS, y);
 			}
 			t += 2;
 		}
