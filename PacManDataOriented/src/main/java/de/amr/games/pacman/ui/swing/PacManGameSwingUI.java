@@ -35,6 +35,15 @@ import de.amr.games.pacman.ui.PacManGameUI;
  */
 public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 
+	private static final Object[][] GHOST_INTRO_TEXTS = {
+		//@formatter:off
+		{ "-SHADOW",  "-SHADOW    \"BLINKY\"", Color.RED }, 
+		{ "-SPEEDY",  "-SPEEDY    \"PINKY\"",  Color.PINK },
+		{ "-BASHFUL", "-BASHFUL   \"INKY\"",   Color.CYAN }, 
+		{  "-POKEY",  "-POKEY     \"CLYDE\"",  Color.ORANGE }
+		//@formatter:on
+	};
+
 	//@formatter:off
 	private static final Map<Direction,Integer> DIR_INDEX = Map.of(
 		Direction.RIGHT, 0,
@@ -187,46 +196,21 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 		}
 
 		t += 1;
-		if (introTimer >= game.clock.sec(t)) {
-			g.drawImage(assets.sheet(0, 4), 2 * TS, 10 * TS, 12, 12, null);
-		}
-		if (introTimer >= game.clock.sec(t + 0.5f)) {
-			g.setColor(Color.RED);
-			String ghostText = introTimer > game.clock.sec(t + 1) ? "OIKAKE....\"BLINKY\"" : "OIKAKE";
-			g.drawString(ghostText, 6 * TS, 10 * TS + 10);
+
+		for (int ghost = 0; ghost <= 3; ++ghost) {
+			int y = (10 + 2 * ghost) * TS;
+			if (introTimer >= game.clock.sec(t)) {
+				g.drawImage(assets.sheet(0, 4 + ghost), 2 * TS, y, 12, 12, null);
+			}
+			if (introTimer >= game.clock.sec(t + 0.5f)) {
+				g.setColor((Color) GHOST_INTRO_TEXTS[ghost][2]);
+				String text = introTimer > game.clock.sec(t + 1) ? (String) GHOST_INTRO_TEXTS[ghost][1]
+						: (String) GHOST_INTRO_TEXTS[ghost][0];
+				g.drawString(text, 4 * TS, y + 12);
+			}
+			t += 2;
 		}
 
-		t += 2;
-		if (introTimer >= game.clock.sec(t)) {
-			g.drawImage(assets.sheet(0, 5), 2 * TS, 12 * TS, 12, 12, null);
-		}
-		if (introTimer >= game.clock.sec(t + 0.5f)) {
-			g.setColor(Color.PINK);
-			String ghostText = introTimer > game.clock.sec(t + 1) ? "MACHIBUSE..\"PINKY\"" : "MACHIBUSE";
-			g.drawString(ghostText, 6 * TS, 12 * TS + 10);
-		}
-
-		t += 2;
-		if (introTimer >= game.clock.sec(t)) {
-			g.drawImage(assets.sheet(0, 6), 2 * TS, 14 * TS, 12, 12, null);
-		}
-		if (introTimer >= game.clock.sec(t + 0.5f)) {
-			g.setColor(Color.CYAN);
-			String ghostText = introTimer > game.clock.sec(t + 1) ? "KIMAGURE....\"INKY\"" : "KIMAGURE";
-			g.drawString(ghostText, 6 * TS, 14 * TS + 10);
-		}
-
-		t += 2;
-		if (introTimer >= game.clock.sec(t)) {
-			g.drawImage(assets.sheet(0, 7), 2 * TS, 16 * TS, 12, 12, null);
-		}
-		if (introTimer >= game.clock.sec(t + 0.5f)) {
-			g.setColor(Color.ORANGE);
-			String ghostText = introTimer > game.clock.sec(t + 1) ? "OTOBOKE....\"CLYDE\"" : "OTOBOKE";
-			g.drawString(ghostText, 6 * TS, 16 * TS + 10);
-		}
-
-		t += 2;
 		if (introTimer >= game.clock.sec(t)) {
 			g.setColor(Color.WHITE);
 			if (game.clock.framesTotal % 60 < 30) {
