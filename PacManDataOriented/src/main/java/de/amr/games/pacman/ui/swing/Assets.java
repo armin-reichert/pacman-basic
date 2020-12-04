@@ -35,27 +35,27 @@ public class Assets {
 		imageMazeFull = image("/maze_full.png");
 		imageMazeEmpty = image("/maze_empty.png");
 		imageMazeEmptyWhite = image("/maze_empty_white.png");
-		imageLive = section(8, 1);
+		imageLive = sheet(8, 1);
 
 		scoreFont = font("/PressStart2P-Regular.ttf", 8);
 
 		//@formatter:off
 		symbols = Map.of(
-			"Cherries",   section(2, 3),
-			"Strawberry", section(3, 3),
-			"Peach",      section(4, 3),
-			"Apple",      section(5, 3),
-			"Grapes",     section(6, 3),
-			"Galaxian",   section(7, 3),
-			"Bell",       section(8, 3),
-			"Key",        section(9, 3)
+			"Cherries",   sheet(2, 3),
+			"Strawberry", sheet(3, 3),
+			"Peach",      sheet(4, 3),
+			"Apple",      sheet(5, 3),
+			"Grapes",     sheet(6, 3),
+			"Galaxian",   sheet(7, 3),
+			"Bell",       sheet(8, 3),
+			"Key",        sheet(9, 3)
 		);
 	
 		numbers = Map.of(
-			100,  section(0, 9),
-			300,  section(1, 9),
-			500,  section(2, 9),
-			700,  section(3, 9),
+			100,  sheet(0, 9),
+			300,  sheet(1, 9),
+			500,  sheet(2, 9),
+			700,  sheet(3, 9),
 			1000, section(4, 9, 2, 1),
 			2000, section(3, 10, 3, 1),
 			3000, section(3, 11, 3, 1),
@@ -63,10 +63,10 @@ public class Assets {
 		);
 	
 		bountyNumbers = Map.of(
-			200,  section(0, 8),
-			400,  section(1, 8),
-			800,  section(2, 8),
-			1600, section(3, 8)
+			200,  sheet(0, 8),
+			400,  sheet(1, 8),
+			800,  sheet(2, 8),
+			1600, sheet(3, 8)
 		);
 		//@formatter:on
 	}
@@ -75,7 +75,7 @@ public class Assets {
 		return spriteSheet.getSubimage(x * 16, y * 16, w * 16, h * 16);
 	}
 
-	public BufferedImage section(int x, int y) {
+	public BufferedImage sheet(int x, int y) {
 		return section(x, y, 1, 1);
 	}
 

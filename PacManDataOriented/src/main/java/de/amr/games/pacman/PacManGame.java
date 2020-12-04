@@ -485,6 +485,10 @@ public class PacManGame implements Runnable {
 
 	private void enterGameOverState() {
 		enterState(GAME_OVER, Long.MAX_VALUE);
+		for (Ghost ghost : ghosts) {
+			ghost.speed = 0;
+		}
+		pacMan.speed = 0;
 		ui.redMessage("Game Over!");
 		if (newHiscore) {
 			saveHiscore();

@@ -188,7 +188,7 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 
 		t += 1;
 		if (introTimer >= game.clock.sec(t)) {
-			g.drawImage(assets.section(0, 4), 2 * TS, 10 * TS, 12, 12, null);
+			g.drawImage(assets.sheet(0, 4), 2 * TS, 10 * TS, 12, 12, null);
 		}
 		if (introTimer >= game.clock.sec(t + 0.5f)) {
 			g.setColor(Color.RED);
@@ -198,7 +198,7 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 
 		t += 2;
 		if (introTimer >= game.clock.sec(t)) {
-			g.drawImage(assets.section(0, 5), 2 * TS, 12 * TS, 12, 12, null);
+			g.drawImage(assets.sheet(0, 5), 2 * TS, 12 * TS, 12, 12, null);
 		}
 		if (introTimer >= game.clock.sec(t + 0.5f)) {
 			g.setColor(Color.PINK);
@@ -208,7 +208,7 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 
 		t += 2;
 		if (introTimer >= game.clock.sec(t)) {
-			g.drawImage(assets.section(0, 6), 2 * TS, 14 * TS, 12, 12, null);
+			g.drawImage(assets.sheet(0, 6), 2 * TS, 14 * TS, 12, 12, null);
 		}
 		if (introTimer >= game.clock.sec(t + 0.5f)) {
 			g.setColor(Color.CYAN);
@@ -218,7 +218,7 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 
 		t += 2;
 		if (introTimer >= game.clock.sec(t)) {
-			g.drawImage(assets.section(0, 7), 2 * TS, 16 * TS, 12, 12, null);
+			g.drawImage(assets.sheet(0, 7), 2 * TS, 16 * TS, 12, 12, null);
 		}
 		if (introTimer >= game.clock.sec(t + 0.5f)) {
 			g.setColor(Color.ORANGE);
@@ -405,29 +405,29 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 			return;
 		}
 		BufferedImage sprite;
-		int mouthFrame = animationFrame(5, 3);
+		int mouthFrame = frameIndex(5, 3);
 		if (game.state == GameState.PACMAN_DYING) {
 			if (game.state.ticksRemaining() >= game.clock.sec(2) + 11 * 8) {
 				// for 2 seconds, show full sprite before animation starts
-				sprite = assets.section(2, 0);
+				sprite = assets.sheet(2, 0);
 			} else if (game.state.ticksRemaining() >= game.clock.sec(2)) {
 				// run collapsing animation
 				int frame = (int) (game.state.ticksRemaining() - game.clock.sec(2)) / 8;
-				sprite = assets.section(13 - frame, 0);
+				sprite = assets.sheet(13 - frame, 0);
 			} else {
 				// show collapsed sprite after collapsing
-				sprite = assets.section(13, 0);
+				sprite = assets.sheet(13, 0);
 			}
 		} else if (game.state == GameState.READY || game.state == GameState.CHANGING_LEVEL
 				|| game.state == GameState.GAME_OVER) {
 			// show full sprite
-			sprite = assets.section(2, 0);
+			sprite = assets.sheet(2, 0);
 		} else if (!pacMan.couldMove) {
 			// show mouth wide open
-			sprite = assets.section(0, DIR_INDEX.get(pacMan.dir));
+			sprite = assets.sheet(0, DIR_INDEX.get(pacMan.dir));
 		} else {
 			// switch between mouth closed and mouth open
-			sprite = mouthFrame == 2 ? assets.section(mouthFrame, 0) : assets.section(mouthFrame, DIR_INDEX.get(pacMan.dir));
+			sprite = mouthFrame == 2 ? assets.sheet(mouthFrame, 0) : assets.sheet(mouthFrame, DIR_INDEX.get(pacMan.dir));
 		}
 		g.drawImage(sprite, (int) pacMan.position.x - HTS, (int) pacMan.position.y - HTS, null);
 	}
@@ -439,29 +439,28 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 		}
 
 		BufferedImage sprite;
-		int dirIndex = DIR_INDEX.get(ghost.dir);
-		boolean frozen = game.state == GameState.GAME_OVER || ghost.speed == 0;
-		int walkingFrame = frozen ? 0 : animationFrame(5, 2);
+		int dir = DIR_INDEX.get(ghost.dir);
+		int walking = ghost.speed == 0 ? 0 : frameIndex(5, 2);
 		if (ghost.dead) {
 			if (ghost.bounty > 0) {
 				// show bounty as number
 				sprite = assets.bountyNumbers.get(ghost.bounty);
 			} else {
 				// show eyes looking towards move direction
-				sprite = assets.section(8 + dirIndex, 5);
+				sprite = assets.sheet(8 + dir, 5);
 			}
 		} else if (ghost.frightened) {
 			// TODO flash exactly as often as specified by level
-			if (game.pacManPowerTimer < game.clock.sec(2) && !frozen) {
+			if (game.pacManPowerTimer < game.clock.sec(2) && ghost.speed != 0) {
 				// ghost flashing blue/white, animated walking
-				int flashingFrame = animationFrame(10, 2) == 0 ? 8 : 10;
-				sprite = assets.section(walkingFrame + flashingFrame, 4);
+				int flashing = frameIndex(10, 2) == 0 ? 8 : 10;
+				sprite = assets.sheet(walking + flashing, 4);
 			} else {
 				// blue ghost, animated walking
-				sprite = assets.section(8 + walkingFrame, 4);
+				sprite = assets.sheet(8 + walking, 4);
 			}
 		} else {
-			sprite = assets.section(2 * dirIndex + walkingFrame, 4 + ghostIndex);
+			sprite = assets.sheet(2 * dir + walking, 4 + ghostIndex);
 		}
 		g.drawImage(sprite, (int) ghost.position.x - HTS, (int) ghost.position.y - HTS, null);
 
@@ -471,7 +470,7 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 		}
 	}
 
-	private int animationFrame(int ticks, int intervals) {
-		return (int) (game.clock.framesTotal / ticks) % intervals;
+	private int frameIndex(int frameDurationTicks, int numFrames) {
+		return (int) (game.clock.framesTotal / frameDurationTicks) % numFrames;
 	}
 }
