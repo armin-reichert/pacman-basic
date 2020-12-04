@@ -178,7 +178,7 @@ public class PacManGame implements Runnable {
 		bonusAvailableTimer = 0;
 		bonusConsumedTimer = 0;
 		for (GameState state : GameState.values()) {
-			state.setTimer(0);
+			state.setDuration(0);
 		}
 	}
 
@@ -261,7 +261,7 @@ public class PacManGame implements Runnable {
 
 	private void enterState(GameState newState, long duration) {
 		state = newState;
-		state.setTimer(duration);
+		state.setDuration(duration);
 		String durationText = duration == Long.MAX_VALUE ? "forever" : duration + " ticks";
 		log("Game entered state %s for %s", stateDescription(), durationText);
 	}
@@ -312,7 +312,7 @@ public class PacManGame implements Runnable {
 
 	private void enterReadyState() {
 		enterState(READY, clock.sec(4));
-		HUNTING.setTimer(0);
+		HUNTING.setDuration(0);
 		huntingPhase = 0;
 		resetGuys();
 		ui.yellowMessage("Ready!");
@@ -365,7 +365,7 @@ public class PacManGame implements Runnable {
 
 	private void nextHuntingPhase() {
 		huntingPhase++;
-		state.setTimer(huntingPhaseDuration());
+		state.setDuration(huntingPhaseDuration());
 		forceGhostsTurningBack();
 		String phaseText = (huntingPhase % 2 == 0 ? "Scattering #" : "Chasing #") + huntingPhase / 2;
 		log("Game state HUNTING entered phase " + phaseText);

@@ -4,23 +4,23 @@ public enum GameState {
 
 	INTRO, READY, HUNTING, CHANGING_LEVEL, PACMAN_DYING, GHOST_DYING, GAME_OVER;
 
-	private long timer;
+	private long ticksRemaining;
 
 	public void tick() {
-		if (timer != Long.MAX_VALUE) {
-			--timer;
+		if (ticksRemaining != Long.MAX_VALUE && ticksRemaining > 0) {
+			--ticksRemaining;
 		}
 	}
 
-	public void setTimer(long duration) {
-		timer = duration;
+	public void setDuration(long duration) {
+		ticksRemaining = duration;
 	}
 
 	public long ticksRemaining() {
-		return timer;
+		return ticksRemaining;
 	}
 
 	public boolean expired() {
-		return timer == 0;
+		return ticksRemaining == 0;
 	}
 }
