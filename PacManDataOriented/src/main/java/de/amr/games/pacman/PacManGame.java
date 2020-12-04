@@ -104,10 +104,14 @@ public class PacManGame implements Runnable {
 		return level(level);
 	}
 
-	public final GameClock clock = new GameClock();
-	public final World world = new World();
+	public final World world;
 	public final Creature pacMan;
-	public final Ghost[] ghosts = new Ghost[4];
+	public final Ghost[] ghosts;
+
+	public GameClock clock;
+	public PacManGameUI ui;
+
+	public boolean paused;
 
 	public GameState state;
 	public GameState previousState;
@@ -126,11 +130,10 @@ public class PacManGame implements Runnable {
 	public long bonusAvailableTimer;
 	public long bonusConsumedTimer;
 
-	public PacManGameUI ui;
-	public boolean paused;
-
 	public PacManGame() {
+		world = new World();
 		pacMan = new Creature("Pac-Man", PACMAN_HOME);
+		ghosts = new Ghost[4];
 		ghosts[BLINKY] = new Ghost("Blinky", HOUSE_ENTRY, UPPER_RIGHT_CORNER);
 		ghosts[PINKY] = new Ghost("Pinky", HOUSE_CENTER, UPPER_LEFT_CORNER);
 		ghosts[INKY] = new Ghost("Inky", HOUSE_LEFT, LOWER_RIGHT_CORNER);
@@ -139,6 +142,7 @@ public class PacManGame implements Runnable {
 
 	@Override
 	public void run() {
+		clock = new GameClock();
 		reset();
 		enterIntroState();
 		while (true) {
@@ -262,7 +266,7 @@ public class PacManGame implements Runnable {
 	private void enterState(GameState newState, long duration) {
 		state = newState;
 		state.setDuration(duration);
-		String durationText = duration == Long.MAX_VALUE ? "forever" : duration + " ticks";
+		String durationText = duration == Long.MAX_VALUE ? "indefinite time" : duration + " ticks";
 		log("Game entered state %s for %s", stateDescription(), durationText);
 	}
 
