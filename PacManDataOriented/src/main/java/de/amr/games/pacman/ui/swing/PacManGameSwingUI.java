@@ -35,16 +35,14 @@ import de.amr.games.pacman.ui.PacManGameUI;
  */
 public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 
+	//@formatter:off
 	private static final Object[][] GHOST_INTRO_TEXTS = {
-		//@formatter:off
-		{ "-SHADOW",  "-SHADOW    \"BLINKY\"", Color.RED }, 
-		{ "-SPEEDY",  "-SPEEDY    \"PINKY\"",  Color.PINK },
-		{ "-BASHFUL", "-BASHFUL   \"INKY\"",   Color.CYAN }, 
-		{  "-POKEY",  "-POKEY     \"CLYDE\"",  Color.ORANGE }
-		//@formatter:on
+		{ "-SHADOW ", "\"BLINKY\"", Color.RED }, 
+		{ "-SPEEDY ", "\"PINKY\"",  Color.PINK },
+		{ "-BASHFUL", "\"INKY\"",   Color.CYAN }, 
+		{ "-POKEY  ", "\"CLYDE\"",  Color.ORANGE }
 	};
 
-	//@formatter:off
 	private static final Map<Direction,Integer> DIR_INDEX = Map.of(
 		Direction.RIGHT, 0,
 		Direction.LEFT,  1,
@@ -59,9 +57,9 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 	
 	private static final Map<String, Color> GHOST_COLORS = Map.of(
 		"Blinky", Color.RED, 
-		"Pinky",  Color.PINK, 
-		"Inky",	  Color.CYAN, 
-		"Clyde",  Color.ORANGE
+		"Pinky ", Color.PINK, 
+		"Inky  ",	Color.CYAN, 
+		"Clyde ", Color.ORANGE
 		);
 	//@formatter:on
 
@@ -203,9 +201,11 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 				g.drawImage(assets.sheet(0, 4 + ghost), 2 * TS, y, 12, 12, null);
 			}
 			if (introTimer >= game.clock.sec(t + 0.5f)) {
-				g.setColor((Color) GHOST_INTRO_TEXTS[ghost][2]);
-				String text = introTimer > game.clock.sec(t + 1) ? (String) GHOST_INTRO_TEXTS[ghost][1]
-						: (String) GHOST_INTRO_TEXTS[ghost][0];
+				String character = (String) GHOST_INTRO_TEXTS[ghost][0];
+				String nickname = (String) GHOST_INTRO_TEXTS[ghost][1];
+				Color color = (Color) GHOST_INTRO_TEXTS[ghost][2];
+				g.setColor(color);
+				String text = introTimer > game.clock.sec(t + 1) ? character + "    " + nickname : character;
 				g.drawString(text, 4 * TS, y + 12);
 			}
 			t += 2;
