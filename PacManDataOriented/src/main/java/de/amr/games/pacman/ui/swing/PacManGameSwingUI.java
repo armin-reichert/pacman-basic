@@ -269,15 +269,12 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 
 	private void drawDebugInfo(Graphics2D g) {
 		if (debugMode) {
+			long remaining = game.state.ticksRemaining();
+			String ticksText = remaining == Long.MAX_VALUE ? "forever" : remaining + " ticks remaining";
+			String stateText = String.format("%s (%s)", game.stateDescription(), ticksText);
 			g.setColor(Color.WHITE);
 			g.setFont(new Font("Arial", Font.PLAIN, 6));
-			boolean chasing = game.huntingPhase % 2 != 0;
-			int step = game.huntingPhase / 2;
-			String hunting = game.state == GameState.HUNTING ? (chasing ? "chasing #" : "scattering #") + step : "";
-			String remaining = game.state.ticksRemaining() == Long.MAX_VALUE ? "forever"
-					: game.state.ticksRemaining() + " ticks remaining";
-			String text = String.format("%s %s %s", game.state, hunting, remaining);
-			g.drawString(text, 8 * TS, 3 * TS);
+			g.drawString(stateText, 1 * TS, 3 * TS);
 			for (Ghost ghost : game.ghosts) {
 				if (ghost.targetTile != null) {
 					g.setColor(GHOST_COLORS.get(ghost.name));
@@ -289,8 +286,8 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 
 	private void drawScore(Graphics2D g) {
 		g.setFont(assets.scoreFont);
-		g.setColor(Color.WHITE);
 		g.translate(0, 2);
+		g.setColor(Color.WHITE);
 		g.drawString("SCORE", 1 * TS, 1 * TS);
 		g.drawString("HI SCORE", 16 * TS, 1 * TS);
 		g.translate(0, 1);

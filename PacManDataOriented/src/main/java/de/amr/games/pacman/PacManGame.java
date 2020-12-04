@@ -250,13 +250,20 @@ public class PacManGame implements Runnable {
 
 	// BEGIN-STATE-MACHINE
 
+	public String stateDescription() {
+		if (state == HUNTING) {
+			boolean chasing = huntingPhase % 2 != 0;
+			int step = huntingPhase / 2;
+			return state.name() + ":" + (chasing ? "chasing" : "scattering" + "# " + step);
+		}
+		return state.name();
+	}
+
 	private void enterState(GameState newState, long duration) {
 		state = newState;
 		state.setTimer(duration);
-		String phaseText = (huntingPhase % 2 == 0 ? "Scattering #" : "Chasing #") + huntingPhase / 2;
-		String stateText = state != HUNTING ? state.name() : state.name() + " (" + phaseText + ")";
 		String durationText = duration == Long.MAX_VALUE ? "forever" : duration + " ticks";
-		log("Game entered state %s for %s", stateText, durationText);
+		log("Game entered state %s for %s", stateDescription(), durationText);
 	}
 
 	private void updateState() {
