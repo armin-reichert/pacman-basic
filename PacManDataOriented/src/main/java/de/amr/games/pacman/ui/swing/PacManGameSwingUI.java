@@ -37,10 +37,10 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 
 	//@formatter:off
 	private static final Object[][] GHOST_INTRO_TEXTS = {
-		{ "-SHADOW ", "\"BLINKY\"", Color.RED }, 
-		{ "-SPEEDY ", "\"PINKY\"",  Color.PINK },
-		{ "-BASHFUL", "\"INKY\"",   Color.CYAN }, 
-		{ "-POKEY  ", "\"CLYDE\"",  Color.ORANGE }
+		{ "SHADOW ", "\"BLINKY\"", Color.RED }, 
+		{ "SPEEDY ", "\"PINKY\"",  Color.PINK },
+		{ "BASHFUL", "\"INKY\"",   Color.CYAN }, 
+		{ "POKEY  ", "\"CLYDE\"",  Color.ORANGE }
 	};
 
 	private static final Map<Direction,Integer> DIR_INDEX = Map.of(
@@ -179,9 +179,13 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 
 	private void drawIntroScene(Graphics2D g) {
 		g.setFont(assets.scoreFont);
-		int t = 0;
 
-		t = 1;
+		g.setColor(Color.WHITE);
+		if (game.clock.framesTotal % 60 < 30) {
+			drawCenteredText(g, "Press SPACE to play!", unscaledSize.height - 20);
+		}
+
+		int t = 1;
 		if (introTimer >= game.clock.sec(t)) {
 			int w = assets.imageLogo.getWidth();
 			g.drawImage(assets.imageLogo, (unscaledSize.width - w) / 2, 3, null);
@@ -211,10 +215,6 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 		}
 
 		if (introTimer >= game.clock.sec(t)) {
-			g.setColor(Color.WHITE);
-			if (game.clock.framesTotal % 60 < 30) {
-				drawCenteredText(g, "Press SPACE to play!", unscaledSize.height - 20);
-			}
 		}
 
 		++introTimer;
