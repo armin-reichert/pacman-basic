@@ -319,7 +319,7 @@ public class PacManGame implements Runnable {
 		HUNTING.setDuration(0);
 		huntingPhase = 0;
 		resetGuys();
-		ui.yellowMessage("Ready!");
+		ui.showGameReadyMessage();
 	}
 
 	private void runReadyState() {
@@ -500,7 +500,7 @@ public class PacManGame implements Runnable {
 			ghost.speed = 0;
 		}
 		pacMan.speed = 0;
-		ui.redMessage("Game Over!");
+		ui.showGameOverMessage();
 		if (newHiscore) {
 			saveHiscore();
 		}
@@ -510,6 +510,7 @@ public class PacManGame implements Runnable {
 		if (state.expired() || ui.keyPressed("space")) {
 			exitGameOverState();
 			enterIntroState();
+			return;
 		}
 		state.tick();
 	}

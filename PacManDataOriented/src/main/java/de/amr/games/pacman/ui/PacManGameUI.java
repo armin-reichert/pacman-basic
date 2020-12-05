@@ -8,9 +8,9 @@ public interface PacManGameUI {
 
 	void render();
 
-	void redMessage(String text);
+	void showGameReadyMessage();
 
-	void yellowMessage(String text);
+	void showGameOverMessage();
 
 	void clearMessage();
 

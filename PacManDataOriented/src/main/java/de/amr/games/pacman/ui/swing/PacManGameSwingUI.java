@@ -131,14 +131,14 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 	}
 
 	@Override
-	public void redMessage(String text) {
-		messageText = text;
+	public void showGameOverMessage() {
+		messageText = "Game Over!";
 		messageColor = Color.RED;
 	}
 
 	@Override
-	public void yellowMessage(String text) {
-		messageText = text;
+	public void showGameReadyMessage() {
+		messageText = "Ready!";
 		messageColor = Color.YELLOW;
 	}
 
