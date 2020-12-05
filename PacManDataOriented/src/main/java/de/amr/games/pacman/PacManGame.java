@@ -307,6 +307,7 @@ public class PacManGame implements Runnable {
 	private void runIntroState() {
 		if (ui.keyPressed("space")) {
 			enterReadyState();
+			return;
 		}
 		state.tick();
 	}
@@ -370,7 +371,7 @@ public class PacManGame implements Runnable {
 		huntingPhase++;
 		state.setDuration(huntingPhaseDuration());
 		forceGhostsTurningBack();
-		log("Game state updated to %s", stateDescription());
+		log("Game state updated to %s for %d ticks", stateDescription(), state.ticksRemaining());
 	}
 
 	private void enterHuntingState() {
@@ -414,11 +415,10 @@ public class PacManGame implements Runnable {
 			exitPacManDyingState();
 			if (lives > 0) {
 				enterReadyState();
-				return;
 			} else {
 				enterGameOverState();
-				return;
 			}
+			return;
 		}
 		if (state.ticksRemaining() == clock.sec(2.5f) + 88) {
 			for (Ghost ghost : ghosts) {
