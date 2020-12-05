@@ -431,7 +431,7 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 			}
 		} else if (ghost.frightened) {
 			// TODO flash exactly as often as specified by level
-			if (game.pacManPowerTimer < game.clock.sec(2) && ghost.speed != 0) {
+			if (game.pacMan.powerTimer < game.clock.sec(2) && ghost.speed != 0) {
 				// ghost flashing blue/white, animated walking
 				int flashing = frameIndex(10, 2) == 0 ? 8 : 10;
 				sprite = assets.sheet(walking + flashing, 4);

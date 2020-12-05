@@ -47,6 +47,7 @@ import de.amr.games.pacman.common.V2f;
 import de.amr.games.pacman.common.V2i;
 import de.amr.games.pacman.entities.Creature;
 import de.amr.games.pacman.entities.Ghost;
+import de.amr.games.pacman.entities.PacMan;
 import de.amr.games.pacman.ui.PacManGameUI;
 
 /**
@@ -105,7 +106,7 @@ public class PacManGame implements Runnable {
 	}
 
 	public final World world;
-	public final Creature pacMan;
+	public final PacMan pacMan;
 	public final Ghost[] ghosts;
 
 	public GameClock clock;
@@ -126,13 +127,12 @@ public class PacManGame implements Runnable {
 	public int ghostsKilledUsingEnergizer;
 	public int ghostsKilledInLevel;
 	public int mazeFlashesRemaining;
-	public long pacManPowerTimer;
 	public long bonusAvailableTimer;
 	public long bonusConsumedTimer;
 
 	public PacManGame() {
 		world = new World();
-		pacMan = new Creature("Pac-Man", PACMAN_HOME);
+		pacMan = new PacMan("Pac-Man", PACMAN_HOME);
 		ghosts = new Ghost[4];
 		ghosts[BLINKY] = new Ghost("Blinky", HOUSE_ENTRY, UPPER_RIGHT_CORNER);
 		ghosts[PINKY] = new Ghost("Pinky", HOUSE_CENTER, UPPER_LEFT_CORNER);
@@ -178,7 +178,6 @@ public class PacManGame implements Runnable {
 		mazeFlashesRemaining = 0;
 		ghostsKilledUsingEnergizer = 0;
 		ghostsKilledInLevel = 0;
-		pacManPowerTimer = 0;
 		bonusAvailableTimer = 0;
 		bonusConsumedTimer = 0;
 		for (GameState state : GameState.values()) {
@@ -196,6 +195,7 @@ public class PacManGame implements Runnable {
 		pacMan.forcedOnTrack = true;
 		pacMan.forcedTurningBack = false;
 		pacMan.dead = false;
+		pacMan.powerTimer = 0;
 
 		for (Ghost ghost : ghosts) {
 			ghost.visible = true;
@@ -252,7 +252,7 @@ public class PacManGame implements Runnable {
 		}
 	}
 
-	// BEGIN-STATE-MACHINE
+	// BEGIN STATE-MACHINE
 
 	public String stateDescription() {
 		if (state == HUNTING) {
@@ -391,15 +391,16 @@ public class PacManGame implements Runnable {
 		if (state.expired()) {
 			nextHuntingPhase();
 		}
-		if (pacManPowerTimer == 0) {
-			state.tick();
-		}
 		updatePacMan();
 		for (Ghost ghost : ghosts) {
 			updateGhost(ghost);
 		}
 		updateBonus();
 		updateHiscore();
+
+		if (pacMan.powerTimer == 0) {
+			state.tick();
+		}
 	}
 
 	// PACMAN_DYING
@@ -520,15 +521,15 @@ public class PacManGame implements Runnable {
 		log("Left game over state");
 	}
 
-	// END-STATE-MACHINE
+	// END STATE-MACHINE
 
 	private void updatePacMan() {
 		tryMoving(pacMan);
 
 		// Pac-man power expiring?
-		if (pacManPowerTimer > 0) {
-			pacManPowerTimer--;
-			if (pacManPowerTimer == 0) {
+		if (pacMan.powerTimer > 0) {
+			pacMan.powerTimer--;
+			if (pacMan.powerTimer == 0) {
 				for (Ghost ghost : ghosts) {
 					ghost.frightened = false;
 				}
@@ -543,7 +544,7 @@ public class PacManGame implements Runnable {
 			// energizer found?
 			if (world.isEnergizerTile(tile.x, tile.y)) {
 				score(40);
-				pacManPowerTimer = clock.sec(level().ghostFrightenedSeconds);
+				pacMan.powerTimer = clock.sec(level().ghostFrightenedSeconds);
 				if (level().ghostFrightenedSeconds > 0) {
 					log("Pac-Man got power for %d seconds", level().ghostFrightenedSeconds);
 					for (Ghost ghost : ghosts) {
@@ -580,7 +581,7 @@ public class PacManGame implements Runnable {
 				return;
 			}
 			// getting killed by ghost?
-			if (pacManPowerTimer == 0 && !ghost.dead) {
+			if (pacMan.powerTimer == 0 && !ghost.dead) {
 				pacMan.dead = true;
 				--lives;
 				log("Pac-Man killed by %s at tile %s", ghost.name, ghost.tile());
