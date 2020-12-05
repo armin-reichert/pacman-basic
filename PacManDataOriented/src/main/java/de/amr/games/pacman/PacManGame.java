@@ -258,7 +258,7 @@ public class PacManGame implements Runnable {
 		if (state == HUNTING) {
 			boolean chasing = huntingPhase % 2 != 0;
 			int step = huntingPhase / 2;
-			return state.name() + ":" + (chasing ? "chasing" : "scattering" + "# " + step);
+			return chasing ? String.format("%s-chasing-%d", state, step) : String.format("%s-scattering-%d", state, step);
 		}
 		return state.name();
 	}
@@ -371,8 +371,7 @@ public class PacManGame implements Runnable {
 		huntingPhase++;
 		state.setDuration(huntingPhaseDuration());
 		forceGhostsTurningBack();
-		String phaseText = (huntingPhase % 2 == 0 ? "Scattering #" : "Chasing #") + huntingPhase / 2;
-		log("Game state HUNTING entered phase " + phaseText);
+		log("Game state updated to %s", stateDescription());
 	}
 
 	private void enterHuntingState() {
