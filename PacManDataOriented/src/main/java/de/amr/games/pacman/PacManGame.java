@@ -124,7 +124,7 @@ public class PacManGame implements Runnable {
 	public int hiscoreLevel;
 	public boolean newHiscore;
 	public boolean extraLife;
-	public int ghostsKilledUsingEnergizer;
+	public int ghostBounty;
 	public int ghostsKilledInLevel;
 	public int mazeFlashesRemaining;
 	public long bonusAvailableTimer;
@@ -176,7 +176,7 @@ public class PacManGame implements Runnable {
 		world.restoreFood();
 		huntingPhase = 0;
 		mazeFlashesRemaining = 0;
-		ghostsKilledUsingEnergizer = 0;
+		ghostBounty = 200;
 		ghostsKilledInLevel = 0;
 		bonusAvailableTimer = 0;
 		bonusConsumedTimer = 0;
@@ -237,7 +237,7 @@ public class PacManGame implements Runnable {
 		} else if (ui.keyPressed("e")) {
 			eatAllNormalPellets();
 		} else if (ui.keyPressed("x")) {
-			ghostsKilledUsingEnergizer = 0;
+			ghostBounty = 200;
 			for (Ghost ghost : ghosts) {
 				killGhost(ghost);
 			}
@@ -552,7 +552,7 @@ public class PacManGame implements Runnable {
 					}
 					forceGhostsTurningBack();
 				}
-				ghostsKilledUsingEnergizer = 0;
+				ghostBounty = 200;
 			}
 			// bonus score reached?
 			int eaten = TOTAL_FOOD_COUNT - world.foodRemaining;
@@ -594,12 +594,12 @@ public class PacManGame implements Runnable {
 		if (ghost.dead) {
 			return;
 		}
-		ghostsKilledUsingEnergizer++;
 		ghostsKilledInLevel++;
 		ghost.dead = true;
 		ghost.frightened = false;
 		ghost.targetTile = HOUSE_ENTRY;
-		ghost.bounty = (int) Math.pow(2, ghostsKilledUsingEnergizer) * 100;
+		ghost.bounty = ghostBounty;
+		ghostBounty *= 2;
 		score(ghost.bounty);
 		if (ghostsKilledInLevel == 16) {
 			score(12000);

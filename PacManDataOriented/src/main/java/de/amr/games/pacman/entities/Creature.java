@@ -15,7 +15,7 @@ public class Creature {
 	public float speed;
 	public Direction dir;
 	public Direction wishDir;
-	public V2f position; // left upper corner
+	public V2f position; // left upper corner of collision box
 	public boolean changedTile;
 	public boolean couldMove;
 	public boolean forcedOnTrack;
