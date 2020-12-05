@@ -5,6 +5,10 @@ import static de.amr.games.pacman.World.HTS;
 import static de.amr.games.pacman.World.TS;
 import static de.amr.games.pacman.World.WORLD_HEIGHT_TILES;
 import static de.amr.games.pacman.World.WORLD_WIDTH_TILES;
+import static de.amr.games.pacman.common.Direction.DOWN;
+import static de.amr.games.pacman.common.Direction.LEFT;
+import static de.amr.games.pacman.common.Direction.RIGHT;
+import static de.amr.games.pacman.common.Direction.UP;
 
 import java.awt.BasicStroke;
 import java.awt.Canvas;
@@ -36,6 +40,12 @@ import de.amr.games.pacman.ui.PacManGameUI;
 public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 
 	//@formatter:off
+	private static final Map<String, Color> GHOST_COLORS = Map.of(
+		"Blinky", Color.RED, 
+		"Pinky ", Color.PINK, "Inky  ", 
+		Color.CYAN,	"Clyde ", 
+		Color.ORANGE);
+	
 	private static final Object[][] GHOST_INTRO_TEXTS = {
 		{ "SHADOW ", "\"BLINKY\"", Color.RED }, 
 		{ "SPEEDY ", "\"PINKY\"",  Color.PINK },
@@ -44,23 +54,10 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 	};
 
 	private static final Map<Direction,Integer> DIR_INDEX = Map.of(
-		Direction.RIGHT, 0,
-		Direction.LEFT,  1,
-		Direction.UP,    2,
-		Direction.DOWN,  3
-	);
+		RIGHT, 0,	LEFT, 1, UP, 2,	DOWN, 3);
 	
 	private static final Polygon TRIANGLE = new Polygon(
-		new int[] { -4, 4, 0 }, 
-		new int[] { 0, 0, 4 },
-		3);
-	
-	private static final Map<String, Color> GHOST_COLORS = Map.of(
-		"Blinky", Color.RED, 
-		"Pinky ", Color.PINK, 
-		"Inky  ",	Color.CYAN, 
-		"Clyde ", Color.ORANGE
-		);
+		new int[] { -4, 4, 0 }, new int[] { 0, 0, 4 }, 3);
 	//@formatter:on
 
 	private final Assets assets;
@@ -70,6 +67,7 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 	private final Keyboard keyboard;
 	private final Dimension unscaledSize;
 
+	private long introTimer;
 	private boolean debugMode;
 	private String messageText;
 	private Color messageColor;
@@ -160,17 +158,12 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 	}
 
 	private void drawCurrentScene(Graphics2D g) {
-		switch (game.state) {
-		case INTRO:
+		if (game.state == GameState.INTRO) {
 			drawIntroScene(g);
-			break;
-		default:
-			drawGame(g);
-			break;
+		} else {
+			drawPlayingScene(g);
 		}
 	}
-
-	private long introTimer;
 
 	@Override
 	public void startIntroAnimation() {
@@ -179,11 +172,6 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 
 	private void drawIntroScene(Graphics2D g) {
 		g.setFont(assets.scoreFont);
-
-		g.setColor(Color.WHITE);
-		if (game.clock.framesTotal % 60 < 30) {
-			drawCenteredText(g, "Press SPACE to play!", unscaledSize.height - 20);
-		}
 
 		int t = 1;
 		if (introTimer >= game.clock.sec(t)) {
@@ -215,9 +203,27 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 		}
 
 		if (introTimer >= game.clock.sec(t)) {
+			g.setColor(Color.PINK);
+			g.fillRect(9 * TS + 6, 27 * TS + 2, 2, 2);
+			drawCenteredText(g, "10 PTS", 28 * TS);
+			blinking(20, () -> {
+				g.fillOval(9 * TS, 29 * TS - 2, 10, 10);
+			});
+			drawCenteredText(g, "50 PTS", 30 * TS);
 		}
 
+		g.setColor(Color.WHITE);
+		blinking(20, () -> {
+			drawCenteredText(g, "Press SPACE to play!", unscaledSize.height - 20);
+		});
+
 		++introTimer;
+	}
+
+	private void blinking(int ticks, Runnable code) {
+		if (game.clock.framesTotal % (2 * ticks) < ticks) {
+			code.run();
+		}
 	}
 
 	private void drawFPS(Graphics2D g) {
@@ -226,7 +232,7 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 		drawCenteredText(g, String.format("%d fps", game.clock.fps), unscaledSize.height - 3);
 	}
 
-	private void drawGame(Graphics2D g) {
+	private void drawPlayingScene(Graphics2D g) {
 		drawScore(g);
 		drawLivesCounter(g);
 		drawLevelCounter(g);
