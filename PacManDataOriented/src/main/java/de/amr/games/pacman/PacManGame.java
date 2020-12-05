@@ -51,7 +51,7 @@ import de.amr.games.pacman.entities.PacMan;
 import de.amr.games.pacman.ui.PacManGameUI;
 
 /**
- * A simple Pac-Man game with faithful behavior.
+ * Pac-Man game with original "AI".
  * 
  * @author Armin Reichert
  * 
@@ -60,41 +60,36 @@ import de.amr.games.pacman.ui.PacManGameUI;
  */
 public class PacManGame implements Runnable {
 
-	private static final int BLINKY = 0, PINKY = 1, INKY = 2, CLYDE = 3;
+	static final int BLINKY = 0, PINKY = 1, INKY = 2, CLYDE = 3;
 
-	private static final List<Direction> DIRECTION_PRIORITY = List.of(UP, LEFT, DOWN, RIGHT);
+	static final List<Direction> DIRECTION_PRIORITY = List.of(UP, LEFT, DOWN, RIGHT);
 
-	private static final File HISCORE_DIR = new File(System.getProperty("user.home"));
-	private static final File HISCORE_FILE = new File(HISCORE_DIR, "pacman-basic-hiscore.xml");
+	static final File HISCORE_FILE = new File(System.getProperty("user.home"), "pacman-basic-hiscore.xml");
 
-	private static boolean differsAtMost(float value, float target, float tolerance) {
-		return Math.abs(value - target) <= tolerance;
-	}
-
-	private static final List<GameLevel> LEVELS = List.of(
+	static final List<GameLevel> LEVELS = List.of(
 	/*@formatter:off*/
-	new GameLevel("Cherries",   100,  80,  71,  75, 40,  20,  80, 10,  85,  90, 79, 50, 6, 5),
-	new GameLevel("Strawberry", 300,  90,  79,  85, 45,  30,  90, 15,  95,  95, 83, 55, 5, 5),
-	new GameLevel("Peach",      500,  90,  79,  85, 45,  40,  90, 20,  95,  95, 83, 55, 4, 5),
-	new GameLevel("Peach",      500,  90,  79,  85, 50,  40, 100, 20,  95,  95, 83, 55, 3, 5),
-	new GameLevel("Apple",      700, 100,  87,  95, 50,  40, 100, 20, 105, 100, 87, 60, 2, 5),
-	new GameLevel("Apple",      700, 100,  87,  95, 50,  50, 100, 25, 105, 100, 87, 60, 5, 5),
-	new GameLevel("Grapes",    1000, 100,  87,  95, 50,  50, 100, 25, 105, 100, 87, 60, 2, 5),
-	new GameLevel("Grapes",    1000, 100,  87,  95, 50,  50, 100, 25, 105, 100, 87, 60, 2, 5),
-	new GameLevel("Galaxian",  2000, 100,  87,  95, 50,  60, 100, 30, 105, 100, 87, 60, 1, 3),
-	new GameLevel("Galaxian",  2000, 100,  87,  95, 50,  60, 100, 30, 105, 100, 87, 60, 5, 5),
-	new GameLevel("Bell",      3000, 100,  87,  95, 50,  60, 100, 30, 105, 100, 87, 60, 2, 5),
-	new GameLevel("Bell",      3000, 100,  87,  95, 50,  80, 100, 40, 105, 100, 87, 60, 1, 3),
-	new GameLevel("Key",       5000, 100,  87,  95, 50,  80, 100, 40, 105, 100, 87, 60, 1, 3),
-	new GameLevel("Key",       5000, 100,  87,  95, 50,  80, 100, 40, 105, 100, 87, 60, 3, 5),
-	new GameLevel("Key",       5000, 100,  87,  95, 50, 100, 100, 50, 105, 100, 87, 60, 1, 3),
-	new GameLevel("Key",       5000, 100,  87,  95, 50, 100, 100, 50, 105,   0,  0,  0, 1, 3),
-	new GameLevel("Key",       5000, 100,  87,  95, 50, 100, 100, 50, 105, 100, 87, 60, 0, 0),
-	new GameLevel("Key",       5000, 100,  87,  95, 50, 100, 100, 50, 105,   0,   0, 0, 1, 0),
-	new GameLevel("Key",       5000, 100,  87,  95, 50, 120, 100, 60, 105,   0,   0, 0, 0, 0),
-	new GameLevel("Key",       5000, 100,  87,  95, 50, 120, 100, 60, 105,   0,   0, 0, 0, 0),
-	new GameLevel("Key",       5000,  90,  79,  95, 50, 120, 100, 60, 105,   0,   0, 0, 0, 0)
-	//@formatter:on
+		new GameLevel("Cherries",   100,  80,  71,  75, 40,  20,  80, 10,  85,  90, 79, 50, 6, 5),
+		new GameLevel("Strawberry", 300,  90,  79,  85, 45,  30,  90, 15,  95,  95, 83, 55, 5, 5),
+		new GameLevel("Peach",      500,  90,  79,  85, 45,  40,  90, 20,  95,  95, 83, 55, 4, 5),
+		new GameLevel("Peach",      500,  90,  79,  85, 50,  40, 100, 20,  95,  95, 83, 55, 3, 5),
+		new GameLevel("Apple",      700, 100,  87,  95, 50,  40, 100, 20, 105, 100, 87, 60, 2, 5),
+		new GameLevel("Apple",      700, 100,  87,  95, 50,  50, 100, 25, 105, 100, 87, 60, 5, 5),
+		new GameLevel("Grapes",    1000, 100,  87,  95, 50,  50, 100, 25, 105, 100, 87, 60, 2, 5),
+		new GameLevel("Grapes",    1000, 100,  87,  95, 50,  50, 100, 25, 105, 100, 87, 60, 2, 5),
+		new GameLevel("Galaxian",  2000, 100,  87,  95, 50,  60, 100, 30, 105, 100, 87, 60, 1, 3),
+		new GameLevel("Galaxian",  2000, 100,  87,  95, 50,  60, 100, 30, 105, 100, 87, 60, 5, 5),
+		new GameLevel("Bell",      3000, 100,  87,  95, 50,  60, 100, 30, 105, 100, 87, 60, 2, 5),
+		new GameLevel("Bell",      3000, 100,  87,  95, 50,  80, 100, 40, 105, 100, 87, 60, 1, 3),
+		new GameLevel("Key",       5000, 100,  87,  95, 50,  80, 100, 40, 105, 100, 87, 60, 1, 3),
+		new GameLevel("Key",       5000, 100,  87,  95, 50,  80, 100, 40, 105, 100, 87, 60, 3, 5),
+		new GameLevel("Key",       5000, 100,  87,  95, 50, 100, 100, 50, 105, 100, 87, 60, 1, 3),
+		new GameLevel("Key",       5000, 100,  87,  95, 50, 100, 100, 50, 105,   0,  0,  0, 1, 3),
+		new GameLevel("Key",       5000, 100,  87,  95, 50, 100, 100, 50, 105, 100, 87, 60, 0, 0),
+		new GameLevel("Key",       5000, 100,  87,  95, 50, 100, 100, 50, 105,   0,   0, 0, 1, 0),
+		new GameLevel("Key",       5000, 100,  87,  95, 50, 120, 100, 60, 105,   0,   0, 0, 0, 0),
+		new GameLevel("Key",       5000, 100,  87,  95, 50, 120, 100, 60, 105,   0,   0, 0, 0, 0),
+		new GameLevel("Key",       5000,  90,  79,  95, 50, 120, 100, 60, 105,   0,   0, 0, 0, 0)
+		//@formatter:on
 	);
 
 	public static GameLevel level(int level) {
@@ -103,6 +98,10 @@ public class PacManGame implements Runnable {
 
 	public GameLevel level() {
 		return level(level);
+	}
+
+	static boolean differsAtMost(float value, float target, float tolerance) {
+		return Math.abs(value - target) <= tolerance;
 	}
 
 	public final World world;
@@ -120,9 +119,9 @@ public class PacManGame implements Runnable {
 	public int huntingPhase;
 	public int lives;
 	public int points;
-	public int hiscore;
+	public int hiscorePoints;
 	public int hiscoreLevel;
-	public boolean newHiscore;
+	public boolean hiscoreChanged;
 	public boolean extraLife;
 	public int ghostBounty;
 	public int ghostsKilledInLevel;
@@ -131,6 +130,7 @@ public class PacManGame implements Runnable {
 	public long bonusConsumedTimer;
 
 	public PacManGame() {
+		clock = new GameClock();
 		world = new World();
 		pacMan = new PacMan("Pac-Man", PACMAN_HOME);
 		ghosts = new Ghost[4];
@@ -142,29 +142,25 @@ public class PacManGame implements Runnable {
 
 	@Override
 	public void run() {
-		clock = new GameClock();
 		reset();
 		enterIntroState();
 		while (true) {
 			clock.tick(() -> {
 				readInput();
-				if (!paused) {
-					updateState();
-				}
+				updateState();
 				ui.render();
 			});
 		}
 	}
 
 	public void exit() {
-		if (newHiscore) {
+		if (hiscoreChanged) {
 			saveHiscore();
 		}
 	}
 
 	private void reset() {
 		loadHiscore();
-		newHiscore = false;
 		extraLife = false;
 		points = 0;
 		lives = 3;
@@ -271,6 +267,9 @@ public class PacManGame implements Runnable {
 	}
 
 	private void updateState() {
+		if (paused) {
+			return;
+		}
 		switch (state) {
 		case INTRO:
 			runIntroState();
@@ -501,7 +500,7 @@ public class PacManGame implements Runnable {
 		}
 		pacMan.speed = 0;
 		ui.showGameOverMessage();
-		if (newHiscore) {
+		if (hiscoreChanged) {
 			saveHiscore();
 		}
 	}
@@ -628,12 +627,13 @@ public class PacManGame implements Runnable {
 	}
 
 	private void loadHiscore() {
-		hiscore = 0;
+		hiscorePoints = 0;
 		hiscoreLevel = 1;
+		hiscoreChanged = false;
 		try (FileInputStream in = new FileInputStream(HISCORE_FILE)) {
 			Properties content = new Properties();
 			content.loadFromXML(in);
-			hiscore = Integer.parseInt(content.getProperty("points"));
+			hiscorePoints = Integer.parseInt(content.getProperty("points"));
 			hiscoreLevel = Integer.parseInt(content.getProperty("level"));
 			log("Hiscore file loaded: %s", HISCORE_FILE);
 		} catch (Exception x) {
@@ -643,7 +643,7 @@ public class PacManGame implements Runnable {
 
 	private void saveHiscore() {
 		Properties content = new Properties();
-		content.setProperty("points", String.valueOf(hiscore));
+		content.setProperty("points", String.valueOf(hiscorePoints));
 		content.setProperty("level", String.valueOf(hiscoreLevel));
 		content.setProperty("date", ZonedDateTime.now().format(ISO_DATE_TIME));
 		try (FileOutputStream out = new FileOutputStream(HISCORE_FILE)) {
@@ -656,10 +656,10 @@ public class PacManGame implements Runnable {
 	}
 
 	private void updateHiscore() {
-		if (points > hiscore) {
-			hiscore = points;
+		if (points > hiscorePoints) {
+			hiscorePoints = points;
 			hiscoreLevel = level;
-			newHiscore = true;
+			hiscoreChanged = true;
 		}
 	}
 

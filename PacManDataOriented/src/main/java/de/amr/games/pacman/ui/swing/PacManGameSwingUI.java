@@ -279,7 +279,7 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 		g.setColor(Color.LIGHT_GRAY);
 		g.drawString(String.format("L%02d", game.level), 9 * TS, 2 * TS);
 		g.setColor(Color.YELLOW);
-		g.drawString(String.format("%08d", game.hiscore), 16 * TS, 2 * TS);
+		g.drawString(String.format("%08d", game.hiscorePoints), 16 * TS, 2 * TS);
 		g.setColor(Color.LIGHT_GRAY);
 		g.drawString(String.format("L%02d", game.hiscoreLevel), 24 * TS, 2 * TS);
 		g.translate(0, -3);
