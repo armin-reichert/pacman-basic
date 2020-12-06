@@ -218,12 +218,18 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 			drawCenteredText(g, "50 PTS", 30 * TS);
 		}
 
-		g.setColor(Color.WHITE);
-		blinking(20, () -> {
-			drawCenteredText(g, "Press SPACE to play!", unscaledSize.height - 20);
-		});
+		t += 1;
+		if (introTimer >= game.clock.sec(t)) {
+			g.setColor(Color.WHITE);
+			blinking(20, () -> {
+				drawCenteredText(g, "Press SPACE to play!", unscaledSize.height - 20);
+			});
+		}
 
 		++introTimer;
+		if (introTimer == game.clock.sec(20)) {
+			introTimer = 0;
+		}
 	}
 
 	private void blinking(int ticks, Runnable code) {
