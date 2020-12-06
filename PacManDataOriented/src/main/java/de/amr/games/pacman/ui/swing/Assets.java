@@ -1,5 +1,6 @@
 package de.amr.games.pacman.ui.swing;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.image.BufferedImage;
@@ -15,6 +16,14 @@ import javax.imageio.ImageIO;
  * @author Armin Reichert
  */
 public class Assets {
+
+	//@formatter:off
+	static final Map<String, Color> GHOST_COLORS = Map.of(
+		"Blinky", Color.RED, 
+		"Pinky ", Color.PINK, 
+		"Inky  ", Color.CYAN,	
+		"Clyde ", Color.ORANGE);
+	//@formatter:on
 
 	public final BufferedImage imageLogo;
 	public final BufferedImage imageMazeFull;

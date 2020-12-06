@@ -41,12 +41,6 @@ import de.amr.games.pacman.ui.PacManGameUI;
 public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 
 	//@formatter:off
-	static final Map<String, Color> GHOST_COLORS = Map.of(
-		"Blinky", Color.RED, 
-		"Pinky ", Color.PINK, 
-		"Inky  ", Color.CYAN,	
-		"Clyde ", Color.ORANGE);
-	
 	static final Object[][] GHOST_INTRO_TEXTS = {
 		{ "SHADOW ", "\"BLINKY\"", Color.RED }, 
 		{ "SPEEDY ", "\"PINKY\"",  Color.PINK },
@@ -226,7 +220,7 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 			g.drawString(stateText, 1 * TS, 3 * TS);
 			for (Ghost ghost : game.ghosts) {
 				if (ghost.targetTile != null) {
-					g.setColor(GHOST_COLORS.get(ghost.name));
+					g.setColor(Assets.GHOST_COLORS.get(ghost.name));
 					g.fillRect(ghost.targetTile.x * TS + HTS / 2, ghost.targetTile.y * TS + HTS / 2, HTS, HTS);
 				}
 			}
