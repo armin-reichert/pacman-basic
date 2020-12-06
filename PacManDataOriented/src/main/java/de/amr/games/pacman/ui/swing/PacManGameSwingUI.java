@@ -105,7 +105,8 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 					String character = (String) GHOST_INTRO_TEXTS[ghost][0];
 					String nickname = (String) GHOST_INTRO_TEXTS[ghost][1];
 					Color color = (Color) GHOST_INTRO_TEXTS[ghost][2];
-					String text = intro.timer > game.clock.sec(time + 1) ? character + "    " + nickname : character;
+					String text = "-";
+					text += intro.timer > game.clock.sec(time + 1) ? character + "    " + nickname : character;
 					g.setColor(color);
 					g.drawString(text, 4 * TS, y + 11);
 				}
@@ -136,21 +137,23 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 			}
 
 			++intro.timer;
-			if (intro.timer == game.clock.sec(20)) {
+			if (intro.timer == game.clock.sec(30)) {
 				intro.timer = 0;
 			}
 		}
 
-		private void drawChasingPacMan(Graphics2D g, int time) {
+		void drawChasingPacMan(Graphics2D g, int time) {
 			int x = headX;
 			int y = 22 * TS;
-			int mouthFrame = frameIndex(5, 3);
-			BufferedImage pacMan = mouthFrame == 2 ? assets.sheet(mouthFrame, 0)
-					: assets.sheet(mouthFrame, DIR_INDEX.get(LEFT));
+			BufferedImage pacMan = pacManWalking(LEFT);
 			BufferedImage blinky = ghostWalking(LEFT, BLINKY);
 			BufferedImage pinky = ghostWalking(LEFT, PINKY);
 			BufferedImage inky = ghostWalking(LEFT, INKY);
 			BufferedImage clyde = ghostWalking(LEFT, CLYDE);
+			blinking(20, () -> {
+				g.setColor(Color.PINK);
+				g.fillOval(2 * TS, y + 2, 10, 10);
+			});
 			g.drawImage(pacMan, x, y, null);
 			x += 24;
 			g.drawImage(blinky, x, y, null);
@@ -160,11 +163,20 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 			g.drawImage(inky, x, y, null);
 			x += 16;
 			g.drawImage(clyde, x, y, null);
-			if (headX > 0) {
+			if (headX > 2 * TS) {
 				headX -= 1;
 			} else {
 				headX = unscaledSize.width;
 			}
+		}
+
+		BufferedImage pacManWalking(Direction dir) {
+			int mouthFrame = frameIndex(5, 3);
+			return mouthFrame == 2 ? assets.sheet(mouthFrame, 0) : assets.sheet(mouthFrame, DIR_INDEX.get(LEFT));
+		}
+
+		BufferedImage ghostWalking(Direction dir, int ghost) {
+			return assets.sheet(2 * DIR_INDEX.get(dir) + frameIndex(5, 2), 4 + ghost);
 		}
 	}
 
@@ -277,10 +289,6 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 	@Override
 	public void startIntroAnimation() {
 		intro = new Intro();
-	}
-
-	private BufferedImage ghostWalking(Direction dir, int ghost) {
-		return assets.sheet(2 * DIR_INDEX.get(dir) + frameIndex(5, 2), 4 + ghost);
 	}
 
 	private void blinking(int ticks, Runnable code) {
