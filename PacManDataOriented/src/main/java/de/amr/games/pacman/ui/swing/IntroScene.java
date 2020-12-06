@@ -7,8 +7,6 @@ import static de.amr.games.pacman.PacManGame.PINKY;
 import static de.amr.games.pacman.World.TS;
 import static de.amr.games.pacman.common.Direction.LEFT;
 import static de.amr.games.pacman.common.Direction.RIGHT;
-import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.DIR_INDEX;
-import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.blinking;
 import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.dirIndex;
 import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.drawCenteredText;
 
@@ -21,6 +19,15 @@ import de.amr.games.pacman.PacManGame;
 import de.amr.games.pacman.common.Direction;
 
 class IntroScene {
+
+	//@formatter:off
+	static final Object[][] GHOST_INTRO_TEXTS = {
+		{ "SHADOW ", "\"BLINKY\"", Color.RED }, 
+		{ "SPEEDY ", "\"PINKY\"",  Color.PINK },
+		{ "BASHFUL", "\"INKY\"",   Color.CYAN }, 
+		{ "POKEY  ", "\"CLYDE\"",  Color.ORANGE }
+	};
+	//@formatter:on
 
 	public PacManGame game;
 	public Assets assets;
@@ -65,9 +72,9 @@ class IntroScene {
 				g.drawImage(ghostLookingRight, 2 * TS - 3, y - 2, null);
 			}
 			if (timer >= game.clock.sec(time + 0.5f)) {
-				String character = (String) PacManGameSwingUI.GHOST_INTRO_TEXTS[ghost][0];
-				String nickname = (String) PacManGameSwingUI.GHOST_INTRO_TEXTS[ghost][1];
-				Color color = (Color) PacManGameSwingUI.GHOST_INTRO_TEXTS[ghost][2];
+				String character = (String) GHOST_INTRO_TEXTS[ghost][0];
+				String nickname = (String) GHOST_INTRO_TEXTS[ghost][1];
+				Color color = (Color) GHOST_INTRO_TEXTS[ghost][2];
 				String text = "-";
 				text += timer > game.clock.sec(time + 1) ? character + "    " + nickname : character;
 				g.setColor(color);
@@ -80,7 +87,7 @@ class IntroScene {
 			g.setColor(Color.PINK);
 			g.fillRect(9 * TS + 6, 27 * TS + 2, 2, 2);
 			drawCenteredText(g, "10 PTS", 28 * TS, size.width);
-			blinking(game.clock, 20, () -> {
+			game.clock.alternating(20, () -> {
 				g.fillOval(9 * TS, 29 * TS - 2, 10, 10);
 			});
 			drawCenteredText(g, "50 PTS", 30 * TS, size.width);
@@ -98,7 +105,7 @@ class IntroScene {
 		time += 1;
 		if (timer >= game.clock.sec(time)) {
 			g.setColor(Color.WHITE);
-			blinking(game.clock, 20, () -> {
+			game.clock.alternating(20, () -> {
 				drawCenteredText(g, "Press SPACE to play!", size.height - 20, size.width);
 			});
 		}
@@ -112,7 +119,7 @@ class IntroScene {
 	private void drawChasingPacMan(Graphics2D g, int time) {
 		int x = pacManX;
 		int y = 22 * TS;
-		blinking(game.clock, 20, () -> {
+		game.clock.alternating(20, () -> {
 			g.setColor(Color.PINK);
 			g.fillOval(2 * TS, y + 2, 10, 10);
 		});
@@ -155,7 +162,7 @@ class IntroScene {
 	}
 
 	private BufferedImage ghostWalking(Direction dir, int ghost) {
-		return assets.sheet(2 * DIR_INDEX.get(dir) + game.clock.frame(5, 2), 4 + ghost);
+		return assets.sheet(2 * dirIndex(dir) + game.clock.frame(5, 2), 4 + ghost);
 	}
 
 	private BufferedImage ghostFrightened() {

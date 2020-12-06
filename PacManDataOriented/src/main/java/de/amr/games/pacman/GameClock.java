@@ -19,6 +19,12 @@ public class GameClock {
 		return (int) (framesTotal / frameTicks) % numFrames;
 	}
 
+	public void alternating(int ticks, Runnable code) {
+		if (framesTotal % (2 * ticks) < ticks) {
+			code.run();
+		}
+	}
+
 	public void tick(Runnable frame) {
 		frameStartTime = System.nanoTime();
 		frame.run();
