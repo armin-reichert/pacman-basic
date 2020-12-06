@@ -53,11 +53,9 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 		{ "POKEY  ", "\"CLYDE\"",  Color.ORANGE }
 	};
 
-	static final Map<Direction,Integer> DIR_INDEX = Map.of(
-		RIGHT, 0,	LEFT, 1, UP, 2,	DOWN, 3);
+	static final Map<Direction,Integer> DIR_INDEX = Map.of(RIGHT, 0, LEFT, 1, UP, 2,	DOWN, 3);
 	
-	static final Polygon TRIANGLE = new Polygon(
-		new int[] { -4, 4, 0 }, new int[] { 0, 0, 4 }, 3);
+	static final Polygon TRIANGLE = new Polygon(new int[] { -4, 4, 0 }, new int[] { 0, 0, 4 }, 3);
 	//@formatter:on
 
 	final Assets assets;
@@ -81,6 +79,7 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 		assets = new Assets();
 		keyboard = new Keyboard(this);
 		canvas = new Canvas();
+		canvas.setBackground(Color.BLACK);
 		canvas.setSize((int) (unscaledSize.width * scaling), (int) (unscaledSize.height * scaling));
 		canvas.setFocusable(false);
 		add(canvas);
@@ -118,7 +117,7 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 		do {
 			do {
 				Graphics2D g = (Graphics2D) buffers.getDrawGraphics();
-				g.setColor(Color.BLACK);
+				g.setColor(canvas.getBackground());
 				g.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 				g.scale(scaling, scaling);
 				drawCurrentScene(g);
@@ -162,6 +161,11 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 			drawIntroScene(g);
 		} else {
 			drawPlayingScene(g);
+		}
+		if (game.paused) {
+			g.setColor(Color.GREEN);
+			g.setFont(new Font(Font.MONOSPACED, Font.BOLD, 28));
+			drawCenteredText(g, "PAUSED", 16 * TS);
 		}
 	}
 
@@ -238,16 +242,11 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 		drawLevelCounter(g);
 		drawMaze(g);
 		drawPacMan(g);
-		for (int i = 0; i < 4; ++i) {
-			drawGhost(g, i);
+		for (int ghost = 0; ghost < 4; ++ghost) {
+			drawGhost(g, ghost);
 		}
 		drawDebugInfo(g);
 		drawFPS(g);
-		if (game.paused) {
-			g.setColor(Color.WHITE);
-			g.setFont(new Font(Font.MONOSPACED, Font.BOLD, 16));
-			drawCenteredText(g, "PAUSED", 10 * TS);
-		}
 	}
 
 	private void drawCenteredText(Graphics2D g, String text, int y) {
