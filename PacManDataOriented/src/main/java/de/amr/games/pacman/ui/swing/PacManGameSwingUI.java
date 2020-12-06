@@ -163,6 +163,8 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 			drawPlayingScene(g);
 		}
 		if (game.paused) {
+			g.setColor(new Color(200, 200, 200, 100));
+			g.fillRect(0, 0, unscaledSize.width, unscaledSize.height);
 			g.setColor(Color.GREEN);
 			g.setFont(new Font(Font.MONOSPACED, Font.BOLD, 28));
 			drawCenteredText(g, "PAUSED", 16 * TS);
