@@ -475,6 +475,7 @@ public class PacManGame implements Runnable {
 		for (Ghost ghost : ghosts) {
 			ghost.frightened = false;
 			ghost.dead = false;
+			ghost.speed = 0;
 		}
 	}
 
