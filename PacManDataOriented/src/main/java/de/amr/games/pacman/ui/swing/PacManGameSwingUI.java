@@ -40,37 +40,37 @@ import de.amr.games.pacman.ui.PacManGameUI;
 public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 
 	//@formatter:off
-	private static final Map<String, Color> GHOST_COLORS = Map.of(
+	static final Map<String, Color> GHOST_COLORS = Map.of(
 		"Blinky", Color.RED, 
-		"Pinky ", Color.PINK, "Inky  ", 
-		Color.CYAN,	"Clyde ", 
-		Color.ORANGE);
+		"Pinky ", Color.PINK, 
+		"Inky  ", Color.CYAN,	
+		"Clyde ", Color.ORANGE);
 	
-	private static final Object[][] GHOST_INTRO_TEXTS = {
+	static final Object[][] GHOST_INTRO_TEXTS = {
 		{ "SHADOW ", "\"BLINKY\"", Color.RED }, 
 		{ "SPEEDY ", "\"PINKY\"",  Color.PINK },
 		{ "BASHFUL", "\"INKY\"",   Color.CYAN }, 
 		{ "POKEY  ", "\"CLYDE\"",  Color.ORANGE }
 	};
 
-	private static final Map<Direction,Integer> DIR_INDEX = Map.of(
+	static final Map<Direction,Integer> DIR_INDEX = Map.of(
 		RIGHT, 0,	LEFT, 1, UP, 2,	DOWN, 3);
 	
-	private static final Polygon TRIANGLE = new Polygon(
+	static final Polygon TRIANGLE = new Polygon(
 		new int[] { -4, 4, 0 }, new int[] { 0, 0, 4 }, 3);
 	//@formatter:on
 
-	private final Assets assets;
-	private final PacManGame game;
-	private final float scaling;
-	private final Canvas canvas;
-	private final Keyboard keyboard;
-	private final Dimension unscaledSize;
+	final Assets assets;
+	final PacManGame game;
+	final float scaling;
+	final Canvas canvas;
+	final Keyboard keyboard;
+	final Dimension unscaledSize;
 
-	private long introTimer;
-	private boolean debugMode;
-	private String messageText;
-	private Color messageColor;
+	long introTimer;
+	boolean debugMode;
+	String messageText;
+	Color messageColor;
 
 	public PacManGameSwingUI(PacManGame game, float scaling) {
 		this.game = game;
