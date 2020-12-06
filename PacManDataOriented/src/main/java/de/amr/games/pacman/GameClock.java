@@ -15,6 +15,10 @@ public class GameClock {
 		return (int) (seconds * targetFPS);
 	}
 
+	public int frame(int frameTicks, int numFrames) {
+		return (int) (framesTotal / frameTicks) % numFrames;
+	}
+
 	public void tick(Runnable frame) {
 		frameStartTime = System.nanoTime();
 		frame.run();

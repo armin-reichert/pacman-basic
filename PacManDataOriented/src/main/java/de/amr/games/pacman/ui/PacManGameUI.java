@@ -14,7 +14,7 @@ public interface PacManGameUI {
 
 	void clearMessage();
 
-	void startIntroAnimation();
+	void startIntroScene();
 
 	boolean keyPressed(String keySpec);
 

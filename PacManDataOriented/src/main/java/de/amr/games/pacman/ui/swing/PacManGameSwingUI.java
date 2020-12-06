@@ -1,9 +1,5 @@
 package de.amr.games.pacman.ui.swing;
 
-import static de.amr.games.pacman.PacManGame.BLINKY;
-import static de.amr.games.pacman.PacManGame.CLYDE;
-import static de.amr.games.pacman.PacManGame.INKY;
-import static de.amr.games.pacman.PacManGame.PINKY;
 import static de.amr.games.pacman.PacManGame.level;
 import static de.amr.games.pacman.World.HTS;
 import static de.amr.games.pacman.World.TS;
@@ -29,6 +25,7 @@ import java.util.Map;
 
 import javax.swing.JFrame;
 
+import de.amr.games.pacman.GameClock;
 import de.amr.games.pacman.GameState;
 import de.amr.games.pacman.PacManGame;
 import de.amr.games.pacman.common.Direction;
@@ -62,140 +59,32 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 	static final Polygon TRIANGLE = new Polygon(new int[] { -4, 4, 0 }, new int[] { 0, 0, 4 }, 3);
 	//@formatter:on
 
+	public static void drawCenteredText(Graphics2D g, String text, int y, int width) {
+		int textWidth = g.getFontMetrics().stringWidth(text);
+		g.drawString(text, (width - textWidth) / 2, y);
+
+	}
+
+	public static void blinking(GameClock clock, int ticks, Runnable code) {
+		if (clock.framesTotal % (2 * ticks) < ticks) {
+			code.run();
+		}
+	}
+
+	public static int dirIndex(Direction dir) {
+		return DIR_INDEX.get(dir);
+	}
+
 	final Assets assets;
 	final PacManGame game;
 	final float scaling;
 	final Canvas canvas;
 	final Keyboard keyboard;
 	final Dimension unscaledSize;
-	final Intro intro;
+	final IntroScene introScene;
 	boolean debugMode;
 	String messageText;
 	Color messageColor;
-
-	class Intro {
-
-		long timer;
-		int pacManX;
-		boolean chasingPacMan;
-
-		public Intro() {
-			reset();
-		}
-
-		public void reset() {
-			timer = 0;
-			pacManX = unscaledSize.width;
-			chasingPacMan = true;
-		}
-
-		private void draw(Graphics2D g) {
-			g.setFont(assets.scoreFont);
-
-			int time = 1;
-			if (timer >= game.clock.sec(time)) {
-				int w = assets.imageLogo.getWidth();
-				g.drawImage(assets.imageLogo, (unscaledSize.width - w) / 2, 3, null);
-			}
-
-			time += 1;
-			if (timer >= game.clock.sec(time)) {
-				g.setColor(Color.WHITE);
-				drawCenteredText(g, "CHARACTER / NICKNAME", 8 * TS);
-			}
-
-			time += 1;
-			for (int ghost = 0; ghost <= 3; ++ghost) {
-				int y = (10 + 3 * ghost) * TS;
-				if (timer >= game.clock.sec(time)) {
-					BufferedImage ghostLookingRight = assets.sheet(0, 4 + ghost);
-					g.drawImage(ghostLookingRight, 2 * TS - 3, y - 2, null);
-				}
-				if (timer >= game.clock.sec(time + 0.5f)) {
-					String character = (String) GHOST_INTRO_TEXTS[ghost][0];
-					String nickname = (String) GHOST_INTRO_TEXTS[ghost][1];
-					Color color = (Color) GHOST_INTRO_TEXTS[ghost][2];
-					String text = "-";
-					text += timer > game.clock.sec(time + 1) ? character + "    " + nickname : character;
-					g.setColor(color);
-					g.drawString(text, 4 * TS, y + 11);
-				}
-				time += 2;
-			}
-
-			if (timer >= game.clock.sec(time)) {
-				g.setColor(Color.PINK);
-				g.fillRect(9 * TS + 6, 27 * TS + 2, 2, 2);
-				drawCenteredText(g, "10 PTS", 28 * TS);
-				blinking(20, () -> {
-					g.fillOval(9 * TS, 29 * TS - 2, 10, 10);
-				});
-				drawCenteredText(g, "50 PTS", 30 * TS);
-			}
-
-			time += 1;
-			if (timer >= game.clock.sec(time)) {
-				if (chasingPacMan) {
-					drawChasingPacMan(g, time);
-				} else {
-					drawChasingGhosts(g, time);
-				}
-			}
-
-			time += 1;
-			if (timer >= game.clock.sec(time)) {
-				g.setColor(Color.WHITE);
-				blinking(20, () -> {
-					drawCenteredText(g, "Press SPACE to play!", unscaledSize.height - 20);
-				});
-			}
-
-			++timer;
-			if (timer == game.clock.sec(30)) {
-				reset();
-			}
-		}
-
-		private void drawChasingPacMan(Graphics2D g, int time) {
-			int x = pacManX;
-			int y = 22 * TS;
-			blinking(20, () -> {
-				g.setColor(Color.PINK);
-				g.fillOval(2 * TS, y + 2, 10, 10);
-			});
-			g.drawImage(pacManWalking(LEFT), x, y, null);
-			x += 24;
-			g.drawImage(ghostWalking(LEFT, BLINKY), x, y, null);
-			x += 16;
-			g.drawImage(ghostWalking(LEFT, PINKY), x, y, null);
-			x += 16;
-			g.drawImage(ghostWalking(LEFT, INKY), x, y, null);
-			x += 16;
-			g.drawImage(ghostWalking(LEFT, CLYDE), x, y, null);
-			if (pacManX > 2 * TS) {
-				pacManX -= 1;
-			} else {
-				chasingPacMan = false;
-			}
-		}
-
-		private void drawChasingGhosts(Graphics2D g, int time) {
-			int x = pacManX;
-			int y = 22 * TS;
-			g.drawImage(pacManWalking(RIGHT), x, y, null);
-			x += 24;
-			BufferedImage ghost = ghostFrightened();
-			for (int i = 0; i < 4; ++i) {
-				g.drawImage(ghost, x, y, null);
-				x += 16;
-			}
-			if (pacManX < unscaledSize.width) {
-				pacManX += 1;
-			} else {
-				// TODO what?
-			}
-		}
-	}
 
 	public PacManGameSwingUI(PacManGame game, float scaling) {
 		this.game = game;
@@ -203,16 +92,19 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 		unscaledSize = new Dimension(WORLD_WIDTH_TILES * TS, WORLD_HEIGHT_TILES * TS);
 		messageText = null;
 		messageColor = Color.YELLOW;
-		intro = new Intro();
 		assets = new Assets();
 		keyboard = new Keyboard(this);
+
+		introScene = new IntroScene(game, assets, unscaledSize);
+
 		canvas = new Canvas();
 		canvas.setBackground(Color.BLACK);
 		canvas.setSize((int) (unscaledSize.width * scaling), (int) (unscaledSize.height * scaling));
 		canvas.setFocusable(false);
+
 		add(canvas);
 		setTitle("Pac-Man");
-		setIconImage(assets.sheet(1, DIR_INDEX.get(RIGHT)));
+		setIconImage(assets.sheet(1, dirIndex(RIGHT)));
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		addWindowListener(new WindowAdapter() {
@@ -287,7 +179,7 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 
 	private void drawCurrentScene(Graphics2D g) {
 		if (game.state == GameState.INTRO) {
-			intro.draw(g);
+			introScene.draw(g);
 		} else {
 			drawPlayingScene(g);
 		}
@@ -296,25 +188,19 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 			g.fillRect(0, 0, unscaledSize.width, unscaledSize.height);
 			g.setColor(Color.GREEN);
 			g.setFont(new Font(Font.MONOSPACED, Font.BOLD, 28));
-			drawCenteredText(g, "PAUSED", 16 * TS);
+			drawCenteredText(g, "PAUSED", 16 * TS, unscaledSize.width);
 		}
 	}
 
 	@Override
-	public void startIntroAnimation() {
-		intro.reset();
-	}
-
-	private void blinking(int ticks, Runnable code) {
-		if (game.clock.framesTotal % (2 * ticks) < ticks) {
-			code.run();
-		}
+	public void startIntroScene() {
+		introScene.reset();
 	}
 
 	private void drawFPS(Graphics2D g) {
 		g.setColor(Color.GRAY);
 		g.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 8));
-		drawCenteredText(g, String.format("%d fps", game.clock.fps), unscaledSize.height - 3);
+		drawCenteredText(g, String.format("%d fps", game.clock.fps), unscaledSize.height - 3, unscaledSize.width);
 	}
 
 	private void drawPlayingScene(Graphics2D g) {
@@ -328,12 +214,6 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 		}
 		drawDebugInfo(g);
 		drawFPS(g);
-	}
-
-	private void drawCenteredText(Graphics2D g, String text, int y) {
-		int textWidth = g.getFontMetrics().stringWidth(text);
-		g.drawString(text, (unscaledSize.width - textWidth) / 2, y);
-
 	}
 
 	private void drawDebugInfo(Graphics2D g) {
@@ -437,7 +317,7 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 		if (messageText != null) {
 			g.setFont(assets.scoreFont);
 			g.setColor(messageColor);
-			drawCenteredText(g, messageText, 21 * TS);
+			drawCenteredText(g, messageText, 21 * TS, unscaledSize.width);
 		}
 
 		if (debugMode) {
@@ -489,11 +369,11 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 			sprite = assets.sheet(2, 0);
 		} else if (!pacMan.couldMove) {
 			// show mouth wide open
-			sprite = assets.sheet(0, DIR_INDEX.get(pacMan.dir));
+			sprite = assets.sheet(0, dirIndex(pacMan.dir));
 		} else {
 			// switch between mouth closed and mouth open
-			int mouthFrame = frameIndex(5, 3);
-			sprite = mouthFrame == 2 ? assets.sheet(mouthFrame, 0) : assets.sheet(mouthFrame, DIR_INDEX.get(pacMan.dir));
+			int mouthFrame = game.clock.frame(5, 3);
+			sprite = mouthFrame == 2 ? assets.sheet(mouthFrame, 0) : assets.sheet(mouthFrame, dirIndex(pacMan.dir));
 		}
 		g.drawImage(sprite, (int) pacMan.position.x - HTS, (int) pacMan.position.y - HTS, null);
 	}
@@ -505,8 +385,8 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 		}
 
 		BufferedImage sprite;
-		int dir = DIR_INDEX.get(ghost.dir);
-		int walking = ghost.speed == 0 ? 0 : frameIndex(5, 2);
+		int dir = dirIndex(ghost.dir);
+		int walking = ghost.speed == 0 ? 0 : game.clock.frame(5, 2);
 		if (ghost.dead) {
 			if (ghost.bounty > 0) {
 				// show bounty as number
@@ -519,7 +399,7 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 			// TODO flash exactly as often as specified by level
 			if (game.pacMan.powerTimer < game.clock.sec(2) && ghost.speed != 0) {
 				// ghost flashing blue/white, animated walking
-				int flashing = frameIndex(10, 2) == 0 ? 8 : 10;
+				int flashing = game.clock.frame(10, 2) == 0 ? 8 : 10;
 				sprite = assets.sheet(walking + flashing, 4);
 			} else {
 				// blue ghost, animated walking
@@ -534,22 +414,5 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 			g.setColor(Color.WHITE);
 			g.drawRect((int) ghost.position.x, (int) ghost.position.y, TS, TS);
 		}
-	}
-
-	private BufferedImage pacManWalking(Direction dir) {
-		int mouthFrame = frameIndex(5, 3);
-		return mouthFrame == 2 ? assets.sheet(mouthFrame, 0) : assets.sheet(mouthFrame, DIR_INDEX.get(dir));
-	}
-
-	private BufferedImage ghostWalking(Direction dir, int ghost) {
-		return assets.sheet(2 * DIR_INDEX.get(dir) + frameIndex(5, 2), 4 + ghost);
-	}
-
-	private BufferedImage ghostFrightened() {
-		return assets.sheet(8 + frameIndex(5, 2), 4);
-	}
-
-	private int frameIndex(int frameDurationTicks, int numFrames) {
-		return (int) (game.clock.framesTotal / frameDurationTicks) % numFrames;
 	}
 }

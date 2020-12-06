@@ -303,7 +303,7 @@ public class PacManGame implements Runnable {
 
 	private void enterIntroState() {
 		enterState(INTRO, Long.MAX_VALUE);
-		ui.startIntroAnimation();
+		ui.startIntroScene();
 	}
 
 	private void runIntroState() {
