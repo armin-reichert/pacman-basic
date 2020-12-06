@@ -60,7 +60,7 @@ import de.amr.games.pacman.ui.PacManGameUI;
  */
 public class PacManGame implements Runnable {
 
-	static final int BLINKY = 0, PINKY = 1, INKY = 2, CLYDE = 3;
+	public static final int BLINKY = 0, PINKY = 1, INKY = 2, CLYDE = 3;
 
 	static final List<Direction> DIRECTION_PRIORITY = List.of(UP, LEFT, DOWN, RIGHT);
 
