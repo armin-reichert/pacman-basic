@@ -235,7 +235,9 @@ public class PacManGame implements Runnable {
 		} else if (ui.keyPressed("x")) {
 			ghostBounty = 200;
 			for (Ghost ghost : ghosts) {
-				killGhost(ghost);
+				if (!ghost.dead) {
+					killGhost(ghost);
+				}
 			}
 			enterGhostDyingState();
 		} else if (ui.keyPressed("s")) {
@@ -523,20 +525,44 @@ public class PacManGame implements Runnable {
 	// END STATE-MACHINE
 
 	private void updatePacMan() {
+		V2i tile = pacMan.tile();
 		tryMoving(pacMan);
+		updatePacManPower();
+		checkPacManFoundFood(tile);
+		checkPacManFoundBonus(tile);
 
-		// Pac-man power expiring?
-		if (pacMan.powerTimer > 0) {
-			pacMan.powerTimer--;
+		// ghost(s) at current tile?
+		for (Ghost ghost : ghosts) {
+			if (!tile.equals(ghost.tile())) {
+				continue;
+			}
+			if (ghost.dead) {
+				continue;
+			}
+			if (ghost.frightened) {
+				killGhost(ghost);
+				enterGhostDyingState();
+				return;
+			}
 			if (pacMan.powerTimer == 0) {
-				for (Ghost ghost : ghosts) {
-					ghost.frightened = false;
-				}
+				pacMan.dead = true;
+				--lives;
+				log("Pac-Man killed by %s at tile %s", ghost.name, ghost.tile());
+				return;
 			}
 		}
+	}
 
-		// food found?
-		V2i tile = pacMan.tile();
+	private void checkPacManFoundBonus(V2i tile) {
+		if (bonusAvailableTimer > 0 && world.isBonusTile(tile.x, tile.y)) {
+			bonusAvailableTimer = 0;
+			bonusConsumedTimer = clock.sec(2);
+			score(level().bonusPoints);
+			log("Pac-Man found bonus %s of value %d", level().bonusSymbol, level().bonusPoints);
+		}
+	}
+
+	private void checkPacManFoundFood(V2i tile) {
 		if (world.isFoodTile(tile.x, tile.y) && !world.hasEatenFood(tile.x, tile.y)) {
 			world.eatFood(tile.x, tile.y);
 			score(10);
@@ -559,51 +585,31 @@ public class PacManGame implements Runnable {
 				bonusAvailableTimer = clock.sec(9 + new Random().nextFloat());
 			}
 		}
+	}
 
-		// bonus found?
-		if (bonusAvailableTimer > 0 && world.isBonusTile(tile.x, tile.y)) {
-			bonusAvailableTimer = 0;
-			bonusConsumedTimer = clock.sec(2);
-			score(level().bonusPoints);
-			log("Pac-Man found bonus %s of value %d", level().bonusSymbol, level().bonusPoints);
-		}
-
-		// ghost at current tile?
-		for (Ghost ghost : ghosts) {
-			if (!pacMan.tile().equals(ghost.tile())) {
-				continue;
-			}
-			// killing ghost?
-			if (ghost.frightened) {
-				killGhost(ghost);
-				enterGhostDyingState();
-				return;
-			}
-			// getting killed by ghost?
-			if (pacMan.powerTimer == 0 && !ghost.dead) {
-				pacMan.dead = true;
-				--lives;
-				log("Pac-Man killed by %s at tile %s", ghost.name, ghost.tile());
-				return;
+	private void updatePacManPower() {
+		if (pacMan.powerTimer > 0) {
+			pacMan.powerTimer--;
+			if (pacMan.powerTimer == 0) {
+				for (Ghost ghost : ghosts) {
+					ghost.frightened = false;
+				}
 			}
 		}
 	}
 
 	private void killGhost(Ghost ghost) {
-		if (ghost.dead) {
-			return;
-		}
 		ghostsKilledInLevel++;
 		ghost.dead = true;
 		ghost.frightened = false;
 		ghost.targetTile = HOUSE_ENTRY;
 		ghost.bounty = ghostBounty;
-		ghostBounty *= 2;
+		log("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name, ghost.tile(), ghost.bounty);
 		score(ghost.bounty);
 		if (ghostsKilledInLevel == 16) {
 			score(12000);
 		}
-		log("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name, ghost.tile(), ghost.bounty);
+		ghostBounty *= 2;
 	}
 
 	private void updateBonus() {
