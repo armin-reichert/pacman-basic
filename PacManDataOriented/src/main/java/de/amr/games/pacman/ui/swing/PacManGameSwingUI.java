@@ -83,13 +83,13 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 			reset();
 		}
 
-		void reset() {
+		public void reset() {
 			timer = 0;
 			pacManX = unscaledSize.width;
 			chasingPacMan = true;
 		}
 
-		void draw(Graphics2D g) {
+		private void draw(Graphics2D g) {
 			g.setFont(assets.scoreFont);
 
 			int time = 1;
@@ -156,7 +156,7 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 			}
 		}
 
-		void drawChasingPacMan(Graphics2D g, int time) {
+		private void drawChasingPacMan(Graphics2D g, int time) {
 			int x = pacManX;
 			int y = 22 * TS;
 			blinking(20, () -> {
@@ -179,7 +179,7 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 			}
 		}
 
-		void drawChasingGhosts(Graphics2D g, int time) {
+		private void drawChasingGhosts(Graphics2D g, int time) {
 			int x = pacManX;
 			int y = 22 * TS;
 			g.drawImage(pacManWalking(RIGHT), x, y, null);
@@ -194,19 +194,6 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 			} else {
 				// TODO what?
 			}
-		}
-
-		BufferedImage pacManWalking(Direction dir) {
-			int mouthFrame = frameIndex(5, 3);
-			return mouthFrame == 2 ? assets.sheet(mouthFrame, 0) : assets.sheet(mouthFrame, DIR_INDEX.get(dir));
-		}
-
-		BufferedImage ghostWalking(Direction dir, int ghost) {
-			return assets.sheet(2 * DIR_INDEX.get(dir) + frameIndex(5, 2), 4 + ghost);
-		}
-
-		BufferedImage ghostFrightened() {
-			return assets.sheet(8 + frameIndex(5, 2), 4);
 		}
 	}
 
@@ -225,6 +212,7 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 		canvas.setFocusable(false);
 		add(canvas);
 		setTitle("Pac-Man");
+		setIconImage(assets.sheet(1, DIR_INDEX.get(RIGHT)));
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		addWindowListener(new WindowAdapter() {
@@ -546,6 +534,19 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 			g.setColor(Color.WHITE);
 			g.drawRect((int) ghost.position.x, (int) ghost.position.y, TS, TS);
 		}
+	}
+
+	private BufferedImage pacManWalking(Direction dir) {
+		int mouthFrame = frameIndex(5, 3);
+		return mouthFrame == 2 ? assets.sheet(mouthFrame, 0) : assets.sheet(mouthFrame, DIR_INDEX.get(dir));
+	}
+
+	private BufferedImage ghostWalking(Direction dir, int ghost) {
+		return assets.sheet(2 * DIR_INDEX.get(dir) + frameIndex(5, 2), 4 + ghost);
+	}
+
+	private BufferedImage ghostFrightened() {
+		return assets.sheet(8 + frameIndex(5, 2), 4);
 	}
 
 	private int frameIndex(int frameDurationTicks, int numFrames) {
