@@ -159,24 +159,19 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 		void drawChasingPacMan(Graphics2D g, int time) {
 			int x = pacManX;
 			int y = 22 * TS;
-			BufferedImage pacMan = pacManWalking(LEFT);
-			BufferedImage blinky = ghostWalking(LEFT, BLINKY);
-			BufferedImage pinky = ghostWalking(LEFT, PINKY);
-			BufferedImage inky = ghostWalking(LEFT, INKY);
-			BufferedImage clyde = ghostWalking(LEFT, CLYDE);
 			blinking(20, () -> {
 				g.setColor(Color.PINK);
 				g.fillOval(2 * TS, y + 2, 10, 10);
 			});
-			g.drawImage(pacMan, x, y, null);
+			g.drawImage(pacManWalking(LEFT), x, y, null);
 			x += 24;
-			g.drawImage(blinky, x, y, null);
+			g.drawImage(ghostWalking(LEFT, BLINKY), x, y, null);
 			x += 16;
-			g.drawImage(pinky, x, y, null);
+			g.drawImage(ghostWalking(LEFT, PINKY), x, y, null);
 			x += 16;
-			g.drawImage(inky, x, y, null);
+			g.drawImage(ghostWalking(LEFT, INKY), x, y, null);
 			x += 16;
-			g.drawImage(clyde, x, y, null);
+			g.drawImage(ghostWalking(LEFT, CLYDE), x, y, null);
 			if (pacManX > 2 * TS) {
 				pacManX -= 1;
 			} else {
@@ -187,15 +182,13 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 		void drawChasingGhosts(Graphics2D g, int time) {
 			int x = pacManX;
 			int y = 22 * TS;
-			BufferedImage pacMan = pacManWalking(RIGHT);
-			BufferedImage ghost = ghostFrightened();
-			g.drawImage(pacMan, x, y, null);
+			g.drawImage(pacManWalking(RIGHT), x, y, null);
 			x += 24;
+			BufferedImage ghost = ghostFrightened();
 			for (int i = 0; i < 4; ++i) {
 				g.drawImage(ghost, x, y, null);
 				x += 16;
 			}
-
 			if (pacManX < unscaledSize.width) {
 				pacManX += 1;
 			} else {
