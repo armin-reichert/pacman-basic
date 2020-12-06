@@ -68,28 +68,38 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 	final Canvas canvas;
 	final Keyboard keyboard;
 	final Dimension unscaledSize;
+	final Intro intro;
+	boolean debugMode;
+	String messageText;
+	Color messageColor;
 
 	class Intro {
 
 		long timer;
-		int headX;
+		int pacManX;
+		boolean chasingPacMan;
 
 		public Intro() {
+			reset();
+		}
+
+		void reset() {
 			timer = 0;
-			headX = unscaledSize.width;
+			pacManX = unscaledSize.width;
+			chasingPacMan = true;
 		}
 
 		void draw(Graphics2D g) {
 			g.setFont(assets.scoreFont);
 
 			int time = 1;
-			if (intro.timer >= game.clock.sec(time)) {
+			if (timer >= game.clock.sec(time)) {
 				int w = assets.imageLogo.getWidth();
 				g.drawImage(assets.imageLogo, (unscaledSize.width - w) / 2, 3, null);
 			}
 
 			time += 1;
-			if (intro.timer >= game.clock.sec(time)) {
+			if (timer >= game.clock.sec(time)) {
 				g.setColor(Color.WHITE);
 				drawCenteredText(g, "CHARACTER / NICKNAME", 8 * TS);
 			}
@@ -97,23 +107,23 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 			time += 1;
 			for (int ghost = 0; ghost <= 3; ++ghost) {
 				int y = (10 + 3 * ghost) * TS;
-				if (intro.timer >= game.clock.sec(time)) {
+				if (timer >= game.clock.sec(time)) {
 					BufferedImage ghostLookingRight = assets.sheet(0, 4 + ghost);
 					g.drawImage(ghostLookingRight, 2 * TS - 3, y - 2, null);
 				}
-				if (intro.timer >= game.clock.sec(time + 0.5f)) {
+				if (timer >= game.clock.sec(time + 0.5f)) {
 					String character = (String) GHOST_INTRO_TEXTS[ghost][0];
 					String nickname = (String) GHOST_INTRO_TEXTS[ghost][1];
 					Color color = (Color) GHOST_INTRO_TEXTS[ghost][2];
 					String text = "-";
-					text += intro.timer > game.clock.sec(time + 1) ? character + "    " + nickname : character;
+					text += timer > game.clock.sec(time + 1) ? character + "    " + nickname : character;
 					g.setColor(color);
 					g.drawString(text, 4 * TS, y + 11);
 				}
 				time += 2;
 			}
 
-			if (intro.timer >= game.clock.sec(time)) {
+			if (timer >= game.clock.sec(time)) {
 				g.setColor(Color.PINK);
 				g.fillRect(9 * TS + 6, 27 * TS + 2, 2, 2);
 				drawCenteredText(g, "10 PTS", 28 * TS);
@@ -124,26 +134,30 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 			}
 
 			time += 1;
-			if (intro.timer >= game.clock.sec(time)) {
-				intro.drawChasingPacMan(g, time);
+			if (timer >= game.clock.sec(time)) {
+				if (chasingPacMan) {
+					drawChasingPacMan(g, time);
+				} else {
+					drawChasingGhosts(g, time);
+				}
 			}
 
 			time += 1;
-			if (intro.timer >= game.clock.sec(time)) {
+			if (timer >= game.clock.sec(time)) {
 				g.setColor(Color.WHITE);
 				blinking(20, () -> {
 					drawCenteredText(g, "Press SPACE to play!", unscaledSize.height - 20);
 				});
 			}
 
-			++intro.timer;
-			if (intro.timer == game.clock.sec(30)) {
-				intro.timer = 0;
+			++timer;
+			if (timer == game.clock.sec(30)) {
+				reset();
 			}
 		}
 
 		void drawChasingPacMan(Graphics2D g, int time) {
-			int x = headX;
+			int x = pacManX;
 			int y = 22 * TS;
 			BufferedImage pacMan = pacManWalking(LEFT);
 			BufferedImage blinky = ghostWalking(LEFT, BLINKY);
@@ -163,27 +177,45 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 			g.drawImage(inky, x, y, null);
 			x += 16;
 			g.drawImage(clyde, x, y, null);
-			if (headX > 2 * TS) {
-				headX -= 1;
+			if (pacManX > 2 * TS) {
+				pacManX -= 1;
 			} else {
-				headX = unscaledSize.width;
+				chasingPacMan = false;
+			}
+		}
+
+		void drawChasingGhosts(Graphics2D g, int time) {
+			int x = pacManX;
+			int y = 22 * TS;
+			BufferedImage pacMan = pacManWalking(RIGHT);
+			BufferedImage ghost = ghostFrightened();
+			g.drawImage(pacMan, x, y, null);
+			x += 24;
+			for (int i = 0; i < 4; ++i) {
+				g.drawImage(ghost, x, y, null);
+				x += 16;
+			}
+
+			if (pacManX < unscaledSize.width) {
+				pacManX += 1;
+			} else {
+				// TODO what?
 			}
 		}
 
 		BufferedImage pacManWalking(Direction dir) {
 			int mouthFrame = frameIndex(5, 3);
-			return mouthFrame == 2 ? assets.sheet(mouthFrame, 0) : assets.sheet(mouthFrame, DIR_INDEX.get(LEFT));
+			return mouthFrame == 2 ? assets.sheet(mouthFrame, 0) : assets.sheet(mouthFrame, DIR_INDEX.get(dir));
 		}
 
 		BufferedImage ghostWalking(Direction dir, int ghost) {
 			return assets.sheet(2 * DIR_INDEX.get(dir) + frameIndex(5, 2), 4 + ghost);
 		}
-	}
 
-	Intro intro;
-	boolean debugMode;
-	String messageText;
-	Color messageColor;
+		BufferedImage ghostFrightened() {
+			return assets.sheet(8 + frameIndex(5, 2), 4);
+		}
+	}
 
 	public PacManGameSwingUI(PacManGame game, float scaling) {
 		this.game = game;
@@ -191,6 +223,7 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 		unscaledSize = new Dimension(WORLD_WIDTH_TILES * TS, WORLD_HEIGHT_TILES * TS);
 		messageText = null;
 		messageColor = Color.YELLOW;
+		intro = new Intro();
 		assets = new Assets();
 		keyboard = new Keyboard(this);
 		canvas = new Canvas();
@@ -288,7 +321,7 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 
 	@Override
 	public void startIntroAnimation() {
-		intro = new Intro();
+		intro.reset();
 	}
 
 	private void blinking(int ticks, Runnable code) {
