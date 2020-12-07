@@ -4,6 +4,8 @@ import de.amr.games.pacman.common.V2i;
 
 public class Ghost extends Creature {
 
+	public static final int BLINKY = 0, PINKY = 1, INKY = 2, CLYDE = 3;
+
 	public final V2i scatterTile;
 	public V2i targetTile;
 	public boolean frightened;

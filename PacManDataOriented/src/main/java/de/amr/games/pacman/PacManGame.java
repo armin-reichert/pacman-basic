@@ -29,6 +29,10 @@ import static de.amr.games.pacman.common.Direction.UP;
 import static de.amr.games.pacman.common.Logging.log;
 import static de.amr.games.pacman.entities.Creature.offset;
 import static de.amr.games.pacman.entities.Creature.tile;
+import static de.amr.games.pacman.entities.Ghost.BLINKY;
+import static de.amr.games.pacman.entities.Ghost.CLYDE;
+import static de.amr.games.pacman.entities.Ghost.INKY;
+import static de.amr.games.pacman.entities.Ghost.PINKY;
 import static java.time.format.DateTimeFormatter.ISO_DATE_TIME;
 
 import java.io.File;
@@ -43,6 +47,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.common.Direction;
+import de.amr.games.pacman.common.Functions;
 import de.amr.games.pacman.common.V2f;
 import de.amr.games.pacman.common.V2i;
 import de.amr.games.pacman.entities.Creature;
@@ -60,13 +65,11 @@ import de.amr.games.pacman.ui.PacManGameUI;
  */
 public class PacManGame implements Runnable {
 
-	public static final int BLINKY = 0, PINKY = 1, INKY = 2, CLYDE = 3;
+	final List<Direction> DIRECTION_PRIORITY = List.of(UP, LEFT, DOWN, RIGHT);
 
-	static final List<Direction> DIRECTION_PRIORITY = List.of(UP, LEFT, DOWN, RIGHT);
+	final File HISCORE_FILE = new File(System.getProperty("user.home"), "pacman-basic-hiscore.xml");
 
-	static final File HISCORE_FILE = new File(System.getProperty("user.home"), "pacman-basic-hiscore.xml");
-
-	static final List<GameLevel> LEVELS = List.of(
+	final List<GameLevel> LEVELS = List.of(
 	/*@formatter:off*/
 		new GameLevel("Cherries",   100,  80, 71, 75, 40,  20,  80, 10,  85,  90, 79, 50, 6, 5),
 		new GameLevel("Strawberry", 300,  90, 79, 85, 45,  30,  90, 15,  95,  95, 83, 55, 5, 5),
@@ -92,16 +95,12 @@ public class PacManGame implements Runnable {
 	//@formatter:on
 	);
 
-	public static GameLevel level(int level) {
+	public GameLevel level(int level) {
 		return level <= 21 ? LEVELS.get(level - 1) : LEVELS.get(20);
 	}
 
 	public GameLevel level() {
 		return level(level);
-	}
-
-	static boolean differsAtMost(float value, float target, float tolerance) {
-		return Math.abs(value - target) <= tolerance;
 	}
 
 	public final World world;
@@ -732,7 +731,7 @@ public class PacManGame implements Runnable {
 	}
 
 	private boolean atGhostHouseDoor(Creature guy) {
-		return guy.at(HOUSE_ENTRY) && differsAtMost(guy.offset().x, HTS, 2);
+		return guy.at(HOUSE_ENTRY) && Functions.differsAtMost(guy.offset().x, HTS, 2);
 	}
 
 	private void letGhostEnterHouse(Ghost ghost) {
@@ -755,7 +754,7 @@ public class PacManGame implements Runnable {
 	private void letGhostLeaveHouse(Ghost ghost) {
 		V2f offset = ghost.offset();
 		// house left?
-		if (ghost.at(HOUSE_ENTRY) && differsAtMost(offset.y, 0, 1)) {
+		if (ghost.at(HOUSE_ENTRY) && Functions.differsAtMost(offset.y, 0, 1)) {
 			ghost.setOffset(HTS, 0);
 			ghost.dir = ghost.wishDir = LEFT;
 			ghost.forcedOnTrack = true;
@@ -763,7 +762,7 @@ public class PacManGame implements Runnable {
 			return;
 		}
 		// center of house reached?
-		if (ghost.at(HOUSE_CENTER) && differsAtMost(offset.x, 3, 1)) {
+		if (ghost.at(HOUSE_CENTER) && Functions.differsAtMost(offset.x, 3, 1)) {
 			ghost.setOffset(HTS, 0);
 			ghost.wishDir = UP;
 			tryMoving(ghost);

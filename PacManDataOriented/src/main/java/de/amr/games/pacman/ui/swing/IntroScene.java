@@ -1,12 +1,12 @@
 package de.amr.games.pacman.ui.swing;
 
-import static de.amr.games.pacman.PacManGame.BLINKY;
-import static de.amr.games.pacman.PacManGame.CLYDE;
-import static de.amr.games.pacman.PacManGame.INKY;
-import static de.amr.games.pacman.PacManGame.PINKY;
 import static de.amr.games.pacman.World.TS;
 import static de.amr.games.pacman.common.Direction.LEFT;
 import static de.amr.games.pacman.common.Direction.RIGHT;
+import static de.amr.games.pacman.entities.Ghost.BLINKY;
+import static de.amr.games.pacman.entities.Ghost.CLYDE;
+import static de.amr.games.pacman.entities.Ghost.INKY;
+import static de.amr.games.pacman.entities.Ghost.PINKY;
 import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.dirIndex;
 import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.drawCenteredText;
 
