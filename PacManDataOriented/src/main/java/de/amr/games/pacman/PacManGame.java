@@ -107,7 +107,7 @@ public class PacManGame implements Runnable {
 	public final PacMan pacMan;
 	public final Ghost[] ghosts;
 
-	public GameClock clock;
+	public final GameClock clock;
 	public PacManGameUI ui;
 
 	public boolean paused;
@@ -253,7 +253,7 @@ public class PacManGame implements Runnable {
 
 	public String stateDescription() {
 		if (state == HUNTING) {
-			boolean chasing = huntingPhase % 2 != 0;
+			boolean chasing = huntingPhase % 2 == 1;
 			int step = huntingPhase / 2;
 			return chasing ? String.format("%s-chasing-%d", state, step) : String.format("%s-scattering-%d", state, step);
 		}
@@ -345,7 +345,7 @@ public class PacManGame implements Runnable {
 
 	// HUNTING
 
-	private static final long[][] HUNTING_PHASE_DURATION = {
+	private final long[][] HUNTING_PHASE_DURATION = {
 		//@formatter:off
 		{ 7, 20, 7, 20, 5,   20,  5, Long.MAX_VALUE },
 		{ 7, 20, 7, 20, 5, 1033, -1, Long.MAX_VALUE },
@@ -353,14 +353,14 @@ public class PacManGame implements Runnable {
 		//@formatter:on
 	};
 
-	private long ticks(long spec) {
-		if (spec == -1) {
-			return 1;
+	private long ticks(long secOrTicks) {
+		if (secOrTicks < 0) {
+			return -secOrTicks; // ticks
 		}
-		if (spec == Long.MAX_VALUE) {
+		if (secOrTicks == Long.MAX_VALUE) {
 			return Long.MAX_VALUE;
 		}
-		return clock.sec(spec);
+		return clock.sec(secOrTicks); // seconds
 	}
 
 	private long huntingPhaseDuration() {
@@ -368,7 +368,7 @@ public class PacManGame implements Runnable {
 		return ticks(HUNTING_PHASE_DURATION[index][huntingPhase]);
 	}
 
-	private void nextHuntingPhase() {
+	private void enterNextHuntingPhase() {
 		huntingPhase++;
 		state.setDuration(huntingPhaseDuration());
 		forceGhostsTurningBack();
@@ -390,7 +390,7 @@ public class PacManGame implements Runnable {
 			return;
 		}
 		if (state.expired()) {
-			nextHuntingPhase();
+			enterNextHuntingPhase();
 		}
 		updatePacMan();
 		for (Ghost ghost : ghosts) {
@@ -430,6 +430,7 @@ public class PacManGame implements Runnable {
 	}
 
 	private void exitPacManDyingState() {
+		lives -= 1;
 		for (Ghost ghost : ghosts) {
 			ghost.visible = true;
 		}
@@ -546,7 +547,6 @@ public class PacManGame implements Runnable {
 			}
 			if (pacMan.powerTimer == 0) {
 				pacMan.dead = true;
-				--lives;
 				log("Pac-Man killed by %s at tile %s", ghost.name, ghost.tile());
 				return;
 			}

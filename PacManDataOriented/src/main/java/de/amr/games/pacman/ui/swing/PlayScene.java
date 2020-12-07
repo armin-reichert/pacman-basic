@@ -49,7 +49,16 @@ class PlayScene {
 		for (int ghost = 0; ghost < 4; ++ghost) {
 			drawGhost(g, ghost);
 		}
+		drawMessage(g);
 		drawDebugInfo(g);
+	}
+
+	private void drawMessage(Graphics2D g) {
+		if (messageText != null) {
+			g.setFont(assets.scoreFont);
+			g.setColor(messageColor);
+			drawCenteredText(g, messageText, 21 * TS, size.width);
+		}
 	}
 
 	private void drawDebugInfo(Graphics2D g) {
@@ -150,12 +159,6 @@ class PlayScene {
 				g.drawImage(image, (size.width - image.getWidth()) / 2, 20 * TS - HTS, null);
 			}
 		}
-		if (messageText != null) {
-			g.setFont(assets.scoreFont);
-			g.setColor(messageColor);
-			drawCenteredText(g, messageText, 21 * TS, size.width);
-		}
-
 		if (debugMode) {
 			for (int x = 0; x < WORLD_WIDTH_TILES; ++x) {
 				for (int y = 0; y < WORLD_HEIGHT_TILES; ++y) {
