@@ -141,7 +141,6 @@ class IntroScene {
 
 	private void drawChasingGhosts(Graphics2D g) {
 		int y = 22 * TS;
-		g.drawImage(pacManWalking(RIGHT), (int) pacManX, y, null);
 		BufferedImage ghost = ghostFrightened();
 		for (int i = 0; i < 4; ++i) {
 			int x = (int) leftmostGhostX + i * 16;
@@ -152,6 +151,7 @@ class IntroScene {
 				g.drawImage(ghost, x, y, null);
 			}
 		}
+		g.drawImage(pacManWalking(RIGHT), (int) pacManX, y, null);
 		if (leftmostGhostX < size.width) {
 			pacManX += 0.6f;
 			leftmostGhostX += 0.3f;
