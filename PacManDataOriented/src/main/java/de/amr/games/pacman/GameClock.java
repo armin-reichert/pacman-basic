@@ -7,9 +7,6 @@ public class GameClock {
 	public long frames;
 	public long framesTotal;
 	public long fpsCountStartTime;
-	public long frameStartTime;
-	public long frameEndTime;
-	public long frameDuration;
 
 	public int sec(float seconds) {
 		return (int) (seconds * targetFPS);
@@ -26,10 +23,10 @@ public class GameClock {
 	}
 
 	public void tick(Runnable frame) {
-		frameStartTime = System.nanoTime();
+		long frameStartTime = System.nanoTime();
 		frame.run();
-		frameEndTime = System.nanoTime();
-		frameDuration = frameEndTime - frameStartTime;
+		long frameEndTime = System.nanoTime();
+		long frameDuration = frameEndTime - frameStartTime;
 		++frames;
 		++framesTotal;
 		if (frameEndTime - fpsCountStartTime >= 1_000_000_000) {
