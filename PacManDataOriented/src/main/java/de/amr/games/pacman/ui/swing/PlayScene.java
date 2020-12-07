@@ -23,7 +23,7 @@ import de.amr.games.pacman.entities.Ghost;
 
 class PlayScene {
 
-	static final Polygon TRIANGLE = new Polygon(new int[] { -4, 4, 0 }, new int[] { 0, 0, 4 }, 3);
+	final Polygon TRIANGLE = new Polygon(new int[] { -4, 4, 0 }, new int[] { 0, 0, 4 }, 3);
 
 	public boolean debugMode;
 
@@ -254,5 +254,4 @@ class PlayScene {
 			g.drawRect((int) ghost.position.x, (int) ghost.position.y, TS, TS);
 		}
 	}
-
 }
