@@ -18,6 +18,11 @@ import java.awt.image.BufferedImage;
 import de.amr.games.pacman.PacManGame;
 import de.amr.games.pacman.common.Direction;
 
+/**
+ * Intro presenting the ghosts and showing the chasing animation.
+ * 
+ * @author Armin Reichert
+ */
 class IntroScene {
 
 	//@formatter:off

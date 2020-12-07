@@ -21,6 +21,11 @@ import de.amr.games.pacman.common.Direction;
 import de.amr.games.pacman.entities.Creature;
 import de.amr.games.pacman.entities.Ghost;
 
+/**
+ * Scene where the game is played.
+ * 
+ * @author Armin Reichert
+ */
 class PlayScene {
 
 	final Polygon TRIANGLE = new Polygon(new int[] { -4, 4, 0 }, new int[] { 0, 0, 4 }, 3);
