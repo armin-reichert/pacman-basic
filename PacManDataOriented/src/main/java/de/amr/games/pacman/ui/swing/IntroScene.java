@@ -3,10 +3,6 @@ package de.amr.games.pacman.ui.swing;
 import static de.amr.games.pacman.World.TS;
 import static de.amr.games.pacman.common.Direction.LEFT;
 import static de.amr.games.pacman.common.Direction.RIGHT;
-import static de.amr.games.pacman.entities.Ghost.BLINKY;
-import static de.amr.games.pacman.entities.Ghost.CLYDE;
-import static de.amr.games.pacman.entities.Ghost.INKY;
-import static de.amr.games.pacman.entities.Ghost.PINKY;
 import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.dirIndex;
 import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.drawCenteredText;
 
@@ -41,7 +37,7 @@ class IntroScene {
 	public long mark;
 	public float pacManX;
 	public float leftmostGhostX;
-	public boolean chasingPacMan;
+	public boolean ghostsChasingPacMan;
 
 	public IntroScene(PacManGame game, Assets assets, Dimension size) {
 		this.game = game;
@@ -55,7 +51,7 @@ class IntroScene {
 		mark = 0;
 		pacManX = size.width;
 		leftmostGhostX = pacManX + 24;
-		chasingPacMan = true;
+		ghostsChasingPacMan = true;
 	}
 
 	public void draw(Graphics2D g) {
@@ -104,10 +100,10 @@ class IntroScene {
 
 		mark += 1;
 		if (passed >= game.clock.sec(mark)) {
-			if (chasingPacMan) {
-				drawChasingPacMan(g);
+			if (ghostsChasingPacMan) {
+				drawGhostsChasingPacMan(g);
 			} else {
-				drawChasingGhosts(g);
+				drawPacManChasingGhosts(g);
 			}
 		}
 
@@ -125,35 +121,34 @@ class IntroScene {
 		}
 	}
 
-	private void drawChasingPacMan(Graphics2D g) {
+	private void drawGhostsChasingPacMan(Graphics2D g) {
 		int y = 22 * TS;
 		game.clock.alternating(20, () -> {
 			g.setColor(Color.PINK);
 			g.fillOval(2 * TS, y + 2, 10, 10);
 		});
 		g.drawImage(pacManWalking(LEFT), (int) pacManX, y, null);
-		g.drawImage(ghostWalking(LEFT, BLINKY), (int) leftmostGhostX, y, null);
-		g.drawImage(ghostWalking(LEFT, PINKY), (int) leftmostGhostX + 16, y, null);
-		g.drawImage(ghostWalking(LEFT, INKY), (int) leftmostGhostX + 2 * 16, y, null);
-		g.drawImage(ghostWalking(LEFT, CLYDE), (int) leftmostGhostX + 3 * 16, y, null);
+		for (int ghost = 0; ghost < 4; ++ghost) {
+			g.drawImage(ghostWalking(LEFT, ghost), (int) leftmostGhostX + 16 * ghost, y, null);
+		}
 		if (pacManX > 2 * TS) {
-			pacManX -= 1;
-			leftmostGhostX -= 1;
+			pacManX -= 0.8f;
+			leftmostGhostX -= 0.8f;
 		} else {
-			chasingPacMan = false;
+			ghostsChasingPacMan = false;
 		}
 	}
 
-	private void drawChasingGhosts(Graphics2D g) {
+	private void drawPacManChasingGhosts(Graphics2D g) {
 		int y = 22 * TS;
-		BufferedImage ghost = ghostFrightened();
-		for (int i = 0; i < 4; ++i) {
-			int x = (int) leftmostGhostX + i * 16;
+		BufferedImage frightenedGhostImage = ghostFrightened();
+		for (int ghost = 0; ghost < 4; ++ghost) {
+			int x = (int) leftmostGhostX + ghost * 16;
 			if (pacManX > x && pacManX <= x + 16) {
-				int bounty = (int) Math.pow(2, i) * 200;
+				int bounty = (int) Math.pow(2, ghost) * 200;
 				g.drawImage(assets.bountyNumbers.get(bounty), x, y, null);
 			} else if (pacManX < x) {
-				g.drawImage(ghost, x, y, null);
+				g.drawImage(frightenedGhostImage, x, y, null);
 			}
 		}
 		g.drawImage(pacManWalking(RIGHT), (int) pacManX, y, null);
