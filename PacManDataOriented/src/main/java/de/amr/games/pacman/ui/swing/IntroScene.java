@@ -34,8 +34,8 @@ class IntroScene {
 	public Dimension size;
 	public long passed;
 	public long mark;
-	public int pacManX;
-	public int leadingGhostX;
+	public float pacManX;
+	public float leftmostGhostX;
 	public boolean chasingPacMan;
 
 	public IntroScene(PacManGame game, Assets assets, Dimension size) {
@@ -49,7 +49,7 @@ class IntroScene {
 		passed = 0;
 		mark = 0;
 		pacManX = size.width;
-		leadingGhostX = pacManX + 24;
+		leftmostGhostX = pacManX + 24;
 		chasingPacMan = true;
 	}
 
@@ -126,33 +126,35 @@ class IntroScene {
 			g.setColor(Color.PINK);
 			g.fillOval(2 * TS, y + 2, 10, 10);
 		});
-		g.drawImage(pacManWalking(LEFT), pacManX, y, null);
-		g.drawImage(ghostWalking(LEFT, BLINKY), leadingGhostX, y, null);
-		g.drawImage(ghostWalking(LEFT, PINKY), leadingGhostX + 16, y, null);
-		g.drawImage(ghostWalking(LEFT, INKY), leadingGhostX + 2 * 16, y, null);
-		g.drawImage(ghostWalking(LEFT, CLYDE), leadingGhostX + 3 * 16, y, null);
+		g.drawImage(pacManWalking(LEFT), (int) pacManX, y, null);
+		g.drawImage(ghostWalking(LEFT, BLINKY), (int) leftmostGhostX, y, null);
+		g.drawImage(ghostWalking(LEFT, PINKY), (int) leftmostGhostX + 16, y, null);
+		g.drawImage(ghostWalking(LEFT, INKY), (int) leftmostGhostX + 2 * 16, y, null);
+		g.drawImage(ghostWalking(LEFT, CLYDE), (int) leftmostGhostX + 3 * 16, y, null);
 		if (pacManX > 2 * TS) {
 			pacManX -= 1;
-			leadingGhostX -= 1;
+			leftmostGhostX -= 1;
 		} else {
 			chasingPacMan = false;
 		}
 	}
 
 	private void drawChasingGhosts(Graphics2D g) {
-		int x = pacManX;
 		int y = 22 * TS;
-		g.drawImage(pacManWalking(RIGHT), x, y, null);
-		x += 24;
+		g.drawImage(pacManWalking(RIGHT), (int) pacManX, y, null);
 		BufferedImage ghost = ghostFrightened();
 		for (int i = 0; i < 4; ++i) {
-			g.drawImage(ghost, x, y, null);
-			x += 16;
+			int x = (int) leftmostGhostX + i * 16;
+			if (pacManX > x && pacManX <= x + 16) {
+				int bounty = (int) Math.pow(2, i) * 200;
+				g.drawImage(assets.bountyNumbers.get(bounty), x, y, null);
+			} else if (pacManX < x) {
+				g.drawImage(ghost, x, y, null);
+			}
 		}
-		if (pacManX < size.width) {
-			pacManX += 1;
-		} else {
-			// TODO what?
+		if (leftmostGhostX < size.width) {
+			pacManX += 0.6f;
+			leftmostGhostX += 0.3f;
 		}
 	}
 
