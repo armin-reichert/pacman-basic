@@ -151,11 +151,7 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 			playScene.draw(g);
 		}
 		if (game.paused) {
-			g.setColor(new Color(200, 200, 200, 100));
-			g.fillRect(0, 0, unscaledSize.width, unscaledSize.height);
-			g.setColor(Color.GREEN);
-			g.setFont(new Font(Font.MONOSPACED, Font.BOLD, 28));
-			drawCenteredText(g, "PAUSED", 16 * TS, unscaledSize.width);
+			drawPauseText(g);
 		}
 		if (debugMode) {
 			drawFPS(g);
@@ -165,6 +161,14 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 	@Override
 	public void startIntroScene() {
 		introScene.reset();
+	}
+
+	private void drawPauseText(Graphics2D g) {
+		g.setColor(new Color(200, 200, 200, 100));
+		g.fillRect(0, 0, unscaledSize.width, unscaledSize.height);
+		g.setColor(Color.GREEN);
+		g.setFont(new Font(Font.MONOSPACED, Font.BOLD, 28));
+		drawCenteredText(g, "PAUSED", 16 * TS, unscaledSize.width);
 	}
 
 	private void drawFPS(Graphics2D g) {
