@@ -477,6 +477,7 @@ public class PacManGame implements Runnable {
 			ghost.dead = false;
 			ghost.speed = 0;
 		}
+		pacMan.speed = 0;
 	}
 
 	private void runChangingLevelState() {

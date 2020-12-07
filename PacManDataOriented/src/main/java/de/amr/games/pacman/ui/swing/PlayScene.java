@@ -18,8 +18,8 @@ import java.awt.image.BufferedImage;
 import de.amr.games.pacman.GameState;
 import de.amr.games.pacman.PacManGame;
 import de.amr.games.pacman.common.Direction;
-import de.amr.games.pacman.entities.Creature;
 import de.amr.games.pacman.entities.Ghost;
+import de.amr.games.pacman.entities.PacMan;
 
 /**
  * Scene where the game is played.
@@ -165,32 +165,36 @@ class PlayScene {
 			}
 		}
 		if (debugMode) {
-			for (int x = 0; x < WORLD_WIDTH_TILES; ++x) {
-				for (int y = 0; y < WORLD_HEIGHT_TILES; ++y) {
-					if (game.world.isIntersectionTile(x, y)) {
-						g.setColor(new Color(100, 100, 100));
-						g.setStroke(new BasicStroke(0.1f));
-						for (Direction dir : Direction.values()) {
-							int nx = x + dir.vec.x, ny = y + dir.vec.y;
-							if (game.world.isWall(nx, ny)) {
-								continue;
-							}
-							g.drawLine(x * TS + HTS, y * TS + HTS, nx * TS + HTS, ny * TS + HTS);
+			drawMazeStructure(g);
+		}
+	}
+
+	private void drawMazeStructure(Graphics2D g) {
+		for (int x = 0; x < WORLD_WIDTH_TILES; ++x) {
+			for (int y = 0; y < WORLD_HEIGHT_TILES; ++y) {
+				if (game.world.isIntersectionTile(x, y)) {
+					g.setColor(new Color(100, 100, 100));
+					g.setStroke(new BasicStroke(0.1f));
+					for (Direction dir : Direction.values()) {
+						int nx = x + dir.vec.x, ny = y + dir.vec.y;
+						if (game.world.isWall(nx, ny)) {
+							continue;
 						}
-					} else if (game.world.isUpwardsBlocked(x, y)) {
-						g.setColor(new Color(100, 100, 100));
-						g.setStroke(new BasicStroke(0.1f));
-						g.translate(x * TS + HTS, y * TS);
-						g.fillPolygon(TRIANGLE);
-						g.translate(-(x * TS + HTS), -y * TS);
+						g.drawLine(x * TS + HTS, y * TS + HTS, nx * TS + HTS, ny * TS + HTS);
 					}
+				} else if (game.world.isUpwardsBlocked(x, y)) {
+					g.setColor(new Color(100, 100, 100));
+					g.setStroke(new BasicStroke(0.1f));
+					g.translate(x * TS + HTS, y * TS);
+					g.fillPolygon(TRIANGLE);
+					g.translate(-(x * TS + HTS), -y * TS);
 				}
 			}
 		}
 	}
 
 	private void drawPacMan(Graphics2D g) {
-		Creature pacMan = game.pacMan;
+		PacMan pacMan = game.pacMan;
 		if (!pacMan.visible) {
 			return;
 		}
@@ -207,8 +211,7 @@ class PlayScene {
 				// show collapsed sprite after collapsing
 				sprite = assets.sheet(13, 0);
 			}
-		} else if (game.state == GameState.READY || game.state == GameState.CHANGING_LEVEL
-				|| game.state == GameState.GAME_OVER) {
+		} else if (pacMan.speed == 0) {
 			// show full sprite
 			sprite = assets.sheet(2, 0);
 		} else if (!pacMan.couldMove) {
