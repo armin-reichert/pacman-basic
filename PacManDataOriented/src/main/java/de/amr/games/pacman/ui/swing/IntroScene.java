@@ -92,7 +92,7 @@ class IntroScene {
 			g.setColor(Color.PINK);
 			g.fillRect(9 * TS + 6, 27 * TS + 2, 2, 2);
 			drawCenteredText(g, "10 PTS", 28 * TS, size.width);
-			game.clock.alternating(20, () -> {
+			game.clock.runOrBeIdle(20, () -> {
 				g.fillOval(9 * TS, 29 * TS - 2, 10, 10);
 			});
 			drawCenteredText(g, "50 PTS", 30 * TS, size.width);
@@ -110,7 +110,7 @@ class IntroScene {
 		mark += 1;
 		if (passed >= game.clock.sec(mark)) {
 			g.setColor(Color.WHITE);
-			game.clock.alternating(20, () -> {
+			game.clock.runOrBeIdle(20, () -> {
 				drawCenteredText(g, "Press SPACE to play!", size.height - 20, size.width);
 			});
 		}
@@ -123,7 +123,7 @@ class IntroScene {
 
 	private void drawGhostsChasingPacMan(Graphics2D g) {
 		int y = 22 * TS;
-		game.clock.alternating(20, () -> {
+		game.clock.runOrBeIdle(20, () -> {
 			g.setColor(Color.PINK);
 			g.fillOval(2 * TS, y + 2, 10, 10);
 		});

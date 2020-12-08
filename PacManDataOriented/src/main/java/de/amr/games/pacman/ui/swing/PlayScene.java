@@ -117,18 +117,17 @@ class PlayScene {
 	}
 
 	private void drawMazeFlashing(Graphics2D g) {
-		if (game.mazeFlashesRemaining > 0 && game.clock.framesTotal % 30 < 15) {
-			g.drawImage(assets.imageMazeEmptyWhite, 0, 3 * TS, null);
-			if (game.clock.framesTotal % 30 == 14) {
-				--game.mazeFlashesRemaining;
-			}
-		} else {
+		game.clock.runAlternating(game.clock.sec(0.25f), () -> {
 			g.drawImage(assets.imageMazeEmpty, 0, 3 * TS, null);
-		}
+		}, () -> {
+			g.drawImage(assets.imageMazeEmptyWhite, 0, 3 * TS, null);
+		}, () -> {
+			--game.mazeFlashesRemaining;
+		});
 	}
 
 	private void drawMaze(Graphics2D g) {
-		if (game.state == GameState.CHANGING_LEVEL && game.state.ticksRemaining() <= game.clock.sec(4f)) {
+		if (game.mazeFlashesRemaining > 0 && game.state.ticksRemaining() <= game.clock.sec(4f)) {
 			drawMazeFlashing(g);
 			return;
 		}
@@ -139,19 +138,17 @@ class PlayScene {
 					hideTile(g, x, y);
 					continue;
 				}
-				// energizer blinking
-				if (game.world.isEnergizerTile(x, y) && game.clock.framesTotal % 20 < 10 && (game.state == GameState.HUNTING)) {
-					hideTile(g, x, y);
+				// energizer blinking?
+				if (game.state == GameState.HUNTING && game.world.isEnergizerTile(x, y)) {
+					int xx = x, yy = y;
+					game.clock.runOrBeIdle(10, () -> hideTile(g, xx, yy));
 				}
 			}
 		}
 		if (game.bonusAvailableTimer > 0) {
-			String symbolName = game.level().bonusSymbol;
-			g.drawImage(assets.symbols.get(symbolName), 13 * TS, 20 * TS - HTS, null);
-		}
-		if (game.bonusConsumedTimer > 0) {
-			int number = game.level().bonusPoints;
-			BufferedImage image = assets.numbers.get(number);
+			g.drawImage(assets.symbols.get(game.level().bonusSymbol), 13 * TS, 20 * TS - HTS, null);
+		} else if (game.bonusConsumedTimer > 0) {
+			BufferedImage image = assets.numbers.get(game.level().bonusPoints);
 			g.drawImage(image, (size.width - image.getWidth()) / 2, 20 * TS - HTS, null);
 		}
 		if (debugMode) {

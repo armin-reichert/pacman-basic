@@ -16,9 +16,51 @@ public class GameClock {
 		return (int) (framesTotal / frameTicks) % numFrames;
 	}
 
-	public void alternating(int ticks, Runnable code) {
-		if (framesTotal % (2 * ticks) < ticks) {
+	/**
+	 * Executes repeatedly either code for specified time and then gets idle for same time.
+	 * 
+	 * @param durationTicks number of ticks that code is executed
+	 * @param code          either code
+	 */
+	public void runOrBeIdle(int durationTicks, Runnable code) {
+		if (framesTotal % (2 * durationTicks) < durationTicks) {
 			code.run();
+		}
+	}
+
+	/**
+	 * Executes alternatively either code for specified time and then other code.
+	 * 
+	 * @param durationTicks number of ticks that either or other code is executed
+	 * @param eitherCode    either code
+	 * @param otherCode     other code
+	 */
+	public void runAlternating(int durationTicks, Runnable eitherCode, Runnable otherCode) {
+		if (framesTotal % (2 * durationTicks) < durationTicks) {
+			eitherCode.run();
+		} else {
+			otherCode.run();
+		}
+	}
+
+	/**
+	 * Executes alternatively either code for specified time and then other code. After each phase the
+	 * third code is executed.
+	 * 
+	 * @param durationTicks number of ticks that either or other code is executed
+	 * @param eitherCode    either code
+	 * @param otherCode     other code
+	 * @param andThen       code executed after one either/other phase has been executed
+	 */
+	public void runAlternating(int durationTicks, Runnable eitherCode, Runnable otherCode, Runnable andThen) {
+		long frame = framesTotal % (2 * durationTicks);
+		if (frame < durationTicks) {
+			eitherCode.run();
+		} else {
+			otherCode.run();
+		}
+		if (frame == 2 * durationTicks - 1) {
+			andThen.run();
 		}
 	}
 
