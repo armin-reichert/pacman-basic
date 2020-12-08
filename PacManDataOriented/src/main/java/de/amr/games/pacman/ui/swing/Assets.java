@@ -20,9 +20,9 @@ public class Assets {
 	//@formatter:off
 	static final Map<String, Color> GHOST_COLORS = Map.of(
 		"Blinky", Color.RED, 
-		"Pinky ", Color.PINK, 
-		"Inky  ", Color.CYAN,	
-		"Clyde ", Color.ORANGE);
+		"Pinky",  Color.PINK, 
+		"Inky",   Color.CYAN,	
+		"Clyde",  Color.ORANGE);
 	//@formatter:on
 
 	public final BufferedImage imageLogo;

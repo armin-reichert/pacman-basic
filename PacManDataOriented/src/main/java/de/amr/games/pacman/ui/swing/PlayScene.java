@@ -74,12 +74,6 @@ class PlayScene {
 			g.setColor(Color.WHITE);
 			g.setFont(new Font("Arial", Font.PLAIN, 6));
 			g.drawString(stateText, 1 * TS, 3 * TS);
-			for (Ghost ghost : game.ghosts) {
-				if (ghost.targetTile != null) {
-					g.setColor(Assets.GHOST_COLORS.get(ghost.name));
-					g.fillRect(ghost.targetTile.x * TS + HTS / 2, ghost.targetTile.y * TS + HTS / 2, HTS, HTS);
-				}
-			}
 		}
 	}
 
@@ -260,6 +254,11 @@ class PlayScene {
 		if (debugMode) {
 			g.setColor(Color.WHITE);
 			g.drawRect((int) ghost.position.x, (int) ghost.position.y, TS, TS);
+			if (ghost.targetTile != null) {
+				Color c = Assets.GHOST_COLORS.get(ghost.name);
+				g.setColor(c);
+				g.fillRect(ghost.targetTile.x * TS + HTS / 2, ghost.targetTile.y * TS + HTS / 2, HTS, HTS);
+			}
 		}
 	}
 }
