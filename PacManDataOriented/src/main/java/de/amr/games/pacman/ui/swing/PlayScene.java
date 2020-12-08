@@ -152,11 +152,7 @@ class PlayScene {
 		if (game.bonusConsumedTimer > 0) {
 			int number = game.level().bonusPoints;
 			BufferedImage image = assets.numbers.get(number);
-			if (number < 2000) {
-				g.drawImage(image, 13 * TS, 20 * TS - HTS, null);
-			} else {
-				g.drawImage(image, (size.width - image.getWidth()) / 2, 20 * TS - HTS, null);
-			}
+			g.drawImage(image, (size.width - image.getWidth()) / 2, 20 * TS - HTS, null);
 		}
 		if (debugMode) {
 			drawMazeStructure(g);
