@@ -163,7 +163,7 @@ public class PacManGame implements Runnable {
 		extraLife = false;
 		points = 0;
 		lives = 3;
-		setLevel(1);
+		setLevel(1); // level numbering starts with 1!
 	}
 
 	private void setLevel(int n) {
@@ -217,6 +217,15 @@ public class PacManGame implements Runnable {
 	}
 
 	private void readInput() {
+
+		if (ui.keyPressed("p")) {
+			paused = !paused;
+		} else if (ui.keyPressed("s")) {
+			clock.targetFPS = clock.targetFPS == 60 ? 30 : 60;
+		} else if (ui.keyPressed("d")) {
+			ui.setDebugMode(!ui.isDebugMode());
+		}
+
 		if (ui.keyPressed("left")) {
 			pacMan.wishDir = LEFT;
 		} else if (ui.keyPressed("right")) {
@@ -226,12 +235,14 @@ public class PacManGame implements Runnable {
 		} else if (ui.keyPressed("down")) {
 			pacMan.wishDir = DOWN;
 		}
+		handleCheatKeys();
+	}
 
-		else if (ui.keyPressed("d")) {
-			ui.setDebugMode(!ui.isDebugMode());
-		} else if (ui.keyPressed("e")) {
+	private void handleCheatKeys() {
+		if (ui.keyPressed("e") && state == HUNTING) {
 			eatAllNormalPellets();
-		} else if (ui.keyPressed("x")) {
+		}
+		if (ui.keyPressed("x") && state == HUNTING) {
 			ghostBounty = 200;
 			for (Ghost ghost : ghosts) {
 				if (!ghost.dead) {
@@ -239,13 +250,10 @@ public class PacManGame implements Runnable {
 				}
 			}
 			enterGhostDyingState();
-		} else if (ui.keyPressed("s")) {
-			clock.targetFPS = clock.targetFPS == 60 ? 30 : 60;
-		} else if (ui.keyPressed("plus")) {
+		}
+		if (ui.keyPressed("plus") && state == READY) {
 			setLevel(++level);
 			enterReadyState();
-		} else if (ui.keyPressed("p")) {
-			paused = !paused;
 		}
 	}
 
