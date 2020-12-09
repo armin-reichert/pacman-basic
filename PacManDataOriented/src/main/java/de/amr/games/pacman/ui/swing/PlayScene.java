@@ -85,7 +85,7 @@ class PlayScene {
 		g.drawString("HIGH SCORE", 16 * TS, 1 * TS);
 		g.translate(0, 1);
 		g.setColor(Color.YELLOW);
-		g.drawString(String.format("%08d", game.points), 1 * TS, 2 * TS);
+		g.drawString(String.format("%08d", game.score), 1 * TS, 2 * TS);
 		g.setColor(Color.LIGHT_GRAY);
 		g.drawString(String.format("L%02d", game.level), 9 * TS, 2 * TS);
 		g.setColor(Color.YELLOW);

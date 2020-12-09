@@ -117,7 +117,7 @@ public class PacManGame implements Runnable {
 	public int level;
 	public int huntingPhase;
 	public int lives;
-	public int points;
+	public int score;
 	public int hiscorePoints;
 	public int hiscoreLevel;
 	public boolean hiscoreChanged;
@@ -161,7 +161,7 @@ public class PacManGame implements Runnable {
 	private void reset() {
 		loadHiscore();
 		extraLife = false;
-		points = 0;
+		score = 0;
 		lives = 3;
 		setLevel(1); // level numbering starts with 1!
 	}
@@ -405,7 +405,6 @@ public class PacManGame implements Runnable {
 			updateGhost(ghost);
 		}
 		updateBonus();
-		updateHiscore();
 
 		if (pacMan.powerTimer == 0) {
 			state.tick();
@@ -632,12 +631,17 @@ public class PacManGame implements Runnable {
 		}
 	}
 
-	private void score(int n) {
-		int oldPoints = points;
-		points += n;
-		if (oldPoints < 10000 && points >= 10000) {
+	private void score(int points) {
+		int oldscore = score;
+		score += points;
+		if (oldscore < 10000 && score >= 10000) {
 			lives++;
 			extraLife = true;
+		}
+		if (score > hiscorePoints) {
+			hiscorePoints = score;
+			hiscoreLevel = level;
+			hiscoreChanged = true;
 		}
 	}
 
@@ -667,14 +671,6 @@ public class PacManGame implements Runnable {
 		} catch (Exception x) {
 			log("Could not save hiscore");
 			x.printStackTrace(System.err);
-		}
-	}
-
-	private void updateHiscore() {
-		if (points > hiscorePoints) {
-			hiscorePoints = points;
-			hiscoreLevel = level;
-			hiscoreChanged = true;
 		}
 	}
 
