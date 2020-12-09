@@ -166,8 +166,8 @@ public class PacManGame implements Runnable {
 		setLevel(1); // level numbering starts with 1!
 	}
 
-	private void setLevel(int n) {
-		level = n;
+	private void setLevel(int levelNumber) {
+		level = levelNumber;
 		world.restoreFood();
 		huntingPhase = 0;
 		mazeFlashesRemaining = 0;
@@ -235,21 +235,13 @@ public class PacManGame implements Runnable {
 		} else if (ui.keyPressed("down")) {
 			pacMan.wishDir = DOWN;
 		}
-		handleCheatKeys();
-	}
 
-	private void handleCheatKeys() {
+		// cheats
 		if (ui.keyPressed("e") && state == HUNTING) {
 			eatAllNormalPellets();
 		}
 		if (ui.keyPressed("x") && state == HUNTING) {
-			ghostBounty = 200;
-			for (Ghost ghost : ghosts) {
-				if (!ghost.dead) {
-					killGhost(ghost);
-				}
-			}
-			enterGhostDyingState();
+			killAllGhosts();
 		}
 		if (ui.keyPressed("plus") && state == READY) {
 			setLevel(++level);
@@ -631,49 +623,6 @@ public class PacManGame implements Runnable {
 		}
 	}
 
-	private void score(int points) {
-		int oldscore = score;
-		score += points;
-		if (oldscore < 10000 && score >= 10000) {
-			lives++;
-			extraLife = true;
-		}
-		if (score > hiscorePoints) {
-			hiscorePoints = score;
-			hiscoreLevel = level;
-			hiscoreChanged = true;
-		}
-	}
-
-	private void loadHiscore() {
-		hiscorePoints = 0;
-		hiscoreLevel = 1;
-		hiscoreChanged = false;
-		try (FileInputStream in = new FileInputStream(HISCORE_FILE)) {
-			Properties content = new Properties();
-			content.loadFromXML(in);
-			hiscorePoints = Integer.parseInt(content.getProperty("points"));
-			hiscoreLevel = Integer.parseInt(content.getProperty("level"));
-			log("Hiscore file loaded: %s", HISCORE_FILE);
-		} catch (Exception x) {
-			log("Could not load hiscore file");
-		}
-	}
-
-	private void saveHiscore() {
-		Properties content = new Properties();
-		content.setProperty("points", String.valueOf(hiscorePoints));
-		content.setProperty("level", String.valueOf(hiscoreLevel));
-		content.setProperty("date", ZonedDateTime.now().format(ISO_DATE_TIME));
-		try (FileOutputStream out = new FileOutputStream(HISCORE_FILE)) {
-			content.storeToXML(out, "Pac-Man Hiscore");
-			log("Hiscore file saved: %s", HISCORE_FILE);
-		} catch (Exception x) {
-			log("Could not save hiscore");
-			x.printStackTrace(System.err);
-		}
-	}
-
 	private void updateGhost(Ghost ghost) {
 		if (ghost.enteringHouse) {
 			letGhostEnterHouse(ghost);
@@ -945,16 +894,6 @@ public class PacManGame implements Runnable {
 		return true;
 	}
 
-	private void eatAllNormalPellets() {
-		for (int x = 0; x < WORLD_WIDTH_TILES; ++x) {
-			for (int y = 0; y < WORLD_HEIGHT_TILES; ++y) {
-				if (world.isFoodTile(x, y) && !world.hasEatenFood(x, y) && !world.isEnergizerTile(x, y)) {
-					world.eatFood(x, y);
-				}
-			}
-		}
-	}
-
 	private boolean canAccessTile(Creature guy, int x, int y) {
 		if (!world.inMapRange(x, y)) {
 			return world.isPortalTile(x, y);
@@ -980,6 +919,73 @@ public class PacManGame implements Runnable {
 			.collect(Collectors.toList());
 		//@formatter:on
 		return dirs.get(new Random().nextInt(dirs.size()));
+	}
+
+	// Score
+
+	private void score(int points) {
+		int oldscore = score;
+		score += points;
+		if (oldscore < 10000 && score >= 10000) {
+			lives++;
+			extraLife = true;
+		}
+		if (score > hiscorePoints) {
+			hiscorePoints = score;
+			hiscoreLevel = level;
+			hiscoreChanged = true;
+		}
+	}
+
+	private void loadHiscore() {
+		hiscorePoints = 0;
+		hiscoreLevel = 1;
+		hiscoreChanged = false;
+		try (FileInputStream in = new FileInputStream(HISCORE_FILE)) {
+			Properties content = new Properties();
+			content.loadFromXML(in);
+			hiscorePoints = Integer.parseInt(content.getProperty("points"));
+			hiscoreLevel = Integer.parseInt(content.getProperty("level"));
+			log("Hiscore file loaded: %s", HISCORE_FILE);
+		} catch (Exception x) {
+			log("Could not load hiscore file");
+		}
+	}
+
+	private void saveHiscore() {
+		Properties content = new Properties();
+		content.setProperty("points", String.valueOf(hiscorePoints));
+		content.setProperty("level", String.valueOf(hiscoreLevel));
+		content.setProperty("date", ZonedDateTime.now().format(ISO_DATE_TIME));
+		try (FileOutputStream out = new FileOutputStream(HISCORE_FILE)) {
+			content.storeToXML(out, "Pac-Man Hiscore");
+			log("Hiscore file saved: %s", HISCORE_FILE);
+		} catch (Exception x) {
+			log("Could not save hiscore");
+			x.printStackTrace(System.err);
+		}
+	}
+
+	// Cheats
+
+	private void eatAllNormalPellets() {
+		for (int x = 0; x < WORLD_WIDTH_TILES; ++x) {
+			for (int y = 0; y < WORLD_HEIGHT_TILES; ++y) {
+				if (world.isFoodTile(x, y) && !world.hasEatenFood(x, y) && !world.isEnergizerTile(x, y)) {
+					world.eatFood(x, y);
+				}
+			}
+		}
+	}
+
+	private void killAllGhosts() {
+		ghostBounty = 200;
+		for (Ghost ghost : ghosts) {
+			if (!ghost.dead) {
+				killGhost(ghost);
+			}
+		}
+		enterGhostDyingState();
 	}
 
 }
