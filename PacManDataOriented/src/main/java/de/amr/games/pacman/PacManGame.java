@@ -33,15 +33,10 @@ import static de.amr.games.pacman.entities.Ghost.BLINKY;
 import static de.amr.games.pacman.entities.Ghost.CLYDE;
 import static de.amr.games.pacman.entities.Ghost.INKY;
 import static de.amr.games.pacman.entities.Ghost.PINKY;
-import static java.time.format.DateTimeFormatter.ISO_DATE_TIME;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.Properties;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -106,7 +101,7 @@ public class PacManGame implements Runnable {
 	public final World world;
 	public final PacMan pacMan;
 	public final Ghost[] ghosts;
-
+	public final Hiscore hiscore;
 	public final GameClock clock;
 	public PacManGameUI ui;
 
@@ -118,10 +113,6 @@ public class PacManGame implements Runnable {
 	public int huntingPhase;
 	public int lives;
 	public int score;
-	public int hiscorePoints;
-	public ZonedDateTime hiscoreTime;
-	public int hiscoreLevel;
-	public boolean hiscoreChanged;
 	public boolean extraLife;
 	public int ghostBounty;
 	public int ghostsKilledInLevel;
@@ -132,6 +123,7 @@ public class PacManGame implements Runnable {
 	public PacManGame() {
 		clock = new GameClock();
 		world = new World();
+		hiscore = new Hiscore();
 		pacMan = new PacMan("Pac-Man", PACMAN_HOME);
 		ghosts = new Ghost[4];
 		ghosts[BLINKY] = new Ghost("Blinky", HOUSE_ENTRY, UPPER_RIGHT_CORNER);
@@ -154,13 +146,13 @@ public class PacManGame implements Runnable {
 	}
 
 	public void exit() {
-		if (hiscoreChanged) {
-			saveHiscore();
+		if (hiscore.changed) {
+			hiscore.save(HISCORE_FILE);
 		}
 	}
 
 	private void reset() {
-		loadHiscore();
+		hiscore.load(HISCORE_FILE);
 		extraLife = false;
 		score = 0;
 		lives = 3;
@@ -504,8 +496,8 @@ public class PacManGame implements Runnable {
 		}
 		pacMan.speed = 0;
 		ui.showGameOverMessage();
-		if (hiscoreChanged) {
-			saveHiscore();
+		if (hiscore.changed) {
+			hiscore.save(HISCORE_FILE);
 		}
 	}
 
@@ -931,43 +923,7 @@ public class PacManGame implements Runnable {
 			lives++;
 			extraLife = true;
 		}
-		if (score > hiscorePoints) {
-			hiscorePoints = score;
-			hiscoreLevel = level;
-			hiscoreTime = ZonedDateTime.now();
-			hiscoreChanged = true;
-		}
-	}
-
-	private void loadHiscore() {
-		hiscorePoints = 0;
-		hiscoreLevel = 1;
-		hiscoreTime = ZonedDateTime.now();
-		hiscoreChanged = false;
-		try (FileInputStream in = new FileInputStream(HISCORE_FILE)) {
-			Properties content = new Properties();
-			content.loadFromXML(in);
-			hiscorePoints = Integer.parseInt(content.getProperty("points"));
-			hiscoreLevel = Integer.parseInt(content.getProperty("level"));
-			hiscoreTime = ZonedDateTime.parse(content.getProperty("date"));
-			log("Hiscore file loaded: %s", HISCORE_FILE);
-		} catch (Exception x) {
-			log("Could not load hiscore file");
-		}
-	}
-
-	private void saveHiscore() {
-		Properties content = new Properties();
-		content.setProperty("points", String.valueOf(hiscorePoints));
-		content.setProperty("level", String.valueOf(hiscoreLevel));
-		content.setProperty("date", hiscoreTime.format(ISO_DATE_TIME));
-		try (FileOutputStream out = new FileOutputStream(HISCORE_FILE)) {
-			content.storeToXML(out, "Pac-Man Hiscore");
-			log("Hiscore file saved: %s", HISCORE_FILE);
-		} catch (Exception x) {
-			log("Could not save hiscore");
-			x.printStackTrace(System.err);
-		}
+		hiscore.update(score, level);
 	}
 
 	// Cheats
