@@ -119,6 +119,7 @@ public class PacManGame implements Runnable {
 	public int lives;
 	public int score;
 	public int hiscorePoints;
+	public ZonedDateTime hiscoreTime;
 	public int hiscoreLevel;
 	public boolean hiscoreChanged;
 	public boolean extraLife;
@@ -933,6 +934,7 @@ public class PacManGame implements Runnable {
 		if (score > hiscorePoints) {
 			hiscorePoints = score;
 			hiscoreLevel = level;
+			hiscoreTime = ZonedDateTime.now();
 			hiscoreChanged = true;
 		}
 	}
@@ -940,12 +942,14 @@ public class PacManGame implements Runnable {
 	private void loadHiscore() {
 		hiscorePoints = 0;
 		hiscoreLevel = 1;
+		hiscoreTime = ZonedDateTime.now();
 		hiscoreChanged = false;
 		try (FileInputStream in = new FileInputStream(HISCORE_FILE)) {
 			Properties content = new Properties();
 			content.loadFromXML(in);
 			hiscorePoints = Integer.parseInt(content.getProperty("points"));
 			hiscoreLevel = Integer.parseInt(content.getProperty("level"));
+			hiscoreTime = ZonedDateTime.parse(content.getProperty("date"));
 			log("Hiscore file loaded: %s", HISCORE_FILE);
 		} catch (Exception x) {
 			log("Could not load hiscore file");
@@ -956,7 +960,7 @@ public class PacManGame implements Runnable {
 		Properties content = new Properties();
 		content.setProperty("points", String.valueOf(hiscorePoints));
 		content.setProperty("level", String.valueOf(hiscoreLevel));
-		content.setProperty("date", ZonedDateTime.now().format(ISO_DATE_TIME));
+		content.setProperty("date", hiscoreTime.format(ISO_DATE_TIME));
 		try (FileOutputStream out = new FileOutputStream(HISCORE_FILE)) {
 			content.storeToXML(out, "Pac-Man Hiscore");
 			log("Hiscore file saved: %s", HISCORE_FILE);
