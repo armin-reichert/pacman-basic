@@ -11,6 +11,8 @@ import java.util.Properties;
 
 public class Hiscore {
 
+	static final File DEFAULT_HISCORE_FILE = new File(System.getProperty("user.home"), "pacman-basic-hiscore.xml");
+
 	public int points;
 	public int level;
 	public ZonedDateTime time;
@@ -21,6 +23,10 @@ public class Hiscore {
 		level = 1;
 		time = ZonedDateTime.now();
 		changed = false;
+	}
+
+	public void load() {
+		load(DEFAULT_HISCORE_FILE);
 	}
 
 	public void load(File file) {
@@ -35,6 +41,10 @@ public class Hiscore {
 		} catch (Exception x) {
 			log("Could not load hiscore file");
 		}
+	}
+
+	public void save() {
+		save(DEFAULT_HISCORE_FILE);
 	}
 
 	public void save(File file) {

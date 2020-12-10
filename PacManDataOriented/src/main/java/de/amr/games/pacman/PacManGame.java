@@ -34,7 +34,6 @@ import static de.amr.games.pacman.entities.Ghost.CLYDE;
 import static de.amr.games.pacman.entities.Ghost.INKY;
 import static de.amr.games.pacman.entities.Ghost.PINKY;
 
-import java.io.File;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -60,11 +59,9 @@ import de.amr.games.pacman.ui.PacManGameUI;
  */
 public class PacManGame implements Runnable {
 
-	final List<Direction> DIRECTION_PRIORITY = List.of(UP, LEFT, DOWN, RIGHT);
+	static final List<Direction> DIRECTION_PRIORITY = List.of(UP, LEFT, DOWN, RIGHT);
 
-	final File HISCORE_FILE = new File(System.getProperty("user.home"), "pacman-basic-hiscore.xml");
-
-	final List<GameLevel> LEVELS = List.of(
+	static final List<GameLevel> LEVELS = List.of(
 	/*@formatter:off*/
 		new GameLevel("Cherries",   100,  80, 71, 75, 40,  20,  80, 10,  85,  90, 79, 50, 6, 5),
 		new GameLevel("Strawberry", 300,  90, 79, 85, 45,  30,  90, 15,  95,  95, 83, 55, 5, 5),
@@ -147,12 +144,12 @@ public class PacManGame implements Runnable {
 
 	public void exit() {
 		if (hiscore.changed) {
-			hiscore.save(HISCORE_FILE);
+			hiscore.save();
 		}
 	}
 
 	private void reset() {
-		hiscore.load(HISCORE_FILE);
+		hiscore.load();
 		extraLife = false;
 		score = 0;
 		lives = 3;
@@ -497,7 +494,7 @@ public class PacManGame implements Runnable {
 		pacMan.speed = 0;
 		ui.showGameOverMessage();
 		if (hiscore.changed) {
-			hiscore.save(HISCORE_FILE);
+			hiscore.save();
 		}
 	}
 
