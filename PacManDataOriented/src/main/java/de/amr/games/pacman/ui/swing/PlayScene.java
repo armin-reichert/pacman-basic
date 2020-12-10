@@ -59,6 +59,15 @@ class PlayScene {
 	}
 
 	private void drawMessage(Graphics2D g) {
+		if (game.state == GameState.READY) {
+			messageText = "Ready!";
+			messageColor = Color.YELLOW;
+		} else if (game.state == GameState.GAME_OVER) {
+			messageText = "Game Over!";
+			messageColor = Color.RED;
+		} else {
+			messageText = null;
+		}
 		if (messageText != null) {
 			g.setFont(assets.scoreFont);
 			g.setColor(messageColor);

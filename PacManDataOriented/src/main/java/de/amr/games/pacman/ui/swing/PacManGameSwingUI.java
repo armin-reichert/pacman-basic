@@ -30,61 +30,69 @@ import de.amr.games.pacman.ui.PacManGameUI;
  * 
  * @author Armin Reichert
  */
-public class PacManGameSwingUI extends JFrame implements PacManGameUI {
+public class PacManGameSwingUI implements PacManGameUI {
 
 	static final Map<Direction, Integer> DIR_INDEX = Map.of(RIGHT, 0, LEFT, 1, UP, 2, DOWN, 3);
 
-	public static void drawCenteredText(Graphics2D g, String text, int y, int width) {
+	static void drawCenteredText(Graphics2D g, String text, int y, int width) {
 		int textWidth = g.getFontMetrics().stringWidth(text);
 		g.drawString(text, (width - textWidth) / 2, y);
 	}
 
-	public static int dirIndex(Direction dir) {
+	static int dirIndex(Direction dir) {
 		return DIR_INDEX.get(dir);
 	}
 
-	public final Assets assets;
-	public final PacManGame game;
-	public final float scaling;
-	public final Canvas canvas;
-	public final Keyboard keyboard;
-	public final Dimension unscaledSize;
-	public final IntroScene introScene;
-	public final PlayScene playScene;
-	public boolean debugMode;
+	private final JFrame window;
+	private final Assets assets;
+	private final PacManGame game;
+	private final float scaling;
+	private final Canvas canvas;
+	private final Keyboard keyboard;
+	private final Dimension unscaledSize;
+
+	private final IntroScene introScene;
+	private final PlayScene playScene;
+
+	private boolean debugMode;
 
 	public PacManGameSwingUI(PacManGame game, float scaling) {
 		this.game = game;
 		this.scaling = scaling;
 		unscaledSize = new Dimension(WORLD_WIDTH_TILES * TS, WORLD_HEIGHT_TILES * TS);
 		assets = new Assets();
-		keyboard = new Keyboard(this);
 
 		introScene = new IntroScene(game, assets, unscaledSize);
 		playScene = new PlayScene(game, assets, unscaledSize);
 
-		canvas = new Canvas();
-		canvas.setBackground(Color.BLACK);
-		canvas.setSize((int) (unscaledSize.width * scaling), (int) (unscaledSize.height * scaling));
-		canvas.setFocusable(false);
-
-		add(canvas);
-		setTitle("Pac-Man");
-		setIconImage(assets.sheet(1, dirIndex(RIGHT)));
-		setResizable(false);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		addWindowListener(new WindowAdapter() {
+		window = new JFrame();
+		keyboard = new Keyboard(window);
+		window.setTitle("Pac-Man");
+		window.setIconImage(assets.sheet(1, dirIndex(RIGHT)));
+		window.setResizable(false);
+		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		window.addWindowListener(new WindowAdapter() {
 
 			@Override
 			public void windowClosing(WindowEvent e) {
 				onExit();
 			}
 		});
-		pack();
-		setLocationRelativeTo(null);
-		setVisible(true);
+
+		canvas = new Canvas();
+		canvas.setBackground(Color.BLACK);
+		canvas.setSize((int) (unscaledSize.width * scaling), (int) (unscaledSize.height * scaling));
+		canvas.setFocusable(false);
+		window.add(canvas);
+	}
+
+	@Override
+	public void show() {
+		window.pack();
+		window.setLocationRelativeTo(null);
+		window.setVisible(true);
 		// these must called be *after* setVisible():
-		requestFocus();
+		window.requestFocus();
 		canvas.createBufferStrategy(2);
 	}
 
@@ -113,23 +121,6 @@ public class PacManGameSwingUI extends JFrame implements PacManGameUI {
 			} while (buffers.contentsRestored());
 			buffers.show();
 		} while (buffers.contentsLost());
-	}
-
-	@Override
-	public void showGameOverMessage() {
-		playScene.messageText = "Game Over!";
-		playScene.messageColor = Color.RED;
-	}
-
-	@Override
-	public void showGameReadyMessage() {
-		playScene.messageText = "Ready!";
-		playScene.messageColor = Color.YELLOW;
-	}
-
-	@Override
-	public void clearMessage() {
-		playScene.messageText = null;
 	}
 
 	@Override

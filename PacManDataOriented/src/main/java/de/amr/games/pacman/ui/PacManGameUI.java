@@ -8,11 +8,7 @@ public interface PacManGameUI {
 
 	void render();
 
-	void showGameReadyMessage();
-
-	void showGameOverMessage();
-
-	void clearMessage();
+	void show();
 
 	void startIntroScene();
 

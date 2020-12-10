@@ -310,7 +310,6 @@ public class PacManGame implements Runnable {
 		HUNTING.setDuration(0);
 		huntingPhase = 0;
 		resetGuys();
-		ui.showGameReadyMessage();
 	}
 
 	private void runReadyState() {
@@ -330,7 +329,6 @@ public class PacManGame implements Runnable {
 	private void exitReadyState() {
 		ghosts[INKY].leavingHouse = ghosts[PINKY].leavingHouse = ghosts[CLYDE].leavingHouse = true;
 		ghosts[BLINKY].leavingHouse = false;
-		ui.clearMessage();
 	}
 
 	// HUNTING
@@ -492,7 +490,6 @@ public class PacManGame implements Runnable {
 			ghost.speed = 0;
 		}
 		pacMan.speed = 0;
-		ui.showGameOverMessage();
 		if (hiscore.changed) {
 			hiscore.save();
 		}
@@ -509,7 +506,6 @@ public class PacManGame implements Runnable {
 
 	private void exitGameOverState() {
 		reset();
-		ui.clearMessage();
 		log("Left game over state");
 	}
 
