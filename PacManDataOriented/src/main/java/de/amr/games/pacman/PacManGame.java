@@ -335,22 +335,22 @@ public class PacManGame implements Runnable {
 
 	// HUNTING
 
-	private final long[][] HUNTING_PHASE_DURATION = {
+	static final short[][] HUNTING_PHASE_DURATION = {
 		//@formatter:off
-		{ 7, 20, 7, 20, 5,   20,  5, Long.MAX_VALUE },
-		{ 7, 20, 7, 20, 5, 1033, -1, Long.MAX_VALUE },
-		{ 5,  5, 5,  5, 5, 1037, -1, Long.MAX_VALUE },
+		{ 7, 20, 7, 20, 5,   20,  5, Short.MAX_VALUE },
+		{ 7, 20, 7, 20, 5, 1033, -1, Short.MAX_VALUE },
+		{ 5,  5, 5,  5, 5, 1037, -1, Short.MAX_VALUE },
 		//@formatter:on
 	};
 
-	private long ticks(long secOrTicks) {
-		if (secOrTicks < 0) {
-			return -secOrTicks; // ticks
+	private long ticks(short duration) {
+		if (duration == -1) {
+			return 1; // 1 tick
 		}
-		if (secOrTicks == Long.MAX_VALUE) {
+		if (duration == Short.MAX_VALUE) {
 			return Long.MAX_VALUE;
 		}
-		return clock.sec(secOrTicks); // seconds
+		return clock.sec(duration);
 	}
 
 	private long huntingPhaseDuration() {
