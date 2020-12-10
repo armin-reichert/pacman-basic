@@ -133,6 +133,7 @@ public class PacManGame implements Runnable {
 	public void run() {
 		reset();
 		enterIntroState();
+		ui.show();
 		while (true) {
 			clock.tick(() -> {
 				readInput();

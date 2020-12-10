@@ -1,6 +1,6 @@
 package de.amr.games.pacman;
 
-import java.awt.EventQueue;
+import static java.awt.EventQueue.invokeLater;
 
 import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
 
@@ -13,9 +13,8 @@ public class PacManGameApp {
 
 	public static void main(String[] args) {
 		PacManGame game = new PacManGame();
-		EventQueue.invokeLater(() -> {
+		invokeLater(() -> {
 			game.ui = new PacManGameSwingUI(game, 2);
-			game.ui.show();
 			new Thread(game, "GameLoop").start();
 		});
 	}
