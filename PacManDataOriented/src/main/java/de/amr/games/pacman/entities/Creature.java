@@ -25,6 +25,7 @@ public class Creature {
 	public Creature(String name, V2i homeTile) {
 		this.name = name;
 		this.homeTile = homeTile;
+		position = V2f.NULL;
 	}
 
 	public void placeAt(int x, int y, float offsetX, float offsetY) {
