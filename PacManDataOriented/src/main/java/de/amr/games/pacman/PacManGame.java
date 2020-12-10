@@ -88,7 +88,8 @@ public class PacManGame implements Runnable {
 	);
 
 	public GameLevel level(int level) {
-		return level <= 21 ? LEVELS.get(level - 1) : LEVELS.get(20);
+		int index = level <= 21 ? level - 1 : 20;
+		return LEVELS.get(index);
 	}
 
 	public GameLevel level() {
