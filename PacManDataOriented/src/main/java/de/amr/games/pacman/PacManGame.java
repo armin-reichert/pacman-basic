@@ -55,6 +55,7 @@ import de.amr.games.pacman.ui.PacManGameUI;
  * @author Armin Reichert
  * 
  * @see https://gameinternals.com/understanding-pac-man-ghost-behavior
+ * @see https://pacman.holenet.info
  * @see https://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php
  */
 public class PacManGame implements Runnable {
@@ -63,27 +64,27 @@ public class PacManGame implements Runnable {
 
 	static final List<GameLevel> LEVELS = List.of(
 	/*@formatter:off*/
-		new GameLevel("Cherries",   100,  80, 71, 75, 40,  20,  80, 10,  85,  90, 79, 50, 6, 5),
-		new GameLevel("Strawberry", 300,  90, 79, 85, 45,  30,  90, 15,  95,  95, 83, 55, 5, 5),
-		new GameLevel("Peach",      500,  90, 79, 85, 45,  40,  90, 20,  95,  95, 83, 55, 4, 5),
-		new GameLevel("Peach",      500,  90, 79, 85, 50,  40, 100, 20,  95,  95, 83, 55, 3, 5),
-		new GameLevel("Apple",      700, 100, 87, 95, 50,  40, 100, 20, 105, 100, 87, 60, 2, 5),
-		new GameLevel("Apple",      700, 100, 87, 95, 50,  50, 100, 25, 105, 100, 87, 60, 5, 5),
-		new GameLevel("Grapes",    1000, 100, 87, 95, 50,  50, 100, 25, 105, 100, 87, 60, 2, 5),
-		new GameLevel("Grapes",    1000, 100, 87, 95, 50,  50, 100, 25, 105, 100, 87, 60, 2, 5),
-		new GameLevel("Galaxian",  2000, 100, 87, 95, 50,  60, 100, 30, 105, 100, 87, 60, 1, 3),
-		new GameLevel("Galaxian",  2000, 100, 87, 95, 50,  60, 100, 30, 105, 100, 87, 60, 5, 5),
-		new GameLevel("Bell",      3000, 100, 87, 95, 50,  60, 100, 30, 105, 100, 87, 60, 2, 5),
-		new GameLevel("Bell",      3000, 100, 87, 95, 50,  80, 100, 40, 105, 100, 87, 60, 1, 3),
-		new GameLevel("Key",       5000, 100, 87, 95, 50,  80, 100, 40, 105, 100, 87, 60, 1, 3),
-		new GameLevel("Key",       5000, 100, 87, 95, 50,  80, 100, 40, 105, 100, 87, 60, 3, 5),
-		new GameLevel("Key",       5000, 100, 87, 95, 50, 100, 100, 50, 105, 100, 87, 60, 1, 3),
-		new GameLevel("Key",       5000, 100, 87, 95, 50, 100, 100, 50, 105,   0,  0,  0, 1, 3),
-		new GameLevel("Key",       5000, 100, 87, 95, 50, 100, 100, 50, 105, 100, 87, 60, 0, 0),
-		new GameLevel("Key",       5000, 100, 87, 95, 50, 100, 100, 50, 105,   0,   0, 0, 1, 0),
-		new GameLevel("Key",       5000, 100, 87, 95, 50, 120, 100, 60, 105,   0,   0, 0, 0, 0),
-		new GameLevel("Key",       5000, 100, 87, 95, 50, 120, 100, 60, 105,   0,   0, 0, 0, 0),
-		new GameLevel("Key",       5000,  90, 79, 95, 50, 120, 100, 60, 105,   0,   0, 0, 0, 0)
+		new GameLevel("Cherries",   100,  80, 75, 40,  20,  80, 10,  85,  90, 50, 6, 5),
+		new GameLevel("Strawberry", 300,  90, 85, 45,  30,  90, 15,  95,  95, 55, 5, 5),
+		new GameLevel("Peach",      500,  90, 85, 45,  40,  90, 20,  95,  95, 55, 4, 5),
+		new GameLevel("Peach",      500,  90, 85, 50,  40, 100, 20,  95,  95, 55, 3, 5),
+		new GameLevel("Apple",      700, 100, 95, 50,  40, 100, 20, 105, 100, 60, 2, 5),
+		new GameLevel("Apple",      700, 100, 95, 50,  50, 100, 25, 105, 100, 60, 5, 5),
+		new GameLevel("Grapes",    1000, 100, 95, 50,  50, 100, 25, 105, 100, 60, 2, 5),
+		new GameLevel("Grapes",    1000, 100, 95, 50,  50, 100, 25, 105, 100, 60, 2, 5),
+		new GameLevel("Galaxian",  2000, 100, 95, 50,  60, 100, 30, 105, 100, 60, 1, 3),
+		new GameLevel("Galaxian",  2000, 100, 95, 50,  60, 100, 30, 105, 100, 60, 5, 5),
+		new GameLevel("Bell",      3000, 100, 95, 50,  60, 100, 30, 105, 100, 60, 2, 5),
+		new GameLevel("Bell",      3000, 100, 95, 50,  80, 100, 40, 105, 100, 60, 1, 3),
+		new GameLevel("Key",       5000, 100, 95, 50,  80, 100, 40, 105, 100, 60, 1, 3),
+		new GameLevel("Key",       5000, 100, 95, 50,  80, 100, 40, 105, 100, 60, 3, 5),
+		new GameLevel("Key",       5000, 100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3),
+		new GameLevel("Key",       5000, 100, 95, 50, 100, 100, 50, 105,   0,  0, 1, 3),
+		new GameLevel("Key",       5000, 100, 95, 50, 100, 100, 50, 105, 100, 60, 0, 0),
+		new GameLevel("Key",       5000, 100, 95, 50, 100, 100, 50, 105,   0,  0, 1, 0),
+		new GameLevel("Key",       5000, 100, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0),
+		new GameLevel("Key",       5000, 100, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0),
+		new GameLevel("Key",       5000,  90, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0)
 	//@formatter:on
 	);
 
@@ -745,9 +746,9 @@ public class PacManGame implements Runnable {
 		} else if (ghost.dead) {
 			ghost.speed = 2f * level().ghostSpeed;
 		} else if (world.isInsideTunnel(ghost.tile().x, ghost.tile().y)) {
-			ghost.speed = level().ghostTunnelSpeed;
+			ghost.speed = level().ghostSpeedTunnel;
 		} else if (ghost.frightened) {
-			ghost.speed = level().frightenedGhostSpeed;
+			ghost.speed = level().ghostSpeedFrightened;
 		} else {
 			ghost.speed = level().ghostSpeed;
 			if (ghost == ghosts[BLINKY]) {
