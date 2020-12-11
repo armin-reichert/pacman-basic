@@ -192,7 +192,7 @@ public class PacManGame implements Runnable {
 		pacMan.forcedTurningBack = false;
 		pacMan.dead = false;
 		pacMan.powerTimer = 0;
-		pacMan.standingTicks = 0;
+		pacMan.restingTicks = 0;
 		pacMan.starvingTicks = 0;
 
 		for (Ghost ghost : ghosts) {
@@ -527,10 +527,10 @@ public class PacManGame implements Runnable {
 
 	private void updatePacMan() {
 		V2i tile = pacMan.tile();
-		if (pacMan.standingTicks == 0) {
+		if (pacMan.restingTicks == 0) {
 			tryMoving(pacMan);
 		} else {
-			pacMan.standingTicks--;
+			pacMan.restingTicks--;
 		}
 		updatePacManPower();
 		checkPacManFoundFood(tile);
@@ -602,7 +602,7 @@ public class PacManGame implements Runnable {
 			});
 		}
 		if (world.isEnergizerTile(tile.x, tile.y)) {
-			pacMan.standingTicks = 3;
+			pacMan.restingTicks = 3;
 			score(50);
 			int powerSeconds = level().ghostFrightenedSeconds;
 			pacMan.powerTimer = clock.sec(powerSeconds);
@@ -617,7 +617,7 @@ public class PacManGame implements Runnable {
 			}
 			ghostBounty = 200;
 		} else {
-			pacMan.standingTicks = 1;
+			pacMan.restingTicks = 1;
 			score(10);
 		}
 		// bonus score reached?
