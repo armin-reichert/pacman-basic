@@ -240,7 +240,7 @@ class PlayScene {
 			}
 		} else if (ghost.frightened) {
 			// TODO flash exactly as often as specified by level
-			if (game.pacMan.powerTimer < game.clock.sec(2) && ghost.speed != 0) {
+			if (game.pacMan.powerTicks < game.clock.sec(2) && ghost.speed != 0) {
 				// ghost flashing blue/white, animated walking
 				int flashing = game.clock.frame(10, 2) == 0 ? 8 : 10;
 				sprite = assets.sheet(walking + flashing, 4);

@@ -191,7 +191,7 @@ public class PacManGame implements Runnable {
 		pacMan.forcedOnTrack = true;
 		pacMan.forcedTurningBack = false;
 		pacMan.dead = false;
-		pacMan.powerTimer = 0;
+		pacMan.powerTicks = 0;
 		pacMan.restingTicks = 0;
 		pacMan.starvingTicks = 0;
 
@@ -400,7 +400,7 @@ public class PacManGame implements Runnable {
 		}
 		updateBonus();
 
-		if (pacMan.powerTimer == 0) {
+		if (pacMan.powerTicks == 0) {
 			state.tick();
 		}
 	}
@@ -549,7 +549,7 @@ public class PacManGame implements Runnable {
 				enterGhostDyingState();
 				return;
 			}
-			if (pacMan.powerTimer == 0) {
+			if (pacMan.powerTicks == 0) {
 				pacMan.dead = true;
 				log("Pac-Man killed by %s at tile %s", ghost.name, ghost.tile());
 				globalDotCounter = 0;
@@ -605,7 +605,7 @@ public class PacManGame implements Runnable {
 			pacMan.restingTicks = 3;
 			score(50);
 			int powerSeconds = level().ghostFrightenedSeconds;
-			pacMan.powerTimer = clock.sec(powerSeconds);
+			pacMan.powerTicks = clock.sec(powerSeconds);
 			if (powerSeconds > 0) {
 				log("Pac-Man got power for %d seconds", powerSeconds);
 				for (Ghost ghost : ghosts) {
@@ -628,9 +628,9 @@ public class PacManGame implements Runnable {
 	}
 
 	private void updatePacManPower() {
-		if (pacMan.powerTimer > 0) {
-			pacMan.powerTimer--;
-			if (pacMan.powerTimer == 0) {
+		if (pacMan.powerTicks > 0) {
+			pacMan.powerTicks--;
+			if (pacMan.powerTicks == 0) {
 				for (Ghost ghost : ghosts) {
 					ghost.frightened = false;
 				}
