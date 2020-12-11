@@ -4,13 +4,13 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.image.BufferedImage;
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
-import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 
@@ -101,9 +101,9 @@ public class Assets {
 
 	public Clip loadClip(String path) {
 		try {
-			AudioInputStream is = AudioSystem.getAudioInputStream(getClass().getResourceAsStream(path));
 			Clip clip = AudioSystem.getClip();
-			clip.open(is);
+			BufferedInputStream bs = new BufferedInputStream(getClass().getResourceAsStream(path));
+			clip.open(AudioSystem.getAudioInputStream(bs));
 			return clip;
 		} catch (Exception x) {
 			throw new RuntimeException(x);

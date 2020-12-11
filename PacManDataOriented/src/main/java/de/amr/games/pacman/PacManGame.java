@@ -601,12 +601,10 @@ public class PacManGame implements Runnable {
 				log("Global dot counter disabled");
 			} else {
 				++globalDotCounter;
-				log("Global dot counter=%d", globalDotCounter);
 			}
 		} else {
 			preferredLockedGhost().ifPresent(ghost -> {
 				ghost.dotCounter++;
-				log("%s dot counter=%d of %d", ghost.name, ghost.dotCounter, privateDotLimit(ghost));
 			});
 		}
 		if (world.isEnergizerTile(tile.x, tile.y)) {
@@ -674,9 +672,12 @@ public class PacManGame implements Runnable {
 	private void updateGhost(Ghost ghost) {
 		if (ghost.locked) {
 			if (ghost != ghosts[BLINKY]) {
-				if (globalDotCounterEnabled && globalDotCounter >= globalDotLimit(ghost)
-						|| ghost.dotCounter >= privateDotLimit(ghost)) {
+				if (globalDotCounterEnabled && globalDotCounter >= globalDotLimit(ghost)) {
 					unlockGhost(ghost);
+					log("Ghost %s unlocked, global dot counter is %d", ghost.name, globalDotCounter);
+				} else if (ghost.dotCounter >= privateDotLimit(ghost)) {
+					unlockGhost(ghost);
+					log("Ghost %s unlocked, ghost dot counter is %d", ghost.name, ghost.dotCounter);
 				} else {
 					letGhostBounce(ghost);
 				}
@@ -697,7 +698,6 @@ public class PacManGame implements Runnable {
 	private void unlockGhost(Ghost ghost) {
 		ghost.locked = false;
 		ghost.leavingHouse = true;
-		log("Ghost %s unlocked", ghost.name);
 	}
 
 	private Optional<Ghost> preferredLockedGhost() {
