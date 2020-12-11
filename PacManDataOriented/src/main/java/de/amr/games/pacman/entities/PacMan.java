@@ -6,6 +6,7 @@ public class PacMan extends Creature {
 
 	public long powerTimer;
 	public byte stoppedTicks;
+	public long starvingTicks;
 
 	public PacMan(String name, V2i homeTile) {
 		super(name, homeTile);

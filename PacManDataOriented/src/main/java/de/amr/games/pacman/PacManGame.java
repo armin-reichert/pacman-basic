@@ -193,6 +193,7 @@ public class PacManGame implements Runnable {
 		pacMan.dead = false;
 		pacMan.powerTimer = 0;
 		pacMan.stoppedTicks = 0;
+		pacMan.starvingTicks = 0;
 
 		for (Ghost ghost : ghosts) {
 			ghost.visible = true;
@@ -569,45 +570,59 @@ public class PacManGame implements Runnable {
 
 	private void checkPacManFoundFood(V2i tile) {
 		if (world.isFoodTile(tile.x, tile.y) && !world.hasEatenFood(tile.x, tile.y)) {
-			world.eatFood(tile.x, tile.y);
-			if (globalDotCounterEnabled) {
-				if (ghosts[CLYDE].locked && globalDotCounter == 32) {
-					globalDotCounterEnabled = false;
-					globalDotCounter = 0;
-					log("Global dot counter disabled");
-				} else {
-					++globalDotCounter;
-					log("Global dot counter=%d", globalDotCounter);
-				}
+			onPacManFoundFood(tile);
+		} else {
+			onPacManStarved();
+		}
+	}
+
+	private void onPacManStarved() {
+		pacMan.starvingTicks++;
+		if (pacMan.starvingTicks >= starvingTimeLimit()) {
+			preferredLockedGhost().ifPresent(this::unlockGhost);
+		}
+	}
+
+	private void onPacManFoundFood(V2i tile) {
+		world.eatFood(tile.x, tile.y);
+		pacMan.starvingTicks = 0;
+		if (globalDotCounterEnabled) {
+			if (ghosts[CLYDE].locked && globalDotCounter == 32) {
+				globalDotCounterEnabled = false;
+				globalDotCounter = 0;
+				log("Global dot counter disabled");
 			} else {
-				preferredLockedGhost().ifPresent(ghost -> {
-					ghost.dotCounter++;
-					log("%s dot counter=%d of %d", ghost.name, ghost.dotCounter, privateDotLimit(ghost));
-				});
+				++globalDotCounter;
+				log("Global dot counter=%d", globalDotCounter);
 			}
-			if (world.isEnergizerTile(tile.x, tile.y)) {
-				score(50);
-				pacMan.stoppedTicks = 3;
-				pacMan.powerTimer = clock.sec(level().ghostFrightenedSeconds);
-				if (level().ghostFrightenedSeconds > 0) {
-					log("Pac-Man got power for %d seconds", level().ghostFrightenedSeconds);
-					for (Ghost ghost : ghosts) {
-						if (!ghost.dead && !ghost.locked) {
-							ghost.frightened = true;
-						}
+		} else {
+			preferredLockedGhost().ifPresent(ghost -> {
+				ghost.dotCounter++;
+				log("%s dot counter=%d of %d", ghost.name, ghost.dotCounter, privateDotLimit(ghost));
+			});
+		}
+		if (world.isEnergizerTile(tile.x, tile.y)) {
+			score(50);
+			pacMan.stoppedTicks = 3;
+			pacMan.powerTimer = clock.sec(level().ghostFrightenedSeconds);
+			if (level().ghostFrightenedSeconds > 0) {
+				log("Pac-Man got power for %d seconds", level().ghostFrightenedSeconds);
+				for (Ghost ghost : ghosts) {
+					if (!ghost.dead && !ghost.locked) {
+						ghost.frightened = true;
 					}
-					forceGhostsTurningBack();
 				}
-				ghostBounty = 200;
-			} else {
-				score(10);
-				pacMan.stoppedTicks = 1;
+				forceGhostsTurningBack();
 			}
-			// bonus score reached?
-			int eaten = TOTAL_FOOD_COUNT - world.foodRemaining;
-			if (bonusAvailableTimer == 0 && (eaten == 70 || eaten == 170)) {
-				bonusAvailableTimer = clock.sec(9 + new Random().nextFloat());
-			}
+			ghostBounty = 200;
+		} else {
+			score(10);
+			pacMan.stoppedTicks = 1;
+		}
+		// bonus score reached?
+		int eaten = TOTAL_FOOD_COUNT - world.foodRemaining;
+		if (bonusAvailableTimer == 0 && (eaten == 70 || eaten == 170)) {
+			bonusAvailableTimer = clock.sec(9 + new Random().nextFloat());
 		}
 	}
 
@@ -652,9 +667,7 @@ public class PacManGame implements Runnable {
 			if (ghost != ghosts[BLINKY]) {
 				if (globalDotCounterEnabled && globalDotCounter >= globalDotLimit(ghost)
 						|| ghost.dotCounter >= privateDotLimit(ghost)) {
-					ghost.locked = false;
-					ghost.leavingHouse = true;
-					log("Ghost %s unlocked", ghost.name);
+					unlockGhost(ghost);
 				} else {
 					letGhostBounce(ghost);
 				}
@@ -670,6 +683,12 @@ public class PacManGame implements Runnable {
 			ghost.targetTile = chasing ? currentChasingTarget(ghost) : ghost.scatterTile;
 			letGhostHeadForTargetTile(ghost);
 		}
+	}
+
+	private void unlockGhost(Ghost ghost) {
+		ghost.locked = false;
+		ghost.leavingHouse = true;
+		log("Ghost %s unlocked", ghost.name);
 	}
 
 	private Optional<Ghost> preferredLockedGhost() {
@@ -705,6 +724,10 @@ public class PacManGame implements Runnable {
 			return 17;
 		}
 		return Integer.MAX_VALUE;
+	}
+
+	private int starvingTimeLimit() {
+		return level < 5 ? clock.sec(4) : clock.sec(3);
 	}
 
 	private V2i currentChasingTarget(Ghost ghost) {
