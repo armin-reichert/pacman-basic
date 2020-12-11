@@ -121,6 +121,9 @@ public class PacManGame implements Runnable {
 	public long bonusAvailableTimer;
 	public long bonusConsumedTimer;
 
+	public int globalDotCounter;
+	public boolean globalDotCounterEnabled;
+
 	public PacManGame() {
 		clock = new GameClock();
 		world = new World();
@@ -548,6 +551,8 @@ public class PacManGame implements Runnable {
 			if (pacMan.powerTimer == 0) {
 				pacMan.dead = true;
 				log("Pac-Man killed by %s at tile %s", ghost.name, ghost.tile());
+				globalDotCounter = 0;
+				globalDotCounterEnabled = true;
 				return;
 			}
 		}
@@ -565,10 +570,21 @@ public class PacManGame implements Runnable {
 	private void checkPacManFoundFood(V2i tile) {
 		if (world.isFoodTile(tile.x, tile.y) && !world.hasEatenFood(tile.x, tile.y)) {
 			world.eatFood(tile.x, tile.y);
-			preferredLockedGhost().ifPresent(ghost -> {
-				ghost.dotCounter++;
-				log("%s dot counter=%d", ghost.name, ghost.dotCounter);
-			});
+			if (globalDotCounterEnabled) {
+				if (ghosts[CLYDE].locked && globalDotCounter == 32) {
+					globalDotCounterEnabled = false;
+					globalDotCounter = 0;
+					log("Global dot counter disabled");
+				} else {
+					++globalDotCounter;
+					log("Global dot counter=%d", globalDotCounter);
+				}
+			} else {
+				preferredLockedGhost().ifPresent(ghost -> {
+					ghost.dotCounter++;
+					log("%s dot counter=%d of %d", ghost.name, ghost.dotCounter, privateDotLimit(ghost));
+				});
+			}
 			if (world.isEnergizerTile(tile.x, tile.y)) {
 				score(50);
 				pacMan.stoppedTicks = 3;
@@ -633,11 +649,15 @@ public class PacManGame implements Runnable {
 
 	private void updateGhost(Ghost ghost) {
 		if (ghost.locked) {
-			if (ghost.dotCounter >= ghostDotLimit(ghost)) {
-				ghost.locked = false;
-				ghost.leavingHouse = true;
-			} else if (ghost != ghosts[BLINKY]) {
-				letGhostBounce(ghost);
+			if (ghost != ghosts[BLINKY]) {
+				if (globalDotCounterEnabled && globalDotCounter >= globalDotLimit(ghost)
+						|| ghost.dotCounter >= privateDotLimit(ghost)) {
+					ghost.locked = false;
+					ghost.leavingHouse = true;
+					log("Ghost %s unlocked", ghost.name);
+				} else {
+					letGhostBounce(ghost);
+				}
 			}
 		} else if (ghost.enteringHouse) {
 			letGhostEnterHouse(ghost);
@@ -667,7 +687,7 @@ public class PacManGame implements Runnable {
 	 * 
 	 * @see https://pacman.holenet.info/#CH2_Home_Sweet_Home
 	 */
-	private int ghostDotLimit(Ghost ghost) {
+	private int privateDotLimit(Ghost ghost) {
 		if (ghost == ghosts[INKY]) {
 			return level == 1 ? 30 : 0;
 		}
@@ -675,6 +695,16 @@ public class PacManGame implements Runnable {
 			return level == 1 ? 60 : level == 2 ? 50 : 0;
 		}
 		return 0;
+	}
+
+	private int globalDotLimit(Ghost ghost) {
+		if (ghost == ghosts[PINKY]) {
+			return 7;
+		}
+		if (ghost == ghosts[INKY]) {
+			return 17;
+		}
+		return Integer.MAX_VALUE;
 	}
 
 	private V2i currentChasingTarget(Ghost ghost) {
