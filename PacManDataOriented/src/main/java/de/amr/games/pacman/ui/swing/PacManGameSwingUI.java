@@ -154,6 +154,12 @@ public class PacManGameSwingUI implements PacManGameUI {
 		introScene.reset();
 	}
 
+	@Override
+	public void playGameReadyClip() {
+		assets.clipGameReady.setFramePosition(0);
+		assets.clipGameReady.start();
+	}
+
 	private void drawPauseText(Graphics2D g) {
 		g.setColor(new Color(200, 200, 200, 100));
 		g.fillRect(0, 0, unscaledSize.width, unscaledSize.height);

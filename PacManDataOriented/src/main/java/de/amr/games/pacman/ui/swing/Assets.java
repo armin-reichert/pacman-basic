@@ -9,6 +9,9 @@ import java.io.InputStream;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 
 /**
  * Assets used in Pac-Man game.
@@ -35,6 +38,8 @@ public class Assets {
 	public final Map<Integer, BufferedImage> numbers;
 	public final Map<Integer, BufferedImage> bountyNumbers;
 	public final Font scoreFont;
+
+	public final Clip clipGameReady;
 
 	public Assets() {
 
@@ -78,6 +83,19 @@ public class Assets {
 			1600, sheet(3, 8)
 		);
 		//@formatter:on
+
+		clipGameReady = loadClip("/pacman_beginning.wav");
+	}
+
+	public Clip loadClip(String path) {
+		try {
+			AudioInputStream is = AudioSystem.getAudioInputStream(getClass().getResourceAsStream(path));
+			Clip clip = AudioSystem.getClip();
+			clip.open(is);
+			return clip;
+		} catch (Exception x) {
+			throw new RuntimeException(x);
+		}
 	}
 
 	public BufferedImage section(int x, int y, int w, int h) {

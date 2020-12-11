@@ -321,7 +321,7 @@ public class PacManGame implements Runnable {
 	// READY
 
 	private void enterReadyState() {
-		enterState(READY, clock.sec(4));
+		enterState(READY, clock.sec(6));
 		HUNTING.setDuration(0);
 		huntingPhase = 0;
 		resetGuys();
@@ -333,7 +333,10 @@ public class PacManGame implements Runnable {
 			enterHuntingState();
 			return;
 		}
-		if (state.ticksRemaining() <= clock.sec(2.5f)) {
+		if (state.ticksRemaining() == clock.sec(5)) {
+			ui.playGameReadyClip();
+		}
+		if (state.ticksRemaining() <= clock.sec(5)) {
 			letGhostBounce(ghosts[INKY]);
 			letGhostBounce(ghosts[PINKY]);
 			letGhostBounce(ghosts[CLYDE]);
@@ -912,7 +915,6 @@ public class PacManGame implements Runnable {
 		tryMoving(ghost);
 		if (!ghost.couldMove) {
 			ghost.wishDir = ghost.wishDir.inverse();
-			log("Ghost bounced: %s", ghost);
 		}
 	}
 

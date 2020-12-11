@@ -15,4 +15,6 @@ public interface PacManGameUI {
 	boolean keyPressed(String keySpec);
 
 	void onExit();
+
+	void playGameReadyClip();
 }
