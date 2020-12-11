@@ -17,4 +17,6 @@ public interface PacManGameUI {
 	void onExit();
 
 	void playGameReadyClip();
+
+	void playPacManDeathClip();
 }

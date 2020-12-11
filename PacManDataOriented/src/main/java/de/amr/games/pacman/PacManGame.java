@@ -430,6 +430,9 @@ public class PacManGame implements Runnable {
 				ghost.visible = false;
 			}
 		}
+		if (state.ticksRemaining() == clock.sec(2.5f) + 40) {
+			ui.playPacManDeathClip();
+		}
 		state.tick();
 	}
 

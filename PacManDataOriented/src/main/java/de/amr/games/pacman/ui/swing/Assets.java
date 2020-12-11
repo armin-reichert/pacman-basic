@@ -40,6 +40,7 @@ public class Assets {
 	public final Font scoreFont;
 
 	public final Clip clipGameReady;
+	public final Clip clipPacManDeath;
 
 	public Assets() {
 
@@ -85,6 +86,7 @@ public class Assets {
 		//@formatter:on
 
 		clipGameReady = loadClip("/pacman_beginning.wav");
+		clipPacManDeath = loadClip("/pacman_death.wav");
 	}
 
 	public Clip loadClip(String path) {
