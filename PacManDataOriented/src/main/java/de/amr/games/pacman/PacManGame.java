@@ -838,8 +838,8 @@ public class PacManGame implements Runnable {
 	}
 
 	private void setGhostSpeed(Ghost ghost) {
-		if (ghost.leavingHouse) {
-			ghost.speed = 0.5f * level().ghostSpeed;
+		if (ghost.leavingHouse || (ghost.locked && ghost != ghosts[BLINKY])) {
+			ghost.speed = 0.75f * level().ghostSpeed;
 		} else if (ghost.dead) {
 			ghost.speed = 2f * level().ghostSpeed;
 		} else if (world.isInsideTunnel(ghost.tile().x, ghost.tile().y)) {
@@ -912,6 +912,7 @@ public class PacManGame implements Runnable {
 		tryMoving(ghost);
 		if (!ghost.couldMove) {
 			ghost.wishDir = ghost.wishDir.inverse();
+			log("Ghost bounced: %s", ghost);
 		}
 	}
 
