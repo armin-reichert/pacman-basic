@@ -48,6 +48,7 @@ import de.amr.games.pacman.entities.Creature;
 import de.amr.games.pacman.entities.Ghost;
 import de.amr.games.pacman.entities.PacMan;
 import de.amr.games.pacman.ui.PacManGameUI;
+import de.amr.games.pacman.ui.Sound;
 
 /**
  * Pac-Man game with original "AI".
@@ -114,7 +115,6 @@ public class PacManGame implements Runnable {
 	public int huntingPhase;
 	public int lives;
 	public int score;
-	public boolean extraLife;
 	public int ghostBounty;
 	public int ghostsKilledInLevel;
 	public int mazeFlashesRemaining;
@@ -158,7 +158,6 @@ public class PacManGame implements Runnable {
 
 	private void reset() {
 		hiscore.load();
-		extraLife = false;
 		score = 0;
 		lives = 3;
 		startLevel(1); // level numbering starts with 1!
@@ -334,7 +333,7 @@ public class PacManGame implements Runnable {
 			return;
 		}
 		if (state.ticksRemaining() == clock.sec(5)) {
-			ui.playGameReadyClip();
+			ui.playSound(Sound.GAME_READY);
 		}
 		if (state.ticksRemaining() <= clock.sec(5)) {
 			letGhostBounce(ghosts[INKY]);
@@ -431,7 +430,7 @@ public class PacManGame implements Runnable {
 			}
 		}
 		if (state.ticksRemaining() == clock.sec(2.5f) + 40) {
-			ui.playPacManDeathClip();
+			ui.playSound(Sound.PACMAN_DEATH);
 		}
 		state.tick();
 	}
@@ -449,6 +448,7 @@ public class PacManGame implements Runnable {
 		previousState = state;
 		enterState(GHOST_DYING, clock.sec(0.5f));
 		pacMan.visible = false;
+		ui.playSound(Sound.GHOST_DEATH);
 	}
 
 	private void runGhostDyingState() {
@@ -570,6 +570,7 @@ public class PacManGame implements Runnable {
 			bonusAvailableTimer = 0;
 			bonusConsumedTimer = clock.sec(2);
 			score(level().bonusPoints);
+			ui.playSound(Sound.EAT_BONUS);
 			log("Pac-Man found bonus %s of value %d", level().bonusSymbol, level().bonusPoints);
 		}
 	}
@@ -590,6 +591,7 @@ public class PacManGame implements Runnable {
 	}
 
 	private void onPacManFoundFood(V2i tile) {
+		ui.playSound(Sound.CHOMP, false);
 		world.eatFood(tile.x, tile.y);
 		pacMan.starvingTicks = 0;
 		if (globalDotCounterEnabled) {
@@ -1028,7 +1030,7 @@ public class PacManGame implements Runnable {
 		score += points;
 		if (oldscore < 10000 && score >= 10000) {
 			lives++;
-			extraLife = true;
+			ui.playSound(Sound.EXTRA_LIFE);
 		}
 		hiscore.update(score, level);
 	}

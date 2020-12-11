@@ -16,7 +16,9 @@ public interface PacManGameUI {
 
 	void onExit();
 
-	void playGameReadyClip();
+	void playSound(Sound sound, boolean cached);
 
-	void playPacManDeathClip();
+	default void playSound(Sound sound) {
+		playSound(sound, true);
+	}
 }

@@ -6,12 +6,15 @@ import java.awt.FontFormatException;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+
+import de.amr.games.pacman.ui.Sound;
 
 /**
  * Assets used in Pac-Man game.
@@ -39,8 +42,8 @@ public class Assets {
 	public final Map<Integer, BufferedImage> bountyNumbers;
 	public final Font scoreFont;
 
-	public final Clip clipGameReady;
-	public final Clip clipPacManDeath;
+	public final Map<Sound, String> clipPaths;
+	public final Map<Sound, Clip> cachedClips = new HashMap<>();
 
 	public Assets() {
 
@@ -83,10 +86,17 @@ public class Assets {
 			800,  sheet(2, 8),
 			1600, sheet(3, 8)
 		);
+		
+		clipPaths = Map.of(
+			Sound.CHOMP,        "/pacman_chomp.wav",
+			Sound.GAME_READY,   "/pacman_beginning.wav",
+			Sound.GHOST_DEATH,  "/pacman_eatghost.wav",
+			Sound.PACMAN_DEATH, "/pacman_death.wav",
+			Sound.EAT_BONUS,    "/pacman_eatfruit.wav",
+			Sound.EXTRA_LIFE,   "/pacman_extrapac.wav"
+		);
+		
 		//@formatter:on
-
-		clipGameReady = loadClip("/pacman_beginning.wav");
-		clipPacManDeath = loadClip("/pacman_death.wav");
 	}
 
 	public Clip loadClip(String path) {

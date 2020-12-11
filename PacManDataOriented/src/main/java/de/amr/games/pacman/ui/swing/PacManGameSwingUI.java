@@ -18,12 +18,14 @@ import java.awt.event.WindowEvent;
 import java.awt.image.BufferStrategy;
 import java.util.Map;
 
+import javax.sound.sampled.Clip;
 import javax.swing.JFrame;
 
 import de.amr.games.pacman.GameState;
 import de.amr.games.pacman.PacManGame;
 import de.amr.games.pacman.common.Direction;
 import de.amr.games.pacman.ui.PacManGameUI;
+import de.amr.games.pacman.ui.Sound;
 
 /**
  * Swing UI for Pac-Man game.
@@ -155,15 +157,20 @@ public class PacManGameSwingUI implements PacManGameUI {
 	}
 
 	@Override
-	public void playGameReadyClip() {
-		assets.clipGameReady.setFramePosition(0);
-		assets.clipGameReady.start();
-	}
-
-	@Override
-	public void playPacManDeathClip() {
-		assets.clipPacManDeath.setFramePosition(0);
-		assets.clipPacManDeath.start();
+	public void playSound(Sound sound, boolean useCache) {
+		Clip clip = null;
+		if (useCache) {
+			if (assets.cachedClips.containsKey(sound)) {
+				clip = assets.cachedClips.get(sound);
+			} else {
+				clip = assets.loadClip(assets.clipPaths.get(sound));
+				assets.cachedClips.put(sound, clip);
+			}
+		} else {
+			clip = assets.loadClip(assets.clipPaths.get(sound));
+		}
+		clip.setFramePosition(0);
+		clip.start();
 	}
 
 	private void drawPauseText(Graphics2D g) {
