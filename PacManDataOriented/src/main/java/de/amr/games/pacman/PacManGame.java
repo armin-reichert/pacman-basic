@@ -62,6 +62,8 @@ public class PacManGame implements Runnable {
 
 	static final List<Direction> DIRECTION_PRIORITY = List.of(UP, LEFT, DOWN, RIGHT);
 
+	static final int[] GHOST_UNLOCK_ORDER = { PINKY, INKY, CLYDE };
+
 	static final List<GameLevel> LEVELS = List.of(
 	/*@formatter:off*/
 		new GameLevel("Cherries",   100,  80, 75, 40,  20,  80, 10,  85,  90, 50, 6, 5),
@@ -156,10 +158,10 @@ public class PacManGame implements Runnable {
 		extraLife = false;
 		score = 0;
 		lives = 3;
-		setLevel(1); // level numbering starts with 1!
+		startLevel(1); // level numbering starts with 1!
 	}
 
-	private void setLevel(int levelNumber) {
+	private void startLevel(int levelNumber) {
 		level = levelNumber;
 		world.restoreFood();
 		huntingPhase = 0;
@@ -170,6 +172,9 @@ public class PacManGame implements Runnable {
 		bonusConsumedTimer = 0;
 		for (GameState state : GameState.values()) {
 			state.setDuration(0);
+		}
+		for (Ghost ghost : ghosts) {
+			ghost.dotCounter = 0;
 		}
 	}
 
@@ -197,9 +202,11 @@ public class PacManGame implements Runnable {
 			ghost.forcedOnTrack = ghost == ghosts[BLINKY];
 			ghost.dead = false;
 			ghost.frightened = false;
+			ghost.locked = true;
 			ghost.enteringHouse = false;
 			ghost.leavingHouse = false;
 			ghost.bounty = 0;
+//			ghost.dotCounter = 0;
 		}
 		ghosts[BLINKY].dir = ghosts[BLINKY].wishDir = LEFT;
 		ghosts[PINKY].dir = ghosts[PINKY].wishDir = DOWN;
@@ -238,7 +245,7 @@ public class PacManGame implements Runnable {
 			killAllGhosts();
 		}
 		if (ui.keyPressed("plus") && state == READY) {
-			setLevel(++level);
+			startLevel(++level);
 			enterReadyState();
 		}
 	}
@@ -331,8 +338,7 @@ public class PacManGame implements Runnable {
 	}
 
 	private void exitReadyState() {
-		ghosts[INKY].leavingHouse = ghosts[PINKY].leavingHouse = ghosts[CLYDE].leavingHouse = true;
-		ghosts[BLINKY].leavingHouse = false;
+		ghosts[BLINKY].locked = false;
 	}
 
 	// HUNTING
@@ -474,7 +480,7 @@ public class PacManGame implements Runnable {
 	private void runChangingLevelState() {
 		if (state.expired()) {
 			log("Level %d complete, entering level %d", level, level + 1);
-			setLevel(++level);
+			startLevel(++level);
 			enterReadyState();
 			return;
 		}
@@ -559,7 +565,10 @@ public class PacManGame implements Runnable {
 	private void checkPacManFoundFood(V2i tile) {
 		if (world.isFoodTile(tile.x, tile.y) && !world.hasEatenFood(tile.x, tile.y)) {
 			world.eatFood(tile.x, tile.y);
-			// energizer found?
+			preferredLockedGhost().ifPresent(ghost -> {
+				ghost.dotCounter++;
+				log("%s dot counter=%d", ghost.name, ghost.dotCounter);
+			});
 			if (world.isEnergizerTile(tile.x, tile.y)) {
 				score(50);
 				pacMan.stoppedTicks = 3;
@@ -567,7 +576,9 @@ public class PacManGame implements Runnable {
 				if (level().ghostFrightenedSeconds > 0) {
 					log("Pac-Man got power for %d seconds", level().ghostFrightenedSeconds);
 					for (Ghost ghost : ghosts) {
-						ghost.frightened = !ghost.dead;
+						if (!ghost.dead && !ghost.locked) {
+							ghost.frightened = true;
+						}
 					}
 					forceGhostsTurningBack();
 				}
@@ -621,7 +632,14 @@ public class PacManGame implements Runnable {
 	}
 
 	private void updateGhost(Ghost ghost) {
-		if (ghost.enteringHouse) {
+		if (ghost.locked) {
+			if (ghost.dotCounter >= ghostDotLimit(ghost)) {
+				ghost.locked = false;
+				ghost.leavingHouse = true;
+			} else if (ghost != ghosts[BLINKY]) {
+				letGhostBounce(ghost);
+			}
+		} else if (ghost.enteringHouse) {
 			letGhostEnterHouse(ghost);
 		} else if (ghost.leavingHouse) {
 			letGhostLeaveHouse(ghost);
@@ -632,6 +650,31 @@ public class PacManGame implements Runnable {
 			ghost.targetTile = chasing ? currentChasingTarget(ghost) : ghost.scatterTile;
 			letGhostHeadForTargetTile(ghost);
 		}
+	}
+
+	private Optional<Ghost> preferredLockedGhost() {
+		for (int ghost : GHOST_UNLOCK_ORDER) {
+			if (ghosts[ghost].locked) {
+				return Optional.of(ghosts[ghost]);
+			}
+		}
+		return Optional.empty();
+	}
+
+	/**
+	 * @param ghost ghost index
+	 * @return dot limit for ghost at current game level
+	 * 
+	 * @see https://pacman.holenet.info/#CH2_Home_Sweet_Home
+	 */
+	private int ghostDotLimit(Ghost ghost) {
+		if (ghost == ghosts[INKY]) {
+			return level == 1 ? 30 : 0;
+		}
+		if (ghost == ghosts[CLYDE]) {
+			return level == 1 ? 60 : level == 2 ? 50 : 0;
+		}
+		return 0;
 	}
 
 	private V2i currentChasingTarget(Ghost ghost) {
