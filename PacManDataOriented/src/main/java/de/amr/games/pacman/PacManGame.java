@@ -603,9 +603,9 @@ public class PacManGame implements Runnable {
 	private long lastChomp;
 
 	private void onPacManFoundFood(V2i tile) {
-		if (System.nanoTime() - lastChomp >= TimeUnit.MILLISECONDS.toNanos(400)) {
-			ui.playSound(Sound.CHOMP, false);
-			log("chomp");
+		// TODO
+		if (System.nanoTime() - lastChomp >= TimeUnit.MILLISECONDS.toNanos(100)) {
+			ui.playSound(Sound.CHOMP, true);
 			lastChomp = System.nanoTime();
 		}
 		world.eatFood(tile.x, tile.y);

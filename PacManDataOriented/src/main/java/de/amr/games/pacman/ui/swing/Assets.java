@@ -88,12 +88,12 @@ public class Assets {
 		);
 		
 		clipPaths = Map.of(
-			Sound.CHOMP,        "/pacman_chomp.wav",
-			Sound.GAME_READY,   "/pacman_beginning.wav",
-			Sound.GHOST_DEATH,  "/pacman_eatghost.wav",
-			Sound.PACMAN_DEATH, "/pacman_death.wav",
-			Sound.EAT_BONUS,    "/pacman_eatfruit.wav",
-			Sound.EXTRA_LIFE,   "/pacman_extrapac.wav"
+			Sound.CHOMP,        "/sound/munch_1.wav",
+			Sound.GAME_READY,   "/sound/game_start.wav",
+			Sound.GHOST_DEATH,  "/sound/eat_ghost.wav",
+			Sound.PACMAN_DEATH, "/sound/death_1.wav",
+			Sound.EAT_BONUS,    "/sound/eat_fruit.wav",
+			Sound.EXTRA_LIFE,   "/sound/extend.wav"
 		);
 		
 		//@formatter:on
