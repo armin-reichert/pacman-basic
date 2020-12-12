@@ -677,11 +677,11 @@ public class PacManGame implements Runnable {
 		if (ghost.locked) {
 			if (ghost != ghosts[BLINKY]) {
 				if (globalDotCounterEnabled && globalDotCounter >= globalDotLimit(ghost)) {
+					log("Global dot counter is %d", globalDotCounter);
 					unlockGhost(ghost);
-					log("%s's dot counter is %d", ghost.name, globalDotCounter);
 				} else if (!globalDotCounterEnabled && ghost.dotCounter >= privateDotLimit(ghost)) {
-					unlockGhost(ghost);
 					log("%s's dot counter is %d", ghost.name, ghost.dotCounter);
+					unlockGhost(ghost);
 				} else {
 					letGhostBounce(ghost);
 				}
