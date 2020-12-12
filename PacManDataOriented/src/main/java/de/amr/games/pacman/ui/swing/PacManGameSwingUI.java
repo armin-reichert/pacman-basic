@@ -64,7 +64,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 		unscaledSize = new Dimension(WORLD_WIDTH_TILES * TS, WORLD_HEIGHT_TILES * TS);
 		assets = new Assets();
 
-		introScene = new IntroScene(game, assets, unscaledSize);
+		introScene = new IntroScene(game, this, assets, unscaledSize);
 		playScene = new PlayScene(game, assets, unscaledSize);
 
 		window = new JFrame();

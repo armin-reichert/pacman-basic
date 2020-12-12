@@ -13,6 +13,7 @@ import java.awt.image.BufferedImage;
 
 import de.amr.games.pacman.PacManGame;
 import de.amr.games.pacman.common.Direction;
+import de.amr.games.pacman.ui.Sound;
 
 /**
  * Intro presenting the ghosts and showing the chasing animation.
@@ -30,17 +31,19 @@ class IntroScene {
 	};
 	//@formatter:on
 
-	public PacManGame game;
-	public Assets assets;
-	public Dimension size;
+	public final PacManGame game;
+	public final PacManGameSwingUI ui;
+	public final Assets assets;
+	public final Dimension size;
 	public long passed;
 	public long mark;
 	public float pacManX;
 	public float leftmostGhostX;
 	public boolean ghostsChasingPacMan;
 
-	public IntroScene(PacManGame game, Assets assets, Dimension size) {
+	public IntroScene(PacManGame game, PacManGameSwingUI ui, Assets assets, Dimension size) {
 		this.game = game;
+		this.ui = ui;
 		this.assets = assets;
 		this.size = size;
 		reset();
@@ -72,6 +75,9 @@ class IntroScene {
 		mark += 1;
 		for (int ghost = 0; ghost <= 3; ++ghost) {
 			int y = (10 + 3 * ghost) * TS;
+			if (passed == game.clock.sec(mark)) {
+				ui.playSound(Sound.CREDIT);
+			}
 			if (passed >= game.clock.sec(mark)) {
 				BufferedImage ghostLookingRight = assets.sheet(0, 4 + ghost);
 				g.drawImage(ghostLookingRight, 2 * TS - 3, y - 2, null);

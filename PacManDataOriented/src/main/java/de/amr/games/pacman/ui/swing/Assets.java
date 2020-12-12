@@ -88,12 +88,14 @@ public class Assets {
 		);
 		
 		clipPaths = Map.of(
+			Sound.CREDIT,       "/sound/credit.wav",
 			Sound.CHOMP,        "/sound/munch_1.wav",
 			Sound.GAME_READY,   "/sound/game_start.wav",
 			Sound.GHOST_DEATH,  "/sound/eat_ghost.wav",
 			Sound.PACMAN_DEATH, "/sound/death_1.wav",
 			Sound.EAT_BONUS,    "/sound/eat_fruit.wav",
-			Sound.EXTRA_LIFE,   "/sound/extend.wav"
+			Sound.EXTRA_LIFE,   "/sound/extend.wav",
+			Sound.SIREN,        "/sound/siren_4.wav"
 		);
 		
 		//@formatter:on
