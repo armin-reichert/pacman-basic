@@ -16,7 +16,11 @@ public interface PacManGameUI {
 
 	void onExit();
 
+	void loopSound(Sound sound);
+
 	void playSound(Sound sound, boolean cached);
+
+	void stopSound(Sound sound);
 
 	default void playSound(Sound sound) {
 		playSound(sound, true);

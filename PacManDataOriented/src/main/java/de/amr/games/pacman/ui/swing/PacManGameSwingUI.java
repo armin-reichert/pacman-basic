@@ -158,19 +158,32 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 	@Override
 	public void playSound(Sound sound, boolean useCache) {
-		Clip clip = null;
-		if (useCache) {
-			if (assets.cachedClips.containsKey(sound)) {
-				clip = assets.cachedClips.get(sound);
-			} else {
-				clip = assets.clip(assets.clipPaths.get(sound));
-				assets.cachedClips.put(sound, clip);
-			}
-		} else {
-			clip = assets.clip(assets.clipPaths.get(sound));
-		}
+		Clip clip = getClip(sound, useCache);
 		clip.setFramePosition(0);
 		clip.start();
+	}
+
+	@Override
+	public void loopSound(Sound sound) {
+		Clip clip = getClip(sound, true);
+		clip.loop(Clip.LOOP_CONTINUOUSLY);
+	}
+
+	@Override
+	public void stopSound(Sound sound) {
+		getClip(sound, true).stop();
+	}
+
+	private Clip getClip(Sound sound, boolean useCache) {
+		if (useCache) {
+			if (assets.cachedClips.containsKey(sound)) {
+				return assets.cachedClips.get(sound);
+			}
+			Clip clip = assets.clip(assets.clipPaths.get(sound));
+			assets.cachedClips.put(sound, clip);
+			return clip;
+		}
+		return assets.clip(assets.clipPaths.get(sound));
 	}
 
 	private void drawPauseText(Graphics2D g) {

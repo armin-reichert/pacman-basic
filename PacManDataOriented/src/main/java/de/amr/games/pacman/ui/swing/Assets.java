@@ -93,6 +93,7 @@ public class Assets {
 			Sound.GAME_READY,   "/sound/game_start.wav",
 			Sound.GHOST_DEATH,  "/sound/eat_ghost.wav",
 			Sound.PACMAN_DEATH, "/sound/death_1.wav",
+			Sound.PACMAN_POWER, "/sound/power_pellet.wav",
 			Sound.EAT_BONUS,    "/sound/eat_fruit.wav",
 			Sound.EXTRA_LIFE,   "/sound/extend.wav",
 			Sound.SIREN,        "/sound/siren_4.wav"

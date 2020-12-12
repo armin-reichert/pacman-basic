@@ -37,7 +37,6 @@ import static de.amr.games.pacman.entities.Ghost.PINKY;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -383,6 +382,12 @@ public class PacManGame implements Runnable {
 		state.setDuration(huntingPhaseDuration());
 		forceGhostsTurningBack();
 		log("Game state updated to %s for %d ticks", stateDescription(), state.ticksRemaining());
+		boolean chasing = huntingPhase % 2 == 1;
+		if (chasing) {
+			ui.loopSound(Sound.SIREN);
+		} else {
+			ui.stopSound(Sound.SIREN);
+		}
 	}
 
 	private void enterHuntingState() {
@@ -392,10 +397,12 @@ public class PacManGame implements Runnable {
 
 	private void runHuntingState() {
 		if (pacMan.dead) {
+			exitHuntingState();
 			enterPacManDyingState();
 			return;
 		}
 		if (world.foodRemaining == 0) {
+			exitHuntingState();
 			enterChangingLevelState();
 			return;
 		}
@@ -411,6 +418,10 @@ public class PacManGame implements Runnable {
 		if (pacMan.powerTicks == 0) {
 			state.tick();
 		}
+	}
+
+	private void exitHuntingState() {
+		ui.stopSound(Sound.SIREN);
 	}
 
 	// PACMAN_DYING
@@ -600,14 +611,8 @@ public class PacManGame implements Runnable {
 		}
 	}
 
-	private long lastChomp;
-
 	private void onPacManFoundFood(V2i tile) {
-		// TODO
-		if (System.nanoTime() - lastChomp >= TimeUnit.MILLISECONDS.toNanos(100)) {
-			ui.playSound(Sound.CHOMP, true);
-			lastChomp = System.nanoTime();
-		}
+		ui.playSound(Sound.CHOMP, false);
 		world.eatFood(tile.x, tile.y);
 		pacMan.starvingTicks = 0;
 		if (globalDotCounterEnabled) {
@@ -636,6 +641,8 @@ public class PacManGame implements Runnable {
 					}
 				}
 				forceGhostsTurningBack();
+				ui.stopSound(Sound.SIREN);
+				ui.loopSound(Sound.PACMAN_POWER);
 			}
 			ghostBounty = 200;
 		} else {
@@ -656,6 +663,8 @@ public class PacManGame implements Runnable {
 				for (Ghost ghost : ghosts) {
 					ghost.frightened = false;
 				}
+				ui.stopSound(Sound.PACMAN_POWER);
+				ui.loopSound(Sound.SIREN);
 			}
 		}
 	}
