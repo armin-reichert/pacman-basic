@@ -157,15 +157,14 @@ public class PacManGame implements Runnable {
 	}
 
 	private void reset() {
-		hiscore.load();
 		score = 0;
 		lives = 3;
+		hiscore.load();
 		startLevel(1); // level numbering starts with 1!
 	}
 
 	private void startLevel(int levelNumber) {
 		level = levelNumber;
-		world.restoreFood();
 		huntingPhase = 0;
 		mazeFlashesRemaining = 0;
 		ghostBounty = 200;
@@ -178,13 +177,13 @@ public class PacManGame implements Runnable {
 		for (Ghost ghost : ghosts) {
 			ghost.dotCounter = 0;
 		}
+		world.restoreFood();
 	}
 
 	private void resetGuys() {
 		pacMan.visible = true;
 		pacMan.speed = 0;
 		pacMan.dir = pacMan.wishDir = RIGHT;
-		pacMan.placeAt(pacMan.homeTile.x, pacMan.homeTile.y, HTS, 0);
 		pacMan.changedTile = true;
 		pacMan.couldMove = true;
 		pacMan.forcedOnTrack = true;
@@ -193,11 +192,11 @@ public class PacManGame implements Runnable {
 		pacMan.powerTicks = 0;
 		pacMan.restingTicks = 0;
 		pacMan.starvingTicks = 0;
+		pacMan.placeAt(pacMan.homeTile.x, pacMan.homeTile.y, HTS, 0);
 
 		for (Ghost ghost : ghosts) {
 			ghost.visible = true;
 			ghost.speed = 0;
-			ghost.placeAt(ghost.homeTile.x, ghost.homeTile.y, HTS, 0);
 			ghost.targetTile = null;
 			ghost.changedTile = true;
 			ghost.couldMove = true;
@@ -210,6 +209,7 @@ public class PacManGame implements Runnable {
 			ghost.leavingHouse = false;
 			ghost.bounty = 0;
 //			ghost.dotCounter = 0;
+			ghost.placeAt(ghost.homeTile.x, ghost.homeTile.y, HTS, 0);
 		}
 		ghosts[BLINKY].dir = ghosts[BLINKY].wishDir = LEFT;
 		ghosts[PINKY].dir = ghosts[PINKY].wishDir = DOWN;
@@ -264,7 +264,7 @@ public class PacManGame implements Runnable {
 		if (state == HUNTING) {
 			boolean chasing = huntingPhase % 2 == 1;
 			int step = huntingPhase / 2;
-			return chasing ? String.format("%s-chasing-%d", state, step) : String.format("%s-scattering-%d", state, step);
+			return String.format(chasing ? "%s-chasing-%d" : "%s-scattering-%d", state, step);
 		}
 		return state.name();
 	}
@@ -593,8 +593,7 @@ public class PacManGame implements Runnable {
 		pacMan.starvingTicks++;
 		if (pacMan.starvingTicks >= starvingTimeLimit()) {
 			preferredLockedGhost().ifPresent(ghost -> {
-				unlockGhost(ghost);
-				log("Ghost %s unlocked, Pac-Man starved for %d ticks", ghost.name, pacMan.starvingTicks);
+				unlockGhost(ghost, "Pac-Man starving for %d ticks", pacMan.starvingTicks);
 				pacMan.starvingTicks = 0;
 			});
 		}
@@ -683,11 +682,9 @@ public class PacManGame implements Runnable {
 		if (ghost.locked) {
 			if (ghost != ghosts[BLINKY]) {
 				if (globalDotCounterEnabled && globalDotCounter >= globalDotLimit(ghost)) {
-					log("Global dot counter is %d", globalDotCounter);
-					unlockGhost(ghost);
+					unlockGhost(ghost, "Global dot counter is %d", globalDotCounter);
 				} else if (!globalDotCounterEnabled && ghost.dotCounter >= privateDotLimit(ghost)) {
-					log("%s's dot counter is %d", ghost.name, ghost.dotCounter);
-					unlockGhost(ghost);
+					unlockGhost(ghost, "%s's dot counter is %d", ghost.name, ghost.dotCounter);
 				} else {
 					letGhostBounce(ghost);
 				}
@@ -705,12 +702,12 @@ public class PacManGame implements Runnable {
 		}
 	}
 
-	private void unlockGhost(Ghost ghost) {
+	private void unlockGhost(Ghost ghost, String reason, Object... args) {
 		ghost.locked = false;
 		if (ghost != ghosts[BLINKY]) {
 			ghost.leavingHouse = true;
 		}
-		log("Ghost %s unlocked", ghost.name);
+		log("Ghost %s unlocked: %s", ghost.name, String.format(reason, args));
 	}
 
 	private Optional<Ghost> preferredLockedGhost() {
