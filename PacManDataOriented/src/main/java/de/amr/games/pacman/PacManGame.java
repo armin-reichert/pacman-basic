@@ -590,6 +590,7 @@ public class PacManGame implements Runnable {
 			preferredLockedGhost().ifPresent(ghost -> {
 				unlockGhost(ghost);
 				log("Ghost %s unlocked, Pac-Man starved for %d ticks", ghost.name, pacMan.starvingTicks);
+				pacMan.starvingTicks = 0;
 			});
 		}
 	}
