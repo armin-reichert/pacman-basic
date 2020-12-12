@@ -319,10 +319,15 @@ public class PacManGame implements Runnable {
 
 	private void runIntroState() {
 		if (ui.keyPressed("space")) {
+			exitIntroState();
 			enterReadyState();
 			return;
 		}
 		state.tick();
+	}
+
+	private void exitIntroState() {
+		ui.endIntroScene();
 	}
 
 	// READY

@@ -157,6 +157,11 @@ public class PacManGameSwingUI implements PacManGameUI {
 	}
 
 	@Override
+	public void endIntroScene() {
+		introScene.mute();
+	}
+
+	@Override
 	public void playSound(Sound sound, boolean useCache) {
 		Clip clip = getClip(sound, useCache);
 		clip.setFramePosition(0);

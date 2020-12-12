@@ -12,6 +12,8 @@ public interface PacManGameUI {
 
 	void startIntroScene();
 
+	void endIntroScene();
+
 	boolean keyPressed(String keySpec);
 
 	void onExit();

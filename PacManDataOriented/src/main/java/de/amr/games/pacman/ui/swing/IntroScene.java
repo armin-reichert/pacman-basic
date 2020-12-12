@@ -60,6 +60,12 @@ class IntroScene {
 		ghostsChasingPacMan = true;
 	}
 
+	public void mute() {
+		ui.stopSound(Sound.SIREN);
+		ui.stopSound(Sound.PACMAN_POWER);
+		ui.stopSound(Sound.GHOST_DEATH);
+	}
+
 	public void draw(Graphics2D g) {
 		g.setFont(assets.scoreFont);
 
