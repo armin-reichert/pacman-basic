@@ -37,6 +37,7 @@ import static de.amr.games.pacman.entities.Ghost.PINKY;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -599,8 +600,14 @@ public class PacManGame implements Runnable {
 		}
 	}
 
+	private long lastChomp;
+
 	private void onPacManFoundFood(V2i tile) {
-		ui.playSound(Sound.CHOMP, false);
+		if (System.nanoTime() - lastChomp >= TimeUnit.MILLISECONDS.toNanos(400)) {
+			ui.playSound(Sound.CHOMP, false);
+			log("chomp");
+			lastChomp = System.nanoTime();
+		}
 		world.eatFood(tile.x, tile.y);
 		pacMan.starvingTicks = 0;
 		if (globalDotCounterEnabled) {

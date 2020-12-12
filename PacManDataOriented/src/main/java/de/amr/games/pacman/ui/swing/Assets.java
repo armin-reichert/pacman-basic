@@ -99,17 +99,6 @@ public class Assets {
 		//@formatter:on
 	}
 
-	public Clip loadClip(String path) {
-		try {
-			Clip clip = AudioSystem.getClip();
-			BufferedInputStream bs = new BufferedInputStream(getClass().getResourceAsStream(path));
-			clip.open(AudioSystem.getAudioInputStream(bs));
-			return clip;
-		} catch (Exception x) {
-			throw new RuntimeException(x);
-		}
-	}
-
 	public BufferedImage section(int x, int y, int w, int h) {
 		return spriteSheet.getSubimage(x * 16, y * 16, w * 16, h * 16);
 	}
@@ -139,4 +128,16 @@ public class Assets {
 			throw new RuntimeException(String.format("Could not create font, path='%s'", fontPath));
 		}
 	}
+
+	public Clip clip(String path) {
+		try {
+			Clip clip = AudioSystem.getClip();
+			BufferedInputStream bs = new BufferedInputStream(getClass().getResourceAsStream(path));
+			clip.open(AudioSystem.getAudioInputStream(bs));
+			return clip;
+		} catch (Exception x) {
+			throw new RuntimeException(x);
+		}
+	}
+
 }

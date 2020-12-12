@@ -163,11 +163,11 @@ public class PacManGameSwingUI implements PacManGameUI {
 			if (assets.cachedClips.containsKey(sound)) {
 				clip = assets.cachedClips.get(sound);
 			} else {
-				clip = assets.loadClip(assets.clipPaths.get(sound));
+				clip = assets.clip(assets.clipPaths.get(sound));
 				assets.cachedClips.put(sound, clip);
 			}
 		} else {
-			clip = assets.loadClip(assets.clipPaths.get(sound));
+			clip = assets.clip(assets.clipPaths.get(sound));
 		}
 		clip.setFramePosition(0);
 		clip.start();
