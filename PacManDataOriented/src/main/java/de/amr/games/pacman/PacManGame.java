@@ -560,6 +560,7 @@ public class PacManGame implements Runnable {
 				log("Pac-Man killed by %s at tile %s", ghost.name, ghost.tile());
 				globalDotCounter = 0;
 				globalDotCounterEnabled = true;
+				log("Global dot counter reset and enabled");
 				return;
 			}
 		}
@@ -586,7 +587,10 @@ public class PacManGame implements Runnable {
 	private void onPacManStarved() {
 		pacMan.starvingTicks++;
 		if (pacMan.starvingTicks >= starvingTimeLimit()) {
-			preferredLockedGhost().ifPresent(this::unlockGhost);
+			preferredLockedGhost().ifPresent(ghost -> {
+				unlockGhost(ghost);
+				log("Ghost %s unlocked, Pac-Man starved for %d ticks", ghost.name, pacMan.starvingTicks);
+			});
 		}
 	}
 
@@ -598,7 +602,7 @@ public class PacManGame implements Runnable {
 			if (ghosts[CLYDE].locked && globalDotCounter == 32) {
 				globalDotCounterEnabled = false;
 				globalDotCounter = 0;
-				log("Global dot counter disabled");
+				log("Global dot counter disabled, Clyde in house when counter reached 32");
 			} else {
 				++globalDotCounter;
 			}
@@ -674,10 +678,10 @@ public class PacManGame implements Runnable {
 			if (ghost != ghosts[BLINKY]) {
 				if (globalDotCounterEnabled && globalDotCounter >= globalDotLimit(ghost)) {
 					unlockGhost(ghost);
-					log("Ghost %s unlocked, global dot counter is %d", ghost.name, globalDotCounter);
-				} else if (ghost.dotCounter >= privateDotLimit(ghost)) {
+					log("%s's dot counter is %d", ghost.name, globalDotCounter);
+				} else if (!globalDotCounterEnabled && ghost.dotCounter >= privateDotLimit(ghost)) {
 					unlockGhost(ghost);
-					log("Ghost %s unlocked, ghost dot counter is %d", ghost.name, ghost.dotCounter);
+					log("%s's dot counter is %d", ghost.name, ghost.dotCounter);
 				} else {
 					letGhostBounce(ghost);
 				}
@@ -697,7 +701,10 @@ public class PacManGame implements Runnable {
 
 	private void unlockGhost(Ghost ghost) {
 		ghost.locked = false;
-		ghost.leavingHouse = true;
+		if (ghost != ghosts[BLINKY]) {
+			ghost.leavingHouse = true;
+		}
+		log("Ghost %s unlocked", ghost.name);
 	}
 
 	private Optional<Ghost> preferredLockedGhost() {
@@ -710,7 +717,7 @@ public class PacManGame implements Runnable {
 	}
 
 	/**
-	 * @param ghost ghost index
+	 * @param ghost ghost
 	 * @return dot limit for ghost at current game level
 	 * 
 	 * @see https://pacman.holenet.info/#CH2_Home_Sweet_Home
