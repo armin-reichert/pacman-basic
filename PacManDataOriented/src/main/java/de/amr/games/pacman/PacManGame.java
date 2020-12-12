@@ -224,19 +224,24 @@ public class PacManGame implements Runnable {
 
 		if (ui.keyPressed("p")) {
 			paused = !paused;
-		} else if (ui.keyPressed("s")) {
+		}
+		if (ui.keyPressed("s")) {
 			clock.targetFPS = clock.targetFPS == 60 ? 30 : 60;
-		} else if (ui.keyPressed("d")) {
+		}
+		if (ui.keyPressed("d")) {
 			ui.setDebugMode(!ui.isDebugMode());
 		}
 
 		if (ui.keyPressed("left")) {
 			pacMan.wishDir = LEFT;
-		} else if (ui.keyPressed("right")) {
+		}
+		if (ui.keyPressed("right")) {
 			pacMan.wishDir = RIGHT;
-		} else if (ui.keyPressed("up")) {
+		}
+		if (ui.keyPressed("up")) {
 			pacMan.wishDir = UP;
-		} else if (ui.keyPressed("down")) {
+		}
+		if (ui.keyPressed("down")) {
 			pacMan.wishDir = DOWN;
 		}
 
