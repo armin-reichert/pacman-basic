@@ -256,6 +256,9 @@ public class PacManGame implements Runnable {
 			startLevel(++level);
 			enterReadyState();
 		}
+		if (ui.keyPressed("l") && state == READY) {
+			lives++;
+		}
 	}
 
 	// BEGIN STATE-MACHINE
