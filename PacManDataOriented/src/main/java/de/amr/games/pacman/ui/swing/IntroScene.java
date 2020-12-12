@@ -35,11 +35,13 @@ class IntroScene {
 	public final PacManGameSwingUI ui;
 	public final Assets assets;
 	public final Dimension size;
-	public long passed;
-	public long mark;
-	public float pacManX;
-	public float leftmostGhostX;
-	public boolean ghostsChasingPacMan;
+
+	private long passed;
+	private long mark;
+	private float pacManX;
+	private float leftmostGhostX;
+	private int killedGhost;
+	private boolean ghostsChasingPacMan;
 
 	public IntroScene(PacManGame game, PacManGameSwingUI ui, Assets assets, Dimension size) {
 		this.game = game;
@@ -54,6 +56,7 @@ class IntroScene {
 		mark = 0;
 		pacManX = size.width;
 		leftmostGhostX = pacManX + 24;
+		killedGhost = -1;
 		ghostsChasingPacMan = true;
 	}
 
@@ -105,6 +108,10 @@ class IntroScene {
 		}
 
 		mark += 1;
+		if (passed == game.clock.sec(mark)) {
+			ui.loopSound(Sound.SIREN);
+		}
+
 		if (passed >= game.clock.sec(mark)) {
 			if (ghostsChasingPacMan) {
 				drawGhostsChasingPacMan(g);
@@ -142,6 +149,8 @@ class IntroScene {
 			leftmostGhostX -= 0.8f;
 		} else {
 			ghostsChasingPacMan = false;
+			ui.stopSound(Sound.SIREN);
+			ui.loopSound(Sound.PACMAN_POWER);
 		}
 	}
 
@@ -150,17 +159,23 @@ class IntroScene {
 		BufferedImage frightenedGhostImage = ghostFrightened();
 		for (int ghost = 0; ghost < 4; ++ghost) {
 			int x = (int) leftmostGhostX + ghost * 16;
-			if (pacManX > x && pacManX <= x + 16) {
+			if (pacManX < x) {
+				g.drawImage(frightenedGhostImage, x, y, null);
+			} else if (pacManX > x && pacManX <= x + 16) {
 				int bounty = (int) Math.pow(2, ghost) * 200;
 				g.drawImage(assets.bountyNumbers.get(bounty), x, y, null);
-			} else if (pacManX < x) {
-				g.drawImage(frightenedGhostImage, x, y, null);
+				if (killedGhost != ghost) {
+					killedGhost++;
+					ui.playSound(Sound.GHOST_DEATH);
+				}
 			}
 		}
 		g.drawImage(pacManWalking(RIGHT), (int) pacManX, y, null);
-		if (leftmostGhostX < size.width) {
+		if (pacManX < size.width) {
 			pacManX += 0.6f;
 			leftmostGhostX += 0.3f;
+		} else {
+			ui.stopSound(Sound.PACMAN_POWER);
 		}
 	}
 
