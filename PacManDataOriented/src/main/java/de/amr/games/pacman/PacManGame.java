@@ -61,10 +61,6 @@ import de.amr.games.pacman.ui.Sound;
  */
 public class PacManGame implements Runnable {
 
-	static final Direction[] DIRECTION_PRIORITY = { UP, LEFT, DOWN, RIGHT };
-
-	static final int[] GHOST_UNLOCK_ORDER = { PINKY, INKY, CLYDE };
-
 	static final GameLevel[] LEVELS = {
 	/*@formatter:off*/
 		new GameLevel("Cherries",   100,  80, 75, 40,  20,  80, 10,  85,  90, 50, 6, 5),
@@ -88,17 +84,12 @@ public class PacManGame implements Runnable {
 		new GameLevel("Key",       5000, 100, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0),
 		new GameLevel("Key",       5000, 100, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0),
 		new GameLevel("Key",       5000,  90, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0)
-	//@formatter:on
+	/*@formatter:on*/
 	};
 
-	public GameLevel level(int level) {
-		int index = level <= 21 ? level - 1 : 20;
-		return LEVELS[index];
-	}
+	static final Direction[] DIRECTION_PRIORITY = { UP, LEFT, DOWN, RIGHT };
 
-	public GameLevel level() {
-		return level(level);
-	}
+	static final int[] GHOST_UNLOCK_ORDER = { PINKY, INKY, CLYDE };
 
 	public final World world;
 	public final PacMan pacMan;
@@ -154,6 +145,15 @@ public class PacManGame implements Runnable {
 		if (hiscore.changed) {
 			hiscore.save();
 		}
+	}
+
+	public GameLevel level(int level) {
+		int index = level <= 21 ? level - 1 : 20;
+		return LEVELS[index];
+	}
+
+	public GameLevel level() {
+		return level(level);
 	}
 
 	private void reset() {
