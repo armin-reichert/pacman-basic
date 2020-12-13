@@ -61,11 +61,11 @@ import de.amr.games.pacman.ui.Sound;
  */
 public class PacManGame implements Runnable {
 
-	static final List<Direction> DIRECTION_PRIORITY = List.of(UP, LEFT, DOWN, RIGHT);
+	static final Direction[] DIRECTION_PRIORITY = { UP, LEFT, DOWN, RIGHT };
 
 	static final int[] GHOST_UNLOCK_ORDER = { PINKY, INKY, CLYDE };
 
-	static final List<GameLevel> LEVELS = List.of(
+	static final GameLevel[] LEVELS = {
 	/*@formatter:off*/
 		new GameLevel("Cherries",   100,  80, 75, 40,  20,  80, 10,  85,  90, 50, 6, 5),
 		new GameLevel("Strawberry", 300,  90, 85, 45,  30,  90, 15,  95,  95, 55, 5, 5),
@@ -89,11 +89,11 @@ public class PacManGame implements Runnable {
 		new GameLevel("Key",       5000, 100, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0),
 		new GameLevel("Key",       5000,  90, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0)
 	//@formatter:on
-	);
+	};
 
 	public GameLevel level(int level) {
 		int index = level <= 21 ? level - 1 : 20;
-		return LEVELS.get(index);
+		return LEVELS[index];
 	}
 
 	public GameLevel level() {
