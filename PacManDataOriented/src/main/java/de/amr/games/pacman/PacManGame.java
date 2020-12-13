@@ -984,10 +984,12 @@ public class PacManGame implements Runnable {
 	private boolean tryMoving(Creature guy, Direction dir) {
 		V2i tile = guy.tile();
 		V2f offset = guy.offset();
+		V2i neighbor = tile.sum(dir.vec);
+		// 100% speed corresponds to 1.25 pixels/tick
 		float pixelsMoving = guy.speed * 1.25f;
 
-		// turns
-		if (guy.forcedOnTrack && canAccessTile(guy, tile.x + dir.vec.x, tile.y + dir.vec.y)) {
+		// check if guy can take the given direction at its current position
+		if (guy.forcedOnTrack && canAccessTile(guy, neighbor.x, neighbor.y)) {
 			if (dir == LEFT || dir == RIGHT) {
 				if (Math.abs(offset.y) > pixelsMoving) {
 					return false;
@@ -1001,27 +1003,25 @@ public class PacManGame implements Runnable {
 			}
 		}
 
-		// 100% speed corresponds to 1.25 pixels/tick
 		V2f velocity = new V2f(dir.vec).scaled(pixelsMoving);
 		V2f newPosition = guy.position.sum(velocity);
 		V2i newTile = tile(newPosition);
 		V2f newOffset = offset(newPosition);
 
+		// block moving into inaccessible tile
 		if (!canAccessTile(guy, newTile.x, newTile.y)) {
 			return false;
 		}
 
-		// avoid moving (partially) into inaccessible tile
-		if (guy.at(newTile)) {
-			if (!canAccessTile(guy, tile.x + dir.vec.x, tile.y + dir.vec.y)) {
-				if (dir == RIGHT && newOffset.x > 0 || dir == LEFT && newOffset.x < 0) {
-					guy.setOffset(0, offset.y);
-					return false;
-				}
-				if (dir == DOWN && newOffset.y > 0 || dir == UP && newOffset.y < 0) {
-					guy.setOffset(offset.x, 0);
-					return false;
-				}
+		// align with edge of inaccessible neighbor
+		if (!canAccessTile(guy, neighbor.x, neighbor.y)) {
+			if (dir == RIGHT && newOffset.x > 0 || dir == LEFT && newOffset.x < 0) {
+				guy.setOffset(0, offset.y);
+				return false;
+			}
+			if (dir == DOWN && newOffset.y > 0 || dir == UP && newOffset.y < 0) {
+				guy.setOffset(offset.x, 0);
+				return false;
 			}
 		}
 
