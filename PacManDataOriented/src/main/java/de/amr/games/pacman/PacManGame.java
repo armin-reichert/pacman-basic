@@ -588,6 +588,10 @@ public class PacManGame implements Runnable {
 				globalDotCounter = 0;
 				globalDotCounterEnabled = true;
 				log("Global dot counter reset and enabled");
+				if (ghosts[BLINKY].elroyMode > 0) {
+					log("Blinky Elroy mode %d disabled", ghosts[BLINKY].elroyMode);
+					ghosts[BLINKY].elroyMode = (byte) -ghosts[BLINKY].elroyMode; // disabled
+				}
 				return;
 			}
 		}
@@ -626,7 +630,7 @@ public class PacManGame implements Runnable {
 		world.eatFood(tile.x, tile.y);
 		pacMan.starvingTicks = 0;
 		updateGhostDotCounters();
-		updateBlinkyElroyMode();
+		mayBeEnterElroyMode();
 		if (world.isEnergizerTile(tile.x, tile.y)) {
 			pacMan.restingTicks = 3;
 			score(50);
@@ -671,7 +675,7 @@ public class PacManGame implements Runnable {
 		}
 	}
 
-	private void updateBlinkyElroyMode() {
+	private void mayBeEnterElroyMode() {
 		if (world.foodRemaining == level().elroy1DotsLeft) {
 			ghosts[BLINKY].elroyMode = 1;
 			log("Blinky becomes Elroy 1");
@@ -754,6 +758,10 @@ public class PacManGame implements Runnable {
 		ghost.locked = false;
 		if (ghost != ghosts[BLINKY]) {
 			ghost.leavingHouse = true;
+			if (ghost == ghosts[CLYDE] && ghosts[BLINKY].elroyMode < 0) {
+				ghosts[BLINKY].elroyMode = (byte) -ghosts[BLINKY].elroyMode;
+				log("Blinky Elroy mode %d resumed", ghosts[BLINKY].elroyMode);
+			}
 		}
 		log("Ghost %s unlocked: %s", ghost.name, String.format(reason, args));
 	}
