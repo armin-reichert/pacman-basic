@@ -166,8 +166,8 @@ public class Game implements Runnable {
 	@Override
 	public void run() {
 		reset();
-		enterIntroState();
 		ui.show();
+		enterIntroState();
 		while (true) {
 			clock.tick(() -> {
 				readInput();
@@ -473,8 +473,7 @@ public class Game implements Runnable {
 	// PACMAN_DYING
 
 	private void enterPacManDyingState() {
-		// 11 animation frames, 8 ticks each, 2 seconds before animation, 2 seconds after
-		enterState(PACMAN_DYING, clock.sec(2) + 88 + clock.sec(2));
+		enterState(PACMAN_DYING, clock.sec(6));
 	}
 
 	private void runPacManDyingState() {
@@ -487,12 +486,12 @@ public class Game implements Runnable {
 			}
 			return;
 		}
-		if (state.ticksRemaining() == clock.sec(2.5f) + 88) {
+		if (state.ticksRemaining() == clock.sec(4.5f)) {
 			for (Ghost ghost : ghosts) {
 				ghost.visible = false;
 			}
 		}
-		if (state.ticksRemaining() == clock.sec(2.5f) + 40) {
+		if (state.ticksRemaining() == clock.sec(3.5f)) {
 			ui.playSound(Sound.PACMAN_DEATH);
 		}
 		state.tick();
