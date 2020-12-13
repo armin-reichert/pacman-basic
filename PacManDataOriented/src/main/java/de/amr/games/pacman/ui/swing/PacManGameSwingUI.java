@@ -1,8 +1,8 @@
 package de.amr.games.pacman.ui.swing;
 
-import static de.amr.games.pacman.core.PacManGameWorld.TS;
-import static de.amr.games.pacman.core.PacManGameWorld.WORLD_HEIGHT_TILES;
-import static de.amr.games.pacman.core.PacManGameWorld.WORLD_WIDTH_TILES;
+import static de.amr.games.pacman.core.World.TS;
+import static de.amr.games.pacman.core.World.WORLD_HEIGHT_TILES;
+import static de.amr.games.pacman.core.World.WORLD_WIDTH_TILES;
 import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
@@ -22,8 +22,8 @@ import java.util.Map;
 import javax.sound.sampled.Clip;
 import javax.swing.JFrame;
 
-import de.amr.games.pacman.core.PacManGame;
-import de.amr.games.pacman.core.PacManGameState;
+import de.amr.games.pacman.core.Game;
+import de.amr.games.pacman.core.GameState;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.ui.PacManGameUI;
 import de.amr.games.pacman.ui.Sound;
@@ -48,7 +48,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 	private final JFrame window;
 	private final Assets assets;
-	private final PacManGame game;
+	private final Game game;
 	private final float scaling;
 	private final Canvas canvas;
 	private final Keyboard keyboard;
@@ -60,7 +60,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 	private boolean debugMode;
 
-	public PacManGameSwingUI(PacManGame game, float scaling) {
+	public PacManGameSwingUI(Game game, float scaling) {
 		this.game = game;
 		this.scaling = scaling;
 		unscaledSize = new Dimension(WORLD_WIDTH_TILES * TS, WORLD_HEIGHT_TILES * TS);
@@ -140,7 +140,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 	}
 
 	private void drawCurrentScene(Graphics2D g) {
-		if (game.state == PacManGameState.INTRO) {
+		if (game.state == GameState.INTRO) {
 			introScene.draw(g);
 		} else {
 			playScene.draw(g);

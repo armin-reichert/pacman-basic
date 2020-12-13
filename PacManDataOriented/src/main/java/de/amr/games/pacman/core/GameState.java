@@ -1,6 +1,6 @@
 package de.amr.games.pacman.core;
 
-public enum PacManGameState {
+public enum GameState {
 
 	INTRO, READY, HUNTING, CHANGING_LEVEL, PACMAN_DYING, GHOST_DYING, GAME_OVER;
 

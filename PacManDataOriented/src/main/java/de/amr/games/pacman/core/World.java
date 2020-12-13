@@ -6,7 +6,7 @@ import java.util.stream.Stream;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
 
-public class PacManGameWorld {
+public class World {
 
 	public static final int TS = 8;
 	public static final int HTS = TS / 2;

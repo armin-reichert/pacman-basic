@@ -1,9 +1,9 @@
 package de.amr.games.pacman.ui.swing;
 
-import static de.amr.games.pacman.core.PacManGameWorld.HTS;
-import static de.amr.games.pacman.core.PacManGameWorld.TS;
-import static de.amr.games.pacman.core.PacManGameWorld.WORLD_HEIGHT_TILES;
-import static de.amr.games.pacman.core.PacManGameWorld.WORLD_WIDTH_TILES;
+import static de.amr.games.pacman.core.World.HTS;
+import static de.amr.games.pacman.core.World.TS;
+import static de.amr.games.pacman.core.World.WORLD_HEIGHT_TILES;
+import static de.amr.games.pacman.core.World.WORLD_WIDTH_TILES;
 import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.dirIndex;
 import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.drawCenteredText;
 
@@ -17,8 +17,8 @@ import java.awt.image.BufferedImage;
 
 import de.amr.games.pacman.core.Ghost;
 import de.amr.games.pacman.core.PacMan;
-import de.amr.games.pacman.core.PacManGame;
-import de.amr.games.pacman.core.PacManGameState;
+import de.amr.games.pacman.core.Game;
+import de.amr.games.pacman.core.GameState;
 import de.amr.games.pacman.lib.Direction;
 
 /**
@@ -32,14 +32,14 @@ class PlayScene {
 
 	public boolean debugMode;
 
-	public final PacManGame game;
+	public final Game game;
 	public final Assets assets;
 	public final Dimension size;
 
 	public String messageText;
 	public Color messageColor;
 
-	public PlayScene(PacManGame game, Assets assets, Dimension size) {
+	public PlayScene(Game game, Assets assets, Dimension size) {
 		this.game = game;
 		this.assets = assets;
 		this.size = size;
@@ -59,10 +59,10 @@ class PlayScene {
 	}
 
 	private void drawMessage(Graphics2D g) {
-		if (game.state == PacManGameState.READY) {
+		if (game.state == GameState.READY) {
 			messageText = "Ready!";
 			messageColor = Color.YELLOW;
-		} else if (game.state == PacManGameState.GAME_OVER) {
+		} else if (game.state == GameState.GAME_OVER) {
 			messageText = "Game Over!";
 			messageColor = Color.RED;
 		} else {
@@ -148,7 +148,7 @@ class PlayScene {
 					continue;
 				}
 				// energizer blinking?
-				if (game.state == PacManGameState.HUNTING && game.world.isEnergizerTile(x, y)) {
+				if (game.state == GameState.HUNTING && game.world.isEnergizerTile(x, y)) {
 					int xx = x, yy = y;
 					game.clock.runOrBeIdle(10, () -> hideTile(g, xx, yy));
 				}
@@ -195,7 +195,7 @@ class PlayScene {
 			return;
 		}
 		BufferedImage sprite;
-		if (game.state == PacManGameState.PACMAN_DYING) {
+		if (game.state == GameState.PACMAN_DYING) {
 			if (game.state.ticksRemaining() >= game.clock.sec(2) + 11 * 8) {
 				// for 2 seconds, show full sprite before animation starts
 				sprite = assets.sheet(2, 0);

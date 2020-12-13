@@ -1,6 +1,6 @@
 package de.amr.games.pacman.ui.swing;
 
-import static de.amr.games.pacman.core.PacManGameWorld.TS;
+import static de.amr.games.pacman.core.World.TS;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.dirIndex;
@@ -11,7 +11,7 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
-import de.amr.games.pacman.core.PacManGame;
+import de.amr.games.pacman.core.Game;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.ui.Sound;
 
@@ -31,7 +31,7 @@ class IntroScene {
 	};
 	//@formatter:on
 
-	public final PacManGame game;
+	public final Game game;
 	public final PacManGameSwingUI ui;
 	public final Assets assets;
 	public final Dimension size;
@@ -43,7 +43,7 @@ class IntroScene {
 	private int killedGhost;
 	private boolean ghostsChasingPacMan;
 
-	public IntroScene(PacManGame game, PacManGameSwingUI ui, Assets assets, Dimension size) {
+	public IntroScene(Game game, PacManGameSwingUI ui, Assets assets, Dimension size) {
 		this.game = game;
 		this.ui = ui;
 		this.assets = assets;
