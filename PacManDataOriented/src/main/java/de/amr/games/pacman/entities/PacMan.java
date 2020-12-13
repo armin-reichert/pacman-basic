@@ -1,6 +1,6 @@
 package de.amr.games.pacman.entities;
 
-import de.amr.games.pacman.common.V2i;
+import de.amr.games.pacman.lib.V2i;
 
 public class PacMan extends Creature {
 

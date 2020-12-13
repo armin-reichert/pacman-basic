@@ -1,10 +1,10 @@
 package de.amr.games.pacman.entities;
 
-import static de.amr.games.pacman.PacManGameWorld.TS;
+import static de.amr.games.pacman.core.PacManGameWorld.TS;
 
-import de.amr.games.pacman.common.Direction;
-import de.amr.games.pacman.common.V2f;
-import de.amr.games.pacman.common.V2i;
+import de.amr.games.pacman.lib.Direction;
+import de.amr.games.pacman.lib.V2f;
+import de.amr.games.pacman.lib.V2i;
 
 public class Creature {
 

@@ -1,12 +1,12 @@
 package de.amr.games.pacman.ui.swing;
 
-import static de.amr.games.pacman.PacManGameWorld.TS;
-import static de.amr.games.pacman.PacManGameWorld.WORLD_HEIGHT_TILES;
-import static de.amr.games.pacman.PacManGameWorld.WORLD_WIDTH_TILES;
-import static de.amr.games.pacman.common.Direction.DOWN;
-import static de.amr.games.pacman.common.Direction.LEFT;
-import static de.amr.games.pacman.common.Direction.RIGHT;
-import static de.amr.games.pacman.common.Direction.UP;
+import static de.amr.games.pacman.core.PacManGameWorld.TS;
+import static de.amr.games.pacman.core.PacManGameWorld.WORLD_HEIGHT_TILES;
+import static de.amr.games.pacman.core.PacManGameWorld.WORLD_WIDTH_TILES;
+import static de.amr.games.pacman.lib.Direction.DOWN;
+import static de.amr.games.pacman.lib.Direction.LEFT;
+import static de.amr.games.pacman.lib.Direction.RIGHT;
+import static de.amr.games.pacman.lib.Direction.UP;
 
 import java.awt.Canvas;
 import java.awt.Color;
@@ -22,9 +22,9 @@ import java.util.Map;
 import javax.sound.sampled.Clip;
 import javax.swing.JFrame;
 
-import de.amr.games.pacman.PacManGameState;
-import de.amr.games.pacman.PacManGame;
-import de.amr.games.pacman.common.Direction;
+import de.amr.games.pacman.core.PacManGame;
+import de.amr.games.pacman.core.PacManGameState;
+import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.ui.PacManGameUI;
 import de.amr.games.pacman.ui.Sound;
 

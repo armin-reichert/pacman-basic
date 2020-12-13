@@ -1,9 +1,9 @@
 package de.amr.games.pacman.ui.swing;
 
-import static de.amr.games.pacman.PacManGameWorld.HTS;
-import static de.amr.games.pacman.PacManGameWorld.TS;
-import static de.amr.games.pacman.PacManGameWorld.WORLD_HEIGHT_TILES;
-import static de.amr.games.pacman.PacManGameWorld.WORLD_WIDTH_TILES;
+import static de.amr.games.pacman.core.PacManGameWorld.HTS;
+import static de.amr.games.pacman.core.PacManGameWorld.TS;
+import static de.amr.games.pacman.core.PacManGameWorld.WORLD_HEIGHT_TILES;
+import static de.amr.games.pacman.core.PacManGameWorld.WORLD_WIDTH_TILES;
 import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.dirIndex;
 import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.drawCenteredText;
 
@@ -15,11 +15,11 @@ import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.image.BufferedImage;
 
-import de.amr.games.pacman.PacManGameState;
-import de.amr.games.pacman.PacManGame;
-import de.amr.games.pacman.common.Direction;
+import de.amr.games.pacman.core.PacManGame;
+import de.amr.games.pacman.core.PacManGameState;
 import de.amr.games.pacman.entities.Ghost;
 import de.amr.games.pacman.entities.PacMan;
+import de.amr.games.pacman.lib.Direction;
 
 /**
  * Scene where the game is played.

@@ -1,4 +1,4 @@
-package de.amr.games.pacman.common;
+package de.amr.games.pacman.lib;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;

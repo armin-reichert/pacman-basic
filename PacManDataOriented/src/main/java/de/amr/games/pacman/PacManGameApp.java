@@ -2,6 +2,7 @@ package de.amr.games.pacman;
 
 import static java.awt.EventQueue.invokeLater;
 
+import de.amr.games.pacman.core.PacManGame;
 import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
 
 /**

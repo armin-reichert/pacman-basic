@@ -1,8 +1,8 @@
 package de.amr.games.pacman.ui.swing;
 
-import static de.amr.games.pacman.PacManGameWorld.TS;
-import static de.amr.games.pacman.common.Direction.LEFT;
-import static de.amr.games.pacman.common.Direction.RIGHT;
+import static de.amr.games.pacman.core.PacManGameWorld.TS;
+import static de.amr.games.pacman.lib.Direction.LEFT;
+import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.dirIndex;
 import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.drawCenteredText;
 
@@ -11,8 +11,8 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
-import de.amr.games.pacman.PacManGame;
-import de.amr.games.pacman.common.Direction;
+import de.amr.games.pacman.core.PacManGame;
+import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.ui.Sound;
 
 /**

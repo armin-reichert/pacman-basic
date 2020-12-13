@@ -1,10 +1,10 @@
-package de.amr.games.pacman;
+package de.amr.games.pacman.core;
 
 import java.util.BitSet;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.common.Direction;
-import de.amr.games.pacman.common.V2i;
+import de.amr.games.pacman.lib.Direction;
+import de.amr.games.pacman.lib.V2i;
 
 public class PacManGameWorld {
 

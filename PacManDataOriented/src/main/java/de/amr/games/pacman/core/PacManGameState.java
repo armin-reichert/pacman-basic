@@ -1,4 +1,4 @@
-package de.amr.games.pacman;
+package de.amr.games.pacman.core;
 
 public enum PacManGameState {
 
