@@ -395,7 +395,7 @@ public class Game implements Runnable {
 	}
 
 	private void exitReadyState() {
-		releaseGhost(ghosts[BLINKY]);
+		maybeReleaseGhost(ghosts[BLINKY]);
 	}
 
 	// HUNTING
@@ -761,7 +761,7 @@ public class Game implements Runnable {
 
 	private void updateGhost(Ghost ghost) {
 		if (ghost.locked) {
-			releaseGhost(ghost);
+			maybeReleaseGhost(ghost);
 		} else if (ghost.enteringHouse) {
 			letGhostEnterHouse(ghost);
 		} else if (ghost.leavingHouse) {
@@ -774,7 +774,7 @@ public class Game implements Runnable {
 		}
 	}
 
-	private void releaseGhost(Ghost ghost) {
+	private void maybeReleaseGhost(Ghost ghost) {
 		if (ghost == ghosts[BLINKY]) {
 			ghost.locked = false;
 			return;
