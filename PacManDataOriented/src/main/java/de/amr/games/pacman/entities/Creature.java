@@ -1,6 +1,6 @@
 package de.amr.games.pacman.entities;
 
-import static de.amr.games.pacman.World.TS;
+import static de.amr.games.pacman.PacManGameWorld.TS;
 
 import de.amr.games.pacman.common.Direction;
 import de.amr.games.pacman.common.V2f;

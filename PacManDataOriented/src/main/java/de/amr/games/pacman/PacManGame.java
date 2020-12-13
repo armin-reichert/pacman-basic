@@ -1,27 +1,27 @@
 package de.amr.games.pacman;
 
-import static de.amr.games.pacman.GameState.CHANGING_LEVEL;
-import static de.amr.games.pacman.GameState.GAME_OVER;
-import static de.amr.games.pacman.GameState.GHOST_DYING;
-import static de.amr.games.pacman.GameState.HUNTING;
-import static de.amr.games.pacman.GameState.INTRO;
-import static de.amr.games.pacman.GameState.PACMAN_DYING;
-import static de.amr.games.pacman.GameState.READY;
-import static de.amr.games.pacman.World.HOUSE_CENTER;
-import static de.amr.games.pacman.World.HOUSE_ENTRY;
-import static de.amr.games.pacman.World.HOUSE_LEFT;
-import static de.amr.games.pacman.World.HOUSE_RIGHT;
-import static de.amr.games.pacman.World.HTS;
-import static de.amr.games.pacman.World.LOWER_LEFT_CORNER;
-import static de.amr.games.pacman.World.LOWER_RIGHT_CORNER;
-import static de.amr.games.pacman.World.PACMAN_HOME;
-import static de.amr.games.pacman.World.PORTAL_LEFT;
-import static de.amr.games.pacman.World.PORTAL_RIGHT;
-import static de.amr.games.pacman.World.TOTAL_FOOD_COUNT;
-import static de.amr.games.pacman.World.UPPER_LEFT_CORNER;
-import static de.amr.games.pacman.World.UPPER_RIGHT_CORNER;
-import static de.amr.games.pacman.World.WORLD_HEIGHT_TILES;
-import static de.amr.games.pacman.World.WORLD_WIDTH_TILES;
+import static de.amr.games.pacman.PacManGameState.CHANGING_LEVEL;
+import static de.amr.games.pacman.PacManGameState.GAME_OVER;
+import static de.amr.games.pacman.PacManGameState.GHOST_DYING;
+import static de.amr.games.pacman.PacManGameState.HUNTING;
+import static de.amr.games.pacman.PacManGameState.INTRO;
+import static de.amr.games.pacman.PacManGameState.PACMAN_DYING;
+import static de.amr.games.pacman.PacManGameState.READY;
+import static de.amr.games.pacman.PacManGameWorld.HOUSE_CENTER;
+import static de.amr.games.pacman.PacManGameWorld.HOUSE_ENTRY;
+import static de.amr.games.pacman.PacManGameWorld.HOUSE_LEFT;
+import static de.amr.games.pacman.PacManGameWorld.HOUSE_RIGHT;
+import static de.amr.games.pacman.PacManGameWorld.HTS;
+import static de.amr.games.pacman.PacManGameWorld.LOWER_LEFT_CORNER;
+import static de.amr.games.pacman.PacManGameWorld.LOWER_RIGHT_CORNER;
+import static de.amr.games.pacman.PacManGameWorld.PACMAN_HOME;
+import static de.amr.games.pacman.PacManGameWorld.PORTAL_LEFT;
+import static de.amr.games.pacman.PacManGameWorld.PORTAL_RIGHT;
+import static de.amr.games.pacman.PacManGameWorld.TOTAL_FOOD_COUNT;
+import static de.amr.games.pacman.PacManGameWorld.UPPER_LEFT_CORNER;
+import static de.amr.games.pacman.PacManGameWorld.UPPER_RIGHT_CORNER;
+import static de.amr.games.pacman.PacManGameWorld.WORLD_HEIGHT_TILES;
+import static de.amr.games.pacman.PacManGameWorld.WORLD_WIDTH_TILES;
 import static de.amr.games.pacman.common.Direction.DOWN;
 import static de.amr.games.pacman.common.Direction.LEFT;
 import static de.amr.games.pacman.common.Direction.RIGHT;
@@ -42,6 +42,8 @@ import java.util.stream.Stream;
 
 import de.amr.games.pacman.common.Direction;
 import de.amr.games.pacman.common.Functions;
+import de.amr.games.pacman.common.GameClock;
+import de.amr.games.pacman.common.Hiscore;
 import de.amr.games.pacman.common.V2f;
 import de.amr.games.pacman.common.V2i;
 import de.amr.games.pacman.entities.Creature;
@@ -61,29 +63,29 @@ import de.amr.games.pacman.ui.Sound;
  */
 public class PacManGame implements Runnable {
 
-	static final GameLevel[] LEVELS = {
+	static final PacManGameLevel[] LEVELS = {
 	/*@formatter:off*/
-		new GameLevel("Cherries",   100,  80, 75, 40,  20,  80, 10,  85,  90, 50, 6, 5),
-		new GameLevel("Strawberry", 300,  90, 85, 45,  30,  90, 15,  95,  95, 55, 5, 5),
-		new GameLevel("Peach",      500,  90, 85, 45,  40,  90, 20,  95,  95, 55, 4, 5),
-		new GameLevel("Peach",      500,  90, 85, 50,  40, 100, 20,  95,  95, 55, 3, 5),
-		new GameLevel("Apple",      700, 100, 95, 50,  40, 100, 20, 105, 100, 60, 2, 5),
-		new GameLevel("Apple",      700, 100, 95, 50,  50, 100, 25, 105, 100, 60, 5, 5),
-		new GameLevel("Grapes",    1000, 100, 95, 50,  50, 100, 25, 105, 100, 60, 2, 5),
-		new GameLevel("Grapes",    1000, 100, 95, 50,  50, 100, 25, 105, 100, 60, 2, 5),
-		new GameLevel("Galaxian",  2000, 100, 95, 50,  60, 100, 30, 105, 100, 60, 1, 3),
-		new GameLevel("Galaxian",  2000, 100, 95, 50,  60, 100, 30, 105, 100, 60, 5, 5),
-		new GameLevel("Bell",      3000, 100, 95, 50,  60, 100, 30, 105, 100, 60, 2, 5),
-		new GameLevel("Bell",      3000, 100, 95, 50,  80, 100, 40, 105, 100, 60, 1, 3),
-		new GameLevel("Key",       5000, 100, 95, 50,  80, 100, 40, 105, 100, 60, 1, 3),
-		new GameLevel("Key",       5000, 100, 95, 50,  80, 100, 40, 105, 100, 60, 3, 5),
-		new GameLevel("Key",       5000, 100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3),
-		new GameLevel("Key",       5000, 100, 95, 50, 100, 100, 50, 105,   0,  0, 1, 3),
-		new GameLevel("Key",       5000, 100, 95, 50, 100, 100, 50, 105, 100, 60, 0, 0),
-		new GameLevel("Key",       5000, 100, 95, 50, 100, 100, 50, 105,   0,  0, 1, 0),
-		new GameLevel("Key",       5000, 100, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0),
-		new GameLevel("Key",       5000, 100, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0),
-		new GameLevel("Key",       5000,  90, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0)
+		new PacManGameLevel("Cherries",   100,  80, 75, 40,  20,  80, 10,  85,  90, 50, 6, 5),
+		new PacManGameLevel("Strawberry", 300,  90, 85, 45,  30,  90, 15,  95,  95, 55, 5, 5),
+		new PacManGameLevel("Peach",      500,  90, 85, 45,  40,  90, 20,  95,  95, 55, 4, 5),
+		new PacManGameLevel("Peach",      500,  90, 85, 50,  40, 100, 20,  95,  95, 55, 3, 5),
+		new PacManGameLevel("Apple",      700, 100, 95, 50,  40, 100, 20, 105, 100, 60, 2, 5),
+		new PacManGameLevel("Apple",      700, 100, 95, 50,  50, 100, 25, 105, 100, 60, 5, 5),
+		new PacManGameLevel("Grapes",    1000, 100, 95, 50,  50, 100, 25, 105, 100, 60, 2, 5),
+		new PacManGameLevel("Grapes",    1000, 100, 95, 50,  50, 100, 25, 105, 100, 60, 2, 5),
+		new PacManGameLevel("Galaxian",  2000, 100, 95, 50,  60, 100, 30, 105, 100, 60, 1, 3),
+		new PacManGameLevel("Galaxian",  2000, 100, 95, 50,  60, 100, 30, 105, 100, 60, 5, 5),
+		new PacManGameLevel("Bell",      3000, 100, 95, 50,  60, 100, 30, 105, 100, 60, 2, 5),
+		new PacManGameLevel("Bell",      3000, 100, 95, 50,  80, 100, 40, 105, 100, 60, 1, 3),
+		new PacManGameLevel("Key",       5000, 100, 95, 50,  80, 100, 40, 105, 100, 60, 1, 3),
+		new PacManGameLevel("Key",       5000, 100, 95, 50,  80, 100, 40, 105, 100, 60, 3, 5),
+		new PacManGameLevel("Key",       5000, 100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3),
+		new PacManGameLevel("Key",       5000, 100, 95, 50, 100, 100, 50, 105,   0,  0, 1, 3),
+		new PacManGameLevel("Key",       5000, 100, 95, 50, 100, 100, 50, 105, 100, 60, 0, 0),
+		new PacManGameLevel("Key",       5000, 100, 95, 50, 100, 100, 50, 105,   0,  0, 1, 0),
+		new PacManGameLevel("Key",       5000, 100, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0),
+		new PacManGameLevel("Key",       5000, 100, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0),
+		new PacManGameLevel("Key",       5000,  90, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0)
 	/*@formatter:on*/
 	};
 
@@ -91,7 +93,7 @@ public class PacManGame implements Runnable {
 
 	static final int[] GHOST_UNLOCK_ORDER = { PINKY, INKY, CLYDE };
 
-	public final World world;
+	public final PacManGameWorld world;
 	public final PacMan pacMan;
 	public final Ghost[] ghosts;
 	public final Hiscore hiscore;
@@ -100,8 +102,8 @@ public class PacManGame implements Runnable {
 
 	public boolean paused;
 
-	public GameState state;
-	public GameState previousState;
+	public PacManGameState state;
+	public PacManGameState previousState;
 	public int level;
 	public int huntingPhase;
 	public int lives;
@@ -117,7 +119,7 @@ public class PacManGame implements Runnable {
 
 	public PacManGame() {
 		clock = new GameClock();
-		world = new World();
+		world = new PacManGameWorld();
 		hiscore = new Hiscore();
 		pacMan = new PacMan("Pac-Man", PACMAN_HOME);
 		ghosts = new Ghost[4];
@@ -147,12 +149,12 @@ public class PacManGame implements Runnable {
 		}
 	}
 
-	public GameLevel level(int level) {
+	public PacManGameLevel level(int level) {
 		int index = level <= 21 ? level - 1 : 20;
 		return LEVELS[index];
 	}
 
-	public GameLevel level() {
+	public PacManGameLevel level() {
 		return level(level);
 	}
 
@@ -171,7 +173,7 @@ public class PacManGame implements Runnable {
 		ghostsKilledInLevel = 0;
 		bonusAvailableTimer = 0;
 		bonusConsumedTimer = 0;
-		for (GameState state : GameState.values()) {
+		for (PacManGameState state : PacManGameState.values()) {
 			state.setDuration(0);
 		}
 		for (Ghost ghost : ghosts) {
@@ -274,7 +276,7 @@ public class PacManGame implements Runnable {
 		return state.name();
 	}
 
-	private void enterState(GameState newState, long duration) {
+	private void enterState(PacManGameState newState, long duration) {
 		state = newState;
 		state.setDuration(duration);
 		String durationText = duration == Long.MAX_VALUE ? "indefinite time" : duration + " ticks";

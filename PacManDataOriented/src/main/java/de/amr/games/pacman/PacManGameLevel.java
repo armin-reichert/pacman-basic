@@ -19,7 +19,7 @@ package de.amr.games.pacman;
  * </ol>
  * <img src="../../../../../resources/levels.png">
  */
-public class GameLevel {
+public class PacManGameLevel {
 
 	public final String bonusSymbol;
 	public final int bonusPoints;
@@ -39,7 +39,7 @@ public class GameLevel {
 		return ((int) value) / 100f;
 	}
 
-	public GameLevel(String symbolName, int... values) {
+	public PacManGameLevel(String symbolName, int... values) {
 		bonusSymbol = symbolName;
 		bonusPoints = values[0];
 		pacManSpeed = percent(values[1]);

@@ -1,6 +1,6 @@
 package de.amr.games.pacman.ui.swing;
 
-import static de.amr.games.pacman.World.TS;
+import static de.amr.games.pacman.PacManGameWorld.TS;
 import static de.amr.games.pacman.common.Direction.LEFT;
 import static de.amr.games.pacman.common.Direction.RIGHT;
 import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.dirIndex;

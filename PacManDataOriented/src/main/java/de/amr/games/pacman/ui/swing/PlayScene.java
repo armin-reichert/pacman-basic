@@ -1,9 +1,9 @@
 package de.amr.games.pacman.ui.swing;
 
-import static de.amr.games.pacman.World.HTS;
-import static de.amr.games.pacman.World.TS;
-import static de.amr.games.pacman.World.WORLD_HEIGHT_TILES;
-import static de.amr.games.pacman.World.WORLD_WIDTH_TILES;
+import static de.amr.games.pacman.PacManGameWorld.HTS;
+import static de.amr.games.pacman.PacManGameWorld.TS;
+import static de.amr.games.pacman.PacManGameWorld.WORLD_HEIGHT_TILES;
+import static de.amr.games.pacman.PacManGameWorld.WORLD_WIDTH_TILES;
 import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.dirIndex;
 import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.drawCenteredText;
 
@@ -15,7 +15,7 @@ import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.image.BufferedImage;
 
-import de.amr.games.pacman.GameState;
+import de.amr.games.pacman.PacManGameState;
 import de.amr.games.pacman.PacManGame;
 import de.amr.games.pacman.common.Direction;
 import de.amr.games.pacman.entities.Ghost;
@@ -59,10 +59,10 @@ class PlayScene {
 	}
 
 	private void drawMessage(Graphics2D g) {
-		if (game.state == GameState.READY) {
+		if (game.state == PacManGameState.READY) {
 			messageText = "Ready!";
 			messageColor = Color.YELLOW;
-		} else if (game.state == GameState.GAME_OVER) {
+		} else if (game.state == PacManGameState.GAME_OVER) {
 			messageText = "Game Over!";
 			messageColor = Color.RED;
 		} else {
@@ -148,7 +148,7 @@ class PlayScene {
 					continue;
 				}
 				// energizer blinking?
-				if (game.state == GameState.HUNTING && game.world.isEnergizerTile(x, y)) {
+				if (game.state == PacManGameState.HUNTING && game.world.isEnergizerTile(x, y)) {
 					int xx = x, yy = y;
 					game.clock.runOrBeIdle(10, () -> hideTile(g, xx, yy));
 				}
@@ -195,7 +195,7 @@ class PlayScene {
 			return;
 		}
 		BufferedImage sprite;
-		if (game.state == GameState.PACMAN_DYING) {
+		if (game.state == PacManGameState.PACMAN_DYING) {
 			if (game.state.ticksRemaining() >= game.clock.sec(2) + 11 * 8) {
 				// for 2 seconds, show full sprite before animation starts
 				sprite = assets.sheet(2, 0);

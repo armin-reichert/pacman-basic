@@ -1,8 +1,8 @@
 package de.amr.games.pacman.ui.swing;
 
-import static de.amr.games.pacman.World.TS;
-import static de.amr.games.pacman.World.WORLD_HEIGHT_TILES;
-import static de.amr.games.pacman.World.WORLD_WIDTH_TILES;
+import static de.amr.games.pacman.PacManGameWorld.TS;
+import static de.amr.games.pacman.PacManGameWorld.WORLD_HEIGHT_TILES;
+import static de.amr.games.pacman.PacManGameWorld.WORLD_WIDTH_TILES;
 import static de.amr.games.pacman.common.Direction.DOWN;
 import static de.amr.games.pacman.common.Direction.LEFT;
 import static de.amr.games.pacman.common.Direction.RIGHT;
@@ -22,7 +22,7 @@ import java.util.Map;
 import javax.sound.sampled.Clip;
 import javax.swing.JFrame;
 
-import de.amr.games.pacman.GameState;
+import de.amr.games.pacman.PacManGameState;
 import de.amr.games.pacman.PacManGame;
 import de.amr.games.pacman.common.Direction;
 import de.amr.games.pacman.ui.PacManGameUI;
@@ -140,7 +140,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 	}
 
 	private void drawCurrentScene(Graphics2D g) {
-		if (game.state == GameState.INTRO) {
+		if (game.state == PacManGameState.INTRO) {
 			introScene.draw(g);
 		} else {
 			playScene.draw(g);

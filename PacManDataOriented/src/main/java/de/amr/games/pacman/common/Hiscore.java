@@ -1,4 +1,4 @@
-package de.amr.games.pacman;
+package de.amr.games.pacman.common;
 
 import static de.amr.games.pacman.common.Logging.log;
 import static java.time.format.DateTimeFormatter.ISO_DATE_TIME;
