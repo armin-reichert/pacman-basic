@@ -177,6 +177,7 @@ public class PacManGame implements Runnable {
 		for (Ghost ghost : ghosts) {
 			ghost.dotCounter = 0;
 		}
+		ghosts[BLINKY].elroyMode = 0;
 		world.restoreFood();
 	}
 
@@ -209,6 +210,7 @@ public class PacManGame implements Runnable {
 			ghost.leavingHouse = false;
 			ghost.bounty = 0;
 //			ghost.dotCounter = 0;
+//			ghost.elroyMode = 0;
 			ghost.placeAt(ghost.homeTile.x, ghost.homeTile.y, HTS, 0);
 		}
 		ghosts[BLINKY].dir = ghosts[BLINKY].wishDir = LEFT;
@@ -623,19 +625,8 @@ public class PacManGame implements Runnable {
 		ui.playSound(Sound.CHOMP, false);
 		world.eatFood(tile.x, tile.y);
 		pacMan.starvingTicks = 0;
-		if (globalDotCounterEnabled) {
-			if (ghosts[CLYDE].locked && globalDotCounter == 32) {
-				globalDotCounterEnabled = false;
-				globalDotCounter = 0;
-				log("Global dot counter disabled, Clyde in house when counter reached 32");
-			} else {
-				++globalDotCounter;
-			}
-		} else {
-			preferredLockedGhost().ifPresent(ghost -> {
-				ghost.dotCounter++;
-			});
-		}
+		updateGhostDotCounters();
+		updateBlinkyElroyMode();
 		if (world.isEnergizerTile(tile.x, tile.y)) {
 			pacMan.restingTicks = 3;
 			score(50);
@@ -661,6 +652,32 @@ public class PacManGame implements Runnable {
 		int eaten = TOTAL_FOOD_COUNT - world.foodRemaining;
 		if (bonusAvailableTimer == 0 && (eaten == 70 || eaten == 170)) {
 			bonusAvailableTimer = clock.sec(9 + new Random().nextFloat());
+		}
+	}
+
+	private void updateGhostDotCounters() {
+		if (globalDotCounterEnabled) {
+			if (ghosts[CLYDE].locked && globalDotCounter == 32) {
+				globalDotCounterEnabled = false;
+				globalDotCounter = 0;
+				log("Global dot counter disabled, Clyde in house when counter reached 32");
+			} else {
+				++globalDotCounter;
+			}
+		} else {
+			preferredLockedGhost().ifPresent(ghost -> {
+				ghost.dotCounter++;
+			});
+		}
+	}
+
+	private void updateBlinkyElroyMode() {
+		if (world.foodRemaining == level().elroy1DotsLeft) {
+			ghosts[BLINKY].elroyMode = 1;
+			log("Blinky becomes Elroy 1");
+		} else if (world.foodRemaining == level().elroy2DotsLeft) {
+			ghosts[BLINKY].elroyMode = 2;
+			log("Blinky becomes Elroy 2");
 		}
 	}
 
@@ -720,9 +737,16 @@ public class PacManGame implements Runnable {
 		} else if (ghost.dead) {
 			letGhostReturnHome(ghost);
 		} else if (state == HUNTING) {
-			boolean chasing = huntingPhase % 2 != 0;
-			ghost.targetTile = chasing ? currentChasingTarget(ghost) : ghost.scatterTile;
+			updateGhostTargetTile(ghost);
 			letGhostHeadForTargetTile(ghost);
+		}
+	}
+
+	private void updateGhostTargetTile(Ghost ghost) {
+		boolean chasing = huntingPhase % 2 != 0;
+		ghost.targetTile = chasing ? currentChasingTarget(ghost) : ghost.scatterTile;
+		if (ghost == ghosts[BLINKY] && ghost.elroyMode > 0) {
+			ghost.targetTile = pacMan.tile();
 		}
 	}
 
@@ -888,19 +912,12 @@ public class PacManGame implements Runnable {
 			ghost.speed = level().ghostSpeedTunnel;
 		} else if (ghost.frightened) {
 			ghost.speed = level().ghostSpeedFrightened;
+		} else if (ghost.elroyMode == 1) {
+			ghost.speed = level().elroy1Speed;
+		} else if (ghost.elroyMode == 2) {
+			ghost.speed = level().elroy2Speed;
 		} else {
 			ghost.speed = level().ghostSpeed;
-			if (ghost == ghosts[BLINKY]) {
-				maybeSetElroySpeed(ghost);
-			}
-		}
-	}
-
-	private void maybeSetElroySpeed(Ghost blinky) {
-		if (world.foodRemaining <= level().elroy2DotsLeft) {
-			blinky.speed = level().elroy2Speed;
-		} else if (world.foodRemaining <= level().elroy1DotsLeft) {
-			blinky.speed = level().elroy1Speed;
 		}
 	}
 
