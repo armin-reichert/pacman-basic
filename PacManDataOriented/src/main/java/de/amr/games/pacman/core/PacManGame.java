@@ -1,5 +1,11 @@
 package de.amr.games.pacman.core;
 
+import static de.amr.games.pacman.core.Creature.offset;
+import static de.amr.games.pacman.core.Creature.tile;
+import static de.amr.games.pacman.core.Ghost.BLINKY;
+import static de.amr.games.pacman.core.Ghost.CLYDE;
+import static de.amr.games.pacman.core.Ghost.INKY;
+import static de.amr.games.pacman.core.Ghost.PINKY;
 import static de.amr.games.pacman.core.PacManGameState.CHANGING_LEVEL;
 import static de.amr.games.pacman.core.PacManGameState.GAME_OVER;
 import static de.amr.games.pacman.core.PacManGameState.GHOST_DYING;
@@ -22,12 +28,6 @@ import static de.amr.games.pacman.core.PacManGameWorld.UPPER_LEFT_CORNER;
 import static de.amr.games.pacman.core.PacManGameWorld.UPPER_RIGHT_CORNER;
 import static de.amr.games.pacman.core.PacManGameWorld.WORLD_HEIGHT_TILES;
 import static de.amr.games.pacman.core.PacManGameWorld.WORLD_WIDTH_TILES;
-import static de.amr.games.pacman.entities.Creature.offset;
-import static de.amr.games.pacman.entities.Creature.tile;
-import static de.amr.games.pacman.entities.Ghost.BLINKY;
-import static de.amr.games.pacman.entities.Ghost.CLYDE;
-import static de.amr.games.pacman.entities.Ghost.INKY;
-import static de.amr.games.pacman.entities.Ghost.PINKY;
 import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
@@ -40,9 +40,6 @@ import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.entities.Creature;
-import de.amr.games.pacman.entities.Ghost;
-import de.amr.games.pacman.entities.PacMan;
 import de.amr.games.pacman.lib.Clock;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.Functions;

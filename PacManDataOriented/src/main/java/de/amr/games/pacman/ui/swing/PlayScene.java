@@ -15,10 +15,10 @@ import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.image.BufferedImage;
 
+import de.amr.games.pacman.core.Ghost;
+import de.amr.games.pacman.core.PacMan;
 import de.amr.games.pacman.core.PacManGame;
 import de.amr.games.pacman.core.PacManGameState;
-import de.amr.games.pacman.entities.Ghost;
-import de.amr.games.pacman.entities.PacMan;
 import de.amr.games.pacman.lib.Direction;
 
 /**

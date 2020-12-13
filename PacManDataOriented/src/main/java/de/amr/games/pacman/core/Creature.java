@@ -1,4 +1,4 @@
-package de.amr.games.pacman.entities;
+package de.amr.games.pacman.core;
 
 import static de.amr.games.pacman.core.PacManGameWorld.TS;
 
