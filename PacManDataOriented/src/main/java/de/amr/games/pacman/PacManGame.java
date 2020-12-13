@@ -42,7 +42,7 @@ import java.util.stream.Stream;
 
 import de.amr.games.pacman.common.Direction;
 import de.amr.games.pacman.common.Functions;
-import de.amr.games.pacman.common.GameClock;
+import de.amr.games.pacman.common.Clock;
 import de.amr.games.pacman.common.Hiscore;
 import de.amr.games.pacman.common.V2f;
 import de.amr.games.pacman.common.V2i;
@@ -97,7 +97,7 @@ public class PacManGame implements Runnable {
 	public final PacMan pacMan;
 	public final Ghost[] ghosts;
 	public final Hiscore hiscore;
-	public final GameClock clock;
+	public final Clock clock;
 	public PacManGameUI ui;
 
 	public boolean paused;
@@ -118,7 +118,7 @@ public class PacManGame implements Runnable {
 	public boolean globalDotCounterEnabled;
 
 	public PacManGame() {
-		clock = new GameClock();
+		clock = new Clock();
 		world = new PacManGameWorld();
 		hiscore = new Hiscore();
 		pacMan = new PacMan("Pac-Man", PACMAN_HOME);

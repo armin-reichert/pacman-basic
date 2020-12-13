@@ -1,6 +1,6 @@
 package de.amr.games.pacman.common;
 
-public class GameClock {
+public class Clock {
 
 	public int targetFPS = 60;
 	public long fps;
