@@ -7,7 +7,6 @@ import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
@@ -42,8 +41,7 @@ public class Assets {
 	public final Map<Integer, BufferedImage> bountyNumbers;
 	public final Font scoreFont;
 
-	public final Map<Sound, String> clipPaths;
-	public final Map<Sound, Clip> cachedClips = new HashMap<>();
+	public final Map<Sound, String> soundPaths;
 
 	public Assets() {
 
@@ -87,7 +85,7 @@ public class Assets {
 			1600, sheet(3, 8)
 		);
 		
-		clipPaths = Map.of(
+		soundPaths = Map.of(
 			Sound.CREDIT,       "/sound/credit.wav",
 			Sound.CHOMP,        "/sound/munch_1.wav",
 			Sound.GAME_READY,   "/sound/game_start.wav",

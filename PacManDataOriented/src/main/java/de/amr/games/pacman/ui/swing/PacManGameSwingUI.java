@@ -16,6 +16,7 @@ import java.awt.Graphics2D;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferStrategy;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.sound.sampled.Clip;
@@ -52,6 +53,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 	private final Canvas canvas;
 	private final Keyboard keyboard;
 	private final Dimension unscaledSize;
+	private final Map<Sound, Clip> cachedClips = new HashMap<>();
 
 	private final IntroScene introScene;
 	private final PlayScene playScene;
@@ -146,9 +148,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 		if (game.paused) {
 			drawPauseText(g);
 		}
-		if (debugMode) {
-			drawFPS(g);
-		}
+		drawFPS(g);
 	}
 
 	@Override
@@ -181,14 +181,14 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 	private Clip getClip(Sound sound, boolean useCache) {
 		if (useCache) {
-			if (assets.cachedClips.containsKey(sound)) {
-				return assets.cachedClips.get(sound);
+			if (cachedClips.containsKey(sound)) {
+				return cachedClips.get(sound);
 			}
-			Clip clip = assets.clip(assets.clipPaths.get(sound));
-			assets.cachedClips.put(sound, clip);
+			Clip clip = assets.clip(assets.soundPaths.get(sound));
+			cachedClips.put(sound, clip);
 			return clip;
 		}
-		return assets.clip(assets.clipPaths.get(sound));
+		return assets.clip(assets.soundPaths.get(sound));
 	}
 
 	private void drawPauseText(Graphics2D g) {
