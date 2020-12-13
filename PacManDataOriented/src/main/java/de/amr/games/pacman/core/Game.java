@@ -395,7 +395,7 @@ public class Game implements Runnable {
 	}
 
 	private void exitReadyState() {
-		ghosts[BLINKY].locked = false;
+		releaseGhost(ghosts[BLINKY]);
 	}
 
 	// HUNTING
@@ -655,7 +655,7 @@ public class Game implements Runnable {
 		pacMan.starvingTicks++;
 		if (pacMan.starvingTicks >= starvingTimeLimit()) {
 			preferredLockedGhost().ifPresent(ghost -> {
-				unlockGhost(ghost, "Pac-Man starving for %d ticks", pacMan.starvingTicks);
+				releaseGhost(ghost, "Pac-Man starving for %d ticks", pacMan.starvingTicks);
 				pacMan.starvingTicks = 0;
 			});
 		}
@@ -761,15 +761,7 @@ public class Game implements Runnable {
 
 	private void updateGhost(Ghost ghost) {
 		if (ghost.locked) {
-			if (ghost != ghosts[BLINKY]) {
-				if (globalDotCounterEnabled && globalDotCounter >= globalDotLimit(ghost)) {
-					unlockGhost(ghost, "Global dot counter is %d", globalDotCounter);
-				} else if (!globalDotCounterEnabled && ghost.dotCounter >= privateDotLimit(ghost)) {
-					unlockGhost(ghost, "%s's dot counter is %d", ghost.name, ghost.dotCounter);
-				} else {
-					letGhostBounce(ghost);
-				}
-			}
+			releaseGhost(ghost);
 		} else if (ghost.enteringHouse) {
 			letGhostEnterHouse(ghost);
 		} else if (ghost.leavingHouse) {
@@ -782,24 +774,36 @@ public class Game implements Runnable {
 		}
 	}
 
+	private void releaseGhost(Ghost ghost) {
+		if (ghost == ghosts[BLINKY]) {
+			ghost.locked = false;
+			return;
+		}
+		if (globalDotCounterEnabled && globalDotCounter >= globalDotLimit(ghost)) {
+			releaseGhost(ghost, "Global dot counter is %d", globalDotCounter);
+		} else if (!globalDotCounterEnabled && ghost.dotCounter >= privateDotLimit(ghost)) {
+			releaseGhost(ghost, "%s's dot counter is %d", ghost.name, ghost.dotCounter);
+		} else {
+			letGhostBounce(ghost);
+		}
+	}
+
+	private void releaseGhost(Ghost ghost, String reason, Object... args) {
+		ghost.locked = false;
+		ghost.leavingHouse = true;
+		if (ghost == ghosts[CLYDE] && ghosts[BLINKY].elroyMode < 0) {
+			ghosts[BLINKY].elroyMode = (byte) -ghosts[BLINKY].elroyMode;
+			log("Blinky Elroy mode %d resumed", ghosts[BLINKY].elroyMode);
+		}
+		log("Ghost %s unlocked: %s", ghost.name, String.format(reason, args));
+	}
+
 	private void updateGhostTargetTile(Ghost ghost) {
 		boolean chasing = huntingPhase % 2 != 0;
 		ghost.targetTile = chasing ? currentChasingTarget(ghost) : ghost.scatterTile;
 		if (ghost == ghosts[BLINKY] && ghost.elroyMode > 0) {
 			ghost.targetTile = pacMan.tile();
 		}
-	}
-
-	private void unlockGhost(Ghost ghost, String reason, Object... args) {
-		ghost.locked = false;
-		if (ghost != ghosts[BLINKY]) {
-			ghost.leavingHouse = true;
-			if (ghost == ghosts[CLYDE] && ghosts[BLINKY].elroyMode < 0) {
-				ghosts[BLINKY].elroyMode = (byte) -ghosts[BLINKY].elroyMode;
-				log("Blinky Elroy mode %d resumed", ghosts[BLINKY].elroyMode);
-			}
-		}
-		log("Ghost %s unlocked: %s", ghost.name, String.format(reason, args));
 	}
 
 	private Optional<Ghost> preferredLockedGhost() {
