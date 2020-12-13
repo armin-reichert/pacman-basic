@@ -6,7 +6,7 @@ public enum Direction {
 
 	public final V2i vec;
 
-	public Direction inverse() {
+	public Direction opposite() {
 		switch (this) {
 		case LEFT:
 			return RIGHT;

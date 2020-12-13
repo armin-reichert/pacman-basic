@@ -828,7 +828,7 @@ public class PacManGame implements Runnable {
 		V2f offset = ghost.offset();
 		// target reached?
 		if (ghost.at(ghost.targetTile) && offset.y >= 0) {
-			ghost.wishDir = ghost.dir.inverse();
+			ghost.wishDir = ghost.dir.opposite();
 			ghost.dead = false;
 			ghost.enteringHouse = false;
 			ghost.leavingHouse = true;
@@ -910,7 +910,7 @@ public class PacManGame implements Runnable {
 		}
 		if (ghost.forcedTurningBack) {
 			ghost.forcedTurningBack = false;
-			return Optional.of(ghost.wishDir.inverse());
+			return Optional.of(ghost.wishDir.opposite());
 		}
 		V2i tile = ghost.tile();
 		if (world.isPortalTile(tile.x, tile.y)) {
@@ -923,7 +923,7 @@ public class PacManGame implements Runnable {
 		double minDist = Double.MAX_VALUE;
 		Direction minDistDir = null;
 		for (Direction dir : DIRECTION_PRIORITY) {
-			if (dir == ghost.dir.inverse()) {
+			if (dir == ghost.dir.opposite()) {
 				continue;
 			}
 			V2i neighbor = tile.sum(dir.vec);
@@ -953,7 +953,7 @@ public class PacManGame implements Runnable {
 	private void letGhostBounce(Ghost ghost) {
 		tryMoving(ghost);
 		if (!ghost.couldMove) {
-			ghost.wishDir = ghost.wishDir.inverse();
+			ghost.wishDir = ghost.wishDir.opposite();
 		}
 	}
 
@@ -1031,23 +1031,19 @@ public class PacManGame implements Runnable {
 	}
 
 	private boolean canAccessTile(Creature guy, int x, int y) {
-		if (!world.inMapRange(x, y)) {
-			return world.isPortalTile(x, y);
+		if (world.isPortalTile(x, y)) {
+			return true;
 		}
 		if (world.isGhostHouseDoor(x, y)) {
-			if (guy instanceof Ghost) {
-				Ghost ghost = (Ghost) guy;
-				return ghost.enteringHouse || ghost.leavingHouse;
-			}
-			return false;
+			return guy instanceof Ghost && (((Ghost) guy).enteringHouse || ((Ghost) guy).leavingHouse);
 		}
-		return !world.isWall(x, y);
+		return world.inMapRange(x, y) && !world.isWall(x, y);
 	}
 
 	private Direction randomMoveDir(Creature guy) {
 		//@formatter:off
 		List<Direction> dirs = Stream.of(Direction.values())
-			.filter(dir -> dir != guy.dir.inverse())
+			.filter(dir -> dir != guy.dir.opposite())
 			.filter(dir -> {
 				V2i neighbor = guy.tile().sum(dir.vec);
 				return world.isAccessibleTile(neighbor.x, neighbor.y);
