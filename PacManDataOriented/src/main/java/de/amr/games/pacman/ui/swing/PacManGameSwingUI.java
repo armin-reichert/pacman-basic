@@ -149,11 +149,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 		if (game.paused) {
 			drawPauseText(g);
 		}
-		if (debugMode) {
-			drawFPS(g);
-		} else {
-			invokeLater(() -> window.setTitle(String.format("Pac-Man (%d fps)", game.clock.fps)));
-		}
+		invokeLater(() -> window.setTitle(String.format("Pac-Man (%d fps)", game.clock.fps)));
 	}
 
 	@Override
@@ -203,11 +199,4 @@ public class PacManGameSwingUI implements PacManGameUI {
 		g.setFont(new Font(Font.MONOSPACED, Font.BOLD, 28));
 		drawCenteredText(g, "PAUSED", 16 * TS, unscaledSize.width);
 	}
-
-	private void drawFPS(Graphics2D g) {
-		g.setColor(Color.GRAY);
-		g.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 8));
-		drawCenteredText(g, String.format("%d fps", game.clock.fps), unscaledSize.height - 3, unscaledSize.width);
-	}
-
 }
