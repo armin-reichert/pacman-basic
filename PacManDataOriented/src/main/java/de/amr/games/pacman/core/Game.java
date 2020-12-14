@@ -58,7 +58,7 @@ import de.amr.games.pacman.ui.Sound;
  * @see https://pacman.holenet.info
  * @see https://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php
  */
-public class Game implements Runnable {
+public class Game {
 
 	public static class Level {
 
@@ -163,8 +163,7 @@ public class Game implements Runnable {
 		ghosts[CLYDE] = new Ghost("Clyde", HOUSE_RIGHT, LOWER_LEFT_CORNER);
 	}
 
-	@Override
-	public void run() {
+	private void run() {
 		reset();
 		ui.show();
 		enterIntroState();
@@ -175,6 +174,10 @@ public class Game implements Runnable {
 				ui.render();
 			});
 		}
+	}
+
+	public void start() {
+		new Thread(this::run, "GameLoop").start();
 	}
 
 	public void exit() {

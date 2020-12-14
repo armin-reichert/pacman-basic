@@ -13,10 +13,10 @@ import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
 public class PacManGameApp {
 
 	public static void main(String[] args) {
-		Game game = new Game();
 		invokeLater(() -> {
+			Game game = new Game();
 			game.ui = new PacManGameSwingUI(game, 2);
-			new Thread(game, "GameLoop").start();
+			game.start();
 		});
 	}
 }
