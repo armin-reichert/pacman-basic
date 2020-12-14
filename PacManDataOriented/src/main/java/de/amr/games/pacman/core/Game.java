@@ -440,18 +440,14 @@ public class Game {
 	}
 
 	private static Sound siren(int huntingPhase) {
-		switch (huntingPhase) {
+		switch (huntingPhase / 2) {
 		case 0:
-		case 1:
 			return Sound.SIREN_1;
-		case 2:
-		case 3:
+		case 1:
 			return Sound.SIREN_2;
-		case 4:
-		case 5:
+		case 2:
 			return Sound.SIREN_3;
-		case 6:
-		case 7:
+		case 3:
 			return Sound.SIREN_4;
 		default:
 			throw new IllegalArgumentException("Illegal hunting phase: " + huntingPhase);
