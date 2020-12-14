@@ -407,7 +407,7 @@ public class Game {
 		//@formatter:off
 		{ 7, 20, 7, 20, 5,   20,  5, Short.MAX_VALUE },
 		{ 7, 20, 7, 20, 5, 1033, -1, Short.MAX_VALUE },
-		{ 5,  5, 5,  5, 5, 1037, -1, Short.MAX_VALUE },
+		{ 5, 20, 5, 20, 5, 1037, -1, Short.MAX_VALUE },
 		//@formatter:on
 	};
 
