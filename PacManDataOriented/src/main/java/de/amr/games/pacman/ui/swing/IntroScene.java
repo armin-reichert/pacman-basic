@@ -61,7 +61,7 @@ class IntroScene {
 	}
 
 	public void mute() {
-		ui.stopSound(Sound.SIREN);
+		ui.stopSound(Sound.SIREN_1);
 		ui.stopSound(Sound.PACMAN_POWER);
 		ui.stopSound(Sound.GHOST_DEATH);
 	}
@@ -115,7 +115,7 @@ class IntroScene {
 
 		mark += 1;
 		if (passed == game.clock.sec(mark)) {
-			ui.loopSound(Sound.SIREN);
+			ui.loopSound(Sound.SIREN_1);
 		}
 
 		if (passed >= game.clock.sec(mark)) {
@@ -155,7 +155,7 @@ class IntroScene {
 			leftmostGhostX -= 0.8f;
 		} else {
 			ghostsChasingPacMan = false;
-			ui.stopSound(Sound.SIREN);
+			ui.stopSound(Sound.SIREN_1);
 			ui.loopSound(Sound.PACMAN_POWER);
 		}
 	}

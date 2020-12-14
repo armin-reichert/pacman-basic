@@ -7,6 +7,7 @@ import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
@@ -85,18 +86,20 @@ public class Assets {
 			1600, sheet(3, 8)
 		);
 		
-		soundPaths = Map.of(
-			Sound.CREDIT,       "/sound/credit.wav",
-			Sound.CHOMP,        "/sound/munch_1.wav",
-			Sound.GAME_READY,   "/sound/game_start.wav",
-			Sound.GHOST_DEATH,  "/sound/eat_ghost.wav",
-			Sound.PACMAN_DEATH, "/sound/death_1.wav",
-			Sound.PACMAN_POWER, "/sound/power_pellet.wav",
-			Sound.EAT_BONUS,    "/sound/eat_fruit.wav",
-			Sound.EXTRA_LIFE,   "/sound/extend.wav",
-			Sound.SIREN,        "/sound/siren_4.wav"
-		);
-		
+		soundPaths = new HashMap<>();
+		soundPaths.put(Sound.CREDIT,       "/sound/credit.wav");
+		soundPaths.put(Sound.EAT_BONUS,    "/sound/eat_fruit.wav");
+		soundPaths.put(Sound.EXTRA_LIFE,   "/sound/extend.wav");
+		soundPaths.put(Sound.GAME_READY,   "/sound/game_start.wav");
+		soundPaths.put(Sound.GHOST_DEATH,  "/sound/eat_ghost.wav");
+		soundPaths.put(Sound.MUNCH,        "/sound/munch_1.wav");
+		soundPaths.put(Sound.PACMAN_DEATH, "/sound/death_1.wav");
+		soundPaths.put(Sound.PACMAN_POWER, "/sound/power_pellet.wav");
+		soundPaths.put(Sound.SIREN_1,      "/sound/siren_1.wav");
+		soundPaths.put(Sound.SIREN_2,      "/sound/siren_2.wav");
+		soundPaths.put(Sound.SIREN_3,      "/sound/siren_3.wav");
+		soundPaths.put(Sound.SIREN_4,      "/sound/siren_4.wav");
+		soundPaths.put(Sound.SIREN_5,      "/sound/siren_5.wav");
 		//@formatter:on
 	}
 

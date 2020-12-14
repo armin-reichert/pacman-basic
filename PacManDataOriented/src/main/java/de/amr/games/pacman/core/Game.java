@@ -431,17 +431,37 @@ public class Game {
 		state.setDuration(huntingPhaseDuration());
 		forceGhostsTurningBack();
 		log("Game state updated to %s for %d ticks", stateDescription(), state.ticksRemaining());
-		boolean chasing = huntingPhase % 2 == 1;
-		if (chasing) {
-			ui.loopSound(Sound.SIREN);
-		} else {
-			ui.stopSound(Sound.SIREN);
+		if (huntingPhase % 2 == 0) { // scattering
+			if (huntingPhase >= 2) {
+				ui.stopSound(siren(huntingPhase - 2));
+			}
+			ui.loopSound(siren(huntingPhase));
+		}
+	}
+
+	private static Sound siren(int huntingPhase) {
+		switch (huntingPhase) {
+		case 0:
+		case 1:
+			return Sound.SIREN_1;
+		case 2:
+		case 3:
+			return Sound.SIREN_2;
+		case 4:
+		case 5:
+			return Sound.SIREN_3;
+		case 6:
+		case 7:
+			return Sound.SIREN_4;
+		default:
+			throw new IllegalArgumentException("Illegal hunting phase: " + huntingPhase);
 		}
 	}
 
 	private void enterHuntingState() {
 		huntingPhase = 0;
 		enterState(HUNTING, huntingPhaseDuration());
+		ui.loopSound(siren(huntingPhase / 2));
 	}
 
 	private void runHuntingState() {
@@ -470,7 +490,7 @@ public class Game {
 	}
 
 	private void exitHuntingState() {
-		ui.stopSound(Sound.SIREN);
+		ui.stopSound(siren(huntingPhase));
 	}
 
 	// PACMAN_DYING
@@ -664,7 +684,7 @@ public class Game {
 	}
 
 	private void onPacManFoundFood(V2i tile) {
-		ui.playSound(Sound.CHOMP, false);
+		ui.playSound(Sound.MUNCH, false);
 		world.eatFood(tile.x, tile.y);
 		pacMan.starvingTicks = 0;
 		updateGhostDotCounters();
@@ -682,7 +702,6 @@ public class Game {
 					}
 				}
 				forceGhostsTurningBack();
-				ui.stopSound(Sound.SIREN);
 				ui.loopSound(Sound.PACMAN_POWER);
 			}
 			ghostBounty = 200;
@@ -731,7 +750,6 @@ public class Game {
 					ghost.frightened = false;
 				}
 				ui.stopSound(Sound.PACMAN_POWER);
-				ui.loopSound(Sound.SIREN);
 			}
 		}
 	}
