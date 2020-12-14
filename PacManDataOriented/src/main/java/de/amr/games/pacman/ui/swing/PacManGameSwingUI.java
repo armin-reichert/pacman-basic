@@ -7,11 +7,11 @@ import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Direction.UP;
+import static java.awt.EventQueue.invokeLater;
 
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.event.WindowAdapter;
@@ -149,8 +149,11 @@ public class PacManGameSwingUI implements PacManGameUI {
 		if (game.paused) {
 			drawPauseText(g);
 		}
-//		drawFPS(g);
-		EventQueue.invokeLater(() -> window.setTitle(String.format("Pac-Man (%d fps)", game.clock.fps)));
+		if (debugMode) {
+			drawFPS(g);
+		} else {
+			invokeLater(() -> window.setTitle(String.format("Pac-Man (%d fps)", game.clock.fps)));
+		}
 	}
 
 	@Override
