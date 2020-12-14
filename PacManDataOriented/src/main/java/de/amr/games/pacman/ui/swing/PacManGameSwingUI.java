@@ -14,6 +14,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferStrategy;
@@ -141,15 +142,28 @@ public class PacManGameSwingUI implements PacManGameUI {
 	}
 
 	private void drawCurrentScene(Graphics2D g) {
-		if (game.state == GameState.INTRO) {
-			introScene.draw(g);
-		} else {
-			playScene.draw(g);
-		}
 		if (game.paused) {
-			drawPauseText(g);
+			drawPausedScreen(g);
+		} else {
+			if (game.state == GameState.INTRO) {
+				introScene.draw(g);
+			} else {
+				playScene.draw(g);
+			}
 		}
 		invokeLater(() -> window.setTitle(String.format("Pac-Man (%d fps)", game.clock.fps)));
+	}
+
+	private void drawPausedScreen(Graphics2D g) {
+		int w = assets.imageLogo.getWidth();
+		g.drawImage(assets.imageLogo, (unscaledSize.width - w) / 2, 3, null);
+		g.setColor(new Color(200, 200, 200, 100));
+		g.fillRect(0, 0, unscaledSize.width, unscaledSize.height);
+		g.setColor(Color.GREEN);
+		g.setFont(new Font(Font.MONOSPACED, Font.BOLD, 28));
+		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+		drawCenteredText(g, "PAUSED", 16 * TS, unscaledSize.width);
+		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
 	}
 
 	@Override
@@ -190,13 +204,5 @@ public class PacManGameSwingUI implements PacManGameUI {
 			return clip;
 		}
 		return assets.clip(assets.soundPaths.get(sound));
-	}
-
-	private void drawPauseText(Graphics2D g) {
-		g.setColor(new Color(200, 200, 200, 100));
-		g.fillRect(0, 0, unscaledSize.width, unscaledSize.height);
-		g.setColor(Color.GREEN);
-		g.setFont(new Font(Font.MONOSPACED, Font.BOLD, 28));
-		drawCenteredText(g, "PAUSED", 16 * TS, unscaledSize.width);
 	}
 }
