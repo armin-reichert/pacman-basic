@@ -457,7 +457,7 @@ public class Game {
 	private void enterHuntingState() {
 		huntingPhase = 0;
 		enterState(HUNTING, huntingPhaseDuration());
-		ui.loopSound(siren(huntingPhase / 2));
+		ui.loopSound(siren(huntingPhase));
 	}
 
 	private void runHuntingState() {
