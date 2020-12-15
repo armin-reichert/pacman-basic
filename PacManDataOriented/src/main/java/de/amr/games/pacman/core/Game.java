@@ -306,9 +306,8 @@ public class Game {
 
 	public String stateDescription() {
 		if (state == HUNTING) {
-			boolean chasing = huntingPhase % 2 == 1;
 			int step = huntingPhase / 2;
-			return String.format(chasing ? "%s-chasing-%d" : "%s-scattering-%d", state, step);
+			return String.format(isChasing() ? "%s-chasing-%d" : "%s-scattering-%d", state, step);
 		}
 		return state.name();
 	}
@@ -411,7 +410,15 @@ public class Game {
 		//@formatter:on
 	};
 
-	private long ticks(short duration) {
+	private boolean isScattering() {
+		return huntingPhase % 2 == 0;
+	}
+
+	private boolean isChasing() {
+		return huntingPhase % 2 == 1;
+	}
+
+	private long huntingTicks(short duration) {
 		if (duration == -1) {
 			return 1; // 1 tick
 		}
@@ -421,17 +428,17 @@ public class Game {
 		return clock.sec(duration);
 	}
 
-	private long huntingPhaseDuration() {
+	private long currentHuntingPhaseDuration() {
 		int index = level == 1 ? 0 : level <= 4 ? 1 : 2;
-		return ticks(HUNTING_PHASE_DURATION[index][huntingPhase]);
+		return huntingTicks(HUNTING_PHASE_DURATION[index][huntingPhase]);
 	}
 
 	private void enterNextHuntingPhase() {
 		huntingPhase++;
-		state.setDuration(huntingPhaseDuration());
+		state.setDuration(currentHuntingPhaseDuration());
 		forceGhostsTurningBack();
 		log("Game state updated to %s for %d ticks", stateDescription(), state.ticksRemaining());
-		if (huntingPhase % 2 == 0) { // scattering
+		if (isScattering()) {
 			if (huntingPhase >= 2) {
 				ui.stopSound(siren(huntingPhase - 2));
 			}
@@ -456,7 +463,7 @@ public class Game {
 
 	private void enterHuntingState() {
 		huntingPhase = 0;
-		enterState(HUNTING, huntingPhaseDuration());
+		enterState(HUNTING, currentHuntingPhaseDuration());
 		ui.loopSound(siren(huntingPhase));
 	}
 
@@ -808,7 +815,7 @@ public class Game {
 		ghost.locked = false;
 		ghost.leavingHouse = true;
 		if (ghost == ghosts[CLYDE] && ghosts[BLINKY].elroyMode < 0) {
-			ghosts[BLINKY].elroyMode = (byte) -ghosts[BLINKY].elroyMode;
+			ghosts[BLINKY].elroyMode -= 1; // resume Elroy mode
 			log("Blinky Elroy mode %d resumed", ghosts[BLINKY].elroyMode);
 		}
 		log("Ghost %s unlocked: %s", ghost.name, String.format(reason, args));
