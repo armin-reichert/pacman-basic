@@ -20,7 +20,7 @@ public interface PacManGameUI {
 
 	void loopSound(Sound sound);
 
-	void playSound(Sound sound, boolean cached);
+	void playSound(Sound sound, boolean useCache);
 
 	void stopSound(Sound sound);
 
