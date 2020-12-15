@@ -717,7 +717,7 @@ public class Game {
 			if (ghosts[CLYDE].locked && globalDotCounter == 32) {
 				globalDotCounterEnabled = false;
 				globalDotCounter = 0;
-				log("Global dot counter disabled, Clyde in house when counter reached 32");
+				log("Global dot counter disabled and reset, Clyde in house when counter reached 32");
 			} else {
 				++globalDotCounter;
 			}
