@@ -13,6 +13,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
+import java.awt.Stroke;
 import java.awt.image.BufferedImage;
 
 import de.amr.games.pacman.core.Game;
@@ -83,6 +84,15 @@ class PlayScene {
 			g.setColor(Color.WHITE);
 			g.setFont(new Font("Arial", Font.PLAIN, 6));
 			g.drawString(stateText, 1 * TS, 3 * TS);
+			for (Ghost ghost : game.ghosts) {
+				g.setColor(Color.WHITE);
+				g.drawRect((int) ghost.position.x, (int) ghost.position.y, TS, TS);
+				if (ghost.targetTile != null) {
+					Color c = Assets.GHOST_COLORS.get(ghost.name);
+					g.setColor(c);
+					g.fillRect(ghost.targetTile.x * TS + HTS / 2, ghost.targetTile.y * TS + HTS / 2, HTS, HTS);
+				}
+			}
 		}
 	}
 
@@ -172,11 +182,13 @@ class PlayScene {
 	}
 
 	private void drawMazeStructure(Graphics2D g) {
+		Color dark = new Color(80, 80, 80, 200);
+		Stroke thin = new BasicStroke(0.1f);
+		g.setColor(dark);
+		g.setStroke(thin);
 		for (int x = 0; x < WORLD_WIDTH_TILES; ++x) {
 			for (int y = 0; y < WORLD_HEIGHT_TILES; ++y) {
 				if (game.world.isIntersectionTile(x, y)) {
-					g.setColor(new Color(100, 100, 100));
-					g.setStroke(new BasicStroke(0.1f));
 					for (Direction dir : Direction.values()) {
 						int nx = x + dir.vec.x, ny = y + dir.vec.y;
 						if (game.world.isWall(nx, ny)) {
@@ -185,8 +197,6 @@ class PlayScene {
 						g.drawLine(x * TS + HTS, y * TS + HTS, nx * TS + HTS, ny * TS + HTS);
 					}
 				} else if (game.world.isUpwardsBlocked(x, y)) {
-					g.setColor(new Color(100, 100, 100));
-					g.setStroke(new BasicStroke(0.1f));
 					g.translate(x * TS + HTS, y * TS);
 					g.fillPolygon(TRIANGLE);
 					g.translate(-(x * TS + HTS), -y * TS);
@@ -258,15 +268,5 @@ class PlayScene {
 			sprite = assets.sheet(2 * dir + walking, 4 + ghostIndex);
 		}
 		g.drawImage(sprite, (int) ghost.position.x - HTS, (int) ghost.position.y - HTS, null);
-
-		if (debugMode) {
-			g.setColor(Color.WHITE);
-			g.drawRect((int) ghost.position.x, (int) ghost.position.y, TS, TS);
-			if (ghost.targetTile != null) {
-				Color c = Assets.GHOST_COLORS.get(ghost.name);
-				g.setColor(c);
-				g.fillRect(ghost.targetTile.x * TS + HTS / 2, ghost.targetTile.y * TS + HTS / 2, HTS, HTS);
-			}
-		}
 	}
 }
