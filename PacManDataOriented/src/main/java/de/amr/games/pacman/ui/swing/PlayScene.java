@@ -76,26 +76,6 @@ class PlayScene {
 		}
 	}
 
-	private void drawDebugInfo(Graphics2D g) {
-		if (debugMode) {
-			long remaining = game.state.ticksRemaining();
-			String ticksText = remaining == Long.MAX_VALUE ? "forever" : remaining + " ticks remaining";
-			String stateText = String.format("%s (%s)", game.stateDescription(), ticksText);
-			g.setColor(Color.WHITE);
-			g.setFont(new Font("Arial", Font.PLAIN, 6));
-			g.drawString(stateText, 1 * TS, 3 * TS);
-			for (Ghost ghost : game.ghosts) {
-				g.setColor(Color.WHITE);
-				g.drawRect((int) ghost.position.x, (int) ghost.position.y, TS, TS);
-				if (ghost.targetTile != null) {
-					Color c = Assets.GHOST_COLORS.get(ghost.name);
-					g.setColor(c);
-					g.fillRect(ghost.targetTile.x * TS + HTS / 2, ghost.targetTile.y * TS + HTS / 2, HTS, HTS);
-				}
-			}
-		}
-	}
-
 	private void drawScore(Graphics2D g) {
 		g.setFont(assets.scoreFont);
 		g.translate(0, 2);
@@ -181,30 +161,6 @@ class PlayScene {
 		}
 	}
 
-	private void drawMazeStructure(Graphics2D g) {
-		Color dark = new Color(80, 80, 80, 200);
-		Stroke thin = new BasicStroke(0.1f);
-		g.setColor(dark);
-		g.setStroke(thin);
-		for (int x = 0; x < WORLD_WIDTH_TILES; ++x) {
-			for (int y = 0; y < WORLD_HEIGHT_TILES; ++y) {
-				if (game.world.isIntersectionTile(x, y)) {
-					for (Direction dir : Direction.values()) {
-						int nx = x + dir.vec.x, ny = y + dir.vec.y;
-						if (game.world.isWall(nx, ny)) {
-							continue;
-						}
-						g.drawLine(x * TS + HTS, y * TS + HTS, nx * TS + HTS, ny * TS + HTS);
-					}
-				} else if (game.world.isUpwardsBlocked(x, y)) {
-					g.translate(x * TS + HTS, y * TS);
-					g.fillPolygon(TRIANGLE);
-					g.translate(-(x * TS + HTS), -y * TS);
-				}
-			}
-		}
-	}
-
 	private void drawPacMan(Graphics2D g) {
 		PacMan pacMan = game.pacMan;
 		if (!pacMan.visible) {
@@ -268,5 +224,49 @@ class PlayScene {
 			sprite = assets.sheet(2 * dir + walking, 4 + ghostIndex);
 		}
 		g.drawImage(sprite, (int) ghost.position.x - HTS, (int) ghost.position.y - HTS, null);
+	}
+
+	private void drawDebugInfo(Graphics2D g) {
+		if (debugMode) {
+			long remaining = game.state.ticksRemaining();
+			String ticksText = remaining == Long.MAX_VALUE ? "forever" : remaining + " ticks remaining";
+			String stateText = String.format("%s (%s)", game.stateDescription(), ticksText);
+			g.setColor(Color.WHITE);
+			g.setFont(new Font("Arial", Font.PLAIN, 6));
+			g.drawString(stateText, 1 * TS, 3 * TS);
+			for (Ghost ghost : game.ghosts) {
+				g.setColor(Color.WHITE);
+				g.drawRect((int) ghost.position.x, (int) ghost.position.y, TS, TS);
+				if (ghost.targetTile != null) {
+					Color c = Assets.GHOST_COLORS.get(ghost.name);
+					g.setColor(c);
+					g.fillRect(ghost.targetTile.x * TS + HTS / 2, ghost.targetTile.y * TS + HTS / 2, HTS, HTS);
+				}
+			}
+		}
+	}
+
+	private void drawMazeStructure(Graphics2D g) {
+		Color dark = new Color(80, 80, 80, 200);
+		Stroke thin = new BasicStroke(0.1f);
+		g.setColor(dark);
+		g.setStroke(thin);
+		for (int x = 0; x < WORLD_WIDTH_TILES; ++x) {
+			for (int y = 0; y < WORLD_HEIGHT_TILES; ++y) {
+				if (game.world.isIntersectionTile(x, y)) {
+					for (Direction dir : Direction.values()) {
+						int nx = x + dir.vec.x, ny = y + dir.vec.y;
+						if (game.world.isWall(nx, ny)) {
+							continue;
+						}
+						g.drawLine(x * TS + HTS, y * TS + HTS, nx * TS + HTS, ny * TS + HTS);
+					}
+				} else if (game.world.isUpwardsBlocked(x, y)) {
+					g.translate(x * TS + HTS, y * TS);
+					g.fillPolygon(TRIANGLE);
+					g.translate(-(x * TS + HTS), -y * TS);
+				}
+			}
+		}
 	}
 }
