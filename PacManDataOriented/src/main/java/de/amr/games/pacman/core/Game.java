@@ -493,7 +493,7 @@ public class Game {
 	}
 
 	private void exitHuntingState() {
-		ui.stopSound(siren(huntingPhase));
+		ui.stopAllSounds();
 	}
 
 	// PACMAN_DYING
@@ -1170,7 +1170,7 @@ public class Game {
 	private void killAllGhosts() {
 		ghostBounty = 200;
 		for (Ghost ghost : ghosts) {
-			if (!ghost.dead) {
+			if (!ghost.locked && !ghost.dead && !ghost.enteringHouse && !ghost.leavingHouse) {
 				killGhost(ghost);
 			}
 		}

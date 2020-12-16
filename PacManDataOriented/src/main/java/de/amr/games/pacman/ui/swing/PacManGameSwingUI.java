@@ -194,6 +194,13 @@ public class PacManGameSwingUI implements PacManGameUI {
 		getClip(sound, true).stop();
 	}
 
+	@Override
+	public void stopAllSounds() {
+		for (Clip clip : cachedClips.values()) {
+			clip.stop();
+		}
+	}
+
 	private Clip getClip(Sound sound, boolean useCache) {
 		if (useCache) {
 			if (cachedClips.containsKey(sound)) {
