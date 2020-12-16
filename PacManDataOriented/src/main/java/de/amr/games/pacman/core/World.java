@@ -138,7 +138,7 @@ public class World {
 		return is(x, y, 13, 20);
 	}
 
-	public boolean hasEatenFood(int x, int y) {
+	public boolean foodEatenAt(int x, int y) {
 		return eatenFood.get(index(x, y));
 	}
 

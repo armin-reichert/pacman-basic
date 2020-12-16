@@ -270,7 +270,7 @@ public class Game {
 	public String stateDescription() {
 		if (state == HUNTING) {
 			int step = huntingPhase / 2;
-			return String.format(isChasing() ? "%s-chasing-%d" : "%s-scattering-%d", state, step);
+			return String.format(inChasingPhase() ? "%s-chasing-%d" : "%s-scattering-%d", state, step);
 		}
 		return state.name();
 	}
@@ -373,11 +373,11 @@ public class Game {
 		//@formatter:on
 	};
 
-	private boolean isScattering() {
+	private boolean inScatteringPhase() {
 		return huntingPhase % 2 == 0;
 	}
 
-	private boolean isChasing() {
+	private boolean inChasingPhase() {
 		return huntingPhase % 2 == 1;
 	}
 
@@ -401,7 +401,7 @@ public class Game {
 		state.setDuration(currentHuntingPhaseDuration());
 		forceGhostsTurningBack();
 		log("Game state updated to %s for %d ticks", stateDescription(), state.ticksRemaining());
-		if (isScattering()) {
+		if (inScatteringPhase()) {
 			if (huntingPhase >= 2) {
 				ui.stopSound(siren(huntingPhase - 2));
 			}
@@ -622,17 +622,18 @@ public class Game {
 	}
 
 	private void checkPacManFoundBonus(V2i tile) {
-		if (bonusAvailableTimer > 0 && world.isBonusTile(tile.x, tile.y)) {
-			bonusAvailableTimer = 0;
-			bonusConsumedTimer = clock.sec(2);
-			score(level().bonusPoints);
-			ui.playSound(Sound.EAT_BONUS);
-			log("Pac-Man found bonus %s of value %d", level().bonusSymbol, level().bonusPoints);
+		if (!world.isBonusTile(tile.x, tile.y) || bonusAvailableTimer == 0) {
+			return;
 		}
+		bonusAvailableTimer = 0;
+		bonusConsumedTimer = clock.sec(2);
+		score(level().bonusPoints);
+		ui.playSound(Sound.EAT_BONUS);
+		log("Pac-Man found bonus %s of value %d", level().bonusSymbol, level().bonusPoints);
 	}
 
 	private void checkPacManFoundFood(V2i tile) {
-		if (world.isFoodTile(tile.x, tile.y) && !world.hasEatenFood(tile.x, tile.y)) {
+		if (world.isFoodTile(tile.x, tile.y) && !world.foodEatenAt(tile.x, tile.y)) {
 			onPacManFoundFood(tile);
 		} else {
 			onPacManStarved();
@@ -643,7 +644,7 @@ public class Game {
 		pacMan.starvingTicks++;
 		if (pacMan.starvingTicks >= starvingTimeLimit()) {
 			preferredLockedGhost().ifPresent(ghost -> {
-				releaseGhost(ghost, "Pac-Man starving for %d ticks", pacMan.starvingTicks);
+				releaseGhost(ghost, "Pac-Man has been starving for %d ticks", pacMan.starvingTicks);
 				pacMan.starvingTicks = 0;
 			});
 		}
@@ -663,7 +664,7 @@ public class Game {
 			if (powerSeconds > 0) {
 				log("Pac-Man got power for %d seconds", powerSeconds);
 				for (Ghost ghost : ghosts) {
-					if (!ghost.dead && !ghost.locked) {
+					if (isGhostHunting(ghost)) {
 						ghost.frightened = true;
 					}
 				}
@@ -882,6 +883,10 @@ public class Game {
 		return guy.at(HOUSE_ENTRY) && Functions.differsAtMost(guy.offset().x, HTS, 2);
 	}
 
+	private boolean isGhostHunting(Ghost ghost) {
+		return !ghost.dead && !ghost.locked && !ghost.enteringHouse && !ghost.leavingHouse && !ghost.frightened;
+	}
+
 	private void letGhostEnterHouse(Ghost ghost) {
 		V2f offset = ghost.offset();
 		// target reached?
@@ -1097,7 +1102,7 @@ public class Game {
 	private void eatAllNormalPellets() {
 		for (int x = 0; x < WORLD_WIDTH_TILES; ++x) {
 			for (int y = 0; y < WORLD_HEIGHT_TILES; ++y) {
-				if (world.isFoodTile(x, y) && !world.hasEatenFood(x, y) && !world.isEnergizerTile(x, y)) {
+				if (world.isFoodTile(x, y) && !world.foodEatenAt(x, y) && !world.isEnergizerTile(x, y)) {
 					world.eatFood(x, y);
 				}
 			}
@@ -1107,7 +1112,7 @@ public class Game {
 	private void killAllGhosts() {
 		ghostBounty = 200;
 		for (Ghost ghost : ghosts) {
-			if (!ghost.locked && !ghost.dead && !ghost.enteringHouse && !ghost.leavingHouse) {
+			if (isGhostHunting(ghost) || ghost.frightened) {
 				killGhost(ghost);
 			}
 		}
