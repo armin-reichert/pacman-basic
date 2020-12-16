@@ -20,4 +20,23 @@ public class Ghost extends Creature {
 		super(name, homeTile);
 		this.scatterTile = scatterTile;
 	}
+
+	@Override
+	public void updateSpeed(World world, Game.Level level) {
+		if (leavingHouse || (locked && !name.equals("Blinky"))) {
+			speed = 0.75f * level.ghostSpeed;
+		} else if (dead) {
+			speed = 2f * level.ghostSpeed;
+		} else if (world.isInsideTunnel(tile().x, tile().y)) {
+			speed = level.ghostSpeedTunnel;
+		} else if (frightened) {
+			speed = level.ghostSpeedFrightened;
+		} else if (elroyMode == 1) {
+			speed = level.elroy1Speed;
+		} else if (elroyMode == 2) {
+			speed = level.elroy2Speed;
+		} else {
+			speed = level.ghostSpeed;
+		}
+	}
 }

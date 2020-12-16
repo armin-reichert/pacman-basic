@@ -966,32 +966,6 @@ public class Game {
 		tryMoving(ghost);
 	}
 
-	private void setSpeed(Creature guy) {
-		if (guy.name.equals("Pac-Man")) {
-			guy.speed = level().pacManSpeed;
-		} else {
-			setGhostSpeed((Ghost) guy);
-		}
-	}
-
-	private void setGhostSpeed(Ghost ghost) {
-		if (ghost.leavingHouse || (ghost.locked && ghost != ghosts[BLINKY])) {
-			ghost.speed = 0.75f * level().ghostSpeed;
-		} else if (ghost.dead) {
-			ghost.speed = 2f * level().ghostSpeed;
-		} else if (world.isInsideTunnel(ghost.tile().x, ghost.tile().y)) {
-			ghost.speed = level().ghostSpeedTunnel;
-		} else if (ghost.frightened) {
-			ghost.speed = level().ghostSpeedFrightened;
-		} else if (ghost.elroyMode == 1) {
-			ghost.speed = level().elroy1Speed;
-		} else if (ghost.elroyMode == 2) {
-			ghost.speed = level().elroy2Speed;
-		} else {
-			ghost.speed = level().ghostSpeed;
-		}
-	}
-
 	private Optional<Direction> newWishDir(Ghost ghost) {
 		if (!ghost.changedTile) {
 			return Optional.empty();
@@ -1048,7 +1022,7 @@ public class Game {
 	}
 
 	private void tryMoving(Creature guy) {
-		setSpeed(guy);
+		guy.updateSpeed(world, level());
 		if (guy.speed == 0) {
 			return;
 		}

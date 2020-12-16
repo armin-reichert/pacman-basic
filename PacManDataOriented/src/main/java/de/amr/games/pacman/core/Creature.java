@@ -2,11 +2,12 @@ package de.amr.games.pacman.core;
 
 import static de.amr.games.pacman.core.World.TS;
 
+import de.amr.games.pacman.core.Game.Level;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
 
-public class Creature {
+public abstract class Creature {
 
 	public final String name;
 	public final V2i homeTile;
@@ -27,6 +28,8 @@ public class Creature {
 		this.homeTile = homeTile;
 		position = V2f.NULL;
 	}
+
+	public abstract void updateSpeed(World world, Level level);
 
 	public void placeAt(int x, int y, float offsetX, float offsetY) {
 		position = new V2f(x * TS + offsetX, y * TS + offsetY);
