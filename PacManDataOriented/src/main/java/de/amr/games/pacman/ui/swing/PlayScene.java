@@ -105,8 +105,14 @@ class PlayScene {
 	}
 
 	private void drawLivesCounter(Graphics2D g) {
-		for (int i = 0; i < game.lives; ++i) {
-			g.drawImage(assets.imageLive, 2 * (i + 1) * TS, size.height - 2 * TS, null);
+		int y = size.height - 2 * TS;
+		for (int i = 0; i < Math.min(game.lives, 4); ++i) {
+			g.drawImage(assets.imageLive, 2 * (i + 1) * TS, y, null);
+		}
+		if (game.lives > 4) {
+			g.setColor(Color.YELLOW);
+			g.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 8));
+			g.drawString("+" + (game.lives - 4), 10 * TS, y + TS);
 		}
 	}
 
