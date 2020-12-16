@@ -1,6 +1,5 @@
 package de.amr.games.pacman.core;
 
-import de.amr.games.pacman.core.Game.Level;
 import de.amr.games.pacman.lib.V2i;
 
 public class PacMan extends Creature {

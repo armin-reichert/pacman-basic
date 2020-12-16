@@ -22,7 +22,7 @@ public class Ghost extends Creature {
 	}
 
 	@Override
-	public void updateSpeed(World world, Game.Level level) {
+	public void updateSpeed(World world, Level level) {
 		if (leavingHouse || (locked && !name.equals("Blinky"))) {
 			speed = 0.75f * level.ghostSpeed;
 		} else if (dead) {
