@@ -1018,8 +1018,10 @@ public class Game {
 			if (!canAccessTile(ghost, neighbor.x, neighbor.y)) {
 				continue;
 			}
-			if (dir == UP && !ghost.dead && world.isUpwardsBlocked(neighbor.x, neighbor.y)) {
-				continue;
+			if (dir == UP && world.isUpwardsBlocked(neighbor.x, neighbor.y)) {
+				if (!ghost.frightened && !ghost.dead) {
+					continue;
+				}
 			}
 			double dist = neighbor.distance(ghost.targetTile);
 			if (dist < minDist) {
