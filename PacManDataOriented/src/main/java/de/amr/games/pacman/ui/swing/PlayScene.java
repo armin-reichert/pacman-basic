@@ -127,12 +127,12 @@ class PlayScene {
 		}, () -> {
 			g.drawImage(assets.imageMazeEmptyWhite, 0, 3 * TS, null);
 		}, () -> {
-			--game.mazeFlashesRemaining;
+			game.mazeFlashesRemaining--;
 		});
 	}
 
 	private void drawMaze(Graphics2D g) {
-		if (game.mazeFlashesRemaining > 0 && game.state.ticksRemaining() <= game.clock.sec(4f)) {
+		if (game.mazeFlashesRemaining > 0) {
 			drawMazeFlashing(g);
 			return;
 		}

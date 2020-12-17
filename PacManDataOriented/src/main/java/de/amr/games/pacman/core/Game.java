@@ -161,6 +161,7 @@ public class Game {
 
 	private void reset() {
 		gameStarted = false;
+		mazeFlashesRemaining = 0;
 		score = 0;
 		lives = 3;
 		hiscore.load();
@@ -338,7 +339,7 @@ public class Game {
 	// READY
 
 	private void enterReadyState() {
-		enterState(READY, clock.sec(gameStarted ? 1 : 6));
+		enterState(READY, clock.sec(gameStarted ? 1 : 4.5f));
 		HUNTING.setDuration(0);
 		huntingPhase = 0;
 		resetGuys();
@@ -529,8 +530,7 @@ public class Game {
 	// CHANGING_LEVEL
 
 	private void enterChangingLevelState() {
-		enterState(CHANGING_LEVEL, clock.sec(4 + level().numFlashes));
-		mazeFlashesRemaining = level().numFlashes;
+		enterState(CHANGING_LEVEL, clock.sec(level().numFlashes + 2));
 		for (Ghost ghost : ghosts) {
 			ghost.frightened = false;
 			ghost.dead = false;
@@ -546,10 +546,13 @@ public class Game {
 			enterReadyState();
 			return;
 		}
-		if (state.ticksRemaining() == clock.sec(2 + level().numFlashes)) {
+		if (state.ticksRemaining() == clock.sec(level().numFlashes + 1f)) {
 			for (Ghost ghost : ghosts) {
 				ghost.visible = false;
 			}
+		}
+		if (state.ticksRemaining() == clock.sec(level().numFlashes)) {
+			mazeFlashesRemaining = level().numFlashes;
 		}
 		state.tick();
 	}
