@@ -129,9 +129,8 @@ public class Assets {
 	}
 
 	public Clip clip(String path) {
-		try {
+		try (BufferedInputStream bs = new BufferedInputStream(getClass().getResourceAsStream(path))) {
 			Clip clip = AudioSystem.getClip();
-			BufferedInputStream bs = new BufferedInputStream(getClass().getResourceAsStream(path));
 			clip.open(AudioSystem.getAudioInputStream(bs));
 			return clip;
 		} catch (Exception x) {
