@@ -501,7 +501,7 @@ public class Game {
 
 	private void enterGhostDyingState() {
 		previousState = state;
-		enterState(GHOST_DYING, clock.sec(1f));
+		enterState(GHOST_DYING, clock.sec(0.75f));
 		pacMan.visible = false;
 		ui.playSound(Sound.GHOST_DEATH);
 	}
@@ -982,7 +982,7 @@ public class Game {
 
 	private void forceGhostsTurningBack() {
 		for (Ghost ghost : ghosts) {
-			if (!ghost.dead && !ghost.enteringHouse && !ghost.leavingHouse) {
+			if (isGhostHunting(ghost)) {
 				ghost.forcedTurningBack = true;
 			}
 		}
