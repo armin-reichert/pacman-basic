@@ -39,7 +39,6 @@ public class Assets {
 	public final BufferedImage imageLive;
 	public final Map<String, BufferedImage> symbols;
 	public final Map<Integer, BufferedImage> numbers;
-	public final Map<Integer, BufferedImage> bountyNumbers;
 	public final Font scoreFont;
 
 	public final Map<Sound, String> soundPaths;
@@ -68,24 +67,20 @@ public class Assets {
 			"Key",        sheet(9, 3)
 		);
 	
-		numbers = Map.of(
-			100,  sheet(0, 9),
-			300,  sheet(1, 9),
-			500,  sheet(2, 9),
-			700,  sheet(3, 9),
-			1000, section(4, 9, 2, 1),
-			2000, section(3, 10, 3, 1),
-			3000, section(3, 11, 3, 1),
-			5000, section(3, 12, 3, 1)
-		);
+		numbers = new HashMap<>();
+		numbers.put(200,  sheet(0, 8));
+		numbers.put(100,  sheet(0, 9));
+		numbers.put(300,  sheet(1, 9));
+		numbers.put(400,  sheet(1, 8));
+		numbers.put(500,  sheet(2, 9));
+		numbers.put(700,  sheet(3, 9));
+		numbers.put(800,  sheet(2, 8));
+		numbers.put(1600, sheet(3, 8));
+		numbers.put(1000, section(4, 9, 2, 1));
+		numbers.put(2000, section(3, 10, 3, 1));
+		numbers.put(3000, section(3, 11, 3, 1));
+		numbers.put(5000, section(3, 12, 3, 1));
 	
-		bountyNumbers = Map.of(
-			200,  sheet(0, 8),
-			400,  sheet(1, 8),
-			800,  sheet(2, 8),
-			1600, sheet(3, 8)
-		);
-		
 		soundPaths = new HashMap<>();
 		soundPaths.put(Sound.CREDIT,       "/sound/credit.wav");
 		soundPaths.put(Sound.EAT_BONUS,    "/sound/eat_fruit.wav");
@@ -143,5 +138,4 @@ public class Assets {
 			throw new RuntimeException(x);
 		}
 	}
-
 }

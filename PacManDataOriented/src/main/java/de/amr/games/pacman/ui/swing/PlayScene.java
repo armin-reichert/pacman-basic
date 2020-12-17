@@ -205,7 +205,7 @@ class PlayScene {
 		if (ghost.dead) {
 			if (ghost.bounty > 0) {
 				// show bounty as number
-				sprite = assets.bountyNumbers.get(ghost.bounty);
+				sprite = assets.numbers.get(ghost.bounty);
 			} else {
 				// show eyes looking towards move direction
 				sprite = assets.sheet(8 + dir, 5);

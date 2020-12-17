@@ -169,7 +169,7 @@ class IntroScene {
 				g.drawImage(frightenedGhostImage, x, y, null);
 			} else if (pacManX > x && pacManX <= x + 16) {
 				int bounty = (int) Math.pow(2, ghost) * 200;
-				g.drawImage(assets.bountyNumbers.get(bounty), x, y, null);
+				g.drawImage(assets.numbers.get(bounty), x, y, null);
 				if (killedGhost != ghost) {
 					killedGhost++;
 					ui.playSound(Sound.GHOST_DEATH);
