@@ -8,9 +8,7 @@ import de.amr.games.pacman.lib.V2i;
 
 public abstract class Creature {
 
-	public final String name;
 	public final V2i homeTile;
-
 	public boolean visible;
 	public float speed;
 	public Direction dir;
@@ -22,13 +20,14 @@ public abstract class Creature {
 	public boolean forcedTurningBack;
 	public boolean dead;
 
-	public Creature(String name, V2i homeTile) {
-		this.name = name;
+	public Creature(V2i homeTile) {
 		this.homeTile = homeTile;
 		position = V2f.NULL;
 	}
 
 	public abstract void updateSpeed(World world, Level level);
+
+	public abstract String name();
 
 	public void placeAt(int x, int y, float offsetX, float offsetY) {
 		position = new V2f(x * TS + offsetX, y * TS + offsetY);
@@ -62,7 +61,7 @@ public abstract class Creature {
 
 	@Override
 	public String toString() {
-		return String.format("[%-8s tile=%s offset=%s dir=%s wishDir=%s speed=%.2f changedTile=%s]", name, tile(), offset(),
-				dir, wishDir, speed, changedTile);
+		return String.format("[%-8s tile=%s offset=%s dir=%s wishDir=%s speed=%.2f changedTile=%s]", name(), tile(),
+				offset(), dir, wishDir, speed, changedTile);
 	}
 }

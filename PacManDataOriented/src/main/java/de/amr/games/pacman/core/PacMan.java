@@ -8,8 +8,13 @@ public class PacMan extends Creature {
 	public int restingTicks;
 	public long starvingTicks;
 
-	public PacMan(String name, V2i homeTile) {
-		super(name, homeTile);
+	public PacMan(V2i homeTile) {
+		super(homeTile);
+	}
+
+	@Override
+	public String name() {
+		return "Pac-Man";
 	}
 
 	@Override

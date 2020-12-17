@@ -238,7 +238,7 @@ class PlayScene {
 				g.setColor(Color.WHITE);
 				g.drawRect((int) ghost.position.x, (int) ghost.position.y, TS, TS);
 				if (ghost.targetTile != null) {
-					Color c = Assets.GHOST_COLORS.get(ghost.name);
+					Color c = Assets.GHOST_COLORS[ghost.id];
 					g.setColor(c);
 					g.fillRect(ghost.targetTile.x * TS + HTS / 2, ghost.targetTile.y * TS + HTS / 2, HTS, HTS);
 				}

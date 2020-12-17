@@ -4,8 +4,11 @@ import de.amr.games.pacman.lib.V2i;
 
 public class Ghost extends Creature {
 
-	public static final int BLINKY = 0, PINKY = 1, INKY = 2, CLYDE = 3;
+	public static final byte BLINKY = 0, PINKY = 1, INKY = 2, CLYDE = 3;
 
+	public static final String[] NAMES = { "Blinky", "Pinky", "Inky", "Clyde" };
+
+	public final byte id;
 	public final V2i scatterTile;
 	public V2i targetTile;
 	public boolean frightened;
@@ -16,14 +19,20 @@ public class Ghost extends Creature {
 	public int dotCounter;
 	public byte elroyMode;
 
-	public Ghost(String name, V2i homeTile, V2i scatterTile) {
-		super(name, homeTile);
+	public Ghost(byte id, V2i homeTile, V2i scatterTile) {
+		super(homeTile);
+		this.id = id;
 		this.scatterTile = scatterTile;
 	}
 
 	@Override
+	public String name() {
+		return NAMES[id];
+	}
+
+	@Override
 	public void updateSpeed(World world, Level level) {
-		if (leavingHouse || (locked && !name.equals("Blinky"))) {
+		if (leavingHouse || (locked && id != BLINKY)) {
 			speed = 0.75f * level.ghostSpeed;
 		} else if (dead) {
 			speed = 2f * level.ghostSpeed;

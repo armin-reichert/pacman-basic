@@ -119,12 +119,15 @@ public class Game {
 		clock = new Clock();
 		world = new World();
 		hiscore = new Hiscore();
-		pacMan = new PacMan("Pac-Man", PACMAN_HOME);
-		ghosts = new Ghost[4];
-		ghosts[BLINKY] = new Ghost("Blinky", HOUSE_ENTRY, UPPER_RIGHT_CORNER);
-		ghosts[PINKY] = new Ghost("Pinky", HOUSE_CENTER, UPPER_LEFT_CORNER);
-		ghosts[INKY] = new Ghost("Inky", HOUSE_LEFT, LOWER_RIGHT_CORNER);
-		ghosts[CLYDE] = new Ghost("Clyde", HOUSE_RIGHT, LOWER_LEFT_CORNER);
+		pacMan = new PacMan(PACMAN_HOME);
+		/*@formatter:off*/
+		ghosts = new Ghost[] {
+			new Ghost(BLINKY, HOUSE_ENTRY,  UPPER_RIGHT_CORNER),
+			new Ghost(PINKY,  HOUSE_CENTER, UPPER_LEFT_CORNER), 
+			new Ghost(INKY,   HOUSE_LEFT,   LOWER_RIGHT_CORNER),
+			new Ghost(CLYDE,  HOUSE_RIGHT,  LOWER_LEFT_CORNER) 
+		};
+		/*@formatter:on*/
 	}
 
 	private void run() {
@@ -614,7 +617,7 @@ public class Game {
 			}
 			if (pacMan.powerTicks == 0) {
 				pacMan.dead = true;
-				log("Pac-Man killed by %s at tile %s", ghost.name, ghost.tile());
+				log("Pac-Man killed by %s at tile %s", ghost.name(), ghost.tile());
 				globalDotCounter = 0;
 				globalDotCounterEnabled = true;
 				log("Global dot counter reset and enabled");
@@ -733,7 +736,7 @@ public class Game {
 		ghost.frightened = false;
 		ghost.targetTile = HOUSE_ENTRY;
 		ghost.bounty = ghostBounty;
-		log("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name, ghost.tile(), ghost.bounty);
+		log("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name(), ghost.tile(), ghost.bounty);
 		score(ghost.bounty);
 		if (ghostsKilledInLevel == 16) {
 			score(12000);
@@ -775,7 +778,7 @@ public class Game {
 		if (globalDotCounterEnabled && globalDotCounter >= globalDotLimit(ghost)) {
 			releaseGhost(ghost, "Global dot counter is %d", globalDotCounter);
 		} else if (!globalDotCounterEnabled && ghost.dotCounter >= privateDotLimit(ghost)) {
-			releaseGhost(ghost, "%s's dot counter is %d", ghost.name, ghost.dotCounter);
+			releaseGhost(ghost, "%s's dot counter is %d", ghost.name(), ghost.dotCounter);
 		} else {
 			letGhostBounce(ghost);
 		}
@@ -788,7 +791,7 @@ public class Game {
 			ghosts[BLINKY].elroyMode -= 1; // resume Elroy mode
 			log("Blinky Elroy mode %d resumed", ghosts[BLINKY].elroyMode);
 		}
-		log("Ghost %s unlocked: %s", ghost.name, String.format(reason, args));
+		log("Ghost %s unlocked: %s", ghost.name(), String.format(reason, args));
 	}
 
 	private void updateGhostTargetTile(Ghost ghost) {
@@ -840,11 +843,11 @@ public class Game {
 
 	private V2i currentChasingTarget(Ghost ghost) {
 		V2i pacManTile = pacMan.tile();
-		switch (ghost.name) {
-		case "Blinky": {
+		switch (ghost.id) {
+		case BLINKY: {
 			return pacManTile;
 		}
-		case "Pinky": {
+		case PINKY: {
 			V2i pacManTileAhead4 = pacManTile.sum(pacMan.dir.vec.scaled(4));
 			if (pacMan.dir == UP) {
 				// simulate overflow bug when Pac-Man is looking UP
@@ -852,7 +855,7 @@ public class Game {
 			}
 			return pacManTileAhead4;
 		}
-		case "Inky": {
+		case INKY: {
 			V2i pacManTileAhead2 = pacManTile.sum(pacMan.dir.vec.scaled(2));
 			if (pacMan.dir == UP) {
 				// simulate overflow bug when Pac-Man is looking UP
@@ -860,11 +863,11 @@ public class Game {
 			}
 			return ghosts[BLINKY].tile().scaled(-1).sum(pacManTileAhead2.scaled(2));
 		}
-		case "Clyde": {
+		case CLYDE: {
 			return ghosts[CLYDE].tile().distance(pacManTile) < 8 ? ghosts[CLYDE].scatterTile : pacManTile;
 		}
 		default:
-			throw new IllegalArgumentException("Unknown ghost name: " + ghost.name);
+			throw new IllegalArgumentException("Unknown ghost id: " + ghost.id);
 		}
 	}
 

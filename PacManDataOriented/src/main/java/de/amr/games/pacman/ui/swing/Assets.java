@@ -23,13 +23,7 @@ import de.amr.games.pacman.ui.Sound;
  */
 public class Assets {
 
-	//@formatter:off
-	static final Map<String, Color> GHOST_COLORS = Map.of(
-		"Blinky", Color.RED, 
-		"Pinky",  Color.PINK, 
-		"Inky",   Color.CYAN,	
-		"Clyde",  Color.ORANGE);
-	//@formatter:on
+	static final Color[] GHOST_COLORS = new Color[] { Color.RED, Color.PINK, Color.CYAN, Color.ORANGE };
 
 	public final BufferedImage imageLogo;
 	public final BufferedImage imageMazeFull;
