@@ -351,13 +351,15 @@ public class Game {
 			enterHuntingState();
 			return;
 		}
-		if (!gameStarted) {
+		if (!gameStarted && state.running() == clock.sec(0.5f)) {
 			ui.playSound(Sound.GAME_READY);
 			gameStarted = true;
 		}
-		letGhostBounce(ghosts[INKY]);
-		letGhostBounce(ghosts[PINKY]);
-		letGhostBounce(ghosts[CLYDE]);
+		if (state.running() > clock.sec(0.5f)) {
+			letGhostBounce(ghosts[INKY]);
+			letGhostBounce(ghosts[PINKY]);
+			letGhostBounce(ghosts[CLYDE]);
+		}
 		state.tick();
 	}
 
@@ -499,7 +501,7 @@ public class Game {
 
 	private void enterGhostDyingState() {
 		previousState = state;
-		enterState(GHOST_DYING, clock.sec(0.5f));
+		enterState(GHOST_DYING, clock.sec(1f));
 		pacMan.visible = false;
 		ui.playSound(Sound.GHOST_DEATH);
 	}
