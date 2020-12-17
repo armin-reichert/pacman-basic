@@ -961,14 +961,17 @@ public class Game {
 		if (ghost.frightened && world.isIntersectionTile(tile.x, tile.y)) {
 			return Optional.of(randomMoveDir(ghost));
 		}
-		// use direction to neighbor with minimal distance to target
+		return bestDirection(ghost);
+	}
+
+	private Optional<Direction> bestDirection(Ghost ghost) {
 		double minDist = Double.MAX_VALUE;
 		Direction minDistDir = null;
 		for (Direction dir : DIRECTION_PRIORITY) {
 			if (dir == ghost.dir.opposite()) {
 				continue;
 			}
-			V2i neighbor = tile.sum(dir.vec);
+			V2i neighbor = ghost.tile().sum(dir.vec);
 			if (!canAccessTile(ghost, neighbor.x, neighbor.y)) {
 				continue;
 			}
