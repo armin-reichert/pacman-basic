@@ -2,7 +2,7 @@ package de.amr.games.pacman.core;
 
 public class Level {
 
-	public final String bonusSymbol;
+	public final int bonusSymbol;
 	public final int bonusPoints;
 	public final float pacManSpeed;
 	public final float ghostSpeed;
@@ -20,19 +20,19 @@ public class Level {
 		return ((int) value) / 100f;
 	}
 
-	public Level(String symbolName, int... values) {
-		bonusSymbol = symbolName;
-		bonusPoints = values[0];
-		pacManSpeed = percent(values[1]);
-		ghostSpeed = percent(values[2]);
-		ghostSpeedTunnel = percent(values[3]);
-		elroy1DotsLeft = values[4];
-		elroy1Speed = percent(values[5]);
-		elroy2DotsLeft = values[6];
-		elroy2Speed = percent(values[7]);
-		pacManSpeedPowered = percent(values[8]);
-		ghostSpeedFrightened = percent(values[9]);
-		ghostFrightenedSeconds = values[10];
-		numFlashes = values[11];
+	public Level(int... values) {
+		bonusSymbol = values[0];
+		bonusPoints = values[1];
+		pacManSpeed = percent(values[2]);
+		ghostSpeed = percent(values[3]);
+		ghostSpeedTunnel = percent(values[4]);
+		elroy1DotsLeft = values[5];
+		elroy1Speed = percent(values[6]);
+		elroy2DotsLeft = values[7];
+		elroy2Speed = percent(values[8]);
+		pacManSpeedPowered = percent(values[9]);
+		ghostSpeedFrightened = percent(values[10]);
+		ghostFrightenedSeconds = values[11];
+		numFlashes = values[12];
 	}
 }

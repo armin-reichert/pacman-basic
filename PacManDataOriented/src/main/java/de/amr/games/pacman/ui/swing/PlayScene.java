@@ -110,7 +110,7 @@ class PlayScene {
 		int x = (WORLD_WIDTH_TILES - 4) * TS;
 		int first = Math.max(1, game.level - 6);
 		for (int level = first; level <= game.level; ++level) {
-			BufferedImage symbol = assets.symbols.get(game.level(level).bonusSymbol);
+			BufferedImage symbol = assets.symbols[game.level(level).bonusSymbol];
 			g.drawImage(symbol, x, size.height - 2 * TS, null);
 			x -= 2 * TS;
 		}
@@ -151,7 +151,7 @@ class PlayScene {
 			}
 		}
 		if (game.bonusAvailableTimer > 0) {
-			g.drawImage(assets.symbols.get(game.level().bonusSymbol), 13 * TS, 20 * TS - HTS, null);
+			g.drawImage(assets.symbols[game.level().bonusSymbol], 13 * TS, 20 * TS - HTS, null);
 		} else if (game.bonusConsumedTimer > 0) {
 			BufferedImage image = assets.numbers.get(game.level().bonusPoints);
 			g.drawImage(image, (size.width - image.getWidth()) / 2, 20 * TS - HTS, null);

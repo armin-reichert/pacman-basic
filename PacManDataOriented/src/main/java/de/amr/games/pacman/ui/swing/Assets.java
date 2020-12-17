@@ -1,5 +1,14 @@
 package de.amr.games.pacman.ui.swing;
 
+import static de.amr.games.pacman.core.Game.APPLE;
+import static de.amr.games.pacman.core.Game.BELL;
+import static de.amr.games.pacman.core.Game.CHERRIES;
+import static de.amr.games.pacman.core.Game.GALAXIAN;
+import static de.amr.games.pacman.core.Game.GRAPES;
+import static de.amr.games.pacman.core.Game.KEY;
+import static de.amr.games.pacman.core.Game.PEACH;
+import static de.amr.games.pacman.core.Game.STRAWBERRY;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontFormatException;
@@ -31,7 +40,7 @@ public class Assets {
 	public final BufferedImage imageMazeEmptyWhite;
 	public final BufferedImage spriteSheet;
 	public final BufferedImage imageLive;
-	public final Map<String, BufferedImage> symbols;
+	public final BufferedImage[] symbols;
 	public final Map<Integer, BufferedImage> numbers;
 	public final Font scoreFont;
 
@@ -50,16 +59,15 @@ public class Assets {
 		scoreFont = font("/PressStart2P-Regular.ttf", 8);
 
 		//@formatter:off
-		symbols = Map.of(
-			"Cherries",   sheet(2, 3),
-			"Strawberry", sheet(3, 3),
-			"Peach",      sheet(4, 3),
-			"Apple",      sheet(5, 3),
-			"Grapes",     sheet(6, 3),
-			"Galaxian",   sheet(7, 3),
-			"Bell",       sheet(8, 3),
-			"Key",        sheet(9, 3)
-		);
+		symbols = new BufferedImage[8];
+		symbols[CHERRIES]   = sheet(2, 3);
+		symbols[STRAWBERRY] = sheet(3, 3);
+		symbols[PEACH]      = sheet(4, 3);
+		symbols[APPLE]      = sheet(5, 3);
+		symbols[GRAPES]     = sheet(6, 3);
+		symbols[GALAXIAN]   = sheet(7, 3);
+		symbols[BELL]       = sheet(8, 3);
+		symbols[KEY]        = sheet(9, 3);
 	
 		numbers = new HashMap<>();
 		numbers.put(200,  sheet(0, 8));
