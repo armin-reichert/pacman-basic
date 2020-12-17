@@ -336,7 +336,7 @@ public class Game {
 	// READY
 
 	private void enterReadyState() {
-		enterState(READY, clock.sec(6));
+		enterState(READY, clock.sec(level == 1 ? 6 : 2));
 		HUNTING.setDuration(0);
 		huntingPhase = 0;
 		resetGuys();
@@ -348,13 +348,15 @@ public class Game {
 			enterHuntingState();
 			return;
 		}
-		if (state.ticksRemaining() == clock.sec(5)) {
-			ui.playSound(Sound.GAME_READY);
-		}
-		if (state.ticksRemaining() <= clock.sec(5)) {
-			letGhostBounce(ghosts[INKY]);
-			letGhostBounce(ghosts[PINKY]);
-			letGhostBounce(ghosts[CLYDE]);
+		if (level == 1) {
+			if (state.ticksRemaining() == clock.sec(5)) {
+				ui.playSound(Sound.GAME_READY);
+			}
+			if (state.ticksRemaining() <= clock.sec(5)) {
+				letGhostBounce(ghosts[INKY]);
+				letGhostBounce(ghosts[PINKY]);
+				letGhostBounce(ghosts[CLYDE]);
+			}
 		}
 		state.tick();
 	}
