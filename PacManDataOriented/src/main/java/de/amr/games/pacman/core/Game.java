@@ -26,8 +26,7 @@ import static de.amr.games.pacman.core.World.PORTAL_RIGHT;
 import static de.amr.games.pacman.core.World.TOTAL_FOOD_COUNT;
 import static de.amr.games.pacman.core.World.UPPER_LEFT_CORNER;
 import static de.amr.games.pacman.core.World.UPPER_RIGHT_CORNER;
-import static de.amr.games.pacman.core.World.WORLD_HEIGHT_TILES;
-import static de.amr.games.pacman.core.World.WORLD_WIDTH_TILES;
+import static de.amr.games.pacman.core.World.WORLD_TILES;
 import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
@@ -1118,8 +1117,8 @@ public class Game {
 	// Cheats
 
 	private void eatAllNormalPellets() {
-		for (int x = 0; x < WORLD_WIDTH_TILES; ++x) {
-			for (int y = 0; y < WORLD_HEIGHT_TILES; ++y) {
+		for (int x = 0; x < WORLD_TILES.x; ++x) {
+			for (int y = 0; y < WORLD_TILES.y; ++y) {
 				if (world.isFoodTile(x, y) && !world.foodEatenAt(x, y) && !world.isEnergizerTile(x, y)) {
 					world.eatFood(x, y);
 				}

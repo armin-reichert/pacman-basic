@@ -11,18 +11,17 @@ public class World {
 	public static final int TS = 8;
 	public static final int HTS = TS / 2;
 
-	public static final int WORLD_WIDTH_TILES = 28;
-	public static final int WORLD_HEIGHT_TILES = 36;
+	public static final V2i WORLD_TILES = new V2i(28, 36);
 
 	public static final V2i PORTAL_LEFT = new V2i(-1, 17);
-	public static final V2i PORTAL_RIGHT = new V2i(WORLD_WIDTH_TILES, 17);
+	public static final V2i PORTAL_RIGHT = new V2i(WORLD_TILES.x, 17);
 
 	public static final V2i PACMAN_HOME = new V2i(13, 26);
 
-	public static final V2i UPPER_RIGHT_CORNER = new V2i(WORLD_WIDTH_TILES - 3, 0);
+	public static final V2i UPPER_RIGHT_CORNER = new V2i(WORLD_TILES.x - 3, 0);
 	public static final V2i UPPER_LEFT_CORNER = new V2i(2, 0);
-	public static final V2i LOWER_RIGHT_CORNER = new V2i(WORLD_WIDTH_TILES - 1, WORLD_HEIGHT_TILES - 1);
-	public static final V2i LOWER_LEFT_CORNER = new V2i(0, WORLD_HEIGHT_TILES - 1);
+	public static final V2i LOWER_RIGHT_CORNER = new V2i(WORLD_TILES.x - 1, WORLD_TILES.y - 1);
+	public static final V2i LOWER_LEFT_CORNER = new V2i(0, WORLD_TILES.y - 1);
 
 	public static final V2i HOUSE_ENTRY = new V2i(13, 14);
 	public static final V2i HOUSE_CENTER = new V2i(13, 17);
@@ -32,7 +31,7 @@ public class World {
 	public static final int TOTAL_FOOD_COUNT = 244;
 
 	private static int index(int x, int y) {
-		return y * WORLD_WIDTH_TILES + x;
+		return y * WORLD_TILES.x + x;
 	}
 
 	private static boolean is(int x, int y, int xx, int yy) {
@@ -88,7 +87,7 @@ public class World {
 	}
 
 	public boolean inMapRange(int x, int y) {
-		return 0 <= x && x < WORLD_WIDTH_TILES && 0 <= y && y < WORLD_HEIGHT_TILES;
+		return 0 <= x && x < WORLD_TILES.x && 0 <= y && y < WORLD_TILES.y;
 	}
 
 	public boolean isWall(int x, int y) {

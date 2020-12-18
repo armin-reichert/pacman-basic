@@ -7,12 +7,12 @@ import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.dirIndex;
 import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.drawCenteredText;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 import de.amr.games.pacman.core.Game;
 import de.amr.games.pacman.lib.Direction;
+import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.Sound;
 
 /**
@@ -34,7 +34,7 @@ class IntroScene {
 	public final Game game;
 	public final PacManGameSwingUI ui;
 	public final Assets assets;
-	public final Dimension size;
+	public final V2i size;
 
 	private long passed;
 	private long mark;
@@ -43,7 +43,7 @@ class IntroScene {
 	private int killedGhost;
 	private boolean ghostsChasingPacMan;
 
-	public IntroScene(Game game, PacManGameSwingUI ui, Assets assets, Dimension size) {
+	public IntroScene(Game game, PacManGameSwingUI ui, Assets assets, V2i size) {
 		this.game = game;
 		this.ui = ui;
 		this.assets = assets;
@@ -54,7 +54,7 @@ class IntroScene {
 	public void reset() {
 		passed = 0;
 		mark = 0;
-		pacManX = size.width;
+		pacManX = size.x;
 		leftmostGhostX = pacManX + 24;
 		killedGhost = -1;
 		ghostsChasingPacMan = true;
@@ -72,13 +72,13 @@ class IntroScene {
 		mark = 1;
 		if (passed >= game.clock.sec(mark)) {
 			int w = assets.imageLogo.getWidth();
-			g.drawImage(assets.imageLogo, (size.width - w) / 2, 3, null);
+			g.drawImage(assets.imageLogo, (size.x - w) / 2, 3, null);
 		}
 
 		mark += 1;
 		if (passed >= game.clock.sec(mark)) {
 			g.setColor(Color.WHITE);
-			drawCenteredText(g, "CHARACTER / NICKNAME", 8 * TS, size.width);
+			drawCenteredText(g, "CHARACTER / NICKNAME", 8 * TS, size.x);
 		}
 
 		mark += 1;
@@ -106,11 +106,11 @@ class IntroScene {
 		if (passed >= game.clock.sec(mark)) {
 			g.setColor(Color.PINK);
 			g.fillRect(9 * TS + 6, 27 * TS + 2, 2, 2);
-			drawCenteredText(g, "10 PTS", 28 * TS, size.width);
+			drawCenteredText(g, "10 PTS", 28 * TS, size.x);
 			game.clock.runOrBeIdle(20, () -> {
 				g.fillOval(9 * TS, 29 * TS - 2, 10, 10);
 			});
-			drawCenteredText(g, "50 PTS", 30 * TS, size.width);
+			drawCenteredText(g, "50 PTS", 30 * TS, size.x);
 		}
 
 		mark += 1;
@@ -130,7 +130,7 @@ class IntroScene {
 		if (passed >= game.clock.sec(mark)) {
 			g.setColor(Color.WHITE);
 			game.clock.runOrBeIdle(20, () -> {
-				drawCenteredText(g, "Press SPACE to play!", size.height - 20, size.width);
+				drawCenteredText(g, "Press SPACE to play!", size.y - 20, size.x);
 			});
 		}
 
@@ -177,7 +177,7 @@ class IntroScene {
 			}
 		}
 		g.drawImage(pacManWalking(RIGHT), (int) pacManX, y, null);
-		if (pacManX < size.width) {
+		if (pacManX < size.x) {
 			pacManX += 0.6f;
 			leftmostGhostX += 0.3f;
 		} else {

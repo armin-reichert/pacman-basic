@@ -2,14 +2,12 @@ package de.amr.games.pacman.ui.swing;
 
 import static de.amr.games.pacman.core.World.HTS;
 import static de.amr.games.pacman.core.World.TS;
-import static de.amr.games.pacman.core.World.WORLD_HEIGHT_TILES;
-import static de.amr.games.pacman.core.World.WORLD_WIDTH_TILES;
+import static de.amr.games.pacman.core.World.WORLD_TILES;
 import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.dirIndex;
 import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.drawCenteredText;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
@@ -21,6 +19,7 @@ import de.amr.games.pacman.core.GameState;
 import de.amr.games.pacman.core.Ghost;
 import de.amr.games.pacman.core.PacMan;
 import de.amr.games.pacman.lib.Direction;
+import de.amr.games.pacman.lib.V2i;
 
 /**
  * Scene where the game is played.
@@ -35,12 +34,12 @@ class PlayScene {
 
 	public final Game game;
 	public final Assets assets;
-	public final Dimension size;
+	public final V2i size;
 
 	public String messageText;
 	public Color messageColor;
 
-	public PlayScene(Game game, Assets assets, Dimension size) {
+	public PlayScene(Game game, Assets assets, V2i size) {
 		this.game = game;
 		this.assets = assets;
 		this.size = size;
@@ -72,7 +71,7 @@ class PlayScene {
 		if (messageText != null) {
 			g.setFont(assets.scoreFont);
 			g.setColor(messageColor);
-			drawCenteredText(g, messageText, 21 * TS, size.width);
+			drawCenteredText(g, messageText, 21 * TS, size.x);
 		}
 	}
 
@@ -95,7 +94,7 @@ class PlayScene {
 	}
 
 	private void drawLivesCounter(Graphics2D g) {
-		int y = size.height - 2 * TS;
+		int y = size.y - 2 * TS;
 		for (int i = 0; i < Math.min(game.lives, 4); ++i) {
 			g.drawImage(assets.imageLive, 2 * (i + 1) * TS, y, null);
 		}
@@ -107,11 +106,11 @@ class PlayScene {
 	}
 
 	private void drawLevelCounter(Graphics2D g) {
-		int x = (WORLD_WIDTH_TILES - 4) * TS;
+		int x = (WORLD_TILES.x - 4) * TS;
 		int first = Math.max(1, game.level - 6);
 		for (int level = first; level <= game.level; ++level) {
 			BufferedImage symbol = assets.symbols[game.level(level).bonusSymbol];
-			g.drawImage(symbol, x, size.height - 2 * TS, null);
+			g.drawImage(symbol, x, size.y - 2 * TS, null);
 			x -= 2 * TS;
 		}
 	}
@@ -137,8 +136,8 @@ class PlayScene {
 			return;
 		}
 		g.drawImage(assets.imageMazeFull, 0, 3 * TS, null);
-		for (int x = 0; x < WORLD_WIDTH_TILES; ++x) {
-			for (int y = 0; y < WORLD_HEIGHT_TILES; ++y) {
+		for (int x = 0; x < WORLD_TILES.x; ++x) {
+			for (int y = 0; y < WORLD_TILES.y; ++y) {
 				if (game.world.foodEatenAt(x, y)) {
 					hideTile(g, x, y);
 					continue;
@@ -154,7 +153,7 @@ class PlayScene {
 			g.drawImage(assets.symbols[game.level().bonusSymbol], 13 * TS, 20 * TS - HTS, null);
 		} else if (game.bonusConsumedTimer > 0) {
 			BufferedImage image = assets.numbers.get(game.level().bonusPoints);
-			g.drawImage(image, (size.width - image.getWidth()) / 2, 20 * TS - HTS, null);
+			g.drawImage(image, (size.x - image.getWidth()) / 2, 20 * TS - HTS, null);
 		}
 		if (debugMode) {
 			drawMazeStructure(g);
@@ -251,8 +250,8 @@ class PlayScene {
 		Stroke thin = new BasicStroke(0.1f);
 		g.setColor(dark);
 		g.setStroke(thin);
-		for (int x = 0; x < WORLD_WIDTH_TILES; ++x) {
-			for (int y = 0; y < WORLD_HEIGHT_TILES; ++y) {
+		for (int x = 0; x < WORLD_TILES.x; ++x) {
+			for (int y = 0; y < WORLD_TILES.y; ++y) {
 				if (game.world.isIntersectionTile(x, y)) {
 					for (Direction dir : Direction.values()) {
 						int nx = x + dir.vec.x, ny = y + dir.vec.y;
