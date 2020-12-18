@@ -443,10 +443,25 @@ public class Game {
 	}
 
 	private void runHuntingState() {
-		if (pacMan.dead) {
-			exitHuntingState();
-			enterPacManDyingState();
-			return;
+		Ghost ghostColliding = checkGhostCollision(pacMan.tile());
+		if (ghostColliding != null) {
+			if (ghostColliding.frightened) {
+				killGhost(ghostColliding);
+				enterGhostDyingState();
+				return;
+			}
+			if (pacMan.powerTicks == 0) {
+				log("Pac-Man killed by %s at tile %s", ghostColliding.name(), ghostColliding.tile());
+				pacMan.dead = true;
+				resetAndEnableGlobalDotCounter();
+				if (ghosts[BLINKY].elroyMode > 0) {
+					log("Blinky Elroy mode %d disabled", ghosts[BLINKY].elroyMode);
+					ghosts[BLINKY].elroyMode = (byte) -ghosts[BLINKY].elroyMode; // disabled
+				}
+				exitHuntingState();
+				enterPacManDyingState();
+				return;
+			}
 		}
 		if (world.foodRemaining == 0) {
 			exitHuntingState();
@@ -598,26 +613,6 @@ public class Game {
 
 	private void updatePacMan() {
 		V2i tile = pacMan.tile();
-		Ghost ghost = checkGhostCollision(tile);
-		if (ghost != null) {
-			if (ghost.frightened) {
-				killGhost(ghost);
-				enterGhostDyingState();
-				return;
-			}
-			if (pacMan.powerTicks == 0) {
-				pacMan.dead = true;
-				log("Pac-Man killed by %s at tile %s", ghost.name(), ghost.tile());
-				globalDotCounter = 0;
-				globalDotCounterEnabled = true;
-				log("Global dot counter reset and enabled");
-				if (ghosts[BLINKY].elroyMode > 0) {
-					log("Blinky Elroy mode %d disabled", ghosts[BLINKY].elroyMode);
-					ghosts[BLINKY].elroyMode = (byte) -ghosts[BLINKY].elroyMode; // disabled
-				}
-				return;
-			}
-		}
 
 		if (pacMan.restingTicks == 0) {
 			tryMoving(pacMan);
@@ -843,6 +838,12 @@ public class Game {
 			return 17;
 		}
 		return Integer.MAX_VALUE;
+	}
+
+	private void resetAndEnableGlobalDotCounter() {
+		globalDotCounter = 0;
+		globalDotCounterEnabled = true;
+		log("Global dot counter reset and enabled");
 	}
 
 	private int starvingTimeLimit() {
