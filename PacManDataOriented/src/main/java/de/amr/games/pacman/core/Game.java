@@ -98,6 +98,7 @@ public class Game {
 	public final Ghost[] ghosts;
 	public final Hiscore hiscore;
 	public final Clock clock;
+	public final Random rnd;
 	public PacManGameUI ui;
 
 	public boolean paused;
@@ -120,6 +121,7 @@ public class Game {
 
 	public Game() {
 		clock = new Clock();
+		rnd = new Random();
 		world = new World();
 		hiscore = new Hiscore();
 		pacMan = new PacMan(PACMAN_HOME);
@@ -388,7 +390,7 @@ public class Game {
 	}
 
 	private boolean inChasingPhase() {
-		return huntingPhase % 2 == 1;
+		return huntingPhase % 2 != 0;
 	}
 
 	private long huntingTicks(short duration) {
@@ -691,7 +693,7 @@ public class Game {
 		// bonus score reached?
 		int eaten = TOTAL_FOOD_COUNT - world.foodRemaining;
 		if (bonusAvailableTimer == 0 && (eaten == 70 || eaten == 170)) {
-			bonusAvailableTimer = clock.sec(9 + new Random().nextFloat());
+			bonusAvailableTimer = clock.sec(9 + rnd.nextFloat());
 		}
 	}
 
