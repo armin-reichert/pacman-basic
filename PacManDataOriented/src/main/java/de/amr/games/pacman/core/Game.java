@@ -598,23 +598,8 @@ public class Game {
 
 	private void updatePacMan() {
 		V2i tile = pacMan.tile();
-		if (pacMan.restingTicks == 0) {
-			tryMoving(pacMan);
-		} else {
-			pacMan.restingTicks--;
-		}
-		updatePacManPower();
-		checkPacManFoundFood(tile);
-		checkPacManFoundBonus(tile);
-
-		// ghost(s) at current tile?
-		for (Ghost ghost : ghosts) {
-			if (!tile.equals(ghost.tile())) {
-				continue;
-			}
-			if (ghost.dead) {
-				continue;
-			}
+		Ghost ghost = checkGhostCollision(tile);
+		if (ghost != null) {
 			if (ghost.frightened) {
 				killGhost(ghost);
 				enterGhostDyingState();
@@ -633,6 +618,24 @@ public class Game {
 				return;
 			}
 		}
+
+		if (pacMan.restingTicks == 0) {
+			tryMoving(pacMan);
+		} else {
+			pacMan.restingTicks--;
+		}
+		updatePacManPower();
+		checkPacManFoundFood(tile);
+		checkPacManFoundBonus(tile);
+	}
+
+	private Ghost checkGhostCollision(V2i tile) {
+		for (Ghost ghost : ghosts) {
+			if (tile.equals(ghost.tile()) && !ghost.dead) {
+				return ghost;
+			}
+		}
+		return null;
 	}
 
 	private void checkPacManFoundBonus(V2i tile) {
