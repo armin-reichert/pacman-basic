@@ -474,6 +474,8 @@ public class Game {
 		if (state.expired()) {
 			enterNextHuntingPhase();
 		}
+		checkPacManFoundFood();
+		checkPacManFoundBonus();
 		updatePacMan();
 		for (Ghost ghost : ghosts) {
 			updateGhost(ghost);
@@ -615,16 +617,12 @@ public class Game {
 	// END STATE-MACHINE
 
 	private void updatePacMan() {
-		V2i tile = pacMan.tile();
-
 		if (pacMan.restingTicks == 0) {
 			tryMoving(pacMan);
 		} else {
 			pacMan.restingTicks--;
 		}
 		updatePacManPower();
-		checkPacManFoundFood(tile);
-		checkPacManFoundBonus(tile);
 	}
 
 	private Ghost checkGhostCollision() {
@@ -637,7 +635,8 @@ public class Game {
 		return null;
 	}
 
-	private void checkPacManFoundBonus(V2i tile) {
+	private void checkPacManFoundBonus() {
+		V2i tile = pacMan.tile();
 		if (!world.isBonusTile(tile.x, tile.y) || bonusAvailableTimer == 0) {
 			return;
 		}
@@ -648,7 +647,8 @@ public class Game {
 		log("Pac-Man found bonus (id=%d) of value %d", level().bonusSymbol, level().bonusPoints);
 	}
 
-	private void checkPacManFoundFood(V2i tile) {
+	private void checkPacManFoundFood() {
+		V2i tile = pacMan.tile();
 		if (world.isFoodTile(tile.x, tile.y) && !world.foodEatenAt(tile.x, tile.y)) {
 			onPacManFoundFood(tile);
 		} else {
