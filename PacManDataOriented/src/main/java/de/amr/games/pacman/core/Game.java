@@ -449,6 +449,7 @@ public class Game {
 		if (ghostColliding != null) {
 			if (ghostColliding.frightened) {
 				killGhost(ghostColliding);
+				exitHuntingState();
 				enterGhostDyingState();
 				return;
 			}
@@ -485,13 +486,13 @@ public class Game {
 	}
 
 	private void exitHuntingState() {
-		ui.stopAllSounds();
 	}
 
 	// PACMAN_DYING
 
 	private void enterPacManDyingState() {
 		enterState(PACMAN_DYING, clock.sec(6));
+		ui.stopAllSounds();
 	}
 
 	private void runPacManDyingState() {
