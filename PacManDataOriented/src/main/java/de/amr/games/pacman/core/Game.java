@@ -357,9 +357,13 @@ public class Game {
 			enterHuntingState();
 			return;
 		}
-		if (!gameStarted && state.running() == clock.sec(0.5f)) {
-			ui.playSound(Sound.GAME_READY);
-			gameStarted = true;
+		if (state.running() == clock.sec(0.25f)) {
+			if (!gameStarted) {
+				ui.playSound(Sound.GAME_READY);
+				gameStarted = true;
+			} else {
+				ui.playSound(Sound.CREDIT);
+			}
 		}
 		if (state.running() > clock.sec(0.5f)) {
 			for (Ghost ghost : ghosts) {
@@ -565,6 +569,7 @@ public class Game {
 			ghost.speed = 0;
 		}
 		pacMan.speed = 0;
+		ui.stopAllSounds();
 	}
 
 	private void runChangingLevelState() {
