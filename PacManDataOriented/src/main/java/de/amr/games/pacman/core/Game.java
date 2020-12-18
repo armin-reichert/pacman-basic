@@ -471,9 +471,6 @@ public class Game {
 			enterChangingLevelState();
 			return;
 		}
-		if (state.expired()) {
-			enterNextHuntingPhase();
-		}
 		checkPacManFoundFood();
 		checkPacManFoundBonus();
 		updatePacMan();
@@ -484,6 +481,9 @@ public class Game {
 
 		if (pacMan.powerTicks == 0) {
 			state.tick();
+		}
+		if (state.expired()) {
+			enterNextHuntingPhase();
 		}
 	}
 
