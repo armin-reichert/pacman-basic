@@ -215,7 +215,7 @@ public class Game {
 			ghost.changedTile = true;
 			ghost.couldMove = true;
 			ghost.forcedTurningBack = false;
-			ghost.forcedOnTrack = ghost == ghosts[BLINKY];
+			ghost.forcedOnTrack = ghost.id == BLINKY;
 			ghost.dead = false;
 			ghost.frightened = false;
 			ghost.locked = true;
@@ -364,9 +364,11 @@ public class Game {
 			gameStarted = true;
 		}
 		if (state.running() > clock.sec(0.5f)) {
-			letGhostBounce(ghosts[INKY]);
-			letGhostBounce(ghosts[PINKY]);
-			letGhostBounce(ghosts[CLYDE]);
+			for (Ghost ghost : ghosts) {
+				if (ghost.id != BLINKY) {
+					letGhostBounce(ghost);
+				}
+			}
 		}
 		state.tick();
 	}
@@ -774,7 +776,7 @@ public class Game {
 	}
 
 	private void maybeReleaseGhost(Ghost ghost) {
-		if (ghost == ghosts[BLINKY]) {
+		if (ghost.id == BLINKY) {
 			ghost.locked = false;
 			return;
 		}
@@ -790,7 +792,7 @@ public class Game {
 	private void releaseGhost(Ghost ghost, String reason, Object... args) {
 		ghost.locked = false;
 		ghost.leavingHouse = true;
-		if (ghost == ghosts[CLYDE] && ghosts[BLINKY].elroyMode < 0) {
+		if (ghost.id == CLYDE && ghosts[BLINKY].elroyMode < 0) {
 			ghosts[BLINKY].elroyMode -= 1; // resume Elroy mode
 			log("Blinky Elroy mode %d resumed", ghosts[BLINKY].elroyMode);
 		}
@@ -806,9 +808,9 @@ public class Game {
 	}
 
 	private Optional<Ghost> preferredLockedGhost() {
-		for (int ghost : GHOST_UNLOCK_ORDER) {
-			if (ghosts[ghost].locked) {
-				return Optional.of(ghosts[ghost]);
+		for (int ghostId : GHOST_UNLOCK_ORDER) {
+			if (ghosts[ghostId].locked) {
+				return Optional.of(ghosts[ghostId]);
 			}
 		}
 		return Optional.empty();
@@ -821,20 +823,20 @@ public class Game {
 	 * @see https://pacman.holenet.info/#CH2_Home_Sweet_Home
 	 */
 	private int privateDotLimit(Ghost ghost) {
-		if (ghost == ghosts[INKY]) {
+		if (ghost.id == INKY) {
 			return level == 1 ? 30 : 0;
 		}
-		if (ghost == ghosts[CLYDE]) {
+		if (ghost.id == CLYDE) {
 			return level == 1 ? 60 : level == 2 ? 50 : 0;
 		}
 		return 0;
 	}
 
 	private int globalDotLimit(Ghost ghost) {
-		if (ghost == ghosts[PINKY]) {
+		if (ghost.id == PINKY) {
 			return 7;
 		}
-		if (ghost == ghosts[INKY]) {
+		if (ghost.id == INKY) {
 			return 17;
 		}
 		return Integer.MAX_VALUE;
@@ -851,13 +853,12 @@ public class Game {
 	}
 
 	private V2i currentChasingTarget(Ghost ghost) {
-		V2i pacManTile = pacMan.tile();
 		switch (ghost.id) {
 		case BLINKY: {
-			return pacManTile;
+			return pacMan.tile();
 		}
 		case PINKY: {
-			V2i pacManTileAhead4 = pacManTile.sum(pacMan.dir.vec.scaled(4));
+			V2i pacManTileAhead4 = pacMan.tile().sum(pacMan.dir.vec.scaled(4));
 			if (pacMan.dir == UP) {
 				// simulate overflow bug when Pac-Man is looking UP
 				pacManTileAhead4 = pacManTileAhead4.sum(LEFT.vec.scaled(4));
@@ -865,7 +866,7 @@ public class Game {
 			return pacManTileAhead4;
 		}
 		case INKY: {
-			V2i pacManTileAhead2 = pacManTile.sum(pacMan.dir.vec.scaled(2));
+			V2i pacManTileAhead2 = pacMan.tile().sum(pacMan.dir.vec.scaled(2));
 			if (pacMan.dir == UP) {
 				// simulate overflow bug when Pac-Man is looking UP
 				pacManTileAhead2 = pacManTileAhead2.sum(LEFT.vec.scaled(2));
@@ -873,7 +874,7 @@ public class Game {
 			return ghosts[BLINKY].tile().scaled(-1).sum(pacManTileAhead2.scaled(2));
 		}
 		case CLYDE: {
-			return ghosts[CLYDE].tile().distance(pacManTile) < 8 ? ghosts[CLYDE].scatterTile : pacManTile;
+			return ghost.tile().distance(pacMan.tile()) < 8 ? ghost.scatterTile : pacMan.tile();
 		}
 		default:
 			throw new IllegalArgumentException("Unknown ghost id: " + ghost.id);
@@ -891,7 +892,7 @@ public class Game {
 			ghost.dir = ghost.wishDir = DOWN;
 			ghost.forcedOnTrack = false;
 			ghost.enteringHouse = true;
-			ghost.targetTile = ghost == ghosts[BLINKY] ? HOUSE_CENTER : ghost.homeTile;
+			ghost.targetTile = ghost.id == BLINKY ? HOUSE_CENTER : ghost.homeTile;
 			return;
 		}
 		letGhostHeadForTargetTile(ghost);
