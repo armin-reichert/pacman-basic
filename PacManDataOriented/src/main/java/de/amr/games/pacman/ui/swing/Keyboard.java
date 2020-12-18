@@ -64,8 +64,10 @@ public class Keyboard {
 		case "space":
 			return KeyEvent.VK_SPACE;
 		case "plus":
+		case "+":
 			return KeyEvent.VK_PLUS;
 		case "minus":
+		case "-":
 			return KeyEvent.VK_MINUS;
 		default:
 			throw new IllegalArgumentException(String.format("Unknown key specification: %s", keySpec));

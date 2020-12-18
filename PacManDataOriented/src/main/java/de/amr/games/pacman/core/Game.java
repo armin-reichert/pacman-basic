@@ -168,7 +168,6 @@ public class Game {
 
 	private void reset() {
 		gameStarted = false;
-		mazeFlashesRemaining = 0;
 		score = 0;
 		lives = 3;
 		hiscore.load();
