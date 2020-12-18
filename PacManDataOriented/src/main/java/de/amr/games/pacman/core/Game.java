@@ -445,7 +445,7 @@ public class Game {
 	}
 
 	private void runHuntingState() {
-		Ghost ghostColliding = checkGhostCollision(pacMan.tile());
+		Ghost ghostColliding = checkGhostCollision();
 		if (ghostColliding != null) {
 			if (ghostColliding.frightened) {
 				killGhost(ghostColliding);
@@ -626,9 +626,10 @@ public class Game {
 		checkPacManFoundBonus(tile);
 	}
 
-	private Ghost checkGhostCollision(V2i tile) {
+	private Ghost checkGhostCollision() {
+		V2i tile = pacMan.tile();
 		for (Ghost ghost : ghosts) {
-			if (tile.equals(ghost.tile()) && !ghost.dead) {
+			if (!ghost.dead && tile.equals(ghost.tile())) {
 				return ghost;
 			}
 		}
@@ -833,13 +834,7 @@ public class Game {
 	}
 
 	private int globalDotLimit(Ghost ghost) {
-		if (ghost.id == PINKY) {
-			return 7;
-		}
-		if (ghost.id == INKY) {
-			return 17;
-		}
-		return Integer.MAX_VALUE;
+		return ghost.id == PINKY ? 7 : ghost.id == INKY ? 17 : Integer.MAX_VALUE;
 	}
 
 	private void resetAndEnableGlobalDotCounter() {
@@ -858,20 +853,20 @@ public class Game {
 			return pacMan.tile();
 		}
 		case PINKY: {
-			V2i pacManTileAhead4 = pacMan.tile().sum(pacMan.dir.vec.scaled(4));
+			V2i pacManAhead4 = pacMan.tile().sum(pacMan.dir.vec.scaled(4));
 			if (pacMan.dir == UP) {
 				// simulate overflow bug when Pac-Man is looking UP
-				pacManTileAhead4 = pacManTileAhead4.sum(LEFT.vec.scaled(4));
+				pacManAhead4 = pacManAhead4.sum(LEFT.vec.scaled(4));
 			}
-			return pacManTileAhead4;
+			return pacManAhead4;
 		}
 		case INKY: {
-			V2i pacManTileAhead2 = pacMan.tile().sum(pacMan.dir.vec.scaled(2));
+			V2i pacManAhead2 = pacMan.tile().sum(pacMan.dir.vec.scaled(2));
 			if (pacMan.dir == UP) {
 				// simulate overflow bug when Pac-Man is looking UP
-				pacManTileAhead2 = pacManTileAhead2.sum(LEFT.vec.scaled(2));
+				pacManAhead2 = pacManAhead2.sum(LEFT.vec.scaled(2));
 			}
-			return ghosts[BLINKY].tile().scaled(-1).sum(pacManTileAhead2.scaled(2));
+			return ghosts[BLINKY].tile().scaled(-1).sum(pacManAhead2.scaled(2));
 		}
 		case CLYDE: {
 			return ghost.tile().distance(pacMan.tile()) < 8 ? ghost.scatterTile : pacMan.tile();
