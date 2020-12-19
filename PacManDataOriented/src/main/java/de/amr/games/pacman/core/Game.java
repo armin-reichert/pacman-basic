@@ -201,10 +201,10 @@ public class Game {
 		pacMan.forcedOnTrack = true;
 		pacMan.forcedTurningBack = false;
 		pacMan.dead = false;
-		pacMan.powerTicks = 0;
-		pacMan.restingTicks = 0;
+		pacMan.powerTicksLeft = 0;
+		pacMan.restingTicksLeft = 0;
 		pacMan.starvingTicks = 0;
-		pacMan.collapsingTicksRemaining = 0;
+		pacMan.collapsingTicksLeft = 0;
 		pacMan.placeAt(pacMan.homeTile.x, pacMan.homeTile.y, HTS, 0);
 
 		for (Ghost ghost : ghosts) {
@@ -456,7 +456,7 @@ public class Game {
 				enterGhostDyingState();
 				return;
 			}
-			if (pacMan.powerTicks == 0) {
+			if (pacMan.powerTicksLeft == 0) {
 				log("Pac-Man killed by %s at tile %s", ghostColliding.name(), ghostColliding.tile());
 				pacMan.dead = true;
 				resetAndEnableGlobalDotCounter();
@@ -482,7 +482,7 @@ public class Game {
 		}
 		updateBonus();
 
-		if (pacMan.powerTicks == 0) {
+		if (pacMan.powerTicksLeft == 0) {
 			state.tick();
 		}
 		if (state.expired()) {
@@ -517,18 +517,18 @@ public class Game {
 			}
 		}
 		if (state.ticksRemaining() == clock.sec(3.5)) {
-			pacMan.collapsingTicksRemaining = 88;
+			pacMan.collapsingTicksLeft = 88;
 			ui.playSound(Sound.PACMAN_DEATH);
 		}
-		if (pacMan.collapsingTicksRemaining > 1) { // display Pac-Man completely collapsed till end of state
-			pacMan.collapsingTicksRemaining--;
+		if (pacMan.collapsingTicksLeft > 1) { // display Pac-Man completely collapsed till end of state
+			pacMan.collapsingTicksLeft--;
 		}
 		state.tick();
 	}
 
 	private void exitPacManDyingState() {
 		lives -= 1;
-		pacMan.collapsingTicksRemaining = 0;
+		pacMan.collapsingTicksLeft = 0;
 		for (Ghost ghost : ghosts) {
 			ghost.visible = true;
 		}
@@ -627,10 +627,10 @@ public class Game {
 	// END STATE-MACHINE
 
 	private void updatePacMan() {
-		if (pacMan.restingTicks == 0) {
+		if (pacMan.restingTicksLeft == 0) {
 			tryMoving(pacMan);
 		} else {
-			pacMan.restingTicks--;
+			pacMan.restingTicksLeft--;
 		}
 		updatePacManPower();
 	}
@@ -683,29 +683,33 @@ public class Game {
 		updateGhostDotCounters();
 		mayBeEnterElroyMode();
 		if (world.isEnergizerTile(tile.x, tile.y)) {
-			pacMan.restingTicks = 3;
 			score(50);
-			int powerSeconds = level().ghostFrightenedSeconds;
-			pacMan.powerTicks = clock.sec(powerSeconds);
-			if (powerSeconds > 0) {
-				log("Pac-Man got power for %d seconds", powerSeconds);
-				for (Ghost ghost : ghosts) {
-					if (isGhostHunting(ghost)) {
-						ghost.frightened = true;
-					}
-				}
-				forceGhostsTurningBack();
-				ui.loopSound(Sound.PACMAN_POWER);
-			}
+			givePacManPower();
 			ghostBounty = 200;
+			pacMan.restingTicksLeft = 3;
 		} else {
-			pacMan.restingTicks = 1;
 			score(10);
+			pacMan.restingTicksLeft = 1;
 		}
 		// bonus score reached?
 		int eaten = TOTAL_FOOD_COUNT - world.foodRemaining;
 		if (bonusAvailableTimer == 0 && (eaten == 70 || eaten == 170)) {
 			bonusAvailableTimer = clock.sec(9 + rnd.nextFloat());
+		}
+	}
+
+	private void givePacManPower() {
+		int powerSeconds = level().ghostFrightenedSeconds;
+		pacMan.powerTicksLeft = clock.sec(powerSeconds);
+		if (powerSeconds > 0) {
+			log("Pac-Man got power for %d seconds", powerSeconds);
+			for (Ghost ghost : ghosts) {
+				if (isGhostHunting(ghost)) {
+					ghost.frightened = true;
+				}
+			}
+			forceGhostsTurningBack();
+			ui.loopSound(Sound.PACMAN_POWER);
 		}
 	}
 
@@ -736,9 +740,9 @@ public class Game {
 	}
 
 	private void updatePacManPower() {
-		if (pacMan.powerTicks > 0) {
-			pacMan.powerTicks--;
-			if (pacMan.powerTicks == 0) {
+		if (pacMan.powerTicksLeft > 0) {
+			pacMan.powerTicksLeft--;
+			if (pacMan.powerTicksLeft == 0) {
 				for (Ghost ghost : ghosts) {
 					ghost.frightened = false;
 				}

@@ -169,9 +169,9 @@ class PlayScene {
 		}
 		// use full face as default
 		BufferedImage sprite = assets.sheet(2, 0);
-		if (pacMan.collapsingTicksRemaining > 0) {
+		if (pacMan.collapsingTicksLeft > 0) {
 			// collapsing animation
-			int frame = 13 - (int) pacMan.collapsingTicksRemaining / 8;
+			int frame = 13 - (int) pacMan.collapsingTicksLeft / 8;
 			if (frame > 13) {
 				frame = 13;
 			} else if (frame < 3) {
@@ -209,7 +209,7 @@ class PlayScene {
 			}
 		} else if (ghost.frightened) {
 			// TODO flash exactly as often as specified by level
-			if (game.pacMan.powerTicks < game.clock.sec(2) && ghost.speed != 0) {
+			if (game.pacMan.powerTicksLeft < game.clock.sec(2) && ghost.speed != 0) {
 				// ghost flashing blue/white, animated walking
 				int flashing = game.clock.frame(10, 2) == 0 ? 8 : 10;
 				sprite = assets.sheet(walking + flashing, 4);

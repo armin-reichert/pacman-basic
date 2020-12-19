@@ -20,8 +20,8 @@ public class Ghost extends Creature {
 	public byte elroyMode;
 
 	public Ghost(byte id, V2i homeTile, V2i scatterTile) {
-		super(homeTile);
 		this.id = id;
+		this.homeTile = homeTile;
 		this.scatterTile = scatterTile;
 	}
 

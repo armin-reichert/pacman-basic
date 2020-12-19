@@ -4,13 +4,13 @@ import de.amr.games.pacman.lib.V2i;
 
 public class PacMan extends Creature {
 
-	public int powerTicks;
-	public int restingTicks;
+	public long powerTicksLeft;
+	public long restingTicksLeft;
 	public long starvingTicks;
-	public long collapsingTicksRemaining;
+	public long collapsingTicksLeft;
 
 	public PacMan(V2i homeTile) {
-		super(homeTile);
+		this.homeTile = homeTile;
 	}
 
 	@Override
@@ -20,6 +20,6 @@ public class PacMan extends Creature {
 
 	@Override
 	public void updateSpeed(World world, Level level) {
-		speed = powerTicks > 0 ? level.pacManSpeedPowered : level.pacManSpeed;
+		speed = powerTicksLeft > 0 ? level.pacManSpeedPowered : level.pacManSpeed;
 	}
 }

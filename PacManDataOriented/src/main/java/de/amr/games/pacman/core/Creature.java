@@ -8,20 +8,20 @@ import de.amr.games.pacman.lib.V2i;
 
 public abstract class Creature {
 
-	public final V2i homeTile;
 	public boolean visible;
 	public float speed;
 	public Direction dir;
 	public Direction wishDir;
 	public V2f position; // left upper corner of collision box
+	public V2i homeTile;
 	public boolean changedTile;
 	public boolean couldMove;
 	public boolean forcedOnTrack;
 	public boolean forcedTurningBack;
 	public boolean dead;
 
-	public Creature(V2i homeTile) {
-		this.homeTile = homeTile;
+	public Creature() {
+		visible = true;
 		position = V2f.NULL;
 	}
 
