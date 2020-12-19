@@ -5,6 +5,7 @@ import static de.amr.games.pacman.core.World.TS;
 import static de.amr.games.pacman.core.World.WORLD_TILES;
 import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.dirIndex;
 import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.drawCenteredText;
+import static java.lang.Math.round;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -165,9 +166,10 @@ class PlayScene {
 		if (!pacMan.visible) {
 			return;
 		}
-		BufferedImage sprite;
+		// use full face as default
+		BufferedImage sprite = assets.sheet(2, 0);
 		if (pacMan.collapsingTicksRemaining > 0) {
-			// run collapsing animation
+			// collapsing animation
 			int frame = 13 - (int) pacMan.collapsingTicksRemaining / 8;
 			if (frame > 13) {
 				frame = 13;
@@ -176,18 +178,15 @@ class PlayScene {
 			}
 //			Logging.log("Collapsing, ticks = %d, animation frame = %d", pacMan.collapsingTicksRemaining, frame);
 			sprite = assets.sheet(frame, 0);
-		} else if (pacMan.speed == 0) {
-			// show full sprite
-			sprite = assets.sheet(2, 0);
 		} else if (!pacMan.couldMove) {
 			// show mouth wide open
 			sprite = assets.sheet(0, dirIndex(pacMan.dir));
-		} else {
+		} else if (pacMan.speed != 0) {
 			// switch between mouth closed and mouth open
-			int mouthFrame = game.clock.frame(5, 3);
-			sprite = mouthFrame == 2 ? assets.sheet(mouthFrame, 0) : assets.sheet(mouthFrame, dirIndex(pacMan.dir));
+			int frame = game.clock.frame(5, 3);
+			sprite = frame == 2 ? assets.sheet(frame, 0) : assets.sheet(frame, dirIndex(pacMan.dir));
 		}
-		g.drawImage(sprite, (int) pacMan.position.x - HTS, (int) pacMan.position.y - HTS, null);
+		g.drawImage(sprite, round(pacMan.position.x - HTS), round(pacMan.position.y - HTS), null);
 	}
 
 	private void drawGhost(Graphics2D g, int ghostIndex) {
