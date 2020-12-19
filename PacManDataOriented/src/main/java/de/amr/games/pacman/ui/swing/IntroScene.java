@@ -3,6 +3,7 @@ package de.amr.games.pacman.ui.swing;
 import static de.amr.games.pacman.core.World.TS;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
+import static de.amr.games.pacman.lib.Functions.t;
 import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.dirIndex;
 import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.drawCenteredText;
 
@@ -83,13 +84,13 @@ class IntroScene {
 
 		mark += 1;
 		for (int ghost = 0; ghost <= 3; ++ghost) {
-			int y = (10 + 3 * ghost) * TS;
+			int y = t(10 + 3 * ghost);
 			if (passed == game.clock.sec(mark)) {
 				ui.playSound(Sound.CREDIT);
 			}
 			if (passed >= game.clock.sec(mark)) {
 				BufferedImage ghostLookingRight = assets.sheet(0, 4 + ghost);
-				g.drawImage(ghostLookingRight, 2 * TS - 3, y - 2, null);
+				g.drawImage(ghostLookingRight, t(2) - 3, y - 2, null);
 			}
 			if (passed >= game.clock.sec(mark + 0.5f)) {
 				String character = (String) GHOST_INTRO_TEXTS[ghost][0];
@@ -98,19 +99,19 @@ class IntroScene {
 				String text = "-";
 				text += passed > game.clock.sec(mark + 1) ? character + "    " + nickname : character;
 				g.setColor(color);
-				g.drawString(text, 4 * TS, y + 11);
+				g.drawString(text, t(4), y + 11);
 			}
 			mark += 2;
 		}
 
 		if (passed >= game.clock.sec(mark)) {
 			g.setColor(Color.PINK);
-			g.fillRect(9 * TS + 6, 27 * TS + 2, 2, 2);
-			drawCenteredText(g, "10 PTS", 28 * TS, size.x);
+			g.fillRect(t(9) + 6, t(27) + 2, 2, 2);
+			drawCenteredText(g, "10 PTS", t(28), size.x);
 			game.clock.runOrBeIdle(20, () -> {
-				g.fillOval(9 * TS, 29 * TS - 2, 10, 10);
+				g.fillOval(t(9), t(29) - 2, 10, 10);
 			});
-			drawCenteredText(g, "50 PTS", 30 * TS, size.x);
+			drawCenteredText(g, "50 PTS", t(30), size.x);
 		}
 
 		mark += 1;
@@ -141,16 +142,16 @@ class IntroScene {
 	}
 
 	private void drawGhostsChasingPacMan(Graphics2D g) {
-		int y = 22 * TS;
+		int y = t(22);
 		game.clock.runOrBeIdle(20, () -> {
 			g.setColor(Color.PINK);
-			g.fillOval(2 * TS, y + 2, 10, 10);
+			g.fillOval(t(2), y + 2, 10, 10);
 		});
 		g.drawImage(pacManWalking(LEFT), (int) pacManX, y, null);
 		for (int ghost = 0; ghost < 4; ++ghost) {
 			g.drawImage(ghostWalking(LEFT, ghost), (int) leftmostGhostX + 16 * ghost, y, null);
 		}
-		if (pacManX > 2 * TS) {
+		if (pacManX > t(2)) {
 			pacManX -= 0.8f;
 			leftmostGhostX -= 0.8f;
 		} else {
@@ -161,7 +162,7 @@ class IntroScene {
 	}
 
 	private void drawPacManChasingGhosts(Graphics2D g) {
-		int y = 22 * TS;
+		int y = t(22);
 		BufferedImage frightenedGhostImage = ghostFrightened();
 		for (int ghost = 0; ghost < 4; ++ghost) {
 			int x = (int) leftmostGhostX + ghost * 16;
@@ -186,8 +187,8 @@ class IntroScene {
 	}
 
 	private BufferedImage pacManWalking(Direction dir) {
-		int mouthFrame = game.clock.frame(5, 3);
-		return mouthFrame == 2 ? assets.sheet(mouthFrame, 0) : assets.sheet(mouthFrame, dirIndex(dir));
+		int frame = game.clock.frame(5, 3);
+		return frame == 2 ? assets.sheet(frame, 0) : assets.sheet(frame, dirIndex(dir));
 	}
 
 	private BufferedImage ghostWalking(Direction dir, int ghost) {

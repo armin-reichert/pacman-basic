@@ -3,6 +3,7 @@ package de.amr.games.pacman.ui.swing;
 import static de.amr.games.pacman.core.World.HTS;
 import static de.amr.games.pacman.core.World.TS;
 import static de.amr.games.pacman.core.World.WORLD_TILES;
+import static de.amr.games.pacman.lib.Functions.t;
 import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.dirIndex;
 import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.drawCenteredText;
 import static java.lang.Math.round;
@@ -28,10 +29,6 @@ import de.amr.games.pacman.lib.V2i;
  * @author Armin Reichert
  */
 class PlayScene {
-
-	static int t(int nTiles) {
-		return nTiles * TS;
-	}
 
 	static final Polygon TRIANGLE = new Polygon(new int[] { -4, 4, 0 }, new int[] { 0, 0, 4 }, 3);
 
