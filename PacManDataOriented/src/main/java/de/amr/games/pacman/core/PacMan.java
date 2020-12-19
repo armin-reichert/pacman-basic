@@ -7,6 +7,7 @@ public class PacMan extends Creature {
 	public int powerTicks;
 	public int restingTicks;
 	public long starvingTicks;
+	public long collapsingTicksRemaining;
 
 	public PacMan(V2i homeTile) {
 		super(homeTile);

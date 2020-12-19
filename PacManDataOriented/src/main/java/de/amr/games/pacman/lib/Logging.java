@@ -9,6 +9,7 @@ public class Logging {
 
 	public static void log(String msg, Object... args) {
 		String timestamp = TIME_FORMAT.format(LocalTime.now());
-		System.err.println(String.format("[%s] %s", timestamp, String.format(msg, args)));
+		String message = String.format(msg, args);
+		System.err.printf("[%s] %s\n", timestamp, message);
 	}
 }

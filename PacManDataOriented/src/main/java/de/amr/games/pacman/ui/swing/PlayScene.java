@@ -166,18 +166,16 @@ class PlayScene {
 			return;
 		}
 		BufferedImage sprite;
-		if (game.state == GameState.PACMAN_DYING) {
-			if (game.state.ticksRemaining() >= game.clock.sec(2) + 11 * 8) {
-				// for 2 seconds, show full sprite before animation starts
-				sprite = assets.sheet(2, 0);
-			} else if (game.state.ticksRemaining() >= game.clock.sec(2)) {
-				// run collapsing animation
-				int frame = (int) (game.state.ticksRemaining() - game.clock.sec(2)) / 8;
-				sprite = assets.sheet(13 - frame, 0);
-			} else {
-				// show collapsed sprite after collapsing
-				sprite = assets.sheet(13, 0);
+		if (pacMan.collapsingTicksRemaining > 0) {
+			// run collapsing animation
+			int frame = 13 - (int) pacMan.collapsingTicksRemaining / 8;
+			if (frame > 13) {
+				frame = 13;
+			} else if (frame < 3) {
+				frame = 3;
 			}
+//			Logging.log("Collapsing, ticks = %d, animation frame = %d", pacMan.collapsingTicksRemaining, frame);
+			sprite = assets.sheet(frame, 0);
 		} else if (pacMan.speed == 0) {
 			// show full sprite
 			sprite = assets.sheet(2, 0);

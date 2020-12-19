@@ -204,6 +204,7 @@ public class Game {
 		pacMan.powerTicks = 0;
 		pacMan.restingTicks = 0;
 		pacMan.starvingTicks = 0;
+		pacMan.collapsingTicksRemaining = 0;
 		pacMan.placeAt(pacMan.homeTile.x, pacMan.homeTile.y, HTS, 0);
 
 		for (Ghost ghost : ghosts) {
@@ -496,6 +497,7 @@ public class Game {
 
 	private void enterPacManDyingState() {
 		enterState(PACMAN_DYING, clock.sec(6));
+		pacMan.speed = 0;
 		ui.stopAllSounds();
 	}
 
@@ -514,14 +516,19 @@ public class Game {
 				ghost.visible = false;
 			}
 		}
-		if (state.ticksRemaining() == clock.sec(3.5f)) {
+		if (state.ticksRemaining() == clock.sec(3.5)) {
+			pacMan.collapsingTicksRemaining = 88;
 			ui.playSound(Sound.PACMAN_DEATH);
+		}
+		if (pacMan.collapsingTicksRemaining > 1) { // display Pac-Man completely collapsed till end of state
+			pacMan.collapsingTicksRemaining--;
 		}
 		state.tick();
 	}
 
 	private void exitPacManDyingState() {
 		lives -= 1;
+		pacMan.collapsingTicksRemaining = 0;
 		for (Ghost ghost : ghosts) {
 			ghost.visible = true;
 		}

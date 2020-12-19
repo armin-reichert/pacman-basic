@@ -8,7 +8,7 @@ public class Clock {
 	public long framesTotal;
 	public long fpsCountStartTime;
 
-	public int sec(float seconds) {
+	public int sec(double seconds) {
 		return (int) (seconds * targetFPS);
 	}
 
