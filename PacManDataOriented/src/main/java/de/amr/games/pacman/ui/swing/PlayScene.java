@@ -172,7 +172,6 @@ class PlayScene {
 		int dir = dirIndex(pacMan.dir);
 		if (pacMan.collapsingTicksLeft > 0) { // collapsing animation
 			int frame = 13 - (int) pacMan.collapsingTicksLeft / 8;
-			frame = Math.min(frame, 13);
 			frame = Math.max(frame, 3);
 			return assets.sheet(frame, 0);
 		}
