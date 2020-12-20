@@ -53,8 +53,8 @@ class PlayScene {
 		drawLevelCounter(g);
 		drawMaze(g);
 		drawPacMan(g);
-		for (int ghostID = 0; ghostID < 4; ++ghostID) {
-			drawGhost(g, ghostID);
+		for (Ghost ghost : game.ghosts) {
+			drawGhost(g, ghost);
 		}
 		drawMessage(g);
 		drawDebugInfo(g);
@@ -190,38 +190,34 @@ class PlayScene {
 		g.drawImage(sprite, round(pacMan.position.x - HTS), round(pacMan.position.y - HTS), null);
 	}
 
-	private void drawGhost(Graphics2D g, int ghostIndex) {
-		Ghost ghost = game.ghosts[ghostIndex];
-		if (!ghost.visible) {
-			return;
+	private void drawGhost(Graphics2D g, Ghost ghost) {
+		if (ghost.visible) {
+			g.drawImage(selectGhostSprite(ghost), round(ghost.position.x - HTS), round(ghost.position.y - HTS), null);
 		}
+	}
 
-		BufferedImage sprite;
+	private BufferedImage selectGhostSprite(Ghost ghost) {
 		int dir = dirIndex(ghost.dir);
 		int walking = ghost.speed == 0 ? 0 : game.clock.frame(5, 2);
-		if (ghost.dead) {
-			if (ghost.bounty > 0) {
-				// show bounty as number
-				sprite = assets.numbers.get(ghost.bounty);
-			} else {
-				// show eyes looking towards move direction
-				sprite = assets.sheet(8 + dir, 5);
-			}
+		if (ghost.bounty > 0) { // show as number
+			return assets.numbers.get(ghost.bounty);
+		} else if (ghost.dead) { // show eyes looking towards move direction
+			return assets.sheet(8 + dir, 5);
 		} else if (ghost.frightened) {
 			// TODO flash exactly as often as specified by level
 			if (game.pacMan.powerTicksLeft < game.clock.sec(2) && ghost.speed != 0) {
 				// ghost flashing blue/white, animated walking
 				int flashing = game.clock.frame(10, 2) == 0 ? 8 : 10;
-				sprite = assets.sheet(walking + flashing, 4);
-			} else {
-				// blue ghost, animated walking
-				sprite = assets.sheet(8 + walking, 4);
+				return assets.sheet(walking + flashing, 4);
+			} else { // blue ghost, animated walking
+				return assets.sheet(8 + walking, 4);
 			}
 		} else {
-			sprite = assets.sheet(2 * dir + walking, 4 + ghostIndex);
+			return assets.sheet(2 * dir + walking, 4 + ghost.id);
 		}
-		g.drawImage(sprite, round(ghost.position.x - HTS), round(ghost.position.y - HTS), null);
 	}
+
+	// debug
 
 	private void drawDebugInfo(Graphics2D g) {
 		if (debugMode) {
