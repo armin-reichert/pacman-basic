@@ -32,7 +32,7 @@ import de.amr.games.pacman.ui.Sound;
  */
 public class Assets {
 
-	static final Color[] GHOST_COLORS = new Color[] { Color.RED, Color.PINK, Color.CYAN, Color.ORANGE };
+	static final Color[] GHOST_COLORS = { Color.RED, Color.PINK, Color.CYAN, Color.ORANGE };
 
 	public final BufferedImage imageLogo;
 	public final BufferedImage imageMazeFull;
