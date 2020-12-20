@@ -9,6 +9,12 @@ import java.io.FileOutputStream;
 import java.time.ZonedDateTime;
 import java.util.Properties;
 
+/**
+ * Hiscore management.
+ * 
+ * @author Armin Reichert
+ *
+ */
 public class Hiscore {
 
 	static final File DEFAULT_HISCORE_FILE = new File(System.getProperty("user.home"), "pacman-basic-hiscore.xml");

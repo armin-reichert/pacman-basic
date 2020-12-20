@@ -6,6 +6,12 @@ import java.util.stream.Stream;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
 
+/**
+ * The game world.
+ * 
+ * @author Armin Reichert
+ *
+ */
 public class World {
 
 	public static final int TS = 8;

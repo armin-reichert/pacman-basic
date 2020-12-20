@@ -1,5 +1,11 @@
 package de.amr.games.pacman.lib;
 
+/**
+ * A clock producing the ticks driving the game.
+ * 
+ * @author Armin Reichert
+ *
+ */
 public class Clock {
 
 	public int targetFPS = 60;

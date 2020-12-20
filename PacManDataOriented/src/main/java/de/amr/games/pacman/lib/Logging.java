@@ -3,6 +3,12 @@ package de.amr.games.pacman.lib;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Log messages.
+ * 
+ * @author Armin Reichert
+ *
+ */
 public class Logging {
 
 	public static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");

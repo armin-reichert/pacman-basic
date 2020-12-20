@@ -2,6 +2,12 @@ package de.amr.games.pacman.core;
 
 import de.amr.games.pacman.lib.V2i;
 
+/**
+ * The Pac-Man.
+ * 
+ * @author Armin Reichert
+ *
+ */
 public class PacMan extends Creature {
 
 	public long powerTicksLeft;

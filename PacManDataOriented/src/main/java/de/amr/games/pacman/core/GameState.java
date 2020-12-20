@@ -1,5 +1,11 @@
 package de.amr.games.pacman.core;
 
+/**
+ * The different states of the game. Each state has a timer.
+ * 
+ * @author Armin Reichert
+ *
+ */
 public enum GameState {
 
 	INTRO, READY, HUNTING, CHANGING_LEVEL, PACMAN_DYING, GHOST_DYING, GAME_OVER;

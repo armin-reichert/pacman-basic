@@ -2,6 +2,12 @@ package de.amr.games.pacman.core;
 
 import de.amr.games.pacman.lib.V2i;
 
+/**
+ * A ghost.
+ * 
+ * @author Armin Reichert
+ *
+ */
 public class Ghost extends Creature {
 
 	public static final byte BLINKY = 0, PINKY = 1, INKY = 2, CLYDE = 3;

@@ -1,5 +1,11 @@
 package de.amr.games.pacman.ui;
 
+/**
+ * Interface through which the game class can talk to the user interface.
+ * 
+ * @author Armin Reichert
+ *
+ */
 public interface PacManGameUI {
 
 	void setDebugMode(boolean debug);

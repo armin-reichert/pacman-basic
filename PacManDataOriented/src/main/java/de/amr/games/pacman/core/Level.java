@@ -1,5 +1,11 @@
 package de.amr.games.pacman.core;
 
+/**
+ * Data comprising a game level.
+ * 
+ * @author Armin Reichert
+ *
+ */
 public class Level {
 
 	public final int bonusSymbol;

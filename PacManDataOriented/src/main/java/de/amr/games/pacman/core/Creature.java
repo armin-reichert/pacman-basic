@@ -6,6 +6,12 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
 
+/**
+ * Base class for Pac-Man and ghosts.
+ * 
+ * @author Armin Reichert
+ *
+ */
 public class Creature {
 
 	/** Left upper corner of collision box */
