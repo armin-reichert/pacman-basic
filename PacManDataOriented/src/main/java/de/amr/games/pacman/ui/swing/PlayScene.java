@@ -97,7 +97,7 @@ class PlayScene {
 
 	private void drawLivesCounter(Graphics2D g) {
 		int y = size.y - t(2);
-		for (int i = 0; i < Math.min(game.lives, 4); ++i) {
+		for (int i = 0; i < Math.min(game.lives - 1, 4); ++i) {
 			g.drawImage(assets.imageLive, t(2 * (i + 1)), y, null);
 		}
 		if (game.lives > 4) {
