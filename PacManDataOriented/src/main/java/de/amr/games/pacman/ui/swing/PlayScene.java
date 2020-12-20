@@ -97,13 +97,13 @@ class PlayScene {
 
 	private void drawLivesCounter(Graphics2D g) {
 		int y = size.y - t(2);
-		for (int i = 0; i < Math.min(game.lives - 1, 4); ++i) {
+		for (int i = 0; i < Math.min(game.lives - 1, 3); ++i) {
 			g.drawImage(assets.imageLive, t(2 * (i + 1)), y, null);
 		}
-		if (game.lives > 4) {
+		if (game.lives > 3) {
 			g.setColor(Color.YELLOW);
-			g.setFont(new Font(Font.SANS_SERIF, Font.PLAIN, 8));
-			g.drawString("+" + (game.lives - 4), t(10), y + t(1));
+			g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 6));
+			g.drawString("+" + (game.lives - 3), t(8) + HTS, y + t(1));
 		}
 	}
 
