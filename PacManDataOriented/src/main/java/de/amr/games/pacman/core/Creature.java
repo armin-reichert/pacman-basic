@@ -8,12 +8,12 @@ import de.amr.games.pacman.lib.V2i;
 
 public abstract class Creature {
 
-	public boolean visible;
-	public float speed;
-	public Direction dir;
-	public Direction wishDir;
 	public V2f position; // left upper corner of collision box
 	public V2i homeTile;
+	public Direction dir;
+	public Direction wishDir;
+	public float speed;
+	public boolean visible;
 	public boolean changedTile;
 	public boolean couldMove;
 	public boolean forcedOnTrack;
@@ -61,7 +61,7 @@ public abstract class Creature {
 
 	@Override
 	public String toString() {
-		return String.format("[%-8s tile=%s offset=%s dir=%s wishDir=%s speed=%.2f changedTile=%s]", name(), tile(),
-				offset(), dir, wishDir, speed, changedTile);
+		return String.format("[%-8s tile=%s offset=%s dir=%s wishDir=%s speed=%.2f changedTile=%s couldMove=%s]", name(),
+				tile(), offset(), dir, wishDir, speed, changedTile, couldMove);
 	}
 }
