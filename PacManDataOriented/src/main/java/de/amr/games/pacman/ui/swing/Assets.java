@@ -70,15 +70,15 @@ public class Assets {
 		symbols[KEY]        = sheet(9, 3);
 	
 		numbers = new HashMap<>();
-		numbers.put(200,  sheet(0, 8));
 		numbers.put(100,  sheet(0, 9));
+		numbers.put(200,  sheet(0, 8));
 		numbers.put(300,  sheet(1, 9));
 		numbers.put(400,  sheet(1, 8));
 		numbers.put(500,  sheet(2, 9));
 		numbers.put(700,  sheet(3, 9));
 		numbers.put(800,  sheet(2, 8));
-		numbers.put(1600, sheet(3, 8));
 		numbers.put(1000, section(4, 9, 2, 1));
+		numbers.put(1600, sheet(3, 8));
 		numbers.put(2000, section(3, 10, 3, 1));
 		numbers.put(3000, section(3, 11, 3, 1));
 		numbers.put(5000, section(3, 12, 3, 1));
