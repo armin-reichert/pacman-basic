@@ -52,7 +52,7 @@ class PlayScene {
 		drawLivesCounter(g);
 		drawLevelCounter(g);
 		drawMaze(g);
-		drawPacMan(g);
+		drawPacMan(g, game.pacMan);
 		for (Ghost ghost : game.ghosts) {
 			drawGhost(g, ghost);
 		}
@@ -162,41 +162,38 @@ class PlayScene {
 		}
 	}
 
-	private void drawPacMan(Graphics2D g) {
-		PacMan pacMan = game.pacMan;
-		if (!pacMan.visible) {
-			return;
+	private void drawPacMan(Graphics2D g, PacMan pacMan) {
+		if (pacMan.visible) {
+			g.drawImage(selectSprite(pacMan), round(pacMan.position.x - HTS), round(pacMan.position.y - HTS), null);
+		}
+	}
+
+	private BufferedImage selectSprite(PacMan pacMan) {
+		int dir = dirIndex(pacMan.dir);
+		if (pacMan.collapsingTicksLeft > 0) { // collapsing animation
+			int frame = 13 - (int) pacMan.collapsingTicksLeft / 8;
+			frame = Math.min(frame, 13);
+			frame = Math.max(frame, 3);
+			return assets.sheet(frame, 0);
+		}
+		if (!pacMan.couldMove) { // mouth wide open
+			return assets.sheet(0, dir);
+		}
+		if (pacMan.speed != 0) { // mouth animation
+			int frame = game.clock.frame(5, 3);
+			return frame == 2 ? assets.sheet(frame, 0) : assets.sheet(frame, dir);
 		}
 		// use full face as default
-		BufferedImage sprite = assets.sheet(2, 0);
-		if (pacMan.collapsingTicksLeft > 0) {
-			// collapsing animation
-			int frame = 13 - (int) pacMan.collapsingTicksLeft / 8;
-			if (frame > 13) {
-				frame = 13;
-			} else if (frame < 3) {
-				frame = 3;
-			}
-//			Logging.log("Collapsing, ticks = %d, animation frame = %d", pacMan.collapsingTicksRemaining, frame);
-			sprite = assets.sheet(frame, 0);
-		} else if (!pacMan.couldMove) {
-			// show mouth wide open
-			sprite = assets.sheet(0, dirIndex(pacMan.dir));
-		} else if (pacMan.speed != 0) {
-			// switch between mouth closed and mouth open
-			int frame = game.clock.frame(5, 3);
-			sprite = frame == 2 ? assets.sheet(frame, 0) : assets.sheet(frame, dirIndex(pacMan.dir));
-		}
-		g.drawImage(sprite, round(pacMan.position.x - HTS), round(pacMan.position.y - HTS), null);
+		return assets.sheet(2, 0);
 	}
 
 	private void drawGhost(Graphics2D g, Ghost ghost) {
 		if (ghost.visible) {
-			g.drawImage(selectGhostSprite(ghost), round(ghost.position.x - HTS), round(ghost.position.y - HTS), null);
+			g.drawImage(selectSprite(ghost), round(ghost.position.x - HTS), round(ghost.position.y - HTS), null);
 		}
 	}
 
-	private BufferedImage selectGhostSprite(Ghost ghost) {
+	private BufferedImage selectSprite(Ghost ghost) {
 		int dir = dirIndex(ghost.dir);
 		int walking = ghost.speed == 0 ? 0 : game.clock.frame(5, 2);
 		if (ghost.bounty > 0) { // show as number
