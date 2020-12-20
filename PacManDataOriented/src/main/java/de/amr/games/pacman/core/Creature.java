@@ -6,12 +6,14 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
 
-public abstract class Creature {
+public class Creature {
 
-	public V2f position; // left upper corner of collision box
+	/** Left upper corner of collision box */
+	public V2f position;
 	public V2i homeTile;
 	public Direction dir;
 	public Direction wishDir;
+	/** Relative speed (between 0 and 1) */
 	public float speed;
 	public boolean visible;
 	public boolean changedTile;
@@ -20,14 +22,19 @@ public abstract class Creature {
 	public boolean forcedTurningBack;
 	public boolean dead;
 
-	public Creature() {
-		visible = true;
-		position = V2f.NULL;
+	@Override
+	public String toString() {
+		return String.format("[%-8s tile=%s offset=%s dir=%s wishDir=%s speed=%.2f changedTile=%s couldMove=%s]", name(),
+				tile(), offset(), dir, wishDir, speed, changedTile, couldMove);
 	}
 
-	public abstract void updateSpeed(World world, Level level);
+	public void updateSpeed(World world, Level level) {
 
-	public abstract String name();
+	}
+
+	public String name() {
+		return super.toString();
+	}
 
 	public void placeAt(int x, int y, float offsetX, float offsetY) {
 		position = new V2f(x * TS + offsetX, y * TS + offsetY);
@@ -57,11 +64,5 @@ public abstract class Creature {
 	public void setOffset(float offsetX, float offsetY) {
 		V2i tile = tile();
 		placeAt(tile.x, tile.y, offsetX, offsetY);
-	}
-
-	@Override
-	public String toString() {
-		return String.format("[%-8s tile=%s offset=%s dir=%s wishDir=%s speed=%.2f changedTile=%s couldMove=%s]", name(),
-				tile(), offset(), dir, wishDir, speed, changedTile, couldMove);
 	}
 }

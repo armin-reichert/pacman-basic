@@ -9,6 +9,8 @@ import java.util.Objects;
  */
 public class V2i {
 
+	public static final V2i NULL = new V2i(0, 0);
+
 	public final int x;
 	public final int y;
 
