@@ -546,6 +546,7 @@ public class Game {
 	private void runGhostDyingState() {
 		if (state.expired()) {
 			exitGhostDyingState();
+			state = previousState;
 			return;
 		}
 		for (Ghost ghost : ghosts) {
@@ -563,7 +564,6 @@ public class Game {
 			}
 		}
 		pacMan.visible = true;
-		state = previousState;
 	}
 
 	// CHANGING_LEVEL
