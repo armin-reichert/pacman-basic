@@ -809,7 +809,7 @@ public class Game {
 		ghost.locked = false;
 		ghost.leavingHouse = true;
 		if (ghost.id == CLYDE && ghosts[BLINKY].elroyMode < 0) {
-			ghosts[BLINKY].elroyMode -= 1; // resume Elroy mode
+			ghosts[BLINKY].elroyMode = (byte) -ghosts[BLINKY].elroyMode; // resume Elroy mode
 			log("Blinky Elroy mode %d resumed", ghosts[BLINKY].elroyMode);
 		}
 		log("Ghost %s unlocked: %s", ghost.name(), String.format(reason, args));
