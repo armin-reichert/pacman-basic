@@ -366,7 +366,7 @@ public class Game {
 				ui.playSound(Sound.CREDIT);
 			}
 		}
-		if (state.running() > clock.sec(0.5f)) {
+		if (state.running() > clock.sec(0.5)) {
 			for (Ghost ghost : ghosts) {
 				if (ghost.id != BLINKY) {
 					letGhostBounce(ghost);
