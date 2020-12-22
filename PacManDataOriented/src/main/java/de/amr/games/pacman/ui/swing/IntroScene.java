@@ -111,8 +111,11 @@ class IntroScene {
 				g.fillOval(t(9), t(29) - 2, 10, 10);
 			});
 			g.setColor(Color.WHITE);
-			drawCenteredText(g, "10 PTS", t(28), size.x);
-			drawCenteredText(g, "50 PTS", t(30), size.x);
+			g.drawString("10", t(12), t(28));
+			g.drawString("50", t(12), t(30));
+			g.setFont(assets.scoreFont.deriveFont(6f));
+			g.drawString("PTS", t(15), t(28));
+			g.drawString("PTS", t(15), t(30));
 		}
 
 		mark += 1;
@@ -131,6 +134,7 @@ class IntroScene {
 		mark += 1;
 		if (passed >= game.clock.sec(mark)) {
 			g.setColor(Color.ORANGE);
+			g.setFont(assets.scoreFont);
 			game.clock.runOrBeIdle(20, () -> {
 				drawCenteredText(g, "Press SPACE key to play!", size.y - 20, size.x);
 			});
