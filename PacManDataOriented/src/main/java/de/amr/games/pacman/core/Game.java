@@ -812,9 +812,8 @@ public class Game {
 	}
 
 	private void updateGhostTargetTile(Ghost ghost) {
-		boolean chasing = huntingPhase % 2 != 0;
-		ghost.targetTile = chasing ? currentChasingTarget(ghost) : ghost.scatterTile;
-		if (ghost == ghosts[BLINKY] && ghost.elroyMode > 0) {
+		ghost.targetTile = inChasingPhase() ? currentChasingTarget(ghost) : ghost.scatterTile;
+		if (ghost.id == BLINKY && ghost.elroyMode > 0) {
 			ghost.targetTile = pacMan.tile();
 		}
 	}
