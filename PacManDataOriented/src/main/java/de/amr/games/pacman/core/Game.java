@@ -33,6 +33,7 @@ import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.lib.Logging.log;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -377,7 +378,7 @@ public class Game {
 	}
 
 	private void exitReadyState() {
-		maybeReleaseGhost(ghosts[BLINKY]);
+		tryReleasingGhost(ghosts[BLINKY]);
 	}
 
 	// HUNTING
@@ -774,7 +775,7 @@ public class Game {
 
 	private void updateGhost(Ghost ghost) {
 		if (ghost.locked) {
-			maybeReleaseGhost(ghost);
+			tryReleasingGhost(ghost);
 		} else if (ghost.enteringHouse) {
 			letGhostEnterHouse(ghost);
 		} else if (ghost.leavingHouse) {
@@ -782,12 +783,11 @@ public class Game {
 		} else if (ghost.dead) {
 			letGhostReturnHome(ghost);
 		} else if (state == HUNTING) {
-			updateGhostTargetTile(ghost);
-			letGhostHeadForTargetTile(ghost);
+			letGhostHuntPacMan(ghost);
 		}
 	}
 
-	private void maybeReleaseGhost(Ghost ghost) {
+	private void tryReleasingGhost(Ghost ghost) {
 		if (ghost.id == BLINKY) {
 			ghost.locked = false;
 			return;
@@ -811,20 +811,8 @@ public class Game {
 		log("Ghost %s unlocked: %s", ghost.name(), String.format(reason, args));
 	}
 
-	private void updateGhostTargetTile(Ghost ghost) {
-		ghost.targetTile = inChasingPhase() ? currentChasingTarget(ghost) : ghost.scatterTile;
-		if (ghost.id == BLINKY && ghost.elroyMode > 0) {
-			ghost.targetTile = pacMan.tile();
-		}
-	}
-
 	private Optional<Ghost> preferredLockedGhost() {
-		for (int ghostId : GHOST_UNLOCK_ORDER) {
-			if (ghosts[ghostId].locked) {
-				return Optional.of(ghosts[ghostId]);
-			}
-		}
-		return Optional.empty();
+		return Arrays.stream(GHOST_UNLOCK_ORDER).mapToObj(id -> ghosts[id]).filter(ghost -> ghost.locked).findFirst();
 	}
 
 	/**
@@ -884,6 +872,12 @@ public class Game {
 		default:
 			throw new IllegalArgumentException("Unknown ghost id: " + ghost.id);
 		}
+	}
+
+	private void letGhostHuntPacMan(Ghost ghost) {
+		ghost.targetTile = inChasingPhase() || ghost.id == BLINKY && ghost.elroyMode > 0 ? currentChasingTarget(ghost)
+				: ghost.scatterTile;
+		letGhostHeadForTargetTile(ghost);
 	}
 
 	private void letGhostHeadForTargetTile(Ghost ghost) {
