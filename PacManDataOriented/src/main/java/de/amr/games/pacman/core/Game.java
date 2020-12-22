@@ -497,21 +497,22 @@ public class Game {
 			exitPacManDyingState();
 			if (lives > 0) {
 				enterReadyState();
+				return;
 			} else {
 				enterGameOverState();
+				return;
 			}
-			return;
 		}
-		if (state.ticksRemaining() == clock.sec(4.5)) {
+		if (state.running() == clock.sec(1.5)) {
 			for (Ghost ghost : ghosts) {
 				ghost.visible = false;
 			}
 		}
-		if (state.ticksRemaining() == clock.sec(3.5)) {
+		if (state.running() == clock.sec(2.5)) {
 			pacMan.collapsingTicksLeft = 88;
 			ui.playSound(Sound.PACMAN_DEATH);
 		}
-		if (pacMan.collapsingTicksLeft > 1) { // display Pac-Man completely collapsed till end of state
+		if (pacMan.collapsingTicksLeft > 1) {
 			pacMan.collapsingTicksLeft--;
 		}
 		state.tick();
