@@ -584,12 +584,12 @@ public class Game {
 			enterReadyState();
 			return;
 		}
-		if (state.ticksRemaining() == clock.sec(level().numFlashes + 1)) {
+		if (state.running() == clock.sec(1)) {
 			for (Ghost ghost : ghosts) {
 				ghost.visible = false;
 			}
 		}
-		if (state.ticksRemaining() == clock.sec(level().numFlashes)) {
+		if (state.running() == clock.sec(2)) {
 			mazeFlashesRemaining = level().numFlashes;
 		}
 		state.tick();
