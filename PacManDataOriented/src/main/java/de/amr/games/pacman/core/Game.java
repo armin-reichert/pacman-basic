@@ -448,7 +448,7 @@ public class Game {
 	}
 
 	private void runHuntingState() {
-		Ghost ghostColliding = checkGhostCollision();
+		Ghost ghostColliding = checkPacManMeetsGhost();
 		if (ghostColliding != null) {
 			if (ghostColliding.frightened) {
 				killGhost(ghostColliding);
@@ -474,8 +474,8 @@ public class Game {
 			enterChangingLevelState();
 			return;
 		}
-		checkPacManFoundFood();
-		checkPacManFoundBonus();
+		checkPacManFindsFood();
+		checkPacManFindsBonus();
 		updatePacMan();
 		for (Ghost ghost : ghosts) {
 			updateGhost(ghost);
@@ -632,10 +632,18 @@ public class Game {
 		} else {
 			pacMan.restingTicksLeft--;
 		}
-		updatePacManPower();
+		if (pacMan.powerTicksLeft > 0) {
+			pacMan.powerTicksLeft--;
+			if (pacMan.powerTicksLeft == 0) {
+				for (Ghost ghost : ghosts) {
+					ghost.frightened = false;
+				}
+				ui.stopSound(Sound.PACMAN_POWER);
+			}
+		}
 	}
 
-	private Ghost checkGhostCollision() {
+	private Ghost checkPacManMeetsGhost() {
 		V2i tile = pacMan.tile();
 		for (Ghost ghost : ghosts) {
 			if (!ghost.dead && tile.equals(ghost.tile())) {
@@ -645,7 +653,7 @@ public class Game {
 		return null;
 	}
 
-	private void checkPacManFoundBonus() {
+	private void checkPacManFindsBonus() {
 		V2i tile = pacMan.tile();
 		if (!world.isBonusTile(tile.x, tile.y) || bonusAvailableTimer == 0) {
 			return;
@@ -657,7 +665,7 @@ public class Game {
 		log("Pac-Man found bonus (id=%d) of value %d", level().bonusSymbol, level().bonusPoints);
 	}
 
-	private void checkPacManFoundFood() {
+	private void checkPacManFindsFood() {
 		V2i tile = pacMan.tile();
 		if (world.isFoodTile(tile.x, tile.y) && !world.foodEatenAt(tile.x, tile.y)) {
 			onPacManFoundFood(tile);
@@ -736,18 +744,6 @@ public class Game {
 		} else if (world.foodRemaining == level().elroy2DotsLeft) {
 			ghosts[BLINKY].elroyMode = 2;
 			log("Blinky becomes Elroy 2");
-		}
-	}
-
-	private void updatePacManPower() {
-		if (pacMan.powerTicksLeft > 0) {
-			pacMan.powerTicksLeft--;
-			if (pacMan.powerTicksLeft == 0) {
-				for (Ghost ghost : ghosts) {
-					ghost.frightened = false;
-				}
-				ui.stopSound(Sound.PACMAN_POWER);
-			}
 		}
 	}
 
