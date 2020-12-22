@@ -356,7 +356,7 @@ public class Game {
 			enterHuntingState();
 			return;
 		}
-		if (state.running() == clock.sec(0.25)) {
+		if (state.running() == clock.sec(0.5)) {
 			if (!gameStarted) {
 				ui.playSound(Sound.GAME_READY);
 				gameStarted = true;
@@ -364,7 +364,7 @@ public class Game {
 				ui.playSound(Sound.CREDIT);
 			}
 		}
-		if (state.running() > clock.sec(0.5)) {
+		if (state.running() >= clock.sec(0.5)) {
 			for (Ghost ghost : ghosts) {
 				if (ghost.id != BLINKY) {
 					letGhostBounce(ghost);
