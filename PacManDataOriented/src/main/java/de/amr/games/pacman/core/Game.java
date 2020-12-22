@@ -602,7 +602,7 @@ public class Game {
 	}
 
 	private void runGameOverState() {
-		if (state.expired() || ui.keyPressed("space")) {
+		if (state.expired() || ui.anyKeyPressed()) {
 			exitGameOverState();
 			enterIntroState();
 			return;
