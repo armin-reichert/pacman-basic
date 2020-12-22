@@ -33,7 +33,6 @@ import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.lib.Logging.log;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -90,8 +89,6 @@ public class Game {
 	};
 
 	static final Direction[] DIRECTION_PRIORITY = { UP, LEFT, DOWN, RIGHT };
-
-	static final int[] GHOST_UNLOCK_ORDER = { PINKY, INKY, CLYDE };
 
 	public final World world;
 	public final PacMan pacMan;
@@ -812,7 +809,7 @@ public class Game {
 	}
 
 	private Optional<Ghost> preferredLockedGhost() {
-		return Arrays.stream(GHOST_UNLOCK_ORDER).mapToObj(id -> ghosts[id]).filter(ghost -> ghost.locked).findFirst();
+		return Stream.of(ghosts[PINKY], ghosts[INKY], ghosts[CLYDE]).filter(ghost -> ghost.locked).findFirst();
 	}
 
 	/**
