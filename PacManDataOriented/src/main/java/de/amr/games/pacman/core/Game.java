@@ -348,6 +348,10 @@ public class Game {
 		HUNTING.setDuration(0);
 		huntingPhase = 0;
 		resetGuys();
+		if (!gameStarted) {
+			ui.playSound(Sound.GAME_READY);
+			gameStarted = true;
+		}
 	}
 
 	private void runReadyState() {
@@ -356,26 +360,15 @@ public class Game {
 			enterHuntingState();
 			return;
 		}
-		if (state.running() == clock.sec(0.5)) {
-			if (!gameStarted) {
-				ui.playSound(Sound.GAME_READY);
-				gameStarted = true;
-			} else {
-				ui.playSound(Sound.CREDIT);
-			}
-		}
-		if (state.running() >= clock.sec(1)) {
-			for (Ghost ghost : ghosts) {
-				if (ghost.id != BLINKY) {
-					letGhostBounce(ghost);
-				}
+		for (Ghost ghost : ghosts) {
+			if (ghost.id != BLINKY) {
+				letGhostBounce(ghost);
 			}
 		}
 		state.tick();
 	}
 
 	private void exitReadyState() {
-		tryReleasingGhost(ghosts[BLINKY]);
 	}
 
 	// HUNTING
@@ -772,7 +765,12 @@ public class Game {
 
 	private void updateGhost(Ghost ghost) {
 		if (ghost.locked) {
-			tryReleasingGhost(ghost);
+			if (ghost.id != BLINKY) {
+				tryReleasingGhost(ghost);
+				letGhostBounce(ghost);
+			} else {
+				ghost.locked = false;
+			}
 		} else if (ghost.enteringHouse) {
 			letGhostEnterHouse(ghost);
 		} else if (ghost.leavingHouse) {
@@ -785,16 +783,10 @@ public class Game {
 	}
 
 	private void tryReleasingGhost(Ghost ghost) {
-		if (ghost.id == BLINKY) {
-			ghost.locked = false;
-			return;
-		}
 		if (globalDotCounterEnabled && globalDotCounter >= globalDotLimit(ghost)) {
 			releaseGhost(ghost, "Global dot counter is %d", globalDotCounter);
 		} else if (!globalDotCounterEnabled && ghost.dotCounter >= privateDotLimit(ghost)) {
 			releaseGhost(ghost, "%s's dot counter is %d", ghost.name(), ghost.dotCounter);
-		} else {
-			letGhostBounce(ghost);
 		}
 	}
 
