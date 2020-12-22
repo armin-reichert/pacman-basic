@@ -136,7 +136,7 @@ class IntroScene {
 			g.setColor(Color.ORANGE);
 			g.setFont(assets.scoreFont);
 			game.clock.runOrBeIdle(20, () -> {
-				drawCenteredText(g, "Press SPACE key to play!", size.y - 20, size.x);
+				drawCenteredText(g, "Press any key to play!", size.y - 20, size.x);
 			});
 		}
 

@@ -33,6 +33,10 @@ public class Keyboard {
 		return pressedKeys.get(keyCode(keySpec));
 	}
 
+	public boolean anyKeyPressed() {
+		return !pressedKeys.isEmpty();
+	}
+
 	public void clearKey(String keySpec) {
 		pressedKeys.clear(keyCode(keySpec));
 	}

@@ -329,7 +329,7 @@ public class Game {
 	}
 
 	private void runIntroState() {
-		if (ui.keyPressed("space")) {
+		if (ui.anyKeyPressed()) {
 			exitIntroState();
 			enterReadyState();
 			return;
@@ -364,7 +364,7 @@ public class Game {
 				ui.playSound(Sound.CREDIT);
 			}
 		}
-		if (state.running() >= clock.sec(0.5)) {
+		if (state.running() >= clock.sec(1)) {
 			for (Ghost ghost : ghosts) {
 				if (ghost.id != BLINKY) {
 					letGhostBounce(ghost);

@@ -22,6 +22,8 @@ public interface PacManGameUI {
 
 	boolean keyPressed(String keySpec);
 
+	boolean anyKeyPressed();
+
 	void onExit();
 
 	default void playSound(Sound sound) {
