@@ -123,7 +123,7 @@ class PlayScene {
 	}
 
 	private void drawMazeFlashing(Graphics2D g) {
-		game.clock.runAlternating(game.clock.sec(0.25f), () -> {
+		game.clock.runAlternating(game.clock.sec(0.25), () -> {
 			g.drawImage(assets.imageMazeEmpty, 0, t(3), null);
 		}, () -> {
 			g.drawImage(assets.imageMazeEmptyWhite, 0, t(3), null);

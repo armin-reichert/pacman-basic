@@ -346,7 +346,7 @@ public class Game {
 	// READY
 
 	private void enterReadyState() {
-		enterState(READY, clock.sec(gameStarted ? 1 : 4.5f));
+		enterState(READY, clock.sec(gameStarted ? 1 : 4.5));
 		HUNTING.setDuration(0);
 		huntingPhase = 0;
 		resetGuys();
@@ -358,7 +358,7 @@ public class Game {
 			enterHuntingState();
 			return;
 		}
-		if (state.running() == clock.sec(0.25f)) {
+		if (state.running() == clock.sec(0.25)) {
 			if (!gameStarted) {
 				ui.playSound(Sound.GAME_READY);
 				gameStarted = true;
@@ -511,7 +511,7 @@ public class Game {
 			}
 			return;
 		}
-		if (state.ticksRemaining() == clock.sec(4.5f)) {
+		if (state.ticksRemaining() == clock.sec(4.5)) {
 			for (Ghost ghost : ghosts) {
 				ghost.visible = false;
 			}
@@ -538,7 +538,7 @@ public class Game {
 
 	private void enterGhostDyingState() {
 		previousState = state;
-		enterState(GHOST_DYING, clock.sec(0.75f));
+		enterState(GHOST_DYING, clock.sec(0.75));
 		pacMan.visible = false;
 		ui.playSound(Sound.GHOST_DEATH);
 	}
@@ -586,7 +586,7 @@ public class Game {
 			enterReadyState();
 			return;
 		}
-		if (state.ticksRemaining() == clock.sec(level().numFlashes + 1f)) {
+		if (state.ticksRemaining() == clock.sec(level().numFlashes + 1)) {
 			for (Ghost ghost : ghosts) {
 				ghost.visible = false;
 			}
