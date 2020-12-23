@@ -996,17 +996,11 @@ public class Game {
 	private void letGhostBounce(Ghost ghost) {
 		tryMoving(ghost);
 		if (!ghost.couldMove) {
-			ghost.wishDir = ghost.wishDir.opposite();
+			ghost.wishDir = ghost.dir.opposite();
 		}
 	}
 
 	private void tryMoving(Creature guy) {
-		guy.updateSpeed(world, level());
-		if (guy.speed == 0) {
-			return;
-		}
-
-		// entering portal?
 		if (guy.at(PORTAL_RIGHT) && guy.dir == RIGHT) {
 			guy.placeAt(PORTAL_LEFT.x, PORTAL_LEFT.y, 0, 0);
 			return;
@@ -1015,7 +1009,6 @@ public class Game {
 			guy.placeAt(PORTAL_RIGHT.x, PORTAL_RIGHT.y, 0, 0);
 			return;
 		}
-
 		guy.couldMove = tryMoving(guy, guy.wishDir);
 		if (guy.couldMove) {
 			guy.dir = guy.wishDir;
@@ -1025,6 +1018,7 @@ public class Game {
 	}
 
 	private boolean tryMoving(Creature guy, Direction dir) {
+		guy.updateSpeed(world, level());
 		V2i tile = guy.tile();
 		V2f offset = guy.offset();
 		V2i neighbor = tile.sum(dir.vec);
