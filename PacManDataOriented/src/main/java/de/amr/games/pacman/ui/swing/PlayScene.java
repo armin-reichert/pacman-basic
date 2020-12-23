@@ -38,9 +38,6 @@ class PlayScene {
 	public final Assets assets;
 	public final V2i size;
 
-	public String messageText;
-	public Color messageColor;
-
 	public PlayScene(Game game, Assets assets, V2i size) {
 		this.game = game;
 		this.assets = assets;
@@ -62,18 +59,13 @@ class PlayScene {
 
 	private void drawMessage(Graphics2D g) {
 		if (game.state == GameState.READY) {
-			messageText = "Ready!";
-			messageColor = Color.YELLOW;
-		} else if (game.state == GameState.GAME_OVER) {
-			messageText = "Game  Over!";
-			messageColor = Color.RED;
-		} else {
-			messageText = null;
-		}
-		if (messageText != null) {
 			g.setFont(assets.scoreFont);
-			g.setColor(messageColor);
-			drawCenteredText(g, messageText, t(21), size.x);
+			g.setColor(Color.YELLOW);
+			drawCenteredText(g, "Ready!", t(21), size.x);
+		} else if (game.state == GameState.GAME_OVER) {
+			g.setFont(assets.scoreFont);
+			g.setColor(Color.RED);
+			drawCenteredText(g, "Game  Over!", t(21), size.x);
 		}
 	}
 
