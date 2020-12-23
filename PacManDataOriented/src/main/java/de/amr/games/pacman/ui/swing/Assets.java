@@ -16,6 +16,7 @@ import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -83,7 +84,7 @@ public class Assets {
 		numbers.put(3000, section(3, 11, 3, 1));
 		numbers.put(5000, section(3, 12, 3, 1));
 	
-		soundPaths = new HashMap<>();
+		soundPaths = new EnumMap<>(Sound.class);
 		soundPaths.put(Sound.CREDIT,       "/sound/credit.wav");
 		soundPaths.put(Sound.EAT_BONUS,    "/sound/eat_fruit.wav");
 		soundPaths.put(Sound.EXTRA_LIFE,   "/sound/extend.wav");

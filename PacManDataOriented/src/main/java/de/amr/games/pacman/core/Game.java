@@ -798,19 +798,13 @@ public class Game {
 			ghosts[BLINKY].elroyMode = (byte) -ghosts[BLINKY].elroyMode; // resume Elroy mode
 			log("Blinky Elroy mode %d resumed", ghosts[BLINKY].elroyMode);
 		}
-		log("Ghost %s unlocked: %s", ghost.name(), String.format(reason, args));
+		log("Ghost %s released: %s", ghost.name(), String.format(reason, args));
 	}
 
 	private Optional<Ghost> preferredLockedGhost() {
 		return Stream.of(ghosts[PINKY], ghosts[INKY], ghosts[CLYDE]).filter(ghost -> ghost.locked).findFirst();
 	}
 
-	/**
-	 * @param ghost ghost
-	 * @return dot limit for ghost at current game level
-	 * 
-	 * @see https://pacman.holenet.info/#CH2_Home_Sweet_Home
-	 */
 	private int privateDotLimit(Ghost ghost) {
 		if (ghost.id == INKY) {
 			return level == 1 ? 30 : 0;
@@ -864,6 +858,13 @@ public class Game {
 		}
 	}
 
+	private void letGhostBounce(Ghost ghost) {
+		tryMoving(ghost);
+		if (!ghost.couldMove) {
+			ghost.wishDir = ghost.dir.opposite();
+		}
+	}
+
 	private void letGhostHuntPacMan(Ghost ghost) {
 		ghost.targetTile = inChasingPhase() || ghost.id == BLINKY && ghost.elroyMode > 0 ? currentChasingTarget(ghost)
 				: ghost.scatterTile;
@@ -889,10 +890,6 @@ public class Game {
 
 	private boolean atGhostHouseDoor(Creature guy) {
 		return guy.at(HOUSE_ENTRY) && Functions.differsAtMost(guy.offset().x, HTS, 2);
-	}
-
-	private boolean isGhostHunting(Ghost ghost) {
-		return !ghost.dead && !ghost.locked && !ghost.enteringHouse && !ghost.leavingHouse && !ghost.frightened;
 	}
 
 	private void letGhostEnterHouse(Ghost ghost) {
@@ -985,18 +982,15 @@ public class Game {
 		return Optional.ofNullable(minDistDir);
 	}
 
+	private boolean isGhostHunting(Ghost ghost) {
+		return !ghost.dead && !ghost.locked && !ghost.enteringHouse && !ghost.leavingHouse && !ghost.frightened;
+	}
+
 	private void forceGhostsTurningBack() {
 		for (Ghost ghost : ghosts) {
 			if (isGhostHunting(ghost)) {
 				ghost.forcedTurningBack = true;
 			}
-		}
-	}
-
-	private void letGhostBounce(Ghost ghost) {
-		tryMoving(ghost);
-		if (!ghost.couldMove) {
-			ghost.wishDir = ghost.dir.opposite();
 		}
 	}
 
