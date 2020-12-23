@@ -30,13 +30,10 @@ import de.amr.games.pacman.lib.V2i;
  */
 class PlayScene {
 
-	static final Polygon TRIANGLE = new Polygon(new int[] { -4, 4, 0 }, new int[] { 0, 0, 4 }, 3);
-
-	public boolean debugMode;
-
 	public final Game game;
 	public final Assets assets;
 	public final V2i size;
+	public boolean debugMode;
 
 	public PlayScene(Game game, Assets assets, V2i size) {
 		this.game = game;
@@ -206,6 +203,8 @@ class PlayScene {
 	}
 
 	// debug
+
+	static final Polygon TRIANGLE = new Polygon(new int[] { -4, 4, 0 }, new int[] { 0, 0, 4 }, 3);
 
 	private void drawDebugInfo(Graphics2D g) {
 		if (debugMode) {
