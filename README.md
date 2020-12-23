@@ -5,6 +5,8 @@ The game is controlled by a finite-state machine with states INTRO, READY, HUNTI
 
 The code here is more to the point than that in my other state-machine focussed [Pac-Man implementation](https://github.com/armin-reichert/pacman).
 
+YouTube: https://www.youtube.com/watch?v=_L6YdSH7xis
+
 ### Intro scene
 <img src="PacManDataOriented/doc/intro.png">
 
