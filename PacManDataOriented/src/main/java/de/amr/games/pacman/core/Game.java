@@ -342,7 +342,7 @@ public class Game {
 	// READY
 
 	private void enterReadyState() {
-		enterState(READY, clock.sec(gameStarted ? 1 : 4.5));
+		enterState(READY, clock.sec(gameStarted ? 0.5 : 4.5));
 		HUNTING.setDuration(0);
 		huntingPhase = 0;
 		resetGuys();
