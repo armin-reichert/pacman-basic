@@ -33,6 +33,7 @@ import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.lib.Logging.log;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -554,6 +555,7 @@ public class Game {
 			}
 		}
 		pacMan.visible = true;
+		ui.loopSound(Sound.RETREATING);
 	}
 
 	// CHANGING_LEVEL
@@ -898,6 +900,9 @@ public class Game {
 			ghost.dead = false;
 			ghost.enteringHouse = false;
 			ghost.leavingHouse = true;
+			if (Arrays.stream(ghosts).noneMatch(g -> g.dead)) {
+				ui.stopSound(Sound.RETREATING);
+			}
 			return;
 		}
 		// move sidewards towards target tile?
