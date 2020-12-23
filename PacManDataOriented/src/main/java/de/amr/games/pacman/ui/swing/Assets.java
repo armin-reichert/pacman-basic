@@ -42,7 +42,7 @@ public class Assets {
 	public final BufferedImage spriteSheet;
 	public final BufferedImage imageLive;
 	public final BufferedImage[] symbols;
-	public final Map<Integer, BufferedImage> numbers;
+	public final Map<Short, BufferedImage> numbers;
 	public final Font scoreFont;
 
 	public final Map<Sound, String> soundPaths;
@@ -71,18 +71,18 @@ public class Assets {
 		symbols[KEY]        = sheet(9, 3);
 	
 		numbers = new HashMap<>();
-		numbers.put(100,  sheet(0, 9));
-		numbers.put(200,  sheet(0, 8));
-		numbers.put(300,  sheet(1, 9));
-		numbers.put(400,  sheet(1, 8));
-		numbers.put(500,  sheet(2, 9));
-		numbers.put(700,  sheet(3, 9));
-		numbers.put(800,  sheet(2, 8));
-		numbers.put(1000, section(4, 9, 2, 1));
-		numbers.put(1600, sheet(3, 8));
-		numbers.put(2000, section(3, 10, 3, 1));
-		numbers.put(3000, section(3, 11, 3, 1));
-		numbers.put(5000, section(3, 12, 3, 1));
+		numbers.put((short)100,  sheet(0, 9));
+		numbers.put((short)200,  sheet(0, 8));
+		numbers.put((short)300,  sheet(1, 9));
+		numbers.put((short)400,  sheet(1, 8));
+		numbers.put((short)500,  sheet(2, 9));
+		numbers.put((short)700,  sheet(3, 9));
+		numbers.put((short)800,  sheet(2, 8));
+		numbers.put((short)1000, section(4, 9, 2, 1));
+		numbers.put((short)1600, sheet(3, 8));
+		numbers.put((short)2000, section(3, 10, 3, 1));
+		numbers.put((short)3000, section(3, 11, 3, 1));
+		numbers.put((short)5000, section(3, 12, 3, 1));
 	
 		soundPaths = new EnumMap<>(Sound.class);
 		soundPaths.put(Sound.CREDIT,       "/sound/credit.wav");

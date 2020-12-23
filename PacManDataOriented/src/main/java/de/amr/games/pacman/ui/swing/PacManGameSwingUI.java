@@ -145,7 +145,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 	}
 
 	private void drawCurrentScene(Graphics2D g) {
-		if (game.paused) {
+		if (game.gamePaused) {
 			drawPausedScreen(g);
 		} else {
 			if (game.state == GameState.INTRO) {

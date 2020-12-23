@@ -59,7 +59,7 @@ import de.amr.games.pacman.ui.Sound;
  */
 public class Game {
 
-	public static final int CHERRIES = 0, STRAWBERRY = 1, PEACH = 2, APPLE = 3, GRAPES = 4, GALAXIAN = 5, BELL = 6,
+	public static final short CHERRIES = 0, STRAWBERRY = 1, PEACH = 2, APPLE = 3, GRAPES = 4, GALAXIAN = 5, BELL = 6,
 			KEY = 7;
 
 	static final Level[] LEVELS = {
@@ -98,21 +98,19 @@ public class Game {
 	public final Random rnd;
 	public PacManGameUI ui;
 
-	public boolean paused;
-
 	public GameState state;
 	public GameState previousState;
+	public boolean gamePaused;
 	public boolean gameStarted;
-	public int level;
-	public int huntingPhase;
-	public int lives;
+	public short level;
+	public short huntingPhase;
+	public short lives;
 	public int score;
-	public int ghostBounty;
-	public int ghostsKilledInLevel;
-	public int mazeFlashesRemaining;
+	public short ghostBounty;
+	public short ghostsKilledInLevel;
+	public short mazeFlashesRemaining;
 	public long bonusAvailableTimer;
 	public long bonusConsumedTimer;
-
 	public int globalDotCounter;
 	public boolean globalDotCounterEnabled;
 
@@ -130,19 +128,6 @@ public class Game {
 			new Ghost(CLYDE,  HOUSE_RIGHT,  LOWER_LEFT_CORNER) 
 		};
 		/*@formatter:on*/
-	}
-
-	private void run() {
-		reset();
-		ui.show();
-		enterIntroState();
-		while (true) {
-			clock.tick(() -> {
-				readInput();
-				updateState();
-				ui.render();
-			});
-		}
 	}
 
 	public void start() {
@@ -164,6 +149,19 @@ public class Game {
 		return level(level);
 	}
 
+	private void run() {
+		reset();
+		ui.show();
+		enterIntroState();
+		while (true) {
+			clock.tick(() -> {
+				readInput();
+				updateState();
+				ui.render();
+			});
+		}
+	}
+
 	private void reset() {
 		gameStarted = false;
 		score = 0;
@@ -173,7 +171,7 @@ public class Game {
 	}
 
 	private void startLevel(int levelNumber) {
-		level = levelNumber;
+		level = (short) levelNumber;
 		huntingPhase = 0;
 		mazeFlashesRemaining = 0;
 		ghostBounty = 200;
@@ -235,7 +233,7 @@ public class Game {
 	private void readInput() {
 
 		if (ui.keyPressed("p")) {
-			paused = !paused;
+			gamePaused = !gamePaused;
 		}
 		if (ui.keyPressed("s")) {
 			clock.targetFPS = clock.targetFPS == 60 ? 30 : 60;
@@ -291,7 +289,7 @@ public class Game {
 	}
 
 	private void updateState() {
-		if (paused) {
+		if (gamePaused) {
 			return;
 		}
 		switch (state) {

@@ -174,7 +174,7 @@ class IntroScene {
 			if (pacManX < x) {
 				g.drawImage(frightenedGhostImage, x, y, null);
 			} else if (pacManX > x && pacManX <= x + 16) {
-				int bounty = (int) Math.pow(2, ghost) * 200;
+				short bounty = (short) (Math.pow(2, ghost) * 200);
 				g.drawImage(assets.numbers.get(bounty), x, y, null);
 				if (killedGhost != ghost) {
 					killedGhost++;
