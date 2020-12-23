@@ -8,7 +8,7 @@ The code here is more to the point than that in my other state-machine focussed 
 YouTube: https://www.youtube.com/watch?v=_L6YdSH7xis
 
 ### Intro scene
-<img src="PacManDataOriented/doc/intro.png">
+<img src="pacman/doc/intro.png">
 
 ### Play scene
-<img src="PacManDataOriented/doc/playing.png">
+<img src="pacman/doc/playing.png">
