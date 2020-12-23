@@ -65,7 +65,7 @@ class PlayScene {
 			messageText = "Ready!";
 			messageColor = Color.YELLOW;
 		} else if (game.state == GameState.GAME_OVER) {
-			messageText = "Game Over!";
+			messageText = "Game  Over!";
 			messageColor = Color.RED;
 		} else {
 			messageText = null;
