@@ -16,14 +16,9 @@ import java.awt.RenderingHints;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferStrategy;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
-import javax.sound.sampled.Clip;
 import javax.swing.JFrame;
-import javax.swing.Timer;
 
 import de.amr.games.pacman.core.Game;
 import de.amr.games.pacman.core.GameState;
@@ -50,16 +45,14 @@ public class PacManGameSwingUI implements PacManGameUI {
 		return DIR_INDEX.get(dir);
 	}
 
-	private final JFrame window;
 	private final Assets assets;
 	private final Game game;
+	private final V2i unscaledSize;
 	private final float scaling;
+	private final JFrame window;
 	private final Canvas canvas;
 	private final Keyboard keyboard;
-	private final V2i unscaledSize;
-	private final Map<Sound, Clip> cachedClips = new HashMap<>();
-	private final Set<Clip> onetimeClips = new HashSet<>();
-	private final Timer clipGC;
+	private final SoundManager soundManager;
 
 	private final IntroScene introScene;
 	private final PlayScene playScene;
@@ -76,6 +69,8 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 		window = new JFrame();
 		keyboard = new Keyboard(window);
+		soundManager = new SoundManager(assets);
+
 		window.setTitle("Pac-Man");
 		window.setIconImage(assets.sheet(1, dirIndex(RIGHT)));
 		window.setResizable(false);
@@ -94,13 +89,6 @@ public class PacManGameSwingUI implements PacManGameUI {
 		canvas.setFocusable(false);
 		window.add(canvas);
 
-		clipGC = new Timer(3000, e -> {
-			for (Clip onetimeClip : onetimeClips) {
-				if (!onetimeClip.isRunning()) {
-					onetimeClip.close();
-				}
-			}
-		});
 	}
 
 	@Override
@@ -111,7 +99,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 		// these must called be *after* setVisible():
 		window.requestFocus();
 		canvas.createBufferStrategy(2);
-		clipGC.start();
+		soundManager.start();
 	}
 
 	@Override
@@ -195,42 +183,21 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 	@Override
 	public void playSound(Sound sound, boolean useCache) {
-		Clip clip = getClip(sound, useCache);
-		clip.setFramePosition(0);
-		clip.start();
+		soundManager.playSound(sound, useCache);
 	}
 
 	@Override
 	public void loopSound(Sound sound) {
-		Clip clip = getClip(sound, true);
-		clip.loop(Clip.LOOP_CONTINUOUSLY);
+		soundManager.loopSound(sound);
 	}
 
 	@Override
 	public void stopSound(Sound sound) {
-		Clip clip = getClip(sound, true);
-		clip.stop();
+		soundManager.stopSound(sound);
 	}
 
 	@Override
 	public void stopAllSounds() {
-		for (Clip clip : cachedClips.values()) {
-			clip.stop();
-		}
-	}
-
-	private Clip getClip(Sound sound, boolean useCache) {
-		if (useCache) {
-			if (cachedClips.containsKey(sound)) {
-				return cachedClips.get(sound);
-			}
-			Clip clip = assets.clip(assets.soundPaths.get(sound));
-			cachedClips.put(sound, clip);
-			return clip;
-		} else {
-			Clip clip = assets.clip(assets.soundPaths.get(sound));
-			onetimeClips.add(clip);
-			return clip;
-		}
+		soundManager.stopAllSounds();
 	}
 }
