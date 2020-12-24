@@ -168,10 +168,22 @@ public class Game {
 		enterIntroState();
 		while (true) {
 			clock.tick(() -> {
-				readGlobalInput();
+				handleGlobalInput();
 				updateState();
 				ui.render();
 			});
+		}
+	}
+
+	private void handleGlobalInput() {
+		if (ui.keyPressed("p")) {
+			gamePaused = !gamePaused;
+		}
+		if (ui.keyPressed("s")) {
+			clock.targetFPS = clock.targetFPS == 60 ? 30 : 60;
+		}
+		if (ui.keyPressed("d")) {
+			ui.setDebugMode(!ui.isDebugMode());
 		}
 	}
 
@@ -180,7 +192,7 @@ public class Game {
 		score = 0;
 		lives = 3;
 		hiscore.load();
-		startLevel(1); // level numbering starts with 1!
+		startLevel(1); // first level is 1
 	}
 
 	private void startLevel(int levelNumber) {
@@ -243,34 +255,22 @@ public class Game {
 		bonusConsumedTicks = 0;
 	}
 
-	private void readGlobalInput() {
-
-		if (ui.keyPressed("p")) {
-			gamePaused = !gamePaused;
-		}
-		if (ui.keyPressed("s")) {
-			clock.targetFPS = clock.targetFPS == 60 ? 30 : 60;
-		}
-		if (ui.keyPressed("d")) {
-			ui.setDebugMode(!ui.isDebugMode());
-		}
-	}
-
 	// BEGIN STATE-MACHINE
 
 	public String stateDescription() {
 		if (state == HUNTING) {
-			int step = huntingPhase / 2;
-			return String.format(inChasingPhase() ? "%s-chasing-%d" : "%s-scattering-%d", state, step);
+			String phaseName = inChasingPhase() ? "Chasing" : "Scattering";
+			int phase = huntingPhase / 2;
+			return String.format("%s-%s (%d of 4)", state, phaseName, phase + 1);
 		}
 		return state.name();
 	}
 
-	private void enterState(GameState newState, long duration) {
+	private void enterState(GameState newState, long ticks) {
 		state = newState;
-		state.setDuration(duration);
-		String durationText = duration == Long.MAX_VALUE ? "indefinite time" : duration + " ticks";
-		log("Game entered state %s for %s", stateDescription(), durationText);
+		state.setDuration(ticks);
+		String text = ticks == Long.MAX_VALUE ? "indefinite time" : ticks + " ticks";
+		log("Game enters state '%s' for %s", stateDescription(), text);
 	}
 
 	private void updateState() {
