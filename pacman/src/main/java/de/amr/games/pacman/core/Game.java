@@ -254,32 +254,33 @@ public class Game {
 			ui.setDebugMode(!ui.isDebugMode());
 		}
 
-		if (ui.keyPressed("left")) {
-			pacMan.wishDir = LEFT;
-		}
-		if (ui.keyPressed("right")) {
-			pacMan.wishDir = RIGHT;
-		}
-		if (ui.keyPressed("up")) {
-			pacMan.wishDir = UP;
-		}
-		if (ui.keyPressed("down")) {
-			pacMan.wishDir = DOWN;
-		}
-
-		// cheats
-		if (ui.keyPressed("e") && state == HUNTING) {
-			eatAllNormalPellets();
-		}
-		if (ui.keyPressed("x") && state == HUNTING) {
-			killAllGhosts();
-		}
-		if (ui.keyPressed("plus") && state == READY) {
-			startLevel(++level);
-			enterReadyState();
-		}
-		if (ui.keyPressed("l") && state == READY) {
-			lives++;
+		if (state == HUNTING) {
+			if (ui.keyPressed("left")) {
+				pacMan.wishDir = LEFT;
+			}
+			if (ui.keyPressed("right")) {
+				pacMan.wishDir = RIGHT;
+			}
+			if (ui.keyPressed("up")) {
+				pacMan.wishDir = UP;
+			}
+			if (ui.keyPressed("down")) {
+				pacMan.wishDir = DOWN;
+			}
+			// cheats
+			if (ui.keyPressed("e")) {
+				eatAllNormalPellets();
+			}
+			if (ui.keyPressed("x")) {
+				killAllGhosts();
+			}
+			if (ui.keyPressed("plus")) {
+				startLevel(++level);
+				enterReadyState();
+			}
+			if (ui.keyPressed("l")) {
+				lives++;
+			}
 		}
 	}
 
