@@ -68,7 +68,6 @@ class IntroScene {
 	}
 
 	public void draw(Graphics2D g) {
-		g.setFont(assets.scoreFont);
 
 		mark = 1;
 		if (passed >= game.clock.sec(mark)) {
@@ -79,6 +78,7 @@ class IntroScene {
 		mark += 1;
 		if (passed >= game.clock.sec(mark)) {
 			g.setColor(Color.WHITE);
+			g.setFont(assets.scoreFont);
 			drawCenteredText(g, "CHARACTER / NICKNAME", 8 * TS, size.x);
 		}
 
@@ -93,13 +93,7 @@ class IntroScene {
 				g.drawImage(ghostLookingRight, t(2) - 3, y - 2, null);
 			}
 			if (passed >= game.clock.sec(mark + 0.5f)) {
-				String character = (String) GHOST_INTRO_TEXTS[ghost][0];
-				String nickname = (String) GHOST_INTRO_TEXTS[ghost][1];
-				Color color = (Color) GHOST_INTRO_TEXTS[ghost][2];
-				String text = "-";
-				text += passed > game.clock.sec(mark + 1) ? character + "    " + nickname : character;
-				g.setColor(color);
-				g.drawString(text, t(4), y + 11);
+				drawGhostCharacterAndName(g, ghost, y, passed > game.clock.sec(mark + 1));
 			}
 			mark += 2;
 		}
@@ -111,6 +105,7 @@ class IntroScene {
 				g.fillOval(t(9), t(29) - 2, 10, 10);
 			});
 			g.setColor(Color.WHITE);
+			g.setFont(assets.scoreFont);
 			g.drawString("10", t(12), t(28));
 			g.drawString("50", t(12), t(30));
 			g.setFont(assets.scoreFont.deriveFont(6f));
@@ -144,6 +139,16 @@ class IntroScene {
 		if (passed == game.clock.sec(30)) {
 			reset();
 		}
+	}
+
+	private void drawGhostCharacterAndName(Graphics2D g, int ghostId, int y, boolean both) {
+		String character = (String) GHOST_INTRO_TEXTS[ghostId][0];
+		String nickname = (String) GHOST_INTRO_TEXTS[ghostId][1];
+		Color color = (Color) GHOST_INTRO_TEXTS[ghostId][2];
+		String text = both ? character + "    " + nickname : character;
+		g.setColor(color);
+		g.setFont(assets.scoreFont);
+		g.drawString("-" + text, t(4), y + 11);
 	}
 
 	private void drawGhostsChasingPacMan(Graphics2D g) {
