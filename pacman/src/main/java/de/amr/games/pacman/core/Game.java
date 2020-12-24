@@ -57,7 +57,6 @@ import de.amr.games.pacman.ui.Sound;
  * @see <a href="https://pacman.holenet.info">Jamey Pittman: The Pac-Man Dossier
  * @see <a href="https://gameinternals.com/understanding-pac-man-ghost-behavior">Chad Birch:
  *      Understanding ghost behavior
- * 
  */
 public class Game {
 
