@@ -182,8 +182,8 @@ public class PacManGameSwingUI implements PacManGameUI {
 	}
 
 	@Override
-	public void playSound(Sound sound, boolean useCache) {
-		soundManager.playSound(sound, useCache);
+	public void playSound(Sound sound) {
+		soundManager.playSound(sound);
 	}
 
 	@Override

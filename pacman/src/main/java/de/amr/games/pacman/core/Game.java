@@ -687,7 +687,7 @@ public class Game {
 	}
 
 	private void onPacManFoundFood(V2i tile) {
-		ui.playSound(Sound.MUNCH, false);
+		ui.playSound(Sound.MUNCH);
 		world.eatFood(tile.x, tile.y);
 		pacMan.starvingTicks = 0;
 		updateGhostDotCounters();

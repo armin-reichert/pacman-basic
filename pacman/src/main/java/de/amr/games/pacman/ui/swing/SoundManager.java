@@ -37,7 +37,8 @@ public class SoundManager {
 		clipGC.start();
 	}
 
-	public void playSound(Sound sound, boolean useCache) {
+	public void playSound(Sound sound) {
+		boolean useCache = sound != Sound.MUNCH;
 		Clip clip = getClip(sound, useCache);
 		clip.setFramePosition(0);
 		clip.start();
