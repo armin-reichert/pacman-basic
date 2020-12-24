@@ -83,17 +83,17 @@ class IntroScene {
 		}
 
 		mark += 1;
-		for (int ghost = 0; ghost <= 3; ++ghost) {
-			int y = t(10 + 3 * ghost);
+		for (int ghostID = 0; ghostID <= 3; ++ghostID) {
+			int y = t(10 + 3 * ghostID);
 			if (passed == game.clock.sec(mark)) {
 				ui.playSound(Sound.CREDIT);
 			}
 			if (passed >= game.clock.sec(mark)) {
-				BufferedImage ghostLookingRight = assets.sheet(0, 4 + ghost);
+				BufferedImage ghostLookingRight = assets.sheet(0, 4 + ghostID);
 				g.drawImage(ghostLookingRight, t(2) - 3, y - 2, null);
 			}
 			if (passed >= game.clock.sec(mark + 0.5f)) {
-				drawGhostCharacterAndName(g, ghost, y, passed > game.clock.sec(mark + 1));
+				drawGhostCharacterAndName(g, ghostID, y, passed > game.clock.sec(mark + 1));
 			}
 			mark += 2;
 		}
@@ -141,10 +141,10 @@ class IntroScene {
 		}
 	}
 
-	private void drawGhostCharacterAndName(Graphics2D g, int ghostId, int y, boolean both) {
-		String character = (String) GHOST_INTRO_TEXTS[ghostId][0];
-		String nickname = (String) GHOST_INTRO_TEXTS[ghostId][1];
-		Color color = (Color) GHOST_INTRO_TEXTS[ghostId][2];
+	private void drawGhostCharacterAndName(Graphics2D g, int ghostID, int y, boolean both) {
+		String character = (String) GHOST_INTRO_TEXTS[ghostID][0];
+		String nickname = (String) GHOST_INTRO_TEXTS[ghostID][1];
+		Color color = (Color) GHOST_INTRO_TEXTS[ghostID][2];
 		String text = both ? character + "    " + nickname : character;
 		g.setColor(color);
 		g.setFont(assets.scoreFont);
