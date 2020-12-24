@@ -164,10 +164,10 @@ class PlayScene {
 			frame = Math.max(frame, 3);
 			return assets.sheet(frame, 0);
 		}
-		if (!pacMan.couldMove) { // mouth wide open
-			return assets.sheet(0, dir);
-		}
 		if (pacMan.speed != 0) { // mouth animation
+			if (!pacMan.couldMove) { // mouth wide open
+				return assets.sheet(0, dir);
+			}
 			int frame = game.clock.frame(5, 3);
 			return frame == 2 ? assets.sheet(frame, 0) : assets.sheet(frame, dir);
 		}

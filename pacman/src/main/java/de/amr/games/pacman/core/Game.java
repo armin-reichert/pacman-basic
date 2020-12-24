@@ -168,7 +168,7 @@ public class Game {
 		enterIntroState();
 		while (true) {
 			clock.tick(() -> {
-				readInput();
+				readGlobalInput();
 				updateState();
 				ui.render();
 			});
@@ -243,7 +243,7 @@ public class Game {
 		bonusConsumedTicks = 0;
 	}
 
-	private void readInput() {
+	private void readGlobalInput() {
 
 		if (ui.keyPressed("p")) {
 			gamePaused = !gamePaused;
@@ -253,35 +253,6 @@ public class Game {
 		}
 		if (ui.keyPressed("d")) {
 			ui.setDebugMode(!ui.isDebugMode());
-		}
-
-		if (state == HUNTING) {
-			if (ui.keyPressed("left")) {
-				pacMan.wishDir = LEFT;
-			}
-			if (ui.keyPressed("right")) {
-				pacMan.wishDir = RIGHT;
-			}
-			if (ui.keyPressed("up")) {
-				pacMan.wishDir = UP;
-			}
-			if (ui.keyPressed("down")) {
-				pacMan.wishDir = DOWN;
-			}
-			// cheats
-			if (ui.keyPressed("e")) {
-				eatAllNormalPellets();
-			}
-			if (ui.keyPressed("x")) {
-				killAllGhosts();
-			}
-			if (ui.keyPressed("plus")) {
-				startLevel(++level);
-				enterReadyState();
-			}
-			if (ui.keyPressed("l")) {
-				lives++;
-			}
 		}
 	}
 
@@ -451,6 +422,34 @@ public class Game {
 	}
 
 	private void runHuntingState() {
+		// read state-specific input
+		if (ui.keyPressed("left")) {
+			pacMan.wishDir = LEFT;
+		}
+		if (ui.keyPressed("right")) {
+			pacMan.wishDir = RIGHT;
+		}
+		if (ui.keyPressed("up")) {
+			pacMan.wishDir = UP;
+		}
+		if (ui.keyPressed("down")) {
+			pacMan.wishDir = DOWN;
+		}
+		// cheats
+		if (ui.keyPressed("e")) {
+			eatAllNormalPellets();
+		}
+		if (ui.keyPressed("x")) {
+			killAllGhosts();
+		}
+		if (ui.keyPressed("plus")) {
+			startLevel(++level);
+			enterReadyState();
+		}
+		if (ui.keyPressed("l")) {
+			lives++;
+		}
+
 		Ghost ghostColliding = checkPacManMeetsGhost();
 		if (ghostColliding != null) {
 			if (ghostColliding.frightened) {
