@@ -140,9 +140,9 @@ class PlayScene {
 				}
 			}
 		}
-		if (game.bonusAvailableTimer > 0) {
+		if (game.bonusAvailableTicks > 0) {
 			g.drawImage(assets.symbols[game.level().bonusSymbol], t(13), t(20) - HTS, null);
-		} else if (game.bonusConsumedTimer > 0) {
+		} else if (game.bonusConsumedTicks > 0) {
 			BufferedImage image = assets.numbers.get(game.level().bonusPoints);
 			g.drawImage(image, (size.x - image.getWidth()) / 2, t(20) - HTS, null);
 		}

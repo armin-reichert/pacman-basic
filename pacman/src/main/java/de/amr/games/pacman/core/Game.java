@@ -50,69 +50,80 @@ import de.amr.games.pacman.ui.PacManGameUI;
 import de.amr.games.pacman.ui.Sound;
 
 /**
- * Pac-Man game with original "AI".
+ * Pac-Man game with original "AI", levels, timers.
  * 
  * @author Armin Reichert
  * 
- * @see https://gameinternals.com/understanding-pac-man-ghost-behavior
- * @see https://pacman.holenet.info
- * @see https://www.gamasutra.com/view/feature/132330/the_pacman_dossier.php
+ * @see <a href="https://pacman.holenet.info">Jamey Pittman: The Pac-Man Dossier
+ * @see <a href="https://gameinternals.com/understanding-pac-man-ghost-behavior">Chad Birch:
+ *      Understanding ghost behavior
+ * 
  */
 public class Game {
 
-	public static final short CHERRIES = 0, STRAWBERRY = 1, PEACH = 2, APPLE = 3, GRAPES = 4, GALAXIAN = 5, BELL = 6,
-			KEY = 7;
+	/*@formatter:off*/
+	
+	public static final byte 
+		CHERRIES   = 0, 
+		STRAWBERRY = 1, 
+		PEACH      = 2, 
+		APPLE      = 3, 
+		GRAPES     = 4, 
+		GALAXIAN   = 5, 
+		BELL       = 6,
+		KEY        = 7;
 
 	static final Level[] LEVELS = {
-	/*@formatter:off*/
-	/* 1*/ new Level(CHERRIES,   100,  80, 75, 40,  20,  80, 10,  85,  90, 50, 6, 5),
-	/* 2*/ new Level(STRAWBERRY, 300,  90, 85, 45,  30,  90, 15,  95,  95, 55, 5, 5),
-	/* 3*/ new Level(PEACH,      500,  90, 85, 45,  40,  90, 20,  95,  95, 55, 4, 5),
-	/* 4*/ new Level(PEACH,      500,  90, 85, 50,  40, 100, 20,  95,  95, 55, 3, 5),
-	/* 5*/ new Level(APPLE,      700, 100, 95, 50,  40, 100, 20, 105, 100, 60, 2, 5),
-	/* 6*/ new Level(APPLE,      700, 100, 95, 50,  50, 100, 25, 105, 100, 60, 5, 5),
-	/* 7*/ new Level(GRAPES,    1000, 100, 95, 50,  50, 100, 25, 105, 100, 60, 2, 5),
-	/* 8*/ new Level(GRAPES,    1000, 100, 95, 50,  50, 100, 25, 105, 100, 60, 2, 5),
-	/* 9*/ new Level(GALAXIAN,  2000, 100, 95, 50,  60, 100, 30, 105, 100, 60, 1, 3),
-	/*10*/ new Level(GALAXIAN,  2000, 100, 95, 50,  60, 100, 30, 105, 100, 60, 5, 5),
-	/*11*/ new Level(BELL,      3000, 100, 95, 50,  60, 100, 30, 105, 100, 60, 2, 5),
-	/*12*/ new Level(BELL,      3000, 100, 95, 50,  80, 100, 40, 105, 100, 60, 1, 3),
-	/*13*/ new Level(KEY,       5000, 100, 95, 50,  80, 100, 40, 105, 100, 60, 1, 3),
-	/*14*/ new Level(KEY,       5000, 100, 95, 50,  80, 100, 40, 105, 100, 60, 3, 5),
-	/*15*/ new Level(KEY,       5000, 100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3),
-	/*16*/ new Level(KEY,       5000, 100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3),
-	/*17*/ new Level(KEY,       5000, 100, 95, 50, 100, 100, 50, 105,   0,  0, 0, 0),
-	/*18*/ new Level(KEY,       5000, 100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3),
-	/*19*/ new Level(KEY,       5000, 100, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0),
-	/*20*/ new Level(KEY,       5000, 100, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0),
-	/*21*/ new Level(KEY,       5000,  90, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0)
-	/*@formatter:on*/
+		/* 1*/ new Level(CHERRIES,   100,  80, 75, 40,  20,  80, 10,  85,  90, 50, 6, 5),
+		/* 2*/ new Level(STRAWBERRY, 300,  90, 85, 45,  30,  90, 15,  95,  95, 55, 5, 5),
+		/* 3*/ new Level(PEACH,      500,  90, 85, 45,  40,  90, 20,  95,  95, 55, 4, 5),
+		/* 4*/ new Level(PEACH,      500,  90, 85, 50,  40, 100, 20,  95,  95, 55, 3, 5),
+		/* 5*/ new Level(APPLE,      700, 100, 95, 50,  40, 100, 20, 105, 100, 60, 2, 5),
+		/* 6*/ new Level(APPLE,      700, 100, 95, 50,  50, 100, 25, 105, 100, 60, 5, 5),
+		/* 7*/ new Level(GRAPES,    1000, 100, 95, 50,  50, 100, 25, 105, 100, 60, 2, 5),
+		/* 8*/ new Level(GRAPES,    1000, 100, 95, 50,  50, 100, 25, 105, 100, 60, 2, 5),
+		/* 9*/ new Level(GALAXIAN,  2000, 100, 95, 50,  60, 100, 30, 105, 100, 60, 1, 3),
+		/*10*/ new Level(GALAXIAN,  2000, 100, 95, 50,  60, 100, 30, 105, 100, 60, 5, 5),
+		/*11*/ new Level(BELL,      3000, 100, 95, 50,  60, 100, 30, 105, 100, 60, 2, 5),
+		/*12*/ new Level(BELL,      3000, 100, 95, 50,  80, 100, 40, 105, 100, 60, 1, 3),
+		/*13*/ new Level(KEY,       5000, 100, 95, 50,  80, 100, 40, 105, 100, 60, 1, 3),
+		/*14*/ new Level(KEY,       5000, 100, 95, 50,  80, 100, 40, 105, 100, 60, 3, 5),
+		/*15*/ new Level(KEY,       5000, 100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3),
+		/*16*/ new Level(KEY,       5000, 100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3),
+		/*17*/ new Level(KEY,       5000, 100, 95, 50, 100, 100, 50, 105,   0,  0, 0, 0),
+		/*18*/ new Level(KEY,       5000, 100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3),
+		/*19*/ new Level(KEY,       5000, 100, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0),
+		/*20*/ new Level(KEY,       5000, 100, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0),
+		/*21*/ new Level(KEY,       5000,  90, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0)
 	};
+	
+	/*@formatter:on*/
 
 	static final Direction[] DIRECTION_PRIORITY = { UP, LEFT, DOWN, RIGHT };
 
+	public final Clock clock;
+	public final Random rnd;
 	public final World world;
 	public final PacMan pacMan;
 	public final Ghost[] ghosts;
 	public final Hiscore hiscore;
-	public final Clock clock;
-	public final Random rnd;
 	public PacManGameUI ui;
+
+	public boolean gamePaused;
+	public boolean gameStarted;
 
 	public GameState state;
 	public GameState previousState;
-	public boolean gamePaused;
-	public boolean gameStarted;
 	public short level;
 	public short huntingPhase;
 	public short lives;
 	public int score;
 	public short ghostBounty;
-	public short ghostsKilledInLevel;
-	public short mazeFlashesRemaining;
-	public long bonusAvailableTimer;
-	public long bonusConsumedTimer;
-	public int globalDotCounter;
+	public byte ghostsKilledInLevel;
+	public byte mazeFlashesRemaining;
+	public long bonusAvailableTicks;
+	public long bonusConsumedTicks;
+	public short globalDotCounter;
 	public boolean globalDotCounterEnabled;
 
 	public Game() {
@@ -177,8 +188,8 @@ public class Game {
 		mazeFlashesRemaining = 0;
 		ghostBounty = 200;
 		ghostsKilledInLevel = 0;
-		bonusAvailableTimer = 0;
-		bonusConsumedTimer = 0;
+		bonusAvailableTicks = 0;
+		bonusConsumedTicks = 0;
 		for (GameState state : GameState.values()) {
 			state.setDuration(0);
 		}
@@ -227,8 +238,8 @@ public class Game {
 		ghosts[INKY].dir = ghosts[INKY].wishDir = UP;
 		ghosts[CLYDE].dir = ghosts[CLYDE].wishDir = UP;
 
-		bonusAvailableTimer = 0;
-		bonusConsumedTimer = 0;
+		bonusAvailableTicks = 0;
+		bonusConsumedTicks = 0;
 	}
 
 	private void readInput() {
@@ -647,11 +658,11 @@ public class Game {
 
 	private void checkPacManFindsBonus() {
 		V2i tile = pacMan.tile();
-		if (!world.isBonusTile(tile.x, tile.y) || bonusAvailableTimer == 0) {
+		if (!world.isBonusTile(tile.x, tile.y) || bonusAvailableTicks == 0) {
 			return;
 		}
-		bonusAvailableTimer = 0;
-		bonusConsumedTimer = clock.sec(2);
+		bonusAvailableTicks = 0;
+		bonusConsumedTicks = clock.sec(2);
 		score(level().bonusPoints);
 		ui.playSound(Sound.EAT_BONUS);
 		log("Pac-Man found bonus (id=%d) of value %d", level().bonusSymbol, level().bonusPoints);
@@ -693,8 +704,8 @@ public class Game {
 		}
 		// bonus score reached?
 		int eaten = TOTAL_FOOD_COUNT - world.foodRemaining;
-		if (bonusAvailableTimer == 0 && (eaten == 70 || eaten == 170)) {
-			bonusAvailableTimer = clock.sec(9 + rnd.nextFloat());
+		if (bonusAvailableTicks == 0 && (eaten == 70 || eaten == 170)) {
+			bonusAvailableTicks = clock.sec(9 + rnd.nextFloat());
 		}
 	}
 
@@ -755,12 +766,12 @@ public class Game {
 
 	private void updateBonus() {
 		// bonus active and not consumed
-		if (bonusAvailableTimer > 0) {
-			--bonusAvailableTimer;
+		if (bonusAvailableTicks > 0) {
+			--bonusAvailableTicks;
 		}
 		// bonus active and consumed
-		if (bonusConsumedTimer > 0) {
-			--bonusConsumedTimer;
+		if (bonusConsumedTicks > 0) {
+			--bonusConsumedTicks;
 		}
 	}
 

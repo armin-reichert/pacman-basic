@@ -20,7 +20,7 @@ public class Level {
 	public final float pacManSpeedPowered;
 	public final float ghostSpeedFrightened;
 	public final short ghostFrightenedSeconds;
-	public final short numFlashes;
+	public final byte numFlashes;
 
 	private static float percent(Integer value) {
 		return value / 100.0f;
@@ -39,6 +39,6 @@ public class Level {
 		pacManSpeedPowered = percent(values[9]);
 		ghostSpeedFrightened = percent(values[10]);
 		ghostFrightenedSeconds = (short) values[11];
-		numFlashes = (short) values[12];
+		numFlashes = (byte) values[12];
 	}
 }
