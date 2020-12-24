@@ -99,7 +99,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 		// these must called be *after* setVisible():
 		window.requestFocus();
 		canvas.createBufferStrategy(2);
-		soundManager.start();
+		soundManager.init();
 	}
 
 	@Override

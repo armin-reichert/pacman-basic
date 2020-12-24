@@ -13,7 +13,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.image.BufferedImage;
-import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.EnumMap;
@@ -21,8 +20,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
 
 import de.amr.games.pacman.ui.Sound;
 
@@ -129,16 +126,6 @@ public class Assets {
 			throw new RuntimeException(String.format("Could not access font, path='%s'", fontPath));
 		} catch (FontFormatException x) {
 			throw new RuntimeException(String.format("Could not create font, path='%s'", fontPath));
-		}
-	}
-
-	public Clip clip(String path) {
-		try (BufferedInputStream bs = new BufferedInputStream(getClass().getResourceAsStream(path))) {
-			Clip clip = AudioSystem.getClip();
-			clip.open(AudioSystem.getAudioInputStream(bs));
-			return clip;
-		} catch (Exception x) {
-			throw new RuntimeException(x);
 		}
 	}
 }
