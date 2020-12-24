@@ -17,10 +17,13 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferStrategy;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import javax.sound.sampled.Clip;
 import javax.swing.JFrame;
+import javax.swing.Timer;
 
 import de.amr.games.pacman.core.Game;
 import de.amr.games.pacman.core.GameState;
@@ -55,6 +58,8 @@ public class PacManGameSwingUI implements PacManGameUI {
 	private final Keyboard keyboard;
 	private final V2i unscaledSize;
 	private final Map<Sound, Clip> cachedClips = new HashMap<>();
+	private final Set<Clip> onetimeClips = new HashSet<>();
+	private final Timer clipGC;
 
 	private final IntroScene introScene;
 	private final PlayScene playScene;
@@ -88,6 +93,14 @@ public class PacManGameSwingUI implements PacManGameUI {
 		canvas.setSize((int) (unscaledSize.x * scaling), (int) (unscaledSize.y * scaling));
 		canvas.setFocusable(false);
 		window.add(canvas);
+
+		clipGC = new Timer(3000, e -> {
+			for (Clip onetimeClip : onetimeClips) {
+				if (!onetimeClip.isRunning()) {
+					onetimeClip.close();
+				}
+			}
+		});
 	}
 
 	@Override
@@ -98,6 +111,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 		// these must called be *after* setVisible():
 		window.requestFocus();
 		canvas.createBufferStrategy(2);
+		clipGC.start();
 	}
 
 	@Override
@@ -194,7 +208,8 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 	@Override
 	public void stopSound(Sound sound) {
-		getClip(sound, true).stop();
+		Clip clip = getClip(sound, true);
+		clip.stop();
 	}
 
 	@Override
@@ -212,7 +227,10 @@ public class PacManGameSwingUI implements PacManGameUI {
 			Clip clip = assets.clip(assets.soundPaths.get(sound));
 			cachedClips.put(sound, clip);
 			return clip;
+		} else {
+			Clip clip = assets.clip(assets.soundPaths.get(sound));
+			onetimeClips.add(clip);
+			return clip;
 		}
-		return assets.clip(assets.soundPaths.get(sound));
 	}
 }
