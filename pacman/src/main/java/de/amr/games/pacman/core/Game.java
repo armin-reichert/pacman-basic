@@ -440,11 +440,10 @@ public class Game {
 			eatAllNormalPellets();
 		}
 		if (ui.keyPressed("x")) {
+			exitHuntingState();
 			killAllGhosts();
-		}
-		if (ui.keyPressed("plus")) {
-			startLevel(++level);
-			enterReadyState();
+			enterGhostDyingState();
+			return;
 		}
 		if (ui.keyPressed("l")) {
 			lives++;
@@ -1130,6 +1129,5 @@ public class Game {
 				killGhost(ghost);
 			}
 		}
-		enterGhostDyingState();
 	}
 }
