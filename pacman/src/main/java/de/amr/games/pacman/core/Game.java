@@ -150,6 +150,7 @@ public class Game {
 		if (hiscore.changed) {
 			hiscore.save();
 		}
+		log("Game exits.");
 	}
 
 	public Level level(int level) {
@@ -752,17 +753,17 @@ public class Game {
 	}
 
 	private void killGhost(Ghost ghost) {
-		ghostsKilledInLevel++;
-		ghost.dead = true;
 		ghost.frightened = false;
+		ghost.dead = true;
 		ghost.targetTile = HOUSE_ENTRY;
 		ghost.bounty = ghostBounty;
-		log("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name(), ghost.tile(), ghost.bounty);
 		score(ghost.bounty);
+		ghostsKilledInLevel++;
 		if (ghostsKilledInLevel == 16) {
 			score(12000);
 		}
 		ghostBounty *= 2;
+		log("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name(), ghost.tile(), ghost.bounty);
 	}
 
 	private void updateBonus() {
