@@ -327,13 +327,11 @@ public class Game {
 
 	private void enterReadyState() {
 		enterState(READY, clock.sec(gameStarted ? 0.5 : 4.5));
-		HUNTING.setDuration(0);
-		huntingPhase = 0;
-		resetGuys();
 		if (!gameStarted) {
 			ui.playSound(Sound.GAME_READY);
 			gameStarted = true;
 		}
+		resetGuys();
 	}
 
 	private void runReadyState() {
@@ -351,6 +349,7 @@ public class Game {
 	}
 
 	private void exitReadyState() {
+		HUNTING.setDuration(0);
 	}
 
 	// HUNTING
