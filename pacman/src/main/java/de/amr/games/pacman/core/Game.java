@@ -349,7 +349,6 @@ public class Game {
 	}
 
 	private void exitReadyState() {
-		HUNTING.setDuration(0);
 	}
 
 	// HUNTING
