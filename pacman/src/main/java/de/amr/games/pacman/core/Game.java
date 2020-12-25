@@ -321,6 +321,7 @@ public class Game {
 
 	private void exitIntroState() {
 		ui.endIntroScene();
+		log("Exit '%s' state", stateDescription());
 	}
 
 	// READY
@@ -349,6 +350,7 @@ public class Game {
 	}
 
 	private void exitReadyState() {
+		log("Exit '%s' state", stateDescription());
 	}
 
 	// HUNTING
@@ -489,6 +491,7 @@ public class Game {
 	}
 
 	private void exitHuntingState() {
+		log("Exit '%s' state", stateDescription());
 	}
 
 	// PACMAN_DYING
@@ -531,6 +534,7 @@ public class Game {
 		for (Ghost ghost : ghosts) {
 			ghost.visible = true;
 		}
+		log("Exit '%s' state", stateDescription());
 	}
 
 	// GHOST_DYING
@@ -546,6 +550,7 @@ public class Game {
 		if (state.expired()) {
 			exitGhostDyingState();
 			state = previousState;
+			log("Resume '%s' state", state);
 			return;
 		}
 		for (Ghost ghost : ghosts) {
@@ -564,6 +569,7 @@ public class Game {
 		}
 		pacMan.visible = true;
 		ui.loopSound(Sound.RETREATING);
+		log("Exit '%s' state", stateDescription());
 	}
 
 	// CHANGING_LEVEL
@@ -621,7 +627,7 @@ public class Game {
 
 	private void exitGameOverState() {
 		reset();
-		log("Left game over state");
+		log("Exit '%s' state", stateDescription());
 	}
 
 	// END STATE-MACHINE
