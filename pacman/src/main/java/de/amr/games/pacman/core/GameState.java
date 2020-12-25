@@ -4,27 +4,25 @@ package de.amr.games.pacman.core;
  * The different states of the game. Each state has a timer.
  * 
  * @author Armin Reichert
- *
  */
 public enum GameState {
 
 	INTRO, READY, HUNTING, CHANGING_LEVEL, PACMAN_DYING, GHOST_DYING, GAME_OVER;
 
 	private long duration;
-	private long ticksRemaining;
+	private long running;
 
 	public void tick() {
-		if (ticksRemaining != Long.MAX_VALUE && ticksRemaining > 0) {
-			--ticksRemaining;
-		}
+		++running;
 	}
 
 	public void setDuration(long ticks) {
-		ticksRemaining = duration = ticks;
+		duration = ticks;
+		running = 0;
 	}
 
 	public long ticksRemaining() {
-		return ticksRemaining;
+		return duration == Long.MAX_VALUE ? Long.MAX_VALUE : Math.max(duration - running, 0);
 	}
 
 	public long duration() {
@@ -32,10 +30,10 @@ public enum GameState {
 	}
 
 	public long running() {
-		return duration - ticksRemaining;
+		return running;
 	}
 
 	public boolean expired() {
-		return ticksRemaining == 0;
+		return ticksRemaining() == 0;
 	}
 }
