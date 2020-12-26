@@ -442,6 +442,12 @@ public class Game {
 			enterNextHuntingPhase();
 		}
 
+		if (world.foodRemaining == 0) {
+			exitHuntingState();
+			enterChangingLevelState();
+			return;
+		}
+
 		boolean ghostCollision = checkPacManGhostCollision();
 		if (ghostCollision) {
 			exitHuntingState();
@@ -450,12 +456,6 @@ public class Game {
 			} else {
 				enterGhostDyingState();
 			}
-			return;
-		}
-
-		if (world.foodRemaining == 0) {
-			exitHuntingState();
-			enterChangingLevelState();
 			return;
 		}
 
