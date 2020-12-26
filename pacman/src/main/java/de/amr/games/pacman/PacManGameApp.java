@@ -13,9 +13,10 @@ import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
 public class PacManGameApp {
 
 	public static void main(String[] args) {
+		float scaling = args.length > 0 ? Float.parseFloat(args[0]) : 2;
 		invokeLater(() -> {
 			Game game = new Game();
-			game.ui = new PacManGameSwingUI(game, 2);
+			game.ui = new PacManGameSwingUI(game, scaling);
 			game.start();
 		});
 	}
