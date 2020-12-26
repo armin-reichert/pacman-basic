@@ -421,7 +421,7 @@ public class Game {
 	}
 
 	private void runHuntingState() {
-		// read state-specific input
+
 		if (ui.keyPressed("left")) {
 			pacMan.wishDir = LEFT;
 		}
@@ -434,43 +434,36 @@ public class Game {
 		if (ui.keyPressed("down")) {
 			pacMan.wishDir = DOWN;
 		}
+
 		// cheats
 		if (ui.keyPressed("e")) {
 			eatAllNormalPellets();
 		}
+
 		if (ui.keyPressed("x")) {
-			exitHuntingState();
 			killAllGhosts();
+			exitHuntingState();
 			enterGhostDyingState();
 			return;
 		}
+
 		if (ui.keyPressed("l")) {
 			if (lives < Byte.MAX_VALUE) {
 				lives++;
 			}
 		}
 
-		Ghost ghostColliding = checkPacManMeetsGhost();
-		if (ghostColliding != null) {
-			if (ghostColliding.frightened) {
-				killGhost(ghostColliding);
-				exitHuntingState();
-				enterGhostDyingState();
-				return;
-			}
-			if (pacMan.powerTicksLeft == 0) {
-				log("Pac-Man killed by %s at tile %s", ghostColliding.name(), ghostColliding.tile());
-				pacMan.dead = true;
-				resetAndEnableGlobalDotCounter();
-				if (ghosts[BLINKY].elroyMode > 0) {
-					log("Blinky Elroy mode %d disabled", ghosts[BLINKY].elroyMode);
-					ghosts[BLINKY].elroyMode = (byte) -ghosts[BLINKY].elroyMode; // disabled
-				}
-				exitHuntingState();
+		boolean metGhost = checkPacManGhostCollision();
+		if (metGhost) {
+			exitHuntingState();
+			if (pacMan.dead) {
 				enterPacManDyingState();
-				return;
+			} else {
+				enterGhostDyingState();
 			}
+			return;
 		}
+
 		if (world.foodRemaining == 0) {
 			exitHuntingState();
 			enterChangingLevelState();
@@ -478,6 +471,7 @@ public class Game {
 		}
 		checkPacManFindsFood();
 		checkPacManFindsBonus();
+
 		updatePacMan();
 		for (Ghost ghost : ghosts) {
 			updateGhost(ghost);
@@ -651,7 +645,7 @@ public class Game {
 		}
 	}
 
-	private Ghost checkPacManMeetsGhost() {
+	private Ghost ghostOnPacManPosition() {
 		V2i tile = pacMan.tile();
 		for (Ghost ghost : ghosts) {
 			if (!ghost.dead && tile.equals(ghost.tile())) {
@@ -659,6 +653,25 @@ public class Game {
 			}
 		}
 		return null;
+	}
+
+	private boolean checkPacManGhostCollision() {
+		Ghost ghost = ghostOnPacManPosition();
+		if (ghost == null) {
+			return false;
+		}
+		if (ghost.frightened) {
+			killGhost(ghost);
+		} else {
+			pacMan.dead = true;
+			resetAndEnableGlobalDotCounter();
+			if (ghosts[BLINKY].elroyMode > 0) {
+				log("Blinky Elroy mode %d disabled", ghosts[BLINKY].elroyMode);
+				ghosts[BLINKY].elroyMode = (byte) -ghosts[BLINKY].elroyMode;
+			}
+			log("Pac-Man killed by %s at tile %s", ghost.name(), ghost.tile());
+		}
+		return true;
 	}
 
 	private void checkPacManFindsBonus() {
