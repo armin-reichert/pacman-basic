@@ -114,8 +114,8 @@ public class Game {
 	public GameState state;
 	public GameState previousState;
 	public short level;
-	public short huntingPhase;
-	public short lives;
+	public byte huntingPhase;
+	public byte lives;
 	public int score;
 	public short ghostBounty;
 	public byte ghostsKilledInLevel;
@@ -445,7 +445,9 @@ public class Game {
 			return;
 		}
 		if (ui.keyPressed("l")) {
-			lives++;
+			if (lives < Byte.MAX_VALUE) {
+				lives++;
+			}
 		}
 
 		Ghost ghostColliding = checkPacManMeetsGhost();
