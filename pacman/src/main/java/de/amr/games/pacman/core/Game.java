@@ -648,26 +648,24 @@ public class Game {
 		}
 	}
 
-	private Stream<Ghost> ghostsOnPacManPosition() {
-		return Stream.of(ghosts).filter(ghost -> !ghost.dead).filter(ghost -> pacMan.tile().equals(ghost.tile()));
-	}
-
 	private boolean checkPacManGhostCollision() {
-		Ghost ghost = ghostsOnPacManPosition().findAny().orElse(null);
-		if (ghost == null) {
+		Ghost collidingGhost = Stream.of(ghosts).filter(ghost -> !ghost.dead)
+				.filter(ghost -> pacMan.tile().equals(ghost.tile())).findAny().orElse(null);
+		if (collidingGhost == null) {
 			return false;
 		}
-		if (ghost.frightened) {
-			killGhost(ghost);
-		} else {
-			resetAndEnableGlobalDotCounter();
-			if (ghosts[BLINKY].elroyMode > 0) {
-				log("Blinky Elroy mode %d disabled", ghosts[BLINKY].elroyMode);
-				ghosts[BLINKY].elroyMode = (byte) -ghosts[BLINKY].elroyMode;
-			}
-			pacMan.dead = true;
-			log("Pac-Man killed by %s at tile %s", ghost.name(), ghost.tile());
+		if (collidingGhost.frightened) {
+			killGhost(collidingGhost);
+			return true;
 		}
+		resetAndEnableGlobalDotCounter();
+		byte elroyMode = ghosts[BLINKY].elroyMode;
+		if (elroyMode > 0) {
+			ghosts[BLINKY].elroyMode = (byte) -elroyMode; // negative value means "disabled"
+			log("Blinky Elroy mode %d disabled", elroyMode);
+		}
+		pacMan.dead = true;
+		log("Pac-Man killed by %s at tile %s", collidingGhost.name(), collidingGhost.tile());
 		return true;
 	}
 
