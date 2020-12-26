@@ -853,7 +853,7 @@ public class Game {
 		return level < 5 ? clock.sec(4) : clock.sec(3);
 	}
 
-	private V2i currentChasingTarget(Ghost ghost) {
+	private V2i ghostChasingTarget(Ghost ghost) {
 		switch (ghost.id) {
 		case BLINKY: {
 			return pacMan.tile();
@@ -890,13 +890,13 @@ public class Game {
 	}
 
 	private void letGhostHuntPacMan(Ghost ghost) {
-		ghost.targetTile = inChasingPhase() || ghost.id == BLINKY && ghost.elroyMode > 0 ? currentChasingTarget(ghost)
+		ghost.targetTile = inChasingPhase() || ghost.id == BLINKY && ghost.elroyMode > 0 ? ghostChasingTarget(ghost)
 				: ghost.scatterTile;
 		letGhostHeadForTargetTile(ghost);
 	}
 
 	private void letGhostHeadForTargetTile(Ghost ghost) {
-		newWishDir(ghost).ifPresent(dir -> ghost.wishDir = dir);
+		ghostWishDir(ghost).ifPresent(dir -> ghost.wishDir = dir);
 		tryMoving(ghost);
 	}
 
@@ -966,7 +966,7 @@ public class Game {
 		tryMoving(ghost);
 	}
 
-	private Optional<Direction> newWishDir(Ghost ghost) {
+	private Optional<Direction> ghostWishDir(Ghost ghost) {
 		if (!ghost.changedTile) {
 			return Optional.empty();
 		}
@@ -981,10 +981,10 @@ public class Game {
 		if (ghost.frightened && world.isIntersectionTile(tile.x, tile.y)) {
 			return Optional.of(randomMoveDir(ghost));
 		}
-		return bestDirection(ghost);
+		return ghostTargetDirection(ghost);
 	}
 
-	private Optional<Direction> bestDirection(Ghost ghost) {
+	private Optional<Direction> ghostTargetDirection(Ghost ghost) {
 		double minDist = Double.MAX_VALUE;
 		Direction minDistDir = null;
 		for (Direction dir : DIRECTION_PRIORITY) {
