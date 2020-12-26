@@ -13,20 +13,7 @@ import static de.amr.games.pacman.core.Ghost.BLINKY;
 import static de.amr.games.pacman.core.Ghost.CLYDE;
 import static de.amr.games.pacman.core.Ghost.INKY;
 import static de.amr.games.pacman.core.Ghost.PINKY;
-import static de.amr.games.pacman.core.World.HOUSE_CENTER;
-import static de.amr.games.pacman.core.World.HOUSE_ENTRY;
-import static de.amr.games.pacman.core.World.HOUSE_LEFT;
-import static de.amr.games.pacman.core.World.HOUSE_RIGHT;
 import static de.amr.games.pacman.core.World.HTS;
-import static de.amr.games.pacman.core.World.LOWER_LEFT_CORNER;
-import static de.amr.games.pacman.core.World.LOWER_RIGHT_CORNER;
-import static de.amr.games.pacman.core.World.PACMAN_HOME;
-import static de.amr.games.pacman.core.World.PORTAL_LEFT;
-import static de.amr.games.pacman.core.World.PORTAL_RIGHT;
-import static de.amr.games.pacman.core.World.TOTAL_FOOD_COUNT;
-import static de.amr.games.pacman.core.World.UPPER_LEFT_CORNER;
-import static de.amr.games.pacman.core.World.UPPER_RIGHT_CORNER;
-import static de.amr.games.pacman.core.World.WORLD_TILES;
 import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
@@ -130,13 +117,13 @@ public class Game {
 		rnd = new Random();
 		world = new World();
 		hiscore = new Hiscore();
-		pacMan = new PacMan(PACMAN_HOME);
+		pacMan = new PacMan(world.pacManHome);
 		/*@formatter:off*/
 		ghosts = new Ghost[] {
-			new Ghost(BLINKY, HOUSE_ENTRY,  UPPER_RIGHT_CORNER),
-			new Ghost(PINKY,  HOUSE_CENTER, UPPER_LEFT_CORNER), 
-			new Ghost(INKY,   HOUSE_LEFT,   LOWER_RIGHT_CORNER),
-			new Ghost(CLYDE,  HOUSE_RIGHT,  LOWER_LEFT_CORNER) 
+			new Ghost(BLINKY, world.houseEntry,  world.upperRightScatterTile),
+			new Ghost(PINKY,  world.houseCenter, world.upperLeftScatterTile), 
+			new Ghost(INKY,   world.houseLeft,   world.lowerRightScatterTile),
+			new Ghost(CLYDE,  world.houseRight,  world.lowerLeftScatterTile) 
 		};
 		/*@formatter:on*/
 	}
@@ -683,8 +670,9 @@ public class Game {
 
 	private void checkPacManFindsFood() {
 		V2i tile = pacMan.tile();
-		if (world.isFoodTile(tile.x, tile.y) && !world.foodEatenAt(tile.x, tile.y)) {
+		if (world.isFoodTile(tile.x, tile.y) && !world.foodRemoved(tile.x, tile.y)) {
 			onPacManFoundFood(tile);
+			ui.playSound(Sound.MUNCH);
 		} else {
 			onPacManStarved();
 		}
@@ -701,11 +689,8 @@ public class Game {
 	}
 
 	private void onPacManFoundFood(V2i tile) {
-		ui.playSound(Sound.MUNCH);
-		world.eatFood(tile.x, tile.y);
 		pacMan.starvingTicks = 0;
-		updateGhostDotCounters();
-		mayBeEnterElroyMode();
+		world.removeFood(tile.x, tile.y);
 		if (world.isEnergizerTile(tile.x, tile.y)) {
 			score(50);
 			givePacManPower();
@@ -716,10 +701,12 @@ public class Game {
 			pacMan.restingTicksLeft = 1;
 		}
 		// bonus score reached?
-		int eaten = TOTAL_FOOD_COUNT - world.foodRemaining;
+		int eaten = world.totalFoodCount - world.foodRemaining;
 		if (bonusAvailableTicks == 0 && (eaten == 70 || eaten == 170)) {
 			bonusAvailableTicks = clock.sec(9 + rnd.nextFloat());
 		}
+		updateGhostDotCounters();
+		mayBeEnterElroyMode();
 	}
 
 	private void givePacManPower() {
@@ -766,7 +753,7 @@ public class Game {
 	private void killGhost(Ghost ghost) {
 		ghost.frightened = false;
 		ghost.dead = true;
-		ghost.targetTile = HOUSE_ENTRY;
+		ghost.targetTile = world.houseEntry;
 		ghost.bounty = ghostBounty;
 		score(ghost.bounty);
 		ghostsKilledInLevel++;
@@ -906,14 +893,14 @@ public class Game {
 			ghost.dir = ghost.wishDir = DOWN;
 			ghost.forcedOnTrack = false;
 			ghost.enteringHouse = true;
-			ghost.targetTile = ghost.id == BLINKY ? HOUSE_CENTER : ghost.homeTile;
+			ghost.targetTile = ghost.id == BLINKY ? world.houseCenter : ghost.homeTile;
 			return;
 		}
 		letGhostHeadForTargetTile(ghost);
 	}
 
 	private boolean atGhostHouseDoor(Creature guy) {
-		return guy.at(HOUSE_ENTRY) && Functions.differsAtMost(guy.offset().x, HTS, 2);
+		return guy.at(world.houseEntry) && Functions.differsAtMost(guy.offset().x, HTS, 2);
 	}
 
 	private void letGhostEnterHouse(Ghost ghost) {
@@ -930,8 +917,8 @@ public class Game {
 			return;
 		}
 		// move sidewards towards target tile?
-		if (ghost.at(HOUSE_CENTER) && offset.y >= 0) {
-			ghost.wishDir = ghost.targetTile.x < HOUSE_CENTER.x ? LEFT : RIGHT;
+		if (ghost.at(world.houseCenter) && offset.y >= 0) {
+			ghost.wishDir = ghost.targetTile.x < world.houseCenter.x ? LEFT : RIGHT;
 		}
 		ghost.couldMove = tryMoving(ghost, ghost.wishDir);
 	}
@@ -939,7 +926,7 @@ public class Game {
 	private void letGhostLeaveHouse(Ghost ghost) {
 		V2f offset = ghost.offset();
 		// house left?
-		if (ghost.at(HOUSE_ENTRY) && Functions.differsAtMost(offset.y, 0, 1)) {
+		if (ghost.at(world.houseEntry) && Functions.differsAtMost(offset.y, 0, 1)) {
 			ghost.setOffset(HTS, 0);
 			ghost.dir = ghost.wishDir = LEFT;
 			ghost.forcedOnTrack = true;
@@ -947,7 +934,7 @@ public class Game {
 			return;
 		}
 		// center of house reached?
-		if (ghost.at(HOUSE_CENTER) && Functions.differsAtMost(offset.x, 3, 1)) {
+		if (ghost.at(world.houseCenter) && Functions.differsAtMost(offset.x, 3, 1)) {
 			ghost.setOffset(HTS, 0);
 			ghost.wishDir = UP;
 			tryMoving(ghost);
@@ -957,7 +944,7 @@ public class Game {
 		if (ghost.wishDir == UP || ghost.wishDir == DOWN) {
 			if (ghost.at(ghost.homeTile)) {
 				ghost.setOffset(HTS, 0);
-				ghost.wishDir = ghost.homeTile.x < HOUSE_CENTER.x ? RIGHT : LEFT;
+				ghost.wishDir = ghost.homeTile.x < world.houseCenter.x ? RIGHT : LEFT;
 			} else {
 				letGhostBounce(ghost);
 			}
@@ -1022,12 +1009,12 @@ public class Game {
 	}
 
 	private void tryMoving(Creature guy) {
-		if (guy.at(PORTAL_RIGHT) && guy.dir == RIGHT) {
-			guy.placeAt(PORTAL_LEFT.x, PORTAL_LEFT.y, 0, 0);
+		if (guy.at(world.portalRight) && guy.dir == RIGHT) {
+			guy.placeAt(world.portalLeft.x, world.portalLeft.y, 0, 0);
 			return;
 		}
-		if (guy.at(PORTAL_LEFT) && guy.dir == LEFT) {
-			guy.placeAt(PORTAL_RIGHT.x, PORTAL_RIGHT.y, 0, 0);
+		if (guy.at(world.portalLeft) && guy.dir == LEFT) {
+			guy.placeAt(world.portalRight.x, world.portalRight.y, 0, 0);
 			return;
 		}
 		guy.couldMove = tryMoving(guy, guy.wishDir);
@@ -1126,10 +1113,10 @@ public class Game {
 	// Cheats
 
 	private void eatAllNormalPellets() {
-		for (int x = 0; x < WORLD_TILES.x; ++x) {
-			for (int y = 0; y < WORLD_TILES.y; ++y) {
-				if (world.isFoodTile(x, y) && !world.foodEatenAt(x, y) && !world.isEnergizerTile(x, y)) {
-					world.eatFood(x, y);
+		for (int x = 0; x < world.size.x; ++x) {
+			for (int y = 0; y < world.size.y; ++y) {
+				if (world.isFoodTile(x, y) && !world.foodRemoved(x, y) && !world.isEnergizerTile(x, y)) {
+					world.removeFood(x, y);
 				}
 			}
 		}

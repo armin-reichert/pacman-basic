@@ -10,34 +10,36 @@ import de.amr.games.pacman.lib.V2i;
  * The game world.
  * 
  * @author Armin Reichert
- *
  */
 public class World {
 
-	public static final int TS = 8;
-	public static final int HTS = TS / 2;
+	public static final int TS = 8, HTS = TS / 2;
 
-	public static final V2i WORLD_TILES = new V2i(28, 36);
+	public static int t(int nTiles) {
+		return nTiles * TS;
+	}
 
-	public static final V2i PORTAL_LEFT = new V2i(-1, 17);
-	public static final V2i PORTAL_RIGHT = new V2i(WORLD_TILES.x, 17);
+	public final V2i size = new V2i(28, 36);
 
-	public static final V2i PACMAN_HOME = new V2i(13, 26);
+	public final V2i portalLeft = new V2i(-1, 17);
+	public final V2i portalRight = new V2i(size.x, 17);
 
-	public static final V2i UPPER_RIGHT_CORNER = new V2i(WORLD_TILES.x - 3, 0);
-	public static final V2i UPPER_LEFT_CORNER = new V2i(2, 0);
-	public static final V2i LOWER_RIGHT_CORNER = new V2i(WORLD_TILES.x - 1, WORLD_TILES.y - 1);
-	public static final V2i LOWER_LEFT_CORNER = new V2i(0, WORLD_TILES.y - 1);
+	public final V2i pacManHome = new V2i(13, 26);
 
-	public static final V2i HOUSE_ENTRY = new V2i(13, 14);
-	public static final V2i HOUSE_CENTER = new V2i(13, 17);
-	public static final V2i HOUSE_LEFT = new V2i(11, 17);
-	public static final V2i HOUSE_RIGHT = new V2i(15, 17);
+	public final V2i upperRightScatterTile = new V2i(size.x - 3, 0);
+	public final V2i upperLeftScatterTile = new V2i(2, 0);
+	public final V2i lowerRightScatterTile = new V2i(size.x - 1, size.y - 1);
+	public final V2i lowerLeftScatterTile = new V2i(0, size.y - 1);
 
-	public static final int TOTAL_FOOD_COUNT = 244;
+	public final V2i houseEntry = new V2i(13, 14);
+	public final V2i houseCenter = new V2i(13, 17);
+	public final V2i houseLeft = new V2i(11, 17);
+	public final V2i houseRight = new V2i(15, 17);
 
-	private static int index(int x, int y) {
-		return y * WORLD_TILES.x + x;
+	public final int totalFoodCount = 244;
+
+	private int index(int x, int y) {
+		return y * size.x + x;
 	}
 
 	private static boolean is(int x, int y, int xx, int yy) {
@@ -85,7 +87,7 @@ public class World {
 			//@formatter:on
 	};
 
-	private final BitSet eatenFood = new BitSet(244);
+	private final BitSet eaten = new BitSet(244);
 	public int foodRemaining;
 
 	private char map(int x, int y) {
@@ -93,7 +95,7 @@ public class World {
 	}
 
 	public boolean inMapRange(int x, int y) {
-		return 0 <= x && x < WORLD_TILES.x && 0 <= y && y < WORLD_TILES.y;
+		return 0 <= x && x < size.x && 0 <= y && y < size.y;
 	}
 
 	public boolean isWall(int x, int y) {
@@ -136,24 +138,26 @@ public class World {
 	}
 
 	public boolean isPortalTile(int x, int y) {
-		return is(x, y, PORTAL_LEFT.x, PORTAL_LEFT.y) || is(x, y, PORTAL_RIGHT.x, PORTAL_RIGHT.y);
+		return is(x, y, portalLeft.x, portalLeft.y) || is(x, y, portalRight.x, portalRight.y);
 	}
 
 	public boolean isBonusTile(int x, int y) {
 		return is(x, y, 13, 20);
 	}
 
-	public boolean foodEatenAt(int x, int y) {
-		return eatenFood.get(index(x, y));
+	public boolean foodRemoved(int x, int y) {
+		return eaten.get(index(x, y));
+	}
+
+	public void removeFood(int x, int y) {
+		if (!foodRemoved(x, y)) {
+			eaten.set(index(x, y));
+			--foodRemaining;
+		}
 	}
 
 	public void restoreFood() {
-		eatenFood.clear();
-		foodRemaining = TOTAL_FOOD_COUNT;
-	}
-
-	public void eatFood(int x, int y) {
-		eatenFood.set(index(x, y));
-		--foodRemaining;
+		eaten.clear();
+		foodRemaining = totalFoodCount;
 	}
 }

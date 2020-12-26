@@ -1,7 +1,6 @@
 package de.amr.games.pacman.ui.swing;
 
 import static de.amr.games.pacman.core.World.TS;
-import static de.amr.games.pacman.core.World.WORLD_TILES;
 import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
@@ -62,7 +61,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 	public PacManGameSwingUI(Game game, float scaling) {
 		this.game = game;
 		this.scaling = scaling;
-		unscaledSize = new V2i(WORLD_TILES.x * TS, WORLD_TILES.y * TS);
+		unscaledSize = new V2i(game.world.size.x * TS, game.world.size.y * TS);
 		assets = new Assets();
 		introScene = new IntroScene(game, this, assets, unscaledSize);
 		playScene = new PlayScene(game, assets, unscaledSize);

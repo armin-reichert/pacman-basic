@@ -2,8 +2,7 @@ package de.amr.games.pacman.ui.swing;
 
 import static de.amr.games.pacman.core.World.HTS;
 import static de.amr.games.pacman.core.World.TS;
-import static de.amr.games.pacman.core.World.WORLD_TILES;
-import static de.amr.games.pacman.lib.Functions.t;
+import static de.amr.games.pacman.core.World.t;
 import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.dirIndex;
 import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.drawCenteredText;
 import static java.lang.Math.round;
@@ -97,7 +96,7 @@ class PlayScene {
 	}
 
 	private void drawLevelCounter(Graphics2D g) {
-		int x = t(WORLD_TILES.x - 4);
+		int x = t(game.world.size.x - 4);
 		int first = Math.max(1, game.level - 6);
 		for (int level = first; level <= game.level; ++level) {
 			BufferedImage symbol = assets.symbols[game.level(level).bonusSymbol];
@@ -127,9 +126,9 @@ class PlayScene {
 			return;
 		}
 		g.drawImage(assets.imageMazeFull, 0, t(3), null);
-		for (int x = 0; x < WORLD_TILES.x; ++x) {
-			for (int y = 0; y < WORLD_TILES.y; ++y) {
-				if (game.world.foodEatenAt(x, y)) {
+		for (int x = 0; x < game.world.size.x; ++x) {
+			for (int y = 0; y < game.world.size.y; ++y) {
+				if (game.world.foodRemoved(x, y)) {
 					hideTile(g, x, y);
 					continue;
 				}
@@ -231,8 +230,8 @@ class PlayScene {
 		Stroke thin = new BasicStroke(0.1f);
 		g.setColor(dark);
 		g.setStroke(thin);
-		for (int x = 0; x < WORLD_TILES.x; ++x) {
-			for (int y = 0; y < WORLD_TILES.y; ++y) {
+		for (int x = 0; x < game.world.size.x; ++x) {
+			for (int y = 0; y < game.world.size.y; ++y) {
 				if (game.world.isIntersectionTile(x, y)) {
 					for (Direction dir : Direction.values()) {
 						int nx = x + dir.vec.x, ny = y + dir.vec.y;
