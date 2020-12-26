@@ -79,7 +79,7 @@ public class World {
 		"1111111111111111111111111111";
 	//@formatter:on
 
-	private final BitSet eaten = new BitSet(244);
+	private final BitSet eaten = new BitSet();
 
 	private int index(int x, int y) {
 		return y * size.x + x;
