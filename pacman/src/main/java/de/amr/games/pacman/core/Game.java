@@ -363,12 +363,9 @@ public class Game {
 		//@formatter:on
 	};
 
-	private boolean inScatteringPhase() {
-		return huntingPhase % 2 == 0;
-	}
-
-	private boolean inChasingPhase() {
-		return huntingPhase % 2 != 0;
+	private long huntingPhaseDuration(int phase) {
+		int index = level == 1 ? 0 : level <= 4 ? 1 : 2;
+		return huntingTicks(HUNTING_PHASE_DURATION[index][phase]);
 	}
 
 	private long huntingTicks(short duration) {
@@ -381,14 +378,17 @@ public class Game {
 		return clock.sec(duration);
 	}
 
-	private long currentHuntingPhaseDuration() {
-		int index = level == 1 ? 0 : level <= 4 ? 1 : 2;
-		return huntingTicks(HUNTING_PHASE_DURATION[index][huntingPhase]);
+	private boolean inScatteringPhase() {
+		return huntingPhase % 2 == 0;
+	}
+
+	private boolean inChasingPhase() {
+		return huntingPhase % 2 != 0;
 	}
 
 	private void enterNextHuntingPhase() {
 		huntingPhase++;
-		state.setDuration(currentHuntingPhaseDuration());
+		state.setDuration(huntingPhaseDuration(huntingPhase));
 		forceGhostsTurningBack();
 		log("Game state updated to %s for %d ticks", stateDescription(), state.ticksRemaining());
 		if (inScatteringPhase()) {
@@ -416,25 +416,22 @@ public class Game {
 
 	private void enterHuntingState() {
 		huntingPhase = 0;
-		enterState(HUNTING, currentHuntingPhaseDuration());
+		enterState(HUNTING, huntingPhaseDuration(huntingPhase));
 		ui.loopSound(siren(huntingPhase));
 	}
 
 	private void runHuntingState() {
 
 		// Cheats
-
 		if (ui.keyPressed("e")) {
 			eatAllNormalPellets();
 		}
-
 		if (ui.keyPressed("x")) {
 			killAllGhosts();
 			exitHuntingState();
 			enterGhostDyingState();
 			return;
 		}
-
 		if (ui.keyPressed("l")) {
 			if (lives < Byte.MAX_VALUE) {
 				lives++;
@@ -445,8 +442,8 @@ public class Game {
 			enterNextHuntingPhase();
 		}
 
-		boolean metGhost = checkPacManGhostCollision();
-		if (metGhost) {
+		boolean ghostCollision = checkPacManGhostCollision();
+		if (ghostCollision) {
 			exitHuntingState();
 			if (pacMan.dead) {
 				enterPacManDyingState();
