@@ -422,20 +422,8 @@ public class Game {
 
 	private void runHuntingState() {
 
-		if (ui.keyPressed("left")) {
-			pacMan.wishDir = LEFT;
-		}
-		if (ui.keyPressed("right")) {
-			pacMan.wishDir = RIGHT;
-		}
-		if (ui.keyPressed("up")) {
-			pacMan.wishDir = UP;
-		}
-		if (ui.keyPressed("down")) {
-			pacMan.wishDir = DOWN;
-		}
+		// Cheats
 
-		// cheats
 		if (ui.keyPressed("e")) {
 			eatAllNormalPellets();
 		}
@@ -451,6 +439,10 @@ public class Game {
 			if (lives < Byte.MAX_VALUE) {
 				lives++;
 			}
+		}
+
+		if (state.expired()) {
+			enterNextHuntingPhase();
 		}
 
 		boolean metGhost = checkPacManGhostCollision();
@@ -469,6 +461,7 @@ public class Game {
 			enterChangingLevelState();
 			return;
 		}
+
 		checkPacManFindsFood();
 		checkPacManFindsBonus();
 
@@ -480,9 +473,6 @@ public class Game {
 
 		if (pacMan.powerTicksLeft == 0) {
 			state.tick();
-		}
-		if (state.expired()) {
-			enterNextHuntingPhase();
 		}
 	}
 
@@ -630,6 +620,7 @@ public class Game {
 
 	private void updatePacMan() {
 		if (pacMan.restingTicksLeft == 0) {
+			updatePacManDirection();
 			tryMoving(pacMan);
 		} else {
 			pacMan.restingTicksLeft--;
@@ -645,30 +636,39 @@ public class Game {
 		}
 	}
 
-	private Ghost ghostOnPacManPosition() {
-		V2i tile = pacMan.tile();
-		for (Ghost ghost : ghosts) {
-			if (!ghost.dead && tile.equals(ghost.tile())) {
-				return ghost;
-			}
+	private void updatePacManDirection() {
+		if (ui.keyPressed("left")) {
+			pacMan.wishDir = LEFT;
 		}
-		return null;
+		if (ui.keyPressed("right")) {
+			pacMan.wishDir = RIGHT;
+		}
+		if (ui.keyPressed("up")) {
+			pacMan.wishDir = UP;
+		}
+		if (ui.keyPressed("down")) {
+			pacMan.wishDir = DOWN;
+		}
+	}
+
+	private Stream<Ghost> ghostsOnPacManPosition() {
+		return Stream.of(ghosts).filter(ghost -> !ghost.dead).filter(ghost -> pacMan.tile().equals(ghost.tile()));
 	}
 
 	private boolean checkPacManGhostCollision() {
-		Ghost ghost = ghostOnPacManPosition();
+		Ghost ghost = ghostsOnPacManPosition().findAny().orElse(null);
 		if (ghost == null) {
 			return false;
 		}
 		if (ghost.frightened) {
 			killGhost(ghost);
 		} else {
-			pacMan.dead = true;
 			resetAndEnableGlobalDotCounter();
 			if (ghosts[BLINKY].elroyMode > 0) {
 				log("Blinky Elroy mode %d disabled", ghosts[BLINKY].elroyMode);
 				ghosts[BLINKY].elroyMode = (byte) -ghosts[BLINKY].elroyMode;
 			}
+			pacMan.dead = true;
 			log("Pac-Man killed by %s at tile %s", ghost.name(), ghost.tile());
 		}
 		return true;
