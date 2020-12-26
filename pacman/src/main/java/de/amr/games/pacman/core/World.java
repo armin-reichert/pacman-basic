@@ -37,14 +37,7 @@ public class World {
 	public final V2i houseRight = new V2i(15, 17);
 
 	public final int totalFoodCount = 244;
-
-	private int index(int x, int y) {
-		return y * size.x + x;
-	}
-
-	private static boolean is(int x, int y, int xx, int yy) {
-		return x == xx & y == yy;
-	}
+	public int foodRemaining;
 
 	private final String[] map = {
 			//@formatter:off
@@ -88,7 +81,14 @@ public class World {
 	};
 
 	private final BitSet eaten = new BitSet(244);
-	public int foodRemaining;
+
+	private int index(int x, int y) {
+		return y * size.x + x;
+	}
+
+	private boolean is(int x, int y, int xx, int yy) {
+		return x == xx & y == yy;
+	}
 
 	private char map(int x, int y) {
 		return map[y].charAt(x);
