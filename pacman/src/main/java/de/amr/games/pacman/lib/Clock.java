@@ -8,18 +8,42 @@ package de.amr.games.pacman.lib;
  */
 public class Clock {
 
-	public int targetFPS = 60;
-	public long fps;
-	public long frames;
-	public long framesTotal;
-	public long fpsCountStartTime;
+	public int targetFrequency = 60;
+	public long frequency;
+	public long ticksTotal;
+
+	private long ticksCounted;
+	private long ticksCountStart;
+
+	public void tick(Runnable work) {
+		long start, end, duration;
+		start = System.nanoTime();
+		work.run();
+		end = System.nanoTime();
+		duration = end - start;
+		++ticksTotal;
+		++ticksCounted;
+		if (end - ticksCountStart >= 1_000_000_000) {
+			frequency = ticksCounted;
+			ticksCounted = 0;
+			ticksCountStart = System.nanoTime();
+		}
+		long sleep = Math.max(1_000_000_000 / targetFrequency - duration, 0);
+		if (sleep > 0) {
+			try {
+				Thread.sleep(sleep / 1_000_000); // nanos -> millis
+			} catch (InterruptedException x) {
+				x.printStackTrace();
+			}
+		}
+	}
 
 	public int sec(double seconds) {
-		return (int) (seconds * targetFPS);
+		return (int) (seconds * targetFrequency);
 	}
 
 	public int frame(int frameTicks, int numFrames) {
-		return (int) (framesTotal / frameTicks) % numFrames;
+		return (int) (ticksTotal / frameTicks) % numFrames;
 	}
 
 	/**
@@ -29,7 +53,7 @@ public class Clock {
 	 * @param code          either code
 	 */
 	public void runOrBeIdle(int durationTicks, Runnable code) {
-		if (framesTotal % (2 * durationTicks) < durationTicks) {
+		if (ticksTotal % (2 * durationTicks) < durationTicks) {
 			code.run();
 		}
 	}
@@ -42,7 +66,7 @@ public class Clock {
 	 * @param otherCode     other code
 	 */
 	public void runAlternating(int durationTicks, Runnable eitherCode, Runnable otherCode) {
-		if (framesTotal % (2 * durationTicks) < durationTicks) {
+		if (ticksTotal % (2 * durationTicks) < durationTicks) {
 			eitherCode.run();
 		} else {
 			otherCode.run();
@@ -59,7 +83,7 @@ public class Clock {
 	 * @param andThen       code executed after one either/other phase has been executed
 	 */
 	public void runAlternating(int durationTicks, Runnable eitherCode, Runnable otherCode, Runnable andThen) {
-		long frame = framesTotal % (2 * durationTicks);
+		long frame = ticksTotal % (2 * durationTicks);
 		if (frame < durationTicks) {
 			eitherCode.run();
 		} else {
@@ -67,28 +91,6 @@ public class Clock {
 		}
 		if (frame == 2 * durationTicks - 1) {
 			andThen.run();
-		}
-	}
-
-	public void tick(Runnable frame) {
-		long frameStartTime = System.nanoTime();
-		frame.run();
-		long frameEndTime = System.nanoTime();
-		long frameDuration = frameEndTime - frameStartTime;
-		++frames;
-		++framesTotal;
-		if (frameEndTime - fpsCountStartTime >= 1_000_000_000) {
-			fps = frames;
-			frames = 0;
-			fpsCountStartTime = System.nanoTime();
-		}
-		long sleepTime = Math.max(1_000_000_000 / targetFPS - frameDuration, 0);
-		if (sleepTime > 0) {
-			try {
-				Thread.sleep(sleepTime / 1_000_000); // milliseconds
-			} catch (InterruptedException x) {
-				x.printStackTrace();
-			}
 		}
 	}
 }

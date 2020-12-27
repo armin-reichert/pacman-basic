@@ -166,7 +166,7 @@ public class Game {
 			gamePaused = !gamePaused;
 		}
 		if (ui.keyPressed("s")) {
-			clock.targetFPS = clock.targetFPS == 60 ? 30 : 60;
+			clock.targetFrequency = clock.targetFrequency == 60 ? 30 : 60;
 		}
 		if (ui.keyPressed("d")) {
 			ui.setDebugMode(!ui.isDebugMode());

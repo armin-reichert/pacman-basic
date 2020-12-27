@@ -155,7 +155,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 				playScene.draw(g);
 			}
 		}
-		invokeLater(() -> window.setTitle(String.format("Pac-Man (%d fps)", game.clock.fps)));
+		invokeLater(() -> window.setTitle(String.format("Pac-Man (%d fps)", game.clock.frequency)));
 	}
 
 	private void drawPausedScreen(Graphics2D g) {
