@@ -86,7 +86,7 @@ public class World {
 	}
 
 	private boolean is(int x, int y, int xx, int yy) {
-		return x == xx & y == yy;
+		return x == xx && y == yy;
 	}
 
 	private char map(int x, int y) {
