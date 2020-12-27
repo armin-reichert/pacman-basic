@@ -1,6 +1,6 @@
 package de.amr.games.pacman.core;
 
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.BitSet;
 import java.util.stream.Stream;
 
@@ -79,7 +79,7 @@ public class World {
 		"1111111111111111111111111111" +
 		"1111111111111111111111111111" +
 		"1111111111111111111111111111"
-	).getBytes(Charset.forName("UTF-8"));
+	).getBytes(StandardCharsets.UTF_8);
 	//@formatter:on
 
 	private final BitSet eaten = new BitSet();
