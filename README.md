@@ -7,6 +7,9 @@ The code here is more to the point than that in my other state-machine focussed 
 
 YouTube: https://www.youtube.com/watch?v=_L6YdSH7xis
 
+To build the executable:
+```mvn clean install assembly:single```
+
 ### Intro scene
 <img src="pacman/doc/intro.png">
 
