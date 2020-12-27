@@ -255,8 +255,17 @@ public class Game {
 	private void enterState(GameState newState, long ticks) {
 		state = newState;
 		state.setDuration(ticks);
+		logStateEntry();
+	}
+
+	private void logStateEntry() {
+		long ticks = state.duration();
 		String text = ticks == Long.MAX_VALUE ? "indefinite time" : ticks + " ticks";
-		log("Game enters state '%s' for %s", stateDescription(), text);
+		log("Enter state '%s' for %s", stateDescription(), text);
+	}
+
+	private void logStateExit() {
+		log("Exit state '%s'", stateDescription());
 	}
 
 	private void updateState() {
@@ -308,7 +317,7 @@ public class Game {
 
 	private void exitIntroState() {
 		ui.endIntroScene();
-		log("Exit '%s' state", stateDescription());
+		logStateExit();
 	}
 
 	// READY
@@ -337,7 +346,7 @@ public class Game {
 	}
 
 	private void exitReadyState() {
-		log("Exit '%s' state", stateDescription());
+		logStateExit();
 	}
 
 	// HUNTING
@@ -461,7 +470,7 @@ public class Game {
 	}
 
 	private void exitHuntingState() {
-		log("Exit '%s' state", stateDescription());
+		logStateExit();
 	}
 
 	// PACMAN_DYING
@@ -504,7 +513,7 @@ public class Game {
 		for (Ghost ghost : ghosts) {
 			ghost.visible = true;
 		}
-		log("Exit '%s' state", stateDescription());
+		logStateExit();
 	}
 
 	// GHOST_DYING
@@ -520,7 +529,7 @@ public class Game {
 		if (state.expired()) {
 			exitGhostDyingState();
 			state = previousState;
-			log("Resume '%s' state", state);
+			log("Resume state '%s'", state);
 			return;
 		}
 		for (Ghost ghost : ghosts) {
@@ -539,7 +548,7 @@ public class Game {
 		}
 		pacMan.visible = true;
 		ui.loopSound(Sound.RETREATING);
-		log("Exit '%s' state", stateDescription());
+		logStateExit();
 	}
 
 	// CHANGING_LEVEL
@@ -557,8 +566,7 @@ public class Game {
 
 	private void runChangingLevelState() {
 		if (state.expired()) {
-			log("Level %d complete, entering level %d", level, level + 1);
-			startLevel(++level);
+			exitChangingLevelState();
 			enterReadyState();
 			return;
 		}
@@ -571,6 +579,12 @@ public class Game {
 			mazeFlashesRemaining = level().numFlashes;
 		}
 		state.tick();
+	}
+
+	private void exitChangingLevelState() {
+		log("Level %d complete, entering level %d", level, level + 1);
+		startLevel(++level);
+		logStateExit();
 	}
 
 	// GAME_OVER
@@ -597,7 +611,7 @@ public class Game {
 
 	private void exitGameOverState() {
 		reset();
-		log("Exit '%s' state", stateDescription());
+		logStateExit();
 	}
 
 	// END STATE-MACHINE
