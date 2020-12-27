@@ -1,5 +1,6 @@
 package de.amr.games.pacman.core;
 
+import java.nio.charset.Charset;
 import java.util.BitSet;
 import java.util.stream.Stream;
 
@@ -39,8 +40,9 @@ public class World {
 	public final int totalFoodCount = 244;
 	public int foodRemaining;
 
-	private final String map =
+	private final byte[] map =
 	//@formatter:off
+	(
 		"1111111111111111111111111111" +
 		"1111111111111111111111111111" +
 		"1111111111111111111111111111" +
@@ -76,7 +78,8 @@ public class World {
 		"1222222222222222222222222221" +
 		"1111111111111111111111111111" +
 		"1111111111111111111111111111" +
-		"1111111111111111111111111111";
+		"1111111111111111111111111111"
+	).getBytes(Charset.forName("UTF-8"));
 	//@formatter:on
 
 	private final BitSet eaten = new BitSet();
@@ -89,8 +92,8 @@ public class World {
 		return x == xx && y == yy;
 	}
 
-	private char map(int x, int y) {
-		return map.charAt(index(x, y));
+	private byte map(int x, int y) {
+		return map[index(x, y)];
 	}
 
 	public boolean inMapRange(int x, int y) {
