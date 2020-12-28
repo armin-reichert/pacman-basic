@@ -82,6 +82,10 @@ public class World {
 	).getBytes(StandardCharsets.UTF_8);
 	//@formatter:on
 
+	public World() {
+		foodRemaining = totalFoodCount;
+	}
+
 	private final BitSet eaten = new BitSet();
 
 	private int index(int x, int y) {
