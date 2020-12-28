@@ -51,9 +51,7 @@ public class Assets {
 	public final Map<Sound, String> soundPaths;
 
 	public Assets() {
-
 		spriteSheet = image("/sprites.png");
-
 		imageLogo = image("/logo.png");
 		imageMazeFull = image("/maze_full.png");
 		imageMazeEmpty = image("/maze_empty.png");
@@ -116,12 +114,12 @@ public class Assets {
 	public BufferedImage image(String path) {
 		InputStream is = getClass().getResourceAsStream(path);
 		if (is == null) {
-			throw new RuntimeException(String.format("Could not access resource, path='%s'", path));
+			throw new AssetsException("Could not load resource for image with path '%s'", path);
 		}
 		try {
 			return ImageIO.read(is);
 		} catch (IOException x) {
-			throw new RuntimeException(String.format("Could not load image, path='%s'", path));
+			throw new AssetsException("Could not load image with path '%s'", path);
 		}
 	}
 
@@ -129,9 +127,9 @@ public class Assets {
 		try (InputStream fontData = getClass().getResourceAsStream(fontPath)) {
 			return Font.createFont(Font.TRUETYPE_FONT, fontData).deriveFont((float) size);
 		} catch (IOException x) {
-			throw new RuntimeException(String.format("Could not access font, path='%s'", fontPath));
+			throw new AssetsException("Could not load font with path '%s'", fontPath);
 		} catch (FontFormatException x) {
-			throw new RuntimeException(String.format("Could not create font, path='%s'", fontPath));
+			throw new AssetsException("Could not create font with path '%s'", fontPath);
 		}
 	}
 }
