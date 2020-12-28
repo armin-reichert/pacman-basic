@@ -2,7 +2,6 @@ package de.amr.games.pacman.ui.swing;
 
 import static de.amr.games.pacman.core.World.TS;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
-import static java.awt.EventQueue.invokeLater;
 
 import java.awt.Canvas;
 import java.awt.Color;
@@ -14,6 +13,7 @@ import java.awt.event.WindowEvent;
 import java.awt.image.BufferStrategy;
 
 import javax.swing.JFrame;
+import javax.swing.Timer;
 
 import de.amr.games.pacman.core.Game;
 import de.amr.games.pacman.core.GameState;
@@ -81,6 +81,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 	@Override
 	public void show() {
+		new Timer(1000, e -> window.setTitle(String.format("Pac-Man (%d fps)", game.clock.frequency))).start();
 		window.pack();
 		window.setLocationRelativeTo(null);
 		window.setVisible(true);
@@ -144,7 +145,6 @@ public class PacManGameSwingUI implements PacManGameUI {
 				playScene.draw(g);
 			}
 		}
-		invokeLater(() -> window.setTitle(String.format("Pac-Man (%d fps)", game.clock.frequency)));
 	}
 
 	private void drawPausedScreen(Graphics2D g) {
