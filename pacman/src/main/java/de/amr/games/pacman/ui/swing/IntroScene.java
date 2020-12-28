@@ -4,7 +4,6 @@ import static de.amr.games.pacman.core.World.TS;
 import static de.amr.games.pacman.core.World.t;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
-import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.dirIndex;
 import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.drawCenteredText;
 
 import java.awt.Color;
@@ -198,11 +197,11 @@ class IntroScene {
 
 	private BufferedImage pacManWalking(Direction dir) {
 		int frame = game.clock.frame(5, 3);
-		return frame == 2 ? assets.sheet(frame, 0) : assets.sheet(frame, dirIndex(dir));
+		return frame == 2 ? assets.sheet(frame, 0) : assets.sheet(frame, Assets.DIR_INDEX.get(dir));
 	}
 
 	private BufferedImage ghostWalking(Direction dir, int ghost) {
-		return assets.sheet(2 * dirIndex(dir) + game.clock.frame(5, 2), 4 + ghost);
+		return assets.sheet(2 * Assets.DIR_INDEX.get(dir) + game.clock.frame(5, 2), 4 + ghost);
 	}
 
 	private BufferedImage ghostFrightened() {

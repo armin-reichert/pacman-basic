@@ -1,10 +1,7 @@
 package de.amr.games.pacman.ui.swing;
 
 import static de.amr.games.pacman.core.World.TS;
-import static de.amr.games.pacman.lib.Direction.DOWN;
-import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
-import static de.amr.games.pacman.lib.Direction.UP;
 import static java.awt.EventQueue.invokeLater;
 
 import java.awt.Canvas;
@@ -15,13 +12,11 @@ import java.awt.RenderingHints;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferStrategy;
-import java.util.Map;
 
 import javax.swing.JFrame;
 
 import de.amr.games.pacman.core.Game;
 import de.amr.games.pacman.core.GameState;
-import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.PacManGameUI;
 import de.amr.games.pacman.ui.Sound;
@@ -33,15 +28,9 @@ import de.amr.games.pacman.ui.Sound;
  */
 public class PacManGameSwingUI implements PacManGameUI {
 
-	static final Map<Direction, Integer> DIR_INDEX = Map.of(RIGHT, 0, LEFT, 1, UP, 2, DOWN, 3);
-
 	static void drawCenteredText(Graphics2D g, String text, int y, int width) {
 		int textWidth = g.getFontMetrics().stringWidth(text);
 		g.drawString(text, (width - textWidth) / 2, y);
-	}
-
-	static int dirIndex(Direction dir) {
-		return DIR_INDEX.get(dir);
 	}
 
 	private final Assets assets;
@@ -71,7 +60,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 		soundManager = new SoundManager(assets);
 
 		window.setTitle("Pac-Man");
-		window.setIconImage(assets.sheet(1, dirIndex(RIGHT)));
+		window.setIconImage(assets.sheet(1, Assets.DIR_INDEX.get(RIGHT)));
 		window.setResizable(false);
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		window.addWindowListener(new WindowAdapter() {

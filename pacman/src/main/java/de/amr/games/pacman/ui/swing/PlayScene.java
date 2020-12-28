@@ -3,7 +3,6 @@ package de.amr.games.pacman.ui.swing;
 import static de.amr.games.pacman.core.World.HTS;
 import static de.amr.games.pacman.core.World.TS;
 import static de.amr.games.pacman.core.World.t;
-import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.dirIndex;
 import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.drawCenteredText;
 import static java.lang.Math.round;
 
@@ -152,12 +151,12 @@ class PlayScene {
 
 	private void drawPacMan(Graphics2D g, PacMan pacMan) {
 		if (pacMan.visible) {
-			g.drawImage(selectSprite(pacMan), round(pacMan.position.x - HTS), round(pacMan.position.y - HTS), null);
+			g.drawImage(sprite(pacMan), round(pacMan.position.x - HTS), round(pacMan.position.y - HTS), null);
 		}
 	}
 
-	private BufferedImage selectSprite(PacMan pacMan) {
-		int dir = dirIndex(pacMan.dir);
+	private BufferedImage sprite(PacMan pacMan) {
+		int dir = Assets.DIR_INDEX.get(pacMan.dir);
 		if (pacMan.collapsingTicksLeft > 0) { // collapsing animation
 			int frame = 13 - (int) pacMan.collapsingTicksLeft / 8;
 			frame = Math.max(frame, 3);
@@ -176,12 +175,12 @@ class PlayScene {
 
 	private void drawGhost(Graphics2D g, Ghost ghost) {
 		if (ghost.visible) {
-			g.drawImage(selectSprite(ghost), round(ghost.position.x - HTS), round(ghost.position.y - HTS), null);
+			g.drawImage(sprite(ghost), round(ghost.position.x - HTS), round(ghost.position.y - HTS), null);
 		}
 	}
 
-	private BufferedImage selectSprite(Ghost ghost) {
-		int dir = dirIndex(ghost.wishDir);
+	private BufferedImage sprite(Ghost ghost) {
+		int dir = Assets.DIR_INDEX.get(ghost.wishDir);
 		int walking = ghost.speed == 0 ? 0 : game.clock.frame(5, 2);
 		if (ghost.bounty > 0) {
 			// show as number
