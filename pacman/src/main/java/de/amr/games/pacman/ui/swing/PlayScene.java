@@ -181,27 +181,35 @@ class PlayScene {
 	}
 
 	private BufferedImage selectSprite(Ghost ghost) {
-		int dir = dirIndex(ghost.dir);
+		int dir = dirIndex(ghost.wishDir);
 		int walking = ghost.speed == 0 ? 0 : game.clock.frame(5, 2);
-		if (ghost.bounty > 0) { // show as number
+		if (ghost.bounty > 0) {
+			// show as number
 			return assets.numbers.get(ghost.bounty);
-		} else if (ghost.dead) { // show eyes looking towards move direction
+		}
+		if (ghost.dead) {
+			// eyes looking towards intended move direction
 			return assets.sheet(8 + dir, 5);
-		} else if (ghost.frightened) {
-			// TODO flash exactly as often as specified by level
-			if (game.pacMan.powerTicksLeft < game.clock.sec(2) && ghost.speed != 0) {
-				// ghost flashing blue/white, animated walking
+		}
+		if (ghost.frightened) {
+			if (game.pacMan.powerTicksLeft <= game.clock.sec(2) && ghost.speed != 0) {
+				// TODO flash exactly as often as specified by level
+				// flashing blue/white, walking animation
 				int flashing = game.clock.frame(10, 2) == 0 ? 8 : 10;
 				return assets.sheet(walking + flashing, 4);
-			} else { // blue ghost, animated walking
-				return assets.sheet(8 + walking, 4);
 			}
-		} else {
-			return assets.sheet(2 * dir + walking, 4 + ghost.id);
+			// blue, walking animation
+			return assets.sheet(8 + walking, 4);
 		}
+		if (ghost.locked && game.pacMan.powerTicksLeft > 0) {
+			// blue, walking animation
+			return assets.sheet(8 + walking, 4);
+		}
+		// colored, walking animation, looking towards intended move direction
+		return assets.sheet(2 * dir + walking, 4 + ghost.id);
 	}
 
-	// debug
+	// debug drawing stuff
 
 	static final Polygon TRIANGLE = new Polygon(new int[] { -4, 4, 0 }, new int[] { 0, 0, 4 }, 3);
 
