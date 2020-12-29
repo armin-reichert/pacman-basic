@@ -57,7 +57,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 		this.scaling = scaling;
 		unscaledSize = new V2i(game.world.size.x * TS, game.world.size.y * TS);
 		assets = new Assets();
-		introScene = new IntroScene(game, this, assets, unscaledSize);
+		introScene = new IntroScene(game, assets, unscaledSize);
 		playScene = new PlayScene(game, assets, unscaledSize);
 
 		window = new JFrame();

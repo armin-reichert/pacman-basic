@@ -33,7 +33,6 @@ class IntroScene {
 	//@formatter:on
 
 	public final Game game;
-	public final PacManGameSwingUI ui;
 	public final Assets assets;
 	public final V2i size;
 
@@ -43,9 +42,8 @@ class IntroScene {
 	private int killedGhost;
 	private boolean ghostsChasingPacMan;
 
-	public IntroScene(Game game, PacManGameSwingUI ui, Assets assets, V2i size) {
+	public IntroScene(Game game, Assets assets, V2i size) {
 		this.game = game;
-		this.ui = ui;
 		this.assets = assets;
 		this.size = size;
 	}
@@ -71,9 +69,9 @@ class IntroScene {
 	}
 
 	public void mute() {
-		ui.stopSound(Sound.SIREN_1);
-		ui.stopSound(Sound.PACMAN_POWER);
-		ui.stopSound(Sound.GHOST_DEATH);
+		game.ui.stopSound(Sound.SIREN_1);
+		game.ui.stopSound(Sound.PACMAN_POWER);
+		game.ui.stopSound(Sound.GHOST_DEATH);
 	}
 
 	public void draw(Graphics2D g) {
@@ -92,7 +90,7 @@ class IntroScene {
 			int ghostAnimationStart = 3 + 2 * ghost;
 			int y = t(10 + 3 * ghost);
 			at_second(ghostAnimationStart, () -> {
-				ui.playSound(Sound.CREDIT);
+				game.ui.playSound(Sound.CREDIT);
 			});
 			after_second(ghostAnimationStart, () -> {
 				g.drawImage(assets.sheet(0, 4 + ghost), t(2) - 3, y - 2, null);
@@ -110,7 +108,7 @@ class IntroScene {
 		});
 
 		at_second(13, () -> {
-			ui.loopSound(Sound.SIREN_1);
+			game.ui.loopSound(Sound.SIREN_1);
 		});
 
 		after_second(13, () -> {
@@ -178,8 +176,8 @@ class IntroScene {
 			leftmostGhostX -= 0.8f;
 		} else {
 			ghostsChasingPacMan = false;
-			ui.stopSound(Sound.SIREN_1);
-			ui.loopSound(Sound.PACMAN_POWER);
+			game.ui.stopSound(Sound.SIREN_1);
+			game.ui.loopSound(Sound.PACMAN_POWER);
 		}
 	}
 
@@ -195,7 +193,7 @@ class IntroScene {
 				g.drawImage(assets.numbers.get(bounty), x, y, null);
 				if (killedGhost != ghost) {
 					killedGhost++;
-					ui.playSound(Sound.GHOST_DEATH);
+					game.ui.playSound(Sound.GHOST_DEATH);
 				}
 			}
 		}
@@ -204,7 +202,7 @@ class IntroScene {
 			pacManX += 0.6f;
 			leftmostGhostX += 0.3f;
 		} else {
-			ui.stopSound(Sound.PACMAN_POWER);
+			game.ui.stopSound(Sound.PACMAN_POWER);
 		}
 	}
 
