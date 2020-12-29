@@ -129,7 +129,20 @@ public class Game {
 	}
 
 	public void start() {
-		new Thread(this::run, "GameLoop").start();
+		reset();
+		ui.show();
+		enterIntroState();
+		new Thread(this::gameLoop, "GameLoop").start();
+	}
+
+	private void gameLoop() {
+		do {
+			clock.tick(() -> {
+				readInput();
+				updateState();
+				ui.render();
+			});
+		} while (true);
 	}
 
 	public void exit() {
@@ -148,20 +161,7 @@ public class Game {
 		return level(level);
 	}
 
-	private void run() {
-		reset();
-		ui.show();
-		enterIntroState();
-		while (true) {
-			clock.tick(() -> {
-				handleGlobalInput();
-				updateState();
-				ui.render();
-			});
-		}
-	}
-
-	private void handleGlobalInput() {
+	private void readInput() {
 		if (ui.keyPressed("p")) {
 			gamePaused = !gamePaused;
 		}
