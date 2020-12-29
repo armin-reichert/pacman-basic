@@ -8,10 +8,6 @@ import static de.amr.games.pacman.core.Game.GRAPES;
 import static de.amr.games.pacman.core.Game.KEY;
 import static de.amr.games.pacman.core.Game.PEACH;
 import static de.amr.games.pacman.core.Game.STRAWBERRY;
-import static de.amr.games.pacman.lib.Direction.DOWN;
-import static de.amr.games.pacman.lib.Direction.LEFT;
-import static de.amr.games.pacman.lib.Direction.RIGHT;
-import static de.amr.games.pacman.lib.Direction.UP;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -35,7 +31,13 @@ import de.amr.games.pacman.ui.Sound;
  */
 public class Assets {
 
-	public static final Map<Direction, Integer> DIR_INDEX = Map.of(RIGHT, 0, LEFT, 1, UP, 2, DOWN, 3);
+	public static final Map<Direction, Integer> DIR_INDEX = new HashMap<>();
+	static {
+		DIR_INDEX.put(Direction.RIGHT, 0);
+		DIR_INDEX.put(Direction.LEFT, 1);
+		DIR_INDEX.put(Direction.UP, 2);
+		DIR_INDEX.put(Direction.DOWN, 3);
+	}
 
 	public static final Color[] GHOST_COLORS = { Color.RED, Color.PINK, Color.CYAN, Color.ORANGE };
 
