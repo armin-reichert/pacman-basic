@@ -103,6 +103,8 @@ public class Game {
 	public short globalDotCounter;
 	public boolean globalDotCounterEnabled;
 
+	public boolean autoPilot;
+
 	public Game() {
 		clock = new Clock();
 		rnd = new Random();
@@ -161,6 +163,9 @@ public class Game {
 		}
 		if (ui.keyPressed("d")) {
 			ui.setDebugMode(!ui.isDebugMode());
+		}
+		if (ui.keyPressed("a")) {
+			autoPilot = !autoPilot;
 		}
 	}
 
@@ -499,7 +504,9 @@ public class Game {
 	}
 
 	private void exitPacManDyingState() {
-		lives -= 1;
+		if (!autoPilot) {
+			lives -= 1;
+		}
 		pacMan.collapsingTicksLeft = 0;
 		for (Ghost ghost : ghosts) {
 			ghost.visible = true;
@@ -626,6 +633,14 @@ public class Game {
 	}
 
 	private void updatePacManDirection() {
+		if (autoPilot) {
+			controlPacManAutomatically();
+		} else {
+			controlPacManByKeys();
+		}
+	}
+
+	private void controlPacManByKeys() {
 		if (ui.keyPressed("left")) {
 			pacMan.wishDir = LEFT;
 		}
@@ -637,6 +652,12 @@ public class Game {
 		}
 		if (ui.keyPressed("down")) {
 			pacMan.wishDir = DOWN;
+		}
+	}
+
+	private void controlPacManAutomatically() {
+		if (!pacMan.couldMove || world.isIntersectionTile(pacMan.tile().x, pacMan.tile().y)) {
+			pacMan.wishDir = randomMoveDir(pacMan);
 		}
 	}
 
