@@ -11,6 +11,7 @@ import java.awt.RenderingHints;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferStrategy;
+import java.awt.image.BufferedImage;
 
 import javax.swing.JFrame;
 import javax.swing.Timer;
@@ -28,9 +29,13 @@ import de.amr.games.pacman.ui.Sound;
  */
 public class PacManGameSwingUI implements PacManGameUI {
 
-	static void drawCenteredText(Graphics2D g, String text, int y, int width) {
+	public static void drawCenteredText(Graphics2D g, String text, int y, int width) {
 		int textWidth = g.getFontMetrics().stringWidth(text);
 		g.drawString(text, (width - textWidth) / 2, y);
+	}
+
+	public static void drawCenteredImage(Graphics2D g, BufferedImage image, int y, int width) {
+		g.drawImage(image, (width - image.getWidth()) / 2, y, null);
 	}
 
 	private final Assets assets;
