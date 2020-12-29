@@ -47,18 +47,10 @@ import de.amr.games.pacman.ui.Sound;
  */
 public class Game {
 
-	/*@formatter:off*/
-	
-	public static final byte 
-		CHERRIES   = 0, 
-		STRAWBERRY = 1, 
-		PEACH      = 2, 
-		APPLE      = 3, 
-		GRAPES     = 4, 
-		GALAXIAN   = 5, 
-		BELL       = 6,
-		KEY        = 7;
+	public static final byte CHERRIES = 0, STRAWBERRY = 1, PEACH = 2, APPLE = 3, GRAPES = 4, GALAXIAN = 5, BELL = 6,
+			KEY = 7;
 
+	/*@formatter:off*/
 	static final Level[] LEVELS = {
 		/* 1*/ new Level(CHERRIES,   100,  80, 75, 40,  20,  80, 10,  85,  90, 50, 6, 5),
 		/* 2*/ new Level(STRAWBERRY, 300,  90, 85, 45,  30,  90, 15,  95,  95, 55, 5, 5),
@@ -82,7 +74,6 @@ public class Game {
 		/*20*/ new Level(KEY,       5000, 100, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0),
 		/*21*/ new Level(KEY,       5000,  90, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0)
 	};
-	
 	/*@formatter:on*/
 
 	static final Direction[] DIRECTION_PRIORITY = { UP, LEFT, DOWN, RIGHT };
