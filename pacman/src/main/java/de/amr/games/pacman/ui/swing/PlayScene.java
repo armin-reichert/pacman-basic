@@ -28,10 +28,9 @@ import de.amr.games.pacman.lib.V2i;
  */
 class PlayScene {
 
-	public final Game game;
-	public final Assets assets;
-	public final V2i size;
-	public boolean debugMode;
+	private final Game game;
+	private final Assets assets;
+	private final V2i size;
 
 	public PlayScene(Game game, Assets assets, V2i size) {
 		this.game = game;
@@ -144,7 +143,7 @@ class PlayScene {
 			BufferedImage image = assets.numbers.get(game.level().bonusPoints);
 			g.drawImage(image, (size.x - image.getWidth()) / 2, t(20) - HTS, null);
 		}
-		if (debugMode) {
+		if (game.ui.isDebugMode()) {
 			drawMazeStructure(g);
 		}
 	}
@@ -213,7 +212,7 @@ class PlayScene {
 	static final Polygon TRIANGLE = new Polygon(new int[] { -4, 4, 0 }, new int[] { 0, 0, 4 }, 3);
 
 	private void drawDebugInfo(Graphics2D g) {
-		if (debugMode) {
+		if (game.ui.isDebugMode()) {
 			long remaining = game.state.ticksRemaining();
 			String ticksText = remaining == Long.MAX_VALUE ? "forever" : remaining + " ticks remaining";
 			String stateText = String.format("%s (%s)", game.stateDescription(), ticksText);

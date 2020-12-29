@@ -104,7 +104,6 @@ public class PacManGameSwingUI implements PacManGameUI {
 	@Override
 	public void setDebugMode(boolean debug) {
 		debugMode = debug;
-		playScene.debugMode = debug;
 	}
 
 	@Override
