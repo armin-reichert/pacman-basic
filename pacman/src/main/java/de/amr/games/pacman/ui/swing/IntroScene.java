@@ -32,10 +32,9 @@ class IntroScene {
 	};
 	//@formatter:on
 
-	public final Game game;
-	public final Assets assets;
-	public final V2i size;
-
+	private final Game game;
+	private final Assets assets;
+	private final V2i size;
 	private long animationTime;
 	private float pacManX;
 	private float leftmostGhostX;
