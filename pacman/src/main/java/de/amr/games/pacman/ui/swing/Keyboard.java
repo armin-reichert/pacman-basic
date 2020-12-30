@@ -10,7 +10,7 @@ import java.util.BitSet;
  * 
  * @author Armin Reichert
  */
-public class Keyboard {
+class Keyboard {
 
 	private final BitSet pressedKeys = new BitSet(256);
 

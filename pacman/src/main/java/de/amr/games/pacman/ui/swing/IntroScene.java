@@ -3,8 +3,6 @@ package de.amr.games.pacman.ui.swing;
 import static de.amr.games.pacman.core.World.t;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
-import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.drawCenteredImage;
-import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.drawCenteredText;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -21,7 +19,7 @@ import de.amr.games.pacman.ui.Sound;
  * 
  * @author Armin Reichert
  */
-class IntroScene {
+class IntroScene extends Scene {
 
 	//@formatter:off
 	static final Object[][] GHOST_INTRO_TEXTS = {
@@ -32,9 +30,6 @@ class IntroScene {
 	};
 	//@formatter:on
 
-	private final Game game;
-	private final Assets assets;
-	private final V2i size;
 	private long animationTime;
 	private float pacManX;
 	private float leftmostGhostX;
@@ -42,9 +37,7 @@ class IntroScene {
 	private boolean ghostsChasingPacMan;
 
 	public IntroScene(Game game, Assets assets, V2i size) {
-		this.game = game;
-		this.assets = assets;
-		this.size = size;
+		super(game, assets, size);
 	}
 
 	private void after_second(double sec, Runnable code) {
@@ -76,13 +69,13 @@ class IntroScene {
 	public void draw(Graphics2D g) {
 
 		after_second(1, () -> {
-			drawCenteredImage(g, assets.imageLogo, 3, size.x);
+			drawCenteredImage(g, assets.imageLogo, 3);
 		});
 
 		after_second(2, () -> {
 			g.setColor(Color.WHITE);
 			g.setFont(assets.scoreFont);
-			drawCenteredText(g, "CHARACTER / NICKNAME", t(8), size.x);
+			drawCenteredText(g, "CHARACTER / NICKNAME", t(8));
 		});
 
 		IntStream.rangeClosed(0, 3).forEach(ghost -> {
@@ -131,7 +124,7 @@ class IntroScene {
 		g.setColor(Color.ORANGE);
 		g.setFont(assets.scoreFont);
 		game.clock.runOrBeIdle(20, () -> {
-			drawCenteredText(g, "Press any key to play!", size.y - 20, size.x);
+			drawCenteredText(g, "Press any key to play!", size.y - 20);
 		});
 	}
 

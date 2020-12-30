@@ -29,7 +29,7 @@ import de.amr.games.pacman.ui.Sound;
  * 
  * @author Armin Reichert
  */
-public class Assets {
+class Assets {
 
 	public static final Map<Direction, Integer> DIR_INDEX = new HashMap<>();
 	static {

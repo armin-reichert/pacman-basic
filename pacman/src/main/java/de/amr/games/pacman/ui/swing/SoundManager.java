@@ -14,7 +14,7 @@ import de.amr.games.pacman.ui.Sound;
  * 
  * @author Armin Reichert
  */
-public class SoundManager {
+class SoundManager {
 
 	private final Assets assets;
 	private final Map<Sound, Clip> clips = new EnumMap<>(Sound.class);

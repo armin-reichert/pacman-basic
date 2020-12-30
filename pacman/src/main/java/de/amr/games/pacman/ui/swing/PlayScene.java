@@ -3,7 +3,6 @@ package de.amr.games.pacman.ui.swing;
 import static de.amr.games.pacman.core.World.HTS;
 import static de.amr.games.pacman.core.World.TS;
 import static de.amr.games.pacman.core.World.t;
-import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.drawCenteredText;
 import static java.lang.Math.round;
 import static java.util.stream.IntStream.range;
 
@@ -27,16 +26,10 @@ import de.amr.games.pacman.lib.V2i;
  * 
  * @author Armin Reichert
  */
-class PlayScene {
-
-	private final Game game;
-	private final Assets assets;
-	private final V2i size;
+class PlayScene extends Scene {
 
 	public PlayScene(Game game, Assets assets, V2i size) {
-		this.game = game;
-		this.assets = assets;
-		this.size = size;
+		super(game, assets, size);
 	}
 
 	public void draw(Graphics2D g) {
@@ -56,11 +49,11 @@ class PlayScene {
 		if (game.state == GameState.READY) {
 			g.setFont(assets.scoreFont);
 			g.setColor(Color.YELLOW);
-			drawCenteredText(g, "Ready!", t(21), size.x);
+			drawCenteredText(g, "Ready!", t(21));
 		} else if (game.state == GameState.GAME_OVER) {
 			g.setFont(assets.scoreFont);
 			g.setColor(Color.RED);
-			drawCenteredText(g, "Game  Over!", t(21), size.x);
+			drawCenteredText(g, "Game  Over!", t(21));
 		}
 	}
 
