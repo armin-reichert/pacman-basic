@@ -1122,7 +1122,7 @@ public class Game {
 			})
 			.collect(Collectors.toList());
 		//@formatter:on
-		return dirs.get(new Random().nextInt(dirs.size()));
+		return dirs.get(rnd.nextInt(dirs.size()));
 	}
 
 	// Score
