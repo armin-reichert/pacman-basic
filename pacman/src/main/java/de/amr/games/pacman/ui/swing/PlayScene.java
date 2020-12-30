@@ -5,6 +5,7 @@ import static de.amr.games.pacman.core.World.TS;
 import static de.amr.games.pacman.core.World.t;
 import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.drawCenteredText;
 import static java.lang.Math.round;
+import static java.util.stream.IntStream.range;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -124,19 +125,15 @@ class PlayScene {
 			return;
 		}
 		g.drawImage(assets.imageMazeFull, 0, t(3), null);
-		for (int x = 0; x < game.world.size.x; ++x) {
-			for (int y = 0; y < game.world.size.y; ++y) {
+		range(0, game.world.size.x).forEach(x -> {
+			range(4, game.world.size.y - 3).forEach(y -> {
 				if (game.world.foodRemoved(x, y)) {
 					hideTile(g, x, y);
-					continue;
+				} else if (game.state == GameState.HUNTING && game.world.isEnergizerTile(x, y)) {
+					game.clock.runOrBeIdle(10, () -> hideTile(g, x, y));
 				}
-				// energizer blinking?
-				if (game.state == GameState.HUNTING && game.world.isEnergizerTile(x, y)) {
-					int xx = x, yy = y;
-					game.clock.runOrBeIdle(10, () -> hideTile(g, xx, yy));
-				}
-			}
-		}
+			});
+		});
 		if (game.bonusAvailableTicks > 0) {
 			g.drawImage(assets.symbols[game.level().bonusSymbol], t(13), t(20) - HTS, null);
 		} else if (game.bonusConsumedTicks > 0) {
