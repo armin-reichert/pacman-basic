@@ -1114,7 +1114,7 @@ public class Game {
 		if (world.isGhostHouseDoor(x, y)) {
 			return guy instanceof Ghost && (((Ghost) guy).enteringHouse || ((Ghost) guy).leavingHouse);
 		}
-		return !world.isWall(x, y);
+		return world.inMapRange(x, y) && !world.isWall(x, y);
 	}
 
 	private Direction randomMoveDir(Creature guy) {
