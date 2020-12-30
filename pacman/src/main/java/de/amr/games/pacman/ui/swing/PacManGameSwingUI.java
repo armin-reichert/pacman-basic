@@ -142,8 +142,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 	}
 
 	private void drawPausedScreen(Graphics2D g) {
-		int w = assets.imageLogo.getWidth();
-		g.drawImage(assets.imageLogo, (unscaledSize.width - w) / 2, 3, null);
+		g.drawImage(assets.imageLogo, (unscaledSize.width - assets.imageLogo.getWidth()) / 2, 3, null);
 		g.setColor(new Color(200, 200, 200, 100));
 		g.fillRect(0, 0, unscaledSize.width, unscaledSize.height);
 		g.setColor(Color.GREEN);
