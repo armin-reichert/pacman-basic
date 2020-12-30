@@ -477,6 +477,9 @@ public class Game {
 	private void enterPacManDyingState() {
 		enterState(PACMAN_DYING, clock.sec(6));
 		pacMan.speed = 0;
+		for (Ghost ghost : ghosts) {
+			ghost.speed = 0;
+		}
 		ui.stopAllSounds();
 	}
 
@@ -521,7 +524,7 @@ public class Game {
 
 	private void enterGhostDyingState() {
 		previousState = state;
-		enterState(GHOST_DYING, clock.sec(0.75));
+		enterState(GHOST_DYING, clock.sec(1));
 		pacMan.visible = false;
 		ui.playSound(Sound.GHOST_DEATH);
 	}
