@@ -909,7 +909,7 @@ public class Game {
 	}
 
 	private void letGhostHeadForTargetTile(Ghost ghost) {
-		ghostWishDir(ghost).ifPresent(dir -> ghost.wishDir = dir);
+		newGhostWishDir(ghost).ifPresent(dir -> ghost.wishDir = dir);
 		tryMoving(ghost);
 	}
 
@@ -979,13 +979,13 @@ public class Game {
 		tryMoving(ghost);
 	}
 
-	private Optional<Direction> ghostWishDir(Ghost ghost) {
+	private Optional<Direction> newGhostWishDir(Ghost ghost) {
 		if (!ghost.changedTile) {
 			return Optional.empty();
 		}
 		if (ghost.forcedTurningBack) {
 			ghost.forcedTurningBack = false;
-			return Optional.of(ghost.wishDir.opposite());
+			return Optional.of(ghost.dir.opposite());
 		}
 		V2i tile = ghost.tile();
 		if (world.isPortalTile(tile.x, tile.y)) {
@@ -1008,15 +1008,13 @@ public class Game {
 			if (!canAccessTile(ghost, neighbor.x, neighbor.y)) {
 				continue;
 			}
-			if (dir == UP && world.isUpwardsBlocked(neighbor.x, neighbor.y)) {
-				if (!ghost.frightened && !ghost.dead) {
-					continue;
-				}
+			if (dir == UP && world.isUpwardsBlocked(neighbor.x, neighbor.y) && !ghost.frightened && !ghost.dead) {
+				continue;
 			}
 			double dist = neighbor.distance(ghost.targetTile);
 			if (dist < minDist) {
-				minDistDir = dir;
 				minDist = dist;
+				minDistDir = dir;
 			}
 		}
 		return Optional.ofNullable(minDistDir);
