@@ -239,6 +239,10 @@ public class Game {
 
 	// BEGIN STATE-MACHINE
 
+	public String ticksDescription(long ticks) {
+		return ticks == Long.MAX_VALUE ? "indefinite time" : ticks + " ticks";
+	}
+
 	public String stateDescription() {
 		if (state == HUNTING) {
 			String phaseName = inChasingPhase() ? "Chasing" : "Scattering";
@@ -255,9 +259,7 @@ public class Game {
 	}
 
 	private void logStateEntry() {
-		long ticks = state.duration();
-		String text = ticks == Long.MAX_VALUE ? "indefinite time" : ticks + " ticks";
-		log("Enter state '%s' for %s", stateDescription(), text);
+		log("Enter state '%s' for %s", stateDescription(), ticksDescription(state.duration()));
 	}
 
 	private void logStateExit() {
@@ -382,13 +384,13 @@ public class Game {
 		huntingPhase++;
 		state.setDuration(huntingPhaseDuration(huntingPhase));
 		forceGhostsTurningBack();
-		log("Game state updated to %s for %d ticks", stateDescription(), state.ticksRemaining());
 		if (inScatteringPhase()) {
 			if (huntingPhase >= 2) {
 				ui.stopSound(siren(huntingPhase - 2));
 			}
 			ui.loopSound(siren(huntingPhase));
 		}
+		log("Game state updated to '%s' for %s", stateDescription(), ticksDescription(state.ticksRemaining()));
 	}
 
 	private static Sound siren(int huntingPhase) {
@@ -822,9 +824,10 @@ public class Game {
 
 	private void tryReleasingGhost(Ghost ghost) {
 		if (globalDotCounterEnabled && globalDotCounter >= globalDotLimit(ghost)) {
-			releaseGhost(ghost, "Global dot counter is %d", globalDotCounter);
+			releaseGhost(ghost, "Global dot counter (%d) reached limit (%d)", globalDotCounter, globalDotLimit(ghost));
 		} else if (!globalDotCounterEnabled && ghost.dotCounter >= privateDotLimit(ghost)) {
-			releaseGhost(ghost, "%s's dot counter is %d", ghost.name(), ghost.dotCounter);
+			releaseGhost(ghost, "%s's dot counter (%d) reached limit (%d)", ghost.name(), ghost.dotCounter,
+					privateDotLimit(ghost));
 		}
 	}
 
