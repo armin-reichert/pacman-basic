@@ -34,6 +34,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 	private final Dimension unscaledSize;
 	private final float scaling;
 	private final JFrame window;
+	private final Timer windowTitleUpdate;
 	private final Canvas canvas;
 	private final Keyboard keyboard;
 	private final SoundManager soundManager;
@@ -55,7 +56,6 @@ public class PacManGameSwingUI implements PacManGameUI {
 		keyboard = new Keyboard(window);
 		soundManager = new SoundManager(assets);
 
-		window.setTitle("Pac-Man");
 		window.setIconImage(assets.sheet(1, Assets.DIR_INDEX.get(RIGHT)));
 		window.setResizable(false);
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -66,18 +66,19 @@ public class PacManGameSwingUI implements PacManGameUI {
 				onExit();
 			}
 		});
+		window.setTitle("Pac-Man");
+		windowTitleUpdate = new Timer(1000, e -> window.setTitle(String.format("Pac-Man (%d fps)", game.clock.frequency)));
 
 		canvas = new Canvas();
 		canvas.setBackground(Color.BLACK);
 		canvas.setSize((int) (unscaledSize.width * scaling), (int) (unscaledSize.height * scaling));
 		canvas.setFocusable(false);
 		window.add(canvas);
-
 	}
 
 	@Override
 	public void show() {
-		new Timer(1000, e -> window.setTitle(String.format("Pac-Man (%d fps)", game.clock.frequency))).start();
+		windowTitleUpdate.start();
 		window.pack();
 		window.setLocationRelativeTo(null);
 		window.setVisible(true);
