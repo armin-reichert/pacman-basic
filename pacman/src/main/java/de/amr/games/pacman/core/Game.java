@@ -18,6 +18,7 @@ import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Direction.UP;
+import static de.amr.games.pacman.lib.Functions.differsAtMost;
 import static de.amr.games.pacman.lib.Logging.log;
 import static java.lang.Math.abs;
 
@@ -30,7 +31,6 @@ import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.Clock;
 import de.amr.games.pacman.lib.Direction;
-import de.amr.games.pacman.lib.Functions;
 import de.amr.games.pacman.lib.Hiscore;
 import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
@@ -384,7 +384,7 @@ public class Game {
 	private void enterNextHuntingPhase() {
 		huntingPhase++;
 		state.setDuration(huntingPhaseDuration(huntingPhase));
-		forceGhostsTurningBack();
+		forceHuntingGhostsTurningBack();
 		if (inScatteringPhase()) {
 			if (huntingPhase >= 2) {
 				ui.stopSound(siren(huntingPhase - 2));
@@ -709,7 +709,7 @@ public class Game {
 
 	private void onPacManStarved() {
 		pacMan.starvingTicks++;
-		if (pacMan.starvingTicks >= starvingTimeLimit()) {
+		if (pacMan.starvingTicks >= pacManStarvingTimeLimit()) {
 			preferredLockedGhost().ifPresent(ghost -> {
 				releaseGhost(ghost, "Pac-Man has been starving for %d ticks", pacMan.starvingTicks);
 				pacMan.starvingTicks = 0;
@@ -748,7 +748,7 @@ public class Game {
 					ghost.frightened = true;
 				}
 			}
-			forceGhostsTurningBack();
+			forceHuntingGhostsTurningBack();
 			ui.loopSound(Sound.PACMAN_POWER);
 		}
 	}
@@ -824,11 +824,11 @@ public class Game {
 	}
 
 	private void tryReleasingGhost(Ghost ghost) {
-		if (globalDotCounterEnabled && globalDotCounter >= globalDotLimit(ghost)) {
-			releaseGhost(ghost, "Global dot counter (%d) reached limit (%d)", globalDotCounter, globalDotLimit(ghost));
-		} else if (!globalDotCounterEnabled && ghost.dotCounter >= privateDotLimit(ghost)) {
+		if (globalDotCounterEnabled && globalDotCounter >= ghostGlobalDotLimit(ghost)) {
+			releaseGhost(ghost, "Global dot counter (%d) reached limit (%d)", globalDotCounter, ghostGlobalDotLimit(ghost));
+		} else if (!globalDotCounterEnabled && ghost.dotCounter >= ghostPrivateDotLimit(ghost)) {
 			releaseGhost(ghost, "%s's dot counter (%d) reached limit (%d)", ghost.name(), ghost.dotCounter,
-					privateDotLimit(ghost));
+					ghostPrivateDotLimit(ghost));
 		}
 	}
 
@@ -846,7 +846,7 @@ public class Game {
 		return Stream.of(ghosts[PINKY], ghosts[INKY], ghosts[CLYDE]).filter(ghost -> ghost.locked).findFirst();
 	}
 
-	private int privateDotLimit(Ghost ghost) {
+	private int ghostPrivateDotLimit(Ghost ghost) {
 		if (ghost.id == INKY) {
 			return level == 1 ? 30 : 0;
 		}
@@ -856,7 +856,7 @@ public class Game {
 		return 0;
 	}
 
-	private int globalDotLimit(Ghost ghost) {
+	private int ghostGlobalDotLimit(Ghost ghost) {
 		return ghost.id == PINKY ? 7 : ghost.id == INKY ? 17 : Integer.MAX_VALUE;
 	}
 
@@ -866,7 +866,7 @@ public class Game {
 		log("Global dot counter reset and enabled");
 	}
 
-	private int starvingTimeLimit() {
+	private int pacManStarvingTimeLimit() {
 		return level < 5 ? clock.sec(4) : clock.sec(3);
 	}
 
@@ -930,7 +930,7 @@ public class Game {
 	}
 
 	private boolean atGhostHouseDoor(Creature guy) {
-		return guy.at(world.houseEntry) && Functions.differsAtMost(guy.offset().x, HTS, 2);
+		return guy.at(world.houseEntry) && differsAtMost(guy.offset().x, HTS, 2);
 	}
 
 	private void letGhostEnterHouse(Ghost ghost) {
@@ -956,7 +956,7 @@ public class Game {
 	private void letGhostLeaveHouse(Ghost ghost) {
 		V2f offset = ghost.offset();
 		// house left?
-		if (ghost.at(world.houseEntry) && Functions.differsAtMost(offset.y, 0, 1)) {
+		if (ghost.at(world.houseEntry) && differsAtMost(offset.y, 0, 1)) {
 			ghost.setOffset(HTS, 0);
 			ghost.dir = ghost.wishDir = LEFT;
 			ghost.forcedOnTrack = true;
@@ -964,7 +964,7 @@ public class Game {
 			return;
 		}
 		// center of house reached?
-		if (ghost.at(world.houseCenter) && Functions.differsAtMost(offset.x, 3, 1)) {
+		if (ghost.at(world.houseCenter) && differsAtMost(offset.x, 3, 1)) {
 			ghost.setOffset(HTS, 0);
 			ghost.wishDir = UP;
 			tryMoving(ghost);
@@ -1028,7 +1028,7 @@ public class Game {
 		return !ghost.dead && !ghost.locked && !ghost.enteringHouse && !ghost.leavingHouse && !ghost.frightened;
 	}
 
-	private void forceGhostsTurningBack() {
+	private void forceHuntingGhostsTurningBack() {
 		for (Ghost ghost : ghosts) {
 			if (isGhostHunting(ghost)) {
 				ghost.forcedTurningBack = true;
