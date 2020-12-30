@@ -8,6 +8,7 @@ import static java.util.stream.IntStream.range;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
@@ -19,7 +20,6 @@ import de.amr.games.pacman.core.GameState;
 import de.amr.games.pacman.core.Ghost;
 import de.amr.games.pacman.core.PacMan;
 import de.amr.games.pacman.lib.Direction;
-import de.amr.games.pacman.lib.V2i;
 
 /**
  * Scene where the game is played.
@@ -28,7 +28,7 @@ import de.amr.games.pacman.lib.V2i;
  */
 class PlayScene extends Scene {
 
-	public PlayScene(Game game, Assets assets, V2i size) {
+	public PlayScene(Game game, Assets assets, Dimension size) {
 		super(game, assets, size);
 	}
 
@@ -76,7 +76,7 @@ class PlayScene extends Scene {
 	}
 
 	private void drawLivesCounter(Graphics2D g) {
-		int y = size.y - t(2);
+		int y = size.height - t(2);
 		for (int i = 0; i < Math.min(game.lives - 1, 3); ++i) {
 			g.drawImage(assets.imageLive, t(2 * (i + 1)), y, null);
 		}
@@ -92,7 +92,7 @@ class PlayScene extends Scene {
 		int first = Math.max(1, game.level - 6);
 		for (int level = first; level <= game.level; ++level) {
 			BufferedImage symbol = assets.symbols[game.level(level).bonusSymbol];
-			g.drawImage(symbol, x, size.y - t(2), null);
+			g.drawImage(symbol, x, size.height - t(2), null);
 			x -= t(2);
 		}
 	}
@@ -131,7 +131,7 @@ class PlayScene extends Scene {
 			g.drawImage(assets.symbols[game.level().bonusSymbol], t(13), t(20) - HTS, null);
 		} else if (game.bonusConsumedTicks > 0) {
 			BufferedImage image = assets.numbers.get(game.level().bonusPoints);
-			g.drawImage(image, (size.x - image.getWidth()) / 2, t(20) - HTS, null);
+			g.drawImage(image, (size.width - image.getWidth()) / 2, t(20) - HTS, null);
 		}
 		if (game.ui.isDebugMode()) {
 			drawMazeStructure(g);

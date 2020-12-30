@@ -5,13 +5,13 @@ import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.stream.IntStream;
 
 import de.amr.games.pacman.core.Game;
 import de.amr.games.pacman.lib.Direction;
-import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.Sound;
 
 /**
@@ -36,7 +36,7 @@ class IntroScene extends Scene {
 	private int killedGhost;
 	private boolean ghostsChasingPacMan;
 
-	public IntroScene(Game game, Assets assets, V2i size) {
+	public IntroScene(Game game, Assets assets, Dimension size) {
 		super(game, assets, size);
 	}
 
@@ -54,7 +54,7 @@ class IntroScene extends Scene {
 
 	public void reset() {
 		animationTime = 0;
-		pacManX = size.x;
+		pacManX = size.width;
 		leftmostGhostX = pacManX + 24;
 		killedGhost = -1;
 		ghostsChasingPacMan = true;
@@ -124,7 +124,7 @@ class IntroScene extends Scene {
 		g.setColor(Color.ORANGE);
 		g.setFont(assets.scoreFont);
 		game.clock.runOrBeIdle(20, () -> {
-			drawCenteredText(g, "Press any key to play!", size.y - 20);
+			drawCenteredText(g, "Press any key to play!", size.height - 20);
 		});
 	}
 
@@ -190,7 +190,7 @@ class IntroScene extends Scene {
 			}
 		}
 		g.drawImage(pacManWalkingSprite(RIGHT), (int) pacManX, y, null);
-		if (pacManX < size.x) {
+		if (pacManX < size.width) {
 			pacManX += 0.6f;
 			leftmostGhostX += 0.3f;
 		} else {

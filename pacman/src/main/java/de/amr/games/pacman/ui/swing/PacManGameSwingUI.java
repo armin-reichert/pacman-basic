@@ -6,6 +6,7 @@ import static de.amr.games.pacman.lib.Direction.RIGHT;
 
 import java.awt.Canvas;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -18,7 +19,6 @@ import javax.swing.Timer;
 
 import de.amr.games.pacman.core.Game;
 import de.amr.games.pacman.core.GameState;
-import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.PacManGameUI;
 import de.amr.games.pacman.ui.Sound;
 
@@ -31,7 +31,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 	private final Assets assets;
 	private final Game game;
-	private final V2i unscaledSize;
+	private final Dimension unscaledSize;
 	private final float scaling;
 	private final JFrame window;
 	private final Canvas canvas;
@@ -46,7 +46,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 	public PacManGameSwingUI(Game game, float scaling) {
 		this.game = game;
 		this.scaling = scaling;
-		unscaledSize = new V2i(game.world.size.x * TS, game.world.size.y * TS);
+		unscaledSize = new Dimension(game.world.size.x * TS, game.world.size.y * TS);
 		assets = new Assets();
 		introScene = new IntroScene(game, assets, unscaledSize);
 		playScene = new PlayScene(game, assets, unscaledSize);
@@ -69,7 +69,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 		canvas = new Canvas();
 		canvas.setBackground(Color.BLACK);
-		canvas.setSize((int) (unscaledSize.x * scaling), (int) (unscaledSize.y * scaling));
+		canvas.setSize((int) (unscaledSize.width * scaling), (int) (unscaledSize.height * scaling));
 		canvas.setFocusable(false);
 		window.add(canvas);
 
@@ -144,13 +144,13 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 	private void drawPausedScreen(Graphics2D g) {
 		int w = assets.imageLogo.getWidth();
-		g.drawImage(assets.imageLogo, (unscaledSize.x - w) / 2, 3, null);
+		g.drawImage(assets.imageLogo, (unscaledSize.width - w) / 2, 3, null);
 		g.setColor(new Color(200, 200, 200, 100));
-		g.fillRect(0, 0, unscaledSize.x, unscaledSize.y);
+		g.fillRect(0, 0, unscaledSize.width, unscaledSize.height);
 		g.setColor(Color.GREEN);
 		g.setFont(new Font(Font.MONOSPACED, Font.BOLD, 28));
 		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-		g.drawString("PAUSED", (unscaledSize.x - g.getFontMetrics().stringWidth("PAUSED")) / 2, t(16));
+		g.drawString("PAUSED", (unscaledSize.width - g.getFontMetrics().stringWidth("PAUSED")) / 2, t(16));
 		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
 	}
 
