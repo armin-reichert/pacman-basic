@@ -19,6 +19,7 @@ import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.lib.Logging.log;
+import static java.lang.Math.abs;
 
 import java.util.Arrays;
 import java.util.List;
@@ -1054,28 +1055,29 @@ public class Game {
 
 	private boolean tryMoving(Creature guy, Direction dir) {
 		guy.updateSpeed(world, level());
+		// 100% speed corresponds to 1.25 pixels/tick (75px/sec)
+		float pixelSpeed = guy.speed * 1.25f;
+
 		V2i tile = guy.tile();
 		V2f offset = guy.offset();
 		V2i neighbor = tile.sum(dir.vec);
-		// 100% speed corresponds to 1.25 pixels/tick
-		float pixelsMoving = guy.speed * 1.25f;
 
-		// check if guy can take the given direction at its current position
+		// check if guy can change its direction now
 		if (guy.forcedOnTrack && canAccessTile(guy, neighbor.x, neighbor.y)) {
 			if (dir == LEFT || dir == RIGHT) {
-				if (Math.abs(offset.y) > pixelsMoving) {
+				if (abs(offset.y) > pixelSpeed) {
 					return false;
 				}
 				guy.setOffset(offset.x, 0);
 			} else if (dir == UP || dir == DOWN) {
-				if (Math.abs(offset.x) > pixelsMoving) {
+				if (abs(offset.x) > pixelSpeed) {
 					return false;
 				}
 				guy.setOffset(0, offset.y);
 			}
 		}
 
-		V2f velocity = new V2f(dir.vec).scaled(pixelsMoving);
+		V2f velocity = new V2f(dir.vec).scaled(pixelSpeed);
 		V2f newPosition = guy.position.sum(velocity);
 		V2i newTile = tile(newPosition);
 		V2f newOffset = offset(newPosition);

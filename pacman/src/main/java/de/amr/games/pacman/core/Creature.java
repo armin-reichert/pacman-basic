@@ -10,9 +10,8 @@ import de.amr.games.pacman.lib.V2i;
  * Base class for Pac-Man and ghosts.
  * 
  * @author Armin Reichert
- *
  */
-public class Creature {
+public abstract class Creature {
 
 	/** Left upper corner of collision box */
 	public V2f position;
@@ -34,13 +33,9 @@ public class Creature {
 				tile(), offset(), dir, wishDir, speed, changedTile, couldMove);
 	}
 
-	public void updateSpeed(World world, Level level) {
+	public abstract void updateSpeed(World world, Level level);
 
-	}
-
-	public String name() {
-		return super.toString();
-	}
+	public abstract String name();
 
 	public void placeAt(int x, int y, float offsetX, float offsetY) {
 		position = new V2f(x * TS + offsetX, y * TS + offsetY);
