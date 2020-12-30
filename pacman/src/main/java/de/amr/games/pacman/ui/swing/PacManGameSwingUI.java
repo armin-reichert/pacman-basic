@@ -117,7 +117,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 	@Override
 	public boolean keyPressed(String keySpec) {
 		boolean pressed = keyboard.keyPressed(keySpec);
-		keyboard.clearKey(keySpec);
+		keyboard.clearKey(keySpec); // TODO
 		return pressed;
 	}
 
@@ -134,12 +134,10 @@ public class PacManGameSwingUI implements PacManGameUI {
 	private void drawCurrentScene(Graphics2D g) {
 		if (game.gamePaused) {
 			drawPausedScreen(g);
+		} else if (game.state == GameState.INTRO) {
+			introScene.draw(g);
 		} else {
-			if (game.state == GameState.INTRO) {
-				introScene.draw(g);
-			} else {
-				playScene.draw(g);
-			}
+			playScene.draw(g);
 		}
 	}
 
