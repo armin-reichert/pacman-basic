@@ -11,9 +11,7 @@ import static de.amr.games.pacman.core.Game.STRAWBERRY;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.FontFormatException;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -114,13 +112,9 @@ class Assets {
 	}
 
 	public BufferedImage image(String path) {
-		InputStream is = getClass().getResourceAsStream(path);
-		if (is == null) {
-			throw new AssetsException("Could not load resource for image with path '%s'", path);
-		}
-		try {
+		try (InputStream is = getClass().getResourceAsStream(path)) {
 			return ImageIO.read(is);
-		} catch (IOException x) {
+		} catch (Exception x) {
 			throw new AssetsException("Could not load image with path '%s'", path);
 		}
 	}
@@ -128,10 +122,8 @@ class Assets {
 	public Font font(String fontPath, int size) {
 		try (InputStream fontData = getClass().getResourceAsStream(fontPath)) {
 			return Font.createFont(Font.TRUETYPE_FONT, fontData).deriveFont((float) size);
-		} catch (IOException x) {
+		} catch (Exception x) {
 			throw new AssetsException("Could not load font with path '%s'", fontPath);
-		} catch (FontFormatException x) {
-			throw new AssetsException("Could not create font with path '%s'", fontPath);
 		}
 	}
 }
