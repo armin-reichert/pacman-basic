@@ -67,7 +67,7 @@ class PlayScene extends Scene {
 		g.setColor(Color.YELLOW);
 		g.drawString(String.format("%08d", game.score), t(1), t(2));
 		g.setColor(Color.LIGHT_GRAY);
-		g.drawString(String.format("L%02d", game.level), t(9), t(2));
+		g.drawString(String.format("L%02d", game.levelNumber), t(9), t(2));
 		g.setColor(Color.YELLOW);
 		g.drawString(String.format("%08d", game.hiscore.points), t(16), t(2));
 		g.setColor(Color.LIGHT_GRAY);
@@ -89,8 +89,8 @@ class PlayScene extends Scene {
 
 	private void drawLevelCounter(Graphics2D g) {
 		int x = t(game.world.size.x - 4);
-		int first = Math.max(1, game.level - 6);
-		for (int level = first; level <= game.level; ++level) {
+		int first = Math.max(1, game.levelNumber - 6);
+		for (int level = first; level <= game.levelNumber; ++level) {
 			BufferedImage symbol = assets.symbols[game.level(level).bonusSymbol];
 			g.drawImage(symbol, x, size.height - t(2), null);
 			x -= t(2);

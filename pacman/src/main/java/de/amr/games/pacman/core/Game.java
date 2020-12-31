@@ -92,7 +92,7 @@ public class Game {
 
 	public GameState state;
 	public GameState previousState;
-	public short level;
+	public short levelNumber;
 	public byte huntingPhase;
 	public byte lives;
 	public int score;
@@ -152,7 +152,7 @@ public class Game {
 	}
 
 	public Level level() {
-		return level(level);
+		return level(levelNumber);
 	}
 
 	private void readInput() {
@@ -178,8 +178,8 @@ public class Game {
 		startLevel(1); // first level is 1
 	}
 
-	private void startLevel(int levelNumber) {
-		level = (short) levelNumber;
+	private void startLevel(int number) {
+		levelNumber = (short) number;
 		huntingPhase = 0;
 		mazeFlashesRemaining = 0;
 		ghostBounty = 200;
@@ -359,7 +359,7 @@ public class Game {
 	};
 
 	private long huntingPhaseDuration(int phase) {
-		int index = level == 1 ? 0 : level <= 4 ? 1 : 2;
+		int index = levelNumber == 1 ? 0 : levelNumber <= 4 ? 1 : 2;
 		return huntingTicks(HUNTING_PHASE_DURATION[index][phase]);
 	}
 
@@ -586,8 +586,8 @@ public class Game {
 	}
 
 	private void exitChangingLevelState() {
-		log("Level %d complete, entering level %d", level, level + 1);
-		startLevel(++level);
+		log("Level %d complete, entering level %d", levelNumber, levelNumber + 1);
+		startLevel(++levelNumber);
 		logStateExit();
 	}
 
@@ -851,10 +851,10 @@ public class Game {
 
 	private int ghostPrivateDotLimit(Ghost ghost) {
 		if (ghost.id == INKY) {
-			return level == 1 ? 30 : 0;
+			return levelNumber == 1 ? 30 : 0;
 		}
 		if (ghost.id == CLYDE) {
-			return level == 1 ? 60 : level == 2 ? 50 : 0;
+			return levelNumber == 1 ? 60 : levelNumber == 2 ? 50 : 0;
 		}
 		return 0;
 	}
@@ -870,7 +870,7 @@ public class Game {
 	}
 
 	private int pacManStarvingTimeLimit() {
-		return level < 5 ? clock.sec(4) : clock.sec(3);
+		return levelNumber < 5 ? clock.sec(4) : clock.sec(3);
 	}
 
 	private V2i ghostChasingTarget(Ghost ghost) {
@@ -1140,7 +1140,7 @@ public class Game {
 			lives++;
 			ui.playSound(Sound.EXTRA_LIFE);
 		}
-		hiscore.update(score, level);
+		hiscore.update(score, levelNumber);
 	}
 
 	// Cheats
