@@ -22,7 +22,7 @@ import de.amr.games.pacman.ui.Sound;
  */
 class IntroScene extends Scene {
 
-	private final ResourceBundle resources = ResourceBundle.getBundle("IntroScene");
+	private final ResourceBundle resources = ResourceBundle.getBundle("localization.IntroScene");
 	private float pacManX;
 	private float leftmostGhostX;
 	private int killedGhost;
@@ -123,13 +123,13 @@ class IntroScene extends Scene {
 
 	private void drawGhostCharacterAndName(Graphics2D g, int ghostID, int y, boolean both) {
 		String character = resources.getString("GHOST." + ghostID + ".CHARACTER");
-		String nickname = resources.getString("GHOST." + ghostID + ".NICKNAME");
+		String nickname = "\"" + resources.getString("GHOST." + ghostID + ".NICKNAME") + "\"";
 		Color color = Assets.GHOST_COLORS[ghostID];
 		g.setColor(color);
 		g.setFont(assets.scoreFont);
 		g.drawString("-" + character, t(4), y + 11);
 		if (both) {
-			g.drawString(nickname, t(16), y + 11);
+			g.drawString(nickname, t(15), y + 11);
 		}
 	}
 

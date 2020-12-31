@@ -14,6 +14,7 @@ import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.Stroke;
 import java.awt.image.BufferedImage;
+import java.util.ResourceBundle;
 
 import de.amr.games.pacman.core.Game;
 import de.amr.games.pacman.core.GameState;
@@ -27,6 +28,8 @@ import de.amr.games.pacman.lib.Direction;
  * @author Armin Reichert
  */
 class PlayScene extends Scene {
+
+	private final ResourceBundle resources = ResourceBundle.getBundle("localization.PlayScene");
 
 	public PlayScene(Game game, Assets assets, Dimension size) {
 		super(game, assets, size);
@@ -49,11 +52,11 @@ class PlayScene extends Scene {
 		if (game.state == GameState.READY) {
 			g.setFont(assets.scoreFont);
 			g.setColor(Color.YELLOW);
-			drawCenteredText(g, "Ready!", t(21));
+			drawCenteredText(g, resources.getString("READY"), t(21));
 		} else if (game.state == GameState.GAME_OVER) {
 			g.setFont(assets.scoreFont);
 			g.setColor(Color.RED);
-			drawCenteredText(g, "Game  Over!", t(21));
+			drawCenteredText(g, resources.getString("GAME_OVER"), t(21));
 		}
 	}
 
@@ -61,8 +64,8 @@ class PlayScene extends Scene {
 		g.setFont(assets.scoreFont);
 		g.translate(0, 2);
 		g.setColor(Color.WHITE);
-		g.drawString("SCORE", t(1), t(1));
-		g.drawString("HIGH SCORE", t(16), t(1));
+		g.drawString(resources.getString("SCORE"), t(1), t(1));
+		g.drawString(resources.getString("HI_SCORE"), t(16), t(1));
 		g.translate(0, 1);
 		g.setColor(Color.YELLOW);
 		g.drawString(String.format("%08d", game.score), t(1), t(2));
