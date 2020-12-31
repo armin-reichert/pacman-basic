@@ -939,20 +939,21 @@ public class Game {
 	}
 
 	private void letGhostEnterHouse(Ghost ghost) {
+		V2i tile = ghost.tile();
 		V2f offset = ghost.offset();
-		// target reached?
-		if (ghost.at(ghost.targetTile) && offset.y >= 0) {
-			ghost.wishDir = ghost.dir.opposite();
+		// Target reached? Revive and start leaving house.
+		if (tile.equals(ghost.targetTile) && offset.y >= 0) {
 			ghost.dead = false;
 			ghost.enteringHouse = false;
 			ghost.leavingHouse = true;
 			if (Arrays.stream(ghosts).noneMatch(g -> g.dead)) {
 				ui.stopSound(Sound.RETREATING);
 			}
+			ghost.wishDir = ghost.dir.opposite();
 			return;
 		}
-		// move sidewards towards target tile?
-		if (ghost.at(world.houseCenter) && offset.y >= 0) {
+		// House center reached? Move sidewards towards target tile
+		if (tile.equals(world.houseCenter) && offset.y >= 0) {
 			ghost.wishDir = ghost.targetTile.x < world.houseCenter.x ? LEFT : RIGHT;
 		}
 		ghost.couldMove = tryMoving(ghost, ghost.wishDir);
@@ -973,7 +974,7 @@ public class Game {
 		if (tile.x == world.houseCenter.x && differsAtMost(offset.x, 3, 1)) {
 			ghost.setOffset(HTS, offset.y);
 			ghost.wishDir = UP;
-			tryMoving(ghost);
+			ghost.couldMove = tryMoving(ghost, ghost.wishDir);
 			return;
 		}
 		// move towards center
