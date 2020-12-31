@@ -8,6 +8,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.util.ResourceBundle;
 import java.util.stream.IntStream;
 
 import de.amr.games.pacman.core.Game;
@@ -21,15 +22,7 @@ import de.amr.games.pacman.ui.Sound;
  */
 class IntroScene extends Scene {
 
-	//@formatter:off
-	static final Object[][] GHOST_INTRO_TEXTS = {
-		{ "SHADOW ", "\"BLINKY\"", Color.RED }, 
-		{ "SPEEDY ", "\"PINKY\"",  Color.PINK },
-		{ "BASHFUL", "\"INKY\"",   Color.CYAN }, 
-		{ "POKEY  ", "\"CLYDE\"",  Color.ORANGE }
-	};
-	//@formatter:on
-
+	private final ResourceBundle resources = ResourceBundle.getBundle("IntroScene");
 	private float pacManX;
 	private float leftmostGhostX;
 	private int killedGhost;
@@ -62,22 +55,22 @@ class IntroScene extends Scene {
 		game.state.runAfter(game.clock.sec(2), () -> {
 			g.setColor(Color.WHITE);
 			g.setFont(assets.scoreFont);
-			drawCenteredText(g, "CHARACTER / NICKNAME", t(8));
+			drawCenteredText(g, resources.getString("CHARACTER_NICKNAME"), t(8));
 		});
 
 		IntStream.rangeClosed(0, 3).forEach(ghost -> {
-			int ghostAnimationStart = 3 + 2 * ghost;
+			int ghostStart = 3 + 2 * ghost;
 			int y = t(10 + 3 * ghost);
-			game.state.runAt(game.clock.sec(ghostAnimationStart), () -> {
+			game.state.runAt(game.clock.sec(ghostStart), () -> {
 				game.ui.playSound(Sound.CREDIT);
 			});
-			game.state.runAfter(game.clock.sec(ghostAnimationStart), () -> {
+			game.state.runAfter(game.clock.sec(ghostStart), () -> {
 				g.drawImage(assets.sheet(0, 4 + ghost), t(2) - 3, y - 2, null);
 			});
-			game.state.runAfter(game.clock.sec(ghostAnimationStart + 0.5), () -> {
+			game.state.runAfter(game.clock.sec(ghostStart + 0.5), () -> {
 				drawGhostCharacterAndName(g, ghost, y, false);
 			});
-			game.state.runAfter(game.clock.sec(ghostAnimationStart + 1), () -> {
+			game.state.runAfter(game.clock.sec(ghostStart + 1), () -> {
 				drawGhostCharacterAndName(g, ghost, y, true);
 			});
 		});
@@ -109,7 +102,7 @@ class IntroScene extends Scene {
 		g.setColor(Color.ORANGE);
 		g.setFont(assets.scoreFont);
 		game.clock.runOrBeIdle(20, () -> {
-			drawCenteredText(g, "Press any key to play!", size.height - 20);
+			drawCenteredText(g, resources.getString("PRESS_ANY_KEY_TO_PLAY"), size.height - 20);
 		});
 	}
 
@@ -124,18 +117,20 @@ class IntroScene extends Scene {
 		g.drawString("10", t(12), t(28));
 		g.drawString("50", t(12), t(30));
 		g.setFont(assets.scoreFont.deriveFont(6f));
-		g.drawString("PTS", t(15), t(28));
-		g.drawString("PTS", t(15), t(30));
+		g.drawString(resources.getString("POINTS"), t(15), t(28));
+		g.drawString(resources.getString("POINTS"), t(15), t(30));
 	}
 
 	private void drawGhostCharacterAndName(Graphics2D g, int ghostID, int y, boolean both) {
-		String character = (String) GHOST_INTRO_TEXTS[ghostID][0];
-		String nickname = (String) GHOST_INTRO_TEXTS[ghostID][1];
-		Color color = (Color) GHOST_INTRO_TEXTS[ghostID][2];
-		String text = both ? character + "    " + nickname : character;
+		String character = resources.getString("GHOST." + ghostID + ".CHARACTER");
+		String nickname = resources.getString("GHOST." + ghostID + ".NICKNAME");
+		Color color = Assets.GHOST_COLORS[ghostID];
 		g.setColor(color);
 		g.setFont(assets.scoreFont);
-		g.drawString("-" + text, t(4), y + 11);
+		g.drawString("-" + character, t(4), y + 11);
+		if (both) {
+			g.drawString(nickname, t(16), y + 11);
+		}
 	}
 
 	private void drawGhostsChasingPacMan(Graphics2D g) {
