@@ -903,10 +903,12 @@ public class Game {
 	}
 
 	private void letGhostBounce(Ghost ghost) {
-		tryMoving(ghost);
-		if (!ghost.couldMove) {
+		V2i tile = ghost.tile();
+		V2f offset = ghost.offset();
+		if (tile.y == world.houseCenter.y - 1 && offset.y < 3 || tile.y == world.houseCenter.y && offset.y > 4) {
 			ghost.wishDir = ghost.dir.opposite();
 		}
+		tryMoving(ghost);
 	}
 
 	private void letGhostHuntPacMan(Ghost ghost) {
@@ -957,33 +959,31 @@ public class Game {
 	}
 
 	private void letGhostLeaveHouse(Ghost ghost) {
+		V2i tile = ghost.tile();
 		V2f offset = ghost.offset();
-		// house left?
-		if (ghost.at(world.houseEntry) && differsAtMost(offset.y, 0, 1)) {
+		// leaving house complete?
+		if (tile.equals(world.houseEntry) && differsAtMost(offset.y, 0, 1)) {
 			ghost.setOffset(HTS, 0);
 			ghost.dir = ghost.wishDir = LEFT;
 			ghost.forcedOnTrack = true;
 			ghost.leavingHouse = false;
 			return;
 		}
-		// center of house reached?
-		if (ghost.at(world.houseCenter) && differsAtMost(offset.x, 3, 1)) {
-			ghost.setOffset(HTS, 0);
+		// at house middle and rising?
+		if (tile.x == world.houseCenter.x && differsAtMost(offset.x, 3, 1)) {
+			ghost.setOffset(HTS, offset.y);
 			ghost.wishDir = UP;
 			tryMoving(ghost);
 			return;
 		}
-		// keep bouncing until ghost can move towards middle of house
-		if (ghost.wishDir == UP || ghost.wishDir == DOWN) {
-			if (ghost.at(ghost.homeTile)) {
-				ghost.setOffset(HTS, 0);
-				ghost.wishDir = ghost.homeTile.x < world.houseCenter.x ? RIGHT : LEFT;
-			} else {
-				letGhostBounce(ghost);
-			}
+		// move towards center
+		if (tile.x == ghost.homeTile.x && differsAtMost(offset.y, 0, 1)) {
+			ghost.wishDir = ghost.homeTile.x < world.houseCenter.x ? RIGHT : LEFT;
+			tryMoving(ghost);
 			return;
 		}
-		tryMoving(ghost);
+		// keep bouncing until ghost can move towards center
+		letGhostBounce(ghost);
 	}
 
 	private Optional<Direction> newGhostWishDir(Ghost ghost) {
