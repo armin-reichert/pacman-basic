@@ -21,6 +21,10 @@ public enum GameState {
 		running = 0;
 	}
 
+	public void resetTimer() {
+		running = 0;
+	}
+
 	public long ticksRemaining() {
 		return duration == Long.MAX_VALUE ? Long.MAX_VALUE : Math.max(duration - running, 0);
 	}

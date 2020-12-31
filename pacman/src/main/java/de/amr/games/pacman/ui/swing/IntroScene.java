@@ -30,7 +30,6 @@ class IntroScene extends Scene {
 	};
 	//@formatter:on
 
-	private long animationTime;
 	private float pacManX;
 	private float leftmostGhostX;
 	private int killedGhost;
@@ -41,19 +40,19 @@ class IntroScene extends Scene {
 	}
 
 	private void after_second(double sec, Runnable code) {
-		if (animationTime > game.clock.sec(sec)) {
+		if (game.state.running() > game.clock.sec(sec)) {
 			code.run();
 		}
 	}
 
 	private void at_second(double sec, Runnable code) {
-		if (animationTime == game.clock.sec(sec)) {
+		if (game.state.running() == game.clock.sec(sec)) {
 			code.run();
 		}
 	}
 
 	public void reset() {
-		animationTime = 0;
+		game.state.resetTimer();
 		pacManX = size.width;
 		leftmostGhostX = pacManX + 24;
 		killedGhost = -1;
@@ -116,8 +115,6 @@ class IntroScene extends Scene {
 		});
 
 		at_second(30, this::reset);
-
-		++animationTime;
 	}
 
 	private void drawPressKeyToStart(Graphics2D g) {
