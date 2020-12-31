@@ -39,18 +39,6 @@ class IntroScene extends Scene {
 		super(game, assets, size);
 	}
 
-	private void after_second(double sec, Runnable code) {
-		if (game.state.running() > game.clock.sec(sec)) {
-			code.run();
-		}
-	}
-
-	private void at_second(double sec, Runnable code) {
-		if (game.state.running() == game.clock.sec(sec)) {
-			code.run();
-		}
-	}
-
 	public void reset() {
 		game.state.resetTimer();
 		pacManX = size.width;
@@ -67,11 +55,11 @@ class IntroScene extends Scene {
 
 	public void draw(Graphics2D g) {
 
-		after_second(1, () -> {
+		game.state.runAfter(game.clock.sec(1), () -> {
 			drawCenteredImage(g, assets.imageLogo, 3);
 		});
 
-		after_second(2, () -> {
+		game.state.runAfter(game.clock.sec(2), () -> {
 			g.setColor(Color.WHITE);
 			g.setFont(assets.scoreFont);
 			drawCenteredText(g, "CHARACTER / NICKNAME", t(8));
@@ -80,29 +68,29 @@ class IntroScene extends Scene {
 		IntStream.rangeClosed(0, 3).forEach(ghost -> {
 			int ghostAnimationStart = 3 + 2 * ghost;
 			int y = t(10 + 3 * ghost);
-			at_second(ghostAnimationStart, () -> {
+			game.state.runAt(game.clock.sec(ghostAnimationStart), () -> {
 				game.ui.playSound(Sound.CREDIT);
 			});
-			after_second(ghostAnimationStart, () -> {
+			game.state.runAfter(game.clock.sec(ghostAnimationStart), () -> {
 				g.drawImage(assets.sheet(0, 4 + ghost), t(2) - 3, y - 2, null);
 			});
-			after_second(ghostAnimationStart + 0.5, () -> {
+			game.state.runAfter(game.clock.sec(ghostAnimationStart + 0.5), () -> {
 				drawGhostCharacterAndName(g, ghost, y, false);
 			});
-			after_second(ghostAnimationStart + 1, () -> {
+			game.state.runAfter(game.clock.sec(ghostAnimationStart + 1), () -> {
 				drawGhostCharacterAndName(g, ghost, y, true);
 			});
 		});
 
-		after_second(12, () -> {
+		game.state.runAfter(game.clock.sec(12), () -> {
 			drawPointsAnimation(g);
 		});
 
-		at_second(13, () -> {
+		game.state.runAt(game.clock.sec(13), () -> {
 			game.ui.loopSound(Sound.SIREN_1);
 		});
 
-		after_second(13, () -> {
+		game.state.runAfter(game.clock.sec(13), () -> {
 			if (ghostsChasingPacMan) {
 				drawGhostsChasingPacMan(g);
 			} else {
@@ -110,11 +98,11 @@ class IntroScene extends Scene {
 			}
 		});
 
-		after_second(14, () -> {
+		game.state.runAfter(game.clock.sec(14), () -> {
 			drawPressKeyToStart(g);
 		});
 
-		at_second(30, this::reset);
+		game.state.runAt(game.clock.sec(30), this::reset);
 	}
 
 	private void drawPressKeyToStart(Graphics2D g) {

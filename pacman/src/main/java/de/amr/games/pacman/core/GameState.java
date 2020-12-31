@@ -40,4 +40,16 @@ public enum GameState {
 	public boolean expired() {
 		return ticksRemaining() == 0;
 	}
+
+	public void runAfter(long ticks, Runnable code) {
+		if (running > ticks) {
+			code.run();
+		}
+	}
+
+	public void runAt(long ticks, Runnable code) {
+		if (running == ticks) {
+			code.run();
+		}
+	}
 }
