@@ -146,8 +146,8 @@ public class Game {
 		log("Game exits.");
 	}
 
-	public Level level(int level) {
-		int index = level <= 21 ? level - 1 : 20;
+	public Level level(int levelNumber) {
+		int index = levelNumber <= 21 ? levelNumber - 1 : 20;
 		return LEVELS[index];
 	}
 
