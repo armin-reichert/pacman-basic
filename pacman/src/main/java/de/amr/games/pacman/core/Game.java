@@ -230,8 +230,6 @@ public class Game {
 //		ghost.dotCounter = 0;
 //		ghost.elroyMode = 0;
 		}
-		bonusAvailableTicks = 0;
-		bonusConsumedTicks = 0;
 	}
 
 	// BEGIN STATE-MACHINE
@@ -320,6 +318,7 @@ public class Game {
 			gameStarted = true;
 		}
 		resetGuys();
+		bonusAvailableTicks = bonusConsumedTicks = 0;
 	}
 
 	private void runReadyState() {
