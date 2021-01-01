@@ -100,41 +100,36 @@ class PlayScene extends Scene {
 		}
 	}
 
-	private void hideTile(Graphics2D g, int x, int y) {
+	private void hideFood(Graphics2D g, int x, int y) {
 		g.setColor(Color.BLACK);
 		g.fillRect(t(x), t(y), TS, TS);
 	}
 
-	private void drawMazeFlashing(Graphics2D g) {
-		game.clock.runAlternating(game.clock.sec(0.25), () -> {
-			g.drawImage(assets.imageMazeEmpty, 0, t(3), null);
-		}, () -> {
-			g.drawImage(assets.imageMazeEmptyWhite, 0, t(3), null);
-		}, () -> {
-			game.mazeFlashesRemaining--;
-		});
-	}
-
 	private void drawMaze(Graphics2D g) {
 		if (game.mazeFlashesRemaining > 0) {
-			drawMazeFlashing(g);
+			game.clock.runAlternating(game.clock.sec(0.25), () -> {
+				g.drawImage(assets.imageMazeEmpty, 0, t(3), null);
+			}, () -> {
+				g.drawImage(assets.imageMazeEmptyWhite, 0, t(3), null);
+			}, () -> {
+				game.mazeFlashesRemaining--;
+			});
 			return;
 		}
 		g.drawImage(assets.imageMazeFull, 0, t(3), null);
 		range(0, game.world.size.x).forEach(x -> {
 			range(4, game.world.size.y - 3).forEach(y -> {
 				if (game.world.foodRemoved(x, y)) {
-					hideTile(g, x, y);
+					hideFood(g, x, y);
 				} else if (game.state == GameState.HUNTING && game.world.isEnergizerTile(x, y)) {
-					game.clock.runOrBeIdle(10, () -> hideTile(g, x, y));
+					game.clock.runOrBeIdle(10, () -> hideFood(g, x, y));
 				}
 			});
 		});
 		if (game.bonusAvailableTicks > 0) {
 			g.drawImage(assets.symbols[game.level().bonusSymbol], t(13), t(20) - HTS, null);
 		} else if (game.bonusConsumedTicks > 0) {
-			BufferedImage image = assets.numbers.get(game.level().bonusPoints);
-			g.drawImage(image, (size.width - image.getWidth()) / 2, t(20) - HTS, null);
+			drawCenteredImage(g, assets.numbers.get(game.level().bonusPoints), t(20) - HTS);
 		}
 		if (game.ui.isDebugMode()) {
 			drawMazeStructure(g);
@@ -149,19 +144,22 @@ class PlayScene extends Scene {
 
 	private BufferedImage sprite(PacMan pacMan) {
 		int dir = Assets.DIR_INDEX.get(pacMan.dir);
-		if (pacMan.collapsingTicksLeft > 0) { // collapsing animation
+		if (pacMan.collapsingTicksLeft > 0) {
+			// collapsing animation
 			int frame = 13 - (int) pacMan.collapsingTicksLeft / 8;
 			frame = Math.max(frame, 3);
 			return assets.sheet(frame, 0);
 		}
-		if (pacMan.speed != 0) { // mouth animation
-			if (!pacMan.couldMove) { // mouth wide open
+		if (pacMan.speed != 0) {
+			if (!pacMan.couldMove) {
+				// mouth wide open
 				return assets.sheet(0, dir);
 			}
+			// mouth animation
 			int frame = game.clock.frame(5, 3);
 			return frame == 2 ? assets.sheet(frame, 0) : assets.sheet(frame, dir);
 		}
-		// use full face as default
+		// full face
 		return assets.sheet(2, 0);
 	}
 
@@ -175,7 +173,7 @@ class PlayScene extends Scene {
 		int dir = Assets.DIR_INDEX.get(ghost.wishDir);
 		int walking = ghost.speed == 0 ? 0 : game.clock.frame(5, 2);
 		if (ghost.bounty > 0) {
-			// show as number
+			// number
 			return assets.numbers.get(ghost.bounty);
 		}
 		if (ghost.dead) {
