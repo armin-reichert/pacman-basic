@@ -147,8 +147,7 @@ public class Game {
 	}
 
 	public Level level(int levelNumber) {
-		int index = levelNumber <= 21 ? levelNumber - 1 : 20;
-		return LEVELS[index];
+		return LEVELS[levelNumber <= 21 ? levelNumber - 1 : 20];
 	}
 
 	public Level level() {
@@ -161,12 +160,15 @@ public class Game {
 		}
 		if (ui.keyPressed("s")) {
 			clock.targetFrequency = clock.targetFrequency == 60 ? 30 : 60;
+			log("Clock frequency changed to %d Hz", clock.targetFrequency);
 		}
 		if (ui.keyPressed("d")) {
 			ui.setDebugMode(!ui.isDebugMode());
+			log("UI debug mode is %s", ui.isDebugMode() ? "on" : "off");
 		}
 		if (ui.keyPressed("a")) {
 			autoPilot = !autoPilot;
+			log("Pac-Man autopilot mode is %s", autoPilot ? "on" : "off");
 		}
 	}
 
@@ -175,7 +177,7 @@ public class Game {
 		score = 0;
 		lives = 3;
 		hiscore.load();
-		startLevel(1); // first level is 1
+		startLevel(1);
 	}
 
 	private void startLevel(int number) {
@@ -186,13 +188,10 @@ public class Game {
 		ghostsKilledInLevel = 0;
 		bonusAvailableTicks = 0;
 		bonusConsumedTicks = 0;
-		for (GameState state : GameState.values()) {
-			state.setDuration(0);
-		}
 		for (Ghost ghost : ghosts) {
 			ghost.dotCounter = 0;
+			ghost.elroyMode = 0;
 		}
-		ghosts[BLINKY].elroyMode = 0;
 		world.restoreFood();
 	}
 
