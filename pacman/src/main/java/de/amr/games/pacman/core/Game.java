@@ -256,10 +256,6 @@ public class Game {
 	private void enterState(GameState newState, long ticks) {
 		state = newState;
 		state.setDuration(ticks);
-		logStateEntry();
-	}
-
-	private void logStateEntry() {
 		log("Enter state '%s' for %s", stateDescription(), ticksDescription(state.duration()));
 	}
 

@@ -25,7 +25,7 @@ class IntroScene extends Scene {
 	private final ResourceBundle resources = ResourceBundle.getBundle("localization.IntroScene");
 	private float pacManX;
 	private float leftmostGhostX;
-	private int killedGhost;
+	private int lastKilledGhost;
 	private boolean ghostsChasingPacMan;
 
 	public IntroScene(Game game, Assets assets, Dimension size) {
@@ -36,7 +36,7 @@ class IntroScene extends Scene {
 		game.state.resetTimer();
 		pacManX = size.width;
 		leftmostGhostX = pacManX + 24;
-		killedGhost = -1;
+		lastKilledGhost = -1;
 		ghostsChasingPacMan = true;
 	}
 
@@ -163,8 +163,8 @@ class IntroScene extends Scene {
 			} else if (pacManX > x && pacManX <= x + 16) {
 				short bounty = (short) (Math.pow(2, ghost) * 200);
 				g.drawImage(assets.numbers.get(bounty), x, y, null);
-				if (killedGhost != ghost) {
-					killedGhost++;
+				if (lastKilledGhost != ghost) {
+					lastKilledGhost++;
 					game.ui.playSound(Sound.GHOST_DEATH);
 				}
 			}
@@ -184,10 +184,12 @@ class IntroScene extends Scene {
 	}
 
 	private BufferedImage ghostWalkingSprite(Direction dir, int ghost) {
-		return assets.sheet(2 * Assets.DIR_INDEX.get(dir) + game.clock.frame(5, 2), 4 + ghost);
+		int frame = game.clock.frame(5, 2);
+		return assets.sheet(2 * Assets.DIR_INDEX.get(dir) + frame, 4 + ghost);
 	}
 
 	private BufferedImage ghostFrightenedSprite() {
-		return assets.sheet(8 + game.clock.frame(5, 2), 4);
+		int frame = game.clock.frame(5, 2);
+		return assets.sheet(8 + frame, 4);
 	}
 }
