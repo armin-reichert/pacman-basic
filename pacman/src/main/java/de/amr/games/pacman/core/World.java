@@ -37,6 +37,8 @@ public class World {
 	public final V2i houseLeft = new V2i(11, 17);
 	public final V2i houseRight = new V2i(15, 17);
 
+	public final V2i bonusTile = new V2i(13, 20);
+
 	public final int totalFoodCount = 244;
 	public int foodRemaining;
 
@@ -145,10 +147,6 @@ public class World {
 
 	public boolean isPortalTile(int x, int y) {
 		return is(x, y, portalLeft.x, portalLeft.y) || is(x, y, portalRight.x, portalRight.y);
-	}
-
-	public boolean isBonusTile(int x, int y) {
-		return is(x, y, 13, 20);
 	}
 
 	public boolean foodRemoved(int x, int y) {

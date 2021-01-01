@@ -22,8 +22,10 @@ import static de.amr.games.pacman.lib.Functions.differsAtMost;
 import static de.amr.games.pacman.lib.Logging.log;
 import static java.lang.Math.abs;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -676,7 +678,7 @@ public class Game {
 
 	private void checkPacManFindsBonus() {
 		V2i tile = pacMan.tile();
-		if (bonusAvailableTicks > 0 && world.isBonusTile(tile.x, tile.y)) {
+		if (bonusAvailableTicks > 0 && world.bonusTile.equals(tile)) {
 			bonusAvailableTicks = 0;
 			bonusConsumedTicks = clock.sec(2);
 			score(level().bonusPoints);
@@ -1154,12 +1156,29 @@ public class Game {
 	private void controlPacManAutomatically() {
 		V2i pacManTile = pacMan.tile();
 		if (!pacMan.couldMove || world.isIntersectionTile(pacManTile.x, pacManTile.y)) {
-			V2i targetTile = computeNearestFoodTile(pacMan);
-			log("Pac-Man target is %s", targetTile);
+			List<V2i> targetTiles = nearestFoodTiles(pacMan);
+			log("Possible target tiles from current location %s:", pacManTile);
+			for (V2i tile : targetTiles) {
+				log("\t%s (%.2g tiles from Pac-Man, %.2g tiles from ghosts)", tile, tile.distance(pacManTile),
+						distanceFromGhosts(tile));
+			}
+			V2i targetTile = null;
+			if (bonusAvailableTicks > 0) {
+				targetTile = world.bonusTile;
+			} else if (pacMan.powerTicksLeft > 0) {
+				targetTile = targetTiles.get(rnd.nextInt(targetTiles.size())); // TODO
+			} else {
+				targetTile = farestAwayFromGhosts(targetTiles);
+			}
 			if (targetTile != null) {
+				log("Selected target tile %s", targetTile);
 				double minDist = Double.MAX_VALUE;
 				Direction minDistDir = null;
 				for (Direction dir : dirsShuffled()) {
+					if (dir == pacMan.dir.opposite()) {
+						// TODO sometimes he bounces back and forth between opposite walls
+						continue;
+					}
 					V2i neighbor = pacManTile.sum(dir.vec);
 					if (!canAccessTile(pacMan, neighbor.x, neighbor.y)) {
 						continue;
@@ -1175,9 +1194,9 @@ public class Game {
 		}
 	}
 
-	private V2i computeNearestFoodTile(PacMan pacMan) {
+	private List<V2i> nearestFoodTiles(PacMan pacMan) {
+		List<V2i> tiles = new ArrayList<>();
 		V2i pacManTile = pacMan.tile();
-		V2i nearestTile = null;
 		double minDist = Double.MAX_VALUE;
 		for (int x = 0; x < world.size.x; ++x) {
 			for (int y = 0; y < world.size.y; ++y) {
@@ -1186,13 +1205,45 @@ public class Game {
 				}
 				V2i tile = new V2i(x, y);
 				double dist = pacManTile.distance(tile);
-				if (dist < minDist) {
+				if (dist <= minDist) {
 					minDist = dist;
-					nearestTile = tile;
+					tiles.add(tile);
 				}
 			}
 		}
-		return nearestTile;
+		// remove all tiles with larger than minimum distance
+		Iterator<V2i> it = tiles.iterator();
+		while (it.hasNext()) {
+			V2i tile = it.next();
+			if (pacManTile.distance(tile) > minDist) {
+				it.remove();
+			}
+		}
+		return tiles;
+	}
+
+	private V2i farestAwayFromGhosts(List<V2i> tiles) {
+		V2i bestTile = null;
+		double bestTileGhostDist = -1;
+		for (V2i tile : tiles) {
+			double dist = distanceFromGhosts(tile);
+			if (dist > bestTileGhostDist) {
+				bestTileGhostDist = dist;
+				bestTile = tile;
+			}
+		}
+		return bestTile;
+	}
+
+	private double distanceFromGhosts(V2i tile) {
+		double minDist = Double.MAX_VALUE;
+		for (Ghost ghost : ghosts) {
+			double dist = tile.distance(ghost.tile());
+			if (dist < minDist) {
+				minDist = dist;
+			}
+		}
+		return minDist;
 	}
 
 	private List<Direction> dirsShuffled() {
