@@ -681,14 +681,13 @@ public class Game {
 
 	private void checkPacManFindsBonus() {
 		V2i tile = pacMan.tile();
-		if (!world.isBonusTile(tile.x, tile.y) || bonusAvailableTicks == 0) {
-			return;
+		if (bonusAvailableTicks > 0 && world.isBonusTile(tile.x, tile.y)) {
+			bonusAvailableTicks = 0;
+			bonusConsumedTicks = clock.sec(2);
+			score(level().bonusPoints);
+			ui.playSound(Sound.EAT_BONUS);
+			log("Pac-Man found bonus (id=%d) of value %d", level().bonusSymbol, level().bonusPoints);
 		}
-		bonusAvailableTicks = 0;
-		bonusConsumedTicks = clock.sec(2);
-		score(level().bonusPoints);
-		ui.playSound(Sound.EAT_BONUS);
-		log("Pac-Man found bonus (id=%d) of value %d", level().bonusSymbol, level().bonusPoints);
 	}
 
 	private void checkPacManFindsFood() {
