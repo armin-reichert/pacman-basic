@@ -23,6 +23,7 @@ import static de.amr.games.pacman.lib.Logging.log;
 import static java.lang.Math.abs;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -652,12 +653,6 @@ public class Game {
 		}
 	}
 
-	private void controlPacManAutomatically() {
-		if (!pacMan.couldMove || world.isIntersectionTile(pacMan.tile().x, pacMan.tile().y)) {
-			pacMan.wishDir = randomMoveDir(pacMan);
-		}
-	}
-
 	private boolean checkPacManGhostCollision() {
 		Ghost collidingGhost = Stream.of(ghosts).filter(ghost -> !ghost.dead)
 				.filter(ghost -> pacMan.tile().equals(ghost.tile())).findAny().orElse(null);
@@ -694,7 +689,6 @@ public class Game {
 		V2i tile = pacMan.tile();
 		if (world.isFoodTile(tile.x, tile.y) && !world.foodRemoved(tile.x, tile.y)) {
 			onPacManFoundFood(tile);
-			ui.playSound(Sound.MUNCH);
 		} else {
 			onPacManStarved();
 		}
@@ -729,6 +723,7 @@ public class Game {
 		}
 		updateGhostDotCounters();
 		mayBeEnterElroyMode();
+		ui.playSound(Sound.MUNCH);
 	}
 
 	private void givePacManPower() {
@@ -1153,4 +1148,57 @@ public class Game {
 			}
 		}
 	}
+
+	// Pac-Man autopilot
+
+	private void controlPacManAutomatically() {
+		V2i pacManTile = pacMan.tile();
+		if (!pacMan.couldMove || world.isIntersectionTile(pacManTile.x, pacManTile.y)) {
+			V2i targetTile = computeNearestFoodTile(pacMan);
+			log("Pac-Man target is %s", targetTile);
+			if (targetTile != null) {
+				double minDist = Double.MAX_VALUE;
+				Direction minDistDir = null;
+				for (Direction dir : dirsShuffled()) {
+					V2i neighbor = pacManTile.sum(dir.vec);
+					if (!canAccessTile(pacMan, neighbor.x, neighbor.y)) {
+						continue;
+					}
+					double dist = neighbor.distance(targetTile);
+					if (dist < minDist) {
+						minDist = dist;
+						minDistDir = dir;
+					}
+				}
+				pacMan.wishDir = minDistDir;
+			}
+		}
+	}
+
+	private V2i computeNearestFoodTile(PacMan pacMan) {
+		V2i pacManTile = pacMan.tile();
+		V2i nearestTile = null;
+		double minDist = Double.MAX_VALUE;
+		for (int x = 0; x < world.size.x; ++x) {
+			for (int y = 0; y < world.size.y; ++y) {
+				if (!world.isFoodTile(x, y) || world.foodRemoved(x, y)) {
+					continue;
+				}
+				V2i tile = new V2i(x, y);
+				double dist = pacManTile.distance(tile);
+				if (dist < minDist) {
+					minDist = dist;
+					nearestTile = tile;
+				}
+			}
+		}
+		return nearestTile;
+	}
+
+	private List<Direction> dirsShuffled() {
+		List<Direction> dirs = Arrays.asList(Direction.values());
+		Collections.shuffle(dirs);
+		return dirs;
+	}
+
 }
