@@ -25,7 +25,6 @@ import static java.lang.Math.abs;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -176,6 +175,7 @@ public class Game {
 	}
 
 	private void reset() {
+//		clock.targetFrequency = 120;
 		gameStarted = false;
 		score = 0;
 		lives = 3;
@@ -1195,7 +1195,7 @@ public class Game {
 	}
 
 	private List<V2i> nearestFoodTiles(PacMan pacMan) {
-		List<V2i> tiles = new ArrayList<>();
+		List<V2i> foodTiles = new ArrayList<>();
 		V2i pacManTile = pacMan.tile();
 		double minDist = Double.MAX_VALUE;
 		for (int x = 0; x < world.size.x; ++x) {
@@ -1203,23 +1203,18 @@ public class Game {
 				if (!world.isFoodTile(x, y) || world.foodRemoved(x, y)) {
 					continue;
 				}
-				V2i tile = new V2i(x, y);
-				double dist = pacManTile.distance(tile);
-				if (dist <= minDist) {
+				V2i foodTile = new V2i(x, y);
+				double dist = pacManTile.distance(foodTile);
+				if (dist < minDist) {
 					minDist = dist;
-					tiles.add(tile);
+					foodTiles.clear();
+					foodTiles.add(foodTile);
+				} else if (dist == minDist) {
+					foodTiles.add(foodTile);
 				}
 			}
 		}
-		// remove all tiles with larger than minimum distance
-		Iterator<V2i> it = tiles.iterator();
-		while (it.hasNext()) {
-			V2i tile = it.next();
-			if (pacManTile.distance(tile) > minDist) {
-				it.remove();
-			}
-		}
-		return tiles;
+		return foodTiles;
 	}
 
 	private V2i farestAwayFromGhosts(List<V2i> tiles) {
