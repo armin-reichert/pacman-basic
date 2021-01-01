@@ -198,7 +198,6 @@ public class Game {
 	private void resetGuys() {
 		pacMan.visible = true;
 		pacMan.speed = 0;
-		pacMan.dir = pacMan.wishDir = RIGHT;
 		pacMan.changedTile = true;
 		pacMan.couldMove = true;
 		pacMan.forcedOnTrack = true;
@@ -209,6 +208,7 @@ public class Game {
 		pacMan.starvingTicks = 0;
 		pacMan.collapsingTicksLeft = 0;
 		pacMan.placeAt(pacMan.homeTile.x, pacMan.homeTile.y, HTS, 0);
+		pacMan.dir = pacMan.wishDir = RIGHT;
 
 		for (Ghost ghost : ghosts) {
 			ghost.visible = true;
@@ -224,15 +224,12 @@ public class Game {
 			ghost.enteringHouse = false;
 			ghost.leavingHouse = false;
 			ghost.bounty = 0;
-//			ghost.dotCounter = 0;
-//			ghost.elroyMode = 0;
 			ghost.placeAt(ghost.homeTile.x, ghost.homeTile.y, HTS, 0);
+			ghost.dir = ghost.wishDir = ghost.id == BLINKY ? LEFT : ghost.id == PINKY ? DOWN : UP;
+			// these are only reset when entering level:
+//		ghost.dotCounter = 0;
+//		ghost.elroyMode = 0;
 		}
-		ghosts[BLINKY].dir = ghosts[BLINKY].wishDir = LEFT;
-		ghosts[PINKY].dir = ghosts[PINKY].wishDir = DOWN;
-		ghosts[INKY].dir = ghosts[INKY].wishDir = UP;
-		ghosts[CLYDE].dir = ghosts[CLYDE].wishDir = UP;
-
 		bonusAvailableTicks = 0;
 		bonusConsumedTicks = 0;
 	}
