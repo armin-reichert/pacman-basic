@@ -1155,6 +1155,10 @@ public class Game {
 
 	private void controlPacManAutomatically() {
 		V2i pacManTile = pacMan.tile();
+		if (isHuntingGhostApproaching(pacMan)) {
+			pacMan.wishDir = escapeDir(pacMan, pacMan.dir);
+			return;
+		}
 		if (!pacMan.couldMove || world.isIntersectionTile(pacManTile.x, pacManTile.y)) {
 			List<V2i> targetTiles = nearestFoodTiles(pacMan);
 			log("Possible target tiles from current location %s:", pacManTile);
@@ -1192,6 +1196,33 @@ public class Game {
 				pacMan.wishDir = minDistDir;
 			}
 		}
+	}
+
+	private boolean isHuntingGhostApproaching(PacMan pacMan) {
+		V2i pacManTile = pacMan.tile();
+		for (int n = 1; n <= 4; ++n) {
+			V2i ahead = pacManTile.sum(pacMan.dir.vec.scaled(n));
+			for (Ghost ghost : ghosts) {
+				if (ghost.tile().equals(ahead) && isGhostHunting(ghost) && ghost.dir == pacMan.dir.opposite()) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	private Direction escapeDir(PacMan pacMan, Direction forbidden) {
+		List<Direction> dirs = new ArrayList<>();
+		for (Direction dir : Direction.values()) {
+			if (dir == forbidden) {
+				continue;
+			}
+			V2i neighbor = pacMan.tile().sum(dir.vec);
+			if (canAccessTile(pacMan, neighbor.x, neighbor.y)) {
+				dirs.add(dir);
+			}
+		}
+		return dirs.get(rnd.nextInt(dirs.size()));
 	}
 
 	private List<V2i> nearestFoodTiles(PacMan pacMan) {
