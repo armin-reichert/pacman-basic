@@ -178,7 +178,6 @@ public class Game {
 	}
 
 	private void reset() {
-//		clock.targetFrequency = 120;
 		gameStarted = false;
 		score = 0;
 		lives = 3;
