@@ -1,5 +1,9 @@
 package de.amr.games.pacman.lib;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * The move directions inside the world.
  * 
@@ -10,6 +14,12 @@ public enum Direction {
 	LEFT(-1, 0), RIGHT(1, 0), UP(0, -1), DOWN(0, 1);
 
 	private static final Direction[] OPPOSITE = { RIGHT, LEFT, DOWN, UP };
+
+	public static List<Direction> shuffled() {
+		List<Direction> dirs = Arrays.asList(values());
+		Collections.shuffle(dirs);
+		return dirs;
+	}
 
 	public final V2i vec;
 

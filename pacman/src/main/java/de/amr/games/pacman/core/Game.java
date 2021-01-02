@@ -24,7 +24,6 @@ import static java.lang.Math.abs;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -1182,16 +1181,15 @@ public class Game {
 				log("Selected target tile %s", targetTile);
 				double minDist = Double.MAX_VALUE;
 				Direction minDistDir = null;
-				for (Direction dir : dirsShuffled()) {
+				for (Direction dir : Direction.shuffled()) {
 					if (dir == pacMan.dir.opposite()) {
-						// TODO sometimes he bounces back and forth between opposite walls
 						continue;
 					}
 					V2i neighbor = pacManTile.sum(dir.vec);
 					if (!canAccessTile(pacMan, neighbor.x, neighbor.y)) {
 						continue;
 					}
-					double dist = neighbor.manhattanDistance(targetTile);
+					double dist = neighbor.euclideanDistance(targetTile);
 					if (dist < minDist) {
 						minDist = dist;
 						minDistDir = dir;
@@ -1274,12 +1272,6 @@ public class Game {
 			}
 		}
 		return minDist;
-	}
-
-	private List<Direction> dirsShuffled() {
-		List<Direction> dirs = Arrays.asList(Direction.values());
-		Collections.shuffle(dirs);
-		return dirs;
 	}
 
 }
