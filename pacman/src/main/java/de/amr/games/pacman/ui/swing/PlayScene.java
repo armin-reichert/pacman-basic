@@ -79,14 +79,15 @@ class PlayScene extends Scene {
 	}
 
 	private void drawLivesCounter(Graphics2D g) {
+		int maxLives = 5;
 		int y = size.height - t(2);
-		for (int i = 0; i < Math.min(game.lives - 1, 3); ++i) {
+		for (int i = 0; i < Math.min(game.lives - 1, maxLives); ++i) {
 			g.drawImage(assets.imageLive, t(2 * (i + 1)), y, null);
 		}
-		if (game.lives > 3) {
+		if (game.lives > maxLives) {
 			g.setColor(Color.YELLOW);
 			g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 6));
-			g.drawString("+" + (game.lives - 3), t(8) + HTS, y + t(1));
+			g.drawString("+" + (game.lives - maxLives), t(12) - 4, y + t(2));
 		}
 	}
 

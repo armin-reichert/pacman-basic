@@ -164,6 +164,10 @@ public class Game {
 			clock.targetFrequency = clock.targetFrequency == 60 ? 30 : 60;
 			log("Clock frequency changed to %d Hz", clock.targetFrequency);
 		}
+		if (ui.keyPressed("f")) {
+			clock.targetFrequency = clock.targetFrequency == 60 ? 120 : 60;
+			log("Clock frequency changed to %d Hz", clock.targetFrequency);
+		}
 		if (ui.keyPressed("d")) {
 			ui.setDebugMode(!ui.isDebugMode());
 			log("UI debug mode is %s", ui.isDebugMode() ? "on" : "off");
