@@ -27,8 +27,12 @@ public class V2i {
 		return new V2i(x + v.x, y + v.y);
 	}
 
-	public double distance(V2i v) {
+	public double euclideanDistance(V2i v) {
 		return Math.hypot(x - v.x, y - v.y);
+	}
+
+	public double manhattanDistance(V2i v) {
+		return Math.abs(x - v.x) + Math.abs(y - v.y);
 	}
 
 	@Override

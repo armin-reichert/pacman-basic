@@ -882,7 +882,7 @@ public class Game {
 			return ghosts[BLINKY].tile().scaled(-1).sum(pacManAhead2.scaled(2));
 		}
 		case CLYDE: {
-			return ghost.tile().distance(pacMan.tile()) < 8 ? ghost.scatterTile : pacMan.tile();
+			return ghost.tile().euclideanDistance(pacMan.tile()) < 8 ? ghost.scatterTile : pacMan.tile();
 		}
 		default:
 			throw new IllegalArgumentException("Unknown ghost id: " + ghost.id);
@@ -1006,7 +1006,7 @@ public class Game {
 			if (dir == UP && world.isUpwardsBlocked(neighbor.x, neighbor.y) && !ghost.frightened && !ghost.dead) {
 				continue;
 			}
-			double dist = neighbor.distance(ghost.targetTile);
+			double dist = neighbor.euclideanDistance(ghost.targetTile);
 			if (dist < minDist) {
 				minDist = dist;
 				minDistDir = dir;
@@ -1159,7 +1159,7 @@ public class Game {
 			List<V2i> targetTiles = nearestFoodTiles(pacMan);
 			log("Possible target tiles from current location %s:", pacManTile);
 			for (V2i tile : targetTiles) {
-				log("\t%s (%.2g tiles from Pac-Man, %.2g tiles from ghosts)", tile, tile.distance(pacManTile),
+				log("\t%s (%.2g tiles from Pac-Man, %.2g tiles from ghosts)", tile, tile.manhattanDistance(pacManTile),
 						distanceFromGhosts(tile));
 			}
 			V2i targetTile = null;
@@ -1183,7 +1183,7 @@ public class Game {
 					if (!canAccessTile(pacMan, neighbor.x, neighbor.y)) {
 						continue;
 					}
-					double dist = neighbor.distance(targetTile);
+					double dist = neighbor.manhattanDistance(targetTile);
 					if (dist < minDist) {
 						minDist = dist;
 						minDistDir = dir;
@@ -1204,7 +1204,7 @@ public class Game {
 					continue;
 				}
 				V2i foodTile = new V2i(x, y);
-				double dist = pacManTile.distance(foodTile);
+				double dist = pacManTile.manhattanDistance(foodTile);
 				if (dist < minDist) {
 					minDist = dist;
 					foodTiles.clear();
@@ -1233,7 +1233,7 @@ public class Game {
 	private double distanceFromGhosts(V2i tile) {
 		double minDist = Double.MAX_VALUE;
 		for (Ghost ghost : ghosts) {
-			double dist = tile.distance(ghost.tile());
+			double dist = tile.manhattanDistance(ghost.tile());
 			if (dist < minDist) {
 				minDist = dist;
 			}
