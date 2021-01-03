@@ -45,7 +45,7 @@ public class Autopilot {
 		if (pacMan.couldMove && !game.world.isIntersectionTile(pacManTile.x, pacManTile.y))
 			return;
 
-		Ghost frightenedGhost = frightenedGhostNearPacMan(16);
+		Ghost frightenedGhost = frightenedGhostNearPacMan(10);
 		if (frightenedGhost != null) {
 			targetTile = frightenedGhost.tile();
 		} else if (game.bonusAvailableTicks > 0) {

@@ -440,6 +440,15 @@ public class Game {
 			return;
 		}
 
+		updatePacMan();
+		for (Ghost ghost : ghosts) {
+			updateGhost(ghost);
+		}
+		updateBonus();
+
+		checkPacManFindsFood();
+		checkPacManFindsBonus();
+
 		Ghost collidingGhost = ghostCollidingWithPacMan();
 		if (collidingGhost != null) {
 			exitHuntingState();
@@ -453,15 +462,6 @@ public class Game {
 				return;
 			}
 		}
-
-		checkPacManFindsFood();
-		checkPacManFindsBonus();
-
-		updatePacMan();
-		for (Ghost ghost : ghosts) {
-			updateGhost(ghost);
-		}
-		updateBonus();
 
 		if (pacMan.powerTicksLeft == 0) {
 			state.tick();
