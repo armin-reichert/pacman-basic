@@ -1153,21 +1153,19 @@ public class Game {
 
 	// Pac-Man autopilot
 
-	private long escapeTimer;
+	private int escapingTicks;
 
 	private void controlPacManAutomatically() {
 		V2i pacManTile = pacMan.tile();
-		if (escapeTimer > 0) {
-			--escapeTimer;
+		if (escapingTicks > 0) {
+			--escapingTicks;
 			return;
 		}
-		Ghost hunter = huntingGhostInFront(pacMan);
+		Ghost hunter = huntingGhostInFront(pacMan, 4);
 		if (hunter != null) {
 			pacMan.wishDir = escapeDir(pacMan, hunter.dir.opposite());
 			log("Ghost %s going %s is heading me, moving %s to escape", hunter.name(), hunter.dir, pacMan.wishDir);
-			if (escapeTimer == 0) {
-				escapeTimer = clock.sec(1);
-			}
+			escapingTicks = 8;
 			return;
 		}
 		if (!pacMan.couldMove || world.isIntersectionTile(pacManTile.x, pacManTile.y)) {
@@ -1175,7 +1173,7 @@ public class Game {
 			log("Possible target tiles from current location %s:", pacManTile);
 			for (V2i tile : targetTiles) {
 				log("\t%s (%.2g tiles from Pac-Man, %.2g tiles from ghosts)", tile, tile.manhattanDistance(pacManTile),
-						distanceFromGhosts(tile));
+						minDistanceFromGhosts(tile));
 			}
 			V2i targetTile = null;
 			if (bonusAvailableTicks > 0) {
@@ -1183,7 +1181,7 @@ public class Game {
 			} else if (pacMan.powerTicksLeft > 0) {
 				targetTile = targetTiles.get(rnd.nextInt(targetTiles.size())); // TODO
 			} else {
-				targetTile = farestAwayFromGhosts(targetTiles);
+				targetTile = tileFarestAwayFromGhosts(targetTiles);
 			}
 			if (targetTile != null) {
 				log("Selected target tile %s", targetTile);
@@ -1208,9 +1206,9 @@ public class Game {
 		}
 	}
 
-	private Ghost huntingGhostInFront(PacMan pacMan) {
+	private Ghost huntingGhostInFront(PacMan pacMan, int maxTiles) {
 		V2i pacManTile = pacMan.tile();
-		for (int n = 1; n <= 4; ++n) {
+		for (int n = 1; n <= maxTiles; ++n) {
 			V2i ahead = pacManTile.sum(pacMan.dir.vec.scaled(n));
 			for (Ghost ghost : ghosts) {
 				if (ghost.tile().equals(ahead) && isGhostHunting(ghost) && ghost.dir == pacMan.dir.opposite()) {
@@ -1222,17 +1220,17 @@ public class Game {
 	}
 
 	private Direction escapeDir(PacMan pacMan, Direction forbidden) {
-		List<Direction> dirs = new ArrayList<>();
-		for (Direction dir : Direction.values()) {
+		V2i pacManTile = pacMan.tile();
+		for (Direction dir : Direction.shuffled()) {
 			if (dir == forbidden) {
 				continue;
 			}
-			V2i neighbor = pacMan.tile().sum(dir.vec);
+			V2i neighbor = pacManTile.sum(dir.vec);
 			if (canAccessTile(pacMan, neighbor.x, neighbor.y)) {
-				dirs.add(dir);
+				return dir;
 			}
 		}
-		return dirs.get(rnd.nextInt(dirs.size()));
+		return null;
 	}
 
 	private List<V2i> nearestFoodTiles(PacMan pacMan) {
@@ -1258,20 +1256,20 @@ public class Game {
 		return foodTiles;
 	}
 
-	private V2i farestAwayFromGhosts(List<V2i> tiles) {
-		V2i bestTile = null;
-		double bestTileGhostDist = -1;
+	private V2i tileFarestAwayFromGhosts(List<V2i> tiles) {
+		V2i farestTile = null;
+		double maxDist = -1;
 		for (V2i tile : tiles) {
-			double dist = distanceFromGhosts(tile);
-			if (dist > bestTileGhostDist) {
-				bestTileGhostDist = dist;
-				bestTile = tile;
+			double dist = minDistanceFromGhosts(tile);
+			if (dist > maxDist) {
+				maxDist = dist;
+				farestTile = tile;
 			}
 		}
-		return bestTile;
+		return farestTile;
 	}
 
-	private double distanceFromGhosts(V2i tile) {
+	private double minDistanceFromGhosts(V2i tile) {
 		double minDist = Double.MAX_VALUE;
 		for (Ghost ghost : ghosts) {
 			double dist = tile.manhattanDistance(ghost.tile());
