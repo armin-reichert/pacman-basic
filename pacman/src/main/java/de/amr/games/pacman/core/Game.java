@@ -451,13 +451,14 @@ public class Game {
 
 		Ghost collidingGhost = ghostCollidingWithPacMan();
 		if (collidingGhost != null) {
-			exitHuntingState();
 			if (collidingGhost.frightened) {
 				killGhost(collidingGhost);
+				exitHuntingState();
 				enterGhostDyingState();
 				return;
 			} else {
 				killPacMan(collidingGhost);
+				exitHuntingState();
 				enterPacManDyingState();
 				return;
 			}
