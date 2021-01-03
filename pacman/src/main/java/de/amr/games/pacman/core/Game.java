@@ -273,32 +273,25 @@ public class Game {
 		return entry.get();
 	}
 
-	private void updateState() {
+	private GameState updateState() {
 		if (gamePaused) {
-			return;
+			return state;
 		}
 		switch (state) {
 		case INTRO:
-			runIntroState();
-			break;
+			return runIntroState();
 		case READY:
-			runReadyState();
-			break;
+			return runReadyState();
 		case HUNTING:
-			runHuntingState();
-			break;
+			return runHuntingState();
 		case CHANGING_LEVEL:
-			runChangingLevelState();
-			break;
+			return runChangingLevelState();
 		case PACMAN_DYING:
-			runPacManDyingState();
-			break;
+			return runPacManDyingState();
 		case GHOST_DYING:
-			runGhostDyingState();
-			break;
+			return runGhostDyingState();
 		case GAME_OVER:
-			runGameOverState();
-			break;
+			return runGameOverState();
 		default:
 			throw new IllegalStateException("Illegal state: " + state);
 		}
