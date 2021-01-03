@@ -439,15 +439,18 @@ public class Game {
 			return;
 		}
 
-		boolean ghostCollision = checkPacManGhostCollision();
-		if (ghostCollision) {
+		Ghost collidingGhost = ghostCollidingWithPacMan();
+		if (collidingGhost != null) {
 			exitHuntingState();
-			if (pacMan.dead) {
-				enterPacManDyingState();
-			} else {
+			if (collidingGhost.frightened) {
+				killGhost(collidingGhost);
 				enterGhostDyingState();
+				return;
+			} else {
+				killPacMan(collidingGhost);
+				enterPacManDyingState();
+				return;
 			}
-			return;
 		}
 
 		checkPacManFindsFood();
@@ -638,11 +641,11 @@ public class Game {
 		if (autoPilot) {
 			controlPacManAutomatically();
 		} else {
-			controlPacManByKeys();
+			controlPacManManually();
 		}
 	}
 
-	private void controlPacManByKeys() {
+	private void controlPacManManually() {
 		if (ui.keyPressed("left")) {
 			pacMan.wishDir = LEFT;
 		}
@@ -657,25 +660,20 @@ public class Game {
 		}
 	}
 
-	private boolean checkPacManGhostCollision() {
-		Ghost collidingGhost = Stream.of(ghosts).filter(ghost -> !ghost.dead)
-				.filter(ghost -> pacMan.tile().equals(ghost.tile())).findAny().orElse(null);
-		if (collidingGhost == null) {
-			return false;
-		}
-		if (collidingGhost.frightened) {
-			killGhost(collidingGhost);
-			return true;
-		}
+	private Ghost ghostCollidingWithPacMan() {
+		return Stream.of(ghosts).filter(ghost -> !ghost.dead).filter(ghost -> pacMan.tile().equals(ghost.tile())).findAny()
+				.orElse(null);
+	}
+
+	private void killPacMan(Ghost killerGhost) {
+		pacMan.dead = true;
+		log("Pac-Man killed by %s at tile %s", killerGhost.name(), killerGhost.tile());
 		resetAndEnableGlobalDotCounter();
 		byte elroyMode = ghosts[BLINKY].elroyMode;
 		if (elroyMode > 0) {
 			ghosts[BLINKY].elroyMode = (byte) -elroyMode; // negative value means "disabled"
 			log("Blinky Elroy mode %d disabled", elroyMode);
 		}
-		pacMan.dead = true;
-		log("Pac-Man killed by %s at tile %s", collidingGhost.name(), collidingGhost.tile());
-		return true;
 	}
 
 	private void checkPacManFindsBonus() {
@@ -1155,10 +1153,21 @@ public class Game {
 
 	// Pac-Man autopilot
 
+	private long escapeTimer;
+
 	private void controlPacManAutomatically() {
 		V2i pacManTile = pacMan.tile();
-		if (isHuntingGhostApproaching(pacMan)) {
-			pacMan.wishDir = escapeDir(pacMan, pacMan.dir);
+		if (escapeTimer > 0) {
+			--escapeTimer;
+			return;
+		}
+		Ghost hunter = huntingGhostInFront(pacMan);
+		if (hunter != null) {
+			pacMan.wishDir = escapeDir(pacMan, hunter.dir.opposite());
+			log("Ghost %s going %s is heading me, moving %s to escape", hunter.name(), hunter.dir, pacMan.wishDir);
+			if (escapeTimer == 0) {
+				escapeTimer = clock.sec(1);
+			}
 			return;
 		}
 		if (!pacMan.couldMove || world.isIntersectionTile(pacManTile.x, pacManTile.y)) {
@@ -1199,17 +1208,17 @@ public class Game {
 		}
 	}
 
-	private boolean isHuntingGhostApproaching(PacMan pacMan) {
+	private Ghost huntingGhostInFront(PacMan pacMan) {
 		V2i pacManTile = pacMan.tile();
 		for (int n = 1; n <= 4; ++n) {
 			V2i ahead = pacManTile.sum(pacMan.dir.vec.scaled(n));
 			for (Ghost ghost : ghosts) {
 				if (ghost.tile().equals(ahead) && isGhostHunting(ghost) && ghost.dir == pacMan.dir.opposite()) {
-					return true;
+					return ghost;
 				}
 			}
 		}
-		return false;
+		return null;
 	}
 
 	private Direction escapeDir(PacMan pacMan, Direction forbidden) {
