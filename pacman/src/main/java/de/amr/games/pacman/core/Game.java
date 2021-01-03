@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -263,15 +264,15 @@ public class Game {
 		log("Exit state '%s'", stateDescription());
 	}
 
-	private void transition(Runnable exit, Runnable entry, Runnable action) {
+	private GameState transition(Runnable exit, Supplier<GameState> entry, Runnable action) {
 		exit.run();
 		action.run();
-		entry.run();
+		return entry.get();
 	}
 
-	private void transition(Runnable exit, Runnable entry) {
+	private GameState transition(Runnable exit, Supplier<GameState> entry) {
 		exit.run();
-		entry.run();
+		return entry.get();
 	}
 
 	private void updateState() {
@@ -307,17 +308,18 @@ public class Game {
 
 	// INTRO
 
-	private void enterIntroState() {
+	private GameState enterIntroState() {
 		enterState(INTRO, Long.MAX_VALUE);
 		ui.startIntroScene();
+		return state;
 	}
 
-	private void runIntroState() {
+	private GameState runIntroState() {
 		if (ui.anyKeyPressed()) {
-			transition(this::exitIntroState, this::enterReadyState);
-			return;
+			return transition(this::exitIntroState, this::enterReadyState);
 		}
 		state.tick();
+		return state;
 	}
 
 	private void exitIntroState() {
@@ -327,7 +329,7 @@ public class Game {
 
 	// READY
 
-	private void enterReadyState() {
+	private GameState enterReadyState() {
 		enterState(READY, clock.sec(gameStarted ? 0.5 : 4.5));
 		if (!gameStarted) {
 			ui.playSound(Sound.GAME_READY);
@@ -335,12 +337,12 @@ public class Game {
 		}
 		resetGuys();
 		bonusAvailableTicks = bonusConsumedTicks = 0;
+		return state;
 	}
 
-	private void runReadyState() {
+	private GameState runReadyState() {
 		if (state.expired()) {
-			transition(this::exitReadyState, this::enterHuntingState);
-			return;
+			return transition(this::exitReadyState, this::enterHuntingState);
 		}
 		for (Ghost ghost : ghosts) {
 			if (ghost.id != BLINKY) {
@@ -348,6 +350,7 @@ public class Game {
 			}
 		}
 		state.tick();
+		return state;
 	}
 
 	private void exitReadyState() {
@@ -415,21 +418,21 @@ public class Game {
 		}
 	}
 
-	private void enterHuntingState() {
+	private GameState enterHuntingState() {
 		huntingPhase = 0;
 		enterState(HUNTING, huntingPhaseDuration(huntingPhase));
 		ui.loopSound(siren(huntingPhase));
+		return state;
 	}
 
-	private void runHuntingState() {
+	private GameState runHuntingState() {
 
 		// Cheats
 		if (ui.keyPressed("e")) {
 			eatAllNormalPellets();
 		}
 		if (ui.keyPressed("x")) {
-			transition(this::exitHuntingState, this::enterGhostDyingState, this::killAllGhosts);
-			return;
+			return transition(this::exitHuntingState, this::enterGhostDyingState, this::killAllGhosts);
 		}
 		if (ui.keyPressed("l")) {
 			if (lives < Byte.MAX_VALUE) {
@@ -442,8 +445,7 @@ public class Game {
 		}
 
 		if (world.foodRemaining == 0) {
-			transition(this::exitHuntingState, this::enterChangingLevelState);
-			return;
+			return transition(this::exitHuntingState, this::enterChangingLevelState);
 		}
 
 		updatePacMan();
@@ -458,17 +460,16 @@ public class Game {
 		Ghost collidingGhost = ghostCollidingWithPacMan();
 		if (collidingGhost != null) {
 			if (collidingGhost.frightened) {
-				transition(this::exitHuntingState, this::enterGhostDyingState, () -> killGhost(collidingGhost));
-				return;
+				return transition(this::exitHuntingState, this::enterGhostDyingState, () -> killGhost(collidingGhost));
 			} else {
-				transition(this::exitHuntingState, this::enterPacManDyingState, () -> killPacMan(collidingGhost));
-				return;
+				return transition(this::exitHuntingState, this::enterPacManDyingState, () -> killPacMan(collidingGhost));
 			}
 		}
 
 		if (pacMan.powerTicksLeft == 0) {
 			state.tick();
 		}
+		return state;
 	}
 
 	private void exitHuntingState() {
@@ -477,23 +478,22 @@ public class Game {
 
 	// PACMAN_DYING
 
-	private void enterPacManDyingState() {
+	private GameState enterPacManDyingState() {
 		enterState(PACMAN_DYING, clock.sec(6));
 		pacMan.speed = 0;
 		for (Ghost ghost : ghosts) {
 			ghost.speed = 0;
 		}
 		ui.stopAllSounds();
+		return state;
 	}
 
-	private void runPacManDyingState() {
+	private GameState runPacManDyingState() {
 		if (state.expired()) {
 			if (lives > 0) {
-				transition(this::exitPacManDyingState, this::enterReadyState);
-				return;
+				return transition(this::exitPacManDyingState, this::enterReadyState);
 			} else {
-				transition(this::exitPacManDyingState, this::enterGameOverState);
-				return;
+				return transition(this::exitPacManDyingState, this::enterGameOverState);
 			}
 		}
 		if (state.running(clock.sec(1.5))) {
@@ -510,6 +510,7 @@ public class Game {
 			pacMan.collapsingTicksLeft--;
 		}
 		state.tick();
+		return state;
 	}
 
 	private void exitPacManDyingState() {
@@ -523,17 +524,17 @@ public class Game {
 
 	// GHOST_DYING
 
-	private void enterGhostDyingState() {
+	private GameState enterGhostDyingState() {
 		previousState = state;
 		enterState(GHOST_DYING, clock.sec(1));
 		pacMan.visible = false;
 		ui.playSound(Sound.GHOST_DEATH);
+		return state;
 	}
 
-	private void runGhostDyingState() {
+	private GameState runGhostDyingState() {
 		if (state.expired()) {
-			transition(this::exitGhostDyingState, () -> state = previousState, () -> log("Resume state '%s'", state));
-			return;
+			return transition(this::exitGhostDyingState, () -> state = previousState, () -> log("Resume state '%s'", state));
 		}
 		for (Ghost ghost : ghosts) {
 			if (ghost.dead && ghost.bounty == 0) {
@@ -541,6 +542,7 @@ public class Game {
 			}
 		}
 		state.tick();
+		return state;
 	}
 
 	private void exitGhostDyingState() {
@@ -556,7 +558,7 @@ public class Game {
 
 	// CHANGING_LEVEL
 
-	private void enterChangingLevelState() {
+	private GameState enterChangingLevelState() {
 		enterState(CHANGING_LEVEL, clock.sec(level().numFlashes + 2));
 		for (Ghost ghost : ghosts) {
 			ghost.frightened = false;
@@ -565,12 +567,12 @@ public class Game {
 		}
 		pacMan.speed = 0;
 		ui.stopAllSounds();
+		return state;
 	}
 
-	private void runChangingLevelState() {
+	private GameState runChangingLevelState() {
 		if (state.expired()) {
-			transition(this::exitChangingLevelState, this::enterReadyState);
-			return;
+			return transition(this::exitChangingLevelState, this::enterReadyState);
 		}
 		if (state.running() == clock.sec(1)) {
 			for (Ghost ghost : ghosts) {
@@ -581,6 +583,7 @@ public class Game {
 			mazeFlashesRemaining = level().numFlashes;
 		}
 		state.tick();
+		return state;
 	}
 
 	private void exitChangingLevelState() {
@@ -591,7 +594,7 @@ public class Game {
 
 	// GAME_OVER
 
-	private void enterGameOverState() {
+	private GameState enterGameOverState() {
 		enterState(GAME_OVER, clock.sec(30));
 		for (Ghost ghost : ghosts) {
 			ghost.speed = 0;
@@ -600,14 +603,15 @@ public class Game {
 		if (hiscore.changed) {
 			hiscore.save();
 		}
+		return state;
 	}
 
-	private void runGameOverState() {
+	private GameState runGameOverState() {
 		if (state.expired() || ui.anyKeyPressed()) {
-			transition(this::exitGameOverState, this::enterIntroState);
-			return;
+			return transition(this::exitGameOverState, this::enterIntroState);
 		}
 		state.tick();
+		return state;
 	}
 
 	private void exitGameOverState() {
