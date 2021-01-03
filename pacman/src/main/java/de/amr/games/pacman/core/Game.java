@@ -22,7 +22,6 @@ import static de.amr.games.pacman.lib.Functions.differsAtMost;
 import static de.amr.games.pacman.lib.Logging.log;
 import static java.lang.Math.abs;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -105,7 +104,8 @@ public class Game {
 	public short globalDotCounter;
 	public boolean globalDotCounterEnabled;
 
-	public boolean autoPilot;
+	public boolean autopilotMode;
+	public final Autopilot autopilot;
 
 	public Game() {
 		clock = new Clock();
@@ -121,6 +121,7 @@ public class Game {
 			new Ghost(CLYDE,  world.houseRight,  world.lowerLeftScatterTile) 
 		};
 		/*@formatter:on*/
+		autopilot = new Autopilot(this);
 	}
 
 	public void start() {
@@ -172,8 +173,8 @@ public class Game {
 			log("UI debug mode is %s", ui.isDebugMode() ? "on" : "off");
 		}
 		if (ui.keyPressed("a")) {
-			autoPilot = !autoPilot;
-			log("Pac-Man autopilot mode is %s", autoPilot ? "on" : "off");
+			autopilotMode = !autopilotMode;
+			log("Pac-Man autopilot mode is %s", autopilotMode ? "on" : "off");
 		}
 	}
 
@@ -509,7 +510,7 @@ public class Game {
 	}
 
 	private void exitPacManDyingState() {
-		if (!autoPilot) {
+		if (!autopilotMode) {
 			lives -= 1;
 		}
 		pacMan.collapsingTicksLeft = 0;
@@ -638,25 +639,21 @@ public class Game {
 	}
 
 	private void updatePacManDirection() {
-		if (autoPilot) {
-			controlPacManAutomatically();
+		if (autopilotMode) {
+			autopilot.controlPacMan();
 		} else {
-			controlPacManManually();
-		}
-	}
-
-	private void controlPacManManually() {
-		if (ui.keyPressed("left")) {
-			pacMan.wishDir = LEFT;
-		}
-		if (ui.keyPressed("right")) {
-			pacMan.wishDir = RIGHT;
-		}
-		if (ui.keyPressed("up")) {
-			pacMan.wishDir = UP;
-		}
-		if (ui.keyPressed("down")) {
-			pacMan.wishDir = DOWN;
+			if (ui.keyPressed("left")) {
+				pacMan.wishDir = LEFT;
+			}
+			if (ui.keyPressed("right")) {
+				pacMan.wishDir = RIGHT;
+			}
+			if (ui.keyPressed("up")) {
+				pacMan.wishDir = UP;
+			}
+			if (ui.keyPressed("down")) {
+				pacMan.wishDir = DOWN;
+			}
 		}
 	}
 
@@ -1015,7 +1012,7 @@ public class Game {
 		return Optional.ofNullable(minDistDir);
 	}
 
-	private boolean isGhostHunting(Ghost ghost) {
+	boolean isGhostHunting(Ghost ghost) {
 		return !ghost.dead && !ghost.locked && !ghost.enteringHouse && !ghost.leavingHouse && !ghost.frightened;
 	}
 
@@ -1095,7 +1092,7 @@ public class Game {
 		return true;
 	}
 
-	private boolean canAccessTile(Creature guy, int x, int y) {
+	boolean canAccessTile(Creature guy, int x, int y) {
 		if (world.isPortalTile(x, y)) {
 			return true;
 		}
@@ -1150,152 +1147,4 @@ public class Game {
 			}
 		}
 	}
-
-	// Pac-Man autopilot
-
-	private int escapingTicks;
-
-	private void controlPacManAutomatically() {
-		V2i pacManTile = pacMan.tile();
-		V2i targetTile = null;
-
-		if (escapingTicks > 0) {
-			--escapingTicks;
-			return;
-		}
-		Ghost hunter = huntingGhostInFront(pacMan, 4);
-		if (hunter != null) {
-			pacMan.wishDir = escapeDir(pacMan, hunter.dir.opposite());
-			log("Ghost %s going %s is heading me, moving %s to escape", hunter.name(), hunter.dir, pacMan.wishDir);
-			escapingTicks = 6; // TODO
-			return;
-		}
-
-		if (pacMan.couldMove && !world.isIntersectionTile(pacManTile.x, pacManTile.y))
-			return;
-
-		Ghost frightenedGhost = frightenedGhostNearPacMan(16);
-		if (frightenedGhost != null) {
-			targetTile = frightenedGhost.tile();
-		} else if (bonusAvailableTicks > 0) {
-			targetTile = world.bonusTile;
-		} else {
-			List<V2i> targetTiles = nearestFoodTiles(pacMan);
-			log("Nearest food tiles from Pac-Man location %s:", pacManTile);
-			for (V2i t : targetTiles) {
-				log("\t%s (%.2g tiles away from Pac-Man, %.2g tiles away from ghosts)", t, t.manhattanDistance(pacManTile),
-						minDistanceFromGhosts(t));
-			}
-			targetTile = tileFarestAwayFromGhosts(targetTiles);
-		}
-
-		if (targetTile != null) {
-			log("Selected target tile %s", targetTile);
-			approachTarget(pacMan, targetTile);
-		}
-	}
-
-	private void approachTarget(PacMan pacMan, V2i targetTile) {
-		double minDist = Double.MAX_VALUE;
-		Direction minDistDir = null;
-		for (Direction dir : Direction.shuffled()) {
-			if (dir == pacMan.dir.opposite()) {
-				continue;
-			}
-			V2i neighbor = pacMan.tile().sum(dir.vec);
-			if (!canAccessTile(pacMan, neighbor.x, neighbor.y)) {
-				continue;
-			}
-			double dist = neighbor.euclideanDistance(targetTile);
-			if (dist < minDist) {
-				minDist = dist;
-				minDistDir = dir;
-			}
-		}
-		pacMan.wishDir = minDistDir;
-	}
-
-	private Ghost frightenedGhostNearPacMan(int maxTilesAway) {
-		for (Ghost ghost : ghosts) {
-			if (ghost.frightened && ghost.tile().manhattanDistance(pacMan.tile()) < maxTilesAway) {
-				return ghost;
-			}
-		}
-		return null;
-	}
-
-	private Ghost huntingGhostInFront(PacMan pacMan, int maxTiles) {
-		V2i pacManTile = pacMan.tile();
-		for (int n = 1; n <= maxTiles; ++n) {
-			V2i ahead = pacManTile.sum(pacMan.dir.vec.scaled(n));
-			for (Ghost ghost : ghosts) {
-				if (ghost.tile().equals(ahead) && isGhostHunting(ghost) && ghost.dir == pacMan.dir.opposite()) {
-					return ghost;
-				}
-			}
-		}
-		return null;
-	}
-
-	private Direction escapeDir(PacMan pacMan, Direction forbidden) {
-		V2i pacManTile = pacMan.tile();
-		for (Direction dir : Direction.shuffled()) {
-			if (dir == forbidden) {
-				continue;
-			}
-			V2i neighbor = pacManTile.sum(dir.vec);
-			if (canAccessTile(pacMan, neighbor.x, neighbor.y)) {
-				return dir;
-			}
-		}
-		return null;
-	}
-
-	private List<V2i> nearestFoodTiles(PacMan pacMan) {
-		List<V2i> foodTiles = new ArrayList<>();
-		V2i pacManTile = pacMan.tile();
-		double minDist = Double.MAX_VALUE;
-		for (int x = 0; x < world.size.x; ++x) {
-			for (int y = 0; y < world.size.y; ++y) {
-				if (!world.isFoodTile(x, y) || world.foodRemoved(x, y)) {
-					continue;
-				}
-				V2i foodTile = new V2i(x, y);
-				double dist = pacManTile.manhattanDistance(foodTile);
-				if (dist < minDist) {
-					minDist = dist;
-					foodTiles.clear();
-					foodTiles.add(foodTile);
-				} else if (dist == minDist) {
-					foodTiles.add(foodTile);
-				}
-			}
-		}
-		return foodTiles;
-	}
-
-	private V2i tileFarestAwayFromGhosts(List<V2i> tiles) {
-		V2i farestTile = null;
-		double maxDist = -1;
-		for (V2i tile : tiles) {
-			double dist = minDistanceFromGhosts(tile);
-			if (dist > maxDist) {
-				maxDist = dist;
-				farestTile = tile;
-			}
-		}
-		return farestTile;
-	}
-
-	private double minDistanceFromGhosts(V2i tile) {
-		double minDist = Double.MAX_VALUE;
-		for (Ghost ghost : ghosts) {
-			double dist = tile.manhattanDistance(ghost.tile());
-			if (dist < minDist) {
-				minDist = dist;
-			}
-		}
-		return minDist;
-	}
-
 }
