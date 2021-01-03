@@ -254,9 +254,7 @@ public class Game {
 		return state.name();
 	}
 
-	private void enterState(GameState newState, long ticks) {
-		state = newState;
-		state.setDuration(ticks);
+	private void logStateEntry() {
 		log("Enter state '%s' for %s", stateDescription(), ticksDescription(state.duration()));
 	}
 
@@ -309,8 +307,10 @@ public class Game {
 	// INTRO
 
 	private GameState enterIntroState() {
-		enterState(INTRO, Long.MAX_VALUE);
+		state = INTRO;
+		state.setDuration(Long.MAX_VALUE);
 		ui.startIntroScene();
+		logStateEntry();
 		return state;
 	}
 
@@ -330,13 +330,15 @@ public class Game {
 	// READY
 
 	private GameState enterReadyState() {
-		enterState(READY, clock.sec(gameStarted ? 0.5 : 4.5));
+		state = READY;
+		state.setDuration(clock.sec(gameStarted ? 0.5 : 4.5));
 		if (!gameStarted) {
 			ui.playSound(Sound.GAME_READY);
 			gameStarted = true;
 		}
 		resetGuys();
 		bonusAvailableTicks = bonusConsumedTicks = 0;
+		logStateEntry();
 		return state;
 	}
 
@@ -390,7 +392,7 @@ public class Game {
 		return huntingPhase % 2 != 0;
 	}
 
-	private void enterNextHuntingPhase() {
+	private void nextHuntingPhase() {
 		huntingPhase++;
 		state.setDuration(huntingPhaseDuration(huntingPhase));
 		forceHuntingGhostsTurningBack();
@@ -419,9 +421,11 @@ public class Game {
 	}
 
 	private GameState enterHuntingState() {
+		state = HUNTING;
 		huntingPhase = 0;
-		enterState(HUNTING, huntingPhaseDuration(huntingPhase));
+		state.setDuration(huntingPhaseDuration(huntingPhase));
 		ui.loopSound(siren(huntingPhase));
+		logStateEntry();
 		return state;
 	}
 
@@ -441,7 +445,7 @@ public class Game {
 		}
 
 		if (state.expired()) {
-			enterNextHuntingPhase();
+			nextHuntingPhase();
 		}
 
 		if (world.foodRemaining == 0) {
@@ -458,12 +462,11 @@ public class Game {
 		checkPacManFindsBonus();
 
 		Ghost collidingGhost = ghostCollidingWithPacMan();
-		if (collidingGhost != null) {
-			if (collidingGhost.frightened) {
-				return transition(this::exitHuntingState, this::enterGhostDyingState, () -> killGhost(collidingGhost));
-			} else {
-				return transition(this::exitHuntingState, this::enterPacManDyingState, () -> killPacMan(collidingGhost));
-			}
+		if (collidingGhost != null && collidingGhost.frightened) {
+			return transition(this::exitHuntingState, this::enterGhostDyingState, () -> killGhost(collidingGhost));
+		}
+		if (collidingGhost != null && !collidingGhost.frightened) {
+			return transition(this::exitHuntingState, this::enterPacManDyingState, () -> killPacMan(collidingGhost));
 		}
 
 		if (pacMan.powerTicksLeft == 0) {
@@ -479,12 +482,14 @@ public class Game {
 	// PACMAN_DYING
 
 	private GameState enterPacManDyingState() {
-		enterState(PACMAN_DYING, clock.sec(6));
+		state = PACMAN_DYING;
+		state.setDuration(clock.sec(6));
 		pacMan.speed = 0;
 		for (Ghost ghost : ghosts) {
 			ghost.speed = 0;
 		}
 		ui.stopAllSounds();
+		logStateEntry();
 		return state;
 	}
 
@@ -526,9 +531,11 @@ public class Game {
 
 	private GameState enterGhostDyingState() {
 		previousState = state;
-		enterState(GHOST_DYING, clock.sec(1));
+		state = GHOST_DYING;
+		state.setDuration(clock.sec(1));
 		pacMan.visible = false;
 		ui.playSound(Sound.GHOST_DEATH);
+		logStateEntry();
 		return state;
 	}
 
@@ -559,7 +566,8 @@ public class Game {
 	// CHANGING_LEVEL
 
 	private GameState enterChangingLevelState() {
-		enterState(CHANGING_LEVEL, clock.sec(level().numFlashes + 2));
+		state = CHANGING_LEVEL;
+		state.setDuration(clock.sec(level().numFlashes + 2));
 		for (Ghost ghost : ghosts) {
 			ghost.frightened = false;
 			ghost.dead = false;
@@ -567,6 +575,8 @@ public class Game {
 		}
 		pacMan.speed = 0;
 		ui.stopAllSounds();
+		logStateEntry();
+
 		return state;
 	}
 
@@ -595,7 +605,8 @@ public class Game {
 	// GAME_OVER
 
 	private GameState enterGameOverState() {
-		enterState(GAME_OVER, clock.sec(30));
+		state = GAME_OVER;
+		state.setDuration(clock.sec(30));
 		for (Ghost ghost : ghosts) {
 			ghost.speed = 0;
 		}
@@ -603,6 +614,8 @@ public class Game {
 		if (hiscore.changed) {
 			hiscore.save();
 		}
+		logStateEntry();
+
 		return state;
 	}
 
