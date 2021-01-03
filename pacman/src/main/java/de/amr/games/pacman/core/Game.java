@@ -486,11 +486,12 @@ public class Game {
 
 	private void runPacManDyingState() {
 		if (state.expired()) {
-			exitPacManDyingState();
 			if (lives > 0) {
+				exitPacManDyingState();
 				enterReadyState();
 				return;
 			} else {
+				exitPacManDyingState();
 				enterGameOverState();
 				return;
 			}
