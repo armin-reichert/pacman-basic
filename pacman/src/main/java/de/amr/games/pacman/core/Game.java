@@ -263,6 +263,17 @@ public class Game {
 		log("Exit state '%s'", stateDescription());
 	}
 
+	private void transition(Runnable exit, Runnable entry, Runnable action) {
+		exit.run();
+		action.run();
+		entry.run();
+	}
+
+	private void transition(Runnable exit, Runnable entry) {
+		exit.run();
+		entry.run();
+	}
+
 	private void updateState() {
 		if (gamePaused) {
 			return;
@@ -303,8 +314,7 @@ public class Game {
 
 	private void runIntroState() {
 		if (ui.anyKeyPressed()) {
-			exitIntroState();
-			enterReadyState();
+			transition(this::exitIntroState, this::enterReadyState);
 			return;
 		}
 		state.tick();
@@ -329,8 +339,7 @@ public class Game {
 
 	private void runReadyState() {
 		if (state.expired()) {
-			exitReadyState();
-			enterHuntingState();
+			transition(this::exitReadyState, this::enterHuntingState);
 			return;
 		}
 		for (Ghost ghost : ghosts) {
@@ -419,9 +428,7 @@ public class Game {
 			eatAllNormalPellets();
 		}
 		if (ui.keyPressed("x")) {
-			killAllGhosts();
-			exitHuntingState();
-			enterGhostDyingState();
+			transition(this::exitHuntingState, this::enterGhostDyingState, this::killAllGhosts);
 			return;
 		}
 		if (ui.keyPressed("l")) {
@@ -435,8 +442,7 @@ public class Game {
 		}
 
 		if (world.foodRemaining == 0) {
-			exitHuntingState();
-			enterChangingLevelState();
+			transition(this::exitHuntingState, this::enterChangingLevelState);
 			return;
 		}
 
@@ -452,14 +458,10 @@ public class Game {
 		Ghost collidingGhost = ghostCollidingWithPacMan();
 		if (collidingGhost != null) {
 			if (collidingGhost.frightened) {
-				killGhost(collidingGhost);
-				exitHuntingState();
-				enterGhostDyingState();
+				transition(this::exitHuntingState, this::enterGhostDyingState, () -> killGhost(collidingGhost));
 				return;
 			} else {
-				killPacMan(collidingGhost);
-				exitHuntingState();
-				enterPacManDyingState();
+				transition(this::exitHuntingState, this::enterPacManDyingState, () -> killPacMan(collidingGhost));
 				return;
 			}
 		}
@@ -487,34 +489,31 @@ public class Game {
 	private void runPacManDyingState() {
 		if (state.expired()) {
 			if (lives > 0) {
-				exitPacManDyingState();
-				enterReadyState();
+				transition(this::exitPacManDyingState, this::enterReadyState);
 				return;
 			} else {
-				exitPacManDyingState();
-				enterGameOverState();
+				transition(this::exitPacManDyingState, this::enterGameOverState);
 				return;
 			}
 		}
-		if (state.running() == clock.sec(1.5)) {
+		if (state.running(clock.sec(1.5))) {
 			for (Ghost ghost : ghosts) {
 				ghost.visible = false;
 			}
 		}
-		if (state.running() == clock.sec(2.5)) {
+		if (state.running(clock.sec(2.5))) {
 			pacMan.collapsingTicksLeft = 88;
 			ui.playSound(Sound.PACMAN_DEATH);
 		}
 		if (pacMan.collapsingTicksLeft > 1) {
+			// count down until 1 such that animation stays at last frame until state expires
 			pacMan.collapsingTicksLeft--;
 		}
 		state.tick();
 	}
 
 	private void exitPacManDyingState() {
-		if (!autopilotMode) {
-			lives -= 1;
-		}
+		lives -= autopilotMode ? 0 : 1;
 		pacMan.collapsingTicksLeft = 0;
 		for (Ghost ghost : ghosts) {
 			ghost.visible = true;
@@ -533,9 +532,7 @@ public class Game {
 
 	private void runGhostDyingState() {
 		if (state.expired()) {
-			exitGhostDyingState();
-			state = previousState;
-			log("Resume state '%s'", state);
+			transition(this::exitGhostDyingState, () -> state = previousState, () -> log("Resume state '%s'", state));
 			return;
 		}
 		for (Ghost ghost : ghosts) {
@@ -572,8 +569,7 @@ public class Game {
 
 	private void runChangingLevelState() {
 		if (state.expired()) {
-			exitChangingLevelState();
-			enterReadyState();
+			transition(this::exitChangingLevelState, this::enterReadyState);
 			return;
 		}
 		if (state.running() == clock.sec(1)) {
@@ -608,8 +604,7 @@ public class Game {
 
 	private void runGameOverState() {
 		if (state.expired() || ui.anyKeyPressed()) {
-			exitGameOverState();
-			enterIntroState();
+			transition(this::exitGameOverState, this::enterIntroState);
 			return;
 		}
 		state.tick();

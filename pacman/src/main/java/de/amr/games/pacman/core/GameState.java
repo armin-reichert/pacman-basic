@@ -37,6 +37,10 @@ public enum GameState {
 		return running;
 	}
 
+	public boolean running(long ticks) {
+		return running == ticks;
+	}
+
 	public boolean expired() {
 		return ticksRemaining() == 0;
 	}
