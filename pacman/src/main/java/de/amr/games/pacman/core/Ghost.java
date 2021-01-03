@@ -32,6 +32,9 @@ public class Ghost extends Creature {
 
 	@Override
 	public String name() {
+		if (id == BLINKY && elroyMode > 0) {
+			return String.format("%s (Elroy %d)", NAMES[BLINKY], elroyMode);
+		}
 		return NAMES[id];
 	}
 
