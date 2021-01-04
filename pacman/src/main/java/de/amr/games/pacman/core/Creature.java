@@ -16,6 +16,7 @@ public abstract class Creature {
 	/** Left upper corner of collision box */
 	public V2f position;
 	public V2i homeTile;
+	public V2i targetTile;
 	public Direction dir;
 	public Direction wishDir;
 	/** Relative speed (between 0 and 1) */
@@ -24,7 +25,6 @@ public abstract class Creature {
 	public boolean changedTile;
 	public boolean couldMove;
 	public boolean forcedOnTrack;
-	public boolean forcedTurningBack;
 	public boolean dead;
 
 	@Override

@@ -220,6 +220,10 @@ class PlayScene extends Scene {
 					g.fillRect(t(ghost.targetTile.x) + HTS / 2, t(ghost.targetTile.y) + HTS / 2, HTS, HTS);
 				}
 			}
+			if (game.pacMan.targetTile != null) {
+				g.setColor(new Color(255, 255, 0, 200));
+				g.fillRect(t(game.pacMan.targetTile.x), t(game.pacMan.targetTile.y), TS, TS);
+			}
 		}
 	}
 

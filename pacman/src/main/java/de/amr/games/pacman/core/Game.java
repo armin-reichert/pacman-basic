@@ -205,10 +205,10 @@ public class Game {
 	private void resetGuys() {
 		pacMan.visible = true;
 		pacMan.speed = 0;
+		pacMan.targetTile = null; // used in autopilot mode
 		pacMan.changedTile = true;
 		pacMan.couldMove = true;
 		pacMan.forcedOnTrack = true;
-		pacMan.forcedTurningBack = false;
 		pacMan.dead = false;
 		pacMan.powerTicksLeft = 0;
 		pacMan.restingTicksLeft = 0;
