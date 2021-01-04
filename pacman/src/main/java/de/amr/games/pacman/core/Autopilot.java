@@ -34,25 +34,26 @@ public class Autopilot {
 			--escapingTicks;
 			return;
 		}
-		Ghost hunter = huntingGhostInFront(pacMan, 4);
+		Ghost hunter = huntingGhostInFront(pacMan, 4); // where is Hunter?
 		if (hunter != null) {
-			pacMan.wishDir = escapeDir(hunter.dir.opposite());
+			pacMan.wishDir = escapeDirection(hunter.dir.opposite());
 			log("Ghost %s going %s is heading me, moving %s to escape", hunter.name(), hunter.dir, pacMan.wishDir);
-			escapingTicks = 6; // TODO
+			escapingTicks = 6; // TODO how long is best?
 			return;
 		}
 
 		if (pacMan.couldMove && !game.world.isIntersectionTile(pacManTile.x, pacManTile.y))
 			return;
 
-		Ghost frightenedGhost = frightenedGhostNearPacMan(10);
-		if (frightenedGhost != null) {
-			targetTile = frightenedGhost.tile();
+		Ghost frightenedGhostNearby = frightenedGhostMaxDistFromPacMan(8);
+		if (frightenedGhostNearby != null) {
+			log("Frightened ghost %s is near Pac-Man", frightenedGhostNearby.name());
+			targetTile = frightenedGhostNearby.tile();
 		} else if (game.bonusAvailableTicks > 0) {
+			log("Chasing bonus");
 			targetTile = game.world.bonusTile;
 		} else {
-			List<V2i> targetTiles = nearestFoodTiles();
-			targetTile = tileFarestAwayFromGhosts(targetTiles);
+			targetTile = tileWithMaxDistFromGhosts(foodTilesWithMinDistFromPacMan());
 		}
 
 		if (targetTile != null) {
@@ -81,7 +82,7 @@ public class Autopilot {
 		pacMan.wishDir = minDistDir;
 	}
 
-	private Ghost frightenedGhostNearPacMan(int maxTilesAway) {
+	private Ghost frightenedGhostMaxDistFromPacMan(int maxTilesAway) {
 		for (Ghost ghost : ghosts) {
 			if (ghost.frightened && ghost.tile().manhattanDistance(pacMan.tile()) < maxTilesAway) {
 				return ghost;
@@ -103,7 +104,7 @@ public class Autopilot {
 		return null;
 	}
 
-	private Direction escapeDir(Direction forbidden) {
+	private Direction escapeDirection(Direction forbidden) {
 		V2i pacManTile = pacMan.tile();
 		for (Direction dir : Direction.shuffled()) {
 			if (dir == forbidden) {
@@ -117,7 +118,7 @@ public class Autopilot {
 		return null;
 	}
 
-	private List<V2i> nearestFoodTiles() {
+	private List<V2i> foodTilesWithMinDistFromPacMan() {
 		List<V2i> foodTiles = new ArrayList<>();
 		V2i pacManTile = pacMan.tile();
 		double minDist = Double.MAX_VALUE;
@@ -145,7 +146,7 @@ public class Autopilot {
 		return foodTiles;
 	}
 
-	private V2i tileFarestAwayFromGhosts(List<V2i> tiles) {
+	private V2i tileWithMaxDistFromGhosts(List<V2i> tiles) {
 		V2i farestTile = null;
 		double maxDist = -1;
 		for (V2i tile : tiles) {
