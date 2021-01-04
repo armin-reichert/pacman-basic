@@ -1,9 +1,5 @@
 package de.amr.games.pacman.core;
 
-import static de.amr.games.pacman.lib.Direction.DOWN;
-import static de.amr.games.pacman.lib.Direction.LEFT;
-import static de.amr.games.pacman.lib.Direction.RIGHT;
-import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.lib.Logging.log;
 
 import java.util.ArrayList;
@@ -24,14 +20,6 @@ public class Autopilot {
 	private static final int FIXED_DIRECTION_TICKS = 2;
 	private static final int MAX_GHOST_DETECTION_TILES = 4;
 	private static final int MAX_CHASE_TILES = 10;
-
-	private static Direction leftOf(Direction dir) {
-		return dir == UP ? LEFT : dir == LEFT ? DOWN : dir == DOWN ? RIGHT : UP;
-	}
-
-	private static Direction rightOf(Direction dir) {
-		return dir == UP ? RIGHT : dir == LEFT ? UP : dir == DOWN ? LEFT : DOWN;
-	}
 
 	private final Game game;
 	private final PacMan pacMan;
@@ -119,7 +107,7 @@ public class Autopilot {
 			if (!game.canAccessTile(pacMan, ahead.x, ahead.y)) {
 				break;
 			}
-			V2i aheadLeft = ahead.sum(leftOf(pacMan.dir).vec), aheadRight = ahead.sum(rightOf(pacMan.dir).vec);
+			V2i aheadLeft = ahead.sum(pacMan.dir.turnLeft().vec), aheadRight = ahead.sum(pacMan.dir.turnRight().vec);
 			for (Ghost ghost : ghosts) {
 				if (!game.isGhostHunting(ghost)) {
 					continue;

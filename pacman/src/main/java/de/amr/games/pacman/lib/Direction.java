@@ -27,6 +27,14 @@ public enum Direction {
 		return OPPOSITE[ordinal()];
 	}
 
+	public Direction turnLeft() {
+		return this == UP ? LEFT : this == LEFT ? DOWN : this == DOWN ? RIGHT : UP;
+	}
+
+	public Direction turnRight() {
+		return this == UP ? RIGHT : this == RIGHT ? DOWN : this == DOWN ? LEFT : UP;
+	}
+
 	private Direction(int x, int y) {
 		vec = new V2i(x, y);
 	}
