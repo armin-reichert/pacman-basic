@@ -19,7 +19,7 @@ import de.amr.games.pacman.lib.V2i;
  */
 public class Autopilot {
 
-	private static final int FIXED_DIRECTION_TICKS = 4;
+	private static final int FIXED_DIRECTION_TICKS = 2;
 	private static final int MAX_GHOST_DETECTION_TILES = 4;
 	private static final int MAX_CHASE_TILES = 10;
 
@@ -97,7 +97,7 @@ public class Autopilot {
 			}
 		}
 		pacMan.wishDir = minDistDir;
-		log("Approach target tile %s by turning %s", targetTile, pacMan.wishDir);
+		log("Approach target tile %s from tile %s by turning %s", pacMan.tile(), targetTile, pacMan.wishDir);
 	}
 
 	private Ghost findFrightenedGhostInReach() {
@@ -113,6 +113,9 @@ public class Autopilot {
 		V2i pacManTile = pacMan.tile();
 		for (int i = 1; i <= MAX_GHOST_DETECTION_TILES; ++i) {
 			V2i ahead = pacManTile.sum(pacMan.dir.vec.scaled(i));
+			if (!game.canAccessTile(pacMan, ahead.x, ahead.y)) {
+				break;
+			}
 			V2i aheadLeft = ahead.sum(leftOf(pacMan.dir).vec), aheadRight = ahead.sum(rightOf(pacMan.dir).vec);
 			for (Ghost ghost : ghosts) {
 				if (!game.isGhostHunting(ghost)) {
