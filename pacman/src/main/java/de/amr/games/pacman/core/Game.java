@@ -26,7 +26,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -262,15 +261,17 @@ public class Game {
 		log("Exit state '%s'", stateDescription());
 	}
 
-	private GameState transition(Runnable exit, Supplier<GameState> entry, Runnable action) {
+	private GameState transition(Runnable exit, Runnable entry, Runnable action) {
 		exit.run();
 		action.run();
-		return entry.get();
+		entry.run();
+		return state;
 	}
 
-	private GameState transition(Runnable exit, Supplier<GameState> entry) {
+	private GameState transition(Runnable exit, Runnable entry) {
 		exit.run();
-		return entry.get();
+		entry.run();
+		return state;
 	}
 
 	private GameState updateState() {
@@ -299,12 +300,11 @@ public class Game {
 
 	// INTRO
 
-	private GameState enterIntroState() {
+	private void enterIntroState() {
 		state = INTRO;
 		state.setDuration(Long.MAX_VALUE);
 		ui.startIntroScene();
 		logStateEntry();
-		return state;
 	}
 
 	private GameState runIntroState() {
@@ -322,7 +322,7 @@ public class Game {
 
 	// READY
 
-	private GameState enterReadyState() {
+	private void enterReadyState() {
 		state = READY;
 		state.setDuration(clock.sec(gameStarted ? 0.5 : 4.5));
 		if (!gameStarted) {
@@ -332,7 +332,6 @@ public class Game {
 		resetGuys();
 		bonusAvailableTicks = bonusConsumedTicks = 0;
 		logStateEntry();
-		return state;
 	}
 
 	private GameState runReadyState() {
@@ -413,13 +412,12 @@ public class Game {
 		}
 	}
 
-	private GameState enterHuntingState() {
+	private void enterHuntingState() {
 		state = HUNTING;
 		huntingPhase = 0;
 		state.setDuration(huntingPhaseDuration(huntingPhase));
 		ui.loopSound(siren(huntingPhase));
 		logStateEntry();
-		return state;
 	}
 
 	private GameState runHuntingState() {
@@ -474,7 +472,7 @@ public class Game {
 
 	// PACMAN_DYING
 
-	private GameState enterPacManDyingState() {
+	private void enterPacManDyingState() {
 		state = PACMAN_DYING;
 		state.setDuration(clock.sec(6));
 		pacMan.speed = 0;
@@ -483,7 +481,6 @@ public class Game {
 		}
 		ui.stopAllSounds();
 		logStateEntry();
-		return state;
 	}
 
 	private GameState runPacManDyingState() {
@@ -522,14 +519,13 @@ public class Game {
 
 	// GHOST_DYING
 
-	private GameState enterGhostDyingState() {
+	private void enterGhostDyingState() {
 		previousState = state;
 		state = GHOST_DYING;
 		state.setDuration(clock.sec(1));
 		pacMan.visible = false;
 		ui.playSound(Sound.GHOST_DEATH);
 		logStateEntry();
-		return state;
 	}
 
 	private GameState runGhostDyingState() {
@@ -558,7 +554,7 @@ public class Game {
 
 	// CHANGING_LEVEL
 
-	private GameState enterChangingLevelState() {
+	private void enterChangingLevelState() {
 		state = CHANGING_LEVEL;
 		state.setDuration(clock.sec(level().numFlashes + 2));
 		for (Ghost ghost : ghosts) {
@@ -569,8 +565,6 @@ public class Game {
 		pacMan.speed = 0;
 		ui.stopAllSounds();
 		logStateEntry();
-
-		return state;
 	}
 
 	private GameState runChangingLevelState() {
@@ -597,7 +591,7 @@ public class Game {
 
 	// GAME_OVER
 
-	private GameState enterGameOverState() {
+	private void enterGameOverState() {
 		state = GAME_OVER;
 		state.setDuration(clock.sec(30));
 		for (Ghost ghost : ghosts) {
@@ -608,8 +602,6 @@ public class Game {
 			hiscore.save();
 		}
 		logStateEntry();
-
-		return state;
 	}
 
 	private GameState runGameOverState() {
