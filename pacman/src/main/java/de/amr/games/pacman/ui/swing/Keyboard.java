@@ -19,7 +19,7 @@ class Keyboard {
 
 			@Override
 			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() != 0) {
+				if (e.getKeyCode() != 0 && e.getKeyCode() < 256) {
 					pressedKeys.set(e.getKeyCode());
 				}
 			}
