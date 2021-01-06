@@ -19,9 +19,9 @@ import de.amr.games.pacman.lib.V2i;
 public class Autopilot {
 
 	private static final int FIXED_DIRECTION_TICKS = 2;
-	private static final int MAX_GHOST_AHEAD_DETECTION_DIST = 3; // tiles
+	private static final int MAX_GHOST_AHEAD_DETECTION_DIST = 4; // tiles
 	private static final int MAX_GHOST_BEHIND_DETECTION_DIST = 1; // tiles
-	private static final int MAX_GHOST_CHASE_DIST = 16; // tiles
+	private static final int MAX_GHOST_CHASE_DIST = 8; // tiles
 	private static final int MAX_BONUS_HARVEST_DIST = 16; // tiles
 
 	private final Game game;
