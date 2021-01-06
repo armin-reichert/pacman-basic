@@ -18,7 +18,7 @@ import de.amr.games.pacman.lib.V2i;
 public class Autopilot {
 
 	private static final int FIXED_DIRECTION_TICKS = 2;
-	private static final int MAX_GHOST_DETECTION_TILES = 3;
+	private static final int MAX_GHOST_DETECTION_AHEAD_ILES = 3;
 	private static final int MAX_CHASE_TILES = 16;
 
 	private final Game game;
@@ -113,7 +113,7 @@ public class Autopilot {
 	private Ghost findHuntingGhostAhead() {
 		V2i pacManTile = pacMan.tile();
 		boolean energizerFound = false;
-		for (int i = 1; i <= MAX_GHOST_DETECTION_TILES; ++i) {
+		for (int i = 1; i <= MAX_GHOST_DETECTION_AHEAD_ILES; ++i) {
 			V2i ahead = pacManTile.sum(pacMan.dir.vec.scaled(i));
 			if (!game.canAccessTile(pacMan, ahead.x, ahead.y)) {
 				break;
