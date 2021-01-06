@@ -91,7 +91,7 @@ public class World {
 		return y * size.x + x;
 	}
 
-	private boolean is(int x, int y, int xx, int yy) {
+	private boolean isTile(int x, int y, int xx, int yy) {
 		return x == xx && y == yy;
 	}
 
@@ -108,7 +108,7 @@ public class World {
 	}
 
 	public boolean isGhostHouseDoor(int x, int y) {
-		return is(x, y, 13, 15) || is(x, y, 14, 15);
+		return isTile(x, y, 13, 15) || isTile(x, y, 14, 15);
 	}
 
 	public boolean isInsideGhostHouse(int x, int y) {
@@ -120,7 +120,7 @@ public class World {
 	}
 
 	public boolean isUpwardsBlocked(int x, int y) {
-		return is(x, y, 12, 13) || is(x, y, 15, 13) || is(x, y, 12, 25) || is(x, y, 15, 25);
+		return isTile(x, y, 12, 13) || isTile(x, y, 15, 13) || isTile(x, y, 12, 25) || isTile(x, y, 15, 25);
 	}
 
 	public boolean isFoodTile(int x, int y) {
@@ -128,7 +128,7 @@ public class World {
 	}
 
 	public boolean isEnergizerTile(int x, int y) {
-		return is(x, y, 1, 6) || is(x, y, 26, 6) || is(x, y, 1, 26) || is(x, y, 26, 26);
+		return isTile(x, y, 1, 6) || isTile(x, y, 26, 6) || isTile(x, y, 1, 26) || isTile(x, y, 26, 26);
 	}
 
 	public boolean isIntersectionTile(int x, int y) {
@@ -143,7 +143,7 @@ public class World {
 	}
 
 	public boolean isPortalTile(int x, int y) {
-		return is(x, y, portalLeft.x, portalLeft.y) || is(x, y, portalRight.x, portalRight.y);
+		return isTile(x, y, portalLeft.x, portalLeft.y) || isTile(x, y, portalRight.x, portalRight.y);
 	}
 
 	public boolean foodRemoved(int x, int y) {
