@@ -222,7 +222,7 @@ public class Game {
 			ghost.targetTile = null;
 			ghost.changedTile = true;
 			ghost.couldMove = true;
-			ghost.forcedTurningBack = false;
+			ghost.forcedTakingDirection = false;
 			ghost.forcedOnTrack = ghost.id == BLINKY;
 			ghost.dead = false;
 			ghost.frightened = false;
@@ -974,8 +974,8 @@ public class Game {
 		if (!ghost.changedTile) {
 			return Optional.empty();
 		}
-		if (ghost.forcedTurningBack) {
-			ghost.forcedTurningBack = false;
+		if (ghost.forcedTakingDirection) {
+			ghost.forcedTakingDirection = false;
 			return Optional.of(ghost.dir.opposite());
 		}
 		V2i tile = ghost.tile();
@@ -1018,7 +1018,7 @@ public class Game {
 	private void forceHuntingGhostsTurningBack() {
 		for (Ghost ghost : ghosts) {
 			if (isGhostHunting(ghost)) {
-				ghost.forcedTurningBack = true;
+				ghost.forcedTakingDirection = true;
 			}
 		}
 	}

@@ -18,16 +18,14 @@ import de.amr.games.pacman.lib.V2i;
  */
 public class Autopilot {
 
-	private static final int FIXED_DIRECTION_TICKS = 2;
 	private static final int MAX_GHOST_AHEAD_DETECTION_DIST = 4; // tiles
-	private static final int MAX_GHOST_BEHIND_DETECTION_DIST = 1; // tiles
-	private static final int MAX_GHOST_CHASE_DIST = 8; // tiles
-	private static final int MAX_BONUS_HARVEST_DIST = 16; // tiles
+	private static final int MAX_GHOST_BEHIND_DETECTION_DIST = 2; // tiles
+	private static final int MAX_GHOST_CHASE_DIST = 10; // tiles
+	private static final int MAX_BONUS_HARVEST_DIST = 20; // tiles
 
 	private final Game game;
 	private final PacMan pacMan;
 	private final Ghost[] ghosts;
-	private int directionFixedTicks;
 
 	public Autopilot(Game game) {
 		this.game = game;
@@ -38,8 +36,12 @@ public class Autopilot {
 	public void controlPacMan() {
 		V2i pacManTile = pacMan.tile();
 
-		if (directionFixedTicks > 0) {
-			--directionFixedTicks;
+		if (pacMan.couldMove && !pacMan.changedTile) {
+			return;
+		}
+
+		if (pacMan.forcedTakingDirection) {
+			pacMan.forcedTakingDirection = false;
 			return;
 		}
 
@@ -59,7 +61,7 @@ public class Autopilot {
 			if (escapeDir != null) {
 				pacMan.wishDir = escapeDir;
 			}
-			directionFixedTicks = FIXED_DIRECTION_TICKS; // TODO how long is best?
+			pacMan.forcedTakingDirection = true;
 			return;
 		}
 

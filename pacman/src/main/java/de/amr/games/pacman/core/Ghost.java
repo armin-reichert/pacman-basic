@@ -19,7 +19,6 @@ public class Ghost extends Creature {
 	public boolean locked;
 	public boolean enteringHouse;
 	public boolean leavingHouse;
-	public boolean forcedTurningBack;
 	public short bounty;
 	public int dotCounter;
 	public byte elroyMode;
