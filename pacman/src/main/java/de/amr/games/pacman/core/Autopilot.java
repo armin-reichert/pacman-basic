@@ -66,7 +66,7 @@ public class Autopilot {
 			return;
 
 		Ghost prey = findFrightenedGhostInReach();
-		if (prey != null && pacMan.powerTicksLeft > game.clock.sec(0.5)) {
+		if (prey != null && pacMan.powerTicksLeft >= game.clock.sec(1)) {
 			log("Detected frightened ghost %s %.0g tiles away", prey.name(), prey.tile().manhattanDistance(pacManTile));
 			pacMan.targetTile = prey.tile();
 		} else if (game.bonusAvailableTicks > 0) {
@@ -160,16 +160,23 @@ public class Autopilot {
 
 	private Direction findEscapeDirectionExcluding(Collection<Direction> forbidden) {
 		V2i pacManTile = pacMan.tile();
+		List<Direction> escapes = new ArrayList<>(4);
 		for (Direction dir : Direction.shuffled()) {
 			if (forbidden.contains(dir)) {
 				continue;
 			}
 			V2i neighbor = pacManTile.sum(dir.vec);
 			if (game.canAccessTile(pacMan, neighbor.x, neighbor.y)) {
-				return dir;
+				escapes.add(dir);
 			}
 		}
-		return null;
+		for (Direction escape : escapes) {
+			V2i escapeTile = pacManTile.sum(escape.vec);
+			if (game.world.isInsideTunnel(escapeTile.x, escapeTile.y)) {
+				return escape;
+			}
+		}
+		return escapes.isEmpty() ? null : escapes.get(0);
 	}
 
 	private List<V2i> findNearestFoodTiles() {
