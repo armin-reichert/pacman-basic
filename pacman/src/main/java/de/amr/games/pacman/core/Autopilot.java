@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
@@ -219,13 +220,6 @@ public class Autopilot {
 	}
 
 	private double minDistanceFromGhosts(V2i tile) {
-		double minDist = Double.MAX_VALUE;
-		for (Ghost ghost : ghosts) {
-			double dist = tile.manhattanDistance(ghost.tile());
-			if (dist < minDist) {
-				minDist = dist;
-			}
-		}
-		return minDist;
+		return Stream.of(ghosts).map(Ghost::tile).mapToDouble(tile::manhattanDistance).min().getAsDouble();
 	}
 }
