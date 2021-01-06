@@ -115,10 +115,10 @@ public class Game {
 		pacMan = new PacMan(world.pacManHome);
 		/*@formatter:off*/
 		ghosts = new Ghost[] {
-			new Ghost(BLINKY, world.houseEntry,  world.upperRightScatterTile),
-			new Ghost(PINKY,  world.houseCenter, world.upperLeftScatterTile), 
-			new Ghost(INKY,   world.houseLeft,   world.lowerRightScatterTile),
-			new Ghost(CLYDE,  world.houseRight,  world.lowerLeftScatterTile) 
+			new Ghost(BLINKY, world.houseEntry,  world.scatterTileTopRight),
+			new Ghost(PINKY,  world.houseCenter, world.scatterTileTopLeft), 
+			new Ghost(INKY,   world.houseLeft,   world.scatterTileBottomRight),
+			new Ghost(CLYDE,  world.houseRight,  world.scatterTileBottomLeft) 
 		};
 		/*@formatter:on*/
 		autopilot = new Autopilot(this);

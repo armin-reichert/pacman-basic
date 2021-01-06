@@ -23,14 +23,14 @@ public class World {
 	public final V2i size = new V2i(28, 36);
 
 	public final V2i portalLeft = new V2i(-1, 17);
-	public final V2i portalRight = new V2i(size.x, 17);
+	public final V2i portalRight = new V2i(28, 17);
 
 	public final V2i pacManHome = new V2i(13, 26);
 
-	public final V2i upperRightScatterTile = new V2i(size.x - 3, 0);
-	public final V2i upperLeftScatterTile = new V2i(2, 0);
-	public final V2i lowerRightScatterTile = new V2i(size.x - 1, size.y - 1);
-	public final V2i lowerLeftScatterTile = new V2i(0, size.y - 1);
+	public final V2i scatterTileTopLeft = new V2i(2, 0);
+	public final V2i scatterTileTopRight = new V2i(25, 0);
+	public final V2i scatterTileBottomLeft = new V2i(0, 35);
+	public final V2i scatterTileBottomRight = new V2i(27, 35);
 
 	public final V2i houseEntry = new V2i(13, 14);
 	public final V2i houseCenter = new V2i(13, 17);
