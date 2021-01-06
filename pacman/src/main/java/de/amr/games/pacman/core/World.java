@@ -1,6 +1,5 @@
 package de.amr.games.pacman.core;
 
-import java.nio.charset.StandardCharsets;
 import java.util.BitSet;
 import java.util.stream.Stream;
 
@@ -39,12 +38,12 @@ public class World {
 
 	public final V2i bonusTile = new V2i(13, 20);
 
-	public final int totalFoodCount = 244;
+	public final int totalFoodCount;
 	public int foodRemaining;
+	private final BitSet eaten = new BitSet();
 
-	private final byte[] map =
+	private final String map =
 	//@formatter:off
-	(
 		"1111111111111111111111111111" +
 		"1111111111111111111111111111" +
 		"1111111111111111111111111111" +
@@ -80,17 +79,15 @@ public class World {
 		"1222222222222222222222222221" +
 		"1111111111111111111111111111" +
 		"1111111111111111111111111111" +
-		"1111111111111111111111111111"
-	).getBytes(StandardCharsets.UTF_8);
+		"1111111111111111111111111111";
 	//@formatter:on
 
 	public World() {
+		totalFoodCount = (int) map.chars().filter(c -> c == '2').count();
 		foodRemaining = totalFoodCount;
 	}
 
-	private final BitSet eaten = new BitSet();
-
-	private int index(int x, int y) {
+	private int tileIndex(int x, int y) {
 		return y * size.x + x;
 	}
 
@@ -98,8 +95,8 @@ public class World {
 		return x == xx && y == yy;
 	}
 
-	private byte map(int x, int y) {
-		return map[index(x, y)];
+	private char map(int x, int y) {
+		return map.charAt(tileIndex(x, y));
 	}
 
 	public boolean inMapRange(int x, int y) {
@@ -150,12 +147,12 @@ public class World {
 	}
 
 	public boolean foodRemoved(int x, int y) {
-		return eaten.get(index(x, y));
+		return eaten.get(tileIndex(x, y));
 	}
 
 	public void removeFood(int x, int y) {
 		if (!foodRemoved(x, y)) {
-			eaten.set(index(x, y));
+			eaten.set(tileIndex(x, y));
 			--foodRemaining;
 		}
 	}
