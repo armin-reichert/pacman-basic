@@ -73,7 +73,8 @@ public class Autopilot {
 			log("Detected active bonus");
 			pacMan.targetTile = game.world.bonusTile;
 		} else {
-			pacMan.targetTile = findTileFarestFromGhosts(findNearestFoodTiles());
+			V2i foodTile = findTileFarestFromGhosts(findNearestFoodTiles());
+			pacMan.targetTile = foodTile;
 		}
 		approachTarget();
 	}
