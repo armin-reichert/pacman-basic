@@ -19,8 +19,10 @@ import de.amr.games.pacman.lib.V2i;
 public class Autopilot {
 
 	private static final int FIXED_DIRECTION_TICKS = 2;
-	private static final int MAX_GHOST_DETECTION_AHEAD_ILES = 3;
-	private static final int MAX_CHASE_TILES = 16;
+	private static final int MAX_GHOST_AHEAD_DETECTION_DIST = 3; // tiles
+	private static final int MAX_GHOST_BEHIND_DETECTION_DIST = 1; // tiles
+	private static final int MAX_GHOST_CHASE_DIST = 16; // tiles
+	private static final int MAX_BONUS_HARVEST_DIST = 16; // tiles
 
 	private final Game game;
 	private final PacMan pacMan;
@@ -46,7 +48,7 @@ public class Autopilot {
 		Ghost hunterAhead = findHuntingGhostAhead(); // Where is Hunter?
 		if (hunterAhead != null) {
 			Direction escapeDir = null;
-			Ghost hunterBehind = findHuntingGhostBehind(2);
+			Ghost hunterBehind = findHuntingGhostBehind();
 			if (hunterBehind != null) {
 				escapeDir = findEscapeDirectionExcluding(EnumSet.of(pacMan.dir, pacMan.dir.opposite()));
 				log("Detected ghost %s behind, escape direction is %s", hunterAhead.name(), escapeDir);
@@ -61,7 +63,7 @@ public class Autopilot {
 			return;
 		}
 
-		// when targeting a food tile, keep moving till next intersection
+		// when not escaping ghost, keep move direction at least until next intersection
 		if (pacMan.couldMove && !game.world.isIntersectionTile(pacManTile.x, pacManTile.y))
 			return;
 
@@ -69,7 +71,8 @@ public class Autopilot {
 		if (prey != null && pacMan.powerTicksLeft >= game.clock.sec(1)) {
 			log("Detected frightened ghost %s %.0g tiles away", prey.name(), prey.tile().manhattanDistance(pacManTile));
 			pacMan.targetTile = prey.tile();
-		} else if (game.bonusAvailableTicks > 0) {
+		} else if (game.bonusAvailableTicks > 0
+				&& game.world.bonusTile.manhattanDistance(pacManTile) <= MAX_BONUS_HARVEST_DIST) {
 			log("Detected active bonus");
 			pacMan.targetTile = game.world.bonusTile;
 		} else {
@@ -99,13 +102,15 @@ public class Autopilot {
 				minDistDir = dir;
 			}
 		}
-		pacMan.wishDir = minDistDir;
-		log("Approach target tile %s from tile %s by turning %s", pacMan.tile(), pacMan.targetTile, pacMan.wishDir);
+		if (minDistDir != null) {
+			pacMan.wishDir = minDistDir;
+			log("Approach target tile %s from tile %s by turning %s", pacMan.tile(), pacMan.targetTile, pacMan.wishDir);
+		}
 	}
 
 	private Ghost findFrightenedGhostInReach() {
 		for (Ghost ghost : ghosts) {
-			if (ghost.frightened && ghost.tile().manhattanDistance(pacMan.tile()) < MAX_CHASE_TILES) {
+			if (ghost.frightened && ghost.tile().manhattanDistance(pacMan.tile()) < MAX_GHOST_CHASE_DIST) {
 				return ghost;
 			}
 		}
@@ -115,7 +120,7 @@ public class Autopilot {
 	private Ghost findHuntingGhostAhead() {
 		V2i pacManTile = pacMan.tile();
 		boolean energizerFound = false;
-		for (int i = 1; i <= MAX_GHOST_DETECTION_AHEAD_ILES; ++i) {
+		for (int i = 1; i <= MAX_GHOST_AHEAD_DETECTION_DIST; ++i) {
 			V2i ahead = pacManTile.sum(pacMan.dir.vec.scaled(i));
 			if (!game.canAccessTile(pacMan, ahead.x, ahead.y)) {
 				break;
@@ -140,9 +145,9 @@ public class Autopilot {
 		return null;
 	}
 
-	private Ghost findHuntingGhostBehind(int maxTiles) {
+	private Ghost findHuntingGhostBehind() {
 		V2i pacManTile = pacMan.tile();
-		for (int i = 1; i <= maxTiles; ++i) {
+		for (int i = 1; i <= MAX_GHOST_BEHIND_DETECTION_DIST; ++i) {
 			V2i behind = pacManTile.sum(pacMan.dir.opposite().vec.scaled(i));
 			if (!game.canAccessTile(pacMan, behind.x, behind.y)) {
 				break;
