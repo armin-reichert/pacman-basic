@@ -135,6 +135,7 @@ public class Autopilot {
 	}
 
 	private List<V2i> findNearestFoodTiles() {
+		long time = System.nanoTime();
 		List<V2i> foodTiles = new ArrayList<>();
 		V2i pacManTile = pacMan.tile();
 		double minDist = Double.MAX_VALUE;
@@ -154,7 +155,8 @@ public class Autopilot {
 				}
 			}
 		}
-		log("Nearest food tiles from Pac-Man location %s:", pacManTile);
+		time = System.nanoTime() - time;
+		log("Nearest food tiles from Pac-Man location %s: (time %.2f millis)", pacManTile, time / 1_000_000f);
 		for (V2i t : foodTiles) {
 			log("\t%s (%.2g tiles away from Pac-Man, %.2g tiles away from ghosts)", t, t.manhattanDistance(pacManTile),
 					minDistanceFromGhosts(t));
