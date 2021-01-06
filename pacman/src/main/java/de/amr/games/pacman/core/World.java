@@ -83,7 +83,14 @@ public class World {
 	//@formatter:on
 
 	public World() {
-		totalFoodCount = (int) map.chars().filter(c -> c == '2').count();
+//		totalFoodCount = (int) map.chars().filter(c -> c == '2').count();
+		int food = 0;
+		for (int i = 0; i < map.length(); ++i) {
+			if (map.charAt(i) == '2') {
+				++food;
+			}
+		}
+		totalFoodCount = food;
 		foodRemaining = totalFoodCount;
 	}
 
