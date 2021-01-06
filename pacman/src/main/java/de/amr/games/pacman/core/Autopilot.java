@@ -18,8 +18,8 @@ import de.amr.games.pacman.lib.V2i;
 public class Autopilot {
 
 	private static final int FIXED_DIRECTION_TICKS = 2;
-	private static final int MAX_GHOST_DETECTION_TILES = 4;
-	private static final int MAX_CHASE_TILES = 10;
+	private static final int MAX_GHOST_DETECTION_TILES = 3;
+	private static final int MAX_CHASE_TILES = 16;
 
 	private final Game game;
 	private final PacMan pacMan;
@@ -182,6 +182,10 @@ public class Autopilot {
 					continue;
 				}
 				V2i foodTile = new V2i(x, y);
+				if (game.world.isEnergizerTile(foodTile.x, foodTile.y) && pacMan.powerTicksLeft > game.clock.sec(1)
+						&& game.world.foodRemaining > 1) {
+					continue;
+				}
 				double dist = pacManTile.manhattanDistance(foodTile);
 				if (dist < minDist) {
 					minDist = dist;
