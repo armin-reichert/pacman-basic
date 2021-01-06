@@ -4,7 +4,7 @@ import static de.amr.games.pacman.lib.Logging.log;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
+import java.util.EnumSet;
 import java.util.List;
 
 import de.amr.games.pacman.lib.Direction;
@@ -42,10 +42,20 @@ public class Autopilot {
 
 		pacMan.targetTile = null;
 
-		Ghost hunter = findHuntingGhostAhead(); // Where is Hunter?
-		if (hunter != null) {
-			pacMan.wishDir = findEscapeDirectionExcluding(Collections.singleton(pacMan.wishDir));
-			log("Detected ghost %s moving %s ahead, changing direction to %s", hunter.name(), hunter.dir, pacMan.wishDir);
+		Ghost hunterAhead = findHuntingGhostAhead(); // Where is Hunter?
+		if (hunterAhead != null) {
+			Direction escapeDir = null;
+			Ghost hunterBehind = findHuntingGhostBehind(2);
+			if (hunterBehind != null) {
+				escapeDir = findEscapeDirectionExcluding(EnumSet.of(pacMan.dir, pacMan.dir.opposite()));
+				log("Detected ghost %s behind, escape direction is %s", hunterAhead.name(), escapeDir);
+			} else {
+				escapeDir = findEscapeDirectionExcluding(EnumSet.of(pacMan.dir));
+				log("Detected ghost %s ahead, escape direction is %s", hunterAhead.name(), escapeDir);
+			}
+			if (escapeDir != null) {
+				pacMan.wishDir = escapeDir;
+			}
 			directionFixedTicks = FIXED_DIRECTION_TICKS; // TODO how long is best?
 			return;
 		}
@@ -55,7 +65,7 @@ public class Autopilot {
 			return;
 
 		Ghost prey = findFrightenedGhostInReach();
-		if (prey != null) {
+		if (prey != null && pacMan.powerTicksLeft > game.clock.sec(0.5)) {
 			log("Detected frightened ghost %s %.0g tiles away", prey.name(), prey.tile().manhattanDistance(pacManTile));
 			pacMan.targetTile = prey.tile();
 		} else if (game.bonusAvailableTicks > 0) {
@@ -102,10 +112,14 @@ public class Autopilot {
 
 	private Ghost findHuntingGhostAhead() {
 		V2i pacManTile = pacMan.tile();
+		boolean energizerFound = false;
 		for (int i = 1; i <= MAX_GHOST_DETECTION_TILES; ++i) {
 			V2i ahead = pacManTile.sum(pacMan.dir.vec.scaled(i));
 			if (!game.canAccessTile(pacMan, ahead.x, ahead.y)) {
 				break;
+			}
+			if (game.world.isEnergizerTile(ahead.x, ahead.y) && !game.world.foodRemoved(ahead.x, ahead.y)) {
+				energizerFound = true;
 			}
 			V2i aheadLeft = ahead.sum(pacMan.dir.turnLeft().vec), aheadRight = ahead.sum(pacMan.dir.turnRight().vec);
 			for (Ghost ghost : ghosts) {
@@ -113,6 +127,29 @@ public class Autopilot {
 					continue;
 				}
 				if (ghost.tile().equals(ahead) || ghost.tile().equals(aheadLeft) || ghost.tile().equals(aheadRight)) {
+					if (energizerFound) {
+						log("Ignore hunting ghost ahead, energizer comes first!");
+						return null;
+					}
+					return ghost;
+				}
+			}
+		}
+		return null;
+	}
+
+	private Ghost findHuntingGhostBehind(int maxTiles) {
+		V2i pacManTile = pacMan.tile();
+		for (int i = 1; i <= maxTiles; ++i) {
+			V2i behind = pacManTile.sum(pacMan.dir.opposite().vec.scaled(i));
+			if (!game.canAccessTile(pacMan, behind.x, behind.y)) {
+				break;
+			}
+			for (Ghost ghost : ghosts) {
+				if (!game.isGhostHunting(ghost)) {
+					continue;
+				}
+				if (ghost.tile().equals(behind)) {
 					return ghost;
 				}
 			}
