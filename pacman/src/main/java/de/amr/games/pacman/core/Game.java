@@ -1012,7 +1012,7 @@ public class Game {
 	}
 
 	boolean isGhostHunting(Ghost ghost) {
-		return !ghost.dead && !ghost.locked && !ghost.enteringHouse && !ghost.leavingHouse && !ghost.frightened;
+		return !(ghost.dead || ghost.locked || ghost.enteringHouse || ghost.leavingHouse || ghost.frightened);
 	}
 
 	private void forceHuntingGhostsTurningBack() {
