@@ -716,19 +716,19 @@ public class Game {
 		}
 		// bonus score reached?
 		int eaten = world.totalFoodCount - world.foodRemaining;
-		if (bonusAvailableTicks == 0 && (eaten == 70 || eaten == 170)) {
+		if (eaten == 70 || eaten == 170) {
 			bonusAvailableTicks = clock.sec(9 + rnd.nextFloat());
 		}
 		updateGhostDotCounters();
-		mayBeEnterElroyMode();
+		maybeBlinkyEntersElroyMode();
 		ui.playSound(Sound.MUNCH);
 	}
 
 	private void givePacManPower() {
-		int powerSeconds = level().ghostFrightenedSeconds;
-		pacMan.powerTicksLeft = clock.sec(powerSeconds);
-		if (powerSeconds > 0) {
-			log("Pac-Man got power for %d seconds", powerSeconds);
+		int seconds = level().ghostFrightenedSeconds;
+		pacMan.powerTicksLeft = clock.sec(seconds);
+		if (seconds > 0) {
+			log("Pac-Man got power for %d seconds", seconds);
 			for (Ghost ghost : ghosts) {
 				if (isGhostHunting(ghost)) {
 					ghost.frightened = true;
@@ -755,7 +755,7 @@ public class Game {
 		}
 	}
 
-	private void mayBeEnterElroyMode() {
+	private void maybeBlinkyEntersElroyMode() {
 		if (world.foodRemaining == level().elroy1DotsLeft) {
 			ghosts[BLINKY].elroyMode = 1;
 			log("Blinky becomes Elroy 1");
@@ -976,7 +976,7 @@ public class Game {
 		}
 		if (ghost.forcedTakingDirection) {
 			ghost.forcedTakingDirection = false;
-			return Optional.of(ghost.dir.opposite());
+			return Optional.of(ghost.wishDir);
 		}
 		V2i tile = ghost.tile();
 		if (world.isPortalTile(tile.x, tile.y)) {
@@ -1018,6 +1018,7 @@ public class Game {
 	private void forceHuntingGhostsTurningBack() {
 		for (Ghost ghost : ghosts) {
 			if (isGhostHunting(ghost)) {
+				ghost.wishDir = ghost.dir.opposite();
 				ghost.forcedTakingDirection = true;
 			}
 		}
