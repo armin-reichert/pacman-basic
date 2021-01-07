@@ -42,10 +42,6 @@ public abstract class Creature {
 		position = new V2f(x * TS + offsetX, y * TS + offsetY);
 	}
 
-	public boolean at(V2i tile) {
-		return tile().equals(tile);
-	}
-
 	public static V2i tile(V2f position) {
 		return new V2i((int) position.x / TS, (int) position.y / TS);
 	}

@@ -918,7 +918,7 @@ public class Game {
 	}
 
 	private boolean atGhostHouseDoor(Creature guy) {
-		return guy.at(world.houseEntry) && differsAtMost(guy.offset().x, HTS, 2);
+		return guy.tile().equals(world.houseEntry) && differsAtMost(guy.offset().x, HTS, 2);
 	}
 
 	private void letGhostEnterHouse(Ghost ghost) {
@@ -1025,11 +1025,12 @@ public class Game {
 	}
 
 	private void tryMoving(Creature guy) {
-		if (guy.at(world.portalRight) && guy.dir == RIGHT) {
+		V2i tile = guy.tile();
+		if (tile.equals(world.portalRight) && guy.dir == RIGHT) {
 			guy.placeAt(world.portalLeft.x, world.portalLeft.y, 0, 0);
 			return;
 		}
-		if (guy.at(world.portalLeft) && guy.dir == LEFT) {
+		if (tile.equals(world.portalLeft) && guy.dir == LEFT) {
 			guy.placeAt(world.portalRight.x, world.portalRight.y, 0, 0);
 			return;
 		}
@@ -1088,7 +1089,7 @@ public class Game {
 		}
 
 		guy.placeAt(newTile.x, newTile.y, newOffset.x, newOffset.y);
-		guy.changedTile = !guy.at(tile);
+		guy.changedTile = !guy.tile().equals(tile);
 		return true;
 	}
 
