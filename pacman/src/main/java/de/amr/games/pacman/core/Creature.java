@@ -23,7 +23,7 @@ public abstract class Creature {
 	public float speed;
 	public boolean visible;
 	public boolean changedTile;
-	public boolean forcedTakingDirection;
+	public boolean forcedDirection;
 	public boolean couldMove;
 	public boolean forcedOnTrack;
 	public boolean dead;

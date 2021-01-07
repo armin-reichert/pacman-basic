@@ -40,8 +40,8 @@ public class Autopilot {
 			return;
 		}
 
-		if (pacMan.forcedTakingDirection) {
-			pacMan.forcedTakingDirection = false;
+		if (pacMan.forcedDirection) {
+			pacMan.forcedDirection = false;
 			return;
 		}
 
@@ -61,7 +61,7 @@ public class Autopilot {
 			if (escapeDir != null) {
 				pacMan.wishDir = escapeDir;
 			}
-			pacMan.forcedTakingDirection = true;
+			pacMan.forcedDirection = true;
 			return;
 		}
 
