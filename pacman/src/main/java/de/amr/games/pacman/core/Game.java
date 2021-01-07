@@ -983,7 +983,7 @@ public class Game {
 			return Optional.empty();
 		}
 		if (ghost.frightened && world.isIntersectionTile(tile.x, tile.y)) {
-			return Optional.of(randomMoveDir(ghost));
+			return Optional.of(randomPossibleMoveDir(ghost));
 		}
 		return ghostTargetDirection(ghost);
 	}
@@ -1102,7 +1102,7 @@ public class Game {
 		return world.inMapRange(x, y) && !world.isWall(x, y);
 	}
 
-	private Direction randomMoveDir(Creature guy) {
+	private Direction randomPossibleMoveDir(Creature guy) {
 		//@formatter:off
 		List<Direction> dirs = Stream.of(Direction.values())
 			.filter(dir -> dir != guy.dir.opposite())
@@ -1132,7 +1132,7 @@ public class Game {
 	private void eatAllNormalPellets() {
 		for (int x = 0; x < world.size.x; ++x) {
 			for (int y = 0; y < world.size.y; ++y) {
-				if (world.isFoodTile(x, y) && !world.foodRemoved(x, y) && !world.isEnergizerTile(x, y)) {
+				if (world.isFoodTile(x, y) && !world.isEnergizerTile(x, y)) {
 					world.removeFood(x, y);
 				}
 			}
