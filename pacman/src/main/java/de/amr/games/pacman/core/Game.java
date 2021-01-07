@@ -620,6 +620,7 @@ public class Game {
 	// END STATE-MACHINE
 
 	private void updatePacMan() {
+		pacMan.speed = level().pacManSpeed;
 		if (pacMan.restingTicksLeft == 0) {
 			updatePacManDirection();
 			tryMoving(pacMan);
@@ -634,6 +635,7 @@ public class Game {
 				}
 				ui.stopSound(Sound.PACMAN_POWER);
 			}
+			pacMan.speed = level().pacManSpeedPowered;
 		}
 	}
 
@@ -768,6 +770,7 @@ public class Game {
 	private void killGhost(Ghost ghost) {
 		ghost.frightened = false;
 		ghost.dead = true;
+		ghost.speed = 2 * level().ghostSpeed; // TODO correct?
 		ghost.targetTile = world.houseEntry;
 		ghost.bounty = ghostBounty;
 		score(ghost.bounty);
@@ -888,6 +891,7 @@ public class Game {
 	private void letGhostBounce(Ghost ghost) {
 		V2i tile = ghost.tile();
 		V2f offset = ghost.offset();
+		ghost.speed = level().ghostSpeedTunnel; // TODO what's the correct speed when bouncing?
 		if (tile.y == world.houseCenter.y - 1 && offset.y < 3 || tile.y == world.houseCenter.y && offset.y > 4) {
 			ghost.wishDir = ghost.dir.opposite();
 		}
@@ -895,6 +899,18 @@ public class Game {
 	}
 
 	private void letGhostHuntPacMan(Ghost ghost) {
+		V2i tile = ghost.tile();
+		if (world.isInsideTunnel(tile.x, tile.y)) {
+			ghost.speed = level().ghostSpeedTunnel;
+		} else if (ghost.frightened) {
+			ghost.speed = level().ghostSpeedFrightened;
+		} else if (ghost.id == BLINKY && ghost.elroyMode == 1) {
+			ghost.speed = level().elroy1Speed;
+		} else if (ghost.id == BLINKY && ghost.elroyMode == 2) {
+			ghost.speed = level().elroy2Speed;
+		} else {
+			ghost.speed = level().ghostSpeed;
+		}
 		ghost.targetTile = inChasingPhase() || ghost.id == BLINKY && ghost.elroyMode > 0 ? ghostChasingTarget(ghost)
 				: ghost.scatterTile;
 		letGhostHeadForTargetTile(ghost);
@@ -945,6 +961,7 @@ public class Game {
 	private void letGhostLeaveHouse(Ghost ghost) {
 		V2i tile = ghost.tile();
 		V2f offset = ghost.offset();
+		ghost.speed = level().ghostSpeedTunnel; // TODO
 		// leaving house complete?
 		if (tile.equals(world.houseEntry) && differsAtMost(offset.y, 0, 1)) {
 			ghost.setOffset(HTS, 0);
@@ -1043,7 +1060,6 @@ public class Game {
 	}
 
 	private boolean tryMoving(Creature guy, Direction dir) {
-		guy.updateSpeed(world, level());
 		// 100% speed corresponds to 1.25 pixels/tick (75px/sec)
 		float pixelSpeed = guy.speed * 1.25f;
 

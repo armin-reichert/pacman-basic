@@ -34,8 +34,6 @@ public abstract class Creature {
 				tile(), offset(), dir, wishDir, speed, changedTile, couldMove);
 	}
 
-	public abstract void updateSpeed(World world, Level level);
-
 	public abstract String name();
 
 	public void placeAt(int x, int y, float offsetX, float offsetY) {

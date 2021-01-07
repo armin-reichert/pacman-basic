@@ -6,7 +6,6 @@ import de.amr.games.pacman.lib.V2i;
  * A ghost.
  * 
  * @author Armin Reichert
- *
  */
 public class Ghost extends Creature {
 
@@ -32,27 +31,8 @@ public class Ghost extends Creature {
 	@Override
 	public String name() {
 		if (id == BLINKY && elroyMode > 0) {
-			return String.format("%s (Elroy %d)", NAMES[BLINKY], elroyMode);
+			return String.format("%s (Cruise Elroy %d)", NAMES[BLINKY], elroyMode);
 		}
 		return NAMES[id];
-	}
-
-	@Override
-	public void updateSpeed(World world, Level level) {
-		if (leavingHouse || (locked && id != BLINKY)) {
-			speed = 0.75f * level.ghostSpeed;
-		} else if (dead) {
-			speed = 2f * level.ghostSpeed;
-		} else if (world.isInsideTunnel(tile().x, tile().y)) {
-			speed = level.ghostSpeedTunnel;
-		} else if (frightened) {
-			speed = level.ghostSpeedFrightened;
-		} else if (elroyMode == 1) {
-			speed = level.elroy1Speed;
-		} else if (elroyMode == 2) {
-			speed = level.elroy2Speed;
-		} else {
-			speed = level.ghostSpeed;
-		}
 	}
 }
