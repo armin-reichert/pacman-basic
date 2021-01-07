@@ -716,13 +716,19 @@ public class Game {
 			score(10);
 			pacMan.restingTicksLeft = 1;
 		}
+		if (world.foodRemaining == level().elroy1DotsLeft) {
+			ghosts[BLINKY].elroyMode = 1;
+			log("Blinky becomes Cruise Elroy 1");
+		} else if (world.foodRemaining == level().elroy2DotsLeft) {
+			ghosts[BLINKY].elroyMode = 2;
+			log("Blinky becomes Cruise Elroy 2");
+		}
 		// bonus score reached?
 		int eaten = world.totalFoodCount - world.foodRemaining;
 		if (eaten == 70 || eaten == 170) {
 			bonusAvailableTicks = clock.sec(9 + rnd.nextFloat());
 		}
 		updateGhostDotCounters();
-		maybeBlinkyEntersElroyMode();
 		ui.playSound(Sound.MUNCH);
 	}
 
@@ -754,16 +760,6 @@ public class Game {
 			preferredLockedGhost().ifPresent(ghost -> {
 				ghost.dotCounter++;
 			});
-		}
-	}
-
-	private void maybeBlinkyEntersElroyMode() {
-		if (world.foodRemaining == level().elroy1DotsLeft) {
-			ghosts[BLINKY].elroyMode = 1;
-			log("Blinky becomes Elroy 1");
-		} else if (world.foodRemaining == level().elroy2DotsLeft) {
-			ghosts[BLINKY].elroyMode = 2;
-			log("Blinky becomes Elroy 2");
 		}
 	}
 
