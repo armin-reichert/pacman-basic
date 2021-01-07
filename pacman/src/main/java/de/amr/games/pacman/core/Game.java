@@ -659,13 +659,13 @@ public class Game {
 	}
 
 	private Ghost ghostCollidingWithPacMan() {
-		return Stream.of(ghosts).filter(ghost -> !ghost.dead).filter(ghost -> pacMan.tile().equals(ghost.tile())).findAny()
+		return Stream.of(ghosts).filter(ghost -> !ghost.dead).filter(ghost -> ghost.atSameTile(pacMan)).findAny()
 				.orElse(null);
 	}
 
-	private void killPacMan(Ghost killerGhost) {
+	private void killPacMan(Ghost killer) {
 		pacMan.dead = true;
-		log("Pac-Man killed by %s at tile %s", killerGhost.name(), killerGhost.tile());
+		log("Pac-Man killed by %s at tile %s", killer.name(), killer.tile());
 		resetAndEnableGlobalDotCounter();
 		byte elroyMode = ghosts[BLINKY].elroyMode;
 		if (elroyMode > 0) {
