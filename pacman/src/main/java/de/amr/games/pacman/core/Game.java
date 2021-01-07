@@ -999,7 +999,7 @@ public class Game {
 			if (!canAccessTile(ghost, neighbor.x, neighbor.y)) {
 				continue;
 			}
-			if (dir == UP && world.isUpwardsBlocked(neighbor.x, neighbor.y) && !ghost.frightened && !ghost.dead) {
+			if (dir == UP && world.isUpwardsBlocked(neighbor.x, neighbor.y) && !(ghost.frightened || ghost.dead)) {
 				continue;
 			}
 			double dist = neighbor.euclideanDistance(ghost.targetTile);
