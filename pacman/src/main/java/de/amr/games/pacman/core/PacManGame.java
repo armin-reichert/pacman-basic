@@ -1038,7 +1038,7 @@ public class PacManGame {
 
 	private boolean tryMoving(Creature guy, Direction dir) {
 		// 100% speed corresponds to 1.25 pixels/tick (75px/sec)
-		float pixelSpeed = guy.speed * 1.25f;
+		float pixels = guy.speed * 1.25f;
 
 		V2i guyLocationBeforeMove = guy.tile();
 		V2f offset = guy.offset();
@@ -1047,19 +1047,19 @@ public class PacManGame {
 		// check if guy can change its direction now
 		if (guy.forcedOnTrack && canAccessTile(guy, neighbor.x, neighbor.y)) {
 			if (dir == LEFT || dir == RIGHT) {
-				if (abs(offset.y) > pixelSpeed) {
+				if (abs(offset.y) > pixels) {
 					return false;
 				}
 				guy.setOffset(offset.x, 0);
 			} else if (dir == UP || dir == DOWN) {
-				if (abs(offset.x) > pixelSpeed) {
+				if (abs(offset.x) > pixels) {
 					return false;
 				}
 				guy.setOffset(0, offset.y);
 			}
 		}
 
-		V2f velocity = new V2f(dir.vec).scaled(pixelSpeed);
+		V2f velocity = new V2f(dir.vec).scaled(pixels);
 		V2f newPosition = guy.position.sum(velocity);
 		V2i newTile = tile(newPosition);
 		V2f newOffset = offset(newPosition);
