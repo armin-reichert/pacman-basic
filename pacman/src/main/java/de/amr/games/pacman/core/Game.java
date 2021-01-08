@@ -14,6 +14,7 @@ import static de.amr.games.pacman.core.Ghost.CLYDE;
 import static de.amr.games.pacman.core.Ghost.INKY;
 import static de.amr.games.pacman.core.Ghost.PINKY;
 import static de.amr.games.pacman.core.World.HTS;
+import static de.amr.games.pacman.core.World.t;
 import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
@@ -659,8 +660,7 @@ public class Game {
 	}
 
 	private Ghost ghostCollidingWithPacMan() {
-		return Stream.of(ghosts).filter(ghost -> !ghost.dead).filter(ghost -> ghost.atSameTile(pacMan)).findAny()
-				.orElse(null);
+		return Stream.of(ghosts).filter(ghost -> !ghost.dead).filter(pacMan::atSameTile).findAny().orElse(null);
 	}
 
 	private void killPacMan(Ghost killer) {
@@ -885,12 +885,11 @@ public class Game {
 	}
 
 	private void letGhostBounce(Ghost ghost) {
-		V2i tile = ghost.tile();
-		V2f offset = ghost.offset();
-		ghost.speed = level().ghostSpeedTunnel; // TODO what's the correct speed when bouncing?
-		if (tile.y == world.houseCenter.y - 1 && offset.y < 3 || tile.y == world.houseCenter.y && offset.y > 4) {
+		int ceiling = t(world.houseCenter.y - 1) + 3, ground = t(world.houseCenter.y) + 4;
+		if (ghost.position.y <= ceiling || ghost.position.y >= ground) {
 			ghost.wishDir = ghost.dir.opposite();
 		}
+		ghost.speed = level().ghostSpeedTunnel; // TODO correct?
 		tryMoving(ghost);
 	}
 
