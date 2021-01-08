@@ -156,7 +156,7 @@ public class PacManGame {
 		log("Game exits.");
 	}
 
-	public PacManGameLevel level(int levelNumber) {
+	public static PacManGameLevel level(int levelNumber) {
 		return LEVELS[levelNumber <= 21 ? levelNumber - 1 : 20];
 	}
 

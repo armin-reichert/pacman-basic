@@ -16,10 +16,10 @@ import java.awt.Stroke;
 import java.awt.image.BufferedImage;
 import java.util.ResourceBundle;
 
-import de.amr.games.pacman.core.PacManGame;
-import de.amr.games.pacman.core.PacManGameState;
 import de.amr.games.pacman.core.Ghost;
 import de.amr.games.pacman.core.PacMan;
+import de.amr.games.pacman.core.PacManGame;
+import de.amr.games.pacman.core.PacManGameState;
 import de.amr.games.pacman.lib.Direction;
 
 /**
@@ -95,7 +95,7 @@ class PlayScene extends Scene {
 		int x = t(game.world.size.x - 4);
 		int first = Math.max(1, game.levelNumber - 6);
 		for (int level = first; level <= game.levelNumber; ++level) {
-			BufferedImage symbol = assets.symbols[game.level(level).bonusSymbol];
+			BufferedImage symbol = assets.symbols[PacManGame.level(level).bonusSymbol];
 			g.drawImage(symbol, x, size.height - t(2), null);
 			x -= t(2);
 		}
