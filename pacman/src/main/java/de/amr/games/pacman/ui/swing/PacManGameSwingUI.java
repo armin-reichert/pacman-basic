@@ -18,7 +18,7 @@ import javax.swing.JFrame;
 import javax.swing.Timer;
 
 import de.amr.games.pacman.core.PacManGame;
-import de.amr.games.pacman.core.GameState;
+import de.amr.games.pacman.core.PacManGameState;
 import de.amr.games.pacman.ui.PacManGameUI;
 import de.amr.games.pacman.ui.Sound;
 
@@ -134,7 +134,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 	private void drawCurrentScene(Graphics2D g) {
 		if (game.gamePaused) {
 			drawPausedScreen(g);
-		} else if (game.state == GameState.INTRO) {
+		} else if (game.state == PacManGameState.INTRO) {
 			introScene.draw(g);
 		} else {
 			playScene.draw(g);

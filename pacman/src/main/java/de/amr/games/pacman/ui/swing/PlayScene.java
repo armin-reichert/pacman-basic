@@ -17,7 +17,7 @@ import java.awt.image.BufferedImage;
 import java.util.ResourceBundle;
 
 import de.amr.games.pacman.core.PacManGame;
-import de.amr.games.pacman.core.GameState;
+import de.amr.games.pacman.core.PacManGameState;
 import de.amr.games.pacman.core.Ghost;
 import de.amr.games.pacman.core.PacMan;
 import de.amr.games.pacman.lib.Direction;
@@ -49,11 +49,11 @@ class PlayScene extends Scene {
 	}
 
 	private void drawMessage(Graphics2D g) {
-		if (game.state == GameState.READY) {
+		if (game.state == PacManGameState.READY) {
 			g.setFont(assets.scoreFont);
 			g.setColor(Color.YELLOW);
 			drawCenteredText(g, resources.getString("READY"), t(21));
-		} else if (game.state == GameState.GAME_OVER) {
+		} else if (game.state == PacManGameState.GAME_OVER) {
 			g.setFont(assets.scoreFont);
 			g.setColor(Color.RED);
 			drawCenteredText(g, resources.getString("GAME_OVER"), t(21));
@@ -122,7 +122,7 @@ class PlayScene extends Scene {
 			range(4, game.world.size.y - 3).forEach(y -> {
 				if (game.world.foodRemoved(x, y)) {
 					hideFood(g, x, y);
-				} else if (game.state == GameState.HUNTING && game.world.isEnergizerTile(x, y)) {
+				} else if (game.state == PacManGameState.HUNTING && game.world.isEnergizerTile(x, y)) {
 					game.clock.runOrBeIdle(10, () -> hideFood(g, x, y));
 				}
 			});

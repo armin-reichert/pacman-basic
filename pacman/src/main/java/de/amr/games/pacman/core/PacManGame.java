@@ -2,13 +2,13 @@ package de.amr.games.pacman.core;
 
 import static de.amr.games.pacman.core.Creature.offset;
 import static de.amr.games.pacman.core.Creature.tile;
-import static de.amr.games.pacman.core.GameState.CHANGING_LEVEL;
-import static de.amr.games.pacman.core.GameState.GAME_OVER;
-import static de.amr.games.pacman.core.GameState.GHOST_DYING;
-import static de.amr.games.pacman.core.GameState.HUNTING;
-import static de.amr.games.pacman.core.GameState.INTRO;
-import static de.amr.games.pacman.core.GameState.PACMAN_DYING;
-import static de.amr.games.pacman.core.GameState.READY;
+import static de.amr.games.pacman.core.PacManGameState.CHANGING_LEVEL;
+import static de.amr.games.pacman.core.PacManGameState.GAME_OVER;
+import static de.amr.games.pacman.core.PacManGameState.GHOST_DYING;
+import static de.amr.games.pacman.core.PacManGameState.HUNTING;
+import static de.amr.games.pacman.core.PacManGameState.INTRO;
+import static de.amr.games.pacman.core.PacManGameState.PACMAN_DYING;
+import static de.amr.games.pacman.core.PacManGameState.READY;
 import static de.amr.games.pacman.core.Ghost.BLINKY;
 import static de.amr.games.pacman.core.Ghost.CLYDE;
 import static de.amr.games.pacman.core.Ghost.INKY;
@@ -98,8 +98,8 @@ public class PacManGame {
 	public boolean gamePaused;
 	public boolean gameStarted;
 
-	public GameState state;
-	public GameState previousState;
+	public PacManGameState state;
+	public PacManGameState previousState;
 	public short levelNumber;
 	public byte huntingPhase;
 	public byte lives;
@@ -269,20 +269,20 @@ public class PacManGame {
 		log("Exit state '%s'", stateDescription());
 	}
 
-	private GameState transition(Runnable exit, Runnable entry, Runnable action) {
+	private PacManGameState transition(Runnable exit, Runnable entry, Runnable action) {
 		exit.run();
 		action.run();
 		entry.run();
 		return state;
 	}
 
-	private GameState transition(Runnable exit, Runnable entry) {
+	private PacManGameState transition(Runnable exit, Runnable entry) {
 		exit.run();
 		entry.run();
 		return state;
 	}
 
-	private GameState updateState() {
+	private PacManGameState updateState() {
 		if (gamePaused) {
 			return state;
 		}
@@ -315,7 +315,7 @@ public class PacManGame {
 		logStateEntry();
 	}
 
-	private GameState runIntroState() {
+	private PacManGameState runIntroState() {
 		if (ui.anyKeyPressed()) {
 			return transition(this::exitIntroState, this::enterReadyState);
 		}
@@ -342,7 +342,7 @@ public class PacManGame {
 		logStateEntry();
 	}
 
-	private GameState runReadyState() {
+	private PacManGameState runReadyState() {
 		if (state.expired()) {
 			return transition(this::exitReadyState, this::enterHuntingState);
 		}
@@ -428,7 +428,7 @@ public class PacManGame {
 		logStateEntry();
 	}
 
-	private GameState runHuntingState() {
+	private PacManGameState runHuntingState() {
 
 		// Cheats
 		if (ui.keyPressed("e")) {
@@ -491,7 +491,7 @@ public class PacManGame {
 		logStateEntry();
 	}
 
-	private GameState runPacManDyingState() {
+	private PacManGameState runPacManDyingState() {
 		if (state.expired()) {
 			if (lives > 0) {
 				return transition(this::exitPacManDyingState, this::enterReadyState);
@@ -536,7 +536,7 @@ public class PacManGame {
 		logStateEntry();
 	}
 
-	private GameState runGhostDyingState() {
+	private PacManGameState runGhostDyingState() {
 		if (state.expired()) {
 			return transition(this::exitGhostDyingState, () -> state = previousState, () -> log("Resume state '%s'", state));
 		}
@@ -575,7 +575,7 @@ public class PacManGame {
 		logStateEntry();
 	}
 
-	private GameState runChangingLevelState() {
+	private PacManGameState runChangingLevelState() {
 		if (state.expired()) {
 			return transition(this::exitChangingLevelState, this::enterReadyState);
 		}
@@ -612,7 +612,7 @@ public class PacManGame {
 		logStateEntry();
 	}
 
-	private GameState runGameOverState() {
+	private PacManGameState runGameOverState() {
 		if (state.expired() || ui.anyKeyPressed()) {
 			return transition(this::exitGameOverState, this::enterIntroState);
 		}

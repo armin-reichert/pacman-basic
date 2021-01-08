@@ -5,7 +5,7 @@ package de.amr.games.pacman.core;
  * 
  * @author Armin Reichert
  */
-public enum GameState {
+public enum PacManGameState {
 
 	INTRO, READY, HUNTING, CHANGING_LEVEL, PACMAN_DYING, GHOST_DYING, GAME_OVER;
 
