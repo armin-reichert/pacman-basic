@@ -4,15 +4,15 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
-import de.amr.games.pacman.core.Game;
+import de.amr.games.pacman.core.PacManGame;
 
 abstract class Scene {
 
-	public final Game game;
+	public final PacManGame game;
 	public final Assets assets;
 	public final Dimension size;
 
-	public Scene(Game game, Assets assets, Dimension size) {
+	public Scene(PacManGame game, Assets assets, Dimension size) {
 		this.game = game;
 		this.assets = assets;
 		this.size = size;

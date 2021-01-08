@@ -17,7 +17,7 @@ import java.awt.image.BufferStrategy;
 import javax.swing.JFrame;
 import javax.swing.Timer;
 
-import de.amr.games.pacman.core.Game;
+import de.amr.games.pacman.core.PacManGame;
 import de.amr.games.pacman.core.GameState;
 import de.amr.games.pacman.ui.PacManGameUI;
 import de.amr.games.pacman.ui.Sound;
@@ -30,7 +30,7 @@ import de.amr.games.pacman.ui.Sound;
 public class PacManGameSwingUI implements PacManGameUI {
 
 	private final Assets assets;
-	private final Game game;
+	private final PacManGame game;
 	private final Dimension unscaledSize;
 	private final float scaling;
 	private final JFrame window;
@@ -44,7 +44,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 	private boolean debugMode;
 
-	public PacManGameSwingUI(Game game, float scaling) {
+	public PacManGameSwingUI(PacManGame game, float scaling) {
 		this.game = game;
 		this.scaling = scaling;
 		unscaledSize = new Dimension(game.world.size.x * TS, game.world.size.y * TS);

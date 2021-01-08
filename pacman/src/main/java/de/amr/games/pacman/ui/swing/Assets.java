@@ -1,13 +1,13 @@
 package de.amr.games.pacman.ui.swing;
 
-import static de.amr.games.pacman.core.Game.APPLE;
-import static de.amr.games.pacman.core.Game.BELL;
-import static de.amr.games.pacman.core.Game.CHERRIES;
-import static de.amr.games.pacman.core.Game.GALAXIAN;
-import static de.amr.games.pacman.core.Game.GRAPES;
-import static de.amr.games.pacman.core.Game.KEY;
-import static de.amr.games.pacman.core.Game.PEACH;
-import static de.amr.games.pacman.core.Game.STRAWBERRY;
+import static de.amr.games.pacman.core.PacManGame.APPLE;
+import static de.amr.games.pacman.core.PacManGame.BELL;
+import static de.amr.games.pacman.core.PacManGame.CHERRIES;
+import static de.amr.games.pacman.core.PacManGame.GALAXIAN;
+import static de.amr.games.pacman.core.PacManGame.GRAPES;
+import static de.amr.games.pacman.core.PacManGame.KEY;
+import static de.amr.games.pacman.core.PacManGame.PEACH;
+import static de.amr.games.pacman.core.PacManGame.STRAWBERRY;
 
 import java.awt.Color;
 import java.awt.Font;

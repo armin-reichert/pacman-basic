@@ -16,7 +16,7 @@ import java.awt.Stroke;
 import java.awt.image.BufferedImage;
 import java.util.ResourceBundle;
 
-import de.amr.games.pacman.core.Game;
+import de.amr.games.pacman.core.PacManGame;
 import de.amr.games.pacman.core.GameState;
 import de.amr.games.pacman.core.Ghost;
 import de.amr.games.pacman.core.PacMan;
@@ -31,7 +31,7 @@ class PlayScene extends Scene {
 
 	private final ResourceBundle resources = ResourceBundle.getBundle("localization.PlayScene");
 
-	public PlayScene(Game game, Assets assets, Dimension size) {
+	public PlayScene(PacManGame game, Assets assets, Dimension size) {
 		super(game, assets, size);
 	}
 

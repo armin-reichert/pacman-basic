@@ -11,7 +11,7 @@ import java.awt.image.BufferedImage;
 import java.util.ResourceBundle;
 import java.util.stream.IntStream;
 
-import de.amr.games.pacman.core.Game;
+import de.amr.games.pacman.core.PacManGame;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.ui.Sound;
 
@@ -28,7 +28,7 @@ class IntroScene extends Scene {
 	private int lastKilledGhost;
 	private boolean ghostsChasingPacMan;
 
-	public IntroScene(Game game, Assets assets, Dimension size) {
+	public IntroScene(PacManGame game, Assets assets, Dimension size) {
 		super(game, assets, size);
 	}
 

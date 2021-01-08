@@ -23,11 +23,11 @@ public class Autopilot {
 	private static final int MAX_GHOST_CHASE_DIST = 10; // tiles
 	private static final int MAX_BONUS_HARVEST_DIST = 20; // tiles
 
-	private final Game game;
+	private final PacManGame game;
 	private final PacMan pacMan;
 	private final Ghost[] ghosts;
 
-	public Autopilot(Game game) {
+	public Autopilot(PacManGame game) {
 		this.game = game;
 		pacMan = game.pacMan;
 		ghosts = game.ghosts;

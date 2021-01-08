@@ -40,6 +40,13 @@ import de.amr.games.pacman.ui.Sound;
 
 /**
  * Pac-Man game with original "AI", levels, timers.
+ * <p>
+ * Still missing:
+ * <ul>
+ * <li>Pac-Man "cornering"</li>
+ * <li>Intermission scenes</li>
+ * <li>Multiple players</li>
+ * </ul>
  * 
  * @author Armin Reichert
  * 
@@ -47,7 +54,7 @@ import de.amr.games.pacman.ui.Sound;
  * @see <a href="https://gameinternals.com/understanding-pac-man-ghost-behavior">Chad Birch:
  *      Understanding ghost behavior
  */
-public class Game {
+public class PacManGame {
 
 	public static final byte CHERRIES = 0, STRAWBERRY = 1, PEACH = 2, APPLE = 3, GRAPES = 4, GALAXIAN = 5, BELL = 6,
 			KEY = 7;
@@ -108,7 +115,7 @@ public class Game {
 	public boolean autopilotMode;
 	public final Autopilot autopilot;
 
-	public Game() {
+	public PacManGame() {
 		clock = new Clock();
 		rnd = new Random();
 		world = new World();
