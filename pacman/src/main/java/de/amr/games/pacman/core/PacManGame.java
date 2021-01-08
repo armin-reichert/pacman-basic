@@ -135,6 +135,7 @@ public class PacManGame {
 		reset();
 		ui.show();
 		enterIntroState();
+		log("Enter state '%s' for %s", stateDescription(), ticksDescription(state.duration()));
 		new Thread(this::loop, "GameLoop").start();
 	}
 
@@ -260,10 +261,6 @@ public class PacManGame {
 		return state.name();
 	}
 
-	private void logStateEntry() {
-		log("Enter state '%s' for %s", stateDescription(), ticksDescription(state.duration()));
-	}
-
 	private PacManGameState changeState(Runnable oldStateExit, Runnable newStateEntry, Runnable action) {
 		log("Exit state '%s'", stateDescription());
 		oldStateExit.run();
@@ -271,6 +268,7 @@ public class PacManGame {
 			action.run();
 		}
 		newStateEntry.run();
+		log("Enter state '%s' for %s", stateDescription(), ticksDescription(state.duration()));
 		return state;
 	}
 
@@ -311,7 +309,6 @@ public class PacManGame {
 		state = INTRO;
 		state.setDuration(Long.MAX_VALUE);
 		ui.startIntroScene();
-		logStateEntry();
 	}
 
 	private PacManGameState runIntroState() {
@@ -336,7 +333,6 @@ public class PacManGame {
 		}
 		resetGuys();
 		bonusAvailableTicks = bonusConsumedTicks = 0;
-		logStateEntry();
 	}
 
 	private PacManGameState runReadyState() {
@@ -420,7 +416,6 @@ public class PacManGame {
 		huntingPhase = 0;
 		state.setDuration(huntingPhaseDuration(huntingPhase));
 		ui.loopSound(siren(huntingPhase));
-		logStateEntry();
 	}
 
 	private PacManGameState runHuntingState() {
@@ -479,7 +474,6 @@ public class PacManGame {
 			ghost.speed = 0;
 		}
 		ui.stopAllSounds();
-		logStateEntry();
 	}
 
 	private PacManGameState runPacManDyingState() {
@@ -522,7 +516,6 @@ public class PacManGame {
 		state.setDuration(clock.sec(1));
 		pacMan.visible = false;
 		ui.playSound(Sound.GHOST_DEATH);
-		logStateEntry();
 	}
 
 	private PacManGameState runGhostDyingState() {
@@ -559,7 +552,6 @@ public class PacManGame {
 		}
 		pacMan.speed = 0;
 		ui.stopAllSounds();
-		logStateEntry();
 	}
 
 	private PacManGameState runChangingLevelState() {
@@ -594,7 +586,6 @@ public class PacManGame {
 		if (hiscore.changed) {
 			hiscore.save();
 		}
-		logStateEntry();
 	}
 
 	private PacManGameState runGameOverState() {
