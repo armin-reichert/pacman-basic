@@ -12,8 +12,9 @@ public enum PacManGameState {
 	private long duration;
 	private long running;
 
-	public void tick() {
+	public PacManGameState tick() {
 		++running;
+		return this;
 	}
 
 	public void setDuration(long ticks) {

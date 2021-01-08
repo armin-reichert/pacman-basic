@@ -264,42 +264,42 @@ public class PacManGame {
 		log("Enter state '%s' for %s", stateDescription(), ticksDescription(state.duration()));
 	}
 
-	private void logStateExit() {
+	private PacManGameState changeState(Runnable oldStateExit, Runnable newStateEntry, Runnable action) {
 		log("Exit state '%s'", stateDescription());
-	}
-
-	private PacManGameState transition(Runnable exit, Runnable entry, Runnable action) {
-		exit.run();
-		action.run();
-		entry.run();
+		oldStateExit.run();
+		if (action != null) {
+			action.run();
+		}
+		newStateEntry.run();
 		return state;
 	}
 
-	private PacManGameState transition(Runnable exit, Runnable entry) {
-		exit.run();
-		entry.run();
-		return state;
-	}
-
-	private PacManGameState updateState() {
+	private void updateState() {
 		if (gamePaused) {
-			return state;
+			return;
 		}
 		switch (state) {
 		case INTRO:
-			return runIntroState();
+			runIntroState();
+			break;
 		case READY:
-			return runReadyState();
+			runReadyState();
+			break;
 		case HUNTING:
-			return runHuntingState();
+			runHuntingState();
+			break;
 		case CHANGING_LEVEL:
-			return runChangingLevelState();
+			runChangingLevelState();
+			break;
 		case PACMAN_DYING:
-			return runPacManDyingState();
+			runPacManDyingState();
+			break;
 		case GHOST_DYING:
-			return runGhostDyingState();
+			runGhostDyingState();
+			break;
 		case GAME_OVER:
-			return runGameOverState();
+			runGameOverState();
+			break;
 		default:
 			throw new IllegalStateException("Illegal state: " + state);
 		}
@@ -316,15 +316,13 @@ public class PacManGame {
 
 	private PacManGameState runIntroState() {
 		if (ui.anyKeyPressed()) {
-			return transition(this::exitIntroState, this::enterReadyState);
+			return changeState(this::exitIntroState, this::enterReadyState, null);
 		}
-		state.tick();
-		return state;
+		return state.tick();
 	}
 
 	private void exitIntroState() {
 		ui.endIntroScene();
-		logStateExit();
 	}
 
 	// READY
@@ -343,19 +341,17 @@ public class PacManGame {
 
 	private PacManGameState runReadyState() {
 		if (state.expired()) {
-			return transition(this::exitReadyState, this::enterHuntingState);
+			return changeState(this::exitReadyState, this::enterHuntingState, null);
 		}
 		for (Ghost ghost : ghosts) {
 			if (ghost.id != BLINKY) {
 				letGhostBounce(ghost);
 			}
 		}
-		state.tick();
-		return state;
+		return state.tick();
 	}
 
 	private void exitReadyState() {
-		logStateExit();
 	}
 
 	// HUNTING
@@ -434,7 +430,7 @@ public class PacManGame {
 			eatAllNormalPellets();
 		}
 		if (ui.keyPressed("x")) {
-			return transition(this::exitHuntingState, this::enterGhostDyingState, this::killAllGhosts);
+			return changeState(this::exitHuntingState, this::enterGhostDyingState, this::killAllGhosts);
 		}
 		if (ui.keyPressed("l")) {
 			if (lives < Byte.MAX_VALUE) {
@@ -447,7 +443,7 @@ public class PacManGame {
 		}
 
 		if (world.foodRemaining == 0) {
-			return transition(this::exitHuntingState, this::enterChangingLevelState);
+			return changeState(this::exitHuntingState, this::enterChangingLevelState, null);
 		}
 
 		updatePacMan();
@@ -461,20 +457,16 @@ public class PacManGame {
 
 		Ghost collidingGhost = ghostCollidingWithPacMan();
 		if (collidingGhost != null && collidingGhost.frightened) {
-			return transition(this::exitHuntingState, this::enterGhostDyingState, () -> killGhost(collidingGhost));
+			return changeState(this::exitHuntingState, this::enterGhostDyingState, () -> killGhost(collidingGhost));
 		}
 		if (collidingGhost != null && !collidingGhost.frightened) {
-			return transition(this::exitHuntingState, this::enterPacManDyingState, () -> killPacMan(collidingGhost));
+			return changeState(this::exitHuntingState, this::enterPacManDyingState, () -> killPacMan(collidingGhost));
 		}
 
-		if (pacMan.powerTicksLeft == 0) {
-			state.tick();
-		}
-		return state;
+		return pacMan.powerTicksLeft == 0 ? state.tick() : state;
 	}
 
 	private void exitHuntingState() {
-		logStateExit();
 	}
 
 	// PACMAN_DYING
@@ -493,9 +485,9 @@ public class PacManGame {
 	private PacManGameState runPacManDyingState() {
 		if (state.expired()) {
 			if (lives > 0) {
-				return transition(this::exitPacManDyingState, this::enterReadyState);
+				return changeState(this::exitPacManDyingState, this::enterReadyState, null);
 			} else {
-				return transition(this::exitPacManDyingState, this::enterGameOverState);
+				return changeState(this::exitPacManDyingState, this::enterGameOverState, null);
 			}
 		}
 		if (state.running(clock.sec(1.5))) {
@@ -511,8 +503,7 @@ public class PacManGame {
 			// count down until 1 such that animation stays at last frame until state expires
 			pacMan.collapsingTicksLeft--;
 		}
-		state.tick();
-		return state;
+		return state.tick();
 	}
 
 	private void exitPacManDyingState() {
@@ -521,7 +512,6 @@ public class PacManGame {
 		for (Ghost ghost : ghosts) {
 			ghost.visible = true;
 		}
-		logStateExit();
 	}
 
 	// GHOST_DYING
@@ -537,15 +527,14 @@ public class PacManGame {
 
 	private PacManGameState runGhostDyingState() {
 		if (state.expired()) {
-			return transition(this::exitGhostDyingState, () -> state = previousState, () -> log("Resume state '%s'", state));
+			return changeState(this::exitGhostDyingState, () -> state = previousState, () -> log("Resume state '%s'", state));
 		}
 		for (Ghost ghost : ghosts) {
 			if (ghost.dead && ghost.bounty == 0) {
 				updateGhost(ghost);
 			}
 		}
-		state.tick();
-		return state;
+		return state.tick();
 	}
 
 	private void exitGhostDyingState() {
@@ -556,7 +545,6 @@ public class PacManGame {
 		}
 		pacMan.visible = true;
 		ui.loopSound(Sound.RETREATING);
-		logStateExit();
 	}
 
 	// CHANGING_LEVEL
@@ -576,7 +564,7 @@ public class PacManGame {
 
 	private PacManGameState runChangingLevelState() {
 		if (state.expired()) {
-			return transition(this::exitChangingLevelState, this::enterReadyState);
+			return changeState(this::exitChangingLevelState, this::enterReadyState, null);
 		}
 		if (state.running() == clock.sec(1)) {
 			for (Ghost ghost : ghosts) {
@@ -586,14 +574,12 @@ public class PacManGame {
 		if (state.running() == clock.sec(2)) {
 			mazeFlashesRemaining = level().numFlashes;
 		}
-		state.tick();
-		return state;
+		return state.tick();
 	}
 
 	private void exitChangingLevelState() {
 		log("Level %d complete, entering level %d", levelNumber, levelNumber + 1);
 		setLevel(++levelNumber);
-		logStateExit();
 	}
 
 	// GAME_OVER
@@ -613,15 +599,13 @@ public class PacManGame {
 
 	private PacManGameState runGameOverState() {
 		if (state.expired() || ui.anyKeyPressed()) {
-			return transition(this::exitGameOverState, this::enterIntroState);
+			return changeState(this::exitGameOverState, this::enterIntroState, null);
 		}
-		state.tick();
-		return state;
+		return state.tick();
 	}
 
 	private void exitGameOverState() {
 		reset();
-		logStateExit();
 	}
 
 	// END STATE-MACHINE
