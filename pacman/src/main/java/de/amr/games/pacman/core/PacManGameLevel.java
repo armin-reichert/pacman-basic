@@ -6,7 +6,7 @@ package de.amr.games.pacman.core;
  * @author Armin Reichert
  *
  */
-public class Level {
+public class PacManGameLevel {
 
 	public final byte bonusSymbol;
 	public final short bonusPoints;
@@ -26,7 +26,7 @@ public class Level {
 		return value / 100.0f;
 	}
 
-	public Level(int... values) {
+	public PacManGameLevel(int... values) {
 		bonusSymbol = (byte) values[0];
 		bonusPoints = (short) values[1];
 		pacManSpeed = percent(values[2]);

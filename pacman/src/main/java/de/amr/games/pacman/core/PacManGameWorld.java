@@ -11,7 +11,7 @@ import de.amr.games.pacman.lib.V2i;
  * 
  * @author Armin Reichert
  */
-public class World {
+public class PacManGameWorld {
 
 	public static final int TS = 8, HTS = TS / 2;
 
@@ -82,7 +82,7 @@ public class World {
 		"1111111111111111111111111111";
 	//@formatter:on
 
-	public World() {
+	public PacManGameWorld() {
 //		totalFoodCount = (int) map.chars().filter(c -> c == '2').count();
 		int food = 0;
 		for (int i = 0; i < map.length(); ++i) {
