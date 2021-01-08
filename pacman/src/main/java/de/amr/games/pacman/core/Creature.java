@@ -61,8 +61,4 @@ public abstract class Creature {
 		V2i tile = tile();
 		placeAt(tile.x, tile.y, offsetX, offsetY);
 	}
-
-	public boolean atSameTile(Creature other) {
-		return tile().equals(other.tile());
-	}
 }

@@ -23,7 +23,6 @@ import static de.amr.games.pacman.lib.Functions.differsAtMost;
 import static de.amr.games.pacman.lib.Logging.log;
 import static java.lang.Math.abs;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -370,13 +369,13 @@ public class PacManGame {
 	};
 
 	private long huntingPhaseDuration(int phase) {
-		int index = levelNumber == 1 ? 0 : levelNumber <= 4 ? 1 : 2;
-		return huntingTicks(HUNTING_PHASE_DURATION[index][phase]);
+		int row = levelNumber == 1 ? 0 : levelNumber <= 4 ? 1 : 2;
+		return huntingTicks(HUNTING_PHASE_DURATION[row][phase]);
 	}
 
 	private long huntingTicks(short duration) {
 		if (duration == -1) {
-			return 1; // 1 tick
+			return 1; // -1 means a single tick
 		}
 		if (duration == Short.MAX_VALUE) {
 			return Long.MAX_VALUE;
@@ -400,7 +399,7 @@ public class PacManGame {
 			if (huntingPhase >= 2) {
 				ui.stopSound(siren(huntingPhase - 2));
 			}
-			ui.loopSound(siren(huntingPhase));
+			ui.loopSound(siren(huntingPhase)); // TODO not clear when which siren should play
 		}
 		log("Game state updated to '%s' for %s", stateDescription(), ticksDescription(state.ticksRemaining()));
 	}
@@ -667,7 +666,8 @@ public class PacManGame {
 	}
 
 	private Ghost ghostCollidingWithPacMan() {
-		return Stream.of(ghosts).filter(ghost -> !ghost.dead).filter(pacMan::atSameTile).findAny().orElse(null);
+		return Stream.of(ghosts).filter(ghost -> !ghost.dead).filter(ghost -> ghost.tile().equals(pacMan.tile())).findAny()
+				.orElse(null);
 	}
 
 	private void killPacMan(Ghost killer) {
@@ -945,7 +945,7 @@ public class PacManGame {
 			ghost.leavingHouse = true;
 			ghost.speed = level().ghostSpeed; // TODO correct?
 			ghost.wishDir = ghost.dir.opposite();
-			if (Arrays.stream(ghosts).noneMatch(g -> g.dead)) {
+			if (Stream.of(ghosts).noneMatch(g -> g.dead)) {
 				ui.stopSound(Sound.RETREATING);
 			}
 			return;
