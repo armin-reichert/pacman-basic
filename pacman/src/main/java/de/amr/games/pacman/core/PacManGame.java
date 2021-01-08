@@ -1,7 +1,5 @@
 package de.amr.games.pacman.core;
 
-import static de.amr.games.pacman.core.PacManGameWorld.HTS;
-import static de.amr.games.pacman.core.PacManGameWorld.t;
 import static de.amr.games.pacman.core.Creature.offset;
 import static de.amr.games.pacman.core.Creature.tile;
 import static de.amr.games.pacman.core.Ghost.BLINKY;
@@ -15,6 +13,8 @@ import static de.amr.games.pacman.core.PacManGameState.HUNTING;
 import static de.amr.games.pacman.core.PacManGameState.INTRO;
 import static de.amr.games.pacman.core.PacManGameState.PACMAN_DYING;
 import static de.amr.games.pacman.core.PacManGameState.READY;
+import static de.amr.games.pacman.core.PacManGameWorld.HTS;
+import static de.amr.games.pacman.core.PacManGameWorld.t;
 import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
@@ -117,8 +117,9 @@ public class PacManGame {
 	public PacManGame() {
 		clock = new Clock();
 		rnd = new Random();
-		world = new PacManClassicWorld();
 		hiscore = new Hiscore();
+		autopilot = new Autopilot();
+		world = new PacManClassicWorld();
 		pacMan = new PacMan(world.pacManHome());
 		/*@formatter:off*/
 		ghosts = new Ghost[] {
@@ -128,7 +129,6 @@ public class PacManGame {
 			new Ghost(CLYDE,  world.houseRight(),  world.scatterTileBottomLeft()) 
 		};
 		/*@formatter:on*/
-		autopilot = new Autopilot(this);
 	}
 
 	public void start() {
@@ -623,7 +623,7 @@ public class PacManGame {
 
 	private void updatePacManDirection() {
 		if (autopilotMode) {
-			autopilot.controlPacMan();
+			autopilot.controlPacMan(this);
 		} else {
 			if (ui.keyPressed("left")) {
 				pacMan.wishDir = LEFT;

@@ -23,17 +23,14 @@ public class Autopilot {
 	private static final int MAX_GHOST_CHASE_DIST = 10; // tiles
 	private static final int MAX_BONUS_HARVEST_DIST = 20; // tiles
 
-	private final PacManGame game;
-	private final PacMan pacMan;
-	private final Ghost[] ghosts;
+	private PacManGame game;
+	private PacMan pacMan;
+	private Ghost[] ghosts;
 
-	public Autopilot(PacManGame game) {
+	public void controlPacMan(PacManGame game) {
 		this.game = game;
-		pacMan = game.pacMan;
-		ghosts = game.ghosts;
-	}
-
-	public void controlPacMan() {
+		this.pacMan = game.pacMan;
+		this.ghosts = game.ghosts;
 		V2i pacManTile = pacMan.tile();
 
 		if (pacMan.couldMove && !pacMan.changedTile) {
@@ -92,7 +89,10 @@ public class Autopilot {
 		Direction minDistDir = null;
 		for (Direction dir : Direction.shuffled()) {
 			if (dir == pacMan.dir.opposite()) {
-				continue; // TODO sometimes reversing direction could be useful
+				continue;
+				/*
+				 * TODO sometimes reversing direction can be useful but in most cases, it leads to bouncing.
+				 */
 			}
 			V2i neighbor = pacMan.tile().sum(dir.vec);
 			if (!game.canAccessTile(pacMan, neighbor.x, neighbor.y)) {
