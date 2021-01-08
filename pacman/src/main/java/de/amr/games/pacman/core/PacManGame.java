@@ -136,10 +136,10 @@ public class PacManGame {
 		reset();
 		ui.show();
 		enterIntroState();
-		new Thread(this::gameLoop, "GameLoop").start();
+		new Thread(this::loop, "GameLoop").start();
 	}
 
-	private void gameLoop() {
+	private void loop() {
 		do {
 			clock.tick(() -> {
 				readInput();
