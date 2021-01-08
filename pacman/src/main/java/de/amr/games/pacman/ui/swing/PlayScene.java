@@ -92,7 +92,7 @@ class PlayScene extends Scene {
 	}
 
 	private void drawLevelCounter(Graphics2D g) {
-		int x = t(game.world.size.x - 4);
+		int x = t(game.world.size().x - 4);
 		int first = Math.max(1, game.levelNumber - 6);
 		for (int level = first; level <= game.levelNumber; ++level) {
 			BufferedImage symbol = assets.symbols[PacManGame.level(level).bonusSymbol];
@@ -118,8 +118,8 @@ class PlayScene extends Scene {
 			return;
 		}
 		g.drawImage(assets.imageMazeFull, 0, t(3), null);
-		range(0, game.world.size.x).forEach(x -> {
-			range(4, game.world.size.y - 3).forEach(y -> {
+		range(0, game.world.size().x).forEach(x -> {
+			range(4, game.world.size().y - 3).forEach(y -> {
 				if (game.world.foodRemoved(x, y)) {
 					hideFood(g, x, y);
 				} else if (game.state == PacManGameState.HUNTING && game.world.isEnergizerTile(x, y)) {
@@ -232,8 +232,8 @@ class PlayScene extends Scene {
 		Stroke thin = new BasicStroke(0.1f);
 		g.setColor(dark);
 		g.setStroke(thin);
-		for (int x = 0; x < game.world.size.x; ++x) {
-			for (int y = 0; y < game.world.size.y; ++y) {
+		for (int x = 0; x < game.world.size().x; ++x) {
+			for (int y = 0; y < game.world.size().y; ++y) {
 				if (game.world.isIntersectionTile(x, y)) {
 					for (Direction dir : Direction.values()) {
 						int nx = x + dir.vec.x, ny = y + dir.vec.y;

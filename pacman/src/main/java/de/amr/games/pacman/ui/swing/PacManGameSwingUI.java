@@ -47,7 +47,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 	public PacManGameSwingUI(PacManGame game, float scaling) {
 		this.game = game;
 		this.scaling = scaling;
-		unscaledSize = new Dimension(game.world.size.x * TS, game.world.size.y * TS);
+		unscaledSize = new Dimension(game.world.size().x * TS, game.world.size().y * TS);
 		assets = new Assets();
 		introScene = new IntroScene(game, assets, unscaledSize);
 		playScene = new PlayScene(game, assets, unscaledSize);

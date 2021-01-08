@@ -74,9 +74,9 @@ public class Autopilot {
 			log("Detected frightened ghost %s %.0g tiles away", prey.name(), prey.tile().manhattanDistance(pacManTile));
 			pacMan.targetTile = prey.tile();
 		} else if (game.bonusAvailableTicks > 0
-				&& game.world.bonusTile.manhattanDistance(pacManTile) <= MAX_BONUS_HARVEST_DIST) {
+				&& game.world.bonusTile().manhattanDistance(pacManTile) <= MAX_BONUS_HARVEST_DIST) {
 			log("Detected active bonus");
-			pacMan.targetTile = game.world.bonusTile;
+			pacMan.targetTile = game.world.bonusTile();
 		} else {
 			V2i foodTile = findTileFarestFromGhosts(findNearestFoodTiles());
 			pacMan.targetTile = foodTile;
@@ -192,14 +192,14 @@ public class Autopilot {
 		List<V2i> foodTiles = new ArrayList<>();
 		V2i pacManTile = pacMan.tile();
 		double minDist = Double.MAX_VALUE;
-		for (int x = 0; x < game.world.size.x; ++x) {
-			for (int y = 0; y < game.world.size.y; ++y) {
+		for (int x = 0; x < game.world.size().x; ++x) {
+			for (int y = 0; y < game.world.size().y; ++y) {
 				if (!game.world.isFoodTile(x, y) || game.world.foodRemoved(x, y)) {
 					continue;
 				}
 				V2i foodTile = new V2i(x, y);
 				if (game.world.isEnergizerTile(foodTile.x, foodTile.y) && pacMan.powerTicksLeft > game.clock.sec(1)
-						&& game.world.foodRemaining > 1) {
+						&& game.world.foodRemaining() > 1) {
 					continue;
 				}
 				double dist = pacManTile.manhattanDistance(foodTile);

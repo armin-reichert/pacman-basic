@@ -1,5 +1,7 @@
 package de.amr.games.pacman.core;
 
+import static de.amr.games.pacman.core.PacManGameWorld.HTS;
+import static de.amr.games.pacman.core.PacManGameWorld.t;
 import static de.amr.games.pacman.core.Creature.offset;
 import static de.amr.games.pacman.core.Creature.tile;
 import static de.amr.games.pacman.core.Ghost.BLINKY;
@@ -13,8 +15,6 @@ import static de.amr.games.pacman.core.PacManGameState.HUNTING;
 import static de.amr.games.pacman.core.PacManGameState.INTRO;
 import static de.amr.games.pacman.core.PacManGameState.PACMAN_DYING;
 import static de.amr.games.pacman.core.PacManGameState.READY;
-import static de.amr.games.pacman.core.PacManGameWorld.HTS;
-import static de.amr.games.pacman.core.PacManGameWorld.t;
 import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
@@ -117,15 +117,15 @@ public class PacManGame {
 	public PacManGame() {
 		clock = new Clock();
 		rnd = new Random();
-		world = new PacManGameWorld();
+		world = new PacManClassicWorld();
 		hiscore = new Hiscore();
-		pacMan = new PacMan(world.pacManHome);
+		pacMan = new PacMan(world.pacManHome());
 		/*@formatter:off*/
 		ghosts = new Ghost[] {
-			new Ghost(BLINKY, world.houseEntry,  world.scatterTileTopRight),
-			new Ghost(PINKY,  world.houseCenter, world.scatterTileTopLeft), 
-			new Ghost(INKY,   world.houseLeft,   world.scatterTileBottomRight),
-			new Ghost(CLYDE,  world.houseRight,  world.scatterTileBottomLeft) 
+			new Ghost(BLINKY, world.houseEntry(),  world.scatterTileTopRight()),
+			new Ghost(PINKY,  world.houseCenter(), world.scatterTileTopLeft()), 
+			new Ghost(INKY,   world.houseLeft(),   world.scatterTileBottomRight()),
+			new Ghost(CLYDE,  world.houseRight(),  world.scatterTileBottomLeft()) 
 		};
 		/*@formatter:on*/
 		autopilot = new Autopilot(this);
@@ -437,7 +437,7 @@ public class PacManGame {
 			nextHuntingPhase();
 		}
 
-		if (world.foodRemaining == 0) {
+		if (world.foodRemaining() == 0) {
 			return changeState(this::exitHuntingState, this::enterChangingLevelState, null);
 		}
 
@@ -658,7 +658,7 @@ public class PacManGame {
 
 	private void checkPacManFindsBonus() {
 		V2i tile = pacMan.tile();
-		if (bonusAvailableTicks > 0 && world.bonusTile.equals(tile)) {
+		if (bonusAvailableTicks > 0 && world.bonusTile().equals(tile)) {
 			bonusAvailableTicks = 0;
 			bonusConsumedTicks = clock.sec(2);
 			score(level().bonusPoints);
@@ -698,15 +698,15 @@ public class PacManGame {
 			score(10);
 			pacMan.restingTicksLeft = 1;
 		}
-		if (world.foodRemaining == level().elroy1DotsLeft) {
+		if (world.foodRemaining() == level().elroy1DotsLeft) {
 			ghosts[BLINKY].elroyMode = 1;
 			log("Blinky becomes Cruise Elroy 1");
-		} else if (world.foodRemaining == level().elroy2DotsLeft) {
+		} else if (world.foodRemaining() == level().elroy2DotsLeft) {
 			ghosts[BLINKY].elroyMode = 2;
 			log("Blinky becomes Cruise Elroy 2");
 		}
 		// bonus score reached?
-		int eaten = world.totalFoodCount - world.foodRemaining;
+		int eaten = world.eatenFoodCount();
 		if (eaten == 70 || eaten == 170) {
 			bonusAvailableTicks = clock.sec(9 + rnd.nextFloat());
 		}
@@ -749,7 +749,7 @@ public class PacManGame {
 		ghost.frightened = false;
 		ghost.dead = true;
 		ghost.speed = 2 * level().ghostSpeed; // TODO correct?
-		ghost.targetTile = world.houseEntry;
+		ghost.targetTile = world.houseEntry();
 		ghost.bounty = ghostBounty;
 		score(ghost.bounty);
 		ghostsKilledInLevel++;
@@ -867,7 +867,7 @@ public class PacManGame {
 	}
 
 	private void letGhostBounce(Ghost ghost) {
-		int ceiling = t(world.houseCenter.y - 1) + 3, ground = t(world.houseCenter.y) + 4;
+		int ceiling = t(world.houseCenter().y - 1) + 3, ground = t(world.houseCenter().y) + 4;
 		if (ghost.position.y <= ceiling || ghost.position.y >= ground) {
 			ghost.wishDir = ghost.dir.opposite();
 		}
@@ -904,7 +904,7 @@ public class PacManGame {
 			ghost.dir = ghost.wishDir = DOWN;
 			ghost.forcedOnTrack = false;
 			ghost.enteringHouse = true;
-			ghost.targetTile = ghost.id == BLINKY ? world.houseCenter : ghost.homeTile;
+			ghost.targetTile = ghost.id == BLINKY ? world.houseCenter() : ghost.homeTile;
 			return;
 		}
 		letGhostHeadForTargetTile(ghost);
@@ -926,8 +926,8 @@ public class PacManGame {
 			return;
 		}
 		// House center reached? Move sidewards towards target tile
-		if (ghostLocation.equals(world.houseCenter) && offset.y >= 0) {
-			ghost.wishDir = ghost.targetTile.x < world.houseCenter.x ? LEFT : RIGHT;
+		if (ghostLocation.equals(world.houseCenter()) && offset.y >= 0) {
+			ghost.wishDir = ghost.targetTile.x < world.houseCenter().x ? LEFT : RIGHT;
 		}
 		ghost.couldMove = tryMoving(ghost, ghost.wishDir);
 	}
@@ -936,7 +936,7 @@ public class PacManGame {
 		V2i ghostLocation = ghost.tile();
 		V2f offset = ghost.offset();
 		// leaving house complete?
-		if (ghostLocation.equals(world.houseEntry) && differsAtMost(offset.y, 0, 1)) {
+		if (ghostLocation.equals(world.houseEntry()) && differsAtMost(offset.y, 0, 1)) {
 			ghost.setOffset(HTS, 0);
 			ghost.dir = ghost.wishDir = LEFT;
 			ghost.forcedOnTrack = true;
@@ -944,7 +944,7 @@ public class PacManGame {
 			return;
 		}
 		// at house middle and rising?
-		if (ghostLocation.x == world.houseCenter.x && differsAtMost(offset.x, 3, 1)) {
+		if (ghostLocation.x == world.houseCenter().x && differsAtMost(offset.x, 3, 1)) {
 			ghost.setOffset(HTS, offset.y);
 			ghost.wishDir = UP;
 			ghost.couldMove = tryMoving(ghost, ghost.wishDir);
@@ -952,7 +952,7 @@ public class PacManGame {
 		}
 		// move sidewards towards center
 		if (ghostLocation.x == ghost.homeTile.x && differsAtMost(offset.y, 0, 1)) {
-			ghost.wishDir = ghost.homeTile.x < world.houseCenter.x ? RIGHT : LEFT;
+			ghost.wishDir = ghost.homeTile.x < world.houseCenter().x ? RIGHT : LEFT;
 			ghost.couldMove = tryMoving(ghost, ghost.wishDir);
 			return;
 		}
@@ -961,7 +961,7 @@ public class PacManGame {
 	}
 
 	private boolean atGhostHouseDoor(Creature guy) {
-		return guy.tile().equals(world.houseEntry) && differsAtMost(guy.offset().x, HTS, 2);
+		return guy.tile().equals(world.houseEntry()) && differsAtMost(guy.offset().x, HTS, 2);
 	}
 
 	private Optional<Direction> newGhostWishDir(Ghost ghost) {
@@ -1020,12 +1020,12 @@ public class PacManGame {
 
 	private void tryMoving(Creature guy) {
 		V2i guyLocation = guy.tile();
-		if (guyLocation.equals(world.portalRight) && guy.dir == RIGHT) {
-			guy.placeAt(world.portalLeft.x, world.portalLeft.y, 0, 0);
+		if (guyLocation.equals(world.portalRight()) && guy.dir == RIGHT) {
+			guy.placeAt(world.portalLeft().x, world.portalLeft().y, 0, 0);
 			return;
 		}
-		if (guyLocation.equals(world.portalLeft) && guy.dir == LEFT) {
-			guy.placeAt(world.portalRight.x, world.portalRight.y, 0, 0);
+		if (guyLocation.equals(world.portalLeft()) && guy.dir == LEFT) {
+			guy.placeAt(world.portalRight().x, world.portalRight().y, 0, 0);
 			return;
 		}
 		guy.couldMove = tryMoving(guy, guy.wishDir);
@@ -1124,8 +1124,8 @@ public class PacManGame {
 	// Cheats
 
 	private void eatAllNormalPellets() {
-		for (int x = 0; x < world.size.x; ++x) {
-			for (int y = 0; y < world.size.y; ++y) {
+		for (int x = 0; x < world.size().x; ++x) {
+			for (int y = 0; y < world.size().y; ++y) {
 				if (world.isFoodTile(x, y) && !world.isEnergizerTile(x, y)) {
 					world.removeFood(x, y);
 				}
