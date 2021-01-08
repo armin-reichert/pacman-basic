@@ -191,10 +191,10 @@ public class PacManGame {
 		score = 0;
 		lives = 3;
 		hiscore.load();
-		startLevel(1);
+		setLevel(1);
 	}
 
-	private void startLevel(int number) {
+	private void setLevel(int number) {
 		levelNumber = (short) number;
 		huntingPhase = 0;
 		mazeFlashesRemaining = 0;
@@ -593,7 +593,7 @@ public class PacManGame {
 
 	private void exitChangingLevelState() {
 		log("Level %d complete, entering level %d", levelNumber, levelNumber + 1);
-		startLevel(++levelNumber);
+		setLevel(++levelNumber);
 		logStateExit();
 	}
 
