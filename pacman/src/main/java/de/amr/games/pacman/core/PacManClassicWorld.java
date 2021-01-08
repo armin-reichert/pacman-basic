@@ -189,7 +189,7 @@ public class PacManClassicWorld implements PacManGameWorld {
 	}
 
 	@Override
-	public boolean isInsideTunnel(int x, int y) {
+	public boolean isTunnel(int x, int y) {
 		return y == 17 && (x <= 5 || x >= 21);
 	}
 
@@ -209,20 +209,20 @@ public class PacManClassicWorld implements PacManGameWorld {
 	}
 
 	@Override
-	public boolean isIntersectionTile(int x, int y) {
+	public boolean isIntersection(int x, int y) {
 		if (isInsideGhostHouse(x, y) || isGhostHouseDoor(x, y + 1)) {
 			return false;
 		}
-		return Stream.of(Direction.values()).filter(dir -> isAccessibleTile(x + dir.vec.x, y + dir.vec.y)).count() >= 3;
+		return Stream.of(Direction.values()).filter(dir -> isAccessible(x + dir.vec.x, y + dir.vec.y)).count() >= 3;
 	}
 
 	@Override
-	public boolean isAccessibleTile(int x, int y) {
-		return !isWall(x, y) || isPortalTile(x, y);
+	public boolean isAccessible(int x, int y) {
+		return !isWall(x, y) || isPortal(x, y);
 	}
 
 	@Override
-	public boolean isPortalTile(int x, int y) {
+	public boolean isPortal(int x, int y) {
 		return isTile(x, y, portalLeft.x, portalLeft.y) || isTile(x, y, portalRight.x, portalRight.y);
 	}
 

@@ -877,7 +877,7 @@ public class PacManGame {
 
 	private void letGhostHunt(Ghost ghost) {
 		V2i tile = ghost.tile();
-		if (world.isInsideTunnel(tile.x, tile.y)) {
+		if (world.isTunnel(tile.x, tile.y)) {
 			ghost.speed = level().ghostSpeedTunnel;
 		} else if (ghost.frightened) {
 			ghost.speed = level().ghostSpeedFrightened;
@@ -973,10 +973,10 @@ public class PacManGame {
 			return Optional.of(ghost.wishDir);
 		}
 		V2i ghostLocation = ghost.tile();
-		if (world.isPortalTile(ghostLocation.x, ghostLocation.y)) {
+		if (world.isPortal(ghostLocation.x, ghostLocation.y)) {
 			return Optional.empty();
 		}
-		if (ghost.frightened && world.isIntersectionTile(ghostLocation.x, ghostLocation.y)) {
+		if (ghost.frightened && world.isIntersection(ghostLocation.x, ghostLocation.y)) {
 			return Optional.of(randomPossibleMoveDir(ghost));
 		}
 		return ghostTargetDirection(ghost);
@@ -1087,7 +1087,7 @@ public class PacManGame {
 	}
 
 	boolean canAccessTile(Creature guy, int x, int y) {
-		if (world.isPortalTile(x, y)) {
+		if (world.isPortal(x, y)) {
 			return true;
 		}
 		if (world.isGhostHouseDoor(x, y)) {
@@ -1102,7 +1102,7 @@ public class PacManGame {
 			.filter(dir -> dir != guy.dir.opposite())
 			.filter(dir -> {
 				V2i neighbor = guy.tile().sum(dir.vec);
-				return world.isAccessibleTile(neighbor.x, neighbor.y);
+				return world.isAccessible(neighbor.x, neighbor.y);
 			})
 			.collect(Collectors.toList());
 		//@formatter:on

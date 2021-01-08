@@ -234,7 +234,7 @@ class PlayScene extends Scene {
 		g.setStroke(thin);
 		for (int x = 0; x < game.world.size().x; ++x) {
 			for (int y = 0; y < game.world.size().y; ++y) {
-				if (game.world.isIntersectionTile(x, y)) {
+				if (game.world.isIntersection(x, y)) {
 					for (Direction dir : Direction.values()) {
 						int nx = x + dir.vec.x, ny = y + dir.vec.y;
 						if (game.world.isWall(nx, ny)) {

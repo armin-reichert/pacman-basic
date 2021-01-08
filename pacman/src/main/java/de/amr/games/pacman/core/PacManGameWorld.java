@@ -20,7 +20,6 @@ public interface PacManGameWorld {
 	default boolean inMapRange(int x, int y) {
 		V2i size = size();
 		return 0 <= x && x < size.x && 0 <= y && y < size.y;
-
 	}
 
 	V2i portalLeft();
@@ -43,19 +42,19 @@ public interface PacManGameWorld {
 
 	V2i houseLeft();
 
-	V2i bonusTile();
-
 	V2i houseRight();
+
+	V2i bonusTile();
 
 	boolean isWall(int x, int y);
 
-	boolean isAccessibleTile(int x, int y);
+	boolean isAccessible(int x, int y);
 
-	boolean isPortalTile(int x, int y);
+	boolean isPortal(int x, int y);
 
-	boolean isIntersectionTile(int x, int y);
+	boolean isIntersection(int x, int y);
 
-	boolean isInsideTunnel(int x, int y);
+	boolean isTunnel(int x, int y);
 
 	boolean isUpwardsBlocked(int x, int y);
 
