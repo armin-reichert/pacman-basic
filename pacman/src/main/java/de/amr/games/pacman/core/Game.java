@@ -804,7 +804,7 @@ public class Game {
 		} else if (ghost.dead) {
 			letGhostReturnHome(ghost);
 		} else if (state == HUNTING) {
-			letGhostHuntPacMan(ghost);
+			letGhostHunt(ghost);
 		}
 	}
 
@@ -893,7 +893,7 @@ public class Game {
 		tryMoving(ghost);
 	}
 
-	private void letGhostHuntPacMan(Ghost ghost) {
+	private void letGhostHunt(Ghost ghost) {
 		V2i tile = ghost.tile();
 		if (world.isInsideTunnel(tile.x, tile.y)) {
 			ghost.speed = level().ghostSpeedTunnel;
@@ -928,37 +928,33 @@ public class Game {
 		letGhostHeadForTargetTile(ghost);
 	}
 
-	private boolean atGhostHouseDoor(Creature guy) {
-		return guy.tile().equals(world.houseEntry) && differsAtMost(guy.offset().x, HTS, 2);
-	}
-
 	private void letGhostEnterHouse(Ghost ghost) {
-		V2i tile = ghost.tile();
+		V2i ghostLocation = ghost.tile();
 		V2f offset = ghost.offset();
 		// Target reached? Revive and start leaving house.
-		if (tile.equals(ghost.targetTile) && offset.y >= 0) {
+		if (ghostLocation.equals(ghost.targetTile) && offset.y >= 0) {
 			ghost.dead = false;
 			ghost.enteringHouse = false;
 			ghost.leavingHouse = true;
+			ghost.speed = level().ghostSpeed; // TODO correct?
+			ghost.wishDir = ghost.dir.opposite();
 			if (Arrays.stream(ghosts).noneMatch(g -> g.dead)) {
 				ui.stopSound(Sound.RETREATING);
 			}
-			ghost.wishDir = ghost.dir.opposite();
 			return;
 		}
 		// House center reached? Move sidewards towards target tile
-		if (tile.equals(world.houseCenter) && offset.y >= 0) {
+		if (ghostLocation.equals(world.houseCenter) && offset.y >= 0) {
 			ghost.wishDir = ghost.targetTile.x < world.houseCenter.x ? LEFT : RIGHT;
 		}
 		ghost.couldMove = tryMoving(ghost, ghost.wishDir);
 	}
 
 	private void letGhostLeaveHouse(Ghost ghost) {
-		V2i tile = ghost.tile();
+		V2i ghostLocation = ghost.tile();
 		V2f offset = ghost.offset();
-		ghost.speed = level().ghostSpeedTunnel; // TODO
 		// leaving house complete?
-		if (tile.equals(world.houseEntry) && differsAtMost(offset.y, 0, 1)) {
+		if (ghostLocation.equals(world.houseEntry) && differsAtMost(offset.y, 0, 1)) {
 			ghost.setOffset(HTS, 0);
 			ghost.dir = ghost.wishDir = LEFT;
 			ghost.forcedOnTrack = true;
@@ -966,35 +962,39 @@ public class Game {
 			return;
 		}
 		// at house middle and rising?
-		if (tile.x == world.houseCenter.x && differsAtMost(offset.x, 3, 1)) {
+		if (ghostLocation.x == world.houseCenter.x && differsAtMost(offset.x, 3, 1)) {
 			ghost.setOffset(HTS, offset.y);
 			ghost.wishDir = UP;
 			ghost.couldMove = tryMoving(ghost, ghost.wishDir);
 			return;
 		}
-		// move towards center
-		if (tile.x == ghost.homeTile.x && differsAtMost(offset.y, 0, 1)) {
+		// move sidewards towards center
+		if (ghostLocation.x == ghost.homeTile.x && differsAtMost(offset.y, 0, 1)) {
 			ghost.wishDir = ghost.homeTile.x < world.houseCenter.x ? RIGHT : LEFT;
-			tryMoving(ghost);
+			ghost.couldMove = tryMoving(ghost, ghost.wishDir);
 			return;
 		}
 		// keep bouncing until ghost can move towards center
 		letGhostBounce(ghost);
 	}
 
+	private boolean atGhostHouseDoor(Creature guy) {
+		return guy.tile().equals(world.houseEntry) && differsAtMost(guy.offset().x, HTS, 2);
+	}
+
 	private Optional<Direction> newGhostWishDir(Ghost ghost) {
-		if (!ghost.changedTile) {
+		if (ghost.couldMove && !ghost.changedTile) {
 			return Optional.empty();
 		}
 		if (ghost.forcedDirection) {
 			ghost.forcedDirection = false;
 			return Optional.of(ghost.wishDir);
 		}
-		V2i tile = ghost.tile();
-		if (world.isPortalTile(tile.x, tile.y)) {
+		V2i ghostLocation = ghost.tile();
+		if (world.isPortalTile(ghostLocation.x, ghostLocation.y)) {
 			return Optional.empty();
 		}
-		if (ghost.frightened && world.isIntersectionTile(tile.x, tile.y)) {
+		if (ghost.frightened && world.isIntersectionTile(ghostLocation.x, ghostLocation.y)) {
 			return Optional.of(randomPossibleMoveDir(ghost));
 		}
 		return ghostTargetDirection(ghost);
@@ -1037,12 +1037,12 @@ public class Game {
 	}
 
 	private void tryMoving(Creature guy) {
-		V2i tile = guy.tile();
-		if (tile.equals(world.portalRight) && guy.dir == RIGHT) {
+		V2i guyLocation = guy.tile();
+		if (guyLocation.equals(world.portalRight) && guy.dir == RIGHT) {
 			guy.placeAt(world.portalLeft.x, world.portalLeft.y, 0, 0);
 			return;
 		}
-		if (tile.equals(world.portalLeft) && guy.dir == LEFT) {
+		if (guyLocation.equals(world.portalLeft) && guy.dir == LEFT) {
 			guy.placeAt(world.portalRight.x, world.portalRight.y, 0, 0);
 			return;
 		}
@@ -1058,9 +1058,9 @@ public class Game {
 		// 100% speed corresponds to 1.25 pixels/tick (75px/sec)
 		float pixelSpeed = guy.speed * 1.25f;
 
-		V2i tile = guy.tile();
+		V2i guyLocationBeforeMove = guy.tile();
 		V2f offset = guy.offset();
-		V2i neighbor = tile.sum(dir.vec);
+		V2i neighbor = guyLocationBeforeMove.sum(dir.vec);
 
 		// check if guy can change its direction now
 		if (guy.forcedOnTrack && canAccessTile(guy, neighbor.x, neighbor.y)) {
@@ -1100,7 +1100,7 @@ public class Game {
 		}
 
 		guy.placeAt(newTile.x, newTile.y, newOffset.x, newOffset.y);
-		guy.changedTile = !guy.tile().equals(tile);
+		guy.changedTile = !guy.tile().equals(guyLocationBeforeMove);
 		return true;
 	}
 
