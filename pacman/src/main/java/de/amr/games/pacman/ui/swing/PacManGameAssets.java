@@ -26,7 +26,7 @@ import de.amr.games.pacman.ui.Sound;
  * 
  * @author Armin Reichert
  */
-class Assets {
+public class PacManGameAssets {
 
 	/** Sprite sheet order of directions. */
 	public static final Map<Direction, Integer> DIR_INDEX = new EnumMap<>(Direction.class);
@@ -49,14 +49,15 @@ class Assets {
 	public final Map<Sound, String> soundPaths = new EnumMap<>(Sound.class);
 	public final Font scoreFont;
 
-	public Assets() {
+	public PacManGameAssets(String mapType) {
 		//@formatter:off
-		
-		spriteSheet         = image("/sprites.png");
 		gameLogo            = image("/logo.png");
-		mazeFull            = image("/maze_full.png");
-		mazeEmptyDark       = image("/maze_empty.png");
-		mazeEmptyBright     = image("/maze_empty_white.png");
+		
+		spriteSheet         = image("/maps/" + mapType + "/sprites.png");
+		mazeFull            = image("/maps/" + mapType + "/maze_full.png");
+		mazeEmptyDark       = image("/maps/" + mapType + "/maze_empty.png");
+		mazeEmptyBright     = image("/maps/" + mapType + "/maze_empty_white.png");
+
 		life                = section(8, 1);
 
 		symbols[CHERRIES]   = section(2, 3);

@@ -16,12 +16,12 @@ import de.amr.games.pacman.ui.Sound;
  */
 class SoundManager {
 
-	private final Assets assets;
+	private final PacManGameAssets assets;
 	private final Map<Sound, Clip> clips = new EnumMap<>(Sound.class);
 	private final Clip[] munchClips = new Clip[2];
 	private int munchIndex;
 
-	public SoundManager(Assets assets) {
+	public SoundManager(PacManGameAssets assets) {
 		this.assets = assets;
 	}
 

@@ -88,10 +88,11 @@ public class PacManGame {
 
 	public final Clock clock;
 	public final Random rnd;
-	public final PacManGameWorld world;
-	public final PacMan pacMan;
-	public final Ghost[] ghosts;
 	public final Hiscore hiscore;
+
+	public PacManGameWorld world;
+	public PacMan pacMan;
+	public Ghost[] ghosts;
 	public PacManGameUI ui;
 
 	public boolean gamePaused;
@@ -119,7 +120,10 @@ public class PacManGame {
 		rnd = new Random();
 		hiscore = new Hiscore();
 		autopilot = new Autopilot();
-		world = new PacManClassicWorld();
+	}
+
+	public void setWorld(PacManGameWorld world) {
+		this.world = world;
 		pacMan = new PacMan(world.pacManHome());
 		/*@formatter:off*/
 		ghosts = new Ghost[] {

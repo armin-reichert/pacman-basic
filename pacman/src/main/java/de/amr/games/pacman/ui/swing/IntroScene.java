@@ -28,8 +28,8 @@ class IntroScene extends Scene {
 	private int lastKilledGhost;
 	private boolean ghostsChasingPacMan;
 
-	public IntroScene(PacManGame game, Assets assets, Dimension size) {
-		super(game, assets, size);
+	public IntroScene(PacManGame game, Dimension size) {
+		super(game, size);
 	}
 
 	public void reset() {
@@ -180,12 +180,12 @@ class IntroScene extends Scene {
 
 	private BufferedImage pacManWalkingSprite(Direction dir) {
 		int frame = game.clock.frame(5, 3);
-		return frame == 2 ? assets.section(frame, 0) : assets.section(frame, Assets.DIR_INDEX.get(dir));
+		return frame == 2 ? assets.section(frame, 0) : assets.section(frame, PacManGameAssets.DIR_INDEX.get(dir));
 	}
 
 	private BufferedImage ghostWalkingSprite(Direction dir, int ghost) {
 		int frame = game.clock.frame(5, 2);
-		return assets.section(2 * Assets.DIR_INDEX.get(dir) + frame, 4 + ghost);
+		return assets.section(2 * PacManGameAssets.DIR_INDEX.get(dir) + frame, 4 + ghost);
 	}
 
 	private BufferedImage ghostFrightenedSprite() {

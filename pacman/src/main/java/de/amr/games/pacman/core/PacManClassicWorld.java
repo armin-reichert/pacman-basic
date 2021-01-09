@@ -36,7 +36,7 @@ public class PacManClassicWorld implements PacManGameWorld {
 	private int foodRemaining;
 
 	public PacManClassicWorld() {
-		map = MapReader.readMap("/maps/pacman_classic.txt");
+		map = MapReader.readMap("/maps/pacMan_classic/pacman_classic.txt");
 		int food = 0;
 		for (int x = 0; x < size.x; ++x) {
 			for (int y = 0; y < size.y; ++y) {

@@ -31,8 +31,8 @@ class PlayScene extends Scene {
 
 	private final ResourceBundle resources = ResourceBundle.getBundle("localization.PlayScene");
 
-	public PlayScene(PacManGame game, Assets assets, Dimension size) {
-		super(game, assets, size);
+	public PlayScene(PacManGame game, Dimension size) {
+		super(game, size);
 	}
 
 	public void draw(Graphics2D g) {
@@ -144,7 +144,7 @@ class PlayScene extends Scene {
 	}
 
 	private BufferedImage sprite(PacMan pacMan) {
-		int dir = Assets.DIR_INDEX.get(pacMan.dir);
+		int dir = PacManGameAssets.DIR_INDEX.get(pacMan.dir);
 		if (pacMan.collapsingTicksLeft > 0) {
 			// collapsing animation
 			int frame = 13 - (int) pacMan.collapsingTicksLeft / 8;
@@ -171,7 +171,7 @@ class PlayScene extends Scene {
 	}
 
 	private BufferedImage sprite(Ghost ghost) {
-		int dir = Assets.DIR_INDEX.get(ghost.wishDir);
+		int dir = PacManGameAssets.DIR_INDEX.get(ghost.wishDir);
 		int walking = ghost.speed == 0 ? 0 : game.clock.frame(5, 2);
 		if (ghost.bounty > 0) {
 			// number

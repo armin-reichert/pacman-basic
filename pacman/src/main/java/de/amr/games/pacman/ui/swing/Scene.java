@@ -12,12 +12,11 @@ abstract class Scene {
 	public static final Color[] GHOST_COLORS = { Color.RED, Color.PINK, Color.CYAN, Color.ORANGE };
 
 	public final PacManGame game;
-	public final Assets assets;
 	public final Dimension size;
+	public PacManGameAssets assets;
 
-	public Scene(PacManGame game, Assets assets, Dimension size) {
+	public Scene(PacManGame game, Dimension size) {
 		this.game = game;
-		this.assets = assets;
 		this.size = size;
 	}
 

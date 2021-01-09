@@ -2,7 +2,9 @@ package de.amr.games.pacman;
 
 import static java.awt.EventQueue.invokeLater;
 
+import de.amr.games.pacman.core.PacManClassicWorld;
 import de.amr.games.pacman.core.PacManGame;
+import de.amr.games.pacman.ui.swing.PacManGameAssets;
 import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
 
 /**
@@ -16,7 +18,10 @@ public class PacManGameApp {
 		float scaling = args.length > 0 ? Float.parseFloat(args[0]) : 2;
 		invokeLater(() -> {
 			PacManGame game = new PacManGame();
-			game.ui = new PacManGameSwingUI(game, scaling);
+			game.setWorld(new PacManClassicWorld());
+			PacManGameSwingUI ui = new PacManGameSwingUI(game, scaling);
+			ui.setAssets(new PacManGameAssets("pacman_classic"));
+			game.ui = ui;
 			game.start();
 		});
 	}

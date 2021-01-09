@@ -2,7 +2,6 @@ package de.amr.games.pacman.ui.swing;
 
 import static de.amr.games.pacman.core.PacManGameWorld.TS;
 import static de.amr.games.pacman.core.PacManGameWorld.t;
-import static de.amr.games.pacman.lib.Direction.RIGHT;
 
 import java.awt.Canvas;
 import java.awt.Color;
@@ -19,6 +18,7 @@ import javax.swing.Timer;
 
 import de.amr.games.pacman.core.PacManGame;
 import de.amr.games.pacman.core.PacManGameState;
+import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.ui.PacManGameUI;
 import de.amr.games.pacman.ui.Sound;
 
@@ -29,7 +29,6 @@ import de.amr.games.pacman.ui.Sound;
  */
 public class PacManGameSwingUI implements PacManGameUI {
 
-	private final Assets assets;
 	private final PacManGame game;
 	private final Dimension unscaledSize;
 	private final float scaling;
@@ -37,7 +36,9 @@ public class PacManGameSwingUI implements PacManGameUI {
 	private final Timer windowTitleUpdate;
 	private final Canvas canvas;
 	private final Keyboard keyboard;
-	private final SoundManager soundManager;
+
+	private PacManGameAssets assets;
+	private SoundManager soundManager;
 
 	private final IntroScene introScene;
 	private final PlayScene playScene;
@@ -47,16 +48,14 @@ public class PacManGameSwingUI implements PacManGameUI {
 	public PacManGameSwingUI(PacManGame game, float scaling) {
 		this.game = game;
 		this.scaling = scaling;
+
 		unscaledSize = new Dimension(game.world.size().x * TS, game.world.size().y * TS);
-		assets = new Assets();
-		introScene = new IntroScene(game, assets, unscaledSize);
-		playScene = new PlayScene(game, assets, unscaledSize);
+		introScene = new IntroScene(game, unscaledSize);
+		playScene = new PlayScene(game, unscaledSize);
 
 		window = new JFrame();
 		keyboard = new Keyboard(window);
-		soundManager = new SoundManager(assets);
 
-		window.setIconImage(assets.section(1, Assets.DIR_INDEX.get(RIGHT)));
 		window.setResizable(false);
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		window.addWindowListener(new WindowAdapter() {
@@ -74,6 +73,14 @@ public class PacManGameSwingUI implements PacManGameUI {
 		canvas.setSize((int) (unscaledSize.width * scaling), (int) (unscaledSize.height * scaling));
 		canvas.setFocusable(false);
 		window.add(canvas);
+	}
+
+	public void setAssets(PacManGameAssets assets) {
+		this.assets = assets;
+		window.setIconImage(assets.section(1, PacManGameAssets.DIR_INDEX.get(Direction.RIGHT)));
+		soundManager = new SoundManager(assets);
+		introScene.assets = assets;
+		playScene.assets = assets;
 	}
 
 	@Override
