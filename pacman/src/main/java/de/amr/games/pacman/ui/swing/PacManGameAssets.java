@@ -53,10 +53,10 @@ public class PacManGameAssets {
 		//@formatter:off
 		gameLogo            = image("/logo.png");
 		
-		spriteSheet         = image("/maps/" + mapType + "/sprites.png");
-		mazeFull            = image("/maps/" + mapType + "/maze_full.png");
-		mazeEmptyDark       = image("/maps/" + mapType + "/maze_empty.png");
-		mazeEmptyBright     = image("/maps/" + mapType + "/maze_empty_white.png");
+		spriteSheet         = image("/worlds/" + mapType + "/sprites.png");
+		mazeFull            = image("/worlds/" + mapType + "/maze_full.png");
+		mazeEmptyDark       = image("/worlds/" + mapType + "/maze_empty.png");
+		mazeEmptyBright     = image("/worlds/" + mapType + "/maze_empty_white.png");
 
 		life                = section(8, 1);
 
