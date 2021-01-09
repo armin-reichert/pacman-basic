@@ -383,19 +383,6 @@ public class PacManGame {
 		return huntingPhase % 2 != 0;
 	}
 
-	private void nextHuntingPhase() {
-		huntingPhase++;
-		state.setDuration(huntingPhaseDuration(huntingPhase));
-		forceHuntingGhostsTurningBack();
-		if (inScatteringPhase()) {
-			if (huntingPhase >= 2) {
-				ui.stopSound(siren(huntingPhase - 2));
-			}
-			ui.loopSound(siren(huntingPhase)); // TODO not clear when which siren should play
-		}
-		log("Game state updated to '%s' for %s", stateDescription(), ticksDescription(state.ticksRemaining()));
-	}
-
 	private static Sound siren(int huntingPhase) {
 		switch (huntingPhase / 2) {
 		case 0:
@@ -411,11 +398,21 @@ public class PacManGame {
 		}
 	}
 
+	private void startHuntingPhase(int phase) {
+		huntingPhase = (byte) phase;
+		state.setDuration(huntingPhaseDuration(huntingPhase));
+		if (inScatteringPhase()) {
+			if (huntingPhase >= 2) {
+				ui.stopSound(siren(huntingPhase - 2));
+			}
+			ui.loopSound(siren(huntingPhase)); // TODO not clear when which siren should play
+		}
+		log("Hunting phase %d started, state is now %s", phase, stateDescription());
+	}
+
 	private void enterHuntingState() {
 		state = HUNTING;
-		huntingPhase = 0;
-		state.setDuration(huntingPhaseDuration(huntingPhase));
-		ui.loopSound(siren(huntingPhase));
+		startHuntingPhase(0);
 	}
 
 	private PacManGameState runHuntingState() {
@@ -434,7 +431,8 @@ public class PacManGame {
 		}
 
 		if (state.expired()) {
-			nextHuntingPhase();
+			startHuntingPhase(++huntingPhase);
+			forceHuntingGhostsTurningBack();
 		}
 
 		if (world.foodRemaining() == 0) {
