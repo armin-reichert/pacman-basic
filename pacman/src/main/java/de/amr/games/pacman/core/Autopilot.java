@@ -50,10 +50,10 @@ public class Autopilot {
 			Ghost hunterBehind = findHuntingGhostBehind();
 			if (hunterBehind != null) {
 				escapeDir = findEscapeDirectionExcluding(EnumSet.of(pacMan.dir, pacMan.dir.opposite()));
-				log("Detected ghost %s behind, escape direction is %s", hunterAhead.name(), escapeDir);
+				log("Detected ghost %s behind, escape direction is %s", hunterAhead.name, escapeDir);
 			} else {
 				escapeDir = findEscapeDirectionExcluding(EnumSet.of(pacMan.dir));
-				log("Detected ghost %s ahead, escape direction is %s", hunterAhead.name(), escapeDir);
+				log("Detected ghost %s ahead, escape direction is %s", hunterAhead.name, escapeDir);
 			}
 			if (escapeDir != null) {
 				pacMan.wishDir = escapeDir;
@@ -68,7 +68,7 @@ public class Autopilot {
 
 		Ghost prey = findFrightenedGhostInReach();
 		if (prey != null && pacMan.powerTicksLeft >= game.clock.sec(1)) {
-			log("Detected frightened ghost %s %.0g tiles away", prey.name(), prey.tile().manhattanDistance(pacManTile));
+			log("Detected frightened ghost %s %.0g tiles away", prey.name, prey.tile().manhattanDistance(pacManTile));
 			pacMan.targetTile = prey.tile();
 		} else if (game.bonusAvailableTicks > 0
 				&& game.world.bonusTile().manhattanDistance(pacManTile) <= MAX_BONUS_HARVEST_DIST) {

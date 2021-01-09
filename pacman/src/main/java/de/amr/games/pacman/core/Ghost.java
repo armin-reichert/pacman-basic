@@ -10,7 +10,6 @@ import de.amr.games.pacman.lib.V2i;
 public class Ghost extends Creature {
 
 	public static final byte BLINKY = 0, PINKY = 1, INKY = 2, CLYDE = 3;
-	public static final String[] NAMES = { "Blinky", "Pinky", "Inky", "Clyde" };
 
 	public final byte id;
 	public V2i scatterTile;
@@ -24,13 +23,5 @@ public class Ghost extends Creature {
 
 	public Ghost(byte id) {
 		this.id = id;
-	}
-
-	@Override
-	public String name() {
-		if (id == BLINKY && elroyMode > 0) {
-			return String.format("%s (Cruise Elroy %d)", NAMES[BLINKY], elroyMode);
-		}
-		return NAMES[id];
 	}
 }

@@ -126,13 +126,18 @@ public class PacManGame {
 
 	public void setWorld(PacManGameWorld world) {
 		this.world = world;
+		pacMan.name = "Pac-Man";
 		pacMan.homeTile = world.pacManHome();
+		ghosts[BLINKY].name = "Blinky";
 		ghosts[BLINKY].homeTile = world.houseEntry();
 		ghosts[BLINKY].scatterTile = world.scatterTileTopRight();
+		ghosts[PINKY].name = "Pinky";
 		ghosts[PINKY].homeTile = world.houseCenter();
 		ghosts[PINKY].scatterTile = world.scatterTileTopLeft();
+		ghosts[INKY].name = "Inky";
 		ghosts[INKY].homeTile = world.houseLeft();
 		ghosts[INKY].scatterTile = world.scatterTileBottomRight();
+		ghosts[CLYDE].name = "Clyde";
 		ghosts[CLYDE].homeTile = world.houseRight();
 		ghosts[CLYDE].scatterTile = world.scatterTileBottomLeft();
 	}
@@ -650,7 +655,7 @@ public class PacManGame {
 
 	private void killPacMan(Ghost killer) {
 		pacMan.dead = true;
-		log("Pac-Man killed by %s at tile %s", killer.name(), killer.tile());
+		log("Pac-Man killed by %s at tile %s", killer.name, killer.tile());
 		resetAndEnableGlobalDotCounter();
 		byte elroyMode = ghosts[BLINKY].elroyMode;
 		if (elroyMode > 0) {
@@ -758,7 +763,7 @@ public class PacManGame {
 			score(12000);
 		}
 		ghostBounty *= 2;
-		log("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name(), ghost.tile(), ghost.bounty);
+		log("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name, ghost.tile(), ghost.bounty);
 	}
 
 	private void updateBonus() {
@@ -795,7 +800,7 @@ public class PacManGame {
 		if (globalDotCounterEnabled && globalDotCounter >= ghostGlobalDotLimit(ghost)) {
 			releaseGhost(ghost, "Global dot counter (%d) reached limit (%d)", globalDotCounter, ghostGlobalDotLimit(ghost));
 		} else if (!globalDotCounterEnabled && ghost.dotCounter >= ghostPrivateDotLimit(ghost)) {
-			releaseGhost(ghost, "%s's dot counter (%d) reached limit (%d)", ghost.name(), ghost.dotCounter,
+			releaseGhost(ghost, "%s's dot counter (%d) reached limit (%d)", ghost.name, ghost.dotCounter,
 					ghostPrivateDotLimit(ghost));
 		}
 	}
@@ -807,7 +812,7 @@ public class PacManGame {
 			ghosts[BLINKY].elroyMode = (byte) -ghosts[BLINKY].elroyMode; // resume Elroy mode
 			log("Blinky Elroy mode %d resumed", ghosts[BLINKY].elroyMode);
 		}
-		log("Ghost %s released: %s", ghost.name(), String.format(reason, args));
+		log("Ghost %s released: %s", ghost.name, String.format(reason, args));
 	}
 
 	private Optional<Ghost> preferredLockedGhost() {

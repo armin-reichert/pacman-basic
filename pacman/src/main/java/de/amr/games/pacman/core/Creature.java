@@ -13,6 +13,7 @@ import de.amr.games.pacman.lib.V2i;
  */
 public abstract class Creature {
 
+	public String name;
 	/** Left upper corner of collision box */
 	public V2f position;
 	public V2i homeTile;
@@ -30,11 +31,9 @@ public abstract class Creature {
 
 	@Override
 	public String toString() {
-		return String.format("[%-8s tile=%s offset=%s dir=%s wishDir=%s speed=%.2f changedTile=%s couldMove=%s]", name(),
+		return String.format("[%-8s tile=%s offset=%s dir=%s wishDir=%s speed=%.2f changedTile=%s couldMove=%s]", name,
 				tile(), offset(), dir, wishDir, speed, changedTile, couldMove);
 	}
-
-	public abstract String name();
 
 	public void placeAt(int x, int y, float offsetX, float offsetY) {
 		position = new V2f(x * TS + offsetX, y * TS + offsetY);

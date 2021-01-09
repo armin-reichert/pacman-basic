@@ -11,9 +11,4 @@ public class PacMan extends Creature {
 	public long restingTicksLeft;
 	public long collapsingTicksLeft;
 	public long starvingTicks;
-
-	@Override
-	public String name() {
-		return "Pac-Man";
-	}
 }
