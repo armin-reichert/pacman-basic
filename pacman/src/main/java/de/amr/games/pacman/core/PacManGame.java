@@ -511,7 +511,7 @@ public class PacManGame {
 	private void enterGhostDyingState() {
 		previousState = state;
 		state = GHOST_DYING;
-		state.setDuration(clock.sec(1));
+		state.setDuration(clock.sec(1)); // TODO correct?
 		pacMan.visible = false;
 		ui.playSound(Sound.GHOST_DEATH);
 	}
