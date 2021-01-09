@@ -29,8 +29,10 @@ import de.amr.games.pacman.ui.Sound;
  */
 class Assets {
 
-	public static final Map<Direction, Integer> DIR_INDEX = new HashMap<>();
+	public static final Map<Direction, Integer> DIR_INDEX;
+
 	static {
+		DIR_INDEX = new EnumMap<>(Direction.class);
 		DIR_INDEX.put(Direction.RIGHT, 0);
 		DIR_INDEX.put(Direction.LEFT, 1);
 		DIR_INDEX.put(Direction.UP, 2);
