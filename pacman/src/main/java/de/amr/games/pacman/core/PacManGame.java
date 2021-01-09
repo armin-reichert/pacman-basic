@@ -2,10 +2,6 @@ package de.amr.games.pacman.core;
 
 import static de.amr.games.pacman.core.Creature.offset;
 import static de.amr.games.pacman.core.Creature.tile;
-import static de.amr.games.pacman.core.Ghost.BLINKY;
-import static de.amr.games.pacman.core.Ghost.CLYDE;
-import static de.amr.games.pacman.core.Ghost.INKY;
-import static de.amr.games.pacman.core.Ghost.PINKY;
 import static de.amr.games.pacman.core.PacManGameState.CHANGING_LEVEL;
 import static de.amr.games.pacman.core.PacManGameState.GAME_OVER;
 import static de.amr.games.pacman.core.PacManGameState.GHOST_DYING;
@@ -13,7 +9,11 @@ import static de.amr.games.pacman.core.PacManGameState.HUNTING;
 import static de.amr.games.pacman.core.PacManGameState.INTRO;
 import static de.amr.games.pacman.core.PacManGameState.PACMAN_DYING;
 import static de.amr.games.pacman.core.PacManGameState.READY;
+import static de.amr.games.pacman.core.PacManGameWorld.BLINKY;
+import static de.amr.games.pacman.core.PacManGameWorld.CLYDE;
 import static de.amr.games.pacman.core.PacManGameWorld.HTS;
+import static de.amr.games.pacman.core.PacManGameWorld.INKY;
+import static de.amr.games.pacman.core.PacManGameWorld.PINKY;
 import static de.amr.games.pacman.core.PacManGameWorld.t;
 import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
@@ -121,7 +121,7 @@ public class PacManGame {
 		hiscore = new Hiscore();
 		autopilot = new Autopilot();
 		pacMan = new PacMan();
-		ghosts = new Ghost[] { new Ghost(BLINKY), new Ghost(PINKY), new Ghost(INKY), new Ghost(CLYDE) };
+		ghosts = new Ghost[] { new Ghost(0), new Ghost(1), new Ghost(2), new Ghost(3) };
 	}
 
 	public void setWorld(PacManGameWorld world) {

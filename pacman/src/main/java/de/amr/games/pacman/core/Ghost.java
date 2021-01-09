@@ -9,8 +9,6 @@ import de.amr.games.pacman.lib.V2i;
  */
 public class Ghost extends Creature {
 
-	public static final byte BLINKY = 0, PINKY = 1, INKY = 2, CLYDE = 3;
-
 	public final byte id;
 	public V2i scatterTile;
 	public boolean frightened;
@@ -21,7 +19,7 @@ public class Ghost extends Creature {
 	public int dotCounter;
 	public byte elroyMode;
 
-	public Ghost(byte id) {
-		this.id = id;
+	public Ghost(int id) {
+		this.id = (byte) id;
 	}
 }
