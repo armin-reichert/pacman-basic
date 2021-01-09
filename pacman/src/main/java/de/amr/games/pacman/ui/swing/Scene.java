@@ -1,5 +1,6 @@
 package de.amr.games.pacman.ui.swing;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -7,6 +8,8 @@ import java.awt.image.BufferedImage;
 import de.amr.games.pacman.core.PacManGame;
 
 abstract class Scene {
+
+	public static final Color[] GHOST_COLORS = { Color.RED, Color.PINK, Color.CYAN, Color.ORANGE };
 
 	public final PacManGame game;
 	public final Assets assets;

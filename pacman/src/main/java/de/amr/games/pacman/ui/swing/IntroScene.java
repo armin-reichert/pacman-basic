@@ -124,7 +124,7 @@ class IntroScene extends Scene {
 	private void drawGhostCharacterAndName(Graphics2D g, int ghostID, int y, boolean both) {
 		String character = resources.getString("GHOST." + ghostID + ".CHARACTER");
 		String nickname = "\"" + resources.getString("GHOST." + ghostID + ".NICKNAME") + "\"";
-		Color color = Assets.GHOST_COLORS[ghostID];
+		Color color = GHOST_COLORS[ghostID];
 		g.setColor(color);
 		g.setFont(assets.scoreFont);
 		g.drawString("-" + character, t(4), y + 11);

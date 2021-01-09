@@ -215,7 +215,7 @@ class PlayScene extends Scene {
 				g.setColor(Color.WHITE);
 				g.drawRect(round(ghost.position.x), round(ghost.position.y), TS, TS);
 				if (ghost.targetTile != null) {
-					Color c = Assets.GHOST_COLORS[ghost.id];
+					Color c = GHOST_COLORS[ghost.id];
 					g.setColor(c);
 					g.fillRect(t(ghost.targetTile.x) + HTS / 2, t(ghost.targetTile.y) + HTS / 2, HTS, HTS);
 				}

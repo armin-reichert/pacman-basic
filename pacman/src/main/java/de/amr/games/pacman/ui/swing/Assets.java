@@ -9,7 +9,6 @@ import static de.amr.games.pacman.core.PacManGame.KEY;
 import static de.amr.games.pacman.core.PacManGame.PEACH;
 import static de.amr.games.pacman.core.PacManGame.STRAWBERRY;
 
-import java.awt.Color;
 import java.awt.Font;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
@@ -38,8 +37,6 @@ class Assets {
 		DIR_INDEX.put(Direction.UP, 2);
 		DIR_INDEX.put(Direction.DOWN, 3);
 	}
-
-	public static final Color[] GHOST_COLORS = { Color.RED, Color.PINK, Color.CYAN, Color.ORANGE };
 
 	public final BufferedImage spriteSheet;
 	public final BufferedImage gameLogo;
