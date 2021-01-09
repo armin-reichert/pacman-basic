@@ -22,10 +22,8 @@ public class Ghost extends Creature {
 	public int dotCounter;
 	public byte elroyMode;
 
-	public Ghost(byte id, V2i homeTile, V2i scatterTile) {
+	public Ghost(byte id) {
 		this.id = id;
-		this.homeTile = homeTile;
-		this.scatterTile = scatterTile;
 	}
 
 	@Override

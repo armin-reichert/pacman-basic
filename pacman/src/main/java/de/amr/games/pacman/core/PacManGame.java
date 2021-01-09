@@ -120,19 +120,21 @@ public class PacManGame {
 		rnd = new Random();
 		hiscore = new Hiscore();
 		autopilot = new Autopilot();
+		pacMan = new PacMan();
+		ghosts = new Ghost[] { new Ghost(BLINKY), new Ghost(PINKY), new Ghost(INKY), new Ghost(CLYDE) };
 	}
 
 	public void setWorld(PacManGameWorld world) {
 		this.world = world;
-		pacMan = new PacMan(world.pacManHome());
-		/*@formatter:off*/
-		ghosts = new Ghost[] {
-			new Ghost(BLINKY, world.houseEntry(),  world.scatterTileTopRight()),
-			new Ghost(PINKY,  world.houseCenter(), world.scatterTileTopLeft()), 
-			new Ghost(INKY,   world.houseLeft(),   world.scatterTileBottomRight()),
-			new Ghost(CLYDE,  world.houseRight(),  world.scatterTileBottomLeft()) 
-		};
-		/*@formatter:on*/
+		pacMan.homeTile = world.pacManHome();
+		ghosts[BLINKY].homeTile = world.houseEntry();
+		ghosts[BLINKY].scatterTile = world.scatterTileTopRight();
+		ghosts[PINKY].homeTile = world.houseCenter();
+		ghosts[PINKY].scatterTile = world.scatterTileTopLeft();
+		ghosts[INKY].homeTile = world.houseLeft();
+		ghosts[INKY].scatterTile = world.scatterTileBottomRight();
+		ghosts[CLYDE].homeTile = world.houseRight();
+		ghosts[CLYDE].scatterTile = world.scatterTileBottomLeft();
 	}
 
 	public void start() {
