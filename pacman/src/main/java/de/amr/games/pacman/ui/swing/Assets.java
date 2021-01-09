@@ -29,10 +29,10 @@ import de.amr.games.pacman.ui.Sound;
  */
 class Assets {
 
-	public static final Map<Direction, Integer> DIR_INDEX;
+	/** Sprite sheet order of directions. */
+	public static final Map<Direction, Integer> DIR_INDEX = new EnumMap<>(Direction.class);
 
 	static {
-		DIR_INDEX = new EnumMap<>(Direction.class);
 		DIR_INDEX.put(Direction.RIGHT, 0);
 		DIR_INDEX.put(Direction.LEFT, 1);
 		DIR_INDEX.put(Direction.UP, 2);
@@ -41,53 +41,49 @@ class Assets {
 
 	public static final Color[] GHOST_COLORS = { Color.RED, Color.PINK, Color.CYAN, Color.ORANGE };
 
-	public final BufferedImage imageLogo;
-	public final BufferedImage imageMazeFull;
-	public final BufferedImage imageMazeEmpty;
-	public final BufferedImage imageMazeEmptyWhite;
 	public final BufferedImage spriteSheet;
-	public final BufferedImage imageLive;
-	public final BufferedImage[] symbols;
-	public final Map<Short, BufferedImage> numbers;
+	public final BufferedImage gameLogo;
+	public final BufferedImage mazeFull;
+	public final BufferedImage mazeEmptyDark;
+	public final BufferedImage mazeEmptyBright;
+	public final BufferedImage life;
+	public final BufferedImage[] symbols = new BufferedImage[8];
+	public final Map<Short, BufferedImage> numbers = new HashMap<>();
+	public final Map<Sound, String> soundPaths = new EnumMap<>(Sound.class);
 	public final Font scoreFont;
-	public final Map<Sound, String> soundPaths;
 
 	public Assets() {
-		spriteSheet = image("/sprites.png");
-		imageLogo = image("/logo.png");
-		imageMazeFull = image("/maze_full.png");
-		imageMazeEmpty = image("/maze_empty.png");
-		imageMazeEmptyWhite = image("/maze_empty_white.png");
-		imageLive = sheet(8, 1);
-
-		scoreFont = font("/PressStart2P-Regular.ttf", 8);
-
 		//@formatter:off
-		symbols = new BufferedImage[8];
-		symbols[CHERRIES]   = sheet(2, 3);
-		symbols[STRAWBERRY] = sheet(3, 3);
-		symbols[PEACH]      = sheet(4, 3);
-		symbols[APPLE]      = sheet(5, 3);
-		symbols[GRAPES]     = sheet(6, 3);
-		symbols[GALAXIAN]   = sheet(7, 3);
-		symbols[BELL]       = sheet(8, 3);
-		symbols[KEY]        = sheet(9, 3);
+		
+		spriteSheet         = image("/sprites.png");
+		gameLogo            = image("/logo.png");
+		mazeFull            = image("/maze_full.png");
+		mazeEmptyDark       = image("/maze_empty.png");
+		mazeEmptyBright     = image("/maze_empty_white.png");
+		life                = section(8, 1);
+
+		symbols[CHERRIES]   = section(2, 3);
+		symbols[STRAWBERRY] = section(3, 3);
+		symbols[PEACH]      = section(4, 3);
+		symbols[APPLE]      = section(5, 3);
+		symbols[GRAPES]     = section(6, 3);
+		symbols[GALAXIAN]   = section(7, 3);
+		symbols[BELL]       = section(8, 3);
+		symbols[KEY]        = section(9, 3);
 	
-		numbers = new HashMap<>();
-		numbers.put((short)100,  sheet(0, 9));
-		numbers.put((short)200,  sheet(0, 8));
-		numbers.put((short)300,  sheet(1, 9));
-		numbers.put((short)400,  sheet(1, 8));
-		numbers.put((short)500,  sheet(2, 9));
-		numbers.put((short)700,  sheet(3, 9));
-		numbers.put((short)800,  sheet(2, 8));
+		numbers.put((short)100,  section(0, 9));
+		numbers.put((short)200,  section(0, 8));
+		numbers.put((short)300,  section(1, 9));
+		numbers.put((short)400,  section(1, 8));
+		numbers.put((short)500,  section(2, 9));
+		numbers.put((short)700,  section(3, 9));
+		numbers.put((short)800,  section(2, 8));
 		numbers.put((short)1000, section(4, 9, 2, 1));
-		numbers.put((short)1600, sheet(3, 8));
+		numbers.put((short)1600, section(3, 8));
 		numbers.put((short)2000, section(3, 10, 3, 1));
 		numbers.put((short)3000, section(3, 11, 3, 1));
 		numbers.put((short)5000, section(3, 12, 3, 1));
 	
-		soundPaths = new EnumMap<>(Sound.class);
 		soundPaths.put(Sound.CREDIT,       "/sound/credit.wav");
 		soundPaths.put(Sound.EAT_BONUS,    "/sound/eat_fruit.wav");
 		soundPaths.put(Sound.EXTRA_LIFE,   "/sound/extend.wav");
@@ -103,13 +99,15 @@ class Assets {
 		soundPaths.put(Sound.SIREN_4,      "/sound/siren_4.wav");
 		soundPaths.put(Sound.SIREN_5,      "/sound/siren_5.wav");
 		//@formatter:on
+
+		scoreFont = font("/PressStart2P-Regular.ttf", 8);
 	}
 
 	public BufferedImage section(int x, int y, int w, int h) {
 		return spriteSheet.getSubimage(x * 16, y * 16, w * 16, h * 16);
 	}
 
-	public BufferedImage sheet(int x, int y) {
+	public BufferedImage section(int x, int y) {
 		return section(x, y, 1, 1);
 	}
 

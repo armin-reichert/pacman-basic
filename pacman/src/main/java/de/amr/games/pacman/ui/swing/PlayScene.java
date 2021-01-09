@@ -82,7 +82,7 @@ class PlayScene extends Scene {
 		int maxLives = 5;
 		int y = size.height - t(2);
 		for (int i = 0; i < Math.min(game.lives - 1, maxLives); ++i) {
-			g.drawImage(assets.imageLive, t(2 * (i + 1)), y, null);
+			g.drawImage(assets.life, t(2 * (i + 1)), y, null);
 		}
 		if (game.lives > maxLives) {
 			g.setColor(Color.YELLOW);
@@ -109,15 +109,15 @@ class PlayScene extends Scene {
 	private void drawMaze(Graphics2D g) {
 		if (game.mazeFlashesRemaining > 0) {
 			game.clock.runAlternating(game.clock.sec(0.25), () -> {
-				g.drawImage(assets.imageMazeEmpty, 0, t(3), null);
+				g.drawImage(assets.mazeEmptyDark, 0, t(3), null);
 			}, () -> {
-				g.drawImage(assets.imageMazeEmptyWhite, 0, t(3), null);
+				g.drawImage(assets.mazeEmptyBright, 0, t(3), null);
 			}, () -> {
 				game.mazeFlashesRemaining--;
 			});
 			return;
 		}
-		g.drawImage(assets.imageMazeFull, 0, t(3), null);
+		g.drawImage(assets.mazeFull, 0, t(3), null);
 		range(0, game.world.size().x).forEach(x -> {
 			range(4, game.world.size().y - 3).forEach(y -> {
 				if (game.world.foodRemoved(x, y)) {
@@ -149,19 +149,19 @@ class PlayScene extends Scene {
 			// collapsing animation
 			int frame = 13 - (int) pacMan.collapsingTicksLeft / 8;
 			frame = Math.max(frame, 3);
-			return assets.sheet(frame, 0);
+			return assets.section(frame, 0);
 		}
 		if (pacMan.speed != 0) {
 			if (!pacMan.couldMove) {
 				// mouth wide open
-				return assets.sheet(0, dir);
+				return assets.section(0, dir);
 			}
 			// mouth animation
 			int frame = game.clock.frame(5, 3);
-			return frame == 2 ? assets.sheet(frame, 0) : assets.sheet(frame, dir);
+			return frame == 2 ? assets.section(frame, 0) : assets.section(frame, dir);
 		}
 		// full face
-		return assets.sheet(2, 0);
+		return assets.section(2, 0);
 	}
 
 	private void drawGhost(Graphics2D g, Ghost ghost) {
@@ -179,24 +179,24 @@ class PlayScene extends Scene {
 		}
 		if (ghost.dead) {
 			// eyes looking towards intended move direction
-			return assets.sheet(8 + dir, 5);
+			return assets.section(8 + dir, 5);
 		}
 		if (ghost.frightened) {
 			if (game.pacMan.powerTicksLeft <= game.clock.sec(2) && ghost.speed != 0) {
 				// TODO flash exactly as often as specified by level
 				// flashing blue/white, walking animation
 				int flashing = game.clock.frame(10, 2) == 0 ? 8 : 10;
-				return assets.sheet(walking + flashing, 4);
+				return assets.section(walking + flashing, 4);
 			}
 			// blue, walking animation
-			return assets.sheet(8 + walking, 4);
+			return assets.section(8 + walking, 4);
 		}
 		if (ghost.locked && game.pacMan.powerTicksLeft > 0) {
 			// blue, walking animation
-			return assets.sheet(8 + walking, 4);
+			return assets.section(8 + walking, 4);
 		}
 		// colored, walking animation, looking towards intended move direction
-		return assets.sheet(2 * dir + walking, 4 + ghost.id);
+		return assets.section(2 * dir + walking, 4 + ghost.id);
 	}
 
 	// debug drawing stuff

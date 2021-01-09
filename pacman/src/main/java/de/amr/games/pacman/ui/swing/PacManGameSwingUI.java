@@ -56,7 +56,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 		keyboard = new Keyboard(window);
 		soundManager = new SoundManager(assets);
 
-		window.setIconImage(assets.sheet(1, Assets.DIR_INDEX.get(RIGHT)));
+		window.setIconImage(assets.section(1, Assets.DIR_INDEX.get(RIGHT)));
 		window.setResizable(false);
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		window.addWindowListener(new WindowAdapter() {
@@ -142,7 +142,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 	}
 
 	private void drawPausedScreen(Graphics2D g) {
-		g.drawImage(assets.imageLogo, (unscaledSize.width - assets.imageLogo.getWidth()) / 2, 3, null);
+		g.drawImage(assets.gameLogo, (unscaledSize.width - assets.gameLogo.getWidth()) / 2, 3, null);
 		g.setColor(new Color(200, 200, 200, 100));
 		g.fillRect(0, 0, unscaledSize.width, unscaledSize.height);
 		g.setColor(Color.GREEN);

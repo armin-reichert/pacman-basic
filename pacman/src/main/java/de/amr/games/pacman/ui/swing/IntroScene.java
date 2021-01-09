@@ -49,7 +49,7 @@ class IntroScene extends Scene {
 	public void draw(Graphics2D g) {
 
 		game.state.runAfter(game.clock.sec(1), () -> {
-			drawCenteredImage(g, assets.imageLogo, 3);
+			drawCenteredImage(g, assets.gameLogo, 3);
 		});
 
 		game.state.runAfter(game.clock.sec(2), () -> {
@@ -65,7 +65,7 @@ class IntroScene extends Scene {
 				game.ui.playSound(Sound.CREDIT);
 			});
 			game.state.runAfter(game.clock.sec(ghostStart), () -> {
-				g.drawImage(assets.sheet(0, 4 + ghost), t(2) - 3, y - 2, null);
+				g.drawImage(assets.section(0, 4 + ghost), t(2) - 3, y - 2, null);
 			});
 			game.state.runAfter(game.clock.sec(ghostStart + 0.5), () -> {
 				drawGhostCharacterAndName(g, ghost, y, false);
@@ -180,16 +180,16 @@ class IntroScene extends Scene {
 
 	private BufferedImage pacManWalkingSprite(Direction dir) {
 		int frame = game.clock.frame(5, 3);
-		return frame == 2 ? assets.sheet(frame, 0) : assets.sheet(frame, Assets.DIR_INDEX.get(dir));
+		return frame == 2 ? assets.section(frame, 0) : assets.section(frame, Assets.DIR_INDEX.get(dir));
 	}
 
 	private BufferedImage ghostWalkingSprite(Direction dir, int ghost) {
 		int frame = game.clock.frame(5, 2);
-		return assets.sheet(2 * Assets.DIR_INDEX.get(dir) + frame, 4 + ghost);
+		return assets.section(2 * Assets.DIR_INDEX.get(dir) + frame, 4 + ghost);
 	}
 
 	private BufferedImage ghostFrightenedSprite() {
 		int frame = game.clock.frame(5, 2);
-		return assets.sheet(8 + frame, 4);
+		return assets.section(8 + frame, 4);
 	}
 }
