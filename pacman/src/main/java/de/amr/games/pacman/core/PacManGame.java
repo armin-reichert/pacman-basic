@@ -600,9 +600,9 @@ public class PacManGame {
 	// END STATE-MACHINE
 
 	private void updatePacMan() {
-		pacMan.speed = level().pacManSpeed;
 		if (pacMan.restingTicksLeft == 0) {
 			updatePacManDirection();
+			pacMan.speed = pacMan.powerTicksLeft == 0 ? level().pacManSpeed : level().pacManSpeedPowered;
 			tryMoving(pacMan);
 		} else {
 			pacMan.restingTicksLeft--;
@@ -615,7 +615,6 @@ public class PacManGame {
 				}
 				ui.stopSound(Sound.PACMAN_POWER);
 			}
-			pacMan.speed = level().pacManSpeedPowered;
 		}
 	}
 
