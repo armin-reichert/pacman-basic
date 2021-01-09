@@ -337,10 +337,12 @@ public class PacManGame {
 
 	private void enterReadyState() {
 		state = READY;
-		state.setDuration(clock.sec(gameStarted ? 0.5 : 4.5));
 		if (!gameStarted) {
+			state.setDuration(clock.sec(4.5));
 			ui.playSound(Sound.GAME_READY);
 			gameStarted = true;
+		} else {
+			state.setDuration(clock.sec(0.5));
 		}
 		resetGuys();
 		bonusAvailableTicks = bonusConsumedTicks = 0;
