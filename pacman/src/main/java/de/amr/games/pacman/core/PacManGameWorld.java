@@ -78,4 +78,7 @@ public interface PacManGameWorld {
 
 	boolean isEnergizerTile(int x, int y);
 
+	default boolean containsFood(int x, int y) {
+		return isFoodTile(x, y) && !foodRemoved(x, y);
+	}
 }

@@ -654,20 +654,19 @@ public class PacManGame {
 	}
 
 	private void checkPacManFindsBonus() {
-		V2i tile = pacMan.tile();
-		if (bonusAvailableTicks > 0 && world.bonusTile().equals(tile)) {
+		if (bonusAvailableTicks > 0 && world.bonusTile().equals(pacMan.tile())) {
 			bonusAvailableTicks = 0;
 			bonusConsumedTicks = clock.sec(2);
 			score(level().bonusPoints);
 			ui.playSound(Sound.EAT_BONUS);
-			log("Pac-Man found bonus (id=%d) of value %d", level().bonusSymbol, level().bonusPoints);
+			log("Pac-Man found bonus (%d) of value %d", level().bonusSymbol, level().bonusPoints);
 		}
 	}
 
 	private void checkPacManFindsFood() {
-		V2i tile = pacMan.tile();
-		if (world.isFoodTile(tile.x, tile.y) && !world.foodRemoved(tile.x, tile.y)) {
-			onPacManFoundFood(tile);
+		V2i pacManLocation = pacMan.tile();
+		if (world.containsFood(pacManLocation.x, pacManLocation.y)) {
+			onPacManFoundFood(pacManLocation);
 		} else {
 			onPacManStarved();
 		}
@@ -683,18 +682,18 @@ public class PacManGame {
 		}
 	}
 
-	private void onPacManFoundFood(V2i tile) {
-		pacMan.starvingTicks = 0;
-		world.removeFood(tile.x, tile.y);
-		if (world.isEnergizerTile(tile.x, tile.y)) {
+	private void onPacManFoundFood(V2i foodLocation) {
+		if (world.isEnergizerTile(foodLocation.x, foodLocation.y)) {
 			score(50);
 			givePacManPower();
-			ghostBounty = 200;
 			pacMan.restingTicksLeft = 3;
+			ghostBounty = 200;
 		} else {
 			score(10);
 			pacMan.restingTicksLeft = 1;
 		}
+		pacMan.starvingTicks = 0;
+		world.removeFood(foodLocation.x, foodLocation.y);
 		if (world.foodRemaining() == level().elroy1DotsLeft) {
 			ghosts[BLINKY].elroyMode = 1;
 			log("Blinky becomes Cruise Elroy 1");
@@ -702,7 +701,6 @@ public class PacManGame {
 			ghosts[BLINKY].elroyMode = 2;
 			log("Blinky becomes Cruise Elroy 2");
 		}
-		// bonus score reached?
 		int eaten = world.eatenFoodCount();
 		if (eaten == 70 || eaten == 170) {
 			bonusAvailableTicks = clock.sec(9 + rnd.nextFloat());
