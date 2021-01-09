@@ -14,8 +14,6 @@ import de.amr.games.pacman.lib.V2i;
  */
 public class PacManClassicWorld implements PacManGameWorld {
 
-	private static final byte WALL = 1, FOOD = 2;
-
 	private final byte[][] map;
 	private final V2i size = new V2i(28, 36);
 	private final V2i portalLeft = new V2i(-1, 17);

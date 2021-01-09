@@ -1,5 +1,9 @@
 package de.amr.games.pacman.lib;
 
+import static de.amr.games.pacman.core.PacManGameWorld.FOOD;
+import static de.amr.games.pacman.core.PacManGameWorld.SPACE;
+import static de.amr.games.pacman.core.PacManGameWorld.WALL;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -28,12 +32,12 @@ public class MapReader {
 
 	private static byte decode(char c) {
 		switch (c) {
-		case '0':
-			return 0;
-		case '1':
-			return 1;
-		case '2':
-			return 2;
+		case ' ':
+			return SPACE;
+		case '#':
+			return WALL;
+		case '.':
+			return FOOD;
 		default:
 			throw new IllegalArgumentException("Unknown map character: " + c);
 		}

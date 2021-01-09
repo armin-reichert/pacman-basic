@@ -9,11 +9,13 @@ import de.amr.games.pacman.lib.V2i;
  */
 public interface PacManGameWorld {
 
-	public static final int TS = 8, HTS = TS / 2;
+	static final int TS = 8, HTS = TS / 2;
 
-	public static int t(int nTiles) {
+	static int t(int nTiles) {
 		return nTiles * TS;
 	}
+
+	static final byte SPACE = 0, WALL = 1, FOOD = 2;
 
 	V2i size();
 
