@@ -1132,7 +1132,7 @@ public class PacManGame {
 	private void eatAllNormalPellets() {
 		for (int x = 0; x < world.size().x; ++x) {
 			for (int y = 0; y < world.size().y; ++y) {
-				if (world.isFoodTile(x, y) && !world.isEnergizerTile(x, y)) {
+				if (world.containsFood(x, y) && !world.isEnergizerTile(x, y)) {
 					world.removeFood(x, y);
 				}
 			}
