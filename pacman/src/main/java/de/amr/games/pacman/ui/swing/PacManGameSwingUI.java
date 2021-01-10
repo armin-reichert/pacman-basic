@@ -37,7 +37,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 	private final Canvas canvas;
 	private final Keyboard keyboard;
 
-	private PacManGameAssets assets;
+	private PacManClassicGameAssets assets;
 	private SoundManager soundManager;
 
 	private final IntroScene introScene;
@@ -75,9 +75,9 @@ public class PacManGameSwingUI implements PacManGameUI {
 		window.add(canvas);
 	}
 
-	public void setAssets(PacManGameAssets assets) {
+	public void setAssets(PacManClassicGameAssets assets) {
 		this.assets = assets;
-		window.setIconImage(assets.section(1, PacManGameAssets.DIR_INDEX.get(Direction.RIGHT)));
+		window.setIconImage(assets.section(1, PacManClassicGameAssets.DIR_INDEX.get(Direction.RIGHT)));
 		soundManager = new SoundManager(assets);
 		introScene.assets = assets;
 		playScene.assets = assets;

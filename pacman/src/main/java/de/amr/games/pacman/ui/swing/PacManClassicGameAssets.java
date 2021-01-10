@@ -1,13 +1,13 @@
 package de.amr.games.pacman.ui.swing;
 
-import static de.amr.games.pacman.core.PacManGame.APPLE;
-import static de.amr.games.pacman.core.PacManGame.BELL;
-import static de.amr.games.pacman.core.PacManGame.CHERRIES;
-import static de.amr.games.pacman.core.PacManGame.GALAXIAN;
-import static de.amr.games.pacman.core.PacManGame.GRAPES;
-import static de.amr.games.pacman.core.PacManGame.KEY;
-import static de.amr.games.pacman.core.PacManGame.PEACH;
-import static de.amr.games.pacman.core.PacManGame.STRAWBERRY;
+import static de.amr.games.pacman.worlds.classic.PacManClassicWorld.APPLE;
+import static de.amr.games.pacman.worlds.classic.PacManClassicWorld.BELL;
+import static de.amr.games.pacman.worlds.classic.PacManClassicWorld.CHERRIES;
+import static de.amr.games.pacman.worlds.classic.PacManClassicWorld.GALAXIAN;
+import static de.amr.games.pacman.worlds.classic.PacManClassicWorld.GRAPES;
+import static de.amr.games.pacman.worlds.classic.PacManClassicWorld.KEY;
+import static de.amr.games.pacman.worlds.classic.PacManClassicWorld.PEACH;
+import static de.amr.games.pacman.worlds.classic.PacManClassicWorld.STRAWBERRY;
 
 import java.awt.Font;
 import java.awt.image.BufferedImage;
@@ -26,7 +26,7 @@ import de.amr.games.pacman.ui.Sound;
  * 
  * @author Armin Reichert
  */
-public class PacManGameAssets {
+public class PacManClassicGameAssets {
 
 	/** Sprite sheet order of directions. */
 	public static final Map<Direction, Integer> DIR_INDEX = new EnumMap<>(Direction.class);
@@ -49,7 +49,7 @@ public class PacManGameAssets {
 	public final Map<Sound, String> soundPaths = new EnumMap<>(Sound.class);
 	public final Font scoreFont;
 
-	public PacManGameAssets(String mapType) {
+	public PacManClassicGameAssets(String mapType) {
 		//@formatter:off
 		gameLogo            = image("/logo.png");
 		

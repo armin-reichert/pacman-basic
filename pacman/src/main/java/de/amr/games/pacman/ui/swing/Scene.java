@@ -13,7 +13,7 @@ abstract class Scene {
 
 	public final PacManGame game;
 	public final Dimension size;
-	public PacManGameAssets assets;
+	public PacManClassicGameAssets assets;
 
 	public Scene(PacManGame game, Dimension size) {
 		this.game = game;

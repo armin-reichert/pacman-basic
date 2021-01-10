@@ -3,7 +3,7 @@ package de.amr.games.pacman;
 import static java.awt.EventQueue.invokeLater;
 
 import de.amr.games.pacman.core.PacManGame;
-import de.amr.games.pacman.ui.swing.PacManGameAssets;
+import de.amr.games.pacman.ui.swing.PacManClassicGameAssets;
 import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
 import de.amr.games.pacman.worlds.classic.PacManClassicWorld;
 
@@ -20,7 +20,7 @@ public class PacManGameApp {
 			PacManGame game = new PacManGame();
 			game.setWorld(new PacManClassicWorld());
 			PacManGameSwingUI ui = new PacManGameSwingUI(game, scaling);
-			ui.setAssets(new PacManGameAssets("pacman_classic"));
+			ui.setAssets(new PacManClassicGameAssets("pacman_classic"));
 			game.ui = ui;
 			game.start();
 		});

@@ -95,7 +95,7 @@ class PlayScene extends Scene {
 		int x = t(game.world.size().x - 4);
 		int first = Math.max(1, game.levelNumber - 6);
 		for (int level = first; level <= game.levelNumber; ++level) {
-			BufferedImage symbol = assets.symbols[PacManGame.level(level).bonusSymbol];
+			BufferedImage symbol = assets.symbols[game.world.level(level).bonusSymbol];
 			g.drawImage(symbol, x, size.height - t(2), null);
 			x -= t(2);
 		}
@@ -144,7 +144,7 @@ class PlayScene extends Scene {
 	}
 
 	private BufferedImage sprite(PacMan pacMan) {
-		int dir = PacManGameAssets.DIR_INDEX.get(pacMan.dir);
+		int dir = PacManClassicGameAssets.DIR_INDEX.get(pacMan.dir);
 		if (pacMan.collapsingTicksLeft > 0) {
 			// collapsing animation
 			int frame = 13 - (int) pacMan.collapsingTicksLeft / 8;
@@ -171,7 +171,7 @@ class PlayScene extends Scene {
 	}
 
 	private BufferedImage sprite(Ghost ghost) {
-		int dir = PacManGameAssets.DIR_INDEX.get(ghost.wishDir);
+		int dir = PacManClassicGameAssets.DIR_INDEX.get(ghost.wishDir);
 		int walking = ghost.speed == 0 ? 0 : game.clock.frame(5, 2);
 		if (ghost.bounty > 0) {
 			// number

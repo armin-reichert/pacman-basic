@@ -1,5 +1,6 @@
 package de.amr.games.pacman.worlds;
 
+import de.amr.games.pacman.core.PacManGameLevel;
 import de.amr.games.pacman.lib.V2i;
 
 /**
@@ -16,6 +17,8 @@ public interface PacManGameWorld {
 	}
 
 	static final byte SPACE = 0, WALL = 1, FOOD = 2;
+
+	PacManGameLevel level(int levelNumber);
 
 	V2i size();
 
