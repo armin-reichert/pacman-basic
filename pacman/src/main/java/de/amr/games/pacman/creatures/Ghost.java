@@ -1,7 +1,5 @@
 package de.amr.games.pacman.creatures;
 
-import de.amr.games.pacman.lib.V2i;
-
 /**
  * A ghost.
  * 
@@ -10,7 +8,6 @@ import de.amr.games.pacman.lib.V2i;
 public class Ghost extends Creature {
 
 	public final byte id;
-	public V2i scatterTile;
 	public boolean frightened;
 	public boolean locked;
 	public boolean enteringHouse;

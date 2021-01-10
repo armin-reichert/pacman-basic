@@ -101,7 +101,6 @@ public class PacManGame {
 		pac.name = world.pacName();
 		for (int id = 0; id < 4; ++id) {
 			ghosts[id].name = world.ghostName(id);
-			ghosts[id].scatterTile = world.ghostScatterTile(id);
 		}
 	}
 
@@ -802,8 +801,8 @@ public class PacManGame {
 		return levelNumber < 5 ? clock.sec(4) : clock.sec(3);
 	}
 
-	private V2i ghostChasingTarget(Ghost ghost) {
-		switch (ghost.id) {
+	private V2i ghostChasingTarget(int id) {
+		switch (id) {
 		case BLINKY: {
 			return pac.tile();
 		}
@@ -824,10 +823,10 @@ public class PacManGame {
 			return ghosts[BLINKY].tile().scaled(-1).sum(pacAhead2.scaled(2));
 		}
 		case CLYDE: {
-			return ghost.tile().euclideanDistance(pac.tile()) < 8 ? ghost.scatterTile : pac.tile();
+			return ghosts[CLYDE].tile().euclideanDistance(pac.tile()) < 8 ? world.ghostScatterTile(CLYDE) : pac.tile();
 		}
 		default:
-			throw new IllegalArgumentException("Unknown ghost id: " + ghost.id);
+			throw new IllegalArgumentException("Unknown ghost id: " + id);
 		}
 	}
 
@@ -853,8 +852,11 @@ public class PacManGame {
 		} else {
 			ghost.speed = level().ghostSpeed;
 		}
-		ghost.targetTile = inChasingPhase() || ghost.id == BLINKY && ghost.elroyMode > 0 ? ghostChasingTarget(ghost)
-				: ghost.scatterTile;
+		if (inChasingPhase() || ghost.id == BLINKY && ghost.elroyMode > 0) {
+			ghost.targetTile = ghostChasingTarget(ghost.id);
+		} else {
+			ghost.targetTile = world.ghostScatterTile(ghost.id);
+		}
 		letGhostHeadForTargetTile(ghost);
 	}
 
