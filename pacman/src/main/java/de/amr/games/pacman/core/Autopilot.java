@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.creatures.Ghost;
-import de.amr.games.pacman.creatures.PacMan;
+import de.amr.games.pacman.creatures.Pac;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
 
@@ -26,12 +26,12 @@ public class Autopilot {
 	private static final int MAX_BONUS_HARVEST_DIST = 20; // tiles
 
 	private PacManGame game;
-	private PacMan pacMan;
+	private Pac pacMan;
 	private Ghost[] ghosts;
 
 	public void controlPacMan(PacManGame game) {
 		this.game = game;
-		this.pacMan = game.pacMan;
+		this.pacMan = game.pac;
 		this.ghosts = game.ghosts;
 		V2i pacManTile = pacMan.tile();
 

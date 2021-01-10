@@ -5,7 +5,7 @@ package de.amr.games.pacman.creatures;
  * 
  * @author Armin Reichert
  */
-public class PacMan extends Creature {
+public class Pac extends Creature {
 
 	public long powerTicksLeft;
 	public long restingTicksLeft;

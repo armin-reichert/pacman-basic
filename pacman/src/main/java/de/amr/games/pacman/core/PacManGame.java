@@ -31,7 +31,7 @@ import java.util.stream.Stream;
 
 import de.amr.games.pacman.creatures.Creature;
 import de.amr.games.pacman.creatures.Ghost;
-import de.amr.games.pacman.creatures.PacMan;
+import de.amr.games.pacman.creatures.Pac;
 import de.amr.games.pacman.lib.Clock;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.Hiscore;
@@ -66,7 +66,7 @@ public class PacManGame {
 	public final Hiscore hiscore;
 
 	public PacManGameWorld world;
-	public PacMan pacMan;
+	public Pac pac;
 	public Ghost[] ghosts;
 	public PacManGameUI ui;
 
@@ -95,14 +95,14 @@ public class PacManGame {
 		rnd = new Random();
 		hiscore = new Hiscore();
 		autopilot = new Autopilot();
-		pacMan = new PacMan();
+		pac = new Pac();
 		ghosts = new Ghost[] { new Ghost(0), new Ghost(1), new Ghost(2), new Ghost(3) };
 	}
 
 	public void setWorld(PacManGameWorld world) {
 		this.world = world;
-		pacMan.name = "Pac-Man";
-		pacMan.homeTile = world.pacManHome();
+		pac.name = world.pacName();
+		pac.homeTile = world.pacHome();
 		for (int id = 0; id < 4; ++id) {
 			ghosts[id].name = world.ghostName(id);
 			ghosts[id].homeTile = world.ghostHome(id);
@@ -185,19 +185,19 @@ public class PacManGame {
 	}
 
 	private void resetGuys() {
-		pacMan.visible = true;
-		pacMan.speed = 0;
-		pacMan.targetTile = null; // used in autopilot mode
-		pacMan.changedTile = true;
-		pacMan.couldMove = true;
-		pacMan.forcedOnTrack = true;
-		pacMan.dead = false;
-		pacMan.powerTicksLeft = 0;
-		pacMan.restingTicksLeft = 0;
-		pacMan.starvingTicks = 0;
-		pacMan.collapsingTicksLeft = 0;
-		pacMan.placeAt(pacMan.homeTile.x, pacMan.homeTile.y, HTS, 0);
-		pacMan.dir = pacMan.wishDir = RIGHT;
+		pac.visible = true;
+		pac.speed = 0;
+		pac.targetTile = null; // used in autopilot mode
+		pac.changedTile = true;
+		pac.couldMove = true;
+		pac.forcedOnTrack = true;
+		pac.dead = false;
+		pac.powerTicksLeft = 0;
+		pac.restingTicksLeft = 0;
+		pac.starvingTicks = 0;
+		pac.collapsingTicksLeft = 0;
+		pac.placeAt(pac.homeTile.x, pac.homeTile.y, HTS, 0);
+		pac.dir = pac.wishDir = RIGHT;
 
 		for (Ghost ghost : ghosts) {
 			ghost.visible = true;
@@ -433,7 +433,7 @@ public class PacManGame {
 			return changeState(this::exitHuntingState, this::enterPacManDyingState, () -> killPacMan(collidingGhost));
 		}
 
-		return pacMan.powerTicksLeft == 0 ? state.tick() : state;
+		return pac.powerTicksLeft == 0 ? state.tick() : state;
 	}
 
 	private void exitHuntingState() {
@@ -444,7 +444,7 @@ public class PacManGame {
 	private void enterPacManDyingState() {
 		state = PACMAN_DYING;
 		state.setDuration(clock.sec(6));
-		pacMan.speed = 0;
+		pac.speed = 0;
 		for (Ghost ghost : ghosts) {
 			ghost.speed = 0;
 		}
@@ -465,19 +465,19 @@ public class PacManGame {
 			}
 		}
 		if (state.running(clock.sec(2.5))) {
-			pacMan.collapsingTicksLeft = 88;
+			pac.collapsingTicksLeft = 88;
 			ui.playSound(Sound.PACMAN_DEATH);
 		}
-		if (pacMan.collapsingTicksLeft > 1) {
+		if (pac.collapsingTicksLeft > 1) {
 			// count down until 1 such that animation stays at last frame until state expires
-			pacMan.collapsingTicksLeft--;
+			pac.collapsingTicksLeft--;
 		}
 		return state.tick();
 	}
 
 	private void exitPacManDyingState() {
 		lives -= autopilotMode ? 0 : 1;
-		pacMan.collapsingTicksLeft = 0;
+		pac.collapsingTicksLeft = 0;
 		for (Ghost ghost : ghosts) {
 			ghost.visible = true;
 		}
@@ -489,7 +489,7 @@ public class PacManGame {
 		previousState = state;
 		state = GHOST_DYING;
 		state.setDuration(clock.sec(1)); // TODO correct?
-		pacMan.visible = false;
+		pac.visible = false;
 		ui.playSound(Sound.GHOST_DEATH);
 	}
 
@@ -511,7 +511,7 @@ public class PacManGame {
 				ghost.bounty = 0;
 			}
 		}
-		pacMan.visible = true;
+		pac.visible = true;
 		ui.loopSound(Sound.RETREATING);
 	}
 
@@ -525,7 +525,7 @@ public class PacManGame {
 			ghost.dead = false;
 			ghost.speed = 0;
 		}
-		pacMan.speed = 0;
+		pac.speed = 0;
 		ui.stopAllSounds();
 	}
 
@@ -557,7 +557,7 @@ public class PacManGame {
 		for (Ghost ghost : ghosts) {
 			ghost.speed = 0;
 		}
-		pacMan.speed = 0;
+		pac.speed = 0;
 		if (hiscore.changed) {
 			hiscore.save();
 		}
@@ -577,16 +577,16 @@ public class PacManGame {
 	// END STATE-MACHINE
 
 	private void updatePacMan() {
-		if (pacMan.restingTicksLeft == 0) {
+		if (pac.restingTicksLeft == 0) {
 			updatePacManDirection();
-			pacMan.speed = pacMan.powerTicksLeft == 0 ? level().pacManSpeed : level().pacManSpeedPowered;
-			tryMoving(pacMan);
+			pac.speed = pac.powerTicksLeft == 0 ? level().pacManSpeed : level().pacManSpeedPowered;
+			tryMoving(pac);
 		} else {
-			pacMan.restingTicksLeft--;
+			pac.restingTicksLeft--;
 		}
-		if (pacMan.powerTicksLeft > 0) {
-			pacMan.powerTicksLeft--;
-			if (pacMan.powerTicksLeft == 0) {
+		if (pac.powerTicksLeft > 0) {
+			pac.powerTicksLeft--;
+			if (pac.powerTicksLeft == 0) {
 				for (Ghost ghost : ghosts) {
 					ghost.frightened = false;
 				}
@@ -600,27 +600,27 @@ public class PacManGame {
 			autopilot.controlPacMan(this);
 		} else {
 			if (ui.keyPressed("left")) {
-				pacMan.wishDir = LEFT;
+				pac.wishDir = LEFT;
 			}
 			if (ui.keyPressed("right")) {
-				pacMan.wishDir = RIGHT;
+				pac.wishDir = RIGHT;
 			}
 			if (ui.keyPressed("up")) {
-				pacMan.wishDir = UP;
+				pac.wishDir = UP;
 			}
 			if (ui.keyPressed("down")) {
-				pacMan.wishDir = DOWN;
+				pac.wishDir = DOWN;
 			}
 		}
 	}
 
 	private Ghost ghostCollidingWithPacMan() {
-		return Stream.of(ghosts).filter(ghost -> !ghost.dead).filter(ghost -> ghost.tile().equals(pacMan.tile())).findAny()
+		return Stream.of(ghosts).filter(ghost -> !ghost.dead).filter(ghost -> ghost.tile().equals(pac.tile())).findAny()
 				.orElse(null);
 	}
 
 	private void killPacMan(Ghost killer) {
-		pacMan.dead = true;
+		pac.dead = true;
 		log("Pac-Man killed by %s at tile %s", killer.name, killer.tile());
 		resetAndEnableGlobalDotCounter();
 		byte elroyMode = ghosts[BLINKY].elroyMode;
@@ -631,7 +631,7 @@ public class PacManGame {
 	}
 
 	private void checkPacManFindsBonus() {
-		if (bonusAvailableTicks > 0 && world.bonusTile().equals(pacMan.tile())) {
+		if (bonusAvailableTicks > 0 && world.bonusTile().equals(pac.tile())) {
 			bonusAvailableTicks = 0;
 			bonusConsumedTicks = clock.sec(2);
 			score(level().bonusPoints);
@@ -641,7 +641,7 @@ public class PacManGame {
 	}
 
 	private void checkPacManFindsFood() {
-		V2i pacManLocation = pacMan.tile();
+		V2i pacManLocation = pac.tile();
 		if (world.containsFood(pacManLocation.x, pacManLocation.y)) {
 			onPacManFoundFood(pacManLocation);
 		} else {
@@ -650,11 +650,11 @@ public class PacManGame {
 	}
 
 	private void onPacManStarved() {
-		pacMan.starvingTicks++;
-		if (pacMan.starvingTicks >= pacManStarvingTimeLimit()) {
+		pac.starvingTicks++;
+		if (pac.starvingTicks >= pacManStarvingTimeLimit()) {
 			preferredLockedGhost().ifPresent(ghost -> {
-				releaseGhost(ghost, "Pac-Man has been starving for %d ticks", pacMan.starvingTicks);
-				pacMan.starvingTicks = 0;
+				releaseGhost(ghost, "Pac-Man has been starving for %d ticks", pac.starvingTicks);
+				pac.starvingTicks = 0;
 			});
 		}
 	}
@@ -663,13 +663,13 @@ public class PacManGame {
 		if (world.isEnergizerTile(foodLocation.x, foodLocation.y)) {
 			score(50);
 			givePacManPower();
-			pacMan.restingTicksLeft = 3;
+			pac.restingTicksLeft = 3;
 			ghostBounty = 200;
 		} else {
 			score(10);
-			pacMan.restingTicksLeft = 1;
+			pac.restingTicksLeft = 1;
 		}
-		pacMan.starvingTicks = 0;
+		pac.starvingTicks = 0;
 		world.removeFood(foodLocation.x, foodLocation.y);
 		if (world.foodRemaining() == level().elroy1DotsLeft) {
 			ghosts[BLINKY].elroyMode = 1;
@@ -688,7 +688,7 @@ public class PacManGame {
 
 	private void givePacManPower() {
 		int seconds = level().ghostFrightenedSeconds;
-		pacMan.powerTicksLeft = clock.sec(seconds);
+		pac.powerTicksLeft = clock.sec(seconds);
 		if (seconds > 0) {
 			log("Pac-Man got power for %d seconds", seconds);
 			for (Ghost ghost : ghosts) {
@@ -812,26 +812,26 @@ public class PacManGame {
 	private V2i ghostChasingTarget(Ghost ghost) {
 		switch (ghost.id) {
 		case BLINKY: {
-			return pacMan.tile();
+			return pac.tile();
 		}
 		case PINKY: {
-			V2i pacManAhead4 = pacMan.tile().sum(pacMan.dir.vec.scaled(4));
-			if (pacMan.dir == UP) {
+			V2i pacManAhead4 = pac.tile().sum(pac.dir.vec.scaled(4));
+			if (pac.dir == UP) {
 				// simulate overflow bug when Pac-Man is looking UP
 				pacManAhead4 = pacManAhead4.sum(LEFT.vec.scaled(4));
 			}
 			return pacManAhead4;
 		}
 		case INKY: {
-			V2i pacManAhead2 = pacMan.tile().sum(pacMan.dir.vec.scaled(2));
-			if (pacMan.dir == UP) {
+			V2i pacManAhead2 = pac.tile().sum(pac.dir.vec.scaled(2));
+			if (pac.dir == UP) {
 				// simulate overflow bug when Pac-Man is looking UP
 				pacManAhead2 = pacManAhead2.sum(LEFT.vec.scaled(2));
 			}
 			return ghosts[BLINKY].tile().scaled(-1).sum(pacManAhead2.scaled(2));
 		}
 		case CLYDE: {
-			return ghost.tile().euclideanDistance(pacMan.tile()) < 8 ? ghost.scatterTile : pacMan.tile();
+			return ghost.tile().euclideanDistance(pac.tile()) < 8 ? ghost.scatterTile : pac.tile();
 		}
 		default:
 			throw new IllegalArgumentException("Unknown ghost id: " + ghost.id);

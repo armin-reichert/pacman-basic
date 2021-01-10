@@ -27,9 +27,11 @@ public interface PacManGameWorld {
 		return 0 <= x && x < size.x && 0 <= y && y < size.y;
 	}
 
+	String pacName();
+
 	String ghostName(int ghost);
 
-	V2i pacManHome();
+	V2i pacHome();
 
 	V2i ghostHome(int ghost);
 

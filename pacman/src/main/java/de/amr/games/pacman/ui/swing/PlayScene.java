@@ -19,7 +19,7 @@ import java.util.ResourceBundle;
 import de.amr.games.pacman.core.PacManGame;
 import de.amr.games.pacman.core.PacManGameState;
 import de.amr.games.pacman.creatures.Ghost;
-import de.amr.games.pacman.creatures.PacMan;
+import de.amr.games.pacman.creatures.Pac;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.worlds.classic.PacManClassicAssets;
 
@@ -41,7 +41,7 @@ class PlayScene extends Scene {
 		drawLivesCounter(g);
 		drawLevelCounter(g);
 		drawMaze(g);
-		drawPacMan(g, game.pacMan);
+		drawPacMan(g, game.pac);
 		for (Ghost ghost : game.ghosts) {
 			drawGhost(g, ghost);
 		}
@@ -138,13 +138,13 @@ class PlayScene extends Scene {
 		}
 	}
 
-	private void drawPacMan(Graphics2D g, PacMan pacMan) {
+	private void drawPacMan(Graphics2D g, Pac pacMan) {
 		if (pacMan.visible) {
 			g.drawImage(sprite(pacMan), round(pacMan.position.x - HTS), round(pacMan.position.y - HTS), null);
 		}
 	}
 
-	private BufferedImage sprite(PacMan pacMan) {
+	private BufferedImage sprite(Pac pacMan) {
 		int dir = PacManClassicAssets.DIR_INDEX.get(pacMan.dir);
 		if (pacMan.collapsingTicksLeft > 0) {
 			// collapsing animation
@@ -183,7 +183,7 @@ class PlayScene extends Scene {
 			return assets.section(8 + dir, 5);
 		}
 		if (ghost.frightened) {
-			if (game.pacMan.powerTicksLeft <= game.clock.sec(2) && ghost.speed != 0) {
+			if (game.pac.powerTicksLeft <= game.clock.sec(2) && ghost.speed != 0) {
 				// TODO flash exactly as often as specified by level
 				// flashing blue/white, walking animation
 				int flashing = game.clock.frame(10, 2) == 0 ? 8 : 10;
@@ -192,7 +192,7 @@ class PlayScene extends Scene {
 			// blue, walking animation
 			return assets.section(8 + walking, 4);
 		}
-		if (ghost.locked && game.pacMan.powerTicksLeft > 0) {
+		if (ghost.locked && game.pac.powerTicksLeft > 0) {
 			// blue, walking animation
 			return assets.section(8 + walking, 4);
 		}
@@ -221,9 +221,9 @@ class PlayScene extends Scene {
 					g.fillRect(t(ghost.targetTile.x) + HTS / 2, t(ghost.targetTile.y) + HTS / 2, HTS, HTS);
 				}
 			}
-			if (game.pacMan.targetTile != null) {
+			if (game.pac.targetTile != null) {
 				g.setColor(new Color(255, 255, 0, 200));
-				g.fillRect(t(game.pacMan.targetTile.x), t(game.pacMan.targetTile.y), TS, TS);
+				g.fillRect(t(game.pac.targetTile.x), t(game.pac.targetTile.y), TS, TS);
 			}
 		}
 	}

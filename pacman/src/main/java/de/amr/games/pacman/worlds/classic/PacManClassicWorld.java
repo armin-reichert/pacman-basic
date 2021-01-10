@@ -114,7 +114,12 @@ public class PacManClassicWorld implements PacManGameWorld {
 	}
 
 	@Override
-	public V2i pacManHome() {
+	public String pacName() {
+		return "Pac-Man";
+	}
+
+	@Override
+	public V2i pacHome() {
 		return pacManHome;
 	}
 
