@@ -29,7 +29,7 @@ public class Autopilot {
 	private Pac pacMan;
 	private Ghost[] ghosts;
 
-	public void controlPacMan(PacManGame game) {
+	public void controlPac(PacManGame game) {
 		this.game = game;
 		this.pacMan = game.pac;
 		this.ghosts = game.ghosts;
