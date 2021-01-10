@@ -80,20 +80,22 @@ public class PacManGameSwingUI implements PacManGameUI {
 	public void configurePacManClassic(PacManClassicAssets assets) {
 		window.setIconImage(assets.section(1, PacManClassicAssets.DIR_INDEX.get(Direction.RIGHT)));
 		soundManager = new SoundManager(assets);
+		soundManager.init();
 		introScene = new PacManClassicIntroScene(game, unscaledSize, assets);
 		playScene = new PacManClassicPlayScene(game, unscaledSize, assets);
 	}
 
 	@Override
 	public void show() {
-		windowTitleUpdate.start();
 		window.pack();
 		window.setLocationRelativeTo(null);
 		window.setVisible(true);
-		// these must called be *after* setVisible():
+
+		// must called be *after* setVisible()
 		window.requestFocus();
 		canvas.createBufferStrategy(2);
-		soundManager.init();
+
+		windowTitleUpdate.start();
 	}
 
 	@Override

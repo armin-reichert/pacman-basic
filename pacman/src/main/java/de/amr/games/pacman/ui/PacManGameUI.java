@@ -7,10 +7,6 @@ package de.amr.games.pacman.ui;
  */
 public interface PacManGameUI {
 
-	void setDebugMode(boolean debug);
-
-	boolean isDebugMode();
-
 	void render();
 
 	void show();
@@ -28,4 +24,9 @@ public interface PacManGameUI {
 	void stopSound(Sound sound);
 
 	void stopAllSounds();
+
+	void setDebugMode(boolean debug);
+
+	boolean isDebugMode();
+
 }

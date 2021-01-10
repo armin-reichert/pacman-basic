@@ -112,9 +112,9 @@ public class PacManGame {
 
 	public void start() {
 		reset();
-		ui.show();
 		enterIntroState();
 		log("Enter state '%s' for %s", stateDescription(), ticksDescription(state.duration()));
+		ui.show();
 		new Thread(this::loop, "GameLoop").start();
 	}
 
