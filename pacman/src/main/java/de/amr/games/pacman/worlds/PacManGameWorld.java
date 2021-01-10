@@ -26,19 +26,17 @@ public interface PacManGameWorld {
 		return 0 <= x && x < size.x && 0 <= y && y < size.y;
 	}
 
+	String ghostName(int ghost);
+
 	V2i portalLeft();
 
 	V2i portalRight();
 
 	V2i pacManHome();
 
-	V2i scatterTileTopLeft();
+	V2i ghostHome(int ghost);
 
-	V2i scatterTileTopRight();
-
-	V2i scatterTileBottomLeft();
-
-	V2i scatterTileBottomRight();
+	V2i ghostScatterTile(int ghost);
 
 	V2i houseEntry();
 

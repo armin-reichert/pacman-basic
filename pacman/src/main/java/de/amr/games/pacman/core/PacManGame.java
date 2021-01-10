@@ -132,18 +132,11 @@ public class PacManGame {
 		this.world = world;
 		pacMan.name = "Pac-Man";
 		pacMan.homeTile = world.pacManHome();
-		ghosts[BLINKY].name = "Blinky";
-		ghosts[BLINKY].homeTile = world.houseEntry();
-		ghosts[BLINKY].scatterTile = world.scatterTileTopRight();
-		ghosts[PINKY].name = "Pinky";
-		ghosts[PINKY].homeTile = world.houseCenter();
-		ghosts[PINKY].scatterTile = world.scatterTileTopLeft();
-		ghosts[INKY].name = "Inky";
-		ghosts[INKY].homeTile = world.houseLeft();
-		ghosts[INKY].scatterTile = world.scatterTileBottomRight();
-		ghosts[CLYDE].name = "Clyde";
-		ghosts[CLYDE].homeTile = world.houseRight();
-		ghosts[CLYDE].scatterTile = world.scatterTileBottomLeft();
+		for (int id = 0; id < 4; ++id) {
+			ghosts[id].name = world.ghostName(id);
+			ghosts[id].homeTile = world.ghostHome(id);
+			ghosts[id].scatterTile = world.ghostScatterTile(id);
+		}
 	}
 
 	public void start() {

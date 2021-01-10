@@ -69,23 +69,51 @@ public class PacManClassicWorld implements PacManGameWorld {
 	}
 
 	@Override
-	public V2i scatterTileTopLeft() {
-		return scatterTileTopLeft;
+	public String ghostName(int ghost) {
+		switch (ghost) {
+		case 0:
+			return "Blinky";
+		case 1:
+			return "Pinky";
+		case 2:
+			return "Inky";
+		case 3:
+			return "Clyde";
+		default:
+			throw new IllegalArgumentException("Illegal ghost ID: " + ghost);
+		}
 	}
 
 	@Override
-	public V2i scatterTileTopRight() {
-		return scatterTileTopRight;
+	public V2i ghostHome(int ghost) {
+		switch (ghost) {
+		case 0:
+			return houseEntry;
+		case 1:
+			return houseCenter;
+		case 2:
+			return houseLeft;
+		case 3:
+			return houseRight;
+		default:
+			throw new IllegalArgumentException("Illegal ghost ID: " + ghost);
+		}
 	}
 
 	@Override
-	public V2i scatterTileBottomLeft() {
-		return scatterTileBottomLeft;
-	}
-
-	@Override
-	public V2i scatterTileBottomRight() {
-		return scatterTileBottomRight;
+	public V2i ghostScatterTile(int ghost) {
+		switch (ghost) {
+		case 0:
+			return scatterTileTopRight;
+		case 1:
+			return scatterTileTopLeft;
+		case 2:
+			return scatterTileBottomRight;
+		case 3:
+			return scatterTileBottomLeft;
+		default:
+			throw new IllegalArgumentException("Illegal ghost ID: " + ghost);
+		}
 	}
 
 	@Override
