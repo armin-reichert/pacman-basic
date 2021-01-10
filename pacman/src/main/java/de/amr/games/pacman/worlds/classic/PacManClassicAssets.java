@@ -11,23 +11,20 @@ import static de.amr.games.pacman.worlds.classic.PacManClassicWorld.STRAWBERRY;
 
 import java.awt.Font;
 import java.awt.image.BufferedImage;
-import java.io.InputStream;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.imageio.ImageIO;
-
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.ui.Sound;
-import de.amr.games.pacman.ui.swing.AssetsException;
+import de.amr.games.pacman.ui.swing.Assets;
 
 /**
  * Assets used in Pac-Man game.
  * 
  * @author Armin Reichert
  */
-public class PacManClassicAssets {
+public class PacManClassicAssets extends Assets {
 
 	/** Sprite sheet order of directions. */
 	public static final Map<Direction, Integer> DIR_INDEX = new EnumMap<>(Direction.class);
@@ -108,21 +105,5 @@ public class PacManClassicAssets {
 
 	public BufferedImage section(int x, int y) {
 		return section(x, y, 1, 1);
-	}
-
-	public BufferedImage image(String path) {
-		try (InputStream is = getClass().getResourceAsStream(path)) {
-			return ImageIO.read(is);
-		} catch (Exception x) {
-			throw new AssetsException("Could not load image with path '%s'", path);
-		}
-	}
-
-	public Font font(String fontPath, int size) {
-		try (InputStream fontData = getClass().getResourceAsStream(fontPath)) {
-			return Font.createFont(Font.TRUETYPE_FONT, fontData).deriveFont((float) size);
-		} catch (Exception x) {
-			throw new AssetsException("Could not load font with path '%s'", fontPath);
-		}
 	}
 }
