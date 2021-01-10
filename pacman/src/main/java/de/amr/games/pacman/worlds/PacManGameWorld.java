@@ -11,22 +11,19 @@ import de.amr.games.pacman.lib.V2i;
  */
 public interface PacManGameWorld {
 
-	static final int TS = 8, HTS = TS / 2;
+	public static final byte SPACE = 0, WALL = 1, FOOD = 2;
 
-	static int t(int nTiles) {
+	public static final int TS = 8, HTS = 4;
+
+	public static int t(int nTiles) {
 		return nTiles * TS;
 	}
-
-	static final byte SPACE = 0, WALL = 1, FOOD = 2;
 
 	PacManGameLevel level(int levelNumber);
 
 	V2i sizeInTiles();
 
-	default boolean inMapRange(int x, int y) {
-		V2i size = sizeInTiles();
-		return 0 <= x && x < size.x && 0 <= y && y < size.y;
-	}
+	boolean inMapRange(int x, int y);
 
 	String pacName();
 
@@ -76,9 +73,7 @@ public interface PacManGameWorld {
 
 	int foodRemaining();
 
-	default int eatenFoodCount() {
-		return totalFoodCount() - foodRemaining();
-	}
+	int eatenFoodCount();
 
 	void restoreFood();
 
@@ -90,7 +85,5 @@ public interface PacManGameWorld {
 
 	boolean isEnergizerTile(int x, int y);
 
-	default boolean containsFood(int x, int y) {
-		return isFoodTile(x, y) && !foodRemoved(x, y);
-	}
+	boolean containsFood(int x, int y);
 }

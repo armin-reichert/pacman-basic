@@ -4,23 +4,19 @@ import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.UP;
 
-import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.List;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.core.PacManGameLevel;
 import de.amr.games.pacman.lib.Direction;
-import de.amr.games.pacman.lib.MapReader;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.worlds.PacManGameWorld;
+import de.amr.games.pacman.worlds.AbstractPacManGameWorld;
 
 /**
  * The game world used by the classic Pac-Man game.
  * 
  * @author Armin Reichert
  */
-public class PacManClassicWorld implements PacManGameWorld {
+public class PacManClassicWorld extends AbstractPacManGameWorld {
 
 	public static final byte BLINKY = 0, PINKY = 1, INKY = 2, CLYDE = 3;
 
@@ -53,69 +49,25 @@ public class PacManClassicWorld implements PacManGameWorld {
 	};
 	/*@formatter:on*/
 
-	private final byte[][] map;
-	private final String[] ghostNames = { "Blinky", "Pinky", "Inky", "Clyde" };
-	private final V2i size = new V2i(28, 36);
-	private final List<V2i> portalsLeft = new ArrayList<>(2);
-	private final List<V2i> portalsRight = new ArrayList<>(2);
-	private final V2i houseEntry = new V2i(13, 14);
-	private final V2i houseCenter = new V2i(13, 17);
-	private final V2i houseLeft = new V2i(11, 17);
-	private final V2i houseRight = new V2i(15, 17);
-	private final V2i bonusTile = new V2i(13, 20);
+	private static final V2i houseEntry = new V2i(13, 14);
+	private static final V2i houseCenter = new V2i(13, 17);
+	private static final V2i houseLeft = new V2i(11, 17);
+	private static final V2i houseRight = new V2i(15, 17);
+	private static final V2i bonusTile = new V2i(13, 20);
+	private static final V2i pacManHome = new V2i(13, 26);
 
-	private final V2i pacManHome = new V2i(13, 26);
-	private final V2i[] ghostHomeTiles = { houseEntry, houseCenter, houseLeft, houseRight };
-	private final V2i[] ghostScatterTiles = { new V2i(25, 0), new V2i(2, 0), new V2i(27, 35), new V2i(27, 35) };
-	private final Direction[] ghostStartDirections = { LEFT, UP, DOWN, DOWN };
-
-	private final BitSet eaten = new BitSet();
-	private final int totalFoodCount;
-	private int foodRemaining;
+	private static final String[] ghostNames = { "Blinky", "Pinky", "Inky", "Clyde" };
+	private static final V2i[] ghostHomeTiles = { houseEntry, houseCenter, houseLeft, houseRight };
+	private static final V2i[] ghostScatterTiles = { new V2i(25, 0), new V2i(2, 0), new V2i(27, 35), new V2i(27, 35) };
+	private static final Direction[] ghostStartDirections = { LEFT, UP, DOWN, DOWN };
 
 	public PacManClassicWorld() {
-		map = MapReader.readMap("/worlds/pacMan_classic/map.txt");
-		int food = 0;
-		for (int x = 0; x < size.x; ++x) {
-			for (int y = 0; y < size.y; ++y) {
-				if (map[y][x] == FOOD) {
-					++food;
-				}
-			}
-		}
-		for (int y = 0; y < size.y; ++y) {
-			if (map[y][0] == SPACE && map[y][size.x - 1] == SPACE) {
-				portalsLeft.add(new V2i(0, y));
-				portalsRight.add(new V2i(size.x - 1, y));
-			}
-		}
-		totalFoodCount = food;
-		foodRemaining = totalFoodCount;
+		super("/worlds/pacMan_classic/map.txt");
 	}
 
 	@Override
 	public PacManGameLevel level(int levelNumber) {
 		return LEVELS[levelNumber <= 21 ? levelNumber - 1 : 20];
-	}
-
-	@Override
-	public V2i sizeInTiles() {
-		return size;
-	}
-
-	@Override
-	public int numPortals() {
-		return portalsLeft.size();
-	}
-
-	@Override
-	public V2i portalLeft(int i) {
-		return portalsLeft.get(i);
-	}
-
-	@Override
-	public V2i portalRight(int i) {
-		return portalsRight.get(i);
 	}
 
 	@Override
@@ -178,35 +130,8 @@ public class PacManClassicWorld implements PacManGameWorld {
 		return bonusTile;
 	}
 
-	@Override
-	public int totalFoodCount() {
-		return totalFoodCount;
-	}
-
-	@Override
-	public int foodRemaining() {
-		return foodRemaining;
-	}
-
-	private int tileIndex(int x, int y) {
-		return y * size.x + x;
-	}
-
-	private boolean isTile(int x, int y, int xx, int yy) {
-		return x == xx && y == yy;
-	}
-
-	private byte map(int x, int y) {
-		return map[y][x];
-	}
-
 	private boolean isInsideGhostHouse(int x, int y) {
 		return x >= 10 && x <= 17 && y >= 15 && y <= 22;
-	}
-
-	@Override
-	public boolean isWall(int x, int y) {
-		return inMapRange(x, y) && map(x, y) == WALL;
 	}
 
 	@Override
@@ -225,11 +150,6 @@ public class PacManClassicWorld implements PacManGameWorld {
 	}
 
 	@Override
-	public boolean isFoodTile(int x, int y) {
-		return inMapRange(x, y) && map(x, y) == FOOD;
-	}
-
-	@Override
 	public boolean isEnergizerTile(int x, int y) {
 		return isTile(x, y, 1, 6) || isTile(x, y, 26, 6) || isTile(x, y, 1, 26) || isTile(x, y, 26, 26);
 	}
@@ -240,40 +160,5 @@ public class PacManClassicWorld implements PacManGameWorld {
 			return false;
 		}
 		return Stream.of(Direction.values()).filter(dir -> isAccessible(x + dir.vec.x, y + dir.vec.y)).count() >= 3;
-	}
-
-	@Override
-	public boolean isAccessible(int x, int y) {
-		return !isWall(x, y) || isPortal(x, y);
-	}
-
-	@Override
-	public boolean isPortal(int x, int y) {
-		for (int i = 0; i < numPortals(); ++i) {
-			if (isTile(x, y, portalsLeft.get(i).x, portalsLeft.get(i).y)
-					|| isTile(x, y, portalsRight.get(i).x, portalsRight.get(i).y)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	@Override
-	public boolean foodRemoved(int x, int y) {
-		return eaten.get(tileIndex(x, y));
-	}
-
-	@Override
-	public void removeFood(int x, int y) {
-		if (!foodRemoved(x, y)) {
-			eaten.set(tileIndex(x, y));
-			--foodRemaining;
-		}
-	}
-
-	@Override
-	public void restoreFood() {
-		eaten.clear();
-		foodRemaining = totalFoodCount;
 	}
 }
