@@ -1,6 +1,8 @@
 package de.amr.games.pacman.worlds.classic;
 
+import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.List;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.core.PacManGameLevel;
@@ -49,8 +51,8 @@ public class PacManClassicWorld implements PacManGameWorld {
 
 	private final byte[][] map;
 	private final V2i size = new V2i(28, 36);
-	private final V2i portalLeft = new V2i(-1, 17);
-	private final V2i portalRight = new V2i(28, 17);
+	private final List<V2i> portalsLeft = new ArrayList<>(3);
+	private final List<V2i> portalsRight = new ArrayList<>(3);
 	private final V2i pacManHome = new V2i(13, 26);
 	private final V2i scatterTileTopLeft = new V2i(2, 0);
 	private final V2i scatterTileTopRight = new V2i(25, 0);
@@ -76,6 +78,12 @@ public class PacManClassicWorld implements PacManGameWorld {
 				}
 			}
 		}
+		for (int y = 0; y < size.y; ++y) {
+			if (map[y][0] == SPACE && map[y][size.x - 1] == SPACE) {
+				portalsLeft.add(new V2i(0, y));
+				portalsRight.add(new V2i(size.x - 1, y));
+			}
+		}
 		totalFoodCount = food;
 		foodRemaining = totalFoodCount;
 	}
@@ -92,17 +100,17 @@ public class PacManClassicWorld implements PacManGameWorld {
 
 	@Override
 	public int numPortals() {
-		return 1;
+		return portalsLeft.size();
 	}
 
 	@Override
 	public V2i portalLeft(int i) {
-		return portalLeft;
+		return portalsLeft.get(i);
 	}
 
 	@Override
 	public V2i portalRight(int i) {
-		return portalRight;
+		return portalsRight.get(i);
 	}
 
 	@Override
@@ -254,7 +262,13 @@ public class PacManClassicWorld implements PacManGameWorld {
 
 	@Override
 	public boolean isPortal(int x, int y) {
-		return isTile(x, y, portalLeft.x, portalLeft.y) || isTile(x, y, portalRight.x, portalRight.y);
+		for (int i = 0; i < numPortals(); ++i) {
+			if (isTile(x, y, portalsLeft.get(i).x, portalsLeft.get(i).y)
+					|| isTile(x, y, portalsRight.get(i).x, portalsRight.get(i).y)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@Override
