@@ -30,7 +30,7 @@ import de.amr.games.pacman.ui.swing.Scene;
  */
 public class PacManClassicPlayScene extends Scene {
 
-	private final ResourceBundle resources = ResourceBundle.getBundle("localization.PlayScene");
+	private final ResourceBundle resources = ResourceBundle.getBundle("localization.translation");
 	private final PacManClassicAssets assets;
 
 	public PacManClassicPlayScene(PacManGame game, V2i size, PacManClassicAssets assets) {

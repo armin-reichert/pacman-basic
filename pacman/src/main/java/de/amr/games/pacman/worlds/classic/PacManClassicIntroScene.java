@@ -24,7 +24,7 @@ import de.amr.games.pacman.ui.swing.Scene;
 public class PacManClassicIntroScene extends Scene {
 
 	private final PacManClassicAssets assets;
-	private final ResourceBundle resources = ResourceBundle.getBundle("localization.IntroScene");
+	private final ResourceBundle resources = ResourceBundle.getBundle("localization.translation");
 	private float pacManX;
 	private float leftmostGhostX;
 	private int lastKilledGhost;
