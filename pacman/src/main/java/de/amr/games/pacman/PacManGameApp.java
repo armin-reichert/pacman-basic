@@ -20,10 +20,10 @@ public class PacManGameApp {
 
 	public static void main(String[] args) {
 		float scaling = args.length > 0 ? Float.parseFloat(args[0]) : 2;
+		PacManGameWorld world = new PacManClassicWorld();
+		PacManGame game = new PacManGame();
+		game.setWorld(world);
 		invokeLater(() -> {
-			PacManGameWorld world = new PacManClassicWorld();
-			PacManGame game = new PacManGame();
-			game.setWorld(world);
 			PacManGameUI ui = new PacManGameSwingUI(new Dimension(t(world.size().x), t(world.size().y)), scaling);
 			ui.setGame(game);
 			game.start();

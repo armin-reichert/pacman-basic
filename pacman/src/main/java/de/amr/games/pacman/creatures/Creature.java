@@ -29,6 +29,12 @@ public abstract class Creature {
 	public boolean forcedOnTrack;
 	public boolean dead;
 
+	public Creature() {
+		position = V2f.NULL;
+		homeTile = V2i.NULL;
+		targetTile = V2i.NULL;
+	}
+
 	@Override
 	public String toString() {
 		return String.format("[%-8s tile=%s offset=%s dir=%s wishDir=%s speed=%.2f changedTile=%s couldMove=%s]", name,
