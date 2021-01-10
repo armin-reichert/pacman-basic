@@ -194,7 +194,7 @@ public class PacManGame {
 		pac.starvingTicks = 0;
 		pac.collapsingTicksLeft = 0;
 		pac.placeAt(pac.homeTile.x, pac.homeTile.y, HTS, 0);
-		pac.dir = pac.wishDir = RIGHT;
+		pac.dir = pac.wishDir = world.pacStartDirection();
 
 		for (Ghost ghost : ghosts) {
 			ghost.visible = true;
@@ -211,7 +211,7 @@ public class PacManGame {
 			ghost.leavingHouse = false;
 			ghost.bounty = 0;
 			ghost.placeAt(ghost.homeTile.x, ghost.homeTile.y, HTS, 0);
-			ghost.dir = ghost.wishDir = ghost.id == BLINKY ? LEFT : ghost.id == PINKY ? DOWN : UP;
+			ghost.dir = ghost.wishDir = world.ghostStartDirection(ghost.id);
 			// these are only reset when entering level:
 //		ghost.dotCounter = 0;
 //		ghost.elroyMode = 0;

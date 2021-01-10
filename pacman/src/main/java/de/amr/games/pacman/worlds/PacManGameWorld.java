@@ -1,6 +1,7 @@
 package de.amr.games.pacman.worlds;
 
 import de.amr.games.pacman.core.PacManGameLevel;
+import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
 
 /**
@@ -29,9 +30,13 @@ public interface PacManGameWorld {
 
 	String pacName();
 
-	String ghostName(int ghost);
+	Direction pacStartDirection();
 
 	V2i pacHome();
+
+	String ghostName(int ghost);
+
+	Direction ghostStartDirection(int ghost);
 
 	V2i ghostHome(int ghost);
 

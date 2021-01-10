@@ -119,6 +119,11 @@ public class PacManClassicWorld implements PacManGameWorld {
 	}
 
 	@Override
+	public Direction pacStartDirection() {
+		return Direction.RIGHT;
+	}
+
+	@Override
 	public V2i pacHome() {
 		return pacManHome;
 	}
@@ -134,6 +139,21 @@ public class PacManClassicWorld implements PacManGameWorld {
 			return "Inky";
 		case 3:
 			return "Clyde";
+		default:
+			throw new IllegalArgumentException("Illegal ghost ID: " + ghost);
+		}
+	}
+
+	@Override
+	public Direction ghostStartDirection(int ghost) {
+		switch (ghost) {
+		case 0:
+			return Direction.LEFT;
+		case 1:
+			return Direction.UP;
+		case 2:
+		case 3:
+			return Direction.DOWN;
 		default:
 			throw new IllegalArgumentException("Illegal ghost ID: " + ghost);
 		}
