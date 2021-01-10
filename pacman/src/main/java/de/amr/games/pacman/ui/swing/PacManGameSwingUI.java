@@ -21,6 +21,7 @@ import de.amr.games.pacman.core.PacManGameState;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.ui.PacManGameUI;
 import de.amr.games.pacman.ui.Sound;
+import de.amr.games.pacman.worlds.classic.PacManClassicAssets;
 
 /**
  * Swing UI for Pac-Man game.
@@ -37,7 +38,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 	private final Canvas canvas;
 	private final Keyboard keyboard;
 
-	private PacManClassicGameAssets assets;
+	private PacManClassicAssets assets;
 	private SoundManager soundManager;
 
 	private final IntroScene introScene;
@@ -75,9 +76,9 @@ public class PacManGameSwingUI implements PacManGameUI {
 		window.add(canvas);
 	}
 
-	public void setAssets(PacManClassicGameAssets assets) {
+	public void setAssets(PacManClassicAssets assets) {
 		this.assets = assets;
-		window.setIconImage(assets.section(1, PacManClassicGameAssets.DIR_INDEX.get(Direction.RIGHT)));
+		window.setIconImage(assets.section(1, PacManClassicAssets.DIR_INDEX.get(Direction.RIGHT)));
 		soundManager = new SoundManager(assets);
 		introScene.assets = assets;
 		playScene.assets = assets;

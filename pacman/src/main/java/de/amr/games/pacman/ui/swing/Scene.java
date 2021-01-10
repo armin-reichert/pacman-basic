@@ -6,6 +6,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 import de.amr.games.pacman.core.PacManGame;
+import de.amr.games.pacman.worlds.classic.PacManClassicAssets;
 
 abstract class Scene {
 
@@ -13,7 +14,7 @@ abstract class Scene {
 
 	public final PacManGame game;
 	public final Dimension size;
-	public PacManClassicGameAssets assets;
+	public PacManClassicAssets assets;
 
 	public Scene(PacManGame game, Dimension size) {
 		this.game = game;

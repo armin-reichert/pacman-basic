@@ -21,6 +21,7 @@ import de.amr.games.pacman.core.PacManGameState;
 import de.amr.games.pacman.creatures.Ghost;
 import de.amr.games.pacman.creatures.PacMan;
 import de.amr.games.pacman.lib.Direction;
+import de.amr.games.pacman.worlds.classic.PacManClassicAssets;
 
 /**
  * Scene where the game is played.
@@ -144,7 +145,7 @@ class PlayScene extends Scene {
 	}
 
 	private BufferedImage sprite(PacMan pacMan) {
-		int dir = PacManClassicGameAssets.DIR_INDEX.get(pacMan.dir);
+		int dir = PacManClassicAssets.DIR_INDEX.get(pacMan.dir);
 		if (pacMan.collapsingTicksLeft > 0) {
 			// collapsing animation
 			int frame = 13 - (int) pacMan.collapsingTicksLeft / 8;
@@ -171,7 +172,7 @@ class PlayScene extends Scene {
 	}
 
 	private BufferedImage sprite(Ghost ghost) {
-		int dir = PacManClassicGameAssets.DIR_INDEX.get(ghost.wishDir);
+		int dir = PacManClassicAssets.DIR_INDEX.get(ghost.wishDir);
 		int walking = ghost.speed == 0 ? 0 : game.clock.frame(5, 2);
 		if (ghost.bounty > 0) {
 			// number

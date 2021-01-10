@@ -14,6 +14,7 @@ import java.util.stream.IntStream;
 import de.amr.games.pacman.core.PacManGame;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.ui.Sound;
+import de.amr.games.pacman.worlds.classic.PacManClassicAssets;
 
 /**
  * Intro presenting the ghosts and showing the chasing animations.
@@ -180,12 +181,12 @@ class IntroScene extends Scene {
 
 	private BufferedImage pacManWalkingSprite(Direction dir) {
 		int frame = game.clock.frame(5, 3);
-		return frame == 2 ? assets.section(frame, 0) : assets.section(frame, PacManClassicGameAssets.DIR_INDEX.get(dir));
+		return frame == 2 ? assets.section(frame, 0) : assets.section(frame, PacManClassicAssets.DIR_INDEX.get(dir));
 	}
 
 	private BufferedImage ghostWalkingSprite(Direction dir, int ghost) {
 		int frame = game.clock.frame(5, 2);
-		return assets.section(2 * PacManClassicGameAssets.DIR_INDEX.get(dir) + frame, 4 + ghost);
+		return assets.section(2 * PacManClassicAssets.DIR_INDEX.get(dir) + frame, 4 + ghost);
 	}
 
 	private BufferedImage ghostFrightenedSprite() {

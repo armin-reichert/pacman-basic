@@ -1,4 +1,4 @@
-package de.amr.games.pacman.ui.swing;
+package de.amr.games.pacman.worlds.classic;
 
 import static de.amr.games.pacman.worlds.classic.PacManClassicWorld.APPLE;
 import static de.amr.games.pacman.worlds.classic.PacManClassicWorld.BELL;
@@ -20,13 +20,14 @@ import javax.imageio.ImageIO;
 
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.ui.Sound;
+import de.amr.games.pacman.ui.swing.AssetsException;
 
 /**
  * Assets used in Pac-Man game.
  * 
  * @author Armin Reichert
  */
-public class PacManClassicGameAssets {
+public class PacManClassicAssets {
 
 	/** Sprite sheet order of directions. */
 	public static final Map<Direction, Integer> DIR_INDEX = new EnumMap<>(Direction.class);
@@ -49,7 +50,7 @@ public class PacManClassicGameAssets {
 	public final Map<Sound, String> soundPaths = new EnumMap<>(Sound.class);
 	public final Font scoreFont;
 
-	public PacManClassicGameAssets(String mapType) {
+	public PacManClassicAssets(String mapType) {
 		//@formatter:off
 		gameLogo            = image("/logo.png");
 		

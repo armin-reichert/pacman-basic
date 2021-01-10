@@ -8,6 +8,7 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 
 import de.amr.games.pacman.ui.Sound;
+import de.amr.games.pacman.worlds.classic.PacManClassicAssets;
 
 /**
  * Sound manager for Pac-Man Swing UI.
@@ -16,12 +17,12 @@ import de.amr.games.pacman.ui.Sound;
  */
 class SoundManager {
 
-	private final PacManClassicGameAssets assets;
+	private final PacManClassicAssets assets;
 	private final Map<Sound, Clip> clips = new EnumMap<>(Sound.class);
 	private final Clip[] munchClips = new Clip[2];
 	private int munchIndex;
 
-	public SoundManager(PacManClassicGameAssets assets) {
+	public SoundManager(PacManClassicAssets assets) {
 		this.assets = assets;
 	}
 
