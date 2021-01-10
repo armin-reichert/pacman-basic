@@ -1,6 +1,5 @@
 package de.amr.games.pacman.ui.swing;
 
-import static de.amr.games.pacman.worlds.PacManGameWorld.TS;
 import static de.amr.games.pacman.worlds.PacManGameWorld.t;
 
 import java.awt.Canvas;
@@ -24,6 +23,7 @@ import de.amr.games.pacman.ui.Sound;
 import de.amr.games.pacman.worlds.classic.PacManClassicAssets;
 import de.amr.games.pacman.worlds.classic.PacManClassicIntroScene;
 import de.amr.games.pacman.worlds.classic.PacManClassicPlayScene;
+import de.amr.games.pacman.worlds.classic.PacManClassicWorld;
 
 /**
  * Swing UI for Pac-Man game.
@@ -35,25 +35,20 @@ public class PacManGameSwingUI implements PacManGameUI {
 	private final Dimension unscaledSize;
 	private final float scaling;
 	private final JFrame window;
-	private final Timer windowTitleUpdate;
 	private final Canvas canvas;
 	private final Keyboard keyboard;
 
-	private final PacManGame game;
-
+	private boolean debugMode;
+	private Timer windowTitleUpdate;
+	private PacManGame game;
 	private Scene currentScene;
 	private Scene introScene;
 	private Scene playScene;
-
 	private SoundManager soundManager;
 
-	private boolean debugMode;
-
-	public PacManGameSwingUI(PacManGame game, float scaling) {
-		this.game = game;
+	public PacManGameSwingUI(Dimension unscaledSize, float scaling) {
+		this.unscaledSize = unscaledSize;
 		this.scaling = scaling;
-
-		unscaledSize = new Dimension(game.world.size().x * TS, game.world.size().y * TS);
 
 		window = new JFrame();
 		keyboard = new Keyboard(window);
@@ -68,16 +63,27 @@ public class PacManGameSwingUI implements PacManGameUI {
 			}
 		});
 		window.setTitle("Pac-Man");
-		windowTitleUpdate = new Timer(1000, e -> window.setTitle(String.format("Pac-Man (%d fps)", game.clock.frequency)));
 
 		canvas = new Canvas();
 		canvas.setBackground(Color.BLACK);
-		canvas.setSize((int) (unscaledSize.width * scaling), (int) (unscaledSize.height * scaling));
+		canvas.setSize(new Dimension((int) (unscaledSize.width * scaling), (int) (unscaledSize.height * scaling)));
 		canvas.setFocusable(false);
 		window.add(canvas);
 	}
 
-	public void configurePacManClassic(PacManClassicAssets assets) {
+	public void setGame(PacManGame game) {
+		this.game = game;
+		game.ui = this;
+		windowTitleUpdate = new Timer(1000, e -> window.setTitle(String.format("Pac-Man (%d fps)", game.clock.frequency)));
+		if (game.world instanceof PacManClassicWorld) {
+			initPacManClassic();
+		} else {
+			throw new IllegalArgumentException("Unknown game world: " + game.world);
+		}
+	}
+
+	private void initPacManClassic() {
+		PacManClassicAssets assets = new PacManClassicAssets("pacman_classic");
 		window.setIconImage(assets.section(1, PacManClassicAssets.DIR_INDEX.get(Direction.RIGHT)));
 		soundManager = new SoundManager(assets);
 		soundManager.init();
