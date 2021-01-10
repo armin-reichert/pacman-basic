@@ -15,6 +15,8 @@ import de.amr.games.pacman.worlds.PacManGameWorld;
  */
 public class PacManClassicWorld implements PacManGameWorld {
 
+	public static final byte BLINKY = 0, PINKY = 1, INKY = 2, CLYDE = 3;
+
 	private final byte[][] map;
 	private final V2i size = new V2i(28, 36);
 	private final V2i portalLeft = new V2i(-1, 17);

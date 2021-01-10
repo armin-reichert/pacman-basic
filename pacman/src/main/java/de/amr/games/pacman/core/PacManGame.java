@@ -15,12 +15,12 @@ import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.lib.Functions.differsAtMost;
 import static de.amr.games.pacman.lib.Logging.log;
-import static de.amr.games.pacman.worlds.PacManGameWorld.BLINKY;
-import static de.amr.games.pacman.worlds.PacManGameWorld.CLYDE;
 import static de.amr.games.pacman.worlds.PacManGameWorld.HTS;
-import static de.amr.games.pacman.worlds.PacManGameWorld.INKY;
-import static de.amr.games.pacman.worlds.PacManGameWorld.PINKY;
 import static de.amr.games.pacman.worlds.PacManGameWorld.t;
+import static de.amr.games.pacman.worlds.classic.PacManClassicWorld.BLINKY;
+import static de.amr.games.pacman.worlds.classic.PacManClassicWorld.CLYDE;
+import static de.amr.games.pacman.worlds.classic.PacManClassicWorld.INKY;
+import static de.amr.games.pacman.worlds.classic.PacManClassicWorld.PINKY;
 import static java.lang.Math.abs;
 
 import java.util.List;

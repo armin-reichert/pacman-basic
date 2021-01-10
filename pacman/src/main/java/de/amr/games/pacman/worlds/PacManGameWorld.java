@@ -15,8 +15,6 @@ public interface PacManGameWorld {
 		return nTiles * TS;
 	}
 
-	static final byte BLINKY = 0, PINKY = 1, INKY = 2, CLYDE = 3;
-
 	static final byte SPACE = 0, WALL = 1, FOOD = 2;
 
 	V2i size();
