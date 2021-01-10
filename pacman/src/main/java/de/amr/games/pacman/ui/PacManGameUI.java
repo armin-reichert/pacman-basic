@@ -1,11 +1,15 @@
 package de.amr.games.pacman.ui;
 
+import de.amr.games.pacman.core.PacManGame;
+
 /**
  * Interface through which the game class sees the user interface.
  * 
  * @author Armin Reichert
  */
 public interface PacManGameUI {
+
+	void setGame(PacManGame game);
 
 	void render();
 
