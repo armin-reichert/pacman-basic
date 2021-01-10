@@ -29,10 +29,6 @@ public interface PacManGameWorld {
 
 	String ghostName(int ghost);
 
-	V2i portalLeft();
-
-	V2i portalRight();
-
 	V2i pacManHome();
 
 	V2i ghostHome(int ghost);
@@ -48,6 +44,12 @@ public interface PacManGameWorld {
 	V2i houseRight();
 
 	V2i bonusTile();
+
+	int numPortals();
+
+	V2i portalLeft(int i);
+
+	V2i portalRight(int i);
 
 	boolean isWall(int x, int y);
 

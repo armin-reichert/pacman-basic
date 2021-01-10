@@ -992,13 +992,16 @@ public class PacManGame {
 
 	private void tryMoving(Creature guy) {
 		V2i guyLocation = guy.tile();
-		if (guyLocation.equals(world.portalRight()) && guy.dir == RIGHT) {
-			guy.placeAt(world.portalLeft().x, world.portalLeft().y, 0, 0);
-			return;
-		}
-		if (guyLocation.equals(world.portalLeft()) && guy.dir == LEFT) {
-			guy.placeAt(world.portalRight().x, world.portalRight().y, 0, 0);
-			return;
+		// teleport?
+		for (int i = 0; i < world.numPortals(); ++i) {
+			if (guyLocation.equals(world.portalRight(i)) && guy.dir == RIGHT) {
+				guy.placeAt(world.portalLeft(i).x, world.portalLeft(i).y, 0, 0);
+				return;
+			}
+			if (guyLocation.equals(world.portalLeft(i)) && guy.dir == LEFT) {
+				guy.placeAt(world.portalRight(i).x, world.portalRight(i).y, 0, 0);
+				return;
+			}
 		}
 		guy.couldMove = tryMoving(guy, guy.wishDir);
 		if (guy.couldMove) {

@@ -91,12 +91,17 @@ public class PacManClassicWorld implements PacManGameWorld {
 	}
 
 	@Override
-	public V2i portalLeft() {
+	public int numPortals() {
+		return 1;
+	}
+
+	@Override
+	public V2i portalLeft(int i) {
 		return portalLeft;
 	}
 
 	@Override
-	public V2i portalRight() {
+	public V2i portalRight(int i) {
 		return portalRight;
 	}
 
