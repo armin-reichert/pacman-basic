@@ -54,6 +54,7 @@ public class PacManClassicWorld implements PacManGameWorld {
 	/*@formatter:on*/
 
 	private final byte[][] map;
+	private final String[] ghostNames = { "Blinky", "Pinky", "Inky", "Clyde" };
 	private final V2i size = new V2i(28, 36);
 	private final List<V2i> portalsLeft = new ArrayList<>(2);
 	private final List<V2i> portalsRight = new ArrayList<>(2);
@@ -134,18 +135,7 @@ public class PacManClassicWorld implements PacManGameWorld {
 
 	@Override
 	public String ghostName(int ghost) {
-		switch (ghost) {
-		case 0:
-			return "Blinky";
-		case 1:
-			return "Pinky";
-		case 2:
-			return "Inky";
-		case 3:
-			return "Clyde";
-		default:
-			throw new IllegalArgumentException("Illegal ghost ID: " + ghost);
-		}
+		return ghostNames[ghost];
 	}
 
 	@Override
@@ -210,6 +200,10 @@ public class PacManClassicWorld implements PacManGameWorld {
 		return map[y][x];
 	}
 
+	private boolean isInsideGhostHouse(int x, int y) {
+		return x >= 10 && x <= 17 && y >= 15 && y <= 22;
+	}
+
 	@Override
 	public boolean isWall(int x, int y) {
 		return inMapRange(x, y) && map(x, y) == WALL;
@@ -218,10 +212,6 @@ public class PacManClassicWorld implements PacManGameWorld {
 	@Override
 	public boolean isGhostHouseDoor(int x, int y) {
 		return isTile(x, y, 13, 15) || isTile(x, y, 14, 15);
-	}
-
-	public boolean isInsideGhostHouse(int x, int y) {
-		return x >= 10 && x <= 17 && y >= 15 && y <= 22;
 	}
 
 	@Override
