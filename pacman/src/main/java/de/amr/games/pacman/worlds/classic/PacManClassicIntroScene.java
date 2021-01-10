@@ -35,7 +35,8 @@ public class PacManClassicIntroScene extends Scene {
 		this.assets = assets;
 	}
 
-	public void reset() {
+	@Override
+	public void start() {
 		game.state.resetTimer();
 		pacManX = size.width;
 		leftmostGhostX = pacManX + 24;
@@ -43,14 +44,15 @@ public class PacManClassicIntroScene extends Scene {
 		ghostsChasingPacMan = true;
 	}
 
-	public void mute() {
+	@Override
+	public void end() {
 		game.ui.stopSound(Sound.SIREN_1);
 		game.ui.stopSound(Sound.PACMAN_POWER);
 		game.ui.stopSound(Sound.GHOST_DEATH);
 	}
 
+	@Override
 	public void draw(Graphics2D g) {
-
 		game.state.runAfter(game.clock.sec(1), () -> {
 			drawCenteredImage(g, assets.gameLogo, 3);
 		});
@@ -98,7 +100,7 @@ public class PacManClassicIntroScene extends Scene {
 			drawPressKeyToStart(g);
 		});
 
-		game.state.runAt(game.clock.sec(30), this::reset);
+		game.state.runAt(game.clock.sec(30), this::start);
 	}
 
 	private void drawPressKeyToStart(Graphics2D g) {

@@ -41,7 +41,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 	private final PacManGame game;
 
-	private PacManClassicIntroScene introScene;
+	private Scene introScene;
 	private PacManClassicPlayScene playScene;
 	private SoundManager soundManager;
 
@@ -113,11 +113,25 @@ public class PacManGameSwingUI implements PacManGameUI {
 				g.setColor(canvas.getBackground());
 				g.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 				g.scale(scaling, scaling);
-				drawCurrentScene(g);
+				if (game.gamePaused) {
+					drawPausedScreen(g);
+				} else {
+					currentScene().draw(g);
+				}
 				g.dispose();
 			} while (buffers.contentsRestored());
 			buffers.show();
 		} while (buffers.contentsLost());
+	}
+
+	private void drawPausedScreen(Graphics2D g) {
+		g.setColor(new Color(200, 200, 200, 100));
+		g.fillRect(0, 0, unscaledSize.width, unscaledSize.height);
+		g.setColor(Color.GREEN);
+		g.setFont(new Font(Font.MONOSPACED, Font.BOLD, 28));
+		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+		g.drawString("PAUSED", (unscaledSize.width - g.getFontMetrics().stringWidth("PAUSED")) / 2, t(16));
+		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
 	}
 
 	@Override
@@ -137,34 +151,13 @@ public class PacManGameSwingUI implements PacManGameUI {
 		game.exit();
 	}
 
-	private void drawCurrentScene(Graphics2D g) {
-		if (game.gamePaused) {
-			drawPausedScreen(g);
-		} else if (game.state == PacManGameState.INTRO) {
-			introScene.draw(g);
+	@Override
+	public Scene currentScene() {
+		if (game.state == PacManGameState.INTRO) {
+			return introScene;
 		} else {
-			playScene.draw(g);
+			return playScene;
 		}
-	}
-
-	private void drawPausedScreen(Graphics2D g) {
-		g.setColor(new Color(200, 200, 200, 100));
-		g.fillRect(0, 0, unscaledSize.width, unscaledSize.height);
-		g.setColor(Color.GREEN);
-		g.setFont(new Font(Font.MONOSPACED, Font.BOLD, 28));
-		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-		g.drawString("PAUSED", (unscaledSize.width - g.getFontMetrics().stringWidth("PAUSED")) / 2, t(16));
-		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
-	}
-
-	@Override
-	public void startIntroScene() {
-		introScene.reset();
-	}
-
-	@Override
-	public void endIntroScene() {
-		introScene.mute();
 	}
 
 	@Override

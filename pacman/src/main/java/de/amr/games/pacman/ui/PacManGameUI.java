@@ -1,10 +1,11 @@
 package de.amr.games.pacman.ui;
 
+import de.amr.games.pacman.ui.swing.Scene;
+
 /**
- * Interface through which the game class can talk to the user interface.
+ * Interface through which the game class sees the user interface.
  * 
  * @author Armin Reichert
- *
  */
 public interface PacManGameUI {
 
@@ -16,9 +17,7 @@ public interface PacManGameUI {
 
 	void show();
 
-	void startIntroScene();
-
-	void endIntroScene();
+	Scene currentScene();
 
 	boolean keyPressed(String keySpec);
 

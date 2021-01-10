@@ -19,6 +19,12 @@ public abstract class Scene {
 		this.size = size;
 	}
 
+	public abstract void start();
+
+	public abstract void end();
+
+	public abstract void draw(Graphics2D g);
+
 	public void drawCenteredText(Graphics2D g, String text, int y) {
 		g.drawString(text, (size.width - g.getFontMetrics().stringWidth(text)) / 2, y);
 	}

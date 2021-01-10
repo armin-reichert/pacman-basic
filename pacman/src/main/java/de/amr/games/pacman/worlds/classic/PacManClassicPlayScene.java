@@ -38,6 +38,15 @@ public class PacManClassicPlayScene extends Scene {
 		this.assets = assets;
 	}
 
+	@Override
+	public void start() {
+	}
+
+	@Override
+	public void end() {
+	}
+
+	@Override
 	public void draw(Graphics2D g) {
 		drawScore(g);
 		drawLivesCounter(g);
