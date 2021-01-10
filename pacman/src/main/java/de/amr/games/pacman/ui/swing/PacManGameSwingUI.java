@@ -4,7 +4,6 @@ import static de.amr.games.pacman.worlds.PacManGameWorld.t;
 
 import java.awt.Canvas;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -18,6 +17,7 @@ import javax.swing.Timer;
 import de.amr.games.pacman.core.PacManGame;
 import de.amr.games.pacman.core.PacManGameState;
 import de.amr.games.pacman.lib.Direction;
+import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.PacManGameUI;
 import de.amr.games.pacman.ui.Sound;
 import de.amr.games.pacman.worlds.classic.PacManClassicAssets;
@@ -32,7 +32,7 @@ import de.amr.games.pacman.worlds.classic.PacManClassicWorld;
  */
 public class PacManGameSwingUI implements PacManGameUI {
 
-	private final Dimension unscaledSize;
+	private final V2i sizeUnscaled;
 	private final float scaling;
 	private final JFrame window;
 	private final Canvas canvas;
@@ -46,9 +46,9 @@ public class PacManGameSwingUI implements PacManGameUI {
 	private Scene playScene;
 	private SoundManager soundManager;
 
-	public PacManGameSwingUI(Dimension unscaledSize, float scaling) {
-		this.unscaledSize = unscaledSize;
+	public PacManGameSwingUI(V2i sizeUnscaled, float scaling) {
 		this.scaling = scaling;
+		this.sizeUnscaled = sizeUnscaled;
 
 		window = new JFrame();
 		keyboard = new Keyboard(window);
@@ -66,11 +66,12 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 		canvas = new Canvas();
 		canvas.setBackground(Color.BLACK);
-		canvas.setSize(new Dimension((int) (unscaledSize.width * scaling), (int) (unscaledSize.height * scaling)));
+		canvas.setSize((int) (sizeUnscaled.x * scaling), (int) (sizeUnscaled.y * scaling));
 		canvas.setFocusable(false);
 		window.add(canvas);
 	}
 
+	@Override
 	public void setGame(PacManGame game) {
 		this.game = game;
 		game.ui = this;
@@ -87,8 +88,8 @@ public class PacManGameSwingUI implements PacManGameUI {
 		window.setIconImage(assets.section(1, PacManClassicAssets.DIR_INDEX.get(Direction.RIGHT)));
 		soundManager = new SoundManager(assets);
 		soundManager.init();
-		introScene = new PacManClassicIntroScene(game, unscaledSize, assets);
-		playScene = new PacManClassicPlayScene(game, unscaledSize, assets);
+		introScene = new PacManClassicIntroScene(game, sizeUnscaled, assets);
+		playScene = new PacManClassicPlayScene(game, sizeUnscaled, assets);
 	}
 
 	@Override
@@ -137,11 +138,11 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 	private void drawPausedScreen(Graphics2D g) {
 		g.setColor(new Color(200, 200, 200, 100));
-		g.fillRect(0, 0, unscaledSize.width, unscaledSize.height);
+		g.fillRect(0, 0, sizeUnscaled.x, sizeUnscaled.y);
 		g.setColor(Color.GREEN);
 		g.setFont(new Font(Font.MONOSPACED, Font.BOLD, 28));
 		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-		g.drawString("PAUSED", (unscaledSize.width - g.getFontMetrics().stringWidth("PAUSED")) / 2, t(16));
+		g.drawString("PAUSED", (sizeUnscaled.x - g.getFontMetrics().stringWidth("PAUSED")) / 2, t(16));
 		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
 	}
 

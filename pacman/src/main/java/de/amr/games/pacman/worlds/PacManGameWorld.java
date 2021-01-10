@@ -20,10 +20,10 @@ public interface PacManGameWorld {
 
 	PacManGameLevel level(int levelNumber);
 
-	V2i size();
+	V2i sizeInTiles();
 
 	default boolean inMapRange(int x, int y) {
-		V2i size = size();
+		V2i size = sizeInTiles();
 		return 0 <= x && x < size.x && 0 <= y && y < size.y;
 	}
 

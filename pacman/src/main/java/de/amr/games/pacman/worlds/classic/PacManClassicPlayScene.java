@@ -8,7 +8,6 @@ import static java.util.stream.IntStream.range;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
@@ -21,6 +20,7 @@ import de.amr.games.pacman.core.PacManGameState;
 import de.amr.games.pacman.creatures.Ghost;
 import de.amr.games.pacman.creatures.Pac;
 import de.amr.games.pacman.lib.Direction;
+import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.swing.Scene;
 
 /**
@@ -33,7 +33,7 @@ public class PacManClassicPlayScene extends Scene {
 	private final ResourceBundle resources = ResourceBundle.getBundle("localization.PlayScene");
 	private final PacManClassicAssets assets;
 
-	public PacManClassicPlayScene(PacManGame game, Dimension size, PacManClassicAssets assets) {
+	public PacManClassicPlayScene(PacManGame game, V2i size, PacManClassicAssets assets) {
 		super(game, size);
 		this.assets = assets;
 	}
@@ -92,7 +92,7 @@ public class PacManClassicPlayScene extends Scene {
 
 	private void drawLivesCounter(Graphics2D g) {
 		int maxLives = 5;
-		int y = size.height - t(2);
+		int y = size.y - t(2);
 		for (int i = 0; i < Math.min(game.lives - 1, maxLives); ++i) {
 			g.drawImage(assets.life, t(2 * (i + 1)), y, null);
 		}
@@ -104,11 +104,11 @@ public class PacManClassicPlayScene extends Scene {
 	}
 
 	private void drawLevelCounter(Graphics2D g) {
-		int x = t(game.world.size().x - 4);
+		int x = t(game.world.sizeInTiles().x - 4);
 		int first = Math.max(1, game.levelNumber - 6);
 		for (int level = first; level <= game.levelNumber; ++level) {
 			BufferedImage symbol = assets.symbols[game.world.level(level).bonusSymbol];
-			g.drawImage(symbol, x, size.height - t(2), null);
+			g.drawImage(symbol, x, size.y - t(2), null);
 			x -= t(2);
 		}
 	}
@@ -130,8 +130,8 @@ public class PacManClassicPlayScene extends Scene {
 			return;
 		}
 		g.drawImage(assets.mazeFull, 0, t(3), null);
-		range(0, game.world.size().x).forEach(x -> {
-			range(4, game.world.size().y - 3).forEach(y -> {
+		range(0, game.world.sizeInTiles().x).forEach(x -> {
+			range(4, game.world.sizeInTiles().y - 3).forEach(y -> {
 				if (game.world.foodRemoved(x, y)) {
 					hideFood(g, x, y);
 				} else if (game.state == PacManGameState.HUNTING && game.world.isEnergizerTile(x, y)) {
@@ -244,8 +244,8 @@ public class PacManClassicPlayScene extends Scene {
 		Stroke thin = new BasicStroke(0.1f);
 		g.setColor(dark);
 		g.setStroke(thin);
-		for (int x = 0; x < game.world.size().x; ++x) {
-			for (int y = 0; y < game.world.size().y; ++y) {
+		for (int x = 0; x < game.world.sizeInTiles().x; ++x) {
+			for (int y = 0; y < game.world.sizeInTiles().y; ++y) {
 				if (game.world.isIntersection(x, y)) {
 					for (Direction dir : Direction.values()) {
 						int nx = x + dir.vec.x, ny = y + dir.vec.y;

@@ -1096,8 +1096,8 @@ public class PacManGame {
 	// Cheats
 
 	private void eatAllNormalPellets() {
-		for (int x = 0; x < world.size().x; ++x) {
-			for (int y = 0; y < world.size().y; ++y) {
+		for (int x = 0; x < world.sizeInTiles().x; ++x) {
+			for (int y = 0; y < world.sizeInTiles().y; ++y) {
 				if (world.containsFood(x, y) && !world.isEnergizerTile(x, y)) {
 					world.removeFood(x, y);
 				}

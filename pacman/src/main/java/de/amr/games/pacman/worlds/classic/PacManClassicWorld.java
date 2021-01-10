@@ -94,7 +94,7 @@ public class PacManClassicWorld implements PacManGameWorld {
 	}
 
 	@Override
-	public V2i size() {
+	public V2i sizeInTiles() {
 		return size;
 	}
 

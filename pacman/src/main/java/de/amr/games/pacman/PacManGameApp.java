@@ -1,9 +1,6 @@
 package de.amr.games.pacman;
 
-import static de.amr.games.pacman.worlds.PacManGameWorld.t;
 import static java.awt.EventQueue.invokeLater;
-
-import java.awt.Dimension;
 
 import de.amr.games.pacman.core.PacManGame;
 import de.amr.games.pacman.ui.PacManGameUI;
@@ -20,11 +17,10 @@ public class PacManGameApp {
 
 	public static void main(String[] args) {
 		float scaling = args.length > 0 ? Float.parseFloat(args[0]) : 2;
-		PacManGameWorld world = new PacManClassicWorld();
 		PacManGame game = new PacManGame();
-		game.setWorld(world);
+		game.setWorld(new PacManClassicWorld());
 		invokeLater(() -> {
-			PacManGameUI ui = new PacManGameSwingUI(new Dimension(t(world.size().x), t(world.size().y)), scaling);
+			PacManGameUI ui = new PacManGameSwingUI(game.world.sizeInTiles().scaled(PacManGameWorld.TS), scaling);
 			ui.setGame(game);
 			game.start();
 		});
