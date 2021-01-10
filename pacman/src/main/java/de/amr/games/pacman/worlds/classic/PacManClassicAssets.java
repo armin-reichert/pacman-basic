@@ -47,14 +47,14 @@ public class PacManClassicAssets extends Assets {
 	public final Map<Sound, String> soundPaths = new EnumMap<>(Sound.class);
 	public final Font scoreFont;
 
-	public PacManClassicAssets(String worldName) {
+	public PacManClassicAssets() {
 		//@formatter:off
 		gameLogo            = image("/logo.png");
 		
-		spriteSheet         = image("/worlds/" + worldName + "/sprites.png");
-		mazeFull            = image("/worlds/" + worldName + "/maze_full.png");
-		mazeEmptyDark       = image("/worlds/" + worldName + "/maze_empty.png");
-		mazeEmptyBright     = image("/worlds/" + worldName + "/maze_empty_white.png");
+		spriteSheet         = image("/worlds/pacman_classic/sprites.png");
+		mazeFull            = image("/worlds/pacman_classic/maze_full.png");
+		mazeEmptyDark       = image("/worlds/pacman_classic/maze_empty.png");
+		mazeEmptyBright     = image("/worlds/pacman_classic/maze_empty_white.png");
 
 		life                = section(8, 1);
 

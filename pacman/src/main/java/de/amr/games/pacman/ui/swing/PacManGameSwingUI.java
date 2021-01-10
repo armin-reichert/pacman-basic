@@ -84,7 +84,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 	}
 
 	private void initPacManClassic() {
-		PacManClassicAssets assets = new PacManClassicAssets("pacman_classic");
+		PacManClassicAssets assets = new PacManClassicAssets();
 		window.setIconImage(assets.section(1, PacManClassicAssets.DIR_INDEX.get(Direction.RIGHT)));
 		soundManager = new SoundManager(assets);
 		soundManager.init();
