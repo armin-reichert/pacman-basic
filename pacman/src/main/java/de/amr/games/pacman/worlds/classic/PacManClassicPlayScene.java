@@ -1,4 +1,4 @@
-package de.amr.games.pacman.ui.swing;
+package de.amr.games.pacman.worlds.classic;
 
 import static de.amr.games.pacman.worlds.PacManGameWorld.HTS;
 import static de.amr.games.pacman.worlds.PacManGameWorld.TS;
@@ -21,19 +21,21 @@ import de.amr.games.pacman.core.PacManGameState;
 import de.amr.games.pacman.creatures.Ghost;
 import de.amr.games.pacman.creatures.Pac;
 import de.amr.games.pacman.lib.Direction;
-import de.amr.games.pacman.worlds.classic.PacManClassicAssets;
+import de.amr.games.pacman.ui.swing.Scene;
 
 /**
  * Scene where the game is played.
  * 
  * @author Armin Reichert
  */
-class PlayScene extends Scene {
+public class PacManClassicPlayScene extends Scene {
 
 	private final ResourceBundle resources = ResourceBundle.getBundle("localization.PlayScene");
+	private final PacManClassicAssets assets;
 
-	public PlayScene(PacManGame game, Dimension size) {
+	public PacManClassicPlayScene(PacManGame game, Dimension size, PacManClassicAssets assets) {
 		super(game, size);
+		this.assets = assets;
 	}
 
 	public void draw(Graphics2D g) {

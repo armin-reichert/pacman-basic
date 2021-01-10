@@ -1,4 +1,4 @@
-package de.amr.games.pacman.ui.swing;
+package de.amr.games.pacman.worlds.classic;
 
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
@@ -14,23 +14,25 @@ import java.util.stream.IntStream;
 import de.amr.games.pacman.core.PacManGame;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.ui.Sound;
-import de.amr.games.pacman.worlds.classic.PacManClassicAssets;
+import de.amr.games.pacman.ui.swing.Scene;
 
 /**
  * Intro presenting the ghosts and showing the chasing animations.
  * 
  * @author Armin Reichert
  */
-class IntroScene extends Scene {
+public class PacManClassicIntroScene extends Scene {
 
+	private final PacManClassicAssets assets;
 	private final ResourceBundle resources = ResourceBundle.getBundle("localization.IntroScene");
 	private float pacManX;
 	private float leftmostGhostX;
 	private int lastKilledGhost;
 	private boolean ghostsChasingPacMan;
 
-	public IntroScene(PacManGame game, Dimension size) {
+	public PacManClassicIntroScene(PacManGame game, Dimension size, PacManClassicAssets assets) {
 		super(game, size);
+		this.assets = assets;
 	}
 
 	public void reset() {

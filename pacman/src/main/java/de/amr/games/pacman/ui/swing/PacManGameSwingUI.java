@@ -22,6 +22,8 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.ui.PacManGameUI;
 import de.amr.games.pacman.ui.Sound;
 import de.amr.games.pacman.worlds.classic.PacManClassicAssets;
+import de.amr.games.pacman.worlds.classic.PacManClassicIntroScene;
+import de.amr.games.pacman.worlds.classic.PacManClassicPlayScene;
 
 /**
  * Swing UI for Pac-Man game.
@@ -30,7 +32,6 @@ import de.amr.games.pacman.worlds.classic.PacManClassicAssets;
  */
 public class PacManGameSwingUI implements PacManGameUI {
 
-	private final PacManGame game;
 	private final Dimension unscaledSize;
 	private final float scaling;
 	private final JFrame window;
@@ -38,11 +39,11 @@ public class PacManGameSwingUI implements PacManGameUI {
 	private final Canvas canvas;
 	private final Keyboard keyboard;
 
-	private PacManClassicAssets assets;
-	private SoundManager soundManager;
+	private final PacManGame game;
 
-	private final IntroScene introScene;
-	private final PlayScene playScene;
+	private PacManClassicIntroScene introScene;
+	private PacManClassicPlayScene playScene;
+	private SoundManager soundManager;
 
 	private boolean debugMode;
 
@@ -51,8 +52,6 @@ public class PacManGameSwingUI implements PacManGameUI {
 		this.scaling = scaling;
 
 		unscaledSize = new Dimension(game.world.size().x * TS, game.world.size().y * TS);
-		introScene = new IntroScene(game, unscaledSize);
-		playScene = new PlayScene(game, unscaledSize);
 
 		window = new JFrame();
 		keyboard = new Keyboard(window);
@@ -76,12 +75,11 @@ public class PacManGameSwingUI implements PacManGameUI {
 		window.add(canvas);
 	}
 
-	public void setAssets(PacManClassicAssets assets) {
-		this.assets = assets;
+	public void configurePacManClassic(PacManClassicAssets assets) {
 		window.setIconImage(assets.section(1, PacManClassicAssets.DIR_INDEX.get(Direction.RIGHT)));
 		soundManager = new SoundManager(assets);
-		introScene.assets = assets;
-		playScene.assets = assets;
+		introScene = new PacManClassicIntroScene(game, unscaledSize, assets);
+		playScene = new PacManClassicPlayScene(game, unscaledSize, assets);
 	}
 
 	@Override
@@ -150,7 +148,6 @@ public class PacManGameSwingUI implements PacManGameUI {
 	}
 
 	private void drawPausedScreen(Graphics2D g) {
-		g.drawImage(assets.gameLogo, (unscaledSize.width - assets.gameLogo.getWidth()) / 2, 3, null);
 		g.setColor(new Color(200, 200, 200, 100));
 		g.fillRect(0, 0, unscaledSize.width, unscaledSize.height);
 		g.setColor(Color.GREEN);

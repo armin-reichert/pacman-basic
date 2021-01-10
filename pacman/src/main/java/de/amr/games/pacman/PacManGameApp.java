@@ -20,7 +20,7 @@ public class PacManGameApp {
 			PacManGame game = new PacManGame();
 			game.setWorld(new PacManClassicWorld());
 			PacManGameSwingUI ui = new PacManGameSwingUI(game, scaling);
-			ui.setAssets(new PacManClassicAssets("pacman_classic"));
+			ui.configurePacManClassic(new PacManClassicAssets("pacman_classic"));
 			game.ui = ui;
 			game.start();
 		});

@@ -6,15 +6,13 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 import de.amr.games.pacman.core.PacManGame;
-import de.amr.games.pacman.worlds.classic.PacManClassicAssets;
 
-abstract class Scene {
+public abstract class Scene {
 
 	public static final Color[] GHOST_COLORS = { Color.RED, Color.PINK, Color.CYAN, Color.ORANGE };
 
 	public final PacManGame game;
 	public final Dimension size;
-	public PacManClassicAssets assets;
 
 	public Scene(PacManGame game, Dimension size) {
 		this.game = game;
