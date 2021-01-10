@@ -16,7 +16,6 @@ public abstract class Creature {
 	public String name;
 	/** Left upper corner of collision box */
 	public V2f position;
-	public V2i homeTile;
 	public V2i targetTile;
 	public Direction dir;
 	public Direction wishDir;
@@ -31,7 +30,6 @@ public abstract class Creature {
 
 	public Creature() {
 		position = V2f.NULL;
-		homeTile = V2i.NULL;
 		targetTile = V2i.NULL;
 	}
 
@@ -41,8 +39,8 @@ public abstract class Creature {
 				tile(), offset(), dir, wishDir, speed, changedTile, couldMove);
 	}
 
-	public void placeAt(int x, int y, float offsetX, float offsetY) {
-		position = new V2f(x * TS + offsetX, y * TS + offsetY);
+	public void placeAt(V2i tile, float offsetX, float offsetY) {
+		position = new V2f(tile.x * TS + offsetX, tile.y * TS + offsetY);
 	}
 
 	public static V2i tile(V2f position) {
@@ -63,7 +61,6 @@ public abstract class Creature {
 	}
 
 	public void setOffset(float offsetX, float offsetY) {
-		V2i tile = tile();
-		placeAt(tile.x, tile.y, offsetX, offsetY);
+		placeAt(tile(), offsetX, offsetY);
 	}
 }

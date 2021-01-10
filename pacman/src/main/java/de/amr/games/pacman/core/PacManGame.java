@@ -99,10 +99,8 @@ public class PacManGame {
 	public void setWorld(PacManGameWorld world) {
 		this.world = world;
 		pac.name = world.pacName();
-		pac.homeTile = world.pacHome();
 		for (int id = 0; id < 4; ++id) {
 			ghosts[id].name = world.ghostName(id);
-			ghosts[id].homeTile = world.ghostHome(id);
 			ghosts[id].scatterTile = world.ghostScatterTile(id);
 		}
 	}
@@ -193,7 +191,7 @@ public class PacManGame {
 		pac.restingTicksLeft = 0;
 		pac.starvingTicks = 0;
 		pac.collapsingTicksLeft = 0;
-		pac.placeAt(pac.homeTile.x, pac.homeTile.y, HTS, 0);
+		pac.placeAt(world.pacHome(), HTS, 0);
 		pac.dir = pac.wishDir = world.pacStartDirection();
 
 		for (Ghost ghost : ghosts) {
@@ -210,7 +208,7 @@ public class PacManGame {
 			ghost.enteringHouse = false;
 			ghost.leavingHouse = false;
 			ghost.bounty = 0;
-			ghost.placeAt(ghost.homeTile.x, ghost.homeTile.y, HTS, 0);
+			ghost.placeAt(world.ghostHome(ghost.id), HTS, 0);
 			ghost.dir = ghost.wishDir = world.ghostStartDirection(ghost.id);
 			// these are only reset when entering level:
 //		ghost.dotCounter = 0;
@@ -871,7 +869,7 @@ public class PacManGame {
 			ghost.dir = ghost.wishDir = DOWN;
 			ghost.forcedOnTrack = false;
 			ghost.enteringHouse = true;
-			ghost.targetTile = ghost.id == BLINKY ? world.houseCenter() : ghost.homeTile;
+			ghost.targetTile = ghost.id == BLINKY ? world.houseCenter() : world.ghostHome(ghost.id);
 			return;
 		}
 		letGhostHeadForTargetTile(ghost);
@@ -918,8 +916,8 @@ public class PacManGame {
 			return;
 		}
 		// move sidewards towards center
-		if (ghostLocation.x == ghost.homeTile.x && differsAtMost(offset.y, 0, 1)) {
-			ghost.wishDir = ghost.homeTile.x < world.houseCenter().x ? RIGHT : LEFT;
+		if (ghostLocation.x == world.ghostHome(ghost.id).x && differsAtMost(offset.y, 0, 1)) {
+			ghost.wishDir = world.ghostHome(ghost.id).x < world.houseCenter().x ? RIGHT : LEFT;
 			ghost.couldMove = tryMoving(ghost, ghost.wishDir);
 			return;
 		}
@@ -992,11 +990,11 @@ public class PacManGame {
 		// teleport?
 		for (int i = 0; i < world.numPortals(); ++i) {
 			if (guyLocation.equals(world.portalRight(i)) && guy.dir == RIGHT) {
-				guy.placeAt(world.portalLeft(i).x, world.portalLeft(i).y, 0, 0);
+				guy.placeAt(world.portalLeft(i), 0, 0);
 				return;
 			}
 			if (guyLocation.equals(world.portalLeft(i)) && guy.dir == LEFT) {
-				guy.placeAt(world.portalRight(i).x, world.portalRight(i).y, 0, 0);
+				guy.placeAt(world.portalRight(i), 0, 0);
 				return;
 			}
 		}
@@ -1053,7 +1051,7 @@ public class PacManGame {
 			}
 		}
 
-		guy.placeAt(newTile.x, newTile.y, newOffset.x, newOffset.y);
+		guy.placeAt(newTile, newOffset.x, newOffset.y);
 		guy.changedTile = !guy.tile().equals(guyLocationBeforeMove);
 		return true;
 	}
