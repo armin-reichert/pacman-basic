@@ -1,7 +1,5 @@
 package de.amr.games.pacman.core;
 
-import static de.amr.games.pacman.core.Creature.offset;
-import static de.amr.games.pacman.core.Creature.tile;
 import static de.amr.games.pacman.core.PacManGameState.CHANGING_LEVEL;
 import static de.amr.games.pacman.core.PacManGameState.GAME_OVER;
 import static de.amr.games.pacman.core.PacManGameState.GHOST_DYING;
@@ -9,18 +7,20 @@ import static de.amr.games.pacman.core.PacManGameState.HUNTING;
 import static de.amr.games.pacman.core.PacManGameState.INTRO;
 import static de.amr.games.pacman.core.PacManGameState.PACMAN_DYING;
 import static de.amr.games.pacman.core.PacManGameState.READY;
-import static de.amr.games.pacman.core.PacManGameWorld.BLINKY;
-import static de.amr.games.pacman.core.PacManGameWorld.CLYDE;
-import static de.amr.games.pacman.core.PacManGameWorld.HTS;
-import static de.amr.games.pacman.core.PacManGameWorld.INKY;
-import static de.amr.games.pacman.core.PacManGameWorld.PINKY;
-import static de.amr.games.pacman.core.PacManGameWorld.t;
+import static de.amr.games.pacman.creatures.Creature.offset;
+import static de.amr.games.pacman.creatures.Creature.tile;
 import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.lib.Functions.differsAtMost;
 import static de.amr.games.pacman.lib.Logging.log;
+import static de.amr.games.pacman.worlds.PacManGameWorld.BLINKY;
+import static de.amr.games.pacman.worlds.PacManGameWorld.CLYDE;
+import static de.amr.games.pacman.worlds.PacManGameWorld.HTS;
+import static de.amr.games.pacman.worlds.PacManGameWorld.INKY;
+import static de.amr.games.pacman.worlds.PacManGameWorld.PINKY;
+import static de.amr.games.pacman.worlds.PacManGameWorld.t;
 import static java.lang.Math.abs;
 
 import java.util.List;
@@ -29,6 +29,9 @@ import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import de.amr.games.pacman.creatures.Creature;
+import de.amr.games.pacman.creatures.Ghost;
+import de.amr.games.pacman.creatures.PacMan;
 import de.amr.games.pacman.lib.Clock;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.Hiscore;
@@ -36,6 +39,7 @@ import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.PacManGameUI;
 import de.amr.games.pacman.ui.Sound;
+import de.amr.games.pacman.worlds.PacManGameWorld;
 
 /**
  * Pac-Man game with original "AI", levels, timers.

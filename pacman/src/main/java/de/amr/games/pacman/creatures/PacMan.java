@@ -1,4 +1,4 @@
-package de.amr.games.pacman.core;
+package de.amr.games.pacman.creatures;
 
 /**
  * The Pac-Man.

@@ -1,8 +1,8 @@
 package de.amr.games.pacman.lib;
 
-import static de.amr.games.pacman.core.PacManGameWorld.FOOD;
-import static de.amr.games.pacman.core.PacManGameWorld.SPACE;
-import static de.amr.games.pacman.core.PacManGameWorld.WALL;
+import static de.amr.games.pacman.worlds.PacManGameWorld.FOOD;
+import static de.amr.games.pacman.worlds.PacManGameWorld.SPACE;
+import static de.amr.games.pacman.worlds.PacManGameWorld.WALL;
 
 import java.io.BufferedReader;
 import java.io.InputStream;

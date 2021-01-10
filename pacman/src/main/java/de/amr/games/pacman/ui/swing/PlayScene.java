@@ -1,8 +1,8 @@
 package de.amr.games.pacman.ui.swing;
 
-import static de.amr.games.pacman.core.PacManGameWorld.HTS;
-import static de.amr.games.pacman.core.PacManGameWorld.TS;
-import static de.amr.games.pacman.core.PacManGameWorld.t;
+import static de.amr.games.pacman.worlds.PacManGameWorld.HTS;
+import static de.amr.games.pacman.worlds.PacManGameWorld.TS;
+import static de.amr.games.pacman.worlds.PacManGameWorld.t;
 import static java.lang.Math.round;
 import static java.util.stream.IntStream.range;
 
@@ -16,10 +16,10 @@ import java.awt.Stroke;
 import java.awt.image.BufferedImage;
 import java.util.ResourceBundle;
 
-import de.amr.games.pacman.core.Ghost;
-import de.amr.games.pacman.core.PacMan;
 import de.amr.games.pacman.core.PacManGame;
 import de.amr.games.pacman.core.PacManGameState;
+import de.amr.games.pacman.creatures.Ghost;
+import de.amr.games.pacman.creatures.PacMan;
 import de.amr.games.pacman.lib.Direction;
 
 /**

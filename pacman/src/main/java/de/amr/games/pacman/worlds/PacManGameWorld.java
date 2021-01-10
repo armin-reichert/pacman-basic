@@ -1,4 +1,4 @@
-package de.amr.games.pacman.core;
+package de.amr.games.pacman.worlds;
 
 import de.amr.games.pacman.lib.V2i;
 

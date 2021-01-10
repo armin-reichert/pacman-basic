@@ -1,4 +1,4 @@
-package de.amr.games.pacman.core;
+package de.amr.games.pacman.worlds.classic;
 
 import java.util.BitSet;
 import java.util.stream.Stream;
@@ -6,6 +6,7 @@ import java.util.stream.Stream;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.MapReader;
 import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.worlds.PacManGameWorld;
 
 /**
  * The game world used by the classic Pac-Man game.

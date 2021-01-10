@@ -2,10 +2,10 @@ package de.amr.games.pacman;
 
 import static java.awt.EventQueue.invokeLater;
 
-import de.amr.games.pacman.core.PacManClassicWorld;
 import de.amr.games.pacman.core.PacManGame;
 import de.amr.games.pacman.ui.swing.PacManGameAssets;
 import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
+import de.amr.games.pacman.worlds.classic.PacManClassicWorld;
 
 /**
  * The Pac-Man game app.

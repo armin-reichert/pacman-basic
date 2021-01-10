@@ -1,6 +1,6 @@
-package de.amr.games.pacman.core;
+package de.amr.games.pacman.creatures;
 
-import static de.amr.games.pacman.core.PacManGameWorld.TS;
+import static de.amr.games.pacman.worlds.PacManGameWorld.TS;
 
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2f;
