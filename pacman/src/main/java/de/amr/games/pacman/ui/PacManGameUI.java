@@ -19,7 +19,7 @@ public interface PacManGameUI {
 
 	boolean anyKeyPressed();
 
-	void onExit();
+	void onWindowClosing();
 
 	void playSound(Sound sound);
 

@@ -59,7 +59,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 			@Override
 			public void windowClosing(WindowEvent e) {
-				onExit();
+				onWindowClosing();
 			}
 		});
 		window.setTitle("Pac-Man");
@@ -159,7 +159,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 	}
 
 	@Override
-	public void onExit() {
+	public void onWindowClosing() {
 		game.exit();
 	}
 
