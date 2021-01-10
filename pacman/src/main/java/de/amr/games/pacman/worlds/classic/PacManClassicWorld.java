@@ -1,5 +1,9 @@
 package de.amr.games.pacman.worlds.classic;
 
+import static de.amr.games.pacman.lib.Direction.DOWN;
+import static de.amr.games.pacman.lib.Direction.LEFT;
+import static de.amr.games.pacman.lib.Direction.UP;
+
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
@@ -51,21 +55,21 @@ public class PacManClassicWorld implements PacManGameWorld {
 
 	private final byte[][] map;
 	private final V2i size = new V2i(28, 36);
-	private final List<V2i> portalsLeft = new ArrayList<>(3);
-	private final List<V2i> portalsRight = new ArrayList<>(3);
-	private final V2i pacManHome = new V2i(13, 26);
-	private final V2i scatterTileTopLeft = new V2i(2, 0);
-	private final V2i scatterTileTopRight = new V2i(25, 0);
-	private final V2i scatterTileBottomLeft = new V2i(0, 35);
-	private final V2i scatterTileBottomRight = new V2i(27, 35);
+	private final List<V2i> portalsLeft = new ArrayList<>(2);
+	private final List<V2i> portalsRight = new ArrayList<>(2);
 	private final V2i houseEntry = new V2i(13, 14);
 	private final V2i houseCenter = new V2i(13, 17);
 	private final V2i houseLeft = new V2i(11, 17);
 	private final V2i houseRight = new V2i(15, 17);
 	private final V2i bonusTile = new V2i(13, 20);
-	private final int totalFoodCount;
-	private final BitSet eaten = new BitSet();
 
+	private final V2i pacManHome = new V2i(13, 26);
+	private final V2i[] ghostHomeTiles = { houseEntry, houseCenter, houseLeft, houseRight };
+	private final V2i[] ghostScatterTiles = { new V2i(25, 0), new V2i(2, 0), new V2i(27, 35), new V2i(27, 35) };
+	private final Direction[] ghostStartDirections = { LEFT, UP, DOWN, DOWN };
+
+	private final BitSet eaten = new BitSet();
+	private final int totalFoodCount;
 	private int foodRemaining;
 
 	public PacManClassicWorld() {
@@ -146,49 +150,17 @@ public class PacManClassicWorld implements PacManGameWorld {
 
 	@Override
 	public Direction ghostStartDirection(int ghost) {
-		switch (ghost) {
-		case 0:
-			return Direction.LEFT;
-		case 1:
-			return Direction.UP;
-		case 2:
-		case 3:
-			return Direction.DOWN;
-		default:
-			throw new IllegalArgumentException("Illegal ghost ID: " + ghost);
-		}
+		return ghostStartDirections[ghost];
 	}
 
 	@Override
 	public V2i ghostHome(int ghost) {
-		switch (ghost) {
-		case 0:
-			return houseEntry;
-		case 1:
-			return houseCenter;
-		case 2:
-			return houseLeft;
-		case 3:
-			return houseRight;
-		default:
-			throw new IllegalArgumentException("Illegal ghost ID: " + ghost);
-		}
+		return ghostHomeTiles[ghost];
 	}
 
 	@Override
 	public V2i ghostScatterTile(int ghost) {
-		switch (ghost) {
-		case 0:
-			return scatterTileTopRight;
-		case 1:
-			return scatterTileTopLeft;
-		case 2:
-			return scatterTileBottomRight;
-		case 3:
-			return scatterTileBottomLeft;
-		default:
-			throw new IllegalArgumentException("Illegal ghost ID: " + ghost);
-		}
+		return ghostScatterTiles[ghost];
 	}
 
 	@Override
