@@ -283,7 +283,6 @@ public class PacManGame {
 	private void enterIntroState() {
 		state = INTRO;
 		state.setDuration(Long.MAX_VALUE);
-		ui.currentScene().end();
 	}
 
 	private PacManGameState runIntroState() {
@@ -294,7 +293,6 @@ public class PacManGame {
 	}
 
 	private void exitIntroState() {
-		ui.currentScene().end();
 	}
 
 	// READY

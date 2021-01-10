@@ -41,8 +41,10 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 	private final PacManGame game;
 
+	private Scene currentScene;
 	private Scene introScene;
-	private PacManClassicPlayScene playScene;
+	private Scene playScene;
+
 	private SoundManager soundManager;
 
 	private boolean debugMode;
@@ -116,7 +118,8 @@ public class PacManGameSwingUI implements PacManGameUI {
 				if (game.gamePaused) {
 					drawPausedScreen(g);
 				} else {
-					currentScene().draw(g);
+					updateScene();
+					currentScene.draw(g);
 				}
 				g.dispose();
 			} while (buffers.contentsRestored());
@@ -151,12 +154,19 @@ public class PacManGameSwingUI implements PacManGameUI {
 		game.exit();
 	}
 
-	@Override
-	public Scene currentScene() {
+	private void updateScene() {
+		Scene scene = null;
 		if (game.state == PacManGameState.INTRO) {
-			return introScene;
+			scene = introScene;
 		} else {
-			return playScene;
+			scene = playScene;
+		}
+		if (scene != currentScene) {
+			if (currentScene != null) {
+				currentScene.end();
+			}
+			currentScene = scene;
+			currentScene.start();
 		}
 	}
 

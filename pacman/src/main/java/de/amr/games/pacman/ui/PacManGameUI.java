@@ -1,7 +1,5 @@
 package de.amr.games.pacman.ui;
 
-import de.amr.games.pacman.ui.swing.Scene;
-
 /**
  * Interface through which the game class sees the user interface.
  * 
@@ -16,8 +14,6 @@ public interface PacManGameUI {
 	void render();
 
 	void show();
-
-	Scene currentScene();
 
 	boolean keyPressed(String keySpec);
 
