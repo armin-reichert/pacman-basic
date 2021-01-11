@@ -69,6 +69,7 @@ public class MsPacManAssets extends PacManGameAssets {
 		bountyNumbers.put((short)800, section(2,8));
 		bountyNumbers.put((short)1600, section(3,8));
 	
+		//TODO use Ms. Pac-Man sounds
 		soundPaths.put(Sound.CREDIT,       "/sound/credit.wav");
 		soundPaths.put(Sound.EAT_BONUS,    "/sound/eat_fruit.wav");
 		soundPaths.put(Sound.EXTRA_LIFE,   "/sound/extend.wav");

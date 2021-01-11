@@ -17,6 +17,8 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 			return SPACE;
 		case '#':
 			return WALL;
+		case '-':
+			return DOOR;
 		case '.':
 			return PILL;
 		case '*':
@@ -174,6 +176,11 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 	@Override
 	public boolean isWall(int x, int y) {
 		return inMapRange(x, y) && map[y][x] == WALL;
+	}
+
+	@Override
+	public boolean isGhostHouseDoor(int x, int y) {
+		return inMapRange(x, y) && map[y][x] == DOOR;
 	}
 
 	@Override

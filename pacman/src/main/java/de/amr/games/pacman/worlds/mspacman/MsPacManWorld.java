@@ -51,7 +51,7 @@ public class MsPacManWorld extends AbstractPacManGameWorld {
 	private static final V2i bonusTile = new V2i(13, 20);
 	private static final V2i pacHome = new V2i(13, 26);
 
-	private static final String[] ghostNames = { "Blinky", "Pinky", "Inky", "Clyde" };
+	private static final String[] ghostNames = { "Blinky", "Pinky", "Inky", "Sue" };
 	private static final V2i[] ghostHomeTiles = { houseEntry, houseCenter, houseLeft, houseRight };
 	private static final V2i[] ghostScatterTiles = { new V2i(25, 0), new V2i(2, 0), new V2i(27, 35), new V2i(27, 35) };
 	private static final Direction[] ghostStartDirections = { LEFT, UP, DOWN, DOWN };

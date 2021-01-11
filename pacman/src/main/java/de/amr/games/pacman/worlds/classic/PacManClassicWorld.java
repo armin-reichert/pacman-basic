@@ -135,11 +135,6 @@ public class PacManClassicWorld extends AbstractPacManGameWorld {
 	}
 
 	@Override
-	public boolean isGhostHouseDoor(int x, int y) {
-		return isTile(x, y, 13, 15) || isTile(x, y, 14, 15);
-	}
-
-	@Override
 	public boolean isTunnel(int x, int y) {
 		return y == 17 && (x <= 5 || x >= 21);
 	}
