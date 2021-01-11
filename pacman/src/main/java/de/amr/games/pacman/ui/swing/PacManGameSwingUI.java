@@ -1,5 +1,6 @@
 package de.amr.games.pacman.ui.swing;
 
+import static de.amr.games.pacman.worlds.PacManGameWorld.TS;
 import static de.amr.games.pacman.worlds.PacManGameWorld.t;
 
 import java.awt.Canvas;
@@ -32,7 +33,7 @@ import de.amr.games.pacman.worlds.classic.PacManClassicWorld;
  */
 public class PacManGameSwingUI implements PacManGameUI {
 
-	private final V2i sizeUnscaled;
+	private final V2i sizeInPixels; // unscaled size in pixels
 	private final float scaling;
 	private final JFrame window;
 	private final Canvas canvas;
@@ -46,9 +47,9 @@ public class PacManGameSwingUI implements PacManGameUI {
 	private Scene playScene;
 	private SoundManager soundManager;
 
-	public PacManGameSwingUI(V2i sizeUnscaled, float scaling) {
+	public PacManGameSwingUI(V2i sizeInTiles, float scaling) {
 		this.scaling = scaling;
-		this.sizeUnscaled = sizeUnscaled;
+		sizeInPixels = sizeInTiles.scaled(TS);
 
 		window = new JFrame();
 		keyboard = new Keyboard(window);
@@ -66,7 +67,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 		canvas = new Canvas();
 		canvas.setBackground(Color.BLACK);
-		canvas.setSize((int) (sizeUnscaled.x * scaling), (int) (sizeUnscaled.y * scaling));
+		canvas.setSize((int) (sizeInPixels.x * scaling), (int) (sizeInPixels.y * scaling));
 		canvas.setFocusable(false);
 		window.add(canvas);
 	}
@@ -88,8 +89,8 @@ public class PacManGameSwingUI implements PacManGameUI {
 		window.setIconImage(assets.section(1, PacManClassicAssets.DIR_INDEX.get(Direction.RIGHT)));
 		soundManager = new SoundManager(assets);
 		soundManager.init();
-		introScene = new PacManClassicIntroScene(game, sizeUnscaled, assets);
-		playScene = new PacManClassicPlayScene(game, sizeUnscaled, assets);
+		introScene = new PacManClassicIntroScene(game, sizeInPixels, assets);
+		playScene = new PacManClassicPlayScene(game, sizeInPixels, assets);
 	}
 
 	@Override
@@ -138,11 +139,11 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 	private void drawPausedScreen(Graphics2D g) {
 		g.setColor(new Color(200, 200, 200, 100));
-		g.fillRect(0, 0, sizeUnscaled.x, sizeUnscaled.y);
+		g.fillRect(0, 0, sizeInPixels.x, sizeInPixels.y);
 		g.setColor(Color.GREEN);
 		g.setFont(new Font(Font.MONOSPACED, Font.BOLD, 28));
 		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-		g.drawString("PAUSED", (sizeUnscaled.x - g.getFontMetrics().stringWidth("PAUSED")) / 2, t(16));
+		g.drawString("PAUSED", (sizeInPixels.x - g.getFontMetrics().stringWidth("PAUSED")) / 2, t(16));
 		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
 	}
 

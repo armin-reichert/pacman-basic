@@ -5,7 +5,6 @@ import static java.awt.EventQueue.invokeLater;
 import de.amr.games.pacman.core.PacManGame;
 import de.amr.games.pacman.ui.PacManGameUI;
 import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
-import de.amr.games.pacman.worlds.PacManGameWorld;
 import de.amr.games.pacman.worlds.classic.PacManClassicWorld;
 
 /**
@@ -20,7 +19,7 @@ public class PacManGameApp {
 		PacManGame game = new PacManGame();
 		game.setWorld(new PacManClassicWorld());
 		invokeLater(() -> {
-			PacManGameUI ui = new PacManGameSwingUI(game.world.sizeInTiles().scaled(PacManGameWorld.TS), scaling);
+			PacManGameUI ui = new PacManGameSwingUI(game.world.sizeInTiles(), scaling);
 			ui.setGame(game);
 			game.start();
 		});
