@@ -45,9 +45,9 @@ public class PacManGameSwingUI implements PacManGameUI {
 	private boolean debugMode;
 	private Timer windowTitleUpdate;
 	private PacManGame game;
-	private Scene currentScene;
-	private Scene introScene;
-	private Scene playScene;
+	private PacManGameScene currentScene;
+	private PacManGameScene introScene;
+	private PacManGameScene playScene;
 	private SoundManager soundManager;
 
 	public PacManGameSwingUI(V2i sizeInTiles, float scaling) {
@@ -179,7 +179,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 	}
 
 	private void updateScene() {
-		Scene scene = null;
+		PacManGameScene scene = null;
 		if (game.state == PacManGameState.INTRO) {
 			scene = introScene;
 		} else {

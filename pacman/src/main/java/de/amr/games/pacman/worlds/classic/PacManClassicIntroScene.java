@@ -14,14 +14,14 @@ import de.amr.games.pacman.core.PacManGame;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.Sound;
-import de.amr.games.pacman.ui.swing.Scene;
+import de.amr.games.pacman.ui.swing.PacManGameScene;
 
 /**
  * Intro presenting the ghosts and showing the chasing animations.
  * 
  * @author Armin Reichert
  */
-public class PacManClassicIntroScene extends Scene {
+public class PacManClassicIntroScene extends PacManGameScene {
 
 	private final PacManClassicAssets assets;
 	private final ResourceBundle resources = ResourceBundle.getBundle("localization.translation");

@@ -30,9 +30,9 @@ public class MsPacManAssets extends PacManGameAssets {
 	}
 
 	public final BufferedImage spriteSheet;
-	public final BufferedImage mazeFull;
-	public final BufferedImage mazeEmptyDark;
-	public final BufferedImage mazeEmptyBright;
+	public final BufferedImage[] mazeFull = new BufferedImage[6];
+	public final BufferedImage[] mazeEmptyDark = new BufferedImage[6];
+	public final BufferedImage[] mazeEmptyBright = new BufferedImage[6];
 	public final BufferedImage life;
 	public final BufferedImage[] symbols = new BufferedImage[8];
 	public final Map<Short, BufferedImage> numbers = new HashMap<>();
@@ -42,11 +42,15 @@ public class MsPacManAssets extends PacManGameAssets {
 
 	public MsPacManAssets() {
 		//@formatter:off
-		spriteSheet = image("/worlds/mspacman/sprites.png");
-		mazeFull = spriteSheet.getSubimage(0, 0, 226, 248);
-		mazeEmptyDark = spriteSheet.getSubimage(226, 0, 226, 248);
-		mazeEmptyBright = mazeEmptyDark; // TODO fixme
-		scoreFont = font("/PressStart2P-Regular.ttf", 8);
+		spriteSheet         = image("/worlds/mspacman/sprites.png");
+		
+		for (int i = 0; i < 6; ++i) {
+			mazeFull[i]         = spriteSheet.getSubimage(0, i*248, 226, 248);
+			mazeEmptyDark[i]    = spriteSheet.getSubimage(226, i*248, 226, 248);
+			mazeEmptyBright[i]  = mazeEmptyDark[i]; // TODO fixme
+		}
+		
+		scoreFont           = font("/PressStart2P-Regular.ttf", 8);
 		life                = section(1, 0);
 
 		symbols[CHERRIES]   = section(3, 0);
