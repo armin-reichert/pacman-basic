@@ -1,13 +1,11 @@
-package de.amr.games.pacman.worlds.classic;
+package de.amr.games.pacman.worlds.mspacman;
 
-import static de.amr.games.pacman.worlds.classic.PacManClassicWorld.APPLE;
-import static de.amr.games.pacman.worlds.classic.PacManClassicWorld.BELL;
-import static de.amr.games.pacman.worlds.classic.PacManClassicWorld.CHERRIES;
-import static de.amr.games.pacman.worlds.classic.PacManClassicWorld.GALAXIAN;
-import static de.amr.games.pacman.worlds.classic.PacManClassicWorld.GRAPES;
-import static de.amr.games.pacman.worlds.classic.PacManClassicWorld.KEY;
-import static de.amr.games.pacman.worlds.classic.PacManClassicWorld.PEACH;
-import static de.amr.games.pacman.worlds.classic.PacManClassicWorld.STRAWBERRY;
+import static de.amr.games.pacman.worlds.mspacman.MsPacManWorld.APPLE;
+import static de.amr.games.pacman.worlds.mspacman.MsPacManWorld.BANANA;
+import static de.amr.games.pacman.worlds.mspacman.MsPacManWorld.BREZN;
+import static de.amr.games.pacman.worlds.mspacman.MsPacManWorld.CHERRIES;
+import static de.amr.games.pacman.worlds.mspacman.MsPacManWorld.PEACH;
+import static de.amr.games.pacman.worlds.mspacman.MsPacManWorld.STRAWBERRY;
 
 import java.awt.Font;
 import java.awt.image.BufferedImage;
@@ -15,29 +13,12 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.ui.Sound;
 import de.amr.games.pacman.ui.swing.PacManGameAssets;
 
-/**
- * Assets used in Pac-Man game.
- * 
- * @author Armin Reichert
- */
-public class PacManClassicAssets extends PacManGameAssets {
-
-	/** Sprite sheet order of directions. */
-	public static final Map<Direction, Integer> DIR_INDEX = new EnumMap<>(Direction.class);
-
-	static {
-		DIR_INDEX.put(Direction.RIGHT, 0);
-		DIR_INDEX.put(Direction.LEFT, 1);
-		DIR_INDEX.put(Direction.UP, 2);
-		DIR_INDEX.put(Direction.DOWN, 3);
-	}
+public class MsPacManAssets extends PacManGameAssets {
 
 	public final BufferedImage spriteSheet;
-	public final BufferedImage gameLogo;
 	public final BufferedImage mazeFull;
 	public final BufferedImage mazeEmptyDark;
 	public final BufferedImage mazeEmptyBright;
@@ -47,25 +28,21 @@ public class PacManClassicAssets extends PacManGameAssets {
 	public final Map<Sound, String> soundPaths = new EnumMap<>(Sound.class);
 	public final Font scoreFont;
 
-	public PacManClassicAssets() {
+	public MsPacManAssets() {
 		//@formatter:off
-		gameLogo            = image("/logo.png");
-		
-		spriteSheet         = image("/worlds/classic/sprites.png");
-		mazeFull            = image("/worlds/classic/maze_full.png");
-		mazeEmptyDark       = image("/worlds/classic/maze_empty.png");
-		mazeEmptyBright     = image("/worlds/classic/maze_empty_white.png");
-
+		spriteSheet = image("/worlds/mspacman/sprites.png");
+		mazeFull = spriteSheet.getSubimage(0, 0, 226, 248);
+		mazeEmptyDark = spriteSheet.getSubimage(226, 0, 226, 248);
+		mazeEmptyBright = mazeEmptyDark; // TODO fixme
+		scoreFont = font("/PressStart2P-Regular.ttf", 8);
 		life                = section(8, 1);
 
 		symbols[CHERRIES]   = section(2, 3);
 		symbols[STRAWBERRY] = section(3, 3);
 		symbols[PEACH]      = section(4, 3);
-		symbols[APPLE]      = section(5, 3);
-		symbols[GRAPES]     = section(6, 3);
-		symbols[GALAXIAN]   = section(7, 3);
-		symbols[BELL]       = section(8, 3);
-		symbols[KEY]        = section(9, 3);
+		symbols[BREZN]      = section(5, 3);
+		symbols[APPLE]     = section(6, 3);
+		symbols[BANANA]   = section(7, 3);
 	
 		numbers.put((short)100,  section(0, 9));
 		numbers.put((short)200,  section(0, 8));
@@ -95,8 +72,6 @@ public class PacManClassicAssets extends PacManGameAssets {
 		soundPaths.put(Sound.SIREN_4,      "/sound/siren_4.wav");
 		soundPaths.put(Sound.SIREN_5,      "/sound/siren_5.wav");
 		//@formatter:on
-
-		scoreFont = font("/PressStart2P-Regular.ttf", 8);
 	}
 
 	public BufferedImage section(int x, int y, int w, int h) {
@@ -111,4 +86,5 @@ public class PacManClassicAssets extends PacManGameAssets {
 	public String getSoundPath(Sound sound) {
 		return soundPaths.get(sound);
 	}
+
 }

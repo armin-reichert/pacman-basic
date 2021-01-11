@@ -25,6 +25,9 @@ import de.amr.games.pacman.worlds.classic.PacManClassicAssets;
 import de.amr.games.pacman.worlds.classic.PacManClassicIntroScene;
 import de.amr.games.pacman.worlds.classic.PacManClassicPlayScene;
 import de.amr.games.pacman.worlds.classic.PacManClassicWorld;
+import de.amr.games.pacman.worlds.mspacman.MsPacManAssets;
+import de.amr.games.pacman.worlds.mspacman.MsPacManPlayScene;
+import de.amr.games.pacman.worlds.mspacman.MsPacManWorld;
 
 /**
  * Swing UI for Pac-Man game.
@@ -79,6 +82,8 @@ public class PacManGameSwingUI implements PacManGameUI {
 		windowTitleUpdate = new Timer(1000, e -> window.setTitle(String.format("Pac-Man (%d fps)", game.clock.frequency)));
 		if (game.world instanceof PacManClassicWorld) {
 			initPacManClassic();
+		} else if (game.world instanceof MsPacManWorld) {
+			initMsPacManWorld();
 		} else {
 			throw new IllegalArgumentException("Unknown game world: " + game.world);
 		}
@@ -91,6 +96,15 @@ public class PacManGameSwingUI implements PacManGameUI {
 		soundManager.init();
 		introScene = new PacManClassicIntroScene(game, sizeInPixels, assets);
 		playScene = new PacManClassicPlayScene(game, sizeInPixels, assets);
+	}
+
+	private void initMsPacManWorld() {
+		MsPacManAssets assets = new MsPacManAssets();
+		PacManClassicAssets assetsClassic = new PacManClassicAssets(); // TODO
+		soundManager = new SoundManager(assets);
+		soundManager.init();
+		introScene = new PacManClassicIntroScene(game, sizeInPixels, assetsClassic);
+		playScene = new MsPacManPlayScene(game, sizeInPixels, assets);
 	}
 
 	@Override
