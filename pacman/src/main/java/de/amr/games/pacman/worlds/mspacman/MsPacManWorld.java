@@ -141,7 +141,8 @@ public class MsPacManWorld extends AbstractPacManGameWorld {
 
 	@Override
 	public boolean isUpwardsBlocked(int x, int y) {
-		return isTile(x, y, 12, 13) || isTile(x, y, 15, 13) || isTile(x, y, 12, 25) || isTile(x, y, 15, 25);
+//		return isTile(x, y, 12, 13) || isTile(x, y, 15, 13) || isTile(x, y, 12, 25) || isTile(x, y, 15, 25);
+		return false; // TODO are there such tiles?
 	}
 
 	@Override

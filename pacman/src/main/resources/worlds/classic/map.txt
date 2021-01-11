@@ -1,9 +1,5 @@
 ! Pac-Man classic map
-! '#' = wall
-! '.' = pill
-! '*' = energizer
-! ' ' = space
-! '-' = door
+! '#' wall, '.' pill, '*' energizer, ' ' space, '-' door
 ############################
 ############################
 ############################
