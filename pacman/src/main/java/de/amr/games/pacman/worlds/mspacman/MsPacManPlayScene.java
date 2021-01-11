@@ -22,7 +22,6 @@ import de.amr.games.pacman.creatures.Pac;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.swing.Scene;
-import de.amr.games.pacman.worlds.classic.PacManClassicAssets;
 
 /**
  * Scene where the game is played.
@@ -53,7 +52,7 @@ public class MsPacManPlayScene extends Scene {
 		drawLivesCounter(g);
 		drawLevelCounter(g);
 		drawMaze(g);
-		drawPacMan(g, game.pac);
+		drawPac(g, game.pac);
 		for (Ghost ghost : game.ghosts) {
 			drawGhost(g, ghost);
 		}
@@ -150,22 +149,24 @@ public class MsPacManPlayScene extends Scene {
 		}
 	}
 
-	private void drawPacMan(Graphics2D g, Pac pacMan) {
-		if (pacMan.visible) {
-			g.drawImage(sprite(pacMan), round(pacMan.position.x - HTS), round(pacMan.position.y - HTS), null);
+	private void drawPac(Graphics2D g, Pac pac) {
+		if (pac.visible) {
+			g.drawImage(sprite(pac), round(pac.position.x - HTS), round(pac.position.y - HTS), null);
 		}
 	}
 
-	private BufferedImage sprite(Pac pacMan) {
-		int dir = PacManClassicAssets.DIR_INDEX.get(pacMan.dir);
-		if (pacMan.collapsingTicksLeft > 0) {
+	private BufferedImage sprite(Pac pac) {
+		int dir = MsPacManAssets.DIR_INDEX.get(pac.dir);
+		if (pac.collapsingTicksLeft > 0) {
+			// TODO fixme
 			// collapsing animation
-			int frame = 13 - (int) pacMan.collapsingTicksLeft / 8;
-			frame = Math.max(frame, 3);
-			return assets.section(frame, 0);
+//			int frame = 13 - (int) pac.collapsingTicksLeft / 8;
+//			frame = Math.max(frame, 3);
+//			return assets.section(frame, 0);
+			return assets.section(0, dir);
 		}
-		if (pacMan.speed != 0) {
-			if (!pacMan.couldMove) {
+		if (pac.speed != 0) {
+			if (!pac.couldMove) {
 				// mouth wide open
 				return assets.section(0, dir);
 			}
@@ -174,7 +175,7 @@ public class MsPacManPlayScene extends Scene {
 			return frame == 2 ? assets.section(frame, 0) : assets.section(frame, dir);
 		}
 		// full face
-		return assets.section(2, 0);
+		return assets.section(2, dir);
 	}
 
 	private void drawGhost(Graphics2D g, Ghost ghost) {
@@ -184,11 +185,11 @@ public class MsPacManPlayScene extends Scene {
 	}
 
 	private BufferedImage sprite(Ghost ghost) {
-		int dir = PacManClassicAssets.DIR_INDEX.get(ghost.wishDir);
+		int dir = MsPacManAssets.DIR_INDEX.get(ghost.wishDir);
 		int walking = ghost.speed == 0 ? 0 : game.clock.frame(5, 2);
 		if (ghost.bounty > 0) {
 			// number
-			return assets.numbers.get(ghost.bounty);
+			return assets.bountyNumbers.get(ghost.bounty);
 		}
 		if (ghost.dead) {
 			// eyes looking towards intended move direction

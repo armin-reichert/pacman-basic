@@ -13,10 +13,21 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 
+import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.ui.Sound;
 import de.amr.games.pacman.ui.swing.PacManGameAssets;
 
 public class MsPacManAssets extends PacManGameAssets {
+
+	/** Sprite sheet order of directions. */
+	public static final Map<Direction, Integer> DIR_INDEX = new EnumMap<>(Direction.class);
+
+	static {
+		DIR_INDEX.put(Direction.RIGHT, 0);
+		DIR_INDEX.put(Direction.LEFT, 1);
+		DIR_INDEX.put(Direction.UP, 2);
+		DIR_INDEX.put(Direction.DOWN, 3);
+	}
 
 	public final BufferedImage spriteSheet;
 	public final BufferedImage mazeFull;
@@ -25,6 +36,7 @@ public class MsPacManAssets extends PacManGameAssets {
 	public final BufferedImage life;
 	public final BufferedImage[] symbols = new BufferedImage[8];
 	public final Map<Short, BufferedImage> numbers = new HashMap<>();
+	public final Map<Short, BufferedImage> bountyNumbers = new HashMap<>();
 	public final Map<Sound, String> soundPaths = new EnumMap<>(Sound.class);
 	public final Font scoreFont;
 
@@ -35,27 +47,27 @@ public class MsPacManAssets extends PacManGameAssets {
 		mazeEmptyDark = spriteSheet.getSubimage(226, 0, 226, 248);
 		mazeEmptyBright = mazeEmptyDark; // TODO fixme
 		scoreFont = font("/PressStart2P-Regular.ttf", 8);
-		life                = section(8, 1);
+		life                = section(1, 0);
 
-		symbols[CHERRIES]   = section(2, 3);
-		symbols[STRAWBERRY] = section(3, 3);
-		symbols[PEACH]      = section(4, 3);
-		symbols[BREZN]      = section(5, 3);
-		symbols[APPLE]     = section(6, 3);
-		symbols[BANANA]   = section(7, 3);
+		symbols[CHERRIES]   = section(3, 0);
+		symbols[STRAWBERRY] = section(3, 1);
+		symbols[PEACH]      = section(3, 2);
+		symbols[BREZN]      = section(3, 3);
+		symbols[APPLE]      = section(3, 4);
+		symbols[BANANA]     = section(3, 5);
 	
-		numbers.put((short)100,  section(0, 9));
-		numbers.put((short)200,  section(0, 8));
-		numbers.put((short)300,  section(1, 9));
-		numbers.put((short)400,  section(1, 8));
-		numbers.put((short)500,  section(2, 9));
-		numbers.put((short)700,  section(3, 9));
-		numbers.put((short)800,  section(2, 8));
-		numbers.put((short)1000, section(4, 9, 2, 1));
-		numbers.put((short)1600, section(3, 8));
-		numbers.put((short)2000, section(3, 10, 3, 1));
-		numbers.put((short)3000, section(3, 11, 3, 1));
-		numbers.put((short)5000, section(3, 12, 3, 1));
+		numbers.put((short)100,  section(3, 1));
+		numbers.put((short)200,  section(4, 1));
+		numbers.put((short)500,  section(5, 1));
+		numbers.put((short)700,  section(6, 1));
+		numbers.put((short)1000, section(7, 1));
+		numbers.put((short)2000, section(8, 1));
+		numbers.put((short)5000, section(9, 1));
+		
+		bountyNumbers.put((short)200, section(0,8));
+		bountyNumbers.put((short)400, section(1,8));
+		bountyNumbers.put((short)800, section(2,8));
+		bountyNumbers.put((short)1600, section(3,8));
 	
 		soundPaths.put(Sound.CREDIT,       "/sound/credit.wav");
 		soundPaths.put(Sound.EAT_BONUS,    "/sound/eat_fruit.wav");
@@ -75,7 +87,7 @@ public class MsPacManAssets extends PacManGameAssets {
 	}
 
 	public BufferedImage section(int x, int y, int w, int h) {
-		return spriteSheet.getSubimage(x * 16, y * 16, w * 16, h * 16);
+		return spriteSheet.getSubimage(456 + x * 16, y * 16, w * 16, h * 16);
 	}
 
 	public BufferedImage section(int x, int y) {
