@@ -18,7 +18,9 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 		case '#':
 			return WALL;
 		case '.':
-			return FOOD;
+			return PILL;
+		case '*':
+			return ENERGIZER;
 		default:
 			throw new IllegalArgumentException("Unknown map character: " + c);
 		}
@@ -28,6 +30,7 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 	protected V2i size = new V2i(28, 36);
 	protected List<V2i> portalsLeft = new ArrayList<>(2);
 	protected List<V2i> portalsRight = new ArrayList<>(2);
+	protected List<V2i> energizerTiles = new ArrayList<>(4);
 
 	protected BitSet eaten = new BitSet();
 	protected int totalFoodCount;
@@ -82,6 +85,22 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 		}
 	}
 
+	protected void findFoodTiles() {
+		int food = 0;
+		for (int x = 0; x < size.x; ++x) {
+			for (int y = 0; y < size.y; ++y) {
+				if (map[y][x] == PILL) {
+					++food;
+				} else if (map[y][x] == ENERGIZER) {
+					++food;
+					energizerTiles.add(new V2i(x, y));
+				}
+			}
+		}
+		totalFoodCount = food;
+		foodRemaining = totalFoodCount;
+	}
+
 	@Override
 	public int numPortals() {
 		return portalsLeft.size();
@@ -109,7 +128,12 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 
 	@Override
 	public boolean isFoodTile(int x, int y) {
-		return inMapRange(x, y) && map[y][x] == FOOD;
+		return inMapRange(x, y) && (map[y][x] == PILL || map[y][x] == ENERGIZER);
+	}
+
+	@Override
+	public boolean isEnergizerTile(int x, int y) {
+		return energizerTiles.contains(new V2i(x, y));
 	}
 
 	@Override
@@ -128,19 +152,6 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 	@Override
 	public void restoreFood() {
 		eaten.clear();
-		foodRemaining = totalFoodCount;
-	}
-
-	protected void findFoodTiles() {
-		int food = 0;
-		for (int x = 0; x < size.x; ++x) {
-			for (int y = 0; y < size.y; ++y) {
-				if (map[y][x] == FOOD) {
-					++food;
-				}
-			}
-		}
-		totalFoodCount = food;
 		foodRemaining = totalFoodCount;
 	}
 

@@ -11,7 +11,7 @@ import de.amr.games.pacman.lib.V2i;
  */
 public interface PacManGameWorld {
 
-	public static final byte SPACE = 0, WALL = 1, FOOD = 2;
+	public static final byte SPACE = 0, WALL = 1, PILL = 2, ENERGIZER = 3;
 
 	public static final int TS = 8, HTS = 4;
 

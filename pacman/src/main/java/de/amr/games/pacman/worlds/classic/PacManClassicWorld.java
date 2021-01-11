@@ -150,11 +150,6 @@ public class PacManClassicWorld extends AbstractPacManGameWorld {
 	}
 
 	@Override
-	public boolean isEnergizerTile(int x, int y) {
-		return isTile(x, y, 1, 6) || isTile(x, y, 26, 6) || isTile(x, y, 1, 26) || isTile(x, y, 26, 26);
-	}
-
-	@Override
 	public boolean isIntersection(int x, int y) {
 		if (isInsideGhostHouse(x, y) || isGhostHouseDoor(x, y + 1)) {
 			return false;
