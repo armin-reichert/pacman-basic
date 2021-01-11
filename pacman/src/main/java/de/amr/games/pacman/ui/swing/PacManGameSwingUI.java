@@ -60,6 +60,10 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 		window.setResizable(false);
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		// TODO use separate icon
+		PacManClassicAssets assets = new PacManClassicAssets();
+		window.setIconImage(assets.section(1, PacManClassicAssets.DIR_INDEX.get(Direction.RIGHT)));
+
 		window.addWindowListener(new WindowAdapter() {
 
 			@Override
@@ -92,7 +96,6 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 	private void initPacManClassic() {
 		PacManClassicAssets assets = new PacManClassicAssets();
-		window.setIconImage(assets.section(1, PacManClassicAssets.DIR_INDEX.get(Direction.RIGHT)));
 		soundManager = new SoundManager(assets);
 		soundManager.init();
 		introScene = new PacManClassicIntroScene(game, sizeInPixels, assets);
