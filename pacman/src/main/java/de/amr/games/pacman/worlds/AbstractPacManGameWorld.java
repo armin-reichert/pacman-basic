@@ -48,11 +48,18 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 				throw new RuntimeException("Resource not found: " + path);
 			}
 			BufferedReader rdr = new BufferedReader(new InputStreamReader(is));
-			for (int y = 0; y < size.y; ++y) {
-				String line = rdr.readLine();
-				for (int x = 0; x < size.x; ++x) {
-					map[y][x] = decode(line.charAt(x));
+			String line = rdr.readLine();
+			int y = 0;
+			while (line != null) {
+				if (line.startsWith("!") || line.isBlank()) {
+					// skip comments and blank lines
+				} else {
+					for (int x = 0; x < size.x; ++x) {
+						map[y][x] = decode(line.charAt(x));
+					}
+					++y;
 				}
+				line = rdr.readLine();
 			}
 		} catch (Exception x) {
 			throw new RuntimeException("Error reading map from path " + path, x);
