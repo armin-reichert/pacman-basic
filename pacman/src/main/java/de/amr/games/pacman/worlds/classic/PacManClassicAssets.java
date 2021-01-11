@@ -51,10 +51,10 @@ public class PacManClassicAssets extends Assets {
 		//@formatter:off
 		gameLogo            = image("/logo.png");
 		
-		spriteSheet         = image("/worlds/pacman_classic/sprites.png");
-		mazeFull            = image("/worlds/pacman_classic/maze_full.png");
-		mazeEmptyDark       = image("/worlds/pacman_classic/maze_empty.png");
-		mazeEmptyBright     = image("/worlds/pacman_classic/maze_empty_white.png");
+		spriteSheet         = image("/worlds/classic/sprites.png");
+		mazeFull            = image("/worlds/classic/maze_full.png");
+		mazeEmptyDark       = image("/worlds/classic/maze_empty.png");
+		mazeEmptyBright     = image("/worlds/classic/maze_empty_white.png");
 
 		life                = section(8, 1);
 

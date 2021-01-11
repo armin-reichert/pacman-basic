@@ -62,7 +62,7 @@ public class PacManClassicWorld extends AbstractPacManGameWorld {
 	private static final Direction[] ghostStartDirections = { LEFT, UP, DOWN, DOWN };
 
 	public PacManClassicWorld() {
-		super("/worlds/pacMan_classic/map.txt");
+		super("/worlds/classic/map.txt");
 	}
 
 	@Override
