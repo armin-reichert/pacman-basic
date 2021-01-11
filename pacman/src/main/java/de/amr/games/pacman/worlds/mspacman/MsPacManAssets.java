@@ -5,6 +5,7 @@ import static de.amr.games.pacman.worlds.mspacman.MsPacManWorld.BANANA;
 import static de.amr.games.pacman.worlds.mspacman.MsPacManWorld.BREZN;
 import static de.amr.games.pacman.worlds.mspacman.MsPacManWorld.CHERRIES;
 import static de.amr.games.pacman.worlds.mspacman.MsPacManWorld.PEACH;
+import static de.amr.games.pacman.worlds.mspacman.MsPacManWorld.PEAR;
 import static de.amr.games.pacman.worlds.mspacman.MsPacManWorld.STRAWBERRY;
 
 import java.awt.Font;
@@ -56,11 +57,12 @@ public class MsPacManAssets extends PacManGameAssets {
 		life                = section(1, 0);
 
 		symbols[CHERRIES]   = section(3, 0);
-		symbols[STRAWBERRY] = section(3, 1);
-		symbols[PEACH]      = section(3, 2);
-		symbols[BREZN]      = section(3, 3);
-		symbols[APPLE]      = section(3, 4);
-		symbols[BANANA]     = section(3, 5);
+		symbols[STRAWBERRY] = section(4, 0);
+		symbols[PEACH]      = section(5, 0);
+		symbols[BREZN]      = section(6, 0);
+		symbols[APPLE]      = section(7, 0);
+		symbols[PEAR]       = section(8, 0);
+		symbols[BANANA]     = section(9, 0);
 	
 		numbers.put((short)100,  section(3, 1));
 		numbers.put((short)200,  section(4, 1));

@@ -398,6 +398,10 @@ public class PacManGame {
 				lives++;
 			}
 		}
+		if (ui.keyPressed("n")) {
+
+			return changeState(this::exitHuntingState, this::enterChangingLevelState, null);
+		}
 
 		if (state.expired()) {
 			startHuntingPhase(++huntingPhase);

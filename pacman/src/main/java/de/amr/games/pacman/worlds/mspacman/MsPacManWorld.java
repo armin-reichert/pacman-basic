@@ -80,7 +80,7 @@ public class MsPacManWorld extends AbstractPacManGameWorld {
 
 	@Override
 	public PacManGameLevel level(int levelNumber) {
-		return LEVELS[levelNumber <= 7 ? levelNumber - 1 : 7]; // TODO fixme
+		return LEVELS[levelNumber <= 7 ? levelNumber - 1 : 6]; // TODO fixme
 	}
 
 	@Override
