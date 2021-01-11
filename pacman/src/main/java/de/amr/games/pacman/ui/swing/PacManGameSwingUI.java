@@ -26,6 +26,7 @@ import de.amr.games.pacman.worlds.classic.PacManClassicIntroScene;
 import de.amr.games.pacman.worlds.classic.PacManClassicPlayScene;
 import de.amr.games.pacman.worlds.classic.PacManClassicWorld;
 import de.amr.games.pacman.worlds.mspacman.MsPacManAssets;
+import de.amr.games.pacman.worlds.mspacman.MsPacManIntroScene;
 import de.amr.games.pacman.worlds.mspacman.MsPacManPlayScene;
 import de.amr.games.pacman.worlds.mspacman.MsPacManWorld;
 
@@ -100,10 +101,9 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 	private void initMsPacManWorld() {
 		MsPacManAssets assets = new MsPacManAssets();
-		PacManClassicAssets assetsClassic = new PacManClassicAssets(); // TODO
 		soundManager = new SoundManager(assets);
 		soundManager.init();
-		introScene = new PacManClassicIntroScene(game, sizeInPixels, assetsClassic);
+		introScene = new MsPacManIntroScene(game, sizeInPixels, assets);
 		playScene = new MsPacManPlayScene(game, sizeInPixels, assets);
 	}
 

@@ -29,6 +29,7 @@ public class MsPacManAssets extends PacManGameAssets {
 		DIR_INDEX.put(Direction.DOWN, 3);
 	}
 
+	public final BufferedImage gameLogo;
 	public final BufferedImage spriteSheet;
 	public final BufferedImage[] mazeFull = new BufferedImage[6];
 	public final BufferedImage[] mazeEmptyDark = new BufferedImage[6];
@@ -42,6 +43,7 @@ public class MsPacManAssets extends PacManGameAssets {
 
 	public MsPacManAssets() {
 		//@formatter:off
+		gameLogo            = image("/worlds/mspacman/logo.png");
 		spriteSheet         = image("/worlds/mspacman/sprites.png");
 		
 		for (int i = 0; i < 6; ++i) {

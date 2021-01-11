@@ -49,8 +49,7 @@ public class PacManClassicAssets extends PacManGameAssets {
 
 	public PacManClassicAssets() {
 		//@formatter:off
-		gameLogo            = image("/logo.png");
-		
+		gameLogo            = image("/worlds/classic/logo.png");
 		spriteSheet         = image("/worlds/classic/sprites.png");
 		mazeFull            = image("/worlds/classic/maze_full.png");
 		mazeEmptyDark       = image("/worlds/classic/maze_empty.png");
