@@ -64,7 +64,12 @@ public class MsPacManWorld extends AbstractPacManGameWorld {
 
 	public void setMapIndex(int mapIndex) {
 		this.mapIndex = mapIndex;
-		map = loadMap("/worlds/mspacman/map" + mapIndex + ".txt");
+		if (mapIndex < 1 || mapIndex > 6) {
+			throw new IllegalArgumentException("Illegal Ms. Pac-Man map index: " + mapIndex);
+		}
+		// Maps 5 and 6 only differ by color
+		int fileIndex = mapIndex == 5 ? 3 : mapIndex == 6 ? 4 : mapIndex;
+		map = loadMap("/worlds/mspacman/map" + fileIndex + ".txt");
 		findPortals();
 		findFoodTiles();
 	}
