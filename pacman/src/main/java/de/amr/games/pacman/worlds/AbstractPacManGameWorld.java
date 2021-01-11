@@ -46,7 +46,7 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 		return x == xx && y == yy;
 	}
 
-	protected byte[][] readMapFile(String path) {
+	protected byte[][] loadMap(String path) {
 		byte[][] map = new byte[size.y][size.x];
 		try (InputStream is = getClass().getResourceAsStream(path)) {
 			if (is == null) {
@@ -72,13 +72,9 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 		return map;
 	}
 
-	public AbstractPacManGameWorld(String mapPath) {
-		map = readMapFile(mapPath);
-		findPortals();
-		findFoodTiles();
-	}
-
 	protected void findPortals() {
+		portalsLeft.clear();
+		portalsRight.clear();
 		for (int y = 0; y < size.y; ++y) {
 			if (map[y][0] == SPACE && map[y][size.x - 1] == SPACE) {
 				portalsLeft.add(new V2i(0, y));
@@ -88,6 +84,7 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 	}
 
 	protected void findFoodTiles() {
+		energizerTiles.clear();
 		int food = 0;
 		for (int x = 0; x < size.x; ++x) {
 			for (int y = 0; y < size.y; ++y) {

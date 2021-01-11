@@ -28,7 +28,6 @@ public class MsPacManPlayScene extends PacManGameScene {
 
 	private final ResourceBundle resources = ResourceBundle.getBundle("localization.translation");
 	private final MsPacManAssets assets;
-	public int mazeIndex;
 
 	public MsPacManPlayScene(PacManGame game, V2i size, MsPacManAssets assets) {
 		super(game, size);
@@ -116,6 +115,8 @@ public class MsPacManPlayScene extends PacManGameScene {
 	}
 
 	private void drawMaze(Graphics2D g) {
+		MsPacManWorld world = (MsPacManWorld) game.world;
+		int mazeIndex = world.getMapIndex() - 1;
 		if (game.mazeFlashesRemaining > 0) {
 			game.clock.runAlternating(game.clock.sec(0.25), () -> {
 				g.drawImage(assets.mazeEmptyDark[mazeIndex], 0, t(3), null);

@@ -140,7 +140,11 @@ public class PacManGameSwingUI implements PacManGameUI {
 				g.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 				g.scale(scaling, scaling);
 				if (game.gamePaused) {
-					drawPausedScreen(g);
+					if (game.state == PacManGameState.INTRO) {
+						drawPausedScreen(g);
+					} else {
+						currentScene.draw(g);
+					}
 				} else {
 					updateScene();
 					currentScene.draw(g);

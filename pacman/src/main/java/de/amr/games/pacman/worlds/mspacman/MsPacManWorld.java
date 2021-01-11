@@ -56,8 +56,21 @@ public class MsPacManWorld extends AbstractPacManGameWorld {
 	private static final V2i[] ghostScatterTiles = { new V2i(25, 0), new V2i(2, 0), new V2i(27, 35), new V2i(27, 35) };
 	private static final Direction[] ghostStartDirections = { LEFT, UP, DOWN, DOWN };
 
-	public MsPacManWorld(int mapIndex) {
-		super("/worlds/mspacman/map" + mapIndex + ".txt");
+	private int mapIndex; // 1-6
+
+	public MsPacManWorld() {
+		setMapIndex(1);
+	}
+
+	public void setMapIndex(int mapIndex) {
+		this.mapIndex = mapIndex;
+		map = loadMap("/worlds/mspacman/map" + mapIndex + ".txt");
+		findPortals();
+		findFoodTiles();
+	}
+
+	public int getMapIndex() {
+		return mapIndex;
 	}
 
 	@Override
