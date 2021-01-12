@@ -95,6 +95,11 @@ public class PacManGameSwingUI implements PacManGameUI {
 		}
 	}
 
+	@Override
+	public float scaling() {
+		return scaling;
+	}
+
 	private void initPacManClassic() {
 		PacManClassicAssets assets = new PacManClassicAssets();
 		soundManager = new SoundManager(assets);
