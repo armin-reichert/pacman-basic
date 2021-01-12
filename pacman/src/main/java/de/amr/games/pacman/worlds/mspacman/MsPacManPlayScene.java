@@ -1,9 +1,9 @@
 package de.amr.games.pacman.worlds.mspacman;
 
-import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.worlds.PacManGameWorld.HTS;
 import static de.amr.games.pacman.worlds.PacManGameWorld.TS;
 import static de.amr.games.pacman.worlds.PacManGameWorld.t;
+import static de.amr.games.pacman.worlds.mspacman.MsPacManAssets.DIR_INDEX;
 import static java.lang.Math.round;
 import static java.util.stream.IntStream.range;
 
@@ -155,31 +155,26 @@ public class MsPacManPlayScene extends PacManGameScene {
 	}
 
 	private BufferedImage sprite(Pac pac) {
-		int dir = MsPacManAssets.DIR_INDEX.get(pac.dir);
+		int dir = DIR_INDEX.get(pac.dir);
 		if (pac.collapsingTicksLeft > 1) {
 			// collapsing animation
-			log("%s collapsing, ticks left: %d", pac.name, pac.collapsingTicksLeft);
 			int frame = game.clock.frame(10, 4);
 			return assets.section(0, frame);
 		} else if (pac.collapsingTicksLeft == 1) {
 			// collapsing animation is over
 			return assets.section(0, dir);
 		}
-		if (pac.speed != 0) {
-			if (!pac.couldMove) {
-				// mouth wide open
-				return assets.section(0, dir);
-			}
-			// mouth animation
-			int frame = game.clock.frame(5, 3);
-			return frame == 2 ? assets.section(frame, 0) : assets.section(frame, dir);
+		if (pac.speed == 0) {
+			// wide open mouth when in READY state, else full face
+			return game.state == PacManGameState.READY ? assets.section(0, dir) : assets.section(2, dir);
 		}
-		if (game.state == PacManGameState.READY) {
-			// mouth wide open
+		if (!pac.couldMove) {
+			// wide open mouth
 			return assets.section(0, dir);
 		}
-		// full face
-		return assets.section(2, dir);
+		// mouth animation
+		int frame = game.clock.frame(5, 3);
+		return frame == 2 ? assets.section(frame, 0) : assets.section(frame, dir);
 	}
 
 	private void drawGhost(Graphics2D g, Ghost ghost) {

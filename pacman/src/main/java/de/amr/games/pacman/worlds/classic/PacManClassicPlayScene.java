@@ -3,6 +3,7 @@ package de.amr.games.pacman.worlds.classic;
 import static de.amr.games.pacman.worlds.PacManGameWorld.HTS;
 import static de.amr.games.pacman.worlds.PacManGameWorld.TS;
 import static de.amr.games.pacman.worlds.PacManGameWorld.t;
+import static de.amr.games.pacman.worlds.classic.PacManClassicAssets.DIR_INDEX;
 import static java.lang.Math.round;
 import static java.util.stream.IntStream.range;
 
@@ -152,24 +153,23 @@ public class PacManClassicPlayScene extends PacManGameScene {
 	}
 
 	private BufferedImage sprite(Pac pacMan) {
-		int dir = PacManClassicAssets.DIR_INDEX.get(pacMan.dir);
+		int dir = DIR_INDEX.get(pacMan.dir);
 		if (pacMan.collapsingTicksLeft > 0) {
 			// collapsing animation
 			int frame = 13 - (int) pacMan.collapsingTicksLeft / 8;
-			frame = Math.max(frame, 3);
-			return assets.section(frame, 0);
+			return assets.section(Math.max(frame, 3), 0);
 		}
-		if (pacMan.speed != 0) {
-			if (!pacMan.couldMove) {
-				// mouth wide open
-				return assets.section(0, dir);
-			}
-			// mouth animation
-			int frame = game.clock.frame(5, 3);
-			return frame == 2 ? assets.section(frame, 0) : assets.section(frame, dir);
+		if (pacMan.speed == 0) {
+			// full face
+			return assets.section(2, 0);
 		}
-		// full face
-		return assets.section(2, 0);
+		if (!pacMan.couldMove) {
+			// mouth wide open towards move dir
+			return assets.section(0, dir);
+		}
+		// mouth animation towards move dir
+		int frame = game.clock.frame(5, 3);
+		return frame == 2 ? assets.section(frame, 0) : assets.section(frame, dir);
 	}
 
 	private void drawGhost(Graphics2D g, Ghost ghost) {
