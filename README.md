@@ -3,6 +3,8 @@ Yet another Pac-Man game implementation, this time using just JDK functionality 
 
 The game is controlled by a finite-state machine with states INTRO, READY, HUNTING, CHANGING_LEVEL, PACMAN_DYING, GHOST_DYING, GAME_OVER. The user interface is decoupled from the game controller by an interface. A Swing implementation of this interface is provided.
 
+Work in progress: Ms. Pac-Man can also be played with this program.
+
 The code here is more to the point than that in my other state-machine focussed [Pac-Man implementation](https://github.com/armin-reichert/pacman).
 
 YouTube: https://www.youtube.com/watch?v=_L6YdSH7xis
@@ -13,5 +15,8 @@ To build the executable:
 ### Intro scene
 <img src="pacman/doc/intro.png">
 
-### Play scene
+### Pac-Man play scene
 <img src="pacman/doc/playing.png">
+
+### Ms. Pac-Man play scene
+<img src="pacman/doc/mspacman_playing.png">
