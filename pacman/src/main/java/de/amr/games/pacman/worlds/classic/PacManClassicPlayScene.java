@@ -138,9 +138,9 @@ public class PacManClassicPlayScene extends PacManGameScene {
 		});
 		if (game.bonus.availableTicks > 0) {
 			V2i bonusLocation = game.bonus.tile();
-			g.drawImage(assets.symbols[game.level().bonusSymbol], t(bonusLocation.x), t(bonusLocation.y) - HTS, null);
+			g.drawImage(assets.symbols[game.level.bonusSymbol], t(bonusLocation.x), t(bonusLocation.y) - HTS, null);
 		} else if (game.bonus.consumedTicks > 0) {
-			drawCenteredImage(g, assets.numbers.get(game.level().bonusPoints), t(20) - HTS);
+			drawCenteredImage(g, assets.numbers.get(game.level.bonusPoints), t(20) - HTS);
 		}
 		if (game.ui.isDebugMode()) {
 			drawMazeStructure(g);
