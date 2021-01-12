@@ -40,6 +40,8 @@ import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.PacManGameUI;
 import de.amr.games.pacman.ui.Sound;
 import de.amr.games.pacman.worlds.PacManGameWorld;
+import de.amr.games.pacman.worlds.classic.PacManClassicWorld;
+import de.amr.games.pacman.worlds.mspacman.MsPacManWorld;
 
 /**
  * Pac-Man game with original "AI", levels, timers.
@@ -63,6 +65,7 @@ public class PacManGame {
 	public final Random rnd;
 	public final Hiscore hiscore;
 
+	public GameVariant variant;
 	public PacManGameWorld world;
 	public Pac pac;
 	public Ghost[] ghosts;
@@ -96,8 +99,18 @@ public class PacManGame {
 		ghosts = new Ghost[] { new Ghost(0), new Ghost(1), new Ghost(2), new Ghost(3) };
 	}
 
-	public void setWorld(PacManGameWorld world) {
-		this.world = world;
+	public void setVariant(GameVariant variant) {
+		switch (variant) {
+		case CLASSIC:
+			world = new PacManClassicWorld();
+			break;
+		case MS_PACMAN:
+			world = new MsPacManWorld();
+			break;
+		default:
+			throw new IllegalArgumentException("Illegal game variant: " + variant);
+		}
+		this.variant = variant;
 		pac.name = world.pacName();
 		for (int id = 0; id < 4; ++id) {
 			ghosts[id].name = world.ghostName(id);

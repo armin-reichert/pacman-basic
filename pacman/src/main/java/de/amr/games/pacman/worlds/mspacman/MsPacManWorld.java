@@ -90,7 +90,7 @@ public class MsPacManWorld extends AbstractPacManGameWorld {
 
 	@Override
 	public Direction pacStartDirection() {
-		return Direction.RIGHT;
+		return LEFT;
 	}
 
 	@Override
