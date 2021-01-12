@@ -73,6 +73,11 @@ public class PacManClassicWorld extends AbstractPacManGameWorld {
 	}
 
 	@Override
+	public void setLevel(int levelNumber) {
+		// only one map exists
+	}
+
+	@Override
 	public String pacName() {
 		return "Pac-Man";
 	}

@@ -59,14 +59,30 @@ public class MsPacManWorld extends AbstractPacManGameWorld {
 	private int mapIndex; // 1-6
 
 	public MsPacManWorld() {
-		setMapIndex(1);
+		selectMap(1);
 	}
 
-	public void setMapIndex(int mapIndex) {
-		this.mapIndex = mapIndex;
+	@Override
+	public void setLevel(int levelNumber) {
+		if (levelNumber < 1) {
+			throw new IllegalArgumentException("Illegal level number: " + levelNumber);
+		}
+		if (levelNumber <= 2) {
+			selectMap(1);
+		} else if (levelNumber <= 5) {
+			selectMap(2);
+		} else if (levelNumber <= 9) {
+			selectMap(3);
+		} else {
+			selectMap(4); // TODO how to continue from here?
+		}
+	}
+
+	private void selectMap(int mapIndex) {
 		if (mapIndex < 1 || mapIndex > 6) {
 			throw new IllegalArgumentException("Illegal Ms. Pac-Man map index: " + mapIndex);
 		}
+		this.mapIndex = mapIndex;
 		// Maps 5 and 6 only differ by color
 		int fileIndex = mapIndex == 5 ? 3 : mapIndex == 6 ? 4 : mapIndex;
 		map = loadMap("/worlds/mspacman/map" + fileIndex + ".txt");

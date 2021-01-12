@@ -189,6 +189,7 @@ public class PacManGame {
 			ghost.elroyMode = 0;
 		}
 		world.restoreFood();
+		world.setLevel(levelNumber);
 	}
 
 	private void resetGuys() {

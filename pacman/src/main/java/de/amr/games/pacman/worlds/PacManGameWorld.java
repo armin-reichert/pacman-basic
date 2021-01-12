@@ -21,6 +21,8 @@ public interface PacManGameWorld {
 
 	PacManGameLevel level(int levelNumber);
 
+	void setLevel(int levelNumber);
+
 	V2i sizeInTiles();
 
 	boolean inMapRange(int x, int y);
