@@ -8,6 +8,10 @@ package de.amr.games.pacman.core;
  */
 public class PacManGameLevel {
 
+	private static float percent(Integer value) {
+		return value / 100.0f;
+	}
+
 	public final byte bonusSymbol;
 	public final short bonusPoints;
 	public final float pacSpeed;
@@ -22,8 +26,20 @@ public class PacManGameLevel {
 	public final byte ghostFrightenedSeconds;
 	public final byte numFlashes;
 
-	private static float percent(Integer value) {
-		return value / 100.0f;
+	public PacManGameLevel(PacManGameLevel level, int bonusSymbol) {
+		this.bonusSymbol = (byte) bonusSymbol;
+		this.bonusPoints = level.bonusPoints;
+		this.pacSpeed = level.pacSpeed;
+		this.ghostSpeed = level.ghostSpeed;
+		this.ghostSpeedTunnel = level.ghostSpeedTunnel;
+		this.elroy1DotsLeft = level.elroy1DotsLeft;
+		this.elroy1Speed = level.elroy1Speed;
+		this.elroy2DotsLeft = level.elroy2DotsLeft;
+		this.elroy2Speed = level.elroy2Speed;
+		this.pacSpeedPowered = level.pacSpeedPowered;
+		this.ghostSpeedFrightened = level.ghostSpeedFrightened;
+		this.ghostFrightenedSeconds = level.ghostFrightenedSeconds;
+		this.numFlashes = level.numFlashes;
 	}
 
 	public PacManGameLevel(int... values) {

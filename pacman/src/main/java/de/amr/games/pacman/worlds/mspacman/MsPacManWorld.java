@@ -4,6 +4,7 @@ import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.UP;
 
+import java.util.Random;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.core.PacManGameLevel;
@@ -20,15 +21,15 @@ import de.amr.games.pacman.worlds.AbstractPacManGameWorld;
  */
 public class MsPacManWorld extends AbstractPacManGameWorld {
 
-	public static final byte CHERRIES = 0, STRAWBERRY = 1, PEACH = 2, BREZN = 3, APPLE = 4, PEAR = 5, BANANA = 6;
+	public static final byte CHERRIES = 0, STRAWBERRY = 1, ORANGE = 2, PRETZEL = 3, APPLE = 4, PEAR = 5, BANANA = 6;
 
 	/*@formatter:off*/
 	// TODO make levels confom to Ms.Pac-Man game
 	public static final PacManGameLevel[] LEVELS = {
 	/* 1*/ new PacManGameLevel(CHERRIES,   100,  80, 75, 40,  20,  80, 10,  85,  90, 50, 6, 5),
 	/* 2*/ new PacManGameLevel(STRAWBERRY, 200,  90, 85, 45,  30,  90, 15,  95,  95, 55, 5, 5),
-	/* 3*/ new PacManGameLevel(PEACH,      500,  90, 85, 45,  40,  90, 20,  95,  95, 55, 4, 5),
-	/* 4*/ new PacManGameLevel(BREZN,      700,  90, 85, 45,  40,  90, 20,  95,  95, 55, 3, 5),
+	/* 3*/ new PacManGameLevel(ORANGE,      500,  90, 85, 45,  40,  90, 20,  95,  95, 55, 4, 5),
+	/* 4*/ new PacManGameLevel(PRETZEL,    700,  90, 85, 45,  40,  90, 20,  95,  95, 55, 3, 5),
 	/* 5*/ new PacManGameLevel(APPLE,     1000, 100, 95, 50,  40, 100, 20, 105, 100, 60, 2, 5),
 	/* 6*/ new PacManGameLevel(PEAR,      2000, 100, 95, 50,  50, 100, 25, 105, 100, 60, 5, 5),
 	/* 7*/ new PacManGameLevel(BANANA,    5000, 100, 95, 50,  50, 100, 25, 105, 100, 60, 2, 5),
@@ -61,6 +62,7 @@ public class MsPacManWorld extends AbstractPacManGameWorld {
 	private static final V2i[] ghostScatterTiles = { new V2i(25, 0), new V2i(2, 0), new V2i(27, 35), new V2i(27, 35) };
 	private static final Direction[] ghostStartDirections = { LEFT, UP, DOWN, DOWN };
 
+	private final Random rnd = new Random();
 	private int mapIndex; // 1-6
 
 	public MsPacManWorld() {
@@ -84,13 +86,16 @@ public class MsPacManWorld extends AbstractPacManGameWorld {
 			throw new IllegalArgumentException("Illegal level number: " + levelNumber);
 		}
 		if (levelNumber <= 2) {
-			selectMap(1);
+			selectMap(1); // pink maze
 		} else if (levelNumber <= 5) {
-			selectMap(2);
+			selectMap(2); // light blue maze
 		} else if (levelNumber <= 9) {
-			selectMap(3);
+			selectMap(3); // orange maze
+		} else if (levelNumber <= 13) {
+			selectMap(4); // dark blue maze
 		} else {
-			selectMap(4); // TODO how to continue from here?
+			int mapIndex = (levelNumber - 14) % 8 < 4 ? 5 : 6; // TODO correct?
+			selectMap(mapIndex);
 		}
 	}
 
@@ -100,7 +105,10 @@ public class MsPacManWorld extends AbstractPacManGameWorld {
 
 	@Override
 	public PacManGameLevel levelData(int levelNumber) {
-		return LEVELS[levelNumber <= 7 ? levelNumber - 1 : 6]; // TODO fixme
+		if (levelNumber <= 7) {
+			return LEVELS[levelNumber - 1];
+		}
+		return new PacManGameLevel(LEVELS[6], (byte) rnd.nextInt(7));
 	}
 
 	@Override
@@ -174,8 +182,7 @@ public class MsPacManWorld extends AbstractPacManGameWorld {
 
 	@Override
 	public boolean isUpwardsBlocked(int x, int y) {
-//		return isTile(x, y, 12, 13) || isTile(x, y, 15, 13) || isTile(x, y, 12, 25) || isTile(x, y, 15, 25);
-		return false; // TODO are there such tiles?
+		return false; // ghosts can travel all paths
 	}
 
 	@Override

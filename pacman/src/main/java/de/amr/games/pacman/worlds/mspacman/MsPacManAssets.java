@@ -2,9 +2,9 @@ package de.amr.games.pacman.worlds.mspacman;
 
 import static de.amr.games.pacman.worlds.mspacman.MsPacManWorld.APPLE;
 import static de.amr.games.pacman.worlds.mspacman.MsPacManWorld.BANANA;
-import static de.amr.games.pacman.worlds.mspacman.MsPacManWorld.BREZN;
+import static de.amr.games.pacman.worlds.mspacman.MsPacManWorld.PRETZEL;
 import static de.amr.games.pacman.worlds.mspacman.MsPacManWorld.CHERRIES;
-import static de.amr.games.pacman.worlds.mspacman.MsPacManWorld.PEACH;
+import static de.amr.games.pacman.worlds.mspacman.MsPacManWorld.ORANGE;
 import static de.amr.games.pacman.worlds.mspacman.MsPacManWorld.PEAR;
 import static de.amr.games.pacman.worlds.mspacman.MsPacManWorld.STRAWBERRY;
 
@@ -58,8 +58,8 @@ public class MsPacManAssets extends PacManGameAssets {
 
 		symbols[CHERRIES]   = section(3, 0);
 		symbols[STRAWBERRY] = section(4, 0);
-		symbols[PEACH]      = section(5, 0);
-		symbols[BREZN]      = section(6, 0);
+		symbols[ORANGE]      = section(5, 0);
+		symbols[PRETZEL]      = section(6, 0);
 		symbols[APPLE]      = section(7, 0);
 		symbols[PEAR]       = section(8, 0);
 		symbols[BANANA]     = section(9, 0);
