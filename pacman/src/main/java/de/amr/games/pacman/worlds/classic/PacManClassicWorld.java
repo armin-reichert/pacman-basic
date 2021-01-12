@@ -74,7 +74,7 @@ public class PacManClassicWorld extends AbstractPacManGameWorld {
 
 	@Override
 	public void setLevel(int levelNumber) {
-		// only one map exists
+		restoreFood();
 	}
 
 	@Override

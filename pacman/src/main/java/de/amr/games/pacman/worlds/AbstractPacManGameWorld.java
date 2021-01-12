@@ -85,7 +85,6 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 
 	protected void findFoodTiles() {
 		energizerTiles.clear();
-		eaten.clear();
 		int food = 0;
 		for (int x = 0; x < size.x; ++x) {
 			for (int y = 0; y < size.y; ++y) {
@@ -98,7 +97,7 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 			}
 		}
 		totalFoodCount = food;
-		foodRemaining = totalFoodCount;
+		restoreFood();
 	}
 
 	@Override
