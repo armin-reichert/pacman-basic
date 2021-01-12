@@ -54,9 +54,7 @@ public class MsPacManIntroScene extends PacManGameScene {
 
 	@Override
 	public void draw(Graphics2D g) {
-		game.state.runAfter(game.clock.sec(1), () -> {
-			drawCenteredImage(g, assets.gameLogo, 3);
-		});
+		game.state.runAfter(game.clock.sec(1), () -> drawLogo(g));
 
 		game.state.runAfter(game.clock.sec(2), () -> {
 			g.setColor(Color.WHITE);
@@ -102,6 +100,14 @@ public class MsPacManIntroScene extends PacManGameScene {
 		});
 
 		game.state.runAt(game.clock.sec(30), this::start);
+	}
+
+	private void drawLogo(Graphics2D g) {
+		Graphics2D g2 = (Graphics2D) g.create();
+		// TODO cleaner solution
+		g2.scale(1 / game.ui.scaling(), 1 / game.ui.scaling());
+		g.drawImage(assets.gameLogo, (size.x - assets.gameLogo.getWidth()) / 2, 3, null);
+		g2.dispose();
 	}
 
 	private void drawPressKeyToStart(Graphics2D g) {
