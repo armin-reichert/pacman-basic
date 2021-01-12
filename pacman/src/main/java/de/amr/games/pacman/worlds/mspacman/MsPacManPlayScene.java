@@ -1,5 +1,6 @@
 package de.amr.games.pacman.worlds.mspacman;
 
+import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.worlds.PacManGameWorld.HTS;
 import static de.amr.games.pacman.worlds.PacManGameWorld.TS;
 import static de.amr.games.pacman.worlds.PacManGameWorld.t;
@@ -155,12 +156,13 @@ public class MsPacManPlayScene extends PacManGameScene {
 
 	private BufferedImage sprite(Pac pac) {
 		int dir = MsPacManAssets.DIR_INDEX.get(pac.dir);
-		if (pac.collapsingTicksLeft > 0) {
-			// TODO fixme
+		if (pac.collapsingTicksLeft > 1) {
 			// collapsing animation
-//			int frame = 13 - (int) pac.collapsingTicksLeft / 8;
-//			frame = Math.max(frame, 3);
-//			return assets.section(frame, 0);
+			log("%s collapsing, ticks left: %d", pac.name, pac.collapsingTicksLeft);
+			int frame = game.clock.frame(10, 4);
+			return assets.section(0, frame);
+		} else if (pac.collapsingTicksLeft == 1) {
+			// collapsing animation is over
 			return assets.section(0, dir);
 		}
 		if (pac.speed != 0) {
@@ -171,6 +173,10 @@ public class MsPacManPlayScene extends PacManGameScene {
 			// mouth animation
 			int frame = game.clock.frame(5, 3);
 			return frame == 2 ? assets.section(frame, 0) : assets.section(frame, dir);
+		}
+		if (game.state == PacManGameState.READY) {
+			// mouth wide open
+			return assets.section(0, dir);
 		}
 		// full face
 		return assets.section(2, dir);
