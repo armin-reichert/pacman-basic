@@ -49,8 +49,6 @@ public interface PacManGameWorld {
 
 	V2i houseRight();
 
-	V2i bonusTile();
-
 	int numPortals();
 
 	V2i portalLeft(int i);

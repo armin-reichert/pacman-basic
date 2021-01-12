@@ -72,10 +72,10 @@ public class Autopilot {
 		if (prey != null && pacMan.powerTicksLeft >= game.clock.sec(1)) {
 			log("Detected frightened ghost %s %.0g tiles away", prey.name, prey.tile().manhattanDistance(pacManTile));
 			pacMan.targetTile = prey.tile();
-		} else if (game.bonusAvailableTicks > 0
-				&& game.world.bonusTile().manhattanDistance(pacManTile) <= MAX_BONUS_HARVEST_DIST) {
+		} else if (game.bonus.availableTicks > 0
+				&& game.bonus.tile().manhattanDistance(pacManTile) <= MAX_BONUS_HARVEST_DIST) {
 			log("Detected active bonus");
-			pacMan.targetTile = game.world.bonusTile();
+			pacMan.targetTile = game.bonus.tile();
 		} else {
 			V2i foodTile = findTileFarestFromGhosts(findNearestFoodTiles());
 			pacMan.targetTile = foodTile;

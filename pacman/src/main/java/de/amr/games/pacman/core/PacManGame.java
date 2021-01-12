@@ -30,6 +30,7 @@ import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import de.amr.games.pacman.creatures.Bonus;
 import de.amr.games.pacman.creatures.Creature;
 import de.amr.games.pacman.creatures.Ghost;
 import de.amr.games.pacman.creatures.Pac;
@@ -68,8 +69,11 @@ public class PacManGame {
 
 	public GameVariant variant;
 	public PacManGameWorld world;
-	public Pac pac;
-	public Ghost[] ghosts;
+
+	public final Pac pac;
+	public final Ghost[] ghosts;
+	public final Bonus bonus;
+
 	public PacManGameUI ui;
 
 	public boolean gamePaused;
@@ -83,8 +87,6 @@ public class PacManGame {
 	public short ghostBounty;
 	public byte ghostsKilledInLevel;
 	public byte mazeFlashesRemaining;
-	public long bonusAvailableTicks;
-	public long bonusConsumedTicks;
 	public short globalDotCounter;
 	public boolean globalDotCounterEnabled;
 
@@ -98,6 +100,7 @@ public class PacManGame {
 		autopilot = new Autopilot();
 		pac = new Pac();
 		ghosts = new Ghost[] { new Ghost(0), new Ghost(1), new Ghost(2), new Ghost(3) };
+		bonus = new Bonus();
 	}
 
 	public void setVariant(GameVariant variant) {
@@ -183,8 +186,8 @@ public class PacManGame {
 		mazeFlashesRemaining = 0;
 		ghostBounty = 200;
 		ghostsKilledInLevel = 0;
-		bonusAvailableTicks = 0;
-		bonusConsumedTicks = 0;
+		bonus.availableTicks = 0;
+		bonus.consumedTicks = 0;
 		for (Ghost ghost : ghosts) {
 			ghost.dotCounter = 0;
 			ghost.elroyMode = 0;
@@ -227,6 +230,12 @@ public class PacManGame {
 //		ghost.dotCounter = 0;
 //		ghost.elroyMode = 0;
 		}
+
+		bonus.visible = false;
+		bonus.speed = 0;
+		bonus.changedTile = true;
+		bonus.couldMove = true;
+		bonus.forcedOnTrack = true;
 	}
 
 	// BEGIN STATE-MACHINE
@@ -315,7 +324,7 @@ public class PacManGame {
 			state.setDuration(clock.sec(0.5));
 		}
 		resetGuys();
-		bonusAvailableTicks = bonusConsumedTicks = 0;
+		bonus.availableTicks = bonus.consumedTicks = 0;
 	}
 
 	private PacManGameState runReadyState() {
@@ -641,9 +650,10 @@ public class PacManGame {
 	}
 
 	private void checkPacFindsBonus() {
-		if (bonusAvailableTicks > 0 && world.bonusTile().equals(pac.tile())) {
-			bonusAvailableTicks = 0;
-			bonusConsumedTicks = clock.sec(2);
+		if (bonus.availableTicks > 0 && pac.tile().equals(bonus.tile())) {
+			bonus.availableTicks = 0;
+			bonus.consumedTicks = clock.sec(2);
+			bonus.speed = 0;
 			score(level().bonusPoints);
 			ui.playSound(Sound.EAT_BONUS);
 			log("Pac-Man found bonus (%d) of value %d", level().bonusSymbol, level().bonusPoints);
@@ -681,6 +691,13 @@ public class PacManGame {
 		}
 		pac.starvingTicks = 0;
 		world.removeFood(foodLocation.x, foodLocation.y);
+		checkElroyActivation();
+		checkBonusActivation();
+		updateGhostDotCounters();
+		ui.playSound(Sound.MUNCH);
+	}
+
+	private void checkElroyActivation() {
 		if (world.foodRemaining() == level().elroy1DotsLeft) {
 			ghosts[BLINKY].elroyMode = 1;
 			log("Blinky becomes Cruise Elroy 1");
@@ -688,12 +705,25 @@ public class PacManGame {
 			ghosts[BLINKY].elroyMode = 2;
 			log("Blinky becomes Cruise Elroy 2");
 		}
+	}
+
+	private void checkBonusActivation() {
 		int eaten = world.eatenFoodCount();
-		if (eaten == 70 || eaten == 170) {
-			bonusAvailableTicks = clock.sec(9 + rnd.nextFloat());
+		if (eaten == 10 || eaten == 70) { // TODO 10 -> 70, 70 -> 170
+			bonus.visible = true;
+			if (variant == GameVariant.CLASSIC) {
+				bonus.availableTicks = clock.sec(9 + rnd.nextFloat());
+				bonus.placeAt(PacManClassicWorld.bonusTile, HTS, 0);
+			} else if (variant == GameVariant.MS_PACMAN) {
+				bonus.availableTicks = Long.MAX_VALUE; // TODO correct?
+				bonus.startLocation = world.portalLeft(rnd.nextInt(world.numPortals()));
+				bonus.placeAt(bonus.startLocation, 0, 0);
+				bonus.dir = bonus.wishDir = RIGHT;
+				bonus.couldMove = true;
+				bonus.changedTile = true;
+				bonus.speed = 0.5f;
+			}
 		}
-		updateGhostDotCounters();
-		ui.playSound(Sound.MUNCH);
 	}
 
 	private void givePacPower() {
@@ -743,13 +773,28 @@ public class PacManGame {
 	}
 
 	private void updateBonus() {
-		// bonus active and not consumed
-		if (bonusAvailableTicks > 0) {
-			--bonusAvailableTicks;
+
+		if (bonus.availableTicks > 0) {
+			--bonus.availableTicks;
+			if (bonus.speed > 0) {
+				V2i bonusLocation = bonus.tile();
+				if (world.isPortal(bonusLocation.x, bonusLocation.y) && !bonusLocation.equals(bonus.startLocation)) {
+					bonus.availableTicks = 0;
+					bonus.visible = false;
+					return;
+				}
+				if (!bonus.couldMove || world.isIntersection(bonusLocation.x, bonusLocation.y)) {
+					bonus.wishDir = randomPossibleMoveDir(bonus);
+				}
+				tryMoving(bonus);
+			}
 		}
-		// bonus active and consumed
-		if (bonusConsumedTicks > 0) {
-			--bonusConsumedTicks;
+
+		if (bonus.consumedTicks > 0) {
+			--bonus.consumedTicks;
+			if (bonus.consumedTicks == 0) {
+				bonus.visible = false;
+			}
 		}
 	}
 

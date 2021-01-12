@@ -54,7 +54,6 @@ public class MsPacManWorld extends AbstractPacManGameWorld {
 	private static final V2i houseCenter = new V2i(13, 17);
 	private static final V2i houseLeft = new V2i(11, 17);
 	private static final V2i houseRight = new V2i(15, 17);
-	private static final V2i bonusTile = new V2i(13, 20);
 	private static final V2i pacHome = new V2i(13, 26);
 
 	private static final String[] ghostNames = { "Blinky", "Pinky", "Inky", "Sue" };
@@ -164,11 +163,6 @@ public class MsPacManWorld extends AbstractPacManGameWorld {
 	@Override
 	public V2i houseRight() {
 		return houseRight;
-	}
-
-	@Override
-	public V2i bonusTile() {
-		return bonusTile;
 	}
 
 	private boolean isInsideGhostHouse(int x, int y) {

@@ -136,9 +136,10 @@ public class PacManClassicPlayScene extends PacManGameScene {
 				}
 			});
 		});
-		if (game.bonusAvailableTicks > 0) {
-			g.drawImage(assets.symbols[game.level().bonusSymbol], t(13), t(20) - HTS, null);
-		} else if (game.bonusConsumedTicks > 0) {
+		if (game.bonus.availableTicks > 0) {
+			V2i bonusLocation = game.bonus.tile();
+			g.drawImage(assets.symbols[game.level().bonusSymbol], t(bonusLocation.x), t(bonusLocation.y) - HTS, null);
+		} else if (game.bonus.consumedTicks > 0) {
 			drawCenteredImage(g, assets.numbers.get(game.level().bonusPoints), t(20) - HTS);
 		}
 		if (game.ui.isDebugMode()) {

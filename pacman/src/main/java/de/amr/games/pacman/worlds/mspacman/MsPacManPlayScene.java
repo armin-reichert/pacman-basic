@@ -138,10 +138,12 @@ public class MsPacManPlayScene extends PacManGameScene {
 				}
 			});
 		});
-		if (game.bonusAvailableTicks > 0) {
-			g.drawImage(assets.symbols[game.level().bonusSymbol], t(13), t(20) - HTS, null);
-		} else if (game.bonusConsumedTicks > 0) {
-			drawCenteredImage(g, assets.numbers.get(game.level().bonusPoints), t(20) - HTS);
+		if (game.bonus.availableTicks > 0) {
+			BufferedImage bonusSprite = assets.symbols[game.level().bonusSymbol];
+			g.drawImage(bonusSprite, (int) game.bonus.position.x - HTS, (int) game.bonus.position.y - HTS, null);
+		} else if (game.bonus.consumedTicks > 0) {
+			BufferedImage bonusSprite = assets.numbers.get(game.level().bonusPoints);
+			g.drawImage(bonusSprite, (int) game.bonus.position.x - HTS, (int) game.bonus.position.y - HTS, null);
 		}
 		if (game.ui.isDebugMode()) {
 			drawMazeStructure(g);
