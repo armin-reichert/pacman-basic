@@ -127,8 +127,8 @@ public class PacManClassicIntroScene extends PacManGameScene {
 	}
 
 	private void drawGhostCharacterAndName(Graphics2D g, int ghostID, int y, boolean both) {
-		String character = resources.getString("GHOST." + ghostID + ".CHARACTER");
-		String nickname = "\"" + resources.getString("GHOST." + ghostID + ".NICKNAME") + "\"";
+		String character = resources.getString("CLASSIC.GHOST." + ghostID + ".CHARACTER");
+		String nickname = "\"" + resources.getString("CLASSIC.GHOST." + ghostID + ".NICKNAME") + "\"";
 		Color color = GHOST_COLORS[ghostID];
 		g.setColor(color);
 		g.setFont(assets.scoreFont);

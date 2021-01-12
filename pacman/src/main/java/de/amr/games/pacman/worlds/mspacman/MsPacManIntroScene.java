@@ -20,6 +20,8 @@ import de.amr.games.pacman.worlds.classic.PacManClassicAssets;
 /**
  * Intro presenting the ghosts and showing the chasing animations.
  * 
+ * TODO: implement the real Ms. Pac-Man intro
+ * 
  * @author Armin Reichert
  */
 public class MsPacManIntroScene extends PacManGameScene {
@@ -134,8 +136,8 @@ public class MsPacManIntroScene extends PacManGameScene {
 	}
 
 	private void drawGhostCharacterAndName(Graphics2D g, int ghostID, int y, boolean both) {
-		String character = resources.getString("GHOST." + ghostID + ".CHARACTER");
-		String nickname = "\"" + resources.getString("GHOST." + ghostID + ".NICKNAME") + "\"";
+		String character = resources.getString("MSPACMAN.GHOST." + ghostID + ".CHARACTER");
+		String nickname = "\"" + resources.getString("MSPACMAN.GHOST." + ghostID + ".NICKNAME") + "\"";
 		Color color = GHOST_COLORS[ghostID];
 		g.setColor(color);
 		g.setFont(assets.scoreFont);
