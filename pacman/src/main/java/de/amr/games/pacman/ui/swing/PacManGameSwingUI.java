@@ -84,7 +84,8 @@ public class PacManGameSwingUI implements PacManGameUI {
 	public void setGame(PacManGame game) {
 		this.game = game;
 		game.ui = this;
-		windowTitleUpdate = new Timer(1000, e -> window.setTitle(String.format("Pac-Man (%d fps)", game.clock.frequency)));
+		windowTitleUpdate = new Timer(1000,
+				e -> window.setTitle(String.format("%s (%d fps)", game.world.pacName(), game.clock.frequency)));
 		if (game.world instanceof PacManClassicWorld) {
 			initPacManClassic();
 		} else if (game.world instanceof MsPacManWorld) {
