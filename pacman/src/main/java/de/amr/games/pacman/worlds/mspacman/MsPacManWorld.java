@@ -11,9 +11,14 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.worlds.AbstractPacManGameWorld;
 
+/**
+ * Ms. Pac-Man game world. Has 6 maze variants.
+ * 
+ * TODO: lots of details still missing
+ * 
+ * @author Armin Reichert
+ */
 public class MsPacManWorld extends AbstractPacManGameWorld {
-
-	public static final byte BLINKY = 0, PINKY = 1, INKY = 2, CLYDE = 3;
 
 	public static final byte CHERRIES = 0, STRAWBERRY = 1, PEACH = 2, BREZN = 3, APPLE = 4, PEAR = 5, BANANA = 6;
 
@@ -59,7 +64,18 @@ public class MsPacManWorld extends AbstractPacManGameWorld {
 	private int mapIndex; // 1-6
 
 	public MsPacManWorld() {
-		selectMap(1);
+	}
+
+	private void selectMap(int mapIndex) {
+		if (mapIndex < 1 || mapIndex > 6) {
+			throw new IllegalArgumentException("Illegal map index: " + mapIndex);
+		}
+		this.mapIndex = mapIndex;
+		// Map #5 is the same as #3, only different color, same for #6 vs. #4
+		int fileIndex = mapIndex == 5 ? 3 : mapIndex == 6 ? 4 : mapIndex;
+		map = loadMap("/worlds/mspacman/map" + fileIndex + ".txt");
+		findPortals();
+		findFoodTiles();
 	}
 
 	@Override
@@ -76,18 +92,6 @@ public class MsPacManWorld extends AbstractPacManGameWorld {
 		} else {
 			selectMap(4); // TODO how to continue from here?
 		}
-	}
-
-	private void selectMap(int mapIndex) {
-		if (mapIndex < 1 || mapIndex > 6) {
-			throw new IllegalArgumentException("Illegal Ms. Pac-Man map index: " + mapIndex);
-		}
-		this.mapIndex = mapIndex;
-		// Maps 5 and 6 only differ by color
-		int fileIndex = mapIndex == 5 ? 3 : mapIndex == 6 ? 4 : mapIndex;
-		map = loadMap("/worlds/mspacman/map" + fileIndex + ".txt");
-		findPortals();
-		findFoodTiles();
 	}
 
 	public int getMapIndex() {
