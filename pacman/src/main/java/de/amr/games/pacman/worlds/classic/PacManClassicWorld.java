@@ -68,7 +68,7 @@ public class PacManClassicWorld extends AbstractPacManGameWorld {
 	}
 
 	@Override
-	public PacManGameLevel level(int levelNumber) {
+	public PacManGameLevel levelData(int levelNumber) {
 		return LEVELS[levelNumber <= 21 ? levelNumber - 1 : 20];
 	}
 

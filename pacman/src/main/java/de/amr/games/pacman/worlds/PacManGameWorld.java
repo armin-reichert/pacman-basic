@@ -19,7 +19,7 @@ public interface PacManGameWorld {
 		return nTiles * TS;
 	}
 
-	PacManGameLevel level(int levelNumber);
+	PacManGameLevel levelData(int levelNumber);
 
 	void setLevel(int levelNumber);
 

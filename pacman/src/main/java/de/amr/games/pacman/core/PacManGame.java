@@ -143,7 +143,7 @@ public class PacManGame {
 	}
 
 	public PacManGameLevel level() {
-		return world.level(levelNumber);
+		return world.levelData(levelNumber);
 	}
 
 	private void readInput() {
