@@ -23,6 +23,7 @@ import static de.amr.games.pacman.worlds.classic.PacManClassicWorld.INKY;
 import static de.amr.games.pacman.worlds.classic.PacManClassicWorld.PINKY;
 import static java.lang.Math.abs;
 
+import java.io.File;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -137,7 +138,7 @@ public class PacManGame {
 
 	public void exit() {
 		if (hiscore.changed) {
-			hiscore.save();
+			hiscore.save(hiscoreFile(variant));
 		}
 		log("Game exits.");
 	}
@@ -172,7 +173,7 @@ public class PacManGame {
 		gameStarted = false;
 		score = 0;
 		lives = 3;
-		hiscore.load();
+		hiscore.load(hiscoreFile(variant));
 		setLevel(1);
 	}
 
@@ -568,7 +569,7 @@ public class PacManGame {
 		}
 		pac.speed = 0;
 		if (hiscore.changed) {
-			hiscore.save();
+			hiscore.save(hiscoreFile(variant));
 		}
 	}
 
@@ -1109,6 +1110,11 @@ public class PacManGame {
 			ui.playSound(Sound.EXTRA_LIFE);
 		}
 		hiscore.update(score, levelNumber);
+	}
+
+	private File hiscoreFile(GameVariant variant) {
+		File folder = new File(System.getProperty("user.home"));
+		return new File(folder, "pacman-hiscore-" + variant + ".xml");
 	}
 
 	// Cheats
