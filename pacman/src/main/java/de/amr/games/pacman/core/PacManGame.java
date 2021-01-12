@@ -709,7 +709,7 @@ public class PacManGame {
 
 	private void checkBonusActivation() {
 		int eaten = world.eatenFoodCount();
-		if (eaten == 10 || eaten == 70) { // TODO 10 -> 70, 70 -> 170
+		if (eaten == 70 || eaten == 170) {
 			bonus.visible = true;
 			if (variant == GameVariant.CLASSIC) {
 				bonus.availableTicks = clock.sec(9 + rnd.nextFloat());
