@@ -4,7 +4,6 @@ import static de.amr.games.pacman.worlds.PacManGameWorld.HTS;
 import static de.amr.games.pacman.worlds.PacManGameWorld.TS;
 import static de.amr.games.pacman.worlds.PacManGameWorld.t;
 import static de.amr.games.pacman.worlds.classic.PacManClassicAssets.DIR_INDEX;
-import static java.lang.Math.round;
 import static java.util.stream.IntStream.range;
 
 import java.awt.Color;
@@ -138,10 +137,10 @@ public class PacManClassicPlayScene extends PacManGameScene {
 		});
 		if (game.bonus.availableTicks > 0) {
 			BufferedImage sprite = assets.symbols[game.level.bonusSymbol];
-			g.drawImage(sprite, round(game.bonus.position.x) - HTS, round(game.bonus.position.y) - HTS, null);
+			g.drawImage(sprite, (int) (game.bonus.position.x) - HTS, (int) (game.bonus.position.y) - HTS, null);
 		} else if (game.bonus.consumedTicks > 0) {
 			BufferedImage sprite = assets.numbers.get(game.level.bonusPoints);
-			drawCenteredImage(g, sprite, round(game.bonus.position.y) - HTS);
+			drawCenteredImage(g, sprite, (int) (game.bonus.position.y) - HTS);
 		}
 		if (game.ui.isDebugMode()) {
 			drawMazeStructure(g);
@@ -150,7 +149,7 @@ public class PacManClassicPlayScene extends PacManGameScene {
 
 	private void drawPacMan(Graphics2D g, Pac pacMan) {
 		if (pacMan.visible) {
-			g.drawImage(sprite(pacMan), round(pacMan.position.x) - HTS, round(pacMan.position.y) - HTS, null);
+			g.drawImage(sprite(pacMan), (int) (pacMan.position.x) - HTS, (int) (pacMan.position.y) - HTS, null);
 		}
 	}
 
@@ -176,7 +175,7 @@ public class PacManClassicPlayScene extends PacManGameScene {
 
 	private void drawGhost(Graphics2D g, Ghost ghost) {
 		if (ghost.visible) {
-			g.drawImage(sprite(ghost), round(ghost.position.x) - HTS, round(ghost.position.y) - HTS, null);
+			g.drawImage(sprite(ghost), (int) (ghost.position.x) - HTS, (int) (ghost.position.y) - HTS, null);
 		}
 	}
 
