@@ -105,17 +105,8 @@ public class PacManGame {
 	}
 
 	public void setVariant(GameVariant variant) {
-		switch (variant) {
-		case CLASSIC:
-			world = new PacManClassicWorld();
-			break;
-		case MS_PACMAN:
-			world = new MsPacManWorld();
-			break;
-		default:
-			throw new IllegalArgumentException("Illegal game variant: " + variant);
-		}
 		this.variant = variant;
+		world = variant == GameVariant.CLASSIC ? new PacManClassicWorld() : new MsPacManWorld();
 		pac.name = world.pacName();
 		for (int ghost = 0; ghost < ghosts.length; ++ghost) {
 			ghosts[ghost].name = world.ghostName(ghost);
