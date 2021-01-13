@@ -436,7 +436,6 @@ public class PacManGame extends Thread {
 			}
 		}
 		if (ui.keyPressed("n")) {
-
 			return changeState(this::exitHuntingState, this::enterChangingLevelState, null);
 		}
 
