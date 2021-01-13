@@ -49,17 +49,17 @@ public class PacManClassicWorld extends AbstractPacManGameWorld {
 	};
 	/*@formatter:on*/
 
-	private static final V2i houseEntry = new V2i(13, 14);
-	private static final V2i houseCenter = new V2i(13, 17);
-	private static final V2i houseLeft = new V2i(11, 17);
-	private static final V2i houseRight = new V2i(15, 17);
-	public static final V2i bonusTile = new V2i(13, 20);
-	private static final V2i pacManHome = new V2i(13, 26);
+	private static final V2i HOUSE_ENTRY = new V2i(13, 14);
+	private static final V2i HOUSE_CENTER = new V2i(13, 17);
+	private static final V2i HOUSE_LEFT = new V2i(11, 17);
+	private static final V2i HOUSE_RIGHT = new V2i(15, 17);
+	public static final V2i BONUS_TILE = new V2i(13, 20);
+	private static final V2i PAC_HOME = new V2i(13, 26);
 
-	private static final String[] ghostNames = { "Blinky", "Pinky", "Inky", "Clyde" };
-	private static final V2i[] ghostHomeTiles = { houseEntry, houseCenter, houseLeft, houseRight };
-	private static final V2i[] ghostScatterTiles = { new V2i(25, 0), new V2i(2, 0), new V2i(27, 35), new V2i(27, 35) };
-	private static final Direction[] ghostStartDirections = { LEFT, UP, DOWN, DOWN };
+	private static final String[] GHOST_NAMES = { "Blinky", "Pinky", "Inky", "Clyde" };
+	private static final V2i[] GHOST_HOME_TILES = { HOUSE_ENTRY, HOUSE_CENTER, HOUSE_LEFT, HOUSE_RIGHT };
+	private static final V2i[] GHOST_SCATTER_TILES = { new V2i(25, 0), new V2i(2, 0), new V2i(27, 35), new V2i(27, 35) };
+	private static final Direction[] GHOST_START_DIRECTIONS = { LEFT, UP, DOWN, DOWN };
 
 	public PacManClassicWorld() {
 		map = loadMap("/worlds/classic/map.txt");
@@ -89,47 +89,47 @@ public class PacManClassicWorld extends AbstractPacManGameWorld {
 
 	@Override
 	public V2i pacHome() {
-		return pacManHome;
+		return PAC_HOME;
 	}
 
 	@Override
 	public String ghostName(int ghost) {
-		return ghostNames[ghost];
+		return GHOST_NAMES[ghost];
 	}
 
 	@Override
 	public Direction ghostStartDirection(int ghost) {
-		return ghostStartDirections[ghost];
+		return GHOST_START_DIRECTIONS[ghost];
 	}
 
 	@Override
 	public V2i ghostHome(int ghost) {
-		return ghostHomeTiles[ghost];
+		return GHOST_HOME_TILES[ghost];
 	}
 
 	@Override
 	public V2i ghostScatterTile(int ghost) {
-		return ghostScatterTiles[ghost];
+		return GHOST_SCATTER_TILES[ghost];
 	}
 
 	@Override
 	public V2i houseEntry() {
-		return houseEntry;
+		return HOUSE_ENTRY;
 	}
 
 	@Override
 	public V2i houseCenter() {
-		return houseCenter;
+		return HOUSE_CENTER;
 	}
 
 	@Override
 	public V2i houseLeft() {
-		return houseLeft;
+		return HOUSE_LEFT;
 	}
 
 	@Override
 	public V2i houseRight() {
-		return houseRight;
+		return HOUSE_RIGHT;
 	}
 
 	private boolean isInsideGhostHouse(int x, int y) {

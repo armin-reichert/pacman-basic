@@ -732,15 +732,16 @@ public class PacManGame extends Thread {
 			bonus.visible = true;
 			if (variant == CLASSIC) {
 				bonus.availableTicks = clock.sec(9 + rnd.nextFloat());
-				bonus.placeAt(PacManClassicWorld.bonusTile, HTS, 0);
+				bonus.placeAt(PacManClassicWorld.BONUS_TILE, HTS, 0);
 			} else if (variant == MS_PACMAN) {
 				bonus.availableTicks = Long.MAX_VALUE; // TODO is there a timeout?
 				int portalNumber = rnd.nextInt(world.numPortals());
-				Direction start = rnd.nextBoolean() ? LEFT : RIGHT;
-				bonus.targetDirection = start.opposite();
-				bonus.startLocation = start == LEFT ? world.portalLeft(portalNumber) : world.portalRight(portalNumber);
+				Direction borderWhereBonusAppears = rnd.nextBoolean() ? LEFT : RIGHT;
+				bonus.targetDirection = borderWhereBonusAppears.opposite();
+				bonus.startLocation = borderWhereBonusAppears == LEFT ? world.portalLeft(portalNumber)
+						: world.portalRight(portalNumber);
 				bonus.placeAt(bonus.startLocation, 0, 0);
-				bonus.dir = bonus.wishDir = start.opposite();
+				bonus.dir = bonus.wishDir = bonus.targetDirection;
 				bonus.couldMove = true;
 				bonus.changedTile = true;
 				bonus.speed = 0.5f;
