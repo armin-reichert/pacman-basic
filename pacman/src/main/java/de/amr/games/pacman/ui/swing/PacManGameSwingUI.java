@@ -188,9 +188,11 @@ public class PacManGameSwingUI implements PacManGameUI {
 	private void drawMessage(Graphics2D g) {
 		if (messageText != null) {
 			g.setFont(messageFont);
+			g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 			g.setColor(messageColor);
 			int textWidth = g.getFontMetrics().stringWidth(messageText);
 			g.drawString(messageText, (unscaledSizeInPixels.x - textWidth) / 2, t(21));
+			g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
 		}
 	}
 

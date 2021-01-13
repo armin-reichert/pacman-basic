@@ -166,6 +166,10 @@ public class PacManGame extends Thread {
 			autopilotEnabled = !autopilotEnabled;
 			log("Pac-Man autopilot mode is %s", autopilotEnabled ? "on" : "off");
 		}
+		if (ui.keyPressed("escape")) {
+			reset();
+			enterIntroState();
+		}
 	}
 
 	private void reset() {
@@ -174,6 +178,9 @@ public class PacManGame extends Thread {
 		lives = 3;
 		hiscore.load(hiscoreFile(variant));
 		setLevel(1);
+		if (ui != null) {
+			ui.clearMessage();
+		}
 	}
 
 	private void setLevel(int number) {

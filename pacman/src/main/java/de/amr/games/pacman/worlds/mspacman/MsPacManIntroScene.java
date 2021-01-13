@@ -106,7 +106,7 @@ public class MsPacManIntroScene extends PacManGameScene {
 	}
 
 	private void drawLogo(Graphics2D g, double scaling) {
-		g.drawImage(assets.gameLogo, (int) (size.x * scaling - assets.gameLogo.getWidth()) / 2, 3, null);
+		g.drawImage(assets.gameLogo, (int) (size.x * scaling - assets.gameLogo.getWidth()) / 2, (int) (3 * scaling), null);
 	}
 
 	private void drawPressKeyToStart(Graphics2D g) {
