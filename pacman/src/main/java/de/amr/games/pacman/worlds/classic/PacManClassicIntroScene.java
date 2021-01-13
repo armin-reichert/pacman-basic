@@ -3,6 +3,7 @@ package de.amr.games.pacman.worlds.classic;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.worlds.PacManGameWorld.t;
+import static de.amr.games.pacman.worlds.classic.PacManClassicAssets.DIR_INDEX;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -185,12 +186,12 @@ public class PacManClassicIntroScene extends PacManGameScene {
 
 	private BufferedImage pacManWalkingSprite(Direction dir) {
 		int frame = game.clock.frame(5, 3);
-		return frame == 2 ? assets.section(frame, 0) : assets.section(frame, PacManClassicAssets.DIR_INDEX.get(dir));
+		return frame == 2 ? assets.section(frame, 0) : assets.section(frame, DIR_INDEX.get(dir));
 	}
 
 	private BufferedImage ghostWalkingSprite(Direction dir, int ghost) {
 		int frame = game.clock.frame(5, 2);
-		return assets.section(2 * PacManClassicAssets.DIR_INDEX.get(dir) + frame, 4 + ghost);
+		return assets.section(2 * DIR_INDEX.get(dir) + frame, 4 + ghost);
 	}
 
 	private BufferedImage ghostFrightenedSprite() {

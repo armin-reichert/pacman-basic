@@ -4,6 +4,8 @@ import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.UP;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 import java.util.stream.Stream;
 
@@ -63,6 +65,7 @@ public class MsPacManWorld extends AbstractPacManGameWorld {
 
 	private final Random rnd = new Random();
 	private int mapIndex; // 1-6
+	private final Map<Integer, Byte> symbolAtLevel = new HashMap<>();
 
 	public MsPacManWorld() {
 	}
@@ -107,7 +110,14 @@ public class MsPacManWorld extends AbstractPacManGameWorld {
 		if (levelNumber <= 7) {
 			return LEVELS[levelNumber - 1];
 		}
-		return new PacManGameLevel(LEVELS[6], (byte) rnd.nextInt(7));
+		byte symbol = -1;
+		if (symbolAtLevel.containsKey(levelNumber)) {
+			symbol = symbolAtLevel.get(levelNumber);
+		} else {
+			symbol = (byte) rnd.nextInt(7);
+			symbolAtLevel.put(levelNumber, symbol);
+		}
+		return new PacManGameLevel(LEVELS[6], symbol);
 	}
 
 	@Override
