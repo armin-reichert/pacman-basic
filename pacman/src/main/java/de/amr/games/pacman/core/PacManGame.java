@@ -226,6 +226,8 @@ public class PacManGame {
 		bonus.changedTile = true;
 		bonus.couldMove = true;
 		bonus.forcedOnTrack = true;
+		bonus.availableTicks = 0;
+		bonus.consumedTicks = 0;
 	}
 
 	// BEGIN STATE-MACHINE
@@ -314,7 +316,6 @@ public class PacManGame {
 			state.setDuration(clock.sec(0.5));
 		}
 		resetGuys();
-		bonus.availableTicks = bonus.consumedTicks = 0;
 	}
 
 	private PacManGameState runReadyState() {
