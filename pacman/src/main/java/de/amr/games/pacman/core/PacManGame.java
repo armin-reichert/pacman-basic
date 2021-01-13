@@ -1,5 +1,7 @@
 package de.amr.games.pacman.core;
 
+import static de.amr.games.pacman.core.GameVariant.CLASSIC;
+import static de.amr.games.pacman.core.GameVariant.MS_PACMAN;
 import static de.amr.games.pacman.core.PacManGameState.CHANGING_LEVEL;
 import static de.amr.games.pacman.core.PacManGameState.GAME_OVER;
 import static de.amr.games.pacman.core.PacManGameState.GHOST_DYING;
@@ -108,7 +110,7 @@ public class PacManGame {
 		bonus = new Bonus();
 
 		this.variant = variant;
-		world = variant == GameVariant.CLASSIC ? new PacManClassicWorld() : new MsPacManWorld();
+		world = variant == CLASSIC ? new PacManClassicWorld() : new MsPacManWorld();
 		pac.name = world.pacName();
 		for (int ghost = 0; ghost < ghosts.length; ++ghost) {
 			ghosts[ghost].name = world.ghostName(ghost);
@@ -307,8 +309,7 @@ public class PacManGame {
 
 	private PacManGameState runIntroState() {
 		if (ui.keyPressed("v")) {
-			GameVariant next = variant == GameVariant.CLASSIC ? GameVariant.MS_PACMAN : GameVariant.CLASSIC;
-			PacManGame newGame = new PacManGame(next);
+			PacManGame newGame = new PacManGame(variant == CLASSIC ? MS_PACMAN : CLASSIC);
 			ui.setGame(newGame);
 			newGame.start();
 			stop();
@@ -727,10 +728,10 @@ public class PacManGame {
 		int eaten = world.eatenFoodCount();
 		if (eaten == 70 || eaten == 170) {
 			bonus.visible = true;
-			if (variant == GameVariant.CLASSIC) {
+			if (variant == CLASSIC) {
 				bonus.availableTicks = clock.sec(9 + rnd.nextFloat());
 				bonus.placeAt(PacManClassicWorld.bonusTile, HTS, 0);
-			} else if (variant == GameVariant.MS_PACMAN) {
+			} else if (variant == MS_PACMAN) {
 				bonus.availableTicks = Long.MAX_VALUE; // TODO is there a timeout?
 				int portalNumber = rnd.nextInt(world.numPortals());
 				Direction start = rnd.nextBoolean() ? LEFT : RIGHT;
