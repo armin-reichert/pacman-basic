@@ -143,14 +143,14 @@ public class MsPacManPlayScene extends PacManGameScene {
 		}
 	}
 
-	private static int dy[] = { 0, 2, 0, -2 };
+	private static final int BONUS_JUMP[] = { 0, 2, 0, -2 };
 
 	private void drawBonus(Graphics2D g) {
 		if (game.bonus.availableTicks > 0) {
 			BufferedImage bonusSprite = assets.symbols[game.level.bonusSymbol];
 			int frame = game.clock.frame(20, 4);
-			g.drawImage(bonusSprite, (int) (game.bonus.position.x) - HTS, (int) (game.bonus.position.y) + dy[frame] - HTS,
-					null);
+			g.drawImage(bonusSprite, (int) (game.bonus.position.x) - HTS,
+					(int) (game.bonus.position.y) + BONUS_JUMP[frame] - HTS, null);
 		} else if (game.bonus.consumedTicks > 0) {
 			BufferedImage bonusSprite = assets.numbers.get(game.level.bonusPoints);
 			g.drawImage(bonusSprite, (int) (game.bonus.position.x) - HTS, (int) (game.bonus.position.y) - HTS, null);
