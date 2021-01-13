@@ -463,6 +463,7 @@ public class PacManGame {
 		for (Ghost ghost : ghosts) {
 			ghost.speed = 0;
 		}
+		bonus.availableTicks = bonus.consumedTicks = 0;
 		ui.stopAllSounds();
 	}
 
@@ -480,7 +481,7 @@ public class PacManGame {
 			}
 		}
 		if (state.running(clock.sec(2.5))) {
-			pac.collapsingTicksLeft = 88;
+			pac.collapsingTicksLeft = clock.sec(1.5); // TODO correct?
 			ui.playSound(Sound.PACMAN_DEATH);
 		}
 		if (pac.collapsingTicksLeft > 1) {
