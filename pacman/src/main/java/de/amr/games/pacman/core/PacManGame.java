@@ -120,15 +120,10 @@ public class PacManGame extends Thread {
 	}
 
 	@Override
-	public void start() {
+	public void run() {
 		reset();
 		enterIntroState();
 		log("Enter state '%s' for %s", stateDescription(), ticksDescription(state.duration()));
-		super.start();
-	}
-
-	@Override
-	public void run() {
 		while (true) {
 			clock.tick(this::step);
 		}
@@ -832,23 +827,30 @@ public class PacManGame extends Thread {
 	}
 
 	private void updateGhost(Ghost ghost) {
-		if (ghost.state == GhostState.LOCKED) {
+		switch (ghost.state) {
+		case LOCKED:
 			if (ghost.id != BLINKY) {
 				tryReleasingGhost(ghost);
 				letGhostBounce(ghost);
 			} else {
 				ghost.state = GhostState.HUNTING;
 			}
-		} else if (ghost.state == GhostState.ENTERING_HOUSE) {
+			break;
+		case ENTERING_HOUSE:
 			letGhostEnterHouse(ghost);
-		} else if (ghost.state == GhostState.LEAVING_HOUSE) {
+			break;
+		case LEAVING_HOUSE:
 			letGhostLeaveHouse(ghost);
-		} else if (ghost.state == GhostState.DEAD) {
+			break;
+		case FRIGHTENED:
+		case HUNTING:
+			letGhostWanderMaze(ghost);
+			break;
+		case DEAD:
 			letGhostReturnHome(ghost);
-		} else if (ghost.state == GhostState.FRIGHTENED) {
-			letGhostWanderMaze(ghost);
-		} else if (ghost.state == GhostState.HUNTING) {
-			letGhostWanderMaze(ghost);
+			break;
+		default:
+			throw new IllegalArgumentException("Illegal ghost state: " + ghost.state);
 		}
 	}
 
