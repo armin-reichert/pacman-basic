@@ -95,9 +95,10 @@ public class PacManGame {
 	public boolean autopilotEnabled;
 	public final Autopilot autopilot;
 
+	private Thread gameThread;
 	private final ResourceBundle resources = ResourceBundle.getBundle("localization.translation");
 
-	public PacManGame() {
+	public PacManGame(GameVariant variant) {
 		clock = new Clock();
 		rnd = new Random();
 		hiscore = new Hiscore();
@@ -105,18 +106,12 @@ public class PacManGame {
 		pac = new Pac();
 		ghosts = new Ghost[] { new Ghost(0), new Ghost(1), new Ghost(2), new Ghost(3) };
 		bonus = new Bonus();
-	}
 
-	public void setVariant(GameVariant variant) {
 		this.variant = variant;
 		world = variant == GameVariant.CLASSIC ? new PacManClassicWorld() : new MsPacManWorld();
-		world.setLevel(1);
 		pac.name = world.pacName();
 		for (int ghost = 0; ghost < ghosts.length; ++ghost) {
 			ghosts[ghost].name = world.ghostName(ghost);
-		}
-		if (ui != null) {
-			ui.setGameVariant(variant);
 		}
 	}
 
@@ -125,7 +120,16 @@ public class PacManGame {
 		enterIntroState();
 		log("Enter state '%s' for %s", stateDescription(), ticksDescription(state.duration()));
 		ui.show();
-		new Thread(this::loop, "GameLoop").start();
+		gameThread = new Thread(this::loop, "GameLoop");
+		gameThread.start();
+	}
+
+	public void stop() {
+		try {
+			gameThread.join();
+		} catch (InterruptedException x) {
+			x.printStackTrace();
+		}
 	}
 
 	private void loop() {
@@ -303,8 +307,11 @@ public class PacManGame {
 
 	private PacManGameState runIntroState() {
 		if (ui.keyPressed("v")) {
-			setVariant(variant == GameVariant.CLASSIC ? GameVariant.MS_PACMAN : GameVariant.CLASSIC);
-			state.resetTimer();
+			GameVariant next = variant == GameVariant.CLASSIC ? GameVariant.MS_PACMAN : GameVariant.CLASSIC;
+			PacManGame newGame = new PacManGame(next);
+			ui.setGame(newGame);
+			newGame.start();
+			stop();
 			return state;
 		}
 		if (ui.anyKeyPressed()) {
@@ -551,6 +558,7 @@ public class PacManGame {
 			ghost.speed = 0;
 		}
 		pac.speed = 0;
+		bonus.availableTicks = bonus.consumedTicks = 0;
 		ui.stopAllSounds();
 	}
 

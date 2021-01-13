@@ -24,8 +24,7 @@ public class PacManGameApp {
 			}
 		}
 		float scaling = args.length > 1 ? Float.parseFloat(args[1]) : 2;
-		PacManGame game = new PacManGame();
-		game.setVariant(variant);
+		PacManGame game = new PacManGame(variant);
 		invokeLater(() -> {
 			PacManGameUI ui = new PacManGameSwingUI(game.world.sizeInTiles(), scaling);
 			ui.setGame(game);

@@ -23,6 +23,13 @@ class SoundManager {
 
 	public SoundManager(PacManGameAssets assets) {
 		this.assets = assets;
+		munchIndex = 0;
+		for (int i = 0; i < munchClips.length; ++i) {
+			munchClips[i] = openClip(assets.getSoundPath(Sound.MUNCH));
+		}
+		for (Sound sound : Sound.values()) {
+			clips.put(sound, openClip(assets.getSoundPath(sound)));
+		}
 	}
 
 	private Clip openClip(String path) {
@@ -32,16 +39,6 @@ class SoundManager {
 			return clip;
 		} catch (Exception x) {
 			throw new RuntimeException(x);
-		}
-	}
-
-	public void init() {
-		munchIndex = 0;
-		for (int i = 0; i < munchClips.length; ++i) {
-			munchClips[i] = openClip(assets.getSoundPath(Sound.MUNCH));
-		}
-		for (Sound sound : Sound.values()) {
-			clips.put(sound, openClip(assets.getSoundPath(sound)));
 		}
 	}
 

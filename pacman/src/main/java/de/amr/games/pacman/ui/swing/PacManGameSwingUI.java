@@ -46,7 +46,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 	private String messageText;
 	private Color messageColor;
 	private Font messageFont;
-	private Timer windowTitleUpdate;
+	private Timer titleUpdate;
 	private PacManGame game;
 	private PacManGameScene currentScene;
 	private PacManGameScene introScene;
@@ -88,14 +88,15 @@ public class PacManGameSwingUI implements PacManGameUI {
 	public void setGame(PacManGame game) {
 		this.game = game;
 		game.ui = this;
-		setGameVariant(game.variant);
-		windowTitleUpdate = new Timer(1000,
+		if (soundManager != null) {
+			stopAllSounds();
+		}
+		if (titleUpdate != null) {
+			titleUpdate.stop();
+		}
+		titleUpdate = new Timer(1000,
 				e -> window.setTitle(String.format("%s (%d fps)", game.world.pacName(), game.clock.frequency)));
-	}
-
-	@Override
-	public void setGameVariant(GameVariant variant) {
-		if (variant == GameVariant.CLASSIC) {
+		if (game.variant == GameVariant.CLASSIC) {
 			initPacManClassic();
 		} else {
 			initMsPacManWorld();
@@ -105,7 +106,6 @@ public class PacManGameSwingUI implements PacManGameUI {
 	private void initPacManClassic() {
 		PacManClassicAssets assets = new PacManClassicAssets();
 		soundManager = new SoundManager(assets);
-		soundManager.init();
 		introScene = new PacManClassicIntroScene(game, sizeInPixels, assets);
 		playScene = new PacManClassicPlayScene(game, sizeInPixels, assets);
 	}
@@ -113,7 +113,6 @@ public class PacManGameSwingUI implements PacManGameUI {
 	private void initMsPacManWorld() {
 		MsPacManAssets assets = new MsPacManAssets();
 		soundManager = new SoundManager(assets);
-		soundManager.init();
 		introScene = new MsPacManIntroScene(game, sizeInPixels, assets);
 		playScene = new MsPacManPlayScene(game, sizeInPixels, assets);
 	}
@@ -133,7 +132,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 		window.requestFocus();
 		canvas.createBufferStrategy(2);
 
-		windowTitleUpdate.start();
+		titleUpdate.start();
 	}
 
 	@Override
