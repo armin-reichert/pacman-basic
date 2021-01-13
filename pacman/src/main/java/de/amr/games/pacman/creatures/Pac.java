@@ -15,16 +15,16 @@ public class Pac extends Creature {
 	/** If the Pac is dead. */
 	public boolean dead;
 
-	/** Number of click ticks the Pac still has power. */
+	/** Number of clock ticks the Pac still has power. */
 	public long powerTicksLeft;
 
-	/** Number of click ticks the Pac is resting and will not move. */
+	/** Number of clock ticks the Pac is resting and will not move. */
 	public long restingTicksLeft;
 
-	/** Number of click ticks the Pac still is collapsing. */
+	/** Number of clock ticks the Pac still is collapsing. */
 	public long collapsingTicksLeft;
 
-	/** Number of click ticks the Pac has not eaten. */
+	/** Number of clock ticks the Pac has not eaten. */
 	public long starvingTicks;
 
 	/** The tile that the Pac is targeting, used by autopilot. */

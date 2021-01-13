@@ -21,7 +21,7 @@ public class Ghost extends Creature {
 	/** If the ghost is dead. */
 	public boolean dead;
 
-	/** If the ghost can leave its home tile. */
+	/** If the ghost cannot leave its home tile. */
 	public boolean locked;
 
 	/** If the ghost is entering the house. */
