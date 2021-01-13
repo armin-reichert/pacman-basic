@@ -182,10 +182,6 @@ public class PacManGameSwingUI implements PacManGameUI {
 		g.setColor(currentScene.bgColor);
 		g.fillRect(0, 0, unscaledSizeInPixels.x, unscaledSizeInPixels.y);
 		currentScene.draw(g, unscaledGC);
-		drawMessage(g);
-	}
-
-	private void drawMessage(Graphics2D g) {
 		if (messageText != null) {
 			g.setFont(messageFont);
 			g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
