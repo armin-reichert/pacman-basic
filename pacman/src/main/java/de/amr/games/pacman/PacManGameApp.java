@@ -1,6 +1,7 @@
 package de.amr.games.pacman;
 
 import static java.awt.EventQueue.invokeLater;
+import static java.lang.Float.parseFloat;
 
 import de.amr.games.pacman.core.GameVariant;
 import de.amr.games.pacman.core.PacManGame;
@@ -15,20 +16,23 @@ import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
 public class PacManGameApp {
 
 	public static void main(String[] args) {
-		GameVariant variant = GameVariant.CLASSIC;
-		if (args.length > 0) {
-			if ("classic".equals(args[0])) {
-				variant = GameVariant.CLASSIC;
-			} else if ("mspacman".equals(args[0])) {
-				variant = GameVariant.MS_PACMAN;
-			}
-		}
-		float scaling = args.length > 1 ? Float.parseFloat(args[1]) : 2;
-		PacManGame game = new PacManGame(variant);
+		GameVariant variant = args.length > 0 ? parseGameVariant(args[0]) : GameVariant.CLASSIC;
+		float scaling = args.length > 1 ? parseFloat(args[1]) : 2;
 		invokeLater(() -> {
+			PacManGame game = new PacManGame(variant);
 			PacManGameUI ui = new PacManGameSwingUI(game.world.sizeInTiles(), scaling);
 			ui.setGame(game);
 			game.start();
 		});
+	}
+
+	private static GameVariant parseGameVariant(String spec) {
+		GameVariant variant = GameVariant.CLASSIC;
+		if ("classic".equals(spec)) {
+			variant = GameVariant.CLASSIC;
+		} else if ("mspacman".equals(spec)) {
+			variant = GameVariant.MS_PACMAN;
+		}
+		return variant;
 	}
 }

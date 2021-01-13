@@ -64,7 +64,7 @@ import de.amr.games.pacman.worlds.mspacman.MsPacManWorld;
  * @see <a href="https://gameinternals.com/understanding-pac-man-ghost-behavior">Chad Birch:
  *      Understanding ghost behavior
  */
-public class PacManGame {
+public class PacManGame extends Thread {
 
 	public final Clock clock;
 	public final Random rnd;
@@ -97,10 +97,11 @@ public class PacManGame {
 	public boolean autopilotEnabled;
 	public final Autopilot autopilot;
 
-	private Thread gameThread;
 	private final ResourceBundle resources = ResourceBundle.getBundle("localization.translation");
 
 	public PacManGame(GameVariant variant) {
+		super("Pac-Man-" + variant + "-GameLoop");
+
 		clock = new Clock();
 		rnd = new Random();
 		hiscore = new Hiscore();
@@ -117,26 +118,20 @@ public class PacManGame {
 		}
 	}
 
+	@Override
 	public void start() {
 		reset();
 		enterIntroState();
 		log("Enter state '%s' for %s", stateDescription(), ticksDescription(state.duration()));
 		ui.show();
-		gameThread = new Thread(this::loop, "GameLoop");
-		gameThread.start();
+		super.start();
 	}
 
-	public void stop() {
-		try {
-			gameThread.join();
-		} catch (InterruptedException x) {
-			x.printStackTrace();
-		}
-	}
-
-	private void loop() {
-		while (true)
+	@Override
+	public void run() {
+		while (true) {
 			clock.tick(this::step);
+		}
 	}
 
 	private void step() {
@@ -309,16 +304,24 @@ public class PacManGame {
 
 	private PacManGameState runIntroState() {
 		if (ui.keyPressed("v")) {
-			PacManGame newGame = new PacManGame(variant == CLASSIC ? MS_PACMAN : CLASSIC);
-			ui.setGame(newGame);
-			newGame.start();
-			stop();
+			toggleVariant();
 			return state;
 		}
 		if (ui.anyKeyPressed()) {
 			return changeState(this::exitIntroState, this::enterReadyState, null);
 		}
 		return state.tick();
+	}
+
+	private void toggleVariant() {
+		PacManGame game = new PacManGame(variant == CLASSIC ? MS_PACMAN : CLASSIC);
+		ui.setGame(game);
+		game.start();
+		try {
+			join();
+		} catch (InterruptedException x) {
+			x.printStackTrace();
+		}
 	}
 
 	private void exitIntroState() {
