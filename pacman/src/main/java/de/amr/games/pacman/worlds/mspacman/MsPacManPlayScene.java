@@ -108,7 +108,7 @@ public class MsPacManPlayScene extends PacManGameScene {
 			game.clock.runAlternating(game.clock.sec(0.25), () -> {
 				g.drawImage(assets.mazeEmptyDark[mazeIndex], 0, t(3), null);
 			}, () -> {
-				g.drawImage(assets.mazeEmptyBright[mazeIndex], 0, t(3), null);
+//				g.drawImage(assets.mazeEmptyBright[mazeIndex], 0, t(3), null);
 			}, () -> {
 				game.mazeFlashesRemaining--;
 			});
