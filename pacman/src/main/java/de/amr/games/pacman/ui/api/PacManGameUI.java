@@ -1,4 +1,4 @@
-package de.amr.games.pacman.ui;
+package de.amr.games.pacman.ui.api;
 
 import de.amr.games.pacman.core.PacManGame;
 

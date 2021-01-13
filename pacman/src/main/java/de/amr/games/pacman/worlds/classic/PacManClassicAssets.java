@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import de.amr.games.pacman.lib.Direction;
-import de.amr.games.pacman.ui.Sound;
+import de.amr.games.pacman.ui.api.Sound;
 import de.amr.games.pacman.ui.swing.PacManGameAssets;
 
 /**

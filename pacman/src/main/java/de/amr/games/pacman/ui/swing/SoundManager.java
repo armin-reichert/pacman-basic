@@ -7,7 +7,7 @@ import java.util.Map;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 
-import de.amr.games.pacman.ui.Sound;
+import de.amr.games.pacman.ui.api.Sound;
 
 /**
  * Sound manager for Pac-Man Swing UI.

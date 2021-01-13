@@ -6,7 +6,7 @@ import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 
-import de.amr.games.pacman.ui.Sound;
+import de.amr.games.pacman.ui.api.Sound;
 
 public abstract class PacManGameAssets {
 

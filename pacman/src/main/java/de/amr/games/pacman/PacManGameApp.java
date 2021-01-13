@@ -5,7 +5,7 @@ import static java.lang.Float.parseFloat;
 
 import de.amr.games.pacman.core.GameVariant;
 import de.amr.games.pacman.core.PacManGame;
-import de.amr.games.pacman.ui.PacManGameUI;
+import de.amr.games.pacman.ui.api.PacManGameUI;
 import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
 
 /**

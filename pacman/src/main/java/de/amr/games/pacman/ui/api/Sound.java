@@ -1,4 +1,4 @@
-package de.amr.games.pacman.ui;
+package de.amr.games.pacman.ui.api;
 
 /**
  * Constants for the sounds used in the game.
