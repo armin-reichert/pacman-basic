@@ -23,20 +23,21 @@ To build the executable:
 
 ### Keys
 
-- "Escape" = Restart game
-- "p" = Pause/resume game
-- "s" = Toggle slow/normal 
-- "f" = Toggle fast/normal
-- "d" = Toggle debug drawing mode
-- "a" = Toggle Pac-Man autopilot
+- General
+  - "Escape" = Restart game
+  - "a" = Toggle Pac-Man autopilot
+  - "d" = Toggle debug drawing mode
+  - "f" = Toggle fast/normal
+  - "p" = Pause/resume game
+  - "s" = Toggle slow/normal 
 
 - Intro screen
   - "v" = Toggle game variant (Pac-Man, Ms. Pac-Man)
 
 - Play screen
-  - LEFT, RIGHT, UP, DOWN = control Pac-Man movement
+  - LEFT, RIGHT, UP, DOWN = Control Pac-Man movement
   - "e" = Eat all non-energizer pellets
-  - "x" = Kill all ghosts
   - "l" = Add life
   - "n" = Next level
+  - "x" = Kill all ghosts
   
