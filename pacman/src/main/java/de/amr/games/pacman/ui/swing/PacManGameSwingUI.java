@@ -91,16 +91,17 @@ public class PacManGameSwingUI implements PacManGameUI {
 		if (soundManager != null) {
 			stopAllSounds();
 		}
-		if (titleUpdate != null) {
-			titleUpdate.stop();
-		}
-		titleUpdate = new Timer(1000,
-				e -> window.setTitle(String.format("%s (%d fps)", game.world.pacName(), game.clock.frequency)));
 		if (game.variant == GameVariant.CLASSIC) {
 			initPacManClassic();
 		} else {
 			initMsPacManWorld();
 		}
+		if (titleUpdate != null) {
+			titleUpdate.stop();
+		}
+		titleUpdate = new Timer(1000,
+				e -> window.setTitle(String.format("%s (%d fps)", game.world.pacName(), game.clock.frequency)));
+		titleUpdate.start();
 	}
 
 	private void initPacManClassic() {
@@ -131,8 +132,6 @@ public class PacManGameSwingUI implements PacManGameUI {
 		// must called be *after* setVisible()
 		window.requestFocus();
 		canvas.createBufferStrategy(2);
-
-		titleUpdate.start();
 	}
 
 	@Override
