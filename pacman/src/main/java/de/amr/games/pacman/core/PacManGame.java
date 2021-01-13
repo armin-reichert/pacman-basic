@@ -122,13 +122,14 @@ public class PacManGame {
 	}
 
 	private void loop() {
-		do {
-			clock.tick(() -> {
-				readInput();
-				updateState();
-				ui.render();
-			});
-		} while (true);
+		while (true)
+			clock.tick(this::step);
+	}
+
+	private void step() {
+		readInput();
+		updateState();
+		ui.render();
 	}
 
 	public void exit() {
