@@ -7,37 +7,38 @@ import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
 
 /**
- * Base class for Pac-Man and ghosts.
+ * Base class for Pac-Man, the ghosts and the bonus. Creatures can move through the maze.
  * 
  * @author Armin Reichert
  */
 public abstract class Creature {
 
-	public String name;
-	/** Left upper corner of collision box */
-	public V2f position;
-	public V2i targetTile;
+	/** Left upper corner of collision box. */
+	public V2f position = V2f.NULL;
+
+	/** The current move direction. */
 	public Direction dir;
+
+	/** The wanted move direction that will be taken as soon as possible. */
 	public Direction wishDir;
-	/** Relative speed (between 0 and 1) */
+
+	/** Relative speed (between 0 and 1). */
 	public float speed;
+
+	/** Visibility. */
 	public boolean visible;
+
+	/** If the creature entered a new tile with its last movement. */
 	public boolean changedTile;
-	public boolean forcedDirection;
+
+	/** If the creature could move in the last try. */
 	public boolean couldMove;
+
+	/** If the next move will in any case take the intended direction if possible. */
+	public boolean forcedDirection;
+
+	/** If movement is constrained to be aligned with the tiles. */
 	public boolean forcedOnTrack;
-	public boolean dead;
-
-	public Creature() {
-		position = V2f.NULL;
-		targetTile = V2i.NULL;
-	}
-
-	@Override
-	public String toString() {
-		return String.format("[%-8s tile=%s offset=%s dir=%s wishDir=%s speed=%.2f changedTile=%s couldMove=%s]", name,
-				tile(), offset(), dir, wishDir, speed, changedTile, couldMove);
-	}
 
 	public void placeAt(V2i tile, float offsetX, float offsetY) {
 		position = new V2f(tile.x * TS + offsetX, tile.y * TS + offsetY);

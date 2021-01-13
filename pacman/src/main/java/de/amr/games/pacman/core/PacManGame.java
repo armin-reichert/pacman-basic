@@ -738,9 +738,9 @@ public class PacManGame extends Thread {
 				int portalNumber = rnd.nextInt(world.numPortals());
 				Direction borderWhereBonusAppears = rnd.nextBoolean() ? LEFT : RIGHT;
 				bonus.targetDirection = borderWhereBonusAppears.opposite();
-				bonus.startLocation = borderWhereBonusAppears == LEFT ? world.portalLeft(portalNumber)
+				bonus.startTile = borderWhereBonusAppears == LEFT ? world.portalLeft(portalNumber)
 						: world.portalRight(portalNumber);
-				bonus.placeAt(bonus.startLocation, 0, 0);
+				bonus.placeAt(bonus.startTile, 0, 0);
 				bonus.dir = bonus.wishDir = bonus.targetDirection;
 				bonus.couldMove = true;
 				bonus.changedTile = true;
@@ -801,7 +801,7 @@ public class PacManGame extends Thread {
 			--bonus.availableTicks;
 			if (bonus.speed > 0) {
 				V2i bonusLocation = bonus.tile();
-				if (world.isPortal(bonusLocation.x, bonusLocation.y) && !bonusLocation.equals(bonus.startLocation)) {
+				if (world.isPortal(bonusLocation.x, bonusLocation.y) && !bonusLocation.equals(bonus.startTile)) {
 					bonus.availableTicks = 0;
 					bonus.visible = false;
 					return;
