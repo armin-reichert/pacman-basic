@@ -1,5 +1,6 @@
 package de.amr.games.pacman.ui;
 
+import de.amr.games.pacman.core.GameVariant;
 import de.amr.games.pacman.core.PacManGame;
 
 /**
@@ -10,6 +11,8 @@ import de.amr.games.pacman.core.PacManGame;
 public interface PacManGameUI {
 
 	void setGame(PacManGame game);
+
+	void setGameVariant(GameVariant variant);
 
 	float scaling();
 

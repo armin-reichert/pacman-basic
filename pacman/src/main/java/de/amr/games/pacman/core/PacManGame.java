@@ -110,9 +110,13 @@ public class PacManGame {
 	public void setVariant(GameVariant variant) {
 		this.variant = variant;
 		world = variant == GameVariant.CLASSIC ? new PacManClassicWorld() : new MsPacManWorld();
+		world.setLevel(1);
 		pac.name = world.pacName();
 		for (int ghost = 0; ghost < ghosts.length; ++ghost) {
 			ghosts[ghost].name = world.ghostName(ghost);
+		}
+		if (ui != null) {
+			ui.setGameVariant(variant);
 		}
 	}
 
@@ -298,6 +302,11 @@ public class PacManGame {
 	}
 
 	private PacManGameState runIntroState() {
+		if (ui.keyPressed("v")) {
+			setVariant(variant == GameVariant.CLASSIC ? GameVariant.MS_PACMAN : GameVariant.CLASSIC);
+			state.resetTimer();
+			return state;
+		}
 		if (ui.anyKeyPressed()) {
 			return changeState(this::exitIntroState, this::enterReadyState, null);
 		}

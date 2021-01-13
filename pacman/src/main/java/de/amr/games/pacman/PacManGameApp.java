@@ -15,14 +15,17 @@ import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
 public class PacManGameApp {
 
 	public static void main(String[] args) {
-		String variant = args.length > 0 ? args[0] : "classic";
+		GameVariant variant = GameVariant.CLASSIC;
+		if (args.length > 0) {
+			if ("classic".equals(args[0])) {
+				variant = GameVariant.CLASSIC;
+			} else if ("mspacman".equals(args[0])) {
+				variant = GameVariant.MS_PACMAN;
+			}
+		}
 		float scaling = args.length > 1 ? Float.parseFloat(args[1]) : 2;
 		PacManGame game = new PacManGame();
-		if ("classic".equals(variant)) {
-			game.setVariant(GameVariant.CLASSIC);
-		} else if ("mspacman".equals(variant)) {
-			game.setVariant(GameVariant.MS_PACMAN);
-		}
+		game.setVariant(variant);
 		invokeLater(() -> {
 			PacManGameUI ui = new PacManGameSwingUI(game.world.sizeInTiles(), scaling);
 			ui.setGame(game);

@@ -15,6 +15,7 @@ import java.awt.image.BufferStrategy;
 import javax.swing.JFrame;
 import javax.swing.Timer;
 
+import de.amr.games.pacman.core.GameVariant;
 import de.amr.games.pacman.core.PacManGame;
 import de.amr.games.pacman.core.PacManGameState;
 import de.amr.games.pacman.lib.Direction;
@@ -24,11 +25,9 @@ import de.amr.games.pacman.ui.Sound;
 import de.amr.games.pacman.worlds.classic.PacManClassicAssets;
 import de.amr.games.pacman.worlds.classic.PacManClassicIntroScene;
 import de.amr.games.pacman.worlds.classic.PacManClassicPlayScene;
-import de.amr.games.pacman.worlds.classic.PacManClassicWorld;
 import de.amr.games.pacman.worlds.mspacman.MsPacManAssets;
 import de.amr.games.pacman.worlds.mspacman.MsPacManIntroScene;
 import de.amr.games.pacman.worlds.mspacman.MsPacManPlayScene;
-import de.amr.games.pacman.worlds.mspacman.MsPacManWorld;
 
 /**
  * Swing UI for Pac-Man game.
@@ -89,20 +88,18 @@ public class PacManGameSwingUI implements PacManGameUI {
 	public void setGame(PacManGame game) {
 		this.game = game;
 		game.ui = this;
+		setGameVariant(game.variant);
 		windowTitleUpdate = new Timer(1000,
 				e -> window.setTitle(String.format("%s (%d fps)", game.world.pacName(), game.clock.frequency)));
-		if (game.world instanceof PacManClassicWorld) {
-			initPacManClassic();
-		} else if (game.world instanceof MsPacManWorld) {
-			initMsPacManWorld();
-		} else {
-			throw new IllegalArgumentException("Unknown game world: " + game.world);
-		}
 	}
 
 	@Override
-	public float scaling() {
-		return scaling;
+	public void setGameVariant(GameVariant variant) {
+		if (variant == GameVariant.CLASSIC) {
+			initPacManClassic();
+		} else {
+			initMsPacManWorld();
+		}
 	}
 
 	private void initPacManClassic() {
@@ -119,6 +116,11 @@ public class PacManGameSwingUI implements PacManGameUI {
 		soundManager.init();
 		introScene = new MsPacManIntroScene(game, sizeInPixels, assets);
 		playScene = new MsPacManPlayScene(game, sizeInPixels, assets);
+	}
+
+	@Override
+	public float scaling() {
+		return scaling;
 	}
 
 	@Override
