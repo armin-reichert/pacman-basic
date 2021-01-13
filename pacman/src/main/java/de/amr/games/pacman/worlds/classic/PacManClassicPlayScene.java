@@ -52,20 +52,7 @@ public class PacManClassicPlayScene extends PacManGameScene {
 		for (Ghost ghost : game.ghosts) {
 			drawGhost(g, ghost);
 		}
-		drawMessage(g);
 		drawDebugInfo(g);
-	}
-
-	private void drawMessage(Graphics2D g) {
-		if (game.state == PacManGameState.READY) {
-			g.setFont(assets.scoreFont);
-			g.setColor(Color.YELLOW);
-			drawCenteredText(g, resources.getString("READY"), t(21));
-		} else if (game.state == PacManGameState.GAME_OVER) {
-			g.setFont(assets.scoreFont);
-			g.setColor(Color.RED);
-			drawCenteredText(g, resources.getString("GAME_OVER"), t(21));
-		}
 	}
 
 	private void drawScore(Graphics2D g) {

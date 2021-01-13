@@ -44,6 +44,9 @@ public class PacManGameSwingUI implements PacManGameUI {
 	private final Keyboard keyboard;
 
 	private boolean debugMode;
+	private String messageText;
+	private Color messageColor;
+	private Font messageFont;
 	private Timer windowTitleUpdate;
 	private PacManGame game;
 	private PacManGameScene currentScene;
@@ -78,6 +81,8 @@ public class PacManGameSwingUI implements PacManGameUI {
 		canvas.setSize((int) (sizeInPixels.x * scaling), (int) (sizeInPixels.y * scaling));
 		canvas.setFocusable(false);
 		window.add(canvas);
+
+		messageFont = PacManGameAssets.font("/PressStart2P-Regular.ttf", 8).deriveFont(Font.ITALIC);
 	}
 
 	@Override
@@ -130,6 +135,17 @@ public class PacManGameSwingUI implements PacManGameUI {
 	}
 
 	@Override
+	public void showMessage(String message, boolean important) {
+		messageText = message;
+		messageColor = important ? Color.RED : Color.yellow;
+	}
+
+	@Override
+	public void clearMessage() {
+		messageText = null;
+	}
+
+	@Override
 	public boolean isDebugMode() {
 		return debugMode;
 	}
@@ -149,15 +165,12 @@ public class PacManGameSwingUI implements PacManGameUI {
 				g.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 				g.scale(scaling, scaling);
 				if (game.gamePaused) {
-					if (game.state == PacManGameState.INTRO) {
-						drawPausedScreen(g);
-					} else {
-						currentScene.draw(g);
-					}
+					drawPausedScreen(g);
 				} else {
 					updateScene();
 					currentScene.draw(g);
 				}
+				drawMessage(g);
 				g.dispose();
 			} while (buffers.contentsRestored());
 			buffers.show();
@@ -172,6 +185,15 @@ public class PacManGameSwingUI implements PacManGameUI {
 		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 		g.drawString("PAUSED", (sizeInPixels.x - g.getFontMetrics().stringWidth("PAUSED")) / 2, t(16));
 		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
+	}
+
+	private void drawMessage(Graphics2D g) {
+		if (messageText != null) {
+			g.setFont(messageFont);
+			g.setColor(messageColor);
+			int textWidth = g.getFontMetrics().stringWidth(messageText);
+			g.drawString(messageText, (sizeInPixels.x - textWidth) / 2, t(21));
+		}
 	}
 
 	@Override

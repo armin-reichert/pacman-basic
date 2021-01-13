@@ -17,6 +17,10 @@ public interface PacManGameUI {
 
 	void show();
 
+	void showMessage(String message, boolean important);
+
+	void clearMessage();
+
 	boolean keyPressed(String keySpec);
 
 	boolean anyKeyPressed();

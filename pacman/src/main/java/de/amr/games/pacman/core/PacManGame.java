@@ -27,6 +27,7 @@ import java.io.File;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -93,6 +94,8 @@ public class PacManGame {
 
 	public boolean autopilotEnabled;
 	public final Autopilot autopilot;
+
+	private final ResourceBundle resources = ResourceBundle.getBundle("localization.translation");
 
 	public PacManGame() {
 		clock = new Clock();
@@ -316,6 +319,7 @@ public class PacManGame {
 			state.setDuration(clock.sec(0.5));
 		}
 		resetGuys();
+		ui.showMessage(resources.getString("READY"), false);
 	}
 
 	private PacManGameState runReadyState() {
@@ -331,6 +335,7 @@ public class PacManGame {
 	}
 
 	private void exitReadyState() {
+		ui.clearMessage();
 	}
 
 	// HUNTING
@@ -571,6 +576,7 @@ public class PacManGame {
 		if (hiscore.changed) {
 			hiscore.save(hiscoreFile(variant));
 		}
+		ui.showMessage(resources.getString("GAME_OVER"), true);
 	}
 
 	private PacManGameState runGameOverState() {
@@ -582,6 +588,7 @@ public class PacManGame {
 
 	private void exitGameOverState() {
 		reset();
+		ui.clearMessage();
 	}
 
 	// END STATE-MACHINE
