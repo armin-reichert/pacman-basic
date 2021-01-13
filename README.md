@@ -20,3 +20,23 @@ To build the executable:
 
 ### Ms. Pac-Man play scene
 <img src="pacman/doc/mspacman_playing.png">
+
+### Keys
+
+- "Escape" = Restart game
+- "p" = Pause/resume game
+- "s" = Toggle slow/normal 
+- "f" = Toggle fast/normal
+- "d" = Toggle debug drawing mode
+- "a" = Toggle Pac-Man autopilot
+
+- Intro screen
+  - "v" = Toggle game variant (Pac-Man, Ms. Pac-Man)
+
+- Play screen
+  - LEFT, RIGHT, UP, DOWN = control Pac-Man movement
+  - "e" = Eat all non-energizer pellets
+  - "x" = Kill all ghosts
+  - "l" = Add life
+  - "n" = Next level
+  
