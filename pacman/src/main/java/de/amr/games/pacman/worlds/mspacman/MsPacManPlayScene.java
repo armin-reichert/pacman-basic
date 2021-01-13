@@ -143,7 +143,7 @@ public class MsPacManPlayScene extends PacManGameScene {
 		}
 	}
 
-	private static int dy[] = { 0, 3, 0, -3 };
+	private static int dy[] = { 0, 2, 0, -2 };
 
 	private void drawBonus(Graphics2D g) {
 		if (game.bonus.availableTicks > 0) {
