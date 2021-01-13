@@ -36,7 +36,7 @@ public abstract class PacManGameScene {
 
 	public abstract void end();
 
-	public abstract void draw(Graphics2D g);
+	public abstract void draw(Graphics2D g, Graphics2D unscaledGC);
 
 	public void drawCenteredText(Graphics2D g, String text, int y) {
 		g.drawString(text, (size.x - g.getFontMetrics().stringWidth(text)) / 2, y);

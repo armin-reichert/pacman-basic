@@ -169,7 +169,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 					Graphics2D scaledGC = (Graphics2D) g.create();
 					scaledGC.scale(scaling, scaling);
 					updateScene();
-					drawCurrentScene(scaledGC);
+					drawCurrentScene(scaledGC, g);
 					scaledGC.dispose();
 				}
 				g.dispose();
@@ -178,10 +178,10 @@ public class PacManGameSwingUI implements PacManGameUI {
 		} while (buffers.contentsLost());
 	}
 
-	private void drawCurrentScene(Graphics2D g) {
+	private void drawCurrentScene(Graphics2D g, Graphics2D unscaledGC) {
 		g.setColor(currentScene.bgColor);
 		g.fillRect(0, 0, unscaledSizeInPixels.x, unscaledSizeInPixels.y);
-		currentScene.draw(g);
+		currentScene.draw(g, unscaledGC);
 		drawMessage(g);
 	}
 

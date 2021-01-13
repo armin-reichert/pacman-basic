@@ -54,7 +54,7 @@ public class PacManClassicIntroScene extends PacManGameScene {
 	}
 
 	@Override
-	public void draw(Graphics2D g) {
+	public void draw(Graphics2D g, Graphics2D unscaledGC) {
 		game.state.runAfter(game.clock.sec(1), () -> {
 			drawCenteredImage(g, assets.gameLogo, 3);
 		});

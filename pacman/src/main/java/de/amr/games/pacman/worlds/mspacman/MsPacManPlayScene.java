@@ -43,7 +43,7 @@ public class MsPacManPlayScene extends PacManGameScene {
 	}
 
 	@Override
-	public void draw(Graphics2D g) {
+	public void draw(Graphics2D g, Graphics2D unscaledGC) {
 		drawScore(g);
 		drawLivesCounter(g);
 		drawLevelCounter(g);
