@@ -160,28 +160,27 @@ public class PacManGameSwingUI implements PacManGameUI {
 		BufferStrategy buffers = canvas.getBufferStrategy();
 		do {
 			do {
-				Graphics2D gUnscaled = (Graphics2D) buffers.getDrawGraphics();
-				gUnscaled.setColor(canvas.getBackground());
-				gUnscaled.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+				Graphics2D g = (Graphics2D) buffers.getDrawGraphics();
+				g.setColor(canvas.getBackground());
+				g.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 				if (game.gamePaused) {
-					drawPausedScreen(gUnscaled);
+					drawPausedScreen(g);
 				} else {
-					Graphics2D gScaled = (Graphics2D) gUnscaled.create();
-					gScaled.scale(scaling, scaling);
 					updateScene();
-					drawCurrentScene(gScaled, gUnscaled);
-					gScaled.dispose();
+					drawCurrentScene(g);
 				}
-				gUnscaled.dispose();
+				g.dispose();
 			} while (buffers.contentsRestored());
 			buffers.show();
 		} while (buffers.contentsLost());
 	}
 
-	private void drawCurrentScene(Graphics2D gScaled, Graphics2D gUnscaled) {
-		gScaled.setColor(currentScene.bgColor);
-		gScaled.fillRect(0, 0, unscaledSizeInPixels.x, unscaledSizeInPixels.y);
-		currentScene.draw(gScaled, gUnscaled);
+	private void drawCurrentScene(Graphics2D g) {
+		g.setColor(currentScene.bgColor);
+		g.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+		Graphics2D gScaled = (Graphics2D) g.create();
+		gScaled.scale(scaling, scaling);
+		currentScene.draw(gScaled, g);
 		if (messageText != null) {
 			gScaled.setFont(messageFont);
 			gScaled.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
@@ -190,17 +189,18 @@ public class PacManGameSwingUI implements PacManGameUI {
 			gScaled.drawString(messageText, (unscaledSizeInPixels.x - textWidth) / 2, t(21));
 			gScaled.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
 		}
+		gScaled.dispose();
 	}
 
-	private void drawPausedScreen(Graphics2D gUnscaled) {
-		gUnscaled.setColor(new Color(200, 200, 200, 100));
-		gUnscaled.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
-		gUnscaled.setColor(Color.GREEN);
-		gUnscaled.setFont(new Font(Font.MONOSPACED, Font.BOLD, 28));
-		gUnscaled.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-		gUnscaled.drawString("PAUSED", (canvas.getWidth() - gUnscaled.getFontMetrics().stringWidth("PAUSED")) / 2,
-				canvas.getHeight() / 2);
-		gUnscaled.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
+	private void drawPausedScreen(Graphics2D g) {
+		String text = "PAUSED (Press 'P' TO RESUME)";
+		g.setColor(new Color(200, 200, 200, 100));
+		g.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+		g.setColor(Color.GREEN);
+		g.setFont(new Font(Font.MONOSPACED, Font.BOLD, 20));
+		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+		g.drawString(text, (canvas.getWidth() - g.getFontMetrics().stringWidth(text)) / 2, canvas.getHeight() / 2);
+		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
 	}
 
 	@Override
