@@ -36,6 +36,7 @@ import java.util.stream.Stream;
 import de.amr.games.pacman.creatures.Bonus;
 import de.amr.games.pacman.creatures.Creature;
 import de.amr.games.pacman.creatures.Ghost;
+import de.amr.games.pacman.creatures.Ghost.GhostState;
 import de.amr.games.pacman.creatures.Pac;
 import de.amr.games.pacman.lib.Clock;
 import de.amr.games.pacman.lib.Direction;
@@ -222,11 +223,7 @@ public class PacManGame extends Thread {
 			ghost.couldMove = true;
 			ghost.forcedDirection = false;
 			ghost.forcedOnTrack = ghost.id == BLINKY;
-			ghost.dead = false;
-			ghost.frightened = false;
-			ghost.locked = true;
-			ghost.enteringHouse = false;
-			ghost.leavingHouse = false;
+			ghost.state = GhostState.LOCKED;
 			ghost.bounty = 0;
 			ghost.placeAt(world.ghostHome(ghost.id), HTS, 0);
 			ghost.dir = ghost.wishDir = world.ghostStartDirection(ghost.id);
@@ -467,10 +464,10 @@ public class PacManGame extends Thread {
 		checkPacFindsBonus();
 
 		Ghost collidingGhost = ghostCollidingWithPac();
-		if (collidingGhost != null && collidingGhost.frightened) {
+		if (collidingGhost != null && collidingGhost.state == GhostState.FRIGHTENED) {
 			return changeState(this::exitHuntingState, this::enterGhostDyingState, () -> killGhost(collidingGhost));
 		}
-		if (collidingGhost != null && !collidingGhost.frightened) {
+		if (collidingGhost != null && collidingGhost.state != GhostState.FRIGHTENED) {
 			return changeState(this::exitHuntingState, this::enterPacManDyingState, () -> killPac(collidingGhost));
 		}
 
@@ -540,7 +537,7 @@ public class PacManGame extends Thread {
 			return changeState(this::exitGhostDyingState, () -> state = stateBefore, () -> log("Resume state '%s'", state));
 		}
 		for (Ghost ghost : ghosts) {
-			if (ghost.dead && ghost.bounty == 0) {
+			if (ghost.state == GhostState.DEAD && ghost.bounty == 0) {
 				updateGhost(ghost);
 			}
 		}
@@ -549,7 +546,7 @@ public class PacManGame extends Thread {
 
 	private void exitGhostDyingState() {
 		for (Ghost ghost : ghosts) {
-			if (ghost.dead && ghost.bounty > 0) {
+			if (ghost.state == GhostState.DEAD && ghost.bounty > 0) {
 				ghost.bounty = 0;
 			}
 		}
@@ -563,8 +560,7 @@ public class PacManGame extends Thread {
 		state = CHANGING_LEVEL;
 		state.setDuration(clock.sec(level.numFlashes + 2));
 		for (Ghost ghost : ghosts) {
-			ghost.frightened = false;
-			ghost.dead = false;
+			ghost.state = GhostState.LOCKED;
 			ghost.speed = 0;
 		}
 		pac.speed = 0;
@@ -633,7 +629,10 @@ public class PacManGame extends Thread {
 			pac.powerTicksLeft--;
 			if (pac.powerTicksLeft == 0) {
 				for (Ghost ghost : ghosts) {
-					ghost.frightened = false;
+					if (ghost.state == GhostState.FRIGHTENED) {
+						ghost.state = GhostState.HUNTING;
+					}
+					;
 				}
 				ui.stopSound(Sound.PACMAN_POWER);
 			}
@@ -660,8 +659,8 @@ public class PacManGame extends Thread {
 	}
 
 	private Ghost ghostCollidingWithPac() {
-		return Stream.of(ghosts).filter(ghost -> !ghost.dead).filter(ghost -> ghost.tile().equals(pac.tile())).findAny()
-				.orElse(null);
+		return Stream.of(ghosts).filter(ghost -> ghost.state != GhostState.DEAD)
+				.filter(ghost -> ghost.tile().equals(pac.tile())).findAny().orElse(null);
 	}
 
 	private void killPac(Ghost killer) {
@@ -763,7 +762,7 @@ public class PacManGame extends Thread {
 			log("Pac-Man got power for %d seconds", seconds);
 			for (Ghost ghost : ghosts) {
 				if (isGhostHunting(ghost)) {
-					ghost.frightened = true;
+					ghost.state = GhostState.FRIGHTENED;
 				}
 			}
 			forceHuntingGhostsTurningBack();
@@ -773,7 +772,7 @@ public class PacManGame extends Thread {
 
 	private void updateGhostDotCounters() {
 		if (globalDotCounterEnabled) {
-			if (ghosts[CLYDE].locked && globalDotCounter == 32) {
+			if (ghosts[CLYDE].state == GhostState.LOCKED && globalDotCounter == 32) {
 				globalDotCounterEnabled = false;
 				globalDotCounter = 0;
 				log("Global dot counter disabled and reset, Clyde in house when counter reached 32");
@@ -788,8 +787,7 @@ public class PacManGame extends Thread {
 	}
 
 	private void killGhost(Ghost ghost) {
-		ghost.frightened = false;
-		ghost.dead = true;
+		ghost.state = GhostState.DEAD;
 		ghost.speed = 2 * level.ghostSpeed; // TODO correct?
 		ghost.targetTile = world.houseEntry();
 		ghost.bounty = ghostBounty;
@@ -834,21 +832,23 @@ public class PacManGame extends Thread {
 	}
 
 	private void updateGhost(Ghost ghost) {
-		if (ghost.locked) {
+		if (ghost.state == GhostState.LOCKED) {
 			if (ghost.id != BLINKY) {
 				tryReleasingGhost(ghost);
 				letGhostBounce(ghost);
 			} else {
-				ghost.locked = false;
+				ghost.state = GhostState.HUNTING;
 			}
-		} else if (ghost.enteringHouse) {
+		} else if (ghost.state == GhostState.ENTERING_HOUSE) {
 			letGhostEnterHouse(ghost);
-		} else if (ghost.leavingHouse) {
+		} else if (ghost.state == GhostState.LEAVING_HOUSE) {
 			letGhostLeaveHouse(ghost);
-		} else if (ghost.dead) {
+		} else if (ghost.state == GhostState.DEAD) {
 			letGhostReturnHome(ghost);
-		} else if (state == HUNTING) {
-			letGhostHunt(ghost);
+		} else if (ghost.state == GhostState.FRIGHTENED) {
+			letGhostWanderMaze(ghost);
+		} else if (ghost.state == GhostState.HUNTING) {
+			letGhostWanderMaze(ghost);
 		}
 	}
 
@@ -862,8 +862,7 @@ public class PacManGame extends Thread {
 	}
 
 	private void releaseGhost(Ghost ghost, String reason, Object... args) {
-		ghost.locked = false;
-		ghost.leavingHouse = true;
+		ghost.state = GhostState.LEAVING_HOUSE;
 		if (ghost.id == CLYDE && ghosts[BLINKY].elroyMode < 0) {
 			ghosts[BLINKY].elroyMode = (byte) -ghosts[BLINKY].elroyMode; // resume Elroy mode
 			log("Blinky Elroy mode %d resumed", ghosts[BLINKY].elroyMode);
@@ -872,7 +871,8 @@ public class PacManGame extends Thread {
 	}
 
 	private Optional<Ghost> preferredLockedGhost() {
-		return Stream.of(ghosts[PINKY], ghosts[INKY], ghosts[CLYDE]).filter(ghost -> ghost.locked).findFirst();
+		return Stream.of(ghosts[PINKY], ghosts[INKY], ghosts[CLYDE]).filter(ghost -> ghost.state == GhostState.LOCKED)
+				.findFirst();
 	}
 
 	private int ghostPrivateDotLimit(Ghost ghost) {
@@ -937,11 +937,11 @@ public class PacManGame extends Thread {
 		tryMoving(ghost);
 	}
 
-	private void letGhostHunt(Ghost ghost) {
+	private void letGhostWanderMaze(Ghost ghost) {
 		V2i tile = ghost.tile();
 		if (world.isTunnel(tile.x, tile.y)) {
 			ghost.speed = level.ghostSpeedTunnel;
-		} else if (ghost.frightened) {
+		} else if (ghost.state == GhostState.FRIGHTENED) {
 			ghost.speed = level.ghostSpeedFrightened;
 		} else if (ghost.id == BLINKY && ghost.elroyMode == 1) {
 			ghost.speed = level.elroy1Speed;
@@ -969,7 +969,7 @@ public class PacManGame extends Thread {
 			ghost.setOffset(HTS, 0);
 			ghost.dir = ghost.wishDir = DOWN;
 			ghost.forcedOnTrack = false;
-			ghost.enteringHouse = true;
+			ghost.state = GhostState.ENTERING_HOUSE;
 			ghost.targetTile = ghost.id == BLINKY ? world.houseCenter() : world.ghostHome(ghost.id);
 			return;
 		}
@@ -981,12 +981,10 @@ public class PacManGame extends Thread {
 		V2f offset = ghost.offset();
 		// Target reached? Revive and start leaving house.
 		if (ghostLocation.equals(ghost.targetTile) && offset.y >= 0) {
-			ghost.dead = false;
-			ghost.enteringHouse = false;
-			ghost.leavingHouse = true;
+			ghost.state = GhostState.LEAVING_HOUSE;
 			ghost.speed = level.ghostSpeed; // TODO correct?
 			ghost.wishDir = ghost.dir.opposite();
-			if (Stream.of(ghosts).noneMatch(g -> g.dead)) {
+			if (Stream.of(ghosts).noneMatch(g -> g.state == GhostState.DEAD)) {
 				ui.stopSound(Sound.RETREATING);
 			}
 			return;
@@ -1006,7 +1004,7 @@ public class PacManGame extends Thread {
 			ghost.setOffset(HTS, 0);
 			ghost.dir = ghost.wishDir = LEFT;
 			ghost.forcedOnTrack = true;
-			ghost.leavingHouse = false;
+			ghost.state = GhostState.HUNTING;
 			return;
 		}
 		// at house middle and rising?
@@ -1042,7 +1040,7 @@ public class PacManGame extends Thread {
 		if (world.isPortal(ghostLocation.x, ghostLocation.y)) {
 			return Optional.empty();
 		}
-		if (ghost.frightened && world.isIntersection(ghostLocation.x, ghostLocation.y)) {
+		if (ghost.state == GhostState.FRIGHTENED && world.isIntersection(ghostLocation.x, ghostLocation.y)) {
 			return Optional.of(randomPossibleMoveDir(ghost));
 		}
 		return ghostTargetDirection(ghost);
@@ -1061,7 +1059,7 @@ public class PacManGame extends Thread {
 			if (!canAccessTile(ghost, neighbor.x, neighbor.y)) {
 				continue;
 			}
-			if (dir == UP && world.isUpwardsBlocked(neighbor.x, neighbor.y) && !(ghost.frightened || ghost.dead)) {
+			if (dir == UP && ghost.state == GhostState.HUNTING && world.isUpwardsBlocked(neighbor.x, neighbor.y)) {
 				continue;
 			}
 			double dist = neighbor.euclideanDistance(ghost.targetTile);
@@ -1074,7 +1072,7 @@ public class PacManGame extends Thread {
 	}
 
 	boolean isGhostHunting(Ghost ghost) {
-		return !(ghost.dead || ghost.locked || ghost.enteringHouse || ghost.leavingHouse || ghost.frightened);
+		return ghost.state == GhostState.HUNTING;
 	}
 
 	private void forceHuntingGhostsTurningBack() {
@@ -1162,7 +1160,8 @@ public class PacManGame extends Thread {
 			return true;
 		}
 		if (world.isGhostHouseDoor(x, y)) {
-			return guy instanceof Ghost && (((Ghost) guy).enteringHouse || ((Ghost) guy).leavingHouse);
+			return guy instanceof Ghost
+					&& (((Ghost) guy).state == GhostState.ENTERING_HOUSE || ((Ghost) guy).state == GhostState.LEAVING_HOUSE);
 		}
 		return world.inMapRange(x, y) && !world.isWall(x, y);
 	}
@@ -1216,7 +1215,7 @@ public class PacManGame extends Thread {
 	private void killAllGhosts() {
 		ghostBounty = 200;
 		for (Ghost ghost : ghosts) {
-			if (isGhostHunting(ghost) || ghost.frightened) {
+			if (isGhostHunting(ghost) || ghost.state == GhostState.FRIGHTENED) {
 				killGhost(ghost);
 			}
 		}

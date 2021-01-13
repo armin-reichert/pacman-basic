@@ -9,26 +9,18 @@ import de.amr.games.pacman.lib.V2i;
  */
 public class Ghost extends Creature {
 
+	public enum GhostState {
+		LOCKED, DEAD, ENTERING_HOUSE, LEAVING_HOUSE, FRIGHTENED, HUNTING;
+	}
+
 	/** The unique ID of the ghost (0..3). */
 	public final byte id;
 
 	/** The readable name of the ghost. */
 	public String name;
 
-	/** If the ghost can be eaten by the Pac. */
-	public boolean frightened;
-
-	/** If the ghost is dead. */
-	public boolean dead;
-
-	/** If the ghost cannot leave its home tile. */
-	public boolean locked;
-
-	/** If the ghost is entering the house. */
-	public boolean enteringHouse;
-
-	/** If the ghost is leaving the house. */
-	public boolean leavingHouse;
+	/** The current state of the ghost. */
+	public GhostState state;
 
 	/** The bounty for this killing ghost. */
 	public short bounty;

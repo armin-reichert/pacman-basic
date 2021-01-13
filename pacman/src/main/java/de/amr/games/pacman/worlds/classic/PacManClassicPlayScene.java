@@ -15,6 +15,7 @@ import java.util.ResourceBundle;
 import de.amr.games.pacman.core.PacManGame;
 import de.amr.games.pacman.core.PacManGameState;
 import de.amr.games.pacman.creatures.Ghost;
+import de.amr.games.pacman.creatures.Ghost.GhostState;
 import de.amr.games.pacman.creatures.Pac;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.swing.PacManGameScene;
@@ -173,11 +174,11 @@ public class PacManClassicPlayScene extends PacManGameScene {
 			// number
 			return assets.numbers.get(ghost.bounty);
 		}
-		if (ghost.dead) {
+		if (ghost.state == GhostState.DEAD) {
 			// eyes looking towards intended move direction
 			return assets.section(8 + dir, 5);
 		}
-		if (ghost.frightened) {
+		if (ghost.state == GhostState.FRIGHTENED) {
 			if (game.pac.powerTicksLeft <= game.clock.sec(2) && ghost.speed != 0) {
 				// TODO flash exactly as often as specified by level
 				// flashing blue/white, walking animation
@@ -187,7 +188,7 @@ public class PacManClassicPlayScene extends PacManGameScene {
 			// blue, walking animation
 			return assets.section(8 + walking, 4);
 		}
-		if (ghost.locked && game.pac.powerTicksLeft > 0) {
+		if (ghost.state == GhostState.LOCKED && game.pac.powerTicksLeft > 0) {
 			// blue, walking animation
 			return assets.section(8 + walking, 4);
 		}

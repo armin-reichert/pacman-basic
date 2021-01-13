@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.creatures.Ghost;
+import de.amr.games.pacman.creatures.Ghost.GhostState;
 import de.amr.games.pacman.creatures.Pac;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
@@ -114,7 +115,8 @@ public class Autopilot {
 
 	private Ghost findFrightenedGhostInReach() {
 		for (Ghost ghost : ghosts) {
-			if (ghost.frightened && ghost.tile().manhattanDistance(pacMan.tile()) < MAX_GHOST_CHASE_DIST) {
+			if (ghost.state == GhostState.FRIGHTENED
+					&& ghost.tile().manhattanDistance(pacMan.tile()) < MAX_GHOST_CHASE_DIST) {
 				return ghost;
 			}
 		}
