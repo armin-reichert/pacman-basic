@@ -123,7 +123,6 @@ public class PacManGame extends Thread {
 		reset();
 		enterIntroState();
 		log("Enter state '%s' for %s", stateDescription(), ticksDescription(state.duration()));
-		ui.show();
 		super.start();
 	}
 
