@@ -34,6 +34,7 @@ public class PacManClassicIntroScene extends PacManGameScene {
 	public PacManClassicIntroScene(PacManGame game, V2i size, PacManClassicAssets assets) {
 		super(game, size);
 		this.assets = assets;
+		bgColor = new Color(10, 10, 10);
 	}
 
 	@Override

@@ -24,10 +24,12 @@ public abstract class PacManGameScene {
 
 	public final PacManGame game;
 	public final V2i size;
+	public Color bgColor;
 
 	public PacManGameScene(PacManGame game, V2i size) {
 		this.game = game;
 		this.size = size;
+		bgColor = Color.BLACK;
 	}
 
 	public abstract void start();
