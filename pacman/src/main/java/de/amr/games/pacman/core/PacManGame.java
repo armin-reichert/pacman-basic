@@ -714,10 +714,13 @@ public class PacManGame {
 				bonus.availableTicks = clock.sec(9 + rnd.nextFloat());
 				bonus.placeAt(PacManClassicWorld.bonusTile, HTS, 0);
 			} else if (variant == GameVariant.MS_PACMAN) {
-				bonus.availableTicks = Long.MAX_VALUE; // TODO correct?
-				bonus.startLocation = world.portalLeft(rnd.nextInt(world.numPortals()));
+				bonus.availableTicks = Long.MAX_VALUE; // TODO is there a timeout?
+				int portalNumber = rnd.nextInt(world.numPortals());
+				Direction start = rnd.nextBoolean() ? LEFT : RIGHT;
+				bonus.targetDirection = start.opposite();
+				bonus.startLocation = start == LEFT ? world.portalLeft(portalNumber) : world.portalRight(portalNumber);
 				bonus.placeAt(bonus.startLocation, 0, 0);
-				bonus.dir = bonus.wishDir = RIGHT;
+				bonus.dir = bonus.wishDir = start.opposite();
 				bonus.couldMove = true;
 				bonus.changedTile = true;
 				bonus.speed = 0.5f;
@@ -783,7 +786,12 @@ public class PacManGame {
 					return;
 				}
 				if (!bonus.couldMove || world.isIntersection(bonusLocation.x, bonusLocation.y)) {
-					bonus.wishDir = randomPossibleMoveDir(bonus);
+					List<Direction> dirs = possibleMoveDirections(bonus);
+					if (dirs.size() > 1) {
+						// give random movement a bias towards the target direction
+						dirs.remove(bonus.targetDirection.opposite());
+					}
+					bonus.wishDir = dirs.get(rnd.nextInt(dirs.size()));
 				}
 				tryMoving(bonus);
 			}
@@ -1132,8 +1140,13 @@ public class PacManGame {
 	}
 
 	private Direction randomPossibleMoveDir(Creature guy) {
+		List<Direction> dirs = possibleMoveDirections(guy);
+		return dirs.get(rnd.nextInt(dirs.size()));
+	}
+
+	private List<Direction> possibleMoveDirections(Creature guy) {
 		//@formatter:off
-		List<Direction> dirs = Stream.of(Direction.values())
+		return Stream.of(Direction.values())
 			.filter(dir -> dir != guy.dir.opposite())
 			.filter(dir -> {
 				V2i neighbor = guy.tile().sum(dir.vec);
@@ -1141,7 +1154,6 @@ public class PacManGame {
 			})
 			.collect(Collectors.toList());
 		//@formatter:on
-		return dirs.get(rnd.nextInt(dirs.size()));
 	}
 
 	// Score
