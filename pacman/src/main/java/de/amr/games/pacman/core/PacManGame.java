@@ -934,8 +934,8 @@ public class PacManGame extends Thread {
 	}
 
 	private void letGhostWanderMaze(Ghost ghost) {
-		V2i tile = ghost.tile();
-		if (world.isTunnel(tile.x, tile.y)) {
+		V2i ghostLocation = ghost.tile();
+		if (world.isTunnel(ghostLocation.x, ghostLocation.y)) {
 			ghost.speed = level.ghostSpeedTunnel;
 		} else if (ghost.state == GhostState.FRIGHTENED) {
 			ghost.speed = level.ghostSpeedFrightened;
