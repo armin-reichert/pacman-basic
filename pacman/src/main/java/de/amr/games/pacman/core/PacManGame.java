@@ -948,11 +948,10 @@ public class PacManGame extends Thread {
 		}
 		if (inChasingPhase() || ghost.id == BLINKY && ghost.elroyMode > 0) {
 			ghost.targetTile = ghostChasingTarget(ghost.id);
-			letGhostHeadForTargetTile(ghost);
 		} else {
 			ghost.targetTile = world.ghostScatterTile(ghost.id);
-			letGhostHeadForTargetTile(ghost);
 		}
+		letGhostHeadForTargetTile(ghost);
 	}
 
 	private void letGhostHeadForTargetTile(Ghost ghost) {
