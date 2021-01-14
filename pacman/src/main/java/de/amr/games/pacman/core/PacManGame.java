@@ -477,6 +477,7 @@ public class PacManGame extends Thread {
 		pac.speed = 0;
 		for (Ghost ghost : ghosts) {
 			ghost.speed = 0;
+			ghost.state = GhostState.HUNTING;
 		}
 		bonus.availableTicks = bonus.consumedTicks = 0;
 		ui.stopAllSounds();
@@ -731,12 +732,11 @@ public class PacManGame extends Thread {
 				bonus.placeAt(PacManClassicWorld.BONUS_TILE, HTS, 0);
 			} else if (variant == MS_PACMAN) {
 				bonus.availableTicks = Long.MAX_VALUE; // TODO is there a timeout?
-				int portalNumber = rnd.nextInt(world.numPortals());
-				Direction borderWhereBonusAppears = rnd.nextBoolean() ? LEFT : RIGHT;
-				bonus.targetDirection = borderWhereBonusAppears.opposite();
-				bonus.startTile = borderWhereBonusAppears == LEFT ? world.portalLeft(portalNumber)
-						: world.portalRight(portalNumber);
+				int portal = rnd.nextInt(world.numPortals());
+				boolean entersMazeFromLeft = rnd.nextBoolean();
+				bonus.startTile = entersMazeFromLeft ? world.portalLeft(portal) : world.portalRight(portal);
 				bonus.placeAt(bonus.startTile, 0, 0);
+				bonus.targetDirection = entersMazeFromLeft ? RIGHT : LEFT;
 				bonus.dir = bonus.wishDir = bonus.targetDirection;
 				bonus.couldMove = true;
 				bonus.speed = 0.5f;
