@@ -20,8 +20,8 @@ import de.amr.games.pacman.core.PacManGame;
 import de.amr.games.pacman.core.PacManGameState;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.ui.api.PacManGameUI;
 import de.amr.games.pacman.ui.api.PacManGameSound;
+import de.amr.games.pacman.ui.api.PacManGameUI;
 import de.amr.games.pacman.ui.swing.classic.PacManClassicAssets;
 import de.amr.games.pacman.ui.swing.classic.PacManClassicIntroScene;
 import de.amr.games.pacman.ui.swing.classic.PacManClassicPlayScene;
@@ -46,7 +46,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 	private String messageText;
 	private Color messageColor;
 	private Font messageFont;
-	private Timer titleUpdate;
+	private Timer titleUpdateTimer;
 	private PacManGame game;
 	private PacManGameScene currentScene;
 	private PacManGameScene introScene;
@@ -76,7 +76,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 		window.setTitle("Pac-Man");
 
 		canvas = new Canvas();
-		canvas.setBackground(Color.BLACK);
+		canvas.setBackground(new Color(0, 48, 143)); // Air force blue
 		canvas.setSize((int) (unscaledSizeInPixels.x * scaling), (int) (unscaledSizeInPixels.y * scaling));
 		canvas.setFocusable(false);
 		window.add(canvas);
@@ -85,53 +85,48 @@ public class PacManGameSwingUI implements PacManGameUI {
 	}
 
 	@Override
+	public void show() {
+		window.pack();
+		window.setLocationRelativeTo(null);
+		window.setVisible(true);
+		window.requestFocus();
+		canvas.createBufferStrategy(2);
+	}
+
+	@Override
 	public void setGame(PacManGame game) {
-		this.game = game;
-		game.ui = this;
+
+		// maybe detach from old game
 		if (soundManager != null) {
 			stopAllSounds();
 		}
+		if (titleUpdateTimer != null) {
+			titleUpdateTimer.stop();
+		}
+
+		this.game = game;
+		game.ui = this;
+
 		if (game.variant == GameVariant.CLASSIC) {
-			initPacManClassic();
+			PacManClassicAssets assets = new PacManClassicAssets();
+			soundManager = new PacManGameSoundManager(assets);
+			introScene = new PacManClassicIntroScene(game, unscaledSizeInPixels, assets);
+			playScene = new PacManClassicPlayScene(game, unscaledSizeInPixels, assets);
 		} else {
-			initMsPacManWorld();
+			MsPacManAssets assets = new MsPacManAssets();
+			soundManager = new PacManGameSoundManager(assets);
+			introScene = new MsPacManIntroScene(game, unscaledSizeInPixels, assets);
+			playScene = new MsPacManPlayScene(game, unscaledSizeInPixels, assets);
 		}
-		if (titleUpdate != null) {
-			titleUpdate.stop();
-		}
-		titleUpdate = new Timer(1000,
+
+		titleUpdateTimer = new Timer(1000,
 				e -> window.setTitle(String.format("%s (%d fps)", game.world.pacName(), game.clock.frequency)));
-		titleUpdate.start();
-	}
-
-	private void initPacManClassic() {
-		PacManClassicAssets assets = new PacManClassicAssets();
-		soundManager = new PacManGameSoundManager(assets);
-		introScene = new PacManClassicIntroScene(game, unscaledSizeInPixels, assets);
-		playScene = new PacManClassicPlayScene(game, unscaledSizeInPixels, assets);
-	}
-
-	private void initMsPacManWorld() {
-		MsPacManAssets assets = new MsPacManAssets();
-		soundManager = new PacManGameSoundManager(assets);
-		introScene = new MsPacManIntroScene(game, unscaledSizeInPixels, assets);
-		playScene = new MsPacManPlayScene(game, unscaledSizeInPixels, assets);
+		titleUpdateTimer.start();
 	}
 
 	@Override
 	public float scaling() {
 		return scaling;
-	}
-
-	@Override
-	public void show() {
-		window.pack();
-		window.setLocationRelativeTo(null);
-		window.setVisible(true);
-
-		// must called be *after* setVisible()
-		window.requestFocus();
-		canvas.createBufferStrategy(2);
 	}
 
 	@Override

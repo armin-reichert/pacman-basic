@@ -43,8 +43,8 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.Hiscore;
 import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.ui.api.PacManGameUI;
 import de.amr.games.pacman.ui.api.PacManGameSound;
+import de.amr.games.pacman.ui.api.PacManGameUI;
 import de.amr.games.pacman.world.MsPacManWorld;
 import de.amr.games.pacman.world.PacManClassicWorld;
 import de.amr.games.pacman.world.PacManGameWorld;
@@ -67,13 +67,14 @@ import de.amr.games.pacman.world.PacManGameWorld;
  */
 public class PacManGame extends Thread {
 
+	static final ResourceBundle TEXTS = ResourceBundle.getBundle("localization.translation");
+
 	public final Clock clock;
 	public final Random rnd;
 	public final Hiscore hiscore;
 
-	public GameVariant variant;
-	public PacManGameWorld world;
-
+	public final GameVariant variant;
+	public final PacManGameWorld world;
 	public final Pac pac;
 	public final Ghost[] ghosts;
 	public final Bonus bonus;
@@ -84,11 +85,11 @@ public class PacManGame extends Thread {
 	public boolean gameStarted;
 
 	public PacManGameState state, stateBefore;
-	public short levelNumber;
 	public PacManGameLevel level;
-	public byte huntingPhase;
+	public short levelNumber;
 	public byte lives;
 	public int score;
+	public byte huntingPhase;
 	public short ghostBounty;
 	public byte ghostsKilledInLevel;
 	public byte mazeFlashesRemaining;
@@ -97,8 +98,6 @@ public class PacManGame extends Thread {
 
 	public boolean autopilotEnabled;
 	public final Autopilot autopilot;
-
-	private final ResourceBundle resources = ResourceBundle.getBundle("localization.translation");
 
 	public PacManGame(GameVariant variant) {
 		super("Pac-Man-" + variant + "-GameLoop");
@@ -336,7 +335,7 @@ public class PacManGame extends Thread {
 			state.setDuration(clock.sec(0.5));
 		}
 		resetGuys();
-		ui.showMessage(resources.getString("READY"), false);
+		ui.showMessage(TEXTS.getString("READY"), false);
 	}
 
 	private PacManGameState runReadyState() {
@@ -593,7 +592,7 @@ public class PacManGame extends Thread {
 		if (hiscore.changed) {
 			hiscore.save(hiscoreFile(variant));
 		}
-		ui.showMessage(resources.getString("GAME_OVER"), true);
+		ui.showMessage(TEXTS.getString("GAME_OVER"), true);
 	}
 
 	private PacManGameState runGameOverState() {

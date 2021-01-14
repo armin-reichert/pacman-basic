@@ -9,13 +9,13 @@ import de.amr.games.pacman.core.PacManGame;
  */
 public interface PacManGameUI {
 
+	void show();
+
 	void setGame(PacManGame game);
 
 	float scaling();
 
 	void render();
-
-	void show();
 
 	void showMessage(String message, boolean important);
 

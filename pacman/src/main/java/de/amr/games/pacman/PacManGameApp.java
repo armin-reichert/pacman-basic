@@ -16,24 +16,13 @@ import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
 public class PacManGameApp {
 
 	public static void main(String[] args) {
-		GameVariant variant = args.length > 0 ? parseGameVariant(args[0]) : GameVariant.CLASSIC;
 		float scaling = args.length > 1 ? parseFloat(args[1]) : 2;
 		invokeLater(() -> {
-			PacManGame game = new PacManGame(variant);
+			PacManGame game = new PacManGame(GameVariant.CLASSIC);
 			PacManGameUI ui = new PacManGameSwingUI(game.world.sizeInTiles(), scaling);
 			ui.setGame(game);
 			ui.show();
 			game.start();
 		});
-	}
-
-	private static GameVariant parseGameVariant(String spec) {
-		GameVariant variant = GameVariant.CLASSIC;
-		if ("classic".equals(spec)) {
-			variant = GameVariant.CLASSIC;
-		} else if ("mspacman".equals(spec)) {
-			variant = GameVariant.MS_PACMAN;
-		}
-		return variant;
 	}
 }
