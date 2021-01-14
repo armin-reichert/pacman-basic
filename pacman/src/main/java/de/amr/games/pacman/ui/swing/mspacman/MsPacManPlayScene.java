@@ -172,7 +172,7 @@ public class MsPacManPlayScene extends PacManGameScene {
 		}
 		// mouth animation
 		int frame = game.clock.frame(5, 3);
-		return frame == 2 ? assets.section(frame, 0) : assets.section(frame, dir);
+		return assets.section(frame, dir);
 	}
 
 	private void drawGhost(Graphics2D g, Ghost ghost) {

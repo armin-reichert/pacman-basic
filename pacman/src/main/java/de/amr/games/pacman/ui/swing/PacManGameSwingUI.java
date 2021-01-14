@@ -18,7 +18,6 @@ import javax.swing.Timer;
 import de.amr.games.pacman.core.GameVariant;
 import de.amr.games.pacman.core.PacManGame;
 import de.amr.games.pacman.core.PacManGameState;
-import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.api.PacManGameSound;
 import de.amr.games.pacman.ui.api.PacManGameUI;
@@ -36,7 +35,8 @@ import de.amr.games.pacman.ui.swing.mspacman.MsPacManPlayScene;
  */
 public class PacManGameSwingUI implements PacManGameUI {
 
-	private final V2i unscaledSizeInPixels; // unscaled size in pixels
+	private final V2i unscaledSizeInPixels;
+	private final V2i scaledSizeInPixels;
 	private final float scaling;
 	private final JFrame window;
 	private final Canvas canvas;
@@ -56,15 +56,14 @@ public class PacManGameSwingUI implements PacManGameUI {
 	public PacManGameSwingUI(V2i sizeInTiles, float scaling) {
 		this.scaling = scaling;
 		unscaledSizeInPixels = sizeInTiles.scaled(TS);
+		scaledSizeInPixels = new V2i((int) (unscaledSizeInPixels.x * scaling), (int) (unscaledSizeInPixels.y * scaling));
 
 		window = new JFrame();
 		keyboard = new Keyboard(window);
 
 		window.setResizable(false);
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		// TODO use separate icon
-		PacManClassicAssets assets = new PacManClassicAssets();
-		window.setIconImage(assets.section(1, PacManClassicAssets.DIR_INDEX.get(Direction.RIGHT)));
+		window.setIconImage(Assets.image("/pacman.png"));
 
 		window.addWindowListener(new WindowAdapter() {
 
@@ -77,7 +76,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 		canvas = new Canvas();
 		canvas.setBackground(new Color(0, 0, 0));
-		canvas.setSize((int) (unscaledSizeInPixels.x * scaling), (int) (unscaledSizeInPixels.y * scaling));
+		canvas.setSize(scaledSizeInPixels.x, scaledSizeInPixels.y);
 		canvas.setFocusable(false);
 		window.add(canvas);
 
