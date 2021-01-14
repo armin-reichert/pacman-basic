@@ -29,7 +29,8 @@ import de.amr.games.pacman.ui.swing.PacManGameScene;
  */
 public class PacManClassicPlayScene extends PacManGameScene {
 
-	private final ResourceBundle resources = ResourceBundle.getBundle("localization.translation");
+	private static final ResourceBundle TEXTS = ResourceBundle.getBundle("localization.translation");
+
 	private final PacManClassicAssets assets;
 
 	public PacManClassicPlayScene(PacManGame game, V2i size, PacManClassicAssets assets) {
@@ -62,8 +63,8 @@ public class PacManClassicPlayScene extends PacManGameScene {
 		g.setFont(assets.scoreFont);
 		g.translate(0, 2);
 		g.setColor(Color.WHITE);
-		g.drawString(resources.getString("SCORE"), t(1), t(1));
-		g.drawString(resources.getString("HI_SCORE"), t(16), t(1));
+		g.drawString(TEXTS.getString("SCORE"), t(1), t(1));
+		g.drawString(TEXTS.getString("HI_SCORE"), t(16), t(1));
 		g.translate(0, 1);
 		g.setColor(Color.YELLOW);
 		g.drawString(String.format("%08d", game.score), t(1), t(2));
