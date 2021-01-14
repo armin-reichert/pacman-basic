@@ -76,7 +76,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 		window.setTitle("Pac-Man");
 
 		canvas = new Canvas();
-		canvas.setBackground(new Color(0, 48, 143)); // Air force blue
+		canvas.setBackground(new Color(0, 0, 0));
 		canvas.setSize((int) (unscaledSizeInPixels.x * scaling), (int) (unscaledSizeInPixels.y * scaling));
 		canvas.setFocusable(false);
 		window.add(canvas);
@@ -189,7 +189,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 	private void drawPausedScreen(Graphics2D g) {
 		String text = "PAUSED (Press 'P' TO RESUME)";
-		g.setColor(new Color(200, 200, 200, 100));
+		g.setColor(new Color(0, 48, 143));
 		g.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 		g.setColor(Color.GREEN);
 		g.setFont(new Font(Font.MONOSPACED, Font.BOLD, 20));

@@ -734,8 +734,8 @@ public class PacManGame extends Thread {
 				bonus.availableTicks = Long.MAX_VALUE; // TODO is there a timeout?
 				int portal = rnd.nextInt(world.numPortals());
 				boolean entersMazeFromLeft = rnd.nextBoolean();
-				bonus.startTile = entersMazeFromLeft ? world.portalLeft(portal) : world.portalRight(portal);
-				bonus.placeAt(bonus.startTile, 0, 0);
+				V2i startTile = entersMazeFromLeft ? world.portalLeft(portal) : world.portalRight(portal);
+				bonus.placeAt(startTile, 0, 0);
 				bonus.targetDirection = entersMazeFromLeft ? RIGHT : LEFT;
 				bonus.dir = bonus.wishDir = bonus.targetDirection;
 				bonus.couldMove = true;
@@ -795,7 +795,7 @@ public class PacManGame extends Thread {
 			--bonus.availableTicks;
 			if (bonus.speed > 0) {
 				V2i bonusLocation = bonus.tile();
-				if (world.isPortal(bonusLocation.x, bonusLocation.y) && !bonusLocation.equals(bonus.startTile)) {
+				if (world.isPortal(bonusLocation.x, bonusLocation.y)) {
 					bonus.availableTicks = 0;
 					bonus.visible = false;
 					return;
