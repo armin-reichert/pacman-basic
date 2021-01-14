@@ -12,24 +12,24 @@ import de.amr.games.pacman.worlds.PacManGameWorld;
  * 
  * @author Armin Reichert
  */
-public abstract class Creature {
+public class Creature {
 
-	/** Left upper corner of collision box. */
+	/** Left upper corner of TSxTS collision box. Sprites can be larger. */
 	public V2f position = V2f.NULL;
 
 	/** The current move direction. */
 	public Direction dir;
 
-	/** The wanted move direction that will be taken as soon as possible. */
+	/** The intended move direction that will be taken as soon as possible. */
 	public Direction wishDir;
 
 	/** Relative speed (between 0 and 1). */
 	public float speed;
 
-	/** Visibility. */
+	/** If the creature is drawn on the screen. */
 	public boolean visible;
 
-	/** If the creature entered a new tile with its last movement. */
+	/** If the creature entered a new tile with its last movement or placement. */
 	public boolean changedTile;
 
 	/** If the creature could move in the last try. */
@@ -43,6 +43,7 @@ public abstract class Creature {
 
 	public void placeAt(V2i tile, float offsetX, float offsetY) {
 		position = new V2f(tile.x * TS + offsetX, tile.y * TS + offsetY);
+		changedTile = true;
 	}
 
 	public V2i tile() {
