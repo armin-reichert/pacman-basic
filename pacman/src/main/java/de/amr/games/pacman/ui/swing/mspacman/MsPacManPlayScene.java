@@ -1,9 +1,9 @@
-package de.amr.games.pacman.worlds.mspacman;
+package de.amr.games.pacman.ui.swing.mspacman;
 
-import static de.amr.games.pacman.worlds.PacManGameWorld.HTS;
-import static de.amr.games.pacman.worlds.PacManGameWorld.TS;
-import static de.amr.games.pacman.worlds.PacManGameWorld.t;
-import static de.amr.games.pacman.worlds.mspacman.MsPacManAssets.DIR_INDEX;
+import static de.amr.games.pacman.ui.swing.mspacman.MsPacManAssets.DIR_INDEX;
+import static de.amr.games.pacman.world.PacManGameWorld.HTS;
+import static de.amr.games.pacman.world.PacManGameWorld.TS;
+import static de.amr.games.pacman.world.PacManGameWorld.t;
 import static java.util.stream.IntStream.range;
 
 import java.awt.Color;
@@ -19,6 +19,7 @@ import de.amr.games.pacman.creatures.Ghost.GhostState;
 import de.amr.games.pacman.creatures.Pac;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.swing.PacManGameScene;
+import de.amr.games.pacman.world.MsPacManWorld;
 
 /**
  * Scene where the game is played.

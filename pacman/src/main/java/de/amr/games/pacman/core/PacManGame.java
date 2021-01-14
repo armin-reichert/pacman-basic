@@ -15,14 +15,14 @@ import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.lib.Functions.differsAtMost;
 import static de.amr.games.pacman.lib.Logging.log;
-import static de.amr.games.pacman.worlds.PacManGameWorld.HTS;
-import static de.amr.games.pacman.worlds.PacManGameWorld.offset;
-import static de.amr.games.pacman.worlds.PacManGameWorld.t;
-import static de.amr.games.pacman.worlds.PacManGameWorld.tile;
-import static de.amr.games.pacman.worlds.classic.PacManClassicWorld.BLINKY;
-import static de.amr.games.pacman.worlds.classic.PacManClassicWorld.CLYDE;
-import static de.amr.games.pacman.worlds.classic.PacManClassicWorld.INKY;
-import static de.amr.games.pacman.worlds.classic.PacManClassicWorld.PINKY;
+import static de.amr.games.pacman.world.PacManClassicWorld.BLINKY;
+import static de.amr.games.pacman.world.PacManClassicWorld.CLYDE;
+import static de.amr.games.pacman.world.PacManClassicWorld.INKY;
+import static de.amr.games.pacman.world.PacManClassicWorld.PINKY;
+import static de.amr.games.pacman.world.PacManGameWorld.HTS;
+import static de.amr.games.pacman.world.PacManGameWorld.offset;
+import static de.amr.games.pacman.world.PacManGameWorld.t;
+import static de.amr.games.pacman.world.PacManGameWorld.tile;
 import static java.lang.Math.abs;
 
 import java.io.File;
@@ -45,9 +45,9 @@ import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.api.PacManGameUI;
 import de.amr.games.pacman.ui.api.Sound;
-import de.amr.games.pacman.worlds.PacManGameWorld;
-import de.amr.games.pacman.worlds.classic.PacManClassicWorld;
-import de.amr.games.pacman.worlds.mspacman.MsPacManWorld;
+import de.amr.games.pacman.world.MsPacManWorld;
+import de.amr.games.pacman.world.PacManClassicWorld;
+import de.amr.games.pacman.world.PacManGameWorld;
 
 /**
  * Pac-Man game with original "AI", levels, timers.

@@ -1,9 +1,9 @@
-package de.amr.games.pacman.worlds.classic;
+package de.amr.games.pacman.ui.swing.classic;
 
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
-import static de.amr.games.pacman.worlds.PacManGameWorld.t;
-import static de.amr.games.pacman.worlds.classic.PacManClassicAssets.DIR_INDEX;
+import static de.amr.games.pacman.ui.swing.classic.PacManClassicAssets.DIR_INDEX;
+import static de.amr.games.pacman.world.PacManGameWorld.t;
 
 import java.awt.Color;
 import java.awt.Graphics2D;

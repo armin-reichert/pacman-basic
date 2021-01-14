@@ -1,7 +1,7 @@
 package de.amr.games.pacman.ui.swing;
 
-import static de.amr.games.pacman.worlds.PacManGameWorld.TS;
-import static de.amr.games.pacman.worlds.PacManGameWorld.t;
+import static de.amr.games.pacman.world.PacManGameWorld.TS;
+import static de.amr.games.pacman.world.PacManGameWorld.t;
 
 import java.awt.Canvas;
 import java.awt.Color;
@@ -22,12 +22,12 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.api.PacManGameUI;
 import de.amr.games.pacman.ui.api.Sound;
-import de.amr.games.pacman.worlds.classic.PacManClassicAssets;
-import de.amr.games.pacman.worlds.classic.PacManClassicIntroScene;
-import de.amr.games.pacman.worlds.classic.PacManClassicPlayScene;
-import de.amr.games.pacman.worlds.mspacman.MsPacManAssets;
-import de.amr.games.pacman.worlds.mspacman.MsPacManIntroScene;
-import de.amr.games.pacman.worlds.mspacman.MsPacManPlayScene;
+import de.amr.games.pacman.ui.swing.classic.PacManClassicAssets;
+import de.amr.games.pacman.ui.swing.classic.PacManClassicIntroScene;
+import de.amr.games.pacman.ui.swing.classic.PacManClassicPlayScene;
+import de.amr.games.pacman.ui.swing.mspacman.MsPacManAssets;
+import de.amr.games.pacman.ui.swing.mspacman.MsPacManIntroScene;
+import de.amr.games.pacman.ui.swing.mspacman.MsPacManPlayScene;
 
 /**
  * Swing UI for Pac-Man game.

@@ -1,13 +1,13 @@
-package de.amr.games.pacman.worlds.classic;
+package de.amr.games.pacman.ui.swing.classic;
 
-import static de.amr.games.pacman.worlds.classic.PacManClassicWorld.APPLE;
-import static de.amr.games.pacman.worlds.classic.PacManClassicWorld.BELL;
-import static de.amr.games.pacman.worlds.classic.PacManClassicWorld.CHERRIES;
-import static de.amr.games.pacman.worlds.classic.PacManClassicWorld.GALAXIAN;
-import static de.amr.games.pacman.worlds.classic.PacManClassicWorld.GRAPES;
-import static de.amr.games.pacman.worlds.classic.PacManClassicWorld.KEY;
-import static de.amr.games.pacman.worlds.classic.PacManClassicWorld.PEACH;
-import static de.amr.games.pacman.worlds.classic.PacManClassicWorld.STRAWBERRY;
+import static de.amr.games.pacman.world.PacManClassicWorld.APPLE;
+import static de.amr.games.pacman.world.PacManClassicWorld.BELL;
+import static de.amr.games.pacman.world.PacManClassicWorld.CHERRIES;
+import static de.amr.games.pacman.world.PacManClassicWorld.GALAXIAN;
+import static de.amr.games.pacman.world.PacManClassicWorld.GRAPES;
+import static de.amr.games.pacman.world.PacManClassicWorld.KEY;
+import static de.amr.games.pacman.world.PacManClassicWorld.PEACH;
+import static de.amr.games.pacman.world.PacManClassicWorld.STRAWBERRY;
 
 import java.awt.Font;
 import java.awt.image.BufferedImage;

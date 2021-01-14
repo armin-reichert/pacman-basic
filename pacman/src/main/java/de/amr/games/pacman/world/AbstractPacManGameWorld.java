@@ -1,4 +1,4 @@
-package de.amr.games.pacman.worlds;
+package de.amr.games.pacman.world;
 
 import java.io.BufferedReader;
 import java.io.InputStream;

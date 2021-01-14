@@ -1,12 +1,12 @@
-package de.amr.games.pacman.worlds.mspacman;
+package de.amr.games.pacman.ui.swing.mspacman;
 
-import static de.amr.games.pacman.worlds.mspacman.MsPacManWorld.APPLE;
-import static de.amr.games.pacman.worlds.mspacman.MsPacManWorld.BANANA;
-import static de.amr.games.pacman.worlds.mspacman.MsPacManWorld.CHERRIES;
-import static de.amr.games.pacman.worlds.mspacman.MsPacManWorld.ORANGE;
-import static de.amr.games.pacman.worlds.mspacman.MsPacManWorld.PEAR;
-import static de.amr.games.pacman.worlds.mspacman.MsPacManWorld.PRETZEL;
-import static de.amr.games.pacman.worlds.mspacman.MsPacManWorld.STRAWBERRY;
+import static de.amr.games.pacman.world.MsPacManWorld.APPLE;
+import static de.amr.games.pacman.world.MsPacManWorld.BANANA;
+import static de.amr.games.pacman.world.MsPacManWorld.CHERRIES;
+import static de.amr.games.pacman.world.MsPacManWorld.ORANGE;
+import static de.amr.games.pacman.world.MsPacManWorld.PEAR;
+import static de.amr.games.pacman.world.MsPacManWorld.PRETZEL;
+import static de.amr.games.pacman.world.MsPacManWorld.STRAWBERRY;
 
 import java.awt.Font;
 import java.awt.image.BufferedImage;

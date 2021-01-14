@@ -1,4 +1,4 @@
-package de.amr.games.pacman.worlds.mspacman;
+package de.amr.games.pacman.world;
 
 import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
@@ -12,7 +12,6 @@ import java.util.stream.Stream;
 import de.amr.games.pacman.core.PacManGameLevel;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.worlds.AbstractPacManGameWorld;
 
 /**
  * Ms. Pac-Man game world. Has 6 maze variants.
