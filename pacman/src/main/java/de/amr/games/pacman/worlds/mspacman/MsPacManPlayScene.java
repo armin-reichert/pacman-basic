@@ -155,7 +155,7 @@ public class MsPacManPlayScene extends PacManGameScene {
 		int dir = DIR_INDEX.get(pac.dir);
 		if (pac.collapsingTicksLeft > 1) {
 			// collapsing animation
-			int frame = game.clock.frame(10, 4);
+			int frame = game.clock.frame(6, 4);
 			return assets.section(0, frame);
 		} else if (pac.collapsingTicksLeft == 1) {
 			// collapsing animation is over
