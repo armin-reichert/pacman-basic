@@ -168,7 +168,7 @@ public class PacManClassicIntroScene extends PacManGameScene {
 			if (pacManX < x) {
 				g.drawImage(frightenedGhost, x, y, null);
 			} else if (pacManX > x && pacManX <= x + 16) {
-				short bounty = (short) (Math.pow(2, ghost) * 200);
+				int bounty = (int) (Math.pow(2, ghost) * 200);
 				g.drawImage(assets.numbers.get(bounty), x, y, null);
 				if (lastKilledGhost != ghost) {
 					lastKilledGhost++;
