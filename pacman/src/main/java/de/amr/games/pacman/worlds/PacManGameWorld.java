@@ -2,6 +2,7 @@ package de.amr.games.pacman.worlds;
 
 import de.amr.games.pacman.core.PacManGameLevel;
 import de.amr.games.pacman.lib.Direction;
+import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
 
 /**
@@ -17,6 +18,15 @@ public interface PacManGameWorld {
 
 	public static int t(int nTiles) {
 		return nTiles * TS;
+	}
+
+	public static V2i tile(V2f position) {
+		return new V2i((int) position.x / TS, (int) position.y / TS);
+	}
+
+	public static V2f offset(V2f position) {
+		V2i tile = tile(position);
+		return new V2f(position.x - tile.x * TS, position.y - tile.y * TS);
 	}
 
 	PacManGameLevel levelData(int levelNumber);

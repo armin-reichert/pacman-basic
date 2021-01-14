@@ -5,6 +5,7 @@ import static de.amr.games.pacman.worlds.PacManGameWorld.TS;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.worlds.PacManGameWorld;
 
 /**
  * Base class for Pac-Man, the ghosts and the bonus. Creatures can move through the maze.
@@ -44,21 +45,12 @@ public abstract class Creature {
 		position = new V2f(tile.x * TS + offsetX, tile.y * TS + offsetY);
 	}
 
-	public static V2i tile(V2f position) {
-		return new V2i((int) position.x / TS, (int) position.y / TS);
-	}
-
 	public V2i tile() {
-		return tile(position);
-	}
-
-	public static V2f offset(V2f position) {
-		V2i tile = tile(position);
-		return new V2f(position.x - tile.x * TS, position.y - tile.y * TS);
+		return PacManGameWorld.tile(position);
 	}
 
 	public V2f offset() {
-		return offset(position);
+		return PacManGameWorld.offset(position);
 	}
 
 	public void setOffset(float offsetX, float offsetY) {
