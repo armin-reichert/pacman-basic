@@ -6,12 +6,10 @@ import java.io.InputStream;
 
 import javax.imageio.ImageIO;
 
-import de.amr.games.pacman.ui.api.Sound;
-
-public abstract class PacManGameAssets {
+public class Assets {
 
 	public static BufferedImage image(String path) {
-		try (InputStream is = PacManGameAssets.class.getResourceAsStream(path)) {
+		try (InputStream is = Assets.class.getResourceAsStream(path)) {
 			return ImageIO.read(is);
 		} catch (Exception x) {
 			throw new AssetsException("Could not load image with path '%s'", path);
@@ -19,12 +17,10 @@ public abstract class PacManGameAssets {
 	}
 
 	public static Font font(String fontPath, int size) {
-		try (InputStream fontData = PacManGameAssets.class.getResourceAsStream(fontPath)) {
+		try (InputStream fontData = Assets.class.getResourceAsStream(fontPath)) {
 			return Font.createFont(Font.TRUETYPE_FONT, fontData).deriveFont((float) size);
 		} catch (Exception x) {
 			throw new AssetsException("Could not load font with path '%s'", fontPath);
 		}
 	}
-
-	public abstract String getSoundPath(Sound sound);
 }

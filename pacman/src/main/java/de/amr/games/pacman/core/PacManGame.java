@@ -44,7 +44,7 @@ import de.amr.games.pacman.lib.Hiscore;
 import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.api.PacManGameUI;
-import de.amr.games.pacman.ui.api.Sound;
+import de.amr.games.pacman.ui.api.PacManGameSound;
 import de.amr.games.pacman.world.MsPacManWorld;
 import de.amr.games.pacman.world.PacManClassicWorld;
 import de.amr.games.pacman.world.PacManGameWorld;
@@ -330,7 +330,7 @@ public class PacManGame extends Thread {
 		state = READY;
 		if (!gameStarted) {
 			state.setDuration(clock.sec(4.5));
-			ui.playSound(Sound.GAME_READY);
+			ui.playSound(PacManGameSound.GAME_READY);
 			gameStarted = true;
 		} else {
 			state.setDuration(clock.sec(0.5));
@@ -388,16 +388,16 @@ public class PacManGame extends Thread {
 		return huntingPhase % 2 != 0;
 	}
 
-	private static Sound siren(int huntingPhase) {
+	private static PacManGameSound siren(int huntingPhase) {
 		switch (huntingPhase / 2) {
 		case 0:
-			return Sound.SIREN_1;
+			return PacManGameSound.SIREN_1;
 		case 1:
-			return Sound.SIREN_2;
+			return PacManGameSound.SIREN_2;
 		case 2:
-			return Sound.SIREN_3;
+			return PacManGameSound.SIREN_3;
 		case 3:
-			return Sound.SIREN_4;
+			return PacManGameSound.SIREN_4;
 		default:
 			throw new IllegalArgumentException("Illegal hunting phase: " + huntingPhase);
 		}
@@ -498,7 +498,7 @@ public class PacManGame extends Thread {
 		}
 		if (state.running(clock.sec(2.5))) {
 			pac.collapsingTicksLeft = clock.sec(1.5); // TODO correct?
-			ui.playSound(Sound.PACMAN_DEATH);
+			ui.playSound(PacManGameSound.PACMAN_DEATH);
 		}
 		if (pac.collapsingTicksLeft > 1) {
 			// count down until 1 such that animation stays at last frame until state expires
@@ -522,7 +522,7 @@ public class PacManGame extends Thread {
 		state = GHOST_DYING;
 		state.setDuration(clock.sec(1)); // TODO correct?
 		pac.visible = false;
-		ui.playSound(Sound.GHOST_DEATH);
+		ui.playSound(PacManGameSound.GHOST_DEATH);
 	}
 
 	private PacManGameState runGhostDyingState() {
@@ -544,7 +544,7 @@ public class PacManGame extends Thread {
 			}
 		}
 		pac.visible = true;
-		ui.loopSound(Sound.RETREATING);
+		ui.loopSound(PacManGameSound.RETREATING);
 	}
 
 	// CHANGING_LEVEL
@@ -627,7 +627,7 @@ public class PacManGame extends Thread {
 					}
 					;
 				}
-				ui.stopSound(Sound.PACMAN_POWER);
+				ui.stopSound(PacManGameSound.PACMAN_POWER);
 			}
 		}
 	}
@@ -673,7 +673,7 @@ public class PacManGame extends Thread {
 			bonus.consumedTicks = clock.sec(2);
 			bonus.speed = 0;
 			score(level.bonusPoints);
-			ui.playSound(Sound.EAT_BONUS);
+			ui.playSound(PacManGameSound.EAT_BONUS);
 			log("Pac-Man found bonus (%d) of value %d", level.bonusSymbol, level.bonusPoints);
 		}
 	}
@@ -712,7 +712,7 @@ public class PacManGame extends Thread {
 		checkElroyActivation();
 		checkBonusActivation();
 		updateGhostDotCounters();
-		ui.playSound(Sound.MUNCH);
+		ui.playSound(PacManGameSound.MUNCH);
 	}
 
 	private void checkElroyActivation() {
@@ -758,7 +758,7 @@ public class PacManGame extends Thread {
 				}
 			}
 			forceHuntingGhostsTurningBack();
-			ui.loopSound(Sound.PACMAN_POWER);
+			ui.loopSound(PacManGameSound.PACMAN_POWER);
 		}
 	}
 
@@ -984,7 +984,7 @@ public class PacManGame extends Thread {
 			ghost.speed = level.ghostSpeed; // TODO correct?
 			ghost.wishDir = ghost.dir.opposite();
 			if (Stream.of(ghosts).noneMatch(g -> g.state == GhostState.DEAD)) {
-				ui.stopSound(Sound.RETREATING);
+				ui.stopSound(PacManGameSound.RETREATING);
 			}
 			return;
 		}
@@ -1189,7 +1189,7 @@ public class PacManGame extends Thread {
 		score += points;
 		if (oldscore < 10000 && score >= 10000) {
 			lives++;
-			ui.playSound(Sound.EXTRA_LIFE);
+			ui.playSound(PacManGameSound.EXTRA_LIFE);
 		}
 		hiscore.update(score, levelNumber);
 	}

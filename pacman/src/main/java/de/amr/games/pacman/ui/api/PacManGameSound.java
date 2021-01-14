@@ -5,7 +5,7 @@ package de.amr.games.pacman.ui.api;
  * 
  * @author Armin Reichert
  */
-public enum Sound {
+public enum PacManGameSound {
 	MUNCH, CREDIT, SIREN_1, SIREN_2, SIREN_3, SIREN_4, SIREN_5, RETREATING, GAME_READY, PACMAN_POWER, PACMAN_DEATH,
 	GHOST_DEATH, EAT_BONUS, EXTRA_LIFE;
 

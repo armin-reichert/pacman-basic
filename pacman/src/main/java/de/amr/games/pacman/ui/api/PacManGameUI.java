@@ -27,11 +27,11 @@ public interface PacManGameUI {
 
 	void onWindowClosing();
 
-	void playSound(Sound sound);
+	void playSound(PacManGameSound sound);
 
-	void loopSound(Sound sound);
+	void loopSound(PacManGameSound sound);
 
-	void stopSound(Sound sound);
+	void stopSound(PacManGameSound sound);
 
 	void stopAllSounds();
 

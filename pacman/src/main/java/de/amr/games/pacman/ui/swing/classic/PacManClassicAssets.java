@@ -1,5 +1,7 @@
 package de.amr.games.pacman.ui.swing.classic;
 
+import static de.amr.games.pacman.ui.swing.Assets.font;
+import static de.amr.games.pacman.ui.swing.Assets.image;
 import static de.amr.games.pacman.world.PacManClassicWorld.APPLE;
 import static de.amr.games.pacman.world.PacManClassicWorld.BELL;
 import static de.amr.games.pacman.world.PacManClassicWorld.CHERRIES;
@@ -16,15 +18,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 import de.amr.games.pacman.lib.Direction;
-import de.amr.games.pacman.ui.api.Sound;
-import de.amr.games.pacman.ui.swing.PacManGameAssets;
+import de.amr.games.pacman.ui.api.PacManGameSound;
+import de.amr.games.pacman.ui.swing.SoundAssets;
 
 /**
  * Assets used in Pac-Man game.
  * 
  * @author Armin Reichert
  */
-public class PacManClassicAssets extends PacManGameAssets {
+public class PacManClassicAssets implements SoundAssets {
 
 	/** Sprite sheet order of directions. */
 	public static final Map<Direction, Integer> DIR_INDEX = new EnumMap<>(Direction.class);
@@ -44,7 +46,7 @@ public class PacManClassicAssets extends PacManGameAssets {
 	public final BufferedImage life;
 	public final BufferedImage[] symbols = new BufferedImage[8];
 	public final Map<Integer, BufferedImage> numbers = new HashMap<>();
-	public final Map<Sound, String> soundPaths = new EnumMap<>(Sound.class);
+	public final Map<PacManGameSound, String> soundPaths = new EnumMap<>(PacManGameSound.class);
 	public final Font scoreFont;
 
 	public PacManClassicAssets() {
@@ -82,20 +84,20 @@ public class PacManClassicAssets extends PacManGameAssets {
 		numbers.put(3000, section(3, 11, 3, 1));
 		numbers.put(5000, section(3, 12, 3, 1));
 	
-		soundPaths.put(Sound.CREDIT,       "/sound/credit.wav");
-		soundPaths.put(Sound.EAT_BONUS,    "/sound/eat_fruit.wav");
-		soundPaths.put(Sound.EXTRA_LIFE,   "/sound/extend.wav");
-		soundPaths.put(Sound.GAME_READY,   "/sound/game_start.wav");
-		soundPaths.put(Sound.GHOST_DEATH,  "/sound/eat_ghost.wav");
-		soundPaths.put(Sound.MUNCH,        "/sound/munch_1.wav");
-		soundPaths.put(Sound.PACMAN_DEATH, "/sound/death_1.wav");
-		soundPaths.put(Sound.PACMAN_POWER, "/sound/power_pellet.wav");
-		soundPaths.put(Sound.RETREATING,   "/sound/retreating.wav");
-		soundPaths.put(Sound.SIREN_1,      "/sound/siren_1.wav");
-		soundPaths.put(Sound.SIREN_2,      "/sound/siren_2.wav");
-		soundPaths.put(Sound.SIREN_3,      "/sound/siren_3.wav");
-		soundPaths.put(Sound.SIREN_4,      "/sound/siren_4.wav");
-		soundPaths.put(Sound.SIREN_5,      "/sound/siren_5.wav");
+		soundPaths.put(PacManGameSound.CREDIT,       "/sound/credit.wav");
+		soundPaths.put(PacManGameSound.EAT_BONUS,    "/sound/eat_fruit.wav");
+		soundPaths.put(PacManGameSound.EXTRA_LIFE,   "/sound/extend.wav");
+		soundPaths.put(PacManGameSound.GAME_READY,   "/sound/game_start.wav");
+		soundPaths.put(PacManGameSound.GHOST_DEATH,  "/sound/eat_ghost.wav");
+		soundPaths.put(PacManGameSound.MUNCH,        "/sound/munch_1.wav");
+		soundPaths.put(PacManGameSound.PACMAN_DEATH, "/sound/death_1.wav");
+		soundPaths.put(PacManGameSound.PACMAN_POWER, "/sound/power_pellet.wav");
+		soundPaths.put(PacManGameSound.RETREATING,   "/sound/retreating.wav");
+		soundPaths.put(PacManGameSound.SIREN_1,      "/sound/siren_1.wav");
+		soundPaths.put(PacManGameSound.SIREN_2,      "/sound/siren_2.wav");
+		soundPaths.put(PacManGameSound.SIREN_3,      "/sound/siren_3.wav");
+		soundPaths.put(PacManGameSound.SIREN_4,      "/sound/siren_4.wav");
+		soundPaths.put(PacManGameSound.SIREN_5,      "/sound/siren_5.wav");
 		//@formatter:on
 
 		scoreFont = font("/PressStart2P-Regular.ttf", 8);
@@ -110,7 +112,7 @@ public class PacManClassicAssets extends PacManGameAssets {
 	}
 
 	@Override
-	public String getSoundPath(Sound sound) {
+	public String getSoundPath(PacManGameSound sound) {
 		return soundPaths.get(sound);
 	}
 }

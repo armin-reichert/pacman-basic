@@ -14,7 +14,7 @@ import java.util.stream.IntStream;
 import de.amr.games.pacman.core.PacManGame;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.ui.api.Sound;
+import de.amr.games.pacman.ui.api.PacManGameSound;
 import de.amr.games.pacman.ui.swing.PacManGameScene;
 
 /**
@@ -48,9 +48,9 @@ public class PacManClassicIntroScene extends PacManGameScene {
 
 	@Override
 	public void end() {
-		game.ui.stopSound(Sound.SIREN_1);
-		game.ui.stopSound(Sound.PACMAN_POWER);
-		game.ui.stopSound(Sound.GHOST_DEATH);
+		game.ui.stopSound(PacManGameSound.SIREN_1);
+		game.ui.stopSound(PacManGameSound.PACMAN_POWER);
+		game.ui.stopSound(PacManGameSound.GHOST_DEATH);
 	}
 
 	@Override
@@ -69,7 +69,7 @@ public class PacManClassicIntroScene extends PacManGameScene {
 			int ghostStart = 3 + 2 * ghost;
 			int y = t(10 + 3 * ghost);
 			game.state.runAt(game.clock.sec(ghostStart), () -> {
-				game.ui.playSound(Sound.CREDIT);
+				game.ui.playSound(PacManGameSound.CREDIT);
 			});
 			game.state.runAfter(game.clock.sec(ghostStart), () -> {
 				g.drawImage(assets.section(0, 4 + ghost), t(2) - 3, y - 2, null);
@@ -87,7 +87,7 @@ public class PacManClassicIntroScene extends PacManGameScene {
 		});
 
 		game.state.runAt(game.clock.sec(13), () -> {
-			game.ui.loopSound(Sound.SIREN_1);
+			game.ui.loopSound(PacManGameSound.SIREN_1);
 		});
 
 		game.state.runAfter(game.clock.sec(13), () -> {
@@ -155,8 +155,8 @@ public class PacManClassicIntroScene extends PacManGameScene {
 			leftmostGhostX -= 0.8f;
 		} else {
 			ghostsChasingPacMan = false;
-			game.ui.stopSound(Sound.SIREN_1);
-			game.ui.loopSound(Sound.PACMAN_POWER);
+			game.ui.stopSound(PacManGameSound.SIREN_1);
+			game.ui.loopSound(PacManGameSound.PACMAN_POWER);
 		}
 	}
 
@@ -172,7 +172,7 @@ public class PacManClassicIntroScene extends PacManGameScene {
 				g.drawImage(assets.numbers.get(bounty), x, y, null);
 				if (lastKilledGhost != ghost) {
 					lastKilledGhost++;
-					game.ui.playSound(Sound.GHOST_DEATH);
+					game.ui.playSound(PacManGameSound.GHOST_DEATH);
 				}
 			}
 		}
@@ -181,7 +181,7 @@ public class PacManClassicIntroScene extends PacManGameScene {
 			pacManX += 0.6f;
 			leftmostGhostX += 0.3f;
 		} else {
-			game.ui.stopSound(Sound.PACMAN_POWER);
+			game.ui.stopSound(PacManGameSound.PACMAN_POWER);
 		}
 	}
 

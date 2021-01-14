@@ -21,7 +21,7 @@ import de.amr.games.pacman.core.PacManGameState;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.api.PacManGameUI;
-import de.amr.games.pacman.ui.api.Sound;
+import de.amr.games.pacman.ui.api.PacManGameSound;
 import de.amr.games.pacman.ui.swing.classic.PacManClassicAssets;
 import de.amr.games.pacman.ui.swing.classic.PacManClassicIntroScene;
 import de.amr.games.pacman.ui.swing.classic.PacManClassicPlayScene;
@@ -51,7 +51,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 	private PacManGameScene currentScene;
 	private PacManGameScene introScene;
 	private PacManGameScene playScene;
-	private SoundManager soundManager;
+	private PacManGameSoundManager soundManager;
 
 	public PacManGameSwingUI(V2i sizeInTiles, float scaling) {
 		this.scaling = scaling;
@@ -81,7 +81,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 		canvas.setFocusable(false);
 		window.add(canvas);
 
-		messageFont = PacManGameAssets.font("/PressStart2P-Regular.ttf", 8).deriveFont(Font.ITALIC);
+		messageFont = Assets.font("/PressStart2P-Regular.ttf", 8).deriveFont(Font.ITALIC);
 	}
 
 	@Override
@@ -106,14 +106,14 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 	private void initPacManClassic() {
 		PacManClassicAssets assets = new PacManClassicAssets();
-		soundManager = new SoundManager(assets);
+		soundManager = new PacManGameSoundManager(assets);
 		introScene = new PacManClassicIntroScene(game, unscaledSizeInPixels, assets);
 		playScene = new PacManClassicPlayScene(game, unscaledSizeInPixels, assets);
 	}
 
 	private void initMsPacManWorld() {
 		MsPacManAssets assets = new MsPacManAssets();
-		soundManager = new SoundManager(assets);
+		soundManager = new PacManGameSoundManager(assets);
 		introScene = new MsPacManIntroScene(game, unscaledSizeInPixels, assets);
 		playScene = new MsPacManPlayScene(game, unscaledSizeInPixels, assets);
 	}
@@ -237,17 +237,17 @@ public class PacManGameSwingUI implements PacManGameUI {
 	}
 
 	@Override
-	public void playSound(Sound sound) {
+	public void playSound(PacManGameSound sound) {
 		soundManager.playSound(sound);
 	}
 
 	@Override
-	public void loopSound(Sound sound) {
+	public void loopSound(PacManGameSound sound) {
 		soundManager.loopSound(sound);
 	}
 
 	@Override
-	public void stopSound(Sound sound) {
+	public void stopSound(PacManGameSound sound) {
 		soundManager.stopSound(sound);
 	}
 
