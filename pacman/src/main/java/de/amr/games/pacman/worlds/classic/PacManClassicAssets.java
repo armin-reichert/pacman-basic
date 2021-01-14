@@ -43,7 +43,7 @@ public class PacManClassicAssets extends PacManGameAssets {
 	public final BufferedImage mazeEmptyBright;
 	public final BufferedImage life;
 	public final BufferedImage[] symbols = new BufferedImage[8];
-	public final Map<Short, BufferedImage> numbers = new HashMap<>();
+	public final Map<Integer, BufferedImage> numbers = new HashMap<>();
 	public final Map<Sound, String> soundPaths = new EnumMap<>(Sound.class);
 	public final Font scoreFont;
 
@@ -66,18 +66,21 @@ public class PacManClassicAssets extends PacManGameAssets {
 		symbols[BELL]       = section(8, 3);
 		symbols[KEY]        = section(9, 3);
 	
-		numbers.put((short)100,  section(0, 9));
-		numbers.put((short)200,  section(0, 8));
-		numbers.put((short)300,  section(1, 9));
-		numbers.put((short)400,  section(1, 8));
-		numbers.put((short)500,  section(2, 9));
-		numbers.put((short)700,  section(3, 9));
-		numbers.put((short)800,  section(2, 8));
-		numbers.put((short)1000, section(4, 9, 2, 1));
-		numbers.put((short)1600, section(3, 8));
-		numbers.put((short)2000, section(3, 10, 3, 1));
-		numbers.put((short)3000, section(3, 11, 3, 1));
-		numbers.put((short)5000, section(3, 12, 3, 1));
+		numbers.put(200,  section(0, 8));
+		numbers.put(400,  section(1, 8));
+		numbers.put(800,  section(2, 8));
+		numbers.put(1600, section(3, 8));
+		
+		numbers.put(100,  section(0, 9));
+		numbers.put(300,  section(1, 9));
+		numbers.put(500,  section(2, 9));
+		numbers.put(700,  section(3, 9));
+		
+		numbers.put(1000, section(4, 9, 2, 1)); // left-aligned 
+		
+		numbers.put(2000, section(3, 10, 3, 1));
+		numbers.put(3000, section(3, 11, 3, 1));
+		numbers.put(5000, section(3, 12, 3, 1));
 	
 		soundPaths.put(Sound.CREDIT,       "/sound/credit.wav");
 		soundPaths.put(Sound.EAT_BONUS,    "/sound/eat_fruit.wav");

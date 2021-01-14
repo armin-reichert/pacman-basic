@@ -181,18 +181,17 @@ public class MsPacManPlayScene extends PacManGameScene {
 	}
 
 	private BufferedImage sprite(Ghost ghost) {
-		int dir = MsPacManAssets.DIR_INDEX.get(ghost.wishDir);
-		int walking = ghost.speed == 0 ? 0 : game.clock.frame(5, 2);
 		if (ghost.bounty > 0) {
-			// number
 			return assets.bountyNumbers.get(ghost.bounty);
 		}
+		int dir = DIR_INDEX.get(ghost.wishDir);
+		int walking = ghost.speed == 0 ? 0 : game.clock.frame(5, 2);
 		if (ghost.state == GhostState.DEAD) {
-			// eyes looking towards intended move direction
+			// eyes looking towards *intended* move direction
 			return assets.section(8 + dir, 5);
 		}
 		if (ghost.state == GhostState.FRIGHTENED) {
-			if (game.pac.powerTicksLeft <= game.clock.sec(2) && ghost.speed != 0) {
+			if (game.pac.powerTicksLeft <= game.clock.sec(2)) {
 				// TODO flash exactly as often as specified by level
 				// flashing blue/white, walking animation
 				int flashing = game.clock.frame(10, 2) == 0 ? 8 : 10;

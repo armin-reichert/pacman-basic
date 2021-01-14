@@ -23,7 +23,7 @@ public class Ghost extends Creature {
 	public GhostState state;
 
 	/** The bounty for this killing ghost. */
-	public short bounty;
+	public int bounty;
 
 	/** The individual counter of the ghost, used by the logic when ghosts can leave the house. */
 	public int dotCounter;

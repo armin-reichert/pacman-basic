@@ -13,7 +13,7 @@ public class PacManGameLevel {
 	}
 
 	public final byte bonusSymbol;
-	public final short bonusPoints;
+	public final int bonusPoints;
 	public final float pacSpeed;
 	public final float ghostSpeed;
 	public final float ghostSpeedTunnel;

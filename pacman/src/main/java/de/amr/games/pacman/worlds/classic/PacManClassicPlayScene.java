@@ -14,6 +14,8 @@ import java.util.ResourceBundle;
 
 import de.amr.games.pacman.core.PacManGame;
 import de.amr.games.pacman.core.PacManGameState;
+import de.amr.games.pacman.creatures.Bonus;
+import de.amr.games.pacman.creatures.Creature;
 import de.amr.games.pacman.creatures.Ghost;
 import de.amr.games.pacman.creatures.Ghost.GhostState;
 import de.amr.games.pacman.creatures.Pac;
@@ -49,7 +51,7 @@ public class PacManClassicPlayScene extends PacManGameScene {
 		drawLivesCounter(g);
 		drawLevelCounter(g);
 		drawMaze(g);
-		drawPacMan(g, game.pac);
+		drawPac(g, game.pac);
 		for (Ghost ghost : game.ghosts) {
 			drawGhost(g, ghost);
 		}
@@ -123,36 +125,53 @@ public class PacManClassicPlayScene extends PacManGameScene {
 				}
 			});
 		});
-		if (game.bonus.availableTicks > 0) {
-			BufferedImage sprite = assets.symbols[game.level.bonusSymbol];
-			g.drawImage(sprite, (int) (game.bonus.position.x) - HTS, (int) (game.bonus.position.y) - HTS, null);
-		} else if (game.bonus.consumedTicks > 0) {
-			BufferedImage sprite = assets.numbers.get(game.level.bonusPoints);
-			drawCenteredImage(g, sprite, (int) (game.bonus.position.y) - HTS);
-		}
+		drawBonus(g, game.bonus);
 		if (game.ui.isDebugMode()) {
 			drawMazeStructure(g);
 		}
 	}
 
-	private void drawPacMan(Graphics2D g, Pac pacMan) {
-		if (pacMan.visible) {
-			g.drawImage(sprite(pacMan), (int) (pacMan.position.x) - HTS, (int) (pacMan.position.y) - HTS, null);
+	private void drawGuy(Graphics2D g, Creature guy, BufferedImage sprite) {
+		if (guy.visible) {
+			int dx = (sprite.getWidth() - TS) / 2, dy = (sprite.getHeight() - TS) / 2;
+			g.drawImage(sprite, (int) (guy.position.x) - dx, (int) (guy.position.y) - dy, null);
 		}
 	}
 
-	private BufferedImage sprite(Pac pacMan) {
-		int dir = DIR_INDEX.get(pacMan.dir);
-		if (pacMan.collapsingTicksLeft > 0) {
+	private void drawBonus(Graphics2D g, Bonus bonus) {
+		if (bonus.availableTicks > 0) {
+			drawGuy(g, bonus, assets.symbols[bonus.symbol]);
+		} else if (bonus.consumedTicks > -1) {
+			int points = game.level.bonusPoints;
+			if (points != 1000) {
+				drawGuy(g, game.bonus, assets.numbers.get(points));
+			} else {
+				// this sprite is somewhat nasty
+				g.drawImage(assets.numbers.get(1000), (int) (bonus.position.x) - HTS - 2, (int) (bonus.position.y) - HTS, null);
+			}
+		}
+	}
+
+	private void drawPac(Graphics2D g, Pac pac) {
+		drawGuy(g, pac, sprite(pac));
+	}
+
+	private void drawGhost(Graphics2D g, Ghost ghost) {
+		drawGuy(g, ghost, sprite(ghost));
+	}
+
+	private BufferedImage sprite(Pac pac) {
+		int dir = DIR_INDEX.get(pac.dir);
+		if (pac.collapsingTicksLeft > 0) {
 			// collapsing animation
-			int frame = 13 - (int) pacMan.collapsingTicksLeft / 8;
+			int frame = 13 - (int) pac.collapsingTicksLeft / 8;
 			return assets.section(Math.max(frame, 3), 0);
 		}
-		if (pacMan.speed == 0) {
+		if (pac.speed == 0) {
 			// full face
 			return assets.section(2, 0);
 		}
-		if (!pacMan.couldMove) {
+		if (!pac.couldMove) {
 			// mouth wide open towards move dir
 			return assets.section(0, dir);
 		}
@@ -161,27 +180,20 @@ public class PacManClassicPlayScene extends PacManGameScene {
 		return frame == 2 ? assets.section(frame, 0) : assets.section(frame, dir);
 	}
 
-	private void drawGhost(Graphics2D g, Ghost ghost) {
-		if (ghost.visible) {
-			g.drawImage(sprite(ghost), (int) (ghost.position.x) - HTS, (int) (ghost.position.y) - HTS, null);
-		}
-	}
-
 	private BufferedImage sprite(Ghost ghost) {
-		int dir = PacManClassicAssets.DIR_INDEX.get(ghost.wishDir);
-		int walking = ghost.speed == 0 ? 0 : game.clock.frame(5, 2);
 		if (ghost.bounty > 0) {
-			// number
 			return assets.numbers.get(ghost.bounty);
 		}
+		int dir = DIR_INDEX.get(ghost.wishDir);
+		int walking = ghost.speed == 0 ? 0 : game.clock.frame(5, 2);
 		if (ghost.state == GhostState.DEAD) {
 			// eyes looking towards intended move direction
 			return assets.section(8 + dir, 5);
 		}
 		if (ghost.state == GhostState.FRIGHTENED) {
-			if (game.pac.powerTicksLeft <= game.clock.sec(2) && ghost.speed != 0) {
-				// TODO flash exactly as often as specified by level
+			if (game.pac.powerTicksLeft <= game.clock.sec(2)) {
 				// flashing blue/white, walking animation
+				// TODO: flash exactly as often as specified by level
 				int flashing = game.clock.frame(10, 2) == 0 ? 8 : 10;
 				return assets.section(walking + flashing, 4);
 			}
@@ -192,7 +204,7 @@ public class PacManClassicPlayScene extends PacManGameScene {
 			// blue, walking animation
 			return assets.section(8 + walking, 4);
 		}
-		// colored, walking animation, looking towards intended move direction
+		// colored, walking animation, looking towards *intended* move direction
 		return assets.section(2 * dir + walking, 4 + ghost.id);
 	}
 }

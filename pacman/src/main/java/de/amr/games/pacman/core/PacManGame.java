@@ -163,6 +163,7 @@ public class PacManGame extends Thread {
 			log("Pac-Man autopilot mode is %s", autopilotEnabled ? "on" : "off");
 		}
 		if (ui.keyPressed("escape")) {
+			ui.stopAllSounds();
 			reset();
 			enterIntroState();
 		}
@@ -196,10 +197,11 @@ public class PacManGame extends Thread {
 	}
 
 	private void resetGuys() {
+		pac.placeAt(world.pacHome(), HTS, 0);
+		pac.dir = pac.wishDir = world.pacStartDirection();
 		pac.visible = true;
 		pac.speed = 0;
 		pac.targetTile = null; // used in autopilot mode
-		pac.changedTile = true;
 		pac.couldMove = true;
 		pac.forcedOnTrack = true;
 		pac.dead = false;
@@ -207,21 +209,18 @@ public class PacManGame extends Thread {
 		pac.restingTicksLeft = 0;
 		pac.starvingTicks = 0;
 		pac.collapsingTicksLeft = 0;
-		pac.placeAt(world.pacHome(), HTS, 0);
-		pac.dir = pac.wishDir = world.pacStartDirection();
 
 		for (Ghost ghost : ghosts) {
+			ghost.placeAt(world.ghostHome(ghost.id), HTS, 0);
+			ghost.dir = ghost.wishDir = world.ghostStartDirection(ghost.id);
 			ghost.visible = true;
 			ghost.speed = 0;
 			ghost.targetTile = null;
-			ghost.changedTile = true;
 			ghost.couldMove = true;
 			ghost.forcedDirection = false;
 			ghost.forcedOnTrack = ghost.id == BLINKY;
 			ghost.state = GhostState.LOCKED;
 			ghost.bounty = 0;
-			ghost.placeAt(world.ghostHome(ghost.id), HTS, 0);
-			ghost.dir = ghost.wishDir = world.ghostStartDirection(ghost.id);
 			// these are only reset when entering level:
 //		ghost.dotCounter = 0;
 //		ghost.elroyMode = 0;
@@ -743,7 +742,6 @@ public class PacManGame extends Thread {
 				bonus.placeAt(bonus.startTile, 0, 0);
 				bonus.dir = bonus.wishDir = bonus.targetDirection;
 				bonus.couldMove = true;
-				bonus.changedTile = true;
 				bonus.speed = 0.5f;
 			}
 		}

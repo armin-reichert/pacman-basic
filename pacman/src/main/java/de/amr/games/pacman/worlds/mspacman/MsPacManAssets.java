@@ -2,10 +2,10 @@ package de.amr.games.pacman.worlds.mspacman;
 
 import static de.amr.games.pacman.worlds.mspacman.MsPacManWorld.APPLE;
 import static de.amr.games.pacman.worlds.mspacman.MsPacManWorld.BANANA;
-import static de.amr.games.pacman.worlds.mspacman.MsPacManWorld.PRETZEL;
 import static de.amr.games.pacman.worlds.mspacman.MsPacManWorld.CHERRIES;
 import static de.amr.games.pacman.worlds.mspacman.MsPacManWorld.ORANGE;
 import static de.amr.games.pacman.worlds.mspacman.MsPacManWorld.PEAR;
+import static de.amr.games.pacman.worlds.mspacman.MsPacManWorld.PRETZEL;
 import static de.amr.games.pacman.worlds.mspacman.MsPacManWorld.STRAWBERRY;
 
 import java.awt.Font;
@@ -37,8 +37,8 @@ public class MsPacManAssets extends PacManGameAssets {
 	public final BufferedImage[] mazeEmptyBright = new BufferedImage[6];
 	public final BufferedImage life;
 	public final BufferedImage[] symbols = new BufferedImage[8];
-	public final Map<Short, BufferedImage> numbers = new HashMap<>();
-	public final Map<Short, BufferedImage> bountyNumbers = new HashMap<>();
+	public final Map<Integer, BufferedImage> numbers = new HashMap<>();
+	public final Map<Integer, BufferedImage> bountyNumbers = new HashMap<>();
 	public final Map<Sound, String> soundPaths = new EnumMap<>(Sound.class);
 	public final Font scoreFont;
 
@@ -64,18 +64,18 @@ public class MsPacManAssets extends PacManGameAssets {
 		symbols[PEAR]       = section(8, 0);
 		symbols[BANANA]     = section(9, 0);
 	
-		numbers.put((short)100,  section(3, 1));
-		numbers.put((short)200,  section(4, 1));
-		numbers.put((short)500,  section(5, 1));
-		numbers.put((short)700,  section(6, 1));
-		numbers.put((short)1000, section(7, 1));
-		numbers.put((short)2000, section(8, 1));
-		numbers.put((short)5000, section(9, 1));
+		numbers.put(100,  section(3, 1));
+		numbers.put(200,  section(4, 1));
+		numbers.put(500,  section(5, 1));
+		numbers.put(700,  section(6, 1));
+		numbers.put(1000, section(7, 1));
+		numbers.put(2000, section(8, 1));
+		numbers.put(5000, section(9, 1));
 		
-		bountyNumbers.put((short)200, section(0,8));
-		bountyNumbers.put((short)400, section(1,8));
-		bountyNumbers.put((short)800, section(2,8));
-		bountyNumbers.put((short)1600, section(3,8));
+		bountyNumbers.put(200, section(0,8));
+		bountyNumbers.put(400, section(1,8));
+		bountyNumbers.put(800, section(2,8));
+		bountyNumbers.put(1600, section(3,8));
 	
 		//TODO use Ms. Pac-Man sounds
 		soundPaths.put(Sound.CREDIT,       "/sound/credit.wav");
