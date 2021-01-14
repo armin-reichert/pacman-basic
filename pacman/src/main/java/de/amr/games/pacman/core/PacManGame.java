@@ -100,7 +100,7 @@ public class PacManGame extends Thread {
 	public final Autopilot autopilot;
 
 	public PacManGame(GameVariant variant) {
-		super("Pac-Man-" + variant + "-GameLoop");
+		super("Pac-Man-" + variant);
 
 		clock = new Clock();
 		rnd = new Random();
@@ -236,10 +236,6 @@ public class PacManGame extends Thread {
 
 	// BEGIN STATE-MACHINE
 
-	public String ticksDescription(long ticks) {
-		return ticks == Long.MAX_VALUE ? "indefinite time" : ticks + " ticks";
-	}
-
 	public String stateDescription() {
 		if (state == HUNTING) {
 			String phaseName = inChasingPhase() ? "Chasing" : "Scattering";
@@ -247,6 +243,10 @@ public class PacManGame extends Thread {
 			return String.format("%s-%s (%d of 4)", state, phaseName, phase + 1);
 		}
 		return state.name();
+	}
+
+	private String ticksDescription(long ticks) {
+		return ticks == Long.MAX_VALUE ? "indefinite time" : ticks + " ticks";
 	}
 
 	private PacManGameState changeState(Runnable oldStateExit, Runnable newStateEntry, Runnable action) {
@@ -457,10 +457,10 @@ public class PacManGame extends Thread {
 
 		Ghost collidingGhost = ghostCollidingWithPac();
 		if (collidingGhost != null && collidingGhost.state == GhostState.FRIGHTENED) {
-			return changeState(this::exitHuntingState, this::enterGhostDyingState, () -> killGhost(collidingGhost));
+			return changeState(this::exitHuntingState, this::enterGhostDyingState, () -> ghostKilled(collidingGhost));
 		}
 		if (collidingGhost != null && collidingGhost.state != GhostState.FRIGHTENED) {
-			return changeState(this::exitHuntingState, this::enterPacManDyingState, () -> killPac(collidingGhost));
+			return changeState(this::exitHuntingState, this::enterPacManDyingState, () -> pacKilled(collidingGhost));
 		}
 
 		return pac.powerTicksLeft == 0 ? state.tick() : state;
@@ -649,22 +649,6 @@ public class PacManGame extends Thread {
 		}
 	}
 
-	private Ghost ghostCollidingWithPac() {
-		return Stream.of(ghosts).filter(ghost -> ghost.state != GhostState.DEAD)
-				.filter(ghost -> ghost.tile().equals(pac.tile())).findAny().orElse(null);
-	}
-
-	private void killPac(Ghost killer) {
-		pac.dead = true;
-		log("%s killed by %s at tile %s", pac.name, killer.name, killer.tile());
-		resetAndEnableGlobalDotCounter();
-		byte elroyMode = ghosts[BLINKY].elroyMode;
-		if (elroyMode > 0) {
-			ghosts[BLINKY].elroyMode = (byte) -elroyMode; // negative value means "disabled"
-			log("Blinky Elroy mode %d disabled", elroyMode);
-		}
-	}
-
 	private void checkPacFindsBonus() {
 		if (bonus.availableTicks > 0 && pac.tile().equals(bonus.tile())) {
 			bonus.availableTicks = 0;
@@ -679,47 +663,9 @@ public class PacManGame extends Thread {
 	private void checkPacFindsFood() {
 		V2i pacLocation = pac.tile();
 		if (world.containsFood(pacLocation.x, pacLocation.y)) {
-			onPacFoundFood(pacLocation);
+			pacFoundFood(pacLocation);
 		} else {
-			onPacStarved();
-		}
-	}
-
-	private void onPacStarved() {
-		pac.starvingTicks++;
-		if (pac.starvingTicks >= pacStarvingTimeLimit()) {
-			preferredLockedGhost().ifPresent(ghost -> {
-				releaseGhost(ghost, "%s has been starving for %d ticks", pac.name, pac.starvingTicks);
-				pac.starvingTicks = 0;
-			});
-		}
-	}
-
-	private void onPacFoundFood(V2i foodLocation) {
-		if (world.isEnergizerTile(foodLocation.x, foodLocation.y)) {
-			score(50);
-			givePacPower();
-			pac.restingTicksLeft = 3;
-			ghostBounty = 200;
-		} else {
-			score(10);
-			pac.restingTicksLeft = 1;
-		}
-		pac.starvingTicks = 0;
-		world.removeFood(foodLocation.x, foodLocation.y);
-		checkElroyActivation();
-		checkBonusActivation();
-		updateGhostDotCounters();
-		ui.playSound(PacManGameSound.MUNCH);
-	}
-
-	private void checkElroyActivation() {
-		if (world.foodRemaining() == level.elroy1DotsLeft) {
-			ghosts[BLINKY].elroyMode = 1;
-			log("Blinky becomes Cruise Elroy 1");
-		} else if (world.foodRemaining() == level.elroy2DotsLeft) {
-			ghosts[BLINKY].elroyMode = 2;
-			log("Blinky becomes Cruise Elroy 2");
+			pacStarved();
 		}
 	}
 
@@ -744,7 +690,60 @@ public class PacManGame extends Thread {
 		}
 	}
 
-	private void givePacPower() {
+	private void checkElroyActivation() {
+		if (world.foodRemaining() == level.elroy1DotsLeft) {
+			ghosts[BLINKY].elroyMode = 1;
+			log("Blinky becomes Cruise Elroy 1");
+		} else if (world.foodRemaining() == level.elroy2DotsLeft) {
+			ghosts[BLINKY].elroyMode = 2;
+			log("Blinky becomes Cruise Elroy 2");
+		}
+	}
+
+	private void pacStarved() {
+		pac.starvingTicks++;
+		if (pac.starvingTicks >= pacStarvingTimeLimit()) {
+			preferredLockedGhost().ifPresent(ghost -> {
+				releaseGhost(ghost, "%s has been starving for %d ticks", pac.name, pac.starvingTicks);
+				pac.starvingTicks = 0;
+			});
+		}
+	}
+
+	private int pacStarvingTimeLimit() {
+		return levelNumber < 5 ? clock.sec(4) : clock.sec(3);
+	}
+
+	private void pacFoundFood(V2i foodLocation) {
+		if (world.isEnergizerTile(foodLocation.x, foodLocation.y)) {
+			score(50);
+			pacGetsPower();
+			pac.restingTicksLeft = 3;
+			ghostBounty = 200;
+		} else {
+			score(10);
+			pac.restingTicksLeft = 1;
+		}
+		pac.starvingTicks = 0;
+		world.removeFood(foodLocation.x, foodLocation.y);
+		checkElroyActivation();
+		checkBonusActivation();
+		updateGhostDotCounters();
+		ui.playSound(PacManGameSound.MUNCH);
+	}
+
+	private void pacKilled(Ghost killer) {
+		pac.dead = true;
+		log("%s killed by %s at tile %s", pac.name, killer.name, killer.tile());
+		resetAndEnableGlobalDotCounter();
+		byte elroyMode = ghosts[BLINKY].elroyMode;
+		if (elroyMode > 0) {
+			ghosts[BLINKY].elroyMode = (byte) -elroyMode; // negative value means "disabled"
+			log("Blinky Elroy mode %d disabled", elroyMode);
+		}
+	}
+
+	private void pacGetsPower() {
 		int seconds = level.ghostFrightenedSeconds;
 		pac.powerTicksLeft = clock.sec(seconds);
 		if (seconds > 0) {
@@ -757,6 +756,11 @@ public class PacManGame extends Thread {
 			forceHuntingGhostsTurningBack();
 			ui.loopSound(PacManGameSound.PACMAN_POWER);
 		}
+	}
+
+	private Ghost ghostCollidingWithPac() {
+		return Stream.of(ghosts).filter(ghost -> ghost.state != GhostState.DEAD)
+				.filter(ghost -> ghost.tile().equals(pac.tile())).findAny().orElse(null);
 	}
 
 	private void updateGhostDotCounters() {
@@ -773,20 +777,6 @@ public class PacManGame extends Thread {
 				ghost.dotCounter++;
 			});
 		}
-	}
-
-	private void killGhost(Ghost ghost) {
-		ghost.state = GhostState.DEAD;
-		ghost.speed = 2 * level.ghostSpeed; // TODO correct?
-		ghost.targetTile = world.houseEntry();
-		ghost.bounty = ghostBounty;
-		score(ghost.bounty);
-		ghostsKilledInLevel++;
-		if (ghostsKilledInLevel == 16) {
-			score(12000);
-		}
-		ghostBounty *= 2;
-		log("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name, ghost.tile(), ghost.bounty);
 	}
 
 	private void updateBonus() {
@@ -891,10 +881,6 @@ public class PacManGame extends Thread {
 		log("Global dot counter reset and enabled");
 	}
 
-	private int pacStarvingTimeLimit() {
-		return levelNumber < 5 ? clock.sec(4) : clock.sec(3);
-	}
-
 	private V2i ghostChasingTarget(int id) {
 		switch (id) {
 		case BLINKY: {
@@ -922,6 +908,20 @@ public class PacManGame extends Thread {
 		default:
 			throw new IllegalArgumentException("Unknown ghost id: " + id);
 		}
+	}
+
+	private void ghostKilled(Ghost ghost) {
+		ghost.state = GhostState.DEAD;
+		ghost.speed = 2 * level.ghostSpeed; // TODO correct?
+		ghost.targetTile = world.houseEntry();
+		ghost.bounty = ghostBounty;
+		score(ghost.bounty);
+		ghostsKilledInLevel++;
+		if (ghostsKilledInLevel == 16) {
+			score(12000);
+		}
+		ghostBounty *= 2;
+		log("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name, ghost.tile(), ghost.bounty);
 	}
 
 	private void letGhostBounce(Ghost ghost) {
@@ -1215,7 +1215,7 @@ public class PacManGame extends Thread {
 		ghostBounty = 200;
 		for (Ghost ghost : ghosts) {
 			if (isGhostHunting(ghost) || ghost.state == GhostState.FRIGHTENED) {
-				killGhost(ghost);
+				ghostKilled(ghost);
 			}
 		}
 	}
