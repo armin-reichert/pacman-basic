@@ -113,8 +113,8 @@ public class PacManGame extends Thread {
 		this.variant = variant;
 		world = variant == CLASSIC ? new PacManClassicWorld() : new MsPacManWorld();
 		pac.name = world.pacName();
-		for (int ghost = 0; ghost < ghosts.length; ++ghost) {
-			ghosts[ghost].name = world.ghostName(ghost);
+		for (Ghost ghost : ghosts) {
+			ghost.name = world.ghostName(ghost.id);
 		}
 	}
 
