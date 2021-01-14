@@ -47,7 +47,7 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 	}
 
 	protected void loadMap(String path) {
-		byte[][] map = new byte[size.y][size.x];
+		map = new byte[size.y][size.x];
 		try (InputStream is = getClass().getResourceAsStream(path)) {
 			if (is == null) {
 				throw new RuntimeException("Resource not found: " + path);
