@@ -46,7 +46,7 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 		return x == xx && y == yy;
 	}
 
-	protected byte[][] loadMap(String path) {
+	protected void loadMap(String path) {
 		byte[][] map = new byte[size.y][size.x];
 		try (InputStream is = getClass().getResourceAsStream(path)) {
 			if (is == null) {
@@ -69,7 +69,8 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 		} catch (Exception x) {
 			throw new RuntimeException("Error reading map from path " + path, x);
 		}
-		return map;
+		findPortals();
+		findFoodTiles();
 	}
 
 	protected void findPortals() {

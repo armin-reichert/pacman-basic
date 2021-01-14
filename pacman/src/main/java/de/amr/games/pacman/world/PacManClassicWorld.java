@@ -46,24 +46,24 @@ public class PacManClassicWorld extends AbstractPacManGameWorld {
 	/*20*/ new PacManGameLevel(KEY,       5000, 100, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0),
 	/*21*/ new PacManGameLevel(KEY,       5000,  90, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0)
 	};
+
+	public static final V2i BONUS_TILE    = new V2i(13, 20);
+	
+	static final V2i HOUSE_ENTRY  = new V2i(13, 14);
+	static final V2i HOUSE_CENTER = new V2i(13, 17);
+	static final V2i HOUSE_LEFT   = new V2i(11, 17);
+	static final V2i HOUSE_RIGHT  = new V2i(15, 17);
+	static final V2i PAC_HOME     = new V2i(13, 26);
+
+	static final String[]    GHOST_NAMES = { "Blinky", "Pinky", "Inky", "Clyde" };
+	static final V2i[]       GHOST_HOME_TILES = { HOUSE_ENTRY, HOUSE_CENTER, HOUSE_LEFT, HOUSE_RIGHT };
+	static final V2i[]       GHOST_SCATTER_TILES = { new V2i(25, 0), new V2i(2, 0), new V2i(27, 35), new V2i(27, 35) };
+	static final Direction[] GHOST_START_DIRECTIONS = { LEFT, UP, DOWN, DOWN };
+
 	/*@formatter:on*/
 
-	private static final V2i HOUSE_ENTRY = new V2i(13, 14);
-	private static final V2i HOUSE_CENTER = new V2i(13, 17);
-	private static final V2i HOUSE_LEFT = new V2i(11, 17);
-	private static final V2i HOUSE_RIGHT = new V2i(15, 17);
-	public static final V2i BONUS_TILE = new V2i(13, 20);
-	private static final V2i PAC_HOME = new V2i(13, 26);
-
-	private static final String[] GHOST_NAMES = { "Blinky", "Pinky", "Inky", "Clyde" };
-	private static final V2i[] GHOST_HOME_TILES = { HOUSE_ENTRY, HOUSE_CENTER, HOUSE_LEFT, HOUSE_RIGHT };
-	private static final V2i[] GHOST_SCATTER_TILES = { new V2i(25, 0), new V2i(2, 0), new V2i(27, 35), new V2i(27, 35) };
-	private static final Direction[] GHOST_START_DIRECTIONS = { LEFT, UP, DOWN, DOWN };
-
 	public PacManClassicWorld() {
-		map = loadMap("/worlds/classic/map.txt");
-		findPortals();
-		findFoodTiles();
+		loadMap("/worlds/classic/map.txt");
 	}
 
 	@Override

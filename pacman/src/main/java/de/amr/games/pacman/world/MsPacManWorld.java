@@ -49,25 +49,24 @@ public class MsPacManWorld extends AbstractPacManGameWorld {
 //	/*20*/ new PacManGameLevel(BANANA,    5000, 100, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0),
 //	/*21*/ new PacManGameLevel(BANANA,    5000,  90, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0)
 	};
+
+	static final V2i HOUSE_ENTRY  = new V2i(13, 14);
+	static final V2i HOUSE_CENTER = new V2i(13, 17);
+	static final V2i HOUSE_LEFT   = new V2i(11, 17);
+	static final V2i HOUSE_RIGHT  = new V2i(15, 17);
+	static final V2i PAC_HOME     = new V2i(13, 26);
+
+	static final String[]    GHOST_NAMES = { "Blinky", "Pinky", "Inky", "Sue" };
+	static final V2i[]       GHOST_HOME_TILES = { HOUSE_ENTRY, HOUSE_CENTER, HOUSE_LEFT, HOUSE_RIGHT };
+	static final V2i[]       GHOST_SCATTER_TILES = { new V2i(25, 0), new V2i(2, 0), new V2i(27, 35), new V2i(27, 35) };
+	static final Direction[] GHOST_START_DIRECTIONS = { LEFT, UP, DOWN, DOWN };
+
 	/*@formatter:on*/
-
-	private static final V2i HOUSE_ENTRY = new V2i(13, 14);
-	private static final V2i HOUSE_CENTER = new V2i(13, 17);
-	private static final V2i HOUSE_LEFT = new V2i(11, 17);
-	private static final V2i HOUSE_RIGHT = new V2i(15, 17);
-	private static final V2i PAC_HOME = new V2i(13, 26);
-
-	private static final String[] GHOST_NAMES = { "Blinky", "Pinky", "Inky", "Sue" };
-	private static final V2i[] GHOST_HOME_TILES = { HOUSE_ENTRY, HOUSE_CENTER, HOUSE_LEFT, HOUSE_RIGHT };
-	private static final V2i[] GHOST_SCATTER_TILES = { new V2i(25, 0), new V2i(2, 0), new V2i(27, 35), new V2i(27, 35) };
-	private static final Direction[] GHOST_START_DIRECTIONS = { LEFT, UP, DOWN, DOWN };
 
 	private final Random rnd = new Random();
 	private final Map<Integer, Byte> symbolAtLevel = new HashMap<>();
-	private int mapIndex; // 1-6
 
-	public MsPacManWorld() {
-	}
+	private int mapIndex; // 1-6
 
 	private void selectMap(int mapIndex) {
 		if (mapIndex < 1 || mapIndex > 6) {
@@ -76,9 +75,7 @@ public class MsPacManWorld extends AbstractPacManGameWorld {
 		this.mapIndex = mapIndex;
 		// Map #5 is the same as #3, only different color, same for #6 vs. #4
 		int fileIndex = mapIndex == 5 ? 3 : mapIndex == 6 ? 4 : mapIndex;
-		map = loadMap("/worlds/mspacman/map" + fileIndex + ".txt");
-		findPortals();
-		findFoodTiles();
+		loadMap("/worlds/mspacman/map" + fileIndex + ".txt");
 	}
 
 	@Override
