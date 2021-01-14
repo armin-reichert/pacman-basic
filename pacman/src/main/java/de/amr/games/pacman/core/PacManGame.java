@@ -122,7 +122,7 @@ public class PacManGame extends Thread {
 	public void run() {
 		reset();
 		enterIntroState();
-		log("Enter state '%s' for %s", stateDescription(), ticksDescription(state.duration()));
+		log("Game starts. Entering state '%s' for %s", stateDescription(), ticksDescription(state.duration()));
 		while (true) {
 			clock.tick(this::step);
 		}
@@ -172,8 +172,8 @@ public class PacManGame extends Thread {
 		gameStarted = false;
 		score = 0;
 		lives = 3;
-		hiscore.load(hiscoreFile(variant));
 		setLevel(1);
+		hiscore.load(hiscoreFile(variant));
 		if (ui != null) {
 			ui.clearMessage();
 		}
@@ -597,14 +597,12 @@ public class PacManGame extends Thread {
 
 	private PacManGameState runGameOverState() {
 		if (state.expired() || ui.anyKeyPressed()) {
-			return changeState(this::exitGameOverState, this::enterIntroState, null);
+			return changeState(this::exitGameOverState, this::enterIntroState, this::reset);
 		}
 		return state.tick();
 	}
 
 	private void exitGameOverState() {
-		reset();
-		ui.clearMessage();
 	}
 
 	// END STATE-MACHINE
