@@ -1155,8 +1155,12 @@ public class PacManGame extends Thread {
 			return true;
 		}
 		if (world.isGhostHouseDoor(x, y)) {
-			return guy instanceof Ghost
-					&& (((Ghost) guy).state == GhostState.ENTERING_HOUSE || ((Ghost) guy).state == GhostState.LEAVING_HOUSE);
+			if (guy instanceof Ghost) {
+				Ghost ghost = (Ghost) guy;
+				return ghost.state == GhostState.ENTERING_HOUSE || ghost.state == GhostState.LEAVING_HOUSE;
+			} else {
+				return false;
+			}
 		}
 		return world.inMapRange(x, y) && !world.isWall(x, y);
 	}

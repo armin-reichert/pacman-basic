@@ -187,7 +187,7 @@ public class MsPacManPlayScene extends PacManGameScene {
 		}
 		int dir = DIR_INDEX.get(ghost.wishDir);
 		int walking = ghost.speed == 0 ? 0 : game.clock.frame(5, 2);
-		if (ghost.state == GhostState.DEAD) {
+		if (ghost.state == GhostState.DEAD || ghost.state == GhostState.ENTERING_HOUSE) {
 			// eyes looking towards *intended* move direction
 			return assets.section(8 + dir, 5);
 		}
