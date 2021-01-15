@@ -47,7 +47,7 @@ public class MsPacManWorld extends AbstractPacManGameWorld {
 	};
 	/*@formatter:on*/
 
-	static final String[] GHOST_NAMES = { "Blinky", "Pinky", "Inky", "Sue" };
+	private static final String[] GHOST_NAMES = { "Blinky", "Pinky", "Inky", "Sue" };
 
 	private final Random rnd = new Random();
 	private int mapIndex; // 1-6

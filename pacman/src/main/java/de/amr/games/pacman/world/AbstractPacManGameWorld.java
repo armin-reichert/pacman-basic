@@ -15,6 +15,12 @@ import java.util.stream.Stream;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
 
+/**
+ * Common base of Pac-Man classic and Ms. Pac-man worlds. All maps used in these game variants have
+ * the same ghost house structure and location.
+ * 
+ * @author Armin Reichert
+ */
 public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 
 	private static byte decode(char c) {
@@ -36,11 +42,9 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 		}
 	}
 
-	// All maps in Pac-Man and in Ms. Pac-Man have the following in common:
-
 	private static final V2i HOUSE_ENTRY = new V2i(13, 14);
-	private static final V2i HOUSE_CENTER = new V2i(13, 17);
 	private static final V2i HOUSE_LEFT = new V2i(11, 17);
+	private static final V2i HOUSE_CENTER = new V2i(13, 17);
 	private static final V2i HOUSE_RIGHT = new V2i(15, 17);
 
 	private static final V2i PAC_HOME = new V2i(13, 26);
@@ -49,13 +53,13 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 	private static final Direction[] GHOST_START_DIRECTIONS = { LEFT, UP, DOWN, DOWN };
 	private static final V2i[] GHOST_SCATTER_TILES = { new V2i(25, 0), new V2i(2, 0), new V2i(27, 35), new V2i(27, 35) };
 
-	protected byte[][] map;
-	protected V2i size = new V2i(28, 36);
-	protected List<V2i> portalsLeft = new ArrayList<>(2);
-	protected List<V2i> portalsRight = new ArrayList<>(2);
-	protected List<V2i> energizerTiles = new ArrayList<>(4);
+	protected final V2i size = new V2i(28, 36);
+	protected final List<V2i> portalsLeft = new ArrayList<>(2);
+	protected final List<V2i> portalsRight = new ArrayList<>(2);
+	protected final List<V2i> energizerTiles = new ArrayList<>(4);
 
-	protected BitSet eaten = new BitSet();
+	protected byte[][] map;
+	protected final BitSet eaten = new BitSet();
 	protected int totalFoodCount;
 	protected int foodRemaining;
 
@@ -177,7 +181,7 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 		return HOUSE_RIGHT;
 	}
 
-	protected boolean isInsideGhostHouse(int x, int y) {
+	private boolean isInsideGhostHouse(int x, int y) {
 		return x >= 10 && x <= 17 && y >= 15 && y <= 22;
 	}
 
