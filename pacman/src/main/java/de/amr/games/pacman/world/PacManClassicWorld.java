@@ -18,7 +18,7 @@ public class PacManClassicWorld extends AbstractPacManGameWorld {
 	public static final byte CHERRIES = 0, STRAWBERRY = 1, PEACH = 2, APPLE = 3, GRAPES = 4, GALAXIAN = 5, BELL = 6,
 			KEY = 7;
 
-	public static final short[] BONUS_POINTS = { 100, 300, 500, 700, 1000, 2000, 3000 };
+	public static final short[] BONUS_POINTS = { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
 
 	public static final V2i BONUS_TILE = new V2i(13, 20);
 
