@@ -69,13 +69,33 @@ public interface PacManGameWorld {
 
 	boolean isAccessible(int x, int y);
 
+	default boolean isAccessible(V2i tile) {
+		return isAccessible(tile.x, tile.y);
+	}
+
 	boolean isPortal(int x, int y);
+
+	default boolean isPortal(V2i tile) {
+		return isPortal(tile.x, tile.y);
+	}
 
 	boolean isIntersection(int x, int y);
 
+	default boolean isIntersection(V2i tile) {
+		return isIntersection(tile.x, tile.y);
+	}
+
 	boolean isTunnel(int x, int y);
 
+	default boolean isTunnel(V2i tile) {
+		return isTunnel(tile.x, tile.y);
+	}
+
 	boolean isUpwardsBlocked(int x, int y);
+
+	default boolean isUpwardsBlocked(V2i tile) {
+		return isUpwardsBlocked(tile.x, tile.y);
+	}
 
 	boolean isGhostHouseDoor(int x, int y);
 

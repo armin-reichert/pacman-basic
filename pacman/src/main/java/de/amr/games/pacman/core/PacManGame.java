@@ -790,7 +790,7 @@ public class PacManGame {
 			if (variant == MS_PACMAN) {
 				letBonusWanderMaze();
 				V2i bonusLocation = bonus.tile();
-				if (world.isPortal(bonusLocation.x, bonusLocation.y)) {
+				if (world.isPortal(bonusLocation)) {
 					expired = true; // TODO should bonus also expire on timeout?
 				}
 			} else {
@@ -821,7 +821,7 @@ public class PacManGame {
 
 	private void letBonusWanderMaze() {
 		V2i bonusLocation = bonus.tile();
-		if (!bonus.couldMove || world.isIntersection(bonusLocation.x, bonusLocation.y)) {
+		if (!bonus.couldMove || world.isIntersection(bonusLocation)) {
 			List<Direction> dirs = possibleMoveDirections(bonus);
 			if (dirs.size() > 1) {
 				// give random movement a bias towards the target direction
@@ -957,7 +957,7 @@ public class PacManGame {
 
 	private void letGhostWanderMaze(Ghost ghost) {
 		V2i ghostLocation = ghost.tile();
-		if (world.isTunnel(ghostLocation.x, ghostLocation.y)) {
+		if (world.isTunnel(ghostLocation)) {
 			ghost.speed = level.ghostSpeedTunnel;
 		} else if (ghost.state == GhostState.FRIGHTENED) {
 			ghost.speed = level.ghostSpeedFrightened;
@@ -1054,10 +1054,10 @@ public class PacManGame {
 			return Optional.of(ghost.wishDir);
 		}
 		V2i ghostLocation = ghost.tile();
-		if (world.isPortal(ghostLocation.x, ghostLocation.y)) {
+		if (world.isPortal(ghostLocation)) {
 			return Optional.empty();
 		}
-		if (ghost.state == GhostState.FRIGHTENED && world.isIntersection(ghostLocation.x, ghostLocation.y)) {
+		if (ghost.state == GhostState.FRIGHTENED && world.isIntersection(ghostLocation)) {
 			return Optional.of(randomPossibleMoveDir(ghost));
 		}
 		return ghostTargetDirection(ghost);
@@ -1076,7 +1076,7 @@ public class PacManGame {
 			if (!canAccessTile(ghost, neighbor.x, neighbor.y)) {
 				continue;
 			}
-			if (dir == UP && ghost.state == GhostState.HUNTING && world.isUpwardsBlocked(neighbor.x, neighbor.y)) {
+			if (dir == UP && ghost.state == GhostState.HUNTING && world.isUpwardsBlocked(neighbor)) {
 				continue;
 			}
 			double dist = neighbor.euclideanDistance(ghost.targetTile);
@@ -1196,10 +1196,7 @@ public class PacManGame {
 		//@formatter:off
 		return Stream.of(Direction.values())
 			.filter(dir -> dir != guy.dir.opposite())
-			.filter(dir -> {
-				V2i neighbor = guy.tile().sum(dir.vec);
-				return world.isAccessible(neighbor.x, neighbor.y);
-			})
+			.filter(dir -> world.isAccessible(guy.tile().sum(dir.vec)))
 			.collect(Collectors.toList());
 		//@formatter:on
 	}

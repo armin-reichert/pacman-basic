@@ -66,7 +66,7 @@ public class Autopilot {
 		}
 
 		// when not escaping ghost, keep move direction at least until next intersection
-		if (pacMan.couldMove && !game.world.isIntersection(pacManTile.x, pacManTile.y))
+		if (pacMan.couldMove && !game.world.isIntersection(pacManTile))
 			return;
 
 		Ghost prey = findFrightenedGhostInReach();
@@ -184,7 +184,7 @@ public class Autopilot {
 		}
 		for (Direction escape : escapes) {
 			V2i escapeTile = pacManTile.sum(escape.vec);
-			if (game.world.isTunnel(escapeTile.x, escapeTile.y)) {
+			if (game.world.isTunnel(escapeTile)) {
 				return escape;
 			}
 		}
