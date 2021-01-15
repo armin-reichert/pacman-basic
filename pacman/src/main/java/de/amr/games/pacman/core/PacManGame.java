@@ -26,6 +26,7 @@ import static de.amr.games.pacman.world.PacManGameWorld.tile;
 import static java.lang.Math.abs;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -78,6 +79,7 @@ public class PacManGame {
 	public final Pac pac;
 	public final Ghost[] ghosts;
 	public final Bonus bonus;
+	public final List<Byte> bonusSymbols;
 
 	public PacManGameUI ui;
 
@@ -118,6 +120,7 @@ public class PacManGame {
 		for (Ghost ghost : ghosts) {
 			ghost.name = world.ghostName(ghost.id);
 		}
+		bonusSymbols = new ArrayList<>();
 	}
 
 	public void start() {
@@ -182,17 +185,16 @@ public class PacManGame {
 		gameStarted = false;
 		score = 0;
 		lives = 3;
-		setLevel(1);
+		levelNumber = 0;
+		bonusSymbols.clear();
+		nextLevel();
 		hiscore.load();
 		if (ui != null) {
 			ui.clearMessage();
 		}
 	}
 
-	private void setLevel(int number) {
-		levelNumber = (short) number;
-		level = world.levelData(levelNumber);
-		world.setLevel(levelNumber);
+	private void nextLevel() {
 		huntingPhase = 0;
 		mazeFlashesRemaining = 0;
 		ghostBounty = 200;
@@ -203,6 +205,10 @@ public class PacManGame {
 			ghost.dotCounter = 0;
 			ghost.elroyMode = 0;
 		}
+		levelNumber++;
+		level = world.createLevel(levelNumber);
+		world.setLevel(levelNumber); // TODO
+		bonusSymbols.add(level.bonusSymbol);
 	}
 
 	private void resetGuys() {
@@ -589,7 +595,7 @@ public class PacManGame {
 
 	private void exitChangingLevelState() {
 		log("Level %d complete, entering level %d", levelNumber, levelNumber + 1);
-		setLevel(++levelNumber);
+		nextLevel();
 	}
 
 	// GAME_OVER
@@ -665,9 +671,9 @@ public class PacManGame {
 			bonus.availableTicks = 0;
 			bonus.consumedTicks = clock.sec(2);
 			bonus.speed = 0;
-			score(level.bonusPoints);
+			score(bonus.points);
 			ui.playSound(PacManGameSound.EAT_BONUS);
-			log("Pac-Man found bonus (%d) of value %d", level.bonusSymbol, level.bonusPoints);
+			log("Pac-Man found bonus (%d) of value %d", level.bonusSymbol, bonus.points);
 		}
 	}
 
@@ -685,9 +691,13 @@ public class PacManGame {
 		if (eaten == 70 || eaten == 170) {
 			bonus.visible = true;
 			if (variant == CLASSIC) {
+				bonus.symbol = level.bonusSymbol;
+				bonus.points = PacManClassicWorld.BONUS_POINTS[bonus.symbol];
 				bonus.availableTicks = clock.sec(9 + rnd.nextFloat());
 				bonus.placeAt(PacManClassicWorld.BONUS_TILE, HTS, 0);
 			} else if (variant == MS_PACMAN) {
+				bonus.symbol = level.bonusSymbol;
+				bonus.points = MsPacManWorld.BONUS_POINTS[bonus.symbol];
 				bonus.availableTicks = Long.MAX_VALUE; // TODO is there a timeout?
 				int portal = rnd.nextInt(world.numPortals());
 				boolean entersMazeFromLeft = rnd.nextBoolean();

@@ -92,8 +92,8 @@ public class MsPacManPlayScene extends PacManGameScene {
 	private void drawLevelCounter(Graphics2D g) {
 		int x = t(game.world.sizeInTiles().x - 4);
 		int first = Math.max(1, game.levelNumber - 6);
-		for (int level = first; level <= game.levelNumber; ++level) {
-			BufferedImage symbol = assets.symbols[game.world.levelData(level).bonusSymbol];
+		for (int levelNumber = first; levelNumber <= game.levelNumber; ++levelNumber) {
+			BufferedImage symbol = assets.symbols[game.bonusSymbols.get(levelNumber - 1)];
 			g.drawImage(symbol, x, size.y - t(2), null);
 			x -= t(2);
 		}
@@ -142,7 +142,7 @@ public class MsPacManPlayScene extends PacManGameScene {
 			g.drawImage(bonusSprite, (int) (game.bonus.position.x) - HTS,
 					(int) (game.bonus.position.y) + BONUS_JUMP[frame] - HTS, null);
 		} else if (game.bonus.consumedTicks > 0) {
-			BufferedImage bonusSprite = assets.numbers.get(game.level.bonusPoints);
+			BufferedImage bonusSprite = assets.numbers.get(game.bonus.points);
 			g.drawImage(bonusSprite, (int) (game.bonus.position.x) - HTS, (int) (game.bonus.position.y) - HTS, null);
 		}
 	}

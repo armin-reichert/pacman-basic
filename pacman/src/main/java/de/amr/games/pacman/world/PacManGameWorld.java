@@ -29,7 +29,7 @@ public interface PacManGameWorld {
 		return new V2f(position.x - tile.x * TS, position.y - tile.y * TS);
 	}
 
-	PacManGameLevel levelData(int levelNumber);
+	PacManGameLevel createLevel(int levelNumber);
 
 	void setLevel(int levelNumber);
 

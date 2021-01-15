@@ -12,6 +12,9 @@ public class Bonus extends Creature {
 	/** ID of the bonus symbol. */
 	public byte symbol;
 
+	/** Value of this bonus. */
+	public int points;
+
 	/** Number of clock ticks the bonus is still available for eating. */
 	public long availableTicks;
 
