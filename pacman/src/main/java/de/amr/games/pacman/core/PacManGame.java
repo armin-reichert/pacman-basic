@@ -136,7 +136,7 @@ public class PacManGame extends Thread {
 
 	public void exit() {
 		if (hiscore.changed) {
-			hiscore.save(hiscoreFile(variant));
+			hiscore.save(hiscoreFile());
 		}
 		log("Game exits.");
 	}
@@ -173,7 +173,7 @@ public class PacManGame extends Thread {
 		score = 0;
 		lives = 3;
 		setLevel(1);
-		hiscore.load(hiscoreFile(variant));
+		hiscore.load(hiscoreFile());
 		if (ui != null) {
 			ui.clearMessage();
 		}
@@ -592,7 +592,7 @@ public class PacManGame extends Thread {
 		}
 		pac.speed = 0;
 		if (hiscore.changed) {
-			hiscore.save(hiscoreFile(variant));
+			hiscore.save(hiscoreFile());
 		}
 		ui.showMessage(TEXTS.getString("GAME_OVER"), true);
 	}
@@ -1192,7 +1192,7 @@ public class PacManGame extends Thread {
 		hiscore.update(score, levelNumber);
 	}
 
-	private File hiscoreFile(GameVariant variant) {
+	private File hiscoreFile() {
 		File folder = new File(System.getProperty("user.home"));
 		return new File(folder, "pacman-hiscore-" + variant + ".xml");
 	}
