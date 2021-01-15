@@ -667,7 +667,7 @@ public class PacManGame {
 
 	private void checkPacFindsFood() {
 		V2i pacLocation = pac.tile();
-		if (world.containsFood(pacLocation.x, pacLocation.y)) {
+		if (world.containsFood(pacLocation)) {
 			pacFoundFood(pacLocation);
 		} else {
 			pacStarved();
@@ -720,7 +720,7 @@ public class PacManGame {
 	}
 
 	private void pacFoundFood(V2i foodLocation) {
-		if (world.isEnergizerTile(foodLocation.x, foodLocation.y)) {
+		if (world.isEnergizerTile(foodLocation)) {
 			score(50);
 			pacGetsPower();
 			pac.restingTicksLeft = 3;
@@ -730,7 +730,7 @@ public class PacManGame {
 			pac.restingTicksLeft = 1;
 		}
 		pac.starvingTicks = 0;
-		world.removeFood(foodLocation.x, foodLocation.y);
+		world.removeFood(foodLocation);
 		checkElroyActivation();
 		checkBonusActivation();
 		updateGhostDotCounters();

@@ -109,11 +109,31 @@ public interface PacManGameWorld {
 
 	void removeFood(int x, int y);
 
-	boolean foodRemoved(int x, int y);
+	default void removeFood(V2i tile) {
+		removeFood(tile.x, tile.y);
+	}
+
+	boolean isFoodRemoved(int x, int y);
+
+	default boolean isFoodRemoved(V2i tile) {
+		return isFoodRemoved(tile.x, tile.y);
+	}
 
 	boolean isFoodTile(int x, int y);
 
+	default boolean isFoodTile(V2i tile) {
+		return isFoodTile(tile.x, tile.y);
+	}
+
 	boolean isEnergizerTile(int x, int y);
 
+	default boolean isEnergizerTile(V2i tile) {
+		return isEnergizerTile(tile.x, tile.y);
+	}
+
 	boolean containsFood(int x, int y);
+
+	default boolean containsFood(V2i tile) {
+		return containsFood(tile.x, tile.y);
+	}
 }

@@ -139,13 +139,13 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 	}
 
 	@Override
-	public boolean foodRemoved(int x, int y) {
+	public boolean isFoodRemoved(int x, int y) {
 		return eaten.get(tileIndex(x, y));
 	}
 
 	@Override
 	public void removeFood(int x, int y) {
-		if (!foodRemoved(x, y)) {
+		if (!isFoodRemoved(x, y)) {
 			eaten.set(tileIndex(x, y));
 			--foodRemaining;
 		}
@@ -206,6 +206,6 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 
 	@Override
 	public boolean containsFood(int x, int y) {
-		return isFoodTile(x, y) && !foodRemoved(x, y);
+		return isFoodTile(x, y) && !isFoodRemoved(x, y);
 	}
 }
