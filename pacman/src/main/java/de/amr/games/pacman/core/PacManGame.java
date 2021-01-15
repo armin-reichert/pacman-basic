@@ -69,9 +69,9 @@ public class PacManGame extends Thread {
 
 	static final ResourceBundle TEXTS = ResourceBundle.getBundle("localization.translation");
 
+	public final Hiscore hiscore;
 	public final Clock clock;
 	public final Random rnd;
-	public final Hiscore hiscore;
 
 	public final GameVariant variant;
 	public final PacManGameWorld world;
@@ -101,16 +101,14 @@ public class PacManGame extends Thread {
 
 	public PacManGame(GameVariant variant) {
 		super("Pac-Man-" + variant);
-
+		this.variant = variant;
+		hiscore = new Hiscore(new File(System.getProperty("user.home"), "pacman-hiscore-" + variant + ".xml"));
 		clock = new Clock();
 		rnd = new Random();
-		hiscore = new Hiscore();
 		autopilot = new Autopilot();
 		pac = new Pac();
 		ghosts = new Ghost[] { new Ghost(0), new Ghost(1), new Ghost(2), new Ghost(3) };
 		bonus = new Bonus();
-
-		this.variant = variant;
 		world = variant == CLASSIC ? new PacManClassicWorld() : new MsPacManWorld();
 		pac.name = world.pacName();
 		for (Ghost ghost : ghosts) {
@@ -136,7 +134,7 @@ public class PacManGame extends Thread {
 
 	public void exit() {
 		if (hiscore.changed) {
-			hiscore.save(hiscoreFile());
+			hiscore.save();
 		}
 		log("Game exits.");
 	}
@@ -173,7 +171,7 @@ public class PacManGame extends Thread {
 		score = 0;
 		lives = 3;
 		setLevel(1);
-		hiscore.load(hiscoreFile());
+		hiscore.load();
 		if (ui != null) {
 			ui.clearMessage();
 		}
@@ -592,7 +590,7 @@ public class PacManGame extends Thread {
 		}
 		pac.speed = 0;
 		if (hiscore.changed) {
-			hiscore.save(hiscoreFile());
+			hiscore.save();
 		}
 		ui.showMessage(TEXTS.getString("GAME_OVER"), true);
 	}
@@ -1190,11 +1188,6 @@ public class PacManGame extends Thread {
 			ui.playSound(PacManGameSound.EXTRA_LIFE);
 		}
 		hiscore.update(score, levelNumber);
-	}
-
-	private File hiscoreFile() {
-		File folder = new File(System.getProperty("user.home"));
-		return new File(folder, "pacman-hiscore-" + variant + ".xml");
 	}
 
 	// Cheats

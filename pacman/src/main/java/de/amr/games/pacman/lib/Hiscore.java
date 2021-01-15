@@ -17,6 +17,7 @@ import java.util.Properties;
  */
 public class Hiscore {
 
+	public File file;
 	public int points;
 	public int level;
 	public ZonedDateTime time;
@@ -27,6 +28,10 @@ public class Hiscore {
 		level = 1;
 		time = ZonedDateTime.now();
 		changed = false;
+	}
+
+	public Hiscore(File file) {
+		this.file = file;
 	}
 
 	public void load(File file) {
@@ -43,6 +48,12 @@ public class Hiscore {
 		}
 	}
 
+	public void load() {
+		if (file != null) {
+			load(file);
+		}
+	}
+
 	public void save(File file) {
 		Properties content = new Properties();
 		content.setProperty("points", String.valueOf(points));
@@ -54,6 +65,12 @@ public class Hiscore {
 		} catch (Exception x) {
 			log("Could not save hiscore");
 			x.printStackTrace(System.err);
+		}
+	}
+
+	public void save() {
+		if (file != null) {
+			save(file);
 		}
 	}
 
