@@ -783,34 +783,53 @@ public class PacManGame {
 	}
 
 	private void updateBonus() {
-		if (bonus.availableTicks > 0) {
-			--bonus.availableTicks;
 
+		// uneaten bonus available?
+		boolean expired = false;
+		if (bonus.availableTicks > 0) {
 			if (variant == MS_PACMAN) {
+				letBonusWanderMaze();
 				V2i bonusLocation = bonus.tile();
 				if (world.isPortal(bonusLocation.x, bonusLocation.y)) {
-					bonus.availableTicks = 0;
-					bonus.visible = false;
-					return;
+					expired = true; // TODO should bonus also expire on timeout?
 				}
-				if (!bonus.couldMove || world.isIntersection(bonusLocation.x, bonusLocation.y)) {
-					List<Direction> dirs = possibleMoveDirections(bonus);
-					if (dirs.size() > 1) {
-						// give random movement a bias towards the target direction
-						dirs.remove(bonus.targetDirection.opposite());
-					}
-					bonus.wishDir = dirs.get(rnd.nextInt(dirs.size()));
+			} else {
+				bonus.availableTicks--;
+				if (bonus.availableTicks == 0) {
+					expired = true;
 				}
-				tryMoving(bonus);
 			}
+		}
+		if (expired) {
+			bonus.availableTicks = 0;
+			bonus.visible = false;
 		}
 
+		// consumed bonus?
+		expired = false;
 		if (bonus.consumedTicks > 0) {
-			--bonus.consumedTicks;
+			bonus.consumedTicks--;
 			if (bonus.consumedTicks == 0) {
-				bonus.visible = false;
+				expired = true;
 			}
 		}
+		if (expired) {
+			bonus.consumedTicks = 0;
+			bonus.visible = false;
+		}
+	}
+
+	private void letBonusWanderMaze() {
+		V2i bonusLocation = bonus.tile();
+		if (!bonus.couldMove || world.isIntersection(bonusLocation.x, bonusLocation.y)) {
+			List<Direction> dirs = possibleMoveDirections(bonus);
+			if (dirs.size() > 1) {
+				// give random movement a bias towards the target direction
+				dirs.remove(bonus.targetDirection.opposite());
+			}
+			bonus.wishDir = dirs.get(rnd.nextInt(dirs.size()));
+		}
+		tryMoving(bonus);
 	}
 
 	private void updateGhost(Ghost ghost) {
