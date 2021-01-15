@@ -238,7 +238,7 @@ public class PacManGame extends Thread {
 
 	public String stateDescription() {
 		if (state == HUNTING) {
-			String phaseName = inChasingPhase() ? "Chasing" : "Scattering";
+			String phaseName = inAttackMode() ? "Chasing" : "Scattering";
 			int phase = huntingPhase / 2;
 			return String.format("%s-%s (%d of 4)", state, phaseName, phase + 1);
 		}
@@ -379,11 +379,11 @@ public class PacManGame extends Thread {
 		return clock.sec(duration);
 	}
 
-	private boolean inScatteringPhase() {
+	private boolean inRetreatMode() {
 		return huntingPhase % 2 == 0;
 	}
 
-	private boolean inChasingPhase() {
+	private boolean inAttackMode() {
 		return huntingPhase % 2 != 0;
 	}
 
@@ -405,7 +405,7 @@ public class PacManGame extends Thread {
 	private void startHuntingPhase(int phase) {
 		huntingPhase = (byte) phase;
 		state.setDuration(huntingPhaseDuration(huntingPhase));
-		if (inScatteringPhase()) {
+		if (inRetreatMode()) {
 			if (huntingPhase >= 2) {
 				ui.stopSound(siren(huntingPhase - 2));
 			}
@@ -463,6 +463,7 @@ public class PacManGame extends Thread {
 			return changeState(this::exitHuntingState, this::enterPacManDyingState, () -> pacKilled(collidingGhost));
 		}
 
+		// hunting state timer is stopped as long as Pac has power
 		return pac.powerTicksLeft == 0 ? state.tick() : state;
 	}
 
@@ -497,7 +498,7 @@ public class PacManGame extends Thread {
 			}
 		}
 		if (state.running(clock.sec(2.5))) {
-			pac.collapsingTicksLeft = clock.sec(1.5); // TODO correct?
+			pac.collapsingTicksLeft = clock.sec(1.5);
 			ui.playSound(PacManGameSound.PACMAN_DEATH);
 		}
 		if (pac.collapsingTicksLeft > 1) {
@@ -520,7 +521,7 @@ public class PacManGame extends Thread {
 	private void enterGhostDyingState() {
 		stateBefore = state;
 		state = GHOST_DYING;
-		state.setDuration(clock.sec(1)); // TODO correct?
+		state.setDuration(clock.sec(1));
 		pac.visible = false;
 		ui.playSound(PacManGameSound.GHOST_DEATH);
 	}
@@ -623,7 +624,6 @@ public class PacManGame extends Thread {
 					if (ghost.state == GhostState.FRIGHTENED) {
 						ghost.state = GhostState.HUNTING;
 					}
-					;
 				}
 				ui.stopSound(PacManGameSound.PACMAN_POWER);
 			}
@@ -768,22 +768,20 @@ public class PacManGame extends Thread {
 			if (ghosts[CLYDE].state == GhostState.LOCKED && globalDotCounter == 32) {
 				globalDotCounterEnabled = false;
 				globalDotCounter = 0;
-				log("Global dot counter disabled and reset, Clyde in house when counter reached 32");
+				log("Global dot counter disabled and reset, Clyde was in house when counter reached 32");
 			} else {
 				++globalDotCounter;
 			}
 		} else {
-			preferredLockedGhost().ifPresent(ghost -> {
-				ghost.dotCounter++;
-			});
+			preferredLockedGhost().ifPresent(ghost -> ++ghost.dotCounter);
 		}
 	}
 
 	private void updateBonus() {
-
 		if (bonus.availableTicks > 0) {
 			--bonus.availableTicks;
-			if (bonus.speed > 0) {
+
+			if (variant == MS_PACMAN) {
 				V2i bonusLocation = bonus.tile();
 				if (world.isPortal(bonusLocation.x, bonusLocation.y)) {
 					bonus.availableTicks = 0;
@@ -857,7 +855,7 @@ public class PacManGame extends Thread {
 	}
 
 	private Optional<Ghost> preferredLockedGhost() {
-		return Stream.of(ghosts[PINKY], ghosts[INKY], ghosts[CLYDE]).filter(ghost -> ghost.state == GhostState.LOCKED)
+		return Stream.of(PINKY, INKY, CLYDE).map(id -> ghosts[id]).filter(ghost -> ghost.state == GhostState.LOCKED)
 				.findFirst();
 	}
 
@@ -925,7 +923,7 @@ public class PacManGame extends Thread {
 	}
 
 	private void letGhostBounce(Ghost ghost) {
-		int ceiling = t(world.houseCenter().y - 1) + 3, ground = t(world.houseCenter().y) + 4;
+		int ceiling = t(world.houseCenter().y) - 5, ground = t(world.houseCenter().y) + 4;
 		if (ghost.position.y <= ceiling || ghost.position.y >= ground) {
 			ghost.wishDir = ghost.dir.opposite();
 		}
@@ -939,14 +937,14 @@ public class PacManGame extends Thread {
 			ghost.speed = level.ghostSpeedTunnel;
 		} else if (ghost.state == GhostState.FRIGHTENED) {
 			ghost.speed = level.ghostSpeedFrightened;
-		} else if (ghost.id == BLINKY && ghost.elroyMode == 1) {
+		} else if (ghost.elroyMode == 1) {
 			ghost.speed = level.elroy1Speed;
-		} else if (ghost.id == BLINKY && ghost.elroyMode == 2) {
+		} else if (ghost.elroyMode == 2) {
 			ghost.speed = level.elroy2Speed;
 		} else {
 			ghost.speed = level.ghostSpeed;
 		}
-		if (inChasingPhase() || ghost.id == BLINKY && ghost.elroyMode > 0) {
+		if (inAttackMode() || ghost.elroyMode > 0) {
 			ghost.targetTile = ghostChasingTarget(ghost.id);
 		} else {
 			ghost.targetTile = world.ghostScatterTile(ghost.id);
