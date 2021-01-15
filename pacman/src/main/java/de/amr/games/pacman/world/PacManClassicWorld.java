@@ -1,10 +1,6 @@
 package de.amr.games.pacman.world;
 
-import static de.amr.games.pacman.lib.Direction.DOWN;
-import static de.amr.games.pacman.lib.Direction.LEFT;
-import static de.amr.games.pacman.lib.Direction.UP;
-
-import java.util.stream.Stream;
+import static de.amr.games.pacman.lib.Direction.RIGHT;
 
 import de.amr.games.pacman.core.PacManGameLevel;
 import de.amr.games.pacman.lib.Direction;
@@ -22,46 +18,36 @@ public class PacManClassicWorld extends AbstractPacManGameWorld {
 	public static final byte CHERRIES = 0, STRAWBERRY = 1, PEACH = 2, APPLE = 3, GRAPES = 4, GALAXIAN = 5, BELL = 6,
 			KEY = 7;
 
-	public static final int[] BONUS_POINTS = { 100, 300, 500, 700, 1000, 2000, 3000 };
+	public static final short[] BONUS_POINTS = { 100, 300, 500, 700, 1000, 2000, 3000 };
+
+	public static final V2i BONUS_TILE = new V2i(13, 20);
+
+	private static final String[] GHOST_NAMES = { "Blinky", "Pinky", "Inky", "Clyde" };
 
 	/*@formatter:off*/
-	public static final PacManGameLevel[] LEVELS = {
-	/* 1*/ new PacManGameLevel(CHERRIES,   80, 75, 40,  20,  80, 10,  85,  90, 50, 6, 5),
-	/* 2*/ new PacManGameLevel(STRAWBERRY, 90, 85, 45,  30,  90, 15,  95,  95, 55, 5, 5),
-	/* 3*/ new PacManGameLevel(PEACH,      90, 85, 45,  40,  90, 20,  95,  95, 55, 4, 5),
-	/* 4*/ new PacManGameLevel(PEACH,      90, 85, 45,  40,  90, 20,  95,  95, 55, 3, 5),
-	/* 5*/ new PacManGameLevel(APPLE,     100, 95, 50,  40, 100, 20, 105, 100, 60, 2, 5),
-	/* 6*/ new PacManGameLevel(APPLE,     100, 95, 50,  50, 100, 25, 105, 100, 60, 5, 5),
-	/* 7*/ new PacManGameLevel(GRAPES,    100, 95, 50,  50, 100, 25, 105, 100, 60, 2, 5),
-	/* 8*/ new PacManGameLevel(GRAPES,    100, 95, 50,  50, 100, 25, 105, 100, 60, 2, 5),
-	/* 9*/ new PacManGameLevel(GALAXIAN,  100, 95, 50,  60, 100, 30, 105, 100, 60, 1, 3),
-	/*10*/ new PacManGameLevel(GALAXIAN,  100, 95, 50,  60, 100, 30, 105, 100, 60, 5, 5),
-	/*11*/ new PacManGameLevel(BELL,      100, 95, 50,  60, 100, 30, 105, 100, 60, 2, 5),
-	/*12*/ new PacManGameLevel(BELL,      100, 95, 50,  80, 100, 40, 105, 100, 60, 1, 3),
-	/*13*/ new PacManGameLevel(KEY,       100, 95, 50,  80, 100, 40, 105, 100, 60, 1, 3),
-	/*14*/ new PacManGameLevel(KEY,       100, 95, 50,  80, 100, 40, 105, 100, 60, 3, 5),
-	/*15*/ new PacManGameLevel(KEY,       100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3),
-	/*16*/ new PacManGameLevel(KEY,       100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3),
-	/*17*/ new PacManGameLevel(KEY,       100, 95, 50, 100, 100, 50, 105,   0,  0, 0, 0),
-	/*18*/ new PacManGameLevel(KEY,       100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3),
-	/*19*/ new PacManGameLevel(KEY,       100, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0),
-	/*20*/ new PacManGameLevel(KEY,       100, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0),
-	/*21*/ new PacManGameLevel(KEY,        90, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0)
+	private static final int[][] LEVELS = {
+	/* 1*/ {CHERRIES,   80, 75, 40,  20,  80, 10,  85,  90, 50, 6, 5},
+	/* 2*/ {STRAWBERRY, 90, 85, 45,  30,  90, 15,  95,  95, 55, 5, 5},
+	/* 3*/ {PEACH,      90, 85, 45,  40,  90, 20,  95,  95, 55, 4, 5},
+	/* 4*/ {PEACH,      90, 85, 45,  40,  90, 20,  95,  95, 55, 3, 5},
+	/* 5*/ {APPLE,     100, 95, 50,  40, 100, 20, 105, 100, 60, 2, 5},
+	/* 6*/ {APPLE,     100, 95, 50,  50, 100, 25, 105, 100, 60, 5, 5},
+	/* 7*/ {GRAPES,    100, 95, 50,  50, 100, 25, 105, 100, 60, 2, 5},
+	/* 8*/ {GRAPES,    100, 95, 50,  50, 100, 25, 105, 100, 60, 2, 5},
+	/* 9*/ {GALAXIAN,  100, 95, 50,  60, 100, 30, 105, 100, 60, 1, 3},
+	/*10*/ {GALAXIAN,  100, 95, 50,  60, 100, 30, 105, 100, 60, 5, 5},
+	/*11*/ {BELL,      100, 95, 50,  60, 100, 30, 105, 100, 60, 2, 5},
+	/*12*/ {BELL,      100, 95, 50,  80, 100, 40, 105, 100, 60, 1, 3},
+	/*13*/ {KEY,       100, 95, 50,  80, 100, 40, 105, 100, 60, 1, 3},
+	/*14*/ {KEY,       100, 95, 50,  80, 100, 40, 105, 100, 60, 3, 5},
+	/*15*/ {KEY,       100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3},
+	/*16*/ {KEY,       100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3},
+	/*17*/ {KEY,       100, 95, 50, 100, 100, 50, 105,   0,  0, 0, 0},
+	/*18*/ {KEY,       100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3},
+	/*19*/ {KEY,       100, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
+	/*20*/ {KEY,       100, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
+	/*21*/ {KEY,        90, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
 	};
-
-	public static final V2i BONUS_TILE    = new V2i(13, 20);
-	
-	static final V2i HOUSE_ENTRY  = new V2i(13, 14);
-	static final V2i HOUSE_CENTER = new V2i(13, 17);
-	static final V2i HOUSE_LEFT   = new V2i(11, 17);
-	static final V2i HOUSE_RIGHT  = new V2i(15, 17);
-	static final V2i PAC_HOME     = new V2i(13, 26);
-
-	static final String[]    GHOST_NAMES = { "Blinky", "Pinky", "Inky", "Clyde" };
-	static final V2i[]       GHOST_HOME_TILES = { HOUSE_ENTRY, HOUSE_CENTER, HOUSE_LEFT, HOUSE_RIGHT };
-	static final V2i[]       GHOST_SCATTER_TILES = { new V2i(25, 0), new V2i(2, 0), new V2i(27, 35), new V2i(27, 35) };
-	static final Direction[] GHOST_START_DIRECTIONS = { LEFT, UP, DOWN, DOWN };
-
 	/*@formatter:on*/
 
 	public PacManClassicWorld() {
@@ -70,11 +56,11 @@ public class PacManClassicWorld extends AbstractPacManGameWorld {
 
 	@Override
 	public PacManGameLevel createLevel(int levelNumber) {
-		return LEVELS[levelNumber <= 21 ? levelNumber - 1 : 20];
+		return new PacManGameLevel(LEVELS[levelNumber <= 21 ? levelNumber - 1 : 20]);
 	}
 
 	@Override
-	public void setLevel(int levelNumber) {
+	public void initLevel(int levelNumber) {
 		restoreFood();
 	}
 
@@ -85,12 +71,7 @@ public class PacManClassicWorld extends AbstractPacManGameWorld {
 
 	@Override
 	public Direction pacStartDirection() {
-		return Direction.RIGHT;
-	}
-
-	@Override
-	public V2i pacHome() {
-		return PAC_HOME;
+		return RIGHT;
 	}
 
 	@Override
@@ -99,54 +80,7 @@ public class PacManClassicWorld extends AbstractPacManGameWorld {
 	}
 
 	@Override
-	public Direction ghostStartDirection(int ghost) {
-		return GHOST_START_DIRECTIONS[ghost];
-	}
-
-	@Override
-	public V2i ghostHome(int ghost) {
-		return GHOST_HOME_TILES[ghost];
-	}
-
-	@Override
-	public V2i ghostScatterTile(int ghost) {
-		return GHOST_SCATTER_TILES[ghost];
-	}
-
-	@Override
-	public V2i houseEntry() {
-		return HOUSE_ENTRY;
-	}
-
-	@Override
-	public V2i houseCenter() {
-		return HOUSE_CENTER;
-	}
-
-	@Override
-	public V2i houseLeft() {
-		return HOUSE_LEFT;
-	}
-
-	@Override
-	public V2i houseRight() {
-		return HOUSE_RIGHT;
-	}
-
-	private boolean isInsideGhostHouse(int x, int y) {
-		return x >= 10 && x <= 17 && y >= 15 && y <= 22;
-	}
-
-	@Override
 	public boolean isUpwardsBlocked(int x, int y) {
 		return isTile(x, y, 12, 13) || isTile(x, y, 15, 13) || isTile(x, y, 12, 25) || isTile(x, y, 15, 25);
-	}
-
-	@Override
-	public boolean isIntersection(int x, int y) {
-		if (isInsideGhostHouse(x, y) || isGhostHouseDoor(x, y + 1)) {
-			return false;
-		}
-		return Stream.of(Direction.values()).filter(dir -> isAccessible(x + dir.vec.x, y + dir.vec.y)).count() >= 3;
 	}
 }

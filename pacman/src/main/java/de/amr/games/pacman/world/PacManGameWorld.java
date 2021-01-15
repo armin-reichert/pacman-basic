@@ -31,7 +31,7 @@ public interface PacManGameWorld {
 
 	PacManGameLevel createLevel(int levelNumber);
 
-	void setLevel(int levelNumber);
+	void initLevel(int levelNumber);
 
 	V2i sizeInTiles();
 

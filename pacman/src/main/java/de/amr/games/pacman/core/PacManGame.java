@@ -207,7 +207,7 @@ public class PacManGame {
 		}
 		levelNumber++;
 		level = world.createLevel(levelNumber);
-		world.setLevel(levelNumber); // TODO
+		world.initLevel(levelNumber); // TODO
 		bonusSymbols.add(level.bonusSymbol);
 	}
 

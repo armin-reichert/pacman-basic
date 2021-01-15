@@ -1,12 +1,18 @@
 package de.amr.games.pacman.world;
 
+import static de.amr.games.pacman.lib.Direction.DOWN;
+import static de.amr.games.pacman.lib.Direction.LEFT;
+import static de.amr.games.pacman.lib.Direction.UP;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
+import java.util.stream.Stream;
 
+import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
 
 public abstract class AbstractPacManGameWorld implements PacManGameWorld {
@@ -29,6 +35,19 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 			throw new IllegalArgumentException("Unknown map character: " + c);
 		}
 	}
+
+	// All maps in Pac-Man and in Ms. Pac-Man have the following in common:
+
+	private static final V2i HOUSE_ENTRY = new V2i(13, 14);
+	private static final V2i HOUSE_CENTER = new V2i(13, 17);
+	private static final V2i HOUSE_LEFT = new V2i(11, 17);
+	private static final V2i HOUSE_RIGHT = new V2i(15, 17);
+
+	private static final V2i PAC_HOME = new V2i(13, 26);
+
+	private static final V2i[] GHOST_HOME_TILES = { HOUSE_ENTRY, HOUSE_CENTER, HOUSE_LEFT, HOUSE_RIGHT };
+	private static final Direction[] GHOST_START_DIRECTIONS = { LEFT, UP, DOWN, DOWN };
+	private static final V2i[] GHOST_SCATTER_TILES = { new V2i(25, 0), new V2i(2, 0), new V2i(27, 35), new V2i(27, 35) };
 
 	protected byte[][] map;
 	protected V2i size = new V2i(28, 36);
@@ -73,6 +92,7 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 		}
 		findPortals();
 		findFoodTiles();
+		restoreFood();
 	}
 
 	protected void findPortals() {
@@ -100,7 +120,26 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 			}
 		}
 		totalFoodCount = food;
-		restoreFood();
+	}
+
+	@Override
+	public V2i pacHome() {
+		return PAC_HOME;
+	}
+
+	@Override
+	public Direction ghostStartDirection(int ghost) {
+		return GHOST_START_DIRECTIONS[ghost];
+	}
+
+	@Override
+	public V2i ghostHome(int ghost) {
+		return GHOST_HOME_TILES[ghost];
+	}
+
+	@Override
+	public V2i ghostScatterTile(int ghost) {
+		return GHOST_SCATTER_TILES[ghost];
 	}
 
 	@Override
@@ -116,6 +155,38 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 	@Override
 	public V2i portalRight(int i) {
 		return portalsRight.get(i);
+	}
+
+	@Override
+	public V2i houseEntry() {
+		return HOUSE_ENTRY;
+	}
+
+	@Override
+	public V2i houseCenter() {
+		return HOUSE_CENTER;
+	}
+
+	@Override
+	public V2i houseLeft() {
+		return HOUSE_LEFT;
+	}
+
+	@Override
+	public V2i houseRight() {
+		return HOUSE_RIGHT;
+	}
+
+	protected boolean isInsideGhostHouse(int x, int y) {
+		return x >= 10 && x <= 17 && y >= 15 && y <= 22;
+	}
+
+	@Override
+	public boolean isIntersection(int x, int y) {
+		if (isInsideGhostHouse(x, y) || isGhostHouseDoor(x, y + 1)) {
+			return false;
+		}
+		return Stream.of(Direction.values()).filter(dir -> isAccessible(x + dir.vec.x, y + dir.vec.y)).count() >= 3;
 	}
 
 	@Override
