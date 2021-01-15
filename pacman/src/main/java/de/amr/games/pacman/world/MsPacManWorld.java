@@ -176,11 +176,6 @@ public class MsPacManWorld extends AbstractPacManGameWorld {
 	}
 
 	@Override
-	public boolean isTunnel(int x, int y) {
-		return false;
-	}
-
-	@Override
 	public boolean isUpwardsBlocked(int x, int y) {
 		return false; // ghosts can travel all paths
 	}

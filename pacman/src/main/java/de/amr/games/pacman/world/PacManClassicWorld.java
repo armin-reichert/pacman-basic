@@ -136,11 +136,6 @@ public class PacManClassicWorld extends AbstractPacManGameWorld {
 	}
 
 	@Override
-	public boolean isTunnel(int x, int y) {
-		return y == 17 && (x <= 5 || x >= 21);
-	}
-
-	@Override
 	public boolean isUpwardsBlocked(int x, int y) {
 		return isTile(x, y, 12, 13) || isTile(x, y, 15, 13) || isTile(x, y, 12, 25) || isTile(x, y, 15, 25);
 	}

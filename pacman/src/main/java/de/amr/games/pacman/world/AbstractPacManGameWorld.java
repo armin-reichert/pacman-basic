@@ -17,6 +17,8 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 			return SPACE;
 		case '#':
 			return WALL;
+		case 'T':
+			return TUNNEL;
 		case '-':
 			return DOOR;
 		case '.':
@@ -77,7 +79,7 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 		portalsLeft.clear();
 		portalsRight.clear();
 		for (int y = 0; y < size.y; ++y) {
-			if (map[y][0] == SPACE && map[y][size.x - 1] == SPACE) {
+			if (map[y][0] != WALL && map[y][size.x - 1] != WALL) {
 				portalsLeft.add(new V2i(0, y));
 				portalsRight.add(new V2i(size.x - 1, y));
 			}
@@ -177,6 +179,11 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 	}
 
 	@Override
+	public boolean isTunnel(int x, int y) {
+		return inMapRange(x, y) && map[y][x] == TUNNEL;
+	}
+
+	@Override
 	public boolean isGhostHouseDoor(int x, int y) {
 		return inMapRange(x, y) && map[y][x] == DOOR;
 	}
@@ -201,5 +208,4 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 	public boolean containsFood(int x, int y) {
 		return isFoodTile(x, y) && !foodRemoved(x, y);
 	}
-
 }
