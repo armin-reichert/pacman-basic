@@ -80,8 +80,8 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 		portalsRight.clear();
 		for (int y = 0; y < size.y; ++y) {
 			if (map[y][0] != WALL && map[y][size.x - 1] != WALL) {
-				portalsLeft.add(new V2i(0, y));
-				portalsRight.add(new V2i(size.x - 1, y));
+				portalsLeft.add(new V2i(-1, y));
+				portalsRight.add(new V2i(size.x, y));
 			}
 		}
 	}

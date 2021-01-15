@@ -99,6 +99,8 @@ public class PacManGame {
 	public boolean autopilotEnabled;
 	public final Autopilot autopilot;
 
+	public boolean pacImmune = false;
+
 	private final Thread thread;
 
 	public PacManGame(GameVariant variant) {
@@ -164,6 +166,10 @@ public class PacManGame {
 		if (ui.keyPressed("a")) {
 			autopilotEnabled = !autopilotEnabled;
 			log("Pac-Man autopilot mode is %s", autopilotEnabled ? "on" : "off");
+		}
+		if (ui.keyPressed("i")) {
+			pacImmune = !pacImmune;
+			log("%s is %s", pac.name, pacImmune ? "immune against ghosts" : "vulnerable by ghosts");
 		}
 		if (ui.keyPressed("escape")) {
 			ui.stopAllSounds();
@@ -463,7 +469,7 @@ public class PacManGame {
 		if (collidingGhost != null && collidingGhost.state == GhostState.FRIGHTENED) {
 			return changeState(this::exitHuntingState, this::enterGhostDyingState, () -> ghostKilled(collidingGhost));
 		}
-		if (collidingGhost != null && collidingGhost.state != GhostState.FRIGHTENED) {
+		if (collidingGhost != null && collidingGhost.state != GhostState.FRIGHTENED && !pacImmune) {
 			return changeState(this::exitHuntingState, this::enterPacManDyingState, () -> pacKilled(collidingGhost));
 		}
 
