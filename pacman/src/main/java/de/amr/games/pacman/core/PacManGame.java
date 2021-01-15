@@ -65,7 +65,7 @@ import de.amr.games.pacman.world.PacManGameWorld;
  * @see <a href="https://gameinternals.com/understanding-pac-man-ghost-behavior">Chad Birch:
  *      Understanding ghost behavior
  */
-public class PacManGame extends Thread {
+public class PacManGame {
 
 	static final ResourceBundle TEXTS = ResourceBundle.getBundle("localization.translation");
 
@@ -99,11 +99,13 @@ public class PacManGame extends Thread {
 	public boolean autopilotEnabled;
 	public final Autopilot autopilot;
 
+	private final Thread thread;
+
 	public PacManGame(GameVariant variant) {
-		super("Pac-Man-" + variant);
 		this.variant = variant;
 		hiscore = new Hiscore(new File(System.getProperty("user.home"), "pacman-hiscore-" + variant + ".xml"));
 		clock = new Clock();
+		thread = new Thread(this::run, "Pac-Man-" + variant);
 		rnd = new Random();
 		autopilot = new Autopilot();
 		pac = new Pac();
@@ -116,8 +118,11 @@ public class PacManGame extends Thread {
 		}
 	}
 
-	@Override
-	public void run() {
+	public void start() {
+		thread.start();
+	}
+
+	private void run() {
 		reset();
 		enterIntroState();
 		log("Game starts. Entering state '%s' for %s", stateDescription(), ticksDescription(state.duration()));
@@ -135,6 +140,7 @@ public class PacManGame extends Thread {
 	public void exit() {
 		if (hiscore.changed) {
 			hiscore.save();
+			log("Hiscore saved to " + hiscore.file);
 		}
 		log("Game exits.");
 	}
@@ -312,7 +318,7 @@ public class PacManGame extends Thread {
 		ui.setGame(game);
 		game.start();
 		try {
-			join();
+			thread.join();
 		} catch (InterruptedException x) {
 			x.printStackTrace();
 		}
@@ -591,6 +597,7 @@ public class PacManGame extends Thread {
 		pac.speed = 0;
 		if (hiscore.changed) {
 			hiscore.save();
+			log("Hiscore saved to " + hiscore.file);
 		}
 		ui.showMessage(TEXTS.getString("GAME_OVER"), true);
 	}
