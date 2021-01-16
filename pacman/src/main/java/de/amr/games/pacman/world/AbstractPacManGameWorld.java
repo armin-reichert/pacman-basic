@@ -5,6 +5,7 @@ import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.UP;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ import de.amr.games.pacman.lib.V2i;
  */
 public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 
-	private static byte decode(char c) {
+	private static byte decode(char c) throws Exception {
 		switch (c) {
 		case ' ':
 			return SPACE;
@@ -38,7 +39,7 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 		case '*':
 			return ENERGIZER;
 		default:
-			throw new IllegalArgumentException("Unknown map character: " + c);
+			throw new Exception(String.format("Unknown map character: '%c'", c));
 		}
 	}
 
@@ -78,21 +79,22 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 				throw new RuntimeException("Resource not found: " + path);
 			}
 			BufferedReader rdr = new BufferedReader(new InputStreamReader(is));
-			String line = rdr.readLine();
 			int y = 0;
-			while (line != null) {
+			for (String line = rdr.readLine(); line != null; line = rdr.readLine()) {
 				if (line.startsWith("!") || line.isBlank()) {
-					// skip comments and blank lines
-				} else {
-					for (int x = 0; x < size.x; ++x) {
-						map[y][x] = decode(line.charAt(x));
-					}
-					++y;
+					continue; // skip comments and blank lines
 				}
-				line = rdr.readLine();
+				for (int x = 0; x < size.x; ++x) {
+					try {
+						map[y][x] = decode(line.charAt(x));
+					} catch (Exception cause) {
+						throw new RuntimeException(String.format("Error decoding map '%s', line %d, column %d", path, y, x), cause);
+					}
+				}
+				++y;
 			}
-		} catch (Exception x) {
-			throw new RuntimeException("Error reading map from path " + path, x);
+		} catch (IOException e) {
+			throw new RuntimeException(String.format("Error reading map '%s'", path, e));
 		}
 		findPortals();
 		findFoodTiles();
