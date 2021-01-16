@@ -105,7 +105,7 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 		portalsLeft.clear();
 		portalsRight.clear();
 		for (int y = 0; y < size.y; ++y) {
-			if (map[y][0] != WALL && map[y][size.x - 1] != WALL) {
+			if (map[y][0] == TUNNEL && map[y][size.x - 1] == TUNNEL) {
 				portalsLeft.add(new V2i(-1, y));
 				portalsRight.add(new V2i(size.x, y));
 			}
