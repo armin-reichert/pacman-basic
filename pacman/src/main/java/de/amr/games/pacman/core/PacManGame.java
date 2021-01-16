@@ -79,7 +79,7 @@ public class PacManGame {
 	public final Pac pac;
 	public final Ghost[] ghosts;
 	public final Bonus bonus;
-	public final List<Byte> bonusSymbols;
+	public final List<Byte> levelSymbols;
 
 	public PacManGameUI ui;
 
@@ -120,7 +120,7 @@ public class PacManGame {
 		for (Ghost ghost : ghosts) {
 			ghost.name = world.ghostName(ghost.id);
 		}
-		bonusSymbols = new ArrayList<>();
+		levelSymbols = new ArrayList<>();
 	}
 
 	public void start() {
@@ -186,7 +186,7 @@ public class PacManGame {
 		score = 0;
 		lives = 3;
 		levelNumber = 0;
-		bonusSymbols.clear();
+		levelSymbols.clear();
 		nextLevel();
 		hiscore.load();
 		if (ui != null) {
@@ -207,8 +207,8 @@ public class PacManGame {
 		}
 		levelNumber++;
 		level = world.createLevel(levelNumber);
-		world.initLevel(levelNumber); // TODO
-		bonusSymbols.add(level.bonusSymbol);
+		world.initLevel(levelNumber);
+		levelSymbols.add(level.bonusSymbol);
 	}
 
 	private void resetGuys() {

@@ -94,7 +94,7 @@ public class PacManClassicPlayScene extends PacManGameScene {
 		int x = t(game.world.sizeInTiles().x - 4);
 		int first = Math.max(1, game.levelNumber - 6);
 		for (int levelNumber = first; levelNumber <= game.levelNumber; ++levelNumber) {
-			BufferedImage symbol = assets.symbols[game.bonusSymbols.get(levelNumber - 1)];
+			BufferedImage symbol = assets.symbols[game.levelSymbols.get(levelNumber - 1)];
 			g.drawImage(symbol, x, size.y - t(2), null);
 			x -= t(2);
 		}
