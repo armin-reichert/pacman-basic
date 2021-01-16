@@ -1,5 +1,6 @@
 package de.amr.games.pacman.ui.swing;
 
+import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.world.PacManGameWorld.TS;
 import static de.amr.games.pacman.world.PacManGameWorld.t;
 
@@ -8,6 +9,8 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferStrategy;
@@ -35,6 +38,11 @@ import de.amr.games.pacman.ui.swing.mspacman.MsPacManPlayScene;
  */
 public class PacManGameSwingUI implements PacManGameUI {
 
+	static final int PAUSE_KEY = KeyEvent.VK_P;
+	static final int SLOWMODE_KEY = KeyEvent.VK_S;
+	static final int FASTMODE_KEY = KeyEvent.VK_F;
+	static final int DEBUGMODE_KEY = KeyEvent.VK_D;
+
 	private final V2i unscaledSizeInPixels;
 	private final V2i scaledSizeInPixels;
 	private final float scaling;
@@ -59,8 +67,8 @@ public class PacManGameSwingUI implements PacManGameUI {
 		scaledSizeInPixels = new V2i((int) (unscaledSizeInPixels.x * scaling), (int) (unscaledSizeInPixels.y * scaling));
 
 		window = new JFrame();
-		keyboard = new Keyboard(window);
 
+		window.setTitle("Pac-Man");
 		window.setResizable(false);
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		window.setIconImage(Assets.image("/pacman.png"));
@@ -72,7 +80,29 @@ public class PacManGameSwingUI implements PacManGameUI {
 				onWindowClosing();
 			}
 		});
-		window.setTitle("Pac-Man");
+		window.addKeyListener(new KeyAdapter() {
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == PAUSE_KEY) {
+					game.gamePaused = !game.gamePaused;
+				}
+				if (e.getKeyCode() == SLOWMODE_KEY) {
+					game.clock.targetFrequency = game.clock.targetFrequency == 60 ? 30 : 60;
+					log("Clock frequency changed to %d Hz", game.clock.targetFrequency);
+				}
+				if (e.getKeyCode() == FASTMODE_KEY) {
+					game.clock.targetFrequency = game.clock.targetFrequency == 60 ? 120 : 60;
+					log("Clock frequency changed to %d Hz", game.clock.targetFrequency);
+				}
+				if (e.getKeyCode() == DEBUGMODE_KEY) {
+					setDebugMode(!isDebugMode());
+					log("UI debug mode is %s", isDebugMode() ? "on" : "off");
+				}
+			}
+		});
+
+		keyboard = new Keyboard(window);
 
 		canvas = new Canvas();
 		canvas.setBackground(new Color(0, 0, 0));
@@ -157,11 +187,10 @@ public class PacManGameSwingUI implements PacManGameUI {
 				Graphics2D g = (Graphics2D) buffers.getDrawGraphics();
 				g.setColor(canvas.getBackground());
 				g.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+				updateScene();
+				drawCurrentScene(g);
 				if (game.gamePaused) {
 					drawPausedScreen(g);
-				} else {
-					updateScene();
-					drawCurrentScene(g);
 				}
 				g.dispose();
 			} while (buffers.contentsRestored());
@@ -187,8 +216,8 @@ public class PacManGameSwingUI implements PacManGameUI {
 	}
 
 	private void drawPausedScreen(Graphics2D g) {
-		String text = "PAUSED (Press 'P' TO RESUME)";
-		g.setColor(new Color(0, 48, 143));
+		String text = "PAUSED (Press 'P' to resume!)";
+		g.setColor(new Color(0, 48, 143, 100));
 		g.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 		g.setColor(Color.GREEN);
 		g.setFont(new Font(Font.MONOSPACED, Font.BOLD, 20));

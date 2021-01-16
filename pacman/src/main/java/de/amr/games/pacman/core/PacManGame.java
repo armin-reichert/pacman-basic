@@ -138,8 +138,10 @@ public class PacManGame {
 	}
 
 	private void step() {
-		readInput();
-		updateState();
+		if (!gamePaused) {
+			readInput();
+			updateState();
+		}
 		ui.render();
 	}
 
@@ -152,21 +154,6 @@ public class PacManGame {
 	}
 
 	private void readInput() {
-		if (ui.keyPressed("p")) {
-			gamePaused = !gamePaused;
-		}
-		if (ui.keyPressed("s")) {
-			clock.targetFrequency = clock.targetFrequency == 60 ? 30 : 60;
-			log("Clock frequency changed to %d Hz", clock.targetFrequency);
-		}
-		if (ui.keyPressed("f")) {
-			clock.targetFrequency = clock.targetFrequency == 60 ? 120 : 60;
-			log("Clock frequency changed to %d Hz", clock.targetFrequency);
-		}
-		if (ui.keyPressed("d")) {
-			ui.setDebugMode(!ui.isDebugMode());
-			log("UI debug mode is %s", ui.isDebugMode() ? "on" : "off");
-		}
 		if (ui.keyPressed("a")) {
 			autopilotEnabled = !autopilotEnabled;
 			log("Pac-Man autopilot mode is %s", autopilotEnabled ? "on" : "off");
@@ -278,9 +265,6 @@ public class PacManGame {
 	}
 
 	private void updateState() {
-		if (gamePaused) {
-			return;
-		}
 		switch (state) {
 		case INTRO:
 			runIntroState();
