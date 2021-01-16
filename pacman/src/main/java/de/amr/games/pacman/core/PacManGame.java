@@ -304,7 +304,7 @@ public class PacManGame {
 			toggleVariant();
 			return state;
 		}
-		if (ui.anyKeyPressed()) {
+		if (ui.keyPressed("space")) {
 			return changeState(this::exitIntroState, this::enterReadyState, null);
 		}
 		return state.tick();
@@ -600,7 +600,7 @@ public class PacManGame {
 	}
 
 	private PacManGameState runGameOverState() {
-		if (state.expired() || ui.anyKeyPressed()) {
+		if (state.expired() || ui.keyPressed("space")) {
 			return changeState(this::exitGameOverState, this::enterIntroState, this::reset);
 		}
 		return state.tick();

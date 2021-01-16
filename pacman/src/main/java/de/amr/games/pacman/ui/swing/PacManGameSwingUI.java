@@ -216,13 +216,18 @@ public class PacManGameSwingUI implements PacManGameUI {
 	}
 
 	private void drawPausedScreen(Graphics2D g) {
-		String text = "PAUSED (Press 'P' to resume!)";
+		Font font = new Font(Font.MONOSPACED, Font.BOLD, 24);
+		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 		g.setColor(new Color(0, 48, 143, 100));
 		g.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 		g.setColor(Color.GREEN);
-		g.setFont(new Font(Font.MONOSPACED, Font.BOLD, 20));
-		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-		g.drawString(text, (canvas.getWidth() - g.getFontMetrics().stringWidth(text)) / 2, canvas.getHeight() / 2);
+		g.setFont(font);
+		int y = canvas.getHeight() / 2;
+		String text = "PAUSED";
+		g.drawString(text, (canvas.getWidth() - g.getFontMetrics().stringWidth(text)) / 2, y);
+		y += font.getSize() * 150 / 100;
+		text = "(Press 'P' key to resume)";
+		g.drawString(text, (canvas.getWidth() - g.getFontMetrics().stringWidth(text)) / 2, y);
 		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
 	}
 

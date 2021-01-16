@@ -109,7 +109,7 @@ public class PacManClassicIntroScene extends PacManGameScene {
 		g.setColor(Color.ORANGE);
 		g.setFont(assets.scoreFont);
 		game.clock.runOrBeIdle(20, () -> {
-			drawCenteredText(g, resources.getString("PRESS_ANY_KEY_TO_PLAY"), size.y - 20);
+			drawCenteredText(g, resources.getString("PRESS_KEY_TO_PLAY"), size.y - 20);
 		});
 	}
 
