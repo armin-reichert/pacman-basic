@@ -114,18 +114,18 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 
 	protected void findFoodTiles() {
 		energizerTiles.clear();
-		int food = 0;
+		int foodCount = 0;
 		for (int x = 0; x < size.x; ++x) {
 			for (int y = 0; y < size.y; ++y) {
 				if (map[y][x] == PILL) {
-					++food;
+					++foodCount;
 				} else if (map[y][x] == ENERGIZER) {
-					++food;
+					++foodCount;
 					energizerTiles.add(new V2i(x, y));
 				}
 			}
 		}
-		totalFoodCount = food;
+		totalFoodCount = foodCount;
 	}
 
 	@Override
