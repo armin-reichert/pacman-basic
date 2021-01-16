@@ -100,7 +100,8 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 		findPortals();
 		findFoodTiles();
 		restoreFood();
-		log("Map '%s' loaded, total food count=%d", path, totalFoodCount);
+		log("Map '%s' loaded, total food count=%d (%d pellets + %d energizers)", path, totalFoodCount,
+				totalFoodCount - energizerTiles.size(), energizerTiles.size());
 	}
 
 	protected void findPortals() {
