@@ -3,6 +3,7 @@ package de.amr.games.pacman.world;
 import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.UP;
+import static de.amr.games.pacman.lib.Logging.log;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -99,6 +100,7 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 		findPortals();
 		findFoodTiles();
 		restoreFood();
+		log("Map '%s' loaded, total food count=%d", path, totalFoodCount);
 	}
 
 	protected void findPortals() {
