@@ -9,24 +9,24 @@ import de.amr.games.pacman.lib.V2i;
  */
 public class Pac extends Creature {
 
-	/** Readable name if the Pac e.g. "Ms. Pac.Man". */
+	/** Readable name, "Pac-Man" or "Ms. Pac-Man". */
 	public String name;
 
-	/** If the Pac is dead. */
+	/** If Pac is dead. */
 	public boolean dead;
 
-	/** Number of clock ticks the Pac still has power. */
+	/** Number of clock ticks Pac still has power. */
 	public long powerTicksLeft;
 
-	/** Number of clock ticks the Pac is resting and will not move. */
+	/** Number of clock ticks Pac is resting and will not move. */
 	public long restingTicksLeft;
 
-	/** Number of clock ticks the Pac still is collapsing. */
+	/** Number of clock ticks Pac keeps collapsing. */
 	public long collapsingTicksLeft;
 
-	/** Number of clock ticks the Pac has not eaten. */
+	/** Number of clock ticks Pac has not eaten any pellet. */
 	public long starvingTicks;
 
-	/** The tile that the Pac is targeting, used by autopilot. */
+	/** The tile that the Pac is targeting, used in autopilot mode. */
 	public V2i targetTile = V2i.NULL;
 }
