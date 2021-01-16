@@ -97,14 +97,8 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 		} catch (IOException e) {
 			throw new RuntimeException(String.format("Error reading map '%s'", path, e));
 		}
-		findPortals();
-		findFoodTiles();
-		restoreFood();
-		log("Map '%s' loaded, total food count=%d (%d pellets + %d energizers)", path, totalFoodCount,
-				totalFoodCount - energizerTiles.size(), energizerTiles.size());
-	}
 
-	protected void findPortals() {
+		// find portals
 		portalsLeft.clear();
 		portalsRight.clear();
 		for (int y = 0; y < size.y; ++y) {
@@ -113,22 +107,35 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 				portalsRight.add(new V2i(size.x, y));
 			}
 		}
-	}
 
-	protected void findFoodTiles() {
+		// find food
 		energizerTiles.clear();
-		int foodCount = 0;
+		totalFoodCount = 0;
 		for (int x = 0; x < size.x; ++x) {
 			for (int y = 0; y < size.y; ++y) {
 				if (map[y][x] == PILL) {
-					++foodCount;
+					++totalFoodCount;
 				} else if (map[y][x] == ENERGIZER) {
-					++foodCount;
+					++totalFoodCount;
 					energizerTiles.add(new V2i(x, y));
 				}
 			}
 		}
-		totalFoodCount = foodCount;
+		eaten.clear();
+		foodRemaining = totalFoodCount;
+		log("Map '%s' loaded, total food count=%d (%d pellets + %d energizers)", path, totalFoodCount,
+				totalFoodCount - energizerTiles.size(), energizerTiles.size());
+	}
+
+	@Override
+	public V2i sizeInTiles() {
+		return size;
+	}
+
+	@Override
+	public boolean inMapRange(int x, int y) {
+		V2i size = sizeInTiles();
+		return 0 <= x && x < size.x && 0 <= y && y < size.y;
 	}
 
 	@Override
@@ -186,68 +193,6 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 		return HOUSE_RIGHT;
 	}
 
-	private boolean isInsideGhostHouse(int x, int y) {
-		return x >= 10 && x <= 17 && y >= 15 && y <= 22;
-	}
-
-	@Override
-	public boolean isIntersection(int x, int y) {
-		if (isInsideGhostHouse(x, y) || isGhostHouseDoor(x, y + 1)) {
-			return false;
-		}
-		return Stream.of(Direction.values()).filter(dir -> isAccessible(x + dir.vec.x, y + dir.vec.y)).count() >= 3;
-	}
-
-	@Override
-	public int totalFoodCount() {
-		return totalFoodCount;
-	}
-
-	@Override
-	public int foodRemaining() {
-		return foodRemaining;
-	}
-
-	@Override
-	public boolean isFoodTile(int x, int y) {
-		return inMapRange(x, y) && (map[y][x] == PILL || map[y][x] == ENERGIZER);
-	}
-
-	@Override
-	public boolean isEnergizerTile(int x, int y) {
-		return energizerTiles.contains(new V2i(x, y));
-	}
-
-	@Override
-	public boolean isFoodRemoved(int x, int y) {
-		return eaten.get(tileIndex(x, y));
-	}
-
-	@Override
-	public void removeFood(int x, int y) {
-		if (!isFoodRemoved(x, y)) {
-			eaten.set(tileIndex(x, y));
-			--foodRemaining;
-		}
-	}
-
-	@Override
-	public void restoreFood() {
-		eaten.clear();
-		foodRemaining = totalFoodCount;
-	}
-
-	@Override
-	public V2i sizeInTiles() {
-		return size;
-	}
-
-	@Override
-	public boolean inMapRange(int x, int y) {
-		V2i size = sizeInTiles();
-		return 0 <= x && x < size.x && 0 <= y && y < size.y;
-	}
-
 	@Override
 	public boolean isAccessible(int x, int y) {
 		return !isWall(x, y) || isPortal(x, y);
@@ -279,13 +224,65 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 		return false;
 	}
 
+	private boolean isInsideGhostHouse(int x, int y) {
+		return x >= 10 && x <= 17 && y >= 15 && y <= 22;
+	}
+
+	@Override
+	public boolean isIntersection(int x, int y) {
+		if (isInsideGhostHouse(x, y) || isGhostHouseDoor(x, y + 1)) {
+			return false;
+		}
+		return Stream.of(Direction.values()).filter(dir -> isAccessible(x + dir.vec.x, y + dir.vec.y)).count() >= 3;
+	}
+
+	@Override
+	public int totalFoodCount() {
+		return totalFoodCount;
+	}
+
+	@Override
+	public int foodRemaining() {
+		return foodRemaining;
+	}
+
 	@Override
 	public int eatenFoodCount() {
-		return totalFoodCount() - foodRemaining();
+		return totalFoodCount - foodRemaining;
+	}
+
+	@Override
+	public boolean isFoodTile(int x, int y) {
+		return inMapRange(x, y) && (map[y][x] == PILL || map[y][x] == ENERGIZER);
+	}
+
+	@Override
+	public boolean isEnergizerTile(int x, int y) {
+		return energizerTiles.contains(new V2i(x, y));
+	}
+
+	@Override
+	public boolean isFoodRemoved(int x, int y) {
+		return eaten.get(tileIndex(x, y));
 	}
 
 	@Override
 	public boolean containsFood(int x, int y) {
 		return isFoodTile(x, y) && !isFoodRemoved(x, y);
 	}
+
+	@Override
+	public void removeFood(int x, int y) {
+		if (!isFoodRemoved(x, y)) {
+			eaten.set(tileIndex(x, y));
+			--foodRemaining;
+		}
+	}
+
+	@Override
+	public void restoreFood() {
+		eaten.clear();
+		foodRemaining = totalFoodCount;
+	}
+
 }
