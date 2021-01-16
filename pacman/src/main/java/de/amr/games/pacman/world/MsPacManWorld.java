@@ -50,7 +50,7 @@ public class MsPacManWorld extends AbstractPacManGameWorld {
 	private static final String[] GHOST_NAMES = { "Blinky", "Pinky", "Inky", "Sue" };
 
 	private final Random rnd = new Random();
-	private int mapIndex; // 1-6
+	public int mapIndex; // 1-6
 
 	private void selectMap(int mapIndex) {
 		if (mapIndex < 1 || mapIndex > 6) {
@@ -76,13 +76,9 @@ public class MsPacManWorld extends AbstractPacManGameWorld {
 		} else if (levelNumber <= 13) {
 			selectMap(4); // dark blue maze
 		} else {
-			int mapIndex = (levelNumber - 14) % 8 < 4 ? 5 : 6; // TODO correct?
-			selectMap(mapIndex);
+			int index = (levelNumber - 14) % 8 < 4 ? 5 : 6;
+			selectMap(index);
 		}
-	}
-
-	public int getMapIndex() {
-		return mapIndex;
 	}
 
 	@Override
