@@ -51,9 +51,9 @@ import de.amr.games.pacman.world.PacManClassicWorld;
 import de.amr.games.pacman.world.PacManGameWorld;
 
 /**
- * Pac-Man game with original "AI", levels, timers.
+ * Pac-Man and Ms. Pac-Man game with original "AI", levels, timers.
  * <p>
- * Still missing:
+ * Missing:
  * <ul>
  * <li>Pac-Man "cornering"</li>
  * <li>Intermission scenes</li>
@@ -62,9 +62,10 @@ import de.amr.games.pacman.world.PacManGameWorld;
  * 
  * @author Armin Reichert
  * 
- * @see <a href="https://pacman.holenet.info">Jamey Pittman: The Pac-Man Dossier
+ * @see <a href="https://pacman.holenet.info">Jamey Pittman: The Pac-Man Dossier</a>
  * @see <a href="https://gameinternals.com/understanding-pac-man-ghost-behavior">Chad Birch:
- *      Understanding ghost behavior
+ *      Understanding ghost behavior</a>
+ * @see <a href="http://superpacman.com/mspacman/">Ms. Pac-Man</a>
  */
 public class PacManGame {
 
