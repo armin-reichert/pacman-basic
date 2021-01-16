@@ -2,6 +2,9 @@ package de.amr.games.pacman.world;
 
 import static de.amr.games.pacman.lib.Direction.RIGHT;
 
+import java.util.Arrays;
+import java.util.List;
+
 import de.amr.games.pacman.core.PacManGameLevel;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
@@ -21,6 +24,9 @@ public class PacManClassicWorld extends AbstractPacManGameWorld {
 	public static final short[] BONUS_POINTS = { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
 
 	public static final V2i BONUS_TILE = new V2i(13, 20);
+
+	public static final List<V2i> UPWARDS_BLOCKED_TILES = Arrays.asList(new V2i(12, 13), new V2i(15, 13), new V2i(12, 25),
+			new V2i(15, 25));
 
 	private static final String[] GHOST_NAMES = { "Blinky", "Pinky", "Inky", "Clyde" };
 
@@ -81,6 +87,6 @@ public class PacManClassicWorld extends AbstractPacManGameWorld {
 
 	@Override
 	public boolean isUpwardsBlocked(int x, int y) {
-		return isTile(x, y, 12, 13) || isTile(x, y, 15, 13) || isTile(x, y, 12, 25) || isTile(x, y, 15, 25);
+		return UPWARDS_BLOCKED_TILES.contains(new V2i(x, y));
 	}
 }

@@ -69,10 +69,6 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 		return sizeInTiles().x * y + x;
 	}
 
-	protected boolean isTile(int x, int y, int xx, int yy) {
-		return x == xx && y == yy;
-	}
-
 	protected void loadMap(String path) {
 		map = new byte[size.y][size.x];
 		try (InputStream is = getClass().getResourceAsStream(path)) {
@@ -215,13 +211,8 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 
 	@Override
 	public boolean isPortal(int x, int y) {
-		for (int i = 0; i < numPortals(); ++i) {
-			if (isTile(x, y, portalsLeft.get(i).x, portalsLeft.get(i).y)
-					|| isTile(x, y, portalsRight.get(i).x, portalsRight.get(i).y)) {
-				return true;
-			}
-		}
-		return false;
+		V2i tile = new V2i(x, y);
+		return portalsLeft.contains(tile) || portalsRight.contains(tile);
 	}
 
 	private boolean isInsideGhostHouse(int x, int y) {
