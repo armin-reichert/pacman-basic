@@ -27,96 +27,96 @@ public class Autopilot {
 	private static final int MAX_BONUS_HARVEST_DIST = 20; // tiles
 
 	private PacManGame game;
-	private Pac pacMan;
+	private Pac pac;
 	private Ghost[] ghosts;
 
-	public void controlPac(PacManGame game) {
+	public void steerPac(PacManGame game) {
 		this.game = game;
-		this.pacMan = game.pac;
+		this.pac = game.pac;
 		this.ghosts = game.ghosts;
-		V2i pacManTile = pacMan.tile();
+		V2i pacManTile = pac.tile();
 
-		if (pacMan.couldMove && !pacMan.changedTile) {
+		if (pac.couldMove && !pac.changedTile) {
 			return;
 		}
 
-		if (pacMan.forcedDirection) {
-			pacMan.forcedDirection = false;
+		if (pac.forcedDirection) {
+			pac.forcedDirection = false;
 			return;
 		}
 
-		pacMan.targetTile = null;
+		pac.targetTile = null;
 
 		Ghost hunterAhead = findHuntingGhostAhead(); // Where is Hunter?
 		if (hunterAhead != null) {
 			Direction escapeDir = null;
 			Ghost hunterBehind = findHuntingGhostBehind();
 			if (hunterBehind != null) {
-				escapeDir = findEscapeDirectionExcluding(EnumSet.of(pacMan.dir, pacMan.dir.opposite()));
+				escapeDir = findEscapeDirectionExcluding(EnumSet.of(pac.dir, pac.dir.opposite()));
 				log("Detected ghost %s behind, escape direction is %s", hunterAhead.name, escapeDir);
 			} else {
-				escapeDir = findEscapeDirectionExcluding(EnumSet.of(pacMan.dir));
+				escapeDir = findEscapeDirectionExcluding(EnumSet.of(pac.dir));
 				log("Detected ghost %s ahead, escape direction is %s", hunterAhead.name, escapeDir);
 			}
 			if (escapeDir != null) {
-				pacMan.wishDir = escapeDir;
+				pac.wishDir = escapeDir;
 			}
-			pacMan.forcedDirection = true;
+			pac.forcedDirection = true;
 			return;
 		}
 
 		// when not escaping ghost, keep move direction at least until next intersection
-		if (pacMan.couldMove && !game.world.isIntersection(pacManTile))
+		if (pac.couldMove && !game.world.isIntersection(pacManTile))
 			return;
 
 		Ghost prey = findFrightenedGhostInReach();
-		if (prey != null && pacMan.powerTicksLeft >= game.clock.sec(1)) {
+		if (prey != null && pac.powerTicksLeft >= game.clock.sec(1)) {
 			log("Detected frightened ghost %s %.0g tiles away", prey.name, prey.tile().manhattanDistance(pacManTile));
-			pacMan.targetTile = prey.tile();
+			pac.targetTile = prey.tile();
 		} else if (game.bonus.availableTicks > 0
 				&& game.bonus.tile().manhattanDistance(pacManTile) <= MAX_BONUS_HARVEST_DIST) {
 			log("Detected active bonus");
-			pacMan.targetTile = game.bonus.tile();
+			pac.targetTile = game.bonus.tile();
 		} else {
 			V2i foodTile = findTileFarestFromGhosts(findNearestFoodTiles());
-			pacMan.targetTile = foodTile;
+			pac.targetTile = foodTile;
 		}
 		approachTarget();
 	}
 
 	private void approachTarget() {
-		if (pacMan.targetTile == null) {
+		if (pac.targetTile == null) {
 			return;
 		}
 		double minDist = Double.MAX_VALUE;
 		Direction minDistDir = null;
 		for (Direction dir : Direction.shuffled()) {
-			if (dir == pacMan.dir.opposite()) {
+			if (dir == pac.dir.opposite()) {
 				continue;
 				/*
 				 * TODO sometimes reversing direction can be useful but in most cases, it leads to bouncing.
 				 */
 			}
-			V2i neighbor = pacMan.tile().sum(dir.vec);
-			if (!game.canAccessTile(pacMan, neighbor.x, neighbor.y)) {
+			V2i neighbor = pac.tile().sum(dir.vec);
+			if (!game.canAccessTile(pac, neighbor.x, neighbor.y)) {
 				continue;
 			}
-			double dist = neighbor.euclideanDistance(pacMan.targetTile);
+			double dist = neighbor.euclideanDistance(pac.targetTile);
 			if (dist < minDist) {
 				minDist = dist;
 				minDistDir = dir;
 			}
 		}
 		if (minDistDir != null) {
-			pacMan.wishDir = minDistDir;
-			log("Approach target tile %s from tile %s by turning %s", pacMan.tile(), pacMan.targetTile, pacMan.wishDir);
+			pac.wishDir = minDistDir;
+			log("Approach target tile %s from tile %s by turning %s", pac.tile(), pac.targetTile, pac.wishDir);
 		}
 	}
 
 	private Ghost findFrightenedGhostInReach() {
 		for (Ghost ghost : ghosts) {
 			if (ghost.state == GhostState.FRIGHTENED
-					&& ghost.tile().manhattanDistance(pacMan.tile()) < MAX_GHOST_CHASE_DIST) {
+					&& ghost.tile().manhattanDistance(pac.tile()) < MAX_GHOST_CHASE_DIST) {
 				return ghost;
 			}
 		}
@@ -124,17 +124,17 @@ public class Autopilot {
 	}
 
 	private Ghost findHuntingGhostAhead() {
-		V2i pacManTile = pacMan.tile();
+		V2i pacManTile = pac.tile();
 		boolean energizerFound = false;
 		for (int i = 1; i <= MAX_GHOST_AHEAD_DETECTION_DIST; ++i) {
-			V2i ahead = pacManTile.sum(pacMan.dir.vec.scaled(i));
-			if (!game.canAccessTile(pacMan, ahead.x, ahead.y)) {
+			V2i ahead = pacManTile.sum(pac.dir.vec.scaled(i));
+			if (!game.canAccessTile(pac, ahead.x, ahead.y)) {
 				break;
 			}
 			if (game.world.isEnergizerTile(ahead) && !game.world.isFoodRemoved(ahead)) {
 				energizerFound = true;
 			}
-			V2i aheadLeft = ahead.sum(pacMan.dir.turnLeft().vec), aheadRight = ahead.sum(pacMan.dir.turnRight().vec);
+			V2i aheadLeft = ahead.sum(pac.dir.turnLeft().vec), aheadRight = ahead.sum(pac.dir.turnRight().vec);
 			for (Ghost ghost : ghosts) {
 				if (!game.isGhostHunting(ghost)) {
 					continue;
@@ -152,10 +152,10 @@ public class Autopilot {
 	}
 
 	private Ghost findHuntingGhostBehind() {
-		V2i pacManTile = pacMan.tile();
+		V2i pacManTile = pac.tile();
 		for (int i = 1; i <= MAX_GHOST_BEHIND_DETECTION_DIST; ++i) {
-			V2i behind = pacManTile.sum(pacMan.dir.opposite().vec.scaled(i));
-			if (!game.canAccessTile(pacMan, behind.x, behind.y)) {
+			V2i behind = pacManTile.sum(pac.dir.opposite().vec.scaled(i));
+			if (!game.canAccessTile(pac, behind.x, behind.y)) {
 				break;
 			}
 			for (Ghost ghost : ghosts) {
@@ -171,14 +171,14 @@ public class Autopilot {
 	}
 
 	private Direction findEscapeDirectionExcluding(Collection<Direction> forbidden) {
-		V2i pacManTile = pacMan.tile();
+		V2i pacManTile = pac.tile();
 		List<Direction> escapes = new ArrayList<>(4);
 		for (Direction dir : Direction.shuffled()) {
 			if (forbidden.contains(dir)) {
 				continue;
 			}
 			V2i neighbor = pacManTile.sum(dir.vec);
-			if (game.canAccessTile(pacMan, neighbor.x, neighbor.y)) {
+			if (game.canAccessTile(pac, neighbor.x, neighbor.y)) {
 				escapes.add(dir);
 			}
 		}
@@ -194,7 +194,7 @@ public class Autopilot {
 	private List<V2i> findNearestFoodTiles() {
 		long time = System.nanoTime();
 		List<V2i> foodTiles = new ArrayList<>();
-		V2i pacManTile = pacMan.tile();
+		V2i pacManTile = pac.tile();
 		double minDist = Double.MAX_VALUE;
 		for (int x = 0; x < game.world.sizeInTiles().x; ++x) {
 			for (int y = 0; y < game.world.sizeInTiles().y; ++y) {
@@ -202,7 +202,7 @@ public class Autopilot {
 					continue;
 				}
 				V2i foodTile = new V2i(x, y);
-				if (game.world.isEnergizerTile(foodTile) && pacMan.powerTicksLeft > game.clock.sec(1)
+				if (game.world.isEnergizerTile(foodTile) && pac.powerTicksLeft > game.clock.sec(1)
 						&& game.world.foodRemaining() > 1) {
 					continue;
 				}
