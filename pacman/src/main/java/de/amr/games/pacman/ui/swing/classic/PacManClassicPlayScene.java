@@ -142,7 +142,8 @@ public class PacManClassicPlayScene extends PacManGameScene {
 	private void drawBonus(Graphics2D g, Bonus bonus) {
 		if (bonus.availableTicks > 0) {
 			drawGuy(g, bonus, assets.symbols[bonus.symbol]);
-		} else if (bonus.consumedTicks > -1) {
+		}
+		if (bonus.consumedTicks > 0) {
 			if (game.bonus.points != 1000) {
 				drawGuy(g, game.bonus, assets.numbers.get(game.bonus.points));
 			} else {

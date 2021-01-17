@@ -553,13 +553,12 @@ public class PacManGame {
 
 	private void enterChangingLevelState() {
 		state = CHANGING_LEVEL;
-		state.setDuration(clock.sec(level.numFlashes + 2));
+		state.setDuration(clock.sec(level.numFlashes + 3));
+		bonus.availableTicks = bonus.consumedTicks = 0;
+		pac.speed = 0;
 		for (Ghost ghost : ghosts) {
-			ghost.state = GhostState.LOCKED;
 			ghost.speed = 0;
 		}
-		pac.speed = 0;
-		bonus.availableTicks = bonus.consumedTicks = 0;
 		ui.stopAllSounds();
 	}
 
@@ -567,12 +566,12 @@ public class PacManGame {
 		if (state.expired()) {
 			return changeState(this::exitChangingLevelState, this::enterReadyState, null);
 		}
-		if (state.running() == clock.sec(1)) {
+		if (state.running() == clock.sec(2)) {
 			for (Ghost ghost : ghosts) {
 				ghost.visible = false;
 			}
 		}
-		if (state.running() == clock.sec(2)) {
+		if (state.running() == clock.sec(3)) {
 			mazeFlashesRemaining = level.numFlashes;
 		}
 		return state.tick();

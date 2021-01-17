@@ -141,7 +141,8 @@ public class MsPacManPlayScene extends PacManGameScene {
 			int frame = game.clock.frame(20, 4);
 			g.drawImage(bonusSprite, (int) (game.bonus.position.x) - HTS,
 					(int) (game.bonus.position.y) + BONUS_JUMP[frame] - HTS, null);
-		} else if (game.bonus.consumedTicks > 0) {
+		}
+		if (game.bonus.consumedTicks > 0) {
 			BufferedImage bonusSprite = assets.numbers.get(game.bonus.points);
 			g.drawImage(bonusSprite, (int) (game.bonus.position.x) - HTS, (int) (game.bonus.position.y) - HTS, null);
 		}
