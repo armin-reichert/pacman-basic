@@ -14,6 +14,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferStrategy;
+import java.util.ResourceBundle;
 
 import javax.swing.JFrame;
 import javax.swing.Timer;
@@ -37,6 +38,8 @@ import de.amr.games.pacman.ui.swing.mspacman.MsPacManPlayScene;
  * @author Armin Reichert
  */
 public class PacManGameSwingUI implements PacManGameUI {
+
+	public static final ResourceBundle TEXTS = ResourceBundle.getBundle("localization.translation");
 
 	static final int PAUSE_KEY = KeyEvent.VK_P;
 	static final int SLOWMODE_KEY = KeyEvent.VK_S;

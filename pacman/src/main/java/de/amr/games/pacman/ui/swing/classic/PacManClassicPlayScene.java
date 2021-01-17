@@ -1,5 +1,6 @@
 package de.amr.games.pacman.ui.swing.classic;
 
+import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.TEXTS;
 import static de.amr.games.pacman.ui.swing.classic.PacManClassicAssets.DIR_INDEX;
 import static de.amr.games.pacman.world.PacManGameWorld.HTS;
 import static de.amr.games.pacman.world.PacManGameWorld.TS;
@@ -10,7 +11,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.util.ResourceBundle;
 
 import de.amr.games.pacman.core.PacManGame;
 import de.amr.games.pacman.core.PacManGameState;
@@ -28,8 +28,6 @@ import de.amr.games.pacman.ui.swing.PacManGameScene;
  * @author Armin Reichert
  */
 public class PacManClassicPlayScene extends PacManGameScene {
-
-	private static final ResourceBundle TEXTS = ResourceBundle.getBundle("localization.translation");
 
 	private final PacManClassicAssets assets;
 

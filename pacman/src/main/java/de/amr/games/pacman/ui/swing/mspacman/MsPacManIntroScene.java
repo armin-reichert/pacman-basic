@@ -2,13 +2,13 @@ package de.amr.games.pacman.ui.swing.mspacman;
 
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
+import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.TEXTS;
 import static de.amr.games.pacman.ui.swing.mspacman.MsPacManAssets.DIR_INDEX;
 import static de.amr.games.pacman.world.PacManGameWorld.t;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.util.ResourceBundle;
 import java.util.stream.IntStream;
 
 import de.amr.games.pacman.core.PacManGame;
@@ -27,7 +27,6 @@ import de.amr.games.pacman.ui.swing.PacManGameScene;
 public class MsPacManIntroScene extends PacManGameScene {
 
 	private final MsPacManAssets assets;
-	private final ResourceBundle resources = ResourceBundle.getBundle("localization.translation");
 	private float pacManX;
 	private float leftmostGhostX;
 	private int lastKilledGhost;
@@ -62,7 +61,7 @@ public class MsPacManIntroScene extends PacManGameScene {
 		game.state.runAfter(game.clock.sec(2), () -> {
 			g.setColor(Color.WHITE);
 			g.setFont(assets.scoreFont);
-			drawCenteredText(g, resources.getString("CHARACTER_NICKNAME"), t(8));
+			drawCenteredText(g, TEXTS.getString("CHARACTER_NICKNAME"), t(8));
 		});
 
 		IntStream.rangeClosed(0, 3).forEach(ghost -> {
@@ -113,7 +112,7 @@ public class MsPacManIntroScene extends PacManGameScene {
 		g.setColor(Color.ORANGE);
 		g.setFont(assets.scoreFont);
 		game.clock.runOrBeIdle(20, () -> {
-			drawCenteredText(g, resources.getString("PRESS_KEY_TO_PLAY"), size.y - 20);
+			drawCenteredText(g, TEXTS.getString("PRESS_KEY_TO_PLAY"), size.y - 20);
 		});
 	}
 
@@ -128,13 +127,13 @@ public class MsPacManIntroScene extends PacManGameScene {
 		g.drawString("10", t(12), t(28));
 		g.drawString("50", t(12), t(30));
 		g.setFont(assets.scoreFont.deriveFont(6f));
-		g.drawString(resources.getString("POINTS"), t(15), t(28));
-		g.drawString(resources.getString("POINTS"), t(15), t(30));
+		g.drawString(TEXTS.getString("POINTS"), t(15), t(28));
+		g.drawString(TEXTS.getString("POINTS"), t(15), t(30));
 	}
 
 	private void drawGhostCharacterAndName(Graphics2D g, int ghostID, int y, boolean both) {
-		String character = resources.getString("MSPACMAN.GHOST." + ghostID + ".CHARACTER");
-		String nickname = "\"" + resources.getString("MSPACMAN.GHOST." + ghostID + ".NICKNAME") + "\"";
+		String character = TEXTS.getString("MSPACMAN.GHOST." + ghostID + ".CHARACTER");
+		String nickname = "\"" + TEXTS.getString("MSPACMAN.GHOST." + ghostID + ".NICKNAME") + "\"";
 		Color color = GHOST_COLORS[ghostID];
 		g.setColor(color);
 		g.setFont(assets.scoreFont);
