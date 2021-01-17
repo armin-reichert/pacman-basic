@@ -85,7 +85,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == PAUSE_KEY) {
-					game.gamePaused = !game.gamePaused;
+					game.paused = !game.paused;
 				}
 				if (e.getKeyCode() == SLOWMODE_KEY) {
 					game.clock.targetFrequency = game.clock.targetFrequency == 60 ? 30 : 60;
@@ -189,7 +189,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 				g.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 				updateScene();
 				drawCurrentScene(g);
-				if (game.gamePaused) {
+				if (game.paused) {
 					drawPausedScreen(g);
 				}
 				g.dispose();

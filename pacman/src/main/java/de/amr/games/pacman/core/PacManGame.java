@@ -84,8 +84,8 @@ public class PacManGame {
 
 	public PacManGameUI ui;
 
-	public boolean gamePaused;
-	public boolean gameStarted;
+	public boolean paused;
+	public boolean started;
 
 	public PacManGameState state, stateBefore;
 	public PacManGameLevel level;
@@ -138,7 +138,7 @@ public class PacManGame {
 	}
 
 	private void step() {
-		if (!gamePaused) {
+		if (!paused) {
 			readInput();
 			updateState();
 		}
@@ -170,7 +170,7 @@ public class PacManGame {
 	}
 
 	private void reset() {
-		gameStarted = false;
+		started = false;
 		score = 0;
 		lives = 3;
 		levelNumber = 0;
@@ -332,10 +332,10 @@ public class PacManGame {
 
 	private void enterReadyState() {
 		state = READY;
-		if (!gameStarted) {
+		if (!started) {
 			state.setDuration(clock.sec(4.5));
 			ui.playSound(PacManGameSound.GAME_READY);
-			gameStarted = true;
+			started = true;
 		} else {
 			state.setDuration(clock.sec(0.5));
 		}
