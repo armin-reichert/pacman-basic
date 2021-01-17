@@ -253,13 +253,17 @@ public class PacManGame {
 		return ticks == Long.MAX_VALUE ? "indefinite time" : ticks + " ticks";
 	}
 
-	private PacManGameState changeState(Runnable oldStateExit, Runnable newStateEntry, Runnable action) {
+	private PacManGameState changeState(Runnable onExit, Runnable onEntry) {
+		return changeState(onExit, onEntry, null);
+	}
+
+	private PacManGameState changeState(Runnable onExit, Runnable onEntry, Runnable action) {
 		log("Exit state '%s'", stateDescription());
-		oldStateExit.run();
+		onExit.run();
 		if (action != null) {
 			action.run();
 		}
-		newStateEntry.run();
+		onEntry.run();
 		log("Enter state '%s' for %s", stateDescription(), ticksDescription(state.duration()));
 		return state;
 	}
@@ -305,7 +309,7 @@ public class PacManGame {
 			return state;
 		}
 		if (ui.keyPressed("space")) {
-			return changeState(this::exitIntroState, this::enterReadyState, null);
+			return changeState(this::exitIntroState, this::enterReadyState);
 		}
 		return state.tick();
 	}
@@ -341,7 +345,7 @@ public class PacManGame {
 
 	private PacManGameState runReadyState() {
 		if (state.expired()) {
-			return changeState(this::exitReadyState, this::enterHuntingState, null);
+			return changeState(this::exitReadyState, this::enterHuntingState);
 		}
 		for (Ghost ghost : ghosts) {
 			if (ghost.id != BLINKY) {
@@ -488,9 +492,9 @@ public class PacManGame {
 	private PacManGameState runPacManDyingState() {
 		if (state.expired()) {
 			if (lives > 0) {
-				return changeState(this::exitPacManDyingState, this::enterReadyState, null);
+				return changeState(this::exitPacManDyingState, this::enterReadyState);
 			} else {
-				return changeState(this::exitPacManDyingState, this::enterGameOverState, null);
+				return changeState(this::exitPacManDyingState, this::enterGameOverState);
 			}
 		}
 		if (state.running(clock.sec(1.5))) {
@@ -564,7 +568,7 @@ public class PacManGame {
 
 	private PacManGameState runChangingLevelState() {
 		if (state.expired()) {
-			return changeState(this::exitChangingLevelState, this::enterReadyState, null);
+			return changeState(this::exitChangingLevelState, this::enterReadyState);
 		}
 		if (state.running() == clock.sec(2)) {
 			for (Ghost ghost : ghosts) {
