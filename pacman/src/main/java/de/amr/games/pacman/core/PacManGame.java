@@ -534,6 +534,7 @@ public class PacManGame {
 		if (state.expired()) {
 			return changeState(this::exitGhostDyingState, () -> state = stateBefore, () -> log("Resume state '%s'", state));
 		}
+		steerPacMan();
 		for (Ghost ghost : ghosts) {
 			if (ghost.state == GhostState.DEAD && ghost.bounty == 0) {
 				updateGhost(ghost);
@@ -633,6 +634,12 @@ public class PacManGame {
 	}
 
 	private void letPacManMove() {
+		steerPacMan();
+		pac.speed = pac.powerTicksLeft == 0 ? level.pacSpeed : level.pacSpeedPowered;
+		tryMoving(pac);
+	}
+
+	private void steerPacMan() {
 		if (autopilotEnabled) {
 			autopilot.controlPac(this);
 		} else {
@@ -649,8 +656,6 @@ public class PacManGame {
 				pac.wishDir = DOWN;
 			}
 		}
-		pac.speed = pac.powerTicksLeft == 0 ? level.pacSpeed : level.pacSpeedPowered;
-		tryMoving(pac);
 	}
 
 	private void checkPacFindsBonus() {
