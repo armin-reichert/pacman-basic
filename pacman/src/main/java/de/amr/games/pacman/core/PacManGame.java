@@ -113,15 +113,14 @@ public class PacManGame {
 		thread = new Thread(this::run, "Pac-Man-" + variant);
 		rnd = new Random();
 		autopilot = new Autopilot();
-		pac = new Pac();
-		ghosts = new Ghost[] { new Ghost(0), new Ghost(1), new Ghost(2), new Ghost(3) };
-		bonus = new Bonus();
 		world = variant == CLASSIC ? new PacManClassicWorld() : new MsPacManWorld();
-		pac.name = world.pacName();
-		for (Ghost ghost : ghosts) {
-			ghost.name = world.ghostName(ghost.id);
-		}
 		levelSymbols = new ArrayList<>();
+		pac = new Pac(world.pacName());
+		ghosts = new Ghost[4];
+		for (int ghostID = 0; ghostID < 4; ++ghostID) {
+			ghosts[ghostID] = new Ghost(ghostID, world.ghostName(ghostID));
+		}
+		bonus = new Bonus();
 	}
 
 	public void start() {

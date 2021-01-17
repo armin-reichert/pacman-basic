@@ -17,7 +17,7 @@ public class Ghost extends Creature {
 	public final byte id;
 
 	/** The readable name of the ghost. */
-	public String name;
+	public final String name;
 
 	/** The current state of the ghost. */
 	public GhostState state;
@@ -36,7 +36,8 @@ public class Ghost extends Creature {
 	/** The tile that the ghost tries to reach. Can be inaccessible or outside of the maze. */
 	public V2i targetTile = V2i.NULL;
 
-	public Ghost(int id) {
+	public Ghost(int id, String name) {
 		this.id = (byte) id;
+		this.name = name;
 	}
 }

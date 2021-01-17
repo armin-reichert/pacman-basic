@@ -10,7 +10,7 @@ import de.amr.games.pacman.lib.V2i;
 public class Pac extends Creature {
 
 	/** Readable name, "Pac-Man" or "Ms. Pac-Man". */
-	public String name;
+	public final String name;
 
 	/** If Pac is dead. */
 	public boolean dead;
@@ -29,4 +29,8 @@ public class Pac extends Creature {
 
 	/** The tile that the Pac is targeting, used in autopilot mode. */
 	public V2i targetTile = V2i.NULL;
+
+	public Pac(String name) {
+		this.name = name;
+	}
 }
