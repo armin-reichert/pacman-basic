@@ -614,12 +614,10 @@ public class PacManGame {
 	// END STATE-MACHINE
 
 	private void updatePac() {
-		if (pac.restingTicksLeft == 0) {
-			updatePacDirection();
-			pac.speed = pac.powerTicksLeft == 0 ? level.pacSpeed : level.pacSpeedPowered;
-			tryMoving(pac);
-		} else {
+		if (pac.restingTicksLeft > 0) {
 			pac.restingTicksLeft--;
+		} else {
+			letPacManMove();
 		}
 		if (pac.powerTicksLeft > 0) {
 			pac.powerTicksLeft--;
@@ -634,7 +632,7 @@ public class PacManGame {
 		}
 	}
 
-	private void updatePacDirection() {
+	private void letPacManMove() {
 		if (autopilotEnabled) {
 			autopilot.controlPac(this);
 		} else {
@@ -651,6 +649,8 @@ public class PacManGame {
 				pac.wishDir = DOWN;
 			}
 		}
+		pac.speed = pac.powerTicksLeft == 0 ? level.pacSpeed : level.pacSpeedPowered;
+		tryMoving(pac);
 	}
 
 	private void checkPacFindsBonus() {
