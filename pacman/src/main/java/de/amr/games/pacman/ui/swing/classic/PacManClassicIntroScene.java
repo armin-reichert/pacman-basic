@@ -47,9 +47,7 @@ public class PacManClassicIntroScene extends PacManGameScene {
 
 	@Override
 	public void end() {
-		game.ui.stopSound(PacManGameSound.SIREN_1);
-		game.ui.stopSound(PacManGameSound.PACMAN_POWER);
-		game.ui.stopSound(PacManGameSound.GHOST_DEATH);
+		game.ui.stopAllSounds();
 	}
 
 	@Override
@@ -97,7 +95,11 @@ public class PacManClassicIntroScene extends PacManGameScene {
 			}
 		});
 
-		game.state.runAfter(game.clock.sec(14), () -> {
+		game.state.runAt(game.clock.sec(24), () -> {
+			game.ui.stopSound(PacManGameSound.PACMAN_POWER);
+		});
+
+		game.state.runAfter(game.clock.sec(24), () -> {
 			drawPressKeyToStart(g);
 		});
 
@@ -179,8 +181,6 @@ public class PacManClassicIntroScene extends PacManGameScene {
 		if (pacManX < size.x) {
 			pacManX += 0.6f;
 			leftmostGhostX += 0.3f;
-		} else {
-			game.ui.stopSound(PacManGameSound.PACMAN_POWER);
 		}
 	}
 

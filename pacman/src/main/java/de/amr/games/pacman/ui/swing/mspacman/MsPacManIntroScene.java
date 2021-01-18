@@ -49,9 +49,6 @@ public class MsPacManIntroScene extends PacManGameScene {
 
 	@Override
 	public void end() {
-		game.ui.stopSound(PacManGameSound.SIREN_1);
-		game.ui.stopSound(PacManGameSound.PACMAN_POWER);
-		game.ui.stopSound(PacManGameSound.GHOST_DEATH);
 	}
 
 	@Override
@@ -97,7 +94,11 @@ public class MsPacManIntroScene extends PacManGameScene {
 			}
 		});
 
-		game.state.runAfter(game.clock.sec(14), () -> {
+		game.state.runAt(game.clock.sec(24), () -> {
+			game.ui.stopSound(PacManGameSound.PACMAN_POWER);
+		});
+
+		game.state.runAfter(game.clock.sec(24), () -> {
 			drawPressKeyToStart(g);
 		});
 
@@ -183,14 +184,12 @@ public class MsPacManIntroScene extends PacManGameScene {
 		if (pacManX < size.x) {
 			pacManX += 0.6f;
 			leftmostGhostX += 0.3f;
-		} else {
-			game.ui.stopSound(PacManGameSound.PACMAN_POWER);
 		}
 	}
 
 	private BufferedImage pacManWalkingSprite(Direction dir) {
 		int frame = game.clock.frame(5, 3);
-		return frame == 2 ? assets.section(frame, 0) : assets.section(frame, DIR_INDEX.get(dir));
+		return assets.section(frame, DIR_INDEX.get(dir));
 	}
 
 	private BufferedImage ghostWalkingSprite(Direction dir, int ghost) {
