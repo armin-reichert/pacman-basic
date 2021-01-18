@@ -323,7 +323,7 @@ public class PacManGame {
 
 	private void enterReadyState() {
 		state = READY;
-		state.setDuration(clock.sec(started ? 1.5 : 4.5));
+		state.setDuration(clock.sec(started ? 2 : 5));
 		resetGuys();
 		ui.stopAllSounds();
 	}
