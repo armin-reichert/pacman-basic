@@ -765,7 +765,7 @@ public class PacManGame {
 		if (seconds > 0) {
 			log("Pac-Man got power for %d seconds", seconds);
 			for (Ghost ghost : ghosts) {
-				if (isGhostHunting(ghost)) {
+				if (ghost.state == GhostState.HUNTING) {
 					ghost.state = GhostState.FRIGHTENED;
 				}
 			}
@@ -1099,13 +1099,9 @@ public class PacManGame {
 		return Optional.ofNullable(minDistDir);
 	}
 
-	boolean isGhostHunting(Ghost ghost) {
-		return ghost.state == GhostState.HUNTING;
-	}
-
 	private void forceHuntingGhostsTurningBack() {
 		for (Ghost ghost : ghosts) {
-			if (isGhostHunting(ghost)) {
+			if (ghost.state == GhostState.HUNTING) {
 				ghost.wishDir = ghost.dir.opposite();
 				ghost.forcedDirection = true;
 			}
@@ -1239,7 +1235,7 @@ public class PacManGame {
 	private void killAllGhosts() {
 		ghostBounty = 200;
 		for (Ghost ghost : ghosts) {
-			if (isGhostHunting(ghost) || ghost.state == GhostState.FRIGHTENED) {
+			if (ghost.state == GhostState.HUNTING || ghost.state == GhostState.FRIGHTENED) {
 				ghostKilled(ghost);
 			}
 		}

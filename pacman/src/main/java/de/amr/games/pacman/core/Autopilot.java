@@ -115,8 +115,7 @@ public class Autopilot {
 
 	private Ghost findFrightenedGhostInReach() {
 		for (Ghost ghost : ghosts) {
-			if (ghost.state == GhostState.FRIGHTENED
-					&& ghost.tile().manhattanDistance(pac.tile()) < MAX_GHOST_CHASE_DIST) {
+			if (ghost.state == GhostState.FRIGHTENED && ghost.tile().manhattanDistance(pac.tile()) < MAX_GHOST_CHASE_DIST) {
 				return ghost;
 			}
 		}
@@ -136,7 +135,7 @@ public class Autopilot {
 			}
 			V2i aheadLeft = ahead.sum(pac.dir.turnLeft().vec), aheadRight = ahead.sum(pac.dir.turnRight().vec);
 			for (Ghost ghost : ghosts) {
-				if (!game.isGhostHunting(ghost)) {
+				if (ghost.state != GhostState.HUNTING) {
 					continue;
 				}
 				if (ghost.tile().equals(ahead) || ghost.tile().equals(aheadLeft) || ghost.tile().equals(aheadRight)) {
@@ -159,10 +158,7 @@ public class Autopilot {
 				break;
 			}
 			for (Ghost ghost : ghosts) {
-				if (!game.isGhostHunting(ghost)) {
-					continue;
-				}
-				if (ghost.tile().equals(behind)) {
+				if (ghost.state == GhostState.HUNTING && ghost.tile().equals(behind)) {
 					return ghost;
 				}
 			}
