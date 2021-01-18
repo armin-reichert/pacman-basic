@@ -157,11 +157,6 @@ public class PacManGameSwingUI implements PacManGameUI {
 	}
 
 	@Override
-	public float scaling() {
-		return scaling;
-	}
-
-	@Override
 	public void showMessage(String message, boolean important) {
 		messageText = message;
 		messageColor = important ? Color.RED : Color.yellow;
