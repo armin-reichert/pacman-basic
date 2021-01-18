@@ -30,9 +30,4 @@ public interface PacManGameUI {
 	void stopSound(PacManGameSound sound);
 
 	void stopAllSounds();
-
-	void setDebugMode(boolean debug);
-
-	boolean isDebugMode();
-
 }

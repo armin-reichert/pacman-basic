@@ -19,6 +19,7 @@ import de.amr.games.pacman.creatures.GhostState;
 import de.amr.games.pacman.creatures.Pac;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.swing.PacManGameScene;
+import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
 import de.amr.games.pacman.world.MsPacManWorld;
 
 /**
@@ -126,7 +127,7 @@ public class MsPacManPlayScene extends PacManGameScene {
 			});
 		});
 		drawBonus(g);
-		if (game.ui.isDebugMode()) {
+		if (PacManGameSwingUI.debugMode) {
 			drawMazeStructure(g);
 		}
 	}

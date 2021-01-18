@@ -39,6 +39,7 @@ import de.amr.games.pacman.ui.swing.mspacman.MsPacManPlayScene;
  */
 public class PacManGameSwingUI implements PacManGameUI {
 
+	public static boolean debugMode;
 	public static final ResourceBundle TEXTS = ResourceBundle.getBundle("localization.translation");
 
 	static final int PAUSE_KEY = KeyEvent.VK_P;
@@ -53,7 +54,6 @@ public class PacManGameSwingUI implements PacManGameUI {
 	private final Canvas canvas;
 	private final Keyboard keyboard;
 
-	private boolean debugMode;
 	private String messageText;
 	private Color messageColor;
 	private Font messageFont;
@@ -99,8 +99,8 @@ public class PacManGameSwingUI implements PacManGameUI {
 					log("Clock frequency changed to %d Hz", game.clock.targetFrequency);
 				}
 				if (e.getKeyCode() == DEBUGMODE_KEY) {
-					setDebugMode(!isDebugMode());
-					log("UI debug mode is %s", isDebugMode() ? "on" : "off");
+					debugMode = !debugMode;
+					log("UI debug mode is %s", debugMode ? "on" : "off");
 				}
 			}
 		});
@@ -165,16 +165,6 @@ public class PacManGameSwingUI implements PacManGameUI {
 	@Override
 	public void clearMessage() {
 		messageText = null;
-	}
-
-	@Override
-	public boolean isDebugMode() {
-		return debugMode;
-	}
-
-	@Override
-	public void setDebugMode(boolean debug) {
-		debugMode = debug;
 	}
 
 	@Override

@@ -51,7 +51,7 @@ public abstract class PacManGameScene {
 	private static final Polygon TRIANGLE = new Polygon(new int[] { -4, 4, 0 }, new int[] { 0, 0, 4 }, 3);
 
 	public void drawDebugInfo(Graphics2D g) {
-		if (game.ui.isDebugMode()) {
+		if (PacManGameSwingUI.debugMode) {
 			long remaining = game.state.ticksRemaining();
 			String ticksText = remaining == Long.MAX_VALUE ? "forever" : remaining + " ticks remaining";
 			String stateText = String.format("%s (%s)", game.stateDescription(), ticksText);

@@ -21,6 +21,7 @@ import de.amr.games.pacman.creatures.GhostState;
 import de.amr.games.pacman.creatures.Pac;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.swing.PacManGameScene;
+import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
 
 /**
  * Scene where the game is played.
@@ -125,7 +126,7 @@ public class PacManClassicPlayScene extends PacManGameScene {
 			});
 		});
 		drawBonus(g, game.bonus);
-		if (game.ui.isDebugMode()) {
+		if (PacManGameSwingUI.debugMode) {
 			drawMazeStructure(g);
 		}
 	}
