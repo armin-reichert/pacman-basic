@@ -13,8 +13,6 @@ public interface PacManGameUI {
 
 	void setGame(PacManGame game);
 
-	float scaling();
-
 	void render();
 
 	void showMessage(String message, boolean important);
