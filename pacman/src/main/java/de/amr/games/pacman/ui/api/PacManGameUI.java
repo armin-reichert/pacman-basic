@@ -11,6 +11,8 @@ public interface PacManGameUI {
 
 	void setGame(PacManGame game);
 
+	void onGameVariantChanged(PacManGame game);
+
 	void openWindow();
 
 	void render();

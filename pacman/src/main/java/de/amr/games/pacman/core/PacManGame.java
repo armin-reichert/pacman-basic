@@ -71,16 +71,15 @@ public class PacManGame {
 
 	static final ResourceBundle TEXTS = ResourceBundle.getBundle("localization.translation");
 
-	public final Hiscore hiscore;
-	public final Clock clock;
-	public final Random rnd;
+	public final Clock clock = new Clock();
+	public final Random rnd = new Random();
 
-	public final GameVariant variant;
-	public final PacManGameWorld world;
-	public final Pac pac;
-	public final Ghost[] ghosts;
-	public final Bonus bonus;
-	public final List<Byte> levelSymbols;
+	public GameVariant variant;
+	public PacManGameWorld world;
+	public Pac pac;
+	public Ghost[] ghosts;
+	public Bonus bonus;
+	public Hiscore hiscore;
 
 	public PacManGameUI ui;
 
@@ -98,32 +97,48 @@ public class PacManGame {
 	public byte mazeFlashesRemaining;
 	public short globalDotCounter;
 	public boolean globalDotCounterEnabled;
+	public List<Byte> levelSymbols;
 
-	public boolean autopilotEnabled;
-	public final Autopilot autopilot;
+	private Thread thread;
 
-	public boolean pacImmune = false;
+	private boolean autopilotEnabled = false;
+	private final Autopilot autopilot = new Autopilot();
 
-	private final Thread thread;
+	private boolean pacImmune = false;
 
 	public PacManGame(GameVariant variant) {
+		setGameVariant(variant);
+	}
+
+	private void setGameVariant(GameVariant variant) {
 		this.variant = variant;
 		hiscore = new Hiscore(new File(System.getProperty("user.home"), "pacman-hiscore-" + variant + ".xml"));
-		clock = new Clock();
-		thread = new Thread(this::run, "Pac-Man-" + variant);
-		rnd = new Random();
-		autopilot = new Autopilot();
-		world = variant == CLASSIC ? new PacManClassicWorld() : new MsPacManWorld();
-		levelSymbols = new ArrayList<>();
+		world = (variant == CLASSIC) ? new PacManClassicWorld() : new MsPacManWorld();
 		pac = new Pac(world.pacName());
 		ghosts = new Ghost[4];
 		for (int ghostID = 0; ghostID < 4; ++ghostID) {
 			ghosts[ghostID] = new Ghost(ghostID, world.ghostName(ghostID));
 		}
 		bonus = new Bonus();
+		reset();
+		log("Game variant changed to %s", variant);
+	}
+
+	private void reset() {
+		started = false;
+		score = 0;
+		lives = 3;
+		levelNumber = 0;
+		levelSymbols = new ArrayList<>();
+		nextLevel();
+		hiscore.load();
+		if (ui != null) {
+			ui.clearMessage();
+		}
 	}
 
 	public void start() {
+		thread = new Thread(this::run, "PacManGame");
 		thread.start();
 	}
 
@@ -165,19 +180,6 @@ public class PacManGame {
 			ui.stopAllSounds();
 			reset();
 			enterIntroState();
-		}
-	}
-
-	private void reset() {
-		started = false;
-		score = 0;
-		lives = 3;
-		levelNumber = 0;
-		levelSymbols.clear();
-		nextLevel();
-		hiscore.load();
-		if (ui != null) {
-			ui.clearMessage();
 		}
 	}
 
@@ -304,24 +306,14 @@ public class PacManGame {
 
 	private PacManGameState runIntroState() {
 		if (ui.keyPressed("v")) {
-			toggleVariant();
+			setGameVariant((variant == CLASSIC) ? MS_PACMAN : CLASSIC);
+			ui.onGameVariantChanged(this);
 			return state;
 		}
 		if (ui.keyPressed("space")) {
 			return changeState(this::exitIntroState, this::enterReadyState);
 		}
 		return state.tick();
-	}
-
-	private void toggleVariant() {
-		PacManGame game = new PacManGame(variant == CLASSIC ? MS_PACMAN : CLASSIC);
-		ui.setGame(game);
-		game.start();
-		try {
-			thread.join();
-		} catch (InterruptedException x) {
-			x.printStackTrace();
-		}
 	}
 
 	private void exitIntroState() {

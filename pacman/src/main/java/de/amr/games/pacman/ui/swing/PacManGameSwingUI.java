@@ -127,17 +127,17 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 	@Override
 	public void setGame(PacManGame game) {
+		this.game = game;
+		game.ui = this;
+		onGameVariantChanged(game);
+	}
 
-		// maybe detach from old game
+	@Override
+	public void onGameVariantChanged(PacManGame game) {
+
 		if (soundManager != null) {
 			stopAllSounds();
 		}
-		if (titleUpdateTimer != null) {
-			titleUpdateTimer.stop();
-		}
-
-		this.game = game;
-		game.ui = this;
 
 		if (game.variant == GameVariant.CLASSIC) {
 			PacManClassicAssets assets = new PacManClassicAssets();
@@ -151,6 +151,9 @@ public class PacManGameSwingUI implements PacManGameUI {
 			playScene = new MsPacManPlayScene(game, unscaledSizeInPixels, assets);
 		}
 
+		if (titleUpdateTimer != null) {
+			titleUpdateTimer.stop();
+		}
 		titleUpdateTimer = new Timer(1000,
 				e -> window.setTitle(String.format("%s (%d fps)", game.world.pacName(), game.clock.frequency)));
 		titleUpdateTimer.start();
