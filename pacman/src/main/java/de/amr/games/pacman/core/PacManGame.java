@@ -37,7 +37,7 @@ import java.util.stream.Stream;
 import de.amr.games.pacman.creatures.Bonus;
 import de.amr.games.pacman.creatures.Creature;
 import de.amr.games.pacman.creatures.Ghost;
-import de.amr.games.pacman.creatures.Ghost.GhostState;
+import de.amr.games.pacman.creatures.GhostState;
 import de.amr.games.pacman.creatures.Pac;
 import de.amr.games.pacman.lib.Clock;
 import de.amr.games.pacman.lib.Direction;

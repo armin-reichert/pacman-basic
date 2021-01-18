@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.creatures.Ghost;
-import de.amr.games.pacman.creatures.Ghost.GhostState;
+import de.amr.games.pacman.creatures.GhostState;
 import de.amr.games.pacman.creatures.Pac;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;

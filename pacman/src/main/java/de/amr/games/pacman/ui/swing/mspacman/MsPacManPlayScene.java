@@ -15,7 +15,7 @@ import java.awt.image.BufferedImage;
 import de.amr.games.pacman.core.PacManGame;
 import de.amr.games.pacman.core.PacManGameState;
 import de.amr.games.pacman.creatures.Ghost;
-import de.amr.games.pacman.creatures.Ghost.GhostState;
+import de.amr.games.pacman.creatures.GhostState;
 import de.amr.games.pacman.creatures.Pac;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.swing.PacManGameScene;

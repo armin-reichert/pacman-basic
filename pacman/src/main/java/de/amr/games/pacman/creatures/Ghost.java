@@ -9,10 +9,6 @@ import de.amr.games.pacman.lib.V2i;
  */
 public class Ghost extends Creature {
 
-	public enum GhostState {
-		LOCKED, DEAD, ENTERING_HOUSE, LEAVING_HOUSE, FRIGHTENED, HUNTING;
-	}
-
 	/** The unique ID of the ghost (0..3). */
 	public final byte id;
 
