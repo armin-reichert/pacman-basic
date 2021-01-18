@@ -83,7 +83,7 @@ public class MsPacManAssets implements SoundAssets {
 		soundPaths.put(PacManGameSound.CREDIT,       "/sound/credit.wav");
 		soundPaths.put(PacManGameSound.EAT_BONUS,    "/sound/eat_fruit.wav");
 		soundPaths.put(PacManGameSound.EXTRA_LIFE,   "/sound/extend.wav");
-		soundPaths.put(PacManGameSound.GAME_READY,   "/sound/game_start.wav");
+		soundPaths.put(PacManGameSound.GAME_READY,   "/sound/mspacman/game_start.wav");
 		soundPaths.put(PacManGameSound.GHOST_DEATH,  "/sound/eat_ghost.wav");
 		soundPaths.put(PacManGameSound.MUNCH,        "/sound/munch_1.wav");
 		soundPaths.put(PacManGameSound.PACMAN_DEATH, "/sound/death_1.wav");
