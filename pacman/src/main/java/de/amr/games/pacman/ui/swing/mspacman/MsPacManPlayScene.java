@@ -192,7 +192,7 @@ public class MsPacManPlayScene extends PacManGameScene {
 			return assets.section(8 + dir, 5);
 		}
 		if (ghost.state == GhostState.FRIGHTENED) {
-			if (game.pac.powerTicksLeft <= 20 * game.level.numFlashes) {
+			if (game.pac.powerTicksLeft <= 20 * game.level.numFlashes && game.state == PacManGameState.HUNTING) {
 				// flashing blue/white, walking animation
 				int flashing = game.clock.frame(10, 2) == 0 ? 8 : 10;
 				return assets.section(walking + flashing, 4);
