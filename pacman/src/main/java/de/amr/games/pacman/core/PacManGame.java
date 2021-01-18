@@ -331,24 +331,27 @@ public class PacManGame {
 
 	private void enterReadyState() {
 		state = READY;
-		if (!started) {
-			state.setDuration(clock.sec(4.5));
-			ui.playSound(PacManGameSound.GAME_READY);
-			started = true;
-		} else {
-			state.setDuration(clock.sec(0.5));
-		}
+		state.setDuration(clock.sec(started ? 1.5 : 4.5));
 		resetGuys();
-		ui.showMessage(TEXTS.getString("READY"), false);
+		ui.stopAllSounds();
 	}
 
 	private PacManGameState runReadyState() {
 		if (state.expired()) {
 			return changeState(this::exitReadyState, this::enterHuntingState);
 		}
-		for (Ghost ghost : ghosts) {
-			if (ghost.id != BLINKY) {
-				letGhostBounce(ghost);
+		if (state.atTick(clock.sec(0.5))) {
+			ui.showMessage(TEXTS.getString("READY"), false);
+			if (!started) {
+				ui.playSound(PacManGameSound.GAME_READY);
+				started = true;
+			}
+		}
+		if (state.ticks() > clock.sec(0.5)) {
+			for (Ghost ghost : ghosts) {
+				if (ghost.id != BLINKY) {
+					letGhostBounce(ghost);
+				}
 			}
 		}
 		return state.tick();
@@ -496,12 +499,12 @@ public class PacManGame {
 				return changeState(this::exitPacManDyingState, this::enterGameOverState);
 			}
 		}
-		if (state.running(clock.sec(1.5))) {
+		if (state.atTick(clock.sec(1.5))) {
 			for (Ghost ghost : ghosts) {
 				ghost.visible = false;
 			}
 		}
-		if (state.running(clock.sec(2.5))) {
+		if (state.atTick(clock.sec(2.5))) {
 			pac.collapsingTicksLeft = clock.sec(1.5);
 			ui.playSound(PacManGameSound.PACMAN_DEATH);
 		}
@@ -570,12 +573,12 @@ public class PacManGame {
 		if (state.expired()) {
 			return changeState(this::exitChangingLevelState, this::enterReadyState);
 		}
-		if (state.running() == clock.sec(2)) {
+		if (state.ticks() == clock.sec(2)) {
 			for (Ghost ghost : ghosts) {
 				ghost.visible = false;
 			}
 		}
-		if (state.running() == clock.sec(3)) {
+		if (state.ticks() == clock.sec(3)) {
 			mazeFlashesRemaining = level.numFlashes;
 		}
 		return state.tick();

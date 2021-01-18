@@ -47,7 +47,6 @@ public class PacManClassicIntroScene extends PacManGameScene {
 
 	@Override
 	public void end() {
-		game.ui.stopAllSounds();
 	}
 
 	@Override

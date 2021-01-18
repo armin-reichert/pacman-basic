@@ -34,11 +34,11 @@ public enum PacManGameState {
 		return duration;
 	}
 
-	public long running() {
+	public long ticks() {
 		return running;
 	}
 
-	public boolean running(long ticks) {
+	public boolean atTick(long ticks) {
 		return running == ticks;
 	}
 
