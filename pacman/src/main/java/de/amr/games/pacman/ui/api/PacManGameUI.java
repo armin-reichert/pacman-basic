@@ -11,7 +11,7 @@ public interface PacManGameUI {
 
 	void setGame(PacManGame game);
 
-	void showWindow();
+	void openWindow();
 
 	void render();
 

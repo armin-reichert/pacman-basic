@@ -117,7 +117,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 	}
 
 	@Override
-	public void showWindow() {
+	public void openWindow() {
 		window.pack();
 		window.setLocationRelativeTo(null);
 		window.setVisible(true);
