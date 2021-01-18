@@ -9,9 +9,9 @@ import de.amr.games.pacman.core.PacManGame;
  */
 public interface PacManGameUI {
 
-	void show();
-
 	void setGame(PacManGame game);
+
+	void showWindow();
 
 	void render();
 
