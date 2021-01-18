@@ -21,8 +21,6 @@ public interface PacManGameUI {
 
 	boolean keyPressed(String keySpec);
 
-	boolean anyKeyPressed();
-
 	void onWindowClosing();
 
 	void playSound(PacManGameSound sound);

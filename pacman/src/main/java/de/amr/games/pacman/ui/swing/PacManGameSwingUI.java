@@ -237,11 +237,6 @@ public class PacManGameSwingUI implements PacManGameUI {
 	}
 
 	@Override
-	public boolean anyKeyPressed() {
-		return keyboard.anyKeyPressed();
-	}
-
-	@Override
 	public void onWindowClosing() {
 		game.exit();
 	}
