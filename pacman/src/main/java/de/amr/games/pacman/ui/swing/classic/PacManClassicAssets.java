@@ -84,20 +84,20 @@ public class PacManClassicAssets implements SoundAssets {
 		numbers.put(3000, section(3, 11, 3, 1));
 		numbers.put(5000, section(3, 12, 3, 1));
 	
-		soundPaths.put(PacManGameSound.CREDIT,       "/sound/credit.wav");
-		soundPaths.put(PacManGameSound.EAT_BONUS,    "/sound/eat_fruit.wav");
-		soundPaths.put(PacManGameSound.EXTRA_LIFE,   "/sound/extend.wav");
-		soundPaths.put(PacManGameSound.GAME_READY,   "/sound/game_start.wav");
-		soundPaths.put(PacManGameSound.GHOST_DEATH,  "/sound/eat_ghost.wav");
-		soundPaths.put(PacManGameSound.MUNCH,        "/sound/munch_1.wav");
-		soundPaths.put(PacManGameSound.PACMAN_DEATH, "/sound/death_1.wav");
-		soundPaths.put(PacManGameSound.PACMAN_POWER, "/sound/power_pellet.wav");
-		soundPaths.put(PacManGameSound.GHOST_RETURNING,   "/sound/retreating.wav");
-		soundPaths.put(PacManGameSound.SIREN_1,      "/sound/siren_1.wav");
-		soundPaths.put(PacManGameSound.SIREN_2,      "/sound/siren_2.wav");
-		soundPaths.put(PacManGameSound.SIREN_3,      "/sound/siren_3.wav");
-		soundPaths.put(PacManGameSound.SIREN_4,      "/sound/siren_4.wav");
-		soundPaths.put(PacManGameSound.SIREN_5,      "/sound/siren_5.wav");
+		soundPaths.put(PacManGameSound.CREDIT,          "/sound/classic/credit.wav");
+		soundPaths.put(PacManGameSound.EAT_BONUS,       "/sound/classic/eat_fruit.wav");
+		soundPaths.put(PacManGameSound.EXTRA_LIFE,      "/sound/classic/extend.wav");
+		soundPaths.put(PacManGameSound.GAME_READY,      "/sound/classic/game_start.wav");
+		soundPaths.put(PacManGameSound.GHOST_DEATH,     "/sound/classic/eat_ghost.wav");
+		soundPaths.put(PacManGameSound.MUNCH,           "/sound/classic/munch_1.wav");
+		soundPaths.put(PacManGameSound.PACMAN_DEATH,    "/sound/classic/death_1.wav");
+		soundPaths.put(PacManGameSound.PACMAN_POWER,    "/sound/classic/power_pellet.wav");
+		soundPaths.put(PacManGameSound.GHOST_RETURNING, "/sound/classic/retreating.wav");
+		soundPaths.put(PacManGameSound.SIREN_1,         "/sound/classic/siren_1.wav");
+		soundPaths.put(PacManGameSound.SIREN_2,         "/sound/classic/siren_2.wav");
+		soundPaths.put(PacManGameSound.SIREN_3,         "/sound/classic/siren_3.wav");
+		soundPaths.put(PacManGameSound.SIREN_4,         "/sound/classic/siren_4.wav");
+		soundPaths.put(PacManGameSound.SIREN_5,         "/sound/classic/siren_5.wav");
 		//@formatter:on
 
 		scoreFont = font("/PressStart2P-Regular.ttf", 8);
