@@ -46,7 +46,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 		try (InputStream is = PacManGameSwingUI.class.getResourceAsStream(path)) {
 			return ImageIO.read(is);
 		} catch (Exception x) {
-			throw new AssetsException("Could not load image with path '%s'", path);
+			throw new AssetException("Could not load image with path '%s'", path);
 		}
 	}
 
@@ -54,7 +54,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 		try (InputStream fontData = PacManGameSwingUI.class.getResourceAsStream(fontPath)) {
 			return Font.createFont(Font.TRUETYPE_FONT, fontData).deriveFont((float) size);
 		} catch (Exception x) {
-			throw new AssetsException("Could not load font with path '%s'", fontPath);
+			throw new AssetException("Could not load font with path '%s'", fontPath);
 		}
 	}
 
