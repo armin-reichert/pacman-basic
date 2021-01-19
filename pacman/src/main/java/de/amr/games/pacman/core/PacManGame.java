@@ -99,8 +99,6 @@ public class PacManGame {
 	public boolean globalDotCounterEnabled;
 	public List<Byte> levelSymbols;
 
-	private Thread thread;
-
 	private boolean autopilotEnabled = false;
 	private final Autopilot autopilot = new Autopilot();
 
@@ -138,14 +136,13 @@ public class PacManGame {
 	}
 
 	public void start() {
-		thread = new Thread(this::run, "PacManGame");
-		thread.start();
-	}
-
-	private void run() {
 		reset();
 		enterIntroState();
-		log("Game starts. Entering state '%s' for %s", stateDescription(), ticksDescription(state.duration()));
+		log("State is '%s' for %s", stateDescription(), ticksDescription(state.duration()));
+		new Thread(this::loop, "PacManGame").start();
+	}
+
+	private void loop() {
 		while (true) {
 			clock.tick(this::step);
 		}
