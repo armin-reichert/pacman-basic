@@ -1,11 +1,11 @@
-package de.amr.games.pacman.creatures;
+package de.amr.games.pacman.game.creatures;
 
-import static de.amr.games.pacman.world.PacManGameWorld.TS;
+import static de.amr.games.pacman.game.worlds.PacManGameWorld.TS;
 
+import de.amr.games.pacman.game.worlds.PacManGameWorld;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.world.PacManGameWorld;
 
 /**
  * Base class for Pac-Man, the ghosts and the bonus. Creatures can move through the maze.

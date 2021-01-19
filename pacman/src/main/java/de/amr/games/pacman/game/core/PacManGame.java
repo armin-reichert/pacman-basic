@@ -1,28 +1,28 @@
-package de.amr.games.pacman.core;
+package de.amr.games.pacman.game.core;
 
-import static de.amr.games.pacman.core.GameVariant.CLASSIC;
-import static de.amr.games.pacman.core.GameVariant.MS_PACMAN;
-import static de.amr.games.pacman.core.PacManGameState.CHANGING_LEVEL;
-import static de.amr.games.pacman.core.PacManGameState.GAME_OVER;
-import static de.amr.games.pacman.core.PacManGameState.GHOST_DYING;
-import static de.amr.games.pacman.core.PacManGameState.HUNTING;
-import static de.amr.games.pacman.core.PacManGameState.INTRO;
-import static de.amr.games.pacman.core.PacManGameState.PACMAN_DYING;
-import static de.amr.games.pacman.core.PacManGameState.READY;
+import static de.amr.games.pacman.game.core.GameVariant.CLASSIC;
+import static de.amr.games.pacman.game.core.GameVariant.MS_PACMAN;
+import static de.amr.games.pacman.game.core.PacManGameState.CHANGING_LEVEL;
+import static de.amr.games.pacman.game.core.PacManGameState.GAME_OVER;
+import static de.amr.games.pacman.game.core.PacManGameState.GHOST_DYING;
+import static de.amr.games.pacman.game.core.PacManGameState.HUNTING;
+import static de.amr.games.pacman.game.core.PacManGameState.INTRO;
+import static de.amr.games.pacman.game.core.PacManGameState.PACMAN_DYING;
+import static de.amr.games.pacman.game.core.PacManGameState.READY;
+import static de.amr.games.pacman.game.worlds.PacManClassicWorld.BLINKY;
+import static de.amr.games.pacman.game.worlds.PacManClassicWorld.CLYDE;
+import static de.amr.games.pacman.game.worlds.PacManClassicWorld.INKY;
+import static de.amr.games.pacman.game.worlds.PacManClassicWorld.PINKY;
+import static de.amr.games.pacman.game.worlds.PacManGameWorld.HTS;
+import static de.amr.games.pacman.game.worlds.PacManGameWorld.offset;
+import static de.amr.games.pacman.game.worlds.PacManGameWorld.t;
+import static de.amr.games.pacman.game.worlds.PacManGameWorld.tile;
 import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.lib.Functions.differsAtMost;
 import static de.amr.games.pacman.lib.Logging.log;
-import static de.amr.games.pacman.world.PacManClassicWorld.BLINKY;
-import static de.amr.games.pacman.world.PacManClassicWorld.CLYDE;
-import static de.amr.games.pacman.world.PacManClassicWorld.INKY;
-import static de.amr.games.pacman.world.PacManClassicWorld.PINKY;
-import static de.amr.games.pacman.world.PacManGameWorld.HTS;
-import static de.amr.games.pacman.world.PacManGameWorld.offset;
-import static de.amr.games.pacman.world.PacManGameWorld.t;
-import static de.amr.games.pacman.world.PacManGameWorld.tile;
 import static java.lang.Math.abs;
 
 import java.io.File;
@@ -34,11 +34,14 @@ import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.creatures.Bonus;
-import de.amr.games.pacman.creatures.Creature;
-import de.amr.games.pacman.creatures.Ghost;
-import de.amr.games.pacman.creatures.GhostState;
-import de.amr.games.pacman.creatures.Pac;
+import de.amr.games.pacman.game.creatures.Bonus;
+import de.amr.games.pacman.game.creatures.Creature;
+import de.amr.games.pacman.game.creatures.Ghost;
+import de.amr.games.pacman.game.creatures.GhostState;
+import de.amr.games.pacman.game.creatures.Pac;
+import de.amr.games.pacman.game.worlds.MsPacManWorld;
+import de.amr.games.pacman.game.worlds.PacManClassicWorld;
+import de.amr.games.pacman.game.worlds.PacManGameWorld;
 import de.amr.games.pacman.lib.Clock;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.Hiscore;
@@ -46,9 +49,6 @@ import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.api.PacManGameSound;
 import de.amr.games.pacman.ui.api.PacManGameUI;
-import de.amr.games.pacman.world.MsPacManWorld;
-import de.amr.games.pacman.world.PacManClassicWorld;
-import de.amr.games.pacman.world.PacManGameWorld;
 
 /**
  * Pac-Man and Ms. Pac-Man game with original "AI", levels, timers.

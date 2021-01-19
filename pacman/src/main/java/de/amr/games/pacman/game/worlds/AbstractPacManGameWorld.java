@@ -1,4 +1,4 @@
-package de.amr.games.pacman.world;
+package de.amr.games.pacman.game.worlds;
 
 import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;

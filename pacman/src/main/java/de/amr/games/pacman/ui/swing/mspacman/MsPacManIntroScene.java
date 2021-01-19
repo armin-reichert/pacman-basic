@@ -1,17 +1,17 @@
 package de.amr.games.pacman.ui.swing.mspacman;
 
+import static de.amr.games.pacman.game.worlds.PacManGameWorld.t;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.TEXTS;
 import static de.amr.games.pacman.ui.swing.mspacman.MsPacManAssets.DIR_INDEX;
-import static de.amr.games.pacman.world.PacManGameWorld.t;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.stream.IntStream;
 
-import de.amr.games.pacman.core.PacManGame;
+import de.amr.games.pacman.game.core.PacManGame;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.api.PacManGameSound;

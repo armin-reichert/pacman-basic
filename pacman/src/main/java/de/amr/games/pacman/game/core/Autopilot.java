@@ -1,4 +1,4 @@
-package de.amr.games.pacman.core;
+package de.amr.games.pacman.game.core;
 
 import static de.amr.games.pacman.lib.Logging.log;
 
@@ -8,9 +8,9 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.creatures.Ghost;
-import de.amr.games.pacman.creatures.GhostState;
-import de.amr.games.pacman.creatures.Pac;
+import de.amr.games.pacman.game.creatures.Ghost;
+import de.amr.games.pacman.game.creatures.GhostState;
+import de.amr.games.pacman.game.creatures.Pac;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
 

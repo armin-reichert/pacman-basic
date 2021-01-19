@@ -1,10 +1,10 @@
 package de.amr.games.pacman.ui.swing.mspacman;
 
+import static de.amr.games.pacman.game.worlds.PacManGameWorld.HTS;
+import static de.amr.games.pacman.game.worlds.PacManGameWorld.TS;
+import static de.amr.games.pacman.game.worlds.PacManGameWorld.t;
 import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.TEXTS;
 import static de.amr.games.pacman.ui.swing.mspacman.MsPacManAssets.DIR_INDEX;
-import static de.amr.games.pacman.world.PacManGameWorld.HTS;
-import static de.amr.games.pacman.world.PacManGameWorld.TS;
-import static de.amr.games.pacman.world.PacManGameWorld.t;
 import static java.util.stream.IntStream.range;
 
 import java.awt.Color;
@@ -12,15 +12,15 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
-import de.amr.games.pacman.core.PacManGame;
-import de.amr.games.pacman.core.PacManGameState;
-import de.amr.games.pacman.creatures.Ghost;
-import de.amr.games.pacman.creatures.GhostState;
-import de.amr.games.pacman.creatures.Pac;
+import de.amr.games.pacman.game.core.PacManGame;
+import de.amr.games.pacman.game.core.PacManGameState;
+import de.amr.games.pacman.game.creatures.Ghost;
+import de.amr.games.pacman.game.creatures.GhostState;
+import de.amr.games.pacman.game.creatures.Pac;
+import de.amr.games.pacman.game.worlds.MsPacManWorld;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.swing.PacManGameScene;
 import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
-import de.amr.games.pacman.world.MsPacManWorld;
 
 /**
  * Scene where the game is played.

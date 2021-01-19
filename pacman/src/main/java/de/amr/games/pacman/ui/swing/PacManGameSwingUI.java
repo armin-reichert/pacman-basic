@@ -1,8 +1,8 @@
 package de.amr.games.pacman.ui.swing;
 
+import static de.amr.games.pacman.game.worlds.PacManGameWorld.TS;
+import static de.amr.games.pacman.game.worlds.PacManGameWorld.t;
 import static de.amr.games.pacman.lib.Logging.log;
-import static de.amr.games.pacman.world.PacManGameWorld.TS;
-import static de.amr.games.pacman.world.PacManGameWorld.t;
 
 import java.awt.Canvas;
 import java.awt.Color;
@@ -19,9 +19,9 @@ import java.util.ResourceBundle;
 import javax.swing.JFrame;
 import javax.swing.Timer;
 
-import de.amr.games.pacman.core.GameVariant;
-import de.amr.games.pacman.core.PacManGame;
-import de.amr.games.pacman.core.PacManGameState;
+import de.amr.games.pacman.game.core.GameVariant;
+import de.amr.games.pacman.game.core.PacManGame;
+import de.amr.games.pacman.game.core.PacManGameState;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.api.PacManGameSound;
 import de.amr.games.pacman.ui.api.PacManGameUI;

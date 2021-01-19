@@ -1,11 +1,11 @@
-package de.amr.games.pacman.world;
+package de.amr.games.pacman.game.worlds;
 
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Logging.log;
 
 import java.util.Random;
 
-import de.amr.games.pacman.core.PacManGameLevel;
+import de.amr.games.pacman.game.core.PacManGameLevel;
 import de.amr.games.pacman.lib.Direction;
 
 /**

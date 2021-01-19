@@ -1,6 +1,6 @@
 package de.amr.games.pacman.ui.api;
 
-import de.amr.games.pacman.core.PacManGame;
+import de.amr.games.pacman.game.core.PacManGame;
 
 /**
  * Interface through which the game class sees the user interface.

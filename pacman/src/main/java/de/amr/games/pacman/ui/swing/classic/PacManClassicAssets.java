@@ -1,15 +1,15 @@
 package de.amr.games.pacman.ui.swing.classic;
 
+import static de.amr.games.pacman.game.worlds.PacManClassicWorld.APPLE;
+import static de.amr.games.pacman.game.worlds.PacManClassicWorld.BELL;
+import static de.amr.games.pacman.game.worlds.PacManClassicWorld.CHERRIES;
+import static de.amr.games.pacman.game.worlds.PacManClassicWorld.GALAXIAN;
+import static de.amr.games.pacman.game.worlds.PacManClassicWorld.GRAPES;
+import static de.amr.games.pacman.game.worlds.PacManClassicWorld.KEY;
+import static de.amr.games.pacman.game.worlds.PacManClassicWorld.PEACH;
+import static de.amr.games.pacman.game.worlds.PacManClassicWorld.STRAWBERRY;
 import static de.amr.games.pacman.ui.swing.Assets.font;
 import static de.amr.games.pacman.ui.swing.Assets.image;
-import static de.amr.games.pacman.world.PacManClassicWorld.APPLE;
-import static de.amr.games.pacman.world.PacManClassicWorld.BELL;
-import static de.amr.games.pacman.world.PacManClassicWorld.CHERRIES;
-import static de.amr.games.pacman.world.PacManClassicWorld.GALAXIAN;
-import static de.amr.games.pacman.world.PacManClassicWorld.GRAPES;
-import static de.amr.games.pacman.world.PacManClassicWorld.KEY;
-import static de.amr.games.pacman.world.PacManClassicWorld.PEACH;
-import static de.amr.games.pacman.world.PacManClassicWorld.STRAWBERRY;
 
 import java.awt.Font;
 import java.awt.image.BufferedImage;

@@ -3,8 +3,8 @@ package de.amr.games.pacman;
 import static java.awt.EventQueue.invokeLater;
 import static java.lang.Float.parseFloat;
 
-import de.amr.games.pacman.core.GameVariant;
-import de.amr.games.pacman.core.PacManGame;
+import de.amr.games.pacman.game.core.GameVariant;
+import de.amr.games.pacman.game.core.PacManGame;
 import de.amr.games.pacman.ui.api.PacManGameUI;
 import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
 

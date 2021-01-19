@@ -1,4 +1,4 @@
-package de.amr.games.pacman.core;
+package de.amr.games.pacman.game.core;
 
 /**
  * The different states of the game. Each state has a timer.
