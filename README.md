@@ -12,7 +12,7 @@ YouTube Videos:
 
 Pac-Man: https://www.youtube.com/watch?v=_L6YdSH7xis
 
-Ms. Pac-Man: https://www.youtube.com/watch?v=tg3WRZT75Y0&t=457s
+Ms. Pac-Man: https://www.youtube.com/watch?v=tg3WRZT75Y0
 
 To build the executable:
 ```mvn clean install assembly:single```
