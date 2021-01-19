@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -19,16 +20,16 @@ import de.amr.games.pacman.ui.api.PacManGameSound;
  */
 class PacManGameSoundManager {
 
-	private final SoundAssets assets;
+	private final Function<PacManGameSound, String> fnSoundPath;
 	private final Map<PacManGameSound, Clip> clipCache = new EnumMap<>(PacManGameSound.class);
 	private final List<Clip> munchingClips = new ArrayList<>(2);
 	private int munchIndex;
 
-	public PacManGameSoundManager(SoundAssets assets) {
-		this.assets = assets;
+	public PacManGameSoundManager(Function<PacManGameSound, String> fnSoundPath) {
+		this.fnSoundPath = fnSoundPath;
 		munchIndex = 0;
 		for (int i = 0; i < 2; ++i) {
-			Clip clip = openClip(assets.getSoundPath(PacManGameSound.MUNCH));
+			Clip clip = openClip(fnSoundPath.apply(PacManGameSound.MUNCH));
 			munchingClips.add(clip);
 		}
 	}
@@ -48,7 +49,7 @@ class PacManGameSoundManager {
 	public void playSound(PacManGameSound sound) {
 		Clip clip = findClip(sound);
 		if (!clip.isOpen()) {
-			openClip(assets.getSoundPath(sound));
+			openClip(fnSoundPath.apply(sound));
 		}
 		clip.setFramePosition(0);
 		clip.start();
@@ -64,7 +65,7 @@ class PacManGameSoundManager {
 			Clip clip = clipCache.get(sound);
 			return clip;
 		} else {
-			Clip clip = openClip(assets.getSoundPath(sound));
+			Clip clip = openClip(fnSoundPath.apply(sound));
 			clipCache.put(sound, clip);
 			return clip;
 		}

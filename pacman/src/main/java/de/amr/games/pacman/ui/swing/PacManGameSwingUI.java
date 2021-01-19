@@ -134,12 +134,12 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 		if (game.variant == GameVariant.CLASSIC) {
 			PacManClassicAssets assets = new PacManClassicAssets();
-			soundManager = new PacManGameSoundManager(assets);
+			soundManager = new PacManGameSoundManager(assets.soundPaths::get);
 			introScene = new PacManClassicIntroScene(game, unscaledSizeInPixels, assets);
 			playScene = new PacManClassicPlayScene(game, unscaledSizeInPixels, assets);
 		} else {
 			MsPacManAssets assets = new MsPacManAssets();
-			soundManager = new PacManGameSoundManager(assets);
+			soundManager = new PacManGameSoundManager(assets.soundPaths::get);
 			introScene = new MsPacManIntroScene(game, unscaledSizeInPixels, assets);
 			playScene = new MsPacManPlayScene(game, unscaledSizeInPixels, assets);
 		}

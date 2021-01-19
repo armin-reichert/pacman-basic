@@ -18,9 +18,8 @@ import java.util.Map;
 
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.ui.api.PacManGameSound;
-import de.amr.games.pacman.ui.swing.SoundAssets;
 
-public class MsPacManAssets implements SoundAssets {
+public class MsPacManAssets {
 
 	/** Sprite sheet order of directions. */
 	public static final Map<Direction, Integer> DIR_INDEX = new EnumMap<>(Direction.class);
@@ -102,10 +101,5 @@ public class MsPacManAssets implements SoundAssets {
 
 	public BufferedImage section(int x, int y) {
 		return section(x, y, 1, 1);
-	}
-
-	@Override
-	public String getSoundPath(PacManGameSound sound) {
-		return soundPaths.get(sound);
 	}
 }
