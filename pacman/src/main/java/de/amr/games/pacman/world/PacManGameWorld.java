@@ -25,8 +25,7 @@ public interface PacManGameWorld {
 	}
 
 	public static V2f offset(V2f position) {
-		V2i tile = tile(position);
-		return new V2f(position.x - tile.x * TS, position.y - tile.y * TS);
+		return new V2f(position.x - (int) (position.x / TS) * TS, position.y - (int) (position.y / TS) * TS);
 	}
 
 	PacManGameLevel createLevel(int levelNumber);
