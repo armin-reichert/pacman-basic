@@ -504,7 +504,7 @@ public class PacManGame {
 	}
 
 	private void exitPacManDyingState() {
-		lives -= autopilotEnabled ? 0 : 1;
+		lives -= 1;
 		pac.collapsingTicksLeft = 0;
 		for (Ghost ghost : ghosts) {
 			ghost.visible = true;
