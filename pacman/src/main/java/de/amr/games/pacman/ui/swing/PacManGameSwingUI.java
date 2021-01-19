@@ -211,8 +211,6 @@ public class PacManGameSwingUI implements PacManGameUI {
 	}
 
 	private void drawCurrentScene(Graphics2D g) {
-		g.setColor(currentScene.bgColor);
-		g.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 		Graphics2D gScaled = (Graphics2D) g.create();
 		gScaled.scale(scaling, scaling);
 		currentScene.draw(gScaled, g);

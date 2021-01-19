@@ -22,18 +22,28 @@ import de.amr.games.pacman.ui.swing.PacManGameScene;
  * 
  * @author Armin Reichert
  */
-public class PacManClassicIntroScene extends PacManGameScene {
+public class PacManClassicIntroScene implements PacManGameScene {
 
+	private static final Color[] GHOST_COLORS = { Color.RED, Color.PINK, Color.CYAN, Color.ORANGE };
+
+	private final PacManGame game;
+	private final V2i size;
 	private final PacManClassicAssets assets;
+
 	private float pacManX;
 	private float leftmostGhostX;
 	private int lastKilledGhost;
 	private boolean ghostsChasingPacMan;
 
 	public PacManClassicIntroScene(PacManGame game, V2i size, PacManClassicAssets assets) {
-		super(game, size);
+		this.game = game;
+		this.size = size;
 		this.assets = assets;
-		bgColor = new Color(0, 0, 0);
+	}
+
+	@Override
+	public V2i size() {
+		return size;
 	}
 
 	@Override

@@ -24,18 +24,28 @@ import de.amr.games.pacman.ui.swing.PacManGameScene;
  * 
  * @author Armin Reichert
  */
-public class MsPacManIntroScene extends PacManGameScene {
+public class MsPacManIntroScene implements PacManGameScene {
 
+	private static final Color[] GHOST_COLORS = { Color.RED, Color.PINK, Color.CYAN, Color.ORANGE };
+
+	private final PacManGame game;
+	private final V2i size;
 	private final MsPacManAssets assets;
+
 	private float pacManX;
 	private float leftmostGhostX;
 	private int lastKilledGhost;
 	private boolean ghostsChasingPacMan;
 
 	public MsPacManIntroScene(PacManGame game, V2i size, MsPacManAssets assets) {
-		super(game, size);
+		this.game = game;
+		this.size = size;
 		this.assets = assets;
-		bgColor = new Color(0, 0, 0);
+	}
+
+	@Override
+	public V2i size() {
+		return size;
 	}
 
 	@Override
@@ -45,10 +55,6 @@ public class MsPacManIntroScene extends PacManGameScene {
 		leftmostGhostX = pacManX + 24;
 		lastKilledGhost = -1;
 		ghostsChasingPacMan = true;
-	}
-
-	@Override
-	public void end() {
 	}
 
 	@Override

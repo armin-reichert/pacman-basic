@@ -17,13 +17,23 @@ import de.amr.games.pacman.game.creatures.Ghost;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
 
-public abstract class PacManGamePlayScene extends PacManGameScene {
+public abstract class PacManGamePlayScene implements PacManGameScene {
+
+	private static final Color[] GHOST_COLORS = { Color.RED, Color.PINK, Color.CYAN, Color.ORANGE };
+	private static final Polygon TRIANGLE = new Polygon(new int[] { -4, 4, 0 }, new int[] { 0, 0, 4 }, 3);
+
+	protected final PacManGame game;
+	protected final V2i size;
 
 	public PacManGamePlayScene(PacManGame game, V2i size) {
-		super(game, size);
+		this.game = game;
+		this.size = size;
 	}
 
-	private static final Polygon TRIANGLE = new Polygon(new int[] { -4, 4, 0 }, new int[] { 0, 0, 4 }, 3);
+	@Override
+	public V2i size() {
+		return size;
+	}
 
 	public void drawDebugInfo(Graphics2D g) {
 		if (PacManGameSwingUI.debugMode) {
