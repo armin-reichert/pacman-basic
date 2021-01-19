@@ -191,8 +191,7 @@ public class PacManGame {
 			ghost.elroyMode = 0;
 		}
 		levelNumber++;
-		level = world.createLevel(levelNumber);
-		world.initLevel(levelNumber);
+		level = world.enterLevel(levelNumber);
 		levelSymbols.add(level.bonusSymbol);
 	}
 

@@ -61,13 +61,10 @@ public class PacManClassicWorld extends AbstractPacManGameWorld {
 	}
 
 	@Override
-	public PacManGameLevel createLevel(int levelNumber) {
-		return new PacManGameLevel(LEVELS[levelNumber <= 21 ? levelNumber - 1 : 20]);
-	}
-
-	@Override
-	public void initLevel(int levelNumber) {
+	public PacManGameLevel enterLevel(int levelNumber) {
+		PacManGameLevel level = new PacManGameLevel(LEVELS[levelNumber <= 21 ? levelNumber - 1 : 20]);
 		restoreFood();
+		return level;
 	}
 
 	@Override

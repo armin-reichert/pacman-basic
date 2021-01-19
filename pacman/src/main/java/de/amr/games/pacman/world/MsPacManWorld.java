@@ -1,6 +1,7 @@
 package de.amr.games.pacman.world;
 
 import static de.amr.games.pacman.lib.Direction.LEFT;
+import static de.amr.games.pacman.lib.Logging.log;
 
 import java.util.Random;
 
@@ -63,9 +64,11 @@ public class MsPacManWorld extends AbstractPacManGameWorld {
 	}
 
 	@Override
-	public void initLevel(int levelNumber) {
-		if (levelNumber < 1) {
-			throw new IllegalArgumentException("Illegal level number: " + levelNumber);
+	public PacManGameLevel enterLevel(int levelNumber) {
+		int index = levelNumber <= 21 ? levelNumber - 1 : 20;
+		PacManGameLevel level = new PacManGameLevel(LEVELS[index]);
+		if (levelNumber > 7) {
+			level.bonusSymbol = (byte) rnd.nextInt(7);
 		}
 		if (levelNumber <= 2) {
 			selectMap(1); // pink maze
@@ -76,18 +79,11 @@ public class MsPacManWorld extends AbstractPacManGameWorld {
 		} else if (levelNumber <= 13) {
 			selectMap(4); // dark blue maze
 		} else {
-			int index = (levelNumber - 14) % 8 < 4 ? 5 : 6;
-			selectMap(index);
+			// from level 14 on, switch between maps #5 and #6 after every 4 levels
+			int mapIndex = (levelNumber - 14) % 8 < 4 ? 5 : 6;
+			selectMap(mapIndex);
 		}
-	}
-
-	@Override
-	public PacManGameLevel createLevel(int levelNumber) {
-		int index = levelNumber <= 21 ? levelNumber - 1 : 20;
-		PacManGameLevel level = new PacManGameLevel(LEVELS[index]);
-		if (levelNumber > 7) {
-			level.bonusSymbol = (byte) rnd.nextInt(7);
-		}
+		log("Selected map #%d at game level %d", mapIndex, levelNumber);
 		return level;
 	}
 

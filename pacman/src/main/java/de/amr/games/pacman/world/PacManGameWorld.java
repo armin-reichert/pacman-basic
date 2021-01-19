@@ -28,9 +28,7 @@ public interface PacManGameWorld {
 		return new V2f(position.x - (int) (position.x / TS) * TS, position.y - (int) (position.y / TS) * TS);
 	}
 
-	PacManGameLevel createLevel(int levelNumber);
-
-	void initLevel(int levelNumber);
+	PacManGameLevel enterLevel(int levelNumber);
 
 	V2i sizeInTiles();
 
