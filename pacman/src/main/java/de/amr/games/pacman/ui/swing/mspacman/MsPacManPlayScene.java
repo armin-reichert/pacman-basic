@@ -164,12 +164,12 @@ public class MsPacManPlayScene extends PacManGameScene {
 			return assets.section(0, dir);
 		}
 		if (pac.speed == 0) {
-			// wide open mouth when in READY state, else full face
-			return game.state == PacManGameState.READY ? assets.section(0, dir) : assets.section(2, dir);
+			// medium open mouth when in READY state, else full face
+			return game.state == PacManGameState.READY ? assets.section(1, dir) : assets.section(2, dir);
 		}
 		if (!pac.couldMove) {
-			// wide open mouth
-			return assets.section(0, dir);
+			// medium open mouth
+			return assets.section(1, dir);
 		}
 		// mouth animation
 		int frame = game.clock.frame(5, 3);
