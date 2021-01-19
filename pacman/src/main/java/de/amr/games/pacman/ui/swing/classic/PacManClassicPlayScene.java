@@ -20,7 +20,7 @@ import de.amr.games.pacman.game.creatures.Ghost;
 import de.amr.games.pacman.game.creatures.GhostState;
 import de.amr.games.pacman.game.creatures.Pac;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.ui.swing.PacManGameScene;
+import de.amr.games.pacman.ui.swing.PacManGamePlayScene;
 import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
 
 /**
@@ -28,21 +28,13 @@ import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
  * 
  * @author Armin Reichert
  */
-public class PacManClassicPlayScene extends PacManGameScene {
+public class PacManClassicPlayScene extends PacManGamePlayScene {
 
 	private final PacManClassicAssets assets;
 
 	public PacManClassicPlayScene(PacManGame game, V2i size, PacManClassicAssets assets) {
 		super(game, size);
 		this.assets = assets;
-	}
-
-	@Override
-	public void start() {
-	}
-
-	@Override
-	public void end() {
 	}
 
 	@Override
