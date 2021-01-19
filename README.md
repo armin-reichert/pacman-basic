@@ -8,7 +8,11 @@ The game is controlled by a finite-state machine with states INTRO, READY, HUNTI
 
 The code here is more to the point than that in my other state-machine focussed [Pac-Man implementation](https://github.com/armin-reichert/pacman).
 
-YouTube: https://www.youtube.com/watch?v=_L6YdSH7xis
+YouTube Videos:
+
+Pac-Man: https://www.youtube.com/watch?v=_L6YdSH7xis
+
+Ms. Pac-Man: https://www.youtube.com/watch?v=tg3WRZT75Y0&t=457s
 
 To build the executable:
 ```mvn clean install assembly:single```
