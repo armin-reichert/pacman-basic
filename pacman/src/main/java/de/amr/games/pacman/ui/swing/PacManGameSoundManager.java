@@ -1,7 +1,5 @@
 package de.amr.games.pacman.ui.swing;
 
-import static de.amr.games.pacman.lib.Logging.log;
-
 import java.io.BufferedInputStream;
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -81,7 +79,6 @@ class PacManGameSoundManager {
 		Clip clip = findClip(sound);
 		if (clip.isOpen() && clip.isRunning()) {
 			clip.stop();
-			log("Clip '%s' stopped", sound);
 		}
 	}
 
