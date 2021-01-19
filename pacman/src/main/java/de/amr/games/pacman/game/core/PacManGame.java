@@ -237,7 +237,7 @@ public class PacManGame {
 
 	public String stateDescription() {
 		if (state == HUNTING) {
-			String phaseName = inAttackMode() ? "Chasing" : "Scattering";
+			String phaseName = inChaseMode() ? "Chasing" : "Scattering";
 			int phase = huntingPhase / 2;
 			return String.format("%s-%s (%d of 4)", state, phaseName, phase + 1);
 		}
@@ -376,7 +376,7 @@ public class PacManGame {
 		return huntingPhase % 2 == 0;
 	}
 
-	private boolean inAttackMode() {
+	private boolean inChaseMode() {
 		return huntingPhase % 2 != 0;
 	}
 
@@ -954,6 +954,8 @@ public class PacManGame {
 
 	private void letGhostWanderMaze(Ghost ghost) {
 		V2i ghostLocation = ghost.tile();
+
+		// update speed
 		if (world.isTunnel(ghostLocation)) {
 			ghost.speed = level.ghostSpeedTunnel;
 		} else if (ghost.state == GhostState.FRIGHTENED) {
@@ -965,12 +967,21 @@ public class PacManGame {
 		} else {
 			ghost.speed = level.ghostSpeed;
 		}
-		if (inAttackMode() || ghost.elroyMode > 0) {
+
+		// update target and move
+		if (inChaseMode() || ghost.elroyMode > 0) {
 			ghost.targetTile = ghostChasingTarget(ghost.id);
+			letGhostHeadForTargetTile(ghost);
 		} else {
-			ghost.targetTile = world.ghostScatterTile(ghost.id);
+			if (variant == MS_PACMAN && huntingPhase == 0 && (ghost.id == BLINKY || ghost.id == PINKY)) {
+				ghost.wishDir = randomPossibleMoveDir(ghost);
+				tryMoving(ghost);
+				log("Ghost %s moving ramdomly", ghost.name);
+			} else {
+				ghost.targetTile = world.ghostScatterTile(ghost.id);
+				letGhostHeadForTargetTile(ghost);
+			}
 		}
-		letGhostHeadForTargetTile(ghost);
 	}
 
 	private void letGhostHeadForTargetTile(Ghost ghost) {
