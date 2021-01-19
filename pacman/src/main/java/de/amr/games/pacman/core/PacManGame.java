@@ -105,6 +105,8 @@ public class PacManGame {
 	private boolean pacImmune = false;
 
 	public PacManGame(GameVariant variant) {
+		enterIntroState();
+		log("State is '%s' for %s", stateDescription(), ticksDescription(state.duration()));
 		setGameVariant(variant);
 	}
 
@@ -136,9 +138,6 @@ public class PacManGame {
 	}
 
 	public void start() {
-		reset();
-		enterIntroState();
-		log("State is '%s' for %s", stateDescription(), ticksDescription(state.duration()));
 		new Thread(this::loop, "PacManGame").start();
 	}
 
