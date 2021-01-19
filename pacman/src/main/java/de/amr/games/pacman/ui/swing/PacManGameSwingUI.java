@@ -64,9 +64,9 @@ public class PacManGameSwingUI implements PacManGameUI {
 	private PacManGameScene playScene;
 	private PacManGameSoundManager soundManager;
 
-	public PacManGameSwingUI(V2i sizeInTiles, float scaling) {
+	public PacManGameSwingUI(PacManGame game, float scaling) {
 		this.scaling = scaling;
-		unscaledSizeInPixels = sizeInTiles.scaled(TS);
+		unscaledSizeInPixels = game.world.sizeInTiles().scaled(TS);
 		scaledSizeInPixels = new V2i((int) (unscaledSizeInPixels.x * scaling), (int) (unscaledSizeInPixels.y * scaling));
 
 		window = new JFrame();
@@ -80,7 +80,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 			@Override
 			public void windowClosing(WindowEvent e) {
-				onWindowClosing();
+				game.exit();
 			}
 		});
 		window.addKeyListener(new KeyAdapter() {
@@ -114,15 +114,8 @@ public class PacManGameSwingUI implements PacManGameUI {
 		window.add(canvas);
 
 		messageFont = Assets.font("/PressStart2P-Regular.ttf", 8).deriveFont(Font.ITALIC);
-	}
 
-	@Override
-	public void openWindow() {
-		window.pack();
-		window.setLocationRelativeTo(null);
-		window.setVisible(true);
-		window.requestFocus();
-		canvas.createBufferStrategy(2);
+		setGame(game);
 	}
 
 	@Override
@@ -157,6 +150,15 @@ public class PacManGameSwingUI implements PacManGameUI {
 		titleUpdateTimer = new Timer(1000,
 				e -> window.setTitle(String.format("%s (%d fps)", game.world.pacName(), game.clock.frequency)));
 		titleUpdateTimer.start();
+	}
+
+	@Override
+	public void openWindow() {
+		window.pack();
+		window.setLocationRelativeTo(null);
+		window.setVisible(true);
+		window.requestFocus();
+		canvas.createBufferStrategy(2);
 	}
 
 	@Override
@@ -227,11 +229,6 @@ public class PacManGameSwingUI implements PacManGameUI {
 		boolean pressed = keyboard.keyPressed(keySpec);
 		keyboard.clearKey(keySpec); // TODO
 		return pressed;
-	}
-
-	@Override
-	public void onWindowClosing() {
-		game.exit();
 	}
 
 	private void updateScene() {
