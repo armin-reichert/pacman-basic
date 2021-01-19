@@ -21,7 +21,6 @@ import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Direction.UP;
-import static de.amr.games.pacman.lib.Functions.differsAtMost;
 import static de.amr.games.pacman.lib.Logging.log;
 import static java.lang.Math.abs;
 
@@ -1227,4 +1226,10 @@ public class PacManGame {
 			}
 		}
 	}
+
+	// Misc
+	private static boolean differsAtMost(float value, float target, float tolerance) {
+		return Math.abs(value - target) <= tolerance;
+	}
+
 }
