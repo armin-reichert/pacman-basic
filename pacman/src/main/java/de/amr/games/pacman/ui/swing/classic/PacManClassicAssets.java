@@ -92,7 +92,7 @@ public class PacManClassicAssets implements SoundAssets {
 		soundPaths.put(PacManGameSound.MUNCH,        "/sound/munch_1.wav");
 		soundPaths.put(PacManGameSound.PACMAN_DEATH, "/sound/death_1.wav");
 		soundPaths.put(PacManGameSound.PACMAN_POWER, "/sound/power_pellet.wav");
-		soundPaths.put(PacManGameSound.RETREATING,   "/sound/retreating.wav");
+		soundPaths.put(PacManGameSound.GHOST_RETURNING,   "/sound/retreating.wav");
 		soundPaths.put(PacManGameSound.SIREN_1,      "/sound/siren_1.wav");
 		soundPaths.put(PacManGameSound.SIREN_2,      "/sound/siren_2.wav");
 		soundPaths.put(PacManGameSound.SIREN_3,      "/sound/siren_3.wav");

@@ -541,7 +541,7 @@ public class PacManGame {
 			}
 		}
 		pac.visible = true;
-		ui.loopSound(PacManGameSound.RETREATING);
+		ui.loopSound(PacManGameSound.GHOST_RETURNING);
 	}
 
 	// CHANGING_LEVEL
@@ -1001,7 +1001,7 @@ public class PacManGame {
 			ghost.speed = level.ghostSpeed; // TODO correct?
 			ghost.wishDir = ghost.dir.opposite();
 			if (Stream.of(ghosts).noneMatch(g -> g.state == GhostState.DEAD)) {
-				ui.stopSound(PacManGameSound.RETREATING);
+				ui.stopSound(PacManGameSound.GHOST_RETURNING);
 			}
 			return;
 		}
