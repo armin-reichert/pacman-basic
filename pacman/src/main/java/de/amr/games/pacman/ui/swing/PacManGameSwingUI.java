@@ -34,6 +34,7 @@ import de.amr.games.pacman.ui.swing.classic.PacManClassicPlayScene;
 import de.amr.games.pacman.ui.swing.mspacman.MsPacManAssets;
 import de.amr.games.pacman.ui.swing.mspacman.MsPacManIntroScene;
 import de.amr.games.pacman.ui.swing.mspacman.MsPacManPlayScene;
+import de.amr.games.pacman.ui.swing.scene.PacManGameScene;
 
 /**
  * Swing UI for Pac-Man game.

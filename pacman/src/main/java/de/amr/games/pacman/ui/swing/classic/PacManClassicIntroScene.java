@@ -15,7 +15,7 @@ import de.amr.games.pacman.game.core.PacManGame;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.api.PacManGameSound;
-import de.amr.games.pacman.ui.swing.PacManGameScene;
+import de.amr.games.pacman.ui.swing.scene.PacManGameScene;
 
 /**
  * Intro presenting the ghosts and showing the chasing animations.

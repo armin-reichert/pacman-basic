@@ -1,4 +1,4 @@
-package de.amr.games.pacman.ui.swing;
+package de.amr.games.pacman.ui.swing.scene;
 
 import static de.amr.games.pacman.game.worlds.PacManGameWorld.HTS;
 import static de.amr.games.pacman.game.worlds.PacManGameWorld.TS;
@@ -16,6 +16,7 @@ import de.amr.games.pacman.game.core.PacManGame;
 import de.amr.games.pacman.game.creatures.Ghost;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
 
 public abstract class PacManGamePlayScene implements PacManGameScene {
 

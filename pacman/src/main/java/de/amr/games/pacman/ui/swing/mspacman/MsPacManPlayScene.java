@@ -19,8 +19,8 @@ import de.amr.games.pacman.game.creatures.GhostState;
 import de.amr.games.pacman.game.creatures.Pac;
 import de.amr.games.pacman.game.worlds.MsPacManWorld;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.ui.swing.PacManGamePlayScene;
 import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
+import de.amr.games.pacman.ui.swing.scene.PacManGamePlayScene;
 
 /**
  * Scene where the game is played.
