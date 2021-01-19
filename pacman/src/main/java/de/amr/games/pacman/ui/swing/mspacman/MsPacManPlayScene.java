@@ -105,7 +105,7 @@ public class MsPacManPlayScene extends PacManGameScene {
 
 	private void drawMaze(Graphics2D g) {
 		MsPacManWorld world = (MsPacManWorld) game.world;
-		int mazeIndex = world.mapIndex - 1;
+		int mazeIndex = world.mazeIndex - 1;
 		if (game.mazeFlashesRemaining > 0) {
 			game.clock.runAlternating(game.clock.sec(0.25), () -> {
 				g.drawImage(assets.mazeEmptyDark[mazeIndex], 0, t(3), null);
