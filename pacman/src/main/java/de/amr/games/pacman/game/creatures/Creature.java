@@ -57,4 +57,18 @@ public class Creature {
 	public void setOffset(float offsetX, float offsetY) {
 		placeAt(tile(), offsetX, offsetY);
 	}
+
+	public boolean canAccessTile(PacManGameWorld world, int x, int y) {
+		if (world.isPortal(x, y)) {
+			return true;
+		}
+		if (world.isGhostHouseDoor(x, y)) {
+			return false;
+		}
+		return world.inMapRange(x, y) && !world.isWall(x, y);
+	}
+
+	public boolean canAccessTile(PacManGameWorld world, V2i tile) {
+		return canAccessTile(world, tile.x, tile.y);
+	}
 }

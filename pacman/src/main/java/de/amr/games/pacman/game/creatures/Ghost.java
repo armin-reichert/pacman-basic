@@ -1,5 +1,6 @@
 package de.amr.games.pacman.game.creatures;
 
+import de.amr.games.pacman.game.worlds.PacManGameWorld;
 import de.amr.games.pacman.lib.V2i;
 
 /**
@@ -35,5 +36,13 @@ public class Ghost extends Creature {
 	public Ghost(int id, String name) {
 		this.id = (byte) id;
 		this.name = name;
+	}
+
+	@Override
+	public boolean canAccessTile(PacManGameWorld world, int x, int y) {
+		if (world.isGhostHouseDoor(x, y)) {
+			return state == GhostState.ENTERING_HOUSE || state == GhostState.LEAVING_HOUSE;
+		}
+		return super.canAccessTile(world, x, y);
 	}
 }

@@ -1082,7 +1082,7 @@ public class PacManGame {
 				continue;
 			}
 			V2i neighbor = ghost.tile().sum(dir.vec);
-			if (!canAccessTile(ghost, neighbor.x, neighbor.y)) {
+			if (!ghost.canAccessTile(world, neighbor)) {
 				continue;
 			}
 			if (dir == UP && ghost.state == GhostState.HUNTING && world.isUpwardsBlocked(neighbor)) {
@@ -1136,7 +1136,7 @@ public class PacManGame {
 		V2i neighbor = guyLocationBeforeMove.sum(dir.vec);
 
 		// check if guy can change its direction now
-		if (guy.forcedOnTrack && canAccessTile(guy, neighbor.x, neighbor.y)) {
+		if (guy.forcedOnTrack && guy.canAccessTile(world, neighbor)) {
 			if (dir == LEFT || dir == RIGHT) {
 				if (abs(offset.y) > pixels) {
 					return false;
@@ -1156,12 +1156,12 @@ public class PacManGame {
 		V2f newOffset = offset(newPosition);
 
 		// block moving into inaccessible tile
-		if (!canAccessTile(guy, newTile.x, newTile.y)) {
+		if (!guy.canAccessTile(world, newTile)) {
 			return false;
 		}
 
 		// align with edge of inaccessible neighbor
-		if (!canAccessTile(guy, neighbor.x, neighbor.y)) {
+		if (!guy.canAccessTile(world, neighbor)) {
 			if (dir == RIGHT && newOffset.x > 0 || dir == LEFT && newOffset.x < 0) {
 				guy.setOffset(0, offset.y);
 				return false;
@@ -1175,21 +1175,6 @@ public class PacManGame {
 		guy.placeAt(newTile, newOffset.x, newOffset.y);
 		guy.changedTile = !guy.tile().equals(guyLocationBeforeMove);
 		return true;
-	}
-
-	boolean canAccessTile(Creature guy, int x, int y) {
-		if (world.isPortal(x, y)) {
-			return true;
-		}
-		if (world.isGhostHouseDoor(x, y)) {
-			if (guy instanceof Ghost) {
-				Ghost ghost = (Ghost) guy;
-				return ghost.state == GhostState.ENTERING_HOUSE || ghost.state == GhostState.LEAVING_HOUSE;
-			} else {
-				return false;
-			}
-		}
-		return world.inMapRange(x, y) && !world.isWall(x, y);
 	}
 
 	private Direction randomAccessibleDirectionExcluding(V2i tile, Direction... excludedDirections) {
