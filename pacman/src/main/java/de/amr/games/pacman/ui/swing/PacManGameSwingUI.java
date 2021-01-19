@@ -14,8 +14,11 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferStrategy;
+import java.awt.image.BufferedImage;
+import java.io.InputStream;
 import java.util.ResourceBundle;
 
+import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.Timer;
 
@@ -38,6 +41,22 @@ import de.amr.games.pacman.ui.swing.mspacman.MsPacManPlayScene;
  * @author Armin Reichert
  */
 public class PacManGameSwingUI implements PacManGameUI {
+
+	public static BufferedImage image(String path) {
+		try (InputStream is = PacManGameSwingUI.class.getResourceAsStream(path)) {
+			return ImageIO.read(is);
+		} catch (Exception x) {
+			throw new AssetsException("Could not load image with path '%s'", path);
+		}
+	}
+
+	public static Font font(String fontPath, int size) {
+		try (InputStream fontData = PacManGameSwingUI.class.getResourceAsStream(fontPath)) {
+			return Font.createFont(Font.TRUETYPE_FONT, fontData).deriveFont((float) size);
+		} catch (Exception x) {
+			throw new AssetsException("Could not load font with path '%s'", fontPath);
+		}
+	}
 
 	public static boolean debugMode;
 	public static final ResourceBundle TEXTS = ResourceBundle.getBundle("localization.translation");
@@ -74,7 +93,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 		window.setTitle("Pac-Man");
 		window.setResizable(false);
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		window.setIconImage(Assets.image("/pacman.png"));
+		window.setIconImage(image("/pacman.png"));
 
 		window.addWindowListener(new WindowAdapter() {
 
@@ -113,7 +132,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 		canvas.setFocusable(false);
 		window.add(canvas);
 
-		messageFont = Assets.font("/PressStart2P-Regular.ttf", 8).deriveFont(Font.ITALIC);
+		messageFont = font("/PressStart2P-Regular.ttf", 8).deriveFont(Font.ITALIC);
 
 		setGame(game);
 	}

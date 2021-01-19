@@ -8,8 +8,8 @@ import static de.amr.games.pacman.game.worlds.PacManClassicWorld.GRAPES;
 import static de.amr.games.pacman.game.worlds.PacManClassicWorld.KEY;
 import static de.amr.games.pacman.game.worlds.PacManClassicWorld.PEACH;
 import static de.amr.games.pacman.game.worlds.PacManClassicWorld.STRAWBERRY;
-import static de.amr.games.pacman.ui.swing.Assets.font;
-import static de.amr.games.pacman.ui.swing.Assets.image;
+import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.font;
+import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.image;
 
 import java.awt.Font;
 import java.awt.image.BufferedImage;
