@@ -819,7 +819,7 @@ public class PacManGame {
 	private void letBonusWanderMaze() {
 		V2i bonusLocation = bonus.tile();
 		if (!bonus.couldMove || world.isIntersection(bonusLocation)) {
-			List<Direction> dirs = possibleMoveDirections(bonus);
+			List<Direction> dirs = accessibleDirections(bonusLocation, bonus.dir.opposite());
 			if (dirs.size() > 1) {
 				// give random movement a bias towards the target direction
 				dirs.remove(bonus.targetDirection.opposite());
@@ -974,9 +974,10 @@ public class PacManGame {
 			letGhostHeadForTargetTile(ghost);
 		} else {
 			if (variant == MS_PACMAN && huntingPhase == 0 && (ghost.id == BLINKY || ghost.id == PINKY)) {
-				ghost.wishDir = randomPossibleMoveDir(ghost);
+				if (world.isIntersection(ghostLocation) || !ghost.couldMove) {
+					ghost.wishDir = randomAccessibleDirectionExcluding(ghostLocation, ghost.dir.opposite());
+				}
 				tryMoving(ghost);
-				log("Ghost %s moving ramdomly", ghost.name);
 			} else {
 				ghost.targetTile = world.ghostScatterTile(ghost.id);
 				letGhostHeadForTargetTile(ghost);
@@ -1066,7 +1067,7 @@ public class PacManGame {
 			return Optional.empty();
 		}
 		if (ghost.state == GhostState.FRIGHTENED && world.isIntersection(ghostLocation)) {
-			return Optional.of(randomPossibleMoveDir(ghost));
+			return Optional.of(randomAccessibleDirectionExcluding(ghostLocation, ghost.dir.opposite()));
 		}
 		return ghostTargetDirection(ghost);
 	}
@@ -1191,16 +1192,16 @@ public class PacManGame {
 		return world.inMapRange(x, y) && !world.isWall(x, y);
 	}
 
-	private Direction randomPossibleMoveDir(Creature guy) {
-		List<Direction> dirs = possibleMoveDirections(guy);
+	private Direction randomAccessibleDirectionExcluding(V2i tile, Direction... excludedDirections) {
+		List<Direction> dirs = accessibleDirections(tile, excludedDirections);
 		return dirs.get(rnd.nextInt(dirs.size()));
 	}
 
-	private List<Direction> possibleMoveDirections(Creature guy) {
+	private List<Direction> accessibleDirections(V2i tile, Direction... excludedDirections) {
 		//@formatter:off
 		return Stream.of(Direction.values())
-			.filter(dir -> dir != guy.dir.opposite())
-			.filter(dir -> world.isAccessible(guy.tile().sum(dir.vec)))
+			.filter(dir -> Stream.of(excludedDirections).noneMatch(excludedDir -> excludedDir == dir))
+			.filter(dir -> world.isAccessible(tile.sum(dir.vec)))
 			.collect(Collectors.toList());
 		//@formatter:on
 	}
