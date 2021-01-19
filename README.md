@@ -1,9 +1,10 @@
-## Pac-Man (c'mon man, it's the, the thing, you dog-faced pony soldier ;-)
-Yet another Pac-Man game implementation, this time using just JDK functionality (version 8 or later). Game levels, timing, ghost "AI" etc. follow (for the most part) the details given in the highly appreciated [Pac-Man Dossier](https://pacman.holenet.info) by Jamey Pittman.
+## Pac-Man and Ms. Pac-Man
+
+Another Pac-Man game implementation, this time using just JDK functionality (version 8 or later). Game levels, timing, ghost "AI" etc. follow (for the most part) the details given in the highly appreciated [Pac-Man Dossier](https://pacman.holenet.info) by Jamey Pittman.
+
+Ms. Pac-Man ist still work in progress.
 
 The game is controlled by a finite-state machine with states INTRO, READY, HUNTING, CHANGING_LEVEL, PACMAN_DYING, GHOST_DYING, GAME_OVER. The user interface is decoupled from the game controller by an interface. A Swing implementation of this interface is provided.
-
-Work in progress: Ms. Pac-Man can also be played with this program.
 
 The code here is more to the point than that in my other state-machine focussed [Pac-Man implementation](https://github.com/armin-reichert/pacman).
 
