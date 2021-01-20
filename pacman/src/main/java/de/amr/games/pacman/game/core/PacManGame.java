@@ -807,8 +807,7 @@ public class PacManGame implements Runnable {
 
 	private void checkBonusActivation() {
 		int eaten = world.eatenFoodCount();
-//		if (eaten == 70 || eaten == 170) {
-		if (eaten == 10 || eaten == 70) {
+		if (eaten == 70 || eaten == 170) {
 			bonus.visible = true;
 			bonus.symbol = level.bonusSymbol;
 			if (variant == CLASSIC) {
