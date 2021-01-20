@@ -667,9 +667,29 @@ public class PacManGame {
 	private void checkPacFindsFood() {
 		V2i pacLocation = pac.tile();
 		if (world.containsFood(pacLocation)) {
-			pacFoundFood(pacLocation);
+			if (world.isEnergizerTile(pacLocation)) {
+				score(50);
+				pacGetsPower();
+				pac.restingTicksLeft = 3;
+				ghostBounty = 200;
+			} else {
+				score(10);
+				pac.restingTicksLeft = 1;
+			}
+			pac.starvingTicks = 0;
+			world.removeFood(pacLocation);
+			checkBlinkyBecomesElroy();
+			checkBonusActivation();
+			updateGhostDotCounters();
+			ui.playSound(PacManGameSound.MUNCH);
 		} else {
-			pacStarved();
+			pac.starvingTicks++;
+			if (pac.starvingTicks >= pacStarvingTimeLimit()) {
+				preferredLockedGhost().ifPresent(ghost -> {
+					releaseGhost(ghost, "%s has been starving for %d ticks", pac.name, pac.starvingTicks);
+					pac.starvingTicks = 0;
+				});
+			}
 		}
 	}
 
@@ -677,28 +697,27 @@ public class PacManGame {
 		int eaten = world.eatenFoodCount();
 		if (eaten == 70 || eaten == 170) {
 			bonus.visible = true;
+			bonus.symbol = level.bonusSymbol;
 			if (variant == CLASSIC) {
-				bonus.symbol = level.bonusSymbol;
 				bonus.points = PacManClassicWorld.BONUS_POINTS[bonus.symbol];
 				bonus.edibleTicksLeft = clock.sec(9 + rnd.nextFloat());
 				bonus.placeAt(PacManClassicWorld.BONUS_TILE, HTS, 0);
 			} else if (variant == MS_PACMAN) {
-				bonus.symbol = level.bonusSymbol;
 				bonus.points = MsPacManWorld.BONUS_POINTS[bonus.symbol];
 				bonus.edibleTicksLeft = Long.MAX_VALUE; // TODO is there a timeout?
-				int portal = rnd.nextInt(world.numPortals());
 				boolean entersMazeFromLeft = rnd.nextBoolean();
+				int portal = rnd.nextInt(world.numPortals());
 				V2i startTile = entersMazeFromLeft ? world.portalLeft(portal) : world.portalRight(portal);
 				bonus.placeAt(startTile, 0, 0);
 				bonus.targetDirection = entersMazeFromLeft ? RIGHT : LEFT;
 				bonus.dir = bonus.wishDir = bonus.targetDirection;
 				bonus.couldMove = true;
-				bonus.speed = 0.5f;
+				bonus.speed = 0.5f; // TODO what is the correct bonus speed?
 			}
 		}
 	}
 
-	private void checkElroyActivation() {
+	private void checkBlinkyBecomesElroy() {
 		if (world.foodRemaining() == level.elroy1DotsLeft) {
 			ghosts[BLINKY].elroyMode = 1;
 			log("Blinky becomes Cruise Elroy 1");
@@ -708,47 +727,21 @@ public class PacManGame {
 		}
 	}
 
-	private void pacStarved() {
-		pac.starvingTicks++;
-		if (pac.starvingTicks >= pacStarvingTimeLimit()) {
-			preferredLockedGhost().ifPresent(ghost -> {
-				releaseGhost(ghost, "%s has been starving for %d ticks", pac.name, pac.starvingTicks);
-				pac.starvingTicks = 0;
-			});
-		}
-	}
-
 	private int pacStarvingTimeLimit() {
 		return levelNumber < 5 ? clock.sec(4) : clock.sec(3);
 	}
 
-	private void pacFoundFood(V2i foodLocation) {
-		if (world.isEnergizerTile(foodLocation)) {
-			score(50);
-			pacGetsPower();
-			pac.restingTicksLeft = 3;
-			ghostBounty = 200;
-		} else {
-			score(10);
-			pac.restingTicksLeft = 1;
-		}
-		pac.starvingTicks = 0;
-		world.removeFood(foodLocation);
-		checkElroyActivation();
-		checkBonusActivation();
-		updateGhostDotCounters();
-		ui.playSound(PacManGameSound.MUNCH);
-	}
-
 	private void pacKilled(Ghost killer) {
-		pac.dead = true;
 		log("%s killed by %s at tile %s", pac.name, killer.name, killer.tile());
-		resetAndEnableGlobalDotCounter();
+		pac.dead = true;
 		byte elroyMode = ghosts[BLINKY].elroyMode;
 		if (elroyMode > 0) {
 			ghosts[BLINKY].elroyMode = (byte) -elroyMode; // negative value means "disabled"
 			log("Blinky Elroy mode %d disabled", elroyMode);
 		}
+		globalDotCounter = 0;
+		globalDotCounterEnabled = true;
+		log("Global dot counter reset and enabled");
 	}
 
 	private void pacGetsPower() {
@@ -759,9 +752,10 @@ public class PacManGame {
 			for (Ghost ghost : ghosts) {
 				if (ghost.state == GhostState.HUNTING) {
 					ghost.state = GhostState.FRIGHTENED;
+					ghost.wishDir = ghost.dir.opposite();
+					ghost.forcedDirection = true;
 				}
 			}
-			forceHuntingGhostsTurningBack();
 			ui.loopSound(PacManGameSound.PACMAN_POWER);
 		}
 	}
@@ -785,8 +779,7 @@ public class PacManGame {
 	}
 
 	private void updateBonus() {
-
-		// uneaten bonus available?
+		// edible bonus active?
 		boolean expired = false;
 		if (bonus.edibleTicksLeft > 0) {
 			if (variant == MS_PACMAN) {
@@ -807,7 +800,7 @@ public class PacManGame {
 			bonus.visible = false;
 		}
 
-		// consumed bonus?
+		// eaten bonus active?
 		expired = false;
 		if (bonus.eatenTicksLeft > 0) {
 			bonus.eatenTicksLeft--;
@@ -897,12 +890,6 @@ public class PacManGame {
 
 	private int ghostGlobalDotLimit(Ghost ghost) {
 		return ghost.id == PINKY ? 7 : ghost.id == INKY ? 17 : Integer.MAX_VALUE;
-	}
-
-	private void resetAndEnableGlobalDotCounter() {
-		globalDotCounter = 0;
-		globalDotCounterEnabled = true;
-		log("Global dot counter reset and enabled");
 	}
 
 	private V2i ghostChasingTarget(int id) {
