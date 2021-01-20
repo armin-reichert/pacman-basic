@@ -14,6 +14,7 @@ import static de.amr.games.pacman.game.worlds.PacManClassicWorld.CLYDE;
 import static de.amr.games.pacman.game.worlds.PacManClassicWorld.INKY;
 import static de.amr.games.pacman.game.worlds.PacManClassicWorld.PINKY;
 import static de.amr.games.pacman.game.worlds.PacManGameWorld.HTS;
+import static de.amr.games.pacman.game.worlds.PacManGameWorld.TS;
 import static de.amr.games.pacman.game.worlds.PacManGameWorld.offset;
 import static de.amr.games.pacman.game.worlds.PacManGameWorld.t;
 import static de.amr.games.pacman.game.worlds.PacManGameWorld.tile;
@@ -1008,30 +1009,29 @@ public class PacManGame {
 
 	private void letGhostLeaveHouse(Ghost ghost) {
 		V2i ghostLocation = ghost.tile();
-		V2f offset = ghost.offset();
+		V2f ghostOffset = ghost.offset();
+
 		// leaving house complete?
-		if (ghostLocation.equals(world.houseEntry()) && differsAtMost(offset.y, 0, 1)) {
+		if (ghostLocation.equals(world.houseEntry()) && differsAtMost(ghostOffset.y, 0, 1)) {
 			ghost.setOffset(HTS, 0);
 			ghost.dir = ghost.wishDir = LEFT;
 			ghost.forcedOnTrack = true;
 			ghost.state = GhostState.HUNTING;
 			return;
 		}
-		// at house middle and rising?
-		if (ghostLocation.x == world.houseCenter().x && differsAtMost(offset.x, 3, 1)) {
-			ghost.setOffset(HTS, offset.y);
+
+		V2i centerTile = world.houseCenter();
+		int centerX = centerTile.x * TS + HTS;
+		int groundY = centerTile.y * TS + HTS;
+		if (differsAtMost(ghost.position.x, centerX, 1)) {
+			ghost.setOffset(HTS, ghostOffset.y);
 			ghost.wishDir = UP;
-			ghost.couldMove = tryMoving(ghost, ghost.wishDir);
-			return;
+		} else if (ghost.position.y < groundY) {
+			ghost.wishDir = DOWN;
+		} else {
+			ghost.wishDir = ghost.position.x < centerX ? RIGHT : LEFT;
 		}
-		// move sidewards towards center
-		if (ghostLocation.x == world.ghostHome(ghost.id).x && differsAtMost(offset.y, 0, 1)) {
-			ghost.wishDir = world.ghostHome(ghost.id).x < world.houseCenter().x ? RIGHT : LEFT;
-			ghost.couldMove = tryMoving(ghost, ghost.wishDir);
-			return;
-		}
-		// keep bouncing until ghost can move towards center
-		letGhostBounce(ghost);
+		ghost.couldMove = tryMoving(ghost, ghost.wishDir);
 	}
 
 	private boolean atGhostHouseDoor(Creature guy) {
