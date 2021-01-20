@@ -558,7 +558,7 @@ public class PacManGame {
 
 	private PacManGameState runChangingLevelState() {
 		if (state.expired()) {
-			return changeState(this::exitChangingLevelState, this::enterReadyState);
+			return changeState(this::exitChangingLevelState, this::enterReadyState, this::nextLevel);
 		}
 		if (state.ticks() == clock.sec(2)) {
 			for (Ghost ghost : ghosts) {
@@ -573,7 +573,6 @@ public class PacManGame {
 
 	private void exitChangingLevelState() {
 		log("Level %d complete, entering level %d", levelNumber, levelNumber + 1);
-		nextLevel();
 	}
 
 	// GAME_OVER
