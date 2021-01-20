@@ -654,7 +654,7 @@ public class PacManGame {
 			bonus.speed = 0;
 			score(bonus.points);
 			ui.playSound(PacManGameSound.EAT_BONUS);
-			log("Pac-Man found bonus (%d) of value %d", level.bonusSymbol, bonus.points);
+			log("Pac-Man found bonus (%d) of value %d", bonus.symbol, bonus.points);
 		}
 	}
 
@@ -1225,6 +1225,7 @@ public class PacManGame {
 	}
 
 	// Misc
+
 	private static boolean differsAtMost(float value, float target, float tolerance) {
 		return Math.abs(value - target) <= tolerance;
 	}
