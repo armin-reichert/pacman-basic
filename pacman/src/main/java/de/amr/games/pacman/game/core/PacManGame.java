@@ -318,7 +318,7 @@ public class PacManGame {
 
 	private void enterReadyState() {
 		state = READY;
-		state.setDuration(clock.sec(started ? 2 : 5));
+		state.setDuration(clock.sec(started ? 3 : 6));
 		resetGuys();
 		ui.stopAllSounds();
 		for (Ghost ghost : ghosts) {
@@ -455,12 +455,12 @@ public class PacManGame {
 		checkPacFindsFood();
 		checkPacFindsBonus();
 
-		Ghost collidingGhost = ghostCollidingWithPac();
-		if (collidingGhost != null && collidingGhost.state == GhostState.FRIGHTENED) {
-			return changeState(this::exitHuntingState, this::enterGhostDyingState, () -> ghostKilled(collidingGhost));
+		Optional<Ghost> collidingGhost = ghostCollidingWithPac();
+		if (collidingGhost.isPresent() && collidingGhost.get().state == GhostState.FRIGHTENED) {
+			return changeState(this::exitHuntingState, this::enterGhostDyingState, () -> ghostKilled(collidingGhost.get()));
 		}
-		if (collidingGhost != null && collidingGhost.state != GhostState.FRIGHTENED && !pacImmune) {
-			return changeState(this::exitHuntingState, this::enterPacManDyingState, () -> pacKilled(collidingGhost));
+		if (collidingGhost.isPresent() && collidingGhost.get().state == GhostState.HUNTING && !pacImmune) {
+			return changeState(this::exitHuntingState, this::enterPacManDyingState, () -> pacKilled(collidingGhost.get()));
 		}
 
 		// hunting state timer is stopped as long as Pac has power
@@ -766,9 +766,8 @@ public class PacManGame {
 		}
 	}
 
-	private Ghost ghostCollidingWithPac() {
-		return Stream.of(ghosts).filter(ghost -> ghost.state != GhostState.DEAD)
-				.filter(ghost -> ghost.tile().equals(pac.tile())).findAny().orElse(null);
+	private Optional<Ghost> ghostCollidingWithPac() {
+		return Stream.of(ghosts).filter(ghost -> ghost.tile().equals(pac.tile())).findAny();
 	}
 
 	private void updateGhostDotCounters() {
