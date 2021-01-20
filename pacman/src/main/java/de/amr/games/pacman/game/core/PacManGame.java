@@ -637,19 +637,14 @@ public class PacManGame {
 	private void steerPac() {
 		if (autopilotEnabled) {
 			autopilot.steerPac(this);
-		} else {
-			if (ui.keyPressed("left")) {
-				pac.wishDir = LEFT;
-			}
-			if (ui.keyPressed("right")) {
-				pac.wishDir = RIGHT;
-			}
-			if (ui.keyPressed("up")) {
-				pac.wishDir = UP;
-			}
-			if (ui.keyPressed("down")) {
-				pac.wishDir = DOWN;
-			}
+		} else if (ui.keyPressed("left")) {
+			pac.wishDir = LEFT;
+		} else if (ui.keyPressed("right")) {
+			pac.wishDir = RIGHT;
+		} else if (ui.keyPressed("up")) {
+			pac.wishDir = UP;
+		} else if (ui.keyPressed("down")) {
+			pac.wishDir = DOWN;
 		}
 	}
 
