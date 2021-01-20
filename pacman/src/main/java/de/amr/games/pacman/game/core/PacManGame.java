@@ -379,7 +379,7 @@ public class PacManGame {
 		return clock.sec(duration);
 	}
 
-	private boolean inRetreatMode() {
+	private boolean inScatterMode() {
 		return huntingPhase % 2 == 0;
 	}
 
@@ -405,7 +405,7 @@ public class PacManGame {
 	private void startHuntingPhase(int phase) {
 		huntingPhase = (byte) phase;
 		state.setDuration(huntingPhaseDuration(huntingPhase));
-		if (inRetreatMode()) {
+		if (inScatterMode()) {
 			if (huntingPhase >= 2) {
 				ui.stopSound(siren(huntingPhase - 2));
 			}
