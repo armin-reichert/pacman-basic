@@ -73,7 +73,7 @@ public class Autopilot {
 		if (prey != null && pac.powerTicksLeft >= game.clock.sec(1)) {
 			log("Detected frightened ghost %s %.0g tiles away", prey.name, prey.tile().manhattanDistance(pacManTile));
 			pac.targetTile = prey.tile();
-		} else if (game.bonus.availableTicks > 0
+		} else if (game.bonus.edibleTicks > 0
 				&& game.bonus.tile().manhattanDistance(pacManTile) <= MAX_BONUS_HARVEST_DIST) {
 			log("Detected active bonus");
 			pac.targetTile = game.bonus.tile();

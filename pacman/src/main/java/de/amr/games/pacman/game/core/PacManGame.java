@@ -183,8 +183,8 @@ public class PacManGame {
 		mazeFlashesRemaining = 0;
 		ghostBounty = 200;
 		ghostsKilledInLevel = 0;
-		bonus.availableTicks = 0;
-		bonus.consumedTicks = 0;
+		bonus.edibleTicks = 0;
+		bonus.eatenTicks = 0;
 		for (Ghost ghost : ghosts) {
 			ghost.dotCounter = 0;
 			ghost.elroyMode = 0;
@@ -229,8 +229,8 @@ public class PacManGame {
 		bonus.changedTile = true;
 		bonus.couldMove = true;
 		bonus.forcedOnTrack = true;
-		bonus.availableTicks = 0;
-		bonus.consumedTicks = 0;
+		bonus.edibleTicks = 0;
+		bonus.eatenTicks = 0;
 	}
 
 	// BEGIN STATE-MACHINE
@@ -473,7 +473,7 @@ public class PacManGame {
 			ghost.speed = 0;
 			ghost.state = GhostState.HUNTING;
 		}
-		bonus.availableTicks = bonus.consumedTicks = 0;
+		bonus.edibleTicks = bonus.eatenTicks = 0;
 		ui.stopAllSounds();
 	}
 
@@ -547,7 +547,7 @@ public class PacManGame {
 	private void enterChangingLevelState() {
 		state = CHANGING_LEVEL;
 		state.setDuration(clock.sec(level.numFlashes + 3));
-		bonus.availableTicks = bonus.consumedTicks = 0;
+		bonus.edibleTicks = bonus.eatenTicks = 0;
 		pac.speed = 0;
 		for (Ghost ghost : ghosts) {
 			ghost.speed = 0;
@@ -648,9 +648,9 @@ public class PacManGame {
 	}
 
 	private void checkPacFindsBonus() {
-		if (bonus.availableTicks > 0 && pac.tile().equals(bonus.tile())) {
-			bonus.availableTicks = 0;
-			bonus.consumedTicks = clock.sec(2);
+		if (bonus.edibleTicks > 0 && pac.tile().equals(bonus.tile())) {
+			bonus.edibleTicks = 0;
+			bonus.eatenTicks = clock.sec(2);
 			bonus.speed = 0;
 			score(bonus.points);
 			ui.playSound(PacManGameSound.EAT_BONUS);
@@ -674,12 +674,12 @@ public class PacManGame {
 			if (variant == CLASSIC) {
 				bonus.symbol = level.bonusSymbol;
 				bonus.points = PacManClassicWorld.BONUS_POINTS[bonus.symbol];
-				bonus.availableTicks = clock.sec(9 + rnd.nextFloat());
+				bonus.edibleTicks = clock.sec(9 + rnd.nextFloat());
 				bonus.placeAt(PacManClassicWorld.BONUS_TILE, HTS, 0);
 			} else if (variant == MS_PACMAN) {
 				bonus.symbol = level.bonusSymbol;
 				bonus.points = MsPacManWorld.BONUS_POINTS[bonus.symbol];
-				bonus.availableTicks = Long.MAX_VALUE; // TODO is there a timeout?
+				bonus.edibleTicks = Long.MAX_VALUE; // TODO is there a timeout?
 				int portal = rnd.nextInt(world.numPortals());
 				boolean entersMazeFromLeft = rnd.nextBoolean();
 				V2i startTile = entersMazeFromLeft ? world.portalLeft(portal) : world.portalRight(portal);
@@ -783,7 +783,7 @@ public class PacManGame {
 
 		// uneaten bonus available?
 		boolean expired = false;
-		if (bonus.availableTicks > 0) {
+		if (bonus.edibleTicks > 0) {
 			if (variant == MS_PACMAN) {
 				letBonusWanderMaze();
 				V2i bonusLocation = bonus.tile();
@@ -791,27 +791,27 @@ public class PacManGame {
 					expired = true; // TODO should bonus also expire on timeout?
 				}
 			} else {
-				bonus.availableTicks--;
-				if (bonus.availableTicks == 0) {
+				bonus.edibleTicks--;
+				if (bonus.edibleTicks == 0) {
 					expired = true;
 				}
 			}
 		}
 		if (expired) {
-			bonus.availableTicks = 0;
+			bonus.edibleTicks = 0;
 			bonus.visible = false;
 		}
 
 		// consumed bonus?
 		expired = false;
-		if (bonus.consumedTicks > 0) {
-			bonus.consumedTicks--;
-			if (bonus.consumedTicks == 0) {
+		if (bonus.eatenTicks > 0) {
+			bonus.eatenTicks--;
+			if (bonus.eatenTicks == 0) {
 				expired = true;
 			}
 		}
 		if (expired) {
-			bonus.consumedTicks = 0;
+			bonus.eatenTicks = 0;
 			bonus.visible = false;
 		}
 	}

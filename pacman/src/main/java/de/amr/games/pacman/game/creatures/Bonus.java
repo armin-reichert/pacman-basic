@@ -16,10 +16,10 @@ public class Bonus extends Creature {
 	public int points;
 
 	/** Number of clock ticks the bonus is still available for eating. */
-	public long availableTicks;
+	public long edibleTicks;
 
 	/** Number of clock ticks the consumed bonus is still displayed. */
-	public long consumedTicks;
+	public long eatenTicks;
 
 	/* Ms. Pac-Man only: Diretion in which bonus traverses the maze. */
 	public Direction targetDirection;

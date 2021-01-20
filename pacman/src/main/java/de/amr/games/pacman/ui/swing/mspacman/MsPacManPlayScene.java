@@ -127,13 +127,13 @@ public class MsPacManPlayScene extends PacManGamePlayScene {
 	private static final int BONUS_JUMP[] = { 0, 2, 0, -2 };
 
 	private void drawBonus(Graphics2D g) {
-		if (game.bonus.availableTicks > 0) {
+		if (game.bonus.edibleTicks > 0) {
 			BufferedImage bonusSprite = assets.symbols[game.level.bonusSymbol];
 			int frame = game.clock.frame(20, 4);
 			g.drawImage(bonusSprite, (int) (game.bonus.position.x) - HTS,
 					(int) (game.bonus.position.y) + BONUS_JUMP[frame] - HTS, null);
 		}
-		if (game.bonus.consumedTicks > 0) {
+		if (game.bonus.eatenTicks > 0) {
 			BufferedImage bonusSprite = assets.numbers.get(game.bonus.points);
 			g.drawImage(bonusSprite, (int) (game.bonus.position.x) - HTS, (int) (game.bonus.position.y) - HTS, null);
 		}
