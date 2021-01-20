@@ -613,7 +613,7 @@ public class PacManGame {
 		if (pac.restingTicksLeft > 0) {
 			pac.restingTicksLeft--;
 		} else {
-			letPacManMove();
+			letPacMove();
 		}
 		if (pac.powerTicksLeft > 0) {
 			pac.powerTicksLeft--;
@@ -628,7 +628,7 @@ public class PacManGame {
 		}
 	}
 
-	private void letPacManMove() {
+	private void letPacMove() {
 		steerPac();
 		pac.speed = pac.powerTicksLeft == 0 ? level.pacSpeed : level.pacSpeedPowered;
 		tryMoving(pac);
