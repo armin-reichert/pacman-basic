@@ -147,13 +147,9 @@ public class MsPacManPlayScene extends PacManGamePlayScene {
 
 	private BufferedImage sprite(Pac pac) {
 		int dir = DIR_INDEX.get(pac.dir);
-		if (pac.collapsingTicksLeft > 1) {
+		if (pac.collapsingTicksLeft > 0) {
 			// collapsing animation
-			int frame = game.clock.frame(6, 4);
-			return assets.section(0, frame);
-		} else if (pac.collapsingTicksLeft == 1) {
-			// collapsing animation is over
-			return assets.section(0, dir);
+			return assets.section(0, pac.collapsingTicksLeft > 1 ? game.clock.frame(10, 4) : dir);
 		}
 		if (pac.speed == 0) {
 			// medium open mouth when in READY state, else full face
