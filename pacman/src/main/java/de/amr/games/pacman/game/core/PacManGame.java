@@ -613,7 +613,9 @@ public class PacManGame {
 		if (pac.restingTicksLeft > 0) {
 			pac.restingTicksLeft--;
 		} else {
-			letPacMove();
+			pac.speed = pac.powerTicksLeft == 0 ? level.pacSpeed : level.pacSpeedPowered;
+			steerPac();
+			tryMoving(pac);
 		}
 		if (pac.powerTicksLeft > 0) {
 			pac.powerTicksLeft--;
@@ -626,12 +628,6 @@ public class PacManGame {
 				ui.stopSound(PacManGameSound.PACMAN_POWER);
 			}
 		}
-	}
-
-	private void letPacMove() {
-		steerPac();
-		pac.speed = pac.powerTicksLeft == 0 ? level.pacSpeed : level.pacSpeedPowered;
-		tryMoving(pac);
 	}
 
 	private void steerPac() {
