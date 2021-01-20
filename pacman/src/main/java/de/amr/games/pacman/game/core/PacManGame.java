@@ -67,7 +67,7 @@ import de.amr.games.pacman.ui.api.PacManGameUI;
  *      Understanding ghost behavior</a>
  * @see <a href="http://superpacman.com/mspacman/">Ms. Pac-Man</a>
  */
-public class PacManGame {
+public class PacManGame implements Runnable {
 
 	static final ResourceBundle TEXTS = ResourceBundle.getBundle("localization.translation");
 
@@ -137,11 +137,8 @@ public class PacManGame {
 		}
 	}
 
-	public void start() {
-		new Thread(this::loop, "PacManGame").start();
-	}
-
-	private void loop() {
+	@Override
+	public void run() {
 		while (true) {
 			clock.tick(this::step);
 		}

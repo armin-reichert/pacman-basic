@@ -21,7 +21,7 @@ public class PacManGameApp {
 			PacManGame game = new PacManGame(GameVariant.CLASSIC);
 			PacManGameUI ui = new PacManGameSwingUI(game, scaling);
 			ui.openWindow();
-			game.start();
+			new Thread(game, "PacManGame").start();
 		});
 	}
 }
