@@ -807,7 +807,8 @@ public class PacManGame implements Runnable {
 
 	private void checkBonusActivation() {
 		int eaten = world.eatenFoodCount();
-		if (eaten == 70 || eaten == 170) {
+//		if (eaten == 70 || eaten == 170) {
+		if (eaten == 10 || eaten == 70) {
 			bonus.visible = true;
 			bonus.symbol = level.bonusSymbol;
 			if (variant == CLASSIC) {
@@ -824,7 +825,7 @@ public class PacManGame implements Runnable {
 				bonus.targetDirection = entersMazeFromLeft ? RIGHT : LEFT;
 				bonus.dir = bonus.wishDir = bonus.targetDirection;
 				bonus.couldMove = true;
-				bonus.speed = 0.5f; // TODO what is the correct bonus speed?
+				bonus.speed = 0.25f; // TODO what is the correct bonus speed?
 			}
 		}
 	}

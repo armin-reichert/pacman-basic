@@ -18,6 +18,7 @@ import de.amr.games.pacman.game.creatures.Ghost;
 import de.amr.games.pacman.game.creatures.GhostState;
 import de.amr.games.pacman.game.creatures.Pac;
 import de.amr.games.pacman.game.worlds.MsPacManWorld;
+import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
 import de.amr.games.pacman.ui.swing.scene.PacManGamePlayScene;
@@ -124,18 +125,23 @@ public class MsPacManPlayScene extends PacManGamePlayScene {
 		}
 	}
 
-	private static final int BONUS_JUMP[] = { 0, 2, 0, -2 };
+	private static final int BONUS_JUMP[] = { -2, 0, 2 };
 
 	private void drawBonus(Graphics2D g) {
 		if (game.bonus.edibleTicksLeft > 0) {
-			BufferedImage bonusSprite = assets.symbols[game.level.bonusSymbol];
-			int frame = game.clock.frame(20, 4);
-			g.drawImage(bonusSprite, (int) (game.bonus.position.x) - HTS,
-					(int) (game.bonus.position.y) + BONUS_JUMP[frame] - HTS, null);
+			int x = (int) (game.bonus.position.x) - HTS;
+			int y = (int) (game.bonus.position.y) - HTS;
+			int frame = game.clock.frame(20, BONUS_JUMP.length);
+			if (game.bonus.dir == Direction.LEFT || game.bonus.dir == Direction.RIGHT) {
+				y += BONUS_JUMP[frame];
+			}
+			g.drawImage(assets.symbols[game.bonus.symbol], x, y, null);
 		}
 		if (game.bonus.eatenTicksLeft > 0) {
+			int x = (int) (game.bonus.position.x) - HTS;
+			int y = (int) (game.bonus.position.y) - HTS;
 			BufferedImage bonusSprite = assets.numbers.get(game.bonus.points);
-			g.drawImage(bonusSprite, (int) (game.bonus.position.x) - HTS, (int) (game.bonus.position.y) - HTS, null);
+			g.drawImage(bonusSprite, x, y, null);
 		}
 	}
 
