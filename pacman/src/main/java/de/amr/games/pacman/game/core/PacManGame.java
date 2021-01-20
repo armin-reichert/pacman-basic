@@ -172,8 +172,8 @@ public class PacManGame {
 			log("%s is %s", pac.name, pacImmune ? "immune against ghosts" : "vulnerable by ghosts");
 		}
 		if (ui.keyPressed("escape")) {
-			ui.stopAllSounds();
 			reset();
+			ui.stopAllSounds();
 			enterIntroState();
 		}
 	}
@@ -302,6 +302,7 @@ public class PacManGame {
 		if (ui.keyPressed("v")) {
 			setGameVariant((variant == CLASSIC) ? MS_PACMAN : CLASSIC);
 			ui.onGameVariantChanged(this);
+			state.resetTimer();
 			return state;
 		}
 		if (ui.keyPressed("space")) {
