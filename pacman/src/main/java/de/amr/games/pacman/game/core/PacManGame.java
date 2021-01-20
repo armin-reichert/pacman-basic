@@ -812,7 +812,7 @@ public class PacManGame {
 	private void letBonusWanderMaze() {
 		V2i bonusLocation = bonus.tile();
 		if (!bonus.couldMove || world.isIntersection(bonusLocation)) {
-			List<Direction> dirs = accessibleDirections(bonusLocation, bonus.dir.opposite());
+			List<Direction> dirs = accessibleDirections(bonusLocation, bonus.dir.opposite()).collect(Collectors.toList());
 			if (dirs.size() > 1) {
 				// give random movement a bias towards the target direction
 				dirs.remove(bonus.targetDirection.opposite());
@@ -963,7 +963,7 @@ public class PacManGame {
 			// Blinky and Pinky move randomly during first scatter phase
 			if (variant == MS_PACMAN && huntingPhase == 0 && (ghost.id == BLINKY || ghost.id == PINKY)) {
 				if (world.isIntersection(ghostLocation) || !ghost.couldMove) {
-					anyAccessibleDirection(ghostLocation, ghost.dir.opposite()).ifPresent(dir -> ghost.wishDir = dir);
+					randomAccessibleDirection(ghostLocation, ghost.dir.opposite()).ifPresent(dir -> ghost.wishDir = dir);
 				}
 				tryMoving(ghost);
 			} else {
@@ -1055,7 +1055,7 @@ public class PacManGame {
 			return Optional.empty();
 		}
 		if (ghost.state == GhostState.FRIGHTENED && world.isIntersection(ghostLocation)) {
-			return anyAccessibleDirection(ghostLocation, ghost.dir.opposite());
+			return randomAccessibleDirection(ghostLocation, ghost.dir.opposite());
 		}
 		return ghostTargetDirection(ghost);
 	}
@@ -1165,17 +1165,16 @@ public class PacManGame {
 		return true;
 	}
 
-	private Optional<Direction> anyAccessibleDirection(V2i tile, Direction... excludedDirections) {
-		List<Direction> dirs = accessibleDirections(tile, excludedDirections);
+	private Optional<Direction> randomAccessibleDirection(V2i tile, Direction... excludedDirections) {
+		List<Direction> dirs = accessibleDirections(tile, excludedDirections).collect(Collectors.toList());
 		return dirs.isEmpty() ? Optional.empty() : Optional.of(dirs.get(rnd.nextInt(dirs.size())));
 	}
 
-	private List<Direction> accessibleDirections(V2i tile, Direction... excludedDirections) {
+	private Stream<Direction> accessibleDirections(V2i tile, Direction... excludedDirections) {
 		//@formatter:off
 		return Stream.of(Direction.values())
 			.filter(dir -> Stream.of(excludedDirections).noneMatch(excludedDir -> excludedDir == dir))
-			.filter(dir -> world.isAccessible(tile.sum(dir.vec)))
-			.collect(Collectors.toList());
+			.filter(dir -> world.isAccessible(tile.sum(dir.vec)));
 		//@formatter:on
 	}
 
