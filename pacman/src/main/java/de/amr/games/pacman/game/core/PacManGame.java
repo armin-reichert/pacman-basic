@@ -321,6 +321,9 @@ public class PacManGame {
 		state.setDuration(clock.sec(started ? 2 : 5));
 		resetGuys();
 		ui.stopAllSounds();
+		for (Ghost ghost : ghosts) {
+			ghost.visible = false;
+		}
 	}
 
 	private PacManGameState runReadyState() {
@@ -329,12 +332,15 @@ public class PacManGame {
 		}
 		if (state.atTick(clock.sec(0.5))) {
 			ui.showMessage(TEXTS.getString("READY"), false);
-			if (!started) {
-				ui.playSound(PacManGameSound.GAME_READY);
-				started = true;
+			for (Ghost ghost : ghosts) {
+				ghost.visible = true;
 			}
 		}
-		if (state.ticks() > clock.sec(0.5)) {
+		if (state.atTick(clock.sec(1)) && !started) {
+			ui.playSound(PacManGameSound.GAME_READY);
+			started = true;
+		}
+		if (state.ticks() > clock.sec(1)) {
 			for (Ghost ghost : ghosts) {
 				if (ghost.id != BLINKY) {
 					letGhostBounce(ghost);
