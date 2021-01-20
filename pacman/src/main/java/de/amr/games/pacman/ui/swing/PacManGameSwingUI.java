@@ -133,7 +133,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 		canvas.setFocusable(false);
 		window.add(canvas);
 
-		messageFont = font("/PressStart2P-Regular.ttf", 8).deriveFont(Font.ITALIC);
+		messageFont = font("/PressStart2P-Regular.ttf", 8).deriveFont(Font.PLAIN);
 
 		setGame(game);
 	}
