@@ -960,9 +960,10 @@ public class PacManGame {
 			ghost.targetTile = ghostChasingTarget(ghost.id);
 			letGhostHeadForTargetTile(ghost);
 		} else {
+			// Blinky and Pinky move randomly during first scatter phase
 			if (variant == MS_PACMAN && huntingPhase == 0 && (ghost.id == BLINKY || ghost.id == PINKY)) {
 				if (world.isIntersection(ghostLocation) || !ghost.couldMove) {
-					ghost.wishDir = randomAccessibleDirectionExcluding(ghostLocation, ghost.dir.opposite());
+					anyAccessibleDirection(ghostLocation, ghost.dir.opposite()).ifPresent(dir -> ghost.wishDir = dir);
 				}
 				tryMoving(ghost);
 			} else {
@@ -1054,7 +1055,7 @@ public class PacManGame {
 			return Optional.empty();
 		}
 		if (ghost.state == GhostState.FRIGHTENED && world.isIntersection(ghostLocation)) {
-			return Optional.of(randomAccessibleDirectionExcluding(ghostLocation, ghost.dir.opposite()));
+			return anyAccessibleDirection(ghostLocation, ghost.dir.opposite());
 		}
 		return ghostTargetDirection(ghost);
 	}
@@ -1164,9 +1165,9 @@ public class PacManGame {
 		return true;
 	}
 
-	private Direction randomAccessibleDirectionExcluding(V2i tile, Direction... excludedDirections) {
+	private Optional<Direction> anyAccessibleDirection(V2i tile, Direction... excludedDirections) {
 		List<Direction> dirs = accessibleDirections(tile, excludedDirections);
-		return dirs.get(rnd.nextInt(dirs.size()));
+		return dirs.isEmpty() ? Optional.empty() : Optional.of(dirs.get(rnd.nextInt(dirs.size())));
 	}
 
 	private List<Direction> accessibleDirections(V2i tile, Direction... excludedDirections) {
