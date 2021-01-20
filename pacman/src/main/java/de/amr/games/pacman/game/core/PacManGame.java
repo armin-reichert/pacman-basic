@@ -391,13 +391,13 @@ public class PacManGame {
 	private static PacManGameSound siren(int huntingPhase) {
 		switch (huntingPhase / 2) {
 		case 0:
-			return PacManGameSound.SIREN_1;
+			return PacManGameSound.GHOST_SIREN_1;
 		case 1:
-			return PacManGameSound.SIREN_2;
+			return PacManGameSound.GHOST_SIREN_2;
 		case 2:
-			return PacManGameSound.SIREN_3;
+			return PacManGameSound.GHOST_SIREN_3;
 		case 3:
-			return PacManGameSound.SIREN_4;
+			return PacManGameSound.GHOST_SIREN_4;
 		default:
 			throw new IllegalArgumentException("Illegal hunting phase: " + huntingPhase);
 		}
@@ -524,7 +524,7 @@ public class PacManGame {
 		state = GHOST_DYING;
 		state.setDuration(clock.sec(1));
 		pac.visible = false;
-		ui.playSound(PacManGameSound.GHOST_DEATH);
+		ui.playSound(PacManGameSound.GHOST_EATEN);
 	}
 
 	private PacManGameState runGhostDyingState() {
@@ -547,7 +547,7 @@ public class PacManGame {
 			}
 		}
 		pac.visible = true;
-		ui.loopSound(PacManGameSound.GHOST_RETURNING);
+		ui.loopSound(PacManGameSound.GHOST_EYES);
 	}
 
 	// CHANGING_LEVEL
@@ -651,7 +651,7 @@ public class PacManGame {
 			bonus.eatenTicksLeft = clock.sec(2);
 			bonus.speed = 0;
 			score(bonus.points);
-			ui.playSound(PacManGameSound.EAT_BONUS);
+			ui.playSound(PacManGameSound.PACMAN_EAT_BONUS);
 			log("Pac-Man found bonus (%d) of value %d", bonus.symbol, bonus.points);
 		}
 	}
@@ -673,7 +673,7 @@ public class PacManGame {
 			checkBlinkyBecomesElroy();
 			checkBonusActivation();
 			updateGhostDotCounters();
-			ui.playSound(PacManGameSound.MUNCH);
+			ui.playSound(PacManGameSound.PACMAN_MUNCH);
 		} else {
 			pac.starvingTicks++;
 			if (pac.starvingTicks >= pacStarvingTimeLimit()) {
@@ -996,7 +996,7 @@ public class PacManGame {
 			ghost.speed = level.ghostSpeed; // TODO correct?
 			ghost.wishDir = ghost.dir.opposite();
 			if (Stream.of(ghosts).noneMatch(g -> g.state == GhostState.DEAD)) {
-				ui.stopSound(PacManGameSound.GHOST_RETURNING);
+				ui.stopSound(PacManGameSound.GHOST_EYES);
 			}
 			return;
 		}

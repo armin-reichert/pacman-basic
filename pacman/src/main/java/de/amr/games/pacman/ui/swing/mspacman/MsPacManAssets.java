@@ -78,20 +78,20 @@ public class MsPacManAssets {
 		bountyNumbers.put(800, section(2,8));
 		bountyNumbers.put(1600, section(3,8));
 	
-		soundPaths.put(PacManGameSound.CREDIT,          "/sound/mspacman/Coin Credit.wav");
-		soundPaths.put(PacManGameSound.EAT_BONUS,       "/sound/mspacman/Fruit.wav");
-		soundPaths.put(PacManGameSound.EXTRA_LIFE,      "/sound/mspacman/Extra Life.wav");
-		soundPaths.put(PacManGameSound.GAME_READY,      "/sound/mspacman/Start.wav");
-		soundPaths.put(PacManGameSound.GHOST_DEATH,     "/sound/mspacman/Ghost.wav");
-		soundPaths.put(PacManGameSound.MUNCH,           "/sound/mspacman/Ms. Pac Man Pill.wav");
-		soundPaths.put(PacManGameSound.PACMAN_DEATH,    "/sound/mspacman/Died.wav");
-		soundPaths.put(PacManGameSound.PACMAN_POWER,    "/sound/mspacman/Scared Ghost.wav");
-		soundPaths.put(PacManGameSound.GHOST_RETURNING, "/sound/mspacman/Ghost Eyes.wav");
-		soundPaths.put(PacManGameSound.SIREN_1,         "/sound/mspacman/Ghost Noise.wav");
-		soundPaths.put(PacManGameSound.SIREN_2,         "/sound/mspacman/Ghost Noise 1.wav");
-		soundPaths.put(PacManGameSound.SIREN_3,         "/sound/mspacman/Ghost Noise 2.wav");
-		soundPaths.put(PacManGameSound.SIREN_4,         "/sound/mspacman/Ghost Noise 3.wav");
-		soundPaths.put(PacManGameSound.SIREN_5,         "/sound/mspacman/Ghost Noise 4.wav");
+		soundPaths.put(PacManGameSound.CREDIT,           "/sound/mspacman/Coin Credit.wav");
+		soundPaths.put(PacManGameSound.EXTRA_LIFE,       "/sound/mspacman/Extra Life.wav");
+		soundPaths.put(PacManGameSound.GAME_READY,       "/sound/mspacman/Start.wav");
+		soundPaths.put(PacManGameSound.PACMAN_EAT_BONUS, "/sound/mspacman/Fruit.wav");
+		soundPaths.put(PacManGameSound.PACMAN_MUNCH,     "/sound/mspacman/Ms. Pac Man Pill.wav");
+		soundPaths.put(PacManGameSound.PACMAN_DEATH,     "/sound/mspacman/Died.wav");
+		soundPaths.put(PacManGameSound.PACMAN_POWER,     "/sound/mspacman/Scared Ghost.wav");
+		soundPaths.put(PacManGameSound.GHOST_EATEN,      "/sound/mspacman/Ghost.wav");
+		soundPaths.put(PacManGameSound.GHOST_EYES,       "/sound/mspacman/Ghost Eyes.wav");
+		soundPaths.put(PacManGameSound.GHOST_SIREN_1,    "/sound/mspacman/Ghost Noise.wav");
+		soundPaths.put(PacManGameSound.GHOST_SIREN_2,    "/sound/mspacman/Ghost Noise 1.wav");
+		soundPaths.put(PacManGameSound.GHOST_SIREN_3,    "/sound/mspacman/Ghost Noise 2.wav");
+		soundPaths.put(PacManGameSound.GHOST_SIREN_4,    "/sound/mspacman/Ghost Noise 3.wav");
+		soundPaths.put(PacManGameSound.GHOST_SIREN_5,    "/sound/mspacman/Ghost Noise 4.wav");
 		//@formatter:on
 	}
 

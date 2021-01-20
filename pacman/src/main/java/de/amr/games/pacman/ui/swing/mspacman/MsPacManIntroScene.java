@@ -89,7 +89,7 @@ public class MsPacManIntroScene implements PacManGameScene {
 		});
 
 		game.state.runAt(game.clock.sec(13), () -> {
-			game.ui.loopSound(PacManGameSound.SIREN_1);
+			game.ui.loopSound(PacManGameSound.GHOST_SIREN_1);
 		});
 
 		game.state.runAfter(game.clock.sec(13), () -> {
@@ -165,7 +165,7 @@ public class MsPacManIntroScene implements PacManGameScene {
 			leftmostGhostX -= 0.8f;
 		} else {
 			ghostsChasingPacMan = false;
-			game.ui.stopSound(PacManGameSound.SIREN_1);
+			game.ui.stopSound(PacManGameSound.GHOST_SIREN_1);
 			game.ui.loopSound(PacManGameSound.PACMAN_POWER);
 		}
 	}
@@ -182,7 +182,7 @@ public class MsPacManIntroScene implements PacManGameScene {
 				g.drawImage(assets.bountyNumbers.get(bounty), x, y, null);
 				if (lastKilledGhost != ghost) {
 					lastKilledGhost++;
-					game.ui.playSound(PacManGameSound.GHOST_DEATH);
+					game.ui.playSound(PacManGameSound.GHOST_EATEN);
 				}
 			}
 		}

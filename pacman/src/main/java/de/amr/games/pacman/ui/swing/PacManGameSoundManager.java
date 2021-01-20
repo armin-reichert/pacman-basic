@@ -29,7 +29,7 @@ class PacManGameSoundManager {
 		this.fnSoundPath = fnSoundPath;
 		munchIndex = 0;
 		for (int i = 0; i < 2; ++i) {
-			Clip clip = openClip(fnSoundPath.apply(PacManGameSound.MUNCH));
+			Clip clip = openClip(fnSoundPath.apply(PacManGameSound.PACMAN_MUNCH));
 			munchingClips.add(clip);
 		}
 	}
@@ -56,7 +56,7 @@ class PacManGameSoundManager {
 	}
 
 	private Clip findClip(PacManGameSound sound) {
-		if (sound == PacManGameSound.MUNCH) {
+		if (sound == PacManGameSound.PACMAN_MUNCH) {
 			Clip clip = munchingClips.get(munchIndex);
 			munchIndex = (munchIndex + 1) % munchingClips.size();
 			clip.setFramePosition(0);
