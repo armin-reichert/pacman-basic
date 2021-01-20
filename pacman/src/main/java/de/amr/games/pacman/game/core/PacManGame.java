@@ -607,6 +607,94 @@ public class PacManGame implements Runnable {
 
 	// END STATE-MACHINE
 
+	// Movement
+
+	private void tryMoving(Creature guy) {
+		V2i guyLocation = guy.tile();
+		// teleport?
+		for (int i = 0; i < world.numPortals(); ++i) {
+			if (guyLocation.equals(world.portalRight(i)) && guy.dir == RIGHT) {
+				guy.placeAt(world.portalLeft(i), 0, 0);
+				return;
+			}
+			if (guyLocation.equals(world.portalLeft(i)) && guy.dir == LEFT) {
+				guy.placeAt(world.portalRight(i), 0, 0);
+				return;
+			}
+		}
+		guy.couldMove = tryMoving(guy, guy.wishDir);
+		if (guy.couldMove) {
+			guy.dir = guy.wishDir;
+		} else {
+			guy.couldMove = tryMoving(guy, guy.dir);
+		}
+	}
+
+	private boolean tryMoving(Creature guy, Direction dir) {
+		// 100% speed corresponds to 1.25 pixels/tick (75px/sec)
+		float pixels = guy.speed * 1.25f;
+
+		V2i guyLocationBeforeMove = guy.tile();
+		V2f offset = guy.offset();
+		V2i neighbor = guyLocationBeforeMove.sum(dir.vec);
+
+		// check if guy can change its direction now
+		if (guy.forcedOnTrack && guy.canAccessTile(world, neighbor)) {
+			if (dir == LEFT || dir == RIGHT) {
+				if (abs(offset.y) > pixels) {
+					return false;
+				}
+				guy.setOffset(offset.x, 0);
+			} else if (dir == UP || dir == DOWN) {
+				if (abs(offset.x) > pixels) {
+					return false;
+				}
+				guy.setOffset(0, offset.y);
+			}
+		}
+
+		V2f velocity = new V2f(dir.vec).scaled(pixels);
+		V2f newPosition = guy.position.sum(velocity);
+		V2i newTile = tile(newPosition);
+		V2f newOffset = offset(newPosition);
+
+		// block moving into inaccessible tile
+		if (!guy.canAccessTile(world, newTile)) {
+			return false;
+		}
+
+		// align with edge of inaccessible neighbor
+		if (!guy.canAccessTile(world, neighbor)) {
+			if (dir == RIGHT && newOffset.x > 0 || dir == LEFT && newOffset.x < 0) {
+				guy.setOffset(0, offset.y);
+				return false;
+			}
+			if (dir == DOWN && newOffset.y > 0 || dir == UP && newOffset.y < 0) {
+				guy.setOffset(offset.x, 0);
+				return false;
+			}
+		}
+
+		guy.placeAt(newTile, newOffset.x, newOffset.y);
+		guy.changedTile = !guy.tile().equals(guyLocationBeforeMove);
+		return true;
+	}
+
+	private Optional<Direction> randomAccessibleDirection(V2i tile, Direction... excludedDirections) {
+		List<Direction> dirs = accessibleDirections(tile, excludedDirections).collect(Collectors.toList());
+		return dirs.isEmpty() ? Optional.empty() : Optional.of(dirs.get(rnd.nextInt(dirs.size())));
+	}
+
+	private Stream<Direction> accessibleDirections(V2i tile, Direction... excludedDirections) {
+		//@formatter:off
+		return Stream.of(Direction.values())
+			.filter(dir -> Stream.of(excludedDirections).noneMatch(excludedDir -> excludedDir == dir))
+			.filter(dir -> world.isAccessible(tile.sum(dir.vec)));
+		//@formatter:on
+	}
+
+	// Pac
+
 	private void updatePac() {
 		if (pac.restingTicksLeft > 0) {
 			pac.restingTicksLeft--;
@@ -682,6 +770,41 @@ public class PacManGame implements Runnable {
 		}
 	}
 
+	private void pacGetsPower() {
+		int seconds = level.ghostFrightenedSeconds;
+		pac.powerTicksLeft = clock.sec(seconds);
+		if (seconds > 0) {
+			log("Pac-Man got power for %d seconds", seconds);
+			for (Ghost ghost : ghosts) {
+				if (ghost.state == GhostState.HUNTING) {
+					ghost.state = GhostState.FRIGHTENED;
+					ghost.wishDir = ghost.dir.opposite();
+					ghost.forcedDirection = true;
+				}
+			}
+			ui.loopSound(PacManGameSound.PACMAN_POWER);
+		}
+	}
+
+	private void pacKilled(Ghost killer) {
+		log("%s killed by %s at tile %s", pac.name, killer.name, killer.tile());
+		pac.dead = true;
+		byte elroyMode = ghosts[BLINKY].elroyMode;
+		if (elroyMode > 0) {
+			ghosts[BLINKY].elroyMode = (byte) -elroyMode; // negative value means "disabled"
+			log("Blinky Elroy mode %d disabled", elroyMode);
+		}
+		globalDotCounter = 0;
+		globalDotCounterEnabled = true;
+		log("Global dot counter reset and enabled");
+	}
+
+	private int pacStarvingTimeLimit() {
+		return levelNumber < 5 ? clock.sec(4) : clock.sec(3);
+	}
+
+	// Bonus
+
 	private void checkBonusActivation() {
 		int eaten = world.eatenFoodCount();
 		if (eaten == 70 || eaten == 170) {
@@ -706,65 +829,17 @@ public class PacManGame implements Runnable {
 		}
 	}
 
-	private void checkBlinkyBecomesElroy() {
-		if (world.foodRemaining() == level.elroy1DotsLeft) {
-			ghosts[BLINKY].elroyMode = 1;
-			log("Blinky becomes Cruise Elroy 1");
-		} else if (world.foodRemaining() == level.elroy2DotsLeft) {
-			ghosts[BLINKY].elroyMode = 2;
-			log("Blinky becomes Cruise Elroy 2");
-		}
-	}
-
-	private int pacStarvingTimeLimit() {
-		return levelNumber < 5 ? clock.sec(4) : clock.sec(3);
-	}
-
-	private void pacKilled(Ghost killer) {
-		log("%s killed by %s at tile %s", pac.name, killer.name, killer.tile());
-		pac.dead = true;
-		byte elroyMode = ghosts[BLINKY].elroyMode;
-		if (elroyMode > 0) {
-			ghosts[BLINKY].elroyMode = (byte) -elroyMode; // negative value means "disabled"
-			log("Blinky Elroy mode %d disabled", elroyMode);
-		}
-		globalDotCounter = 0;
-		globalDotCounterEnabled = true;
-		log("Global dot counter reset and enabled");
-	}
-
-	private void pacGetsPower() {
-		int seconds = level.ghostFrightenedSeconds;
-		pac.powerTicksLeft = clock.sec(seconds);
-		if (seconds > 0) {
-			log("Pac-Man got power for %d seconds", seconds);
-			for (Ghost ghost : ghosts) {
-				if (ghost.state == GhostState.HUNTING) {
-					ghost.state = GhostState.FRIGHTENED;
-					ghost.wishDir = ghost.dir.opposite();
-					ghost.forcedDirection = true;
-				}
+	private void letBonusWanderMaze() {
+		V2i bonusLocation = bonus.tile();
+		if (!bonus.couldMove || world.isIntersection(bonusLocation)) {
+			List<Direction> dirs = accessibleDirections(bonusLocation, bonus.dir.opposite()).collect(Collectors.toList());
+			if (dirs.size() > 1) {
+				// give random movement a bias towards the target direction
+				dirs.remove(bonus.targetDirection.opposite());
 			}
-			ui.loopSound(PacManGameSound.PACMAN_POWER);
+			bonus.wishDir = dirs.get(rnd.nextInt(dirs.size()));
 		}
-	}
-
-	private Optional<Ghost> ghostCollidingWithPac() {
-		return Stream.of(ghosts).filter(ghost -> ghost.tile().equals(pac.tile())).findAny();
-	}
-
-	private void updateGhostDotCounters() {
-		if (globalDotCounterEnabled) {
-			if (ghosts[CLYDE].state == GhostState.LOCKED && globalDotCounter == 32) {
-				globalDotCounterEnabled = false;
-				globalDotCounter = 0;
-				log("Global dot counter disabled and reset, Clyde was in house when counter reached 32");
-			} else {
-				++globalDotCounter;
-			}
-		} else {
-			preferredLockedGhost().ifPresent(ghost -> ++ghost.dotCounter);
-		}
+		tryMoving(bonus);
 	}
 
 	private void updateBonus() {
@@ -803,18 +878,7 @@ public class PacManGame implements Runnable {
 		}
 	}
 
-	private void letBonusWanderMaze() {
-		V2i bonusLocation = bonus.tile();
-		if (!bonus.couldMove || world.isIntersection(bonusLocation)) {
-			List<Direction> dirs = accessibleDirections(bonusLocation, bonus.dir.opposite()).collect(Collectors.toList());
-			if (dirs.size() > 1) {
-				// give random movement a bias towards the target direction
-				dirs.remove(bonus.targetDirection.opposite());
-			}
-			bonus.wishDir = dirs.get(rnd.nextInt(dirs.size()));
-		}
-		tryMoving(bonus);
-	}
+	// Ghosts
 
 	private void updateGhost(Ghost ghost) {
 		switch (ghost.state) {
@@ -844,41 +908,32 @@ public class PacManGame implements Runnable {
 		}
 	}
 
-	private void tryReleasingGhost(Ghost ghost) {
-		if (globalDotCounterEnabled && globalDotCounter >= ghostGlobalDotLimit(ghost)) {
-			releaseGhost(ghost, "Global dot counter (%d) reached limit (%d)", globalDotCounter, ghostGlobalDotLimit(ghost));
-		} else if (!globalDotCounterEnabled && ghost.dotCounter >= ghostPrivateDotLimit(ghost)) {
-			releaseGhost(ghost, "%s's dot counter (%d) reached limit (%d)", ghost.name, ghost.dotCounter,
-					ghostPrivateDotLimit(ghost));
+	private Optional<Ghost> ghostCollidingWithPac() {
+		return Stream.of(ghosts).filter(ghost -> ghost.tile().equals(pac.tile())).findAny();
+	}
+
+	private void checkBlinkyBecomesElroy() {
+		if (world.foodRemaining() == level.elroy1DotsLeft) {
+			ghosts[BLINKY].elroyMode = 1;
+			log("Blinky becomes Cruise Elroy 1");
+		} else if (world.foodRemaining() == level.elroy2DotsLeft) {
+			ghosts[BLINKY].elroyMode = 2;
+			log("Blinky becomes Cruise Elroy 2");
 		}
 	}
 
-	private void releaseGhost(Ghost ghost, String reason, Object... args) {
-		ghost.state = GhostState.LEAVING_HOUSE;
-		if (ghost.id == CLYDE && ghosts[BLINKY].elroyMode < 0) {
-			ghosts[BLINKY].elroyMode = (byte) -ghosts[BLINKY].elroyMode; // resume Elroy mode
-			log("Blinky Elroy mode %d resumed", ghosts[BLINKY].elroyMode);
+	private void ghostKilled(Ghost ghost) {
+		ghost.state = GhostState.DEAD;
+		ghost.speed = 2 * level.ghostSpeed; // TODO correct?
+		ghost.targetTile = world.houseEntry();
+		ghost.bounty = ghostBounty;
+		score(ghost.bounty);
+		ghostsKilledInLevel++;
+		if (ghostsKilledInLevel == 16) {
+			score(12000);
 		}
-		log("Ghost %s released: %s", ghost.name, String.format(reason, args));
-	}
-
-	private Optional<Ghost> preferredLockedGhost() {
-		return Stream.of(PINKY, INKY, CLYDE).map(id -> ghosts[id]).filter(ghost -> ghost.state == GhostState.LOCKED)
-				.findFirst();
-	}
-
-	private int ghostPrivateDotLimit(Ghost ghost) {
-		if (ghost.id == INKY) {
-			return levelNumber == 1 ? 30 : 0;
-		}
-		if (ghost.id == CLYDE) {
-			return levelNumber == 1 ? 60 : levelNumber == 2 ? 50 : 0;
-		}
-		return 0;
-	}
-
-	private int ghostGlobalDotLimit(Ghost ghost) {
-		return ghost.id == PINKY ? 7 : ghost.id == INKY ? 17 : Integer.MAX_VALUE;
+		ghostBounty *= 2;
+		log("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name, ghost.tile(), ghost.bounty);
 	}
 
 	private V2i ghostChasingTarget(int id) {
@@ -908,20 +963,6 @@ public class PacManGame implements Runnable {
 		default:
 			throw new IllegalArgumentException("Unknown ghost id: " + id);
 		}
-	}
-
-	private void ghostKilled(Ghost ghost) {
-		ghost.state = GhostState.DEAD;
-		ghost.speed = 2 * level.ghostSpeed; // TODO correct?
-		ghost.targetTile = world.houseEntry();
-		ghost.bounty = ghostBounty;
-		score(ghost.bounty);
-		ghostsKilledInLevel++;
-		if (ghostsKilledInLevel == 16) {
-			score(12000);
-		}
-		ghostBounty *= 2;
-		log("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name, ghost.tile(), ghost.bounty);
 	}
 
 	private void letGhostBounce(Ghost ghost) {
@@ -1087,88 +1128,57 @@ public class PacManGame implements Runnable {
 		}
 	}
 
-	private void tryMoving(Creature guy) {
-		V2i guyLocation = guy.tile();
-		// teleport?
-		for (int i = 0; i < world.numPortals(); ++i) {
-			if (guyLocation.equals(world.portalRight(i)) && guy.dir == RIGHT) {
-				guy.placeAt(world.portalLeft(i), 0, 0);
-				return;
-			}
-			if (guyLocation.equals(world.portalLeft(i)) && guy.dir == LEFT) {
-				guy.placeAt(world.portalRight(i), 0, 0);
-				return;
-			}
+	// Ghost house
+
+	private void tryReleasingGhost(Ghost ghost) {
+		if (globalDotCounterEnabled && globalDotCounter >= ghostGlobalDotLimit(ghost)) {
+			releaseGhost(ghost, "Global dot counter (%d) reached limit (%d)", globalDotCounter, ghostGlobalDotLimit(ghost));
+		} else if (!globalDotCounterEnabled && ghost.dotCounter >= ghostPrivateDotLimit(ghost)) {
+			releaseGhost(ghost, "%s's dot counter (%d) reached limit (%d)", ghost.name, ghost.dotCounter,
+					ghostPrivateDotLimit(ghost));
 		}
-		guy.couldMove = tryMoving(guy, guy.wishDir);
-		if (guy.couldMove) {
-			guy.dir = guy.wishDir;
+	}
+
+	private void releaseGhost(Ghost ghost, String reason, Object... args) {
+		ghost.state = GhostState.LEAVING_HOUSE;
+		if (ghost.id == CLYDE && ghosts[BLINKY].elroyMode < 0) {
+			ghosts[BLINKY].elroyMode = (byte) -ghosts[BLINKY].elroyMode; // resume Elroy mode
+			log("Blinky Elroy mode %d resumed", ghosts[BLINKY].elroyMode);
+		}
+		log("Ghost %s released: %s", ghost.name, String.format(reason, args));
+	}
+
+	private Optional<Ghost> preferredLockedGhost() {
+		return Stream.of(PINKY, INKY, CLYDE).map(id -> ghosts[id]).filter(ghost -> ghost.state == GhostState.LOCKED)
+				.findFirst();
+	}
+
+	private int ghostPrivateDotLimit(Ghost ghost) {
+		if (ghost.id == INKY) {
+			return levelNumber == 1 ? 30 : 0;
+		}
+		if (ghost.id == CLYDE) {
+			return levelNumber == 1 ? 60 : levelNumber == 2 ? 50 : 0;
+		}
+		return 0;
+	}
+
+	private int ghostGlobalDotLimit(Ghost ghost) {
+		return ghost.id == PINKY ? 7 : ghost.id == INKY ? 17 : Integer.MAX_VALUE;
+	}
+
+	private void updateGhostDotCounters() {
+		if (globalDotCounterEnabled) {
+			if (ghosts[CLYDE].state == GhostState.LOCKED && globalDotCounter == 32) {
+				globalDotCounterEnabled = false;
+				globalDotCounter = 0;
+				log("Global dot counter disabled and reset, Clyde was in house when counter reached 32");
+			} else {
+				++globalDotCounter;
+			}
 		} else {
-			guy.couldMove = tryMoving(guy, guy.dir);
+			preferredLockedGhost().ifPresent(ghost -> ++ghost.dotCounter);
 		}
-	}
-
-	private boolean tryMoving(Creature guy, Direction dir) {
-		// 100% speed corresponds to 1.25 pixels/tick (75px/sec)
-		float pixels = guy.speed * 1.25f;
-
-		V2i guyLocationBeforeMove = guy.tile();
-		V2f offset = guy.offset();
-		V2i neighbor = guyLocationBeforeMove.sum(dir.vec);
-
-		// check if guy can change its direction now
-		if (guy.forcedOnTrack && guy.canAccessTile(world, neighbor)) {
-			if (dir == LEFT || dir == RIGHT) {
-				if (abs(offset.y) > pixels) {
-					return false;
-				}
-				guy.setOffset(offset.x, 0);
-			} else if (dir == UP || dir == DOWN) {
-				if (abs(offset.x) > pixels) {
-					return false;
-				}
-				guy.setOffset(0, offset.y);
-			}
-		}
-
-		V2f velocity = new V2f(dir.vec).scaled(pixels);
-		V2f newPosition = guy.position.sum(velocity);
-		V2i newTile = tile(newPosition);
-		V2f newOffset = offset(newPosition);
-
-		// block moving into inaccessible tile
-		if (!guy.canAccessTile(world, newTile)) {
-			return false;
-		}
-
-		// align with edge of inaccessible neighbor
-		if (!guy.canAccessTile(world, neighbor)) {
-			if (dir == RIGHT && newOffset.x > 0 || dir == LEFT && newOffset.x < 0) {
-				guy.setOffset(0, offset.y);
-				return false;
-			}
-			if (dir == DOWN && newOffset.y > 0 || dir == UP && newOffset.y < 0) {
-				guy.setOffset(offset.x, 0);
-				return false;
-			}
-		}
-
-		guy.placeAt(newTile, newOffset.x, newOffset.y);
-		guy.changedTile = !guy.tile().equals(guyLocationBeforeMove);
-		return true;
-	}
-
-	private Optional<Direction> randomAccessibleDirection(V2i tile, Direction... excludedDirections) {
-		List<Direction> dirs = accessibleDirections(tile, excludedDirections).collect(Collectors.toList());
-		return dirs.isEmpty() ? Optional.empty() : Optional.of(dirs.get(rnd.nextInt(dirs.size())));
-	}
-
-	private Stream<Direction> accessibleDirections(V2i tile, Direction... excludedDirections) {
-		//@formatter:off
-		return Stream.of(Direction.values())
-			.filter(dir -> Stream.of(excludedDirections).noneMatch(excludedDir -> excludedDir == dir))
-			.filter(dir -> world.isAccessible(tile.sum(dir.vec)));
-		//@formatter:on
 	}
 
 	// Score
