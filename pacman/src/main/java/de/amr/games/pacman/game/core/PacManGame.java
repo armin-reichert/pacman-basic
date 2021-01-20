@@ -453,7 +453,7 @@ public class PacManGame {
 		updateBonus();
 
 		checkPacFindsFood();
-		checkPacFindsBonus();
+		checkPacFindsEdibleBonus();
 
 		Optional<Ghost> collidingGhost = ghostCollidingWithPac();
 		if (collidingGhost.isPresent() && collidingGhost.get().state == GhostState.FRIGHTENED) {
@@ -653,7 +653,7 @@ public class PacManGame {
 		}
 	}
 
-	private void checkPacFindsBonus() {
+	private void checkPacFindsEdibleBonus() {
 		if (bonus.edibleTicks > 0 && pac.tile().equals(bonus.tile())) {
 			bonus.edibleTicks = 0;
 			bonus.eatenTicks = clock.sec(2);
