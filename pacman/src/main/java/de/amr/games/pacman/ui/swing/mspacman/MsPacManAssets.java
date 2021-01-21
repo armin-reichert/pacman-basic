@@ -3,7 +3,7 @@ package de.amr.games.pacman.ui.swing.mspacman;
 import static de.amr.games.pacman.game.worlds.MsPacManWorld.APPLE;
 import static de.amr.games.pacman.game.worlds.MsPacManWorld.BANANA;
 import static de.amr.games.pacman.game.worlds.MsPacManWorld.CHERRIES;
-import static de.amr.games.pacman.game.worlds.MsPacManWorld.ORANGE;
+import static de.amr.games.pacman.game.worlds.MsPacManWorld.PEACH;
 import static de.amr.games.pacman.game.worlds.MsPacManWorld.PEAR;
 import static de.amr.games.pacman.game.worlds.MsPacManWorld.PRETZEL;
 import static de.amr.games.pacman.game.worlds.MsPacManWorld.STRAWBERRY;
@@ -59,7 +59,7 @@ public class MsPacManAssets {
 
 		symbols[CHERRIES]   = section(3, 0);
 		symbols[STRAWBERRY] = section(4, 0);
-		symbols[ORANGE]     = section(5, 0);
+		symbols[PEACH]      = section(5, 0);
 		symbols[PRETZEL]    = section(6, 0);
 		symbols[APPLE]      = section(7, 0);
 		symbols[PEAR]       = section(8, 0);

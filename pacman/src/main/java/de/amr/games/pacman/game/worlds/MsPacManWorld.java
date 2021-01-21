@@ -17,7 +17,7 @@ import de.amr.games.pacman.lib.Direction;
  */
 public class MsPacManWorld extends AbstractPacManGameWorld {
 
-	public static final byte CHERRIES = 0, STRAWBERRY = 1, ORANGE = 2, PRETZEL = 3, APPLE = 4, PEAR = 5, BANANA = 6;
+	public static final byte CHERRIES = 0, STRAWBERRY = 1, PEACH = 2, PRETZEL = 3, APPLE = 4, PEAR = 5, BANANA = 6;
 
 	public static final short[] BONUS_POINTS = { 100, 200, 500, 700, 1000, 2000, 5000 };
 
@@ -29,7 +29,7 @@ public class MsPacManWorld extends AbstractPacManGameWorld {
 	public static final int[][] LEVELS = {
 	/* 1*/ {CHERRIES,    80, 75, 40,  20,  80, 10,  85,  90, 50, 6, 5},
 	/* 2*/ {STRAWBERRY,  90, 85, 45,  30,  90, 15,  95,  95, 55, 5, 5},
-	/* 3*/ {ORANGE,      90, 85, 45,  40,  90, 20,  95,  95, 55, 4, 5},
+	/* 3*/ {PEACH,      90, 85, 45,  40,  90, 20,  95,  95, 55, 4, 5},
 	/* 4*/ {PRETZEL,     90, 85, 45,  40,  90, 20,  95,  95, 55, 3, 5},
 	/* 5*/ {APPLE,      100, 95, 50,  40, 100, 20, 105, 100, 60, 2, 5},
 	/* 6*/ {PEAR,       100, 95, 50,  50, 100, 25, 105, 100, 60, 5, 5},
