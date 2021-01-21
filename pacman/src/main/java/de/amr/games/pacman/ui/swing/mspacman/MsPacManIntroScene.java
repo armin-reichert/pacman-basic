@@ -98,7 +98,7 @@ public class MsPacManIntroScene implements PacManGameScene {
 		g.setFont(assets.scoreFont);
 		g.setColor(Color.ORANGE);
 		drawCenteredText(g, "\"MS PAC-MAN\"", t(5));
-		drawFrame(g, Color.RED, game.clock.frame(2, 8));
+		drawFrame(g, Color.RED, game.clock.frame(4, 8));
 
 		for (int ghost = 0; ghost <= 3; ++ghost) {
 
@@ -155,7 +155,7 @@ public class MsPacManIntroScene implements PacManGameScene {
 		if (pacWalking) {
 			pacX -= speed;
 		}
-		if (pacX <= t(14)) {
+		if (pacX <= t(13)) {
 			pacWalking = false;
 			pacReachedTarget = true;
 		}
