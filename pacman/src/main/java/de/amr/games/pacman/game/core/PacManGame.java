@@ -1,7 +1,7 @@
 package de.amr.games.pacman.game.core;
 
-import static de.amr.games.pacman.game.core.GameVariant.CLASSIC;
-import static de.amr.games.pacman.game.core.GameVariant.MS_PACMAN;
+import static de.amr.games.pacman.game.core.PacManGameVariant.CLASSIC;
+import static de.amr.games.pacman.game.core.PacManGameVariant.MS_PACMAN;
 import static de.amr.games.pacman.game.core.PacManGameState.CHANGING_LEVEL;
 import static de.amr.games.pacman.game.core.PacManGameState.GAME_OVER;
 import static de.amr.games.pacman.game.core.PacManGameState.GHOST_DYING;
@@ -74,7 +74,7 @@ public class PacManGame implements Runnable {
 	public final Clock clock = new Clock();
 	public final Random rnd = new Random();
 
-	public GameVariant variant;
+	public PacManGameVariant variant;
 	public PacManGameWorld world;
 	public Pac pac;
 	public Ghost[] ghosts;
@@ -104,13 +104,13 @@ public class PacManGame implements Runnable {
 
 	private boolean pacImmune = false;
 
-	public PacManGame(GameVariant variant) {
+	public PacManGame(PacManGameVariant variant) {
 		enterIntroState();
 		log("State is '%s' for %s", stateDescription(), ticksDescription(state.duration()));
 		setGameVariant(variant);
 	}
 
-	private void setGameVariant(GameVariant variant) {
+	private void setGameVariant(PacManGameVariant variant) {
 		this.variant = variant;
 		hiscore = new Hiscore(new File(System.getProperty("user.home"), "pacman-hiscore-" + variant + ".xml"));
 		world = (variant == CLASSIC) ? new PacManClassicWorld() : new MsPacManWorld();

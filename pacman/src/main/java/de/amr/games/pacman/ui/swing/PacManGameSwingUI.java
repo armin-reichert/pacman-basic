@@ -22,7 +22,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.Timer;
 
-import de.amr.games.pacman.game.core.GameVariant;
+import de.amr.games.pacman.game.core.PacManGameVariant;
 import de.amr.games.pacman.game.core.PacManGame;
 import de.amr.games.pacman.game.core.PacManGameState;
 import de.amr.games.pacman.lib.V2i;
@@ -152,7 +152,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 			stopAllSounds();
 		}
 
-		if (game.variant == GameVariant.CLASSIC) {
+		if (game.variant == PacManGameVariant.CLASSIC) {
 			PacManClassicAssets assets = new PacManClassicAssets();
 			soundManager = new PacManGameSoundManager(assets.soundPaths::get);
 			introScene = new PacManClassicIntroScene(game, unscaledSizeInPixels, assets);

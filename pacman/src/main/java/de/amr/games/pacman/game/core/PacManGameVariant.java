@@ -1,5 +1,5 @@
 package de.amr.games.pacman.game.core;
 
-public enum GameVariant {
+public enum PacManGameVariant {
 	CLASSIC, MS_PACMAN
 }
