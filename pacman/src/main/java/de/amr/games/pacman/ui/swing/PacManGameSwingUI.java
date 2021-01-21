@@ -22,9 +22,9 @@ import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.Timer;
 
-import de.amr.games.pacman.game.core.PacManGameVariant;
 import de.amr.games.pacman.game.core.PacManGame;
 import de.amr.games.pacman.game.core.PacManGameState;
+import de.amr.games.pacman.game.core.PacManGameVariant;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.api.PacManGameSound;
 import de.amr.games.pacman.ui.api.PacManGameUI;
@@ -32,6 +32,7 @@ import de.amr.games.pacman.ui.swing.classic.PacManClassicAssets;
 import de.amr.games.pacman.ui.swing.classic.PacManClassicIntroScene;
 import de.amr.games.pacman.ui.swing.classic.PacManClassicPlayScene;
 import de.amr.games.pacman.ui.swing.mspacman.MsPacManAssets;
+import de.amr.games.pacman.ui.swing.mspacman.MsPacManIntroScene2;
 import de.amr.games.pacman.ui.swing.mspacman.MsPacManIntroScene;
 import de.amr.games.pacman.ui.swing.mspacman.MsPacManPlayScene;
 import de.amr.games.pacman.ui.swing.scene.PacManGameScene;
@@ -67,7 +68,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 	static final int FASTMODE_KEY = KeyEvent.VK_F;
 	static final int DEBUGMODE_KEY = KeyEvent.VK_D;
 
-	private final V2i unscaledSizeInPixels;
+	private final V2i unscaledSizePixels;
 	private final V2i scaledSizeInPixels;
 	private final float scaling;
 	private final JFrame window;
@@ -86,8 +87,8 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 	public PacManGameSwingUI(PacManGame game, float scaling) {
 		this.scaling = scaling;
-		unscaledSizeInPixels = game.world.sizeInTiles().scaled(TS);
-		scaledSizeInPixels = new V2i((int) (unscaledSizeInPixels.x * scaling), (int) (unscaledSizeInPixels.y * scaling));
+		unscaledSizePixels = game.world.sizeInTiles().scaled(TS);
+		scaledSizeInPixels = new V2i((int) (unscaledSizePixels.x * scaling), (int) (unscaledSizePixels.y * scaling));
 
 		window = new JFrame();
 
@@ -155,13 +156,14 @@ public class PacManGameSwingUI implements PacManGameUI {
 		if (game.variant == PacManGameVariant.CLASSIC) {
 			PacManClassicAssets assets = new PacManClassicAssets();
 			soundManager = new PacManGameSoundManager(assets.soundPaths::get);
-			introScene = new PacManClassicIntroScene(game, unscaledSizeInPixels, assets);
-			playScene = new PacManClassicPlayScene(game, unscaledSizeInPixels, assets);
+			introScene = new PacManClassicIntroScene(game, unscaledSizePixels, assets);
+			playScene = new PacManClassicPlayScene(game, unscaledSizePixels, assets);
 		} else {
 			MsPacManAssets assets = new MsPacManAssets();
 			soundManager = new PacManGameSoundManager(assets.soundPaths::get);
-			introScene = new MsPacManIntroScene(game, unscaledSizeInPixels, assets);
-			playScene = new MsPacManPlayScene(game, unscaledSizeInPixels, assets);
+			introScene = new MsPacManIntroScene2(game, unscaledSizePixels, assets);
+			introScene = new MsPacManIntroScene(game, unscaledSizePixels, assets);
+			playScene = new MsPacManPlayScene(game, unscaledSizePixels, assets);
 		}
 
 		if (titleUpdateTimer != null) {
@@ -220,7 +222,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 			gScaled.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 			gScaled.setColor(messageColor);
 			int textWidth = gScaled.getFontMetrics().stringWidth(messageText);
-			gScaled.drawString(messageText, (unscaledSizeInPixels.x - textWidth) / 2, t(21));
+			gScaled.drawString(messageText, (unscaledSizePixels.x - textWidth) / 2, t(21));
 			gScaled.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
 		}
 		gScaled.dispose();

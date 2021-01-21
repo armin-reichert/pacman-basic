@@ -1,15 +1,14 @@
 package de.amr.games.pacman.ui.swing.mspacman;
 
 import static de.amr.games.pacman.game.worlds.PacManGameWorld.t;
-import static de.amr.games.pacman.lib.Direction.LEFT;
-import static de.amr.games.pacman.lib.Direction.RIGHT;
+import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.TEXTS;
 import static de.amr.games.pacman.ui.swing.mspacman.MsPacManAssets.DIR_INDEX;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.util.stream.IntStream;
+import java.util.Arrays;
 
 import de.amr.games.pacman.game.core.PacManGame;
 import de.amr.games.pacman.lib.Direction;
@@ -17,13 +16,6 @@ import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.api.PacManGameSound;
 import de.amr.games.pacman.ui.swing.scene.PacManGameScene;
 
-/**
- * Intro presenting the ghosts and showing the chasing animations.
- * 
- * TODO: implement the real Ms. Pac-Man intro
- * 
- * @author Armin Reichert
- */
 public class MsPacManIntroScene implements PacManGameScene {
 
 	private static final Color[] GHOST_COLORS = { Color.RED, Color.PINK, Color.CYAN, Color.ORANGE };
@@ -31,11 +23,6 @@ public class MsPacManIntroScene implements PacManGameScene {
 	private final PacManGame game;
 	private final V2i size;
 	private final MsPacManAssets assets;
-
-	private float pacManX;
-	private float leftmostGhostX;
-	private int lastKilledGhost;
-	private boolean ghostsChasingPacMan;
 
 	public MsPacManIntroScene(PacManGame game, V2i size, MsPacManAssets assets) {
 		this.game = game;
@@ -48,71 +35,159 @@ public class MsPacManIntroScene implements PacManGameScene {
 		return size;
 	}
 
+	private BufferedImage ghostWalking(Direction dir, int ghostID, boolean animated) {
+		if (animated) {
+			int frame = game.clock.frame(5, 2);
+			return assets.section(2 * DIR_INDEX.get(dir) + frame, 4 + ghostID);
+		} else {
+			return assets.section(2 * DIR_INDEX.get(dir), 4 + ghostID);
+		}
+	}
+
+	private BufferedImage pacWalking(Direction dir, boolean animated) {
+		if (animated) {
+			int frame = game.clock.frame(5, 3);
+			return assets.section(frame, DIR_INDEX.get(dir));
+		} else {
+			return assets.section(1, DIR_INDEX.get(dir));
+		}
+	}
+
+	private final long animationStart = 60;
+	private final V2i frameSize = new V2i(t(6), t(8));
+	private final float speed = 0.5f;
+	private final int ghostTargetX = frameSize.x - 24;
+	private int[] ghostX = new int[4];
+	private int[] ghostY = new int[4];
+	private Direction[] ghostDirection = new Direction[4];
+	private boolean[] ghostWalking = new boolean[4];
+	private boolean[] ghostReachedTarget = new boolean[4];
+	private boolean pacWalking;
+	private boolean pacReachedTarget;
+	private int pacX, pacY;
+
 	@Override
 	public void start() {
+		Arrays.fill(ghostX, size.x);
+		Arrays.fill(ghostY, t(17));
+		Arrays.fill(ghostWalking, false);
+		Arrays.fill(ghostDirection, Direction.LEFT);
+		Arrays.fill(ghostReachedTarget, false);
+		pacWalking = false;
+		pacReachedTarget = false;
+		pacX = size.x;
+		pacY = t(17);
 		game.state.resetTimer();
-		pacManX = size.x;
-		leftmostGhostX = pacManX + 24;
-		lastKilledGhost = -1;
-		ghostsChasingPacMan = true;
 	}
 
 	@Override
 	public void draw(Graphics2D g, Graphics2D unscaledGC) {
-		game.state.runAfter(game.clock.sec(1), () -> drawLogo(unscaledGC, g.getTransform().getScaleX()));
 
-		game.state.runAfter(game.clock.sec(2), () -> {
-			g.setColor(Color.WHITE);
-			g.setFont(assets.scoreFont);
-			drawCenteredText(g, TEXTS.getString("CHARACTER_NICKNAME"), t(8));
-		});
+		if (game.state.tick() < animationStart) {
+			return;
+		}
 
-		IntStream.rangeClosed(0, 3).forEach(ghost -> {
-			int ghostStart = 3 + 2 * ghost;
-			int y = t(10 + 3 * ghost);
-			game.state.runAt(game.clock.sec(ghostStart), () -> {
-				game.ui.playSound(PacManGameSound.CREDIT);
-			});
-			game.state.runAfter(game.clock.sec(ghostStart), () -> {
-				g.drawImage(assets.section(0, 4 + ghost), t(2) - 3, y - 2, null);
-			});
-			game.state.runAfter(game.clock.sec(ghostStart + 0.5), () -> {
-				drawGhostCharacterAndName(g, ghost, y, false);
-			});
-			game.state.runAfter(game.clock.sec(ghostStart + 1), () -> {
-				drawGhostCharacterAndName(g, ghost, y, true);
-			});
-		});
+		// run animation
 
-		game.state.runAfter(game.clock.sec(12), () -> {
-			drawPointsAnimation(g);
-		});
+		long animationTime = game.state.tick() - animationStart;
+		if (animationTime == animationStart) {
+			ghostWalking[0] = true;
+			game.ui.playSound(PacManGameSound.CREDIT);
+		}
 
-		game.state.runAt(game.clock.sec(13), () -> {
-			game.ui.loopSound(PacManGameSound.GHOST_SIREN_1);
-		});
+		g.setFont(assets.scoreFont);
+		g.setColor(Color.ORANGE);
+		drawCenteredText(g, "\"MS PAC-MAN\"", t(5));
+		drawFrame(g, Color.RED);
 
-		game.state.runAfter(game.clock.sec(13), () -> {
-			if (ghostsChasingPacMan) {
-				drawGhostsChasingPacMan(g);
-			} else {
-				drawPacManChasingGhosts(g);
+		for (int ghost = 0; ghost <= 3; ++ghost) {
+
+			if (ghostReachedTarget[ghost]) {
+				g.drawImage(ghostWalking(UP, ghost, false), ghostTargetX, frameSize.y + 16 * ghost, null);
+				continue;
 			}
-		});
 
-		game.state.runAt(game.clock.sec(24), () -> {
-			game.ui.stopSound(PacManGameSound.PACMAN_POWER);
-		});
+			if (ghostWalking[ghost]) {
+				g.setFont(assets.scoreFont);
 
-		game.state.runAfter(game.clock.sec(24), () -> {
+				// display text
+				if (ghost == 0) {
+					g.setColor(Color.WHITE);
+					g.drawString("WITH", t(8), t(11));
+				}
+				g.setColor(GHOST_COLORS[ghost]);
+				drawCenteredText(g, game.world.ghostName(ghost), t(14));
+
+				// walk
+				if (ghostDirection[ghost] == Direction.LEFT) {
+					ghostX[ghost] -= speed;
+				} else if (ghostDirection[ghost] == Direction.UP) {
+					ghostY[ghost] -= speed;
+				}
+				if (ghostX[ghost] == ghostTargetX) {
+					ghostDirection[ghost] = Direction.UP;
+				}
+				BufferedImage sprite = ghostWalking(ghostDirection[ghost], ghost, !ghostReachedTarget[ghost]);
+				g.drawImage(sprite, ghostX[ghost], ghostY[ghost], null);
+
+				// target reached?
+				if (ghostY[ghost] <= frameSize.y + ghost * 16) {
+					ghostReachedTarget[ghost] = true;
+					ghostWalking[ghost] = false;
+					if (ghost < 3) {
+						ghostWalking[ghost + 1] = true;
+						game.ui.playSound(PacManGameSound.CREDIT);
+					} else {
+						pacWalking = true;
+						game.ui.loopSound(PacManGameSound.PACMAN_MUNCH);
+					}
+				}
+			}
+		}
+
+		if (ghostReachedTarget[3]) {
+			g.setColor(Color.WHITE);
+			g.drawString("STARRING", t(8), t(11));
+			g.setColor(Color.YELLOW);
+			g.drawString("MS PAC-MAN", t(11), t(14));
+		}
+
+		if (pacWalking) {
+			pacX -= speed;
+		}
+		if (pacX <= t(14)) {
+			pacWalking = false;
+			pacReachedTarget = true;
+		}
+		if (pacWalking) {
+			g.drawImage(pacWalking(Direction.LEFT, true), pacX, pacY, null);
+		} else if (pacReachedTarget) {
+			g.drawImage(pacWalking(Direction.LEFT, false), pacX, pacY, null);
+		}
+
+		if (pacReachedTarget) {
+			drawPointsAnimation(g);
 			drawPressKeyToStart(g);
-		});
+			game.ui.stopAllSounds();
+		}
 
-		game.state.runAt(game.clock.sec(30), this::start);
+		// restart intro after 30 seconds
+		if (animationTime == game.clock.sec(30)) {
+			start();
+		}
 	}
 
-	private void drawLogo(Graphics2D g, double scaling) {
-		g.drawImage(assets.gameLogo, (int) (size.x * scaling - assets.gameLogo.getWidth()) / 2, (int) (3 * scaling), null);
+	private void drawFrame(Graphics2D g, Color color) {
+		g.setColor(color);
+		int dotsX = 34, dotsY = 16;
+		for (int i = 0; i <= dotsX; ++i) {
+			g.fillRect(frameSize.x + 4 * i, frameSize.y, 2, 2);
+			g.fillRect(frameSize.x + 4 * i, frameSize.y + 4 * dotsY, 2, 2);
+		}
+		for (int i = 1; i < dotsY; ++i) {
+			g.fillRect(frameSize.x, frameSize.y + 4 * i, 2, 2);
+			g.fillRect(frameSize.x + 4 * dotsX, frameSize.y + 4 * i, 2, 2);
+		}
 	}
 
 	private void drawPressKeyToStart(Graphics2D g) {
@@ -138,73 +213,4 @@ public class MsPacManIntroScene implements PacManGameScene {
 		g.drawString(TEXTS.getString("POINTS"), t(15), t(30));
 	}
 
-	private void drawGhostCharacterAndName(Graphics2D g, int ghostID, int y, boolean both) {
-		String character = TEXTS.getString("MSPACMAN.GHOST." + ghostID + ".CHARACTER");
-		String nickname = "\"" + TEXTS.getString("MSPACMAN.GHOST." + ghostID + ".NICKNAME") + "\"";
-		Color color = GHOST_COLORS[ghostID];
-		g.setColor(color);
-		g.setFont(assets.scoreFont);
-		g.drawString("-" + character, t(4), y + 11);
-		if (both) {
-			g.drawString(nickname, t(15), y + 11);
-		}
-	}
-
-	private void drawGhostsChasingPacMan(Graphics2D g) {
-		int y = t(22);
-		game.clock.runOrBeIdle(20, () -> {
-			g.setColor(Color.PINK);
-			g.fillOval(t(2), y + 2, 10, 10);
-		});
-		g.drawImage(pacManWalkingSprite(LEFT), (int) pacManX, y, null);
-		for (int ghost = 0; ghost < 4; ++ghost) {
-			g.drawImage(ghostWalkingSprite(LEFT, ghost), (int) leftmostGhostX + 16 * ghost, y, null);
-		}
-		if (pacManX > t(2)) {
-			pacManX -= 0.8f;
-			leftmostGhostX -= 0.8f;
-		} else {
-			ghostsChasingPacMan = false;
-			game.ui.stopSound(PacManGameSound.GHOST_SIREN_1);
-			game.ui.loopSound(PacManGameSound.PACMAN_POWER);
-		}
-	}
-
-	private void drawPacManChasingGhosts(Graphics2D g) {
-		int y = t(22);
-		BufferedImage frightenedGhost = ghostFrightenedSprite();
-		for (int ghost = 0; ghost < 4; ++ghost) {
-			int x = (int) leftmostGhostX + ghost * 16;
-			if (pacManX < x) {
-				g.drawImage(frightenedGhost, x, y, null);
-			} else if (pacManX > x && pacManX <= x + 16) {
-				int bounty = (int) (Math.pow(2, ghost) * 200);
-				g.drawImage(assets.bountyNumbers.get(bounty), x, y, null);
-				if (lastKilledGhost != ghost) {
-					lastKilledGhost++;
-					game.ui.playSound(PacManGameSound.GHOST_EATEN);
-				}
-			}
-		}
-		g.drawImage(pacManWalkingSprite(RIGHT), (int) pacManX, y, null);
-		if (pacManX < size.x) {
-			pacManX += 0.6f;
-			leftmostGhostX += 0.3f;
-		}
-	}
-
-	private BufferedImage pacManWalkingSprite(Direction dir) {
-		int frame = game.clock.frame(5, 3);
-		return assets.section(frame, DIR_INDEX.get(dir));
-	}
-
-	private BufferedImage ghostWalkingSprite(Direction dir, int ghost) {
-		int frame = game.clock.frame(5, 2);
-		return assets.section(2 * DIR_INDEX.get(dir) + frame, 4 + ghost);
-	}
-
-	private BufferedImage ghostFrightenedSprite() {
-		int frame = game.clock.frame(5, 2);
-		return assets.section(8 + frame, 4);
-	}
 }

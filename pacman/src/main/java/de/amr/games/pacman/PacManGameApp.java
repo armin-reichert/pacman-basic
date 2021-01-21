@@ -3,8 +3,8 @@ package de.amr.games.pacman;
 import static java.awt.EventQueue.invokeLater;
 import static java.lang.Float.parseFloat;
 
-import de.amr.games.pacman.game.core.PacManGameVariant;
 import de.amr.games.pacman.game.core.PacManGame;
+import de.amr.games.pacman.game.core.PacManGameVariant;
 import de.amr.games.pacman.ui.api.PacManGameUI;
 import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
 
@@ -18,7 +18,7 @@ public class PacManGameApp {
 	public static void main(String[] args) {
 		float scaling = args.length > 1 ? parseFloat(args[1]) : 2;
 		invokeLater(() -> {
-			PacManGame game = new PacManGame(PacManGameVariant.CLASSIC);
+			PacManGame game = new PacManGame(PacManGameVariant.MS_PACMAN);
 			PacManGameUI ui = new PacManGameSwingUI(game, scaling);
 			ui.openWindow();
 			new Thread(game, "PacManGame").start();
