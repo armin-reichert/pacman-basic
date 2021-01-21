@@ -166,7 +166,7 @@ public class MsPacManIntroScene implements PacManGameScene {
 		}
 
 		if (pacReachedTarget) {
-			drawPointsAnimation(g);
+			drawPointsAnimation(g, 26);
 			drawPressKeyToStart(g);
 			game.ui.stopAllSounds();
 		}
@@ -198,19 +198,19 @@ public class MsPacManIntroScene implements PacManGameScene {
 		});
 	}
 
-	private void drawPointsAnimation(Graphics2D g) {
+	private void drawPointsAnimation(Graphics2D g, int yTile) {
 		g.setColor(Color.PINK);
-		g.fillRect(t(9) + 6, t(27) + 2, 2, 2);
+		g.fillRect(t(9) + 6, t(yTile - 1) + 2, 2, 2);
 		game.clock.runOrBeIdle(20, () -> {
-			g.fillOval(t(9), t(29) - 2, 10, 10);
+			g.fillOval(t(9), t(yTile + 1) - 2, 10, 10);
 		});
 		g.setColor(Color.WHITE);
 		g.setFont(assets.scoreFont);
-		g.drawString("10", t(12), t(28));
-		g.drawString("50", t(12), t(30));
+		g.drawString("10", t(12), t(yTile));
+		g.drawString("50", t(12), t(yTile + 2));
 		g.setFont(assets.scoreFont.deriveFont(6f));
-		g.drawString(TEXTS.getString("POINTS"), t(15), t(28));
-		g.drawString(TEXTS.getString("POINTS"), t(15), t(30));
+		g.drawString(TEXTS.getString("POINTS"), t(15), t(yTile));
+		g.drawString(TEXTS.getString("POINTS"), t(15), t(yTile + 2));
 	}
 
 }
