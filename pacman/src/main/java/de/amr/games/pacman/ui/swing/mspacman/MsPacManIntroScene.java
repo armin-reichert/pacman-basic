@@ -98,7 +98,7 @@ public class MsPacManIntroScene implements PacManGameScene {
 		g.setFont(assets.scoreFont);
 		g.setColor(Color.ORANGE);
 		drawCenteredText(g, "\"MS PAC-MAN\"", t(5));
-		drawFrame(g, Color.RED);
+		drawFrame(g, Color.RED, game.clock.frame(2, 8));
 
 		for (int ghost = 0; ghost <= 3; ++ghost) {
 
@@ -177,16 +177,28 @@ public class MsPacManIntroScene implements PacManGameScene {
 		}
 	}
 
-	private void drawFrame(Graphics2D g, Color color) {
-		g.setColor(color);
-		int dotsX = 34, dotsY = 16;
-		for (int i = 0; i <= dotsX; ++i) {
+	private void drawFrame(Graphics2D g, Color color, int light) {
+		int dotsX = 32, dotsY = 16;
+		int dot = light;
+		for (int i = 0; i < dotsX; ++i) {
+			g.setColor(dot % 8 == 0 ? Color.WHITE : Color.RED);
 			g.fillRect(frameSize.x + 4 * i, frameSize.y, 2, 2);
-			g.fillRect(frameSize.x + 4 * i, frameSize.y + 4 * dotsY, 2, 2);
+			++dot;
 		}
-		for (int i = 1; i < dotsY; ++i) {
-			g.fillRect(frameSize.x, frameSize.y + 4 * i, 2, 2);
+		for (int i = 0; i < dotsY; ++i) {
+			g.setColor(dot % 8 == 0 ? Color.WHITE : Color.RED);
 			g.fillRect(frameSize.x + 4 * dotsX, frameSize.y + 4 * i, 2, 2);
+			++dot;
+		}
+		for (int i = dotsX; i >= 0; --i) {
+			g.setColor(dot % 8 == 0 ? Color.WHITE : Color.RED);
+			g.fillRect(frameSize.x + 4 * i, frameSize.y + 4 * dotsY, 2, 2);
+			++dot;
+		}
+		for (int i = dotsY - 1; i >= 0; --i) {
+			g.setColor(dot % 8 == 0 ? Color.WHITE : Color.RED);
+			g.fillRect(frameSize.x, frameSize.y + 4 * i, 2, 2);
+			++dot;
 		}
 	}
 
