@@ -152,14 +152,13 @@ public class MsPacManIntroScene implements PacManGameScene {
 			g.drawString("MS PAC-MAN", t(11), t(14));
 		}
 
-		if (pacWalking) {
-			pacX -= speed;
-		}
 		if (pacX <= t(13)) {
 			pacWalking = false;
 			pacReachedTarget = true;
 		}
+
 		if (pacWalking) {
+			pacX -= speed;
 			g.drawImage(pacWalking(Direction.LEFT, true), pacX, pacY, null);
 		} else if (pacReachedTarget) {
 			g.drawImage(pacWalking(Direction.LEFT, false), pacX, pacY, null);
