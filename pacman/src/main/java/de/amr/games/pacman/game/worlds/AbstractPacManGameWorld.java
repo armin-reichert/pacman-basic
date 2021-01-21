@@ -59,6 +59,7 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 	protected final List<V2i> portalsLeft = new ArrayList<>(2);
 	protected final List<V2i> portalsRight = new ArrayList<>(2);
 	protected final List<V2i> energizerTiles = new ArrayList<>(4);
+	protected final BitSet intersections = new BitSet();
 
 	protected byte[][] map;
 	protected final BitSet eaten = new BitSet();
@@ -109,6 +110,19 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 			}
 		}
 
+		// find intersections ("waypoints")
+		for (int y = 0; y < size.y; ++y) {
+			for (int x = 0; x < size.x; ++x) {
+				if (isInsideGhostHouse(x, y) || isGhostHouseDoor(x, y + 1)) {
+					continue;
+				}
+				V2i tile = new V2i(x, y);
+				if (Stream.of(Direction.values()).map(dir -> tile.sum(dir.vec)).filter(this::isAccessible).count() >= 3) {
+					intersections.set(tileIndex(x, y));
+				}
+			}
+		}
+
 		// find food
 		energizerTiles.clear();
 		totalFoodCount = 0;
@@ -135,7 +149,6 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 
 	@Override
 	public boolean inMapRange(int x, int y) {
-		V2i size = sizeInTiles();
 		return 0 <= x && x < size.x && 0 <= y && y < size.y;
 	}
 
@@ -226,10 +239,7 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 
 	@Override
 	public boolean isIntersection(int x, int y) {
-		if (isInsideGhostHouse(x, y) || isGhostHouseDoor(x, y + 1)) {
-			return false;
-		}
-		return Stream.of(Direction.values()).filter(dir -> isAccessible(x + dir.vec.x, y + dir.vec.y)).count() >= 3;
+		return intersections.get(tileIndex(x, y));
 	}
 
 	@Override
