@@ -21,7 +21,7 @@ public class MsPacManWorld extends AbstractPacManGameWorld {
 
 	public static final short[] BONUS_POINTS = { 100, 200, 500, 700, 1000, 2000, 5000 };
 
-	public static final String[] BONUS_NAMES = { "CHERRIES", "STRAWBERRY", "ORANGE", "PRETZEL", "APPLE", "PEAR",
+	public static final String[] BONUS_NAMES = { "CHERRIES", "STRAWBERRY", "PEACH", "PRETZEL", "APPLE", "PEAR",
 			"BANANA" };
 
 	// TODO how exactly are the levels of the Ms.Pac-Man game?
