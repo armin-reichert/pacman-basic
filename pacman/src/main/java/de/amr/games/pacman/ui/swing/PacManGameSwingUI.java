@@ -32,7 +32,6 @@ import de.amr.games.pacman.ui.swing.classic.PacManClassicAssets;
 import de.amr.games.pacman.ui.swing.classic.PacManClassicIntroScene;
 import de.amr.games.pacman.ui.swing.classic.PacManClassicPlayScene;
 import de.amr.games.pacman.ui.swing.mspacman.MsPacManAssets;
-import de.amr.games.pacman.ui.swing.mspacman.MsPacManIntroScene2;
 import de.amr.games.pacman.ui.swing.mspacman.MsPacManIntroScene;
 import de.amr.games.pacman.ui.swing.mspacman.MsPacManPlayScene;
 import de.amr.games.pacman.ui.swing.scene.PacManGameScene;
@@ -161,7 +160,6 @@ public class PacManGameSwingUI implements PacManGameUI {
 		} else {
 			MsPacManAssets assets = new MsPacManAssets();
 			soundManager = new PacManGameSoundManager(assets.soundPaths::get);
-			introScene = new MsPacManIntroScene2(game, unscaledSizePixels, assets);
 			introScene = new MsPacManIntroScene(game, unscaledSizePixels, assets);
 			playScene = new MsPacManPlayScene(game, unscaledSizePixels, assets);
 		}
