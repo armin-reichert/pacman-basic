@@ -4,12 +4,11 @@ package de.amr.games.pacman.game.core;
  * Data comprising a game level.
  * 
  * @author Armin Reichert
- *
  */
 public class PacManGameLevel {
 
-	private static float percent(Integer value) {
-		return value / 100.0f;
+	private static float percent(int value) {
+		return value / 100f;
 	}
 
 	public byte bonusSymbol;
