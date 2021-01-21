@@ -25,7 +25,7 @@ import de.amr.games.pacman.lib.V2i;
  */
 public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 
-	private static byte decode(char c) throws Exception {
+	private static byte decode(char c) {
 		switch (c) {
 		case ' ':
 			return SPACE;
@@ -40,7 +40,7 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 		case '*':
 			return ENERGIZER;
 		default:
-			throw new Exception(String.format("Unknown map character: '%c'", c));
+			throw new RuntimeException();
 		}
 	}
 
@@ -70,6 +70,7 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 	}
 
 	protected void loadMap(String path) {
+		int lineNumber = 0, errors = 0;
 		map = new byte[size.y][size.x];
 		try (InputStream is = getClass().getResourceAsStream(path)) {
 			if (is == null) {
@@ -78,14 +79,18 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 			BufferedReader rdr = new BufferedReader(new InputStreamReader(is));
 			int y = 0;
 			for (String line = rdr.readLine(); line != null; line = rdr.readLine()) {
+				++lineNumber;
 				if (line.startsWith("!") || line.isBlank()) {
 					continue; // skip comments and blank lines
 				}
 				for (int x = 0; x < size.x; ++x) {
+					char c = line.charAt(x);
 					try {
-						map[y][x] = decode(line.charAt(x));
+						map[y][x] = decode(c);
 					} catch (Exception cause) {
-						throw new RuntimeException(String.format("Error decoding map '%s', line %d, column %d", path, y, x), cause);
+						++errors;
+						map[y][x] = SPACE;
+						log("*** Error in map '%s': Illegal char '%c' at line %d, column %d", path, c, lineNumber, x + 1);
 					}
 				}
 				++y;
@@ -119,7 +124,7 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 		}
 		eaten.clear();
 		foodRemaining = totalFoodCount;
-		log("Map '%s' loaded, total food count=%d (%d pellets + %d energizers)", path, totalFoodCount,
+		log("Loaded map '%s' (%d errors), total food count=%d (%d pellets + %d energizers)", path, errors, totalFoodCount,
 				totalFoodCount - energizerTiles.size(), energizerTiles.size());
 	}
 
