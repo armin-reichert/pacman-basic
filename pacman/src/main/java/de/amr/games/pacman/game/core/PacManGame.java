@@ -1,7 +1,5 @@
 package de.amr.games.pacman.game.core;
 
-import static de.amr.games.pacman.game.core.PacManGameVariant.CLASSIC;
-import static de.amr.games.pacman.game.core.PacManGameVariant.MS_PACMAN;
 import static de.amr.games.pacman.game.core.PacManGameState.CHANGING_LEVEL;
 import static de.amr.games.pacman.game.core.PacManGameState.GAME_OVER;
 import static de.amr.games.pacman.game.core.PacManGameState.GHOST_DYING;
@@ -9,6 +7,8 @@ import static de.amr.games.pacman.game.core.PacManGameState.HUNTING;
 import static de.amr.games.pacman.game.core.PacManGameState.INTRO;
 import static de.amr.games.pacman.game.core.PacManGameState.PACMAN_DYING;
 import static de.amr.games.pacman.game.core.PacManGameState.READY;
+import static de.amr.games.pacman.game.core.PacManGameVariant.CLASSIC;
+import static de.amr.games.pacman.game.core.PacManGameVariant.MS_PACMAN;
 import static de.amr.games.pacman.game.worlds.PacManClassicWorld.BLINKY;
 import static de.amr.games.pacman.game.worlds.PacManClassicWorld.CLYDE;
 import static de.amr.games.pacman.game.worlds.PacManClassicWorld.INKY;
@@ -306,7 +306,7 @@ public class PacManGame implements Runnable {
 		if (ui.keyPressed("space")) {
 			return changeState(this::exitIntroState, this::enterReadyState);
 		}
-		return state.tick();
+		return state.doTick();
 	}
 
 	private void exitIntroState() {
@@ -328,24 +328,24 @@ public class PacManGame implements Runnable {
 		if (state.expired()) {
 			return changeState(this::exitReadyState, this::enterHuntingState);
 		}
-		if (state.atTick(clock.sec(0.5))) {
+		if (state.tick() == clock.sec(0.5)) {
 			ui.showMessage(TEXTS.getString("READY"), false);
 			for (Ghost ghost : ghosts) {
 				ghost.visible = true;
 			}
 		}
-		if (state.atTick(clock.sec(1)) && !started) {
+		if (state.tick() == clock.sec(1) && !started) {
 			ui.playSound(PacManGameSound.GAME_READY);
 			started = true;
 		}
-		if (state.ticks() > clock.sec(1)) {
+		if (state.tick() > clock.sec(1)) {
 			for (Ghost ghost : ghosts) {
 				if (ghost.id != BLINKY) {
 					letGhostBounce(ghost);
 				}
 			}
 		}
-		return state.tick();
+		return state.doTick();
 	}
 
 	private void exitReadyState() {
@@ -462,7 +462,7 @@ public class PacManGame implements Runnable {
 		}
 
 		// hunting state timer is stopped as long as Pac has power
-		return pac.powerTicksLeft == 0 ? state.tick() : state;
+		return pac.powerTicksLeft == 0 ? state.doTick() : state;
 	}
 
 	private void exitHuntingState() {
@@ -490,12 +490,12 @@ public class PacManGame implements Runnable {
 				return changeState(this::exitPacManDyingState, this::enterGameOverState);
 			}
 		}
-		if (state.atTick(clock.sec(1.5))) {
+		if (state.tick() == clock.sec(1.5)) {
 			for (Ghost ghost : ghosts) {
 				ghost.visible = false;
 			}
 		}
-		if (state.atTick(clock.sec(2.5))) {
+		if (state.tick() == clock.sec(2.5)) {
 			pac.collapsingTicksLeft = clock.sec(1.5);
 			ui.playSound(PacManGameSound.PACMAN_DEATH);
 		}
@@ -503,7 +503,7 @@ public class PacManGame implements Runnable {
 			// count down until 1 such that animation stays at last frame until state expires
 			pac.collapsingTicksLeft--;
 		}
-		return state.tick();
+		return state.doTick();
 	}
 
 	private void exitPacManDyingState() {
@@ -534,7 +534,7 @@ public class PacManGame implements Runnable {
 				updateGhost(ghost);
 			}
 		}
-		return state.tick();
+		return state.doTick();
 	}
 
 	private void exitGhostDyingState() {
@@ -564,15 +564,15 @@ public class PacManGame implements Runnable {
 		if (state.expired()) {
 			return changeState(this::exitChangingLevelState, this::enterReadyState, this::nextLevel);
 		}
-		if (state.ticks() == clock.sec(2)) {
+		if (state.tick() == clock.sec(2)) {
 			for (Ghost ghost : ghosts) {
 				ghost.visible = false;
 			}
 		}
-		if (state.ticks() == clock.sec(3)) {
+		if (state.tick() == clock.sec(3)) {
 			mazeFlashesRemaining = level.numFlashes;
 		}
-		return state.tick();
+		return state.doTick();
 	}
 
 	private void exitChangingLevelState() {
@@ -599,7 +599,7 @@ public class PacManGame implements Runnable {
 		if (state.expired() || ui.keyPressed("space")) {
 			return changeState(this::exitGameOverState, this::enterIntroState, this::reset);
 		}
-		return state.tick();
+		return state.doTick();
 	}
 
 	private void exitGameOverState() {
