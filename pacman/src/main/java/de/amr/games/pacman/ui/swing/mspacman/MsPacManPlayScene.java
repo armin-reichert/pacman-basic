@@ -98,10 +98,9 @@ public class MsPacManPlayScene extends PacManGamePlayScene {
 
 	private void drawMaze(Graphics2D g) {
 		MsPacManWorld world = (MsPacManWorld) game.world;
-		int mazeIndex = world.mazeIndex - 1;
 		if (game.mazeFlashesRemaining > 0) {
 			game.clock.runAlternating(game.clock.sec(0.25), () -> {
-				g.drawImage(assets.mazeEmptyDark[mazeIndex], 0, t(3), null);
+				g.drawImage(assets.mazeEmptyDark[world.mazeNumber - 1], 0, t(3), null);
 			}, () -> {
 //				g.drawImage(assets.mazeEmptyBright[mazeIndex], 0, t(3), null);
 			}, () -> {
@@ -109,7 +108,7 @@ public class MsPacManPlayScene extends PacManGamePlayScene {
 			});
 			return;
 		}
-		g.drawImage(assets.mazeFull[mazeIndex], 0, t(3), null);
+		g.drawImage(assets.mazeFull[world.mazeNumber - 1], 0, t(3), null);
 		range(0, game.world.sizeInTiles().x).forEach(x -> {
 			range(4, game.world.sizeInTiles().y - 3).forEach(y -> {
 				if (game.world.isFoodRemoved(x, y)) {

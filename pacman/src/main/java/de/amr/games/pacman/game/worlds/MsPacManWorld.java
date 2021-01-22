@@ -54,34 +54,28 @@ public class MsPacManWorld extends AbstractPacManGameWorld {
 	private static final String[] GHOST_NAMES = { "Blinky", "Pinky", "Inky", "Sue" };
 
 	private final Random rnd = new Random();
-	public int mazeIndex; // 1-6
-
-	private void selectMaze(int mazeIndex) {
-		this.mazeIndex = mazeIndex;
-		// Maze #5 has the same map as #3 but a different color, same for #6 vs. #4
-		int mapIndex = mazeIndex == 5 ? 3 : mazeIndex == 6 ? 4 : mazeIndex;
-		loadMap("/worlds/mspacman/map" + mapIndex + ".txt");
-	}
+	public int mazeNumber; // 1-6
 
 	@Override
 	public PacManGameLevel enterLevel(int levelNumber) {
-		int maze;
 		if (levelNumber <= 2) {
-			maze = 1; // pink maze, white dots
+			mazeNumber = 1; // pink maze, white dots
 		} else if (levelNumber <= 5) {
-			maze = 2; // light blue maze, yellow dots
+			mazeNumber = 2; // light blue maze, yellow dots
 		} else if (levelNumber <= 9) {
-			maze = 3; // orange maze, red dots
+			mazeNumber = 3; // orange maze, red dots
 		} else if (levelNumber <= 13) {
-			maze = 4; // dark blue maze, white dots
+			mazeNumber = 4; // dark blue maze, white dots
 		} else if ((levelNumber - 14) % 8 < 4) {
 			// from level 14 on, maze switches between 5 and 6 every 4 levels
-			maze = 5; // pink maze, cyan dots (same map as maze 3)
+			mazeNumber = 5; // pink maze, cyan dots (same map as maze 3)
 		} else {
-			maze = 6; // orange maze, white dots (same map as maze 4)
+			mazeNumber = 6; // orange maze, white dots (same map as maze 4)
 		}
-		selectMaze(maze);
-		log("Use maze #%d at game level %d", maze, levelNumber);
+		// Maze #5 has the same map as #3 but a different color, same for #6 vs. #4
+		int mapIndex = mazeNumber == 5 ? 3 : mazeNumber == 6 ? 4 : mazeNumber;
+		loadMap("/worlds/mspacman/map" + mapIndex + ".txt");
+		log("Use maze #%d at game level %d", mazeNumber, levelNumber);
 
 		int row = levelNumber <= 21 ? levelNumber - 1 : 20;
 		PacManGameLevel level = new PacManGameLevel(LEVELS[row]);
