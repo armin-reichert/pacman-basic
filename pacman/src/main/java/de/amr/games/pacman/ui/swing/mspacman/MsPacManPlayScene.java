@@ -70,8 +70,9 @@ public class MsPacManPlayScene extends PacManGamePlayScene {
 
 	private void drawLivesCounter(Graphics2D g) {
 		int maxLives = 5;
+		int displayedLives = game.started ? game.lives - 1 : game.lives;
 		int y = size.y - t(2);
-		for (int i = 0; i < Math.min(game.lives, maxLives); ++i) {
+		for (int i = 0; i < Math.min(displayedLives, maxLives); ++i) {
 			g.drawImage(assets.life, t(2 * (i + 1)), y, null);
 		}
 		if (game.lives > maxLives) {

@@ -327,6 +327,7 @@ public class PacManGame implements Runnable {
 
 	private PacManGameState runReadyState() {
 		if (state.expired()) {
+			started = true;
 			return changeState(this::exitReadyState, this::enterHuntingState);
 		}
 		if (state.tick() == clock.sec(0.5)) {
@@ -335,9 +336,8 @@ public class PacManGame implements Runnable {
 				ghost.visible = true;
 			}
 		}
-		if (state.tick() == clock.sec(1) && !started) {
+		if (!started && state.tick() == clock.sec(1)) {
 			ui.playSound(PacManGameSound.GAME_READY);
-			started = true;
 		}
 		if (state.tick() > clock.sec(1)) {
 			for (Ghost ghost : ghosts) {
