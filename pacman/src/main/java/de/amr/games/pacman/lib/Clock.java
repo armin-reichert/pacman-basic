@@ -42,8 +42,17 @@ public class Clock {
 		return (int) (seconds * targetFrequency);
 	}
 
-	public int frame(int frameTicks, int numFrames) {
-		return (int) (ticksTotal / frameTicks) % numFrames;
+	/**
+	 * Computes the animation frame at the current clock tick. For example, if each animation frame
+	 * shall take 2 ticks and the complete animation consists of 4 different frames, then the call
+	 * <code>frame(2, 4)</code> produces repeatedly the sequence <code>0, 0, 1, 1, 2, 2, 3, 3</code>.
+	 * 
+	 * @param animationFrameTicks duration in ticks of one animation frame
+	 * @param numFrames           number of frames of the complete animation
+	 * @return animation frame for current clock tick
+	 */
+	public int frame(int animationFrameTicks, int numFrames) {
+		return (int) (ticksTotal / animationFrameTicks) % numFrames;
 	}
 
 	/**
