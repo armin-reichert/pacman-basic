@@ -63,7 +63,6 @@ class PacManGameSoundManager {
 
 	public void playSound(PacManGameSound sound) {
 		getClip(sound).start();
-		;
 	}
 
 	public void loopSound(PacManGameSound sound) {
