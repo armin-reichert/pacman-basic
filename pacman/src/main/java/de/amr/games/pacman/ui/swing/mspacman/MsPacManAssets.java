@@ -9,9 +9,11 @@ import static de.amr.games.pacman.game.worlds.MsPacManWorld.PRETZEL;
 import static de.amr.games.pacman.game.worlds.MsPacManWorld.STRAWBERRY;
 import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.font;
 import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.image;
+import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.url;
 
 import java.awt.Font;
 import java.awt.image.BufferedImage;
+import java.net.URL;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
@@ -40,7 +42,7 @@ public class MsPacManAssets {
 	public final BufferedImage[] symbols = new BufferedImage[8];
 	public final Map<Integer, BufferedImage> numbers = new HashMap<>();
 	public final Map<Integer, BufferedImage> bountyNumbers = new HashMap<>();
-	public final Map<PacManGameSound, String> soundPaths = new EnumMap<>(PacManGameSound.class);
+	public final Map<PacManGameSound, URL> soundURL = new EnumMap<>(PacManGameSound.class);
 	public final Font scoreFont;
 
 	public MsPacManAssets() {
@@ -78,20 +80,20 @@ public class MsPacManAssets {
 		bountyNumbers.put(800, section(2,8));
 		bountyNumbers.put(1600, section(3,8));
 	
-		soundPaths.put(PacManGameSound.CREDIT,           "/sound/mspacman/Coin Credit.wav");
-		soundPaths.put(PacManGameSound.EXTRA_LIFE,       "/sound/mspacman/Extra Life.wav");
-		soundPaths.put(PacManGameSound.GAME_READY,       "/sound/mspacman/Start.wav");
-		soundPaths.put(PacManGameSound.PACMAN_EAT_BONUS, "/sound/mspacman/Fruit.wav");
-		soundPaths.put(PacManGameSound.PACMAN_MUNCH,     "/sound/mspacman/Ms. Pac Man Pill.wav");
-		soundPaths.put(PacManGameSound.PACMAN_DEATH,     "/sound/mspacman/Died.wav");
-		soundPaths.put(PacManGameSound.PACMAN_POWER,     "/sound/mspacman/Scared Ghost.wav");
-		soundPaths.put(PacManGameSound.GHOST_EATEN,      "/sound/mspacman/Ghost.wav");
-		soundPaths.put(PacManGameSound.GHOST_EYES,       "/sound/mspacman/Ghost Eyes.wav");
-		soundPaths.put(PacManGameSound.GHOST_SIREN_1,    "/sound/mspacman/Ghost Noise.wav");
-		soundPaths.put(PacManGameSound.GHOST_SIREN_2,    "/sound/mspacman/Ghost Noise 1.wav");
-		soundPaths.put(PacManGameSound.GHOST_SIREN_3,    "/sound/mspacman/Ghost Noise 2.wav");
-		soundPaths.put(PacManGameSound.GHOST_SIREN_4,    "/sound/mspacman/Ghost Noise 3.wav");
-		soundPaths.put(PacManGameSound.GHOST_SIREN_5,    "/sound/mspacman/Ghost Noise 4.wav");
+		soundURL.put(PacManGameSound.CREDIT,           url("/sound/mspacman/Coin Credit.wav"));
+		soundURL.put(PacManGameSound.EXTRA_LIFE,       url("/sound/mspacman/Extra Life.wav"));
+		soundURL.put(PacManGameSound.GAME_READY,       url("/sound/mspacman/Start.wav"));
+		soundURL.put(PacManGameSound.PACMAN_EAT_BONUS, url("/sound/mspacman/Fruit.wav"));
+		soundURL.put(PacManGameSound.PACMAN_MUNCH,     url("/sound/mspacman/Ms. Pac Man Pill.wav"));
+		soundURL.put(PacManGameSound.PACMAN_DEATH,     url("/sound/mspacman/Died.wav"));
+		soundURL.put(PacManGameSound.PACMAN_POWER,     url("/sound/mspacman/Scared Ghost.wav"));
+		soundURL.put(PacManGameSound.GHOST_EATEN,      url("/sound/mspacman/Ghost.wav"));
+		soundURL.put(PacManGameSound.GHOST_EYES,       url("/sound/mspacman/Ghost Eyes.wav"));
+		soundURL.put(PacManGameSound.GHOST_SIREN_1,    url("/sound/mspacman/Ghost Noise.wav"));
+		soundURL.put(PacManGameSound.GHOST_SIREN_2,    url("/sound/mspacman/Ghost Noise 1.wav"));
+		soundURL.put(PacManGameSound.GHOST_SIREN_3,    url("/sound/mspacman/Ghost Noise 2.wav"));
+		soundURL.put(PacManGameSound.GHOST_SIREN_4,    url("/sound/mspacman/Ghost Noise 3.wav"));
+		soundURL.put(PacManGameSound.GHOST_SIREN_5,    url("/sound/mspacman/Ghost Noise 4.wav"));
 		//@formatter:on
 	}
 

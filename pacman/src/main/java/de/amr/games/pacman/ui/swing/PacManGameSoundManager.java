@@ -1,9 +1,8 @@
 package de.amr.games.pacman.ui.swing;
 
 import java.io.BufferedInputStream;
-import java.util.ArrayList;
+import java.net.URL;
 import java.util.EnumMap;
-import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -20,22 +19,23 @@ import de.amr.games.pacman.ui.api.PacManGameSound;
  */
 class PacManGameSoundManager {
 
-	private final Function<PacManGameSound, String> fnSoundPath;
+	private static final int MUNCHES = 2;
+
+	private final Function<PacManGameSound, URL> fnSoundURL;
 	private final Map<PacManGameSound, Clip> clipCache = new EnumMap<>(PacManGameSound.class);
-	private final List<Clip> munchingClips = new ArrayList<>(2);
+	private final Clip[] munchClips = new Clip[MUNCHES];
 	private int munchIndex;
 
-	public PacManGameSoundManager(Function<PacManGameSound, String> fnSoundPath) {
-		this.fnSoundPath = fnSoundPath;
-		munchIndex = 0;
-		for (int i = 0; i < 2; ++i) {
-			Clip clip = openClip(fnSoundPath.apply(PacManGameSound.PACMAN_MUNCH));
-			munchingClips.add(clip);
+	public PacManGameSoundManager(Function<PacManGameSound, URL> fnSoundURL) {
+		this.fnSoundURL = fnSoundURL;
+		for (int i = 0; i < MUNCHES; ++i) {
+			munchClips[i] = createAndOpenClip(fnSoundURL.apply(PacManGameSound.PACMAN_MUNCH));
 		}
+		munchIndex = 0;
 	}
 
-	private Clip openClip(String path) {
-		try (BufferedInputStream bs = new BufferedInputStream(getClass().getResourceAsStream(path))) {
+	private Clip createAndOpenClip(URL url) {
+		try (BufferedInputStream bs = new BufferedInputStream(url.openStream())) {
 			try (AudioInputStream as = AudioSystem.getAudioInputStream(bs)) {
 				Clip clip = AudioSystem.getClip();
 				clip.open(as);
@@ -46,48 +46,39 @@ class PacManGameSoundManager {
 		}
 	}
 
-	public void playSound(PacManGameSound sound) {
-		Clip clip = findClip(sound);
-		if (!clip.isOpen()) {
-			openClip(fnSoundPath.apply(sound));
+	private Clip getClip(PacManGameSound sound) {
+		Clip clip = null;
+		if (sound == PacManGameSound.PACMAN_MUNCH) {
+			clip = munchClips[munchIndex];
+			munchIndex = (munchIndex + 1) % MUNCHES;
+		} else if (clipCache.containsKey(sound)) {
+			clip = clipCache.get(sound);
+		} else {
+			clip = createAndOpenClip(fnSoundURL.apply(sound));
+			clipCache.put(sound, clip);
 		}
 		clip.setFramePosition(0);
-		clip.start();
+		return clip;
 	}
 
-	private Clip findClip(PacManGameSound sound) {
-		if (sound == PacManGameSound.PACMAN_MUNCH) {
-			Clip clip = munchingClips.get(munchIndex);
-			munchIndex = (munchIndex + 1) % munchingClips.size();
-			clip.setFramePosition(0);
-			return clip;
-		} else if (clipCache.containsKey(sound)) {
-			Clip clip = clipCache.get(sound);
-			return clip;
-		} else {
-			Clip clip = openClip(fnSoundPath.apply(sound));
-			clipCache.put(sound, clip);
-			return clip;
-		}
+	public void playSound(PacManGameSound sound) {
+		getClip(sound).start();
+		;
 	}
 
 	public void loopSound(PacManGameSound sound) {
-		Clip clip = findClip(sound);
-		clip.loop(Clip.LOOP_CONTINUOUSLY);
+		getClip(sound).loop(Clip.LOOP_CONTINUOUSLY);
 	}
 
 	public void stopSound(PacManGameSound sound) {
-		Clip clip = findClip(sound);
-		if (clip.isOpen() && clip.isRunning()) {
-			clip.stop();
-		}
+		getClip(sound).stop();
 	}
 
 	public void stopAllSounds() {
 		for (PacManGameSound sound : clipCache.keySet()) {
 			stopSound(sound);
 		}
-		for (Clip clip : munchingClips) {
+		for (Clip clip : munchClips) {
 			clip.stop();
 		}
 	}

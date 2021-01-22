@@ -16,6 +16,7 @@ import java.awt.event.WindowEvent;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
+import java.net.URL;
 import java.util.ResourceBundle;
 
 import javax.imageio.ImageIO;
@@ -51,8 +52,12 @@ public class PacManGameSwingUI implements PacManGameUI {
 	static final int KEY_FASTMODE = KeyEvent.VK_F;
 	static final int KEY_DEBUGMODE = KeyEvent.VK_D;
 
+	public static URL url(String path) {
+		return PacManGameSwingUI.class.getResource(path);
+	}
+
 	public static BufferedImage image(String path) {
-		try (InputStream is = PacManGameSwingUI.class.getResourceAsStream(path)) {
+		try (InputStream is = url(path).openStream()) {
 			return ImageIO.read(is);
 		} catch (Exception x) {
 			throw new AssetException("Could not load image with path '%s'", path);
@@ -60,7 +65,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 	}
 
 	public static Font font(String fontPath, int size) {
-		try (InputStream fontData = PacManGameSwingUI.class.getResourceAsStream(fontPath)) {
+		try (InputStream fontData = url(fontPath).openStream()) {
 			return Font.createFont(Font.TRUETYPE_FONT, fontData).deriveFont((float) size);
 		} catch (Exception x) {
 			throw new AssetException("Could not load font with path '%s'", fontPath);
@@ -154,12 +159,12 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 		if (game.variant == PacManGameVariant.CLASSIC) {
 			PacManClassicAssets assets = new PacManClassicAssets();
-			soundManager = new PacManGameSoundManager(assets.soundPaths::get);
+			soundManager = new PacManGameSoundManager(assets.soundURL::get);
 			introScene = new PacManClassicIntroScene(game, unscaledSizePixels, assets);
 			playScene = new PacManClassicPlayScene(game, unscaledSizePixels, assets);
 		} else {
 			MsPacManAssets assets = new MsPacManAssets();
-			soundManager = new PacManGameSoundManager(assets.soundPaths::get);
+			soundManager = new PacManGameSoundManager(assets.soundURL::get);
 			introScene = new MsPacManIntroScene(game, unscaledSizePixels, assets);
 			playScene = new MsPacManPlayScene(game, unscaledSizePixels, assets);
 		}
