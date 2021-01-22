@@ -106,9 +106,9 @@ public class PacManGame implements Runnable {
 	private boolean pacImmune = false;
 
 	public PacManGame(byte variant) {
+		setGameVariant(variant);
 		enterIntroState();
 		log("State is '%s' for %s", stateDescription(), ticksDescription(state.duration()));
-		setGameVariant(variant);
 	}
 
 	private void setGameVariant(byte variant) {
@@ -122,7 +122,7 @@ public class PacManGame implements Runnable {
 		}
 		bonus = new Bonus();
 		reset();
-		log("Game variant changed to %s", variant);
+		log("Game variant is %s", variant == CLASSIC ? "Pac-Man" : "Ms. Pac-Man");
 	}
 
 	private void reset() {
@@ -178,6 +178,9 @@ public class PacManGame implements Runnable {
 	}
 
 	private void nextLevel() {
+		levelNumber++;
+		level = world.enterLevel(levelNumber);
+		levelSymbols.add(level.bonusSymbol);
 		huntingPhase = 0;
 		mazeFlashesRemaining = 0;
 		ghostBounty = 200;
@@ -188,9 +191,6 @@ public class PacManGame implements Runnable {
 			ghost.dotCounter = 0;
 			ghost.elroyMode = 0;
 		}
-		levelNumber++;
-		level = world.enterLevel(levelNumber);
-		levelSymbols.add(level.bonusSymbol);
 	}
 
 	private void resetGuys() {
