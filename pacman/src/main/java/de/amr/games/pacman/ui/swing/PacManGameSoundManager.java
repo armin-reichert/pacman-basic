@@ -74,8 +74,8 @@ class PacManGameSoundManager {
 	}
 
 	public void stopAllSounds() {
-		for (PacManGameSound sound : clipCache.keySet()) {
-			stopSound(sound);
+		for (Clip clip : clipCache.values()) {
+			clip.stop();
 		}
 		for (Clip clip : munchClips) {
 			clip.stop();
