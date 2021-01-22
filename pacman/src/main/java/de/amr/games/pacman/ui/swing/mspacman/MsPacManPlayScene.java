@@ -17,7 +17,6 @@ import de.amr.games.pacman.game.core.PacManGameState;
 import de.amr.games.pacman.game.creatures.Ghost;
 import de.amr.games.pacman.game.creatures.GhostState;
 import de.amr.games.pacman.game.creatures.Pac;
-import de.amr.games.pacman.game.worlds.MsPacManWorld;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
@@ -97,10 +96,9 @@ public class MsPacManPlayScene extends PacManGamePlayScene {
 	}
 
 	private void drawMaze(Graphics2D g) {
-		MsPacManWorld world = (MsPacManWorld) game.world;
 		if (game.mazeFlashesRemaining > 0) {
 			game.clock.runAlternating(game.clock.sec(0.25), () -> {
-				g.drawImage(assets.mazeEmptyDark[world.mazeNumber - 1], 0, t(3), null);
+				g.drawImage(assets.mazeEmptyDark[game.level.mazeNumber - 1], 0, t(3), null);
 			}, () -> {
 //				g.drawImage(assets.mazeEmptyBright[mazeIndex], 0, t(3), null);
 			}, () -> {
@@ -108,7 +106,7 @@ public class MsPacManPlayScene extends PacManGamePlayScene {
 			});
 			return;
 		}
-		g.drawImage(assets.mazeFull[world.mazeNumber - 1], 0, t(3), null);
+		g.drawImage(assets.mazeFull[game.level.mazeNumber - 1], 0, t(3), null);
 		range(0, game.world.sizeInTiles().x).forEach(x -> {
 			range(4, game.world.sizeInTiles().y - 3).forEach(y -> {
 				if (game.world.isFoodRemoved(x, y)) {

@@ -54,34 +54,32 @@ public class MsPacManWorld extends AbstractPacManGameWorld {
 	private static final String[] GHOST_NAMES = { "Blinky", "Pinky", "Inky", "Sue" };
 
 	private final Random rnd = new Random();
-	public int mazeNumber; // 1-6
 
 	@Override
 	public PacManGameLevel enterLevel(int levelNumber) {
-		if (levelNumber <= 2) {
-			mazeNumber = 1; // pink maze, white dots
-		} else if (levelNumber <= 5) {
-			mazeNumber = 2; // light blue maze, yellow dots
-		} else if (levelNumber <= 9) {
-			mazeNumber = 3; // orange maze, red dots
-		} else if (levelNumber <= 13) {
-			mazeNumber = 4; // dark blue maze, white dots
-		} else if ((levelNumber - 14) % 8 < 4) {
-			// from level 14 on, maze switches between 5 and 6 every 4 levels
-			mazeNumber = 5; // pink maze, cyan dots (same map as maze 3)
-		} else {
-			mazeNumber = 6; // orange maze, white dots (same map as maze 4)
-		}
-		// Maze #5 has the same map as #3 but a different color, same for #6 vs. #4
-		int mapIndex = mazeNumber == 5 ? 3 : mazeNumber == 6 ? 4 : mazeNumber;
-		loadMap("/worlds/mspacman/map" + mapIndex + ".txt");
-		log("Use maze #%d at game level %d", mazeNumber, levelNumber);
-
 		int row = levelNumber <= 21 ? levelNumber - 1 : 20;
 		PacManGameLevel level = new PacManGameLevel(LEVELS[row]);
 		if (levelNumber > 7) {
 			level.bonusSymbol = (byte) rnd.nextInt(7);
 		}
+		if (levelNumber <= 2) {
+			level.mazeNumber = 1; // pink maze, white dots
+		} else if (levelNumber <= 5) {
+			level.mazeNumber = 2; // light blue maze, yellow dots
+		} else if (levelNumber <= 9) {
+			level.mazeNumber = 3; // orange maze, red dots
+		} else if (levelNumber <= 13) {
+			level.mazeNumber = 4; // dark blue maze, white dots
+		} else if ((levelNumber - 14) % 8 < 4) {
+			// from level 14 on, maze switches between 5 and 6 every 4 levels
+			level.mazeNumber = 5; // pink maze, cyan dots (same map as maze 3)
+		} else {
+			level.mazeNumber = 6; // orange maze, white dots (same map as maze 4)
+		}
+		// Maze #5 has the same map as #3 but a different color, same for #6 vs. #4
+		int mapIndex = level.mazeNumber == 5 ? 3 : level.mazeNumber == 6 ? 4 : level.mazeNumber;
+		loadMap("/worlds/mspacman/map" + mapIndex + ".txt");
+		log("Use maze #%d at game level %d", level.mazeNumber, levelNumber);
 		log("Use bonus %s at level %d", BONUS_NAMES[level.bonusSymbol], levelNumber);
 		return level;
 	}
