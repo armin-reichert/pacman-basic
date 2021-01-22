@@ -49,6 +49,25 @@ public class MsPacManPlayScene extends PacManGamePlayScene {
 		drawDebugInfo(g);
 	}
 
+	private Color getScoreColor() {
+		switch (game.level.mazeNumber) {
+		case 1:
+			return Color.PINK;
+		case 2:
+			return Color.CYAN;
+		case 3:
+			return Color.ORANGE;
+		case 4:
+			return Color.BLUE;
+		case 5:
+			return Color.PINK;
+		case 6:
+			return Color.ORANGE;
+		default:
+			return Color.WHITE;
+		}
+	}
+
 	private void drawScore(Graphics2D g) {
 		g.setFont(assets.scoreFont);
 		g.translate(0, 2);
@@ -56,11 +75,11 @@ public class MsPacManPlayScene extends PacManGamePlayScene {
 		g.drawString(TEXTS.getString("SCORE"), t(1), t(1));
 		g.drawString(TEXTS.getString("HI_SCORE"), t(16), t(1));
 		g.translate(0, 1);
-		g.setColor(Color.PINK);
+		g.setColor(getScoreColor());
 		g.drawString(String.format("%08d", game.score), t(1), t(2));
 		g.setColor(Color.LIGHT_GRAY);
 		g.drawString(String.format("L%02d", game.levelNumber), t(9), t(2));
-		g.setColor(Color.PINK);
+		g.setColor(getScoreColor());
 		g.drawString(String.format("%08d", game.hiscore.points), t(16), t(2));
 		g.setColor(Color.LIGHT_GRAY);
 		g.drawString(String.format("L%02d", game.hiscore.level), t(24), t(2));
