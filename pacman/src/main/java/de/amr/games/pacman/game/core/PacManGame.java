@@ -7,8 +7,6 @@ import static de.amr.games.pacman.game.core.PacManGameState.HUNTING;
 import static de.amr.games.pacman.game.core.PacManGameState.INTRO;
 import static de.amr.games.pacman.game.core.PacManGameState.PACMAN_DYING;
 import static de.amr.games.pacman.game.core.PacManGameState.READY;
-import static de.amr.games.pacman.game.core.PacManGameVariant.CLASSIC;
-import static de.amr.games.pacman.game.core.PacManGameVariant.MS_PACMAN;
 import static de.amr.games.pacman.game.worlds.PacManClassicWorld.BLINKY;
 import static de.amr.games.pacman.game.worlds.PacManClassicWorld.CLYDE;
 import static de.amr.games.pacman.game.worlds.PacManClassicWorld.INKY;
@@ -69,12 +67,15 @@ import de.amr.games.pacman.ui.api.PacManGameUI;
  */
 public class PacManGame implements Runnable {
 
+	public static final byte CLASSIC = 0;
+	public static final byte MS_PACMAN = 1;
+
 	static final ResourceBundle TEXTS = ResourceBundle.getBundle("localization.translation");
 
 	public final Clock clock = new Clock();
 	public final Random rnd = new Random();
 
-	public PacManGameVariant variant;
+	public byte variant;
 	public PacManGameWorld world;
 	public Pac pac;
 	public Ghost[] ghosts;
@@ -104,13 +105,13 @@ public class PacManGame implements Runnable {
 
 	private boolean pacImmune = false;
 
-	public PacManGame(PacManGameVariant variant) {
+	public PacManGame(byte variant) {
 		enterIntroState();
 		log("State is '%s' for %s", stateDescription(), ticksDescription(state.duration()));
 		setGameVariant(variant);
 	}
 
-	private void setGameVariant(PacManGameVariant variant) {
+	private void setGameVariant(byte variant) {
 		this.variant = variant;
 		hiscore = new Hiscore(new File(System.getProperty("user.home"), "pacman-hiscore-" + variant + ".xml"));
 		world = (variant == CLASSIC) ? new PacManClassicWorld() : new MsPacManWorld();
