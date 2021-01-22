@@ -113,10 +113,10 @@ public class MsPacManIntroScene implements PacManGameScene {
 				// display text
 				if (ghost == 0) {
 					g.setColor(Color.WHITE);
-					g.drawString("WITH", t(8), t(11));
+					g.drawString(TEXTS.getString("WITH"), t(8), t(11));
 				}
 				g.setColor(GHOST_COLORS[ghost]);
-				drawCenteredText(g, game.world.ghostName(ghost), t(14));
+				drawCenteredText(g, TEXTS.getString("MSPACMAN.GHOST." + ghost + ".NICKNAME"), t(14));
 
 				// walk
 				if (ghostDirection[ghost] == Direction.LEFT) {
@@ -147,7 +147,7 @@ public class MsPacManIntroScene implements PacManGameScene {
 
 		if (ghostReachedTarget[3]) {
 			g.setColor(Color.WHITE);
-			g.drawString("STARRING", t(8), t(11));
+			g.drawString(TEXTS.getString("STARRING"), t(8), t(11));
 			g.setColor(Color.YELLOW);
 			g.drawString("MS PAC-MAN", t(11), t(14));
 		}
