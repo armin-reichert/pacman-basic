@@ -56,7 +56,7 @@ public class MsPacManWorld extends AbstractPacManGameWorld {
 	private final Random rnd = new Random();
 
 	@Override
-	public PacManGameLevel enterLevel(int levelNumber) {
+	public PacManGameLevel createLevel(int levelNumber) {
 		int row = levelNumber <= 21 ? levelNumber - 1 : 20;
 		PacManGameLevel level = new PacManGameLevel(LEVELS[row]);
 		if (levelNumber > 7) {

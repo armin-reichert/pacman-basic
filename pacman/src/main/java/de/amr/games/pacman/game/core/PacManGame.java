@@ -179,7 +179,7 @@ public class PacManGame implements Runnable {
 
 	private void nextLevel() {
 		levelNumber++;
-		level = world.enterLevel(levelNumber);
+		level = world.createLevel(levelNumber);
 		levelSymbols.add(level.bonusSymbol);
 		huntingPhase = 0;
 		mazeFlashesRemaining = 0;
