@@ -11,10 +11,10 @@ public enum PacManGameState {
 
 	INTRO, READY, HUNTING, CHANGING_LEVEL, PACMAN_DYING, GHOST_DYING, GAME_OVER;
 
-	private long duration;
-	private long running;
+	public long duration;
+	public long running;
 
-	public PacManGameState doTick() {
+	public PacManGameState run() {
 		++running;
 		return this;
 	}
@@ -28,20 +28,12 @@ public enum PacManGameState {
 		running = 0;
 	}
 
-	public long ticksRemaining() {
+	public long remaining() {
 		return duration == Long.MAX_VALUE ? Long.MAX_VALUE : Math.max(duration - running, 0);
 	}
 
-	public long duration() {
-		return duration;
-	}
-
-	public long tick() {
-		return running;
-	}
-
-	public boolean expired() {
-		return ticksRemaining() == 0;
+	public boolean hasExpired() {
+		return remaining() == 0;
 	}
 
 	public void runAfter(long tick, Runnable code) {

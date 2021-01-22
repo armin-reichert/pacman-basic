@@ -38,7 +38,7 @@ public abstract class PacManGamePlayScene implements PacManGameScene {
 
 	public void drawDebugInfo(Graphics2D g) {
 		if (PacManGameSwingUI.debugMode) {
-			long remaining = game.state.ticksRemaining();
+			long remaining = game.state.remaining();
 			String ticksText = remaining == Long.MAX_VALUE ? "forever" : remaining + " ticks remaining";
 			String stateText = String.format("%s (%s)", game.stateDescription(), ticksText);
 			g.setColor(Color.WHITE);

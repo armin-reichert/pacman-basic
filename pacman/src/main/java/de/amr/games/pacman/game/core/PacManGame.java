@@ -108,7 +108,7 @@ public class PacManGame implements Runnable {
 	public PacManGame(byte variant) {
 		setGameVariant(variant);
 		enterIntroState();
-		log("State is '%s' for %s", stateDescription(), ticksDescription(state.duration()));
+		log("State is '%s' for %s", stateDescription(), ticksDescription(state.duration));
 	}
 
 	private void setGameVariant(byte variant) {
@@ -258,7 +258,7 @@ public class PacManGame implements Runnable {
 			action.run();
 		}
 		onEntry.run();
-		log("Enter state '%s' for %s", stateDescription(), ticksDescription(state.duration()));
+		log("Enter state '%s' for %s", stateDescription(), ticksDescription(state.duration));
 		return state;
 	}
 
@@ -307,7 +307,7 @@ public class PacManGame implements Runnable {
 		if (ui.keyPressed("space")) {
 			return changeState(this::exitIntroState, this::enterReadyState);
 		}
-		return state.doTick();
+		return state.run();
 	}
 
 	private void exitIntroState() {
@@ -326,27 +326,27 @@ public class PacManGame implements Runnable {
 	}
 
 	private PacManGameState runReadyState() {
-		if (state.expired()) {
+		if (state.hasExpired()) {
 			started = true;
 			return changeState(this::exitReadyState, this::enterHuntingState);
 		}
-		if (state.tick() == clock.sec(0.5)) {
+		if (state.running == clock.sec(0.5)) {
 			ui.showMessage(TEXTS.getString("READY"), false);
 			for (Ghost ghost : ghosts) {
 				ghost.visible = true;
 			}
 		}
-		if (!started && state.tick() == clock.sec(1)) {
+		if (!started && state.running == clock.sec(1)) {
 			ui.playSound(PacManGameSound.GAME_READY);
 		}
-		if (state.tick() > clock.sec(1)) {
+		if (state.running > clock.sec(1)) {
 			for (Ghost ghost : ghosts) {
 				if (ghost.id != BLINKY) {
 					letGhostBounce(ghost);
 				}
 			}
 		}
-		return state.doTick();
+		return state.run();
 	}
 
 	private void exitReadyState() {
@@ -436,7 +436,7 @@ public class PacManGame implements Runnable {
 			return changeState(this::exitHuntingState, this::enterChangingLevelState, null);
 		}
 
-		if (state.expired()) {
+		if (state.hasExpired()) {
 			startHuntingPhase(++huntingPhase);
 			forceHuntingGhostsTurningBack();
 		}
@@ -463,7 +463,7 @@ public class PacManGame implements Runnable {
 		}
 
 		// hunting state timer is stopped as long as Pac has power
-		return pac.powerTicksLeft == 0 ? state.doTick() : state;
+		return pac.powerTicksLeft == 0 ? state.run() : state;
 	}
 
 	private void exitHuntingState() {
@@ -484,7 +484,7 @@ public class PacManGame implements Runnable {
 	}
 
 	private PacManGameState runPacManDyingState() {
-		if (state.expired()) {
+		if (state.hasExpired()) {
 			lives -= 1;
 			if (lives > 0) {
 				return changeState(this::exitPacManDyingState, this::enterReadyState);
@@ -492,12 +492,12 @@ public class PacManGame implements Runnable {
 				return changeState(this::exitPacManDyingState, this::enterGameOverState);
 			}
 		}
-		if (state.tick() == clock.sec(1.5)) {
+		if (state.running == clock.sec(1.5)) {
 			for (Ghost ghost : ghosts) {
 				ghost.visible = false;
 			}
 		}
-		if (state.tick() == clock.sec(2.5)) {
+		if (state.running == clock.sec(2.5)) {
 			pac.collapsingTicksLeft = clock.sec(1.5);
 			ui.playSound(PacManGameSound.PACMAN_DEATH);
 		}
@@ -505,7 +505,7 @@ public class PacManGame implements Runnable {
 			// count down until 1 such that animation stays at last frame until state expires
 			pac.collapsingTicksLeft--;
 		}
-		return state.doTick();
+		return state.run();
 	}
 
 	private void exitPacManDyingState() {
@@ -526,7 +526,7 @@ public class PacManGame implements Runnable {
 	}
 
 	private PacManGameState runGhostDyingState() {
-		if (state.expired()) {
+		if (state.hasExpired()) {
 			return changeState(this::exitGhostDyingState, () -> state = stateBefore, () -> log("Resume state '%s'", state));
 		}
 		steerPac();
@@ -535,7 +535,7 @@ public class PacManGame implements Runnable {
 				updateGhost(ghost);
 			}
 		}
-		return state.doTick();
+		return state.run();
 	}
 
 	private void exitGhostDyingState() {
@@ -562,18 +562,18 @@ public class PacManGame implements Runnable {
 	}
 
 	private PacManGameState runChangingLevelState() {
-		if (state.expired()) {
+		if (state.hasExpired()) {
 			return changeState(this::exitChangingLevelState, this::enterReadyState, this::nextLevel);
 		}
-		if (state.tick() == clock.sec(2)) {
+		if (state.running == clock.sec(2)) {
 			for (Ghost ghost : ghosts) {
 				ghost.visible = false;
 			}
 		}
-		if (state.tick() == clock.sec(3)) {
+		if (state.running == clock.sec(3)) {
 			mazeFlashesRemaining = level.numFlashes;
 		}
-		return state.doTick();
+		return state.run();
 	}
 
 	private void exitChangingLevelState() {
@@ -597,10 +597,10 @@ public class PacManGame implements Runnable {
 	}
 
 	private PacManGameState runGameOverState() {
-		if (state.expired() || ui.keyPressed("space")) {
+		if (state.hasExpired() || ui.keyPressed("space")) {
 			return changeState(this::exitGameOverState, this::enterIntroState, this::reset);
 		}
-		return state.doTick();
+		return state.run();
 	}
 
 	private void exitGameOverState() {
