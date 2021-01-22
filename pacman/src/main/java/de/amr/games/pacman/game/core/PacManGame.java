@@ -484,6 +484,7 @@ public class PacManGame implements Runnable {
 
 	private PacManGameState runPacManDyingState() {
 		if (state.expired()) {
+			lives -= 1;
 			if (lives > 0) {
 				return changeState(this::exitPacManDyingState, this::enterReadyState);
 			} else {
@@ -507,7 +508,6 @@ public class PacManGame implements Runnable {
 	}
 
 	private void exitPacManDyingState() {
-		lives -= 1;
 		pac.collapsingTicksLeft = 0;
 		for (Ghost ghost : ghosts) {
 			ghost.visible = true;
