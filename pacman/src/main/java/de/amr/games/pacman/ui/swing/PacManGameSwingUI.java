@@ -43,6 +43,14 @@ import de.amr.games.pacman.ui.swing.scene.PacManGameScene;
  */
 public class PacManGameSwingUI implements PacManGameUI {
 
+	public static boolean debugMode;
+	public static final ResourceBundle TEXTS = ResourceBundle.getBundle("localization.translation");
+
+	static final int KEY_PAUSE = KeyEvent.VK_P;
+	static final int KEY_SLOWMODE = KeyEvent.VK_S;
+	static final int KEY_FASTMODE = KeyEvent.VK_F;
+	static final int KEY_DEBUGMODE = KeyEvent.VK_D;
+
 	public static BufferedImage image(String path) {
 		try (InputStream is = PacManGameSwingUI.class.getResourceAsStream(path)) {
 			return ImageIO.read(is);
@@ -58,14 +66,6 @@ public class PacManGameSwingUI implements PacManGameUI {
 			throw new AssetException("Could not load font with path '%s'", fontPath);
 		}
 	}
-
-	public static boolean debugMode;
-	public static final ResourceBundle TEXTS = ResourceBundle.getBundle("localization.translation");
-
-	static final int PAUSE_KEY = KeyEvent.VK_P;
-	static final int SLOWMODE_KEY = KeyEvent.VK_S;
-	static final int FASTMODE_KEY = KeyEvent.VK_F;
-	static final int DEBUGMODE_KEY = KeyEvent.VK_D;
 
 	private final V2i unscaledSizePixels;
 	private final V2i scaledSizeInPixels;
@@ -107,18 +107,18 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 			@Override
 			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == PAUSE_KEY) {
+				if (e.getKeyCode() == KEY_PAUSE) {
 					game.paused = !game.paused;
 				}
-				if (e.getKeyCode() == SLOWMODE_KEY) {
+				if (e.getKeyCode() == KEY_SLOWMODE) {
 					game.clock.targetFrequency = game.clock.targetFrequency == 60 ? 30 : 60;
 					log("Clock frequency changed to %d Hz", game.clock.targetFrequency);
 				}
-				if (e.getKeyCode() == FASTMODE_KEY) {
+				if (e.getKeyCode() == KEY_FASTMODE) {
 					game.clock.targetFrequency = game.clock.targetFrequency == 60 ? 120 : 60;
 					log("Clock frequency changed to %d Hz", game.clock.targetFrequency);
 				}
-				if (e.getKeyCode() == DEBUGMODE_KEY) {
+				if (e.getKeyCode() == KEY_DEBUGMODE) {
 					debugMode = !debugMode;
 					log("UI debug mode is %s", debugMode ? "on" : "off");
 				}
