@@ -50,28 +50,24 @@ public class Ghost extends Creature {
 	public void update(PacManGameWorld world, PacManGameLevel level) {
 		switch (state) {
 		case LOCKED:
-			speed = level.ghostSpeed / 2; // TODO speed correct?
 			if (!atGhostHouseDoor(world)) {
-				bounce(world);
+				bounce(world, level);
 			}
 			break;
 		case ENTERING_HOUSE:
 			enterHouse(world);
 			break;
 		case LEAVING_HOUSE:
-			speed = level.ghostSpeed / 2; // TODO speed correct?
-			leaveHouse(world);
+			leaveHouse(world, level);
 			break;
 		case FRIGHTENED:
-			speed = level.ghostSpeedFrightened;
-			targetTile = null;
-			wanderRandomly(world);
+			wanderRandomly(world, level.ghostSpeedFrightened);
 			break;
 		case HUNTING:
 			if (targetTile != null) {
 				headForTargetTile(world);
 			} else {
-				wanderRandomly(world);
+				wanderRandomly(world, level.ghostSpeed);
 			}
 			break;
 		case DEAD:
@@ -125,7 +121,7 @@ public class Ghost extends Creature {
 		tryMoving(world, wishDir);
 	}
 
-	public void leaveHouse(PacManGameWorld world) {
+	public void leaveHouse(PacManGameWorld world, PacManGameLevel level) {
 		V2i ghostLocation = tile();
 		V2f ghostOffset = offset();
 
@@ -149,14 +145,16 @@ public class Ghost extends Creature {
 		} else {
 			wishDir = position.x < centerX ? RIGHT : LEFT;
 		}
+		speed = level.ghostSpeed / 2; // TODO speed correct?
 		tryMoving(world, wishDir);
 	}
 
-	public void bounce(PacManGameWorld world) {
+	public void bounce(PacManGameWorld world, PacManGameLevel level) {
 		int ceiling = t(world.houseCenter().y) - 5, ground = t(world.houseCenter().y) + 4;
 		if (position.y <= ceiling || position.y >= ground) {
 			wishDir = dir.opposite();
 		}
+		speed = level.ghostSpeed / 2; // TODO speed correct?
 		tryMoving(world);
 	}
 
