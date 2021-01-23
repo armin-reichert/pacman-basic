@@ -1,6 +1,14 @@
 package de.amr.games.pacman.game.creatures;
 
+import static de.amr.games.pacman.lib.Direction.DOWN;
+import static de.amr.games.pacman.lib.Direction.LEFT;
+import static de.amr.games.pacman.lib.Direction.RIGHT;
+import static de.amr.games.pacman.lib.Direction.UP;
+
+import java.util.Optional;
+
 import de.amr.games.pacman.game.worlds.PacManGameWorld;
+import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
 
 /**
@@ -44,5 +52,30 @@ public class Ghost extends Creature {
 			return state == GhostState.ENTERING_HOUSE || state == GhostState.LEAVING_HOUSE;
 		}
 		return super.canAccessTile(world, x, y);
+	}
+
+	private static final Direction[] DIRECTION_PRIORITY = { UP, LEFT, DOWN, RIGHT };
+
+	public Optional<Direction> targetDirection(PacManGameWorld world) {
+		double minDist = Double.MAX_VALUE;
+		Direction minDistDir = null;
+		for (Direction targetDir : DIRECTION_PRIORITY) {
+			if (targetDir == dir.opposite()) {
+				continue;
+			}
+			V2i neighbor = tile().sum(targetDir.vec);
+			if (!canAccessTile(world, neighbor)) {
+				continue;
+			}
+			if (targetDir == UP && state == GhostState.HUNTING && world.isUpwardsBlocked(neighbor)) {
+				continue;
+			}
+			double dist = neighbor.euclideanDistance(targetTile);
+			if (dist < minDist) {
+				minDist = dist;
+				minDistDir = targetDir;
+			}
+		}
+		return Optional.ofNullable(minDistDir);
 	}
 }

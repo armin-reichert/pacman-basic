@@ -1016,32 +1016,7 @@ public class PacManGame implements Runnable {
 		if (ghost.state == GhostState.FRIGHTENED && world.isIntersection(ghostLocation)) {
 			return randomAccessibleDirection(ghostLocation, ghost.dir.opposite());
 		}
-		return ghostTargetDirection(ghost);
-	}
-
-	private static final Direction[] DIRECTION_PRIORITY = { UP, LEFT, DOWN, RIGHT };
-
-	private Optional<Direction> ghostTargetDirection(Ghost ghost) {
-		double minDist = Double.MAX_VALUE;
-		Direction minDistDir = null;
-		for (Direction dir : DIRECTION_PRIORITY) {
-			if (dir == ghost.dir.opposite()) {
-				continue;
-			}
-			V2i neighbor = ghost.tile().sum(dir.vec);
-			if (!ghost.canAccessTile(world, neighbor)) {
-				continue;
-			}
-			if (dir == UP && ghost.state == GhostState.HUNTING && world.isUpwardsBlocked(neighbor)) {
-				continue;
-			}
-			double dist = neighbor.euclideanDistance(ghost.targetTile);
-			if (dist < minDist) {
-				minDist = dist;
-				minDistDir = dir;
-			}
-		}
-		return Optional.ofNullable(minDistDir);
+		return ghost.targetDirection(world);
 	}
 
 	private void forceHuntingGhostsTurningBack() {
