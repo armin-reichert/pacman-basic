@@ -431,7 +431,11 @@ public class PacManGame implements Runnable {
 
 		if (state.hasExpired()) {
 			startHuntingPhase(++huntingPhase);
-			forceHuntingGhostsTurningBack();
+			for (Ghost ghost : ghosts) {
+				if (ghost.state == GhostState.HUNTING) {
+					ghost.forceTurningBack();
+				}
+			}
 		}
 
 		if (world.foodRemaining() == 0) {
@@ -811,7 +815,19 @@ public class PacManGame implements Runnable {
 			break;
 		case FRIGHTENED:
 		case HUNTING:
-			letGhostWanderMaze(ghost);
+			V2i ghostLocation = ghost.tile();
+			if (world.isTunnel(ghostLocation)) {
+				ghost.speed = level.ghostSpeedTunnel;
+			} else if (ghost.state == GhostState.FRIGHTENED) {
+				ghost.speed = level.ghostSpeedFrightened;
+			} else if (ghost.elroyMode == 1) {
+				ghost.speed = level.elroy1Speed;
+			} else if (ghost.elroyMode == 2) {
+				ghost.speed = level.elroy2Speed;
+			} else {
+				ghost.speed = level.ghostSpeed;
+			}
+			letGhostHunt(ghost);
 			break;
 		case DEAD:
 			ghost.returnHome(world);
@@ -878,27 +894,12 @@ public class PacManGame implements Runnable {
 		}
 	}
 
-	private void letGhostWanderMaze(Ghost ghost) {
-		V2i ghostLocation = ghost.tile();
-
-		// update speed
-		if (world.isTunnel(ghostLocation)) {
-			ghost.speed = level.ghostSpeedTunnel;
-		} else if (ghost.state == GhostState.FRIGHTENED) {
-			ghost.speed = level.ghostSpeedFrightened;
-		} else if (ghost.elroyMode == 1) {
-			ghost.speed = level.elroy1Speed;
-		} else if (ghost.elroyMode == 2) {
-			ghost.speed = level.elroy2Speed;
-		} else {
-			ghost.speed = level.ghostSpeed;
-		}
-
-		// update target and move
+	private void letGhostHunt(Ghost ghost) {
 		if (inChaseMode() || ghost.elroyMode > 0) {
 			ghost.targetTile = ghostChasingTarget(ghost.id);
 			ghost.headForTargetTile(world);
 		} else {
+			V2i ghostLocation = ghost.tile();
 			// Blinky and Pinky move randomly during first scatter phase
 			if (variant == MS_PACMAN && huntingPhase == 0 && (ghost.id == BLINKY || ghost.id == PINKY)) {
 				if (world.isIntersection(ghostLocation) || !ghost.couldMove) {
@@ -909,15 +910,6 @@ public class PacManGame implements Runnable {
 			} else {
 				ghost.targetTile = world.ghostScatterTile(ghost.id);
 				ghost.headForTargetTile(world);
-			}
-		}
-	}
-
-	private void forceHuntingGhostsTurningBack() {
-		for (Ghost ghost : ghosts) {
-			if (ghost.state == GhostState.HUNTING) {
-				ghost.wishDir = ghost.dir.opposite();
-				ghost.forcedDirection = true;
 			}
 		}
 	}

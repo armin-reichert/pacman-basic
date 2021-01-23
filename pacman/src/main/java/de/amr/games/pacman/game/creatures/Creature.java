@@ -175,4 +175,9 @@ public class Creature {
 		//@formatter:on
 	}
 
+	public void forceTurningBack() {
+		wishDir = dir.opposite();
+		forcedDirection = true;
+	}
+
 }
