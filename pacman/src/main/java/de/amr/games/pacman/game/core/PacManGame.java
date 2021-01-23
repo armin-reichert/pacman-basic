@@ -604,19 +604,6 @@ public class PacManGame implements Runnable {
 
 	// END STATE-MACHINE
 
-	private Optional<Direction> randomAccessibleDirection(V2i tile, Direction... excludedDirections) {
-		List<Direction> dirs = accessibleDirections(tile, excludedDirections).collect(Collectors.toList());
-		return dirs.isEmpty() ? Optional.empty() : Optional.of(dirs.get(rnd.nextInt(dirs.size())));
-	}
-
-	private Stream<Direction> accessibleDirections(V2i tile, Direction... excludedDirections) {
-		//@formatter:off
-		return Stream.of(Direction.values())
-			.filter(dir -> Stream.of(excludedDirections).noneMatch(excludedDir -> excludedDir == dir))
-			.filter(dir -> world.isAccessible(tile.sum(dir.vec)));
-		//@formatter:on
-	}
-
 	// Pac
 
 	private void updatePac() {
@@ -756,7 +743,8 @@ public class PacManGame implements Runnable {
 	private void letBonusWanderMaze() {
 		V2i bonusLocation = bonus.tile();
 		if (!bonus.couldMove || world.isIntersection(bonusLocation)) {
-			List<Direction> dirs = accessibleDirections(bonusLocation, bonus.dir.opposite()).collect(Collectors.toList());
+			List<Direction> dirs = bonus.accessibleDirections(world, bonusLocation, bonus.dir.opposite())
+					.collect(Collectors.toList());
 			if (dirs.size() > 1) {
 				// give random movement a bias towards the target direction
 				dirs.remove(bonus.targetDirection.opposite());
@@ -922,7 +910,8 @@ public class PacManGame implements Runnable {
 			// Blinky and Pinky move randomly during first scatter phase
 			if (variant == MS_PACMAN && huntingPhase == 0 && (ghost.id == BLINKY || ghost.id == PINKY)) {
 				if (world.isIntersection(ghostLocation) || !ghost.couldMove) {
-					randomAccessibleDirection(ghostLocation, ghost.dir.opposite()).ifPresent(dir -> ghost.wishDir = dir);
+					ghost.randomAccessibleDirection(world, ghostLocation, ghost.dir.opposite())
+							.ifPresent(dir -> ghost.wishDir = dir);
 				}
 				ghost.tryMoving(world);
 			} else {
@@ -933,7 +922,7 @@ public class PacManGame implements Runnable {
 	}
 
 	private void letGhostHeadForTargetTile(Ghost ghost) {
-		newGhostWishDir(ghost).ifPresent(dir -> ghost.wishDir = dir);
+		ghost.newWishDir(world).ifPresent(dir -> ghost.wishDir = dir);
 		ghost.tryMoving(world);
 	}
 
@@ -994,24 +983,6 @@ public class PacManGame implements Runnable {
 			ghost.wishDir = ghost.position.x < centerX ? RIGHT : LEFT;
 		}
 		ghost.tryMoving(world, ghost.wishDir);
-	}
-
-	private Optional<Direction> newGhostWishDir(Ghost ghost) {
-		if (ghost.couldMove && !ghost.changedTile) {
-			return Optional.empty();
-		}
-		if (ghost.forcedDirection) {
-			ghost.forcedDirection = false;
-			return Optional.of(ghost.wishDir);
-		}
-		V2i ghostLocation = ghost.tile();
-		if (world.isPortal(ghostLocation)) {
-			return Optional.empty();
-		}
-		if (ghost.state == GhostState.FRIGHTENED && world.isIntersection(ghostLocation)) {
-			return randomAccessibleDirection(ghostLocation, ghost.dir.opposite());
-		}
-		return ghost.targetDirection(world);
 	}
 
 	private void forceHuntingGhostsTurningBack() {

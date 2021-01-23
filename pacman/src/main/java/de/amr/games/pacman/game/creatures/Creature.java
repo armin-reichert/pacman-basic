@@ -7,6 +7,12 @@ import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Direction.UP;
 import static java.lang.Math.abs;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import de.amr.games.pacman.game.worlds.PacManGameWorld;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2f;
@@ -45,6 +51,8 @@ public class Creature {
 
 	/** If movement is constrained to be aligned with the tiles. */
 	public boolean forcedOnTrack;
+
+	private Random rnd = new Random();
 
 	public void placeAt(V2i tile, float offsetX, float offsetY) {
 		position = new V2f(tile.x * TS + offsetX, tile.y * TS + offsetY);
@@ -152,4 +160,19 @@ public class Creature {
 		changedTile = !tile().equals(guyLocationBeforeMove);
 		couldMove = true;
 	}
+
+	public Optional<Direction> randomAccessibleDirection(PacManGameWorld world, V2i tile,
+			Direction... excludedDirections) {
+		List<Direction> dirs = accessibleDirections(world, tile, excludedDirections).collect(Collectors.toList());
+		return dirs.isEmpty() ? Optional.empty() : Optional.of(dirs.get(rnd.nextInt(dirs.size())));
+	}
+
+	public Stream<Direction> accessibleDirections(PacManGameWorld world, V2i tile, Direction... excludedDirections) {
+		//@formatter:off
+		return Stream.of(Direction.values())
+			.filter(d -> Stream.of(excludedDirections).noneMatch(excludedDir -> excludedDir == d))
+			.filter(d -> world.isAccessible(tile.sum(d.vec)));
+		//@formatter:on
+	}
+
 }

@@ -84,4 +84,22 @@ public class Ghost extends Creature {
 		}
 		return Optional.ofNullable(minDistDir);
 	}
+
+	public Optional<Direction> newWishDir(PacManGameWorld world) {
+		if (couldMove && !changedTile) {
+			return Optional.empty();
+		}
+		if (forcedDirection) {
+			forcedDirection = false;
+			return Optional.of(wishDir);
+		}
+		V2i ghostLocation = tile();
+		if (world.isPortal(ghostLocation)) {
+			return Optional.empty();
+		}
+		if (state == GhostState.FRIGHTENED && world.isIntersection(ghostLocation)) {
+			return randomAccessibleDirection(world, ghostLocation, dir.opposite());
+		}
+		return targetDirection(world);
+	}
 }
