@@ -14,6 +14,7 @@ import java.awt.image.BufferedImage;
 
 import de.amr.games.pacman.game.core.PacManGame;
 import de.amr.games.pacman.game.core.PacManGameState;
+import de.amr.games.pacman.game.creatures.Creature;
 import de.amr.games.pacman.game.creatures.Ghost;
 import de.amr.games.pacman.game.creatures.GhostState;
 import de.amr.games.pacman.game.creatures.Pac;
@@ -42,11 +43,17 @@ public class MsPacManPlayScene extends PacManGamePlayScene {
 		drawLivesCounter(g);
 		drawLevelCounter(g);
 		drawMaze(g);
-		drawPac(g, game.pac);
+		drawSprite(g, sprite(game.pac), game.pac);
 		for (Ghost ghost : game.ghosts) {
-			drawGhost(g, ghost);
+			drawSprite(g, sprite(ghost), ghost);
 		}
 		drawDebugInfo(g);
+	}
+
+	private void drawSprite(Graphics2D g, BufferedImage sprite, Creature guy) {
+		if (guy.visible) {
+			g.drawImage(sprite, (int) (guy.position.x) - HTS, (int) (guy.position.y) - HTS, null);
+		}
 	}
 
 	private Color getScoreColor() {
@@ -144,26 +151,16 @@ public class MsPacManPlayScene extends PacManGamePlayScene {
 	private static final int BONUS_JUMP[] = { -2, 0, 2 };
 
 	private void drawBonus(Graphics2D g) {
+		int x = (int) (game.bonus.position.x) - HTS;
+		int y = (int) (game.bonus.position.y) - HTS;
 		if (game.bonus.edibleTicksLeft > 0) {
-			int x = (int) (game.bonus.position.x) - HTS;
-			int y = (int) (game.bonus.position.y) - HTS;
 			int frame = game.clock.frame(20, BONUS_JUMP.length);
 			if (game.bonus.dir == Direction.LEFT || game.bonus.dir == Direction.RIGHT) {
-				y += BONUS_JUMP[frame];
+				y += BONUS_JUMP[frame]; // TODO this is not yet correct
 			}
 			g.drawImage(assets.symbols[game.bonus.symbol], x, y, null);
-		}
-		if (game.bonus.eatenTicksLeft > 0) {
-			int x = (int) (game.bonus.position.x) - HTS;
-			int y = (int) (game.bonus.position.y) - HTS;
-			BufferedImage bonusSprite = assets.numbers.get(game.bonus.points);
-			g.drawImage(bonusSprite, x, y, null);
-		}
-	}
-
-	private void drawPac(Graphics2D g, Pac pac) {
-		if (pac.visible) {
-			g.drawImage(sprite(pac), (int) (pac.position.x) - HTS, (int) (pac.position.y) - HTS, null);
+		} else if (game.bonus.eatenTicksLeft > 0) {
+			g.drawImage(assets.numbers.get(game.bonus.points), x, y, null);
 		}
 	}
 
@@ -184,12 +181,6 @@ public class MsPacManPlayScene extends PacManGamePlayScene {
 		// mouth animation
 		int frame = game.clock.frame(5, 3);
 		return assets.section(frame, dir);
-	}
-
-	private void drawGhost(Graphics2D g, Ghost ghost) {
-		if (ghost.visible) {
-			g.drawImage(sprite(ghost), (int) (ghost.position.x) - HTS, (int) (ghost.position.y) - HTS, null);
-		}
 	}
 
 	private BufferedImage sprite(Ghost ghost) {
