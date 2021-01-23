@@ -171,7 +171,6 @@ public class PacManGame implements Runnable {
 			ui.stopAllSounds();
 			enterIntroState();
 		}
-		pacController.accept(pac);
 	}
 
 	private void nextLevel() {
@@ -435,6 +434,7 @@ public class PacManGame implements Runnable {
 			}
 		}
 
+		pacController.accept(pac);
 		if (pac.restingTicksLeft > 0) {
 			pac.restingTicksLeft--;
 		} else {
@@ -542,6 +542,7 @@ public class PacManGame implements Runnable {
 		if (state.hasExpired()) {
 			return changeState(this::exitGhostDyingState, () -> state = stateBefore, () -> log("Resume state '%s'", state));
 		}
+		pacController.accept(pac);
 		for (Ghost ghost : ghosts) {
 			if (ghost.state == GhostState.DEAD && ghost.bounty == 0) {
 				ghost.update(world, level);
