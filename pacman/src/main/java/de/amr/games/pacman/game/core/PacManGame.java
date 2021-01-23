@@ -30,7 +30,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.game.creatures.Bonus;
-import de.amr.games.pacman.game.creatures.Creature;
 import de.amr.games.pacman.game.creatures.Ghost;
 import de.amr.games.pacman.game.creatures.GhostState;
 import de.amr.games.pacman.game.creatures.Pac;
@@ -939,7 +938,7 @@ public class PacManGame implements Runnable {
 	}
 
 	private void letGhostReturnHome(Ghost ghost) {
-		if (atGhostHouseDoor(ghost)) {
+		if (ghost.atGhostHouseDoor(world)) {
 			ghost.setOffset(HTS, 0);
 			ghost.dir = ghost.wishDir = DOWN;
 			ghost.forcedOnTrack = false;
@@ -995,10 +994,6 @@ public class PacManGame implements Runnable {
 			ghost.wishDir = ghost.position.x < centerX ? RIGHT : LEFT;
 		}
 		ghost.tryMoving(world, ghost.wishDir);
-	}
-
-	private boolean atGhostHouseDoor(Creature guy) {
-		return guy.tile().equals(world.houseEntry()) && differsAtMost(guy.offset().x, HTS, 2);
 	}
 
 	private Optional<Direction> newGhostWishDir(Ghost ghost) {
@@ -1116,7 +1111,7 @@ public class PacManGame implements Runnable {
 
 	// Misc
 
-	private static boolean differsAtMost(float value, float target, float tolerance) {
+	public static boolean differsAtMost(float value, float target, float tolerance) {
 		return Math.abs(value - target) <= tolerance;
 	}
 

@@ -1,5 +1,6 @@
 package de.amr.games.pacman.game.creatures;
 
+import static de.amr.games.pacman.game.worlds.PacManGameWorld.HTS;
 import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
@@ -7,6 +8,7 @@ import static de.amr.games.pacman.lib.Direction.UP;
 
 import java.util.Optional;
 
+import de.amr.games.pacman.game.core.PacManGame;
 import de.amr.games.pacman.game.worlds.PacManGameWorld;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
@@ -52,6 +54,10 @@ public class Ghost extends Creature {
 			return state == GhostState.ENTERING_HOUSE || state == GhostState.LEAVING_HOUSE;
 		}
 		return super.canAccessTile(world, x, y);
+	}
+
+	public boolean atGhostHouseDoor(PacManGameWorld world) {
+		return tile().equals(world.houseEntry()) && PacManGame.differsAtMost(offset().x, HTS, 2);
 	}
 
 	private static final Direction[] DIRECTION_PRIORITY = { UP, LEFT, DOWN, RIGHT };
