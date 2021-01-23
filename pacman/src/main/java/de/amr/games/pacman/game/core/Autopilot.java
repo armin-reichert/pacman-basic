@@ -1,7 +1,5 @@
 package de.amr.games.pacman.game.core;
 
-import static de.amr.games.pacman.lib.Logging.log;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
@@ -12,6 +10,7 @@ import de.amr.games.pacman.game.creatures.Ghost;
 import de.amr.games.pacman.game.creatures.GhostState;
 import de.amr.games.pacman.game.creatures.Pac;
 import de.amr.games.pacman.lib.Direction;
+import de.amr.games.pacman.lib.Logging;
 import de.amr.games.pacman.lib.V2i;
 
 /**
@@ -26,9 +25,17 @@ public class Autopilot {
 	private static final int MAX_GHOST_CHASE_DIST = 10; // tiles
 	private static final int MAX_BONUS_HARVEST_DIST = 20; // tiles
 
+	public static boolean logEnabled;
+
 	private PacManGame game;
 	private Pac pac;
 	private Ghost[] ghosts;
+
+	private void log(String msg, Object... args) {
+		if (logEnabled) {
+			Logging.log(msg, args);
+		}
+	}
 
 	public void steerPac(PacManGame game) {
 		this.game = game;

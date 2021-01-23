@@ -96,6 +96,10 @@ public interface PacManGameWorld {
 
 	boolean isGhostHouseDoor(int x, int y);
 
+	default boolean isGhostHouseDoor(V2i tile) {
+		return isGhostHouseDoor(tile.x, tile.y);
+	}
+
 	int totalFoodCount();
 
 	int foodRemaining();

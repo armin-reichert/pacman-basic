@@ -10,6 +10,7 @@ import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Direction.UP;
 
+import de.amr.games.pacman.game.core.PacManGameLevel;
 import de.amr.games.pacman.game.worlds.PacManGameWorld;
 import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
@@ -44,6 +45,41 @@ public class Ghost extends Creature {
 	public Ghost(int id, String name) {
 		this.id = (byte) id;
 		this.name = name;
+	}
+
+	public void update(PacManGameWorld world, PacManGameLevel level) {
+		switch (state) {
+		case LOCKED:
+			speed = level.ghostSpeed / 2; // TODO speed correct?
+			if (!atGhostHouseDoor(world)) {
+				bounce(world);
+			}
+			break;
+		case ENTERING_HOUSE:
+			enterHouse(world);
+			break;
+		case LEAVING_HOUSE:
+			speed = level.ghostSpeed / 2; // TODO speed correct?
+			leaveHouse(world);
+			break;
+		case FRIGHTENED:
+			speed = level.ghostSpeedFrightened;
+			targetTile = null;
+			wanderRandomly(world);
+			break;
+		case HUNTING:
+			if (targetTile != null) {
+				headForTargetTile(world);
+			} else {
+				wanderRandomly(world);
+			}
+			break;
+		case DEAD:
+			returnHome(world);
+			break;
+		default:
+			throw new IllegalArgumentException("Illegal ghost state: " + state);
+		}
 	}
 
 	@Override
@@ -116,12 +152,11 @@ public class Ghost extends Creature {
 		tryMoving(world, wishDir);
 	}
 
-	public void bounce(PacManGameWorld world, float bounceSpeed) {
+	public void bounce(PacManGameWorld world) {
 		int ceiling = t(world.houseCenter().y) - 5, ground = t(world.houseCenter().y) + 4;
 		if (position.y <= ceiling || position.y >= ground) {
 			wishDir = dir.opposite();
 		}
-		speed = bounceSpeed;
 		tryMoving(world);
 	}
 

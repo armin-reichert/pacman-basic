@@ -205,7 +205,7 @@ public class PacManGame implements Runnable {
 			ghost.speed = 0;
 			ghost.targetTile = null;
 			ghost.couldMove = true;
-			ghost.forcedDirection = false;
+			ghost.forcedDirection = ghost.id == BLINKY;
 			ghost.forcedOnTrack = ghost.id == BLINKY;
 			ghost.state = GhostState.LOCKED;
 			ghost.bounty = 0;
@@ -227,7 +227,7 @@ public class PacManGame implements Runnable {
 
 	public String stateDescription() {
 		if (state == HUNTING) {
-			String phaseName = inChaseMode() ? "Chasing" : "Scattering";
+			String phaseName = inScatteringPhase() ? "Scattering" : "Chasing";
 			int phase = huntingPhase / 2;
 			return String.format("%s-%s (%d of 4)", state, phaseName, phase + 1);
 		}
@@ -278,6 +278,9 @@ public class PacManGame implements Runnable {
 			break;
 		default:
 			throw new IllegalStateException("Illegal state: " + state);
+		}
+		if (Stream.of(ghosts).noneMatch(g -> g.state == GhostState.DEAD)) {
+			ui.stopSound(PacManGameSound.GHOST_EYES);
 		}
 	}
 
@@ -330,13 +333,6 @@ public class PacManGame implements Runnable {
 		if (!started && state.running == clock.sec(1)) {
 			ui.playSound(PacManGameSound.GAME_READY);
 		}
-		if (state.running > clock.sec(1)) {
-			for (Ghost ghost : ghosts) {
-				if (ghost.id != BLINKY) {
-					ghost.bounce(world, level.ghostSpeed / 2); // TODO correct speed?
-				}
-			}
-		}
 		return state.run();
 	}
 
@@ -369,12 +365,8 @@ public class PacManGame implements Runnable {
 		return clock.sec(duration);
 	}
 
-	private boolean inScatterMode() {
+	private boolean inScatteringPhase() {
 		return huntingPhase % 2 == 0;
-	}
-
-	private boolean inChaseMode() {
-		return huntingPhase % 2 != 0;
 	}
 
 	private static PacManGameSound siren(int huntingPhase) {
@@ -395,7 +387,7 @@ public class PacManGame implements Runnable {
 	private void startHuntingPhase(int phase) {
 		huntingPhase = (byte) phase;
 		state.setDuration(huntingPhaseDuration(huntingPhase));
-		if (inScatterMode()) {
+		if (inScatteringPhase()) {
 			if (huntingPhase >= 2) {
 				ui.stopSound(siren(huntingPhase - 2));
 			}
@@ -441,15 +433,23 @@ public class PacManGame implements Runnable {
 		}
 
 		updatePac();
+
 		for (Ghost ghost : ghosts) {
-			updateGhost(ghost);
+			if (ghost.state == GhostState.LOCKED) {
+				tryReleasingGhost(ghost);
+			}
+			if (ghost.state == GhostState.HUNTING) {
+				setGhostHuntingTargetAndSpeed(ghost);
+			}
+			ghost.update(world, level);
 		}
+
 		updateBonus();
 
 		checkPacFindsFood();
 		checkPacFindsEdibleBonus();
 
-		Optional<Ghost> collidingGhost = ghostCollidingWithPac();
+		Optional<Ghost> collidingGhost = Stream.of(ghosts).filter(ghost -> ghost.tile().equals(pac.tile())).findAny();
 		if (collidingGhost.isPresent() && collidingGhost.get().state == GhostState.FRIGHTENED) {
 			return changeState(this::exitHuntingState, this::enterGhostDyingState, () -> ghostKilled(collidingGhost.get()));
 		}
@@ -527,7 +527,7 @@ public class PacManGame implements Runnable {
 		steerPac();
 		for (Ghost ghost : ghosts) {
 			if (ghost.state == GhostState.DEAD && ghost.bounty == 0) {
-				updateGhost(ghost);
+				ghost.update(world, level);
 			}
 		}
 		return state.run();
@@ -777,54 +777,6 @@ public class PacManGame implements Runnable {
 
 	// Ghosts
 
-	private void updateGhost(Ghost ghost) {
-		switch (ghost.state) {
-		case LOCKED:
-			if (ghost.id != BLINKY) {
-				tryReleasingGhost(ghost);
-				ghost.bounce(world, level.ghostSpeed / 2); // TODO speed correct?
-			} else {
-				ghost.state = GhostState.HUNTING;
-			}
-			break;
-		case ENTERING_HOUSE:
-			ghost.enterHouse(world);
-			// TODO move outside
-			if (Stream.of(ghosts).noneMatch(g -> g.state == GhostState.DEAD)) {
-				ui.stopSound(PacManGameSound.GHOST_EYES);
-			}
-			break;
-		case LEAVING_HOUSE:
-			ghost.leaveHouse(world);
-			break;
-		case FRIGHTENED:
-		case HUNTING:
-			V2i ghostLocation = ghost.tile();
-			if (world.isTunnel(ghostLocation)) {
-				ghost.speed = level.ghostSpeedTunnel;
-			} else if (ghost.state == GhostState.FRIGHTENED) {
-				ghost.speed = level.ghostSpeedFrightened;
-			} else if (ghost.elroyMode == 1) {
-				ghost.speed = level.elroy1Speed;
-			} else if (ghost.elroyMode == 2) {
-				ghost.speed = level.elroy2Speed;
-			} else {
-				ghost.speed = level.ghostSpeed;
-			}
-			letGhostHunt(ghost);
-			break;
-		case DEAD:
-			ghost.returnHome(world);
-			break;
-		default:
-			throw new IllegalArgumentException("Illegal ghost state: " + ghost.state);
-		}
-	}
-
-	private Optional<Ghost> ghostCollidingWithPac() {
-		return Stream.of(ghosts).filter(ghost -> ghost.tile().equals(pac.tile())).findAny();
-	}
-
 	private void checkBlinkyBecomesElroy() {
 		if (world.foodRemaining() == level.elroy1DotsLeft) {
 			ghosts[BLINKY].elroyMode = 1;
@@ -849,57 +801,65 @@ public class PacManGame implements Runnable {
 		log("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name, ghost.tile(), ghost.bounty);
 	}
 
-	private V2i ghostChasingTarget(int ghostID) {
-		switch (ghostID) {
-		case 0: { // BLINKY
-			return pac.tile();
-		}
-		case 1: { // PINKY
-			V2i pacAhead4 = pac.tile().sum(pac.dir.vec.scaled(4));
-			if (pac.dir == UP) { // simulate overflow bug when Pac-Man is looking UP
-				pacAhead4 = pacAhead4.sum(LEFT.vec.scaled(4));
-			}
-			return pacAhead4;
-		}
-		case 2: { // INKY
-			V2i pacAhead2 = pac.tile().sum(pac.dir.vec.scaled(2));
-			if (pac.dir == UP) { // simulate overflow bug when Pac-Man is looking UP
-				pacAhead2 = pacAhead2.sum(LEFT.vec.scaled(2));
-			}
-			return ghosts[BLINKY].tile().scaled(-1).sum(pacAhead2.scaled(2));
-		}
-		case 3: { // CLYDE, SUE
-			return ghosts[3].tile().euclideanDistance(pac.tile()) < 8 ? world.ghostScatterTile(3) : pac.tile();
-		}
-		default:
-			throw new IllegalArgumentException("Unknown ghost id: " + ghostID);
-		}
-	}
-
-	private void letGhostHunt(Ghost ghost) {
-		byte mode = 1; // 0 = scatter, 1 == chase, 2 == random walk
-
-		if (inScatterMode() && ghost.elroyMode == 0) {
-			mode = 0;
+	private void setGhostHuntingTargetAndSpeed(Ghost ghost) {
+		V2i ghostLocation = ghost.tile();
+		if (world.isTunnel(ghostLocation)) {
+			ghost.speed = level.ghostSpeedTunnel;
+		} else if (ghost.elroyMode == 1) {
+			ghost.speed = level.elroy1Speed;
+		} else if (ghost.elroyMode == 2) {
+			ghost.speed = level.elroy2Speed;
+		} else {
+			ghost.speed = level.ghostSpeed;
 		}
 		// In Ms. Pac-Man, Blinky and Pinky move randomly during *first* scatter phase
 		if (variant == MS_PACMAN && (ghost.id == BLINKY || ghost.id == PINKY) && huntingPhase == 0) {
-			mode = 2;
-		}
-		if (mode == 0) {
+			ghost.targetTile = null; // move randomly
+		} else if (inScatteringPhase() && ghost.elroyMode == 0) {
 			ghost.targetTile = world.ghostScatterTile(ghost.id);
-			ghost.headForTargetTile(world);
-		} else if (mode == 1) {
-			ghost.targetTile = ghostChasingTarget(ghost.id);
-			ghost.headForTargetTile(world);
-		} else if (mode == 2) {
-			ghost.wanderRandomly(world);
+		} else {
+			switch (ghost.id) {
+			case 0: {
+				// BLINKY
+				ghost.targetTile = pac.tile();
+				break;
+			}
+			case 1: {
+				// PINKY
+				V2i pacAhead4 = pac.tile().sum(pac.dir.vec.scaled(4));
+				if (pac.dir == UP) { // simulate overflow bug when Pac-Man is looking UP
+					pacAhead4 = pacAhead4.sum(LEFT.vec.scaled(4));
+				}
+				ghost.targetTile = pacAhead4;
+				break;
+			}
+			case 2: {
+				// INKY
+				V2i pacAhead2 = pac.tile().sum(pac.dir.vec.scaled(2));
+				if (pac.dir == UP) { // simulate overflow bug when Pac-Man is looking UP
+					pacAhead2 = pacAhead2.sum(LEFT.vec.scaled(2));
+				}
+				ghost.targetTile = ghosts[BLINKY].tile().scaled(-1).sum(pacAhead2.scaled(2));
+				break;
+			}
+			case 3: {
+				// CLYDE, SUE
+				ghost.targetTile = ghosts[3].tile().euclideanDistance(pac.tile()) < 8 ? world.ghostScatterTile(3) : pac.tile();
+				break;
+			}
+			default:
+				throw new IllegalArgumentException("Unknown ghost id: " + ghost.id);
+			}
 		}
 	}
 
 	// Ghost house
 
 	private void tryReleasingGhost(Ghost ghost) {
+		if (ghost.id == BLINKY) {
+			ghost.state = GhostState.HUNTING;
+			return;
+		}
 		if (globalDotCounterEnabled && globalDotCounter >= ghostGlobalDotLimit(ghost)) {
 			releaseGhost(ghost, "Global dot counter (%d) reached limit (%d)", globalDotCounter, ghostGlobalDotLimit(ghost));
 		} else if (!globalDotCounterEnabled && ghost.dotCounter >= ghostPrivateDotLimit(ghost)) {
@@ -958,6 +918,7 @@ public class PacManGame implements Runnable {
 		if (oldscore < 10000 && score >= 10000) {
 			lives++;
 			ui.playSound(PacManGameSound.EXTRA_LIFE);
+			log("Extra life! Now we have %d lives", lives);
 		}
 		hiscore.update(score, levelNumber);
 	}
