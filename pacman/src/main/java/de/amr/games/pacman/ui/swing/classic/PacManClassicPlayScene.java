@@ -43,11 +43,18 @@ public class PacManClassicPlayScene extends PacManGamePlayScene {
 		drawLivesCounter(g);
 		drawLevelCounter(g);
 		drawMaze(g);
-		drawPac(g, game.pac);
+		drawGuy(g, game.pac, sprite(game.pac));
 		for (Ghost ghost : game.ghosts) {
-			drawGhost(g, ghost);
+			drawGuy(g, ghost, sprite(ghost));
 		}
 		drawDebugInfo(g);
+	}
+
+	private void drawGuy(Graphics2D g, Creature guy, BufferedImage sprite) {
+		if (guy.visible) {
+			int dx = (sprite.getWidth() - TS) / 2, dy = (sprite.getHeight() - TS) / 2;
+			g.drawImage(sprite, (int) (guy.position.x) - dx, (int) (guy.position.y) - dy, null);
+		}
 	}
 
 	private void drawScore(Graphics2D g) {
@@ -123,13 +130,6 @@ public class PacManClassicPlayScene extends PacManGamePlayScene {
 		}
 	}
 
-	private void drawGuy(Graphics2D g, Creature guy, BufferedImage sprite) {
-		if (guy.visible) {
-			int dx = (sprite.getWidth() - TS) / 2, dy = (sprite.getHeight() - TS) / 2;
-			g.drawImage(sprite, (int) (guy.position.x) - dx, (int) (guy.position.y) - dy, null);
-		}
-	}
-
 	private void drawBonus(Graphics2D g, Bonus bonus) {
 		if (bonus.edibleTicksLeft > 0) {
 			drawGuy(g, bonus, assets.symbols[bonus.symbol]);
@@ -142,14 +142,6 @@ public class PacManClassicPlayScene extends PacManGamePlayScene {
 				g.drawImage(assets.numbers.get(1000), (int) (bonus.position.x) - HTS - 2, (int) (bonus.position.y) - HTS, null);
 			}
 		}
-	}
-
-	private void drawPac(Graphics2D g, Pac pac) {
-		drawGuy(g, pac, sprite(pac));
-	}
-
-	private void drawGhost(Graphics2D g, Ghost ghost) {
-		drawGuy(g, ghost, sprite(ghost));
 	}
 
 	private BufferedImage sprite(Pac pac) {

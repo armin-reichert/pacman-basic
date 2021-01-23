@@ -43,16 +43,17 @@ public class MsPacManPlayScene extends PacManGamePlayScene {
 		drawLivesCounter(g);
 		drawLevelCounter(g);
 		drawMaze(g);
-		drawSprite(g, sprite(game.pac), game.pac);
+		drawGuy(g, game.pac, sprite(game.pac));
 		for (Ghost ghost : game.ghosts) {
-			drawSprite(g, sprite(ghost), ghost);
+			drawGuy(g, ghost, sprite(ghost));
 		}
 		drawDebugInfo(g);
 	}
 
-	private void drawSprite(Graphics2D g, BufferedImage sprite, Creature guy) {
+	private void drawGuy(Graphics2D g, Creature guy, BufferedImage sprite) {
 		if (guy.visible) {
-			g.drawImage(sprite, (int) (guy.position.x) - HTS, (int) (guy.position.y) - HTS, null);
+			int dx = (sprite.getWidth() - TS) / 2, dy = (sprite.getHeight() - TS) / 2;
+			g.drawImage(sprite, (int) (guy.position.x) - dx, (int) (guy.position.y) - dy, null);
 		}
 	}
 
