@@ -102,4 +102,10 @@ public class Ghost extends Creature {
 		}
 		return targetDirection(world);
 	}
+
+	public void headForTargetTile(PacManGameWorld world) {
+		newWishDir(world).ifPresent(newWishDir -> wishDir = newWishDir);
+		tryMoving(world);
+	}
+
 }

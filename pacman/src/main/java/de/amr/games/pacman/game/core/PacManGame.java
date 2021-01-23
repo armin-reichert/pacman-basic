@@ -905,7 +905,7 @@ public class PacManGame implements Runnable {
 		// update target and move
 		if (inChaseMode() || ghost.elroyMode > 0) {
 			ghost.targetTile = ghostChasingTarget(ghost.id);
-			letGhostHeadForTargetTile(ghost);
+			ghost.headForTargetTile(world);
 		} else {
 			// Blinky and Pinky move randomly during first scatter phase
 			if (variant == MS_PACMAN && huntingPhase == 0 && (ghost.id == BLINKY || ghost.id == PINKY)) {
@@ -916,14 +916,9 @@ public class PacManGame implements Runnable {
 				ghost.tryMoving(world);
 			} else {
 				ghost.targetTile = world.ghostScatterTile(ghost.id);
-				letGhostHeadForTargetTile(ghost);
+				ghost.headForTargetTile(world);
 			}
 		}
-	}
-
-	private void letGhostHeadForTargetTile(Ghost ghost) {
-		ghost.newWishDir(world).ifPresent(dir -> ghost.wishDir = dir);
-		ghost.tryMoving(world);
 	}
 
 	private void letGhostReturnHome(Ghost ghost) {
@@ -935,7 +930,7 @@ public class PacManGame implements Runnable {
 			ghost.targetTile = ghost.id == BLINKY ? world.houseCenter() : world.ghostHome(ghost.id);
 			return;
 		}
-		letGhostHeadForTargetTile(ghost);
+		ghost.headForTargetTile(world);
 	}
 
 	private void letGhostEnterHouse(Ghost ghost) {
