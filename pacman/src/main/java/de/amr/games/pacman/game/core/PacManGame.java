@@ -13,15 +13,12 @@ import static de.amr.games.pacman.game.worlds.PacManClassicWorld.INKY;
 import static de.amr.games.pacman.game.worlds.PacManClassicWorld.PINKY;
 import static de.amr.games.pacman.game.worlds.PacManGameWorld.HTS;
 import static de.amr.games.pacman.game.worlds.PacManGameWorld.TS;
-import static de.amr.games.pacman.game.worlds.PacManGameWorld.offset;
 import static de.amr.games.pacman.game.worlds.PacManGameWorld.t;
-import static de.amr.games.pacman.game.worlds.PacManGameWorld.tile;
 import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.lib.Logging.log;
-import static java.lang.Math.abs;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -608,79 +605,6 @@ public class PacManGame implements Runnable {
 
 	// END STATE-MACHINE
 
-	// Movement
-
-	private void tryMoving(Creature guy) {
-		V2i guyLocation = guy.tile();
-		// teleport?
-		for (int i = 0; i < world.numPortals(); ++i) {
-			if (guyLocation.equals(world.portalRight(i)) && guy.dir == RIGHT) {
-				guy.placeAt(world.portalLeft(i), 0, 0);
-				return;
-			}
-			if (guyLocation.equals(world.portalLeft(i)) && guy.dir == LEFT) {
-				guy.placeAt(world.portalRight(i), 0, 0);
-				return;
-			}
-		}
-		guy.couldMove = tryMoving(guy, guy.wishDir);
-		if (guy.couldMove) {
-			guy.dir = guy.wishDir;
-		} else {
-			guy.couldMove = tryMoving(guy, guy.dir);
-		}
-	}
-
-	private boolean tryMoving(Creature guy, Direction dir) {
-		// 100% speed corresponds to 1.25 pixels/tick (75px/sec)
-		float pixels = guy.speed * 1.25f;
-
-		V2i guyLocationBeforeMove = guy.tile();
-		V2f offset = guy.offset();
-		V2i neighbor = guyLocationBeforeMove.sum(dir.vec);
-
-		// check if guy can change its direction now
-		if (guy.forcedOnTrack && guy.canAccessTile(world, neighbor)) {
-			if (dir == LEFT || dir == RIGHT) {
-				if (abs(offset.y) > pixels) {
-					return false;
-				}
-				guy.setOffset(offset.x, 0);
-			} else if (dir == UP || dir == DOWN) {
-				if (abs(offset.x) > pixels) {
-					return false;
-				}
-				guy.setOffset(0, offset.y);
-			}
-		}
-
-		V2f velocity = new V2f(dir.vec).scaled(pixels);
-		V2f newPosition = guy.position.sum(velocity);
-		V2i newTile = tile(newPosition);
-		V2f newOffset = offset(newPosition);
-
-		// block moving into inaccessible tile
-		if (!guy.canAccessTile(world, newTile)) {
-			return false;
-		}
-
-		// align with edge of inaccessible neighbor
-		if (!guy.canAccessTile(world, neighbor)) {
-			if (dir == RIGHT && newOffset.x > 0 || dir == LEFT && newOffset.x < 0) {
-				guy.setOffset(0, offset.y);
-				return false;
-			}
-			if (dir == DOWN && newOffset.y > 0 || dir == UP && newOffset.y < 0) {
-				guy.setOffset(offset.x, 0);
-				return false;
-			}
-		}
-
-		guy.placeAt(newTile, newOffset.x, newOffset.y);
-		guy.changedTile = !guy.tile().equals(guyLocationBeforeMove);
-		return true;
-	}
-
 	private Optional<Direction> randomAccessibleDirection(V2i tile, Direction... excludedDirections) {
 		List<Direction> dirs = accessibleDirections(tile, excludedDirections).collect(Collectors.toList());
 		return dirs.isEmpty() ? Optional.empty() : Optional.of(dirs.get(rnd.nextInt(dirs.size())));
@@ -702,7 +626,7 @@ public class PacManGame implements Runnable {
 		} else {
 			pac.speed = pac.powerTicksLeft == 0 ? level.pacSpeed : level.pacSpeedPowered;
 			steerPac();
-			tryMoving(pac);
+			pac.tryMoving(world);
 		}
 		if (pac.powerTicksLeft > 0) {
 			pac.powerTicksLeft--;
@@ -840,7 +764,7 @@ public class PacManGame implements Runnable {
 			}
 			bonus.wishDir = dirs.get(rnd.nextInt(dirs.size()));
 		}
-		tryMoving(bonus);
+		bonus.tryMoving(world);
 	}
 
 	private void updateBonus() {
@@ -972,7 +896,7 @@ public class PacManGame implements Runnable {
 			ghost.wishDir = ghost.dir.opposite();
 		}
 		ghost.speed = level.ghostSpeedTunnel; // TODO correct?
-		tryMoving(ghost);
+		ghost.tryMoving(world);
 	}
 
 	private void letGhostWanderMaze(Ghost ghost) {
@@ -1001,7 +925,7 @@ public class PacManGame implements Runnable {
 				if (world.isIntersection(ghostLocation) || !ghost.couldMove) {
 					randomAccessibleDirection(ghostLocation, ghost.dir.opposite()).ifPresent(dir -> ghost.wishDir = dir);
 				}
-				tryMoving(ghost);
+				ghost.tryMoving(world);
 			} else {
 				ghost.targetTile = world.ghostScatterTile(ghost.id);
 				letGhostHeadForTargetTile(ghost);
@@ -1011,7 +935,7 @@ public class PacManGame implements Runnable {
 
 	private void letGhostHeadForTargetTile(Ghost ghost) {
 		newGhostWishDir(ghost).ifPresent(dir -> ghost.wishDir = dir);
-		tryMoving(ghost);
+		ghost.tryMoving(world);
 	}
 
 	private void letGhostReturnHome(Ghost ghost) {
@@ -1043,7 +967,7 @@ public class PacManGame implements Runnable {
 		if (ghostLocation.equals(world.houseCenter()) && offset.y >= 0) {
 			ghost.wishDir = ghost.targetTile.x < world.houseCenter().x ? LEFT : RIGHT;
 		}
-		ghost.couldMove = tryMoving(ghost, ghost.wishDir);
+		ghost.couldMove = ghost.tryMoving(world, ghost.wishDir);
 	}
 
 	private void letGhostLeaveHouse(Ghost ghost) {
@@ -1070,7 +994,7 @@ public class PacManGame implements Runnable {
 		} else {
 			ghost.wishDir = ghost.position.x < centerX ? RIGHT : LEFT;
 		}
-		ghost.couldMove = tryMoving(ghost, ghost.wishDir);
+		ghost.couldMove = ghost.tryMoving(world, ghost.wishDir);
 	}
 
 	private boolean atGhostHouseDoor(Creature guy) {

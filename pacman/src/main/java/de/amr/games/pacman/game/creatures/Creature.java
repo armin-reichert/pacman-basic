@@ -1,6 +1,11 @@
 package de.amr.games.pacman.game.creatures;
 
 import static de.amr.games.pacman.game.worlds.PacManGameWorld.TS;
+import static de.amr.games.pacman.lib.Direction.DOWN;
+import static de.amr.games.pacman.lib.Direction.LEFT;
+import static de.amr.games.pacman.lib.Direction.RIGHT;
+import static de.amr.games.pacman.lib.Direction.UP;
+import static java.lang.Math.abs;
 
 import de.amr.games.pacman.game.worlds.PacManGameWorld;
 import de.amr.games.pacman.lib.Direction;
@@ -70,5 +75,76 @@ public class Creature {
 
 	public boolean canAccessTile(PacManGameWorld world, V2i tile) {
 		return canAccessTile(world, tile.x, tile.y);
+	}
+
+	public void tryMoving(PacManGameWorld world) {
+		V2i guyLocation = tile();
+		// teleport?
+		for (int i = 0; i < world.numPortals(); ++i) {
+			if (guyLocation.equals(world.portalRight(i)) && dir == RIGHT) {
+				placeAt(world.portalLeft(i), 0, 0);
+				return;
+			}
+			if (guyLocation.equals(world.portalLeft(i)) && dir == LEFT) {
+				placeAt(world.portalRight(i), 0, 0);
+				return;
+			}
+		}
+		couldMove = tryMoving(world, wishDir);
+		if (couldMove) {
+			dir = wishDir;
+		} else {
+			couldMove = tryMoving(world, dir);
+		}
+	}
+
+	public boolean tryMoving(PacManGameWorld world, Direction dir) {
+		// 100% speed corresponds to 1.25 pixels/tick (75px/sec)
+		float pixels = speed * 1.25f;
+
+		V2i guyLocationBeforeMove = tile();
+		V2f offset = offset();
+		V2i neighbor = guyLocationBeforeMove.sum(dir.vec);
+
+		// check if guy can change its direction now
+		if (forcedOnTrack && canAccessTile(world, neighbor)) {
+			if (dir == LEFT || dir == RIGHT) {
+				if (abs(offset.y) > pixels) {
+					return false;
+				}
+				setOffset(offset.x, 0);
+			} else if (dir == UP || dir == DOWN) {
+				if (abs(offset.x) > pixels) {
+					return false;
+				}
+				setOffset(0, offset.y);
+			}
+		}
+
+		V2f velocity = new V2f(dir.vec).scaled(pixels);
+		V2f newPosition = position.sum(velocity);
+		V2i newTile = PacManGameWorld.tile(newPosition);
+		V2f newOffset = PacManGameWorld.offset(newPosition);
+
+		// block moving into inaccessible tile
+		if (!canAccessTile(world, newTile)) {
+			return false;
+		}
+
+		// align with edge of inaccessible neighbor
+		if (!canAccessTile(world, neighbor)) {
+			if (dir == RIGHT && newOffset.x > 0 || dir == LEFT && newOffset.x < 0) {
+				setOffset(0, offset.y);
+				return false;
+			}
+			if (dir == DOWN && newOffset.y > 0 || dir == UP && newOffset.y < 0) {
+				setOffset(offset.x, 0);
+				return false;
+			}
+		}
+
+		placeAt(newTile, newOffset.x, newOffset.y);
+		changedTile = !tile().equals(guyLocationBeforeMove);
+		return true;
 	}
 }
