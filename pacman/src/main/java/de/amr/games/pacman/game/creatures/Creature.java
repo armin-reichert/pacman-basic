@@ -182,7 +182,7 @@ public class Creature {
 			return Optional.empty();
 		}
 		if (randomWalk) {
-			return randomAccessibleDirection(world, location, dir.opposite());
+			return randomMoveDirection(world);
 		}
 		return targetDirection(world);
 	}
@@ -212,23 +212,22 @@ public class Creature {
 	public void wanderRandomly(PacManGameWorld world, float speed) {
 		V2i location = tile();
 		if (world.isIntersection(location) || !couldMove) {
-			randomAccessibleDirection(world, location, dir.opposite()).ifPresent(d -> wishDir = d);
+			randomMoveDirection(world).ifPresent(randomDir -> wishDir = randomDir);
 		}
 		this.speed = speed;
 		tryMoving(world);
 	}
 
-	public Optional<Direction> randomAccessibleDirection(PacManGameWorld world, V2i tile,
-			Direction... excludedDirections) {
-		List<Direction> dirs = accessibleDirections(world, tile, excludedDirections).collect(Collectors.toList());
+	public Optional<Direction> randomMoveDirection(PacManGameWorld world) {
+		List<Direction> dirs = accessibleDirections(world, tile(), dir.opposite()).collect(Collectors.toList());
 		return dirs.isEmpty() ? Optional.empty() : Optional.of(dirs.get(rnd.nextInt(dirs.size())));
 	}
 
 	public Stream<Direction> accessibleDirections(PacManGameWorld world, V2i tile, Direction... excludedDirections) {
 		//@formatter:off
 		return Stream.of(Direction.values())
-			.filter(d -> Stream.of(excludedDirections).noneMatch(excludedDir -> excludedDir == d))
-			.filter(d -> world.isAccessible(tile.sum(d.vec)));
+			.filter(direction -> Stream.of(excludedDirections).noneMatch(excludedDir -> excludedDir == direction))
+			.filter(direction -> world.isAccessible(tile.sum(direction.vec)));
 		//@formatter:on
 	}
 
@@ -236,5 +235,4 @@ public class Creature {
 		wishDir = dir.opposite();
 		forcedDirection = true;
 	}
-
 }
