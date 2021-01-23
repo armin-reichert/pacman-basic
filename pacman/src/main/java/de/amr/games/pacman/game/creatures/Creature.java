@@ -34,6 +34,9 @@ public class Creature {
 	/** The intended move direction that will be taken as soon as possible. */
 	public Direction wishDir;
 
+	/** The tile that the guy tries to reach. Can be inaccessible or outside of the maze. */
+	public V2i targetTile = V2i.NULL;
+
 	/** Relative speed (between 0 and 1). */
 	public float speed;
 
@@ -159,6 +162,51 @@ public class Creature {
 		placeAt(newTile, newOffset.x, newOffset.y);
 		changedTile = !tile().equals(guyLocationBeforeMove);
 		couldMove = true;
+	}
+
+	public void headForTargetTile(PacManGameWorld world, boolean randomWalk) {
+		newWishDir(world, randomWalk).ifPresent(newWishDir -> wishDir = newWishDir);
+		tryMoving(world);
+	}
+
+	public Optional<Direction> newWishDir(PacManGameWorld world, boolean randomWalk) {
+		if (couldMove && !changedTile) {
+			return Optional.empty();
+		}
+		if (forcedDirection) {
+			forcedDirection = false;
+			return Optional.of(wishDir);
+		}
+		V2i ghostLocation = tile();
+		if (world.isPortal(ghostLocation)) {
+			return Optional.empty();
+		}
+		if (randomWalk) {
+			return randomAccessibleDirection(world, ghostLocation, dir.opposite());
+		}
+		return targetDirection(world);
+	}
+
+	private static final Direction[] DIRECTION_PRIORITY = { UP, LEFT, DOWN, RIGHT };
+
+	public Optional<Direction> targetDirection(PacManGameWorld world) {
+		double minDist = Double.MAX_VALUE;
+		Direction minDistDir = null;
+		for (Direction targetDir : DIRECTION_PRIORITY) {
+			if (targetDir == dir.opposite()) {
+				continue;
+			}
+			V2i neighbor = tile().sum(targetDir.vec);
+			if (!canAccessTile(world, neighbor)) {
+				continue;
+			}
+			double dist = neighbor.euclideanDistance(targetTile);
+			if (dist < minDist) {
+				minDist = dist;
+				minDistDir = targetDir;
+			}
+		}
+		return Optional.ofNullable(minDistDir);
 	}
 
 	public Optional<Direction> randomAccessibleDirection(PacManGameWorld world, V2i tile,

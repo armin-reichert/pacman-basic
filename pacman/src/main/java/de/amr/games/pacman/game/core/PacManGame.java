@@ -731,8 +731,8 @@ public class PacManGame implements Runnable {
 				int portal = rnd.nextInt(world.numPortals());
 				V2i startTile = entersMazeFromLeft ? world.portalLeft(portal) : world.portalRight(portal);
 				bonus.placeAt(startTile, 0, 0);
-				bonus.targetDirection = entersMazeFromLeft ? RIGHT : LEFT;
-				bonus.dir = bonus.wishDir = bonus.targetDirection;
+				bonus.wanderingDirection = entersMazeFromLeft ? RIGHT : LEFT;
+				bonus.dir = bonus.wishDir = bonus.wanderingDirection;
 				bonus.couldMove = true;
 				bonus.speed = 0.25f; // TODO what is the correct bonus speed?
 			}
@@ -879,7 +879,7 @@ public class PacManGame implements Runnable {
 	private void letGhostHunt(Ghost ghost) {
 		if (inChaseMode() || ghost.elroyMode > 0) {
 			ghost.targetTile = ghostChasingTarget(ghost.id);
-			ghost.headForTargetTile(world);
+			ghost.headForTargetTile(world, false);
 		} else {
 			V2i ghostLocation = ghost.tile();
 			// Blinky and Pinky move randomly during first scatter phase
@@ -891,7 +891,7 @@ public class PacManGame implements Runnable {
 				ghost.tryMoving(world);
 			} else {
 				ghost.targetTile = world.ghostScatterTile(ghost.id);
-				ghost.headForTargetTile(world);
+				ghost.headForTargetTile(world, false);
 			}
 		}
 	}

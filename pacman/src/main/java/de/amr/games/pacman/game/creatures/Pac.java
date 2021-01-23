@@ -1,7 +1,5 @@
 package de.amr.games.pacman.game.creatures;
 
-import de.amr.games.pacman.lib.V2i;
-
 /**
  * The Pac-Man.
  * 
@@ -26,9 +24,6 @@ public class Pac extends Creature {
 
 	/** Number of clock ticks Pac has not eaten any pellet. */
 	public long starvingTicks;
-
-	/** The tile that the Pac is targeting, used in autopilot mode. */
-	public V2i targetTile = V2i.NULL;
 
 	public Pac(String name) {
 		this.name = name;

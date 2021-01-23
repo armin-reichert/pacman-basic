@@ -26,16 +26,16 @@ public class Bonus extends Creature {
 	/** Number of clock ticks the consumed bonus is still displayed. */
 	public long eatenTicksLeft;
 
-	/* Ms. Pac-Man only: Diretion in which bonus traverses the maze. */
-	public Direction targetDirection;
+	/* Ms. Pac-Man only: Direction in which bonus traverses the maze. */
+	public Direction wanderingDirection;
 
 	public void wander(PacManGameWorld world) {
 		V2i location = tile();
 		if (!couldMove || world.isIntersection(location)) {
 			List<Direction> dirs = accessibleDirections(world, location, dir.opposite()).collect(Collectors.toList());
 			if (dirs.size() > 1) {
-				// give random movement a bias towards the target direction
-				dirs.remove(targetDirection.opposite());
+				// give random movement a bias towards the wandering direction
+				dirs.remove(wanderingDirection.opposite());
 			}
 			wishDir = dirs.get(rnd.nextInt(dirs.size()));
 		}

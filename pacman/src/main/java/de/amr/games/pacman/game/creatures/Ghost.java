@@ -10,10 +10,7 @@ import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Direction.UP;
 
-import java.util.Optional;
-
 import de.amr.games.pacman.game.worlds.PacManGameWorld;
-import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
 
@@ -44,9 +41,6 @@ public class Ghost extends Creature {
 	 */
 	public byte elroyMode;
 
-	/** The tile that the ghost tries to reach. Can be inaccessible or outside of the maze. */
-	public V2i targetTile = V2i.NULL;
-
 	public Ghost(int id, String name) {
 		this.id = (byte) id;
 		this.name = name;
@@ -57,59 +51,14 @@ public class Ghost extends Creature {
 		if (world.isGhostHouseDoor(x, y)) {
 			return state == GhostState.ENTERING_HOUSE || state == GhostState.LEAVING_HOUSE;
 		}
+		if (world.isUpwardsBlocked(x, y) && wishDir == UP && state == GhostState.HUNTING) {
+			return false;
+		}
 		return super.canAccessTile(world, x, y);
 	}
 
 	public boolean atGhostHouseDoor(PacManGameWorld world) {
 		return tile().equals(world.houseEntry()) && differsAtMost(offset().x, HTS, 2);
-	}
-
-	private static final Direction[] DIRECTION_PRIORITY = { UP, LEFT, DOWN, RIGHT };
-
-	public Optional<Direction> targetDirection(PacManGameWorld world) {
-		double minDist = Double.MAX_VALUE;
-		Direction minDistDir = null;
-		for (Direction targetDir : DIRECTION_PRIORITY) {
-			if (targetDir == dir.opposite()) {
-				continue;
-			}
-			V2i neighbor = tile().sum(targetDir.vec);
-			if (!canAccessTile(world, neighbor)) {
-				continue;
-			}
-			if (targetDir == UP && state == GhostState.HUNTING && world.isUpwardsBlocked(neighbor)) {
-				continue;
-			}
-			double dist = neighbor.euclideanDistance(targetTile);
-			if (dist < minDist) {
-				minDist = dist;
-				minDistDir = targetDir;
-			}
-		}
-		return Optional.ofNullable(minDistDir);
-	}
-
-	public Optional<Direction> newWishDir(PacManGameWorld world) {
-		if (couldMove && !changedTile) {
-			return Optional.empty();
-		}
-		if (forcedDirection) {
-			forcedDirection = false;
-			return Optional.of(wishDir);
-		}
-		V2i ghostLocation = tile();
-		if (world.isPortal(ghostLocation)) {
-			return Optional.empty();
-		}
-		if (state == GhostState.FRIGHTENED && world.isIntersection(ghostLocation)) {
-			return randomAccessibleDirection(world, ghostLocation, dir.opposite());
-		}
-		return targetDirection(world);
-	}
-
-	public void headForTargetTile(PacManGameWorld world) {
-		newWishDir(world).ifPresent(newWishDir -> wishDir = newWishDir);
-		tryMoving(world);
 	}
 
 	public void returnHome(PacManGameWorld world) {
@@ -121,7 +70,7 @@ public class Ghost extends Creature {
 			targetTile = id == BLINKY ? world.houseCenter() : world.ghostHome(id); // TODO
 			return;
 		}
-		headForTargetTile(world);
+		headForTargetTile(world, false);
 	}
 
 	public void enterHouse(PacManGameWorld world) {
