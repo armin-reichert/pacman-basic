@@ -60,17 +60,17 @@ public class MsPacManPlayScene extends PacManGamePlayScene {
 	private Color getScoreColor() {
 		switch (game.level.mazeNumber) {
 		case 1:
-			return Color.PINK;
+			return new Color(255, 183, 174);
 		case 2:
-			return Color.CYAN;
+			return new Color(71, 183, 255);
 		case 3:
-			return Color.ORANGE;
+			return new Color(222, 151, 81);
 		case 4:
-			return Color.BLUE;
+			return new Color(33, 33, 255);
 		case 5:
-			return Color.PINK;
+			return new Color(255, 183, 255);
 		case 6:
-			return Color.ORANGE;
+			return new Color(255, 183, 174);
 		default:
 			return Color.WHITE;
 		}
