@@ -70,7 +70,7 @@ public class Ghost extends Creature {
 			targetTile = id == BLINKY ? world.houseCenter() : world.ghostHome(id); // TODO
 			return;
 		}
-		headForTargetTile(world, false);
+		headForTargetTile(world);
 	}
 
 	public void enterHouse(PacManGameWorld world) {

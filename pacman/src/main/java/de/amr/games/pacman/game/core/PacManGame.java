@@ -877,22 +877,23 @@ public class PacManGame implements Runnable {
 	}
 
 	private void letGhostHunt(Ghost ghost) {
-		if (inChaseMode() || ghost.elroyMode > 0) {
+		byte mode = 1; // 0 = scatter, 1 == chase, 2 == random walk
+
+		if (inScatterMode() && ghost.elroyMode == 0) {
+			mode = 0;
+		}
+		// In Ms. Pac-Man, Blinky and Pinky move randomly during *first* scatter phase
+		if (variant == MS_PACMAN && (ghost.id == BLINKY || ghost.id == PINKY) && huntingPhase == 0) {
+			mode = 2;
+		}
+		if (mode == 0) {
+			ghost.targetTile = world.ghostScatterTile(ghost.id);
+			ghost.headForTargetTile(world);
+		} else if (mode == 1) {
 			ghost.targetTile = ghostChasingTarget(ghost.id);
-			ghost.headForTargetTile(world, false);
-		} else {
-			V2i ghostLocation = ghost.tile();
-			// Blinky and Pinky move randomly during first scatter phase
-			if (variant == MS_PACMAN && huntingPhase == 0 && (ghost.id == BLINKY || ghost.id == PINKY)) {
-				if (world.isIntersection(ghostLocation) || !ghost.couldMove) {
-					ghost.randomAccessibleDirection(world, ghostLocation, ghost.dir.opposite())
-							.ifPresent(dir -> ghost.wishDir = dir);
-				}
-				ghost.tryMoving(world);
-			} else {
-				ghost.targetTile = world.ghostScatterTile(ghost.id);
-				ghost.headForTargetTile(world, false);
-			}
+			ghost.headForTargetTile(world);
+		} else if (mode == 2) {
+			ghost.wanderRandomly(world);
 		}
 	}
 

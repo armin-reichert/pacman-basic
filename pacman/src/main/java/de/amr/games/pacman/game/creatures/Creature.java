@@ -164,8 +164,8 @@ public class Creature {
 		couldMove = true;
 	}
 
-	public void headForTargetTile(PacManGameWorld world, boolean randomWalk) {
-		newWishDir(world, randomWalk).ifPresent(newWishDir -> wishDir = newWishDir);
+	public void headForTargetTile(PacManGameWorld world) {
+		newWishDir(world, false).ifPresent(newWishDir -> wishDir = newWishDir);
 		tryMoving(world);
 	}
 
@@ -207,6 +207,14 @@ public class Creature {
 			}
 		}
 		return Optional.ofNullable(minDistDir);
+	}
+
+	public void wanderRandomly(PacManGameWorld world) {
+		V2i location = tile();
+		if (world.isIntersection(location) || !couldMove) {
+			randomAccessibleDirection(world, location, dir.opposite()).ifPresent(d -> wishDir = d);
+		}
+		tryMoving(world);
 	}
 
 	public Optional<Direction> randomAccessibleDirection(PacManGameWorld world, V2i tile,
