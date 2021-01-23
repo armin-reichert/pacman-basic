@@ -967,7 +967,7 @@ public class PacManGame implements Runnable {
 		if (ghostLocation.equals(world.houseCenter()) && offset.y >= 0) {
 			ghost.wishDir = ghost.targetTile.x < world.houseCenter().x ? LEFT : RIGHT;
 		}
-		ghost.couldMove = ghost.tryMoving(world, ghost.wishDir);
+		ghost.tryMoving(world, ghost.wishDir);
 	}
 
 	private void letGhostLeaveHouse(Ghost ghost) {
@@ -994,7 +994,7 @@ public class PacManGame implements Runnable {
 		} else {
 			ghost.wishDir = ghost.position.x < centerX ? RIGHT : LEFT;
 		}
-		ghost.couldMove = ghost.tryMoving(world, ghost.wishDir);
+		ghost.tryMoving(world, ghost.wishDir);
 	}
 
 	private boolean atGhostHouseDoor(Creature guy) {

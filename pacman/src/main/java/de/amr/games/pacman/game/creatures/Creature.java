@@ -90,15 +90,15 @@ public class Creature {
 				return;
 			}
 		}
-		couldMove = tryMoving(world, wishDir);
+		tryMoving(world, wishDir);
 		if (couldMove) {
 			dir = wishDir;
 		} else {
-			couldMove = tryMoving(world, dir);
+			tryMoving(world, dir);
 		}
 	}
 
-	public boolean tryMoving(PacManGameWorld world, Direction dir) {
+	public void tryMoving(PacManGameWorld world, Direction dir) {
 		// 100% speed corresponds to 1.25 pixels/tick (75px/sec)
 		float pixels = speed * 1.25f;
 
@@ -110,12 +110,14 @@ public class Creature {
 		if (forcedOnTrack && canAccessTile(world, neighbor)) {
 			if (dir == LEFT || dir == RIGHT) {
 				if (abs(offset.y) > pixels) {
-					return false;
+					couldMove = false;
+					return;
 				}
 				setOffset(offset.x, 0);
 			} else if (dir == UP || dir == DOWN) {
 				if (abs(offset.x) > pixels) {
-					return false;
+					couldMove = false;
+					return;
 				}
 				setOffset(0, offset.y);
 			}
@@ -128,23 +130,26 @@ public class Creature {
 
 		// block moving into inaccessible tile
 		if (!canAccessTile(world, newTile)) {
-			return false;
+			couldMove = false;
+			return;
 		}
 
 		// align with edge of inaccessible neighbor
 		if (!canAccessTile(world, neighbor)) {
 			if (dir == RIGHT && newOffset.x > 0 || dir == LEFT && newOffset.x < 0) {
 				setOffset(0, offset.y);
-				return false;
+				couldMove = false;
+				return;
 			}
 			if (dir == DOWN && newOffset.y > 0 || dir == UP && newOffset.y < 0) {
 				setOffset(offset.x, 0);
-				return false;
+				couldMove = false;
+				return;
 			}
 		}
 
 		placeAt(newTile, newOffset.x, newOffset.y);
 		changedTile = !tile().equals(guyLocationBeforeMove);
-		return true;
+		couldMove = true;
 	}
 }
