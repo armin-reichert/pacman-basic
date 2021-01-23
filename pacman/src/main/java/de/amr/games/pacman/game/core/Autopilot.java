@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.game.creatures.Ghost;
@@ -18,7 +19,7 @@ import de.amr.games.pacman.lib.V2i;
  * 
  * @author Armin Reichert
  */
-public class Autopilot implements Runnable {
+public class Autopilot implements Consumer<Pac> {
 
 	private static final int MAX_GHOST_AHEAD_DETECTION_DIST = 4; // tiles
 	private static final int MAX_GHOST_BEHIND_DETECTION_DIST = 2; // tiles
@@ -28,8 +29,6 @@ public class Autopilot implements Runnable {
 	public static boolean logEnabled;
 
 	private final PacManGame game;
-	private final Pac pac;
-	private final Ghost[] ghosts;
 
 	private void log(String msg, Object... args) {
 		if (logEnabled) {
@@ -39,12 +38,10 @@ public class Autopilot implements Runnable {
 
 	public Autopilot(PacManGame game) {
 		this.game = game;
-		this.pac = game.pac;
-		this.ghosts = game.ghosts;
 	}
 
 	@Override
-	public void run() {
+	public void accept(Pac pac) {
 		V2i pacManTile = pac.tile();
 
 		if (pac.couldMove && !pac.changedTile) {
@@ -58,15 +55,15 @@ public class Autopilot implements Runnable {
 
 		pac.targetTile = null;
 
-		Ghost hunterAhead = findHuntingGhostAhead(); // Where is Hunter?
+		Ghost hunterAhead = findHuntingGhostAhead(pac, game.ghosts); // Where is Hunter?
 		if (hunterAhead != null) {
 			Direction escapeDir = null;
-			Ghost hunterBehind = findHuntingGhostBehind();
+			Ghost hunterBehind = findHuntingGhostBehind(pac, game.ghosts);
 			if (hunterBehind != null) {
-				escapeDir = findEscapeDirectionExcluding(EnumSet.of(pac.dir, pac.dir.opposite()));
+				escapeDir = findEscapeDirectionExcluding(pac, game.ghosts, EnumSet.of(pac.dir, pac.dir.opposite()));
 				log("Detected ghost %s behind, escape direction is %s", hunterAhead.name, escapeDir);
 			} else {
-				escapeDir = findEscapeDirectionExcluding(EnumSet.of(pac.dir));
+				escapeDir = findEscapeDirectionExcluding(pac, game.ghosts, EnumSet.of(pac.dir));
 				log("Detected ghost %s ahead, escape direction is %s", hunterAhead.name, escapeDir);
 			}
 			if (escapeDir != null) {
@@ -80,7 +77,7 @@ public class Autopilot implements Runnable {
 		if (pac.couldMove && !game.world.isIntersection(pacManTile))
 			return;
 
-		Ghost prey = findFrightenedGhostInReach();
+		Ghost prey = findFrightenedGhostInReach(pac, game.ghosts);
 		if (prey != null && pac.powerTicksLeft >= game.clock.sec(1)) {
 			log("Detected frightened ghost %s %.0g tiles away", prey.name, prey.tile().manhattanDistance(pacManTile));
 			pac.targetTile = prey.tile();
@@ -89,13 +86,13 @@ public class Autopilot implements Runnable {
 			log("Detected active bonus");
 			pac.targetTile = game.bonus.tile();
 		} else {
-			V2i foodTile = findTileFarestFromGhosts(findNearestFoodTiles());
+			V2i foodTile = findTileFarestFromGhosts(pac, game.ghosts, findNearestFoodTiles(pac, game.ghosts));
 			pac.targetTile = foodTile;
 		}
-		approachTarget();
+		approachTarget(pac);
 	}
 
-	private void approachTarget() {
+	private void approachTarget(Pac pac) {
 		if (pac.targetTile == null) {
 			return;
 		}
@@ -124,7 +121,7 @@ public class Autopilot implements Runnable {
 		}
 	}
 
-	private Ghost findFrightenedGhostInReach() {
+	private Ghost findFrightenedGhostInReach(Pac pac, Ghost[] ghosts) {
 		for (Ghost ghost : ghosts) {
 			if (ghost.state == GhostState.FRIGHTENED && ghost.tile().manhattanDistance(pac.tile()) < MAX_GHOST_CHASE_DIST) {
 				return ghost;
@@ -133,7 +130,7 @@ public class Autopilot implements Runnable {
 		return null;
 	}
 
-	private Ghost findHuntingGhostAhead() {
+	private Ghost findHuntingGhostAhead(Pac pac, Ghost[] ghosts) {
 		V2i pacManTile = pac.tile();
 		boolean energizerFound = false;
 		for (int i = 1; i <= MAX_GHOST_AHEAD_DETECTION_DIST; ++i) {
@@ -161,7 +158,7 @@ public class Autopilot implements Runnable {
 		return null;
 	}
 
-	private Ghost findHuntingGhostBehind() {
+	private Ghost findHuntingGhostBehind(Pac pac, Ghost[] ghosts) {
 		V2i pacManTile = pac.tile();
 		for (int i = 1; i <= MAX_GHOST_BEHIND_DETECTION_DIST; ++i) {
 			V2i behind = pacManTile.sum(pac.dir.opposite().vec.scaled(i));
@@ -177,7 +174,7 @@ public class Autopilot implements Runnable {
 		return null;
 	}
 
-	private Direction findEscapeDirectionExcluding(Collection<Direction> forbidden) {
+	private Direction findEscapeDirectionExcluding(Pac pac, Ghost[] ghosts, Collection<Direction> forbidden) {
 		V2i pacManTile = pac.tile();
 		List<Direction> escapes = new ArrayList<>(4);
 		for (Direction dir : Direction.shuffled()) {
@@ -198,7 +195,7 @@ public class Autopilot implements Runnable {
 		return escapes.isEmpty() ? null : escapes.get(0);
 	}
 
-	private List<V2i> findNearestFoodTiles() {
+	private List<V2i> findNearestFoodTiles(Pac pac, Ghost[] ghosts) {
 		long time = System.nanoTime();
 		List<V2i> foodTiles = new ArrayList<>();
 		V2i pacManTile = pac.tile();
@@ -227,16 +224,16 @@ public class Autopilot implements Runnable {
 		log("Nearest food tiles from Pac-Man location %s: (time %.2f millis)", pacManTile, time / 1_000_000f);
 		for (V2i t : foodTiles) {
 			log("\t%s (%.2g tiles away from Pac-Man, %.2g tiles away from ghosts)", t, t.manhattanDistance(pacManTile),
-					minDistanceFromGhosts(t));
+					minDistanceFromGhosts(pac, ghosts));
 		}
 		return foodTiles;
 	}
 
-	private V2i findTileFarestFromGhosts(List<V2i> tiles) {
+	private V2i findTileFarestFromGhosts(Pac pac, Ghost[] ghosts, List<V2i> tiles) {
 		V2i farestTile = null;
 		double maxDist = -1;
 		for (V2i tile : tiles) {
-			double dist = minDistanceFromGhosts(tile);
+			double dist = minDistanceFromGhosts(pac, ghosts);
 			if (dist > maxDist) {
 				maxDist = dist;
 				farestTile = tile;
@@ -245,7 +242,7 @@ public class Autopilot implements Runnable {
 		return farestTile;
 	}
 
-	private double minDistanceFromGhosts(V2i tile) {
-		return Stream.of(ghosts).map(Ghost::tile).mapToDouble(tile::manhattanDistance).min().getAsDouble();
+	private double minDistanceFromGhosts(Pac pac, Ghost[] ghosts) {
+		return Stream.of(ghosts).map(Ghost::tile).mapToDouble(pac.tile()::manhattanDistance).min().getAsDouble();
 	}
 }

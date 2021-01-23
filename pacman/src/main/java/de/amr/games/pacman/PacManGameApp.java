@@ -20,7 +20,7 @@ public class PacManGameApp {
 		invokeLater(() -> {
 			PacManGame game = new PacManGame(PacManGame.MS_PACMAN);
 			PacManGameUI ui = new PacManGameSwingUI(game, scaling);
-			game.pacController = new KeyboardPacController(ui, game);
+			game.pacController = new KeyboardPacController(ui);
 			ui.openWindow();
 			new Thread(game, "PacManGame").start();
 		});

@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.ResourceBundle;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.game.creatures.Bonus;
@@ -74,7 +75,7 @@ public class PacManGame implements Runnable {
 	public Hiscore hiscore;
 
 	public PacManGameUI ui;
-	public Runnable pacController;
+	public Consumer<Pac> pacController;
 
 	public boolean paused;
 	public boolean started;
@@ -154,7 +155,7 @@ public class PacManGame implements Runnable {
 	private void readInput() {
 		if (ui.keyPressed("a")) {
 			if (pacController instanceof Autopilot) {
-				pacController = new KeyboardPacController(ui, this);
+				pacController = new KeyboardPacController(ui);
 				log("Pac-Man autopilot mode is off");
 			} else {
 				pacController = new Autopilot(this);
@@ -420,6 +421,10 @@ public class PacManGame implements Runnable {
 			return changeState(this::exitHuntingState, this::enterChangingLevelState, null);
 		}
 
+		if (world.foodRemaining() == 0) {
+			return changeState(this::exitHuntingState, this::enterChangingLevelState, null);
+		}
+
 		if (state.hasExpired()) {
 			startHuntingPhase(++huntingPhase);
 			for (Ghost ghost : ghosts) {
@@ -429,11 +434,23 @@ public class PacManGame implements Runnable {
 			}
 		}
 
-		if (world.foodRemaining() == 0) {
-			return changeState(this::exitHuntingState, this::enterChangingLevelState, null);
+		pacController.accept(pac);
+		if (pac.restingTicksLeft > 0) {
+			pac.restingTicksLeft--;
+		} else {
+			pac.speed = pac.powerTicksLeft == 0 ? level.pacSpeed : level.pacSpeedPowered;
+			pac.tryMoving(world);
 		}
-
-		updatePac();
+		if (pac.powerTicksLeft > 0) {
+			pac.powerTicksLeft--;
+			if (pac.powerTicksLeft == 0) {
+				for (Ghost ghost : ghosts) {
+					if (ghost.state == GhostState.FRIGHTENED) {
+						ghost.state = GhostState.HUNTING;
+					}
+				}
+			}
+		}
 
 		for (Ghost ghost : ghosts) {
 			if (ghost.state == GhostState.LOCKED) {
@@ -525,7 +542,7 @@ public class PacManGame implements Runnable {
 		if (state.hasExpired()) {
 			return changeState(this::exitGhostDyingState, () -> state = stateBefore, () -> log("Resume state '%s'", state));
 		}
-		pacController.run();
+		pacController.accept(pac);
 		for (Ghost ghost : ghosts) {
 			if (ghost.state == GhostState.DEAD && ghost.bounty == 0) {
 				ghost.update(world, level);
@@ -605,27 +622,6 @@ public class PacManGame implements Runnable {
 	// END STATE-MACHINE
 
 	// Pac
-
-	private void updatePac() {
-		if (pac.restingTicksLeft > 0) {
-			pac.restingTicksLeft--;
-		} else {
-			pac.speed = pac.powerTicksLeft == 0 ? level.pacSpeed : level.pacSpeedPowered;
-			pacController.run();
-			pac.tryMoving(world);
-		}
-		if (pac.powerTicksLeft > 0) {
-			pac.powerTicksLeft--;
-			if (pac.powerTicksLeft == 0) {
-				for (Ghost ghost : ghosts) {
-					if (ghost.state == GhostState.FRIGHTENED) {
-						ghost.state = GhostState.HUNTING;
-					}
-				}
-				ui.stopSound(PacManGameSound.PACMAN_POWER);
-			}
-		}
-	}
 
 	private void checkPacFindsEdibleBonus() {
 		if (bonus.edibleTicksLeft > 0 && pac.tile().equals(bonus.tile())) {
@@ -914,6 +910,9 @@ public class PacManGame implements Runnable {
 	private void updateSound() {
 		if (Stream.of(ghosts).noneMatch(g -> g.state == GhostState.DEAD)) {
 			ui.stopSound(PacManGameSound.GHOST_EYES);
+		}
+		if (Stream.of(ghosts).noneMatch(g -> g.state == GhostState.FRIGHTENED)) {
+			ui.stopSound(PacManGameSound.PACMAN_POWER);
 		}
 	}
 

@@ -5,21 +5,20 @@ import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Direction.UP;
 
-import de.amr.games.pacman.game.core.PacManGame;
+import java.util.function.Consumer;
+
 import de.amr.games.pacman.game.creatures.Pac;
 
-public class KeyboardPacController implements Runnable {
+public class KeyboardPacController implements Consumer<Pac> {
 
-	private final Pac pac;
 	private final PacManGameUI ui;
 
-	public KeyboardPacController(PacManGameUI ui, PacManGame game) {
+	public KeyboardPacController(PacManGameUI ui) {
 		this.ui = ui;
-		this.pac = game.pac;
 	}
 
 	@Override
-	public void run() {
+	public void accept(Pac pac) {
 		if (ui.keyPressed("left")) {
 			pac.wishDir = LEFT;
 		} else if (ui.keyPressed("right")) {
