@@ -156,12 +156,13 @@ public class PacManClassicPlayScene extends PacManGamePlayScene {
 			return assets.section(2, 0);
 		}
 		if (!pac.couldMove) {
-			// mouth wide open towards move dir
-			return assets.section(0, dir);
+			// mouth half open towards move dir
+			return assets.section(1, dir);
 		}
 		// mouth animation towards move dir
-		int frame = game.clock.frame(5, 3);
-		return frame == 2 ? assets.section(frame, 0) : assets.section(frame, dir);
+		// pattern (2, 0), (1, dir), (0, dir), (1, dir)
+		int frame = game.clock.frame(5, 4);
+		return frame == 0 ? assets.section(2, 0) : assets.section(frame % 2, dir);
 	}
 
 	private BufferedImage sprite(Ghost ghost) {
