@@ -2,6 +2,7 @@ package de.amr.games.pacman.game.creatures;
 
 import static de.amr.games.pacman.game.worlds.PacManClassicWorld.BLINKY;
 import static de.amr.games.pacman.game.worlds.PacManGameWorld.HTS;
+import static de.amr.games.pacman.game.worlds.PacManGameWorld.t;
 import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
@@ -12,6 +13,7 @@ import java.util.Optional;
 import de.amr.games.pacman.game.core.PacManGame;
 import de.amr.games.pacman.game.worlds.PacManGameWorld;
 import de.amr.games.pacman.lib.Direction;
+import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
 
 /**
@@ -119,6 +121,31 @@ public class Ghost extends Creature {
 			return;
 		}
 		headForTargetTile(world);
+	}
+
+	public void enterHouse(PacManGameWorld world) {
+		V2i ghostLocation = tile();
+		V2f offset = offset();
+		// Target reached? Revive and start leaving house.
+		if (ghostLocation.equals(targetTile) && offset.y >= 0) {
+			state = GhostState.LEAVING_HOUSE;
+			wishDir = dir.opposite();
+			return;
+		}
+		// House center reached? Move sidewards towards target tile
+		if (ghostLocation.equals(world.houseCenter()) && offset.y >= 0) {
+			wishDir = targetTile.x < world.houseCenter().x ? LEFT : RIGHT;
+		}
+		tryMoving(world, wishDir);
+	}
+
+	public void bounce(PacManGameWorld world, float bounceSpeed) {
+		int ceiling = t(world.houseCenter().y) - 5, ground = t(world.houseCenter().y) + 4;
+		if (position.y <= ceiling || position.y >= ground) {
+			wishDir = dir.opposite();
+		}
+		speed = bounceSpeed;
+		tryMoving(world);
 	}
 
 }

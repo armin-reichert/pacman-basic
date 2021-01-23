@@ -13,7 +13,6 @@ import static de.amr.games.pacman.game.worlds.PacManClassicWorld.INKY;
 import static de.amr.games.pacman.game.worlds.PacManClassicWorld.PINKY;
 import static de.amr.games.pacman.game.worlds.PacManGameWorld.HTS;
 import static de.amr.games.pacman.game.worlds.PacManGameWorld.TS;
-import static de.amr.games.pacman.game.worlds.PacManGameWorld.t;
 import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
@@ -338,7 +337,7 @@ public class PacManGame implements Runnable {
 		if (state.running > clock.sec(1)) {
 			for (Ghost ghost : ghosts) {
 				if (ghost.id != BLINKY) {
-					letGhostBounce(ghost);
+					ghost.bounce(world, level.ghostSpeed / 2); // TODO correct speed?
 				}
 			}
 		}
@@ -797,13 +796,16 @@ public class PacManGame implements Runnable {
 		case LOCKED:
 			if (ghost.id != BLINKY) {
 				tryReleasingGhost(ghost);
-				letGhostBounce(ghost);
+				ghost.bounce(world, level.ghostSpeed / 2); // TODO speed correct?
 			} else {
 				ghost.state = GhostState.HUNTING;
 			}
 			break;
 		case ENTERING_HOUSE:
-			letGhostEnterHouse(ghost);
+			ghost.enterHouse(world);
+			if (Stream.of(ghosts).noneMatch(g -> g.state == GhostState.DEAD)) {
+				ui.stopSound(PacManGameSound.GHOST_EYES);
+			}
 			break;
 		case LEAVING_HOUSE:
 			letGhostLeaveHouse(ghost);
@@ -877,15 +879,6 @@ public class PacManGame implements Runnable {
 		}
 	}
 
-	private void letGhostBounce(Ghost ghost) {
-		int ceiling = t(world.houseCenter().y) - 5, ground = t(world.houseCenter().y) + 4;
-		if (ghost.position.y <= ceiling || ghost.position.y >= ground) {
-			ghost.wishDir = ghost.dir.opposite();
-		}
-		ghost.speed = level.ghostSpeedTunnel; // TODO correct?
-		ghost.tryMoving(world);
-	}
-
 	private void letGhostWanderMaze(Ghost ghost) {
 		V2i ghostLocation = ghost.tile();
 
@@ -919,26 +912,6 @@ public class PacManGame implements Runnable {
 				ghost.headForTargetTile(world);
 			}
 		}
-	}
-
-	private void letGhostEnterHouse(Ghost ghost) {
-		V2i ghostLocation = ghost.tile();
-		V2f offset = ghost.offset();
-		// Target reached? Revive and start leaving house.
-		if (ghostLocation.equals(ghost.targetTile) && offset.y >= 0) {
-			ghost.state = GhostState.LEAVING_HOUSE;
-			ghost.speed = level.ghostSpeed; // TODO correct?
-			ghost.wishDir = ghost.dir.opposite();
-			if (Stream.of(ghosts).noneMatch(g -> g.state == GhostState.DEAD)) {
-				ui.stopSound(PacManGameSound.GHOST_EYES);
-			}
-			return;
-		}
-		// House center reached? Move sidewards towards target tile
-		if (ghostLocation.equals(world.houseCenter()) && offset.y >= 0) {
-			ghost.wishDir = ghost.targetTile.x < world.houseCenter().x ? LEFT : RIGHT;
-		}
-		ghost.tryMoving(world, ghost.wishDir);
 	}
 
 	private void letGhostLeaveHouse(Ghost ghost) {
