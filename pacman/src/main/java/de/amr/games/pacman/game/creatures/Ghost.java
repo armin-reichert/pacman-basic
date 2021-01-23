@@ -1,5 +1,6 @@
 package de.amr.games.pacman.game.creatures;
 
+import static de.amr.games.pacman.game.worlds.PacManClassicWorld.BLINKY;
 import static de.amr.games.pacman.game.worlds.PacManGameWorld.HTS;
 import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
@@ -106,6 +107,18 @@ public class Ghost extends Creature {
 	public void headForTargetTile(PacManGameWorld world) {
 		newWishDir(world).ifPresent(newWishDir -> wishDir = newWishDir);
 		tryMoving(world);
+	}
+
+	public void returnHome(PacManGameWorld world) {
+		if (atGhostHouseDoor(world)) {
+			setOffset(HTS, 0);
+			dir = wishDir = DOWN;
+			forcedOnTrack = false;
+			state = GhostState.ENTERING_HOUSE;
+			targetTile = id == BLINKY ? world.houseCenter() : world.ghostHome(id); // TODO
+			return;
+		}
+		headForTargetTile(world);
 	}
 
 }

@@ -813,7 +813,7 @@ public class PacManGame implements Runnable {
 			letGhostWanderMaze(ghost);
 			break;
 		case DEAD:
-			letGhostReturnHome(ghost);
+			ghost.returnHome(world);
 			break;
 		default:
 			throw new IllegalArgumentException("Illegal ghost state: " + ghost.state);
@@ -919,18 +919,6 @@ public class PacManGame implements Runnable {
 				ghost.headForTargetTile(world);
 			}
 		}
-	}
-
-	private void letGhostReturnHome(Ghost ghost) {
-		if (ghost.atGhostHouseDoor(world)) {
-			ghost.setOffset(HTS, 0);
-			ghost.dir = ghost.wishDir = DOWN;
-			ghost.forcedOnTrack = false;
-			ghost.state = GhostState.ENTERING_HOUSE;
-			ghost.targetTile = ghost.id == BLINKY ? world.houseCenter() : world.ghostHome(ghost.id);
-			return;
-		}
-		ghost.headForTargetTile(world);
 	}
 
 	private void letGhostEnterHouse(Ghost ghost) {
