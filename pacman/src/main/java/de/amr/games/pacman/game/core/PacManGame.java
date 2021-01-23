@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.ResourceBundle;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.game.creatures.Bonus;
@@ -35,7 +34,6 @@ import de.amr.games.pacman.game.worlds.MsPacManWorld;
 import de.amr.games.pacman.game.worlds.PacManClassicWorld;
 import de.amr.games.pacman.game.worlds.PacManGameWorld;
 import de.amr.games.pacman.lib.Clock;
-import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.Hiscore;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.api.PacManGameSound;
@@ -741,26 +739,12 @@ public class PacManGame implements Runnable {
 		}
 	}
 
-	private void letBonusWanderMaze() {
-		V2i bonusLocation = bonus.tile();
-		if (!bonus.couldMove || world.isIntersection(bonusLocation)) {
-			List<Direction> dirs = bonus.accessibleDirections(world, bonusLocation, bonus.dir.opposite())
-					.collect(Collectors.toList());
-			if (dirs.size() > 1) {
-				// give random movement a bias towards the target direction
-				dirs.remove(bonus.targetDirection.opposite());
-			}
-			bonus.wishDir = dirs.get(rnd.nextInt(dirs.size()));
-		}
-		bonus.tryMoving(world);
-	}
-
 	private void updateBonus() {
 		// edible bonus active?
 		boolean expired = false;
 		if (bonus.edibleTicksLeft > 0) {
 			if (variant == MS_PACMAN) {
-				letBonusWanderMaze();
+				bonus.wander(world);
 				V2i bonusLocation = bonus.tile();
 				if (world.isPortal(bonusLocation)) {
 					expired = true; // TODO should bonus also expire on timeout?

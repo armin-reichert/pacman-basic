@@ -52,7 +52,7 @@ public class Creature {
 	/** If movement is constrained to be aligned with the tiles. */
 	public boolean forcedOnTrack;
 
-	private Random rnd = new Random();
+	public final Random rnd = new Random();
 
 	public void placeAt(V2i tile, float offsetX, float offsetY) {
 		position = new V2f(tile.x * TS + offsetX, tile.y * TS + offsetY);
