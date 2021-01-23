@@ -81,7 +81,7 @@ public class MsPacManIntroScene implements PacManGameScene {
 	}
 
 	@Override
-	public void draw(Graphics2D g, Graphics2D unscaledGC) {
+	public void draw(Graphics2D g) {
 
 		if (game.state.running < animationStart) {
 			return;

@@ -14,7 +14,7 @@ public interface PacManGameScene {
 
 	V2i size();
 
-	void draw(Graphics2D g, Graphics2D unscaledGC);
+	void draw(Graphics2D g);
 
 	default void drawCenteredText(Graphics2D g, String text, int y) {
 		g.drawString(text, (size().x - g.getFontMetrics().stringWidth(text)) / 2, y);

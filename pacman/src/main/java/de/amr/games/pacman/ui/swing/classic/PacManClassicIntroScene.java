@@ -60,7 +60,7 @@ public class PacManClassicIntroScene implements PacManGameScene {
 	}
 
 	@Override
-	public void draw(Graphics2D g, Graphics2D unscaledGC) {
+	public void draw(Graphics2D g) {
 		game.state.runAfter(game.clock.sec(1), () -> {
 			drawCenteredImage(g, assets.gameLogo, 3);
 		});

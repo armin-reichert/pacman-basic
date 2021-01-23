@@ -204,8 +204,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 				Graphics2D g = (Graphics2D) buffers.getDrawGraphics();
 				g.setColor(canvas.getBackground());
 				g.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
-				updateScene();
-				drawCurrentScene(g);
+				drawCurrentScene(g, scaling);
 				if (game.paused) {
 					drawPausedScreen(g);
 				}
@@ -215,19 +214,20 @@ public class PacManGameSwingUI implements PacManGameUI {
 		} while (buffers.contentsLost());
 	}
 
-	private void drawCurrentScene(Graphics2D g) {
-		Graphics2D gScaled = (Graphics2D) g.create();
-		gScaled.scale(scaling, scaling);
-		currentScene.draw(gScaled, g);
+	private void drawCurrentScene(Graphics2D g, float scaling) {
+		updateScene();
+		Graphics2D g2 = (Graphics2D) g.create();
+		g2.scale(scaling, scaling);
+		currentScene.draw(g2);
 		if (messageText != null) {
-			gScaled.setFont(messageFont);
-			gScaled.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-			gScaled.setColor(messageColor);
-			int textWidth = gScaled.getFontMetrics().stringWidth(messageText);
-			gScaled.drawString(messageText, (unscaledSizePixels.x - textWidth) / 2, t(21));
-			gScaled.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
+			g2.setFont(messageFont);
+			g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+			g2.setColor(messageColor);
+			int textWidth = g2.getFontMetrics().stringWidth(messageText);
+			g2.drawString(messageText, (unscaledSizePixels.x - textWidth) / 2, t(21));
+			g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
 		}
-		gScaled.dispose();
+		g2.dispose();
 	}
 
 	private void drawPausedScreen(Graphics2D g) {

@@ -38,7 +38,7 @@ public class PacManClassicPlayScene extends PacManGamePlayScene {
 	}
 
 	@Override
-	public void draw(Graphics2D g, Graphics2D unscaledGC) {
+	public void draw(Graphics2D g) {
 		drawScore(g);
 		drawLivesCounter(g);
 		drawLevelCounter(g);
