@@ -177,25 +177,26 @@ public class MsPacManIntroScene implements PacManGameScene {
 	}
 
 	private void drawFrame(Graphics2D g, Color color, int light) {
+		Color bright = Color.PINK;
 		int dotsX = 32, dotsY = 16;
 		int dot = light;
 		for (int i = 0; i < dotsX; ++i) {
-			g.setColor(dot % 8 == 0 ? Color.WHITE : Color.RED);
+			g.setColor(dot % 8 == 0 ? bright : Color.RED);
 			g.fillRect(frameSize.x + 4 * i, frameSize.y, 2, 2);
 			++dot;
 		}
 		for (int i = 0; i < dotsY; ++i) {
-			g.setColor(dot % 8 == 0 ? Color.WHITE : Color.RED);
+			g.setColor(dot % 8 == 0 ? bright : Color.RED);
 			g.fillRect(frameSize.x + 4 * dotsX, frameSize.y + 4 * i, 2, 2);
 			++dot;
 		}
 		for (int i = dotsX; i >= 0; --i) {
-			g.setColor(dot % 8 == 0 ? Color.WHITE : Color.RED);
+			g.setColor(dot % 8 == 0 ? bright : Color.RED);
 			g.fillRect(frameSize.x + 4 * i, frameSize.y + 4 * dotsY, 2, 2);
 			++dot;
 		}
 		for (int i = dotsY - 1; i >= 0; --i) {
-			g.setColor(dot % 8 == 0 ? Color.WHITE : Color.RED);
+			g.setColor(dot % 8 == 0 ? bright : Color.RED);
 			g.fillRect(frameSize.x, frameSize.y + 4 * i, 2, 2);
 			++dot;
 		}
