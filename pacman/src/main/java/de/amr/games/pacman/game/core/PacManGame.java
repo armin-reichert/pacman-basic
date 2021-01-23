@@ -801,38 +801,42 @@ public class PacManGame implements Runnable {
 		} else if (inScatteringPhase() && ghost.elroyMode == 0) {
 			ghost.targetTile = world.ghostScatterTile(ghost.id);
 		} else {
-			switch (ghost.id) {
-			case 0: {
-				// BLINKY
-				ghost.targetTile = pac.tile();
-				break;
+			setGhostChasingTarget(ghost);
+		}
+	}
+
+	private void setGhostChasingTarget(Ghost ghost) {
+		switch (ghost.id) {
+		case 0: {
+			// BLINKY
+			ghost.targetTile = pac.tile();
+			break;
+		}
+		case 1: {
+			// PINKY
+			V2i pacAhead4 = pac.tile().sum(pac.dir.vec.scaled(4));
+			if (pac.dir == UP) { // simulate overflow bug when Pac-Man is looking UP
+				pacAhead4 = pacAhead4.sum(LEFT.vec.scaled(4));
 			}
-			case 1: {
-				// PINKY
-				V2i pacAhead4 = pac.tile().sum(pac.dir.vec.scaled(4));
-				if (pac.dir == UP) { // simulate overflow bug when Pac-Man is looking UP
-					pacAhead4 = pacAhead4.sum(LEFT.vec.scaled(4));
-				}
-				ghost.targetTile = pacAhead4;
-				break;
+			ghost.targetTile = pacAhead4;
+			break;
+		}
+		case 2: {
+			// INKY
+			V2i pacAhead2 = pac.tile().sum(pac.dir.vec.scaled(2));
+			if (pac.dir == UP) { // simulate overflow bug when Pac-Man is looking UP
+				pacAhead2 = pacAhead2.sum(LEFT.vec.scaled(2));
 			}
-			case 2: {
-				// INKY
-				V2i pacAhead2 = pac.tile().sum(pac.dir.vec.scaled(2));
-				if (pac.dir == UP) { // simulate overflow bug when Pac-Man is looking UP
-					pacAhead2 = pacAhead2.sum(LEFT.vec.scaled(2));
-				}
-				ghost.targetTile = ghosts[BLINKY].tile().scaled(-1).sum(pacAhead2.scaled(2));
-				break;
-			}
-			case 3: {
-				// CLYDE, SUE
-				ghost.targetTile = ghosts[3].tile().euclideanDistance(pac.tile()) < 8 ? world.ghostScatterTile(3) : pac.tile();
-				break;
-			}
-			default:
-				throw new IllegalArgumentException("Unknown ghost id: " + ghost.id);
-			}
+			ghost.targetTile = ghosts[BLINKY].tile().scaled(-1).sum(pacAhead2.scaled(2));
+			break;
+		}
+		case 3: {
+			// CLYDE, SUE
+			ghost.targetTile = ghosts[3].tile().euclideanDistance(pac.tile()) < 8 ? world.ghostScatterTile(3) : pac.tile();
+			break;
+		}
+		default:
+			throw new IllegalArgumentException("Unknown ghost id: " + ghost.id);
 		}
 	}
 
