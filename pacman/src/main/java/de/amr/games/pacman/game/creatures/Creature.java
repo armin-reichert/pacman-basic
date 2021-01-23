@@ -177,12 +177,12 @@ public class Creature {
 			forcedDirection = false;
 			return Optional.of(wishDir);
 		}
-		V2i ghostLocation = tile();
-		if (world.isPortal(ghostLocation)) {
+		V2i location = tile();
+		if (world.isPortal(location)) {
 			return Optional.empty();
 		}
 		if (randomWalk) {
-			return randomAccessibleDirection(world, ghostLocation, dir.opposite());
+			return randomAccessibleDirection(world, location, dir.opposite());
 		}
 		return targetDirection(world);
 	}
