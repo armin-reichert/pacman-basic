@@ -865,32 +865,30 @@ public class PacManGame implements Runnable {
 		log("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name, ghost.tile(), ghost.bounty);
 	}
 
-	private V2i ghostChasingTarget(int id) {
-		switch (id) {
-		case BLINKY: {
+	private V2i ghostChasingTarget(int ghostID) {
+		switch (ghostID) {
+		case 0: { // BLINKY
 			return pac.tile();
 		}
-		case PINKY: {
+		case 1: { // PINKY
 			V2i pacAhead4 = pac.tile().sum(pac.dir.vec.scaled(4));
-			if (pac.dir == UP) {
-				// simulate overflow bug when Pac-Man is looking UP
+			if (pac.dir == UP) { // simulate overflow bug when Pac-Man is looking UP
 				pacAhead4 = pacAhead4.sum(LEFT.vec.scaled(4));
 			}
 			return pacAhead4;
 		}
-		case INKY: {
+		case 2: { // INKY
 			V2i pacAhead2 = pac.tile().sum(pac.dir.vec.scaled(2));
-			if (pac.dir == UP) {
-				// simulate overflow bug when Pac-Man is looking UP
+			if (pac.dir == UP) { // simulate overflow bug when Pac-Man is looking UP
 				pacAhead2 = pacAhead2.sum(LEFT.vec.scaled(2));
 			}
 			return ghosts[BLINKY].tile().scaled(-1).sum(pacAhead2.scaled(2));
 		}
-		case CLYDE: {
-			return ghosts[CLYDE].tile().euclideanDistance(pac.tile()) < 8 ? world.ghostScatterTile(CLYDE) : pac.tile();
+		case 3: { // CLYDE, SUE
+			return ghosts[3].tile().euclideanDistance(pac.tile()) < 8 ? world.ghostScatterTile(3) : pac.tile();
 		}
 		default:
-			throw new IllegalArgumentException("Unknown ghost id: " + id);
+			throw new IllegalArgumentException("Unknown ghost id: " + ghostID);
 		}
 	}
 
