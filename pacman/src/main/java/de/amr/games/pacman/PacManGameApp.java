@@ -4,6 +4,7 @@ import static java.awt.EventQueue.invokeLater;
 import static java.lang.Float.parseFloat;
 
 import de.amr.games.pacman.game.core.PacManGame;
+import de.amr.games.pacman.ui.api.KeyboardPacController;
 import de.amr.games.pacman.ui.api.PacManGameUI;
 import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
 
@@ -19,6 +20,7 @@ public class PacManGameApp {
 		invokeLater(() -> {
 			PacManGame game = new PacManGame(PacManGame.MS_PACMAN);
 			PacManGameUI ui = new PacManGameSwingUI(game, scaling);
+			game.pacController = new KeyboardPacController(ui, game);
 			ui.openWindow();
 			new Thread(game, "PacManGame").start();
 		});

@@ -12,7 +12,6 @@ import static de.amr.games.pacman.game.worlds.PacManClassicWorld.CLYDE;
 import static de.amr.games.pacman.game.worlds.PacManClassicWorld.INKY;
 import static de.amr.games.pacman.game.worlds.PacManClassicWorld.PINKY;
 import static de.amr.games.pacman.game.worlds.PacManGameWorld.HTS;
-import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Direction.UP;
@@ -36,6 +35,7 @@ import de.amr.games.pacman.game.worlds.PacManGameWorld;
 import de.amr.games.pacman.lib.Clock;
 import de.amr.games.pacman.lib.Hiscore;
 import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.ui.api.KeyboardPacController;
 import de.amr.games.pacman.ui.api.PacManGameSound;
 import de.amr.games.pacman.ui.api.PacManGameUI;
 
@@ -74,6 +74,7 @@ public class PacManGame implements Runnable {
 	public Hiscore hiscore;
 
 	public PacManGameUI ui;
+	public Runnable pacController;
 
 	public boolean paused;
 	public boolean started;
@@ -90,9 +91,6 @@ public class PacManGame implements Runnable {
 	public short globalDotCounter;
 	public boolean globalDotCounterEnabled;
 	public List<Byte> levelSymbols;
-
-	private boolean autopilotEnabled = false;
-	private final Autopilot autopilot = new Autopilot();
 
 	private boolean pacImmune = false;
 
@@ -140,6 +138,7 @@ public class PacManGame implements Runnable {
 		if (!paused) {
 			readInput();
 			updateState();
+			updateSound();
 		}
 		ui.render();
 	}
@@ -154,8 +153,13 @@ public class PacManGame implements Runnable {
 
 	private void readInput() {
 		if (ui.keyPressed("a")) {
-			autopilotEnabled = !autopilotEnabled;
-			log("Pac-Man autopilot mode is %s", autopilotEnabled ? "on" : "off");
+			if (pacController instanceof Autopilot) {
+				pacController = new KeyboardPacController(ui, this);
+				log("Pac-Man autopilot mode is off");
+			} else {
+				pacController = new Autopilot(this);
+				log("Pac-Man autopilot mode is on");
+			}
 		}
 		if (ui.keyPressed("i")) {
 			pacImmune = !pacImmune;
@@ -225,19 +229,6 @@ public class PacManGame implements Runnable {
 
 	// BEGIN STATE-MACHINE
 
-	public String stateDescription() {
-		if (state == HUNTING) {
-			String phaseName = inScatteringPhase() ? "Scattering" : "Chasing";
-			int phase = huntingPhase / 2;
-			return String.format("%s-%s (%d of 4)", state, phaseName, phase + 1);
-		}
-		return state.name();
-	}
-
-	private String ticksDescription(long ticks) {
-		return ticks == Long.MAX_VALUE ? "indefinite time" : ticks + " ticks";
-	}
-
 	private PacManGameState changeState(Runnable onExit, Runnable onEntry) {
 		return changeState(onExit, onEntry, null);
 	}
@@ -279,9 +270,19 @@ public class PacManGame implements Runnable {
 		default:
 			throw new IllegalStateException("Illegal state: " + state);
 		}
-		if (Stream.of(ghosts).noneMatch(g -> g.state == GhostState.DEAD)) {
-			ui.stopSound(PacManGameSound.GHOST_EYES);
+	}
+
+	public String stateDescription() {
+		if (state == HUNTING) {
+			String phaseName = inScatteringPhase() ? "Scattering" : "Chasing";
+			int phase = huntingPhase / 2;
+			return String.format("%s-%s (%d of 4)", state, phaseName, phase + 1);
 		}
+		return state.name();
+	}
+
+	private String ticksDescription(long ticks) {
+		return ticks == Long.MAX_VALUE ? "indefinite time" : ticks + " ticks";
 	}
 
 	// INTRO
@@ -524,7 +525,7 @@ public class PacManGame implements Runnable {
 		if (state.hasExpired()) {
 			return changeState(this::exitGhostDyingState, () -> state = stateBefore, () -> log("Resume state '%s'", state));
 		}
-		steerPac();
+		pacController.run();
 		for (Ghost ghost : ghosts) {
 			if (ghost.state == GhostState.DEAD && ghost.bounty == 0) {
 				ghost.update(world, level);
@@ -610,7 +611,7 @@ public class PacManGame implements Runnable {
 			pac.restingTicksLeft--;
 		} else {
 			pac.speed = pac.powerTicksLeft == 0 ? level.pacSpeed : level.pacSpeedPowered;
-			steerPac();
+			pacController.run();
 			pac.tryMoving(world);
 		}
 		if (pac.powerTicksLeft > 0) {
@@ -623,20 +624,6 @@ public class PacManGame implements Runnable {
 				}
 				ui.stopSound(PacManGameSound.PACMAN_POWER);
 			}
-		}
-	}
-
-	private void steerPac() {
-		if (autopilotEnabled) {
-			autopilot.steerPac(this);
-		} else if (ui.keyPressed("left")) {
-			pac.wishDir = LEFT;
-		} else if (ui.keyPressed("right")) {
-			pac.wishDir = RIGHT;
-		} else if (ui.keyPressed("up")) {
-			pac.wishDir = UP;
-		} else if (ui.keyPressed("down")) {
-			pac.wishDir = DOWN;
 		}
 	}
 
@@ -921,6 +908,13 @@ public class PacManGame implements Runnable {
 			log("Extra life! Now we have %d lives", lives);
 		}
 		hiscore.update(score, levelNumber);
+	}
+
+	// Sound
+	private void updateSound() {
+		if (Stream.of(ghosts).noneMatch(g -> g.state == GhostState.DEAD)) {
+			ui.stopSound(PacManGameSound.GHOST_EYES);
+		}
 	}
 
 	// Cheats

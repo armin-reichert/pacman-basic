@@ -18,7 +18,7 @@ import de.amr.games.pacman.lib.V2i;
  * 
  * @author Armin Reichert
  */
-public class Autopilot {
+public class Autopilot implements Runnable {
 
 	private static final int MAX_GHOST_AHEAD_DETECTION_DIST = 4; // tiles
 	private static final int MAX_GHOST_BEHIND_DETECTION_DIST = 2; // tiles
@@ -27,9 +27,9 @@ public class Autopilot {
 
 	public static boolean logEnabled;
 
-	private PacManGame game;
-	private Pac pac;
-	private Ghost[] ghosts;
+	private final PacManGame game;
+	private final Pac pac;
+	private final Ghost[] ghosts;
 
 	private void log(String msg, Object... args) {
 		if (logEnabled) {
@@ -37,10 +37,14 @@ public class Autopilot {
 		}
 	}
 
-	public void steerPac(PacManGame game) {
+	public Autopilot(PacManGame game) {
 		this.game = game;
 		this.pac = game.pac;
 		this.ghosts = game.ghosts;
+	}
+
+	@Override
+	public void run() {
 		V2i pacManTile = pac.tile();
 
 		if (pac.couldMove && !pac.changedTile) {
