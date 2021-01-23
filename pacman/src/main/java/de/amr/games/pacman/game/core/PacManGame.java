@@ -12,7 +12,6 @@ import static de.amr.games.pacman.game.worlds.PacManClassicWorld.CLYDE;
 import static de.amr.games.pacman.game.worlds.PacManClassicWorld.INKY;
 import static de.amr.games.pacman.game.worlds.PacManClassicWorld.PINKY;
 import static de.amr.games.pacman.game.worlds.PacManGameWorld.HTS;
-import static de.amr.games.pacman.game.worlds.PacManGameWorld.TS;
 import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
@@ -38,7 +37,6 @@ import de.amr.games.pacman.game.worlds.PacManGameWorld;
 import de.amr.games.pacman.lib.Clock;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.Hiscore;
-import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.api.PacManGameSound;
 import de.amr.games.pacman.ui.api.PacManGameUI;
@@ -803,12 +801,13 @@ public class PacManGame implements Runnable {
 			break;
 		case ENTERING_HOUSE:
 			ghost.enterHouse(world);
+			// TODO move outside
 			if (Stream.of(ghosts).noneMatch(g -> g.state == GhostState.DEAD)) {
 				ui.stopSound(PacManGameSound.GHOST_EYES);
 			}
 			break;
 		case LEAVING_HOUSE:
-			letGhostLeaveHouse(ghost);
+			ghost.leaveHouse(world);
 			break;
 		case FRIGHTENED:
 		case HUNTING:
@@ -912,33 +911,6 @@ public class PacManGame implements Runnable {
 				ghost.headForTargetTile(world);
 			}
 		}
-	}
-
-	private void letGhostLeaveHouse(Ghost ghost) {
-		V2i ghostLocation = ghost.tile();
-		V2f ghostOffset = ghost.offset();
-
-		// leaving house complete?
-		if (ghostLocation.equals(world.houseEntry()) && differsAtMost(ghostOffset.y, 0, 1)) {
-			ghost.setOffset(HTS, 0);
-			ghost.dir = ghost.wishDir = LEFT;
-			ghost.forcedOnTrack = true;
-			ghost.state = GhostState.HUNTING;
-			return;
-		}
-
-		V2i centerTile = world.houseCenter();
-		int centerX = centerTile.x * TS + HTS;
-		int groundY = centerTile.y * TS + HTS;
-		if (differsAtMost(ghost.position.x, centerX, 1)) {
-			ghost.setOffset(HTS, ghostOffset.y);
-			ghost.wishDir = UP;
-		} else if (ghost.position.y < groundY) {
-			ghost.wishDir = DOWN;
-		} else {
-			ghost.wishDir = ghost.position.x < centerX ? RIGHT : LEFT;
-		}
-		ghost.tryMoving(world, ghost.wishDir);
 	}
 
 	private void forceHuntingGhostsTurningBack() {

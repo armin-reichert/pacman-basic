@@ -1,7 +1,9 @@
 package de.amr.games.pacman.game.creatures;
 
+import static de.amr.games.pacman.game.core.PacManGame.differsAtMost;
 import static de.amr.games.pacman.game.worlds.PacManClassicWorld.BLINKY;
 import static de.amr.games.pacman.game.worlds.PacManGameWorld.HTS;
+import static de.amr.games.pacman.game.worlds.PacManGameWorld.TS;
 import static de.amr.games.pacman.game.worlds.PacManGameWorld.t;
 import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
@@ -135,6 +137,33 @@ public class Ghost extends Creature {
 		// House center reached? Move sidewards towards target tile
 		if (ghostLocation.equals(world.houseCenter()) && offset.y >= 0) {
 			wishDir = targetTile.x < world.houseCenter().x ? LEFT : RIGHT;
+		}
+		tryMoving(world, wishDir);
+	}
+
+	public void leaveHouse(PacManGameWorld world) {
+		V2i ghostLocation = tile();
+		V2f ghostOffset = offset();
+
+		// leaving house complete?
+		if (ghostLocation.equals(world.houseEntry()) && differsAtMost(ghostOffset.y, 0, 1)) {
+			setOffset(HTS, 0);
+			dir = wishDir = LEFT;
+			forcedOnTrack = true;
+			state = GhostState.HUNTING;
+			return;
+		}
+
+		V2i centerTile = world.houseCenter();
+		int centerX = centerTile.x * TS + HTS;
+		int groundY = centerTile.y * TS + HTS;
+		if (differsAtMost(position.x, centerX, 1)) {
+			setOffset(HTS, ghostOffset.y);
+			wishDir = UP;
+		} else if (position.y < groundY) {
+			wishDir = DOWN;
+		} else {
+			wishDir = position.x < centerX ? RIGHT : LEFT;
 		}
 		tryMoving(world, wishDir);
 	}
