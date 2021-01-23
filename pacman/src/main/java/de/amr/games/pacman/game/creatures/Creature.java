@@ -98,23 +98,23 @@ public class Creature {
 		}
 	}
 
-	public void tryMoving(PacManGameWorld world, Direction dir) {
+	public void tryMoving(PacManGameWorld world, Direction moveDir) {
 		// 100% speed corresponds to 1.25 pixels/tick (75px/sec)
 		float pixels = speed * 1.25f;
 
 		V2i guyLocationBeforeMove = tile();
 		V2f offset = offset();
-		V2i neighbor = guyLocationBeforeMove.sum(dir.vec);
+		V2i neighbor = guyLocationBeforeMove.sum(moveDir.vec);
 
 		// check if guy can change its direction now
 		if (forcedOnTrack && canAccessTile(world, neighbor)) {
-			if (dir == LEFT || dir == RIGHT) {
+			if (moveDir == LEFT || moveDir == RIGHT) {
 				if (abs(offset.y) > pixels) {
 					couldMove = false;
 					return;
 				}
 				setOffset(offset.x, 0);
-			} else if (dir == UP || dir == DOWN) {
+			} else if (moveDir == UP || moveDir == DOWN) {
 				if (abs(offset.x) > pixels) {
 					couldMove = false;
 					return;
@@ -123,7 +123,7 @@ public class Creature {
 			}
 		}
 
-		V2f velocity = new V2f(dir.vec).scaled(pixels);
+		V2f velocity = new V2f(moveDir.vec).scaled(pixels);
 		V2f newPosition = position.sum(velocity);
 		V2i newTile = PacManGameWorld.tile(newPosition);
 		V2f newOffset = PacManGameWorld.offset(newPosition);
@@ -136,12 +136,12 @@ public class Creature {
 
 		// align with edge of inaccessible neighbor
 		if (!canAccessTile(world, neighbor)) {
-			if (dir == RIGHT && newOffset.x > 0 || dir == LEFT && newOffset.x < 0) {
+			if (moveDir == RIGHT && newOffset.x > 0 || moveDir == LEFT && newOffset.x < 0) {
 				setOffset(0, offset.y);
 				couldMove = false;
 				return;
 			}
-			if (dir == DOWN && newOffset.y > 0 || dir == UP && newOffset.y < 0) {
+			if (moveDir == DOWN && newOffset.y > 0 || moveDir == UP && newOffset.y < 0) {
 				setOffset(offset.x, 0);
 				couldMove = false;
 				return;
