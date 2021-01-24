@@ -73,7 +73,6 @@ public class PacManGame implements Runnable {
 
 	public boolean paused;
 	public boolean started;
-	private boolean pacImmune = false;
 
 	public byte variant;
 	public PacManGameState state;
@@ -171,8 +170,8 @@ public class PacManGame implements Runnable {
 			}
 		}
 		if (ui.keyPressed("i")) {
-			pacImmune = !pacImmune;
-			log("%s is %s", pac.name, pacImmune ? "immune against ghosts" : "vulnerable by ghosts");
+			pac.immune = !pac.immune;
+			log("%s is %s", pac.name, pac.immune ? "immune against ghosts" : "vulnerable by ghosts");
 		}
 		if (ui.keyPressed("escape")) {
 			reset();
@@ -435,7 +434,7 @@ public class PacManGame implements Runnable {
 
 		// Pac killed by ghost?
 		Optional<Ghost> killer = Stream.of(ghosts).filter(ghost -> ghost.is(HUNTING) && ghost.meets(pac)).findAny();
-		if (!pacImmune && killer.isPresent()) {
+		if (!pac.immune && killer.isPresent()) {
 			onPacKilled(killer.get());
 			return changeState(this::exitHuntingState, this::enterPacManDyingState);
 		}

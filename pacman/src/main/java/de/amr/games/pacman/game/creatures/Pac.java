@@ -27,6 +27,9 @@ public class Pac extends Creature {
 	/** Number of clock ticks Pac has not eaten any pellet. */
 	public long starvingTicks;
 
+	/** Used for demo/autopilot mode. */
+	public boolean immune;
+
 	public Pac(PacManGameWorld world) {
 		super(world);
 		name = world.pacName();
