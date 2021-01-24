@@ -95,6 +95,10 @@ public class Creature {
 		return canAccessTile(tile.x, tile.y);
 	}
 
+	public boolean meets(Creature other) {
+		return tile().equals(other.tile());
+	}
+
 	public void tryMoving() {
 		V2i guyLocation = tile();
 		// teleport?

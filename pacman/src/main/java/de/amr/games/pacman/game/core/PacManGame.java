@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.game.creatures.ClassicBonus;
@@ -426,17 +427,16 @@ public class PacManGame implements Runnable {
 			return changeState(this::exitHuntingState, this::enterChangingLevelState);
 		}
 
-		// Pac kills ghost?
-		Optional<Ghost> prey = Stream.of(ghosts).filter(ghost -> ghost.tile().equals(pac.tile()))
-				.filter(ghost -> ghost.is(FRIGHTENED)).findAny();
-		if (prey.isPresent()) {
-			onGhostKilled(prey.get());
+		// Can Pac kill ghost(s)?
+		List<Ghost> prey = Stream.of(ghosts).filter(ghost -> ghost.is(FRIGHTENED) && ghost.meets(pac))
+				.collect(Collectors.toList());
+		if (!prey.isEmpty()) {
+			prey.forEach(this::killGhost);
 			return changeState(this::exitHuntingState, this::enterGhostDyingState);
 		}
 
 		// Pac killed by ghost?
-		Optional<Ghost> killer = Stream.of(ghosts).filter(ghost -> ghost.tile().equals(pac.tile()))
-				.filter(ghost -> ghost.is(HUNTING)).findAny();
+		Optional<Ghost> killer = Stream.of(ghosts).filter(ghost -> ghost.is(HUNTING) && ghost.meets(pac)).findAny();
 		if (!pacImmune && killer.isPresent()) {
 			onPacKilled(killer.get());
 			return changeState(this::exitHuntingState, this::enterPacManDyingState);
@@ -499,7 +499,7 @@ public class PacManGame implements Runnable {
 		}
 
 		bonus.update();
-		if (bonus.edibleTicksLeft > 0 && pac.tile().equals(bonus.tile())) {
+		if (bonus.edibleTicksLeft > 0 && pac.meets(bonus)) {
 			log("Pac-Man found bonus (%d) of value %d", bonus.symbol, bonus.points);
 			bonus.eatAndDisplayValue(clock.sec(2));
 			score(bonus.points);
@@ -721,7 +721,7 @@ public class PacManGame implements Runnable {
 
 	// Ghosts
 
-	private void onGhostKilled(Ghost ghost) {
+	private void killGhost(Ghost ghost) {
 		ghost.state = DEAD;
 		ghost.targetTile = world.houseEntry();
 		ghost.bounty = ghostBounty;
@@ -866,7 +866,7 @@ public class PacManGame implements Runnable {
 		ghostBounty = 200;
 		for (Ghost ghost : ghosts) {
 			if (ghost.is(HUNTING) || ghost.is(FRIGHTENED)) {
-				onGhostKilled(ghost);
+				killGhost(ghost);
 			}
 		}
 	}
