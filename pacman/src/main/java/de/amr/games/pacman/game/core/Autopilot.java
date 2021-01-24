@@ -106,7 +106,7 @@ public class Autopilot implements Consumer<Pac> {
 				 */
 			}
 			V2i neighbor = pac.tile().sum(dir.vec);
-			if (!pac.canAccessTile(game.world, neighbor.x, neighbor.y)) {
+			if (!pac.canAccessTile(neighbor.x, neighbor.y)) {
 				continue;
 			}
 			double dist = neighbor.euclideanDistance(pac.targetTile);
@@ -135,7 +135,7 @@ public class Autopilot implements Consumer<Pac> {
 		boolean energizerFound = false;
 		for (int i = 1; i <= MAX_GHOST_AHEAD_DETECTION_DIST; ++i) {
 			V2i ahead = pacManTile.sum(pac.dir.vec.scaled(i));
-			if (!pac.canAccessTile(game.world, ahead)) {
+			if (!pac.canAccessTile(ahead)) {
 				break;
 			}
 			if (game.world.isEnergizerTile(ahead) && !game.world.isFoodRemoved(ahead)) {
@@ -162,7 +162,7 @@ public class Autopilot implements Consumer<Pac> {
 		V2i pacManTile = pac.tile();
 		for (int i = 1; i <= MAX_GHOST_BEHIND_DETECTION_DIST; ++i) {
 			V2i behind = pacManTile.sum(pac.dir.opposite().vec.scaled(i));
-			if (!pac.canAccessTile(game.world, behind)) {
+			if (!pac.canAccessTile(behind)) {
 				break;
 			}
 			for (Ghost ghost : ghosts) {
@@ -182,7 +182,7 @@ public class Autopilot implements Consumer<Pac> {
 				continue;
 			}
 			V2i neighbor = pacManTile.sum(dir.vec);
-			if (pac.canAccessTile(game.world, neighbor)) {
+			if (pac.canAccessTile(neighbor)) {
 				escapes.add(dir);
 			}
 		}

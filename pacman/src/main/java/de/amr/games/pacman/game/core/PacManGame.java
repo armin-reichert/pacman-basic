@@ -104,12 +104,12 @@ public class PacManGame implements Runnable {
 			hiscore = new Hiscore(new File(System.getProperty("user.home"), "hiscore-mspacman.xml"));
 			world = new MsPacManWorld();
 		}
-		pac = new Pac(world.pacName());
+		pac = new Pac(world);
 		ghosts = new Ghost[4];
 		for (int ghostID = 0; ghostID < 4; ++ghostID) {
-			ghosts[ghostID] = new Ghost(ghostID, world.ghostName(ghostID));
+			ghosts[ghostID] = new Ghost(ghostID, world);
 		}
-		bonus = new Bonus();
+		bonus = new Bonus(world);
 		reset();
 		enterIntroState();
 		log("State is '%s' for %s", stateDescription(), ticksDescription(state.duration));
@@ -438,7 +438,7 @@ public class PacManGame implements Runnable {
 			pac.restingTicksLeft--;
 		} else {
 			pac.speed = pac.powerTicksLeft == 0 ? level.pacSpeed : level.pacSpeedPowered;
-			pac.tryMoving(world);
+			pac.tryMoving();
 		}
 		if (pac.powerTicksLeft > 0) {
 			pac.powerTicksLeft--;
@@ -458,7 +458,7 @@ public class PacManGame implements Runnable {
 			if (ghost.state == GhostState.HUNTING) {
 				setGhostHuntingTargetAndSpeed(ghost);
 			}
-			ghost.update(world, level);
+			ghost.update(level);
 		}
 
 		updateBonus();
@@ -544,7 +544,7 @@ public class PacManGame implements Runnable {
 		pacController.accept(pac);
 		for (Ghost ghost : ghosts) {
 			if (ghost.state == GhostState.DEAD && ghost.bounty == 0) {
-				ghost.update(world, level);
+				ghost.update(level);
 			}
 		}
 		return state.run();
@@ -726,7 +726,7 @@ public class PacManGame implements Runnable {
 		boolean expired = false;
 		if (bonus.edibleTicksLeft > 0) {
 			if (variant == MS_PACMAN) {
-				bonus.wander(world);
+				bonus.wander();
 				V2i bonusLocation = bonus.tile();
 				if (world.isPortal(bonusLocation)) {
 					expired = true; // TODO should bonus also expire on timeout?

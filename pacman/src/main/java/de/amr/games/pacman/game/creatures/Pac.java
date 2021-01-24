@@ -1,5 +1,7 @@
 package de.amr.games.pacman.game.creatures;
 
+import de.amr.games.pacman.game.worlds.PacManGameWorld;
+
 /**
  * The Pac-Man.
  * 
@@ -25,7 +27,8 @@ public class Pac extends Creature {
 	/** Number of clock ticks Pac has not eaten any pellet. */
 	public long starvingTicks;
 
-	public Pac(String name) {
-		this.name = name;
+	public Pac(PacManGameWorld world) {
+		super(world);
+		name = world.pacName();
 	}
 }

@@ -19,11 +19,14 @@ import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
 
 /**
- * Base class for Pac-Man, the ghosts and the bonus. Creatures can move through the maze.
+ * Base class for Pac-Man, the ghosts and the bonus. Creatures can move through their world.
  * 
  * @author Armin Reichert
  */
 public class Creature {
+
+	/** The world where this creature lives. */
+	public final PacManGameWorld world;
 
 	/** Left upper corner of TSxTS collision box. Sprites can be larger. */
 	public V2f position = V2f.NULL;
@@ -57,6 +60,10 @@ public class Creature {
 
 	public final Random rnd = new Random();
 
+	public Creature(PacManGameWorld world) {
+		this.world = world;
+	}
+
 	public void placeAt(V2i tile, float offsetX, float offsetY) {
 		position = new V2f(tile.x * TS + offsetX, tile.y * TS + offsetY);
 		changedTile = true;
@@ -74,7 +81,7 @@ public class Creature {
 		placeAt(tile(), offsetX, offsetY);
 	}
 
-	public boolean canAccessTile(PacManGameWorld world, int x, int y) {
+	public boolean canAccessTile(int x, int y) {
 		if (world.isPortal(x, y)) {
 			return true;
 		}
@@ -84,11 +91,11 @@ public class Creature {
 		return world.inMapRange(x, y) && !world.isWall(x, y);
 	}
 
-	public boolean canAccessTile(PacManGameWorld world, V2i tile) {
-		return canAccessTile(world, tile.x, tile.y);
+	public boolean canAccessTile(V2i tile) {
+		return canAccessTile(tile.x, tile.y);
 	}
 
-	public void tryMoving(PacManGameWorld world) {
+	public void tryMoving() {
 		V2i guyLocation = tile();
 		// teleport?
 		for (int i = 0; i < world.numPortals(); ++i) {
@@ -101,15 +108,15 @@ public class Creature {
 				return;
 			}
 		}
-		tryMoving(world, wishDir);
+		tryMoving(wishDir);
 		if (couldMove) {
 			dir = wishDir;
 		} else {
-			tryMoving(world, dir);
+			tryMoving(dir);
 		}
 	}
 
-	public void tryMoving(PacManGameWorld world, Direction moveDir) {
+	public void tryMoving(Direction moveDir) {
 		// 100% speed corresponds to 1.25 pixels/tick (75px/sec)
 		float pixels = speed * 1.25f;
 
@@ -118,7 +125,7 @@ public class Creature {
 		V2i neighbor = guyLocationBeforeMove.sum(moveDir.vec);
 
 		// check if guy can change its direction now
-		if (forcedOnTrack && canAccessTile(world, neighbor)) {
+		if (forcedOnTrack && canAccessTile(neighbor)) {
 			if (moveDir == LEFT || moveDir == RIGHT) {
 				if (abs(offset.y) > pixels) {
 					couldMove = false;
@@ -140,13 +147,13 @@ public class Creature {
 		V2f newOffset = PacManGameWorld.offset(newPosition);
 
 		// block moving into inaccessible tile
-		if (!canAccessTile(world, newTile)) {
+		if (!canAccessTile(newTile)) {
 			couldMove = false;
 			return;
 		}
 
 		// align with edge of inaccessible neighbor
-		if (!canAccessTile(world, neighbor)) {
+		if (!canAccessTile(neighbor)) {
 			if (moveDir == RIGHT && newOffset.x > 0 || moveDir == LEFT && newOffset.x < 0) {
 				setOffset(0, offset.y);
 				couldMove = false;
@@ -164,12 +171,12 @@ public class Creature {
 		couldMove = true;
 	}
 
-	public void headForTargetTile(PacManGameWorld world) {
-		newWishDir(world, false).ifPresent(newWishDir -> wishDir = newWishDir);
-		tryMoving(world);
+	public void headForTargetTile() {
+		newWishDir(false).ifPresent(newWishDir -> wishDir = newWishDir);
+		tryMoving();
 	}
 
-	public Optional<Direction> newWishDir(PacManGameWorld world, boolean randomWalk) {
+	public Optional<Direction> newWishDir(boolean randomWalk) {
 		if (couldMove && !changedTile) {
 			return Optional.empty();
 		}
@@ -182,14 +189,14 @@ public class Creature {
 			return Optional.empty();
 		}
 		if (randomWalk) {
-			return randomMoveDirection(world);
+			return randomMoveDirection();
 		}
-		return targetDirection(world);
+		return targetDirection();
 	}
 
 	private static final Direction[] DIRECTION_PRIORITY = { UP, LEFT, DOWN, RIGHT };
 
-	public Optional<Direction> targetDirection(PacManGameWorld world) {
+	public Optional<Direction> targetDirection() {
 		double minDist = Double.MAX_VALUE;
 		Direction minDistDir = null;
 		for (Direction targetDir : DIRECTION_PRIORITY) {
@@ -197,7 +204,7 @@ public class Creature {
 				continue;
 			}
 			V2i neighbor = tile().sum(targetDir.vec);
-			if (!canAccessTile(world, neighbor)) {
+			if (!canAccessTile(neighbor)) {
 				continue;
 			}
 			double dist = neighbor.euclideanDistance(targetTile);
@@ -209,21 +216,21 @@ public class Creature {
 		return Optional.ofNullable(minDistDir);
 	}
 
-	public void wanderRandomly(PacManGameWorld world, float wanderSpeed) {
+	public void wanderRandomly(float wanderSpeed) {
 		V2i location = tile();
 		if (world.isIntersection(location) || !couldMove) {
-			randomMoveDirection(world).ifPresent(randomDir -> wishDir = randomDir);
+			randomMoveDirection().ifPresent(randomDir -> wishDir = randomDir);
 		}
 		speed = wanderSpeed;
-		tryMoving(world);
+		tryMoving();
 	}
 
-	public Optional<Direction> randomMoveDirection(PacManGameWorld world) {
-		List<Direction> dirs = accessibleDirections(world, tile(), dir.opposite()).collect(Collectors.toList());
+	public Optional<Direction> randomMoveDirection() {
+		List<Direction> dirs = accessibleDirections(tile(), dir.opposite()).collect(Collectors.toList());
 		return dirs.isEmpty() ? Optional.empty() : Optional.of(dirs.get(rnd.nextInt(dirs.size())));
 	}
 
-	public Stream<Direction> accessibleDirections(PacManGameWorld world, V2i tile, Direction... excludedDirections) {
+	public Stream<Direction> accessibleDirections(V2i tile, Direction... excludedDirections) {
 		//@formatter:off
 		return Stream.of(Direction.values())
 			.filter(direction -> Stream.of(excludedDirections).noneMatch(excludedDir -> excludedDir == direction))
