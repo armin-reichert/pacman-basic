@@ -113,6 +113,9 @@ public class PacManGame implements Runnable {
 		reset();
 		enterIntroState();
 		log("State is '%s' for %s", stateDescription(), ticksDescription(state.duration));
+		if (ui != null) {
+			ui.onGameVariantChanged(this);
+		}
 	}
 
 	private void reset() {
@@ -289,7 +292,6 @@ public class PacManGame implements Runnable {
 	private PacManGameState runIntroState() {
 		if (ui.keyPressed("v")) {
 			init(variant == CLASSIC ? MS_PACMAN : CLASSIC);
-			ui.onGameVariantChanged(this);
 			return state;
 		}
 		if (ui.keyPressed("space")) {
