@@ -3,10 +3,15 @@ package de.amr.games.pacman.game.core;
 import static de.amr.games.pacman.game.core.PacManGameState.CHANGING_LEVEL;
 import static de.amr.games.pacman.game.core.PacManGameState.GAME_OVER;
 import static de.amr.games.pacman.game.core.PacManGameState.GHOST_DYING;
-import static de.amr.games.pacman.game.core.PacManGameState.HUNTING;
 import static de.amr.games.pacman.game.core.PacManGameState.INTRO;
 import static de.amr.games.pacman.game.core.PacManGameState.PACMAN_DYING;
 import static de.amr.games.pacman.game.core.PacManGameState.READY;
+import static de.amr.games.pacman.game.creatures.GhostState.DEAD;
+import static de.amr.games.pacman.game.creatures.GhostState.ENTERING_HOUSE;
+import static de.amr.games.pacman.game.creatures.GhostState.FRIGHTENED;
+import static de.amr.games.pacman.game.creatures.GhostState.HUNTING;
+import static de.amr.games.pacman.game.creatures.GhostState.LEAVING_HOUSE;
+import static de.amr.games.pacman.game.creatures.GhostState.LOCKED;
 import static de.amr.games.pacman.game.worlds.PacManClassicWorld.BLINKY;
 import static de.amr.games.pacman.game.worlds.PacManClassicWorld.CLYDE;
 import static de.amr.games.pacman.game.worlds.PacManClassicWorld.INKY;
@@ -26,7 +31,6 @@ import java.util.stream.Stream;
 
 import de.amr.games.pacman.game.creatures.ClassicBonus;
 import de.amr.games.pacman.game.creatures.Ghost;
-import de.amr.games.pacman.game.creatures.GhostState;
 import de.amr.games.pacman.game.creatures.MsPacManBonus;
 import de.amr.games.pacman.game.creatures.Pac;
 import de.amr.games.pacman.game.worlds.MsPacManWorld;
@@ -216,7 +220,7 @@ public class PacManGame implements Runnable {
 			ghost.couldMove = true;
 			ghost.forcedDirection = ghost.id == BLINKY;
 			ghost.forcedOnTrack = ghost.id == BLINKY;
-			ghost.state = GhostState.LOCKED;
+			ghost.state = LOCKED;
 			ghost.bounty = 0;
 			// these are only reset when entering level:
 //		ghost.dotCounter = 0;
@@ -271,7 +275,7 @@ public class PacManGame implements Runnable {
 	}
 
 	public String stateDescription() {
-		if (state == HUNTING) {
+		if (state == PacManGameState.HUNTING) {
 			String phaseName = inScatteringPhase() ? "Scattering" : "Chasing";
 			int phase = huntingPhase / 2;
 			return String.format("%s-%s (%d of 4)", state, phaseName, phase + 1);
@@ -394,7 +398,7 @@ public class PacManGame implements Runnable {
 	}
 
 	private void enterHuntingState() {
-		state = HUNTING;
+		state = PacManGameState.HUNTING;
 		startHuntingPhase(0);
 	}
 
@@ -422,11 +426,11 @@ public class PacManGame implements Runnable {
 		}
 
 		Optional<Ghost> collidingGhost = Stream.of(ghosts).filter(ghost -> ghost.tile().equals(pac.tile())).findAny();
-		if (collidingGhost.isPresent() && collidingGhost.get().state == GhostState.FRIGHTENED) {
+		if (collidingGhost.filter(ghost -> ghost.is(FRIGHTENED)).isPresent()) {
 			onGhostKilled(collidingGhost.get());
 			return changeState(this::exitHuntingState, this::enterGhostDyingState);
 		}
-		if (collidingGhost.isPresent() && collidingGhost.get().state == GhostState.HUNTING && !pacImmune) {
+		if (!pacImmune && collidingGhost.filter(ghost -> ghost.is(FRIGHTENED)).isPresent()) {
 			onPacKilled(collidingGhost.get());
 			return changeState(this::exitHuntingState, this::enterPacManDyingState);
 		}
@@ -434,7 +438,7 @@ public class PacManGame implements Runnable {
 		if (state.hasExpired()) {
 			startHuntingPhase(++huntingPhase);
 			for (Ghost ghost : ghosts) {
-				if (ghost.state == GhostState.HUNTING) {
+				if (ghost.state == HUNTING) {
 					ghost.forceTurningBack();
 				}
 			}
@@ -462,8 +466,8 @@ public class PacManGame implements Runnable {
 			pac.powerTicksLeft--;
 			if (pac.powerTicksLeft == 0) {
 				for (Ghost ghost : ghosts) {
-					if (ghost.state == GhostState.FRIGHTENED) {
-						ghost.state = GhostState.HUNTING;
+					if (ghost.is(FRIGHTENED)) {
+						ghost.state = HUNTING;
 					}
 				}
 			}
@@ -472,7 +476,7 @@ public class PacManGame implements Runnable {
 		tryReleasingGhosts();
 
 		for (Ghost ghost : ghosts) {
-			if (ghost.state == GhostState.HUNTING) {
+			if (ghost.is(HUNTING)) {
 				// In Ms. Pac-Man, Blinky and Pinky move randomly during *first* scatter phase
 				if (variant == MS_PACMAN && (ghost.id == BLINKY || ghost.id == PINKY) && huntingPhase == 0) {
 					ghost.targetTile = null; // move randomly
@@ -507,7 +511,7 @@ public class PacManGame implements Runnable {
 		state.setDuration(clock.sec(6));
 		pac.speed = 0;
 		for (Ghost ghost : ghosts) {
-			ghost.state = GhostState.HUNTING; // TODO just want ghost to be rendered colorful
+			ghost.state = HUNTING; // TODO just want ghost to be rendered colorful
 		}
 		bonus.edibleTicksLeft = bonus.eatenTicksLeft = 0;
 		ui.stopAllSounds();
@@ -562,7 +566,7 @@ public class PacManGame implements Runnable {
 		}
 		pacController.accept(pac);
 		for (Ghost ghost : ghosts) {
-			if (ghost.state == GhostState.DEAD && ghost.bounty == 0 || ghost.state == GhostState.ENTERING_HOUSE) {
+			if (ghost.is(DEAD) && ghost.bounty == 0 || ghost.is(ENTERING_HOUSE)) {
 				ghost.update(level);
 			}
 		}
@@ -571,7 +575,7 @@ public class PacManGame implements Runnable {
 
 	private void exitGhostDyingState() {
 		for (Ghost ghost : ghosts) {
-			if (ghost.state == GhostState.DEAD && ghost.bounty > 0) {
+			if (ghost.is(DEAD) && ghost.bounty > 0) {
 				ghost.bounty = 0;
 			}
 		}
@@ -675,8 +679,8 @@ public class PacManGame implements Runnable {
 		if (seconds > 0) {
 			log("Pac-Man got power for %d seconds", seconds);
 			for (Ghost ghost : ghosts) {
-				if (ghost.state == GhostState.HUNTING) {
-					ghost.state = GhostState.FRIGHTENED;
+				if (ghost.is(HUNTING)) {
+					ghost.state = FRIGHTENED;
 					ghost.wishDir = ghost.dir.opposite();
 					ghost.forcedDirection = true;
 				}
@@ -705,7 +709,7 @@ public class PacManGame implements Runnable {
 	// Ghosts
 
 	private void onGhostKilled(Ghost ghost) {
-		ghost.state = GhostState.DEAD;
+		ghost.state = DEAD;
 		ghost.targetTile = world.houseEntry();
 		ghost.bounty = ghostBounty;
 		score(ghost.bounty);
@@ -755,8 +759,8 @@ public class PacManGame implements Runnable {
 	// Ghost house
 
 	private void tryReleasingGhosts() {
-		if (ghosts[BLINKY].state == GhostState.LOCKED) {
-			ghosts[BLINKY].state = GhostState.HUNTING;
+		if (ghosts[BLINKY].is(LOCKED)) {
+			ghosts[BLINKY].state = HUNTING;
 		}
 		preferredLockedGhostInsideHouse().ifPresent(ghost -> {
 			if (globalDotCounterEnabled && globalDotCounter >= ghostGlobalDotLimit(ghost)) {
@@ -772,7 +776,7 @@ public class PacManGame implements Runnable {
 	}
 
 	private void releaseGhost(Ghost ghost, String reason, Object... args) {
-		ghost.state = GhostState.LEAVING_HOUSE;
+		ghost.state = LEAVING_HOUSE;
 		if (ghost.id == CLYDE && ghosts[BLINKY].elroy < 0) {
 			ghosts[BLINKY].elroy = (byte) -ghosts[BLINKY].elroy; // resume Elroy mode
 			log("Blinky Elroy mode %d resumed", ghosts[BLINKY].elroy);
@@ -781,8 +785,7 @@ public class PacManGame implements Runnable {
 	}
 
 	private Optional<Ghost> preferredLockedGhostInsideHouse() {
-		return Stream.of(PINKY, INKY, CLYDE).map(id -> ghosts[id]).filter(ghost -> ghost.state == GhostState.LOCKED)
-				.findFirst();
+		return Stream.of(PINKY, INKY, CLYDE).map(id -> ghosts[id]).filter(ghost -> ghost.is(LOCKED)).findFirst();
 	}
 
 	private int ghostPrivateDotLimit(Ghost ghost) {
@@ -801,7 +804,7 @@ public class PacManGame implements Runnable {
 
 	private void updateGhostDotCounters() {
 		if (globalDotCounterEnabled) {
-			if (ghosts[CLYDE].state == GhostState.LOCKED && globalDotCounter == 32) {
+			if (ghosts[CLYDE].is(LOCKED) && globalDotCounter == 32) {
 				globalDotCounterEnabled = false;
 				globalDotCounter = 0;
 				log("Global dot counter disabled and reset, Clyde was in house when counter reached 32");
@@ -828,10 +831,10 @@ public class PacManGame implements Runnable {
 
 	// Sound
 	private void updateSound() {
-		if (Stream.of(ghosts).noneMatch(g -> g.state == GhostState.DEAD)) {
+		if (Stream.of(ghosts).noneMatch(ghost -> ghost.is(DEAD))) {
 			ui.stopSound(PacManGameSound.GHOST_EYES);
 		}
-		if (Stream.of(ghosts).noneMatch(g -> g.state == GhostState.FRIGHTENED)) {
+		if (Stream.of(ghosts).noneMatch(ghost -> ghost.is(FRIGHTENED))) {
 			ui.stopSound(PacManGameSound.PACMAN_POWER);
 		}
 	}
@@ -849,7 +852,7 @@ public class PacManGame implements Runnable {
 	private void killAllGhosts() {
 		ghostBounty = 200;
 		for (Ghost ghost : ghosts) {
-			if (ghost.state == GhostState.HUNTING || ghost.state == GhostState.FRIGHTENED) {
+			if (ghost.is(HUNTING) || ghost.is(FRIGHTENED)) {
 				onGhostKilled(ghost);
 			}
 		}

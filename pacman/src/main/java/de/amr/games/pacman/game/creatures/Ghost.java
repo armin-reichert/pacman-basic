@@ -47,6 +47,10 @@ public class Ghost extends Creature {
 		name = world.ghostName(ghostID);
 	}
 
+	public boolean is(GhostState ghostState) {
+		return state == ghostState;
+	}
+
 	/**
 	 * Updates speed and behavior depending on current state.
 	 * 
