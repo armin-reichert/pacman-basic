@@ -13,7 +13,6 @@ import static de.amr.games.pacman.game.worlds.PacManClassicWorld.INKY;
 import static de.amr.games.pacman.game.worlds.PacManClassicWorld.PINKY;
 import static de.amr.games.pacman.game.worlds.PacManGameWorld.HTS;
 import static de.amr.games.pacman.lib.Direction.LEFT;
-import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.lib.Logging.log;
 
@@ -25,9 +24,10 @@ import java.util.Random;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.game.creatures.Bonus;
+import de.amr.games.pacman.game.creatures.ClassicBonus;
 import de.amr.games.pacman.game.creatures.Ghost;
 import de.amr.games.pacman.game.creatures.GhostState;
+import de.amr.games.pacman.game.creatures.MsPacManBonus;
 import de.amr.games.pacman.game.creatures.Pac;
 import de.amr.games.pacman.game.worlds.MsPacManWorld;
 import de.amr.games.pacman.game.worlds.PacManClassicWorld;
@@ -77,7 +77,7 @@ public class PacManGame implements Runnable {
 	public PacManGameLevel level;
 	public Pac pac;
 	public Ghost[] ghosts;
-	public Bonus bonus;
+	public ClassicBonus bonus;
 	public Hiscore hiscore;
 	public short levelNumber;
 	public byte lives;
@@ -100,16 +100,17 @@ public class PacManGame implements Runnable {
 		if (variant == CLASSIC) {
 			hiscore = new Hiscore(new File(System.getProperty("user.home"), "hiscore-pacman.xml"));
 			world = new PacManClassicWorld();
+			bonus = new ClassicBonus(world);
 		} else if (variant == MS_PACMAN) {
 			hiscore = new Hiscore(new File(System.getProperty("user.home"), "hiscore-mspacman.xml"));
 			world = new MsPacManWorld();
+			bonus = new MsPacManBonus(world);
 		}
 		pac = new Pac(world);
 		ghosts = new Ghost[4];
 		for (int ghostID = 0; ghostID < 4; ++ghostID) {
 			ghosts[ghostID] = new Ghost(ghostID, world);
 		}
-		bonus = new Bonus(world);
 		reset();
 		enterIntroState();
 		log("State is '%s' for %s", stateDescription(), ticksDescription(state.duration));
@@ -422,11 +423,11 @@ public class PacManGame implements Runnable {
 
 		Optional<Ghost> collidingGhost = Stream.of(ghosts).filter(ghost -> ghost.tile().equals(pac.tile())).findAny();
 		if (collidingGhost.isPresent() && collidingGhost.get().state == GhostState.FRIGHTENED) {
-			ghostKilled(collidingGhost.get());
+			onGhostKilled(collidingGhost.get());
 			return changeState(this::exitHuntingState, this::enterGhostDyingState);
 		}
 		if (collidingGhost.isPresent() && collidingGhost.get().state == GhostState.HUNTING && !pacImmune) {
-			pacKilled(collidingGhost.get());
+			onPacKilled(collidingGhost.get());
 			return changeState(this::exitHuntingState, this::enterPacManDyingState);
 		}
 
@@ -462,13 +463,18 @@ public class PacManGame implements Runnable {
 				tryReleasingGhost(ghost);
 			}
 			if (ghost.state == GhostState.HUNTING) {
-				setGhostHuntingTarget(ghost);
+				// In Ms. Pac-Man, Blinky and Pinky move randomly during *first* scatter phase
+				if (variant == MS_PACMAN && (ghost.id == BLINKY || ghost.id == PINKY) && huntingPhase == 0) {
+					ghost.targetTile = null; // move randomly
+				} else if (inScatteringPhase() && ghost.elroy == 0) {
+					ghost.targetTile = world.ghostScatterTile(ghost.id);
+				} else {
+					setGhostChasingTarget(ghost);
+				}
 			}
 			ghost.update(level);
 		}
-
-		updateBonus();
-
+		bonus.update();
 		checkPacFindsFood();
 		checkPacFindsEdibleBonus();
 
@@ -675,7 +681,7 @@ public class PacManGame implements Runnable {
 		}
 	}
 
-	private void pacKilled(Ghost killer) {
+	private void onPacKilled(Ghost killer) {
 		log("%s killed by %s at tile %s", pac.name, killer.name, killer.tile());
 		pac.dead = true;
 		byte elroyMode = ghosts[BLINKY].elroy;
@@ -697,60 +703,8 @@ public class PacManGame implements Runnable {
 	private void checkBonusActivation() {
 		int eaten = world.eatenFoodCount();
 		if (eaten == 70 || eaten == 170) {
-			bonus.visible = true;
-			bonus.symbol = level.bonusSymbol;
-			if (variant == CLASSIC) {
-				bonus.points = PacManClassicWorld.BONUS_POINTS[bonus.symbol];
-				bonus.edibleTicksLeft = clock.sec(9 + rnd.nextFloat());
-				bonus.placeAt(PacManClassicWorld.BONUS_TILE, HTS, 0);
-			} else if (variant == MS_PACMAN) {
-				bonus.points = MsPacManWorld.BONUS_POINTS[bonus.symbol];
-				bonus.edibleTicksLeft = Long.MAX_VALUE; // TODO is there a timeout?
-				boolean entersMazeFromLeft = rnd.nextBoolean();
-				int portal = rnd.nextInt(world.numPortals());
-				V2i startTile = entersMazeFromLeft ? world.portalLeft(portal) : world.portalRight(portal);
-				bonus.placeAt(startTile, 0, 0);
-				bonus.wanderingDirection = entersMazeFromLeft ? RIGHT : LEFT;
-				bonus.dir = bonus.wishDir = bonus.wanderingDirection;
-				bonus.couldMove = true;
-				bonus.speed = 0.25f; // TODO what is the correct bonus speed?
-			}
-		}
-	}
-
-	private void updateBonus() {
-		// edible bonus active?
-		boolean expired = false;
-		if (bonus.edibleTicksLeft > 0) {
-			if (variant == MS_PACMAN) {
-				bonus.wander();
-				V2i bonusLocation = bonus.tile();
-				if (world.isPortal(bonusLocation)) {
-					expired = true; // TODO should bonus also expire on timeout?
-				}
-			} else {
-				bonus.edibleTicksLeft--;
-				if (bonus.edibleTicksLeft == 0) {
-					expired = true;
-				}
-			}
-		}
-		if (expired) {
-			bonus.edibleTicksLeft = 0;
-			bonus.visible = false;
-		}
-
-		// eaten bonus active?
-		expired = false;
-		if (bonus.eatenTicksLeft > 0) {
-			bonus.eatenTicksLeft--;
-			if (bonus.eatenTicksLeft == 0) {
-				expired = true;
-			}
-		}
-		if (expired) {
-			bonus.eatenTicksLeft = 0;
-			bonus.visible = false;
+			long ticks = variant == CLASSIC ? clock.sec(9 + rnd.nextFloat()) : Long.MAX_VALUE;
+			bonus.activate(level.bonusSymbol, ticks);
 		}
 	}
 
@@ -766,7 +720,7 @@ public class PacManGame implements Runnable {
 		}
 	}
 
-	private void ghostKilled(Ghost ghost) {
+	private void onGhostKilled(Ghost ghost) {
 		ghost.state = GhostState.DEAD;
 		ghost.targetTile = world.houseEntry();
 		ghost.bounty = ghostBounty;
@@ -777,17 +731,6 @@ public class PacManGame implements Runnable {
 		}
 		ghostBounty *= 2;
 		log("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name, ghost.tile(), ghost.bounty);
-	}
-
-	private void setGhostHuntingTarget(Ghost ghost) {
-		// In Ms. Pac-Man, Blinky and Pinky move randomly during *first* scatter phase
-		if (variant == MS_PACMAN && (ghost.id == BLINKY || ghost.id == PINKY) && huntingPhase == 0) {
-			ghost.targetTile = null; // move randomly
-		} else if (inScatteringPhase() && ghost.elroy == 0) {
-			ghost.targetTile = world.ghostScatterTile(ghost.id);
-		} else {
-			setGhostChasingTarget(ghost);
-		}
 	}
 
 	private void setGhostChasingTarget(Ghost ghost) {
@@ -921,7 +864,7 @@ public class PacManGame implements Runnable {
 		ghostBounty = 200;
 		for (Ghost ghost : ghosts) {
 			if (ghost.state == GhostState.HUNTING || ghost.state == GhostState.FRIGHTENED) {
-				ghostKilled(ghost);
+				onGhostKilled(ghost);
 			}
 		}
 	}
