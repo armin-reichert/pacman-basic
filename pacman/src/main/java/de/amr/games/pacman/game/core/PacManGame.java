@@ -421,20 +421,28 @@ public class PacManGame implements Runnable {
 			return changeState(this::exitHuntingState, this::enterChangingLevelState);
 		}
 
+		// Level completed?
 		if (world.foodRemaining() == 0) {
 			return changeState(this::exitHuntingState, this::enterChangingLevelState);
 		}
 
-		Optional<Ghost> collidingGhost = Stream.of(ghosts).filter(ghost -> ghost.tile().equals(pac.tile())).findAny();
-		if (collidingGhost.filter(ghost -> ghost.is(FRIGHTENED)).isPresent()) {
-			onGhostKilled(collidingGhost.get());
+		// Pac kills ghost?
+		Optional<Ghost> prey = Stream.of(ghosts).filter(ghost -> ghost.tile().equals(pac.tile()))
+				.filter(ghost -> ghost.is(FRIGHTENED)).findAny();
+		if (prey.isPresent()) {
+			onGhostKilled(prey.get());
 			return changeState(this::exitHuntingState, this::enterGhostDyingState);
 		}
-		if (!pacImmune && collidingGhost.filter(ghost -> ghost.is(HUNTING)).isPresent()) {
-			onPacKilled(collidingGhost.get());
+
+		// Pac killed by ghost?
+		Optional<Ghost> killer = Stream.of(ghosts).filter(ghost -> ghost.tile().equals(pac.tile()))
+				.filter(ghost -> ghost.is(HUNTING)).findAny();
+		if (!pacImmune && killer.isPresent()) {
+			onPacKilled(killer.get());
 			return changeState(this::exitHuntingState, this::enterPacManDyingState);
 		}
 
+		// Hunting phase complete?
 		if (state.hasExpired()) {
 			startHuntingPhase(++huntingPhase);
 			for (Ghost ghost : ghosts) {
@@ -481,6 +489,7 @@ public class PacManGame implements Runnable {
 				if (variant == MS_PACMAN && (ghost.id == BLINKY || ghost.id == PINKY) && huntingPhase == 0) {
 					ghost.targetTile = null; // move randomly
 				} else if (inScatteringPhase() && ghost.elroy == 0) {
+					// Elroy chases also in scatter phase
 					ghost.targetTile = world.ghostScatterTile(ghost.id);
 				} else {
 					setGhostChasingTarget(ghost);
@@ -491,14 +500,18 @@ public class PacManGame implements Runnable {
 
 		bonus.update();
 		if (bonus.edibleTicksLeft > 0 && pac.tile().equals(bonus.tile())) {
+			log("Pac-Man found bonus (%d) of value %d", bonus.symbol, bonus.points);
 			bonus.eatAndDisplayValue(clock.sec(2));
 			score(bonus.points);
 			ui.playSound(PacManGameSound.PACMAN_EAT_BONUS);
-			log("Pac-Man found bonus (%d) of value %d", bonus.symbol, bonus.points);
 		}
 
-		// hunting state timer is stopped as long as Pac has power
-		return pac.powerTicksLeft == 0 ? state.run() : state;
+		// hunting state timer is suspended if Pac has power
+		if (pac.powerTicksLeft == 0) {
+			state.run();
+		}
+
+		return state;
 	}
 
 	private void exitHuntingState() {
