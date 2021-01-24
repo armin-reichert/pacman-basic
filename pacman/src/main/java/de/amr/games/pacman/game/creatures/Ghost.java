@@ -175,9 +175,8 @@ public class Ghost extends Creature {
 	}
 
 	private void bounce() {
-		V2i houseCenter = world.houseCenter();
-		int ceiling = t(houseCenter.y) - HTS - 1, ground = t(houseCenter.y) + HTS;
-		if (position.y <= ceiling || position.y >= ground) {
+		int centerY = t(world.houseCenter().y);
+		if (position.y < centerY - HTS || position.y > centerY + HTS) {
 			wishDir = dir.opposite();
 		}
 		tryMoving();
