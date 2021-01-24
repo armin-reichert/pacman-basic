@@ -44,7 +44,8 @@ import de.amr.games.pacman.ui.swing.scene.PacManGameScene;
 public class PacManGameSwingUI implements PacManGameUI {
 
 	public static boolean debugMode;
-	public static final ResourceBundle TEXTS = ResourceBundle.getBundle("localization.translation");
+
+	static final ResourceBundle TEXTS = ResourceBundle.getBundle("de.amr.games.pacman.ui.swing.localization.translation");
 
 	static final int KEY_PAUSE = KeyEvent.VK_P;
 	static final int KEY_SLOWMODE = KeyEvent.VK_S;
@@ -143,6 +144,11 @@ public class PacManGameSwingUI implements PacManGameUI {
 	}
 
 	@Override
+	public String getString(String key) {
+		return TEXTS.getString(key);
+	}
+
+	@Override
 	public void setGame(PacManGame game) {
 		this.game = game;
 		game.ui = this;
@@ -159,13 +165,13 @@ public class PacManGameSwingUI implements PacManGameUI {
 		if (game.variant == PacManGame.CLASSIC) {
 			PacManClassicAssets assets = new PacManClassicAssets();
 			soundManager = new PacManGameSoundManager(assets.soundURL::get);
-			introScene = new PacManClassicIntroScene(game, unscaledSizePixels, assets);
-			playScene = new PacManClassicPlayScene(game, unscaledSizePixels, assets);
+			introScene = new PacManClassicIntroScene(this, game, unscaledSizePixels, assets);
+			playScene = new PacManClassicPlayScene(this, game, unscaledSizePixels, assets);
 		} else {
 			MsPacManAssets assets = new MsPacManAssets();
 			soundManager = new PacManGameSoundManager(assets.soundURL::get);
-			introScene = new MsPacManIntroScene(game, unscaledSizePixels, assets);
-			playScene = new MsPacManPlayScene(game, unscaledSizePixels, assets);
+			introScene = new MsPacManIntroScene(this, game, unscaledSizePixels, assets);
+			playScene = new MsPacManPlayScene(this, game, unscaledSizePixels, assets);
 		}
 
 		if (titleUpdateTimer != null) {

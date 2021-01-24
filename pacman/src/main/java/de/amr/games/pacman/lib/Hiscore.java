@@ -17,24 +17,21 @@ import java.util.Properties;
  */
 public class Hiscore {
 
-	public File file;
+	public final File file;
 	public int points;
 	public int level;
 	public ZonedDateTime time;
 	public boolean changed;
 
-	public Hiscore() {
+	public Hiscore(File file) {
+		this.file = file;
 		points = 0;
 		level = 1;
 		time = ZonedDateTime.now();
 		changed = false;
 	}
 
-	public Hiscore(File file) {
-		this.file = file;
-	}
-
-	public void load(File file) {
+	public void load() {
 		try (FileInputStream in = new FileInputStream(file)) {
 			Properties content = new Properties();
 			content.loadFromXML(in);
@@ -48,13 +45,7 @@ public class Hiscore {
 		}
 	}
 
-	public void load() {
-		if (file != null) {
-			load(file);
-		}
-	}
-
-	public void save(File file) {
+	public void save() {
 		Properties content = new Properties();
 		content.setProperty("points", String.valueOf(points));
 		content.setProperty("level", String.valueOf(level));
@@ -65,12 +56,6 @@ public class Hiscore {
 		} catch (Exception x) {
 			log("Could not save hiscore");
 			x.printStackTrace(System.err);
-		}
-	}
-
-	public void save() {
-		if (file != null) {
-			save(file);
 		}
 	}
 

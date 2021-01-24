@@ -3,7 +3,6 @@ package de.amr.games.pacman.ui.swing.classic;
 import static de.amr.games.pacman.game.worlds.PacManGameWorld.t;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
-import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.TEXTS;
 import static de.amr.games.pacman.ui.swing.classic.PacManClassicAssets.DIR_INDEX;
 
 import java.awt.Color;
@@ -15,6 +14,7 @@ import de.amr.games.pacman.game.core.PacManGame;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.api.PacManGameSound;
+import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
 import de.amr.games.pacman.ui.swing.scene.PacManGameScene;
 
 /**
@@ -26,6 +26,7 @@ public class PacManClassicIntroScene implements PacManGameScene {
 
 	private static final Color[] GHOST_COLORS = { Color.RED, Color.PINK, Color.CYAN, Color.ORANGE };
 
+	private final PacManGameSwingUI ui;
 	private final PacManGame game;
 	private final V2i size;
 	private final PacManClassicAssets assets;
@@ -35,7 +36,8 @@ public class PacManClassicIntroScene implements PacManGameScene {
 	private int lastKilledGhost;
 	private boolean ghostsChasingPacMan;
 
-	public PacManClassicIntroScene(PacManGame game, V2i size, PacManClassicAssets assets) {
+	public PacManClassicIntroScene(PacManGameSwingUI ui, PacManGame game, V2i size, PacManClassicAssets assets) {
+		this.ui = ui;
 		this.game = game;
 		this.size = size;
 		this.assets = assets;
@@ -68,7 +70,7 @@ public class PacManClassicIntroScene implements PacManGameScene {
 		game.state.runAfter(game.clock.sec(2), () -> {
 			g.setColor(Color.WHITE);
 			g.setFont(assets.scoreFont);
-			drawCenteredText(g, TEXTS.getString("CHARACTER_NICKNAME"), t(8));
+			drawCenteredText(g, ui.getString("CHARACTER_NICKNAME"), t(8));
 		});
 
 		IntStream.rangeClosed(0, 3).forEach(ghost -> {
@@ -119,7 +121,7 @@ public class PacManClassicIntroScene implements PacManGameScene {
 		g.setColor(Color.ORANGE);
 		g.setFont(assets.scoreFont);
 		game.clock.runOrBeIdle(20, () -> {
-			drawCenteredText(g, TEXTS.getString("PRESS_KEY_TO_PLAY"), size.y - 20);
+			drawCenteredText(g, ui.getString("PRESS_KEY_TO_PLAY"), size.y - 20);
 		});
 	}
 
@@ -134,13 +136,13 @@ public class PacManClassicIntroScene implements PacManGameScene {
 		g.drawString("10", t(12), t(28));
 		g.drawString("50", t(12), t(30));
 		g.setFont(assets.scoreFont.deriveFont(6f));
-		g.drawString(TEXTS.getString("POINTS"), t(15), t(28));
-		g.drawString(TEXTS.getString("POINTS"), t(15), t(30));
+		g.drawString(ui.getString("POINTS"), t(15), t(28));
+		g.drawString(ui.getString("POINTS"), t(15), t(30));
 	}
 
 	private void drawGhostCharacterAndName(Graphics2D g, int ghostID, int y, boolean both) {
-		String character = TEXTS.getString("CLASSIC.GHOST." + ghostID + ".CHARACTER");
-		String nickname = "\"" + TEXTS.getString("CLASSIC.GHOST." + ghostID + ".NICKNAME") + "\"";
+		String character = ui.getString("CLASSIC.GHOST." + ghostID + ".CHARACTER");
+		String nickname = "\"" + ui.getString("CLASSIC.GHOST." + ghostID + ".NICKNAME") + "\"";
 		Color color = GHOST_COLORS[ghostID];
 		g.setColor(color);
 		g.setFont(assets.scoreFont);

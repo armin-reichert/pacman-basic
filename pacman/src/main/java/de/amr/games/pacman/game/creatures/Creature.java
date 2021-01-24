@@ -209,12 +209,12 @@ public class Creature {
 		return Optional.ofNullable(minDistDir);
 	}
 
-	public void wanderRandomly(PacManGameWorld world, float speed) {
+	public void wanderRandomly(PacManGameWorld world, float wanderSpeed) {
 		V2i location = tile();
 		if (world.isIntersection(location) || !couldMove) {
 			randomMoveDirection(world).ifPresent(randomDir -> wishDir = randomDir);
 		}
-		this.speed = speed;
+		speed = wanderSpeed;
 		tryMoving(world);
 	}
 

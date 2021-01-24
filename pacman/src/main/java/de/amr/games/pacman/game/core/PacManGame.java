@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
-import java.util.ResourceBundle;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
@@ -59,10 +58,7 @@ import de.amr.games.pacman.ui.api.PacManGameUI;
  */
 public class PacManGame implements Runnable {
 
-	public static final byte CLASSIC = 0;
-	public static final byte MS_PACMAN = 1;
-
-	static final ResourceBundle TEXTS = ResourceBundle.getBundle("localization.translation");
+	public static final byte CLASSIC = 0, MS_PACMAN = 1;
 
 	public final Clock clock = new Clock();
 	public final Random rnd = new Random();
@@ -327,7 +323,7 @@ public class PacManGame implements Runnable {
 			return changeState(this::exitReadyState, this::enterHuntingState);
 		}
 		if (state.running == clock.sec(0.5)) {
-			ui.showMessage(TEXTS.getString("READY"), false);
+			ui.showMessage(ui.getString("READY"), false);
 			for (Ghost ghost : ghosts) {
 				ghost.visible = true;
 			}
@@ -606,7 +602,7 @@ public class PacManGame implements Runnable {
 			hiscore.save();
 			log("Hiscore saved to " + hiscore.file);
 		}
-		ui.showMessage(TEXTS.getString("GAME_OVER"), true);
+		ui.showMessage(ui.getString("GAME_OVER"), true);
 	}
 
 	private PacManGameState runGameOverState() {

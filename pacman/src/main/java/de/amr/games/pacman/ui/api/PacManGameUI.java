@@ -9,6 +9,8 @@ import de.amr.games.pacman.game.core.PacManGame;
  */
 public interface PacManGameUI {
 
+	String getString(String key);
+
 	void setGame(PacManGame game);
 
 	void onGameVariantChanged(PacManGame game);

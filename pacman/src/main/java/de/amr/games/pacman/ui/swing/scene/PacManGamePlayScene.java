@@ -23,10 +23,12 @@ public abstract class PacManGamePlayScene implements PacManGameScene {
 	private static final Color[] GHOST_COLORS = { Color.RED, Color.PINK, Color.CYAN, Color.ORANGE };
 	private static final Polygon TRIANGLE = new Polygon(new int[] { -4, 4, 0 }, new int[] { 0, 0, 4 }, 3);
 
+	protected final PacManGameSwingUI ui;
 	protected final PacManGame game;
 	protected final V2i size;
 
-	public PacManGamePlayScene(PacManGame game, V2i size) {
+	public PacManGamePlayScene(PacManGameSwingUI ui, PacManGame game, V2i size) {
+		this.ui = ui;
 		this.game = game;
 		this.size = size;
 	}

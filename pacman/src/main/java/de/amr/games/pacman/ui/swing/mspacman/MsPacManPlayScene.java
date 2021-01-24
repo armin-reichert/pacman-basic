@@ -3,7 +3,6 @@ package de.amr.games.pacman.ui.swing.mspacman;
 import static de.amr.games.pacman.game.worlds.PacManGameWorld.HTS;
 import static de.amr.games.pacman.game.worlds.PacManGameWorld.TS;
 import static de.amr.games.pacman.game.worlds.PacManGameWorld.t;
-import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.TEXTS;
 import static de.amr.games.pacman.ui.swing.mspacman.MsPacManAssets.DIR_INDEX;
 import static java.util.stream.IntStream.range;
 
@@ -32,8 +31,8 @@ public class MsPacManPlayScene extends PacManGamePlayScene {
 
 	private final MsPacManAssets assets;
 
-	public MsPacManPlayScene(PacManGame game, V2i size, MsPacManAssets assets) {
-		super(game, size);
+	public MsPacManPlayScene(PacManGameSwingUI ui, PacManGame game, V2i size, MsPacManAssets assets) {
+		super(ui, game, size);
 		this.assets = assets;
 	}
 
@@ -80,8 +79,8 @@ public class MsPacManPlayScene extends PacManGamePlayScene {
 		g.setFont(assets.scoreFont);
 		g.translate(0, 2);
 		g.setColor(Color.WHITE);
-		g.drawString(TEXTS.getString("SCORE"), t(1), t(1));
-		g.drawString(TEXTS.getString("HI_SCORE"), t(16), t(1));
+		g.drawString(ui.getString("SCORE"), t(1), t(1));
+		g.drawString(ui.getString("HI_SCORE"), t(16), t(1));
 		g.translate(0, 1);
 		g.setColor(getScoreColor());
 		g.drawString(String.format("%08d", game.score), t(1), t(2));
