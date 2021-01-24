@@ -456,7 +456,7 @@ public class PacManGame implements Runnable {
 				tryReleasingGhost(ghost);
 			}
 			if (ghost.state == GhostState.HUNTING) {
-				setGhostHuntingTargetAndSpeed(ghost);
+				setGhostHuntingTarget(ghost);
 			}
 			ghost.update(level);
 		}
@@ -488,8 +488,7 @@ public class PacManGame implements Runnable {
 		state.setDuration(clock.sec(6));
 		pac.speed = 0;
 		for (Ghost ghost : ghosts) {
-			ghost.speed = 0;
-			ghost.state = GhostState.HUNTING;
+			ghost.state = GhostState.HUNTING; // TODO just want ghost to be rendered colorful
 		}
 		bonus.edibleTicksLeft = bonus.eatenTicksLeft = 0;
 		ui.stopAllSounds();
@@ -567,9 +566,6 @@ public class PacManGame implements Runnable {
 		state.setDuration(clock.sec(level.numFlashes + 3));
 		bonus.edibleTicksLeft = bonus.eatenTicksLeft = 0;
 		pac.speed = 0;
-		for (Ghost ghost : ghosts) {
-			ghost.speed = 0;
-		}
 		ui.stopAllSounds();
 	}
 
@@ -771,7 +767,6 @@ public class PacManGame implements Runnable {
 
 	private void ghostKilled(Ghost ghost) {
 		ghost.state = GhostState.DEAD;
-		ghost.speed = 2 * level.ghostSpeed; // TODO correct?
 		ghost.targetTile = world.houseEntry();
 		ghost.bounty = ghostBounty;
 		score(ghost.bounty);
@@ -783,17 +778,7 @@ public class PacManGame implements Runnable {
 		log("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name, ghost.tile(), ghost.bounty);
 	}
 
-	private void setGhostHuntingTargetAndSpeed(Ghost ghost) {
-		V2i ghostLocation = ghost.tile();
-		if (world.isTunnel(ghostLocation)) {
-			ghost.speed = level.ghostSpeedTunnel;
-		} else if (ghost.elroyMode == 1) {
-			ghost.speed = level.elroy1Speed;
-		} else if (ghost.elroyMode == 2) {
-			ghost.speed = level.elroy2Speed;
-		} else {
-			ghost.speed = level.ghostSpeed;
-		}
+	private void setGhostHuntingTarget(Ghost ghost) {
 		// In Ms. Pac-Man, Blinky and Pinky move randomly during *first* scatter phase
 		if (variant == MS_PACMAN && (ghost.id == BLINKY || ghost.id == PINKY) && huntingPhase == 0) {
 			ghost.targetTile = null; // move randomly

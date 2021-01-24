@@ -78,7 +78,15 @@ public class Ghost extends Creature {
 			wanderRandomly();
 			break;
 		case HUNTING:
-			speed = level.ghostSpeed;
+			if (world.isTunnel(tile())) {
+				speed = level.ghostSpeedTunnel;
+			} else if (elroyMode == 1) {
+				speed = level.elroy1Speed;
+			} else if (elroyMode == 2) {
+				speed = level.elroy2Speed;
+			} else {
+				speed = level.ghostSpeed;
+			}
 			if (targetTile != null) {
 				headForTargetTile();
 			} else {
