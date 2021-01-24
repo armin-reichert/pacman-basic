@@ -45,7 +45,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 	public static boolean debugMode;
 
-	static final ResourceBundle TEXTS = ResourceBundle.getBundle("de.amr.games.pacman.ui.swing.localization.translation");
+	static final ResourceBundle TEXTS = ResourceBundle.getBundle("ui.swing.localization.translation");
 
 	static final int KEY_PAUSE = KeyEvent.VK_P;
 	static final int KEY_SLOWMODE = KeyEvent.VK_S;
