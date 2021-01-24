@@ -48,31 +48,45 @@ public class Ghost extends Creature {
 		name = world.ghostName(ghostID);
 	}
 
+	/**
+	 * Updates speed and behavior depending on current state.
+	 * 
+	 * TODO: not sure about correct speed
+	 * 
+	 * @param level current game level
+	 */
 	public void update(PacManGameLevel level) {
 		switch (state) {
 		case LOCKED:
-			if (!atGhostHouseDoor()) {
-				speed = level.ghostSpeed / 2; // TODO speed correct?
+			if (atGhostHouseDoor()) {
+				speed = 0;
+			} else {
+				speed = level.ghostSpeed / 2;
 				bounce();
 			}
 			break;
 		case ENTERING_HOUSE:
+			speed = level.ghostSpeed * 2;
 			enterHouse();
 			break;
 		case LEAVING_HOUSE:
-			leaveHouse(level);
+			speed = level.ghostSpeed / 2;
+			leaveHouse();
 			break;
 		case FRIGHTENED:
-			wanderRandomly(level.ghostSpeedFrightened);
+			speed = level.ghostSpeedFrightened;
+			wanderRandomly();
 			break;
 		case HUNTING:
+			speed = level.ghostSpeed;
 			if (targetTile != null) {
 				headForTargetTile();
 			} else {
-				wanderRandomly(level.ghostSpeed);
+				wanderRandomly();
 			}
 			break;
 		case DEAD:
+			speed = level.ghostSpeed * 2;
 			returnHome();
 			break;
 		default:
@@ -95,7 +109,7 @@ public class Ghost extends Creature {
 		return tile().equals(world.houseEntry()) && differsAtMost(offset().x, HTS, 2);
 	}
 
-	public void returnHome() {
+	private void returnHome() {
 		if (atGhostHouseDoor()) {
 			setOffset(HTS, 0);
 			dir = wishDir = DOWN;
@@ -107,7 +121,7 @@ public class Ghost extends Creature {
 		headForTargetTile();
 	}
 
-	public void enterHouse() {
+	private void enterHouse() {
 		V2i ghostLocation = tile();
 		V2f offset = offset();
 		// Target reached? Revive and start leaving house.
@@ -123,7 +137,7 @@ public class Ghost extends Creature {
 		tryMoving(wishDir);
 	}
 
-	public void leaveHouse(PacManGameLevel level) {
+	private void leaveHouse() {
 		V2i ghostLocation = tile();
 		V2f ghostOffset = offset();
 
@@ -147,11 +161,10 @@ public class Ghost extends Creature {
 		} else {
 			wishDir = position.x < centerX ? RIGHT : LEFT;
 		}
-		speed = level.ghostSpeed / 2; // TODO speed correct?
 		tryMoving(wishDir);
 	}
 
-	public void bounce() {
+	private void bounce() {
 		int ceiling = t(world.houseCenter().y) - 5, ground = t(world.houseCenter().y) + 4;
 		if (position.y <= ceiling || position.y >= ground) {
 			wishDir = dir.opposite();

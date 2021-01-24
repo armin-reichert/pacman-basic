@@ -216,12 +216,11 @@ public class Creature {
 		return Optional.ofNullable(minDistDir);
 	}
 
-	public void wanderRandomly(float wanderSpeed) {
+	public void wanderRandomly() {
 		V2i location = tile();
 		if (world.isIntersection(location) || !couldMove) {
 			randomMoveDirection().ifPresent(randomDir -> wishDir = randomDir);
 		}
-		speed = wanderSpeed;
 		tryMoving();
 	}
 
