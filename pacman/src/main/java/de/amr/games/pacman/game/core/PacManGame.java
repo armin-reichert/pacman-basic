@@ -424,6 +424,14 @@ public class PacManGame implements Runnable {
 			return changeState(this::exitHuntingState, this::enterChangingLevelState, null);
 		}
 
+		Optional<Ghost> collidingGhost = Stream.of(ghosts).filter(ghost -> ghost.tile().equals(pac.tile())).findAny();
+		if (collidingGhost.isPresent() && collidingGhost.get().state == GhostState.FRIGHTENED) {
+			return changeState(this::exitHuntingState, this::enterGhostDyingState, () -> ghostKilled(collidingGhost.get()));
+		}
+		if (collidingGhost.isPresent() && collidingGhost.get().state == GhostState.HUNTING && !pacImmune) {
+			return changeState(this::exitHuntingState, this::enterPacManDyingState, () -> pacKilled(collidingGhost.get()));
+		}
+
 		if (state.hasExpired()) {
 			startHuntingPhase(++huntingPhase);
 			for (Ghost ghost : ghosts) {
@@ -465,14 +473,6 @@ public class PacManGame implements Runnable {
 
 		checkPacFindsFood();
 		checkPacFindsEdibleBonus();
-
-		Optional<Ghost> collidingGhost = Stream.of(ghosts).filter(ghost -> ghost.tile().equals(pac.tile())).findAny();
-		if (collidingGhost.isPresent() && collidingGhost.get().state == GhostState.FRIGHTENED) {
-			return changeState(this::exitHuntingState, this::enterGhostDyingState, () -> ghostKilled(collidingGhost.get()));
-		}
-		if (collidingGhost.isPresent() && collidingGhost.get().state == GhostState.HUNTING && !pacImmune) {
-			return changeState(this::exitHuntingState, this::enterPacManDyingState, () -> pacKilled(collidingGhost.get()));
-		}
 
 		// hunting state timer is stopped as long as Pac has power
 		return pac.powerTicksLeft == 0 ? state.run() : state;
