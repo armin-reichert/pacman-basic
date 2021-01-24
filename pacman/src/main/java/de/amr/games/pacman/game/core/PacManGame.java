@@ -185,7 +185,7 @@ public class PacManGame implements Runnable {
 		bonus.eatenTicksLeft = 0;
 		for (Ghost ghost : ghosts) {
 			ghost.dotCounter = 0;
-			ghost.elroyMode = 0;
+			ghost.elroy = 0;
 		}
 	}
 
@@ -677,9 +677,9 @@ public class PacManGame implements Runnable {
 	private void pacKilled(Ghost killer) {
 		log("%s killed by %s at tile %s", pac.name, killer.name, killer.tile());
 		pac.dead = true;
-		byte elroyMode = ghosts[BLINKY].elroyMode;
+		byte elroyMode = ghosts[BLINKY].elroy;
 		if (elroyMode > 0) {
-			ghosts[BLINKY].elroyMode = (byte) -elroyMode; // negative value means "disabled"
+			ghosts[BLINKY].elroy = (byte) -elroyMode; // negative value means "disabled"
 			log("Blinky Elroy mode %d disabled", elroyMode);
 		}
 		globalDotCounter = 0;
@@ -757,10 +757,10 @@ public class PacManGame implements Runnable {
 
 	private void checkBlinkyBecomesElroy() {
 		if (world.foodRemaining() == level.elroy1DotsLeft) {
-			ghosts[BLINKY].elroyMode = 1;
+			ghosts[BLINKY].elroy = 1;
 			log("Blinky becomes Cruise Elroy 1");
 		} else if (world.foodRemaining() == level.elroy2DotsLeft) {
-			ghosts[BLINKY].elroyMode = 2;
+			ghosts[BLINKY].elroy = 2;
 			log("Blinky becomes Cruise Elroy 2");
 		}
 	}
@@ -782,7 +782,7 @@ public class PacManGame implements Runnable {
 		// In Ms. Pac-Man, Blinky and Pinky move randomly during *first* scatter phase
 		if (variant == MS_PACMAN && (ghost.id == BLINKY || ghost.id == PINKY) && huntingPhase == 0) {
 			ghost.targetTile = null; // move randomly
-		} else if (inScatteringPhase() && ghost.elroyMode == 0) {
+		} else if (inScatteringPhase() && ghost.elroy == 0) {
 			ghost.targetTile = world.ghostScatterTile(ghost.id);
 		} else {
 			setGhostChasingTarget(ghost);
@@ -841,9 +841,9 @@ public class PacManGame implements Runnable {
 
 	private void releaseGhost(Ghost ghost, String reason, Object... args) {
 		ghost.state = GhostState.LEAVING_HOUSE;
-		if (ghost.id == CLYDE && ghosts[BLINKY].elroyMode < 0) {
-			ghosts[BLINKY].elroyMode = (byte) -ghosts[BLINKY].elroyMode; // resume Elroy mode
-			log("Blinky Elroy mode %d resumed", ghosts[BLINKY].elroyMode);
+		if (ghost.id == CLYDE && ghosts[BLINKY].elroy < 0) {
+			ghosts[BLINKY].elroy = (byte) -ghosts[BLINKY].elroy; // resume Elroy mode
+			log("Blinky Elroy mode %d resumed", ghosts[BLINKY].elroy);
 		}
 		log("Ghost %s released: %s", ghost.name, String.format(reason, args));
 	}

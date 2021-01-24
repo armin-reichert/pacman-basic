@@ -3,7 +3,6 @@ package de.amr.games.pacman.game.creatures;
 import static de.amr.games.pacman.game.core.PacManGame.differsAtMost;
 import static de.amr.games.pacman.game.worlds.PacManClassicWorld.BLINKY;
 import static de.amr.games.pacman.game.worlds.PacManGameWorld.HTS;
-import static de.amr.games.pacman.game.worlds.PacManGameWorld.TS;
 import static de.amr.games.pacman.game.worlds.PacManGameWorld.t;
 import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
@@ -40,7 +39,7 @@ public class Ghost extends Creature {
 	/**
 	 * The "Cruise Elroy" mode of Blinky, the red ghost. Value is 1, 2 or -1, -2 (disabled Elroy mode).
 	 */
-	public byte elroyMode;
+	public byte elroy;
 
 	public Ghost(int ghostID, PacManGameWorld world) {
 		super(world);
@@ -74,15 +73,19 @@ public class Ghost extends Creature {
 			leaveHouse();
 			break;
 		case FRIGHTENED:
-			speed = level.ghostSpeedFrightened;
+			if (world.isTunnel(tile())) {
+				speed = level.ghostSpeedTunnel;
+			} else {
+				speed = level.ghostSpeedFrightened;
+			}
 			wanderRandomly();
 			break;
 		case HUNTING:
 			if (world.isTunnel(tile())) {
 				speed = level.ghostSpeedTunnel;
-			} else if (elroyMode == 1) {
+			} else if (elroy == 1) {
 				speed = level.elroy1Speed;
-			} else if (elroyMode == 2) {
+			} else if (elroy == 2) {
 				speed = level.elroy2Speed;
 			} else {
 				speed = level.ghostSpeed;
@@ -118,62 +121,62 @@ public class Ghost extends Creature {
 	}
 
 	private void returnHome() {
+		// Ghost house door reached? Start falling into house.
 		if (atGhostHouseDoor()) {
 			setOffset(HTS, 0);
 			dir = wishDir = DOWN;
 			forcedOnTrack = false;
+			targetTile = id == BLINKY ? world.houseCenter() : world.ghostHome(id);
 			state = GhostState.ENTERING_HOUSE;
-			targetTile = id == BLINKY ? world.houseCenter() : world.ghostHome(id); // TODO
 			return;
 		}
 		headForTargetTile();
 	}
 
 	private void enterHouse() {
-		V2i ghostLocation = tile();
+		V2i location = tile();
 		V2f offset = offset();
-		// Target reached? Revive and start leaving house.
-		if (ghostLocation.equals(targetTile) && offset.y >= 0) {
-			state = GhostState.LEAVING_HOUSE;
+		// Target inside house reached? Start leaving house.
+		if (location.equals(targetTile) && offset.y >= 0) {
 			wishDir = dir.opposite();
+			state = GhostState.LEAVING_HOUSE;
 			return;
 		}
 		// House center reached? Move sidewards towards target tile
-		if (ghostLocation.equals(world.houseCenter()) && offset.y >= 0) {
+		if (location.equals(world.houseCenter()) && offset.y >= 0) {
 			wishDir = targetTile.x < world.houseCenter().x ? LEFT : RIGHT;
 		}
 		tryMoving(wishDir);
 	}
 
 	private void leaveHouse() {
-		V2i ghostLocation = tile();
-		V2f ghostOffset = offset();
-
-		// leaving house complete?
-		if (ghostLocation.equals(world.houseEntry()) && differsAtMost(ghostOffset.y, 0, 1)) {
+		V2i location = tile();
+		V2f offset = offset();
+		// House left? Resume hunting.
+		if (location.equals(world.houseEntry()) && differsAtMost(offset.y, 0, 1)) {
 			setOffset(HTS, 0);
 			dir = wishDir = LEFT;
 			forcedOnTrack = true;
 			state = GhostState.HUNTING;
 			return;
 		}
-
-		V2i centerTile = world.houseCenter();
-		int centerX = centerTile.x * TS + HTS;
-		int groundY = centerTile.y * TS + HTS;
-		if (differsAtMost(position.x, centerX, 1)) {
-			setOffset(HTS, ghostOffset.y);
+		V2i houseCenter = world.houseCenter();
+		int center = t(houseCenter.x) + HTS;
+		int ground = t(houseCenter.y) + HTS;
+		if (differsAtMost(position.x, center, 1)) {
+			setOffset(HTS, offset.y);
 			wishDir = UP;
-		} else if (position.y < groundY) {
+		} else if (position.y < ground) {
 			wishDir = DOWN;
 		} else {
-			wishDir = position.x < centerX ? RIGHT : LEFT;
+			wishDir = position.x < center ? RIGHT : LEFT;
 		}
 		tryMoving(wishDir);
 	}
 
 	private void bounce() {
-		int ceiling = t(world.houseCenter().y) - 5, ground = t(world.houseCenter().y) + 4;
+		V2i houseCenter = world.houseCenter();
+		int ceiling = t(houseCenter.y) - HTS - 1, ground = t(houseCenter.y) + HTS;
 		if (position.y <= ceiling || position.y >= ground) {
 			wishDir = dir.opposite();
 		}
