@@ -825,8 +825,6 @@ public class PacManGame implements Runnable {
 		}
 	}
 
-	// Score
-
 	private void score(int points) {
 		int oldscore = score;
 		score += points;
@@ -838,7 +836,6 @@ public class PacManGame implements Runnable {
 		hiscore.update(score, levelNumber);
 	}
 
-	// Sound
 	private void updateSound() {
 		if (Stream.of(ghosts).noneMatch(ghost -> ghost.is(DEAD))) {
 			ui.stopSound(PacManGameSound.GHOST_EYES);
@@ -870,5 +867,4 @@ public class PacManGame implements Runnable {
 	public static boolean differsAtMost(float value, float target, float tolerance) {
 		return Math.abs(value - target) <= tolerance;
 	}
-
 }
