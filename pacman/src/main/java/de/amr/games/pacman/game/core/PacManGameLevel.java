@@ -24,6 +24,8 @@ public class PacManGameLevel {
 	public final byte ghostFrightenedSeconds;
 	public final byte numFlashes;
 
+	public int numGhostsKilled;
+
 	// Ms. Pac-Man, values 1..6
 	public int mazeNumber;
 

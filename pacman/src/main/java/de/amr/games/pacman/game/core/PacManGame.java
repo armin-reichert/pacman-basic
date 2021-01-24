@@ -89,7 +89,6 @@ public class PacManGame implements Runnable {
 	public int score;
 	public byte huntingPhase;
 	public short ghostBounty;
-	public byte ghostsKilledInLevel;
 	public byte mazeFlashesRemaining;
 	public short globalDotCounter;
 	public boolean globalDotCounterEnabled;
@@ -189,7 +188,6 @@ public class PacManGame implements Runnable {
 		huntingPhase = 0;
 		mazeFlashesRemaining = 0;
 		ghostBounty = 200;
-		ghostsKilledInLevel = 0;
 		bonus.edibleTicksLeft = 0;
 		bonus.eatenTicksLeft = 0;
 		for (Ghost ghost : ghosts) {
@@ -661,7 +659,7 @@ public class PacManGame implements Runnable {
 		if (world.isEnergizerTile(pacLocation)) {
 			pac.restingTicksLeft = 3;
 			ghostBounty = 200;
-			pacGetsPower();
+			letPacFrightenGhosts(level.ghostFrightenedSeconds);
 			score(50);
 		} else {
 			pac.restingTicksLeft = 1;
@@ -686,8 +684,7 @@ public class PacManGame implements Runnable {
 		ui.playSound(PacManGameSound.PACMAN_MUNCH);
 	}
 
-	private void pacGetsPower() {
-		int seconds = level.ghostFrightenedSeconds;
+	private void letPacFrightenGhosts(int seconds) {
 		pac.powerTicksLeft = clock.sec(seconds);
 		if (seconds > 0) {
 			log("Pac-Man got power for %d seconds", seconds);
@@ -726,8 +723,7 @@ public class PacManGame implements Runnable {
 		ghost.targetTile = world.houseEntry();
 		ghost.bounty = ghostBounty;
 		score(ghost.bounty);
-		ghostsKilledInLevel++;
-		if (ghostsKilledInLevel == 16) {
+		if (++level.numGhostsKilled == 16) {
 			score(12000);
 		}
 		ghostBounty *= 2;
