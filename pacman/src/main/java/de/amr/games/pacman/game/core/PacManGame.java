@@ -91,14 +91,13 @@ public class PacManGame implements Runnable {
 
 	private boolean pacImmune = false;
 
-	public PacManGame(byte variant) {
-		setGameVariant(variant);
-		enterIntroState();
-		log("State is '%s' for %s", stateDescription(), ticksDescription(state.duration));
+	public PacManGame(byte gameVariant) {
+		init(gameVariant);
 	}
 
-	private void setGameVariant(byte variant) {
-		this.variant = variant;
+	private void init(byte gameVariant) {
+		variant = gameVariant;
+		log("Game variant is %s", variant == CLASSIC ? "Pac-Man" : "Ms. Pac-Man");
 		hiscore = new Hiscore(new File(System.getProperty("user.home"), "pacman-hiscore-" + variant + ".xml"));
 		world = (variant == CLASSIC) ? new PacManClassicWorld() : new MsPacManWorld();
 		pac = new Pac(world.pacName());
@@ -108,7 +107,8 @@ public class PacManGame implements Runnable {
 		}
 		bonus = new Bonus();
 		reset();
-		log("Game variant is %s", variant == CLASSIC ? "Pac-Man" : "Ms. Pac-Man");
+		enterIntroState();
+		log("State is '%s' for %s", stateDescription(), ticksDescription(state.duration));
 	}
 
 	private void reset() {
@@ -291,9 +291,8 @@ public class PacManGame implements Runnable {
 
 	private PacManGameState runIntroState() {
 		if (ui.keyPressed("v")) {
-			setGameVariant((variant == CLASSIC) ? MS_PACMAN : CLASSIC);
+			init(variant == CLASSIC ? MS_PACMAN : CLASSIC);
 			ui.onGameVariantChanged(this);
-			state.resetTimer();
 			return state;
 		}
 		if (ui.keyPressed("space")) {
