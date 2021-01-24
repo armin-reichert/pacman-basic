@@ -430,7 +430,7 @@ public class PacManGame implements Runnable {
 			onGhostKilled(collidingGhost.get());
 			return changeState(this::exitHuntingState, this::enterGhostDyingState);
 		}
-		if (!pacImmune && collidingGhost.filter(ghost -> ghost.is(FRIGHTENED)).isPresent()) {
+		if (!pacImmune && collidingGhost.filter(ghost -> ghost.is(HUNTING)).isPresent()) {
 			onPacKilled(collidingGhost.get());
 			return changeState(this::exitHuntingState, this::enterPacManDyingState);
 		}
