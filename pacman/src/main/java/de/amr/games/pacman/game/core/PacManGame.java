@@ -63,21 +63,22 @@ public class PacManGame implements Runnable {
 	public final Clock clock = new Clock();
 	public final Random rnd = new Random();
 
-	public byte variant;
-	public PacManGameWorld world;
-	public Pac pac;
-	public Ghost[] ghosts;
-	public Bonus bonus;
-	public Hiscore hiscore;
-
 	public PacManGameUI ui;
 	public Consumer<Pac> pacController;
 
 	public boolean paused;
 	public boolean started;
+	private boolean pacImmune = false;
 
-	public PacManGameState state, stateBefore;
+	public byte variant;
+	public PacManGameState state;
+	private PacManGameState stateBefore;
+	public PacManGameWorld world;
 	public PacManGameLevel level;
+	public Pac pac;
+	public Ghost[] ghosts;
+	public Bonus bonus;
+	public Hiscore hiscore;
 	public short levelNumber;
 	public byte lives;
 	public int score;
@@ -89,8 +90,6 @@ public class PacManGame implements Runnable {
 	public boolean globalDotCounterEnabled;
 	public List<Byte> levelSymbols;
 
-	private boolean pacImmune = false;
-
 	public PacManGame(byte gameVariant) {
 		init(gameVariant);
 	}
@@ -98,8 +97,13 @@ public class PacManGame implements Runnable {
 	private void init(byte gameVariant) {
 		variant = gameVariant;
 		log("Game variant is %s", variant == CLASSIC ? "Pac-Man" : "Ms. Pac-Man");
-		hiscore = new Hiscore(new File(System.getProperty("user.home"), "pacman-hiscore-" + variant + ".xml"));
-		world = (variant == CLASSIC) ? new PacManClassicWorld() : new MsPacManWorld();
+		if (variant == CLASSIC) {
+			hiscore = new Hiscore(new File(System.getProperty("user.home"), "hiscore-pacman.xml"));
+			world = new PacManClassicWorld();
+		} else if (variant == MS_PACMAN) {
+			hiscore = new Hiscore(new File(System.getProperty("user.home"), "hiscore-mspacman.xml"));
+			world = new MsPacManWorld();
+		}
 		pac = new Pac(world.pacName());
 		ghosts = new Ghost[4];
 		for (int ghostID = 0; ghostID < 4; ++ghostID) {
