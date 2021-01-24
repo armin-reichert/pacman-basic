@@ -440,6 +440,7 @@ public class PacManGame implements Runnable {
 			}
 		}
 
+		// Can Pac move?
 		pacController.accept(pac);
 		if (pac.restingTicksLeft > 0) {
 			pac.restingTicksLeft--;
@@ -447,6 +448,16 @@ public class PacManGame implements Runnable {
 			pac.speed = pac.powerTicksLeft == 0 ? level.pacSpeed : level.pacSpeedPowered;
 			pac.tryMoving();
 		}
+
+		// Does Pac find food?
+		V2i pacLocation = pac.tile();
+		if (world.containsFood(pacLocation)) {
+			onPacFoundFood(pacLocation);
+		} else {
+			pac.starvingTicks++;
+		}
+
+		// Is Pac losing power?
 		if (pac.powerTicksLeft > 0) {
 			pac.powerTicksLeft--;
 			if (pac.powerTicksLeft == 0) {
@@ -458,10 +469,9 @@ public class PacManGame implements Runnable {
 			}
 		}
 
+		tryReleasingGhosts();
+
 		for (Ghost ghost : ghosts) {
-			if (ghost.state == GhostState.LOCKED) {
-				tryReleasingGhost(ghost);
-			}
 			if (ghost.state == GhostState.HUNTING) {
 				// In Ms. Pac-Man, Blinky and Pinky move randomly during *first* scatter phase
 				if (variant == MS_PACMAN && (ghost.id == BLINKY || ghost.id == PINKY) && huntingPhase == 0) {
@@ -474,9 +484,14 @@ public class PacManGame implements Runnable {
 			}
 			ghost.update(level);
 		}
+
 		bonus.update();
-		checkPacFindsFood();
-		checkPacFindsEdibleBonus();
+		if (bonus.edibleTicksLeft > 0 && pac.tile().equals(bonus.tile())) {
+			bonus.eatAndDisplayValue(clock.sec(2));
+			score(bonus.points);
+			ui.playSound(PacManGameSound.PACMAN_EAT_BONUS);
+			log("Pac-Man found bonus (%d) of value %d", bonus.symbol, bonus.points);
+		}
 
 		// hunting state timer is stopped as long as Pac has power
 		return pac.powerTicksLeft == 0 ? state.run() : state;
@@ -547,7 +562,7 @@ public class PacManGame implements Runnable {
 		}
 		pacController.accept(pac);
 		for (Ghost ghost : ghosts) {
-			if (ghost.state == GhostState.DEAD && ghost.bounty == 0) {
+			if (ghost.state == GhostState.DEAD && ghost.bounty == 0 || ghost.state == GhostState.ENTERING_HOUSE) {
 				ghost.update(level);
 			}
 		}
@@ -623,46 +638,35 @@ public class PacManGame implements Runnable {
 
 	// END STATE-MACHINE
 
-	// Pac
-
-	private void checkPacFindsEdibleBonus() {
-		if (bonus.edibleTicksLeft > 0 && pac.tile().equals(bonus.tile())) {
-			bonus.edibleTicksLeft = 0;
-			bonus.eatenTicksLeft = clock.sec(2);
-			bonus.speed = 0;
-			score(bonus.points);
-			ui.playSound(PacManGameSound.PACMAN_EAT_BONUS);
-			log("Pac-Man found bonus (%d) of value %d", bonus.symbol, bonus.points);
-		}
-	}
-
-	private void checkPacFindsFood() {
-		V2i pacLocation = pac.tile();
-		if (world.containsFood(pacLocation)) {
-			if (world.isEnergizerTile(pacLocation)) {
-				score(50);
-				pacGetsPower();
-				pac.restingTicksLeft = 3;
-				ghostBounty = 200;
-			} else {
-				score(10);
-				pac.restingTicksLeft = 1;
-			}
-			pac.starvingTicks = 0;
-			world.removeFood(pacLocation);
-			checkBlinkyBecomesElroy();
-			checkBonusActivation();
-			updateGhostDotCounters();
-			ui.playSound(PacManGameSound.PACMAN_MUNCH);
+	private void onPacFoundFood(V2i pacLocation) {
+		world.removeFood(pacLocation);
+		pac.starvingTicks = 0;
+		if (world.isEnergizerTile(pacLocation)) {
+			pac.restingTicksLeft = 3;
+			ghostBounty = 200;
+			pacGetsPower();
+			score(50);
 		} else {
-			pac.starvingTicks++;
-			if (pac.starvingTicks >= pacStarvingTimeLimit()) {
-				preferredLockedGhost().ifPresent(ghost -> {
-					releaseGhost(ghost, "%s has been starving for %d ticks", pac.name, pac.starvingTicks);
-					pac.starvingTicks = 0;
-				});
-			}
+			pac.restingTicksLeft = 1;
+			score(10);
 		}
+
+		// Bonus gets edible?
+		if (world.eatenFoodCount() == 70 || world.eatenFoodCount() == 170) {
+			long ticks = variant == CLASSIC ? clock.sec(9 + rnd.nextFloat()) : Long.MAX_VALUE;
+			bonus.activate(level.bonusSymbol, ticks);
+		}
+
+		// Blinky becomes Elroy?
+		if (world.foodRemaining() == level.elroy1DotsLeft) {
+			ghosts[BLINKY].elroy = 1;
+			log("Blinky becomes Cruise Elroy 1");
+		} else if (world.foodRemaining() == level.elroy2DotsLeft) {
+			ghosts[BLINKY].elroy = 2;
+			log("Blinky becomes Cruise Elroy 2");
+		}
+		updateGhostDotCounters();
+		ui.playSound(PacManGameSound.PACMAN_MUNCH);
 	}
 
 	private void pacGetsPower() {
@@ -698,27 +702,7 @@ public class PacManGame implements Runnable {
 		return levelNumber < 5 ? clock.sec(4) : clock.sec(3);
 	}
 
-	// Bonus
-
-	private void checkBonusActivation() {
-		int eaten = world.eatenFoodCount();
-		if (eaten == 70 || eaten == 170) {
-			long ticks = variant == CLASSIC ? clock.sec(9 + rnd.nextFloat()) : Long.MAX_VALUE;
-			bonus.activate(level.bonusSymbol, ticks);
-		}
-	}
-
 	// Ghosts
-
-	private void checkBlinkyBecomesElroy() {
-		if (world.foodRemaining() == level.elroy1DotsLeft) {
-			ghosts[BLINKY].elroy = 1;
-			log("Blinky becomes Cruise Elroy 1");
-		} else if (world.foodRemaining() == level.elroy2DotsLeft) {
-			ghosts[BLINKY].elroy = 2;
-			log("Blinky becomes Cruise Elroy 2");
-		}
-	}
 
 	private void onGhostKilled(Ghost ghost) {
 		ghost.state = GhostState.DEAD;
@@ -770,17 +754,21 @@ public class PacManGame implements Runnable {
 
 	// Ghost house
 
-	private void tryReleasingGhost(Ghost ghost) {
-		if (ghost.id == BLINKY) {
-			ghost.state = GhostState.HUNTING;
-			return;
+	private void tryReleasingGhosts() {
+		if (ghosts[BLINKY].state == GhostState.LOCKED) {
+			ghosts[BLINKY].state = GhostState.HUNTING;
 		}
-		if (globalDotCounterEnabled && globalDotCounter >= ghostGlobalDotLimit(ghost)) {
-			releaseGhost(ghost, "Global dot counter (%d) reached limit (%d)", globalDotCounter, ghostGlobalDotLimit(ghost));
-		} else if (!globalDotCounterEnabled && ghost.dotCounter >= ghostPrivateDotLimit(ghost)) {
-			releaseGhost(ghost, "%s's dot counter (%d) reached limit (%d)", ghost.name, ghost.dotCounter,
-					ghostPrivateDotLimit(ghost));
-		}
+		preferredLockedGhostInsideHouse().ifPresent(ghost -> {
+			if (globalDotCounterEnabled && globalDotCounter >= ghostGlobalDotLimit(ghost)) {
+				releaseGhost(ghost, "Global dot counter (%d) reached limit (%d)", globalDotCounter, ghostGlobalDotLimit(ghost));
+			} else if (!globalDotCounterEnabled && ghost.dotCounter >= ghostPrivateDotLimit(ghost)) {
+				releaseGhost(ghost, "%s's dot counter (%d) reached limit (%d)", ghost.name, ghost.dotCounter,
+						ghostPrivateDotLimit(ghost));
+			} else if (pac.starvingTicks >= pacStarvingTimeLimit()) {
+				releaseGhost(ghost, "%s has been starving for %d ticks", pac.name, pac.starvingTicks);
+				pac.starvingTicks = 0;
+			}
+		});
 	}
 
 	private void releaseGhost(Ghost ghost, String reason, Object... args) {
@@ -792,7 +780,7 @@ public class PacManGame implements Runnable {
 		log("Ghost %s released: %s", ghost.name, String.format(reason, args));
 	}
 
-	private Optional<Ghost> preferredLockedGhost() {
+	private Optional<Ghost> preferredLockedGhostInsideHouse() {
 		return Stream.of(PINKY, INKY, CLYDE).map(id -> ghosts[id]).filter(ghost -> ghost.state == GhostState.LOCKED)
 				.findFirst();
 	}
@@ -821,7 +809,7 @@ public class PacManGame implements Runnable {
 				++globalDotCounter;
 			}
 		} else {
-			preferredLockedGhost().ifPresent(ghost -> ++ghost.dotCounter);
+			preferredLockedGhostInsideHouse().ifPresent(ghost -> ++ghost.dotCounter);
 		}
 	}
 
@@ -848,8 +836,6 @@ public class PacManGame implements Runnable {
 		}
 	}
 
-	// Cheats
-
 	private void eatAllNormalPellets() {
 		for (int x = 0; x < world.sizeInTiles().x; ++x) {
 			for (int y = 0; y < world.sizeInTiles().y; ++y) {
@@ -868,8 +854,6 @@ public class PacManGame implements Runnable {
 			}
 		}
 	}
-
-	// Misc
 
 	public static boolean differsAtMost(float value, float target, float tolerance) {
 		return Math.abs(value - target) <= tolerance;

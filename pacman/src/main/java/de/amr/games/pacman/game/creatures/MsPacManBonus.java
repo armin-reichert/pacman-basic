@@ -36,6 +36,13 @@ public class MsPacManBonus extends ClassicBonus {
 	}
 
 	@Override
+	public void eatAndDisplayValue(long ticks) {
+		edibleTicksLeft = 0;
+		eatenTicksLeft = ticks;
+		speed = 0;
+	}
+
+	@Override
 	public void update() {
 		if (edibleTicksLeft > 0) {
 			wander();

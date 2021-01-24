@@ -36,6 +36,11 @@ public class ClassicBonus extends Creature {
 		placeAt(PacManClassicWorld.BONUS_TILE, HTS, 0);
 	}
 
+	public void eatAndDisplayValue(long ticks) {
+		edibleTicksLeft = 0;
+		eatenTicksLeft = ticks;
+	}
+
 	public void update() {
 		if (edibleTicksLeft > 0) {
 			edibleTicksLeft--;
