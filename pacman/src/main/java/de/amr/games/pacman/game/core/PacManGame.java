@@ -231,15 +231,8 @@ public class PacManGame implements Runnable {
 	// BEGIN STATE-MACHINE
 
 	private PacManGameState changeState(Runnable onExit, Runnable onEntry) {
-		return changeState(onExit, onEntry, null);
-	}
-
-	private PacManGameState changeState(Runnable onExit, Runnable onEntry, Runnable action) {
 		log("Exit state '%s'", stateDescription());
 		onExit.run();
-		if (action != null) {
-			action.run();
-		}
 		onEntry.run();
 		log("Enter state '%s' for %s", stateDescription(), ticksDescription(state.duration));
 		return state;
@@ -409,7 +402,8 @@ public class PacManGame implements Runnable {
 			eatAllNormalPellets();
 		}
 		if (ui.keyPressed("x")) {
-			return changeState(this::exitHuntingState, this::enterGhostDyingState, this::killAllGhosts);
+			killAllGhosts();
+			return changeState(this::exitHuntingState, this::enterGhostDyingState);
 		}
 		if (ui.keyPressed("l")) {
 			if (lives < Byte.MAX_VALUE) {
@@ -417,19 +411,21 @@ public class PacManGame implements Runnable {
 			}
 		}
 		if (ui.keyPressed("n")) {
-			return changeState(this::exitHuntingState, this::enterChangingLevelState, null);
+			return changeState(this::exitHuntingState, this::enterChangingLevelState);
 		}
 
 		if (world.foodRemaining() == 0) {
-			return changeState(this::exitHuntingState, this::enterChangingLevelState, null);
+			return changeState(this::exitHuntingState, this::enterChangingLevelState);
 		}
 
 		Optional<Ghost> collidingGhost = Stream.of(ghosts).filter(ghost -> ghost.tile().equals(pac.tile())).findAny();
 		if (collidingGhost.isPresent() && collidingGhost.get().state == GhostState.FRIGHTENED) {
-			return changeState(this::exitHuntingState, this::enterGhostDyingState, () -> ghostKilled(collidingGhost.get()));
+			ghostKilled(collidingGhost.get());
+			return changeState(this::exitHuntingState, this::enterGhostDyingState);
 		}
 		if (collidingGhost.isPresent() && collidingGhost.get().state == GhostState.HUNTING && !pacImmune) {
-			return changeState(this::exitHuntingState, this::enterPacManDyingState, () -> pacKilled(collidingGhost.get()));
+			pacKilled(collidingGhost.get());
+			return changeState(this::exitHuntingState, this::enterPacManDyingState);
 		}
 
 		if (state.hasExpired()) {
@@ -538,7 +534,8 @@ public class PacManGame implements Runnable {
 
 	private PacManGameState runGhostDyingState() {
 		if (state.hasExpired()) {
-			return changeState(this::exitGhostDyingState, () -> state = stateBefore, () -> log("Resume state '%s'", state));
+			log("Resume state '%s'", stateBefore);
+			return changeState(this::exitGhostDyingState, () -> state = stateBefore);
 		}
 		pacController.accept(pac);
 		for (Ghost ghost : ghosts) {
@@ -571,7 +568,7 @@ public class PacManGame implements Runnable {
 
 	private PacManGameState runChangingLevelState() {
 		if (state.hasExpired()) {
-			return changeState(this::exitChangingLevelState, this::enterReadyState, this::nextLevel);
+			return changeState(this::exitChangingLevelState, this::enterReadyState);
 		}
 		if (state.running == clock.sec(2)) {
 			for (Ghost ghost : ghosts) {
@@ -586,6 +583,7 @@ public class PacManGame implements Runnable {
 
 	private void exitChangingLevelState() {
 		log("Level %d complete, entering level %d", levelNumber, levelNumber + 1);
+		nextLevel();
 	}
 
 	// GAME_OVER
@@ -606,12 +604,13 @@ public class PacManGame implements Runnable {
 
 	private PacManGameState runGameOverState() {
 		if (state.hasExpired() || ui.keyPressed("space")) {
-			return changeState(this::exitGameOverState, this::enterIntroState, this::reset);
+			return changeState(this::exitGameOverState, this::enterIntroState);
 		}
 		return state.run();
 	}
 
 	private void exitGameOverState() {
+		reset();
 	}
 
 	// END STATE-MACHINE
