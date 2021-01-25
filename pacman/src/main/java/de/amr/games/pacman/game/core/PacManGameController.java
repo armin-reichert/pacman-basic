@@ -60,12 +60,10 @@ public class PacManGameController implements Runnable {
 
 	public Consumer<Pac> pacController;
 
-	// controller state
 	public boolean paused;
 	public boolean started;
 	public PacManGameState state;
 	public PacManGameState stateBefore;
-	public byte huntingPhase;
 	public byte mazeFlashesRemaining;
 
 	public void newPacManClassicGame() {
@@ -137,7 +135,6 @@ public class PacManGameController implements Runnable {
 	}
 
 	private void nextLevel() {
-		huntingPhase = 0;
 		mazeFlashesRemaining = 0;
 		game.initLevel(game.levelNumber + 1);
 		game.levelSymbols.add(game.level.bonusSymbol);
@@ -223,7 +220,7 @@ public class PacManGameController implements Runnable {
 	public String stateDescription() {
 		if (state == PacManGameState.HUNTING) {
 			String phaseName = inScatteringPhase() ? "Scattering" : "Chasing";
-			int phase = huntingPhase / 2;
+			int phase = game.huntingPhase / 2;
 			return String.format("%s-%s (%d of 4)", state, phaseName, phase + 1);
 		}
 		return state.name();
@@ -320,7 +317,7 @@ public class PacManGameController implements Runnable {
 	}
 
 	private boolean inScatteringPhase() {
-		return huntingPhase % 2 == 0;
+		return game.huntingPhase % 2 == 0;
 	}
 
 	private static PacManGameSound siren(int huntingPhase) {
@@ -339,13 +336,13 @@ public class PacManGameController implements Runnable {
 	}
 
 	private void startHuntingPhase(int phase) {
-		huntingPhase = (byte) phase;
-		state.setDuration(huntingPhaseDuration(huntingPhase));
+		game.huntingPhase = (byte) phase;
+		state.setDuration(huntingPhaseDuration(game.huntingPhase));
 		if (inScatteringPhase()) {
-			if (huntingPhase >= 2) {
-				ui.stopSound(siren(huntingPhase - 2));
+			if (game.huntingPhase >= 2) {
+				ui.stopSound(siren(game.huntingPhase - 2));
 			}
-			ui.loopSound(siren(huntingPhase)); // TODO not clear when which siren should play
+			ui.loopSound(siren(game.huntingPhase)); // TODO not clear when which siren should play
 		}
 		log("Hunting phase %d started, state is now %s", phase, stateDescription());
 	}
@@ -397,7 +394,7 @@ public class PacManGameController implements Runnable {
 
 		// Hunting phase complete?
 		if (state.hasExpired()) {
-			startHuntingPhase(++huntingPhase);
+			startHuntingPhase(++game.huntingPhase);
 			for (Ghost ghost : game.ghosts) {
 				if (ghost.state == HUNTING) {
 					ghost.forceTurningBack();
@@ -440,7 +437,7 @@ public class PacManGameController implements Runnable {
 			if (ghost.is(HUNTING)) {
 				// In Ms. Pac-Man, Blinky and Pinky move randomly during *first* scatter phase
 				if (game.variant == PacManGameModel.MS_PACMAN && (ghost.id == BLINKY || ghost.id == PINKY)
-						&& huntingPhase == 0) {
+						&& game.huntingPhase == 0) {
 					ghost.targetTile = null; // move randomly
 				} else if (inScatteringPhase() && ghost.elroy == 0) {
 					// Elroy chases also in scatter phase
@@ -735,7 +732,7 @@ public class PacManGameController implements Runnable {
 		if (game.ghosts[BLINKY].is(LOCKED)) {
 			game.ghosts[BLINKY].state = HUNTING;
 		}
-		preferredLockedGhostInsideHouse().ifPresent(ghost -> {
+		preferredLockedGhostInHouse().ifPresent(ghost -> {
 			if (game.globalDotCounterEnabled && game.globalDotCounter >= ghostGlobalDotLimit(ghost)) {
 				releaseGhost(ghost, "Global dot counter (%d) reached limit (%d)", game.globalDotCounter,
 						ghostGlobalDotLimit(ghost));
@@ -758,7 +755,7 @@ public class PacManGameController implements Runnable {
 		log("Ghost %s released: %s", ghost.name, String.format(reason, args));
 	}
 
-	private Optional<Ghost> preferredLockedGhostInsideHouse() {
+	private Optional<Ghost> preferredLockedGhostInHouse() {
 		return Stream.of(PINKY, INKY, CLYDE).map(id -> game.ghosts[id]).filter(ghost -> ghost.is(LOCKED)).findFirst();
 	}
 
@@ -786,7 +783,7 @@ public class PacManGameController implements Runnable {
 				++game.globalDotCounter;
 			}
 		} else {
-			preferredLockedGhostInsideHouse().ifPresent(ghost -> ++ghost.dotCounter);
+			preferredLockedGhostInHouse().ifPresent(ghost -> ++ghost.dotCounter);
 		}
 	}
 

@@ -31,6 +31,7 @@ public class PacManGameModel {
 	public Bonus bonus;
 	public byte lives;
 	public int score;
+	public byte huntingPhase;
 	public short ghostBounty;
 	public short globalDotCounter;
 	public boolean globalDotCounterEnabled;
@@ -80,6 +81,7 @@ public class PacManGameModel {
 		levelNumber = (short) n;
 		level = world.createLevel(n);
 		ghostBounty = 200;
+		huntingPhase = 0;
 		bonus.edibleTicksLeft = 0;
 		bonus.eatenTicksLeft = 0;
 		for (Ghost ghost : ghosts) {
