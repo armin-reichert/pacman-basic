@@ -69,19 +69,12 @@ public class PacManGameController implements Runnable {
 	public byte huntingPhase;
 	public byte mazeFlashesRemaining;
 
-	public PacManGameController() {
-		newPacManClassicGame();
-	}
-
 	public void newPacManClassicGame() {
 		game = PacManGameModel.newPacManClassicGame();
 		log("Game variant is Pac-Man");
 		reset();
 		enterIntroState();
 		log("State is '%s' for %s", stateDescription(), ticksDescription(state.duration));
-		if (ui != null) {
-			ui.setGameController(this);
-		}
 	}
 
 	public void newMsPacManGame() {
@@ -90,9 +83,6 @@ public class PacManGameController implements Runnable {
 		reset();
 		enterIntroState();
 		log("State is '%s' for %s", stateDescription(), ticksDescription(state.duration));
-		if (ui != null) {
-			ui.setGameController(this);
-		}
 	}
 
 	private void reset() {
@@ -267,11 +257,14 @@ public class PacManGameController implements Runnable {
 
 	private PacManGameState runIntroState() {
 		if (ui.keyPressed("v")) {
+			// toggle game variant
 			if (game.variant == PacManGameModel.CLASSIC) {
 				newMsPacManGame();
 			} else {
 				newPacManClassicGame();
 			}
+			// update UI
+			ui.setGameController(this);
 			return state;
 		}
 		if (ui.keyPressed("space")) {
