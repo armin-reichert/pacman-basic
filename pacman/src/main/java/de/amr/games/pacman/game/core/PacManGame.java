@@ -74,8 +74,9 @@ public class PacManGame implements Runnable {
 	public boolean paused;
 	public boolean started;
 	public PacManGameState state;
-	private PacManGameState stateBefore;
+	public PacManGameState stateBefore;
 	public Hiscore hiscore;
+	public short levelNumber;
 
 	public byte variant;
 	public PacManGameWorld world;
@@ -83,7 +84,6 @@ public class PacManGame implements Runnable {
 	public Pac pac;
 	public Ghost[] ghosts;
 	public Bonus bonus;
-	public short levelNumber;
 	public byte lives;
 	public int score;
 	public byte huntingPhase;
