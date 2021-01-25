@@ -6,13 +6,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.game.creatures.Ghost;
 import de.amr.games.pacman.game.creatures.GhostState;
-import de.amr.games.pacman.game.creatures.Pac;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.Logging;
 import de.amr.games.pacman.lib.V2i;
@@ -22,7 +20,7 @@ import de.amr.games.pacman.lib.V2i;
  * 
  * @author Armin Reichert
  */
-public class Autopilot implements Consumer<Pac> {
+public class Autopilot {
 
 	static class AutoPilotInfo {
 
@@ -78,20 +76,21 @@ public class Autopilot implements Consumer<Pac> {
 		this.controller = controller;
 	}
 
-	@Override
-	public void accept(Pac pac) {
-		if (pac.couldMove && !pac.changedTile) {
+	public void run() {
+		PacManGameModel game = controller.game;
+
+		if (game.pac.couldMove && !game.pac.changedTile) {
 			return;
 		}
-		if (pac.forcedDirection) {
-			pac.forcedDirection = false;
+		if (game.pac.forcedDirection) {
+			game.pac.forcedDirection = false;
 			return;
 		}
-		collectData(controller.game);
+		collectData(game);
 		if (data.hunterAhead != null || data.hunterBehind != null || !data.frightenedGhosts.isEmpty()) {
 			log("\n%s", data);
 		}
-		takeAction(controller.game);
+		takeAction(game);
 	}
 
 	private void collectData(PacManGameModel game) {

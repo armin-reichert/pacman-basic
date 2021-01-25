@@ -25,12 +25,10 @@ import static de.amr.games.pacman.lib.Logging.log;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.game.creatures.Ghost;
-import de.amr.games.pacman.game.creatures.Pac;
 import de.amr.games.pacman.lib.Hiscore;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.api.KeyboardPacController;
@@ -58,7 +56,10 @@ public class PacManGameController implements Runnable {
 
 	public PacManGameModel game;
 	public PacManGameUI ui;
-	public Consumer<Pac> manualPacController, automaticPacController, pacController;
+
+	public KeyboardPacController manualPacController;
+	public Autopilot autoPacController;
+	public boolean autoControlled;
 
 	public boolean paused;
 	public boolean started;
@@ -102,13 +103,8 @@ public class PacManGameController implements Runnable {
 	}
 
 	private void toggleAutopilot() {
-		if (pacController == automaticPacController) {
-			pacController = manualPacController;
-			log("Pac-Man autopilot mode is off");
-		} else {
-			pacController = automaticPacController;
-			log("Pac-Man autopilot mode is on");
-		}
+		autoControlled = !autoControlled;
+		log("Pac-Man autopilot mode is " + (autoControlled ? "on" : "off"));
 	}
 
 	private void togglePacImmunity() {
@@ -119,8 +115,7 @@ public class PacManGameController implements Runnable {
 	@Override
 	public void run() {
 		manualPacController = new KeyboardPacController(ui);
-		automaticPacController = new Autopilot(this);
-		pacController = manualPacController;
+		autoPacController = new Autopilot(this);
 		while (true) {
 			clock.tick(this::step);
 		}
@@ -403,7 +398,7 @@ public class PacManGameController implements Runnable {
 		}
 
 		// Can Pac move?
-		pacController.accept(game.pac);
+		steerPac();
 		if (game.pac.restingTicksLeft > 0) {
 			game.pac.restingTicksLeft--;
 		} else {
@@ -526,7 +521,7 @@ public class PacManGameController implements Runnable {
 			log("Resume state '%s'", suspendedState);
 			return changeState(this::exitGhostDyingState, () -> state = suspendedState);
 		}
-		pacController.accept(game.pac);
+		steerPac();
 		for (Ghost ghost : game.ghosts) {
 			if (ghost.is(DEAD) && ghost.bounty == 0 || ghost.is(ENTERING_HOUSE)) {
 				ghost.update(game.level);
@@ -603,6 +598,14 @@ public class PacManGameController implements Runnable {
 	}
 
 	// END STATE-MACHINE
+
+	private void steerPac() {
+		if (autoControlled) {
+			autoPacController.run();
+		} else {
+			manualPacController.accept(game.pac);
+		}
+	}
 
 	private void onPacFoundFood(V2i pacLocation) {
 		game.world.removeFood(pacLocation);
