@@ -1,5 +1,6 @@
 package de.amr.games.pacman.ui.swing;
 
+import static de.amr.games.pacman.game.heaven.God.clock;
 import static de.amr.games.pacman.game.worlds.PacManGameWorld.TS;
 import static de.amr.games.pacman.game.worlds.PacManGameWorld.t;
 import static de.amr.games.pacman.lib.Logging.log;
@@ -116,12 +117,12 @@ public class PacManGameSwingUI implements PacManGameUI {
 					game.paused = !game.paused;
 				}
 				if (e.getKeyCode() == KEY_SLOWMODE) {
-					game.clock.targetFrequency = game.clock.targetFrequency == 60 ? 30 : 60;
-					log("Clock frequency changed to %d Hz", game.clock.targetFrequency);
+					clock.targetFrequency = clock.targetFrequency == 60 ? 30 : 60;
+					log("Clock frequency changed to %d Hz", clock.targetFrequency);
 				}
 				if (e.getKeyCode() == KEY_FASTMODE) {
-					game.clock.targetFrequency = game.clock.targetFrequency == 60 ? 120 : 60;
-					log("Clock frequency changed to %d Hz", game.clock.targetFrequency);
+					clock.targetFrequency = clock.targetFrequency == 60 ? 120 : 60;
+					log("Clock frequency changed to %d Hz", clock.targetFrequency);
 				}
 				if (e.getKeyCode() == KEY_DEBUGMODE) {
 					debugMode = !debugMode;
@@ -178,7 +179,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 			titleUpdateTimer.stop();
 		}
 		titleUpdateTimer = new Timer(1000,
-				e -> window.setTitle(String.format("%s (%d fps)", game.world.pacName(), game.clock.frequency)));
+				e -> window.setTitle(String.format("%s (%d fps)", game.world.pacName(), clock.frequency)));
 		titleUpdateTimer.start();
 	}
 

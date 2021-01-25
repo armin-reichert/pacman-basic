@@ -1,5 +1,6 @@
 package de.amr.games.pacman.ui.swing.mspacman;
 
+import static de.amr.games.pacman.game.heaven.God.clock;
 import static de.amr.games.pacman.game.worlds.PacManGameWorld.HTS;
 import static de.amr.games.pacman.game.worlds.PacManGameWorld.TS;
 import static de.amr.games.pacman.game.worlds.PacManGameWorld.t;
@@ -123,7 +124,7 @@ public class MsPacManPlayScene extends PacManGamePlayScene {
 
 	private void drawMaze(Graphics2D g) {
 		if (game.mazeFlashesRemaining > 0) {
-			game.clock.runAlternating(game.clock.sec(0.25), () -> {
+			clock.runAlternating(clock.sec(0.25), () -> {
 				g.drawImage(assets.mazeEmptyDark[game.level.mazeNumber - 1], 0, t(3), null);
 			}, () -> {
 //				g.drawImage(assets.mazeEmptyBright[mazeIndex], 0, t(3), null);
@@ -138,7 +139,7 @@ public class MsPacManPlayScene extends PacManGamePlayScene {
 				if (game.world.isFoodRemoved(x, y)) {
 					hideFood(g, x, y);
 				} else if (game.state == PacManGameState.HUNTING && game.world.isEnergizerTile(x, y)) {
-					game.clock.runOrBeIdle(10, () -> hideFood(g, x, y));
+					clock.runOrBeIdle(10, () -> hideFood(g, x, y));
 				}
 			});
 		});
@@ -154,7 +155,7 @@ public class MsPacManPlayScene extends PacManGamePlayScene {
 		int x = (int) (game.bonus.position.x) - HTS;
 		int y = (int) (game.bonus.position.y) - HTS;
 		if (game.bonus.edibleTicksLeft > 0) {
-			int frame = game.clock.frame(20, BONUS_JUMP.length);
+			int frame = clock.frame(20, BONUS_JUMP.length);
 			if (game.bonus.dir == Direction.LEFT || game.bonus.dir == Direction.RIGHT) {
 				y += BONUS_JUMP[frame]; // TODO this is not yet correct
 			}
@@ -168,7 +169,7 @@ public class MsPacManPlayScene extends PacManGamePlayScene {
 		int dir = DIR_INDEX.get(pac.dir);
 		if (pac.collapsingTicksLeft > 0) {
 			// collapsing animation
-			return assets.section(0, pac.collapsingTicksLeft > 1 ? game.clock.frame(10, 4) : dir);
+			return assets.section(0, pac.collapsingTicksLeft > 1 ? clock.frame(10, 4) : dir);
 		}
 		if (pac.speed == 0) {
 			// medium open mouth when in READY state, else full face
@@ -179,7 +180,7 @@ public class MsPacManPlayScene extends PacManGamePlayScene {
 			return assets.section(1, dir);
 		}
 		// mouth animation
-		int frame = game.clock.frame(5, 3);
+		int frame = clock.frame(5, 3);
 		return assets.section(frame, dir);
 	}
 
@@ -188,7 +189,7 @@ public class MsPacManPlayScene extends PacManGamePlayScene {
 			return assets.bountyNumbers.get(ghost.bounty);
 		}
 		int dir = DIR_INDEX.get(ghost.wishDir);
-		int walking = ghost.speed == 0 ? 0 : game.clock.frame(5, 2);
+		int walking = ghost.speed == 0 ? 0 : clock.frame(5, 2);
 		if (ghost.state == GhostState.DEAD || ghost.state == GhostState.ENTERING_HOUSE) {
 			// eyes looking towards *intended* move direction
 			return assets.section(8 + dir, 5);
@@ -196,7 +197,7 @@ public class MsPacManPlayScene extends PacManGamePlayScene {
 		if (ghost.state == GhostState.FRIGHTENED) {
 			if (game.pac.powerTicksLeft <= 20 * game.level.numFlashes && game.state == PacManGameState.HUNTING) {
 				// flashing blue/white, walking animation
-				int flashing = game.clock.frame(10, 2) == 0 ? 8 : 10;
+				int flashing = clock.frame(10, 2) == 0 ? 8 : 10;
 				return assets.section(walking + flashing, 4);
 			}
 			// blue, walking animation

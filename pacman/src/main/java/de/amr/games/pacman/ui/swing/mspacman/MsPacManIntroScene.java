@@ -1,5 +1,6 @@
 package de.amr.games.pacman.ui.swing.mspacman;
 
+import static de.amr.games.pacman.game.heaven.God.clock;
 import static de.amr.games.pacman.game.worlds.PacManGameWorld.t;
 import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.ui.swing.mspacman.MsPacManAssets.DIR_INDEX;
@@ -39,7 +40,7 @@ public class MsPacManIntroScene implements PacManGameScene {
 
 	private BufferedImage ghostWalking(Direction dir, int ghostID, boolean animated) {
 		if (animated) {
-			int frame = game.clock.frame(5, 2);
+			int frame = clock.frame(5, 2);
 			return assets.section(2 * DIR_INDEX.get(dir) + frame, 4 + ghostID);
 		} else {
 			return assets.section(2 * DIR_INDEX.get(dir), 4 + ghostID);
@@ -48,7 +49,7 @@ public class MsPacManIntroScene implements PacManGameScene {
 
 	private BufferedImage pacWalking(Direction dir, boolean animated) {
 		if (animated) {
-			int frame = game.clock.frame(5, 3);
+			int frame = clock.frame(5, 3);
 			return assets.section(frame, DIR_INDEX.get(dir));
 		} else {
 			return assets.section(1, DIR_INDEX.get(dir));
@@ -100,7 +101,7 @@ public class MsPacManIntroScene implements PacManGameScene {
 		g.setFont(assets.scoreFont);
 		g.setColor(Color.ORANGE);
 		drawCenteredText(g, "\"MS PAC-MAN\"", t(5));
-		drawFrame(g, Color.RED, game.clock.frame(4, 8));
+		drawFrame(g, Color.RED, clock.frame(4, 8));
 
 		for (int ghost = 0; ghost <= 3; ++ghost) {
 
@@ -173,7 +174,7 @@ public class MsPacManIntroScene implements PacManGameScene {
 		}
 
 		// restart intro after 30 seconds
-		if (animationTime == game.clock.sec(30)) {
+		if (animationTime == clock.sec(30)) {
 			start();
 		}
 	}
@@ -207,7 +208,7 @@ public class MsPacManIntroScene implements PacManGameScene {
 	private void drawPressKeyToStart(Graphics2D g) {
 		g.setColor(Color.ORANGE);
 		g.setFont(assets.scoreFont);
-		game.clock.runOrBeIdle(20, () -> {
+		clock.runOrBeIdle(20, () -> {
 			drawCenteredText(g, ui.getString("PRESS_KEY_TO_PLAY"), size.y - 20);
 		});
 	}
@@ -215,7 +216,7 @@ public class MsPacManIntroScene implements PacManGameScene {
 	private void drawPointsAnimation(Graphics2D g, int yTile) {
 		g.setColor(Color.PINK);
 		g.fillRect(t(9) + 6, t(yTile - 1) + 2, 2, 2);
-		game.clock.runOrBeIdle(20, () -> {
+		clock.runOrBeIdle(20, () -> {
 			g.fillOval(t(9), t(yTile + 1) - 2, 10, 10);
 		});
 		g.setColor(Color.WHITE);

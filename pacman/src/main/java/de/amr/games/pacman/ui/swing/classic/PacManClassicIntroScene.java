@@ -1,5 +1,6 @@
 package de.amr.games.pacman.ui.swing.classic;
 
+import static de.amr.games.pacman.game.heaven.God.clock;
 import static de.amr.games.pacman.game.worlds.PacManGameWorld.t;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
@@ -63,11 +64,11 @@ public class PacManClassicIntroScene implements PacManGameScene {
 
 	@Override
 	public void draw(Graphics2D g) {
-		game.state.runAfter(game.clock.sec(1), () -> {
+		game.state.runAfter(clock.sec(1), () -> {
 			drawCenteredImage(g, assets.gameLogo, 3);
 		});
 
-		game.state.runAfter(game.clock.sec(2), () -> {
+		game.state.runAfter(clock.sec(2), () -> {
 			g.setColor(Color.WHITE);
 			g.setFont(assets.scoreFont);
 			drawCenteredText(g, ui.getString("CHARACTER_NICKNAME"), t(8));
@@ -76,29 +77,29 @@ public class PacManClassicIntroScene implements PacManGameScene {
 		IntStream.rangeClosed(0, 3).forEach(ghost -> {
 			int ghostStart = 3 + 2 * ghost;
 			int y = t(10 + 3 * ghost);
-			game.state.runAt(game.clock.sec(ghostStart), () -> {
+			game.state.runAt(clock.sec(ghostStart), () -> {
 				game.ui.playSound(PacManGameSound.CREDIT);
 			});
-			game.state.runAfter(game.clock.sec(ghostStart), () -> {
+			game.state.runAfter(clock.sec(ghostStart), () -> {
 				g.drawImage(assets.section(0, 4 + ghost), t(2) - 3, y - 2, null);
 			});
-			game.state.runAfter(game.clock.sec(ghostStart + 0.5), () -> {
+			game.state.runAfter(clock.sec(ghostStart + 0.5), () -> {
 				drawGhostCharacterAndName(g, ghost, y, false);
 			});
-			game.state.runAfter(game.clock.sec(ghostStart + 1), () -> {
+			game.state.runAfter(clock.sec(ghostStart + 1), () -> {
 				drawGhostCharacterAndName(g, ghost, y, true);
 			});
 		});
 
-		game.state.runAfter(game.clock.sec(12), () -> {
+		game.state.runAfter(clock.sec(12), () -> {
 			drawPointsAnimation(g);
 		});
 
-		game.state.runAt(game.clock.sec(13), () -> {
+		game.state.runAt(clock.sec(13), () -> {
 			game.ui.loopSound(PacManGameSound.GHOST_SIREN_1);
 		});
 
-		game.state.runAfter(game.clock.sec(13), () -> {
+		game.state.runAfter(clock.sec(13), () -> {
 			if (ghostsChasingPacMan) {
 				drawGhostsChasingPacMan(g);
 			} else {
@@ -106,21 +107,21 @@ public class PacManClassicIntroScene implements PacManGameScene {
 			}
 		});
 
-		game.state.runAt(game.clock.sec(24), () -> {
+		game.state.runAt(clock.sec(24), () -> {
 			game.ui.stopSound(PacManGameSound.PACMAN_POWER);
 		});
 
-		game.state.runAfter(game.clock.sec(24), () -> {
+		game.state.runAfter(clock.sec(24), () -> {
 			drawPressKeyToStart(g);
 		});
 
-		game.state.runAt(game.clock.sec(30), this::start);
+		game.state.runAt(clock.sec(30), this::start);
 	}
 
 	private void drawPressKeyToStart(Graphics2D g) {
 		g.setColor(Color.ORANGE);
 		g.setFont(assets.scoreFont);
-		game.clock.runOrBeIdle(20, () -> {
+		clock.runOrBeIdle(20, () -> {
 			drawCenteredText(g, ui.getString("PRESS_KEY_TO_PLAY"), size.y - 20);
 		});
 	}
@@ -128,7 +129,7 @@ public class PacManClassicIntroScene implements PacManGameScene {
 	private void drawPointsAnimation(Graphics2D g) {
 		g.setColor(Color.PINK);
 		g.fillRect(t(9) + 6, t(27) + 2, 2, 2);
-		game.clock.runOrBeIdle(20, () -> {
+		clock.runOrBeIdle(20, () -> {
 			g.fillOval(t(9), t(29) - 2, 10, 10);
 		});
 		g.setColor(Color.WHITE);
@@ -154,7 +155,7 @@ public class PacManClassicIntroScene implements PacManGameScene {
 
 	private void drawGhostsChasingPacMan(Graphics2D g) {
 		int y = t(22);
-		game.clock.runOrBeIdle(20, () -> {
+		clock.runOrBeIdle(20, () -> {
 			g.setColor(Color.PINK);
 			g.fillOval(t(2), y + 2, 10, 10);
 		});
@@ -196,17 +197,17 @@ public class PacManClassicIntroScene implements PacManGameScene {
 	}
 
 	private BufferedImage pacManWalkingSprite(Direction dir) {
-		int frame = game.clock.frame(5, 3);
+		int frame = clock.frame(5, 3);
 		return frame == 2 ? assets.section(frame, 0) : assets.section(frame, DIR_INDEX.get(dir));
 	}
 
 	private BufferedImage ghostWalkingSprite(Direction dir, int ghost) {
-		int frame = game.clock.frame(5, 2);
+		int frame = clock.frame(5, 2);
 		return assets.section(2 * DIR_INDEX.get(dir) + frame, 4 + ghost);
 	}
 
 	private BufferedImage ghostFrightenedSprite() {
-		int frame = game.clock.frame(5, 2);
+		int frame = clock.frame(5, 2);
 		return assets.section(8 + frame, 4);
 	}
 }

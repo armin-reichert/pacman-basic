@@ -1,5 +1,6 @@
 package de.amr.games.pacman.game.creatures;
 
+import static de.amr.games.pacman.game.heaven.God.random;
 import static de.amr.games.pacman.game.worlds.MsPacManWorld.BONUS_POINTS;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
@@ -20,13 +21,13 @@ public class MovingBonus extends Bonus {
 		visible = true;
 		couldMove = true;
 		speed = 0.25f; // TODO what is the correct speed?
-		if (rnd.nextBoolean()) {
-			placeAt(world.portalLeft(rnd.nextInt(world.numPortals())), 0, 0);
-			targetTile = world.portalRight(rnd.nextInt(world.numPortals()));
+		if (random.nextBoolean()) {
+			placeAt(world.portalLeft(random.nextInt(world.numPortals())), 0, 0);
+			targetTile = world.portalRight(random.nextInt(world.numPortals()));
 			dir = wishDir = RIGHT;
 		} else {
-			placeAt(world.portalRight(rnd.nextInt(world.numPortals())), 0, 0);
-			targetTile = world.portalLeft(rnd.nextInt(world.numPortals()));
+			placeAt(world.portalRight(random.nextInt(world.numPortals())), 0, 0);
+			targetTile = world.portalLeft(random.nextInt(world.numPortals()));
 			dir = wishDir = LEFT;
 		}
 	}

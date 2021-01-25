@@ -1,5 +1,7 @@
 package de.amr.games.pacman.game.core;
 
+import static de.amr.games.pacman.game.heaven.God.clock;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
@@ -78,7 +80,7 @@ public class Autopilot implements Consumer<Pac> {
 			return;
 
 		Ghost prey = findFrightenedGhostInReach(pac, game.ghosts);
-		if (prey != null && pac.powerTicksLeft >= game.clock.sec(1)) {
+		if (prey != null && pac.powerTicksLeft >= clock.sec(1)) {
 			log("Detected frightened ghost %s %.0g tiles away", prey.name, prey.tile().manhattanDistance(pacManTile));
 			pac.targetTile = prey.tile();
 		} else if (game.bonus.edibleTicksLeft > 0
@@ -206,7 +208,7 @@ public class Autopilot implements Consumer<Pac> {
 					continue;
 				}
 				V2i foodTile = new V2i(x, y);
-				if (game.world.isEnergizerTile(foodTile) && pac.powerTicksLeft > game.clock.sec(1)
+				if (game.world.isEnergizerTile(foodTile) && pac.powerTicksLeft > clock.sec(1)
 						&& game.world.foodRemaining() > 1) {
 					continue;
 				}

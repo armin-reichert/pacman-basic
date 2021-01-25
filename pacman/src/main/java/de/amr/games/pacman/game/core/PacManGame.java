@@ -12,6 +12,8 @@ import static de.amr.games.pacman.game.creatures.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.game.creatures.GhostState.HUNTING;
 import static de.amr.games.pacman.game.creatures.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.game.creatures.GhostState.LOCKED;
+import static de.amr.games.pacman.game.heaven.God.clock;
+import static de.amr.games.pacman.game.heaven.God.random;
 import static de.amr.games.pacman.game.worlds.PacManClassicWorld.BLINKY;
 import static de.amr.games.pacman.game.worlds.PacManClassicWorld.CLYDE;
 import static de.amr.games.pacman.game.worlds.PacManClassicWorld.INKY;
@@ -25,7 +27,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -37,7 +38,6 @@ import de.amr.games.pacman.game.creatures.Pac;
 import de.amr.games.pacman.game.worlds.MsPacManWorld;
 import de.amr.games.pacman.game.worlds.PacManClassicWorld;
 import de.amr.games.pacman.game.worlds.PacManGameWorld;
-import de.amr.games.pacman.lib.Clock;
 import de.amr.games.pacman.lib.Hiscore;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.api.KeyboardPacController;
@@ -64,9 +64,6 @@ import de.amr.games.pacman.ui.api.PacManGameUI;
 public class PacManGame implements Runnable {
 
 	public static final byte CLASSIC = 0, MS_PACMAN = 1;
-
-	public final Clock clock = new Clock();
-	public final Random rnd = new Random();
 
 	public PacManGameUI ui;
 	public Consumer<Pac> pacController;
@@ -667,7 +664,7 @@ public class PacManGame implements Runnable {
 
 		// Bonus gets edible?
 		if (world.eatenFoodCount() == 70 || world.eatenFoodCount() == 170) {
-			long ticks = variant == CLASSIC ? clock.sec(9 + rnd.nextFloat()) : Long.MAX_VALUE;
+			long ticks = variant == CLASSIC ? clock.sec(9 + random.nextFloat()) : Long.MAX_VALUE;
 			bonus.activate(level.bonusSymbol, ticks);
 		}
 

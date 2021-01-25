@@ -1,9 +1,8 @@
 package de.amr.games.pacman.game.worlds;
 
+import static de.amr.games.pacman.game.heaven.God.random;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Logging.log;
-
-import java.util.Random;
 
 import de.amr.games.pacman.game.core.PacManGameLevel;
 import de.amr.games.pacman.lib.Direction;
@@ -53,14 +52,12 @@ public class MsPacManWorld extends AbstractPacManGameWorld {
 
 	private static final String[] GHOST_NAMES = { "Blinky", "Pinky", "Inky", "Sue" };
 
-	private final Random rnd = new Random();
-
 	@Override
 	public PacManGameLevel createLevel(int levelNumber) {
 		int row = levelNumber <= 21 ? levelNumber - 1 : 20;
 		PacManGameLevel level = new PacManGameLevel(LEVELS[row]);
 		if (levelNumber > 7) {
-			level.bonusSymbol = (byte) rnd.nextInt(7);
+			level.bonusSymbol = (byte) random.nextInt(7);
 		}
 		if (levelNumber <= 2) {
 			level.mazeNumber = 1; // pink maze, white dots

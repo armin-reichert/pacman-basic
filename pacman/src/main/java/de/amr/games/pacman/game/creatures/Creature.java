@@ -1,5 +1,6 @@
 package de.amr.games.pacman.game.creatures;
 
+import static de.amr.games.pacman.game.heaven.God.random;
 import static de.amr.games.pacman.game.worlds.PacManGameWorld.TS;
 import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
@@ -9,7 +10,6 @@ import static java.lang.Math.abs;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -57,8 +57,6 @@ public class Creature {
 
 	/** If movement is constrained to be aligned with the tiles. */
 	public boolean forcedOnTrack;
-
-	public final Random rnd = new Random();
 
 	public Creature(PacManGameWorld world) {
 		this.world = world;
@@ -230,7 +228,7 @@ public class Creature {
 
 	public Optional<Direction> randomMoveDirection() {
 		List<Direction> dirs = accessibleDirections(tile(), dir.opposite()).collect(Collectors.toList());
-		return dirs.isEmpty() ? Optional.empty() : Optional.of(dirs.get(rnd.nextInt(dirs.size())));
+		return dirs.isEmpty() ? Optional.empty() : Optional.of(dirs.get(random.nextInt(dirs.size())));
 	}
 
 	public Stream<Direction> accessibleDirections(V2i tile, Direction... excludedDirections) {
