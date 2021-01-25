@@ -13,7 +13,7 @@ import java.awt.image.BufferedImage;
 
 import de.amr.games.pacman.game.core.PacManGame;
 import de.amr.games.pacman.game.core.PacManGameState;
-import de.amr.games.pacman.game.creatures.ClassicBonus;
+import de.amr.games.pacman.game.creatures.Bonus;
 import de.amr.games.pacman.game.creatures.Creature;
 import de.amr.games.pacman.game.creatures.Ghost;
 import de.amr.games.pacman.game.creatures.GhostState;
@@ -129,7 +129,7 @@ public class PacManClassicPlayScene extends PacManGamePlayScene {
 		}
 	}
 
-	private void drawBonus(Graphics2D g, ClassicBonus bonus) {
+	private void drawBonus(Graphics2D g, Bonus bonus) {
 		if (bonus.edibleTicksLeft > 0) {
 			drawGuy(g, bonus, assets.symbols[bonus.symbol]);
 		}

@@ -10,7 +10,7 @@ import de.amr.games.pacman.game.worlds.PacManGameWorld;
  * 
  * @author Armin Reichert
  */
-public class ClassicBonus extends Creature {
+public class Bonus extends Creature {
 
 	/** ID of the bonus symbol. */
 	public byte symbol;
@@ -24,7 +24,7 @@ public class ClassicBonus extends Creature {
 	/** Number of clock ticks the consumed bonus is still displayed. */
 	public long eatenTicksLeft;
 
-	public ClassicBonus(PacManGameWorld world) {
+	public Bonus(PacManGameWorld world) {
 		super(world);
 	}
 

@@ -30,9 +30,9 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.game.creatures.ClassicBonus;
+import de.amr.games.pacman.game.creatures.Bonus;
 import de.amr.games.pacman.game.creatures.Ghost;
-import de.amr.games.pacman.game.creatures.MsPacManBonus;
+import de.amr.games.pacman.game.creatures.MovingBonus;
 import de.amr.games.pacman.game.creatures.Pac;
 import de.amr.games.pacman.game.worlds.MsPacManWorld;
 import de.amr.games.pacman.game.worlds.PacManClassicWorld;
@@ -73,16 +73,16 @@ public class PacManGame implements Runnable {
 
 	public boolean paused;
 	public boolean started;
-
-	public byte variant;
 	public PacManGameState state;
 	private PacManGameState stateBefore;
+	public Hiscore hiscore;
+
+	public byte variant;
 	public PacManGameWorld world;
 	public PacManGameLevel level;
 	public Pac pac;
 	public Ghost[] ghosts;
-	public ClassicBonus bonus;
-	public Hiscore hiscore;
+	public Bonus bonus;
 	public short levelNumber;
 	public byte lives;
 	public int score;
@@ -103,11 +103,11 @@ public class PacManGame implements Runnable {
 		if (variant == CLASSIC) {
 			hiscore = new Hiscore(new File(System.getProperty("user.home"), "hiscore-pacman.xml"));
 			world = new PacManClassicWorld();
-			bonus = new ClassicBonus(world);
+			bonus = new Bonus(world);
 		} else if (variant == MS_PACMAN) {
 			hiscore = new Hiscore(new File(System.getProperty("user.home"), "hiscore-mspacman.xml"));
 			world = new MsPacManWorld();
-			bonus = new MsPacManBonus(world);
+			bonus = new MovingBonus(world);
 		}
 		pac = new Pac(world);
 		ghosts = new Ghost[4];

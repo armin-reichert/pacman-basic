@@ -6,9 +6,9 @@ import static de.amr.games.pacman.lib.Direction.RIGHT;
 
 import de.amr.games.pacman.game.worlds.PacManGameWorld;
 
-public class MsPacManBonus extends ClassicBonus {
+public class MovingBonus extends Bonus {
 
-	public MsPacManBonus(PacManGameWorld world) {
+	public MovingBonus(PacManGameWorld world) {
 		super(world);
 	}
 
