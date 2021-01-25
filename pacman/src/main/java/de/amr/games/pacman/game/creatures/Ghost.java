@@ -1,6 +1,6 @@
 package de.amr.games.pacman.game.creatures;
 
-import static de.amr.games.pacman.game.core.PacManGame.differsAtMost;
+import static de.amr.games.pacman.game.core.PacManGameController.differsAtMost;
 import static de.amr.games.pacman.game.worlds.PacManClassicWorld.BLINKY;
 import static de.amr.games.pacman.game.worlds.PacManGameWorld.HTS;
 import static de.amr.games.pacman.game.worlds.PacManGameWorld.t;

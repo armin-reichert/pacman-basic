@@ -10,7 +10,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
 
-import de.amr.games.pacman.game.core.PacManGame;
+import de.amr.games.pacman.game.core.PacManGameController;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.api.PacManGameSound;
@@ -22,11 +22,11 @@ public class MsPacManIntroScene implements PacManGameScene {
 	private static final Color[] GHOST_COLORS = { Color.RED, Color.PINK, Color.CYAN, Color.ORANGE };
 
 	private final PacManGameSwingUI ui;
-	private final PacManGame game;
+	private final PacManGameController game;
 	private final V2i size;
 	private final MsPacManAssets assets;
 
-	public MsPacManIntroScene(PacManGameSwingUI ui, PacManGame game, V2i size, MsPacManAssets assets) {
+	public MsPacManIntroScene(PacManGameSwingUI ui, PacManGameController game, V2i size, MsPacManAssets assets) {
 		this.ui = ui;
 		this.game = game;
 		this.size = size;

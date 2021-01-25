@@ -12,7 +12,7 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
-import de.amr.games.pacman.game.core.PacManGame;
+import de.amr.games.pacman.game.core.PacManGameController;
 import de.amr.games.pacman.game.core.PacManGameState;
 import de.amr.games.pacman.game.creatures.Bonus;
 import de.amr.games.pacman.game.creatures.Creature;
@@ -32,8 +32,9 @@ public class PacManClassicPlayScene extends PacManGamePlayScene {
 
 	private final PacManClassicAssets assets;
 
-	public PacManClassicPlayScene(PacManGameSwingUI ui, PacManGame game, V2i size, PacManClassicAssets assets) {
-		super(ui, game, size);
+	public PacManClassicPlayScene(PacManGameSwingUI ui, PacManGameController controller, V2i size,
+			PacManClassicAssets assets) {
+		super(ui, controller, size);
 		this.assets = assets;
 	}
 
@@ -104,13 +105,13 @@ public class PacManClassicPlayScene extends PacManGamePlayScene {
 	}
 
 	private void drawMaze(Graphics2D g) {
-		if (game.mazeFlashesRemaining > 0) {
+		if (controller.mazeFlashesRemaining > 0) {
 			clock.runAlternating(clock.sec(0.25), () -> {
 				g.drawImage(assets.mazeEmptyDark, 0, t(3), null);
 			}, () -> {
 				g.drawImage(assets.mazeEmptyBright, 0, t(3), null);
 			}, () -> {
-				game.mazeFlashesRemaining--;
+				controller.mazeFlashesRemaining--;
 			});
 			return;
 		}
@@ -119,7 +120,7 @@ public class PacManClassicPlayScene extends PacManGamePlayScene {
 			range(4, game.world.sizeInTiles().y - 3).forEach(y -> {
 				if (game.world.isFoodRemoved(x, y)) {
 					hideFood(g, x, y);
-				} else if (game.state == PacManGameState.HUNTING && game.world.isEnergizerTile(x, y)) {
+				} else if (controller.state == PacManGameState.HUNTING && game.world.isEnergizerTile(x, y)) {
 					clock.runOrBeIdle(10, () -> hideFood(g, x, y));
 				}
 			});
@@ -176,7 +177,7 @@ public class PacManClassicPlayScene extends PacManGamePlayScene {
 			return assets.section(8 + dir, 5);
 		}
 		if (ghost.state == GhostState.FRIGHTENED) {
-			if (game.pac.powerTicksLeft <= 20 * game.level.numFlashes && game.state == PacManGameState.HUNTING) {
+			if (game.pac.powerTicksLeft <= 20 * game.level.numFlashes && controller.state == PacManGameState.HUNTING) {
 				// flashing blue/white, walking animation
 				int flashing = clock.frame(10, 2) == 0 ? 8 : 10;
 				return assets.section(walking + flashing, 4);

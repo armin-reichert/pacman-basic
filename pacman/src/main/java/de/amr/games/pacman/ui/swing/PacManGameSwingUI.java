@@ -24,7 +24,8 @@ import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.Timer;
 
-import de.amr.games.pacman.game.core.PacManGame;
+import de.amr.games.pacman.game.core.PacManGameController;
+import de.amr.games.pacman.game.core.PacManGameModel;
 import de.amr.games.pacman.game.core.PacManGameState;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.api.PacManGameSound;
@@ -84,13 +85,16 @@ public class PacManGameSwingUI implements PacManGameUI {
 	private Color messageColor;
 	private Font messageFont;
 	private Timer titleUpdateTimer;
-	private PacManGame game;
+	private PacManGameController controller;
+	private PacManGameModel game;
 	private PacManGameScene currentScene;
 	private PacManGameScene introScene;
 	private PacManGameScene playScene;
 	private PacManGameSoundManager soundManager;
 
-	public PacManGameSwingUI(PacManGame game, float scaling) {
+	public PacManGameSwingUI(PacManGameController controller, float scaling) {
+		this.controller = controller;
+		this.game = controller.game;
 		this.scaling = scaling;
 		unscaledSizePixels = game.world.sizeInTiles().scaled(TS);
 		scaledSizeInPixels = new V2i((int) (unscaledSizePixels.x * scaling), (int) (unscaledSizePixels.y * scaling));
@@ -106,7 +110,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 			@Override
 			public void windowClosing(WindowEvent e) {
-				game.exit();
+				controller.exit();
 			}
 		});
 		window.addKeyListener(new KeyAdapter() {
@@ -114,7 +118,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KEY_PAUSE) {
-					game.paused = !game.paused;
+					controller.paused = !controller.paused;
 				}
 				if (e.getKeyCode() == KEY_SLOWMODE) {
 					clock.targetFrequency = clock.targetFrequency == 60 ? 30 : 60;
@@ -141,7 +145,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 		messageFont = font("/PressStart2P-Regular.ttf", 8).deriveFont(Font.PLAIN);
 
-		setGame(game);
+		setGame(controller);
 	}
 
 	@Override
@@ -150,29 +154,30 @@ public class PacManGameSwingUI implements PacManGameUI {
 	}
 
 	@Override
-	public void setGame(PacManGame game) {
-		this.game = game;
-		game.ui = this;
-		onGameVariantChanged(game);
+	public void setGame(PacManGameController controller) {
+		this.controller = controller;
+		this.game = controller.game;
+		controller.ui = this;
+		onGameVariantChanged(controller);
 	}
 
 	@Override
-	public void onGameVariantChanged(PacManGame game) {
+	public void onGameVariantChanged(PacManGameController controller) {
 
 		if (soundManager != null) {
 			stopAllSounds();
 		}
 
-		if (game.variant == PacManGame.CLASSIC) {
+		if (game.variant == PacManGameModel.CLASSIC) {
 			PacManClassicAssets assets = new PacManClassicAssets();
 			soundManager = new PacManGameSoundManager(assets.soundURL::get);
-			introScene = new PacManClassicIntroScene(this, game, unscaledSizePixels, assets);
-			playScene = new PacManClassicPlayScene(this, game, unscaledSizePixels, assets);
+			introScene = new PacManClassicIntroScene(this, controller, unscaledSizePixels, assets);
+			playScene = new PacManClassicPlayScene(this, controller, unscaledSizePixels, assets);
 		} else {
 			MsPacManAssets assets = new MsPacManAssets();
 			soundManager = new PacManGameSoundManager(assets.soundURL::get);
-			introScene = new MsPacManIntroScene(this, game, unscaledSizePixels, assets);
-			playScene = new MsPacManPlayScene(this, game, unscaledSizePixels, assets);
+			introScene = new MsPacManIntroScene(this, controller, unscaledSizePixels, assets);
+			playScene = new MsPacManPlayScene(this, controller, unscaledSizePixels, assets);
 		}
 
 		if (titleUpdateTimer != null) {
@@ -212,7 +217,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 				g.setColor(canvas.getBackground());
 				g.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 				drawCurrentScene(g, scaling);
-				if (game.paused) {
+				if (controller.paused) {
 					drawPausedScreen(g);
 				}
 				g.dispose();
@@ -262,7 +267,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 	private void updateScene() {
 		PacManGameScene scene = null;
-		if (game.state == PacManGameState.INTRO) {
+		if (controller.state == PacManGameState.INTRO) {
 			scene = introScene;
 		} else {
 			scene = playScene;

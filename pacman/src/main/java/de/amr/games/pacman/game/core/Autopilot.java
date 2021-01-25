@@ -30,7 +30,7 @@ public class Autopilot implements Consumer<Pac> {
 
 	public static boolean logEnabled;
 
-	private final PacManGame game;
+	private final PacManGameModel game;
 
 	private void log(String msg, Object... args) {
 		if (logEnabled) {
@@ -38,7 +38,7 @@ public class Autopilot implements Consumer<Pac> {
 		}
 	}
 
-	public Autopilot(PacManGame game) {
+	public Autopilot(PacManGameModel game) {
 		this.game = game;
 	}
 
