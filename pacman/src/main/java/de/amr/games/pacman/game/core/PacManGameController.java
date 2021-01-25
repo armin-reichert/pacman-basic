@@ -347,7 +347,7 @@ public class PacManGameController implements Runnable {
 
 		// Cheats
 		if (ui.keyPressed("e")) {
-			eatAllNormalPellets();
+			game.removeAllNormalPellets();
 		}
 		if (ui.keyPressed("x")) {
 			killAllGhosts();
@@ -800,16 +800,6 @@ public class PacManGameController implements Runnable {
 			hiscore.level = game.highscoreLevel;
 			hiscore.save();
 			log("New hiscore saved. %d points in level %d", hiscore.points, hiscore.level);
-		}
-	}
-
-	private void eatAllNormalPellets() {
-		for (int x = 0; x < game.world.sizeInTiles().x; ++x) {
-			for (int y = 0; y < game.world.sizeInTiles().y; ++y) {
-				if (game.world.containsFood(x, y) && !game.world.isEnergizerTile(x, y)) {
-					game.world.removeFood(x, y);
-				}
-			}
 		}
 	}
 
