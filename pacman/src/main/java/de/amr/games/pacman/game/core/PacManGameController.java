@@ -59,6 +59,7 @@ public class PacManGameController implements Runnable {
 	public PacManGameModel game;
 	public PacManGameUI ui;
 	public Consumer<Pac> manualPacController, automaticPacController, pacController;
+
 	public boolean paused;
 	public boolean started;
 	public PacManGameState state;
@@ -67,12 +68,25 @@ public class PacManGameController implements Runnable {
 
 	public void startPacManClassicGame() {
 		game = PacManGameModel.newPacManClassicGame();
-		restart();
+		reset();
 	}
 
 	public void startMsPacManGame() {
 		game = PacManGameModel.newMsPacManGame();
-		restart();
+		reset();
+	}
+
+	private void reset() {
+		started = false;
+		state = suspendedState = null;
+		mazeFlashesRemaining = 0;
+		if (ui != null) {
+			ui.stopAllSounds();
+			ui.clearMessage();
+		}
+		enterIntroState();
+		log("Game variant is %s", game.variant == PacManGameModel.CLASSIC ? "Pac-Man" : "Ms. Pac-Man");
+		log("State is '%s' for %s", stateDescription(), ticksDescription(state.duration));
 	}
 
 	private void toggleGameVariant() {
@@ -93,17 +107,6 @@ public class PacManGameController implements Runnable {
 			pacController = automaticPacController;
 			log("Pac-Man autopilot mode is on");
 		}
-	}
-
-	private void restart() {
-		started = false;
-		if (ui != null) {
-			ui.stopAllSounds();
-			ui.clearMessage();
-		}
-		enterIntroState();
-		log("Game variant is %s", game.variant == PacManGameModel.CLASSIC ? "Pac-Man" : "Ms. Pac-Man");
-		log("State is '%s' for %s", stateDescription(), ticksDescription(state.duration));
 	}
 
 	@Override
@@ -134,7 +137,7 @@ public class PacManGameController implements Runnable {
 		}
 		if (ui.keyPressed("escape")) {
 			game.reset();
-			restart();
+			reset();
 		}
 	}
 
@@ -590,7 +593,7 @@ public class PacManGameController implements Runnable {
 
 	private void exitGameOverState() {
 		game.reset();
-		restart();
+		reset();
 	}
 
 	// END STATE-MACHINE
