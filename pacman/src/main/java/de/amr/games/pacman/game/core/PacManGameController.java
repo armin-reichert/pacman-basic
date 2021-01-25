@@ -120,12 +120,6 @@ public class PacManGameController implements Runnable {
 		}
 	}
 
-	private void nextLevel() {
-		mazeFlashesRemaining = 0;
-		game.initLevel(game.levelNumber + 1);
-		game.levelSymbols.add(game.level.bonusSymbol);
-	}
-
 	private void resetGuys() {
 		game.pac.placeAt(game.world.pacHome(), HTS, 0);
 		game.pac.dir = game.pac.wishDir = game.world.pacStartDirection();
@@ -567,7 +561,9 @@ public class PacManGameController implements Runnable {
 
 	private void exitChangingLevelState() {
 		log("Level %d complete, entering level %d", game.levelNumber, game.levelNumber + 1);
-		nextLevel();
+		mazeFlashesRemaining = 0;
+		game.initLevel(game.levelNumber + 1);
+		game.levelSymbols.add(game.level.bonusSymbol);
 	}
 
 	// GAME_OVER
