@@ -63,7 +63,7 @@ public class PacManGameController implements Runnable {
 	public boolean paused;
 	public boolean started;
 	public PacManGameState state;
-	public PacManGameState stateBefore;
+	public PacManGameState suspendedState;
 	public byte mazeFlashesRemaining;
 
 	public void newPacManClassicGame() {
@@ -523,7 +523,7 @@ public class PacManGameController implements Runnable {
 	// GHOST_DYING
 
 	private void enterGhostDyingState() {
-		stateBefore = state;
+		suspendedState = state;
 		state = GHOST_DYING;
 		state.setDuration(clock.sec(1));
 		game.pac.visible = false;
@@ -532,8 +532,8 @@ public class PacManGameController implements Runnable {
 
 	private PacManGameState runGhostDyingState() {
 		if (state.hasExpired()) {
-			log("Resume state '%s'", stateBefore);
-			return changeState(this::exitGhostDyingState, () -> state = stateBefore);
+			log("Resume state '%s'", suspendedState);
+			return changeState(this::exitGhostDyingState, () -> state = suspendedState);
 		}
 		pacController.accept(game.pac);
 		for (Ghost ghost : game.ghosts) {
