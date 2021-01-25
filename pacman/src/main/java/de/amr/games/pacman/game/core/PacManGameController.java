@@ -146,16 +146,8 @@ public class PacManGameController implements Runnable {
 	private void nextLevel() {
 		huntingPhase = 0;
 		mazeFlashesRemaining = 0;
-		game.levelNumber++;
-		game.level = game.world.createLevel(game.levelNumber);
+		game.initLevel(game.levelNumber + 1);
 		game.levelSymbols.add(game.level.bonusSymbol);
-		game.ghostBounty = 200;
-		game.bonus.edibleTicksLeft = 0;
-		game.bonus.eatenTicksLeft = 0;
-		for (Ghost ghost : game.ghosts) {
-			ghost.dotCounter = 0;
-			ghost.elroy = 0;
-		}
 	}
 
 	private void resetGuys() {

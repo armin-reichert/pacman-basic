@@ -63,4 +63,16 @@ public class PacManGameModel {
 		}
 		return game;
 	}
+
+	public void initLevel(int n) {
+		levelNumber = (short) n;
+		level = world.createLevel(n);
+		ghostBounty = 200;
+		bonus.edibleTicksLeft = 0;
+		bonus.eatenTicksLeft = 0;
+		for (Ghost ghost : ghosts) {
+			ghost.dotCounter = 0;
+			ghost.elroy = 0;
+		}
+	}
 }
