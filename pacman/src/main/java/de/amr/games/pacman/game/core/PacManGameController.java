@@ -71,7 +71,7 @@ public class PacManGameController implements Runnable {
 	public void newPacManClassicGame() {
 		game = PacManGameModel.newPacManClassicGame();
 		log("Game variant is Pac-Man");
-		reset();
+		restart();
 		enterIntroState();
 		log("State is '%s' for %s", stateDescription(), ticksDescription(state.duration));
 	}
@@ -79,12 +79,12 @@ public class PacManGameController implements Runnable {
 	public void newMsPacManGame() {
 		game = PacManGameModel.newMsPacManGame();
 		log("Game variant is Ms. Pac-Man");
-		reset();
+		restart();
 		enterIntroState();
 		log("State is '%s' for %s", stateDescription(), ticksDescription(state.duration));
 	}
 
-	private void reset() {
+	private void restart() {
 		started = false;
 		game.reset();
 		if (ui != null) {
@@ -103,7 +103,6 @@ public class PacManGameController implements Runnable {
 		if (!paused) {
 			readInput();
 			updateState();
-			updateSound();
 		}
 		ui.render();
 	}
@@ -131,7 +130,7 @@ public class PacManGameController implements Runnable {
 			log("%s is %s", game.pac.name, game.pac.immune ? "immune against ghosts" : "vulnerable by ghosts");
 		}
 		if (ui.keyPressed("escape")) {
-			reset();
+			restart();
 			ui.stopAllSounds();
 			enterIntroState();
 		}
@@ -461,6 +460,13 @@ public class PacManGameController implements Runnable {
 			ui.playSound(PacManGameSound.PACMAN_EAT_BONUS);
 		}
 
+		if (Stream.of(game.ghosts).noneMatch(ghost -> ghost.is(DEAD))) {
+			ui.stopSound(PacManGameSound.GHOST_EYES);
+		}
+		if (Stream.of(game.ghosts).noneMatch(ghost -> ghost.is(FRIGHTENED))) {
+			ui.stopSound(PacManGameSound.PACMAN_POWER);
+		}
+
 		// hunting state timer is suspended if Pac has power
 		if (game.pac.powerTicksLeft == 0) {
 			state.run();
@@ -605,7 +611,7 @@ public class PacManGameController implements Runnable {
 	}
 
 	private void exitGameOverState() {
-		reset();
+		restart();
 	}
 
 	// END STATE-MACHINE
@@ -793,15 +799,6 @@ public class PacManGameController implements Runnable {
 			log("Extra life! Now we have %d lives", game.lives);
 		}
 		game.hiscore.update(game.score, game.levelNumber);
-	}
-
-	private void updateSound() {
-		if (Stream.of(game.ghosts).noneMatch(ghost -> ghost.is(DEAD))) {
-			ui.stopSound(PacManGameSound.GHOST_EYES);
-		}
-		if (Stream.of(game.ghosts).noneMatch(ghost -> ghost.is(FRIGHTENED))) {
-			ui.stopSound(PacManGameSound.PACMAN_POWER);
-		}
 	}
 
 	private void eatAllNormalPellets() {
