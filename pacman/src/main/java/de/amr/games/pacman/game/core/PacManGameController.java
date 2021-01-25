@@ -818,8 +818,4 @@ public class PacManGameController implements Runnable {
 			}
 		}
 	}
-
-	public static boolean differsAtMost(float value, float target, float tolerance) {
-		return Math.abs(value - target) <= tolerance;
-	}
 }
