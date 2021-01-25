@@ -57,7 +57,7 @@ public class PacManGameController implements Runnable {
 
 	public PacManGameModel game;
 	public PacManGameUI ui;
-	public Consumer<Pac> pacController;
+	public Consumer<Pac> manualPacController, automaticPacController, pacController;
 	public boolean paused;
 	public boolean started;
 	public PacManGameState state;
@@ -74,6 +74,26 @@ public class PacManGameController implements Runnable {
 		restart();
 	}
 
+	private void toggleGameVariant() {
+		if (game.variant == PacManGameModel.CLASSIC) {
+			startMsPacManGame();
+		} else {
+			startPacManClassicGame();
+		}
+		// update UI
+		ui.setGameController(this);
+	}
+
+	private void toggleAutopilot() {
+		if (pacController == automaticPacController) {
+			pacController = manualPacController;
+			log("Pac-Man autopilot mode is off");
+		} else {
+			pacController = automaticPacController;
+			log("Pac-Man autopilot mode is on");
+		}
+	}
+
 	private void restart() {
 		started = false;
 		if (ui != null) {
@@ -87,6 +107,9 @@ public class PacManGameController implements Runnable {
 
 	@Override
 	public void run() {
+		manualPacController = new KeyboardPacController(ui);
+		automaticPacController = new Autopilot(game);
+		pacController = manualPacController;
 		while (true) {
 			clock.tick(this::step);
 		}
@@ -102,13 +125,7 @@ public class PacManGameController implements Runnable {
 
 	private void readInput() {
 		if (ui.keyPressed("a")) {
-			if (pacController instanceof Autopilot) {
-				pacController = new KeyboardPacController(ui);
-				log("Pac-Man autopilot mode is off");
-			} else {
-				pacController = new Autopilot(game);
-				log("Pac-Man autopilot mode is on");
-			}
+			toggleAutopilot();
 		}
 		if (ui.keyPressed("i")) {
 			game.pac.immune = !game.pac.immune;
@@ -120,7 +137,7 @@ public class PacManGameController implements Runnable {
 		}
 	}
 
-	private void resetGuys() {
+	private void makeGuysReady() {
 		game.pac.placeAt(game.world.pacHome(), HTS, 0);
 		game.pac.dir = game.pac.wishDir = game.world.pacStartDirection();
 		game.pac.visible = true;
@@ -165,7 +182,7 @@ public class PacManGameController implements Runnable {
 		log("Exit state '%s'", stateDescription());
 		onExit.run();
 		onEntry.run();
-		log("Enter state '%s' for %s", stateDescription(), ticksDescription(state.duration));
+		log("Entered state '%s' for %s", stateDescription(), ticksDescription(state.duration));
 		return state;
 	}
 
@@ -200,8 +217,8 @@ public class PacManGameController implements Runnable {
 	public String stateDescription() {
 		if (state == PacManGameState.HUNTING) {
 			String phaseName = inScatteringPhase() ? "Scattering" : "Chasing";
-			int phase = game.huntingPhase / 2;
-			return String.format("%s-%s (%d of 4)", state, phaseName, phase + 1);
+			int phaseIndex = game.huntingPhase / 2;
+			return String.format("%s-%s (%d of 4)", state, phaseName, phaseIndex + 1);
 		}
 		return state.name();
 	}
@@ -219,14 +236,7 @@ public class PacManGameController implements Runnable {
 
 	private PacManGameState runIntroState() {
 		if (ui.keyPressed("v")) {
-			// toggle game variant
-			if (game.variant == PacManGameModel.CLASSIC) {
-				startMsPacManGame();
-			} else {
-				startPacManClassicGame();
-			}
-			// update UI
-			ui.setGameController(this);
+			toggleGameVariant();
 			return state;
 		}
 		if (ui.keyPressed("space")) {
@@ -243,7 +253,7 @@ public class PacManGameController implements Runnable {
 	private void enterReadyState() {
 		state = READY;
 		state.setDuration(clock.sec(started ? 3 : 6));
-		resetGuys();
+		makeGuysReady();
 		ui.stopAllSounds();
 		for (Ghost ghost : game.ghosts) {
 			ghost.visible = false;

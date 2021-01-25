@@ -5,7 +5,6 @@ import static java.lang.Float.parseFloat;
 
 import de.amr.games.pacman.game.core.PacManGameController;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.ui.api.KeyboardPacController;
 import de.amr.games.pacman.ui.api.PacManGameUI;
 import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
 
@@ -23,7 +22,6 @@ public class PacManGameApp {
 			gameController.startMsPacManGame();
 			PacManGameUI ui = new PacManGameSwingUI(new V2i(28, 36), scaling);
 			ui.setGameController(gameController);
-			gameController.pacController = new KeyboardPacController(ui);
 			ui.openWindow();
 			new Thread(gameController, "PacManGame").start();
 		});
