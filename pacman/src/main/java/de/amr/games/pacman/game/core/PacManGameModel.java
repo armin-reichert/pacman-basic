@@ -1,10 +1,14 @@
 package de.amr.games.pacman.game.core;
 
+import java.io.File;
 import java.util.List;
 
 import de.amr.games.pacman.game.creatures.Bonus;
 import de.amr.games.pacman.game.creatures.Ghost;
+import de.amr.games.pacman.game.creatures.MovingBonus;
 import de.amr.games.pacman.game.creatures.Pac;
+import de.amr.games.pacman.game.worlds.MsPacManWorld;
+import de.amr.games.pacman.game.worlds.PacManClassicWorld;
 import de.amr.games.pacman.game.worlds.PacManGameWorld;
 import de.amr.games.pacman.lib.Hiscore;
 
@@ -31,4 +35,32 @@ public class PacManGameModel {
 	public boolean globalDotCounterEnabled;
 	public List<Byte> levelSymbols;
 	public Hiscore hiscore;
+
+	public static PacManGameModel newPacManClassicGame() {
+		PacManGameModel game = new PacManGameModel();
+		game.variant = CLASSIC;
+		game.hiscore = new Hiscore(new File(System.getProperty("user.home"), "hiscore-pacman.xml"));
+		game.world = new PacManClassicWorld();
+		game.bonus = new Bonus(game.world);
+		game.pac = new Pac(game.world);
+		game.ghosts = new Ghost[4];
+		for (int ghostID = 0; ghostID < 4; ++ghostID) {
+			game.ghosts[ghostID] = new Ghost(ghostID, game.world);
+		}
+		return game;
+	}
+
+	public static PacManGameModel newMsPacManGame() {
+		PacManGameModel game = new PacManGameModel();
+		game.variant = MS_PACMAN;
+		game.hiscore = new Hiscore(new File(System.getProperty("user.home"), "hiscore-mspacman.xml"));
+		game.world = new MsPacManWorld();
+		game.bonus = new MovingBonus(game.world);
+		game.pac = new Pac(game.world);
+		game.ghosts = new Ghost[4];
+		for (int ghostID = 0; ghostID < 4; ++ghostID) {
+			game.ghosts[ghostID] = new Ghost(ghostID, game.world);
+		}
+		return game;
+	}
 }

@@ -23,7 +23,6 @@ import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.lib.Logging.log;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -31,13 +30,8 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.game.creatures.Bonus;
 import de.amr.games.pacman.game.creatures.Ghost;
-import de.amr.games.pacman.game.creatures.MovingBonus;
 import de.amr.games.pacman.game.creatures.Pac;
-import de.amr.games.pacman.game.worlds.MsPacManWorld;
-import de.amr.games.pacman.game.worlds.PacManClassicWorld;
-import de.amr.games.pacman.lib.Hiscore;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.api.KeyboardPacController;
 import de.amr.games.pacman.ui.api.PacManGameSound;
@@ -75,33 +69,29 @@ public class PacManGameController implements Runnable {
 	public byte huntingPhase;
 	public byte mazeFlashesRemaining;
 
-	public PacManGameController(byte gameVariant) {
-		game = new PacManGameModel();
-		init(gameVariant);
+	public PacManGameController() {
+		newPacManClassicGame();
 	}
 
-	private void init(byte gameVariant) {
-		game.variant = gameVariant;
-		log("Game variant is %s", game.variant == PacManGameModel.CLASSIC ? "Pac-Man" : "Ms. Pac-Man");
-		if (game.variant == PacManGameModel.CLASSIC) {
-			game.hiscore = new Hiscore(new File(System.getProperty("user.home"), "hiscore-pacman.xml"));
-			game.world = new PacManClassicWorld();
-			game.bonus = new Bonus(game.world);
-		} else if (game.variant == PacManGameModel.MS_PACMAN) {
-			game.hiscore = new Hiscore(new File(System.getProperty("user.home"), "hiscore-mspacman.xml"));
-			game.world = new MsPacManWorld();
-			game.bonus = new MovingBonus(game.world);
-		}
-		game.pac = new Pac(game.world);
-		game.ghosts = new Ghost[4];
-		for (int ghostID = 0; ghostID < 4; ++ghostID) {
-			game.ghosts[ghostID] = new Ghost(ghostID, game.world);
-		}
+	public void newPacManClassicGame() {
+		game = PacManGameModel.newPacManClassicGame();
+		log("Game variant is Pac-Man");
 		reset();
 		enterIntroState();
 		log("State is '%s' for %s", stateDescription(), ticksDescription(state.duration));
 		if (ui != null) {
-			ui.onGameVariantChanged(this);
+			ui.setGameController(this);
+		}
+	}
+
+	public void newMsPacManGame() {
+		game = PacManGameModel.newMsPacManGame();
+		log("Game variant is Ms. Pac-Man");
+		reset();
+		enterIntroState();
+		log("State is '%s' for %s", stateDescription(), ticksDescription(state.duration));
+		if (ui != null) {
+			ui.setGameController(this);
 		}
 	}
 
@@ -277,7 +267,11 @@ public class PacManGameController implements Runnable {
 
 	private PacManGameState runIntroState() {
 		if (ui.keyPressed("v")) {
-			init(game.variant == PacManGameModel.CLASSIC ? PacManGameModel.MS_PACMAN : PacManGameModel.CLASSIC);
+			if (game.variant == PacManGameModel.CLASSIC) {
+				newMsPacManGame();
+			} else {
+				newPacManClassicGame();
+			}
 			return state;
 		}
 		if (ui.keyPressed("space")) {

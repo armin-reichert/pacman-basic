@@ -92,11 +92,9 @@ public class PacManGameSwingUI implements PacManGameUI {
 	private PacManGameScene playScene;
 	private PacManGameSoundManager soundManager;
 
-	public PacManGameSwingUI(PacManGameController controller, float scaling) {
-		this.controller = controller;
-		this.game = controller.game;
+	public PacManGameSwingUI(V2i sizeInTiles, float scaling) {
 		this.scaling = scaling;
-		unscaledSizePixels = game.world.sizeInTiles().scaled(TS);
+		unscaledSizePixels = sizeInTiles.scaled(TS);
 		scaledSizeInPixels = new V2i((int) (unscaledSizePixels.x * scaling), (int) (unscaledSizePixels.y * scaling));
 
 		window = new JFrame();
@@ -144,8 +142,6 @@ public class PacManGameSwingUI implements PacManGameUI {
 		window.add(canvas);
 
 		messageFont = font("/PressStart2P-Regular.ttf", 8).deriveFont(Font.PLAIN);
-
-		setGame(controller);
 	}
 
 	@Override
@@ -154,15 +150,10 @@ public class PacManGameSwingUI implements PacManGameUI {
 	}
 
 	@Override
-	public void setGame(PacManGameController controller) {
+	public void setGameController(PacManGameController controller) {
 		this.controller = controller;
 		this.game = controller.game;
 		controller.ui = this;
-		onGameVariantChanged(controller);
-	}
-
-	@Override
-	public void onGameVariantChanged(PacManGameController controller) {
 
 		if (soundManager != null) {
 			stopAllSounds();
