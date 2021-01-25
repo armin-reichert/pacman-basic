@@ -146,46 +146,7 @@ public class Autopilot implements Consumer<Pac> {
 			V2i foodTile = findTileFarestFromGhosts(game, findNearestFoodTiles(game));
 			game.pac.targetTile = foodTile;
 		}
-		approachTarget(game);
-	}
-
-	private void approachTarget(PacManGameModel game) {
-		if (game.pac.targetTile == null) {
-			return;
-		}
-		double minDist = Double.MAX_VALUE;
-		Direction minDistDir = null;
-		for (Direction dir : Direction.shuffled()) {
-			if (dir == game.pac.dir.opposite()) {
-				continue;
-				/*
-				 * TODO sometimes reversing direction can be useful but in most cases, it leads to bouncing.
-				 */
-			}
-			V2i neighbor = game.pac.tile().sum(dir.vec);
-			if (!game.pac.canAccessTile(neighbor.x, neighbor.y)) {
-				continue;
-			}
-			double dist = neighbor.euclideanDistance(game.pac.targetTile);
-			if (dist < minDist) {
-				minDist = dist;
-				minDistDir = dir;
-			}
-		}
-		if (minDistDir != null) {
-			game.pac.wishDir = minDistDir;
-			log("Approach target tile %s from tile %s by turning %s", game.pac.tile(), game.pac.targetTile, game.pac.wishDir);
-		}
-	}
-
-	private Ghost findFrightenedGhostInReach(PacManGameModel game) {
-		for (Ghost ghost : game.ghosts) {
-			if (ghost.state == GhostState.FRIGHTENED
-					&& ghost.tile().manhattanDistance(game.pac.tile()) < MAX_GHOST_CHASE_DIST) {
-				return ghost;
-			}
-		}
-		return null;
+		game.pac.headForTargetTile();
 	}
 
 	private Ghost findHuntingGhostAhead(PacManGameModel game) {
