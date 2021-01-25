@@ -31,6 +31,7 @@ import java.util.stream.Stream;
 
 import de.amr.games.pacman.game.creatures.Ghost;
 import de.amr.games.pacman.game.creatures.Pac;
+import de.amr.games.pacman.lib.Hiscore;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.api.KeyboardPacController;
 import de.amr.games.pacman.ui.api.PacManGameSound;
@@ -576,10 +577,7 @@ public class PacManGameController implements Runnable {
 			ghost.speed = 0;
 		}
 		game.pac.speed = 0;
-		if (game.hiscore.changed) {
-			game.hiscore.save();
-			log("Hiscore saved to " + game.hiscore.file);
-		}
+		saveHighscore();
 		ui.showMessage(ui.getString("GAME_OVER"), true);
 	}
 
@@ -789,7 +787,20 @@ public class PacManGameController implements Runnable {
 			ui.playSound(PacManGameSound.EXTRA_LIFE);
 			log("Extra life! Now we have %d lives", game.lives);
 		}
-		game.hiscore.update(game.score, game.levelNumber);
+		if (game.score > game.highscorePoints) {
+			game.highscorePoints = game.score;
+			game.highscoreLevel = game.levelNumber;
+		}
+	}
+
+	public void saveHighscore() {
+		Hiscore hiscore = game.loadHighScore();
+		if (game.highscorePoints > hiscore.points) {
+			hiscore.points = game.highscorePoints;
+			hiscore.level = game.highscoreLevel;
+			hiscore.save();
+			log("New hiscore saved. %d points in level %d", hiscore.points, hiscore.level);
+		}
 	}
 
 	private void eatAllNormalPellets() {

@@ -17,18 +17,17 @@ import java.util.Properties;
  */
 public class Hiscore {
 
-	public final File file;
+	private final File file;
+
 	public int points;
 	public int level;
 	public ZonedDateTime time;
-	public boolean changed;
 
 	public Hiscore(File file) {
 		this.file = file;
 		points = 0;
 		level = 1;
 		time = ZonedDateTime.now();
-		changed = false;
 	}
 
 	public void load() {
@@ -38,8 +37,8 @@ public class Hiscore {
 			points = Integer.parseInt(content.getProperty("points"));
 			level = Integer.parseInt(content.getProperty("level"));
 			time = ZonedDateTime.parse(content.getProperty("date"));
-			changed = false;
-			log("Hiscore file loaded: %s", file);
+			log("Hiscore file: %s", file);
+			log("Hiscore loaded: %d points in level %d", points, level);
 		} catch (Exception x) {
 			log("Could not load hiscore file");
 		}
@@ -49,22 +48,13 @@ public class Hiscore {
 		Properties content = new Properties();
 		content.setProperty("points", String.valueOf(points));
 		content.setProperty("level", String.valueOf(level));
-		content.setProperty("date", time.format(ISO_DATE_TIME));
+		content.setProperty("date", ZonedDateTime.now().format(ISO_DATE_TIME));
 		try (FileOutputStream out = new FileOutputStream(file)) {
 			content.storeToXML(out, "");
 			log("Hiscore file saved: %s", file);
 		} catch (Exception x) {
 			log("Could not save hiscore");
 			x.printStackTrace(System.err);
-		}
-	}
-
-	public void update(int score, int levelNumber) {
-		if (score > points) {
-			points = score;
-			level = levelNumber;
-			time = ZonedDateTime.now();
-			changed = true;
 		}
 	}
 }

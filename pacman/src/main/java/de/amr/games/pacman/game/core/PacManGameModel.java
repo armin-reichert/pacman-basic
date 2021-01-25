@@ -31,17 +31,16 @@ public class PacManGameModel {
 	public Bonus bonus;
 	public byte lives;
 	public int score;
+	public int highscoreLevel, highscorePoints;
 	public byte huntingPhase;
 	public short ghostBounty;
 	public short globalDotCounter;
 	public boolean globalDotCounterEnabled;
 	public List<Byte> levelSymbols;
-	public Hiscore hiscore;
 
 	public static PacManGameModel newPacManClassicGame() {
 		PacManGameModel game = new PacManGameModel();
 		game.variant = CLASSIC;
-		game.hiscore = new Hiscore(new File(System.getProperty("user.home"), "hiscore-pacman.xml"));
 		game.world = new PacManClassicWorld();
 		game.bonus = new Bonus(game.world);
 		game.pac = new Pac(game.world);
@@ -56,7 +55,6 @@ public class PacManGameModel {
 	public static PacManGameModel newMsPacManGame() {
 		PacManGameModel game = new PacManGameModel();
 		game.variant = MS_PACMAN;
-		game.hiscore = new Hiscore(new File(System.getProperty("user.home"), "hiscore-mspacman.xml"));
 		game.world = new MsPacManWorld();
 		game.bonus = new MovingBonus(game.world);
 		game.pac = new Pac(game.world);
@@ -70,11 +68,13 @@ public class PacManGameModel {
 
 	public void reset() {
 		score = 0;
+		Hiscore hiscore = loadHighScore();
+		highscoreLevel = hiscore.level;
+		highscorePoints = hiscore.points;
 		lives = 3;
 		initLevel(1);
 		levelSymbols = new ArrayList<>();
 		levelSymbols.add(level.bonusSymbol);
-		hiscore.load();
 	}
 
 	public void initLevel(int n) {
@@ -88,5 +88,13 @@ public class PacManGameModel {
 			ghost.dotCounter = 0;
 			ghost.elroy = 0;
 		}
+	}
+
+	public Hiscore loadHighScore() {
+		File dir = new File(System.getProperty("user.home"));
+		String fileName = variant == CLASSIC ? "hiscore-pacman.xml" : "hiscore-mspacman.xml";
+		Hiscore hiscore = new Hiscore(new File(dir, fileName));
+		hiscore.load();
+		return hiscore;
 	}
 }

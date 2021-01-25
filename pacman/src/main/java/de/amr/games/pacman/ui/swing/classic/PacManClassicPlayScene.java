@@ -70,9 +70,9 @@ public class PacManClassicPlayScene extends PacManGamePlayScene {
 		g.setColor(Color.LIGHT_GRAY);
 		g.drawString(String.format("L%02d", game.levelNumber), t(9), t(2));
 		g.setColor(Color.YELLOW);
-		g.drawString(String.format("%08d", game.hiscore.points), t(16), t(2));
+		g.drawString(String.format("%08d", game.highscorePoints), t(16), t(2));
 		g.setColor(Color.LIGHT_GRAY);
-		g.drawString(String.format("L%02d", game.hiscore.level), t(24), t(2));
+		g.drawString(String.format("L%02d", game.highscoreLevel), t(24), t(2));
 		g.translate(0, -3);
 	}
 

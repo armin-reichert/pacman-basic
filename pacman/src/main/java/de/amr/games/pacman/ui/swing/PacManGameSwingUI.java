@@ -108,9 +108,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 			@Override
 			public void windowClosing(WindowEvent e) {
-				if (controller.game.hiscore.changed) {
-					controller.game.hiscore.save();
-				}
+				controller.saveHighscore();
 			}
 		});
 		window.addKeyListener(new KeyAdapter() {
@@ -133,6 +131,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 					log("UI debug mode is %s", debugMode ? "on" : "off");
 				}
 			}
+
 		});
 
 		keyboard = new Keyboard(window);
