@@ -65,6 +65,8 @@ public class PacManGameController implements Runnable {
 	public PacManGameState state;
 	public PacManGameState suspendedState;
 	public byte mazeFlashesRemaining;
+	public short globalDotCounter;
+	public boolean globalDotCounterEnabled;
 
 	public void startPacManClassicGame() {
 		game = PacManGameModel.newPacManClassicGame();
@@ -656,8 +658,8 @@ public class PacManGameController implements Runnable {
 			game.ghosts[BLINKY].elroy = (byte) -elroyMode; // negative value means "disabled"
 			log("Blinky Elroy mode %d disabled", elroyMode);
 		}
-		game.globalDotCounter = 0;
-		game.globalDotCounterEnabled = true;
+		globalDotCounter = 0;
+		globalDotCounterEnabled = true;
 		log("Global dot counter reset and enabled");
 	}
 
@@ -732,10 +734,9 @@ public class PacManGameController implements Runnable {
 			game.ghosts[BLINKY].state = HUNTING;
 		}
 		preferredLockedGhostInHouse().ifPresent(ghost -> {
-			if (game.globalDotCounterEnabled && game.globalDotCounter >= ghostGlobalDotLimit(ghost)) {
-				releaseGhost(ghost, "Global dot counter (%d) reached limit (%d)", game.globalDotCounter,
-						ghostGlobalDotLimit(ghost));
-			} else if (!game.globalDotCounterEnabled && ghost.dotCounter >= ghostPrivateDotLimit(ghost)) {
+			if (globalDotCounterEnabled && globalDotCounter >= ghostGlobalDotLimit(ghost)) {
+				releaseGhost(ghost, "Global dot counter (%d) reached limit (%d)", globalDotCounter, ghostGlobalDotLimit(ghost));
+			} else if (!globalDotCounterEnabled && ghost.dotCounter >= ghostPrivateDotLimit(ghost)) {
 				releaseGhost(ghost, "%s's dot counter (%d) reached limit (%d)", ghost.name, ghost.dotCounter,
 						ghostPrivateDotLimit(ghost));
 			} else if (game.pac.starvingTicks >= pacStarvingTimeLimit()) {
@@ -773,13 +774,13 @@ public class PacManGameController implements Runnable {
 	}
 
 	private void updateGhostDotCounters() {
-		if (game.globalDotCounterEnabled) {
-			if (game.ghosts[CLYDE].is(LOCKED) && game.globalDotCounter == 32) {
-				game.globalDotCounterEnabled = false;
-				game.globalDotCounter = 0;
+		if (globalDotCounterEnabled) {
+			if (game.ghosts[CLYDE].is(LOCKED) && globalDotCounter == 32) {
+				globalDotCounterEnabled = false;
+				globalDotCounter = 0;
 				log("Global dot counter disabled and reset, Clyde was in house when counter reached 32");
 			} else {
-				++game.globalDotCounter;
+				++globalDotCounter;
 			}
 		} else {
 			preferredLockedGhostInHouse().ifPresent(ghost -> ++ghost.dotCounter);

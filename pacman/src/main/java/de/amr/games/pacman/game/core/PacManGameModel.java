@@ -34,8 +34,6 @@ public class PacManGameModel {
 	public int highscoreLevel, highscorePoints;
 	public byte huntingPhase;
 	public short ghostBounty;
-	public short globalDotCounter;
-	public boolean globalDotCounterEnabled;
 	public List<Byte> levelSymbols;
 
 	public static PacManGameModel newPacManClassicGame() {
