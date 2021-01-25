@@ -103,14 +103,6 @@ public class PacManGameController implements Runnable {
 		ui.render();
 	}
 
-	public void exit() {
-		if (game.hiscore.changed) {
-			game.hiscore.save();
-			log("Hiscore saved to " + game.hiscore.file);
-		}
-		log("Game exits.");
-	}
-
 	private void readInput() {
 		if (ui.keyPressed("a")) {
 			if (pacController instanceof Autopilot) {

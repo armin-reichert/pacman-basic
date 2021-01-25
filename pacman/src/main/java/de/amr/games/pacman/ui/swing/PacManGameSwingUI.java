@@ -108,7 +108,9 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 			@Override
 			public void windowClosing(WindowEvent e) {
-				controller.exit();
+				if (controller.game.hiscore.changed) {
+					controller.game.hiscore.save();
+				}
 			}
 		});
 		window.addKeyListener(new KeyAdapter() {
