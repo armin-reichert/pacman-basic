@@ -138,7 +138,7 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 		}
 		eaten.clear();
 		foodRemaining = totalFoodCount;
-		log("Loaded map '%s' (%d errors), total food count=%d (%d pellets + %d energizers)", path, errors, totalFoodCount,
+		log("Use map '%s' (%d errors), total food count=%d (%d pellets + %d energizers)", path, errors, totalFoodCount,
 				totalFoodCount - energizerTiles.size(), energizerTiles.size());
 	}
 

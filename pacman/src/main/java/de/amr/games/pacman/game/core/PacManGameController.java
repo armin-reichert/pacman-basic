@@ -66,26 +66,23 @@ public class PacManGameController implements Runnable {
 
 	public void startPacManClassicGame() {
 		game = PacManGameModel.newPacManClassicGame();
-		log("Game variant is Pac-Man");
 		restart();
-		enterIntroState();
-		log("State is '%s' for %s", stateDescription(), ticksDescription(state.duration));
 	}
 
 	public void startMsPacManGame() {
 		game = PacManGameModel.newMsPacManGame();
-		log("Game variant is Ms. Pac-Man");
 		restart();
-		enterIntroState();
-		log("State is '%s' for %s", stateDescription(), ticksDescription(state.duration));
 	}
 
 	private void restart() {
 		started = false;
-		game.reset();
 		if (ui != null) {
+			ui.stopAllSounds();
 			ui.clearMessage();
 		}
+		enterIntroState();
+		log("Game variant is %s", game.variant == PacManGameModel.CLASSIC ? "Pac-Man" : "Ms. Pac-Man");
+		log("State is '%s' for %s", stateDescription(), ticksDescription(state.duration));
 	}
 
 	@Override
@@ -118,9 +115,8 @@ public class PacManGameController implements Runnable {
 			log("%s is %s", game.pac.name, game.pac.immune ? "immune against ghosts" : "vulnerable by ghosts");
 		}
 		if (ui.keyPressed("escape")) {
+			game.reset();
 			restart();
-			ui.stopAllSounds();
-			enterIntroState();
 		}
 	}
 
@@ -598,6 +594,7 @@ public class PacManGameController implements Runnable {
 	}
 
 	private void exitGameOverState() {
+		game.reset();
 		restart();
 	}
 
