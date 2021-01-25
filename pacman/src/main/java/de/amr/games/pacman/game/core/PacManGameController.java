@@ -425,16 +425,7 @@ public class PacManGameController implements Runnable {
 
 		for (Ghost ghost : game.ghosts) {
 			if (ghost.is(HUNTING)) {
-				// In Ms. Pac-Man, Blinky and Pinky move randomly during *first* scatter phase
-				if (game.variant == PacManGameModel.MS_PACMAN && (ghost.id == BLINKY || ghost.id == PINKY)
-						&& game.huntingPhase == 0) {
-					ghost.targetTile = null; // move randomly
-				} else if (inScatteringPhase() && ghost.elroy == 0) {
-					// Elroy chases also in scatter phase
-					ghost.targetTile = game.world.ghostScatterTile(ghost.id);
-				} else {
-					setGhostChasingTarget(ghost);
-				}
+				setGhostHuntingTarget(ghost);
 			}
 			ghost.update(game.level);
 		}
@@ -683,7 +674,17 @@ public class PacManGameController implements Runnable {
 		log("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name, ghost.tile(), ghost.bounty);
 	}
 
-	private void setGhostChasingTarget(Ghost ghost) {
+	private void setGhostHuntingTarget(Ghost ghost) {
+		// In Ms. Pac-Man, Blinky and Pinky move randomly during *first* scatter phase
+		if (game.variant == PacManGameModel.MS_PACMAN && (ghost.id == BLINKY || ghost.id == PINKY)
+				&& game.huntingPhase == 0) {
+			ghost.targetTile = null; // move randomly
+			return;
+		}
+		if (inScatteringPhase() && ghost.elroy == 0) {
+			ghost.targetTile = game.world.ghostScatterTile(ghost.id);
+			return;
+		}
 		switch (ghost.id) {
 		case 0: {
 			// BLINKY
