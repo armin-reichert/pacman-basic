@@ -109,6 +109,11 @@ public class PacManGameController implements Runnable {
 		}
 	}
 
+	private void togglePacImmunity() {
+		game.pac.immune = !game.pac.immune;
+		log("%s is %s", game.pac.name, game.pac.immune ? "immune against ghosts" : "vulnerable by ghosts");
+	}
+
 	@Override
 	public void run() {
 		manualPacController = new KeyboardPacController(ui);
@@ -132,8 +137,7 @@ public class PacManGameController implements Runnable {
 			toggleAutopilot();
 		}
 		if (ui.keyPressed("i")) {
-			game.pac.immune = !game.pac.immune;
-			log("%s is %s", game.pac.name, game.pac.immune ? "immune against ghosts" : "vulnerable by ghosts");
+			togglePacImmunity();
 		}
 		if (ui.keyPressed("escape")) {
 			game.reset();
