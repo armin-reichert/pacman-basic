@@ -23,7 +23,6 @@ import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.lib.Logging.log;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -87,12 +86,7 @@ public class PacManGameController implements Runnable {
 
 	private void reset() {
 		started = false;
-		game.levelNumber = 0;
-		game.score = 0;
-		game.lives = 3;
-		game.levelSymbols = new ArrayList<>();
-		nextLevel();
-		game.hiscore.load();
+		game.reset();
 		if (ui != null) {
 			ui.clearMessage();
 		}

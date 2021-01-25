@@ -1,6 +1,7 @@
 package de.amr.games.pacman.game.core;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import de.amr.games.pacman.game.creatures.Bonus;
@@ -47,6 +48,7 @@ public class PacManGameModel {
 		for (int ghostID = 0; ghostID < 4; ++ghostID) {
 			game.ghosts[ghostID] = new Ghost(ghostID, game.world);
 		}
+		game.reset();
 		return game;
 	}
 
@@ -61,7 +63,17 @@ public class PacManGameModel {
 		for (int ghostID = 0; ghostID < 4; ++ghostID) {
 			game.ghosts[ghostID] = new Ghost(ghostID, game.world);
 		}
+		game.reset();
 		return game;
+	}
+
+	public void reset() {
+		score = 0;
+		lives = 3;
+		initLevel(1);
+		levelSymbols = new ArrayList<>();
+		levelSymbols.add(level.bonusSymbol);
+		hiscore.load();
 	}
 
 	public void initLevel(int n) {
