@@ -119,7 +119,7 @@ public class PacManGameController implements Runnable {
 	@Override
 	public void run() {
 		manualPacController = new KeyboardPacController(ui);
-		automaticPacController = new Autopilot(game);
+		automaticPacController = new Autopilot(this);
 		pacController = manualPacController;
 		while (true) {
 			clock.tick(this::step);
