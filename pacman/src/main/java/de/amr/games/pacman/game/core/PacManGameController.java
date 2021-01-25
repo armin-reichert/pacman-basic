@@ -57,16 +57,14 @@ public class PacManGameController implements Runnable {
 
 	public PacManGameModel game;
 	public PacManGameUI ui;
-
 	public Consumer<Pac> pacController;
-
 	public boolean paused;
 	public boolean started;
 	public PacManGameState state;
 	public PacManGameState suspendedState;
 	public byte mazeFlashesRemaining;
 
-	public void newPacManClassicGame() {
+	public void startPacManClassicGame() {
 		game = PacManGameModel.newPacManClassicGame();
 		log("Game variant is Pac-Man");
 		restart();
@@ -74,7 +72,7 @@ public class PacManGameController implements Runnable {
 		log("State is '%s' for %s", stateDescription(), ticksDescription(state.duration));
 	}
 
-	public void newMsPacManGame() {
+	public void startMsPacManGame() {
 		game = PacManGameModel.newMsPacManGame();
 		log("Game variant is Ms. Pac-Man");
 		restart();
@@ -241,9 +239,9 @@ public class PacManGameController implements Runnable {
 		if (ui.keyPressed("v")) {
 			// toggle game variant
 			if (game.variant == PacManGameModel.CLASSIC) {
-				newMsPacManGame();
+				startMsPacManGame();
 			} else {
-				newPacManClassicGame();
+				startPacManClassicGame();
 			}
 			// update UI
 			ui.setGameController(this);

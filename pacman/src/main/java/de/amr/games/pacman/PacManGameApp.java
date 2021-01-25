@@ -20,7 +20,7 @@ public class PacManGameApp {
 		float scaling = args.length > 1 ? parseFloat(args[1]) : 2;
 		invokeLater(() -> {
 			PacManGameController gameController = new PacManGameController();
-			gameController.newMsPacManGame();
+			gameController.startMsPacManGame();
 			PacManGameUI ui = new PacManGameSwingUI(new V2i(28, 36), scaling);
 			ui.setGameController(gameController);
 			gameController.pacController = new KeyboardPacController(ui);
