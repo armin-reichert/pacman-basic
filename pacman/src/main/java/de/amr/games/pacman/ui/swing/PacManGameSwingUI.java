@@ -18,6 +18,8 @@ import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import javax.imageio.ImageIO;
@@ -27,6 +29,7 @@ import javax.swing.Timer;
 import de.amr.games.pacman.game.core.PacManGameController;
 import de.amr.games.pacman.game.core.PacManGameModel;
 import de.amr.games.pacman.game.core.PacManGameState;
+import de.amr.games.pacman.game.heaven.God;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.api.PacManGameSound;
 import de.amr.games.pacman.ui.api.PacManGameUI;
@@ -53,6 +56,8 @@ public class PacManGameSwingUI implements PacManGameUI {
 	static final int KEY_SLOWMODE = KeyEvent.VK_S;
 	static final int KEY_FASTMODE = KeyEvent.VK_F;
 	static final int KEY_DEBUGMODE = KeyEvent.VK_D;
+
+	static final int FLASH_MESSAGE_TICKS = God.clock.sec(1.5);
 
 	public static URL url(String path) {
 		return PacManGameSwingUI.class.getResource(path);
@@ -84,6 +89,10 @@ public class PacManGameSwingUI implements PacManGameUI {
 	private String messageText;
 	private Color messageColor;
 	private Font messageFont;
+
+	private List<String> flashMessages = new ArrayList<>();
+	private long flashMessageTicksLeft;
+
 	private Timer titleUpdateTimer;
 	private PacManGameController controller;
 	private PacManGameModel game;
@@ -201,6 +210,14 @@ public class PacManGameSwingUI implements PacManGameUI {
 	}
 
 	@Override
+	public void showFlashMessage(String message) {
+		flashMessages.add(message);
+		if (flashMessageTicksLeft == 0) {
+			flashMessageTicksLeft = FLASH_MESSAGE_TICKS;
+		}
+	}
+
+	@Override
 	public void render() {
 		BufferStrategy buffers = canvas.getBufferStrategy();
 		do {
@@ -223,6 +240,11 @@ public class PacManGameSwingUI implements PacManGameUI {
 		Graphics2D g2 = (Graphics2D) g.create();
 		g2.scale(scaling, scaling);
 		currentScene.draw(g2);
+		drawMessages(g2);
+		g2.dispose();
+	}
+
+	private void drawMessages(Graphics2D g2) {
 		if (messageText != null) {
 			g2.setFont(messageFont);
 			g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
@@ -231,7 +253,22 @@ public class PacManGameSwingUI implements PacManGameUI {
 			g2.drawString(messageText, (unscaledSizePixels.x - textWidth) / 2, t(21));
 			g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
 		}
-		g2.dispose();
+		if (flashMessages.size() > 0 && flashMessageTicksLeft > 0) {
+			String flashMessage = flashMessages.get(0);
+			g2.setFont(new Font(Font.SERIF, Font.BOLD, 16));
+			float alpha = (float) Math.sin((float) flashMessageTicksLeft / FLASH_MESSAGE_TICKS);
+			g2.setColor(new Color(1, 1, 0, alpha));
+			int flashMessageTextWidth = g2.getFontMetrics().stringWidth(flashMessage);
+			g2.drawString(flashMessage, (unscaledSizePixels.x - flashMessageTextWidth) / 2, t(18));
+			g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
+			--flashMessageTicksLeft;
+			if (flashMessageTicksLeft == 0) {
+				flashMessages.remove(0);
+				if (flashMessages.size() > 0) {
+					flashMessageTicksLeft = FLASH_MESSAGE_TICKS;
+				}
+			}
+		}
 	}
 
 	private void drawPausedScreen(Graphics2D g) {

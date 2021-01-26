@@ -109,11 +109,13 @@ public class PacManGameController implements Runnable {
 
 	private void toggleAutopilot() {
 		autoControlled = !autoControlled;
+		ui.showFlashMessage("Autopilot " + (autoControlled ? "on" : "off"));
 		log("Pac-Man autopilot mode is " + (autoControlled ? "on" : "off"));
 	}
 
 	private void togglePacImmunity() {
 		game.pac.immune = !game.pac.immune;
+		ui.showFlashMessage(game.pac.name + " is " + (game.pac.immune ? "immune" : "vulnerable"));
 		log("%s is %s", game.pac.name, game.pac.immune ? "immune against ghosts" : "vulnerable by ghosts");
 	}
 

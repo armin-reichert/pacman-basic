@@ -21,6 +21,8 @@ public interface PacManGameUI {
 
 	void clearMessage();
 
+	void showFlashMessage(String message);
+
 	boolean keyPressed(String keySpec);
 
 	void playSound(PacManGameSound sound);
