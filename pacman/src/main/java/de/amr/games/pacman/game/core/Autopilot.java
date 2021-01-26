@@ -22,7 +22,12 @@ import de.amr.games.pacman.lib.V2i;
  */
 public class Autopilot {
 
-	static class AutoPilotInfo {
+	private static final int MAX_GHOST_AHEAD_DETECTION_DIST = 4; // tiles
+	private static final int MAX_GHOST_BEHIND_DETECTION_DIST = 2; // tiles
+	private static final int MAX_GHOST_CHASE_DIST = 10; // tiles
+	private static final int MAX_BONUS_HARVEST_DIST = 20; // tiles
+
+	private static class AutoPilotInfo {
 
 		Ghost hunterAhead;
 		double hunterAheadDistance;
@@ -56,15 +61,8 @@ public class Autopilot {
 		}
 	}
 
-	private static final int MAX_GHOST_AHEAD_DETECTION_DIST = 4; // tiles
-	private static final int MAX_GHOST_BEHIND_DETECTION_DIST = 2; // tiles
-	private static final int MAX_GHOST_CHASE_DIST = 10; // tiles
-	private static final int MAX_BONUS_HARVEST_DIST = 20; // tiles
-
-	public static boolean logEnabled = true;
-
+	public boolean logEnabled;
 	private final PacManGameController controller;
-	private AutoPilotInfo data;
 
 	private void log(String msg, Object... args) {
 		if (logEnabled) {
@@ -78,23 +76,22 @@ public class Autopilot {
 
 	public void run() {
 		PacManGameModel game = controller.game;
-
-		if (game.pac.couldMove && !game.pac.changedTile) {
-			return;
-		}
 		if (game.pac.forcedDirection) {
 			game.pac.forcedDirection = false;
 			return;
 		}
-		collectData(game);
+		if (game.pac.couldMove && !game.pac.changedTile) {
+			return;
+		}
+		AutoPilotInfo data = collectData(game);
 		if (data.hunterAhead != null || data.hunterBehind != null || !data.frightenedGhosts.isEmpty()) {
 			log("\n%s", data);
 		}
-		takeAction(game);
+		takeAction(game, data);
 	}
 
-	private void collectData(PacManGameModel game) {
-		data = new AutoPilotInfo();
+	private AutoPilotInfo collectData(PacManGameModel game) {
+		AutoPilotInfo data = new AutoPilotInfo();
 		Ghost hunterAhead = findHuntingGhostAhead(game); // Where is Hunter?
 		if (hunterAhead != null) {
 			data.hunterAhead = hunterAhead;
@@ -110,9 +107,10 @@ public class Autopilot {
 				.collect(Collectors.toList());
 		data.frightenedGhostsDistance = data.frightenedGhosts.stream()
 				.map(ghost -> ghost.tile().manhattanDistance(game.pac.tile())).collect(Collectors.toList());
+		return data;
 	}
 
-	private void takeAction(PacManGameModel game) {
+	private void takeAction(PacManGameModel game, AutoPilotInfo data) {
 		if (data.hunterAhead != null) {
 			Direction escapeDir = null;
 			if (data.hunterBehind != null) {

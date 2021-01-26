@@ -19,7 +19,9 @@ import static de.amr.games.pacman.game.worlds.PacManClassicWorld.CLYDE;
 import static de.amr.games.pacman.game.worlds.PacManClassicWorld.INKY;
 import static de.amr.games.pacman.game.worlds.PacManClassicWorld.PINKY;
 import static de.amr.games.pacman.game.worlds.PacManGameWorld.HTS;
+import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
+import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.lib.Logging.log;
 
@@ -31,7 +33,6 @@ import java.util.stream.Stream;
 import de.amr.games.pacman.game.creatures.Ghost;
 import de.amr.games.pacman.lib.Hiscore;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.ui.api.KeyboardPacController;
 import de.amr.games.pacman.ui.api.PacManGameSound;
 import de.amr.games.pacman.ui.api.PacManGameUI;
 
@@ -57,7 +58,6 @@ public class PacManGameController implements Runnable {
 	public PacManGameModel game;
 	public PacManGameUI ui;
 
-	public KeyboardPacController manualPacController;
 	public Autopilot autoPacController;
 	public boolean autoControlled;
 
@@ -68,6 +68,10 @@ public class PacManGameController implements Runnable {
 	public byte mazeFlashesRemaining;
 	public short globalDotCounter;
 	public boolean globalDotCounterEnabled;
+
+	public PacManGameController() {
+		autoPacController = new Autopilot(this);
+	}
 
 	public void startPacManClassicGame() {
 		game = PacManGameModel.newPacManClassicGame();
@@ -114,8 +118,6 @@ public class PacManGameController implements Runnable {
 
 	@Override
 	public void run() {
-		manualPacController = new KeyboardPacController(ui);
-		autoPacController = new Autopilot(this);
 		while (true) {
 			clock.tick(this::step);
 		}
@@ -603,7 +605,15 @@ public class PacManGameController implements Runnable {
 		if (autoControlled) {
 			autoPacController.run();
 		} else {
-			manualPacController.accept(game.pac);
+			if (ui.keyPressed("left")) {
+				game.pac.wishDir = LEFT;
+			} else if (ui.keyPressed("right")) {
+				game.pac.wishDir = RIGHT;
+			} else if (ui.keyPressed("up")) {
+				game.pac.wishDir = UP;
+			} else if (ui.keyPressed("down")) {
+				game.pac.wishDir = DOWN;
+			}
 		}
 	}
 
