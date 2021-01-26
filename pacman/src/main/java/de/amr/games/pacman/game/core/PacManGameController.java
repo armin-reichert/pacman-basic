@@ -339,10 +339,13 @@ public class PacManGameController implements Runnable {
 		game.huntingPhase = (byte) phase;
 		state.setDuration(huntingPhaseDuration(game.huntingPhase));
 		if (inScatteringPhase()) {
+			ui.showFlashMessage("Scattering");
 			if (game.huntingPhase >= 2) {
 				ui.stopSound(siren(game.huntingPhase - 2));
 			}
 			ui.loopSound(siren(game.huntingPhase)); // TODO not clear when which siren should play
+		} else {
+			ui.showFlashMessage("Chasing");
 		}
 		log("Hunting phase %d started, state is now %s", phase, stateDescription());
 	}
