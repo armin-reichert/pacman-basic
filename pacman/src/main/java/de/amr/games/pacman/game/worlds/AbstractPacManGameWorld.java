@@ -62,13 +62,6 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 	protected final BitSet intersections = new BitSet();
 
 	protected byte[][] map;
-	protected final BitSet eaten = new BitSet();
-	protected int totalFoodCount;
-	protected int foodRemaining;
-
-	protected int tileIndex(int x, int y) {
-		return sizeInTiles().x * y + x;
-	}
 
 	protected void loadMap(String path) {
 		int lineNumber = 0, errors = 0;
@@ -123,28 +116,27 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 			}
 		}
 
-		// find food
+		// find energizer tiles
 		energizerTiles.clear();
-		totalFoodCount = 0;
 		for (int x = 0; x < size.x; ++x) {
 			for (int y = 0; y < size.y; ++y) {
-				if (map[y][x] == PILL) {
-					++totalFoodCount;
-				} else if (map[y][x] == ENERGIZER) {
-					++totalFoodCount;
+				if (map[y][x] == ENERGIZER) {
 					energizerTiles.add(new V2i(x, y));
 				}
 			}
 		}
-		eaten.clear();
-		foodRemaining = totalFoodCount;
-		log("Use map '%s' (%d errors), total food count=%d (%d pellets + %d energizers)", path, errors, totalFoodCount,
-				totalFoodCount - energizerTiles.size(), energizerTiles.size());
+
+		log("Use map '%s' (%d errors), (%d energizers)", path, errors, energizerTiles.size());
 	}
 
 	@Override
 	public V2i sizeInTiles() {
 		return size;
+	}
+
+	@Override
+	public byte mapData(int x, int y) {
+		return map[y][x];
 	}
 
 	@Override
@@ -243,21 +235,6 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 	}
 
 	@Override
-	public int totalFoodCount() {
-		return totalFoodCount;
-	}
-
-	@Override
-	public int foodRemaining() {
-		return foodRemaining;
-	}
-
-	@Override
-	public int eatenFoodCount() {
-		return totalFoodCount - foodRemaining;
-	}
-
-	@Override
 	public boolean isFoodTile(int x, int y) {
 		return inMapRange(x, y) && (map[y][x] == PILL || map[y][x] == ENERGIZER);
 	}
@@ -266,29 +243,4 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 	public boolean isEnergizerTile(int x, int y) {
 		return energizerTiles.contains(new V2i(x, y));
 	}
-
-	@Override
-	public boolean isFoodRemoved(int x, int y) {
-		return eaten.get(tileIndex(x, y));
-	}
-
-	@Override
-	public boolean containsFood(int x, int y) {
-		return isFoodTile(x, y) && !isFoodRemoved(x, y);
-	}
-
-	@Override
-	public void removeFood(int x, int y) {
-		if (!isFoodRemoved(x, y)) {
-			eaten.set(tileIndex(x, y));
-			--foodRemaining;
-		}
-	}
-
-	@Override
-	public void restoreFood() {
-		eaten.clear();
-		foodRemaining = totalFoodCount;
-	}
-
 }

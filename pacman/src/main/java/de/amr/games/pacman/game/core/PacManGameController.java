@@ -369,7 +369,7 @@ public class PacManGameController implements Runnable {
 		}
 
 		// Level completed?
-		if (game.world.foodRemaining() == 0) {
+		if (game.level.foodRemaining == 0) {
 			return changeState(this::exitHuntingState, this::enterChangingLevelState);
 		}
 
@@ -410,7 +410,7 @@ public class PacManGameController implements Runnable {
 
 		// Does Pac find food?
 		V2i pacLocation = game.pac.tile();
-		if (game.world.containsFood(pacLocation)) {
+		if (game.level.containsFood(pacLocation)) {
 			onPacFoundFood(pacLocation);
 		} else {
 			game.pac.starvingTicks++;
@@ -618,7 +618,7 @@ public class PacManGameController implements Runnable {
 	}
 
 	private void onPacFoundFood(V2i pacLocation) {
-		game.world.removeFood(pacLocation);
+		game.level.removeFood(pacLocation);
 		game.pac.starvingTicks = 0;
 		if (game.world.isEnergizerTile(pacLocation)) {
 			game.pac.restingTicksLeft = 3;
@@ -631,16 +631,16 @@ public class PacManGameController implements Runnable {
 		}
 
 		// Bonus gets edible?
-		if (game.world.eatenFoodCount() == 70 || game.world.eatenFoodCount() == 170) {
+		if (game.level.eatenFoodCount() == 70 || game.level.eatenFoodCount() == 170) {
 			long ticks = game.variant == PacManGameModel.CLASSIC ? clock.sec(9 + random.nextFloat()) : Long.MAX_VALUE;
 			game.bonus.activate(game.level.bonusSymbol, ticks);
 		}
 
 		// Blinky becomes Elroy?
-		if (game.world.foodRemaining() == game.level.elroy1DotsLeft) {
+		if (game.level.foodRemaining == game.level.elroy1DotsLeft) {
 			game.ghosts[BLINKY].elroy = 1;
 			log("Blinky becomes Cruise Elroy 1");
-		} else if (game.world.foodRemaining() == game.level.elroy2DotsLeft) {
+		} else if (game.level.foodRemaining == game.level.elroy2DotsLeft) {
 			game.ghosts[BLINKY].elroy = 2;
 			log("Blinky becomes Cruise Elroy 2");
 		}

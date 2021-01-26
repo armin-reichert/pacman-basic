@@ -32,6 +32,10 @@ public interface PacManGameWorld {
 
 	V2i sizeInTiles();
 
+	default int tileIndex(int x, int y) {
+		return sizeInTiles().x * y + x;
+	}
+
 	boolean inMapRange(int x, int y);
 
 	String pacName();
@@ -100,25 +104,7 @@ public interface PacManGameWorld {
 		return isGhostHouseDoor(tile.x, tile.y);
 	}
 
-	int totalFoodCount();
-
-	int foodRemaining();
-
-	int eatenFoodCount();
-
-	void restoreFood();
-
-	void removeFood(int x, int y);
-
-	default void removeFood(V2i tile) {
-		removeFood(tile.x, tile.y);
-	}
-
-	boolean isFoodRemoved(int x, int y);
-
-	default boolean isFoodRemoved(V2i tile) {
-		return isFoodRemoved(tile.x, tile.y);
-	}
+	byte mapData(int x, int y);
 
 	boolean isFoodTile(int x, int y);
 
@@ -130,11 +116,5 @@ public interface PacManGameWorld {
 
 	default boolean isEnergizerTile(V2i tile) {
 		return isEnergizerTile(tile.x, tile.y);
-	}
-
-	boolean containsFood(int x, int y);
-
-	default boolean containsFood(V2i tile) {
-		return containsFood(tile.x, tile.y);
 	}
 }

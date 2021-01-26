@@ -136,7 +136,7 @@ public class MsPacManPlayScene extends PacManGamePlayScene {
 		g.drawImage(assets.mazeFull[game.level.mazeNumber - 1], 0, t(3), null);
 		range(0, game.world.sizeInTiles().x).forEach(x -> {
 			range(4, game.world.sizeInTiles().y - 3).forEach(y -> {
-				if (game.world.isFoodRemoved(x, y)) {
+				if (game.level.isFoodRemoved(x, y)) {
 					hideFood(g, x, y);
 				} else if (controller.state == PacManGameState.HUNTING && game.world.isEnergizerTile(x, y)) {
 					clock.runOrBeIdle(10, () -> hideFood(g, x, y));

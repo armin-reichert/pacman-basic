@@ -154,7 +154,7 @@ public class Autopilot {
 			if (!game.pac.canAccessTile(ahead)) {
 				break;
 			}
-			if (game.world.isEnergizerTile(ahead) && !game.world.isFoodRemoved(ahead)) {
+			if (game.world.isEnergizerTile(ahead) && !game.level.isFoodRemoved(ahead)) {
 				energizerFound = true;
 			}
 			V2i aheadLeft = ahead.sum(game.pac.dir.turnLeft().vec), aheadRight = ahead.sum(game.pac.dir.turnRight().vec);
@@ -218,12 +218,12 @@ public class Autopilot {
 		double minDist = Double.MAX_VALUE;
 		for (int x = 0; x < game.world.sizeInTiles().x; ++x) {
 			for (int y = 0; y < game.world.sizeInTiles().y; ++y) {
-				if (!game.world.isFoodTile(x, y) || game.world.isFoodRemoved(x, y)) {
+				if (!game.world.isFoodTile(x, y) || game.level.isFoodRemoved(x, y)) {
 					continue;
 				}
 				V2i foodTile = new V2i(x, y);
 				if (game.world.isEnergizerTile(foodTile) && game.pac.powerTicksLeft > clock.sec(1)
-						&& game.world.foodRemaining() > 1) {
+						&& game.level.foodRemaining > 1) {
 					continue;
 				}
 				double dist = pacManTile.manhattanDistance(foodTile);

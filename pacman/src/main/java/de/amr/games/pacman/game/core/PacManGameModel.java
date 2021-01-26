@@ -99,8 +99,8 @@ public class PacManGameModel {
 	public void removeAllNormalPellets() {
 		for (int x = 0; x < world.sizeInTiles().x; ++x) {
 			for (int y = 0; y < world.sizeInTiles().y; ++y) {
-				if (world.containsFood(x, y) && !world.isEnergizerTile(x, y)) {
-					world.removeFood(x, y);
+				if (level.containsFood(x, y) && !world.isEnergizerTile(x, y)) {
+					level.removeFood(x, y);
 				}
 			}
 		}
