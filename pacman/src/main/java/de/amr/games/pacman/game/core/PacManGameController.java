@@ -104,7 +104,7 @@ public class PacManGameController implements Runnable {
 			startPacManClassicGame();
 		}
 		// update UI
-		ui.setGameController(this);
+		ui.setController(this);
 	}
 
 	private void toggleAutopilot() {

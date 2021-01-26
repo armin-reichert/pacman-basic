@@ -151,7 +151,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 	}
 
 	@Override
-	public void setGameController(PacManGameController controller) {
+	public void setController(PacManGameController controller) {
 		this.controller = controller;
 		this.game = controller.game;
 		controller.ui = this;

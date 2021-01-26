@@ -11,7 +11,7 @@ public interface PacManGameUI {
 
 	String getString(String key);
 
-	void setGameController(PacManGameController controller);
+	void setController(PacManGameController controller);
 
 	void openWindow();
 

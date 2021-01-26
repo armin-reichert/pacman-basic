@@ -20,7 +20,7 @@ public class PacManGameApp {
 			PacManGameController gameController = new PacManGameController();
 			gameController.startMsPacManGame();
 			PacManGameUI ui = new PacManGameSwingUI(gameController.game.world.sizeInTiles(), scaling);
-			ui.setGameController(gameController);
+			ui.setController(gameController);
 			ui.openWindow();
 			new Thread(gameController, "PacManGame").start();
 		});
