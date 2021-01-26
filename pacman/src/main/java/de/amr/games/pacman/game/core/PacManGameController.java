@@ -694,6 +694,15 @@ public class PacManGameController implements Runnable {
 		log("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name, ghost.tile(), ghost.bounty);
 	}
 
+	private void killAllGhosts() {
+		game.ghostBounty = 200;
+		for (Ghost ghost : game.ghosts) {
+			if (ghost.is(HUNTING) || ghost.is(FRIGHTENED)) {
+				killGhost(ghost);
+			}
+		}
+	}
+
 	private void setGhostHuntingTarget(Ghost ghost) {
 		// In Ms. Pac-Man, Blinky and Pinky move randomly during *first* scatter phase
 		if (game.variant == PacManGameModel.MS_PACMAN && (ghost.id == BLINKY || ghost.id == PINKY)
@@ -821,15 +830,6 @@ public class PacManGameController implements Runnable {
 			hiscore.level = game.highscoreLevel;
 			hiscore.save();
 			log("New hiscore saved. %d points in level %d", hiscore.points, hiscore.level);
-		}
-	}
-
-	private void killAllGhosts() {
-		game.ghostBounty = 200;
-		for (Ghost ghost : game.ghosts) {
-			if (ghost.is(HUNTING) || ghost.is(FRIGHTENED)) {
-				killGhost(ghost);
-			}
 		}
 	}
 }
