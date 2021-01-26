@@ -131,10 +131,12 @@ public class PacManGameSwingUI implements PacManGameUI {
 				if (e.getKeyCode() == KEY_SLOWMODE) {
 					clock.targetFrequency = clock.targetFrequency == 60 ? 30 : 60;
 					log("Clock frequency changed to %d Hz", clock.targetFrequency);
+					showFlashMessage(clock.targetFrequency == 60 ? "Normal speed" : "Slow speed");
 				}
 				if (e.getKeyCode() == KEY_FASTMODE) {
 					clock.targetFrequency = clock.targetFrequency == 60 ? 120 : 60;
 					log("Clock frequency changed to %d Hz", clock.targetFrequency);
+					showFlashMessage(clock.targetFrequency == 60 ? "Normal speed" : "Fast speed");
 				}
 				if (e.getKeyCode() == KEY_DEBUGMODE) {
 					debugMode = !debugMode;
