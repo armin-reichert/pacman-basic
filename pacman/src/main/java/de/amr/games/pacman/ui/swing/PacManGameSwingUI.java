@@ -255,11 +255,11 @@ public class PacManGameSwingUI implements PacManGameUI {
 		}
 		if (flashMessages.size() > 0 && flashMessageTicksLeft > 0) {
 			String flashMessage = flashMessages.get(0);
-			g2.setFont(new Font(Font.SERIF, Font.BOLD, 16));
+			g2.setFont(new Font(Font.SERIF, Font.BOLD, 14));
 			float alpha = (float) Math.sin((float) flashMessageTicksLeft / FLASH_MESSAGE_TICKS);
 			g2.setColor(new Color(1, 1, 1, alpha));
 			int flashMessageTextWidth = g2.getFontMetrics().stringWidth(flashMessage);
-			g2.drawString(flashMessage, (unscaledSizePixels.x - flashMessageTextWidth) / 2, t(18));
+			g2.drawString(flashMessage, (unscaledSizePixels.x - flashMessageTextWidth) / 2, unscaledSizePixels.y - 2);
 			g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
 			--flashMessageTicksLeft;
 			if (flashMessageTicksLeft == 0) {
