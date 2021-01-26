@@ -244,23 +244,21 @@ public class PacManGameSwingUI implements PacManGameUI {
 		g2.dispose();
 	}
 
-	private void drawMessages(Graphics2D g2) {
+	private void drawMessages(Graphics2D g) {
+		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 		if (messageText != null) {
-			g2.setFont(messageFont);
-			g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-			g2.setColor(messageColor);
-			int textWidth = g2.getFontMetrics().stringWidth(messageText);
-			g2.drawString(messageText, (unscaledSizePixels.x - textWidth) / 2, t(21));
-			g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
+			g.setFont(messageFont);
+			g.setColor(messageColor);
+			int textWidth = g.getFontMetrics().stringWidth(messageText);
+			g.drawString(messageText, (unscaledSizePixels.x - textWidth) / 2, t(21));
 		}
 		if (flashMessages.size() > 0 && flashMessageTicksLeft > 0) {
 			String flashMessage = flashMessages.get(0);
-			g2.setFont(new Font(Font.SERIF, Font.BOLD, 14));
+			g.setFont(new Font(Font.SERIF, Font.BOLD, 14));
 			float alpha = (float) Math.sin((float) flashMessageTicksLeft / FLASH_MESSAGE_TICKS);
-			g2.setColor(new Color(1, 1, 1, alpha));
-			int flashMessageTextWidth = g2.getFontMetrics().stringWidth(flashMessage);
-			g2.drawString(flashMessage, (unscaledSizePixels.x - flashMessageTextWidth) / 2, unscaledSizePixels.y - 2);
-			g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
+			g.setColor(new Color(1, 1, 1, alpha));
+			int flashMessageTextWidth = g.getFontMetrics().stringWidth(flashMessage);
+			g.drawString(flashMessage, (unscaledSizePixels.x - flashMessageTextWidth) / 2, unscaledSizePixels.y - 6);
 			--flashMessageTicksLeft;
 			if (flashMessageTicksLeft == 0) {
 				flashMessages.remove(0);
@@ -269,6 +267,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 				}
 			}
 		}
+		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
 	}
 
 	private void drawPausedScreen(Graphics2D g) {
