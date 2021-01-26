@@ -57,11 +57,10 @@ public class PacManGameLevel {
 		numFlashes = (byte) values[i++];
 
 		// find food
-		V2i worldSize = world.sizeInTiles();
 		totalFoodCount = 0;
 		int energizerCount = 0;
-		for (int x = 0; x < worldSize.x; ++x) {
-			for (int y = 0; y < worldSize.y; ++y) {
+		for (int x = 0; x < world.xTiles(); ++x) {
+			for (int y = 0; y < world.yTiles(); ++y) {
 				byte data = world.mapData(x, y);
 				if (data == PacManGameWorld.PILL) {
 					++totalFoodCount;

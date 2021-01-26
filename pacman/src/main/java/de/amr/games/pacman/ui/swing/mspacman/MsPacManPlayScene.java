@@ -109,7 +109,7 @@ public class MsPacManPlayScene extends PacManGamePlayScene {
 	}
 
 	private void drawLevelCounter(Graphics2D g) {
-		int x = t(game.world.sizeInTiles().x - 4);
+		int x = t(game.world.xTiles() - 4);
 		for (int levelNumber = 1; levelNumber <= Math.min(game.levelNumber, 7); ++levelNumber) {
 			BufferedImage symbol = assets.symbols[game.levelSymbols.get(levelNumber - 1)];
 			g.drawImage(symbol, x, size.y - t(2), null);
@@ -134,8 +134,8 @@ public class MsPacManPlayScene extends PacManGamePlayScene {
 			return;
 		}
 		g.drawImage(assets.mazeFull[game.level.mazeNumber - 1], 0, t(3), null);
-		range(0, game.world.sizeInTiles().x).forEach(x -> {
-			range(4, game.world.sizeInTiles().y - 3).forEach(y -> {
+		range(0, game.world.xTiles()).forEach(x -> {
+			range(4, game.world.yTiles() - 3).forEach(y -> {
 				if (game.level.isFoodRemoved(x, y)) {
 					hideFood(g, x, y);
 				} else if (controller.state == PacManGameState.HUNTING && game.world.isEnergizerTile(x, y)) {

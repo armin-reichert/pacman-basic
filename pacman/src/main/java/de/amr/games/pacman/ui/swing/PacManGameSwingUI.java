@@ -4,6 +4,7 @@ import static de.amr.games.pacman.game.heaven.God.clock;
 import static de.amr.games.pacman.game.worlds.PacManGameWorld.TS;
 import static de.amr.games.pacman.game.worlds.PacManGameWorld.t;
 import static de.amr.games.pacman.lib.Logging.log;
+import static java.lang.Math.cos;
 
 import java.awt.Canvas;
 import java.awt.Color;
@@ -101,9 +102,9 @@ public class PacManGameSwingUI implements PacManGameUI {
 	private PacManGameScene playScene;
 	private PacManGameSoundManager soundManager;
 
-	public PacManGameSwingUI(V2i sizeInTiles, float scaling) {
+	public PacManGameSwingUI(int xTiles, int yTiles, float scaling) {
 		this.scaling = scaling;
-		unscaledSizePixels = sizeInTiles.scaled(TS);
+		unscaledSizePixels = new V2i(xTiles * TS, yTiles * TS);
 		scaledSizeInPixels = new V2i((int) (unscaledSizePixels.x * scaling), (int) (unscaledSizePixels.y * scaling));
 
 		window = new JFrame();
@@ -254,11 +255,12 @@ public class PacManGameSwingUI implements PacManGameUI {
 		}
 		if (flashMessages.size() > 0 && flashMessageTicksLeft > 0) {
 			String flashMessage = flashMessages.get(0);
-			g.setFont(new Font(Font.SERIF, Font.BOLD, 14));
-			float alpha = (float) Math.sin((float) flashMessageTicksLeft / FLASH_MESSAGE_TICKS);
-			g.setColor(new Color(1, 1, 1, alpha));
+			g.setFont(new Font(Font.SERIF, Font.BOLD, 12));
+			float t = FLASH_MESSAGE_TICKS - flashMessageTicksLeft;
+			float alpha = (float) cos(Math.PI * t / (2 * FLASH_MESSAGE_TICKS));
+			g.setColor(new Color(1, 1, 0.5f, alpha));
 			int flashMessageTextWidth = g.getFontMetrics().stringWidth(flashMessage);
-			g.drawString(flashMessage, (unscaledSizePixels.x - flashMessageTextWidth) / 2, unscaledSizePixels.y - 6);
+			g.drawString(flashMessage, (unscaledSizePixels.x - flashMessageTextWidth) / 2, unscaledSizePixels.y - 3);
 			--flashMessageTicksLeft;
 			if (flashMessageTicksLeft == 0) {
 				flashMessages.remove(0);

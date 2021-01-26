@@ -55,7 +55,8 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 	private static final Direction[] GHOST_START_DIRECTIONS = { LEFT, UP, DOWN, DOWN };
 	private static final V2i[] GHOST_SCATTER_TILES = { new V2i(25, 0), new V2i(2, 0), new V2i(27, 35), new V2i(27, 35) };
 
-	protected final V2i size = new V2i(28, 36);
+	protected final V2i sizeTiles = new V2i(28, 36);
+
 	protected final List<V2i> portalsLeft = new ArrayList<>(2);
 	protected final List<V2i> portalsRight = new ArrayList<>(2);
 	protected final List<V2i> energizerTiles = new ArrayList<>(4);
@@ -65,7 +66,7 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 
 	protected void loadMap(String path) {
 		int lineNumber = 0, errors = 0;
-		map = new byte[size.y][size.x];
+		map = new byte[sizeTiles.y][sizeTiles.x];
 		try (InputStream is = getClass().getResourceAsStream(path)) {
 			if (is == null) {
 				throw new RuntimeException("Resource not found: " + path);
@@ -77,7 +78,7 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 				if (line.startsWith("!") || line.isBlank()) {
 					continue; // skip comments and blank lines
 				}
-				for (int x = 0; x < size.x; ++x) {
+				for (int x = 0; x < sizeTiles.x; ++x) {
 					char c = line.charAt(x);
 					try {
 						map[y][x] = decode(c);
@@ -96,16 +97,16 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 		// find portals
 		portalsLeft.clear();
 		portalsRight.clear();
-		for (int y = 0; y < size.y; ++y) {
-			if (map[y][0] == TUNNEL && map[y][size.x - 1] == TUNNEL) {
+		for (int y = 0; y < sizeTiles.y; ++y) {
+			if (map[y][0] == TUNNEL && map[y][sizeTiles.x - 1] == TUNNEL) {
 				portalsLeft.add(new V2i(-1, y));
-				portalsRight.add(new V2i(size.x, y));
+				portalsRight.add(new V2i(sizeTiles.x, y));
 			}
 		}
 
 		// find intersections ("waypoints")
-		for (int y = 0; y < size.y; ++y) {
-			for (int x = 0; x < size.x; ++x) {
+		for (int y = 0; y < sizeTiles.y; ++y) {
+			for (int x = 0; x < sizeTiles.x; ++x) {
 				if (isInsideGhostHouse(x, y) || isGhostHouseDoor(x, y + 1)) {
 					continue;
 				}
@@ -118,8 +119,8 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 
 		// find energizer tiles
 		energizerTiles.clear();
-		for (int x = 0; x < size.x; ++x) {
-			for (int y = 0; y < size.y; ++y) {
+		for (int x = 0; x < sizeTiles.x; ++x) {
+			for (int y = 0; y < sizeTiles.y; ++y) {
 				if (map[y][x] == ENERGIZER) {
 					energizerTiles.add(new V2i(x, y));
 				}
@@ -130,8 +131,13 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 	}
 
 	@Override
-	public V2i sizeInTiles() {
-		return size;
+	public int xTiles() {
+		return sizeTiles.x;
+	}
+
+	@Override
+	public int yTiles() {
+		return sizeTiles.y;
 	}
 
 	@Override
@@ -141,7 +147,7 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 
 	@Override
 	public boolean inMapRange(int x, int y) {
-		return 0 <= x && x < size.x && 0 <= y && y < size.y;
+		return 0 <= x && x < sizeTiles.x && 0 <= y && y < sizeTiles.y;
 	}
 
 	@Override

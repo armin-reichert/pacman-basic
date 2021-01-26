@@ -70,8 +70,8 @@ public abstract class PacManGamePlayScene implements PacManGameScene {
 		Stroke thin = new BasicStroke(0.1f);
 		g.setColor(dark);
 		g.setStroke(thin);
-		for (int x = 0; x < game.world.sizeInTiles().x; ++x) {
-			for (int y = 0; y < game.world.sizeInTiles().y; ++y) {
+		for (int x = 0; x < game.world.xTiles(); ++x) {
+			for (int y = 0; y < game.world.yTiles(); ++y) {
 				if (game.world.isIntersection(x, y)) {
 					for (Direction dir : Direction.values()) {
 						int nx = x + dir.vec.x, ny = y + dir.vec.y;

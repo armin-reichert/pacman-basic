@@ -30,10 +30,12 @@ public interface PacManGameWorld {
 
 	PacManGameLevel createLevel(int levelNumber);
 
-	V2i sizeInTiles();
+	int xTiles();
+
+	int yTiles();
 
 	default int tileIndex(int x, int y) {
-		return sizeInTiles().x * y + x;
+		return xTiles() * y + x;
 	}
 
 	boolean inMapRange(int x, int y);

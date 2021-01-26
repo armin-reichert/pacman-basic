@@ -216,8 +216,8 @@ public class Autopilot {
 		List<V2i> foodTiles = new ArrayList<>();
 		V2i pacManTile = game.pac.tile();
 		double minDist = Double.MAX_VALUE;
-		for (int x = 0; x < game.world.sizeInTiles().x; ++x) {
-			for (int y = 0; y < game.world.sizeInTiles().y; ++y) {
+		for (int x = 0; x < game.world.xTiles(); ++x) {
+			for (int y = 0; y < game.world.yTiles(); ++y) {
 				if (!game.world.isFoodTile(x, y) || game.level.isFoodRemoved(x, y)) {
 					continue;
 				}
