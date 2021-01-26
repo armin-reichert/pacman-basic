@@ -9,7 +9,7 @@ import de.amr.games.pacman.game.core.PacManGameController;
  */
 public interface PacManGameUI {
 
-	String getString(String key);
+	String translation(String key);
 
 	void setController(PacManGameController controller);
 

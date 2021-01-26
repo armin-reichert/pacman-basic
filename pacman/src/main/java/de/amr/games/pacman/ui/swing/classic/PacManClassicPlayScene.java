@@ -62,8 +62,8 @@ public class PacManClassicPlayScene extends PacManGamePlayScene {
 		g.setFont(assets.scoreFont);
 		g.translate(0, 2);
 		g.setColor(Color.WHITE);
-		g.drawString(ui.getString("SCORE"), t(1), t(1));
-		g.drawString(ui.getString("HI_SCORE"), t(16), t(1));
+		g.drawString(ui.translation("SCORE"), t(1), t(1));
+		g.drawString(ui.translation("HI_SCORE"), t(16), t(1));
 		g.translate(0, 1);
 		g.setColor(Color.YELLOW);
 		g.drawString(String.format("%08d", game.score), t(1), t(2));

@@ -71,7 +71,7 @@ public class PacManClassicIntroScene implements PacManGameScene {
 		game.state.runAfter(clock.sec(2), () -> {
 			g.setColor(Color.WHITE);
 			g.setFont(assets.scoreFont);
-			drawCenteredText(g, ui.getString("CHARACTER_NICKNAME"), t(8));
+			drawCenteredText(g, ui.translation("CHARACTER_NICKNAME"), t(8));
 		});
 
 		IntStream.rangeClosed(0, 3).forEach(ghost -> {
@@ -122,7 +122,7 @@ public class PacManClassicIntroScene implements PacManGameScene {
 		g.setColor(Color.ORANGE);
 		g.setFont(assets.scoreFont);
 		clock.runOrBeIdle(20, () -> {
-			drawCenteredText(g, ui.getString("PRESS_KEY_TO_PLAY"), size.y - 20);
+			drawCenteredText(g, ui.translation("PRESS_KEY_TO_PLAY"), size.y - 20);
 		});
 	}
 
@@ -137,13 +137,13 @@ public class PacManClassicIntroScene implements PacManGameScene {
 		g.drawString("10", t(12), t(28));
 		g.drawString("50", t(12), t(30));
 		g.setFont(assets.scoreFont.deriveFont(6f));
-		g.drawString(ui.getString("POINTS"), t(15), t(28));
-		g.drawString(ui.getString("POINTS"), t(15), t(30));
+		g.drawString(ui.translation("POINTS"), t(15), t(28));
+		g.drawString(ui.translation("POINTS"), t(15), t(30));
 	}
 
 	private void drawGhostCharacterAndName(Graphics2D g, int ghostID, int y, boolean both) {
-		String character = ui.getString("CLASSIC.GHOST." + ghostID + ".CHARACTER");
-		String nickname = "\"" + ui.getString("CLASSIC.GHOST." + ghostID + ".NICKNAME") + "\"";
+		String character = ui.translation("CLASSIC.GHOST." + ghostID + ".CHARACTER");
+		String nickname = "\"" + ui.translation("CLASSIC.GHOST." + ghostID + ".NICKNAME") + "\"";
 		Color color = GHOST_COLORS[ghostID];
 		g.setColor(color);
 		g.setFont(assets.scoreFont);

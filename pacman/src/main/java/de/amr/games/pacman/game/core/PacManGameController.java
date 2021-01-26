@@ -274,7 +274,7 @@ public class PacManGameController implements Runnable {
 			return changeState(this::exitReadyState, this::enterHuntingState);
 		}
 		if (state.running == clock.sec(0.5)) {
-			ui.showMessage(ui.getString("READY"), false);
+			ui.showMessage(ui.translation("READY"), false);
 			for (Ghost ghost : game.ghosts) {
 				ghost.visible = true;
 			}
@@ -585,7 +585,7 @@ public class PacManGameController implements Runnable {
 		}
 		game.pac.speed = 0;
 		saveHighscore();
-		ui.showMessage(ui.getString("GAME_OVER"), true);
+		ui.showMessage(ui.translation("GAME_OVER"), true);
 	}
 
 	private PacManGameState runGameOverState() {

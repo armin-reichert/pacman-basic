@@ -146,7 +146,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 	}
 
 	@Override
-	public String getString(String key) {
+	public String translation(String key) {
 		return TEXTS.getString(key);
 	}
 

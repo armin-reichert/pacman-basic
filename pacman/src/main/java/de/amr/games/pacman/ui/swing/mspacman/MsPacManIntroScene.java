@@ -116,10 +116,10 @@ public class MsPacManIntroScene implements PacManGameScene {
 				// display text
 				if (ghost == 0) {
 					g.setColor(Color.WHITE);
-					g.drawString(ui.getString("WITH"), t(8), t(11));
+					g.drawString(ui.translation("WITH"), t(8), t(11));
 				}
 				g.setColor(GHOST_COLORS[ghost]);
-				drawCenteredText(g, ui.getString("MSPACMAN.GHOST." + ghost + ".NICKNAME"), t(14));
+				drawCenteredText(g, ui.translation("MSPACMAN.GHOST." + ghost + ".NICKNAME"), t(14));
 
 				// walk
 				if (ghostDirection[ghost] == Direction.LEFT) {
@@ -150,7 +150,7 @@ public class MsPacManIntroScene implements PacManGameScene {
 
 		if (ghostReachedTarget[3]) {
 			g.setColor(Color.WHITE);
-			g.drawString(ui.getString("STARRING"), t(8), t(11));
+			g.drawString(ui.translation("STARRING"), t(8), t(11));
 			g.setColor(Color.YELLOW);
 			g.drawString("MS PAC-MAN", t(11), t(14));
 		}
@@ -209,7 +209,7 @@ public class MsPacManIntroScene implements PacManGameScene {
 		g.setColor(Color.ORANGE);
 		g.setFont(assets.scoreFont);
 		clock.runOrBeIdle(20, () -> {
-			drawCenteredText(g, ui.getString("PRESS_KEY_TO_PLAY"), size.y - 20);
+			drawCenteredText(g, ui.translation("PRESS_KEY_TO_PLAY"), size.y - 20);
 		});
 	}
 
@@ -224,8 +224,8 @@ public class MsPacManIntroScene implements PacManGameScene {
 		g.drawString("10", t(12), t(yTile));
 		g.drawString("50", t(12), t(yTile + 2));
 		g.setFont(assets.scoreFont.deriveFont(6f));
-		g.drawString(ui.getString("POINTS"), t(15), t(yTile));
-		g.drawString(ui.getString("POINTS"), t(15), t(yTile + 2));
+		g.drawString(ui.translation("POINTS"), t(15), t(yTile));
+		g.drawString(ui.translation("POINTS"), t(15), t(yTile + 2));
 	}
 
 }
