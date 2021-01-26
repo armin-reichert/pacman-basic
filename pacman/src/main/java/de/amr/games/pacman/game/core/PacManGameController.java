@@ -74,12 +74,12 @@ public class PacManGameController implements Runnable {
 		autoPacController = new Autopilot(this);
 	}
 
-	public void startPacManClassicGame() {
+	public void initPacManClassicGame() {
 		game = PacManGameModel.newPacManClassicGame();
 		reset();
 	}
 
-	public void startMsPacManGame() {
+	public void initMsPacManGame() {
 		game = PacManGameModel.newMsPacManGame();
 		reset();
 	}
@@ -99,9 +99,9 @@ public class PacManGameController implements Runnable {
 
 	private void toggleGameVariant() {
 		if (game.variant == PacManGameModel.CLASSIC) {
-			startMsPacManGame();
+			initMsPacManGame();
 		} else {
-			startPacManClassicGame();
+			initPacManClassicGame();
 		}
 		// update UI
 		ui.setController(this);

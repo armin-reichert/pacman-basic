@@ -19,7 +19,7 @@ public class PacManGameApp {
 		float scaling = args.length > 1 ? parseFloat(args[1]) : 2;
 		invokeLater(() -> {
 			PacManGameController gameController = new PacManGameController();
-			gameController.startMsPacManGame();
+			gameController.initMsPacManGame();
 			PacManGameWorld world = gameController.game.world;
 			PacManGameUI ui = new PacManGameSwingUI(world.xTiles(), world.yTiles(), scaling);
 			ui.setController(gameController);
