@@ -175,11 +175,10 @@ public class MsPacManIntroScene implements PacManGameScene {
 	}
 
 	private void drawFrame(Graphics2D g, int light) {
-		int x = 0, y = 0;
-		for (int dot = 0; dot <= 2 * (frameSize.x + frameSize.y) - 1; ++dot) {
+		for (int dot = 0; dot < 2 * (frameSize.x + frameSize.y); ++dot) {
+			int x = 0, y = 0;
 			if (dot <= frameSize.x) {
 				x = dot;
-				y = 0;
 			} else if (dot < frameSize.x + frameSize.y) {
 				x = frameSize.x;
 				y = dot - frameSize.x;
@@ -187,13 +186,11 @@ public class MsPacManIntroScene implements PacManGameScene {
 				x = 2 * frameSize.x + frameSize.y - dot;
 				y = frameSize.y;
 			} else {
-				x = 0;
 				y = 2 * (frameSize.x + frameSize.y) - dot;
 			}
 			g.setColor((dot + light) % (frameSize.x / 2) == 0 ? Color.CYAN : Color.RED);
 			g.fillRect(t(frameTopLeftTile.x) + 4 * x, t(frameTopLeftTile.y) + 4 * y, 2, 2);
 		}
-
 	}
 
 	private void drawPressKeyToStart(Graphics2D g) {
