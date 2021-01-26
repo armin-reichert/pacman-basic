@@ -1,5 +1,6 @@
 package de.amr.games.pacman.game.core;
 
+import static de.amr.games.pacman.game.core.PacManGameModel.MS_PACMAN;
 import static de.amr.games.pacman.game.core.PacManGameState.CHANGING_LEVEL;
 import static de.amr.games.pacman.game.core.PacManGameState.GAME_OVER;
 import static de.amr.games.pacman.game.core.PacManGameState.GHOST_DYING;
@@ -601,6 +602,30 @@ public class PacManGameController implements Runnable {
 
 	// END STATE-MACHINE
 
+	public void saveHighscore() {
+		Hiscore hiscore = game.loadHighScore();
+		if (game.highscorePoints > hiscore.points) {
+			hiscore.points = game.highscorePoints;
+			hiscore.level = game.highscoreLevel;
+			hiscore.save();
+			log("New hiscore saved. %d points in level %d", hiscore.points, hiscore.level);
+		}
+	}
+
+	private void score(int points) {
+		int oldscore = game.score;
+		game.score += points;
+		if (oldscore < 10000 && game.score >= 10000) {
+			game.lives++;
+			ui.playSound(PacManGameSound.EXTRA_LIFE);
+			log("Extra life! Now we have %d lives", game.lives);
+		}
+		if (game.score > game.highscorePoints) {
+			game.highscorePoints = game.score;
+			game.highscoreLevel = game.levelNumber;
+		}
+	}
+
 	private void steerPac() {
 		if (autoControlled) {
 			autoPacController.run();
@@ -704,48 +729,39 @@ public class PacManGameController implements Runnable {
 	}
 
 	private void setGhostHuntingTarget(Ghost ghost) {
-		// In Ms. Pac-Man, Blinky and Pinky move randomly during *first* scatter phase
-		if (game.variant == PacManGameModel.MS_PACMAN && (ghost.id == BLINKY || ghost.id == PINKY)
-				&& game.huntingPhase == 0) {
-			ghost.targetTile = null; // move randomly
-			return;
-		}
-		if (inScatteringPhase() && ghost.elroy == 0) {
+		if (game.variant == MS_PACMAN && game.huntingPhase == 0 && (ghost.id == BLINKY || ghost.id == PINKY)) {
+			// In Ms. Pac-Man, Blinky and Pinky move randomly during *first* scatter phase
+			ghost.targetTile = null;
+		} else if (inScatteringPhase() && ghost.elroy == 0) {
 			ghost.targetTile = game.world.ghostScatterTile(ghost.id);
-			return;
+		} else {
+			ghost.targetTile = ghostHuntingTarget(ghost.id);
 		}
-		switch (ghost.id) {
-		case 0: {
-			// BLINKY
-			ghost.targetTile = game.pac.tile();
-			break;
-		}
+	}
+
+	private V2i ghostHuntingTarget(int ghostID) {
+		switch (ghostID) {
+		case 0:
+			return game.pac.tile();
 		case 1: {
-			// PINKY
-			V2i pacAhead4 = game.pac.tile().sum(game.pac.dir.vec.scaled(4));
-			if (game.pac.dir == UP) { // simulate overflow bug when Pac-Man is looking UP
-				pacAhead4 = pacAhead4.sum(LEFT.vec.scaled(4));
+			V2i fourAheadPac = game.pac.tile().sum(game.pac.dir.vec.scaled(4));
+			if (game.pac.dir == UP) { // simulate overflow bug
+				fourAheadPac = fourAheadPac.sum(LEFT.vec.scaled(4));
 			}
-			ghost.targetTile = pacAhead4;
-			break;
+			return fourAheadPac;
 		}
 		case 2: {
-			// INKY
-			V2i pacAhead2 = game.pac.tile().sum(game.pac.dir.vec.scaled(2));
-			if (game.pac.dir == UP) { // simulate overflow bug when Pac-Man is looking UP
-				pacAhead2 = pacAhead2.sum(LEFT.vec.scaled(2));
+			V2i twoAheadPac = game.pac.tile().sum(game.pac.dir.vec.scaled(2));
+			if (game.pac.dir == UP) { // simulate overflow bug
+				twoAheadPac = twoAheadPac.sum(LEFT.vec.scaled(2));
 			}
-			ghost.targetTile = game.ghosts[BLINKY].tile().scaled(-1).sum(pacAhead2.scaled(2));
-			break;
+			return game.ghosts[0].tile().scaled(-1).sum(twoAheadPac.scaled(2));
 		}
-		case 3: {
-			// CLYDE, SUE
-			ghost.targetTile = game.ghosts[3].tile().euclideanDistance(game.pac.tile()) < 8 ? game.world.ghostScatterTile(3)
+		case 3:
+			return game.ghosts[3].tile().euclideanDistance(game.pac.tile()) < 8 ? game.world.ghostScatterTile(3)
 					: game.pac.tile();
-			break;
-		}
 		default:
-			throw new IllegalArgumentException("Unknown ghost id: " + ghost.id);
+			throw new IllegalArgumentException("Unknown ghost id: " + ghostID);
 		}
 	}
 
@@ -806,30 +822,6 @@ public class PacManGameController implements Runnable {
 			}
 		} else {
 			preferredLockedGhostInHouse().ifPresent(ghost -> ++ghost.dotCounter);
-		}
-	}
-
-	private void score(int points) {
-		int oldscore = game.score;
-		game.score += points;
-		if (oldscore < 10000 && game.score >= 10000) {
-			game.lives++;
-			ui.playSound(PacManGameSound.EXTRA_LIFE);
-			log("Extra life! Now we have %d lives", game.lives);
-		}
-		if (game.score > game.highscorePoints) {
-			game.highscorePoints = game.score;
-			game.highscoreLevel = game.levelNumber;
-		}
-	}
-
-	public void saveHighscore() {
-		Hiscore hiscore = game.loadHighScore();
-		if (game.highscorePoints > hiscore.points) {
-			hiscore.points = game.highscorePoints;
-			hiscore.level = game.highscoreLevel;
-			hiscore.save();
-			log("New hiscore saved. %d points in level %d", hiscore.points, hiscore.level);
 		}
 	}
 }
