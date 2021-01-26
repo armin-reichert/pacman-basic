@@ -57,9 +57,10 @@ public class MsPacManIntroScene implements PacManGameScene {
 	}
 
 	private final long animationStart = 60;
-	private final V2i frameTopLeft = new V2i(t(5), t(8));
+	private final V2i frameTopLeftTile = new V2i(6, 8);
+	private final V2i frameSize = new V2i(32, 16);
 	private final float speed = 0.5f;
-	private final int ghostTargetX = frameTopLeft.x - 18;
+	private final int ghostTargetX = t(frameTopLeftTile.x) - 18;
 	private int[] ghostX = new int[4];
 	private int[] ghostY = new int[4];
 	private Direction[] ghostDirection = new Direction[4];
@@ -72,26 +73,23 @@ public class MsPacManIntroScene implements PacManGameScene {
 	@Override
 	public void start() {
 		Arrays.fill(ghostX, size.x);
-		Arrays.fill(ghostY, t(18));
+		Arrays.fill(ghostY, t(frameTopLeftTile.y) + 4 * (frameSize.y + 1));
 		Arrays.fill(ghostWalking, false);
 		Arrays.fill(ghostDirection, Direction.LEFT);
 		Arrays.fill(ghostReachedTarget, false);
 		pacWalking = false;
 		pacReachedTarget = false;
 		pacX = size.x;
-		pacY = t(18);
+		pacY = t(frameTopLeftTile.y) + 4 * (frameSize.y + 1);
 		game.state.resetTimer();
 	}
 
 	@Override
 	public void draw(Graphics2D g) {
-
 		if (game.state.running < animationStart) {
 			return;
 		}
-
 		// run animation
-
 		long animationTime = game.state.running - animationStart;
 		if (animationTime == animationStart) {
 			ghostWalking[0] = true;
@@ -101,11 +99,11 @@ public class MsPacManIntroScene implements PacManGameScene {
 		g.setFont(assets.scoreFont);
 		g.setColor(Color.ORANGE);
 		drawCenteredText(g, "\"MS PAC-MAN\"", t(5));
-		drawFrame(g, Color.RED, clock.frame(4, 18));
+		drawFrame(g, clock.frame(2, frameSize.x / 2));
 
 		for (int ghost = 0; ghost <= 3; ++ghost) {
 			if (ghostReachedTarget[ghost]) {
-				g.drawImage(ghostWalking(UP, ghost, false), ghostTargetX, frameTopLeft.y + 16 * ghost, null);
+				g.drawImage(ghostWalking(UP, ghost, false), ghostTargetX, t(frameTopLeftTile.y) + 16 * ghost, null);
 				continue;
 			}
 			if (ghostWalking[ghost]) {
@@ -131,7 +129,7 @@ public class MsPacManIntroScene implements PacManGameScene {
 				g.drawImage(sprite, ghostX[ghost], ghostY[ghost], null);
 
 				// target reached?
-				if (ghostY[ghost] <= frameTopLeft.y + ghost * 16) {
+				if (ghostY[ghost] <= t(frameTopLeftTile.y) + ghost * 16) {
 					ghostReachedTarget[ghost] = true;
 					ghostWalking[ghost] = false;
 					if (ghost < 3) {
@@ -176,24 +174,26 @@ public class MsPacManIntroScene implements PacManGameScene {
 		}
 	}
 
-	private void drawFrame(Graphics2D g, Color color, int light) {
-		for (int dot = 0; dot < 108; ++dot) {
-			int x = 0, y = 0;
-			if (dot <= 36) {
+	private void drawFrame(Graphics2D g, int light) {
+		int x = 0, y = 0;
+		for (int dot = 0; dot <= 2 * (frameSize.x + frameSize.y) - 1; ++dot) {
+			if (dot <= frameSize.x) {
 				x = dot;
-			} else if (dot <= 54) {
-				x = 36;
-				y = dot - 36;
-			} else if (dot <= 90) {
-				x = 90 - dot;
-				y = 18;
+				y = 0;
+			} else if (dot < frameSize.x + frameSize.y) {
+				x = frameSize.x;
+				y = dot - frameSize.x;
+			} else if (dot < 2 * frameSize.x + frameSize.y + 1) {
+				x = 2 * frameSize.x + frameSize.y - dot;
+				y = frameSize.y;
 			} else {
 				x = 0;
-				y = 108 - dot;
+				y = 2 * (frameSize.x + frameSize.y) - dot;
 			}
-			g.setColor(dot % 18 == light ? Color.CYAN : Color.RED);
-			g.fillRect(frameTopLeft.x + 4 * x, frameTopLeft.y + 4 * y, 2, 2);
+			g.setColor((dot + light) % (frameSize.x / 2) == 0 ? Color.CYAN : Color.RED);
+			g.fillRect(t(frameTopLeftTile.x) + 4 * x, t(frameTopLeftTile.y) + 4 * y, 2, 2);
 		}
+
 	}
 
 	private void drawPressKeyToStart(Graphics2D g) {
