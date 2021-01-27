@@ -22,6 +22,7 @@ public class PacManGameModel {
 
 	public static final byte CLASSIC = 0, MS_PACMAN = 1;
 
+	public PacManGameState state;
 	public byte variant;
 	public PacManGameWorld world;
 	public short levelNumber;
@@ -35,6 +36,10 @@ public class PacManGameModel {
 	public byte huntingPhase;
 	public short ghostBounty;
 	public List<Byte> levelSymbols;
+	public short globalDotCounter;
+	public boolean globalDotCounterEnabled;
+
+	public byte mazeFlashesRemaining; // TODO this does not belong here
 
 	public static PacManGameModel newPacManClassicGame() {
 		PacManGameModel game = new PacManGameModel();
@@ -86,6 +91,19 @@ public class PacManGameModel {
 			ghost.dotCounter = 0;
 			ghost.elroy = 0;
 		}
+	}
+
+	public String stateDescription() {
+		if (state == PacManGameState.HUNTING) {
+			String phaseName = inScatteringPhase() ? "Scattering" : "Chasing";
+			int phaseIndex = huntingPhase / 2;
+			return String.format("%s-%s (%d of 4)", state, phaseName, phaseIndex + 1);
+		}
+		return state.name();
+	}
+
+	public boolean inScatteringPhase() {
+		return huntingPhase % 2 == 0;
 	}
 
 	public Hiscore loadHighScore() {

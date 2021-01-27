@@ -12,7 +12,6 @@ import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.Stroke;
 
-import de.amr.games.pacman.game.core.PacManGameController;
 import de.amr.games.pacman.game.core.PacManGameModel;
 import de.amr.games.pacman.game.creatures.Ghost;
 import de.amr.games.pacman.lib.Direction;
@@ -25,14 +24,12 @@ public abstract class PacManGamePlayScene implements PacManGameScene {
 	private static final Polygon TRIANGLE = new Polygon(new int[] { -4, 4, 0 }, new int[] { 0, 0, 4 }, 3);
 
 	protected final PacManGameSwingUI ui;
-	protected final PacManGameController controller;
 	protected final PacManGameModel game;
 	protected final V2i size;
 
-	public PacManGamePlayScene(PacManGameSwingUI ui, PacManGameController controller, V2i size) {
+	public PacManGamePlayScene(PacManGameSwingUI ui, PacManGameModel game, V2i size) {
 		this.ui = ui;
-		this.controller = controller;
-		this.game = controller.game;
+		this.game = game;
 		this.size = size;
 	}
 
@@ -43,9 +40,9 @@ public abstract class PacManGamePlayScene implements PacManGameScene {
 
 	public void drawDebugInfo(Graphics2D g) {
 		if (PacManGameSwingUI.debugMode) {
-			long remaining = controller.state.remaining();
+			long remaining = game.state.remaining();
 			String ticksText = remaining == Long.MAX_VALUE ? "forever" : remaining + " ticks remaining";
-			String stateText = String.format("%s (%s)", controller.stateDescription(), ticksText);
+			String stateText = String.format("%s (%s)", game.stateDescription(), ticksText);
 			g.setColor(Color.WHITE);
 			g.setFont(new Font("Arial", Font.PLAIN, 6));
 			g.drawString(stateText, t(1), t(3));

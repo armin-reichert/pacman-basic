@@ -12,7 +12,7 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
-import de.amr.games.pacman.game.core.PacManGameController;
+import de.amr.games.pacman.game.core.PacManGameModel;
 import de.amr.games.pacman.game.core.PacManGameState;
 import de.amr.games.pacman.game.creatures.Creature;
 import de.amr.games.pacman.game.creatures.Ghost;
@@ -32,8 +32,8 @@ public class MsPacManPlayScene extends PacManGamePlayScene {
 
 	private final MsPacManAssets assets;
 
-	public MsPacManPlayScene(PacManGameSwingUI ui, PacManGameController controller, V2i size, MsPacManAssets assets) {
-		super(ui, controller, size);
+	public MsPacManPlayScene(PacManGameSwingUI ui, PacManGameModel game, V2i size, MsPacManAssets assets) {
+		super(ui, game, size);
 		this.assets = assets;
 	}
 
@@ -96,7 +96,7 @@ public class MsPacManPlayScene extends PacManGamePlayScene {
 
 	private void drawLivesCounter(Graphics2D g) {
 		int maxLives = 5;
-		int displayedLives = controller.started ? game.lives - 1 : game.lives;
+		int displayedLives = game.lives;
 		int y = size.y - t(2);
 		for (int i = 0; i < Math.min(displayedLives, maxLives); ++i) {
 			g.drawImage(assets.life, t(2 * (i + 1)), y, null);
@@ -123,13 +123,13 @@ public class MsPacManPlayScene extends PacManGamePlayScene {
 	}
 
 	private void drawMaze(Graphics2D g) {
-		if (controller.mazeFlashesRemaining > 0) {
+		if (game.mazeFlashesRemaining > 0) {
 			clock.runAlternating(clock.sec(0.25), () -> {
 				g.drawImage(assets.mazeEmptyDark[game.level.mazeNumber - 1], 0, t(3), null);
 			}, () -> {
 //				g.drawImage(assets.mazeEmptyBright[mazeIndex], 0, t(3), null);
 			}, () -> {
-				controller.mazeFlashesRemaining--;
+				game.mazeFlashesRemaining--;
 			});
 			return;
 		}
@@ -138,7 +138,7 @@ public class MsPacManPlayScene extends PacManGamePlayScene {
 			range(4, game.world.yTiles() - 3).forEach(y -> {
 				if (game.level.isFoodRemoved(x, y)) {
 					hideFood(g, x, y);
-				} else if (controller.state == PacManGameState.HUNTING && game.world.isEnergizerTile(x, y)) {
+				} else if (game.state == PacManGameState.HUNTING && game.world.isEnergizerTile(x, y)) {
 					clock.runOrBeIdle(10, () -> hideFood(g, x, y));
 				}
 			});
@@ -173,7 +173,7 @@ public class MsPacManPlayScene extends PacManGamePlayScene {
 		}
 		if (pac.speed == 0) {
 			// medium open mouth when in READY state, else full face
-			return controller.state == PacManGameState.READY ? assets.section(1, dir) : assets.section(2, dir);
+			return game.state == PacManGameState.READY ? assets.section(1, dir) : assets.section(2, dir);
 		}
 		if (!pac.couldMove) {
 			// medium open mouth
@@ -195,7 +195,7 @@ public class MsPacManPlayScene extends PacManGamePlayScene {
 			return assets.section(8 + dir, 5);
 		}
 		if (ghost.state == GhostState.FRIGHTENED) {
-			if (game.pac.powerTicksLeft <= 20 * game.level.numFlashes && controller.state == PacManGameState.HUNTING) {
+			if (game.pac.powerTicksLeft <= 20 * game.level.numFlashes && game.state == PacManGameState.HUNTING) {
 				// flashing blue/white, walking animation
 				int flashing = clock.frame(10, 2) == 0 ? 8 : 10;
 				return assets.section(walking + flashing, 4);

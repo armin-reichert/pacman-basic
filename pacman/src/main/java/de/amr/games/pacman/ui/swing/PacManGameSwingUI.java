@@ -175,13 +175,13 @@ public class PacManGameSwingUI implements PacManGameUI {
 		if (game.variant == PacManGameModel.CLASSIC) {
 			PacManClassicAssets assets = new PacManClassicAssets();
 			soundManager = new PacManGameSoundManager(assets.soundURL::get);
-			introScene = new PacManClassicIntroScene(this, controller, unscaledSizePixels, assets);
-			playScene = new PacManClassicPlayScene(this, controller, unscaledSizePixels, assets);
+			introScene = new PacManClassicIntroScene(this, game, unscaledSizePixels, assets);
+			playScene = new PacManClassicPlayScene(this, game, unscaledSizePixels, assets);
 		} else {
 			MsPacManAssets assets = new MsPacManAssets();
 			soundManager = new PacManGameSoundManager(assets.soundURL::get);
-			introScene = new MsPacManIntroScene(this, controller, unscaledSizePixels, assets);
-			playScene = new MsPacManPlayScene(this, controller, unscaledSizePixels, assets);
+			introScene = new MsPacManIntroScene(this, game, unscaledSizePixels, assets);
+			playScene = new MsPacManPlayScene(this, game, unscaledSizePixels, assets);
 		}
 
 		if (titleUpdateTimer != null) {
@@ -299,7 +299,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 	private void updateScene() {
 		PacManGameScene scene = null;
-		if (controller.state == PacManGameState.INTRO) {
+		if (game.state == PacManGameState.INTRO) {
 			scene = introScene;
 		} else {
 			scene = playScene;

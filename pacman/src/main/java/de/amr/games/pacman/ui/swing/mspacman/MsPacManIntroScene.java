@@ -10,7 +10,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
 
-import de.amr.games.pacman.game.core.PacManGameController;
+import de.amr.games.pacman.game.core.PacManGameModel;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.api.PacManGameSound;
@@ -22,11 +22,11 @@ public class MsPacManIntroScene implements PacManGameScene {
 	private static final Color[] GHOST_COLORS = { Color.RED, Color.PINK, Color.CYAN, Color.ORANGE };
 
 	private final PacManGameSwingUI ui;
-	private final PacManGameController game;
+	private final PacManGameModel game;
 	private final V2i size;
 	private final MsPacManAssets assets;
 
-	public MsPacManIntroScene(PacManGameSwingUI ui, PacManGameController game, V2i size, MsPacManAssets assets) {
+	public MsPacManIntroScene(PacManGameSwingUI ui, PacManGameModel game, V2i size, MsPacManAssets assets) {
 		this.ui = ui;
 		this.game = game;
 		this.size = size;
@@ -93,7 +93,7 @@ public class MsPacManIntroScene implements PacManGameScene {
 		long animationTime = game.state.running - animationStart;
 		if (animationTime == animationStart) {
 			ghostWalking[0] = true;
-			game.ui.playSound(PacManGameSound.CREDIT);
+			ui.playSound(PacManGameSound.CREDIT);
 		}
 
 		g.setFont(assets.scoreFont);
@@ -134,10 +134,10 @@ public class MsPacManIntroScene implements PacManGameScene {
 					ghostWalking[ghost] = false;
 					if (ghost < 3) {
 						ghostWalking[ghost + 1] = true;
-						game.ui.playSound(PacManGameSound.CREDIT);
+						ui.playSound(PacManGameSound.CREDIT);
 					} else {
 						pacWalking = true;
-						game.ui.loopSound(PacManGameSound.PACMAN_MUNCH);
+						ui.loopSound(PacManGameSound.PACMAN_MUNCH);
 					}
 				}
 			}
@@ -165,7 +165,7 @@ public class MsPacManIntroScene implements PacManGameScene {
 		if (pacReachedTarget) {
 			drawPointsAnimation(g, 26);
 			drawPressKeyToStart(g);
-			game.ui.stopAllSounds();
+			ui.stopAllSounds();
 		}
 
 		// restart intro after 30 seconds

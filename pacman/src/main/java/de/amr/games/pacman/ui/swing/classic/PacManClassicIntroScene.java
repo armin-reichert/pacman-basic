@@ -11,7 +11,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.stream.IntStream;
 
-import de.amr.games.pacman.game.core.PacManGameController;
+import de.amr.games.pacman.game.core.PacManGameModel;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.api.PacManGameSound;
@@ -28,7 +28,7 @@ public class PacManClassicIntroScene implements PacManGameScene {
 	private static final Color[] GHOST_COLORS = { Color.RED, Color.PINK, Color.CYAN, Color.ORANGE };
 
 	private final PacManGameSwingUI ui;
-	private final PacManGameController game;
+	private final PacManGameModel game;
 	private final V2i size;
 	private final PacManClassicAssets assets;
 
@@ -37,7 +37,7 @@ public class PacManClassicIntroScene implements PacManGameScene {
 	private int lastKilledGhost;
 	private boolean ghostsChasingPacMan;
 
-	public PacManClassicIntroScene(PacManGameSwingUI ui, PacManGameController game, V2i size, PacManClassicAssets assets) {
+	public PacManClassicIntroScene(PacManGameSwingUI ui, PacManGameModel game, V2i size, PacManClassicAssets assets) {
 		this.ui = ui;
 		this.game = game;
 		this.size = size;
@@ -78,7 +78,7 @@ public class PacManClassicIntroScene implements PacManGameScene {
 			int ghostStart = 3 + 2 * ghost;
 			int y = t(10 + 3 * ghost);
 			game.state.runAt(clock.sec(ghostStart), () -> {
-				game.ui.playSound(PacManGameSound.CREDIT);
+				ui.playSound(PacManGameSound.CREDIT);
 			});
 			game.state.runAfter(clock.sec(ghostStart), () -> {
 				g.drawImage(assets.section(0, 4 + ghost), t(2) - 3, y - 2, null);
@@ -96,7 +96,7 @@ public class PacManClassicIntroScene implements PacManGameScene {
 		});
 
 		game.state.runAt(clock.sec(13), () -> {
-			game.ui.loopSound(PacManGameSound.GHOST_SIREN_1);
+			ui.loopSound(PacManGameSound.GHOST_SIREN_1);
 		});
 
 		game.state.runAfter(clock.sec(13), () -> {
@@ -108,7 +108,7 @@ public class PacManClassicIntroScene implements PacManGameScene {
 		});
 
 		game.state.runAt(clock.sec(24), () -> {
-			game.ui.stopSound(PacManGameSound.PACMAN_POWER);
+			ui.stopSound(PacManGameSound.PACMAN_POWER);
 		});
 
 		game.state.runAfter(clock.sec(24), () -> {
@@ -168,8 +168,8 @@ public class PacManClassicIntroScene implements PacManGameScene {
 			leftmostGhostX -= 0.8f;
 		} else {
 			ghostsChasingPacMan = false;
-			game.ui.stopSound(PacManGameSound.GHOST_SIREN_1);
-			game.ui.loopSound(PacManGameSound.PACMAN_POWER);
+			ui.stopSound(PacManGameSound.GHOST_SIREN_1);
+			ui.loopSound(PacManGameSound.PACMAN_POWER);
 		}
 	}
 
@@ -185,7 +185,7 @@ public class PacManClassicIntroScene implements PacManGameScene {
 				g.drawImage(assets.numbers.get(bounty), x, y, null);
 				if (lastKilledGhost != ghost) {
 					lastKilledGhost++;
-					game.ui.playSound(PacManGameSound.GHOST_EATEN);
+					ui.playSound(PacManGameSound.GHOST_EATEN);
 				}
 			}
 		}
