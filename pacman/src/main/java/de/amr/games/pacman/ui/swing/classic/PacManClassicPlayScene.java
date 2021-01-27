@@ -42,6 +42,7 @@ public class PacManClassicPlayScene extends PacManGamePlayScene {
 	private final Animation pacCollapsing;
 	private final EnumMap<Direction, Animation> pacWalking;
 	private final List<EnumMap<Direction, Animation>> ghostsWalking;
+	private final EnumMap<Direction, BufferedImage> ghostEyes;
 
 	public PacManClassicPlayScene(PacManGameSwingUI ui, PacManGameModel game, V2i size, PacManClassicAssets assets) {
 		super(ui, game, size);
@@ -80,6 +81,12 @@ public class PacManClassicPlayScene extends PacManGamePlayScene {
 				animationForDir.put(direction, animation);
 			}
 			ghostsWalking.add(animationForDir);
+		}
+
+		ghostEyes = new EnumMap<>(Direction.class);
+		for (Direction direction : Direction.values()) {
+			int dir = DIR.get(direction);
+			ghostEyes.put(direction, assets.section(8 + dir, 5));
 		}
 
 		Logging.log("");
@@ -225,8 +232,7 @@ public class PacManClassicPlayScene extends PacManGamePlayScene {
 		int dir = DIR.get(ghost.wishDir);
 		int walking = ghost.speed == 0 ? 0 : clock.frame(5, 2);
 		if (ghost.state == GhostState.DEAD || ghost.state == GhostState.ENTERING_HOUSE) {
-			// eyes looking towards intended move direction
-			return assets.section(8 + dir, 5);
+			return ghostEyes.get(ghost.wishDir);
 		}
 		if (ghost.state == GhostState.FRIGHTENED) {
 			if (game.pac.powerTicksLeft <= 20 * game.level.numFlashes && game.state == PacManGameState.HUNTING) {
