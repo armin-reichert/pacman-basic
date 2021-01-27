@@ -35,12 +35,15 @@ public class PacManClassicPlayScene extends PacManGamePlayScene {
 
 	private final PacManClassicAssets assets;
 
+	private final BufferedImage pacFull;
 	private Animation pacCollapsing;
 	private EnumMap<Direction, Animation> pacWalking;
 
 	public PacManClassicPlayScene(PacManGameSwingUI ui, PacManGameModel game, V2i size, PacManClassicAssets assets) {
 		super(ui, game, size);
 		this.assets = assets;
+
+		pacFull = assets.section(2, 0);
 
 		pacCollapsing = new Animation(8);
 		for (int i = 0; i < 11; ++i) {
@@ -181,17 +184,15 @@ public class PacManClassicPlayScene extends PacManGamePlayScene {
 	}
 
 	private BufferedImage sprite(Pac pac) {
-		BufferedImage fullPac = assets.section(2, 0);
-		int dir = DIR.get(pac.dir);
 		if (pac.dead) {
-			return pacCollapsing.isRunning() ? pacCollapsing.frame() : fullPac;
+			return pacCollapsing.isRunning() ? pacCollapsing.frame() : pacFull;
 		}
 		if (pac.speed == 0) {
-			return fullPac;
+			return pacFull;
 		}
 		if (!pac.couldMove) {
 			// mouth half open towards move dir
-			return assets.section(1, dir);
+			return assets.section(1, DIR.get(pac.dir));
 		}
 		return pacWalking.get(pac.dir).frame();
 	}

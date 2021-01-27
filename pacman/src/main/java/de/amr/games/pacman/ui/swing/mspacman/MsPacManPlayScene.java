@@ -32,12 +32,19 @@ import de.amr.games.pacman.ui.swing.scene.PacManGamePlayScene;
 public class MsPacManPlayScene extends PacManGamePlayScene {
 
 	private final MsPacManAssets assets;
+	private final EnumMap<Direction, BufferedImage> fullPac;
 	private final Animation pacCollapsingAnimation;
 	private final EnumMap<Direction, Animation> pacWalking;
 
 	public MsPacManPlayScene(PacManGameSwingUI ui, PacManGameModel game, V2i size, MsPacManAssets assets) {
 		super(ui, game, size);
 		this.assets = assets;
+
+		fullPac = new EnumMap<>(Direction.class);
+		for (Direction direction : Direction.values()) {
+			int dir = MsPacManAssets.DIR.get(direction);
+			fullPac.put(direction, assets.section(2, dir));
+		}
 
 		pacCollapsingAnimation = new Animation(10);
 		for (int i = 0; i < 2; ++i) {
@@ -46,10 +53,11 @@ public class MsPacManPlayScene extends PacManGamePlayScene {
 			pacCollapsingAnimation.addFrame(assets.section(0, 1));
 			pacCollapsingAnimation.addFrame(assets.section(0, 2));
 		}
+
 		pacWalking = new EnumMap<>(Direction.class);
 		for (Direction direction : Direction.values()) {
 			int dir = MsPacManAssets.DIR.get(direction);
-			Animation walking = new Animation(4);
+			Animation walking = new Animation(2);
 			walking.setLoop(true);
 			walking.start();
 			walking.addFrame(assets.section(0, dir));
@@ -202,16 +210,10 @@ public class MsPacManPlayScene extends PacManGamePlayScene {
 
 	private BufferedImage sprite(Pac pac) {
 		int dir = MsPacManAssets.DIR.get(pac.dir);
-		BufferedImage fullPac = assets.section(2, dir);
 		if (pac.dead) {
 			return pacCollapsingAnimation.isRunning() ? pacCollapsingAnimation.frame() : assets.section(1, dir);
 		}
-		if (pac.speed == 0) {
-			// medium open mouth when in READY state, else full face
-			return game.state == PacManGameState.READY ? assets.section(1, dir) : fullPac;
-		}
-		if (!pac.couldMove) {
-			// medium open mouth
+		if (pac.speed == 0 || !pac.couldMove) {
 			return assets.section(1, dir);
 		}
 		return pacWalking.get(pac.dir).frame();
