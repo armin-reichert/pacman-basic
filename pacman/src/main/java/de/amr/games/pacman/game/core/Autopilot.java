@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -22,12 +23,12 @@ import de.amr.games.pacman.lib.V2i;
  */
 public class Autopilot {
 
-	private static final int MAX_GHOST_AHEAD_DETECTION_DIST = 4; // tiles
-	private static final int MAX_GHOST_BEHIND_DETECTION_DIST = 2; // tiles
-	private static final int MAX_GHOST_CHASE_DIST = 10; // tiles
-	private static final int MAX_BONUS_HARVEST_DIST = 20; // tiles
+	static final int MAX_GHOST_AHEAD_DETECTION_DIST = 4; // tiles
+	static final int MAX_GHOST_BEHIND_DETECTION_DIST = 2; // tiles
+	static final int MAX_GHOST_CHASE_DIST = 10; // tiles
+	static final int MAX_BONUS_HARVEST_DIST = 20; // tiles
 
-	private static class AutoPilotInfo {
+	static class GameInfo {
 
 		Ghost hunterAhead;
 		double hunterAheadDistance;
@@ -59,23 +60,19 @@ public class Autopilot {
 			s += "-- End autopilot info";
 			return s;
 		}
+
 	}
 
 	public boolean logEnabled;
-	private final PacManGameController controller;
 
-	private void log(String msg, Object... args) {
-		if (logEnabled) {
-			Logging.log(msg, args);
-		}
-	}
+	private final Supplier<PacManGameModel> fnGame;
 
-	public Autopilot(PacManGameController controller) {
-		this.controller = controller;
+	public Autopilot(Supplier<PacManGameModel> fnGame) {
+		this.fnGame = fnGame;
 	}
 
 	public void run() {
-		PacManGameModel game = controller.game;
+		PacManGameModel game = fnGame.get();
 		if (game.pac.forcedDirection) {
 			game.pac.forcedDirection = false;
 			return;
@@ -83,15 +80,21 @@ public class Autopilot {
 		if (game.pac.couldMove && !game.pac.changedTile) {
 			return;
 		}
-		AutoPilotInfo data = collectData(game);
+		GameInfo data = collectData(game);
 		if (data.hunterAhead != null || data.hunterBehind != null || !data.frightenedGhosts.isEmpty()) {
 			log("\n%s", data);
 		}
 		takeAction(game, data);
 	}
 
-	private AutoPilotInfo collectData(PacManGameModel game) {
-		AutoPilotInfo data = new AutoPilotInfo();
+	private void log(String msg, Object... args) {
+		if (logEnabled) {
+			Logging.log(msg, args);
+		}
+	}
+
+	private GameInfo collectData(PacManGameModel game) {
+		GameInfo data = new GameInfo();
 		Ghost hunterAhead = findHuntingGhostAhead(game); // Where is Hunter?
 		if (hunterAhead != null) {
 			data.hunterAhead = hunterAhead;
@@ -110,7 +113,7 @@ public class Autopilot {
 		return data;
 	}
 
-	private void takeAction(PacManGameModel game, AutoPilotInfo data) {
+	private void takeAction(PacManGameModel game, GameInfo data) {
 		if (data.hunterAhead != null) {
 			Direction escapeDir = null;
 			if (data.hunterBehind != null) {

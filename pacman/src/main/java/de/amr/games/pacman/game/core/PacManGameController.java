@@ -59,7 +59,7 @@ public class PacManGameController implements Runnable {
 	public PacManGameModel game;
 	public PacManGameUI ui;
 
-	public Autopilot autoPacController;
+	public Autopilot autopilot;
 	public boolean autoControlled;
 
 	public boolean paused;
@@ -71,7 +71,7 @@ public class PacManGameController implements Runnable {
 	public boolean globalDotCounterEnabled;
 
 	public PacManGameController() {
-		autoPacController = new Autopilot(this);
+		autopilot = new Autopilot(() -> game);
 	}
 
 	public void initPacManClassicGame() {
@@ -633,7 +633,7 @@ public class PacManGameController implements Runnable {
 
 	private void steerPac() {
 		if (autoControlled) {
-			autoPacController.run();
+			autopilot.run();
 		} else {
 			if (ui.keyPressed("left")) {
 				game.pac.wishDir = LEFT;
