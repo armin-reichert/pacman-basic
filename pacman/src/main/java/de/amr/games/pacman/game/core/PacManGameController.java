@@ -245,12 +245,11 @@ public class PacManGameController implements Runnable {
 	}
 
 	private PacManGameState runIntroState() {
-		if (ui.keyPressed("v")) {
-			toggleGameVariant();
-			return state;
-		}
 		if (ui.keyPressed("space")) {
 			return changeState(this::exitIntroState, this::enterReadyState);
+		}
+		if (ui.keyPressed("v")) {
+			toggleGameVariant();
 		}
 		return state.run();
 	}
@@ -262,32 +261,34 @@ public class PacManGameController implements Runnable {
 
 	private void enterReadyState() {
 		state = READY;
-		state.setDuration(clock.sec(started ? 3 : 6));
+		state.setDuration(clock.sec(started ? 2 : 5));
 		makeGuysReady();
-		ui.stopAllSounds();
 		for (Ghost ghost : game.ghosts) {
 			ghost.visible = false;
 		}
+		ui.stopAllSounds();
 	}
 
 	private PacManGameState runReadyState() {
 		if (state.hasExpired()) {
-			started = true;
 			return changeState(this::exitReadyState, this::enterHuntingState);
 		}
 		if (state.running == clock.sec(0.5)) {
-			ui.showMessage(ui.translation("READY"), false);
 			for (Ghost ghost : game.ghosts) {
 				ghost.visible = true;
 			}
 		}
-		if (!started && state.running == clock.sec(1)) {
-			ui.playSound(PacManGameSound.GAME_READY);
+		if (state.running == clock.sec(1)) {
+			ui.showMessage(ui.translation("READY"), false);
+			if (!started) {
+				ui.playSound(PacManGameSound.GAME_READY);
+			}
 		}
 		return state.run();
 	}
 
 	private void exitReadyState() {
+		started = true;
 		ui.clearMessage();
 	}
 
