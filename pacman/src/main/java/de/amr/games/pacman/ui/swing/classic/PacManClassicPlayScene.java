@@ -23,7 +23,6 @@ import de.amr.games.pacman.game.creatures.Ghost;
 import de.amr.games.pacman.game.creatures.GhostState;
 import de.amr.games.pacman.game.creatures.Pac;
 import de.amr.games.pacman.lib.Direction;
-import de.amr.games.pacman.lib.Logging;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.swing.Animation;
 import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
@@ -43,6 +42,8 @@ public class PacManClassicPlayScene extends PacManGamePlayScene {
 	private final EnumMap<Direction, Animation> pacWalking;
 	private final List<EnumMap<Direction, Animation>> ghostsWalking;
 	private final EnumMap<Direction, BufferedImage> ghostEyes;
+	private final Animation ghostBlue;
+	private final Animation ghostFlashing;
 
 	public PacManClassicPlayScene(PacManGameSwingUI ui, PacManGameModel game, V2i size, PacManClassicAssets assets) {
 		super(ui, game, size);
@@ -89,7 +90,19 @@ public class PacManClassicPlayScene extends PacManGamePlayScene {
 			ghostEyes.put(direction, assets.section(8 + dir, 5));
 		}
 
-		Logging.log("");
+		ghostBlue = new Animation(20);
+		ghostBlue.setLoop(true);
+		ghostBlue.start();
+		ghostBlue.addFrame(assets.section(8, 4));
+		ghostBlue.addFrame(assets.section(9, 4));
+
+		ghostFlashing = new Animation(15);
+		ghostFlashing.setLoop(true);
+		ghostFlashing.start();
+		ghostFlashing.addFrame(assets.section(8, 4));
+		ghostFlashing.addFrame(assets.section(9, 4));
+		ghostFlashing.addFrame(assets.section(10, 4));
+		ghostFlashing.addFrame(assets.section(11, 4));
 	}
 
 	@Override
@@ -229,25 +242,18 @@ public class PacManClassicPlayScene extends PacManGamePlayScene {
 		if (ghost.bounty > 0) {
 			return assets.numbers.get(ghost.bounty);
 		}
-		int dir = DIR.get(ghost.wishDir);
-		int walking = ghost.speed == 0 ? 0 : clock.frame(5, 2);
 		if (ghost.state == GhostState.DEAD || ghost.state == GhostState.ENTERING_HOUSE) {
 			return ghostEyes.get(ghost.wishDir);
 		}
 		if (ghost.state == GhostState.FRIGHTENED) {
 			if (game.pac.powerTicksLeft <= 20 * game.level.numFlashes && game.state == PacManGameState.HUNTING) {
-				// flashing blue/white, walking animation
-				int flashing = clock.frame(10, 2) == 0 ? 8 : 10;
-				return assets.section(walking + flashing, 4);
+				return ghostFlashing.frame();
 			}
-			// blue, walking animation
-			return assets.section(8 + walking, 4);
+			return ghostBlue.frame();
 		}
 		if (ghost.state == GhostState.LOCKED && game.pac.powerTicksLeft > 0) {
-			// blue, walking animation
-			return assets.section(8 + walking, 4);
+			return ghostBlue.frame();
 		}
-		// colored, walking animation, looking towards *intended* move direction
 		return ghostsWalking.get(ghost.id).get(ghost.wishDir).frame();
 	}
 }
