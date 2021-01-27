@@ -59,7 +59,7 @@ public class PacManGameApp {
 	}
 
 	/**
-	 * Starter class.
+	 * Starts the Pac-Man game application.
 	 * 
 	 * @param args command-line arguments
 	 *             <ul>
