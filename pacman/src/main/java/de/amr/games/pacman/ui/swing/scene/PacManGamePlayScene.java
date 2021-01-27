@@ -75,7 +75,7 @@ public abstract class PacManGamePlayScene implements PacManGameScene {
 				if (game.world.isIntersection(x, y)) {
 					for (Direction dir : Direction.values()) {
 						int nx = x + dir.vec.x, ny = y + dir.vec.y;
-						if (game.world.isWall(nx, ny)) {
+						if (!game.world.isAccessible(nx, ny)) {
 							continue;
 						}
 						g.drawLine(t(x) + HTS, t(y) + HTS, t(nx) + HTS, t(ny) + HTS);

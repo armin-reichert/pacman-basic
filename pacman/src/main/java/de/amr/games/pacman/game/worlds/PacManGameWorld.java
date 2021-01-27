@@ -68,8 +68,6 @@ public interface PacManGameWorld {
 
 	V2i portalRight(int i);
 
-	boolean isWall(int x, int y);
-
 	boolean isAccessible(int x, int y);
 
 	default boolean isAccessible(V2i tile) {

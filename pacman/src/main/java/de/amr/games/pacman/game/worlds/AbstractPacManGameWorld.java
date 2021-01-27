@@ -207,12 +207,16 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 
 	@Override
 	public boolean isAccessible(int x, int y) {
-		return !isWall(x, y) || isPortal(x, y);
-	}
-
-	@Override
-	public boolean isWall(int x, int y) {
-		return inMapRange(x, y) && map[y][x] == WALL;
+		if (isPortal(x, y)) {
+			return true;
+		}
+		if (!inMapRange(x, y)) {
+			return false;
+		}
+		if (isGhostHouseDoor(x, y)) {
+			return false;
+		}
+		return map[y][x] != WALL;
 	}
 
 	@Override

@@ -80,13 +80,7 @@ public class Creature {
 	}
 
 	public boolean canAccessTile(int x, int y) {
-		if (world.isPortal(x, y)) {
-			return true;
-		}
-		if (world.isGhostHouseDoor(x, y)) {
-			return false;
-		}
-		return world.inMapRange(x, y) && !world.isWall(x, y);
+		return world.isAccessible(x, y);
 	}
 
 	public boolean canAccessTile(V2i tile) {
