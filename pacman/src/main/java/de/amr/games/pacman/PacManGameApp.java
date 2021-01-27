@@ -72,11 +72,7 @@ public class PacManGameApp {
 		Options options = Options.parse(args);
 		invokeLater(() -> {
 			PacManGameController gameController = new PacManGameController();
-			if (options.variant == PacManGameModel.CLASSIC) {
-				gameController.initPacManClassicGame();
-			} else {
-				gameController.initMsPacManGame();
-			}
+			gameController.initGame(options.variant);
 			PacManGameWorld world = gameController.game().get().world;
 			PacManGameSwingUI ui = new PacManGameSwingUI(gameController, world.xTiles(), world.yTiles(), options.scaling);
 			ui.updateGame(gameController.game().get());

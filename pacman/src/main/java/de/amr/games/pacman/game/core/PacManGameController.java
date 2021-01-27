@@ -72,13 +72,15 @@ public class PacManGameController implements Runnable {
 		autopilot = new Autopilot(() -> game);
 	}
 
-	public void initPacManClassicGame() {
-		game = PacManGameModel.newPacManClassicGame();
-		reset();
-	}
-
-	public void initMsPacManGame() {
-		game = PacManGameModel.newMsPacManGame();
+	public void initGame(int variant) {
+		if (variant == PacManGameModel.CLASSIC) {
+			game = PacManGameModel.newPacManClassicGame();
+		} else if (variant == PacManGameModel.MS_PACMAN) {
+			game = PacManGameModel.newMsPacManGame();
+		} else {
+			log("Illegal game variant value %d, preparing Ms. Pac-Man game", variant);
+			game = PacManGameModel.newMsPacManGame();
+		}
 		reset();
 	}
 
@@ -113,9 +115,9 @@ public class PacManGameController implements Runnable {
 
 	private void toggleGameVariant() {
 		if (game.variant == PacManGameModel.CLASSIC) {
-			initMsPacManGame();
+			initGame(PacManGameModel.MS_PACMAN);
 		} else {
-			initPacManClassicGame();
+			initGame(PacManGameModel.CLASSIC);
 		}
 		ui.sounds().ifPresent(SoundManager::stopAllSounds);
 		ui.updateGame(game);
