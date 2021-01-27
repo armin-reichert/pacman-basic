@@ -21,9 +21,9 @@ public interface PacManGameUI {
 
 	void showMessage(String message, boolean important);
 
-	void clearMessage();
-
 	void showFlashMessage(String message);
+
+	void clearMessages();
 
 	boolean keyPressed(String keySpec);
 

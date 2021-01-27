@@ -92,7 +92,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 	private Color messageColor;
 	private Font messageFont;
 
-	private List<String> flashMessages = new ArrayList<>();
+	private final List<String> flashMessages = new ArrayList<>();
 	private long flashMessageTicksLeft;
 
 	private Timer titleUpdateTimer;
@@ -206,8 +206,10 @@ public class PacManGameSwingUI implements PacManGameUI {
 	}
 
 	@Override
-	public void clearMessage() {
+	public void clearMessages() {
 		messageText = null;
+		flashMessages.clear();
+		flashMessageTicksLeft = 0;
 	}
 
 	@Override

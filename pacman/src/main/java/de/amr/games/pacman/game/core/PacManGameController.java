@@ -104,7 +104,7 @@ public class PacManGameController implements Runnable {
 		game.mazeFlashesRemaining = 0;
 		if (ui != null) {
 			ui.sounds().ifPresent(SoundManager::stopAllSounds);
-			ui.clearMessage();
+			ui.clearMessages();
 		}
 		enterIntroState();
 		log("Game variant is %s", game.variant == PacManGameModel.CLASSIC ? "Pac-Man" : "Ms. Pac-Man");
@@ -294,7 +294,7 @@ public class PacManGameController implements Runnable {
 
 	private void exitReadyState() {
 		gameStarted = true;
-		ui.clearMessage();
+		ui.clearMessages();
 	}
 
 	// HUNTING
