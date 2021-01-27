@@ -11,6 +11,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.util.EnumMap;
 
 import de.amr.games.pacman.game.core.PacManGameModel;
 import de.amr.games.pacman.game.core.PacManGameState;
@@ -19,6 +20,7 @@ import de.amr.games.pacman.game.creatures.Creature;
 import de.amr.games.pacman.game.creatures.Ghost;
 import de.amr.games.pacman.game.creatures.GhostState;
 import de.amr.games.pacman.game.creatures.Pac;
+import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.swing.Animation;
 import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
@@ -33,28 +35,42 @@ public class PacManClassicPlayScene extends PacManGamePlayScene {
 
 	private final PacManClassicAssets assets;
 
-	private Animation pacCollapsingAnimation;
+	private Animation pacCollapsing;
+	private EnumMap<Direction, Animation> pacWalking;
 
 	public PacManClassicPlayScene(PacManGameSwingUI ui, PacManGameModel game, V2i size, PacManClassicAssets assets) {
 		super(ui, game, size);
 		this.assets = assets;
 
-		pacCollapsingAnimation = new Animation(8);
+		pacCollapsing = new Animation(8);
 		for (int i = 0; i < 11; ++i) {
-			pacCollapsingAnimation.addFrame(assets.section(3 + i, 0));
+			pacCollapsing.addFrame(assets.section(3 + i, 0));
+		}
+
+		pacWalking = new EnumMap<>(Direction.class);
+		for (Direction direction : Direction.values()) {
+			int dir = DIR.get(direction);
+			Animation walking = new Animation(4);
+			walking.setLoop(true);
+			walking.start();
+			walking.addFrame(assets.section(2, 0));
+			walking.addFrame(assets.section(1, dir));
+			walking.addFrame(assets.section(0, dir));
+			walking.addFrame(assets.section(1, dir));
+			pacWalking.put(direction, walking);
 		}
 	}
 
 	@Override
 	public void startPacManCollapsing() {
-		pacCollapsingAnimation.reset();
-		pacCollapsingAnimation.start();
+		pacCollapsing.reset();
+		pacCollapsing.start();
 	}
 
 	@Override
 	public void endPacManCollapsing() {
-		pacCollapsingAnimation.stop();
-		pacCollapsingAnimation.reset();
+		pacCollapsing.stop();
+		pacCollapsing.reset();
 	}
 
 	@Override
@@ -168,7 +184,7 @@ public class PacManClassicPlayScene extends PacManGamePlayScene {
 		BufferedImage fullPac = assets.section(2, 0);
 		int dir = DIR.get(pac.dir);
 		if (pac.dead) {
-			return pacCollapsingAnimation.isRunning() ? pacCollapsingAnimation.frame() : fullPac;
+			return pacCollapsing.isRunning() ? pacCollapsing.frame() : fullPac;
 		}
 		if (pac.speed == 0) {
 			return fullPac;
@@ -177,10 +193,7 @@ public class PacManClassicPlayScene extends PacManGamePlayScene {
 			// mouth half open towards move dir
 			return assets.section(1, dir);
 		}
-		// mouth animation towards move dir
-		// pattern (2, 0), (1, dir), (0, dir), (1, dir)
-		int frame = clock.frame(5, 4);
-		return frame == 0 ? fullPac : assets.section(frame % 2, dir);
+		return pacWalking.get(pac.dir).frame();
 	}
 
 	private BufferedImage sprite(Ghost ghost) {
