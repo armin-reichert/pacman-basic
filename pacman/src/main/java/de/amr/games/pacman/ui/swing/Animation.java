@@ -4,6 +4,11 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Sprite animation.
+ * 
+ * @author Armin Reichert
+ */
 public class Animation {
 
 	private int ticksPerFrame;
