@@ -29,4 +29,5 @@ public interface PacManGameUI {
 
 	Optional<SoundManager> sounds();
 
+	Optional<PacManAnimations> animations();
 }

@@ -4,7 +4,7 @@ import static de.amr.games.pacman.game.heaven.God.clock;
 import static de.amr.games.pacman.game.worlds.PacManGameWorld.HTS;
 import static de.amr.games.pacman.game.worlds.PacManGameWorld.TS;
 import static de.amr.games.pacman.game.worlds.PacManGameWorld.t;
-import static de.amr.games.pacman.ui.swing.mspacman.MsPacManAssets.DIR_INDEX;
+import static de.amr.games.pacman.ui.swing.mspacman.MsPacManAssets.DIR;
 import static java.util.stream.IntStream.range;
 
 import java.awt.Color;
@@ -20,6 +20,7 @@ import de.amr.games.pacman.game.creatures.GhostState;
 import de.amr.games.pacman.game.creatures.Pac;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.ui.swing.Animation;
 import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
 import de.amr.games.pacman.ui.swing.scene.PacManGamePlayScene;
 
@@ -32,9 +33,32 @@ public class MsPacManPlayScene extends PacManGamePlayScene {
 
 	private final MsPacManAssets assets;
 
+	private Animation pacCollapsingAnimation;
+
 	public MsPacManPlayScene(PacManGameSwingUI ui, PacManGameModel game, V2i size, MsPacManAssets assets) {
 		super(ui, game, size);
 		this.assets = assets;
+
+		pacCollapsingAnimation = new Animation(10);
+
+		for (int i = 0; i < 2; ++i) {
+			pacCollapsingAnimation.addFrame(assets.section(0, 3));
+			pacCollapsingAnimation.addFrame(assets.section(0, 0));
+			pacCollapsingAnimation.addFrame(assets.section(0, 1));
+			pacCollapsingAnimation.addFrame(assets.section(0, 2));
+		}
+	}
+
+	@Override
+	public void startPacManCollapsing() {
+		pacCollapsingAnimation.reset();
+		pacCollapsingAnimation.start();
+	}
+
+	@Override
+	public void endPacManCollapsing() {
+		pacCollapsingAnimation.stop();
+		pacCollapsingAnimation.reset();
 	}
 
 	@Override
@@ -166,14 +190,14 @@ public class MsPacManPlayScene extends PacManGamePlayScene {
 	}
 
 	private BufferedImage sprite(Pac pac) {
-		int dir = DIR_INDEX.get(pac.dir);
-		if (pac.collapsingTicksLeft > 0) {
-			// collapsing animation
-			return assets.section(0, pac.collapsingTicksLeft > 1 ? clock.frame(10, 4) : dir);
+		int dir = DIR.get(pac.dir);
+		BufferedImage fullPac = assets.section(2, dir);
+		if (pac.dead) {
+			return pacCollapsingAnimation.isRunning() ? pacCollapsingAnimation.frame() : assets.section(1, dir);
 		}
 		if (pac.speed == 0) {
 			// medium open mouth when in READY state, else full face
-			return game.state == PacManGameState.READY ? assets.section(1, dir) : assets.section(2, dir);
+			return game.state == PacManGameState.READY ? assets.section(1, dir) : fullPac;
 		}
 		if (!pac.couldMove) {
 			// medium open mouth
@@ -188,7 +212,7 @@ public class MsPacManPlayScene extends PacManGamePlayScene {
 		if (ghost.bounty > 0) {
 			return assets.bountyNumbers.get(ghost.bounty);
 		}
-		int dir = DIR_INDEX.get(ghost.wishDir);
+		int dir = DIR.get(ghost.wishDir);
 		int walking = ghost.speed == 0 ? 0 : clock.frame(5, 2);
 		if (ghost.state == GhostState.DEAD || ghost.state == GhostState.ENTERING_HOUSE) {
 			// eyes looking towards *intended* move direction

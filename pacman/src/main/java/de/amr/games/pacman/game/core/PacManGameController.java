@@ -175,7 +175,6 @@ public class PacManGameController implements Runnable {
 		game.pac.powerTicksLeft = 0;
 		game.pac.restingTicksLeft = 0;
 		game.pac.starvingTicks = 0;
-		game.pac.collapsingTicksLeft = 0;
 
 		for (Ghost ghost : game.ghosts) {
 			ghost.placeAt(game.world.ghostHome(ghost.id), HTS, 0);
@@ -502,21 +501,17 @@ public class PacManGameController implements Runnable {
 			}
 		}
 		if (game.state.running == clock.sec(2.5)) {
-			game.pac.collapsingTicksLeft = clock.sec(1.5);
+			ui.animations().ifPresent(animations -> animations.startPacManCollapsing());
 			ui.sounds().ifPresent(sm -> sm.playSound(PacManGameSound.PACMAN_DEATH));
-		}
-		if (game.pac.collapsingTicksLeft > 1) {
-			// count down until 1 such that animation stays at last frame until state expires
-			game.pac.collapsingTicksLeft--;
 		}
 		return game.state.run();
 	}
 
 	private void exitPacManDyingState() {
-		game.pac.collapsingTicksLeft = 0;
 		for (Ghost ghost : game.ghosts) {
 			ghost.visible = true;
 		}
+		ui.animations().ifPresent(animations -> animations.endPacManCollapsing());
 	}
 
 	// GHOST_DYING

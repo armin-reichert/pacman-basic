@@ -21,9 +21,6 @@ public class Pac extends Creature {
 	/** Number of clock ticks Pac is resting and will not move. */
 	public long restingTicksLeft;
 
-	/** Number of clock ticks Pac keeps collapsing. */
-	public long collapsingTicksLeft;
-
 	/** Number of clock ticks Pac has not eaten any pellet. */
 	public long starvingTicks;
 

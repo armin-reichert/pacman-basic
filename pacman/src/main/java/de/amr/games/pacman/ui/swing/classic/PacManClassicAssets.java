@@ -30,13 +30,13 @@ import de.amr.games.pacman.ui.api.PacManGameSound;
 public class PacManClassicAssets {
 
 	/** Sprite sheet order of directions. */
-	public static final Map<Direction, Integer> DIR_INDEX = new EnumMap<>(Direction.class);
+	public static final Map<Direction, Integer> DIR = new EnumMap<>(Direction.class);
 
 	static {
-		DIR_INDEX.put(Direction.RIGHT, 0);
-		DIR_INDEX.put(Direction.LEFT, 1);
-		DIR_INDEX.put(Direction.UP, 2);
-		DIR_INDEX.put(Direction.DOWN, 3);
+		DIR.put(Direction.RIGHT, 0);
+		DIR.put(Direction.LEFT, 1);
+		DIR.put(Direction.UP, 2);
+		DIR.put(Direction.DOWN, 3);
 	}
 
 	public final BufferedImage spriteSheet;

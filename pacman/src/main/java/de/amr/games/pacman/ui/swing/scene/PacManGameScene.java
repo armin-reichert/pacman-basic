@@ -4,13 +4,14 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.ui.api.PacManAnimations;
 
 /**
  * Implemented by all scenes of the Pac-Man and Ms. Pac-Man game.
  * 
  * @author Armin Reichert
  */
-public interface PacManGameScene {
+public interface PacManGameScene extends PacManAnimations {
 
 	V2i size();
 
@@ -30,6 +31,14 @@ public interface PacManGameScene {
 
 	default void end() {
 
+	}
+
+	@Override
+	default void startPacManCollapsing() {
+	}
+
+	@Override
+	default void endPacManCollapsing() {
 	}
 
 }

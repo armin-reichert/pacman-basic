@@ -3,7 +3,7 @@ package de.amr.games.pacman.ui.swing.mspacman;
 import static de.amr.games.pacman.game.heaven.God.clock;
 import static de.amr.games.pacman.game.worlds.PacManGameWorld.t;
 import static de.amr.games.pacman.lib.Direction.UP;
-import static de.amr.games.pacman.ui.swing.mspacman.MsPacManAssets.DIR_INDEX;
+import static de.amr.games.pacman.ui.swing.mspacman.MsPacManAssets.DIR;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -41,18 +41,18 @@ public class MsPacManIntroScene implements PacManGameScene {
 	private BufferedImage ghostWalking(Direction dir, int ghostID, boolean animated) {
 		if (animated) {
 			int frame = clock.frame(5, 2);
-			return assets.section(2 * DIR_INDEX.get(dir) + frame, 4 + ghostID);
+			return assets.section(2 * DIR.get(dir) + frame, 4 + ghostID);
 		} else {
-			return assets.section(2 * DIR_INDEX.get(dir), 4 + ghostID);
+			return assets.section(2 * DIR.get(dir), 4 + ghostID);
 		}
 	}
 
 	private BufferedImage pacWalking(Direction dir, boolean animated) {
 		if (animated) {
 			int frame = clock.frame(5, 3);
-			return assets.section(frame, DIR_INDEX.get(dir));
+			return assets.section(frame, DIR.get(dir));
 		} else {
-			return assets.section(1, DIR_INDEX.get(dir));
+			return assets.section(1, DIR.get(dir));
 		}
 	}
 
