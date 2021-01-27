@@ -106,7 +106,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 	public PacManGameSwingUI(PacManGameController controller, int xTiles, int yTiles, float scaling) {
 		this.controller = controller;
-		controller.ui = this;
+		controller.setUI(this);
 
 		this.scaling = scaling;
 		unscaledSizePixels = new V2i(xTiles * TS, yTiles * TS);
@@ -131,7 +131,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 			@Override
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KEY_PAUSE) {
-					controller.paused = !controller.paused;
+					controller.pauseGame(!controller.isGamePaused());
 				}
 				if (e.getKeyCode() == KEY_SLOWMODE) {
 					clock.targetFrequency = clock.targetFrequency == 60 ? 30 : 60;
@@ -232,7 +232,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 				g.setColor(canvas.getBackground());
 				g.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 				drawCurrentScene(g, scaling);
-				if (controller.paused) {
+				if (controller.isGamePaused()) {
 					drawPausedScreen(g);
 				}
 				g.dispose();

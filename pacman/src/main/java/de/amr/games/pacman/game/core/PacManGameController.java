@@ -56,14 +56,14 @@ import de.amr.games.pacman.ui.api.PacManGameUI;
  */
 public class PacManGameController implements Runnable {
 
-	public PacManGameUI ui;
+	private PacManGameUI ui;
 	private PacManGameModel game;
 
 	private Autopilot autopilot;
-	private boolean autoControlled;
+	private boolean autopilotEnabled;
 
-	public boolean paused;
-	public boolean started;
+	private boolean gamePaused;
+	private boolean started;
 
 	private PacManGameState suspendedState;
 
@@ -79,6 +79,18 @@ public class PacManGameController implements Runnable {
 	public void initMsPacManGame() {
 		game = PacManGameModel.newMsPacManGame();
 		reset();
+	}
+
+	public void setUI(PacManGameUI ui) {
+		this.ui = ui;
+	}
+
+	public boolean isGamePaused() {
+		return gamePaused;
+	}
+
+	public void pauseGame(boolean paused) {
+		this.gamePaused = paused;
 	}
 
 	public Optional<PacManGameModel> game() {
@@ -108,9 +120,9 @@ public class PacManGameController implements Runnable {
 	}
 
 	private void toggleAutopilot() {
-		autoControlled = !autoControlled;
-		ui.showFlashMessage("Autopilot " + (autoControlled ? "on" : "off"));
-		log("Pac-Man autopilot mode is " + (autoControlled ? "on" : "off"));
+		autopilotEnabled = !autopilotEnabled;
+		ui.showFlashMessage("Autopilot " + (autopilotEnabled ? "on" : "off"));
+		log("Pac-Man autopilot mode is " + (autopilotEnabled ? "on" : "off"));
 	}
 
 	private void togglePacImmunity() {
@@ -127,7 +139,7 @@ public class PacManGameController implements Runnable {
 	}
 
 	private void step() {
-		if (!paused) {
+		if (!gamePaused) {
 			readInput();
 			updateState();
 		}
@@ -620,7 +632,7 @@ public class PacManGameController implements Runnable {
 	}
 
 	private void steerPac() {
-		if (autoControlled) {
+		if (autopilotEnabled) {
 			autopilot.run();
 		} else {
 			if (ui.keyPressed("left")) {
