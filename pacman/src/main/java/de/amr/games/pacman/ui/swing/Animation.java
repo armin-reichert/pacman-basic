@@ -11,24 +11,35 @@ import java.util.List;
  */
 public class Animation {
 
-	private int ticksPerFrame;
-	private List<BufferedImage> sprites;
-	private int frame;
-	private int ticks;
+	private List<BufferedImage> sprites = new ArrayList<>();
+	private int frameTicks;
+	private int frameIndex;
+	private int ticksPassed;
 	private boolean running;
 	private boolean loop;
 
-	public Animation() {
-		this(1);
-	}
-
-	public Animation(int ticksPerFrame) {
-		sprites = new ArrayList<>();
-		this.ticksPerFrame = ticksPerFrame;
-	}
-
 	public void addFrame(BufferedImage sprite) {
 		sprites.add(sprite);
+	}
+
+	public BufferedImage getSprite(int i) {
+		return sprites.get(i);
+	}
+
+	public int currentFrameIndex() {
+		return frameIndex;
+	}
+
+	public int getFrameTicks() {
+		return frameTicks;
+	}
+
+	public void setFrameTicks(int ticks) {
+		frameTicks = ticks;
+	}
+
+	public int getDuration() {
+		return sprites.size() * frameTicks;
 	}
 
 	public void setLoop(boolean b) {
@@ -40,8 +51,8 @@ public class Animation {
 	}
 
 	public void reset() {
-		frame = 0;
-		ticks = 0;
+		frameIndex = 0;
+		ticksPassed = 0;
 	}
 
 	public void start() {
@@ -53,17 +64,19 @@ public class Animation {
 	}
 
 	public BufferedImage frame() {
-		BufferedImage current = sprites.get(frame);
+		BufferedImage currentSprite = sprites.get(frameIndex);
 		if (running) {
-			if (ticks < ticksPerFrame) {
-				++ticks;
-			} else if (frame < sprites.size() - 1) {
-				ticks = 0;
-				++frame;
-			} else if (loop && frame == sprites.size() - 1) {
-				reset();
+			if (ticksPassed < frameTicks) {
+				++ticksPassed;
+			} else {
+				if (frameIndex < sprites.size() - 1) {
+					ticksPassed = 0;
+					++frameIndex;
+				} else if (loop) {
+					reset();
+				}
 			}
 		}
-		return current;
+		return currentSprite;
 	}
 }

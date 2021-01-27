@@ -1,10 +1,11 @@
 package de.amr.games.pacman.ui.swing.classic;
 
+import static de.amr.games.pacman.game.creatures.GhostState.FRIGHTENED;
+import static de.amr.games.pacman.game.creatures.GhostState.LOCKED;
 import static de.amr.games.pacman.game.heaven.God.clock;
 import static de.amr.games.pacman.game.worlds.PacManGameWorld.HTS;
 import static de.amr.games.pacman.game.worlds.PacManGameWorld.TS;
 import static de.amr.games.pacman.game.worlds.PacManGameWorld.t;
-import static de.amr.games.pacman.ui.swing.classic.PacManClassicAssets.DIR;
 import static java.util.stream.IntStream.range;
 
 import java.awt.Color;
@@ -37,44 +38,53 @@ public class PacManClassicPlayScene extends PacManGamePlayScene {
 
 	private final PacManClassicAssets assets;
 
-	private final BufferedImage pacFull;
-	private final Animation pacCollapsing;
+	private final BufferedImage pacMouthClosed;
+	private final EnumMap<Direction, BufferedImage> pacMouthOpen;
 	private final EnumMap<Direction, Animation> pacWalking;
+	private final Animation pacCollapsing;
 	private final List<EnumMap<Direction, Animation>> ghostsWalking;
 	private final EnumMap<Direction, BufferedImage> ghostEyes;
 	private final Animation ghostBlue;
-	private final Animation ghostFlashing;
+	private final List<Animation> ghostFlashing;
 
 	public PacManClassicPlayScene(PacManGameSwingUI ui, PacManGameModel game, V2i size, PacManClassicAssets assets) {
 		super(ui, game, size);
 		this.assets = assets;
 
-		pacFull = assets.section(2, 0);
-
-		pacCollapsing = new Animation(8);
-		for (int i = 0; i < 11; ++i) {
-			pacCollapsing.addFrame(assets.section(3 + i, 0));
+		pacMouthClosed = assets.section(2, 0);
+		pacMouthOpen = new EnumMap<>(Direction.class);
+		for (Direction direction : Direction.values()) {
+			int dir = PacManClassicAssets.DIR.get(direction);
+			pacMouthOpen.put(direction, assets.section(1, dir));
 		}
 
 		pacWalking = new EnumMap<>(Direction.class);
 		for (Direction direction : Direction.values()) {
-			int dir = DIR.get(direction);
-			Animation animation = new Animation(4);
+			int dir = PacManClassicAssets.DIR.get(direction);
+			Animation animation = new Animation();
+			animation.setFrameTicks(1);
 			animation.setLoop(true);
 			animation.start();
-			animation.addFrame(assets.section(2, 0));
+			animation.addFrame(pacMouthClosed);
 			animation.addFrame(assets.section(1, dir));
 			animation.addFrame(assets.section(0, dir));
 			animation.addFrame(assets.section(1, dir));
 			pacWalking.put(direction, animation);
 		}
 
+		pacCollapsing = new Animation();
+		pacCollapsing.setFrameTicks(8);
+		for (int i = 0; i < 11; ++i) {
+			pacCollapsing.addFrame(assets.section(3 + i, 0));
+		}
+
 		ghostsWalking = new ArrayList<>();
 		for (int ghostID = 0; ghostID < 4; ++ghostID) {
 			EnumMap<Direction, Animation> animationForDir = new EnumMap<>(Direction.class);
 			for (Direction direction : Direction.values()) {
-				int dir = DIR.get(direction);
-				Animation animation = new Animation(10);
+				int dir = PacManClassicAssets.DIR.get(direction);
+				Animation animation = new Animation();
+				animation.setFrameTicks(10);
 				animation.setLoop(true);
 				animation.start();
 				animation.addFrame(assets.section(2 * dir, 4 + ghostID));
@@ -86,23 +96,29 @@ public class PacManClassicPlayScene extends PacManGamePlayScene {
 
 		ghostEyes = new EnumMap<>(Direction.class);
 		for (Direction direction : Direction.values()) {
-			int dir = DIR.get(direction);
+			int dir = PacManClassicAssets.DIR.get(direction);
 			ghostEyes.put(direction, assets.section(8 + dir, 5));
 		}
 
-		ghostBlue = new Animation(20);
+		ghostBlue = new Animation();
+		ghostBlue.setFrameTicks(20);
 		ghostBlue.setLoop(true);
 		ghostBlue.start();
 		ghostBlue.addFrame(assets.section(8, 4));
 		ghostBlue.addFrame(assets.section(9, 4));
 
-		ghostFlashing = new Animation(15);
-		ghostFlashing.setLoop(true);
-		ghostFlashing.start();
-		ghostFlashing.addFrame(assets.section(8, 4));
-		ghostFlashing.addFrame(assets.section(9, 4));
-		ghostFlashing.addFrame(assets.section(10, 4));
-		ghostFlashing.addFrame(assets.section(11, 4));
+		ghostFlashing = new ArrayList<>();
+		for (int ghostID = 0; ghostID < 4; ++ghostID) {
+			Animation animation = new Animation();
+			animation.setFrameTicks(10);
+			animation.setLoop(true);
+			animation.start();
+			animation.addFrame(assets.section(8, 4));
+			animation.addFrame(assets.section(9, 4));
+			animation.addFrame(assets.section(10, 4));
+			animation.addFrame(assets.section(11, 4));
+			ghostFlashing.add(animation);
+		}
 	}
 
 	@Override
@@ -226,14 +242,13 @@ public class PacManClassicPlayScene extends PacManGamePlayScene {
 
 	private BufferedImage sprite(Pac pac) {
 		if (pac.dead) {
-			return pacCollapsing.isRunning() ? pacCollapsing.frame() : pacFull;
+			return pacCollapsing.isRunning() ? pacCollapsing.frame() : pacMouthClosed;
 		}
 		if (pac.speed == 0) {
-			return pacFull;
+			return pacMouthClosed;
 		}
 		if (!pac.couldMove) {
-			// mouth half open towards move dir
-			return assets.section(1, DIR.get(pac.dir));
+			return pacMouthOpen.get(pac.dir);
 		}
 		return pacWalking.get(pac.dir).frame();
 	}
@@ -245,13 +260,14 @@ public class PacManClassicPlayScene extends PacManGamePlayScene {
 		if (ghost.state == GhostState.DEAD || ghost.state == GhostState.ENTERING_HOUSE) {
 			return ghostEyes.get(ghost.wishDir);
 		}
-		if (ghost.state == GhostState.FRIGHTENED) {
-			if (game.pac.powerTicksLeft <= 20 * game.level.numFlashes && game.state == PacManGameState.HUNTING) {
-				return ghostFlashing.frame();
+		if (ghost.is(FRIGHTENED)) {
+			if (game.pac.powerTicksLeft <= ghostFlashing.get(ghost.id).getDuration() * game.level.numFlashes
+					&& game.state == PacManGameState.HUNTING) {
+				return ghostFlashing.get(ghost.id).frame();
 			}
 			return ghostBlue.frame();
 		}
-		if (ghost.state == GhostState.LOCKED && game.pac.powerTicksLeft > 0) {
+		if (ghost.is(LOCKED) && game.pac.powerTicksLeft > 0) {
 			return ghostBlue.frame();
 		}
 		return ghostsWalking.get(ghost.id).get(ghost.wishDir).frame();
