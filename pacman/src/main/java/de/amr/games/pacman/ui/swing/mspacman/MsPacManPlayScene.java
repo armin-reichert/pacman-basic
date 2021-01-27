@@ -35,8 +35,8 @@ import de.amr.games.pacman.ui.swing.scene.PacManGamePlayScene;
 public class MsPacManPlayScene extends PacManGamePlayScene {
 
 	private final MsPacManAssets assets;
-	private final EnumMap<Direction, BufferedImage> fullPac;
-	private final Animation pacCollapsingAnimation;
+	private final EnumMap<Direction, BufferedImage> pacFull;
+	private final Animation pacCollapsing;
 	private final EnumMap<Direction, Animation> pacWalking;
 	private final List<EnumMap<Direction, Animation>> ghostsWalking;
 
@@ -44,18 +44,18 @@ public class MsPacManPlayScene extends PacManGamePlayScene {
 		super(ui, game, size);
 		this.assets = assets;
 
-		fullPac = new EnumMap<>(Direction.class);
+		pacFull = new EnumMap<>(Direction.class);
 		for (Direction direction : Direction.values()) {
 			int dir = MsPacManAssets.DIR.get(direction);
-			fullPac.put(direction, assets.section(2, dir));
+			pacFull.put(direction, assets.section(2, dir));
 		}
 
-		pacCollapsingAnimation = new Animation(10);
+		pacCollapsing = new Animation(10);
 		for (int i = 0; i < 2; ++i) {
-			pacCollapsingAnimation.addFrame(assets.section(0, 3));
-			pacCollapsingAnimation.addFrame(assets.section(0, 0));
-			pacCollapsingAnimation.addFrame(assets.section(0, 1));
-			pacCollapsingAnimation.addFrame(assets.section(0, 2));
+			pacCollapsing.addFrame(assets.section(0, 3));
+			pacCollapsing.addFrame(assets.section(0, 0));
+			pacCollapsing.addFrame(assets.section(0, 1));
+			pacCollapsing.addFrame(assets.section(0, 2));
 		}
 
 		pacWalking = new EnumMap<>(Direction.class);
@@ -90,14 +90,14 @@ public class MsPacManPlayScene extends PacManGamePlayScene {
 
 	@Override
 	public void startPacManCollapsing() {
-		pacCollapsingAnimation.reset();
-		pacCollapsingAnimation.start();
+		pacCollapsing.reset();
+		pacCollapsing.start();
 	}
 
 	@Override
 	public void endPacManCollapsing() {
-		pacCollapsingAnimation.stop();
-		pacCollapsingAnimation.reset();
+		pacCollapsing.stop();
+		pacCollapsing.reset();
 	}
 
 	@Override
@@ -231,7 +231,7 @@ public class MsPacManPlayScene extends PacManGamePlayScene {
 	private BufferedImage sprite(Pac pac) {
 		int dir = MsPacManAssets.DIR.get(pac.dir);
 		if (pac.dead) {
-			return pacCollapsingAnimation.isRunning() ? pacCollapsingAnimation.frame() : assets.section(1, dir);
+			return pacCollapsing.isRunning() ? pacCollapsing.frame() : assets.section(1, dir);
 		}
 		if (pac.speed == 0 || !pac.couldMove) {
 			return assets.section(1, dir);
