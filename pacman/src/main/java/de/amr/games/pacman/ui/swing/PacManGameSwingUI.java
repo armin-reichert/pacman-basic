@@ -313,6 +313,6 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 	@Override
 	public Optional<SoundManager> sounds() {
-		return Optional.of(soundManager);
+		return Optional.ofNullable(soundManager);
 	}
 }
