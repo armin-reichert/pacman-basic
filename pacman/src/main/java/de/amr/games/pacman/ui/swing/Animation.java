@@ -14,7 +14,7 @@ public class Animation {
 	private int ticksPerFrame;
 	private List<BufferedImage> sprites;
 	private int frame;
-	private int t;
+	private int ticks;
 	private boolean running;
 	private boolean loop;
 
@@ -41,7 +41,7 @@ public class Animation {
 
 	public void reset() {
 		frame = 0;
-		t = 0;
+		ticks = 0;
 	}
 
 	public void start() {
@@ -55,13 +55,12 @@ public class Animation {
 	public BufferedImage frame() {
 		BufferedImage current = sprites.get(frame);
 		if (running) {
-			if (t < ticksPerFrame) {
-				++t;
+			if (ticks < ticksPerFrame) {
+				++ticks;
 			} else if (frame < sprites.size() - 1) {
-				t = 0;
+				ticks = 0;
 				++frame;
-			}
-			if (loop && frame == sprites.size() - 1) {
+			} else if (loop && frame == sprites.size() - 1) {
 				reset();
 			}
 		}

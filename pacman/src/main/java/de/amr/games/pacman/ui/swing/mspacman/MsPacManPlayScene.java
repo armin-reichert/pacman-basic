@@ -4,13 +4,16 @@ import static de.amr.games.pacman.game.heaven.God.clock;
 import static de.amr.games.pacman.game.worlds.PacManGameWorld.HTS;
 import static de.amr.games.pacman.game.worlds.PacManGameWorld.TS;
 import static de.amr.games.pacman.game.worlds.PacManGameWorld.t;
+import static de.amr.games.pacman.ui.swing.classic.PacManClassicAssets.DIR;
 import static java.util.stream.IntStream.range;
 
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.List;
 
 import de.amr.games.pacman.game.core.PacManGameModel;
 import de.amr.games.pacman.game.core.PacManGameState;
@@ -35,6 +38,7 @@ public class MsPacManPlayScene extends PacManGamePlayScene {
 	private final EnumMap<Direction, BufferedImage> fullPac;
 	private final Animation pacCollapsingAnimation;
 	private final EnumMap<Direction, Animation> pacWalking;
+	private final List<EnumMap<Direction, Animation>> ghostsWalking;
 
 	public MsPacManPlayScene(PacManGameSwingUI ui, PacManGameModel game, V2i size, MsPacManAssets assets) {
 		super(ui, game, size);
@@ -57,15 +61,31 @@ public class MsPacManPlayScene extends PacManGamePlayScene {
 		pacWalking = new EnumMap<>(Direction.class);
 		for (Direction direction : Direction.values()) {
 			int dir = MsPacManAssets.DIR.get(direction);
-			Animation walking = new Animation(2);
-			walking.setLoop(true);
-			walking.start();
-			walking.addFrame(assets.section(0, dir));
-			walking.addFrame(assets.section(1, dir));
-			walking.addFrame(assets.section(2, dir));
-			walking.addFrame(assets.section(1, dir));
-			pacWalking.put(direction, walking);
+			Animation animation = new Animation(4);
+			animation.setLoop(true);
+			animation.start();
+			animation.addFrame(assets.section(0, dir));
+			animation.addFrame(assets.section(1, dir));
+			animation.addFrame(assets.section(2, dir));
+			animation.addFrame(assets.section(1, dir));
+			pacWalking.put(direction, animation);
 		}
+
+		ghostsWalking = new ArrayList<>();
+		for (int ghostID = 0; ghostID < 4; ++ghostID) {
+			EnumMap<Direction, Animation> animationForDir = new EnumMap<>(Direction.class);
+			for (Direction direction : Direction.values()) {
+				int dir = DIR.get(direction);
+				Animation animation = new Animation(10);
+				animation.setLoop(true);
+				animation.start();
+				animation.addFrame(assets.section(2 * dir, 4 + ghostID));
+				animation.addFrame(assets.section(2 * dir + 1, 4 + ghostID));
+				animationForDir.put(direction, animation);
+			}
+			ghostsWalking.add(animationForDir);
+		}
+
 	}
 
 	@Override
@@ -243,7 +263,6 @@ public class MsPacManPlayScene extends PacManGamePlayScene {
 			return assets.section(8 + walking, 4);
 		}
 		// colored, walking animation, looking towards intended move direction
-		return assets.section(2 * dir + walking, 4 + ghost.id);
+		return ghostsWalking.get(ghost.id).get(ghost.wishDir).frame();
 	}
-
 }
