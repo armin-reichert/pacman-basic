@@ -1,5 +1,7 @@
 package de.amr.games.pacman.ui.api;
 
+import java.util.Optional;
+
 import de.amr.games.pacman.game.core.PacManGameModel;
 
 /**
@@ -25,11 +27,6 @@ public interface PacManGameUI {
 
 	boolean keyPressed(String keySpec);
 
-	void playSound(PacManGameSound sound);
+	Optional<SoundManager> sounds();
 
-	void loopSound(PacManGameSound sound);
-
-	void stopSound(PacManGameSound sound);
-
-	void stopAllSounds();
 }

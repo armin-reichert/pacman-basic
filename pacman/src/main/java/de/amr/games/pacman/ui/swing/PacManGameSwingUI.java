@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import javax.imageio.ImageIO;
@@ -32,8 +33,8 @@ import de.amr.games.pacman.game.core.PacManGameModel;
 import de.amr.games.pacman.game.core.PacManGameState;
 import de.amr.games.pacman.game.heaven.God;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.ui.api.PacManGameSound;
 import de.amr.games.pacman.ui.api.PacManGameUI;
+import de.amr.games.pacman.ui.api.SoundManager;
 import de.amr.games.pacman.ui.swing.classic.PacManClassicAssets;
 import de.amr.games.pacman.ui.swing.classic.PacManClassicIntroScene;
 import de.amr.games.pacman.ui.swing.classic.PacManClassicPlayScene;
@@ -170,11 +171,6 @@ public class PacManGameSwingUI implements PacManGameUI {
 	@Override
 	public void updateGame(PacManGameModel game) {
 		this.game = game;
-
-		if (soundManager != null) {
-			stopAllSounds();
-		}
-
 		if (game.variant == PacManGameModel.CLASSIC) {
 			PacManClassicAssets assets = new PacManClassicAssets();
 			soundManager = new PacManGameSoundManager(assets.soundURL::get);
@@ -186,7 +182,6 @@ public class PacManGameSwingUI implements PacManGameUI {
 			introScene = new MsPacManIntroScene(this, game, unscaledSizePixels, assets);
 			playScene = new MsPacManPlayScene(this, game, unscaledSizePixels, assets);
 		}
-
 		if (titleUpdateTimer != null) {
 			titleUpdateTimer.stop();
 		}
@@ -317,22 +312,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 	}
 
 	@Override
-	public void playSound(PacManGameSound sound) {
-		soundManager.playSound(sound);
-	}
-
-	@Override
-	public void loopSound(PacManGameSound sound) {
-		soundManager.loopSound(sound);
-	}
-
-	@Override
-	public void stopSound(PacManGameSound sound) {
-		soundManager.stopSound(sound);
-	}
-
-	@Override
-	public void stopAllSounds() {
-		soundManager.stopAllSounds();
+	public Optional<SoundManager> sounds() {
+		return Optional.of(soundManager);
 	}
 }

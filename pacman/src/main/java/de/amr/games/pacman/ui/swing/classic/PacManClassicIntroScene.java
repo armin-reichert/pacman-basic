@@ -78,7 +78,7 @@ public class PacManClassicIntroScene implements PacManGameScene {
 			int ghostStart = 3 + 2 * ghost;
 			int y = t(10 + 3 * ghost);
 			game.state.runAt(clock.sec(ghostStart), () -> {
-				ui.playSound(PacManGameSound.CREDIT);
+				ui.sounds().get().playSound(PacManGameSound.CREDIT);
 			});
 			game.state.runAfter(clock.sec(ghostStart), () -> {
 				g.drawImage(assets.section(0, 4 + ghost), t(2) - 3, y - 2, null);
@@ -96,7 +96,7 @@ public class PacManClassicIntroScene implements PacManGameScene {
 		});
 
 		game.state.runAt(clock.sec(13), () -> {
-			ui.loopSound(PacManGameSound.GHOST_SIREN_1);
+			ui.sounds().get().loopSound(PacManGameSound.GHOST_SIREN_1);
 		});
 
 		game.state.runAfter(clock.sec(13), () -> {
@@ -108,7 +108,7 @@ public class PacManClassicIntroScene implements PacManGameScene {
 		});
 
 		game.state.runAt(clock.sec(24), () -> {
-			ui.stopSound(PacManGameSound.PACMAN_POWER);
+			ui.sounds().get().stopSound(PacManGameSound.PACMAN_POWER);
 		});
 
 		game.state.runAfter(clock.sec(24), () -> {
@@ -168,8 +168,8 @@ public class PacManClassicIntroScene implements PacManGameScene {
 			leftmostGhostX -= 0.8f;
 		} else {
 			ghostsChasingPacMan = false;
-			ui.stopSound(PacManGameSound.GHOST_SIREN_1);
-			ui.loopSound(PacManGameSound.PACMAN_POWER);
+			ui.sounds().get().stopSound(PacManGameSound.GHOST_SIREN_1);
+			ui.sounds().get().loopSound(PacManGameSound.PACMAN_POWER);
 		}
 	}
 
@@ -185,7 +185,7 @@ public class PacManClassicIntroScene implements PacManGameScene {
 				g.drawImage(assets.numbers.get(bounty), x, y, null);
 				if (lastKilledGhost != ghost) {
 					lastKilledGhost++;
-					ui.playSound(PacManGameSound.GHOST_EATEN);
+					ui.sounds().get().playSound(PacManGameSound.GHOST_EATEN);
 				}
 			}
 		}

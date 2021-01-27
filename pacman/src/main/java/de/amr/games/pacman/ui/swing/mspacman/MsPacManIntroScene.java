@@ -93,7 +93,7 @@ public class MsPacManIntroScene implements PacManGameScene {
 		long animationTime = game.state.running - animationStart;
 		if (animationTime == animationStart) {
 			ghostWalking[0] = true;
-			ui.playSound(PacManGameSound.CREDIT);
+			ui.sounds().get().playSound(PacManGameSound.CREDIT);
 		}
 
 		g.setFont(assets.scoreFont);
@@ -134,10 +134,10 @@ public class MsPacManIntroScene implements PacManGameScene {
 					ghostWalking[ghost] = false;
 					if (ghost < 3) {
 						ghostWalking[ghost + 1] = true;
-						ui.playSound(PacManGameSound.CREDIT);
+						ui.sounds().get().playSound(PacManGameSound.CREDIT);
 					} else {
 						pacWalking = true;
-						ui.loopSound(PacManGameSound.PACMAN_MUNCH);
+						ui.sounds().get().loopSound(PacManGameSound.PACMAN_MUNCH);
 					}
 				}
 			}
@@ -165,7 +165,7 @@ public class MsPacManIntroScene implements PacManGameScene {
 		if (pacReachedTarget) {
 			drawPointsAnimation(g, 26);
 			drawPressKeyToStart(g);
-			ui.stopAllSounds();
+			ui.sounds().get().stopAllSounds();
 		}
 
 		// restart intro after 30 seconds
