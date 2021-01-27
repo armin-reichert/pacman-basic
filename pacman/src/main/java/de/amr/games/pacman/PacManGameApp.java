@@ -80,7 +80,7 @@ public class PacManGameApp {
 			PacManGameWorld world = gameController.game().get().world;
 			PacManGameSwingUI ui = new PacManGameSwingUI(gameController, world.xTiles(), world.yTiles(), options.scaling);
 			ui.updateGame(gameController.game().get());
-			ui.openWindow();
+			ui.show();
 			new Thread(gameController, "PacManGame").start();
 		});
 	}

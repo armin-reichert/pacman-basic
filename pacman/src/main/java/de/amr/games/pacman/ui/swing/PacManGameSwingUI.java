@@ -196,7 +196,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 	}
 
 	@Override
-	public void openWindow() {
+	public void show() {
 		window.pack();
 		window.setLocationRelativeTo(null);
 		window.setVisible(true);
@@ -224,7 +224,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 	}
 
 	@Override
-	public void render() {
+	public void redraw() {
 		BufferStrategy buffers = canvas.getBufferStrategy();
 		do {
 			do {

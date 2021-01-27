@@ -143,7 +143,7 @@ public class PacManGameController implements Runnable {
 			readInput();
 			updateState();
 		}
-		ui.render();
+		ui.redraw();
 	}
 
 	private void readInput() {

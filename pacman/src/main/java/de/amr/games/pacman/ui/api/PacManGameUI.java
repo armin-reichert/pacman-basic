@@ -13,9 +13,9 @@ public interface PacManGameUI {
 
 	void updateGame(PacManGameModel game);
 
-	void openWindow();
+	void show();
 
-	void render();
+	void redraw();
 
 	void showMessage(String message, boolean important);
 
