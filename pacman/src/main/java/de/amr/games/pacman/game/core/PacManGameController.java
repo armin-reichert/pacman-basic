@@ -64,7 +64,7 @@ public class PacManGameController implements Runnable {
 	private boolean autopilotEnabled;
 
 	private boolean gamePaused;
-	private boolean started;
+	private boolean gameStarted;
 
 	private PacManGameState suspendedState;
 
@@ -99,7 +99,7 @@ public class PacManGameController implements Runnable {
 	}
 
 	private void reset() {
-		started = false;
+		gameStarted = false;
 		game.state = suspendedState = null;
 		game.mazeFlashesRemaining = 0;
 		if (ui != null) {
@@ -266,7 +266,7 @@ public class PacManGameController implements Runnable {
 
 	private void enterReadyState() {
 		game.state = READY;
-		game.state.setDuration(clock.sec(started ? 2 : 5));
+		game.state.setDuration(clock.sec(gameStarted ? 2 : 5));
 		makeGuysReady();
 		for (Ghost ghost : game.ghosts) {
 			ghost.visible = false;
@@ -285,7 +285,7 @@ public class PacManGameController implements Runnable {
 		}
 		if (game.state.running == clock.sec(1)) {
 			ui.showMessage(ui.translation("READY"), false);
-			if (!started) {
+			if (!gameStarted) {
 				ui.sounds().ifPresent(sm -> sm.playSound(PacManGameSound.GAME_READY));
 			}
 		}
@@ -293,7 +293,7 @@ public class PacManGameController implements Runnable {
 	}
 
 	private void exitReadyState() {
-		started = true;
+		gameStarted = true;
 		ui.clearMessage();
 	}
 
