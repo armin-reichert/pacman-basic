@@ -56,15 +56,16 @@ import de.amr.games.pacman.ui.api.PacManGameUI;
  */
 public class PacManGameController implements Runnable {
 
-	public PacManGameModel game;
 	public PacManGameUI ui;
+	private PacManGameModel game;
 
-	public Autopilot autopilot;
-	public boolean autoControlled;
+	private Autopilot autopilot;
+	private boolean autoControlled;
 
 	public boolean paused;
 	public boolean started;
-	public PacManGameState suspendedState;
+
+	private PacManGameState suspendedState;
 
 	public PacManGameController() {
 		autopilot = new Autopilot(() -> game);
@@ -78,6 +79,10 @@ public class PacManGameController implements Runnable {
 	public void initMsPacManGame() {
 		game = PacManGameModel.newMsPacManGame();
 		reset();
+	}
+
+	public Optional<PacManGameModel> game() {
+		return Optional.ofNullable(game);
 	}
 
 	private void reset() {
@@ -99,8 +104,7 @@ public class PacManGameController implements Runnable {
 		} else {
 			initPacManClassicGame();
 		}
-		// update UI
-		ui.setController(this);
+		ui.updateGame(game);
 	}
 
 	private void toggleAutopilot() {

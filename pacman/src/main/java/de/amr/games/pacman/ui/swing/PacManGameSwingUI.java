@@ -95,14 +95,19 @@ public class PacManGameSwingUI implements PacManGameUI {
 	private long flashMessageTicksLeft;
 
 	private Timer titleUpdateTimer;
+
 	private PacManGameController controller;
 	private PacManGameModel game;
+
 	private PacManGameScene currentScene;
 	private PacManGameScene introScene;
 	private PacManGameScene playScene;
 	private PacManGameSoundManager soundManager;
 
-	public PacManGameSwingUI(int xTiles, int yTiles, float scaling) {
+	public PacManGameSwingUI(PacManGameController controller, int xTiles, int yTiles, float scaling) {
+		this.controller = controller;
+		controller.ui = this;
+
 		this.scaling = scaling;
 		unscaledSizePixels = new V2i(xTiles * TS, yTiles * TS);
 		scaledSizeInPixels = new V2i((int) (unscaledSizePixels.x * scaling), (int) (unscaledSizePixels.y * scaling));
@@ -163,10 +168,8 @@ public class PacManGameSwingUI implements PacManGameUI {
 	}
 
 	@Override
-	public void setController(PacManGameController controller) {
-		this.controller = controller;
-		this.game = controller.game;
-		controller.ui = this;
+	public void updateGame(PacManGameModel game) {
+		this.game = game;
 
 		if (soundManager != null) {
 			stopAllSounds();

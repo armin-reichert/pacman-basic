@@ -1,6 +1,6 @@
 package de.amr.games.pacman.ui.api;
 
-import de.amr.games.pacman.game.core.PacManGameController;
+import de.amr.games.pacman.game.core.PacManGameModel;
 
 /**
  * Interface through which the game class sees the user interface.
@@ -11,7 +11,7 @@ public interface PacManGameUI {
 
 	String translation(String key);
 
-	void setController(PacManGameController controller);
+	void updateGame(PacManGameModel game);
 
 	void openWindow();
 

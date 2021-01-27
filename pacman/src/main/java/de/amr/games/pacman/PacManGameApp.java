@@ -6,7 +6,6 @@ import static java.awt.EventQueue.invokeLater;
 import de.amr.games.pacman.game.core.PacManGameController;
 import de.amr.games.pacman.game.core.PacManGameModel;
 import de.amr.games.pacman.game.worlds.PacManGameWorld;
-import de.amr.games.pacman.ui.api.PacManGameUI;
 import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
 
 /**
@@ -78,9 +77,9 @@ public class PacManGameApp {
 			} else {
 				gameController.initMsPacManGame();
 			}
-			PacManGameWorld world = gameController.game.world;
-			PacManGameUI ui = new PacManGameSwingUI(world.xTiles(), world.yTiles(), options.scaling);
-			ui.setController(gameController);
+			PacManGameWorld world = gameController.game().get().world;
+			PacManGameSwingUI ui = new PacManGameSwingUI(gameController, world.xTiles(), world.yTiles(), options.scaling);
+			ui.updateGame(gameController.game().get());
 			ui.openWindow();
 			new Thread(gameController, "PacManGame").start();
 		});
