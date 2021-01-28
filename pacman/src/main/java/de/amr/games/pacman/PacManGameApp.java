@@ -72,18 +72,17 @@ public class PacManGameApp {
 		Options options = Options.parse(args);
 		PacManGameController controller = new PacManGameController();
 		controller.initGame(options.variant);
-		invokeLater(() -> {
-			controller.game().ifPresent(game -> {
+		controller.game().ifPresent(game -> {
+			invokeLater(() -> {
 				PacManGameSwingUI ui = new PacManGameSwingUI(controller, game.world.xTiles(), game.world.yTiles(),
 						options.scaling);
 				ui.updateGame(game);
 				ui.show();
-				// start game loop in its own thread
-				new Thread(() -> {
-					while (true) {
+				Runnable loop = () -> {
+					while (true)
 						God.clock.tick(controller::step);
-					}
-				}, "PacManGame").start();
+				};
+				new Thread(loop, "PacManGame").start();
 			});
 		});
 	}
