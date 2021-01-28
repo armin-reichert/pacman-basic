@@ -10,6 +10,7 @@ import java.awt.Graphics2D;
 import java.util.Arrays;
 
 import de.amr.games.pacman.game.core.PacManGameModel;
+import de.amr.games.pacman.game.creatures.Ghost;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
@@ -41,24 +42,18 @@ public class MsPacManIntroScene implements PacManGameScene {
 	private final long animationStart = 60;
 	private final V2i frameTopLeftTile = new V2i(6, 8);
 	private final V2i frameSize = new V2i(32, 16);
-	private final float speed = 0.75f;
 	private final int ghostTargetX = t(frameTopLeftTile.x) - 18;
-
-	private int[] ghostX = new int[4];
-	private int[] ghostY = new int[4];
-	private Direction[] ghostDir = new Direction[4];
-	private boolean[] ghostWalking = new boolean[4];
 	private boolean[] ghostReachedTarget = new boolean[4];
-
 	private boolean pacReachedTarget;
 
 	@Override
 	public void start() {
-		Arrays.fill(ghostX, size.x);
-		Arrays.fill(ghostY, t(frameTopLeftTile.y) + 4 * (frameSize.y + 1));
-		Arrays.fill(ghostWalking, false);
-		Arrays.fill(ghostDir, Direction.LEFT);
 		Arrays.fill(ghostReachedTarget, false);
+		for (Ghost ghost : game.ghosts) {
+			ghost.position = new V2f(size.x, t(frameTopLeftTile.y) + 4 * (frameSize.y + 1));
+			ghost.speed = 0;
+			ghost.dir = LEFT;
+		}
 
 		pacReachedTarget = false;
 		game.pac.position = new V2f(size.x, t(frameTopLeftTile.y) + 4 * (frameSize.y + 1));
@@ -90,8 +85,7 @@ public class MsPacManIntroScene implements PacManGameScene {
 		// run animation
 		long animationTime = game.state.running - animationStart;
 		if (animationTime == animationStart) {
-			ghostWalking[0] = true;
-			assets.pacWalking.get(LEFT).start();
+			game.ghosts[0].speed = 0.75f;
 			ui.sounds().ifPresent(sm -> sm.playSound(PacManGameSound.CREDIT));
 		}
 
@@ -100,46 +94,41 @@ public class MsPacManIntroScene implements PacManGameScene {
 		drawCenteredText(g, "\"MS PAC-MAN\"", t(5));
 		drawFrame(g, clock.frame(2, frameSize.x / 2));
 
-		for (int ghost = 0; ghost <= 3; ++ghost) {
-			if (ghostReachedTarget[ghost]) {
-				assets.ghostsWalking.get(ghost).get(UP).stop();
-				g.drawImage(assets.ghostsWalking.get(ghost).get(UP).frame(), ghostTargetX, t(frameTopLeftTile.y) + 16 * ghost,
-						null);
+		for (Ghost ghost : game.ghosts) {
+			if (ghostReachedTarget[ghost.id]) {
+				assets.ghostsWalking.get(ghost.id).get(ghost.dir).stop();
+				g.drawImage(assets.ghostsWalking.get(ghost.id).get(ghost.dir).frame(), ghostTargetX,
+						t(frameTopLeftTile.y) + 16 * ghost.id, null);
 				continue;
 			}
-			if (ghostWalking[ghost]) {
+			if (ghost.speed != 0) {
 				g.setFont(assets.scoreFont);
 				// display text
-				if (ghost == 0) {
+				if (ghost.id == 0) {
 					g.setColor(Color.WHITE);
 					g.drawString(ui.translation("WITH"), t(8), t(11));
 				}
-				g.setColor(GHOST_COLORS[ghost]);
-				drawCenteredText(g, ui.translation("MSPACMAN.GHOST." + ghost + ".NICKNAME"), t(14));
+				g.setColor(GHOST_COLORS[ghost.id]);
+				drawCenteredText(g, ui.translation("MSPACMAN.GHOST." + ghost.id + ".NICKNAME"), t(14));
 
 				// walk
-				if (ghostDir[ghost] == Direction.LEFT) {
-					ghostX[ghost] -= speed;
-				} else if (ghostDir[ghost] == Direction.UP) {
-					ghostY[ghost] -= speed;
+				V2f velocity = new V2f(ghost.dir.vec).scaled(ghost.speed);
+				ghost.position = ghost.position.sum(velocity);
+				if (ghost.position.x <= ghostTargetX) {
+					ghost.dir = UP;
 				}
-				if (ghostX[ghost] == ghostTargetX) {
-					ghostDir[ghost] = Direction.UP;
-				}
-				g.drawImage(assets.ghostsWalking.get(ghost).get(ghostDir[ghost]).frame(), ghostX[ghost], ghostY[ghost], null);
+				g.drawImage(assets.ghostsWalking.get(ghost.id).get(ghost.dir).frame(), (int) ghost.position.x,
+						(int) ghost.position.y, null);
 
 				// target reached?
-				if (ghostY[ghost] <= t(frameTopLeftTile.y) + ghost * 16) {
-					ghostReachedTarget[ghost] = true;
-					ghostWalking[ghost] = false;
-					assets.ghostsWalking.get(ghost).get(ghostDir[ghost]).stop();
-					assets.ghostsWalking.get(ghost).get(ghostDir[ghost]).reset();
-					if (ghost < 3) {
-						ghostWalking[ghost + 1] = true;
+				if (ghost.position.y <= t(frameTopLeftTile.y) + ghost.id * 16) {
+					ghostReachedTarget[ghost.id] = true;
+					ghost.speed = 0;
+					if (ghost.id < 3) {
+						game.ghosts[ghost.id + 1].speed = 0.75f;
 						ui.sounds().ifPresent(sm -> sm.playSound(PacManGameSound.CREDIT));
 					} else {
-						game.pac.speed = speed;
-						game.pac.dir = LEFT;
+						game.pac.speed = 0.75f;
 						ui.sounds().ifPresent(sm -> sm.loopSound(PacManGameSound.PACMAN_MUNCH));
 					}
 				}
@@ -175,6 +164,7 @@ public class MsPacManIntroScene implements PacManGameScene {
 
 		// restart intro after 30 seconds
 		if (animationTime == clock.sec(30)) {
+			end();
 			start();
 		}
 	}
