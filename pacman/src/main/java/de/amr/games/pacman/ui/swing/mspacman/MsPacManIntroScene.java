@@ -39,25 +39,23 @@ public class MsPacManIntroScene implements PacManGameScene {
 		return size;
 	}
 
-	private final long animationStart = 60;
+	private final V2i frameSizeTiles = new V2i(32, 16);
 	private final V2i frameTopLeftTile = new V2i(6, 8);
-	private final V2i frameSize = new V2i(32, 16);
-	private final int ghostTargetX = t(frameTopLeftTile.x) - 18;
-	private boolean pacReachedTarget;
+	private final int leftOfFrame = t(frameTopLeftTile.x) - 18;
+	private final int belowFrame = t(frameTopLeftTile.y) + 4 * (frameSizeTiles.y + 1);
+	private final int belowFrameCenterX = t(frameTopLeftTile.x) + t(frameSizeTiles.x) / 2;
+	private final float walkSpeed = 1.2f;
 
 	@Override
 	public void start() {
 		for (Ghost ghost : game.ghosts) {
-			ghost.position = new V2f(size.x, t(frameTopLeftTile.y) + 4 * (frameSize.y + 1));
+			ghost.position = new V2f(size.x, belowFrame);
 			ghost.speed = 0;
 			ghost.dir = LEFT;
 		}
-		pacReachedTarget = false;
-		game.pac.position = new V2f(size.x, t(frameTopLeftTile.y) + 4 * (frameSize.y + 1));
+		game.pac.position = new V2f(size.x, belowFrame);
 		game.pac.speed = 0;
 		game.pac.dir = LEFT;
-
-		game.state.resetTimer();
 	}
 
 	@Override
@@ -72,55 +70,56 @@ public class MsPacManIntroScene implements PacManGameScene {
 			assets.pacWalking.get(dir).reset();
 			assets.pacWalking.get(dir).start();
 		}
+		game.state.resetTimer();
 	}
 
 	@Override
 	public void draw(Graphics2D g) {
-		if (game.state.ticksRun() < animationStart) {
+
+		// wait 1 second before animation starts
+		long time = game.state.ticksRun() - clock.sec(1);
+		if (time < 0) {
 			return;
 		}
-		// run animation
-		long animationTime = game.state.ticksRun() - animationStart;
-		if (animationTime == animationStart) {
-			game.ghosts[0].speed = 0.75f;
+
+		// animation start:
+		if (time == 0) {
+			game.ghosts[0].speed = walkSpeed;
 			ui.sounds().ifPresent(sm -> sm.playSound(PacManGameSound.CREDIT));
 		}
 
+		drawBlinkingFrame(g, clock.frame(2, frameSizeTiles.x / 2));
 		g.setFont(assets.scoreFont);
 		g.setColor(Color.ORANGE);
 		drawCenteredText(g, "\"MS PAC-MAN\"", t(5));
-		drawBlinkingFrame(g, clock.frame(2, frameSize.x / 2));
 
 		for (Ghost ghost : game.ghosts) {
 			if (ghostReachedEndPosition(ghost)) {
-				g.drawImage(sprite(ghost), (int) ghost.position.x, t(frameTopLeftTile.y) + 16 * ghost.id, null);
+				g.drawImage(sprite(ghost), (int) ghost.position.x, (int) ghost.position.y, null);
 				continue;
 			}
 			if (ghost.id == 0) {
 				g.setColor(Color.WHITE);
-				g.setFont(assets.scoreFont);
 				g.drawString(ui.translation("WITH"), t(8), t(11));
 			}
 			if (ghost.speed != 0) {
 				g.setColor(GHOST_COLORS[ghost.id]);
-				g.setFont(assets.scoreFont);
 				drawCenteredText(g, ui.translation("MSPACMAN.GHOST." + ghost.id + ".NICKNAME"), t(14));
-
-				// walk, turn UP at frame left corner
 				V2f velocity = new V2f(ghost.dir.vec).scaled(ghost.speed);
 				ghost.position = ghost.position.sum(velocity);
-				if (ghost.position.x <= ghostTargetX) {
+				if (ghost.position.x <= leftOfFrame) {
 					ghost.dir = UP;
 				}
 			}
 			g.drawImage(sprite(ghost), (int) ghost.position.x, (int) ghost.position.y, null);
 			if (ghostReachedEndPosition(ghost)) {
 				ghost.speed = 0;
+				ghost.position = new V2f(ghost.position.x, t(frameTopLeftTile.y) + 16 * ghost.id);
 				if (ghost.id < 3) { // start next ghost
-					game.ghosts[ghost.id + 1].speed = 0.75f;
+					game.ghosts[ghost.id + 1].speed = walkSpeed;
 					ui.sounds().ifPresent(sm -> sm.playSound(PacManGameSound.CREDIT));
 				} else { // start Pac
-					game.pac.speed = 0.75f;
+					game.pac.speed = walkSpeed;
 					ui.sounds().ifPresent(sm -> sm.loopSound(PacManGameSound.PACMAN_MUNCH));
 				}
 			}
@@ -135,57 +134,58 @@ public class MsPacManIntroScene implements PacManGameScene {
 
 		if (game.pac.position.x <= t(13)) {
 			game.pac.speed = 0;
-			pacReachedTarget = true;
 		}
 
 		if (game.pac.speed != 0) {
 			V2f velocity = new V2f(game.pac.dir.vec).scaled(game.pac.speed);
 			game.pac.position = game.pac.position.sum(velocity);
-		} else if (pacReachedTarget) {
-			assets.pacWalking.get(game.pac.dir).stop();
+			if (game.pac.position.x <= belowFrameCenterX) {
+				ui.sounds().ifPresent(sm -> sm.stopAllSounds());
+			}
 		}
-		g.drawImage(assets.pacWalking.get(game.pac.dir).frame(), (int) game.pac.position.x, (int) game.pac.position.y,
-				null);
+		g.drawImage(pacSprite(), (int) game.pac.position.x, (int) game.pac.position.y, null);
 
-		if (pacReachedTarget) {
+		// Pac animation over?
+		if (game.pac.speed == 0 && game.pac.position.x <= belowFrameCenterX) {
 			drawPointsAnimation(g, 26);
 			drawPressKeyToStart(g);
-			ui.sounds().ifPresent(sm -> sm.stopAllSounds());
 		}
 
 		// restart intro after 30 seconds
-		if (animationTime == clock.sec(30)) {
+		if (time == clock.sec(30)) {
 			end();
 			start();
 		}
 	}
 
 	private boolean ghostReachedEndPosition(Ghost ghost) {
-		return ghost.position.x <= ghostTargetX && ghost.position.y <= t(frameTopLeftTile.y) + ghost.id * 16;
+		return ghost.position.x <= leftOfFrame && ghost.position.y <= t(frameTopLeftTile.y) + ghost.id * 16;
+	}
+
+	private BufferedImage pacSprite() {
+		return game.pac.speed != 0 ? assets.pacWalking.get(game.pac.dir).frame() : assets.pacMouthOpen.get(game.pac.dir);
 	}
 
 	private BufferedImage sprite(Ghost ghost) {
-		if (ghost.speed != 0) {
-			return assets.ghostsWalking.get(ghost.id).get(ghost.dir).frame();
-		}
-		return assets.ghostsWalking.get(ghost.id).get(ghost.dir).getSprite(0);
+		return ghost.speed != 0 ? assets.ghostsWalking.get(ghost.id).get(ghost.dir).frame()
+				: assets.ghostsWalking.get(ghost.id).get(ghost.dir).getSprite(0);
 	}
 
 	private void drawBlinkingFrame(Graphics2D g, int light) {
-		for (int dot = 0; dot < 2 * (frameSize.x + frameSize.y); ++dot) {
+		for (int dot = 0; dot < 2 * (frameSizeTiles.x + frameSizeTiles.y); ++dot) {
 			int x = 0, y = 0;
-			if (dot <= frameSize.x) {
+			if (dot <= frameSizeTiles.x) {
 				x = dot;
-			} else if (dot < frameSize.x + frameSize.y) {
-				x = frameSize.x;
-				y = dot - frameSize.x;
-			} else if (dot < 2 * frameSize.x + frameSize.y + 1) {
-				x = 2 * frameSize.x + frameSize.y - dot;
-				y = frameSize.y;
+			} else if (dot < frameSizeTiles.x + frameSizeTiles.y) {
+				x = frameSizeTiles.x;
+				y = dot - frameSizeTiles.x;
+			} else if (dot < 2 * frameSizeTiles.x + frameSizeTiles.y + 1) {
+				x = 2 * frameSizeTiles.x + frameSizeTiles.y - dot;
+				y = frameSizeTiles.y;
 			} else {
-				y = 2 * (frameSize.x + frameSize.y) - dot;
+				y = 2 * (frameSizeTiles.x + frameSizeTiles.y) - dot;
 			}
-			g.setColor((dot + light) % (frameSize.x / 2) == 0 ? Color.CYAN : Color.RED);
+			g.setColor((dot + light) % (frameSizeTiles.x / 2) == 0 ? Color.CYAN : Color.RED);
 			g.fillRect(t(frameTopLeftTile.x) + 4 * x, t(frameTopLeftTile.y) + 4 * y, 2, 2);
 		}
 	}
