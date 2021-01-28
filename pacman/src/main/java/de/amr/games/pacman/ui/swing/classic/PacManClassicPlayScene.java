@@ -1,10 +1,12 @@
 package de.amr.games.pacman.ui.swing.classic;
 
+import static de.amr.games.pacman.game.core.PacManGameState.HUNTING;
 import static de.amr.games.pacman.game.core.PacManGameWorld.HTS;
 import static de.amr.games.pacman.game.core.PacManGameWorld.TS;
 import static de.amr.games.pacman.game.core.PacManGameWorld.t;
 import static de.amr.games.pacman.game.creatures.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.game.creatures.GhostState.LOCKED;
+import static de.amr.games.pacman.game.heaven.God.clock;
 import static java.util.stream.IntStream.range;
 
 import java.awt.Color;
@@ -19,7 +21,6 @@ import de.amr.games.pacman.game.creatures.Creature;
 import de.amr.games.pacman.game.creatures.Ghost;
 import de.amr.games.pacman.game.creatures.GhostState;
 import de.amr.games.pacman.game.creatures.Pac;
-import de.amr.games.pacman.game.heaven.God;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.api.PacManGameAnimations;
 import de.amr.games.pacman.ui.api.PacManGameScene;
@@ -149,8 +150,8 @@ public class PacManClassicPlayScene implements PacManGameScene, PacManGameAnimat
 			range(4, game.world.yTiles() - 3).forEach(y -> {
 				if (game.level.isFoodRemoved(x, y)) {
 					hideFood(g, x, y);
-				} else if (game.state == PacManGameState.HUNTING && game.world.isEnergizerTile(x, y)) {
-					God.clock.runOrBeIdle(10, () -> hideFood(g, x, y));
+				} else if (game.state == HUNTING && game.world.isEnergizerTile(x, y) && clock.ticksTotal % 20 < 10) {
+					hideFood(g, x, y);
 				}
 			});
 		});

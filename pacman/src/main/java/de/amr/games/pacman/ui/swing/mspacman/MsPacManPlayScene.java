@@ -1,5 +1,6 @@
 package de.amr.games.pacman.ui.swing.mspacman;
 
+import static de.amr.games.pacman.game.core.PacManGameState.HUNTING;
 import static de.amr.games.pacman.game.core.PacManGameWorld.HTS;
 import static de.amr.games.pacman.game.core.PacManGameWorld.TS;
 import static de.amr.games.pacman.game.core.PacManGameWorld.t;
@@ -180,8 +181,8 @@ public class MsPacManPlayScene implements PacManGameScene, PacManGameAnimations 
 			IntStream.range(4, game.world.yTiles() - 3).forEach(y -> {
 				if (game.level.isFoodRemoved(x, y)) {
 					hideFood(g, x, y);
-				} else if (game.state == PacManGameState.HUNTING && game.world.isEnergizerTile(x, y)) {
-					clock.runOrBeIdle(10, () -> hideFood(g, x, y));
+				} else if (game.state == HUNTING && game.world.isEnergizerTile(x, y) && clock.ticksTotal % 20 < 10) {
+					hideFood(g, x, y);
 				}
 			});
 		});
