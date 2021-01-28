@@ -2,11 +2,11 @@ package de.amr.games.pacman.ui.swing.mspacman;
 
 import static de.amr.games.pacman.game.heaven.God.clock;
 import static de.amr.games.pacman.game.worlds.PacManGameWorld.t;
+import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.UP;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
 import java.util.Arrays;
 
 import de.amr.games.pacman.game.core.PacManGameModel;
@@ -35,15 +35,6 @@ public class MsPacManIntroScene implements PacManGameScene {
 	@Override
 	public V2i size() {
 		return size;
-	}
-
-	private BufferedImage pacWalking(Direction dir, boolean animated) {
-		if (animated) {
-			int frame = clock.frame(5, 3);
-			return assets.section(frame, assets.dirIndex(dir));
-		} else {
-			return assets.section(1, assets.dirIndex(dir));
-		}
 	}
 
 	private final long animationStart = 60;
@@ -79,10 +70,12 @@ public class MsPacManIntroScene implements PacManGameScene {
 		for (int ghostID = 0; ghostID < 4; ++ghostID) {
 			for (Direction dir : Direction.values()) {
 				assets.ghostsWalking.get(ghostID).get(dir).reset();
+				assets.ghostsWalking.get(ghostID).get(dir).start();
 			}
 		}
 		for (Direction dir : Direction.values()) {
 			assets.pacWalking.get(dir).reset();
+			assets.pacWalking.get(dir).start();
 		}
 	}
 
@@ -95,6 +88,7 @@ public class MsPacManIntroScene implements PacManGameScene {
 		long animationTime = game.state.running - animationStart;
 		if (animationTime == animationStart) {
 			ghostWalking[0] = true;
+			assets.pacWalking.get(LEFT).start();
 			ui.sounds().ifPresent(sm -> sm.playSound(PacManGameSound.CREDIT));
 		}
 
@@ -162,10 +156,10 @@ public class MsPacManIntroScene implements PacManGameScene {
 
 		if (pacWalking) {
 			pacX -= speed;
-			g.drawImage(pacWalking(Direction.LEFT, true), pacX, pacY, null);
 		} else if (pacReachedTarget) {
-			g.drawImage(pacWalking(Direction.LEFT, false), pacX, pacY, null);
+			assets.pacWalking.get(LEFT).stop();
 		}
+		g.drawImage(assets.pacWalking.get(LEFT).frame(), pacX, pacY, null);
 
 		if (pacReachedTarget) {
 			drawPointsAnimation(g, 26);
