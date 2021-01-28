@@ -8,12 +8,12 @@ import static de.amr.games.pacman.game.heaven.God.clock;
 import static de.amr.games.pacman.game.worlds.PacManGameWorld.HTS;
 import static de.amr.games.pacman.game.worlds.PacManGameWorld.TS;
 import static de.amr.games.pacman.game.worlds.PacManGameWorld.t;
-import static java.util.stream.IntStream.range;
 
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.util.stream.IntStream;
 
 import de.amr.games.pacman.game.core.PacManGameModel;
 import de.amr.games.pacman.game.core.PacManGameState;
@@ -25,21 +25,31 @@ import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.api.PacManAnimations;
 import de.amr.games.pacman.ui.swing.Animation;
 import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
-import de.amr.games.pacman.ui.swing.scene.PacManGamePlayScene;
+import de.amr.games.pacman.ui.swing.scene.PacManGameScene;
 
 /**
  * Scene where the game is played.
  * 
  * @author Armin Reichert
  */
-public class MsPacManPlayScene extends PacManGamePlayScene implements PacManAnimations {
+public class MsPacManPlayScene implements PacManGameScene, PacManAnimations {
 
+	private final PacManGameSwingUI ui;
+	private final PacManGameModel game;
+	private final V2i size;
 	private final MsPacManAssets assets;
 	private Animation mazeFlashing;
 
 	public MsPacManPlayScene(PacManGameSwingUI ui, PacManGameModel game, V2i size, MsPacManAssets assets) {
-		super(ui, game, size);
+		this.ui = ui;
+		this.game = game;
+		this.size = size;
 		this.assets = assets;
+	}
+
+	@Override
+	public V2i size() {
+		return size;
 	}
 
 	@Override
@@ -81,7 +91,7 @@ public class MsPacManPlayScene extends PacManGamePlayScene implements PacManAnim
 		for (Ghost ghost : game.ghosts) {
 			drawGuy(g, ghost, sprite(ghost));
 		}
-		drawDebugInfo(g);
+		drawDebugInfo(g, game);
 	}
 
 	private void drawGuy(Graphics2D g, Creature guy, BufferedImage sprite) {
@@ -166,8 +176,8 @@ public class MsPacManPlayScene extends PacManGamePlayScene implements PacManAnim
 			return;
 		}
 		g.drawImage(assets.mazeFull[game.level.mazeNumber - 1], 0, t(3), null);
-		range(0, game.world.xTiles()).forEach(x -> {
-			range(4, game.world.yTiles() - 3).forEach(y -> {
+		IntStream.range(0, game.world.xTiles()).forEach(x -> {
+			IntStream.range(4, game.world.yTiles() - 3).forEach(y -> {
 				if (game.level.isFoodRemoved(x, y)) {
 					hideFood(g, x, y);
 				} else if (game.state == PacManGameState.HUNTING && game.world.isEnergizerTile(x, y)) {
@@ -177,7 +187,7 @@ public class MsPacManPlayScene extends PacManGamePlayScene implements PacManAnim
 		});
 		drawBonus(g);
 		if (PacManGameSwingUI.debugMode) {
-			drawMazeStructure(g);
+			drawMazeStructure(g, game);
 		}
 	}
 

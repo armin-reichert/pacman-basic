@@ -2,7 +2,6 @@ package de.amr.games.pacman.ui.swing.classic;
 
 import static de.amr.games.pacman.game.creatures.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.game.creatures.GhostState.LOCKED;
-import static de.amr.games.pacman.game.heaven.God.clock;
 import static de.amr.games.pacman.game.worlds.PacManGameWorld.HTS;
 import static de.amr.games.pacman.game.worlds.PacManGameWorld.TS;
 import static de.amr.games.pacman.game.worlds.PacManGameWorld.t;
@@ -20,23 +19,34 @@ import de.amr.games.pacman.game.creatures.Creature;
 import de.amr.games.pacman.game.creatures.Ghost;
 import de.amr.games.pacman.game.creatures.GhostState;
 import de.amr.games.pacman.game.creatures.Pac;
+import de.amr.games.pacman.game.heaven.God;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.api.PacManAnimations;
 import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
-import de.amr.games.pacman.ui.swing.scene.PacManGamePlayScene;
+import de.amr.games.pacman.ui.swing.scene.PacManGameScene;
 
 /**
  * Scene where the game is played.
  * 
  * @author Armin Reichert
  */
-public class PacManClassicPlayScene extends PacManGamePlayScene implements PacManAnimations {
+public class PacManClassicPlayScene implements PacManGameScene, PacManAnimations {
 
+	private final PacManGameSwingUI ui;
+	private final PacManGameModel game;
+	private final V2i size;
 	private final PacManClassicAssets assets;
 
 	public PacManClassicPlayScene(PacManGameSwingUI ui, PacManGameModel game, V2i size, PacManClassicAssets assets) {
-		super(ui, game, size);
+		this.ui = ui;
+		this.game = game;
+		this.size = size;
 		this.assets = assets;
+	}
+
+	@Override
+	public V2i size() {
+		return size;
 	}
 
 	@Override
@@ -73,7 +83,7 @@ public class PacManClassicPlayScene extends PacManGamePlayScene implements PacMa
 		for (Ghost ghost : game.ghosts) {
 			drawGuy(g, ghost, sprite(ghost));
 		}
-		drawDebugInfo(g);
+		drawDebugInfo(g, game);
 	}
 
 	private void drawGuy(Graphics2D g, Creature guy, BufferedImage sprite) {
@@ -140,13 +150,13 @@ public class PacManClassicPlayScene extends PacManGamePlayScene implements PacMa
 				if (game.level.isFoodRemoved(x, y)) {
 					hideFood(g, x, y);
 				} else if (game.state == PacManGameState.HUNTING && game.world.isEnergizerTile(x, y)) {
-					clock.runOrBeIdle(10, () -> hideFood(g, x, y));
+					God.clock.runOrBeIdle(10, () -> hideFood(g, x, y));
 				}
 			});
 		});
 		drawBonus(g, game.bonus);
 		if (PacManGameSwingUI.debugMode) {
-			drawMazeStructure(g);
+			drawMazeStructure(g, game);
 		}
 	}
 
