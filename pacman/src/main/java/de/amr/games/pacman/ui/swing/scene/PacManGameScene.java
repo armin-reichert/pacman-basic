@@ -30,6 +30,14 @@ public interface PacManGameScene {
 
 	void draw(Graphics2D g);
 
+	default void start() {
+	}
+
+	default void end() {
+	}
+
+	// convenience
+
 	default void drawCenteredText(Graphics2D g, String text, int y) {
 		g.drawString(text, (size().x - g.getFontMetrics().stringWidth(text)) / 2, y);
 	}
@@ -38,15 +46,7 @@ public interface PacManGameScene {
 		g.drawImage(image, (size().x - image.getWidth()) / 2, y, null);
 	}
 
-	default void start() {
-
-	}
-
-	default void end() {
-
-	}
-
-	// debugging help
+	// debugging
 
 	default void drawDebugInfo(Graphics2D g, PacManGameModel game) {
 		if (PacManGameSwingUI.debugMode) {
