@@ -23,9 +23,9 @@ import de.amr.games.pacman.game.creatures.Pac;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.api.PacManGameAnimations;
+import de.amr.games.pacman.ui.api.PacManGameScene;
 import de.amr.games.pacman.ui.swing.Animation;
 import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
-import de.amr.games.pacman.ui.swing.scene.PacManGameScene;
 
 /**
  * Scene where the game is played.

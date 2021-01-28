@@ -22,8 +22,8 @@ import de.amr.games.pacman.game.creatures.Pac;
 import de.amr.games.pacman.game.heaven.God;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.api.PacManGameAnimations;
+import de.amr.games.pacman.ui.api.PacManGameScene;
 import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
-import de.amr.games.pacman.ui.swing.scene.PacManGameScene;
 
 /**
  * Scene where the game is played.

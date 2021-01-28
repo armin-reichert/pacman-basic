@@ -14,9 +14,9 @@ import de.amr.games.pacman.game.creatures.Ghost;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.ui.api.PacManGameScene;
 import de.amr.games.pacman.ui.api.PacManGameSound;
 import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
-import de.amr.games.pacman.ui.swing.scene.PacManGameScene;
 
 public class MsPacManIntroScene implements PacManGameScene {
 

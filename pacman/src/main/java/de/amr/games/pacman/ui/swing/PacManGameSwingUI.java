@@ -34,6 +34,7 @@ import de.amr.games.pacman.game.core.PacManGameState;
 import de.amr.games.pacman.game.heaven.God;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.api.PacManGameAnimations;
+import de.amr.games.pacman.ui.api.PacManGameScene;
 import de.amr.games.pacman.ui.api.PacManGameUI;
 import de.amr.games.pacman.ui.api.PacManGameSoundManager;
 import de.amr.games.pacman.ui.swing.classic.PacManClassicAssets;
@@ -42,7 +43,6 @@ import de.amr.games.pacman.ui.swing.classic.PacManClassicPlayScene;
 import de.amr.games.pacman.ui.swing.mspacman.MsPacManAssets;
 import de.amr.games.pacman.ui.swing.mspacman.MsPacManIntroScene;
 import de.amr.games.pacman.ui.swing.mspacman.MsPacManPlayScene;
-import de.amr.games.pacman.ui.swing.scene.PacManGameScene;
 
 /**
  * Swing UI for Pac-Man game.
