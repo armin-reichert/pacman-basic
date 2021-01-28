@@ -4,14 +4,13 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.ui.api.PacManAnimations;
 
 /**
  * Implemented by all scenes of the Pac-Man and Ms. Pac-Man game.
  * 
  * @author Armin Reichert
  */
-public interface PacManGameScene extends PacManAnimations {
+public interface PacManGameScene {
 
 	V2i size();
 

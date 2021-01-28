@@ -21,6 +21,7 @@ import de.amr.games.pacman.game.creatures.Ghost;
 import de.amr.games.pacman.game.creatures.GhostState;
 import de.amr.games.pacman.game.creatures.Pac;
 import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.ui.api.PacManAnimations;
 import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
 import de.amr.games.pacman.ui.swing.scene.PacManGamePlayScene;
 
@@ -29,7 +30,7 @@ import de.amr.games.pacman.ui.swing.scene.PacManGamePlayScene;
  * 
  * @author Armin Reichert
  */
-public class PacManClassicPlayScene extends PacManGamePlayScene {
+public class PacManClassicPlayScene extends PacManGamePlayScene implements PacManAnimations {
 
 	private final PacManClassicAssets assets;
 

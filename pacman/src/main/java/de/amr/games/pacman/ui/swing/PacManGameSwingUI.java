@@ -229,7 +229,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 				Graphics2D g = (Graphics2D) buffers.getDrawGraphics();
 				g.setColor(canvas.getBackground());
 				g.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
-				drawCurrentScene(g, scaling);
+				drawCurrentScene(g);
 				if (controller.isGamePaused()) {
 					drawPausedScreen(g);
 				}
@@ -239,7 +239,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 		} while (buffers.contentsLost());
 	}
 
-	private void drawCurrentScene(Graphics2D g, float scaling) {
+	private void drawCurrentScene(Graphics2D g) {
 		updateScene();
 		Graphics2D g2 = (Graphics2D) g.create();
 		g2.scale(scaling, scaling);
@@ -321,6 +321,9 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 	@Override
 	public Optional<PacManAnimations> animations() {
-		return Optional.ofNullable(currentScene);
+		if (currentScene instanceof PacManAnimations) {
+			return Optional.ofNullable((PacManAnimations) currentScene);
+		}
+		return Optional.empty();
 	}
 }

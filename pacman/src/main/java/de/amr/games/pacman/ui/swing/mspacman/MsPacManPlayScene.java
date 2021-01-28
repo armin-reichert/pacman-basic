@@ -22,6 +22,7 @@ import de.amr.games.pacman.game.creatures.Ghost;
 import de.amr.games.pacman.game.creatures.Pac;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.ui.api.PacManAnimations;
 import de.amr.games.pacman.ui.swing.Animation;
 import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
 import de.amr.games.pacman.ui.swing.scene.PacManGamePlayScene;
@@ -31,7 +32,7 @@ import de.amr.games.pacman.ui.swing.scene.PacManGamePlayScene;
  * 
  * @author Armin Reichert
  */
-public class MsPacManPlayScene extends PacManGamePlayScene {
+public class MsPacManPlayScene extends PacManGamePlayScene implements PacManAnimations {
 
 	private final MsPacManAssets assets;
 	private Animation mazeFlashing;
