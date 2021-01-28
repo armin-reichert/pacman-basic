@@ -37,15 +37,6 @@ public class MsPacManIntroScene implements PacManGameScene {
 		return size;
 	}
 
-	private BufferedImage ghostWalking(Direction dir, int ghostID, boolean animated) {
-		if (animated) {
-			int frame = clock.frame(5, 2);
-			return assets.section(2 * assets.dirIndex(dir) + frame, 4 + ghostID);
-		} else {
-			return assets.section(2 * assets.dirIndex(dir), 4 + ghostID);
-		}
-	}
-
 	private BufferedImage pacWalking(Direction dir, boolean animated) {
 		if (animated) {
 			int frame = clock.frame(5, 3);
@@ -62,7 +53,7 @@ public class MsPacManIntroScene implements PacManGameScene {
 	private final int ghostTargetX = t(frameTopLeftTile.x) - 18;
 	private int[] ghostX = new int[4];
 	private int[] ghostY = new int[4];
-	private Direction[] ghostDirection = new Direction[4];
+	private Direction[] ghostDir = new Direction[4];
 	private boolean[] ghostWalking = new boolean[4];
 	private boolean[] ghostReachedTarget = new boolean[4];
 	private boolean pacWalking;
@@ -74,13 +65,25 @@ public class MsPacManIntroScene implements PacManGameScene {
 		Arrays.fill(ghostX, size.x);
 		Arrays.fill(ghostY, t(frameTopLeftTile.y) + 4 * (frameSize.y + 1));
 		Arrays.fill(ghostWalking, false);
-		Arrays.fill(ghostDirection, Direction.LEFT);
+		Arrays.fill(ghostDir, Direction.LEFT);
 		Arrays.fill(ghostReachedTarget, false);
 		pacWalking = false;
 		pacReachedTarget = false;
 		pacX = size.x;
 		pacY = t(frameTopLeftTile.y) + 4 * (frameSize.y + 1);
 		game.state.resetTimer();
+	}
+
+	@Override
+	public void end() {
+		for (int ghostID = 0; ghostID < 4; ++ghostID) {
+			for (Direction dir : Direction.values()) {
+				assets.ghostsWalking.get(ghostID).get(dir).reset();
+			}
+		}
+		for (Direction dir : Direction.values()) {
+			assets.pacWalking.get(dir).reset();
+		}
 	}
 
 	@Override
@@ -102,7 +105,9 @@ public class MsPacManIntroScene implements PacManGameScene {
 
 		for (int ghost = 0; ghost <= 3; ++ghost) {
 			if (ghostReachedTarget[ghost]) {
-				g.drawImage(ghostWalking(UP, ghost, false), ghostTargetX, t(frameTopLeftTile.y) + 16 * ghost, null);
+				assets.ghostsWalking.get(ghost).get(UP).stop();
+				g.drawImage(assets.ghostsWalking.get(ghost).get(UP).frame(), ghostTargetX, t(frameTopLeftTile.y) + 16 * ghost,
+						null);
 				continue;
 			}
 			if (ghostWalking[ghost]) {
@@ -116,21 +121,22 @@ public class MsPacManIntroScene implements PacManGameScene {
 				drawCenteredText(g, ui.translation("MSPACMAN.GHOST." + ghost + ".NICKNAME"), t(14));
 
 				// walk
-				if (ghostDirection[ghost] == Direction.LEFT) {
+				if (ghostDir[ghost] == Direction.LEFT) {
 					ghostX[ghost] -= speed;
-				} else if (ghostDirection[ghost] == Direction.UP) {
+				} else if (ghostDir[ghost] == Direction.UP) {
 					ghostY[ghost] -= speed;
 				}
 				if (ghostX[ghost] == ghostTargetX) {
-					ghostDirection[ghost] = Direction.UP;
+					ghostDir[ghost] = Direction.UP;
 				}
-				BufferedImage sprite = ghostWalking(ghostDirection[ghost], ghost, !ghostReachedTarget[ghost]);
-				g.drawImage(sprite, ghostX[ghost], ghostY[ghost], null);
+				g.drawImage(assets.ghostsWalking.get(ghost).get(ghostDir[ghost]).frame(), ghostX[ghost], ghostY[ghost], null);
 
 				// target reached?
 				if (ghostY[ghost] <= t(frameTopLeftTile.y) + ghost * 16) {
 					ghostReachedTarget[ghost] = true;
 					ghostWalking[ghost] = false;
+					assets.ghostsWalking.get(ghost).get(ghostDir[ghost]).stop();
+					assets.ghostsWalking.get(ghost).get(ghostDir[ghost]).reset();
 					if (ghost < 3) {
 						ghostWalking[ghost + 1] = true;
 						ui.sounds().ifPresent(sm -> sm.playSound(PacManGameSound.CREDIT));
