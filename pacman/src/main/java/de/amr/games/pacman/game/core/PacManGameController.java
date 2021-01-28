@@ -34,7 +34,7 @@ import java.util.stream.Stream;
 import de.amr.games.pacman.game.creatures.Ghost;
 import de.amr.games.pacman.lib.Hiscore;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.ui.api.PacManAnimations;
+import de.amr.games.pacman.ui.api.PacManGameAnimations;
 import de.amr.games.pacman.ui.api.PacManGameSound;
 import de.amr.games.pacman.ui.api.PacManGameUI;
 import de.amr.games.pacman.ui.api.PacManGameSoundManager;
@@ -575,7 +575,7 @@ public class PacManGameController implements Runnable {
 
 	private void exitChangingLevelState() {
 		log("Level %d complete, entering level %d", game.levelNumber, game.levelNumber + 1);
-		ui.animations().ifPresent(PacManAnimations::endMazeFlashing);
+		ui.animations().ifPresent(PacManGameAnimations::endMazeFlashing);
 		game.initLevel(game.levelNumber + 1);
 		game.levelSymbols.add(game.level.bonusSymbol);
 	}

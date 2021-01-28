@@ -22,7 +22,7 @@ import de.amr.games.pacman.game.creatures.Ghost;
 import de.amr.games.pacman.game.creatures.Pac;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.ui.api.PacManAnimations;
+import de.amr.games.pacman.ui.api.PacManGameAnimations;
 import de.amr.games.pacman.ui.swing.Animation;
 import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
 import de.amr.games.pacman.ui.swing.scene.PacManGameScene;
@@ -32,7 +32,7 @@ import de.amr.games.pacman.ui.swing.scene.PacManGameScene;
  * 
  * @author Armin Reichert
  */
-public class MsPacManPlayScene implements PacManGameScene, PacManAnimations {
+public class MsPacManPlayScene implements PacManGameScene, PacManGameAnimations {
 
 	private final PacManGameSwingUI ui;
 	private final PacManGameModel game;

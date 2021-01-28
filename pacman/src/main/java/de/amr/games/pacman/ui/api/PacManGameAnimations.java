@@ -1,6 +1,6 @@
 package de.amr.games.pacman.ui.api;
 
-public interface PacManAnimations {
+public interface PacManGameAnimations {
 
 	default void startPacManCollapsing() {
 	}

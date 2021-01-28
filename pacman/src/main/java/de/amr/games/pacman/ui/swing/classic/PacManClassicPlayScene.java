@@ -21,7 +21,7 @@ import de.amr.games.pacman.game.creatures.GhostState;
 import de.amr.games.pacman.game.creatures.Pac;
 import de.amr.games.pacman.game.heaven.God;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.ui.api.PacManAnimations;
+import de.amr.games.pacman.ui.api.PacManGameAnimations;
 import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
 import de.amr.games.pacman.ui.swing.scene.PacManGameScene;
 
@@ -30,7 +30,7 @@ import de.amr.games.pacman.ui.swing.scene.PacManGameScene;
  * 
  * @author Armin Reichert
  */
-public class PacManClassicPlayScene implements PacManGameScene, PacManAnimations {
+public class PacManClassicPlayScene implements PacManGameScene, PacManGameAnimations {
 
 	private final PacManGameSwingUI ui;
 	private final PacManGameModel game;

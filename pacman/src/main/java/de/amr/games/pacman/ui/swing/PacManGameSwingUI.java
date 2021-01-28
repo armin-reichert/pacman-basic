@@ -33,7 +33,7 @@ import de.amr.games.pacman.game.core.PacManGameModel;
 import de.amr.games.pacman.game.core.PacManGameState;
 import de.amr.games.pacman.game.heaven.God;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.ui.api.PacManAnimations;
+import de.amr.games.pacman.ui.api.PacManGameAnimations;
 import de.amr.games.pacman.ui.api.PacManGameUI;
 import de.amr.games.pacman.ui.api.PacManGameSoundManager;
 import de.amr.games.pacman.ui.swing.classic.PacManClassicAssets;
@@ -320,9 +320,9 @@ public class PacManGameSwingUI implements PacManGameUI {
 	}
 
 	@Override
-	public Optional<PacManAnimations> animations() {
-		if (currentScene instanceof PacManAnimations) {
-			return Optional.ofNullable((PacManAnimations) currentScene);
+	public Optional<PacManGameAnimations> animations() {
+		if (currentScene instanceof PacManGameAnimations) {
+			return Optional.ofNullable((PacManGameAnimations) currentScene);
 		}
 		return Optional.empty();
 	}
