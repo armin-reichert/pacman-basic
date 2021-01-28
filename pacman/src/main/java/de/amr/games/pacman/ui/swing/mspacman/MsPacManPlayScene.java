@@ -22,6 +22,7 @@ import de.amr.games.pacman.game.creatures.Ghost;
 import de.amr.games.pacman.game.creatures.Pac;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.ui.swing.Animation;
 import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
 import de.amr.games.pacman.ui.swing.scene.PacManGamePlayScene;
 
@@ -33,6 +34,7 @@ import de.amr.games.pacman.ui.swing.scene.PacManGamePlayScene;
 public class MsPacManPlayScene extends PacManGamePlayScene {
 
 	private final MsPacManAssets assets;
+	private Animation mazeFlashing;
 
 	public MsPacManPlayScene(PacManGameSwingUI ui, PacManGameModel game, V2i size, MsPacManAssets assets) {
 		super(ui, game, size);
@@ -49,6 +51,23 @@ public class MsPacManPlayScene extends PacManGamePlayScene {
 	public void endPacManCollapsing() {
 		assets.pacCollapsing.stop();
 		assets.pacCollapsing.reset();
+	}
+
+	@Override
+	public void startMazeFlashing(int repetitions) {
+		mazeFlashing = new Animation();
+		mazeFlashing.addFrame(assets.mazeEmptyBright[game.level.mazeNumber - 1]);
+		mazeFlashing.addFrame(assets.mazeEmptyDark[game.level.mazeNumber - 1]);
+		mazeFlashing.setFrameDurationTicks(15);
+		mazeFlashing.setRepetitions(repetitions);
+		mazeFlashing.reset();
+		mazeFlashing.start();
+	}
+
+	@Override
+	public void endMazeFlashing() {
+		mazeFlashing.stop();
+		mazeFlashing = null;
 	}
 
 	@Override
@@ -137,14 +156,12 @@ public class MsPacManPlayScene extends PacManGamePlayScene {
 	}
 
 	private void drawMaze(Graphics2D g) {
-		if (game.mazeFlashesRemaining > 0) {
-			clock.runAlternating(clock.sec(0.25), () -> {
-				g.drawImage(assets.mazeEmptyDark[game.level.mazeNumber - 1], 0, t(3), null);
-			}, () -> {
-//				g.drawImage(assets.mazeEmptyBright[mazeIndex], 0, t(3), null);
-			}, () -> {
-				game.mazeFlashesRemaining--;
-			});
+		if (mazeFlashing != null) {
+			// TODO fixme
+			BufferedImage frame = mazeFlashing.frame();
+			if (frame != null) {
+				g.drawImage(mazeFlashing.frame(), 0, t(3), null);
+			}
 			return;
 		}
 		g.drawImage(assets.mazeFull[game.level.mazeNumber - 1], 0, t(3), null);

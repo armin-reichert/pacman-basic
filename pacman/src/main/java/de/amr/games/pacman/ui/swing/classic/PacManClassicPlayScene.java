@@ -51,6 +51,18 @@ public class PacManClassicPlayScene extends PacManGamePlayScene {
 	}
 
 	@Override
+	public void startMazeFlashing(int repetitions) {
+		assets.mazeFlashing.setRepetitions(repetitions);
+		assets.mazeFlashing.reset();
+		assets.mazeFlashing.start();
+	}
+
+	@Override
+	public void endMazeFlashing() {
+		assets.mazeFlashing.stop();
+	}
+
+	@Override
 	public void draw(Graphics2D g) {
 		drawScore(g);
 		drawLivesCounter(g);
@@ -117,14 +129,8 @@ public class PacManClassicPlayScene extends PacManGamePlayScene {
 	}
 
 	private void drawMaze(Graphics2D g) {
-		if (game.mazeFlashesRemaining > 0) {
-			clock.runAlternating(clock.sec(0.25), () -> {
-				g.drawImage(assets.mazeEmptyDark, 0, t(3), null);
-			}, () -> {
-				g.drawImage(assets.mazeEmptyBright, 0, t(3), null);
-			}, () -> {
-				game.mazeFlashesRemaining--;
-			});
+		if (assets.mazeFlashing.isRunning()) {
+			g.drawImage(assets.mazeFlashing.frame(), 0, t(3), null);
 			return;
 		}
 		g.drawImage(assets.mazeFull, 0, t(3), null);

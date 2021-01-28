@@ -2,8 +2,15 @@ package de.amr.games.pacman.ui.api;
 
 public interface PacManAnimations {
 
-	void endPacManCollapsing();
+	default void startPacManCollapsing() {
+	}
 
-	void startPacManCollapsing();
+	default void endPacManCollapsing() {
+	}
 
+	default void startMazeFlashing(int repetitions) {
+	}
+
+	default void endMazeFlashing() {
+	}
 }

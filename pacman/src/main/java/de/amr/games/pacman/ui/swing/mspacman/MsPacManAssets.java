@@ -65,7 +65,7 @@ public class MsPacManAssets {
 		for (int i = 0; i < 6; ++i) {
 			mazeFull[i]         = spriteSheet.getSubimage(0, i*248, 226, 248);
 			mazeEmptyDark[i]    = spriteSheet.getSubimage(226, i*248, 226, 248);
-			mazeEmptyBright[i]  = mazeEmptyDark[i]; // TODO fixme
+			mazeEmptyBright[i]  = null; //TODO fixme
 		}
 		scoreFont           = font("/PressStart2P-Regular.ttf", 8);
 		life                = section(1, 0);
@@ -119,8 +119,8 @@ public class MsPacManAssets {
 		for (Direction direction : Direction.values()) {
 			int dir = MsPacManAssets.DIR.get(direction);
 			Animation animation = new Animation();
-			animation.setFrameTicks(1);
-			animation.setLoop(true);
+			animation.setFrameDurationTicks(1);
+			animation.setRepetitions(Integer.MAX_VALUE);
 			animation.start();
 			animation.addFrame(section(0, dir));
 			animation.addFrame(section(1, dir));
@@ -130,7 +130,7 @@ public class MsPacManAssets {
 		}
 
 		pacCollapsing = new Animation();
-		pacCollapsing.setFrameTicks(10);
+		pacCollapsing.setFrameDurationTicks(10);
 		for (int i = 0; i < 2; ++i) {
 			pacCollapsing.addFrame(section(0, 3));
 			pacCollapsing.addFrame(section(0, 0));
@@ -144,8 +144,8 @@ public class MsPacManAssets {
 			for (Direction direction : Direction.values()) {
 				int dir = DIR.get(direction);
 				Animation animation = new Animation();
-				animation.setFrameTicks(4);
-				animation.setLoop(true);
+				animation.setFrameDurationTicks(4);
+				animation.setRepetitions(Integer.MAX_VALUE);
 				animation.start();
 				animation.addFrame(section(2 * dir, 4 + ghostID));
 				animation.addFrame(section(2 * dir + 1, 4 + ghostID));
@@ -161,8 +161,8 @@ public class MsPacManAssets {
 		}
 
 		ghostBlue = new Animation();
-		ghostBlue.setFrameTicks(20);
-		ghostBlue.setLoop(true);
+		ghostBlue.setFrameDurationTicks(20);
+		ghostBlue.setRepetitions(Integer.MAX_VALUE);
 		ghostBlue.start();
 		ghostBlue.addFrame(section(8, 4));
 		ghostBlue.addFrame(section(9, 4));
@@ -170,8 +170,8 @@ public class MsPacManAssets {
 		ghostFlashing = new ArrayList<>();
 		for (int ghostID = 0; ghostID < 4; ++ghostID) {
 			Animation animation = new Animation();
-			animation.setFrameTicks(10);
-			animation.setLoop(true);
+			animation.setFrameDurationTicks(10);
+			animation.setRepetitions(Integer.MAX_VALUE);
 			animation.start();
 			animation.addFrame(section(8, 4));
 			animation.addFrame(section(9, 4));

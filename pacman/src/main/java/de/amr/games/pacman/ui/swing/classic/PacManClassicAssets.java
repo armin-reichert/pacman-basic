@@ -58,6 +58,7 @@ public class PacManClassicAssets {
 	public final EnumMap<Direction, BufferedImage> ghostEyes;
 	public final Animation ghostBlue;
 	public final List<Animation> ghostFlashing;
+	public final Animation mazeFlashing;
 
 	public final Map<PacManGameSound, URL> soundURL = new EnumMap<>(PacManGameSound.class);
 	public final Font scoreFont;
@@ -126,8 +127,8 @@ public class PacManClassicAssets {
 		for (Direction direction : Direction.values()) {
 			int dir = PacManClassicAssets.DIR.get(direction);
 			Animation animation = new Animation();
-			animation.setFrameTicks(1);
-			animation.setLoop(true);
+			animation.setFrameDurationTicks(1);
+			animation.setRepetitions(Integer.MAX_VALUE);
 			animation.start();
 			animation.addFrame(pacMouthClosed);
 			animation.addFrame(section(1, dir));
@@ -137,7 +138,7 @@ public class PacManClassicAssets {
 		}
 
 		pacCollapsing = new Animation();
-		pacCollapsing.setFrameTicks(8);
+		pacCollapsing.setFrameDurationTicks(8);
 		for (int i = 0; i < 11; ++i) {
 			pacCollapsing.addFrame(section(3 + i, 0));
 		}
@@ -148,8 +149,8 @@ public class PacManClassicAssets {
 			for (Direction direction : Direction.values()) {
 				int dir = PacManClassicAssets.DIR.get(direction);
 				Animation animation = new Animation();
-				animation.setFrameTicks(10);
-				animation.setLoop(true);
+				animation.setFrameDurationTicks(10);
+				animation.setRepetitions(Integer.MAX_VALUE);
 				animation.start();
 				animation.addFrame(section(2 * dir, 4 + ghostID));
 				animation.addFrame(section(2 * dir + 1, 4 + ghostID));
@@ -165,8 +166,8 @@ public class PacManClassicAssets {
 		}
 
 		ghostBlue = new Animation();
-		ghostBlue.setFrameTicks(20);
-		ghostBlue.setLoop(true);
+		ghostBlue.setFrameDurationTicks(20);
+		ghostBlue.setRepetitions(Integer.MAX_VALUE);
 		ghostBlue.start();
 		ghostBlue.addFrame(section(8, 4));
 		ghostBlue.addFrame(section(9, 4));
@@ -174,8 +175,8 @@ public class PacManClassicAssets {
 		ghostFlashing = new ArrayList<>();
 		for (int ghostID = 0; ghostID < 4; ++ghostID) {
 			Animation animation = new Animation();
-			animation.setFrameTicks(10);
-			animation.setLoop(true);
+			animation.setFrameDurationTicks(10);
+			animation.setRepetitions(Integer.MAX_VALUE);
 			animation.start();
 			animation.addFrame(section(8, 4));
 			animation.addFrame(section(9, 4));
@@ -183,6 +184,11 @@ public class PacManClassicAssets {
 			animation.addFrame(section(11, 4));
 			ghostFlashing.add(animation);
 		}
+
+		mazeFlashing = new Animation();
+		mazeFlashing.setFrameDurationTicks(15);
+		mazeFlashing.addFrame(mazeEmptyBright);
+		mazeFlashing.addFrame(mazeEmptyDark);
 	}
 
 	public BufferedImage section(int x, int y, int w, int h) {

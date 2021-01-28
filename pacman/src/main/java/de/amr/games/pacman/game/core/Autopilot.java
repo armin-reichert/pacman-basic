@@ -146,7 +146,9 @@ public class Autopilot {
 			V2i foodTile = findTileFarestFromGhosts(game, findNearestFoodTiles(game));
 			game.pac.targetTile = foodTile;
 		}
-		game.pac.headForTargetTile();
+		if (game.pac.targetTile != null) {
+			game.pac.headForTargetTile();
+		}
 	}
 
 	private Ghost findHuntingGhostAhead(PacManGameModel game) {

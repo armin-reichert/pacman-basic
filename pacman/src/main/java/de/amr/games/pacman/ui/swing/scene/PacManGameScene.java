@@ -32,13 +32,4 @@ public interface PacManGameScene extends PacManAnimations {
 	default void end() {
 
 	}
-
-	@Override
-	default void startPacManCollapsing() {
-	}
-
-	@Override
-	default void endPacManCollapsing() {
-	}
-
 }
