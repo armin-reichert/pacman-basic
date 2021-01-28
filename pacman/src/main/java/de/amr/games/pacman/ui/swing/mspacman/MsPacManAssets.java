@@ -27,7 +27,7 @@ import de.amr.games.pacman.ui.swing.Animation;
 public class MsPacManAssets {
 
 	/** Sprite sheet order of directions. */
-	public static final Map<Direction, Integer> DIR = new EnumMap<>(Direction.class);
+	private static final Map<Direction, Integer> DIR = new EnumMap<>(Direction.class);
 
 	static {
 		DIR.put(Direction.RIGHT, 0);
@@ -179,6 +179,10 @@ public class MsPacManAssets {
 			animation.addFrame(section(11, 4));
 			ghostFlashing.add(animation);
 		}
+	}
+
+	public int dirIndex(Direction direction) {
+		return DIR.get(direction);
 	}
 
 	public BufferedImage section(int x, int y, int w, int h) {

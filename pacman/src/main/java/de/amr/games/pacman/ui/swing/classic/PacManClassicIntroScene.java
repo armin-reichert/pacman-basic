@@ -4,7 +4,6 @@ import static de.amr.games.pacman.game.heaven.God.clock;
 import static de.amr.games.pacman.game.worlds.PacManGameWorld.t;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
-import static de.amr.games.pacman.ui.swing.classic.PacManClassicAssets.DIR;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -198,12 +197,12 @@ public class PacManClassicIntroScene implements PacManGameScene {
 
 	private BufferedImage pacManWalkingSprite(Direction dir) {
 		int frame = clock.frame(5, 3);
-		return frame == 2 ? assets.section(frame, 0) : assets.section(frame, DIR.get(dir));
+		return frame == 2 ? assets.section(frame, 0) : assets.section(frame, assets.dirIndex(dir));
 	}
 
 	private BufferedImage ghostWalkingSprite(Direction dir, int ghost) {
 		int frame = clock.frame(5, 2);
-		return assets.section(2 * DIR.get(dir) + frame, 4 + ghost);
+		return assets.section(2 * assets.dirIndex(dir) + frame, 4 + ghost);
 	}
 
 	private BufferedImage ghostFrightenedSprite() {
