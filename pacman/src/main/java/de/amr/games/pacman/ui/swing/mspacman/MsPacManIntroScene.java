@@ -11,6 +11,7 @@ import java.util.Arrays;
 
 import de.amr.games.pacman.game.core.PacManGameModel;
 import de.amr.games.pacman.lib.Direction;
+import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.api.PacManGameSound;
 import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
@@ -40,16 +41,16 @@ public class MsPacManIntroScene implements PacManGameScene {
 	private final long animationStart = 60;
 	private final V2i frameTopLeftTile = new V2i(6, 8);
 	private final V2i frameSize = new V2i(32, 16);
-	private final float speed = 0.5f;
+	private final float speed = 0.75f;
 	private final int ghostTargetX = t(frameTopLeftTile.x) - 18;
+
 	private int[] ghostX = new int[4];
 	private int[] ghostY = new int[4];
 	private Direction[] ghostDir = new Direction[4];
 	private boolean[] ghostWalking = new boolean[4];
 	private boolean[] ghostReachedTarget = new boolean[4];
-	private boolean pacWalking;
+
 	private boolean pacReachedTarget;
-	private int pacX, pacY;
 
 	@Override
 	public void start() {
@@ -58,10 +59,12 @@ public class MsPacManIntroScene implements PacManGameScene {
 		Arrays.fill(ghostWalking, false);
 		Arrays.fill(ghostDir, Direction.LEFT);
 		Arrays.fill(ghostReachedTarget, false);
-		pacWalking = false;
+
 		pacReachedTarget = false;
-		pacX = size.x;
-		pacY = t(frameTopLeftTile.y) + 4 * (frameSize.y + 1);
+		game.pac.position = new V2f(size.x, t(frameTopLeftTile.y) + 4 * (frameSize.y + 1));
+		game.pac.speed = 0;
+		game.pac.dir = LEFT;
+
 		game.state.resetTimer();
 	}
 
@@ -135,7 +138,8 @@ public class MsPacManIntroScene implements PacManGameScene {
 						ghostWalking[ghost + 1] = true;
 						ui.sounds().ifPresent(sm -> sm.playSound(PacManGameSound.CREDIT));
 					} else {
-						pacWalking = true;
+						game.pac.speed = speed;
+						game.pac.dir = LEFT;
 						ui.sounds().ifPresent(sm -> sm.loopSound(PacManGameSound.PACMAN_MUNCH));
 					}
 				}
@@ -149,17 +153,19 @@ public class MsPacManIntroScene implements PacManGameScene {
 			g.drawString("MS PAC-MAN", t(11), t(14));
 		}
 
-		if (pacX <= t(13)) {
-			pacWalking = false;
+		if (game.pac.position.x <= t(13)) {
+			game.pac.speed = 0;
 			pacReachedTarget = true;
 		}
 
-		if (pacWalking) {
-			pacX -= speed;
+		if (game.pac.speed != 0) {
+			V2f velocity = new V2f(game.pac.dir.vec).scaled(game.pac.speed);
+			game.pac.position = game.pac.position.sum(velocity);
 		} else if (pacReachedTarget) {
-			assets.pacWalking.get(LEFT).stop();
+			assets.pacWalking.get(game.pac.dir).stop();
 		}
-		g.drawImage(assets.pacWalking.get(LEFT).frame(), pacX, pacY, null);
+		g.drawImage(assets.pacWalking.get(game.pac.dir).frame(), (int) game.pac.position.x, (int) game.pac.position.y,
+				null);
 
 		if (pacReachedTarget) {
 			drawPointsAnimation(g, 26);
