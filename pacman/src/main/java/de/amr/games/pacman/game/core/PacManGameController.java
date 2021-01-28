@@ -104,7 +104,6 @@ public class PacManGameController implements Runnable {
 	private void reset() {
 		gameStarted = false;
 		game.state = suspendedState = null;
-		game.mazeFlashesRemaining = 0;
 		if (ui != null) {
 			ui.sounds().ifPresent(SoundManager::stopAllSounds);
 			ui.clearMessages();
@@ -570,14 +569,12 @@ public class PacManGameController implements Runnable {
 		}
 		if (game.state.running == clock.sec(3)) {
 			ui.animations().ifPresent(animations -> animations.startMazeFlashing(game.level.numFlashes));
-			game.mazeFlashesRemaining = game.level.numFlashes;
 		}
 		return game.state.run();
 	}
 
 	private void exitChangingLevelState() {
 		log("Level %d complete, entering level %d", game.levelNumber, game.levelNumber + 1);
-		game.mazeFlashesRemaining = 0;
 		ui.animations().ifPresent(PacManAnimations::endMazeFlashing);
 		game.initLevel(game.levelNumber + 1);
 		game.levelSymbols.add(game.level.bonusSymbol);

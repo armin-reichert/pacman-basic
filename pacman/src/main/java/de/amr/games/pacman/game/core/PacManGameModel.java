@@ -39,8 +39,6 @@ public class PacManGameModel {
 	public short globalDotCounter;
 	public boolean globalDotCounterEnabled;
 
-	public byte mazeFlashesRemaining; // TODO this does not belong here
-
 	public static PacManGameModel newPacManClassicGame() {
 		PacManGameModel game = new PacManGameModel();
 		game.variant = CLASSIC;
