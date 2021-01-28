@@ -5,7 +5,7 @@ import static java.awt.EventQueue.invokeLater;
 
 import de.amr.games.pacman.game.core.PacManGameController;
 import de.amr.games.pacman.game.core.PacManGameModel;
-import de.amr.games.pacman.game.worlds.PacManGameWorld;
+import de.amr.games.pacman.game.heaven.God;
 import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
 
 /**
@@ -70,14 +70,21 @@ public class PacManGameApp {
 	 */
 	public static void main(String[] args) {
 		Options options = Options.parse(args);
+		PacManGameController controller = new PacManGameController();
+		controller.initGame(options.variant);
 		invokeLater(() -> {
-			PacManGameController gameController = new PacManGameController();
-			gameController.initGame(options.variant);
-			PacManGameWorld world = gameController.game().get().world;
-			PacManGameSwingUI ui = new PacManGameSwingUI(gameController, world.xTiles(), world.yTiles(), options.scaling);
-			ui.updateGame(gameController.game().get());
-			ui.show();
-			new Thread(gameController, "PacManGame").start();
+			controller.game().ifPresent(game -> {
+				PacManGameSwingUI ui = new PacManGameSwingUI(controller, game.world.xTiles(), game.world.yTiles(),
+						options.scaling);
+				ui.updateGame(game);
+				ui.show();
+				// start game loop in its own thread
+				new Thread(() -> {
+					while (true) {
+						God.clock.tick(controller::step);
+					}
+				}, "PacManGame").start();
+			});
 		});
 	}
 }

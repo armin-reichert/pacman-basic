@@ -36,8 +36,8 @@ import de.amr.games.pacman.lib.Hiscore;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.api.PacManGameAnimations;
 import de.amr.games.pacman.ui.api.PacManGameSound;
-import de.amr.games.pacman.ui.api.PacManGameUI;
 import de.amr.games.pacman.ui.api.PacManGameSoundManager;
+import de.amr.games.pacman.ui.api.PacManGameUI;
 
 /**
  * Pac-Man and Ms. Pac-Man game with original "AI", levels, timers.
@@ -56,7 +56,7 @@ import de.amr.games.pacman.ui.api.PacManGameSoundManager;
  *      Understanding ghost behavior</a>
  * @see <a href="http://superpacman.com/mspacman/">Ms. Pac-Man</a>
  */
-public class PacManGameController implements Runnable {
+public class PacManGameController {
 
 	private PacManGameUI ui;
 	private PacManGameModel game;
@@ -135,14 +135,7 @@ public class PacManGameController implements Runnable {
 		log("%s is %s", game.pac.name, game.pac.immune ? "immune against ghosts" : "vulnerable by ghosts");
 	}
 
-	@Override
-	public void run() {
-		while (true) {
-			clock.tick(this::step);
-		}
-	}
-
-	private void step() {
+	public void step() {
 		if (!gamePaused) {
 			readInput();
 			updateState();
