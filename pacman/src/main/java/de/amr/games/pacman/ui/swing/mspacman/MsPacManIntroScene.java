@@ -39,11 +39,11 @@ public class MsPacManIntroScene implements PacManGameScene {
 		return size;
 	}
 
-	private final V2i frameSizeTiles = new V2i(32, 16);
+	private final V2i frameDots = new V2i(32, 16);
 	private final V2i frameTopLeftTile = new V2i(6, 8);
 	private final int leftOfFrame = t(frameTopLeftTile.x) - 18;
-	private final int belowFrame = t(frameTopLeftTile.y) + 4 * (frameSizeTiles.y + 1);
-	private final int belowFrameCenterX = t(frameTopLeftTile.x) + t(frameSizeTiles.x) / 2;
+	private final int belowFrame = t(frameTopLeftTile.y) + 4 * (frameDots.y + 1);
+	private final int belowFrameCenterX = t(frameTopLeftTile.x) + 2 * frameDots.x;
 	private final float walkSpeed = 1.2f;
 
 	@Override
@@ -132,14 +132,11 @@ public class MsPacManIntroScene implements PacManGameScene {
 			g.drawString("MS PAC-MAN", t(11), t(14));
 		}
 
-		if (game.pac.position.x <= t(13)) {
-			game.pac.speed = 0;
-		}
-
 		if (game.pac.speed != 0) {
 			V2f velocity = new V2f(game.pac.dir.vec).scaled(game.pac.speed);
 			game.pac.position = game.pac.position.sum(velocity);
 			if (game.pac.position.x <= belowFrameCenterX) {
+				game.pac.speed = 0;
 				ui.sounds().ifPresent(sm -> sm.stopAllSounds());
 			}
 		}
@@ -147,8 +144,8 @@ public class MsPacManIntroScene implements PacManGameScene {
 
 		// Pac animation over?
 		if (game.pac.speed == 0 && game.pac.position.x <= belowFrameCenterX) {
-			drawPointsAnimation(g, 26);
-			drawPressKeyToStart(g);
+			drawPointsAnimation(g, 26, time);
+			drawPressKeyToStart(g, time);
 		}
 
 		// restart intro after 30 seconds
@@ -172,39 +169,39 @@ public class MsPacManIntroScene implements PacManGameScene {
 	}
 
 	private void drawBlinkingFrame(Graphics2D g, long time) {
-		int light = (int) (time / 2) % (frameSizeTiles.x / 2);
-		for (int dot = 0; dot < 2 * (frameSizeTiles.x + frameSizeTiles.y); ++dot) {
+		int light = (int) (time / 2) % (frameDots.x / 2);
+		for (int dot = 0; dot < 2 * (frameDots.x + frameDots.y); ++dot) {
 			int x = 0, y = 0;
-			if (dot <= frameSizeTiles.x) {
+			if (dot <= frameDots.x) {
 				x = dot;
-			} else if (dot < frameSizeTiles.x + frameSizeTiles.y) {
-				x = frameSizeTiles.x;
-				y = dot - frameSizeTiles.x;
-			} else if (dot < 2 * frameSizeTiles.x + frameSizeTiles.y + 1) {
-				x = 2 * frameSizeTiles.x + frameSizeTiles.y - dot;
-				y = frameSizeTiles.y;
+			} else if (dot < frameDots.x + frameDots.y) {
+				x = frameDots.x;
+				y = dot - frameDots.x;
+			} else if (dot < 2 * frameDots.x + frameDots.y + 1) {
+				x = 2 * frameDots.x + frameDots.y - dot;
+				y = frameDots.y;
 			} else {
-				y = 2 * (frameSizeTiles.x + frameSizeTiles.y) - dot;
+				y = 2 * (frameDots.x + frameDots.y) - dot;
 			}
-			g.setColor((dot + light) % (frameSizeTiles.x / 2) == 0 ? Color.CYAN : Color.RED);
+			g.setColor((dot + light) % (frameDots.x / 2) == 0 ? Color.CYAN : Color.RED);
 			g.fillRect(t(frameTopLeftTile.x) + 4 * x, t(frameTopLeftTile.y) + 4 * y, 2, 2);
 		}
 	}
 
-	private void drawPressKeyToStart(Graphics2D g) {
+	private void drawPressKeyToStart(Graphics2D g, long time) {
 		g.setColor(Color.ORANGE);
 		g.setFont(assets.scoreFont);
-		clock.runOrBeIdle(20, () -> {
+		if (time % 40 < 20) {
 			drawCenteredText(g, ui.translation("PRESS_KEY_TO_PLAY"), size.y - 20);
-		});
+		}
 	}
 
-	private void drawPointsAnimation(Graphics2D g, int yTile) {
+	private void drawPointsAnimation(Graphics2D g, int yTile, long time) {
 		g.setColor(Color.PINK);
 		g.fillRect(t(9) + 6, t(yTile - 1) + 2, 2, 2);
-		clock.runOrBeIdle(20, () -> {
+		if (time % 40 < 20) {
 			g.fillOval(t(9), t(yTile + 1) - 2, 10, 10);
-		});
+		}
 		g.setColor(Color.WHITE);
 		g.setFont(assets.scoreFont);
 		g.drawString("10", t(12), t(yTile));
