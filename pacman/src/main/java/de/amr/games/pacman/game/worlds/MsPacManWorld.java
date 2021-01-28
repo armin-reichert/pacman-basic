@@ -10,11 +10,13 @@ import de.amr.games.pacman.lib.Direction;
 /**
  * Ms. Pac-Man game world. Has 6 maze variants.
  * 
- * TODO: lots of details still missing
+ * TODO: lots of details still unclear
  * 
  * @author Armin Reichert
  */
 public class MsPacManWorld extends AbstractPacManGameWorld {
+
+	private static final String[] GHOST_NAMES = { "Blinky", "Pinky", "Inky", "Sue" };
 
 	public static final byte CHERRIES = 0, STRAWBERRY = 1, PEACH = 2, PRETZEL = 3, APPLE = 4, PEAR = 5, BANANA = 6;
 
@@ -50,8 +52,6 @@ public class MsPacManWorld extends AbstractPacManGameWorld {
 	};
 	/*@formatter:on*/
 
-	private static final String[] GHOST_NAMES = { "Blinky", "Pinky", "Inky", "Sue" };
-
 	@Override
 	public PacManGameLevel createLevel(int levelNumber) {
 		int mazeNumber = mazeNumber(levelNumber);
@@ -73,19 +73,21 @@ public class MsPacManWorld extends AbstractPacManGameWorld {
 	private int mazeNumber(int levelNumber) {
 		if (levelNumber <= 2) {
 			return 1; // pink maze, white dots
-		} else if (levelNumber <= 5) {
-			return 2; // light blue maze, yellow dots
-		} else if (levelNumber <= 9) {
-			return 3; // orange maze, red dots
-		} else if (levelNumber <= 13) {
-			return 4; // dark blue maze, white dots
-		} else if ((levelNumber - 14) % 8 < 4) {
-			// from level 14 on, maze switches between 5 and 6 every 4 levels
-			return 5; // pink maze, cyan dots (same map as maze 3)
-		} else {
-			return 6; // orange maze, white dots (same map as maze 4)
 		}
-
+		if (levelNumber <= 5) {
+			return 2; // light blue maze, yellow dots
+		}
+		if (levelNumber <= 9) {
+			return 3; // orange maze, red dots
+		}
+		if (levelNumber <= 13) {
+			return 4; // dark blue maze, white dots
+		}
+		// from level 14 on, maze switches between 5 and 6 every 4 levels
+		if ((levelNumber - 14) % 8 < 4) {
+			return 5; // pink maze, cyan dots (same map as maze 3)
+		}
+		return 6; // orange maze, white dots (same map as maze 4)
 	}
 
 	@Override
