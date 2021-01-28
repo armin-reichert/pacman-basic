@@ -11,14 +11,14 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 
 import de.amr.games.pacman.ui.api.PacManGameSound;
-import de.amr.games.pacman.ui.api.SoundManager;
+import de.amr.games.pacman.ui.api.PacManGameSoundManager;
 
 /**
  * Sound manager for Pac-Man game.
  * 
  * @author Armin Reichert
  */
-class PacManGameSoundManager implements SoundManager {
+class DefaultPacManGameSoundManager implements PacManGameSoundManager {
 
 	private static final int MUNCHES = 2;
 
@@ -27,7 +27,7 @@ class PacManGameSoundManager implements SoundManager {
 	private final Clip[] munchClips = new Clip[MUNCHES];
 	private int munchIndex;
 
-	public PacManGameSoundManager(Function<PacManGameSound, URL> fnSoundURL) {
+	public DefaultPacManGameSoundManager(Function<PacManGameSound, URL> fnSoundURL) {
 		this.fnSoundURL = fnSoundURL;
 		for (int i = 0; i < MUNCHES; ++i) {
 			munchClips[i] = createAndOpenClip(fnSoundURL.apply(PacManGameSound.PACMAN_MUNCH));

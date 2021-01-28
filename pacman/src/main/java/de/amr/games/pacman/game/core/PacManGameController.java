@@ -37,7 +37,7 @@ import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.api.PacManAnimations;
 import de.amr.games.pacman.ui.api.PacManGameSound;
 import de.amr.games.pacman.ui.api.PacManGameUI;
-import de.amr.games.pacman.ui.api.SoundManager;
+import de.amr.games.pacman.ui.api.PacManGameSoundManager;
 
 /**
  * Pac-Man and Ms. Pac-Man game with original "AI", levels, timers.
@@ -105,7 +105,7 @@ public class PacManGameController implements Runnable {
 		gameStarted = false;
 		game.state = suspendedState = null;
 		if (ui != null) {
-			ui.sounds().ifPresent(SoundManager::stopAllSounds);
+			ui.sounds().ifPresent(PacManGameSoundManager::stopAllSounds);
 			ui.clearMessages();
 		}
 		enterIntroState();
@@ -119,7 +119,7 @@ public class PacManGameController implements Runnable {
 		} else {
 			initGame(PacManGameModel.CLASSIC);
 		}
-		ui.sounds().ifPresent(SoundManager::stopAllSounds);
+		ui.sounds().ifPresent(PacManGameSoundManager::stopAllSounds);
 		ui.updateGame(game);
 	}
 
@@ -272,7 +272,7 @@ public class PacManGameController implements Runnable {
 		for (Ghost ghost : game.ghosts) {
 			ghost.visible = false;
 		}
-		ui.sounds().ifPresent(SoundManager::stopAllSounds);
+		ui.sounds().ifPresent(PacManGameSoundManager::stopAllSounds);
 	}
 
 	private PacManGameState runReadyState() {
@@ -483,7 +483,7 @@ public class PacManGameController implements Runnable {
 			ghost.state = HUNTING; // TODO just want ghost to be rendered colorful
 		}
 		game.bonus.edibleTicksLeft = game.bonus.eatenTicksLeft = 0;
-		ui.sounds().ifPresent(SoundManager::stopAllSounds);
+		ui.sounds().ifPresent(PacManGameSoundManager::stopAllSounds);
 	}
 
 	private PacManGameState runPacManDyingState() {
@@ -555,7 +555,7 @@ public class PacManGameController implements Runnable {
 		game.state.setDuration(clock.sec(game.level.numFlashes + 3));
 		game.bonus.edibleTicksLeft = game.bonus.eatenTicksLeft = 0;
 		game.pac.speed = 0;
-		ui.sounds().ifPresent(SoundManager::stopAllSounds);
+		ui.sounds().ifPresent(PacManGameSoundManager::stopAllSounds);
 	}
 
 	private PacManGameState runChangingLevelState() {

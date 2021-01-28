@@ -1,6 +1,6 @@
 package de.amr.games.pacman.ui.api;
 
-public interface SoundManager {
+public interface PacManGameSoundManager {
 
 	void playSound(PacManGameSound sound);
 

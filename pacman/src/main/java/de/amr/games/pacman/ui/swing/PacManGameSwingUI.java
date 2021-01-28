@@ -35,7 +35,7 @@ import de.amr.games.pacman.game.heaven.God;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.api.PacManAnimations;
 import de.amr.games.pacman.ui.api.PacManGameUI;
-import de.amr.games.pacman.ui.api.SoundManager;
+import de.amr.games.pacman.ui.api.PacManGameSoundManager;
 import de.amr.games.pacman.ui.swing.classic.PacManClassicAssets;
 import de.amr.games.pacman.ui.swing.classic.PacManClassicIntroScene;
 import de.amr.games.pacman.ui.swing.classic.PacManClassicPlayScene;
@@ -104,7 +104,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 	private PacManGameScene currentScene;
 	private PacManGameScene introScene;
 	private PacManGameScene playScene;
-	private PacManGameSoundManager soundManager;
+	private DefaultPacManGameSoundManager soundManager;
 
 	public PacManGameSwingUI(PacManGameController controller, int xTiles, int yTiles, float scaling) {
 		this.controller = controller;
@@ -174,12 +174,12 @@ public class PacManGameSwingUI implements PacManGameUI {
 		this.game = game;
 		if (game.variant == PacManGameModel.CLASSIC) {
 			PacManClassicAssets assets = new PacManClassicAssets();
-			soundManager = new PacManGameSoundManager(assets.soundURL::get);
+			soundManager = new DefaultPacManGameSoundManager(assets.soundURL::get);
 			introScene = new PacManClassicIntroScene(this, game, unscaledSizePixels, assets);
 			playScene = new PacManClassicPlayScene(this, game, unscaledSizePixels, assets);
 		} else {
 			MsPacManAssets assets = new MsPacManAssets();
-			soundManager = new PacManGameSoundManager(assets.soundURL::get);
+			soundManager = new DefaultPacManGameSoundManager(assets.soundURL::get);
 			introScene = new MsPacManIntroScene(this, game, unscaledSizePixels, assets);
 			playScene = new MsPacManPlayScene(this, game, unscaledSizePixels, assets);
 		}
@@ -315,7 +315,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 	}
 
 	@Override
-	public Optional<SoundManager> sounds() {
+	public Optional<PacManGameSoundManager> sounds() {
 		return Optional.ofNullable(soundManager);
 	}
 
