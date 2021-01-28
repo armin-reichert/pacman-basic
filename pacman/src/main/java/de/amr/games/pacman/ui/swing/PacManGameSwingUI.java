@@ -35,8 +35,8 @@ import de.amr.games.pacman.game.heaven.God;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.api.PacManGameAnimations;
 import de.amr.games.pacman.ui.api.PacManGameScene;
-import de.amr.games.pacman.ui.api.PacManGameUI;
 import de.amr.games.pacman.ui.api.PacManGameSoundManager;
+import de.amr.games.pacman.ui.api.PacManGameUI;
 import de.amr.games.pacman.ui.swing.classic.PacManClassicAssets;
 import de.amr.games.pacman.ui.swing.classic.PacManClassicIntroScene;
 import de.amr.games.pacman.ui.swing.classic.PacManClassicPlayScene;
@@ -258,7 +258,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 		}
 		if (flashMessages.size() > 0 && flashMessageTicksLeft > 0) {
 			String flashMessage = flashMessages.get(0);
-			g.setFont(new Font(Font.SERIF, Font.BOLD, 12));
+			g.setFont(new Font(Font.SERIF, Font.BOLD, 10));
 			float t = FLASH_MESSAGE_TICKS - flashMessageTicksLeft;
 			float alpha = (float) cos(Math.PI * t / (2 * FLASH_MESSAGE_TICKS));
 			g.setColor(new Color(1, 1, 0.5f, alpha));
