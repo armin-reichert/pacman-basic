@@ -15,12 +15,15 @@ import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.url;
 import java.awt.Font;
 import java.awt.image.BufferedImage;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.ui.api.PacManGameSound;
+import de.amr.games.pacman.ui.swing.Animation;
 
 /**
  * Assets used in Pac-Man game.
@@ -47,9 +50,16 @@ public class PacManClassicAssets {
 	public final BufferedImage life;
 	public final BufferedImage[] symbols = new BufferedImage[8];
 	public final Map<Integer, BufferedImage> numbers = new HashMap<>();
+	public final BufferedImage pacMouthClosed;
+	public final EnumMap<Direction, BufferedImage> pacMouthOpen;
+	public final EnumMap<Direction, Animation> pacWalking;
+	public final Animation pacCollapsing;
+	public final List<EnumMap<Direction, Animation>> ghostsWalking;
+	public final EnumMap<Direction, BufferedImage> ghostEyes;
+	public final Animation ghostBlue;
+	public final List<Animation> ghostFlashing;
 
 	public final Map<PacManGameSound, URL> soundURL = new EnumMap<>(PacManGameSound.class);
-
 	public final Font scoreFont;
 
 	public PacManClassicAssets() {
@@ -104,6 +114,75 @@ public class PacManClassicAssets {
 		//@formatter:on
 
 		scoreFont = font("/PressStart2P-Regular.ttf", 8);
+
+		pacMouthClosed = section(2, 0);
+		pacMouthOpen = new EnumMap<>(Direction.class);
+		for (Direction direction : Direction.values()) {
+			int dir = PacManClassicAssets.DIR.get(direction);
+			pacMouthOpen.put(direction, section(1, dir));
+		}
+
+		pacWalking = new EnumMap<>(Direction.class);
+		for (Direction direction : Direction.values()) {
+			int dir = PacManClassicAssets.DIR.get(direction);
+			Animation animation = new Animation();
+			animation.setFrameTicks(1);
+			animation.setLoop(true);
+			animation.start();
+			animation.addFrame(pacMouthClosed);
+			animation.addFrame(section(1, dir));
+			animation.addFrame(section(0, dir));
+			animation.addFrame(section(1, dir));
+			pacWalking.put(direction, animation);
+		}
+
+		pacCollapsing = new Animation();
+		pacCollapsing.setFrameTicks(8);
+		for (int i = 0; i < 11; ++i) {
+			pacCollapsing.addFrame(section(3 + i, 0));
+		}
+
+		ghostsWalking = new ArrayList<>();
+		for (int ghostID = 0; ghostID < 4; ++ghostID) {
+			EnumMap<Direction, Animation> animationForDir = new EnumMap<>(Direction.class);
+			for (Direction direction : Direction.values()) {
+				int dir = PacManClassicAssets.DIR.get(direction);
+				Animation animation = new Animation();
+				animation.setFrameTicks(10);
+				animation.setLoop(true);
+				animation.start();
+				animation.addFrame(section(2 * dir, 4 + ghostID));
+				animation.addFrame(section(2 * dir + 1, 4 + ghostID));
+				animationForDir.put(direction, animation);
+			}
+			ghostsWalking.add(animationForDir);
+		}
+
+		ghostEyes = new EnumMap<>(Direction.class);
+		for (Direction direction : Direction.values()) {
+			int dir = PacManClassicAssets.DIR.get(direction);
+			ghostEyes.put(direction, section(8 + dir, 5));
+		}
+
+		ghostBlue = new Animation();
+		ghostBlue.setFrameTicks(20);
+		ghostBlue.setLoop(true);
+		ghostBlue.start();
+		ghostBlue.addFrame(section(8, 4));
+		ghostBlue.addFrame(section(9, 4));
+
+		ghostFlashing = new ArrayList<>();
+		for (int ghostID = 0; ghostID < 4; ++ghostID) {
+			Animation animation = new Animation();
+			animation.setFrameTicks(10);
+			animation.setLoop(true);
+			animation.start();
+			animation.addFrame(section(8, 4));
+			animation.addFrame(section(9, 4));
+			animation.addFrame(section(10, 4));
+			animation.addFrame(section(11, 4));
+			ghostFlashing.add(animation);
+		}
 	}
 
 	public BufferedImage section(int x, int y, int w, int h) {

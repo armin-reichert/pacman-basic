@@ -12,9 +12,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.List;
 
 import de.amr.games.pacman.game.core.PacManGameModel;
 import de.amr.games.pacman.game.core.PacManGameState;
@@ -23,9 +20,7 @@ import de.amr.games.pacman.game.creatures.Creature;
 import de.amr.games.pacman.game.creatures.Ghost;
 import de.amr.games.pacman.game.creatures.GhostState;
 import de.amr.games.pacman.game.creatures.Pac;
-import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.ui.swing.Animation;
 import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
 import de.amr.games.pacman.ui.swing.scene.PacManGamePlayScene;
 
@@ -38,99 +33,21 @@ public class PacManClassicPlayScene extends PacManGamePlayScene {
 
 	private final PacManClassicAssets assets;
 
-	private final BufferedImage pacMouthClosed;
-	private final EnumMap<Direction, BufferedImage> pacMouthOpen;
-	private final EnumMap<Direction, Animation> pacWalking;
-	private final Animation pacCollapsing;
-	private final List<EnumMap<Direction, Animation>> ghostsWalking;
-	private final EnumMap<Direction, BufferedImage> ghostEyes;
-	private final Animation ghostBlue;
-	private final List<Animation> ghostFlashing;
-
 	public PacManClassicPlayScene(PacManGameSwingUI ui, PacManGameModel game, V2i size, PacManClassicAssets assets) {
 		super(ui, game, size);
 		this.assets = assets;
-
-		pacMouthClosed = assets.section(2, 0);
-		pacMouthOpen = new EnumMap<>(Direction.class);
-		for (Direction direction : Direction.values()) {
-			int dir = PacManClassicAssets.DIR.get(direction);
-			pacMouthOpen.put(direction, assets.section(1, dir));
-		}
-
-		pacWalking = new EnumMap<>(Direction.class);
-		for (Direction direction : Direction.values()) {
-			int dir = PacManClassicAssets.DIR.get(direction);
-			Animation animation = new Animation();
-			animation.setFrameTicks(1);
-			animation.setLoop(true);
-			animation.start();
-			animation.addFrame(pacMouthClosed);
-			animation.addFrame(assets.section(1, dir));
-			animation.addFrame(assets.section(0, dir));
-			animation.addFrame(assets.section(1, dir));
-			pacWalking.put(direction, animation);
-		}
-
-		pacCollapsing = new Animation();
-		pacCollapsing.setFrameTicks(8);
-		for (int i = 0; i < 11; ++i) {
-			pacCollapsing.addFrame(assets.section(3 + i, 0));
-		}
-
-		ghostsWalking = new ArrayList<>();
-		for (int ghostID = 0; ghostID < 4; ++ghostID) {
-			EnumMap<Direction, Animation> animationForDir = new EnumMap<>(Direction.class);
-			for (Direction direction : Direction.values()) {
-				int dir = PacManClassicAssets.DIR.get(direction);
-				Animation animation = new Animation();
-				animation.setFrameTicks(10);
-				animation.setLoop(true);
-				animation.start();
-				animation.addFrame(assets.section(2 * dir, 4 + ghostID));
-				animation.addFrame(assets.section(2 * dir + 1, 4 + ghostID));
-				animationForDir.put(direction, animation);
-			}
-			ghostsWalking.add(animationForDir);
-		}
-
-		ghostEyes = new EnumMap<>(Direction.class);
-		for (Direction direction : Direction.values()) {
-			int dir = PacManClassicAssets.DIR.get(direction);
-			ghostEyes.put(direction, assets.section(8 + dir, 5));
-		}
-
-		ghostBlue = new Animation();
-		ghostBlue.setFrameTicks(20);
-		ghostBlue.setLoop(true);
-		ghostBlue.start();
-		ghostBlue.addFrame(assets.section(8, 4));
-		ghostBlue.addFrame(assets.section(9, 4));
-
-		ghostFlashing = new ArrayList<>();
-		for (int ghostID = 0; ghostID < 4; ++ghostID) {
-			Animation animation = new Animation();
-			animation.setFrameTicks(10);
-			animation.setLoop(true);
-			animation.start();
-			animation.addFrame(assets.section(8, 4));
-			animation.addFrame(assets.section(9, 4));
-			animation.addFrame(assets.section(10, 4));
-			animation.addFrame(assets.section(11, 4));
-			ghostFlashing.add(animation);
-		}
 	}
 
 	@Override
 	public void startPacManCollapsing() {
-		pacCollapsing.reset();
-		pacCollapsing.start();
+		assets.pacCollapsing.reset();
+		assets.pacCollapsing.start();
 	}
 
 	@Override
 	public void endPacManCollapsing() {
-		pacCollapsing.stop();
-		pacCollapsing.reset();
+		assets.pacCollapsing.stop();
+		assets.pacCollapsing.reset();
 	}
 
 	@Override
@@ -242,15 +159,15 @@ public class PacManClassicPlayScene extends PacManGamePlayScene {
 
 	private BufferedImage sprite(Pac pac) {
 		if (pac.dead) {
-			return pacCollapsing.isRunning() ? pacCollapsing.frame() : pacMouthClosed;
+			return assets.pacCollapsing.isRunning() ? assets.pacCollapsing.frame() : assets.pacMouthClosed;
 		}
 		if (pac.speed == 0) {
-			return pacMouthClosed;
+			return assets.pacMouthClosed;
 		}
 		if (!pac.couldMove) {
-			return pacMouthOpen.get(pac.dir);
+			return assets.pacMouthOpen.get(pac.dir);
 		}
-		return pacWalking.get(pac.dir).frame();
+		return assets.pacWalking.get(pac.dir).frame();
 	}
 
 	private BufferedImage sprite(Ghost ghost) {
@@ -258,18 +175,18 @@ public class PacManClassicPlayScene extends PacManGamePlayScene {
 			return assets.numbers.get(ghost.bounty);
 		}
 		if (ghost.state == GhostState.DEAD || ghost.state == GhostState.ENTERING_HOUSE) {
-			return ghostEyes.get(ghost.wishDir);
+			return assets.ghostEyes.get(ghost.wishDir);
 		}
 		if (ghost.is(FRIGHTENED)) {
-			if (game.pac.powerTicksLeft <= ghostFlashing.get(ghost.id).getDuration() * game.level.numFlashes
+			if (game.pac.powerTicksLeft <= assets.ghostFlashing.get(ghost.id).getDuration() * game.level.numFlashes
 					&& game.state == PacManGameState.HUNTING) {
-				return ghostFlashing.get(ghost.id).frame();
+				return assets.ghostFlashing.get(ghost.id).frame();
 			}
-			return ghostBlue.frame();
+			return assets.ghostBlue.frame();
 		}
 		if (ghost.is(LOCKED) && game.pac.powerTicksLeft > 0) {
-			return ghostBlue.frame();
+			return assets.ghostBlue.frame();
 		}
-		return ghostsWalking.get(ghost.id).get(ghost.wishDir).frame();
+		return assets.ghostsWalking.get(ghost.id).get(ghost.wishDir).frame();
 	}
 }
