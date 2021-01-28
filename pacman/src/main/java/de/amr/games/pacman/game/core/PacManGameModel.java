@@ -10,7 +10,6 @@ import de.amr.games.pacman.game.creatures.MovingBonus;
 import de.amr.games.pacman.game.creatures.Pac;
 import de.amr.games.pacman.game.worlds.MsPacManWorld;
 import de.amr.games.pacman.game.worlds.PacManClassicWorld;
-import de.amr.games.pacman.game.worlds.PacManGameWorld;
 import de.amr.games.pacman.lib.Hiscore;
 
 /**

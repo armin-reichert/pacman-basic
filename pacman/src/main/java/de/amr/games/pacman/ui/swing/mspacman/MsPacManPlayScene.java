@@ -1,13 +1,13 @@
 package de.amr.games.pacman.ui.swing.mspacman;
 
+import static de.amr.games.pacman.game.core.PacManGameWorld.HTS;
+import static de.amr.games.pacman.game.core.PacManGameWorld.TS;
+import static de.amr.games.pacman.game.core.PacManGameWorld.t;
 import static de.amr.games.pacman.game.creatures.GhostState.DEAD;
 import static de.amr.games.pacman.game.creatures.GhostState.ENTERING_HOUSE;
 import static de.amr.games.pacman.game.creatures.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.game.creatures.GhostState.LOCKED;
 import static de.amr.games.pacman.game.heaven.God.clock;
-import static de.amr.games.pacman.game.worlds.PacManGameWorld.HTS;
-import static de.amr.games.pacman.game.worlds.PacManGameWorld.TS;
-import static de.amr.games.pacman.game.worlds.PacManGameWorld.t;
 
 import java.awt.Color;
 import java.awt.Font;

@@ -1,9 +1,9 @@
 package de.amr.games.pacman.game.creatures;
 
-import static de.amr.games.pacman.game.worlds.PacManGameWorld.HTS;
+import static de.amr.games.pacman.game.core.PacManGameWorld.HTS;
 
+import de.amr.games.pacman.game.core.PacManGameWorld;
 import de.amr.games.pacman.game.worlds.PacManClassicWorld;
-import de.amr.games.pacman.game.worlds.PacManGameWorld;
 
 /**
  * Bonus symbol. In Ms. Pac-Man, the bonus wanders the maze.

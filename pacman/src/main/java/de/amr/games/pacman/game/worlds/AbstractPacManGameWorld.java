@@ -14,6 +14,7 @@ import java.util.BitSet;
 import java.util.List;
 import java.util.stream.Stream;
 
+import de.amr.games.pacman.game.core.PacManGameWorld;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
 

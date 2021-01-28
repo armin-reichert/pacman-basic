@@ -1,16 +1,16 @@
 package de.amr.games.pacman.game.creatures;
 
+import static de.amr.games.pacman.game.core.PacManGameWorld.HTS;
+import static de.amr.games.pacman.game.core.PacManGameWorld.t;
 import static de.amr.games.pacman.game.heaven.God.differsAtMost;
 import static de.amr.games.pacman.game.worlds.PacManClassicWorld.BLINKY;
-import static de.amr.games.pacman.game.worlds.PacManGameWorld.HTS;
-import static de.amr.games.pacman.game.worlds.PacManGameWorld.t;
 import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Direction.UP;
 
 import de.amr.games.pacman.game.core.PacManGameLevel;
-import de.amr.games.pacman.game.worlds.PacManGameWorld;
+import de.amr.games.pacman.game.core.PacManGameWorld;
 import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
 

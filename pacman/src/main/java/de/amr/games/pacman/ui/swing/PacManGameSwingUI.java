@@ -1,8 +1,8 @@
 package de.amr.games.pacman.ui.swing;
 
+import static de.amr.games.pacman.game.core.PacManGameWorld.TS;
+import static de.amr.games.pacman.game.core.PacManGameWorld.t;
 import static de.amr.games.pacman.game.heaven.God.clock;
-import static de.amr.games.pacman.game.worlds.PacManGameWorld.TS;
-import static de.amr.games.pacman.game.worlds.PacManGameWorld.t;
 import static de.amr.games.pacman.lib.Logging.log;
 import static java.lang.Math.cos;
 

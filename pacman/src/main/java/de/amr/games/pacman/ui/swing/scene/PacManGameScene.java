@@ -1,8 +1,8 @@
 package de.amr.games.pacman.ui.swing.scene;
 
-import static de.amr.games.pacman.game.worlds.PacManGameWorld.HTS;
-import static de.amr.games.pacman.game.worlds.PacManGameWorld.TS;
-import static de.amr.games.pacman.game.worlds.PacManGameWorld.t;
+import static de.amr.games.pacman.game.core.PacManGameWorld.HTS;
+import static de.amr.games.pacman.game.core.PacManGameWorld.TS;
+import static de.amr.games.pacman.game.core.PacManGameWorld.t;
 import static java.lang.Math.round;
 
 import java.awt.BasicStroke;

@@ -1,10 +1,10 @@
 package de.amr.games.pacman.ui.swing.classic;
 
+import static de.amr.games.pacman.game.core.PacManGameWorld.HTS;
+import static de.amr.games.pacman.game.core.PacManGameWorld.TS;
+import static de.amr.games.pacman.game.core.PacManGameWorld.t;
 import static de.amr.games.pacman.game.creatures.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.game.creatures.GhostState.LOCKED;
-import static de.amr.games.pacman.game.worlds.PacManGameWorld.HTS;
-import static de.amr.games.pacman.game.worlds.PacManGameWorld.TS;
-import static de.amr.games.pacman.game.worlds.PacManGameWorld.t;
 import static java.util.stream.IntStream.range;
 
 import java.awt.Color;

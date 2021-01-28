@@ -1,6 +1,6 @@
 package de.amr.games.pacman.game.creatures;
 
-import de.amr.games.pacman.game.worlds.PacManGameWorld;
+import de.amr.games.pacman.game.core.PacManGameWorld;
 
 /**
  * The Pac-Man.

@@ -4,7 +4,6 @@ import static de.amr.games.pacman.lib.Logging.log;
 
 import java.util.BitSet;
 
-import de.amr.games.pacman.game.worlds.PacManGameWorld;
 import de.amr.games.pacman.lib.V2i;
 
 /**

@@ -1,6 +1,5 @@
-package de.amr.games.pacman.game.worlds;
+package de.amr.games.pacman.game.core;
 
-import de.amr.games.pacman.game.core.PacManGameLevel;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;

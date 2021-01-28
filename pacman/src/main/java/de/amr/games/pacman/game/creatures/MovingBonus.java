@@ -5,7 +5,7 @@ import static de.amr.games.pacman.game.worlds.MsPacManWorld.BONUS_POINTS;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
 
-import de.amr.games.pacman.game.worlds.PacManGameWorld;
+import de.amr.games.pacman.game.core.PacManGameWorld;
 
 public class MovingBonus extends Bonus {
 
