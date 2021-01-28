@@ -7,11 +7,9 @@ import static de.amr.games.pacman.lib.Direction.RIGHT;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
 import java.util.stream.IntStream;
 
 import de.amr.games.pacman.game.core.PacManGameModel;
-import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.api.PacManGameSound;
 import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
@@ -158,9 +156,9 @@ public class PacManClassicIntroScene implements PacManGameScene {
 			g.setColor(Color.PINK);
 			g.fillOval(t(2), y + 2, 10, 10);
 		});
-		g.drawImage(pacManWalkingSprite(LEFT), (int) pacManX, y, null);
-		for (int ghost = 0; ghost < 4; ++ghost) {
-			g.drawImage(ghostWalkingSprite(LEFT, ghost), (int) leftmostGhostX + 16 * ghost, y, null);
+		g.drawImage(assets.pacWalking.get(LEFT).frame(), (int) pacManX, y, null);
+		for (int ghostID = 0; ghostID < 4; ++ghostID) {
+			g.drawImage(assets.ghostsWalking.get(ghostID).get(LEFT).frame(), (int) leftmostGhostX + 16 * ghostID, y, null);
 		}
 		if (pacManX > t(2)) {
 			pacManX -= 0.8f;
@@ -174,11 +172,10 @@ public class PacManClassicIntroScene implements PacManGameScene {
 
 	private void drawPacManChasingGhosts(Graphics2D g) {
 		int y = t(22);
-		BufferedImage frightenedGhost = ghostFrightenedSprite();
 		for (int ghost = 0; ghost < 4; ++ghost) {
 			int x = (int) leftmostGhostX + ghost * 16;
 			if (pacManX < x) {
-				g.drawImage(frightenedGhost, x, y, null);
+				g.drawImage(assets.ghostBlue.frame(), x, y, null);
 			} else if (pacManX > x && pacManX <= x + 16) {
 				int bounty = (int) (Math.pow(2, ghost) * 200);
 				g.drawImage(assets.numbers.get(bounty), x, y, null);
@@ -188,25 +185,10 @@ public class PacManClassicIntroScene implements PacManGameScene {
 				}
 			}
 		}
-		g.drawImage(pacManWalkingSprite(RIGHT), (int) pacManX, y, null);
+		g.drawImage(assets.pacWalking.get(RIGHT).frame(), (int) pacManX, y, null);
 		if (pacManX < size.x) {
 			pacManX += 0.6f;
 			leftmostGhostX += 0.3f;
 		}
-	}
-
-	private BufferedImage pacManWalkingSprite(Direction dir) {
-		int frame = clock.frame(5, 3);
-		return frame == 2 ? assets.section(frame, 0) : assets.section(frame, assets.dirIndex(dir));
-	}
-
-	private BufferedImage ghostWalkingSprite(Direction dir, int ghost) {
-		int frame = clock.frame(5, 2);
-		return assets.section(2 * assets.dirIndex(dir) + frame, 4 + ghost);
-	}
-
-	private BufferedImage ghostFrightenedSprite() {
-		int frame = clock.frame(5, 2);
-		return assets.section(8 + frame, 4);
 	}
 }
