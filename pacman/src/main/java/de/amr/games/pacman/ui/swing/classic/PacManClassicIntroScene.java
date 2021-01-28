@@ -7,9 +7,12 @@ import static de.amr.games.pacman.lib.Direction.RIGHT;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import java.util.stream.IntStream;
 
 import de.amr.games.pacman.game.core.PacManGameModel;
+import de.amr.games.pacman.lib.Direction;
+import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.api.PacManGameScene;
 import de.amr.games.pacman.ui.api.PacManGameSound;
@@ -29,7 +32,6 @@ public class PacManClassicIntroScene implements PacManGameScene {
 	private final V2i size;
 	private final PacManClassicAssets assets;
 
-	private float pacManX;
 	private float leftmostGhostX;
 	private int lastKilledGhost;
 	private boolean ghostsChasingPacMan;
@@ -48,15 +50,21 @@ public class PacManClassicIntroScene implements PacManGameScene {
 
 	@Override
 	public void start() {
-		game.state.resetTimer();
-		pacManX = size.x;
-		leftmostGhostX = pacManX + 24;
+		game.pac.position = new V2f(size.x, t(22));
+		game.pac.dir = LEFT;
+		game.pac.speed = 0.8f;
+		leftmostGhostX = game.pac.position.x + 24;
 		lastKilledGhost = -1;
 		ghostsChasingPacMan = true;
 	}
 
 	@Override
 	public void end() {
+		for (Direction dir : Direction.values()) {
+			assets.pacWalking.get(dir).reset();
+			assets.pacWalking.get(dir).start();
+		}
+		game.state.resetTimer();
 	}
 
 	@Override
@@ -112,7 +120,10 @@ public class PacManClassicIntroScene implements PacManGameScene {
 			drawPressKeyToStart(g);
 		});
 
-		game.state.runAt(clock.sec(30), this::start);
+		game.state.runAt(clock.sec(30), () -> {
+			end();
+			start();
+		});
 	}
 
 	private void drawPressKeyToStart(Graphics2D g) {
@@ -151,32 +162,38 @@ public class PacManClassicIntroScene implements PacManGameScene {
 	}
 
 	private void drawGhostsChasingPacMan(Graphics2D g) {
-		int y = t(22);
 		clock.runOrBeIdle(20, () -> {
 			g.setColor(Color.PINK);
-			g.fillOval(t(2), y + 2, 10, 10);
+			g.fillOval(t(2), (int) game.pac.position.y + 2, 10, 10);
 		});
-		g.drawImage(assets.pacWalking.get(LEFT).frame(), (int) pacManX, y, null);
+		g.drawImage(pacSprite(), (int) game.pac.position.x, (int) game.pac.position.y, null);
 		for (int ghostID = 0; ghostID < 4; ++ghostID) {
-			g.drawImage(assets.ghostsWalking.get(ghostID).get(LEFT).frame(), (int) leftmostGhostX + 16 * ghostID, y, null);
+			g.drawImage(assets.ghostsWalking.get(ghostID).get(LEFT).frame(), (int) leftmostGhostX + 16 * ghostID,
+					(int) game.pac.position.y, null);
 		}
-		if (pacManX > t(2)) {
-			pacManX -= 0.8f;
+		if (game.pac.position.x > t(2)) {
+			V2f velocity = new V2f(game.pac.dir.vec).scaled(game.pac.speed);
+			game.pac.position = game.pac.position.sum(velocity);
 			leftmostGhostX -= 0.8f;
 		} else {
 			ghostsChasingPacMan = false;
+			game.pac.dir = RIGHT;
 			ui.sounds().ifPresent(sm -> sm.stopSound(PacManGameSound.GHOST_SIREN_1));
 			ui.sounds().ifPresent(sm -> sm.loopSound(PacManGameSound.PACMAN_POWER));
 		}
+	}
+
+	private BufferedImage pacSprite() {
+		return game.pac.speed != 0 ? assets.pacWalking.get(game.pac.dir).frame() : assets.pacMouthOpen.get(game.pac.dir);
 	}
 
 	private void drawPacManChasingGhosts(Graphics2D g) {
 		int y = t(22);
 		for (int ghost = 0; ghost < 4; ++ghost) {
 			int x = (int) leftmostGhostX + ghost * 16;
-			if (pacManX < x) {
+			if (game.pac.position.x < x) {
 				g.drawImage(assets.ghostBlue.frame(), x, y, null);
-			} else if (pacManX > x && pacManX <= x + 16) {
+			} else if (game.pac.position.x > x && game.pac.position.x <= x + 16) {
 				int bounty = (int) (Math.pow(2, ghost) * 200);
 				g.drawImage(assets.numbers.get(bounty), x, y, null);
 				if (lastKilledGhost != ghost) {
@@ -185,9 +202,10 @@ public class PacManClassicIntroScene implements PacManGameScene {
 				}
 			}
 		}
-		g.drawImage(assets.pacWalking.get(RIGHT).frame(), (int) pacManX, y, null);
-		if (pacManX < size.x) {
-			pacManX += 0.6f;
+		g.drawImage(pacSprite(), (int) game.pac.position.x, (int) game.pac.position.y, null);
+		if (game.pac.position.x < size.x) {
+			V2f velocity = new V2f(game.pac.dir.vec).scaled(game.pac.speed);
+			game.pac.position = game.pac.position.sum(velocity);
 			leftmostGhostX += 0.3f;
 		}
 	}
