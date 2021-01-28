@@ -11,25 +11,33 @@ public enum PacManGameState {
 
 	INTRO, READY, HUNTING, CHANGING_LEVEL, PACMAN_DYING, GHOST_DYING, GAME_OVER;
 
-	public long duration;
-	public long running;
+	private long duration;
+	private long ticksRun;
+
+	public long ticksRun() {
+		return ticksRun;
+	}
+
+	public long durationTicks() {
+		return duration;
+	}
 
 	public PacManGameState run() {
-		++running;
+		++ticksRun;
 		return this;
 	}
 
-	public void setDuration(long ticks) {
-		duration = ticks;
-		running = 0;
+	public void setDuration(long durationTicks) {
+		duration = durationTicks;
+		ticksRun = 0;
 	}
 
 	public void resetTimer() {
-		running = 0;
+		ticksRun = 0;
 	}
 
 	public long remaining() {
-		return duration == Long.MAX_VALUE ? Long.MAX_VALUE : Math.max(duration - running, 0);
+		return duration == Long.MAX_VALUE ? Long.MAX_VALUE : Math.max(duration - ticksRun, 0);
 	}
 
 	public boolean hasExpired() {
@@ -37,31 +45,31 @@ public enum PacManGameState {
 	}
 
 	public void runAfter(long tick, Runnable code) {
-		if (running > tick) {
+		if (ticksRun > tick) {
 			code.run();
 		}
 	}
 
 	public void runBefore(long tick, Runnable code) {
-		if (running < tick) {
+		if (ticksRun < tick) {
 			code.run();
 		}
 	}
 
 	public void runBetween(long startTick, long endTick, Runnable code) {
-		if (running >= startTick && running <= endTick) {
+		if (ticksRun >= startTick && ticksRun <= endTick) {
 			code.run();
 		}
 	}
 
 	public void runAt(long tick, Runnable code) {
-		if (running == tick) {
+		if (ticksRun == tick) {
 			code.run();
 		}
 	}
 
 	public void runWhile(Predicate<Long> timerCondition, Runnable code) {
-		if (timerCondition.test(running)) {
+		if (timerCondition.test(ticksRun)) {
 			code.run();
 		}
 	}

@@ -76,11 +76,11 @@ public class MsPacManIntroScene implements PacManGameScene {
 
 	@Override
 	public void draw(Graphics2D g) {
-		if (game.state.running < animationStart) {
+		if (game.state.ticksRun() < animationStart) {
 			return;
 		}
 		// run animation
-		long animationTime = game.state.running - animationStart;
+		long animationTime = game.state.ticksRun() - animationStart;
 		if (animationTime == animationStart) {
 			game.ghosts[0].speed = 0.75f;
 			ui.sounds().ifPresent(sm -> sm.playSound(PacManGameSound.CREDIT));

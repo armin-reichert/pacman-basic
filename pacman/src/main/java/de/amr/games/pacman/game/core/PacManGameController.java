@@ -110,7 +110,7 @@ public class PacManGameController {
 		}
 		enterIntroState();
 		log("Game variant is %s", game.variant == PacManGameModel.CLASSIC ? "Pac-Man" : "Ms. Pac-Man");
-		log("State is '%s' for %s", game.stateDescription(), ticksDescription(game.state.duration));
+		log("State is '%s' for %s", game.stateDescription(), ticksDescription(game.state.durationTicks()));
 	}
 
 	private void toggleGameVariant() {
@@ -200,7 +200,7 @@ public class PacManGameController {
 		log("Exit state '%s'", game.stateDescription());
 		onExit.run();
 		onEntry.run();
-		log("Entered state '%s' for %s", game.stateDescription(), ticksDescription(game.state.duration));
+		log("Entered state '%s' for %s", game.stateDescription(), ticksDescription(game.state.durationTicks()));
 		return game.state;
 	}
 
@@ -272,12 +272,12 @@ public class PacManGameController {
 		if (game.state.hasExpired()) {
 			return changeState(this::exitReadyState, this::enterHuntingState);
 		}
-		if (game.state.running == clock.sec(0.5)) {
+		if (game.state.ticksRun() == clock.sec(0.5)) {
 			for (Ghost ghost : game.ghosts) {
 				ghost.visible = true;
 			}
 		}
-		if (game.state.running == clock.sec(1)) {
+		if (game.state.ticksRun() == clock.sec(1)) {
 			ui.showMessage(ui.translation("READY"), false);
 			if (!gameStarted) {
 				ui.sounds().ifPresent(sm -> sm.playSound(PacManGameSound.GAME_READY));
@@ -488,12 +488,12 @@ public class PacManGameController {
 				return changeState(this::exitPacManDyingState, this::enterGameOverState);
 			}
 		}
-		if (game.state.running == clock.sec(1.5)) {
+		if (game.state.ticksRun() == clock.sec(1.5)) {
 			for (Ghost ghost : game.ghosts) {
 				ghost.visible = false;
 			}
 		}
-		if (game.state.running == clock.sec(2.5)) {
+		if (game.state.ticksRun() == clock.sec(2.5)) {
 			ui.animations().ifPresent(animations -> animations.startPacManCollapsing());
 			ui.sounds().ifPresent(sm -> sm.playSound(PacManGameSound.PACMAN_DEATH));
 		}
@@ -555,12 +555,12 @@ public class PacManGameController {
 		if (game.state.hasExpired()) {
 			return changeState(this::exitChangingLevelState, this::enterReadyState);
 		}
-		if (game.state.running == clock.sec(2)) {
+		if (game.state.ticksRun() == clock.sec(2)) {
 			for (Ghost ghost : game.ghosts) {
 				ghost.visible = false;
 			}
 		}
-		if (game.state.running == clock.sec(3)) {
+		if (game.state.ticksRun() == clock.sec(3)) {
 			ui.animations().ifPresent(animations -> animations.startMazeFlashing(game.level.numFlashes));
 		}
 		return game.state.run();
