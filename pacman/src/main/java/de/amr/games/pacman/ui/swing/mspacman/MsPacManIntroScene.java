@@ -7,7 +7,7 @@ import static de.amr.games.pacman.lib.Direction.UP;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.util.Arrays;
+import java.awt.image.BufferedImage;
 
 import de.amr.games.pacman.game.core.PacManGameModel;
 import de.amr.games.pacman.game.creatures.Ghost;
@@ -43,18 +43,15 @@ public class MsPacManIntroScene implements PacManGameScene {
 	private final V2i frameTopLeftTile = new V2i(6, 8);
 	private final V2i frameSize = new V2i(32, 16);
 	private final int ghostTargetX = t(frameTopLeftTile.x) - 18;
-	private boolean[] ghostReachedTarget = new boolean[4];
 	private boolean pacReachedTarget;
 
 	@Override
 	public void start() {
-		Arrays.fill(ghostReachedTarget, false);
 		for (Ghost ghost : game.ghosts) {
 			ghost.position = new V2f(size.x, t(frameTopLeftTile.y) + 4 * (frameSize.y + 1));
 			ghost.speed = 0;
 			ghost.dir = LEFT;
 		}
-
 		pacReachedTarget = false;
 		game.pac.position = new V2f(size.x, t(frameTopLeftTile.y) + 4 * (frameSize.y + 1));
 		game.pac.speed = 0;
@@ -92,50 +89,44 @@ public class MsPacManIntroScene implements PacManGameScene {
 		g.setFont(assets.scoreFont);
 		g.setColor(Color.ORANGE);
 		drawCenteredText(g, "\"MS PAC-MAN\"", t(5));
-		drawFrame(g, clock.frame(2, frameSize.x / 2));
+		drawBlinkingFrame(g, clock.frame(2, frameSize.x / 2));
 
 		for (Ghost ghost : game.ghosts) {
-			if (ghostReachedTarget[ghost.id]) {
-				assets.ghostsWalking.get(ghost.id).get(ghost.dir).stop();
-				g.drawImage(assets.ghostsWalking.get(ghost.id).get(ghost.dir).frame(), ghostTargetX,
-						t(frameTopLeftTile.y) + 16 * ghost.id, null);
+			if (ghostReachedEndPosition(ghost)) {
+				g.drawImage(sprite(ghost), (int) ghost.position.x, t(frameTopLeftTile.y) + 16 * ghost.id, null);
 				continue;
 			}
-			if (ghost.speed != 0) {
+			if (ghost.id == 0) {
+				g.setColor(Color.WHITE);
 				g.setFont(assets.scoreFont);
-				// display text
-				if (ghost.id == 0) {
-					g.setColor(Color.WHITE);
-					g.drawString(ui.translation("WITH"), t(8), t(11));
-				}
+				g.drawString(ui.translation("WITH"), t(8), t(11));
+			}
+			if (ghost.speed != 0) {
 				g.setColor(GHOST_COLORS[ghost.id]);
+				g.setFont(assets.scoreFont);
 				drawCenteredText(g, ui.translation("MSPACMAN.GHOST." + ghost.id + ".NICKNAME"), t(14));
 
-				// walk
+				// walk, turn UP at frame left corner
 				V2f velocity = new V2f(ghost.dir.vec).scaled(ghost.speed);
 				ghost.position = ghost.position.sum(velocity);
 				if (ghost.position.x <= ghostTargetX) {
 					ghost.dir = UP;
 				}
-				g.drawImage(assets.ghostsWalking.get(ghost.id).get(ghost.dir).frame(), (int) ghost.position.x,
-						(int) ghost.position.y, null);
-
-				// target reached?
-				if (ghost.position.y <= t(frameTopLeftTile.y) + ghost.id * 16) {
-					ghostReachedTarget[ghost.id] = true;
-					ghost.speed = 0;
-					if (ghost.id < 3) {
-						game.ghosts[ghost.id + 1].speed = 0.75f;
-						ui.sounds().ifPresent(sm -> sm.playSound(PacManGameSound.CREDIT));
-					} else {
-						game.pac.speed = 0.75f;
-						ui.sounds().ifPresent(sm -> sm.loopSound(PacManGameSound.PACMAN_MUNCH));
-					}
+			}
+			g.drawImage(sprite(ghost), (int) ghost.position.x, (int) ghost.position.y, null);
+			if (ghostReachedEndPosition(ghost)) {
+				ghost.speed = 0;
+				if (ghost.id < 3) { // start next ghost
+					game.ghosts[ghost.id + 1].speed = 0.75f;
+					ui.sounds().ifPresent(sm -> sm.playSound(PacManGameSound.CREDIT));
+				} else { // start Pac
+					game.pac.speed = 0.75f;
+					ui.sounds().ifPresent(sm -> sm.loopSound(PacManGameSound.PACMAN_MUNCH));
 				}
 			}
 		}
 
-		if (ghostReachedTarget[3]) {
+		if (ghostReachedEndPosition(game.ghosts[3])) {
 			g.setColor(Color.WHITE);
 			g.drawString(ui.translation("STARRING"), t(8), t(11));
 			g.setColor(Color.YELLOW);
@@ -169,7 +160,18 @@ public class MsPacManIntroScene implements PacManGameScene {
 		}
 	}
 
-	private void drawFrame(Graphics2D g, int light) {
+	private boolean ghostReachedEndPosition(Ghost ghost) {
+		return ghost.position.x <= ghostTargetX && ghost.position.y <= t(frameTopLeftTile.y) + ghost.id * 16;
+	}
+
+	private BufferedImage sprite(Ghost ghost) {
+		if (ghost.speed != 0) {
+			return assets.ghostsWalking.get(ghost.id).get(ghost.dir).frame();
+		}
+		return assets.ghostsWalking.get(ghost.id).get(ghost.dir).getSprite(0);
+	}
+
+	private void drawBlinkingFrame(Graphics2D g, int light) {
 		for (int dot = 0; dot < 2 * (frameSize.x + frameSize.y); ++dot) {
 			int x = 0, y = 0;
 			if (dot <= frameSize.x) {
