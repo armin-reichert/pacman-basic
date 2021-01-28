@@ -135,11 +135,6 @@ public class PacManClassicPlayScene implements PacManGameScene, PacManGameAnimat
 		}
 	}
 
-	private void hideFood(Graphics2D g, int x, int y) {
-		g.setColor(Color.BLACK);
-		g.fillRect(t(x), t(y), TS, TS);
-	}
-
 	private void drawMaze(Graphics2D g) {
 		if (assets.mazeFlashing.isRunning()) {
 			g.drawImage(assets.mazeFlashing.frame(), 0, t(3), null);
@@ -148,10 +143,10 @@ public class PacManClassicPlayScene implements PacManGameScene, PacManGameAnimat
 		g.drawImage(assets.mazeFull, 0, t(3), null);
 		range(0, game.world.xTiles()).forEach(x -> {
 			range(4, game.world.yTiles() - 3).forEach(y -> {
-				if (game.level.isFoodRemoved(x, y)) {
-					hideFood(g, x, y);
-				} else if (game.state == HUNTING && game.world.isEnergizerTile(x, y) && clock.ticksTotal % 20 < 10) {
-					hideFood(g, x, y);
+				if (game.level.isFoodRemoved(x, y)
+						|| game.state == HUNTING && game.world.isEnergizerTile(x, y) && clock.ticksTotal % 20 < 10) {
+					g.setColor(Color.BLACK);
+					g.fillRect(t(x), t(y), TS, TS);
 				}
 			});
 		});
