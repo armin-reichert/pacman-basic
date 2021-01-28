@@ -88,7 +88,7 @@ public class MsPacManIntroScene implements PacManGameScene {
 			ui.sounds().ifPresent(sm -> sm.playSound(PacManGameSound.CREDIT));
 		}
 
-		drawBlinkingFrame(g, clock.frame(2, frameSizeTiles.x / 2));
+		drawBlinkingFrame(g, time);
 		g.setFont(assets.scoreFont);
 		g.setColor(Color.ORANGE);
 		drawCenteredText(g, "\"MS PAC-MAN\"", t(5));
@@ -171,7 +171,8 @@ public class MsPacManIntroScene implements PacManGameScene {
 				: assets.ghostsWalking.get(ghost.id).get(ghost.dir).getSprite(0);
 	}
 
-	private void drawBlinkingFrame(Graphics2D g, int light) {
+	private void drawBlinkingFrame(Graphics2D g, long time) {
+		int light = (int) (time / 2) % (frameSizeTiles.x / 2);
 		for (int dot = 0; dot < 2 * (frameSizeTiles.x + frameSizeTiles.y); ++dot) {
 			int x = 0, y = 0;
 			if (dot <= frameSizeTiles.x) {
