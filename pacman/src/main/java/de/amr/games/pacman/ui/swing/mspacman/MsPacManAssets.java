@@ -131,12 +131,11 @@ public class MsPacManAssets {
 
 		pacCollapsing = new Animation();
 		pacCollapsing.setFrameDurationTicks(10);
-		for (int i = 0; i < 2; ++i) {
-			pacCollapsing.addFrame(section(0, 3));
-			pacCollapsing.addFrame(section(0, 0));
-			pacCollapsing.addFrame(section(0, 1));
-			pacCollapsing.addFrame(section(0, 2));
-		}
+		pacCollapsing.setRepetitions(2);
+		pacCollapsing.addFrame(section(0, 3));
+		pacCollapsing.addFrame(section(0, 0));
+		pacCollapsing.addFrame(section(0, 1));
+		pacCollapsing.addFrame(section(0, 2));
 
 		ghostsWalking = new ArrayList<>();
 		for (int ghostID = 0; ghostID < 4; ++ghostID) {
