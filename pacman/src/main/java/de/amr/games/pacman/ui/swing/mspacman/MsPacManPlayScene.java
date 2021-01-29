@@ -159,9 +159,9 @@ public class MsPacManPlayScene implements PacManGameScene, PacManGameAnimations 
 	private void drawMaze(Graphics2D g) {
 		if (mazeFlashing != null) {
 			// TODO fixme
-			BufferedImage frame = mazeFlashing.sprite();
+			BufferedImage frame = mazeFlashing.currentFrameThenAdvance();
 			if (frame != null) {
-				g.drawImage(mazeFlashing.sprite(), 0, t(3), null);
+				g.drawImage(mazeFlashing.currentFrameThenAdvance(), 0, t(3), null);
 			}
 			return;
 		}
@@ -200,14 +200,14 @@ public class MsPacManPlayScene implements PacManGameScene, PacManGameAnimations 
 	private BufferedImage sprite(Pac pac) {
 		if (pac.dead) {
 			if (assets.pacCollapsing.isRunning() || assets.pacCollapsing.isComplete()) {
-				return assets.pacCollapsing.sprite();
+				return assets.pacCollapsing.currentFrameThenAdvance();
 			}
 			return assets.pacMouthOpen.get(pac.dir);
 		}
 		if (pac.speed == 0 || !pac.couldMove) {
 			return assets.pacMouthOpen.get(pac.dir);
 		}
-		return assets.pacMunching.get(pac.dir).sprite();
+		return assets.pacMunching.get(pac.dir).currentFrameThenAdvance();
 	}
 
 	private BufferedImage sprite(Ghost ghost) {
@@ -220,13 +220,13 @@ public class MsPacManPlayScene implements PacManGameScene, PacManGameAnimations 
 		if (ghost.is(FRIGHTENED)) {
 			if (game.pac.powerTicksLeft <= assets.ghostFlashing.getDuration() * game.level.numFlashes
 					&& game.state == PacManGameState.HUNTING) {
-				return assets.ghostFlashing.sprite();
+				return assets.ghostFlashing.currentFrameThenAdvance();
 			}
-			return assets.ghostBlue.sprite();
+			return assets.ghostBlue.currentFrameThenAdvance();
 		}
 		if (ghost.is(LOCKED) && game.pac.powerTicksLeft > 0) {
-			return assets.ghostBlue.sprite();
+			return assets.ghostBlue.currentFrameThenAdvance();
 		}
-		return assets.ghostsWalking.get(ghost.id).get(ghost.wishDir).sprite();
+		return assets.ghostsWalking.get(ghost.id).get(ghost.wishDir).currentFrameThenAdvance();
 	}
 }

@@ -134,7 +134,7 @@ public class PacManClassicPlayScene implements PacManGameScene, PacManGameAnimat
 
 	private void drawMaze(Graphics2D g) {
 		if (assets.mazeFlashing.isRunning()) {
-			g.drawImage(assets.mazeFlashing.sprite(), 0, t(3), null);
+			g.drawImage(assets.mazeFlashing.currentFrameThenAdvance(), 0, t(3), null);
 			return;
 		}
 		g.drawImage(assets.mazeFull, 0, t(3), null);
@@ -169,8 +169,11 @@ public class PacManClassicPlayScene implements PacManGameScene, PacManGameAnimat
 
 	private BufferedImage sprite(Pac pac) {
 		if (pac.dead) {
-			return assets.pacCollapsing.isRunning() || assets.pacCollapsing.isComplete() ? assets.pacCollapsing.sprite()
-					: assets.pacMouthClosed;
+			if (assets.pacCollapsing.isRunning() || assets.pacCollapsing.isComplete()) {
+				V2i coord = assets.pacCollapsing.currentFrameThenAdvance();
+				return assets.tile(coord.x, coord.y);
+			}
+			return assets.pacMouthClosed;
 		}
 		if (pac.speed == 0) {
 			return assets.pacMouthClosed;
@@ -178,7 +181,7 @@ public class PacManClassicPlayScene implements PacManGameScene, PacManGameAnimat
 		if (!pac.couldMove) {
 			return assets.pacMouthOpen.get(pac.dir);
 		}
-		return assets.pacMunching.get(pac.dir).sprite();
+		return assets.pacMunching.get(pac.dir).currentFrameThenAdvance();
 	}
 
 	private BufferedImage sprite(Ghost ghost) {
@@ -191,13 +194,13 @@ public class PacManClassicPlayScene implements PacManGameScene, PacManGameAnimat
 		if (ghost.is(FRIGHTENED)) {
 			if (game.pac.powerTicksLeft <= assets.ghostFlashing.getDuration() * game.level.numFlashes
 					&& game.state == PacManGameState.HUNTING) {
-				return assets.ghostFlashing.sprite();
+				return assets.ghostFlashing.currentFrameThenAdvance();
 			}
-			return assets.ghostBlue.sprite();
+			return assets.ghostBlue.currentFrameThenAdvance();
 		}
 		if (ghost.is(LOCKED) && game.pac.powerTicksLeft > 0) {
-			return assets.ghostBlue.sprite();
+			return assets.ghostBlue.currentFrameThenAdvance();
 		}
-		return assets.ghostWalking.get(ghost.id).get(ghost.wishDir).sprite();
+		return assets.ghostWalking.get(ghost.id).get(ghost.wishDir).currentFrameThenAdvance();
 	}
 }

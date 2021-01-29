@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import de.amr.games.pacman.lib.Direction;
+import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.api.PacManGameSound;
 import de.amr.games.pacman.ui.swing.Animation;
 import de.amr.games.pacman.ui.swing.Spritesheet;
@@ -41,7 +42,7 @@ public class PacManClassicAssets extends Spritesheet {
 	public final BufferedImage pacMouthClosed;
 	public final EnumMap<Direction, BufferedImage> pacMouthOpen;
 	public final EnumMap<Direction, Animation<BufferedImage>> pacMunching;
-	public final Animation<BufferedImage> pacCollapsing;
+	public final Animation<V2i> pacCollapsing;
 	public final List<EnumMap<Direction, Animation<BufferedImage>>> ghostWalking;
 	public final EnumMap<Direction, BufferedImage> ghostEyes;
 	public final Animation<BufferedImage> ghostBlue;
@@ -49,6 +50,10 @@ public class PacManClassicAssets extends Spritesheet {
 	public final Animation<BufferedImage> mazeFlashing;
 	public final Map<PacManGameSound, URL> soundURL;
 	public final Font scoreFont;
+
+	private V2i v2(int x, int y) {
+		return new V2i(x, y);
+	}
 
 	public PacManClassicAssets() {
 		super(image("/worlds/classic/sprites.png"), 16);
@@ -122,8 +127,8 @@ public class PacManClassicAssets extends Spritesheet {
 							.frameDuration(2).run());
 		}
 
-		pacCollapsing = Animation.of(tile(3, 0), tile(4, 0), tile(5, 0), tile(6, 0), tile(7, 0), tile(8, 0), tile(9, 0),
-				tile(10, 0), tile(11, 0), tile(12, 0), tile(13, 0)).frameDuration(8);
+		pacCollapsing = Animation.of(v2(3, 0), v2(4, 0), v2(5, 0), v2(6, 0), v2(7, 0), v2(8, 0), v2(9, 0), v2(10, 0),
+				v2(11, 0), v2(12, 0), v2(13, 0)).frameDuration(8);
 
 		ghostWalking = new ArrayList<>();
 		for (int g = 0; g < 4; ++g) {

@@ -5,13 +5,13 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Animation of things.
+ * Animation of things, for example of images.
  * 
  * @author Armin Reichert
  */
 public class Animation<T> {
 
-	private List<T> sprites;
+	private List<T> things;
 	private int repetitions;
 	private int frameDurationTicks;
 	private int frameRunningTicks;
@@ -23,7 +23,7 @@ public class Animation<T> {
 	@SafeVarargs
 	public static <TT> Animation<TT> of(TT... images) {
 		Animation<TT> a = new Animation<>();
-		a.sprites = images.length > 0 ? Arrays.asList(images) : new ArrayList<>();
+		a.things = images.length > 0 ? Arrays.asList(images) : new ArrayList<>();
 		return a;
 	}
 
@@ -37,8 +37,8 @@ public class Animation<T> {
 		complete = false;
 	}
 
-	public Animation<T> add(T sprite) {
-		sprites.add(sprite);
+	public Animation<T> add(T thing) {
+		things.add(thing);
 		return this;
 	}
 
@@ -81,12 +81,21 @@ public class Animation<T> {
 		return this;
 	}
 
-	public T sprite() {
-		T currentSprite = sprites.get(frameIndex);
+	public T currentFrameThenAdvance() {
+		T currentThing = things.get(frameIndex);
+		advance();
+		return currentThing;
+	}
+
+	public T currentFrame() {
+		return things.get(frameIndex);
+	}
+
+	public void advance() {
 		if (running) {
 			if (frameRunningTicks + 1 < frameDurationTicks) {
 				frameRunningTicks++;
-			} else if (frameIndex + 1 < sprites.size()) {
+			} else if (frameIndex + 1 < things.size()) {
 				// start next frame
 				frameIndex++;
 				frameRunningTicks = 0;
@@ -105,11 +114,10 @@ public class Animation<T> {
 				frameRunningTicks = 0;
 			}
 		}
-		return currentSprite;
 	}
 
-	public T sprite(int i) {
-		return sprites.get(i);
+	public T thing(int i) {
+		return things.get(i);
 	}
 
 	public int currentFrameIndex() {
@@ -121,7 +129,7 @@ public class Animation<T> {
 	}
 
 	public int getDuration() {
-		return sprites.size() * frameDurationTicks;
+		return things.size() * frameDurationTicks;
 	}
 
 	public boolean isRunning() {
