@@ -52,21 +52,18 @@ public class PacManClassicPlayScene implements PacManGameScene, PacManGameAnimat
 
 	@Override
 	public void startPacManCollapsing() {
-		assets.pacCollapsing.reset();
-		assets.pacCollapsing.start();
+		assets.pacCollapsing.restart();
 	}
 
 	@Override
 	public void endPacManCollapsing() {
 		assets.pacCollapsing.stop();
-		assets.pacCollapsing.reset();
 	}
 
 	@Override
 	public void startMazeFlashing(int repetitions) {
 		assets.mazeFlashing.setRepetitions(repetitions);
-		assets.mazeFlashing.reset();
-		assets.mazeFlashing.start();
+		assets.mazeFlashing.restart();
 	}
 
 	@Override

@@ -55,25 +55,22 @@ public class MsPacManPlayScene implements PacManGameScene, PacManGameAnimations 
 
 	@Override
 	public void startPacManCollapsing() {
-		assets.pacCollapsing.reset();
-		assets.pacCollapsing.start();
+		assets.pacCollapsing.restart();
 	}
 
 	@Override
 	public void endPacManCollapsing() {
 		assets.pacCollapsing.stop();
-		assets.pacCollapsing.reset();
 	}
 
 	@Override
 	public void startMazeFlashing(int repetitions) {
 		mazeFlashing = new Animation();
-		mazeFlashing.addFrame(assets.mazeEmptyBright[game.level.mazeNumber - 1]);
-		mazeFlashing.addFrame(assets.mazeEmptyDark[game.level.mazeNumber - 1]);
+		mazeFlashing.add(assets.mazeEmptyBright[game.level.mazeNumber - 1]);
+		mazeFlashing.add(assets.mazeEmptyDark[game.level.mazeNumber - 1]);
 		mazeFlashing.setFrameDurationTicks(15);
 		mazeFlashing.setRepetitions(repetitions);
-		mazeFlashing.reset();
-		mazeFlashing.start();
+		mazeFlashing.restart();
 	}
 
 	@Override
@@ -205,7 +202,10 @@ public class MsPacManPlayScene implements PacManGameScene, PacManGameAnimations 
 
 	private BufferedImage sprite(Pac pac) {
 		if (pac.dead) {
-			return assets.pacCollapsing.isRunning() ? assets.pacCollapsing.frame() : assets.pacMouthOpen.get(pac.dir);
+			if (assets.pacCollapsing.isRunning() || assets.pacCollapsing.isComplete()) {
+				return assets.pacCollapsing.frame();
+			}
+			return assets.pacMouthOpen.get(pac.dir);
 		}
 		if (pac.speed == 0 || !pac.couldMove) {
 			return assets.pacMouthOpen.get(pac.dir);

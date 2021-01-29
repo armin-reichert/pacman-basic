@@ -16,14 +16,42 @@ public class Animation {
 	private int frameIndex;
 	private int ticksInFrame;
 	private boolean running;
+	private boolean complete;
 	private int repetitions = 1;
 	private int loopIndex;
 
-	public void addFrame(BufferedImage sprite) {
+	public BufferedImage frame() {
+		BufferedImage currentSprite = sprites.get(frameIndex);
+		if (running) {
+			if (ticksInFrame + 1 < frameDurationTicks) {
+				ticksInFrame++;
+			} else if (frameIndex + 1 < sprites.size()) {
+				// start next frame
+				frameIndex++;
+				ticksInFrame = 0;
+			} else if (loopIndex + 1 < repetitions) {
+				// start next loop
+				loopIndex++;
+				frameIndex = 0;
+				ticksInFrame = 0;
+			} else if (repetitions < Integer.MAX_VALUE) {
+				// last loop complete
+				complete = true;
+				stop();
+			} else {
+				loopIndex = 0;
+				frameIndex = 0;
+				ticksInFrame = 0;
+			}
+		}
+		return currentSprite;
+	}
+
+	public void add(BufferedImage sprite) {
 		sprites.add(sprite);
 	}
 
-	public BufferedImage getSprite(int i) {
+	public BufferedImage get(int i) {
 		return sprites.get(i);
 	}
 
@@ -51,34 +79,27 @@ public class Animation {
 		return running;
 	}
 
+	public boolean isComplete() {
+		return complete;
+	}
+
+	public void restart() {
+		reset();
+		run();
+	}
+
 	public void reset() {
 		ticksInFrame = 0;
 		frameIndex = 0;
 		loopIndex = 0;
+		complete = false;
 	}
 
-	public void start() {
+	public void run() {
 		running = true;
 	}
 
 	public void stop() {
 		running = false;
-	}
-
-	public BufferedImage frame() {
-		BufferedImage currentSprite = sprites.get(frameIndex);
-		if (running) {
-			if (ticksInFrame < frameDurationTicks - 1) {
-				++ticksInFrame;
-			} else if (frameIndex < sprites.size() - 1) {
-				ticksInFrame = 0;
-				++frameIndex;
-			} else if (loopIndex < repetitions - 1) {
-				ticksInFrame = 0;
-				frameIndex = 0;
-				++loopIndex;
-			}
-		}
-		return currentSprite;
 	}
 }

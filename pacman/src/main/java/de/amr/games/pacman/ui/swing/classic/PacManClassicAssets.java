@@ -119,18 +119,18 @@ public class PacManClassicAssets {
 			Animation animation = new Animation();
 			animation.setFrameDurationTicks(1);
 			animation.setRepetitions(Integer.MAX_VALUE);
-			animation.start();
-			animation.addFrame(pacMouthClosed);
-			animation.addFrame(section(1, dir));
-			animation.addFrame(section(0, dir));
-			animation.addFrame(section(1, dir));
+			animation.run();
+			animation.add(pacMouthClosed);
+			animation.add(section(1, dir));
+			animation.add(section(0, dir));
+			animation.add(section(1, dir));
 			pacWalking.put(direction, animation);
 		}
 
 		pacCollapsing = new Animation();
 		pacCollapsing.setFrameDurationTicks(8);
 		for (int i = 0; i < 11; ++i) {
-			pacCollapsing.addFrame(section(3 + i, 0));
+			pacCollapsing.add(section(3 + i, 0));
 		}
 
 		ghostsWalking = new ArrayList<>();
@@ -141,9 +141,9 @@ public class PacManClassicAssets {
 				Animation animation = new Animation();
 				animation.setFrameDurationTicks(10);
 				animation.setRepetitions(Integer.MAX_VALUE);
-				animation.start();
-				animation.addFrame(section(2 * dir, 4 + ghostID));
-				animation.addFrame(section(2 * dir + 1, 4 + ghostID));
+				animation.run();
+				animation.add(section(2 * dir, 4 + ghostID));
+				animation.add(section(2 * dir + 1, 4 + ghostID));
 				animationForDir.put(direction, animation);
 			}
 			ghostsWalking.add(animationForDir);
@@ -158,27 +158,27 @@ public class PacManClassicAssets {
 		ghostBlue = new Animation();
 		ghostBlue.setFrameDurationTicks(20);
 		ghostBlue.setRepetitions(Integer.MAX_VALUE);
-		ghostBlue.start();
-		ghostBlue.addFrame(section(8, 4));
-		ghostBlue.addFrame(section(9, 4));
+		ghostBlue.run();
+		ghostBlue.add(section(8, 4));
+		ghostBlue.add(section(9, 4));
 
 		ghostFlashing = new ArrayList<>();
 		for (int ghostID = 0; ghostID < 4; ++ghostID) {
 			Animation animation = new Animation();
 			animation.setFrameDurationTicks(10);
 			animation.setRepetitions(Integer.MAX_VALUE);
-			animation.start();
-			animation.addFrame(section(8, 4));
-			animation.addFrame(section(9, 4));
-			animation.addFrame(section(10, 4));
-			animation.addFrame(section(11, 4));
+			animation.run();
+			animation.add(section(8, 4));
+			animation.add(section(9, 4));
+			animation.add(section(10, 4));
+			animation.add(section(11, 4));
 			ghostFlashing.add(animation);
 		}
 
 		mazeFlashing = new Animation();
 		mazeFlashing.setFrameDurationTicks(15);
-		mazeFlashing.addFrame(mazeEmptyBright);
-		mazeFlashing.addFrame(mazeEmptyDark);
+		mazeFlashing.add(mazeEmptyBright);
+		mazeFlashing.add(mazeEmptyDark);
 	}
 
 	/** Sprite sheet order of directions. */
