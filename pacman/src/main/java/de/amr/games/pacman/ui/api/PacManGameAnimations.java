@@ -1,24 +1,16 @@
 package de.amr.games.pacman.ui.api;
 
+import java.awt.image.BufferedImage;
+
 import de.amr.games.pacman.game.creatures.Ghost;
+import de.amr.games.pacman.lib.Direction;
+import de.amr.games.pacman.ui.swing.Animation;
 
 public interface PacManGameAnimations {
 
-	default void startGhostWalking(Ghost ghost) {
-	}
+	Animation<BufferedImage> pacCollapsing();
 
-	default void stopGhostWalking(Ghost ghost) {
-	}
+	Animation<BufferedImage> ghostWalking(Ghost ghost, Direction dir);
 
-	default void startPacManCollapsing() {
-	}
-
-	default void endPacManCollapsing() {
-	}
-
-	default void startMazeFlashing(int repetitions) {
-	}
-
-	default void endMazeFlashing() {
-	}
+	Animation<BufferedImage> mazeFlashing(int mazeNumber, int numFlashes);
 }

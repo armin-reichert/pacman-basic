@@ -21,7 +21,7 @@ import de.amr.games.pacman.game.creatures.Creature;
 import de.amr.games.pacman.game.creatures.Ghost;
 import de.amr.games.pacman.game.creatures.GhostState;
 import de.amr.games.pacman.game.creatures.Pac;
-import de.amr.games.pacman.lib.Logging;
+import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.api.PacManGameAnimations;
 import de.amr.games.pacman.ui.api.PacManGameScene;
@@ -53,36 +53,18 @@ public class PacManClassicPlayScene implements PacManGameScene, PacManGameAnimat
 	}
 
 	@Override
-	public void startGhostWalking(Ghost ghost) {
-		assets.ghostWalking.get(ghost.id).values().forEach(Animation::restart);
-		Logging.log("Ghost %s started walking", ghost.name);
+	public Animation<BufferedImage> pacCollapsing() {
+		return assets.pacCollapsing;
 	}
 
 	@Override
-	public void stopGhostWalking(Ghost ghost) {
-		assets.ghostWalking.get(ghost.id).values().forEach(Animation::stop);
-		Logging.log("Ghost %s stopped walking", ghost.name);
+	public Animation<BufferedImage> ghostWalking(Ghost ghost, Direction dir) {
+		return assets.ghostWalking.get(ghost.id).get(dir);
 	}
 
 	@Override
-	public void startPacManCollapsing() {
-		assets.pacCollapsing.restart();
-	}
-
-	@Override
-	public void endPacManCollapsing() {
-		assets.pacCollapsing.stop();
-	}
-
-	@Override
-	public void startMazeFlashing(int repetitions) {
-		assets.mazeFlashing.repetitions(repetitions);
-		assets.mazeFlashing.restart();
-	}
-
-	@Override
-	public void endMazeFlashing() {
-		assets.mazeFlashing.stop();
+	public Animation<BufferedImage> mazeFlashing(int mazeNumber, int numFlashes) {
+		return assets.mazeFlashing.repetitions(numFlashes);
 	}
 
 	@Override

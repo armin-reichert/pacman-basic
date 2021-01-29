@@ -61,7 +61,7 @@ public class MsPacManIntroScene implements PacManGameScene {
 	public void end() {
 		for (int ghostID = 0; ghostID < 4; ++ghostID) {
 			for (Direction dir : Direction.values()) {
-				assets.ghostsWalking.get(ghostID).get(dir).restart();
+				assets.ghostWalking.get(ghostID).get(dir).restart();
 			}
 		}
 		for (Direction dir : Direction.values()) {
@@ -157,12 +157,13 @@ public class MsPacManIntroScene implements PacManGameScene {
 	}
 
 	private BufferedImage pacSprite() {
-		return game.pac.speed != 0 ? assets.pacMunching.get(game.pac.dir).currentFrameThenAdvance() : assets.pacMouthOpen.get(game.pac.dir);
+		return game.pac.speed != 0 ? assets.pacMunching.get(game.pac.dir).currentFrameThenAdvance()
+				: assets.pacMouthOpen.get(game.pac.dir);
 	}
 
 	private BufferedImage sprite(Ghost ghost) {
-		return ghost.speed != 0 ? assets.ghostsWalking.get(ghost.id).get(ghost.dir).currentFrameThenAdvance()
-				: assets.ghostsWalking.get(ghost.id).get(ghost.dir).thing(0);
+		return ghost.speed != 0 ? assets.ghostWalking.get(ghost.id).get(ghost.dir).currentFrameThenAdvance()
+				: assets.ghostWalking.get(ghost.id).get(ghost.dir).thing(0);
 	}
 
 	private void drawBlinkingFrame(Graphics2D g, long time) {

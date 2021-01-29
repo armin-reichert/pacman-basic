@@ -54,26 +54,20 @@ public class MsPacManPlayScene implements PacManGameScene, PacManGameAnimations 
 	}
 
 	@Override
-	public void startPacManCollapsing() {
-		assets.pacCollapsing.restart();
+	public Animation<BufferedImage> pacCollapsing() {
+		return assets.pacCollapsing;
 	}
 
 	@Override
-	public void endPacManCollapsing() {
-		assets.pacCollapsing.stop();
+	public Animation<BufferedImage> ghostWalking(Ghost ghost, Direction dir) {
+		return assets.ghostWalking.get(ghost.id).get(dir);
 	}
 
 	@Override
-	public void startMazeFlashing(int numFlashes) {
-		mazeFlashing = Animation.of(assets.mazeEmptyBright[game.level.mazeNumber - 1],
-				assets.mazeEmptyDark[game.level.mazeNumber - 1]);
-		mazeFlashing.frameDuration(15).repetitions(numFlashes).restart();
-	}
-
-	@Override
-	public void endMazeFlashing() {
-		mazeFlashing.stop();
-		mazeFlashing = null;
+	public Animation<BufferedImage> mazeFlashing(int mazeNumber, int numFlashes) {
+		mazeFlashing = Animation.of(assets.mazeFull[game.level.mazeNumber - 1], null); // TODO
+		mazeFlashing.repetitions(numFlashes).restart();
+		return mazeFlashing;
 	}
 
 	@Override
@@ -157,11 +151,10 @@ public class MsPacManPlayScene implements PacManGameScene, PacManGameAnimations 
 	}
 
 	private void drawMaze(Graphics2D g) {
-		if (mazeFlashing != null) {
-			// TODO fixme
+		if (mazeFlashing != null && mazeFlashing.isRunning()) {
 			BufferedImage frame = mazeFlashing.currentFrameThenAdvance();
-			if (frame != null) {
-				g.drawImage(mazeFlashing.currentFrameThenAdvance(), 0, t(3), null);
+			if (frame != null) { // TODO
+				g.drawImage(frame, 0, t(3), null);
 			}
 			return;
 		}
@@ -228,6 +221,6 @@ public class MsPacManPlayScene implements PacManGameScene, PacManGameAnimations 
 		if (ghost.is(LOCKED) && game.pac.powerTicksLeft > 0) {
 			return assets.ghostBlue.currentFrameThenAdvance();
 		}
-		return assets.ghostsWalking.get(ghost.id).get(ghost.wishDir).currentFrameThenAdvance();
+		return assets.ghostWalking.get(ghost.id).get(ghost.wishDir).currentFrameThenAdvance();
 	}
 }

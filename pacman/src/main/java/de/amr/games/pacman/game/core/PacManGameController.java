@@ -32,9 +32,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.game.creatures.Ghost;
+import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.Hiscore;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.ui.api.PacManGameAnimations;
 import de.amr.games.pacman.ui.api.PacManGameSound;
 import de.amr.games.pacman.ui.api.PacManGameSoundManager;
 import de.amr.games.pacman.ui.api.PacManGameUI;
@@ -276,14 +276,22 @@ public class PacManGameController {
 		if (game.state.ticksRun() == clock.sec(1)) {
 			for (Ghost ghost : game.ghosts) {
 				ghost.visible = true;
-				ui.animations().ifPresent(animations -> animations.stopGhostWalking(ghost));
+				ui.animations().ifPresent(animations -> {
+					for (Direction dir : Direction.values()) {
+						animations.ghostWalking(ghost, dir).stop();
+					}
+				});
 			}
 		}
 		if (game.state.ticksRun() == clock.sec(2)) {
 			ui.showMessage(ui.translation("READY"), false);
 			for (Ghost ghost : game.ghosts) {
 				ghost.visible = true;
-				ui.animations().ifPresent(animations -> animations.startGhostWalking(ghost));
+				ui.animations().ifPresent(animations -> {
+					for (Direction dir : Direction.values()) {
+						animations.ghostWalking(ghost, dir).restart();
+					}
+				});
 			}
 			if (!gameStarted) {
 				ui.sounds().ifPresent(sm -> sm.playSound(PacManGameSound.GAME_READY));
@@ -501,7 +509,7 @@ public class PacManGameController {
 			}
 		}
 		if (game.state.ticksRun() == clock.sec(2.5)) {
-			ui.animations().ifPresent(animations -> animations.startPacManCollapsing());
+			ui.animations().ifPresent(animations -> animations.pacCollapsing().run());
 			ui.sounds().ifPresent(sm -> sm.playSound(PacManGameSound.PACMAN_DEATH));
 		}
 		return game.state.run();
@@ -511,6 +519,7 @@ public class PacManGameController {
 		for (Ghost ghost : game.ghosts) {
 			ghost.visible = true;
 		}
+		ui.animations().ifPresent(animations -> animations.pacCollapsing().reset());
 	}
 
 	// GHOST_DYING
@@ -567,14 +576,14 @@ public class PacManGameController {
 			}
 		}
 		if (game.state.ticksRun() == clock.sec(3)) {
-			ui.animations().ifPresent(animations -> animations.startMazeFlashing(game.level.numFlashes));
+			ui.animations()
+					.ifPresent(animations -> animations.mazeFlashing(game.level.mazeNumber, game.level.numFlashes).restart());
 		}
 		return game.state.run();
 	}
 
 	private void exitChangingLevelState() {
 		log("Level %d complete, entering level %d", game.levelNumber, game.levelNumber + 1);
-		ui.animations().ifPresent(PacManGameAnimations::endMazeFlashing);
 		game.initLevel(game.levelNumber + 1);
 		game.levelSymbols.add(game.level.bonusSymbol);
 	}
