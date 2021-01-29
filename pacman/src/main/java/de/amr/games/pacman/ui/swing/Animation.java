@@ -1,18 +1,17 @@
 package de.amr.games.pacman.ui.swing;
 
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 /**
- * Sprite animation.
+ * Animation of things.
  * 
  * @author Armin Reichert
  */
-public class Animation {
+public class Animation<T> {
 
-	private List<BufferedImage> sprites;
+	private List<T> sprites;
 	private int repetitions;
 	private int frameDurationTicks;
 	private int frameRunningTicks;
@@ -21,8 +20,9 @@ public class Animation {
 	private boolean running;
 	private boolean complete;
 
-	public static Animation of(BufferedImage... images) {
-		Animation a = new Animation();
+	@SafeVarargs
+	public static <TT> Animation<TT> of(TT... images) {
+		Animation<TT> a = new Animation<>();
 		a.sprites = images.length > 0 ? Arrays.asList(images) : new ArrayList<>();
 		return a;
 	}
@@ -37,33 +37,33 @@ public class Animation {
 		complete = false;
 	}
 
-	public Animation add(BufferedImage sprite) {
+	public Animation<T> add(T sprite) {
 		sprites.add(sprite);
 		return this;
 	}
 
-	public Animation frameDuration(int ticks) {
+	public Animation<T> frameDuration(int ticks) {
 		frameDurationTicks = ticks;
 		return this;
 	}
 
-	public Animation repetitions(int n) {
+	public Animation<T> repetitions(int n) {
 		repetitions = n;
 		return this;
 	}
 
-	public Animation endless() {
+	public Animation<T> endless() {
 		repetitions = Integer.MAX_VALUE;
 		return this;
 	}
 
-	public Animation restart() {
+	public Animation<T> restart() {
 		reset();
 		run();
 		return this;
 	}
 
-	public Animation reset() {
+	public Animation<T> reset() {
 		frameRunningTicks = 0;
 		frameIndex = 0;
 		loopIndex = 0;
@@ -71,18 +71,18 @@ public class Animation {
 		return this;
 	}
 
-	public Animation run() {
+	public Animation<T> run() {
 		running = true;
 		return this;
 	}
 
-	public Animation stop() {
+	public Animation<T> stop() {
 		running = false;
 		return this;
 	}
 
-	public BufferedImage sprite() {
-		BufferedImage currentSprite = sprites.get(frameIndex);
+	public T sprite() {
+		T currentSprite = sprites.get(frameIndex);
 		if (running) {
 			if (frameRunningTicks + 1 < frameDurationTicks) {
 				frameRunningTicks++;
@@ -108,7 +108,7 @@ public class Animation {
 		return currentSprite;
 	}
 
-	public BufferedImage sprite(int i) {
+	public T sprite(int i) {
 		return sprites.get(i);
 	}
 
@@ -131,5 +131,4 @@ public class Animation {
 	public boolean isComplete() {
 		return complete;
 	}
-
 }

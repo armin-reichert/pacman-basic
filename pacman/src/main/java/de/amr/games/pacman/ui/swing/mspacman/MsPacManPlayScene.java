@@ -39,7 +39,7 @@ public class MsPacManPlayScene implements PacManGameScene, PacManGameAnimations 
 	private final V2i size;
 	private final MsPacManAssets assets;
 	private final PacManGameModel game;
-	private Animation mazeFlashing;
+	private Animation<BufferedImage> mazeFlashing;
 
 	public MsPacManPlayScene(PacManGameSwingUI ui, V2i size, MsPacManAssets assets, PacManGameModel game) {
 		this.ui = ui;

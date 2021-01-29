@@ -40,13 +40,13 @@ public class PacManClassicAssets extends Spritesheet {
 	public final Map<Integer, BufferedImage> numbers;
 	public final BufferedImage pacMouthClosed;
 	public final EnumMap<Direction, BufferedImage> pacMouthOpen;
-	public final EnumMap<Direction, Animation> pacMunching;
-	public final Animation pacCollapsing;
-	public final List<EnumMap<Direction, Animation>> ghostWalking;
+	public final EnumMap<Direction, Animation<BufferedImage>> pacMunching;
+	public final Animation<BufferedImage> pacCollapsing;
+	public final List<EnumMap<Direction, Animation<BufferedImage>>> ghostWalking;
 	public final EnumMap<Direction, BufferedImage> ghostEyes;
-	public final Animation ghostBlue;
-	public final Animation ghostFlashing;
-	public final Animation mazeFlashing;
+	public final Animation<BufferedImage> ghostBlue;
+	public final Animation<BufferedImage> ghostFlashing;
+	public final Animation<BufferedImage> mazeFlashing;
 	public final Map<PacManGameSound, URL> soundURL;
 	public final Font scoreFont;
 
@@ -127,7 +127,7 @@ public class PacManClassicAssets extends Spritesheet {
 
 		ghostWalking = new ArrayList<>();
 		for (int g = 0; g < 4; ++g) {
-			EnumMap<Direction, Animation> walkingTo = new EnumMap<>(Direction.class);
+			EnumMap<Direction, Animation<BufferedImage>> walkingTo = new EnumMap<>(Direction.class);
 			for (Direction dir : Direction.values()) {
 				walkingTo.put(dir, Animation.of(tile(2 * index(dir), 4 + g), tile(2 * index(dir) + 1, 4 + g)).frameDuration(10)
 						.endless().run());

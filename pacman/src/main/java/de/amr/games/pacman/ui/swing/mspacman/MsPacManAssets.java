@@ -31,12 +31,12 @@ public class MsPacManAssets extends Spritesheet {
 	public final Map<PacManGameSound, URL> soundURL;
 	public final EnumMap<Direction, BufferedImage> pacMouthOpen;
 	public final EnumMap<Direction, BufferedImage> pacMouthClosed;
-	public final EnumMap<Direction, Animation> pacMunching;
-	public final Animation pacCollapsing;
-	public final List<EnumMap<Direction, Animation>> ghostsWalking;
+	public final EnumMap<Direction, Animation<BufferedImage>> pacMunching;
+	public final Animation<BufferedImage> pacCollapsing;
+	public final List<EnumMap<Direction, Animation<BufferedImage>>> ghostsWalking;
 	public final EnumMap<Direction, BufferedImage> ghostEyes;
-	public final Animation ghostBlue;
-	public final Animation ghostFlashing;
+	public final Animation<BufferedImage> ghostBlue;
+	public final Animation<BufferedImage> ghostFlashing;
 	public final Font scoreFont;
 
 	public MsPacManAssets() {
@@ -109,7 +109,7 @@ public class MsPacManAssets extends Spritesheet {
 		pacMunching = new EnumMap<>(Direction.class);
 		for (Direction dir : Direction.values()) {
 			int d = index(dir);
-			Animation animation = Animation.of(tile(0, d), tile(1, d), tile(2, d), tile(1, d));
+			Animation<BufferedImage> animation = Animation.of(tile(0, d), tile(1, d), tile(2, d), tile(1, d));
 			animation.frameDuration(2).endless().run();
 			pacMunching.put(dir, animation);
 		}
@@ -119,10 +119,10 @@ public class MsPacManAssets extends Spritesheet {
 
 		ghostsWalking = new ArrayList<>();
 		for (int g = 0; g < 4; ++g) {
-			EnumMap<Direction, Animation> animationForDir = new EnumMap<>(Direction.class);
+			EnumMap<Direction, Animation<BufferedImage>> animationForDir = new EnumMap<>(Direction.class);
 			for (Direction dir : Direction.values()) {
 				int d = index(dir);
-				Animation animation = Animation.of(tile(2 * d, 4 + g), tile(2 * d + 1, 4 + g));
+				Animation<BufferedImage> animation = Animation.of(tile(2 * d, 4 + g), tile(2 * d + 1, 4 + g));
 				animation.frameDuration(4).endless().run();
 				animationForDir.put(dir, animation);
 			}
