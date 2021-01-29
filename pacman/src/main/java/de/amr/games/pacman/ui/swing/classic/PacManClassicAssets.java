@@ -122,8 +122,8 @@ public class PacManClassicAssets {
 							.frameDuration(1).run());
 		}
 
-		pacCollapsing = Animation.of(tile(3, 0), tile(3, 1), tile(3, 2), tile(3, 3), tile(3, 4), tile(3, 5), tile(3, 6),
-				tile(3, 7), tile(3, 8), tile(3, 9), tile(3, 10)).frameDuration(8);
+		pacCollapsing = Animation.of(tile(3, 0), tile(4, 0), tile(5, 0), tile(6, 0), tile(7, 0), tile(8, 0), tile(9, 0),
+				tile(10, 0), tile(11, 0), tile(12, 0), tile(13, 0)).frameDuration(8);
 
 		ghostWalking = new ArrayList<>();
 		for (int g = 0; g < 4; ++g) {
