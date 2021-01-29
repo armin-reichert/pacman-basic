@@ -230,6 +230,7 @@ public class PacManGameController {
 		default:
 			throw new IllegalStateException("Illegal state: " + game.state);
 		}
+		ui.updateScene();
 	}
 
 	private String ticksDescription(long ticks) {
@@ -260,7 +261,7 @@ public class PacManGameController {
 
 	private void enterReadyState() {
 		game.state = READY;
-		game.state.setDuration(clock.sec(gameStarted ? 2 : 5));
+		game.state.setDuration(clock.sec(gameStarted ? 2.5 : 6));
 		makeGuysReady();
 		for (Ghost ghost : game.ghosts) {
 			ghost.visible = false;
@@ -272,13 +273,18 @@ public class PacManGameController {
 		if (game.state.hasExpired()) {
 			return changeState(this::exitReadyState, this::enterHuntingState);
 		}
-		if (game.state.ticksRun() == clock.sec(0.5)) {
+		if (game.state.ticksRun() == clock.sec(1)) {
 			for (Ghost ghost : game.ghosts) {
 				ghost.visible = true;
+				ui.animations().ifPresent(animations -> animations.stopGhostWalking(ghost));
 			}
 		}
-		if (game.state.ticksRun() == clock.sec(1)) {
+		if (game.state.ticksRun() == clock.sec(2)) {
 			ui.showMessage(ui.translation("READY"), false);
+			for (Ghost ghost : game.ghosts) {
+				ghost.visible = true;
+				ui.animations().ifPresent(animations -> animations.startGhostWalking(ghost));
+			}
 			if (!gameStarted) {
 				ui.sounds().ifPresent(sm -> sm.playSound(PacManGameSound.GAME_READY));
 			}
@@ -476,6 +482,7 @@ public class PacManGameController {
 			ghost.state = HUNTING; // TODO just want ghost to be rendered colorful
 		}
 		game.bonus.edibleTicksLeft = game.bonus.eatenTicksLeft = 0;
+//		ui.animations().ifPresent(animations -> animations.pacManCollapsing.reset());
 		ui.sounds().ifPresent(PacManGameSoundManager::stopAllSounds);
 	}
 
@@ -504,7 +511,6 @@ public class PacManGameController {
 		for (Ghost ghost : game.ghosts) {
 			ghost.visible = true;
 		}
-		ui.animations().ifPresent(animations -> animations.endPacManCollapsing());
 	}
 
 	// GHOST_DYING

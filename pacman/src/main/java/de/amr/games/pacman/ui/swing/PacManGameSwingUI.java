@@ -170,6 +170,36 @@ public class PacManGameSwingUI implements PacManGameUI {
 	}
 
 	@Override
+	public Optional<PacManGameSoundManager> sounds() {
+		return Optional.ofNullable(soundManager);
+	}
+
+	@Override
+	public Optional<PacManGameAnimations> animations() {
+		if (currentScene instanceof PacManGameAnimations) {
+			return Optional.ofNullable((PacManGameAnimations) currentScene);
+		}
+		return Optional.empty();
+	}
+
+	@Override
+	public void updateScene() {
+		PacManGameScene scene = null;
+		if (game.state == PacManGameState.INTRO) {
+			scene = introScene;
+		} else {
+			scene = playScene;
+		}
+		if (scene != currentScene) {
+			if (currentScene != null) {
+				currentScene.end();
+			}
+			currentScene = scene;
+			currentScene.start();
+		}
+	}
+
+	@Override
 	public void updateGame(PacManGameModel newGame) {
 		this.game = newGame;
 		if (game.variant == PacManGameModel.CLASSIC) {
@@ -240,12 +270,13 @@ public class PacManGameSwingUI implements PacManGameUI {
 	}
 
 	private void drawCurrentScene(Graphics2D g) {
-		updateScene();
-		Graphics2D g2 = (Graphics2D) g.create();
-		g2.scale(scaling, scaling);
-		currentScene.draw(g2);
-		drawMessages(g2);
-		g2.dispose();
+		if (currentScene != null) {
+			Graphics2D g2 = (Graphics2D) g.create();
+			g2.scale(scaling, scaling);
+			currentScene.draw(g2);
+			drawMessages(g2);
+			g2.dispose();
+		}
 	}
 
 	private void drawMessages(Graphics2D g) {
@@ -296,34 +327,5 @@ public class PacManGameSwingUI implements PacManGameUI {
 		boolean pressed = keyboard.keyPressed(keySpec);
 		keyboard.clearKey(keySpec); // TODO
 		return pressed;
-	}
-
-	private void updateScene() {
-		PacManGameScene scene = null;
-		if (game.state == PacManGameState.INTRO) {
-			scene = introScene;
-		} else {
-			scene = playScene;
-		}
-		if (scene != currentScene) {
-			if (currentScene != null) {
-				currentScene.end();
-			}
-			currentScene = scene;
-			currentScene.start();
-		}
-	}
-
-	@Override
-	public Optional<PacManGameSoundManager> sounds() {
-		return Optional.ofNullable(soundManager);
-	}
-
-	@Override
-	public Optional<PacManGameAnimations> animations() {
-		if (currentScene instanceof PacManGameAnimations) {
-			return Optional.ofNullable((PacManGameAnimations) currentScene);
-		}
-		return Optional.empty();
 	}
 }

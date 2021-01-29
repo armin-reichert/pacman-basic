@@ -30,11 +30,16 @@ public class Animation<T> {
 	private Animation() {
 		repetitions = 1;
 		frameDurationTicks = 6; // 0.1 sec
+		reset();
+	}
+
+	public Animation<T> reset() {
 		frameRunningTicks = 0;
 		frameIndex = 0;
 		loopIndex = 0;
 		running = false;
 		complete = false;
+		return this;
 	}
 
 	public Animation<T> add(T thing) {
@@ -60,14 +65,6 @@ public class Animation<T> {
 	public Animation<T> restart() {
 		reset();
 		run();
-		return this;
-	}
-
-	public Animation<T> reset() {
-		frameRunningTicks = 0;
-		frameIndex = 0;
-		loopIndex = 0;
-		complete = false;
 		return this;
 	}
 

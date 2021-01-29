@@ -21,9 +21,11 @@ import de.amr.games.pacman.game.creatures.Creature;
 import de.amr.games.pacman.game.creatures.Ghost;
 import de.amr.games.pacman.game.creatures.GhostState;
 import de.amr.games.pacman.game.creatures.Pac;
+import de.amr.games.pacman.lib.Logging;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.api.PacManGameAnimations;
 import de.amr.games.pacman.ui.api.PacManGameScene;
+import de.amr.games.pacman.ui.swing.Animation;
 import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
 
 /**
@@ -48,6 +50,18 @@ public class PacManClassicPlayScene implements PacManGameScene, PacManGameAnimat
 	@Override
 	public V2i size() {
 		return size;
+	}
+
+	@Override
+	public void startGhostWalking(Ghost ghost) {
+		assets.ghostWalking.get(ghost.id).values().forEach(Animation::restart);
+		Logging.log("Ghost %s started walking", ghost.name);
+	}
+
+	@Override
+	public void stopGhostWalking(Ghost ghost) {
+		assets.ghostWalking.get(ghost.id).values().forEach(Animation::stop);
+		Logging.log("Ghost %s stopped walking", ghost.name);
 	}
 
 	@Override

@@ -15,6 +15,8 @@ public interface PacManGameUI {
 
 	void updateGame(PacManGameModel game);
 
+	void updateScene();
+
 	void show();
 
 	void redraw();
