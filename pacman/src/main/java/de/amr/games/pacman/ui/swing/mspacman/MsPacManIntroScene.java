@@ -23,28 +23,27 @@ public class MsPacManIntroScene implements PacManGameScene {
 	private static final Color[] GHOST_COLORS = { Color.RED, Color.PINK, Color.CYAN, Color.ORANGE };
 
 	private final PacManGameSwingUI ui;
-	private final PacManGameModel game;
 	private final V2i size;
 	private final MsPacManAssets assets;
-
-	public MsPacManIntroScene(PacManGameSwingUI ui, PacManGameModel game, V2i size, MsPacManAssets assets) {
-		this.ui = ui;
-		this.game = game;
-		this.size = size;
-		this.assets = assets;
-	}
-
-	@Override
-	public V2i size() {
-		return size;
-	}
-
+	private final PacManGameModel game;
 	private final V2i frameDots = new V2i(32, 16);
 	private final V2i frameTopLeftTile = new V2i(6, 8);
 	private final int leftOfFrame = t(frameTopLeftTile.x) - 18;
 	private final int belowFrame = t(frameTopLeftTile.y) + 4 * (frameDots.y + 1);
 	private final int belowFrameCenterX = t(frameTopLeftTile.x) + 2 * frameDots.x;
 	private final float walkSpeed = 1.2f;
+
+	public MsPacManIntroScene(PacManGameSwingUI ui, V2i size, MsPacManAssets assets, PacManGameModel game) {
+		this.ui = ui;
+		this.size = size;
+		this.assets = assets;
+		this.game = game;
+	}
+
+	@Override
+	public V2i size() {
+		return size;
+	}
 
 	@Override
 	public void start() {

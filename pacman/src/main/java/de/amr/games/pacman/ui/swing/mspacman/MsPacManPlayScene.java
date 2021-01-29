@@ -36,16 +36,16 @@ import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
 public class MsPacManPlayScene implements PacManGameScene, PacManGameAnimations {
 
 	private final PacManGameSwingUI ui;
-	private final PacManGameModel game;
 	private final V2i size;
 	private final MsPacManAssets assets;
+	private final PacManGameModel game;
 	private Animation mazeFlashing;
 
-	public MsPacManPlayScene(PacManGameSwingUI ui, PacManGameModel game, V2i size, MsPacManAssets assets) {
+	public MsPacManPlayScene(PacManGameSwingUI ui, V2i size, MsPacManAssets assets, PacManGameModel game) {
 		this.ui = ui;
-		this.game = game;
 		this.size = size;
 		this.assets = assets;
+		this.game = game;
 	}
 
 	@Override

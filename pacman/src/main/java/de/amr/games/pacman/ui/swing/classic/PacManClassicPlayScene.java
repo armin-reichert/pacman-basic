@@ -34,15 +34,15 @@ import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
 public class PacManClassicPlayScene implements PacManGameScene, PacManGameAnimations {
 
 	private final PacManGameSwingUI ui;
-	private final PacManGameModel game;
 	private final V2i size;
 	private final PacManClassicAssets assets;
+	private final PacManGameModel game;
 
-	public PacManClassicPlayScene(PacManGameSwingUI ui, PacManGameModel game, V2i size, PacManClassicAssets assets) {
+	public PacManClassicPlayScene(PacManGameSwingUI ui, V2i size, PacManClassicAssets assets, PacManGameModel game) {
 		this.ui = ui;
-		this.game = game;
 		this.size = size;
 		this.assets = assets;
+		this.game = game;
 	}
 
 	@Override
