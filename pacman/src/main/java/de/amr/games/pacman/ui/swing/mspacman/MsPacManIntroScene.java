@@ -65,7 +65,7 @@ public class MsPacManIntroScene implements PacManGameScene {
 			}
 		}
 		for (Direction dir : Direction.values()) {
-			assets.pacWalking.get(dir).restart();
+			assets.pacMunching.get(dir).restart();
 		}
 		game.state.resetTimer();
 	}
@@ -157,7 +157,7 @@ public class MsPacManIntroScene implements PacManGameScene {
 	}
 
 	private BufferedImage pacSprite() {
-		return game.pac.speed != 0 ? assets.pacWalking.get(game.pac.dir).sprite() : assets.pacMouthOpen.get(game.pac.dir);
+		return game.pac.speed != 0 ? assets.pacMunching.get(game.pac.dir).sprite() : assets.pacMouthOpen.get(game.pac.dir);
 	}
 
 	private BufferedImage sprite(Ghost ghost) {

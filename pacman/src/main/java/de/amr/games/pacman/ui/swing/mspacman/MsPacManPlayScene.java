@@ -207,7 +207,7 @@ public class MsPacManPlayScene implements PacManGameScene, PacManGameAnimations 
 		if (pac.speed == 0 || !pac.couldMove) {
 			return assets.pacMouthOpen.get(pac.dir);
 		}
-		return assets.pacWalking.get(pac.dir).sprite();
+		return assets.pacMunching.get(pac.dir).sprite();
 	}
 
 	private BufferedImage sprite(Ghost ghost) {

@@ -61,26 +61,26 @@ public class PacManClassicAssets {
 		mazeEmptyDark       = image("/worlds/classic/maze_empty.png");
 		mazeEmptyBright     = image("/worlds/classic/maze_empty_white.png");
 
-		life                = sprite(8, 1);
+		life                = tile(8, 1);
 
-		symbols[CHERRIES]   = sprite(2, 3);
-		symbols[STRAWBERRY] = sprite(3, 3);
-		symbols[PEACH]      = sprite(4, 3);
-		symbols[APPLE]      = sprite(5, 3);
-		symbols[GRAPES]     = sprite(6, 3);
-		symbols[GALAXIAN]   = sprite(7, 3);
-		symbols[BELL]       = sprite(8, 3);
-		symbols[KEY]        = sprite(9, 3);
+		symbols[CHERRIES]   = tile(2, 3);
+		symbols[STRAWBERRY] = tile(3, 3);
+		symbols[PEACH]      = tile(4, 3);
+		symbols[APPLE]      = tile(5, 3);
+		symbols[GRAPES]     = tile(6, 3);
+		symbols[GALAXIAN]   = tile(7, 3);
+		symbols[BELL]       = tile(8, 3);
+		symbols[KEY]        = tile(9, 3);
 	
-		numbers.put(200,  sprite(0, 8));
-		numbers.put(400,  sprite(1, 8));
-		numbers.put(800,  sprite(2, 8));
-		numbers.put(1600, sprite(3, 8));
+		numbers.put(200,  tile(0, 8));
+		numbers.put(400,  tile(1, 8));
+		numbers.put(800,  tile(2, 8));
+		numbers.put(1600, tile(3, 8));
 		
-		numbers.put(100,  sprite(0, 9));
-		numbers.put(300,  sprite(1, 9));
-		numbers.put(500,  sprite(2, 9));
-		numbers.put(700,  sprite(3, 9));
+		numbers.put(100,  tile(0, 9));
+		numbers.put(300,  tile(1, 9));
+		numbers.put(500,  tile(2, 9));
+		numbers.put(700,  tile(3, 9));
 		
 		numbers.put(1000, region(4, 9, 2, 1)); // left-aligned 
 		numbers.put(2000, region(3, 10, 3, 1));
@@ -105,30 +105,28 @@ public class PacManClassicAssets {
 
 		scoreFont = font("/PressStart2P-Regular.ttf", 8);
 
-		pacMouthClosed = sprite(2, 0);
+		pacMouthClosed = tile(2, 0);
 
 		pacMouthOpen = new EnumMap<>(Direction.class);
 		for (Direction dir : Direction.values()) {
-			pacMouthOpen.put(dir, sprite(1, index(dir)));
+			pacMouthOpen.put(dir, tile(1, index(dir)));
 		}
 
 		pacWalking = new EnumMap<>(Direction.class);
 		for (Direction dir : Direction.values()) {
 			pacWalking.put(dir,
-					Animation.of(pacMouthClosed, pacMouthOpen.get(dir), sprite(0, index(dir)), pacMouthOpen.get(dir)).endless()
+					Animation.of(pacMouthClosed, pacMouthOpen.get(dir), tile(0, index(dir)), pacMouthOpen.get(dir)).endless()
 							.frameDuration(1).run());
 		}
 
-		pacCollapsing = Animation.of().frameDuration(8);
-		for (int i = 0; i < 11; ++i) {
-			pacCollapsing.add(sprite(3 + i, 0));
-		}
+		pacCollapsing = Animation.of(tile(3, 0), tile(3, 1), tile(3, 2), tile(3, 3), tile(3, 4), tile(3, 5), tile(3, 6),
+				tile(3, 7), tile(3, 8), tile(3, 9), tile(3, 10)).frameDuration(8);
 
 		ghostWalking = new ArrayList<>();
 		for (int ghostID = 0; ghostID < 4; ++ghostID) {
 			EnumMap<Direction, Animation> walkingTo = new EnumMap<>(Direction.class);
 			for (Direction dir : Direction.values()) {
-				walkingTo.put(dir, Animation.of(sprite(2 * index(dir), 4 + ghostID), sprite(2 * index(dir) + 1, 4 + ghostID))
+				walkingTo.put(dir, Animation.of(tile(2 * index(dir), 4 + ghostID), tile(2 * index(dir) + 1, 4 + ghostID))
 						.frameDuration(10).endless().run());
 			}
 			ghostWalking.add(walkingTo);
@@ -136,21 +134,19 @@ public class PacManClassicAssets {
 
 		ghostEyes = new EnumMap<>(Direction.class);
 		for (Direction dir : Direction.values()) {
-			ghostEyes.put(dir, sprite(8 + index(dir), 5));
+			ghostEyes.put(dir, tile(8 + index(dir), 5));
 		}
 
-		ghostBlue = Animation.of(sprite(8, 4), sprite(9, 4)).frameDuration(20).endless().run();
+		ghostBlue = Animation.of(tile(8, 4), tile(9, 4)).frameDuration(20).endless().run();
 
-		ghostFlashing = Animation.of(sprite(8, 4), sprite(9, 4), sprite(10, 4), sprite(11, 4)).frameDuration(10).endless()
-				.run();
+		ghostFlashing = Animation.of(tile(8, 4), tile(9, 4), tile(10, 4), tile(11, 4)).frameDuration(10).endless().run();
 
 		mazeFlashing = Animation.of(mazeEmptyBright, mazeEmptyDark).frameDuration(15);
-
 	}
 
 	/** Sprite sheet order of directions. */
-	private int index(Direction direction) {
-		switch (direction) {
+	private int index(Direction dir) {
+		switch (dir) {
 		case RIGHT:
 			return 0;
 		case LEFT:
@@ -168,7 +164,7 @@ public class PacManClassicAssets {
 		return spriteSheet.getSubimage(x * 16, y * 16, w * 16, h * 16);
 	}
 
-	private BufferedImage sprite(int x, int y) {
+	private BufferedImage tile(int x, int y) {
 		return region(x, y, 1, 1);
 	}
 }
