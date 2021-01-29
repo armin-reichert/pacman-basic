@@ -1,5 +1,6 @@
 package de.amr.games.pacman.game.core;
 
+import static de.amr.games.pacman.game.core.PacManGameModel.CLASSIC;
 import static de.amr.games.pacman.game.core.PacManGameModel.MS_PACMAN;
 import static de.amr.games.pacman.game.core.PacManGameState.CHANGING_LEVEL;
 import static de.amr.games.pacman.game.core.PacManGameState.GAME_OVER;
@@ -74,9 +75,9 @@ public class PacManGameController {
 	}
 
 	public void initGame(int variant) {
-		if (variant == PacManGameModel.CLASSIC) {
+		if (variant == CLASSIC) {
 			game = PacManGameModel.newPacManClassicGame();
-		} else if (variant == PacManGameModel.MS_PACMAN) {
+		} else if (variant == MS_PACMAN) {
 			game = PacManGameModel.newMsPacManGame();
 		} else {
 			log("Illegal game variant value %d, preparing Ms. Pac-Man game", variant);
@@ -109,30 +110,28 @@ public class PacManGameController {
 			ui.clearMessages();
 		}
 		enterIntroState();
-		log("Game variant is %s", game.variant == PacManGameModel.CLASSIC ? "Pac-Man" : "Ms. Pac-Man");
+		log("Game variant is %s", game.variant == CLASSIC ? "Pac-Man" : "Ms. Pac-Man");
 		log("State is '%s' for %s", game.stateDescription(), ticksDescription(game.state.durationTicks()));
 	}
 
 	private void toggleGameVariant() {
-		if (game.variant == PacManGameModel.CLASSIC) {
-			initGame(PacManGameModel.MS_PACMAN);
-		} else {
-			initGame(PacManGameModel.CLASSIC);
-		}
+		initGame(game.variant == CLASSIC ? MS_PACMAN : CLASSIC);
 		ui.sounds().ifPresent(PacManGameSoundManager::stopAllSounds);
 		ui.updateGame(game);
 	}
 
 	private void toggleAutopilot() {
 		autopilotEnabled = !autopilotEnabled;
-		ui.showFlashMessage("Autopilot " + (autopilotEnabled ? "on" : "off"));
-		log("Pac-Man autopilot mode is " + (autopilotEnabled ? "on" : "off"));
+		String msg = "Autopilot " + (autopilotEnabled ? "on" : "off");
+		ui.showFlashMessage(msg);
+		log(msg);
 	}
 
 	private void togglePacImmunity() {
 		game.pac.immune = !game.pac.immune;
-		ui.showFlashMessage(game.pac.name + " is " + (game.pac.immune ? "immune" : "vulnerable"));
-		log("%s is %s", game.pac.name, game.pac.immune ? "immune against ghosts" : "vulnerable by ghosts");
+		String msg = game.pac.name + " is " + (game.pac.immune ? "immune" : "vulnerable");
+		ui.showFlashMessage(msg);
+		log(msg);
 	}
 
 	public void step() {
