@@ -22,15 +22,31 @@ import de.amr.games.pacman.ui.swing.Spritesheet;
 /**
  * Assets used in Pac-Man game.
  * 
- * Just for testing the feature, some animations or arrays just stores the coordinates inside the
- * spritesheet and creates the subimage every time the animation frame or image gets rendered. This
- * does not really make sense if the subimage object has to be created anyway but could be useful if
- * there was a way to draw the corresponding section from the spritesheet image without having to
- * create a subimage object.
+ * <p>
+ * Just for testing, some animations or maps just store the sprite coordinates and the subimage gets
+ * created every time the animation frame or image is rendered. This does not really make sense if
+ * the subimage object has to be created anyway but could be useful if there was a way to draw the
+ * corresponding section from the spritesheet image without having to create a subimage object.
  * 
  * @author Armin Reichert
  */
 public class PacManClassicAssets extends Spritesheet {
+
+	/** Sprite sheet order of directions. */
+	private static int index(Direction dir) {
+		switch (dir) {
+		case RIGHT:
+			return 0;
+		case LEFT:
+			return 1;
+		case UP:
+			return 2;
+		case DOWN:
+			return 3;
+		default:
+			return -1;
+		}
+	}
 
 	public final BufferedImage gameLogo;
 	public final BufferedImage mazeFull;
@@ -75,22 +91,6 @@ public class PacManClassicAssets extends Spritesheet {
 		numbers.put(2000, spritesAt(3, 10, 3, 1));
 		numbers.put(3000, spritesAt(3, 11, 3, 1));
 		numbers.put(5000, spritesAt(3, 12, 3, 1));
-	
-		soundURL = new EnumMap<>(PacManGameSound.class);
-		soundURL.put(PacManGameSound.CREDIT,           url("/sound/classic/credit.wav"));
-		soundURL.put(PacManGameSound.EXTRA_LIFE,       url("/sound/classic/extend.wav"));
-		soundURL.put(PacManGameSound.GAME_READY,       url("/sound/classic/game_start.wav"));
-		soundURL.put(PacManGameSound.PACMAN_EAT_BONUS, url("/sound/classic/eat_fruit.wav"));
-		soundURL.put(PacManGameSound.PACMAN_MUNCH,     url("/sound/classic/munch_1.wav"));
-		soundURL.put(PacManGameSound.PACMAN_DEATH,     url("/sound/classic/death_1.wav"));
-		soundURL.put(PacManGameSound.PACMAN_POWER,     url("/sound/classic/power_pellet.wav"));
-		soundURL.put(PacManGameSound.GHOST_EATEN,      url("/sound/classic/eat_ghost.wav"));
-		soundURL.put(PacManGameSound.GHOST_EYES,       url("/sound/classic/retreating.wav"));
-		soundURL.put(PacManGameSound.GHOST_SIREN_1,    url("/sound/classic/siren_1.wav"));
-		soundURL.put(PacManGameSound.GHOST_SIREN_2,    url("/sound/classic/siren_2.wav"));
-		soundURL.put(PacManGameSound.GHOST_SIREN_3,    url("/sound/classic/siren_3.wav"));
-		soundURL.put(PacManGameSound.GHOST_SIREN_4,    url("/sound/classic/siren_4.wav"));
-		soundURL.put(PacManGameSound.GHOST_SIREN_5,    url("/sound/classic/siren_5.wav"));
 		//@formatter:on
 
 		scoreFont = font("/PressStart2P-Regular.ttf", 8);
@@ -108,20 +108,24 @@ public class PacManClassicAssets extends Spritesheet {
 
 		pacMunching = new EnumMap<>(Direction.class);
 		for (Direction dir : Direction.values()) {
-			pacMunching.put(dir,
-					Animation.of(pacMouthClosed, pacMouthOpen.get(dir), spriteAt(0, index(dir)), pacMouthOpen.get(dir)).endless()
-							.frameDuration(2).run());
+			Animation<BufferedImage> animation = Animation.of(pacMouthClosed, pacMouthOpen.get(dir), spriteAt(0, index(dir)),
+					pacMouthOpen.get(dir));
+			animation.endless().frameDuration(2).run();
+			pacMunching.put(dir, animation);
 		}
 
-		pacCollapsing = Animation.of(spriteAt(3, 0), spriteAt(4, 0), spriteAt(5, 0), spriteAt(6, 0), spriteAt(7, 0), spriteAt(8, 0),
-				spriteAt(9, 0), spriteAt(10, 0), spriteAt(11, 0), spriteAt(12, 0), spriteAt(13, 0)).frameDuration(8);
+		pacCollapsing = Animation.of(spriteAt(3, 0), spriteAt(4, 0), spriteAt(5, 0), spriteAt(6, 0), spriteAt(7, 0),
+				spriteAt(8, 0), spriteAt(9, 0), spriteAt(10, 0), spriteAt(11, 0), spriteAt(12, 0), spriteAt(13, 0));
+		pacCollapsing.frameDuration(8);
 
-		ghostWalking = new ArrayList<>();
+		ghostWalking = new ArrayList<>(4);
 		for (int g = 0; g < 4; ++g) {
 			EnumMap<Direction, Animation<BufferedImage>> walkingTo = new EnumMap<>(Direction.class);
 			for (Direction dir : Direction.values()) {
-				walkingTo.put(dir, Animation.of(spriteAt(2 * index(dir), 4 + g), spriteAt(2 * index(dir) + 1, 4 + g))
-						.frameDuration(10).endless().run());
+				Animation<BufferedImage> animation = Animation.of(spriteAt(2 * index(dir), 4 + g),
+						spriteAt(2 * index(dir) + 1, 4 + g));
+				animation.frameDuration(10).endless().run();
+				walkingTo.put(dir, animation);
 			}
 			ghostWalking.add(walkingTo);
 		}
@@ -131,25 +135,28 @@ public class PacManClassicAssets extends Spritesheet {
 			ghostEyes.put(dir, spriteAt(8 + index(dir), 5));
 		}
 
-		ghostBlue = Animation.of(spriteAt(8, 4), spriteAt(9, 4)).frameDuration(20).endless().run();
+		ghostBlue = Animation.of(spriteAt(8, 4), spriteAt(9, 4));
+		ghostBlue.frameDuration(20).endless().run();
 
-		ghostFlashing = Animation.of(spriteAt(8, 4), spriteAt(9, 4), spriteAt(10, 4), spriteAt(11, 4)).frameDuration(10).endless()
-				.run();
-	}
+		ghostFlashing = Animation.of(spriteAt(8, 4), spriteAt(9, 4), spriteAt(10, 4), spriteAt(11, 4));
+		ghostFlashing.frameDuration(10).endless().run();
 
-	/** Sprite sheet order of directions. */
-	private int index(Direction dir) {
-		switch (dir) {
-		case RIGHT:
-			return 0;
-		case LEFT:
-			return 1;
-		case UP:
-			return 2;
-		case DOWN:
-			return 3;
-		default:
-			return -1;
-		}
+		//@formatter:off
+		soundURL = new EnumMap<>(PacManGameSound.class);
+		soundURL.put(PacManGameSound.CREDIT,           url("/sound/classic/credit.wav"));
+		soundURL.put(PacManGameSound.EXTRA_LIFE,       url("/sound/classic/extend.wav"));
+		soundURL.put(PacManGameSound.GAME_READY,       url("/sound/classic/game_start.wav"));
+		soundURL.put(PacManGameSound.PACMAN_EAT_BONUS, url("/sound/classic/eat_fruit.wav"));
+		soundURL.put(PacManGameSound.PACMAN_MUNCH,     url("/sound/classic/munch_1.wav"));
+		soundURL.put(PacManGameSound.PACMAN_DEATH,     url("/sound/classic/death_1.wav"));
+		soundURL.put(PacManGameSound.PACMAN_POWER,     url("/sound/classic/power_pellet.wav"));
+		soundURL.put(PacManGameSound.GHOST_EATEN,      url("/sound/classic/eat_ghost.wav"));
+		soundURL.put(PacManGameSound.GHOST_EYES,       url("/sound/classic/retreating.wav"));
+		soundURL.put(PacManGameSound.GHOST_SIREN_1,    url("/sound/classic/siren_1.wav"));
+		soundURL.put(PacManGameSound.GHOST_SIREN_2,    url("/sound/classic/siren_2.wav"));
+		soundURL.put(PacManGameSound.GHOST_SIREN_3,    url("/sound/classic/siren_3.wav"));
+		soundURL.put(PacManGameSound.GHOST_SIREN_4,    url("/sound/classic/siren_4.wav"));
+		soundURL.put(PacManGameSound.GHOST_SIREN_5,    url("/sound/classic/siren_5.wav"));
+		//@formatter:on
 	}
 }

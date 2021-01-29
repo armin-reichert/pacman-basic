@@ -4,11 +4,16 @@ import java.awt.image.BufferedImage;
 
 import de.amr.games.pacman.lib.V2i;
 
+/**
+ * A spritesheet.
+ * 
+ * @author Armin Reichert
+ */
 public class Spritesheet {
 
-	private int offsetX, offsetY;
 	private final BufferedImage image;
 	private final int tileSize;
+	private int offsetX, offsetY;
 
 	public Spritesheet(BufferedImage image, int tileSize) {
 		this.image = image;
@@ -29,15 +34,14 @@ public class Spritesheet {
 	}
 
 	public BufferedImage spritesAt(int tileX, int tileY, int numTilesX, int numTilesY) {
-		return image.getSubimage(offsetX + tileX * tileSize, offsetY + tileY * tileSize, numTilesX * tileSize,
-				numTilesY * tileSize);
+		return subImage(offsetX + tileX * tileSize, offsetY + tileY * tileSize, numTilesX * tileSize, numTilesY * tileSize);
 	}
 
 	public BufferedImage spriteAt(int tileX, int tileY) {
 		return spritesAt(tileX, tileY, 1, 1);
 	}
 
-	public BufferedImage spriteAt(V2i coord) {
-		return spriteAt(coord.x, coord.y);
+	public BufferedImage spriteAt(V2i tile) {
+		return spriteAt(tile.x, tile.y);
 	}
 }
