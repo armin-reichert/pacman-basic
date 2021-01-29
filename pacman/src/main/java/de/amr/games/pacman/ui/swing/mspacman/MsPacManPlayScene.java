@@ -150,8 +150,8 @@ public class MsPacManPlayScene implements PacManGameScene, PacManGameAnimations 
 	private void drawLevelCounter(Graphics2D g) {
 		int x = t(game.world.xTiles() - 4);
 		for (int levelNumber = 1; levelNumber <= Math.min(game.levelNumber, 7); ++levelNumber) {
-			BufferedImage symbol = assets.symbols[game.levelSymbols.get(levelNumber - 1)];
-			g.drawImage(symbol, x, size.y - t(2), null);
+			byte symbol = game.levelSymbols.get(levelNumber - 1);
+			g.drawImage(assets.spriteAt(assets.symbolTiles[symbol]), x, size.y - t(2), null);
 			x -= t(2);
 		}
 	}
@@ -191,9 +191,10 @@ public class MsPacManPlayScene implements PacManGameScene, PacManGameAnimations 
 			if (game.bonus.dir == Direction.LEFT || game.bonus.dir == Direction.RIGHT) {
 				y += BONUS_JUMP[frame]; // TODO this is not yet correct
 			}
-			g.drawImage(assets.symbols[game.bonus.symbol], x, y, null);
+			g.drawImage(assets.spriteAt(assets.symbolTiles[game.bonus.symbol]), x, y, null);
 		} else if (game.bonus.eatenTicksLeft > 0) {
-			g.drawImage(assets.numbers.get(game.bonus.points), x, y, null);
+
+			g.drawImage(assets.spriteAt(assets.numberTiles.get(game.bonus.points)), x, y, null);
 		}
 	}
 
@@ -212,7 +213,7 @@ public class MsPacManPlayScene implements PacManGameScene, PacManGameAnimations 
 
 	private BufferedImage sprite(Ghost ghost) {
 		if (ghost.bounty > 0) {
-			return assets.bountyNumbers.get(ghost.bounty);
+			return assets.spriteAt(assets.bountyNumberTiles.get(ghost.bounty));
 		}
 		if (ghost.is(DEAD) || ghost.is(ENTERING_HOUSE)) {
 			return assets.ghostEyes.get(ghost.wishDir);

@@ -126,8 +126,8 @@ public class PacManClassicPlayScene implements PacManGameScene, PacManGameAnimat
 		int x = t(game.world.xTiles() - 4);
 		int first = Math.max(1, game.levelNumber - 6);
 		for (int levelNumber = first; levelNumber <= game.levelNumber; ++levelNumber) {
-			BufferedImage symbol = assets.symbols[game.levelSymbols.get(levelNumber - 1)];
-			g.drawImage(symbol, x, size.y - t(2), null);
+			V2i symbolTile = assets.symbolTiles[game.levelSymbols.get(levelNumber - 1)];
+			g.drawImage(assets.spriteAt(symbolTile), x, size.y - t(2), null);
 			x -= t(2);
 		}
 	}
@@ -155,7 +155,7 @@ public class PacManClassicPlayScene implements PacManGameScene, PacManGameAnimat
 
 	private void drawBonus(Graphics2D g, Bonus bonus) {
 		if (bonus.edibleTicksLeft > 0) {
-			drawGuy(g, bonus, assets.symbols[bonus.symbol]);
+			drawGuy(g, bonus, assets.spriteAt(assets.symbolTiles[bonus.symbol]));
 		}
 		if (bonus.eatenTicksLeft > 0) {
 			if (game.bonus.points != 1000) {
@@ -170,8 +170,7 @@ public class PacManClassicPlayScene implements PacManGameScene, PacManGameAnimat
 	private BufferedImage sprite(Pac pac) {
 		if (pac.dead) {
 			if (assets.pacCollapsing.isRunning() || assets.pacCollapsing.isComplete()) {
-				V2i coord = assets.pacCollapsing.currentFrameThenAdvance();
-				return assets.tile(coord.x, coord.y);
+				return assets.pacCollapsing.currentFrameThenAdvance();
 			}
 			return assets.pacMouthClosed;
 		}

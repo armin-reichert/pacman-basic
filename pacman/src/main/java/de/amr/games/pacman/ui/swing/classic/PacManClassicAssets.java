@@ -1,13 +1,5 @@
 package de.amr.games.pacman.ui.swing.classic;
 
-import static de.amr.games.pacman.game.worlds.PacManClassicWorld.APPLE;
-import static de.amr.games.pacman.game.worlds.PacManClassicWorld.BELL;
-import static de.amr.games.pacman.game.worlds.PacManClassicWorld.CHERRIES;
-import static de.amr.games.pacman.game.worlds.PacManClassicWorld.GALAXIAN;
-import static de.amr.games.pacman.game.worlds.PacManClassicWorld.GRAPES;
-import static de.amr.games.pacman.game.worlds.PacManClassicWorld.KEY;
-import static de.amr.games.pacman.game.worlds.PacManClassicWorld.PEACH;
-import static de.amr.games.pacman.game.worlds.PacManClassicWorld.STRAWBERRY;
 import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.font;
 import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.image;
 import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.url;
@@ -30,6 +22,12 @@ import de.amr.games.pacman.ui.swing.Spritesheet;
 /**
  * Assets used in Pac-Man game.
  * 
+ * Just for testing the feature, some animations or arrays just stores the coordinates inside the
+ * spritesheet and creates the subimage every time the animation frame or image gets rendered. This
+ * does not really make sense if the subimage object has to be created anyway but could be useful if
+ * there was a way to draw the corresponding section from the spritesheet image without having to
+ * create a subimage object.
+ * 
  * @author Armin Reichert
  */
 public class PacManClassicAssets extends Spritesheet {
@@ -37,12 +35,12 @@ public class PacManClassicAssets extends Spritesheet {
 	public final BufferedImage gameLogo;
 	public final BufferedImage mazeFull;
 	public final BufferedImage life;
-	public final BufferedImage[] symbols;
+	public final V2i[] symbolTiles;
 	public final Map<Integer, BufferedImage> numbers;
 	public final BufferedImage pacMouthClosed;
 	public final EnumMap<Direction, BufferedImage> pacMouthOpen;
 	public final EnumMap<Direction, Animation<BufferedImage>> pacMunching;
-	public final Animation<V2i> pacCollapsing;
+	public final Animation<BufferedImage> pacCollapsing;
 	public final List<EnumMap<Direction, Animation<BufferedImage>>> ghostWalking;
 	public final EnumMap<Direction, BufferedImage> ghostEyes;
 	public final Animation<BufferedImage> ghostBlue;
@@ -51,44 +49,32 @@ public class PacManClassicAssets extends Spritesheet {
 	public final Map<PacManGameSound, URL> soundURL;
 	public final Font scoreFont;
 
-	private V2i v2(int x, int y) {
-		return new V2i(x, y);
-	}
-
 	public PacManClassicAssets() {
 		super(image("/worlds/classic/sprites.png"), 16);
 
+		gameLogo = image("/worlds/classic/logo.png");
+		mazeFull = image("/worlds/classic/maze_full.png");
+
+		life = spriteAt(8, 1);
+
+		symbolTiles = new V2i[] { v2(2, 3), v2(3, 3), v2(4, 3), v2(5, 3), v2(6, 3), v2(7, 3), v2(8, 3), v2(9, 3) };
+
 		//@formatter:off
-		gameLogo            = image("/worlds/classic/logo.png");
-		mazeFull            = image("/worlds/classic/maze_full.png");
-
-		life                = tile(8, 1);
-
-		symbols = new BufferedImage[8];
-		symbols[CHERRIES]   = tile(2, 3);
-		symbols[STRAWBERRY] = tile(3, 3);
-		symbols[PEACH]      = tile(4, 3);
-		symbols[APPLE]      = tile(5, 3);
-		symbols[GRAPES]     = tile(6, 3);
-		symbols[GALAXIAN]   = tile(7, 3);
-		symbols[BELL]       = tile(8, 3);
-		symbols[KEY]        = tile(9, 3);
-	
 		numbers = new HashMap<>();
-		numbers.put(200,  tile(0, 8));
-		numbers.put(400,  tile(1, 8));
-		numbers.put(800,  tile(2, 8));
-		numbers.put(1600, tile(3, 8));
+		numbers.put(200,  spriteAt(0, 8));
+		numbers.put(400,  spriteAt(1, 8));
+		numbers.put(800,  spriteAt(2, 8));
+		numbers.put(1600, spriteAt(3, 8));
 		
-		numbers.put(100,  tile(0, 9));
-		numbers.put(300,  tile(1, 9));
-		numbers.put(500,  tile(2, 9));
-		numbers.put(700,  tile(3, 9));
+		numbers.put(100,  spriteAt(0, 9));
+		numbers.put(300,  spriteAt(1, 9));
+		numbers.put(500,  spriteAt(2, 9));
+		numbers.put(700,  spriteAt(3, 9));
 		
-		numbers.put(1000, tiles(4, 9, 2, 1)); // left-aligned 
-		numbers.put(2000, tiles(3, 10, 3, 1));
-		numbers.put(3000, tiles(3, 11, 3, 1));
-		numbers.put(5000, tiles(3, 12, 3, 1));
+		numbers.put(1000, spritesAt(4, 9, 2, 1)); // left-aligned 
+		numbers.put(2000, spritesAt(3, 10, 3, 1));
+		numbers.put(3000, spritesAt(3, 11, 3, 1));
+		numbers.put(5000, spritesAt(3, 12, 3, 1));
 	
 		soundURL = new EnumMap<>(PacManGameSound.class);
 		soundURL.put(PacManGameSound.CREDIT,           url("/sound/classic/credit.wav"));
@@ -113,48 +99,42 @@ public class PacManClassicAssets extends Spritesheet {
 		BufferedImage mazeEmptyBright = image("/worlds/classic/maze_empty_white.png");
 		mazeFlashing = Animation.of(mazeEmptyBright, mazeEmptyDark).frameDuration(15);
 
-		pacMouthClosed = tile(2, 0);
+		pacMouthClosed = spriteAt(2, 0);
 
 		pacMouthOpen = new EnumMap<>(Direction.class);
 		for (Direction dir : Direction.values()) {
-			pacMouthOpen.put(dir, tile(1, index(dir)));
+			pacMouthOpen.put(dir, spriteAt(1, index(dir)));
 		}
 
 		pacMunching = new EnumMap<>(Direction.class);
 		for (Direction dir : Direction.values()) {
 			pacMunching.put(dir,
-					Animation.of(pacMouthClosed, pacMouthOpen.get(dir), tile(0, index(dir)), pacMouthOpen.get(dir)).endless()
+					Animation.of(pacMouthClosed, pacMouthOpen.get(dir), spriteAt(0, index(dir)), pacMouthOpen.get(dir)).endless()
 							.frameDuration(2).run());
 		}
 
-		/*
-		 * Just for testing the feature: The Pac-collapsing animation just stores the coordinates inside the
-		 * spritesheet and creates the subimage every time the animation frame is drawn. This does not
-		 * really make sense if the subimage object has to be created anyway but could be useful if there
-		 * was a way to draw the corresponding section from the spritesheet image without having to create a
-		 * subimage object.
-		 */
-		pacCollapsing = Animation.of(v2(3, 0), v2(4, 0), v2(5, 0), v2(6, 0), v2(7, 0), v2(8, 0), v2(9, 0), v2(10, 0),
-				v2(11, 0), v2(12, 0), v2(13, 0)).frameDuration(8);
+		pacCollapsing = Animation.of(spriteAt(3, 0), spriteAt(4, 0), spriteAt(5, 0), spriteAt(6, 0), spriteAt(7, 0), spriteAt(8, 0),
+				spriteAt(9, 0), spriteAt(10, 0), spriteAt(11, 0), spriteAt(12, 0), spriteAt(13, 0)).frameDuration(8);
 
 		ghostWalking = new ArrayList<>();
 		for (int g = 0; g < 4; ++g) {
 			EnumMap<Direction, Animation<BufferedImage>> walkingTo = new EnumMap<>(Direction.class);
 			for (Direction dir : Direction.values()) {
-				walkingTo.put(dir, Animation.of(tile(2 * index(dir), 4 + g), tile(2 * index(dir) + 1, 4 + g)).frameDuration(10)
-						.endless().run());
+				walkingTo.put(dir, Animation.of(spriteAt(2 * index(dir), 4 + g), spriteAt(2 * index(dir) + 1, 4 + g))
+						.frameDuration(10).endless().run());
 			}
 			ghostWalking.add(walkingTo);
 		}
 
 		ghostEyes = new EnumMap<>(Direction.class);
 		for (Direction dir : Direction.values()) {
-			ghostEyes.put(dir, tile(8 + index(dir), 5));
+			ghostEyes.put(dir, spriteAt(8 + index(dir), 5));
 		}
 
-		ghostBlue = Animation.of(tile(8, 4), tile(9, 4)).frameDuration(20).endless().run();
+		ghostBlue = Animation.of(spriteAt(8, 4), spriteAt(9, 4)).frameDuration(20).endless().run();
 
-		ghostFlashing = Animation.of(tile(8, 4), tile(9, 4), tile(10, 4), tile(11, 4)).frameDuration(10).endless().run();
+		ghostFlashing = Animation.of(spriteAt(8, 4), spriteAt(9, 4), spriteAt(10, 4), spriteAt(11, 4)).frameDuration(10).endless()
+				.run();
 	}
 
 	/** Sprite sheet order of directions. */
