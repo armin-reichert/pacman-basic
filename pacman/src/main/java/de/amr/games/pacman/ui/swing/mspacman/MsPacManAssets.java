@@ -26,16 +26,6 @@ import de.amr.games.pacman.ui.swing.Animation;
 
 public class MsPacManAssets {
 
-	/** Sprite sheet order of directions. */
-	private static final Map<Direction, Integer> DIR = new EnumMap<>(Direction.class);
-
-	static {
-		DIR.put(Direction.RIGHT, 0);
-		DIR.put(Direction.LEFT, 1);
-		DIR.put(Direction.UP, 2);
-		DIR.put(Direction.DOWN, 3);
-	}
-
 	public final BufferedImage gameLogo;
 	public final BufferedImage spriteSheet;
 	public final BufferedImage[] mazeFull = new BufferedImage[6];
@@ -141,7 +131,7 @@ public class MsPacManAssets {
 		for (int ghostID = 0; ghostID < 4; ++ghostID) {
 			EnumMap<Direction, Animation> animationForDir = new EnumMap<>(Direction.class);
 			for (Direction direction : Direction.values()) {
-				int dir = DIR.get(direction);
+				int dir = dirIndex(direction);
 				Animation animation = new Animation();
 				animation.setFrameDurationTicks(4);
 				animation.setRepetitions(Integer.MAX_VALUE);
@@ -155,7 +145,7 @@ public class MsPacManAssets {
 
 		ghostEyes = new EnumMap<>(Direction.class);
 		for (Direction direction : Direction.values()) {
-			int dir = DIR.get(direction);
+			int dir = dirIndex(direction);
 			ghostEyes.put(direction, section(8 + dir, 5));
 		}
 
@@ -180,8 +170,20 @@ public class MsPacManAssets {
 		}
 	}
 
+	/** Sprite sheet order of directions. */
 	public int dirIndex(Direction direction) {
-		return DIR.get(direction);
+		switch (direction) {
+		case RIGHT:
+			return 0;
+		case LEFT:
+			return 1;
+		case UP:
+			return 2;
+		case DOWN:
+			return 3;
+		default:
+			return -1;
+		}
 	}
 
 	public BufferedImage section(int x, int y, int w, int h) {

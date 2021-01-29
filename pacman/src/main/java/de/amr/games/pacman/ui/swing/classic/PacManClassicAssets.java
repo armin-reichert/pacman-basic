@@ -32,16 +32,6 @@ import de.amr.games.pacman.ui.swing.Animation;
  */
 public class PacManClassicAssets {
 
-	/** Sprite sheet order of directions. */
-	private static final Map<Direction, Integer> DIR = new EnumMap<>(Direction.class);
-
-	static {
-		DIR.put(Direction.RIGHT, 0);
-		DIR.put(Direction.LEFT, 1);
-		DIR.put(Direction.UP, 2);
-		DIR.put(Direction.DOWN, 3);
-	}
-
 	public final BufferedImage spriteSheet;
 	public final BufferedImage gameLogo;
 	public final BufferedImage mazeFull;
@@ -191,8 +181,20 @@ public class PacManClassicAssets {
 		mazeFlashing.addFrame(mazeEmptyDark);
 	}
 
+	/** Sprite sheet order of directions. */
 	public int dirIndex(Direction direction) {
-		return DIR.get(direction);
+		switch (direction) {
+		case RIGHT:
+			return 0;
+		case LEFT:
+			return 1;
+		case UP:
+			return 2;
+		case DOWN:
+			return 3;
+		default:
+			return -1;
+		}
 	}
 
 	public BufferedImage section(int x, int y, int w, int h) {
