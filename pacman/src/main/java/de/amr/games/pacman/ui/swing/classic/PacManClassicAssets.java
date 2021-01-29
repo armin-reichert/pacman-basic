@@ -127,6 +127,13 @@ public class PacManClassicAssets extends Spritesheet {
 							.frameDuration(2).run());
 		}
 
+		/*
+		 * Just for testing the feature: The Pac-collapsing animation just stores the coordinates inside the
+		 * spritesheet and creates the subimage every time the animation frame is drawn. This does not
+		 * really make sense if the subimage object has to be created anyway but could be useful if there
+		 * was a way to draw the corresponding section from the spritesheet image without having to create a
+		 * subimage object.
+		 */
 		pacCollapsing = Animation.of(v2(3, 0), v2(4, 0), v2(5, 0), v2(6, 0), v2(7, 0), v2(8, 0), v2(9, 0), v2(10, 0),
 				v2(11, 0), v2(12, 0), v2(13, 0)).frameDuration(8);
 
