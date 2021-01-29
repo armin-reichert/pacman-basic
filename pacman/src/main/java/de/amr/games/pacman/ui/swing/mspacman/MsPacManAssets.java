@@ -1,12 +1,5 @@
 package de.amr.games.pacman.ui.swing.mspacman;
 
-import static de.amr.games.pacman.game.worlds.MsPacManWorld.APPLE;
-import static de.amr.games.pacman.game.worlds.MsPacManWorld.BANANA;
-import static de.amr.games.pacman.game.worlds.MsPacManWorld.CHERRIES;
-import static de.amr.games.pacman.game.worlds.MsPacManWorld.PEACH;
-import static de.amr.games.pacman.game.worlds.MsPacManWorld.PEAR;
-import static de.amr.games.pacman.game.worlds.MsPacManWorld.PRETZEL;
-import static de.amr.games.pacman.game.worlds.MsPacManWorld.STRAWBERRY;
 import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.font;
 import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.image;
 import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.url;
@@ -23,8 +16,9 @@ import java.util.Map;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.ui.api.PacManGameSound;
 import de.amr.games.pacman.ui.swing.Animation;
+import de.amr.games.pacman.ui.swing.Spritesheet;
 
-public class MsPacManAssets {
+public class MsPacManAssets extends Spritesheet {
 
 	public final BufferedImage gameLogo;
 	public final BufferedImage[] mazeFull;
@@ -45,35 +39,31 @@ public class MsPacManAssets {
 	public final Animation ghostFlashing;
 	public final Font scoreFont;
 
-	private final BufferedImage spriteSheet;
-
 	public MsPacManAssets() {
-		//@formatter:off
-		gameLogo            = image("/worlds/mspacman/logo.png");
-		spriteSheet         = image("/worlds/mspacman/sprites.png");
-		
+		super(image("/worlds/mspacman/sprites.png"), 16);
+
+		scoreFont = font("/PressStart2P-Regular.ttf", 8);
+
+		gameLogo = image("/worlds/mspacman/logo.png");
+
 		mazeFull = new BufferedImage[6];
 		mazeEmptyDark = new BufferedImage[6];
 		mazeEmptyBright = new BufferedImage[6];
 		for (int i = 0; i < 6; ++i) {
-			mazeFull[i]         = spriteSheet.getSubimage(0, i*248, 226, 248);
-			mazeEmptyDark[i]    = spriteSheet.getSubimage(226, i*248, 226, 248);
-			mazeEmptyBright[i]  = null; //TODO fixme
+			mazeFull[i] = section(0, i * 248, 226, 248);
+			mazeEmptyDark[i] = section(226, i * 248, 226, 248);
+			mazeEmptyBright[i] = null; // TODO fixme
 		}
 
-		scoreFont           = font("/PressStart2P-Regular.ttf", 8);
-		
-		life                = tile(1, 0);
+		// Left part of spritesheet contains the 6 mazes, rest is on the right
+		setOrigin(456, 0);
 
-		symbols = new BufferedImage[8];
-		symbols[CHERRIES]   = tile(3, 0);
-		symbols[STRAWBERRY] = tile(4, 0);
-		symbols[PEACH]      = tile(5, 0);
-		symbols[PRETZEL]    = tile(6, 0);
-		symbols[APPLE]      = tile(7, 0);
-		symbols[PEAR]       = tile(8, 0);
-		symbols[BANANA]     = tile(9, 0);
-	
+		life = tile(1, 0);
+
+		symbols = new BufferedImage[] { tile(3, 0), tile(4, 0), tile(5, 0), tile(6, 0), tile(7, 0), tile(8, 0),
+				tile(9, 0) };
+
+		//@formatter:off
 		numbers = new HashMap<>();
 		numbers.put(100,  tile(3, 1));
 		numbers.put(200,  tile(4, 1));
@@ -163,13 +153,5 @@ public class MsPacManAssets {
 		default:
 			return -1;
 		}
-	}
-
-	public BufferedImage region(int x, int y, int w, int h) {
-		return spriteSheet.getSubimage(456 + x * 16, y * 16, w * 16, h * 16);
-	}
-
-	public BufferedImage tile(int x, int y) {
-		return region(x, y, 1, 1);
 	}
 }

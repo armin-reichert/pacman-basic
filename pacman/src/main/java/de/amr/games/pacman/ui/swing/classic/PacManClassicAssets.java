@@ -24,13 +24,14 @@ import java.util.Map;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.ui.api.PacManGameSound;
 import de.amr.games.pacman.ui.swing.Animation;
+import de.amr.games.pacman.ui.swing.Spritesheet;
 
 /**
  * Assets used in Pac-Man game.
  * 
  * @author Armin Reichert
  */
-public class PacManClassicAssets {
+public class PacManClassicAssets extends Spritesheet {
 
 	public final BufferedImage gameLogo;
 	public final BufferedImage mazeFull;
@@ -49,12 +50,11 @@ public class PacManClassicAssets {
 	public final Map<PacManGameSound, URL> soundURL;
 	public final Font scoreFont;
 
-	private final BufferedImage spriteSheet;
-
 	public PacManClassicAssets() {
+		super(image("/worlds/classic/sprites.png"), 16);
+
 		//@formatter:off
 		gameLogo            = image("/worlds/classic/logo.png");
-		spriteSheet         = image("/worlds/classic/sprites.png");
 		mazeFull            = image("/worlds/classic/maze_full.png");
 
 		life                = tile(8, 1);
@@ -80,10 +80,10 @@ public class PacManClassicAssets {
 		numbers.put(500,  tile(2, 9));
 		numbers.put(700,  tile(3, 9));
 		
-		numbers.put(1000, region(4, 9, 2, 1)); // left-aligned 
-		numbers.put(2000, region(3, 10, 3, 1));
-		numbers.put(3000, region(3, 11, 3, 1));
-		numbers.put(5000, region(3, 12, 3, 1));
+		numbers.put(1000, tiles(4, 9, 2, 1)); // left-aligned 
+		numbers.put(2000, tiles(3, 10, 3, 1));
+		numbers.put(3000, tiles(3, 11, 3, 1));
+		numbers.put(5000, tiles(3, 12, 3, 1));
 	
 		soundURL = new EnumMap<>(PacManGameSound.class);
 		soundURL.put(PacManGameSound.CREDIT,           url("/sound/classic/credit.wav"));
@@ -159,13 +159,5 @@ public class PacManClassicAssets {
 		default:
 			return -1;
 		}
-	}
-
-	private BufferedImage region(int x, int y, int w, int h) {
-		return spriteSheet.getSubimage(x * 16, y * 16, w * 16, h * 16);
-	}
-
-	private BufferedImage tile(int x, int y) {
-		return region(x, y, 1, 1);
 	}
 }
