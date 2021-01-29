@@ -119,7 +119,7 @@ public class PacManClassicAssets {
 		for (Direction dir : Direction.values()) {
 			pacMunching.put(dir,
 					Animation.of(pacMouthClosed, pacMouthOpen.get(dir), tile(0, index(dir)), pacMouthOpen.get(dir)).endless()
-							.frameDuration(1).run());
+							.frameDuration(2).run());
 		}
 
 		pacCollapsing = Animation.of(tile(3, 0), tile(4, 0), tile(5, 0), tile(6, 0), tile(7, 0), tile(8, 0), tile(9, 0),

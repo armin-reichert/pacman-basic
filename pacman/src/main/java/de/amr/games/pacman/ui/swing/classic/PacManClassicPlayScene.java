@@ -169,7 +169,8 @@ public class PacManClassicPlayScene implements PacManGameScene, PacManGameAnimat
 
 	private BufferedImage sprite(Pac pac) {
 		if (pac.dead) {
-			return assets.pacCollapsing.isRunning() ? assets.pacCollapsing.sprite() : assets.pacMouthClosed;
+			return assets.pacCollapsing.isRunning() || assets.pacCollapsing.isComplete() ? assets.pacCollapsing.sprite()
+					: assets.pacMouthClosed;
 		}
 		if (pac.speed == 0) {
 			return assets.pacMouthClosed;
