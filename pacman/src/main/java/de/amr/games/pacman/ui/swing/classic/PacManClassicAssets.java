@@ -32,37 +32,34 @@ import de.amr.games.pacman.ui.swing.Animation;
  */
 public class PacManClassicAssets {
 
-	public final BufferedImage spriteSheet;
 	public final BufferedImage gameLogo;
 	public final BufferedImage mazeFull;
-	public final BufferedImage mazeEmptyDark;
-	public final BufferedImage mazeEmptyBright;
 	public final BufferedImage life;
-	public final BufferedImage[] symbols = new BufferedImage[8];
-	public final Map<Integer, BufferedImage> numbers = new HashMap<>();
+	public final BufferedImage[] symbols;
+	public final Map<Integer, BufferedImage> numbers;
 	public final BufferedImage pacMouthClosed;
 	public final EnumMap<Direction, BufferedImage> pacMouthOpen;
-	public final EnumMap<Direction, Animation> pacWalking;
+	public final EnumMap<Direction, Animation> pacMunching;
 	public final Animation pacCollapsing;
 	public final List<EnumMap<Direction, Animation>> ghostWalking;
 	public final EnumMap<Direction, BufferedImage> ghostEyes;
 	public final Animation ghostBlue;
 	public final Animation ghostFlashing;
 	public final Animation mazeFlashing;
-
-	public final Map<PacManGameSound, URL> soundURL = new EnumMap<>(PacManGameSound.class);
+	public final Map<PacManGameSound, URL> soundURL;
 	public final Font scoreFont;
+
+	private final BufferedImage spriteSheet;
 
 	public PacManClassicAssets() {
 		//@formatter:off
 		gameLogo            = image("/worlds/classic/logo.png");
 		spriteSheet         = image("/worlds/classic/sprites.png");
 		mazeFull            = image("/worlds/classic/maze_full.png");
-		mazeEmptyDark       = image("/worlds/classic/maze_empty.png");
-		mazeEmptyBright     = image("/worlds/classic/maze_empty_white.png");
 
 		life                = tile(8, 1);
 
+		symbols = new BufferedImage[8];
 		symbols[CHERRIES]   = tile(2, 3);
 		symbols[STRAWBERRY] = tile(3, 3);
 		symbols[PEACH]      = tile(4, 3);
@@ -72,6 +69,7 @@ public class PacManClassicAssets {
 		symbols[BELL]       = tile(8, 3);
 		symbols[KEY]        = tile(9, 3);
 	
+		numbers = new HashMap<>();
 		numbers.put(200,  tile(0, 8));
 		numbers.put(400,  tile(1, 8));
 		numbers.put(800,  tile(2, 8));
@@ -87,6 +85,7 @@ public class PacManClassicAssets {
 		numbers.put(3000, region(3, 11, 3, 1));
 		numbers.put(5000, region(3, 12, 3, 1));
 	
+		soundURL = new EnumMap<>(PacManGameSound.class);
 		soundURL.put(PacManGameSound.CREDIT,           url("/sound/classic/credit.wav"));
 		soundURL.put(PacManGameSound.EXTRA_LIFE,       url("/sound/classic/extend.wav"));
 		soundURL.put(PacManGameSound.GAME_READY,       url("/sound/classic/game_start.wav"));
@@ -105,6 +104,10 @@ public class PacManClassicAssets {
 
 		scoreFont = font("/PressStart2P-Regular.ttf", 8);
 
+		BufferedImage mazeEmptyDark = image("/worlds/classic/maze_empty.png");
+		BufferedImage mazeEmptyBright = image("/worlds/classic/maze_empty_white.png");
+		mazeFlashing = Animation.of(mazeEmptyBright, mazeEmptyDark).frameDuration(15);
+
 		pacMouthClosed = tile(2, 0);
 
 		pacMouthOpen = new EnumMap<>(Direction.class);
@@ -112,9 +115,9 @@ public class PacManClassicAssets {
 			pacMouthOpen.put(dir, tile(1, index(dir)));
 		}
 
-		pacWalking = new EnumMap<>(Direction.class);
+		pacMunching = new EnumMap<>(Direction.class);
 		for (Direction dir : Direction.values()) {
-			pacWalking.put(dir,
+			pacMunching.put(dir,
 					Animation.of(pacMouthClosed, pacMouthOpen.get(dir), tile(0, index(dir)), pacMouthOpen.get(dir)).endless()
 							.frameDuration(1).run());
 		}
@@ -123,11 +126,11 @@ public class PacManClassicAssets {
 				tile(3, 7), tile(3, 8), tile(3, 9), tile(3, 10)).frameDuration(8);
 
 		ghostWalking = new ArrayList<>();
-		for (int ghostID = 0; ghostID < 4; ++ghostID) {
+		for (int g = 0; g < 4; ++g) {
 			EnumMap<Direction, Animation> walkingTo = new EnumMap<>(Direction.class);
 			for (Direction dir : Direction.values()) {
-				walkingTo.put(dir, Animation.of(tile(2 * index(dir), 4 + ghostID), tile(2 * index(dir) + 1, 4 + ghostID))
-						.frameDuration(10).endless().run());
+				walkingTo.put(dir, Animation.of(tile(2 * index(dir), 4 + g), tile(2 * index(dir) + 1, 4 + g)).frameDuration(10)
+						.endless().run());
 			}
 			ghostWalking.add(walkingTo);
 		}
@@ -140,8 +143,6 @@ public class PacManClassicAssets {
 		ghostBlue = Animation.of(tile(8, 4), tile(9, 4)).frameDuration(20).endless().run();
 
 		ghostFlashing = Animation.of(tile(8, 4), tile(9, 4), tile(10, 4), tile(11, 4)).frameDuration(10).endless().run();
-
-		mazeFlashing = Animation.of(mazeEmptyBright, mazeEmptyDark).frameDuration(15);
 	}
 
 	/** Sprite sheet order of directions. */

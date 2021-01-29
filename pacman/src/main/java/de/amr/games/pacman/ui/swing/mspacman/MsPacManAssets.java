@@ -27,39 +27,45 @@ import de.amr.games.pacman.ui.swing.Animation;
 public class MsPacManAssets {
 
 	public final BufferedImage gameLogo;
-	public final BufferedImage spriteSheet;
-	public final BufferedImage[] mazeFull = new BufferedImage[6];
-	public final BufferedImage[] mazeEmptyDark = new BufferedImage[6];
-	public final BufferedImage[] mazeEmptyBright = new BufferedImage[6];
+	public final BufferedImage[] mazeFull;
+	public final BufferedImage[] mazeEmptyDark;
+	public final BufferedImage[] mazeEmptyBright;
 	public final BufferedImage life;
-	public final BufferedImage[] symbols = new BufferedImage[8];
-	public final Map<Integer, BufferedImage> numbers = new HashMap<>();
-	public final Map<Integer, BufferedImage> bountyNumbers = new HashMap<>();
-	public final Map<PacManGameSound, URL> soundURL = new EnumMap<>(PacManGameSound.class);
-	public final Font scoreFont;
-
-	public final EnumMap<Direction, BufferedImage> pacMouthClosed;
+	public final BufferedImage[] symbols;
+	public final Map<Integer, BufferedImage> numbers;
+	public final Map<Integer, BufferedImage> bountyNumbers;
+	public final Map<PacManGameSound, URL> soundURL;
 	public final EnumMap<Direction, BufferedImage> pacMouthOpen;
+	public final EnumMap<Direction, BufferedImage> pacMouthClosed;
 	public final EnumMap<Direction, Animation> pacMunching;
 	public final Animation pacCollapsing;
 	public final List<EnumMap<Direction, Animation>> ghostsWalking;
 	public final EnumMap<Direction, BufferedImage> ghostEyes;
 	public final Animation ghostBlue;
 	public final Animation ghostFlashing;
+	public final Font scoreFont;
+
+	private final BufferedImage spriteSheet;
 
 	public MsPacManAssets() {
 		//@formatter:off
 		gameLogo            = image("/worlds/mspacman/logo.png");
 		spriteSheet         = image("/worlds/mspacman/sprites.png");
 		
+		mazeFull = new BufferedImage[6];
+		mazeEmptyDark = new BufferedImage[6];
+		mazeEmptyBright = new BufferedImage[6];
 		for (int i = 0; i < 6; ++i) {
 			mazeFull[i]         = spriteSheet.getSubimage(0, i*248, 226, 248);
 			mazeEmptyDark[i]    = spriteSheet.getSubimage(226, i*248, 226, 248);
 			mazeEmptyBright[i]  = null; //TODO fixme
 		}
+
 		scoreFont           = font("/PressStart2P-Regular.ttf", 8);
+		
 		life                = tile(1, 0);
 
+		symbols = new BufferedImage[8];
 		symbols[CHERRIES]   = tile(3, 0);
 		symbols[STRAWBERRY] = tile(4, 0);
 		symbols[PEACH]      = tile(5, 0);
@@ -68,6 +74,7 @@ public class MsPacManAssets {
 		symbols[PEAR]       = tile(8, 0);
 		symbols[BANANA]     = tile(9, 0);
 	
+		numbers = new HashMap<>();
 		numbers.put(100,  tile(3, 1));
 		numbers.put(200,  tile(4, 1));
 		numbers.put(500,  tile(5, 1));
@@ -76,11 +83,13 @@ public class MsPacManAssets {
 		numbers.put(2000, tile(8, 1));
 		numbers.put(5000, tile(9, 1));
 		
+		bountyNumbers = new HashMap<>();
 		bountyNumbers.put(200, tile(0,8));
 		bountyNumbers.put(400, tile(1,8));
 		bountyNumbers.put(800, tile(2,8));
 		bountyNumbers.put(1600, tile(3,8));
 	
+		soundURL = new EnumMap<>(PacManGameSound.class);
 		soundURL.put(PacManGameSound.CREDIT,           url("/sound/mspacman/Coin Credit.wav"));
 		soundURL.put(PacManGameSound.EXTRA_LIFE,       url("/sound/mspacman/Extra Life.wav"));
 		soundURL.put(PacManGameSound.GAME_READY,       url("/sound/mspacman/Start.wav"));
@@ -97,14 +106,14 @@ public class MsPacManAssets {
 		soundURL.put(PacManGameSound.GHOST_SIREN_5,    url("/sound/mspacman/Ghost Noise 4.wav"));
 		//@formatter:on
 
-		pacMouthClosed = new EnumMap<>(Direction.class);
-		for (Direction dir : Direction.values()) {
-			pacMouthClosed.put(dir, tile(2, index(dir)));
-		}
-
 		pacMouthOpen = new EnumMap<>(Direction.class);
 		for (Direction dir : Direction.values()) {
 			pacMouthOpen.put(dir, tile(1, index(dir)));
+		}
+
+		pacMouthClosed = new EnumMap<>(Direction.class);
+		for (Direction dir : Direction.values()) {
+			pacMouthClosed.put(dir, tile(2, index(dir)));
 		}
 
 		pacMunching = new EnumMap<>(Direction.class);
@@ -119,11 +128,11 @@ public class MsPacManAssets {
 		pacCollapsing.frameDuration(10).repetitions(2);
 
 		ghostsWalking = new ArrayList<>();
-		for (int ghostID = 0; ghostID < 4; ++ghostID) {
+		for (int g = 0; g < 4; ++g) {
 			EnumMap<Direction, Animation> animationForDir = new EnumMap<>(Direction.class);
 			for (Direction dir : Direction.values()) {
 				int d = index(dir);
-				Animation animation = Animation.of(tile(2 * d, 4 + ghostID), tile(2 * d + 1, 4 + ghostID));
+				Animation animation = Animation.of(tile(2 * d, 4 + g), tile(2 * d + 1, 4 + g));
 				animation.frameDuration(4).endless().run();
 				animationForDir.put(dir, animation);
 			}
@@ -137,8 +146,7 @@ public class MsPacManAssets {
 
 		ghostBlue = Animation.of(tile(8, 4), tile(9, 4)).frameDuration(20).endless().run();
 
-		ghostFlashing = Animation.of(tile(8, 4), tile(9, 4), tile(10, 4), tile(11, 4)).frameDuration(10).endless()
-				.run();
+		ghostFlashing = Animation.of(tile(8, 4), tile(9, 4), tile(10, 4), tile(11, 4)).frameDuration(10).endless().run();
 	}
 
 	/** Sprite sheet order of directions. */

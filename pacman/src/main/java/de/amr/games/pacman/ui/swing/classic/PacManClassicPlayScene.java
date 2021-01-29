@@ -177,7 +177,7 @@ public class PacManClassicPlayScene implements PacManGameScene, PacManGameAnimat
 		if (!pac.couldMove) {
 			return assets.pacMouthOpen.get(pac.dir);
 		}
-		return assets.pacWalking.get(pac.dir).sprite();
+		return assets.pacMunching.get(pac.dir).sprite();
 	}
 
 	private BufferedImage sprite(Ghost ghost) {
