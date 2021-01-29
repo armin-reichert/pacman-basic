@@ -110,14 +110,14 @@ public class MsPacManAssets {
 		pacMouthClosed = new EnumMap<>(Direction.class);
 		pacMouthOpen = new EnumMap<>(Direction.class);
 		for (Direction direction : Direction.values()) {
-			int dir = MsPacManAssets.DIR.get(direction);
+			int dir = dirIndex(direction);
 			pacMouthClosed.put(direction, section(2, dir));
 			pacMouthOpen.put(direction, section(1, dir));
 		}
 
 		pacWalking = new EnumMap<>(Direction.class);
 		for (Direction direction : Direction.values()) {
-			int dir = MsPacManAssets.DIR.get(direction);
+			int dir = dirIndex(direction);
 			Animation animation = new Animation();
 			animation.setFrameDurationTicks(1);
 			animation.setRepetitions(Integer.MAX_VALUE);

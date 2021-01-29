@@ -119,13 +119,13 @@ public class PacManClassicAssets {
 		pacMouthClosed = section(2, 0);
 		pacMouthOpen = new EnumMap<>(Direction.class);
 		for (Direction direction : Direction.values()) {
-			int dir = PacManClassicAssets.DIR.get(direction);
+			int dir = dirIndex(direction);
 			pacMouthOpen.put(direction, section(1, dir));
 		}
 
 		pacWalking = new EnumMap<>(Direction.class);
 		for (Direction direction : Direction.values()) {
-			int dir = PacManClassicAssets.DIR.get(direction);
+			int dir = dirIndex(direction);
 			Animation animation = new Animation();
 			animation.setFrameDurationTicks(1);
 			animation.setRepetitions(Integer.MAX_VALUE);
@@ -147,7 +147,7 @@ public class PacManClassicAssets {
 		for (int ghostID = 0; ghostID < 4; ++ghostID) {
 			EnumMap<Direction, Animation> animationForDir = new EnumMap<>(Direction.class);
 			for (Direction direction : Direction.values()) {
-				int dir = PacManClassicAssets.DIR.get(direction);
+				int dir = dirIndex(direction);
 				Animation animation = new Animation();
 				animation.setFrameDurationTicks(10);
 				animation.setRepetitions(Integer.MAX_VALUE);
@@ -161,7 +161,7 @@ public class PacManClassicAssets {
 
 		ghostEyes = new EnumMap<>(Direction.class);
 		for (Direction direction : Direction.values()) {
-			int dir = PacManClassicAssets.DIR.get(direction);
+			int dir = dirIndex(direction);
 			ghostEyes.put(direction, section(8 + dir, 5));
 		}
 
