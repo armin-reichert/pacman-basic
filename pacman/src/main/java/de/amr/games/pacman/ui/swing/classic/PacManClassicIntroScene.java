@@ -60,7 +60,7 @@ public class PacManClassicIntroScene implements PacManGameScene {
 	public void end() {
 		for (int ghostID = 0; ghostID < 4; ++ghostID) {
 			for (Direction dir : Direction.values()) {
-				assets.ghostsWalking.get(ghostID).get(dir).restart();
+				assets.ghostWalking.get(ghostID).get(dir).restart();
 			}
 		}
 		for (Direction dir : Direction.values()) {
@@ -88,7 +88,7 @@ public class PacManClassicIntroScene implements PacManGameScene {
 				ui.sounds().ifPresent(sm -> sm.playSound(PacManGameSound.CREDIT));
 			});
 			game.state.runAfter(clock.sec(ghostStart), () -> {
-				g.drawImage(assets.ghostsWalking.get(ghost).get(RIGHT).get(0), t(2) - 3, y - 2, null);
+				g.drawImage(assets.ghostWalking.get(ghost).get(RIGHT).sprite(0), t(2) - 3, y - 2, null);
 			});
 			game.state.runAfter(clock.sec(ghostStart + 0.5), () -> {
 				drawGhostCharacterAndName(g, ghost, y, false);
@@ -170,7 +170,7 @@ public class PacManClassicIntroScene implements PacManGameScene {
 		}
 		g.drawImage(pacSprite(), (int) game.pac.position.x, (int) game.pac.position.y, null);
 		for (int ghostID = 0; ghostID < 4; ++ghostID) {
-			g.drawImage(assets.ghostsWalking.get(ghostID).get(LEFT).frame(), (int) game.ghosts[0].position.x + 16 * ghostID,
+			g.drawImage(assets.ghostWalking.get(ghostID).get(LEFT).sprite(), (int) game.ghosts[0].position.x + 16 * ghostID,
 					(int) game.pac.position.y, null);
 		}
 		if (game.pac.position.x > t(2)) {
@@ -192,7 +192,7 @@ public class PacManClassicIntroScene implements PacManGameScene {
 		for (int ghostID = 0; ghostID < 4; ++ghostID) {
 			int x = (int) game.ghosts[0].position.x + 16 * ghostID;
 			if (game.pac.position.x < x) {
-				g.drawImage(assets.ghostBlue.frame(), x, y, null);
+				g.drawImage(assets.ghostBlue.sprite(), x, y, null);
 			} else if (game.pac.position.x > x && game.pac.position.x <= x + 16) {
 				int bounty = (int) (Math.pow(2, ghostID) * 200);
 				g.drawImage(assets.numbers.get(bounty), x, y, null);
@@ -212,7 +212,7 @@ public class PacManClassicIntroScene implements PacManGameScene {
 	}
 
 	private BufferedImage pacSprite() {
-		return game.pac.speed != 0 ? assets.pacWalking.get(game.pac.dir).frame() : assets.pacMouthOpen.get(game.pac.dir);
+		return game.pac.speed != 0 ? assets.pacWalking.get(game.pac.dir).sprite() : assets.pacMouthOpen.get(game.pac.dir);
 	}
 
 }

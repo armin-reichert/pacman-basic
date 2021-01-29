@@ -157,12 +157,12 @@ public class MsPacManIntroScene implements PacManGameScene {
 	}
 
 	private BufferedImage pacSprite() {
-		return game.pac.speed != 0 ? assets.pacWalking.get(game.pac.dir).frame() : assets.pacMouthOpen.get(game.pac.dir);
+		return game.pac.speed != 0 ? assets.pacWalking.get(game.pac.dir).sprite() : assets.pacMouthOpen.get(game.pac.dir);
 	}
 
 	private BufferedImage sprite(Ghost ghost) {
-		return ghost.speed != 0 ? assets.ghostsWalking.get(ghost.id).get(ghost.dir).frame()
-				: assets.ghostsWalking.get(ghost.id).get(ghost.dir).get(0);
+		return ghost.speed != 0 ? assets.ghostsWalking.get(ghost.id).get(ghost.dir).sprite()
+				: assets.ghostsWalking.get(ghost.id).get(ghost.dir).sprite(0);
 	}
 
 	private void drawBlinkingFrame(Graphics2D g, long time) {

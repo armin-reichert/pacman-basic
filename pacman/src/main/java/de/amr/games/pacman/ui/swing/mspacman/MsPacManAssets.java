@@ -45,7 +45,7 @@ public class MsPacManAssets {
 	public final List<EnumMap<Direction, Animation>> ghostsWalking;
 	public final EnumMap<Direction, BufferedImage> ghostEyes;
 	public final Animation ghostBlue;
-	public final List<Animation> ghostFlashing;
+	public final Animation ghostFlashing;
 
 	public MsPacManAssets() {
 		//@formatter:off
@@ -58,28 +58,28 @@ public class MsPacManAssets {
 			mazeEmptyBright[i]  = null; //TODO fixme
 		}
 		scoreFont           = font("/PressStart2P-Regular.ttf", 8);
-		life                = section(1, 0);
+		life                = sprite(1, 0);
 
-		symbols[CHERRIES]   = section(3, 0);
-		symbols[STRAWBERRY] = section(4, 0);
-		symbols[PEACH]      = section(5, 0);
-		symbols[PRETZEL]    = section(6, 0);
-		symbols[APPLE]      = section(7, 0);
-		symbols[PEAR]       = section(8, 0);
-		symbols[BANANA]     = section(9, 0);
+		symbols[CHERRIES]   = sprite(3, 0);
+		symbols[STRAWBERRY] = sprite(4, 0);
+		symbols[PEACH]      = sprite(5, 0);
+		symbols[PRETZEL]    = sprite(6, 0);
+		symbols[APPLE]      = sprite(7, 0);
+		symbols[PEAR]       = sprite(8, 0);
+		symbols[BANANA]     = sprite(9, 0);
 	
-		numbers.put(100,  section(3, 1));
-		numbers.put(200,  section(4, 1));
-		numbers.put(500,  section(5, 1));
-		numbers.put(700,  section(6, 1));
-		numbers.put(1000, section(7, 1));
-		numbers.put(2000, section(8, 1));
-		numbers.put(5000, section(9, 1));
+		numbers.put(100,  sprite(3, 1));
+		numbers.put(200,  sprite(4, 1));
+		numbers.put(500,  sprite(5, 1));
+		numbers.put(700,  sprite(6, 1));
+		numbers.put(1000, sprite(7, 1));
+		numbers.put(2000, sprite(8, 1));
+		numbers.put(5000, sprite(9, 1));
 		
-		bountyNumbers.put(200, section(0,8));
-		bountyNumbers.put(400, section(1,8));
-		bountyNumbers.put(800, section(2,8));
-		bountyNumbers.put(1600, section(3,8));
+		bountyNumbers.put(200, sprite(0,8));
+		bountyNumbers.put(400, sprite(1,8));
+		bountyNumbers.put(800, sprite(2,8));
+		bountyNumbers.put(1600, sprite(3,8));
 	
 		soundURL.put(PacManGameSound.CREDIT,           url("/sound/mspacman/Coin Credit.wav"));
 		soundURL.put(PacManGameSound.EXTRA_LIFE,       url("/sound/mspacman/Extra Life.wav"));
@@ -98,47 +98,34 @@ public class MsPacManAssets {
 		//@formatter:on
 
 		pacMouthClosed = new EnumMap<>(Direction.class);
+		for (Direction dir : Direction.values()) {
+			pacMouthClosed.put(dir, sprite(2, index(dir)));
+		}
+
 		pacMouthOpen = new EnumMap<>(Direction.class);
-		for (Direction direction : Direction.values()) {
-			int dir = dirIndex(direction);
-			pacMouthClosed.put(direction, section(2, dir));
-			pacMouthOpen.put(direction, section(1, dir));
+		for (Direction dir : Direction.values()) {
+			pacMouthOpen.put(dir, sprite(1, index(dir)));
 		}
 
 		pacWalking = new EnumMap<>(Direction.class);
-		for (Direction direction : Direction.values()) {
-			int dir = dirIndex(direction);
-			Animation animation = new Animation();
-			animation.setFrameDurationTicks(1);
-			animation.setRepetitions(Integer.MAX_VALUE);
-			animation.run();
-			animation.add(section(0, dir));
-			animation.add(section(1, dir));
-			animation.add(section(2, dir));
-			animation.add(section(1, dir));
-			pacWalking.put(direction, animation);
+		for (Direction dir : Direction.values()) {
+			int dirIndex = index(dir);
+			Animation animation = Animation.of(sprite(0, dirIndex), sprite(1, dirIndex), sprite(2, dirIndex),
+					sprite(1, dirIndex));
+			animation.frameDuration(1).endless().run();
+			pacWalking.put(dir, animation);
 		}
 
-		pacCollapsing = new Animation();
-		pacCollapsing.setFrameDurationTicks(10);
-		pacCollapsing.setRepetitions(2);
-		pacCollapsing.add(section(0, 2));
-		pacCollapsing.add(section(0, 3));
-		pacCollapsing.add(section(0, 0));
-		pacCollapsing.add(section(0, 1));
-		pacCollapsing.add(section(0, 2));
+		pacCollapsing = Animation.of(sprite(0, 2), sprite(0, 3), sprite(0, 0), sprite(0, 1), sprite(0, 2));
+		pacCollapsing.frameDuration(10).repetitions(2);
 
 		ghostsWalking = new ArrayList<>();
 		for (int ghostID = 0; ghostID < 4; ++ghostID) {
 			EnumMap<Direction, Animation> animationForDir = new EnumMap<>(Direction.class);
 			for (Direction direction : Direction.values()) {
-				int dir = dirIndex(direction);
-				Animation animation = new Animation();
-				animation.setFrameDurationTicks(4);
-				animation.setRepetitions(Integer.MAX_VALUE);
-				animation.run();
-				animation.add(section(2 * dir, 4 + ghostID));
-				animation.add(section(2 * dir + 1, 4 + ghostID));
+				int dir = index(direction);
+				Animation animation = Animation.of(sprite(2 * dir, 4 + ghostID), sprite(2 * dir + 1, 4 + ghostID));
+				animation.frameDuration(4).endless().run();
 				animationForDir.put(direction, animation);
 			}
 			ghostsWalking.add(animationForDir);
@@ -146,33 +133,18 @@ public class MsPacManAssets {
 
 		ghostEyes = new EnumMap<>(Direction.class);
 		for (Direction direction : Direction.values()) {
-			int dir = dirIndex(direction);
-			ghostEyes.put(direction, section(8 + dir, 5));
+			int dir = index(direction);
+			ghostEyes.put(direction, sprite(8 + dir, 5));
 		}
 
-		ghostBlue = new Animation();
-		ghostBlue.setFrameDurationTicks(20);
-		ghostBlue.setRepetitions(Integer.MAX_VALUE);
-		ghostBlue.run();
-		ghostBlue.add(section(8, 4));
-		ghostBlue.add(section(9, 4));
+		ghostBlue = Animation.of(sprite(8, 4), sprite(9, 4)).frameDuration(20).endless().run();
 
-		ghostFlashing = new ArrayList<>();
-		for (int ghostID = 0; ghostID < 4; ++ghostID) {
-			Animation animation = new Animation();
-			animation.setFrameDurationTicks(10);
-			animation.setRepetitions(Integer.MAX_VALUE);
-			animation.run();
-			animation.add(section(8, 4));
-			animation.add(section(9, 4));
-			animation.add(section(10, 4));
-			animation.add(section(11, 4));
-			ghostFlashing.add(animation);
-		}
+		ghostFlashing = Animation.of(sprite(8, 4), sprite(9, 4), sprite(10, 4), sprite(11, 4)).frameDuration(10)
+				.endless().run();
 	}
 
 	/** Sprite sheet order of directions. */
-	public int dirIndex(Direction direction) {
+	public int index(Direction direction) {
 		switch (direction) {
 		case RIGHT:
 			return 0;
@@ -187,11 +159,11 @@ public class MsPacManAssets {
 		}
 	}
 
-	public BufferedImage section(int x, int y, int w, int h) {
+	public BufferedImage region(int x, int y, int w, int h) {
 		return spriteSheet.getSubimage(456 + x * 16, y * 16, w * 16, h * 16);
 	}
 
-	public BufferedImage section(int x, int y) {
-		return section(x, y, 1, 1);
+	public BufferedImage sprite(int x, int y) {
+		return region(x, y, 1, 1);
 	}
 }

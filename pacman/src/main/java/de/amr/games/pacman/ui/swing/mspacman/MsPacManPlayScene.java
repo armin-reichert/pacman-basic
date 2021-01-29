@@ -64,13 +64,10 @@ public class MsPacManPlayScene implements PacManGameScene, PacManGameAnimations 
 	}
 
 	@Override
-	public void startMazeFlashing(int repetitions) {
-		mazeFlashing = new Animation();
-		mazeFlashing.add(assets.mazeEmptyBright[game.level.mazeNumber - 1]);
-		mazeFlashing.add(assets.mazeEmptyDark[game.level.mazeNumber - 1]);
-		mazeFlashing.setFrameDurationTicks(15);
-		mazeFlashing.setRepetitions(repetitions);
-		mazeFlashing.restart();
+	public void startMazeFlashing(int numFlashes) {
+		mazeFlashing = Animation.of(assets.mazeEmptyBright[game.level.mazeNumber - 1],
+				assets.mazeEmptyDark[game.level.mazeNumber - 1]);
+		mazeFlashing.frameDuration(15).repetitions(numFlashes).restart();
 	}
 
 	@Override
@@ -162,9 +159,9 @@ public class MsPacManPlayScene implements PacManGameScene, PacManGameAnimations 
 	private void drawMaze(Graphics2D g) {
 		if (mazeFlashing != null) {
 			// TODO fixme
-			BufferedImage frame = mazeFlashing.frame();
+			BufferedImage frame = mazeFlashing.sprite();
 			if (frame != null) {
-				g.drawImage(mazeFlashing.frame(), 0, t(3), null);
+				g.drawImage(mazeFlashing.sprite(), 0, t(3), null);
 			}
 			return;
 		}
@@ -203,14 +200,14 @@ public class MsPacManPlayScene implements PacManGameScene, PacManGameAnimations 
 	private BufferedImage sprite(Pac pac) {
 		if (pac.dead) {
 			if (assets.pacCollapsing.isRunning() || assets.pacCollapsing.isComplete()) {
-				return assets.pacCollapsing.frame();
+				return assets.pacCollapsing.sprite();
 			}
 			return assets.pacMouthOpen.get(pac.dir);
 		}
 		if (pac.speed == 0 || !pac.couldMove) {
 			return assets.pacMouthOpen.get(pac.dir);
 		}
-		return assets.pacWalking.get(pac.dir).frame();
+		return assets.pacWalking.get(pac.dir).sprite();
 	}
 
 	private BufferedImage sprite(Ghost ghost) {
@@ -221,15 +218,15 @@ public class MsPacManPlayScene implements PacManGameScene, PacManGameAnimations 
 			return assets.ghostEyes.get(ghost.wishDir);
 		}
 		if (ghost.is(FRIGHTENED)) {
-			if (game.pac.powerTicksLeft <= assets.ghostFlashing.get(ghost.id).getDuration() * game.level.numFlashes
+			if (game.pac.powerTicksLeft <= assets.ghostFlashing.getDuration() * game.level.numFlashes
 					&& game.state == PacManGameState.HUNTING) {
-				return assets.ghostFlashing.get(ghost.id).frame();
+				return assets.ghostFlashing.sprite();
 			}
-			return assets.ghostBlue.frame();
+			return assets.ghostBlue.sprite();
 		}
 		if (ghost.is(LOCKED) && game.pac.powerTicksLeft > 0) {
-			return assets.ghostBlue.frame();
+			return assets.ghostBlue.sprite();
 		}
-		return assets.ghostsWalking.get(ghost.id).get(ghost.wishDir).frame();
+		return assets.ghostsWalking.get(ghost.id).get(ghost.wishDir).sprite();
 	}
 }

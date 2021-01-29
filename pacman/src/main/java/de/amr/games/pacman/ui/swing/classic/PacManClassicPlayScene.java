@@ -62,7 +62,7 @@ public class PacManClassicPlayScene implements PacManGameScene, PacManGameAnimat
 
 	@Override
 	public void startMazeFlashing(int repetitions) {
-		assets.mazeFlashing.setRepetitions(repetitions);
+		assets.mazeFlashing.repetitions(repetitions);
 		assets.mazeFlashing.restart();
 	}
 
@@ -134,7 +134,7 @@ public class PacManClassicPlayScene implements PacManGameScene, PacManGameAnimat
 
 	private void drawMaze(Graphics2D g) {
 		if (assets.mazeFlashing.isRunning()) {
-			g.drawImage(assets.mazeFlashing.frame(), 0, t(3), null);
+			g.drawImage(assets.mazeFlashing.sprite(), 0, t(3), null);
 			return;
 		}
 		g.drawImage(assets.mazeFull, 0, t(3), null);
@@ -169,7 +169,7 @@ public class PacManClassicPlayScene implements PacManGameScene, PacManGameAnimat
 
 	private BufferedImage sprite(Pac pac) {
 		if (pac.dead) {
-			return assets.pacCollapsing.isRunning() ? assets.pacCollapsing.frame() : assets.pacMouthClosed;
+			return assets.pacCollapsing.isRunning() ? assets.pacCollapsing.sprite() : assets.pacMouthClosed;
 		}
 		if (pac.speed == 0) {
 			return assets.pacMouthClosed;
@@ -177,7 +177,7 @@ public class PacManClassicPlayScene implements PacManGameScene, PacManGameAnimat
 		if (!pac.couldMove) {
 			return assets.pacMouthOpen.get(pac.dir);
 		}
-		return assets.pacWalking.get(pac.dir).frame();
+		return assets.pacWalking.get(pac.dir).sprite();
 	}
 
 	private BufferedImage sprite(Ghost ghost) {
@@ -188,15 +188,15 @@ public class PacManClassicPlayScene implements PacManGameScene, PacManGameAnimat
 			return assets.ghostEyes.get(ghost.wishDir);
 		}
 		if (ghost.is(FRIGHTENED)) {
-			if (game.pac.powerTicksLeft <= assets.ghostFlashing.get(ghost.id).getDuration() * game.level.numFlashes
+			if (game.pac.powerTicksLeft <= assets.ghostFlashing.getDuration() * game.level.numFlashes
 					&& game.state == PacManGameState.HUNTING) {
-				return assets.ghostFlashing.get(ghost.id).frame();
+				return assets.ghostFlashing.sprite();
 			}
-			return assets.ghostBlue.frame();
+			return assets.ghostBlue.sprite();
 		}
 		if (ghost.is(LOCKED) && game.pac.powerTicksLeft > 0) {
-			return assets.ghostBlue.frame();
+			return assets.ghostBlue.sprite();
 		}
-		return assets.ghostsWalking.get(ghost.id).get(ghost.wishDir).frame();
+		return assets.ghostWalking.get(ghost.id).get(ghost.wishDir).sprite();
 	}
 }
