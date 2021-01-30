@@ -1,7 +1,5 @@
 package de.amr.games.pacman.game.creatures;
 
-import static de.amr.games.pacman.game.core.PacManGameWorld.HTS;
-
 import de.amr.games.pacman.game.core.PacManGameWorld;
 import de.amr.games.pacman.game.worlds.PacManClassicWorld;
 
@@ -33,7 +31,6 @@ public class Bonus extends Creature {
 		symbol = bonusSymbol;
 		points = PacManClassicWorld.BONUS_POINTS[bonusSymbol];
 		edibleTicksLeft = ticks;
-		placeAt(PacManClassicWorld.BONUS_TILE, HTS, 0);
 	}
 
 	public void eatAndDisplayValue(long ticks) {

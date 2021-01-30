@@ -20,8 +20,6 @@ public class PacManClassicWorld extends AbstractPacManGameWorld {
 
 	public static final short[] BONUS_POINTS = { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
 
-	public static final V2i BONUS_TILE = new V2i(13, 20);
-
 	public static final List<V2i> UPWARDS_BLOCKED_TILES = Arrays.asList(new V2i(12, 13), new V2i(15, 13), new V2i(12, 25),
 			new V2i(15, 25));
 

@@ -1,5 +1,6 @@
 package de.amr.games.pacman.game.core;
 
+import static de.amr.games.pacman.game.core.PacManGameWorld.TS;
 import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.UP;
@@ -16,6 +17,7 @@ import de.amr.games.pacman.game.worlds.MsPacManWorld;
 import de.amr.games.pacman.game.worlds.PacManClassicWorld;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.Hiscore;
+import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
 
 /**
@@ -49,6 +51,7 @@ public class PacManGameModel {
 		game.variant = CLASSIC;
 		game.world = new PacManClassicWorld();
 		game.bonus = new Bonus(game.world);
+		game.bonus.position = new V2f(13 * TS, 20 * TS);
 		game.pac = new Pac(game.world);
 		game.pac.name = "Pac-Man";
 		game.pac.startDir = Direction.RIGHT;
