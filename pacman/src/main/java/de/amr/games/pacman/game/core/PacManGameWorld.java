@@ -29,8 +29,6 @@ public interface PacManGameWorld {
 		return new V2f(position.x - (int) (position.x / TS) * TS, position.y - (int) (position.y / TS) * TS);
 	}
 
-	PacManGameLevel createLevel(int levelNumber);
-
 	int xTiles();
 
 	int yTiles();
@@ -44,6 +42,8 @@ public interface PacManGameWorld {
 	}
 
 	boolean inMapRange(V2i tile);
+
+	void loadMap(String path);
 
 	V2i pacHome();
 

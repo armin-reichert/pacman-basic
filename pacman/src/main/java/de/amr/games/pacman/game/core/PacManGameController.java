@@ -1,7 +1,11 @@
 package de.amr.games.pacman.game.core;
 
+import static de.amr.games.pacman.game.core.PacManGameModel.BLINKY;
 import static de.amr.games.pacman.game.core.PacManGameModel.CLASSIC;
+import static de.amr.games.pacman.game.core.PacManGameModel.CLYDE;
+import static de.amr.games.pacman.game.core.PacManGameModel.INKY;
 import static de.amr.games.pacman.game.core.PacManGameModel.MS_PACMAN;
+import static de.amr.games.pacman.game.core.PacManGameModel.PINKY;
 import static de.amr.games.pacman.game.core.PacManGameState.CHANGING_LEVEL;
 import static de.amr.games.pacman.game.core.PacManGameState.GAME_OVER;
 import static de.amr.games.pacman.game.core.PacManGameState.GHOST_DYING;
@@ -17,10 +21,6 @@ import static de.amr.games.pacman.game.creatures.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.game.creatures.GhostState.LOCKED;
 import static de.amr.games.pacman.game.heaven.God.clock;
 import static de.amr.games.pacman.game.heaven.God.random;
-import static de.amr.games.pacman.game.worlds.PacManClassicWorld.BLINKY;
-import static de.amr.games.pacman.game.worlds.PacManClassicWorld.CLYDE;
-import static de.amr.games.pacman.game.worlds.PacManClassicWorld.INKY;
-import static de.amr.games.pacman.game.worlds.PacManClassicWorld.PINKY;
 import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;

@@ -1,9 +1,11 @@
 package de.amr.games.pacman.game.core;
 
 import static de.amr.games.pacman.game.core.PacManGameWorld.TS;
+import static de.amr.games.pacman.game.heaven.God.random;
 import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.UP;
+import static de.amr.games.pacman.lib.Logging.log;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -28,6 +30,69 @@ import de.amr.games.pacman.lib.V2i;
 public class PacManGameModel {
 
 	public static final byte CLASSIC = 0, MS_PACMAN = 1;
+
+	public static final byte BLINKY = 0, PINKY = 1, INKY = 2, CLYDE = 3;
+
+	public enum PacManClassicSymbols {
+		CHERRIES, STRAWBERRY, PEACH, APPLE, GRAPES, GALAXIAN, BELL, KEY;
+	}
+
+	/*@formatter:off*/
+	private static final int[][] PACMAN_CLASSIC_LEVELS = {
+	/* 1*/ {0,  80, 75, 40,  20,  80, 10,  85,  90, 50, 6, 5},
+	/* 2*/ {1,  90, 85, 45,  30,  90, 15,  95,  95, 55, 5, 5},
+	/* 3*/ {2,  90, 85, 45,  40,  90, 20,  95,  95, 55, 4, 5},
+	/* 4*/ {2,  90, 85, 45,  40,  90, 20,  95,  95, 55, 3, 5},
+	/* 5*/ {3, 100, 95, 50,  40, 100, 20, 105, 100, 60, 2, 5},
+	/* 6*/ {3, 100, 95, 50,  50, 100, 25, 105, 100, 60, 5, 5},
+	/* 7*/ {4, 100, 95, 50,  50, 100, 25, 105, 100, 60, 2, 5},
+	/* 8*/ {4, 100, 95, 50,  50, 100, 25, 105, 100, 60, 2, 5},
+	/* 9*/ {5, 100, 95, 50,  60, 100, 30, 105, 100, 60, 1, 3},
+	/*10*/ {5, 100, 95, 50,  60, 100, 30, 105, 100, 60, 5, 5},
+	/*11*/ {6, 100, 95, 50,  60, 100, 30, 105, 100, 60, 2, 5},
+	/*12*/ {6, 100, 95, 50,  80, 100, 40, 105, 100, 60, 1, 3},
+	/*13*/ {7, 100, 95, 50,  80, 100, 40, 105, 100, 60, 1, 3},
+	/*14*/ {7, 100, 95, 50,  80, 100, 40, 105, 100, 60, 3, 5},
+	/*15*/ {7, 100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3},
+	/*16*/ {7, 100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3},
+	/*17*/ {7, 100, 95, 50, 100, 100, 50, 105,   0,  0, 0, 0},
+	/*18*/ {7, 100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3},
+	/*19*/ {7, 100, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
+	/*20*/ {7, 100, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
+	/*21*/ {7,  90, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
+	};
+	/*@formatter:on*/
+
+	public enum MsPacManSymbols {
+		CHERRIES, STRAWBERRY, PEACH, PRETZEL, APPLE, PEAR, BANANA;
+	}
+
+	// TODO how exactly are the levels of the Ms.Pac-Man game?
+	/*@formatter:off*/
+	public static final int[][] MS_PACMAN_LEVELS = {
+	/* 1*/ {0,  80, 75, 40,  20,  80, 10,  85,  90, 50, 6, 5},
+	/* 2*/ {1,  90, 85, 45,  30,  90, 15,  95,  95, 55, 5, 5},
+	/* 3*/ {2,  90, 85, 45,  40,  90, 20,  95,  95, 55, 4, 5},
+	/* 4*/ {3,  90, 85, 45,  40,  90, 20,  95,  95, 55, 3, 5},
+	/* 5*/ {4, 100, 95, 50,  40, 100, 20, 105, 100, 60, 2, 5},
+	/* 6*/ {5, 100, 95, 50,  50, 100, 25, 105, 100, 60, 5, 5},
+	/* 7*/ {6, 100, 95, 50,  50, 100, 25, 105, 100, 60, 2, 5},
+	/* 8*/ {0, 100, 95, 50,  50, 100, 25, 105, 100, 60, 2, 5},
+	/* 9*/ {0, 100, 95, 50,  60, 100, 30, 105, 100, 60, 1, 3},
+	/*10*/ {0, 100, 95, 50,  60, 100, 30, 105, 100, 60, 5, 5},
+	/*11*/ {0, 100, 95, 50,  60, 100, 30, 105, 100, 60, 2, 5},
+	/*12*/ {0, 100, 95, 50,  80, 100, 40, 105, 100, 60, 1, 3},
+	/*13*/ {0, 100, 95, 50,  80, 100, 40, 105, 100, 60, 1, 3},
+	/*14*/ {0, 100, 95, 50,  80, 100, 40, 105, 100, 60, 3, 5},
+	/*15*/ {0, 100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3},
+	/*16*/ {0, 100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3},
+	/*17*/ {0, 100, 95, 50, 100, 100, 50, 105,   0,  0, 0, 0},
+	/*18*/ {0, 100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3},
+	/*19*/ {0, 100, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
+	/*20*/ {0, 100, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
+	/*21*/ {0,  90, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
+	};
+	/*@formatter:on*/
 
 	public PacManGameState state;
 	public byte variant;
@@ -112,9 +177,38 @@ public class PacManGameModel {
 		levelSymbols.add(level.bonusSymbol);
 	}
 
+	public PacManGameLevel createLevel(int levelNumber) {
+		if (variant == CLASSIC) {
+			return createPacManClassicLevel(levelNumber);
+		} else if (variant == MS_PACMAN) {
+			return createMsPacManLevel(levelNumber);
+		}
+		throw new IllegalArgumentException("Illegal level number " + levelNumber);
+	}
+
+	private PacManGameLevel createPacManClassicLevel(int levelNumber) {
+		return new PacManGameLevel(world, PACMAN_CLASSIC_LEVELS[levelNumber <= 21 ? levelNumber - 1 : 20]);
+	}
+
+	private PacManGameLevel createMsPacManLevel(int levelNumber) {
+		int mazeNumber = MsPacManWorld.mazeNumber(levelNumber);
+		// Maze #5 has the same map as #3 but a different color, same for #6 vs. #4
+		int mapIndex = mazeNumber == 5 ? 3 : mazeNumber == 6 ? 4 : mazeNumber;
+		world.loadMap("/worlds/mspacman/map" + mapIndex + ".txt");
+		log("Use maze #%d at game level %d", mazeNumber, levelNumber);
+		// map has been loaded, now create level
+		PacManGameLevel level = new PacManGameLevel(world,
+				PacManGameModel.MS_PACMAN_LEVELS[levelNumber <= 21 ? levelNumber - 1 : 20]);
+		level.mazeNumber = mazeNumber;
+		if (levelNumber > 7) {
+			level.bonusSymbol = (byte) random.nextInt(7);
+		}
+		return level;
+	}
+
 	public void initLevel(int n) {
 		levelNumber = (short) n;
-		level = world.createLevel(n);
+		level = createLevel(n);
 		ghostBounty = 200;
 		huntingPhase = 0;
 		bonus.edibleTicksLeft = 0;

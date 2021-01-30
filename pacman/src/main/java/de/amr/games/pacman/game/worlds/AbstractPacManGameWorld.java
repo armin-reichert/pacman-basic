@@ -64,7 +64,8 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 
 	protected byte[][] map;
 
-	protected void loadMap(String path) {
+	@Override
+	public void loadMap(String path) {
 		int lineNumber = 0, errors = 0;
 		map = new byte[sizeTiles.y][sizeTiles.x];
 		try (InputStream is = getClass().getResourceAsStream(path)) {

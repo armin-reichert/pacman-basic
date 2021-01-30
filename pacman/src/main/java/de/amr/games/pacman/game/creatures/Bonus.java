@@ -10,7 +10,7 @@ import de.amr.games.pacman.game.core.PacManGameWorld;
 public class Bonus extends Creature {
 
 	/** ID of the bonus symbol. */
-	public byte symbol;
+	public int symbol;
 
 	/** Value of this bonus. */
 	public int points;

@@ -3,7 +3,6 @@ package de.amr.games.pacman.game.creatures;
 import static de.amr.games.pacman.game.core.PacManGameWorld.HTS;
 import static de.amr.games.pacman.game.core.PacManGameWorld.t;
 import static de.amr.games.pacman.game.heaven.God.differsAtMost;
-import static de.amr.games.pacman.game.worlds.PacManClassicWorld.BLINKY;
 import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
@@ -129,7 +128,7 @@ public class Ghost extends Creature {
 			setOffset(HTS, 0);
 			dir = wishDir = DOWN;
 			forcedOnTrack = false;
-			targetTile = id == BLINKY ? world.houseCenter() : world.ghostHome(id);
+			targetTile = (id == 0) ? world.houseCenter() : world.ghostHome(id);
 			state = GhostState.ENTERING_HOUSE;
 			return;
 		}
