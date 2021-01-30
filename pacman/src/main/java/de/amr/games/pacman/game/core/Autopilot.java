@@ -223,21 +223,21 @@ public class Autopilot {
 		double minDist = Double.MAX_VALUE;
 		for (int x = 0; x < game.world.xTiles(); ++x) {
 			for (int y = 0; y < game.world.yTiles(); ++y) {
-				if (!game.world.isFoodTile(x, y) || game.level.isFoodRemoved(x, y)) {
+				V2i tile = new V2i(x, y);
+				if (!game.world.isFoodTile(tile) || game.level.isFoodRemoved(tile)) {
 					continue;
 				}
-				V2i foodTile = new V2i(x, y);
-				if (game.world.isEnergizerTile(foodTile) && game.pac.powerTicksLeft > clock.sec(1)
+				if (game.world.isEnergizerTile(tile) && game.pac.powerTicksLeft > clock.sec(1)
 						&& game.level.foodRemaining > 1) {
 					continue;
 				}
-				double dist = pacManTile.manhattanDistance(foodTile);
+				double dist = pacManTile.manhattanDistance(tile);
 				if (dist < minDist) {
 					minDist = dist;
 					foodTiles.clear();
-					foodTiles.add(foodTile);
+					foodTiles.add(tile);
 				} else if (dist == minDist) {
-					foodTiles.add(foodTile);
+					foodTiles.add(tile);
 				}
 			}
 		}

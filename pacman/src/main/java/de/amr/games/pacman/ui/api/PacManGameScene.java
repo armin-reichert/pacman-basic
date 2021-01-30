@@ -81,15 +81,16 @@ public interface PacManGameScene {
 		g.setStroke(thin);
 		for (int x = 0; x < game.world.xTiles(); ++x) {
 			for (int y = 0; y < game.world.yTiles(); ++y) {
-				if (game.world.isIntersection(x, y)) {
+				V2i tile = new V2i(x, y);
+				if (game.world.isIntersection(tile)) {
 					for (Direction dir : Direction.values()) {
-						int nx = x + dir.vec.x, ny = y + dir.vec.y;
-						if (!game.world.isAccessible(nx, ny)) {
+						V2i neighbor = tile.sum(dir.vec);
+						if (!game.world.isAccessible(neighbor)) {
 							continue;
 						}
-						g.drawLine(t(x) + HTS, t(y) + HTS, t(nx) + HTS, t(ny) + HTS);
+						g.drawLine(t(x) + HTS, t(y) + HTS, t(neighbor.x) + HTS, t(neighbor.y) + HTS);
 					}
-				} else if (game.world.isUpwardsBlocked(x, y)) {
+				} else if (game.world.isUpwardsBlocked(tile)) {
 					g.translate(t(x) + HTS, t(y));
 					g.fillPolygon(TRIANGLE);
 					g.translate(-t(x) - HTS, -t(y));

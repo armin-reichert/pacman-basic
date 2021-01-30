@@ -32,11 +32,11 @@ public interface PacManGameWorld {
 
 	int yTiles();
 
-	default int tileIndex(int x, int y) {
-		return xTiles() * y + x;
+	default int tileIndex(V2i tile) {
+		return xTiles() * tile.y + tile.x;
 	}
 
-	boolean inMapRange(int x, int y);
+	boolean inMapRange(V2i tile);
 
 	V2i pacHome();
 
@@ -58,53 +58,21 @@ public interface PacManGameWorld {
 
 	V2i portalRight(int i);
 
-	boolean isAccessible(int x, int y);
+	boolean isAccessible(V2i tile);
 
-	default boolean isAccessible(V2i tile) {
-		return isAccessible(tile.x, tile.y);
-	}
+	boolean isPortal(V2i tile);
 
-	boolean isPortal(int x, int y);
+	boolean isIntersection(V2i tile);
 
-	default boolean isPortal(V2i tile) {
-		return isPortal(tile.x, tile.y);
-	}
+	boolean isTunnel(V2i tile);
 
-	boolean isIntersection(int x, int y);
+	boolean isUpwardsBlocked(V2i tile);
 
-	default boolean isIntersection(V2i tile) {
-		return isIntersection(tile.x, tile.y);
-	}
+	boolean isGhostHouseDoor(V2i tile);
 
-	boolean isTunnel(int x, int y);
+	byte data(V2i tile);
 
-	default boolean isTunnel(V2i tile) {
-		return isTunnel(tile.x, tile.y);
-	}
+	boolean isFoodTile(V2i tile);
 
-	boolean isUpwardsBlocked(int x, int y);
-
-	default boolean isUpwardsBlocked(V2i tile) {
-		return isUpwardsBlocked(tile.x, tile.y);
-	}
-
-	boolean isGhostHouseDoor(int x, int y);
-
-	default boolean isGhostHouseDoor(V2i tile) {
-		return isGhostHouseDoor(tile.x, tile.y);
-	}
-
-	byte mapData(int x, int y);
-
-	boolean isFoodTile(int x, int y);
-
-	default boolean isFoodTile(V2i tile) {
-		return isFoodTile(tile.x, tile.y);
-	}
-
-	boolean isEnergizerTile(int x, int y);
-
-	default boolean isEnergizerTile(V2i tile) {
-		return isEnergizerTile(tile.x, tile.y);
-	}
+	boolean isEnergizerTile(V2i tile);
 }

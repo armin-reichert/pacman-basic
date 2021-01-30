@@ -109,14 +109,14 @@ public class Ghost extends Creature {
 	}
 
 	@Override
-	public boolean canAccessTile(int x, int y) {
-		if (world.isGhostHouseDoor(x, y)) {
+	public boolean canAccessTile(V2i tile) {
+		if (world.isGhostHouseDoor(tile)) {
 			return state == GhostState.ENTERING_HOUSE || state == GhostState.LEAVING_HOUSE;
 		}
-		if (world.isUpwardsBlocked(x, y) && wishDir == UP && state == GhostState.HUNTING_PAC) {
+		if (world.isUpwardsBlocked(tile) && wishDir == UP && state == GhostState.HUNTING_PAC) {
 			return false;
 		}
-		return super.canAccessTile(x, y);
+		return super.canAccessTile(tile);
 	}
 
 	public boolean atGhostHouseDoor() {

@@ -16,6 +16,7 @@ import de.amr.games.pacman.game.worlds.MsPacManWorld;
 import de.amr.games.pacman.game.worlds.PacManClassicWorld;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.Hiscore;
+import de.amr.games.pacman.lib.V2i;
 
 /**
  * The game data.
@@ -139,8 +140,9 @@ public class PacManGameModel {
 	public void removeAllNormalPellets() {
 		for (int x = 0; x < world.xTiles(); ++x) {
 			for (int y = 0; y < world.yTiles(); ++y) {
-				if (level.containsFood(x, y) && !world.isEnergizerTile(x, y)) {
-					level.removeFood(x, y);
+				V2i tile = new V2i(x, y);
+				if (level.containsFood(tile) && !world.isEnergizerTile(tile)) {
+					level.removeFood(tile);
 				}
 			}
 		}

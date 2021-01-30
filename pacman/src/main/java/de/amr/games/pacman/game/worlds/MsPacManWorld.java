@@ -4,6 +4,7 @@ import static de.amr.games.pacman.game.heaven.God.random;
 import static de.amr.games.pacman.lib.Logging.log;
 
 import de.amr.games.pacman.game.core.PacManGameLevel;
+import de.amr.games.pacman.lib.V2i;
 
 /**
  * Ms. Pac-Man game world. Has 6 maze variants.
@@ -87,7 +88,7 @@ public class MsPacManWorld extends AbstractPacManGameWorld {
 	}
 
 	@Override
-	public boolean isUpwardsBlocked(int x, int y) {
+	public boolean isUpwardsBlocked(V2i tile) {
 		return false; // ghosts can travel all paths
 	}
 }

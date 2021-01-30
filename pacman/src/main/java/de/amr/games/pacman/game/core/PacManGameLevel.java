@@ -60,10 +60,10 @@ public class PacManGameLevel {
 		int energizerCount = 0;
 		for (int x = 0; x < world.xTiles(); ++x) {
 			for (int y = 0; y < world.yTiles(); ++y) {
-				byte data = world.mapData(x, y);
-				if (data == PacManGameWorld.PILL) {
+				V2i tile = new V2i(x, y);
+				if (world.data(tile) == PacManGameWorld.PILL) {
 					++totalFoodCount;
-				} else if (data == PacManGameWorld.ENERGIZER) {
+				} else if (world.data(tile) == PacManGameWorld.ENERGIZER) {
 					energizerCount++;
 					++totalFoodCount;
 				}
@@ -80,35 +80,22 @@ public class PacManGameLevel {
 	}
 
 	public boolean isFoodRemoved(V2i tile) {
-		return isFoodRemoved(tile.x, tile.y);
-	}
-
-	public boolean isFoodRemoved(int x, int y) {
-		return eaten.get(world.tileIndex(x, y));
-	}
-
-	public boolean containsFood(int x, int y) {
-		return world.isFoodTile(x, y) && !isFoodRemoved(x, y);
+		return eaten.get(world.tileIndex(tile));
 	}
 
 	public boolean containsFood(V2i tile) {
-		return containsFood(tile.x, tile.y);
-	}
-
-	public void removeFood(int x, int y) {
-		if (!isFoodRemoved(x, y)) {
-			eaten.set(world.tileIndex(x, y));
-			--foodRemaining;
-		}
+		return world.isFoodTile(tile) && !isFoodRemoved(tile);
 	}
 
 	public void removeFood(V2i tile) {
-		removeFood(tile.x, tile.y);
+		if (!isFoodRemoved(tile)) {
+			eaten.set(world.tileIndex(tile));
+			--foodRemaining;
+		}
 	}
 
 	public void restoreFood() {
 		eaten.clear();
 		foodRemaining = totalFoodCount;
 	}
-
 }

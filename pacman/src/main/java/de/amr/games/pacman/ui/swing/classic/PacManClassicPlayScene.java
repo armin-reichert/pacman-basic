@@ -136,8 +136,9 @@ public class PacManClassicPlayScene implements PacManGameScene, PacManGameAnimat
 		g.drawImage(assets.mazeFull, 0, t(3), null);
 		range(0, game.world.xTiles()).forEach(x -> {
 			range(4, game.world.yTiles() - 3).forEach(y -> {
-				if (game.level.isFoodRemoved(x, y)
-						|| game.state == HUNTING && game.world.isEnergizerTile(x, y) && clock.ticksTotal % 20 < 10) {
+				V2i tile = new V2i(x, y);
+				if (game.level.isFoodRemoved(tile)
+						|| game.state == HUNTING && game.world.isEnergizerTile(tile) && clock.ticksTotal % 20 < 10) {
 					g.setColor(Color.BLACK);
 					g.fillRect(t(x), t(y), TS, TS);
 				}

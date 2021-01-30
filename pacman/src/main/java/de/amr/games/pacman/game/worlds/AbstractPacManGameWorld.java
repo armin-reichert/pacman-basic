@@ -1,5 +1,6 @@
 package de.amr.games.pacman.game.worlds;
 
+import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Logging.log;
 
 import java.io.BufferedReader;
@@ -104,12 +105,12 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 		// find intersections ("waypoints")
 		for (int y = 0; y < sizeTiles.y; ++y) {
 			for (int x = 0; x < sizeTiles.x; ++x) {
-				if (isInsideGhostHouse(x, y) || isGhostHouseDoor(x, y + 1)) {
+				V2i tile = new V2i(x, y), tileBelow = tile.sum(DOWN.vec);
+				if (isInsideGhostHouse(tile) || isGhostHouseDoor(tileBelow)) {
 					continue;
 				}
-				V2i tile = new V2i(x, y);
 				if (Stream.of(Direction.values()).map(dir -> tile.sum(dir.vec)).filter(this::isAccessible).count() >= 3) {
-					intersections.set(tileIndex(x, y));
+					intersections.set(tileIndex(tile));
 				}
 			}
 		}
@@ -138,13 +139,13 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 	}
 
 	@Override
-	public byte mapData(int x, int y) {
-		return map[y][x];
+	public byte data(V2i tile) {
+		return map[tile.y][tile.x];
 	}
 
 	@Override
-	public boolean inMapRange(int x, int y) {
-		return 0 <= x && x < sizeTiles.x && 0 <= y && y < sizeTiles.y;
+	public boolean inMapRange(V2i tile) {
+		return 0 <= tile.x && tile.x < sizeTiles.x && 0 <= tile.y && tile.y < sizeTiles.y;
 	}
 
 	@Override
@@ -198,51 +199,50 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 	}
 
 	@Override
-	public boolean isAccessible(int x, int y) {
-		if (isPortal(x, y)) {
+	public boolean isAccessible(V2i tile) {
+		if (isPortal(tile)) {
 			return true;
 		}
-		if (!inMapRange(x, y)) {
+		if (!inMapRange(tile)) {
 			return false;
 		}
-		if (isGhostHouseDoor(x, y)) {
+		if (isGhostHouseDoor(tile)) {
 			return false;
 		}
-		return map[y][x] != WALL;
+		return map[tile.y][tile.x] != WALL;
 	}
 
 	@Override
-	public boolean isTunnel(int x, int y) {
-		return inMapRange(x, y) && map[y][x] == TUNNEL;
+	public boolean isTunnel(V2i tile) {
+		return inMapRange(tile) && map[tile.y][tile.x] == TUNNEL;
 	}
 
 	@Override
-	public boolean isGhostHouseDoor(int x, int y) {
-		return inMapRange(x, y) && map[y][x] == DOOR;
+	public boolean isGhostHouseDoor(V2i tile) {
+		return inMapRange(tile) && data(tile) == DOOR;
 	}
 
 	@Override
-	public boolean isPortal(int x, int y) {
-		V2i tile = new V2i(x, y);
+	public boolean isPortal(V2i tile) {
 		return portalsLeft.contains(tile) || portalsRight.contains(tile);
 	}
 
-	private boolean isInsideGhostHouse(int x, int y) {
-		return x >= 10 && x <= 17 && y >= 15 && y <= 22;
+	private boolean isInsideGhostHouse(V2i tile) {
+		return tile.x >= 10 && tile.x <= 17 && tile.y >= 15 && tile.y <= 22;
 	}
 
 	@Override
-	public boolean isIntersection(int x, int y) {
-		return intersections.get(tileIndex(x, y));
+	public boolean isIntersection(V2i tile) {
+		return intersections.get(tileIndex(tile));
 	}
 
 	@Override
-	public boolean isFoodTile(int x, int y) {
-		return inMapRange(x, y) && (map[y][x] == PILL || map[y][x] == ENERGIZER);
+	public boolean isFoodTile(V2i tile) {
+		return inMapRange(tile) && (data(tile) == PILL || data(tile) == ENERGIZER);
 	}
 
 	@Override
-	public boolean isEnergizerTile(int x, int y) {
-		return energizerTiles.contains(new V2i(x, y));
+	public boolean isEnergizerTile(V2i tile) {
+		return energizerTiles.contains(tile);
 	}
 }

@@ -82,12 +82,8 @@ public class Creature {
 		placeAt(tile(), offsetX, offsetY);
 	}
 
-	public boolean canAccessTile(int x, int y) {
-		return world.isAccessible(x, y);
-	}
-
 	public boolean canAccessTile(V2i tile) {
-		return canAccessTile(tile.x, tile.y);
+		return world.isAccessible(tile);
 	}
 
 	public boolean meets(Creature other) {

@@ -61,7 +61,7 @@ public class PacManClassicWorld extends AbstractPacManGameWorld {
 	}
 
 	@Override
-	public boolean isUpwardsBlocked(int x, int y) {
-		return UPWARDS_BLOCKED_TILES.contains(new V2i(x, y));
+	public boolean isUpwardsBlocked(V2i tile) {
+		return UPWARDS_BLOCKED_TILES.contains(tile);
 	}
 }
