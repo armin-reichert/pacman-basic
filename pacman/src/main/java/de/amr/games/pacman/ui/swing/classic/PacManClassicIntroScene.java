@@ -15,7 +15,7 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.api.PacManGameScene;
-import de.amr.games.pacman.ui.api.PacManGameSound;
+import de.amr.games.pacman.ui.api.Sound;
 import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
 
 /**
@@ -85,7 +85,7 @@ public class PacManClassicIntroScene implements PacManGameScene {
 			int ghostStart = 3 + 2 * ghost;
 			int y = t(10 + 3 * ghost);
 			game.state.runAt(clock.sec(ghostStart), () -> {
-				ui.sounds().ifPresent(sm -> sm.playSound(PacManGameSound.CREDIT));
+				ui.sounds().ifPresent(sm -> sm.playSound(Sound.CREDIT));
 			});
 			game.state.runAfter(clock.sec(ghostStart), () -> {
 				g.drawImage(assets.ghostWalking.get(ghost).get(RIGHT).thing(0), t(2) - 3, y - 2, null);
@@ -103,7 +103,7 @@ public class PacManClassicIntroScene implements PacManGameScene {
 		});
 
 		game.state.runAt(clock.sec(13), () -> {
-			ui.sounds().ifPresent(sm -> sm.loopSound(PacManGameSound.GHOST_SIREN_1));
+			ui.sounds().ifPresent(sm -> sm.loopSound(Sound.GHOST_SIREN_1));
 		});
 
 		game.state.runAfter(clock.sec(13), () -> {
@@ -115,7 +115,7 @@ public class PacManClassicIntroScene implements PacManGameScene {
 		});
 
 		game.state.runAt(clock.sec(24), () -> {
-			ui.sounds().ifPresent(sm -> sm.stopSound(PacManGameSound.PACMAN_POWER));
+			ui.sounds().ifPresent(sm -> sm.stopSound(Sound.PACMAN_POWER));
 		});
 
 		game.state.runAfter(clock.sec(24), () -> {
@@ -182,8 +182,8 @@ public class PacManClassicIntroScene implements PacManGameScene {
 			game.pac.dir = RIGHT;
 			game.ghosts[0].dir = RIGHT;
 			game.ghosts[0].speed = 0.4f;
-			ui.sounds().ifPresent(sm -> sm.stopSound(PacManGameSound.GHOST_SIREN_1));
-			ui.sounds().ifPresent(sm -> sm.loopSound(PacManGameSound.PACMAN_POWER));
+			ui.sounds().ifPresent(sm -> sm.stopSound(Sound.GHOST_SIREN_1));
+			ui.sounds().ifPresent(sm -> sm.loopSound(Sound.PACMAN_POWER));
 		}
 	}
 
@@ -198,7 +198,7 @@ public class PacManClassicIntroScene implements PacManGameScene {
 				g.drawImage(assets.numbers.get(bounty), x, y, null);
 				if (lastKilledGhostID != ghostID) {
 					lastKilledGhostID++;
-					ui.sounds().ifPresent(sm -> sm.playSound(PacManGameSound.GHOST_EATEN));
+					ui.sounds().ifPresent(sm -> sm.playSound(Sound.GHOST_EATEN));
 				}
 			}
 		}

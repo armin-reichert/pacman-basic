@@ -15,7 +15,7 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.api.PacManGameScene;
-import de.amr.games.pacman.ui.api.PacManGameSound;
+import de.amr.games.pacman.ui.api.Sound;
 import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
 
 public class MsPacManIntroScene implements PacManGameScene {
@@ -82,7 +82,7 @@ public class MsPacManIntroScene implements PacManGameScene {
 		// animation start:
 		if (time == 0) {
 			game.ghosts[0].speed = walkSpeed;
-			ui.sounds().ifPresent(sm -> sm.playSound(PacManGameSound.CREDIT));
+			ui.sounds().ifPresent(sm -> sm.playSound(Sound.CREDIT));
 		}
 
 		drawBlinkingFrame(g, time);
@@ -114,10 +114,10 @@ public class MsPacManIntroScene implements PacManGameScene {
 				ghost.position = new V2f(ghost.position.x, t(frameTopLeftTile.y) + 16 * ghost.id);
 				if (ghost.id < 3) { // start next ghost
 					game.ghosts[ghost.id + 1].speed = walkSpeed;
-					ui.sounds().ifPresent(sm -> sm.playSound(PacManGameSound.CREDIT));
+					ui.sounds().ifPresent(sm -> sm.playSound(Sound.CREDIT));
 				} else { // start Pac
 					game.pac.speed = walkSpeed;
-					ui.sounds().ifPresent(sm -> sm.loopSound(PacManGameSound.PACMAN_MUNCH));
+					ui.sounds().ifPresent(sm -> sm.loopSound(Sound.PACMAN_MUNCH));
 				}
 			}
 		}

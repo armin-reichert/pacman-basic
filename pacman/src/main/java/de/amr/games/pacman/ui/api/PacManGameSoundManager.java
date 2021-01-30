@@ -2,11 +2,11 @@ package de.amr.games.pacman.ui.api;
 
 public interface PacManGameSoundManager {
 
-	void playSound(PacManGameSound sound);
+	void playSound(Sound sound);
 
-	void loopSound(PacManGameSound sound);
+	void loopSound(Sound sound);
 
-	void stopSound(PacManGameSound sound);
+	void stopSound(Sound sound);
 
 	void stopAllSounds();
 
