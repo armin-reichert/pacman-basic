@@ -282,13 +282,13 @@ public class PacManGameController {
 		if (game.state.hasExpired()) {
 			return changeState(PacManGameState.HUNTING, this::exitReadyState, this::enterHuntingState);
 		}
-		if (game.state.ticksRun() == game.state.durationTicks() - clock.sec(1)) {
+		if (game.state.ticksLeft(clock.sec(1))) {
 			for (Ghost ghost : game.ghosts) {
 				ghost.visible = true;
 			}
 			game.pac.visible = true;
 		}
-		if (game.state.ticksRun() == game.state.durationTicks() - clock.sec(0.5)) {
+		if (game.state.ticksLeft(clock.sec(0.5))) {
 			for (Ghost ghost : game.ghosts) {
 				ui.animations().ifPresent(animations -> {
 					for (Direction dir : Direction.values()) {

@@ -18,6 +18,10 @@ public enum PacManGameState {
 		return ticksRun;
 	}
 
+	public boolean ticksLeft(int ticks) {
+		return duration - ticksRun == ticks;
+	}
+
 	public long durationTicks() {
 		return duration;
 	}
