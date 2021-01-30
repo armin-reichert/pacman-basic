@@ -7,7 +7,6 @@ import static de.amr.games.pacman.game.core.PacManGameWorld.t;
 import static de.amr.games.pacman.game.creatures.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.game.creatures.GhostState.LOCKED;
 import static de.amr.games.pacman.game.heaven.God.clock;
-import static java.util.stream.IntStream.range;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -73,6 +72,9 @@ public class PacManClassicPlayScene implements PacManGameScene, PacManGameAnimat
 		drawLivesCounter(g);
 		drawLevelCounter(g);
 		drawMaze(g);
+		if (PacManGameSwingUI.debugMode) {
+			drawMazeStructure(g, game);
+		}
 		drawGuy(g, game.pac, sprite(game.pac));
 		for (Ghost ghost : game.ghosts) {
 			drawGuy(g, ghost, sprite(ghost));
@@ -134,20 +136,18 @@ public class PacManClassicPlayScene implements PacManGameScene, PacManGameAnimat
 			return;
 		}
 		g.drawImage(assets.mazeFull, 0, t(3), null);
-		range(0, game.world.xTiles()).forEach(x -> {
-			range(4, game.world.yTiles() - 3).forEach(y -> {
-				V2i tile = new V2i(x, y);
-				if (game.level.isFoodRemoved(tile)
-						|| game.state == HUNTING && game.world.isEnergizerTile(tile) && clock.ticksTotal % 20 < 10) {
-					g.setColor(Color.BLACK);
-					g.fillRect(t(x), t(y), TS, TS);
-				}
-			});
+		game.world.tiles().filter(game.level::isFoodRemoved).forEach(tile -> {
+			g.setColor(Color.BLACK);
+			g.fillRect(t(tile.x), t(tile.y), TS, TS);
 		});
-		drawBonus(g, game.bonus);
-		if (PacManGameSwingUI.debugMode) {
-			drawMazeStructure(g, game);
+		// TODO use animation instead?
+		if (clock.ticksTotal % 20 < 10 && game.state == HUNTING) {
+			game.world.energizerTiles().forEach(tile -> {
+				g.setColor(Color.BLACK);
+				g.fillRect(t(tile.x), t(tile.y), TS, TS);
+			});
 		}
+		drawBonus(g, game.bonus);
 	}
 
 	private void drawBonus(Graphics2D g, Bonus bonus) {

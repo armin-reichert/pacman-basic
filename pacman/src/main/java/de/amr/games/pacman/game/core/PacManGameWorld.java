@@ -82,4 +82,6 @@ public interface PacManGameWorld {
 	boolean isFoodTile(V2i tile);
 
 	boolean isEnergizerTile(V2i tile);
+
+	Stream<V2i> energizerTiles();
 }

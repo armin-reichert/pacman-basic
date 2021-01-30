@@ -242,4 +242,9 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 	public boolean isEnergizerTile(V2i tile) {
 		return energizerTiles.contains(tile);
 	}
+
+	@Override
+	public Stream<V2i> energizerTiles() {
+		return energizerTiles.stream();
+	}
 }
