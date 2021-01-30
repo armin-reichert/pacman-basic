@@ -125,7 +125,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 			@Override
 			public void windowClosing(WindowEvent e) {
-				controller.saveHighscore();
+				controller.game().ifPresent(PacManGameModel::saveHighscore);
 			}
 		});
 		window.addKeyListener(new KeyAdapter() {

@@ -34,7 +34,6 @@ import java.util.stream.Stream;
 
 import de.amr.games.pacman.game.creatures.Ghost;
 import de.amr.games.pacman.lib.Direction;
-import de.amr.games.pacman.lib.Hiscore;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.api.PacManGameUI;
 import de.amr.games.pacman.ui.api.Sound;
@@ -594,7 +593,7 @@ public class PacManGameController {
 			ghost.speed = 0;
 		}
 		game.pac.speed = 0;
-		saveHighscore();
+		game.saveHighscore();
 		ui.showMessage(ui.translation("GAME_OVER"), true);
 	}
 
@@ -611,16 +610,6 @@ public class PacManGameController {
 	}
 
 	// END STATE-MACHINE
-
-	public void saveHighscore() {
-		Hiscore hiscore = game.loadHighScore();
-		if (game.highscorePoints > hiscore.points) {
-			hiscore.points = game.highscorePoints;
-			hiscore.level = game.highscoreLevel;
-			hiscore.save();
-			log("New hiscore saved. %d points in level %d", hiscore.points, hiscore.level);
-		}
-	}
 
 	private void score(int points) {
 		int oldscore = game.score;

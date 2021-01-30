@@ -1,5 +1,7 @@
 package de.amr.games.pacman.game.core;
 
+import static de.amr.games.pacman.lib.Logging.log;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -85,4 +87,15 @@ public abstract class PacManGameModel {
 		hiscore.load();
 		return hiscore;
 	}
+
+	public void saveHighscore() {
+		Hiscore hiscore = loadHighScore();
+		if (highscorePoints > hiscore.points) {
+			hiscore.points = highscorePoints;
+			hiscore.level = highscoreLevel;
+			hiscore.save();
+			log("New hiscore saved. %d points in level %d", hiscore.points, hiscore.level);
+		}
+	}
+
 }
