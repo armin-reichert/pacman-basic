@@ -59,8 +59,8 @@ public class PacManClassicPlayScene extends AbstractPacManPlayScene implements P
 	@Override
 	protected void drawLevelCounter(Graphics2D g) {
 		int x = t(game.world.xTiles() - 4);
-		int first = Math.max(1, game.levelNumber - 6);
-		for (int levelNumber = first; levelNumber <= game.levelNumber; ++levelNumber) {
+		int first = Math.max(1, game.currentLevelNumber - 6);
+		for (int levelNumber = first; levelNumber <= game.currentLevelNumber; ++levelNumber) {
 			V2i symbolTile = assets.symbolTiles[game.levelSymbols.get(levelNumber - 1)];
 			g.drawImage(assets.spriteAt(symbolTile), x, size.y - t(2), null);
 			x -= t(2);

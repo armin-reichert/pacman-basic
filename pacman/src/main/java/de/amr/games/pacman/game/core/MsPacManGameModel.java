@@ -4,7 +4,6 @@ import static de.amr.games.pacman.game.heaven.God.random;
 import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.UP;
-import static de.amr.games.pacman.lib.Logging.log;
 
 import de.amr.games.pacman.game.creatures.Ghost;
 import de.amr.games.pacman.game.creatures.MovingBonus;
@@ -70,6 +69,11 @@ public class MsPacManGameModel extends PacManGameModel {
 		return 6; // orange maze, white dots (same map as maze 4)
 	}
 
+	private static int mapIndex(int mazeNumber) {
+		// Maze #5 has the same map as #3 but a different color, same for #6 vs. #4
+		return mazeNumber == 5 ? 3 : mazeNumber == 6 ? 4 : mazeNumber;
+	}
+
 	public MsPacManGameModel() {
 		variant = MS_PACMAN;
 		world = new MapBasedPacManGameWorld();
@@ -96,18 +100,13 @@ public class MsPacManGameModel extends PacManGameModel {
 	}
 
 	@Override
-	public void createLevel(int number) {
-		levelNumber = number;
-		int mazeNumber = mazeNumber(levelNumber);
-		// Maze #5 has the same map as #3 but a different color, same for #6 vs. #4
-		int mapIndex = mazeNumber == 5 ? 3 : mazeNumber == 6 ? 4 : mazeNumber;
-		world.loadMap("/worlds/mspacman/map" + mapIndex + ".txt");
-		log("Use maze #%d at game level %d", mazeNumber, levelNumber);
-		// map has been loaded, now create level
-		level = new PacManGameLevel(world, MS_PACMAN_LEVELS[levelNumber <= 21 ? levelNumber - 1 : 20]);
-		level.mazeNumber = mazeNumber;
-		if (levelNumber > 7) {
+	public void createLevel() {
+		int mazeNumber = mazeNumber(currentLevelNumber);
+		world.loadMap("/worlds/mspacman/map" + mapIndex(mazeNumber) + ".txt");
+		level = new PacManGameLevel(world, MS_PACMAN_LEVELS[currentLevelNumber <= 21 ? currentLevelNumber - 1 : 20]);
+		if (currentLevelNumber > 7) {
 			level.bonusSymbol = (byte) random.nextInt(7);
 		}
+		level.mazeNumber = mazeNumber;
 	}
 }

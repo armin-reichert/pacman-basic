@@ -3,6 +3,7 @@ package de.amr.games.pacman.game.core;
 import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.UP;
+import static de.amr.games.pacman.lib.Logging.log;
 
 import de.amr.games.pacman.game.creatures.Bonus;
 import de.amr.games.pacman.game.creatures.Ghost;
@@ -82,9 +83,8 @@ public class PacManClassicGameModel extends PacManGameModel {
 	}
 
 	@Override
-	public void createLevel(int number) {
-		levelNumber = number;
-		level = new PacManGameLevel(world, PACMAN_CLASSIC_LEVELS[levelNumber <= 21 ? levelNumber - 1 : 20]);
+	public void createLevel() {
+		level = new PacManGameLevel(world, PACMAN_CLASSIC_LEVELS[currentLevelNumber <= 21 ? currentLevelNumber - 1 : 20]);
+		log("Current level is %d, maze index is %d", currentLevelNumber, level.mazeNumber);
 	}
-
 }

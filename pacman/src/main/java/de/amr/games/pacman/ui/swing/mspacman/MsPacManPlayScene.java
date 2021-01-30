@@ -86,7 +86,7 @@ public class MsPacManPlayScene extends AbstractPacManPlayScene implements PacMan
 	@Override
 	protected void drawLevelCounter(Graphics2D g) {
 		int x = t(game.world.xTiles() - 4);
-		for (int levelNumber = 1; levelNumber <= Math.min(game.levelNumber, 7); ++levelNumber) {
+		for (int levelNumber = 1; levelNumber <= Math.min(game.currentLevelNumber, 7); ++levelNumber) {
 			byte symbol = game.levelSymbols.get(levelNumber - 1);
 			g.drawImage(assets.spriteAt(assets.symbolTiles[symbol]), x, size.y - t(2), null);
 			x -= t(2);

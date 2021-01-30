@@ -24,7 +24,7 @@ public abstract class PacManGameModel {
 	public PacManGameState state;
 	public byte variant;
 	public PacManGameWorld world;
-	public int levelNumber;
+	public int currentLevelNumber; // counting from 1
 	public PacManGameLevel level;
 	public Pac pac;
 	public Ghost[] ghosts;
@@ -40,10 +40,11 @@ public abstract class PacManGameModel {
 	public short globalDotCounter;
 	public boolean globalDotCounterEnabled;
 
-	public abstract void createLevel(int number);
+	public abstract void createLevel();
 
-	public void setLevel(int number) {
-		createLevel(number);
+	public void setLevel(int levelNumber) {
+		currentLevelNumber = levelNumber;
+		createLevel();
 		ghostBounty = 200;
 		huntingPhase = 0;
 		bonus.edibleTicksLeft = 0;

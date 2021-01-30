@@ -77,7 +77,7 @@ public abstract class AbstractPacManPlayScene implements PacManGameScene {
 		g.setColor(getScoreColor());
 		g.drawString(String.format("%08d", game.score), t(1), t(2));
 		g.setColor(Color.LIGHT_GRAY);
-		g.drawString(String.format("L%02d", game.levelNumber), t(9), t(2));
+		g.drawString(String.format("L%02d", game.currentLevelNumber), t(9), t(2));
 		g.setColor(getScoreColor());
 		g.drawString(String.format("%08d", game.highscorePoints), t(16), t(2));
 		g.setColor(Color.LIGHT_GRAY);

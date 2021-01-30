@@ -316,7 +316,7 @@ public class PacManGameController {
 	};
 
 	private long huntingPhaseDuration(int phase) {
-		int row = game.levelNumber == 1 ? 0 : game.levelNumber <= 4 ? 1 : 2;
+		int row = game.currentLevelNumber == 1 ? 0 : game.currentLevelNumber <= 4 ? 1 : 2;
 		return huntingTicks(HUNTING_PHASE_DURATION[row][phase]);
 	}
 
@@ -580,8 +580,8 @@ public class PacManGameController {
 	private void exitChangingLevelState() {
 		ui.animations().ifPresent(
 				animations -> animations.mazeFlashing(game.level.mazeNumber).repetitions(game.level.numFlashes).reset());
-		log("Level %d complete, entering level %d", game.levelNumber, game.levelNumber + 1);
-		game.setLevel(game.levelNumber + 1);
+		log("Level %d complete, entering level %d", game.currentLevelNumber, game.currentLevelNumber + 1);
+		game.setLevel(game.currentLevelNumber + 1);
 		game.levelSymbols.add(game.level.bonusSymbol);
 	}
 
@@ -631,7 +631,7 @@ public class PacManGameController {
 		}
 		if (game.score > game.highscorePoints) {
 			game.highscorePoints = game.score;
-			game.highscoreLevel = game.levelNumber;
+			game.highscoreLevel = game.currentLevelNumber;
 		}
 	}
 
@@ -712,7 +712,7 @@ public class PacManGameController {
 	}
 
 	private int pacStarvingTimeLimit() {
-		return game.levelNumber < 5 ? clock.sec(4) : clock.sec(3);
+		return game.currentLevelNumber < 5 ? clock.sec(4) : clock.sec(3);
 	}
 
 	// Ghosts
@@ -810,10 +810,10 @@ public class PacManGameController {
 
 	private int ghostPrivateDotLimit(Ghost ghost) {
 		if (ghost.id == INKY) {
-			return game.levelNumber == 1 ? 30 : 0;
+			return game.currentLevelNumber == 1 ? 30 : 0;
 		}
 		if (ghost.id == CLYDE) {
-			return game.levelNumber == 1 ? 60 : game.levelNumber == 2 ? 50 : 0;
+			return game.currentLevelNumber == 1 ? 60 : game.currentLevelNumber == 2 ? 50 : 0;
 		}
 		return 0;
 	}
