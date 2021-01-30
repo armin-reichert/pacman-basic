@@ -37,7 +37,7 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.Hiscore;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.api.Sound;
-import de.amr.games.pacman.ui.api.PacManGameSoundManager;
+import de.amr.games.pacman.ui.api.SoundManager;
 import de.amr.games.pacman.ui.api.PacManGameUI;
 
 /**
@@ -106,7 +106,7 @@ public class PacManGameController {
 		gameStarted = false;
 		game.state = suspendedState = null;
 		if (ui != null) {
-			ui.sounds().ifPresent(PacManGameSoundManager::stopAllSounds);
+			ui.sounds().ifPresent(SoundManager::stopAllSounds);
 			ui.clearMessages();
 		}
 		changeState(INTRO, () -> {
@@ -115,7 +115,7 @@ public class PacManGameController {
 
 	private void toggleGameVariant() {
 		initGame(game.variant == CLASSIC ? MS_PACMAN : CLASSIC);
-		ui.sounds().ifPresent(PacManGameSoundManager::stopAllSounds);
+		ui.sounds().ifPresent(SoundManager::stopAllSounds);
 		ui.updateGame(game);
 	}
 
@@ -272,7 +272,7 @@ public class PacManGameController {
 				}
 			});
 		}
-		ui.sounds().ifPresent(PacManGameSoundManager::stopAllSounds);
+		ui.sounds().ifPresent(SoundManager::stopAllSounds);
 	}
 
 	private PacManGameState runReadyState() {
@@ -488,7 +488,7 @@ public class PacManGameController {
 		}
 		game.bonus.edibleTicksLeft = game.bonus.eatenTicksLeft = 0;
 //		ui.animations().ifPresent(animations -> animations.pacManCollapsing.reset());
-		ui.sounds().ifPresent(PacManGameSoundManager::stopAllSounds);
+		ui.sounds().ifPresent(SoundManager::stopAllSounds);
 	}
 
 	private PacManGameState runPacManDyingState() {
@@ -558,7 +558,7 @@ public class PacManGameController {
 		game.state.setDuration(clock.sec(game.level.numFlashes + 3));
 		game.bonus.edibleTicksLeft = game.bonus.eatenTicksLeft = 0;
 		game.pac.speed = 0;
-		ui.sounds().ifPresent(PacManGameSoundManager::stopAllSounds);
+		ui.sounds().ifPresent(SoundManager::stopAllSounds);
 	}
 
 	private PacManGameState runChangingLevelState() {

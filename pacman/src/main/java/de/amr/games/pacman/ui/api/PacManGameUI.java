@@ -29,7 +29,7 @@ public interface PacManGameUI {
 
 	boolean keyPressed(String keySpec);
 
-	Optional<PacManGameSoundManager> sounds();
+	Optional<SoundManager> sounds();
 
 	Optional<PacManGameAnimations> animations();
 }
