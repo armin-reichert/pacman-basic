@@ -76,12 +76,12 @@ public class PacManGameController {
 
 	public void initGame(int variant) {
 		if (variant == CLASSIC) {
-			game = PacManGameModel.newPacManClassicGame();
+			game = new PacManClassicGameModel();
 		} else if (variant == MS_PACMAN) {
-			game = PacManGameModel.newMsPacManGame();
+			game = new MsPacManGameModel();
 		} else {
 			log("Illegal game variant value %d, preparing Ms. Pac-Man game", variant);
-			game = PacManGameModel.newMsPacManGame();
+			game = new MsPacManGameModel();
 		}
 		reset();
 	}

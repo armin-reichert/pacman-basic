@@ -13,6 +13,10 @@ public class V2f {
 
 	private static float EPS = 0.000001f;
 
+	private static boolean almostEquals(float x, float y) {
+		return x >= y - EPS && x <= y + EPS;
+	}
+
 	public final float x;
 	public final float y;
 
@@ -31,10 +35,6 @@ public class V2f {
 			return false;
 		V2f other = (V2f) obj;
 		return almostEquals(x, other.x) && almostEquals(y, other.y);
-	}
-
-	private boolean almostEquals(float x, float y) {
-		return x >= y - EPS && x <= y + EPS;
 	}
 
 	@Override
