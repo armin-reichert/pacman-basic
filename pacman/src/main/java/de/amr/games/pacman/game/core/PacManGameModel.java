@@ -49,11 +49,16 @@ public class PacManGameModel {
 		game.world = new PacManClassicWorld();
 		game.bonus = new Bonus(game.world);
 		game.pac = new Pac(game.world);
+		game.pac.name = "Pac-Man";
 		game.pac.startDir = Direction.RIGHT;
 		game.ghosts = new Ghost[4];
 		for (int ghostID = 0; ghostID < 4; ++ghostID) {
 			game.ghosts[ghostID] = new Ghost(ghostID, game.world);
 		}
+		game.ghosts[0].name = "Blinky";
+		game.ghosts[1].name = "Pinky";
+		game.ghosts[2].name = "Inky";
+		game.ghosts[3].name = "Clyde";
 		game.ghosts[0].startDir = LEFT;
 		game.ghosts[1].startDir = UP;
 		game.ghosts[2].startDir = DOWN;
@@ -68,11 +73,16 @@ public class PacManGameModel {
 		game.world = new MsPacManWorld();
 		game.bonus = new MovingBonus(game.world);
 		game.pac = new Pac(game.world);
+		game.pac.name = "Ms. Pac-Man";
 		game.pac.startDir = Direction.LEFT;
 		game.ghosts = new Ghost[4];
 		for (int ghostID = 0; ghostID < 4; ++ghostID) {
 			game.ghosts[ghostID] = new Ghost(ghostID, game.world);
 		}
+		game.ghosts[0].name = "Blinky";
+		game.ghosts[1].name = "Pinky";
+		game.ghosts[2].name = "Inky";
+		game.ghosts[3].name = "Sue";
 		game.ghosts[0].startDir = LEFT;
 		game.ghosts[1].startDir = UP;
 		game.ghosts[2].startDir = DOWN;

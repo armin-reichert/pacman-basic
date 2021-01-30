@@ -15,8 +15,6 @@ public class PacManClassicWorld extends AbstractPacManGameWorld {
 
 	public static final byte BLINKY = 0, PINKY = 1, INKY = 2, CLYDE = 3;
 
-	private static final String[] GHOST_NAMES = { "Blinky", "Pinky", "Inky", "Clyde" };
-
 	public static final byte CHERRIES = 0, STRAWBERRY = 1, PEACH = 2, APPLE = 3, GRAPES = 4, GALAXIAN = 5, BELL = 6,
 			KEY = 7;
 
@@ -60,16 +58,6 @@ public class PacManClassicWorld extends AbstractPacManGameWorld {
 	@Override
 	public PacManGameLevel createLevel(int levelNumber) {
 		return new PacManGameLevel(this, LEVELS[levelNumber <= 21 ? levelNumber - 1 : 20]);
-	}
-
-	@Override
-	public String pacName() {
-		return "Pac-Man";
-	}
-
-	@Override
-	public String ghostName(int ghost) {
-		return GHOST_NAMES[ghost];
 	}
 
 	@Override

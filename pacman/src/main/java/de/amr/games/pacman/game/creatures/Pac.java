@@ -10,7 +10,7 @@ import de.amr.games.pacman.game.core.PacManGameWorld;
 public class Pac extends Creature {
 
 	/** Readable name, "Pac-Man" or "Ms. Pac-Man". */
-	public final String name;
+	public String name;
 
 	/** If Pac is dead. */
 	public boolean dead;
@@ -29,6 +29,5 @@ public class Pac extends Creature {
 
 	public Pac(PacManGameWorld world) {
 		super(world);
-		name = world.pacName();
 	}
 }

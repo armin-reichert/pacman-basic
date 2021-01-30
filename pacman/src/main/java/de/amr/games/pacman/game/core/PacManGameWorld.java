@@ -38,11 +38,7 @@ public interface PacManGameWorld {
 
 	boolean inMapRange(int x, int y);
 
-	String pacName();
-
 	V2i pacHome();
-
-	String ghostName(int ghost);
 
 	V2i ghostHome(int ghost);
 

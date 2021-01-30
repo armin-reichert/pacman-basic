@@ -14,8 +14,6 @@ import de.amr.games.pacman.game.core.PacManGameLevel;
  */
 public class MsPacManWorld extends AbstractPacManGameWorld {
 
-	private static final String[] GHOST_NAMES = { "Blinky", "Pinky", "Inky", "Sue" };
-
 	public static final byte CHERRIES = 0, STRAWBERRY = 1, PEACH = 2, PRETZEL = 3, APPLE = 4, PEAR = 5, BANANA = 6;
 
 	public static final short[] BONUS_POINTS = { 100, 200, 500, 700, 1000, 2000, 5000 };
@@ -86,16 +84,6 @@ public class MsPacManWorld extends AbstractPacManGameWorld {
 			return 5; // pink maze, cyan dots (same map as maze 3)
 		}
 		return 6; // orange maze, white dots (same map as maze 4)
-	}
-
-	@Override
-	public String pacName() {
-		return "Ms. Pac-Man";
-	}
-
-	@Override
-	public String ghostName(int ghost) {
-		return GHOST_NAMES[ghost];
 	}
 
 	@Override
