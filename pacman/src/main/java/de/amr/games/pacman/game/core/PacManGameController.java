@@ -369,7 +369,8 @@ public class PacManGameController {
 
 		// Cheats
 		if (ui.keyPressed("e")) {
-			game.removeAllNormalPellets();
+			game.world.tiles().filter(tile -> game.level.containsFood(tile) && !game.world.isEnergizerTile(tile))
+					.forEach(game.level::removeFood);
 		}
 		if (ui.keyPressed("x")) {
 			killAllGhosts();

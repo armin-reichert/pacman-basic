@@ -8,7 +8,6 @@ import de.amr.games.pacman.game.creatures.Bonus;
 import de.amr.games.pacman.game.creatures.Ghost;
 import de.amr.games.pacman.game.creatures.Pac;
 import de.amr.games.pacman.lib.Hiscore;
-import de.amr.games.pacman.lib.V2i;
 
 /**
  * The common base class of the game data.
@@ -85,16 +84,5 @@ public abstract class PacManGameModel {
 		Hiscore hiscore = new Hiscore(new File(dir, fileName));
 		hiscore.load();
 		return hiscore;
-	}
-
-	public void removeAllNormalPellets() {
-		for (int x = 0; x < world.xTiles(); ++x) {
-			for (int y = 0; y < world.yTiles(); ++y) {
-				V2i tile = new V2i(x, y);
-				if (level.containsFood(tile) && !world.isEnergizerTile(tile)) {
-					level.removeFood(tile);
-				}
-			}
-		}
 	}
 }
