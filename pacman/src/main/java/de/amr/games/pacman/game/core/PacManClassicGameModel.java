@@ -1,5 +1,7 @@
 package de.amr.games.pacman.game.core;
 
+import static de.amr.games.pacman.game.core.PacManGameWorld.HTS;
+import static de.amr.games.pacman.game.core.PacManGameWorld.TS;
 import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.UP;
@@ -60,7 +62,7 @@ public class PacManClassicGameModel extends PacManGameModel {
 		bonusNames = new String[] { "CHERRIES", "STRAWBERRY", "PEACH", "APPLE", "GRAPES", "GALAXIAN", "BELL", "KEY" };
 		bonusValues = new int[] { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
 		bonus = new Bonus(world);
-		bonus.position = new V2f(13 * PacManGameWorld.TS, 20 * PacManGameWorld.TS);
+		bonus.position = new V2f(13 * TS, 20 * TS + HTS);
 
 		pac = new Pac(world);
 		pac.name = "Pac-Man";
