@@ -171,7 +171,7 @@ public class PacManGameController {
 		for (Ghost ghost : game.ghosts) {
 			ghost.placeAt(game.world.ghostHome(ghost.id), HTS, 0);
 			ghost.dir = ghost.wishDir = game.world.ghostStartDirection(ghost.id);
-			ghost.visible = true;
+			ghost.visible = false;
 			ghost.speed = 0;
 			ghost.targetTile = null;
 			ghost.couldMove = true;
@@ -262,36 +262,40 @@ public class PacManGameController {
 		game.state = READY;
 		game.state.setDuration(clock.sec(gameStarted ? 2.5 : 6));
 		makeGuysReady();
-		for (Ghost ghost : game.ghosts) {
-			ghost.visible = false;
-		}
-		ui.sounds().ifPresent(PacManGameSoundManager::stopAllSounds);
 	}
 
 	private PacManGameState runReadyState() {
 		if (game.state.hasExpired()) {
 			return changeState(this::exitReadyState, this::enterHuntingState);
 		}
-		if (game.state.ticksRun() == clock.sec(1)) {
+		if (game.state.ticksRun() == clock.sec(0)) {
+			/*
+			 * TODO: this should be in enterReadyState() but at that point in time, the UI has not yet changed
+			 * to the play scene.
+			 */
 			for (Ghost ghost : game.ghosts) {
-				ghost.visible = true;
 				ui.animations().ifPresent(animations -> {
 					for (Direction dir : Direction.values()) {
 						animations.ghostWalking(ghost, dir).stop();
 					}
 				});
 			}
+			ui.sounds().ifPresent(PacManGameSoundManager::stopAllSounds);
 		}
-		if (game.state.ticksRun() == clock.sec(2)) {
-			ui.showMessage(ui.translation("READY"), false);
+		if (game.state.ticksRun() == clock.sec(1)) {
 			for (Ghost ghost : game.ghosts) {
 				ghost.visible = true;
+			}
+		}
+		if (game.state.ticksRun() == clock.sec(2)) {
+			for (Ghost ghost : game.ghosts) {
 				ui.animations().ifPresent(animations -> {
 					for (Direction dir : Direction.values()) {
 						animations.ghostWalking(ghost, dir).restart();
 					}
 				});
 			}
+			ui.showMessage(ui.translation("READY"), false);
 			if (!gameStarted) {
 				ui.sounds().ifPresent(sm -> sm.playSound(PacManGameSound.GAME_READY));
 			}
