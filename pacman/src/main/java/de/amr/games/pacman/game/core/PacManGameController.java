@@ -1,10 +1,8 @@
 package de.amr.games.pacman.game.core;
 
 import static de.amr.games.pacman.game.core.PacManGameModel.BLINKY;
-import static de.amr.games.pacman.game.core.PacManGameModel.CLASSIC;
 import static de.amr.games.pacman.game.core.PacManGameModel.CLYDE;
 import static de.amr.games.pacman.game.core.PacManGameModel.INKY;
-import static de.amr.games.pacman.game.core.PacManGameModel.MS_PACMAN;
 import static de.amr.games.pacman.game.core.PacManGameModel.PINKY;
 import static de.amr.games.pacman.game.core.PacManGameState.CHANGING_LEVEL;
 import static de.amr.games.pacman.game.core.PacManGameState.GAME_OVER;
@@ -20,7 +18,6 @@ import static de.amr.games.pacman.game.creatures.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.game.creatures.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.game.creatures.GhostState.LOCKED;
 import static de.amr.games.pacman.game.heaven.God.clock;
-import static de.amr.games.pacman.game.heaven.God.random;
 import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
@@ -73,10 +70,10 @@ public class PacManGameController {
 		autopilot = new Autopilot(() -> game);
 	}
 
-	public void initGame(int variant) {
-		if (variant == CLASSIC) {
+	public void initGame(GameVariant variant) {
+		if (variant == GameVariant.CLASSIC) {
 			game = new PacManClassicGameModel();
-		} else if (variant == MS_PACMAN) {
+		} else if (variant == GameVariant.MS_PACMAN) {
 			game = new MsPacManGameModel();
 		} else {
 			log("Illegal game variant value %d, preparing Ms. Pac-Man game", variant);
@@ -113,7 +110,8 @@ public class PacManGameController {
 	}
 
 	private void toggleGameVariant() {
-		initGame(game.variant == CLASSIC ? MS_PACMAN : CLASSIC);
+		initGame(game instanceof PacManClassicGameModel ? GameVariant.MS_PACMAN
+				: GameVariant.CLASSIC);
 		ui.sounds().ifPresent(SoundManager::stopAllSounds);
 		ui.updateGame(game);
 	}
@@ -660,8 +658,8 @@ public class PacManGameController {
 
 		// Bonus gets edible?
 		if (game.level.eatenFoodCount() == 70 || game.level.eatenFoodCount() == 170) {
-			long ticks = game.variant == PacManGameModel.CLASSIC ? clock.sec(9 + random.nextFloat()) : Long.MAX_VALUE;
-			game.bonus.activate(game.level.bonusSymbol, game.bonusValues[game.level.bonusSymbol], ticks);
+			game.bonus.activate(game.level.bonusSymbol, game.bonusValues[game.level.bonusSymbol],
+					game.bonusActivationTicks());
 			log("Bonus %s (value %d) activated", game.bonusNames[game.bonus.symbol], game.bonus.points);
 		}
 
@@ -733,7 +731,7 @@ public class PacManGameController {
 	}
 
 	private void setGhostHuntingTarget(Ghost ghost) {
-		if (game.variant == MS_PACMAN && game.huntingPhase == 0 && (ghost.id == BLINKY || ghost.id == PINKY)) {
+		if (game instanceof MsPacManGameModel && game.huntingPhase == 0 && (ghost.id == BLINKY || ghost.id == PINKY)) {
 			// In Ms. Pac-Man, Blinky and Pinky move randomly during *first* scatter phase
 			ghost.targetTile = null;
 		} else if (game.inScatteringPhase() && ghost.elroy == 0) {

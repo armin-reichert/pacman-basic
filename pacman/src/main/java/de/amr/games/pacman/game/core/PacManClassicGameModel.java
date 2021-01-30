@@ -2,6 +2,8 @@ package de.amr.games.pacman.game.core;
 
 import static de.amr.games.pacman.game.core.PacManGameWorld.HTS;
 import static de.amr.games.pacman.game.core.PacManGameWorld.TS;
+import static de.amr.games.pacman.game.heaven.God.clock;
+import static de.amr.games.pacman.game.heaven.God.random;
 import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
@@ -53,7 +55,6 @@ public class PacManClassicGameModel extends PacManGameModel {
 	/*@formatter:on*/
 
 	public PacManClassicGameModel() {
-		variant = CLASSIC;
 		world = new MapBasedPacManGameWorld();
 		world.loadMap("/worlds/classic/map.txt");
 		// TODO store this info inside map
@@ -79,5 +80,15 @@ public class PacManClassicGameModel extends PacManGameModel {
 	public void createLevel() {
 		level = new PacManGameLevel(world, PACMAN_CLASSIC_LEVELS[currentLevelNumber <= 21 ? currentLevelNumber - 1 : 20]);
 		log("Current level is %d, maze index is %d", currentLevelNumber, level.mazeNumber);
+	}
+
+	@Override
+	public String hiscoreFilename() {
+		return "hiscore-pacman.xml";
+	}
+
+	@Override
+	public long bonusActivationTicks() {
+		return clock.sec(9 + random.nextFloat());
 	}
 }

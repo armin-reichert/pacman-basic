@@ -28,6 +28,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.Timer;
 
+import de.amr.games.pacman.game.core.PacManClassicGameModel;
 import de.amr.games.pacman.game.core.PacManGameController;
 import de.amr.games.pacman.game.core.PacManGameModel;
 import de.amr.games.pacman.game.core.PacManGameState;
@@ -202,7 +203,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 	@Override
 	public void updateGame(PacManGameModel newGame) {
 		this.game = newGame;
-		if (game.variant == PacManGameModel.CLASSIC) {
+		if (game instanceof PacManClassicGameModel) {
 			PacManClassicAssets assets = new PacManClassicAssets();
 			soundManager = new DefaultPacManGameSoundManager(assets.soundURL::get);
 			introScene = new PacManClassicIntroScene(this, unscaledSizePixels, assets, game);

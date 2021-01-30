@@ -3,8 +3,8 @@ package de.amr.games.pacman;
 import static de.amr.games.pacman.lib.Logging.log;
 import static java.awt.EventQueue.invokeLater;
 
+import de.amr.games.pacman.game.core.GameVariant;
 import de.amr.games.pacman.game.core.PacManGameController;
-import de.amr.games.pacman.game.core.PacManGameModel;
 import de.amr.games.pacman.game.heaven.God;
 import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
 
@@ -18,7 +18,7 @@ public class PacManGameApp {
 	static class Options {
 
 		float scaling = 2;
-		byte variant = PacManGameModel.MS_PACMAN;
+		GameVariant variant = GameVariant.MS_PACMAN;
 
 		static Options parse(String[] args) {
 			Options options = new Options();
@@ -26,12 +26,12 @@ public class PacManGameApp {
 			while (i < args.length) {
 				String arg = args[i];
 				if ("-pacman".equals(arg)) {
-					options.variant = PacManGameModel.CLASSIC;
+					options.variant = GameVariant.CLASSIC;
 					++i;
 					continue;
 				}
 				if ("-mspacman".equals(arg)) {
-					options.variant = PacManGameModel.MS_PACMAN;
+					options.variant = GameVariant.MS_PACMAN;
 					++i;
 					continue;
 				}

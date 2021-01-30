@@ -74,7 +74,6 @@ public class MsPacManGameModel extends PacManGameModel {
 	}
 
 	public MsPacManGameModel() {
-		variant = MS_PACMAN;
 		world = new MapBasedPacManGameWorld();
 
 		bonusNames = new String[] { "CHERRIES", "STRAWBERRY", "PEACH", "PRETZEL", "APPLE", "PEAR", "BANANA" };
@@ -100,5 +99,15 @@ public class MsPacManGameModel extends PacManGameModel {
 			level.bonusSymbol = (byte) random.nextInt(7);
 		}
 		level.mazeNumber = mazeNumber;
+	}
+
+	@Override
+	public String hiscoreFilename() {
+		return "hiscore-mspacman.xml";
+	}
+
+	@Override
+	public long bonusActivationTicks() {
+		return Long.MAX_VALUE;
 	}
 }

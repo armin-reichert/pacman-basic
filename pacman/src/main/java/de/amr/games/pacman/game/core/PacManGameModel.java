@@ -18,12 +18,9 @@ import de.amr.games.pacman.lib.Hiscore;
  */
 public abstract class PacManGameModel {
 
-	public static final byte CLASSIC = 0, MS_PACMAN = 1;
-
 	public static final byte BLINKY = 0, PINKY = 1, INKY = 2, CLYDE = 3, SUE = 3;
 
 	public PacManGameState state;
-	public byte variant;
 	public PacManGameWorld world;
 	public int currentLevelNumber; // counting from 1
 	public PacManGameLevel level;
@@ -42,6 +39,10 @@ public abstract class PacManGameModel {
 	public boolean globalDotCounterEnabled;
 
 	public abstract void createLevel();
+
+	public abstract String hiscoreFilename();
+
+	public abstract long bonusActivationTicks();
 
 	public void setLevel(int levelNumber) {
 		currentLevelNumber = levelNumber;
@@ -82,8 +83,7 @@ public abstract class PacManGameModel {
 
 	public Hiscore loadHighScore() {
 		File dir = new File(System.getProperty("user.home"));
-		String fileName = variant == CLASSIC ? "hiscore-pacman.xml" : "hiscore-mspacman.xml";
-		Hiscore hiscore = new Hiscore(new File(dir, fileName));
+		Hiscore hiscore = new Hiscore(new File(dir, hiscoreFilename()));
 		hiscore.load();
 		return hiscore;
 	}
