@@ -156,7 +156,7 @@ public class PacManGameController {
 	private void makeGuysReady() {
 		game.pac.placeAt(game.world.pacHome(), HTS, 0);
 		game.pac.dir = game.pac.wishDir = game.pac.startDir;
-		game.pac.visible = true;
+		game.pac.visible = false;
 		game.pac.speed = 0;
 		game.pac.targetTile = null; // used in autopilot mode
 		game.pac.couldMove = true;
@@ -286,6 +286,7 @@ public class PacManGameController {
 			for (Ghost ghost : game.ghosts) {
 				ghost.visible = true;
 			}
+			game.pac.visible = true;
 		}
 		if (game.state.ticksRun() == game.state.durationTicks() - clock.sec(0.5)) {
 			for (Ghost ghost : game.ghosts) {
@@ -591,6 +592,9 @@ public class PacManGameController {
 		game.state.setDuration(clock.sec(30));
 		for (Ghost ghost : game.ghosts) {
 			ghost.speed = 0;
+			ui.animations().ifPresent(animations -> {
+				Stream.of(Direction.values()).forEach(dir -> animations.ghostWalking(ghost, dir).stop());
+			});
 		}
 		game.pac.speed = 0;
 		game.saveHighscore();
