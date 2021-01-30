@@ -98,7 +98,7 @@ public class MsPacManGameModel extends PacManGameModel {
 	@Override
 	public void createLevel(int number) {
 		levelNumber = number;
-		int mazeNumber = mazeNumber(number);
+		int mazeNumber = mazeNumber(levelNumber);
 		// Maze #5 has the same map as #3 but a different color, same for #6 vs. #4
 		int mapIndex = mazeNumber == 5 ? 3 : mazeNumber == 6 ? 4 : mazeNumber;
 		world.loadMap("/worlds/mspacman/map" + mapIndex + ".txt");
