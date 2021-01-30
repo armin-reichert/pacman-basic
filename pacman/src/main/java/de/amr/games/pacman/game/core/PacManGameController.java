@@ -454,7 +454,7 @@ public class PacManGameController {
 
 		game.bonus.update();
 		if (game.bonus.edibleTicksLeft > 0 && game.pac.meets(game.bonus)) {
-			log("Pac-Man found bonus (%d) of value %d", game.bonus.symbol, game.bonus.points);
+			log("Pac-Man found bonus (%s) of value %d", game.bonusNames[game.bonus.symbol], game.bonus.points);
 			game.bonus.eatAndDisplayValue(clock.sec(2));
 			score(game.bonus.points);
 			ui.sounds().ifPresent(sm -> sm.playSound(Sound.PACMAN_EAT_BONUS));
@@ -667,7 +667,8 @@ public class PacManGameController {
 		// Bonus gets edible?
 		if (game.level.eatenFoodCount() == 70 || game.level.eatenFoodCount() == 170) {
 			long ticks = game.variant == PacManGameModel.CLASSIC ? clock.sec(9 + random.nextFloat()) : Long.MAX_VALUE;
-			game.bonus.activate(game.level.bonusSymbol, ticks);
+			game.bonus.activate(game.level.bonusSymbol, game.bonusValues[game.level.bonusSymbol], ticks);
+			log("Bonus %s (value %d) activated", game.bonusNames[game.bonus.symbol], game.bonus.points);
 		}
 
 		// Blinky becomes Elroy?

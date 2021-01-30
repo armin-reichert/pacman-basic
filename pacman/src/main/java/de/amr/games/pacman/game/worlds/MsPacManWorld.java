@@ -17,11 +17,6 @@ public class MsPacManWorld extends AbstractPacManGameWorld {
 
 	public static final byte CHERRIES = 0, STRAWBERRY = 1, PEACH = 2, PRETZEL = 3, APPLE = 4, PEAR = 5, BANANA = 6;
 
-	public static final short[] BONUS_POINTS = { 100, 200, 500, 700, 1000, 2000, 5000 };
-
-	public static final String[] BONUS_NAMES = { "CHERRIES", "STRAWBERRY", "PEACH", "PRETZEL", "APPLE", "PEAR",
-			"BANANA" };
-
 	// TODO how exactly are the levels of the Ms.Pac-Man game?
 	/*@formatter:off*/
 	public static final int[][] LEVELS = {
@@ -56,14 +51,12 @@ public class MsPacManWorld extends AbstractPacManGameWorld {
 		int mapIndex = mazeNumber == 5 ? 3 : mazeNumber == 6 ? 4 : mazeNumber;
 		loadMap("/worlds/mspacman/map" + mapIndex + ".txt");
 		log("Use maze #%d at game level %d", mazeNumber, levelNumber);
-
 		// map has been loaded, now create level
 		PacManGameLevel level = new PacManGameLevel(this, LEVELS[levelNumber <= 21 ? levelNumber - 1 : 20]);
 		level.mazeNumber = mazeNumber;
 		if (levelNumber > 7) {
 			level.bonusSymbol = (byte) random.nextInt(7);
 		}
-		log("Use bonus %s at level %d", BONUS_NAMES[level.bonusSymbol], levelNumber);
 		return level;
 	}
 

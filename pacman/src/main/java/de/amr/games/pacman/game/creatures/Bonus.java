@@ -1,7 +1,6 @@
 package de.amr.games.pacman.game.creatures;
 
 import de.amr.games.pacman.game.core.PacManGameWorld;
-import de.amr.games.pacman.game.worlds.PacManClassicWorld;
 
 /**
  * Bonus symbol. In Ms. Pac-Man, the bonus wanders the maze.
@@ -26,10 +25,10 @@ public class Bonus extends Creature {
 		super(world);
 	}
 
-	public void activate(byte bonusSymbol, long ticks) {
+	public void activate(byte bonusSymbol, int bonusPoints, long ticks) {
 		visible = true;
 		symbol = bonusSymbol;
-		points = PacManClassicWorld.BONUS_POINTS[bonusSymbol];
+		points = bonusPoints;
 		edibleTicksLeft = ticks;
 	}
 

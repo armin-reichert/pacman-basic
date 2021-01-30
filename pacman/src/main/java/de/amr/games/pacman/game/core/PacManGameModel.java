@@ -37,6 +37,8 @@ public class PacManGameModel {
 	public Pac pac;
 	public Ghost[] ghosts;
 	public Bonus bonus;
+	public String[] bonusNames;
+	public int[] bonusValues;
 	public byte lives;
 	public int score;
 	public int highscoreLevel, highscorePoints;
@@ -50,6 +52,8 @@ public class PacManGameModel {
 		PacManGameModel game = new PacManGameModel();
 		game.variant = CLASSIC;
 		game.world = new PacManClassicWorld();
+		game.bonusNames = new String[] { "CHERRIES", "STRAWBERRY", "PEACH", "APPLE", "GRAPES", "GALAXIAN", "BELL", "KEY" };
+		game.bonusValues = new int[] { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
 		game.bonus = new Bonus(game.world);
 		game.bonus.position = new V2f(13 * TS, 20 * TS);
 		game.pac = new Pac(game.world);
@@ -75,6 +79,8 @@ public class PacManGameModel {
 		PacManGameModel game = new PacManGameModel();
 		game.variant = MS_PACMAN;
 		game.world = new MsPacManWorld();
+		game.bonusNames = new String[] { "CHERRIES", "STRAWBERRY", "PEACH", "PRETZEL", "APPLE", "PEAR", "BANANA" };
+		game.bonusValues = new int[] { 100, 200, 500, 700, 1000, 2000, 5000 };
 		game.bonus = new MovingBonus(game.world);
 		game.pac = new Pac(game.world);
 		game.pac.name = "Ms. Pac-Man";

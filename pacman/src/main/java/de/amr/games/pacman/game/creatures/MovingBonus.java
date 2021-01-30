@@ -1,7 +1,6 @@
 package de.amr.games.pacman.game.creatures;
 
 import static de.amr.games.pacman.game.heaven.God.random;
-import static de.amr.games.pacman.game.worlds.MsPacManWorld.BONUS_POINTS;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
 
@@ -14,9 +13,9 @@ public class MovingBonus extends Bonus {
 	}
 
 	@Override
-	public void activate(byte bonusSymbol, long ticks) {
+	public void activate(byte bonusSymbol, int bonusPoints, long ticks) {
 		symbol = bonusSymbol;
-		points = BONUS_POINTS[symbol];
+		points = bonusPoints;
 		edibleTicksLeft = ticks;
 		visible = true;
 		couldMove = true;
