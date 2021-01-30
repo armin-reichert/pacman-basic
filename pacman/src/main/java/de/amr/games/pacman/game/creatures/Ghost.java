@@ -84,7 +84,7 @@ public class Ghost extends Creature {
 			}
 			wanderRandomly();
 			break;
-		case HUNTING:
+		case HUNTING_PAC:
 			if (world.isTunnel(tile())) {
 				speed = level.ghostSpeedTunnel;
 			} else if (elroy == 1) {
@@ -114,7 +114,7 @@ public class Ghost extends Creature {
 		if (world.isGhostHouseDoor(x, y)) {
 			return state == GhostState.ENTERING_HOUSE || state == GhostState.LEAVING_HOUSE;
 		}
-		if (world.isUpwardsBlocked(x, y) && wishDir == UP && state == GhostState.HUNTING) {
+		if (world.isUpwardsBlocked(x, y) && wishDir == UP && state == GhostState.HUNTING_PAC) {
 			return false;
 		}
 		return super.canAccessTile(x, y);
@@ -161,7 +161,7 @@ public class Ghost extends Creature {
 			setOffset(HTS, 0);
 			dir = wishDir = LEFT;
 			forcedOnTrack = true;
-			state = GhostState.HUNTING;
+			state = GhostState.HUNTING_PAC;
 			return;
 		}
 		V2i houseCenter = world.houseCenter();

@@ -12,7 +12,7 @@ import static de.amr.games.pacman.game.core.PacManGameWorld.HTS;
 import static de.amr.games.pacman.game.creatures.GhostState.DEAD;
 import static de.amr.games.pacman.game.creatures.GhostState.ENTERING_HOUSE;
 import static de.amr.games.pacman.game.creatures.GhostState.FRIGHTENED;
-import static de.amr.games.pacman.game.creatures.GhostState.HUNTING;
+import static de.amr.games.pacman.game.creatures.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.game.creatures.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.game.creatures.GhostState.LOCKED;
 import static de.amr.games.pacman.game.heaven.God.clock;
@@ -400,7 +400,7 @@ public class PacManGameController {
 		}
 
 		// Pac killed by ghost?
-		Optional<Ghost> killer = Stream.of(game.ghosts).filter(ghost -> ghost.is(HUNTING) && ghost.meets(game.pac))
+		Optional<Ghost> killer = Stream.of(game.ghosts).filter(ghost -> ghost.is(HUNTING_PAC) && ghost.meets(game.pac))
 				.findAny();
 		if (!game.pac.immune && killer.isPresent()) {
 			onPacKilled(killer.get());
@@ -411,7 +411,7 @@ public class PacManGameController {
 		if (game.state.hasExpired()) {
 			startHuntingPhase(++game.huntingPhase);
 			for (Ghost ghost : game.ghosts) {
-				if (ghost.state == HUNTING) {
+				if (ghost.state == HUNTING_PAC) {
 					ghost.forceTurningBack();
 				}
 			}
@@ -438,18 +438,15 @@ public class PacManGameController {
 		if (game.pac.powerTicksLeft > 0) {
 			game.pac.powerTicksLeft--;
 			if (game.pac.powerTicksLeft == 0) {
-				for (Ghost ghost : game.ghosts) {
-					if (ghost.is(FRIGHTENED)) {
-						ghost.state = HUNTING;
-					}
-				}
+				log("%s lost power", game.pac.name);
+				Stream.of(game.ghosts).filter(ghost -> ghost.is(FRIGHTENED)).forEach(ghost -> ghost.state = HUNTING_PAC);
 			}
 		}
 
 		tryReleasingGhosts();
 
 		for (Ghost ghost : game.ghosts) {
-			if (ghost.is(HUNTING)) {
+			if (ghost.is(HUNTING_PAC)) {
 				setGhostHuntingTarget(ghost);
 			}
 			ghost.update(game.level);
@@ -487,7 +484,7 @@ public class PacManGameController {
 		game.state.setDuration(clock.sec(6));
 		game.pac.speed = 0;
 		for (Ghost ghost : game.ghosts) {
-			ghost.state = HUNTING; // TODO just want ghost to be rendered colorful
+			ghost.state = HUNTING_PAC; // TODO just want ghost to be rendered colorful
 		}
 		game.bonus.edibleTicksLeft = game.bonus.eatenTicksLeft = 0;
 //		ui.animations().ifPresent(animations -> animations.pacManCollapsing.reset());
@@ -688,7 +685,7 @@ public class PacManGameController {
 		if (seconds > 0) {
 			log("Pac-Man got power for %d seconds", seconds);
 			for (Ghost ghost : game.ghosts) {
-				if (ghost.is(HUNTING)) {
+				if (ghost.is(HUNTING_PAC)) {
 					ghost.state = FRIGHTENED;
 					ghost.wishDir = ghost.dir.opposite();
 					ghost.forcedDirection = true;
@@ -732,7 +729,7 @@ public class PacManGameController {
 	private void killAllGhosts() {
 		game.ghostBounty = 200;
 		for (Ghost ghost : game.ghosts) {
-			if (ghost.is(HUNTING) || ghost.is(FRIGHTENED)) {
+			if (ghost.is(HUNTING_PAC) || ghost.is(FRIGHTENED)) {
 				killGhost(ghost);
 			}
 		}
@@ -779,7 +776,7 @@ public class PacManGameController {
 
 	private void tryReleasingGhosts() {
 		if (game.ghosts[BLINKY].is(LOCKED)) {
-			game.ghosts[BLINKY].state = HUNTING;
+			game.ghosts[BLINKY].state = HUNTING_PAC;
 		}
 		preferredLockedGhostInHouse().ifPresent(ghost -> {
 			if (game.globalDotCounterEnabled && game.globalDotCounter >= ghostGlobalDotLimit(ghost)) {

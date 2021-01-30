@@ -164,7 +164,7 @@ public class Autopilot {
 			}
 			V2i aheadLeft = ahead.sum(game.pac.dir.turnLeft().vec), aheadRight = ahead.sum(game.pac.dir.turnRight().vec);
 			for (Ghost ghost : game.ghosts) {
-				if (ghost.state != GhostState.HUNTING) {
+				if (ghost.state != GhostState.HUNTING_PAC) {
 					continue;
 				}
 				if (ghost.tile().equals(ahead) || ghost.tile().equals(aheadLeft) || ghost.tile().equals(aheadRight)) {
@@ -187,7 +187,7 @@ public class Autopilot {
 				break;
 			}
 			for (Ghost ghost : game.ghosts) {
-				if (ghost.state == GhostState.HUNTING && ghost.tile().equals(behind)) {
+				if (ghost.state == GhostState.HUNTING_PAC && ghost.tile().equals(behind)) {
 					return ghost;
 				}
 			}
