@@ -37,6 +37,9 @@ public class Creature {
 	/** The intended move direction that will be taken as soon as possible. */
 	public Direction wishDir;
 
+	/** The first move direction. */
+	public Direction startDir;
+
 	/** The tile that the guy tries to reach. Can be inaccessible or outside of the maze. */
 	public V2i targetTile = V2i.NULL;
 

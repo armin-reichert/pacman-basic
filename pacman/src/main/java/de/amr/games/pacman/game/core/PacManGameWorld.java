@@ -1,6 +1,5 @@
 package de.amr.games.pacman.game.core;
 
-import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
 
@@ -41,13 +40,9 @@ public interface PacManGameWorld {
 
 	String pacName();
 
-	Direction pacStartDirection();
-
 	V2i pacHome();
 
 	String ghostName(int ghost);
-
-	Direction ghostStartDirection(int ghost);
 
 	V2i ghostHome(int ghost);
 

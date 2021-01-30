@@ -1,11 +1,9 @@
 package de.amr.games.pacman.game.worlds;
 
 import static de.amr.games.pacman.game.heaven.God.random;
-import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Logging.log;
 
 import de.amr.games.pacman.game.core.PacManGameLevel;
-import de.amr.games.pacman.lib.Direction;
 
 /**
  * Ms. Pac-Man game world. Has 6 maze variants.
@@ -93,11 +91,6 @@ public class MsPacManWorld extends AbstractPacManGameWorld {
 	@Override
 	public String pacName() {
 		return "Ms. Pac-Man";
-	}
-
-	@Override
-	public Direction pacStartDirection() {
-		return LEFT;
 	}
 
 	@Override

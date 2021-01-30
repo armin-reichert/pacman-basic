@@ -1,8 +1,5 @@
 package de.amr.games.pacman.game.worlds;
 
-import static de.amr.games.pacman.lib.Direction.DOWN;
-import static de.amr.games.pacman.lib.Direction.LEFT;
-import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.lib.Logging.log;
 
 import java.io.BufferedReader;
@@ -53,7 +50,6 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 	private static final V2i PAC_HOME = new V2i(13, 26);
 
 	private static final V2i[] GHOST_HOME_TILES = { HOUSE_ENTRY, HOUSE_CENTER, HOUSE_LEFT, HOUSE_RIGHT };
-	private static final Direction[] GHOST_START_DIRECTIONS = { LEFT, UP, DOWN, DOWN };
 	private static final V2i[] GHOST_SCATTER_TILES = { new V2i(25, 0), new V2i(2, 0), new V2i(27, 35), new V2i(27, 35) };
 
 	protected final V2i sizeTiles = new V2i(28, 36);
@@ -154,11 +150,6 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 	@Override
 	public V2i pacHome() {
 		return PAC_HOME;
-	}
-
-	@Override
-	public Direction ghostStartDirection(int ghost) {
-		return GHOST_START_DIRECTIONS[ghost];
 	}
 
 	@Override

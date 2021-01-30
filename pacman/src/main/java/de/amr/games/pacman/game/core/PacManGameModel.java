@@ -1,5 +1,9 @@
 package de.amr.games.pacman.game.core;
 
+import static de.amr.games.pacman.lib.Direction.DOWN;
+import static de.amr.games.pacman.lib.Direction.LEFT;
+import static de.amr.games.pacman.lib.Direction.UP;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +14,7 @@ import de.amr.games.pacman.game.creatures.MovingBonus;
 import de.amr.games.pacman.game.creatures.Pac;
 import de.amr.games.pacman.game.worlds.MsPacManWorld;
 import de.amr.games.pacman.game.worlds.PacManClassicWorld;
+import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.Hiscore;
 
 /**
@@ -44,10 +49,15 @@ public class PacManGameModel {
 		game.world = new PacManClassicWorld();
 		game.bonus = new Bonus(game.world);
 		game.pac = new Pac(game.world);
+		game.pac.startDir = Direction.RIGHT;
 		game.ghosts = new Ghost[4];
 		for (int ghostID = 0; ghostID < 4; ++ghostID) {
 			game.ghosts[ghostID] = new Ghost(ghostID, game.world);
 		}
+		game.ghosts[0].startDir = LEFT;
+		game.ghosts[1].startDir = UP;
+		game.ghosts[2].startDir = DOWN;
+		game.ghosts[3].startDir = DOWN;
 		game.reset();
 		return game;
 	}
@@ -58,10 +68,15 @@ public class PacManGameModel {
 		game.world = new MsPacManWorld();
 		game.bonus = new MovingBonus(game.world);
 		game.pac = new Pac(game.world);
+		game.pac.startDir = Direction.LEFT;
 		game.ghosts = new Ghost[4];
 		for (int ghostID = 0; ghostID < 4; ++ghostID) {
 			game.ghosts[ghostID] = new Ghost(ghostID, game.world);
 		}
+		game.ghosts[0].startDir = LEFT;
+		game.ghosts[1].startDir = UP;
+		game.ghosts[2].startDir = DOWN;
+		game.ghosts[3].startDir = DOWN;
 		game.reset();
 		return game;
 	}

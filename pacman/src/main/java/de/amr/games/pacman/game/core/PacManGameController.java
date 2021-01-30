@@ -36,9 +36,9 @@ import de.amr.games.pacman.game.creatures.Ghost;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.Hiscore;
 import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.ui.api.PacManGameUI;
 import de.amr.games.pacman.ui.api.Sound;
 import de.amr.games.pacman.ui.api.SoundManager;
-import de.amr.games.pacman.ui.api.PacManGameUI;
 
 /**
  * Pac-Man and Ms. Pac-Man game with original "AI", levels, timers.
@@ -156,7 +156,7 @@ public class PacManGameController {
 
 	private void makeGuysReady() {
 		game.pac.placeAt(game.world.pacHome(), HTS, 0);
-		game.pac.dir = game.pac.wishDir = game.world.pacStartDirection();
+		game.pac.dir = game.pac.wishDir = game.pac.startDir;
 		game.pac.visible = true;
 		game.pac.speed = 0;
 		game.pac.targetTile = null; // used in autopilot mode
@@ -169,7 +169,7 @@ public class PacManGameController {
 
 		for (Ghost ghost : game.ghosts) {
 			ghost.placeAt(game.world.ghostHome(ghost.id), HTS, 0);
-			ghost.dir = ghost.wishDir = game.world.ghostStartDirection(ghost.id);
+			ghost.dir = ghost.wishDir = ghost.startDir;
 			ghost.visible = false;
 			ghost.speed = 0;
 			ghost.targetTile = null;
