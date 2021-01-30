@@ -97,7 +97,7 @@ public class PacManGameModel {
 	public PacManGameState state;
 	public byte variant;
 	public PacManGameWorld world;
-	public short levelNumber;
+	public int levelNumber;
 	public PacManGameLevel level;
 	public Pac pac;
 	public Ghost[] ghosts;
@@ -136,6 +136,7 @@ public class PacManGameModel {
 		game.ghosts[1].startDir = UP;
 		game.ghosts[2].startDir = DOWN;
 		game.ghosts[3].startDir = DOWN;
+
 		game.reset();
 		return game;
 	}
@@ -162,53 +163,29 @@ public class PacManGameModel {
 		game.ghosts[1].startDir = UP;
 		game.ghosts[2].startDir = DOWN;
 		game.ghosts[3].startDir = DOWN;
+
 		game.reset();
 		return game;
 	}
 
-	public void reset() {
-		score = 0;
-		Hiscore hiscore = loadHighScore();
-		highscoreLevel = hiscore.level;
-		highscorePoints = hiscore.points;
-		lives = 3;
-		initLevel(1);
-		levelSymbols = new ArrayList<>();
-		levelSymbols.add(level.bonusSymbol);
-	}
-
-	public PacManGameLevel createLevel(int levelNumber) {
+	public void setLevel(int number) {
 		if (variant == CLASSIC) {
-			return createPacManClassicLevel(levelNumber);
+			levelNumber = number;
+			level = new PacManGameLevel(world, PACMAN_CLASSIC_LEVELS[levelNumber <= 21 ? levelNumber - 1 : 20]);
 		} else if (variant == MS_PACMAN) {
-			return createMsPacManLevel(levelNumber);
+			levelNumber = number;
+			int mazeNumber = msPacManMazeNumber(levelNumber);
+			// Maze #5 has the same map as #3 but a different color, same for #6 vs. #4
+			int mapIndex = mazeNumber == 5 ? 3 : mazeNumber == 6 ? 4 : mazeNumber;
+			world.loadMap("/worlds/mspacman/map" + mapIndex + ".txt");
+			log("Use maze #%d at game level %d", mazeNumber, levelNumber);
+			// map has been loaded, now create level
+			level = new PacManGameLevel(world, PacManGameModel.MS_PACMAN_LEVELS[levelNumber <= 21 ? levelNumber - 1 : 20]);
+			level.mazeNumber = mazeNumber;
+			if (levelNumber > 7) {
+				level.bonusSymbol = (byte) random.nextInt(7);
+			}
 		}
-		throw new IllegalArgumentException("Illegal level number " + levelNumber);
-	}
-
-	private PacManGameLevel createPacManClassicLevel(int levelNumber) {
-		return new PacManGameLevel(world, PACMAN_CLASSIC_LEVELS[levelNumber <= 21 ? levelNumber - 1 : 20]);
-	}
-
-	private PacManGameLevel createMsPacManLevel(int levelNumber) {
-		int mazeNumber = MsPacManWorld.mazeNumber(levelNumber);
-		// Maze #5 has the same map as #3 but a different color, same for #6 vs. #4
-		int mapIndex = mazeNumber == 5 ? 3 : mazeNumber == 6 ? 4 : mazeNumber;
-		world.loadMap("/worlds/mspacman/map" + mapIndex + ".txt");
-		log("Use maze #%d at game level %d", mazeNumber, levelNumber);
-		// map has been loaded, now create level
-		PacManGameLevel level = new PacManGameLevel(world,
-				PacManGameModel.MS_PACMAN_LEVELS[levelNumber <= 21 ? levelNumber - 1 : 20]);
-		level.mazeNumber = mazeNumber;
-		if (levelNumber > 7) {
-			level.bonusSymbol = (byte) random.nextInt(7);
-		}
-		return level;
-	}
-
-	public void initLevel(int n) {
-		levelNumber = (short) n;
-		level = createLevel(n);
 		ghostBounty = 200;
 		huntingPhase = 0;
 		bonus.edibleTicksLeft = 0;
@@ -217,6 +194,37 @@ public class PacManGameModel {
 			ghost.dotCounter = 0;
 			ghost.elroy = 0;
 		}
+	}
+
+	public void reset() {
+		setLevel(1);
+		Hiscore hiscore = loadHighScore();
+		highscoreLevel = hiscore.level;
+		highscorePoints = hiscore.points;
+		score = 0;
+		lives = 3;
+		levelSymbols = new ArrayList<>();
+		levelSymbols.add(level.bonusSymbol);
+	}
+
+	private static int msPacManMazeNumber(int levelNumber) {
+		if (levelNumber <= 2) {
+			return 1; // pink maze, white dots
+		}
+		if (levelNumber <= 5) {
+			return 2; // light blue maze, yellow dots
+		}
+		if (levelNumber <= 9) {
+			return 3; // orange maze, red dots
+		}
+		if (levelNumber <= 13) {
+			return 4; // dark blue maze, white dots
+		}
+		// from level 14 on, maze switches between 5 and 6 every 4 levels
+		if ((levelNumber - 14) % 8 < 4) {
+			return 5; // pink maze, cyan dots (same map as maze 3)
+		}
+		return 6; // orange maze, white dots (same map as maze 4)
 	}
 
 	public String stateDescription() {

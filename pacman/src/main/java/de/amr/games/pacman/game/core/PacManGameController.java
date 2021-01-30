@@ -581,7 +581,7 @@ public class PacManGameController {
 		ui.animations().ifPresent(
 				animations -> animations.mazeFlashing(game.level.mazeNumber).repetitions(game.level.numFlashes).reset());
 		log("Level %d complete, entering level %d", game.levelNumber, game.levelNumber + 1);
-		game.initLevel(game.levelNumber + 1);
+		game.setLevel(game.levelNumber + 1);
 		game.levelSymbols.add(game.level.bonusSymbol);
 	}
 
