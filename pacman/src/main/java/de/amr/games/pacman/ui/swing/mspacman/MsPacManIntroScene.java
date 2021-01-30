@@ -111,7 +111,7 @@ public class MsPacManIntroScene implements PacManGameScene {
 			g.drawImage(sprite(ghost), (int) ghost.position.x, (int) ghost.position.y, null);
 			if (ghostReachedEndPosition(ghost)) {
 				ghost.speed = 0;
-				ghost.position = new V2f(ghost.position.x, t(frameTopLeftTile.y) + 16 * ghost.id);
+				ghost.position = new V2f(ghost.position.x, ghostEndPositionY(ghost));
 				if (ghost.id < 3) { // start next ghost
 					game.ghosts[ghost.id + 1].speed = walkSpeed;
 					ui.sounds().ifPresent(sm -> sm.playSound(Sound.CREDIT));
@@ -152,8 +152,12 @@ public class MsPacManIntroScene implements PacManGameScene {
 		}
 	}
 
+	private int ghostEndPositionY(Ghost ghost) {
+		return t(frameTopLeftTile.y) + 16 * ghost.id - 4;
+	}
+
 	private boolean ghostReachedEndPosition(Ghost ghost) {
-		return ghost.position.x <= leftOfFrame && ghost.position.y <= t(frameTopLeftTile.y) + ghost.id * 16;
+		return ghost.position.x <= leftOfFrame && (ghost.position.y - ghostEndPositionY(ghost)) <= 1;
 	}
 
 	private BufferedImage pacSprite() {
