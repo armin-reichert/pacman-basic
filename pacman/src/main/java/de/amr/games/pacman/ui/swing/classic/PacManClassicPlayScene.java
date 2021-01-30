@@ -16,7 +16,6 @@ import java.awt.image.BufferedImage;
 import de.amr.games.pacman.game.core.PacManGameModel;
 import de.amr.games.pacman.game.core.PacManGameState;
 import de.amr.games.pacman.game.creatures.Bonus;
-import de.amr.games.pacman.game.creatures.Creature;
 import de.amr.games.pacman.game.creatures.Ghost;
 import de.amr.games.pacman.game.creatures.GhostState;
 import de.amr.games.pacman.game.creatures.Pac;
@@ -24,6 +23,7 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.api.PacManGameAnimations;
 import de.amr.games.pacman.ui.api.PacManGameScene;
+import de.amr.games.pacman.ui.swing.AbstractPacManPlayScene;
 import de.amr.games.pacman.ui.swing.Animation;
 import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
 
@@ -32,23 +32,13 @@ import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
  * 
  * @author Armin Reichert
  */
-public class PacManClassicPlayScene implements PacManGameScene, PacManGameAnimations {
+public class PacManClassicPlayScene extends AbstractPacManPlayScene implements PacManGameScene, PacManGameAnimations {
 
-	private final PacManGameSwingUI ui;
-	private final V2i size;
 	private final PacManClassicAssets assets;
-	private final PacManGameModel game;
 
 	public PacManClassicPlayScene(PacManGameSwingUI ui, V2i size, PacManClassicAssets assets, PacManGameModel game) {
-		this.ui = ui;
-		this.size = size;
+		super(ui, size, game);
 		this.assets = assets;
-		this.game = game;
-	}
-
-	@Override
-	public V2i size() {
-		return size;
 	}
 
 	@Override
@@ -67,60 +57,7 @@ public class PacManClassicPlayScene implements PacManGameScene, PacManGameAnimat
 	}
 
 	@Override
-	public void draw(Graphics2D g) {
-		drawScore(g);
-		drawLivesCounter(g);
-		drawLevelCounter(g);
-		drawMaze(g);
-		if (PacManGameSwingUI.debugMode) {
-			drawMazeStructure(g, game);
-		}
-		drawGuy(g, game.pac, sprite(game.pac));
-		for (Ghost ghost : game.ghosts) {
-			drawGuy(g, ghost, sprite(ghost));
-		}
-		drawDebugInfo(g, game);
-	}
-
-	private void drawGuy(Graphics2D g, Creature guy, BufferedImage sprite) {
-		if (guy.visible) {
-			int dx = (sprite.getWidth() - TS) / 2, dy = (sprite.getHeight() - TS) / 2;
-			g.drawImage(sprite, (int) (guy.position.x) - dx, (int) (guy.position.y) - dy, null);
-		}
-	}
-
-	private void drawScore(Graphics2D g) {
-		g.setFont(assets.scoreFont);
-		g.translate(0, 2);
-		g.setColor(Color.WHITE);
-		g.drawString(ui.translation("SCORE"), t(1), t(1));
-		g.drawString(ui.translation("HI_SCORE"), t(16), t(1));
-		g.translate(0, 1);
-		g.setColor(Color.YELLOW);
-		g.drawString(String.format("%08d", game.score), t(1), t(2));
-		g.setColor(Color.LIGHT_GRAY);
-		g.drawString(String.format("L%02d", game.levelNumber), t(9), t(2));
-		g.setColor(Color.YELLOW);
-		g.drawString(String.format("%08d", game.highscorePoints), t(16), t(2));
-		g.setColor(Color.LIGHT_GRAY);
-		g.drawString(String.format("L%02d", game.highscoreLevel), t(24), t(2));
-		g.translate(0, -3);
-	}
-
-	private void drawLivesCounter(Graphics2D g) {
-		int maxLives = 5;
-		int y = size.y - t(2);
-		for (int i = 0; i < Math.min(game.lives, maxLives); ++i) {
-			g.drawImage(assets.life, t(2 * (i + 1)), y, null);
-		}
-		if (game.lives > maxLives) {
-			g.setColor(Color.YELLOW);
-			g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 6));
-			g.drawString("+" + (game.lives - maxLives), t(12) - 4, y + t(2));
-		}
-	}
-
-	private void drawLevelCounter(Graphics2D g) {
+	protected void drawLevelCounter(Graphics2D g) {
 		int x = t(game.world.xTiles() - 4);
 		int first = Math.max(1, game.levelNumber - 6);
 		for (int levelNumber = first; levelNumber <= game.levelNumber; ++levelNumber) {
@@ -130,7 +67,8 @@ public class PacManClassicPlayScene implements PacManGameScene, PacManGameAnimat
 		}
 	}
 
-	private void drawMaze(Graphics2D g) {
+	@Override
+	protected void drawMaze(Graphics2D g) {
 		if (assets.mazeFlashing.isRunning()) {
 			g.drawImage(assets.mazeFlashing.currentFrameThenAdvance(), 0, t(3), null);
 			return;
@@ -150,7 +88,7 @@ public class PacManClassicPlayScene implements PacManGameScene, PacManGameAnimat
 		drawBonus(g, game.bonus);
 	}
 
-	private void drawBonus(Graphics2D g, Bonus bonus) {
+	protected void drawBonus(Graphics2D g, Bonus bonus) {
 		if (bonus.edibleTicksLeft > 0) {
 			drawGuy(g, bonus, assets.spriteAt(assets.symbolTiles[bonus.symbol]));
 		}
@@ -164,7 +102,23 @@ public class PacManClassicPlayScene implements PacManGameScene, PacManGameAnimat
 		}
 	}
 
-	private BufferedImage sprite(Pac pac) {
+	@Override
+	protected Color getScoreColor() {
+		return Color.yellow;
+	}
+
+	@Override
+	protected Font getScoreFont() {
+		return assets.scoreFont;
+	}
+
+	@Override
+	protected BufferedImage lifeSprite() {
+		return assets.life;
+	}
+
+	@Override
+	protected BufferedImage sprite(Pac pac) {
 		if (pac.dead) {
 			if (assets.pacCollapsing.isRunning() || assets.pacCollapsing.isComplete()) {
 				return assets.pacCollapsing.currentFrameThenAdvance();
@@ -180,7 +134,8 @@ public class PacManClassicPlayScene implements PacManGameScene, PacManGameAnimat
 		return assets.pacMunching.get(pac.dir).currentFrameThenAdvance();
 	}
 
-	private BufferedImage sprite(Ghost ghost) {
+	@Override
+	protected BufferedImage sprite(Ghost ghost) {
 		if (ghost.bounty > 0) {
 			return assets.numbers.get(ghost.bounty);
 		}

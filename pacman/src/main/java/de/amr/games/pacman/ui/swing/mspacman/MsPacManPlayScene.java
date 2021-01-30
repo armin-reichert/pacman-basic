@@ -14,11 +14,9 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.util.stream.IntStream;
 
 import de.amr.games.pacman.game.core.PacManGameModel;
 import de.amr.games.pacman.game.core.PacManGameState;
-import de.amr.games.pacman.game.creatures.Creature;
 import de.amr.games.pacman.game.creatures.Ghost;
 import de.amr.games.pacman.game.creatures.Pac;
 import de.amr.games.pacman.lib.Direction;
@@ -26,6 +24,7 @@ import de.amr.games.pacman.lib.Logging;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.api.PacManGameAnimations;
 import de.amr.games.pacman.ui.api.PacManGameScene;
+import de.amr.games.pacman.ui.swing.AbstractPacManPlayScene;
 import de.amr.games.pacman.ui.swing.Animation;
 import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
 
@@ -34,24 +33,14 @@ import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
  * 
  * @author Armin Reichert
  */
-public class MsPacManPlayScene implements PacManGameScene, PacManGameAnimations {
+public class MsPacManPlayScene extends AbstractPacManPlayScene implements PacManGameScene, PacManGameAnimations {
 
-	private final PacManGameSwingUI ui;
-	private final V2i size;
 	private final MsPacManAssets assets;
-	private final PacManGameModel game;
 	private Animation<BufferedImage> mazeFlashing;
 
 	public MsPacManPlayScene(PacManGameSwingUI ui, V2i size, MsPacManAssets assets, PacManGameModel game) {
-		this.ui = ui;
-		this.size = size;
+		super(ui, size, game);
 		this.assets = assets;
-		this.game = game;
-	}
-
-	@Override
-	public V2i size() {
-		return size;
 	}
 
 	@Override
@@ -74,26 +63,7 @@ public class MsPacManPlayScene implements PacManGameScene, PacManGameAnimations 
 	}
 
 	@Override
-	public void draw(Graphics2D g) {
-		drawScore(g);
-		drawLivesCounter(g);
-		drawLevelCounter(g);
-		drawMaze(g);
-		drawGuy(g, game.pac, sprite(game.pac));
-		for (Ghost ghost : game.ghosts) {
-			drawGuy(g, ghost, sprite(ghost));
-		}
-		drawDebugInfo(g, game);
-	}
-
-	private void drawGuy(Graphics2D g, Creature guy, BufferedImage sprite) {
-		if (guy.visible) {
-			int dx = (sprite.getWidth() - TS) / 2, dy = (sprite.getHeight() - TS) / 2;
-			g.drawImage(sprite, (int) (guy.position.x) - dx, (int) (guy.position.y) - dy, null);
-		}
-	}
-
-	private Color getScoreColor() {
+	protected Color getScoreColor() {
 		switch (game.level.mazeNumber) {
 		case 1:
 			return new Color(255, 183, 174);
@@ -112,39 +82,13 @@ public class MsPacManPlayScene implements PacManGameScene, PacManGameAnimations 
 		}
 	}
 
-	private void drawScore(Graphics2D g) {
-		g.setFont(assets.scoreFont);
-		g.translate(0, 2);
-		g.setColor(Color.WHITE);
-		g.drawString(ui.translation("SCORE"), t(1), t(1));
-		g.drawString(ui.translation("HI_SCORE"), t(16), t(1));
-		g.translate(0, 1);
-		g.setColor(getScoreColor());
-		g.drawString(String.format("%08d", game.score), t(1), t(2));
-		g.setColor(Color.LIGHT_GRAY);
-		g.drawString(String.format("L%02d", game.levelNumber), t(9), t(2));
-		g.setColor(getScoreColor());
-		g.drawString(String.format("%08d", game.highscorePoints), t(16), t(2));
-		g.setColor(Color.LIGHT_GRAY);
-		g.drawString(String.format("L%02d", game.highscoreLevel), t(24), t(2));
-		g.translate(0, -3);
+	@Override
+	protected Font getScoreFont() {
+		return assets.scoreFont;
 	}
 
-	private void drawLivesCounter(Graphics2D g) {
-		int maxLives = 5;
-		int displayedLives = game.lives;
-		int y = size.y - t(2);
-		for (int i = 0; i < Math.min(displayedLives, maxLives); ++i) {
-			g.drawImage(assets.life, t(2 * (i + 1)), y, null);
-		}
-		if (game.lives > maxLives) {
-			g.setColor(Color.YELLOW);
-			g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 6));
-			g.drawString("+" + (game.lives - maxLives), t(12) - 4, y + t(2));
-		}
-	}
-
-	private void drawLevelCounter(Graphics2D g) {
+	@Override
+	protected void drawLevelCounter(Graphics2D g) {
 		int x = t(game.world.xTiles() - 4);
 		for (int levelNumber = 1; levelNumber <= Math.min(game.levelNumber, 7); ++levelNumber) {
 			byte symbol = game.levelSymbols.get(levelNumber - 1);
@@ -153,7 +97,8 @@ public class MsPacManPlayScene implements PacManGameScene, PacManGameAnimations 
 		}
 	}
 
-	private void drawMaze(Graphics2D g) {
+	@Override
+	protected void drawMaze(Graphics2D g) {
 		if (mazeFlashing != null && mazeFlashing.isRunning()) {
 			BufferedImage frame = mazeFlashing.currentFrameThenAdvance();
 			if (frame != null) { // TODO
@@ -162,20 +107,18 @@ public class MsPacManPlayScene implements PacManGameScene, PacManGameAnimations 
 			return;
 		}
 		g.drawImage(assets.mazeFull[game.level.mazeNumber - 1], 0, t(3), null);
-		IntStream.range(0, game.world.xTiles()).forEach(x -> {
-			IntStream.range(4, game.world.yTiles() - 3).forEach(y -> {
-				V2i tile = new V2i(x, y);
-				if (game.level.isFoodRemoved(tile)
-						|| game.state == HUNTING && game.world.isEnergizerTile(tile) && clock.ticksTotal % 20 < 10) {
-					g.setColor(Color.BLACK);
-					g.fillRect(t(x), t(y), TS, TS);
-				}
-			});
+		game.world.tiles().filter(game.level::isFoodRemoved).forEach(tile -> {
+			g.setColor(Color.BLACK);
+			g.fillRect(t(tile.x), t(tile.y), TS, TS);
 		});
-		drawBonus(g);
-		if (PacManGameSwingUI.debugMode) {
-			drawMazeStructure(g, game);
+		// TODO use animation instead?
+		if (clock.ticksTotal % 20 < 10 && game.state == HUNTING) {
+			game.world.energizerTiles().forEach(tile -> {
+				g.setColor(Color.BLACK);
+				g.fillRect(t(tile.x), t(tile.y), TS, TS);
+			});
 		}
+		drawBonus(g);
 	}
 
 	private static final int BONUS_JUMP[] = { -2, 0, 2 };
@@ -195,7 +138,13 @@ public class MsPacManPlayScene implements PacManGameScene, PacManGameAnimations 
 		}
 	}
 
-	private BufferedImage sprite(Pac pac) {
+	@Override
+	protected BufferedImage lifeSprite() {
+		return assets.life;
+	}
+
+	@Override
+	protected BufferedImage sprite(Pac pac) {
 		if (pac.dead) {
 			if (assets.pacCollapsing.isRunning() || assets.pacCollapsing.isComplete()) {
 				return assets.pacCollapsing.currentFrameThenAdvance();
@@ -208,7 +157,8 @@ public class MsPacManPlayScene implements PacManGameScene, PacManGameAnimations 
 		return assets.pacMunching.get(pac.dir).currentFrameThenAdvance();
 	}
 
-	private BufferedImage sprite(Ghost ghost) {
+	@Override
+	protected BufferedImage sprite(Ghost ghost) {
 		if (ghost.bounty > 0) {
 			return assets.spriteAt(assets.bountyNumberTiles.get(ghost.bounty));
 		}
