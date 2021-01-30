@@ -12,6 +12,11 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
 
+/**
+ * Game model of the classic Pac-Man game.
+ * 
+ * @author Armin Reichert
+ */
 public class PacManClassicGameModel extends PacManGameModel {
 
 	public enum PacManClassicSymbols {
