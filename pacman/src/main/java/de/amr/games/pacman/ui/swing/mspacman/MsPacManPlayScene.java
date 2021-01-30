@@ -22,6 +22,7 @@ import de.amr.games.pacman.game.creatures.Creature;
 import de.amr.games.pacman.game.creatures.Ghost;
 import de.amr.games.pacman.game.creatures.Pac;
 import de.amr.games.pacman.lib.Direction;
+import de.amr.games.pacman.lib.Logging;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.api.PacManGameAnimations;
 import de.amr.games.pacman.ui.api.PacManGameScene;
@@ -65,8 +66,10 @@ public class MsPacManPlayScene implements PacManGameScene, PacManGameAnimations 
 
 	@Override
 	public Animation<BufferedImage> mazeFlashing(int mazeNumber, int numFlashes) {
-		mazeFlashing = Animation.of(assets.mazeFull[game.level.mazeNumber - 1], null); // TODO
-		mazeFlashing.repetitions(numFlashes).restart();
+		mazeFlashing = Animation.of(assets.mazeEmptyBright[game.level.mazeNumber - 1],
+				assets.mazeEmptyDark[game.level.mazeNumber - 1]);
+		mazeFlashing.frameDuration(15).repetitions(numFlashes).restart();
+		Logging.log("Maze flashing animation created");
 		return mazeFlashing;
 	}
 
