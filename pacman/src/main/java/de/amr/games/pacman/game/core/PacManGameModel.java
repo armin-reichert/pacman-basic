@@ -11,7 +11,7 @@ import de.amr.games.pacman.lib.Hiscore;
 import de.amr.games.pacman.lib.V2i;
 
 /**
- * The game data.
+ * The common base class of the game data.
  * 
  * @author Armin Reichert
  */
@@ -19,7 +19,7 @@ public abstract class PacManGameModel {
 
 	public static final byte CLASSIC = 0, MS_PACMAN = 1;
 
-	public static final byte BLINKY = 0, PINKY = 1, INKY = 2, CLYDE = 3;
+	public static final byte BLINKY = 0, PINKY = 1, INKY = 2, CLYDE = 3, SUE = 3;
 
 	public PacManGameState state;
 	public byte variant;

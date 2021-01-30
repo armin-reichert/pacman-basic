@@ -65,6 +65,11 @@ public interface PacManGameWorld {
 
 	V2i portalRight(int i);
 
+	default void setUpwardsBlocked(V2i... tiles) {
+	}
+
+	boolean isUpwardsBlocked(V2i tile);
+
 	boolean isAccessible(V2i tile);
 
 	boolean isPortal(V2i tile);
@@ -72,8 +77,6 @@ public interface PacManGameWorld {
 	boolean isIntersection(V2i tile);
 
 	boolean isTunnel(V2i tile);
-
-	boolean isUpwardsBlocked(V2i tile);
 
 	boolean isGhostHouseDoor(V2i tile);
 

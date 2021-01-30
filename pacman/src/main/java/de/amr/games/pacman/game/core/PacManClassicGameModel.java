@@ -7,9 +7,10 @@ import static de.amr.games.pacman.lib.Direction.UP;
 import de.amr.games.pacman.game.creatures.Bonus;
 import de.amr.games.pacman.game.creatures.Ghost;
 import de.amr.games.pacman.game.creatures.Pac;
-import de.amr.games.pacman.game.worlds.PacManClassicWorld;
+import de.amr.games.pacman.game.worlds.MapBasedPacManGameWorld;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2f;
+import de.amr.games.pacman.lib.V2i;
 
 public class PacManClassicGameModel extends PacManGameModel {
 
@@ -45,14 +46,20 @@ public class PacManClassicGameModel extends PacManGameModel {
 
 	public PacManClassicGameModel() {
 		variant = CLASSIC;
-		world = new PacManClassicWorld();
+		world = new MapBasedPacManGameWorld();
+		world.loadMap("/worlds/classic/map.txt");
+		// TODO store this info inside map
+		world.setUpwardsBlocked(new V2i(12, 13), new V2i(15, 13), new V2i(12, 25), new V2i(15, 25));
+
 		bonusNames = new String[] { "CHERRIES", "STRAWBERRY", "PEACH", "APPLE", "GRAPES", "GALAXIAN", "BELL", "KEY" };
 		bonusValues = new int[] { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
 		bonus = new Bonus(world);
 		bonus.position = new V2f(13 * PacManGameWorld.TS, 20 * PacManGameWorld.TS);
+
 		pac = new Pac(world);
 		pac.name = "Pac-Man";
 		pac.startDir = Direction.RIGHT;
+
 		ghosts = new Ghost[4];
 		for (int ghostID = 0; ghostID < 4; ++ghostID) {
 			ghosts[ghostID] = new Ghost(ghostID, world);

@@ -8,7 +8,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.BitSet;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -23,7 +25,7 @@ import de.amr.games.pacman.lib.V2i;
  * 
  * @author Armin Reichert
  */
-public abstract class AbstractPacManGameWorld implements PacManGameWorld {
+public class MapBasedPacManGameWorld implements PacManGameWorld {
 
 	private static byte decode(char c) {
 		switch (c) {
@@ -61,6 +63,7 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 
 	protected List<V2i> energizerTiles;
 	protected BitSet intersections;
+	protected List<V2i> upwardsBlockedTiles;
 
 	protected byte[][] map;
 
@@ -94,6 +97,8 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 		} catch (IOException e) {
 			throw new RuntimeException(String.format("Error reading map '%s'", path, e));
 		}
+
+		upwardsBlockedTiles = Collections.emptyList();
 
 		// find portals
 		portalsLeft.clear();
@@ -174,6 +179,16 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 	@Override
 	public V2i portalRight(int i) {
 		return portalsRight.get(i);
+	}
+
+	@Override
+	public void setUpwardsBlocked(V2i... tiles) {
+		upwardsBlockedTiles = Arrays.asList(tiles);
+	}
+
+	@Override
+	public boolean isUpwardsBlocked(V2i tile) {
+		return upwardsBlockedTiles.contains(tile);
 	}
 
 	@Override

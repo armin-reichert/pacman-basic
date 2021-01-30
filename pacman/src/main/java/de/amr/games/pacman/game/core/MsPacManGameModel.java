@@ -9,9 +9,14 @@ import static de.amr.games.pacman.lib.Logging.log;
 import de.amr.games.pacman.game.creatures.Ghost;
 import de.amr.games.pacman.game.creatures.MovingBonus;
 import de.amr.games.pacman.game.creatures.Pac;
-import de.amr.games.pacman.game.worlds.MsPacManWorld;
+import de.amr.games.pacman.game.worlds.MapBasedPacManGameWorld;
 import de.amr.games.pacman.lib.Direction;
 
+/**
+ * Game model of the Ms. Pac-Man game variant.
+ * 
+ * @author Armin Reichert
+ */
 public class MsPacManGameModel extends PacManGameModel {
 
 	public enum MsPacManSymbols {
@@ -67,7 +72,7 @@ public class MsPacManGameModel extends PacManGameModel {
 
 	public MsPacManGameModel() {
 		variant = MS_PACMAN;
-		world = new MsPacManWorld();
+		world = new MapBasedPacManGameWorld();
 		bonusNames = new String[] { "CHERRIES", "STRAWBERRY", "PEACH", "PRETZEL", "APPLE", "PEAR", "BANANA" };
 		bonusValues = new int[] { 100, 200, 500, 700, 1000, 2000, 5000 };
 		bonus = new MovingBonus(world);
