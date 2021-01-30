@@ -50,7 +50,7 @@ public class MsPacManAssets extends Spritesheet {
 	public final EnumMap<Direction, BufferedImage> pacMouthOpen;
 	public final EnumMap<Direction, BufferedImage> pacMouthClosed;
 	public final EnumMap<Direction, Animation<BufferedImage>> pacMunching;
-	public final Animation<BufferedImage> pacCollapsing;
+	public final Animation<BufferedImage> pacSpinning;
 	public final List<EnumMap<Direction, Animation<BufferedImage>>> ghostWalking;
 	public final EnumMap<Direction, BufferedImage> ghostEyes;
 	public final Animation<BufferedImage> ghostBlue;
@@ -121,8 +121,8 @@ public class MsPacManAssets extends Spritesheet {
 			pacMunching.put(dir, animation);
 		}
 
-		pacCollapsing = Animation.of(spriteAt(0, 2), spriteAt(0, 3), spriteAt(0, 0), spriteAt(0, 1), spriteAt(0, 2));
-		pacCollapsing.frameDuration(10).repetitions(2);
+		pacSpinning = Animation.of(spriteAt(0, 3), spriteAt(0, 0), spriteAt(0, 1), spriteAt(0, 2));
+		pacSpinning.frameDuration(10).repetitions(2);
 
 		ghostWalking = new ArrayList<>(4);
 		for (int g = 0; g < 4; ++g) {

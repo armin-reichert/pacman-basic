@@ -262,8 +262,9 @@ public class PacManGameController {
 	// READY
 
 	private void enterReadyState() {
-		game.state.setDuration(clock.sec(gameStarted ? 2.5 : 6.5));
+		game.state.setDuration(clock.sec(gameStarted ? 2 : 4.5));
 		makeGuysReady();
+		ui.showMessage(ui.translation("READY"), false);
 		for (Ghost ghost : game.ghosts) {
 			ui.animations().ifPresent(animations -> {
 				for (Direction dir : Direction.values()) {
@@ -272,28 +273,27 @@ public class PacManGameController {
 			});
 		}
 		ui.sounds().ifPresent(SoundManager::stopAllSounds);
+		if (!gameStarted) {
+			ui.sounds().ifPresent(sm -> sm.playSound(Sound.GAME_READY));
+		}
 	}
 
 	private PacManGameState runReadyState() {
 		if (game.state.hasExpired()) {
 			return changeState(PacManGameState.HUNTING, this::exitReadyState, this::enterHuntingState);
 		}
-		if (game.state.ticksRun() == clock.sec(1)) {
+		if (game.state.ticksRun() == game.state.durationTicks() - clock.sec(1)) {
 			for (Ghost ghost : game.ghosts) {
 				ghost.visible = true;
 			}
 		}
-		if (game.state.ticksRun() == clock.sec(2)) {
+		if (game.state.ticksRun() == game.state.durationTicks() - clock.sec(0.5)) {
 			for (Ghost ghost : game.ghosts) {
 				ui.animations().ifPresent(animations -> {
 					for (Direction dir : Direction.values()) {
 						animations.ghostWalking(ghost, dir).restart();
 					}
 				});
-			}
-			ui.showMessage(ui.translation("READY"), false);
-			if (!gameStarted) {
-				ui.sounds().ifPresent(sm -> sm.playSound(Sound.GAME_READY));
 			}
 		}
 		return game.state.run();

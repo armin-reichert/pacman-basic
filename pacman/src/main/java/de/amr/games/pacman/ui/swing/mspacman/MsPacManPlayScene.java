@@ -44,7 +44,7 @@ public class MsPacManPlayScene extends AbstractPacManPlayScene implements PacMan
 
 	@Override
 	public Animation<BufferedImage> pacCollapsing() {
-		return assets.pacCollapsing;
+		return assets.pacSpinning;
 	}
 
 	@Override
@@ -143,8 +143,8 @@ public class MsPacManPlayScene extends AbstractPacManPlayScene implements PacMan
 	@Override
 	protected BufferedImage sprite(Pac pac) {
 		if (pac.dead) {
-			if (assets.pacCollapsing.isRunning() || assets.pacCollapsing.isComplete()) {
-				return assets.pacCollapsing.currentFrameThenAdvance();
+			if (assets.pacSpinning.isRunning() || assets.pacSpinning.isComplete()) {
+				return assets.pacSpinning.currentFrameThenAdvance();
 			}
 			return assets.pacMouthOpen.get(pac.dir);
 		}
