@@ -110,8 +110,7 @@ public class PacManGameController {
 	}
 
 	private void toggleGameVariant() {
-		initGame(game instanceof PacManClassicGameModel ? GameVariant.MS_PACMAN
-				: GameVariant.CLASSIC);
+		initGame(game instanceof PacManClassicGameModel ? GameVariant.MS_PACMAN : GameVariant.CLASSIC);
 		ui.sounds().ifPresent(SoundManager::stopAllSounds);
 		ui.updateGame(game);
 	}
