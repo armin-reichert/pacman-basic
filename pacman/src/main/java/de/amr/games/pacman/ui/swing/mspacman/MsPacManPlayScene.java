@@ -29,14 +29,13 @@ import de.amr.games.pacman.ui.swing.Animation;
 import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
 
 /**
- * Scene where the game is played.
+ * Scene where the Ms. Pac-Man game is played.
  * 
  * @author Armin Reichert
  */
 public class MsPacManPlayScene extends AbstractPacManPlayScene implements PacManGameScene, PacManGameAnimations {
 
 	private final MsPacManAssets assets;
-	private Animation<BufferedImage> mazeFlashing;
 
 	public MsPacManPlayScene(PacManGameSwingUI ui, V2i size, MsPacManAssets assets, PacManGameModel game) {
 		super(ui, size, game);
@@ -54,12 +53,9 @@ public class MsPacManPlayScene extends AbstractPacManPlayScene implements PacMan
 	}
 
 	@Override
-	public Animation<BufferedImage> mazeFlashing(int mazeNumber, int numFlashes) {
-		mazeFlashing = Animation.of(assets.mazeEmptyBright[game.level.mazeNumber - 1],
-				assets.mazeEmptyDark[game.level.mazeNumber - 1]);
-		mazeFlashing.frameDuration(15).repetitions(numFlashes).restart();
-		Logging.log("Maze flashing animation created");
-		return mazeFlashing;
+	public Animation<BufferedImage> mazeFlashing(int mazeNumber) {
+		Logging.log("Animation for maze #%d equested", mazeNumber);
+		return assets.mazeFlashingAnimations.get(mazeNumber - 1);
 	}
 
 	@Override
@@ -99,9 +95,10 @@ public class MsPacManPlayScene extends AbstractPacManPlayScene implements PacMan
 
 	@Override
 	protected void drawMaze(Graphics2D g) {
-		if (mazeFlashing != null && mazeFlashing.isRunning()) {
+		Animation<BufferedImage> mazeFlashing = assets.mazeFlashingAnimations.get(game.level.mazeNumber - 1);
+		if (mazeFlashing.isRunning() || mazeFlashing.isComplete()) {
 			BufferedImage frame = mazeFlashing.currentFrameThenAdvance();
-			if (frame != null) { // TODO
+			if (frame != null) {
 				g.drawImage(frame, 0, t(3), null);
 			}
 			return;

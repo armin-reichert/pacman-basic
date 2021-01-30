@@ -41,6 +41,7 @@ public class MsPacManAssets extends Spritesheet {
 	public final BufferedImage[] mazeFull;
 	public final BufferedImage[] mazeEmptyDark;
 	public final BufferedImage[] mazeEmptyBright;
+	public final List<Animation<BufferedImage>> mazeFlashingAnimations;
 	public final BufferedImage life;
 	public final V2i[] symbolTiles;
 	public final Map<Integer, V2i> bonusValueTiles;
@@ -94,6 +95,13 @@ public class MsPacManAssets extends Spritesheet {
 		bountyNumberTiles.put(800, v2(2,8));
 		bountyNumberTiles.put(1600, v2(3,8));
 		//@formatter:on
+
+		mazeFlashingAnimations = new ArrayList<>(6);
+		for (int mazeIndex = 0; mazeIndex < 6; ++mazeIndex) {
+			Animation<BufferedImage> mazeFlashing = Animation.of(mazeEmptyBright[mazeIndex], mazeEmptyDark[mazeIndex]);
+			mazeFlashing.frameDuration(15);
+			mazeFlashingAnimations.add(mazeFlashing);
+		}
 
 		pacMouthOpen = new EnumMap<>(Direction.class);
 		for (Direction dir : Direction.values()) {

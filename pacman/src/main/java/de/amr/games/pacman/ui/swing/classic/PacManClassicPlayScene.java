@@ -52,8 +52,8 @@ public class PacManClassicPlayScene extends AbstractPacManPlayScene implements P
 	}
 
 	@Override
-	public Animation<BufferedImage> mazeFlashing(int mazeNumber, int numFlashes) {
-		return assets.mazeFlashing.repetitions(numFlashes);
+	public Animation<BufferedImage> mazeFlashing(int mazeNumber) {
+		return assets.mazeFlashing;
 	}
 
 	@Override
@@ -69,7 +69,7 @@ public class PacManClassicPlayScene extends AbstractPacManPlayScene implements P
 
 	@Override
 	protected void drawMaze(Graphics2D g) {
-		if (assets.mazeFlashing.isRunning()) {
+		if (assets.mazeFlashing.isRunning() || assets.mazeFlashing.isComplete()) {
 			g.drawImage(assets.mazeFlashing.currentFrameThenAdvance(), 0, t(3), null);
 			return;
 		}

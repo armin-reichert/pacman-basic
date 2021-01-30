@@ -263,7 +263,7 @@ public class PacManGameController {
 	// READY
 
 	private void enterReadyState() {
-		game.state.setDuration(clock.sec(gameStarted ? 2.5 : 6));
+		game.state.setDuration(clock.sec(gameStarted ? 2.5 : 6.5));
 		makeGuysReady();
 		for (Ghost ghost : game.ghosts) {
 			ui.animations().ifPresent(animations -> {
@@ -571,13 +571,15 @@ public class PacManGameController {
 			}
 		}
 		if (game.state.ticksRun() == clock.sec(3)) {
-			ui.animations()
-					.ifPresent(animations -> animations.mazeFlashing(game.level.mazeNumber, game.level.numFlashes).restart());
+			ui.animations().ifPresent(
+					animations -> animations.mazeFlashing(game.level.mazeNumber).repetitions(game.level.numFlashes).restart());
 		}
 		return game.state.run();
 	}
 
 	private void exitChangingLevelState() {
+		ui.animations().ifPresent(
+				animations -> animations.mazeFlashing(game.level.mazeNumber).repetitions(game.level.numFlashes).reset());
 		log("Level %d complete, entering level %d", game.levelNumber, game.levelNumber + 1);
 		game.initLevel(game.levelNumber + 1);
 		game.levelSymbols.add(game.level.bonusSymbol);
