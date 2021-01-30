@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.game.core.PacManGameWorld;
@@ -57,8 +58,9 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 
 	protected final List<V2i> portalsLeft = new ArrayList<>(2);
 	protected final List<V2i> portalsRight = new ArrayList<>(2);
-	protected final List<V2i> energizerTiles = new ArrayList<>(4);
-	protected final BitSet intersections = new BitSet();
+
+	protected List<V2i> energizerTiles;
+	protected BitSet intersections;
 
 	protected byte[][] map;
 
@@ -102,30 +104,25 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 			}
 		}
 
-		// find intersections ("waypoints")
-		for (int y = 0; y < sizeTiles.y; ++y) {
-			for (int x = 0; x < sizeTiles.x; ++x) {
-				V2i tile = new V2i(x, y), tileBelow = tile.sum(DOWN.vec);
-				if (isInsideGhostHouse(tile) || isGhostHouseDoor(tileBelow)) {
-					continue;
-				}
-				if (Stream.of(Direction.values()).map(dir -> tile.sum(dir.vec)).filter(this::isAccessible).count() >= 3) {
-					intersections.set(index(tile));
-				}
-			}
-		}
+		// find intersections ("waypoints"), i.e. tiles with at least 3 accessible neighbor tiles
+		intersections = new BitSet();
+		//@formatter:off
+		tiles()
+			.filter(tile -> !isInsideGhostHouse(tile))
+			.filter(tile -> !isGhostHouseDoor(tile.sum(DOWN.vec)))
+			.filter(tile -> neighborTiles(tile).filter(this::isAccessible).count() >= 3)
+			.map(tile -> index(tile))
+			.forEach(intersections::set);
+		//@formatter:on
 
 		// find energizer tiles
-		energizerTiles.clear();
-		for (int x = 0; x < sizeTiles.x; ++x) {
-			for (int y = 0; y < sizeTiles.y; ++y) {
-				if (map[y][x] == ENERGIZER) {
-					energizerTiles.add(new V2i(x, y));
-				}
-			}
-		}
+		energizerTiles = tiles().filter(tile -> data(tile) == ENERGIZER).collect(Collectors.toList());
 
 		log("Use map '%s' (%d errors), (%d energizers)", path, errors, energizerTiles.size());
+	}
+
+	private Stream<V2i> neighborTiles(V2i tile) {
+		return Stream.of(Direction.values()).map(dir -> tile.sum(dir.vec));
 	}
 
 	@Override
