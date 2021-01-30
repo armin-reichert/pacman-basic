@@ -1,6 +1,7 @@
 package de.amr.games.pacman.game.creatures;
 
 import de.amr.games.pacman.game.core.PacManGameWorld;
+import de.amr.games.pacman.lib.Direction;
 
 /**
  * The Pac-Man.
@@ -27,7 +28,9 @@ public class Pac extends Creature {
 	/** Used for demo/autopilot mode. */
 	public boolean immune;
 
-	public Pac(PacManGameWorld world) {
+	public Pac(PacManGameWorld world, String pacName, Direction pacStartDir) {
 		super(world);
+		name = pacName;
+		startDir = pacStartDir;
 	}
 }

@@ -10,6 +10,7 @@ import static de.amr.games.pacman.lib.Direction.UP;
 
 import de.amr.games.pacman.game.core.PacManGameLevel;
 import de.amr.games.pacman.game.core.PacManGameWorld;
+import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
 
@@ -40,9 +41,11 @@ public class Ghost extends Creature {
 	 */
 	public byte elroy;
 
-	public Ghost(int ghostID, PacManGameWorld world) {
+	public Ghost(PacManGameWorld world, int ghostID, String ghostName, Direction ghostStartDir) {
 		super(world);
 		id = (byte) ghostID;
+		name = ghostName;
+		startDir = ghostStartDir;
 	}
 
 	public boolean is(GhostState ghostState) {

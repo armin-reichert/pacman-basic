@@ -9,7 +9,6 @@ import de.amr.games.pacman.game.creatures.Ghost;
 import de.amr.games.pacman.game.creatures.MovingBonus;
 import de.amr.games.pacman.game.creatures.Pac;
 import de.amr.games.pacman.game.worlds.MapBasedPacManGameWorld;
-import de.amr.games.pacman.lib.Direction;
 
 /**
  * Game model of the Ms. Pac-Man game variant.
@@ -77,25 +76,18 @@ public class MsPacManGameModel extends PacManGameModel {
 	public MsPacManGameModel() {
 		variant = MS_PACMAN;
 		world = new MapBasedPacManGameWorld();
+
 		bonusNames = new String[] { "CHERRIES", "STRAWBERRY", "PEACH", "PRETZEL", "APPLE", "PEAR", "BANANA" };
 		bonusValues = new int[] { 100, 200, 500, 700, 1000, 2000, 5000 };
 		bonus = new MovingBonus(world);
-		pac = new Pac(world);
-		pac.name = "Ms. Pac-Man";
-		pac.startDir = Direction.LEFT;
-		ghosts = new Ghost[4];
-		for (int ghostID = 0; ghostID < 4; ++ghostID) {
-			ghosts[ghostID] = new Ghost(ghostID, world);
-		}
-		ghosts[0].name = "Blinky";
-		ghosts[1].name = "Pinky";
-		ghosts[2].name = "Inky";
-		ghosts[3].name = "Sue";
-		ghosts[0].startDir = LEFT;
-		ghosts[1].startDir = UP;
-		ghosts[2].startDir = DOWN;
-		ghosts[3].startDir = DOWN;
 
+		pac = new Pac(world, "Ms. Pac-Man", LEFT);
+
+		ghosts = new Ghost[4];
+		ghosts[BLINKY] = new Ghost(world, BLINKY, "Blinky", LEFT);
+		ghosts[PINKY] = new Ghost(world, PINKY, "Pinky", UP);
+		ghosts[INKY] = new Ghost(world, INKY, "Iinky", DOWN);
+		ghosts[SUE] = new Ghost(world, SUE, "Sue", DOWN);
 		reset();
 	}
 

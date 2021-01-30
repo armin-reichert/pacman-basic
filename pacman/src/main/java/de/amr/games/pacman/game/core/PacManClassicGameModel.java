@@ -4,6 +4,7 @@ import static de.amr.games.pacman.game.core.PacManGameWorld.HTS;
 import static de.amr.games.pacman.game.core.PacManGameWorld.TS;
 import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
+import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.lib.Logging.log;
 
@@ -11,7 +12,6 @@ import de.amr.games.pacman.game.creatures.Bonus;
 import de.amr.games.pacman.game.creatures.Ghost;
 import de.amr.games.pacman.game.creatures.Pac;
 import de.amr.games.pacman.game.worlds.MapBasedPacManGameWorld;
-import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
 
@@ -64,22 +64,13 @@ public class PacManClassicGameModel extends PacManGameModel {
 		bonus = new Bonus(world);
 		bonus.position = new V2f(13 * TS, 20 * TS + HTS);
 
-		pac = new Pac(world);
-		pac.name = "Pac-Man";
-		pac.startDir = Direction.RIGHT;
+		pac = new Pac(world, "Pac-Man", RIGHT);
 
 		ghosts = new Ghost[4];
-		for (int ghostID = 0; ghostID < 4; ++ghostID) {
-			ghosts[ghostID] = new Ghost(ghostID, world);
-		}
-		ghosts[0].name = "Blinky";
-		ghosts[1].name = "Pinky";
-		ghosts[2].name = "Inky";
-		ghosts[3].name = "Clyde";
-		ghosts[0].startDir = LEFT;
-		ghosts[1].startDir = UP;
-		ghosts[2].startDir = DOWN;
-		ghosts[3].startDir = DOWN;
+		ghosts[BLINKY] = new Ghost(world, BLINKY, "Blinky", LEFT);
+		ghosts[PINKY] = new Ghost(world, PINKY, "Pinky", UP);
+		ghosts[INKY] = new Ghost(world, INKY, "Iinky", DOWN);
+		ghosts[CLYDE] = new Ghost(world, CLYDE, "Clyde", DOWN);
 
 		reset();
 	}
