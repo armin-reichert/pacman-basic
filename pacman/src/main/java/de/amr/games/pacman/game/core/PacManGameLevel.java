@@ -80,7 +80,7 @@ public class PacManGameLevel {
 	}
 
 	public boolean isFoodRemoved(V2i tile) {
-		return eaten.get(world.tileIndex(tile));
+		return eaten.get(world.index(tile));
 	}
 
 	public boolean containsFood(V2i tile) {
@@ -89,7 +89,7 @@ public class PacManGameLevel {
 
 	public void removeFood(V2i tile) {
 		if (!isFoodRemoved(tile)) {
-			eaten.set(world.tileIndex(tile));
+			eaten.set(world.index(tile));
 			--foodRemaining;
 		}
 	}

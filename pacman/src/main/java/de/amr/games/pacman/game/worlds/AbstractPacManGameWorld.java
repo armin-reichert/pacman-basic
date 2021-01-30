@@ -110,7 +110,7 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 					continue;
 				}
 				if (Stream.of(Direction.values()).map(dir -> tile.sum(dir.vec)).filter(this::isAccessible).count() >= 3) {
-					intersections.set(tileIndex(tile));
+					intersections.set(index(tile));
 				}
 			}
 		}
@@ -233,7 +233,7 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 
 	@Override
 	public boolean isIntersection(V2i tile) {
-		return intersections.get(tileIndex(tile));
+		return intersections.get(index(tile));
 	}
 
 	@Override

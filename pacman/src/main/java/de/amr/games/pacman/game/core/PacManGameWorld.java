@@ -1,5 +1,8 @@
 package de.amr.games.pacman.game.core;
 
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
+
 import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
 
@@ -32,7 +35,11 @@ public interface PacManGameWorld {
 
 	int yTiles();
 
-	default int tileIndex(V2i tile) {
+	default Stream<V2i> tiles() {
+		return IntStream.range(0, xTiles() * yTiles()).mapToObj(index -> new V2i(index % xTiles(), index / xTiles()));
+	}
+
+	default int index(V2i tile) {
 		return xTiles() * tile.y + tile.x;
 	}
 
