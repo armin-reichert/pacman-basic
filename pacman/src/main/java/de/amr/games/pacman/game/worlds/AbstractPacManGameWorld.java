@@ -206,12 +206,12 @@ public abstract class AbstractPacManGameWorld implements PacManGameWorld {
 		if (isGhostHouseDoor(tile)) {
 			return false;
 		}
-		return map[tile.y][tile.x] != WALL;
+		return data(tile) != WALL;
 	}
 
 	@Override
 	public boolean isTunnel(V2i tile) {
-		return inMapRange(tile) && map[tile.y][tile.x] == TUNNEL;
+		return inMapRange(tile) && data(tile) == TUNNEL;
 	}
 
 	@Override
