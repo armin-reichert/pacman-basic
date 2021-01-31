@@ -5,6 +5,7 @@ import static de.amr.games.pacman.lib.Logging.log;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 import de.amr.games.pacman.controller.PacManGameState;
 import de.amr.games.pacman.lib.Hiscore;
@@ -67,6 +68,10 @@ public abstract class PacManGameModel {
 		lives = 3;
 		levelSymbols = new ArrayList<>();
 		levelSymbols.add(level.bonusSymbol);
+	}
+
+	public Stream<Ghost> ghosts() {
+		return Stream.of(ghosts);
 	}
 
 	public String stateDescription() {
