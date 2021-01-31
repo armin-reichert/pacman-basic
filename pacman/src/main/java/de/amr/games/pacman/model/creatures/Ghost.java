@@ -1,18 +1,18 @@
-package de.amr.games.pacman.game.model.creatures;
+package de.amr.games.pacman.model.creatures;
 
-import static de.amr.games.pacman.game.heaven.God.differsAtMost;
-import static de.amr.games.pacman.game.world.PacManGameWorld.HTS;
-import static de.amr.games.pacman.game.world.PacManGameWorld.t;
+import static de.amr.games.pacman.heaven.God.differsAtMost;
 import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Direction.UP;
+import static de.amr.games.pacman.world.PacManGameWorld.HTS;
+import static de.amr.games.pacman.world.PacManGameWorld.t;
 
-import de.amr.games.pacman.game.model.PacManGameLevel;
-import de.amr.games.pacman.game.world.PacManGameWorld;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.model.PacManGameLevel;
+import de.amr.games.pacman.world.PacManGameWorld;
 
 /**
  * A ghost.

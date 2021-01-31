@@ -1,10 +1,10 @@
-package de.amr.games.pacman.game.model.creatures;
+package de.amr.games.pacman.model.creatures;
 
-import static de.amr.games.pacman.game.heaven.God.random;
+import static de.amr.games.pacman.heaven.God.random;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
 
-import de.amr.games.pacman.game.world.PacManGameWorld;
+import de.amr.games.pacman.world.PacManGameWorld;
 
 public class MovingBonus extends Bonus {
 

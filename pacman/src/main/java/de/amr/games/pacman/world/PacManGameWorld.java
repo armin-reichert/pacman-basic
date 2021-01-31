@@ -1,4 +1,4 @@
-package de.amr.games.pacman.game.world;
+package de.amr.games.pacman.world;
 
 import java.util.stream.IntStream;
 import java.util.stream.Stream;

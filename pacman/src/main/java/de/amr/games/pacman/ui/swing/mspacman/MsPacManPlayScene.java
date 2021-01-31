@@ -1,27 +1,27 @@
 package de.amr.games.pacman.ui.swing.mspacman;
 
-import static de.amr.games.pacman.game.controller.PacManGameState.HUNTING;
-import static de.amr.games.pacman.game.heaven.God.clock;
-import static de.amr.games.pacman.game.model.creatures.GhostState.DEAD;
-import static de.amr.games.pacman.game.model.creatures.GhostState.ENTERING_HOUSE;
-import static de.amr.games.pacman.game.model.creatures.GhostState.FRIGHTENED;
-import static de.amr.games.pacman.game.model.creatures.GhostState.LOCKED;
-import static de.amr.games.pacman.game.world.PacManGameWorld.HTS;
-import static de.amr.games.pacman.game.world.PacManGameWorld.TS;
-import static de.amr.games.pacman.game.world.PacManGameWorld.t;
+import static de.amr.games.pacman.controller.PacManGameState.HUNTING;
+import static de.amr.games.pacman.heaven.God.clock;
+import static de.amr.games.pacman.model.creatures.GhostState.DEAD;
+import static de.amr.games.pacman.model.creatures.GhostState.ENTERING_HOUSE;
+import static de.amr.games.pacman.model.creatures.GhostState.FRIGHTENED;
+import static de.amr.games.pacman.model.creatures.GhostState.LOCKED;
+import static de.amr.games.pacman.world.PacManGameWorld.HTS;
+import static de.amr.games.pacman.world.PacManGameWorld.TS;
+import static de.amr.games.pacman.world.PacManGameWorld.t;
 
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
-import de.amr.games.pacman.game.controller.PacManGameState;
-import de.amr.games.pacman.game.model.PacManGameModel;
-import de.amr.games.pacman.game.model.creatures.Ghost;
-import de.amr.games.pacman.game.model.creatures.Pac;
+import de.amr.games.pacman.controller.PacManGameState;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.Logging;
 import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.model.PacManGameModel;
+import de.amr.games.pacman.model.creatures.Ghost;
+import de.amr.games.pacman.model.creatures.Pac;
 import de.amr.games.pacman.ui.api.PacManGameAnimations;
 import de.amr.games.pacman.ui.api.PacManGameScene;
 import de.amr.games.pacman.ui.swing.AbstractPacManPlayScene;

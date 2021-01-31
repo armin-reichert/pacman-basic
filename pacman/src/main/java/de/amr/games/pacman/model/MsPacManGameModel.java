@@ -1,14 +1,14 @@
-package de.amr.games.pacman.game.model;
+package de.amr.games.pacman.model;
 
-import static de.amr.games.pacman.game.heaven.God.random;
+import static de.amr.games.pacman.heaven.God.random;
 import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.UP;
 
-import de.amr.games.pacman.game.model.creatures.Ghost;
-import de.amr.games.pacman.game.model.creatures.MovingBonus;
-import de.amr.games.pacman.game.model.creatures.Pac;
-import de.amr.games.pacman.game.world.MapBasedPacManGameWorld;
+import de.amr.games.pacman.model.creatures.Ghost;
+import de.amr.games.pacman.model.creatures.MovingBonus;
+import de.amr.games.pacman.model.creatures.Pac;
+import de.amr.games.pacman.world.MapBasedPacManGameWorld;
 
 /**
  * Game model of the Ms. Pac-Man game variant.

@@ -1,21 +1,21 @@
-package de.amr.games.pacman.game.model;
+package de.amr.games.pacman.model;
 
-import static de.amr.games.pacman.game.heaven.God.clock;
-import static de.amr.games.pacman.game.heaven.God.random;
-import static de.amr.games.pacman.game.world.PacManGameWorld.HTS;
-import static de.amr.games.pacman.game.world.PacManGameWorld.TS;
+import static de.amr.games.pacman.heaven.God.clock;
+import static de.amr.games.pacman.heaven.God.random;
 import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.lib.Logging.log;
+import static de.amr.games.pacman.world.PacManGameWorld.HTS;
+import static de.amr.games.pacman.world.PacManGameWorld.TS;
 
-import de.amr.games.pacman.game.model.creatures.Bonus;
-import de.amr.games.pacman.game.model.creatures.Ghost;
-import de.amr.games.pacman.game.model.creatures.Pac;
-import de.amr.games.pacman.game.world.MapBasedPacManGameWorld;
 import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.model.creatures.Bonus;
+import de.amr.games.pacman.model.creatures.Ghost;
+import de.amr.games.pacman.model.creatures.Pac;
+import de.amr.games.pacman.world.MapBasedPacManGameWorld;
 
 /**
  * Game model of the classic Pac-Man game.

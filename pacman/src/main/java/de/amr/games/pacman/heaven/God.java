@@ -1,4 +1,4 @@
-package de.amr.games.pacman.game.heaven;
+package de.amr.games.pacman.heaven;
 
 import java.util.Random;
 

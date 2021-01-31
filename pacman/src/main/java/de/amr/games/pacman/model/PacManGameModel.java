@@ -1,4 +1,4 @@
-package de.amr.games.pacman.game.model;
+package de.amr.games.pacman.model;
 
 import static de.amr.games.pacman.lib.Logging.log;
 
@@ -6,12 +6,12 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.amr.games.pacman.game.controller.PacManGameState;
-import de.amr.games.pacman.game.model.creatures.Bonus;
-import de.amr.games.pacman.game.model.creatures.Ghost;
-import de.amr.games.pacman.game.model.creatures.Pac;
-import de.amr.games.pacman.game.world.PacManGameWorld;
+import de.amr.games.pacman.controller.PacManGameState;
 import de.amr.games.pacman.lib.Hiscore;
+import de.amr.games.pacman.model.creatures.Bonus;
+import de.amr.games.pacman.model.creatures.Ghost;
+import de.amr.games.pacman.model.creatures.Pac;
+import de.amr.games.pacman.world.PacManGameWorld;
 
 /**
  * The common base class of the game data.

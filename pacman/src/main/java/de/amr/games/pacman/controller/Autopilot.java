@@ -1,6 +1,6 @@
-package de.amr.games.pacman.game.controller;
+package de.amr.games.pacman.controller;
 
-import static de.amr.games.pacman.game.heaven.God.clock;
+import static de.amr.games.pacman.heaven.God.clock;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -10,12 +10,12 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.game.model.PacManGameModel;
-import de.amr.games.pacman.game.model.creatures.Ghost;
-import de.amr.games.pacman.game.model.creatures.GhostState;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.Logging;
 import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.model.PacManGameModel;
+import de.amr.games.pacman.model.creatures.Ghost;
+import de.amr.games.pacman.model.creatures.GhostState;
 
 /**
  * Controls Pac-Man movement.

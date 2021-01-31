@@ -1,4 +1,4 @@
-package de.amr.games.pacman.game.controller;
+package de.amr.games.pacman.controller;
 
 import java.util.function.Predicate;
 
