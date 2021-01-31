@@ -23,6 +23,7 @@ public abstract class PacManGameModel {
 	public static final byte BLINKY = 0, PINKY = 1, INKY = 2, CLYDE = 3, SUE = 3;
 
 	public PacManGameState state;
+	public boolean started;
 	public PacManGameWorld world;
 	public int currentLevelNumber; // counting from 1
 	public PacManGameLevel level;

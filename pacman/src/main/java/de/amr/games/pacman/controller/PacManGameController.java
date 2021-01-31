@@ -65,8 +65,6 @@ public class PacManGameController {
 	private boolean autopilotEnabled;
 
 	private boolean gamePaused;
-	private boolean gameStarted;
-
 	private PacManGameState previousState;
 
 	public PacManGameController() {
@@ -102,7 +100,7 @@ public class PacManGameController {
 	}
 
 	private void reset() {
-		gameStarted = false;
+		game.started = false;
 		game.state = previousState = null;
 		if (ui != null) {
 			ui.sounds().ifPresent(SoundManager::stopAllSounds);
@@ -263,7 +261,7 @@ public class PacManGameController {
 	// READY
 
 	private void enterReadyState() {
-		if (!gameStarted && ui.sounds().isPresent()) {
+		if (!game.started && ui.sounds().isPresent()) {
 			game.state.setDuration(clock.sec(4.5));
 		} else {
 			game.state.setDuration(clock.sec(2));
@@ -278,7 +276,7 @@ public class PacManGameController {
 			}
 		});
 		ui.sounds().ifPresent(SoundManager::stopAllSounds);
-		if (!gameStarted) {
+		if (!game.started) {
 			ui.sounds().ifPresent(sm -> sm.playSound(Sound.GAME_READY));
 		}
 	}
@@ -306,7 +304,7 @@ public class PacManGameController {
 	}
 
 	private void exitReadyState() {
-		gameStarted = true;
+		game.started = true;
 		ui.clearMessages();
 	}
 

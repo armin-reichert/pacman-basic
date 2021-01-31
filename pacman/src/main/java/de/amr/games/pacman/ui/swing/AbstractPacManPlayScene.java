@@ -86,15 +86,16 @@ public abstract class AbstractPacManPlayScene implements PacManGameScene {
 	}
 
 	protected void drawLivesCounter(Graphics2D g) {
-		int maxLives = 5;
+		int maxLivesDisplayed = 5;
+		int livesDisplayed = game.started ? game.lives - 1 : game.lives;
 		int y = size.y - t(2);
-		for (int i = 0; i < Math.min(game.lives, maxLives); ++i) {
+		for (int i = 0; i < Math.min(livesDisplayed, maxLivesDisplayed); ++i) {
 			g.drawImage(lifeSprite(), t(2 * (i + 1)), y, null);
 		}
-		if (game.lives > maxLives) {
+		if (game.lives > maxLivesDisplayed) {
 			g.setColor(Color.YELLOW);
 			g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 6));
-			g.drawString("+" + (game.lives - maxLives), t(12) - 4, y + t(2));
+			g.drawString("+" + (game.lives - maxLivesDisplayed), t(12) - 4, y + t(2));
 		}
 	}
 
