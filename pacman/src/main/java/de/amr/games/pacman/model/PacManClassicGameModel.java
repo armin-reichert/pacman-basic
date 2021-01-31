@@ -16,6 +16,7 @@ import de.amr.games.pacman.model.creatures.Bonus;
 import de.amr.games.pacman.model.creatures.Ghost;
 import de.amr.games.pacman.model.creatures.Pac;
 import de.amr.games.pacman.world.MapBasedPacManGameWorld;
+import de.amr.games.pacman.world.WorldMap;
 
 /**
  * Game model of the classic Pac-Man game.
@@ -29,7 +30,7 @@ public class PacManClassicGameModel extends PacManGameModel {
 	}
 
 	/*@formatter:off*/
-	private static final int[][] PACMAN_CLASSIC_LEVELS = {
+	private static final int[][] LEVELS = {
 	/* 1*/ {0,  80, 75, 40,  20,  80, 10,  85,  90, 50, 6, 5},
 	/* 2*/ {1,  90, 85, 45,  30,  90, 15,  95,  95, 55, 5, 5},
 	/* 3*/ {2,  90, 85, 45,  40,  90, 20,  95,  95, 55, 4, 5},
@@ -54,6 +55,8 @@ public class PacManClassicGameModel extends PacManGameModel {
 	};
 	/*@formatter:on*/
 
+	private final MapBasedPacManGameWorld world;
+
 	public PacManClassicGameModel() {
 		bonusNames = new String[] { "CHERRIES", "STRAWBERRY", "PEACH", "APPLE", "GRAPES", "GALAXIAN", "BELL", "KEY" };
 		bonusValues = new int[] { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
@@ -69,8 +72,7 @@ public class PacManClassicGameModel extends PacManGameModel {
 		ghosts[CLYDE] = new Ghost(CLYDE, "Clyde", DOWN);
 
 		world = new MapBasedPacManGameWorld();
-		world.loadMap("/worlds/classic/map.txt");
-		// TODO store this info inside map
+		world.setMap(new WorldMap("/worlds/classic/map.txt"));
 		world.setUpwardsBlocked(new V2i(12, 13), new V2i(15, 13), new V2i(12, 25), new V2i(15, 25));
 
 		pac.world = world;
@@ -83,9 +85,11 @@ public class PacManClassicGameModel extends PacManGameModel {
 	}
 
 	@Override
-	public void createLevel() {
-		level = new PacManGameLevel(world, PACMAN_CLASSIC_LEVELS[currentLevelNumber <= 21 ? currentLevelNumber - 1 : 20]);
-		log("Current level is %d, maze index is %d", currentLevelNumber, level.mazeNumber);
+	public void buildLevel(int levelNumber) {
+		log("Pac-Man classic level %d is getting created...", levelNumber);
+		level = new PacManGameLevel(LEVELS[levelNumber <= 21 ? levelNumber - 1 : 20]);
+		level.setWorld(world);
+		log("Pac-Man classic level %d created", levelNumber);
 	}
 
 	@Override

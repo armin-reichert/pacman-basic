@@ -4,11 +4,13 @@ import static de.amr.games.pacman.heaven.God.random;
 import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.UP;
+import static de.amr.games.pacman.lib.Logging.log;
 
 import de.amr.games.pacman.model.creatures.Ghost;
 import de.amr.games.pacman.model.creatures.MovingBonus;
 import de.amr.games.pacman.model.creatures.Pac;
 import de.amr.games.pacman.world.MapBasedPacManGameWorld;
+import de.amr.games.pacman.world.WorldMap;
 
 /**
  * Game model of the Ms. Pac-Man game variant.
@@ -23,7 +25,7 @@ public class MsPacManGameModel extends PacManGameModel {
 
 	// TODO how exactly are the levels of the Ms.Pac-Man game?
 	/*@formatter:off*/
-	public static final int[][] MS_PACMAN_LEVELS = {
+	public static final int[][] LEVELS = {
 	/* 1*/ {0,  80, 75, 40,  20,  80, 10,  85,  90, 50, 6, 5},
 	/* 2*/ {1,  90, 85, 45,  30,  90, 15,  95,  95, 55, 5, 5},
 	/* 3*/ {2,  90, 85, 45,  40,  90, 20,  95,  95, 55, 4, 5},
@@ -73,6 +75,8 @@ public class MsPacManGameModel extends PacManGameModel {
 		return mazeNumber == 5 ? 3 : mazeNumber == 6 ? 4 : mazeNumber;
 	}
 
+	private final MapBasedPacManGameWorld world;
+
 	public MsPacManGameModel() {
 		bonusNames = new String[] { "CHERRIES", "STRAWBERRY", "PEACH", "PRETZEL", "APPLE", "PEAR", "BANANA" };
 		bonusValues = new int[] { 100, 200, 500, 700, 1000, 2000, 5000 };
@@ -86,6 +90,7 @@ public class MsPacManGameModel extends PacManGameModel {
 		ghosts[INKY] = new Ghost(INKY, "Iinky", DOWN);
 		ghosts[SUE] = new Ghost(SUE, "Sue", DOWN);
 
+		// all levels share this world
 		world = new MapBasedPacManGameWorld();
 		pac.world = world;
 		for (Ghost ghost : ghosts) {
@@ -97,14 +102,17 @@ public class MsPacManGameModel extends PacManGameModel {
 	}
 
 	@Override
-	public void createLevel() {
-		int mazeNumber = mazeNumber(currentLevelNumber);
-		world.loadMap("/worlds/mspacman/map" + mapIndex(mazeNumber) + ".txt");
-		level = new PacManGameLevel(world, MS_PACMAN_LEVELS[currentLevelNumber <= 21 ? currentLevelNumber - 1 : 20]);
-		if (currentLevelNumber > 7) {
+	public void buildLevel(int levelNumber) {
+		log("Ms. Pac-Man level %d is getting created...", levelNumber);
+		int mazeNumber = mazeNumber(levelNumber);
+		world.setMap(new WorldMap("/worlds/mspacman/map" + mapIndex(mazeNumber) + ".txt"));
+		level = new PacManGameLevel(LEVELS[levelNumber <= 21 ? levelNumber - 1 : 20]);
+		level.setWorld(world);
+		level.mazeNumber = mazeNumber;
+		if (levelNumber > 7) {
 			level.bonusSymbol = (byte) random.nextInt(7);
 		}
-		level.mazeNumber = mazeNumber;
+		log("Ms. Pac-Man level %d created, maze index is %d", levelNumber, mazeNumber);
 	}
 
 	@Override

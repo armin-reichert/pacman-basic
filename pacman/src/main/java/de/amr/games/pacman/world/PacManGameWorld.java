@@ -41,8 +41,6 @@ public interface PacManGameWorld {
 
 	boolean insideMap(V2i tile);
 
-	void loadMap(String path);
-
 	V2i pacHome();
 
 	V2i ghostHome(int ghost);

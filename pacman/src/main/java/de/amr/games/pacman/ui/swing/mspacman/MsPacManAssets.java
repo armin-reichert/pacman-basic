@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Map;
 
 import de.amr.games.pacman.lib.Direction;
-import de.amr.games.pacman.lib.Logging;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.creatures.Ghost;
 import de.amr.games.pacman.ui.api.PacManGameAnimations;
@@ -181,8 +180,6 @@ public class MsPacManAssets extends Spritesheet implements PacManGameAnimations 
 
 	@Override
 	public Animation<BufferedImage> mazeFlashing(int mazeNumber) {
-		Logging.log("Animation for maze #%d equested", mazeNumber);
 		return mazeFlashingAnimations.get(mazeNumber - 1);
 	}
-
 }

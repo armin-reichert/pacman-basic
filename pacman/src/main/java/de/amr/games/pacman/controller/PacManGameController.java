@@ -152,7 +152,7 @@ public class PacManGameController {
 	}
 
 	private void makeGuysReady() {
-		game.pac.placeAt(game.world.pacHome(), HTS, 0);
+		game.pac.placeAt(game.level.world.pacHome(), HTS, 0);
 		game.pac.dir = game.pac.wishDir = game.pac.startDir;
 		game.pac.visible = false;
 		game.pac.speed = 0;
@@ -165,7 +165,7 @@ public class PacManGameController {
 		game.pac.starvingTicks = 0;
 
 		for (Ghost ghost : game.ghosts) {
-			ghost.placeAt(game.world.ghostHome(ghost.id), HTS, 0);
+			ghost.placeAt(game.level.world.ghostHome(ghost.id), HTS, 0);
 			ghost.dir = ghost.wishDir = ghost.startDir;
 			ghost.visible = false;
 			ghost.speed = 0;
@@ -374,7 +374,7 @@ public class PacManGameController {
 
 		// Cheats
 		if (ui.keyPressed("e")) {
-			game.world.tiles().filter(tile -> game.level.containsFood(tile) && !game.world.isEnergizerTile(tile))
+			game.level.world.tiles().filter(tile -> game.level.containsFood(tile) && !game.level.world.isEnergizerTile(tile))
 					.forEach(game.level::removeFood);
 		}
 		if (ui.keyPressed("x")) {
@@ -579,7 +579,7 @@ public class PacManGameController {
 
 	private void exitChangingLevelState() {
 		log("Level %d complete, entering level %d", game.currentLevelNumber, game.currentLevelNumber + 1);
-		game.setLevel(game.currentLevelNumber + 1);
+		game.enterLevel(game.currentLevelNumber + 1);
 		game.levelSymbols.add(game.level.bonusSymbol);
 		ui.animations().ifPresent(animations -> animations.mazeFlashing(game.level.mazeNumber).reset());
 	}
@@ -646,7 +646,7 @@ public class PacManGameController {
 
 	private void onPacFoundFood(V2i foodLocation) {
 		game.level.removeFood(foodLocation);
-		if (game.world.isEnergizerTile(foodLocation)) {
+		if (game.level.world.isEnergizerTile(foodLocation)) {
 			game.pac.starvingTicks = 0;
 			game.pac.restingTicksLeft = 3;
 			game.ghostBounty = 200;
@@ -714,7 +714,7 @@ public class PacManGameController {
 
 	private void killGhost(Ghost ghost) {
 		ghost.state = DEAD;
-		ghost.targetTile = game.world.houseEntry();
+		ghost.targetTile = game.level.world.houseEntry();
 		ghost.bounty = game.ghostBounty;
 		score(ghost.bounty);
 		if (++game.level.numGhostsKilled == 16) {
@@ -738,7 +738,7 @@ public class PacManGameController {
 			// In Ms. Pac-Man, Blinky and Pinky move randomly during *first* scatter phase
 			ghost.targetTile = null;
 		} else if (game.inScatteringPhase() && ghost.elroy == 0) {
-			ghost.targetTile = game.world.ghostScatterTile(ghost.id);
+			ghost.targetTile = game.level.world.ghostScatterTile(ghost.id);
 		} else {
 			ghost.targetTile = ghostHuntingTarget(ghost.id);
 		}
@@ -763,7 +763,7 @@ public class PacManGameController {
 			return game.ghosts[0].tile().scaled(-1).sum(twoAheadPac.scaled(2));
 		}
 		case 3:
-			return game.ghosts[3].tile().euclideanDistance(game.pac.tile()) < 8 ? game.world.ghostScatterTile(3)
+			return game.ghosts[3].tile().euclideanDistance(game.pac.tile()) < 8 ? game.level.world.ghostScatterTile(3)
 					: game.pac.tile();
 		default:
 			throw new IllegalArgumentException("Unknown ghost id: " + ghostID);

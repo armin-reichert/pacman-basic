@@ -11,7 +11,6 @@ import de.amr.games.pacman.lib.Hiscore;
 import de.amr.games.pacman.model.creatures.Bonus;
 import de.amr.games.pacman.model.creatures.Ghost;
 import de.amr.games.pacman.model.creatures.Pac;
-import de.amr.games.pacman.world.PacManGameWorld;
 
 /**
  * The common base class of the game data.
@@ -24,7 +23,6 @@ public abstract class PacManGameModel {
 
 	public PacManGameState state;
 	public boolean started;
-	public PacManGameWorld world;
 	public int currentLevelNumber; // counting from 1
 	public PacManGameLevel level;
 	public Pac pac;
@@ -41,15 +39,15 @@ public abstract class PacManGameModel {
 	public short globalDotCounter;
 	public boolean globalDotCounterEnabled;
 
-	public abstract void createLevel();
+	public abstract void buildLevel(int levelNumber);
 
 	public abstract String hiscoreFilename();
 
 	public abstract long bonusActivationTicks();
 
-	public void setLevel(int levelNumber) {
+	public void enterLevel(int levelNumber) {
 		currentLevelNumber = levelNumber;
-		createLevel();
+		buildLevel(levelNumber);
 		ghostBounty = 200;
 		huntingPhase = 0;
 		bonus.edibleTicksLeft = 0;
@@ -61,7 +59,7 @@ public abstract class PacManGameModel {
 	}
 
 	public void reset() {
-		setLevel(1);
+		enterLevel(1);
 		Hiscore hiscore = loadHighScore();
 		highscoreLevel = hiscore.level;
 		highscorePoints = hiscore.points;
@@ -100,5 +98,4 @@ public abstract class PacManGameModel {
 			log("New hiscore saved. %d points in level %d", hiscore.points, hiscore.level);
 		}
 	}
-
 }

@@ -74,7 +74,7 @@ public class MsPacManPlayScene extends AbstractPacManPlayScene implements PacMan
 
 	@Override
 	protected void drawLevelCounter(Graphics2D g) {
-		int x = t(game.world.xTiles() - 4);
+		int x = t(game.level.world.xTiles() - 4);
 		for (int levelNumber = 1; levelNumber <= Math.min(game.currentLevelNumber, 7); ++levelNumber) {
 			byte symbol = game.levelSymbols.get(levelNumber - 1);
 			g.drawImage(assets.spriteAt(assets.symbolTiles[symbol]), x, size.y - t(2), null);
@@ -93,13 +93,13 @@ public class MsPacManPlayScene extends AbstractPacManPlayScene implements PacMan
 			return;
 		}
 		g.drawImage(assets.mazeFull[game.level.mazeNumber - 1], 0, t(3), null);
-		game.world.tiles().filter(game.level::isFoodRemoved).forEach(tile -> {
+		game.level.world.tiles().filter(game.level::isFoodRemoved).forEach(tile -> {
 			g.setColor(Color.BLACK);
 			g.fillRect(t(tile.x), t(tile.y), TS, TS);
 		});
 		// TODO use animation instead?
 		if (clock.ticksTotal % 20 < 10 && game.state == HUNTING) {
-			game.world.energizerTiles().forEach(tile -> {
+			game.level.world.energizerTiles().forEach(tile -> {
 				g.setColor(Color.BLACK);
 				g.fillRect(t(tile.x), t(tile.y), TS, TS);
 			});

@@ -31,7 +31,7 @@ public class PacManGameLevel {
 	public final byte ghostFrightenedSeconds;
 	public final byte numFlashes;
 
-	public final PacManGameWorld world;
+	public PacManGameWorld world;
 
 	protected final BitSet eaten = new BitSet();
 	public int totalFoodCount;
@@ -40,8 +40,7 @@ public class PacManGameLevel {
 	public int numGhostsKilled;
 	public int mazeNumber; // Ms. Pac-Man, values 1..6
 
-	public PacManGameLevel(PacManGameWorld world, int... values) {
-		this.world = world;
+	public PacManGameLevel(int... values) {
 		int i = 0;
 		bonusSymbol = (byte) values[i++];
 		pacSpeed = percent(values[i++]);
@@ -56,15 +55,19 @@ public class PacManGameLevel {
 		ghostFrightenedSeconds = (byte) values[i++];
 		numFlashes = (byte) values[i++];
 
+	}
+
+	public void setWorld(PacManGameWorld gameWorld) {
+		world = gameWorld;
 		// find food
 		totalFoodCount = 0;
 		int energizerCount = 0;
-		for (int x = 0; x < world.xTiles(); ++x) {
-			for (int y = 0; y < world.yTiles(); ++y) {
+		for (int x = 0; x < gameWorld.xTiles(); ++x) {
+			for (int y = 0; y < gameWorld.yTiles(); ++y) {
 				V2i tile = new V2i(x, y);
-				if (world.isFoodTile(tile)) {
+				if (gameWorld.isFoodTile(tile)) {
 					++totalFoodCount;
-					if (world.isEnergizerTile(tile)) {
+					if (gameWorld.isEnergizerTile(tile)) {
 						energizerCount++;
 					}
 				}
@@ -74,6 +77,7 @@ public class PacManGameLevel {
 		foodRemaining = totalFoodCount;
 		log("Total food count=%d (%d pellets + %d energizers)", totalFoodCount, totalFoodCount - energizerCount,
 				energizerCount);
+
 	}
 
 	public int eatenFoodCount() {

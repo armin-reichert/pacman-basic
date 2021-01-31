@@ -83,8 +83,8 @@ public class PacManGameApp {
 		PacManGameApp app = new PacManGameApp(options.gameVariant);
 		invokeLater(() -> {
 			app.controller.game().ifPresent(game -> {
-				PacManGameSwingUI ui = new PacManGameSwingUI(app.controller, game.world.xTiles(), game.world.yTiles(),
-						options.scaling);
+				PacManGameSwingUI ui = new PacManGameSwingUI(app.controller, game.level.world.xTiles(),
+						game.level.world.yTiles(), options.scaling);
 				ui.updateGame(game);
 				ui.show();
 				new Thread(app::gameLoop, "PacManGame").start();

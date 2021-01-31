@@ -1,7 +1,6 @@
 package de.amr.games.pacman.world;
 
 import static de.amr.games.pacman.lib.Direction.DOWN;
-import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.world.WorldMap.DOOR;
 import static de.amr.games.pacman.world.WorldMap.ENERGIZER;
 import static de.amr.games.pacman.world.WorldMap.PILL;
@@ -44,9 +43,8 @@ public class MapBasedPacManGameWorld implements PacManGameWorld {
 	protected List<V2i> upwardsBlockedTiles;
 	protected List<V2i> energizerTiles;
 
-	@Override
-	public void loadMap(String path) {
-		map = new WorldMap(path);
+	public void setMap(WorldMap worldMap) {
+		map = worldMap;
 
 		upwardsBlockedTiles = Collections.emptyList();
 
@@ -73,8 +71,6 @@ public class MapBasedPacManGameWorld implements PacManGameWorld {
 
 		// find energizer tiles
 		energizerTiles = tiles().filter(tile -> map.data(tile) == ENERGIZER).collect(Collectors.toList());
-
-		log("World map is '%s'", path);
 	}
 
 	private Stream<V2i> neighborTiles(V2i tile) {

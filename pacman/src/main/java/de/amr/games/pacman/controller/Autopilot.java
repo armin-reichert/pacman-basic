@@ -132,7 +132,7 @@ public class Autopilot {
 		}
 
 		// when not escaping ghost, keep move direction at least until next intersection
-		if (game.pac.couldMove && !game.world.isIntersection(game.pac.tile()))
+		if (game.pac.couldMove && !game.level.world.isIntersection(game.pac.tile()))
 			return;
 
 		if (data.frightenedGhosts.size() != 0 && game.pac.powerTicksLeft >= clock.sec(1)) {
@@ -160,7 +160,7 @@ public class Autopilot {
 			if (!game.pac.canAccessTile(ahead)) {
 				break;
 			}
-			if (game.world.isEnergizerTile(ahead) && !game.level.isFoodRemoved(ahead)) {
+			if (game.level.world.isEnergizerTile(ahead) && !game.level.isFoodRemoved(ahead)) {
 				energizerFound = true;
 			}
 			V2i aheadLeft = ahead.sum(game.pac.dir.turnLeft().vec), aheadRight = ahead.sum(game.pac.dir.turnRight().vec);
@@ -210,7 +210,7 @@ public class Autopilot {
 		}
 		for (Direction escape : escapes) {
 			V2i escapeTile = pacManTile.sum(escape.vec);
-			if (game.world.isTunnel(escapeTile)) {
+			if (game.level.world.isTunnel(escapeTile)) {
 				return escape;
 			}
 		}
@@ -222,13 +222,13 @@ public class Autopilot {
 		List<V2i> foodTiles = new ArrayList<>();
 		V2i pacManTile = game.pac.tile();
 		double minDist = Double.MAX_VALUE;
-		for (int x = 0; x < game.world.xTiles(); ++x) {
-			for (int y = 0; y < game.world.yTiles(); ++y) {
+		for (int x = 0; x < game.level.world.xTiles(); ++x) {
+			for (int y = 0; y < game.level.world.yTiles(); ++y) {
 				V2i tile = new V2i(x, y);
-				if (!game.world.isFoodTile(tile) || game.level.isFoodRemoved(tile)) {
+				if (!game.level.world.isFoodTile(tile) || game.level.isFoodRemoved(tile)) {
 					continue;
 				}
-				if (game.world.isEnergizerTile(tile) && game.pac.powerTicksLeft > clock.sec(1)
+				if (game.level.world.isEnergizerTile(tile) && game.pac.powerTicksLeft > clock.sec(1)
 						&& game.level.foodRemaining > 1) {
 					continue;
 				}
