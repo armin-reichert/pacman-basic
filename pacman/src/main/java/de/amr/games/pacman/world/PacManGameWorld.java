@@ -39,7 +39,7 @@ public interface PacManGameWorld {
 		return xTiles() * tile.y + tile.x;
 	}
 
-	boolean inMapRange(V2i tile);
+	boolean insideMap(V2i tile);
 
 	void loadMap(String path);
 

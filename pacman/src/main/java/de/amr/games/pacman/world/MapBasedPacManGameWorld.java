@@ -27,24 +27,22 @@ import de.amr.games.pacman.lib.V2i;
  */
 public class MapBasedPacManGameWorld implements PacManGameWorld {
 
+	// these are assumed to be equal in all world maps
 	private static final V2i HOUSE_ENTRY = new V2i(13, 14);
 	private static final V2i HOUSE_LEFT = new V2i(11, 17);
 	private static final V2i HOUSE_CENTER = new V2i(13, 17);
 	private static final V2i HOUSE_RIGHT = new V2i(15, 17);
-
 	private static final V2i PAC_HOME = new V2i(13, 26);
-
 	private static final V2i[] GHOST_HOME_TILES = { HOUSE_ENTRY, HOUSE_CENTER, HOUSE_LEFT, HOUSE_RIGHT };
 	private static final V2i[] GHOST_SCATTER_TILES = { new V2i(25, 0), new V2i(2, 0), new V2i(27, 35), new V2i(27, 35) };
 
+	protected WorldMap map;
+
 	protected final List<V2i> portalsLeft = new ArrayList<>(2);
 	protected final List<V2i> portalsRight = new ArrayList<>(2);
-
-	protected List<V2i> energizerTiles;
 	protected BitSet intersections;
 	protected List<V2i> upwardsBlockedTiles;
-
-	protected WorldMap map;
+	protected List<V2i> energizerTiles;
 
 	@Override
 	public void loadMap(String path) {
@@ -76,7 +74,7 @@ public class MapBasedPacManGameWorld implements PacManGameWorld {
 		// find energizer tiles
 		energizerTiles = tiles().filter(tile -> data(tile) == ENERGIZER).collect(Collectors.toList());
 
-		log("Use map '%s' (%d energizers)", path, energizerTiles.size());
+		log("World map is '%s'", path);
 	}
 
 	private Stream<V2i> neighborTiles(V2i tile) {
@@ -99,7 +97,7 @@ public class MapBasedPacManGameWorld implements PacManGameWorld {
 	}
 
 	@Override
-	public boolean inMapRange(V2i tile) {
+	public boolean insideMap(V2i tile) {
 		return 0 <= tile.x && tile.x < map.sizeX() && 0 <= tile.y && tile.y < map.sizeY();
 	}
 
@@ -168,7 +166,7 @@ public class MapBasedPacManGameWorld implements PacManGameWorld {
 		if (isPortal(tile)) {
 			return true;
 		}
-		if (!inMapRange(tile)) {
+		if (!insideMap(tile)) {
 			return false;
 		}
 		if (isGhostHouseDoor(tile)) {
@@ -179,12 +177,12 @@ public class MapBasedPacManGameWorld implements PacManGameWorld {
 
 	@Override
 	public boolean isTunnel(V2i tile) {
-		return inMapRange(tile) && data(tile) == TUNNEL;
+		return insideMap(tile) && data(tile) == TUNNEL;
 	}
 
 	@Override
 	public boolean isGhostHouseDoor(V2i tile) {
-		return inMapRange(tile) && data(tile) == DOOR;
+		return insideMap(tile) && data(tile) == DOOR;
 	}
 
 	@Override
@@ -203,7 +201,7 @@ public class MapBasedPacManGameWorld implements PacManGameWorld {
 
 	@Override
 	public boolean isFoodTile(V2i tile) {
-		return inMapRange(tile) && (data(tile) == PILL || data(tile) == ENERGIZER);
+		return insideMap(tile) && (data(tile) == PILL || data(tile) == ENERGIZER);
 	}
 
 	@Override

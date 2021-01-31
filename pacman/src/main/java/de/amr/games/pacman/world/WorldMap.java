@@ -17,8 +17,8 @@ public class WorldMap {
 
 	public WorldMap(String path) {
 		this.path = path;
-		load();
-		log("");
+		setMapSize();
+		readMapContent();
 	}
 
 	public int sizeX() {
@@ -37,8 +37,31 @@ public class WorldMap {
 		return data[y][x];
 	}
 
-	private void load() {
-		dimMap();
+	private void setMapSize() {
+		int sizeX = 0;
+		int sizeY = 0;
+		try (BufferedReader rdr = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(path)))) {
+			for (String line = rdr.readLine(); line != null; line = rdr.readLine()) {
+				if (line.startsWith("!") || line.isBlank()) {
+					continue; // skip comments and blank lines
+				}
+				if (sizeX == 0) {
+					sizeX = line.length();
+				} else if (sizeX != line.length()) {
+					throw new RuntimeException(String.format("Inconsistent line length in map %s", path));
+				}
+				++sizeY;
+			}
+		} catch (IOException e) {
+			throw new RuntimeException(String.format("Error reading map '%s'", path, e));
+		}
+		if (sizeX == 0 || sizeY == 0) {
+			throw new RuntimeException(String.format("Invalid map size: x=%d y=%d", sizeX, sizeY));
+		}
+		data = new byte[sizeY][sizeX];
+	}
+
+	private void readMapContent() {
 		int lineNumber = 0;
 		int y = 0;
 		try (BufferedReader rdr = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(path)))) {
@@ -61,27 +84,6 @@ public class WorldMap {
 		} catch (IOException e) {
 			throw new RuntimeException(String.format("Error reading map '%s'", path, e));
 		}
-	}
-
-	private void dimMap() {
-		int sizeX = -1;
-		int y = 0;
-		try (BufferedReader rdr = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(path)))) {
-			for (String line = rdr.readLine(); line != null; line = rdr.readLine()) {
-				if (line.startsWith("!") || line.isBlank()) {
-					continue; // skip comments and blank lines
-				}
-				if (sizeX == -1) {
-					sizeX = line.length();
-				} else if (sizeX != line.length()) {
-					throw new RuntimeException(String.format("Error reading map '%s', inconsistent line length", path));
-				}
-				++y;
-			}
-		} catch (IOException e) {
-			throw new RuntimeException(String.format("Error reading map '%s'", path, e));
-		}
-		data = new byte[y][sizeX];
 	}
 
 	private byte decode(char c) {
