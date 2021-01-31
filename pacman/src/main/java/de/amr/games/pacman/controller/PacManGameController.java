@@ -71,6 +71,14 @@ public class PacManGameController {
 		autopilot = new Autopilot(() -> game);
 	}
 
+	public void step() {
+		if (!gamePaused) {
+			readInput();
+			updateState();
+		}
+		ui.redraw();
+	}
+
 	public void selectGame(GameVariant variant) {
 		if (variant == GameVariant.CLASSIC) {
 			game = new PacManClassicGameModel();
@@ -128,14 +136,6 @@ public class PacManGameController {
 		String msg = game.pac.name + " is " + (game.pac.immune ? "immune" : "vulnerable");
 		ui.showFlashMessage(msg);
 		log(msg);
-	}
-
-	public void step() {
-		if (!gamePaused) {
-			readInput();
-			updateState();
-		}
-		ui.redraw();
 	}
 
 	private void readInput() {
@@ -204,54 +204,6 @@ public class PacManGameController {
 	}
 
 	// BEGIN STATE-MACHINE
-
-	private PacManGameState changeState(PacManGameState newState, Runnable onExit, Runnable onEntry) {
-		if (game.state != null) {
-			log("Exit state '%s'", game.stateDescription());
-		}
-		onExit.run();
-		previousState = game.state;
-		game.state = newState;
-		if (ui != null) {
-			ui.updateScene();
-		}
-		onEntry.run();
-		log("Entered state '%s' for %s", game.stateDescription(), ticksDescription(game.state.durationTicks()));
-		return game.state;
-	}
-
-	private void updateState() {
-		switch (game.state) {
-		case INTRO:
-			runIntroState();
-			break;
-		case READY:
-			runReadyState();
-			break;
-		case HUNTING:
-			runHuntingState();
-			break;
-		case CHANGING_LEVEL:
-			runChangingLevelState();
-			break;
-		case PACMAN_DYING:
-			runPacManDyingState();
-			break;
-		case GHOST_DYING:
-			runGhostDyingState();
-			break;
-		case GAME_OVER:
-			runGameOverState();
-			break;
-		default:
-			throw new IllegalStateException("Illegal state: " + game.state);
-		}
-		ui.updateScene();
-	}
-
-	private String ticksDescription(long ticks) {
-		return ticks == Long.MAX_VALUE ? "indefinite time" : ticks + " ticks";
-	}
 
 	// INTRO
 
@@ -616,6 +568,58 @@ public class PacManGameController {
 	}
 
 	// END STATE-MACHINE
+
+	// BEGIN STATE_MACHINE INFRASTRUCTURE
+
+	private PacManGameState changeState(PacManGameState newState, Runnable onExit, Runnable onEntry) {
+		if (game.state != null) {
+			log("Exit state '%s'", game.stateDescription());
+		}
+		onExit.run();
+		previousState = game.state;
+		game.state = newState;
+		if (ui != null) {
+			ui.updateScene();
+		}
+		onEntry.run();
+		log("Entered state '%s' for %s", game.stateDescription(), ticksDescription(game.state.durationTicks()));
+		return game.state;
+	}
+
+	private void updateState() {
+		switch (game.state) {
+		case INTRO:
+			runIntroState();
+			break;
+		case READY:
+			runReadyState();
+			break;
+		case HUNTING:
+			runHuntingState();
+			break;
+		case CHANGING_LEVEL:
+			runChangingLevelState();
+			break;
+		case PACMAN_DYING:
+			runPacManDyingState();
+			break;
+		case GHOST_DYING:
+			runGhostDyingState();
+			break;
+		case GAME_OVER:
+			runGameOverState();
+			break;
+		default:
+			throw new IllegalStateException("Illegal state: " + game.state);
+		}
+		ui.updateScene();
+	}
+
+	private String ticksDescription(long ticks) {
+		return ticks == Long.MAX_VALUE ? "indefinite time" : ticks + " ticks";
+	}
+
+	// END STATE_MACHINE INFRASTRUCTURE
 
 	private void score(int points) {
 		int oldscore = game.score;
