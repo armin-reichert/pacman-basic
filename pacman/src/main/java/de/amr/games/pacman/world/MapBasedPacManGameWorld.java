@@ -72,7 +72,7 @@ public class MapBasedPacManGameWorld implements PacManGameWorld {
 		//@formatter:on
 
 		// find energizer tiles
-		energizerTiles = tiles().filter(tile -> data(tile) == ENERGIZER).collect(Collectors.toList());
+		energizerTiles = tiles().filter(tile -> map.data(tile) == ENERGIZER).collect(Collectors.toList());
 
 		log("World map is '%s'", path);
 	}
@@ -89,11 +89,6 @@ public class MapBasedPacManGameWorld implements PacManGameWorld {
 	@Override
 	public int yTiles() {
 		return map.sizeY();
-	}
-
-	@Override
-	public byte data(V2i tile) {
-		return map.data(tile);
 	}
 
 	@Override
@@ -163,17 +158,17 @@ public class MapBasedPacManGameWorld implements PacManGameWorld {
 
 	@Override
 	public boolean isWall(V2i tile) {
-		return insideMap(tile) && data(tile) == WALL;
+		return insideMap(tile) && map.data(tile) == WALL;
 	}
 
 	@Override
 	public boolean isTunnel(V2i tile) {
-		return insideMap(tile) && data(tile) == TUNNEL;
+		return insideMap(tile) && map.data(tile) == TUNNEL;
 	}
 
 	@Override
 	public boolean isGhostHouseDoor(V2i tile) {
-		return insideMap(tile) && data(tile) == DOOR;
+		return insideMap(tile) && map.data(tile) == DOOR;
 	}
 
 	@Override
@@ -192,7 +187,7 @@ public class MapBasedPacManGameWorld implements PacManGameWorld {
 
 	@Override
 	public boolean isFoodTile(V2i tile) {
-		return insideMap(tile) && (data(tile) == PILL || data(tile) == ENERGIZER);
+		return insideMap(tile) && (map.data(tile) == PILL || map.data(tile) == ENERGIZER);
 	}
 
 	@Override

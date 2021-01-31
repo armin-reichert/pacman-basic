@@ -78,8 +78,6 @@ public interface PacManGameWorld {
 
 	boolean isGhostHouseDoor(V2i tile);
 
-	byte data(V2i tile);
-
 	boolean isFoodTile(V2i tile);
 
 	boolean isEnergizerTile(V2i tile);
