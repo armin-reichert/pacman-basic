@@ -66,7 +66,7 @@ public class MapBasedPacManGameWorld implements PacManGameWorld {
 		tiles()
 			.filter(tile -> !isInsideGhostHouse(tile))
 			.filter(tile -> !isGhostHouseDoor(tile.sum(DOWN.vec)))
-			.filter(tile -> neighborTiles(tile).filter(this::isAccessible).count() >= 3)
+			.filter(tile -> neighborTiles(tile).filter(neighbor-> !isWall(neighbor)).count() >= 3)
 			.map(tile -> index(tile))
 			.forEach(intersections::set);
 		//@formatter:on
@@ -162,17 +162,8 @@ public class MapBasedPacManGameWorld implements PacManGameWorld {
 	}
 
 	@Override
-	public boolean isAccessible(V2i tile) {
-		if (isPortal(tile)) {
-			return true;
-		}
-		if (!insideMap(tile)) {
-			return false;
-		}
-		if (isGhostHouseDoor(tile)) {
-			return false;
-		}
-		return data(tile) != WALL;
+	public boolean isWall(V2i tile) {
+		return insideMap(tile) && data(tile) == WALL;
 	}
 
 	@Override

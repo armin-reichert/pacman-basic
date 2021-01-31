@@ -10,7 +10,7 @@ import de.amr.games.pacman.lib.V2i;
 
 public class WorldMap {
 
-	public static final byte SPACE = 0, WALL = 1, PILL = 2, ENERGIZER = 3, DOOR = 4, TUNNEL = 5;
+	static final byte SPACE = 0, WALL = 1, PILL = 2, ENERGIZER = 3, DOOR = 4, TUNNEL = 5;
 
 	private byte[][] data;
 	private String path;

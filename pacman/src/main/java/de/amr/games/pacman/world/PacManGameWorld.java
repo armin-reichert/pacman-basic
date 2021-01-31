@@ -68,11 +68,11 @@ public interface PacManGameWorld {
 
 	boolean isUpwardsBlocked(V2i tile);
 
-	boolean isAccessible(V2i tile);
-
 	boolean isPortal(V2i tile);
 
 	boolean isIntersection(V2i tile);
+
+	boolean isWall(V2i tile);
 
 	boolean isTunnel(V2i tile);
 

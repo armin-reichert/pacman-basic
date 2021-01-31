@@ -85,7 +85,7 @@ public interface PacManGameScene {
 				if (game.world.isIntersection(tile)) {
 					for (Direction dir : Direction.values()) {
 						V2i neighbor = tile.sum(dir.vec);
-						if (!game.world.isAccessible(neighbor)) {
+						if (game.world.isWall(neighbor)) {
 							continue;
 						}
 						g.drawLine(t(x) + HTS, t(y) + HTS, t(neighbor.x) + HTS, t(neighbor.y) + HTS);

@@ -5,6 +5,9 @@ import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Direction.UP;
+import static de.amr.games.pacman.model.creatures.GhostState.ENTERING_HOUSE;
+import static de.amr.games.pacman.model.creatures.GhostState.HUNTING_PAC;
+import static de.amr.games.pacman.model.creatures.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.world.PacManGameWorld.HTS;
 import static de.amr.games.pacman.world.PacManGameWorld.t;
 
@@ -113,9 +116,9 @@ public class Ghost extends Creature {
 	@Override
 	public boolean canAccessTile(V2i tile) {
 		if (world.isGhostHouseDoor(tile)) {
-			return state == GhostState.ENTERING_HOUSE || state == GhostState.LEAVING_HOUSE;
+			return is(ENTERING_HOUSE) || is(LEAVING_HOUSE);
 		}
-		if (world.isUpwardsBlocked(tile) && wishDir == UP && state == GhostState.HUNTING_PAC) {
+		if (world.isUpwardsBlocked(tile) && wishDir == UP && is(HUNTING_PAC)) {
 			return false;
 		}
 		return super.canAccessTile(tile);

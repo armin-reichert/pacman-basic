@@ -83,7 +83,17 @@ public class Creature {
 	}
 
 	public boolean canAccessTile(V2i tile) {
-		return world.isAccessible(tile);
+		if (world.insideMap(tile)) {
+			if (world.isWall(tile)) {
+				return false;
+			}
+			if (world.isGhostHouseDoor(tile)) {
+				return false;
+			}
+			return true;
+		} else {
+			return world.isPortal(tile);
+		}
 	}
 
 	public boolean meets(Creature other) {
@@ -228,7 +238,7 @@ public class Creature {
 		//@formatter:off
 		return Stream.of(Direction.values())
 			.filter(direction -> Stream.of(excludedDirections).noneMatch(excludedDir -> excludedDir == direction))
-			.filter(direction -> world.isAccessible(tile.sum(direction.vec)));
+			.filter(direction -> canAccessTile(tile.sum(direction.vec)));
 		//@formatter:on
 	}
 
