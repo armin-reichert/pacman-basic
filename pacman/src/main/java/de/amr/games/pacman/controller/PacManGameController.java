@@ -189,11 +189,11 @@ public class PacManGameController {
 		game.bonus.eatenTicksLeft = 0;
 	}
 
-	private void enableGhostAnimations(boolean enabled) {
+	private void ghostWalkingAnimation(boolean animated) {
 		ui.animations().ifPresent(animations -> {
 			for (Ghost ghost : game.ghosts) {
 				for (Direction dir : Direction.values()) {
-					if (enabled) {
+					if (animated) {
 						animations.ghostWalking(ghost, dir).restart();
 					} else {
 						animations.ghostWalking(ghost, dir).stop();
@@ -281,7 +281,7 @@ public class PacManGameController {
 			game.state.setDuration(clock.sec(2));
 		}
 		letGuysGetReady();
-		enableGhostAnimations(false);
+		ghostWalkingAnimation(false);
 		ui.sounds().ifPresent(sm -> {
 			sm.stopAllSounds();
 			if (!game.started) {
@@ -302,7 +302,7 @@ public class PacManGameController {
 			game.pac.visible = true;
 		}
 		if (game.state.ticksLeft(clock.sec(0.5))) {
-			enableGhostAnimations(true);
+			ghostWalkingAnimation(true);
 		}
 		return game.state.run();
 	}
@@ -493,7 +493,7 @@ public class PacManGameController {
 		for (Ghost ghost : game.ghosts) {
 			ghost.state = HUNTING_PAC; // TODO just want ghost to be rendered colorful
 		}
-		enableGhostAnimations(false);
+		ghostWalkingAnimation(false);
 		game.bonus.edibleTicksLeft = game.bonus.eatenTicksLeft = 0;
 		ui.sounds().ifPresent(SoundManager::stopAllSounds);
 	}
@@ -524,7 +524,7 @@ public class PacManGameController {
 			ghost.visible = true;
 		}
 		ui.animations().ifPresent(animations -> animations.pacDying().reset());
-		enableGhostAnimations(true);
+		ghostWalkingAnimation(true);
 	}
 
 	// GHOST_DYING
@@ -599,7 +599,7 @@ public class PacManGameController {
 		}
 		game.pac.speed = 0;
 		game.saveHighscore();
-		enableGhostAnimations(false);
+		ghostWalkingAnimation(false);
 		ui.showMessage(ui.translation("GAME_OVER"), true);
 	}
 
