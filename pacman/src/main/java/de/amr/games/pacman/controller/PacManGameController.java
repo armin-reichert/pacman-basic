@@ -151,7 +151,7 @@ public class PacManGameController {
 		}
 	}
 
-	private void makeGuysReady() {
+	private void letGuysGetReady() {
 		game.pac.placeAt(game.level.world.pacHome(), HTS, 0);
 		game.pac.dir = game.pac.wishDir = game.pac.startDir;
 		game.pac.visible = false;
@@ -187,6 +187,20 @@ public class PacManGameController {
 		game.bonus.forcedOnTrack = true;
 		game.bonus.edibleTicksLeft = 0;
 		game.bonus.eatenTicksLeft = 0;
+	}
+
+	private void enableGhostAnimations(boolean enabled) {
+		ui.animations().ifPresent(animations -> {
+			for (Ghost ghost : game.ghosts) {
+				for (Direction dir : Direction.values()) {
+					if (enabled) {
+						animations.ghostWalking(ghost, dir).restart();
+					} else {
+						animations.ghostWalking(ghost, dir).stop();
+					}
+				}
+			}
+		});
 	}
 
 	// BEGIN STATE-MACHINE
@@ -266,19 +280,15 @@ public class PacManGameController {
 		} else {
 			game.state.setDuration(clock.sec(2));
 		}
-		makeGuysReady();
-		ui.showMessage(ui.translation("READY"), false);
-		ui.animations().ifPresent(animations -> {
-			for (Ghost ghost : game.ghosts) {
-				for (Direction dir : Direction.values()) {
-					animations.ghostWalking(ghost, dir).stop();
-				}
+		letGuysGetReady();
+		enableGhostAnimations(false);
+		ui.sounds().ifPresent(sm -> {
+			sm.stopAllSounds();
+			if (!game.started) {
+				sm.playSound(Sound.GAME_READY);
 			}
 		});
-		ui.sounds().ifPresent(SoundManager::stopAllSounds);
-		if (!game.started) {
-			ui.sounds().ifPresent(sm -> sm.playSound(Sound.GAME_READY));
-		}
+		ui.showMessage(ui.translation("READY"), false);
 	}
 
 	private PacManGameState runReadyState() {
@@ -292,13 +302,7 @@ public class PacManGameController {
 			game.pac.visible = true;
 		}
 		if (game.state.ticksLeft(clock.sec(0.5))) {
-			ui.animations().ifPresent(animations -> {
-				for (Ghost ghost : game.ghosts) {
-					for (Direction dir : Direction.values()) {
-						animations.ghostWalking(ghost, dir).restart();
-					}
-				}
-			});
+			enableGhostAnimations(true);
 		}
 		return game.state.run();
 	}
@@ -489,6 +493,7 @@ public class PacManGameController {
 		for (Ghost ghost : game.ghosts) {
 			ghost.state = HUNTING_PAC; // TODO just want ghost to be rendered colorful
 		}
+		enableGhostAnimations(false);
 		game.bonus.edibleTicksLeft = game.bonus.eatenTicksLeft = 0;
 		ui.sounds().ifPresent(SoundManager::stopAllSounds);
 	}
@@ -519,6 +524,7 @@ public class PacManGameController {
 			ghost.visible = true;
 		}
 		ui.animations().ifPresent(animations -> animations.pacDying().reset());
+		enableGhostAnimations(true);
 	}
 
 	// GHOST_DYING
@@ -593,10 +599,7 @@ public class PacManGameController {
 		}
 		game.pac.speed = 0;
 		game.saveHighscore();
-		ui.animations().ifPresent(animations -> {
-			Stream.of(game.ghosts)
-					.forEach(ghost -> Stream.of(Direction.values()).forEach(dir -> animations.ghostWalking(ghost, dir).stop()));
-		});
+		enableGhostAnimations(false);
 		ui.showMessage(ui.translation("GAME_OVER"), true);
 	}
 
