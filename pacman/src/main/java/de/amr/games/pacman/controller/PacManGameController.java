@@ -178,6 +178,9 @@ public class PacManGameController {
 			// these are only reset when entering level:
 //		ghost.dotCounter = 0;
 //		ghost.elroyMode = 0;
+			ui.animations().ifPresent(animations -> {
+				animations.ghostFlashing(ghost).reset();
+			});
 		}
 
 		game.bonus.visible = false;
