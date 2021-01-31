@@ -21,6 +21,11 @@ import de.amr.games.pacman.ui.api.Sound;
 import de.amr.games.pacman.ui.swing.Animation;
 import de.amr.games.pacman.ui.swing.Spritesheet;
 
+/**
+ * Sprites, animations, images etc. used in Ms. Pac-Man game.
+ * 
+ * @author Armin Reichert
+ */
 public class MsPacManAssets extends Spritesheet implements PacManGameAnimations {
 
 	/** Sprite sheet order of directions. */
