@@ -6,6 +6,7 @@ import java.util.BitSet;
 
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.world.PacManGameWorld;
+import de.amr.games.pacman.world.WorldMap;
 
 /**
  * Data comprising a game level.
@@ -62,9 +63,9 @@ public class PacManGameLevel {
 		for (int x = 0; x < world.xTiles(); ++x) {
 			for (int y = 0; y < world.yTiles(); ++y) {
 				V2i tile = new V2i(x, y);
-				if (world.data(tile) == PacManGameWorld.PILL) {
+				if (world.data(tile) == WorldMap.PILL) {
 					++totalFoodCount;
-				} else if (world.data(tile) == PacManGameWorld.ENERGIZER) {
+				} else if (world.data(tile) == WorldMap.ENERGIZER) {
 					energizerCount++;
 					++totalFoodCount;
 				}

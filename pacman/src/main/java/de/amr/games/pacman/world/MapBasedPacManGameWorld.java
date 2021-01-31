@@ -2,11 +2,12 @@ package de.amr.games.pacman.world;
 
 import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Logging.log;
+import static de.amr.games.pacman.world.WorldMap.DOOR;
+import static de.amr.games.pacman.world.WorldMap.ENERGIZER;
+import static de.amr.games.pacman.world.WorldMap.PILL;
+import static de.amr.games.pacman.world.WorldMap.TUNNEL;
+import static de.amr.games.pacman.world.WorldMap.WALL;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
@@ -26,25 +27,6 @@ import de.amr.games.pacman.lib.V2i;
  */
 public class MapBasedPacManGameWorld implements PacManGameWorld {
 
-	private static byte decode(char c) {
-		switch (c) {
-		case ' ':
-			return SPACE;
-		case '#':
-			return WALL;
-		case 'T':
-			return TUNNEL;
-		case '-':
-			return DOOR;
-		case '.':
-			return PILL;
-		case '*':
-			return ENERGIZER;
-		default:
-			throw new RuntimeException();
-		}
-	}
-
 	private static final V2i HOUSE_ENTRY = new V2i(13, 14);
 	private static final V2i HOUSE_LEFT = new V2i(11, 17);
 	private static final V2i HOUSE_CENTER = new V2i(13, 17);
@@ -55,8 +37,6 @@ public class MapBasedPacManGameWorld implements PacManGameWorld {
 	private static final V2i[] GHOST_HOME_TILES = { HOUSE_ENTRY, HOUSE_CENTER, HOUSE_LEFT, HOUSE_RIGHT };
 	private static final V2i[] GHOST_SCATTER_TILES = { new V2i(25, 0), new V2i(2, 0), new V2i(27, 35), new V2i(27, 35) };
 
-	protected final V2i sizeTiles = new V2i(28, 36);
-
 	protected final List<V2i> portalsLeft = new ArrayList<>(2);
 	protected final List<V2i> portalsRight = new ArrayList<>(2);
 
@@ -64,48 +44,21 @@ public class MapBasedPacManGameWorld implements PacManGameWorld {
 	protected BitSet intersections;
 	protected List<V2i> upwardsBlockedTiles;
 
-	protected byte[][] map;
+	protected WorldMap map;
 
 	@Override
 	public void loadMap(String path) {
-		int lineNumber = 0, errors = 0;
-		map = new byte[sizeTiles.y][sizeTiles.x];
-		try (InputStream is = getClass().getResourceAsStream(path)) {
-			if (is == null) {
-				throw new RuntimeException("Resource not found: " + path);
-			}
-			BufferedReader rdr = new BufferedReader(new InputStreamReader(is));
-			int y = 0;
-			for (String line = rdr.readLine(); line != null; line = rdr.readLine()) {
-				++lineNumber;
-				if (line.startsWith("!") || line.isBlank()) {
-					continue; // skip comments and blank lines
-				}
-				for (int x = 0; x < sizeTiles.x; ++x) {
-					char c = line.charAt(x);
-					try {
-						map[y][x] = decode(c);
-					} catch (Exception cause) {
-						++errors;
-						map[y][x] = SPACE;
-						log("*** Error in map '%s': Illegal char '%c' at line %d, column %d", path, c, lineNumber, x + 1);
-					}
-				}
-				++y;
-			}
-		} catch (IOException e) {
-			throw new RuntimeException(String.format("Error reading map '%s'", path, e));
-		}
+		map = new WorldMap(path);
 
 		upwardsBlockedTiles = Collections.emptyList();
 
 		// find portals
 		portalsLeft.clear();
 		portalsRight.clear();
-		for (int y = 0; y < sizeTiles.y; ++y) {
-			if (map[y][0] == TUNNEL && map[y][sizeTiles.x - 1] == TUNNEL) {
+		for (int y = 0; y < map.sizeY(); ++y) {
+			if (map.data(0, y) == TUNNEL && map.data(map.sizeX() - 1, y) == TUNNEL) {
 				portalsLeft.add(new V2i(-1, y));
-				portalsRight.add(new V2i(sizeTiles.x, y));
+				portalsRight.add(new V2i(map.sizeX(), y));
 			}
 		}
 
@@ -123,7 +76,7 @@ public class MapBasedPacManGameWorld implements PacManGameWorld {
 		// find energizer tiles
 		energizerTiles = tiles().filter(tile -> data(tile) == ENERGIZER).collect(Collectors.toList());
 
-		log("Use map '%s' (%d errors), (%d energizers)", path, errors, energizerTiles.size());
+		log("Use map '%s' (%d energizers)", path, energizerTiles.size());
 	}
 
 	private Stream<V2i> neighborTiles(V2i tile) {
@@ -132,22 +85,22 @@ public class MapBasedPacManGameWorld implements PacManGameWorld {
 
 	@Override
 	public int xTiles() {
-		return sizeTiles.x;
+		return map.sizeX();
 	}
 
 	@Override
 	public int yTiles() {
-		return sizeTiles.y;
+		return map.sizeY();
 	}
 
 	@Override
 	public byte data(V2i tile) {
-		return map[tile.y][tile.x];
+		return map.data(tile);
 	}
 
 	@Override
 	public boolean inMapRange(V2i tile) {
-		return 0 <= tile.x && tile.x < sizeTiles.x && 0 <= tile.y && tile.y < sizeTiles.y;
+		return 0 <= tile.x && tile.x < map.sizeX() && 0 <= tile.y && tile.y < map.sizeY();
 	}
 
 	@Override
