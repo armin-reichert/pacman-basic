@@ -143,7 +143,7 @@ public class PacManClassicAssets extends Spritesheet implements PacManGameAnimat
 		ghostFlashing = new ArrayList<>(4);
 		for (int g = 0; g < 4; ++g) {
 			ghostFlashing
-					.add(Animation.of(spriteAt(8, 4), spriteAt(9, 4), spriteAt(10, 4), spriteAt(11, 4)).frameDuration(10));
+					.add(Animation.of(spriteAt(8, 4), spriteAt(9, 4), spriteAt(10, 4), spriteAt(11, 4)).frameDuration(5));
 		}
 		//@formatter:off
 		soundURL = new EnumMap<>(Sound.class);
