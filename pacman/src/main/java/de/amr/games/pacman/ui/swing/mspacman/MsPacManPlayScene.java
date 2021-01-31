@@ -117,7 +117,6 @@ public class MsPacManPlayScene extends AbstractPacManPlayScene {
 			}
 			g.drawImage(assets.spriteAt(assets.symbolTiles[game.bonus.symbol]), x, y, null);
 		} else if (game.bonus.eatenTicksLeft > 0) {
-
 			g.drawImage(assets.spriteAt(assets.bonusValueTiles.get(game.bonus.points)), x, y, null);
 		}
 	}

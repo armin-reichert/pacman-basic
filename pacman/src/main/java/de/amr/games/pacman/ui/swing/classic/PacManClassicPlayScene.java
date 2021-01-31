@@ -2,6 +2,8 @@ package de.amr.games.pacman.ui.swing.classic;
 
 import static de.amr.games.pacman.controller.PacManGameState.HUNTING;
 import static de.amr.games.pacman.heaven.God.clock;
+import static de.amr.games.pacman.model.creatures.GhostState.DEAD;
+import static de.amr.games.pacman.model.creatures.GhostState.ENTERING_HOUSE;
 import static de.amr.games.pacman.model.creatures.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.creatures.GhostState.LOCKED;
 import static de.amr.games.pacman.world.PacManGameWorld.HTS;
@@ -18,10 +20,8 @@ import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.PacManGameModel;
 import de.amr.games.pacman.model.creatures.Bonus;
 import de.amr.games.pacman.model.creatures.Ghost;
-import de.amr.games.pacman.model.creatures.GhostState;
 import de.amr.games.pacman.model.creatures.Pac;
 import de.amr.games.pacman.ui.api.PacManGameAnimations;
-import de.amr.games.pacman.ui.api.PacManGameScene;
 import de.amr.games.pacman.ui.swing.AbstractPacManPlayScene;
 import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
 
@@ -30,7 +30,7 @@ import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
  * 
  * @author Armin Reichert
  */
-public class PacManClassicPlayScene extends AbstractPacManPlayScene implements PacManGameScene {
+public class PacManClassicPlayScene extends AbstractPacManPlayScene {
 
 	private final PacManClassicAssets assets;
 
@@ -127,7 +127,7 @@ public class PacManClassicPlayScene extends AbstractPacManPlayScene implements P
 		if (ghost.bounty > 0) {
 			return assets.numbers.get(ghost.bounty);
 		}
-		if (ghost.state == GhostState.DEAD || ghost.state == GhostState.ENTERING_HOUSE) {
+		if (ghost.is(DEAD) || ghost.is(ENTERING_HOUSE)) {
 			return assets.ghostEyes.get(ghost.wishDir);
 		}
 		if (ghost.is(FRIGHTENED)) {
@@ -136,9 +136,7 @@ public class PacManClassicPlayScene extends AbstractPacManPlayScene implements P
 			}
 			return assets.ghostBlue.currentFrameThenAdvance();
 		}
-		if (ghost.is(LOCKED) && game.pac.powerTicksLeft > 0)
-
-		{
+		if (ghost.is(LOCKED) && game.pac.powerTicksLeft > 0) {
 			return assets.ghostBlue.currentFrameThenAdvance();
 		}
 		return assets.ghostWalking.get(ghost.id).get(ghost.wishDir).currentFrameThenAdvance();
