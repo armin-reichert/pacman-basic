@@ -29,7 +29,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.MsPacManGameModel;
 import de.amr.games.pacman.model.PacManClassicGameModel;
@@ -192,18 +191,8 @@ public class PacManGameController {
 		game.bonus.eatenTicksLeft = 0;
 	}
 
-	private void ghostWalkingAnimation(boolean animated) {
-		ui.animations().ifPresent(animations -> {
-			for (Ghost ghost : game.ghosts) {
-				for (Direction dir : Direction.values()) {
-					if (animated) {
-						animations.ghostWalking(ghost, dir).restart();
-					} else {
-						animations.ghostWalking(ghost, dir).stop();
-					}
-				}
-			}
-		});
+	private void letGhostsFidget(boolean on) {
+		ui.animations().ifPresent(animations -> animations.letGhostsFidget(game.ghosts(), on));
 	}
 
 	// BEGIN STATE-MACHINE
@@ -236,7 +225,7 @@ public class PacManGameController {
 			game.state.setDuration(clock.sec(2));
 		}
 		letGuysGetReady();
-		ghostWalkingAnimation(false);
+		letGhostsFidget(false);
 		ui.sounds().ifPresent(sm -> {
 			sm.stopAllSounds();
 			if (!game.started) {
@@ -257,7 +246,7 @@ public class PacManGameController {
 			game.pac.visible = true;
 		}
 		if (game.state.ticksLeft(clock.sec(0.5))) {
-			ghostWalkingAnimation(true);
+			letGhostsFidget(true);
 		}
 		return game.state.run();
 	}
@@ -448,8 +437,8 @@ public class PacManGameController {
 		game.state.setDuration(clock.sec(6));
 		game.pac.speed = 0;
 		game.ghosts().forEach(ghost -> ghost.state = HUNTING_PAC); // TODO just to render ghost colorful
-		ghostWalkingAnimation(false);
 		game.bonus.edibleTicksLeft = game.bonus.eatenTicksLeft = 0;
+		letGhostsFidget(false);
 		ui.sounds().ifPresent(SoundManager::stopAllSounds);
 	}
 
@@ -475,7 +464,7 @@ public class PacManGameController {
 	private void exitPacManDyingState() {
 		game.ghosts().forEach(ghost -> ghost.visible = true);
 		ui.animations().ifPresent(animations -> animations.pacDying().reset());
-		ghostWalkingAnimation(true);
+		letGhostsFidget(true);
 	}
 
 	// GHOST_DYING
@@ -541,7 +530,7 @@ public class PacManGameController {
 		game.ghosts().forEach(ghost -> ghost.speed = 0);
 		game.pac.speed = 0;
 		game.saveHighscore();
-		ghostWalkingAnimation(false);
+		letGhostsFidget(false);
 		ui.showMessage(ui.translation("GAME_OVER"), true);
 	}
 
