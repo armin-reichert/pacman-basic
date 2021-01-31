@@ -63,14 +63,14 @@ public class PacManClassicGameModel extends PacManGameModel {
 		bonusNames = new String[] { "CHERRIES", "STRAWBERRY", "PEACH", "APPLE", "GRAPES", "GALAXIAN", "BELL", "KEY" };
 		bonusValues = new int[] { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
 		bonus = new Bonus(world);
-		bonus.position = new V2f(13 * TS, 20 * TS + HTS);
+		bonus.position = new V2f(13 * TS + HTS, 20 * TS);
 
 		pac = new Pac(world, "Pac-Man", RIGHT);
 
 		ghosts = new Ghost[4];
 		ghosts[BLINKY] = new Ghost(world, BLINKY, "Blinky", LEFT);
 		ghosts[PINKY] = new Ghost(world, PINKY, "Pinky", UP);
-		ghosts[INKY] = new Ghost(world, INKY, "Iinky", DOWN);
+		ghosts[INKY] = new Ghost(world, INKY, "Inky", DOWN);
 		ghosts[CLYDE] = new Ghost(world, CLYDE, "Clyde", DOWN);
 
 		reset();
