@@ -71,7 +71,7 @@ public class PacManGameApp {
 	public static void main(String[] args) {
 		Options options = Options.parse(args);
 		PacManGameController controller = new PacManGameController();
-		controller.initGame(options.variant);
+		controller.play(options.variant);
 		controller.game().ifPresent(game -> {
 			invokeLater(() -> {
 				PacManGameSwingUI ui = new PacManGameSwingUI(controller, game.world.xTiles(), game.world.yTiles(),

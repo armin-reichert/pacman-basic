@@ -8,7 +8,7 @@ import de.amr.games.pacman.ui.swing.Animation;
 
 public interface PacManGameAnimations {
 
-	Animation<BufferedImage> pacCollapsing();
+	Animation<BufferedImage> pacDying();
 
 	Animation<BufferedImage> ghostWalking(Ghost ghost, Direction dir);
 

@@ -43,7 +43,7 @@ public class MsPacManPlayScene extends AbstractPacManPlayScene implements PacMan
 	}
 
 	@Override
-	public Animation<BufferedImage> pacCollapsing() {
+	public Animation<BufferedImage> pacDying() {
 		return assets.pacSpinning;
 	}
 
