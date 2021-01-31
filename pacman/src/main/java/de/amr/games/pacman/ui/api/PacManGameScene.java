@@ -12,6 +12,7 @@ import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.Stroke;
 import java.awt.image.BufferedImage;
+import java.util.Optional;
 
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
@@ -35,6 +36,8 @@ public interface PacManGameScene {
 
 	default void end() {
 	}
+
+	Optional<PacManGameAnimations> animations();
 
 	// convenience
 

@@ -8,12 +8,15 @@ import static de.amr.games.pacman.world.PacManGameWorld.t;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.PacManGameModel;
 import de.amr.games.pacman.model.creatures.Ghost;
+import de.amr.games.pacman.ui.api.PacManGameAnimations;
 import de.amr.games.pacman.ui.api.PacManGameScene;
 import de.amr.games.pacman.ui.api.Sound;
 import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
@@ -41,6 +44,11 @@ public class MsPacManIntroScene implements PacManGameScene {
 	}
 
 	@Override
+	public Optional<PacManGameAnimations> animations() {
+		return Optional.of(assets);
+	}
+
+	@Override
 	public V2i size() {
 		return size;
 	}
@@ -52,6 +60,10 @@ public class MsPacManIntroScene implements PacManGameScene {
 			ghost.speed = 0;
 			ghost.dir = LEFT;
 		}
+		ui.animations().ifPresent(animations -> {
+			Stream.of(game.ghosts).forEach(
+					ghost -> Stream.of(Direction.values()).forEach(dir -> animations.ghostWalking(ghost, dir).restart()));
+		});
 		game.pac.position = new V2f(size.x, belowFrame);
 		game.pac.speed = 0;
 		game.pac.dir = LEFT;

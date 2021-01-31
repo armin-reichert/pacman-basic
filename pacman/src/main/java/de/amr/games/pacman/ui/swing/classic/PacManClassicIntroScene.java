@@ -8,12 +8,14 @@ import static de.amr.games.pacman.world.PacManGameWorld.t;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.util.Optional;
 import java.util.stream.IntStream;
 
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.PacManGameModel;
+import de.amr.games.pacman.ui.api.PacManGameAnimations;
 import de.amr.games.pacman.ui.api.PacManGameScene;
 import de.amr.games.pacman.ui.api.Sound;
 import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
@@ -38,6 +40,11 @@ public class PacManClassicIntroScene implements PacManGameScene {
 		this.size = size;
 		this.assets = assets;
 		this.game = game;
+	}
+
+	@Override
+	public Optional<PacManGameAnimations> animations() {
+		return Optional.of(assets);
 	}
 
 	@Override
@@ -170,8 +177,8 @@ public class PacManClassicIntroScene implements PacManGameScene {
 		}
 		g.drawImage(pacSprite(), (int) game.pac.position.x, (int) game.pac.position.y, null);
 		for (int ghostID = 0; ghostID < 4; ++ghostID) {
-			g.drawImage(assets.ghostWalking.get(ghostID).get(LEFT).currentFrameThenAdvance(), (int) game.ghosts[0].position.x + 16 * ghostID,
-					(int) game.pac.position.y, null);
+			g.drawImage(assets.ghostWalking.get(ghostID).get(LEFT).currentFrameThenAdvance(),
+					(int) game.ghosts[0].position.x + 16 * ghostID, (int) game.pac.position.y, null);
 		}
 		if (game.pac.position.x > t(2)) {
 			V2f velocity = new V2f(game.pac.dir.vec).scaled(game.pac.speed);
@@ -212,7 +219,8 @@ public class PacManClassicIntroScene implements PacManGameScene {
 	}
 
 	private BufferedImage pacSprite() {
-		return game.pac.speed != 0 ? assets.pacMunching.get(game.pac.dir).currentFrameThenAdvance() : assets.pacMouthOpen.get(game.pac.dir);
+		return game.pac.speed != 0 ? assets.pacMunching.get(game.pac.dir).currentFrameThenAdvance()
+				: assets.pacMouthOpen.get(game.pac.dir);
 	}
 
 }

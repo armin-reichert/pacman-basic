@@ -15,6 +15,8 @@ import java.util.Map;
 
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.model.creatures.Ghost;
+import de.amr.games.pacman.ui.api.PacManGameAnimations;
 import de.amr.games.pacman.ui.api.Sound;
 import de.amr.games.pacman.ui.swing.Animation;
 import de.amr.games.pacman.ui.swing.Spritesheet;
@@ -30,7 +32,7 @@ import de.amr.games.pacman.ui.swing.Spritesheet;
  * 
  * @author Armin Reichert
  */
-public class PacManClassicAssets extends Spritesheet {
+public class PacManClassicAssets extends Spritesheet implements PacManGameAnimations {
 
 	/** Sprite sheet order of directions. */
 	private static int index(Direction dir) {
@@ -158,5 +160,20 @@ public class PacManClassicAssets extends Spritesheet {
 		soundURL.put(Sound.GHOST_SIREN_4,    url("/sound/classic/siren_4.wav"));
 		soundURL.put(Sound.GHOST_SIREN_5,    url("/sound/classic/siren_5.wav"));
 		//@formatter:on
+	}
+
+	@Override
+	public Animation<BufferedImage> pacDying() {
+		return pacCollapsing;
+	}
+
+	@Override
+	public Animation<BufferedImage> ghostWalking(Ghost ghost, Direction dir) {
+		return ghostWalking.get(ghost.id).get(dir);
+	}
+
+	@Override
+	public Animation<BufferedImage> mazeFlashing(int mazeNumber) {
+		return mazeFlashing;
 	}
 }

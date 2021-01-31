@@ -177,10 +177,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 	@Override
 	public Optional<PacManGameAnimations> animations() {
-		if (currentScene instanceof PacManGameAnimations) {
-			return Optional.ofNullable((PacManGameAnimations) currentScene);
-		}
-		return Optional.empty();
+		return currentScene.animations();
 	}
 
 	@Override

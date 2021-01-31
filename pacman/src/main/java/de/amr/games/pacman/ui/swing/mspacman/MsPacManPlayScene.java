@@ -14,10 +14,10 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.util.Optional;
 
 import de.amr.games.pacman.controller.PacManGameState;
 import de.amr.games.pacman.lib.Direction;
-import de.amr.games.pacman.lib.Logging;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.PacManGameModel;
 import de.amr.games.pacman.model.creatures.Ghost;
@@ -33,7 +33,7 @@ import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
  * 
  * @author Armin Reichert
  */
-public class MsPacManPlayScene extends AbstractPacManPlayScene implements PacManGameScene, PacManGameAnimations {
+public class MsPacManPlayScene extends AbstractPacManPlayScene implements PacManGameScene {
 
 	private final MsPacManAssets assets;
 
@@ -43,19 +43,8 @@ public class MsPacManPlayScene extends AbstractPacManPlayScene implements PacMan
 	}
 
 	@Override
-	public Animation<BufferedImage> pacDying() {
-		return assets.pacSpinning;
-	}
-
-	@Override
-	public Animation<BufferedImage> ghostWalking(Ghost ghost, Direction dir) {
-		return assets.ghostWalking.get(ghost.id).get(dir);
-	}
-
-	@Override
-	public Animation<BufferedImage> mazeFlashing(int mazeNumber) {
-		Logging.log("Animation for maze #%d equested", mazeNumber);
-		return assets.mazeFlashingAnimations.get(mazeNumber - 1);
+	public Optional<PacManGameAnimations> animations() {
+		return Optional.of(assets);
 	}
 
 	@Override
