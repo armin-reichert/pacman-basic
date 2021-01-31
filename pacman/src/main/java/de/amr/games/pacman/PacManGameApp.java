@@ -18,44 +18,54 @@ public class PacManGameApp {
 	static class Options {
 
 		float scaling = 2;
-		GameVariant variant = GameVariant.MS_PACMAN;
+		GameVariant gameVariant = GameVariant.MS_PACMAN;
 
-		static Options parse(String[] args) {
-			Options options = new Options();
+		Options(String[] strings) {
 			int i = 0;
-			while (i < args.length) {
-				String arg = args[i];
-				if ("-pacman".equals(arg)) {
-					options.variant = GameVariant.CLASSIC;
+			while (i < strings.length) {
+				String s = strings[i];
+				if ("-pacman".equals(s)) {
+					gameVariant = GameVariant.CLASSIC;
 					++i;
 					continue;
 				}
-				if ("-mspacman".equals(arg)) {
-					options.variant = GameVariant.MS_PACMAN;
+				if ("-mspacman".equals(s)) {
+					gameVariant = GameVariant.MS_PACMAN;
 					++i;
 					continue;
 				}
-				if ("-scaling".equals(arg)) {
-					if (i == args.length - 1) {
-						log("Error parsing command-line: missing scaling value.");
+				if ("-scaling".equals(s)) {
+					if (i == strings.length - 1) {
+						log("Error parsing options: missing scaling value.");
 						++i;
 						continue;
 					}
 					++i;
-					arg = args[i];
+					s = strings[i];
 					try {
-						options.scaling = Float.parseFloat(arg);
+						scaling = Float.parseFloat(s);
 					} catch (NumberFormatException x) {
-						log("Error parsing command-line: '%s' is no legal scaling value.", arg);
+						log("Error parsing options: '%s' is no legal scaling value.", s);
 					}
 					++i;
 					continue;
 				}
-				log("Error parsing command-line: Unknown argument '%s'", arg);
+				log("Error parsing options: Unknown option '%s'", s);
 				++i;
 			}
-			return options;
 		}
+	}
+
+	private PacManGameController controller;
+
+	public PacManGameApp(GameVariant gameVariant) {
+		controller = new PacManGameController();
+		controller.selectGame(gameVariant);
+	}
+
+	private void gameLoop() {
+		while (true)
+			God.clock.tick(controller::step);
 	}
 
 	/**
@@ -69,20 +79,15 @@ public class PacManGameApp {
 	 *             </ul>
 	 */
 	public static void main(String[] args) {
-		Options options = Options.parse(args);
-		PacManGameController controller = new PacManGameController();
-		controller.play(options.variant);
-		controller.game().ifPresent(game -> {
-			invokeLater(() -> {
-				PacManGameSwingUI ui = new PacManGameSwingUI(controller, game.world.xTiles(), game.world.yTiles(),
+		Options options = new Options(args);
+		PacManGameApp app = new PacManGameApp(options.gameVariant);
+		invokeLater(() -> {
+			app.controller.game().ifPresent(game -> {
+				PacManGameSwingUI ui = new PacManGameSwingUI(app.controller, game.world.xTiles(), game.world.yTiles(),
 						options.scaling);
 				ui.updateGame(game);
 				ui.show();
-				Runnable loop = () -> {
-					while (true)
-						God.clock.tick(controller::step);
-				};
-				new Thread(loop, "PacManGame").start();
+				new Thread(app::gameLoop, "PacManGame").start();
 			});
 		});
 	}

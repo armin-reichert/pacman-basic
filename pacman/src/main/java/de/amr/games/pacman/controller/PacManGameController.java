@@ -71,7 +71,7 @@ public class PacManGameController {
 		autopilot = new Autopilot(() -> game);
 	}
 
-	public void play(GameVariant variant) {
+	public void selectGame(GameVariant variant) {
 		if (variant == GameVariant.CLASSIC) {
 			game = new PacManClassicGameModel();
 		} else if (variant == GameVariant.MS_PACMAN) {
@@ -111,7 +111,7 @@ public class PacManGameController {
 	}
 
 	private void toggleGameVariant() {
-		play(game instanceof PacManClassicGameModel ? GameVariant.MS_PACMAN : GameVariant.CLASSIC);
+		selectGame(game instanceof PacManClassicGameModel ? GameVariant.MS_PACMAN : GameVariant.CLASSIC);
 		ui.sounds().ifPresent(SoundManager::stopAllSounds);
 		ui.updateGame(game);
 	}
