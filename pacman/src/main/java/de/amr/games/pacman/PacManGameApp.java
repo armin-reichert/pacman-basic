@@ -3,8 +3,8 @@ package de.amr.games.pacman;
 import static de.amr.games.pacman.lib.Logging.log;
 import static java.awt.EventQueue.invokeLater;
 
-import de.amr.games.pacman.game.core.GameVariant;
-import de.amr.games.pacman.game.core.PacManGameController;
+import de.amr.games.pacman.game.controller.GameVariant;
+import de.amr.games.pacman.game.controller.PacManGameController;
 import de.amr.games.pacman.game.heaven.God;
 import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
 

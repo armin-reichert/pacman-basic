@@ -1,4 +1,4 @@
-package de.amr.games.pacman.game.core;
+package de.amr.games.pacman.game.model;
 
 import static de.amr.games.pacman.lib.Logging.log;
 
@@ -6,9 +6,11 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.amr.games.pacman.game.creatures.Bonus;
-import de.amr.games.pacman.game.creatures.Ghost;
-import de.amr.games.pacman.game.creatures.Pac;
+import de.amr.games.pacman.game.controller.PacManGameState;
+import de.amr.games.pacman.game.model.creatures.Bonus;
+import de.amr.games.pacman.game.model.creatures.Ghost;
+import de.amr.games.pacman.game.model.creatures.Pac;
+import de.amr.games.pacman.game.world.PacManGameWorld;
 import de.amr.games.pacman.lib.Hiscore;
 
 /**

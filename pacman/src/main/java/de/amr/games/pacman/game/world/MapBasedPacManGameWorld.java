@@ -1,4 +1,4 @@
-package de.amr.games.pacman.game.worlds;
+package de.amr.games.pacman.game.world;
 
 import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Logging.log;
@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.game.core.PacManGameWorld;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
 

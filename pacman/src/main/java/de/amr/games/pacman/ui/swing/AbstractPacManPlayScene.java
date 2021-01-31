@@ -1,17 +1,17 @@
 package de.amr.games.pacman.ui.swing;
 
-import static de.amr.games.pacman.game.core.PacManGameWorld.TS;
-import static de.amr.games.pacman.game.core.PacManGameWorld.t;
+import static de.amr.games.pacman.game.world.PacManGameWorld.TS;
+import static de.amr.games.pacman.game.world.PacManGameWorld.t;
 
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
-import de.amr.games.pacman.game.core.PacManGameModel;
-import de.amr.games.pacman.game.creatures.Creature;
-import de.amr.games.pacman.game.creatures.Ghost;
-import de.amr.games.pacman.game.creatures.Pac;
+import de.amr.games.pacman.game.model.PacManGameModel;
+import de.amr.games.pacman.game.model.creatures.Creature;
+import de.amr.games.pacman.game.model.creatures.Ghost;
+import de.amr.games.pacman.game.model.creatures.Pac;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.api.PacManGameScene;
 

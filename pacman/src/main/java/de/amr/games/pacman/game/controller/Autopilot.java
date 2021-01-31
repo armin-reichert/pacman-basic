@@ -1,4 +1,4 @@
-package de.amr.games.pacman.game.core;
+package de.amr.games.pacman.game.controller;
 
 import static de.amr.games.pacman.game.heaven.God.clock;
 
@@ -10,8 +10,9 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.game.creatures.Ghost;
-import de.amr.games.pacman.game.creatures.GhostState;
+import de.amr.games.pacman.game.model.PacManGameModel;
+import de.amr.games.pacman.game.model.creatures.Ghost;
+import de.amr.games.pacman.game.model.creatures.GhostState;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.Logging;
 import de.amr.games.pacman.lib.V2i;

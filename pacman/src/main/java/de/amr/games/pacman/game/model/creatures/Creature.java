@@ -1,7 +1,7 @@
-package de.amr.games.pacman.game.creatures;
+package de.amr.games.pacman.game.model.creatures;
 
-import static de.amr.games.pacman.game.core.PacManGameWorld.TS;
 import static de.amr.games.pacman.game.heaven.God.random;
+import static de.amr.games.pacman.game.world.PacManGameWorld.TS;
 import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
@@ -13,7 +13,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.game.core.PacManGameWorld;
+import de.amr.games.pacman.game.world.PacManGameWorld;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;

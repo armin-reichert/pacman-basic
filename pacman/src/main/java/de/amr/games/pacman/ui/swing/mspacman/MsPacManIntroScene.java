@@ -1,7 +1,7 @@
 package de.amr.games.pacman.ui.swing.mspacman;
 
-import static de.amr.games.pacman.game.core.PacManGameWorld.t;
 import static de.amr.games.pacman.game.heaven.God.clock;
+import static de.amr.games.pacman.game.world.PacManGameWorld.t;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.UP;
 
@@ -9,8 +9,8 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
-import de.amr.games.pacman.game.core.PacManGameModel;
-import de.amr.games.pacman.game.creatures.Ghost;
+import de.amr.games.pacman.game.model.PacManGameModel;
+import de.amr.games.pacman.game.model.creatures.Ghost;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;

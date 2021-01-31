@@ -1,19 +1,19 @@
-package de.amr.games.pacman.game.core;
+package de.amr.games.pacman.game.model;
 
-import static de.amr.games.pacman.game.core.PacManGameWorld.HTS;
-import static de.amr.games.pacman.game.core.PacManGameWorld.TS;
 import static de.amr.games.pacman.game.heaven.God.clock;
 import static de.amr.games.pacman.game.heaven.God.random;
+import static de.amr.games.pacman.game.world.PacManGameWorld.HTS;
+import static de.amr.games.pacman.game.world.PacManGameWorld.TS;
 import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.lib.Logging.log;
 
-import de.amr.games.pacman.game.creatures.Bonus;
-import de.amr.games.pacman.game.creatures.Ghost;
-import de.amr.games.pacman.game.creatures.Pac;
-import de.amr.games.pacman.game.worlds.MapBasedPacManGameWorld;
+import de.amr.games.pacman.game.model.creatures.Bonus;
+import de.amr.games.pacman.game.model.creatures.Ghost;
+import de.amr.games.pacman.game.model.creatures.Pac;
+import de.amr.games.pacman.game.world.MapBasedPacManGameWorld;
 import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
 

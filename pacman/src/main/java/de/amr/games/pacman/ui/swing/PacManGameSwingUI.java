@@ -1,8 +1,8 @@
 package de.amr.games.pacman.ui.swing;
 
-import static de.amr.games.pacman.game.core.PacManGameWorld.TS;
-import static de.amr.games.pacman.game.core.PacManGameWorld.t;
 import static de.amr.games.pacman.game.heaven.God.clock;
+import static de.amr.games.pacman.game.world.PacManGameWorld.TS;
+import static de.amr.games.pacman.game.world.PacManGameWorld.t;
 import static de.amr.games.pacman.lib.Logging.log;
 import static java.lang.Math.cos;
 
@@ -28,11 +28,11 @@ import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.Timer;
 
-import de.amr.games.pacman.game.core.PacManClassicGameModel;
-import de.amr.games.pacman.game.core.PacManGameController;
-import de.amr.games.pacman.game.core.PacManGameModel;
-import de.amr.games.pacman.game.core.PacManGameState;
+import de.amr.games.pacman.game.controller.PacManGameController;
+import de.amr.games.pacman.game.controller.PacManGameState;
 import de.amr.games.pacman.game.heaven.God;
+import de.amr.games.pacman.game.model.PacManClassicGameModel;
+import de.amr.games.pacman.game.model.PacManGameModel;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.api.PacManGameAnimations;
 import de.amr.games.pacman.ui.api.PacManGameScene;

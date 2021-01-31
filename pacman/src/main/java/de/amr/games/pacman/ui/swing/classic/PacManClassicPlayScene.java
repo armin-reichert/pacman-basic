@@ -1,24 +1,24 @@
 package de.amr.games.pacman.ui.swing.classic;
 
-import static de.amr.games.pacman.game.core.PacManGameState.HUNTING;
-import static de.amr.games.pacman.game.core.PacManGameWorld.HTS;
-import static de.amr.games.pacman.game.core.PacManGameWorld.TS;
-import static de.amr.games.pacman.game.core.PacManGameWorld.t;
-import static de.amr.games.pacman.game.creatures.GhostState.FRIGHTENED;
-import static de.amr.games.pacman.game.creatures.GhostState.LOCKED;
+import static de.amr.games.pacman.game.controller.PacManGameState.HUNTING;
 import static de.amr.games.pacman.game.heaven.God.clock;
+import static de.amr.games.pacman.game.model.creatures.GhostState.FRIGHTENED;
+import static de.amr.games.pacman.game.model.creatures.GhostState.LOCKED;
+import static de.amr.games.pacman.game.world.PacManGameWorld.HTS;
+import static de.amr.games.pacman.game.world.PacManGameWorld.TS;
+import static de.amr.games.pacman.game.world.PacManGameWorld.t;
 
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
-import de.amr.games.pacman.game.core.PacManGameModel;
-import de.amr.games.pacman.game.core.PacManGameState;
-import de.amr.games.pacman.game.creatures.Bonus;
-import de.amr.games.pacman.game.creatures.Ghost;
-import de.amr.games.pacman.game.creatures.GhostState;
-import de.amr.games.pacman.game.creatures.Pac;
+import de.amr.games.pacman.game.controller.PacManGameState;
+import de.amr.games.pacman.game.model.PacManGameModel;
+import de.amr.games.pacman.game.model.creatures.Bonus;
+import de.amr.games.pacman.game.model.creatures.Ghost;
+import de.amr.games.pacman.game.model.creatures.GhostState;
+import de.amr.games.pacman.game.model.creatures.Pac;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.api.PacManGameAnimations;

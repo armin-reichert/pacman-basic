@@ -1,9 +1,10 @@
-package de.amr.games.pacman.game.core;
+package de.amr.games.pacman.game.model;
 
 import static de.amr.games.pacman.lib.Logging.log;
 
 import java.util.BitSet;
 
+import de.amr.games.pacman.game.world.PacManGameWorld;
 import de.amr.games.pacman.lib.V2i;
 
 /**

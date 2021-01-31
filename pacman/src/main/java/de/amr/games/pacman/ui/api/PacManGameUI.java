@@ -2,7 +2,7 @@ package de.amr.games.pacman.ui.api;
 
 import java.util.Optional;
 
-import de.amr.games.pacman.game.core.PacManGameModel;
+import de.amr.games.pacman.game.model.PacManGameModel;
 
 /**
  * Interface through which the game class sees the user interface.
