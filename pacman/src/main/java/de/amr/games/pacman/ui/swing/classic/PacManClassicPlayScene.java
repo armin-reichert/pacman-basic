@@ -14,7 +14,6 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.Optional;
 
-import de.amr.games.pacman.controller.PacManGameState;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.PacManGameModel;
 import de.amr.games.pacman.model.creatures.Bonus;
@@ -132,13 +131,14 @@ public class PacManClassicPlayScene extends AbstractPacManPlayScene implements P
 			return assets.ghostEyes.get(ghost.wishDir);
 		}
 		if (ghost.is(FRIGHTENED)) {
-			if (game.pac.powerTicksLeft <= assets.ghostFlashing.getDuration() * game.level.numFlashes
-					&& game.state == PacManGameState.HUNTING) {
-				return assets.ghostFlashing.currentFrameThenAdvance();
+			if (assets.ghostFlashing(ghost).isRunning()) {
+				return assets.ghostFlashing(ghost).currentFrameThenAdvance();
 			}
 			return assets.ghostBlue.currentFrameThenAdvance();
 		}
-		if (ghost.is(LOCKED) && game.pac.powerTicksLeft > 0) {
+		if (ghost.is(LOCKED) && game.pac.powerTicksLeft > 0)
+
+		{
 			return assets.ghostBlue.currentFrameThenAdvance();
 		}
 		return assets.ghostWalking.get(ghost.id).get(ghost.wishDir).currentFrameThenAdvance();

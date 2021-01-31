@@ -12,5 +12,7 @@ public interface PacManGameAnimations {
 
 	Animation<BufferedImage> ghostWalking(Ghost ghost, Direction dir);
 
+	Animation<BufferedImage> ghostFlashing(Ghost ghost);
+
 	Animation<BufferedImage> mazeFlashing(int mazeNumber);
 }

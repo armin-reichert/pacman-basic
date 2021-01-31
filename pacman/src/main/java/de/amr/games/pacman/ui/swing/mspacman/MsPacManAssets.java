@@ -56,7 +56,7 @@ public class MsPacManAssets extends Spritesheet implements PacManGameAnimations 
 	public final List<EnumMap<Direction, Animation<BufferedImage>>> ghostWalking;
 	public final EnumMap<Direction, BufferedImage> ghostEyes;
 	public final Animation<BufferedImage> ghostBlue;
-	public final Animation<BufferedImage> ghostFlashing;
+	public final List<Animation<BufferedImage>> ghostFlashing;
 	public final Font scoreFont;
 
 	public MsPacManAssets() {
@@ -146,8 +146,11 @@ public class MsPacManAssets extends Spritesheet implements PacManGameAnimations 
 		ghostBlue = Animation.of(spriteAt(8, 4), spriteAt(9, 4));
 		ghostBlue.frameDuration(20).endless().run();
 
-		ghostFlashing = Animation.of(spriteAt(8, 4), spriteAt(9, 4), spriteAt(10, 4), spriteAt(11, 4));
-		ghostFlashing.frameDuration(10).endless().run();
+		ghostFlashing = new ArrayList<>(4);
+		for (int g = 0; g < 4; ++g) {
+			ghostFlashing
+					.add(Animation.of(spriteAt(8, 4), spriteAt(9, 4), spriteAt(10, 4), spriteAt(11, 4)).frameDuration(10));
+		}
 
 		//@formatter:off
 		soundURL = new EnumMap<>(Sound.class);
@@ -176,6 +179,11 @@ public class MsPacManAssets extends Spritesheet implements PacManGameAnimations 
 	@Override
 	public Animation<BufferedImage> ghostWalking(Ghost ghost, Direction dir) {
 		return ghostWalking.get(ghost.id).get(dir);
+	}
+
+	@Override
+	public Animation<BufferedImage> ghostFlashing(Ghost ghost) {
+		return ghostFlashing.get(ghost.id);
 	}
 
 	@Override

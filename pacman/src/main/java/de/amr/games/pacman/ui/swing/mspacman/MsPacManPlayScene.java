@@ -16,7 +16,6 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.Optional;
 
-import de.amr.games.pacman.controller.PacManGameState;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.PacManGameModel;
@@ -152,9 +151,8 @@ public class MsPacManPlayScene extends AbstractPacManPlayScene implements PacMan
 			return assets.ghostEyes.get(ghost.wishDir);
 		}
 		if (ghost.is(FRIGHTENED)) {
-			if (game.pac.powerTicksLeft <= assets.ghostFlashing.getDuration() * game.level.numFlashes
-					&& game.state == PacManGameState.HUNTING) {
-				return assets.ghostFlashing.currentFrameThenAdvance();
+			if (assets.ghostFlashing(ghost).isRunning()) {
+				return assets.ghostFlashing(ghost).currentFrameThenAdvance();
 			}
 			return assets.ghostBlue.currentFrameThenAdvance();
 		}

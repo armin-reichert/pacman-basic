@@ -394,9 +394,21 @@ public class PacManGameController {
 		// Is Pac losing power?
 		if (game.pac.powerTicksLeft > 0) {
 			game.pac.powerTicksLeft--;
+			ui.animations().ifPresent(animations -> {
+				// all ghost have the same flashing time
+				long flashingDuration = animations.ghostFlashing(game.ghosts[0]).getDuration();
+				if (game.pac.powerTicksLeft == game.level.numFlashes * flashingDuration) {
+					Stream.of(game.ghosts).filter(ghost -> ghost.is(FRIGHTENED)).forEach(ghost -> {
+						animations.ghostFlashing(ghost).repetitions(game.level.numFlashes).restart();
+					});
+				}
+			});
 			if (game.pac.powerTicksLeft == 0) {
 				log("%s lost power", game.pac.name);
-				Stream.of(game.ghosts).filter(ghost -> ghost.is(FRIGHTENED)).forEach(ghost -> ghost.state = HUNTING_PAC);
+				Stream.of(game.ghosts).filter(ghost -> ghost.is(FRIGHTENED)).forEach(ghost -> {
+					ghost.state = HUNTING_PAC;
+					ui.animations().ifPresent(animations -> animations.ghostFlashing(ghost).stop());
+				});
 			}
 		}
 
