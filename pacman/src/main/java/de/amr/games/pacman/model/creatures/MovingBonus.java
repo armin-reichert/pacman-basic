@@ -4,13 +4,7 @@ import static de.amr.games.pacman.heaven.God.random;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
 
-import de.amr.games.pacman.world.PacManGameWorld;
-
 public class MovingBonus extends Bonus {
-
-	public MovingBonus(PacManGameWorld world) {
-		super(world);
-	}
 
 	@Override
 	public void activate(byte bonusSymbol, int bonusPoints, long ticks) {

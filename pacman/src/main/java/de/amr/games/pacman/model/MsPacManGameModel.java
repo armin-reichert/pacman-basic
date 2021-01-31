@@ -74,19 +74,25 @@ public class MsPacManGameModel extends PacManGameModel {
 	}
 
 	public MsPacManGameModel() {
-		world = new MapBasedPacManGameWorld();
-
 		bonusNames = new String[] { "CHERRIES", "STRAWBERRY", "PEACH", "PRETZEL", "APPLE", "PEAR", "BANANA" };
 		bonusValues = new int[] { 100, 200, 500, 700, 1000, 2000, 5000 };
-		bonus = new MovingBonus(world);
+		bonus = new MovingBonus();
 
-		pac = new Pac(world, "Ms. Pac-Man", LEFT);
+		pac = new Pac("Ms. Pac-Man", LEFT);
 
 		ghosts = new Ghost[4];
-		ghosts[BLINKY] = new Ghost(world, BLINKY, "Blinky", LEFT);
-		ghosts[PINKY] = new Ghost(world, PINKY, "Pinky", UP);
-		ghosts[INKY] = new Ghost(world, INKY, "Iinky", DOWN);
-		ghosts[SUE] = new Ghost(world, SUE, "Sue", DOWN);
+		ghosts[BLINKY] = new Ghost(BLINKY, "Blinky", LEFT);
+		ghosts[PINKY] = new Ghost(PINKY, "Pinky", UP);
+		ghosts[INKY] = new Ghost(INKY, "Iinky", DOWN);
+		ghosts[SUE] = new Ghost(SUE, "Sue", DOWN);
+
+		world = new MapBasedPacManGameWorld();
+		pac.world = world;
+		for (Ghost ghost : ghosts) {
+			ghost.world = world;
+		}
+		bonus.world = world;
+
 		reset();
 	}
 

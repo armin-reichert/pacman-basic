@@ -55,23 +55,29 @@ public class PacManClassicGameModel extends PacManGameModel {
 	/*@formatter:on*/
 
 	public PacManClassicGameModel() {
+		bonusNames = new String[] { "CHERRIES", "STRAWBERRY", "PEACH", "APPLE", "GRAPES", "GALAXIAN", "BELL", "KEY" };
+		bonusValues = new int[] { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
+		bonus = new Bonus();
+		bonus.position = new V2f(13 * TS + HTS, 20 * TS);
+
+		pac = new Pac("Pac-Man", RIGHT);
+
+		ghosts = new Ghost[4];
+		ghosts[BLINKY] = new Ghost(BLINKY, "Blinky", LEFT);
+		ghosts[PINKY] = new Ghost(PINKY, "Pinky", UP);
+		ghosts[INKY] = new Ghost(INKY, "Inky", DOWN);
+		ghosts[CLYDE] = new Ghost(CLYDE, "Clyde", DOWN);
+
 		world = new MapBasedPacManGameWorld();
 		world.loadMap("/worlds/classic/map.txt");
 		// TODO store this info inside map
 		world.setUpwardsBlocked(new V2i(12, 13), new V2i(15, 13), new V2i(12, 25), new V2i(15, 25));
 
-		bonusNames = new String[] { "CHERRIES", "STRAWBERRY", "PEACH", "APPLE", "GRAPES", "GALAXIAN", "BELL", "KEY" };
-		bonusValues = new int[] { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
-		bonus = new Bonus(world);
-		bonus.position = new V2f(13 * TS + HTS, 20 * TS);
-
-		pac = new Pac(world, "Pac-Man", RIGHT);
-
-		ghosts = new Ghost[4];
-		ghosts[BLINKY] = new Ghost(world, BLINKY, "Blinky", LEFT);
-		ghosts[PINKY] = new Ghost(world, PINKY, "Pinky", UP);
-		ghosts[INKY] = new Ghost(world, INKY, "Inky", DOWN);
-		ghosts[CLYDE] = new Ghost(world, CLYDE, "Clyde", DOWN);
+		pac.world = world;
+		for (Ghost ghost : ghosts) {
+			ghost.world = world;
+		}
+		bonus.world = world;
 
 		reset();
 	}

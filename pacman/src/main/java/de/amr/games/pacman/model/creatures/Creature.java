@@ -26,7 +26,7 @@ import de.amr.games.pacman.world.PacManGameWorld;
 public class Creature {
 
 	/** The world where this creature lives. */
-	public final PacManGameWorld world;
+	public PacManGameWorld world;
 
 	/** Left upper corner of TSxTS collision box. Sprites can be larger. */
 	public V2f position = V2f.NULL;
@@ -60,10 +60,6 @@ public class Creature {
 
 	/** If movement is constrained to be aligned with the tiles. */
 	public boolean forcedOnTrack;
-
-	public Creature(PacManGameWorld world) {
-		this.world = world;
-	}
 
 	public void placeAt(V2i tile, float offsetX, float offsetY) {
 		position = new V2f(tile.x * TS + offsetX, tile.y * TS + offsetY);
