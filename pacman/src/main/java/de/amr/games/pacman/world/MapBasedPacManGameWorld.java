@@ -28,13 +28,13 @@ import de.amr.games.pacman.lib.V2i;
 public class MapBasedPacManGameWorld implements PacManGameWorld {
 
 	// these are assumed to be equal in all world maps
-	private static final V2i HOUSE_ENTRY = new V2i(13, 14);
-	private static final V2i HOUSE_LEFT = new V2i(11, 17);
-	private static final V2i HOUSE_CENTER = new V2i(13, 17);
-	private static final V2i HOUSE_RIGHT = new V2i(15, 17);
-	private static final V2i PAC_HOME = new V2i(13, 26);
-	private static final V2i[] GHOST_HOME_TILES = { HOUSE_ENTRY, HOUSE_CENTER, HOUSE_LEFT, HOUSE_RIGHT };
-	private static final V2i[] GHOST_SCATTER_TILES = { new V2i(25, 0), new V2i(2, 0), new V2i(27, 35), new V2i(27, 35) };
+	private final V2i houseEntry = new V2i(13, 14);
+	private final V2i houseLeft = new V2i(11, 17);
+	private final V2i houseMiddle = new V2i(13, 17);
+	private final V2i houseRight = new V2i(15, 17);
+	private final V2i pacHome = new V2i(13, 26);
+	private final V2i[] ghostHomes = { houseEntry, houseMiddle, houseLeft, houseRight };
+	private final V2i[] ghostScatterTargets = { new V2i(25, 0), new V2i(2, 0), new V2i(27, 35), new V2i(27, 35) };
 
 	protected WorldMap map;
 
@@ -103,17 +103,17 @@ public class MapBasedPacManGameWorld implements PacManGameWorld {
 
 	@Override
 	public V2i pacHome() {
-		return PAC_HOME;
+		return pacHome;
 	}
 
 	@Override
 	public V2i ghostHome(int ghost) {
-		return GHOST_HOME_TILES[ghost];
+		return ghostHomes[ghost];
 	}
 
 	@Override
 	public V2i ghostScatterTile(int ghost) {
-		return GHOST_SCATTER_TILES[ghost];
+		return ghostScatterTargets[ghost];
 	}
 
 	@Override
@@ -143,22 +143,22 @@ public class MapBasedPacManGameWorld implements PacManGameWorld {
 
 	@Override
 	public V2i houseEntry() {
-		return HOUSE_ENTRY;
+		return houseEntry;
 	}
 
 	@Override
 	public V2i houseCenter() {
-		return HOUSE_CENTER;
+		return houseMiddle;
 	}
 
 	@Override
 	public V2i houseLeft() {
-		return HOUSE_LEFT;
+		return houseLeft;
 	}
 
 	@Override
 	public V2i houseRight() {
-		return HOUSE_RIGHT;
+		return houseRight;
 	}
 
 	@Override
