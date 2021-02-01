@@ -2,7 +2,7 @@ package de.amr.games.pacman.ui.api;
 
 import java.util.Optional;
 
-import de.amr.games.pacman.model.PacManGameModel;
+import de.amr.games.pacman.model.PacManGame;
 
 /**
  * Interface through which the game class sees the user interface.
@@ -13,7 +13,7 @@ public interface PacManGameUI {
 
 	String translation(String key);
 
-	void updateGame(PacManGameModel game);
+	void updateGame(PacManGame game);
 
 	void updateScene();
 

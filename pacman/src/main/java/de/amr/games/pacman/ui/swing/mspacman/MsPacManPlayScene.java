@@ -18,7 +18,7 @@ import java.util.Optional;
 
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.model.PacManGameModel;
+import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.creatures.Ghost;
 import de.amr.games.pacman.model.creatures.Pac;
 import de.amr.games.pacman.ui.api.PacManGameAnimations;
@@ -35,7 +35,7 @@ public class MsPacManPlayScene extends AbstractPacManPlayScene {
 
 	private final MsPacManAssets assets;
 
-	public MsPacManPlayScene(PacManGameSwingUI ui, V2i size, MsPacManAssets assets, PacManGameModel game) {
+	public MsPacManPlayScene(PacManGameSwingUI ui, V2i size, MsPacManAssets assets, PacManGame game) {
 		super(ui, size, game);
 		this.assets = assets;
 	}

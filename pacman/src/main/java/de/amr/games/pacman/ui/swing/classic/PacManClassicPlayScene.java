@@ -17,7 +17,7 @@ import java.awt.image.BufferedImage;
 import java.util.Optional;
 
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.model.PacManGameModel;
+import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.creatures.Bonus;
 import de.amr.games.pacman.model.creatures.Ghost;
 import de.amr.games.pacman.model.creatures.Pac;
@@ -34,7 +34,7 @@ public class PacManClassicPlayScene extends AbstractPacManPlayScene {
 
 	private final PacManClassicAssets assets;
 
-	public PacManClassicPlayScene(PacManGameSwingUI ui, V2i size, PacManClassicAssets assets, PacManGameModel game) {
+	public PacManClassicPlayScene(PacManGameSwingUI ui, V2i size, PacManClassicAssets assets, PacManGame game) {
 		super(ui, size, game);
 		this.assets = assets;
 	}

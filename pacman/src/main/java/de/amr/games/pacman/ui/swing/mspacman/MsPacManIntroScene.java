@@ -14,7 +14,7 @@ import java.util.stream.Stream;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.model.PacManGameModel;
+import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.creatures.Ghost;
 import de.amr.games.pacman.ui.api.PacManGameAnimations;
 import de.amr.games.pacman.ui.api.PacManGameScene;
@@ -28,7 +28,7 @@ public class MsPacManIntroScene implements PacManGameScene {
 	private final PacManGameSwingUI ui;
 	private final V2i size;
 	private final MsPacManAssets assets;
-	private final PacManGameModel game;
+	private final PacManGame game;
 	private final V2i frameDots = new V2i(32, 16);
 	private final V2i frameTopLeftTile = new V2i(6, 8);
 	private final int leftOfFrame = t(frameTopLeftTile.x) - 18;
@@ -36,7 +36,7 @@ public class MsPacManIntroScene implements PacManGameScene {
 	private final int belowFrameCenterX = t(frameTopLeftTile.x) + 2 * frameDots.x;
 	private final float walkSpeed = 1.2f;
 
-	public MsPacManIntroScene(PacManGameSwingUI ui, V2i size, MsPacManAssets assets, PacManGameModel game) {
+	public MsPacManIntroScene(PacManGameSwingUI ui, V2i size, MsPacManAssets assets, PacManGame game) {
 		this.ui = ui;
 		this.size = size;
 		this.assets = assets;

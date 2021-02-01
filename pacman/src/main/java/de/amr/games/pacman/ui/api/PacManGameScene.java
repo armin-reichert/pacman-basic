@@ -16,7 +16,7 @@ import java.util.Optional;
 
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.model.PacManGameModel;
+import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.creatures.Ghost;
 import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
 
@@ -51,7 +51,7 @@ public interface PacManGameScene {
 
 	// debugging
 
-	default void drawDebugInfo(Graphics2D g, PacManGameModel game) {
+	default void drawDebugInfo(Graphics2D g, PacManGame game) {
 		if (PacManGameSwingUI.debugMode) {
 			final Color[] GHOST_COLORS = { Color.RED, Color.PINK, Color.CYAN, Color.ORANGE };
 			long remaining = game.state.remaining();
@@ -76,7 +76,7 @@ public interface PacManGameScene {
 		}
 	}
 
-	default void drawMazeStructure(Graphics2D g, PacManGameModel game) {
+	default void drawMazeStructure(Graphics2D g, PacManGame game) {
 		final Polygon TRIANGLE = new Polygon(new int[] { -4, 4, 0 }, new int[] { 0, 0, 4 }, 3);
 		Color dark = new Color(80, 80, 80, 200);
 		Stroke thin = new BasicStroke(0.1f);

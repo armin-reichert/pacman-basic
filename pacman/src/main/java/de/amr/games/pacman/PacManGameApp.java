@@ -4,7 +4,7 @@ import static de.amr.games.pacman.lib.Logging.log;
 import static java.awt.EventQueue.invokeLater;
 
 import de.amr.games.pacman.controller.PacManGameController;
-import de.amr.games.pacman.model.PacManGameModel;
+import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
 
 /**
@@ -60,7 +60,7 @@ public class PacManGameApp {
 	public static void main(String[] args) {
 		Options options = new Options(args);
 		PacManGameController controller = new PacManGameController();
-		PacManGameModel game = options.classic ? controller.playPacManClassic() : controller.playMsPacMan();
+		PacManGame game = options.classic ? controller.playPacManClassic() : controller.playMsPacMan();
 		invokeLater(() -> {
 			PacManGameSwingUI ui = new PacManGameSwingUI(controller, game.level.world.xTiles(), game.level.world.yTiles(),
 					options.scaling);

@@ -32,8 +32,8 @@ import de.amr.games.pacman.controller.PacManGameController;
 import de.amr.games.pacman.controller.PacManGameState;
 import de.amr.games.pacman.heaven.God;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.model.PacManClassicGameModel;
-import de.amr.games.pacman.model.PacManGameModel;
+import de.amr.games.pacman.model.PacManClassicGame;
+import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.ui.api.PacManGameAnimations;
 import de.amr.games.pacman.ui.api.PacManGameScene;
 import de.amr.games.pacman.ui.api.PacManGameUI;
@@ -100,7 +100,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 	private Timer titleUpdateTimer;
 
 	private PacManGameController controller;
-	private PacManGameModel game;
+	private PacManGame game;
 
 	private PacManGameScene currentScene;
 	private PacManGameScene introScene;
@@ -126,7 +126,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 			@Override
 			public void windowClosing(WindowEvent e) {
-				controller.game().ifPresent(PacManGameModel::saveHighscore);
+				controller.game().ifPresent(PacManGame::saveHighscore);
 			}
 		});
 		window.addKeyListener(new KeyAdapter() {
@@ -198,9 +198,9 @@ public class PacManGameSwingUI implements PacManGameUI {
 	}
 
 	@Override
-	public void updateGame(PacManGameModel newGame) {
+	public void updateGame(PacManGame newGame) {
 		this.game = newGame;
-		if (game instanceof PacManClassicGameModel) {
+		if (game instanceof PacManClassicGame) {
 			PacManClassicAssets assets = new PacManClassicAssets();
 			soundManager = new DefaultPacManGameSoundManager(assets.soundURL::get);
 			introScene = new PacManClassicIntroScene(this, unscaledSizePixels, assets, game);

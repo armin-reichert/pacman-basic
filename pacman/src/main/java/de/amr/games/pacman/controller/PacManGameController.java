@@ -12,10 +12,10 @@ import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.lib.Logging.log;
-import static de.amr.games.pacman.model.PacManGameModel.BLINKY;
-import static de.amr.games.pacman.model.PacManGameModel.CLYDE;
-import static de.amr.games.pacman.model.PacManGameModel.INKY;
-import static de.amr.games.pacman.model.PacManGameModel.PINKY;
+import static de.amr.games.pacman.model.PacManGame.BLINKY;
+import static de.amr.games.pacman.model.PacManGame.CLYDE;
+import static de.amr.games.pacman.model.PacManGame.INKY;
+import static de.amr.games.pacman.model.PacManGame.PINKY;
 import static de.amr.games.pacman.model.creatures.GhostState.DEAD;
 import static de.amr.games.pacman.model.creatures.GhostState.ENTERING_HOUSE;
 import static de.amr.games.pacman.model.creatures.GhostState.FRIGHTENED;
@@ -30,9 +30,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.model.MsPacManGameModel;
-import de.amr.games.pacman.model.PacManClassicGameModel;
-import de.amr.games.pacman.model.PacManGameModel;
+import de.amr.games.pacman.model.MsPacManGame;
+import de.amr.games.pacman.model.PacManClassicGame;
+import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.creatures.Ghost;
 import de.amr.games.pacman.ui.api.PacManGameUI;
 import de.amr.games.pacman.ui.api.Sound;
@@ -58,7 +58,7 @@ import de.amr.games.pacman.ui.api.SoundManager;
 public class PacManGameController {
 
 	private PacManGameUI ui;
-	private PacManGameModel game;
+	private PacManGame game;
 
 	private Autopilot autopilot;
 	private boolean autopilotEnabled;
@@ -70,15 +70,15 @@ public class PacManGameController {
 		autopilot = new Autopilot(() -> game);
 	}
 
-	public PacManGameModel playPacManClassic() {
-		game = new PacManClassicGameModel();
+	public PacManGame playPacManClassic() {
+		game = new PacManClassicGame();
 		reset();
 		log("New Pac-Man game");
 		return game;
 	}
 
-	public PacManGameModel playMsPacMan() {
-		game = new MsPacManGameModel();
+	public PacManGame playMsPacMan() {
+		game = new MsPacManGame();
 		reset();
 		log("New Ms. Pac-Man game");
 		return game;
@@ -109,7 +109,7 @@ public class PacManGameController {
 		this.gamePaused = paused;
 	}
 
-	public Optional<PacManGameModel> game() {
+	public Optional<PacManGame> game() {
 		return Optional.ofNullable(game);
 	}
 
@@ -125,7 +125,7 @@ public class PacManGameController {
 	}
 
 	private void toggleGameVariant() {
-		if (game instanceof PacManClassicGameModel) {
+		if (game instanceof PacManClassicGame) {
 			playMsPacMan();
 		} else {
 			playPacManClassic();
@@ -725,7 +725,7 @@ public class PacManGameController {
 	}
 
 	private void setGhostHuntingTarget(Ghost ghost) {
-		if (game instanceof MsPacManGameModel && game.huntingPhase == 0 && (ghost.id == BLINKY || ghost.id == PINKY)) {
+		if (game instanceof MsPacManGame && game.huntingPhase == 0 && (ghost.id == BLINKY || ghost.id == PINKY)) {
 			// In Ms. Pac-Man, Blinky and Pinky move randomly during *first* scatter phase
 			ghost.targetTile = null;
 		} else if (game.inScatteringPhase() && ghost.elroy == 0) {

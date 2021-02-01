@@ -17,7 +17,7 @@ import de.amr.games.pacman.world.WorldMap;
  * 
  * @author Armin Reichert
  */
-public class MsPacManGameModel extends PacManGameModel {
+public class MsPacManGame extends PacManGame {
 
 	public enum MsPacManSymbols {
 		CHERRIES, STRAWBERRY, PEACH, PRETZEL, APPLE, PEAR, BANANA;
@@ -77,7 +77,7 @@ public class MsPacManGameModel extends PacManGameModel {
 
 	private final MapBasedPacManGameWorld world;
 
-	public MsPacManGameModel() {
+	public MsPacManGame() {
 		bonusNames = new String[] { "CHERRIES", "STRAWBERRY", "PEACH", "PRETZEL", "APPLE", "PEAR", "BANANA" };
 		bonusValues = new int[] { 100, 200, 500, 700, 1000, 2000, 5000 };
 		bonus = new MovingBonus();

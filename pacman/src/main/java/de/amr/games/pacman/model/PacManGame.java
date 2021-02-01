@@ -18,7 +18,7 @@ import de.amr.games.pacman.model.creatures.Pac;
  * 
  * @author Armin Reichert
  */
-public abstract class PacManGameModel {
+public abstract class PacManGame {
 
 	public static final byte BLINKY = 0, PINKY = 1, INKY = 2, CLYDE = 3, SUE = 3;
 

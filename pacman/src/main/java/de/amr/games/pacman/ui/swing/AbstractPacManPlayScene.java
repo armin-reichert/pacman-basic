@@ -9,7 +9,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.model.PacManGameModel;
+import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.creatures.Creature;
 import de.amr.games.pacman.model.creatures.Ghost;
 import de.amr.games.pacman.model.creatures.Pac;
@@ -24,9 +24,9 @@ public abstract class AbstractPacManPlayScene implements PacManGameScene {
 
 	protected final PacManGameSwingUI ui;
 	protected final V2i size;
-	protected final PacManGameModel game;
+	protected final PacManGame game;
 
-	public AbstractPacManPlayScene(PacManGameSwingUI ui, V2i size, PacManGameModel game) {
+	public AbstractPacManPlayScene(PacManGameSwingUI ui, V2i size, PacManGame game) {
 		this.ui = ui;
 		this.size = size;
 		this.game = game;

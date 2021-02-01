@@ -14,7 +14,7 @@ import java.util.stream.IntStream;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.model.PacManGameModel;
+import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.ui.api.PacManGameAnimations;
 import de.amr.games.pacman.ui.api.PacManGameScene;
 import de.amr.games.pacman.ui.api.Sound;
@@ -32,10 +32,10 @@ public class PacManClassicIntroScene implements PacManGameScene {
 	private final PacManGameSwingUI ui;
 	private final V2i size;
 	private final PacManClassicAssets assets;
-	private final PacManGameModel game;
+	private final PacManGame game;
 	private int lastKilledGhostID;
 
-	public PacManClassicIntroScene(PacManGameSwingUI ui, V2i size, PacManClassicAssets assets, PacManGameModel game) {
+	public PacManClassicIntroScene(PacManGameSwingUI ui, V2i size, PacManClassicAssets assets, PacManGame game) {
 		this.ui = ui;
 		this.size = size;
 		this.assets = assets;
