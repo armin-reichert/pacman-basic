@@ -27,9 +27,9 @@ import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
  */
 public interface PacManGameScene {
 
-	V2i size();
-
 	void draw(Graphics2D g);
+
+	V2i size();
 
 	default void start() {
 	}
@@ -101,5 +101,4 @@ public interface PacManGameScene {
 			}
 		}
 	}
-
 }

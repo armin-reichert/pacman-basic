@@ -21,13 +21,13 @@ public interface PacManGameUI {
 
 	void redraw();
 
+	String translation(String key);
+
 	void showMessage(String message, boolean important);
 
 	void showFlashMessage(String message);
 
 	void clearMessages();
-
-	String translation(String key);
 
 	boolean keyPressed(String keySpec);
 
