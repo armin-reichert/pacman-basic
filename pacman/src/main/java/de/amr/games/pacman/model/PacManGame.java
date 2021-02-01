@@ -14,7 +14,7 @@ import de.amr.games.pacman.model.creatures.Ghost;
 import de.amr.games.pacman.model.creatures.Pac;
 
 /**
- * The common base class of the game data.
+ * Common base class of the game models.
  * 
  * @author Armin Reichert
  */
@@ -24,6 +24,7 @@ public abstract class PacManGame {
 
 	public PacManGameState state;
 	public boolean started;
+
 	public int currentLevelNumber; // counting from 1
 	public PacManGameLevel level;
 	public Pac pac;

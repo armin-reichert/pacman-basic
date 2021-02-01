@@ -11,9 +11,9 @@ import de.amr.games.pacman.model.PacManGame;
  */
 public interface PacManGameUI {
 
-	String translation(String key);
+	void setGame(PacManGame game);
 
-	void updateGame(PacManGame game);
+	void setCloseHandler(Runnable handler);
 
 	void updateScene();
 
@@ -26,6 +26,8 @@ public interface PacManGameUI {
 	void showFlashMessage(String message);
 
 	void clearMessages();
+
+	String translation(String key);
 
 	boolean keyPressed(String keySpec);
 

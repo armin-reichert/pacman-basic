@@ -28,7 +28,6 @@ import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.Timer;
 
-import de.amr.games.pacman.controller.PacManGameController;
 import de.amr.games.pacman.controller.PacManGameState;
 import de.amr.games.pacman.heaven.God;
 import de.amr.games.pacman.lib.V2i;
@@ -56,7 +55,6 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 	static final ResourceBundle TEXTS = ResourceBundle.getBundle("ui.swing.localization.translation");
 
-	static final int KEY_PAUSE = KeyEvent.VK_P;
 	static final int KEY_SLOWMODE = KeyEvent.VK_S;
 	static final int KEY_FASTMODE = KeyEvent.VK_F;
 	static final int KEY_DEBUGMODE = KeyEvent.VK_D;
@@ -98,8 +96,10 @@ public class PacManGameSwingUI implements PacManGameUI {
 	private long flashMessageTicksLeft;
 
 	private Timer titleUpdateTimer;
+	private Runnable closeHandler = () -> {
+		log("Pac-Man Swing UI closed");
+	};
 
-	private PacManGameController controller;
 	private PacManGame game;
 
 	private PacManGameScene currentScene;
@@ -107,12 +107,10 @@ public class PacManGameSwingUI implements PacManGameUI {
 	private PacManGameScene playScene;
 	private DefaultPacManGameSoundManager soundManager;
 
-	public PacManGameSwingUI(PacManGameController controller, int xTiles, int yTiles, float scaling) {
-		this.controller = controller;
-		controller.setUI(this);
+	public PacManGameSwingUI(PacManGame game, float scaling) {
 
 		this.scaling = scaling;
-		unscaledSizePixels = new V2i(xTiles * TS, yTiles * TS);
+		unscaledSizePixels = new V2i(game.level.world.xTiles() * TS, game.level.world.yTiles() * TS);
 		scaledSizeInPixels = new V2i((int) (unscaledSizePixels.x * scaling), (int) (unscaledSizePixels.y * scaling));
 
 		window = new JFrame();
@@ -122,20 +120,10 @@ public class PacManGameSwingUI implements PacManGameUI {
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		window.setIconImage(image("/pacman.png"));
 
-		window.addWindowListener(new WindowAdapter() {
-
-			@Override
-			public void windowClosing(WindowEvent e) {
-				controller.game().ifPresent(PacManGame::saveHighscore);
-			}
-		});
 		window.addKeyListener(new KeyAdapter() {
 
 			@Override
 			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KEY_PAUSE) {
-					controller.pauseGame(!controller.isGamePaused());
-				}
 				if (e.getKeyCode() == KEY_SLOWMODE) {
 					clock.targetFrequency = clock.targetFrequency == 60 ? 30 : 60;
 					log("Clock frequency changed to %d Hz", clock.targetFrequency);
@@ -154,6 +142,14 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 		});
 
+		window.addWindowListener(new WindowAdapter() {
+
+			@Override
+			public void windowClosing(WindowEvent e) {
+				closeHandler.run();
+			}
+		});
+
 		keyboard = new Keyboard(window);
 
 		canvas = new Canvas();
@@ -163,6 +159,13 @@ public class PacManGameSwingUI implements PacManGameUI {
 		window.add(canvas);
 
 		messageFont = font("/PressStart2P-Regular.ttf", 8).deriveFont(Font.PLAIN);
+
+		setGame(game);
+	}
+
+	@Override
+	public void setCloseHandler(Runnable handler) {
+		closeHandler = handler;
 	}
 
 	@Override
@@ -198,7 +201,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 	}
 
 	@Override
-	public void updateGame(PacManGame newGame) {
+	public void setGame(PacManGame newGame) {
 		this.game = newGame;
 		if (game instanceof PacManClassicGame) {
 			PacManClassicAssets assets = new PacManClassicAssets();
@@ -258,9 +261,6 @@ public class PacManGameSwingUI implements PacManGameUI {
 				g.setColor(canvas.getBackground());
 				g.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 				drawCurrentScene(g);
-				if (controller.isGamePaused()) {
-					drawPausedScreen(g);
-				}
 				g.dispose();
 			} while (buffers.contentsRestored());
 			buffers.show();
@@ -301,22 +301,6 @@ public class PacManGameSwingUI implements PacManGameUI {
 				}
 			}
 		}
-		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
-	}
-
-	private void drawPausedScreen(Graphics2D g) {
-		Font font = new Font(Font.MONOSPACED, Font.BOLD, 24);
-		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-		g.setColor(new Color(0, 48, 143, 100));
-		g.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
-		g.setColor(Color.GREEN);
-		g.setFont(font);
-		int y = canvas.getHeight() / 2;
-		String text = "PAUSED";
-		g.drawString(text, (canvas.getWidth() - g.getFontMetrics().stringWidth(text)) / 2, y);
-		y += font.getSize() * 150 / 100;
-		text = "(Press 'P' key to resume)";
-		g.drawString(text, (canvas.getWidth() - g.getFontMetrics().stringWidth(text)) / 2, y);
 		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
 	}
 

@@ -63,13 +63,15 @@ public class PacManGameController {
 	private Autopilot autopilot;
 	private boolean autopilotOn;
 
-	private boolean gamePaused;
 	private PacManGameState previousState;
 
 	public PacManGame playPacManClassic() {
 		game = new PacManClassicGame();
 		autopilot = null;
 		reset();
+		if (ui != null) {
+			ui.setGame(game);
+		}
 		log("New Pac-Man game");
 		return game;
 	}
@@ -78,6 +80,9 @@ public class PacManGameController {
 		game = new MsPacManGame();
 		autopilot = null;
 		reset();
+		if (ui != null) {
+			ui.setGame(game);
+		}
 		log("New Ms. Pac-Man game");
 		return game;
 	}
@@ -88,23 +93,21 @@ public class PacManGameController {
 	}
 
 	public void step() {
-		if (!gamePaused) {
-			readInput();
-			updateState();
-		}
+		readInput();
+		updateState();
 		ui.redraw();
 	}
 
 	public void setUI(PacManGameUI ui) {
 		this.ui = ui;
+		ui.setCloseHandler(() -> {
+			game.saveHighscore();
+			log("Pac-Man game UI closed");
+		});
 	}
 
-	public boolean isGamePaused() {
-		return gamePaused;
-	}
-
-	public void pauseGame(boolean paused) {
-		this.gamePaused = paused;
+	public void showUI() {
+		ui.show();
 	}
 
 	public Optional<PacManGame> game() {
@@ -128,8 +131,6 @@ public class PacManGameController {
 		} else {
 			playPacManClassic();
 		}
-		ui.sounds().ifPresent(SoundManager::stopAllSounds);
-		ui.updateGame(game);
 	}
 
 	private void toggleAutopilot() {
@@ -217,6 +218,7 @@ public class PacManGameController {
 			return changeState(READY, this::exitIntroState, this::enterReadyState);
 		}
 		if (ui.keyPressed("v")) {
+			ui.sounds().ifPresent(SoundManager::stopAllSounds);
 			toggleGameVariant();
 		}
 		return game.state.run();

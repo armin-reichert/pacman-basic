@@ -62,10 +62,10 @@ public class PacManGameApp {
 		PacManGameController controller = new PacManGameController();
 		PacManGame game = options.classic ? controller.playPacManClassic() : controller.playMsPacMan();
 		invokeLater(() -> {
-			PacManGameSwingUI ui = new PacManGameSwingUI(controller, game.level.world.xTiles(), game.level.world.yTiles(),
-					options.scaling);
-			ui.updateGame(game);
-			ui.show();
+			PacManGameSwingUI ui = new PacManGameSwingUI(game, options.scaling);
+			ui.setGame(game);
+			controller.setUI(ui);
+			controller.showUI();
 			new Thread(controller::gameLoop, "PacManGame").start();
 		});
 	}
