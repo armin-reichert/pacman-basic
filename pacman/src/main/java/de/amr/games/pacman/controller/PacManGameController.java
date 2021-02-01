@@ -61,17 +61,14 @@ public class PacManGameController {
 	private PacManGame game;
 
 	private Autopilot autopilot;
-	private boolean autopilotEnabled;
+	private boolean autopilotOn;
 
 	private boolean gamePaused;
 	private PacManGameState previousState;
 
-	public PacManGameController() {
-		autopilot = new Autopilot(() -> game);
-	}
-
 	public PacManGame playPacManClassic() {
 		game = new PacManClassicGame();
+		autopilot = null;
 		reset();
 		log("New Pac-Man game");
 		return game;
@@ -79,6 +76,7 @@ public class PacManGameController {
 
 	public PacManGame playMsPacMan() {
 		game = new MsPacManGame();
+		autopilot = null;
 		reset();
 		log("New Ms. Pac-Man game");
 		return game;
@@ -135,8 +133,8 @@ public class PacManGameController {
 	}
 
 	private void toggleAutopilot() {
-		autopilotEnabled = !autopilotEnabled;
-		String msg = "Autopilot " + (autopilotEnabled ? "on" : "off");
+		autopilotOn = !autopilotOn;
+		String msg = "Autopilot " + (autopilotOn ? "on" : "off");
 		ui.showFlashMessage(msg);
 		log(msg);
 	}
@@ -630,7 +628,10 @@ public class PacManGameController {
 	}
 
 	private void steerPac() {
-		if (autopilotEnabled) {
+		if (autopilotOn) {
+			if (autopilot == null) {
+				autopilot = new Autopilot(game);
+			}
 			autopilot.run();
 		} else {
 			if (ui.keyPressed("left")) {

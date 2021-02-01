@@ -87,7 +87,7 @@ public class MsPacManGame extends PacManGame {
 		ghosts = new Ghost[4];
 		ghosts[BLINKY] = new Ghost(BLINKY, "Blinky", LEFT);
 		ghosts[PINKY] = new Ghost(PINKY, "Pinky", UP);
-		ghosts[INKY] = new Ghost(INKY, "Iinky", DOWN);
+		ghosts[INKY] = new Ghost(INKY, "Inky", DOWN);
 		ghosts[SUE] = new Ghost(SUE, "Sue", DOWN);
 
 		// all levels share this world
