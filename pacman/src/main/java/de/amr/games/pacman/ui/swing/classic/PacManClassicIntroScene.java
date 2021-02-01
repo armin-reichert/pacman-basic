@@ -32,19 +32,21 @@ public class PacManClassicIntroScene implements PacManGameScene {
 	private final PacManGameSwingUI ui;
 	private final V2i size;
 	private final PacManClassicAssets assets;
+	private final PacManClassicRendering rendering;
 	private final PacManGame game;
 	private int lastKilledGhostID;
 
 	public PacManClassicIntroScene(PacManGameSwingUI ui, V2i size, PacManClassicAssets assets, PacManGame game) {
 		this.ui = ui;
 		this.size = size;
-		this.assets = assets;
 		this.game = game;
+		this.assets = assets;
+		rendering = new PacManClassicRendering(assets, ui::translation);
 	}
 
 	@Override
 	public Optional<PacManGameAnimations> animations() {
-		return Optional.of(assets);
+		return Optional.of(rendering);
 	}
 
 	@Override

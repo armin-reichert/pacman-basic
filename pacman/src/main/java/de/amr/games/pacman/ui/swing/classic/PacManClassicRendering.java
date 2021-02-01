@@ -16,19 +16,22 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.function.Function;
 
+import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.creatures.Bonus;
 import de.amr.games.pacman.model.creatures.Creature;
 import de.amr.games.pacman.model.creatures.Ghost;
 import de.amr.games.pacman.model.creatures.Pac;
+import de.amr.games.pacman.ui.api.PacManGameAnimations;
+import de.amr.games.pacman.ui.swing.Animation;
 
 /**
  * Rendering for the classic Pac-Man game.
  * 
  * @author Armin Reichert
  */
-public class PacManClassicRendering {
+public class PacManClassicRendering implements PacManGameAnimations {
 
 	private final PacManClassicAssets assets;
 	private final Function<String, String> translator;
@@ -36,6 +39,26 @@ public class PacManClassicRendering {
 	public PacManClassicRendering(PacManClassicAssets assets, Function<String, String> translator) {
 		this.assets = assets;
 		this.translator = translator;
+	}
+
+	@Override
+	public Animation<BufferedImage> pacDying() {
+		return assets.pacCollapsing;
+	}
+
+	@Override
+	public Animation<BufferedImage> ghostWalking(Ghost ghost, Direction dir) {
+		return assets.ghostWalking.get(ghost.id).get(dir);
+	}
+
+	@Override
+	public Animation<BufferedImage> ghostFlashing(Ghost ghost) {
+		return assets.ghostFlashing.get(ghost.id);
+	}
+
+	@Override
+	public Animation<BufferedImage> mazeFlashing(int mazeNumber) {
+		return assets.mazeFlashing;
 	}
 
 	public void drawMaze(Graphics2D g, PacManGame game) {
@@ -152,8 +175,8 @@ public class PacManClassicRendering {
 			return assets.ghostEyes.get(ghost.wishDir);
 		}
 		if (ghost.is(FRIGHTENED)) {
-			if (assets.ghostFlashing(ghost).isRunning()) {
-				return assets.ghostFlashing(ghost).currentFrameThenAdvance();
+			if (ghostFlashing(ghost).isRunning()) {
+				return ghostFlashing(ghost).currentFrameThenAdvance();
 			}
 			return assets.ghostBlue.currentFrameThenAdvance();
 		}

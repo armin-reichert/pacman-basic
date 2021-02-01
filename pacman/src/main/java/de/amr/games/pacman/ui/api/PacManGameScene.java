@@ -18,7 +18,6 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.creatures.Ghost;
-import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
 
 /**
  * Implemented by all scenes of the Pac-Man and Ms. Pac-Man game.
@@ -52,27 +51,25 @@ public interface PacManGameScene {
 	// debugging
 
 	default void drawDebugInfo(Graphics2D g, PacManGame game) {
-		if (PacManGameSwingUI.debugMode) {
-			final Color[] GHOST_COLORS = { Color.RED, Color.PINK, Color.CYAN, Color.ORANGE };
-			long remaining = game.state.remaining();
-			String ticksText = remaining == Long.MAX_VALUE ? "forever" : remaining + " ticks remaining";
-			String stateText = String.format("%s (%s)", game.stateDescription(), ticksText);
+		final Color[] GHOST_COLORS = { Color.RED, Color.PINK, Color.CYAN, Color.ORANGE };
+		long remaining = game.state.remaining();
+		String ticksText = remaining == Long.MAX_VALUE ? "forever" : remaining + " ticks remaining";
+		String stateText = String.format("%s (%s)", game.stateDescription(), ticksText);
+		g.setColor(Color.WHITE);
+		g.setFont(new Font("Arial", Font.PLAIN, 6));
+		g.drawString(stateText, t(1), t(3));
+		for (Ghost ghost : game.ghosts) {
 			g.setColor(Color.WHITE);
-			g.setFont(new Font("Arial", Font.PLAIN, 6));
-			g.drawString(stateText, t(1), t(3));
-			for (Ghost ghost : game.ghosts) {
-				g.setColor(Color.WHITE);
-				g.drawRect(round(ghost.position.x), round(ghost.position.y), TS, TS);
-				if (ghost.targetTile != null) {
-					Color c = GHOST_COLORS[ghost.id];
-					g.setColor(c);
-					g.fillRect(t(ghost.targetTile.x) + HTS / 2, t(ghost.targetTile.y) + HTS / 2, HTS, HTS);
-				}
+			g.drawRect(round(ghost.position.x), round(ghost.position.y), TS, TS);
+			if (ghost.targetTile != null) {
+				Color c = GHOST_COLORS[ghost.id];
+				g.setColor(c);
+				g.fillRect(t(ghost.targetTile.x) + HTS / 2, t(ghost.targetTile.y) + HTS / 2, HTS, HTS);
 			}
-			if (game.pac.targetTile != null) {
-				g.setColor(new Color(255, 255, 0, 200));
-				g.fillRect(t(game.pac.targetTile.x), t(game.pac.targetTile.y), TS, TS);
-			}
+		}
+		if (game.pac.targetTile != null) {
+			g.setColor(new Color(255, 255, 0, 200));
+			g.fillRect(t(game.pac.targetTile.x), t(game.pac.targetTile.y), TS, TS);
 		}
 	}
 

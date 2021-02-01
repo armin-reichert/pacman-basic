@@ -20,12 +20,10 @@ public class PacManClassicPlayScene implements PacManGameScene {
 
 	private final V2i size;
 	private final PacManGame game;
-	private final PacManClassicAssets assets;
 	private final PacManClassicRendering rendering;
 
 	public PacManClassicPlayScene(PacManGameSwingUI ui, V2i size, PacManClassicAssets assets, PacManGame game) {
 		this.size = size;
-		this.assets = assets;
 		this.game = game;
 		rendering = new PacManClassicRendering(assets, ui::translation);
 	}
@@ -37,7 +35,7 @@ public class PacManClassicPlayScene implements PacManGameScene {
 
 	@Override
 	public Optional<PacManGameAnimations> animations() {
-		return Optional.of(assets);
+		return Optional.of(rendering);
 	}
 
 	@Override
@@ -51,6 +49,8 @@ public class PacManClassicPlayScene implements PacManGameScene {
 		}
 		rendering.drawPac(g, game.pac);
 		game.ghosts().forEach(ghost -> rendering.drawGhost(g, ghost, game));
-		drawDebugInfo(g, game);
+		if (PacManGameSwingUI.debugMode) {
+			drawDebugInfo(g, game);
+		}
 	}
 }
