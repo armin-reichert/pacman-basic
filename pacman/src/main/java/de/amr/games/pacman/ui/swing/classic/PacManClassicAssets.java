@@ -51,7 +51,7 @@ public class PacManClassicAssets extends Spritesheet {
 	public final BufferedImage gameLogo;
 	public final BufferedImage mazeFull;
 	public final BufferedImage life;
-	public final V2i[] symbolTiles;
+	public final V2i[] symbolSpriteLocation;
 	public final Map<Integer, BufferedImage> numbers;
 	public final BufferedImage pacMouthClosed;
 	public final EnumMap<Direction, BufferedImage> pacMouthOpen;
@@ -73,7 +73,7 @@ public class PacManClassicAssets extends Spritesheet {
 
 		life = spriteAt(8, 1);
 
-		symbolTiles = new V2i[] { v2(2, 3), v2(3, 3), v2(4, 3), v2(5, 3), v2(6, 3), v2(7, 3), v2(8, 3), v2(9, 3) };
+		symbolSpriteLocation = new V2i[] { v2(2, 3), v2(3, 3), v2(4, 3), v2(5, 3), v2(6, 3), v2(7, 3), v2(8, 3), v2(9, 3) };
 
 		//@formatter:off
 		numbers = new HashMap<>();
@@ -94,6 +94,8 @@ public class PacManClassicAssets extends Spritesheet {
 		//@formatter:on
 
 		scoreFont = font("/PressStart2P-Regular.ttf", 8);
+
+		// Animations
 
 		BufferedImage mazeEmptyDark = image("/worlds/classic/maze_empty.png");
 		BufferedImage mazeEmptyBright = image("/worlds/classic/maze_empty_white.png");
@@ -143,6 +145,7 @@ public class PacManClassicAssets extends Spritesheet {
 			ghostFlashing
 					.add(Animation.of(spriteAt(8, 4), spriteAt(9, 4), spriteAt(10, 4), spriteAt(11, 4)).frameDuration(5));
 		}
+
 		//@formatter:off
 		soundURL = new EnumMap<>(PacManGameSound.class);
 		soundURL.put(PacManGameSound.CREDIT,           url("/sound/classic/credit.wav"));

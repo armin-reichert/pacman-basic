@@ -9,9 +9,13 @@ import de.amr.games.pacman.model.creatures.Ghost;
 
 public interface PacManGameAnimations {
 
+	Animation<BufferedImage> pacMunching(Direction dir);
+
 	Animation<BufferedImage> pacDying();
 
 	Animation<BufferedImage> ghostWalking(Ghost ghost, Direction dir);
+
+	Animation<BufferedImage> ghostFrightened(Direction dir);
 
 	Animation<BufferedImage> ghostFlashing(Ghost ghost);
 

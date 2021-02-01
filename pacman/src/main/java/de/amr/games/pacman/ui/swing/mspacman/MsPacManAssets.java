@@ -49,7 +49,7 @@ public class MsPacManAssets extends Spritesheet {
 	public final List<Animation<BufferedImage>> mazeFlashingAnimations;
 	public final BufferedImage life;
 	public final V2i[] symbolTiles;
-	public final Map<Integer, V2i> bonusValueTiles;
+	public final Map<Integer, V2i> bonusValueSpriteLocation;
 	public final Map<Integer, V2i> bountyNumberTiles;
 	public final Map<PacManGameSound, URL> soundURL;
 	public final EnumMap<Direction, BufferedImage> pacMouthOpen;
@@ -85,14 +85,14 @@ public class MsPacManAssets extends Spritesheet {
 		symbolTiles = new V2i[] { v2(3, 0), v2(4, 0), v2(5, 0), v2(6, 0), v2(7, 0), v2(8, 0), v2(9, 0) };
 
 		//@formatter:off
-		bonusValueTiles = new HashMap<>();
-		bonusValueTiles.put(100,  v2(3, 1));
-		bonusValueTiles.put(200,  v2(4, 1));
-		bonusValueTiles.put(500,  v2(5, 1));
-		bonusValueTiles.put(700,  v2(6, 1));
-		bonusValueTiles.put(1000, v2(7, 1));
-		bonusValueTiles.put(2000, v2(8, 1));
-		bonusValueTiles.put(5000, v2(9, 1));
+		bonusValueSpriteLocation = new HashMap<>();
+		bonusValueSpriteLocation.put(100,  v2(3, 1));
+		bonusValueSpriteLocation.put(200,  v2(4, 1));
+		bonusValueSpriteLocation.put(500,  v2(5, 1));
+		bonusValueSpriteLocation.put(700,  v2(6, 1));
+		bonusValueSpriteLocation.put(1000, v2(7, 1));
+		bonusValueSpriteLocation.put(2000, v2(8, 1));
+		bonusValueSpriteLocation.put(5000, v2(9, 1));
 		
 		bountyNumberTiles = new HashMap<>();
 		bountyNumberTiles.put(200, v2(0,8));

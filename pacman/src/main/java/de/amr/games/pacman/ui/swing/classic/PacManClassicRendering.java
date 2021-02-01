@@ -42,6 +42,11 @@ public class PacManClassicRendering implements PacManGameAnimations {
 	}
 
 	@Override
+	public Animation<BufferedImage> pacMunching(Direction dir) {
+		return assets.pacMunching.get(dir);
+	}
+
+	@Override
 	public Animation<BufferedImage> pacDying() {
 		return assets.pacCollapsing;
 	}
@@ -49,6 +54,11 @@ public class PacManClassicRendering implements PacManGameAnimations {
 	@Override
 	public Animation<BufferedImage> ghostWalking(Ghost ghost, Direction dir) {
 		return assets.ghostWalking.get(ghost.id).get(dir);
+	}
+
+	@Override
+	public Animation<BufferedImage> ghostFrightened(Direction dir) {
+		return assets.ghostBlue;
 	}
 
 	@Override
@@ -116,7 +126,7 @@ public class PacManClassicRendering implements PacManGameAnimations {
 		int x = t(game.level.world.xTiles() - 4);
 		int first = Math.max(1, game.currentLevelNumber - 6);
 		for (int levelNumber = first; levelNumber <= game.currentLevelNumber; ++levelNumber) {
-			V2i symbolTile = assets.symbolTiles[game.levelSymbols.get(levelNumber - 1)];
+			V2i symbolTile = assets.symbolSpriteLocation[game.levelSymbols.get(levelNumber - 1)];
 			g.drawImage(assets.spriteAt(symbolTile), x, y, null);
 			x -= t(2);
 		}
@@ -128,7 +138,7 @@ public class PacManClassicRendering implements PacManGameAnimations {
 
 	public void drawBonus(Graphics2D g, Bonus bonus) {
 		if (bonus.edibleTicksLeft > 0) {
-			drawGuy(g, bonus, assets.spriteAt(assets.symbolTiles[bonus.symbol]));
+			drawGuy(g, bonus, assets.spriteAt(assets.symbolSpriteLocation[bonus.symbol]));
 		}
 		if (bonus.eatenTicksLeft > 0) {
 			if (bonus.points != 1000) {
@@ -153,7 +163,7 @@ public class PacManClassicRendering implements PacManGameAnimations {
 		if (!pac.couldMove) {
 			return assets.pacMouthOpen.get(pac.dir);
 		}
-		return assets.pacMunching.get(pac.dir).currentFrameThenAdvance();
+		return pacMunching(pac.dir).currentFrameThenAdvance();
 	}
 
 	public void drawGhost(Graphics2D g, Ghost ghost, PacManGame game) {
@@ -175,14 +185,12 @@ public class PacManClassicRendering implements PacManGameAnimations {
 			return assets.ghostEyes.get(ghost.wishDir);
 		}
 		if (ghost.is(FRIGHTENED)) {
-			if (ghostFlashing(ghost).isRunning()) {
-				return ghostFlashing(ghost).currentFrameThenAdvance();
-			}
-			return assets.ghostBlue.currentFrameThenAdvance();
+			return ghostFlashing(ghost).isRunning() ? ghostFlashing(ghost).currentFrameThenAdvance()
+					: assets.ghostBlue.currentFrameThenAdvance();
 		}
 		if (ghost.is(LOCKED) && game.pac.powerTicksLeft > 0) {
 			return assets.ghostBlue.currentFrameThenAdvance();
 		}
-		return assets.ghostWalking.get(ghost.id).get(ghost.wishDir).currentFrameThenAdvance();
+		return ghostWalking(ghost, ghost.wishDir).currentFrameThenAdvance();
 	}
 }

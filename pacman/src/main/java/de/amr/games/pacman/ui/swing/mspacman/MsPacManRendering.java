@@ -41,6 +41,11 @@ public class MsPacManRendering implements PacManGameAnimations {
 	}
 
 	@Override
+	public Animation<BufferedImage> pacMunching(Direction dir) {
+		return assets.pacMunching.get(dir);
+	}
+
+	@Override
 	public Animation<BufferedImage> pacDying() {
 		return assets.pacSpinning;
 	}
@@ -48,6 +53,11 @@ public class MsPacManRendering implements PacManGameAnimations {
 	@Override
 	public Animation<BufferedImage> ghostWalking(Ghost ghost, Direction dir) {
 		return assets.ghostWalking.get(ghost.id).get(dir);
+	}
+
+	@Override
+	public Animation<BufferedImage> ghostFrightened(Direction dir) {
+		return assets.ghostBlue;
 	}
 
 	@Override
@@ -120,12 +130,9 @@ public class MsPacManRendering implements PacManGameAnimations {
 	}
 
 	public void drawMaze(Graphics2D g, PacManGame game) {
-		Animation<BufferedImage> mazeFlashing = assets.mazeFlashingAnimations.get(game.level.mazeNumber - 1);
+		Animation<BufferedImage> mazeFlashing = mazeFlashing(game.level.mazeNumber);
 		if (mazeFlashing.isRunning() || mazeFlashing.isComplete()) {
-			BufferedImage frame = mazeFlashing.currentFrameThenAdvance();
-			if (frame != null) {
-				g.drawImage(frame, 0, t(3), null);
-			}
+			g.drawImage(mazeFlashing.currentFrameThenAdvance(), 0, t(3), null);
 			return;
 		}
 		g.drawImage(assets.mazeFull[game.level.mazeNumber - 1], 0, t(3), null);
@@ -133,7 +140,7 @@ public class MsPacManRendering implements PacManGameAnimations {
 			g.setColor(Color.BLACK);
 			g.fillRect(t(tile.x), t(tile.y), TS, TS);
 		});
-		// TODO use animation instead?
+		// blink effect
 		if (clock.ticksTotal % 20 < 10 && game.state == HUNTING) {
 			game.level.world.energizerTiles().forEach(tile -> {
 				g.setColor(Color.BLACK);
@@ -141,13 +148,6 @@ public class MsPacManRendering implements PacManGameAnimations {
 			});
 		}
 		drawBonus(g, game.bonus);
-	}
-
-	private void drawGuy(Graphics2D g, Creature guy, BufferedImage sprite) {
-		if (guy.visible) {
-			int dx = (sprite.getWidth() - TS) / 2, dy = (sprite.getHeight() - TS) / 2;
-			g.drawImage(sprite, (int) (guy.position.x) - dx, (int) (guy.position.y) - dy, null);
-		}
 	}
 
 	public void drawPac(Graphics2D g, Pac pac) {
@@ -158,19 +158,24 @@ public class MsPacManRendering implements PacManGameAnimations {
 		drawGuy(g, ghost, sprite(ghost, game));
 	}
 
-	private final int BONUS_JUMP[] = { -2, 0, 2 };
+	private final int BONUS_JUMP[] = { -2, 2 };
 
 	public void drawBonus(Graphics2D g, Bonus bonus) {
 		int x = (int) (bonus.position.x) - HTS;
 		int y = (int) (bonus.position.y) - HTS;
 		if (bonus.edibleTicksLeft > 0) {
 			int frame = clock.frame(20, BONUS_JUMP.length);
-			if (bonus.dir == Direction.LEFT || bonus.dir == Direction.RIGHT) {
-				y += BONUS_JUMP[frame]; // TODO this is not yet correct
-			}
+			y += BONUS_JUMP[frame]; // TODO not yet perfect
 			g.drawImage(assets.spriteAt(assets.symbolTiles[bonus.symbol]), x, y, null);
 		} else if (bonus.eatenTicksLeft > 0) {
-			g.drawImage(assets.spriteAt(assets.bonusValueTiles.get(bonus.points)), x, y, null);
+			g.drawImage(assets.spriteAt(assets.bonusValueSpriteLocation.get(bonus.points)), x, y, null);
+		}
+	}
+
+	private void drawGuy(Graphics2D g, Creature guy, BufferedImage sprite) {
+		if (guy.visible) {
+			int dx = (sprite.getWidth() - TS) / 2, dy = (sprite.getHeight() - TS) / 2;
+			g.drawImage(sprite, (int) (guy.position.x) - dx, (int) (guy.position.y) - dy, null);
 		}
 	}
 
