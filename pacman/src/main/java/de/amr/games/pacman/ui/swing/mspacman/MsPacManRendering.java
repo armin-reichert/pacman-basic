@@ -185,15 +185,15 @@ public class MsPacManRendering implements PacManGameAnimations {
 
 	private BufferedImage sprite(Pac pac) {
 		if (pac.dead) {
-			if (assets.pacSpinning.isRunning() || assets.pacSpinning.isComplete()) {
-				return assets.pacSpinning.currentFrameThenAdvance();
+			if (pacDying().isRunning() || pacDying().isComplete()) {
+				return pacDying().currentFrameThenAdvance();
 			}
 			return assets.pacMouthOpen.get(pac.dir);
 		}
 		if (pac.speed == 0 || !pac.couldMove) {
 			return assets.pacMouthOpen.get(pac.dir);
 		}
-		return assets.pacMunching.get(pac.dir).currentFrameThenAdvance();
+		return pacMunching(pac.dir).currentFrameThenAdvance();
 	}
 
 	private BufferedImage sprite(Ghost ghost, PacManGame game) {
@@ -204,14 +204,12 @@ public class MsPacManRendering implements PacManGameAnimations {
 			return assets.ghostEyes.get(ghost.wishDir);
 		}
 		if (ghost.is(FRIGHTENED)) {
-			if (ghostFlashing(ghost).isRunning()) {
-				return ghostFlashing(ghost).currentFrameThenAdvance();
-			}
-			return assets.ghostBlue.currentFrameThenAdvance();
+			return ghostFlashing(ghost).isRunning() ? ghostFlashing(ghost).currentFrameThenAdvance()
+					: assets.ghostBlue.currentFrameThenAdvance();
 		}
 		if (ghost.is(LOCKED) && game.pac.powerTicksLeft > 0) {
 			return assets.ghostBlue.currentFrameThenAdvance();
 		}
-		return assets.ghostWalking.get(ghost.id).get(ghost.wishDir).currentFrameThenAdvance();
+		return ghostWalking(ghost, ghost.wishDir).currentFrameThenAdvance();
 	}
 }

@@ -153,10 +153,21 @@ public class PacManClassicRendering implements PacManGameAnimations {
 		}
 	}
 
+	public void drawGhost(Graphics2D g, Ghost ghost, PacManGame game) {
+		drawGuy(g, ghost, sprite(ghost, game));
+	}
+
+	private void drawGuy(Graphics2D g, Creature guy, BufferedImage sprite) {
+		if (guy.visible) {
+			int dx = (sprite.getWidth() - TS) / 2, dy = (sprite.getHeight() - TS) / 2;
+			g.drawImage(sprite, (int) (guy.position.x) - dx, (int) (guy.position.y) - dy, null);
+		}
+	}
+
 	private BufferedImage sprite(Pac pac) {
 		if (pac.dead) {
-			if (assets.pacCollapsing.isRunning() || assets.pacCollapsing.isComplete()) {
-				return assets.pacCollapsing.currentFrameThenAdvance();
+			if (pacDying().isRunning() || pacDying().isComplete()) {
+				return pacDying().currentFrameThenAdvance();
 			}
 			return assets.pacMouthClosed;
 		}
@@ -167,17 +178,6 @@ public class PacManClassicRendering implements PacManGameAnimations {
 			return assets.pacMouthOpen.get(pac.dir);
 		}
 		return pacMunching(pac.dir).currentFrameThenAdvance();
-	}
-
-	public void drawGhost(Graphics2D g, Ghost ghost, PacManGame game) {
-		drawGuy(g, ghost, sprite(ghost, game));
-	}
-
-	private void drawGuy(Graphics2D g, Creature guy, BufferedImage sprite) {
-		if (guy.visible) {
-			int dx = (sprite.getWidth() - TS) / 2, dy = (sprite.getHeight() - TS) / 2;
-			g.drawImage(sprite, (int) (guy.position.x) - dx, (int) (guy.position.y) - dy, null);
-		}
 	}
 
 	private BufferedImage sprite(Ghost ghost, PacManGame game) {
