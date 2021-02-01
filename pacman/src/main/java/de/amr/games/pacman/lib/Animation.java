@@ -1,4 +1,4 @@
-package de.amr.games.pacman.ui.swing;
+package de.amr.games.pacman.lib;
 
 import java.util.ArrayList;
 import java.util.Arrays;
