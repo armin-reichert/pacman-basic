@@ -9,7 +9,7 @@ import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.ui.api.PacManGameAnimations;
 import de.amr.games.pacman.ui.api.PacManGameScene;
-import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
+import de.amr.games.pacman.ui.swing.DebugRendering;
 
 /**
  * Scene where the Ms. Pac-Man game is played.
@@ -22,10 +22,10 @@ public class MsPacManPlayScene implements PacManGameScene {
 	private final PacManGame game;
 	private final MsPacManRendering rendering;
 
-	public MsPacManPlayScene(PacManGameSwingUI ui, V2i size, MsPacManAssets assets, PacManGame game) {
+	public MsPacManPlayScene(V2i size, MsPacManRendering rendering, PacManGame game) {
 		this.size = size;
 		this.game = game;
-		rendering = new MsPacManRendering(assets, ui::translation);
+		this.rendering = rendering;
 	}
 
 	@Override
@@ -44,11 +44,13 @@ public class MsPacManPlayScene implements PacManGameScene {
 		rendering.drawLivesCounter(g, game, size.y - t(2));
 		rendering.drawLevelCounter(g, game, size.y - t(2));
 		rendering.drawMaze(g, game);
-		if (PacManGameSwingUI.debugMode) {
-			drawMazeStructure(g, game);
+		if (DebugRendering.on) {
+			DebugRendering.drawMazeStructure(g, game);
 		}
 		rendering.drawPac(g, game.pac);
 		game.ghosts().forEach(ghost -> rendering.drawGhost(g, ghost, game));
-		drawDebugInfo(g, game);
+		if (DebugRendering.on) {
+			DebugRendering.drawPlaySceneDebugInfo(g, game);
+		}
 	}
 }

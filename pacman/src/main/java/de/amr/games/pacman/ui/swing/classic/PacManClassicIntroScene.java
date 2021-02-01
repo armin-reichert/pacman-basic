@@ -15,10 +15,11 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.PacManGame;
+import de.amr.games.pacman.model.creatures.Ghost;
 import de.amr.games.pacman.ui.api.PacManGameAnimations;
 import de.amr.games.pacman.ui.api.PacManGameScene;
 import de.amr.games.pacman.ui.api.Sound;
-import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
+import de.amr.games.pacman.ui.api.SoundManager;
 
 /**
  * Intro presenting the ghosts and showing the chasing animations.
@@ -29,19 +30,18 @@ public class PacManClassicIntroScene implements PacManGameScene {
 
 	private static final Color[] GHOST_COLORS = { Color.RED, Color.PINK, Color.CYAN, Color.ORANGE };
 
-	private final PacManGameSwingUI ui;
 	private final V2i size;
-	private final PacManClassicAssets assets;
 	private final PacManClassicRendering rendering;
 	private final PacManGame game;
+	private final SoundManager sounds;
+
 	private int lastKilledGhostID;
 
-	public PacManClassicIntroScene(PacManGameSwingUI ui, V2i size, PacManClassicAssets assets, PacManGame game) {
-		this.ui = ui;
+	public PacManClassicIntroScene(V2i size, PacManClassicRendering rendering, SoundManager sounds, PacManGame game) {
 		this.size = size;
 		this.game = game;
-		this.assets = assets;
-		rendering = new PacManClassicRendering(assets, ui::translation);
+		this.rendering = rendering;
+		this.sounds = sounds;
 	}
 
 	@Override
@@ -59,21 +59,24 @@ public class PacManClassicIntroScene implements PacManGameScene {
 		game.pac.position = new V2f(size.x, t(22));
 		game.pac.dir = LEFT;
 		game.pac.speed = 0.8f;
-		game.ghosts[0].position = new V2f(game.pac.position.x + 24, t(22));
-		game.ghosts[0].dir = LEFT;
-		game.ghosts[0].speed = 0.8f;
+		for (Ghost ghost : game.ghosts) {
+			ghost.position = new V2f(game.pac.position.x + 24 + 16 * ghost.id, t(22));
+			ghost.wishDir = ghost.dir = LEFT;
+			ghost.speed = 0.8f;
+			ghost.visible = true;
+		}
 		lastKilledGhostID = -1;
 	}
 
 	@Override
 	public void end() {
-		for (int ghostID = 0; ghostID < 4; ++ghostID) {
+		for (Ghost ghost : game.ghosts) {
 			for (Direction dir : Direction.values()) {
-				assets.ghostWalking.get(ghostID).get(dir).restart();
+				rendering.ghostWalking(ghost, dir).restart();
 			}
 		}
 		for (Direction dir : Direction.values()) {
-			assets.pacMunching.get(dir).restart();
+			rendering.assets.pacMunching.get(dir).restart();
 		}
 		game.state.resetTimer();
 	}
@@ -81,23 +84,23 @@ public class PacManClassicIntroScene implements PacManGameScene {
 	@Override
 	public void draw(Graphics2D g) {
 		game.state.runAfter(clock.sec(1), () -> {
-			drawHCenteredImage(g, assets.gameLogo, 3);
+			drawHCenteredImage(g, rendering.assets.gameLogo, 3);
 		});
 
 		game.state.runAfter(clock.sec(2), () -> {
 			g.setColor(Color.WHITE);
-			g.setFont(assets.scoreFont);
-			drawHCenteredText(g, ui.translation("CHARACTER_NICKNAME"), t(8));
+			g.setFont(rendering.assets.scoreFont);
+			drawHCenteredText(g, rendering.translator.apply("CHARACTER_NICKNAME"), t(8));
 		});
 
 		IntStream.rangeClosed(0, 3).forEach(ghost -> {
 			int ghostStart = 3 + 2 * ghost;
 			int y = t(10 + 3 * ghost);
 			game.state.runAt(clock.sec(ghostStart), () -> {
-				ui.sounds().ifPresent(sm -> sm.playSound(Sound.CREDIT));
+				sounds.playSound(Sound.CREDIT);
 			});
 			game.state.runAfter(clock.sec(ghostStart), () -> {
-				g.drawImage(assets.ghostWalking.get(ghost).get(RIGHT).thing(0), t(2) - 3, y - 2, null);
+				g.drawImage(rendering.assets.ghostWalking.get(ghost).get(RIGHT).thing(0), t(2) - 3, y - 2, null);
 			});
 			game.state.runAfter(clock.sec(ghostStart + 0.5), () -> {
 				drawGhostCharacterAndName(g, ghost, y, false);
@@ -112,7 +115,7 @@ public class PacManClassicIntroScene implements PacManGameScene {
 		});
 
 		game.state.runAt(clock.sec(13), () -> {
-			ui.sounds().ifPresent(sm -> sm.loopSound(Sound.GHOST_SIREN_1));
+			sounds.loopSound(Sound.GHOST_SIREN_1);
 		});
 
 		game.state.runAfter(clock.sec(13), () -> {
@@ -124,7 +127,7 @@ public class PacManClassicIntroScene implements PacManGameScene {
 		});
 
 		game.state.runAt(clock.sec(24), () -> {
-			ui.sounds().ifPresent(sm -> sm.stopSound(Sound.PACMAN_POWER));
+			sounds.stopSound(Sound.PACMAN_POWER);
 		});
 
 		game.state.runAfter(clock.sec(24), () -> {
@@ -139,9 +142,9 @@ public class PacManClassicIntroScene implements PacManGameScene {
 
 	private void drawPressKeyToStart(Graphics2D g) {
 		g.setColor(Color.ORANGE);
-		g.setFont(assets.scoreFont);
+		g.setFont(rendering.assets.scoreFont);
 		if (game.state.ticksRun() % 40 < 20) {
-			drawHCenteredText(g, ui.translation("PRESS_KEY_TO_PLAY"), size.y - 20);
+			drawHCenteredText(g, rendering.translator.apply("PRESS_KEY_TO_PLAY"), size.y - 20);
 		}
 	}
 
@@ -152,20 +155,20 @@ public class PacManClassicIntroScene implements PacManGameScene {
 			g.fillOval(t(9), t(29) - 2, 10, 10);
 		}
 		g.setColor(Color.WHITE);
-		g.setFont(assets.scoreFont);
+		g.setFont(rendering.assets.scoreFont);
 		g.drawString("10", t(12), t(28));
 		g.drawString("50", t(12), t(30));
-		g.setFont(assets.scoreFont.deriveFont(6f));
-		g.drawString(ui.translation("POINTS"), t(15), t(28));
-		g.drawString(ui.translation("POINTS"), t(15), t(30));
+		g.setFont(rendering.assets.scoreFont.deriveFont(6f));
+		g.drawString(rendering.translator.apply("POINTS"), t(15), t(28));
+		g.drawString(rendering.translator.apply("POINTS"), t(15), t(30));
 	}
 
 	private void drawGhostCharacterAndName(Graphics2D g, int ghostID, int y, boolean both) {
-		String character = ui.translation("CLASSIC.GHOST." + ghostID + ".CHARACTER");
-		String nickname = "\"" + ui.translation("CLASSIC.GHOST." + ghostID + ".NICKNAME") + "\"";
+		String character = rendering.translator.apply("CLASSIC.GHOST." + ghostID + ".CHARACTER");
+		String nickname = "\"" + rendering.translator.apply("CLASSIC.GHOST." + ghostID + ".NICKNAME") + "\"";
 		Color color = GHOST_COLORS[ghostID];
 		g.setColor(color);
-		g.setFont(assets.scoreFont);
+		g.setFont(rendering.assets.scoreFont);
 		g.drawString("-" + character, t(4), y + 11);
 		if (both) {
 			g.drawString(nickname, t(15), y + 11);
@@ -179,7 +182,7 @@ public class PacManClassicIntroScene implements PacManGameScene {
 		}
 		g.drawImage(pacSprite(), (int) game.pac.position.x, (int) game.pac.position.y, null);
 		for (int ghostID = 0; ghostID < 4; ++ghostID) {
-			g.drawImage(assets.ghostWalking.get(ghostID).get(LEFT).currentFrameThenAdvance(),
+			g.drawImage(rendering.assets.ghostWalking.get(ghostID).get(LEFT).currentFrameThenAdvance(),
 					(int) game.ghosts[0].position.x + 16 * ghostID, (int) game.pac.position.y, null);
 		}
 		if (game.pac.position.x > t(2)) {
@@ -189,10 +192,13 @@ public class PacManClassicIntroScene implements PacManGameScene {
 			game.ghosts[0].position = game.ghosts[0].position.sum(ghostVelocity);
 		} else {
 			game.pac.dir = RIGHT;
-			game.ghosts[0].dir = RIGHT;
-			game.ghosts[0].speed = 0.4f;
-			ui.sounds().ifPresent(sm -> sm.stopSound(Sound.GHOST_SIREN_1));
-			ui.sounds().ifPresent(sm -> sm.loopSound(Sound.PACMAN_POWER));
+			for (int i = 0; i < 4; ++i) {
+				game.ghosts[i].dir = RIGHT;
+				game.ghosts[i].wishDir = RIGHT;
+				game.ghosts[i].speed = 0.4f;
+			}
+			sounds.stopSound(Sound.GHOST_SIREN_1);
+			sounds.loopSound(Sound.PACMAN_POWER);
 		}
 	}
 
@@ -201,13 +207,13 @@ public class PacManClassicIntroScene implements PacManGameScene {
 		for (int ghostID = 0; ghostID < 4; ++ghostID) {
 			int x = (int) game.ghosts[0].position.x + 16 * ghostID;
 			if (game.pac.position.x < x) {
-				g.drawImage(assets.ghostBlue.currentFrameThenAdvance(), x, y, null);
+				g.drawImage(rendering.assets.ghostBlue.currentFrameThenAdvance(), x, y, null);
 			} else if (game.pac.position.x > x && game.pac.position.x <= x + 16) {
 				int bounty = (int) (Math.pow(2, ghostID) * 200);
-				g.drawImage(assets.numbers.get(bounty), x, y, null);
+				g.drawImage(rendering.assets.numbers.get(bounty), x, y, null);
 				if (lastKilledGhostID != ghostID) {
 					lastKilledGhostID++;
-					ui.sounds().ifPresent(sm -> sm.playSound(Sound.GHOST_EATEN));
+					sounds.playSound(Sound.GHOST_EATEN);
 				}
 			}
 		}
@@ -221,8 +227,8 @@ public class PacManClassicIntroScene implements PacManGameScene {
 	}
 
 	private BufferedImage pacSprite() {
-		return game.pac.speed != 0 ? assets.pacMunching.get(game.pac.dir).currentFrameThenAdvance()
-				: assets.pacMouthOpen.get(game.pac.dir);
+		return game.pac.speed != 0 ? rendering.assets.pacMunching.get(game.pac.dir).currentFrameThenAdvance()
+				: rendering.assets.pacMouthOpen.get(game.pac.dir);
 	}
 
 }

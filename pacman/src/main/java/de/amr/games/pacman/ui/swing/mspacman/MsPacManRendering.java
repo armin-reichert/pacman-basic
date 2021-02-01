@@ -32,8 +32,8 @@ import de.amr.games.pacman.ui.swing.Animation;
  */
 public class MsPacManRendering implements PacManGameAnimations {
 
-	private final MsPacManAssets assets;
-	private final Function<String, String> translator;
+	public final MsPacManAssets assets;
+	public final Function<String, String> translator;
 
 	public MsPacManRendering(MsPacManAssets assets, Function<String, String> translator) {
 		this.assets = assets;

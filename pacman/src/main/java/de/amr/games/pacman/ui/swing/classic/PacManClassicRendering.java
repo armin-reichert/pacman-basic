@@ -33,8 +33,8 @@ import de.amr.games.pacman.ui.swing.Animation;
  */
 public class PacManClassicRendering implements PacManGameAnimations {
 
-	private final PacManClassicAssets assets;
-	private final Function<String, String> translator;
+	public final PacManClassicAssets assets;
+	public final Function<String, String> translator;
 
 	public PacManClassicRendering(PacManClassicAssets assets, Function<String, String> translator) {
 		this.assets = assets;

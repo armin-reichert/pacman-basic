@@ -40,9 +40,11 @@ import de.amr.games.pacman.ui.api.SoundManager;
 import de.amr.games.pacman.ui.swing.classic.PacManClassicAssets;
 import de.amr.games.pacman.ui.swing.classic.PacManClassicIntroScene;
 import de.amr.games.pacman.ui.swing.classic.PacManClassicPlayScene;
+import de.amr.games.pacman.ui.swing.classic.PacManClassicRendering;
 import de.amr.games.pacman.ui.swing.mspacman.MsPacManAssets;
 import de.amr.games.pacman.ui.swing.mspacman.MsPacManIntroScene;
 import de.amr.games.pacman.ui.swing.mspacman.MsPacManPlayScene;
+import de.amr.games.pacman.ui.swing.mspacman.MsPacManRendering;
 
 /**
  * Swing UI for Pac-Man game.
@@ -50,8 +52,6 @@ import de.amr.games.pacman.ui.swing.mspacman.MsPacManPlayScene;
  * @author Armin Reichert
  */
 public class PacManGameSwingUI implements PacManGameUI {
-
-	public static boolean debugMode;
 
 	static final ResourceBundle TEXTS = ResourceBundle.getBundle("ui.swing.localization.translation");
 
@@ -135,11 +135,10 @@ public class PacManGameSwingUI implements PacManGameUI {
 					showFlashMessage(clock.targetFrequency == 60 ? "Normal speed" : "Fast speed");
 				}
 				if (e.getKeyCode() == KEY_DEBUGMODE) {
-					debugMode = !debugMode;
-					log("UI debug mode is %s", debugMode ? "on" : "off");
+					DebugRendering.on = !DebugRendering.on;
+					log("UI debug mode is %s", DebugRendering.on ? "on" : "off");
 				}
 			}
-
 		});
 
 		window.addWindowListener(new WindowAdapter() {
@@ -205,14 +204,16 @@ public class PacManGameSwingUI implements PacManGameUI {
 		this.game = newGame;
 		if (game instanceof PacManClassicGame) {
 			PacManClassicAssets assets = new PacManClassicAssets();
+			PacManClassicRendering rendering = new PacManClassicRendering(assets, this::translation);
 			soundManager = new DefaultPacManGameSoundManager(assets.soundURL::get);
-			introScene = new PacManClassicIntroScene(this, unscaledSizePixels, assets, game);
-			playScene = new PacManClassicPlayScene(this, unscaledSizePixels, assets, game);
+			introScene = new PacManClassicIntroScene(unscaledSizePixels, rendering, soundManager, game);
+			playScene = new PacManClassicPlayScene(unscaledSizePixels, rendering, game);
 		} else {
 			MsPacManAssets assets = new MsPacManAssets();
+			MsPacManRendering rendering = new MsPacManRendering(assets, this::translation);
 			soundManager = new DefaultPacManGameSoundManager(assets.soundURL::get);
-			introScene = new MsPacManIntroScene(this, unscaledSizePixels, assets, game);
-			playScene = new MsPacManPlayScene(this, unscaledSizePixels, assets, game);
+			introScene = new MsPacManIntroScene(unscaledSizePixels, rendering, soundManager, game);
+			playScene = new MsPacManPlayScene(unscaledSizePixels, rendering, game);
 		}
 		if (titleUpdateTimer != null) {
 			titleUpdateTimer.stop();
