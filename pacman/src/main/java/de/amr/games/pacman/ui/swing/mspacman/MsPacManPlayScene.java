@@ -20,13 +20,11 @@ public class MsPacManPlayScene implements PacManGameScene {
 
 	private final V2i size;
 	private final PacManGame game;
-	private final MsPacManAssets assets;
 	private final MsPacManRendering rendering;
 
 	public MsPacManPlayScene(PacManGameSwingUI ui, V2i size, MsPacManAssets assets, PacManGame game) {
 		this.size = size;
 		this.game = game;
-		this.assets = assets;
 		rendering = new MsPacManRendering(assets, ui::translation);
 	}
 
@@ -37,7 +35,7 @@ public class MsPacManPlayScene implements PacManGameScene {
 
 	@Override
 	public Optional<PacManGameAnimations> animations() {
-		return Optional.of(assets);
+		return Optional.of(rendering);
 	}
 
 	@Override

@@ -28,6 +28,7 @@ public class MsPacManIntroScene implements PacManGameScene {
 	private final PacManGameSwingUI ui;
 	private final V2i size;
 	private final MsPacManAssets assets;
+	private final MsPacManRendering rendering;
 	private final PacManGame game;
 	private final V2i frameDots = new V2i(32, 16);
 	private final V2i frameTopLeftTile = new V2i(6, 8);
@@ -39,13 +40,14 @@ public class MsPacManIntroScene implements PacManGameScene {
 	public MsPacManIntroScene(PacManGameSwingUI ui, V2i size, MsPacManAssets assets, PacManGame game) {
 		this.ui = ui;
 		this.size = size;
-		this.assets = assets;
 		this.game = game;
+		this.assets = assets;
+		rendering = new MsPacManRendering(assets, ui::translation);
 	}
 
 	@Override
 	public Optional<PacManGameAnimations> animations() {
-		return Optional.of(assets);
+		return Optional.of(rendering);
 	}
 
 	@Override
@@ -100,7 +102,7 @@ public class MsPacManIntroScene implements PacManGameScene {
 		drawBlinkingFrame(g, time);
 		g.setFont(assets.scoreFont);
 		g.setColor(Color.ORANGE);
-		drawCenteredText(g, "\"MS PAC-MAN\"", t(5));
+		drawHCenteredText(g, "\"MS PAC-MAN\"", t(5));
 
 		for (Ghost ghost : game.ghosts) {
 			if (ghostReachedEndPosition(ghost)) {
@@ -113,7 +115,7 @@ public class MsPacManIntroScene implements PacManGameScene {
 			}
 			if (ghost.speed != 0) {
 				g.setColor(GHOST_COLORS[ghost.id]);
-				drawCenteredText(g, ui.translation("MSPACMAN.GHOST." + ghost.id + ".NICKNAME"), t(14));
+				drawHCenteredText(g, ui.translation("MSPACMAN.GHOST." + ghost.id + ".NICKNAME"), t(14));
 				V2f velocity = new V2f(ghost.dir.vec).scaled(ghost.speed);
 				ghost.position = ghost.position.sum(velocity);
 				if (ghost.position.x <= leftOfFrame) {
@@ -206,7 +208,7 @@ public class MsPacManIntroScene implements PacManGameScene {
 		g.setColor(Color.ORANGE);
 		g.setFont(assets.scoreFont);
 		if (time % 40 < 20) {
-			drawCenteredText(g, ui.translation("PRESS_KEY_TO_PLAY"), size.y - 20);
+			drawHCenteredText(g, ui.translation("PRESS_KEY_TO_PLAY"), size.y - 20);
 		}
 	}
 
@@ -224,5 +226,4 @@ public class MsPacManIntroScene implements PacManGameScene {
 		g.drawString(ui.translation("POINTS"), t(15), t(yTile));
 		g.drawString(ui.translation("POINTS"), t(15), t(yTile + 2));
 	}
-
 }

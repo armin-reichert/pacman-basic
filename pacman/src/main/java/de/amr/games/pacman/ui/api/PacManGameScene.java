@@ -40,11 +40,11 @@ public interface PacManGameScene {
 
 	// convenience
 
-	default void drawCenteredText(Graphics2D g, String text, int y) {
+	default void drawHCenteredText(Graphics2D g, String text, int y) {
 		g.drawString(text, (size().x - g.getFontMetrics().stringWidth(text)) / 2, y);
 	}
 
-	default void drawCenteredImage(Graphics2D g, BufferedImage image, int y) {
+	default void drawHCenteredImage(Graphics2D g, BufferedImage image, int y) {
 		g.drawImage(image, (size().x - image.getWidth()) / 2, y, null);
 	}
 

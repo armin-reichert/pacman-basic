@@ -81,13 +81,13 @@ public class PacManClassicIntroScene implements PacManGameScene {
 	@Override
 	public void draw(Graphics2D g) {
 		game.state.runAfter(clock.sec(1), () -> {
-			drawCenteredImage(g, assets.gameLogo, 3);
+			drawHCenteredImage(g, assets.gameLogo, 3);
 		});
 
 		game.state.runAfter(clock.sec(2), () -> {
 			g.setColor(Color.WHITE);
 			g.setFont(assets.scoreFont);
-			drawCenteredText(g, ui.translation("CHARACTER_NICKNAME"), t(8));
+			drawHCenteredText(g, ui.translation("CHARACTER_NICKNAME"), t(8));
 		});
 
 		IntStream.rangeClosed(0, 3).forEach(ghost -> {
@@ -141,7 +141,7 @@ public class PacManClassicIntroScene implements PacManGameScene {
 		g.setColor(Color.ORANGE);
 		g.setFont(assets.scoreFont);
 		if (game.state.ticksRun() % 40 < 20) {
-			drawCenteredText(g, ui.translation("PRESS_KEY_TO_PLAY"), size.y - 20);
+			drawHCenteredText(g, ui.translation("PRESS_KEY_TO_PLAY"), size.y - 20);
 		}
 	}
 

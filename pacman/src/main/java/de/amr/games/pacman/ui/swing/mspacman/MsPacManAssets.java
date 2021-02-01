@@ -15,8 +15,6 @@ import java.util.Map;
 
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.model.creatures.Ghost;
-import de.amr.games.pacman.ui.api.PacManGameAnimations;
 import de.amr.games.pacman.ui.api.Sound;
 import de.amr.games.pacman.ui.swing.Animation;
 import de.amr.games.pacman.ui.swing.Spritesheet;
@@ -26,7 +24,7 @@ import de.amr.games.pacman.ui.swing.Spritesheet;
  * 
  * @author Armin Reichert
  */
-public class MsPacManAssets extends Spritesheet implements PacManGameAnimations {
+public class MsPacManAssets extends Spritesheet {
 
 	/** Sprite sheet order of directions. */
 	private static int index(Direction dir) {
@@ -174,25 +172,5 @@ public class MsPacManAssets extends Spritesheet implements PacManGameAnimations 
 		soundURL.put(Sound.GHOST_SIREN_4,    url("/sound/mspacman/Ghost Noise 3.wav"));
 		soundURL.put(Sound.GHOST_SIREN_5,    url("/sound/mspacman/Ghost Noise 4.wav"));
 		//@formatter:on
-	}
-
-	@Override
-	public Animation<BufferedImage> pacDying() {
-		return pacSpinning;
-	}
-
-	@Override
-	public Animation<BufferedImage> ghostWalking(Ghost ghost, Direction dir) {
-		return ghostWalking.get(ghost.id).get(dir);
-	}
-
-	@Override
-	public Animation<BufferedImage> ghostFlashing(Ghost ghost) {
-		return ghostFlashing.get(ghost.id);
-	}
-
-	@Override
-	public Animation<BufferedImage> mazeFlashing(int mazeNumber) {
-		return mazeFlashingAnimations.get(mazeNumber - 1);
 	}
 }

@@ -22,6 +22,7 @@ import de.amr.games.pacman.model.creatures.Bonus;
 import de.amr.games.pacman.model.creatures.Creature;
 import de.amr.games.pacman.model.creatures.Ghost;
 import de.amr.games.pacman.model.creatures.Pac;
+import de.amr.games.pacman.ui.api.PacManGameAnimations;
 import de.amr.games.pacman.ui.swing.Animation;
 
 /**
@@ -29,7 +30,7 @@ import de.amr.games.pacman.ui.swing.Animation;
  * 
  * @author Armin Reichert
  */
-public class MsPacManRendering {
+public class MsPacManRendering implements PacManGameAnimations {
 
 	private final MsPacManAssets assets;
 	private final Function<String, String> translator;
@@ -37,6 +38,26 @@ public class MsPacManRendering {
 	public MsPacManRendering(MsPacManAssets assets, Function<String, String> translator) {
 		this.assets = assets;
 		this.translator = translator;
+	}
+
+	@Override
+	public Animation<BufferedImage> pacDying() {
+		return assets.pacSpinning;
+	}
+
+	@Override
+	public Animation<BufferedImage> ghostWalking(Ghost ghost, Direction dir) {
+		return assets.ghostWalking.get(ghost.id).get(dir);
+	}
+
+	@Override
+	public Animation<BufferedImage> ghostFlashing(Ghost ghost) {
+		return assets.ghostFlashing.get(ghost.id);
+	}
+
+	@Override
+	public Animation<BufferedImage> mazeFlashing(int mazeNumber) {
+		return assets.mazeFlashingAnimations.get(mazeNumber - 1);
 	}
 
 	public void drawScore(Graphics2D g, PacManGame game) {
@@ -174,8 +195,8 @@ public class MsPacManRendering {
 			return assets.ghostEyes.get(ghost.wishDir);
 		}
 		if (ghost.is(FRIGHTENED)) {
-			if (assets.ghostFlashing(ghost).isRunning()) {
-				return assets.ghostFlashing(ghost).currentFrameThenAdvance();
+			if (ghostFlashing(ghost).isRunning()) {
+				return ghostFlashing(ghost).currentFrameThenAdvance();
 			}
 			return assets.ghostBlue.currentFrameThenAdvance();
 		}
