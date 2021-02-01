@@ -3,6 +3,7 @@ package de.amr.games.pacman.ui.api;
 import java.util.Optional;
 
 import de.amr.games.pacman.model.PacManGame;
+import de.amr.games.pacman.ui.sound.SoundManager;
 
 /**
  * Interface through which the game class sees the user interface.

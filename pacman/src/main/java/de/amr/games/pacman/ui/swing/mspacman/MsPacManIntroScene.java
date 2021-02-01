@@ -17,8 +17,8 @@ import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.creatures.Ghost;
 import de.amr.games.pacman.ui.api.PacManGameAnimations;
 import de.amr.games.pacman.ui.api.PacManGameScene;
-import de.amr.games.pacman.ui.api.Sound;
-import de.amr.games.pacman.ui.api.SoundManager;
+import de.amr.games.pacman.ui.sound.PacManGameSound;
+import de.amr.games.pacman.ui.sound.SoundManager;
 
 public class MsPacManIntroScene implements PacManGameScene {
 
@@ -86,7 +86,7 @@ public class MsPacManIntroScene implements PacManGameScene {
 		// animation start:
 		if (time == 0) {
 			game.ghosts[0].speed = walkSpeed;
-			sounds.playSound(Sound.CREDIT);
+			sounds.playSound(PacManGameSound.CREDIT);
 		}
 
 		drawAnimatedFrame(g, time);
@@ -117,10 +117,10 @@ public class MsPacManIntroScene implements PacManGameScene {
 				rendering.ghostWalking(ghost, ghost.dir).reset();
 				if (ghost.id < 3) { // start next ghost
 					game.ghosts[ghost.id + 1].speed = walkSpeed;
-					sounds.playSound(Sound.CREDIT);
+					sounds.playSound(PacManGameSound.CREDIT);
 				} else { // start Pac
 					game.pac.speed = walkSpeed;
-					sounds.loopSound(Sound.PACMAN_MUNCH);
+					sounds.loopSound(PacManGameSound.PACMAN_MUNCH);
 				}
 			}
 		}

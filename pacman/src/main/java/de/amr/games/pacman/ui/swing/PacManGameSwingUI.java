@@ -36,7 +36,8 @@ import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.ui.api.PacManGameAnimations;
 import de.amr.games.pacman.ui.api.PacManGameScene;
 import de.amr.games.pacman.ui.api.PacManGameUI;
-import de.amr.games.pacman.ui.api.SoundManager;
+import de.amr.games.pacman.ui.sound.PacManGameSoundManager;
+import de.amr.games.pacman.ui.sound.SoundManager;
 import de.amr.games.pacman.ui.swing.classic.PacManClassicAssets;
 import de.amr.games.pacman.ui.swing.classic.PacManClassicIntroScene;
 import de.amr.games.pacman.ui.swing.classic.PacManClassicPlayScene;
@@ -105,7 +106,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 	private PacManGameScene currentScene;
 	private PacManGameScene introScene;
 	private PacManGameScene playScene;
-	private DefaultPacManGameSoundManager soundManager;
+	private PacManGameSoundManager soundManager;
 
 	public PacManGameSwingUI(PacManGame game, float scaling) {
 
@@ -205,13 +206,13 @@ public class PacManGameSwingUI implements PacManGameUI {
 		if (game instanceof PacManClassicGame) {
 			PacManClassicAssets assets = new PacManClassicAssets();
 			PacManClassicRendering rendering = new PacManClassicRendering(assets, this::translation);
-			soundManager = new DefaultPacManGameSoundManager(assets.soundURL::get);
+			soundManager = new PacManGameSoundManager(assets.soundURL::get);
 			introScene = new PacManClassicIntroScene(unscaledSizePixels, rendering, soundManager, game);
 			playScene = new PacManClassicPlayScene(unscaledSizePixels, rendering, game);
 		} else {
 			MsPacManAssets assets = new MsPacManAssets();
 			MsPacManRendering rendering = new MsPacManRendering(assets, this::translation);
-			soundManager = new DefaultPacManGameSoundManager(assets.soundURL::get);
+			soundManager = new PacManGameSoundManager(assets.soundURL::get);
 			introScene = new MsPacManIntroScene(unscaledSizePixels, rendering, soundManager, game);
 			playScene = new MsPacManPlayScene(unscaledSizePixels, rendering, game);
 		}

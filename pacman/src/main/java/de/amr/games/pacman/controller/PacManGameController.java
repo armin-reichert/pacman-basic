@@ -35,8 +35,8 @@ import de.amr.games.pacman.model.PacManClassicGame;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.creatures.Ghost;
 import de.amr.games.pacman.ui.api.PacManGameUI;
-import de.amr.games.pacman.ui.api.Sound;
-import de.amr.games.pacman.ui.api.SoundManager;
+import de.amr.games.pacman.ui.sound.PacManGameSound;
+import de.amr.games.pacman.ui.sound.SoundManager;
 
 /**
  * Pac-Man and Ms. Pac-Man game with original "AI", levels, timers.
@@ -240,7 +240,7 @@ public class PacManGameController {
 		ui.sounds().ifPresent(sm -> {
 			sm.stopAllSounds();
 			if (!game.started) {
-				sm.playSound(Sound.GAME_READY);
+				sm.playSound(PacManGameSound.GAME_READY);
 			}
 		});
 		ui.showMessage(ui.translation("READY"), false);
@@ -292,16 +292,16 @@ public class PacManGameController {
 		return clock.sec(duration);
 	}
 
-	private static Sound siren(int huntingPhase) {
+	private static PacManGameSound siren(int huntingPhase) {
 		switch (huntingPhase / 2) {
 		case 0:
-			return Sound.GHOST_SIREN_1;
+			return PacManGameSound.GHOST_SIREN_1;
 		case 1:
-			return Sound.GHOST_SIREN_2;
+			return PacManGameSound.GHOST_SIREN_2;
 		case 2:
-			return Sound.GHOST_SIREN_3;
+			return PacManGameSound.GHOST_SIREN_3;
 		case 3:
-			return Sound.GHOST_SIREN_4;
+			return PacManGameSound.GHOST_SIREN_4;
 		default:
 			throw new IllegalArgumentException("Illegal hunting phase: " + huntingPhase);
 		}
@@ -419,15 +419,15 @@ public class PacManGameController {
 			log("Pac-Man found bonus (%s) of value %d", game.bonusNames[game.bonus.symbol], game.bonus.points);
 			game.bonus.eatAndDisplayValue(clock.sec(2));
 			score(game.bonus.points);
-			ui.sounds().ifPresent(sm -> sm.playSound(Sound.PACMAN_EAT_BONUS));
+			ui.sounds().ifPresent(sm -> sm.playSound(PacManGameSound.PACMAN_EAT_BONUS));
 		}
 
 		ui.sounds().ifPresent(sm -> {
 			if (game.ghosts().noneMatch(ghost -> ghost.is(DEAD))) {
-				sm.stopSound(Sound.GHOST_EYES);
+				sm.stopSound(PacManGameSound.GHOST_EYES);
 			}
 			if (game.pac.powerTicksLeft == 0) {
-				sm.stopSound(Sound.PACMAN_POWER);
+				sm.stopSound(PacManGameSound.PACMAN_POWER);
 			}
 		});
 
@@ -467,7 +467,7 @@ public class PacManGameController {
 		}
 		if (game.state.ticksRun() == clock.sec(2.5)) {
 			ui.animations().ifPresent(animations -> animations.pacDying().run());
-			ui.sounds().ifPresent(sm -> sm.playSound(Sound.PACMAN_DEATH));
+			ui.sounds().ifPresent(sm -> sm.playSound(PacManGameSound.PACMAN_DEATH));
 		}
 		return game.state.run();
 	}
@@ -483,7 +483,7 @@ public class PacManGameController {
 	private void enterGhostDyingState() {
 		game.state.setDuration(clock.sec(1));
 		game.pac.visible = false;
-		ui.sounds().ifPresent(sm -> sm.playSound(Sound.GHOST_EATEN));
+		ui.sounds().ifPresent(sm -> sm.playSound(PacManGameSound.GHOST_EATEN));
 	}
 
 	private PacManGameState runGhostDyingState() {
@@ -503,7 +503,7 @@ public class PacManGameController {
 		game.ghosts().forEach(ghost -> {
 			if (ghost.bounty > 0) {
 				ghost.bounty = 0;
-				ui.sounds().ifPresent(sm -> sm.loopSound(Sound.GHOST_EYES));
+				ui.sounds().ifPresent(sm -> sm.loopSound(PacManGameSound.GHOST_EYES));
 			}
 		});
 	}
@@ -620,7 +620,7 @@ public class PacManGameController {
 		game.score += points;
 		if (oldscore < 10000 && game.score >= 10000) {
 			game.lives++;
-			ui.sounds().ifPresent(sm -> sm.playSound(Sound.EXTRA_LIFE));
+			ui.sounds().ifPresent(sm -> sm.playSound(PacManGameSound.EXTRA_LIFE));
 			log("Extra life! Now we have %d lives", game.lives);
 		}
 		if (game.score > game.highscorePoints) {
@@ -679,7 +679,7 @@ public class PacManGameController {
 		}
 
 		updateGhostDotCounters();
-		ui.sounds().ifPresent(sm -> sm.playSound(Sound.PACMAN_MUNCH));
+		ui.sounds().ifPresent(sm -> sm.playSound(PacManGameSound.PACMAN_MUNCH));
 	}
 
 	private void letPacFrightenGhosts(int seconds) {
@@ -691,7 +691,7 @@ public class PacManGameController {
 				ghost.wishDir = ghost.dir.opposite();
 				ghost.forcedDirection = true;
 			});
-			ui.sounds().ifPresent(sm -> sm.loopSound(Sound.PACMAN_POWER));
+			ui.sounds().ifPresent(sm -> sm.loopSound(PacManGameSound.PACMAN_POWER));
 		}
 	}
 

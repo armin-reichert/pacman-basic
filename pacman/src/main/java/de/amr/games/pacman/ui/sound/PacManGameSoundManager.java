@@ -1,4 +1,4 @@
-package de.amr.games.pacman.ui.swing;
+package de.amr.games.pacman.ui.sound;
 
 import java.io.BufferedInputStream;
 import java.net.URL;
@@ -10,27 +10,24 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 
-import de.amr.games.pacman.ui.api.Sound;
-import de.amr.games.pacman.ui.api.SoundManager;
-
 /**
  * Sound manager for Pac-Man game.
  * 
  * @author Armin Reichert
  */
-class DefaultPacManGameSoundManager implements SoundManager {
+public class PacManGameSoundManager implements SoundManager {
 
 	private static final int MUNCHES = 2;
 
-	private final Function<Sound, URL> fnSoundURL;
-	private final Map<Sound, Clip> clipCache = new EnumMap<>(Sound.class);
+	private final Function<PacManGameSound, URL> fnSoundURL;
+	private final Map<PacManGameSound, Clip> clipCache = new EnumMap<>(PacManGameSound.class);
 	private final Clip[] munchClips = new Clip[MUNCHES];
 	private int munchIndex;
 
-	public DefaultPacManGameSoundManager(Function<Sound, URL> fnSoundURL) {
+	public PacManGameSoundManager(Function<PacManGameSound, URL> fnSoundURL) {
 		this.fnSoundURL = fnSoundURL;
 		for (int i = 0; i < MUNCHES; ++i) {
-			munchClips[i] = createAndOpenClip(fnSoundURL.apply(Sound.PACMAN_MUNCH));
+			munchClips[i] = createAndOpenClip(fnSoundURL.apply(PacManGameSound.PACMAN_MUNCH));
 		}
 		munchIndex = 0;
 	}
@@ -47,9 +44,9 @@ class DefaultPacManGameSoundManager implements SoundManager {
 		}
 	}
 
-	private Clip getClip(Sound sound) {
+	private Clip getClip(PacManGameSound sound) {
 		Clip clip = null;
-		if (sound == Sound.PACMAN_MUNCH) {
+		if (sound == PacManGameSound.PACMAN_MUNCH) {
 			clip = munchClips[munchIndex];
 			munchIndex = (munchIndex + 1) % MUNCHES;
 		} else if (clipCache.containsKey(sound)) {
@@ -63,17 +60,17 @@ class DefaultPacManGameSoundManager implements SoundManager {
 	}
 
 	@Override
-	public void playSound(Sound sound) {
+	public void playSound(PacManGameSound sound) {
 		getClip(sound).start();
 	}
 
 	@Override
-	public void loopSound(Sound sound) {
+	public void loopSound(PacManGameSound sound) {
 		getClip(sound).loop(Clip.LOOP_CONTINUOUSLY);
 	}
 
 	@Override
-	public void stopSound(Sound sound) {
+	public void stopSound(PacManGameSound sound) {
 		getClip(sound).stop();
 	}
 
