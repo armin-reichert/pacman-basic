@@ -70,24 +70,31 @@ public class PacManGameController {
 		autopilot = new Autopilot(() -> game);
 	}
 
+	public PacManGameModel playPacManClassic() {
+		game = new PacManClassicGameModel();
+		reset();
+		log("New Pac-Man game");
+		return game;
+	}
+
+	public PacManGameModel playMsPacMan() {
+		game = new MsPacManGameModel();
+		reset();
+		log("New Ms. Pac-Man game");
+		return game;
+	}
+
+	public void gameLoop() {
+		while (true)
+			clock.tick(this::step);
+	}
+
 	public void step() {
 		if (!gamePaused) {
 			readInput();
 			updateState();
 		}
 		ui.redraw();
-	}
-
-	public void selectGame(GameVariant variant) {
-		if (variant == GameVariant.CLASSIC) {
-			game = new PacManClassicGameModel();
-		} else if (variant == GameVariant.MS_PACMAN) {
-			game = new MsPacManGameModel();
-		} else {
-			log("Illegal game variant value %d, preparing Ms. Pac-Man game", variant);
-			game = new MsPacManGameModel();
-		}
-		reset();
 	}
 
 	public void setUI(PacManGameUI ui) {
@@ -118,7 +125,11 @@ public class PacManGameController {
 	}
 
 	private void toggleGameVariant() {
-		selectGame(game instanceof PacManClassicGameModel ? GameVariant.MS_PACMAN : GameVariant.CLASSIC);
+		if (game instanceof PacManClassicGameModel) {
+			playMsPacMan();
+		} else {
+			playPacManClassic();
+		}
 		ui.sounds().ifPresent(SoundManager::stopAllSounds);
 		ui.updateGame(game);
 	}

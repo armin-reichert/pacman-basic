@@ -3,9 +3,8 @@ package de.amr.games.pacman;
 import static de.amr.games.pacman.lib.Logging.log;
 import static java.awt.EventQueue.invokeLater;
 
-import de.amr.games.pacman.controller.GameVariant;
 import de.amr.games.pacman.controller.PacManGameController;
-import de.amr.games.pacman.heaven.God;
+import de.amr.games.pacman.model.PacManGameModel;
 import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
 
 /**
@@ -18,54 +17,34 @@ public class PacManGameApp {
 	static class Options {
 
 		float scaling = 2;
-		GameVariant gameVariant = GameVariant.MS_PACMAN;
+		boolean classic = false;
 
-		Options(String[] strings) {
-			int i = 0;
-			while (i < strings.length) {
-				String s = strings[i];
-				if ("-pacman".equals(s)) {
-					gameVariant = GameVariant.CLASSIC;
-					++i;
+		Options(String[] args) {
+			int i = -1;
+			while (++i < args.length) {
+				if ("-pacman".equals(args[i])) {
+					classic = true;
 					continue;
 				}
-				if ("-mspacman".equals(s)) {
-					gameVariant = GameVariant.MS_PACMAN;
-					++i;
+				if ("-mspacman".equals(args[i])) {
+					classic = false;
 					continue;
 				}
-				if ("-scaling".equals(s)) {
-					if (i == strings.length - 1) {
+				if ("-scaling".equals(args[i])) {
+					if (++i == args.length) {
 						log("Error parsing options: missing scaling value.");
-						++i;
-						continue;
+						break;
 					}
-					++i;
-					s = strings[i];
 					try {
-						scaling = Float.parseFloat(s);
+						scaling = Float.parseFloat(args[i]);
 					} catch (NumberFormatException x) {
-						log("Error parsing options: '%s' is no legal scaling value.", s);
+						log("Error parsing options: '%s' is no legal scaling value.", args[i]);
 					}
-					++i;
 					continue;
 				}
-				log("Error parsing options: Unknown option '%s'", s);
-				++i;
+				log("Error parsing options: Found garbage '%s'", args[i]);
 			}
 		}
-	}
-
-	private PacManGameController controller;
-
-	public PacManGameApp(GameVariant gameVariant) {
-		controller = new PacManGameController();
-		controller.selectGame(gameVariant);
-	}
-
-	private void gameLoop() {
-		while (true)
-			God.clock.tick(controller::step);
 	}
 
 	/**
@@ -80,15 +59,14 @@ public class PacManGameApp {
 	 */
 	public static void main(String[] args) {
 		Options options = new Options(args);
-		PacManGameApp app = new PacManGameApp(options.gameVariant);
+		PacManGameController controller = new PacManGameController();
+		PacManGameModel game = options.classic ? controller.playPacManClassic() : controller.playMsPacMan();
 		invokeLater(() -> {
-			app.controller.game().ifPresent(game -> {
-				PacManGameSwingUI ui = new PacManGameSwingUI(app.controller, game.level.world.xTiles(),
-						game.level.world.yTiles(), options.scaling);
-				ui.updateGame(game);
-				ui.show();
-				new Thread(app::gameLoop, "PacManGame").start();
-			});
+			PacManGameSwingUI ui = new PacManGameSwingUI(controller, game.level.world.xTiles(), game.level.world.yTiles(),
+					options.scaling);
+			ui.updateGame(game);
+			ui.show();
+			new Thread(controller::gameLoop, "PacManGame").start();
 		});
 	}
 }
