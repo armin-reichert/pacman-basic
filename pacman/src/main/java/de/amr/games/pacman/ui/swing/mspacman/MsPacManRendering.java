@@ -124,7 +124,7 @@ public class MsPacManRendering implements PacManGameAnimations {
 		int x = t(game.level.world.xTiles() - 4);
 		for (int levelNumber = 1; levelNumber <= Math.min(game.currentLevelNumber, 7); ++levelNumber) {
 			byte symbol = game.levelSymbols.get(levelNumber - 1);
-			g.drawImage(assets.spriteAt(assets.symbolTiles[symbol]), x, y, null);
+			g.drawImage(assets.spriteAt(assets.symbolSpriteLocations[symbol]), x, y, null);
 			x -= t(2);
 		}
 	}
@@ -166,7 +166,7 @@ public class MsPacManRendering implements PacManGameAnimations {
 		if (bonus.edibleTicksLeft > 0) {
 			int frame = clock.frame(20, BONUS_JUMP.length);
 			y += BONUS_JUMP[frame]; // TODO not yet perfect
-			g.drawImage(assets.spriteAt(assets.symbolTiles[bonus.symbol]), x, y, null);
+			g.drawImage(assets.spriteAt(assets.symbolSpriteLocations[bonus.symbol]), x, y, null);
 		} else if (bonus.eatenTicksLeft > 0) {
 			g.drawImage(assets.spriteAt(assets.bonusValueSpriteLocations.get(bonus.points)), x, y, null);
 		}

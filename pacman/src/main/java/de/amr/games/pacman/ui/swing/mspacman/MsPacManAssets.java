@@ -48,7 +48,7 @@ public class MsPacManAssets extends Spritesheet {
 	public final BufferedImage[] mazeEmptyBright;
 	public final List<Animation<BufferedImage>> mazeFlashingAnimations;
 	public final BufferedImage life;
-	public final V2i[] symbolTiles;
+	public final V2i[] symbolSpriteLocations;
 	public final Map<Integer, V2i> bonusValueSpriteLocations;
 	public final Map<Integer, V2i> bountyNumberSpriteLocations;
 	public final Map<PacManGameSound, URL> soundURL;
@@ -82,7 +82,7 @@ public class MsPacManAssets extends Spritesheet {
 
 		life = spriteAt(1, 0);
 
-		symbolTiles = new V2i[] { v2(3, 0), v2(4, 0), v2(5, 0), v2(6, 0), v2(7, 0), v2(8, 0), v2(9, 0) };
+		symbolSpriteLocations = new V2i[] { v2(3, 0), v2(4, 0), v2(5, 0), v2(6, 0), v2(7, 0), v2(8, 0), v2(9, 0) };
 
 		//@formatter:off
 		bonusValueSpriteLocations = new HashMap<>();
