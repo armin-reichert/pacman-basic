@@ -168,7 +168,7 @@ public class MsPacManRendering implements PacManGameAnimations {
 			y += BONUS_JUMP[frame]; // TODO not yet perfect
 			g.drawImage(assets.spriteAt(assets.symbolTiles[bonus.symbol]), x, y, null);
 		} else if (bonus.eatenTicksLeft > 0) {
-			g.drawImage(assets.spriteAt(assets.bonusValueSpriteLocation.get(bonus.points)), x, y, null);
+			g.drawImage(assets.spriteAt(assets.bonusValueSpriteLocations.get(bonus.points)), x, y, null);
 		}
 	}
 
@@ -194,7 +194,7 @@ public class MsPacManRendering implements PacManGameAnimations {
 
 	private BufferedImage sprite(Ghost ghost, PacManGame game) {
 		if (ghost.bounty > 0) {
-			return assets.spriteAt(assets.bountyNumberTiles.get(ghost.bounty));
+			return assets.spriteAt(assets.bountyNumberSpriteLocations.get(ghost.bounty));
 		}
 		if (ghost.is(DEAD) || ghost.is(ENTERING_HOUSE)) {
 			return assets.ghostEyes.get(ghost.wishDir);
