@@ -109,23 +109,23 @@ public class PacManClassicRendering implements PacManGameAnimations {
 		g.translate(0, -3);
 	}
 
-	public void drawLivesCounter(Graphics2D g, PacManGame game, int y) {
+	public void drawLivesCounter(Graphics2D g, PacManGame game, int x, int y) {
 		int maxLivesDisplayed = 5;
 		int livesDisplayed = game.started ? game.lives - 1 : game.lives;
 		for (int i = 0; i < Math.min(livesDisplayed, maxLivesDisplayed); ++i) {
-			g.drawImage(assets.life, t(2 * (i + 1)), y, null);
+			g.drawImage(assets.life, x + t(2 * i), y, null);
 		}
 		if (game.lives > maxLivesDisplayed) {
 			g.setColor(Color.YELLOW);
 			g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 6));
-			g.drawString("+" + (game.lives - maxLivesDisplayed), t(12) - 4, y + t(2));
+			g.drawString("+" + (game.lives - maxLivesDisplayed), x + t(10) - 4, y + t(2));
 		}
 	}
 
-	public void drawLevelCounter(Graphics2D g, PacManGame game, int y) {
-		int x = t(game.level.world.xTiles() - 4);
-		int first = Math.max(1, game.currentLevelNumber - 6);
-		for (int levelNumber = first; levelNumber <= game.currentLevelNumber; ++levelNumber) {
+	public void drawLevelCounter(Graphics2D g, PacManGame game, int rightX, int y) {
+		int x = rightX;
+		int firstLevelNumber = Math.max(1, game.currentLevelNumber - 6);
+		for (int levelNumber = firstLevelNumber; levelNumber <= game.currentLevelNumber; ++levelNumber) {
 			V2i symbolTile = assets.symbolSpriteLocation[game.levelSymbols.get(levelNumber - 1)];
 			g.drawImage(assets.spriteAt(symbolTile), x, y, null);
 			x -= t(2);

@@ -18,9 +18,9 @@ import de.amr.games.pacman.ui.swing.DebugRendering;
  */
 public class PacManClassicPlayScene implements PacManGameScene {
 
-	public final V2i size;
-	public final PacManGame game;
-	public final PacManClassicRendering rendering;
+	private final V2i size;
+	private final PacManGame game;
+	private final PacManClassicRendering rendering;
 
 	public PacManClassicPlayScene(V2i size, PacManClassicRendering rendering, PacManGame game) {
 		this.size = size;
@@ -41,8 +41,8 @@ public class PacManClassicPlayScene implements PacManGameScene {
 	@Override
 	public void draw(Graphics2D g) {
 		rendering.drawScore(g, game);
-		rendering.drawLivesCounter(g, game, size.y - t(2));
-		rendering.drawLevelCounter(g, game, size.y - t(2));
+		rendering.drawLivesCounter(g, game, t(2), size.y - t(2));
+		rendering.drawLevelCounter(g, game, t(game.level.world.xTiles() - 4), size.y - t(2));
 		rendering.drawMaze(g, game);
 		if (DebugRendering.on) {
 			DebugRendering.drawMazeStructure(g, game);
