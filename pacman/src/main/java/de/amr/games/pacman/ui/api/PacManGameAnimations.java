@@ -21,6 +21,8 @@ public interface PacManGameAnimations {
 
 	Animation<BufferedImage> mazeFlashing(int mazeNumber);
 
+	Animation<Boolean> energizerBlinking();
+
 	default void letGhostsFidget(Stream<Ghost> ghosts, boolean on) {
 		ghosts.forEach(ghost -> {
 			Stream.of(Direction.values()).forEach(dir -> {

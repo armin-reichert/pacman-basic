@@ -47,6 +47,7 @@ public class MsPacManAssets extends Spritesheet {
 	public final BufferedImage[] mazeEmptyDark;
 	public final BufferedImage[] mazeEmptyBright;
 	public final List<Animation<BufferedImage>> mazeFlashingAnimations;
+	public final Animation<Boolean> energizerBlinking;
 	public final BufferedImage life;
 	public final V2i[] symbolSpriteLocations;
 	public final Map<Integer, V2i> bonusValueSpriteLocations;
@@ -76,6 +77,9 @@ public class MsPacManAssets extends Spritesheet {
 			mazeEmptyDark[i] = subImage(226, i * 248, 226, 248);
 			mazeEmptyBright[i] = null; // TODO fixme
 		}
+
+		energizerBlinking = Animation.of(true, false);
+		energizerBlinking.frameDuration(10).endless().run();
 
 		// Switch to right part of spritesheet
 		setOrigin(456, 0);

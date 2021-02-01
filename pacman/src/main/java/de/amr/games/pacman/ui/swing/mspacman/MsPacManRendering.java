@@ -70,6 +70,11 @@ public class MsPacManRendering implements PacManGameAnimations {
 		return assets.mazeFlashingAnimations.get(mazeNumber - 1);
 	}
 
+	@Override
+	public Animation<Boolean> energizerBlinking() {
+		return assets.energizerBlinking;
+	}
+
 	public void drawScore(Graphics2D g, PacManGame game) {
 		g.setFont(assets.scoreFont);
 		g.translate(0, 2);
@@ -140,8 +145,7 @@ public class MsPacManRendering implements PacManGameAnimations {
 			g.setColor(Color.BLACK);
 			g.fillRect(t(tile.x), t(tile.y), TS, TS);
 		});
-		// blink effect
-		if (clock.ticksTotal % 20 < 10 && game.state == HUNTING) {
+		if (game.state == HUNTING && energizerBlinking().currentFrameThenAdvance()) {
 			game.level.world.energizerTiles().forEach(tile -> {
 				g.setColor(Color.BLACK);
 				g.fillRect(t(tile.x), t(tile.y), TS, TS);

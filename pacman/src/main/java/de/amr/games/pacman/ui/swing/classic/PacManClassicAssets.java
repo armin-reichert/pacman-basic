@@ -62,6 +62,8 @@ public class PacManClassicAssets extends Spritesheet {
 	public final Animation<BufferedImage> ghostBlue;
 	public final List<Animation<BufferedImage>> ghostFlashing;
 	public final Animation<BufferedImage> mazeFlashing;
+	public final Animation<Boolean> energizerBlinking;
+
 	public final Map<PacManGameSound, URL> soundURL;
 	public final Font scoreFont;
 
@@ -100,6 +102,9 @@ public class PacManClassicAssets extends Spritesheet {
 		BufferedImage mazeEmptyDark = image("/worlds/classic/maze_empty.png");
 		BufferedImage mazeEmptyBright = image("/worlds/classic/maze_empty_white.png");
 		mazeFlashing = Animation.of(mazeEmptyBright, mazeEmptyDark).frameDuration(15);
+
+		energizerBlinking = Animation.of(true, false);
+		energizerBlinking.frameDuration(10).endless().run();
 
 		pacMouthClosed = spriteAt(2, 0);
 

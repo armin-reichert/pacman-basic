@@ -1,7 +1,6 @@
 package de.amr.games.pacman.ui.swing.classic;
 
 import static de.amr.games.pacman.controller.PacManGameState.HUNTING;
-import static de.amr.games.pacman.heaven.God.clock;
 import static de.amr.games.pacman.model.creatures.GhostState.DEAD;
 import static de.amr.games.pacman.model.creatures.GhostState.ENTERING_HOUSE;
 import static de.amr.games.pacman.model.creatures.GhostState.FRIGHTENED;
@@ -71,6 +70,11 @@ public class PacManClassicRendering implements PacManGameAnimations {
 		return assets.mazeFlashing;
 	}
 
+	@Override
+	public Animation<Boolean> energizerBlinking() {
+		return assets.energizerBlinking;
+	}
+
 	public void drawMaze(Graphics2D g, PacManGame game) {
 		if (assets.mazeFlashing.isRunning() || assets.mazeFlashing.isComplete()) {
 			g.drawImage(assets.mazeFlashing.currentFrameThenAdvance(), 0, t(3), null);
@@ -81,8 +85,7 @@ public class PacManClassicRendering implements PacManGameAnimations {
 			g.setColor(Color.BLACK);
 			g.fillRect(t(tile.x), t(tile.y), TS, TS);
 		});
-		// TODO use animation instead?
-		if (clock.ticksTotal % 20 < 10 && game.state == HUNTING) {
+		if (game.state == HUNTING && energizerBlinking().currentFrameThenAdvance()) {
 			game.level.world.energizerTiles().forEach(tile -> {
 				g.setColor(Color.BLACK);
 				g.fillRect(t(tile.x), t(tile.y), TS, TS);
