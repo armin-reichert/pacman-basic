@@ -499,9 +499,13 @@ public class PacManGameController {
 	}
 
 	private void exitGhostDyingState() {
-		game.ghosts().forEach(ghost -> ghost.bounty = 0);
 		game.pac.visible = true;
-		ui.sounds().ifPresent(sm -> sm.loopSound(Sound.GHOST_EYES));
+		game.ghosts().forEach(ghost -> {
+			if (ghost.bounty > 0) {
+				ghost.bounty = 0;
+				ui.sounds().ifPresent(sm -> sm.loopSound(Sound.GHOST_EYES));
+			}
+		});
 	}
 
 	// CHANGING_LEVEL
