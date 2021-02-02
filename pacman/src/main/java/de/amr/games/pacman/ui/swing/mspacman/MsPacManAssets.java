@@ -4,6 +4,7 @@ import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.font;
 import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.image;
 import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.url;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.image.BufferedImage;
 import java.net.URL;
@@ -75,7 +76,7 @@ public class MsPacManAssets extends Spritesheet {
 		for (int i = 0; i < 6; ++i) {
 			mazeFull[i] = subImage(0, i * 248, 226, 248);
 			mazeEmptyDark[i] = subImage(226, i * 248, 226, 248);
-			mazeEmptyBright[i] = null; // TODO fixme
+			mazeEmptyBright[i] = applyFilter(mazeEmptyDark[i]);
 		}
 
 		energizerBlinking = Animation.of(true, false);
@@ -176,5 +177,30 @@ public class MsPacManAssets extends Spritesheet {
 		soundURL.put(PacManGameSound.GHOST_SIREN_4,    url("/sound/mspacman/Ghost Noise 3.wav"));
 		soundURL.put(PacManGameSound.GHOST_SIREN_5,    url("/sound/mspacman/Ghost Noise 4.wav"));
 		//@formatter:on
+	}
+
+	public Color getMazeColor(int mazeNumber) {
+		switch (mazeNumber) {
+		case 1:
+			return new Color(255, 183, 174);
+		case 2:
+			return new Color(71, 183, 255);
+		case 3:
+			return new Color(222, 151, 81);
+		case 4:
+			return new Color(33, 33, 255);
+		case 5:
+			return new Color(255, 183, 255);
+		case 6:
+			return new Color(255, 183, 174);
+		default:
+			return Color.WHITE;
+		}
+	}
+
+	private BufferedImage applyFilter(BufferedImage source) {
+		BufferedImage target = new BufferedImage(source.getWidth(), source.getHeight(), source.getType());
+		target.getGraphics().drawImage(source, 0, 0, null);
+		return target;
 	}
 }

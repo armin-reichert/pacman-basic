@@ -84,34 +84,15 @@ public class MsPacManRendering implements PacManGameAnimations {
 		g.drawString(translator.apply("SCORE"), t(1), t(1));
 		g.drawString(translator.apply("HI_SCORE"), t(16), t(1));
 		g.translate(0, 1);
-		g.setColor(getScoreColor(game.level.mazeNumber));
+		g.setColor(assets.getMazeColor(game.level.mazeNumber));
 		g.drawString(String.format("%08d", game.score), t(1), t(2));
 		g.setColor(Color.LIGHT_GRAY);
 		g.drawString(String.format("L%02d", game.currentLevelNumber), t(9), t(2));
-		g.setColor(getScoreColor(game.level.mazeNumber));
+		g.setColor(assets.getMazeColor(game.level.mazeNumber));
 		g.drawString(String.format("%08d", game.highscorePoints), t(16), t(2));
 		g.setColor(Color.LIGHT_GRAY);
 		g.drawString(String.format("L%02d", game.highscoreLevel), t(24), t(2));
 		g.translate(0, -3);
-	}
-
-	private Color getScoreColor(int mazeNumber) {
-		switch (mazeNumber) {
-		case 1:
-			return new Color(255, 183, 174);
-		case 2:
-			return new Color(71, 183, 255);
-		case 3:
-			return new Color(222, 151, 81);
-		case 4:
-			return new Color(33, 33, 255);
-		case 5:
-			return new Color(255, 183, 255);
-		case 6:
-			return new Color(255, 183, 174);
-		default:
-			return Color.WHITE;
-		}
 	}
 
 	public void drawLivesCounter(Graphics2D g, PacManGame game, int x, int y) {
