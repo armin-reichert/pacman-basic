@@ -1,6 +1,5 @@
 package de.amr.games.pacman.ui.swing.classic;
 
-import static de.amr.games.pacman.controller.PacManGameState.HUNTING;
 import static de.amr.games.pacman.model.creatures.GhostState.DEAD;
 import static de.amr.games.pacman.model.creatures.GhostState.ENTERING_HOUSE;
 import static de.amr.games.pacman.model.creatures.GhostState.FRIGHTENED;
@@ -52,7 +51,7 @@ public class PacManClassicRendering implements PacManGameAnimations {
 
 	@Override
 	public Animation<BufferedImage> ghostWalking(Ghost ghost, Direction dir) {
-		return assets.ghostWalking.get(ghost.id).get(dir);
+		return assets.ghostsWalking.get(ghost.id).get(dir);
 	}
 
 	@Override
@@ -62,7 +61,7 @@ public class PacManClassicRendering implements PacManGameAnimations {
 
 	@Override
 	public Animation<BufferedImage> ghostFlashing(Ghost ghost) {
-		return assets.ghostFlashing.get(ghost.id);
+		return assets.ghostsFlashing.get(ghost.id);
 	}
 
 	@Override
@@ -85,7 +84,7 @@ public class PacManClassicRendering implements PacManGameAnimations {
 			g.setColor(Color.BLACK);
 			g.fillRect(t(tile.x), t(tile.y), TS, TS);
 		});
-		if (game.state == HUNTING && energizerBlinking().currentFrameThenAdvance()) {
+		if (energizerBlinking().isRunning() && energizerBlinking().currentFrameThenAdvance()) {
 			game.level.world.energizerTiles().forEach(tile -> {
 				g.setColor(Color.BLACK);
 				g.fillRect(t(tile.x), t(tile.y), TS, TS);

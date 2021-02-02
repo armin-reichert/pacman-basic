@@ -159,14 +159,11 @@ public class PacManGameController {
 		}
 	}
 
-	private void letGuysGetReady() {
+	private void getReadyToRumble() {
 		game.resetGuys();
-		for (Ghost ghost : game.ghosts) {
-			ui.animations().ifPresent(animations -> {
-				animations.ghostFlashing(ghost).reset();
-			});
-		}
-
+		ui.animations().ifPresent(animations -> {
+			animations.resetAll(game);
+		});
 	}
 
 	private void letGhostsFidget(boolean on) {
@@ -182,6 +179,9 @@ public class PacManGameController {
 		game.attractMode = false;
 		autopilotOn = false;
 		ui.clearMessages();
+		ui.animations().ifPresent(animations -> {
+			animations.letPacMunch();
+		});
 	}
 
 	private PacManGameState runIntroState() {
@@ -207,8 +207,7 @@ public class PacManGameController {
 	private void enterReadyState() {
 		boolean playReadyMusic = !game.started && sounds().isPresent();
 		game.state.setDuration(clock.sec(playReadyMusic ? 4.5 : 2));
-		letGuysGetReady();
-		letGhostsFidget(false);
+		getReadyToRumble();
 		sounds().ifPresent(sm -> {
 			sm.stopAllSounds();
 			if (playReadyMusic) {
@@ -307,6 +306,16 @@ public class PacManGameController {
 
 	private void enterHuntingState() {
 		startHuntingPhase(0);
+		ui.animations().ifPresent(animations -> {
+			animations.energizerBlinking().restart();
+			animations.letPacMunch();
+		});
+	}
+
+	private void exitHuntingState() {
+		ui.animations().ifPresent(animations -> {
+			animations.energizerBlinking().reset();
+		});
 	}
 
 	private PacManGameState runHuntingState() {
@@ -427,9 +436,6 @@ public class PacManGameController {
 		return game.state;
 	}
 
-	private void exitHuntingState() {
-	}
-
 	// PACMAN_DYING
 
 	private void enterPacManDyingState() {
@@ -478,6 +484,9 @@ public class PacManGameController {
 		game.state.setDuration(clock.sec(1));
 		game.pac.visible = false;
 		sounds().ifPresent(sm -> sm.playSound(PacManGameSound.GHOST_EATEN));
+		ui.animations().ifPresent(animations -> {
+			animations.energizerBlinking().restart();
+		});
 	}
 
 	private PacManGameState runGhostDyingState() {

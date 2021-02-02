@@ -1,6 +1,5 @@
 package de.amr.games.pacman.ui.swing.mspacman;
 
-import static de.amr.games.pacman.controller.PacManGameState.HUNTING;
 import static de.amr.games.pacman.heaven.God.clock;
 import static de.amr.games.pacman.model.creatures.GhostState.DEAD;
 import static de.amr.games.pacman.model.creatures.GhostState.ENTERING_HOUSE;
@@ -52,7 +51,7 @@ public class MsPacManRendering implements PacManGameAnimations {
 
 	@Override
 	public Animation<BufferedImage> ghostWalking(Ghost ghost, Direction dir) {
-		return assets.ghostWalking.get(ghost.id).get(dir);
+		return assets.ghostsWalking.get(ghost.id).get(dir);
 	}
 
 	@Override
@@ -62,12 +61,12 @@ public class MsPacManRendering implements PacManGameAnimations {
 
 	@Override
 	public Animation<BufferedImage> ghostFlashing(Ghost ghost) {
-		return assets.ghostFlashing.get(ghost.id);
+		return assets.ghostsFlashing.get(ghost.id);
 	}
 
 	@Override
 	public Animation<BufferedImage> mazeFlashing(int mazeNumber) {
-		return assets.mazeFlashingAnimations.get(mazeNumber - 1);
+		return assets.mazesFlashing.get(mazeNumber - 1);
 	}
 
 	@Override
@@ -145,7 +144,7 @@ public class MsPacManRendering implements PacManGameAnimations {
 			g.setColor(Color.BLACK);
 			g.fillRect(t(tile.x), t(tile.y), TS, TS);
 		});
-		if (game.state == HUNTING && energizerBlinking().currentFrameThenAdvance()) {
+		if (energizerBlinking().isRunning() && energizerBlinking().currentFrameThenAdvance()) {
 			game.level.world.energizerTiles().forEach(tile -> {
 				g.setColor(Color.BLACK);
 				g.fillRect(t(tile.x), t(tile.y), TS, TS);
@@ -192,9 +191,6 @@ public class MsPacManRendering implements PacManGameAnimations {
 		}
 		if (pac.speed == 0 || !pac.couldMove) {
 			return assets.pacMouthOpen.get(pac.dir);
-		}
-		if (!pacMunching(pac.dir).isRunning()) {
-			pacMunching(pac.dir).restart();
 		}
 		return pacMunching(pac.dir).currentFrameThenAdvance();
 	}

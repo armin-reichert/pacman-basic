@@ -36,6 +36,10 @@ public interface PacManGameAnimations {
 		});
 	}
 
+	default void letPacMunch() {
+		Stream.of(Direction.values()).forEach(dir -> pacMunching(dir).restart());
+	}
+
 	default void resetAll(PacManGame game) {
 		game.ghosts().forEach(ghost -> {
 			ghostFlashing(ghost).reset();

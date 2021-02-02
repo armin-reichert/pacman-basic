@@ -46,7 +46,7 @@ public class MsPacManAssets extends Spritesheet {
 	public final BufferedImage[] mazeFull;
 	public final BufferedImage[] mazeEmptyDark;
 	public final BufferedImage[] mazeEmptyBright;
-	public final List<Animation<BufferedImage>> mazeFlashingAnimations;
+	public final List<Animation<BufferedImage>> mazesFlashing;
 	public final Animation<Boolean> energizerBlinking;
 	public final BufferedImage life;
 	public final V2i[] symbolSpriteLocations;
@@ -57,10 +57,10 @@ public class MsPacManAssets extends Spritesheet {
 	public final EnumMap<Direction, BufferedImage> pacMouthClosed;
 	public final EnumMap<Direction, Animation<BufferedImage>> pacMunching;
 	public final Animation<BufferedImage> pacSpinning;
-	public final List<EnumMap<Direction, Animation<BufferedImage>>> ghostWalking;
+	public final List<EnumMap<Direction, Animation<BufferedImage>>> ghostsWalking;
 	public final EnumMap<Direction, BufferedImage> ghostEyes;
 	public final Animation<BufferedImage> ghostBlue;
-	public final List<Animation<BufferedImage>> ghostFlashing;
+	public final List<Animation<BufferedImage>> ghostsFlashing;
 	public final Font scoreFont;
 
 	public MsPacManAssets() {
@@ -79,7 +79,7 @@ public class MsPacManAssets extends Spritesheet {
 		}
 
 		energizerBlinking = Animation.of(true, false);
-		energizerBlinking.frameDuration(10).endless().run();
+		energizerBlinking.frameDuration(10).endless();
 
 		// Switch to right part of spritesheet
 		setOrigin(456, 0);
@@ -105,11 +105,11 @@ public class MsPacManAssets extends Spritesheet {
 		bountyNumberSpriteLocations.put(1600, v2(3,8));
 		//@formatter:on
 
-		mazeFlashingAnimations = new ArrayList<>(6);
+		mazesFlashing = new ArrayList<>(6);
 		for (int mazeIndex = 0; mazeIndex < 6; ++mazeIndex) {
 			Animation<BufferedImage> mazeFlashing = Animation.of(mazeEmptyBright[mazeIndex], mazeEmptyDark[mazeIndex]);
 			mazeFlashing.frameDuration(15);
-			mazeFlashingAnimations.add(mazeFlashing);
+			mazesFlashing.add(mazeFlashing);
 		}
 
 		pacMouthOpen = new EnumMap<>(Direction.class);
@@ -126,23 +126,23 @@ public class MsPacManAssets extends Spritesheet {
 		for (Direction dir : Direction.values()) {
 			int d = index(dir);
 			Animation<BufferedImage> animation = Animation.of(spriteAt(0, d), spriteAt(1, d), spriteAt(2, d), spriteAt(1, d));
-			animation.frameDuration(2).endless().run();
+			animation.frameDuration(2).endless();
 			pacMunching.put(dir, animation);
 		}
 
 		pacSpinning = Animation.of(spriteAt(0, 3), spriteAt(0, 0), spriteAt(0, 1), spriteAt(0, 2));
 		pacSpinning.frameDuration(10).repetitions(2);
 
-		ghostWalking = new ArrayList<>(4);
+		ghostsWalking = new ArrayList<>(4);
 		for (int g = 0; g < 4; ++g) {
 			EnumMap<Direction, Animation<BufferedImage>> animationForDir = new EnumMap<>(Direction.class);
 			for (Direction dir : Direction.values()) {
 				int d = index(dir);
 				Animation<BufferedImage> animation = Animation.of(spriteAt(2 * d, 4 + g), spriteAt(2 * d + 1, 4 + g));
-				animation.frameDuration(4).endless().run();
+				animation.frameDuration(4).endless();
 				animationForDir.put(dir, animation);
 			}
-			ghostWalking.add(animationForDir);
+			ghostsWalking.add(animationForDir);
 		}
 
 		ghostEyes = new EnumMap<>(Direction.class);
@@ -153,9 +153,9 @@ public class MsPacManAssets extends Spritesheet {
 		ghostBlue = Animation.of(spriteAt(8, 4), spriteAt(9, 4));
 		ghostBlue.frameDuration(20).endless().run();
 
-		ghostFlashing = new ArrayList<>(4);
+		ghostsFlashing = new ArrayList<>(4);
 		for (int g = 0; g < 4; ++g) {
-			ghostFlashing
+			ghostsFlashing
 					.add(Animation.of(spriteAt(8, 4), spriteAt(9, 4), spriteAt(10, 4), spriteAt(11, 4)).frameDuration(5));
 		}
 

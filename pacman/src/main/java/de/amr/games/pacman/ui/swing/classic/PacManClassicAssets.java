@@ -57,10 +57,10 @@ public class PacManClassicAssets extends Spritesheet {
 	public final EnumMap<Direction, BufferedImage> pacMouthOpen;
 	public final EnumMap<Direction, Animation<BufferedImage>> pacMunching;
 	public final Animation<BufferedImage> pacCollapsing;
-	public final List<EnumMap<Direction, Animation<BufferedImage>>> ghostWalking;
+	public final List<EnumMap<Direction, Animation<BufferedImage>>> ghostsWalking;
 	public final EnumMap<Direction, BufferedImage> ghostEyes;
 	public final Animation<BufferedImage> ghostBlue;
-	public final List<Animation<BufferedImage>> ghostFlashing;
+	public final List<Animation<BufferedImage>> ghostsFlashing;
 	public final Animation<BufferedImage> mazeFlashing;
 	public final Animation<Boolean> energizerBlinking;
 
@@ -125,7 +125,7 @@ public class PacManClassicAssets extends Spritesheet {
 				spriteAt(8, 0), spriteAt(9, 0), spriteAt(10, 0), spriteAt(11, 0), spriteAt(12, 0), spriteAt(13, 0));
 		pacCollapsing.frameDuration(8);
 
-		ghostWalking = new ArrayList<>(4);
+		ghostsWalking = new ArrayList<>(4);
 		for (int g = 0; g < 4; ++g) {
 			EnumMap<Direction, Animation<BufferedImage>> walkingTo = new EnumMap<>(Direction.class);
 			for (Direction dir : Direction.values()) {
@@ -134,7 +134,7 @@ public class PacManClassicAssets extends Spritesheet {
 				animation.frameDuration(10).endless().run();
 				walkingTo.put(dir, animation);
 			}
-			ghostWalking.add(walkingTo);
+			ghostsWalking.add(walkingTo);
 		}
 
 		ghostEyes = new EnumMap<>(Direction.class);
@@ -145,9 +145,9 @@ public class PacManClassicAssets extends Spritesheet {
 		ghostBlue = Animation.of(spriteAt(8, 4), spriteAt(9, 4));
 		ghostBlue.frameDuration(20).endless().run();
 
-		ghostFlashing = new ArrayList<>(4);
+		ghostsFlashing = new ArrayList<>(4);
 		for (int g = 0; g < 4; ++g) {
-			ghostFlashing
+			ghostsFlashing
 					.add(Animation.of(spriteAt(8, 4), spriteAt(9, 4), spriteAt(10, 4), spriteAt(11, 4)).frameDuration(5));
 		}
 

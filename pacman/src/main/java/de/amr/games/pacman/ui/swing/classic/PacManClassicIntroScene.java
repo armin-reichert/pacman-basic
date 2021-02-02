@@ -104,7 +104,7 @@ public class PacManClassicIntroScene implements PacManGameScene {
 				sounds.playSound(PacManGameSound.CREDIT);
 			});
 			game.state.runAfter(clock.sec(ghostStart), () -> {
-				g.drawImage(rendering.assets.ghostWalking.get(ghost).get(RIGHT).thing(0), t(2) - 3, y - 2, null);
+				g.drawImage(rendering.assets.ghostsWalking.get(ghost).get(RIGHT).thing(0), t(2) - 3, y - 2, null);
 			});
 			game.state.runAfter(clock.sec(ghostStart + 0.5), () -> {
 				drawGhostCharacterAndName(g, ghost, y, false);
@@ -186,7 +186,7 @@ public class PacManClassicIntroScene implements PacManGameScene {
 		}
 		g.drawImage(pacSprite(), (int) game.pac.position.x, (int) game.pac.position.y, null);
 		for (int ghostID = 0; ghostID < 4; ++ghostID) {
-			g.drawImage(rendering.assets.ghostWalking.get(ghostID).get(LEFT).currentFrameThenAdvance(),
+			g.drawImage(rendering.assets.ghostsWalking.get(ghostID).get(LEFT).currentFrameThenAdvance(),
 					(int) game.ghosts[0].position.x + 16 * ghostID, (int) game.pac.position.y, null);
 		}
 		if (game.pac.position.x > t(2)) {
