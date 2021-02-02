@@ -64,13 +64,15 @@ public class PacManGameController {
 
 	private PacManGameState previousState;
 
+	public PacManGameController() {
+		ui = PacManGameUI.NO_UI;
+	}
+
 	public PacManGame playPacManClassic() {
 		game = new PacManClassicGame();
 		autopilot = null;
 		reset();
-		if (ui != null) {
-			ui.setGame(game);
-		}
+		ui.setGame(game);
 		log("New Pac-Man game");
 		return game;
 	}
@@ -79,9 +81,7 @@ public class PacManGameController {
 		game = new MsPacManGame();
 		autopilot = null;
 		reset();
-		if (ui != null) {
-			ui.setGame(game);
-		}
+		ui.setGame(game);
 		log("New Ms. Pac-Man game");
 		return game;
 	}
@@ -117,10 +117,9 @@ public class PacManGameController {
 		game.reset();
 		autopilotOn = false;
 		previousState = null;
-		if (ui != null) {
-			ui.sounds().ifPresent(SoundManager::stopAllSounds);
-			ui.clearMessages();
-		}
+		ui.animations().ifPresent(animations -> animations.resetAll(game));
+		ui.sounds().ifPresent(SoundManager::stopAllSounds);
+		ui.clearMessages();
 		changeState(INTRO, () -> {
 		}, this::enterIntroState);
 	}
@@ -176,9 +175,7 @@ public class PacManGameController {
 		game.state.setDuration(Long.MAX_VALUE);
 		game.attractMode = false;
 		autopilotOn = false;
-		if (ui != null) {
-			ui.clearMessages();
-		}
+		ui.clearMessages();
 	}
 
 	private PacManGameState runIntroState() {
@@ -563,9 +560,7 @@ public class PacManGameController {
 		onExit.run();
 		previousState = game.state;
 		game.state = newState;
-		if (ui != null) {
-			ui.updateScene();
-		}
+		ui.updateScene();
 		onEntry.run();
 		log("Entered state '%s' for %s", game.stateDescription(), ticksDescription(game.state.durationTicks()));
 		return game.state;

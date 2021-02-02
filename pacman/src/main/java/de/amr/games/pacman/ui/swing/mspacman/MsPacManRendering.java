@@ -193,6 +193,9 @@ public class MsPacManRendering implements PacManGameAnimations {
 		if (pac.speed == 0 || !pac.couldMove) {
 			return assets.pacMouthOpen.get(pac.dir);
 		}
+		if (!pacMunching(pac.dir).isRunning()) {
+			pacMunching(pac.dir).restart();
+		}
 		return pacMunching(pac.dir).currentFrameThenAdvance();
 	}
 

@@ -35,4 +35,59 @@ public interface PacManGameUI {
 	Optional<SoundManager> sounds();
 
 	Optional<PacManGameAnimations> animations();
+
+	public static final PacManGameUI NO_UI = new PacManGameUI() {
+
+		@Override
+		public void setGame(PacManGame game) {
+		}
+
+		@Override
+		public void setCloseHandler(Runnable handler) {
+		}
+
+		@Override
+		public void updateScene() {
+		}
+
+		@Override
+		public void show() {
+		}
+
+		@Override
+		public void redraw() {
+		}
+
+		@Override
+		public String translation(String key) {
+			return key;
+		}
+
+		@Override
+		public void showMessage(String message, boolean important) {
+		}
+
+		@Override
+		public void showFlashMessage(String message) {
+		}
+
+		@Override
+		public void clearMessages() {
+		}
+
+		@Override
+		public boolean keyPressed(String keySpec) {
+			return false;
+		}
+
+		@Override
+		public Optional<SoundManager> sounds() {
+			return Optional.empty();
+		}
+
+		@Override
+		public Optional<PacManGameAnimations> animations() {
+			return Optional.empty();
+		}
+	};
 }
