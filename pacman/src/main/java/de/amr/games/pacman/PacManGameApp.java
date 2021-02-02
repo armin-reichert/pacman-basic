@@ -54,16 +54,15 @@ public class PacManGameApp {
 	 *             <ul>
 	 *             <li><code>-scaling</code> <em>value</em>: scaling of UI, default is 2</li>
 	 *             <li><code>-pacman</code>: start in Pac-Man mode</li>
-	 *             <li><code>-mspacman</code>: start in Ms. Pac-Man mode</li>
+	 *             <li><code>-mspacman</code>: start in Ms. Pac-Man mode (default)</li>
 	 *             </ul>
 	 */
 	public static void main(String[] args) {
 		Options options = new Options(args);
-		PacManGameController controller = new PacManGameController();
-		PacManGame game = options.classic ? controller.playPacManClassic() : controller.playMsPacMan();
+		PacManGameController controller = new PacManGameController(options.classic);
 		invokeLater(() -> {
+			PacManGame game = controller.game().get();
 			PacManGameSwingUI ui = new PacManGameSwingUI(game, options.scaling);
-			ui.setGame(game);
 			controller.setUI(ui);
 			controller.showUI();
 			new Thread(controller::gameLoop, "PacManGame").start();

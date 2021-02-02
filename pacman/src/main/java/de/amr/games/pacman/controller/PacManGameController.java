@@ -64,26 +64,41 @@ public class PacManGameController {
 
 	private PacManGameState previousState;
 
-	public PacManGameController() {
+	public PacManGameController(boolean classic) {
 		ui = PacManGameUI.NO_UI;
+		if (classic) {
+			playPacManClassic();
+		} else {
+			playMsPacMan();
+		}
 	}
 
 	public PacManGame playPacManClassic() {
+		log("New Pac-Man game");
 		game = new PacManClassicGame();
-		autopilot = null;
 		reset();
 		ui.setGame(game);
-		log("New Pac-Man game");
 		return game;
 	}
 
 	public PacManGame playMsPacMan() {
+		log("New Ms. Pac-Man game");
 		game = new MsPacManGame();
-		autopilot = null;
 		reset();
 		ui.setGame(game);
-		log("New Ms. Pac-Man game");
 		return game;
+	}
+
+	private void reset() {
+		game.reset();
+		autopilotOn = false;
+		autopilot = null;
+		previousState = null;
+		ui.animations().ifPresent(animations -> animations.resetAll(game));
+		ui.sounds().ifPresent(SoundManager::stopAllSounds);
+		ui.clearMessages();
+		changeState(INTRO, () -> {
+		}, this::enterIntroState);
 	}
 
 	public void gameLoop() {
@@ -111,17 +126,6 @@ public class PacManGameController {
 
 	public Optional<PacManGame> game() {
 		return Optional.ofNullable(game);
-	}
-
-	private void reset() {
-		game.reset();
-		autopilotOn = false;
-		previousState = null;
-		ui.animations().ifPresent(animations -> animations.resetAll(game));
-		ui.sounds().ifPresent(SoundManager::stopAllSounds);
-		ui.clearMessages();
-		changeState(INTRO, () -> {
-		}, this::enterIntroState);
 	}
 
 	private void toggleGameVariant() {
