@@ -76,19 +76,25 @@ public class PacManGameController {
 	public void playPacManClassic() {
 		log("New Pac-Man game");
 		game = new PacManClassicGame();
-		reset();
+		reset(false);
 		ui.setGame(game);
 	}
 
 	public void playMsPacMan() {
 		log("New Ms. Pac-Man game");
 		game = new MsPacManGame();
-		reset();
+		reset(false);
 		ui.setGame(game);
 	}
 
-	private void reset() {
-		game.reset();
+	private boolean playingMsPacMan() {
+		return game instanceof MsPacManGame;
+	}
+
+	private void reset(boolean resetGame) {
+		if (resetGame) {
+			game.reset();
+		}
 		autopilotOn = false;
 		autopilot = null;
 		previousState = null;
@@ -131,10 +137,10 @@ public class PacManGameController {
 	}
 
 	private void toggleGameVariant() {
-		if (game instanceof PacManClassicGame) {
-			playMsPacMan();
-		} else {
+		if (playingMsPacMan()) {
 			playPacManClassic();
+		} else {
+			playMsPacMan();
 		}
 	}
 
@@ -154,8 +160,7 @@ public class PacManGameController {
 
 	private void readInput() {
 		if (ui.keyPressed("escape")) {
-			game.reset();
-			reset();
+			reset(true);
 		}
 	}
 
@@ -188,7 +193,7 @@ public class PacManGameController {
 		if (ui.keyPressed("space")) {
 			return changeState(READY, this::exitIntroState, this::enterReadyState);
 		}
-		if (game instanceof MsPacManGame && game.state.ticksRun() == clock.sec(20)) {
+		if (playingMsPacMan() && game.state.ticksRun() == clock.sec(20)) {
 			game.attractMode = true;
 			return changeState(READY, this::exitIntroState, this::enterReadyState);
 		}
@@ -451,8 +456,7 @@ public class PacManGameController {
 		if (game.state.hasExpired()) {
 			if (game.attractMode) {
 				exitPacManDyingState();
-				game.reset();
-				reset();
+				reset(true);
 				return game.state;
 			}
 			game.lives--;
@@ -560,8 +564,7 @@ public class PacManGameController {
 	}
 
 	private void exitGameOverState() {
-		game.reset();
-		reset();
+		reset(true);
 	}
 
 	// END STATE-MACHINE
@@ -736,7 +739,7 @@ public class PacManGameController {
 	}
 
 	private void setGhostHuntingTarget(Ghost ghost) {
-		if (game instanceof MsPacManGame && game.huntingPhase == 0 && (ghost.id == BLINKY || ghost.id == PINKY)) {
+		if (playingMsPacMan() && game.huntingPhase == 0 && (ghost.id == BLINKY || ghost.id == PINKY)) {
 			// In Ms. Pac-Man, Blinky and Pinky move randomly during *first* scatter phase
 			ghost.targetTile = null;
 		} else if (game.inScatteringPhase() && ghost.elroy == 0) {
