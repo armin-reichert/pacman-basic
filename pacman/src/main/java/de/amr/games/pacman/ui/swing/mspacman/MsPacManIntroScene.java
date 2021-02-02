@@ -9,14 +9,12 @@ import static de.amr.games.pacman.world.PacManGameWorld.t;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.util.Optional;
 
 import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.MsPacManGame;
 import de.amr.games.pacman.model.creatures.Ghost;
 import de.amr.games.pacman.model.creatures.GhostState;
-import de.amr.games.pacman.ui.api.PacManGameAnimations;
 import de.amr.games.pacman.ui.api.PacManGameScene;
 
 public class MsPacManIntroScene implements PacManGameScene {
@@ -38,11 +36,6 @@ public class MsPacManIntroScene implements PacManGameScene {
 		this.size = size;
 		this.game = game;
 		this.rendering = rendering;
-	}
-
-	@Override
-	public Optional<PacManGameAnimations> animations() {
-		return Optional.of(rendering);
 	}
 
 	@Override

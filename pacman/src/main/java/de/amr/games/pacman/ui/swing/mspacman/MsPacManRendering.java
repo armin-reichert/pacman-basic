@@ -23,6 +23,7 @@ import de.amr.games.pacman.model.creatures.Creature;
 import de.amr.games.pacman.model.creatures.Ghost;
 import de.amr.games.pacman.model.creatures.Pac;
 import de.amr.games.pacman.ui.api.PacManGameAnimations;
+import de.amr.games.pacman.ui.sound.PacManGameSoundManager;
 
 /**
  * Rendering for the Ms. Pac-Man game.
@@ -33,10 +34,12 @@ public class MsPacManRendering implements PacManGameAnimations {
 
 	public final MsPacManAssets assets;
 	public final Function<String, String> translator;
+	public final PacManGameSoundManager soundManager;
 
 	public MsPacManRendering(MsPacManAssets assets, Function<String, String> translator) {
 		this.assets = assets;
 		this.translator = translator;
+		soundManager = new PacManGameSoundManager(assets.soundURL::get);
 	}
 
 	@Override

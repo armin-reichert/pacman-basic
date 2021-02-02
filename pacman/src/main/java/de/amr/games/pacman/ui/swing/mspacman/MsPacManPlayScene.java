@@ -3,11 +3,9 @@ package de.amr.games.pacman.ui.swing.mspacman;
 import static de.amr.games.pacman.world.PacManGameWorld.t;
 
 import java.awt.Graphics2D;
-import java.util.Optional;
 
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.MsPacManGame;
-import de.amr.games.pacman.ui.api.PacManGameAnimations;
 import de.amr.games.pacman.ui.api.PacManGameScene;
 import de.amr.games.pacman.ui.swing.DebugRendering;
 
@@ -31,11 +29,6 @@ public class MsPacManPlayScene implements PacManGameScene {
 	@Override
 	public V2i size() {
 		return size;
-	}
-
-	@Override
-	public Optional<PacManGameAnimations> animations() {
-		return Optional.of(rendering);
 	}
 
 	@Override

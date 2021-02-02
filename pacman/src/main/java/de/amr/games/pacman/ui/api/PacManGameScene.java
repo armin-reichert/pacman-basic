@@ -2,7 +2,6 @@ package de.amr.games.pacman.ui.api;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.util.Optional;
 
 import de.amr.games.pacman.lib.V2i;
 
@@ -22,8 +21,6 @@ public interface PacManGameScene {
 	void draw(Graphics2D g);
 
 	V2i size();
-
-	Optional<PacManGameAnimations> animations();
 
 	// convenience methods
 

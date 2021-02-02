@@ -37,7 +37,6 @@ import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.ui.api.PacManGameAnimations;
 import de.amr.games.pacman.ui.api.PacManGameScene;
 import de.amr.games.pacman.ui.api.PacManGameUI;
-import de.amr.games.pacman.ui.sound.PacManGameSoundManager;
 import de.amr.games.pacman.ui.sound.SoundManager;
 import de.amr.games.pacman.ui.swing.classic.PacManClassicAssets;
 import de.amr.games.pacman.ui.swing.classic.PacManClassicIntroScene;
@@ -102,8 +101,8 @@ public class PacManGameSwingUI implements PacManGameUI {
 		log("Pac-Man Swing UI closed");
 	};
 
-	private PacManGameSoundManager soundManager;
 	private PacManGame game;
+
 	private PacManGameScene displayedScene;
 
 	private PacManClassicIntroScene pacManClassicIntroScene;
@@ -112,8 +111,10 @@ public class PacManGameSwingUI implements PacManGameUI {
 	private MsPacManIntroScene msPacManIntroScene;
 	private MsPacManPlayScene msPacManPlayScene;
 
-	public PacManGameSwingUI(PacManGame game, float scaling) {
+	private PacManClassicRendering pacManClassicRendering;
+	private MsPacManRendering msPacManRendering;
 
+	public PacManGameSwingUI(PacManGame game, float scaling) {
 		this.scaling = scaling;
 		unscaledSizePixels = new V2i(game.level.world.xTiles() * TS, game.level.world.yTiles() * TS);
 		scaledSizeInPixels = new V2i((int) (unscaledSizePixels.x * scaling), (int) (unscaledSizePixels.y * scaling));
@@ -164,7 +165,27 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 		messageFont = font("/PressStart2P-Regular.ttf", 8).deriveFont(Font.PLAIN);
 
+		pacManClassicRendering = new PacManClassicRendering(new PacManClassicAssets(), this::translation);
+		msPacManRendering = new MsPacManRendering(new MsPacManAssets(), this::translation);
 		setGame(game);
+	}
+
+	@Override
+	public Optional<PacManGameAnimations> animations() {
+		if (game instanceof MsPacManGame) {
+			return Optional.of(msPacManRendering);
+		} else {
+			return Optional.of(pacManClassicRendering);
+		}
+	}
+
+	@Override
+	public Optional<SoundManager> sounds() {
+		if (game instanceof MsPacManGame) {
+			return Optional.ofNullable(msPacManRendering.soundManager);
+		} else {
+			return Optional.ofNullable(pacManClassicRendering.soundManager);
+		}
 	}
 
 	@Override
@@ -175,16 +196,6 @@ public class PacManGameSwingUI implements PacManGameUI {
 	@Override
 	public String translation(String key) {
 		return TEXTS.getString(key);
-	}
-
-	@Override
-	public Optional<SoundManager> sounds() {
-		return Optional.ofNullable(soundManager);
-	}
-
-	@Override
-	public Optional<PacManGameAnimations> animations() {
-		return displayedScene.animations();
 	}
 
 	@Override
@@ -223,18 +234,12 @@ public class PacManGameSwingUI implements PacManGameUI {
 	public void setGame(PacManGame newGame) {
 		this.game = newGame;
 		if (game instanceof PacManClassicGame) {
-			PacManClassicAssets assets = new PacManClassicAssets();
-			PacManClassicRendering rendering = new PacManClassicRendering(assets, this::translation);
-			soundManager = new PacManGameSoundManager(assets.soundURL::get);
-			pacManClassicIntroScene = new PacManClassicIntroScene(unscaledSizePixels, rendering, soundManager, game);
-			pacManClassicPlayScene = new PacManClassicPlayScene(unscaledSizePixels, rendering, game);
+			pacManClassicIntroScene = new PacManClassicIntroScene(unscaledSizePixels, pacManClassicRendering, game);
+			pacManClassicPlayScene = new PacManClassicPlayScene(unscaledSizePixels, pacManClassicRendering, game);
 		} else if (game instanceof MsPacManGame) {
 			MsPacManGame msPacManGame = (MsPacManGame) game;
-			MsPacManAssets assets = new MsPacManAssets();
-			MsPacManRendering rendering = new MsPacManRendering(assets, this::translation);
-			soundManager = new PacManGameSoundManager(assets.soundURL::get);
-			msPacManIntroScene = new MsPacManIntroScene(unscaledSizePixels, rendering, msPacManGame);
-			msPacManPlayScene = new MsPacManPlayScene(unscaledSizePixels, rendering, msPacManGame);
+			msPacManIntroScene = new MsPacManIntroScene(unscaledSizePixels, msPacManRendering, msPacManGame);
+			msPacManPlayScene = new MsPacManPlayScene(unscaledSizePixels, msPacManRendering, msPacManGame);
 		} else {
 			throw new IllegalArgumentException("Illegal game: " + newGame);
 		}
