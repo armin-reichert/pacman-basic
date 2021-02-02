@@ -69,6 +69,7 @@ public class MsPacManIntroScene implements PacManGameScene {
 		game.pac.dir = LEFT;
 		game.pac.visible = true;
 		game.pac.couldMove = true;
+		game.pac.dead = false;
 		rendering.letPacMunch();
 	}
 
