@@ -233,7 +233,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 			MsPacManAssets assets = new MsPacManAssets();
 			MsPacManRendering rendering = new MsPacManRendering(assets, this::translation);
 			soundManager = new PacManGameSoundManager(assets.soundURL::get);
-			msPacManIntroScene = new MsPacManIntroScene(unscaledSizePixels, rendering, soundManager, msPacManGame);
+			msPacManIntroScene = new MsPacManIntroScene(unscaledSizePixels, rendering, msPacManGame);
 			msPacManPlayScene = new MsPacManPlayScene(unscaledSizePixels, rendering, msPacManGame);
 		} else {
 			throw new IllegalArgumentException("Illegal game: " + newGame);

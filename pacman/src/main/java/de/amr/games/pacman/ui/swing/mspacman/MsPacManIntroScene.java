@@ -18,8 +18,6 @@ import de.amr.games.pacman.model.creatures.Ghost;
 import de.amr.games.pacman.model.creatures.GhostState;
 import de.amr.games.pacman.ui.api.PacManGameAnimations;
 import de.amr.games.pacman.ui.api.PacManGameScene;
-import de.amr.games.pacman.ui.sound.PacManGameSound;
-import de.amr.games.pacman.ui.sound.SoundManager;
 
 public class MsPacManIntroScene implements PacManGameScene {
 
@@ -28,7 +26,6 @@ public class MsPacManIntroScene implements PacManGameScene {
 	private final V2i size;
 	private final MsPacManRendering rendering;
 	private final MsPacManGame game;
-	private final SoundManager sounds;
 
 	private final V2i frameDots = new V2i(32, 16);
 	private final V2i frameTopLeftTile = new V2i(6, 8);
@@ -37,11 +34,10 @@ public class MsPacManIntroScene implements PacManGameScene {
 	private final int belowFrameCenterX = t(frameTopLeftTile.x) + 2 * frameDots.x;
 	private final float walkSpeed = 1.2f;
 
-	public MsPacManIntroScene(V2i size, MsPacManRendering rendering, SoundManager sounds, MsPacManGame game) {
+	public MsPacManIntroScene(V2i size, MsPacManRendering rendering, MsPacManGame game) {
 		this.size = size;
 		this.game = game;
 		this.rendering = rendering;
-		this.sounds = sounds;
 	}
 
 	@Override
@@ -93,7 +89,6 @@ public class MsPacManIntroScene implements PacManGameScene {
 		// animation start:
 		if (time == 0) {
 			game.ghosts[0].speed = walkSpeed;
-			sounds.playSound(PacManGameSound.CREDIT);
 		}
 
 		drawAnimatedFrame(g, time);
@@ -124,10 +119,8 @@ public class MsPacManIntroScene implements PacManGameScene {
 				rendering.ghostWalking(ghost, ghost.dir).reset();
 				if (ghost.id < 3) { // start next ghost
 					game.ghosts[ghost.id + 1].speed = walkSpeed;
-					sounds.playSound(PacManGameSound.CREDIT);
 				} else { // start Pac
 					game.pac.speed = walkSpeed;
-					sounds.loopSound(PacManGameSound.PACMAN_MUNCH);
 				}
 			}
 		}
@@ -146,7 +139,6 @@ public class MsPacManIntroScene implements PacManGameScene {
 			game.pac.position = game.pac.position.sum(velocity);
 			if (game.pac.position.x <= belowFrameCenterX) {
 				game.pac.speed = 0;
-				sounds.stopAllSounds();
 			}
 		}
 		rendering.drawPac(g, game.pac);
