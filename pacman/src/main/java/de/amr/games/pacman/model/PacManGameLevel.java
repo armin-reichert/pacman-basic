@@ -92,6 +92,10 @@ public class PacManGameLevel {
 		return world.isFoodTile(tile) && !isFoodRemoved(tile);
 	}
 
+	public boolean containsEatenFood(V2i tile) {
+		return world.isFoodTile(tile) && isFoodRemoved(tile);
+	}
+
 	public void removeFood(V2i tile) {
 		if (!isFoodRemoved(tile)) {
 			eaten.set(world.index(tile));

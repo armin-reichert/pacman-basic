@@ -11,9 +11,11 @@ import static de.amr.games.pacman.world.PacManGameWorld.t;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.util.function.Function;
 
+import de.amr.games.pacman.heaven.God;
 import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
@@ -31,6 +33,8 @@ import de.amr.games.pacman.ui.sound.PacManGameSoundManager;
  * @author Armin Reichert
  */
 public class PacManClassicRendering implements PacManGameAnimations {
+
+	public static boolean drawFancyFood;
 
 	public final PacManClassicAssets assets;
 	public final PacManGameSoundManager soundManager;
@@ -82,7 +86,11 @@ public class PacManClassicRendering implements PacManGameAnimations {
 			g.drawImage(assets.mazeFlashing.currentFrameThenAdvance(), 0, t(3), null);
 			return;
 		}
-		g.drawImage(assets.mazeFull, 0, t(3), null);
+		if (drawFancyFood) {
+			drawFancyFood(g, game);
+		} else {
+			drawFood(g, game);
+		}
 		game.level.world.tiles().filter(game.level::isFoodRemoved).forEach(tile -> {
 			g.setColor(Color.BLACK);
 			g.fillRect(t(tile.x), t(tile.y), TS, TS);
@@ -94,6 +102,34 @@ public class PacManClassicRendering implements PacManGameAnimations {
 			});
 		}
 		drawBonus(g, game.bonus);
+	}
+
+	private void drawFood(Graphics2D g, PacManGame game) {
+		g.drawImage(assets.mazeFull, 0, t(3), null);
+		game.level.world.tiles().filter(game.level::containsEatenFood).forEach(tile -> {
+			g.setColor(Color.BLACK);
+			g.fillRect(t(tile.x), t(tile.y), TS, TS);
+		});
+	}
+
+	private void drawFancyFood(Graphics2D g, PacManGame game) {
+		g.drawImage(assets.mazeEmpty, 0, t(3), null);
+		game.level.world.tiles().filter(game.level::containsFood).forEach(tile -> {
+			if (game.level.world.isEnergizerTile(tile)) {
+				g.setColor(Color.PINK);
+				g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+				g.fillOval(t(tile.x), t(tile.y), TS, TS);
+				g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+			} else {
+				int change = (int) (God.clock.ticksTotal / 10);
+				int i = (tile.x + tile.y + change) % 14;
+				int r = i < 7 ? 1 + i / 2 : 1 + (14 - i) / 2;
+				g.setColor(Color.PINK);
+				g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+				g.fillOval(t(tile.x) + HTS - r / 2, t(tile.y) + HTS - r / 2, r, r);
+				g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+			}
+		});
 	}
 
 	public void drawScore(Graphics2D g, PacManGame game) {

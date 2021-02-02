@@ -51,6 +51,7 @@ public class PacManClassicAssets extends Spritesheet {
 
 	public final BufferedImage gameLogo;
 	public final BufferedImage mazeFull;
+	public final BufferedImage mazeEmpty;
 	public final BufferedImage life;
 	public final V2i[] symbolSpriteLocation;
 	public final Map<Integer, BufferedImage> numbers;
@@ -73,6 +74,7 @@ public class PacManClassicAssets extends Spritesheet {
 
 		gameLogo = image("/worlds/classic/logo.png");
 		mazeFull = image("/worlds/classic/maze_full.png");
+		mazeEmpty = image("/worlds/classic/maze_empty.png");
 
 		life = spriteAt(8, 1);
 
