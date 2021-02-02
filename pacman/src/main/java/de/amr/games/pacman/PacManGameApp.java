@@ -4,7 +4,6 @@ import static de.amr.games.pacman.lib.Logging.log;
 import static java.awt.EventQueue.invokeLater;
 
 import de.amr.games.pacman.controller.PacManGameController;
-import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
 
 /**
@@ -54,16 +53,14 @@ public class PacManGameApp {
 	 *             <ul>
 	 *             <li><code>-scaling</code> <em>value</em>: scaling of UI, default is 2</li>
 	 *             <li><code>-pacman</code>: start in Pac-Man mode</li>
-	 *             <li><code>-mspacman</code>: start in Ms. Pac-Man mode (default)</li>
+	 *             <li><code>-mspacman</code>: start in Ms. Pac-Man mode</li>
 	 *             </ul>
 	 */
 	public static void main(String[] args) {
 		Options options = new Options(args);
-		PacManGameController controller = new PacManGameController(options.classic);
 		invokeLater(() -> {
-			PacManGame game = controller.game().get();
-			PacManGameSwingUI ui = new PacManGameSwingUI(game, options.scaling);
-			controller.setUI(ui);
+			PacManGameController controller = new PacManGameController(options.classic);
+			controller.setUI(new PacManGameSwingUI(controller.game(), options.scaling));
 			controller.showUI();
 			new Thread(controller::gameLoop, "PacManGame").start();
 		});
