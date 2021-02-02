@@ -13,6 +13,8 @@ import de.amr.games.pacman.lib.V2i;
  */
 public interface PacManGameScene {
 
+	void update();
+
 	void draw(Graphics2D g);
 
 	V2i size();

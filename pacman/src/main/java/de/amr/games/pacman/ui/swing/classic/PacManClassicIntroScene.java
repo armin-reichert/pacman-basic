@@ -82,6 +82,10 @@ public class PacManClassicIntroScene implements PacManGameScene {
 	}
 
 	@Override
+	public void update() {
+	}
+
+	@Override
 	public void draw(Graphics2D g) {
 		game.state.runAfter(clock.sec(1), () -> {
 			drawHCenteredImage(g, rendering.assets.gameLogo, 3);

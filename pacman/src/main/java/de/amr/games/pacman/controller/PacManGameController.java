@@ -211,6 +211,7 @@ public class PacManGameController {
 
 	private void enterIntroState() {
 		game.state.setDuration(Long.MAX_VALUE);
+		game.attractMode = false;
 	}
 
 	private PacManGameState runIntroState() {

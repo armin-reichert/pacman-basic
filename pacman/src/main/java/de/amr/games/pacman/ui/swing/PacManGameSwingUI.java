@@ -31,6 +31,7 @@ import javax.swing.Timer;
 import de.amr.games.pacman.controller.PacManGameState;
 import de.amr.games.pacman.heaven.God;
 import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.model.MsPacManGame;
 import de.amr.games.pacman.model.PacManClassicGame;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.ui.api.PacManGameAnimations;
@@ -43,6 +44,7 @@ import de.amr.games.pacman.ui.swing.classic.PacManClassicIntroScene;
 import de.amr.games.pacman.ui.swing.classic.PacManClassicPlayScene;
 import de.amr.games.pacman.ui.swing.classic.PacManClassicRendering;
 import de.amr.games.pacman.ui.swing.mspacman.MsPacManAssets;
+import de.amr.games.pacman.ui.swing.mspacman.MsPacManAttractScene;
 import de.amr.games.pacman.ui.swing.mspacman.MsPacManIntroScene;
 import de.amr.games.pacman.ui.swing.mspacman.MsPacManPlayScene;
 import de.amr.games.pacman.ui.swing.mspacman.MsPacManRendering;
@@ -101,12 +103,16 @@ public class PacManGameSwingUI implements PacManGameUI {
 		log("Pac-Man Swing UI closed");
 	};
 
-	private PacManGame game;
-
-	private PacManGameScene currentScene;
-	private PacManGameScene introScene;
-	private PacManGameScene playScene;
 	private PacManGameSoundManager soundManager;
+	private PacManGame game;
+	private PacManGameScene displayedScene;
+
+	private PacManClassicIntroScene pacManClassicIntroScene;
+	private PacManClassicPlayScene pacManClassicPlayScene;
+
+	private MsPacManIntroScene msPacManIntroScene;
+	private MsPacManPlayScene msPacManPlayScene;
+	private MsPacManAttractScene msPacManAttractScene;
 
 	public PacManGameSwingUI(PacManGame game, float scaling) {
 
@@ -180,23 +186,38 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 	@Override
 	public Optional<PacManGameAnimations> animations() {
-		return currentScene.animations();
+		return displayedScene.animations();
 	}
 
 	@Override
 	public void updateScene() {
-		PacManGameScene scene = null;
-		if (game.state == PacManGameState.INTRO) {
-			scene = introScene;
-		} else {
-			scene = playScene;
-		}
-		if (scene != currentScene) {
-			if (currentScene != null) {
-				currentScene.end();
+		PacManGameScene scene = sceneToBeDisplayed();
+		if (displayedScene != scene) {
+			if (displayedScene != null) {
+				displayedScene.end();
 			}
-			currentScene = scene;
-			currentScene.start();
+			displayedScene = scene;
+			displayedScene.start();
+		}
+		displayedScene.update();
+	}
+
+	private PacManGameScene sceneToBeDisplayed() {
+		if (game instanceof PacManClassicGame) {
+			if (game.state == PacManGameState.INTRO) {
+				return pacManClassicIntroScene;
+			} else {
+				return pacManClassicPlayScene;
+			}
+		} else if (game instanceof MsPacManGame) {
+			MsPacManGame msPacManGame = (MsPacManGame) game;
+			if (msPacManGame.state == PacManGameState.INTRO) {
+				return msPacManGame.attractMode ? msPacManAttractScene : msPacManIntroScene;
+			} else {
+				return msPacManPlayScene;
+			}
+		} else {
+			throw new IllegalStateException();
 		}
 	}
 
@@ -207,14 +228,18 @@ public class PacManGameSwingUI implements PacManGameUI {
 			PacManClassicAssets assets = new PacManClassicAssets();
 			PacManClassicRendering rendering = new PacManClassicRendering(assets, this::translation);
 			soundManager = new PacManGameSoundManager(assets.soundURL::get);
-			introScene = new PacManClassicIntroScene(unscaledSizePixels, rendering, soundManager, game);
-			playScene = new PacManClassicPlayScene(unscaledSizePixels, rendering, game);
-		} else {
+			pacManClassicIntroScene = new PacManClassicIntroScene(unscaledSizePixels, rendering, soundManager, game);
+			pacManClassicPlayScene = new PacManClassicPlayScene(unscaledSizePixels, rendering, game);
+		} else if (game instanceof MsPacManGame) {
+			MsPacManGame msPacManGame = (MsPacManGame) game;
 			MsPacManAssets assets = new MsPacManAssets();
 			MsPacManRendering rendering = new MsPacManRendering(assets, this::translation);
 			soundManager = new PacManGameSoundManager(assets.soundURL::get);
-			introScene = new MsPacManIntroScene(unscaledSizePixels, rendering, soundManager, game);
-			playScene = new MsPacManPlayScene(unscaledSizePixels, rendering, game);
+			msPacManIntroScene = new MsPacManIntroScene(unscaledSizePixels, rendering, soundManager, msPacManGame);
+			msPacManAttractScene = new MsPacManAttractScene(unscaledSizePixels, rendering, msPacManGame);
+			msPacManPlayScene = new MsPacManPlayScene(unscaledSizePixels, rendering, msPacManGame);
+		} else {
+			throw new IllegalArgumentException("Illegal game: " + newGame);
 		}
 		if (titleUpdateTimer != null) {
 			titleUpdateTimer.stop();
@@ -270,10 +295,10 @@ public class PacManGameSwingUI implements PacManGameUI {
 	}
 
 	private void drawCurrentScene(Graphics2D g) {
-		if (currentScene != null) {
+		if (displayedScene != null) {
 			Graphics2D g2 = (Graphics2D) g.create();
 			g2.scale(scaling, scaling);
-			currentScene.draw(g2);
+			displayedScene.draw(g2);
 			drawMessages(g2);
 			g2.dispose();
 		}

@@ -39,6 +39,10 @@ public class PacManClassicPlayScene implements PacManGameScene {
 	}
 
 	@Override
+	public void update() {
+	}
+
+	@Override
 	public void draw(Graphics2D g) {
 		rendering.drawScore(g, game);
 		rendering.drawLivesCounter(g, game, t(2), size.y - t(2));

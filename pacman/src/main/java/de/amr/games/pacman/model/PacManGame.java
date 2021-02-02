@@ -24,6 +24,7 @@ public abstract class PacManGame {
 
 	public PacManGameState state;
 	public boolean started;
+	public boolean attractMode;
 
 	public int currentLevelNumber; // counting from 1
 	public PacManGameLevel level;

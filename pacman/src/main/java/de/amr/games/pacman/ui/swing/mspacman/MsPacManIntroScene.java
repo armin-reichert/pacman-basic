@@ -13,7 +13,7 @@ import java.util.Optional;
 
 import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.model.PacManGame;
+import de.amr.games.pacman.model.MsPacManGame;
 import de.amr.games.pacman.model.creatures.Ghost;
 import de.amr.games.pacman.ui.api.PacManGameAnimations;
 import de.amr.games.pacman.ui.api.PacManGameScene;
@@ -26,7 +26,7 @@ public class MsPacManIntroScene implements PacManGameScene {
 
 	private final V2i size;
 	private final MsPacManRendering rendering;
-	private final PacManGame game;
+	private final MsPacManGame game;
 	private final SoundManager sounds;
 
 	private final V2i frameDots = new V2i(32, 16);
@@ -36,7 +36,7 @@ public class MsPacManIntroScene implements PacManGameScene {
 	private final int belowFrameCenterX = t(frameTopLeftTile.x) + 2 * frameDots.x;
 	private final float walkSpeed = 1.2f;
 
-	public MsPacManIntroScene(V2i size, MsPacManRendering rendering, SoundManager sounds, PacManGame game) {
+	public MsPacManIntroScene(V2i size, MsPacManRendering rendering, SoundManager sounds, MsPacManGame game) {
 		this.size = size;
 		this.game = game;
 		this.rendering = rendering;
@@ -71,7 +71,10 @@ public class MsPacManIntroScene implements PacManGameScene {
 
 	@Override
 	public void end() {
-		game.state.resetTimer();
+	}
+
+	@Override
+	public void update() {
 	}
 
 	@Override
@@ -150,10 +153,9 @@ public class MsPacManIntroScene implements PacManGameScene {
 			drawPressKeyToStart(g, time);
 		}
 
-		// restart intro after 30 seconds
-		if (time == clock.sec(30)) {
-			end();
-			start();
+		if (time == clock.sec(20)) {
+			game.attractMode = true;
+			game.state.resetTimer();
 		}
 	}
 
