@@ -188,7 +188,7 @@ public class PacManGameController {
 		if (ui.keyPressed("space")) {
 			return changeState(READY, this::exitIntroState, this::enterReadyState);
 		}
-		if (game.state.ticksRun() == clock.sec(20)) {
+		if (game instanceof MsPacManGame && game.state.ticksRun() == clock.sec(20)) {
 			game.attractMode = true;
 			return changeState(READY, this::exitIntroState, this::enterReadyState);
 		}
