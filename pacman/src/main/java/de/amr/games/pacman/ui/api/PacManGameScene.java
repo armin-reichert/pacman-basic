@@ -13,19 +13,17 @@ import de.amr.games.pacman.lib.V2i;
  */
 public interface PacManGameScene {
 
+	void start();
+
 	void update();
+
+	void end();
 
 	void draw(Graphics2D g);
 
 	V2i size();
 
 	Optional<PacManGameAnimations> animations();
-
-	default void start() {
-	}
-
-	default void end() {
-	}
 
 	// convenience methods
 

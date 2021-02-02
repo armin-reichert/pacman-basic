@@ -1,6 +1,8 @@
 package de.amr.games.pacman.model;
 
 import static de.amr.games.pacman.lib.Logging.log;
+import static de.amr.games.pacman.model.creatures.GhostState.LOCKED;
+import static de.amr.games.pacman.world.PacManGameWorld.HTS;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -70,6 +72,44 @@ public abstract class PacManGame {
 		lives = 3;
 		levelSymbols = new ArrayList<>();
 		levelSymbols.add(level.bonusSymbol);
+	}
+
+	public void resetGuys() {
+		pac.placeAt(level.world.pacHome(), HTS, 0);
+		pac.dir = pac.wishDir = pac.startDir;
+		pac.visible = false;
+		pac.speed = 0;
+		pac.targetTile = null; // used in autopilot mode
+		pac.couldMove = true;
+		pac.forcedOnTrack = true;
+		pac.dead = false;
+		pac.powerTicksLeft = 0;
+		pac.restingTicksLeft = 0;
+		pac.starvingTicks = 0;
+
+		for (Ghost ghost : ghosts) {
+			ghost.placeAt(level.world.ghostHome(ghost.id), HTS, 0);
+			ghost.dir = ghost.wishDir = ghost.startDir;
+			ghost.visible = false;
+			ghost.speed = 0;
+			ghost.targetTile = null;
+			ghost.couldMove = true;
+			ghost.forcedDirection = ghost.id == BLINKY;
+			ghost.forcedOnTrack = ghost.id == BLINKY;
+			ghost.state = LOCKED;
+			ghost.bounty = 0;
+			// these are only reset when entering level:
+//		ghost.dotCounter = 0;
+//		ghost.elroyMode = 0;
+		}
+
+		bonus.visible = false;
+		bonus.speed = 0;
+		bonus.changedTile = true;
+		bonus.couldMove = true;
+		bonus.forcedOnTrack = true;
+		bonus.edibleTicksLeft = 0;
+		bonus.eatenTicksLeft = 0;
 	}
 
 	public Stream<Ghost> ghosts() {

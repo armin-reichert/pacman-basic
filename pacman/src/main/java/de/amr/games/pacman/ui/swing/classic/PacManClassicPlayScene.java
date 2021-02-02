@@ -39,7 +39,15 @@ public class PacManClassicPlayScene implements PacManGameScene {
 	}
 
 	@Override
+	public void start() {
+	}
+
+	@Override
 	public void update() {
+	}
+
+	@Override
+	public void end() {
 	}
 
 	@Override

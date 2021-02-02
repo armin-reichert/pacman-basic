@@ -155,7 +155,6 @@ public class MsPacManIntroScene implements PacManGameScene {
 
 		if (time == clock.sec(20)) {
 			game.attractMode = true;
-			game.state.resetTimer();
 		}
 	}
 
@@ -183,7 +182,7 @@ public class MsPacManIntroScene implements PacManGameScene {
 			} else {
 				y = 2 * (frameDots.x + frameDots.y) - dot;
 			}
-			g.setColor((dot + light) % (frameDots.x / 2) == 0 ? Color.CYAN : Color.RED);
+			g.setColor((dot + light) % (frameDots.x / 2) == 0 ? Color.PINK : Color.RED);
 			g.fillRect(t(frameTopLeftTile.x) + 4 * x, t(frameTopLeftTile.y) + 4 * y, 2, 2);
 		}
 	}

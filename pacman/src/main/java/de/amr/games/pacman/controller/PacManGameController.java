@@ -22,7 +22,6 @@ import static de.amr.games.pacman.model.creatures.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.creatures.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.model.creatures.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.model.creatures.GhostState.LOCKED;
-import static de.amr.games.pacman.world.PacManGameWorld.HTS;
 
 import java.util.List;
 import java.util.Optional;
@@ -161,44 +160,13 @@ public class PacManGameController {
 	}
 
 	private void letGuysGetReady() {
-		game.pac.placeAt(game.level.world.pacHome(), HTS, 0);
-		game.pac.dir = game.pac.wishDir = game.pac.startDir;
-		game.pac.visible = false;
-		game.pac.speed = 0;
-		game.pac.targetTile = null; // used in autopilot mode
-		game.pac.couldMove = true;
-		game.pac.forcedOnTrack = true;
-		game.pac.dead = false;
-		game.pac.powerTicksLeft = 0;
-		game.pac.restingTicksLeft = 0;
-		game.pac.starvingTicks = 0;
-
+		game.resetGuys();
 		for (Ghost ghost : game.ghosts) {
-			ghost.placeAt(game.level.world.ghostHome(ghost.id), HTS, 0);
-			ghost.dir = ghost.wishDir = ghost.startDir;
-			ghost.visible = false;
-			ghost.speed = 0;
-			ghost.targetTile = null;
-			ghost.couldMove = true;
-			ghost.forcedDirection = ghost.id == BLINKY;
-			ghost.forcedOnTrack = ghost.id == BLINKY;
-			ghost.state = LOCKED;
-			ghost.bounty = 0;
-			// these are only reset when entering level:
-//		ghost.dotCounter = 0;
-//		ghost.elroyMode = 0;
 			ui.animations().ifPresent(animations -> {
 				animations.ghostFlashing(ghost).reset();
 			});
 		}
 
-		game.bonus.visible = false;
-		game.bonus.speed = 0;
-		game.bonus.changedTile = true;
-		game.bonus.couldMove = true;
-		game.bonus.forcedOnTrack = true;
-		game.bonus.edibleTicksLeft = 0;
-		game.bonus.eatenTicksLeft = 0;
 	}
 
 	private void letGhostsFidget(boolean on) {
