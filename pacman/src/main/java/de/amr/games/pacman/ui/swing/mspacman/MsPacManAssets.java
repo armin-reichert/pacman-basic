@@ -229,20 +229,4 @@ public class MsPacManAssets extends Spritesheet {
 		}
 	}
 
-	private BufferedImage createFlashEffect(BufferedImage src, Color borderColor, Color wallColor) {
-		BufferedImage dst = new BufferedImage(src.getWidth(), src.getHeight(), src.getType());
-		dst.getGraphics().drawImage(src, 0, 0, null);
-		for (int x = 0; x < src.getWidth(); ++x) {
-			for (int y = 0; y < src.getHeight(); ++y) {
-				if (src.getRGB(x, y) == borderColor.getRGB()) {
-					dst.setRGB(x, y, Color.WHITE.getRGB());
-				} else if (src.getRGB(x, y) == wallColor.getRGB()) {
-					dst.setRGB(x, y, Color.BLACK.getRGB());
-				} else {
-					dst.setRGB(x, y, src.getRGB(x, y));
-				}
-			}
-		}
-		return dst;
-	}
 }

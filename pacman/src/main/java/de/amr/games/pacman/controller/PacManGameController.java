@@ -548,7 +548,7 @@ public class PacManGameController {
 	// GAME_OVER
 
 	private void enterGameOverState() {
-		game.state.setDuration(clock.sec(30));
+		game.state.setDuration(clock.sec(10));
 		game.ghosts().forEach(ghost -> ghost.speed = 0);
 		game.pac.speed = 0;
 		game.saveHighscore();

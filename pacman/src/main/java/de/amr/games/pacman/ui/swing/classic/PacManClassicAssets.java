@@ -4,6 +4,7 @@ import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.font;
 import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.image;
 import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.url;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.image.BufferedImage;
 import java.net.URL;
@@ -100,7 +101,7 @@ public class PacManClassicAssets extends Spritesheet {
 		// Animations
 
 		BufferedImage mazeEmptyDark = image("/worlds/classic/maze_empty.png");
-		BufferedImage mazeEmptyBright = image("/worlds/classic/maze_empty_white.png");
+		BufferedImage mazeEmptyBright = createFlashEffect(mazeEmptyDark, new Color(33, 33, 255), Color.BLACK);
 		mazeFlashing = Animation.of(mazeEmptyBright, mazeEmptyDark).frameDuration(15);
 
 		energizerBlinking = Animation.of(true, false);

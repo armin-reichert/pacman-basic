@@ -1,5 +1,6 @@
 package de.amr.games.pacman.ui.swing;
 
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 
 import de.amr.games.pacman.lib.V2i;
@@ -10,6 +11,23 @@ import de.amr.games.pacman.lib.V2i;
  * @author Armin Reichert
  */
 public class Spritesheet {
+
+	public static BufferedImage createFlashEffect(BufferedImage src, Color borderColor, Color wallColor) {
+		BufferedImage dst = new BufferedImage(src.getWidth(), src.getHeight(), src.getType());
+		dst.getGraphics().drawImage(src, 0, 0, null);
+		for (int x = 0; x < src.getWidth(); ++x) {
+			for (int y = 0; y < src.getHeight(); ++y) {
+				if (src.getRGB(x, y) == borderColor.getRGB()) {
+					dst.setRGB(x, y, Color.WHITE.getRGB());
+				} else if (src.getRGB(x, y) == wallColor.getRGB()) {
+					dst.setRGB(x, y, Color.BLACK.getRGB());
+				} else {
+					dst.setRGB(x, y, src.getRGB(x, y));
+				}
+			}
+		}
+		return dst;
+	}
 
 	private final BufferedImage image;
 	private final int tileSize;
