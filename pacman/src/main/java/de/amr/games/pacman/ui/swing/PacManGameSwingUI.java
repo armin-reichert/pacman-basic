@@ -44,7 +44,6 @@ import de.amr.games.pacman.ui.swing.classic.PacManClassicIntroScene;
 import de.amr.games.pacman.ui.swing.classic.PacManClassicPlayScene;
 import de.amr.games.pacman.ui.swing.classic.PacManClassicRendering;
 import de.amr.games.pacman.ui.swing.mspacman.MsPacManAssets;
-import de.amr.games.pacman.ui.swing.mspacman.MsPacManAttractScene;
 import de.amr.games.pacman.ui.swing.mspacman.MsPacManIntroScene;
 import de.amr.games.pacman.ui.swing.mspacman.MsPacManPlayScene;
 import de.amr.games.pacman.ui.swing.mspacman.MsPacManRendering;
@@ -112,7 +111,6 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 	private MsPacManIntroScene msPacManIntroScene;
 	private MsPacManPlayScene msPacManPlayScene;
-	private MsPacManAttractScene msPacManAttractScene;
 
 	public PacManGameSwingUI(PacManGame game, float scaling) {
 
@@ -212,7 +210,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 		} else if (game instanceof MsPacManGame) {
 			MsPacManGame msPacManGame = (MsPacManGame) game;
 			if (msPacManGame.state == PacManGameState.INTRO) {
-				return msPacManGame.attractMode ? msPacManAttractScene : msPacManIntroScene;
+				return msPacManIntroScene;
 			} else {
 				return msPacManPlayScene;
 			}
@@ -236,7 +234,6 @@ public class PacManGameSwingUI implements PacManGameUI {
 			MsPacManRendering rendering = new MsPacManRendering(assets, this::translation);
 			soundManager = new PacManGameSoundManager(assets.soundURL::get);
 			msPacManIntroScene = new MsPacManIntroScene(unscaledSizePixels, rendering, soundManager, msPacManGame);
-			msPacManAttractScene = new MsPacManAttractScene(this, unscaledSizePixels, rendering, msPacManGame);
 			msPacManPlayScene = new MsPacManPlayScene(unscaledSizePixels, rendering, msPacManGame);
 		} else {
 			throw new IllegalArgumentException("Illegal game: " + newGame);

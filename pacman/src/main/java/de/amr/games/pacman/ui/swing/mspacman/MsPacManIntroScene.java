@@ -15,6 +15,7 @@ import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.MsPacManGame;
 import de.amr.games.pacman.model.creatures.Ghost;
+import de.amr.games.pacman.model.creatures.GhostState;
 import de.amr.games.pacman.ui.api.PacManGameAnimations;
 import de.amr.games.pacman.ui.api.PacManGameScene;
 import de.amr.games.pacman.ui.sound.PacManGameSound;
@@ -60,6 +61,7 @@ public class MsPacManIntroScene implements PacManGameScene {
 			ghost.speed = 0;
 			ghost.dir = ghost.wishDir = LEFT;
 			ghost.visible = true;
+			ghost.state = GhostState.HUNTING_PAC;
 		}
 		rendering.letGhostsFidget(game.ghosts(), true);
 		game.pac.position = new V2f(size.x + TS, belowFrame);
@@ -151,10 +153,6 @@ public class MsPacManIntroScene implements PacManGameScene {
 		if (game.pac.speed == 0 && game.pac.position.x <= belowFrameCenterX) {
 			drawPointsAnimation(g, 26, time);
 			drawPressKeyToStart(g, time);
-		}
-
-		if (time == clock.sec(20)) {
-			game.attractMode = true;
 		}
 	}
 

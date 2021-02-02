@@ -64,13 +64,16 @@ public abstract class PacManGame {
 	}
 
 	public void reset() {
-		enterLevel(1);
 		Hiscore hiscore = loadHighScore();
 		highscoreLevel = hiscore.level;
 		highscorePoints = hiscore.points;
 		score = 0;
 		lives = 3;
+		started = false;
+		state = null;
+		attractMode = false;
 		levelSymbols = new ArrayList<>();
+		enterLevel(1);
 		levelSymbols.add(level.bonusSymbol);
 	}
 

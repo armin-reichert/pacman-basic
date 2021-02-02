@@ -114,8 +114,9 @@ public class PacManGameController {
 	}
 
 	private void reset() {
-		game.started = false;
-		game.state = previousState = null;
+		game.reset();
+		autopilotOn = false;
+		previousState = null;
 		if (ui != null) {
 			ui.sounds().ifPresent(SoundManager::stopAllSounds);
 			ui.clearMessages();
@@ -147,12 +148,6 @@ public class PacManGameController {
 	}
 
 	private void readInput() {
-		if (ui.keyPressed("a")) {
-			toggleAutopilot();
-		}
-		if (ui.keyPressed("i")) {
-			togglePacImmunity();
-		}
 		if (ui.keyPressed("escape")) {
 			game.reset();
 			reset();
@@ -180,10 +175,18 @@ public class PacManGameController {
 	private void enterIntroState() {
 		game.state.setDuration(Long.MAX_VALUE);
 		game.attractMode = false;
+		autopilotOn = false;
+		if (ui != null) {
+			ui.clearMessages();
+		}
 	}
 
 	private PacManGameState runIntroState() {
 		if (ui.keyPressed("space")) {
+			return changeState(READY, this::exitIntroState, this::enterReadyState);
+		}
+		if (game.state.ticksRun() == clock.sec(20)) {
+			game.attractMode = true;
 			return changeState(READY, this::exitIntroState, this::enterReadyState);
 		}
 		if (ui.keyPressed("v")) {
@@ -199,20 +202,21 @@ public class PacManGameController {
 	// READY
 
 	private void enterReadyState() {
-		if (!game.started && ui.sounds().isPresent()) {
-			game.state.setDuration(clock.sec(4.5));
-		} else {
-			game.state.setDuration(clock.sec(2));
-		}
+		boolean playMusic = !game.attractMode && !game.started && ui.sounds().isPresent();
+		game.state.setDuration(clock.sec(playMusic ? 4.5 : 2));
 		letGuysGetReady();
 		letGhostsFidget(false);
 		ui.sounds().ifPresent(sm -> {
 			sm.stopAllSounds();
-			if (!game.started) {
+			if (playMusic) {
 				sm.playSound(PacManGameSound.GAME_READY);
 			}
 		});
-		ui.showMessage(ui.translation("READY"), false);
+		if (game.attractMode) {
+			ui.showMessage(ui.translation("GAME_OVER"), true);
+		} else {
+			ui.showMessage(ui.translation("READY"), false);
+		}
 	}
 
 	private PacManGameState runReadyState() {
@@ -232,8 +236,12 @@ public class PacManGameController {
 	}
 
 	private void exitReadyState() {
-		game.started = true;
-		ui.clearMessages();
+		if (game.attractMode) {
+			autopilotOn = true;
+		} else {
+			game.started = true;
+			ui.clearMessages();
+		}
 	}
 
 	// HUNTING
@@ -300,20 +308,28 @@ public class PacManGameController {
 
 	private PacManGameState runHuntingState() {
 
-		// Cheats
-		if (ui.keyPressed("e")) {
-			game.level.world.tiles().filter(tile -> game.level.containsFood(tile) && !game.level.world.isEnergizerTile(tile))
-					.forEach(game.level::removeFood);
-		}
-		if (ui.keyPressed("x")) {
-			killAllGhosts();
-			return changeState(GHOST_DYING, this::exitHuntingState, this::enterGhostDyingState);
-		}
-		if (ui.keyPressed("l")) {
-			game.lives++;
-		}
-		if (ui.keyPressed("n")) {
-			return changeState(CHANGING_LEVEL, this::exitHuntingState, this::enterChangingLevelState);
+		if (!game.attractMode) {
+			if (ui.keyPressed("a")) {
+				toggleAutopilot();
+			}
+			if (ui.keyPressed("i")) {
+				togglePacImmunity();
+			}
+			if (ui.keyPressed("e")) {
+				game.level.world.tiles()
+						.filter(tile -> game.level.containsFood(tile) && !game.level.world.isEnergizerTile(tile))
+						.forEach(game.level::removeFood);
+			}
+			if (ui.keyPressed("x")) {
+				killAllGhosts();
+				return changeState(GHOST_DYING, this::exitHuntingState, this::enterGhostDyingState);
+			}
+			if (ui.keyPressed("l")) {
+				game.lives++;
+			}
+			if (ui.keyPressed("n")) {
+				return changeState(CHANGING_LEVEL, this::exitHuntingState, this::enterChangingLevelState);
+			}
 		}
 
 		// Level completed?
@@ -321,7 +337,7 @@ public class PacManGameController {
 			return changeState(CHANGING_LEVEL, this::exitHuntingState, this::enterChangingLevelState);
 		}
 
-		// Can Pac kill ghost(s)?
+		// Pac kills ghost(s)?
 		List<Ghost> prey = Stream.of(game.ghosts).filter(ghost -> ghost.is(FRIGHTENED) && ghost.meets(game.pac))
 				.collect(Collectors.toList());
 		if (!prey.isEmpty()) {
@@ -424,6 +440,12 @@ public class PacManGameController {
 
 	private PacManGameState runPacManDyingState() {
 		if (game.state.hasExpired()) {
+			if (game.attractMode) {
+				exitPacManDyingState();
+				game.reset();
+				reset();
+				return game.state;
+			}
 			game.lives--;
 			if (game.lives > 0) {
 				return changeState(READY, this::exitPacManDyingState, this::enterReadyState);
@@ -585,6 +607,9 @@ public class PacManGameController {
 	// END STATE_MACHINE INFRASTRUCTURE
 
 	private void score(int points) {
+		if (game.attractMode) {
+			return;
+		}
 		int oldscore = game.score;
 		game.score += points;
 		if (oldscore < 10000 && game.score >= 10000) {
