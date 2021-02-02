@@ -76,7 +76,7 @@ public class MsPacManAssets extends Spritesheet {
 		for (int i = 0; i < 6; ++i) {
 			mazeFull[i] = subImage(0, i * 248, 226, 248);
 			mazeEmptyDark[i] = subImage(226, i * 248, 226, 248);
-			mazeEmptyBright[i] = applyFilter(mazeEmptyDark[i]);
+			mazeEmptyBright[i] = createFlashEffect(mazeEmptyDark[i], getMazeWallBorderColor(i), getMazeWallColor(i));
 		}
 
 		energizerBlinking = Animation.of(true, false);
@@ -179,28 +179,70 @@ public class MsPacManAssets extends Spritesheet {
 		//@formatter:on
 	}
 
-	public Color getMazeColor(int mazeNumber) {
-		switch (mazeNumber) {
-		case 1:
+	/**
+	 * Note: maze numbers are 1-based, maze index as stored here is 0-based.
+	 * 
+	 * @param mazeIndex
+	 * @return
+	 */
+	public Color getMazeWallColor(int mazeIndex) {
+		switch (mazeIndex) {
+		case 0:
 			return new Color(255, 183, 174);
-		case 2:
+		case 1:
 			return new Color(71, 183, 255);
-		case 3:
+		case 2:
 			return new Color(222, 151, 81);
-		case 4:
+		case 3:
 			return new Color(33, 33, 255);
-		case 5:
+		case 4:
 			return new Color(255, 183, 255);
-		case 6:
+		case 5:
 			return new Color(255, 183, 174);
 		default:
 			return Color.WHITE;
 		}
 	}
 
-	private BufferedImage applyFilter(BufferedImage source) {
-		BufferedImage target = new BufferedImage(source.getWidth(), source.getHeight(), source.getType());
-		target.getGraphics().drawImage(source, 0, 0, null);
-		return target;
+	/**
+	 * Note: maze numbers are 1-based, maze index as stored here is 0-based.
+	 * 
+	 * @param mazeIndex
+	 * @return
+	 */
+	public Color getMazeWallBorderColor(int mazeIndex) {
+		switch (mazeIndex) {
+		case 0:
+			return new Color(255, 0, 0);
+		case 1:
+			return new Color(222, 222, 255);
+		case 2:
+			return new Color(222, 222, 255);
+		case 3:
+			return new Color(255, 183, 81);
+		case 4:
+			return new Color(255, 255, 0);
+		case 5:
+			return new Color(255, 0, 0);
+		default:
+			return Color.WHITE;
+		}
+	}
+
+	private BufferedImage createFlashEffect(BufferedImage src, Color borderColor, Color wallColor) {
+		BufferedImage dst = new BufferedImage(src.getWidth(), src.getHeight(), src.getType());
+		dst.getGraphics().drawImage(src, 0, 0, null);
+		for (int x = 0; x < src.getWidth(); ++x) {
+			for (int y = 0; y < src.getHeight(); ++y) {
+				if (src.getRGB(x, y) == borderColor.getRGB()) {
+					dst.setRGB(x, y, Color.WHITE.getRGB());
+				} else if (src.getRGB(x, y) == wallColor.getRGB()) {
+					dst.setRGB(x, y, Color.BLACK.getRGB());
+				} else {
+					dst.setRGB(x, y, src.getRGB(x, y));
+				}
+			}
+		}
+		return dst;
 	}
 }
