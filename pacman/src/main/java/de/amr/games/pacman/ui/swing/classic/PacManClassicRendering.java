@@ -34,7 +34,7 @@ import de.amr.games.pacman.ui.sound.PacManGameSoundManager;
  */
 public class PacManClassicRendering implements PacManGameAnimations {
 
-	public static boolean foodAnimationOn;
+	public static boolean foodAnimationOn = false;
 
 	public final PacManClassicAssets assets;
 	public final PacManGameSoundManager soundManager;
@@ -126,13 +126,13 @@ public class PacManClassicRendering implements PacManGameAnimations {
 				g.fillOval(t(tile.x), t(tile.y), TS, TS);
 				g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 			} else {
-				int change = (int) (God.clock.ticksTotal / 16);
-				int max = 5;
-				int i = (tile.x + tile.y + change) % max;
-				int r = 1 + ((i < max / 2) ? i / 2 : (max - i) / 2);
+				long z = tile.x + tile.y;
+				z += God.clock.ticksTotal / 15;
+				int r = (int) (z % HTS) - 1;
+				r = Math.max(1, r);
 				g.setColor(Color.PINK);
 				g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-				g.fillOval(t(tile.x) + HTS - r - 1, t(tile.y) + HTS - r - 1, r + r, r + r);
+				g.fillOval(t(tile.x) + HTS - r, t(tile.y) + HTS - r, 2 * r, 2 * r);
 				g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 			}
 		});

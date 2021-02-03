@@ -103,7 +103,7 @@ class PacManClassicAssets extends Spritesheet {
 		mazeFlashing = Animation.of(mazeEmptyBright, mazeEmptyDark).frameDuration(15);
 
 		energizerBlinking = Animation.of(true, false);
-		energizerBlinking.frameDuration(10).endless().run();
+		energizerBlinking.frameDuration(15).endless().run();
 
 		pacMunching = new EnumMap<>(Direction.class);
 		for (Direction dir : Direction.values()) {
