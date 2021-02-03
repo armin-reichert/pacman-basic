@@ -43,7 +43,7 @@ public class PacManClassicIntroScene implements PacManGameScene {
 		this.size = size;
 		this.game = game;
 		this.rendering = rendering;
-		blinking = Animation.of(true, false).frameDuration(20).endless().run();
+		blinking = Animation.pulse().frameDuration(20);
 	}
 
 	@Override

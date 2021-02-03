@@ -75,7 +75,7 @@ class MsPacManAssets extends Spritesheet {
 			mazesFlashing.add(Animation.of(mazeEmpzyBright, mazeEmptyNormal).frameDuration(15));
 		}
 
-		energizerBlinking = Animation.of(true, false).frameDuration(10).endless();
+		energizerBlinking = Animation.pulse().frameDuration(10);
 
 		// Switch to right part of spritesheet
 		setOrigin(456, 0);

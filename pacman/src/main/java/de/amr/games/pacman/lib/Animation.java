@@ -35,6 +35,10 @@ public class Animation<T> {
 		return new OneFrameAnimation<TT>(thing);
 	}
 
+	public static Animation<Boolean> pulse() {
+		return Animation.of(true, false).endless();
+	}
+
 	protected List<T> things;
 	protected int repetitions;
 	protected int frameDurationTicks;
