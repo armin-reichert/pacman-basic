@@ -210,7 +210,7 @@ public class PacManClassicRendering implements PacManGameAnimations {
 
 	private BufferedImage sprite(Pac pac) {
 		if (pac.dead) {
-			return pacDying().wasStarted() ? pacDying().animate() : pacMunching(pac.dir).frame(0);
+			return pacDying().hasStarted() ? pacDying().animate() : pacMunching(pac.dir).frame(0);
 		}
 		if (pac.speed == 0) {
 			return pacMunching(pac.dir).frame(0);

@@ -38,7 +38,9 @@ public class PacManGameLevel {
 	public int foodRemaining;
 
 	public int numGhostsKilled;
-	public int mazeNumber; // Ms. Pac-Man, values 1..6
+
+	/** Ms. Pac-Man maze number (1..6) */
+	public int mazeNumber;
 
 	public PacManGameLevel(int... values) {
 		int i = 0;

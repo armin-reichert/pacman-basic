@@ -47,7 +47,7 @@ class MsPacManAssets extends Spritesheet {
 	final Map<Integer, V2i> bonusValuesSSL;
 	final Map<Integer, V2i> bountyNumbersSSL;
 
-	final BufferedImage[] mazesFull;
+	final List<BufferedImage> mazesFull;
 	final List<Animation<BufferedImage>> mazesFlashing;
 	final Animation<Boolean> energizerBlinking;
 	final EnumMap<Direction, Animation<BufferedImage>> pacMunching;
@@ -63,13 +63,11 @@ class MsPacManAssets extends Spritesheet {
 	public MsPacManAssets() {
 		super(image("/worlds/mspacman/sprites.png"), 16);
 
-		scoreFont = font("/PressStart2P-Regular.ttf", 8);
-
 		// Left part of spritesheet contains the 6 mazes, rest is on the right
-		mazesFull = new BufferedImage[6];
+		mazesFull = new ArrayList<>(6);
 		mazesFlashing = new ArrayList<>(6);
 		for (int i = 0; i < 6; ++i) {
-			mazesFull[i] = subImage(0, i * 248, 226, 248);
+			mazesFull.add(subImage(0, i * 248, 226, 248));
 			BufferedImage mazeEmptyNormal = subImage(226, i * 248, 226, 248);
 			BufferedImage mazeEmpzyBright = createBrightEffect(mazeEmptyNormal, getMazeWallBorderColor(i),
 					getMazeWallColor(i));
@@ -154,6 +152,8 @@ class MsPacManAssets extends Spritesheet {
 		soundMap.put(PacManGameSound.GHOST_SIREN_4,    url("/sound/mspacman/Ghost Noise 3.wav"));
 		soundMap.put(PacManGameSound.GHOST_SIREN_5,    url("/sound/mspacman/Ghost Noise 4.wav"));
 		//@formatter:on
+
+		scoreFont = font("/PressStart2P-Regular.ttf", 8);
 	}
 
 	/**

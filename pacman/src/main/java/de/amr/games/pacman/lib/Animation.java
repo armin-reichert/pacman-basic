@@ -154,7 +154,7 @@ public class Animation<T> {
 		return complete;
 	}
 
-	public boolean wasStarted() {
+	public boolean hasStarted() {
 		return running || complete;
 	}
 }

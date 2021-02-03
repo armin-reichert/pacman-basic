@@ -123,12 +123,11 @@ public class MsPacManRendering implements PacManGameAnimations {
 	}
 
 	public void drawMaze(Graphics2D g, PacManGame game) {
-		Animation<BufferedImage> mazeFlashing = mazeFlashing(game.level.mazeNumber);
-		if (mazeFlashing.isRunning() || mazeFlashing.isComplete()) {
-			g.drawImage(mazeFlashing.animate(), 0, t(3), null);
+		if (mazeFlashing(game.level.mazeNumber).hasStarted()) {
+			g.drawImage(mazeFlashing(game.level.mazeNumber).animate(), 0, t(3), null);
 			return;
 		}
-		g.drawImage(assets.mazesFull[game.level.mazeNumber - 1], 0, t(3), null);
+		g.drawImage(assets.mazesFull.get(game.level.mazeNumber - 1), 0, t(3), null);
 		game.level.world.tiles().filter(game.level::isFoodRemoved).forEach(tile -> {
 			g.setColor(Color.BLACK);
 			g.fillRect(t(tile.x), t(tile.y), TS, TS);
@@ -150,14 +149,14 @@ public class MsPacManRendering implements PacManGameAnimations {
 		drawGuy(g, ghost, sprite(ghost, game));
 	}
 
-	private final int BONUS_JUMP[] = { -2, 2 };
+	private final int BONUS_JUMPS[] = { -2, 2 };
 
 	public void drawBonus(Graphics2D g, Bonus bonus) {
 		int x = (int) (bonus.position.x) - HTS;
 		int y = (int) (bonus.position.y) - HTS;
 		if (bonus.edibleTicksLeft > 0) {
-			int frame = clock.frame(20, BONUS_JUMP.length);
-			y += BONUS_JUMP[frame]; // TODO not yet perfect
+			int frame = clock.frame(20, BONUS_JUMPS.length);
+			y += BONUS_JUMPS[frame]; // TODO not yet perfect
 			g.drawImage(assets.spriteAt(assets.symbolsSSL[bonus.symbol]), x, y, null);
 		} else if (bonus.eatenTicksLeft > 0) {
 			g.drawImage(assets.spriteAt(assets.bonusValuesSSL.get(bonus.points)), x, y, null);
@@ -173,7 +172,7 @@ public class MsPacManRendering implements PacManGameAnimations {
 
 	private BufferedImage sprite(Pac pac) {
 		if (pac.dead) {
-			return pacDying().wasStarted() ? pacDying().animate() : pacMunching(pac.dir).frame();
+			return pacDying().hasStarted() ? pacDying().animate() : pacMunching(pac.dir).frame();
 		}
 		return pac.speed == 0 || !pac.couldMove ? pacMunching(pac.dir).frame(1) : pacMunching(pac.dir).animate();
 	}
@@ -183,13 +182,14 @@ public class MsPacManRendering implements PacManGameAnimations {
 			return assets.spriteAt(assets.bountyNumbersSSL.get(ghost.bounty));
 		}
 		if (ghost.is(DEAD) || ghost.is(ENTERING_HOUSE)) {
-			return ghostReturningHome(ghost, ghost.wishDir).animate();
+			return ghostReturningHome(ghost, ghost.dir).animate();
 		}
 		if (ghost.is(FRIGHTENED)) {
-			return ghostFlashing(ghost).isRunning() ? ghostFlashing(ghost).animate() : assets.ghostBlue.animate();
+			return ghostFlashing(ghost).isRunning() ? ghostFlashing(ghost).animate()
+					: ghostFrightened(ghost, ghost.dir).animate();
 		}
 		if (ghost.is(LOCKED) && game.pac.powerTicksLeft > 0) {
-			return assets.ghostBlue.animate();
+			return ghostFrightened(ghost, ghost.dir).animate();
 		}
 		return ghostWalking(ghost, ghost.wishDir).animate();
 	}
