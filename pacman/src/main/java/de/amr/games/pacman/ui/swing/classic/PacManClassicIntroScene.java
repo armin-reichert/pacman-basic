@@ -35,8 +35,9 @@ public class PacManClassicIntroScene implements PacManGameScene {
 	private final Animation<Boolean> blinking;
 	private final int chaseY = t(23);
 	private final int ghostGap = 18;
-	private int lastKilledGhostID;
 	private boolean chasingPac;
+	private long ghostDyingTimer;
+	private Ghost ghostDying;
 
 	public PacManClassicIntroScene(V2i size, PacManClassicRendering rendering, PacManGame game) {
 		this.size = size;
@@ -68,7 +69,8 @@ public class PacManClassicIntroScene implements PacManGameScene {
 		});
 		rendering.letGhostsFidget(game.ghosts(), true);
 		chasingPac = true;
-		lastKilledGhostID = -1;
+		ghostDyingTimer = 0;
+		ghostDying = null;
 	}
 
 	@Override
@@ -172,7 +174,7 @@ public class PacManClassicIntroScene implements PacManGameScene {
 			pac.dir = RIGHT;
 			game.ghosts().forEach(ghost -> {
 				ghost.dir = ghost.wishDir = RIGHT;
-				ghost.speed = 0.4f;
+				ghost.speed = 0.35f;
 				ghost.state = FRIGHTENED;
 				rendering.letGhostBeFrightened(ghost, true);
 			});
@@ -186,22 +188,33 @@ public class PacManClassicIntroScene implements PacManGameScene {
 	}
 
 	private void showPacManChasingGhosts(Graphics2D g, Pac pac) {
-		if (pac.position.x < size.x + 20) {
-			pac.moveFreely();
-			game.ghosts().forEach(Ghost::moveFreely);
-			for (Ghost ghost : game.ghosts) {
-				if (pac.position.x < ghost.position.x) {
-					rendering.drawGhost(g, ghost, game);
-				} else if (pac.position.x > ghost.position.x && pac.position.x <= ghost.position.x + 2 * TS) {
-					ghost.bounty = (int) (Math.pow(2, ghost.id) * 200);
-					rendering.drawGhost(g, ghost, game);
-					if (lastKilledGhostID != ghost.id) {
-						lastKilledGhostID++;
-						rendering.soundManager.playSound(PacManGameSound.GHOST_EATEN);
-					}
-				}
+		if (pac.position.x > size.x + 20) {
+			return;
+		}
+		for (Ghost ghost : game.ghosts) {
+			if (ghost.bounty == 0 && pac.meets(ghost)) {
+				ghostDying = ghost;
+				ghostDyingTimer = clock.sec(0.5);
+				ghost.bounty = (int) (Math.pow(2, ghost.id) * 200);
+				pac.position = new V2f(pac.position.x - 16, pac.position.y);
+				pac.visible = false;
+				rendering.soundManager.playSound(PacManGameSound.GHOST_EATEN);
+				break;
 			}
-			rendering.drawPac(g, pac);
+		}
+		if (ghostDyingTimer > 0) {
+			ghostDyingTimer--;
+			if (ghostDyingTimer == 0) {
+				pac.visible = true;
+				ghostDying.visible = false;
+				ghostDying = null;
+			}
+		}
+		pac.moveFreely();
+		game.ghosts().forEach(Ghost::moveFreely);
+		rendering.drawPac(g, pac);
+		for (Ghost ghost : game.ghosts) {
+			rendering.drawGhost(g, ghost, game);
 		}
 	}
 
