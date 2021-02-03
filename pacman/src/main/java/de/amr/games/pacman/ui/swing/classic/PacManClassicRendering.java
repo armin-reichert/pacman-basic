@@ -34,7 +34,7 @@ import de.amr.games.pacman.ui.sound.PacManGameSoundManager;
  */
 public class PacManClassicRendering implements PacManGameAnimations {
 
-	public static boolean drawFancyFood;
+	public static boolean foodAnimationOn;
 
 	public final PacManClassicAssets assets;
 	public final PacManGameSoundManager soundManager;
@@ -87,12 +87,12 @@ public class PacManClassicRendering implements PacManGameAnimations {
 	}
 
 	public void drawMaze(Graphics2D g, PacManGame game) {
-		if (assets.mazeFlashing.isRunning() || assets.mazeFlashing.isComplete()) {
-			g.drawImage(assets.mazeFlashing.animate(), 0, t(3), null);
+		if (mazeFlashing(1).hasStarted()) {
+			g.drawImage(mazeFlashing(1).animate(), 0, t(3), null);
 			return;
 		}
-		if (drawFancyFood) {
-			drawFancyFood(g, game);
+		if (foodAnimationOn) {
+			drawFoodAnimation(g, game);
 		} else {
 			drawFood(g, game);
 		}
@@ -117,7 +117,7 @@ public class PacManClassicRendering implements PacManGameAnimations {
 		});
 	}
 
-	private void drawFancyFood(Graphics2D g, PacManGame game) {
+	private void drawFoodAnimation(Graphics2D g, PacManGame game) {
 		g.drawImage(assets.mazeEmpty, 0, t(3), null);
 		game.level.world.tiles().filter(game.level::containsFood).forEach(tile -> {
 			if (game.level.world.isEnergizerTile(tile)) {
@@ -226,14 +226,15 @@ public class PacManClassicRendering implements PacManGameAnimations {
 			return assets.numbers.get(ghost.bounty);
 		}
 		if (ghost.is(DEAD) || ghost.is(ENTERING_HOUSE)) {
-			return assets.ghostEyes.get(ghost.wishDir).animate();
+			return ghostReturningHome(ghost, ghost.dir).animate();
 		}
 		if (ghost.is(FRIGHTENED)) {
-			return ghostFlashing(ghost).isRunning() ? ghostFlashing(ghost).animate() : assets.ghostBlue.animate();
+			return ghostFlashing(ghost).isRunning() ? ghostFlashing(ghost).animate()
+					: ghostFrightened(ghost, ghost.dir).animate();
 		}
 		if (ghost.is(LOCKED) && game.pac.powerTicksLeft > 0) {
-			return assets.ghostBlue.animate();
+			return ghostFrightened(ghost, ghost.dir).animate();
 		}
-		return ghostWalking(ghost, ghost.wishDir).animate();
+		return ghostWalking(ghost, ghost.wishDir).animate(); // Looks towards wish dir!
 	}
 }

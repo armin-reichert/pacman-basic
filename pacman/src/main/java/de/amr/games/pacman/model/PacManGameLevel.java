@@ -56,7 +56,6 @@ public class PacManGameLevel {
 		ghostSpeedFrightened = percent(values[i++]);
 		ghostFrightenedSeconds = (byte) values[i++];
 		numFlashes = (byte) values[i++];
-
 	}
 
 	public void setWorld(PacManGameWorld gameWorld) {

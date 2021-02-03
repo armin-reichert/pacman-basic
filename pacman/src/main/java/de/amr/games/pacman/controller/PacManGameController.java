@@ -349,8 +349,8 @@ public class PacManGameController {
 				return changeState(CHANGING_LEVEL, this::exitHuntingState, this::enterChangingLevelState);
 			}
 			if (ui.keyPressed("6") && !playingMsPacMan()) {
-				PacManClassicRendering.drawFancyFood = !PacManClassicRendering.drawFancyFood;
-				ui.showFlashMessage("Fancy food " + (PacManClassicRendering.drawFancyFood ? "on" : "off"));
+				PacManClassicRendering.foodAnimationOn = !PacManClassicRendering.foodAnimationOn;
+				ui.showFlashMessage("Fancy food " + (PacManClassicRendering.foodAnimationOn ? "on" : "off"));
 			}
 		}
 
