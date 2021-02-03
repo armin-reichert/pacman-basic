@@ -49,15 +49,12 @@ class MsPacManAssets extends Spritesheet {
 	final BufferedImage[] mazeEmptyBright;
 	final BufferedImage life;
 
-	final List<Animation<BufferedImage>> mazesFlashing;
-	final Animation<Boolean> energizerBlinking;
 	final V2i[] symbolSpriteLocations;
 	final Map<Integer, V2i> bonusValueSpriteLocations;
 	final Map<Integer, V2i> bountyNumberSpriteLocations;
 
-	final EnumMap<Direction, BufferedImage> pacMouthOpen;
-	final EnumMap<Direction, BufferedImage> pacMouthClosed;
-
+	final List<Animation<BufferedImage>> mazesFlashing;
+	final Animation<Boolean> energizerBlinking;
 	final EnumMap<Direction, Animation<BufferedImage>> pacMunching;
 	final Animation<BufferedImage> pacSpinning;
 	final List<EnumMap<Direction, Animation<BufferedImage>>> ghostsWalking;
@@ -115,16 +112,6 @@ class MsPacManAssets extends Spritesheet {
 			Animation<BufferedImage> mazeFlashing = Animation.of(mazeEmptyBright[mazeIndex], mazeEmptyDark[mazeIndex]);
 			mazeFlashing.frameDuration(15);
 			mazesFlashing.add(mazeFlashing);
-		}
-
-		pacMouthOpen = new EnumMap<>(Direction.class);
-		for (Direction dir : Direction.values()) {
-			pacMouthOpen.put(dir, spriteAt(1, index(dir)));
-		}
-
-		pacMouthClosed = new EnumMap<>(Direction.class);
-		for (Direction dir : Direction.values()) {
-			pacMouthClosed.put(dir, spriteAt(2, index(dir)));
 		}
 
 		pacMunching = new EnumMap<>(Direction.class);

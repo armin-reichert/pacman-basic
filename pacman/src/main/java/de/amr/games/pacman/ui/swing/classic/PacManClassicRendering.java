@@ -210,16 +210,13 @@ public class PacManClassicRendering implements PacManGameAnimations {
 
 	private BufferedImage sprite(Pac pac) {
 		if (pac.dead) {
-			if (pacDying().isRunning() || pacDying().isComplete()) {
-				return pacDying().animate();
-			}
-			return assets.pacMouthClosed;
+			return pacDying().wasStarted() ? pacDying().animate() : pacMunching(pac.dir).frame(0);
 		}
 		if (pac.speed == 0) {
-			return assets.pacMouthClosed;
+			return pacMunching(pac.dir).frame(0);
 		}
 		if (!pac.couldMove) {
-			return assets.pacMouthOpen.get(pac.dir);
+			return pacMunching(pac.dir).frame(1);
 		}
 		return pacMunching(pac.dir).animate();
 	}
@@ -232,8 +229,7 @@ public class PacManClassicRendering implements PacManGameAnimations {
 			return assets.ghostEyes.get(ghost.wishDir).animate();
 		}
 		if (ghost.is(FRIGHTENED)) {
-			return ghostFlashing(ghost).isRunning() ? ghostFlashing(ghost).animate()
-					: assets.ghostBlue.animate();
+			return ghostFlashing(ghost).isRunning() ? ghostFlashing(ghost).animate() : assets.ghostBlue.animate();
 		}
 		if (ghost.is(LOCKED) && game.pac.powerTicksLeft > 0) {
 			return assets.ghostBlue.animate();

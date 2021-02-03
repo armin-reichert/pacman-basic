@@ -101,7 +101,7 @@ public class Animation<T> {
 		return currentThing;
 	}
 
-	public T currentFrame() {
+	public T frame() {
 		return things.get(frameIndex);
 	}
 
@@ -130,7 +130,7 @@ public class Animation<T> {
 		}
 	}
 
-	public T thing(int i) {
+	public T frame(int i) {
 		return things.get(i);
 	}
 
@@ -152,5 +152,9 @@ public class Animation<T> {
 
 	public boolean isComplete() {
 		return complete;
+	}
+
+	public boolean wasStarted() {
+		return running || complete;
 	}
 }

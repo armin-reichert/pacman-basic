@@ -94,7 +94,7 @@ public class PacManClassicIntroScene implements PacManGameScene {
 				rendering.soundManager.playSound(PacManGameSound.CREDIT);
 			});
 			game.state.runAfter(clock.sec(ghostStart), () -> {
-				g.drawImage(rendering.assets.ghostsWalking.get(ghost).get(RIGHT).thing(0), t(2) - 3, y - 2, null);
+				g.drawImage(rendering.assets.ghostsWalking.get(ghost).get(RIGHT).frame(0), t(2) - 3, y - 2, null);
 			});
 			game.state.runAfter(clock.sec(ghostStart + 0.5), () -> {
 				drawGhostCharacterAndName(g, ghost, y, false);
@@ -221,8 +221,8 @@ public class PacManClassicIntroScene implements PacManGameScene {
 	}
 
 	private BufferedImage pacSprite() {
-		return game.pac.speed != 0 ? rendering.assets.pacMunching.get(game.pac.dir).animate()
-				: rendering.assets.pacMouthOpen.get(game.pac.dir);
+		return game.pac.speed != 0 ? rendering.pacMunching(game.pac.dir).animate()
+				: rendering.pacMunching(game.pac.dir).frame(1);
 	}
 
 }

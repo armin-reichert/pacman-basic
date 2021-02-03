@@ -56,8 +56,6 @@ class PacManClassicAssets extends Spritesheet {
 	final V2i[] symbolSpriteLocation;
 	final Map<Integer, BufferedImage> numbers;
 
-	final BufferedImage pacMouthClosed;
-	final EnumMap<Direction, BufferedImage> pacMouthOpen;
 	final EnumMap<Direction, Animation<BufferedImage>> pacMunching;
 	final Animation<BufferedImage> pacCollapsing;
 	final List<EnumMap<Direction, Animation<BufferedImage>>> ghostsWalking;
@@ -110,18 +108,11 @@ class PacManClassicAssets extends Spritesheet {
 		energizerBlinking = Animation.of(true, false);
 		energizerBlinking.frameDuration(10).endless().run();
 
-		pacMouthClosed = spriteAt(2, 0);
-
-		pacMouthOpen = new EnumMap<>(Direction.class);
-		for (Direction dir : Direction.values()) {
-			pacMouthOpen.put(dir, spriteAt(1, index(dir)));
-		}
-
 		pacMunching = new EnumMap<>(Direction.class);
 		for (Direction dir : Direction.values()) {
-			Animation<BufferedImage> animation = Animation.of(pacMouthClosed, pacMouthOpen.get(dir), spriteAt(0, index(dir)),
-					pacMouthOpen.get(dir));
-			animation.endless().frameDuration(2).run();
+			Animation<BufferedImage> animation = Animation.of(spriteAt(2, 0), spriteAt(1, index(dir)),
+					spriteAt(0, index(dir)), spriteAt(1, index(dir)));
+			animation.frameDuration(2).endless().run();
 			pacMunching.put(dir, animation);
 		}
 

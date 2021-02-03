@@ -173,15 +173,9 @@ public class MsPacManRendering implements PacManGameAnimations {
 
 	private BufferedImage sprite(Pac pac) {
 		if (pac.dead) {
-			if (pacDying().isRunning() || pacDying().isComplete()) {
-				return pacDying().animate();
-			}
-			return assets.pacMouthOpen.get(pac.dir);
+			return pacDying().wasStarted() ? pacDying().animate() : pacMunching(pac.dir).frame();
 		}
-		if (pac.speed == 0 || !pac.couldMove) {
-			return assets.pacMouthOpen.get(pac.dir);
-		}
-		return pacMunching(pac.dir).animate();
+		return pac.speed == 0 || !pac.couldMove ? pacMunching(pac.dir).frame(1) : pacMunching(pac.dir).animate();
 	}
 
 	private BufferedImage sprite(Ghost ghost, PacManGame game) {
