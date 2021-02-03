@@ -16,7 +16,7 @@ public interface PacManGameAnimations {
 
 	Animation<BufferedImage> ghostWalking(Ghost ghost, Direction dir);
 
-	Animation<BufferedImage> ghostFrightened(Direction dir);
+	Animation<BufferedImage> ghostFrightened(Ghost ghost, Direction dir);
 
 	Animation<BufferedImage> ghostFlashing(Ghost ghost);
 
@@ -38,6 +38,16 @@ public interface PacManGameAnimations {
 		});
 	}
 
+	default void letGhostBeFrightened(Ghost ghost, boolean on) {
+		Stream.of(Direction.values()).forEach(dir -> {
+			if (on) {
+				ghostFrightened(ghost, dir).restart();
+			} else {
+				ghostFrightened(ghost, dir).stop();
+			}
+		});
+	}
+
 	default void letPacMunch() {
 		Stream.of(Direction.values()).forEach(dir -> pacMunching(dir).restart());
 	}
@@ -45,7 +55,7 @@ public interface PacManGameAnimations {
 	default void resetAll(PacManGame game) {
 		game.ghosts().forEach(ghost -> {
 			ghostFlashing(ghost).reset();
-			Stream.of(Direction.values()).forEach(dir -> ghostFrightened(dir).reset());
+			Stream.of(Direction.values()).forEach(dir -> ghostFrightened(ghost, dir).reset());
 			Stream.of(Direction.values()).forEach(dir -> ghostWalking(ghost, dir).reset());
 		});
 		Stream.of(Direction.values()).forEach(dir -> pacMunching(dir).reset());

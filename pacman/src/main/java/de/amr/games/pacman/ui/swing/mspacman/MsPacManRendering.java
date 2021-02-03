@@ -58,7 +58,7 @@ public class MsPacManRendering implements PacManGameAnimations {
 	}
 
 	@Override
-	public Animation<BufferedImage> ghostFrightened(Direction dir) {
+	public Animation<BufferedImage> ghostFrightened(Ghost ghost, Direction dir) {
 		return assets.ghostBlue;
 	}
 

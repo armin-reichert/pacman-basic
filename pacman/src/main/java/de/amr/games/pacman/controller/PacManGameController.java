@@ -702,6 +702,7 @@ public class PacManGameController {
 				ghost.state = FRIGHTENED;
 				ghost.wishDir = ghost.dir.opposite();
 				ghost.forcedDirection = true;
+				ui.animations().ifPresent(animations -> animations.letGhostBeFrightened(ghost, true));
 			});
 			sounds().ifPresent(sm -> sm.loopSound(PacManGameSound.PACMAN_POWER));
 		}

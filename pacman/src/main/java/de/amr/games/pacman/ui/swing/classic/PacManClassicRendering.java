@@ -62,7 +62,7 @@ public class PacManClassicRendering implements PacManGameAnimations {
 	}
 
 	@Override
-	public Animation<BufferedImage> ghostFrightened(Direction dir) {
+	public Animation<BufferedImage> ghostFrightened(Ghost ghost, Direction dir) {
 		return assets.ghostBlue;
 	}
 
@@ -160,7 +160,7 @@ public class PacManClassicRendering implements PacManGameAnimations {
 		int maxLivesDisplayed = 5;
 		int livesDisplayed = game.started ? game.lives - 1 : game.lives;
 		for (int i = 0; i < Math.min(livesDisplayed, maxLivesDisplayed); ++i) {
-			g.drawImage(assets.life, x + t(2 * i), y, null);
+			g.drawImage(assets.spriteAt(8, 1), x + t(2 * i), y, null);
 		}
 		if (game.lives > maxLivesDisplayed) {
 			g.setColor(Color.YELLOW);

@@ -52,7 +52,6 @@ class PacManClassicAssets extends Spritesheet {
 	final BufferedImage gameLogo;
 	final BufferedImage mazeFull;
 	final BufferedImage mazeEmpty;
-	final BufferedImage life;
 	final V2i[] symbolSpriteLocation;
 	final Map<Integer, BufferedImage> numbers;
 
@@ -74,8 +73,6 @@ class PacManClassicAssets extends Spritesheet {
 		gameLogo = image("/worlds/classic/logo.png");
 		mazeFull = image("/worlds/classic/maze_full.png");
 		mazeEmpty = image("/worlds/classic/maze_empty.png");
-
-		life = spriteAt(8, 1);
 
 		symbolSpriteLocation = new V2i[] { v2(2, 3), v2(3, 3), v2(4, 3), v2(5, 3), v2(6, 3), v2(7, 3), v2(8, 3), v2(9, 3) };
 
@@ -126,7 +123,7 @@ class PacManClassicAssets extends Spritesheet {
 			for (Direction dir : Direction.values()) {
 				Animation<BufferedImage> animation = Animation.of(spriteAt(2 * index(dir), 4 + g),
 						spriteAt(2 * index(dir) + 1, 4 + g));
-				animation.frameDuration(10).endless().run();
+				animation.frameDuration(10).endless();
 				walkingTo.put(dir, animation);
 			}
 			ghostsWalking.add(walkingTo);
@@ -138,7 +135,7 @@ class PacManClassicAssets extends Spritesheet {
 		}
 
 		ghostBlue = Animation.of(spriteAt(8, 4), spriteAt(9, 4));
-		ghostBlue.frameDuration(20).endless().run();
+		ghostBlue.frameDuration(20).endless();
 
 		ghostsFlashing = new ArrayList<>(4);
 		for (int g = 0; g < 4; ++g) {
