@@ -1,8 +1,9 @@
 package de.amr.games.pacman.lib;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Timed sequence of things, for example of images.
@@ -26,7 +27,7 @@ public class Animation<T> {
 	@SafeVarargs
 	public static <TT> Animation<TT> of(TT... things) {
 		Animation<TT> a = new Animation<>();
-		a.things = new ArrayList<>();
+		a.things = Stream.of(things).collect(Collectors.toList());
 		return a;
 	}
 
