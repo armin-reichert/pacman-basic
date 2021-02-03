@@ -33,13 +33,13 @@ import de.amr.games.pacman.ui.sound.PacManGameSoundManager;
 public class MsPacManRendering implements PacManGameAnimations {
 
 	public final MsPacManAssets assets;
-	public final Function<String, String> translator;
 	public final PacManGameSoundManager soundManager;
+	public final Function<String, String> translator;
 
-	public MsPacManRendering(MsPacManAssets assets, Function<String, String> translator) {
-		this.assets = assets;
-		this.translator = translator;
+	public MsPacManRendering(Function<String, String> translator) {
+		assets = new MsPacManAssets();
 		soundManager = new PacManGameSoundManager(assets.soundURL::get);
+		this.translator = translator;
 	}
 
 	@Override

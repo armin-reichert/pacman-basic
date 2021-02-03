@@ -38,11 +38,9 @@ import de.amr.games.pacman.ui.api.PacManGameAnimations;
 import de.amr.games.pacman.ui.api.PacManGameScene;
 import de.amr.games.pacman.ui.api.PacManGameUI;
 import de.amr.games.pacman.ui.sound.SoundManager;
-import de.amr.games.pacman.ui.swing.classic.PacManClassicAssets;
 import de.amr.games.pacman.ui.swing.classic.PacManClassicIntroScene;
 import de.amr.games.pacman.ui.swing.classic.PacManClassicPlayScene;
 import de.amr.games.pacman.ui.swing.classic.PacManClassicRendering;
-import de.amr.games.pacman.ui.swing.mspacman.MsPacManAssets;
 import de.amr.games.pacman.ui.swing.mspacman.MsPacManIntroScene;
 import de.amr.games.pacman.ui.swing.mspacman.MsPacManPlayScene;
 import de.amr.games.pacman.ui.swing.mspacman.MsPacManRendering;
@@ -165,8 +163,8 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 		messageFont = font("/PressStart2P-Regular.ttf", 8).deriveFont(Font.PLAIN);
 
-		pacManClassicRendering = new PacManClassicRendering(new PacManClassicAssets(), this::translation);
-		msPacManRendering = new MsPacManRendering(new MsPacManAssets(), this::translation);
+		pacManClassicRendering = new PacManClassicRendering(this::translation);
+		msPacManRendering = new MsPacManRendering(this::translation);
 		setGame(game);
 	}
 

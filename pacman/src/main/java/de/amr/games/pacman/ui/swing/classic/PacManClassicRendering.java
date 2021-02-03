@@ -40,10 +40,10 @@ public class PacManClassicRendering implements PacManGameAnimations {
 	public final PacManGameSoundManager soundManager;
 	public final Function<String, String> translator;
 
-	public PacManClassicRendering(PacManClassicAssets assets, Function<String, String> translator) {
-		this.assets = assets;
-		this.translator = translator;
+	public PacManClassicRendering(Function<String, String> translator) {
+		assets = new PacManClassicAssets();
 		soundManager = new PacManGameSoundManager(assets.soundURL::get);
+		this.translator = translator;
 	}
 
 	@Override
@@ -121,12 +121,13 @@ public class PacManClassicRendering implements PacManGameAnimations {
 				g.fillOval(t(tile.x), t(tile.y), TS, TS);
 				g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 			} else {
-				int change = (int) (God.clock.ticksTotal / 10);
-				int i = (tile.x + tile.y + change) % 14;
-				int r = i < 7 ? 1 + i / 2 : 1 + (14 - i) / 2;
+				int change = (int) (God.clock.ticksTotal / 16);
+				int max = 5;
+				int i = (tile.x + tile.y + change) % max;
+				int r = 1 + ((i < max / 2) ? i / 2 : (max - i) / 2);
 				g.setColor(Color.PINK);
 				g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-				g.fillOval(t(tile.x) + HTS - r / 2, t(tile.y) + HTS - r / 2, r, r);
+				g.fillOval(t(tile.x) + HTS - r - 1, t(tile.y) + HTS - r - 1, r + r, r + r);
 				g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
 			}
 		});
