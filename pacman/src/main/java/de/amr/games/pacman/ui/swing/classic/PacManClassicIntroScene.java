@@ -67,7 +67,6 @@ public class PacManClassicIntroScene implements PacManGameScene {
 			ghost.bounty = 0;
 		});
 		rendering.letGhostsFidget(game.ghosts(), true);
-
 		chasingPac = true;
 		lastKilledGhostID = -1;
 	}
@@ -175,6 +174,7 @@ public class PacManClassicIntroScene implements PacManGameScene {
 				ghost.dir = ghost.wishDir = RIGHT;
 				ghost.speed = 0.4f;
 				ghost.state = FRIGHTENED;
+				rendering.letGhostBeFrightened(ghost, true);
 			});
 			rendering.soundManager.stopSound(PacManGameSound.GHOST_SIREN_1);
 			rendering.soundManager.loopSound(PacManGameSound.PACMAN_POWER);
