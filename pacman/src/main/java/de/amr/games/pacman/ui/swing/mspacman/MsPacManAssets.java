@@ -56,6 +56,7 @@ class MsPacManAssets extends Spritesheet {
 	final EnumMap<Direction, Animation<BufferedImage>> ghostEyes;
 	final Animation<BufferedImage> ghostBlue;
 	final List<Animation<BufferedImage>> ghostsFlashing;
+	final Animation<Integer> bonusJumps;
 
 	final Map<PacManGameSound, URL> soundMap;
 	final Font scoreFont;
@@ -134,6 +135,8 @@ class MsPacManAssets extends Spritesheet {
 			ghostsFlashing
 					.add(Animation.of(spriteAt(8, 4), spriteAt(9, 4), spriteAt(10, 4), spriteAt(11, 4)).frameDuration(5));
 		}
+
+		bonusJumps = Animation.of(0, 2, 0, -2).frameDuration(20).endless().run();
 
 		//@formatter:off
 		soundMap = new EnumMap<>(PacManGameSound.class);

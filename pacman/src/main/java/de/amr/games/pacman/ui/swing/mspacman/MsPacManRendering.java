@@ -1,6 +1,5 @@
 package de.amr.games.pacman.ui.swing.mspacman;
 
-import static de.amr.games.pacman.heaven.God.clock;
 import static de.amr.games.pacman.model.creatures.GhostState.DEAD;
 import static de.amr.games.pacman.model.creatures.GhostState.ENTERING_HOUSE;
 import static de.amr.games.pacman.model.creatures.GhostState.FRIGHTENED;
@@ -149,14 +148,10 @@ public class MsPacManRendering implements PacManGameAnimations {
 		drawGuy(g, ghost, sprite(ghost, game));
 	}
 
-	private final int BONUS_JUMPS[] = { -2, 2 };
-
 	public void drawBonus(Graphics2D g, Bonus bonus) {
-		int x = (int) (bonus.position.x) - HTS;
-		int y = (int) (bonus.position.y) - HTS;
+		int x = (int) bonus.position.x - HTS;
+		int y = (int) bonus.position.y - HTS + assets.bonusJumps.animate();
 		if (bonus.edibleTicksLeft > 0) {
-			int frame = clock.frame(20, BONUS_JUMPS.length);
-			y += BONUS_JUMPS[frame]; // TODO not yet perfect
 			g.drawImage(assets.spriteAt(assets.symbolsSSL[bonus.symbol]), x, y, null);
 		} else if (bonus.eatenTicksLeft > 0) {
 			g.drawImage(assets.spriteAt(assets.bonusValuesSSL.get(bonus.points)), x, y, null);
