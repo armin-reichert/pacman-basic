@@ -12,23 +12,28 @@ import de.amr.games.pacman.lib.V2i;
  */
 public interface PacManGameScene {
 
-	void start();
-
-	void update();
-
-	void end();
-
 	void draw(Graphics2D g);
 
-	V2i size();
+	V2i sizeInPixel();
 
-	// convenience methods
+	// Lifecycle methods
+
+	default void start() {
+	}
+
+	default void update() {
+	}
+
+	default void end() {
+	}
+
+	// Convenience methods
 
 	default void drawHCenteredText(Graphics2D g, String text, int y) {
-		g.drawString(text, (size().x - g.getFontMetrics().stringWidth(text)) / 2, y);
+		g.drawString(text, (sizeInPixel().x - g.getFontMetrics().stringWidth(text)) / 2, y);
 	}
 
 	default void drawHCenteredImage(Graphics2D g, BufferedImage image, int y) {
-		g.drawImage(image, (size().x - image.getWidth()) / 2, y, null);
+		g.drawImage(image, (sizeInPixel().x - image.getWidth()) / 2, y, null);
 	}
 }

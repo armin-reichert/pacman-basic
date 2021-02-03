@@ -47,7 +47,7 @@ public class PacManClassicIntroScene implements PacManGameScene {
 	}
 
 	@Override
-	public V2i size() {
+	public V2i sizeInPixel() {
 		return size;
 	}
 
@@ -76,11 +76,6 @@ public class PacManClassicIntroScene implements PacManGameScene {
 	@Override
 	public void end() {
 		game.state.resetTimer();
-	}
-
-	@Override
-	public void update() {
-		/* animation is done in draw() method */
 	}
 
 	@Override

@@ -39,7 +39,7 @@ public class MsPacManIntroScene implements PacManGameScene {
 	}
 
 	@Override
-	public V2i size() {
+	public V2i sizeInPixel() {
 		return size;
 	}
 
@@ -60,14 +60,6 @@ public class MsPacManIntroScene implements PacManGameScene {
 		game.pac.couldMove = true;
 		game.pac.dead = false;
 		rendering.letPacMunch();
-	}
-
-	@Override
-	public void end() {
-	}
-
-	@Override
-	public void update() {
 	}
 
 	@Override
