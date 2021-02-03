@@ -43,15 +43,11 @@ class MsPacManAssets extends Spritesheet {
 		}
 	}
 
-	final BufferedImage gameLogo;
-	final BufferedImage[] mazeFull;
-	final BufferedImage[] mazeEmptyDark;
-	final BufferedImage[] mazeEmptyBright;
+	final V2i[] symbolsSSL; // Sprite Sheet Location
+	final Map<Integer, V2i> bonusValuesSSL;
+	final Map<Integer, V2i> bountyNumbersSSL;
 
-	final V2i[] symbolSpriteLocations;
-	final Map<Integer, V2i> bonusValueSpriteLocations;
-	final Map<Integer, V2i> bountyNumberSpriteLocations;
-
+	final BufferedImage[] mazesFull;
 	final List<Animation<BufferedImage>> mazesFlashing;
 	final Animation<Boolean> energizerBlinking;
 	final EnumMap<Direction, Animation<BufferedImage>> pacMunching;
@@ -66,57 +62,50 @@ class MsPacManAssets extends Spritesheet {
 
 	public MsPacManAssets() {
 		super(image("/worlds/mspacman/sprites.png"), 16);
+
 		scoreFont = font("/PressStart2P-Regular.ttf", 8);
-		gameLogo = image("/worlds/mspacman/logo.png");
 
 		// Left part of spritesheet contains the 6 mazes, rest is on the right
-		mazeFull = new BufferedImage[6];
-		mazeEmptyDark = new BufferedImage[6];
-		mazeEmptyBright = new BufferedImage[6];
+		mazesFull = new BufferedImage[6];
+		mazesFlashing = new ArrayList<>(6);
 		for (int i = 0; i < 6; ++i) {
-			mazeFull[i] = subImage(0, i * 248, 226, 248);
-			mazeEmptyDark[i] = subImage(226, i * 248, 226, 248);
-			mazeEmptyBright[i] = createFlashEffect(mazeEmptyDark[i], getMazeWallBorderColor(i), getMazeWallColor(i));
+			mazesFull[i] = subImage(0, i * 248, 226, 248);
+			BufferedImage mazeEmptyNormal = subImage(226, i * 248, 226, 248);
+			BufferedImage mazeEmpzyBright = createBrightEffect(mazeEmptyNormal, getMazeWallBorderColor(i),
+					getMazeWallColor(i));
+			mazesFlashing.add(Animation.of(mazeEmpzyBright, mazeEmptyNormal).frameDuration(15));
 		}
 
-		energizerBlinking = Animation.of(true, false);
-		energizerBlinking.frameDuration(10).endless();
+		energizerBlinking = Animation.of(true, false).frameDuration(10).endless();
 
 		// Switch to right part of spritesheet
 		setOrigin(456, 0);
 
-		symbolSpriteLocations = new V2i[] { v2(3, 0), v2(4, 0), v2(5, 0), v2(6, 0), v2(7, 0), v2(8, 0), v2(9, 0) };
+		symbolsSSL = new V2i[] { v2(3, 0), v2(4, 0), v2(5, 0), v2(6, 0), v2(7, 0), v2(8, 0), v2(9, 0) };
 
 		//@formatter:off
-		bonusValueSpriteLocations = new HashMap<>();
-		bonusValueSpriteLocations.put(100,  v2(3, 1));
-		bonusValueSpriteLocations.put(200,  v2(4, 1));
-		bonusValueSpriteLocations.put(500,  v2(5, 1));
-		bonusValueSpriteLocations.put(700,  v2(6, 1));
-		bonusValueSpriteLocations.put(1000, v2(7, 1));
-		bonusValueSpriteLocations.put(2000, v2(8, 1));
-		bonusValueSpriteLocations.put(5000, v2(9, 1));
+		bonusValuesSSL = new HashMap<>();
+		bonusValuesSSL.put(100,  v2(3, 1));
+		bonusValuesSSL.put(200,  v2(4, 1));
+		bonusValuesSSL.put(500,  v2(5, 1));
+		bonusValuesSSL.put(700,  v2(6, 1));
+		bonusValuesSSL.put(1000, v2(7, 1));
+		bonusValuesSSL.put(2000, v2(8, 1));
+		bonusValuesSSL.put(5000, v2(9, 1));
 		
-		bountyNumberSpriteLocations = new HashMap<>();
-		bountyNumberSpriteLocations.put(200, v2(0,8));
-		bountyNumberSpriteLocations.put(400, v2(1,8));
-		bountyNumberSpriteLocations.put(800, v2(2,8));
-		bountyNumberSpriteLocations.put(1600, v2(3,8));
+		bountyNumbersSSL = new HashMap<>();
+		bountyNumbersSSL.put(200, v2(0,8));
+		bountyNumbersSSL.put(400, v2(1,8));
+		bountyNumbersSSL.put(800, v2(2,8));
+		bountyNumbersSSL.put(1600, v2(3,8));
 		//@formatter:on
-
-		mazesFlashing = new ArrayList<>(6);
-		for (int mazeIndex = 0; mazeIndex < 6; ++mazeIndex) {
-			Animation<BufferedImage> mazeFlashing = Animation.of(mazeEmptyBright[mazeIndex], mazeEmptyDark[mazeIndex]);
-			mazeFlashing.frameDuration(15);
-			mazesFlashing.add(mazeFlashing);
-		}
 
 		pacMunching = new EnumMap<>(Direction.class);
 		for (Direction dir : Direction.values()) {
 			int d = index(dir);
-			Animation<BufferedImage> animation = Animation.of(spriteAt(0, d), spriteAt(1, d), spriteAt(2, d), spriteAt(1, d));
-			animation.frameDuration(2).endless();
-			pacMunching.put(dir, animation);
+			Animation<BufferedImage> munching = Animation.of(spriteAt(0, d), spriteAt(1, d), spriteAt(2, d), spriteAt(1, d));
+			munching.frameDuration(2).endless();
+			pacMunching.put(dir, munching);
 		}
 
 		pacSpinning = Animation.of(spriteAt(0, 3), spriteAt(0, 0), spriteAt(0, 1), spriteAt(0, 2));
@@ -124,14 +113,14 @@ class MsPacManAssets extends Spritesheet {
 
 		ghostsWalking = new ArrayList<>(4);
 		for (int g = 0; g < 4; ++g) {
-			EnumMap<Direction, Animation<BufferedImage>> animationForDir = new EnumMap<>(Direction.class);
+			EnumMap<Direction, Animation<BufferedImage>> walkingTo = new EnumMap<>(Direction.class);
 			for (Direction dir : Direction.values()) {
 				int d = index(dir);
-				Animation<BufferedImage> animation = Animation.of(spriteAt(2 * d, 4 + g), spriteAt(2 * d + 1, 4 + g));
-				animation.frameDuration(4).endless();
-				animationForDir.put(dir, animation);
+				Animation<BufferedImage> walking = Animation.of(spriteAt(2 * d, 4 + g), spriteAt(2 * d + 1, 4 + g));
+				walking.frameDuration(4).endless();
+				walkingTo.put(dir, walking);
 			}
-			ghostsWalking.add(animationForDir);
+			ghostsWalking.add(walkingTo);
 		}
 
 		ghostEyes = new EnumMap<>(Direction.class);
@@ -220,5 +209,4 @@ class MsPacManAssets extends Spritesheet {
 	public Font getScoreFont() {
 		return scoreFont;
 	}
-
 }

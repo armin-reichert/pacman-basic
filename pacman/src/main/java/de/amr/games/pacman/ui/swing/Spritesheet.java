@@ -12,7 +12,7 @@ import de.amr.games.pacman.lib.V2i;
  */
 public class Spritesheet {
 
-	public static BufferedImage createFlashEffect(BufferedImage src, Color borderColor, Color wallColor) {
+	public static BufferedImage createBrightEffect(BufferedImage src, Color borderColor, Color wallColor) {
 		BufferedImage dst = new BufferedImage(src.getWidth(), src.getHeight(), src.getType());
 		dst.getGraphics().drawImage(src, 0, 0, null);
 		for (int x = 0; x < src.getWidth(); ++x) {

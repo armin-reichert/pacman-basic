@@ -117,7 +117,7 @@ public class MsPacManRendering implements PacManGameAnimations {
 		int x = rightX;
 		for (int firstlevelNumber = 1; firstlevelNumber <= Math.min(game.currentLevelNumber, 7); ++firstlevelNumber) {
 			byte symbol = game.levelSymbols.get(firstlevelNumber - 1);
-			g.drawImage(assets.spriteAt(assets.symbolSpriteLocations[symbol]), x, y, null);
+			g.drawImage(assets.spriteAt(assets.symbolsSSL[symbol]), x, y, null);
 			x -= t(2);
 		}
 	}
@@ -128,7 +128,7 @@ public class MsPacManRendering implements PacManGameAnimations {
 			g.drawImage(mazeFlashing.animate(), 0, t(3), null);
 			return;
 		}
-		g.drawImage(assets.mazeFull[game.level.mazeNumber - 1], 0, t(3), null);
+		g.drawImage(assets.mazesFull[game.level.mazeNumber - 1], 0, t(3), null);
 		game.level.world.tiles().filter(game.level::isFoodRemoved).forEach(tile -> {
 			g.setColor(Color.BLACK);
 			g.fillRect(t(tile.x), t(tile.y), TS, TS);
@@ -158,9 +158,9 @@ public class MsPacManRendering implements PacManGameAnimations {
 		if (bonus.edibleTicksLeft > 0) {
 			int frame = clock.frame(20, BONUS_JUMP.length);
 			y += BONUS_JUMP[frame]; // TODO not yet perfect
-			g.drawImage(assets.spriteAt(assets.symbolSpriteLocations[bonus.symbol]), x, y, null);
+			g.drawImage(assets.spriteAt(assets.symbolsSSL[bonus.symbol]), x, y, null);
 		} else if (bonus.eatenTicksLeft > 0) {
-			g.drawImage(assets.spriteAt(assets.bonusValueSpriteLocations.get(bonus.points)), x, y, null);
+			g.drawImage(assets.spriteAt(assets.bonusValuesSSL.get(bonus.points)), x, y, null);
 		}
 	}
 
@@ -180,7 +180,7 @@ public class MsPacManRendering implements PacManGameAnimations {
 
 	private BufferedImage sprite(Ghost ghost, PacManGame game) {
 		if (ghost.bounty > 0) {
-			return assets.spriteAt(assets.bountyNumberSpriteLocations.get(ghost.bounty));
+			return assets.spriteAt(assets.bountyNumbersSSL.get(ghost.bounty));
 		}
 		if (ghost.is(DEAD) || ghost.is(ENTERING_HOUSE)) {
 			return ghostReturningHome(ghost, ghost.wishDir).animate();

@@ -99,7 +99,7 @@ class PacManClassicAssets extends Spritesheet {
 		// Animations
 
 		BufferedImage mazeEmptyDark = image("/worlds/classic/maze_empty.png");
-		BufferedImage mazeEmptyBright = createFlashEffect(mazeEmptyDark, new Color(33, 33, 255), Color.BLACK);
+		BufferedImage mazeEmptyBright = createBrightEffect(mazeEmptyDark, new Color(33, 33, 255), Color.BLACK);
 		mazeFlashing = Animation.of(mazeEmptyBright, mazeEmptyDark).frameDuration(15);
 
 		energizerBlinking = Animation.of(true, false);
