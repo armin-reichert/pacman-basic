@@ -72,6 +72,11 @@ public class PacManClassicRendering implements PacManGameAnimations {
 	}
 
 	@Override
+	public Animation<BufferedImage> ghostReturningHome(Ghost ghost, Direction dir) {
+		return assets.ghostEyes.get(dir);
+	}
+
+	@Override
 	public Animation<BufferedImage> mazeFlashing(int mazeNumber) {
 		return assets.mazeFlashing;
 	}
@@ -83,7 +88,7 @@ public class PacManClassicRendering implements PacManGameAnimations {
 
 	public void drawMaze(Graphics2D g, PacManGame game) {
 		if (assets.mazeFlashing.isRunning() || assets.mazeFlashing.isComplete()) {
-			g.drawImage(assets.mazeFlashing.currentFrameThenAdvance(), 0, t(3), null);
+			g.drawImage(assets.mazeFlashing.animate(), 0, t(3), null);
 			return;
 		}
 		if (drawFancyFood) {
@@ -95,7 +100,7 @@ public class PacManClassicRendering implements PacManGameAnimations {
 			g.setColor(Color.BLACK);
 			g.fillRect(t(tile.x), t(tile.y), TS, TS);
 		});
-		if (energizerBlinking().isRunning() && energizerBlinking().currentFrameThenAdvance()) {
+		if (energizerBlinking().isRunning() && energizerBlinking().animate()) {
 			game.level.world.energizerTiles().forEach(tile -> {
 				g.setColor(Color.BLACK);
 				g.fillRect(t(tile.x), t(tile.y), TS, TS);
@@ -206,7 +211,7 @@ public class PacManClassicRendering implements PacManGameAnimations {
 	private BufferedImage sprite(Pac pac) {
 		if (pac.dead) {
 			if (pacDying().isRunning() || pacDying().isComplete()) {
-				return pacDying().currentFrameThenAdvance();
+				return pacDying().animate();
 			}
 			return assets.pacMouthClosed;
 		}
@@ -216,7 +221,7 @@ public class PacManClassicRendering implements PacManGameAnimations {
 		if (!pac.couldMove) {
 			return assets.pacMouthOpen.get(pac.dir);
 		}
-		return pacMunching(pac.dir).currentFrameThenAdvance();
+		return pacMunching(pac.dir).animate();
 	}
 
 	private BufferedImage sprite(Ghost ghost, PacManGame game) {
@@ -224,15 +229,15 @@ public class PacManClassicRendering implements PacManGameAnimations {
 			return assets.numbers.get(ghost.bounty);
 		}
 		if (ghost.is(DEAD) || ghost.is(ENTERING_HOUSE)) {
-			return assets.ghostEyes.get(ghost.wishDir);
+			return assets.ghostEyes.get(ghost.wishDir).animate();
 		}
 		if (ghost.is(FRIGHTENED)) {
-			return ghostFlashing(ghost).isRunning() ? ghostFlashing(ghost).currentFrameThenAdvance()
-					: assets.ghostBlue.currentFrameThenAdvance();
+			return ghostFlashing(ghost).isRunning() ? ghostFlashing(ghost).animate()
+					: assets.ghostBlue.animate();
 		}
 		if (ghost.is(LOCKED) && game.pac.powerTicksLeft > 0) {
-			return assets.ghostBlue.currentFrameThenAdvance();
+			return assets.ghostBlue.animate();
 		}
-		return ghostWalking(ghost, ghost.wishDir).currentFrameThenAdvance();
+		return ghostWalking(ghost, ghost.wishDir).animate();
 	}
 }

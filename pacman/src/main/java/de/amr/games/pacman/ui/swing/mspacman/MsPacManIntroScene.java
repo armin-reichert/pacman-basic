@@ -85,7 +85,7 @@ public class MsPacManIntroScene implements PacManGameScene {
 		}
 
 		drawAnimatedFrame(g, time);
-		g.setFont(rendering.assets.scoreFont);
+		g.setFont(rendering.assets.getScoreFont());
 		g.setColor(Color.ORANGE);
 		drawHCenteredText(g, "\"MS PAC-MAN\"", t(5));
 
@@ -174,7 +174,7 @@ public class MsPacManIntroScene implements PacManGameScene {
 
 	private void drawPressKeyToStart(Graphics2D g, long time) {
 		g.setColor(Color.ORANGE);
-		g.setFont(rendering.assets.scoreFont);
+		g.setFont(rendering.assets.getScoreFont());
 		if (time % 40 < 20) {
 			drawHCenteredText(g, rendering.translator.apply("PRESS_KEY_TO_PLAY"), size.y - 20);
 		}
@@ -187,10 +187,10 @@ public class MsPacManIntroScene implements PacManGameScene {
 			g.fillOval(t(9), t(yTile + 1) - 2, 10, 10);
 		}
 		g.setColor(Color.WHITE);
-		g.setFont(rendering.assets.scoreFont);
+		g.setFont(rendering.assets.getScoreFont());
 		g.drawString("10", t(12), t(yTile));
 		g.drawString("50", t(12), t(yTile + 2));
-		g.setFont(rendering.assets.scoreFont.deriveFont(6f));
+		g.setFont(rendering.assets.getScoreFont().deriveFont(6f));
 		g.drawString(rendering.translator.apply("POINTS"), t(15), t(yTile));
 		g.drawString(rendering.translator.apply("POINTS"), t(15), t(yTile + 2));
 	}

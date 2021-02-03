@@ -20,6 +20,8 @@ public interface PacManGameAnimations {
 
 	Animation<BufferedImage> ghostFlashing(Ghost ghost);
 
+	Animation<BufferedImage> ghostReturningHome(Ghost ghost, Direction dir);
+
 	Animation<BufferedImage> mazeFlashing(int mazeNumber);
 
 	Animation<Boolean> energizerBlinking();

@@ -95,7 +95,7 @@ public class Animation<T> {
 		return this;
 	}
 
-	public T currentFrameThenAdvance() {
+	public T animate() {
 		T currentThing = things.get(frameIndex);
 		advance();
 		return currentThing;

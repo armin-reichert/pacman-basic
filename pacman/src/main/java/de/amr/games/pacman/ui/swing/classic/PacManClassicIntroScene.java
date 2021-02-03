@@ -176,7 +176,7 @@ public class PacManClassicIntroScene implements PacManGameScene {
 		}
 		g.drawImage(pacSprite(), (int) game.pac.position.x, (int) game.pac.position.y, null);
 		for (int ghostID = 0; ghostID < 4; ++ghostID) {
-			g.drawImage(rendering.assets.ghostsWalking.get(ghostID).get(LEFT).currentFrameThenAdvance(),
+			g.drawImage(rendering.assets.ghostsWalking.get(ghostID).get(LEFT).animate(),
 					(int) game.ghosts[0].position.x + 16 * ghostID, (int) game.pac.position.y, null);
 		}
 		if (game.pac.position.x > t(2)) {
@@ -201,7 +201,7 @@ public class PacManClassicIntroScene implements PacManGameScene {
 		for (int ghostID = 0; ghostID < 4; ++ghostID) {
 			int x = (int) game.ghosts[0].position.x + 16 * ghostID;
 			if (game.pac.position.x < x) {
-				g.drawImage(rendering.assets.ghostBlue.currentFrameThenAdvance(), x, y, null);
+				g.drawImage(rendering.assets.ghostBlue.animate(), x, y, null);
 			} else if (game.pac.position.x > x && game.pac.position.x <= x + 16) {
 				int bounty = (int) (Math.pow(2, ghostID) * 200);
 				g.drawImage(rendering.assets.numbers.get(bounty), x, y, null);
@@ -221,7 +221,7 @@ public class PacManClassicIntroScene implements PacManGameScene {
 	}
 
 	private BufferedImage pacSprite() {
-		return game.pac.speed != 0 ? rendering.assets.pacMunching.get(game.pac.dir).currentFrameThenAdvance()
+		return game.pac.speed != 0 ? rendering.assets.pacMunching.get(game.pac.dir).animate()
 				: rendering.assets.pacMouthOpen.get(game.pac.dir);
 	}
 

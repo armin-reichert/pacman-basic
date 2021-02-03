@@ -31,10 +31,10 @@ import de.amr.games.pacman.ui.swing.Spritesheet;
  * 
  * @author Armin Reichert
  */
-public class PacManClassicAssets extends Spritesheet {
+class PacManClassicAssets extends Spritesheet {
 
 	/** Sprite sheet order of directions. */
-	private static int index(Direction dir) {
+	static int index(Direction dir) {
 		switch (dir) {
 		case RIGHT:
 			return 0;
@@ -49,25 +49,26 @@ public class PacManClassicAssets extends Spritesheet {
 		}
 	}
 
-	public final BufferedImage gameLogo;
-	public final BufferedImage mazeFull;
-	public final BufferedImage mazeEmpty;
-	public final BufferedImage life;
-	public final V2i[] symbolSpriteLocation;
-	public final Map<Integer, BufferedImage> numbers;
-	public final BufferedImage pacMouthClosed;
-	public final EnumMap<Direction, BufferedImage> pacMouthOpen;
-	public final EnumMap<Direction, Animation<BufferedImage>> pacMunching;
-	public final Animation<BufferedImage> pacCollapsing;
-	public final List<EnumMap<Direction, Animation<BufferedImage>>> ghostsWalking;
-	public final EnumMap<Direction, BufferedImage> ghostEyes;
-	public final Animation<BufferedImage> ghostBlue;
-	public final List<Animation<BufferedImage>> ghostsFlashing;
-	public final Animation<BufferedImage> mazeFlashing;
-	public final Animation<Boolean> energizerBlinking;
+	final BufferedImage gameLogo;
+	final BufferedImage mazeFull;
+	final BufferedImage mazeEmpty;
+	final BufferedImage life;
+	final V2i[] symbolSpriteLocation;
+	final Map<Integer, BufferedImage> numbers;
 
-	public final Map<PacManGameSound, URL> soundMap;
-	public final Font scoreFont;
+	final BufferedImage pacMouthClosed;
+	final EnumMap<Direction, BufferedImage> pacMouthOpen;
+	final EnumMap<Direction, Animation<BufferedImage>> pacMunching;
+	final Animation<BufferedImage> pacCollapsing;
+	final List<EnumMap<Direction, Animation<BufferedImage>>> ghostsWalking;
+	final EnumMap<Direction, Animation<BufferedImage>> ghostEyes;
+	final Animation<BufferedImage> ghostBlue;
+	final List<Animation<BufferedImage>> ghostsFlashing;
+	final Animation<BufferedImage> mazeFlashing;
+	final Animation<Boolean> energizerBlinking;
+
+	final Map<PacManGameSound, URL> soundMap;
+	final Font scoreFont;
 
 	public PacManClassicAssets() {
 		super(image("/worlds/classic/sprites.png"), 16);
@@ -142,7 +143,7 @@ public class PacManClassicAssets extends Spritesheet {
 
 		ghostEyes = new EnumMap<>(Direction.class);
 		for (Direction dir : Direction.values()) {
-			ghostEyes.put(dir, spriteAt(8 + index(dir), 5));
+			ghostEyes.put(dir, Animation.ofSingle(spriteAt(8 + index(dir), 5)));
 		}
 
 		ghostBlue = Animation.of(spriteAt(8, 4), spriteAt(9, 4));

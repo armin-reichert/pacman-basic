@@ -25,10 +25,10 @@ import de.amr.games.pacman.ui.swing.Spritesheet;
  * 
  * @author Armin Reichert
  */
-public class MsPacManAssets extends Spritesheet {
+class MsPacManAssets extends Spritesheet {
 
 	/** Sprite sheet order of directions. */
-	private static int index(Direction dir) {
+	static int index(Direction dir) {
 		switch (dir) {
 		case RIGHT:
 			return 0;
@@ -43,26 +43,30 @@ public class MsPacManAssets extends Spritesheet {
 		}
 	}
 
-	public final BufferedImage gameLogo;
-	public final BufferedImage[] mazeFull;
-	public final BufferedImage[] mazeEmptyDark;
-	public final BufferedImage[] mazeEmptyBright;
-	public final List<Animation<BufferedImage>> mazesFlashing;
-	public final Animation<Boolean> energizerBlinking;
-	public final BufferedImage life;
-	public final V2i[] symbolSpriteLocations;
-	public final Map<Integer, V2i> bonusValueSpriteLocations;
-	public final Map<Integer, V2i> bountyNumberSpriteLocations;
-	public final Map<PacManGameSound, URL> soundMap;
-	public final EnumMap<Direction, BufferedImage> pacMouthOpen;
-	public final EnumMap<Direction, BufferedImage> pacMouthClosed;
-	public final EnumMap<Direction, Animation<BufferedImage>> pacMunching;
-	public final Animation<BufferedImage> pacSpinning;
-	public final List<EnumMap<Direction, Animation<BufferedImage>>> ghostsWalking;
-	public final EnumMap<Direction, BufferedImage> ghostEyes;
-	public final Animation<BufferedImage> ghostBlue;
-	public final List<Animation<BufferedImage>> ghostsFlashing;
-	public final Font scoreFont;
+	final BufferedImage gameLogo;
+	final BufferedImage[] mazeFull;
+	final BufferedImage[] mazeEmptyDark;
+	final BufferedImage[] mazeEmptyBright;
+	final BufferedImage life;
+
+	final List<Animation<BufferedImage>> mazesFlashing;
+	final Animation<Boolean> energizerBlinking;
+	final V2i[] symbolSpriteLocations;
+	final Map<Integer, V2i> bonusValueSpriteLocations;
+	final Map<Integer, V2i> bountyNumberSpriteLocations;
+
+	final EnumMap<Direction, BufferedImage> pacMouthOpen;
+	final EnumMap<Direction, BufferedImage> pacMouthClosed;
+
+	final EnumMap<Direction, Animation<BufferedImage>> pacMunching;
+	final Animation<BufferedImage> pacSpinning;
+	final List<EnumMap<Direction, Animation<BufferedImage>>> ghostsWalking;
+	final EnumMap<Direction, Animation<BufferedImage>> ghostEyes;
+	final Animation<BufferedImage> ghostBlue;
+	final List<Animation<BufferedImage>> ghostsFlashing;
+
+	final Map<PacManGameSound, URL> soundMap;
+	final Font scoreFont;
 
 	public MsPacManAssets() {
 		super(image("/worlds/mspacman/sprites.png"), 16);
@@ -148,7 +152,7 @@ public class MsPacManAssets extends Spritesheet {
 
 		ghostEyes = new EnumMap<>(Direction.class);
 		for (Direction dir : Direction.values()) {
-			ghostEyes.put(dir, spriteAt(8 + index(dir), 5));
+			ghostEyes.put(dir, Animation.ofSingle(spriteAt(8 + index(dir), 5)));
 		}
 
 		ghostBlue = Animation.of(spriteAt(8, 4), spriteAt(9, 4));
@@ -227,6 +231,10 @@ public class MsPacManAssets extends Spritesheet {
 		default:
 			return Color.WHITE;
 		}
+	}
+
+	public Font getScoreFont() {
+		return scoreFont;
 	}
 
 }
