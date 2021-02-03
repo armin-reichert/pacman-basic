@@ -42,7 +42,7 @@ public class PacManClassicRendering implements PacManGameAnimations {
 
 	public PacManClassicRendering(Function<String, String> translator) {
 		assets = new PacManClassicAssets();
-		soundManager = new PacManGameSoundManager(assets.soundURL::get);
+		soundManager = new PacManGameSoundManager(assets.soundMap::get);
 		this.translator = translator;
 	}
 

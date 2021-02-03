@@ -38,7 +38,7 @@ public class MsPacManRendering implements PacManGameAnimations {
 
 	public MsPacManRendering(Function<String, String> translator) {
 		assets = new MsPacManAssets();
-		soundManager = new PacManGameSoundManager(assets.soundURL::get);
+		soundManager = new PacManGameSoundManager(assets.soundMap::get);
 		this.translator = translator;
 	}
 
