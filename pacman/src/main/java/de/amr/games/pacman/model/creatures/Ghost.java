@@ -43,6 +43,11 @@ public class Ghost extends Creature {
 	 */
 	public byte elroy;
 
+	@Override
+	public String toString() {
+		return String.format("%s: position: %s, speed=%.2f, dir=%s, wishDir=%s", name, position, speed, dir, wishDir);
+	}
+
 	public Ghost(int ghostID, String ghostName, Direction ghostStartDir) {
 		id = (byte) ghostID;
 		name = ghostName;

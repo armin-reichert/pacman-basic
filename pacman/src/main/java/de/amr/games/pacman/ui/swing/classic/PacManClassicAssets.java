@@ -49,6 +49,8 @@ class PacManClassicAssets extends Spritesheet {
 		}
 	}
 
+	final Color[] ghostColors = { Color.RED, Color.PINK, Color.CYAN, Color.ORANGE };
+
 	final BufferedImage gameLogo;
 	final BufferedImage mazeFull;
 	final BufferedImage mazeEmpty;

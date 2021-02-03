@@ -96,6 +96,10 @@ public class Creature {
 		return tile().equals(other.tile());
 	}
 
+	public void moveFreely() {
+		position = position.sum(new V2f(dir.vec).scaled(speed));
+	}
+
 	public void tryMoving() {
 		V2i guyLocation = tile();
 		// teleport?
