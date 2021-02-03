@@ -1,33 +1,49 @@
 package de.amr.games.pacman.lib;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
- * Animation of things, for example of images.
+ * Timed sequence of things, for example of images.
  * 
  * @author Armin Reichert
  */
 public class Animation<T> {
 
-	private List<T> things;
-	private int repetitions;
-	private int frameDurationTicks;
-	private int frameRunningTicks;
-	private int frameIndex;
-	private int loopIndex;
-	private boolean running;
-	private boolean complete;
+	static class OneFrameAnimation<TT> extends Animation<TT> {
+
+		public OneFrameAnimation(TT thing) {
+			things = Collections.singletonList(thing);
+		}
+
+		@Override
+		public Animation<TT> add(TT thing) {
+			throw new UnsupportedOperationException("Cannot add frame to OneFrame animation");
+		}
+	}
 
 	@SafeVarargs
-	public static <TT> Animation<TT> of(TT... images) {
+	public static <TT> Animation<TT> of(TT... things) {
 		Animation<TT> a = new Animation<>();
-		a.things = images.length > 0 ? Arrays.asList(images) : new ArrayList<>();
+		a.things = new ArrayList<>();
 		return a;
 	}
 
-	private Animation() {
+	public static <TT> Animation<TT> ofSingle(TT thing) {
+		return new OneFrameAnimation<TT>(thing);
+	}
+
+	protected List<T> things;
+	protected int repetitions;
+	protected int frameDurationTicks;
+	protected int frameRunningTicks;
+	protected int frameIndex;
+	protected int loopIndex;
+	protected boolean running;
+	protected boolean complete;
+
+	protected Animation() {
 		repetitions = 1;
 		frameDurationTicks = 6; // 0.1 sec
 		reset();
