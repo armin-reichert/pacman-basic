@@ -47,7 +47,6 @@ class MsPacManAssets extends Spritesheet {
 	final BufferedImage[] mazeFull;
 	final BufferedImage[] mazeEmptyDark;
 	final BufferedImage[] mazeEmptyBright;
-	final BufferedImage life;
 
 	final V2i[] symbolSpriteLocations;
 	final Map<Integer, V2i> bonusValueSpriteLocations;
@@ -85,8 +84,6 @@ class MsPacManAssets extends Spritesheet {
 
 		// Switch to right part of spritesheet
 		setOrigin(456, 0);
-
-		life = spriteAt(1, 0);
 
 		symbolSpriteLocations = new V2i[] { v2(3, 0), v2(4, 0), v2(5, 0), v2(6, 0), v2(7, 0), v2(8, 0), v2(9, 0) };
 

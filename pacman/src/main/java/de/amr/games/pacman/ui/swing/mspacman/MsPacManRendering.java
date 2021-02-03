@@ -104,7 +104,7 @@ public class MsPacManRendering implements PacManGameAnimations {
 		int maxLivesDisplayed = 5;
 		int livesDisplayed = game.started ? game.lives - 1 : game.lives;
 		for (int i = 0; i < Math.min(livesDisplayed, maxLivesDisplayed); ++i) {
-			g.drawImage(assets.life, x + t(2 * i), y, null);
+			g.drawImage(assets.spriteAt(1, 0), x + t(2 * i), y, null);
 		}
 		if (game.lives > maxLivesDisplayed) {
 			g.setColor(Color.YELLOW);
