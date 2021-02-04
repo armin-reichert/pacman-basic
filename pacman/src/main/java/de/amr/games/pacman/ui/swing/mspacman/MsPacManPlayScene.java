@@ -36,8 +36,8 @@ public class MsPacManPlayScene implements PacManGameScene {
 		rendering.drawScore(g, game);
 		if (!game.attractMode) {
 			rendering.drawLivesCounter(g, game, t(2), size.y - t(2));
-			rendering.drawLevelCounter(g, game, t(game.level.world.xTiles() - 4), size.y - t(2));
 		}
+		rendering.drawLevelCounter(g, game, t(game.level.world.xTiles() - 4), size.y - t(2));
 		rendering.drawMaze(g, game);
 		if (DebugRendering.on) {
 			DebugRendering.drawMazeStructure(g, game);
