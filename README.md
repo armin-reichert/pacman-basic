@@ -26,7 +26,6 @@ To build the executable:
 
 - General
   - "d" = Toggle debug drawing mode
-  - "p" = Toggle pause game
   - "s" = Toggle slow/normal 
   - "f" = Toggle fast/normal
 
