@@ -10,6 +10,7 @@ import static de.amr.games.pacman.world.PacManGameWorld.t;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
+import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.MsPacManGame;
@@ -25,6 +26,7 @@ public class MsPacManIntroScene implements PacManGameScene {
 	private final MsPacManRendering rendering;
 	private final MsPacManGame game;
 
+	private final Animation<Boolean> blinking = Animation.pulse().frameDuration(30);
 	private final V2i frameDots = new V2i(32, 16);
 	private final V2i frameTopLeftTile = new V2i(6, 8);
 	private final int leftOfFrame = t(frameTopLeftTile.x) - 16;
@@ -52,13 +54,15 @@ public class MsPacManIntroScene implements PacManGameScene {
 			ghost.visible = true;
 			ghost.state = GhostState.HUNTING_PAC;
 		}
-		rendering.letGhostsFidget(game.ghosts(), true);
 		game.pac.position = new V2f(size.x + TS, belowFrame);
 		game.pac.speed = 0;
 		game.pac.dir = LEFT;
 		game.pac.visible = true;
 		game.pac.couldMove = true;
 		game.pac.dead = false;
+
+		blinking.restart();
+		rendering.letGhostsFidget(game.ghosts(), true);
 		rendering.letPacMunch();
 	}
 
@@ -167,7 +171,7 @@ public class MsPacManIntroScene implements PacManGameScene {
 	private void drawPressKeyToStart(Graphics2D g, long time) {
 		g.setColor(Color.ORANGE);
 		g.setFont(rendering.assets.getScoreFont());
-		if (time % 40 < 20) {
+		if (blinking.animate()) {
 			drawHCenteredText(g, rendering.translator.apply("PRESS_KEY_TO_PLAY"), size.y - 20);
 		}
 	}
@@ -175,7 +179,7 @@ public class MsPacManIntroScene implements PacManGameScene {
 	private void drawPointsAnimation(Graphics2D g, int yTile, long time) {
 		g.setColor(Color.PINK);
 		g.fillRect(t(9) + 6, t(yTile - 1) + 2, 2, 2);
-		if (time % 40 < 20) {
+		if (blinking.animate()) {
 			g.fillOval(t(9), t(yTile + 1) - 2, 10, 10);
 		}
 		g.setColor(Color.WHITE);
