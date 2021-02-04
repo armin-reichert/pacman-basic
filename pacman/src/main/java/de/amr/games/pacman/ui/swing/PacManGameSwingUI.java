@@ -3,7 +3,6 @@ package de.amr.games.pacman.ui.swing;
 import static de.amr.games.pacman.heaven.God.clock;
 import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.world.PacManGameWorld.TS;
-import static de.amr.games.pacman.world.PacManGameWorld.t;
 import static java.lang.Math.cos;
 
 import java.awt.AWTException;
@@ -55,6 +54,13 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 	static final ResourceBundle TEXTS = ResourceBundle.getBundle("ui.swing.localization.translation");
 
+	static class Message {
+
+		String text;
+		int x, y;
+		boolean important;
+	}
+
 	static final int KEY_SLOWMODE = KeyEvent.VK_S;
 	static final int KEY_FASTMODE = KeyEvent.VK_F;
 	static final int KEY_DEBUGMODE = KeyEvent.VK_D;
@@ -87,10 +93,8 @@ public class PacManGameSwingUI implements PacManGameUI {
 	private final Canvas canvas;
 	private final Keyboard keyboard;
 
-	private String messageText;
-	private Color messageColor;
-	private Font messageFont;
-
+	private final Font messageFont;
+	private final List<Message> messages = new ArrayList<>();
 	private final List<String> flashMessages = new ArrayList<>();
 	private long flashMessageTicksLeft;
 
@@ -260,14 +264,18 @@ public class PacManGameSwingUI implements PacManGameUI {
 	}
 
 	@Override
-	public void showMessage(String message, boolean important) {
-		messageText = message;
-		messageColor = important ? Color.RED : Color.yellow;
+	public void showMessage(String messageText, int x, int y, boolean important) {
+		Message message = new Message();
+		message.text = messageText;
+		message.x = x;
+		message.y = y;
+		message.important = important;
+		messages.add(message);
 	}
 
 	@Override
 	public void clearMessages() {
-		messageText = null;
+		messages.clear();
 		flashMessages.clear();
 		flashMessageTicksLeft = 0;
 	}
@@ -299,20 +307,19 @@ public class PacManGameSwingUI implements PacManGameUI {
 		if (displayedScene != null) {
 			Graphics2D g2 = (Graphics2D) g.create();
 			g2.scale(scaling, scaling);
-			displayedScene.draw(g2);
 			drawMessages(g2);
+			displayedScene.draw(g2);
 			g2.dispose();
 		}
 	}
 
 	private void drawMessages(Graphics2D g) {
 		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-		if (messageText != null) {
+		messages.stream().forEach(message -> {
 			g.setFont(messageFont);
-			g.setColor(messageColor);
-			int textWidth = g.getFontMetrics().stringWidth(messageText);
-			g.drawString(messageText, (unscaledSizePixels.x - textWidth) / 2, t(21));
-		}
+			g.setColor(message.important ? Color.RED : Color.YELLOW);
+			g.drawString(message.text, message.x, message.y);
+		});
 		if (flashMessages.size() > 0 && flashMessageTicksLeft > 0) {
 			String flashMessage = flashMessages.get(0);
 			g.setFont(new Font(Font.SERIF, Font.BOLD, 10));

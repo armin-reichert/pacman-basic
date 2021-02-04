@@ -24,7 +24,7 @@ public interface PacManGameUI {
 
 	String translation(String key);
 
-	void showMessage(String message, boolean important);
+	void showMessage(String message, int x, int y, boolean important);
 
 	void showFlashMessage(String message);
 
@@ -64,7 +64,7 @@ public interface PacManGameUI {
 		}
 
 		@Override
-		public void showMessage(String message, boolean important) {
+		public void showMessage(String message, int x, int y, boolean important) {
 		}
 
 		@Override

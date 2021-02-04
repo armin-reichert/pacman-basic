@@ -23,6 +23,7 @@ import static de.amr.games.pacman.model.creatures.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.creatures.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.model.creatures.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.model.creatures.GhostState.LOCKED;
+import static de.amr.games.pacman.world.PacManGameWorld.t;
 
 import java.util.List;
 import java.util.Optional;
@@ -223,9 +224,10 @@ public class PacManGameController {
 			}
 		});
 		if (game.attractMode) {
-			ui.showMessage(ui.translation("GAME_OVER"), true);
+			ui.showMessage(ui.translation("GAME"), t(9), t(21), true);
+			ui.showMessage(ui.translation("OVER"), t(15), t(21), true);
 		} else {
-			ui.showMessage(ui.translation("READY"), false);
+			ui.showMessage(ui.translation("READY"), t(11), t(21), false);
 		}
 	}
 
@@ -534,7 +536,8 @@ public class PacManGameController {
 		game.pac.speed = 0;
 		game.saveHighscore();
 		letGhostsFidget(false);
-		ui.showMessage(ui.translation("GAME_OVER"), true);
+		ui.showMessage(ui.translation("GAME"), t(9), t(21), true);
+		ui.showMessage(ui.translation("OVER"), t(15), t(21), true);
 	}
 
 	private PacManGameState runGameOverState() {

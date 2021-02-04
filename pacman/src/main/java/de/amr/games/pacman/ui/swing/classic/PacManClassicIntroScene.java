@@ -32,7 +32,7 @@ public class PacManClassicIntroScene implements PacManGameScene {
 	private final PacManGame game;
 
 	private final Animation<Boolean> blinking = Animation.pulse().frameDuration(30);
-	private final int headingTileY = 5;
+	private final int headingTileY = 6;
 	private final int chaseTileY = 20;
 	private final int ghostGap = 18;
 	private final float pacSpeedChasing = 1.0f;
@@ -140,20 +140,20 @@ public class PacManClassicIntroScene implements PacManGameScene {
 	}
 
 	private void introduceGhost(Graphics2D g, int id, int y, boolean showCharacter, boolean showNickname) {
-		g.drawImage(rendering.assets.ghostsWalking.get(id).get(RIGHT).frame(), t(3), y, null);
+		g.drawImage(rendering.assets.ghostsWalking.get(id).get(RIGHT).frame(), t(3), y - 4, null);
 		if (showCharacter) {
 			String character = rendering.translator.apply("CLASSIC.GHOST." + id + ".CHARACTER");
 			Color color = rendering.assets.ghostColors[id];
 			g.setColor(color);
 			g.setFont(rendering.assets.scoreFont);
-			g.drawString("-" + character, t(6), y + 13);
+			g.drawString("-" + character, t(6), y + 8);
 		}
 		if (showNickname) {
 			String nickname = "\"" + rendering.translator.apply("CLASSIC.GHOST." + id + ".NICKNAME") + "\"";
 			Color color = rendering.assets.ghostColors[id];
 			g.setColor(color);
 			g.setFont(rendering.assets.scoreFont);
-			g.drawString(nickname, t(18), y + 13);
+			g.drawString(nickname, t(18), y + 8);
 		}
 	}
 
