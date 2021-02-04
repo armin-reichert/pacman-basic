@@ -146,14 +146,16 @@ public class PacManClassicRendering implements PacManGameAnimations {
 		g.drawString(translator.apply("SCORE"), t(1), t(1));
 		g.drawString(translator.apply("HI_SCORE"), t(16), t(1));
 		g.translate(0, 1);
-		g.setColor(Color.YELLOW);
-		g.drawString(String.format("%08d", game.score), t(1), t(2));
-		g.setColor(Color.LIGHT_GRAY);
-		g.drawString(String.format("L%02d", game.currentLevelNumber), t(9), t(2));
-		g.setColor(Color.YELLOW);
-		g.drawString(String.format("%08d", game.highscorePoints), t(16), t(2));
-		g.setColor(Color.LIGHT_GRAY);
-		g.drawString(String.format("L%02d", game.highscoreLevel), t(24), t(2));
+		if (game.state != PacManGameState.INTRO && !game.attractMode) {
+			g.setColor(Color.YELLOW);
+			g.drawString(String.format("%08d", game.score), t(1), t(2));
+			g.setColor(Color.LIGHT_GRAY);
+			g.drawString(String.format("L%02d", game.currentLevelNumber), t(9), t(2));
+			g.setColor(Color.YELLOW);
+			g.drawString(String.format("%08d", game.highscorePoints), t(16), t(2));
+			g.setColor(Color.LIGHT_GRAY);
+			g.drawString(String.format("L%02d", game.highscoreLevel), t(24), t(2));
+		}
 		g.translate(0, -2);
 	}
 

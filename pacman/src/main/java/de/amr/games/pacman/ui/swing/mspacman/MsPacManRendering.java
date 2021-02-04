@@ -14,6 +14,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.function.Function;
 
+import de.amr.games.pacman.controller.PacManGameState;
 import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.model.PacManGame;
@@ -88,14 +89,16 @@ public class MsPacManRendering implements PacManGameAnimations {
 		g.drawString(translator.apply("SCORE"), t(1), t(1));
 		g.drawString(translator.apply("HI_SCORE"), t(16), t(1));
 		g.translate(0, 1);
-		g.setColor(assets.getMazeWallColor(game.level.mazeNumber - 1));
-		g.drawString(String.format("%08d", game.score), t(1), t(2));
-		g.setColor(Color.LIGHT_GRAY);
-		g.drawString(String.format("L%02d", game.currentLevelNumber), t(9), t(2));
-		g.setColor(assets.getMazeWallColor(game.level.mazeNumber - 1));
-		g.drawString(String.format("%08d", game.highscorePoints), t(16), t(2));
-		g.setColor(Color.LIGHT_GRAY);
-		g.drawString(String.format("L%02d", game.highscoreLevel), t(24), t(2));
+		if (game.state != PacManGameState.INTRO && !game.attractMode) {
+			g.setColor(assets.getMazeWallColor(game.level.mazeNumber - 1));
+			g.drawString(String.format("%08d", game.score), t(1), t(2));
+			g.setColor(Color.LIGHT_GRAY);
+			g.drawString(String.format("L%02d", game.currentLevelNumber), t(9), t(2));
+			g.setColor(assets.getMazeWallColor(game.level.mazeNumber - 1));
+			g.drawString(String.format("%08d", game.highscorePoints), t(16), t(2));
+			g.setColor(Color.LIGHT_GRAY);
+			g.drawString(String.format("L%02d", game.highscoreLevel), t(24), t(2));
+		}
 		g.translate(0, -3);
 	}
 
