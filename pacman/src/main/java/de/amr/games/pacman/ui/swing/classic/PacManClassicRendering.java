@@ -15,6 +15,7 @@ import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.util.function.Function;
 
+import de.amr.games.pacman.controller.PacManGameState;
 import de.amr.games.pacman.heaven.God;
 import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.Direction;
@@ -91,7 +92,7 @@ public class PacManClassicRendering implements PacManGameAnimations {
 			g.drawImage(mazeFlashing(1).animate(), 0, t(3), null);
 			return;
 		}
-		if (foodAnimationOn) {
+		if (foodAnimationOn && game.state == PacManGameState.HUNTING) {
 			drawFoodAnimation(g, game);
 		} else {
 			drawFood(g, game);
