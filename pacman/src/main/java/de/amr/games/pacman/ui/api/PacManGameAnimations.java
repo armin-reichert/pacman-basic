@@ -52,14 +52,14 @@ public interface PacManGameAnimations {
 		Stream.of(Direction.values()).forEach(dir -> pacMunching(dir).restart());
 	}
 
-	default void resetAll(PacManGame game) {
+	default void resetAllAnimations(PacManGame game) {
+		energizerBlinking().reset();
+		ghostFlashing().reset();
 		game.ghosts().forEach(ghost -> {
 			Stream.of(Direction.values()).forEach(dir -> ghostFrightened(ghost, dir).reset());
 			Stream.of(Direction.values()).forEach(dir -> ghostWalking(ghost, dir).reset());
 		});
-		ghostFlashing().reset();
 		Stream.of(Direction.values()).forEach(dir -> pacMunching(dir).reset());
 		pacDying().reset();
-		energizerBlinking().reset();
 	}
 }

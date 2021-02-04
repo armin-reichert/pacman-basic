@@ -32,18 +32,18 @@ public class PacManClassicIntroScene implements PacManGameScene {
 	private final PacManClassicRendering rendering;
 	private final PacManGame game;
 
-	private final Animation<Boolean> blinking;
+	private final Animation<Boolean> blinking = Animation.pulse().frameDuration(30);
 	private final int chaseY = t(23);
 	private final int ghostGap = 18;
+
 	private boolean chasingPac;
-	private long ghostDyingTimer;
 	private Ghost ghostDying;
+	private long ghostDyingTimer;
 
 	public PacManClassicIntroScene(V2i size, PacManClassicRendering rendering, PacManGame game) {
 		this.size = size;
 		this.game = game;
 		this.rendering = rendering;
-		blinking = Animation.pulse().frameDuration(20);
 	}
 
 	@Override
@@ -53,12 +53,17 @@ public class PacManClassicIntroScene implements PacManGameScene {
 
 	@Override
 	public void start() {
+		chasingPac = true;
+		ghostDying = null;
+		ghostDyingTimer = 0;
+
 		game.pac.visible = true;
 		game.pac.position = new V2f(size.x, chaseY);
 		game.pac.dir = LEFT;
 		game.pac.speed = 0.8f;
 		game.pac.couldMove = true;
-		rendering.letPacMunch();
+		game.pac.dead = false;
+
 		game.ghosts().forEach(ghost -> {
 			ghost.visible = true;
 			ghost.position = new V2f(size.x + 24 + ghostGap * ghost.id, chaseY);
@@ -66,15 +71,15 @@ public class PacManClassicIntroScene implements PacManGameScene {
 			ghost.speed = 0.8f;
 			ghost.couldMove = true;
 			ghost.bounty = 0;
+			ghost.state = null;
 		});
-		rendering.letGhostsFidget(game.ghosts(), true);
-		chasingPac = true;
-		ghostDyingTimer = 0;
-		ghostDying = null;
+
+		rendering.resetAllAnimations(game);
 	}
 
 	@Override
 	public void end() {
+		blinking.stop();
 		game.state.resetTimer();
 	}
 
@@ -113,6 +118,9 @@ public class PacManClassicIntroScene implements PacManGameScene {
 		});
 
 		game.state.runAt(clock.sec(13), () -> {
+			blinking.restart();
+			rendering.letPacMunch();
+			rendering.letGhostsFidget(game.ghosts(), true);
 			rendering.soundManager.loopSound(PacManGameSound.GHOST_SIREN_1);
 		});
 

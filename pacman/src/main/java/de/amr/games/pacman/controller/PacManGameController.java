@@ -101,7 +101,7 @@ public class PacManGameController {
 		autopilotOn = false;
 		autopilot = null;
 		previousState = null;
-		ui.animations().ifPresent(animations -> animations.resetAll(game));
+		ui.animations().ifPresent(animations -> animations.resetAllAnimations(game));
 		sounds().ifPresent(SoundManager::stopAllSounds);
 		ui.clearMessages();
 		changeState(INTRO, () -> {
@@ -170,7 +170,7 @@ public class PacManGameController {
 	private void getReadyToRumble() {
 		game.resetGuys();
 		ui.animations().ifPresent(animations -> {
-			animations.resetAll(game);
+			animations.resetAllAnimations(game);
 		});
 	}
 
