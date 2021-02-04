@@ -6,11 +6,13 @@ import static de.amr.games.pacman.world.PacManGameWorld.TS;
 import static de.amr.games.pacman.world.PacManGameWorld.t;
 import static java.lang.Math.cos;
 
+import java.awt.AWTException;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.Robot;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
@@ -254,6 +256,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 		window.setVisible(true);
 		window.requestFocus();
 		canvas.createBufferStrategy(2);
+		moveMousePointerOutOfSight();
 	}
 
 	@Override
@@ -335,4 +338,14 @@ public class PacManGameSwingUI implements PacManGameUI {
 		keyboard.clearKey(keySpec); // TODO
 		return pressed;
 	}
+
+	private void moveMousePointerOutOfSight() {
+		try {
+			Robot robot = new Robot();
+			robot.mouseMove(window.getX(), window.getY());
+		} catch (AWTException x) {
+			x.printStackTrace();
+		}
+	}
+
 }
