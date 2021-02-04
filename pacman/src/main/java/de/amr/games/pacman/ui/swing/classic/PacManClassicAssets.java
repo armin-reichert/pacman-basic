@@ -62,7 +62,7 @@ class PacManClassicAssets extends Spritesheet {
 	final List<EnumMap<Direction, Animation<BufferedImage>>> ghostsWalking;
 	final EnumMap<Direction, Animation<BufferedImage>> ghostEyes;
 	final Animation<BufferedImage> ghostBlue;
-	final List<Animation<BufferedImage>> ghostsFlashing;
+	final Animation<BufferedImage> ghostFlashing;
 	final Animation<BufferedImage> mazeFlashing;
 	final Animation<Boolean> energizerBlinking;
 
@@ -138,11 +138,8 @@ class PacManClassicAssets extends Spritesheet {
 		ghostBlue = Animation.of(spriteAt(8, 4), spriteAt(9, 4));
 		ghostBlue.frameDuration(20).endless();
 
-		ghostsFlashing = new ArrayList<>(4);
-		for (int g = 0; g < 4; ++g) {
-			ghostsFlashing
-					.add(Animation.of(spriteAt(8, 4), spriteAt(9, 4), spriteAt(10, 4), spriteAt(11, 4)).frameDuration(5));
-		}
+		ghostFlashing = Animation.of(spriteAt(8, 4), spriteAt(9, 4), spriteAt(10, 4), spriteAt(11, 4));
+		ghostFlashing.frameDuration(5).endless();
 
 		//@formatter:off
 		soundMap = new EnumMap<>(PacManGameSound.class);

@@ -29,7 +29,6 @@ import javax.swing.JFrame;
 import javax.swing.Timer;
 
 import de.amr.games.pacman.controller.PacManGameState;
-import de.amr.games.pacman.heaven.God;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.MsPacManGame;
 import de.amr.games.pacman.model.PacManClassicGame;
@@ -57,8 +56,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 	static final int KEY_SLOWMODE = KeyEvent.VK_S;
 	static final int KEY_FASTMODE = KeyEvent.VK_F;
 	static final int KEY_DEBUGMODE = KeyEvent.VK_D;
-
-	static final int FLASH_MESSAGE_TICKS = God.clock.sec(1.5);
+	static final int FLASH_MESSAGE_TICKS = 60;
 
 	public static URL url(String path) {
 		return PacManGameSwingUI.class.getResource(path);

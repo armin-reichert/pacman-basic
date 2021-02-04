@@ -67,8 +67,8 @@ public class PacManClassicRendering implements PacManGameAnimations {
 	}
 
 	@Override
-	public Animation<BufferedImage> ghostFlashing(Ghost ghost) {
-		return assets.ghostsFlashing.get(ghost.id);
+	public Animation<BufferedImage> ghostFlashing() {
+		return assets.ghostFlashing;
 	}
 
 	@Override
@@ -229,8 +229,7 @@ public class PacManClassicRendering implements PacManGameAnimations {
 			return ghostReturningHome(ghost, ghost.dir).animate();
 		}
 		if (ghost.is(FRIGHTENED)) {
-			return ghostFlashing(ghost).isRunning() ? ghostFlashing(ghost).animate()
-					: ghostFrightened(ghost, ghost.dir).animate();
+			return ghostFlashing().isRunning() ? ghostFlashing().frame() : ghostFrightened(ghost, ghost.dir).animate();
 		}
 		if (ghost.is(LOCKED) && game.pac.powerTicksLeft > 0) {
 			return ghostFrightened(ghost, ghost.dir).animate();

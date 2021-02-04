@@ -55,7 +55,7 @@ class MsPacManAssets extends Spritesheet {
 	final List<EnumMap<Direction, Animation<BufferedImage>>> ghostsWalking;
 	final EnumMap<Direction, Animation<BufferedImage>> ghostEyes;
 	final Animation<BufferedImage> ghostBlue;
-	final List<Animation<BufferedImage>> ghostsFlashing;
+	final Animation<BufferedImage> ghostFlashing;
 	final Animation<Integer> bonusJumps;
 
 	final Map<PacManGameSound, URL> soundMap;
@@ -130,11 +130,8 @@ class MsPacManAssets extends Spritesheet {
 		ghostBlue = Animation.of(spriteAt(8, 4), spriteAt(9, 4));
 		ghostBlue.frameDuration(20).endless().run();
 
-		ghostsFlashing = new ArrayList<>(4);
-		for (int g = 0; g < 4; ++g) {
-			ghostsFlashing
-					.add(Animation.of(spriteAt(8, 4), spriteAt(9, 4), spriteAt(10, 4), spriteAt(11, 4)).frameDuration(5));
-		}
+		ghostFlashing = Animation.of(spriteAt(8, 4), spriteAt(9, 4), spriteAt(10, 4), spriteAt(11, 4));
+		ghostFlashing.frameDuration(5).endless();
 
 		bonusJumps = Animation.of(0, 2, 0, -2).frameDuration(20).endless().run();
 

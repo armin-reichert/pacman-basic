@@ -3,6 +3,7 @@ package de.amr.games.pacman.controller;
 import static de.amr.games.pacman.controller.PacManGameState.CHANGING_LEVEL;
 import static de.amr.games.pacman.controller.PacManGameState.GAME_OVER;
 import static de.amr.games.pacman.controller.PacManGameState.GHOST_DYING;
+import static de.amr.games.pacman.controller.PacManGameState.HUNTING;
 import static de.amr.games.pacman.controller.PacManGameState.INTRO;
 import static de.amr.games.pacman.controller.PacManGameState.PACMAN_DYING;
 import static de.amr.games.pacman.controller.PacManGameState.READY;
@@ -28,6 +29,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.MsPacManGame;
 import de.amr.games.pacman.model.PacManClassicGame;
@@ -325,35 +327,6 @@ public class PacManGameController {
 	}
 
 	private PacManGameState runHuntingState() {
-
-		if (!game.attractMode) {
-			if (ui.keyPressed("a")) {
-				toggleAutopilot();
-			}
-			if (ui.keyPressed("i")) {
-				togglePacImmunity();
-			}
-			if (ui.keyPressed("e")) {
-				game.level.world.tiles()
-						.filter(tile -> game.level.containsFood(tile) && !game.level.world.isEnergizerTile(tile))
-						.forEach(game.level::removeFood);
-			}
-			if (ui.keyPressed("x")) {
-				killAllGhosts();
-				return changeState(GHOST_DYING, this::exitHuntingState, this::enterGhostDyingState);
-			}
-			if (ui.keyPressed("l")) {
-				game.lives++;
-			}
-			if (ui.keyPressed("n")) {
-				return changeState(CHANGING_LEVEL, this::exitHuntingState, this::enterChangingLevelState);
-			}
-			if (ui.keyPressed("6") && !playingMsPacMan()) {
-				PacManClassicRendering.foodAnimationOn = !PacManClassicRendering.foodAnimationOn;
-				ui.showFlashMessage("Fancy food " + (PacManClassicRendering.foodAnimationOn ? "on" : "off"));
-			}
-		}
-
 		// Level completed?
 		if (game.level.foodRemaining == 0) {
 			return changeState(CHANGING_LEVEL, this::exitHuntingState, this::enterChangingLevelState);
@@ -396,25 +369,28 @@ public class PacManGameController {
 			game.pac.starvingTicks++;
 		}
 
-		// Is Pac losing power?
+		// Pac losing power?
 		if (game.pac.powerTicksLeft > 0) {
 			game.pac.powerTicksLeft--;
-			ui.animations().ifPresent(animations -> {
-				// all ghost have the same flashing time
-				long flashingDuration = animations.ghostFlashing(game.ghosts[0]).getDuration();
-				if (game.pac.powerTicksLeft == game.level.numFlashes * flashingDuration) {
-					game.ghosts().filter(ghost -> ghost.is(FRIGHTENED)).forEach(ghost -> {
-						animations.ghostFlashing(ghost).repetitions(game.level.numFlashes).restart();
-					});
-				}
-			});
 			if (game.pac.powerTicksLeft == 0) {
 				log("%s lost power", game.pac.name);
 				game.ghosts().filter(ghost -> ghost.is(FRIGHTENED)).forEach(ghost -> {
 					ghost.state = HUNTING_PAC;
-					ui.animations().ifPresent(animations -> animations.ghostFlashing(ghost).stop());
 				});
 			}
+			ui.animations().ifPresent(animations -> {
+				Animation<?> flashing = animations.ghostFlashing();
+				if (game.level.numFlashes > 0 && game.pac.powerTicksLeft == game.level.numFlashes * flashing.duration()) {
+					flashing.restart();
+					log("Ghost flashing started (%d flashes, %d ticks each), Pac power left: %d ticks", game.level.numFlashes,
+							flashing.duration(), game.pac.powerTicksLeft);
+				} else if (game.pac.powerTicksLeft == 0) {
+					flashing.reset();
+					log("Ghost flashing stopped");
+				} else {
+					flashing.advance();
+				}
+			});
 		}
 
 		tryReleasingGhosts();
@@ -590,6 +566,7 @@ public class PacManGameController {
 	}
 
 	private void updateState() {
+		handleCheatsAndStuff();
 		switch (game.state) {
 		case INTRO:
 			runIntroState();
@@ -694,15 +671,20 @@ public class PacManGameController {
 		sounds().ifPresent(sm -> sm.playSound(PacManGameSound.PACMAN_MUNCH));
 	}
 
-	private void letPacFrightenGhosts(int seconds) {
-		game.pac.powerTicksLeft = clock.sec(seconds);
-		if (seconds > 0) {
-			log("Pac-Man got power for %d seconds", seconds);
+	private void letPacFrightenGhosts(int frightenedSec) {
+		game.pac.powerTicksLeft = clock.sec(frightenedSec);
+		if (frightenedSec > 0) {
+			log("Pac-Man got power for %d seconds", frightenedSec);
 			game.ghosts().filter(ghost -> ghost.is(HUNTING_PAC)).forEach(ghost -> {
 				ghost.state = FRIGHTENED;
 				ghost.wishDir = ghost.dir.opposite();
 				ghost.forcedDirection = true;
-				ui.animations().ifPresent(animations -> animations.letGhostBeFrightened(ghost, true));
+				ui.animations().ifPresent(animations -> {
+					animations.letGhostBeFrightened(ghost, true);
+				});
+			});
+			ui.animations().ifPresent(animations -> {
+				animations.ghostFlashing().reset(); // in case flashing is active now
 			});
 			sounds().ifPresent(sm -> sm.loopSound(PacManGameSound.PACMAN_POWER));
 		}
@@ -839,6 +821,39 @@ public class PacManGameController {
 			}
 		} else {
 			preferredLockedGhostInHouse().ifPresent(ghost -> ++ghost.dotCounter);
+		}
+	}
+
+	// Cheats and stuff
+
+	private void handleCheatsAndStuff() {
+		if (game.attractMode) {
+			return;
+		}
+		boolean r = game.state == READY, h = game.state == HUNTING;
+		if (ui.keyPressed("a") && (r || h)) {
+			toggleAutopilot();
+		}
+		if (ui.keyPressed("i") && (r || h)) {
+			togglePacImmunity();
+		}
+		if (ui.keyPressed("e") && h) {
+			game.level.world.tiles().filter(tile -> game.level.containsFood(tile) && !game.level.world.isEnergizerTile(tile))
+					.forEach(game.level::removeFood);
+		}
+		if (ui.keyPressed("x") && (h)) {
+			killAllGhosts();
+			changeState(GHOST_DYING, this::exitHuntingState, this::enterGhostDyingState);
+		}
+		if (ui.keyPressed("l") && (r || h)) {
+			game.lives++;
+		}
+		if (ui.keyPressed("n") && (r || h)) {
+			changeState(CHANGING_LEVEL, this::exitHuntingState, this::enterChangingLevelState);
+		}
+		if (ui.keyPressed("6") && !playingMsPacMan()) {
+			PacManClassicRendering.foodAnimationOn = !PacManClassicRendering.foodAnimationOn;
+			ui.showFlashMessage("Fancy food " + (PacManClassicRendering.foodAnimationOn ? "on" : "off"));
 		}
 	}
 }

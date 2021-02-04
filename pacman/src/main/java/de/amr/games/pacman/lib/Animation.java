@@ -73,6 +73,10 @@ public class Animation<T> {
 		return this;
 	}
 
+	public int repetitions() {
+		return repetitions;
+	}
+
 	public Animation<T> repetitions(int n) {
 		repetitions = n;
 		return this;
@@ -138,16 +142,20 @@ public class Animation<T> {
 		return things.get(i);
 	}
 
-	public int currentFrameIndex() {
+	public int frameIndex() {
 		return frameIndex;
 	}
 
-	public int getFrameDurationTicks() {
+	public int getFrameDuration() {
 		return frameDurationTicks;
 	}
 
-	public int getDuration() {
+	public int duration() {
 		return things.size() * frameDurationTicks;
+	}
+
+	public int numFrames() {
+		return things.size();
 	}
 
 	public boolean isRunning() {
