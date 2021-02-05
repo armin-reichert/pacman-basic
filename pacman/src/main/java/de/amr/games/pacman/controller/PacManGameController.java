@@ -185,9 +185,6 @@ public class PacManGameController {
 		setAttractMode(false);
 		autopilotOn = false;
 		ui.clearMessages();
-		ui.animations().ifPresent(animations -> {
-			animations.letPacMunch();
-		});
 	}
 
 	private PacManGameState runIntroState() {
