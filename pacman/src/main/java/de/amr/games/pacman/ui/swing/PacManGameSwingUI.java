@@ -302,7 +302,6 @@ public class PacManGameSwingUI implements PacManGameUI {
 				Graphics2D g = (Graphics2D) buffers.getDrawGraphics();
 				g.setColor(canvas.getBackground());
 				g.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
-//				g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 				drawCurrentScene(g);
 				g.dispose();
 			} while (buffers.contentsRestored());
@@ -323,7 +322,6 @@ public class PacManGameSwingUI implements PacManGameUI {
 	private void drawMessages(Graphics2D g) {
 		Font messageFont = game instanceof MsPacManGame ? msPacManRendering.assets.getScoreFont()
 				: pacManClassicRendering.assets.getScoreFont();
-		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 		messages.stream().forEach(message -> {
 			g.setFont(messageFont);
 			g.setColor(message.important ? Color.RED : Color.YELLOW);
@@ -336,7 +334,9 @@ public class PacManGameSwingUI implements PacManGameUI {
 			float alpha = (float) cos(Math.PI * t / (2 * FLASH_MESSAGE_TICKS));
 			g.setColor(new Color(1, 1, 0.5f, alpha));
 			int flashMessageTextWidth = g.getFontMetrics().stringWidth(flashMessage);
+			g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 			g.drawString(flashMessage, (unscaledSizePixels.x - flashMessageTextWidth) / 2, unscaledSizePixels.y - 3);
+			g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
 			--flashMessageTicksLeft;
 			if (flashMessageTicksLeft == 0) {
 				flashMessages.remove(0);
@@ -345,7 +345,6 @@ public class PacManGameSwingUI implements PacManGameUI {
 				}
 			}
 		}
-		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
 	}
 
 	@Override
