@@ -70,8 +70,8 @@ public class MsPacManAssets extends Spritesheet {
 		mazesFull = new ArrayList<>(6);
 		mazesFlashing = new ArrayList<>(6);
 		for (int i = 0; i < 6; ++i) {
-			mazesFull.add(subImage(0, i * 248, 226, 248));
-			BufferedImage mazeEmptyNormal = subImage(226, i * 248, 226, 248);
+			mazesFull.add(sheet.getSubimage(0, i * 248, 226, 248));
+			BufferedImage mazeEmptyNormal = sheet.getSubimage(226, i * 248, 226, 248);
 			BufferedImage mazeEmpzyBright = createBrightEffect(mazeEmptyNormal, getMazeWallBorderColor(i),
 					getMazeWallColor(i));
 			mazesFlashing.add(Animation.of(mazeEmpzyBright, mazeEmptyNormal).frameDuration(15));

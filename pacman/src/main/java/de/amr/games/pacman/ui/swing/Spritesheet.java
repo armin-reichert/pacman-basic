@@ -29,13 +29,13 @@ public class Spritesheet {
 		return dst;
 	}
 
-	private final BufferedImage image;
-	private final int tileSize;
-	private int offsetX, offsetY;
+	protected final BufferedImage sheet;
+	protected final int gridSize;
+	protected int offsetX, offsetY;
 
-	public Spritesheet(BufferedImage image, int tileSize) {
-		this.image = image;
-		this.tileSize = tileSize;
+	public Spritesheet(BufferedImage image, int rasterSize) {
+		sheet = image;
+		gridSize = rasterSize;
 	}
 
 	protected V2i v2(int x, int y) {
@@ -47,12 +47,9 @@ public class Spritesheet {
 		offsetY = y;
 	}
 
-	public BufferedImage subImage(int x, int y, int w, int h) {
-		return image.getSubimage(x, y, w, h);
-	}
-
 	public BufferedImage spritesAt(int tileX, int tileY, int numTilesX, int numTilesY) {
-		return subImage(offsetX + tileX * tileSize, offsetY + tileY * tileSize, numTilesX * tileSize, numTilesY * tileSize);
+		return sheet.getSubimage(offsetX + tileX * gridSize, offsetY + tileY * gridSize, numTilesX * gridSize,
+				numTilesY * gridSize);
 	}
 
 	public BufferedImage spriteAt(int tileX, int tileY) {
