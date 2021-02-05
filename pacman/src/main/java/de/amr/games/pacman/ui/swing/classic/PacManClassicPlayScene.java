@@ -4,6 +4,7 @@ import static de.amr.games.pacman.world.PacManGameWorld.t;
 
 import java.awt.Graphics2D;
 
+import de.amr.games.pacman.controller.PacManGameState;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.ui.api.PacManGameScene;
@@ -41,6 +42,11 @@ public class PacManClassicPlayScene implements PacManGameScene {
 		rendering.drawMaze(g, game);
 		if (DebugRendering.on) {
 			DebugRendering.drawMazeStructure(g, game);
+		}
+		if (game.attractMode || game.state == PacManGameState.GAME_OVER) {
+			rendering.signalGameOverState(g);
+		} else if (game.state == PacManGameState.READY) {
+			rendering.signalReadyState(g);
 		}
 		rendering.drawPac(g, game.pac);
 		game.ghosts().forEach(ghost -> rendering.drawGhost(g, ghost, game));

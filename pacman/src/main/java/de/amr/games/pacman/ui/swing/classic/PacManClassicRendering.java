@@ -87,6 +87,19 @@ public class PacManClassicRendering implements PacManGameAnimations {
 		return assets.energizerBlinking;
 	}
 
+	public void signalReadyState(Graphics2D g) {
+		g.setFont(assets.getScoreFont());
+		g.setColor(Color.YELLOW);
+		g.drawString(translator.apply("READY"), t(11), t(21));
+	}
+
+	public void signalGameOverState(Graphics2D g) {
+		g.setFont(assets.getScoreFont());
+		g.setColor(Color.RED);
+		g.drawString(translator.apply("GAME"), t(9), t(21));
+		g.drawString(translator.apply("OVER"), t(15), t(21));
+	}
+
 	public void drawMaze(Graphics2D g, PacManGame game) {
 		if (mazeFlashing(1).hasStarted()) {
 			g.drawImage(mazeFlashing(1).animate(), 0, t(3), null);

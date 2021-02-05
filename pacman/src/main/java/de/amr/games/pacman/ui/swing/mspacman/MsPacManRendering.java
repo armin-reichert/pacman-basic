@@ -82,6 +82,19 @@ public class MsPacManRendering implements PacManGameAnimations {
 		return assets.energizerBlinking;
 	}
 
+	public void signalReadyState(Graphics2D g) {
+		g.setFont(assets.getScoreFont());
+		g.setColor(Color.YELLOW);
+		g.drawString(translator.apply("READY"), t(11), t(21));
+	}
+
+	public void signalGameOverState(Graphics2D g) {
+		g.setFont(assets.getScoreFont());
+		g.setColor(Color.RED);
+		g.drawString(translator.apply("GAME"), t(9), t(21));
+		g.drawString(translator.apply("OVER"), t(15), t(21));
+	}
+
 	public void drawScore(Graphics2D g, PacManGame game) {
 		g.setFont(assets.getScoreFont());
 		g.translate(0, 2);

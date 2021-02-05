@@ -54,13 +54,6 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 	static final ResourceBundle TEXTS = ResourceBundle.getBundle("ui.swing.localization.translation");
 
-	static class Message {
-
-		String text;
-		int x, y;
-		boolean important;
-	}
-
 	static final int KEY_SLOWMODE = KeyEvent.VK_S;
 	static final int KEY_FASTMODE = KeyEvent.VK_F;
 	static final int KEY_DEBUGMODE = KeyEvent.VK_D;
@@ -94,7 +87,6 @@ public class PacManGameSwingUI implements PacManGameUI {
 	private final Canvas canvas;
 	private final Keyboard keyboard;
 
-	private final List<Message> messages = new ArrayList<>();
 	private final List<String> flashMessages = new ArrayList<>();
 	private long flashMessageTicksLeft;
 
@@ -280,23 +272,6 @@ public class PacManGameSwingUI implements PacManGameUI {
 	}
 
 	@Override
-	public void showMessage(String messageText, int x, int y, boolean important) {
-		Message message = new Message();
-		message.text = messageText;
-		message.x = x;
-		message.y = y;
-		message.important = important;
-		messages.add(message);
-	}
-
-	@Override
-	public void clearMessages() {
-		messages.clear();
-		flashMessages.clear();
-		flashMessageTicksLeft = 0;
-	}
-
-	@Override
 	public void showFlashMessage(String message) {
 		flashMessages.add(message);
 		if (flashMessageTicksLeft == 0) {
@@ -326,21 +301,10 @@ public class PacManGameSwingUI implements PacManGameUI {
 		if (displayedScene != null) {
 			Graphics2D g2 = (Graphics2D) g.create();
 			g2.scale(scaling, scaling);
-			drawSceneMessages(g2);
 			displayedScene.draw(g2);
 			drawFlashMessages(g2);
 			g2.dispose();
 		}
-	}
-
-	private void drawSceneMessages(Graphics2D g) {
-		Font messageFont = game instanceof MsPacManGame ? msPacManRendering.assets.getScoreFont()
-				: pacManClassicRendering.assets.getScoreFont();
-		messages.stream().forEach(message -> {
-			g.setFont(messageFont);
-			g.setColor(message.important ? Color.RED : Color.YELLOW);
-			g.drawString(message.text, message.x, message.y);
-		});
 	}
 
 	private void drawFlashMessages(Graphics2D g) {

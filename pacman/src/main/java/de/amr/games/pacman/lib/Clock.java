@@ -1,7 +1,5 @@
 package de.amr.games.pacman.lib;
 
-import static de.amr.games.pacman.lib.Logging.log;
-
 /**
  * A clock producing the ticks driving the game.
  * 
@@ -42,7 +40,7 @@ public class Clock {
 				x.printStackTrace();
 			}
 		}
-		log("work time: %.2g, sleep time: %.2g", duration / 1000_000.0, sleep / 1000_000.0);
+//		log("work time: %.2g, sleep time: %.2g", duration / 1000_000.0, sleep / 1000_000.0);
 	}
 
 	/**

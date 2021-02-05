@@ -16,8 +16,6 @@ public interface PacManGameScene {
 
 	V2i sizeInPixel();
 
-	// Lifecycle methods
-
 	default void start() {
 	}
 

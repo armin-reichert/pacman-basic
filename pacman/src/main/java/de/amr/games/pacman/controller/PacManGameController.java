@@ -23,7 +23,6 @@ import static de.amr.games.pacman.model.creatures.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.creatures.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.model.creatures.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.model.creatures.GhostState.LOCKED;
-import static de.amr.games.pacman.world.PacManGameWorld.t;
 
 import java.util.List;
 import java.util.Optional;
@@ -127,7 +126,6 @@ public class PacManGameController {
 		previousState = null;
 		ui.animations().ifPresent(animations -> animations.resetAllAnimations(game));
 		ui.sounds().ifPresent(SoundManager::stopAllSounds);
-		ui.clearMessages();
 		changeState(INTRO, () -> {
 		}, this::enterIntroState);
 	}
@@ -178,7 +176,6 @@ public class PacManGameController {
 		game.state.setDuration(Long.MAX_VALUE);
 		setAttractMode(false);
 		autopilotOn = false;
-		ui.clearMessages();
 	}
 
 	private PacManGameState runIntroState() {
@@ -211,12 +208,6 @@ public class PacManGameController {
 				sm.playSound(PacManGameSound.GAME_READY);
 			}
 		});
-		if (game.attractMode) {
-			ui.showMessage(ui.translation("GAME"), t(9), t(21), true);
-			ui.showMessage(ui.translation("OVER"), t(15), t(21), true);
-		} else {
-			ui.showMessage(ui.translation("READY"), t(11), t(21), false);
-		}
 	}
 
 	private PacManGameState runReadyState() {
@@ -240,7 +231,6 @@ public class PacManGameController {
 			autopilotOn = true;
 		} else {
 			game.started = true;
-			ui.clearMessages();
 		}
 	}
 
@@ -524,8 +514,6 @@ public class PacManGameController {
 		game.pac.speed = 0;
 		game.saveHighscore();
 		letGhostsFidget(false);
-		ui.showMessage(ui.translation("GAME"), t(9), t(21), true);
-		ui.showMessage(ui.translation("OVER"), t(15), t(21), true);
 	}
 
 	private PacManGameState runGameOverState() {
