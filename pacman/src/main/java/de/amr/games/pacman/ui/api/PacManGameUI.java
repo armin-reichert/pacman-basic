@@ -34,6 +34,8 @@ public interface PacManGameUI {
 
 	Optional<SoundManager> sounds();
 
+	void mute(boolean muted);
+
 	Optional<PacManGameAnimations> animations();
 
 	public static final PacManGameUI NO_UI = new PacManGameUI() {
@@ -83,6 +85,10 @@ public interface PacManGameUI {
 		@Override
 		public Optional<SoundManager> sounds() {
 			return Optional.empty();
+		}
+
+		@Override
+		public void mute(boolean muted) {
 		}
 
 		@Override

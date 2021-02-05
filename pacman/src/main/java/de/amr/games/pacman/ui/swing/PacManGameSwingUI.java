@@ -98,10 +98,10 @@ public class PacManGameSwingUI implements PacManGameUI {
 	private final List<String> flashMessages = new ArrayList<>();
 	private long flashMessageTicksLeft;
 
+	private boolean muted;
+
 	private Timer titleUpdateTimer;
-	private Runnable closeHandler = () -> {
-		log("Pac-Man Swing UI closed");
-	};
+	private Runnable closeHandler = () -> log("Pac-Man Swing UI closed");
 
 	private PacManGame game;
 
@@ -183,11 +183,20 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 	@Override
 	public Optional<SoundManager> sounds() {
+		if (muted) {
+			// TODO that's just a hack, should have real mute functionality
+			return Optional.empty();
+		}
 		if (game instanceof MsPacManGame) {
 			return Optional.ofNullable(msPacManRendering.soundManager);
 		} else {
 			return Optional.ofNullable(pacManClassicRendering.soundManager);
 		}
+	}
+
+	@Override
+	public void mute(boolean muted) {
+		this.muted = muted;
 	}
 
 	@Override

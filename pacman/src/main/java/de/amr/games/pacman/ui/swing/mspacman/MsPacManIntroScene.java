@@ -4,6 +4,7 @@ import static de.amr.games.pacman.heaven.God.clock;
 import static de.amr.games.pacman.heaven.God.differsAtMost;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.UP;
+import static de.amr.games.pacman.model.creatures.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.world.PacManGameWorld.TS;
 import static de.amr.games.pacman.world.PacManGameWorld.t;
 
@@ -15,7 +16,6 @@ import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.MsPacManGame;
 import de.amr.games.pacman.model.creatures.Ghost;
-import de.amr.games.pacman.model.creatures.GhostState;
 import de.amr.games.pacman.ui.api.PacManGameScene;
 
 public class MsPacManIntroScene implements PacManGameScene {
@@ -34,6 +34,8 @@ public class MsPacManIntroScene implements PacManGameScene {
 	private final int belowFrameCenterX = t(frameTopLeftTile.x) + 2 * frameDots.x;
 	private final float walkSpeed = 1.2f;
 
+	private long completedTime;
+
 	public MsPacManIntroScene(V2i size, MsPacManRendering rendering, MsPacManGame game) {
 		this.size = size;
 		this.game = game;
@@ -47,12 +49,13 @@ public class MsPacManIntroScene implements PacManGameScene {
 
 	@Override
 	public void start() {
+		completedTime = -1;
 		for (Ghost ghost : game.ghosts) {
 			ghost.position = new V2f(size.x + TS, belowFrame);
 			ghost.speed = 0;
 			ghost.dir = ghost.wishDir = LEFT;
 			ghost.visible = true;
-			ghost.state = GhostState.HUNTING_PAC;
+			ghost.state = HUNTING_PAC;
 		}
 		game.pac.position = new V2f(size.x + TS, belowFrame);
 		game.pac.speed = 0;
@@ -123,19 +126,23 @@ public class MsPacManIntroScene implements PacManGameScene {
 			g.drawString("MS PAC-MAN", t(11), t(14));
 		}
 
-		if (game.pac.speed != 0) {
-			V2f velocity = new V2f(game.pac.dir.vec).scaled(game.pac.speed);
-			game.pac.position = game.pac.position.sum(velocity);
+		if (completedTime < 0) {
+			game.pac.moveFreely();
 			if (game.pac.position.x <= belowFrameCenterX) {
 				game.pac.speed = 0;
+				completedTime = game.state.ticksRun();
 			}
 		}
 		rendering.drawPac(g, game.pac);
 
 		// Pac animation over?
-		if (game.pac.speed == 0 && game.pac.position.x <= belowFrameCenterX) {
-			drawPointsAnimation(g, 26, time);
-			drawPressKeyToStart(g, time);
+		if (completedTime > 0) {
+			drawPointsAnimation(g, 26);
+			drawPressKeyToStart(g);
+			game.state.runAt(completedTime + clock.sec(3), () -> {
+				end();
+				game.attractMode = true;
+			});
 		}
 	}
 
@@ -168,7 +175,7 @@ public class MsPacManIntroScene implements PacManGameScene {
 		}
 	}
 
-	private void drawPressKeyToStart(Graphics2D g, long time) {
+	private void drawPressKeyToStart(Graphics2D g) {
 		g.setColor(Color.ORANGE);
 		g.setFont(rendering.assets.getScoreFont());
 		if (blinking.animate()) {
@@ -176,7 +183,7 @@ public class MsPacManIntroScene implements PacManGameScene {
 		}
 	}
 
-	private void drawPointsAnimation(Graphics2D g, int yTile, long time) {
+	private void drawPointsAnimation(Graphics2D g, int yTile) {
 		g.setColor(Color.PINK);
 		g.fillRect(t(9) + 6, t(yTile - 1) + 2, 2, 2);
 		if (blinking.animate()) {

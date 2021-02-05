@@ -43,6 +43,7 @@ public class PacManClassicIntroScene implements PacManGameScene {
 	private boolean chasingPac;
 	private Ghost ghostDying;
 	private long ghostDyingTimer;
+	private long completedTime;
 
 	public PacManClassicIntroScene(V2i size, PacManClassicRendering rendering, PacManGame game) {
 		this.size = size;
@@ -57,6 +58,7 @@ public class PacManClassicIntroScene implements PacManGameScene {
 
 	@Override
 	public void start() {
+		completedTime = -1;
 		chasingPac = true;
 		ghostDying = null;
 		ghostDyingTimer = 0;
@@ -124,19 +126,18 @@ public class PacManClassicIntroScene implements PacManGameScene {
 		game.state.runAfter(clock.sec(11), () -> {
 			if (chasingPac) {
 				showGhostsChasingPacMan(g, game.pac);
-			} else {
+			} else if (completedTime < 0) {
 				showPacManChasingGhosts(g, game.pac);
 			}
 		});
 
-		game.state.runAfter(clock.sec(22), () -> {
+		if (completedTime > 0) {
 			showPressKeyToStart(g);
-		});
-
-		game.state.runAt(clock.sec(23), () -> {
-			end();
-			start();
-		});
+			game.state.runAt(completedTime + clock.sec(3), () -> {
+				end();
+				game.attractMode = true;
+			});
+		}
 	}
 
 	private void introduceGhost(Graphics2D g, int id, int y, boolean showCharacter, boolean showNickname) {
@@ -184,6 +185,7 @@ public class PacManClassicIntroScene implements PacManGameScene {
 
 	private void showPacManChasingGhosts(Graphics2D g, Pac pac) {
 		if (pac.position.x > size.x + 20) {
+			completedTime = game.state.ticksRun();
 			return;
 		}
 		for (Ghost ghost : game.ghosts) {
