@@ -112,7 +112,7 @@ public class PacManClassicRendering implements PacManGameAnimations {
 		}
 		game.level.world.tiles().filter(game.level::isFoodRemoved).forEach(tile -> {
 			g.setColor(Color.BLACK);
-			g.fillRect(t(tile.x), t(tile.y), TS, TS);
+			g.fillRect(t(tile.x) - 1, t(tile.y) - 1, TS + 2, TS + 2);
 		});
 		if (energizerBlinking().isRunning() && energizerBlinking().animate()) {
 			game.level.world.energizerTiles().forEach(tile -> {
