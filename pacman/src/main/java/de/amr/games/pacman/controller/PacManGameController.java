@@ -126,8 +126,7 @@ public class PacManGameController {
 		previousState = null;
 		ui.animations().ifPresent(animations -> animations.resetAllAnimations(game));
 		ui.sounds().ifPresent(SoundManager::stopAllSounds);
-		changeState(INTRO, () -> {
-		}, this::enterIntroState);
+		changeState(INTRO, null, this::enterIntroState);
 	}
 
 	private void toggleGameVariant() {
