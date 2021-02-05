@@ -20,7 +20,7 @@ public interface PacManGameUI {
 
 	void show();
 
-	void redraw();
+	void render();
 
 	String translation(String key);
 
@@ -55,7 +55,7 @@ public interface PacManGameUI {
 		}
 
 		@Override
-		public void redraw() {
+		public void render() {
 		}
 
 		@Override

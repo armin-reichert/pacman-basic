@@ -289,7 +289,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 	}
 
 	@Override
-	public void redraw() {
+	public void render() {
 		BufferStrategy buffers = canvas.getBufferStrategy();
 		do {
 			do {

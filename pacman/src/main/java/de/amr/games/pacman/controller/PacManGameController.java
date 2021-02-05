@@ -69,12 +69,12 @@ public class PacManGameController {
 	private PacManGameState previousState;
 
 	public PacManGameController(boolean classic) {
-		ui = PacManGameUI.NO_UI;
 		if (classic) {
 			playPacManClassic();
 		} else {
 			playMsPacMan();
 		}
+		ui = PacManGameUI.NO_UI;
 	}
 
 	public void gameLoop() {
@@ -85,7 +85,7 @@ public class PacManGameController {
 	public void step() {
 		readInput();
 		updateState();
-		ui.redraw();
+		ui.render();
 	}
 
 	public void setUI(PacManGameUI ui) {
