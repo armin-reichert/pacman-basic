@@ -125,28 +125,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 			@Override
 			public void keyPressed(KeyEvent e) {
-				switch (e.getKeyCode()) {
-				case KEY_SMOOTH_RENDERING:
-					smoothRendering = !smoothRendering;
-					log("Smooth rendering is %s", smoothRendering ? "on" : "off");
-					break;
-				case KEY_SLOWMODE:
-					clock.targetFrequency = clock.targetFrequency == 60 ? 30 : 60;
-					log("Clock frequency changed to %d Hz", clock.targetFrequency);
-					showFlashMessage(clock.targetFrequency == 60 ? "Normal speed" : "Slow speed");
-					break;
-				case KEY_FASTMODE:
-					clock.targetFrequency = clock.targetFrequency == 60 ? 120 : 60;
-					log("Clock frequency changed to %d Hz", clock.targetFrequency);
-					showFlashMessage(clock.targetFrequency == 60 ? "Normal speed" : "Fast speed");
-					break;
-				case KEY_DEBUGMODE:
-					DebugRendering.on = !DebugRendering.on;
-					log("UI debug mode is %s", DebugRendering.on ? "on" : "off");
-					break;
-				default:
-					break;
-				}
+				handleKeyboardInput(e);
 			}
 		});
 
@@ -169,96 +148,6 @@ public class PacManGameSwingUI implements PacManGameUI {
 		pacManClassicRendering = new PacManClassicRendering(this::translation);
 		msPacManRendering = new MsPacManRendering(this::translation);
 		setGame(game);
-	}
-
-	@Override
-	public Optional<PacManGameAnimations> animations() {
-		if (game instanceof MsPacManGame) {
-			return Optional.of(msPacManRendering);
-		} else {
-			return Optional.of(pacManClassicRendering);
-		}
-	}
-
-	@Override
-	public Optional<SoundManager> sounds() {
-		if (muted) {
-			// TODO that's just a hack, should have real mute functionality
-			return Optional.empty();
-		}
-		if (game instanceof MsPacManGame) {
-			return Optional.ofNullable(msPacManRendering.soundManager);
-		} else {
-			return Optional.ofNullable(pacManClassicRendering.soundManager);
-		}
-	}
-
-	@Override
-	public void mute(boolean b) {
-		this.muted = b;
-	}
-
-	@Override
-	public void setCloseHandler(Runnable handler) {
-		closeHandler = handler;
-	}
-
-	@Override
-	public String translation(String key) {
-		return TEXTS.getString(key);
-	}
-
-	@Override
-	public void updateScene() {
-		PacManGameScene scene = sceneToBeDisplayed();
-		if (displayedScene != scene) {
-			if (displayedScene != null) {
-				displayedScene.end();
-			}
-			displayedScene = scene;
-			displayedScene.start();
-		}
-		displayedScene.update();
-	}
-
-	private PacManGameScene sceneToBeDisplayed() {
-		if (game instanceof PacManClassicGame) {
-			if (game.state == PacManGameState.INTRO) {
-				return pacManClassicIntroScene;
-			} else {
-				return pacManClassicPlayScene;
-			}
-		} else if (game instanceof MsPacManGame) {
-			MsPacManGame msPacManGame = (MsPacManGame) game;
-			if (msPacManGame.state == PacManGameState.INTRO) {
-				return msPacManIntroScene;
-			} else {
-				return msPacManPlayScene;
-			}
-		} else {
-			throw new IllegalStateException();
-		}
-	}
-
-	@Override
-	public void setGame(PacManGame newGame) {
-		this.game = newGame;
-		if (game instanceof PacManClassicGame) {
-			pacManClassicIntroScene = new PacManClassicIntroScene(unscaledSizePixels, pacManClassicRendering, game);
-			pacManClassicPlayScene = new PacManClassicPlayScene(unscaledSizePixels, pacManClassicRendering, game);
-		} else if (game instanceof MsPacManGame) {
-			MsPacManGame msPacManGame = (MsPacManGame) game;
-			msPacManIntroScene = new MsPacManIntroScene(unscaledSizePixels, msPacManRendering, msPacManGame);
-			msPacManPlayScene = new MsPacManPlayScene(unscaledSizePixels, msPacManRendering, msPacManGame);
-		} else {
-			throw new IllegalArgumentException("Illegal game: " + newGame);
-		}
-		if (titleUpdateTimer != null) {
-			titleUpdateTimer.stop();
-		}
-		titleUpdateTimer = new Timer(1000,
-				e -> window.setTitle(String.format("%s (%d fps)", game.pac.name, clock.frequency)));
-		titleUpdateTimer.start();
 	}
 
 	@Override
@@ -302,6 +191,128 @@ public class PacManGameSwingUI implements PacManGameUI {
 		} while (buffers.contentsLost());
 	}
 
+	@Override
+	public Optional<PacManGameAnimations> animations() {
+		if (game instanceof MsPacManGame) {
+			return Optional.of(msPacManRendering);
+		} else {
+			return Optional.of(pacManClassicRendering);
+		}
+	}
+
+	@Override
+	public Optional<SoundManager> sounds() {
+		if (muted) {
+			// TODO that's just a hack, should have real mute functionality
+			return Optional.empty();
+		}
+		if (game instanceof MsPacManGame) {
+			return Optional.ofNullable(msPacManRendering.soundManager);
+		} else {
+			return Optional.ofNullable(pacManClassicRendering.soundManager);
+		}
+	}
+
+	@Override
+	public void mute(boolean b) {
+		this.muted = b;
+	}
+
+	@Override
+	public void setGame(PacManGame newGame) {
+		this.game = newGame;
+		if (game instanceof PacManClassicGame) {
+			pacManClassicIntroScene = new PacManClassicIntroScene(unscaledSizePixels, pacManClassicRendering, game);
+			pacManClassicPlayScene = new PacManClassicPlayScene(unscaledSizePixels, pacManClassicRendering, game);
+		} else if (game instanceof MsPacManGame) {
+			MsPacManGame msPacManGame = (MsPacManGame) game;
+			msPacManIntroScene = new MsPacManIntroScene(unscaledSizePixels, msPacManRendering, msPacManGame);
+			msPacManPlayScene = new MsPacManPlayScene(unscaledSizePixels, msPacManRendering, msPacManGame);
+		} else {
+			throw new IllegalArgumentException("Illegal game: " + newGame);
+		}
+		if (titleUpdateTimer != null) {
+			titleUpdateTimer.stop();
+		}
+		titleUpdateTimer = new Timer(1000,
+				e -> window.setTitle(String.format("%s (%d fps)", game.pac.name, clock.frequency)));
+		titleUpdateTimer.start();
+	}
+
+	@Override
+	public void setCloseHandler(Runnable handler) {
+		closeHandler = handler;
+	}
+
+	@Override
+	public String translation(String key) {
+		return TEXTS.getString(key);
+	}
+
+	@Override
+	public boolean keyPressed(String keySpec) {
+		boolean pressed = keyboard.keyPressed(keySpec);
+		keyboard.clearKey(keySpec); // TODO
+		return pressed;
+	}
+
+	@Override
+	public void updateScene() {
+		PacManGameScene scene = sceneToBeDisplayed();
+		if (displayedScene != scene) {
+			if (displayedScene != null) {
+				displayedScene.end();
+			}
+			displayedScene = scene;
+			displayedScene.start();
+		}
+		displayedScene.update();
+	}
+
+	private void handleKeyboardInput(KeyEvent e) {
+		switch (e.getKeyCode()) {
+		case KEY_SMOOTH_RENDERING:
+			smoothRendering = !smoothRendering;
+			log("Smooth rendering is %s", smoothRendering ? "on" : "off");
+			break;
+		case KEY_SLOWMODE:
+			clock.targetFrequency = clock.targetFrequency == 60 ? 30 : 60;
+			log("Clock frequency changed to %d Hz", clock.targetFrequency);
+			showFlashMessage(clock.targetFrequency == 60 ? "Normal speed" : "Slow speed");
+			break;
+		case KEY_FASTMODE:
+			clock.targetFrequency = clock.targetFrequency == 60 ? 120 : 60;
+			log("Clock frequency changed to %d Hz", clock.targetFrequency);
+			showFlashMessage(clock.targetFrequency == 60 ? "Normal speed" : "Fast speed");
+			break;
+		case KEY_DEBUGMODE:
+			DebugRendering.on = !DebugRendering.on;
+			log("UI debug mode is %s", DebugRendering.on ? "on" : "off");
+			break;
+		default:
+			break;
+		}
+	}
+
+	private PacManGameScene sceneToBeDisplayed() {
+		if (game instanceof PacManClassicGame) {
+			if (game.state == PacManGameState.INTRO) {
+				return pacManClassicIntroScene;
+			} else {
+				return pacManClassicPlayScene;
+			}
+		} else if (game instanceof MsPacManGame) {
+			MsPacManGame msPacManGame = (MsPacManGame) game;
+			if (msPacManGame.state == PacManGameState.INTRO) {
+				return msPacManIntroScene;
+			} else {
+				return msPacManPlayScene;
+			}
+		} else {
+			throw new IllegalStateException();
+		}
+	}
+
 	private void drawFlashMessages(Graphics2D g) {
 		if (flashMessages.size() > 0 && flashMessageTicksLeft > 0) {
 			float t = FLASH_MESSAGE_TICKS - flashMessageTicksLeft;
@@ -322,13 +333,6 @@ public class PacManGameSwingUI implements PacManGameUI {
 				}
 			}
 		}
-	}
-
-	@Override
-	public boolean keyPressed(String keySpec) {
-		boolean pressed = keyboard.keyPressed(keySpec);
-		keyboard.clearKey(keySpec); // TODO
-		return pressed;
 	}
 
 	private void moveMousePointerOutOfSight() {

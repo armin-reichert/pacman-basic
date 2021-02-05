@@ -117,7 +117,8 @@ public class PacManClassicRendering implements PacManGameAnimations {
 		if (energizerBlinking().isRunning() && energizerBlinking().animate()) {
 			game.level.world.energizerTiles().forEach(tile -> {
 				g.setColor(Color.BLACK);
-				g.fillRect(t(tile.x), t(tile.y), TS, TS);
+				// when smooth rendering is on, some artifacts remain, so draw a 2 pixel wider square
+				g.fillRect(t(tile.x) - 1, t(tile.y) - 1, TS + 2, TS + 2);
 			});
 		}
 		drawBonus(g, game.bonus);

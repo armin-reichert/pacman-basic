@@ -92,6 +92,7 @@ public class PacManClassicIntroScene implements PacManGameScene {
 	@Override
 	public void draw(Graphics2D g) {
 		rendering.drawScore(g, game);
+
 		g.setColor(Color.WHITE);
 		g.setFont(rendering.assets.scoreFont);
 		g.drawString(rendering.translator.apply("CHARACTER_NICKNAME"), t(6), t(headingTileY));
