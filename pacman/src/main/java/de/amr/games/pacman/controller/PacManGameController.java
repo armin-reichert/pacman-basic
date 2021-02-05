@@ -78,13 +78,13 @@ public class PacManGameController {
 	}
 
 	public void gameLoop() {
-		while (true)
+		while (true) {
 			clock.tick(this::doOneFrame);
+		}
 	}
 
 	private void doOneFrame() {
-		readInput();
-		updateState();
+		updateGameState();
 		ui.render();
 	}
 
@@ -157,12 +157,6 @@ public class PacManGameController {
 		String msg = game.pac.name + " is " + (game.pac.immune ? "immune" : "vulnerable");
 		ui.showFlashMessage(msg);
 		log(msg);
-	}
-
-	private void readInput() {
-		if (ui.keyPressed("escape")) {
-			reset(true);
-		}
 	}
 
 	private void getReadyToRumble() {
@@ -566,7 +560,11 @@ public class PacManGameController {
 		return game.state;
 	}
 
-	private void updateState() {
+	private void updateGameState() {
+		if (ui.keyPressed("escape")) {
+			reset(true);
+			return;
+		}
 		handleCheatsAndStuff();
 		switch (game.state) {
 		case INTRO:
