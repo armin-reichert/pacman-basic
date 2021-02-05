@@ -72,6 +72,8 @@ class PacManClassicAssets extends Spritesheet {
 	public PacManClassicAssets() {
 		super(image("/worlds/classic/sprites.png"), 16);
 
+		scoreFont = font("/emulogic.ttf", 8);
+
 		gameLogo = image("/worlds/classic/logo.png");
 		mazeFull = image("/worlds/classic/maze_full.png");
 		mazeEmpty = image("/worlds/classic/maze_empty.png");
@@ -95,8 +97,6 @@ class PacManClassicAssets extends Spritesheet {
 		numbers.put(3000, spritesAt(3, 11, 3, 1));
 		numbers.put(5000, spritesAt(3, 12, 3, 1));
 		//@formatter:on
-
-		scoreFont = font("/PressStart2P-Regular.ttf", 8);
 
 		// Animations
 

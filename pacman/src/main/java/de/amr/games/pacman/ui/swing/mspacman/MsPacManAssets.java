@@ -64,6 +64,8 @@ class MsPacManAssets extends Spritesheet {
 	public MsPacManAssets() {
 		super(image("/worlds/mspacman/sprites.png"), 16);
 
+		scoreFont = font("/emulogic.ttf", 8);
+
 		// Left part of spritesheet contains the 6 mazes, rest is on the right
 		mazesFull = new ArrayList<>(6);
 		mazesFlashing = new ArrayList<>(6);
@@ -152,8 +154,6 @@ class MsPacManAssets extends Spritesheet {
 		soundMap.put(PacManGameSound.GHOST_SIREN_4,    url("/sound/mspacman/Ghost Noise 3.wav"));
 		soundMap.put(PacManGameSound.GHOST_SIREN_5,    url("/sound/mspacman/Ghost Noise 4.wav"));
 		//@formatter:on
-
-		scoreFont = font("/PressStart2P-Regular.ttf", 8);
 	}
 
 	/**
