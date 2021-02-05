@@ -290,21 +290,16 @@ public class PacManGameSwingUI implements PacManGameUI {
 				if (smoothRendering) {
 					g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 				}
-				drawCurrentScene(g);
+				if (displayedScene != null) {
+					displayedScene.update();
+					g.scale(scaling, scaling);
+					displayedScene.draw(g);
+					drawFlashMessages(g);
+				}
 				g.dispose();
 			} while (buffers.contentsRestored());
 			buffers.show();
 		} while (buffers.contentsLost());
-	}
-
-	private void drawCurrentScene(Graphics2D g) {
-		if (displayedScene != null) {
-			Graphics2D g2 = (Graphics2D) g.create();
-			g2.scale(scaling, scaling);
-			displayedScene.draw(g2);
-			drawFlashMessages(g2);
-			g2.dispose();
-		}
 	}
 
 	private void drawFlashMessages(Graphics2D g) {
