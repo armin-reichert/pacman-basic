@@ -64,6 +64,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 	static final int KEY_SLOWMODE = KeyEvent.VK_S;
 	static final int KEY_FASTMODE = KeyEvent.VK_F;
 	static final int KEY_DEBUGMODE = KeyEvent.VK_D;
+	static final int KEY_SMOOTH_RENDERING = KeyEvent.VK_R;
 	static final int FLASH_MESSAGE_TICKS = 90;
 
 	public static URL url(String path) {
@@ -97,6 +98,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 	private final List<String> flashMessages = new ArrayList<>();
 	private long flashMessageTicksLeft;
 
+	private boolean smoothRendering;
 	private boolean muted;
 
 	private Timer titleUpdateTimer;
@@ -131,19 +133,27 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 			@Override
 			public void keyPressed(KeyEvent e) {
-				if (e.getKeyCode() == KEY_SLOWMODE) {
+				switch (e.getKeyCode()) {
+				case KEY_SMOOTH_RENDERING:
+					smoothRendering = !smoothRendering;
+					log("Smooth rendering is %s", smoothRendering ? "on" : "off");
+					break;
+				case KEY_SLOWMODE:
 					clock.targetFrequency = clock.targetFrequency == 60 ? 30 : 60;
 					log("Clock frequency changed to %d Hz", clock.targetFrequency);
 					showFlashMessage(clock.targetFrequency == 60 ? "Normal speed" : "Slow speed");
-				}
-				if (e.getKeyCode() == KEY_FASTMODE) {
+					break;
+				case KEY_FASTMODE:
 					clock.targetFrequency = clock.targetFrequency == 60 ? 120 : 60;
 					log("Clock frequency changed to %d Hz", clock.targetFrequency);
 					showFlashMessage(clock.targetFrequency == 60 ? "Normal speed" : "Fast speed");
-				}
-				if (e.getKeyCode() == KEY_DEBUGMODE) {
+					break;
+				case KEY_DEBUGMODE:
 					DebugRendering.on = !DebugRendering.on;
 					log("UI debug mode is %s", DebugRendering.on ? "on" : "off");
+					break;
+				default:
+					break;
 				}
 			}
 		});
@@ -302,7 +312,9 @@ public class PacManGameSwingUI implements PacManGameUI {
 				Graphics2D g = (Graphics2D) buffers.getDrawGraphics();
 				g.setColor(canvas.getBackground());
 				g.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
-				g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+				if (smoothRendering) {
+					g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+				}
 				drawCurrentScene(g);
 				g.dispose();
 			} while (buffers.contentsRestored());
