@@ -1,5 +1,7 @@
 package de.amr.games.pacman.lib;
 
+import static de.amr.games.pacman.lib.Logging.log;
+
 /**
  * A clock producing the ticks driving the game.
  * 
@@ -32,7 +34,7 @@ public class Clock {
 			ticksCounted = 0;
 			ticksCountStart = System.nanoTime();
 		}
-		long sleep = Math.max(1_000_000_000 / targetFrequency - duration, 0);
+		long sleep = Math.max(1_000_000_000L / targetFrequency - duration, 0);
 		if (sleep > 0) {
 			try {
 				Thread.sleep(sleep / 1_000_000); // nanos -> millis
@@ -40,6 +42,7 @@ public class Clock {
 				x.printStackTrace();
 			}
 		}
+		log("work time: %.2g, sleep time: %.2g", duration / 1000_000.0, sleep / 1000_000.0);
 	}
 
 	/**
