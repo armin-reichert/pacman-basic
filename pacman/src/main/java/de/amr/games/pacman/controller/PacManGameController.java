@@ -79,10 +79,10 @@ public class PacManGameController {
 
 	public void gameLoop() {
 		while (true)
-			clock.tick(this::step);
+			clock.tick(this::doOneFrame);
 	}
 
-	public void step() {
+	private void doOneFrame() {
 		readInput();
 		updateState();
 		ui.render();
