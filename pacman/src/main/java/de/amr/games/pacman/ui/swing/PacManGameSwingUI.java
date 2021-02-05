@@ -64,7 +64,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 	static final int KEY_SLOWMODE = KeyEvent.VK_S;
 	static final int KEY_FASTMODE = KeyEvent.VK_F;
 	static final int KEY_DEBUGMODE = KeyEvent.VK_D;
-	static final int FLASH_MESSAGE_TICKS = 60;
+	static final int FLASH_MESSAGE_TICKS = 90;
 
 	public static URL url(String path) {
 		return PacManGameSwingUI.class.getResource(path);
