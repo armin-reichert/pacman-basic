@@ -25,7 +25,7 @@ import de.amr.games.pacman.ui.swing.Spritesheet;
  * 
  * @author Armin Reichert
  */
-class MsPacManAssets extends Spritesheet {
+public class MsPacManAssets extends Spritesheet {
 
 	/** Sprite sheet order of directions. */
 	static int index(Direction dir) {

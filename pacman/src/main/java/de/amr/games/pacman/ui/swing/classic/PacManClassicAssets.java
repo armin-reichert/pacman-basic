@@ -31,7 +31,7 @@ import de.amr.games.pacman.ui.swing.Spritesheet;
  * 
  * @author Armin Reichert
  */
-class PacManClassicAssets extends Spritesheet {
+public class PacManClassicAssets extends Spritesheet {
 
 	/** Sprite sheet order of directions. */
 	static int index(Direction dir) {
@@ -158,5 +158,9 @@ class PacManClassicAssets extends Spritesheet {
 		soundMap.put(PacManGameSound.GHOST_SIREN_4,    url("/sound/classic/siren_4.wav"));
 		soundMap.put(PacManGameSound.GHOST_SIREN_5,    url("/sound/classic/siren_5.wav"));
 		//@formatter:on
+	}
+
+	public Font getScoreFont() {
+		return scoreFont;
 	}
 }

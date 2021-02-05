@@ -93,7 +93,6 @@ public class PacManGameSwingUI implements PacManGameUI {
 	private final Canvas canvas;
 	private final Keyboard keyboard;
 
-	private final Font messageFont;
 	private final List<Message> messages = new ArrayList<>();
 	private final List<String> flashMessages = new ArrayList<>();
 	private long flashMessageTicksLeft;
@@ -165,8 +164,6 @@ public class PacManGameSwingUI implements PacManGameUI {
 		canvas.setFocusable(false);
 		window.add(canvas);
 
-		messageFont = font("/PressStart2P-Regular.ttf", 8).deriveFont(Font.PLAIN);
-
 		pacManClassicRendering = new PacManClassicRendering(this::translation);
 		msPacManRendering = new MsPacManRendering(this::translation);
 		setGame(game);
@@ -195,8 +192,8 @@ public class PacManGameSwingUI implements PacManGameUI {
 	}
 
 	@Override
-	public void mute(boolean muted) {
-		this.muted = muted;
+	public void mute(boolean b) {
+		this.muted = b;
 	}
 
 	@Override
@@ -324,6 +321,8 @@ public class PacManGameSwingUI implements PacManGameUI {
 	}
 
 	private void drawMessages(Graphics2D g) {
+		Font messageFont = game instanceof MsPacManGame ? msPacManRendering.assets.getScoreFont()
+				: pacManClassicRendering.assets.getScoreFont();
 		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 		messages.stream().forEach(message -> {
 			g.setFont(messageFont);
