@@ -179,7 +179,7 @@ public class MsPacManIntroScene implements PacManGameScene {
 		g.setColor(Color.ORANGE);
 		g.setFont(rendering.assets.getScoreFont());
 		if (blinking.animate()) {
-			drawHCenteredText(g, rendering.translator.apply("PRESS_KEY_TO_PLAY"), size.y - 20);
+			drawHCenteredText(g, rendering.translator.apply("PRESS_KEY_TO_PLAY"), t(31));
 		}
 	}
 
