@@ -60,8 +60,8 @@ import de.amr.games.pacman.ui.swing.classic.PacManClassicRendering;
  */
 public class PacManGameController {
 
-	private PacManGameUI ui;
-	private PacManGame game;
+	public PacManGameUI ui;
+	public PacManGame game;
 
 	private Autopilot autopilot;
 	private boolean autopilotOn;
@@ -75,6 +75,29 @@ public class PacManGameController {
 		} else {
 			playMsPacMan();
 		}
+	}
+
+	public void gameLoop() {
+		while (true)
+			clock.tick(this::step);
+	}
+
+	public void step() {
+		readInput();
+		updateState();
+		ui.redraw();
+	}
+
+	public void setUI(PacManGameUI ui) {
+		this.ui = ui;
+		ui.setCloseHandler(() -> {
+			game.saveHighscore();
+			log("Pac-Man game UI closed");
+		});
+	}
+
+	public void showUI() {
+		ui.show();
 	}
 
 	public void playPacManClassic() {
@@ -107,33 +130,6 @@ public class PacManGameController {
 		ui.clearMessages();
 		changeState(INTRO, () -> {
 		}, this::enterIntroState);
-	}
-
-	public void gameLoop() {
-		while (true)
-			clock.tick(this::step);
-	}
-
-	public void step() {
-		readInput();
-		updateState();
-		ui.redraw();
-	}
-
-	public void setUI(PacManGameUI ui) {
-		this.ui = ui;
-		ui.setCloseHandler(() -> {
-			game.saveHighscore();
-			log("Pac-Man game UI closed");
-		});
-	}
-
-	public void showUI() {
-		ui.show();
-	}
-
-	public PacManGame game() {
-		return game;
 	}
 
 	private Optional<SoundManager> sounds() {
