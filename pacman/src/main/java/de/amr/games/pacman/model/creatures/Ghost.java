@@ -121,8 +121,11 @@ public class Ghost extends Creature {
 		if (world.isGhostHouseDoor(tile)) {
 			return is(ENTERING_HOUSE) || is(LEAVING_HOUSE);
 		}
-		if (world.isUpwardsBlocked(tile) && wishDir == UP && is(HUNTING_PAC)) {
-			return false;
+		if (world.isUpwardsBlocked(tile)) {
+			if (offset().y != 0) {
+				return true; // maybe already on the way up
+			}
+			return !is(HUNTING_PAC);
 		}
 		return super.canAccessTile(tile);
 	}
