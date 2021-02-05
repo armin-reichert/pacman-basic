@@ -154,7 +154,7 @@ public class PacManClassicIntroScene implements PacManGameScene {
 			Color color = rendering.assets.ghostColors[id];
 			g.setColor(color);
 			g.setFont(rendering.assets.scoreFont);
-			g.drawString(nickname, t(18), y + 8);
+			g.drawString(nickname, t(17), y + 8);
 		}
 	}
 
