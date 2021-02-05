@@ -302,6 +302,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 				Graphics2D g = (Graphics2D) buffers.getDrawGraphics();
 				g.setColor(canvas.getBackground());
 				g.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+				g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 				drawCurrentScene(g);
 				g.dispose();
 			} while (buffers.contentsRestored());
