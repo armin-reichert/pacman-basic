@@ -30,14 +30,14 @@ import de.amr.games.pacman.ui.swing.Spritesheet;
  * 
  * @author Armin Reichert
  */
-public class MsPacManRendering implements SpriteBasedRendering, PacManGameAnimations {
+public class MsPacManGameRendering implements SpriteBasedRendering, PacManGameAnimations {
 
-	public final MsPacManAssets assets;
+	public final MsPacManGameAssets assets;
 	public final PacManGameSoundManager soundManager;
 	public final Function<String, String> translator;
 
-	public MsPacManRendering(Function<String, String> translator) {
-		assets = new MsPacManAssets();
+	public MsPacManGameRendering(Function<String, String> translator) {
+		assets = new MsPacManGameAssets();
 		soundManager = new PacManGameSoundManager(assets.soundMap::get);
 		this.translator = translator;
 	}

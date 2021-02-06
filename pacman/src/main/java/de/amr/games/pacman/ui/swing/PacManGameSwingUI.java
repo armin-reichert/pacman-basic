@@ -39,12 +39,12 @@ import de.amr.games.pacman.ui.api.PacManGameAnimations;
 import de.amr.games.pacman.ui.api.PacManGameScene;
 import de.amr.games.pacman.ui.api.PacManGameUI;
 import de.amr.games.pacman.ui.sound.SoundManager;
-import de.amr.games.pacman.ui.swing.mspacman.MsPacManIntroScene;
-import de.amr.games.pacman.ui.swing.mspacman.MsPacManPlayScene;
-import de.amr.games.pacman.ui.swing.mspacman.MsPacManRendering;
-import de.amr.games.pacman.ui.swing.pacman.PacManIntroScene;
-import de.amr.games.pacman.ui.swing.pacman.PacManPlayScene;
-import de.amr.games.pacman.ui.swing.pacman.PacManRendering;
+import de.amr.games.pacman.ui.swing.mspacman.MsPacManGameIntroScene;
+import de.amr.games.pacman.ui.swing.mspacman.MsPacManGamePlayScene;
+import de.amr.games.pacman.ui.swing.mspacman.MsPacManGameRendering;
+import de.amr.games.pacman.ui.swing.pacman.PacManGameIntroScene;
+import de.amr.games.pacman.ui.swing.pacman.PacManGamePlayScene;
+import de.amr.games.pacman.ui.swing.pacman.PacManGameRendering;
 
 /**
  * Swing UI for Pac-Man game.
@@ -99,14 +99,14 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 	private PacManGameScene displayedScene;
 
-	private PacManIntroScene pacManClassicIntroScene;
-	private PacManPlayScene pacManClassicPlayScene;
+	private PacManGameIntroScene pacManClassicIntroScene;
+	private PacManGamePlayScene pacManClassicPlayScene;
 
-	private MsPacManIntroScene msPacManIntroScene;
-	private MsPacManPlayScene msPacManPlayScene;
+	private MsPacManGameIntroScene msPacManIntroScene;
+	private MsPacManGamePlayScene msPacManPlayScene;
 
-	private PacManRendering pacManRendering;
-	private MsPacManRendering msPacManRendering;
+	private PacManGameRendering pacManRendering;
+	private MsPacManGameRendering msPacManRendering;
 
 	public PacManGameSwingUI(AbstractPacManGame game, float scaling) {
 		this.scaling = scaling;
@@ -143,8 +143,8 @@ public class PacManGameSwingUI implements PacManGameUI {
 		canvas.setFocusable(false);
 		window.getContentPane().add(canvas);
 
-		pacManRendering = new PacManRendering(this::translation);
-		msPacManRendering = new MsPacManRendering(this::translation);
+		pacManRendering = new PacManGameRendering(this::translation);
+		msPacManRendering = new MsPacManGameRendering(this::translation);
 
 		setGame(game);
 	}
@@ -218,12 +218,12 @@ public class PacManGameSwingUI implements PacManGameUI {
 	public void setGame(AbstractPacManGame newGame) {
 		this.game = newGame;
 		if (game instanceof PacManGame) {
-			pacManClassicIntroScene = new PacManIntroScene(unscaledSize_px, pacManRendering, game);
-			pacManClassicPlayScene = new PacManPlayScene(unscaledSize_px, pacManRendering, game);
+			pacManClassicIntroScene = new PacManGameIntroScene(unscaledSize_px, pacManRendering, game);
+			pacManClassicPlayScene = new PacManGamePlayScene(unscaledSize_px, pacManRendering, game);
 		} else if (game instanceof MsPacManGame) {
 			MsPacManGame msPacManGame = (MsPacManGame) game;
-			msPacManIntroScene = new MsPacManIntroScene(unscaledSize_px, msPacManRendering, msPacManGame);
-			msPacManPlayScene = new MsPacManPlayScene(unscaledSize_px, msPacManRendering, msPacManGame);
+			msPacManIntroScene = new MsPacManGameIntroScene(unscaledSize_px, msPacManRendering, msPacManGame);
+			msPacManPlayScene = new MsPacManGamePlayScene(unscaledSize_px, msPacManRendering, msPacManGame);
 		} else {
 			throw new IllegalArgumentException("Illegal game: " + newGame);
 		}

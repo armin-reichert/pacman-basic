@@ -34,16 +34,16 @@ import de.amr.games.pacman.ui.swing.Spritesheet;
  * 
  * @author Armin Reichert
  */
-public class PacManRendering implements SpriteBasedRendering, PacManGameAnimations {
+public class PacManGameRendering implements SpriteBasedRendering, PacManGameAnimations {
 
 	public static boolean foodAnimationOn = false;
 
-	public final PacManAssets assets;
+	public final PacManGameAssets assets;
 	public final PacManGameSoundManager soundManager;
 	public final Function<String, String> translator;
 
-	public PacManRendering(Function<String, String> translator) {
-		assets = new PacManAssets();
+	public PacManGameRendering(Function<String, String> translator) {
+		assets = new PacManGameAssets();
 		soundManager = new PacManGameSoundManager(assets.soundMap::get);
 		this.translator = translator;
 	}

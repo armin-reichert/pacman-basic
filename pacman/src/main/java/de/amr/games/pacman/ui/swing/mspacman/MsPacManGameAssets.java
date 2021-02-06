@@ -25,7 +25,7 @@ import de.amr.games.pacman.ui.swing.Spritesheet;
  * 
  * @author Armin Reichert
  */
-public class MsPacManAssets extends Spritesheet {
+public class MsPacManGameAssets extends Spritesheet {
 
 	/** Sprite sheet order of directions. */
 	static int index(Direction dir) {
@@ -61,7 +61,7 @@ public class MsPacManAssets extends Spritesheet {
 	final Map<PacManGameSound, URL> soundMap;
 	final Font scoreFont;
 
-	public MsPacManAssets() {
+	public MsPacManGameAssets() {
 		super(image("/mspacman/graphics/sprites.png"), 16);
 
 		scoreFont = font("/emulogic.ttf", 8);

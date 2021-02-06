@@ -5,7 +5,7 @@ import java.awt.Graphics2D;
 import de.amr.games.pacman.model.AbstractPacManGame;
 import de.amr.games.pacman.model.creatures.Creature;
 
-public interface PacManGameRendering {
+public interface PacManGameRenderingAPI {
 
 	void signalReadyState(Graphics2D g);
 

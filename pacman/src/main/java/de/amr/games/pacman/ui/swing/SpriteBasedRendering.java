@@ -12,7 +12,7 @@ import de.amr.games.pacman.model.creatures.Creature;
 import de.amr.games.pacman.model.creatures.Ghost;
 import de.amr.games.pacman.model.creatures.Pac;
 
-public interface SpriteBasedRendering extends PacManGameRendering {
+public interface SpriteBasedRendering extends PacManGameRenderingAPI {
 
 	Spritesheet spritesheet();
 

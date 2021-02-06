@@ -10,6 +10,7 @@ import static de.amr.games.pacman.world.PacManGameWorld.t;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.util.stream.IntStream;
 
 import de.amr.games.pacman.lib.Animation;
@@ -25,10 +26,10 @@ import de.amr.games.pacman.ui.api.PacManGameScene;
  * 
  * @author Armin Reichert
  */
-public class PacManIntroScene implements PacManGameScene {
+public class PacManGameIntroScene implements PacManGameScene {
 
 	private final V2i size;
-	private final PacManRendering rendering;
+	private final PacManGameRendering rendering;
 	private final AbstractPacManGame game;
 
 	private final Animation<Boolean> blinking = Animation.pulse().frameDuration(30);
@@ -45,7 +46,7 @@ public class PacManIntroScene implements PacManGameScene {
 	private long ghostDyingTimer;
 	private long completedTime;
 
-	public PacManIntroScene(V2i size, PacManRendering rendering, AbstractPacManGame game) {
+	public PacManGameIntroScene(V2i size, PacManGameRendering rendering, AbstractPacManGame game) {
 		this.size = size;
 		this.game = game;
 		this.rendering = rendering;
@@ -144,6 +145,7 @@ public class PacManIntroScene implements PacManGameScene {
 	private void introduceGhost(Graphics2D g, int id, int y, boolean showCharacter, boolean showNickname) {
 		Graphics2D g2 = rendering.smoothGC(g);
 		g2.drawImage(rendering.assets.ghostsWalking.get(id).get(RIGHT).frame(), t(3), y - 4, null);
+		g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 		if (showCharacter) {
 			String character = rendering.translator.apply("CLASSIC.GHOST." + id + ".CHARACTER");
 			Color color = rendering.assets.ghostColors[id];

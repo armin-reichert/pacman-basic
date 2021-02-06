@@ -18,12 +18,12 @@ import de.amr.games.pacman.model.MsPacManGame;
 import de.amr.games.pacman.model.creatures.Ghost;
 import de.amr.games.pacman.ui.api.PacManGameScene;
 
-public class MsPacManIntroScene implements PacManGameScene {
+public class MsPacManGameIntroScene implements PacManGameScene {
 
 	private static final Color[] GHOST_COLORS = { Color.RED, Color.PINK, Color.CYAN, Color.ORANGE };
 
 	private final V2i size;
-	private final MsPacManRendering rendering;
+	private final MsPacManGameRendering rendering;
 	private final MsPacManGame game;
 
 	private final Animation<Boolean> blinking = Animation.pulse().frameDuration(30);
@@ -36,7 +36,7 @@ public class MsPacManIntroScene implements PacManGameScene {
 
 	private long completedTime;
 
-	public MsPacManIntroScene(V2i size, MsPacManRendering rendering, MsPacManGame game) {
+	public MsPacManGameIntroScene(V2i size, MsPacManGameRendering rendering, MsPacManGame game) {
 		this.size = size;
 		this.game = game;
 		this.rendering = rendering;
