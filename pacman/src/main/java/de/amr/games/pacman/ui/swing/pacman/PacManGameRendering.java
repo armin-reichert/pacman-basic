@@ -134,7 +134,9 @@ public class PacManGameRendering implements SpriteBasedRendering, PacManGameAnim
 	}
 
 	private void drawFood(Graphics2D g, AbstractPacManGame game) {
-		g.drawImage(assets.mazeFull, 0, t(3), null);
+		Graphics2D g2 = smoothGC(g);
+		g2.drawImage(assets.mazeFull, 0, t(3), null);
+		g2.dispose();
 		game.level.world.tiles().filter(game.level::containsEatenFood).forEach(tile -> {
 			g.setColor(Color.BLACK);
 			g.fillRect(t(tile.x), t(tile.y), TS, TS);

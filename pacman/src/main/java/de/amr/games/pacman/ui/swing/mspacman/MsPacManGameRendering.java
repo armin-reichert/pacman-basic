@@ -165,10 +165,10 @@ public class MsPacManGameRendering implements SpriteBasedRendering, PacManGameAn
 		if (energizerBlinking().isRunning() && energizerBlinking().animate()) {
 			game.level.world.energizerTiles().forEach(tile -> {
 				g.setColor(Color.BLACK);
-				g.fillRect(t(tile.x), t(tile.y), TS, TS);
+				g.fillRect(t(tile.x) - 1, t(tile.y) - 1, TS + 2, TS + 2);
 			});
 		}
-		int dy = assets.bonusJumps.animate();
+		int dy = game.bonus.edibleTicksLeft > 0 ? assets.bonusJumps.animate() : 0;
 		g.translate(0, dy);
 		drawGuy(g, game.bonus, game);
 		g.translate(0, -dy);
