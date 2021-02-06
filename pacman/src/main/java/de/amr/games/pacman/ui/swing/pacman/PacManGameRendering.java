@@ -25,8 +25,8 @@ import de.amr.games.pacman.model.creatures.Bonus;
 import de.amr.games.pacman.model.creatures.Ghost;
 import de.amr.games.pacman.model.creatures.Pac;
 import de.amr.games.pacman.ui.api.PacManGameAnimations;
+import de.amr.games.pacman.ui.api.SpriteBasedRendering;
 import de.amr.games.pacman.ui.sound.PacManGameSoundManager;
-import de.amr.games.pacman.ui.swing.SpriteBasedRendering;
 import de.amr.games.pacman.ui.swing.Spritesheet;
 
 /**
