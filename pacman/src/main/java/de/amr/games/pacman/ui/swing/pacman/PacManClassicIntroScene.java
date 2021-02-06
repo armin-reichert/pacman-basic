@@ -1,4 +1,4 @@
-package de.amr.games.pacman.ui.swing.classic;
+package de.amr.games.pacman.ui.swing.pacman;
 
 import static de.amr.games.pacman.heaven.God.clock;
 import static de.amr.games.pacman.heaven.God.differsAtMost;
@@ -15,7 +15,7 @@ import java.util.stream.IntStream;
 import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.model.PacManGame;
+import de.amr.games.pacman.model.AbstractPacManGame;
 import de.amr.games.pacman.model.creatures.Ghost;
 import de.amr.games.pacman.model.creatures.Pac;
 import de.amr.games.pacman.ui.api.PacManGameScene;
@@ -29,7 +29,7 @@ public class PacManClassicIntroScene implements PacManGameScene {
 
 	private final V2i size;
 	private final PacManClassicRendering rendering;
-	private final PacManGame game;
+	private final AbstractPacManGame game;
 
 	private final Animation<Boolean> blinking = Animation.pulse().frameDuration(30);
 	private final int headingTileY = 6;
@@ -45,7 +45,7 @@ public class PacManClassicIntroScene implements PacManGameScene {
 	private long ghostDyingTimer;
 	private long completedTime;
 
-	public PacManClassicIntroScene(V2i size, PacManClassicRendering rendering, PacManGame game) {
+	public PacManClassicIntroScene(V2i size, PacManClassicRendering rendering, AbstractPacManGame game) {
 		this.size = size;
 		this.game = game;
 		this.rendering = rendering;

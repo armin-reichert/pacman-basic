@@ -17,7 +17,7 @@ import java.util.function.Function;
 import de.amr.games.pacman.controller.PacManGameState;
 import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.Direction;
-import de.amr.games.pacman.model.PacManGame;
+import de.amr.games.pacman.model.AbstractPacManGame;
 import de.amr.games.pacman.model.creatures.Bonus;
 import de.amr.games.pacman.model.creatures.Creature;
 import de.amr.games.pacman.model.creatures.Ghost;
@@ -95,7 +95,7 @@ public class MsPacManRendering implements PacManGameAnimations {
 		g.drawString(translator.apply("OVER"), t(15), t(21));
 	}
 
-	public void drawScore(Graphics2D g, PacManGame game) {
+	public void drawScore(Graphics2D g, AbstractPacManGame game) {
 		g.setFont(assets.getScoreFont());
 		g.translate(0, 2);
 		g.setColor(Color.WHITE);
@@ -115,7 +115,7 @@ public class MsPacManRendering implements PacManGameAnimations {
 		g.translate(0, -3);
 	}
 
-	public void drawLivesCounter(Graphics2D g, PacManGame game, int x, int y) {
+	public void drawLivesCounter(Graphics2D g, AbstractPacManGame game, int x, int y) {
 		int maxLivesDisplayed = 5;
 		int livesDisplayed = game.started ? game.lives - 1 : game.lives;
 		for (int i = 0; i < Math.min(livesDisplayed, maxLivesDisplayed); ++i) {
@@ -128,7 +128,7 @@ public class MsPacManRendering implements PacManGameAnimations {
 		}
 	}
 
-	public void drawLevelCounter(Graphics2D g, PacManGame game, int rightX, int y) {
+	public void drawLevelCounter(Graphics2D g, AbstractPacManGame game, int rightX, int y) {
 		int x = rightX;
 		for (int firstlevelNumber = 1; firstlevelNumber <= Math.min(game.currentLevelNumber, 7); ++firstlevelNumber) {
 			byte symbol = game.levelSymbols.get(firstlevelNumber - 1);
@@ -137,7 +137,7 @@ public class MsPacManRendering implements PacManGameAnimations {
 		}
 	}
 
-	public void drawMaze(Graphics2D g, PacManGame game) {
+	public void drawMaze(Graphics2D g, AbstractPacManGame game) {
 		if (mazeFlashing(game.level.mazeNumber).hasStarted()) {
 			g.drawImage(mazeFlashing(game.level.mazeNumber).animate(), 0, t(3), null);
 			return;
@@ -160,7 +160,7 @@ public class MsPacManRendering implements PacManGameAnimations {
 		drawGuy(g, pac, sprite(pac));
 	}
 
-	public void drawGhost(Graphics2D g, Ghost ghost, PacManGame game) {
+	public void drawGhost(Graphics2D g, Ghost ghost, AbstractPacManGame game) {
 		drawGuy(g, ghost, sprite(ghost, game));
 	}
 
@@ -188,7 +188,7 @@ public class MsPacManRendering implements PacManGameAnimations {
 		return pac.speed == 0 || !pac.couldMove ? pacMunching(pac.dir).frame(1) : pacMunching(pac.dir).animate();
 	}
 
-	private BufferedImage sprite(Ghost ghost, PacManGame game) {
+	private BufferedImage sprite(Ghost ghost, AbstractPacManGame game) {
 		if (ghost.bounty > 0) {
 			return assets.spriteAt(assets.bountyNumbersSSL.get(ghost.bounty));
 		}

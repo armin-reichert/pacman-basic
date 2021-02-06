@@ -1,4 +1,4 @@
-package de.amr.games.pacman.ui.swing.classic;
+package de.amr.games.pacman.ui.swing.pacman;
 
 import static de.amr.games.pacman.model.creatures.GhostState.DEAD;
 import static de.amr.games.pacman.model.creatures.GhostState.ENTERING_HOUSE;
@@ -20,7 +20,7 @@ import de.amr.games.pacman.heaven.God;
 import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.model.PacManGame;
+import de.amr.games.pacman.model.AbstractPacManGame;
 import de.amr.games.pacman.model.creatures.Bonus;
 import de.amr.games.pacman.model.creatures.Creature;
 import de.amr.games.pacman.model.creatures.Ghost;
@@ -100,7 +100,7 @@ public class PacManClassicRendering implements PacManGameAnimations {
 		g.drawString(translator.apply("OVER"), t(15), t(21));
 	}
 
-	public void drawMaze(Graphics2D g, PacManGame game) {
+	public void drawMaze(Graphics2D g, AbstractPacManGame game) {
 		if (mazeFlashing(1).hasStarted()) {
 			g.drawImage(mazeFlashing(1).animate(), 0, t(3), null);
 			return;
@@ -124,7 +124,7 @@ public class PacManClassicRendering implements PacManGameAnimations {
 		drawBonus(g, game.bonus);
 	}
 
-	private void drawFood(Graphics2D g, PacManGame game) {
+	private void drawFood(Graphics2D g, AbstractPacManGame game) {
 		g.drawImage(assets.mazeFull, 0, t(3), null);
 		game.level.world.tiles().filter(game.level::containsEatenFood).forEach(tile -> {
 			g.setColor(Color.BLACK);
@@ -132,7 +132,7 @@ public class PacManClassicRendering implements PacManGameAnimations {
 		});
 	}
 
-	private void drawFoodAnimation(Graphics2D g, PacManGame game) {
+	private void drawFoodAnimation(Graphics2D g, AbstractPacManGame game) {
 		g.drawImage(assets.mazeEmpty, 0, t(3), null);
 		game.level.world.tiles().filter(game.level::containsFood).forEach(tile -> {
 			if (game.level.world.isEnergizerTile(tile)) {
@@ -153,7 +153,7 @@ public class PacManClassicRendering implements PacManGameAnimations {
 		});
 	}
 
-	public void drawScore(Graphics2D g, PacManGame game) {
+	public void drawScore(Graphics2D g, AbstractPacManGame game) {
 		g.setFont(assets.scoreFont);
 		g.translate(0, 1);
 		g.setColor(Color.WHITE);
@@ -173,7 +173,7 @@ public class PacManClassicRendering implements PacManGameAnimations {
 		g.translate(0, -2);
 	}
 
-	public void drawLivesCounter(Graphics2D g, PacManGame game, int x, int y) {
+	public void drawLivesCounter(Graphics2D g, AbstractPacManGame game, int x, int y) {
 		int maxLivesDisplayed = 5;
 		int livesDisplayed = game.started ? game.lives - 1 : game.lives;
 		for (int i = 0; i < Math.min(livesDisplayed, maxLivesDisplayed); ++i) {
@@ -186,7 +186,7 @@ public class PacManClassicRendering implements PacManGameAnimations {
 		}
 	}
 
-	public void drawLevelCounter(Graphics2D g, PacManGame game, int rightX, int y) {
+	public void drawLevelCounter(Graphics2D g, AbstractPacManGame game, int rightX, int y) {
 		int x = rightX;
 		int firstLevelNumber = Math.max(1, game.currentLevelNumber - 6);
 		for (int levelNumber = firstLevelNumber; levelNumber <= game.currentLevelNumber; ++levelNumber) {
@@ -214,7 +214,7 @@ public class PacManClassicRendering implements PacManGameAnimations {
 		}
 	}
 
-	public void drawGhost(Graphics2D g, Ghost ghost, PacManGame game) {
+	public void drawGhost(Graphics2D g, Ghost ghost, AbstractPacManGame game) {
 		drawGuy(g, ghost, sprite(ghost, game));
 	}
 
@@ -238,7 +238,7 @@ public class PacManClassicRendering implements PacManGameAnimations {
 		return pacMunching(pac.dir).animate();
 	}
 
-	private BufferedImage sprite(Ghost ghost, PacManGame game) {
+	private BufferedImage sprite(Ghost ghost, AbstractPacManGame game) {
 		if (ghost.bounty > 0) {
 			return assets.numbers.get(ghost.bounty);
 		}

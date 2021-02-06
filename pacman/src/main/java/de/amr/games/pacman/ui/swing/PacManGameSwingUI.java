@@ -33,18 +33,18 @@ import de.amr.games.pacman.controller.PacManGameState;
 import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.MsPacManGame;
-import de.amr.games.pacman.model.PacManClassicGame;
 import de.amr.games.pacman.model.PacManGame;
+import de.amr.games.pacman.model.AbstractPacManGame;
 import de.amr.games.pacman.ui.api.PacManGameAnimations;
 import de.amr.games.pacman.ui.api.PacManGameScene;
 import de.amr.games.pacman.ui.api.PacManGameUI;
 import de.amr.games.pacman.ui.sound.SoundManager;
-import de.amr.games.pacman.ui.swing.classic.PacManClassicIntroScene;
-import de.amr.games.pacman.ui.swing.classic.PacManClassicPlayScene;
-import de.amr.games.pacman.ui.swing.classic.PacManClassicRendering;
 import de.amr.games.pacman.ui.swing.mspacman.MsPacManIntroScene;
 import de.amr.games.pacman.ui.swing.mspacman.MsPacManPlayScene;
 import de.amr.games.pacman.ui.swing.mspacman.MsPacManRendering;
+import de.amr.games.pacman.ui.swing.pacman.PacManClassicIntroScene;
+import de.amr.games.pacman.ui.swing.pacman.PacManClassicPlayScene;
+import de.amr.games.pacman.ui.swing.pacman.PacManClassicRendering;
 
 /**
  * Swing UI for Pac-Man game.
@@ -97,7 +97,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 	private Timer titleUpdateTimer;
 	private Runnable closeHandler = () -> log("Pac-Man Swing UI closed");
 
-	private PacManGame game;
+	private AbstractPacManGame game;
 
 	private PacManGameScene displayedScene;
 
@@ -107,10 +107,10 @@ public class PacManGameSwingUI implements PacManGameUI {
 	private MsPacManIntroScene msPacManIntroScene;
 	private MsPacManPlayScene msPacManPlayScene;
 
-	private PacManClassicRendering pacManClassicRendering;
+	private PacManClassicRendering pacManRendering;
 	private MsPacManRendering msPacManRendering;
 
-	public PacManGameSwingUI(PacManGame game, float scaling) {
+	public PacManGameSwingUI(AbstractPacManGame game, float scaling) {
 		this.scaling = scaling;
 		unscaledSize_px = new V2i(game.level.world.xTiles() * TS, game.level.world.yTiles() * TS);
 		scaledSize_px = new V2f(unscaledSize_px).scaled(scaling).toV2i();
@@ -118,6 +118,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 		window = new JFrame();
 		window.setTitle("Pac-Man");
 		window.setResizable(false);
+		window.setFocusable(true);
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		window.setIconImage(image("/pacman/graphics/pacman.png"));
 
@@ -140,12 +141,11 @@ public class PacManGameSwingUI implements PacManGameUI {
 		keyboard = new Keyboard(window);
 
 		canvas = new Canvas();
-		canvas.setBackground(Color.BLACK);
 		canvas.setSize(scaledSize_px.x, scaledSize_px.y);
 		canvas.setFocusable(false);
-		window.add(canvas);
+		window.getContentPane().add(canvas);
 
-		pacManClassicRendering = new PacManClassicRendering(this::translation);
+		pacManRendering = new PacManClassicRendering(this::translation);
 		msPacManRendering = new MsPacManRendering(this::translation);
 
 		setGame(game);
@@ -175,7 +175,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 		do {
 			do {
 				Graphics2D g = (Graphics2D) buffers.getDrawGraphics();
-				g.setColor(canvas.getBackground());
+				g.setColor(Color.BLACK);
 				g.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 				if (smoothRendering) {
 					g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
@@ -197,7 +197,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 		if (game instanceof MsPacManGame) {
 			return Optional.of(msPacManRendering);
 		} else {
-			return Optional.of(pacManClassicRendering);
+			return Optional.of(pacManRendering);
 		}
 	}
 
@@ -210,7 +210,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 		if (game instanceof MsPacManGame) {
 			return Optional.ofNullable(msPacManRendering.soundManager);
 		} else {
-			return Optional.ofNullable(pacManClassicRendering.soundManager);
+			return Optional.ofNullable(pacManRendering.soundManager);
 		}
 	}
 
@@ -220,11 +220,11 @@ public class PacManGameSwingUI implements PacManGameUI {
 	}
 
 	@Override
-	public void setGame(PacManGame newGame) {
+	public void setGame(AbstractPacManGame newGame) {
 		this.game = newGame;
-		if (game instanceof PacManClassicGame) {
-			pacManClassicIntroScene = new PacManClassicIntroScene(unscaledSize_px, pacManClassicRendering, game);
-			pacManClassicPlayScene = new PacManClassicPlayScene(unscaledSize_px, pacManClassicRendering, game);
+		if (game instanceof PacManGame) {
+			pacManClassicIntroScene = new PacManClassicIntroScene(unscaledSize_px, pacManRendering, game);
+			pacManClassicPlayScene = new PacManClassicPlayScene(unscaledSize_px, pacManRendering, game);
 		} else if (game instanceof MsPacManGame) {
 			MsPacManGame msPacManGame = (MsPacManGame) game;
 			msPacManIntroScene = new MsPacManIntroScene(unscaledSize_px, msPacManRendering, msPacManGame);
@@ -271,7 +271,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 	}
 
 	private PacManGameScene sceneToBeDisplayed() {
-		if (game instanceof PacManClassicGame) {
+		if (game instanceof PacManGame) {
 			if (game.state == PacManGameState.INTRO) {
 				return pacManClassicIntroScene;
 			} else {

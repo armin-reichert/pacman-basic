@@ -14,7 +14,7 @@ import static de.amr.games.pacman.world.PacManGameWorld.t;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.model.PacManGameLevel;
+import de.amr.games.pacman.model.GameLevel;
 
 /**
  * A ghost.
@@ -65,7 +65,7 @@ public class Ghost extends Creature {
 	 * 
 	 * @param level current game level
 	 */
-	public void update(PacManGameLevel level) {
+	public void update(GameLevel level) {
 		switch (state) {
 		case LOCKED:
 			if (atGhostHouseDoor()) {

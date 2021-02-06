@@ -2,7 +2,7 @@ package de.amr.games.pacman.ui.api;
 
 import java.util.Optional;
 
-import de.amr.games.pacman.model.PacManGame;
+import de.amr.games.pacman.model.AbstractPacManGame;
 import de.amr.games.pacman.ui.sound.SoundManager;
 
 /**
@@ -12,7 +12,7 @@ import de.amr.games.pacman.ui.sound.SoundManager;
  */
 public interface PacManGameUI {
 
-	void setGame(PacManGame game);
+	void setGame(AbstractPacManGame game);
 
 	void setCloseHandler(Runnable handler);
 
@@ -37,7 +37,7 @@ public interface PacManGameUI {
 	public static final PacManGameUI NO_UI = new PacManGameUI() {
 
 		@Override
-		public void setGame(PacManGame game) {
+		public void setGame(AbstractPacManGame game) {
 		}
 
 		@Override

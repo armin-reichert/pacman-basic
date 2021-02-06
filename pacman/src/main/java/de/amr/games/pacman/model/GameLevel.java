@@ -12,7 +12,7 @@ import de.amr.games.pacman.world.PacManGameWorld;
  * 
  * @author Armin Reichert
  */
-public class PacManGameLevel {
+public class GameLevel {
 
 	private static float percent(int value) {
 		return value / 100f;
@@ -42,7 +42,7 @@ public class PacManGameLevel {
 	/** Ms. Pac-Man maze number (1..6) */
 	public int mazeNumber;
 
-	public PacManGameLevel(int... values) {
+	public GameLevel(int... values) {
 		int i = 0;
 		bonusSymbol = (byte) values[i++];
 		pacSpeed = percent(values[i++]);

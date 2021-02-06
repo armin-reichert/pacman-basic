@@ -5,7 +5,7 @@ import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.Direction;
-import de.amr.games.pacman.model.PacManGame;
+import de.amr.games.pacman.model.AbstractPacManGame;
 import de.amr.games.pacman.model.creatures.Ghost;
 
 public interface PacManGameAnimations {
@@ -52,7 +52,7 @@ public interface PacManGameAnimations {
 		Stream.of(Direction.values()).forEach(dir -> pacMunching(dir).restart());
 	}
 
-	default void resetAllAnimations(PacManGame game) {
+	default void resetAllAnimations(AbstractPacManGame game) {
 		energizerBlinking().reset();
 		ghostFlashing().reset();
 		game.ghosts().forEach(ghost -> {

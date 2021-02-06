@@ -17,7 +17,7 @@ import de.amr.games.pacman.world.WorldMap;
  * 
  * @author Armin Reichert
  */
-public class MsPacManGame extends PacManGame {
+public class MsPacManGame extends AbstractPacManGame {
 
 	public enum MsPacManSymbols {
 		CHERRIES, STRAWBERRY, PEACH, PRETZEL, APPLE, PEAR, BANANA;
@@ -106,7 +106,7 @@ public class MsPacManGame extends PacManGame {
 		log("Ms. Pac-Man level %d is getting created...", levelNumber);
 		int mazeNumber = mazeNumber(levelNumber);
 		world.setMap(new WorldMap("/mspacman/maps/map" + mapIndex(mazeNumber) + ".txt"));
-		level = new PacManGameLevel(LEVELS[levelNumber <= 21 ? levelNumber - 1 : 20]);
+		level = new GameLevel(LEVELS[levelNumber <= 21 ? levelNumber - 1 : 20]);
 		level.setWorld(world);
 		level.mazeNumber = mazeNumber;
 		if (levelNumber > 7) {

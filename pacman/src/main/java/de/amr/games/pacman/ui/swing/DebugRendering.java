@@ -14,14 +14,14 @@ import java.awt.Stroke;
 
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.model.PacManGame;
+import de.amr.games.pacman.model.AbstractPacManGame;
 import de.amr.games.pacman.model.creatures.Ghost;
 
 public class DebugRendering {
 
 	public static boolean on = false;
 
-	public static void drawPlaySceneDebugInfo(Graphics2D g, PacManGame game) {
+	public static void drawPlaySceneDebugInfo(Graphics2D g, AbstractPacManGame game) {
 		final Color[] GHOST_COLORS = { Color.RED, Color.PINK, Color.CYAN, Color.ORANGE };
 		long remaining = game.state.remaining();
 		String ticksText = remaining == Long.MAX_VALUE ? "forever" : remaining + " ticks remaining";
@@ -44,7 +44,7 @@ public class DebugRendering {
 		}
 	}
 
-	public static void drawMazeStructure(Graphics2D g, PacManGame game) {
+	public static void drawMazeStructure(Graphics2D g, AbstractPacManGame game) {
 		final Polygon TRIANGLE = new Polygon(new int[] { -4, 4, 0 }, new int[] { 0, 0, 4 }, 3);
 		Color dark = new Color(80, 80, 80, 200);
 		Stroke thin = new BasicStroke(0.1f);

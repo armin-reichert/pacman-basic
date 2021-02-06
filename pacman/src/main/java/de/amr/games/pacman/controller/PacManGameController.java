@@ -13,10 +13,10 @@ import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.lib.Logging.log;
-import static de.amr.games.pacman.model.PacManGame.BLINKY;
-import static de.amr.games.pacman.model.PacManGame.CLYDE;
-import static de.amr.games.pacman.model.PacManGame.INKY;
-import static de.amr.games.pacman.model.PacManGame.PINKY;
+import static de.amr.games.pacman.model.AbstractPacManGame.BLINKY;
+import static de.amr.games.pacman.model.AbstractPacManGame.CLYDE;
+import static de.amr.games.pacman.model.AbstractPacManGame.INKY;
+import static de.amr.games.pacman.model.AbstractPacManGame.PINKY;
 import static de.amr.games.pacman.model.creatures.GhostState.DEAD;
 import static de.amr.games.pacman.model.creatures.GhostState.ENTERING_HOUSE;
 import static de.amr.games.pacman.model.creatures.GhostState.FRIGHTENED;
@@ -32,13 +32,13 @@ import java.util.stream.Stream;
 import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.MsPacManGame;
-import de.amr.games.pacman.model.PacManClassicGame;
 import de.amr.games.pacman.model.PacManGame;
+import de.amr.games.pacman.model.AbstractPacManGame;
 import de.amr.games.pacman.model.creatures.Ghost;
 import de.amr.games.pacman.ui.api.PacManGameUI;
 import de.amr.games.pacman.ui.sound.PacManGameSound;
 import de.amr.games.pacman.ui.sound.SoundManager;
-import de.amr.games.pacman.ui.swing.classic.PacManClassicRendering;
+import de.amr.games.pacman.ui.swing.pacman.PacManClassicRendering;
 
 /**
  * Pac-Man and Ms. Pac-Man game with original "AI", levels, timers.
@@ -60,7 +60,7 @@ import de.amr.games.pacman.ui.swing.classic.PacManClassicRendering;
 public class PacManGameController {
 
 	public PacManGameUI ui;
-	public PacManGame game;
+	public AbstractPacManGame game;
 
 	private Autopilot autopilot;
 	private boolean autopilotOn;
@@ -100,7 +100,7 @@ public class PacManGameController {
 	}
 
 	public void playPacManClassic() {
-		game = new PacManClassicGame();
+		game = new PacManGame();
 		reset(false);
 		changeState(INTRO, null, this::enterIntroState);
 		ui.setGame(game);
