@@ -1,7 +1,7 @@
 package de.amr.games.pacman.controller;
 
 /**
- * The different states of the game. Each state has a timer.
+ * The states of the game. Each state has a timer.
  * 
  * @author Armin Reichert
  */
@@ -16,11 +16,11 @@ public enum PacManGameState {
 		return ticksRun;
 	}
 
-	public boolean ticksLeft(int ticks) {
+	public boolean ticksLeftEquals(int ticks) {
 		return duration - ticksRun == ticks;
 	}
 
-	public long durationTicks() {
+	public long duration() {
 		return duration;
 	}
 
@@ -29,8 +29,8 @@ public enum PacManGameState {
 		return this;
 	}
 
-	public void setDuration(long durationTicks) {
-		duration = durationTicks;
+	public void duration(long ticks) {
+		duration = ticks;
 		ticksRun = 0;
 	}
 
