@@ -1,7 +1,5 @@
 package de.amr.games.pacman.controller;
 
-import java.util.function.Predicate;
-
 /**
  * The different states of the game. Each state has a timer.
  * 
@@ -54,26 +52,8 @@ public enum PacManGameState {
 		}
 	}
 
-	public void runBefore(long tick, Runnable code) {
-		if (ticksRun < tick) {
-			code.run();
-		}
-	}
-
-	public void runBetween(long startTick, long endTick, Runnable code) {
-		if (ticksRun >= startTick && ticksRun <= endTick) {
-			code.run();
-		}
-	}
-
 	public void runAt(long tick, Runnable code) {
 		if (ticksRun == tick) {
-			code.run();
-		}
-	}
-
-	public void runWhile(Predicate<Long> timerCondition, Runnable code) {
-		if (timerCondition.test(ticksRun)) {
 			code.run();
 		}
 	}
