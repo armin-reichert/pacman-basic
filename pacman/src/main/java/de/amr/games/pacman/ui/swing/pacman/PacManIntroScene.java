@@ -178,9 +178,9 @@ public class PacManIntroScene implements PacManGameScene {
 				rendering.letGhostBeFrightened(ghost, true);
 			});
 		}
-		rendering.drawPac(g, pac);
+		rendering.drawGuy(g, pac, game);
 		game.ghosts().forEach(ghost -> {
-			rendering.drawGhost(g, ghost, game);
+			rendering.drawGuy(g, ghost, game);
 		});
 	}
 
@@ -211,9 +211,9 @@ public class PacManIntroScene implements PacManGameScene {
 		}
 		pac.moveFreely();
 		game.ghosts().forEach(Ghost::moveFreely);
-		rendering.drawPac(g, pac);
+		rendering.drawGuy(g, pac, game);
 		for (Ghost ghost : game.ghosts) {
-			rendering.drawGhost(g, ghost, game);
+			rendering.drawGuy(g, ghost, game);
 		}
 	}
 

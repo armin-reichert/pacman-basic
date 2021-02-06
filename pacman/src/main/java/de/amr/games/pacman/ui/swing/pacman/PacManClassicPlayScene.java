@@ -48,8 +48,8 @@ public class PacManClassicPlayScene implements PacManGameScene {
 		} else if (game.state == PacManGameState.READY) {
 			rendering.signalReadyState(g);
 		}
-		rendering.drawPac(g, game.pac);
-		game.ghosts().forEach(ghost -> rendering.drawGhost(g, ghost, game));
+		rendering.drawGuy(g, game.pac, game);
+		game.ghosts().forEach(ghost -> rendering.drawGuy(g, ghost, game));
 		if (DebugRendering.on) {
 			DebugRendering.drawPlaySceneDebugInfo(g, game);
 		}

@@ -117,7 +117,7 @@ public class MsPacManIntroScene implements PacManGameScene {
 			}
 		}
 		for (Ghost ghost : game.ghosts) {
-			rendering.drawGhost(g, ghost, game);
+			rendering.drawGuy(g, ghost, game);
 		}
 		if (reachedEndPosition(game.ghosts[3])) {
 			g.setColor(Color.WHITE);
@@ -133,7 +133,7 @@ public class MsPacManIntroScene implements PacManGameScene {
 				completedTime = game.state.ticksRun();
 			}
 		}
-		rendering.drawPac(g, game.pac);
+		rendering.drawGuy(g, game.pac, game);
 
 		// Pac animation over?
 		if (completedTime > 0) {

@@ -22,18 +22,19 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.AbstractPacManGame;
 import de.amr.games.pacman.model.creatures.Bonus;
-import de.amr.games.pacman.model.creatures.Creature;
 import de.amr.games.pacman.model.creatures.Ghost;
 import de.amr.games.pacman.model.creatures.Pac;
 import de.amr.games.pacman.ui.api.PacManGameAnimations;
 import de.amr.games.pacman.ui.sound.PacManGameSoundManager;
+import de.amr.games.pacman.ui.swing.SpriteBasedRendering;
+import de.amr.games.pacman.ui.swing.Spritesheet;
 
 /**
  * Rendering for the classic Pac-Man game.
  * 
  * @author Armin Reichert
  */
-public class PacManRendering implements PacManGameAnimations {
+public class PacManRendering extends SpriteBasedRendering implements PacManGameAnimations {
 
 	public static boolean foodAnimationOn = false;
 
@@ -45,6 +46,11 @@ public class PacManRendering implements PacManGameAnimations {
 		assets = new PacManAssets();
 		soundManager = new PacManGameSoundManager(assets.soundMap::get);
 		this.translator = translator;
+	}
+
+	@Override
+	protected Spritesheet spritesheet() {
+		return assets;
 	}
 
 	@Override
@@ -121,7 +127,7 @@ public class PacManRendering implements PacManGameAnimations {
 				g.fillRect(t(tile.x) - 1, t(tile.y) - 1, TS + 2, TS + 2);
 			});
 		}
-		drawBonus(g, game.bonus);
+		drawGuy(g, game.bonus, game);
 	}
 
 	private void drawFood(Graphics2D g, AbstractPacManGame game) {
@@ -196,39 +202,25 @@ public class PacManRendering implements PacManGameAnimations {
 		}
 	}
 
-	public void drawPac(Graphics2D g, Pac pac) {
-		drawGuy(g, pac, sprite(pac));
-	}
-
-	public void drawBonus(Graphics2D g, Bonus bonus) {
+	@Override
+	protected BufferedImage bonusSprite(Bonus bonus, AbstractPacManGame game) {
 		if (bonus.edibleTicksLeft > 0) {
-			drawGuy(g, bonus, assets.spriteAt(assets.symbolSpriteLocation[bonus.symbol]));
+			return assets.spriteAt(assets.symbolSpriteLocation[bonus.symbol]);
 		}
 		if (bonus.eatenTicksLeft > 0) {
 			if (bonus.points != 1000) {
-				drawGuy(g, bonus, assets.numbers.get(bonus.points));
+				return assets.numbers.get(bonus.points);
 			} else {
 				// this sprite is somewhat nasty
-				g.drawImage(assets.numbers.get(1000), (int) (bonus.position.x) - HTS - 2, (int) (bonus.position.y) - HTS, null);
+				BufferedImage sprite = assets.numbers.get(1000);
+				return sprite; // TODO snip
 			}
 		}
+		return null;
 	}
 
-	public void drawGhost(Graphics2D g, Ghost ghost, AbstractPacManGame game) {
-		drawGuy(g, ghost, sprite(ghost, game));
-	}
-
-	private void drawGuy(Graphics2D g, Creature guy, BufferedImage sprite) {
-		if (guy.visible) {
-			Graphics2D g2 = (Graphics2D) g.create();
-			int dx = (sprite.getWidth() - TS) / 2, dy = (sprite.getHeight() - TS) / 2;
-			g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-			g2.drawImage(sprite, (int) (guy.position.x) - dx, (int) (guy.position.y) - dy, null);
-			g2.dispose();
-		}
-	}
-
-	private BufferedImage sprite(Pac pac) {
+	@Override
+	protected BufferedImage pacSprite(Pac pac, AbstractPacManGame game) {
 		if (pac.dead) {
 			return pacDying().hasStarted() ? pacDying().animate() : pacMunching(pac.dir).frame(0);
 		}
@@ -241,7 +233,8 @@ public class PacManRendering implements PacManGameAnimations {
 		return pacMunching(pac.dir).animate();
 	}
 
-	private BufferedImage sprite(Ghost ghost, AbstractPacManGame game) {
+	@Override
+	protected BufferedImage ghostSprite(Ghost ghost, AbstractPacManGame game) {
 		if (ghost.bounty > 0) {
 			return assets.numbers.get(ghost.bounty);
 		}
