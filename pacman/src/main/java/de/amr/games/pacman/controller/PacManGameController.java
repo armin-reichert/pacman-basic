@@ -543,6 +543,7 @@ public class PacManGameController {
 	private void updateGameState() {
 		if (ui.keyPressed("escape")) {
 			reset(true);
+			changeState(INTRO, null, this::enterIntroState);
 			return;
 		}
 		handleCheatsAndStuff();
