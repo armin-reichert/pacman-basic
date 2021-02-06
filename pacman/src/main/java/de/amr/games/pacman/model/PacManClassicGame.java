@@ -72,7 +72,7 @@ public class PacManClassicGame extends PacManGame {
 		ghosts[CLYDE] = new Ghost(CLYDE, "Clyde", DOWN);
 
 		world = new MapBasedPacManGameWorld();
-		world.setMap(new WorldMap("/worlds/classic/map.txt"));
+		world.setMap(new WorldMap("/pacman/maps/map.txt"));
 		world.setUpwardsBlocked(new V2i(12, 13), new V2i(15, 13), new V2i(12, 25), new V2i(15, 25));
 
 		pac.world = world;

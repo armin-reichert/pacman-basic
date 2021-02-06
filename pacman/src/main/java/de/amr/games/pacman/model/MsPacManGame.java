@@ -105,7 +105,7 @@ public class MsPacManGame extends PacManGame {
 	public void buildLevel(int levelNumber) {
 		log("Ms. Pac-Man level %d is getting created...", levelNumber);
 		int mazeNumber = mazeNumber(levelNumber);
-		world.setMap(new WorldMap("/worlds/mspacman/map" + mapIndex(mazeNumber) + ".txt"));
+		world.setMap(new WorldMap("/mspacman/maps/map" + mapIndex(mazeNumber) + ".txt"));
 		level = new PacManGameLevel(LEVELS[levelNumber <= 21 ? levelNumber - 1 : 20]);
 		level.setWorld(world);
 		level.mazeNumber = mazeNumber;
