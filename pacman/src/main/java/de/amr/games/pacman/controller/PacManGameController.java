@@ -100,17 +100,17 @@ public class PacManGameController {
 	}
 
 	public void playPacManClassic() {
-		log("New Pac-Man game");
 		game = new PacManClassicGame();
 		reset(false);
 		ui.setGame(game);
+		log("New Pac-Man game");
 	}
 
 	public void playMsPacMan() {
-		log("New Ms. Pac-Man game");
 		game = new MsPacManGame();
 		reset(false);
 		ui.setGame(game);
+		log("New Ms. Pac-Man game");
 	}
 
 	private boolean playingMsPacMan() {
@@ -135,6 +135,7 @@ public class PacManGameController {
 		} else {
 			playMsPacMan();
 		}
+		ui.sounds().ifPresent(SoundManager::stopAllSounds);
 	}
 
 	private void setAttractMode(boolean b) {
@@ -154,13 +155,6 @@ public class PacManGameController {
 		String msg = game.pac.name + " is " + (game.pac.immune ? "immune" : "vulnerable");
 		ui.showFlashMessage(msg);
 		log(msg);
-	}
-
-	private void getReadyToRumble() {
-		game.resetGuys();
-		ui.animations().ifPresent(animations -> {
-			animations.resetAllAnimations(game);
-		});
 	}
 
 	private void letGhostsFidget(boolean on) {
@@ -186,7 +180,6 @@ public class PacManGameController {
 			return changeState(READY, this::exitIntroState, this::enterReadyState);
 		}
 		if (ui.keyPressed("v")) {
-			ui.sounds().ifPresent(SoundManager::stopAllSounds);
 			toggleGameVariant();
 		}
 		return game.state.run();
@@ -200,7 +193,10 @@ public class PacManGameController {
 	private void enterReadyState() {
 		boolean playReadyMusic = !game.started && ui.sounds().isPresent();
 		game.state.setDuration(clock.sec(playReadyMusic ? 4.5 : 2));
-		getReadyToRumble();
+		game.resetGuys();
+		ui.animations().ifPresent(animations -> {
+			animations.resetAllAnimations(game);
+		});
 		ui.sounds().ifPresent(sm -> {
 			sm.stopAllSounds();
 			if (playReadyMusic) {

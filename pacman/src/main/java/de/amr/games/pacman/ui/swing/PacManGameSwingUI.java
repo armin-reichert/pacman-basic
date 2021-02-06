@@ -30,6 +30,7 @@ import javax.swing.JFrame;
 import javax.swing.Timer;
 
 import de.amr.games.pacman.controller.PacManGameState;
+import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.MsPacManGame;
 import de.amr.games.pacman.model.PacManClassicGame;
@@ -51,8 +52,6 @@ import de.amr.games.pacman.ui.swing.mspacman.MsPacManRendering;
  * @author Armin Reichert
  */
 public class PacManGameSwingUI implements PacManGameUI {
-
-	static final ResourceBundle TEXTS = ResourceBundle.getBundle("ui.swing.localization.translation");
 
 	static final int KEY_SLOWMODE = KeyEvent.VK_S;
 	static final int KEY_FASTMODE = KeyEvent.VK_F;
@@ -80,12 +79,14 @@ public class PacManGameSwingUI implements PacManGameUI {
 		}
 	}
 
-	private final V2i unscaledSizePixels;
-	private final V2i scaledSizeInPixels;
+	private final V2i unscaledSize_px;
+	private final V2i scaledSize_px;
 	private final float scaling;
 	private final JFrame window;
 	private final Canvas canvas;
 	private final Keyboard keyboard;
+
+	private final ResourceBundle translations = ResourceBundle.getBundle("ui.swing.localization.translation");
 
 	private final List<String> flashMessages = new ArrayList<>();
 	private long flashMessageTicksLeft;
@@ -111,11 +112,10 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 	public PacManGameSwingUI(PacManGame game, float scaling) {
 		this.scaling = scaling;
-		unscaledSizePixels = new V2i(game.level.world.xTiles() * TS, game.level.world.yTiles() * TS);
-		scaledSizeInPixels = new V2i((int) (unscaledSizePixels.x * scaling), (int) (unscaledSizePixels.y * scaling));
+		unscaledSize_px = new V2i(game.level.world.xTiles() * TS, game.level.world.yTiles() * TS);
+		scaledSize_px = new V2f(unscaledSize_px).scaled(scaling).toV2i();
 
 		window = new JFrame();
-
 		window.setTitle("Pac-Man");
 		window.setResizable(false);
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -140,13 +140,14 @@ public class PacManGameSwingUI implements PacManGameUI {
 		keyboard = new Keyboard(window);
 
 		canvas = new Canvas();
-		canvas.setBackground(new Color(0, 0, 0));
-		canvas.setSize(scaledSizeInPixels.x, scaledSizeInPixels.y);
+		canvas.setBackground(Color.BLACK);
+		canvas.setSize(scaledSize_px.x, scaledSize_px.y);
 		canvas.setFocusable(false);
 		window.add(canvas);
 
 		pacManClassicRendering = new PacManClassicRendering(this::translation);
 		msPacManRendering = new MsPacManRendering(this::translation);
+
 		setGame(game);
 	}
 
@@ -222,12 +223,12 @@ public class PacManGameSwingUI implements PacManGameUI {
 	public void setGame(PacManGame newGame) {
 		this.game = newGame;
 		if (game instanceof PacManClassicGame) {
-			pacManClassicIntroScene = new PacManClassicIntroScene(unscaledSizePixels, pacManClassicRendering, game);
-			pacManClassicPlayScene = new PacManClassicPlayScene(unscaledSizePixels, pacManClassicRendering, game);
+			pacManClassicIntroScene = new PacManClassicIntroScene(unscaledSize_px, pacManClassicRendering, game);
+			pacManClassicPlayScene = new PacManClassicPlayScene(unscaledSize_px, pacManClassicRendering, game);
 		} else if (game instanceof MsPacManGame) {
 			MsPacManGame msPacManGame = (MsPacManGame) game;
-			msPacManIntroScene = new MsPacManIntroScene(unscaledSizePixels, msPacManRendering, msPacManGame);
-			msPacManPlayScene = new MsPacManPlayScene(unscaledSizePixels, msPacManRendering, msPacManGame);
+			msPacManIntroScene = new MsPacManIntroScene(unscaledSize_px, msPacManRendering, msPacManGame);
+			msPacManPlayScene = new MsPacManPlayScene(unscaledSize_px, msPacManRendering, msPacManGame);
 		} else {
 			throw new IllegalArgumentException("Illegal game: " + newGame);
 		}
@@ -246,7 +247,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 	@Override
 	public String translation(String key) {
-		return TEXTS.getString(key);
+		return translations.getString(key);
 	}
 
 	@Override
@@ -267,6 +268,25 @@ public class PacManGameSwingUI implements PacManGameUI {
 			displayedScene.start();
 		}
 		displayedScene.update();
+	}
+
+	private PacManGameScene sceneToBeDisplayed() {
+		if (game instanceof PacManClassicGame) {
+			if (game.state == PacManGameState.INTRO) {
+				return pacManClassicIntroScene;
+			} else {
+				return pacManClassicPlayScene;
+			}
+		} else if (game instanceof MsPacManGame) {
+			MsPacManGame msPacManGame = (MsPacManGame) game;
+			if (msPacManGame.state == PacManGameState.INTRO) {
+				return msPacManIntroScene;
+			} else {
+				return msPacManPlayScene;
+			}
+		} else {
+			throw new IllegalStateException();
+		}
 	}
 
 	private void handleKeyboardInput(KeyEvent e) {
@@ -296,36 +316,17 @@ public class PacManGameSwingUI implements PacManGameUI {
 		}
 	}
 
-	private PacManGameScene sceneToBeDisplayed() {
-		if (game instanceof PacManClassicGame) {
-			if (game.state == PacManGameState.INTRO) {
-				return pacManClassicIntroScene;
-			} else {
-				return pacManClassicPlayScene;
-			}
-		} else if (game instanceof MsPacManGame) {
-			MsPacManGame msPacManGame = (MsPacManGame) game;
-			if (msPacManGame.state == PacManGameState.INTRO) {
-				return msPacManIntroScene;
-			} else {
-				return msPacManPlayScene;
-			}
-		} else {
-			throw new IllegalStateException();
-		}
-	}
-
 	private void drawFlashMessages(Graphics2D g) {
 		if (flashMessages.size() > 0 && flashMessageTicksLeft > 0) {
 			float t = FLASH_MESSAGE_TICKS - flashMessageTicksLeft;
 			float alpha = (float) cos(Math.PI * t / (2 * FLASH_MESSAGE_TICKS));
 			String text = flashMessages.get(0);
 			g.setColor(Color.BLACK);
-			g.fillRect(0, unscaledSizePixels.y - 16, unscaledSizePixels.x, 16);
+			g.fillRect(0, unscaledSize_px.y - 16, unscaledSize_px.x, 16);
 			g.setColor(new Color(1, 1, 0, alpha));
 			g.setFont(new Font(Font.SERIF, Font.BOLD, 10));
 			g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-			g.drawString(text, (unscaledSizePixels.x - g.getFontMetrics().stringWidth(text)) / 2, unscaledSizePixels.y - 3);
+			g.drawString(text, (unscaledSize_px.x - g.getFontMetrics().stringWidth(text)) / 2, unscaledSize_px.y - 3);
 			g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
 			--flashMessageTicksLeft;
 			if (flashMessageTicksLeft == 0) {
@@ -345,5 +346,4 @@ public class PacManGameSwingUI implements PacManGameUI {
 			x.printStackTrace();
 		}
 	}
-
 }
