@@ -32,9 +32,9 @@ import javax.swing.Timer;
 import de.amr.games.pacman.controller.PacManGameState;
 import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.model.AbstractPacManGame;
 import de.amr.games.pacman.model.MsPacManGame;
 import de.amr.games.pacman.model.PacManGame;
-import de.amr.games.pacman.model.AbstractPacManGame;
 import de.amr.games.pacman.ui.api.PacManGameAnimations;
 import de.amr.games.pacman.ui.api.PacManGameScene;
 import de.amr.games.pacman.ui.api.PacManGameUI;
@@ -56,7 +56,6 @@ public class PacManGameSwingUI implements PacManGameUI {
 	static final int KEY_SLOWMODE = KeyEvent.VK_S;
 	static final int KEY_FASTMODE = KeyEvent.VK_F;
 	static final int KEY_DEBUGMODE = KeyEvent.VK_D;
-	static final int KEY_SMOOTH_RENDERING = KeyEvent.VK_R;
 	static final int FLASH_MESSAGE_TICKS = 90;
 
 	public static URL url(String path) {
@@ -91,7 +90,6 @@ public class PacManGameSwingUI implements PacManGameUI {
 	private final List<String> flashMessages = new ArrayList<>();
 	private long flashMessageTicksLeft;
 
-	private boolean smoothRendering = true;
 	private boolean muted;
 
 	private Timer titleUpdateTimer;
@@ -177,9 +175,6 @@ public class PacManGameSwingUI implements PacManGameUI {
 				Graphics2D g = (Graphics2D) buffers.getDrawGraphics();
 				g.setColor(Color.BLACK);
 				g.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
-				if (smoothRendering) {
-					g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-				}
 				if (displayedScene != null) {
 					displayedScene.update();
 					g.scale(scaling, scaling);
@@ -291,12 +286,6 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 	private void handleKeyboardInput(KeyEvent e) {
 		switch (e.getKeyCode()) {
-		case KEY_SMOOTH_RENDERING:
-			smoothRendering = !smoothRendering;
-			String message = String.format("Smooth rendering is %s", smoothRendering ? "on" : "off");
-			showFlashMessage(message);
-			log(message);
-			break;
 		case KEY_SLOWMODE:
 			clock.targetFrequency = clock.targetFrequency == 60 ? 30 : 60;
 			log("Clock frequency changed to %d Hz", clock.targetFrequency);

@@ -11,6 +11,7 @@ import static de.amr.games.pacman.world.PacManGameWorld.t;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.util.function.Function;
 
@@ -176,8 +177,11 @@ public class MsPacManRendering implements PacManGameAnimations {
 
 	private void drawGuy(Graphics2D g, Creature guy, BufferedImage sprite) {
 		if (guy.visible) {
+			Graphics2D g2 = (Graphics2D) g.create();
 			int dx = (sprite.getWidth() - TS) / 2, dy = (sprite.getHeight() - TS) / 2;
-			g.drawImage(sprite, (int) (guy.position.x) - dx, (int) (guy.position.y) - dy, null);
+			g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+			g2.drawImage(sprite, (int) (guy.position.x) - dx, (int) (guy.position.y) - dy, null);
+			g2.dispose();
 		}
 	}
 
