@@ -273,7 +273,9 @@ public class PacManGameSwingUI implements PacManGameUI {
 		switch (e.getKeyCode()) {
 		case KEY_SMOOTH_RENDERING:
 			smoothRendering = !smoothRendering;
-			log("Smooth rendering is %s", smoothRendering ? "on" : "off");
+			String message = String.format("Smooth rendering is %s", smoothRendering ? "on" : "off");
+			showFlashMessage(message);
+			log(message);
 			break;
 		case KEY_SLOWMODE:
 			clock.targetFrequency = clock.targetFrequency == 60 ? 30 : 60;
