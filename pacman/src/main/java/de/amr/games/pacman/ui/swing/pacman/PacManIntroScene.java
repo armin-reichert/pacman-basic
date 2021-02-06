@@ -142,21 +142,23 @@ public class PacManIntroScene implements PacManGameScene {
 	}
 
 	private void introduceGhost(Graphics2D g, int id, int y, boolean showCharacter, boolean showNickname) {
-		g.drawImage(rendering.assets.ghostsWalking.get(id).get(RIGHT).frame(), t(3), y - 4, null);
+		Graphics2D g2 = rendering.smoothGC(g);
+		g2.drawImage(rendering.assets.ghostsWalking.get(id).get(RIGHT).frame(), t(3), y - 4, null);
 		if (showCharacter) {
 			String character = rendering.translator.apply("CLASSIC.GHOST." + id + ".CHARACTER");
 			Color color = rendering.assets.ghostColors[id];
-			g.setColor(color);
-			g.setFont(rendering.assets.scoreFont);
-			g.drawString("-" + character, t(6), y + 8);
+			g2.setColor(color);
+			g2.setFont(rendering.assets.scoreFont);
+			g2.drawString("-" + character, t(6), y + 8);
 		}
 		if (showNickname) {
 			String nickname = "\"" + rendering.translator.apply("CLASSIC.GHOST." + id + ".NICKNAME") + "\"";
 			Color color = rendering.assets.ghostColors[id];
-			g.setColor(color);
-			g.setFont(rendering.assets.scoreFont);
-			g.drawString(nickname, t(17), y + 8);
+			g2.setColor(color);
+			g2.setFont(rendering.assets.scoreFont);
+			g2.drawString(nickname, t(17), y + 8);
 		}
+		g2.dispose();
 	}
 
 	private void showGhostsChasingPacMan(Graphics2D g, Pac pac) {

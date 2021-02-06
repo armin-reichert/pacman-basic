@@ -12,18 +12,24 @@ import de.amr.games.pacman.model.creatures.Creature;
 import de.amr.games.pacman.model.creatures.Ghost;
 import de.amr.games.pacman.model.creatures.Pac;
 
-public abstract class SpriteBasedRendering implements PacManGameRendering {
+public interface SpriteBasedRendering extends PacManGameRendering {
 
-	protected abstract Spritesheet spritesheet();
+	Spritesheet spritesheet();
 
-	protected abstract BufferedImage bonusSprite(Bonus guy, AbstractPacManGame game);
+	BufferedImage bonusSprite(Bonus guy, AbstractPacManGame game);
 
-	protected abstract BufferedImage ghostSprite(Ghost guy, AbstractPacManGame game);
+	BufferedImage ghostSprite(Ghost guy, AbstractPacManGame game);
 
-	protected abstract BufferedImage pacSprite(Pac guy, AbstractPacManGame game);
+	BufferedImage pacSprite(Pac guy, AbstractPacManGame game);
+
+	default Graphics2D smoothGC(Graphics2D g) {
+		Graphics2D g2 = (Graphics2D) g.create();
+		g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+		return g2;
+	}
 
 	@Override
-	public void drawGuy(Graphics2D g, Creature guy, AbstractPacManGame game) {
+	default void drawGuy(Graphics2D g, Creature guy, AbstractPacManGame game) {
 		if (guy.visible) {
 			BufferedImage sprite = sprite(guy, game);
 			int dx = (sprite.getWidth() - TS) / 2, dy = (sprite.getHeight() - TS) / 2;
@@ -33,7 +39,7 @@ public abstract class SpriteBasedRendering implements PacManGameRendering {
 		}
 	}
 
-	protected BufferedImage sprite(Creature guy, AbstractPacManGame game) {
+	default BufferedImage sprite(Creature guy, AbstractPacManGame game) {
 		// we don't need polymorphism yet
 		if (guy instanceof Pac) {
 			return pacSprite((Pac) guy, game);
@@ -45,9 +51,4 @@ public abstract class SpriteBasedRendering implements PacManGameRendering {
 		return null;
 	}
 
-	protected Graphics2D smoothGC(Graphics2D g) {
-		Graphics2D g2 = (Graphics2D) g.create();
-		g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-		return g2;
-	}
 }

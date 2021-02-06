@@ -34,7 +34,7 @@ import de.amr.games.pacman.ui.swing.Spritesheet;
  * 
  * @author Armin Reichert
  */
-public class PacManRendering extends SpriteBasedRendering implements PacManGameAnimations {
+public class PacManRendering implements SpriteBasedRendering, PacManGameAnimations {
 
 	public static boolean foodAnimationOn = false;
 
@@ -49,7 +49,7 @@ public class PacManRendering extends SpriteBasedRendering implements PacManGameA
 	}
 
 	@Override
-	protected Spritesheet spritesheet() {
+	public Spritesheet spritesheet() {
 		return assets;
 	}
 
@@ -93,12 +93,14 @@ public class PacManRendering extends SpriteBasedRendering implements PacManGameA
 		return assets.energizerBlinking;
 	}
 
+	@Override
 	public void signalReadyState(Graphics2D g) {
 		g.setFont(assets.getScoreFont());
 		g.setColor(Color.YELLOW);
 		g.drawString(translator.apply("READY"), t(11), t(21));
 	}
 
+	@Override
 	public void signalGameOverState(Graphics2D g) {
 		g.setFont(assets.getScoreFont());
 		g.setColor(Color.RED);
@@ -106,6 +108,7 @@ public class PacManRendering extends SpriteBasedRendering implements PacManGameA
 		g.drawString(translator.apply("OVER"), t(15), t(21));
 	}
 
+	@Override
 	public void drawMaze(Graphics2D g, AbstractPacManGame game) {
 		if (mazeFlashing(1).hasStarted()) {
 			g.drawImage(mazeFlashing(1).animate(), 0, t(3), null);
@@ -159,6 +162,7 @@ public class PacManRendering extends SpriteBasedRendering implements PacManGameA
 		});
 	}
 
+	@Override
 	public void drawScore(Graphics2D g, AbstractPacManGame game) {
 		g.setFont(assets.scoreFont);
 		g.translate(0, 1);
@@ -179,31 +183,37 @@ public class PacManRendering extends SpriteBasedRendering implements PacManGameA
 		g.translate(0, -2);
 	}
 
+	@Override
 	public void drawLivesCounter(Graphics2D g, AbstractPacManGame game, int x, int y) {
+		Graphics2D g2 = smoothGC(g);
 		int maxLivesDisplayed = 5;
 		int livesDisplayed = game.started ? game.lives - 1 : game.lives;
 		for (int i = 0; i < Math.min(livesDisplayed, maxLivesDisplayed); ++i) {
-			g.drawImage(assets.spriteAt(8, 1), x + t(2 * i), y, null);
+			g2.drawImage(assets.spriteAt(8, 1), x + t(2 * i), y, null);
 		}
 		if (game.lives > maxLivesDisplayed) {
-			g.setColor(Color.YELLOW);
-			g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 6));
-			g.drawString("+" + (game.lives - maxLivesDisplayed), x + t(10) - 4, y + t(2));
+			g2.setColor(Color.YELLOW);
+			g2.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 6));
+			g2.drawString("+" + (game.lives - maxLivesDisplayed), x + t(10) - 4, y + t(2));
 		}
+		g2.dispose();
 	}
 
+	@Override
 	public void drawLevelCounter(Graphics2D g, AbstractPacManGame game, int rightX, int y) {
+		Graphics2D g2 = smoothGC(g);
 		int x = rightX;
 		int firstLevelNumber = Math.max(1, game.currentLevelNumber - 6);
 		for (int levelNumber = firstLevelNumber; levelNumber <= game.currentLevelNumber; ++levelNumber) {
 			V2i symbolTile = assets.symbolSpriteLocation[game.levelSymbols.get(levelNumber - 1)];
-			g.drawImage(assets.spriteAt(symbolTile), x, y, null);
+			g2.drawImage(assets.spriteAt(symbolTile), x, y, null);
 			x -= t(2);
 		}
+		g2.dispose();
 	}
 
 	@Override
-	protected BufferedImage bonusSprite(Bonus bonus, AbstractPacManGame game) {
+	public BufferedImage bonusSprite(Bonus bonus, AbstractPacManGame game) {
 		if (bonus.edibleTicksLeft > 0) {
 			return assets.spriteAt(assets.symbolSpriteLocation[bonus.symbol]);
 		}
@@ -220,7 +230,7 @@ public class PacManRendering extends SpriteBasedRendering implements PacManGameA
 	}
 
 	@Override
-	protected BufferedImage pacSprite(Pac pac, AbstractPacManGame game) {
+	public BufferedImage pacSprite(Pac pac, AbstractPacManGame game) {
 		if (pac.dead) {
 			return pacDying().hasStarted() ? pacDying().animate() : pacMunching(pac.dir).frame(0);
 		}
@@ -234,7 +244,7 @@ public class PacManRendering extends SpriteBasedRendering implements PacManGameA
 	}
 
 	@Override
-	protected BufferedImage ghostSprite(Ghost ghost, AbstractPacManGame game) {
+	public BufferedImage ghostSprite(Ghost ghost, AbstractPacManGame game) {
 		if (ghost.bounty > 0) {
 			return assets.numbers.get(ghost.bounty);
 		}

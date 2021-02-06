@@ -18,12 +18,10 @@ import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.model.AbstractPacManGame;
 import de.amr.games.pacman.model.creatures.Bonus;
-import de.amr.games.pacman.model.creatures.Creature;
 import de.amr.games.pacman.model.creatures.Ghost;
 import de.amr.games.pacman.model.creatures.Pac;
 import de.amr.games.pacman.ui.api.PacManGameAnimations;
 import de.amr.games.pacman.ui.sound.PacManGameSoundManager;
-import de.amr.games.pacman.ui.swing.PacManGameRendering;
 import de.amr.games.pacman.ui.swing.SpriteBasedRendering;
 import de.amr.games.pacman.ui.swing.Spritesheet;
 
@@ -32,7 +30,7 @@ import de.amr.games.pacman.ui.swing.Spritesheet;
  * 
  * @author Armin Reichert
  */
-public class MsPacManRendering extends SpriteBasedRendering implements PacManGameRendering, PacManGameAnimations {
+public class MsPacManRendering implements SpriteBasedRendering, PacManGameAnimations {
 
 	public final MsPacManAssets assets;
 	public final PacManGameSoundManager soundManager;
@@ -45,7 +43,7 @@ public class MsPacManRendering extends SpriteBasedRendering implements PacManGam
 	}
 
 	@Override
-	protected Spritesheet spritesheet() {
+	public Spritesheet spritesheet() {
 		return assets;
 	}
 
@@ -170,23 +168,14 @@ public class MsPacManRendering extends SpriteBasedRendering implements PacManGam
 				g.fillRect(t(tile.x), t(tile.y), TS, TS);
 			});
 		}
+		int dy = assets.bonusJumps.animate();
+		g.translate(0, dy);
 		drawGuy(g, game.bonus, game);
+		g.translate(0, -dy);
 	}
 
 	@Override
-	public void drawGuy(Graphics2D g, Creature guy, AbstractPacManGame game) {
-		if (guy == game.bonus) {
-			int dy = assets.bonusJumps.animate();
-			g.translate(0, dy);
-			super.drawGuy(g, game.bonus, game);
-			g.translate(0, -dy);
-		} else {
-			super.drawGuy(g, guy, game);
-		}
-	}
-
-	@Override
-	protected BufferedImage bonusSprite(Bonus bonus, AbstractPacManGame game) {
+	public BufferedImage bonusSprite(Bonus bonus, AbstractPacManGame game) {
 		if (bonus.edibleTicksLeft > 0) {
 			return assets.spriteAt(assets.symbolsSSL[bonus.symbol]);
 		}
@@ -197,7 +186,7 @@ public class MsPacManRendering extends SpriteBasedRendering implements PacManGam
 	}
 
 	@Override
-	protected BufferedImage pacSprite(Pac pac, AbstractPacManGame game) {
+	public BufferedImage pacSprite(Pac pac, AbstractPacManGame game) {
 		if (pac.dead) {
 			return pacDying().hasStarted() ? pacDying().animate() : pacMunching(pac.dir).frame();
 		}
@@ -205,7 +194,7 @@ public class MsPacManRendering extends SpriteBasedRendering implements PacManGam
 	}
 
 	@Override
-	protected BufferedImage ghostSprite(Ghost ghost, AbstractPacManGame game) {
+	public BufferedImage ghostSprite(Ghost ghost, AbstractPacManGame game) {
 		if (ghost.bounty > 0) {
 			return assets.spriteAt(assets.bountyNumbersSSL.get(ghost.bounty));
 		}
