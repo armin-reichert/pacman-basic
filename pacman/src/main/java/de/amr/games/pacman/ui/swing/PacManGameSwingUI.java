@@ -248,11 +248,6 @@ public class PacManGameSwingUI implements PacManGameUI {
 	}
 
 	@Override
-	public String translation(String key) {
-		return translations.getString(key);
-	}
-
-	@Override
 	public boolean keyPressed(String keySpec) {
 		boolean pressed = keyboard.keyPressed(keySpec);
 		keyboard.clearKey(keySpec); // TODO

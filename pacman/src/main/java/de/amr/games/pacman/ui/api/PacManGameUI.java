@@ -22,8 +22,6 @@ public interface PacManGameUI {
 
 	void render();
 
-	String translation(String key);
-
 	void showFlashMessage(String message);
 
 	boolean keyPressed(String keySpec);
@@ -54,11 +52,6 @@ public interface PacManGameUI {
 
 		@Override
 		public void render() {
-		}
-
-		@Override
-		public String translation(String key) {
-			return key;
 		}
 
 		@Override
