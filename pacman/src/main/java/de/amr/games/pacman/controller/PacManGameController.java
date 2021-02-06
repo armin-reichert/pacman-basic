@@ -102,6 +102,7 @@ public class PacManGameController {
 	public void playPacManClassic() {
 		game = new PacManClassicGame();
 		reset(false);
+		changeState(INTRO, null, this::enterIntroState);
 		ui.setGame(game);
 		log("New Pac-Man game");
 	}
@@ -109,6 +110,7 @@ public class PacManGameController {
 	public void playMsPacMan() {
 		game = new MsPacManGame();
 		reset(false);
+		changeState(INTRO, null, this::enterIntroState);
 		ui.setGame(game);
 		log("New Ms. Pac-Man game");
 	}
@@ -126,7 +128,6 @@ public class PacManGameController {
 		previousState = null;
 		ui.animations().ifPresent(animations -> animations.resetAllAnimations(game));
 		ui.sounds().ifPresent(SoundManager::stopAllSounds);
-		changeState(INTRO, null, this::enterIntroState);
 	}
 
 	private void toggleGameVariant() {
@@ -157,7 +158,7 @@ public class PacManGameController {
 		log(msg);
 	}
 
-	private void letGhostsFidget(boolean on) {
+	private void ghostsFidget(boolean on) {
 		ui.animations().ifPresent(animations -> animations.letGhostsFidget(game.ghosts(), on));
 	}
 
@@ -198,7 +199,6 @@ public class PacManGameController {
 			animations.resetAllAnimations(game);
 		});
 		ui.sounds().ifPresent(sm -> {
-			sm.stopAllSounds();
 			if (playReadyMusic) {
 				sm.playSound(PacManGameSound.GAME_READY);
 			}
@@ -216,7 +216,7 @@ public class PacManGameController {
 			game.pac.visible = true;
 		}
 		if (game.state.ticksLeft(clock.sec(0.5))) {
-			letGhostsFidget(true);
+			ghostsFidget(true);
 		}
 		return game.state.run();
 	}
@@ -402,21 +402,18 @@ public class PacManGameController {
 	private void enterPacManDyingState() {
 		game.state.setDuration(clock.sec(6));
 		game.pac.speed = 0;
-		game.ghosts().forEach(ghost -> ghost.state = HUNTING_PAC); // TODO just to render ghost colorful
 		game.bonus.edibleTicksLeft = game.bonus.eatenTicksLeft = 0;
-		letGhostsFidget(false);
+		ghostsFidget(false);
 		ui.sounds().ifPresent(SoundManager::stopAllSounds);
 	}
 
 	private PacManGameState runPacManDyingState() {
 		if (game.state.hasExpired()) {
 			if (game.attractMode) {
-				exitPacManDyingState();
 				reset(true);
-				return game.state;
-			}
-			game.lives--;
-			if (game.lives > 0) {
+				return changeState(INTRO, this::exitPacManDyingState, this::enterIntroState);
+			} else if (game.lives > 1) {
+				game.lives--;
 				return changeState(READY, this::exitPacManDyingState, this::enterReadyState);
 			} else {
 				return changeState(GAME_OVER, this::exitPacManDyingState, this::enterGameOverState);
@@ -435,7 +432,7 @@ public class PacManGameController {
 	private void exitPacManDyingState() {
 		game.ghosts().forEach(ghost -> ghost.visible = true);
 		ui.animations().ifPresent(animations -> animations.pacDying().reset());
-		letGhostsFidget(true);
+		ghostsFidget(true);
 	}
 
 	// GHOST_DYING
@@ -508,7 +505,7 @@ public class PacManGameController {
 		game.ghosts().forEach(ghost -> ghost.speed = 0);
 		game.pac.speed = 0;
 		game.saveHighscore();
-		letGhostsFidget(false);
+		ghostsFidget(false);
 	}
 
 	private PacManGameState runGameOverState() {

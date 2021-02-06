@@ -91,7 +91,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 	private final List<String> flashMessages = new ArrayList<>();
 	private long flashMessageTicksLeft;
 
-	private boolean smoothRendering;
+	private boolean smoothRendering = true;
 	private boolean muted;
 
 	private Timer titleUpdateTimer;
