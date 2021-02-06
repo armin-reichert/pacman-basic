@@ -43,7 +43,7 @@ import de.amr.games.pacman.ui.swing.mspacman.MsPacManIntroScene;
 import de.amr.games.pacman.ui.swing.mspacman.MsPacManPlayScene;
 import de.amr.games.pacman.ui.swing.mspacman.MsPacManRendering;
 import de.amr.games.pacman.ui.swing.pacman.PacManIntroScene;
-import de.amr.games.pacman.ui.swing.pacman.PacManClassicPlayScene;
+import de.amr.games.pacman.ui.swing.pacman.PacManPlayScene;
 import de.amr.games.pacman.ui.swing.pacman.PacManRendering;
 
 /**
@@ -100,7 +100,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 	private PacManGameScene displayedScene;
 
 	private PacManIntroScene pacManClassicIntroScene;
-	private PacManClassicPlayScene pacManClassicPlayScene;
+	private PacManPlayScene pacManClassicPlayScene;
 
 	private MsPacManIntroScene msPacManIntroScene;
 	private MsPacManPlayScene msPacManPlayScene;
@@ -219,7 +219,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 		this.game = newGame;
 		if (game instanceof PacManGame) {
 			pacManClassicIntroScene = new PacManIntroScene(unscaledSize_px, pacManRendering, game);
-			pacManClassicPlayScene = new PacManClassicPlayScene(unscaledSize_px, pacManRendering, game);
+			pacManClassicPlayScene = new PacManPlayScene(unscaledSize_px, pacManRendering, game);
 		} else if (game instanceof MsPacManGame) {
 			MsPacManGame msPacManGame = (MsPacManGame) game;
 			msPacManIntroScene = new MsPacManIntroScene(unscaledSize_px, msPacManRendering, msPacManGame);

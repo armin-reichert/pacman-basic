@@ -18,10 +18,12 @@ import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.model.AbstractPacManGame;
 import de.amr.games.pacman.model.creatures.Bonus;
+import de.amr.games.pacman.model.creatures.Creature;
 import de.amr.games.pacman.model.creatures.Ghost;
 import de.amr.games.pacman.model.creatures.Pac;
 import de.amr.games.pacman.ui.api.PacManGameAnimations;
 import de.amr.games.pacman.ui.sound.PacManGameSoundManager;
+import de.amr.games.pacman.ui.swing.PacManGameRendering;
 import de.amr.games.pacman.ui.swing.SpriteBasedRendering;
 import de.amr.games.pacman.ui.swing.Spritesheet;
 
@@ -30,7 +32,7 @@ import de.amr.games.pacman.ui.swing.Spritesheet;
  * 
  * @author Armin Reichert
  */
-public class MsPacManRendering extends SpriteBasedRendering implements PacManGameAnimations {
+public class MsPacManRendering extends SpriteBasedRendering implements PacManGameRendering, PacManGameAnimations {
 
 	public final MsPacManAssets assets;
 	public final PacManGameSoundManager soundManager;
@@ -87,12 +89,14 @@ public class MsPacManRendering extends SpriteBasedRendering implements PacManGam
 		return assets.energizerBlinking;
 	}
 
+	@Override
 	public void signalReadyState(Graphics2D g) {
 		g.setFont(assets.getScoreFont());
 		g.setColor(Color.YELLOW);
 		g.drawString(translator.apply("READY"), t(11), t(21));
 	}
 
+	@Override
 	public void signalGameOverState(Graphics2D g) {
 		g.setFont(assets.getScoreFont());
 		g.setColor(Color.RED);
@@ -100,6 +104,7 @@ public class MsPacManRendering extends SpriteBasedRendering implements PacManGam
 		g.drawString(translator.apply("OVER"), t(15), t(21));
 	}
 
+	@Override
 	public void drawScore(Graphics2D g, AbstractPacManGame game) {
 		g.setFont(assets.getScoreFont());
 		g.translate(0, 2);
@@ -120,6 +125,7 @@ public class MsPacManRendering extends SpriteBasedRendering implements PacManGam
 		g.translate(0, -3);
 	}
 
+	@Override
 	public void drawLivesCounter(Graphics2D g, AbstractPacManGame game, int x, int y) {
 		int maxLivesDisplayed = 5;
 		int livesDisplayed = game.started ? game.lives - 1 : game.lives;
@@ -135,6 +141,7 @@ public class MsPacManRendering extends SpriteBasedRendering implements PacManGam
 		g2.dispose();
 	}
 
+	@Override
 	public void drawLevelCounter(Graphics2D g, AbstractPacManGame game, int rightX, int y) {
 		Graphics2D g2 = smoothGC(g);
 		int x = rightX;
@@ -146,6 +153,7 @@ public class MsPacManRendering extends SpriteBasedRendering implements PacManGam
 		g2.dispose();
 	}
 
+	@Override
 	public void drawMaze(Graphics2D g, AbstractPacManGame game) {
 		if (mazeFlashing(game.level.mazeNumber).hasStarted()) {
 			g.drawImage(mazeFlashing(game.level.mazeNumber).animate(), 0, t(3), null);
@@ -162,14 +170,19 @@ public class MsPacManRendering extends SpriteBasedRendering implements PacManGam
 				g.fillRect(t(tile.x), t(tile.y), TS, TS);
 			});
 		}
-		drawJumpingBonus(g, game.bonus, game);
+		drawGuy(g, game.bonus, game);
 	}
 
-	private void drawJumpingBonus(Graphics2D g, Bonus bonus, AbstractPacManGame game) {
-		int dy = assets.bonusJumps.animate();
-		g.translate(0, dy);
-		drawGuy(g, bonus, game);
-		g.translate(0, -dy);
+	@Override
+	public void drawGuy(Graphics2D g, Creature guy, AbstractPacManGame game) {
+		if (guy == game.bonus) {
+			int dy = assets.bonusJumps.animate();
+			g.translate(0, dy);
+			super.drawGuy(g, game.bonus, game);
+			g.translate(0, -dy);
+		} else {
+			super.drawGuy(g, guy, game);
+		}
 	}
 
 	@Override

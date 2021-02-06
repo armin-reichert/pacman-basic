@@ -12,7 +12,7 @@ import de.amr.games.pacman.model.creatures.Creature;
 import de.amr.games.pacman.model.creatures.Ghost;
 import de.amr.games.pacman.model.creatures.Pac;
 
-public abstract class SpriteBasedRendering {
+public abstract class SpriteBasedRendering implements PacManGameRendering {
 
 	protected abstract Spritesheet spritesheet();
 
@@ -22,7 +22,8 @@ public abstract class SpriteBasedRendering {
 
 	protected abstract BufferedImage pacSprite(Pac guy, AbstractPacManGame game);
 
-	public final void drawGuy(Graphics2D g, Creature guy, AbstractPacManGame game) {
+	@Override
+	public void drawGuy(Graphics2D g, Creature guy, AbstractPacManGame game) {
 		if (guy.visible) {
 			BufferedImage sprite = sprite(guy, game);
 			int dx = (sprite.getWidth() - TS) / 2, dy = (sprite.getHeight() - TS) / 2;
