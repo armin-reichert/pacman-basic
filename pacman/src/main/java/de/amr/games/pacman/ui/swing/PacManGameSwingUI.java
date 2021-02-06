@@ -42,9 +42,9 @@ import de.amr.games.pacman.ui.sound.SoundManager;
 import de.amr.games.pacman.ui.swing.mspacman.MsPacManIntroScene;
 import de.amr.games.pacman.ui.swing.mspacman.MsPacManPlayScene;
 import de.amr.games.pacman.ui.swing.mspacman.MsPacManRendering;
-import de.amr.games.pacman.ui.swing.pacman.PacManClassicIntroScene;
+import de.amr.games.pacman.ui.swing.pacman.PacManIntroScene;
 import de.amr.games.pacman.ui.swing.pacman.PacManClassicPlayScene;
-import de.amr.games.pacman.ui.swing.pacman.PacManClassicRendering;
+import de.amr.games.pacman.ui.swing.pacman.PacManRendering;
 
 /**
  * Swing UI for Pac-Man game.
@@ -99,13 +99,13 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 	private PacManGameScene displayedScene;
 
-	private PacManClassicIntroScene pacManClassicIntroScene;
+	private PacManIntroScene pacManClassicIntroScene;
 	private PacManClassicPlayScene pacManClassicPlayScene;
 
 	private MsPacManIntroScene msPacManIntroScene;
 	private MsPacManPlayScene msPacManPlayScene;
 
-	private PacManClassicRendering pacManRendering;
+	private PacManRendering pacManRendering;
 	private MsPacManRendering msPacManRendering;
 
 	public PacManGameSwingUI(AbstractPacManGame game, float scaling) {
@@ -143,7 +143,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 		canvas.setFocusable(false);
 		window.getContentPane().add(canvas);
 
-		pacManRendering = new PacManClassicRendering(this::translation);
+		pacManRendering = new PacManRendering(this::translation);
 		msPacManRendering = new MsPacManRendering(this::translation);
 
 		setGame(game);
@@ -218,7 +218,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 	public void setGame(AbstractPacManGame newGame) {
 		this.game = newGame;
 		if (game instanceof PacManGame) {
-			pacManClassicIntroScene = new PacManClassicIntroScene(unscaledSize_px, pacManRendering, game);
+			pacManClassicIntroScene = new PacManIntroScene(unscaledSize_px, pacManRendering, game);
 			pacManClassicPlayScene = new PacManClassicPlayScene(unscaledSize_px, pacManRendering, game);
 		} else if (game instanceof MsPacManGame) {
 			MsPacManGame msPacManGame = (MsPacManGame) game;

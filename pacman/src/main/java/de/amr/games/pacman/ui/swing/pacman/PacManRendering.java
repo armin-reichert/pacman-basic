@@ -33,16 +33,16 @@ import de.amr.games.pacman.ui.sound.PacManGameSoundManager;
  * 
  * @author Armin Reichert
  */
-public class PacManClassicRendering implements PacManGameAnimations {
+public class PacManRendering implements PacManGameAnimations {
 
 	public static boolean foodAnimationOn = false;
 
-	public final PacManClassicAssets assets;
+	public final PacManAssets assets;
 	public final PacManGameSoundManager soundManager;
 	public final Function<String, String> translator;
 
-	public PacManClassicRendering(Function<String, String> translator) {
-		assets = new PacManClassicAssets();
+	public PacManRendering(Function<String, String> translator) {
+		assets = new PacManAssets();
 		soundManager = new PacManGameSoundManager(assets.soundMap::get);
 		this.translator = translator;
 	}

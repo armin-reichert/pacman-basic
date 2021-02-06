@@ -38,7 +38,7 @@ import de.amr.games.pacman.model.creatures.Ghost;
 import de.amr.games.pacman.ui.api.PacManGameUI;
 import de.amr.games.pacman.ui.sound.PacManGameSound;
 import de.amr.games.pacman.ui.sound.SoundManager;
-import de.amr.games.pacman.ui.swing.pacman.PacManClassicRendering;
+import de.amr.games.pacman.ui.swing.pacman.PacManRendering;
 
 /**
  * Pac-Man and Ms. Pac-Man game with original "AI", levels, timers.
@@ -832,8 +832,8 @@ public class PacManGameController {
 			changeState(CHANGING_LEVEL, this::exitHuntingState, this::enterChangingLevelState);
 		}
 		if (ui.keyPressed("6") && !playingMsPacMan()) {
-			PacManClassicRendering.foodAnimationOn = !PacManClassicRendering.foodAnimationOn;
-			ui.showFlashMessage("Fancy food " + (PacManClassicRendering.foodAnimationOn ? "on" : "off"));
+			PacManRendering.foodAnimationOn = !PacManRendering.foodAnimationOn;
+			ui.showFlashMessage("Fancy food " + (PacManRendering.foodAnimationOn ? "on" : "off"));
 		}
 	}
 }
