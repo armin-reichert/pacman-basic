@@ -32,10 +32,12 @@ public interface SpriteBasedRendering extends PacManGameRendering {
 	default void drawGuy(Graphics2D g, Creature guy, AbstractPacManGame game) {
 		if (guy.visible) {
 			BufferedImage sprite = sprite(guy, game);
-			int dx = (sprite.getWidth() - TS) / 2, dy = (sprite.getHeight() - TS) / 2;
-			Graphics2D g2 = smoothGC(g);
-			g2.drawImage(sprite, (int) (guy.position.x) - dx, (int) (guy.position.y) - dy, null);
-			g2.dispose();
+			if (sprite != null) {
+				int dx = (sprite.getWidth() - TS) / 2, dy = (sprite.getHeight() - TS) / 2;
+				Graphics2D g2 = smoothGC(g);
+				g2.drawImage(sprite, (int) (guy.position.x) - dx, (int) (guy.position.y) - dy, null);
+				g2.dispose();
+			}
 		}
 	}
 
