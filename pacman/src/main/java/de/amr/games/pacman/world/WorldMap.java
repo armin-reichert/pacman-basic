@@ -8,12 +8,36 @@ import java.io.InputStreamReader;
 
 import de.amr.games.pacman.lib.V2i;
 
+/**
+ * Map of the game world. Normally created from a textual representation.
+ * 
+ * @author Armin Reichert
+ */
 public class WorldMap {
 
 	static final byte SPACE = 0, WALL = 1, PILL = 2, ENERGIZER = 3, DOOR = 4, TUNNEL = 5;
 
 	private byte[][] data;
 	private String path;
+
+	private byte decode(char c) {
+		switch (c) {
+		case ' ':
+			return SPACE;
+		case '#':
+			return WALL;
+		case 'T':
+			return TUNNEL;
+		case '-':
+			return DOOR;
+		case '.':
+			return PILL;
+		case '*':
+			return ENERGIZER;
+		default:
+			throw new RuntimeException();
+		}
+	}
 
 	public WorldMap(String path) {
 		this.path = path;
@@ -30,7 +54,7 @@ public class WorldMap {
 	}
 
 	public byte data(V2i tile) {
-		return data(tile.x, tile.y);
+		return data[tile.y][tile.x];
 	}
 
 	public byte data(int x, int y) {
@@ -83,25 +107,6 @@ public class WorldMap {
 			}
 		} catch (IOException e) {
 			throw new RuntimeException(String.format("Error reading map '%s'", path, e));
-		}
-	}
-
-	private byte decode(char c) {
-		switch (c) {
-		case ' ':
-			return SPACE;
-		case '#':
-			return WALL;
-		case 'T':
-			return TUNNEL;
-		case '-':
-			return DOOR;
-		case '.':
-			return PILL;
-		case '*':
-			return ENERGIZER;
-		default:
-			throw new RuntimeException();
 		}
 	}
 }
