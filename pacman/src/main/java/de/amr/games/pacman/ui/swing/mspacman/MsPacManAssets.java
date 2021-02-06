@@ -62,7 +62,7 @@ public class MsPacManAssets extends Spritesheet {
 	final Font scoreFont;
 
 	public MsPacManAssets() {
-		super(image("/worlds/mspacman/sprites.png"), 16);
+		super(image("/mspacman/graphics/sprites.png"), 16);
 
 		scoreFont = font("/emulogic.ttf", 8);
 

@@ -119,7 +119,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 		window.setTitle("Pac-Man");
 		window.setResizable(false);
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		window.setIconImage(image("/pacman.png"));
+		window.setIconImage(image("/pacman/graphics/pacman.png"));
 
 		window.addKeyListener(new KeyAdapter() {
 

@@ -51,7 +51,6 @@ public class PacManClassicAssets extends Spritesheet {
 
 	final Color[] ghostColors = { Color.RED, Color.PINK, Color.CYAN, Color.ORANGE };
 
-	final BufferedImage gameLogo;
 	final BufferedImage mazeFull;
 	final BufferedImage mazeEmpty;
 	final V2i[] symbolSpriteLocation;
@@ -70,13 +69,12 @@ public class PacManClassicAssets extends Spritesheet {
 	final Font scoreFont;
 
 	public PacManClassicAssets() {
-		super(image("/worlds/classic/sprites.png"), 16);
+		super(image("/pacman/graphics/sprites.png"), 16);
 
 		scoreFont = font("/emulogic.ttf", 8);
 
-		gameLogo = image("/worlds/classic/logo.png");
-		mazeFull = image("/worlds/classic/maze_full.png");
-		mazeEmpty = image("/worlds/classic/maze_empty.png");
+		mazeFull = image("/pacman/graphics/maze_full.png");
+		mazeEmpty = image("/pacman/graphics/maze_empty.png");
 
 		symbolSpriteLocation = new V2i[] { v2(2, 3), v2(3, 3), v2(4, 3), v2(5, 3), v2(6, 3), v2(7, 3), v2(8, 3), v2(9, 3) };
 
@@ -100,7 +98,7 @@ public class PacManClassicAssets extends Spritesheet {
 
 		// Animations
 
-		BufferedImage mazeEmptyDark = image("/worlds/classic/maze_empty.png");
+		BufferedImage mazeEmptyDark = image("/pacman/graphics/maze_empty.png");
 		BufferedImage mazeEmptyBright = createBrightEffect(mazeEmptyDark, new Color(33, 33, 255), Color.BLACK);
 		mazeFlashing = Animation.of(mazeEmptyBright, mazeEmptyDark).frameDuration(15);
 
