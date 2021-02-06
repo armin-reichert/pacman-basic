@@ -13,7 +13,7 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-import java.util.function.Function;
+import java.util.ResourceBundle;
 
 import de.amr.games.pacman.controller.PacManGameState;
 import de.amr.games.pacman.heaven.God;
@@ -26,7 +26,6 @@ import de.amr.games.pacman.model.creatures.Ghost;
 import de.amr.games.pacman.model.creatures.Pac;
 import de.amr.games.pacman.ui.api.PacManGameAnimations;
 import de.amr.games.pacman.ui.api.SpriteBasedRendering;
-import de.amr.games.pacman.ui.sound.PacManGameSoundManager;
 import de.amr.games.pacman.ui.swing.Spritesheet;
 
 /**
@@ -39,13 +38,11 @@ public class PacManGameRendering implements SpriteBasedRendering, PacManGameAnim
 	public static boolean foodAnimationOn = false;
 
 	public final PacManGameAssets assets;
-	public final PacManGameSoundManager soundManager;
-	public final Function<String, String> translator;
+	public final ResourceBundle translations;
 
-	public PacManGameRendering(Function<String, String> translator) {
+	public PacManGameRendering(ResourceBundle bundle) {
 		assets = new PacManGameAssets();
-		soundManager = new PacManGameSoundManager(assets.soundMap::get);
-		this.translator = translator;
+		translations = bundle;
 	}
 
 	@Override
@@ -97,15 +94,15 @@ public class PacManGameRendering implements SpriteBasedRendering, PacManGameAnim
 	public void signalReadyState(Graphics2D g) {
 		g.setFont(assets.getScoreFont());
 		g.setColor(Color.YELLOW);
-		g.drawString(translator.apply("READY"), t(11), t(21));
+		g.drawString(translations.getString("READY"), t(11), t(21));
 	}
 
 	@Override
 	public void signalGameOverState(Graphics2D g) {
 		g.setFont(assets.getScoreFont());
 		g.setColor(Color.RED);
-		g.drawString(translator.apply("GAME"), t(9), t(21));
-		g.drawString(translator.apply("OVER"), t(15), t(21));
+		g.drawString(translations.getString("GAME"), t(9), t(21));
+		g.drawString(translations.getString("OVER"), t(15), t(21));
 	}
 
 	@Override
@@ -169,8 +166,8 @@ public class PacManGameRendering implements SpriteBasedRendering, PacManGameAnim
 		g.setFont(assets.scoreFont);
 		g.translate(0, 1);
 		g.setColor(Color.WHITE);
-		g.drawString(translator.apply("SCORE"), t(1), t(1));
-		g.drawString(translator.apply("HI_SCORE"), t(16), t(1));
+		g.drawString(translations.getString("SCORE"), t(1), t(1));
+		g.drawString(translations.getString("HI_SCORE"), t(16), t(1));
 		g.translate(0, 1);
 		if (game.state != PacManGameState.INTRO && !game.attractMode) {
 			g.setColor(Color.YELLOW);

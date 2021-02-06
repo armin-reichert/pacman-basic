@@ -96,7 +96,7 @@ public class PacManGameIntroScene implements PacManGameScene {
 
 		g.setColor(Color.WHITE);
 		g.setFont(rendering.assets.getScoreFont());
-		g.drawString(rendering.translator.apply("CHARACTER_NICKNAME"), t(6), t(headingTileY));
+		g.drawString(rendering.translations.getString("CHARACTER_NICKNAME"), t(6), t(headingTileY));
 
 		// Introduce ghosts
 		IntStream.range(0, 4).forEach(id -> {
@@ -146,14 +146,14 @@ public class PacManGameIntroScene implements PacManGameScene {
 		Graphics2D g2 = rendering.smoothGC(g);
 		g2.drawImage(rendering.assets.ghostImage(id, RIGHT), t(3), y - 4, null);
 		if (showCharacter) {
-			String character = rendering.translator.apply("CLASSIC.GHOST." + id + ".CHARACTER");
+			String character = rendering.translations.getString("CLASSIC.GHOST." + id + ".CHARACTER");
 			Color color = rendering.assets.ghostColor(id);
 			g2.setColor(color);
 			g2.setFont(rendering.assets.getScoreFont());
 			g2.drawString("-" + character, t(6), y + 8);
 		}
 		if (showNickname) {
-			String nickname = "\"" + rendering.translator.apply("CLASSIC.GHOST." + id + ".NICKNAME") + "\"";
+			String nickname = "\"" + rendering.translations.getString("CLASSIC.GHOST." + id + ".NICKNAME") + "\"";
 			Color color = rendering.assets.ghostColor(id);
 			g2.setColor(color);
 			g2.setFont(rendering.assets.getScoreFont());
@@ -224,7 +224,7 @@ public class PacManGameIntroScene implements PacManGameScene {
 		g.setColor(Color.ORANGE);
 		g.setFont(rendering.assets.getScoreFont());
 		if (blinking.animate()) {
-			drawHCenteredText(g, rendering.translator.apply("PRESS_KEY_TO_PLAY"), t(31));
+			drawHCenteredText(g, rendering.translations.getString("PRESS_KEY_TO_PLAY"), t(31));
 		}
 	}
 
@@ -239,7 +239,7 @@ public class PacManGameIntroScene implements PacManGameScene {
 		g.drawString("10", t(12), t(tileY + 1));
 		g.drawString("50", t(12), t(tileY + 3));
 		g.setFont(rendering.assets.getScoreFont().deriveFont(6f));
-		g.drawString(rendering.translator.apply("POINTS"), t(15), t(tileY + 1));
-		g.drawString(rendering.translator.apply("POINTS"), t(15), t(tileY + 3));
+		g.drawString(rendering.translations.getString("POINTS"), t(15), t(tileY + 1));
+		g.drawString(rendering.translations.getString("POINTS"), t(15), t(tileY + 3));
 	}
 }

@@ -38,6 +38,7 @@ import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.ui.api.PacManGameAnimations;
 import de.amr.games.pacman.ui.api.PacManGameScene;
 import de.amr.games.pacman.ui.api.PacManGameUI;
+import de.amr.games.pacman.ui.sound.PacManGameSoundManager;
 import de.amr.games.pacman.ui.sound.SoundManager;
 import de.amr.games.pacman.ui.swing.mspacman.MsPacManGameRendering;
 import de.amr.games.pacman.ui.swing.mspacman.scene.MsPacManGameIntroScene;
@@ -87,6 +88,12 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 	private final ResourceBundle translations = ResourceBundle.getBundle("ui.swing.localization.translation");
 
+	private final PacManGameRendering pacManRendering;
+	private final SoundManager pacManSoundManager;
+
+	private final MsPacManGameRendering msPacManRendering;
+	private final SoundManager msPacManSoundManager;
+
 	private final List<String> flashMessages = new ArrayList<>();
 	private long flashMessageTicksLeft;
 
@@ -104,9 +111,6 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 	private MsPacManGameIntroScene msPacManIntroScene;
 	private MsPacManGamePlayScene msPacManPlayScene;
-
-	private PacManGameRendering pacManRendering;
-	private MsPacManGameRendering msPacManRendering;
 
 	public PacManGameSwingUI(AbstractPacManGame game, float scaling) {
 		this.scaling = scaling;
@@ -143,8 +147,11 @@ public class PacManGameSwingUI implements PacManGameUI {
 		canvas.setFocusable(false);
 		window.getContentPane().add(canvas);
 
-		pacManRendering = new PacManGameRendering(this::translation);
-		msPacManRendering = new MsPacManGameRendering(this::translation);
+		pacManRendering = new PacManGameRendering(translations);
+		pacManSoundManager = new PacManGameSoundManager(pacManRendering.assets::getSoundURL);
+
+		msPacManRendering = new MsPacManGameRendering(translations);
+		msPacManSoundManager = new PacManGameSoundManager(msPacManRendering.assets::getSoundURL);
 
 		setGame(game);
 	}
@@ -203,9 +210,9 @@ public class PacManGameSwingUI implements PacManGameUI {
 			return Optional.empty();
 		}
 		if (game instanceof MsPacManGame) {
-			return Optional.ofNullable(msPacManRendering.soundManager);
+			return Optional.ofNullable(msPacManSoundManager);
 		} else {
-			return Optional.ofNullable(pacManRendering.soundManager);
+			return Optional.ofNullable(pacManSoundManager);
 		}
 	}
 

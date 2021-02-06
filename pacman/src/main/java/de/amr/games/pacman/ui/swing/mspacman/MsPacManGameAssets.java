@@ -209,4 +209,8 @@ public class MsPacManGameAssets extends Spritesheet {
 	public Font getScoreFont() {
 		return scoreFont;
 	}
+
+	public URL getSoundURL(PacManGameSound sound) {
+		return soundMap.get(sound);
+	}
 }

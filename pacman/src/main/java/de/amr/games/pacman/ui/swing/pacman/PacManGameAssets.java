@@ -169,4 +169,8 @@ public class PacManGameAssets extends Spritesheet {
 	public Color ghostColor(int g) {
 		return ghostColors[g];
 	}
+
+	public URL getSoundURL(PacManGameSound sound) {
+		return soundMap.get(sound);
+	}
 }

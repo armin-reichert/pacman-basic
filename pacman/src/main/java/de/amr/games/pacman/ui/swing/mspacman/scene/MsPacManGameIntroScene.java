@@ -95,11 +95,11 @@ public class MsPacManGameIntroScene implements PacManGameScene {
 			}
 			if (ghost.id == 0 && ghost.speed != 0) {
 				g.setColor(Color.WHITE);
-				g.drawString(rendering.translator.apply("WITH"), t(8), t(11));
+				g.drawString(rendering.translations.getString("WITH"), t(8), t(11));
 			}
 			if (ghost.speed != 0) {
 				g.setColor(GHOST_COLORS[ghost.id]);
-				drawHCenteredText(g, rendering.translator.apply("MSPACMAN.GHOST." + ghost.id + ".NICKNAME"), t(14));
+				drawHCenteredText(g, rendering.translations.getString("MSPACMAN.GHOST." + ghost.id + ".NICKNAME"), t(14));
 				V2f velocity = new V2f(ghost.dir.vec).scaled(ghost.speed);
 				ghost.position = ghost.position.sum(velocity);
 				if (ghost.dir == LEFT && differsAtMost(ghost.position.x, leftOfFrame, 1)) {
@@ -122,7 +122,7 @@ public class MsPacManGameIntroScene implements PacManGameScene {
 		}
 		if (reachedEndPosition(game.ghosts[3])) {
 			g.setColor(Color.WHITE);
-			g.drawString(rendering.translator.apply("STARRING"), t(8), t(11));
+			g.drawString(rendering.translations.getString("STARRING"), t(8), t(11));
 			g.setColor(Color.YELLOW);
 			g.drawString("MS PAC-MAN", t(11), t(14));
 		}
@@ -180,7 +180,7 @@ public class MsPacManGameIntroScene implements PacManGameScene {
 		g.setColor(Color.ORANGE);
 		g.setFont(rendering.assets.getScoreFont());
 		if (blinking.animate()) {
-			drawHCenteredText(g, rendering.translator.apply("PRESS_KEY_TO_PLAY"), t(31));
+			drawHCenteredText(g, rendering.translations.getString("PRESS_KEY_TO_PLAY"), t(31));
 		}
 	}
 
@@ -195,7 +195,7 @@ public class MsPacManGameIntroScene implements PacManGameScene {
 		g.drawString("10", t(12), t(yTile));
 		g.drawString("50", t(12), t(yTile + 2));
 		g.setFont(rendering.assets.getScoreFont().deriveFont(6f));
-		g.drawString(rendering.translator.apply("POINTS"), t(15), t(yTile));
-		g.drawString(rendering.translator.apply("POINTS"), t(15), t(yTile + 2));
+		g.drawString(rendering.translations.getString("POINTS"), t(15), t(yTile));
+		g.drawString(rendering.translations.getString("POINTS"), t(15), t(yTile + 2));
 	}
 }
