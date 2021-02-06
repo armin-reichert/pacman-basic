@@ -1,4 +1,4 @@
-package de.amr.games.pacman.ui.swing.pacman;
+package de.amr.games.pacman.ui.swing.pacman.scene;
 
 import static de.amr.games.pacman.heaven.God.clock;
 import static de.amr.games.pacman.heaven.God.differsAtMost;
@@ -10,7 +10,6 @@ import static de.amr.games.pacman.world.PacManGameWorld.t;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 import java.util.stream.IntStream;
 
 import de.amr.games.pacman.lib.Animation;
@@ -20,6 +19,7 @@ import de.amr.games.pacman.model.AbstractPacManGame;
 import de.amr.games.pacman.model.creatures.Ghost;
 import de.amr.games.pacman.model.creatures.Pac;
 import de.amr.games.pacman.ui.api.PacManGameScene;
+import de.amr.games.pacman.ui.swing.pacman.PacManGameRendering;
 
 /**
  * Intro presenting the ghosts and showing the chasing animations.
@@ -95,7 +95,7 @@ public class PacManGameIntroScene implements PacManGameScene {
 		rendering.drawScore(g, game);
 
 		g.setColor(Color.WHITE);
-		g.setFont(rendering.assets.scoreFont);
+		g.setFont(rendering.assets.getScoreFont());
 		g.drawString(rendering.translator.apply("CHARACTER_NICKNAME"), t(6), t(headingTileY));
 
 		// Introduce ghosts
@@ -144,20 +144,19 @@ public class PacManGameIntroScene implements PacManGameScene {
 
 	private void introduceGhost(Graphics2D g, int id, int y, boolean showCharacter, boolean showNickname) {
 		Graphics2D g2 = rendering.smoothGC(g);
-		g2.drawImage(rendering.assets.ghostsWalking.get(id).get(RIGHT).frame(), t(3), y - 4, null);
-		g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+		g2.drawImage(rendering.assets.ghostImage(id, RIGHT), t(3), y - 4, null);
 		if (showCharacter) {
 			String character = rendering.translator.apply("CLASSIC.GHOST." + id + ".CHARACTER");
-			Color color = rendering.assets.ghostColors[id];
+			Color color = rendering.assets.ghostColor(id);
 			g2.setColor(color);
-			g2.setFont(rendering.assets.scoreFont);
+			g2.setFont(rendering.assets.getScoreFont());
 			g2.drawString("-" + character, t(6), y + 8);
 		}
 		if (showNickname) {
 			String nickname = "\"" + rendering.translator.apply("CLASSIC.GHOST." + id + ".NICKNAME") + "\"";
-			Color color = rendering.assets.ghostColors[id];
+			Color color = rendering.assets.ghostColor(id);
 			g2.setColor(color);
-			g2.setFont(rendering.assets.scoreFont);
+			g2.setFont(rendering.assets.getScoreFont());
 			g2.drawString(nickname, t(17), y + 8);
 		}
 		g2.dispose();
@@ -223,7 +222,7 @@ public class PacManGameIntroScene implements PacManGameScene {
 
 	private void showPressKeyToStart(Graphics2D g) {
 		g.setColor(Color.ORANGE);
-		g.setFont(rendering.assets.scoreFont);
+		g.setFont(rendering.assets.getScoreFont());
 		if (blinking.animate()) {
 			drawHCenteredText(g, rendering.translator.apply("PRESS_KEY_TO_PLAY"), t(31));
 		}
@@ -236,10 +235,10 @@ public class PacManGameIntroScene implements PacManGameScene {
 			g.fillOval(t(9), t(tileY + 2) - 2, 10, 10);
 		}
 		g.setColor(Color.WHITE);
-		g.setFont(rendering.assets.scoreFont);
+		g.setFont(rendering.assets.getScoreFont());
 		g.drawString("10", t(12), t(tileY + 1));
 		g.drawString("50", t(12), t(tileY + 3));
-		g.setFont(rendering.assets.scoreFont.deriveFont(6f));
+		g.setFont(rendering.assets.getScoreFont().deriveFont(6f));
 		g.drawString(rendering.translator.apply("POINTS"), t(15), t(tileY + 1));
 		g.drawString(rendering.translator.apply("POINTS"), t(15), t(tileY + 3));
 	}

@@ -161,4 +161,12 @@ public class PacManGameAssets extends Spritesheet {
 	public Font getScoreFont() {
 		return scoreFont;
 	}
+
+	public BufferedImage ghostImage(int g, Direction dir) {
+		return spriteAt(2 * index(dir), 4 + g);
+	}
+
+	public Color ghostColor(int g) {
+		return ghostColors[g];
+	}
 }
