@@ -169,7 +169,6 @@ public class PacManGameController {
 	private void enterIntroState() {
 		game.state.duration(Long.MAX_VALUE);
 		setAttractMode(false);
-		autopilotOn = false;
 	}
 
 	private PacManGameState runIntroState() {
@@ -220,9 +219,7 @@ public class PacManGameController {
 	}
 
 	private void exitReadyState() {
-		if (game.attractMode) {
-			autopilotOn = true;
-		} else {
+		if (!game.attractMode) {
 			game.started = true;
 		}
 	}
@@ -593,7 +590,7 @@ public class PacManGameController {
 	}
 
 	private void steerPac() {
-		if (autopilotOn) {
+		if (autopilotOn || game.attractMode) {
 			if (autopilot == null) {
 				autopilot = new Autopilot(game);
 			}
