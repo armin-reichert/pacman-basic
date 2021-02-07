@@ -419,10 +419,8 @@ public class PacManGameController {
 				return changeState(GAME_OVER, this::exitPacManDyingState, this::enterGameOverState);
 			}
 		}
-		if (game.state.ticksRun() == clock.sec(1.0)) {
+		if (game.state.ticksRun() == clock.sec(2)) {
 			game.ghosts().forEach(ghost -> ghost.visible = false);
-		}
-		if (game.state.ticksRun() == clock.sec(2.0)) {
 			ui.animations().ifPresent(animations -> animations.pacDying().run());
 			ui.sounds().ifPresent(sm -> sm.playSound(PacManGameSound.PACMAN_DEATH));
 		}

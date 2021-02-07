@@ -231,7 +231,7 @@ public class PacManGameRendering implements SpriteBasedRendering, PacManGameAnim
 	@Override
 	public BufferedImage pacSprite(Pac pac, AbstractPacManGame game) {
 		if (pac.dead) {
-			return pacDying().hasStarted() ? pacDying().animate() : pacMunching(pac.dir).frame(0);
+			return pacDying().hasStarted() ? pacDying().animate() : pacMunching(pac.dir).frame();
 		}
 		if (pac.speed == 0) {
 			return pacMunching(pac.dir).frame(0);
