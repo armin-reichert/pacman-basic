@@ -19,7 +19,7 @@ import de.amr.games.pacman.model.AbstractPacManGame;
 import de.amr.games.pacman.model.creatures.Ghost;
 import de.amr.games.pacman.model.creatures.Pac;
 import de.amr.games.pacman.ui.api.PacManGameScene;
-import de.amr.games.pacman.ui.swing.pacman.PacManGameRendering;
+import de.amr.games.pacman.ui.swing.pacman.rendering.PacManGameRendering;
 
 /**
  * Intro presenting the ghosts and showing the chasing animations.

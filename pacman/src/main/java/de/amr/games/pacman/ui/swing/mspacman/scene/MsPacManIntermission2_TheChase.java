@@ -5,7 +5,7 @@ import java.awt.Graphics2D;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.MsPacManGame;
 import de.amr.games.pacman.ui.api.PacManGameScene;
-import de.amr.games.pacman.ui.swing.mspacman.MsPacManGameRendering;
+import de.amr.games.pacman.ui.swing.mspacman.rendering.MsPacManGameRendering;
 
 public class MsPacManIntermission2_TheChase implements PacManGameScene {
 

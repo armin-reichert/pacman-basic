@@ -1,4 +1,4 @@
-package de.amr.games.pacman.ui.swing.mspacman;
+package de.amr.games.pacman.ui.swing.mspacman.rendering;
 
 import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.font;
 import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.image;
