@@ -590,7 +590,7 @@ public class PacManGameController {
 		if (oldscore < 10000 && game.score >= 10000) {
 			game.lives++;
 			ui.sounds().ifPresent(sm -> sm.playSound(PacManGameSound.EXTRA_LIFE));
-			log("Extra life! Now we have %d lives", game.lives);
+			log("Extra life. Now you have %d lives!", game.lives);
 		}
 		if (game.score > game.highscorePoints) {
 			game.highscorePoints = game.score;
