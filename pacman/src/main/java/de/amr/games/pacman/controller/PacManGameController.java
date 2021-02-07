@@ -195,9 +195,7 @@ public class PacManGameController {
 		boolean playReadyMusic = !game.started && ui.sounds().isPresent();
 		game.state.duration(clock.sec(playReadyMusic ? 4.5 : 2));
 		game.resetGuys();
-		ui.animations().ifPresent(animations -> {
-			animations.resetAllAnimations(game);
-		});
+		ui.animations().ifPresent(animations -> animations.resetAllAnimations(game));
 		ui.sounds().ifPresent(sm -> {
 			if (playReadyMusic) {
 				sm.playSound(PacManGameSound.GAME_READY);
@@ -209,13 +207,13 @@ public class PacManGameController {
 		if (game.state.hasExpired()) {
 			return changeState(PacManGameState.HUNTING, this::exitReadyState, this::enterHuntingState);
 		}
-		if (game.state.ticksLeftEquals(clock.sec(1))) {
+		if (game.state.ticksLeftEquals(clock.sec(1.5))) {
 			for (Ghost ghost : game.ghosts) {
 				ghost.visible = true;
 			}
 			game.pac.visible = true;
 		}
-		if (game.state.ticksLeftEquals(clock.sec(0.5))) {
+		if (game.state.ticksLeftEquals(clock.sec(1.0))) {
 			ghostsFidget(true);
 		}
 		return game.state.run();
