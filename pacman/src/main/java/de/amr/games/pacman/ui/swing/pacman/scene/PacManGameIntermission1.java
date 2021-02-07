@@ -4,6 +4,7 @@ import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.model.creatures.GhostState.FRIGHTENED;
+import static de.amr.games.pacman.model.creatures.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.world.PacManGameWorld.t;
 
 import java.awt.Graphics2D;
@@ -59,11 +60,14 @@ public class PacManGameIntermission1 implements PacManGameScene {
 	public void start() {
 		log("Start of intermission screen %s", getClass().getSimpleName());
 		soundManager.loopSound(PacManGameSound.INTERMISSION_1, 1);
+		pac.visible = true;
 		pac.position = new V2f(size.x + 50, t(chaseTile));
 		pac.speed = 0.5f;
 		pac.dir = LEFT;
 		pac.dead = false;
 		rendering.letPacMunch(true);
+		blinky.visible = true;
+		blinky.state = HUNTING_PAC;
 		blinky.position = pac.position.sum(new V2f(24, 0));
 		blinky.speed = pac.speed * 1.04f;
 		blinky.dir = game.ghosts[0].wishDir = LEFT;

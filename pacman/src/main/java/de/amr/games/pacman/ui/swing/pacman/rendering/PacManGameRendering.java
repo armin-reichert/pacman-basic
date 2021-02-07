@@ -118,16 +118,23 @@ public class PacManGameRendering implements SpriteBasedRendering, PacManGameAnim
 		}
 		game.level.world.tiles().filter(game.level::isFoodRemoved).forEach(tile -> {
 			g.setColor(Color.BLACK);
-			g.fillRect(t(tile.x) - 1, t(tile.y) - 1, TS + 2, TS + 2);
+			if (game.level.world.isEnergizerTile(tile)) {
+				hideEnergizer(g, tile);
+			} else {
+				g.fillRect(t(tile.x), t(tile.y), TS, TS);
+			}
 		});
 		if (energizerBlinking().isRunning() && energizerBlinking().animate()) {
 			game.level.world.energizerTiles().forEach(tile -> {
-				g.setColor(Color.BLACK);
-				// when smooth rendering is on, some artifacts remain, so draw a 2 pixel wider square
-				g.fillRect(t(tile.x) - 1, t(tile.y) - 1, TS + 2, TS + 2);
+				hideEnergizer(g, tile);
 			});
 		}
 		drawGuy(g, game.bonus, game);
+	}
+
+	private void hideEnergizer(Graphics2D g, V2i tile) {
+		g.setColor(Color.BLACK);
+		g.fillRect(t(tile.x) - 1, t(tile.y) - 1, TS + 2, TS + 2); // workaround for artifacts remaining
 	}
 
 	private void drawFood(Graphics2D g, AbstractPacManGame game) {
