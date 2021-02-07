@@ -34,7 +34,7 @@ public class PacManGameIntermission1 implements PacManGameScene {
 	private final AbstractPacManGame game;
 
 	private final Animation<BufferedImage> bigPacAnimation;
-	private int chaseTile = 20;
+	private final int chaseTile = 20;
 	private final Ghost blinky;
 	private final Pac pac;
 
@@ -58,38 +58,39 @@ public class PacManGameIntermission1 implements PacManGameScene {
 
 	@Override
 	public void start() {
-		log("Start of intermission screen %s", getClass().getSimpleName());
-		soundManager.loopSound(PacManGameSound.INTERMISSION_1, 1);
+		log("Start of intermission scene %s", getClass().getSimpleName());
 		pac.visible = true;
+		pac.dead = false;
 		pac.position = new V2f(size.x + 50, t(chaseTile));
 		pac.speed = 0.5f;
 		pac.dir = LEFT;
-		pac.dead = false;
-		rendering.letPacMunch(true);
 		blinky.visible = true;
 		blinky.state = HUNTING_PAC;
 		blinky.position = pac.position.sum(new V2f(24, 0));
 		blinky.speed = pac.speed * 1.04f;
-		blinky.dir = game.ghosts[0].wishDir = LEFT;
+		blinky.dir = blinky.wishDir = LEFT;
+		rendering.letPacMunch(true);
 		rendering.ghostWalking(blinky, blinky.dir).restart();
+		soundManager.loopSound(PacManGameSound.INTERMISSION_1, 1);
 	}
 
 	@Override
 	public void update() {
 		if (pac.dir == RIGHT && pac.position.x > size.x + 100) {
-			game.state.duration(0);
 			soundManager.stopAllSounds();
-			log("End of intermission screen %s", getClass().getSimpleName());
+			game.state.duration(0); // triggers state expiration
+			log("End of intermission scene %s", getClass().getSimpleName());
 			return;
 		}
+		// turn around?
 		if (blinky.position.x < -50) {
-			blinky.speed = pac.speed * 0.8f;
 			blinky.state = FRIGHTENED;
 			blinky.dir = blinky.wishDir = RIGHT;
 			blinky.position = new V2f(-50, blinky.position.y);
-			rendering.ghostFrightened(blinky, blinky.dir).restart();
-			pac.position = new V2f(blinky.position.x - 100, pac.position.y);
+			blinky.speed = pac.speed * 0.8f;
+			pac.position = blinky.position.sum(new V2f(-100, 0));
 			pac.dir = RIGHT;
+			rendering.ghostFrightened(blinky, blinky.dir).restart();
 			bigPacAnimation.restart();
 		}
 		pac.moveFreely();
@@ -102,7 +103,7 @@ public class PacManGameIntermission1 implements PacManGameScene {
 			rendering.drawGuy(g, pac, game);
 		} else {
 			Graphics2D g2 = rendering.smoothGC(g);
-			g2.drawImage(bigPacAnimation.animate(), (int) pac.position.x, (int) pac.position.y - 22, null);
+			g2.drawImage(bigPacAnimation.animate(), (int) pac.position.x, (int) pac.position.y - 20, null);
 			g2.dispose();
 		}
 		rendering.drawGuy(g, blinky, game);
