@@ -48,6 +48,7 @@ import de.amr.games.pacman.ui.swing.pacman.PacManGameRendering;
  * <li>Pac-Man "cornering"</li>
  * <li>Intermission scenes</li>
  * <li>Multiple players</li>
+ * <li>Exact level data for Ms. Pac-Man still unclear
  * </ul>
  * 
  * @author Armin Reichert
@@ -101,6 +102,7 @@ public class PacManGameController {
 
 	public void playPacManClassic() {
 		game = new PacManGame();
+		autopilot = new Autopilot(game);
 		reset(false);
 		changeState(INTRO, null, this::enterIntroState);
 		ui.setGame(game);
@@ -109,6 +111,7 @@ public class PacManGameController {
 
 	public void playMsPacMan() {
 		game = new MsPacManGame();
+		autopilot = new Autopilot(game);
 		reset(false);
 		changeState(INTRO, null, this::enterIntroState);
 		ui.setGame(game);
@@ -124,7 +127,6 @@ public class PacManGameController {
 			game.reset();
 		}
 		autopilotOn = false;
-		autopilot = null;
 		previousState = null;
 		ui.animations().ifPresent(animations -> animations.resetAllAnimations(game));
 		ui.sounds().ifPresent(SoundManager::stopAllSounds);
@@ -591,9 +593,6 @@ public class PacManGameController {
 
 	private void steerPac() {
 		if (autopilotOn || game.attractMode) {
-			if (autopilot == null) {
-				autopilot = new Autopilot(game);
-			}
 			autopilot.run();
 		} else {
 			if (ui.keyPressed("left")) {
