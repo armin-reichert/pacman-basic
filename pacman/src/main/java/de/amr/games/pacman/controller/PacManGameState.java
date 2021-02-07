@@ -7,7 +7,7 @@ package de.amr.games.pacman.controller;
  */
 public enum PacManGameState {
 
-	INTRO, READY, HUNTING, CHANGING_LEVEL, PACMAN_DYING, GHOST_DYING, GAME_OVER;
+	INTRO, READY, HUNTING, CHANGING_LEVEL, PACMAN_DYING, GHOST_DYING, GAME_OVER, INTERMISSION;
 
 	private long duration;
 	private long ticksRun;

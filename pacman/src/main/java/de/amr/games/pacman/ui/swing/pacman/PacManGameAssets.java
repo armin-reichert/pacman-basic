@@ -155,6 +155,9 @@ public class PacManGameAssets extends Spritesheet {
 		soundMap.put(PacManGameSound.GHOST_SIREN_3,    url("/pacman/sound/siren_3.wav"));
 		soundMap.put(PacManGameSound.GHOST_SIREN_4,    url("/pacman/sound/siren_4.wav"));
 		soundMap.put(PacManGameSound.GHOST_SIREN_5,    url("/pacman/sound/siren_5.wav"));
+		soundMap.put(PacManGameSound.INTERMISSION_1,   url("/pacman/sound/intermission.wav"));
+		soundMap.put(PacManGameSound.INTERMISSION_2,   url("/pacman/sound/intermission.wav"));
+		soundMap.put(PacManGameSound.INTERMISSION_3,   url("/pacman/sound/intermission.wav"));
 		//@formatter:on
 	}
 

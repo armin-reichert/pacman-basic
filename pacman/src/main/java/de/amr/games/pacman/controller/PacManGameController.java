@@ -4,6 +4,7 @@ import static de.amr.games.pacman.controller.PacManGameState.CHANGING_LEVEL;
 import static de.amr.games.pacman.controller.PacManGameState.GAME_OVER;
 import static de.amr.games.pacman.controller.PacManGameState.GHOST_DYING;
 import static de.amr.games.pacman.controller.PacManGameState.HUNTING;
+import static de.amr.games.pacman.controller.PacManGameState.INTERMISSION;
 import static de.amr.games.pacman.controller.PacManGameState.INTRO;
 import static de.amr.games.pacman.controller.PacManGameState.PACMAN_DYING;
 import static de.amr.games.pacman.controller.PacManGameState.READY;
@@ -24,6 +25,7 @@ import static de.amr.games.pacman.model.creatures.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.model.creatures.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.model.creatures.GhostState.LOCKED;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -472,6 +474,12 @@ public class PacManGameController {
 
 	private PacManGameState runChangingLevelState() {
 		if (game.state.hasExpired()) {
+			if (!playingMsPacMan()) { // TODO
+				if (Arrays.asList(2, 5, 9, 13, 17).contains(game.currentLevelNumber)) {
+					game.intermissionNumber = intermissionNumber(game.currentLevelNumber);
+					return changeState(INTERMISSION, this::exitChangingLevelState, this::enterIntermissionState);
+				}
+			}
 			return changeState(READY, this::exitChangingLevelState, this::enterReadyState);
 		}
 		if (game.state.ticksRun() == clock.sec(2)) {
@@ -510,6 +518,39 @@ public class PacManGameController {
 
 	private void exitGameOverState() {
 		reset(true);
+	}
+
+	// INTERMISSION
+
+	private int intermissionNumber(int levelNumber) {
+		switch (levelNumber) {
+		case 2:
+			return 1;
+		case 5:
+			return 2;
+		case 9:
+		case 13:
+		case 17:
+			return 3;
+		default:
+			return 0;
+		}
+	}
+
+	private void enterIntermissionState() {
+		game.state.duration(Long.MAX_VALUE);
+		log("Starting intermission #%d", game.intermissionNumber);
+	}
+
+	private PacManGameState runIntermissionState() {
+		if (game.state.hasExpired()) {
+			return changeState(READY, this::exitIntermissionState, this::enterReadyState);
+		}
+		return game.state.run();
+	}
+
+	private void exitIntermissionState() {
+
 	}
 
 	// END STATE-MACHINE
@@ -561,6 +602,9 @@ public class PacManGameController {
 			break;
 		case GAME_OVER:
 			runGameOverState();
+			break;
+		case INTERMISSION:
+			runIntermissionState();
 			break;
 		default:
 			throw new IllegalStateException("Illegal state: " + game.state);

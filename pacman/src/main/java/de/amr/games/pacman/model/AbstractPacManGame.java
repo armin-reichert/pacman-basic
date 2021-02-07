@@ -30,6 +30,7 @@ public abstract class AbstractPacManGame {
 
 	public int currentLevelNumber; // counting from 1
 	public GameLevel level;
+	public int intermissionNumber;
 	public Pac pac;
 	public Ghost[] ghosts;
 	public Bonus bonus;
