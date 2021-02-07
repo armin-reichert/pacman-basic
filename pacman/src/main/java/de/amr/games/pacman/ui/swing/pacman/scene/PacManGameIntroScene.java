@@ -35,11 +35,11 @@ public class PacManGameIntroScene implements PacManGameScene {
 	private final Animation<Boolean> blinking = Animation.pulse().frameDuration(30);
 	private final int headingTileY = 6;
 	private final int chaseTileY = 20;
-	private final int ghostGap = 18;
-	private final float pacSpeedChasing = 1.0f;
-	private final float pacSpeedFleeing = 0.95f;
-	private final float ghostSpeedChasing = 1.0f;
-	private final float ghostSpeedFleeing = 0.5f;
+	private final int gapBetweenGhosts = 1;
+	private final float pacSpeed = 1.1f;
+	private final float ghostSpeedWhenChasing = pacSpeed * 1.07f;
+	private final float ghostSpeedWhenFleeing = pacSpeed * 0.5f;
+	private final long ghostDyingDuration = 20;
 
 	private boolean chasingPac;
 	private Ghost ghostDying;
@@ -73,7 +73,7 @@ public class PacManGameIntroScene implements PacManGameScene {
 
 		game.ghosts().forEach(ghost -> {
 			ghost.visible = true;
-			ghost.position = new V2f(size.x + 32 + ghostGap * ghost.id, t(chaseTileY));
+			ghost.position = new V2f(size.x + 32 + (16 + gapBetweenGhosts) * ghost.id, t(chaseTileY));
 			ghost.wishDir = ghost.dir = LEFT;
 			ghost.speed = 0;
 			ghost.couldMove = true;
@@ -121,8 +121,8 @@ public class PacManGameIntroScene implements PacManGameScene {
 			blinking.restart();
 			rendering.letPacMunch();
 			rendering.letGhostsFidget(game.ghosts(), true);
-			game.pac.speed = pacSpeedFleeing;
-			game.ghosts().forEach(ghost -> ghost.speed = ghostSpeedChasing);
+			game.pac.speed = pacSpeed;
+			game.ghosts().forEach(ghost -> ghost.speed = ghostSpeedWhenChasing);
 		});
 
 		game.state.runAfter(clock.sec(11), () -> {
@@ -173,10 +173,9 @@ public class PacManGameIntroScene implements PacManGameScene {
 			// let Pac turn around
 			chasingPac = false;
 			pac.dir = RIGHT;
-			game.pac.speed = pacSpeedChasing;
 			game.ghosts().forEach(ghost -> {
 				ghost.dir = ghost.wishDir = RIGHT;
-				ghost.speed = ghostSpeedFleeing;
+				ghost.speed = ghostSpeedWhenFleeing;
 				ghost.state = FRIGHTENED;
 				rendering.letGhostBeFrightened(ghost, true);
 			});
@@ -195,7 +194,7 @@ public class PacManGameIntroScene implements PacManGameScene {
 		for (Ghost ghost : game.ghosts) {
 			if (ghost.bounty == 0 && pac.meets(ghost)) {
 				ghostDying = ghost;
-				ghostDyingTimer = clock.sec(0.6);
+				ghostDyingTimer = ghostDyingDuration;
 				ghost.bounty = (int) (Math.pow(2, ghost.id) * 200);
 				pac.position = new V2f(pac.position.x - 32, pac.position.y);
 				pac.visible = false;
