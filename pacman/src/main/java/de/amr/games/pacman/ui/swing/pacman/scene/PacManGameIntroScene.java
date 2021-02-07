@@ -167,8 +167,8 @@ public class PacManGameIntroScene implements PacManGameScene {
 			g.setColor(Color.PINK);
 			g.fillOval(t(2), t(chaseTileY), TS, TS);
 		}
-		pac.moveFreely();
-		game.ghosts().forEach(Ghost::moveFreely);
+		pac.move();
+		game.ghosts().forEach(Ghost::move);
 		if (differsAtMost(pac.position.x, 2 * TS, 1) && pac.dir == LEFT) {
 			// let Pac turn around
 			chasingPac = false;
@@ -211,8 +211,8 @@ public class PacManGameIntroScene implements PacManGameScene {
 				game.ghosts().forEach(ghost -> ghost.speed = game.level.ghostSpeedFrightened);
 			}
 		}
-		pac.moveFreely();
-		game.ghosts().forEach(Ghost::moveFreely);
+		pac.move();
+		game.ghosts().forEach(Ghost::move);
 		rendering.drawGuy(g, pac, game);
 		for (Ghost ghost : game.ghosts) {
 			rendering.drawGuy(g, ghost, game);

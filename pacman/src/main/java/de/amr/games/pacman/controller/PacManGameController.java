@@ -191,6 +191,14 @@ public class PacManGameController {
 			game.intermissionNumber = 1;
 			return changeState(INTERMISSION, null, this::enterIntermissionState);
 		}
+		if (ui.keyPressed("2")) {
+			game.intermissionNumber = 2;
+			return changeState(INTERMISSION, null, this::enterIntermissionState);
+		}
+		if (ui.keyPressed("3")) {
+			game.intermissionNumber = 3;
+			return changeState(INTERMISSION, null, this::enterIntermissionState);
+		}
 
 		return game.state.run();
 	}

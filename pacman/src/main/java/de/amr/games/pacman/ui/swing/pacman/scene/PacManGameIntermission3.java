@@ -45,7 +45,7 @@ public class PacManGameIntermission3 implements PacManGameScene {
 
 	@Override
 	public void start() {
-		log("Start of intermission screen %s", getClass().getSimpleName());
+		log("Start of intermission scene %s", getClass().getSimpleName());
 		soundManager.playSound(PacManGameSound.INTERMISSION_3);
 		complete = false;
 	}
@@ -53,7 +53,7 @@ public class PacManGameIntermission3 implements PacManGameScene {
 	@Override
 	public void update() {
 		if (complete) {
-			log("End of intermission screen %s", getClass().getSimpleName());
+			log("End of intermission scene %s", getClass().getSimpleName());
 			return;
 		}
 		// TODO

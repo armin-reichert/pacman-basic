@@ -93,8 +93,8 @@ public class PacManGameIntermission1 implements PacManGameScene {
 			rendering.ghostFrightened(blinky, blinky.dir).restart();
 			bigPacAnimation.restart();
 		}
-		pac.moveFreely();
-		blinky.moveFreely();
+		pac.move();
+		blinky.move();
 	}
 
 	@Override

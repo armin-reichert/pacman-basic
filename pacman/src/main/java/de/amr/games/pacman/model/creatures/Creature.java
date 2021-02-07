@@ -96,7 +96,7 @@ public class Creature {
 		return tile().equals(other.tile());
 	}
 
-	public void moveFreely() {
+	public void move() {
 		position = position.sum(new V2f(dir.vec).scaled(speed));
 	}
 

@@ -128,7 +128,7 @@ public class MsPacManGameIntroScene implements PacManGameScene {
 		}
 
 		if (completedTime < 0) {
-			game.pac.moveFreely();
+			game.pac.move();
 			if (game.pac.position.x <= belowFrameCenterX) {
 				game.pac.speed = 0;
 				completedTime = game.state.ticksRun();
