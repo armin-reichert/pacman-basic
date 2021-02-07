@@ -31,9 +31,9 @@ import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.model.AbstractPacManGame;
 import de.amr.games.pacman.model.MsPacManGame;
 import de.amr.games.pacman.model.PacManGame;
-import de.amr.games.pacman.model.AbstractPacManGame;
 import de.amr.games.pacman.model.creatures.Ghost;
 import de.amr.games.pacman.ui.api.PacManGameUI;
 import de.amr.games.pacman.ui.sound.PacManGameSound;
@@ -811,27 +811,27 @@ public class PacManGameController {
 			return;
 		}
 		boolean r = game.state == READY, h = game.state == HUNTING;
-		if (ui.keyPressed("a") && (r || h)) {
+		if (ui.keyPressed("a")) {
 			toggleAutopilot();
-		}
-		if (ui.keyPressed("i") && (r || h)) {
-			togglePacImmunity();
 		}
 		if (ui.keyPressed("e") && h) {
 			game.level.world.tiles().filter(tile -> game.level.containsFood(tile) && !game.level.world.isEnergizerTile(tile))
 					.forEach(game.level::removeFood);
 		}
-		if (ui.keyPressed("x") && (h)) {
-			killAllGhosts();
-			changeState(GHOST_DYING, this::exitHuntingState, this::enterGhostDyingState);
+		if (ui.keyPressed("i")) {
+			togglePacImmunity();
 		}
-		if (ui.keyPressed("l") && (r || h)) {
+		if (ui.keyPressed("l")) {
 			game.lives++;
 		}
 		if (ui.keyPressed("n") && (r || h)) {
 			changeState(CHANGING_LEVEL, this::exitHuntingState, this::enterChangingLevelState);
 		}
-		if (ui.keyPressed("6") && !playingMsPacMan()) {
+		if (ui.keyPressed("x") && h) {
+			killAllGhosts();
+			changeState(GHOST_DYING, this::exitHuntingState, this::enterGhostDyingState);
+		}
+		if (ui.keyPressed("6")) {
 			PacManGameRendering.foodAnimationOn = !PacManGameRendering.foodAnimationOn;
 			ui.showFlashMessage("Fancy food " + (PacManGameRendering.foodAnimationOn ? "on" : "off"));
 		}
