@@ -89,6 +89,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 	private final V2i scaledSize_px;
 	private final float scaling;
 	private final JFrame window;
+	private final Timer titleUpdateTimer;
 	private final Canvas canvas;
 	private final Keyboard keyboard;
 
@@ -105,12 +106,11 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 	private boolean muted;
 
-	private Timer titleUpdateTimer;
 	private Runnable closeHandler = () -> log("Pac-Man Swing UI closed");
 
 	private AbstractPacManGame game;
 
-	private PacManGameScene displayedScene;
+	private PacManGameScene currentScene;
 
 	private PacManGameIntroScene pacManIntroScene;
 	private PacManGamePlayScene pacManClassicPlayScene;
@@ -149,6 +149,10 @@ public class PacManGameSwingUI implements PacManGameUI {
 		});
 
 		keyboard = new Keyboard(window);
+
+		titleUpdateTimer = new Timer(1000,
+				e -> window.setTitle(String.format("Pac-Man / Ms. Pac-Man (%d fps)", clock.frequency)));
+		titleUpdateTimer.start();
 
 		canvas = new Canvas();
 		canvas.setSize(scaledSize_px.x, scaledSize_px.y);
@@ -190,10 +194,10 @@ public class PacManGameSwingUI implements PacManGameUI {
 				Graphics2D g = (Graphics2D) buffers.getDrawGraphics();
 				g.setColor(Color.BLACK);
 				g.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
-				if (displayedScene != null) {
-					displayedScene.update();
+				if (currentScene != null) {
+					currentScene.update();
 					g.scale(scaling, scaling);
-					displayedScene.draw(g);
+					currentScene.draw(g);
 					drawFlashMessages(g);
 				}
 				g.dispose();
@@ -232,17 +236,11 @@ public class PacManGameSwingUI implements PacManGameUI {
 	@Override
 	public void setGame(AbstractPacManGame newGame) {
 		this.game = newGame;
-		createScenes();
-		createTitleUpdateTimer();
-	}
-
-	private void createTitleUpdateTimer() {
-		if (titleUpdateTimer != null) {
-			titleUpdateTimer.stop();
+		if (game instanceof PacManGame) {
+			createPacManScenes();
+		} else {
+			createMsPacManScenes();
 		}
-		titleUpdateTimer = new Timer(1000,
-				e -> window.setTitle(String.format("%s (%d fps)", game.pac.name, clock.frequency)));
-		titleUpdateTimer.start();
 	}
 
 	@Override
@@ -259,57 +257,55 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 	@Override
 	public void updateScene() {
-		PacManGameScene scene = sceneToBeDisplayed();
-		if (displayedScene != scene) {
-			if (displayedScene != null) {
-				displayedScene.end();
+		PacManGameScene scene = game instanceof PacManGame ? selectPacManScene() : selectMsPacManScene();
+		if (currentScene != scene) {
+			if (currentScene != null) {
+				currentScene.end();
+				log("Current scene changed from %s to %s", currentScene.getClass().getSimpleName(),
+						scene.getClass().getSimpleName());
 			}
-			displayedScene = scene;
-			displayedScene.start();
+			currentScene = scene;
+			currentScene.start();
 		}
-		displayedScene.update();
+		currentScene.update();
 	}
 
-	private void createScenes() {
-		if (game instanceof PacManGame) {
-			pacManIntroScene = new PacManGameIntroScene(unscaledSize_px, pacManRendering, game);
-			pacManClassicPlayScene = new PacManGamePlayScene(unscaledSize_px, pacManRendering, game);
-			pacManIntermissions[0] = new PacManGameIntermission1(unscaledSize_px, pacManRendering, pacManSoundManager, game);
-			pacManIntermissions[1] = new PacManGameIntermission2(unscaledSize_px, pacManRendering, pacManSoundManager, game);
-			pacManIntermissions[2] = new PacManGameIntermission3(unscaledSize_px, pacManRendering, pacManSoundManager, game);
-		} else if (game instanceof MsPacManGame) {
-			MsPacManGame msPacManGame = (MsPacManGame) game;
-			msPacManIntroScene = new MsPacManGameIntroScene(unscaledSize_px, msPacManRendering, msPacManGame);
-			msPacManPlayScene = new MsPacManGamePlayScene(unscaledSize_px, msPacManRendering, msPacManGame);
-			msPacManIntermissions[0] = new MsPacManIntermission1_TheyMeet(unscaledSize_px, msPacManRendering, msPacManGame);
-			msPacManIntermissions[1] = new MsPacManIntermission2_TheChase(unscaledSize_px, msPacManRendering, msPacManGame);
-			msPacManIntermissions[2] = new MsPacManIntermission3_Junior(unscaledSize_px, msPacManRendering, msPacManGame);
-		} else {
-			throw new IllegalArgumentException("Illegal game: " + game);
-		}
+	private void createPacManScenes() {
+		pacManIntroScene = new PacManGameIntroScene(unscaledSize_px, pacManRendering, game);
+		pacManClassicPlayScene = new PacManGamePlayScene(unscaledSize_px, pacManRendering, game);
+		pacManIntermissions[0] = new PacManGameIntermission1(unscaledSize_px, pacManRendering, pacManSoundManager, game);
+		pacManIntermissions[1] = new PacManGameIntermission2(unscaledSize_px, pacManRendering, pacManSoundManager, game);
+		pacManIntermissions[2] = new PacManGameIntermission3(unscaledSize_px, pacManRendering, pacManSoundManager, game);
 	}
 
-	private PacManGameScene sceneToBeDisplayed() {
-		if (game instanceof PacManGame) {
-			if (game.state == PacManGameState.INTRO) {
-				return pacManIntroScene;
-			} else if (game.state == PacManGameState.INTERMISSION) {
-				return pacManIntermissions[game.intermissionNumber - 1];
-			} else {
-				return pacManClassicPlayScene;
-			}
-		} else if (game instanceof MsPacManGame) {
-			MsPacManGame msPacManGame = (MsPacManGame) game;
-			if (msPacManGame.state == PacManGameState.INTRO) {
-				return msPacManIntroScene;
-			} else if (game.state == PacManGameState.INTERMISSION) {
-				return msPacManIntermissions[game.intermissionNumber - 1];
-			} else {
-				return msPacManPlayScene;
-			}
-		} else {
-			throw new IllegalArgumentException("Illegal game: " + game);
+	private PacManGameScene selectPacManScene() {
+		if (game.state == PacManGameState.INTRO) {
+			return pacManIntroScene;
 		}
+		if (game.state == PacManGameState.INTERMISSION) {
+			return pacManIntermissions[game.intermissionNumber - 1];
+		}
+		return pacManClassicPlayScene;
+	}
+
+	private void createMsPacManScenes() {
+		MsPacManGame msPacManGame = (MsPacManGame) game;
+		msPacManIntroScene = new MsPacManGameIntroScene(unscaledSize_px, msPacManRendering, msPacManGame);
+		msPacManPlayScene = new MsPacManGamePlayScene(unscaledSize_px, msPacManRendering, msPacManGame);
+		msPacManIntermissions[0] = new MsPacManIntermission1_TheyMeet(unscaledSize_px, msPacManRendering, msPacManGame);
+		msPacManIntermissions[1] = new MsPacManIntermission2_TheChase(unscaledSize_px, msPacManRendering, msPacManGame);
+		msPacManIntermissions[2] = new MsPacManIntermission3_Junior(unscaledSize_px, msPacManRendering, msPacManGame);
+	}
+
+	private PacManGameScene selectMsPacManScene() {
+		MsPacManGame msPacManGame = (MsPacManGame) game;
+		if (msPacManGame.state == PacManGameState.INTRO) {
+			return msPacManIntroScene;
+		}
+		if (game.state == PacManGameState.INTERMISSION) {
+			return msPacManIntermissions[game.intermissionNumber - 1];
+		}
+		return msPacManPlayScene;
 	}
 
 	private void handleKeyboardInput(KeyEvent e) {
