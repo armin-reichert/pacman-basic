@@ -4,7 +4,11 @@ public interface SoundManager {
 
 	void playSound(PacManGameSound sound);
 
-	void loopSound(PacManGameSound sound);
+	default void loopSound(PacManGameSound sound) {
+		loopSound(sound, Integer.MAX_VALUE);
+	}
+
+	void loopSound(PacManGameSound sound, int repetitions);
 
 	void stopSound(PacManGameSound sound);
 

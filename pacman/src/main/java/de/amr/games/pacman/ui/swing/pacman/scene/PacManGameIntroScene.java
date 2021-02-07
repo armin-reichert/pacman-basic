@@ -119,7 +119,7 @@ public class PacManGameIntroScene implements PacManGameScene {
 
 		game.state.runAt(clock.sec(11), () -> {
 			blinking.restart();
-			rendering.letPacMunch();
+			rendering.letPacMunch(true);
 			rendering.letGhostsFidget(game.ghosts(), true);
 			game.pac.speed = pacSpeed;
 			game.ghosts().forEach(ghost -> ghost.speed = ghostSpeedWhenChasing);

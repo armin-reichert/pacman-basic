@@ -67,7 +67,7 @@ public class MsPacManGameIntroScene implements PacManGameScene {
 
 		blinking.restart();
 		rendering.letGhostsFidget(game.ghosts(), true);
-		rendering.letPacMunch();
+		rendering.letPacMunch(true);
 	}
 
 	@Override

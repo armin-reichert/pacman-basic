@@ -48,8 +48,12 @@ public interface PacManGameAnimations {
 		});
 	}
 
-	default void letPacMunch() {
-		Stream.of(Direction.values()).forEach(dir -> pacMunching(dir).restart());
+	default void letPacMunch(boolean on) {
+		if (on) {
+			Stream.of(Direction.values()).forEach(dir -> pacMunching(dir).restart());
+		} else {
+			Stream.of(Direction.values()).forEach(dir -> pacMunching(dir).reset());
+		}
 	}
 
 	default void resetAllAnimations(AbstractPacManGame game) {

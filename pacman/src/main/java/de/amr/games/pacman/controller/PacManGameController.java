@@ -186,6 +186,12 @@ public class PacManGameController {
 		if (ui.keyPressed("v")) {
 			toggleGameVariant();
 		}
+
+		if (ui.keyPressed("1")) {
+			game.intermissionNumber = 1;
+			return changeState(INTERMISSION, null, this::enterIntermissionState);
+		}
+
 		return game.state.run();
 	}
 
@@ -290,7 +296,7 @@ public class PacManGameController {
 		startHuntingPhase(0);
 		ui.animations().ifPresent(animations -> {
 			animations.energizerBlinking().restart();
-			animations.letPacMunch();
+			animations.letPacMunch(true);
 		});
 	}
 
