@@ -123,7 +123,8 @@ public class PacManGameIntermission3 implements PacManGameScene {
 	@Override
 	public void draw(Graphics2D g) {
 		Graphics2D g2 = rendering.smoothGC(g);
-		rendering.drawGuy(g, pac, game);
+		rendering.drawLevelCounter(g2, game, t(game.level.world.xTiles() - 4), size.y - t(2));
+		rendering.drawGuy(g2, pac, game);
 		drawBlinky(g2);
 		g2.dispose();
 	}

@@ -169,6 +169,7 @@ public class PacManGameIntermission2 implements PacManGameScene {
 	@Override
 	public void draw(Graphics2D g) {
 		Graphics2D g2 = rendering.smoothGC(g);
+		rendering.drawLevelCounter(g2, game, t(game.level.world.xTiles() - 4), size.y - t(2));
 		g2.drawImage(nail, nailPosition.x, nailPosition.y, null);
 		rendering.drawGuy(g, pac, game);
 		drawBlinky(g2);

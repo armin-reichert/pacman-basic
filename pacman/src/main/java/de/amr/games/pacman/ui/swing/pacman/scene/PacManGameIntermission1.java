@@ -61,6 +61,7 @@ public class PacManGameIntermission1 implements PacManGameScene {
 		log("Start of intermission scene %s", getClass().getSimpleName());
 		pac.visible = true;
 		pac.dead = false;
+		pac.couldMove = true;
 		pac.position = new V2f(size.x + 50, t(chaseTile));
 		pac.speed = 1f;
 		pac.dir = LEFT;
@@ -99,6 +100,7 @@ public class PacManGameIntermission1 implements PacManGameScene {
 
 	@Override
 	public void draw(Graphics2D g) {
+		rendering.drawLevelCounter(g, game, t(game.level.world.xTiles() - 4), size.y - t(2));
 		if (pac.dir == LEFT) {
 			rendering.drawGuy(g, pac, game);
 		} else {
