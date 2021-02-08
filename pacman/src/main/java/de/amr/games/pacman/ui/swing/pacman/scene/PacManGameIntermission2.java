@@ -3,6 +3,8 @@ package de.amr.games.pacman.ui.swing.pacman.scene;
 import static de.amr.games.pacman.heaven.God.clock;
 import static de.amr.games.pacman.heaven.God.differsAtMost;
 import static de.amr.games.pacman.lib.Direction.LEFT;
+import static de.amr.games.pacman.lib.Direction.RIGHT;
+import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.model.creatures.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.world.PacManGameWorld.t;
@@ -21,7 +23,7 @@ import de.amr.games.pacman.ui.sound.SoundManager;
 import de.amr.games.pacman.ui.swing.pacman.rendering.PacManGameRendering;
 
 /**
- * Scene where the game is played.
+ * Second intermission scene: Blinky pursues Pac but kicks a nail that tears his dress apart.
  * 
  * @author Armin Reichert
  */
@@ -32,11 +34,13 @@ public class PacManGameIntermission2 implements PacManGameScene {
 	private final SoundManager soundManager;
 	private final AbstractPacManGame game;
 
-	private final int chaseTile = 20;
+	private final int chaseTileY = 20;
 	private final Ghost blinky;
 	private final Pac pac;
-	private final BufferedImage nail;
-	private long nailMetTimer;
+	private final BufferedImage nail, blinkyDamagedLookingUp, blinkyDamagedLookingRight, shred;
+	private final V2i nailPosition;
+	private long nailHit;
+	private int damage;
 
 	public PacManGameIntermission2(V2i size, PacManGameRendering rendering, SoundManager soundManager,
 			AbstractPacManGame game) {
@@ -46,7 +50,11 @@ public class PacManGameIntermission2 implements PacManGameScene {
 		this.game = game;
 		pac = game.pac;
 		blinky = game.ghosts[0];
+		nailPosition = new V2i(size.x / 2, t(chaseTileY) - 6);
 		nail = rendering.assets.spriteAt(8, 6);
+		shred = rendering.assets.spriteAt(12, 6);
+		blinkyDamagedLookingUp = rendering.assets.spriteAt(8, 7);
+		blinkyDamagedLookingRight = rendering.assets.spriteAt(9, 7);
 	}
 
 	@Override
@@ -59,7 +67,7 @@ public class PacManGameIntermission2 implements PacManGameScene {
 		log("Start of intermission scene %s", getClass().getSimpleName());
 		pac.visible = true;
 		pac.dead = false;
-		pac.position = new V2f(size.x + 50, t(chaseTile));
+		pac.position = new V2f(size.x + 50, t(chaseTileY));
 		pac.speed = 0.5f;
 		pac.dir = LEFT;
 		blinky.visible = true;
@@ -72,45 +80,75 @@ public class PacManGameIntermission2 implements PacManGameScene {
 		rendering.ghostWalking(blinky, blinky.dir).restart();
 		soundManager.playSound(PacManGameSound.INTERMISSION_2);
 
-		nailMetTimer = -1;
+		damage = 0;
+		nailHit = -1;
 	}
 
 	@Override
 	public void update() {
-
-		// nail met?
-		if (differsAtMost(blinky.position.x, (size.x / 2) + 7, 1)) {
+		// nail hit?
+		if (differsAtMost(blinky.position.x, nailPosition.x + 7, 1)) {
 			blinky.speed = 0.05f;
-			nailMetTimer = clock.sec(3);
+			nailHit = 0; // start animation
 		}
-		if (nailMetTimer > 0) {
-			--nailMetTimer;
-			if (nailMetTimer == 0) {
-				blinky.speed = 0;
-			}
+		if (0 <= nailHit && nailHit < clock.sec(1)) {
+			damage = 1;
+		} else if (clock.sec(1) <= nailHit && nailHit < clock.sec(2)) {
+			damage = 2;
+		} else if (clock.sec(2) <= nailHit && nailHit < clock.sec(3)) {
+			damage = 3;
+		} else if (nailHit == clock.sec(3)) {
+			blinky.speed = 0;
+			rendering.ghostWalking(blinky, LEFT).stop();
+		} else if (nailHit == clock.sec(5)) {
+			damage = 4;
+			blinky.dir = UP;
+			blinky.visible = false; // damaged Blinky sprite gets drawn
+		} else if (nailHit >= clock.sec(7) && nailHit < clock.sec(10)) {
+			blinky.dir = RIGHT;
+		} else if (nailHit == clock.sec(12)) {
+			game.state.duration(0); // end scene
 		}
 		pac.move();
 		blinky.move();
+		if (nailHit != -1) {
+			++nailHit;
+		}
 	}
 
 	@Override
 	public void draw(Graphics2D g) {
-		rendering.drawGuy(g, pac, game);
 		Graphics2D g2 = rendering.smoothGC(g);
-		if (nailMetTimer == -1) {
-			g2.drawImage(nail, size.x / 2, t(chaseTile) - 4, null); // nail
-		} else {
-			int x = (int) blinky.position.x + 5, y = (int) blinky.position.y - 5;
-			if (nailMetTimer > clock.sec(2)) {
-				g2.drawImage(rendering.assets.spriteAt(9, 6), x - 8, y, null);
-			} else if (nailMetTimer > clock.sec(1)) {
-				g2.drawImage(rendering.assets.spriteAt(10, 6), x - 4, y, null);
-			} else if (nailMetTimer >= 0) {
-				g2.drawImage(rendering.assets.spriteAt(11, 6), x - 2, y, null);
+		g2.drawImage(nail, nailPosition.x, nailPosition.y, null);
+		rendering.drawGuy(g, pac, game);
+		int baselineY = (int) blinky.position.y - 5;
+		switch (damage) {
+		case 1:
+			drawSprite(g2, rendering.assets.spriteAt(8 + damage, 6), blinky.position.x - 3, baselineY);
+			break;
+		case 2:
+			drawSprite(g2, rendering.assets.spriteAt(8 + damage, 6), blinky.position.x + 1, baselineY);
+			break;
+		case 3:
+			drawSprite(g2, rendering.assets.spriteAt(8 + damage, 6), blinky.position.x + 3, baselineY);
+			break;
+		case 4:
+			if (blinky.dir == UP) {
+				drawSprite(g2, blinkyDamagedLookingUp, blinky.position.x - 4, blinky.position.y - 4);
+			} else if (blinky.dir == RIGHT) {
+				// TODO is Blinky winking?
+				drawSprite(g2, blinkyDamagedLookingRight, blinky.position.x - 4, blinky.position.y - 4);
 			}
+			drawSprite(g2, shred, nailPosition.x, baselineY);
+			break;
+		default:
+			break;
 		}
-		g2.dispose();
 		rendering.drawGuy(g, blinky, game);
+		g2.dispose();
 	}
 
+	private void drawSprite(Graphics2D g, BufferedImage sprite, float x, float y) {
+		g.drawImage(sprite, (int) x, (int) y, null);
+	}
 }
