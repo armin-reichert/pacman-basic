@@ -59,6 +59,10 @@ public class V2f {
 		return new V2f(x + v.x, y + v.y);
 	}
 
+	public V2f sum(float xx, float yy) {
+		return new V2f(x + xx, y + yy);
+	}
+
 	public V2f scaled(float s) {
 		return new V2f(s * x, s * y);
 	}

@@ -17,6 +17,7 @@ import de.amr.games.pacman.model.creatures.Pac;
 import de.amr.games.pacman.ui.api.PacManGameScene;
 import de.amr.games.pacman.ui.sound.PacManGameSound;
 import de.amr.games.pacman.ui.sound.SoundManager;
+import de.amr.games.pacman.ui.swing.Spritesheet;
 import de.amr.games.pacman.ui.swing.pacman.rendering.PacManGameRendering;
 
 /**
@@ -27,7 +28,7 @@ import de.amr.games.pacman.ui.swing.pacman.rendering.PacManGameRendering;
 public class PacManGameIntermission2 implements PacManGameScene {
 
 	enum Phase {
-		APPROACHING, HITTING_NAIL, GETTING_STRETCHED_1, GETTING_STRETCHED_2, GETTING_STRETCHED_3, LOOKING_UP, LOOKING_RIGHT;
+		APPROACHING, HITTING_NAIL, STRETCHED_1, STRETCHED_2, STRETCHED_3, LOOKING_UP, LOOKING_RIGHT;
 	};
 
 	private final V2i size;
@@ -35,11 +36,12 @@ public class PacManGameIntermission2 implements PacManGameScene {
 	private final SoundManager soundManager;
 	private final AbstractPacManGame game;
 
-	private final int chaseTileY = 20;
+	private final Spritesheet spritesheet;
+	private final int chaseTileY;
 	private final Ghost blinky;
 	private final Pac pac;
-	private final BufferedImage nail, blinkyDamagedLookingUp, blinkyDamagedLookingRight, shred;
-	private final BufferedImage stretchedDress[] = new BufferedImage[3];
+	private final BufferedImage nail, blinkyLookingUp, blinkyLookingRight, shred;
+	private final BufferedImage stretchedDress[];
 	private final V2i nailPosition;
 
 	private Phase phase;
@@ -51,16 +53,20 @@ public class PacManGameIntermission2 implements PacManGameScene {
 		this.rendering = rendering;
 		this.soundManager = soundManager;
 		this.game = game;
+
 		pac = game.pac;
 		blinky = game.ghosts[0];
+		chaseTileY = 20;
 		nailPosition = new V2i(size.x / 2, t(chaseTileY) - 6);
-		nail = rendering.assets.spriteAt(8, 6);
-		shred = rendering.assets.spriteAt(12, 6);
-		blinkyDamagedLookingUp = rendering.assets.spriteAt(8, 7);
-		blinkyDamagedLookingRight = rendering.assets.spriteAt(9, 7);
-		for (int s = 0; s < 3; ++s) {
-			stretchedDress[s] = rendering.assets.spriteAt(9 + s, 6);
-		}
+
+		// Sprites
+		spritesheet = rendering.assets;
+		nail = spritesheet.spriteAt(8, 6);
+		shred = spritesheet.spriteAt(12, 6);
+		blinkyLookingUp = spritesheet.spriteAt(8, 7);
+		blinkyLookingRight = spritesheet.spriteAt(9, 7);
+		stretchedDress = new BufferedImage[] { spritesheet.spriteAt(9, 6), spritesheet.spriteAt(10, 6),
+				spritesheet.spriteAt(11, 6) };
 	}
 
 	@Override
@@ -71,15 +77,17 @@ public class PacManGameIntermission2 implements PacManGameScene {
 	@Override
 	public void start() {
 		log("Start of intermission scene %s", getClass().getSimpleName());
+
 		pac.visible = true;
 		pac.dead = false;
 		pac.position = new V2f(size.x + 50, t(chaseTileY));
-		pac.speed = 0.5f;
+		pac.speed = 1;
 		pac.dir = LEFT;
+
 		blinky.visible = true;
 		blinky.state = HUNTING_PAC;
-		blinky.position = pac.position.sum(new V2f(size.x / 2, 0));
-		blinky.speed = 0.5f;
+		blinky.position = pac.position.sum(size.x / 2, 0);
+		blinky.speed = 1;
 		blinky.dir = blinky.wishDir = LEFT;
 
 		rendering.letPacMunch(true);
@@ -92,62 +100,50 @@ public class PacManGameIntermission2 implements PacManGameScene {
 
 	@Override
 	public void update() {
-		log("scene update, state timer is %d", game.state.ticksRun());
-		int distanceFromNail = (int) (blinky.position.x - nailPosition.x) - 5;
-		log("distance from nail: %d, %s, timer: %d", distanceFromNail, phase, timer);
+		int distFromNail = (int) (blinky.position.x - nailPosition.x) - 6;
 		switch (phase) {
-		case APPROACHING: {
-			blinky.move();
-			pac.move();
-			if (distanceFromNail == 0) {
+		case APPROACHING:
+			if (distFromNail == 0) {
 				blinky.speed = 0;
+				timer = clock.sec(0.2);
 				phase = Phase.HITTING_NAIL;
-				timer = clock.sec(1);
 			}
 			break;
-		}
-		case HITTING_NAIL: {
+		case HITTING_NAIL:
 			if (timer == -1) {
-				phase = Phase.GETTING_STRETCHED_1;
 				blinky.speed = 0.1f;
+				phase = Phase.STRETCHED_1;
 			}
 			break;
-		}
-		case GETTING_STRETCHED_1: {
-			if (distanceFromNail == -3) {
-				phase = Phase.GETTING_STRETCHED_2;
+		case STRETCHED_1:
+			if (distFromNail == -3) {
+				phase = Phase.STRETCHED_2;
 			}
 			break;
-		}
-		case GETTING_STRETCHED_2: {
-			if (distanceFromNail == -6) {
-				phase = Phase.GETTING_STRETCHED_3;
+		case STRETCHED_2:
+			if (distFromNail == -6) {
+				phase = Phase.STRETCHED_3;
 			}
 			break;
-		}
-		case GETTING_STRETCHED_3: {
-			if (distanceFromNail == -9) {
+		case STRETCHED_3:
+			if (distFromNail == -9) {
 				blinky.speed = 0;
 				phase = Phase.LOOKING_UP;
-				timer = clock.sec(4);
 			}
 			break;
-		}
-		case LOOKING_UP: {
+		case LOOKING_UP:
 			if (timer == -1) {
+				timer = clock.sec(2);
 				phase = Phase.LOOKING_RIGHT;
-				timer = clock.sec(20);
 			}
 			break;
-		}
-		case LOOKING_RIGHT: {
+		case LOOKING_RIGHT:
 			if (timer == -1) {
 				game.state.duration(0); // signal end of this scene
 			}
 			break;
-		}
 		default:
-			break;
+			throw new IllegalStateException("Illegal phase: " + phase);
 		}
 		blinky.move();
 		pac.move();
@@ -167,30 +163,30 @@ public class PacManGameIntermission2 implements PacManGameScene {
 
 	private void drawBlinky(Graphics2D g) {
 		int baselineY = (int) blinky.position.y - 5;
-		int blinkySpriteRightEdge = (int) blinky.position.x + 9;
+		int blinkySpriteRightEdge = (int) blinky.position.x + 7;
 		switch (phase) {
 		case APPROACHING:
 		case HITTING_NAIL:
 			rendering.drawGuy(g, blinky, game);
 			break;
-		case GETTING_STRETCHED_1:
+		case STRETCHED_1:
 			rendering.drawSprite(g, stretchedDress[0], blinkySpriteRightEdge - 8, baselineY);
 			rendering.drawGuy(g, blinky, game);
 			break;
-		case GETTING_STRETCHED_2:
+		case STRETCHED_2:
 			rendering.drawSprite(g, stretchedDress[1], blinkySpriteRightEdge - 4, baselineY);
 			rendering.drawGuy(g, blinky, game);
 			break;
-		case GETTING_STRETCHED_3:
+		case STRETCHED_3:
 			rendering.drawSprite(g, stretchedDress[2], blinkySpriteRightEdge - 2, baselineY);
 			rendering.drawGuy(g, blinky, game);
 			break;
 		case LOOKING_UP:
-			rendering.drawSprite(g, blinkyDamagedLookingUp, blinky.position.x - 4, blinky.position.y - 4);
+			rendering.drawSprite(g, blinkyLookingUp, blinky.position.x - 4, blinky.position.y - 4);
 			rendering.drawSprite(g, shred, nailPosition.x, baselineY);
 			break;
 		case LOOKING_RIGHT:
-			rendering.drawSprite(g, blinkyDamagedLookingRight, blinky.position.x - 4, blinky.position.y - 4);
+			rendering.drawSprite(g, blinkyLookingRight, blinky.position.x - 4, blinky.position.y - 4);
 			rendering.drawSprite(g, shred, nailPosition.x, baselineY);
 			break;
 		default:
