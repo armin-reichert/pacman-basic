@@ -62,7 +62,7 @@ public class PacManGameIntermission1 implements PacManGameScene {
 		pac.visible = true;
 		pac.dead = false;
 		pac.position = new V2f(size.x + 50, t(chaseTile));
-		pac.speed = 0.5f;
+		pac.speed = 1f;
 		pac.dir = LEFT;
 		blinky.visible = true;
 		blinky.state = HUNTING_PAC;

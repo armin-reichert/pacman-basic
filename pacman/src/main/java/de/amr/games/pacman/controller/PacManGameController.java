@@ -584,7 +584,6 @@ public class PacManGameController {
 			onEntry.run();
 		}
 		log("Entered state '%s' for %s", game.stateDescription(), ticksDescription(game.state.duration()));
-		ui.updateScene();
 		return game.state;
 	}
 

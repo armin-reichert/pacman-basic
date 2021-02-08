@@ -195,7 +195,6 @@ public class PacManGameSwingUI implements PacManGameUI {
 				g.setColor(Color.BLACK);
 				g.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 				if (currentScene != null) {
-					currentScene.update();
 					g.scale(scaling, scaling);
 					currentScene.draw(g);
 					drawFlashMessages(g);
