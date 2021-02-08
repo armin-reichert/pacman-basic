@@ -13,7 +13,8 @@ import de.amr.games.pacman.ui.sound.SoundManager;
 import de.amr.games.pacman.ui.swing.pacman.rendering.PacManGameRendering;
 
 /**
- * Scene where the game is played.
+ * Third intermission scene: Blinky in shred dress chases Pac-Man, comes back naked with dress on
+ * floor.
  * 
  * @author Armin Reichert
  */
