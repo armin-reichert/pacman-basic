@@ -39,6 +39,7 @@ public class PacManGameIntermission2 implements PacManGameScene {
 	private final Pac pac;
 	private final BufferedImage nail, blinkyDamagedLookingUp, blinkyDamagedLookingRight, shred;
 	private final V2i nailPosition;
+
 	private long nailHit;
 	private int damage;
 
@@ -124,31 +125,27 @@ public class PacManGameIntermission2 implements PacManGameScene {
 		int baselineY = (int) blinky.position.y - 5;
 		switch (damage) {
 		case 1:
-			drawSprite(g2, rendering.assets.spriteAt(8 + damage, 6), blinky.position.x - 3, baselineY);
+			rendering.drawSprite(g2, rendering.assets.spriteAt(8 + damage, 6), blinky.position.x - 3, baselineY);
 			break;
 		case 2:
-			drawSprite(g2, rendering.assets.spriteAt(8 + damage, 6), blinky.position.x + 1, baselineY);
+			rendering.drawSprite(g2, rendering.assets.spriteAt(8 + damage, 6), blinky.position.x + 1, baselineY);
 			break;
 		case 3:
-			drawSprite(g2, rendering.assets.spriteAt(8 + damage, 6), blinky.position.x + 3, baselineY);
+			rendering.drawSprite(g2, rendering.assets.spriteAt(8 + damage, 6), blinky.position.x + 3, baselineY);
 			break;
 		case 4:
 			if (blinky.dir == UP) {
-				drawSprite(g2, blinkyDamagedLookingUp, blinky.position.x - 4, blinky.position.y - 4);
+				rendering.drawSprite(g2, blinkyDamagedLookingUp, blinky.position.x - 4, blinky.position.y - 4);
 			} else if (blinky.dir == RIGHT) {
 				// TODO is Blinky winking?
-				drawSprite(g2, blinkyDamagedLookingRight, blinky.position.x - 4, blinky.position.y - 4);
+				rendering.drawSprite(g2, blinkyDamagedLookingRight, blinky.position.x - 4, blinky.position.y - 4);
 			}
-			drawSprite(g2, shred, nailPosition.x, baselineY);
+			rendering.drawSprite(g2, shred, nailPosition.x, baselineY);
 			break;
 		default:
 			break;
 		}
 		rendering.drawGuy(g, blinky, game);
 		g2.dispose();
-	}
-
-	private void drawSprite(Graphics2D g, BufferedImage sprite, float x, float y) {
-		g.drawImage(sprite, (int) x, (int) y, null);
 	}
 }

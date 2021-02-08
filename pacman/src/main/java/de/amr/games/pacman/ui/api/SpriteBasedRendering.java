@@ -1,6 +1,6 @@
 package de.amr.games.pacman.ui.api;
 
-import static de.amr.games.pacman.world.PacManGameWorld.TS;
+import static de.amr.games.pacman.world.PacManGameWorld.HTS;
 
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -34,12 +34,16 @@ public interface SpriteBasedRendering extends PacManGameRenderingAPI {
 		if (guy.visible) {
 			BufferedImage sprite = sprite(guy, game);
 			if (sprite != null) {
-				int dx = (sprite.getWidth() - TS) / 2, dy = (sprite.getHeight() - TS) / 2;
+				int dx = sprite.getWidth() / 2 - HTS, dy = sprite.getHeight() / 2 - HTS;
 				Graphics2D g2 = smoothGC(g);
-				g2.drawImage(sprite, (int) (guy.position.x) - dx, (int) (guy.position.y) - dy, null);
+				drawSprite(g2, sprite, guy.position.x - dx, guy.position.y - dy);
 				g2.dispose();
 			}
 		}
+	}
+
+	default void drawSprite(Graphics2D g, BufferedImage sprite, float x, float y) {
+		g.drawImage(sprite, (int) x, (int) y, null);
 	}
 
 	default BufferedImage sprite(Creature guy, AbstractPacManGame game) {

@@ -1,10 +1,10 @@
 package de.amr.games.pacman.ui.swing.pacman.scene;
 
+import static de.amr.games.pacman.heaven.God.clock;
 import static de.amr.games.pacman.lib.Logging.log;
 
 import java.awt.Graphics2D;
 
-import de.amr.games.pacman.heaven.God;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.AbstractPacManGame;
 import de.amr.games.pacman.ui.api.PacManGameScene;
@@ -23,8 +23,6 @@ public class PacManGameIntermission3 implements PacManGameScene {
 	private final PacManGameRendering rendering;
 	private final SoundManager soundManager;
 	private final AbstractPacManGame game;
-
-	private boolean complete;
 
 	public PacManGameIntermission3(V2i size, PacManGameRendering rendering, SoundManager soundManager,
 			AbstractPacManGame game) {
@@ -45,20 +43,18 @@ public class PacManGameIntermission3 implements PacManGameScene {
 
 	@Override
 	public void start() {
-		log("Start of intermission scene %s", getClass().getSimpleName());
+		log("Start intermission scene %s", getClass().getSimpleName());
 		soundManager.playSound(PacManGameSound.INTERMISSION_3);
-		complete = false;
+	}
+
+	@Override
+	public void end() {
+		log("End intermission scene %s", getClass().getSimpleName());
 	}
 
 	@Override
 	public void update() {
-		if (complete) {
-			log("End of intermission scene %s", getClass().getSimpleName());
-			return;
-		}
-		// TODO
-		if (game.state.ticksRun() == God.clock.sec(10)) {
-			complete = true;
+		if (game.state.ticksRun() == clock.sec(7)) {
 			game.state.duration(0);
 		}
 	}
