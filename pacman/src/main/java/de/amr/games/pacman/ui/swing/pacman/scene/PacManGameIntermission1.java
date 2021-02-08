@@ -71,7 +71,7 @@ public class PacManGameIntermission1 implements PacManGameScene {
 		blinky.dir = blinky.wishDir = LEFT;
 		rendering.letPacMunch(true);
 		rendering.ghostWalking(blinky, blinky.dir).restart();
-		soundManager.loopSound(PacManGameSound.INTERMISSION_1, 1);
+		soundManager.loopSound(PacManGameSound.INTERMISSION_1, 2);
 	}
 
 	@Override

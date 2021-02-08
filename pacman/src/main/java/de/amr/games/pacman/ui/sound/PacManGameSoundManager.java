@@ -66,7 +66,9 @@ public class PacManGameSoundManager implements SoundManager {
 
 	@Override
 	public void loopSound(PacManGameSound sound, int repetitions) {
-		getClip(sound).loop(repetitions == Integer.MAX_VALUE ? Clip.LOOP_CONTINUOUSLY : repetitions);
+		Clip clip = getClip(sound);
+		clip.setFramePosition(0);
+		clip.loop(repetitions == Integer.MAX_VALUE ? Clip.LOOP_CONTINUOUSLY : repetitions - 1);
 	}
 
 	@Override

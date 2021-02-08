@@ -29,7 +29,7 @@ public class PacManGameIntermission2 implements PacManGameScene {
 
 	enum Phase {
 		APPROACHING_NAIL, HITTING_NAIL, STRETCHED_1, STRETCHED_2, STRETCHED_3, LOOKING_UP, LOOKING_RIGHT;
-	};
+	}
 
 	private final V2i size;
 	private final PacManGameRendering rendering;
