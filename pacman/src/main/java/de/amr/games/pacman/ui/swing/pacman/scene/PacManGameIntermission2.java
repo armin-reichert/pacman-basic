@@ -28,7 +28,7 @@ import de.amr.games.pacman.ui.swing.pacman.rendering.PacManGameRendering;
 public class PacManGameIntermission2 implements PacManGameScene {
 
 	enum Phase {
-		APPROACHING, HITTING_NAIL, STRETCHED_1, STRETCHED_2, STRETCHED_3, LOOKING_UP, LOOKING_RIGHT;
+		APPROACHING_NAIL, HITTING_NAIL, STRETCHED_1, STRETCHED_2, STRETCHED_3, LOOKING_UP, LOOKING_RIGHT;
 	};
 
 	private final V2i size;
@@ -94,51 +94,65 @@ public class PacManGameIntermission2 implements PacManGameScene {
 		rendering.ghostWalking(blinky, blinky.dir).restart();
 		soundManager.playSound(PacManGameSound.INTERMISSION_2);
 
-		phase = Phase.APPROACHING;
+		phase = Phase.APPROACHING_NAIL;
 		timer = -1;
+	}
+
+	private void enter(Phase nextPhase, long ticks) {
+		phase = nextPhase;
+		timer = ticks;
+	}
+
+	private void enter(Phase nextPhase) {
+		phase = nextPhase;
+		timer = -1;
+	}
+
+	private boolean timeout() {
+		return timer == -1;
 	}
 
 	@Override
 	public void update() {
 		int distFromNail = (int) (blinky.position.x - nailPosition.x) - 6;
 		switch (phase) {
-		case APPROACHING:
+		case APPROACHING_NAIL:
 			if (distFromNail == 0) {
 				blinky.speed = 0;
-				timer = clock.sec(0.2);
-				phase = Phase.HITTING_NAIL;
+				enter(Phase.HITTING_NAIL, clock.sec(0.1));
 			}
 			break;
 		case HITTING_NAIL:
-			if (timer == -1) {
-				blinky.speed = 0.1f;
-				phase = Phase.STRETCHED_1;
+			if (timeout()) {
+				blinky.speed = 0.3f;
+				enter(Phase.STRETCHED_1);
 			}
 			break;
 		case STRETCHED_1:
 			if (distFromNail == -3) {
-				phase = Phase.STRETCHED_2;
+				blinky.speed = 0.2f;
+				enter(Phase.STRETCHED_2);
 			}
 			break;
 		case STRETCHED_2:
 			if (distFromNail == -6) {
-				phase = Phase.STRETCHED_3;
+				blinky.speed = 0.1f;
+				enter(Phase.STRETCHED_3);
 			}
 			break;
 		case STRETCHED_3:
 			if (distFromNail == -9) {
 				blinky.speed = 0;
-				phase = Phase.LOOKING_UP;
+				enter(Phase.LOOKING_UP, clock.sec(3));
 			}
 			break;
 		case LOOKING_UP:
-			if (timer == -1) {
-				timer = clock.sec(2);
-				phase = Phase.LOOKING_RIGHT;
+			if (timeout()) {
+				enter(Phase.LOOKING_RIGHT, clock.sec(3));
 			}
 			break;
 		case LOOKING_RIGHT:
-			if (timer == -1) {
+			if (timeout()) {
 				game.state.duration(0); // signal end of this scene
 			}
 			break;
@@ -163,9 +177,9 @@ public class PacManGameIntermission2 implements PacManGameScene {
 
 	private void drawBlinky(Graphics2D g) {
 		int baselineY = (int) blinky.position.y - 5;
-		int blinkySpriteRightEdge = (int) blinky.position.x + 7;
+		int blinkySpriteRightEdge = (int) blinky.position.x + 6;
 		switch (phase) {
-		case APPROACHING:
+		case APPROACHING_NAIL:
 		case HITTING_NAIL:
 			rendering.drawGuy(g, blinky, game);
 			break;
