@@ -10,7 +10,7 @@ The code here is more to the point than that in my other state-machine focussed 
 
 YouTube: https://www.youtube.com/watch?v=oZh2oAnoJbk
 
-To build the executable:
+To build the executable, change to the `pacman-ui-swing` directory and enter:
 ```mvn clean install assembly:single```
 
 ### Intro scene
