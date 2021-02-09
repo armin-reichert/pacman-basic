@@ -8,8 +8,8 @@ import de.amr.games.pacman.controller.PacManGameState;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.AbstractPacManGame;
 import de.amr.games.pacman.ui.api.PacManGameScene;
-import de.amr.games.pacman.ui.swing.DebugRendering;
 import de.amr.games.pacman.ui.swing.pacman.rendering.PacManGameRendering;
+import de.amr.games.pacman.ui.swing.rendering.DebugRendering;
 
 /**
  * Scene where the game is played.

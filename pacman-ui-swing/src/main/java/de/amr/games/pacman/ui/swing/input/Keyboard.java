@@ -1,4 +1,4 @@
-package de.amr.games.pacman.ui.swing;
+package de.amr.games.pacman.ui.swing.input;
 
 import java.awt.Component;
 import java.awt.event.KeyAdapter;
@@ -10,7 +10,7 @@ import java.util.BitSet;
  * 
  * @author Armin Reichert
  */
-class Keyboard {
+public class Keyboard {
 
 	private final BitSet pressedKeys = new BitSet(256);
 

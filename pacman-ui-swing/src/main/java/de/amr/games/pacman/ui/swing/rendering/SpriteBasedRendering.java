@@ -1,4 +1,4 @@
-package de.amr.games.pacman.ui.swing;
+package de.amr.games.pacman.ui.swing.rendering;
 
 import static de.amr.games.pacman.world.PacManGameWorld.HTS;
 
@@ -12,6 +12,7 @@ import de.amr.games.pacman.model.creatures.Creature;
 import de.amr.games.pacman.model.creatures.Ghost;
 import de.amr.games.pacman.model.creatures.Pac;
 import de.amr.games.pacman.ui.api.PacManGameRenderingAPI;
+import de.amr.games.pacman.ui.swing.assets.Spritesheet;
 
 public interface SpriteBasedRendering extends PacManGameRenderingAPI {
 

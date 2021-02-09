@@ -36,6 +36,8 @@ import de.amr.games.pacman.ui.api.PacManGameScene;
 import de.amr.games.pacman.ui.api.PacManGameUI;
 import de.amr.games.pacman.ui.sound.PacManGameSoundManager;
 import de.amr.games.pacman.ui.sound.SoundManager;
+import de.amr.games.pacman.ui.swing.assets.AssetLoader;
+import de.amr.games.pacman.ui.swing.input.Keyboard;
 import de.amr.games.pacman.ui.swing.mspacman.rendering.MsPacManGameRendering;
 import de.amr.games.pacman.ui.swing.mspacman.scene.MsPacManGameIntroScene;
 import de.amr.games.pacman.ui.swing.mspacman.scene.MsPacManGamePlayScene;
@@ -48,6 +50,7 @@ import de.amr.games.pacman.ui.swing.pacman.scene.PacManGameIntermission2;
 import de.amr.games.pacman.ui.swing.pacman.scene.PacManGameIntermission3;
 import de.amr.games.pacman.ui.swing.pacman.scene.PacManGameIntroScene;
 import de.amr.games.pacman.ui.swing.pacman.scene.PacManGamePlayScene;
+import de.amr.games.pacman.ui.swing.rendering.DebugRendering;
 
 /**
  * Swing UI for Pac-Man game.

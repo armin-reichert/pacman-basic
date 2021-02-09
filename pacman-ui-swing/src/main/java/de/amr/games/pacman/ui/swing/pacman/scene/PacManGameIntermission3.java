@@ -18,7 +18,7 @@ import de.amr.games.pacman.model.creatures.Pac;
 import de.amr.games.pacman.ui.api.PacManGameScene;
 import de.amr.games.pacman.ui.sound.PacManGameSound;
 import de.amr.games.pacman.ui.sound.SoundManager;
-import de.amr.games.pacman.ui.swing.Spritesheet;
+import de.amr.games.pacman.ui.swing.assets.Spritesheet;
 import de.amr.games.pacman.ui.swing.pacman.rendering.PacManGameRendering;
 
 /**
