@@ -5,6 +5,8 @@ import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.model.creatures.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.creatures.GhostState.HUNTING_PAC;
+import static de.amr.games.pacman.ui.swing.pacman.scene.PacManGameIntermission1.Phase.BIGPACMAN_CHASING_BLINKY;
+import static de.amr.games.pacman.ui.swing.pacman.scene.PacManGameIntermission1.Phase.BLINKY_CHASING_PACMAN;
 import static de.amr.games.pacman.world.PacManGameWorld.t;
 
 import java.awt.Graphics2D;
@@ -22,21 +24,27 @@ import de.amr.games.pacman.ui.sound.SoundManager;
 import de.amr.games.pacman.ui.swing.pacman.rendering.PacManGameRendering;
 
 /**
- * Scene where the game is played.
+ * First intermission scene: Blinky chases Pac-Man and is then chased by a huge Pac-Man.
  * 
  * @author Armin Reichert
  */
 public class PacManGameIntermission1 implements PacManGameScene {
+
+	enum Phase {
+		BLINKY_CHASING_PACMAN, BIGPACMAN_CHASING_BLINKY;
+	}
 
 	private final V2i size;
 	private final PacManGameRendering rendering;
 	private final SoundManager soundManager;
 	private final AbstractPacManGame game;
 
-	private final Animation<BufferedImage> bigPacAnimation;
-	private final int chaseTile = 20;
+	private final Animation<BufferedImage> bigPac;
+	private final int baselineY = t(20);
 	private final Ghost blinky;
 	private final Pac pac;
+
+	private Phase phase;
 
 	public PacManGameIntermission1(V2i size, PacManGameRendering rendering, SoundManager soundManager,
 			AbstractPacManGame game) {
@@ -47,8 +55,9 @@ public class PacManGameIntermission1 implements PacManGameScene {
 
 		pac = game.pac;
 		blinky = game.ghosts[0];
-		bigPacAnimation = Animation.of(rendering.assets.spritesAt(2, 1, 2, 2), rendering.assets.spritesAt(4, 1, 2, 2),
-				rendering.assets.spritesAt(6, 1, 2, 2)).endless().frameDuration(4);
+		bigPac = Animation.of(rendering.assets.spritesAt(2, 1, 2, 2), rendering.assets.spritesAt(4, 1, 2, 2),
+				rendering.assets.spritesAt(6, 1, 2, 2));
+		bigPac.endless().frameDuration(4).run();
 	}
 
 	@Override
@@ -59,40 +68,58 @@ public class PacManGameIntermission1 implements PacManGameScene {
 	@Override
 	public void start() {
 		log("Start of intermission scene %s", getClass().getSimpleName());
+
+		phase = BLINKY_CHASING_PACMAN;
+
 		pac.visible = true;
 		pac.dead = false;
 		pac.couldMove = true;
-		pac.position = new V2f(size.x + 50, t(chaseTile));
+		pac.position = new V2f(size.x + 50, baselineY);
 		pac.speed = 1f;
 		pac.dir = LEFT;
+
 		blinky.visible = true;
 		blinky.state = HUNTING_PAC;
-		blinky.position = pac.position.sum(new V2f(24, 0));
+		blinky.position = pac.position.sum(30, 0);
 		blinky.speed = pac.speed * 1.04f;
 		blinky.dir = blinky.wishDir = LEFT;
+
 		rendering.letPacMunch(true);
 		rendering.ghostWalking(blinky, blinky.dir).restart();
+		rendering.ghostFrightened(blinky, blinky.dir).restart();
 		soundManager.loopSound(PacManGameSound.INTERMISSION_1, 2);
 	}
 
 	@Override
+	public void end() {
+		log("End of intermission scene %s", getClass().getSimpleName());
+	}
+
+	@Override
 	public void update() {
-		if (pac.dir == RIGHT && pac.position.x > size.x + 100) {
-			soundManager.stopAllSounds();
-			game.state.duration(0); // triggers state expiration
-			log("End of intermission scene %s", getClass().getSimpleName());
-			return;
-		}
-		// turn around?
-		if (blinky.position.x < -50) {
-			blinky.state = FRIGHTENED;
-			blinky.dir = blinky.wishDir = RIGHT;
-			blinky.position = new V2f(-50, blinky.position.y);
-			blinky.speed = pac.speed * 0.8f;
-			pac.position = blinky.position.sum(new V2f(-100, 0));
-			pac.dir = RIGHT;
-			rendering.ghostFrightened(blinky, blinky.dir).restart();
-			bigPacAnimation.restart();
+		switch (phase) {
+		case BLINKY_CHASING_PACMAN:
+			if (pac.position.x < -50) {
+				pac.dir = RIGHT;
+				pac.position = new V2f(-20, baselineY);
+				pac.speed = 0;
+				blinky.dir = blinky.wishDir = RIGHT;
+				blinky.position = new V2f(-20, baselineY);
+				blinky.speed = 0.8f;
+				blinky.state = FRIGHTENED;
+				phase = BIGPACMAN_CHASING_BLINKY;
+			}
+			break;
+		case BIGPACMAN_CHASING_BLINKY:
+			if ((int) blinky.position.x + 4 == size.x / 2) {
+				pac.speed = blinky.speed * 1.9f;
+			}
+			if (pac.position.x > size.x + 100) {
+				game.state.duration(0);
+			}
+			break;
+		default:
+			break;
 		}
 		pac.move();
 		blinky.move();
@@ -100,14 +127,14 @@ public class PacManGameIntermission1 implements PacManGameScene {
 
 	@Override
 	public void draw(Graphics2D g) {
-		rendering.drawLevelCounter(g, game, t(game.level.world.xTiles() - 4), size.y - t(2));
-		if (pac.dir == LEFT) {
-			rendering.drawGuy(g, pac, game);
+		Graphics2D g2 = rendering.smoothGC(g);
+		rendering.drawLevelCounter(g2, game, size.x - t(4), size.y - t(2));
+		rendering.drawGuy(g2, blinky, game);
+		if (phase == BLINKY_CHASING_PACMAN) {
+			rendering.drawGuy(g2, pac, game);
 		} else {
-			Graphics2D g2 = rendering.smoothGC(g);
-			g2.drawImage(bigPacAnimation.animate(), (int) pac.position.x, (int) pac.position.y - 20, null);
-			g2.dispose();
+			rendering.drawSprite(g2, bigPac.animate(), pac.position.x - 12, pac.position.y - 22);
 		}
-		rendering.drawGuy(g, blinky, game);
+		g2.dispose();
 	}
 }
