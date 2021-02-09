@@ -33,14 +33,14 @@ import de.amr.games.pacman.ui.swing.rendering.SpriteBasedRendering;
  * 
  * @author Armin Reichert
  */
-public class PacManGameRendering implements SpriteBasedRendering, PacManGameAnimations {
+public class PacManGameSpriteBasedRendering implements SpriteBasedRendering, PacManGameAnimations {
 
 	public static boolean foodAnimationOn = false;
 
 	public final PacManGameAssets assets;
 	public final ResourceBundle translations;
 
-	public PacManGameRendering(ResourceBundle bundle) {
+	public PacManGameSpriteBasedRendering(ResourceBundle bundle) {
 		assets = new PacManGameAssets();
 		translations = bundle;
 	}

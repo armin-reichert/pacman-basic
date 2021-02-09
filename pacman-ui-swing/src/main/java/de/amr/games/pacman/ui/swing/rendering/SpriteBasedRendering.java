@@ -11,10 +11,10 @@ import de.amr.games.pacman.model.creatures.Bonus;
 import de.amr.games.pacman.model.creatures.Creature;
 import de.amr.games.pacman.model.creatures.Ghost;
 import de.amr.games.pacman.model.creatures.Pac;
-import de.amr.games.pacman.ui.api.PacManGameRenderingAPI;
+import de.amr.games.pacman.ui.api.PacManGameRendering;
 import de.amr.games.pacman.ui.swing.assets.Spritesheet;
 
-public interface SpriteBasedRendering extends PacManGameRenderingAPI {
+public interface SpriteBasedRendering extends PacManGameRendering {
 
 	Spritesheet spritesheet();
 

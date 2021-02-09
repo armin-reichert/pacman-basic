@@ -19,7 +19,7 @@ import de.amr.games.pacman.model.AbstractPacManGame;
 import de.amr.games.pacman.model.creatures.Ghost;
 import de.amr.games.pacman.model.creatures.Pac;
 import de.amr.games.pacman.ui.api.PacManGameScene;
-import de.amr.games.pacman.ui.swing.pacman.rendering.PacManGameRendering;
+import de.amr.games.pacman.ui.swing.pacman.rendering.PacManGameSpriteBasedRendering;
 
 /**
  * Intro presenting the ghosts and showing the chasing animations.
@@ -29,7 +29,7 @@ import de.amr.games.pacman.ui.swing.pacman.rendering.PacManGameRendering;
 public class PacManGameIntroScene implements PacManGameScene {
 
 	private final V2i size;
-	private final PacManGameRendering rendering;
+	private final PacManGameSpriteBasedRendering rendering;
 	private final AbstractPacManGame game;
 
 	private final Animation<Boolean> blinking = Animation.pulse().frameDuration(30);
@@ -46,7 +46,7 @@ public class PacManGameIntroScene implements PacManGameScene {
 	private long ghostDyingTimer;
 	private long completedTime;
 
-	public PacManGameIntroScene(V2i size, PacManGameRendering rendering, AbstractPacManGame game) {
+	public PacManGameIntroScene(V2i size, PacManGameSpriteBasedRendering rendering, AbstractPacManGame game) {
 		this.size = size;
 		this.game = game;
 		this.rendering = rendering;

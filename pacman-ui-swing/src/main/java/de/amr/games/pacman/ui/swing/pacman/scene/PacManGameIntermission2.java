@@ -19,7 +19,7 @@ import de.amr.games.pacman.ui.api.PacManGameScene;
 import de.amr.games.pacman.ui.sound.PacManGameSound;
 import de.amr.games.pacman.ui.sound.SoundManager;
 import de.amr.games.pacman.ui.swing.assets.Spritesheet;
-import de.amr.games.pacman.ui.swing.pacman.rendering.PacManGameRendering;
+import de.amr.games.pacman.ui.swing.pacman.rendering.PacManGameSpriteBasedRendering;
 
 /**
  * Second intermission scene: Blinky pursues Pac but kicks a nail that tears his dress apart.
@@ -33,7 +33,7 @@ public class PacManGameIntermission2 implements PacManGameScene {
 	}
 
 	private final V2i size;
-	private final PacManGameRendering rendering;
+	private final PacManGameSpriteBasedRendering rendering;
 	private final SoundManager soundManager;
 	private final PacManGame game;
 
@@ -48,7 +48,7 @@ public class PacManGameIntermission2 implements PacManGameScene {
 	private Phase phase;
 	private long timer;
 
-	public PacManGameIntermission2(V2i size, PacManGameRendering rendering, SoundManager soundManager, PacManGame game) {
+	public PacManGameIntermission2(V2i size, PacManGameSpriteBasedRendering rendering, SoundManager soundManager, PacManGame game) {
 		this.size = size;
 		this.rendering = rendering;
 		this.soundManager = soundManager;

@@ -38,13 +38,13 @@ import de.amr.games.pacman.ui.sound.PacManGameSoundManager;
 import de.amr.games.pacman.ui.sound.SoundManager;
 import de.amr.games.pacman.ui.swing.assets.AssetLoader;
 import de.amr.games.pacman.ui.swing.input.Keyboard;
-import de.amr.games.pacman.ui.swing.mspacman.rendering.MsPacManGameRendering;
+import de.amr.games.pacman.ui.swing.mspacman.rendering.MsPacManGameSpriteBasedRendering;
 import de.amr.games.pacman.ui.swing.mspacman.scene.MsPacManGameIntroScene;
 import de.amr.games.pacman.ui.swing.mspacman.scene.MsPacManGamePlayScene;
 import de.amr.games.pacman.ui.swing.mspacman.scene.MsPacManIntermission1_TheyMeet;
 import de.amr.games.pacman.ui.swing.mspacman.scene.MsPacManIntermission2_TheChase;
 import de.amr.games.pacman.ui.swing.mspacman.scene.MsPacManIntermission3_Junior;
-import de.amr.games.pacman.ui.swing.pacman.rendering.PacManGameRendering;
+import de.amr.games.pacman.ui.swing.pacman.rendering.PacManGameSpriteBasedRendering;
 import de.amr.games.pacman.ui.swing.pacman.scene.PacManGameIntermission1;
 import de.amr.games.pacman.ui.swing.pacman.scene.PacManGameIntermission2;
 import de.amr.games.pacman.ui.swing.pacman.scene.PacManGameIntermission3;
@@ -74,10 +74,10 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 	private final ResourceBundle translations = ResourceBundle.getBundle("localization.translation");
 
-	private final PacManGameRendering pacManRendering;
+	private final PacManGameSpriteBasedRendering pacManRendering;
 	private final SoundManager pacManSoundManager;
 
-	private final MsPacManGameRendering msPacManRendering;
+	private final MsPacManGameSpriteBasedRendering msPacManRendering;
 	private final SoundManager msPacManSoundManager;
 
 	private final List<String> flashMessages = new ArrayList<>();
@@ -138,10 +138,10 @@ public class PacManGameSwingUI implements PacManGameUI {
 		canvas.setFocusable(false);
 		window.getContentPane().add(canvas);
 
-		pacManRendering = new PacManGameRendering(translations);
+		pacManRendering = new PacManGameSpriteBasedRendering(translations);
 		pacManSoundManager = new PacManGameSoundManager(pacManRendering.assets::getSoundURL);
 
-		msPacManRendering = new MsPacManGameRendering(translations);
+		msPacManRendering = new MsPacManGameSpriteBasedRendering(translations);
 		msPacManSoundManager = new PacManGameSoundManager(msPacManRendering.assets::getSoundURL);
 
 		setGame(game);

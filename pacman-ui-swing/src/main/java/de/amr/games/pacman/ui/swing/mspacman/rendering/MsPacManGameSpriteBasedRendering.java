@@ -29,12 +29,12 @@ import de.amr.games.pacman.ui.swing.rendering.SpriteBasedRendering;
  * 
  * @author Armin Reichert
  */
-public class MsPacManGameRendering implements SpriteBasedRendering, PacManGameAnimations {
+public class MsPacManGameSpriteBasedRendering implements SpriteBasedRendering, PacManGameAnimations {
 
 	public final MsPacManGameAssets assets;
 	public final ResourceBundle translations;
 
-	public MsPacManGameRendering(ResourceBundle bundle) {
+	public MsPacManGameSpriteBasedRendering(ResourceBundle bundle) {
 		assets = new MsPacManGameAssets();
 		translations = bundle;
 	}

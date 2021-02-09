@@ -8,16 +8,16 @@ import de.amr.games.pacman.model.MsPacManGame;
 import de.amr.games.pacman.ui.api.PacManGameScene;
 import de.amr.games.pacman.ui.sound.PacManGameSound;
 import de.amr.games.pacman.ui.sound.SoundManager;
-import de.amr.games.pacman.ui.swing.mspacman.rendering.MsPacManGameRendering;
+import de.amr.games.pacman.ui.swing.mspacman.rendering.MsPacManGameSpriteBasedRendering;
 
 public class MsPacManIntermission2_TheChase implements PacManGameScene {
 
 	private final V2i size;
-	private final MsPacManGameRendering rendering;
+	private final MsPacManGameSpriteBasedRendering rendering;
 	private final SoundManager soundManager;
 	private final MsPacManGame game;
 
-	public MsPacManIntermission2_TheChase(V2i size, MsPacManGameRendering rendering, SoundManager soundManager,
+	public MsPacManIntermission2_TheChase(V2i size, MsPacManGameSpriteBasedRendering rendering, SoundManager soundManager,
 			MsPacManGame game) {
 		this.size = size;
 		this.rendering = rendering;

@@ -21,7 +21,7 @@ import de.amr.games.pacman.model.creatures.Pac;
 import de.amr.games.pacman.ui.api.PacManGameScene;
 import de.amr.games.pacman.ui.sound.PacManGameSound;
 import de.amr.games.pacman.ui.sound.SoundManager;
-import de.amr.games.pacman.ui.swing.pacman.rendering.PacManGameRendering;
+import de.amr.games.pacman.ui.swing.pacman.rendering.PacManGameSpriteBasedRendering;
 
 /**
  * First intermission scene: Blinky chases Pac-Man and is then chased by a huge Pac-Man.
@@ -35,7 +35,7 @@ public class PacManGameIntermission1 implements PacManGameScene {
 	}
 
 	private final V2i size;
-	private final PacManGameRendering rendering;
+	private final PacManGameSpriteBasedRendering rendering;
 	private final SoundManager soundManager;
 	private final PacManGame game;
 
@@ -46,7 +46,7 @@ public class PacManGameIntermission1 implements PacManGameScene {
 
 	private Phase phase;
 
-	public PacManGameIntermission1(V2i size, PacManGameRendering rendering, SoundManager soundManager, PacManGame game) {
+	public PacManGameIntermission1(V2i size, PacManGameSpriteBasedRendering rendering, SoundManager soundManager, PacManGame game) {
 		this.size = size;
 		this.rendering = rendering;
 		this.soundManager = soundManager;
