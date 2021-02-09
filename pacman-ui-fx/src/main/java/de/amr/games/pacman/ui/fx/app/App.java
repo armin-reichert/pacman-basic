@@ -3,8 +3,12 @@ package de.amr.games.pacman.ui.fx.app;
 import java.io.IOException;
 
 import javafx.application.Application;
-import javafx.scene.Group;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -17,11 +21,18 @@ public class App extends Application {
 
 	@Override
 	public void start(Stage stage) throws IOException {
-		Group group = new Group();
-		group.getChildren().add(new Text("Hello"));
-		scene = new Scene(group, 640, 480);
+		scene = new Scene(createContent(), 640, 480);
 		stage.setScene(scene);
 		stage.show();
+	}
+
+	private Parent createContent() {
+		Pane pane = new StackPane();
+		Text text = new Text("Hello, JavaFX!");
+		text.setFont(Font.font("Serif", 20));
+		text.setStroke(Color.BLACK);
+		pane.getChildren().add(text);
+		return pane;
 	}
 
 	public static void main(String[] args) {
