@@ -1,4 +1,4 @@
-package de.amr.games.pacman.ui.api;
+package de.amr.games.pacman.ui.swing;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;

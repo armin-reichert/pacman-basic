@@ -32,7 +32,6 @@ import de.amr.games.pacman.model.AbstractPacManGame;
 import de.amr.games.pacman.model.MsPacManGame;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.ui.api.PacManGameAnimations;
-import de.amr.games.pacman.ui.api.PacManGameScene;
 import de.amr.games.pacman.ui.api.PacManGameUI;
 import de.amr.games.pacman.ui.sound.PacManGameSoundManager;
 import de.amr.games.pacman.ui.sound.SoundManager;

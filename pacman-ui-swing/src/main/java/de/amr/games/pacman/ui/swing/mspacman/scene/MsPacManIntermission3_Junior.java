@@ -5,9 +5,9 @@ import java.awt.Graphics2D;
 import de.amr.games.pacman.heaven.God;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.MsPacManGame;
-import de.amr.games.pacman.ui.api.PacManGameScene;
 import de.amr.games.pacman.ui.sound.PacManGameSound;
 import de.amr.games.pacman.ui.sound.SoundManager;
+import de.amr.games.pacman.ui.swing.PacManGameScene;
 import de.amr.games.pacman.ui.swing.mspacman.rendering.MsPacManGameSpriteBasedRendering;
 
 public class MsPacManIntermission3_Junior implements PacManGameScene {

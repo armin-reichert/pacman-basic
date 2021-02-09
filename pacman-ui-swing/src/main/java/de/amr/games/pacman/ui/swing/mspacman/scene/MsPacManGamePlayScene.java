@@ -7,7 +7,7 @@ import java.awt.Graphics2D;
 import de.amr.games.pacman.controller.PacManGameState;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.MsPacManGame;
-import de.amr.games.pacman.ui.api.PacManGameScene;
+import de.amr.games.pacman.ui.swing.PacManGameScene;
 import de.amr.games.pacman.ui.swing.mspacman.rendering.MsPacManGameSpriteBasedRendering;
 import de.amr.games.pacman.ui.swing.rendering.DebugRendering;
 
