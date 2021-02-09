@@ -22,7 +22,6 @@ import de.amr.games.pacman.world.WorldMap;
  */
 public class PacManGame extends PacManGameModel {
 
-	private final MapBasedPacManGameWorld world;
 	/*@formatter:off*/
 	public static final int[][] PACMAN_LEVELS = {
 	/* 1*/ {0,  80, 75, 40,  20,  80, 10,  85,  90, 50, 6, 5},
@@ -48,6 +47,8 @@ public class PacManGame extends PacManGameModel {
 	/*21*/ {7,  90, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
 	};
 	/*@formatter:on*/
+
+	private final MapBasedPacManGameWorld world;
 
 	public PacManGame() {
 
@@ -80,7 +81,7 @@ public class PacManGame extends PacManGameModel {
 	}
 
 	@Override
-	public void buildLevel(int levelNumber) {
+	protected void buildLevel(int levelNumber) {
 		log("Pac-Man classic level %d is getting created...", levelNumber);
 		level = new GameLevel(PacManGame.PACMAN_LEVELS[levelNumber <= 21 ? levelNumber - 1 : 20]);
 		level.setWorld(world);

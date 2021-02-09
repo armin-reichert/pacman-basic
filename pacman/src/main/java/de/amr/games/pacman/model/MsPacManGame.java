@@ -98,7 +98,7 @@ public class MsPacManGame extends PacManGameModel {
 	}
 
 	@Override
-	public void buildLevel(int levelNumber) {
+	protected void buildLevel(int levelNumber) {
 		log("Ms. Pac-Man level %d is getting created...", levelNumber);
 		int mazeNumber = mazeNumber(levelNumber);
 		world.setMap(new WorldMap("/mspacman/maps/map" + mapIndex(mazeNumber) + ".txt"));

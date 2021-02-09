@@ -43,7 +43,7 @@ public abstract class PacManGameModel {
 	public short globalDotCounter;
 	public boolean globalDotCounterEnabled;
 
-	public abstract void buildLevel(int levelNumber);
+	protected abstract void buildLevel(int levelNumber);
 
 	public abstract int mazeNumber(int levelNumber);
 
