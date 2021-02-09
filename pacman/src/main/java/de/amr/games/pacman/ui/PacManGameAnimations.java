@@ -1,4 +1,4 @@
-package de.amr.games.pacman.ui.api;
+package de.amr.games.pacman.ui;
 
 import java.util.stream.Stream;
 

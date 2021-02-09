@@ -1,4 +1,4 @@
-package de.amr.games.pacman.ui.sound;
+package de.amr.games.pacman.sound;
 
 public interface SoundManager {
 

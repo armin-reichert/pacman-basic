@@ -17,7 +17,7 @@ import java.util.Map;
 import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.ui.sound.PacManGameSound;
+import de.amr.games.pacman.sound.PacManGameSound;
 import de.amr.games.pacman.ui.swing.assets.Spritesheet;
 
 /**

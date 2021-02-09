@@ -20,7 +20,7 @@ import de.amr.games.pacman.model.AbstractPacManGame;
 import de.amr.games.pacman.model.Bonus;
 import de.amr.games.pacman.model.Ghost;
 import de.amr.games.pacman.model.Pac;
-import de.amr.games.pacman.ui.api.PacManGameAnimations;
+import de.amr.games.pacman.ui.PacManGameAnimations;
 import de.amr.games.pacman.ui.swing.assets.Spritesheet;
 import de.amr.games.pacman.ui.swing.rendering.SpriteBasedRendering;
 

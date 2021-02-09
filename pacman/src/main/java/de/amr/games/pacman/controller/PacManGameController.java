@@ -37,9 +37,9 @@ import de.amr.games.pacman.model.AbstractPacManGame;
 import de.amr.games.pacman.model.Ghost;
 import de.amr.games.pacman.model.MsPacManGame;
 import de.amr.games.pacman.model.PacManGame;
-import de.amr.games.pacman.ui.api.PacManGameUI;
-import de.amr.games.pacman.ui.sound.PacManGameSound;
-import de.amr.games.pacman.ui.sound.SoundManager;
+import de.amr.games.pacman.sound.PacManGameSound;
+import de.amr.games.pacman.sound.SoundManager;
+import de.amr.games.pacman.ui.PacManGameUI;
 
 /**
  * Pac-Man and Ms. Pac-Man game with original "AI", levels, timers.
