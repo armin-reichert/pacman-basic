@@ -86,7 +86,7 @@ public class PacManGameIntermission1 implements PacManGameScene {
 		rendering.pacMunching().forEach(Animation::restart);
 		rendering.ghostKickingToDir(blinky, blinky.dir).restart();
 		rendering.ghostFrightenedToDir(blinky, blinky.dir).restart();
-		soundManager.loopSound(PacManGameSound.INTERMISSION_1, 2);
+		soundManager.loop(PacManGameSound.INTERMISSION_1, 2);
 	}
 
 	@Override

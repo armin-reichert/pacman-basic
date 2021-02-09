@@ -92,7 +92,7 @@ public class PacManGameIntermission2 implements PacManGameScene {
 
 		rendering.pacMunching().forEach(Animation::restart);
 		rendering.ghostKickingToDir(blinky, blinky.dir).restart();
-		soundManager.playSound(PacManGameSound.INTERMISSION_2);
+		soundManager.play(PacManGameSound.INTERMISSION_2);
 
 		phase = Phase.APPROACHING_NAIL;
 		timer = -1;

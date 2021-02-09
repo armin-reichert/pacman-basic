@@ -32,7 +32,7 @@ public class MsPacManIntermission1_TheyMeet implements PacManGameScene {
 
 	@Override
 	public void start() {
-		soundManager.loopSound(PacManGameSound.INTERMISSION_1, 1);
+		soundManager.loop(PacManGameSound.INTERMISSION_1, 1);
 	}
 
 	@Override

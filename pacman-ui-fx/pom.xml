@@ -20,6 +20,11 @@
             <artifactId>javafx-fxml</artifactId>
             <version>15</version>
         </dependency>
+        <dependency>
+        	<groupId>de.amr.games.pacman</groupId>
+        	<artifactId>pacman-basic</artifactId>
+        	<version>1.0</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

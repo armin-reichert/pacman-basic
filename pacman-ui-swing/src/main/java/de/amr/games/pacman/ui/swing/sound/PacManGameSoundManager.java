@@ -1,4 +1,4 @@
-package de.amr.games.pacman.sound;
+package de.amr.games.pacman.ui.swing.sound;
 
 import java.io.BufferedInputStream;
 import java.net.URL;
@@ -9,6 +9,9 @@ import java.util.function.Function;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+
+import de.amr.games.pacman.sound.PacManGameSound;
+import de.amr.games.pacman.sound.SoundManager;
 
 /**
  * Sound manager for Pac-Man game.
@@ -60,24 +63,24 @@ public class PacManGameSoundManager implements SoundManager {
 	}
 
 	@Override
-	public void playSound(PacManGameSound sound) {
+	public void play(PacManGameSound sound) {
 		getClip(sound).start();
 	}
 
 	@Override
-	public void loopSound(PacManGameSound sound, int repetitions) {
+	public void loop(PacManGameSound sound, int repetitions) {
 		Clip clip = getClip(sound);
 		clip.setFramePosition(0);
 		clip.loop(repetitions == Integer.MAX_VALUE ? Clip.LOOP_CONTINUOUSLY : repetitions - 1);
 	}
 
 	@Override
-	public void stopSound(PacManGameSound sound) {
+	public void stop(PacManGameSound sound) {
 		getClip(sound).stop();
 	}
 
 	@Override
-	public void stopAllSounds() {
+	public void stopAll() {
 		for (Clip clip : clipCache.values()) {
 			clip.stop();
 		}

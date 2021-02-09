@@ -32,7 +32,7 @@ public class MsPacManIntermission2_TheChase implements PacManGameScene {
 
 	@Override
 	public void start() {
-		soundManager.loopSound(PacManGameSound.INTERMISSION_2, 1);
+		soundManager.loop(PacManGameSound.INTERMISSION_2, 1);
 	}
 
 	@Override

@@ -2,16 +2,16 @@ package de.amr.games.pacman.sound;
 
 public interface SoundManager {
 
-	void playSound(PacManGameSound sound);
+	void play(PacManGameSound sound);
 
-	default void loopSound(PacManGameSound sound) {
-		loopSound(sound, Integer.MAX_VALUE);
+	default void loopForever(PacManGameSound sound) {
+		loop(sound, Integer.MAX_VALUE);
 	}
 
-	void loopSound(PacManGameSound sound, int repetitions);
+	void loop(PacManGameSound sound, int repetitions);
 
-	void stopSound(PacManGameSound sound);
+	void stop(PacManGameSound sound);
 
-	void stopAllSounds();
+	void stopAll();
 
 }

@@ -88,7 +88,7 @@ public class PacManGameIntermission3 implements PacManGameScene {
 
 		rendering.pacMunching().forEach(Animation::restart);
 		blinkyDamaged.restart();
-		soundManager.loopSound(PacManGameSound.INTERMISSION_3, 2);
+		soundManager.loop(PacManGameSound.INTERMISSION_3, 2);
 
 		phase = Phase.CHASING_PACMAN;
 	}

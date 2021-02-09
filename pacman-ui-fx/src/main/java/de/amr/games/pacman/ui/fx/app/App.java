@@ -1,5 +1,7 @@
 package de.amr.games.pacman.ui.fx.app;
 
+import static de.amr.games.pacman.world.PacManGameWorld.TS;
+
 import java.io.IOException;
 
 import javafx.application.Application;
@@ -17,13 +19,23 @@ import javafx.stage.Stage;
  */
 public class App extends Application {
 
-	private static Scene scene;
+	private float scaling = 2;
 
 	@Override
 	public void start(Stage stage) throws IOException {
-		scene = new Scene(createContent(), 640, 480);
+		Scene scene = createPlayScene();
 		stage.setScene(scene);
+
+		stage.setTitle("Pac-Man / Ms. Pac-Man");
+		stage.setOnCloseRequest(e -> {
+			System.exit(0);
+		});
 		stage.show();
+	}
+
+	private Scene createPlayScene() {
+		Scene scene = new Scene(createContent(), 28 * TS * scaling, 36 * TS * scaling);
+		return scene;
 	}
 
 	private Parent createContent() {
