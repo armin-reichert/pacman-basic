@@ -9,6 +9,7 @@ import static de.amr.games.pacman.world.PacManGameWorld.t;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
+import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.PacManGame;
@@ -89,8 +90,8 @@ public class PacManGameIntermission2 implements PacManGameScene {
 		blinky.speed = 1;
 		blinky.dir = blinky.wishDir = LEFT;
 
-		rendering.letPacMunch(true);
-		rendering.ghostWalking(blinky, blinky.dir).restart();
+		rendering.pacMunching().forEach(Animation::restart);
+		rendering.ghostKickingToDir(blinky, blinky.dir).restart();
 		soundManager.playSound(PacManGameSound.INTERMISSION_2);
 
 		phase = Phase.APPROACHING_NAIL;

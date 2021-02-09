@@ -66,8 +66,8 @@ public class MsPacManGameIntroScene implements PacManGameScene {
 		game.pac.dead = false;
 
 		blinking.restart();
-		rendering.letGhostsFidget(game.ghosts(), true);
-		rendering.letPacMunch(true);
+		rendering.ghostsKicking(game.ghosts()).forEach(Animation::restart);
+		rendering.pacMunching().forEach(Animation::restart);
 	}
 
 	@Override
@@ -109,7 +109,7 @@ public class MsPacManGameIntroScene implements PacManGameScene {
 			if (reachedEndPosition(ghost)) {
 				ghost.speed = 0;
 				ghost.position = new V2f(ghost.position.x, ghostEndPositionY(ghost));
-				rendering.ghostWalking(ghost, ghost.dir).reset();
+				rendering.ghostKickingToDir(ghost, ghost.dir).reset();
 				if (ghost.id < 3) { // start next ghost
 					game.ghosts[ghost.id + 1].speed = walkSpeed;
 				} else { // start Pac

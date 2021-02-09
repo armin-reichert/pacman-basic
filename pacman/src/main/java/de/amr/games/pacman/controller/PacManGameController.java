@@ -161,8 +161,14 @@ public class PacManGameController {
 		log(msg);
 	}
 
-	private void ghostsFidget(boolean on) {
-		ui.animations().ifPresent(animations -> animations.letGhostsFidget(game.ghosts(), on));
+	private void ghostsKicking(boolean on) {
+		ui.animations().ifPresent(animations -> {
+			if (on) {
+				animations.ghostsKicking(game.ghosts()).forEach(Animation::restart);
+			} else {
+				animations.ghostsKicking(game.ghosts()).forEach(Animation::reset);
+			}
+		});
 	}
 
 	// BEGIN STATE-MACHINE
@@ -230,7 +236,7 @@ public class PacManGameController {
 			game.pac.visible = true;
 		}
 		if (game.state.ticksLeftEquals(clock.sec(1.0))) {
-			ghostsFidget(true);
+			ghostsKicking(true);
 		}
 		return game.state.run();
 	}
@@ -303,7 +309,7 @@ public class PacManGameController {
 		startHuntingPhase(0);
 		ui.animations().ifPresent(animations -> {
 			animations.energizerBlinking().restart();
-			animations.letPacMunch(true);
+			animations.pacMunching().forEach(Animation::restart);
 		});
 	}
 
@@ -415,7 +421,7 @@ public class PacManGameController {
 		game.state.duration(clock.sec(5));
 		game.pac.speed = 0;
 		game.bonus.edibleTicksLeft = game.bonus.eatenTicksLeft = 0;
-		ghostsFidget(false);
+		ghostsKicking(false);
 		ui.sounds().ifPresent(SoundManager::stopAllSounds);
 	}
 
@@ -519,7 +525,7 @@ public class PacManGameController {
 		game.ghosts().forEach(ghost -> ghost.speed = 0);
 		game.pac.speed = 0;
 		game.saveHighscore();
-		ghostsFidget(false);
+		ghostsKicking(false);
 	}
 
 	private PacManGameState runGameOverState() {
@@ -706,7 +712,7 @@ public class PacManGameController {
 				ghost.wishDir = ghost.dir.opposite();
 				ghost.forcedDirection = true;
 				ui.animations().ifPresent(animations -> {
-					animations.letGhostBeFrightened(ghost, true);
+					animations.ghostFrightened(ghost).forEach(Animation::restart);
 				});
 			});
 			ui.animations().ifPresent(animations -> {

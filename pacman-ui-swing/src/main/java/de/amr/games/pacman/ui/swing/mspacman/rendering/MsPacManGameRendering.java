@@ -45,7 +45,7 @@ public class MsPacManGameRendering implements SpriteBasedRendering, PacManGameAn
 	}
 
 	@Override
-	public Animation<BufferedImage> pacMunching(Direction dir) {
+	public Animation<BufferedImage> pacMunchingToDir(Direction dir) {
 		return assets.pacMunching.get(dir);
 	}
 
@@ -55,12 +55,12 @@ public class MsPacManGameRendering implements SpriteBasedRendering, PacManGameAn
 	}
 
 	@Override
-	public Animation<BufferedImage> ghostWalking(Ghost ghost, Direction dir) {
+	public Animation<BufferedImage> ghostKickingToDir(Ghost ghost, Direction dir) {
 		return assets.ghostsWalking.get(ghost.id).get(dir);
 	}
 
 	@Override
-	public Animation<BufferedImage> ghostFrightened(Ghost ghost, Direction dir) {
+	public Animation<BufferedImage> ghostFrightenedToDir(Ghost ghost, Direction dir) {
 		return assets.ghostBlue;
 	}
 
@@ -70,7 +70,7 @@ public class MsPacManGameRendering implements SpriteBasedRendering, PacManGameAn
 	}
 
 	@Override
-	public Animation<BufferedImage> ghostReturningHome(Ghost ghost, Direction dir) {
+	public Animation<BufferedImage> ghostReturningHomeToDir(Ghost ghost, Direction dir) {
 		return assets.ghostEyes.get(dir);
 	}
 
@@ -185,9 +185,9 @@ public class MsPacManGameRendering implements SpriteBasedRendering, PacManGameAn
 	@Override
 	public BufferedImage pacSprite(Pac pac, AbstractPacManGame game) {
 		if (pac.dead) {
-			return pacDying().hasStarted() ? pacDying().animate() : pacMunching(pac.dir).frame();
+			return pacDying().hasStarted() ? pacDying().animate() : pacMunchingToDir(pac.dir).frame();
 		}
-		return pac.speed == 0 || !pac.couldMove ? pacMunching(pac.dir).frame(1) : pacMunching(pac.dir).animate();
+		return pac.speed == 0 || !pac.couldMove ? pacMunchingToDir(pac.dir).frame(1) : pacMunchingToDir(pac.dir).animate();
 	}
 
 	@Override
@@ -196,14 +196,14 @@ public class MsPacManGameRendering implements SpriteBasedRendering, PacManGameAn
 			return assets.spriteAt(assets.bountyNumbersSSL.get(ghost.bounty));
 		}
 		if (ghost.is(DEAD) || ghost.is(ENTERING_HOUSE)) {
-			return ghostReturningHome(ghost, ghost.dir).animate();
+			return ghostReturningHomeToDir(ghost, ghost.dir).animate();
 		}
 		if (ghost.is(FRIGHTENED)) {
-			return ghostFlashing().isRunning() ? ghostFlashing().frame() : ghostFrightened(ghost, ghost.dir).animate();
+			return ghostFlashing().isRunning() ? ghostFlashing().frame() : ghostFrightenedToDir(ghost, ghost.dir).animate();
 		}
 		if (ghost.is(LOCKED) && game.pac.powerTicksLeft > 0) {
-			return ghostFrightened(ghost, ghost.dir).animate();
+			return ghostFrightenedToDir(ghost, ghost.dir).animate();
 		}
-		return ghostWalking(ghost, ghost.wishDir).animate();
+		return ghostKickingToDir(ghost, ghost.wishDir).animate();
 	}
 }

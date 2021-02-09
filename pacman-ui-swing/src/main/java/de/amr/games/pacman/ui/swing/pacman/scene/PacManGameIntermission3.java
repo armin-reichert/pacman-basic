@@ -86,7 +86,7 @@ public class PacManGameIntermission3 implements PacManGameScene {
 		blinky.speed = pac.speed;
 		blinky.dir = blinky.wishDir = LEFT;
 
-		rendering.letPacMunch(true);
+		rendering.pacMunching().forEach(Animation::restart);
 		blinkyDamaged.restart();
 		soundManager.loopSound(PacManGameSound.INTERMISSION_3, 2);
 

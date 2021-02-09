@@ -83,9 +83,9 @@ public class PacManGameIntermission1 implements PacManGameScene {
 		blinky.speed = pac.speed * 1.04f;
 		blinky.dir = blinky.wishDir = LEFT;
 
-		rendering.letPacMunch(true);
-		rendering.ghostWalking(blinky, blinky.dir).restart();
-		rendering.ghostFrightened(blinky, blinky.dir).restart();
+		rendering.pacMunching().forEach(Animation::restart);
+		rendering.ghostKickingToDir(blinky, blinky.dir).restart();
+		rendering.ghostFrightenedToDir(blinky, blinky.dir).restart();
 		soundManager.loopSound(PacManGameSound.INTERMISSION_1, 2);
 	}
 

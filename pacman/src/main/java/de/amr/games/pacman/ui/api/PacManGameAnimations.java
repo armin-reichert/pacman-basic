@@ -7,62 +7,64 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.model.AbstractPacManGame;
 import de.amr.games.pacman.model.creatures.Ghost;
 
+/**
+ * Optional animations provided by a game UI.
+ * 
+ * @author Armin Reichert
+ */
 public interface PacManGameAnimations {
 
-	Animation<?> pacMunching(Direction dir);
+	Animation<?> pacMunchingToDir(Direction dir);
+
+	default Stream<Animation<?>> pacMunching() {
+		return Stream.of(Direction.values()).map(this::pacMunchingToDir);
+	}
 
 	Animation<?> pacDying();
 
-	Animation<?> ghostWalking(Ghost ghost, Direction dir);
+	Animation<?> ghostKickingToDir(Ghost ghost, Direction dir);
 
-	Animation<?> ghostFrightened(Ghost ghost, Direction dir);
+	default Stream<Animation<?>> ghostKicking(Ghost ghost) {
+		return Stream.of(Direction.values()).map(dir -> ghostKickingToDir(ghost, dir));
+	}
+
+	default Stream<Animation<?>> ghostsKicking(Stream<Ghost> ghosts) {
+		return ghosts.flatMap(this::ghostKicking);
+	}
+
+	Animation<?> ghostFrightenedToDir(Ghost ghost, Direction dir);
+
+	default Stream<Animation<?>> ghostFrightened(Ghost ghost) {
+		return Stream.of(Direction.values()).map(dir -> ghostFrightenedToDir(ghost, dir));
+	}
+
+	default Stream<Animation<?>> ghostsFrightened(Stream<Ghost> ghosts) {
+		return ghosts.flatMap(this::ghostFrightened);
+	}
 
 	Animation<?> ghostFlashing();
 
-	Animation<?> ghostReturningHome(Ghost ghost, Direction dir);
+	Animation<?> ghostReturningHomeToDir(Ghost ghost, Direction dir);
+
+	default Stream<Animation<?>> ghostReturningHome(Ghost ghost) {
+		return Stream.of(Direction.values()).map(dir -> ghostReturningHomeToDir(ghost, dir));
+	}
+
+	default Stream<Animation<?>> ghostsReturningHome(Stream<Ghost> ghosts) {
+		return ghosts.flatMap(this::ghostReturningHome);
+	}
 
 	Animation<?> mazeFlashing(int mazeNumber);
 
 	Animation<Boolean> energizerBlinking();
 
-	default void letGhostsFidget(Stream<Ghost> ghosts, boolean on) {
-		ghosts.forEach(ghost -> {
-			Stream.of(Direction.values()).forEach(dir -> {
-				if (on) {
-					ghostWalking(ghost, dir).restart();
-				} else {
-					ghostWalking(ghost, dir).stop();
-				}
-			});
-		});
-	}
-
-	default void letGhostBeFrightened(Ghost ghost, boolean on) {
-		Stream.of(Direction.values()).forEach(dir -> {
-			if (on) {
-				ghostFrightened(ghost, dir).restart();
-			} else {
-				ghostFrightened(ghost, dir).stop();
-			}
-		});
-	}
-
-	default void letPacMunch(boolean on) {
-		if (on) {
-			Stream.of(Direction.values()).forEach(dir -> pacMunching(dir).restart());
-		} else {
-			Stream.of(Direction.values()).forEach(dir -> pacMunching(dir).reset());
-		}
-	}
-
 	default void resetAllAnimations(AbstractPacManGame game) {
 		energizerBlinking().reset();
 		ghostFlashing().reset();
-		game.ghosts().forEach(ghost -> {
-			Stream.of(Direction.values()).forEach(dir -> ghostFrightened(ghost, dir).reset());
-			Stream.of(Direction.values()).forEach(dir -> ghostWalking(ghost, dir).reset());
-		});
-		Stream.of(Direction.values()).forEach(dir -> pacMunching(dir).reset());
+		ghostsFrightened(game.ghosts()).forEach(Animation::reset);
+		ghostsKicking(game.ghosts()).forEach(Animation::reset);
+		ghostsReturningHome(game.ghosts()).forEach(Animation::reset);
+		pacMunching().forEach(Animation::reset);
 		pacDying().reset();
 	}
 }
