@@ -61,6 +61,7 @@ public class MsPacManGame extends PacManGameModel {
 
 		// all levels share this world
 		world = new MapBasedPacManGameWorld();
+
 		pac.world = world;
 		for (Ghost ghost : ghosts) {
 			ghost.world = world;
@@ -72,23 +73,33 @@ public class MsPacManGame extends PacManGameModel {
 
 	@Override
 	public int mazeNumber(int levelNumber) {
-		if (levelNumber <= 2) {
+		switch (levelNumber) {
+		case 1:
+		case 2:
 			return 1; // pink maze, white dots
-		}
-		if (levelNumber <= 5) {
+		case 3:
+		case 4:
+		case 5:
 			return 2; // light blue maze, yellow dots
-		}
-		if (levelNumber <= 9) {
+		case 6:
+		case 7:
+		case 8:
+		case 9:
 			return 3; // orange maze, red dots
-		}
-		if (levelNumber <= 13) {
+		case 10:
+		case 11:
+		case 12:
+		case 13:
 			return 4; // dark blue maze, white dots
+		default:
+			if (levelNumber < 1) {
+				throw new IllegalArgumentException("Illegal level number: " + levelNumber);
+			}
+			// From level 14 on, maze switches between 5 and 6 every 4 levels
+			// Maze #5 = pink maze, cyan dots (same map as maze 3)
+			// Maze #6 = orange maze, white dots (same map as maze 4)
+			return (levelNumber - 14) % 8 < 4 ? 5 : 6;
 		}
-		// from level 14 on, maze switches between 5 and 6 every 4 levels
-		if ((levelNumber - 14) % 8 < 4) {
-			return 5; // pink maze, cyan dots (same map as maze 3)
-		}
-		return 6; // orange maze, white dots (same map as maze 4)
 	}
 
 	@Override
@@ -99,10 +110,9 @@ public class MsPacManGame extends PacManGameModel {
 
 	@Override
 	protected void buildLevel(int levelNumber) {
-		log("Ms. Pac-Man level %d is getting created...", levelNumber);
 		int mazeNumber = mazeNumber(levelNumber);
 		world.setMap(new WorldMap("/mspacman/maps/map" + mapIndex(mazeNumber) + ".txt"));
-		level = new GameLevel(MsPacManGame.MSPACMAN_LEVELS[levelNumber <= 21 ? levelNumber - 1 : 20]);
+		level = new GameLevel(MSPACMAN_LEVELS[levelNumber <= 21 ? levelNumber - 1 : 20]);
 		level.setWorld(world);
 		level.mazeNumber = mazeNumber;
 		if (levelNumber > 7) {

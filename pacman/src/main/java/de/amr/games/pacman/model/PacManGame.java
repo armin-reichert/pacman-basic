@@ -82,8 +82,7 @@ public class PacManGame extends PacManGameModel {
 
 	@Override
 	protected void buildLevel(int levelNumber) {
-		log("Pac-Man classic level %d is getting created...", levelNumber);
-		level = new GameLevel(PacManGame.PACMAN_LEVELS[levelNumber <= 21 ? levelNumber - 1 : 20]);
+		level = new GameLevel(PACMAN_LEVELS[levelNumber <= 21 ? levelNumber - 1 : 20]);
 		level.setWorld(world);
 		log("Pac-Man classic level %d created", levelNumber);
 	}
