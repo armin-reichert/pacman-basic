@@ -14,16 +14,16 @@ import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.lib.Logging.log;
-import static de.amr.games.pacman.model.PacManGameModel.BLINKY;
-import static de.amr.games.pacman.model.PacManGameModel.CLYDE;
-import static de.amr.games.pacman.model.PacManGameModel.INKY;
-import static de.amr.games.pacman.model.PacManGameModel.PINKY;
 import static de.amr.games.pacman.model.GhostState.DEAD;
 import static de.amr.games.pacman.model.GhostState.ENTERING_HOUSE;
 import static de.amr.games.pacman.model.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.model.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.model.GhostState.LOCKED;
+import static de.amr.games.pacman.model.PacManGameModel.BLINKY;
+import static de.amr.games.pacman.model.PacManGameModel.CLYDE;
+import static de.amr.games.pacman.model.PacManGameModel.INKY;
+import static de.amr.games.pacman.model.PacManGameModel.PINKY;
 
 import java.util.Arrays;
 import java.util.List;
@@ -33,10 +33,10 @@ import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.model.PacManGameModel;
 import de.amr.games.pacman.model.Ghost;
 import de.amr.games.pacman.model.MsPacManGame;
 import de.amr.games.pacman.model.PacManGame;
+import de.amr.games.pacman.model.PacManGameModel;
 import de.amr.games.pacman.sound.PacManGameSound;
 import de.amr.games.pacman.sound.SoundManager;
 import de.amr.games.pacman.ui.PacManGameUI;
@@ -686,7 +686,7 @@ public class PacManGameController {
 		// Bonus gets edible?
 		if (game.level.eatenFoodCount() == 70 || game.level.eatenFoodCount() == 170) {
 			game.bonus.activate(game.level.bonusSymbol, game.bonusValues[game.level.bonusSymbol],
-					game.bonusActivationTicks());
+					game.bonusActivationTicks(game.currentLevelNumber));
 			log("Bonus %s (value %d) activated", game.bonusNames[game.bonus.symbol], game.bonus.points);
 		}
 

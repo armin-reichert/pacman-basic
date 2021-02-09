@@ -53,7 +53,7 @@ public class PacManGame extends PacManGameModel {
 	public PacManGame() {
 
 		world = new MapBasedPacManGameWorld();
-		world.setMap(new WorldMap("/pacman/maps/map.txt"));
+		world.setMap(new WorldMap("/pacman/maps/map1.txt"));
 		world.setUpwardsBlocked(new V2i(12, 13), new V2i(15, 13), new V2i(12, 25), new V2i(15, 25));
 
 		bonusNames = new String[] { "CHERRIES", "STRAWBERRY", "PEACH", "APPLE", "GRAPES", "GALAXIAN", "BELL", "KEY" };
@@ -88,13 +88,13 @@ public class PacManGame extends PacManGameModel {
 	}
 
 	@Override
-	public long bonusActivationTicks() {
+	public long bonusActivationTicks(int levelNumber) {
 		return clock.sec(9 + random.nextFloat());
 	}
 
 	@Override
-	public int mapIndex(int mazeNumber) {
-		return 0;
+	public int mapNumber(int mazeNumber) {
+		return 1;
 	}
 
 	@Override

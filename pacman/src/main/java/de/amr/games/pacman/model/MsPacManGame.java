@@ -104,7 +104,7 @@ public class MsPacManGame extends PacManGameModel {
 	}
 
 	@Override
-	public int mapIndex(int mazeNumber) {
+	public int mapNumber(int mazeNumber) {
 		// Maze #5 has the same map as #3 but a different color, same for #6 vs. #4
 		return mazeNumber == 5 ? 3 : mazeNumber == 6 ? 4 : mazeNumber;
 	}
@@ -112,7 +112,7 @@ public class MsPacManGame extends PacManGameModel {
 	@Override
 	protected void buildLevel(int levelNumber) {
 		int mazeNumber = mazeNumber(levelNumber);
-		world.setMap(new WorldMap("/mspacman/maps/map" + mapIndex(mazeNumber) + ".txt"));
+		world.setMap(new WorldMap("/mspacman/maps/map" + mapNumber(mazeNumber) + ".txt"));
 		level = new GameLevel(MSPACMAN_LEVELS[levelNumber <= 21 ? levelNumber - 1 : 20]);
 		level.setWorld(world);
 		level.mazeNumber = mazeNumber;
@@ -123,7 +123,7 @@ public class MsPacManGame extends PacManGameModel {
 	}
 
 	@Override
-	public long bonusActivationTicks() {
+	public long bonusActivationTicks(int levelNumber) {
 		return Long.MAX_VALUE;
 	}
 }

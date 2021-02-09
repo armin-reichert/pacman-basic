@@ -45,11 +45,22 @@ public abstract class PacManGameModel {
 
 	protected abstract void buildLevel(int levelNumber);
 
+	/**
+	 * @param levelNumber 1-based game level number
+	 * @return 1-based maze number of the maze used in that level
+	 */
 	public abstract int mazeNumber(int levelNumber);
 
-	public abstract int mapIndex(int mazeNumber);
+	/**
+	 * @param mazeNumber 1-based number of a maze
+	 * @return 1-based number of the world map used by that maze
+	 */
+	public abstract int mapNumber(int mazeNumber);
 
-	public abstract long bonusActivationTicks();
+	/**
+	 * @return number of ticks the bonus stays active
+	 */
+	public abstract long bonusActivationTicks(int levelNumber);
 
 	public void enterLevel(int levelNumber) {
 		currentLevelNumber = levelNumber;
