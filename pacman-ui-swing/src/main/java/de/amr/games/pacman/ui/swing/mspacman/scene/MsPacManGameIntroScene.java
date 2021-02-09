@@ -14,8 +14,8 @@ import java.awt.Graphics2D;
 import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.model.AbstractPacManGame;
 import de.amr.games.pacman.model.Ghost;
-import de.amr.games.pacman.model.MsPacManGame;
 import de.amr.games.pacman.ui.swing.PacManGameScene;
 import de.amr.games.pacman.ui.swing.mspacman.rendering.MsPacManGameSpriteBasedRendering;
 
@@ -25,7 +25,7 @@ public class MsPacManGameIntroScene implements PacManGameScene {
 
 	private final V2i size;
 	private final MsPacManGameSpriteBasedRendering rendering;
-	private final MsPacManGame game;
+	private final AbstractPacManGame game;
 
 	private final Animation<Boolean> blinking = Animation.pulse().frameDuration(30);
 	private final V2i frameDots = new V2i(32, 16);
@@ -37,7 +37,7 @@ public class MsPacManGameIntroScene implements PacManGameScene {
 
 	private long completedTime;
 
-	public MsPacManGameIntroScene(V2i size, MsPacManGameSpriteBasedRendering rendering, MsPacManGame game) {
+	public MsPacManGameIntroScene(V2i size, MsPacManGameSpriteBasedRendering rendering, AbstractPacManGame game) {
 		this.size = size;
 		this.game = game;
 		this.rendering = rendering;
