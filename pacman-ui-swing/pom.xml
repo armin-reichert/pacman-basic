@@ -22,7 +22,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>de.amr.games.pacman.PacManGameApp</mainClass>
+							<mainClass>de.amr.games.pacman.ui.swing.app.PacManGameApp</mainClass>
 						</manifest>
 					</archive>
 					<descriptorRefs>
