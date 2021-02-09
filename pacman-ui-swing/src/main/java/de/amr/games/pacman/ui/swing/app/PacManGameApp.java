@@ -1,9 +1,10 @@
-package de.amr.games.pacman.ui.swing;
+package de.amr.games.pacman.ui.swing.app;
 
 import static de.amr.games.pacman.lib.Logging.log;
 import static java.awt.EventQueue.invokeLater;
 
 import de.amr.games.pacman.controller.PacManGameController;
+import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
 
 /**
  * The Pac-Man game app.
