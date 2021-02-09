@@ -48,9 +48,9 @@ import de.amr.games.pacman.ui.swing.pacman.rendering.PacManGameRendering;
  * Missing:
  * <ul>
  * <li>Pac-Man "cornering"</li>
- * <li>Intermission scenes</li>
- * <li>Multiple players</li>
+ * <li>Ms. Pac-Man intermission scenes</li>
  * <li>Exact level data for Ms. Pac-Man still unclear
+ * <li>Multiple players</li>
  * </ul>
  * 
  * @author Armin Reichert
