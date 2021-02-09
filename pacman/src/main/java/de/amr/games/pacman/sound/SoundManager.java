@@ -1,5 +1,10 @@
 package de.amr.games.pacman.sound;
 
+/**
+ * Sound interface used by game controller.
+ * 
+ * @author Armin Reichert
+ */
 public interface SoundManager {
 
 	void play(PacManGameSound sound);
@@ -13,5 +18,4 @@ public interface SoundManager {
 	void stop(PacManGameSound sound);
 
 	void stopAll();
-
 }
