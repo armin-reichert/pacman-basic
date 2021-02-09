@@ -93,7 +93,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 	private final Canvas canvas;
 	private final Keyboard keyboard;
 
-	private final ResourceBundle translations = ResourceBundle.getBundle("ui.swing.localization.translation");
+	private final ResourceBundle translations = ResourceBundle.getBundle("localization.translation");
 
 	private final PacManGameRendering pacManRendering;
 	private final SoundManager pacManSoundManager;
