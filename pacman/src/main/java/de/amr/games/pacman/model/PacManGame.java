@@ -22,10 +22,6 @@ import de.amr.games.pacman.world.WorldMap;
  */
 public class PacManGame extends AbstractPacManGame {
 
-	public enum PacManClassicSymbols {
-		CHERRIES, STRAWBERRY, PEACH, APPLE, GRAPES, GALAXIAN, BELL, KEY;
-	}
-
 	/*@formatter:off*/
 	private static final int[][] LEVELS = {
 	/* 1*/ {0,  80, 75, 40,  20,  80, 10,  85,  90, 50, 6, 5},

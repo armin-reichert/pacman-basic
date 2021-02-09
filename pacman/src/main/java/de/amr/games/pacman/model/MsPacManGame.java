@@ -16,10 +16,6 @@ import de.amr.games.pacman.world.WorldMap;
  */
 public class MsPacManGame extends AbstractPacManGame {
 
-	public enum MsPacManSymbols {
-		CHERRIES, STRAWBERRY, PEACH, PRETZEL, APPLE, PEAR, BANANA;
-	}
-
 	// TODO how exactly are the levels of the Ms.Pac-Man game?
 	/*@formatter:off*/
 	public static final int[][] LEVELS = {
