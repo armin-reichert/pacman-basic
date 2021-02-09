@@ -29,7 +29,7 @@ public class PacManGameSoundAssets {
 		pacManSounds.put(PacManGameSound.CREDIT,             url("/pacman/sound/credit.wav"));
 		pacManSounds.put(PacManGameSound.EXTRA_LIFE,         url("/pacman/sound/extend.wav"));
 		pacManSounds.put(PacManGameSound.GAME_READY,         url("/pacman/sound/game_start.wav"));
-		pacManSounds.put(PacManGameSound.BONUS_EATEN,   url("/pacman/sound/eat_fruit.wav"));
+		pacManSounds.put(PacManGameSound.BONUS_EATEN,        url("/pacman/sound/eat_fruit.wav"));
 		pacManSounds.put(PacManGameSound.PACMAN_MUNCH,       url("/pacman/sound/munch_1.wav"));
 		pacManSounds.put(PacManGameSound.PACMAN_DEATH,       url("/pacman/sound/death_1.wav"));
 		pacManSounds.put(PacManGameSound.PACMAN_POWER,       url("/pacman/sound/power_pellet.wav"));
@@ -48,7 +48,7 @@ public class PacManGameSoundAssets {
 		msPacManSounds.put(PacManGameSound.CREDIT,           url("/mspacman/sound/Coin Credit.wav"));
 		msPacManSounds.put(PacManGameSound.EXTRA_LIFE,       url("/mspacman/sound/Extra Life.wav"));
 		msPacManSounds.put(PacManGameSound.GAME_READY,       url("/mspacman/sound/Start.wav"));
-		msPacManSounds.put(PacManGameSound.BONUS_EATEN, url("/mspacman/sound/Fruit.wav"));
+		msPacManSounds.put(PacManGameSound.BONUS_EATEN,      url("/mspacman/sound/Fruit.wav"));
 		msPacManSounds.put(PacManGameSound.PACMAN_MUNCH,     url("/mspacman/sound/Ms. Pac Man Pill.wav"));
 		msPacManSounds.put(PacManGameSound.PACMAN_DEATH,     url("/mspacman/sound/Died.wav"));
 		msPacManSounds.put(PacManGameSound.PACMAN_POWER,     url("/mspacman/sound/Scared Ghost.wav"));
