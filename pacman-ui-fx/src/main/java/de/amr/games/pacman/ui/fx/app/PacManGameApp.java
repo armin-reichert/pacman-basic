@@ -17,7 +17,7 @@ import javafx.stage.Stage;
 /**
  * JavaFX App
  */
-public class App extends Application {
+public class PacManGameApp extends Application {
 
 	private float scaling = 2;
 
