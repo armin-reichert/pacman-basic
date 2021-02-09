@@ -1,7 +1,7 @@
 package de.amr.games.pacman.model;
 
 import static de.amr.games.pacman.lib.Logging.log;
-import static de.amr.games.pacman.model.creatures.GhostState.LOCKED;
+import static de.amr.games.pacman.model.GhostState.LOCKED;
 import static de.amr.games.pacman.world.PacManGameWorld.HTS;
 
 import java.io.File;
@@ -11,9 +11,6 @@ import java.util.stream.Stream;
 
 import de.amr.games.pacman.controller.PacManGameState;
 import de.amr.games.pacman.lib.Hiscore;
-import de.amr.games.pacman.model.creatures.Bonus;
-import de.amr.games.pacman.model.creatures.Ghost;
-import de.amr.games.pacman.model.creatures.Pac;
 
 /**
  * Common base class of the game models.

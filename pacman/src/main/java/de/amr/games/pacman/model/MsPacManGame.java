@@ -6,9 +6,6 @@ import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.lib.Logging.log;
 
-import de.amr.games.pacman.model.creatures.Ghost;
-import de.amr.games.pacman.model.creatures.MovingBonus;
-import de.amr.games.pacman.model.creatures.Pac;
 import de.amr.games.pacman.world.MapBasedPacManGameWorld;
 import de.amr.games.pacman.world.WorldMap;
 

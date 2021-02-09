@@ -7,10 +7,10 @@ import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
 import de.amr.games.pacman.model.AbstractPacManGame;
-import de.amr.games.pacman.model.creatures.Bonus;
-import de.amr.games.pacman.model.creatures.Creature;
-import de.amr.games.pacman.model.creatures.Ghost;
-import de.amr.games.pacman.model.creatures.Pac;
+import de.amr.games.pacman.model.Bonus;
+import de.amr.games.pacman.model.Creature;
+import de.amr.games.pacman.model.Ghost;
+import de.amr.games.pacman.model.Pac;
 import de.amr.games.pacman.ui.swing.assets.Spritesheet;
 
 public interface SpriteBasedRendering extends PacManGameRendering {

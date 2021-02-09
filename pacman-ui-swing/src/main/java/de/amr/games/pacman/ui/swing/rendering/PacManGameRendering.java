@@ -3,7 +3,7 @@ package de.amr.games.pacman.ui.swing.rendering;
 import java.awt.Graphics2D;
 
 import de.amr.games.pacman.model.AbstractPacManGame;
-import de.amr.games.pacman.model.creatures.Creature;
+import de.amr.games.pacman.model.Creature;
 
 public interface PacManGameRendering {
 

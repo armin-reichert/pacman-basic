@@ -1,9 +1,9 @@
 package de.amr.games.pacman.ui.swing.pacman.rendering;
 
-import static de.amr.games.pacman.model.creatures.GhostState.DEAD;
-import static de.amr.games.pacman.model.creatures.GhostState.ENTERING_HOUSE;
-import static de.amr.games.pacman.model.creatures.GhostState.FRIGHTENED;
-import static de.amr.games.pacman.model.creatures.GhostState.LOCKED;
+import static de.amr.games.pacman.model.GhostState.DEAD;
+import static de.amr.games.pacman.model.GhostState.ENTERING_HOUSE;
+import static de.amr.games.pacman.model.GhostState.FRIGHTENED;
+import static de.amr.games.pacman.model.GhostState.LOCKED;
 import static de.amr.games.pacman.world.PacManGameWorld.HTS;
 import static de.amr.games.pacman.world.PacManGameWorld.TS;
 import static de.amr.games.pacman.world.PacManGameWorld.t;
@@ -21,9 +21,9 @@ import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.AbstractPacManGame;
-import de.amr.games.pacman.model.creatures.Bonus;
-import de.amr.games.pacman.model.creatures.Ghost;
-import de.amr.games.pacman.model.creatures.Pac;
+import de.amr.games.pacman.model.Bonus;
+import de.amr.games.pacman.model.Ghost;
+import de.amr.games.pacman.model.Pac;
 import de.amr.games.pacman.ui.api.PacManGameAnimations;
 import de.amr.games.pacman.ui.swing.assets.Spritesheet;
 import de.amr.games.pacman.ui.swing.rendering.SpriteBasedRendering;

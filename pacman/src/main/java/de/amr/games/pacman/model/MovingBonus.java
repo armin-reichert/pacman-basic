@@ -1,4 +1,4 @@
-package de.amr.games.pacman.model.creatures;
+package de.amr.games.pacman.model;
 
 import static de.amr.games.pacman.heaven.God.random;
 import static de.amr.games.pacman.lib.Direction.LEFT;

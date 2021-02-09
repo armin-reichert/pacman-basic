@@ -5,7 +5,7 @@ import java.util.stream.Stream;
 import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.model.AbstractPacManGame;
-import de.amr.games.pacman.model.creatures.Ghost;
+import de.amr.games.pacman.model.Ghost;
 
 /**
  * Optional animations provided by a game UI.

@@ -13,8 +13,8 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.Logging;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.AbstractPacManGame;
-import de.amr.games.pacman.model.creatures.Ghost;
-import de.amr.games.pacman.model.creatures.GhostState;
+import de.amr.games.pacman.model.Ghost;
+import de.amr.games.pacman.model.GhostState;
 
 /**
  * Controls Pac-Man movement.

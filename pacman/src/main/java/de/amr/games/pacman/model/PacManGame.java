@@ -12,9 +12,6 @@ import static de.amr.games.pacman.world.PacManGameWorld.TS;
 
 import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.model.creatures.Bonus;
-import de.amr.games.pacman.model.creatures.Ghost;
-import de.amr.games.pacman.model.creatures.Pac;
 import de.amr.games.pacman.world.MapBasedPacManGameWorld;
 import de.amr.games.pacman.world.WorldMap;
 
