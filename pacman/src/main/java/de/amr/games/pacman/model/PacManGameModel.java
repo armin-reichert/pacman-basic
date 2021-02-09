@@ -13,11 +13,11 @@ import de.amr.games.pacman.controller.PacManGameState;
 import de.amr.games.pacman.lib.Hiscore;
 
 /**
- * Common base class of the game variants.
+ * Common base class for the game variants.
  * 
  * @author Armin Reichert
  */
-public abstract class AbstractPacManGame {
+public abstract class PacManGameModel {
 
 	public static final byte BLINKY = 0, PINKY = 1, INKY = 2, CLYDE = 3, SUE = 3;
 

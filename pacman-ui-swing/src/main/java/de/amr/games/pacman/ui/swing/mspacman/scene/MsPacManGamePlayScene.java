@@ -6,7 +6,7 @@ import java.awt.Graphics2D;
 
 import de.amr.games.pacman.controller.PacManGameState;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.model.AbstractPacManGame;
+import de.amr.games.pacman.model.PacManGameModel;
 import de.amr.games.pacman.ui.swing.PacManGameScene;
 import de.amr.games.pacman.ui.swing.mspacman.rendering.MsPacManGameSpriteBasedRendering;
 import de.amr.games.pacman.ui.swing.rendering.DebugRendering;
@@ -20,9 +20,9 @@ public class MsPacManGamePlayScene implements PacManGameScene {
 
 	private final V2i size;
 	private final MsPacManGameSpriteBasedRendering rendering;
-	private final AbstractPacManGame game;
+	private final PacManGameModel game;
 
-	public MsPacManGamePlayScene(V2i size, MsPacManGameSpriteBasedRendering rendering, AbstractPacManGame game) {
+	public MsPacManGamePlayScene(V2i size, MsPacManGameSpriteBasedRendering rendering, PacManGameModel game) {
 		this.size = size;
 		this.rendering = rendering;
 		this.game = game;

@@ -20,7 +20,7 @@ import de.amr.games.pacman.heaven.God;
 import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.model.AbstractPacManGame;
+import de.amr.games.pacman.model.PacManGameModel;
 import de.amr.games.pacman.model.Bonus;
 import de.amr.games.pacman.model.Ghost;
 import de.amr.games.pacman.model.Pac;
@@ -106,7 +106,7 @@ public class PacManGameSpriteBasedRendering implements SpriteBasedRendering, Pac
 	}
 
 	@Override
-	public void drawMaze(Graphics2D g, AbstractPacManGame game) {
+	public void drawMaze(Graphics2D g, PacManGameModel game) {
 		if (mazeFlashing(1).hasStarted()) {
 			g.drawImage(mazeFlashing(1).animate(), 0, t(3), null);
 			return;
@@ -137,7 +137,7 @@ public class PacManGameSpriteBasedRendering implements SpriteBasedRendering, Pac
 		g.fillRect(t(tile.x) - 1, t(tile.y) - 1, TS + 2, TS + 2); // workaround for artifacts remaining
 	}
 
-	private void drawFood(Graphics2D g, AbstractPacManGame game) {
+	private void drawFood(Graphics2D g, PacManGameModel game) {
 		Graphics2D g2 = smoothGC(g);
 		g2.drawImage(assets.mazeFull, 0, t(3), null);
 		g2.dispose();
@@ -147,7 +147,7 @@ public class PacManGameSpriteBasedRendering implements SpriteBasedRendering, Pac
 		});
 	}
 
-	private void drawFoodAnimation(Graphics2D g, AbstractPacManGame game) {
+	private void drawFoodAnimation(Graphics2D g, PacManGameModel game) {
 		g.drawImage(assets.mazeEmpty, 0, t(3), null);
 		game.level.world.tiles().filter(game.level::containsFood).forEach(tile -> {
 			if (game.level.world.isEnergizerTile(tile)) {
@@ -169,7 +169,7 @@ public class PacManGameSpriteBasedRendering implements SpriteBasedRendering, Pac
 	}
 
 	@Override
-	public void drawScore(Graphics2D g, AbstractPacManGame game) {
+	public void drawScore(Graphics2D g, PacManGameModel game) {
 		g.setFont(assets.scoreFont);
 		g.translate(0, 1);
 		g.setColor(Color.WHITE);
@@ -190,7 +190,7 @@ public class PacManGameSpriteBasedRendering implements SpriteBasedRendering, Pac
 	}
 
 	@Override
-	public void drawLivesCounter(Graphics2D g, AbstractPacManGame game, int x, int y) {
+	public void drawLivesCounter(Graphics2D g, PacManGameModel game, int x, int y) {
 		Graphics2D g2 = smoothGC(g);
 		int maxLivesDisplayed = 5;
 		int livesDisplayed = game.started ? game.lives - 1 : game.lives;
@@ -206,7 +206,7 @@ public class PacManGameSpriteBasedRendering implements SpriteBasedRendering, Pac
 	}
 
 	@Override
-	public void drawLevelCounter(Graphics2D g, AbstractPacManGame game, int rightX, int y) {
+	public void drawLevelCounter(Graphics2D g, PacManGameModel game, int rightX, int y) {
 		Graphics2D g2 = smoothGC(g);
 		int x = rightX;
 		int firstLevelNumber = Math.max(1, game.currentLevelNumber - 6);
@@ -219,7 +219,7 @@ public class PacManGameSpriteBasedRendering implements SpriteBasedRendering, Pac
 	}
 
 	@Override
-	public BufferedImage bonusSprite(Bonus bonus, AbstractPacManGame game) {
+	public BufferedImage bonusSprite(Bonus bonus, PacManGameModel game) {
 		if (bonus.edibleTicksLeft > 0) {
 			return assets.spriteAt(assets.symbolSpriteLocation[bonus.symbol]);
 		}
@@ -236,7 +236,7 @@ public class PacManGameSpriteBasedRendering implements SpriteBasedRendering, Pac
 	}
 
 	@Override
-	public BufferedImage pacSprite(Pac pac, AbstractPacManGame game) {
+	public BufferedImage pacSprite(Pac pac, PacManGameModel game) {
 		if (pac.dead) {
 			return pacDying().hasStarted() ? pacDying().animate() : pacMunchingToDir(pac.dir).frame();
 		}
@@ -250,7 +250,7 @@ public class PacManGameSpriteBasedRendering implements SpriteBasedRendering, Pac
 	}
 
 	@Override
-	public BufferedImage ghostSprite(Ghost ghost, AbstractPacManGame game) {
+	public BufferedImage ghostSprite(Ghost ghost, PacManGameModel game) {
 		if (ghost.bounty > 0) {
 			return assets.numbers.get(ghost.bounty);
 		}

@@ -16,7 +16,7 @@ import java.util.ResourceBundle;
 import de.amr.games.pacman.controller.PacManGameState;
 import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.Direction;
-import de.amr.games.pacman.model.AbstractPacManGame;
+import de.amr.games.pacman.model.PacManGameModel;
 import de.amr.games.pacman.model.Bonus;
 import de.amr.games.pacman.model.Ghost;
 import de.amr.games.pacman.model.Pac;
@@ -100,7 +100,7 @@ public class MsPacManGameSpriteBasedRendering implements SpriteBasedRendering, P
 	}
 
 	@Override
-	public void drawScore(Graphics2D g, AbstractPacManGame game) {
+	public void drawScore(Graphics2D g, PacManGameModel game) {
 		g.setFont(assets.getScoreFont());
 		g.translate(0, 2);
 		g.setColor(Color.WHITE);
@@ -121,7 +121,7 @@ public class MsPacManGameSpriteBasedRendering implements SpriteBasedRendering, P
 	}
 
 	@Override
-	public void drawLivesCounter(Graphics2D g, AbstractPacManGame game, int x, int y) {
+	public void drawLivesCounter(Graphics2D g, PacManGameModel game, int x, int y) {
 		int maxLivesDisplayed = 5;
 		int livesDisplayed = game.started ? game.lives - 1 : game.lives;
 		Graphics2D g2 = smoothGC(g);
@@ -137,7 +137,7 @@ public class MsPacManGameSpriteBasedRendering implements SpriteBasedRendering, P
 	}
 
 	@Override
-	public void drawLevelCounter(Graphics2D g, AbstractPacManGame game, int rightX, int y) {
+	public void drawLevelCounter(Graphics2D g, PacManGameModel game, int rightX, int y) {
 		Graphics2D g2 = smoothGC(g);
 		int x = rightX;
 		for (int firstlevelNumber = 1; firstlevelNumber <= Math.min(game.currentLevelNumber, 7); ++firstlevelNumber) {
@@ -149,7 +149,7 @@ public class MsPacManGameSpriteBasedRendering implements SpriteBasedRendering, P
 	}
 
 	@Override
-	public void drawMaze(Graphics2D g, AbstractPacManGame game) {
+	public void drawMaze(Graphics2D g, PacManGameModel game) {
 		if (mazeFlashing(game.level.mazeNumber).hasStarted()) {
 			g.drawImage(mazeFlashing(game.level.mazeNumber).animate(), 0, t(3), null);
 			return;
@@ -172,7 +172,7 @@ public class MsPacManGameSpriteBasedRendering implements SpriteBasedRendering, P
 	}
 
 	@Override
-	public BufferedImage bonusSprite(Bonus bonus, AbstractPacManGame game) {
+	public BufferedImage bonusSprite(Bonus bonus, PacManGameModel game) {
 		if (bonus.edibleTicksLeft > 0) {
 			return assets.spriteAt(assets.symbolsSSL[bonus.symbol]);
 		}
@@ -183,7 +183,7 @@ public class MsPacManGameSpriteBasedRendering implements SpriteBasedRendering, P
 	}
 
 	@Override
-	public BufferedImage pacSprite(Pac pac, AbstractPacManGame game) {
+	public BufferedImage pacSprite(Pac pac, PacManGameModel game) {
 		if (pac.dead) {
 			return pacDying().hasStarted() ? pacDying().animate() : pacMunchingToDir(pac.dir).frame();
 		}
@@ -191,7 +191,7 @@ public class MsPacManGameSpriteBasedRendering implements SpriteBasedRendering, P
 	}
 
 	@Override
-	public BufferedImage ghostSprite(Ghost ghost, AbstractPacManGame game) {
+	public BufferedImage ghostSprite(Ghost ghost, PacManGameModel game) {
 		if (ghost.bounty > 0) {
 			return assets.spriteAt(assets.bountyNumbersSSL.get(ghost.bounty));
 		}

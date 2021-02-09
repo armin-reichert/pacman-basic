@@ -2,7 +2,7 @@ package de.amr.games.pacman.ui.swing.rendering;
 
 import java.awt.Graphics2D;
 
-import de.amr.games.pacman.model.AbstractPacManGame;
+import de.amr.games.pacman.model.PacManGameModel;
 import de.amr.games.pacman.model.Creature;
 
 public interface PacManGameRendering {
@@ -11,14 +11,14 @@ public interface PacManGameRendering {
 
 	void signalGameOverState(Graphics2D g);
 
-	void drawScore(Graphics2D g, AbstractPacManGame game);
+	void drawScore(Graphics2D g, PacManGameModel game);
 
-	void drawLivesCounter(Graphics2D g, AbstractPacManGame game, int x, int y);
+	void drawLivesCounter(Graphics2D g, PacManGameModel game, int x, int y);
 
-	void drawLevelCounter(Graphics2D g, AbstractPacManGame game, int rightX, int y);
+	void drawLevelCounter(Graphics2D g, PacManGameModel game, int rightX, int y);
 
-	void drawMaze(Graphics2D g, AbstractPacManGame game);
+	void drawMaze(Graphics2D g, PacManGameModel game);
 
-	void drawGuy(Graphics2D g, Creature guy, AbstractPacManGame game);
+	void drawGuy(Graphics2D g, Creature guy, PacManGameModel game);
 
 }

@@ -12,7 +12,7 @@ import java.util.stream.Stream;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.Logging;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.model.AbstractPacManGame;
+import de.amr.games.pacman.model.PacManGameModel;
 import de.amr.games.pacman.model.Ghost;
 import de.amr.games.pacman.model.GhostState;
 
@@ -65,9 +65,9 @@ public class Autopilot {
 
 	public boolean logEnabled;
 
-	private final AbstractPacManGame game;
+	private final PacManGameModel game;
 
-	public Autopilot(AbstractPacManGame game) {
+	public Autopilot(PacManGameModel game) {
 		this.game = game;
 	}
 

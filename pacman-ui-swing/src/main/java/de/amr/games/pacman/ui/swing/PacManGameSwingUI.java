@@ -28,7 +28,7 @@ import javax.swing.Timer;
 import de.amr.games.pacman.controller.PacManGameState;
 import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.model.AbstractPacManGame;
+import de.amr.games.pacman.model.PacManGameModel;
 import de.amr.games.pacman.model.MsPacManGame;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.sound.PacManGameSoundManager;
@@ -86,7 +86,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 	private Runnable closeHandler = () -> log("Pac-Man Swing UI closed");
 
-	private AbstractPacManGame game;
+	private PacManGameModel game;
 
 	private PacManGameScene currentScene;
 
@@ -98,7 +98,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 	private MsPacManGamePlayScene msPacManPlayScene;
 	private PacManGameScene[] msPacManIntermissions = new PacManGameScene[3];
 
-	public PacManGameSwingUI(AbstractPacManGame game, float scaling) {
+	public PacManGameSwingUI(PacManGameModel game, float scaling) {
 		this.scaling = scaling;
 		unscaledSize_px = new V2i(game.level.world.xTiles() * TS, game.level.world.yTiles() * TS);
 		scaledSize_px = new V2f(unscaledSize_px).scaled(scaling).toV2i();
@@ -211,7 +211,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 	}
 
 	@Override
-	public void setGame(AbstractPacManGame newGame) {
+	public void setGame(PacManGameModel newGame) {
 		this.game = newGame;
 		if (game instanceof PacManGame) {
 			createPacManScenes();

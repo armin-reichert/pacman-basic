@@ -4,7 +4,7 @@ import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.Direction;
-import de.amr.games.pacman.model.AbstractPacManGame;
+import de.amr.games.pacman.model.PacManGameModel;
 import de.amr.games.pacman.model.Ghost;
 
 /**
@@ -58,7 +58,7 @@ public interface PacManGameAnimations {
 
 	Animation<Boolean> energizerBlinking();
 
-	default void resetAllAnimations(AbstractPacManGame game) {
+	default void resetAllAnimations(PacManGameModel game) {
 		energizerBlinking().reset();
 		ghostFlashing().reset();
 		ghostsFrightened(game.ghosts()).forEach(Animation::reset);

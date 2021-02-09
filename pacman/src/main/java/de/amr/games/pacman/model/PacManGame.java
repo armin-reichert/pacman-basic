@@ -20,7 +20,7 @@ import de.amr.games.pacman.world.WorldMap;
  * 
  * @author Armin Reichert
  */
-public class PacManGame extends AbstractPacManGame {
+public class PacManGame extends PacManGameModel {
 
 	private final MapBasedPacManGameWorld world;
 	/*@formatter:off*/

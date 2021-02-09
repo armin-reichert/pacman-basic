@@ -4,7 +4,7 @@ import java.awt.Graphics2D;
 
 import de.amr.games.pacman.heaven.God;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.model.AbstractPacManGame;
+import de.amr.games.pacman.model.PacManGameModel;
 import de.amr.games.pacman.sound.PacManGameSound;
 import de.amr.games.pacman.sound.SoundManager;
 import de.amr.games.pacman.ui.swing.PacManGameScene;
@@ -15,10 +15,10 @@ public class MsPacManIntermission1_TheyMeet implements PacManGameScene {
 	private final V2i size;
 	private final MsPacManGameSpriteBasedRendering rendering;
 	private final SoundManager soundManager;
-	private final AbstractPacManGame game;
+	private final PacManGameModel game;
 
 	public MsPacManIntermission1_TheyMeet(V2i size, MsPacManGameSpriteBasedRendering rendering, SoundManager soundManager,
-			AbstractPacManGame game) {
+			PacManGameModel game) {
 		this.size = size;
 		this.rendering = rendering;
 		this.soundManager = soundManager;

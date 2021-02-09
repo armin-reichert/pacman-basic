@@ -6,7 +6,7 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
-import de.amr.games.pacman.model.AbstractPacManGame;
+import de.amr.games.pacman.model.PacManGameModel;
 import de.amr.games.pacman.model.Bonus;
 import de.amr.games.pacman.model.Creature;
 import de.amr.games.pacman.model.Ghost;
@@ -17,11 +17,11 @@ public interface SpriteBasedRendering extends PacManGameRendering {
 
 	Spritesheet spritesheet();
 
-	BufferedImage bonusSprite(Bonus guy, AbstractPacManGame game);
+	BufferedImage bonusSprite(Bonus guy, PacManGameModel game);
 
-	BufferedImage ghostSprite(Ghost guy, AbstractPacManGame game);
+	BufferedImage ghostSprite(Ghost guy, PacManGameModel game);
 
-	BufferedImage pacSprite(Pac guy, AbstractPacManGame game);
+	BufferedImage pacSprite(Pac guy, PacManGameModel game);
 
 	default Graphics2D smoothGC(Graphics2D g) {
 		Graphics2D g2 = (Graphics2D) g.create();
@@ -30,7 +30,7 @@ public interface SpriteBasedRendering extends PacManGameRendering {
 	}
 
 	@Override
-	default void drawGuy(Graphics2D g, Creature guy, AbstractPacManGame game) {
+	default void drawGuy(Graphics2D g, Creature guy, PacManGameModel game) {
 		if (guy.visible) {
 			BufferedImage sprite = sprite(guy, game);
 			if (sprite != null) {
@@ -46,7 +46,7 @@ public interface SpriteBasedRendering extends PacManGameRendering {
 		g.drawImage(sprite, (int) x, (int) y, null);
 	}
 
-	default BufferedImage sprite(Creature guy, AbstractPacManGame game) {
+	default BufferedImage sprite(Creature guy, PacManGameModel game) {
 		// we don't need polymorphism yet
 		if (guy instanceof Pac) {
 			return pacSprite((Pac) guy, game);

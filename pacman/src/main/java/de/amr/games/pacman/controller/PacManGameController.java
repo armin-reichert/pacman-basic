@@ -14,10 +14,10 @@ import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.lib.Logging.log;
-import static de.amr.games.pacman.model.AbstractPacManGame.BLINKY;
-import static de.amr.games.pacman.model.AbstractPacManGame.CLYDE;
-import static de.amr.games.pacman.model.AbstractPacManGame.INKY;
-import static de.amr.games.pacman.model.AbstractPacManGame.PINKY;
+import static de.amr.games.pacman.model.PacManGameModel.BLINKY;
+import static de.amr.games.pacman.model.PacManGameModel.CLYDE;
+import static de.amr.games.pacman.model.PacManGameModel.INKY;
+import static de.amr.games.pacman.model.PacManGameModel.PINKY;
 import static de.amr.games.pacman.model.GhostState.DEAD;
 import static de.amr.games.pacman.model.GhostState.ENTERING_HOUSE;
 import static de.amr.games.pacman.model.GhostState.FRIGHTENED;
@@ -33,7 +33,7 @@ import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.model.AbstractPacManGame;
+import de.amr.games.pacman.model.PacManGameModel;
 import de.amr.games.pacman.model.Ghost;
 import de.amr.games.pacman.model.MsPacManGame;
 import de.amr.games.pacman.model.PacManGame;
@@ -62,7 +62,7 @@ import de.amr.games.pacman.ui.PacManGameUI;
 public class PacManGameController {
 
 	public PacManGameUI ui;
-	public AbstractPacManGame game;
+	public PacManGameModel game;
 
 	private Autopilot autopilot;
 	private boolean autopilotOn;
