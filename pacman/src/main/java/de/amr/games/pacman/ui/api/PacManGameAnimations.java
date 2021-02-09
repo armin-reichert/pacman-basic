@@ -1,6 +1,5 @@
 package de.amr.games.pacman.ui.api;
 
-import java.awt.image.BufferedImage;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.Animation;
@@ -10,19 +9,19 @@ import de.amr.games.pacman.model.creatures.Ghost;
 
 public interface PacManGameAnimations {
 
-	Animation<BufferedImage> pacMunching(Direction dir);
+	Animation<?> pacMunching(Direction dir);
 
-	Animation<BufferedImage> pacDying();
+	Animation<?> pacDying();
 
-	Animation<BufferedImage> ghostWalking(Ghost ghost, Direction dir);
+	Animation<?> ghostWalking(Ghost ghost, Direction dir);
 
-	Animation<BufferedImage> ghostFrightened(Ghost ghost, Direction dir);
+	Animation<?> ghostFrightened(Ghost ghost, Direction dir);
 
-	Animation<BufferedImage> ghostFlashing();
+	Animation<?> ghostFlashing();
 
-	Animation<BufferedImage> ghostReturningHome(Ghost ghost, Direction dir);
+	Animation<?> ghostReturningHome(Ghost ghost, Direction dir);
 
-	Animation<BufferedImage> mazeFlashing(int mazeNumber);
+	Animation<?> mazeFlashing(int mazeNumber);
 
 	Animation<Boolean> energizerBlinking();
 
