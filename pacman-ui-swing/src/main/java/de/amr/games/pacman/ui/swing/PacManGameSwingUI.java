@@ -295,9 +295,12 @@ public class PacManGameSwingUI implements PacManGameUI {
 		MsPacManGame msPacManGame = (MsPacManGame) game;
 		msPacManIntroScene = new MsPacManGameIntroScene(unscaledSize_px, msPacManRendering, msPacManGame);
 		msPacManPlayScene = new MsPacManGamePlayScene(unscaledSize_px, msPacManRendering, msPacManGame);
-		msPacManIntermissions[0] = new MsPacManIntermission1_TheyMeet(unscaledSize_px, msPacManRendering, msPacManGame);
-		msPacManIntermissions[1] = new MsPacManIntermission2_TheChase(unscaledSize_px, msPacManRendering, msPacManGame);
-		msPacManIntermissions[2] = new MsPacManIntermission3_Junior(unscaledSize_px, msPacManRendering, msPacManGame);
+		msPacManIntermissions[0] = new MsPacManIntermission1_TheyMeet(unscaledSize_px, msPacManRendering,
+				msPacManSoundManager, msPacManGame);
+		msPacManIntermissions[1] = new MsPacManIntermission2_TheChase(unscaledSize_px, msPacManRendering,
+				msPacManSoundManager, msPacManGame);
+		msPacManIntermissions[2] = new MsPacManIntermission3_Junior(unscaledSize_px, msPacManRendering,
+				msPacManSoundManager, msPacManGame);
 	}
 
 	private PacManGameScene selectMsPacManScene() {
