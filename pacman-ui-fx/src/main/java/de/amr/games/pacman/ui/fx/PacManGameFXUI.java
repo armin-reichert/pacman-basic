@@ -8,6 +8,7 @@ import de.amr.games.pacman.model.PacManGameModel;
 import de.amr.games.pacman.sound.SoundManager;
 import de.amr.games.pacman.ui.PacManGameAnimations;
 import de.amr.games.pacman.ui.PacManGameUI;
+import de.amr.games.pacman.ui.fx.input.Keyboard;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -19,19 +20,22 @@ import javafx.stage.Stage;
 public class PacManGameFXUI implements PacManGameUI {
 
 	private final Stage stage;
-	private PacManGameModel game;
+	private final Keyboard keyboard;
 
-	Text text;
+	private PacManGameModel game;
+	private Scene scene;
+	private Text text;
 
 	public PacManGameFXUI(Stage stage, PacManGameModel game, int scaling) {
 		this.stage = stage;
 		this.game = game;
-		Scene scene = createPlayScene(scaling);
+		scene = createPlayScene(scaling);
 		stage.setScene(scene);
 		stage.setTitle("Pac-Man / Ms. Pac-Man");
 		stage.setOnCloseRequest(e -> {
 			System.exit(0);
 		});
+		keyboard = new Keyboard(scene);
 	}
 
 	private Scene createPlayScene(float scaling) {
@@ -40,8 +44,8 @@ public class PacManGameFXUI implements PacManGameUI {
 		text.setFont(Font.font("Serif", 20));
 		text.setStroke(Color.BLACK);
 		pane.getChildren().add(text);
-		Scene scene = new Scene(pane, 28 * TS * scaling, 36 * TS * scaling);
-		return scene;
+		Scene playScene = new Scene(pane, 28 * TS * scaling, 36 * TS * scaling);
+		return playScene;
 	}
 
 	@Override
@@ -55,13 +59,12 @@ public class PacManGameFXUI implements PacManGameUI {
 
 	@Override
 	public void updateScene() {
-		text.setText(game.stateDescription());
+		text.setText(game.state != null ? game.stateDescription() : "no state");
 	}
 
 	@Override
 	public void show() {
 		stage.show();
-
 	}
 
 	@Override
@@ -74,12 +77,14 @@ public class PacManGameFXUI implements PacManGameUI {
 
 	@Override
 	public boolean keyPressed(String keySpec) {
-		return false;
+		boolean pressed = keyboard.keyPressed(keySpec);
+		keyboard.clearKey(keySpec); // TODO
+		return pressed;
 	}
 
 	@Override
 	public Optional<SoundManager> sounds() {
-		return null;
+		return Optional.empty();
 	}
 
 	@Override
@@ -88,7 +93,6 @@ public class PacManGameFXUI implements PacManGameUI {
 
 	@Override
 	public Optional<PacManGameAnimations> animations() {
-		return null;
+		return Optional.empty();
 	}
-
 }
