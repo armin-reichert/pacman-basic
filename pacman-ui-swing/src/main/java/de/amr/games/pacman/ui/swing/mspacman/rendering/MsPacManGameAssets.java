@@ -1,8 +1,8 @@
 package de.amr.games.pacman.ui.swing.mspacman.rendering;
 
-import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.font;
-import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.image;
-import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.url;
+import static de.amr.games.pacman.ui.swing.AssetLoader.font;
+import static de.amr.games.pacman.ui.swing.AssetLoader.image;
+import static de.amr.games.pacman.ui.swing.AssetLoader.url;
 
 import java.awt.Color;
 import java.awt.Font;

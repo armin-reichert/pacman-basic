@@ -17,15 +17,11 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferStrategy;
-import java.awt.image.BufferedImage;
-import java.io.InputStream;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.Timer;
 
@@ -64,26 +60,6 @@ public class PacManGameSwingUI implements PacManGameUI {
 	static final int KEY_FASTMODE = KeyEvent.VK_F;
 	static final int KEY_DEBUGMODE = KeyEvent.VK_D;
 	static final int FLASH_MESSAGE_TICKS = 90;
-
-	public static URL url(String path) {
-		return PacManGameSwingUI.class.getResource(path);
-	}
-
-	public static BufferedImage image(String path) {
-		try (InputStream is = url(path).openStream()) {
-			return ImageIO.read(is);
-		} catch (Exception x) {
-			throw new AssetException("Could not load image with path '%s'", path);
-		}
-	}
-
-	public static Font font(String fontPath, int size) {
-		try (InputStream fontData = url(fontPath).openStream()) {
-			return Font.createFont(Font.TRUETYPE_FONT, fontData).deriveFont((float) size);
-		} catch (Exception x) {
-			throw new AssetException("Could not load font with path '%s'", fontPath);
-		}
-	}
 
 	private final V2i unscaledSize_px;
 	private final V2i scaledSize_px;
@@ -130,7 +106,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 		window.setResizable(false);
 		window.setFocusable(true);
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		window.setIconImage(image("/pacman/graphics/pacman.png"));
+		window.setIconImage(AssetLoader.image("/pacman/graphics/pacman.png"));
 
 		window.addKeyListener(new KeyAdapter() {
 
