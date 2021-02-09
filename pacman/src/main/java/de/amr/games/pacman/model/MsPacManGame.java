@@ -16,7 +16,6 @@ import de.amr.games.pacman.world.WorldMap;
  */
 public class MsPacManGame extends PacManGameModel {
 
-	private final MapBasedPacManGameWorld world;
 	/*@formatter:off*/
 	public static final int[][] MSPACMAN_LEVELS = {
 	/* 1*/ {0,  80, 75, 40,  20,  80, 10,  85,  90, 50, 6, 5},
@@ -42,6 +41,8 @@ public class MsPacManGame extends PacManGameModel {
 	/*21*/ {0,  90, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
 	};
 	/*@formatter:on*/
+
+	private final MapBasedPacManGameWorld world;
 
 	public MsPacManGame() {
 
