@@ -270,11 +270,15 @@ public class PacManGameSwingUI implements PacManGameUI {
 	}
 
 	private void createPacManScenes() {
-		pacManIntroScene = new PacManGameIntroScene(unscaledSize_px, pacManRendering, game);
-		pacManClassicPlayScene = new PacManGamePlayScene(unscaledSize_px, pacManRendering, game);
-		pacManIntermissions[0] = new PacManGameIntermission1(unscaledSize_px, pacManRendering, pacManSoundManager, game);
-		pacManIntermissions[1] = new PacManGameIntermission2(unscaledSize_px, pacManRendering, pacManSoundManager, game);
-		pacManIntermissions[2] = new PacManGameIntermission3(unscaledSize_px, pacManRendering, pacManSoundManager, game);
+		PacManGame pacManGame = (PacManGame) game;
+		pacManIntroScene = new PacManGameIntroScene(unscaledSize_px, pacManRendering, pacManGame);
+		pacManClassicPlayScene = new PacManGamePlayScene(unscaledSize_px, pacManRendering, pacManGame);
+		pacManIntermissions[0] = new PacManGameIntermission1(unscaledSize_px, pacManRendering, pacManSoundManager,
+				pacManGame);
+		pacManIntermissions[1] = new PacManGameIntermission2(unscaledSize_px, pacManRendering, pacManSoundManager,
+				pacManGame);
+		pacManIntermissions[2] = new PacManGameIntermission3(unscaledSize_px, pacManRendering, pacManSoundManager,
+				pacManGame);
 	}
 
 	private PacManGameScene selectPacManScene() {

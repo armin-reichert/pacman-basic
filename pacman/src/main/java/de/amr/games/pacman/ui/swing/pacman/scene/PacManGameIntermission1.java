@@ -15,7 +15,7 @@ import java.awt.image.BufferedImage;
 import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.model.AbstractPacManGame;
+import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.creatures.Ghost;
 import de.amr.games.pacman.model.creatures.Pac;
 import de.amr.games.pacman.ui.api.PacManGameScene;
@@ -37,7 +37,7 @@ public class PacManGameIntermission1 implements PacManGameScene {
 	private final V2i size;
 	private final PacManGameRendering rendering;
 	private final SoundManager soundManager;
-	private final AbstractPacManGame game;
+	private final PacManGame game;
 
 	private final Animation<BufferedImage> bigPac;
 	private final int baselineY = t(20);
@@ -46,8 +46,7 @@ public class PacManGameIntermission1 implements PacManGameScene {
 
 	private Phase phase;
 
-	public PacManGameIntermission1(V2i size, PacManGameRendering rendering, SoundManager soundManager,
-			AbstractPacManGame game) {
+	public PacManGameIntermission1(V2i size, PacManGameRendering rendering, SoundManager soundManager, PacManGame game) {
 		this.size = size;
 		this.rendering = rendering;
 		this.soundManager = soundManager;
