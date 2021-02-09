@@ -45,7 +45,8 @@ public class MsPacManGame extends PacManGameModel {
 
 	public MsPacManGame() {
 
-		highscoreFileName = "hiscore-mspacman.xml";
+		// all levels share this world
+		world = new MapBasedPacManGameWorld();
 
 		bonusNames = new String[] { "CHERRIES", "STRAWBERRY", "PEACH", "PRETZEL", "APPLE", "PEAR", "BANANA" };
 		bonusValues = new int[] { 100, 200, 500, 700, 1000, 2000, 5000 };
@@ -59,14 +60,13 @@ public class MsPacManGame extends PacManGameModel {
 		ghosts[INKY] = new Ghost(INKY, "Inky", DOWN);
 		ghosts[SUE] = new Ghost(SUE, "Sue", DOWN);
 
-		// all levels share this world
-		world = new MapBasedPacManGameWorld();
-
+		bonus.world = world;
 		pac.world = world;
 		for (Ghost ghost : ghosts) {
 			ghost.world = world;
 		}
-		bonus.world = world;
+
+		highscoreFileName = "hiscore-mspacman.xml";
 
 		reset();
 	}
