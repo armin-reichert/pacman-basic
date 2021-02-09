@@ -8,8 +8,8 @@ public class PacManGameSoundAssets {
 
 	private static final PacManGameSoundAssets IT = new PacManGameSoundAssets();
 
-	private final Map<PacManGameSound, URL> pacManSounds;
-	private final Map<PacManGameSound, URL> msPacManSounds;
+	private final Map<PacManGameSound, URL> pacManSounds = new EnumMap<>(PacManGameSound.class);
+	private final Map<PacManGameSound, URL> msPacManSounds = new EnumMap<>(PacManGameSound.class);
 
 	private URL url(String path) {
 		return getClass().getResource(path);
@@ -25,7 +25,6 @@ public class PacManGameSoundAssets {
 
 	private PacManGameSoundAssets() {
 		//@formatter:off
-		pacManSounds = new EnumMap<>(PacManGameSound.class);
 		pacManSounds.put(PacManGameSound.CREDIT,             url("/pacman/sound/credit.wav"));
 		pacManSounds.put(PacManGameSound.EXTRA_LIFE,         url("/pacman/sound/extend.wav"));
 		pacManSounds.put(PacManGameSound.GAME_READY,         url("/pacman/sound/game_start.wav"));
@@ -44,7 +43,6 @@ public class PacManGameSoundAssets {
 		pacManSounds.put(PacManGameSound.INTERMISSION_2,     url("/pacman/sound/intermission.wav"));
 		pacManSounds.put(PacManGameSound.INTERMISSION_3,     url("/pacman/sound/intermission.wav"));
 
-		msPacManSounds = new EnumMap<>(PacManGameSound.class);
 		msPacManSounds.put(PacManGameSound.CREDIT,           url("/mspacman/sound/Coin Credit.wav"));
 		msPacManSounds.put(PacManGameSound.EXTRA_LIFE,       url("/mspacman/sound/Extra Life.wav"));
 		msPacManSounds.put(PacManGameSound.GAME_READY,       url("/mspacman/sound/Start.wav"));
