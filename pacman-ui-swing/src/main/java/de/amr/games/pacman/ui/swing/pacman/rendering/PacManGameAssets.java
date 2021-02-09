@@ -2,12 +2,10 @@ package de.amr.games.pacman.ui.swing.pacman.rendering;
 
 import static de.amr.games.pacman.ui.swing.assets.AssetLoader.font;
 import static de.amr.games.pacman.ui.swing.assets.AssetLoader.image;
-import static de.amr.games.pacman.ui.swing.assets.AssetLoader.url;
 
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.image.BufferedImage;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -17,7 +15,6 @@ import java.util.Map;
 import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.sound.PacManGameSound;
 import de.amr.games.pacman.ui.swing.assets.Spritesheet;
 
 /**
@@ -65,7 +62,6 @@ public class PacManGameAssets extends Spritesheet {
 	final Animation<BufferedImage> mazeFlashing;
 	final Animation<Boolean> energizerBlinking;
 
-	final Map<PacManGameSound, URL> soundMap;
 	final Font scoreFont;
 
 	public PacManGameAssets() {
@@ -138,27 +134,6 @@ public class PacManGameAssets extends Spritesheet {
 
 		ghostFlashing = Animation.of(spriteAt(8, 4), spriteAt(9, 4), spriteAt(10, 4), spriteAt(11, 4));
 		ghostFlashing.frameDuration(5).endless();
-
-		//@formatter:off
-		soundMap = new EnumMap<>(PacManGameSound.class);
-		soundMap.put(PacManGameSound.CREDIT,           url("/pacman/sound/credit.wav"));
-		soundMap.put(PacManGameSound.EXTRA_LIFE,       url("/pacman/sound/extend.wav"));
-		soundMap.put(PacManGameSound.GAME_READY,       url("/pacman/sound/game_start.wav"));
-		soundMap.put(PacManGameSound.PACMAN_EAT_BONUS, url("/pacman/sound/eat_fruit.wav"));
-		soundMap.put(PacManGameSound.PACMAN_MUNCH,     url("/pacman/sound/munch_1.wav"));
-		soundMap.put(PacManGameSound.PACMAN_DEATH,     url("/pacman/sound/death_1.wav"));
-		soundMap.put(PacManGameSound.PACMAN_POWER,     url("/pacman/sound/power_pellet.wav"));
-		soundMap.put(PacManGameSound.GHOST_EATEN,      url("/pacman/sound/eat_ghost.wav"));
-		soundMap.put(PacManGameSound.GHOST_EYES,       url("/pacman/sound/retreating.wav"));
-		soundMap.put(PacManGameSound.GHOST_SIREN_1,    url("/pacman/sound/siren_1.wav"));
-		soundMap.put(PacManGameSound.GHOST_SIREN_2,    url("/pacman/sound/siren_2.wav"));
-		soundMap.put(PacManGameSound.GHOST_SIREN_3,    url("/pacman/sound/siren_3.wav"));
-		soundMap.put(PacManGameSound.GHOST_SIREN_4,    url("/pacman/sound/siren_4.wav"));
-		soundMap.put(PacManGameSound.GHOST_SIREN_5,    url("/pacman/sound/siren_5.wav"));
-		soundMap.put(PacManGameSound.INTERMISSION_1,   url("/pacman/sound/intermission.wav"));
-		soundMap.put(PacManGameSound.INTERMISSION_2,   url("/pacman/sound/intermission.wav"));
-		soundMap.put(PacManGameSound.INTERMISSION_3,   url("/pacman/sound/intermission.wav"));
-		//@formatter:on
 	}
 
 	public Font getScoreFont() {
@@ -171,9 +146,5 @@ public class PacManGameAssets extends Spritesheet {
 
 	public Color ghostColor(int g) {
 		return ghostColors[g];
-	}
-
-	public URL getSoundURL(PacManGameSound sound) {
-		return soundMap.get(sound);
 	}
 }

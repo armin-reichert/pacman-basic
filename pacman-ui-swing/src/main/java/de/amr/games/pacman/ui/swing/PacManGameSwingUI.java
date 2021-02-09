@@ -28,9 +28,10 @@ import javax.swing.Timer;
 import de.amr.games.pacman.controller.PacManGameState;
 import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.model.PacManGameModel;
 import de.amr.games.pacman.model.MsPacManGame;
 import de.amr.games.pacman.model.PacManGame;
+import de.amr.games.pacman.model.PacManGameModel;
+import de.amr.games.pacman.sound.PacManGameSoundAssets;
 import de.amr.games.pacman.sound.PacManGameSoundManager;
 import de.amr.games.pacman.sound.SoundManager;
 import de.amr.games.pacman.ui.PacManGameAnimations;
@@ -138,10 +139,10 @@ public class PacManGameSwingUI implements PacManGameUI {
 		window.getContentPane().add(canvas);
 
 		pacManRendering = new PacManGameSpriteBasedRendering(translations);
-		pacManSoundManager = new PacManGameSoundManager(pacManRendering.assets::getSoundURL);
+		pacManSoundManager = new PacManGameSoundManager(PacManGameSoundAssets::getPacManSoundURL);
 
 		msPacManRendering = new MsPacManGameSpriteBasedRendering(translations);
-		msPacManSoundManager = new PacManGameSoundManager(msPacManRendering.assets::getSoundURL);
+		msPacManSoundManager = new PacManGameSoundManager(PacManGameSoundAssets::getMsPacManSoundURL);
 
 		setGame(game);
 	}
