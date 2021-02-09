@@ -395,7 +395,7 @@ public class PacManGameController {
 			log("Pac-Man found bonus (%s) of value %d", game.bonusNames[game.bonus.symbol], game.bonus.points);
 			game.bonus.eatAndDisplayValue(clock.sec(2));
 			score(game.bonus.points);
-			ui.sounds().ifPresent(sm -> sm.play(PacManGameSound.PACMAN_EAT_BONUS));
+			ui.sounds().ifPresent(sm -> sm.play(PacManGameSound.BONUS_EATEN));
 		}
 
 		ui.sounds().ifPresent(sm -> {
