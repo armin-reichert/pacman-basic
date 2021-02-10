@@ -228,10 +228,8 @@ public class MsPacManGameRendering implements RenderingWithAnimatedSprites, PacM
 	public void drawLivesCounter(PacManGameModel game, int x, int y) {
 		int maxLivesDisplayed = 5;
 		int livesDisplayed = game.started ? game.lives - 1 : game.lives;
-		Rectangle2D region = s(1, 1);
 		for (int i = 0; i < Math.min(livesDisplayed, maxLivesDisplayed); ++i) {
-			g.drawImage(spritesheet, region.getMinX(), region.getMinY(), region.getWidth(), region.getHeight(), x + t(2 * i),
-					y, region.getWidth(), region.getHeight());
+			g.drawImage(spritesheet, 456 + 16, 16, 16, 16, x + t(2 * i), y, 16, 16);
 		}
 	}
 
