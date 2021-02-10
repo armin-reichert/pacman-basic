@@ -97,8 +97,8 @@ public class PacManGameRendering implements RenderingWithAnimatedSprites {
 
 		// Animations
 
-		// TODO create flash effect
-		Image mazeEmptyBright = createBrightEffect(mazeEmpty, Color.rgb(33, 33, 255), Color.BLACK);
+		Image mazeEmptyBright = RenderingWithAnimatedSprites.exchangeColors(mazeEmpty,
+				Map.of(Color.rgb(33, 33, 255), Color.WHITE));
 		mazeFlashing = Animation.of(mazeEmptyBright, mazeEmpty).frameDuration(15);
 
 		energizerBlinking = Animation.pulse().frameDuration(15);
@@ -142,10 +142,6 @@ public class PacManGameRendering implements RenderingWithAnimatedSprites {
 		return dir != null ? dir : Direction.RIGHT;
 	}
 
-	private Image createBrightEffect(Image mazeEmptyDark, Color color, Color black) {
-		return mazeEmptyDark; // TODO
-	}
-
 	@Override
 	public void hideTile(V2i tile) {
 		g.setFill(Color.BLACK);
@@ -154,8 +150,11 @@ public class PacManGameRendering implements RenderingWithAnimatedSprites {
 
 	@Override
 	public void drawMaze(int mazeNumber, int x, int y, boolean flashing) {
-		// TODO flashing
-		g.drawImage(mazeFull, x, y);
+		if (flashing) {
+			g.drawImage(mazeFlashing(mazeNumber).animate(), x, y);
+		} else {
+			g.drawImage(mazeFull, x, y);
+		}
 	}
 
 	@Override
