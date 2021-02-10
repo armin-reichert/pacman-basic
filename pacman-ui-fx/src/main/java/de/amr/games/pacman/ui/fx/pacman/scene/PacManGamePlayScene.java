@@ -3,6 +3,7 @@ package de.amr.games.pacman.ui.fx.pacman.scene;
 import static de.amr.games.pacman.world.PacManGameWorld.t;
 
 import de.amr.games.pacman.model.PacManGameModel;
+import de.amr.games.pacman.ui.fx.PacManGameScene;
 import de.amr.games.pacman.ui.fx.input.Keyboard;
 import de.amr.games.pacman.ui.fx.pacman.rendering.Rendering;
 import javafx.scene.Scene;

@@ -9,7 +9,6 @@ import de.amr.games.pacman.sound.SoundManager;
 import de.amr.games.pacman.ui.PacManGameAnimations;
 import de.amr.games.pacman.ui.PacManGameUI;
 import de.amr.games.pacman.ui.fx.pacman.scene.PacManGamePlayScene;
-import de.amr.games.pacman.ui.fx.pacman.scene.PacManGameScene;
 import javafx.application.Platform;
 import javafx.stage.Stage;
 

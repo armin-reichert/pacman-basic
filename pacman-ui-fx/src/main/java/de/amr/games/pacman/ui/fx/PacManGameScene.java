@@ -1,4 +1,4 @@
-package de.amr.games.pacman.ui.fx.pacman.scene;
+package de.amr.games.pacman.ui.fx;
 
 import de.amr.games.pacman.ui.fx.input.Keyboard;
 import de.amr.games.pacman.ui.fx.pacman.rendering.Rendering;
