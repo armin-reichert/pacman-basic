@@ -2,7 +2,10 @@ package de.amr.games.pacman.ui.fx.mspacman.scene;
 
 import static de.amr.games.pacman.world.PacManGameWorld.t;
 
+import java.util.Optional;
+
 import de.amr.games.pacman.model.PacManGameModel;
+import de.amr.games.pacman.ui.PacManGameAnimations;
 import de.amr.games.pacman.ui.fx.PacManGameScene;
 import de.amr.games.pacman.ui.fx.RenderingWithAnimatedSprites;
 import de.amr.games.pacman.ui.fx.input.Keyboard;
@@ -20,7 +23,7 @@ public class MsPacManGamePlayScene implements PacManGameScene {
 	private final PacManGameModel game;
 	private final Canvas canvas;
 	private final GraphicsContext g;
-	private final MsPacManGameRendering rendering;
+	private final RenderingWithAnimatedSprites rendering;
 
 	public MsPacManGamePlayScene(PacManGameModel game, double width, double height, double scaling) {
 		this.game = game;
@@ -32,11 +35,6 @@ public class MsPacManGamePlayScene implements PacManGameScene {
 		scene = new Scene(pane, width, height);
 		keyboard = new Keyboard(scene);
 		rendering = new MsPacManGameRendering(g);
-	}
-
-	@Override
-	public RenderingWithAnimatedSprites rendering() {
-		return rendering;
 	}
 
 	@Override
@@ -53,6 +51,11 @@ public class MsPacManGamePlayScene implements PacManGameScene {
 		rendering.drawPac(game.pac, game);
 		game.ghosts().forEach(ghost -> rendering.drawGhost(ghost, game));
 		rendering.drawBonus(game.bonus, game);
+	}
+
+	@Override
+	public Optional<PacManGameAnimations> animations() {
+		return rendering instanceof PacManGameAnimations ? Optional.of(rendering) : Optional.empty();
 	}
 
 	@Override

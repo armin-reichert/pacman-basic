@@ -30,6 +30,7 @@ import de.amr.games.pacman.ui.fx.RenderingWithAnimatedSprites;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 
 public class MsPacManGameRendering implements RenderingWithAnimatedSprites, PacManGameAnimations {
@@ -49,7 +50,7 @@ public class MsPacManGameRendering implements RenderingWithAnimatedSprites, PacM
 	private final Animation<Rectangle2D> ghostFlashing;
 	private final Animation<Integer> bonusJumps;
 
-//	private final Animation<Image> mazeFlashing;
+	private final List<Animation<Image>> mazesFlashing;
 	private final Animation<Boolean> energizerBlinking;
 
 	private int index(Direction dir) {
@@ -91,9 +92,15 @@ public class MsPacManGameRendering implements RenderingWithAnimatedSprites, PacM
 
 		energizerBlinking = Animation.pulse().frameDuration(10);
 
-		// TODO create flash effect
-//		Image mazeEmptyBright = createBrightEffect(mazeEmpty, Color.rgb(33, 33, 255), Color.BLACK);
-//		mazeFlashing = Animation.of(mazeEmptyBright, mazeEmpty).frameDuration(15);
+		mazesFlashing = new ArrayList<>(6);
+		for (int mazeIndex = 0; mazeIndex < 6; ++mazeIndex) {
+			Map<Color, Color> exchanges = Map.of(getMazeWallBorderColor(mazeIndex), Color.WHITE, getMazeWallColor(mazeIndex),
+					Color.BLACK);
+			WritableImage mazeEmpty = new WritableImage(226, 248);
+			mazeEmpty.getPixelWriter().setPixels(0, 0, 226, 248, spritesheet.getPixelReader(), 226, 248 * mazeIndex);
+			Image mazeEmptyBright = RenderingWithAnimatedSprites.exchangeColors(mazeEmpty, exchanges);
+			mazesFlashing.add(Animation.of(mazeEmptyBright, mazeEmpty).frameDuration(15));
+		}
 
 		pacMunching = new EnumMap<>(Direction.class);
 		for (Direction dir : Direction.values()) {
@@ -132,19 +139,65 @@ public class MsPacManGameRendering implements RenderingWithAnimatedSprites, PacM
 		bonusJumps = Animation.of(0, 2, 0, -2).frameDuration(20).endless().run();
 	}
 
-	private Direction ensureNotNull(Direction dir) {
-		return dir != null ? dir : Direction.RIGHT;
+	/**
+	 * Note: maze numbers are 1-based, maze index as stored here is 0-based.
+	 * 
+	 * @param mazeIndex
+	 * @return
+	 */
+	public Color getMazeWallColor(int mazeIndex) {
+		switch (mazeIndex) {
+		case 0:
+			return Color.rgb(255, 183, 174);
+		case 1:
+			return Color.rgb(71, 183, 255);
+		case 2:
+			return Color.rgb(222, 151, 81);
+		case 3:
+			return Color.rgb(33, 33, 255);
+		case 4:
+			return Color.rgb(255, 183, 255);
+		case 5:
+			return Color.rgb(255, 183, 174);
+		default:
+			return Color.WHITE;
+		}
 	}
 
-	private Image createBrightEffect(Image mazeEmptyDark, Color color, Color black) {
-		return mazeEmptyDark; // TODO
+	/**
+	 * Note: maze numbers are 1-based, maze index as stored here is 0-based.
+	 * 
+	 * @param mazeIndex
+	 * @return
+	 */
+	public Color getMazeWallBorderColor(int mazeIndex) {
+		switch (mazeIndex) {
+		case 0:
+			return Color.rgb(255, 0, 0);
+		case 1:
+			return Color.rgb(222, 222, 255);
+		case 2:
+			return Color.rgb(222, 222, 255);
+		case 3:
+			return Color.rgb(255, 183, 81);
+		case 4:
+			return Color.rgb(255, 255, 0);
+		case 5:
+			return Color.rgb(255, 0, 0);
+		default:
+			return Color.WHITE;
+		}
+	}
+
+	private Direction ensureNotNull(Direction dir) {
+		return dir != null ? dir : Direction.RIGHT;
 	}
 
 	@Override
 	public void drawMaze(int mazeNumber, int x, int y, boolean flashing) {
 		int index = mazeNumber - 1;
 		if (flashing) {
-			// TODO
+			g.drawImage(mazeFlashing(mazeNumber).animate(), x, y);
 		} else {
 			Rectangle2D fullMazeRegion = new Rectangle2D(0, 248 * index, 226, 248);
 			g.drawImage(spritesheet, fullMazeRegion.getMinX(), fullMazeRegion.getMinY(), fullMazeRegion.getWidth(),
@@ -270,8 +323,7 @@ public class MsPacManGameRendering implements RenderingWithAnimatedSprites, PacM
 
 	@Override
 	public Animation<Image> mazeFlashing(int mazeNumber) {
-//		return mazeFlashing;
-		return Animation.of(); // TODO
+		return mazesFlashing.get(mazeNumber - 1);
 	}
 
 	@Override

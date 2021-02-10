@@ -2,8 +2,12 @@ package de.amr.games.pacman.ui.fx.pacman.scene;
 
 import static de.amr.games.pacman.world.PacManGameWorld.t;
 
+import java.util.Optional;
+
 import de.amr.games.pacman.model.PacManGameModel;
+import de.amr.games.pacman.ui.PacManGameAnimations;
 import de.amr.games.pacman.ui.fx.PacManGameScene;
+import de.amr.games.pacman.ui.fx.RenderingWithAnimatedSprites;
 import de.amr.games.pacman.ui.fx.input.Keyboard;
 import de.amr.games.pacman.ui.fx.pacman.rendering.PacManGameRendering;
 import javafx.scene.Scene;
@@ -19,7 +23,7 @@ public class PacManGamePlayScene implements PacManGameScene {
 	private final PacManGameModel game;
 	private final Canvas canvas;
 	private final GraphicsContext g;
-	private final PacManGameRendering rendering;
+	private final RenderingWithAnimatedSprites rendering;
 
 	public PacManGamePlayScene(PacManGameModel game, double width, double height, double scaling) {
 		this.game = game;
@@ -34,8 +38,8 @@ public class PacManGamePlayScene implements PacManGameScene {
 	}
 
 	@Override
-	public PacManGameRendering rendering() {
-		return rendering;
+	public Optional<PacManGameAnimations> animations() {
+		return rendering instanceof PacManGameAnimations ? Optional.of(rendering) : Optional.empty();
 	}
 
 	@Override
@@ -44,7 +48,7 @@ public class PacManGamePlayScene implements PacManGameScene {
 		g.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 		boolean flashing = rendering.mazeFlashing(game.level.mazeNumber).isRunning();
 		if (flashing) {
-			// TODO
+			rendering.drawMaze(game.level.mazeNumber, 0, t(3), true);
 		} else {
 			rendering.drawMaze(game.level.mazeNumber, 0, t(3), false);
 			rendering.drawFoodTiles(game.level.world.tiles().filter(game.level.world::isFoodTile),
