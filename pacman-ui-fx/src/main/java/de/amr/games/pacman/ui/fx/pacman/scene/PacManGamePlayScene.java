@@ -1,11 +1,16 @@
 package de.amr.games.pacman.ui.fx.pacman.scene;
 
+import static de.amr.games.pacman.lib.Direction.LEFT;
+import static de.amr.games.pacman.lib.Direction.RIGHT;
+import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.world.PacManGameWorld.TS;
 import static de.amr.games.pacman.world.PacManGameWorld.t;
 
+import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.model.Creature;
 import de.amr.games.pacman.model.Ghost;
 import de.amr.games.pacman.model.GhostState;
+import de.amr.games.pacman.model.Pac;
 import de.amr.games.pacman.model.PacManGameModel;
 import de.amr.games.pacman.ui.fx.input.Keyboard;
 import javafx.scene.Scene;
@@ -23,6 +28,8 @@ public class PacManGamePlayScene implements PacManGameScene {
 	private final Canvas canvas;
 	private final GraphicsContext g;
 
+	// TODO move this to renderers
+	private Image spritesheet = new Image("/pacman/graphics/sprites.png", false);
 	private Image mazeFull = new Image("/pacman/graphics/maze_full.png", false);
 
 	public PacManGamePlayScene(PacManGameModel game, double width, double height, double scaling) {
@@ -65,7 +72,7 @@ public class PacManGamePlayScene implements PacManGameScene {
 		g.setFill(Color.BLACK);
 		g.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
-		g.drawImage(mazeFull, 0, 3 * 8);
+		g.drawImage(mazeFull, 0, t(3));
 		game.level.world.tiles().filter(tile -> game.level.world.isFoodTile(tile)).forEach(tile -> {
 			if (game.level.containsEatenFood(tile)) {
 				g.setFill(Color.BLACK);
@@ -73,7 +80,7 @@ public class PacManGamePlayScene implements PacManGameScene {
 			}
 		});
 
-		drawGuy(game.pac, Color.YELLOW);
+		drawPac(game.pac);
 		for (Ghost ghost : game.ghosts) {
 			drawGhost(ghost);
 		}
@@ -82,25 +89,27 @@ public class PacManGamePlayScene implements PacManGameScene {
 		g.fillText(game.stateDescription(), 10, 35 * 8);
 	}
 
-	private void drawGuy(Creature guy, Color color) {
+	private void drawSprite(Creature guy, int sheetX, int sheetY, int sheetCols, int sheetRows) {
 		if (guy.visible) {
-			g.setFill(color);
-			g.fillOval(guy.position.x - 4, guy.position.y - 4, 16, 16);
+			g.drawImage(spritesheet, sheetX * 16, sheetY * 16, sheetCols * 16, sheetRows * 16, guy.position.x - 4,
+					guy.position.y - 4, sheetCols * 16, sheetRows * 16);
 		}
+	}
+
+	private void drawPac(Pac pac) {
+		drawSprite(pac, 1, index(pac.dir), 1, 1);
 	}
 
 	private void drawGhost(Ghost ghost) {
 		if (ghost.is(GhostState.FRIGHTENED)) {
-			drawGuy(ghost, Color.BLUE);
-		} else if (ghost.id == 0) {
-			drawGuy(ghost, Color.RED);
-		} else if (ghost.id == 1) {
-			drawGuy(ghost, Color.PINK);
-		} else if (ghost.id == 2) {
-			drawGuy(ghost, Color.CYAN);
-			g.setFill(Color.CYAN);
-		} else if (ghost.id == 3) {
-			drawGuy(ghost, Color.ORANGE);
+			drawSprite(ghost, 8, 4, 1, 1);
+		} else {
+			drawSprite(ghost, 2 * index(ghost.wishDir), 4 + ghost.id, 1, 1);
 		}
 	}
+
+	private int index(Direction dir) {
+		return dir == RIGHT ? 0 : dir == LEFT ? 1 : dir == UP ? 2 : 3;
+	}
+
 }
