@@ -1,4 +1,4 @@
-package de.amr.games.pacman.ui.fx.app;
+package de.amr.games.pacman.ui.multi.app;
 
 import java.io.IOException;
 
@@ -13,7 +13,7 @@ import javafx.stage.Stage;
  * 
  * @author Armin Reichert
  */
-public class PacManGameAppSwingPlusFX extends Application {
+public class PacManGameAppMulti extends Application {
 
 	public static void main(String[] args) {
 		launch(args);
