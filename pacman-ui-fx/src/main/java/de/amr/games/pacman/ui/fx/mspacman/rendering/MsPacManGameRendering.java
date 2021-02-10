@@ -234,7 +234,7 @@ public class MsPacManGameRendering implements RenderingWithAnimatedSprites, PacM
 		int maxLivesDisplayed = 5;
 		int livesDisplayed = game.started ? game.lives - 1 : game.lives;
 		for (int i = 0; i < Math.min(livesDisplayed, maxLivesDisplayed); ++i) {
-			g.drawImage(spritesheet, 456 + 16, 16, 16, 16, x + t(2 * i), y, 16, 16);
+			g.drawImage(spritesheet, 456 + 16, 0, 16, 16, x + t(2 * i), y, 16, 16);
 		}
 	}
 
