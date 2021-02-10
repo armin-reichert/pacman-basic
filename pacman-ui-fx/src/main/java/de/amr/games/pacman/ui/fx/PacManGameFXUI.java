@@ -111,6 +111,7 @@ public class PacManGameFXUI implements PacManGameUI {
 
 	@Override
 	public Optional<PacManGameAnimations> animations() {
-		return Optional.empty();
+		return currentScene.rendering() instanceof PacManGameAnimations ? Optional.of(currentScene.rendering())
+				: Optional.empty();
 	}
 }
