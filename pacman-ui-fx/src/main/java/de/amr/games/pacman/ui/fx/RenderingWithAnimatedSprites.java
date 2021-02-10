@@ -1,5 +1,8 @@
 package de.amr.games.pacman.ui.fx;
 
+import java.util.function.Predicate;
+import java.util.stream.Stream;
+
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.Bonus;
 import de.amr.games.pacman.model.Ghost;
@@ -24,5 +27,9 @@ public interface RenderingWithAnimatedSprites extends PacManGameAnimations {
 
 	void hideTile(V2i tile);
 
-	void drawFullMaze(int mazeNumber, int x, int y);
+	void drawMaze(int mazeNumber, int x, int y, boolean flashing);
+
+	void drawFoodTiles(Stream<V2i> tiles, Predicate<V2i> eaten);
+
+	void drawEnergizerTiles(Stream<V2i> energizerTiles);
 }

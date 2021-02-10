@@ -14,6 +14,8 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.Direction;
@@ -139,12 +141,27 @@ public class MsPacManGameRendering implements RenderingWithAnimatedSprites, PacM
 	}
 
 	@Override
-	public void drawFullMaze(int mazeNumber, int x, int y) {
-		// 226, 248
+	public void drawMaze(int mazeNumber, int x, int y, boolean flashing) {
 		int index = mazeNumber - 1;
-		Rectangle2D region = new Rectangle2D(0, 248 * index, 226, 248);
-		g.drawImage(spritesheet, region.getMinX(), region.getMinY(), region.getWidth(), region.getHeight(), x, y,
-				region.getWidth(), region.getHeight());
+		if (flashing) {
+			// TODO
+		} else {
+			Rectangle2D fullMazeRegion = new Rectangle2D(0, 248 * index, 226, 248);
+			g.drawImage(spritesheet, fullMazeRegion.getMinX(), fullMazeRegion.getMinY(), fullMazeRegion.getWidth(),
+					fullMazeRegion.getHeight(), x, y, fullMazeRegion.getWidth(), fullMazeRegion.getHeight());
+		}
+	}
+
+	@Override
+	public void drawFoodTiles(Stream<V2i> tiles, Predicate<V2i> eaten) {
+		tiles.filter(eaten).forEach(this::hideTile);
+	}
+
+	@Override
+	public void drawEnergizerTiles(Stream<V2i> energizerTiles) {
+		if (energizerBlinking.animate()) {
+			energizerTiles.forEach(this::hideTile);
+		}
 	}
 
 	@Override

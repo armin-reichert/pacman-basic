@@ -14,6 +14,8 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.Direction;
@@ -151,8 +153,21 @@ public class PacManGameRendering implements RenderingWithAnimatedSprites {
 	}
 
 	@Override
-	public void drawFullMaze(int mazeNumber, int x, int y) {
+	public void drawMaze(int mazeNumber, int x, int y, boolean flashing) {
+		// TODO flashing
 		g.drawImage(mazeFull, x, y);
+	}
+
+	@Override
+	public void drawFoodTiles(Stream<V2i> tiles, Predicate<V2i> eaten) {
+		tiles.filter(eaten).forEach(this::hideTile);
+	}
+
+	@Override
+	public void drawEnergizerTiles(Stream<V2i> energizerTiles) {
+		if (energizerBlinking.animate()) {
+			energizerTiles.forEach(this::hideTile);
+		}
 	}
 
 	@Override
