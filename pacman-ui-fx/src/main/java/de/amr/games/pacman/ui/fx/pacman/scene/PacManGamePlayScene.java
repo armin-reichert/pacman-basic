@@ -43,8 +43,8 @@ public class PacManGamePlayScene implements PacManGameScene {
 		g.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 		rendering.drawFullMaze(0, t(3));
 		game.level.world.tiles().filter(game.level::containsEatenFood).forEach(rendering::hideTile);
-		rendering.drawPac(game.pac);
-		game.ghosts().forEach(rendering::drawGhost);
+		rendering.drawPac(game.pac, game);
+		game.ghosts().forEach(ghost -> rendering.drawGhost(ghost, game));
 	}
 
 	@Override
