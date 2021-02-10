@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import de.amr.games.pacman.controller.PacManGameController;
 import de.amr.games.pacman.ui.fx.PacManGameFXUI;
+import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -12,7 +13,7 @@ import javafx.stage.Stage;
  * 
  * @author Armin Reichert
  */
-public class PacManGameApp extends Application {
+public class PacManGameAppSwingPlusFX extends Application {
 
 	public static void main(String[] args) {
 		launch(args);
@@ -21,7 +22,8 @@ public class PacManGameApp extends Application {
 	@Override
 	public void start(Stage stage) throws IOException {
 		PacManGameController controller = new PacManGameController(true);
-		controller.setUI(new PacManGameFXUI(stage, controller.game, 2));
+		controller.addUI(new PacManGameFXUI(stage, controller.game, 2));
+		controller.addUI(new PacManGameSwingUI(controller.game, 2));
 		controller.showUI();
 		new Thread(controller::gameLoop, "PacManGame").start();
 	}

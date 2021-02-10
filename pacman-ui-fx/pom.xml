@@ -25,6 +25,11 @@
         	<artifactId>pacman-basic</artifactId>
         	<version>1.0</version>
         </dependency>
+        <dependency>
+        	<groupId>de.amr.games.pacman.ui.swing</groupId>
+        	<artifactId>pacman-ui-swing</artifactId>
+        	<version>0.0.1-SNAPSHOT</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
