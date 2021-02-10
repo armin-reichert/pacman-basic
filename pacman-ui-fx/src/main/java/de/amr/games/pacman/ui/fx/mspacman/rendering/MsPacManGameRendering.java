@@ -8,6 +8,7 @@ import static de.amr.games.pacman.model.GhostState.ENTERING_HOUSE;
 import static de.amr.games.pacman.model.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.GhostState.LOCKED;
 import static de.amr.games.pacman.world.PacManGameWorld.TS;
+import static de.amr.games.pacman.world.PacManGameWorld.t;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -215,6 +216,29 @@ public class MsPacManGameRendering implements RenderingWithAnimatedSprites, PacM
 		if (energizerBlinking.animate()) {
 			energizerTiles.forEach(this::hideTile);
 		}
+	}
+
+	@Override
+	public void drawLevelCounter(PacManGameModel game, int x, int y) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void drawLivesCounter(PacManGameModel game, int x, int y) {
+		int maxLivesDisplayed = 5;
+		int livesDisplayed = game.started ? game.lives - 1 : game.lives;
+		Rectangle2D region = s(1, 1);
+		for (int i = 0; i < Math.min(livesDisplayed, maxLivesDisplayed); ++i) {
+			g.drawImage(spritesheet, region.getMinX(), region.getMinY(), region.getWidth(), region.getHeight(), x + t(2 * i),
+					y, region.getWidth(), region.getHeight());
+		}
+	}
+
+	@Override
+	public void drawScore(PacManGameModel game) {
+		// TODO Auto-generated method stub
+
 	}
 
 	@Override

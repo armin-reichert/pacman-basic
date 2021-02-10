@@ -8,6 +8,7 @@ import static de.amr.games.pacman.model.GhostState.ENTERING_HOUSE;
 import static de.amr.games.pacman.model.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.GhostState.LOCKED;
 import static de.amr.games.pacman.world.PacManGameWorld.TS;
+import static de.amr.games.pacman.world.PacManGameWorld.t;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -56,20 +57,16 @@ public class PacManGameRendering implements RenderingWithAnimatedSprites {
 		return dir == RIGHT ? 0 : dir == LEFT ? 1 : dir == UP ? 2 : 3;
 	}
 
+	private Direction ensureNotNull(Direction dir) {
+		return dir != null ? dir : Direction.RIGHT;
+	}
+
 	private Rectangle2D s(int col, int row) {
 		return new Rectangle2D(col, row, 1, 1);
 	}
 
 	private Rectangle2D r(double x, double y, double width, double height) {
 		return new Rectangle2D(x, y, width, height);
-	}
-
-	private void drawRegion(Creature guy, Rectangle2D region) {
-		if (guy.visible && region != null) {
-			g.drawImage(spritesheet, region.getMinX() * 16, region.getMinY() * 16, region.getWidth() * 16,
-					region.getHeight() * 16, guy.position.x - 4, guy.position.y - 4, region.getWidth() * 16,
-					region.getWidth() * 16);
-		}
 	}
 
 	public PacManGameRendering(GraphicsContext g) {
@@ -138,14 +135,18 @@ public class PacManGameRendering implements RenderingWithAnimatedSprites {
 
 	}
 
-	private Direction ensureNotNull(Direction dir) {
-		return dir != null ? dir : Direction.RIGHT;
-	}
-
 	@Override
 	public void hideTile(V2i tile) {
 		g.setFill(Color.BLACK);
 		g.fillRect(tile.x * TS, tile.y * TS, TS, TS);
+	}
+
+	private void drawRegion(Creature guy, Rectangle2D region) {
+		if (guy.visible && region != null) {
+			g.drawImage(spritesheet, region.getMinX() * 16, region.getMinY() * 16, region.getWidth() * 16,
+					region.getHeight() * 16, guy.position.x - 4, guy.position.y - 4, region.getWidth() * 16,
+					region.getHeight() * 16);
+		}
 	}
 
 	@Override
@@ -154,6 +155,25 @@ public class PacManGameRendering implements RenderingWithAnimatedSprites {
 			g.drawImage(mazeFlashing(mazeNumber).animate(), x, y);
 		} else {
 			g.drawImage(mazeFull, x, y);
+		}
+	}
+
+	@Override
+	public void drawScore(PacManGameModel game) {
+	}
+
+	@Override
+	public void drawLevelCounter(PacManGameModel game, int x, int y) {
+	}
+
+	@Override
+	public void drawLivesCounter(PacManGameModel game, int x, int y) {
+		int maxLivesDisplayed = 5;
+		int livesDisplayed = game.started ? game.lives - 1 : game.lives;
+		Rectangle2D region = s(8, 1);
+		for (int i = 0; i < Math.min(livesDisplayed, maxLivesDisplayed); ++i) {
+			g.drawImage(spritesheet, region.getMinX() * 16, region.getMinY() * 16, region.getWidth() * 16,
+					region.getHeight() * 16, x + t(2 * i), y, region.getWidth() * 16, region.getHeight() * 16);
 		}
 	}
 

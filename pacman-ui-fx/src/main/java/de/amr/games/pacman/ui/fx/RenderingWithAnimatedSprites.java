@@ -17,6 +17,21 @@ import javafx.scene.paint.Color;
 
 public interface RenderingWithAnimatedSprites extends PacManGameAnimations {
 
+	static Image exchangeColors(Image source, Map<Color, Color> exchanges) {
+		WritableImage newImage = new WritableImage((int) source.getWidth(), (int) source.getHeight());
+		for (int x = 0; x < source.getWidth(); ++x) {
+			for (int y = 0; y < source.getHeight(); ++y) {
+				Color oldColor = source.getPixelReader().getColor(x, y);
+				for (Map.Entry<Color, Color> entry : exchanges.entrySet()) {
+					if (oldColor.equals(entry.getKey())) {
+						newImage.getPixelWriter().setColor(x, y, entry.getValue());
+					}
+				}
+			}
+		}
+		return newImage;
+	}
+
 	Rectangle2D bonusSprite(Bonus bonus, PacManGameModel game);
 
 	Rectangle2D pacSprite(Pac pac, PacManGameModel game);
@@ -37,18 +52,9 @@ public interface RenderingWithAnimatedSprites extends PacManGameAnimations {
 
 	void drawEnergizerTiles(Stream<V2i> energizerTiles);
 
-	static Image exchangeColors(Image source, Map<Color, Color> exchanges) {
-		WritableImage newImage = new WritableImage((int) source.getWidth(), (int) source.getHeight());
-		for (int x = 0; x < source.getWidth(); ++x) {
-			for (int y = 0; y < source.getHeight(); ++y) {
-				Color oldColor = source.getPixelReader().getColor(x, y);
-				for (Map.Entry<Color, Color> entry : exchanges.entrySet()) {
-					if (oldColor.equals(entry.getKey())) {
-						newImage.getPixelWriter().setColor(x, y, entry.getValue());
-					}
-				}
-			}
-		}
-		return newImage;
-	}
+	void drawScore(PacManGameModel game);
+
+	void drawLivesCounter(PacManGameModel game, int x, int y);
+
+	void drawLevelCounter(PacManGameModel game, int x, int y);
 }

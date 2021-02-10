@@ -54,6 +54,11 @@ public class PlayScene implements PacManGameScene {
 		rendering.drawPac(game.pac, game);
 		game.ghosts().forEach(ghost -> rendering.drawGhost(ghost, game));
 		rendering.drawBonus(game.bonus, game);
+		rendering.drawScore(game);
+		if (!game.attractMode) {
+			rendering.drawLivesCounter(game, t(2), t(34));
+			rendering.drawLevelCounter(game, t(game.level.world.xTiles() - 4), t(34));
+		}
 	}
 
 	@Override
