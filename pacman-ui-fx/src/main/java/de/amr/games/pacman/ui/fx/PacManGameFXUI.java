@@ -18,6 +18,7 @@ import de.amr.games.pacman.ui.fx.common.scene.PlayScene;
 import de.amr.games.pacman.ui.fx.mspacman.scene.MsPacManGameIntroScene;
 import de.amr.games.pacman.ui.fx.pacman.scene.PacManGameIntroScene;
 import javafx.application.Platform;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 public class PacManGameFXUI implements PacManGameUI {
@@ -46,6 +47,7 @@ public class PacManGameFXUI implements PacManGameUI {
 		this.scaling = scaling;
 		this.stage = stage;
 		stage.setTitle("JavaFX: Pac-Man / Ms. Pac-Man");
+		stage.getIcons().add(new Image("/pacman/graphics/pacman.png"));
 		stage.setOnCloseRequest(e -> {
 			Platform.exit();
 			System.exit(0);
