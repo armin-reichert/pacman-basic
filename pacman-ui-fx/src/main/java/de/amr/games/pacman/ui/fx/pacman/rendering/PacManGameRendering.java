@@ -137,6 +137,10 @@ public class PacManGameRendering implements RenderingWithSprites, PacManGameAnim
 
 	}
 
+	private Direction ensureNotNull(Direction dir) {
+		return dir != null ? dir : Direction.RIGHT;
+	}
+
 	private Image createBrightEffect(Image mazeEmptyDark, Color color, Color black) {
 		return mazeEmptyDark; // TODO
 	}
@@ -206,7 +210,7 @@ public class PacManGameRendering implements RenderingWithSprites, PacManGameAnim
 
 	@Override
 	public Animation<Rectangle2D> pacMunchingToDir(Direction dir) {
-		return pacMunching.get(dir);
+		return pacMunching.get(ensureNotNull(dir));
 	}
 
 	@Override
@@ -216,7 +220,7 @@ public class PacManGameRendering implements RenderingWithSprites, PacManGameAnim
 
 	@Override
 	public Animation<Rectangle2D> ghostKickingToDir(Ghost ghost, Direction dir) {
-		return ghostsKicking.get(ghost.id).get(dir);
+		return ghostsKicking.get(ghost.id).get(ensureNotNull(dir));
 	}
 
 	@Override
@@ -231,7 +235,7 @@ public class PacManGameRendering implements RenderingWithSprites, PacManGameAnim
 
 	@Override
 	public Animation<Rectangle2D> ghostReturningHomeToDir(Ghost ghost, Direction dir) {
-		return ghostEyes.get(dir);
+		return ghostEyes.get(ensureNotNull(dir));
 	}
 
 	@Override
