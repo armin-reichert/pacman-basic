@@ -34,92 +34,84 @@ public class MsPacManGameRendering implements RenderingWithAnimatedSprites, PacM
 
 	private final GraphicsContext g;
 
-	private final Image spritesheet = new Image("/pacman/graphics/sprites.png", false);
-	private final Image mazeFull = new Image("/pacman/graphics/maze_full.png", false);
-	private final Image mazeEmpty = new Image("/pacman/graphics/maze_empty.png", false);
+	private final Image spritesheet = new Image("/mspacman/graphics/sprites.png", false);
 
 	private final Rectangle2D[] symbols;
-	private final Map<Integer, Rectangle2D> numbers;
-
+	private final Map<Integer, Rectangle2D> bonusValues;
+	private final Map<Integer, Rectangle2D> bountyValues;
 	private final Map<Direction, Animation<Rectangle2D>> pacMunching;
-	private final Animation<Rectangle2D> pacCollapsing;
+	private final Animation<Rectangle2D> pacSpinning;
 	private final List<EnumMap<Direction, Animation<Rectangle2D>>> ghostsKicking;
 	private final EnumMap<Direction, Animation<Rectangle2D>> ghostEyes;
 	private final Animation<Rectangle2D> ghostBlue;
 	private final Animation<Rectangle2D> ghostFlashing;
+	private final Animation<Integer> bonusJumps;
 
-	private final Animation<Image> mazeFlashing;
+//	private final Animation<Image> mazeFlashing;
 	private final Animation<Boolean> energizerBlinking;
 
 	private int index(Direction dir) {
 		return dir == RIGHT ? 0 : dir == LEFT ? 1 : dir == UP ? 2 : 3;
 	}
 
-	private Rectangle2D s(int col, int row) {
-		return new Rectangle2D(col, row, 1, 1);
+	private Rectangle2D r(double x, double y, int tileX, int tileY, double xTiles, double yTiles) {
+		return new Rectangle2D(x + tileX * 16, y + tileY * 16, xTiles * 16, yTiles * 16);
 	}
 
-	private Rectangle2D r(double x, double y, double width, double height) {
-		return new Rectangle2D(x, y, width, height);
-	}
-
-	private void drawRegion(Creature guy, Rectangle2D region) {
-		if (guy.visible && region != null) {
-			g.drawImage(spritesheet, region.getMinX() * 16, region.getMinY() * 16, region.getWidth() * 16,
-					region.getHeight() * 16, guy.position.x - 4, guy.position.y - 4, region.getWidth() * 16,
-					region.getWidth() * 16);
-		}
+	private Rectangle2D s(int tileX, int tileY) {
+		return r(456, 0, tileX, tileY, 1, 1);
 	}
 
 	public MsPacManGameRendering(GraphicsContext g) {
 		this.g = g;
 
-		symbols = new Rectangle2D[] { s(2, 3), s(3, 3), s(4, 3), s(5, 3), s(6, 3), s(7, 3), s(8, 3), s(9, 3) };
+		symbols = new Rectangle2D[] { s(3, 0), s(4, 0), s(5, 0), s(6, 0), s(7, 0), s(8, 0), s(9, 0) };
 
 		//@formatter:off
-		numbers = new HashMap<>();
-		numbers.put(200,  r(0, 8, 1, 1));
-		numbers.put(400,  r(1, 8, 1, 1));
-		numbers.put(800,  r(2, 8, 1, 1));
-		numbers.put(1600, r(3, 8, 1, 1));
+
+		bonusValues = new HashMap<>();
+		bonusValues.put(100,  s(3, 1));
+		bonusValues.put(200,  s( 4, 1));
+		bonusValues.put(500,  s(5, 1));
+		bonusValues.put(700,  s(6, 1));
+		bonusValues.put(1000, s(7, 1));
+		bonusValues.put(2000, s(8, 1));
+		bonusValues.put(5000, s(9, 1));
 		
-		numbers.put(100,  r(0, 9, 1, 1));
-		numbers.put(300,  r(1, 9, 1, 1));
-		numbers.put(500,  r(2, 9, 1, 1));
-		numbers.put(700,  r(3, 9, 1, 1));
-		
-		numbers.put(1000, r(4, 9, 2, 1)); // left-aligned 
-		numbers.put(2000, r(3, 10, 3, 1));
-		numbers.put(3000, r(3, 11, 3, 1));
-		numbers.put(5000, r(3, 12, 3, 1));
+		bountyValues = new HashMap<>();
+		bountyValues.put(200,  s(0, 8));
+		bountyValues.put(400,  s(1, 8));
+		bountyValues.put(800,  s(2, 8));
+		bountyValues.put(1600, s(3, 8));
 		//@formatter:on
 
 		// Animations
 
-		// TODO create flash effect
-		Image mazeEmptyBright = createBrightEffect(mazeEmpty, Color.rgb(33, 33, 255), Color.BLACK);
-		mazeFlashing = Animation.of(mazeEmptyBright, mazeEmpty).frameDuration(15);
+		energizerBlinking = Animation.pulse().frameDuration(10);
 
-		energizerBlinking = Animation.pulse().frameDuration(15);
+		// TODO create flash effect
+//		Image mazeEmptyBright = createBrightEffect(mazeEmpty, Color.rgb(33, 33, 255), Color.BLACK);
+//		mazeFlashing = Animation.of(mazeEmptyBright, mazeEmpty).frameDuration(15);
 
 		pacMunching = new EnumMap<>(Direction.class);
 		for (Direction dir : Direction.values()) {
-			Animation<Rectangle2D> animation = Animation.of(s(2, 0), s(1, index(dir)), s(0, index(dir)), s(1, index(dir)));
-			animation.frameDuration(2).endless().run();
-			pacMunching.put(dir, animation);
+			int d = index(dir);
+			Animation<Rectangle2D> munching = Animation.of(s(0, d), s(1, d), s(2, d), s(1, d));
+			munching.frameDuration(2).endless();
+			pacMunching.put(dir, munching);
 		}
 
-		pacCollapsing = Animation.of(s(3, 0), s(4, 0), s(5, 0), s(6, 0), s(7, 0), s(8, 0), s(9, 0), s(10, 0), s(11, 0),
-				s(12, 0), s(13, 0));
-		pacCollapsing.frameDuration(8);
+		pacSpinning = Animation.of(s(0, 3), s(0, 0), s(0, 1), s(0, 2));
+		pacSpinning.frameDuration(10).repetitions(2);
 
 		ghostsKicking = new ArrayList<>(4);
 		for (int id = 0; id < 4; ++id) {
 			EnumMap<Direction, Animation<Rectangle2D>> walkingTo = new EnumMap<>(Direction.class);
 			for (Direction dir : Direction.values()) {
-				Animation<Rectangle2D> animation = Animation.of(s(2 * index(dir), 4 + id), s(2 * index(dir) + 1, 4 + id));
-				animation.frameDuration(10).endless();
-				walkingTo.put(dir, animation);
+				int d = index(dir);
+				Animation<Rectangle2D> walking = Animation.of(s(2 * d, 4 + id), s(2 * d + 1, 4 + id));
+				walking.frameDuration(4).endless();
+				walkingTo.put(dir, walking);
 			}
 			ghostsKicking.add(walkingTo);
 		}
@@ -130,11 +122,12 @@ public class MsPacManGameRendering implements RenderingWithAnimatedSprites, PacM
 		}
 
 		ghostBlue = Animation.of(s(8, 4), s(9, 4));
-		ghostBlue.frameDuration(20).endless();
+		ghostBlue.frameDuration(20).endless().run();
 
 		ghostFlashing = Animation.of(s(8, 4), s(9, 4), s(10, 4), s(11, 4));
 		ghostFlashing.frameDuration(5).endless();
 
+		bonusJumps = Animation.of(0, 2, 0, -2).frameDuration(20).endless().run();
 	}
 
 	private Direction ensureNotNull(Direction dir) {
@@ -145,25 +138,45 @@ public class MsPacManGameRendering implements RenderingWithAnimatedSprites, PacM
 		return mazeEmptyDark; // TODO
 	}
 
-	public void drawFullMaze(int x, int y) {
-		g.drawImage(mazeFull, x, y);
+	@Override
+	public void drawFullMaze(int mazeNumber, int x, int y) {
+		// 226, 248
+		int index = mazeNumber - 1;
+		Rectangle2D region = new Rectangle2D(0, 248 * index, 226, 248);
+		g.drawImage(spritesheet, region.getMinX(), region.getMinY(), region.getWidth(), region.getHeight(), x, y,
+				region.getWidth(), region.getHeight());
 	}
 
+	@Override
 	public void hideTile(V2i tile) {
 		g.setFill(Color.BLACK);
 		g.fillRect(tile.x * TS, tile.y * TS, TS, TS);
 	}
 
+	private void drawRegion(Creature guy, Rectangle2D region) {
+		if (guy.visible && region != null) {
+			g.drawImage(spritesheet, region.getMinX(), region.getMinY(), region.getWidth(), region.getHeight(),
+					guy.position.x - 4, guy.position.y - 4, region.getWidth(), region.getHeight());
+		}
+	}
+
+	@Override
 	public void drawPac(Pac pac, PacManGameModel game) {
 		drawRegion(pac, pacSprite(pac, game));
 	}
 
+	@Override
 	public void drawGhost(Ghost ghost, PacManGameModel game) {
 		drawRegion(ghost, ghostSprite(ghost, game));
 	}
 
+	@Override
 	public void drawBonus(Bonus bonus, PacManGameModel game) {
+		int dy = bonusJumps.animate();
+		g.save();
+		g.translate(0, dy);
 		drawRegion(bonus, bonusSprite(bonus, game));
+		g.restore();
 	}
 
 	@Override
@@ -172,7 +185,7 @@ public class MsPacManGameRendering implements RenderingWithAnimatedSprites, PacM
 			return symbols[bonus.symbol];
 		}
 		if (bonus.eatenTicksLeft > 0) {
-			return numbers.get(bonus.points);
+			return bonusValues.get(bonus.points);
 		}
 		return null;
 	}
@@ -194,7 +207,7 @@ public class MsPacManGameRendering implements RenderingWithAnimatedSprites, PacM
 	@Override
 	public Rectangle2D ghostSprite(Ghost ghost, PacManGameModel game) {
 		if (ghost.bounty > 0) {
-			return numbers.get(ghost.bounty);
+			return bountyValues.get(ghost.bounty);
 		}
 		if (ghost.is(DEAD) || ghost.is(ENTERING_HOUSE)) {
 			return ghostReturningHomeToDir(ghost, ghost.dir).animate();
@@ -215,7 +228,7 @@ public class MsPacManGameRendering implements RenderingWithAnimatedSprites, PacM
 
 	@Override
 	public Animation<Rectangle2D> pacDying() {
-		return pacCollapsing;
+		return pacSpinning;
 	}
 
 	@Override
@@ -240,7 +253,8 @@ public class MsPacManGameRendering implements RenderingWithAnimatedSprites, PacM
 
 	@Override
 	public Animation<Image> mazeFlashing(int mazeNumber) {
-		return mazeFlashing;
+//		return mazeFlashing;
+		return Animation.of(); // TODO
 	}
 
 	@Override

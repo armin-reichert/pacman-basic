@@ -144,23 +144,28 @@ public class PacManGameRendering implements RenderingWithAnimatedSprites {
 		return mazeEmptyDark; // TODO
 	}
 
-	public void drawFullMaze(int x, int y) {
-		g.drawImage(mazeFull, x, y);
-	}
-
+	@Override
 	public void hideTile(V2i tile) {
 		g.setFill(Color.BLACK);
 		g.fillRect(tile.x * TS, tile.y * TS, TS, TS);
 	}
 
+	@Override
+	public void drawFullMaze(int mazeNumber, int x, int y) {
+		g.drawImage(mazeFull, x, y);
+	}
+
+	@Override
 	public void drawPac(Pac pac, PacManGameModel game) {
 		drawRegion(pac, pacSprite(pac, game));
 	}
 
+	@Override
 	public void drawGhost(Ghost ghost, PacManGameModel game) {
 		drawRegion(ghost, ghostSprite(ghost, game));
 	}
 
+	@Override
 	public void drawBonus(Bonus bonus, PacManGameModel game) {
 		drawRegion(bonus, bonusSprite(bonus, game));
 	}

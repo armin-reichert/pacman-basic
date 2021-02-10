@@ -43,7 +43,7 @@ public class MsPacManGamePlayScene implements PacManGameScene {
 	public void render() {
 		g.setFill(Color.BLACK);
 		g.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
-		rendering.drawFullMaze(0, t(3));
+		rendering.drawFullMaze(game.level.mazeNumber, 0, t(3));
 		game.level.world.tiles().filter(game.level::containsEatenFood).forEach(rendering::hideTile);
 		rendering.drawPac(game.pac, game);
 		game.ghosts().forEach(ghost -> rendering.drawGhost(ghost, game));
