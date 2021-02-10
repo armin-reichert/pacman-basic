@@ -21,6 +21,11 @@ import javafx.application.Platform;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
+/**
+ * JavaFX implementation of the Pac-Man game UI.
+ * 
+ * @author Armin Reichert
+ */
 public class PacManGameFXUI implements PacManGameUI {
 
 	private final Stage stage;
@@ -36,10 +41,16 @@ public class PacManGameFXUI implements PacManGameUI {
 	// Pac-Man scenes
 	private PacManGameScene pacManIntroScene;
 	private PacManGameScene pacManPlayScene;
+	private PacManGameScene pacManIntermissionScene1;
+	private PacManGameScene pacManIntermissionScene2;
+	private PacManGameScene pacManIntermissionScene3;
 
 	// Ms. Pac_an scenes
 	private PacManGameScene msPacManIntroScene;
 	private PacManGameScene msPacManPlayScene;
+	private PacManGameScene msPacManIntermissionScene1;
+	private PacManGameScene msPacManIntermissionScene2;
+	private PacManGameScene msPacManIntermissionScene3;
 
 	public PacManGameFXUI(Stage stage, PacManGameModel game, double scaling) {
 		sizeX = 28 * TS * scaling;
@@ -68,10 +79,16 @@ public class PacManGameFXUI implements PacManGameUI {
 			soundManager = new PacManGameSoundManager(PacManGameSoundAssets::getMsPacManSoundURL);
 			msPacManIntroScene = new MsPacManGameIntroScene(game, sizeX, sizeY, scaling);
 			msPacManPlayScene = new PlayScene(game, sizeX, sizeY, scaling, true);
+			msPacManIntermissionScene1 = msPacManIntroScene; // TODO
+			msPacManIntermissionScene2 = msPacManIntroScene; // TODO
+			msPacManIntermissionScene3 = msPacManIntroScene; // TODO
 		} else if (game instanceof PacManGame) {
 			soundManager = new PacManGameSoundManager(PacManGameSoundAssets::getPacManSoundURL);
 			pacManIntroScene = new PacManGameIntroScene(game, sizeX, sizeY, scaling);
 			pacManPlayScene = new PlayScene(game, sizeX, sizeY, scaling, false);
+			pacManIntermissionScene1 = pacManIntroScene; // TODO
+			pacManIntermissionScene2 = pacManIntroScene; // TODO
+			pacManIntermissionScene3 = pacManIntroScene; // TODO
 		} else {
 			log("%s: Cannot create scenes for invalid game: %s", this, game);
 		}
@@ -112,15 +129,37 @@ public class PacManGameFXUI implements PacManGameUI {
 			if (game.state == PacManGameState.INTRO) {
 				return msPacManIntroScene;
 			}
+			if (game.state == PacManGameState.INTERMISSION) {
+				if (game.intermissionNumber == 1) {
+					return msPacManIntermissionScene1;
+				}
+				if (game.intermissionNumber == 2) {
+					return msPacManIntermissionScene2;
+				}
+				if (game.intermissionNumber == 3) {
+					return msPacManIntermissionScene3;
+				}
+			}
 			return msPacManPlayScene;
 		}
 		if (game instanceof PacManGame) {
 			if (game.state == PacManGameState.INTRO) {
 				return pacManIntroScene;
 			}
+			if (game.state == PacManGameState.INTERMISSION) {
+				if (game.intermissionNumber == 1) {
+					return pacManIntermissionScene1;
+				}
+				if (game.intermissionNumber == 2) {
+					return pacManIntermissionScene2;
+				}
+				if (game.intermissionNumber == 3) {
+					return pacManIntermissionScene3;
+				}
+			}
 			return pacManPlayScene;
 		}
-		return null;
+		throw new IllegalStateException("No scene found");
 	}
 
 	@Override
