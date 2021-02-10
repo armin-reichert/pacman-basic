@@ -52,12 +52,11 @@ public class PacManGameFXUI implements PacManGameUI {
 			System.exit(0);
 		});
 		setGame(game);
-		updateScene();
-	}
-
-	@Override
-	public String toString() {
-		return getClass().getSimpleName();
+		currentScene = selectScene();
+		currentScene.start();
+		stage.setScene(currentScene.getFXScene());
+		stage.sizeToScene();
+		log("Initial scene is %s", currentScene);
 	}
 
 	@Override
@@ -65,22 +64,6 @@ public class PacManGameFXUI implements PacManGameUI {
 		this.game = game;
 		createScenes();
 		soundManager = new PacManGameSoundManager(PacManGameSoundAssets::getPacManSoundURL);
-	}
-
-	private void createScenes() {
-		if (game instanceof MsPacManGame) {
-			msPacManIntroScene = new MsPacManGameIntroScene(game, sizeX, sizeY, scaling);
-			msPacManPlayScene = new MsPacManGamePlayScene(game, sizeX, sizeY, scaling);
-		} else if (game instanceof PacManGame) {
-			pacManIntroScene = new PacManGameIntroScene(game, sizeX, sizeY, scaling);
-			pacManPlayScene = new PacManGamePlayScene(game, sizeX, sizeY, scaling);
-		} else {
-			log("%s: Cannot create scenes for invalid game: %s", this, game);
-		}
-	}
-
-	@Override
-	public void setCloseHandler(Runnable handler) {
 	}
 
 	@Override
@@ -129,10 +112,24 @@ public class PacManGameFXUI implements PacManGameUI {
 		return null;
 	}
 
+	private void createScenes() {
+		if (game instanceof MsPacManGame) {
+			msPacManIntroScene = new MsPacManGameIntroScene(game, sizeX, sizeY, scaling);
+			msPacManPlayScene = new MsPacManGamePlayScene(game, sizeX, sizeY, scaling);
+		} else if (game instanceof PacManGame) {
+			pacManIntroScene = new PacManGameIntroScene(game, sizeX, sizeY, scaling);
+			pacManPlayScene = new PacManGamePlayScene(game, sizeX, sizeY, scaling);
+		} else {
+			log("%s: Cannot create scenes for invalid game: %s", this, game);
+		}
+	}
+
+	@Override
+	public void setCloseHandler(Runnable handler) {
+	}
+
 	@Override
 	public void show() {
-		log("Initial scene is %s", currentScene);
-		log("Initial stage size is %.2g %.2g", stage.getWidth(), stage.getHeight());
 		stage.show();
 	}
 
@@ -171,5 +168,10 @@ public class PacManGameFXUI implements PacManGameUI {
 	@Override
 	public Optional<PacManGameAnimations> animations() {
 		return currentScene.animations();
+	}
+
+	@Override
+	public String toString() {
+		return getClass().getSimpleName();
 	}
 }
