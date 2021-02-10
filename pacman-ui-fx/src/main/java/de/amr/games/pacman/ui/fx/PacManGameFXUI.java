@@ -16,6 +16,7 @@ import javafx.stage.Stage;
 public class PacManGameFXUI implements PacManGameUI {
 
 	private final Stage stage;
+	private final double scaling;
 
 	private PacManGameModel game;
 	private PacManGameScene currentScene;
@@ -23,11 +24,15 @@ public class PacManGameFXUI implements PacManGameUI {
 	private PacManGamePlayScene pacManPlayScene;
 
 	public PacManGameFXUI(Stage stage, PacManGameModel game, double scaling) {
+
+		this.scaling = scaling;
 		this.stage = stage;
+
 		stage.setTitle("Pac-Man / Ms. Pac-Man");
-		stage.setOnCloseRequest(e -> Platform.exit());
-		stage.setWidth(28 * 8 * scaling);
-		stage.setHeight(36 * 8 * scaling);
+		stage.setOnCloseRequest(e -> {
+			Platform.exit();
+			System.exit(0);
+		});
 
 		setGame(game);
 	}
@@ -39,7 +44,7 @@ public class PacManGameFXUI implements PacManGameUI {
 	}
 
 	private void createScenes() {
-		pacManPlayScene = new PacManGamePlayScene(game, stage.getWidth(), stage.getHeight());
+		pacManPlayScene = new PacManGamePlayScene(game, 28 * 8 * scaling, 36 * 8 * scaling, scaling);
 	}
 
 	@Override
