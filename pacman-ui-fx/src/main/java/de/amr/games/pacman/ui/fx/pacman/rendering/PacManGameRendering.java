@@ -24,12 +24,13 @@ import de.amr.games.pacman.model.Ghost;
 import de.amr.games.pacman.model.Pac;
 import de.amr.games.pacman.model.PacManGameModel;
 import de.amr.games.pacman.ui.PacManGameAnimations;
+import de.amr.games.pacman.ui.fx.RenderingWithSprites;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
-public class Rendering implements PacManGameRenderingWithSprites, PacManGameAnimations {
+public class PacManGameRendering implements RenderingWithSprites, PacManGameAnimations {
 
 	private final GraphicsContext g;
 
@@ -70,7 +71,7 @@ public class Rendering implements PacManGameRenderingWithSprites, PacManGameAnim
 		}
 	}
 
-	public Rendering(GraphicsContext g) {
+	public PacManGameRendering(GraphicsContext g) {
 		this.g = g;
 
 		symbols = new Rectangle2D[] { s(2, 3), s(3, 3), s(4, 3), s(5, 3), s(6, 3), s(7, 3), s(8, 3), s(9, 3) };

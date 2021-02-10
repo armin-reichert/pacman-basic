@@ -5,7 +5,7 @@ import static de.amr.games.pacman.world.PacManGameWorld.t;
 import de.amr.games.pacman.model.PacManGameModel;
 import de.amr.games.pacman.ui.fx.PacManGameScene;
 import de.amr.games.pacman.ui.fx.input.Keyboard;
-import de.amr.games.pacman.ui.fx.pacman.rendering.Rendering;
+import de.amr.games.pacman.ui.fx.pacman.rendering.PacManGameRendering;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -19,7 +19,7 @@ public class PacManGamePlayScene implements PacManGameScene {
 	private final PacManGameModel game;
 	private final Canvas canvas;
 	private final GraphicsContext g;
-	private final Rendering rendering;
+	private final PacManGameRendering rendering;
 
 	public PacManGamePlayScene(PacManGameModel game, double width, double height, double scaling) {
 		this.game = game;
@@ -30,11 +30,11 @@ public class PacManGamePlayScene implements PacManGameScene {
 		pane.getChildren().add(canvas);
 		scene = new Scene(pane, width, height);
 		keyboard = new Keyboard(scene);
-		rendering = new Rendering(g);
+		rendering = new PacManGameRendering(g);
 	}
 
 	@Override
-	public Rendering rendering() {
+	public PacManGameRendering rendering() {
 		return rendering;
 	}
 

@@ -1,4 +1,4 @@
-package de.amr.games.pacman.ui.fx.pacman.rendering;
+package de.amr.games.pacman.ui.fx;
 
 import de.amr.games.pacman.model.Bonus;
 import de.amr.games.pacman.model.Ghost;
@@ -6,7 +6,7 @@ import de.amr.games.pacman.model.Pac;
 import de.amr.games.pacman.model.PacManGameModel;
 import javafx.geometry.Rectangle2D;
 
-public interface PacManGameRenderingWithSprites {
+public interface RenderingWithSprites {
 
 	Rectangle2D bonusSprite(Bonus bonus, PacManGameModel game);
 
