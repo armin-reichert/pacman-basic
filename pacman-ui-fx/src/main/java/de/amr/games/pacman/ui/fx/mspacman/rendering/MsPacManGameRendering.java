@@ -269,9 +269,8 @@ public class MsPacManGameRendering implements RenderingWithAnimatedSprites, PacM
 
 	@Override
 	public void drawBonus(Bonus bonus, PacManGameModel game) {
-		int dy = bonusJumps.animate();
 		g.save();
-		g.translate(0, dy);
+		g.translate(0, bonusJumps.animate());
 		drawRegion(bonus, bonusSprite(bonus, game));
 		g.restore();
 	}
