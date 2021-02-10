@@ -4,14 +4,18 @@ import static de.amr.games.pacman.lib.Logging.log;
 
 import java.util.Optional;
 
+import de.amr.games.pacman.controller.PacManGameState;
 import de.amr.games.pacman.model.MsPacManGame;
+import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.PacManGameModel;
 import de.amr.games.pacman.sound.PacManGameSoundAssets;
 import de.amr.games.pacman.sound.PacManGameSoundManager;
 import de.amr.games.pacman.sound.SoundManager;
 import de.amr.games.pacman.ui.PacManGameAnimations;
 import de.amr.games.pacman.ui.PacManGameUI;
+import de.amr.games.pacman.ui.fx.mspacman.scene.MsPacManGameIntroScene;
 import de.amr.games.pacman.ui.fx.mspacman.scene.MsPacManGamePlayScene;
+import de.amr.games.pacman.ui.fx.pacman.scene.PacManGameIntroScene;
 import de.amr.games.pacman.ui.fx.pacman.scene.PacManGamePlayScene;
 import javafx.application.Platform;
 import javafx.stage.Stage;
@@ -27,8 +31,13 @@ public class PacManGameFXUI implements PacManGameUI {
 
 	private PacManGameScene currentScene;
 
-	private PacManGamePlayScene pacManPlayScene;
-	private MsPacManGamePlayScene msPacManPlayScene;
+	// Pac-Man scenes
+	private PacManGameScene pacManIntroScene;
+	private PacManGameScene pacManPlayScene;
+
+	// Ms. Pac_an scenes
+	private PacManGameScene msPacManIntroScene;
+	private PacManGameScene msPacManPlayScene;
 
 	public PacManGameFXUI(Stage stage, PacManGameModel game, double scaling) {
 
@@ -45,15 +54,27 @@ public class PacManGameFXUI implements PacManGameUI {
 	}
 
 	@Override
+	public String toString() {
+		return getClass().getSimpleName();
+	}
+
+	@Override
 	public void setGame(PacManGameModel game) {
 		this.game = game;
-		createScenes();
+		createScenes(game);
 		soundManager = new PacManGameSoundManager(PacManGameSoundAssets::getPacManSoundURL);
 	}
 
-	private void createScenes() {
-		pacManPlayScene = new PacManGamePlayScene(game, 28 * 8 * scaling, 36 * 8 * scaling, scaling);
-		msPacManPlayScene = new MsPacManGamePlayScene(game, 28 * 8 * scaling, 36 * 8 * scaling, scaling);
+	private void createScenes(PacManGameModel game) {
+		if (game instanceof MsPacManGame) {
+			msPacManIntroScene = new MsPacManGameIntroScene(game, 28 * 8 * scaling, 36 * 8 * scaling, scaling);
+			msPacManPlayScene = new MsPacManGamePlayScene(game, 28 * 8 * scaling, 36 * 8 * scaling, scaling);
+		} else if (game instanceof PacManGame) {
+			pacManIntroScene = new PacManGameIntroScene(game, 28 * 8 * scaling, 36 * 8 * scaling, scaling);
+			pacManPlayScene = new PacManGamePlayScene(game, 28 * 8 * scaling, 36 * 8 * scaling, scaling);
+		} else {
+			log("%s: Cannot create scenes for invalid game: %s", this, game);
+		}
 	}
 
 	@Override
@@ -62,13 +83,23 @@ public class PacManGameFXUI implements PacManGameUI {
 
 	@Override
 	public void updateScene() {
+		if (game == null) {
+			log("%s: No game?", this);
+			return;
+		}
 		Platform.runLater(() -> {
 			PacManGameScene scene = selectScene();
+			if (scene == null) {
+				log("%s: No scene matches current game state %s", this, game.state);
+				return;
+			}
 			if (currentScene != scene) {
 				if (currentScene != null) {
 					currentScene.end();
 					log("%s: Current scene changed from %s to %s", this, currentScene.getClass().getSimpleName(),
 							scene.getClass().getSimpleName());
+				} else {
+					log("%s: Scene changed to %s", this, scene.getClass().getSimpleName());
 				}
 				currentScene = scene;
 				stage.setScene(currentScene.getFXScene());
@@ -80,10 +111,18 @@ public class PacManGameFXUI implements PacManGameUI {
 
 	private PacManGameScene selectScene() {
 		if (game instanceof MsPacManGame) {
+			if (game.state == PacManGameState.INTRO) {
+				return msPacManIntroScene;
+			}
 			return msPacManPlayScene;
-		} else {
+		}
+		if (game instanceof PacManGame) {
+			if (game.state == PacManGameState.INTRO) {
+				return pacManIntroScene;
+			}
 			return pacManPlayScene;
 		}
+		return null;
 	}
 
 	@Override
