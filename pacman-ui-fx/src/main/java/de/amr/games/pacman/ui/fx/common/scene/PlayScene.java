@@ -1,4 +1,4 @@
-package de.amr.games.pacman.ui.fx.pacman.scene;
+package de.amr.games.pacman.ui.fx.common.scene;
 
 import static de.amr.games.pacman.world.PacManGameWorld.t;
 
@@ -9,6 +9,7 @@ import de.amr.games.pacman.ui.PacManGameAnimations;
 import de.amr.games.pacman.ui.fx.PacManGameScene;
 import de.amr.games.pacman.ui.fx.RenderingWithAnimatedSprites;
 import de.amr.games.pacman.ui.fx.input.Keyboard;
+import de.amr.games.pacman.ui.fx.mspacman.rendering.MsPacManGameRendering;
 import de.amr.games.pacman.ui.fx.pacman.rendering.PacManGameRendering;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -16,7 +17,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 
-public class PacManGamePlayScene implements PacManGameScene {
+public class PlayScene implements PacManGameScene {
 
 	private final Scene scene;
 	private final Keyboard keyboard;
@@ -25,7 +26,7 @@ public class PacManGamePlayScene implements PacManGameScene {
 	private final GraphicsContext g;
 	private final RenderingWithAnimatedSprites rendering;
 
-	public PacManGamePlayScene(PacManGameModel game, double width, double height, double scaling) {
+	public PlayScene(PacManGameModel game, double width, double height, double scaling, boolean msPacMan) {
 		this.game = game;
 		canvas = new Canvas(width, height);
 		g = canvas.getGraphicsContext2D();
@@ -34,12 +35,7 @@ public class PacManGamePlayScene implements PacManGameScene {
 		pane.getChildren().add(canvas);
 		scene = new Scene(pane, width, height);
 		keyboard = new Keyboard(scene);
-		rendering = new PacManGameRendering(g);
-	}
-
-	@Override
-	public Optional<PacManGameAnimations> animations() {
-		return rendering instanceof PacManGameAnimations ? Optional.of(rendering) : Optional.empty();
+		this.rendering = msPacMan ? new MsPacManGameRendering(g) : new PacManGameRendering(g);
 	}
 
 	@Override
@@ -58,6 +54,11 @@ public class PacManGamePlayScene implements PacManGameScene {
 		rendering.drawPac(game.pac, game);
 		game.ghosts().forEach(ghost -> rendering.drawGhost(ghost, game));
 		rendering.drawBonus(game.bonus, game);
+	}
+
+	@Override
+	public Optional<PacManGameAnimations> animations() {
+		return rendering instanceof PacManGameAnimations ? Optional.of(rendering) : Optional.empty();
 	}
 
 	@Override

@@ -14,10 +14,9 @@ import de.amr.games.pacman.sound.PacManGameSoundManager;
 import de.amr.games.pacman.sound.SoundManager;
 import de.amr.games.pacman.ui.PacManGameAnimations;
 import de.amr.games.pacman.ui.PacManGameUI;
+import de.amr.games.pacman.ui.fx.common.scene.PlayScene;
 import de.amr.games.pacman.ui.fx.mspacman.scene.MsPacManGameIntroScene;
-import de.amr.games.pacman.ui.fx.mspacman.scene.MsPacManGamePlayScene;
 import de.amr.games.pacman.ui.fx.pacman.scene.PacManGameIntroScene;
-import de.amr.games.pacman.ui.fx.pacman.scene.PacManGamePlayScene;
 import javafx.application.Platform;
 import javafx.stage.Stage;
 
@@ -51,6 +50,7 @@ public class PacManGameFXUI implements PacManGameUI {
 			Platform.exit();
 			System.exit(0);
 		});
+
 		setGame(game);
 		currentScene = selectScene();
 		currentScene.start();
@@ -62,8 +62,17 @@ public class PacManGameFXUI implements PacManGameUI {
 	@Override
 	public void setGame(PacManGameModel game) {
 		this.game = game;
-		createScenes();
-		soundManager = new PacManGameSoundManager(PacManGameSoundAssets::getPacManSoundURL);
+		if (game instanceof MsPacManGame) {
+			soundManager = new PacManGameSoundManager(PacManGameSoundAssets::getMsPacManSoundURL);
+			msPacManIntroScene = new MsPacManGameIntroScene(game, sizeX, sizeY, scaling);
+			msPacManPlayScene = new PlayScene(game, sizeX, sizeY, scaling, true);
+		} else if (game instanceof PacManGame) {
+			soundManager = new PacManGameSoundManager(PacManGameSoundAssets::getPacManSoundURL);
+			pacManIntroScene = new PacManGameIntroScene(game, sizeX, sizeY, scaling);
+			pacManPlayScene = new PlayScene(game, sizeX, sizeY, scaling, false);
+		} else {
+			log("%s: Cannot create scenes for invalid game: %s", this, game);
+		}
 	}
 
 	@Override
@@ -110,18 +119,6 @@ public class PacManGameFXUI implements PacManGameUI {
 			return pacManPlayScene;
 		}
 		return null;
-	}
-
-	private void createScenes() {
-		if (game instanceof MsPacManGame) {
-			msPacManIntroScene = new MsPacManGameIntroScene(game, sizeX, sizeY, scaling);
-			msPacManPlayScene = new MsPacManGamePlayScene(game, sizeX, sizeY, scaling);
-		} else if (game instanceof PacManGame) {
-			pacManIntroScene = new PacManGameIntroScene(game, sizeX, sizeY, scaling);
-			pacManPlayScene = new PacManGamePlayScene(game, sizeX, sizeY, scaling);
-		} else {
-			log("%s: Cannot create scenes for invalid game: %s", this, game);
-		}
 	}
 
 	@Override
