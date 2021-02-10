@@ -46,6 +46,7 @@ public class PacManGamePlayScene implements PacManGameScene {
 		game.level.world.tiles().filter(game.level::containsEatenFood).forEach(rendering::hideTile);
 		rendering.drawPac(game.pac, game);
 		game.ghosts().forEach(ghost -> rendering.drawGhost(ghost, game));
+		rendering.drawBonus(game.bonus, game);
 	}
 
 	@Override

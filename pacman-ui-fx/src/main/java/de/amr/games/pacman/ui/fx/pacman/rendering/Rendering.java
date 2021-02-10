@@ -63,7 +63,7 @@ public class Rendering implements PacManGameRenderingWithSprites, PacManGameAnim
 	}
 
 	private void drawRegion(Creature guy, Rectangle2D region) {
-		if (guy.visible) {
+		if (guy.visible && region != null) {
 			g.drawImage(spritesheet, region.getMinX() * 16, region.getMinY() * 16, region.getWidth() * 16,
 					region.getHeight() * 16, guy.position.x - 4, guy.position.y - 4, region.getWidth() * 16,
 					region.getWidth() * 16);
@@ -155,6 +155,10 @@ public class Rendering implements PacManGameRenderingWithSprites, PacManGameAnim
 
 	public void drawGhost(Ghost ghost, PacManGameModel game) {
 		drawRegion(ghost, ghostSprite(ghost, game));
+	}
+
+	public void drawBonus(Bonus bonus, PacManGameModel game) {
+		drawRegion(bonus, bonusSprite(bonus, game));
 	}
 
 	@Override
