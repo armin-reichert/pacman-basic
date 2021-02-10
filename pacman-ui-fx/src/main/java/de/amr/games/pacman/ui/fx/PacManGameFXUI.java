@@ -1,6 +1,6 @@
 package de.amr.games.pacman.ui.fx;
 
-import static de.amr.games.pacman.world.PacManGameWorld.TS;
+import static de.amr.games.pacman.lib.Logging.log;
 
 import java.util.Optional;
 
@@ -8,49 +8,38 @@ import de.amr.games.pacman.model.PacManGameModel;
 import de.amr.games.pacman.sound.SoundManager;
 import de.amr.games.pacman.ui.PacManGameAnimations;
 import de.amr.games.pacman.ui.PacManGameUI;
-import de.amr.games.pacman.ui.fx.input.Keyboard;
-import javafx.scene.Scene;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
+import de.amr.games.pacman.ui.fx.pacman.scene.PacManGamePlayScene;
+import de.amr.games.pacman.ui.fx.pacman.scene.PacManGameScene;
+import javafx.application.Platform;
 import javafx.stage.Stage;
 
 public class PacManGameFXUI implements PacManGameUI {
 
 	private final Stage stage;
-	private final Keyboard keyboard;
 
 	private PacManGameModel game;
-	private Scene scene;
-	private Text text;
+	private PacManGameScene currentScene;
 
-	public PacManGameFXUI(Stage stage, PacManGameModel game, int scaling) {
+	private PacManGamePlayScene pacManPlayScene;
+
+	public PacManGameFXUI(Stage stage, PacManGameModel game, double scaling) {
 		this.stage = stage;
-		this.game = game;
-		scene = createPlayScene(scaling);
-		stage.setScene(scene);
 		stage.setTitle("Pac-Man / Ms. Pac-Man");
-		stage.setOnCloseRequest(e -> {
-			System.exit(0);
-		});
-		keyboard = new Keyboard(scene);
-	}
+		stage.setOnCloseRequest(e -> Platform.exit());
+		stage.setWidth(28 * 8 * scaling);
+		stage.setHeight(36 * 8 * scaling);
 
-	private Scene createPlayScene(float scaling) {
-		Pane pane = new StackPane();
-		text = new Text("Hello, JavaFX!");
-		text.setFont(Font.font("Serif", 20));
-		text.setStroke(Color.BLACK);
-		pane.getChildren().add(text);
-		Scene playScene = new Scene(pane, 28 * TS * scaling, 36 * TS * scaling);
-		return playScene;
+		setGame(game);
 	}
 
 	@Override
 	public void setGame(PacManGameModel game) {
 		this.game = game;
+		createScenes();
+	}
+
+	private void createScenes() {
+		pacManPlayScene = new PacManGamePlayScene(game, stage.getWidth(), stage.getHeight());
 	}
 
 	@Override
@@ -59,7 +48,24 @@ public class PacManGameFXUI implements PacManGameUI {
 
 	@Override
 	public void updateScene() {
-		text.setText(game.state != null ? game.stateDescription() : "no state");
+		Platform.runLater(() -> {
+			PacManGameScene scene = selectScene();
+			if (currentScene != scene) {
+				if (currentScene != null) {
+					currentScene.end();
+					log("%s: Current scene changed from %s to %s", this, currentScene.getClass().getSimpleName(),
+							scene.getClass().getSimpleName());
+				}
+				currentScene = scene;
+				stage.setScene(currentScene.getFXScene());
+				currentScene.start();
+				currentScene.update();
+			}
+		});
+	}
+
+	private PacManGameScene selectScene() {
+		return pacManPlayScene;
 	}
 
 	@Override
@@ -69,6 +75,9 @@ public class PacManGameFXUI implements PacManGameUI {
 
 	@Override
 	public void render() {
+		if (currentScene != null) {
+			Platform.runLater(currentScene::render);
+		}
 	}
 
 	@Override
@@ -77,9 +86,13 @@ public class PacManGameFXUI implements PacManGameUI {
 
 	@Override
 	public boolean keyPressed(String keySpec) {
-		boolean pressed = keyboard.keyPressed(keySpec);
-		keyboard.clearKey(keySpec); // TODO
-		return pressed;
+		if (currentScene != null) {
+			boolean pressed = currentScene.keyboard().keyPressed(keySpec);
+			currentScene.keyboard().clearKey(keySpec); // TODO
+			return pressed;
+		} else {
+			return false;
+		}
 	}
 
 	@Override
