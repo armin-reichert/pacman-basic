@@ -42,20 +42,14 @@ public class MsPacManGameIntroScene implements PacManGameScene {
 
 	@Override
 	public void start() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void end() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void update() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override

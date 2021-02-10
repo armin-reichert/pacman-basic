@@ -1,6 +1,7 @@
 package de.amr.games.pacman.ui.fx;
 
 import static de.amr.games.pacman.lib.Logging.log;
+import static de.amr.games.pacman.world.PacManGameWorld.TS;
 
 import java.util.Optional;
 
@@ -24,6 +25,7 @@ public class PacManGameFXUI implements PacManGameUI {
 
 	private final Stage stage;
 	private final double scaling;
+	private final double sizeX, sizeY;
 
 	private PacManGameModel game;
 
@@ -40,17 +42,17 @@ public class PacManGameFXUI implements PacManGameUI {
 	private PacManGameScene msPacManPlayScene;
 
 	public PacManGameFXUI(Stage stage, PacManGameModel game, double scaling) {
-
+		sizeX = 28 * TS * scaling;
+		sizeY = 36 * TS * scaling;
 		this.scaling = scaling;
 		this.stage = stage;
-
-		stage.setTitle("Pac-Man / Ms. Pac-Man");
+		stage.setTitle("JavaFX: Pac-Man / Ms. Pac-Man");
 		stage.setOnCloseRequest(e -> {
 			Platform.exit();
 			System.exit(0);
 		});
-
 		setGame(game);
+		updateScene();
 	}
 
 	@Override
@@ -61,17 +63,17 @@ public class PacManGameFXUI implements PacManGameUI {
 	@Override
 	public void setGame(PacManGameModel game) {
 		this.game = game;
-		createScenes(game);
+		createScenes();
 		soundManager = new PacManGameSoundManager(PacManGameSoundAssets::getPacManSoundURL);
 	}
 
-	private void createScenes(PacManGameModel game) {
+	private void createScenes() {
 		if (game instanceof MsPacManGame) {
-			msPacManIntroScene = new MsPacManGameIntroScene(game, 28 * 8 * scaling, 36 * 8 * scaling, scaling);
-			msPacManPlayScene = new MsPacManGamePlayScene(game, 28 * 8 * scaling, 36 * 8 * scaling, scaling);
+			msPacManIntroScene = new MsPacManGameIntroScene(game, sizeX, sizeY, scaling);
+			msPacManPlayScene = new MsPacManGamePlayScene(game, sizeX, sizeY, scaling);
 		} else if (game instanceof PacManGame) {
-			pacManIntroScene = new PacManGameIntroScene(game, 28 * 8 * scaling, 36 * 8 * scaling, scaling);
-			pacManPlayScene = new PacManGamePlayScene(game, 28 * 8 * scaling, 36 * 8 * scaling, scaling);
+			pacManIntroScene = new PacManGameIntroScene(game, sizeX, sizeY, scaling);
+			pacManPlayScene = new PacManGamePlayScene(game, sizeX, sizeY, scaling);
 		} else {
 			log("%s: Cannot create scenes for invalid game: %s", this, game);
 		}
@@ -87,26 +89,28 @@ public class PacManGameFXUI implements PacManGameUI {
 			log("%s: No game?", this);
 			return;
 		}
-		Platform.runLater(() -> {
-			PacManGameScene scene = selectScene();
-			if (scene == null) {
-				log("%s: No scene matches current game state %s", this, game.state);
-				return;
+		PacManGameScene scene = selectScene();
+		if (scene == null) {
+			log("%s: No scene matches current game state %s", this, game.state);
+			return;
+		}
+		if (currentScene != scene) {
+			if (currentScene != null) {
+				currentScene.end();
+				log("%s: Scene changed from %s to %s", this, currentScene.getClass().getSimpleName(),
+						scene.getClass().getSimpleName());
+			} else {
+				log("%s: Scene changed to %s", this, scene.getClass().getSimpleName());
 			}
-			if (currentScene != scene) {
-				if (currentScene != null) {
-					currentScene.end();
-					log("%s: Current scene changed from %s to %s", this, currentScene.getClass().getSimpleName(),
-							scene.getClass().getSimpleName());
-				} else {
-					log("%s: Scene changed to %s", this, scene.getClass().getSimpleName());
-				}
-				currentScene = scene;
+			currentScene = scene;
+			currentScene.start();
+			currentScene.update();
+		}
+		if (currentScene != null) {
+			Platform.runLater(() -> {
 				stage.setScene(currentScene.getFXScene());
-				currentScene.start();
-				currentScene.update();
-			}
-		});
+			});
+		}
 	}
 
 	private PacManGameScene selectScene() {
@@ -127,6 +131,8 @@ public class PacManGameFXUI implements PacManGameUI {
 
 	@Override
 	public void show() {
+		log("Initial scene is %s", currentScene);
+		log("Initial stage size is %.2g %.2g", stage.getWidth(), stage.getHeight());
 		stage.show();
 	}
 
