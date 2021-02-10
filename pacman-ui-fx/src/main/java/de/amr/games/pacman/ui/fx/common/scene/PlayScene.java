@@ -57,7 +57,7 @@ public class PlayScene implements PacManGameScene {
 		rendering.drawScore(game);
 		if (!game.attractMode) {
 			rendering.drawLivesCounter(game, t(2), t(34));
-			rendering.drawLevelCounter(game, t(game.level.world.xTiles() - 4), t(34));
+			rendering.drawLevelCounter(game, t(25), t(34));
 		}
 	}
 

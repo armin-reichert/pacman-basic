@@ -75,7 +75,7 @@ public class MsPacManGameRendering implements RenderingWithAnimatedSprites, PacM
 
 		bonusValues = new HashMap<>();
 		bonusValues.put(100,  s(3, 1));
-		bonusValues.put(200,  s( 4, 1));
+		bonusValues.put(200,  s(4, 1));
 		bonusValues.put(500,  s(5, 1));
 		bonusValues.put(700,  s(6, 1));
 		bonusValues.put(1000, s(7, 1));
@@ -219,9 +219,14 @@ public class MsPacManGameRendering implements RenderingWithAnimatedSprites, PacM
 	}
 
 	@Override
-	public void drawLevelCounter(PacManGameModel game, int x, int y) {
-		// TODO Auto-generated method stub
-
+	public void drawLevelCounter(PacManGameModel game, int rightX, int y) {
+		int x = rightX;
+		int firstLevel = Math.max(1, game.currentLevelNumber - 6);
+		for (int level = firstLevel; level <= game.currentLevelNumber; ++level) {
+			Rectangle2D region = symbols[game.levelSymbols.get(level - 1)];
+			g.drawImage(spritesheet, region.getMinX(), region.getMinY(), 16, 16, x, y, 16, 16);
+			x -= t(2);
+		}
 	}
 
 	@Override

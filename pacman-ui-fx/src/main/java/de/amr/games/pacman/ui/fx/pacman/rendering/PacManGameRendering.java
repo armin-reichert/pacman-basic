@@ -163,7 +163,14 @@ public class PacManGameRendering implements RenderingWithAnimatedSprites {
 	}
 
 	@Override
-	public void drawLevelCounter(PacManGameModel game, int x, int y) {
+	public void drawLevelCounter(PacManGameModel game, int rightX, int y) {
+		int x = rightX;
+		int firstLevel = Math.max(1, game.currentLevelNumber - 6);
+		for (int level = firstLevel; level <= game.currentLevelNumber; ++level) {
+			Rectangle2D region = symbols[game.levelSymbols.get(level - 1)];
+			g.drawImage(spritesheet, region.getMinX() * 16, region.getMinY() * 16, 16, 16, x, y, 16, 16);
+			x -= t(2);
+		}
 	}
 
 	@Override
@@ -172,8 +179,7 @@ public class PacManGameRendering implements RenderingWithAnimatedSprites {
 		int livesDisplayed = game.started ? game.lives - 1 : game.lives;
 		Rectangle2D region = s(8, 1);
 		for (int i = 0; i < Math.min(livesDisplayed, maxLivesDisplayed); ++i) {
-			g.drawImage(spritesheet, region.getMinX() * 16, region.getMinY() * 16, region.getWidth() * 16,
-					region.getHeight() * 16, x + t(2 * i), y, region.getWidth() * 16, region.getHeight() * 16);
+			g.drawImage(spritesheet, region.getMinX() * 16, region.getMinY() * 16, 16, 16, x + t(2 * i), y, 16, 16);
 		}
 	}
 
