@@ -1,4 +1,4 @@
-package de.amr.games.pacman.ui.swing.sound;
+package de.amr.games.pacman.sound;
 
 import java.io.BufferedInputStream;
 import java.net.URL;
@@ -9,9 +9,6 @@ import java.util.function.Function;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
-
-import de.amr.games.pacman.sound.PacManGameSound;
-import de.amr.games.pacman.sound.SoundManager;
 
 /**
  * Sound manager for Pac-Man game.
