@@ -1,7 +1,6 @@
 package de.amr.games.pacman.ui.fx;
 
 import de.amr.games.pacman.ui.fx.input.Keyboard;
-import de.amr.games.pacman.ui.fx.pacman.rendering.PacManGameRendering;
 import javafx.scene.Scene;
 
 public interface PacManGameScene {
@@ -18,6 +17,6 @@ public interface PacManGameScene {
 
 	Keyboard keyboard();
 
-	PacManGameRendering rendering();
+	RenderingWithAnimatedSprites rendering();
 
 }

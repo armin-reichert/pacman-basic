@@ -1,4 +1,4 @@
-package de.amr.games.pacman.ui.fx.pacman.rendering;
+package de.amr.games.pacman.ui.fx.mspacman.rendering;
 
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
@@ -23,13 +23,14 @@ import de.amr.games.pacman.model.Creature;
 import de.amr.games.pacman.model.Ghost;
 import de.amr.games.pacman.model.Pac;
 import de.amr.games.pacman.model.PacManGameModel;
+import de.amr.games.pacman.ui.PacManGameAnimations;
 import de.amr.games.pacman.ui.fx.RenderingWithAnimatedSprites;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 
-public class PacManGameRendering implements RenderingWithAnimatedSprites {
+public class MsPacManGameRendering implements RenderingWithAnimatedSprites, PacManGameAnimations {
 
 	private final GraphicsContext g;
 
@@ -70,7 +71,7 @@ public class PacManGameRendering implements RenderingWithAnimatedSprites {
 		}
 	}
 
-	public PacManGameRendering(GraphicsContext g) {
+	public MsPacManGameRendering(GraphicsContext g) {
 		this.g = g;
 
 		symbols = new Rectangle2D[] { s(2, 3), s(3, 3), s(4, 3), s(5, 3), s(6, 3), s(7, 3), s(8, 3), s(9, 3) };
