@@ -37,7 +37,7 @@ public class Rendering implements PacManGameRenderingWithSprites, PacManGameAnim
 	private final Image mazeFull = new Image("/pacman/graphics/maze_full.png", false);
 	private final Image mazeEmpty = new Image("/pacman/graphics/maze_empty.png", false);
 
-	private final Rectangle2D[] symbolSpriteRegion;
+	private final Rectangle2D[] symbols;
 	private final Map<Integer, Rectangle2D> numbers;
 
 	private final Map<Direction, Animation<Rectangle2D>> pacMunching;
@@ -73,7 +73,7 @@ public class Rendering implements PacManGameRenderingWithSprites, PacManGameAnim
 	public Rendering(GraphicsContext g) {
 		this.g = g;
 
-		symbolSpriteRegion = new Rectangle2D[] { s(2, 3), s(3, 3), s(4, 3), s(5, 3), s(6, 3), s(7, 3), s(8, 3), s(9, 3) };
+		symbols = new Rectangle2D[] { s(2, 3), s(3, 3), s(4, 3), s(5, 3), s(6, 3), s(7, 3), s(8, 3), s(9, 3) };
 
 		//@formatter:off
 		numbers = new HashMap<>();
@@ -164,7 +164,7 @@ public class Rendering implements PacManGameRenderingWithSprites, PacManGameAnim
 	@Override
 	public Rectangle2D bonusSprite(Bonus bonus, PacManGameModel game) {
 		if (bonus.edibleTicksLeft > 0) {
-			return symbolSpriteRegion[bonus.symbol];
+			return symbols[bonus.symbol];
 		}
 		if (bonus.eatenTicksLeft > 0) {
 			return numbers.get(bonus.points);
