@@ -18,6 +18,8 @@ import de.amr.games.pacman.ui.fx.scene.common.PacManGameScene;
 import de.amr.games.pacman.ui.fx.scene.common.PlayScene;
 import de.amr.games.pacman.ui.fx.scene.mspacman.MsPacManGameIntroScene;
 import de.amr.games.pacman.ui.fx.scene.pacman.PacManGameIntermissionScene1;
+import de.amr.games.pacman.ui.fx.scene.pacman.PacManGameIntermissionScene2;
+import de.amr.games.pacman.ui.fx.scene.pacman.PacManGameIntermissionScene3;
 import de.amr.games.pacman.ui.fx.scene.pacman.PacManGameIntroScene;
 import javafx.application.Platform;
 import javafx.scene.image.Image;
@@ -89,8 +91,8 @@ public class PacManGameFXUI implements PacManGameUI {
 			pacManIntroScene = new PacManGameIntroScene(game, sizeX, sizeY, scaling);
 			pacManPlayScene = new PlayScene(game, sizeX, sizeY, scaling, false);
 			pacManIntermissionScene1 = new PacManGameIntermissionScene1(game, soundManager, sizeX, sizeY, scaling);
-			pacManIntermissionScene2 = pacManIntroScene; // TODO
-			pacManIntermissionScene3 = pacManIntroScene; // TODO
+			pacManIntermissionScene2 = new PacManGameIntermissionScene2(game, soundManager, sizeX, sizeY, scaling);
+			pacManIntermissionScene3 = new PacManGameIntermissionScene3(game, soundManager, sizeX, sizeY, scaling);
 		} else {
 			log("%s: Cannot create scenes for invalid game: %s", this, game);
 		}
