@@ -1,5 +1,6 @@
 package de.amr.games.pacman.ui.fx.scene.pacman;
 
+import de.amr.games.pacman.heaven.God;
 import de.amr.games.pacman.model.PacManGameModel;
 import de.amr.games.pacman.ui.fx.scene.common.AbstractPacManGameScene;
 import javafx.scene.paint.Color;
@@ -13,5 +14,12 @@ public class PacManGameIntroScene extends AbstractPacManGameScene {
 	@Override
 	public void render() {
 		fill(Color.BLUE);
+	}
+
+	@Override
+	public void update() {
+		if (game.state.ticksRun() == God.clock.sec(5)) {
+			game.attractMode = true;
+		}
 	}
 }

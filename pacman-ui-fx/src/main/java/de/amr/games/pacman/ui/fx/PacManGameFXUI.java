@@ -38,6 +38,8 @@ public class PacManGameFXUI implements PacManGameUI {
 
 	private PacManGameModel game;
 
+	private final SoundManager pacManSoundManager;
+	private final SoundManager msPacManSoundManager;
 	private SoundManager soundManager;
 
 	private PacManGameScene currentScene;
@@ -68,6 +70,9 @@ public class PacManGameFXUI implements PacManGameUI {
 			System.exit(0);
 		});
 
+		pacManSoundManager = new PacManGameSoundManager(PacManGameSoundAssets::getPacManSoundURL);
+		msPacManSoundManager = new PacManGameSoundManager(PacManGameSoundAssets::getMsPacManSoundURL);
+
 		setGame(game);
 		currentScene = selectScene();
 		currentScene.start();
@@ -80,14 +85,14 @@ public class PacManGameFXUI implements PacManGameUI {
 	public void setGame(PacManGameModel game) {
 		this.game = game;
 		if (game instanceof MsPacManGame) {
-			soundManager = new PacManGameSoundManager(PacManGameSoundAssets::getMsPacManSoundURL);
+			soundManager = msPacManSoundManager;
 			msPacManIntroScene = new MsPacManGameIntroScene(game, sizeX, sizeY, scaling);
 			msPacManPlayScene = new PlayScene(game, sizeX, sizeY, scaling, true);
 			msPacManIntermissionScene1 = msPacManIntroScene; // TODO
 			msPacManIntermissionScene2 = msPacManIntroScene; // TODO
 			msPacManIntermissionScene3 = msPacManIntroScene; // TODO
 		} else if (game instanceof PacManGame) {
-			soundManager = new PacManGameSoundManager(PacManGameSoundAssets::getPacManSoundURL);
+			soundManager = pacManSoundManager;
 			pacManIntroScene = new PacManGameIntroScene(game, sizeX, sizeY, scaling);
 			pacManPlayScene = new PlayScene(game, sizeX, sizeY, scaling, false);
 			pacManIntermissionScene1 = new PacManGameIntermissionScene1(game, soundManager, sizeX, sizeY, scaling);
@@ -188,7 +193,7 @@ public class PacManGameFXUI implements PacManGameUI {
 
 	@Override
 	public void mute(boolean muted) {
-		// TODO
+		soundManager = muted ? null : game instanceof PacManGame ? pacManSoundManager : msPacManSoundManager;
 	}
 
 	@Override
