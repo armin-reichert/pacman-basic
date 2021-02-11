@@ -29,6 +29,7 @@ public class MsPacManGameIntroScene extends AbstractPacManGameScene {
 	private final V2i frameTopLeftTile = new V2i(6, 8);
 	private final int belowFrame = t(17);
 	private final int leftOfFrame = t(4);
+	private final Animation<Boolean> blinking = Animation.pulse().frameDuration(30).restart();
 
 	public MsPacManGameIntroScene(PacManGameModel game, double width, double height, double scaling) {
 		super(game, null, width, height, scaling, true);
@@ -58,7 +59,7 @@ public class MsPacManGameIntroScene extends AbstractPacManGameScene {
 		pac.dead = false;
 		pac.dir = LEFT;
 
-		ghosts = new Ghost[] { new Ghost(0, "Blinky", LEFT), new Ghost(1, "Pinky", LEFT), new Ghost(2, "Iinky", LEFT),
+		ghosts = new Ghost[] { new Ghost(0, "Blinky", LEFT), new Ghost(1, "Pinky", LEFT), new Ghost(2, "Inky", LEFT),
 				new Ghost(3, "Sue", LEFT), };
 		for (Ghost ghost : ghosts) {
 			ghost.position = new V2f(t(37), belowFrame);
@@ -123,7 +124,9 @@ public class MsPacManGameIntroScene extends AbstractPacManGameScene {
 			break;
 		case END:
 			showPacName();
-			if (phaseAt(clock.sec(3))) {
+			showPointsAnimation(26);
+			showPressKeyToStart(32);
+			if (phaseAt(clock.sec(10))) {
 				game.attractMode = true;
 			}
 			break;
@@ -199,5 +202,28 @@ public class MsPacManGameIntroScene extends AbstractPacManGameScene {
 			g.setFill((dot + light) % (numDotsX / 2) == 0 ? Color.PINK : Color.RED);
 			g.fillRect(t(frameTopLeftTile.x) + 4 * x, t(frameTopLeftTile.y) + 4 * y, 2, 2);
 		}
+	}
+
+	private void showPressKeyToStart(int yTile) {
+		if (blinking.animate()) {
+			g.setFill(Color.ORANGE);
+			g.setFont(rendering.getScoreFont());
+			g.fillText("PRESS KEY TO PLAY", t(5), t(yTile));
+		}
+	}
+
+	private void showPointsAnimation(int yTile) {
+		if (blinking.animate()) {
+			g.setFill(Color.PINK);
+			g.fillRect(t(8) + 6, t(yTile - 1) + 2, 2, 2);
+			g.fillOval(t(8), t(yTile + 1) - 2, 10, 10);
+		}
+		g.setFill(Color.WHITE);
+		g.setFont(rendering.getScoreFont());
+		g.fillText("10", t(10), t(yTile));
+		g.fillText("50", t(10), t(yTile + 2));
+		g.setFont(rendering.getScoreFont());
+		g.fillText("POINTS", t(13), t(yTile));
+		g.fillText("POINTS", t(13), t(yTile + 2));
 	}
 }
