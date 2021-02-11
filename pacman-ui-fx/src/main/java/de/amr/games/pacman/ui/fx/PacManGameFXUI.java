@@ -17,6 +17,7 @@ import de.amr.games.pacman.ui.PacManGameUI;
 import de.amr.games.pacman.ui.fx.scene.common.PacManGameScene;
 import de.amr.games.pacman.ui.fx.scene.common.PlayScene;
 import de.amr.games.pacman.ui.fx.scene.mspacman.MsPacManGameIntroScene;
+import de.amr.games.pacman.ui.fx.scene.pacman.PacManGameIntermissionScene1;
 import de.amr.games.pacman.ui.fx.scene.pacman.PacManGameIntroScene;
 import javafx.application.Platform;
 import javafx.scene.image.Image;
@@ -87,7 +88,7 @@ public class PacManGameFXUI implements PacManGameUI {
 			soundManager = new PacManGameSoundManager(PacManGameSoundAssets::getPacManSoundURL);
 			pacManIntroScene = new PacManGameIntroScene(game, sizeX, sizeY, scaling);
 			pacManPlayScene = new PlayScene(game, sizeX, sizeY, scaling, false);
-			pacManIntermissionScene1 = pacManIntroScene; // TODO
+			pacManIntermissionScene1 = new PacManGameIntermissionScene1(game, soundManager, sizeX, sizeY, scaling);
 			pacManIntermissionScene2 = pacManIntroScene; // TODO
 			pacManIntermissionScene3 = pacManIntroScene; // TODO
 		} else {
@@ -97,26 +98,22 @@ public class PacManGameFXUI implements PacManGameUI {
 
 	@Override
 	public void updateScene() {
-		if (game == null) {
-			log("%s: No game?", this);
-			return;
-		}
-		PacManGameScene scene = selectScene();
-		if (scene == null) {
+		PacManGameScene newScene = selectScene();
+		if (newScene == null) {
 			log("%s: No scene matches current game state %s", this, game.state);
 			return;
 		}
-		if (currentScene != scene) {
+		if (currentScene != newScene) {
 			currentScene.end();
+			newScene.start();
+			currentScene = newScene;
 			log("%s: Scene changed from %s to %s", this, currentScene.getClass().getSimpleName(),
-					scene.getClass().getSimpleName());
-			currentScene = scene;
-			currentScene.start();
-			currentScene.update();
+					newScene.getClass().getSimpleName());
+			Platform.runLater(() -> {
+				stage.setScene(currentScene.getFXScene());
+			});
 		}
-		Platform.runLater(() -> {
-			stage.setScene(currentScene.getFXScene());
-		});
+		currentScene.update();
 	}
 
 	private PacManGameScene selectScene() {
