@@ -45,7 +45,6 @@ public class MsPacManGame extends PacManGameModel {
 	private final MapBasedPacManGameWorld world;
 
 	public MsPacManGame() {
-
 		// all levels share this world
 		world = new MapBasedPacManGameWorld();
 
@@ -68,7 +67,6 @@ public class MsPacManGame extends PacManGameModel {
 		}
 
 		highscoreFileName = "hiscore-mspacman.xml";
-
 		reset();
 	}
 

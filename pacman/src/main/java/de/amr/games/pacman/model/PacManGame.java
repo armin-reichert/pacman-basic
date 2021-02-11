@@ -51,7 +51,6 @@ public class PacManGame extends PacManGameModel {
 	private final MapBasedPacManGameWorld world;
 
 	public PacManGame() {
-
 		world = new MapBasedPacManGameWorld();
 		world.setMap(new WorldMap("/pacman/maps/map1.txt"));
 		world.setUpwardsBlocked(new V2i(12, 13), new V2i(15, 13), new V2i(12, 25), new V2i(15, 25));
@@ -74,9 +73,7 @@ public class PacManGame extends PacManGameModel {
 		for (Ghost ghost : ghosts) {
 			ghost.world = world;
 		}
-
 		highscoreFileName = "hiscore-pacman.xml";
-
 		reset();
 	}
 

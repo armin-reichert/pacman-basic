@@ -15,8 +15,6 @@ import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.model.GhostState.DEAD;
-import static de.amr.games.pacman.model.GhostState.ENTERING_HOUSE;
-import static de.amr.games.pacman.model.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.model.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.model.GhostState.LOCKED;
@@ -35,6 +33,7 @@ import java.util.stream.Stream;
 import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.Ghost;
+import de.amr.games.pacman.model.GhostState;
 import de.amr.games.pacman.model.MsPacManGame;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.PacManGameModel;
@@ -43,7 +42,7 @@ import de.amr.games.pacman.sound.SoundManager;
 import de.amr.games.pacman.ui.PacManGameUI;
 
 /**
- * Pac-Man and Ms. Pac-Man game with original "AI", levels, timers.
+ * Pac-Man and Ms. Pac-Man currentGame with original "AI", levels, timers.
  * <p>
  * Missing:
  * <ul>
@@ -62,21 +61,17 @@ import de.amr.games.pacman.ui.PacManGameUI;
  */
 public class PacManGameController {
 
-	public List<PacManGameUI> userInterfaces = new ArrayList<>();
-	public PacManGameModel game;
+	private final List<PacManGameUI> userInterfaces;
+	private final PacManGame pacManGame;
+	private final MsPacManGame msPacManGame;
 
+	private PacManGameModel game;
 	private Autopilot autopilot;
 	private boolean autopilotOn;
-
 	private PacManGameState previousState;
 
-	public PacManGameController(boolean classic) {
-		userInterfaces.add(PacManGameUI.NO_UI);
-		if (classic) {
-			playPacManClassic();
-		} else {
-			playMsPacMan();
-		}
+	public PacManGameModel getCurrentGame() {
+		return game;
 	}
 
 	public void gameLoop() {
@@ -88,6 +83,39 @@ public class PacManGameController {
 	private void doOneFrame() {
 		updateGameState();
 		userInterfaces.forEach(PacManGameUI::render);
+	}
+
+	public PacManGameController() {
+		pacManGame = new PacManGame();
+		msPacManGame = new MsPacManGame();
+		userInterfaces = new ArrayList<>(3);
+		userInterfaces.add(PacManGameUI.NO_UI);
+	}
+
+	public void playPacMan() {
+		log("Play Pac-Man");
+		play(pacManGame);
+	}
+
+	public void playMsPacMan() {
+		log("Play Ms. Pac-Man");
+		play(msPacManGame);
+	}
+
+	private void play(PacManGameModel newGame) {
+		game = newGame;
+		autopilot = new Autopilot(game);
+		changeState(INTRO, null, this::enterIntroState);
+		userInterfaces.forEach(ui -> ui.setGame(game));
+	}
+
+	private void toggleGameVariant() {
+		if (playingMsPacMan()) {
+			play(pacManGame);
+		} else {
+			play(msPacManGame);
+		}
+		userInterfaces.forEach(ui -> ui.sounds().ifPresent(SoundManager::stopAll));
 	}
 
 	public void addUI(PacManGameUI ui) {
@@ -102,50 +130,8 @@ public class PacManGameController {
 		userInterfaces.forEach(ui -> ui.show());
 	}
 
-	public void playPacManClassic() {
-		game = new PacManGame();
-		autopilot = new Autopilot(game);
-		reset(false);
-		changeState(INTRO, null, this::enterIntroState);
-		userInterfaces.forEach(ui -> ui.setGame(game));
-		log("New Pac-Man game");
-	}
-
-	public void playMsPacMan() {
-		game = new MsPacManGame();
-		autopilot = new Autopilot(game);
-		reset(false);
-		changeState(INTRO, null, this::enterIntroState);
-		userInterfaces.forEach(ui -> ui.setGame(game));
-		log("New Ms. Pac-Man game");
-	}
-
 	private boolean playingMsPacMan() {
 		return game instanceof MsPacManGame;
-	}
-
-	private void reset(boolean resetGame) {
-		if (resetGame) {
-			game.reset();
-		}
-		autopilotOn = false;
-		previousState = null;
-		userInterfaces.forEach(ui -> ui.animations().ifPresent(animations -> animations.resetAllAnimations(game)));
-		userInterfaces.forEach(ui -> ui.sounds().ifPresent(SoundManager::stopAll));
-	}
-
-	private void toggleGameVariant() {
-		if (playingMsPacMan()) {
-			playPacManClassic();
-		} else {
-			playMsPacMan();
-		}
-		userInterfaces.forEach(ui -> ui.sounds().ifPresent(SoundManager::stopAll));
-	}
-
-	private void setAttractMode(boolean b) {
-		game.attractMode = b;
-		userInterfaces.forEach(ui -> ui.mute(b));
 	}
 
 	private void toggleAutopilot() {
@@ -182,7 +168,14 @@ public class PacManGameController {
 
 	private void enterIntroState() {
 		game.state.duration(Long.MAX_VALUE);
-		setAttractMode(false);
+		game.reset();
+		autopilotOn = false;
+		previousState = null;
+		userInterfaces.forEach(ui -> {
+			ui.mute(false);
+			ui.sounds().ifPresent(SoundManager::stopAll);
+			ui.animations().ifPresent(animations -> animations.resetAllAnimations(game));
+		});
 	}
 
 	private PacManGameState runIntroState() {
@@ -331,7 +324,7 @@ public class PacManGameController {
 		}
 
 		// Pac kills ghost(s)?
-		List<Ghost> prey = Stream.of(game.ghosts).filter(ghost -> ghost.is(FRIGHTENED) && ghost.meets(game.pac))
+		List<Ghost> prey = Stream.of(game.ghosts).filter(ghost -> ghost.is(GhostState.FRIGHTENED) && ghost.meets(game.pac))
 				.collect(Collectors.toList());
 		if (!prey.isEmpty()) {
 			prey.forEach(this::killGhost);
@@ -372,7 +365,7 @@ public class PacManGameController {
 			game.pac.powerTicksLeft--;
 			if (game.pac.powerTicksLeft == 0) {
 				log("%s lost power", game.pac.name);
-				game.ghosts().filter(ghost -> ghost.is(FRIGHTENED)).forEach(ghost -> {
+				game.ghosts().filter(ghost -> ghost.is(GhostState.FRIGHTENED)).forEach(ghost -> {
 					ghost.state = HUNTING_PAC;
 				});
 			}
@@ -433,7 +426,6 @@ public class PacManGameController {
 	private PacManGameState runPacManDyingState() {
 		if (game.state.hasExpired()) {
 			if (game.attractMode) {
-				reset(true);
 				return changeState(INTRO, this::exitPacManDyingState, this::enterIntroState);
 			} else if (game.lives > 1) {
 				game.lives--;
@@ -472,7 +464,7 @@ public class PacManGameController {
 			});
 		}
 		steerPac();
-		game.ghosts().filter(ghost -> ghost.is(DEAD) && ghost.bounty == 0 || ghost.is(ENTERING_HOUSE))
+		game.ghosts().filter(ghost -> ghost.is(DEAD) && ghost.bounty == 0 || ghost.is(GhostState.ENTERING_HOUSE))
 				.forEach(ghost -> ghost.update(game.level));
 		return game.state.run();
 	}
@@ -536,13 +528,9 @@ public class PacManGameController {
 
 	private PacManGameState runGameOverState() {
 		if (game.state.hasExpired() || keyPressed("space")) {
-			return changeState(INTRO, this::exitGameOverState, this::enterIntroState);
+			return changeState(INTRO, null, this::enterIntroState);
 		}
 		return game.state.run();
-	}
-
-	private void exitGameOverState() {
-		reset(true);
 	}
 
 	// INTERMISSION
@@ -600,7 +588,6 @@ public class PacManGameController {
 
 	private void updateGameState() {
 		if (keyPressed("escape")) {
-			reset(true);
 			changeState(INTRO, null, this::enterIntroState);
 			return;
 		}
@@ -713,7 +700,7 @@ public class PacManGameController {
 		if (frightenedSec > 0) {
 			log("Pac-Man got power for %d seconds", frightenedSec);
 			game.ghosts().filter(ghost -> ghost.is(HUNTING_PAC)).forEach(ghost -> {
-				ghost.state = FRIGHTENED;
+				ghost.state = GhostState.FRIGHTENED;
 				ghost.wishDir = ghost.dir.opposite();
 				ghost.forcedDirection = true;
 				userInterfaces.forEach(ui -> ui.animations().ifPresent(animations -> {
@@ -760,7 +747,7 @@ public class PacManGameController {
 
 	private void killAllGhosts() {
 		game.ghostBounty = 200;
-		game.ghosts().filter(ghost -> ghost.is(HUNTING_PAC) || ghost.is(FRIGHTENED)).forEach(this::killGhost);
+		game.ghosts().filter(ghost -> ghost.is(HUNTING_PAC) || ghost.is(GhostState.FRIGHTENED)).forEach(this::killGhost);
 	}
 
 	private void setGhostHuntingTarget(Ghost ghost) {

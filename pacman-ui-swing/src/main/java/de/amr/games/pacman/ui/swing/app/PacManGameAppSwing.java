@@ -59,8 +59,13 @@ public class PacManGameAppSwing {
 	public static void main(String[] args) {
 		Options options = new Options(args);
 		invokeLater(() -> {
-			PacManGameController controller = new PacManGameController(options.classic);
-			controller.addUI(new PacManGameSwingUI(controller.game, options.scaling));
+			PacManGameController controller = new PacManGameController();
+			if (options.classic) {
+				controller.playPacMan();
+			} else {
+				controller.playMsPacMan();
+			}
+			controller.addUI(new PacManGameSwingUI(controller.getCurrentGame(), options.scaling));
 			controller.showUI();
 			new Thread(controller::gameLoop, "PacManGame").start();
 		});

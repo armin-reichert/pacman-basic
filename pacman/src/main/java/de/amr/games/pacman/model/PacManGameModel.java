@@ -43,6 +43,19 @@ public abstract class PacManGameModel {
 	public short globalDotCounter;
 	public boolean globalDotCounterEnabled;
 
+	public void reset() {
+		Hiscore hiscore = loadHighScore();
+		highscoreLevel = hiscore.level;
+		highscorePoints = hiscore.points;
+		score = 0;
+		lives = 3;
+		started = false;
+		attractMode = false;
+		levelSymbols = new ArrayList<>();
+		enterLevel(1);
+		levelSymbols.add(level.bonusSymbol);
+	}
+
 	protected abstract void buildLevel(int levelNumber);
 
 	/**
@@ -73,20 +86,6 @@ public abstract class PacManGameModel {
 			ghost.dotCounter = 0;
 			ghost.elroy = 0;
 		}
-	}
-
-	public void reset() {
-		Hiscore hiscore = loadHighScore();
-		highscoreLevel = hiscore.level;
-		highscorePoints = hiscore.points;
-		score = 0;
-		lives = 3;
-		started = false;
-		state = null;
-		attractMode = false;
-		levelSymbols = new ArrayList<>();
-		enterLevel(1);
-		levelSymbols.add(level.bonusSymbol);
 	}
 
 	public void resetGuys() {
@@ -132,6 +131,9 @@ public abstract class PacManGameModel {
 	}
 
 	public String stateDescription() {
+		if (state == null) {
+			return "not initialized";
+		}
 		if (state == PacManGameState.HUNTING) {
 			String phaseName = inScatteringPhase() ? "Scattering" : "Chasing";
 			int phaseIndex = huntingPhase / 2;

@@ -20,8 +20,9 @@ public class PacManGameAppFX extends Application {
 
 	@Override
 	public void start(Stage stage) throws IOException {
-		PacManGameController controller = new PacManGameController(true);
-		controller.addUI(new PacManGameFXUI(stage, controller.game, 2));
+		PacManGameController controller = new PacManGameController();
+		controller.playMsPacMan();
+		controller.addUI(new PacManGameFXUI(stage, controller.getCurrentGame(), 2));
 		controller.showUI();
 		new Thread(controller::gameLoop, "PacManGame").start();
 	}
