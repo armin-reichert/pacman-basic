@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import de.amr.games.pacman.controller.PacManGameState;
 import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
@@ -258,8 +259,23 @@ public class MsPacManGameRendering implements RenderingWithAnimatedSprites, PacM
 
 	@Override
 	public void drawScore(PacManGameModel game) {
-		// TODO Auto-generated method stub
-
+		g.setFont(scoreFont);
+		g.translate(0, 2);
+		g.setFill(Color.WHITE);
+		g.fillText("SCORE", t(1), t(1));
+		g.fillText("HIGHSCORE", t(15), t(1));
+		g.translate(0, 1);
+		if (game.state != PacManGameState.INTRO && !game.attractMode) {
+			g.setFill(getMazeWallColor(game.level.mazeNumber - 1));
+			g.fillText(String.format("%08d", game.score), t(1), t(2));
+			g.setFill(Color.LIGHTGRAY);
+			g.fillText(String.format("L%02d", game.currentLevelNumber), t(9), t(2));
+			g.setFill(getMazeWallColor(game.level.mazeNumber - 1));
+			g.fillText(String.format("%08d", game.highscorePoints), t(15), t(2));
+			g.setFill(Color.LIGHTGRAY);
+			g.fillText(String.format("L%02d", game.highscoreLevel), t(23), t(2));
+		}
+		g.translate(0, -3);
 	}
 
 	@Override
