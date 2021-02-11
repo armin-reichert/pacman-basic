@@ -175,6 +175,7 @@ public class PacManGameController {
 			ui.mute(false);
 			ui.sounds().ifPresent(SoundManager::stopAll);
 			ui.animations().ifPresent(animations -> animations.resetAllAnimations(game));
+			ui.setGame(game);
 		});
 	}
 

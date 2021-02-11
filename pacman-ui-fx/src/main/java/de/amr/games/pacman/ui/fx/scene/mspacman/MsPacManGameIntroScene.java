@@ -58,12 +58,15 @@ public class MsPacManGameIntroScene extends AbstractPacManGameScene {
 		log("Intro scene started at clock time %d", clock.ticksTotal);
 		game.pac.position = new V2f(t(37), belowFrame);
 		game.pac.visible = false;
+		game.pac.speed = 0;
 		game.pac.dead = false;
 		game.pac.dir = LEFT;
 		for (Ghost ghost : game.ghosts) {
 			ghost.position = new V2f(t(37), belowFrame);
 			ghost.visible = false;
 			ghost.dir = ghost.wishDir = LEFT;
+			ghost.bounty = 0;
+			ghost.speed = 0;
 			ghost.state = GhostState.HUNTING_PAC;
 		}
 
@@ -72,14 +75,9 @@ public class MsPacManGameIntroScene extends AbstractPacManGameScene {
 	}
 
 	@Override
-	public void update() {
-	}
-
-	@Override
 	public void render() {
 		for (Ghost ghost : game.ghosts) {
 			ghost.move();
-//			log("Ghost %s", ghost);
 		}
 		game.pac.move();
 		fill(Color.BLACK);

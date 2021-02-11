@@ -159,6 +159,12 @@ public class PacManGameSwingUI implements PacManGameUI {
 	}
 
 	@Override
+	public void reset() {
+		currentScene.end();
+		updateScene();
+	}
+
+	@Override
 	public void showFlashMessage(String message) {
 		flashMessages.add(message);
 		if (flashMessageTicksLeft == 0) {

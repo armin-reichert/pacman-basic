@@ -27,6 +27,11 @@ public class Pac extends Creature {
 	/** Used for demo/autopilot mode. */
 	public boolean immune;
 
+	@Override
+	public String toString() {
+		return String.format("%s: position: %s, speed=%.2f, dir=%s, wishDir=%s", name, position, speed, dir, wishDir);
+	}
+
 	public Pac(String pacName, Direction pacStartDir) {
 		name = pacName;
 		startDir = pacStartDir;

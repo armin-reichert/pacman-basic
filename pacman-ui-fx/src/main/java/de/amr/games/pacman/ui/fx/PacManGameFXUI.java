@@ -106,10 +106,10 @@ public class PacManGameFXUI implements PacManGameUI {
 		}
 		if (currentScene != newScene) {
 			currentScene.end();
-			newScene.start();
 			currentScene = newScene;
 			log("%s: Scene changed from %s to %s", this, currentScene.getClass().getSimpleName(),
 					newScene.getClass().getSimpleName());
+			newScene.start();
 			return true;
 		}
 		return false;
@@ -178,6 +178,13 @@ public class PacManGameFXUI implements PacManGameUI {
 				currentScene.render();
 			}
 		});
+	}
+
+	@Override
+	public void reset() {
+		currentScene.end();
+		setGame(game);
+		updateScene();
 	}
 
 	@Override
