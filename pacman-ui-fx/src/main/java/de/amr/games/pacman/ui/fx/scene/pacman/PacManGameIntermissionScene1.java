@@ -7,8 +7,6 @@ import static de.amr.games.pacman.model.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.world.PacManGameWorld.t;
 
-import java.util.Optional;
-
 import de.amr.games.pacman.heaven.God;
 import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.V2f;
@@ -17,16 +15,8 @@ import de.amr.games.pacman.model.Pac;
 import de.amr.games.pacman.model.PacManGameModel;
 import de.amr.games.pacman.sound.PacManGameSound;
 import de.amr.games.pacman.sound.SoundManager;
-import de.amr.games.pacman.ui.PacManGameAnimations;
-import de.amr.games.pacman.ui.fx.input.Keyboard;
-import de.amr.games.pacman.ui.fx.rendering.PacManGameRendering;
-import de.amr.games.pacman.ui.fx.rendering.RenderingWithAnimatedSprites;
-import de.amr.games.pacman.ui.fx.scene.common.PacManGameScene;
+import de.amr.games.pacman.ui.fx.scene.common.AbstractPacManGameScene;
 import javafx.geometry.Rectangle2D;
-import javafx.scene.Scene;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 
 /**
@@ -34,52 +24,25 @@ import javafx.scene.paint.Color;
  * 
  * @author Armin Reichert
  */
-public class PacManGameIntermissionScene1 implements PacManGameScene {
+public class PacManGameIntermissionScene1 extends AbstractPacManGameScene {
 
 	enum Phase {
 		BLINKY_CHASING_PACMAN, BIGPACMAN_CHASING_BLINKY;
 	}
 
-	private final Scene scene;
-	private final Keyboard keyboard;
-	private final PacManGameModel game;
-	private final Canvas canvas;
-	private final GraphicsContext g;
-	private final RenderingWithAnimatedSprites rendering;
-	private final SoundManager soundManager;
-
-	private final Animation<Rectangle2D> bigPac;
 	private final int baselineY = t(20);
 	private final Ghost blinky;
 	private final Pac pac;
-
+	private final Animation<Rectangle2D> bigPac;
 	private Phase phase;
 
 	public PacManGameIntermissionScene1(PacManGameModel game, SoundManager soundManager, double width, double height,
 			double scaling) {
-		this.game = game;
-		canvas = new Canvas(width, height);
-		g = canvas.getGraphicsContext2D();
-		g.scale(scaling, scaling);
-		StackPane pane = new StackPane();
-		pane.getChildren().add(canvas);
-		scene = new Scene(pane, width, height);
-		keyboard = new Keyboard(scene);
-		rendering = new PacManGameRendering(g);
-		this.soundManager = soundManager;
+		super(game, soundManager, width, height, scaling);
 		blinky = game.ghosts[0];
 		pac = game.pac;
 		bigPac = Animation.of(tileRegion(2, 1, 2, 2), tileRegion(4, 1, 2, 2), tileRegion(6, 1, 2, 2));
 		bigPac.endless().frameDuration(4).run();
-	}
-
-	private Rectangle2D tileRegion(int tileX, int tileY, int cols, int rows) {
-		return new Rectangle2D(tileX * 16, tileY * 16, cols * 16, rows * 16);
-	}
-
-	@Override
-	public Scene getFXScene() {
-		return scene;
 	}
 
 	@Override
@@ -153,15 +116,5 @@ public class PacManGameIntermissionScene1 implements PacManGameScene {
 			rendering.drawRegion(g, bigPac.animate(), pac.position.x - 12, pac.position.y - 22);
 		}
 		rendering.drawLevelCounter(game, t(25), t(34));
-	}
-
-	@Override
-	public Keyboard keyboard() {
-		return keyboard;
-	}
-
-	@Override
-	public Optional<PacManGameAnimations> animations() {
-		return rendering instanceof PacManGameAnimations ? Optional.of(rendering) : Optional.empty();
 	}
 }
