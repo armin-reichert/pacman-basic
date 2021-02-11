@@ -174,6 +174,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 				Graphics2D g = (Graphics2D) buffers.getDrawGraphics();
 				g.setColor(Color.BLACK);
 				g.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+				updateScene();
 				if (currentScene != null) {
 					g.scale(scaling, scaling);
 					currentScene.draw(g);
@@ -234,8 +235,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 		return pressed;
 	}
 
-	@Override
-	public void updateScene() {
+	private void updateScene() {
 		PacManGameScene scene = game instanceof PacManGame ? selectPacManScene() : selectMsPacManScene();
 		if (currentScene != scene) {
 			if (currentScene != null) {

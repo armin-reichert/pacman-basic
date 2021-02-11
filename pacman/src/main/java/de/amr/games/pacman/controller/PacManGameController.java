@@ -633,7 +633,6 @@ public class PacManGameController {
 		default:
 			throw new IllegalStateException("Illegal state: " + game.state);
 		}
-		userInterfaces.forEach(ui -> ui.updateScene());
 	}
 
 	private String ticksDescription(long ticks) {

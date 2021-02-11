@@ -158,6 +158,11 @@ public class PacManGameRendering implements RenderingWithAnimatedSprites {
 	}
 
 	@Override
+	public Font getScoreFont() {
+		return scoreFont;
+	}
+
+	@Override
 	public void signalReadyState(PacManGameModel game) {
 		g.setFont(scoreFont);
 		g.setFill(Color.YELLOW);

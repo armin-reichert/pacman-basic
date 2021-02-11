@@ -16,8 +16,6 @@ public interface PacManGameUI {
 
 	void setCloseHandler(Runnable handler);
 
-	void updateScene();
-
 	void show();
 
 	void render();
@@ -40,10 +38,6 @@ public interface PacManGameUI {
 
 		@Override
 		public void setCloseHandler(Runnable handler) {
-		}
-
-		@Override
-		public void updateScene() {
 		}
 
 		@Override

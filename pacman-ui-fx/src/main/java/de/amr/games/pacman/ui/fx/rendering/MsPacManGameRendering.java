@@ -109,7 +109,7 @@ public class MsPacManGameRendering implements RenderingWithAnimatedSprites, PacM
 		pacMunching = new EnumMap<>(Direction.class);
 		for (Direction dir : Direction.values()) {
 			int d = index(dir);
-			Animation<Rectangle2D> munching = Animation.of(s(0, d), s(1, d), s(2, d), s(1, d));
+			Animation<Rectangle2D> munching = Animation.of(s(1, d), s(1, d), s(2, d), s(0, d));
 			munching.frameDuration(2).endless();
 			pacMunching.put(dir, munching);
 		}
@@ -151,6 +151,11 @@ public class MsPacManGameRendering implements RenderingWithAnimatedSprites, PacM
 	@Override
 	public GraphicsContext gc() {
 		return g;
+	}
+
+	@Override
+	public Font getScoreFont() {
+		return scoreFont;
 	}
 
 	/**

@@ -75,10 +75,12 @@ public class PacManGameFXUI implements PacManGameUI {
 
 		setGame(game);
 		currentScene = selectScene();
-		currentScene.start();
-		stage.setScene(currentScene.getFXScene());
-		stage.sizeToScene();
-		log("Initial scene is %s", currentScene);
+		Platform.runLater(() -> {
+			stage.setScene(currentScene.getFXScene());
+			currentScene.start();
+			stage.sizeToScene();
+			log("Initial scene is %s", currentScene);
+		});
 	}
 
 	@Override
@@ -103,12 +105,18 @@ public class PacManGameFXUI implements PacManGameUI {
 		}
 	}
 
-	@Override
-	public void updateScene() {
+	private void updateScene() {
+		boolean changed = updateSceneInternal();
+		if (changed) {
+			stage.setScene(currentScene.getFXScene());
+		}
+	}
+
+	private boolean updateSceneInternal() {
 		PacManGameScene newScene = selectScene();
 		if (newScene == null) {
 			log("%s: No scene matches current game state %s", this, game.state);
-			return;
+			return false;
 		}
 		if (currentScene != newScene) {
 			currentScene.end();
@@ -116,11 +124,9 @@ public class PacManGameFXUI implements PacManGameUI {
 			currentScene = newScene;
 			log("%s: Scene changed from %s to %s", this, currentScene.getClass().getSimpleName(),
 					newScene.getClass().getSimpleName());
-			Platform.runLater(() -> {
-				stage.setScene(currentScene.getFXScene());
-			});
+			return true;
 		}
-		currentScene.update();
+		return false;
 	}
 
 	private PacManGameScene selectScene() {
@@ -172,7 +178,12 @@ public class PacManGameFXUI implements PacManGameUI {
 
 	@Override
 	public void render() {
-		Platform.runLater(currentScene::render);
+		Platform.runLater(() -> {
+			updateScene();
+			if (currentScene != null) {
+				currentScene.render();
+			}
+		});
 	}
 
 	@Override

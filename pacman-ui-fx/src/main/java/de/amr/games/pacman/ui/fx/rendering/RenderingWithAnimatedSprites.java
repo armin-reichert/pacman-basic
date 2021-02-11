@@ -15,6 +15,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 
 public interface RenderingWithAnimatedSprites extends PacManGameAnimations {
 
@@ -36,6 +37,8 @@ public interface RenderingWithAnimatedSprites extends PacManGameAnimations {
 	Image spritesheet();
 
 	GraphicsContext gc();
+
+	Font getScoreFont();
 
 	default void drawRegion(Rectangle2D region, double x, double y) {
 		gc().drawImage(spritesheet(), region.getMinX(), region.getMinY(), region.getWidth(), region.getHeight(), x, y,
