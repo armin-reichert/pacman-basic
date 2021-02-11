@@ -38,7 +38,7 @@ public class PacManGameIntermissionScene1 extends AbstractPacManGameScene {
 
 	public PacManGameIntermissionScene1(PacManGameModel game, SoundManager soundManager, double width, double height,
 			double scaling) {
-		super(game, soundManager, width, height, scaling);
+		super(game, soundManager, width, height, scaling, false);
 		blinky = game.ghosts[0];
 		pac = game.pac;
 		bigPac = Animation.of(tileRegion(2, 1, 2, 2), tileRegion(4, 1, 2, 2), tileRegion(6, 1, 2, 2));
@@ -68,11 +68,6 @@ public class PacManGameIntermissionScene1 extends AbstractPacManGameScene {
 		rendering.ghostKickingToDir(blinky, blinky.dir).restart();
 		rendering.ghostFrightenedToDir(blinky, blinky.dir).restart();
 		soundManager.loop(PacManGameSound.INTERMISSION_1, 2);
-	}
-
-	@Override
-	public void end() {
-		log("End of intermission scene %s at tick %d", getClass().getSimpleName(), God.clock.ticksTotal);
 	}
 
 	@Override
@@ -107,8 +102,7 @@ public class PacManGameIntermissionScene1 extends AbstractPacManGameScene {
 
 	@Override
 	public void render() {
-		g.setFill(Color.BLACK);
-		g.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+		fill(Color.BLACK);
 		rendering.drawGhost(blinky, game);
 		if (phase == Phase.BLINKY_CHASING_PACMAN) {
 			rendering.drawPac(pac, game);
