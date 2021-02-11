@@ -1,20 +1,20 @@
-package de.amr.games.pacman.ui.fx.mspacman.scene;
+package de.amr.games.pacman.ui.fx.scene.pacman;
 
 import java.util.Optional;
 
 import de.amr.games.pacman.model.PacManGameModel;
 import de.amr.games.pacman.ui.PacManGameAnimations;
-import de.amr.games.pacman.ui.fx.PacManGameScene;
-import de.amr.games.pacman.ui.fx.RenderingWithAnimatedSprites;
 import de.amr.games.pacman.ui.fx.input.Keyboard;
-import de.amr.games.pacman.ui.fx.mspacman.rendering.MsPacManGameRendering;
+import de.amr.games.pacman.ui.fx.rendering.PacManGameRendering;
+import de.amr.games.pacman.ui.fx.rendering.RenderingWithAnimatedSprites;
+import de.amr.games.pacman.ui.fx.scene.common.PacManGameScene;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 
-public class MsPacManGameIntroScene implements PacManGameScene {
+public class PacManGameIntroScene implements PacManGameScene {
 
 	private final Scene scene;
 	private final Keyboard keyboard;
@@ -23,7 +23,7 @@ public class MsPacManGameIntroScene implements PacManGameScene {
 	private final GraphicsContext g;
 	private final RenderingWithAnimatedSprites rendering;
 
-	public MsPacManGameIntroScene(PacManGameModel game, double width, double height, double scaling) {
+	public PacManGameIntroScene(PacManGameModel game, double width, double height, double scaling) {
 		this.game = game;
 		canvas = new Canvas(width, height);
 		g = canvas.getGraphicsContext2D();
@@ -32,7 +32,7 @@ public class MsPacManGameIntroScene implements PacManGameScene {
 		pane.getChildren().add(canvas);
 		scene = new Scene(pane, width, height);
 		keyboard = new Keyboard(scene);
-		rendering = new MsPacManGameRendering(g);
+		rendering = new PacManGameRendering(g);
 	}
 
 	@Override
@@ -42,19 +42,25 @@ public class MsPacManGameIntroScene implements PacManGameScene {
 
 	@Override
 	public void start() {
+		// TODO Auto-generated method stub
+
 	}
 
 	@Override
 	public void end() {
+		// TODO Auto-generated method stub
+
 	}
 
 	@Override
 	public void update() {
+		// TODO Auto-generated method stub
+
 	}
 
 	@Override
 	public void render() {
-		g.setFill(Color.PINK);
+		g.setFill(Color.BLUE);
 		g.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 	}
 
