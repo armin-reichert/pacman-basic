@@ -208,7 +208,7 @@ public class MsPacManGameIntroScene extends AbstractPacManGameScene {
 		if (blinking.animate()) {
 			g.setFill(Color.ORANGE);
 			g.setFont(rendering.getScoreFont());
-			g.fillText("PRESS KEY TO PLAY", t(5), t(yTile));
+			g.fillText("PRESS SPACE KEY TO PLAY", t(2), t(yTile));
 		}
 	}
 
