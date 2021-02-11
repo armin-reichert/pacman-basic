@@ -168,13 +168,13 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 	@Override
 	public void render() {
+		updateScene();
 		BufferStrategy buffers = canvas.getBufferStrategy();
 		do {
 			do {
 				Graphics2D g = (Graphics2D) buffers.getDrawGraphics();
 				g.setColor(Color.BLACK);
 				g.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
-				updateScene();
 				if (currentScene != null) {
 					g.scale(scaling, scaling);
 					currentScene.draw(g);

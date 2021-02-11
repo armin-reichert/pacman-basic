@@ -74,13 +74,6 @@ public class PacManGameFXUI implements PacManGameUI {
 		msPacManSoundManager = new PacManGameSoundManager(PacManGameSoundAssets::getMsPacManSoundURL);
 
 		setGame(game);
-		currentScene = selectScene();
-		Platform.runLater(() -> {
-			stage.setScene(currentScene.getFXScene());
-			currentScene.start();
-			stage.sizeToScene();
-			log("Initial scene is %s", currentScene);
-		});
 	}
 
 	@Override
@@ -105,14 +98,7 @@ public class PacManGameFXUI implements PacManGameUI {
 		}
 	}
 
-	private void updateScene() {
-		boolean changed = updateSceneInternal();
-		if (changed) {
-			stage.setScene(currentScene.getFXScene());
-		}
-	}
-
-	private boolean updateSceneInternal() {
+	private boolean updateScene() {
 		PacManGameScene newScene = selectScene();
 		if (newScene == null) {
 			log("%s: No scene matches current game state %s", this, game.state);
@@ -173,14 +159,22 @@ public class PacManGameFXUI implements PacManGameUI {
 
 	@Override
 	public void show() {
+		currentScene = selectScene();
+		log("Initial scene is %s", currentScene);
+		currentScene.start();
+		stage.setScene(currentScene.getFXScene());
+		stage.sizeToScene();
 		stage.show();
 	}
 
 	@Override
 	public void render() {
 		Platform.runLater(() -> {
-			updateScene();
+			boolean changed = updateScene();
 			if (currentScene != null) {
+				if (changed) {
+					stage.setScene(currentScene.getFXScene());
+				}
 				currentScene.render();
 			}
 		});
