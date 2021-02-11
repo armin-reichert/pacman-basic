@@ -107,22 +107,16 @@ public class PacManGameFXUI implements PacManGameUI {
 			return;
 		}
 		if (currentScene != scene) {
-			if (currentScene != null) {
-				currentScene.end();
-				log("%s: Scene changed from %s to %s", this, currentScene.getClass().getSimpleName(),
-						scene.getClass().getSimpleName());
-			} else {
-				log("%s: Scene changed to %s", this, scene.getClass().getSimpleName());
-			}
+			currentScene.end();
+			log("%s: Scene changed from %s to %s", this, currentScene.getClass().getSimpleName(),
+					scene.getClass().getSimpleName());
 			currentScene = scene;
 			currentScene.start();
 			currentScene.update();
 		}
-		if (currentScene != null) {
-			Platform.runLater(() -> {
-				stage.setScene(currentScene.getFXScene());
-			});
-		}
+		Platform.runLater(() -> {
+			stage.setScene(currentScene.getFXScene());
+		});
 	}
 
 	private PacManGameScene selectScene() {
@@ -160,7 +154,7 @@ public class PacManGameFXUI implements PacManGameUI {
 			}
 			return pacManPlayScene;
 		}
-		throw new IllegalStateException("No scene found");
+		throw new IllegalStateException("No scene found for game state " + game.stateDescription());
 	}
 
 	@Override
@@ -174,9 +168,7 @@ public class PacManGameFXUI implements PacManGameUI {
 
 	@Override
 	public void render() {
-		if (currentScene != null) {
-			Platform.runLater(currentScene::render);
-		}
+		Platform.runLater(currentScene::render);
 	}
 
 	@Override
@@ -185,13 +177,9 @@ public class PacManGameFXUI implements PacManGameUI {
 
 	@Override
 	public boolean keyPressed(String keySpec) {
-		if (currentScene != null) {
-			boolean pressed = currentScene.keyboard().keyPressed(keySpec);
-			currentScene.keyboard().clearKey(keySpec); // TODO
-			return pressed;
-		} else {
-			return false;
-		}
+		boolean pressed = currentScene.keyboard().keyPressed(keySpec);
+		currentScene.keyboard().clearKey(keySpec); // TODO
+		return pressed;
 	}
 
 	@Override
