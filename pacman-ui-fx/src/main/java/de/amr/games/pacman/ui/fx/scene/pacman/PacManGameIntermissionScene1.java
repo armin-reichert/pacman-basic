@@ -107,7 +107,7 @@ public class PacManGameIntermissionScene1 extends AbstractPacManGameScene {
 		if (phase == Phase.BLINKY_CHASING_PACMAN) {
 			rendering.drawPac(pac, game);
 		} else {
-			rendering.drawRegion(g, bigPac.animate(), pac.position.x - 12, pac.position.y - 22);
+			rendering.drawRegion(bigPac.animate(), pac.position.x - 12, pac.position.y - 22);
 		}
 		rendering.drawLevelCounter(game, t(25), t(34));
 	}

@@ -38,7 +38,6 @@ import javafx.scene.text.Font;
 public class MsPacManGameRendering implements RenderingWithAnimatedSprites, PacManGameAnimations {
 
 	private final GraphicsContext g;
-
 	private final Image spritesheet = new Image("/mspacman/graphics/sprites.png", false);
 
 	private final Rectangle2D[] symbols;
@@ -147,6 +146,11 @@ public class MsPacManGameRendering implements RenderingWithAnimatedSprites, PacM
 	@Override
 	public Image spritesheet() {
 		return spritesheet;
+	}
+
+	@Override
+	public GraphicsContext gc() {
+		return g;
 	}
 
 	/**

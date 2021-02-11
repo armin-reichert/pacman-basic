@@ -35,8 +35,10 @@ public interface RenderingWithAnimatedSprites extends PacManGameAnimations {
 
 	Image spritesheet();
 
-	default void drawRegion(GraphicsContext g, Rectangle2D region, double x, double y) {
-		g.drawImage(spritesheet(), region.getMinX(), region.getMinY(), region.getWidth(), region.getHeight(), x, y,
+	GraphicsContext gc();
+
+	default void drawRegion(Rectangle2D region, double x, double y) {
+		gc().drawImage(spritesheet(), region.getMinX(), region.getMinY(), region.getWidth(), region.getHeight(), x, y,
 				region.getWidth(), region.getHeight());
 	}
 

@@ -36,12 +36,12 @@ import javafx.scene.text.Font;
 public class PacManGameRendering implements RenderingWithAnimatedSprites {
 
 	private final GraphicsContext g;
-
-	private final Font scoreFont;
-
 	private final Image spritesheet = new Image("/pacman/graphics/sprites.png", false);
+
 	private final Image mazeFull = new Image("/pacman/graphics/maze_full.png", false);
 	private final Image mazeEmpty = new Image("/pacman/graphics/maze_empty.png", false);
+
+	private final Font scoreFont;
 
 	private final Rectangle2D[] symbols;
 	private final Map<Integer, Rectangle2D> numbers;
@@ -150,6 +150,11 @@ public class PacManGameRendering implements RenderingWithAnimatedSprites {
 	@Override
 	public Image spritesheet() {
 		return spritesheet;
+	}
+
+	@Override
+	public GraphicsContext gc() {
+		return g;
 	}
 
 	@Override
