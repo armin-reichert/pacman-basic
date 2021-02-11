@@ -99,19 +99,19 @@ public class MsPacManGameIntroScene extends AbstractPacManGameScene {
 			}
 			break;
 		case BLINKY:
-			showGhostName("WITH", "BLINKY", Color.RED);
+			showGhostName("WITH", "BLINKY", Color.RED, 11);
 			letGhostWalkToEndPosition(game.ghosts[0], Phase.PINKY);
 			break;
 		case PINKY:
-			showGhostName("", "PINKY", Color.PINK);
+			showGhostName("", "PINKY", Color.PINK, 11);
 			letGhostWalkToEndPosition(game.ghosts[1], Phase.INKY);
 			break;
 		case INKY:
-			showGhostName("", "INKY", Color.CYAN);
+			showGhostName("", "INKY", Color.CYAN, 11);
 			letGhostWalkToEndPosition(game.ghosts[2], Phase.SUE);
 			break;
 		case SUE:
-			showGhostName("", "Sue", Color.ORANGE);
+			showGhostName("", "Sue", Color.ORANGE, 12);
 			letGhostWalkToEndPosition(game.ghosts[3], Phase.MSPACMAN);
 			break;
 		case MSPACMAN:
@@ -129,14 +129,14 @@ public class MsPacManGameIntroScene extends AbstractPacManGameScene {
 		}
 	}
 
-	private void showGhostName(String with, String name, Color color) {
+	private void showGhostName(String with, String name, Color color, int tileX) {
 		g.setFill(Color.WHITE);
 		g.setFont(rendering.getScoreFont());
 		if (with.length() > 0) {
 			g.fillText(with, t(8), t(11));
 		}
 		g.setFill(color);
-		g.fillText(name, t(11), t(14));
+		g.fillText(name, t(tileX), t(14));
 	}
 
 	private void letGhostWalkToEndPosition(Ghost ghost, Phase nextPhase) {
