@@ -4,6 +4,7 @@ import static de.amr.games.pacman.world.PacManGameWorld.t;
 
 import java.util.Optional;
 
+import de.amr.games.pacman.controller.PacManGameState;
 import de.amr.games.pacman.model.PacManGameModel;
 import de.amr.games.pacman.ui.PacManGameAnimations;
 import de.amr.games.pacman.ui.fx.input.Keyboard;
@@ -49,6 +50,11 @@ public class PlayScene implements PacManGameScene {
 			rendering.drawFoodTiles(game.level.world.tiles().filter(game.level.world::isFoodTile),
 					game.level::containsEatenFood);
 			rendering.drawEnergizerTiles(game.level.world.energizerTiles());
+		}
+		if (game.attractMode || game.state == PacManGameState.GAME_OVER) {
+			rendering.signalGameOverState(game);
+		} else if (game.state == PacManGameState.READY) {
+			rendering.signalReadyState(game);
 		}
 		rendering.drawPac(game.pac, game);
 		game.ghosts().forEach(ghost -> rendering.drawGhost(ghost, game));

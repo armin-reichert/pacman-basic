@@ -30,10 +30,13 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 
 public class PacManGameRendering implements RenderingWithAnimatedSprites {
 
 	private final GraphicsContext g;
+
+	private final Font scoreFont;
 
 	private final Image spritesheet = new Image("/pacman/graphics/sprites.png", false);
 	private final Image mazeFull = new Image("/pacman/graphics/maze_full.png", false);
@@ -68,8 +71,18 @@ public class PacManGameRendering implements RenderingWithAnimatedSprites {
 		return new Rectangle2D(x, y, width, height);
 	}
 
+	private void drawRegion(Creature guy, Rectangle2D region) {
+		if (guy.visible && region != null) {
+			g.drawImage(spritesheet, region.getMinX() * 16, region.getMinY() * 16, region.getWidth() * 16,
+					region.getHeight() * 16, guy.position.x - 4, guy.position.y - 4, region.getWidth() * 16,
+					region.getHeight() * 16);
+		}
+	}
+
 	public PacManGameRendering(GraphicsContext g) {
 		this.g = g;
+
+		scoreFont = Font.loadFont(getClass().getResource("/emulogic.ttf").toExternalForm(), 8);
 
 		symbols = new Rectangle2D[] { s(2, 3), s(3, 3), s(4, 3), s(5, 3), s(6, 3), s(7, 3), s(8, 3), s(9, 3) };
 
@@ -131,21 +144,27 @@ public class PacManGameRendering implements RenderingWithAnimatedSprites {
 
 		ghostFlashing = Animation.of(s(8, 4), s(9, 4), s(10, 4), s(11, 4));
 		ghostFlashing.frameDuration(5).endless();
+	}
 
+	@Override
+	public void signalReadyState(PacManGameModel game) {
+		g.setFont(scoreFont);
+		g.setFill(Color.YELLOW);
+		g.fillText("READY", t(11), t(21));
+	}
+
+	@Override
+	public void signalGameOverState(PacManGameModel game) {
+		g.setFont(scoreFont);
+		g.setFill(Color.RED);
+		g.fillText("GAME", t(9), t(21));
+		g.fillText("OVER", t(15), t(21));
 	}
 
 	@Override
 	public void hideTile(V2i tile) {
 		g.setFill(Color.BLACK);
 		g.fillRect(tile.x * TS, tile.y * TS, TS, TS);
-	}
-
-	private void drawRegion(Creature guy, Rectangle2D region) {
-		if (guy.visible && region != null) {
-			g.drawImage(spritesheet, region.getMinX() * 16, region.getMinY() * 16, region.getWidth() * 16,
-					region.getHeight() * 16, guy.position.x - 4, guy.position.y - 4, region.getWidth() * 16,
-					region.getHeight() * 16);
-		}
 	}
 
 	@Override

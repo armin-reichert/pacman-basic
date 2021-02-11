@@ -32,6 +32,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 
 public class MsPacManGameRendering implements RenderingWithAnimatedSprites, PacManGameAnimations {
 
@@ -49,9 +50,10 @@ public class MsPacManGameRendering implements RenderingWithAnimatedSprites, PacM
 	private final Animation<Rectangle2D> ghostBlue;
 	private final Animation<Rectangle2D> ghostFlashing;
 	private final Animation<Integer> bonusJumps;
-
 	private final List<Animation<Image>> mazesFlashing;
 	private final Animation<Boolean> energizerBlinking;
+
+	private final Font scoreFont;
 
 	private int index(Direction dir) {
 		return dir == RIGHT ? 0 : dir == LEFT ? 1 : dir == UP ? 2 : 3;
@@ -67,6 +69,8 @@ public class MsPacManGameRendering implements RenderingWithAnimatedSprites, PacM
 
 	public MsPacManGameRendering(GraphicsContext g) {
 		this.g = g;
+
+		scoreFont = Font.loadFont(getClass().getResource("/emulogic.ttf").toExternalForm(), 8);
 
 		symbols = new Rectangle2D[] { s(3, 0), s(4, 0), s(5, 0), s(6, 0), s(7, 0), s(8, 0), s(9, 0) };
 
@@ -191,6 +195,21 @@ public class MsPacManGameRendering implements RenderingWithAnimatedSprites, PacM
 
 	private Direction ensureNotNull(Direction dir) {
 		return dir != null ? dir : Direction.RIGHT;
+	}
+
+	@Override
+	public void signalReadyState(PacManGameModel game) {
+		g.setFont(scoreFont);
+		g.setFill(Color.YELLOW);
+		g.fillText("READY", t(11), t(21));
+	}
+
+	@Override
+	public void signalGameOverState(PacManGameModel game) {
+		g.setFont(scoreFont);
+		g.setFill(Color.RED);
+		g.fillText("GAME", t(9), t(21));
+		g.fillText("OVER", t(15), t(21));
 	}
 
 	@Override

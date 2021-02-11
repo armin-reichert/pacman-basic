@@ -57,4 +57,8 @@ public interface RenderingWithAnimatedSprites extends PacManGameAnimations {
 	void drawLivesCounter(PacManGameModel game, int x, int y);
 
 	void drawLevelCounter(PacManGameModel game, int x, int y);
+
+	void signalGameOverState(PacManGameModel game);
+
+	void signalReadyState(PacManGameModel game);
 }
