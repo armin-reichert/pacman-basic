@@ -25,21 +25,13 @@ public class MsPacManGameIntroScene extends AbstractPacManGameScene {
 	private Pac pac;
 	private Ghost[] ghosts;
 	private Phase phase;
-	private long phaseStartTime, sceneStartTime;
+	private long phaseStartTime;
 	private final V2i frameTopLeftTile = new V2i(6, 8);
 	private final int belowFrame = t(17);
 	private final int leftOfFrame = t(4);
 
 	public MsPacManGameIntroScene(PacManGameModel game, double width, double height, double scaling) {
 		super(game, null, width, height, scaling, true);
-	}
-
-	private boolean at(long ticks) {
-		return game.state.ticksRun() - sceneStartTime == ticks;
-	}
-
-	private boolean after(long ticks) {
-		return game.state.ticksRun() - sceneStartTime >= ticks;
 	}
 
 	private boolean phaseAt(long ticks) {
@@ -76,8 +68,6 @@ public class MsPacManGameIntroScene extends AbstractPacManGameScene {
 			ghost.speed = 0;
 			ghost.state = GhostState.HUNTING_PAC;
 		}
-
-		sceneStartTime = game.state.ticksRun();
 		enterPhase(Phase.BEGIN);
 	}
 
