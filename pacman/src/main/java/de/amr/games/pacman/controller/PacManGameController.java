@@ -219,7 +219,7 @@ public class PacManGameController {
 	// READY
 
 	private void enterReadyState() {
-		boolean playReadyMusic = !game.started;
+		boolean playReadyMusic = !game.started && !game.attractMode;
 		game.state.duration(clock.sec(playReadyMusic ? 4.5 : 2));
 		game.resetGuys();
 		userInterfaces.forEach(ui -> ui.animations().ifPresent(animations -> animations.resetAllAnimations(game)));
