@@ -11,6 +11,7 @@ import de.amr.games.pacman.model.Pac;
 import de.amr.games.pacman.model.PacManGameModel;
 import de.amr.games.pacman.ui.PacManGameAnimations;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
@@ -30,6 +31,13 @@ public interface RenderingWithAnimatedSprites extends PacManGameAnimations {
 			}
 		}
 		return newImage;
+	}
+
+	Image spritesheet();
+
+	default void drawRegion(GraphicsContext g, Rectangle2D region, double x, double y) {
+		g.drawImage(spritesheet(), region.getMinX(), region.getMinY(), region.getWidth(), region.getHeight(), x, y,
+				region.getWidth(), region.getHeight());
 	}
 
 	Rectangle2D bonusSprite(Bonus bonus, PacManGameModel game);

@@ -144,6 +144,11 @@ public class MsPacManGameRendering implements RenderingWithAnimatedSprites, PacM
 		bonusJumps = Animation.of(0, 2, 0, -2).frameDuration(20).endless().run();
 	}
 
+	@Override
+	public Image spritesheet() {
+		return spritesheet;
+	}
+
 	/**
 	 * Note: maze numbers are 1-based, maze index as stored here is 0-based.
 	 * 
