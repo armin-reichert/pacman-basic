@@ -22,6 +22,8 @@ public class MsPacManGameIntroScene extends AbstractPacManGameScene {
 		BEGIN, BLINKY, PINKY, INKY, SUE, MSPACMAN, END
 	}
 
+	private Pac pac;
+	private Ghost[] ghosts;
 	private Phase phase;
 	private long phaseStartTime, sceneStartTime;
 	private final V2i frameTopLeftTile = new V2i(6, 8);
@@ -56,12 +58,17 @@ public class MsPacManGameIntroScene extends AbstractPacManGameScene {
 	@Override
 	public void start() {
 		log("Intro scene started at clock time %d", clock.ticksTotal);
-		game.pac.position = new V2f(t(37), belowFrame);
-		game.pac.visible = false;
-		game.pac.speed = 0;
-		game.pac.dead = false;
-		game.pac.dir = LEFT;
-		for (Ghost ghost : game.ghosts) {
+
+		pac = new Pac("Ms. Pac-Man", LEFT);
+		pac.position = new V2f(t(37), belowFrame);
+		pac.visible = false;
+		pac.speed = 0;
+		pac.dead = false;
+		pac.dir = LEFT;
+
+		ghosts = new Ghost[] { new Ghost(0, "Blinky", LEFT), new Ghost(1, "Pinky", LEFT), new Ghost(2, "Iinky", LEFT),
+				new Ghost(3, "Sue", LEFT), };
+		for (Ghost ghost : ghosts) {
 			ghost.position = new V2f(t(37), belowFrame);
 			ghost.visible = false;
 			ghost.dir = ghost.wishDir = LEFT;
@@ -76,19 +83,27 @@ public class MsPacManGameIntroScene extends AbstractPacManGameScene {
 
 	@Override
 	public void render() {
-		for (Ghost ghost : game.ghosts) {
+		for (Ghost ghost : ghosts) {
 			ghost.move();
 		}
-		game.pac.move();
+		pac.move();
+
+		for (Ghost ghost : ghosts) {
+			if (ghost.speed != 0)
+				log("%s", ghost);
+		}
+		if (pac.speed != 0)
+			log("%s", pac);
+
 		fill(Color.BLACK);
 		g.setFont(rendering.getScoreFont());
 		g.setFill(Color.ORANGE);
 		g.fillText("\"MS PAC-MAN\"", t(8), t(5));
 		drawAnimatedFrame(32, 16, game.state.ticksRun());
-		for (Ghost ghost : game.ghosts) {
+		for (Ghost ghost : ghosts) {
 			rendering.drawGhost(ghost, game);
 		}
-		rendering.drawPac(game.pac, game);
+		rendering.drawPac(pac, game);
 
 		switch (phase) {
 		case BEGIN:
@@ -98,23 +113,23 @@ public class MsPacManGameIntroScene extends AbstractPacManGameScene {
 			break;
 		case BLINKY:
 			showGhostName("WITH", "BLINKY", Color.RED, 11);
-			letGhostWalkToEndPosition(game.ghosts[0], Phase.PINKY);
+			letGhostWalkToEndPosition(ghosts[0], Phase.PINKY);
 			break;
 		case PINKY:
 			showGhostName("", "PINKY", Color.PINK, 11);
-			letGhostWalkToEndPosition(game.ghosts[1], Phase.INKY);
+			letGhostWalkToEndPosition(ghosts[1], Phase.INKY);
 			break;
 		case INKY:
 			showGhostName("", "INKY", Color.CYAN, 11);
-			letGhostWalkToEndPosition(game.ghosts[2], Phase.SUE);
+			letGhostWalkToEndPosition(ghosts[2], Phase.SUE);
 			break;
 		case SUE:
 			showGhostName("", "Sue", Color.ORANGE, 12);
-			letGhostWalkToEndPosition(game.ghosts[3], Phase.MSPACMAN);
+			letGhostWalkToEndPosition(ghosts[3], Phase.MSPACMAN);
 			break;
 		case MSPACMAN:
 			showPacName();
-			letMsPacManWalkToEndPosition(game.pac, Phase.END);
+			letMsPacManWalkToEndPosition(pac, Phase.END);
 			break;
 		case END:
 			showPacName();

@@ -53,10 +53,6 @@ public abstract class AbstractPacManGameScene implements PacManGameScene {
 	}
 
 	@Override
-	public void update() {
-	}
-
-	@Override
 	public Scene getFXScene() {
 		return scene;
 	}

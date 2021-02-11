@@ -13,13 +13,9 @@ public class PacManGameIntroScene extends AbstractPacManGameScene {
 
 	@Override
 	public void render() {
-		fill(Color.BLUE);
-	}
-
-	@Override
-	public void update() {
 		if (game.state.ticksRun() == God.clock.sec(5)) {
 			game.attractMode = true;
 		}
+		fill(Color.BLUE);
 	}
 }
