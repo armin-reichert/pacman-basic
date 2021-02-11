@@ -1,4 +1,4 @@
-package de.amr.games.pacman.ui.swing.mspacman.rendering;
+package de.amr.games.pacman.ui.swing.rendering.mspacman;
 
 import static de.amr.games.pacman.model.GhostState.DEAD;
 import static de.amr.games.pacman.model.GhostState.ENTERING_HOUSE;
@@ -22,7 +22,7 @@ import de.amr.games.pacman.model.Ghost;
 import de.amr.games.pacman.model.Pac;
 import de.amr.games.pacman.ui.PacManGameAnimations;
 import de.amr.games.pacman.ui.swing.assets.Spritesheet;
-import de.amr.games.pacman.ui.swing.rendering.SpriteBasedRendering;
+import de.amr.games.pacman.ui.swing.rendering.common.SpriteBasedRendering;
 
 /**
  * Rendering for the Ms. Pac-Man game.

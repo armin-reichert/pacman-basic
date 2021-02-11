@@ -11,7 +11,7 @@ import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
  * 
  * @author Armin Reichert
  */
-public class PacManGameApp {
+public class PacManGameAppSwing {
 
 	static class Options {
 

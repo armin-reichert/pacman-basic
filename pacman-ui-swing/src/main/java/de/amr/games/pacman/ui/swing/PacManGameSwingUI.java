@@ -38,19 +38,20 @@ import de.amr.games.pacman.ui.PacManGameAnimations;
 import de.amr.games.pacman.ui.PacManGameUI;
 import de.amr.games.pacman.ui.swing.assets.AssetLoader;
 import de.amr.games.pacman.ui.swing.input.Keyboard;
-import de.amr.games.pacman.ui.swing.mspacman.rendering.MsPacManGameSpriteBasedRendering;
-import de.amr.games.pacman.ui.swing.mspacman.scene.MsPacManGameIntroScene;
-import de.amr.games.pacman.ui.swing.mspacman.scene.MsPacManGamePlayScene;
-import de.amr.games.pacman.ui.swing.mspacman.scene.MsPacManIntermission1_TheyMeet;
-import de.amr.games.pacman.ui.swing.mspacman.scene.MsPacManIntermission2_TheChase;
-import de.amr.games.pacman.ui.swing.mspacman.scene.MsPacManIntermission3_Junior;
-import de.amr.games.pacman.ui.swing.pacman.rendering.PacManGameSpriteBasedRendering;
-import de.amr.games.pacman.ui.swing.pacman.scene.PacManGameIntermission1;
-import de.amr.games.pacman.ui.swing.pacman.scene.PacManGameIntermission2;
-import de.amr.games.pacman.ui.swing.pacman.scene.PacManGameIntermission3;
-import de.amr.games.pacman.ui.swing.pacman.scene.PacManGameIntroScene;
-import de.amr.games.pacman.ui.swing.pacman.scene.PacManGamePlayScene;
-import de.amr.games.pacman.ui.swing.rendering.DebugRendering;
+import de.amr.games.pacman.ui.swing.rendering.common.DebugRendering;
+import de.amr.games.pacman.ui.swing.rendering.mspacman.MsPacManGameSpriteBasedRendering;
+import de.amr.games.pacman.ui.swing.rendering.pacman.PacManGameSpriteBasedRendering;
+import de.amr.games.pacman.ui.swing.scene.PacManGameScene;
+import de.amr.games.pacman.ui.swing.scene.mspacman.MsPacManGameIntroScene;
+import de.amr.games.pacman.ui.swing.scene.mspacman.MsPacManGamePlayScene;
+import de.amr.games.pacman.ui.swing.scene.mspacman.MsPacManIntermission1_TheyMeet;
+import de.amr.games.pacman.ui.swing.scene.mspacman.MsPacManIntermission2_TheChase;
+import de.amr.games.pacman.ui.swing.scene.mspacman.MsPacManIntermission3_Junior;
+import de.amr.games.pacman.ui.swing.scene.pacman.PacManGameIntermission1;
+import de.amr.games.pacman.ui.swing.scene.pacman.PacManGameIntermission2;
+import de.amr.games.pacman.ui.swing.scene.pacman.PacManGameIntermission3;
+import de.amr.games.pacman.ui.swing.scene.pacman.PacManGameIntroScene;
+import de.amr.games.pacman.ui.swing.scene.pacman.PacManGamePlayScene;
 
 /**
  * Swing UI for Pac-Man game.
