@@ -144,7 +144,7 @@ public class PacManGameIntroScene implements PacManGameScene {
 
 	private void introduceGhost(Graphics2D g, int id, int y, boolean showCharacter, boolean showNickname) {
 		Graphics2D g2 = rendering.smoothGC(g);
-		g2.drawImage(rendering.assets.ghostImage(id, RIGHT), t(3), y - 4, null);
+		g2.drawImage(rendering.assets.ghostImageByGhostByDir(id, RIGHT), t(3), y - 4, null);
 		if (showCharacter) {
 			String character = rendering.translations.getString("CLASSIC.GHOST." + id + ".CHARACTER");
 			Color color = rendering.assets.ghostColor(id);

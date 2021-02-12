@@ -6,15 +6,15 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * Timed sequence of things, for example of images.
+ * Timed sequence of things, for example of images or spritesheet regions
  * 
  * @author Armin Reichert
  */
 public class Animation<T> {
 
-	static class OneFrameAnimation<TT> extends Animation<TT> {
+	static class SingleFrameAnimation<TT> extends Animation<TT> {
 
-		public OneFrameAnimation(TT thing) {
+		public SingleFrameAnimation(TT thing) {
 			things = Collections.singletonList(thing);
 		}
 
@@ -32,7 +32,7 @@ public class Animation<T> {
 	}
 
 	public static <TT> Animation<TT> ofSingle(TT thing) {
-		return new OneFrameAnimation<TT>(thing);
+		return new SingleFrameAnimation<TT>(thing);
 	}
 
 	public static Animation<Boolean> pulse() {

@@ -38,7 +38,7 @@ public class Spritesheet {
 		gridSize = rasterSize;
 	}
 
-	protected V2i v2(int x, int y) {
+	protected V2i tileAt(int x, int y) {
 		return new V2i(x, y);
 	}
 

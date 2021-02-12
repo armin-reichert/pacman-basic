@@ -41,51 +41,51 @@ class DefaultPacManGameRendering extends DefaultGameRendering {
 
 	@Override
 	public Animation<BufferedImage> pacMunchingToDir(Direction dir) {
-		return assets.pacMunching.get(dir);
+		return assets.pacMunchingAnimByDir.get(dir);
 	}
 
 	@Override
 	public Animation<BufferedImage> pacDying() {
-		return assets.pacCollapsing;
+		return assets.pacCollapsingAnim;
 	}
 
 	@Override
 	public Animation<BufferedImage> ghostKickingToDir(Ghost ghost, Direction dir) {
-		return assets.ghostsWalking.get(ghost.id).get(dir);
+		return assets.ghostsWalkingAnimsByGhost.get(ghost.id).get(dir);
 	}
 
 	@Override
 	public Animation<BufferedImage> ghostFrightenedToDir(Ghost ghost, Direction dir) {
-		return assets.ghostBlue;
+		return assets.ghostBlueAnim;
 	}
 
 	@Override
 	public Animation<BufferedImage> ghostFlashing() {
-		return assets.ghostFlashing;
+		return assets.ghostFlashingAnim;
 	}
 
 	@Override
 	public Animation<BufferedImage> ghostReturningHomeToDir(Ghost ghost, Direction dir) {
-		return assets.ghostEyes.get(dir);
+		return assets.ghostEyesAnimsByDir.get(dir);
 	}
 
 	@Override
 	public Animation<BufferedImage> mazeFlashing(int mazeNumber) {
-		return assets.mazeFlashing;
+		return assets.mazeFlashingAnim;
 	}
 
 	@Override
 	public Animation<Boolean> energizerBlinking() {
-		return assets.energizerBlinking;
+		return assets.energizerBlinkingAnim;
 	}
 
 	@Override
 	public BufferedImage bonusSprite(Bonus bonus, PacManGameModel game) {
 		if (bonus.edibleTicksLeft > 0) {
-			return assets.spriteAt(assets.symbolSpriteLocation[bonus.symbol]);
+			return assets.spriteAt(assets.symbolTiles[bonus.symbol]);
 		}
 		if (bonus.eatenTicksLeft > 0) {
-			return assets.numbers.get(bonus.points);
+			return assets.numberSprites.get(bonus.points);
 		}
 		return null;
 	}
@@ -112,7 +112,7 @@ class DefaultPacManGameRendering extends DefaultGameRendering {
 	@Override
 	public BufferedImage ghostSprite(Ghost ghost, PacManGameModel game) {
 		if (ghost.bounty > 0) {
-			return assets.numbers.get(ghost.bounty);
+			return assets.numberSprites.get(ghost.bounty);
 		}
 		if (ghost.is(DEAD) || ghost.is(ENTERING_HOUSE)) {
 			return ghostReturningHomeToDir(ghost, ghost.dir).animate();
@@ -128,12 +128,12 @@ class DefaultPacManGameRendering extends DefaultGameRendering {
 
 	@Override
 	public void drawFullMaze(Graphics2D g, PacManGameModel game, int mazeNumber, int x, int y) {
-		g.drawImage(assets.mazeFull, x, y, null);
+		g.drawImage(assets.mazeFullImage, x, y, null);
 	}
 
 	@Override
 	public void drawEmptyMaze(Graphics2D g, PacManGameModel game, int mazeNumber, int x, int y) {
-		g.drawImage(assets.mazeEmpty, x, y, null);
+		g.drawImage(assets.mazeEmptyImage, x, y, null);
 	}
 
 	@Override
@@ -174,7 +174,7 @@ class DefaultPacManGameRendering extends DefaultGameRendering {
 		int x = rightX;
 		int firstLevelNumber = Math.max(1, game.currentLevelNumber - 6);
 		for (int levelNumber = firstLevelNumber; levelNumber <= game.currentLevelNumber; ++levelNumber) {
-			V2i symbolTile = assets.symbolSpriteLocation[game.levelSymbols.get(levelNumber - 1)];
+			V2i symbolTile = assets.symbolTiles[game.levelSymbols.get(levelNumber - 1)];
 			g2.drawImage(assets.spriteAt(symbolTile), x, y, null);
 			x -= t(2);
 		}
