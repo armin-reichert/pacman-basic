@@ -19,6 +19,7 @@ import de.amr.games.pacman.sound.PacManGameSound;
 import de.amr.games.pacman.sound.SoundManager;
 import de.amr.games.pacman.ui.swing.PacManGameScene;
 import de.amr.games.pacman.ui.swing.assets.Spritesheet;
+import de.amr.games.pacman.ui.swing.rendering.DefaultGameRendering;
 
 /**
  * Third intermission scene: Blinky in shred dress chases Pac-Man, comes back half-naked drawing
@@ -33,7 +34,7 @@ public class PacManGameIntermission3 implements PacManGameScene {
 	}
 
 	private final V2i size;
-	private final DefaultPacManGameRendering rendering;
+	private final DefaultGameRendering rendering;
 	private final SoundManager soundManager;
 	private final PacManGame game;
 
@@ -123,7 +124,7 @@ public class PacManGameIntermission3 implements PacManGameScene {
 	public void draw(Graphics2D g) {
 		Graphics2D g2 = rendering.smoothGC(g);
 		rendering.drawLevelCounter(g2, game, t(game.level.world.xTiles() - 4), size.y - t(2));
-		rendering.drawGuy(g2, pac, game);
+		rendering.drawPac(g2, pac, game);
 		drawBlinky(g2);
 		g2.dispose();
 	}

@@ -1,7 +1,5 @@
 package de.amr.games.pacman.ui.swing.pacman;
 
-import java.util.ResourceBundle;
-
 import de.amr.games.pacman.controller.PacManGameState;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.PacManGame;
@@ -23,7 +21,7 @@ public class PacManGameScenes {
 	private PacManGameScene intermissionScene3;
 
 	public PacManGameScenes() {
-		rendering = new DefaultPacManGameRendering(ResourceBundle.getBundle("localization.translation"));
+		rendering = new DefaultPacManGameRendering();
 		soundManager = new PacManGameSoundManager(PacManGameSoundAssets::getPacManSoundURL);
 	}
 

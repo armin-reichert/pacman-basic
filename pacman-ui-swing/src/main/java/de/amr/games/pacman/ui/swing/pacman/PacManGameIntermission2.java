@@ -19,6 +19,7 @@ import de.amr.games.pacman.sound.PacManGameSound;
 import de.amr.games.pacman.sound.SoundManager;
 import de.amr.games.pacman.ui.swing.PacManGameScene;
 import de.amr.games.pacman.ui.swing.assets.Spritesheet;
+import de.amr.games.pacman.ui.swing.rendering.DefaultGameRendering;
 
 /**
  * Second intermission scene: Blinky pursues Pac but kicks a nail that tears his dress apart.
@@ -32,7 +33,7 @@ public class PacManGameIntermission2 implements PacManGameScene {
 	}
 
 	private final V2i size;
-	private final DefaultPacManGameRendering rendering;
+	private final DefaultGameRendering rendering;
 	private final SoundManager soundManager;
 	private final PacManGame game;
 
@@ -171,7 +172,7 @@ public class PacManGameIntermission2 implements PacManGameScene {
 		Graphics2D g2 = rendering.smoothGC(g);
 		rendering.drawLevelCounter(g2, game, t(game.level.world.xTiles() - 4), size.y - t(2));
 		g2.drawImage(nail, nailPosition.x, nailPosition.y, null);
-		rendering.drawGuy(g, pac, game);
+		rendering.drawPac(g, pac, game);
 		drawBlinky(g2);
 		g2.dispose();
 	}
@@ -182,19 +183,19 @@ public class PacManGameIntermission2 implements PacManGameScene {
 		switch (phase) {
 		case APPROACHING_NAIL:
 		case HITTING_NAIL:
-			rendering.drawGuy(g, blinky, game);
+			rendering.drawGhost(g, blinky, game);
 			break;
 		case STRETCHED_1:
 			rendering.drawImage(g, stretchedDress[0], blinkySpriteRightEdge - 8, baselineY, true);
-			rendering.drawGuy(g, blinky, game);
+			rendering.drawGhost(g, blinky, game);
 			break;
 		case STRETCHED_2:
 			rendering.drawImage(g, stretchedDress[1], blinkySpriteRightEdge - 4, baselineY, true);
-			rendering.drawGuy(g, blinky, game);
+			rendering.drawGhost(g, blinky, game);
 			break;
 		case STRETCHED_3:
 			rendering.drawImage(g, stretchedDress[2], blinkySpriteRightEdge - 2, baselineY, true);
-			rendering.drawGuy(g, blinky, game);
+			rendering.drawGhost(g, blinky, game);
 			break;
 		case LOOKING_UP:
 			rendering.drawImage(g, blinkyLookingUp, blinky.position.x - 4, blinky.position.y - 4, true);

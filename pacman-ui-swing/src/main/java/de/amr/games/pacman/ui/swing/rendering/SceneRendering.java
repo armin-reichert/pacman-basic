@@ -4,7 +4,9 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
-import de.amr.games.pacman.model.Creature;
+import de.amr.games.pacman.model.Bonus;
+import de.amr.games.pacman.model.Ghost;
+import de.amr.games.pacman.model.Pac;
 import de.amr.games.pacman.model.PacManGameModel;
 
 /**
@@ -28,7 +30,21 @@ public interface SceneRendering {
 
 	void drawMaze(Graphics2D g, PacManGameModel game, int x, int y);
 
-	void drawGuy(Graphics2D g, Creature guy, PacManGameModel game);
+	void drawEmptyMaze(Graphics2D g, PacManGameModel game, int mazeNumber, int x, int y);
+
+	void drawFullMaze(Graphics2D g, PacManGameModel game, int mazeNumber, int x, int y);
+
+	void drawPac(Graphics2D g, Pac pac, PacManGameModel game);
+
+	void drawGhost(Graphics2D g, Ghost ghost, PacManGameModel game);
+
+	void drawBonus(Graphics2D g, Bonus bonus, PacManGameModel game);
+
+	default Graphics2D smoothGC(Graphics2D g) {
+		Graphics2D g2 = (Graphics2D) g.create();
+		g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+		return g2;
+	}
 
 	default void drawImage(Graphics2D g, BufferedImage image, float x, float y, boolean smooth) {
 		if (smooth) {

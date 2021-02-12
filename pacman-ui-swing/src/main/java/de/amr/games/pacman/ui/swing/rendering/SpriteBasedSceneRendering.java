@@ -1,9 +1,5 @@
 package de.amr.games.pacman.ui.swing.rendering;
 
-import static de.amr.games.pacman.world.PacManGameWorld.HTS;
-
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
 import de.amr.games.pacman.model.Bonus;
@@ -23,24 +19,7 @@ public interface SpriteBasedSceneRendering extends SceneRendering {
 
 	BufferedImage pacSprite(Pac guy, PacManGameModel game);
 
-	default Graphics2D smoothGC(Graphics2D g) {
-		Graphics2D g2 = (Graphics2D) g.create();
-		g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-		return g2;
-	}
-
-	@Override
-	default void drawGuy(Graphics2D g, Creature guy, PacManGameModel game) {
-		if (guy.visible) {
-			BufferedImage sprite = sprite(guy, game);
-			if (sprite != null) {
-				int dx = sprite.getWidth() / 2 - HTS, dy = sprite.getHeight() / 2 - HTS;
-				Graphics2D g2 = smoothGC(g);
-				g2.drawImage(sprite, (int) guy.position.x - dx, (int) guy.position.y - dy, null);
-				g2.dispose();
-			}
-		}
-	}
+	BufferedImage lifeSprite();
 
 	default BufferedImage sprite(Creature guy, PacManGameModel game) {
 		// we don't need polymorphism yet

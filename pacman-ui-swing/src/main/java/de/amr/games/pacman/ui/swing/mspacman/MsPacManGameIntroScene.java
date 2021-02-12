@@ -97,9 +97,9 @@ public class MsPacManGameIntroScene implements PacManGameScene {
 		g.drawString("\"MS PAC-MAN\"", t(8), t(5));
 		drawAnimatedFrame(g, 32, 16, game.state.ticksRun());
 		for (Ghost ghost : ghosts) {
-			rendering.drawGuy(g, ghost, game);
+			rendering.drawGhost(g, ghost, game);
 		}
-		rendering.drawGuy(g, pac, game);
+		rendering.drawPac(g, pac, game);
 
 		switch (phase) {
 		case BEGIN:

@@ -44,6 +44,7 @@ public class MsPacManGameAssets extends Spritesheet {
 	final Map<Integer, V2i> bonusValuesSSL;
 	final Map<Integer, V2i> bountyNumbersSSL;
 
+	final List<BufferedImage> mazesEmpty;
 	final List<BufferedImage> mazesFull;
 	final List<Animation<BufferedImage>> mazesFlashing;
 	final Animation<Boolean> energizerBlinking;
@@ -63,14 +64,15 @@ public class MsPacManGameAssets extends Spritesheet {
 		scoreFont = font("/emulogic.ttf", 8);
 
 		// Left part of spritesheet contains the 6 mazes, rest is on the right
+		mazesEmpty = new ArrayList<>(6);
 		mazesFull = new ArrayList<>(6);
 		mazesFlashing = new ArrayList<>(6);
 		for (int i = 0; i < 6; ++i) {
 			mazesFull.add(sheet.getSubimage(0, i * 248, 226, 248));
-			BufferedImage mazeEmptyNormal = sheet.getSubimage(226, i * 248, 226, 248);
-			BufferedImage mazeEmpzyBright = createBrightEffect(mazeEmptyNormal, getMazeWallBorderColor(i),
+			mazesEmpty.add(sheet.getSubimage(226, i * 248, 226, 248));
+			BufferedImage mazeEmpzyBright = createBrightEffect(mazesEmpty.get(i), getMazeWallBorderColor(i),
 					getMazeWallColor(i));
-			mazesFlashing.add(Animation.of(mazeEmpzyBright, mazeEmptyNormal).frameDuration(15));
+			mazesFlashing.add(Animation.of(mazeEmpzyBright, mazesEmpty.get(i)).frameDuration(15));
 		}
 
 		energizerBlinking = Animation.pulse().frameDuration(10);
