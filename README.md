@@ -6,13 +6,13 @@ Game levels, timing, ghost "AI" etc. follow the details given in the highly appr
 
 The game is controlled by a finite-state machine with states INTRO, READY, HUNTING, CHANGING_LEVEL, PACMAN_DYING, GHOST_DYING, GAME_OVER and INTERMISSION. 
 
-The user interface is decoupled from the game controller by an interface. A Swing implementation of this interface is provided in the subproject `pacman-ui-swing`.
+The user interface is decoupled from the game controller by an interface and can be reused for different UI implementation variants. Currently, a Swing and a JavaFX implementation are provided, see subprojects `pacman-ui-swing` and `pacman-ui-fx`.
 
-The code here is more to the point than that in my other state-machine focussed [Pac-Man implementation](https://github.com/armin-reichert/pacman).
+The code is more "to the point" than that in my other state-machine focussed [Pac-Man implementation](https://github.com/armin-reichert/pacman).
 
 YouTube: https://www.youtube.com/watch?v=oZh2oAnoJbk
 
-To build the executable, change to the `pacman-ui-swing` directory and enter `mvn clean install`.
+To build the executable, change to the subproject top directories and execute `mvn clean install` in each.
 
 ### Intro scene
 <img src="pacman/doc/intro.png">
