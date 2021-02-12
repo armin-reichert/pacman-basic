@@ -19,9 +19,6 @@ public interface PacManGameScene {
 	default void start() {
 	}
 
-	default void update() {
-	}
-
 	default void end() {
 	}
 

@@ -161,7 +161,6 @@ public class PacManGameSwingUI implements PacManGameUI {
 			currentScene = scene;
 			currentScene.start();
 		}
-		currentScene.update();
 	}
 
 	@Override

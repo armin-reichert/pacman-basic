@@ -35,14 +35,9 @@ public class MsPacManIntermission1_TheyMeet implements PacManGameScene {
 	}
 
 	@Override
-	public void update() {
+	public void draw(Graphics2D g) {
 		if (game.state.ticksRun() == God.clock.sec(10)) {
 			game.state.duration(0);
 		}
-	}
-
-	@Override
-	public void draw(Graphics2D g) {
-
 	}
 }

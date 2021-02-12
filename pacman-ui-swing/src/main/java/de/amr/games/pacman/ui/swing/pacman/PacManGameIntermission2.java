@@ -113,8 +113,7 @@ public class PacManGameIntermission2 implements PacManGameScene {
 		return timer == -1;
 	}
 
-	@Override
-	public void update() {
+	private void update() {
 		int distFromNail = (int) (blinky.position.x - nailPosition.x) - 6;
 		switch (phase) {
 		case APPROACHING_NAIL:
@@ -169,6 +168,7 @@ public class PacManGameIntermission2 implements PacManGameScene {
 
 	@Override
 	public void draw(Graphics2D g) {
+		update();
 		Graphics2D g2 = rendering.smoothGC(g);
 		rendering.drawLevelCounter(g2, game, t(game.level.world.xTiles() - 4), size.y - t(2));
 		g2.drawImage(nail, nailPosition.x, nailPosition.y, null);

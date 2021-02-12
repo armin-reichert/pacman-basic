@@ -94,8 +94,7 @@ public class PacManGameIntermission3 implements PacManGameScene {
 		phase = Phase.CHASING_PACMAN;
 	}
 
-	@Override
-	public void update() {
+	private void update() {
 		switch (phase) {
 		case CHASING_PACMAN:
 			if (blinky.position.x == -50) {
@@ -122,6 +121,7 @@ public class PacManGameIntermission3 implements PacManGameScene {
 
 	@Override
 	public void draw(Graphics2D g) {
+		update();
 		Graphics2D g2 = rendering.smoothGC(g);
 		rendering.drawLevelCounter(g2, game, t(game.level.world.xTiles() - 4), size.y - t(2));
 		rendering.drawPac(g2, pac, game);
