@@ -18,10 +18,10 @@ import de.amr.games.pacman.ui.swing.rendering.DebugRendering;
 public class MsPacManGamePlayScene implements PacManGameScene {
 
 	private final V2i size;
-	private final MsPacManGameSpriteBasedRendering rendering;
+	private final DefaultMsPacManGameRendering rendering;
 	private final PacManGameModel game;
 
-	public MsPacManGamePlayScene(V2i size, MsPacManGameSpriteBasedRendering rendering, PacManGameModel game) {
+	public MsPacManGamePlayScene(V2i size, DefaultMsPacManGameRendering rendering, PacManGameModel game) {
 		this.size = size;
 		this.rendering = rendering;
 		this.game = game;

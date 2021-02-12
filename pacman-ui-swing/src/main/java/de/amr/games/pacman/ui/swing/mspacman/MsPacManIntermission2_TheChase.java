@@ -12,11 +12,11 @@ import de.amr.games.pacman.ui.swing.PacManGameScene;
 public class MsPacManIntermission2_TheChase implements PacManGameScene {
 
 	private final V2i size;
-	private final MsPacManGameSpriteBasedRendering rendering;
+	private final DefaultMsPacManGameRendering rendering;
 	private final SoundManager soundManager;
 	private final PacManGameModel game;
 
-	public MsPacManIntermission2_TheChase(V2i size, MsPacManGameSpriteBasedRendering rendering, SoundManager soundManager,
+	public MsPacManIntermission2_TheChase(V2i size, DefaultMsPacManGameRendering rendering, SoundManager soundManager,
 			PacManGameModel game) {
 		this.size = size;
 		this.rendering = rendering;

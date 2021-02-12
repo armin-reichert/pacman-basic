@@ -33,7 +33,7 @@ public class PacManGameIntermission3 implements PacManGameScene {
 	}
 
 	private final V2i size;
-	private final PacManGameSpriteBasedRendering rendering;
+	private final DefaultPacManGameRendering rendering;
 	private final SoundManager soundManager;
 	private final PacManGame game;
 
@@ -47,7 +47,7 @@ public class PacManGameIntermission3 implements PacManGameScene {
 	private Phase phase;
 	private long timer;
 
-	public PacManGameIntermission3(V2i size, PacManGameSpriteBasedRendering rendering, SoundManager soundManager, PacManGame game) {
+	public PacManGameIntermission3(V2i size, DefaultPacManGameRendering rendering, SoundManager soundManager, PacManGame game) {
 		this.size = size;
 		this.rendering = rendering;
 		this.soundManager = soundManager;

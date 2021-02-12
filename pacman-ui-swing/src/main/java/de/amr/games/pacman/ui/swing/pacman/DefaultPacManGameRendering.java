@@ -1,41 +1,47 @@
-package de.amr.games.pacman.ui.swing.mspacman;
+package de.amr.games.pacman.ui.swing.pacman;
 
 import static de.amr.games.pacman.model.GhostState.DEAD;
 import static de.amr.games.pacman.model.GhostState.ENTERING_HOUSE;
 import static de.amr.games.pacman.model.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.GhostState.LOCKED;
+import static de.amr.games.pacman.world.PacManGameWorld.HTS;
 import static de.amr.games.pacman.world.PacManGameWorld.TS;
 import static de.amr.games.pacman.world.PacManGameWorld.t;
 
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.util.ResourceBundle;
 
 import de.amr.games.pacman.controller.PacManGameState;
+import de.amr.games.pacman.heaven.God;
 import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.Direction;
-import de.amr.games.pacman.model.PacManGameModel;
+import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.Bonus;
 import de.amr.games.pacman.model.Ghost;
 import de.amr.games.pacman.model.Pac;
+import de.amr.games.pacman.model.PacManGameModel;
 import de.amr.games.pacman.ui.PacManGameAnimations;
 import de.amr.games.pacman.ui.swing.assets.Spritesheet;
 import de.amr.games.pacman.ui.swing.rendering.SpriteBasedSceneRendering;
 
 /**
- * Rendering for the Ms. Pac-Man game.
+ * Rendering for the classic Pac-Man game.
  * 
  * @author Armin Reichert
  */
-public class MsPacManGameSpriteBasedRendering implements SpriteBasedSceneRendering, PacManGameAnimations {
+class DefaultPacManGameRendering implements SpriteBasedSceneRendering, PacManGameAnimations {
 
-	public final MsPacManGameAssets assets;
+	public static boolean foodAnimationOn = false;
+
+	public final PacManGameAssets assets;
 	public final ResourceBundle translations;
 
-	public MsPacManGameSpriteBasedRendering(ResourceBundle bundle) {
-		assets = new MsPacManGameAssets();
+	public DefaultPacManGameRendering(ResourceBundle bundle) {
+		assets = new PacManGameAssets();
 		translations = bundle;
 	}
 
@@ -51,7 +57,7 @@ public class MsPacManGameSpriteBasedRendering implements SpriteBasedSceneRenderi
 
 	@Override
 	public Animation<BufferedImage> pacDying() {
-		return assets.pacSpinning;
+		return assets.pacCollapsing;
 	}
 
 	@Override
@@ -76,7 +82,7 @@ public class MsPacManGameSpriteBasedRendering implements SpriteBasedSceneRenderi
 
 	@Override
 	public Animation<BufferedImage> mazeFlashing(int mazeNumber) {
-		return assets.mazesFlashing.get(mazeNumber - 1);
+		return assets.mazeFlashing;
 	}
 
 	@Override
@@ -100,33 +106,96 @@ public class MsPacManGameSpriteBasedRendering implements SpriteBasedSceneRenderi
 	}
 
 	@Override
+	public void drawMaze(Graphics2D g, PacManGameModel game) {
+		if (mazeFlashing(1).hasStarted()) {
+			g.drawImage(mazeFlashing(1).animate(), 0, t(3), null);
+			return;
+		}
+		if (foodAnimationOn && game.state == PacManGameState.HUNTING) {
+			drawFoodAnimation(g, game);
+		} else {
+			drawFood(g, game);
+		}
+		game.level.world.tiles().filter(game.level::isFoodRemoved).forEach(tile -> {
+			g.setColor(Color.BLACK);
+			if (game.level.world.isEnergizerTile(tile)) {
+				hideEnergizer(g, tile);
+			} else {
+				g.fillRect(t(tile.x), t(tile.y), TS, TS);
+			}
+		});
+		if (energizerBlinking().isRunning() && energizerBlinking().animate()) {
+			game.level.world.energizerTiles().forEach(tile -> {
+				hideEnergizer(g, tile);
+			});
+		}
+		drawGuy(g, game.bonus, game);
+	}
+
+	private void hideEnergizer(Graphics2D g, V2i tile) {
+		g.setColor(Color.BLACK);
+		g.fillRect(t(tile.x) - 1, t(tile.y) - 1, TS + 2, TS + 2); // workaround for artifacts remaining
+	}
+
+	private void drawFood(Graphics2D g, PacManGameModel game) {
+		Graphics2D g2 = smoothGC(g);
+		g2.drawImage(assets.mazeFull, 0, t(3), null);
+		g2.dispose();
+		game.level.world.tiles().filter(game.level::containsEatenFood).forEach(tile -> {
+			g.setColor(Color.BLACK);
+			g.fillRect(t(tile.x), t(tile.y), TS, TS);
+		});
+	}
+
+	private void drawFoodAnimation(Graphics2D g, PacManGameModel game) {
+		g.drawImage(assets.mazeEmpty, 0, t(3), null);
+		game.level.world.tiles().filter(game.level::containsFood).forEach(tile -> {
+			if (game.level.world.isEnergizerTile(tile)) {
+				g.setColor(Color.PINK);
+				g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+				g.fillOval(t(tile.x), t(tile.y), TS, TS);
+				g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+			} else {
+				long z = tile.x + tile.y;
+				z += God.clock.ticksTotal / 15;
+				int r = (int) (z % HTS) - 1;
+				r = Math.max(1, r);
+				g.setColor(Color.PINK);
+				g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+				g.fillOval(t(tile.x) + HTS - r, t(tile.y) + HTS - r, 2 * r, 2 * r);
+				g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+			}
+		});
+	}
+
+	@Override
 	public void drawScore(Graphics2D g, PacManGameModel game) {
-		g.setFont(assets.getScoreFont());
-		g.translate(0, 2);
+		g.setFont(assets.scoreFont);
+		g.translate(0, 1);
 		g.setColor(Color.WHITE);
 		g.drawString(translations.getString("SCORE"), t(1), t(1));
 		g.drawString(translations.getString("HI_SCORE"), t(16), t(1));
 		g.translate(0, 1);
 		if (game.state != PacManGameState.INTRO && !game.attractMode) {
-			g.setColor(assets.getMazeWallColor(game.level.mazeNumber - 1));
+			g.setColor(Color.YELLOW);
 			g.drawString(String.format("%08d", game.score), t(1), t(2));
 			g.setColor(Color.LIGHT_GRAY);
 			g.drawString(String.format("L%02d", game.currentLevelNumber), t(9), t(2));
-			g.setColor(assets.getMazeWallColor(game.level.mazeNumber - 1));
+			g.setColor(Color.YELLOW);
 			g.drawString(String.format("%08d", game.highscorePoints), t(16), t(2));
 			g.setColor(Color.LIGHT_GRAY);
 			g.drawString(String.format("L%02d", game.highscoreLevel), t(24), t(2));
 		}
-		g.translate(0, -3);
+		g.translate(0, -2);
 	}
 
 	@Override
 	public void drawLivesCounter(Graphics2D g, PacManGameModel game, int x, int y) {
+		Graphics2D g2 = smoothGC(g);
 		int maxLivesDisplayed = 5;
 		int livesDisplayed = game.started ? game.lives - 1 : game.lives;
-		Graphics2D g2 = smoothGC(g);
 		for (int i = 0; i < Math.min(livesDisplayed, maxLivesDisplayed); ++i) {
-			g2.drawImage(assets.spriteAt(1, 0), x + t(2 * i), y, null);
+			g2.drawImage(assets.spriteAt(8, 1), x + t(2 * i), y, null);
 		}
 		if (game.lives > maxLivesDisplayed) {
 			g2.setColor(Color.YELLOW);
@@ -140,44 +209,28 @@ public class MsPacManGameSpriteBasedRendering implements SpriteBasedSceneRenderi
 	public void drawLevelCounter(Graphics2D g, PacManGameModel game, int rightX, int y) {
 		Graphics2D g2 = smoothGC(g);
 		int x = rightX;
-		for (int firstlevelNumber = 1; firstlevelNumber <= Math.min(game.currentLevelNumber, 7); ++firstlevelNumber) {
-			byte symbol = game.levelSymbols.get(firstlevelNumber - 1);
-			g2.drawImage(assets.spriteAt(assets.symbolsSSL[symbol]), x, y, null);
+		int firstLevelNumber = Math.max(1, game.currentLevelNumber - 6);
+		for (int levelNumber = firstLevelNumber; levelNumber <= game.currentLevelNumber; ++levelNumber) {
+			V2i symbolTile = assets.symbolSpriteLocation[game.levelSymbols.get(levelNumber - 1)];
+			g2.drawImage(assets.spriteAt(symbolTile), x, y, null);
 			x -= t(2);
 		}
 		g2.dispose();
 	}
 
 	@Override
-	public void drawMaze(Graphics2D g, PacManGameModel game) {
-		if (mazeFlashing(game.level.mazeNumber).hasStarted()) {
-			g.drawImage(mazeFlashing(game.level.mazeNumber).animate(), 0, t(3), null);
-			return;
-		}
-		g.drawImage(assets.mazesFull.get(game.level.mazeNumber - 1), 0, t(3), null);
-		game.level.world.tiles().filter(game.level::isFoodRemoved).forEach(tile -> {
-			g.setColor(Color.BLACK);
-			g.fillRect(t(tile.x), t(tile.y), TS, TS);
-		});
-		if (energizerBlinking().isRunning() && energizerBlinking().animate()) {
-			game.level.world.energizerTiles().forEach(tile -> {
-				g.setColor(Color.BLACK);
-				g.fillRect(t(tile.x) - 1, t(tile.y) - 1, TS + 2, TS + 2);
-			});
-		}
-		int dy = game.bonus.edibleTicksLeft > 0 ? assets.bonusJumps.animate() : 0;
-		g.translate(0, dy);
-		drawGuy(g, game.bonus, game);
-		g.translate(0, -dy);
-	}
-
-	@Override
 	public BufferedImage bonusSprite(Bonus bonus, PacManGameModel game) {
 		if (bonus.edibleTicksLeft > 0) {
-			return assets.spriteAt(assets.symbolsSSL[bonus.symbol]);
+			return assets.spriteAt(assets.symbolSpriteLocation[bonus.symbol]);
 		}
 		if (bonus.eatenTicksLeft > 0) {
-			return assets.spriteAt(assets.bonusValuesSSL.get(bonus.points));
+			if (bonus.points != 1000) {
+				return assets.numbers.get(bonus.points);
+			} else {
+				// this sprite is somewhat nasty
+				BufferedImage sprite = assets.numbers.get(1000);
+				return sprite; // TODO snip
+			}
 		}
 		return null;
 	}
@@ -187,13 +240,19 @@ public class MsPacManGameSpriteBasedRendering implements SpriteBasedSceneRenderi
 		if (pac.dead) {
 			return pacDying().hasStarted() ? pacDying().animate() : pacMunchingToDir(pac.dir).frame();
 		}
-		return pac.speed == 0 || !pac.couldMove ? pacMunchingToDir(pac.dir).frame(1) : pacMunchingToDir(pac.dir).animate();
+		if (pac.speed == 0) {
+			return pacMunchingToDir(pac.dir).frame(0);
+		}
+		if (!pac.couldMove) {
+			return pacMunchingToDir(pac.dir).frame(1);
+		}
+		return pacMunchingToDir(pac.dir).animate();
 	}
 
 	@Override
 	public BufferedImage ghostSprite(Ghost ghost, PacManGameModel game) {
 		if (ghost.bounty > 0) {
-			return assets.spriteAt(assets.bountyNumbersSSL.get(ghost.bounty));
+			return assets.numbers.get(ghost.bounty);
 		}
 		if (ghost.is(DEAD) || ghost.is(ENTERING_HOUSE)) {
 			return ghostReturningHomeToDir(ghost, ghost.dir).animate();
@@ -204,6 +263,6 @@ public class MsPacManGameSpriteBasedRendering implements SpriteBasedSceneRenderi
 		if (ghost.is(LOCKED) && game.pac.powerTicksLeft > 0) {
 			return ghostFrightenedToDir(ghost, ghost.dir).animate();
 		}
-		return ghostKickingToDir(ghost, ghost.wishDir).animate();
+		return ghostKickingToDir(ghost, ghost.wishDir).animate(); // Looks towards wish dir!
 	}
 }

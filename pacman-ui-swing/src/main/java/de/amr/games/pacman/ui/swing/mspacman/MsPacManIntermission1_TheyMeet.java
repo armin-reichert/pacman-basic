@@ -12,11 +12,11 @@ import de.amr.games.pacman.ui.swing.PacManGameScene;
 public class MsPacManIntermission1_TheyMeet implements PacManGameScene {
 
 	private final V2i size;
-	private final MsPacManGameSpriteBasedRendering rendering;
+	private final DefaultMsPacManGameRendering rendering;
 	private final SoundManager soundManager;
 	private final PacManGameModel game;
 
-	public MsPacManIntermission1_TheyMeet(V2i size, MsPacManGameSpriteBasedRendering rendering, SoundManager soundManager,
+	public MsPacManIntermission1_TheyMeet(V2i size, DefaultMsPacManGameRendering rendering, SoundManager soundManager,
 			PacManGameModel game) {
 		this.size = size;
 		this.rendering = rendering;

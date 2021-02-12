@@ -26,7 +26,7 @@ public class MsPacManGameIntroScene implements PacManGameScene {
 
 	private final V2i size;
 	private final PacManGameModel game;
-	private final MsPacManGameSpriteBasedRendering rendering;
+	private final DefaultMsPacManGameRendering rendering;
 
 	private final V2i frameTopLeftTile = new V2i(6, 8);
 	private final int belowFrame = t(17);
@@ -37,7 +37,7 @@ public class MsPacManGameIntroScene implements PacManGameScene {
 	private Phase phase;
 	private long phaseStartTime;
 
-	public MsPacManGameIntroScene(V2i size, MsPacManGameSpriteBasedRendering rendering, PacManGameModel game) {
+	public MsPacManGameIntroScene(V2i size, DefaultMsPacManGameRendering rendering, PacManGameModel game) {
 		this.game = game;
 		this.size = size;
 		this.rendering = rendering;

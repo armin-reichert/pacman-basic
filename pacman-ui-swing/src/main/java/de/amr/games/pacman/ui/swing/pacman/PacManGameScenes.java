@@ -13,7 +13,7 @@ import de.amr.games.pacman.ui.swing.PacManGameScene;
 
 public class PacManGameScenes {
 
-	public final PacManGameSpriteBasedRendering rendering;
+	public final DefaultPacManGameRendering rendering;
 	public final SoundManager soundManager;
 
 	private PacManGameIntroScene introScene;
@@ -23,7 +23,7 @@ public class PacManGameScenes {
 	private PacManGameScene intermissionScene3;
 
 	public PacManGameScenes() {
-		rendering = new PacManGameSpriteBasedRendering(ResourceBundle.getBundle("localization.translation"));
+		rendering = new DefaultPacManGameRendering(ResourceBundle.getBundle("localization.translation"));
 		soundManager = new PacManGameSoundManager(PacManGameSoundAssets::getPacManSoundURL);
 	}
 
