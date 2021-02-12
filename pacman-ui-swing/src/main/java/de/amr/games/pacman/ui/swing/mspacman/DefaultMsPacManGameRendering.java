@@ -153,7 +153,7 @@ class DefaultMsPacManGameRendering implements SpriteBasedSceneRendering, PacManG
 		int x = rightX;
 		for (int firstlevelNumber = 1; firstlevelNumber <= Math.min(game.currentLevelNumber, 7); ++firstlevelNumber) {
 			byte symbol = game.levelSymbols.get(firstlevelNumber - 1);
-			g2.drawImage(assets.spriteAt(assets.symbolsSSL[symbol]), x, y, null);
+			g2.drawImage(assets.spriteAt(assets.symbols[symbol]), x, y, null);
 			x -= t(2);
 		}
 		g2.dispose();
@@ -185,7 +185,7 @@ class DefaultMsPacManGameRendering implements SpriteBasedSceneRendering, PacManG
 	@Override
 	public BufferedImage bonusSprite(Bonus bonus, PacManGameModel game) {
 		if (bonus.edibleTicksLeft > 0) {
-			return assets.spriteAt(assets.symbolsSSL[bonus.symbol]);
+			return assets.spriteAt(assets.symbols[bonus.symbol]);
 		}
 		if (bonus.eatenTicksLeft > 0) {
 			return assets.spriteAt(assets.bonusValuesSSL.get(bonus.points));

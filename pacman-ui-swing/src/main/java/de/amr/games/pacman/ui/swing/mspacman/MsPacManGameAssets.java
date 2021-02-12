@@ -40,7 +40,7 @@ public class MsPacManGameAssets extends Spritesheet {
 		}
 	}
 
-	final V2i[] symbolsSSL; // Sprite Sheet Location
+	final V2i[] symbols;
 	final Map<Integer, V2i> bonusValuesSSL;
 	final Map<Integer, V2i> bountyNumbersSSL;
 
@@ -78,7 +78,7 @@ public class MsPacManGameAssets extends Spritesheet {
 		// Switch to right part of spritesheet
 		setOrigin(456, 0);
 
-		symbolsSSL = new V2i[] { v2(3, 0), v2(4, 0), v2(5, 0), v2(6, 0), v2(7, 0), v2(8, 0), v2(9, 0) };
+		symbols = new V2i[] { v2(3, 0), v2(4, 0), v2(5, 0), v2(6, 0), v2(7, 0), v2(8, 0), v2(9, 0) };
 
 		//@formatter:off
 		bonusValuesSSL = new HashMap<>();
