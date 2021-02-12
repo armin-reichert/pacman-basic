@@ -20,35 +20,21 @@ import java.awt.image.BufferStrategy;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.ResourceBundle;
 
 import javax.swing.JFrame;
 import javax.swing.Timer;
 
 import de.amr.games.pacman.controller.PacManGameController;
-import de.amr.games.pacman.controller.PacManGameState;
 import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.MsPacManGame;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.PacManGameModel;
-import de.amr.games.pacman.sound.PacManGameSoundAssets;
-import de.amr.games.pacman.sound.PacManGameSoundManager;
 import de.amr.games.pacman.sound.SoundManager;
 import de.amr.games.pacman.ui.PacManGameAnimations;
 import de.amr.games.pacman.ui.PacManGameUI;
-import de.amr.games.pacman.ui.swing.mspacman.MsPacManGameIntroScene;
-import de.amr.games.pacman.ui.swing.mspacman.MsPacManGamePlayScene;
-import de.amr.games.pacman.ui.swing.mspacman.MsPacManGameSpriteBasedRendering;
-import de.amr.games.pacman.ui.swing.mspacman.MsPacManIntermission1_TheyMeet;
-import de.amr.games.pacman.ui.swing.mspacman.MsPacManIntermission2_TheChase;
-import de.amr.games.pacman.ui.swing.mspacman.MsPacManIntermission3_Junior;
-import de.amr.games.pacman.ui.swing.pacman.PacManGameIntermission1;
-import de.amr.games.pacman.ui.swing.pacman.PacManGameIntermission2;
-import de.amr.games.pacman.ui.swing.pacman.PacManGameIntermission3;
-import de.amr.games.pacman.ui.swing.pacman.PacManGameIntroScene;
-import de.amr.games.pacman.ui.swing.pacman.PacManGamePlayScene;
-import de.amr.games.pacman.ui.swing.pacman.PacManGameSpriteBasedRendering;
+import de.amr.games.pacman.ui.swing.mspacman.MsPacManGameScenes;
+import de.amr.games.pacman.ui.swing.pacman.PacManGameScenes;
 
 /**
  * A Swing implementation of the Pac-Man game UI interface.
@@ -71,35 +57,25 @@ public class PacManGameSwingUI implements PacManGameUI {
 	private final Canvas canvas;
 	private final Keyboard keyboard;
 
-	private final ResourceBundle translations = ResourceBundle.getBundle("localization.translation");
+	private final PacManGameScenes pacManGameScenes;
+	private final MsPacManGameScenes msPacManGameScenes;
 
-	private final PacManGameSpriteBasedRendering pacManRendering;
-	private final SoundManager pacManSoundManager;
-
-	private final MsPacManGameSpriteBasedRendering msPacManRendering;
-	private final SoundManager msPacManSoundManager;
+	private PacManGameModel game;
+	private PacManGameScene currentScene;
 
 	private final List<String> flashMessages = new ArrayList<>();
 	private long flashMessageTicksLeft;
 
 	private boolean muted;
 
-	private PacManGameModel game;
-
-	private PacManGameScene currentScene;
-
-	private PacManGameIntroScene pacManIntroScene;
-	private PacManGamePlayScene pacManClassicPlayScene;
-	private PacManGameScene[] pacManIntermissions = new PacManGameScene[3];
-
-	private MsPacManGameIntroScene msPacManIntroScene;
-	private MsPacManGamePlayScene msPacManPlayScene;
-	private PacManGameScene[] msPacManIntermissions = new PacManGameScene[3];
-
 	public PacManGameSwingUI(PacManGameController controller, int tilesX, int tilesY, double scalingFactor) {
 		scaling = (float) scalingFactor;
 		unscaledSize_px = new V2i(tilesX * TS, tilesY * TS);
 		scaledSize_px = new V2f(unscaledSize_px).scaled(this.scaling).toV2i();
+
+		canvas = new Canvas();
+		canvas.setSize(scaledSize_px.x, scaledSize_px.y);
+		canvas.setFocusable(false);
 
 		window = new JFrame();
 		window.setTitle("Pac-Man");
@@ -107,7 +83,6 @@ public class PacManGameSwingUI implements PacManGameUI {
 		window.setFocusable(true);
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		window.setIconImage(AssetLoader.image("/pacman/graphics/pacman.png"));
-
 		window.addKeyListener(new KeyAdapter() {
 
 			@Override
@@ -115,7 +90,6 @@ public class PacManGameSwingUI implements PacManGameUI {
 				handleKeyboardInput(e);
 			}
 		});
-
 		window.addWindowListener(new WindowAdapter() {
 
 			@Override
@@ -123,6 +97,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 				controller.exitGame();
 			}
 		});
+		window.getContentPane().add(canvas);
 
 		keyboard = new Keyboard(window);
 
@@ -130,20 +105,23 @@ public class PacManGameSwingUI implements PacManGameUI {
 				e -> window.setTitle(String.format("Pac-Man / Ms. Pac-Man (%d fps)", clock.frequency)));
 		titleUpdateTimer.start();
 
-		canvas = new Canvas();
-		canvas.setSize(scaledSize_px.x, scaledSize_px.y);
-		canvas.setFocusable(false);
-		window.getContentPane().add(canvas);
-
-		pacManRendering = new PacManGameSpriteBasedRendering(translations);
-		pacManSoundManager = new PacManGameSoundManager(PacManGameSoundAssets::getPacManSoundURL);
-
-		msPacManRendering = new MsPacManGameSpriteBasedRendering(translations);
-		msPacManSoundManager = new PacManGameSoundManager(PacManGameSoundAssets::getMsPacManSoundURL);
-
+		pacManGameScenes = new PacManGameScenes();
+		msPacManGameScenes = new MsPacManGameScenes();
 		setGame(controller.getGame());
 
-		log("Pac-Man game Swing UI created");
+		log("Pac-Man Swing UI created");
+	}
+
+	@Override
+	public void setGame(PacManGameModel newGame) {
+		if (newGame instanceof PacManGame) {
+			pacManGameScenes.createScenes((PacManGame) newGame, unscaledSize_px);
+		} else if (newGame instanceof MsPacManGame) {
+			msPacManGameScenes.createScenes((MsPacManGame) newGame, unscaledSize_px);
+		} else {
+			throw new IllegalArgumentException("Cannot set game, game is not supported: " + newGame);
+		}
+		this.game = newGame;
 	}
 
 	@Override
@@ -192,9 +170,9 @@ public class PacManGameSwingUI implements PacManGameUI {
 	@Override
 	public Optional<PacManGameAnimations> animations() {
 		if (game instanceof MsPacManGame) {
-			return Optional.of(msPacManRendering);
+			return Optional.of(msPacManGameScenes.rendering);
 		} else {
-			return Optional.of(pacManRendering);
+			return Optional.of(pacManGameScenes.rendering);
 		}
 	}
 
@@ -205,28 +183,15 @@ public class PacManGameSwingUI implements PacManGameUI {
 			return Optional.empty();
 		}
 		if (game instanceof MsPacManGame) {
-			return Optional.ofNullable(msPacManSoundManager);
+			return Optional.ofNullable(msPacManGameScenes.soundManager);
 		} else {
-			return Optional.ofNullable(pacManSoundManager);
+			return Optional.ofNullable(pacManGameScenes.soundManager);
 		}
 	}
 
 	@Override
 	public void mute(boolean b) {
 		this.muted = b;
-	}
-
-	@Override
-	public void setGame(PacManGameModel newGame) {
-		if (newGame == null) {
-			throw new IllegalArgumentException("Cannot set game, game is null");
-		}
-		this.game = newGame;
-		if (game instanceof PacManGame) {
-			createPacManScenes();
-		} else {
-			createMsPacManScenes();
-		}
 	}
 
 	@Override
@@ -237,7 +202,8 @@ public class PacManGameSwingUI implements PacManGameUI {
 	}
 
 	private void updateScene() {
-		PacManGameScene scene = game instanceof PacManGame ? selectPacManScene() : selectMsPacManScene();
+		PacManGameScene scene = game instanceof PacManGame ? pacManGameScenes.selectScene(game)
+				: msPacManGameScenes.selectScene(game);
 		if (currentScene != scene) {
 			if (currentScene != null) {
 				currentScene.end();
@@ -248,49 +214,6 @@ public class PacManGameSwingUI implements PacManGameUI {
 			currentScene.start();
 		}
 		currentScene.update();
-	}
-
-	private void createPacManScenes() {
-		PacManGame pacManGame = (PacManGame) game;
-		pacManIntroScene = new PacManGameIntroScene(unscaledSize_px, pacManRendering, pacManGame);
-		pacManClassicPlayScene = new PacManGamePlayScene(unscaledSize_px, pacManRendering, pacManGame);
-		pacManIntermissions[0] = new PacManGameIntermission1(unscaledSize_px, pacManRendering, pacManSoundManager,
-				pacManGame);
-		pacManIntermissions[1] = new PacManGameIntermission2(unscaledSize_px, pacManRendering, pacManSoundManager,
-				pacManGame);
-		pacManIntermissions[2] = new PacManGameIntermission3(unscaledSize_px, pacManRendering, pacManSoundManager,
-				pacManGame);
-	}
-
-	private PacManGameScene selectPacManScene() {
-		if (game.state == PacManGameState.INTRO) {
-			return pacManIntroScene;
-		}
-		if (game.state == PacManGameState.INTERMISSION) {
-			return pacManIntermissions[game.intermissionNumber - 1];
-		}
-		return pacManClassicPlayScene;
-	}
-
-	private void createMsPacManScenes() {
-		msPacManIntroScene = new MsPacManGameIntroScene(unscaledSize_px, msPacManRendering, game);
-		msPacManPlayScene = new MsPacManGamePlayScene(unscaledSize_px, msPacManRendering, game);
-		msPacManIntermissions[0] = new MsPacManIntermission1_TheyMeet(unscaledSize_px, msPacManRendering,
-				msPacManSoundManager, game);
-		msPacManIntermissions[1] = new MsPacManIntermission2_TheChase(unscaledSize_px, msPacManRendering,
-				msPacManSoundManager, game);
-		msPacManIntermissions[2] = new MsPacManIntermission3_Junior(unscaledSize_px, msPacManRendering,
-				msPacManSoundManager, game);
-	}
-
-	private PacManGameScene selectMsPacManScene() {
-		if (game.state == PacManGameState.INTRO) {
-			return msPacManIntroScene;
-		}
-		if (game.state == PacManGameState.INTERMISSION) {
-			return msPacManIntermissions[game.intermissionNumber - 1];
-		}
-		return msPacManPlayScene;
 	}
 
 	private void handleKeyboardInput(KeyEvent e) {
