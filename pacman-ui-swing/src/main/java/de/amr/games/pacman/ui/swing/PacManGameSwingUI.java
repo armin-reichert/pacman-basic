@@ -208,7 +208,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 	@Override
 	public void mute(boolean b) {
-		this.muted = b;
+		muted = b;
 	}
 
 	@Override

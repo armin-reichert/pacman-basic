@@ -6,22 +6,15 @@ import static de.amr.games.pacman.world.PacManGameWorld.TS;
 import java.util.Optional;
 
 import de.amr.games.pacman.controller.PacManGameController;
-import de.amr.games.pacman.controller.PacManGameState;
 import de.amr.games.pacman.model.MsPacManGame;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.PacManGameModel;
-import de.amr.games.pacman.sound.PacManGameSoundAssets;
-import de.amr.games.pacman.sound.PacManGameSoundManager;
 import de.amr.games.pacman.sound.SoundManager;
 import de.amr.games.pacman.ui.PacManGameAnimations;
 import de.amr.games.pacman.ui.PacManGameUI;
 import de.amr.games.pacman.ui.fx.scene.common.PacManGameScene;
-import de.amr.games.pacman.ui.fx.scene.common.PlayScene;
-import de.amr.games.pacman.ui.fx.scene.mspacman.MsPacManGameIntroScene;
-import de.amr.games.pacman.ui.fx.scene.pacman.PacManGameIntermissionScene1;
-import de.amr.games.pacman.ui.fx.scene.pacman.PacManGameIntermissionScene2;
-import de.amr.games.pacman.ui.fx.scene.pacman.PacManGameIntermissionScene3;
-import de.amr.games.pacman.ui.fx.scene.pacman.PacManGameIntroScene;
+import de.amr.games.pacman.ui.fx.scene.mspacman.MsPacManGameScenes;
+import de.amr.games.pacman.ui.fx.scene.pacman.PacManGameScenes;
 import javafx.application.Platform;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
@@ -36,39 +29,23 @@ public class PacManGameFXUI implements PacManGameUI {
 	private final Stage stage;
 	private final double scaling;
 	private final double sizeX, sizeY;
+	private final PacManGameScenes pacManGameScenes;
+	private final MsPacManGameScenes msPacManGameScenes;
 
 	private PacManGameModel game;
-
-	private final SoundManager pacManSoundManager;
-	private final SoundManager msPacManSoundManager;
-	private SoundManager soundManager;
-
 	private PacManGameScene currentScene;
-
-	// Pac-Man scenes
-	private PacManGameScene pacManIntroScene;
-	private PacManGameScene pacManPlayScene;
-	private PacManGameScene pacManIntermissionScene1;
-	private PacManGameScene pacManIntermissionScene2;
-	private PacManGameScene pacManIntermissionScene3;
-
-	// Ms. Pac_an scenes
-	private PacManGameScene msPacManIntroScene;
-	private PacManGameScene msPacManPlayScene;
-	private PacManGameScene msPacManIntermissionScene1;
-	private PacManGameScene msPacManIntermissionScene2;
-	private PacManGameScene msPacManIntermissionScene3;
+	private boolean muted;
 
 	public PacManGameFXUI(Stage stage, PacManGameController controller, int tilesX, int tilesY, double scaling) {
-		sizeX = tilesX * TS * scaling;
-		sizeY = tilesY * TS * scaling;
 		this.scaling = scaling;
 		this.stage = stage;
+		sizeX = tilesX * TS * scaling;
+		sizeY = tilesY * TS * scaling;
+		pacManGameScenes = new PacManGameScenes();
+		msPacManGameScenes = new MsPacManGameScenes();
 		stage.setTitle("JavaFX: Pac-Man / Ms. Pac-Man");
 		stage.getIcons().add(new Image("/pacman/graphics/pacman.png"));
 		stage.setOnCloseRequest(e -> controller.exitGame());
-		pacManSoundManager = new PacManGameSoundManager(PacManGameSoundAssets::getPacManSoundURL);
-		msPacManSoundManager = new PacManGameSoundManager(PacManGameSoundAssets::getMsPacManSoundURL);
 		setGame(controller.getGame());
 		log("Pac-Man game JavaFX UI created");
 	}
@@ -80,19 +57,9 @@ public class PacManGameFXUI implements PacManGameUI {
 		}
 		this.game = game;
 		if (game instanceof MsPacManGame) {
-			soundManager = msPacManSoundManager;
-			msPacManIntroScene = new MsPacManGameIntroScene(game, sizeX, sizeY, scaling);
-			msPacManPlayScene = new PlayScene(game, sizeX, sizeY, scaling, true);
-			msPacManIntermissionScene1 = msPacManIntroScene; // TODO
-			msPacManIntermissionScene2 = msPacManIntroScene; // TODO
-			msPacManIntermissionScene3 = msPacManIntroScene; // TODO
+			msPacManGameScenes.createScenes((MsPacManGame) game, sizeX, sizeY, scaling);
 		} else if (game instanceof PacManGame) {
-			soundManager = pacManSoundManager;
-			pacManIntroScene = new PacManGameIntroScene(game, sizeX, sizeY, scaling);
-			pacManPlayScene = new PlayScene(game, sizeX, sizeY, scaling, false);
-			pacManIntermissionScene1 = new PacManGameIntermissionScene1(game, soundManager, sizeX, sizeY, scaling);
-			pacManIntermissionScene2 = new PacManGameIntermissionScene2(game, soundManager, sizeX, sizeY, scaling);
-			pacManIntermissionScene3 = new PacManGameIntermissionScene3(game, soundManager, sizeX, sizeY, scaling);
+			pacManGameScenes.createScenes((PacManGame) game, sizeX, sizeY, scaling);
 		} else {
 			log("%s: Cannot create scenes for invalid game: %s", this, game);
 		}
@@ -117,38 +84,10 @@ public class PacManGameFXUI implements PacManGameUI {
 
 	private PacManGameScene selectScene() {
 		if (game instanceof MsPacManGame) {
-			if (game.state == PacManGameState.INTRO) {
-				return msPacManIntroScene;
-			}
-			if (game.state == PacManGameState.INTERMISSION) {
-				if (game.intermissionNumber == 1) {
-					return msPacManIntermissionScene1;
-				}
-				if (game.intermissionNumber == 2) {
-					return msPacManIntermissionScene2;
-				}
-				if (game.intermissionNumber == 3) {
-					return msPacManIntermissionScene3;
-				}
-			}
-			return msPacManPlayScene;
+			return msPacManGameScenes.selectScene(game);
 		}
 		if (game instanceof PacManGame) {
-			if (game.state == PacManGameState.INTRO) {
-				return pacManIntroScene;
-			}
-			if (game.state == PacManGameState.INTERMISSION) {
-				if (game.intermissionNumber == 1) {
-					return pacManIntermissionScene1;
-				}
-				if (game.intermissionNumber == 2) {
-					return pacManIntermissionScene2;
-				}
-				if (game.intermissionNumber == 3) {
-					return pacManIntermissionScene3;
-				}
-			}
-			return pacManPlayScene;
+			return pacManGameScenes.selectScene(game);
 		}
 		throw new IllegalStateException("No scene found for game state " + game.stateDescription());
 	}
@@ -185,6 +124,7 @@ public class PacManGameFXUI implements PacManGameUI {
 
 	@Override
 	public void showFlashMessage(String message) {
+		// TODO implement
 	}
 
 	@Override
@@ -196,12 +136,13 @@ public class PacManGameFXUI implements PacManGameUI {
 
 	@Override
 	public Optional<SoundManager> sounds() {
-		return Optional.ofNullable(soundManager);
+		return muted ? Optional.empty()
+				: Optional.of(game instanceof PacManGame ? pacManGameScenes.soundManager : msPacManGameScenes.soundManager);
 	}
 
 	@Override
-	public void mute(boolean muted) {
-		soundManager = muted ? null : game instanceof PacManGame ? pacManSoundManager : msPacManSoundManager;
+	public void mute(boolean b) {
+		muted = b;
 	}
 
 	@Override
