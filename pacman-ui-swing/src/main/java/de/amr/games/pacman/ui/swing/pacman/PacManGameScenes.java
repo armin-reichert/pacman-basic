@@ -16,11 +16,11 @@ public class PacManGameScenes {
 	public final PacManGameSpriteBasedRendering rendering;
 	public final SoundManager soundManager;
 
-	public PacManGameIntroScene introScene;
-	public PacManGamePlayScene playScene;
-	public PacManGameScene intermissionScene1;
-	public PacManGameScene intermissionScene2;
-	public PacManGameScene intermissionScene3;
+	private PacManGameIntroScene introScene;
+	private PacManGamePlayScene playScene;
+	private PacManGameScene intermissionScene1;
+	private PacManGameScene intermissionScene2;
+	private PacManGameScene intermissionScene3;
 
 	public PacManGameScenes() {
 		rendering = new PacManGameSpriteBasedRendering(ResourceBundle.getBundle("localization.translation"));
