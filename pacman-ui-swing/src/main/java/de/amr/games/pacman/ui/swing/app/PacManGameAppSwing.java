@@ -65,9 +65,9 @@ public class PacManGameAppSwing {
 			} else {
 				controller.playMsPacMan();
 			}
-			controller.addUI(new PacManGameSwingUI(controller.getCurrentGame(), options.scaling));
+			controller.addUI(new PacManGameSwingUI(controller, 28, 36, options.scaling));
 			controller.showUI();
-			new Thread(controller::gameLoop, "PacManGame").start();
+			controller.startGame();
 		});
 	}
 }

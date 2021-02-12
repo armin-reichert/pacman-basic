@@ -25,6 +25,7 @@ import java.util.ResourceBundle;
 import javax.swing.JFrame;
 import javax.swing.Timer;
 
+import de.amr.games.pacman.controller.PacManGameController;
 import de.amr.games.pacman.controller.PacManGameState;
 import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
@@ -86,8 +87,6 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 	private boolean muted;
 
-	private Runnable closeHandler = () -> log("Pac-Man Swing UI closed");
-
 	private PacManGameModel game;
 
 	private PacManGameScene currentScene;
@@ -100,10 +99,10 @@ public class PacManGameSwingUI implements PacManGameUI {
 	private MsPacManGamePlayScene msPacManPlayScene;
 	private PacManGameScene[] msPacManIntermissions = new PacManGameScene[3];
 
-	public PacManGameSwingUI(PacManGameModel game, float scaling) {
-		this.scaling = scaling;
-		unscaledSize_px = new V2i(game.level.world.xTiles() * TS, game.level.world.yTiles() * TS);
-		scaledSize_px = new V2f(unscaledSize_px).scaled(scaling).toV2i();
+	public PacManGameSwingUI(PacManGameController controller, int tilesX, int tilesY, double scalingFactor) {
+		scaling = (float) scalingFactor;
+		unscaledSize_px = new V2i(tilesX * TS, tilesY * TS);
+		scaledSize_px = new V2f(unscaledSize_px).scaled(this.scaling).toV2i();
 
 		window = new JFrame();
 		window.setTitle("Pac-Man");
@@ -124,7 +123,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 			@Override
 			public void windowClosing(WindowEvent e) {
-				closeHandler.run();
+				controller.exitGame();
 			}
 		});
 
@@ -145,7 +144,9 @@ public class PacManGameSwingUI implements PacManGameUI {
 		msPacManRendering = new MsPacManGameSpriteBasedRendering(translations);
 		msPacManSoundManager = new PacManGameSoundManager(PacManGameSoundAssets::getMsPacManSoundURL);
 
-		setGame(game);
+		setGame(controller.getGame());
+
+		log("Pac-Man game Swing UI created");
 	}
 
 	@Override
@@ -221,17 +222,15 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 	@Override
 	public void setGame(PacManGameModel newGame) {
+		if (newGame == null) {
+			throw new IllegalArgumentException("Cannot set game, game is null");
+		}
 		this.game = newGame;
 		if (game instanceof PacManGame) {
 			createPacManScenes();
 		} else {
 			createMsPacManScenes();
 		}
-	}
-
-	@Override
-	public void setCloseHandler(Runnable handler) {
-		closeHandler = handler;
 	}
 
 	@Override

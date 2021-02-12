@@ -61,26 +61,51 @@ import de.amr.games.pacman.ui.PacManGameUI;
  */
 public class PacManGameController {
 
-	private final List<PacManGameUI> userInterfaces;
 	private final PacManGame pacManGame;
 	private final MsPacManGame msPacManGame;
-
 	private PacManGameModel game;
+
 	private Autopilot autopilot;
 	private boolean autopilotOn;
 	private PacManGameState previousState;
 
-	public PacManGameModel getCurrentGame() {
-		return game;
+	private final List<PacManGameUI> userInterfaces;
+
+	private Thread gameLoopThread;
+	private volatile boolean gameLoopRunning;
+
+	public void startGame() {
+		if (gameLoopRunning) {
+			log("Game already started");
+			return;
+		}
+		gameLoopRunning = true;
+		gameLoopThread = new Thread(this::loop, "PacManGameLoop");
+		gameLoopThread.start();
 	}
 
-	public void gameLoop() {
-		while (true) {
-			clock.tick(this::doOneFrame);
+	public void exitGame() {
+		if (!gameLoopRunning) {
+			log("Game not started");
+			return;
+		}
+		log("Exit game");
+		gameLoopRunning = false;
+		try {
+			gameLoopThread.join();
+		} catch (Exception x) {
+			x.printStackTrace();
+		}
+		System.exit(0);
+	}
+
+	private void loop() {
+		while (gameLoopRunning) {
+			clock.tick(this::step);
 		}
 	}
 
-	private void doOneFrame() {
+	private void step() {
 		updateGameState();
 		userInterfaces.forEach(PacManGameUI::render);
 	}
@@ -90,6 +115,10 @@ public class PacManGameController {
 		msPacManGame = new MsPacManGame();
 		userInterfaces = new ArrayList<>(3);
 		userInterfaces.add(PacManGameUI.NO_UI);
+	}
+
+	public PacManGameModel getGame() {
+		return game;
 	}
 
 	public void playPacMan() {
@@ -120,10 +149,6 @@ public class PacManGameController {
 
 	public void addUI(PacManGameUI ui) {
 		this.userInterfaces.add(ui);
-		ui.setCloseHandler(() -> {
-			game.saveHighscore();
-			log("Pac-Man game UI closed");
-		});
 	}
 
 	public void showUI() {

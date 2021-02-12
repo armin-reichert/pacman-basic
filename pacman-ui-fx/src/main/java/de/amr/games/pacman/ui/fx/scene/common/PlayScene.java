@@ -20,7 +20,7 @@ public class PlayScene extends AbstractPacManGameScene {
 	@Override
 	public void render() {
 		fill(Color.BLACK);
-		boolean flashing = rendering.mazeFlashing(game.level.mazeNumber).isRunning();
+		boolean flashing = rendering.mazeFlashing(game.level.mazeNumber).hasStarted();
 		if (flashing) {
 			rendering.drawMaze(game.level.mazeNumber, 0, t(3), true);
 		} else {

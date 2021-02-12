@@ -14,8 +14,6 @@ public interface PacManGameUI {
 
 	void setGame(PacManGameModel game);
 
-	void setCloseHandler(Runnable handler);
-
 	void reset();
 
 	void show();
@@ -36,10 +34,6 @@ public interface PacManGameUI {
 
 		@Override
 		public void setGame(PacManGameModel game) {
-		}
-
-		@Override
-		public void setCloseHandler(Runnable handler) {
 		}
 
 		@Override

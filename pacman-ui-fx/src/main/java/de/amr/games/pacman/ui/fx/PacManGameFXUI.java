@@ -5,6 +5,7 @@ import static de.amr.games.pacman.world.PacManGameWorld.TS;
 
 import java.util.Optional;
 
+import de.amr.games.pacman.controller.PacManGameController;
 import de.amr.games.pacman.controller.PacManGameState;
 import de.amr.games.pacman.model.MsPacManGame;
 import de.amr.games.pacman.model.PacManGame;
@@ -58,26 +59,25 @@ public class PacManGameFXUI implements PacManGameUI {
 	private PacManGameScene msPacManIntermissionScene2;
 	private PacManGameScene msPacManIntermissionScene3;
 
-	public PacManGameFXUI(Stage stage, PacManGameModel game, double scaling) {
-		sizeX = 28 * TS * scaling;
-		sizeY = 36 * TS * scaling;
+	public PacManGameFXUI(Stage stage, PacManGameController controller, int tilesX, int tilesY, double scaling) {
+		sizeX = tilesX * TS * scaling;
+		sizeY = tilesY * TS * scaling;
 		this.scaling = scaling;
 		this.stage = stage;
 		stage.setTitle("JavaFX: Pac-Man / Ms. Pac-Man");
 		stage.getIcons().add(new Image("/pacman/graphics/pacman.png"));
-		stage.setOnCloseRequest(e -> {
-			Platform.exit();
-			System.exit(0);
-		});
-
+		stage.setOnCloseRequest(e -> controller.exitGame());
 		pacManSoundManager = new PacManGameSoundManager(PacManGameSoundAssets::getPacManSoundURL);
 		msPacManSoundManager = new PacManGameSoundManager(PacManGameSoundAssets::getMsPacManSoundURL);
-
-		setGame(game);
+		setGame(controller.getGame());
+		log("Pac-Man game JavaFX UI created");
 	}
 
 	@Override
 	public void setGame(PacManGameModel game) {
+		if (game == null) {
+			throw new IllegalArgumentException("Cannot set game, game is null");
+		}
 		this.game = game;
 		if (game instanceof MsPacManGame) {
 			soundManager = msPacManSoundManager;
@@ -151,10 +151,6 @@ public class PacManGameFXUI implements PacManGameUI {
 			return pacManPlayScene;
 		}
 		throw new IllegalStateException("No scene found for game state " + game.stateDescription());
-	}
-
-	@Override
-	public void setCloseHandler(Runnable handler) {
 	}
 
 	@Override
