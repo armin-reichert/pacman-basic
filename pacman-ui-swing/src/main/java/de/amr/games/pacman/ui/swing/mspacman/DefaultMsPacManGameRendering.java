@@ -102,22 +102,33 @@ class DefaultMsPacManGameRendering implements SpriteBasedSceneRendering, PacManG
 	@Override
 	public void drawScore(Graphics2D g, PacManGameModel game, int x, int y) {
 		g.setFont(assets.getScoreFont());
-		g.translate(0, 2);
+		g.translate(0, assets.scoreFont.getSize() + 1);
 		g.setColor(Color.WHITE);
-		g.drawString(translations.getString("SCORE"), t(1), t(1));
-		g.drawString(translations.getString("HI_SCORE"), t(16), t(1));
+		g.drawString(translations.getString("SCORE"), x, y);
 		g.translate(0, 1);
 		if (game.state != PacManGameState.INTRO && !game.attractMode) {
 			g.setColor(assets.getMazeWallColor(game.level.mazeNumber - 1));
-			g.drawString(String.format("%08d", game.score), t(1), t(2));
+			g.drawString(String.format("%08d", game.score), x, y + t(1));
 			g.setColor(Color.LIGHT_GRAY);
-			g.drawString(String.format("L%02d", game.currentLevelNumber), t(9), t(2));
-			g.setColor(assets.getMazeWallColor(game.level.mazeNumber - 1));
-			g.drawString(String.format("%08d", game.highscorePoints), t(16), t(2));
-			g.setColor(Color.LIGHT_GRAY);
-			g.drawString(String.format("L%02d", game.highscoreLevel), t(24), t(2));
+			g.drawString(String.format("L%02d", game.currentLevelNumber), x + t(8), y + t(1));
 		}
-		g.translate(0, -3);
+		g.translate(0, -(assets.scoreFont.getSize() + 2));
+	}
+
+	@Override
+	public void drawHiScore(Graphics2D g, PacManGameModel game, int x, int y) {
+		g.setFont(assets.getScoreFont());
+		g.translate(0, assets.scoreFont.getSize() + 1);
+		g.setColor(Color.WHITE);
+		g.drawString(translations.getString("HI_SCORE"), x, y);
+		g.translate(0, 1);
+		if (game.state != PacManGameState.INTRO && !game.attractMode) {
+			g.setColor(assets.getMazeWallColor(game.level.mazeNumber - 1));
+			g.drawString(String.format("%08d", game.highscorePoints), x, y + t(1));
+			g.setColor(Color.LIGHT_GRAY);
+			g.drawString(String.format("L%02d", game.highscoreLevel), x + t(8), y + t(1));
+		}
+		g.translate(0, -(assets.scoreFont.getSize() + 2));
 	}
 
 	@Override

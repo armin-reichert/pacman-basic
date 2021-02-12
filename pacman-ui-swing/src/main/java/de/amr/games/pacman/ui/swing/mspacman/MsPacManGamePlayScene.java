@@ -34,7 +34,8 @@ public class MsPacManGamePlayScene implements PacManGameScene {
 
 	@Override
 	public void draw(Graphics2D g) {
-		rendering.drawScore(g, game, 0, 0);
+		rendering.drawScore(g, game, t(1), t(0));
+		rendering.drawHiScore(g, game, t(15), t(0));
 		if (!game.attractMode) {
 			rendering.drawLivesCounter(g, game, t(2), size.y - t(2));
 		}

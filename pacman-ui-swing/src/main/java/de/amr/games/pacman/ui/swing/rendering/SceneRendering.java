@@ -18,6 +18,8 @@ public interface SceneRendering {
 
 	void drawScore(Graphics2D g, PacManGameModel game, int x, int y);
 
+	void drawHiScore(Graphics2D g, PacManGameModel game, int x, int y);
+
 	void drawLivesCounter(Graphics2D g, PacManGameModel game, int x, int y);
 
 	void drawLevelCounter(Graphics2D g, PacManGameModel game, int rightX, int y);
