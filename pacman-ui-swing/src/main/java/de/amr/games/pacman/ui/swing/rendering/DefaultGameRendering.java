@@ -79,7 +79,9 @@ public abstract class DefaultGameRendering implements SpriteBasedSceneRendering,
 	@Override
 	public void drawMaze(Graphics2D g, PacManGameModel game, int x, int y) {
 		if (mazeFlashing(game.level.mazeNumber).hasStarted()) {
-			g.drawImage(mazeFlashing(game.level.mazeNumber).animate(), x, y, null);
+			// TODO avoid this cats
+			BufferedImage image = (BufferedImage) mazeFlashing(game.level.mazeNumber).animate();
+			g.drawImage(image, x, y, null);
 			return;
 		}
 		if (foodAnimationOn && game.state == PacManGameState.HUNTING) {

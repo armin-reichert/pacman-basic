@@ -1,6 +1,5 @@
 package de.amr.games.pacman.ui;
 
-import java.awt.image.BufferedImage;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.Animation;
@@ -55,7 +54,7 @@ public interface PacManGameAnimations {
 		return ghosts.flatMap(this::ghostReturningHome);
 	}
 
-	Animation<BufferedImage> mazeFlashing(int mazeNumber);
+	Animation<?> mazeFlashing(int mazeNumber);
 
 	Animation<Boolean> energizerBlinking();
 
