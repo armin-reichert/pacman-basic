@@ -1,7 +1,7 @@
-package de.amr.games.pacman.ui.swing.rendering.pacman;
+package de.amr.games.pacman.ui.swing.pacman;
 
-import static de.amr.games.pacman.ui.swing.assets.AssetLoader.font;
-import static de.amr.games.pacman.ui.swing.assets.AssetLoader.image;
+import static de.amr.games.pacman.ui.swing.AssetLoader.font;
+import static de.amr.games.pacman.ui.swing.AssetLoader.image;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -15,7 +15,7 @@ import java.util.Map;
 import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.ui.swing.assets.Spritesheet;
+import de.amr.games.pacman.ui.swing.Spritesheet;
 
 /**
  * Assets used in Pac-Man game.

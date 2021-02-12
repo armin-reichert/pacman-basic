@@ -1,4 +1,4 @@
-package de.amr.games.pacman.ui.swing.input;
+package de.amr.games.pacman.ui.swing;
 
 import java.awt.Component;
 import java.awt.event.KeyAdapter;

@@ -1,4 +1,4 @@
-package de.amr.games.pacman.ui.swing.scene.mspacman;
+package de.amr.games.pacman.ui.swing.mspacman;
 
 import static de.amr.games.pacman.heaven.God.clock;
 import static de.amr.games.pacman.lib.Direction.LEFT;
@@ -16,8 +16,7 @@ import de.amr.games.pacman.model.Ghost;
 import de.amr.games.pacman.model.GhostState;
 import de.amr.games.pacman.model.Pac;
 import de.amr.games.pacman.model.PacManGameModel;
-import de.amr.games.pacman.ui.swing.rendering.mspacman.MsPacManGameSpriteBasedRendering;
-import de.amr.games.pacman.ui.swing.scene.PacManGameScene;
+import de.amr.games.pacman.ui.swing.PacManGameScene;
 
 public class MsPacManGameIntroScene implements PacManGameScene {
 

@@ -1,4 +1,4 @@
-package de.amr.games.pacman.ui.swing.scene.pacman;
+package de.amr.games.pacman.ui.swing.pacman;
 
 import static de.amr.games.pacman.heaven.God.clock;
 import static de.amr.games.pacman.heaven.God.differsAtMost;
@@ -16,10 +16,9 @@ import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.PacManGameModel;
+import de.amr.games.pacman.ui.swing.PacManGameScene;
 import de.amr.games.pacman.model.Ghost;
 import de.amr.games.pacman.model.Pac;
-import de.amr.games.pacman.ui.swing.rendering.pacman.PacManGameSpriteBasedRendering;
-import de.amr.games.pacman.ui.swing.scene.PacManGameScene;
 
 /**
  * Intro presenting the ghosts and showing the chasing animations.

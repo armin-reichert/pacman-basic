@@ -37,33 +37,30 @@ import de.amr.games.pacman.sound.PacManGameSoundManager;
 import de.amr.games.pacman.sound.SoundManager;
 import de.amr.games.pacman.ui.PacManGameAnimations;
 import de.amr.games.pacman.ui.PacManGameUI;
-import de.amr.games.pacman.ui.swing.assets.AssetLoader;
-import de.amr.games.pacman.ui.swing.input.Keyboard;
-import de.amr.games.pacman.ui.swing.rendering.common.DebugRendering;
-import de.amr.games.pacman.ui.swing.rendering.mspacman.MsPacManGameSpriteBasedRendering;
-import de.amr.games.pacman.ui.swing.rendering.pacman.PacManGameSpriteBasedRendering;
-import de.amr.games.pacman.ui.swing.scene.PacManGameScene;
-import de.amr.games.pacman.ui.swing.scene.mspacman.MsPacManGameIntroScene;
-import de.amr.games.pacman.ui.swing.scene.mspacman.MsPacManGamePlayScene;
-import de.amr.games.pacman.ui.swing.scene.mspacman.MsPacManIntermission1_TheyMeet;
-import de.amr.games.pacman.ui.swing.scene.mspacman.MsPacManIntermission2_TheChase;
-import de.amr.games.pacman.ui.swing.scene.mspacman.MsPacManIntermission3_Junior;
-import de.amr.games.pacman.ui.swing.scene.pacman.PacManGameIntermission1;
-import de.amr.games.pacman.ui.swing.scene.pacman.PacManGameIntermission2;
-import de.amr.games.pacman.ui.swing.scene.pacman.PacManGameIntermission3;
-import de.amr.games.pacman.ui.swing.scene.pacman.PacManGameIntroScene;
-import de.amr.games.pacman.ui.swing.scene.pacman.PacManGamePlayScene;
+import de.amr.games.pacman.ui.swing.mspacman.MsPacManGameIntroScene;
+import de.amr.games.pacman.ui.swing.mspacman.MsPacManGamePlayScene;
+import de.amr.games.pacman.ui.swing.mspacman.MsPacManGameSpriteBasedRendering;
+import de.amr.games.pacman.ui.swing.mspacman.MsPacManIntermission1_TheyMeet;
+import de.amr.games.pacman.ui.swing.mspacman.MsPacManIntermission2_TheChase;
+import de.amr.games.pacman.ui.swing.mspacman.MsPacManIntermission3_Junior;
+import de.amr.games.pacman.ui.swing.pacman.PacManGameIntermission1;
+import de.amr.games.pacman.ui.swing.pacman.PacManGameIntermission2;
+import de.amr.games.pacman.ui.swing.pacman.PacManGameIntermission3;
+import de.amr.games.pacman.ui.swing.pacman.PacManGameIntroScene;
+import de.amr.games.pacman.ui.swing.pacman.PacManGamePlayScene;
+import de.amr.games.pacman.ui.swing.pacman.PacManGameSpriteBasedRendering;
 
 /**
- * Swing UI for Pac-Man game.
+ * A Swing implementation of the Pac-Man game UI interface.
  * 
  * @author Armin Reichert
  */
 public class PacManGameSwingUI implements PacManGameUI {
 
-	static final int KEY_SLOWMODE = KeyEvent.VK_S;
-	static final int KEY_FASTMODE = KeyEvent.VK_F;
-	static final int KEY_DEBUGMODE = KeyEvent.VK_D;
+	static final int KEY_SLOW_MODE = KeyEvent.VK_S;
+	static final int KEY_FAST_MODE = KeyEvent.VK_F;
+	static final int KEY_DEBUG_MODE = KeyEvent.VK_D;
+
 	static final int FLASH_MESSAGE_TICKS = 90;
 
 	private final V2i unscaledSize_px;
@@ -298,17 +295,17 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 	private void handleKeyboardInput(KeyEvent e) {
 		switch (e.getKeyCode()) {
-		case KEY_SLOWMODE:
+		case KEY_SLOW_MODE:
 			clock.targetFrequency = clock.targetFrequency == 60 ? 30 : 60;
 			log("Clock frequency changed to %d Hz", clock.targetFrequency);
 			showFlashMessage(clock.targetFrequency == 60 ? "Normal speed" : "Slow speed");
 			break;
-		case KEY_FASTMODE:
+		case KEY_FAST_MODE:
 			clock.targetFrequency = clock.targetFrequency == 60 ? 120 : 60;
 			log("Clock frequency changed to %d Hz", clock.targetFrequency);
 			showFlashMessage(clock.targetFrequency == 60 ? "Normal speed" : "Fast speed");
 			break;
-		case KEY_DEBUGMODE:
+		case KEY_DEBUG_MODE:
 			DebugRendering.on = !DebugRendering.on;
 			log("UI debug mode is %s", DebugRendering.on ? "on" : "off");
 			break;
@@ -342,7 +339,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 	private void moveMousePointerOutOfSight() {
 		try {
 			Robot robot = new Robot();
-			robot.mouseMove(window.getX(), window.getY());
+			robot.mouseMove(window.getX() + 10, window.getY());
 		} catch (AWTException x) {
 			x.printStackTrace();
 		}

@@ -1,12 +1,12 @@
-package de.amr.games.pacman.ui.swing.scene.pacman;
+package de.amr.games.pacman.ui.swing.pacman;
 
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.model.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.GhostState.HUNTING_PAC;
-import static de.amr.games.pacman.ui.swing.scene.pacman.PacManGameIntermission1.Phase.BIGPACMAN_CHASING_BLINKY;
-import static de.amr.games.pacman.ui.swing.scene.pacman.PacManGameIntermission1.Phase.BLINKY_CHASING_PACMAN;
+import static de.amr.games.pacman.ui.swing.pacman.PacManGameIntermission1.Phase.BIGPACMAN_CHASING_BLINKY;
+import static de.amr.games.pacman.ui.swing.pacman.PacManGameIntermission1.Phase.BLINKY_CHASING_PACMAN;
 import static de.amr.games.pacman.world.PacManGameWorld.t;
 
 import java.awt.Graphics2D;
@@ -20,8 +20,7 @@ import de.amr.games.pacman.model.Pac;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.sound.PacManGameSound;
 import de.amr.games.pacman.sound.SoundManager;
-import de.amr.games.pacman.ui.swing.rendering.pacman.PacManGameSpriteBasedRendering;
-import de.amr.games.pacman.ui.swing.scene.PacManGameScene;
+import de.amr.games.pacman.ui.swing.PacManGameScene;
 
 /**
  * First intermission scene: Blinky chases Pac-Man and is then chased by a huge Pac-Man.

@@ -1,4 +1,4 @@
-package de.amr.games.pacman.ui.swing.assets;
+package de.amr.games.pacman.ui.swing;
 
 import java.awt.Font;
 import java.awt.image.BufferedImage;

@@ -1,4 +1,4 @@
-package de.amr.games.pacman.ui.swing.assets;
+package de.amr.games.pacman.ui.swing;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;

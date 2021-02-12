@@ -1,4 +1,4 @@
-package de.amr.games.pacman.ui.swing.rendering.common;
+package de.amr.games.pacman.ui.swing;
 
 import static de.amr.games.pacman.world.PacManGameWorld.HTS;
 import static de.amr.games.pacman.world.PacManGameWorld.TS;
