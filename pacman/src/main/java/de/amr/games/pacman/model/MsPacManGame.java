@@ -67,7 +67,6 @@ public class MsPacManGame extends PacManGameModel {
 		}
 
 		highscoreFileName = "hiscore-mspacman.xml";
-		reset();
 	}
 
 	@Override

@@ -74,7 +74,6 @@ public class PacManGame extends PacManGameModel {
 			ghost.world = world;
 		}
 		highscoreFileName = "hiscore-pacman.xml";
-		reset();
 	}
 
 	@Override
