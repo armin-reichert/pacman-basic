@@ -79,13 +79,6 @@ public class MsPacManGameIntroScene extends AbstractPacManGameScene {
 		}
 		pac.move();
 
-		for (Ghost ghost : ghosts) {
-			if (ghost.speed != 0)
-				log("%s", ghost);
-		}
-		if (pac.speed != 0)
-			log("%s", pac);
-
 		fill(Color.BLACK);
 		g.setFont(rendering.getScoreFont());
 		g.setFill(Color.ORANGE);
