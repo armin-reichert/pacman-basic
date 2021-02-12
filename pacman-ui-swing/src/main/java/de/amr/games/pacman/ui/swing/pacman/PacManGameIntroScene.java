@@ -15,10 +15,10 @@ import java.util.stream.IntStream;
 import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.model.PacManGameModel;
-import de.amr.games.pacman.ui.swing.PacManGameScene;
 import de.amr.games.pacman.model.Ghost;
 import de.amr.games.pacman.model.Pac;
+import de.amr.games.pacman.model.PacManGameModel;
+import de.amr.games.pacman.ui.swing.PacManGameScene;
 
 /**
  * Intro presenting the ghosts and showing the chasing animations.
@@ -91,7 +91,7 @@ public class PacManGameIntroScene implements PacManGameScene {
 
 	@Override
 	public void draw(Graphics2D g) {
-		rendering.drawScore(g, game);
+		rendering.drawScore(g, game, 0, 0);
 
 		g.setColor(Color.WHITE);
 		g.setFont(rendering.assets.getScoreFont());

@@ -106,9 +106,9 @@ class DefaultPacManGameRendering implements SpriteBasedSceneRendering, PacManGam
 	}
 
 	@Override
-	public void drawMaze(Graphics2D g, PacManGameModel game) {
+	public void drawMaze(Graphics2D g, PacManGameModel game, int x, int y) {
 		if (mazeFlashing(1).hasStarted()) {
-			g.drawImage(mazeFlashing(1).animate(), 0, t(3), null);
+			g.drawImage(mazeFlashing(1).animate(), 0, y, null);
 			return;
 		}
 		if (foodAnimationOn && game.state == PacManGameState.HUNTING) {
@@ -169,7 +169,7 @@ class DefaultPacManGameRendering implements SpriteBasedSceneRendering, PacManGam
 	}
 
 	@Override
-	public void drawScore(Graphics2D g, PacManGameModel game) {
+	public void drawScore(Graphics2D g, PacManGameModel game, int x, int y) {
 		g.setFont(assets.scoreFont);
 		g.translate(0, 1);
 		g.setColor(Color.WHITE);

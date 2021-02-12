@@ -100,7 +100,7 @@ class DefaultMsPacManGameRendering implements SpriteBasedSceneRendering, PacManG
 	}
 
 	@Override
-	public void drawScore(Graphics2D g, PacManGameModel game) {
+	public void drawScore(Graphics2D g, PacManGameModel game, int x, int y) {
 		g.setFont(assets.getScoreFont());
 		g.translate(0, 2);
 		g.setColor(Color.WHITE);
@@ -149,12 +149,12 @@ class DefaultMsPacManGameRendering implements SpriteBasedSceneRendering, PacManG
 	}
 
 	@Override
-	public void drawMaze(Graphics2D g, PacManGameModel game) {
+	public void drawMaze(Graphics2D g, PacManGameModel game, int x, int y) {
 		if (mazeFlashing(game.level.mazeNumber).hasStarted()) {
-			g.drawImage(mazeFlashing(game.level.mazeNumber).animate(), 0, t(3), null);
+			g.drawImage(mazeFlashing(game.level.mazeNumber).animate(), x, y, null);
 			return;
 		}
-		g.drawImage(assets.mazesFull.get(game.level.mazeNumber - 1), 0, t(3), null);
+		g.drawImage(assets.mazesFull.get(game.level.mazeNumber - 1), x, y, null);
 		game.level.world.tiles().filter(game.level::isFoodRemoved).forEach(tile -> {
 			g.setColor(Color.BLACK);
 			g.fillRect(t(tile.x), t(tile.y), TS, TS);

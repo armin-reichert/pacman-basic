@@ -149,6 +149,21 @@ public class PacManGameSwingUI implements PacManGameUI {
 		}
 	}
 
+	private void updateScene() {
+		PacManGameScene scene = game instanceof PacManGame ? pacManGameScenes.selectScene(game)
+				: msPacManGameScenes.selectScene(game);
+		if (currentScene != scene) {
+			if (currentScene != null) {
+				currentScene.end();
+				log("Current scene changed from %s to %s", currentScene.getClass().getSimpleName(),
+						scene.getClass().getSimpleName());
+			}
+			currentScene = scene;
+			currentScene.start();
+		}
+		currentScene.update();
+	}
+
 	@Override
 	public void render() {
 		updateScene();
@@ -201,21 +216,6 @@ public class PacManGameSwingUI implements PacManGameUI {
 		boolean pressed = keyboard.keyPressed(keySpec);
 		keyboard.clearKey(keySpec); // TODO
 		return pressed;
-	}
-
-	private void updateScene() {
-		PacManGameScene scene = game instanceof PacManGame ? pacManGameScenes.selectScene(game)
-				: msPacManGameScenes.selectScene(game);
-		if (currentScene != scene) {
-			if (currentScene != null) {
-				currentScene.end();
-				log("Current scene changed from %s to %s", currentScene.getClass().getSimpleName(),
-						scene.getClass().getSimpleName());
-			}
-			currentScene = scene;
-			currentScene.start();
-		}
-		currentScene.update();
 	}
 
 	private void handleKeyboardInput(KeyEvent e) {

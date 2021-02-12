@@ -34,12 +34,12 @@ public class PacManGamePlayScene implements PacManGameScene {
 
 	@Override
 	public void draw(Graphics2D g) {
-		rendering.drawScore(g, game);
+		rendering.drawScore(g, game, 0, 0);
 		if (!game.attractMode) {
 			rendering.drawLivesCounter(g, game, t(2), size.y - t(2));
 			rendering.drawLevelCounter(g, game, t(game.level.world.xTiles() - 4), size.y - t(2));
 		}
-		rendering.drawMaze(g, game);
+		rendering.drawMaze(g, game, 0, t(3));
 		if (DebugRendering.on) {
 			DebugRendering.drawMazeStructure(g, game);
 		}
