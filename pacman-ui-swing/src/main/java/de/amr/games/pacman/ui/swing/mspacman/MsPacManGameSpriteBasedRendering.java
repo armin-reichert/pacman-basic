@@ -21,15 +21,15 @@ import de.amr.games.pacman.model.Bonus;
 import de.amr.games.pacman.model.Ghost;
 import de.amr.games.pacman.model.Pac;
 import de.amr.games.pacman.ui.PacManGameAnimations;
-import de.amr.games.pacman.ui.swing.SpriteBasedRendering;
-import de.amr.games.pacman.ui.swing.Spritesheet;
+import de.amr.games.pacman.ui.swing.assets.Spritesheet;
+import de.amr.games.pacman.ui.swing.rendering.SpriteBasedSceneRendering;
 
 /**
  * Rendering for the Ms. Pac-Man game.
  * 
  * @author Armin Reichert
  */
-public class MsPacManGameSpriteBasedRendering implements SpriteBasedRendering, PacManGameAnimations {
+public class MsPacManGameSpriteBasedRendering implements SpriteBasedSceneRendering, PacManGameAnimations {
 
 	public final MsPacManGameAssets assets;
 	public final ResourceBundle translations;

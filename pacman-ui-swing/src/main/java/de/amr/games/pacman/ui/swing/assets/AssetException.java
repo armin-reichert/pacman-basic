@@ -1,4 +1,4 @@
-package de.amr.games.pacman.ui.swing;
+package de.amr.games.pacman.ui.swing.assets;
 
 public class AssetException extends RuntimeException {
 

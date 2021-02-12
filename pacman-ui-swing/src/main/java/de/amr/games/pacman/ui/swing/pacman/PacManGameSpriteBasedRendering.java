@@ -25,15 +25,15 @@ import de.amr.games.pacman.model.Bonus;
 import de.amr.games.pacman.model.Ghost;
 import de.amr.games.pacman.model.Pac;
 import de.amr.games.pacman.ui.PacManGameAnimations;
-import de.amr.games.pacman.ui.swing.SpriteBasedRendering;
-import de.amr.games.pacman.ui.swing.Spritesheet;
+import de.amr.games.pacman.ui.swing.assets.Spritesheet;
+import de.amr.games.pacman.ui.swing.rendering.SpriteBasedSceneRendering;
 
 /**
  * Rendering for the classic Pac-Man game.
  * 
  * @author Armin Reichert
  */
-public class PacManGameSpriteBasedRendering implements SpriteBasedRendering, PacManGameAnimations {
+public class PacManGameSpriteBasedRendering implements SpriteBasedSceneRendering, PacManGameAnimations {
 
 	public static boolean foodAnimationOn = false;
 

@@ -33,8 +33,10 @@ import de.amr.games.pacman.model.PacManGameModel;
 import de.amr.games.pacman.sound.SoundManager;
 import de.amr.games.pacman.ui.PacManGameAnimations;
 import de.amr.games.pacman.ui.PacManGameUI;
+import de.amr.games.pacman.ui.swing.assets.AssetLoader;
 import de.amr.games.pacman.ui.swing.mspacman.MsPacManGameScenes;
 import de.amr.games.pacman.ui.swing.pacman.PacManGameScenes;
+import de.amr.games.pacman.ui.swing.rendering.DebugRendering;
 
 /**
  * A Swing implementation of the Pac-Man game UI interface.

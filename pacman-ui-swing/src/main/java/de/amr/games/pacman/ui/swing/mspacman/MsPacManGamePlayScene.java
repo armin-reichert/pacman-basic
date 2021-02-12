@@ -7,8 +7,8 @@ import java.awt.Graphics2D;
 import de.amr.games.pacman.controller.PacManGameState;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.PacManGameModel;
-import de.amr.games.pacman.ui.swing.DebugRendering;
 import de.amr.games.pacman.ui.swing.PacManGameScene;
+import de.amr.games.pacman.ui.swing.rendering.DebugRendering;
 
 /**
  * Scene where the Ms. Pac-Man game is played.

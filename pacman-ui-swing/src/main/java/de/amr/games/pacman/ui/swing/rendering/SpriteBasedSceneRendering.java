@@ -1,4 +1,4 @@
-package de.amr.games.pacman.ui.swing;
+package de.amr.games.pacman.ui.swing.rendering;
 
 import static de.amr.games.pacman.world.PacManGameWorld.HTS;
 
@@ -6,13 +6,14 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
-import de.amr.games.pacman.model.PacManGameModel;
 import de.amr.games.pacman.model.Bonus;
 import de.amr.games.pacman.model.Creature;
 import de.amr.games.pacman.model.Ghost;
 import de.amr.games.pacman.model.Pac;
+import de.amr.games.pacman.model.PacManGameModel;
+import de.amr.games.pacman.ui.swing.assets.Spritesheet;
 
-public interface SpriteBasedRendering extends PacManGameRendering {
+public interface SpriteBasedSceneRendering extends PacManGameSceneRendering {
 
 	Spritesheet spritesheet();
 

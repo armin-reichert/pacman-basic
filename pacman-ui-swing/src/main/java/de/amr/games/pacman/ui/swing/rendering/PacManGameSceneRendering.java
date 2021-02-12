@@ -1,11 +1,11 @@
-package de.amr.games.pacman.ui.swing;
+package de.amr.games.pacman.ui.swing.rendering;
 
 import java.awt.Graphics2D;
 
 import de.amr.games.pacman.model.PacManGameModel;
 import de.amr.games.pacman.model.Creature;
 
-public interface PacManGameRendering {
+public interface PacManGameSceneRendering {
 
 	void signalReadyState(Graphics2D g);
 
