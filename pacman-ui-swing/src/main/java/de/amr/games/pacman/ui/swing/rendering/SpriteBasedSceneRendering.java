@@ -36,14 +36,10 @@ public interface SpriteBasedSceneRendering extends SceneRendering {
 			if (sprite != null) {
 				int dx = sprite.getWidth() / 2 - HTS, dy = sprite.getHeight() / 2 - HTS;
 				Graphics2D g2 = smoothGC(g);
-				drawSprite(g2, sprite, guy.position.x - dx, guy.position.y - dy);
+				g2.drawImage(sprite, (int) guy.position.x - dx, (int) guy.position.y - dy, null);
 				g2.dispose();
 			}
 		}
-	}
-
-	default void drawSprite(Graphics2D g, BufferedImage sprite, float x, float y) {
-		g.drawImage(sprite, (int) x, (int) y, null);
 	}
 
 	default BufferedImage sprite(Creature guy, PacManGameModel game) {

@@ -47,7 +47,8 @@ public class PacManGameIntermission3 implements PacManGameScene {
 	private Phase phase;
 	private long timer;
 
-	public PacManGameIntermission3(V2i size, DefaultPacManGameRendering rendering, SoundManager soundManager, PacManGame game) {
+	public PacManGameIntermission3(V2i size, DefaultPacManGameRendering rendering, SoundManager soundManager,
+			PacManGame game) {
 		this.size = size;
 		this.rendering = rendering;
 		this.soundManager = soundManager;
@@ -130,10 +131,10 @@ public class PacManGameIntermission3 implements PacManGameScene {
 	private void drawBlinky(Graphics2D g) {
 		switch (phase) {
 		case CHASING_PACMAN:
-			rendering.drawSprite(g, blinkyDamaged.animate(), blinky.position.x - 4, blinky.position.y - 4);
+			rendering.drawImage(g, blinkyDamaged.animate(), blinky.position.x - 4, blinky.position.y - 4, true);
 			break;
 		case RETURNING_HALF_NAKED:
-			rendering.drawSprite(g, blinkyHalfNaked.animate(), blinky.position.x - 4, blinky.position.y - 4);
+			rendering.drawImage(g, blinkyHalfNaked.animate(), blinky.position.x - 4, blinky.position.y - 4, true);
 			break;
 		default:
 			break;

@@ -45,7 +45,8 @@ public class PacManGameIntermission1 implements PacManGameScene {
 
 	private Phase phase;
 
-	public PacManGameIntermission1(V2i size, DefaultPacManGameRendering rendering, SoundManager soundManager, PacManGame game) {
+	public PacManGameIntermission1(V2i size, DefaultPacManGameRendering rendering, SoundManager soundManager,
+			PacManGame game) {
 		this.size = size;
 		this.rendering = rendering;
 		this.soundManager = soundManager;
@@ -125,14 +126,12 @@ public class PacManGameIntermission1 implements PacManGameScene {
 
 	@Override
 	public void draw(Graphics2D g) {
-		Graphics2D g2 = rendering.smoothGC(g);
-		rendering.drawLevelCounter(g2, game, size.x - t(4), size.y - t(2));
-		rendering.drawGuy(g2, blinky, game);
+		rendering.drawLevelCounter(g, game, size.x - t(4), size.y - t(2));
+		rendering.drawGuy(g, blinky, game);
 		if (phase == BLINKY_CHASING_PACMAN) {
-			rendering.drawGuy(g2, pac, game);
+			rendering.drawGuy(g, pac, game);
 		} else {
-			rendering.drawSprite(g2, bigPac.animate(), pac.position.x - 12, pac.position.y - 22);
+			rendering.drawImage(g, bigPac.animate(), pac.position.x - 12, pac.position.y - 22, true);
 		}
-		g2.dispose();
 	}
 }

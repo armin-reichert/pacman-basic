@@ -47,7 +47,8 @@ public class PacManGameIntermission2 implements PacManGameScene {
 	private Phase phase;
 	private long timer;
 
-	public PacManGameIntermission2(V2i size, DefaultPacManGameRendering rendering, SoundManager soundManager, PacManGame game) {
+	public PacManGameIntermission2(V2i size, DefaultPacManGameRendering rendering, SoundManager soundManager,
+			PacManGame game) {
 		this.size = size;
 		this.rendering = rendering;
 		this.soundManager = soundManager;
@@ -184,24 +185,24 @@ public class PacManGameIntermission2 implements PacManGameScene {
 			rendering.drawGuy(g, blinky, game);
 			break;
 		case STRETCHED_1:
-			rendering.drawSprite(g, stretchedDress[0], blinkySpriteRightEdge - 8, baselineY);
+			rendering.drawImage(g, stretchedDress[0], blinkySpriteRightEdge - 8, baselineY, true);
 			rendering.drawGuy(g, blinky, game);
 			break;
 		case STRETCHED_2:
-			rendering.drawSprite(g, stretchedDress[1], blinkySpriteRightEdge - 4, baselineY);
+			rendering.drawImage(g, stretchedDress[1], blinkySpriteRightEdge - 4, baselineY, true);
 			rendering.drawGuy(g, blinky, game);
 			break;
 		case STRETCHED_3:
-			rendering.drawSprite(g, stretchedDress[2], blinkySpriteRightEdge - 2, baselineY);
+			rendering.drawImage(g, stretchedDress[2], blinkySpriteRightEdge - 2, baselineY, true);
 			rendering.drawGuy(g, blinky, game);
 			break;
 		case LOOKING_UP:
-			rendering.drawSprite(g, blinkyLookingUp, blinky.position.x - 4, blinky.position.y - 4);
-			rendering.drawSprite(g, shred, nailPosition.x, baselineY);
+			rendering.drawImage(g, blinkyLookingUp, blinky.position.x - 4, blinky.position.y - 4, true);
+			rendering.drawImage(g, shred, nailPosition.x, baselineY, true);
 			break;
 		case LOOKING_RIGHT:
-			rendering.drawSprite(g, blinkyLookingRight, blinky.position.x - 4, blinky.position.y - 4);
-			rendering.drawSprite(g, shred, nailPosition.x, baselineY);
+			rendering.drawImage(g, blinkyLookingRight, blinky.position.x - 4, blinky.position.y - 4, true);
+			rendering.drawImage(g, shred, nailPosition.x, baselineY, true);
 			break;
 		default:
 			break;
