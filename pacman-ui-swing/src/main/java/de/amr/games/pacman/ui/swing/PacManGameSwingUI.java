@@ -162,7 +162,6 @@ public class PacManGameSwingUI implements PacManGameUI {
 	@Override
 	public void reset() {
 		currentScene.end();
-		updateScene();
 	}
 
 	@Override
