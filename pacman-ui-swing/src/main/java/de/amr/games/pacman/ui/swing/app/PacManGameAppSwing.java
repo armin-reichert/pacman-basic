@@ -65,7 +65,7 @@ public class PacManGameAppSwing {
 			} else {
 				controller.playMsPacMan();
 			}
-			controller.addView(new PacManGameSwingUI(controller, 28, 36, options.scaling));
+			controller.addView(new PacManGameSwingUI(controller, options.scaling));
 			controller.showViews();
 			controller.startGame();
 		});

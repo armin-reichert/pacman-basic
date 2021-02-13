@@ -70,9 +70,9 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 	private boolean muted;
 
-	public PacManGameSwingUI(PacManGameController controller, int tilesX, int tilesY, double scalingFactor) {
+	public PacManGameSwingUI(PacManGameController controller, double scalingFactor) {
 		scaling = (float) scalingFactor;
-		unscaledSize_px = new V2i(tilesX * TS, tilesY * TS);
+		unscaledSize_px = new V2i(28 * TS, 36 * TS);
 		scaledSize_px = new V2f(unscaledSize_px).scaled(this.scaling).toV2i();
 
 		canvas = new Canvas();
