@@ -69,7 +69,7 @@ public class PacManGameController {
 	private boolean autopilotOn;
 	private PacManGameState previousState;
 
-	private final List<PacManGameUI> userInterfaces;
+	private final List<PacManGameUI> userInterfaces = new ArrayList<>(Arrays.asList(PacManGameUI.NO_UI));
 
 	private Thread gameLoopThread;
 	private volatile boolean gameLoopRunning;
@@ -113,8 +113,6 @@ public class PacManGameController {
 	public PacManGameController() {
 		pacManGame = new PacManGame();
 		msPacManGame = new MsPacManGame();
-		userInterfaces = new ArrayList<>(3);
-		userInterfaces.add(PacManGameUI.NO_UI);
 	}
 
 	public PacManGameModel getGame() {
