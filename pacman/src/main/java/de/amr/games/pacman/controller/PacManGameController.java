@@ -94,18 +94,18 @@ public class PacManGameController {
 		gameLoopThread.start();
 	}
 
-	public void exitGame() {
+	public void endGame() {
 		if (!gameLoopRunning) {
 			log("Game not started");
 			return;
 		}
-		log("Exit game");
 		gameLoopRunning = false;
 		try {
 			gameLoopThread.join();
 		} catch (Exception x) {
 			x.printStackTrace();
 		}
+		log("Exit game and terminate VM");
 		System.exit(0);
 	}
 

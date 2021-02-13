@@ -96,7 +96,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 			@Override
 			public void windowClosing(WindowEvent e) {
-				controller.exitGame();
+				controller.endGame();
 			}
 		});
 		window.getContentPane().add(canvas);
