@@ -1,18 +1,16 @@
 ## Pac-Man and Ms. Pac-Man
 
-A Pac-Man and Ms. Pac-Man game implementation (JDK version 8 or newer required). 
+A Pac-Man and Ms. Pac-Man game implementation with levels, timing, ghost "AI" etc. following the details given in the (highly appreciated) [Pac-Man Dossier](https://pacman.holenet.info) by Jamey Pittman.
 
-Game levels, timing, ghost "AI" etc. follow the details given in the highly appreciated [Pac-Man Dossier](https://pacman.holenet.info) by Jamey Pittman. (Ms. Pac-Man details still missing. Anyone?).
+This implementation follows the Model-View-Controller pattern:
+- The game controller is a finite-state machine with states INTRO, READY, HUNTING, CHANGING_LEVEL, PACMAN_DYING, GHOST_DYING, GAME_OVER and INTERMISSION. 
+- The views are decoupled from the controller by an interface [PacManGameUI](pacman/src/main/java/de/amr/games/pacman/ui/PacManGameUI.java). A Swing UI implementation is provided as the default, see subproject `pacman-ui-swing`. A JavaFX UI is provided in repository [pacman-javafx](https://github.com/armin-reichert/pacman).
 
-The game is controlled by a finite-state machine with states INTRO, READY, HUNTING, CHANGING_LEVEL, PACMAN_DYING, GHOST_DYING, GAME_OVER and INTERMISSION. 
-
-The user interface is decoupled from the game controller by an interface such that the controller code can be reused for different UI implementation variants. Currently, a Swing and a JavaFX implementation are provided, see subprojects `pacman-ui-swing` and `pacman-ui-fx`.
-
-The code is more "to the point" than that in my other state-machine focussed [Pac-Man implementation](https://github.com/armin-reichert/pacman).
+The code here is more "to the point" than te one in my other [state-machine focussed implementation](https://github.com/armin-reichert/pacman).
 
 YouTube: https://www.youtube.com/watch?v=oZh2oAnoJbk
 
-To build the executable, change to the subproject top directories and execute `mvn clean install` in each.
+To build the executable jar file, run `mvn clean install` in each subproject.
 
 ### Intro scene
 <img src="pacman/doc/intro.png">
