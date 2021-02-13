@@ -6,7 +6,7 @@ This implementation follows the Model-View-Controller pattern:
 - The game controller is a finite-state machine with states INTRO, READY, HUNTING, CHANGING_LEVEL, PACMAN_DYING, GHOST_DYING, GAME_OVER and INTERMISSION. 
 - The views are decoupled from the controller by an interface [PacManGameUI](pacman/src/main/java/de/amr/games/pacman/ui/PacManGameUI.java). A Swing UI implementation is provided as the default, see subproject `pacman-ui-swing`. A JavaFX UI is provided in repository [pacman-javafx](https://github.com/armin-reichert/pacman).
 
-The code here is more "to the point" than te one in my other [state-machine focussed implementation](https://github.com/armin-reichert/pacman).
+The code here is more "to the point" than the one in my other [state-machine focussed implementation](https://github.com/armin-reichert/pacman).
 
 YouTube: https://www.youtube.com/watch?v=oZh2oAnoJbk
 
