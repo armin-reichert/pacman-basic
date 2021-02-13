@@ -8,11 +8,11 @@ import de.amr.games.pacman.model.Ghost;
 import de.amr.games.pacman.model.PacManGameModel;
 
 /**
- * Optional animations provided by a game UI.
+ * Optional visual animation provided by a game view.
  * 
  * @author Armin Reichert
  */
-public interface PacManGameAnimations {
+public interface PacManGameAnimation {
 
 	Animation<?> pacMunchingToDir(Direction dir);
 
@@ -58,7 +58,7 @@ public interface PacManGameAnimations {
 
 	Animation<Boolean> energizerBlinking();
 
-	default void resetAllAnimations(PacManGameModel game) {
+	default void reset(PacManGameModel game) {
 		energizerBlinking().reset();
 		ghostFlashing().reset();
 		ghostsFrightened(game.ghosts()).forEach(Animation::reset);

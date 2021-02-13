@@ -31,7 +31,7 @@ import de.amr.games.pacman.model.MsPacManGame;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.PacManGameModel;
 import de.amr.games.pacman.sound.SoundManager;
-import de.amr.games.pacman.ui.PacManGameAnimations;
+import de.amr.games.pacman.ui.PacManGameAnimation;
 import de.amr.games.pacman.ui.PacManGameUI;
 import de.amr.games.pacman.ui.swing.assets.AssetLoader;
 import de.amr.games.pacman.ui.swing.mspacman.MsPacManGameScenes;
@@ -184,7 +184,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 	}
 
 	@Override
-	public Optional<PacManGameAnimations> animations() {
+	public Optional<PacManGameAnimation> animation() {
 		if (game instanceof MsPacManGame) {
 			return Optional.of(msPacManGameScenes.rendering);
 		} else {
@@ -193,7 +193,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 	}
 
 	@Override
-	public Optional<SoundManager> sounds() {
+	public Optional<SoundManager> sound() {
 		if (muted) {
 			// TODO that's just a hack, should have real mute functionality
 			return Optional.empty();

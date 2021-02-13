@@ -40,7 +40,7 @@ import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.PacManGameModel;
 import de.amr.games.pacman.sound.PacManGameSound;
 import de.amr.games.pacman.sound.SoundManager;
-import de.amr.games.pacman.ui.PacManGameAnimations;
+import de.amr.games.pacman.ui.PacManGameAnimation;
 import de.amr.games.pacman.ui.PacManGameNoUI;
 import de.amr.games.pacman.ui.PacManGameUI;
 
@@ -128,12 +128,12 @@ public class PacManGameController {
 		return views.stream();
 	}
 
-	public Stream<PacManGameAnimations> animations() {
-		return views().filter(view -> view.animations().isPresent()).map(view -> view.animations().get());
+	public Stream<PacManGameAnimation> animations() {
+		return views().map(PacManGameUI::animation).filter(Optional::isPresent).map(Optional::get);
 	}
 
 	public Stream<SoundManager> sounds() {
-		return views().filter(view -> view.sounds().isPresent()).map(view -> view.sounds().get());
+		return views().map(PacManGameUI::sound).filter(Optional::isPresent).map(Optional::get);
 	}
 
 	public void playPacMan() {
@@ -213,8 +213,8 @@ public class PacManGameController {
 		previousState = null;
 		views.forEach(view -> {
 			view.mute(false);
-			view.sounds().ifPresent(SoundManager::stopAll);
-			view.animations().ifPresent(animations -> animations.resetAllAnimations(game));
+			view.sound().ifPresent(SoundManager::stopAll);
+			view.animation().ifPresent(animations -> animations.reset(game));
 			view.setGame(game);
 		});
 	}
@@ -256,7 +256,7 @@ public class PacManGameController {
 		boolean playReadyMusic = !game.started && !game.attractMode;
 		game.state.duration(clock.sec(playReadyMusic ? 4.5 : 2));
 		game.resetGuys();
-		animations().forEach(animations -> animations.resetAllAnimations(game));
+		animations().forEach(animations -> animations.reset(game));
 		sounds().forEach(sound -> {
 			if (playReadyMusic) {
 				sound.play(PacManGameSound.GAME_READY);
@@ -550,7 +550,7 @@ public class PacManGameController {
 		game.enterLevel(game.currentLevelNumber + 1);
 		game.levelSymbols.add(game.level.bonusSymbol);
 		views.forEach(
-				view -> view.animations().ifPresent(animations -> animations.mazeFlashing(game.level.mazeNumber).reset()));
+				view -> view.animation().ifPresent(animations -> animations.mazeFlashing(game.level.mazeNumber).reset()));
 	}
 
 	// GAME_OVER

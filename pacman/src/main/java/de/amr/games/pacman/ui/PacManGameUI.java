@@ -26,7 +26,7 @@ public interface PacManGameUI {
 
 	void mute(boolean muted);
 
-	Optional<SoundManager> sounds();
+	Optional<SoundManager> sound();
 
-	Optional<PacManGameAnimations> animations();
+	Optional<PacManGameAnimation> animation();
 }

@@ -80,7 +80,7 @@ public class PacManGameIntroScene implements PacManGameScene {
 			ghost.state = null;
 		});
 
-		rendering.resetAllAnimations(game);
+		rendering.reset(game);
 	}
 
 	@Override

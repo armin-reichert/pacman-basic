@@ -18,10 +18,10 @@ import de.amr.games.pacman.model.Creature;
 import de.amr.games.pacman.model.Ghost;
 import de.amr.games.pacman.model.Pac;
 import de.amr.games.pacman.model.PacManGameModel;
-import de.amr.games.pacman.ui.PacManGameAnimations;
+import de.amr.games.pacman.ui.PacManGameAnimation;
 import de.amr.games.pacman.ui.swing.assets.AssetLoader;
 
-public abstract class DefaultGameRendering implements SpriteBasedSceneRendering, PacManGameAnimations {
+public abstract class DefaultGameRendering implements SpriteBasedSceneRendering, PacManGameAnimation {
 
 	public static boolean foodAnimationOn = false; // experimental
 

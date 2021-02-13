@@ -40,7 +40,7 @@ public class PacManGameNoUI implements PacManGameUI {
 	}
 
 	@Override
-	public Optional<SoundManager> sounds() {
+	public Optional<SoundManager> sound() {
 		return Optional.empty();
 	}
 
@@ -49,7 +49,7 @@ public class PacManGameNoUI implements PacManGameUI {
 	}
 
 	@Override
-	public Optional<PacManGameAnimations> animations() {
+	public Optional<PacManGameAnimation> animation() {
 		return Optional.empty();
 	}
 }
