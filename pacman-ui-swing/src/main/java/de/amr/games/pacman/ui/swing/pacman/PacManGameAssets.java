@@ -43,16 +43,19 @@ public class PacManGameAssets extends Spritesheet {
 
 	final BufferedImage mazeFullImage;
 	final BufferedImage mazeEmptyImage;
+	final Animation<BufferedImage> mazeFlashingAnim;
+
 	final V2i[] symbolTiles;
 	final Map<Integer, BufferedImage> numberSprites;
 
-	private final Map<Pac, EnumMap<Direction, Animation<BufferedImage>>> pacMunchingAnimations = new HashMap<>();
+	final Map<Pac, EnumMap<Direction, Animation<BufferedImage>>> pacMunchingAnimations = new HashMap<>();
 	final Animation<BufferedImage> pacCollapsingAnim;
-	private final Map<Ghost, EnumMap<Direction, Animation<BufferedImage>>> ghostsWalkingAnimsByGhost;
+
+	final Map<Ghost, EnumMap<Direction, Animation<BufferedImage>>> ghostsWalkingAnimsByGhost = new HashMap<>();
 	final EnumMap<Direction, Animation<BufferedImage>> ghostEyesAnimsByDir;
 	final Animation<BufferedImage> ghostBlueAnim;
 	final Animation<BufferedImage> ghostFlashingAnim;
-	final Animation<BufferedImage> mazeFlashingAnim;
+
 	final Animation<Boolean> energizerBlinkingAnim;
 
 	final Font scoreFont;
@@ -61,6 +64,8 @@ public class PacManGameAssets extends Spritesheet {
 		super(image("/pacman/graphics/sprites.png"), 16);
 
 		scoreFont = font("/emulogic.ttf", 8);
+
+		// Sprites and images
 
 		mazeFullImage = image("/pacman/graphics/maze_full.png");
 		mazeEmptyImage = image("/pacman/graphics/maze_empty.png");
@@ -80,7 +85,7 @@ public class PacManGameAssets extends Spritesheet {
 		numberSprites.put(500,  spriteAt(2, 9));
 		numberSprites.put(700,  spriteAt(3, 9));
 		
-		numberSprites.put(1000, spritesAt(4, 9, 2, 1)); // left-aligned 
+		numberSprites.put(1000, spritesAt(4, 9, 2, 1)); // left-aligned
 		numberSprites.put(2000, spritesAt(3, 10, 3, 1));
 		numberSprites.put(3000, spritesAt(3, 11, 3, 1));
 		numberSprites.put(5000, spritesAt(3, 12, 3, 1));
@@ -97,8 +102,6 @@ public class PacManGameAssets extends Spritesheet {
 		pacCollapsingAnim = Animation.of(spriteAt(3, 0), spriteAt(4, 0), spriteAt(5, 0), spriteAt(6, 0), spriteAt(7, 0),
 				spriteAt(8, 0), spriteAt(9, 0), spriteAt(10, 0), spriteAt(11, 0), spriteAt(12, 0), spriteAt(13, 0));
 		pacCollapsingAnim.frameDuration(8);
-
-		ghostsWalkingAnimsByGhost = new HashMap<>();
 
 		ghostEyesAnimsByDir = new EnumMap<>(Direction.class);
 		for (Direction dir : Direction.values()) {
