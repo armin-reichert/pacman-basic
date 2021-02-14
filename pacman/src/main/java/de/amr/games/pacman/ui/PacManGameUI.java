@@ -18,6 +18,8 @@ public interface PacManGameUI {
 
 	void show();
 
+	void update();
+
 	void render();
 
 	void showFlashMessage(String message);

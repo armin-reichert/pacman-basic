@@ -27,6 +27,10 @@ public class PacManGameNoUI implements PacManGameUI {
 	}
 
 	@Override
+	public void update() {
+	}
+
+	@Override
 	public void render() {
 	}
 

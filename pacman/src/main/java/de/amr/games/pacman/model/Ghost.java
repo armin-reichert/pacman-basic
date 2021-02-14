@@ -50,7 +50,7 @@ public class Ghost extends Creature {
 	public Ghost(int ghostID, String ghostName, Direction ghostStartDir) {
 		id = (byte) ghostID;
 		name = ghostName;
-		startDir = ghostStartDir;
+		dir = wishDir = startDir = ghostStartDir;
 	}
 
 	public boolean is(GhostState ghostState) {

@@ -164,8 +164,12 @@ public class PacManGameSwingUI implements PacManGameUI {
 	}
 
 	@Override
-	public void render() {
+	public void update() {
 		updateScene();
+	}
+
+	@Override
+	public void render() {
 		BufferStrategy buffers = canvas.getBufferStrategy();
 		do {
 			do {

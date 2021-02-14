@@ -34,6 +34,6 @@ public class Pac extends Creature {
 
 	public Pac(String pacName, Direction pacStartDir) {
 		name = pacName;
-		startDir = pacStartDir;
+		dir = wishDir = startDir = pacStartDir;
 	}
 }
