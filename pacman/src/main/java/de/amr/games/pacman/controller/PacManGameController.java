@@ -601,7 +601,6 @@ public class PacManGameController {
 	}
 
 	private void exitIntermissionState() {
-
 	}
 
 	// END STATE-MACHINE
