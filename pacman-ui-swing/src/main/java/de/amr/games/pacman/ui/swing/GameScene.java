@@ -10,7 +10,7 @@ import de.amr.games.pacman.lib.V2i;
  * 
  * @author Armin Reichert
  */
-public interface PacManGameScene {
+public interface GameScene {
 
 	void draw(Graphics2D g);
 

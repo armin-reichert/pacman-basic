@@ -63,7 +63,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 	private final MsPacManGameScenes msPacManGameScenes;
 
 	private PacManGameModel game;
-	private PacManGameScene currentScene;
+	private GameScene currentScene;
 
 	private final List<String> flashMessages = new ArrayList<>();
 	private long flashMessageTicksLeft;
@@ -150,7 +150,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 	}
 
 	private void updateScene() {
-		PacManGameScene scene = game instanceof PacManGame ? pacManGameScenes.selectScene(game)
+		GameScene scene = game instanceof PacManGame ? pacManGameScenes.selectScene(game)
 				: msPacManGameScenes.selectScene(game);
 		if (currentScene != scene) {
 			if (currentScene != null) {

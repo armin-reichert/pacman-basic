@@ -18,14 +18,14 @@ import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.Ghost;
 import de.amr.games.pacman.model.Pac;
 import de.amr.games.pacman.model.PacManGameModel;
-import de.amr.games.pacman.ui.swing.PacManGameScene;
+import de.amr.games.pacman.ui.swing.GameScene;
 
 /**
  * Intro presenting the ghosts and showing the chasing animations.
  * 
  * @author Armin Reichert
  */
-public class IntroScene implements PacManGameScene {
+public class IntroScene implements GameScene {
 
 	private final V2i size;
 	private final DefaultPacManGameRendering rendering;

@@ -7,9 +7,9 @@ import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.PacManGameModel;
 import de.amr.games.pacman.sound.PacManGameSound;
 import de.amr.games.pacman.sound.SoundManager;
-import de.amr.games.pacman.ui.swing.PacManGameScene;
+import de.amr.games.pacman.ui.swing.GameScene;
 
-public class IntermissionScene3 implements PacManGameScene {
+public class IntermissionScene3 implements GameScene {
 
 	private final V2i size;
 	private final DefaultMsPacManGameRendering rendering;

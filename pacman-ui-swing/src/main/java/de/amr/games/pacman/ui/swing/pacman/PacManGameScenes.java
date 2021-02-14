@@ -7,7 +7,7 @@ import de.amr.games.pacman.model.PacManGameModel;
 import de.amr.games.pacman.sound.PacManGameSoundAssets;
 import de.amr.games.pacman.sound.PacManGameSoundManager;
 import de.amr.games.pacman.sound.SoundManager;
-import de.amr.games.pacman.ui.swing.PacManGameScene;
+import de.amr.games.pacman.ui.swing.GameScene;
 import de.amr.games.pacman.ui.swing.common.PlayScene;
 
 public class PacManGameScenes {
@@ -17,9 +17,9 @@ public class PacManGameScenes {
 
 	private IntroScene introScene;
 	private PlayScene playScene;
-	private PacManGameScene intermissionScene1;
-	private PacManGameScene intermissionScene2;
-	private PacManGameScene intermissionScene3;
+	private GameScene intermissionScene1;
+	private GameScene intermissionScene2;
+	private GameScene intermissionScene3;
 
 	public PacManGameScenes() {
 		rendering = new DefaultPacManGameRendering();
@@ -34,7 +34,7 @@ public class PacManGameScenes {
 		intermissionScene3 = new IntermissionScene3(unscaledSize_px, rendering, soundManager, game);
 	}
 
-	public PacManGameScene selectScene(PacManGameModel game) {
+	public GameScene selectScene(PacManGameModel game) {
 		if (game.state == PacManGameState.INTRO) {
 			return introScene;
 		}

@@ -7,7 +7,7 @@ import java.awt.Graphics2D;
 import de.amr.games.pacman.controller.PacManGameState;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.PacManGameModel;
-import de.amr.games.pacman.ui.swing.PacManGameScene;
+import de.amr.games.pacman.ui.swing.GameScene;
 import de.amr.games.pacman.ui.swing.rendering.DebugRendering;
 import de.amr.games.pacman.ui.swing.rendering.SceneRendering;
 
@@ -16,7 +16,7 @@ import de.amr.games.pacman.ui.swing.rendering.SceneRendering;
  * 
  * @author Armin Reichert
  */
-public class PlayScene implements PacManGameScene {
+public class PlayScene implements GameScene {
 
 	private final V2i size;
 	private final SceneRendering rendering;

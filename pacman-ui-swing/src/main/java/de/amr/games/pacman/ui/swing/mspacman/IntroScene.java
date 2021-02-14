@@ -16,12 +16,23 @@ import de.amr.games.pacman.model.Ghost;
 import de.amr.games.pacman.model.GhostState;
 import de.amr.games.pacman.model.Pac;
 import de.amr.games.pacman.model.PacManGameModel;
-import de.amr.games.pacman.ui.swing.PacManGameScene;
+import de.amr.games.pacman.ui.swing.GameScene;
 
-public class IntroScene implements PacManGameScene {
+public class IntroScene implements GameScene {
 
 	enum Phase {
-		BEGIN, BLINKY, PINKY, INKY, SUE, MSPACMAN, END
+
+		BEGIN, BLINKY, PINKY, INKY, SUE, MSPACMAN, END;
+
+		long start;
+
+		boolean at(long ticks) {
+			return clock.ticksTotal - start == ticks;
+		}
+
+		boolean after(long ticks) {
+			return clock.ticksTotal - start > ticks;
+		}
 	}
 
 	private final V2i size;
@@ -35,7 +46,6 @@ public class IntroScene implements PacManGameScene {
 	private Pac pac;
 	private Ghost[] ghosts;
 	private Phase phase;
-	private long phaseStartTime;
 
 	public IntroScene(V2i size, DefaultMsPacManGameRendering rendering, PacManGameModel game) {
 		this.game = game;
@@ -43,17 +53,9 @@ public class IntroScene implements PacManGameScene {
 		this.rendering = rendering;
 	}
 
-	private boolean phaseAt(long ticks) {
-		return game.state.ticksRun() - phaseStartTime == ticks;
-	}
-
-	private boolean phaseAfter(long ticks) {
-		return game.state.ticksRun() - phaseStartTime >= ticks;
-	}
-
 	private void enterPhase(Phase newPhase) {
 		phase = newPhase;
-		phaseStartTime = game.state.ticksRun();
+		phase.start = clock.ticksTotal;
 	}
 
 	@Override
@@ -103,7 +105,7 @@ public class IntroScene implements PacManGameScene {
 
 		switch (phase) {
 		case BEGIN:
-			if (phaseAfter(clock.sec(1))) {
+			if (phase.after(clock.sec(1))) {
 				enterPhase(Phase.BLINKY);
 			}
 			break;
@@ -131,7 +133,7 @@ public class IntroScene implements PacManGameScene {
 			showPacName(g);
 			drawPointsAnimation(g, 26);
 			drawPressKeyToStart(g, 32);
-			if (phaseAt(clock.sec(10))) {
+			if (phase.at(clock.sec(10))) {
 				game.attractMode = true;
 			}
 			break;
@@ -151,7 +153,7 @@ public class IntroScene implements PacManGameScene {
 	}
 
 	private void letGhostWalkToEndPosition(Ghost ghost, Phase nextPhase) {
-		if (phaseAt(1)) {
+		if (phase.at(1)) {
 			ghost.visible = true;
 			ghost.speed = 1;
 			rendering.ghostKicking(ghost).forEach(Animation::restart);
@@ -175,7 +177,7 @@ public class IntroScene implements PacManGameScene {
 	}
 
 	private void letMsPacManWalkToEndPosition(Pac msPac, Phase nextPhase) {
-		if (phaseAt(1)) {
+		if (phase.at(1)) {
 			msPac.visible = true;
 			msPac.couldMove = true;
 			msPac.speed = 1;

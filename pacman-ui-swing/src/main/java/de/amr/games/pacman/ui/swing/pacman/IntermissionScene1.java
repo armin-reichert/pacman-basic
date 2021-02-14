@@ -20,7 +20,7 @@ import de.amr.games.pacman.model.Pac;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.sound.PacManGameSound;
 import de.amr.games.pacman.sound.SoundManager;
-import de.amr.games.pacman.ui.swing.PacManGameScene;
+import de.amr.games.pacman.ui.swing.GameScene;
 import de.amr.games.pacman.ui.swing.rendering.DefaultGameRendering;
 
 /**
@@ -28,7 +28,7 @@ import de.amr.games.pacman.ui.swing.rendering.DefaultGameRendering;
  * 
  * @author Armin Reichert
  */
-public class IntermissionScene1 implements PacManGameScene {
+public class IntermissionScene1 implements GameScene {
 
 	enum Phase {
 		BLINKY_CHASING_PACMAN, BIGPACMAN_CHASING_BLINKY;
