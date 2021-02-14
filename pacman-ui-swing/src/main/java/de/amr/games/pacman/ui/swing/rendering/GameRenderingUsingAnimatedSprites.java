@@ -144,10 +144,11 @@ public abstract class GameRenderingUsingAnimatedSprites implements SpriteBasedSc
 			g.setFont(font);
 			g.setColor(Color.YELLOW);
 			g.drawString(translations.getString("READY"), t(11), t(21));
-		} else if (game.state == PacManGameState.GAME_OVER || game.attractMode)
+		} else if (game.state == PacManGameState.GAME_OVER || game.attractMode) {
 			g.setFont(font);
-		g.setColor(Color.RED);
-		g.drawString(translations.getString("GAME"), t(9), t(21));
-		g.drawString(translations.getString("OVER"), t(15), t(21));
+			g.setColor(Color.RED);
+			g.drawString(translations.getString("GAME"), t(9), t(21));
+			g.drawString(translations.getString("OVER"), t(15), t(21));
+		}
 	}
 }
