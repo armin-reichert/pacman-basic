@@ -48,8 +48,7 @@ public class IntermissionScene3 implements GameScene {
 	private Phase phase;
 	private long timer;
 
-	public IntermissionScene3(V2i size, PacManGameRendering rendering, SoundManager soundManager,
-			PacManGame game) {
+	public IntermissionScene3(V2i size, PacManGameRendering rendering, SoundManager soundManager, PacManGame game) {
 		this.size = size;
 		this.rendering = rendering;
 		this.soundManager = soundManager;
@@ -94,7 +93,8 @@ public class IntermissionScene3 implements GameScene {
 		phase = Phase.CHASING_PACMAN;
 	}
 
-	private void update() {
+	@Override
+	public void update() {
 		switch (phase) {
 		case CHASING_PACMAN:
 			if (blinky.position.x == -50) {
@@ -120,8 +120,7 @@ public class IntermissionScene3 implements GameScene {
 	}
 
 	@Override
-	public void draw(Graphics2D g) {
-		update();
+	public void render(Graphics2D g) {
 		Graphics2D g2 = rendering.smoothGC(g);
 		rendering.drawLevelCounter(g2, game, t(game.level.world.xTiles() - 4), size.y - t(2));
 		rendering.drawPac(g2, pac, game);

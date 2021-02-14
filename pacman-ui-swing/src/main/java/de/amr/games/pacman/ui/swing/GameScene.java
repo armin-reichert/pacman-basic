@@ -12,15 +12,17 @@ import de.amr.games.pacman.lib.V2i;
  */
 public interface GameScene {
 
-	void draw(Graphics2D g);
-
-	V2i sizeInPixel();
-
 	default void start() {
 	}
 
 	default void end() {
 	}
+
+	void update();
+
+	void render(Graphics2D g);
+
+	V2i sizeInPixel();
 
 	// Convenience methods
 

@@ -33,7 +33,11 @@ public class PlayScene implements GameScene {
 	}
 
 	@Override
-	public void draw(Graphics2D g) {
+	public void update() {
+	}
+
+	@Override
+	public void render(Graphics2D g) {
 		rendering.drawScore(g, game, t(1), t(0));
 		rendering.drawHiScore(g, game, t(15), t(0));
 		rendering.drawMaze(g, game, 0, t(3));

@@ -140,7 +140,7 @@ public abstract class GameRenderingUsingAnimatedSprites implements SpriteBasedSc
 
 	@Override
 	public void signalGameState(Graphics2D g, PacManGameModel game) {
-		if (game.state == PacManGameState.READY) {
+		if (game.state == PacManGameState.READY && !game.attractMode) {
 			g.setFont(font);
 			g.setColor(Color.YELLOW);
 			g.drawString(translations.getString("READY"), t(11), t(21));

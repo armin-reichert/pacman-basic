@@ -149,23 +149,26 @@ public class PacManGameSwingUI implements PacManGameUI {
 		}
 	}
 
-	private void updateScene() {
-		GameScene scene = game instanceof PacManGame ? pacManGameScenes.selectScene(game)
-				: msPacManGameScenes.selectScene(game);
-		if (currentScene != scene) {
-			if (currentScene != null) {
-				currentScene.end();
-				log("Current scene changed from %s to %s", currentScene.getClass().getSimpleName(),
-						scene.getClass().getSimpleName());
-			}
-			currentScene = scene;
-			currentScene.start();
-		}
-	}
-
 	@Override
 	public void update() {
-		updateScene();
+		GameScene newScene = null;
+		if (game instanceof PacManGame) {
+			newScene = pacManGameScenes.selectScene(game);
+		} else if (game instanceof MsPacManGame) {
+			newScene = msPacManGameScenes.selectScene(game);
+		}
+		if (newScene == null) {
+			throw new IllegalStateException("No scene found for game state " + game.state);
+		}
+		if (currentScene != newScene) {
+			if (currentScene != null) {
+				currentScene.end();
+			}
+			newScene.start();
+			log("Current scene changed from %s to %s", currentScene, newScene);
+		}
+		currentScene = newScene;
+		currentScene.update();
 	}
 
 	@Override
@@ -176,11 +179,9 @@ public class PacManGameSwingUI implements PacManGameUI {
 				Graphics2D g = (Graphics2D) buffers.getDrawGraphics();
 				g.setColor(Color.BLACK);
 				g.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
-				if (currentScene != null) {
-					g.scale(scaling, scaling);
-					currentScene.draw(g);
-					drawFlashMessages(g);
-				}
+				g.scale(scaling, scaling);
+				currentScene.render(g);
+				drawFlashMessages(g);
 				g.dispose();
 			} while (buffers.contentsRestored());
 			buffers.show();

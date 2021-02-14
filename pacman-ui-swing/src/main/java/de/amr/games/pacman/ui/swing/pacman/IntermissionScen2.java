@@ -48,8 +48,7 @@ public class IntermissionScen2 implements GameScene {
 	private Phase phase;
 	private long timer;
 
-	public IntermissionScen2(V2i size, PacManGameRendering rendering, SoundManager soundManager,
-			PacManGame game) {
+	public IntermissionScen2(V2i size, PacManGameRendering rendering, SoundManager soundManager, PacManGame game) {
 		this.size = size;
 		this.rendering = rendering;
 		this.soundManager = soundManager;
@@ -113,7 +112,8 @@ public class IntermissionScen2 implements GameScene {
 		return timer == -1;
 	}
 
-	private void update() {
+	@Override
+	public void update() {
 		int distFromNail = (int) (blinky.position.x - nailPosition.x) - 6;
 		switch (phase) {
 		case APPROACHING_NAIL:
@@ -167,8 +167,7 @@ public class IntermissionScen2 implements GameScene {
 	}
 
 	@Override
-	public void draw(Graphics2D g) {
-		update();
+	public void render(Graphics2D g) {
 		Graphics2D g2 = rendering.smoothGC(g);
 		rendering.drawLevelCounter(g2, game, t(game.level.world.xTiles() - 4), size.y - t(2));
 		g2.drawImage(nail, nailPosition.x, nailPosition.y, null);

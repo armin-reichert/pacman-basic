@@ -35,9 +35,13 @@ public class IntermissionScene1 implements GameScene {
 	}
 
 	@Override
-	public void draw(Graphics2D g) {
+	public void update() {
 		if (game.state.ticksRun() == God.clock.sec(10)) {
 			game.state.duration(0);
 		}
+	}
+
+	@Override
+	public void render(Graphics2D g) {
 	}
 }
