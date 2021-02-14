@@ -5,6 +5,7 @@ import java.util.stream.Stream;
 import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.model.Ghost;
+import de.amr.games.pacman.model.Pac;
 import de.amr.games.pacman.model.PacManGameModel;
 
 /**
@@ -14,10 +15,10 @@ import de.amr.games.pacman.model.PacManGameModel;
  */
 public interface PacManGameAnimation {
 
-	Animation<?> pacMunchingToDir(Direction dir);
+	Animation<?> pacMunchingToDir(Pac pac, Direction dir);
 
-	default Stream<Animation<?>> pacMunching() {
-		return Stream.of(Direction.values()).map(this::pacMunchingToDir);
+	default Stream<Animation<?>> pacMunching(Pac pac) {
+		return Stream.of(Direction.values()).map(dir -> pacMunchingToDir(pac, dir));
 	}
 
 	Animation<?> pacDying();
@@ -64,7 +65,7 @@ public interface PacManGameAnimation {
 		ghostsFrightened(game.ghosts()).forEach(Animation::reset);
 		ghostsKicking(game.ghosts()).forEach(Animation::reset);
 		ghostsReturningHome(game.ghosts()).forEach(Animation::reset);
-		pacMunching().forEach(Animation::reset);
+		pacMunching(game.pac).forEach(Animation::reset);
 		pacDying().reset();
 	}
 }

@@ -345,7 +345,7 @@ public class PacManGameController {
 		startHuntingPhase(0);
 		animations().forEach(animations -> {
 			animations.energizerBlinking().restart();
-			animations.pacMunching().forEach(Animation::restart);
+			animations.pacMunching(game.pac).forEach(Animation::restart);
 		});
 	}
 

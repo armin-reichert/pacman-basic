@@ -10,7 +10,6 @@ import static de.amr.games.pacman.ui.swing.assets.AssetLoader.image;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -20,17 +19,12 @@ import java.util.Map;
 import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.model.Ghost;
+import de.amr.games.pacman.model.Pac;
 import de.amr.games.pacman.ui.swing.assets.Spritesheet;
 
 /**
  * Assets used in Pac-Man game.
- * 
- * <p>
- * Just for testing, some animations or maps just store the sprite coordinates and the subimage gets
- * created every time the animation frame or image is rendered. This does not really make sense if
- * the subimage object has to be created anyway but could be useful if there was a way to draw the
- * corresponding section from the spritesheet image without having to create a subimage object as is
- * possible in JavaFX.
  * 
  * @author Armin Reichert
  */
@@ -39,20 +33,22 @@ public class PacManGameAssets extends Spritesheet {
 	/** Sprite sheet order of directions. */
 	static final List<Direction> order = Arrays.asList(RIGHT, LEFT, UP, DOWN);
 
-	static int index(Direction dir) {
+	private static int index(Direction dir) {
 		return order.indexOf(dir);
 	}
 
-	static final Color[] ghostColors = { Color.RED, Color.PINK, Color.CYAN, Color.ORANGE };
+	public static Color ghostColor(int ghostType) {
+		return ghostType == 0 ? Color.RED : ghostType == 1 ? Color.pink : ghostType == 2 ? Color.CYAN : Color.ORANGE;
+	}
 
 	final BufferedImage mazeFullImage;
 	final BufferedImage mazeEmptyImage;
 	final V2i[] symbolTiles;
 	final Map<Integer, BufferedImage> numberSprites;
 
-	final EnumMap<Direction, Animation<BufferedImage>> pacMunchingAnimByDir;
+	private final Map<Pac, EnumMap<Direction, Animation<BufferedImage>>> pacMunchingAnimations = new HashMap<>();
 	final Animation<BufferedImage> pacCollapsingAnim;
-	final List<EnumMap<Direction, Animation<BufferedImage>>> ghostsWalkingAnimsByGhost;
+	private final Map<Ghost, EnumMap<Direction, Animation<BufferedImage>>> ghostsWalkingAnimsByGhost;
 	final EnumMap<Direction, Animation<BufferedImage>> ghostEyesAnimsByDir;
 	final Animation<BufferedImage> ghostBlueAnim;
 	final Animation<BufferedImage> ghostFlashingAnim;
@@ -69,7 +65,8 @@ public class PacManGameAssets extends Spritesheet {
 		mazeFullImage = image("/pacman/graphics/maze_full.png");
 		mazeEmptyImage = image("/pacman/graphics/maze_empty.png");
 
-		symbolTiles = new V2i[] { tileAt(2, 3), tileAt(3, 3), tileAt(4, 3), tileAt(5, 3), tileAt(6, 3), tileAt(7, 3), tileAt(8, 3), tileAt(9, 3) };
+		symbolTiles = new V2i[] { tileAt(2, 3), tileAt(3, 3), tileAt(4, 3), tileAt(5, 3), tileAt(6, 3), tileAt(7, 3),
+				tileAt(8, 3), tileAt(9, 3) };
 
 		//@formatter:off
 		numberSprites = new HashMap<>();
@@ -97,29 +94,11 @@ public class PacManGameAssets extends Spritesheet {
 
 		energizerBlinkingAnim = Animation.pulse().frameDuration(15);
 
-		pacMunchingAnimByDir = new EnumMap<>(Direction.class);
-		for (Direction dir : Direction.values()) {
-			Animation<BufferedImage> animation = Animation.of(spriteAt(2, 0), spriteAt(1, index(dir)),
-					spriteAt(0, index(dir)), spriteAt(1, index(dir)));
-			animation.frameDuration(2).endless().run();
-			pacMunchingAnimByDir.put(dir, animation);
-		}
-
 		pacCollapsingAnim = Animation.of(spriteAt(3, 0), spriteAt(4, 0), spriteAt(5, 0), spriteAt(6, 0), spriteAt(7, 0),
 				spriteAt(8, 0), spriteAt(9, 0), spriteAt(10, 0), spriteAt(11, 0), spriteAt(12, 0), spriteAt(13, 0));
 		pacCollapsingAnim.frameDuration(8);
 
-		ghostsWalkingAnimsByGhost = new ArrayList<>(4);
-		for (int g = 0; g < 4; ++g) {
-			EnumMap<Direction, Animation<BufferedImage>> walkingTo = new EnumMap<>(Direction.class);
-			for (Direction dir : Direction.values()) {
-				Animation<BufferedImage> animation = Animation.of(spriteAt(2 * index(dir), 4 + g),
-						spriteAt(2 * index(dir) + 1, 4 + g));
-				animation.frameDuration(10).endless();
-				walkingTo.put(dir, animation);
-			}
-			ghostsWalkingAnimsByGhost.add(walkingTo);
-		}
+		ghostsWalkingAnimsByGhost = new HashMap<>();
 
 		ghostEyesAnimsByDir = new EnumMap<>(Direction.class);
 		for (Direction dir : Direction.values()) {
@@ -133,15 +112,47 @@ public class PacManGameAssets extends Spritesheet {
 		ghostFlashingAnim.frameDuration(5).endless();
 	}
 
+	public EnumMap<Direction, Animation<BufferedImage>> getOrCreatePacMunchingAnimation(Pac pac) {
+		if (!pacMunchingAnimations.containsKey(pac)) {
+			pacMunchingAnimations.put(pac, createPacMunchingAnimation());
+		}
+		return pacMunchingAnimations.get(pac);
+	}
+
+	private EnumMap<Direction, Animation<BufferedImage>> createPacMunchingAnimation() {
+		EnumMap<Direction, Animation<BufferedImage>> munching = new EnumMap<>(Direction.class);
+		for (Direction dir : Direction.values()) {
+			Animation<BufferedImage> animation = Animation.of(spriteAt(2, 0), spriteAt(1, index(dir)),
+					spriteAt(0, index(dir)), spriteAt(1, index(dir)));
+			animation.frameDuration(2).endless().run();
+			munching.put(dir, animation);
+		}
+		return munching;
+	}
+
+	private EnumMap<Direction, Animation<BufferedImage>> createGhostWalkingAnimation(int ghostType) {
+		EnumMap<Direction, Animation<BufferedImage>> walkingTo = new EnumMap<>(Direction.class);
+		for (Direction dir : Direction.values()) {
+			Animation<BufferedImage> anim = Animation.of(spriteAt(2 * index(dir), 4 + ghostType),
+					spriteAt(2 * index(dir) + 1, 4 + ghostType));
+			anim.frameDuration(10).endless();
+			walkingTo.put(dir, anim);
+		}
+		return walkingTo;
+	}
+
+	public EnumMap<Direction, Animation<BufferedImage>> getOrCreateGhostsWalkingAnimation(Ghost ghost) {
+		if (!ghostsWalkingAnimsByGhost.containsKey(ghost)) {
+			ghostsWalkingAnimsByGhost.put(ghost, createGhostWalkingAnimation(ghost.id));
+		}
+		return ghostsWalkingAnimsByGhost.get(ghost);
+	}
+
 	public Font getScoreFont() {
 		return scoreFont;
 	}
 
 	public BufferedImage ghostImageByGhostByDir(int ghostID, Direction dir) {
 		return spriteAt(2 * index(dir), 4 + ghostID);
-	}
-
-	public Color ghostColor(int ghostID) {
-		return ghostColors[ghostID];
 	}
 }

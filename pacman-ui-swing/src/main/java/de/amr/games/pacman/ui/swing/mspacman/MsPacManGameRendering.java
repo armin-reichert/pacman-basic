@@ -39,7 +39,7 @@ class MsPacManGameRendering extends GameRenderingUsingAnimatedSprites {
 	}
 
 	@Override
-	public Animation<BufferedImage> pacMunchingToDir(Direction dir) {
+	public Animation<BufferedImage> pacMunchingToDir(Pac pac, Direction dir) {
 		return assets.pacMunchingAnimByDir.get(dir);
 	}
 
@@ -97,9 +97,10 @@ class MsPacManGameRendering extends GameRenderingUsingAnimatedSprites {
 	@Override
 	public BufferedImage pacSprite(Pac pac, PacManGameModel game) {
 		if (pac.dead) {
-			return pacDying().hasStarted() ? pacDying().animate() : pacMunchingToDir(pac.dir).frame();
+			return pacDying().hasStarted() ? pacDying().animate() : pacMunchingToDir(pac, pac.dir).frame();
 		}
-		return pac.speed == 0 || !pac.couldMove ? pacMunchingToDir(pac.dir).frame(1) : pacMunchingToDir(pac.dir).animate();
+		return pac.speed == 0 || !pac.couldMove ? pacMunchingToDir(pac, pac.dir).frame(1)
+				: pacMunchingToDir(pac, pac.dir).animate();
 	}
 
 	@Override

@@ -123,7 +123,7 @@ public class IntroScene implements GameScene {
 
 		game.state.runAt(clock.sec(11), () -> {
 			blinking.restart();
-			rendering.pacMunching().forEach(Animation::restart);
+			rendering.pacMunching(game.pac).forEach(Animation::restart);
 			rendering.ghostsKicking(game.ghosts()).forEach(Animation::restart);
 			game.pac.speed = pacSpeed;
 			game.ghosts().forEach(ghost -> ghost.speed = ghostSpeedWhenChasing);

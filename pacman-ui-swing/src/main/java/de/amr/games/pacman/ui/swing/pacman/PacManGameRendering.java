@@ -40,8 +40,8 @@ class PacManGameRendering extends GameRenderingUsingAnimatedSprites {
 	}
 
 	@Override
-	public Animation<BufferedImage> pacMunchingToDir(Direction dir) {
-		return assets.pacMunchingAnimByDir.get(dir);
+	public Animation<BufferedImage> pacMunchingToDir(Pac pac, Direction dir) {
+		return assets.getOrCreatePacMunchingAnimation(pac).get(dir);
 	}
 
 	@Override
@@ -51,7 +51,7 @@ class PacManGameRendering extends GameRenderingUsingAnimatedSprites {
 
 	@Override
 	public Animation<BufferedImage> ghostKickingToDir(Ghost ghost, Direction dir) {
-		return assets.ghostsWalkingAnimsByGhost.get(ghost.id).get(dir);
+		return assets.getOrCreateGhostsWalkingAnimation(ghost).get(dir);
 	}
 
 	@Override
@@ -98,15 +98,15 @@ class PacManGameRendering extends GameRenderingUsingAnimatedSprites {
 	@Override
 	public BufferedImage pacSprite(Pac pac, PacManGameModel game) {
 		if (pac.dead) {
-			return pacDying().hasStarted() ? pacDying().animate() : pacMunchingToDir(pac.dir).frame();
+			return pacDying().hasStarted() ? pacDying().animate() : pacMunchingToDir(pac, pac.dir).frame();
 		}
 		if (pac.speed == 0) {
-			return pacMunchingToDir(pac.dir).frame(0);
+			return pacMunchingToDir(pac, pac.dir).frame(0);
 		}
 		if (!pac.couldMove) {
-			return pacMunchingToDir(pac.dir).frame(1);
+			return pacMunchingToDir(pac, pac.dir).frame(1);
 		}
-		return pacMunchingToDir(pac.dir).animate();
+		return pacMunchingToDir(pac, pac.dir).animate();
 	}
 
 	@Override
