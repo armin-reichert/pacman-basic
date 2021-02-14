@@ -9,6 +9,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 import de.amr.games.pacman.lib.Animation;
+import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.Ghost;
@@ -54,8 +55,8 @@ public class IntermissionScene3 implements GameScene {
 		this.soundManager = soundManager;
 		this.game = game;
 
-		pac = game.pac;
-		blinky = game.ghosts[0];
+		pac = new Pac("Pac-Man", Direction.LEFT);
+		blinky = new Ghost(0, "Blinky", Direction.LEFT);
 		chaseTileY = 20;
 
 		spritesheet = rendering.assets;
@@ -77,8 +78,9 @@ public class IntermissionScene3 implements GameScene {
 		pac.visible = true;
 		pac.dead = false;
 		pac.position = new V2f(size.x + 50, t(chaseTileY));
-		pac.speed = 1;
+		pac.speed = 1.2f;
 		pac.dir = LEFT;
+		pac.couldMove = true;
 
 		blinky.visible = true;
 		blinky.state = GhostState.HUNTING_PAC;
@@ -97,7 +99,7 @@ public class IntermissionScene3 implements GameScene {
 	public void update() {
 		switch (phase) {
 		case CHASING_PACMAN:
-			if (blinky.position.x == -50) {
+			if (blinky.position.x <= -50) {
 				pac.speed = 0;
 				blinky.dir = blinky.wishDir = RIGHT;
 				blinkyHalfNaked.restart();
@@ -105,7 +107,7 @@ public class IntermissionScene3 implements GameScene {
 			}
 			break;
 		case RETURNING_HALF_NAKED:
-			if (blinky.position.x > size.x + 50) {
+			if (blinky.position.x > t(28) + 200) {
 				game.state.duration(0); // end scene
 			}
 			break;
@@ -122,7 +124,7 @@ public class IntermissionScene3 implements GameScene {
 	@Override
 	public void render(Graphics2D g) {
 		Graphics2D g2 = rendering.smoothGC(g);
-		rendering.drawLevelCounter(g2, game, t(game.level.world.xTiles() - 4), size.y - t(2));
+		rendering.drawLevelCounter(g2, game, t(25), t(34));
 		rendering.drawPac(g2, pac, game);
 		drawBlinky(g2);
 		g2.dispose();
