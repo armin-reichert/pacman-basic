@@ -26,7 +26,7 @@ import de.amr.games.pacman.ui.swing.rendering.GameRenderingUsingAnimatedSprites;
  * 
  * @author Armin Reichert
  */
-public class IntermissionScen2 implements GameScene {
+public class IntermissionScene2 implements GameScene {
 
 	enum Phase {
 		APPROACHING_NAIL, HITTING_NAIL, STRETCHED_1, STRETCHED_2, STRETCHED_3, LOOKING_UP, LOOKING_RIGHT;
@@ -48,7 +48,7 @@ public class IntermissionScen2 implements GameScene {
 	private Phase phase;
 	private long timer;
 
-	public IntermissionScen2(V2i size, PacManGameRendering rendering, SoundManager soundManager, PacManGame game) {
+	public IntermissionScene2(V2i size, PacManGameRendering rendering, SoundManager soundManager, PacManGame game) {
 		this.size = size;
 		this.rendering = rendering;
 		this.soundManager = soundManager;

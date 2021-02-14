@@ -30,7 +30,7 @@ public class PacManGameScenes {
 		introScene = new IntroScene(unscaledSize_px, rendering, game);
 		playScene = new PlayScene(unscaledSize_px, rendering, game);
 		intermissionScene1 = new IntermissionScene1(unscaledSize_px, rendering, soundManager, game);
-		intermissionScene2 = new IntermissionScen2(unscaledSize_px, rendering, soundManager, game);
+		intermissionScene2 = new IntermissionScene2(unscaledSize_px, rendering, soundManager, game);
 		intermissionScene3 = new IntermissionScene3(unscaledSize_px, rendering, soundManager, game);
 	}
 
