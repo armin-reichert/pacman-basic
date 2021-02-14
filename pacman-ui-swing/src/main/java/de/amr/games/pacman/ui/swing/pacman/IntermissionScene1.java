@@ -5,8 +5,8 @@ import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.model.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.GhostState.HUNTING_PAC;
-import static de.amr.games.pacman.ui.swing.pacman.PacManGameIntermission1.Phase.BIGPACMAN_CHASING_BLINKY;
-import static de.amr.games.pacman.ui.swing.pacman.PacManGameIntermission1.Phase.BLINKY_CHASING_PACMAN;
+import static de.amr.games.pacman.ui.swing.pacman.IntermissionScene1.Phase.BIGPACMAN_CHASING_BLINKY;
+import static de.amr.games.pacman.ui.swing.pacman.IntermissionScene1.Phase.BLINKY_CHASING_PACMAN;
 import static de.amr.games.pacman.world.PacManGameWorld.t;
 
 import java.awt.Graphics2D;
@@ -28,7 +28,7 @@ import de.amr.games.pacman.ui.swing.rendering.DefaultGameRendering;
  * 
  * @author Armin Reichert
  */
-public class PacManGameIntermission1 implements PacManGameScene {
+public class IntermissionScene1 implements PacManGameScene {
 
 	enum Phase {
 		BLINKY_CHASING_PACMAN, BIGPACMAN_CHASING_BLINKY;
@@ -46,7 +46,7 @@ public class PacManGameIntermission1 implements PacManGameScene {
 
 	private Phase phase;
 
-	public PacManGameIntermission1(V2i size, DefaultPacManGameRendering rendering, SoundManager soundManager,
+	public IntermissionScene1(V2i size, DefaultPacManGameRendering rendering, SoundManager soundManager,
 			PacManGame game) {
 		this.size = size;
 		this.rendering = rendering;

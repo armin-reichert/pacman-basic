@@ -25,7 +25,7 @@ import de.amr.games.pacman.ui.swing.PacManGameScene;
  * 
  * @author Armin Reichert
  */
-public class PacManGameIntroScene implements PacManGameScene {
+public class IntroScene implements PacManGameScene {
 
 	private final V2i size;
 	private final DefaultPacManGameRendering rendering;
@@ -45,7 +45,7 @@ public class PacManGameIntroScene implements PacManGameScene {
 	private long ghostDyingTimer;
 	private long completedTime;
 
-	public PacManGameIntroScene(V2i size, DefaultPacManGameRendering rendering, PacManGameModel game) {
+	public IntroScene(V2i size, DefaultPacManGameRendering rendering, PacManGameModel game) {
 		this.size = size;
 		this.game = game;
 		this.rendering = rendering;

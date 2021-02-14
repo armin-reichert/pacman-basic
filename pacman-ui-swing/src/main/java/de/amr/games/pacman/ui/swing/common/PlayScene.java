@@ -1,4 +1,4 @@
-package de.amr.games.pacman.ui.swing.pacman;
+package de.amr.games.pacman.ui.swing.common;
 
 import static de.amr.games.pacman.world.PacManGameWorld.t;
 
@@ -16,13 +16,13 @@ import de.amr.games.pacman.ui.swing.rendering.SceneRendering;
  * 
  * @author Armin Reichert
  */
-public class PacManGamePlayScene implements PacManGameScene {
+public class PlayScene implements PacManGameScene {
 
 	private final V2i size;
 	private final SceneRendering rendering;
 	private final PacManGameModel game;
 
-	public PacManGamePlayScene(V2i size, SceneRendering rendering, PacManGameModel game) {
+	public PlayScene(V2i size, SceneRendering rendering, PacManGameModel game) {
 		this.size = size;
 		this.rendering = rendering;
 		this.game = game;

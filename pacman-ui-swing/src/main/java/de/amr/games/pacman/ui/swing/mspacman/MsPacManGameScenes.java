@@ -8,7 +8,7 @@ import de.amr.games.pacman.sound.PacManGameSoundAssets;
 import de.amr.games.pacman.sound.PacManGameSoundManager;
 import de.amr.games.pacman.sound.SoundManager;
 import de.amr.games.pacman.ui.swing.PacManGameScene;
-import de.amr.games.pacman.ui.swing.pacman.PacManGamePlayScene;
+import de.amr.games.pacman.ui.swing.common.PlayScene;
 
 public class MsPacManGameScenes {
 
@@ -27,11 +27,11 @@ public class MsPacManGameScenes {
 	}
 
 	public void createScenes(MsPacManGame game, V2i unscaledSize_px) {
-		introScene = new MsPacManGameIntroScene(unscaledSize_px, rendering, game);
-		playScene = new PacManGamePlayScene(unscaledSize_px, rendering, game);
-		intermissionScene1 = new MsPacManIntermission1_TheyMeet(unscaledSize_px, rendering, soundManager, game);
-		intermissionScene2 = new MsPacManIntermission2_TheChase(unscaledSize_px, rendering, soundManager, game);
-		intermissionScene3 = new MsPacManIntermission3_Junior(unscaledSize_px, rendering, soundManager, game);
+		introScene = new IntroScene(unscaledSize_px, rendering, game);
+		playScene = new PlayScene(unscaledSize_px, rendering, game);
+		intermissionScene1 = new IntermissionScene1(unscaledSize_px, rendering, soundManager, game);
+		intermissionScene2 = new IntermissionScene2(unscaledSize_px, rendering, soundManager, game);
+		intermissionScene3 = new IntermissionScene3(unscaledSize_px, rendering, soundManager, game);
 	}
 
 	public PacManGameScene selectScene(PacManGameModel game) {

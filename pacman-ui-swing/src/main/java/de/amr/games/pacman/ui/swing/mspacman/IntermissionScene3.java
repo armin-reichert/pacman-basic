@@ -9,14 +9,14 @@ import de.amr.games.pacman.sound.PacManGameSound;
 import de.amr.games.pacman.sound.SoundManager;
 import de.amr.games.pacman.ui.swing.PacManGameScene;
 
-public class MsPacManIntermission3_Junior implements PacManGameScene {
+public class IntermissionScene3 implements PacManGameScene {
 
 	private final V2i size;
 	private final DefaultMsPacManGameRendering rendering;
 	private final SoundManager soundManager;
 	private final PacManGameModel game;
 
-	public MsPacManIntermission3_Junior(V2i size, DefaultMsPacManGameRendering rendering, SoundManager soundManager,
+	public IntermissionScene3(V2i size, DefaultMsPacManGameRendering rendering, SoundManager soundManager,
 			PacManGameModel game) {
 		this.size = size;
 		this.rendering = rendering;

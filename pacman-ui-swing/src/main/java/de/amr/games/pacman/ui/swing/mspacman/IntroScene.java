@@ -18,7 +18,7 @@ import de.amr.games.pacman.model.Pac;
 import de.amr.games.pacman.model.PacManGameModel;
 import de.amr.games.pacman.ui.swing.PacManGameScene;
 
-public class MsPacManGameIntroScene implements PacManGameScene {
+public class IntroScene implements PacManGameScene {
 
 	enum Phase {
 		BEGIN, BLINKY, PINKY, INKY, SUE, MSPACMAN, END
@@ -37,7 +37,7 @@ public class MsPacManGameIntroScene implements PacManGameScene {
 	private Phase phase;
 	private long phaseStartTime;
 
-	public MsPacManGameIntroScene(V2i size, DefaultMsPacManGameRendering rendering, PacManGameModel game) {
+	public IntroScene(V2i size, DefaultMsPacManGameRendering rendering, PacManGameModel game) {
 		this.game = game;
 		this.size = size;
 		this.rendering = rendering;

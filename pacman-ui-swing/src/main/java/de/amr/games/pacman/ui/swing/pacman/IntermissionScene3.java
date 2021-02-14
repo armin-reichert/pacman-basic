@@ -27,7 +27,7 @@ import de.amr.games.pacman.ui.swing.rendering.DefaultGameRendering;
  * 
  * @author Armin Reichert
  */
-public class PacManGameIntermission3 implements PacManGameScene {
+public class IntermissionScene3 implements PacManGameScene {
 
 	enum Phase {
 		CHASING_PACMAN, RETURNING_HALF_NAKED
@@ -48,7 +48,7 @@ public class PacManGameIntermission3 implements PacManGameScene {
 	private Phase phase;
 	private long timer;
 
-	public PacManGameIntermission3(V2i size, DefaultPacManGameRendering rendering, SoundManager soundManager,
+	public IntermissionScene3(V2i size, DefaultPacManGameRendering rendering, SoundManager soundManager,
 			PacManGame game) {
 		this.size = size;
 		this.rendering = rendering;

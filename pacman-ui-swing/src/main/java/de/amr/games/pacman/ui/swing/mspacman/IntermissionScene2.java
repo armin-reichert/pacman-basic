@@ -9,14 +9,14 @@ import de.amr.games.pacman.sound.PacManGameSound;
 import de.amr.games.pacman.sound.SoundManager;
 import de.amr.games.pacman.ui.swing.PacManGameScene;
 
-public class MsPacManIntermission1_TheyMeet implements PacManGameScene {
+public class IntermissionScene2 implements PacManGameScene {
 
 	private final V2i size;
 	private final DefaultMsPacManGameRendering rendering;
 	private final SoundManager soundManager;
 	private final PacManGameModel game;
 
-	public MsPacManIntermission1_TheyMeet(V2i size, DefaultMsPacManGameRendering rendering, SoundManager soundManager,
+	public IntermissionScene2(V2i size, DefaultMsPacManGameRendering rendering, SoundManager soundManager,
 			PacManGameModel game) {
 		this.size = size;
 		this.rendering = rendering;
@@ -31,12 +31,12 @@ public class MsPacManIntermission1_TheyMeet implements PacManGameScene {
 
 	@Override
 	public void start() {
-		soundManager.loop(PacManGameSound.INTERMISSION_1, 1);
+		soundManager.loop(PacManGameSound.INTERMISSION_2, 1);
 	}
 
 	@Override
 	public void draw(Graphics2D g) {
-		if (game.state.ticksRun() == God.clock.sec(10)) {
+		if (game.state.ticksRun() == God.clock.sec(23)) {
 			game.state.duration(0);
 		}
 	}
