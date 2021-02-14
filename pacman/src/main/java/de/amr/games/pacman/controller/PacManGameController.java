@@ -156,9 +156,9 @@ public class PacManGameController {
 
 	private void toggleGameVariant() {
 		if (playingMsPacMan()) {
-			play(pacManGame);
+			playPacMan();
 		} else {
-			play(msPacManGame);
+			playMsPacMan();
 		}
 		sounds().forEach(SoundManager::stopAll);
 	}
