@@ -28,7 +28,7 @@ import de.amr.games.pacman.ui.swing.GameScene;
 public class IntroScene implements GameScene {
 
 	private final V2i size;
-	private final DefaultPacManGameRendering rendering;
+	private final PacManGameRendering rendering;
 	private final PacManGameModel game;
 
 	private final Animation<Boolean> blinking = Animation.pulse().frameDuration(30);
@@ -45,7 +45,7 @@ public class IntroScene implements GameScene {
 	private long ghostDyingTimer;
 	private long completedTime;
 
-	public IntroScene(V2i size, DefaultPacManGameRendering rendering, PacManGameModel game) {
+	public IntroScene(V2i size, PacManGameRendering rendering, PacManGameModel game) {
 		this.size = size;
 		this.game = game;
 		this.rendering = rendering;

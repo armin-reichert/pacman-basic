@@ -19,18 +19,18 @@ import de.amr.games.pacman.model.Ghost;
 import de.amr.games.pacman.model.Pac;
 import de.amr.games.pacman.model.PacManGameModel;
 import de.amr.games.pacman.ui.swing.assets.Spritesheet;
-import de.amr.games.pacman.ui.swing.rendering.DefaultGameRendering;
+import de.amr.games.pacman.ui.swing.rendering.GameRenderingUsingAnimatedSprites;
 
 /**
  * Rendering for the classic Pac-Man game.
  * 
  * @author Armin Reichert
  */
-class DefaultPacManGameRendering extends DefaultGameRendering {
+class PacManGameRendering extends GameRenderingUsingAnimatedSprites {
 
 	public final PacManGameAssets assets;
 
-	public DefaultPacManGameRendering() {
+	public PacManGameRendering() {
 		assets = new PacManGameAssets();
 	}
 

@@ -37,7 +37,7 @@ public class IntroScene implements GameScene {
 
 	private final V2i size;
 	private final PacManGameModel game;
-	private final DefaultMsPacManGameRendering rendering;
+	private final MsPacManGameRendering rendering;
 
 	private final V2i frameTopLeftTile = new V2i(6, 8);
 	private final int belowFrame = t(17);
@@ -47,7 +47,7 @@ public class IntroScene implements GameScene {
 	private Ghost[] ghosts;
 	private Phase phase;
 
-	public IntroScene(V2i size, DefaultMsPacManGameRendering rendering, PacManGameModel game) {
+	public IntroScene(V2i size, MsPacManGameRendering rendering, PacManGameModel game) {
 		this.game = game;
 		this.size = size;
 		this.rendering = rendering;

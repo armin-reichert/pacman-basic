@@ -12,7 +12,7 @@ import de.amr.games.pacman.ui.swing.common.PlayScene;
 
 public class PacManGameScenes {
 
-	public final DefaultPacManGameRendering rendering;
+	public final PacManGameRendering rendering;
 	public final SoundManager soundManager;
 
 	private IntroScene introScene;
@@ -22,7 +22,7 @@ public class PacManGameScenes {
 	private GameScene intermissionScene3;
 
 	public PacManGameScenes() {
-		rendering = new DefaultPacManGameRendering();
+		rendering = new PacManGameRendering();
 		soundManager = new PacManGameSoundManager(PacManGameSoundAssets::getPacManSoundURL);
 	}
 

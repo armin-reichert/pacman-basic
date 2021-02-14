@@ -10,15 +10,13 @@ import de.amr.games.pacman.model.Pac;
 import de.amr.games.pacman.model.PacManGameModel;
 
 /**
- * Interface used by scenes to get rendered.
+ * Interface used to render game scenes.
  * 
  * @author Armin Reichert
  */
-public interface SceneRendering {
+public interface GameRendering {
 
-	void signalReadyState(Graphics2D g);
-
-	void signalGameOverState(Graphics2D g);
+	void signalGameState(Graphics2D g, PacManGameModel game);
 
 	void drawScore(Graphics2D g, PacManGameModel game, int x, int y);
 
@@ -48,8 +46,7 @@ public interface SceneRendering {
 
 	default void drawImage(Graphics2D g, BufferedImage image, float x, float y, boolean smooth) {
 		if (smooth) {
-			Graphics2D gc = (Graphics2D) g.create();
-			gc.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+			Graphics2D gc = smoothGC(g);
 			gc.drawImage(image, (int) x, (int) y, null);
 			gc.dispose();
 		} else {

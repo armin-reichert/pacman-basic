@@ -9,7 +9,7 @@ import de.amr.games.pacman.model.Pac;
 import de.amr.games.pacman.model.PacManGameModel;
 import de.amr.games.pacman.ui.swing.assets.Spritesheet;
 
-public interface SpriteBasedSceneRendering extends SceneRendering {
+public interface SpriteBasedSceneRendering extends GameRendering {
 
 	Spritesheet spritesheet();
 

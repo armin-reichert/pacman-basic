@@ -21,14 +21,14 @@ import de.amr.games.pacman.model.PacManGameModel;
 import de.amr.games.pacman.ui.PacManGameAnimation;
 import de.amr.games.pacman.ui.swing.assets.AssetLoader;
 
-public abstract class DefaultGameRendering implements SpriteBasedSceneRendering, PacManGameAnimation {
+public abstract class GameRenderingUsingAnimatedSprites implements SpriteBasedSceneRendering, PacManGameAnimation {
 
 	public static boolean foodAnimationOn = false; // experimental
 
 	public final ResourceBundle translations;
 	public final Font font;
 
-	public DefaultGameRendering() {
+	public GameRenderingUsingAnimatedSprites() {
 		translations = ResourceBundle.getBundle("localization.translation");
 		font = AssetLoader.font("/emulogic.ttf", 8);
 	}
@@ -139,15 +139,13 @@ public abstract class DefaultGameRendering implements SpriteBasedSceneRendering,
 	}
 
 	@Override
-	public void signalReadyState(Graphics2D g) {
-		g.setFont(font);
-		g.setColor(Color.YELLOW);
-		g.drawString(translations.getString("READY"), t(11), t(21));
-	}
-
-	@Override
-	public void signalGameOverState(Graphics2D g) {
-		g.setFont(font);
+	public void signalGameState(Graphics2D g, PacManGameModel game) {
+		if (game.state == PacManGameState.READY) {
+			g.setFont(font);
+			g.setColor(Color.YELLOW);
+			g.drawString(translations.getString("READY"), t(11), t(21));
+		} else if (game.state == PacManGameState.GAME_OVER || game.attractMode)
+			g.setFont(font);
 		g.setColor(Color.RED);
 		g.drawString(translations.getString("GAME"), t(9), t(21));
 		g.drawString(translations.getString("OVER"), t(15), t(21));

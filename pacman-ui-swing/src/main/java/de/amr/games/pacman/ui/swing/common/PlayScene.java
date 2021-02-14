@@ -4,12 +4,11 @@ import static de.amr.games.pacman.world.PacManGameWorld.t;
 
 import java.awt.Graphics2D;
 
-import de.amr.games.pacman.controller.PacManGameState;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.PacManGameModel;
 import de.amr.games.pacman.ui.swing.GameScene;
 import de.amr.games.pacman.ui.swing.rendering.DebugRendering;
-import de.amr.games.pacman.ui.swing.rendering.SceneRendering;
+import de.amr.games.pacman.ui.swing.rendering.GameRendering;
 
 /**
  * Play scene for Pac-Man and Ms. Pac-Man.
@@ -19,10 +18,10 @@ import de.amr.games.pacman.ui.swing.rendering.SceneRendering;
 public class PlayScene implements GameScene {
 
 	private final V2i size;
-	private final SceneRendering rendering;
+	private final GameRendering rendering;
 	private final PacManGameModel game;
 
-	public PlayScene(V2i size, SceneRendering rendering, PacManGameModel game) {
+	public PlayScene(V2i size, GameRendering rendering, PacManGameModel game) {
 		this.size = size;
 		this.rendering = rendering;
 		this.game = game;
@@ -41,11 +40,7 @@ public class PlayScene implements GameScene {
 		if (DebugRendering.on) {
 			DebugRendering.drawMazeStructure(g, game);
 		}
-		if (game.attractMode || game.state == PacManGameState.GAME_OVER) {
-			rendering.signalGameOverState(g);
-		} else if (game.state == PacManGameState.READY) {
-			rendering.signalReadyState(g);
-		}
+		rendering.signalGameState(g, game);
 		rendering.drawPac(g, game.pac, game);
 		game.ghosts().forEach(ghost -> rendering.drawGhost(g, ghost, game));
 		if (DebugRendering.on) {

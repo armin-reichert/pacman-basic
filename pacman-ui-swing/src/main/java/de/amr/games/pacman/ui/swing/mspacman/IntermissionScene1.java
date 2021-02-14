@@ -12,11 +12,11 @@ import de.amr.games.pacman.ui.swing.GameScene;
 public class IntermissionScene1 implements GameScene {
 
 	private final V2i size;
-	private final DefaultMsPacManGameRendering rendering;
+	private final MsPacManGameRendering rendering;
 	private final SoundManager soundManager;
 	private final PacManGameModel game;
 
-	public IntermissionScene1(V2i size, DefaultMsPacManGameRendering rendering, SoundManager soundManager,
+	public IntermissionScene1(V2i size, MsPacManGameRendering rendering, SoundManager soundManager,
 			PacManGameModel game) {
 		this.size = size;
 		this.rendering = rendering;
