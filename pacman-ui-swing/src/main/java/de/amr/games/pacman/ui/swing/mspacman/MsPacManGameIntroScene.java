@@ -129,8 +129,8 @@ public class MsPacManGameIntroScene implements PacManGameScene {
 			break;
 		case END:
 			showPacName(g);
-			showPointsAnimation(g, 26);
-			showPressKeyToStart(g, 32);
+			drawPointsAnimation(g, 26);
+			drawPressKeyToStart(g, 32);
 			if (phaseAt(clock.sec(10))) {
 				game.attractMode = true;
 			}
@@ -209,26 +209,28 @@ public class MsPacManGameIntroScene implements PacManGameScene {
 		}
 	}
 
-	private void showPressKeyToStart(Graphics2D g, int yTile) {
+	private void drawPressKeyToStart(Graphics2D g, int tileY) {
 		if (blinking.animate()) {
+			String text = "PRESS SPACE TO PLAY";
 			g.setColor(Color.ORANGE);
 			g.setFont(rendering.assets.getScoreFont());
-			g.drawString("PRESS SPACE KEY TO PLAY", t(2), t(yTile));
+			g.drawString(text, t(13 - text.length() / 2), t(tileY));
 		}
 	}
 
-	private void showPointsAnimation(Graphics2D g, int yTile) {
+	private void drawPointsAnimation(Graphics2D g, int tileY) {
+		int x = t(10), y = t(tileY);
 		if (blinking.animate()) {
 			g.setColor(Color.PINK);
-			g.fillRect(t(8) + 6, t(yTile - 1) + 2, 2, 2);
-			g.fillOval(t(8), t(yTile + 1) - 2, 10, 10);
+			g.fillOval(x, y + t(1) - 2, 10, 10);
+			g.fillRect(x + 6, y - t(1) + 2, 2, 2);
 		}
 		g.setColor(Color.WHITE);
 		g.setFont(rendering.assets.getScoreFont());
-		g.drawString("10", t(10), t(yTile));
-		g.drawString("50", t(10), t(yTile + 2));
-		g.setFont(rendering.assets.getScoreFont());
-		g.drawString("POINTS", t(13), t(yTile));
-		g.drawString("POINTS", t(13), t(yTile + 2));
+		g.drawString("10", x + t(2), y);
+		g.drawString("50", x + t(2), y + t(2));
+		g.setFont(rendering.assets.getScoreFont().deriveFont(6f));
+		g.drawString("PTS", x + t(5), y);
+		g.drawString("PTS", x + t(5), y + t(2));
 	}
 }
