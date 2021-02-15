@@ -1,11 +1,11 @@
 package de.amr.games.pacman.ui.swing.pacman;
 
+import static de.amr.games.pacman.heaven.God.clock;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.model.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.GhostState.HUNTING_PAC;
-import static de.amr.games.pacman.ui.swing.pacman.IntermissionScene1.Phase.BIGPACMAN_CHASING_BLINKY;
 import static de.amr.games.pacman.ui.swing.pacman.IntermissionScene1.Phase.BLINKY_CHASING_PACMAN;
 import static de.amr.games.pacman.world.PacManGameWorld.t;
 
@@ -13,6 +13,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 import de.amr.games.pacman.lib.Animation;
+import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.Ghost;
@@ -39,10 +40,10 @@ public class IntermissionScene1 implements GameScene {
 	private final SoundManager soundManager;
 	private final PacManGame game;
 
-	private final Animation<BufferedImage> bigPac;
 	private final int baselineY = t(20);
 	private final Ghost blinky;
 	private final Pac pac;
+	private final Animation<BufferedImage> bigPac;
 
 	private Phase phase;
 
@@ -52,8 +53,8 @@ public class IntermissionScene1 implements GameScene {
 		this.soundManager = soundManager;
 		this.game = game;
 
-		pac = game.pac;
-		blinky = game.ghosts[0];
+		pac = new Pac("Pac-Man", Direction.LEFT);
+		blinky = new Ghost(0, "Blinky", Direction.LEFT);
 		bigPac = Animation.of(rendering.assets.spritesAt(2, 1, 2, 2), rendering.assets.spritesAt(4, 1, 2, 2),
 				rendering.assets.spritesAt(6, 1, 2, 2));
 		bigPac.endless().frameDuration(4).run();
@@ -66,20 +67,18 @@ public class IntermissionScene1 implements GameScene {
 
 	@Override
 	public void start() {
-		log("Start of intermission scene %s", getClass().getSimpleName());
-
-		phase = BLINKY_CHASING_PACMAN;
+		log("Start of intermission scene %s at tick %d", this, clock.ticksTotal);
 
 		pac.visible = true;
 		pac.dead = false;
 		pac.couldMove = true;
-		pac.position = new V2f(size.x + 50, baselineY);
+		pac.position = new V2f(t(30), baselineY);
 		pac.speed = 1f;
 		pac.dir = LEFT;
 
 		blinky.visible = true;
 		blinky.state = HUNTING_PAC;
-		blinky.position = pac.position.sum(30, 0);
+		blinky.position = pac.position.sum(t(4), 0);
 		blinky.speed = pac.speed * 1.04f;
 		blinky.dir = blinky.wishDir = LEFT;
 
@@ -87,11 +86,8 @@ public class IntermissionScene1 implements GameScene {
 		rendering.ghostKickingToDir(blinky, blinky.dir).restart();
 		rendering.ghostFrightenedToDir(blinky, blinky.dir).restart();
 		soundManager.loop(PacManGameSound.INTERMISSION_1, 2);
-	}
 
-	@Override
-	public void end() {
-		log("End of intermission scene %s", getClass().getSimpleName());
+		phase = BLINKY_CHASING_PACMAN;
 	}
 
 	@Override
@@ -106,14 +102,14 @@ public class IntermissionScene1 implements GameScene {
 				blinky.position = new V2f(-20, baselineY);
 				blinky.speed = 0.8f;
 				blinky.state = FRIGHTENED;
-				phase = BIGPACMAN_CHASING_BLINKY;
+				phase = Phase.BIGPACMAN_CHASING_BLINKY;
 			}
 			break;
 		case BIGPACMAN_CHASING_BLINKY:
-			if ((int) blinky.position.x + 4 == size.x / 2) {
-				pac.speed = blinky.speed * 1.9f;
+			if ((int) blinky.position.x + 4 == t(13)) {
+				pac.speed = blinky.speed * 1.8f;
 			}
-			if (pac.position.x > size.x + 100) {
+			if (pac.position.x > t(28) + 100) {
 				game.state.duration(0);
 			}
 			break;
@@ -126,12 +122,12 @@ public class IntermissionScene1 implements GameScene {
 
 	@Override
 	public void render(Graphics2D g) {
-		rendering.drawLevelCounter(g, game, size.x - t(4), size.y - t(2));
 		rendering.drawGhost(g, blinky, game);
-		if (phase == BLINKY_CHASING_PACMAN) {
+		if (phase == Phase.BLINKY_CHASING_PACMAN) {
 			rendering.drawPac(g, pac, game);
 		} else {
 			rendering.drawImage(g, bigPac.animate(), pac.position.x - 12, pac.position.y - 22, true);
 		}
+		rendering.drawLevelCounter(g, game, t(25), t(34));
 	}
 }
