@@ -8,7 +8,7 @@ package de.amr.games.pacman.model;
 public class Bonus extends Creature {
 
 	/** ID of the bonus symbol. */
-	public int symbol;
+	public byte symbol;
 
 	/** Value of this bonus. */
 	public int points;
