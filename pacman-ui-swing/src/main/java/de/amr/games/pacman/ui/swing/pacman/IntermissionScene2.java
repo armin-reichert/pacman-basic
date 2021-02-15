@@ -182,7 +182,7 @@ public class IntermissionScene2 implements GameScene {
 
 	private void drawBlinky(Graphics2D g) {
 		int baselineY = (int) blinky.position.y - 5;
-		int blinkySpriteRightEdge = (int) blinky.position.x + 6;
+		int blinkySpriteRightEdge = (int) blinky.position.x + 4;
 		switch (phase) {
 		case APPROACHING_NAIL:
 		case HITTING_NAIL:
