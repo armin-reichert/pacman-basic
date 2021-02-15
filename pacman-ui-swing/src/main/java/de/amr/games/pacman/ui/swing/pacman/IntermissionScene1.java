@@ -78,7 +78,7 @@ public class IntermissionScene1 implements GameScene {
 
 		blinky.visible = true;
 		blinky.state = HUNTING_PAC;
-		blinky.position = pac.position.sum(t(4), 0);
+		blinky.position = pac.position.sum(t(3), 0);
 		blinky.speed = pac.speed * 1.04f;
 		blinky.dir = blinky.wishDir = LEFT;
 
