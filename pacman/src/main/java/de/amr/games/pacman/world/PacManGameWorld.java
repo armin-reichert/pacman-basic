@@ -15,8 +15,8 @@ public interface PacManGameWorld {
 
 	public static final byte TS = 8, HTS = 4;
 
-	public static int t(int nTiles) {
-		return nTiles * TS;
+	public static int t(double nTiles) {
+		return (int) nTiles * TS;
 	}
 
 	public static V2i tile(V2f position) {
