@@ -10,6 +10,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 import de.amr.games.pacman.lib.Animation;
+import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.Ghost;
@@ -29,43 +30,55 @@ import de.amr.games.pacman.ui.swing.rendering.GameRenderingUsingAnimatedSprites;
 public class IntermissionScene2 implements GameScene {
 
 	enum Phase {
+
 		APPROACHING_NAIL, HITTING_NAIL, STRETCHED_1, STRETCHED_2, STRETCHED_3, LOOKING_UP, LOOKING_RIGHT;
+
+		private long timer;
+
+		private boolean isComplete() {
+			return timer == -1;
+		}
+
+		private void tick() {
+			if (timer > -1) {
+				--timer;
+			}
+		}
 	}
 
 	private final V2i size;
 	private final GameRenderingUsingAnimatedSprites rendering;
 	private final SoundManager soundManager;
 	private final PacManGame game;
-
 	private final Spritesheet spritesheet;
-	private final int chaseTileY;
+
+	private final int chaseTileY = 20;
 	private final Ghost blinky;
 	private final Pac pac;
-	private final BufferedImage nail, blinkyLookingUp, blinkyLookingRight, shred;
-	private final BufferedImage stretchedDress[];
+	private final BufferedImage nail, blinkyLookingUp, blinkyLookingRight, shred, stretchedDress[];
 	private final V2i nailPosition;
 
 	private Phase phase;
-	private long timer;
 
 	public IntermissionScene2(V2i size, PacManGameRendering rendering, SoundManager soundManager, PacManGame game) {
 		this.size = size;
 		this.rendering = rendering;
 		this.soundManager = soundManager;
 		this.game = game;
+		this.spritesheet = rendering.assets;
 
-		pac = game.pac;
-		blinky = game.ghosts[0];
-		chaseTileY = 20;
-		nailPosition = new V2i(size.x / 2, t(chaseTileY) - 6);
+		blinky = new Ghost(0, "Blinky", Direction.LEFT);
+		pac = new Pac("Pac-Man", Direction.LEFT);
+		nailPosition = new V2i(t(14), t(chaseTileY) - 6);
 
 		// Sprites
-		spritesheet = rendering.assets;
 		nail = spritesheet.spriteAt(8, 6);
 		shred = spritesheet.spriteAt(12, 6);
 		blinkyLookingUp = spritesheet.spriteAt(8, 7);
 		blinkyLookingRight = spritesheet.spriteAt(9, 7);
-		stretchedDress = new BufferedImage[] { spritesheet.spriteAt(9, 6), spritesheet.spriteAt(10, 6),
+		stretchedDress = new BufferedImage[] { //
+				spritesheet.spriteAt(9, 6), //
+				spritesheet.spriteAt(10, 6), //
 				spritesheet.spriteAt(11, 6) };
 	}
 
@@ -76,17 +89,18 @@ public class IntermissionScene2 implements GameScene {
 
 	@Override
 	public void start() {
-		log("Start of intermission scene %s", getClass().getSimpleName());
+		log("Start of intermission scene %s at %d", this, clock.ticksTotal);
 
 		pac.visible = true;
 		pac.dead = false;
-		pac.position = new V2f(size.x + 50, t(chaseTileY));
+		pac.couldMove = true;
+		pac.position = new V2f(t(30), t(chaseTileY));
 		pac.speed = 1;
 		pac.dir = LEFT;
 
 		blinky.visible = true;
 		blinky.state = HUNTING_PAC;
-		blinky.position = pac.position.sum(size.x / 2, 0);
+		blinky.position = pac.position.sum(t(14), 0);
 		blinky.speed = 1;
 		blinky.dir = blinky.wishDir = LEFT;
 
@@ -94,22 +108,16 @@ public class IntermissionScene2 implements GameScene {
 		rendering.ghostKickingToDir(blinky, blinky.dir).restart();
 		soundManager.play(PacManGameSound.INTERMISSION_2);
 
-		phase = Phase.APPROACHING_NAIL;
-		timer = -1;
+		enter(Phase.APPROACHING_NAIL);
 	}
 
 	private void enter(Phase nextPhase, long ticks) {
 		phase = nextPhase;
-		timer = ticks;
+		phase.timer = ticks;
 	}
 
 	private void enter(Phase nextPhase) {
-		phase = nextPhase;
-		timer = -1;
-	}
-
-	private boolean timeout() {
-		return timer == -1;
+		enter(nextPhase, -1);
 	}
 
 	@Override
@@ -123,7 +131,7 @@ public class IntermissionScene2 implements GameScene {
 			}
 			break;
 		case HITTING_NAIL:
-			if (timeout()) {
+			if (phase.isComplete()) {
 				blinky.speed = 0.3f;
 				enter(Phase.STRETCHED_1);
 			}
@@ -147,12 +155,12 @@ public class IntermissionScene2 implements GameScene {
 			}
 			break;
 		case LOOKING_UP:
-			if (timeout()) {
+			if (phase.isComplete()) {
 				enter(Phase.LOOKING_RIGHT, clock.sec(3));
 			}
 			break;
 		case LOOKING_RIGHT:
-			if (timeout()) {
+			if (phase.isComplete()) {
 				game.state.duration(0); // signal end of this scene
 			}
 			break;
@@ -161,19 +169,15 @@ public class IntermissionScene2 implements GameScene {
 		}
 		blinky.move();
 		pac.move();
-		if (timer >= 0) {
-			--timer;
-		}
+		phase.tick();
 	}
 
 	@Override
 	public void render(Graphics2D g) {
-		Graphics2D g2 = rendering.smoothGC(g);
-		rendering.drawLevelCounter(g2, game, t(game.level.world.xTiles() - 4), size.y - t(2));
-		g2.drawImage(nail, nailPosition.x, nailPosition.y, null);
+		rendering.drawLevelCounter(g, game, t(25), t(34));
+		rendering.drawImage(g, nail, nailPosition.x, nailPosition.y, true);
 		rendering.drawPac(g, pac, game);
-		drawBlinky(g2);
-		g2.dispose();
+		drawBlinky(g);
 	}
 
 	private void drawBlinky(Graphics2D g) {
