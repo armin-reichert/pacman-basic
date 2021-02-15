@@ -1,5 +1,6 @@
 package de.amr.games.pacman.ui.swing.pacman;
 
+import static de.amr.games.pacman.heaven.God.clock;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Logging.log;
@@ -31,7 +32,7 @@ import de.amr.games.pacman.ui.swing.rendering.GameRenderingUsingAnimatedSprites;
 public class IntermissionScene3 implements GameScene {
 
 	enum Phase {
-		CHASING_PACMAN, RETURNING_HALF_NAKED
+		CHASING_PACMAN, RETURNING_HALF_NAKED;
 	}
 
 	private final V2i size;
@@ -42,24 +43,22 @@ public class IntermissionScene3 implements GameScene {
 	private final Spritesheet spritesheet;
 	private final Animation<BufferedImage> blinkyDamaged, blinkyHalfNaked;
 
-	private final int chaseTileY;
+	private final int chaseTileY = 20;
 	private final Ghost blinky;
 	private final Pac pac;
 
 	private Phase phase;
-	private long timer;
 
 	public IntermissionScene3(V2i size, PacManGameRendering rendering, SoundManager soundManager, PacManGame game) {
 		this.size = size;
 		this.rendering = rendering;
 		this.soundManager = soundManager;
 		this.game = game;
+		this.spritesheet = rendering.assets;
 
 		pac = new Pac("Pac-Man", Direction.LEFT);
 		blinky = new Ghost(0, "Blinky", Direction.LEFT);
-		chaseTileY = 20;
 
-		spritesheet = rendering.assets;
 		blinkyDamaged = Animation.of(spritesheet.spriteAt(10, 7), spritesheet.spriteAt(11, 7));
 		blinkyDamaged.frameDuration(4).endless();
 		blinkyHalfNaked = Animation.of(spritesheet.spritesAt(8, 8, 2, 1), spritesheet.spritesAt(10, 8, 2, 1));
@@ -73,12 +72,13 @@ public class IntermissionScene3 implements GameScene {
 
 	@Override
 	public void start() {
-		log("Start intermission scene %s", getClass().getSimpleName());
+		log("Start intermission scene %s at %d", this, clock.ticksTotal);
 
 		pac.visible = true;
 		pac.dead = false;
-		pac.position = new V2f(size.x + 50, t(chaseTileY));
+		pac.position = new V2f(t(30), t(chaseTileY));
 		pac.speed = 1.2f;
+		pac.couldMove = true;
 		pac.dir = LEFT;
 		pac.couldMove = true;
 
@@ -116,9 +116,6 @@ public class IntermissionScene3 implements GameScene {
 		}
 		blinky.move();
 		pac.move();
-		if (timer >= 0) {
-			--timer;
-		}
 	}
 
 	@Override
