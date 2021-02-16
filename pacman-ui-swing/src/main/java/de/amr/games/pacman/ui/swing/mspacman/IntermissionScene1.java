@@ -1,6 +1,7 @@
 package de.amr.games.pacman.ui.swing.mspacman;
 
 import static de.amr.games.pacman.heaven.God.clock;
+import static de.amr.games.pacman.ui.swing.mspacman.MsPacManGameRendering.assets;
 import static de.amr.games.pacman.ui.swing.mspacman.MsPacManGameScenes.rendering;
 import static de.amr.games.pacman.ui.swing.mspacman.MsPacManGameScenes.soundManager;
 import static de.amr.games.pacman.world.PacManGameWorld.t;
@@ -21,7 +22,6 @@ import de.amr.games.pacman.model.Pac;
 import de.amr.games.pacman.model.PacManGameModel;
 import de.amr.games.pacman.sound.PacManGameSound;
 import de.amr.games.pacman.ui.swing.GameScene;
-import de.amr.games.pacman.ui.swing.assets.Spritesheet;
 
 /**
  * Intermission scene 2: "They meet".
@@ -59,19 +59,18 @@ public class IntermissionScene1 implements GameScene {
 		this.size = size;
 		this.game = game;
 
-		Spritesheet sheet = rendering.assets;
-		sheet.setOrigin(456, 0);
-		heart = sheet.spriteAt(2, 10);
+		assets.setOrigin(456, 0);
+		heart = assets.spriteAt(2, 10);
 		pacManMunching = new EnumMap<>(Direction.class);
 		pacManMunching.put(Direction.RIGHT,
-				Animation.of(sheet.spriteAt(0, 9), sheet.spriteAt(1, 9), sheet.spriteAt(2, 9)).endless().frameDuration(4));
+				Animation.of(assets.spriteAt(0, 9), assets.spriteAt(1, 9), assets.spriteAt(2, 9)).endless().frameDuration(4));
 		pacManMunching.put(Direction.LEFT,
-				Animation.of(sheet.spriteAt(0, 10), sheet.spriteAt(1, 10), sheet.spriteAt(2, 9)).endless().frameDuration(4));
+				Animation.of(assets.spriteAt(0, 10), assets.spriteAt(1, 10), assets.spriteAt(2, 9)).endless().frameDuration(4));
 		pacManMunching.put(Direction.UP,
-				Animation.of(sheet.spriteAt(0, 11), sheet.spriteAt(1, 11), sheet.spriteAt(2, 9)).endless().frameDuration(4));
+				Animation.of(assets.spriteAt(0, 11), assets.spriteAt(1, 11), assets.spriteAt(2, 9)).endless().frameDuration(4));
 		pacManMunching.put(Direction.DOWN,
-				Animation.of(sheet.spriteAt(0, 12), sheet.spriteAt(1, 12), sheet.spriteAt(2, 9)).endless().frameDuration(4));
-		sheet.setOrigin(0, 0);
+				Animation.of(assets.spriteAt(0, 12), assets.spriteAt(1, 12), assets.spriteAt(2, 9)).endless().frameDuration(4));
+		assets.setOrigin(0, 0);
 	}
 
 	@Override
@@ -103,7 +102,7 @@ public class IntermissionScene1 implements GameScene {
 		pinky.visible = true;
 
 		rendering.ghostsKicking(Stream.of(inky, pinky)).forEach(Animation::restart);
-		rendering.assets.flapAnim.restart();
+		assets.flapAnim.restart();
 		soundManager.loop(PacManGameSound.INTERMISSION_1, 1);
 
 		heartVisible = false;
@@ -215,11 +214,11 @@ public class IntermissionScene1 implements GameScene {
 	}
 
 	private void drawFlapAnimation(Graphics2D g, int flapX, int flapY) {
-		rendering.drawImage(g, rendering.assets.flapAnim.animate(), flapX, flapY, true);
+		rendering.drawImage(g, assets.flapAnim.animate(), flapX, flapY, true);
 		g.setColor(new Color(222, 222, 225));
-		g.setFont(rendering.assets.getScoreFont());
+		g.setFont(assets.getScoreFont());
 		g.drawString("1", flapX + 20, flapY + 30);
-		if (rendering.assets.flapAnim.isRunning()) {
+		if (assets.flapAnim.isRunning()) {
 			g.drawString("THEY MEET", flapX + 40, flapY + 20);
 		}
 	}

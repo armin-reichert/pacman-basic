@@ -27,11 +27,7 @@ import de.amr.games.pacman.ui.swing.rendering.GameRenderingUsingAnimatedSprites;
  */
 class MsPacManGameRendering extends GameRenderingUsingAnimatedSprites {
 
-	public final MsPacManGameAssets assets;
-
-	public MsPacManGameRendering() {
-		assets = new MsPacManGameAssets();
-	}
+	public static final MsPacManGameAssets assets = new MsPacManGameAssets();
 
 	@Override
 	public Spritesheet spritesheet() {

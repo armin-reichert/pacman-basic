@@ -4,6 +4,7 @@ import static de.amr.games.pacman.heaven.God.clock;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.lib.Logging.log;
+import static de.amr.games.pacman.ui.swing.mspacman.MsPacManGameRendering.assets;
 import static de.amr.games.pacman.ui.swing.mspacman.MsPacManGameScenes.rendering;
 import static de.amr.games.pacman.world.PacManGameWorld.t;
 
@@ -180,7 +181,7 @@ public class IntroScene implements GameScene {
 
 	@Override
 	public void render(Graphics2D g) {
-		g.setFont(rendering.assets.getScoreFont());
+		g.setFont(assets.getScoreFont());
 		g.setColor(Color.ORANGE);
 		g.drawString("\"MS PAC-MAN\"", t(8), t(5));
 		drawAnimatedFrame(g, 32, 16, game.state.ticksRun());
@@ -201,7 +202,7 @@ public class IntroScene implements GameScene {
 			return;
 		}
 		g.setColor(Color.WHITE);
-		g.setFont(rendering.assets.getScoreFont());
+		g.setFont(assets.getScoreFont());
 		if (currentGhost == ghosts[0]) {
 			g.drawString("WITH", t(8), t(11));
 		}
@@ -215,7 +216,7 @@ public class IntroScene implements GameScene {
 			return;
 		}
 		g.setColor(Color.WHITE);
-		g.setFont(rendering.assets.getScoreFont());
+		g.setFont(assets.getScoreFont());
 		g.drawString("STARRING", t(8), t(11));
 		g.setColor(Color.YELLOW);
 		g.drawString("MS PAC-MAN", t(8), t(14));
@@ -245,7 +246,7 @@ public class IntroScene implements GameScene {
 		if (blinking.animate()) {
 			String text = "PRESS SPACE TO PLAY";
 			g.setColor(Color.ORANGE);
-			g.setFont(rendering.assets.getScoreFont());
+			g.setFont(assets.getScoreFont());
 			g.drawString(text, t(13 - text.length() / 2), t(tileY));
 		}
 	}
@@ -258,10 +259,10 @@ public class IntroScene implements GameScene {
 			g.fillRect(x + 6, y - t(1) + 2, 2, 2);
 		}
 		g.setColor(Color.WHITE);
-		g.setFont(rendering.assets.getScoreFont());
+		g.setFont(assets.getScoreFont());
 		g.drawString("10", x + t(2), y);
 		g.drawString("50", x + t(2), y + t(2));
-		g.setFont(rendering.assets.getScoreFont().deriveFont(6f));
+		g.setFont(assets.getScoreFont().deriveFont(6f));
 		g.drawString("PTS", x + t(5), y);
 		g.drawString("PTS", x + t(5), y + t(2));
 	}
