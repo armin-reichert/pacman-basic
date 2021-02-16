@@ -258,6 +258,7 @@ public class PacManGameController {
 		game.state.duration(clock.sec(playReadyMusic ? 4.5 : 2));
 		game.resetGuys();
 		animations().forEach(animations -> animations.reset(game));
+		views().forEach(view -> view.mute(game.attractMode));
 		sounds().forEach(sound -> {
 			if (playReadyMusic) {
 				sound.play(PacManGameSound.GAME_READY);
