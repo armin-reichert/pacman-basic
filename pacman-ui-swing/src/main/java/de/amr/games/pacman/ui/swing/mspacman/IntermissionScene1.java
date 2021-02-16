@@ -25,7 +25,7 @@ public class IntermissionScene1 implements GameScene {
 
 	enum Phase {
 
-		FLAP, CHASED_BY_GHOSTS;
+		FLAP, CHASED_BY_GHOSTS, COMING_TOGETHER, READY_TO_PLAY;
 
 		long ticks;
 
@@ -43,9 +43,11 @@ public class IntermissionScene1 implements GameScene {
 
 	private Phase phase;
 
+	private int upperY = t(12), lowerY = t(24), middleY = t(18);
 	private Pac pac, msPac;
 	private Ghost pinky, inky;
 	private EnumMap<Direction, Animation<BufferedImage>> pacManMunching;
+	private BufferedImage heart;
 
 	private void enter(Phase newPhase, long ticks) {
 		phase = newPhase;
@@ -61,6 +63,7 @@ public class IntermissionScene1 implements GameScene {
 
 		Spritesheet sheet = rendering.assets;
 		sheet.setOrigin(456, 0);
+		heart = sheet.spriteAt(2, 10);
 		pacManMunching = new EnumMap<>(Direction.class);
 		pacManMunching.put(Direction.RIGHT,
 				Animation.of(sheet.spriteAt(0, 9), sheet.spriteAt(1, 9), sheet.spriteAt(2, 9)).endless().frameDuration(4));
@@ -82,7 +85,7 @@ public class IntermissionScene1 implements GameScene {
 	public void start() {
 
 		pac = new Pac("Pac-Man", Direction.RIGHT);
-		pac.position = new V2f(-t(2), t(8));
+		pac.position = new V2f(-t(2), upperY);
 		pac.visible = true;
 		pac.couldMove = true;
 		pacManMunching.values().forEach(Animation::restart);
@@ -92,7 +95,7 @@ public class IntermissionScene1 implements GameScene {
 		inky.visible = true;
 
 		msPac = new Pac("Ms. Pac-Man", Direction.LEFT);
-		msPac.position = new V2f(t(30), t(16));
+		msPac.position = new V2f(t(30), lowerY);
 		msPac.visible = true;
 		msPac.couldMove = true;
 		rendering.pacMunching(msPac).forEach(Animation::restart);
@@ -113,9 +116,7 @@ public class IntermissionScene1 implements GameScene {
 		switch (phase) {
 		case FLAP:
 			if (phase.ticks == 0) {
-				pac.speed = msPac.speed = 1;
-				inky.speed = pinky.speed = 1.04f;
-				enter(Phase.CHASED_BY_GHOSTS, Long.MAX_VALUE);
+				startChasedByGhosts();
 			}
 			break;
 		case CHASED_BY_GHOSTS:
@@ -123,15 +124,54 @@ public class IntermissionScene1 implements GameScene {
 			pac.move();
 			pinky.move();
 			msPac.move();
+			if (inky.position.x > t(30)) {
+				startComingTogether();
+			}
+			break;
+		case COMING_TOGETHER:
+			inky.move();
+			pac.move();
+			pinky.move();
+			msPac.move();
+			if (pac.position.x < t(15)) {
+				pac.dir = msPac.dir = Direction.UP;
+				pinky.speed = inky.speed = 0; // TODO almost collision and bouncing back
+			}
+			if (pac.position.y < upperY) {
+				pac.speed = msPac.speed = 0;
+				pac.dir = Direction.LEFT;
+				msPac.dir = Direction.RIGHT;
+				enter(Phase.READY_TO_PLAY, clock.sec(300));
+			}
+			break;
+		case READY_TO_PLAY:
+			if (phase.ticks == 0) {
+				game.state.duration(0);
+			}
 			break;
 		default:
 			break;
 		}
-		if (game.state.ticksRun() == clock.sec(10)) {
-			game.state.duration(0);
-		}
 		phase.tick();
 //		log("%s %d ticks", phase, phase.ticks);
+	}
+
+	private void startChasedByGhosts() {
+		pac.speed = msPac.speed = 1;
+		inky.speed = pinky.speed = 1.04f;
+		enter(Phase.CHASED_BY_GHOSTS, Long.MAX_VALUE);
+	}
+
+	private void startComingTogether() {
+		pac.position = new V2f(t(30), middleY);
+		inky.position = new V2f(t(33), middleY);
+		pac.dir = Direction.LEFT;
+		inky.dir = inky.wishDir = Direction.LEFT;
+		pinky.position = new V2f(t(-5), middleY);
+		msPac.position = new V2f(t(-2), middleY);
+		msPac.dir = Direction.RIGHT;
+		pinky.dir = pinky.wishDir = Direction.RIGHT;
+		enter(Phase.COMING_TOGETHER, Long.MAX_VALUE);
 	}
 
 	@Override
@@ -143,10 +183,18 @@ public class IntermissionScene1 implements GameScene {
 		rendering.drawGhost(g, inky, game);
 		rendering.drawPac(g, msPac, game);
 		rendering.drawGhost(g, pinky, game);
+		if (phase == Phase.READY_TO_PLAY) {
+			rendering.drawImage(g, heart, msPac.position.x + 4, pac.position.y - 20, true);
+		}
 	}
 
 	private void drawPacMan(Graphics2D g) {
-		rendering.drawImage(g, pacManMunching.get(pac.dir).animate(), pac.position.x - 4, pac.position.y - 4, true);
+		Animation<BufferedImage> munching = pacManMunching.get(pac.dir);
+		if (pac.speed > 0) {
+			rendering.drawImage(g, munching.animate(), pac.position.x - 4, pac.position.y - 4, true);
+		} else {
+			rendering.drawImage(g, munching.frame(1), pac.position.x - 4, pac.position.y - 4, true);
+		}
 	}
 
 	private void drawFlapAnimation(Graphics2D g, int flapX, int flapY) {
