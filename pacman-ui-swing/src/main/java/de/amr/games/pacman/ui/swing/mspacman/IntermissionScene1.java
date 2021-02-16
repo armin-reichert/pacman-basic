@@ -10,6 +10,7 @@ import java.util.EnumMap;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.Animation;
+import de.amr.games.pacman.lib.CountdownTimer;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
@@ -27,19 +28,7 @@ public class IntermissionScene1 implements GameScene {
 
 		FLAP, CHASED_BY_GHOSTS, COMING_TOGETHER, READY_TO_PLAY;
 
-		long ticksRemaining;
-		long ticksRun;
-
-		void tick() {
-			if (ticksRemaining != Long.MAX_VALUE && ticksRemaining > 0) {
-				--ticksRemaining;
-				++ticksRun;
-			}
-		}
-
-		boolean running(int runningTicks) {
-			return ticksRun == runningTicks;
-		}
+		final CountdownTimer timer = new CountdownTimer();
 	}
 
 	private final V2i size;
@@ -59,8 +48,7 @@ public class IntermissionScene1 implements GameScene {
 
 	private void enter(Phase newPhase, long ticks) {
 		phase = newPhase;
-		phase.ticksRemaining = ticks;
-		phase.ticksRun = 0;
+		phase.timer.setDuration(ticks);
 	}
 
 	public IntermissionScene1(V2i size, MsPacManGameRendering rendering, SoundManager soundManager,
@@ -127,7 +115,7 @@ public class IntermissionScene1 implements GameScene {
 	public void update() {
 		switch (phase) {
 		case FLAP:
-			if (phase.ticksRemaining == 0) {
+			if (phase.timer.expired()) {
 				startChasedByGhosts();
 			}
 			break;
@@ -165,19 +153,18 @@ public class IntermissionScene1 implements GameScene {
 			}
 			break;
 		case READY_TO_PLAY:
-			if (phase.running(clock.sec(1))) {
+			if (phase.timer.running() == clock.sec(1)) {
 				inky.visible = false;
 				pinky.visible = false;
 			}
-			if (phase.ticksRemaining == 0) {
+			if (phase.timer.expired()) {
 				game.state.duration(0);
 			}
 			break;
 		default:
 			break;
 		}
-		phase.tick();
-//		log("%s %d ticks", phase, phase.ticks);
+		phase.timer.tick();
 	}
 
 	private void startChasedByGhosts() {
