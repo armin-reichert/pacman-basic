@@ -22,6 +22,11 @@ import de.amr.games.pacman.sound.SoundManager;
 import de.amr.games.pacman.ui.swing.GameScene;
 import de.amr.games.pacman.ui.swing.assets.Spritesheet;
 
+/**
+ * Intermission scene 2: "They meet".
+ * 
+ * @author Armin Reichert
+ */
 public class IntermissionScene1 implements GameScene {
 
 	enum Phase {
@@ -114,11 +119,13 @@ public class IntermissionScene1 implements GameScene {
 	@Override
 	public void update() {
 		switch (phase) {
+
 		case FLAP:
 			if (phase.timer.expired()) {
 				startChasedByGhosts();
 			}
 			break;
+
 		case CHASED_BY_GHOSTS:
 			inky.move();
 			pac.move();
@@ -128,6 +135,7 @@ public class IntermissionScene1 implements GameScene {
 				startComingTogether();
 			}
 			break;
+
 		case COMING_TOGETHER:
 			inky.move();
 			pinky.move();
@@ -152,6 +160,7 @@ public class IntermissionScene1 implements GameScene {
 				inky.speed = pinky.speed = 0.2f;
 			}
 			break;
+
 		case READY_TO_PLAY:
 			if (phase.timer.running() == clock.sec(1)) {
 				inky.visible = false;
@@ -161,6 +170,7 @@ public class IntermissionScene1 implements GameScene {
 				game.state.duration(0);
 			}
 			break;
+
 		default:
 			break;
 		}
@@ -209,7 +219,7 @@ public class IntermissionScene1 implements GameScene {
 	}
 
 	private void drawFlapAnimation(Graphics2D g, int flapX, int flapY) {
-		rendering.drawImage(g, rendering.assets.flapAnim.animate(), flapX, flapY, false);
+		rendering.drawImage(g, rendering.assets.flapAnim.animate(), flapX, flapY, true);
 		g.setColor(new Color(222, 222, 225));
 		g.setFont(rendering.assets.getScoreFont());
 		g.drawString("1", flapX + 20, flapY + 30);
