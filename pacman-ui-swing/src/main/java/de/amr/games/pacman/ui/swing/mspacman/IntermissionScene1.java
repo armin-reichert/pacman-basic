@@ -27,12 +27,18 @@ public class IntermissionScene1 implements GameScene {
 
 		FLAP, CHASED_BY_GHOSTS, COMING_TOGETHER, READY_TO_PLAY;
 
-		long ticks;
+		long ticksRemaining;
+		long ticksRun;
 
 		void tick() {
-			if (ticks != Long.MAX_VALUE && ticks > 0) {
-				--ticks;
+			if (ticksRemaining != Long.MAX_VALUE && ticksRemaining > 0) {
+				--ticksRemaining;
+				++ticksRun;
 			}
+		}
+
+		boolean running(int runningTicks) {
+			return ticksRun == runningTicks;
 		}
 	}
 
@@ -51,7 +57,8 @@ public class IntermissionScene1 implements GameScene {
 
 	private void enter(Phase newPhase, long ticks) {
 		phase = newPhase;
-		phase.ticks = ticks;
+		phase.ticksRemaining = ticks;
+		phase.ticksRun = 0;
 	}
 
 	public IntermissionScene1(V2i size, MsPacManGameRendering rendering, SoundManager soundManager,
@@ -115,7 +122,7 @@ public class IntermissionScene1 implements GameScene {
 	public void update() {
 		switch (phase) {
 		case FLAP:
-			if (phase.ticks == 0) {
+			if (phase.ticksRemaining == 0) {
 				startChasedByGhosts();
 			}
 			break;
@@ -145,7 +152,11 @@ public class IntermissionScene1 implements GameScene {
 			}
 			break;
 		case READY_TO_PLAY:
-			if (phase.ticks == 0) {
+			if (phase.running(clock.sec(1))) {
+				inky.visible = false;
+				pinky.visible = false;
+			}
+			if (phase.ticksRemaining == 0) {
 				game.state.duration(0);
 			}
 			break;
