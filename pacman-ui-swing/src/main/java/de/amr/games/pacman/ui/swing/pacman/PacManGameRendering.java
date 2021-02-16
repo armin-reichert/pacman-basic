@@ -13,7 +13,6 @@ import java.awt.image.BufferedImage;
 import de.amr.games.pacman.controller.PacManGameState;
 import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.Direction;
-import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.Bonus;
 import de.amr.games.pacman.model.Ghost;
 import de.amr.games.pacman.model.Pac;
@@ -82,7 +81,7 @@ class PacManGameRendering extends GameRenderingUsingAnimatedSprites {
 	@Override
 	public BufferedImage bonusSprite(Bonus bonus, PacManGameModel game) {
 		if (bonus.edibleTicksLeft > 0) {
-			return assets.spriteAt(assets.symbolTiles[bonus.symbol]);
+			return assets.symbolSprites[bonus.symbol];
 		}
 		if (bonus.eatenTicksLeft > 0) {
 			return assets.numberSprites.get(bonus.points);
@@ -174,8 +173,8 @@ class PacManGameRendering extends GameRenderingUsingAnimatedSprites {
 		int x = rightX;
 		int firstLevelNumber = Math.max(1, game.currentLevelNumber - 6);
 		for (int levelNumber = firstLevelNumber; levelNumber <= game.currentLevelNumber; ++levelNumber) {
-			V2i symbolTile = assets.symbolTiles[game.levelSymbols.get(levelNumber - 1)];
-			g2.drawImage(assets.spriteAt(symbolTile), x, y, null);
+			BufferedImage sprite = assets.symbolSprites[game.levelSymbols.get(levelNumber - 1)];
+			g2.drawImage(sprite, x, y, null);
 			x -= t(2);
 		}
 		g2.dispose();

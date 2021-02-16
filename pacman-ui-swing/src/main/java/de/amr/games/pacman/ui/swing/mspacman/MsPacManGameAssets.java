@@ -19,7 +19,6 @@ import java.util.Map;
 
 import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.Direction;
-import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.ui.swing.assets.Spritesheet;
 
 /**
@@ -58,10 +57,11 @@ public class MsPacManGameAssets extends Spritesheet {
 
 	final Font scoreFont;
 
-	final V2i[] symbolTiles;
-	final Map<Integer, V2i> bonusValueTiles;
-	final Map<Integer, V2i> bountyNumberTiles;
+	final BufferedImage[] symbolSprites;
+	final Map<Integer, BufferedImage> bonusValueSprites;
+	final Map<Integer, BufferedImage> bountyNumberSprites;
 
+	final BufferedImage lifeSprite;
 	final List<BufferedImage> mazeEmptyImages;
 	final List<BufferedImage> mazeFullImages;
 	final List<Animation<BufferedImage>> mazesFlashingAnims;
@@ -97,24 +97,25 @@ public class MsPacManGameAssets extends Spritesheet {
 		// Switch to right part of spritesheet
 		setOrigin(456, 0);
 
-		symbolTiles = new V2i[] { tileAt(3, 0), tileAt(4, 0), tileAt(5, 0), tileAt(6, 0), tileAt(7, 0), tileAt(8, 0),
-				tileAt(9, 0) };
+		lifeSprite = spriteAt(1, 0);
+		symbolSprites = new BufferedImage[] { spriteAt(3, 0), spriteAt(4, 0), spriteAt(5, 0), spriteAt(6, 0),
+				spriteAt(7, 0), spriteAt(8, 0), spriteAt(9, 0) };
 
 		//@formatter:off
-		bonusValueTiles = new HashMap<>();
-		bonusValueTiles.put(100,  tileAt(3, 1));
-		bonusValueTiles.put(200,  tileAt(4, 1));
-		bonusValueTiles.put(500,  tileAt(5, 1));
-		bonusValueTiles.put(700,  tileAt(6, 1));
-		bonusValueTiles.put(1000, tileAt(7, 1));
-		bonusValueTiles.put(2000, tileAt(8, 1));
-		bonusValueTiles.put(5000, tileAt(9, 1));
+		bonusValueSprites = new HashMap<>();
+		bonusValueSprites.put(100,  spriteAt(3, 1));
+		bonusValueSprites.put(200,  spriteAt(4, 1));
+		bonusValueSprites.put(500,  spriteAt(5, 1));
+		bonusValueSprites.put(700,  spriteAt(6, 1));
+		bonusValueSprites.put(1000, spriteAt(7, 1));
+		bonusValueSprites.put(2000, spriteAt(8, 1));
+		bonusValueSprites.put(5000, spriteAt(9, 1));
 		
-		bountyNumberTiles = new HashMap<>();
-		bountyNumberTiles.put(200, tileAt(0,8));
-		bountyNumberTiles.put(400, tileAt(1,8));
-		bountyNumberTiles.put(800, tileAt(2,8));
-		bountyNumberTiles.put(1600, tileAt(3,8));
+		bountyNumberSprites = new HashMap<>();
+		bountyNumberSprites.put(200, spriteAt(0,8));
+		bountyNumberSprites.put(400, spriteAt(1,8));
+		bountyNumberSprites.put(800, spriteAt(2,8));
+		bountyNumberSprites.put(1600, spriteAt(3,8));
 		//@formatter:on
 
 		pacMunchingAnimByDir = new EnumMap<>(Direction.class);

@@ -81,17 +81,17 @@ class MsPacManGameRendering extends GameRenderingUsingAnimatedSprites {
 	@Override
 	public BufferedImage bonusSprite(Bonus bonus, PacManGameModel game) {
 		if (bonus.edibleTicksLeft > 0) {
-			return assets.spriteAt(assets.symbolTiles[bonus.symbol]);
+			return assets.symbolSprites[bonus.symbol];
 		}
 		if (bonus.eatenTicksLeft > 0) {
-			return assets.spriteAt(assets.bonusValueTiles.get(bonus.points));
+			return assets.bonusValueSprites.get(bonus.points);
 		}
 		return null;
 	}
 
 	@Override
 	public BufferedImage lifeSprite() {
-		return assets.spriteAt(1, 0);
+		return assets.lifeSprite;
 	}
 
 	@Override
@@ -106,7 +106,7 @@ class MsPacManGameRendering extends GameRenderingUsingAnimatedSprites {
 	@Override
 	public BufferedImage ghostSprite(Ghost ghost, PacManGameModel game) {
 		if (ghost.bounty > 0) {
-			return assets.spriteAt(assets.bountyNumberTiles.get(ghost.bounty));
+			return assets.bountyNumberSprites.get(ghost.bounty);
 		}
 		if (ghost.is(DEAD) || ghost.is(ENTERING_HOUSE)) {
 			return ghostReturningHomeToDir(ghost, ghost.dir).animate();
@@ -168,7 +168,7 @@ class MsPacManGameRendering extends GameRenderingUsingAnimatedSprites {
 		int x = rightX;
 		for (int levelNumber = 1; levelNumber <= Math.min(game.currentLevelNumber, 7); ++levelNumber) {
 			byte symbol = game.levelSymbols.get(levelNumber - 1);
-			g2.drawImage(assets.spriteAt(assets.symbolTiles[symbol]), x, y, null);
+			g2.drawImage(assets.symbolSprites[symbol], x, y, null);
 			x -= t(2);
 		}
 		g2.dispose();

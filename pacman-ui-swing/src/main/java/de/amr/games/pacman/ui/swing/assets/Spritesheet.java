@@ -31,24 +31,20 @@ public class Spritesheet {
 
 	protected final BufferedImage sheet;
 	protected final int gridSize;
-	protected int offsetX, offsetY;
+
+	protected V2i origin = V2i.NULL;
 
 	public Spritesheet(BufferedImage image, int rasterSize) {
 		sheet = image;
 		gridSize = rasterSize;
 	}
 
-	protected V2i tileAt(int x, int y) {
-		return new V2i(x, y);
-	}
-
 	public void setOrigin(int x, int y) {
-		offsetX = x;
-		offsetY = y;
+		origin = new V2i(x, y);
 	}
 
 	public BufferedImage spritesAt(int tileX, int tileY, int numTilesX, int numTilesY) {
-		return sheet.getSubimage(offsetX + tileX * gridSize, offsetY + tileY * gridSize, numTilesX * gridSize,
+		return sheet.getSubimage(origin.x + tileX * gridSize, origin.y + tileY * gridSize, numTilesX * gridSize,
 				numTilesY * gridSize);
 	}
 

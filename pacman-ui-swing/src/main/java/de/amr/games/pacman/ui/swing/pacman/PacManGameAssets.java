@@ -18,7 +18,6 @@ import java.util.Map;
 
 import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.Direction;
-import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.Ghost;
 import de.amr.games.pacman.model.Pac;
 import de.amr.games.pacman.ui.swing.assets.Spritesheet;
@@ -45,7 +44,7 @@ public class PacManGameAssets extends Spritesheet {
 	final BufferedImage mazeEmptyImage;
 	final Animation<BufferedImage> mazeFlashingAnim;
 
-	final V2i[] symbolTiles;
+	final BufferedImage[] symbolSprites;
 	final Map<Integer, BufferedImage> numberSprites;
 
 	final Map<Pac, EnumMap<Direction, Animation<BufferedImage>>> pacMunchingAnimations = new HashMap<>();
@@ -70,8 +69,8 @@ public class PacManGameAssets extends Spritesheet {
 		mazeFullImage = image("/pacman/graphics/maze_full.png");
 		mazeEmptyImage = image("/pacman/graphics/maze_empty.png");
 
-		symbolTiles = new V2i[] { tileAt(2, 3), tileAt(3, 3), tileAt(4, 3), tileAt(5, 3), tileAt(6, 3), tileAt(7, 3),
-				tileAt(8, 3), tileAt(9, 3) };
+		symbolSprites = new BufferedImage[] { spriteAt(2, 3), spriteAt(3, 3), spriteAt(4, 3), spriteAt(5, 3),
+				spriteAt(6, 3), spriteAt(7, 3), spriteAt(8, 3), spriteAt(9, 3) };
 
 		//@formatter:off
 		numberSprites = new HashMap<>();
