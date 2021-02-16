@@ -11,6 +11,11 @@ import de.amr.games.pacman.sound.SoundManager;
 import de.amr.games.pacman.ui.swing.GameScene;
 import de.amr.games.pacman.ui.swing.common.PlayScene;
 
+/**
+ * The scenes in the Ms. Pac-Man game.
+ * 
+ * @author Armin Reichert
+ */
 public class MsPacManGameScenes {
 
 	public static final MsPacManGameRendering rendering = new MsPacManGameRendering();
