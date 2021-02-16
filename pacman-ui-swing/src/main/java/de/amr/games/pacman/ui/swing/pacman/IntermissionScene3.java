@@ -8,13 +8,13 @@ import static de.amr.games.pacman.ui.swing.pacman.PacManGameScenes.rendering;
 import static de.amr.games.pacman.ui.swing.pacman.PacManGameScenes.soundManager;
 import static de.amr.games.pacman.world.PacManGameWorld.t;
 
+import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2f;
-import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.Ghost;
 import de.amr.games.pacman.model.GhostState;
 import de.amr.games.pacman.model.Pac;
@@ -35,7 +35,7 @@ public class IntermissionScene3 implements GameScene {
 		CHASING_PACMAN, RETURNING_HALF_NAKED;
 	}
 
-	private final V2i size;
+	private final Dimension size;
 	private final PacManGame game;
 
 	private final Spritesheet spritesheet;
@@ -47,7 +47,7 @@ public class IntermissionScene3 implements GameScene {
 
 	private Phase phase;
 
-	public IntermissionScene3(V2i size, PacManGame game) {
+	public IntermissionScene3(Dimension size, PacManGame game) {
 		this.size = size;
 		this.game = game;
 		this.spritesheet = rendering.assets;
@@ -62,7 +62,7 @@ public class IntermissionScene3 implements GameScene {
 	}
 
 	@Override
-	public V2i sizeInPixel() {
+	public Dimension sizeInPixel() {
 		return size;
 	}
 

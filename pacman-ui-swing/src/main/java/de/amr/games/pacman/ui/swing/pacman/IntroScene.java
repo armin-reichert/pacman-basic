@@ -6,13 +6,13 @@ import static de.amr.games.pacman.world.PacManGameWorld.TS;
 import static de.amr.games.pacman.world.PacManGameWorld.t;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2f;
-import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.Ghost;
 import de.amr.games.pacman.model.GhostState;
 import de.amr.games.pacman.model.Pac;
@@ -26,7 +26,7 @@ import de.amr.games.pacman.ui.swing.GameScene;
  */
 public class IntroScene implements GameScene {
 
-	private final V2i size;
+	private final Dimension size;
 	private final PacManGameRendering rendering;
 	private final PacManGameModel game;
 
@@ -62,14 +62,14 @@ public class IntroScene implements GameScene {
 		log("Phase %s entered at %d", phase, phase.start);
 	}
 
-	public IntroScene(V2i size, PacManGameRendering rendering, PacManGameModel game) {
+	public IntroScene(Dimension size, PacManGameRendering rendering, PacManGameModel game) {
 		this.size = size;
 		this.game = game;
 		this.rendering = rendering;
 	}
 
 	@Override
-	public V2i sizeInPixel() {
+	public Dimension sizeInPixel() {
 		return size;
 	}
 

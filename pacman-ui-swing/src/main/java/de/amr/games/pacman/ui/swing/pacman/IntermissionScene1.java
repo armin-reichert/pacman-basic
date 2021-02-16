@@ -11,13 +11,13 @@ import static de.amr.games.pacman.ui.swing.pacman.PacManGameScenes.rendering;
 import static de.amr.games.pacman.ui.swing.pacman.PacManGameScenes.soundManager;
 import static de.amr.games.pacman.world.PacManGameWorld.t;
 
+import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2f;
-import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.Ghost;
 import de.amr.games.pacman.model.Pac;
 import de.amr.games.pacman.model.PacManGame;
@@ -35,7 +35,7 @@ public class IntermissionScene1 implements GameScene {
 		BLINKY_CHASING_PACMAN, BIGPACMAN_CHASING_BLINKY;
 	}
 
-	private final V2i size;
+	private final Dimension size;
 	private final PacManGame game;
 
 	private final int baselineY = t(20);
@@ -45,7 +45,7 @@ public class IntermissionScene1 implements GameScene {
 
 	private Phase phase;
 
-	public IntermissionScene1(V2i size, PacManGame game) {
+	public IntermissionScene1(Dimension size, PacManGame game) {
 		this.size = size;
 		this.game = game;
 
@@ -57,7 +57,7 @@ public class IntermissionScene1 implements GameScene {
 	}
 
 	@Override
-	public V2i sizeInPixel() {
+	public Dimension sizeInPixel() {
 		return size;
 	}
 

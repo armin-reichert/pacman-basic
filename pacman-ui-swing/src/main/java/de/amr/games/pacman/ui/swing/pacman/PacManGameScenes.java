@@ -1,7 +1,8 @@
 package de.amr.games.pacman.ui.swing.pacman;
 
+import java.awt.Dimension;
+
 import de.amr.games.pacman.controller.PacManGameState;
-import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.PacManGameModel;
 import de.amr.games.pacman.sound.PacManGameSoundAssets;
@@ -26,12 +27,12 @@ public class PacManGameScenes {
 	private GameScene intermissionScene2;
 	private GameScene intermissionScene3;
 
-	public void createScenes(PacManGame game, V2i unscaledSize_px) {
-		introScene = new IntroScene(unscaledSize_px, rendering, game);
-		playScene = new PlayScene(unscaledSize_px, rendering, game);
-		intermissionScene1 = new IntermissionScene1(unscaledSize_px, game);
-		intermissionScene2 = new IntermissionScene2(unscaledSize_px, game);
-		intermissionScene3 = new IntermissionScene3(unscaledSize_px, game);
+	public void createScenes(PacManGame game, Dimension unscaledSize) {
+		introScene = new IntroScene(unscaledSize, rendering, game);
+		playScene = new PlayScene(unscaledSize, rendering, game);
+		intermissionScene1 = new IntermissionScene1(unscaledSize, game);
+		intermissionScene2 = new IntermissionScene2(unscaledSize, game);
+		intermissionScene3 = new IntermissionScene3(unscaledSize, game);
 	}
 
 	public GameScene selectScene(PacManGameModel game) {

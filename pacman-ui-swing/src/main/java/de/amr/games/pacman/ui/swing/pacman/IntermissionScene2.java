@@ -8,6 +8,7 @@ import static de.amr.games.pacman.ui.swing.pacman.PacManGameScenes.rendering;
 import static de.amr.games.pacman.ui.swing.pacman.PacManGameScenes.soundManager;
 import static de.amr.games.pacman.world.PacManGameWorld.t;
 
+import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
@@ -37,7 +38,7 @@ public class IntermissionScene2 implements GameScene {
 		final CountdownTimer timer = new CountdownTimer();
 	}
 
-	private final V2i size;
+	private final Dimension size;
 	private final PacManGame game;
 	private final Spritesheet spritesheet;
 
@@ -49,7 +50,7 @@ public class IntermissionScene2 implements GameScene {
 
 	private Phase phase;
 
-	public IntermissionScene2(V2i size, PacManGame game) {
+	public IntermissionScene2(Dimension size, PacManGame game) {
 		this.size = size;
 		this.game = game;
 		this.spritesheet = rendering.assets;
@@ -70,7 +71,7 @@ public class IntermissionScene2 implements GameScene {
 	}
 
 	@Override
-	public V2i sizeInPixel() {
+	public Dimension sizeInPixel() {
 		return size;
 	}
 

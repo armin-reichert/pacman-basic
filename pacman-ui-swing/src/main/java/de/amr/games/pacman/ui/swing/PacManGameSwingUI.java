@@ -8,6 +8,7 @@ import static java.lang.Math.cos;
 import java.awt.AWTException;
 import java.awt.Canvas;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -51,7 +52,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 	static final int FLASH_MESSAGE_TICKS = 90;
 
-	private final V2i unscaledSize_px;
+	private final Dimension unscaledSize_px;
 	private final V2i scaledSize_px;
 	private final float scaling;
 	private final JFrame window;
@@ -72,8 +73,8 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 	public PacManGameSwingUI(PacManGameController controller, double scalingFactor) {
 		scaling = (float) scalingFactor;
-		unscaledSize_px = new V2i(28 * TS, 36 * TS);
-		scaledSize_px = new V2f(unscaledSize_px).scaled(this.scaling).toV2i();
+		unscaledSize_px = new Dimension(28 * TS, 36 * TS);
+		scaledSize_px = new V2f(unscaledSize_px.width, unscaledSize_px.height).scaled(this.scaling).toV2i();
 
 		canvas = new Canvas();
 		canvas.setSize(scaledSize_px.x, scaledSize_px.y);
@@ -249,11 +250,12 @@ public class PacManGameSwingUI implements PacManGameUI {
 			float alpha = (float) cos(Math.PI * t / (2 * FLASH_MESSAGE_TICKS));
 			String text = flashMessages.get(0);
 			g.setColor(Color.BLACK);
-			g.fillRect(0, unscaledSize_px.y - 16, unscaledSize_px.x, 16);
+			g.fillRect(0, unscaledSize_px.height - 16, unscaledSize_px.width, 16);
 			g.setColor(new Color(1, 1, 0, alpha));
 			g.setFont(new Font(Font.SERIF, Font.BOLD, 10));
 			g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-			g.drawString(text, (unscaledSize_px.x - g.getFontMetrics().stringWidth(text)) / 2, unscaledSize_px.y - 3);
+			g.drawString(text, (unscaledSize_px.width - g.getFontMetrics().stringWidth(text)) / 2,
+					unscaledSize_px.height - 3);
 			g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
 			--flashMessageTicksLeft;
 			if (flashMessageTicksLeft == 0) {

@@ -4,9 +4,11 @@ import static de.amr.games.pacman.heaven.God.clock;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.lib.Logging.log;
+import static de.amr.games.pacman.ui.swing.mspacman.MsPacManGameScenes.rendering;
 import static de.amr.games.pacman.world.PacManGameWorld.t;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics2D;
 
 import de.amr.games.pacman.lib.Animation;
@@ -36,9 +38,8 @@ public class IntroScene implements GameScene {
 		}
 	}
 
-	private final V2i size;
+	private final Dimension size;
 	private final PacManGameModel game;
-	private final MsPacManGameRendering rendering;
 
 	private final V2i frameTopLeftTile = new V2i(6, 8);
 	private final int belowFrame = t(17);
@@ -54,14 +55,13 @@ public class IntroScene implements GameScene {
 	private boolean presentingMsPac;
 
 	@Override
-	public V2i sizeInPixel() {
+	public Dimension sizeInPixel() {
 		return size;
 	}
 
-	public IntroScene(V2i size, MsPacManGameRendering rendering, PacManGameModel game) {
+	public IntroScene(Dimension size, PacManGameModel game) {
 		this.game = game;
 		this.size = size;
-		this.rendering = rendering;
 	}
 
 	private void enterPhase(Phase newPhase) {
