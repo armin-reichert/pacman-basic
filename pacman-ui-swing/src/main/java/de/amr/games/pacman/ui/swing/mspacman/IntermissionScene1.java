@@ -54,6 +54,8 @@ public class IntermissionScene1 implements GameScene {
 	private Ghost pinky, inky;
 	private EnumMap<Direction, Animation<BufferedImage>> pacManMunching;
 	private BufferedImage heart;
+	private boolean heartVisible;
+	private boolean ghostsMet;
 
 	private void enter(Phase newPhase, long ticks) {
 		phase = newPhase;
@@ -115,6 +117,9 @@ public class IntermissionScene1 implements GameScene {
 		rendering.assets.flapAnim.restart();
 		soundManager.loop(PacManGameSound.INTERMISSION_1, 1);
 
+		heartVisible = false;
+		ghostsMet = false;
+
 		enter(Phase.FLAP, clock.sec(1));
 	}
 
@@ -137,18 +142,26 @@ public class IntermissionScene1 implements GameScene {
 			break;
 		case COMING_TOGETHER:
 			inky.move();
-			pac.move();
 			pinky.move();
+			pac.move();
 			msPac.move();
-			if (pac.position.x < t(15)) {
+			if (pac.dir == Direction.LEFT && pac.position.x < t(15)) {
 				pac.dir = msPac.dir = Direction.UP;
-				pinky.speed = inky.speed = 0; // TODO almost collision and bouncing back
 			}
-			if (pac.position.y < upperY) {
+			if (pac.dir == Direction.UP && pac.position.y < upperY) {
 				pac.speed = msPac.speed = 0;
 				pac.dir = Direction.LEFT;
 				msPac.dir = Direction.RIGHT;
-				enter(Phase.READY_TO_PLAY, clock.sec(300));
+				heartVisible = true;
+				rendering.ghostKicking(inky).forEach(Animation::reset);
+				rendering.ghostKicking(pinky).forEach(Animation::reset);
+				enter(Phase.READY_TO_PLAY, clock.sec(3));
+			}
+			if (!ghostsMet && inky.position.x - pinky.position.x < 16) {
+				ghostsMet = true;
+				inky.dir = inky.wishDir = inky.dir.opposite();
+				pinky.dir = pinky.wishDir = pinky.dir.opposite();
+				inky.speed = pinky.speed = 0.2f;
 			}
 			break;
 		case READY_TO_PLAY:
@@ -194,7 +207,7 @@ public class IntermissionScene1 implements GameScene {
 		rendering.drawGhost(g, inky, game);
 		rendering.drawPac(g, msPac, game);
 		rendering.drawGhost(g, pinky, game);
-		if (phase == Phase.READY_TO_PLAY) {
+		if (heartVisible) {
 			rendering.drawImage(g, heart, msPac.position.x + 4, pac.position.y - 20, true);
 		}
 	}
