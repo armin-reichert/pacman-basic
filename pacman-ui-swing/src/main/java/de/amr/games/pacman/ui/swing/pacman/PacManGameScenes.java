@@ -10,10 +10,15 @@ import de.amr.games.pacman.sound.SoundManager;
 import de.amr.games.pacman.ui.swing.GameScene;
 import de.amr.games.pacman.ui.swing.common.PlayScene;
 
+/**
+ * The scenes in the Pac-Man game.
+ * 
+ * @author Armin Reichert
+ */
 public class PacManGameScenes {
 
-	public final PacManGameRendering rendering;
-	public final SoundManager soundManager;
+	public static final SoundManager soundManager = new PacManGameSoundManager(PacManGameSoundAssets::getPacManSoundURL);
+	public static final PacManGameRendering rendering = new PacManGameRendering();
 
 	private IntroScene introScene;
 	private PlayScene playScene;
@@ -21,17 +26,12 @@ public class PacManGameScenes {
 	private GameScene intermissionScene2;
 	private GameScene intermissionScene3;
 
-	public PacManGameScenes() {
-		rendering = new PacManGameRendering();
-		soundManager = new PacManGameSoundManager(PacManGameSoundAssets::getPacManSoundURL);
-	}
-
 	public void createScenes(PacManGame game, V2i unscaledSize_px) {
 		introScene = new IntroScene(unscaledSize_px, rendering, game);
 		playScene = new PlayScene(unscaledSize_px, rendering, game);
-		intermissionScene1 = new IntermissionScene1(unscaledSize_px, rendering, soundManager, game);
-		intermissionScene2 = new IntermissionScene2(unscaledSize_px, rendering, soundManager, game);
-		intermissionScene3 = new IntermissionScene3(unscaledSize_px, rendering, soundManager, game);
+		intermissionScene1 = new IntermissionScene1(unscaledSize_px, game);
+		intermissionScene2 = new IntermissionScene2(unscaledSize_px, game);
+		intermissionScene3 = new IntermissionScene3(unscaledSize_px, game);
 	}
 
 	public GameScene selectScene(PacManGameModel game) {

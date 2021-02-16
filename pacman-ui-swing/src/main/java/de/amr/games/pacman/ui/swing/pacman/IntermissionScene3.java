@@ -4,6 +4,8 @@ import static de.amr.games.pacman.heaven.God.clock;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Logging.log;
+import static de.amr.games.pacman.ui.swing.pacman.PacManGameScenes.rendering;
+import static de.amr.games.pacman.ui.swing.pacman.PacManGameScenes.soundManager;
 import static de.amr.games.pacman.world.PacManGameWorld.t;
 
 import java.awt.Graphics2D;
@@ -18,10 +20,8 @@ import de.amr.games.pacman.model.GhostState;
 import de.amr.games.pacman.model.Pac;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.sound.PacManGameSound;
-import de.amr.games.pacman.sound.SoundManager;
 import de.amr.games.pacman.ui.swing.GameScene;
 import de.amr.games.pacman.ui.swing.assets.Spritesheet;
-import de.amr.games.pacman.ui.swing.rendering.GameRenderingUsingAnimatedSprites;
 
 /**
  * Third intermission scene: Blinky in shred dress chases Pac-Man, comes back half-naked drawing
@@ -36,8 +36,6 @@ public class IntermissionScene3 implements GameScene {
 	}
 
 	private final V2i size;
-	private final GameRenderingUsingAnimatedSprites rendering;
-	private final SoundManager soundManager;
 	private final PacManGame game;
 
 	private final Spritesheet spritesheet;
@@ -49,10 +47,8 @@ public class IntermissionScene3 implements GameScene {
 
 	private Phase phase;
 
-	public IntermissionScene3(V2i size, PacManGameRendering rendering, SoundManager soundManager, PacManGame game) {
+	public IntermissionScene3(V2i size, PacManGame game) {
 		this.size = size;
-		this.rendering = rendering;
-		this.soundManager = soundManager;
 		this.game = game;
 		this.spritesheet = rendering.assets;
 

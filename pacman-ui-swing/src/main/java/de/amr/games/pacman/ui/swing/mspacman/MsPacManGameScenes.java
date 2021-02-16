@@ -12,8 +12,9 @@ import de.amr.games.pacman.ui.swing.common.PlayScene;
 
 public class MsPacManGameScenes {
 
-	public final MsPacManGameRendering rendering;
-	public final SoundManager soundManager;
+	public static final MsPacManGameRendering rendering = new MsPacManGameRendering();
+	public static final SoundManager soundManager = new PacManGameSoundManager(
+			PacManGameSoundAssets::getMsPacManSoundURL);
 
 	private GameScene introScene;
 	private GameScene playScene;
@@ -21,17 +22,12 @@ public class MsPacManGameScenes {
 	private GameScene intermissionScene2;
 	private GameScene intermissionScene3;
 
-	public MsPacManGameScenes() {
-		rendering = new MsPacManGameRendering();
-		soundManager = new PacManGameSoundManager(PacManGameSoundAssets::getMsPacManSoundURL);
-	}
-
 	public void createScenes(MsPacManGame game, V2i unscaledSize_px) {
 		introScene = new IntroScene(unscaledSize_px, rendering, game);
 		playScene = new PlayScene(unscaledSize_px, rendering, game);
-		intermissionScene1 = new IntermissionScene1(unscaledSize_px, rendering, soundManager, game);
-		intermissionScene2 = new IntermissionScene2(unscaledSize_px, rendering, soundManager, game);
-		intermissionScene3 = new IntermissionScene3(unscaledSize_px, rendering, soundManager, game);
+		intermissionScene1 = new IntermissionScene1(unscaledSize_px, game);
+		intermissionScene2 = new IntermissionScene2(unscaledSize_px, game);
+		intermissionScene3 = new IntermissionScene3(unscaledSize_px, game);
 	}
 
 	public GameScene selectScene(PacManGameModel game) {

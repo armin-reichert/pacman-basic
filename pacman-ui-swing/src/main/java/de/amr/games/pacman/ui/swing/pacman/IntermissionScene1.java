@@ -7,6 +7,8 @@ import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.model.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.ui.swing.pacman.IntermissionScene1.Phase.BLINKY_CHASING_PACMAN;
+import static de.amr.games.pacman.ui.swing.pacman.PacManGameScenes.rendering;
+import static de.amr.games.pacman.ui.swing.pacman.PacManGameScenes.soundManager;
 import static de.amr.games.pacman.world.PacManGameWorld.t;
 
 import java.awt.Graphics2D;
@@ -20,9 +22,7 @@ import de.amr.games.pacman.model.Ghost;
 import de.amr.games.pacman.model.Pac;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.sound.PacManGameSound;
-import de.amr.games.pacman.sound.SoundManager;
 import de.amr.games.pacman.ui.swing.GameScene;
-import de.amr.games.pacman.ui.swing.rendering.GameRenderingUsingAnimatedSprites;
 
 /**
  * First intermission scene: Blinky chases Pac-Man and is then chased by a huge Pac-Man.
@@ -36,8 +36,6 @@ public class IntermissionScene1 implements GameScene {
 	}
 
 	private final V2i size;
-	private final GameRenderingUsingAnimatedSprites rendering;
-	private final SoundManager soundManager;
 	private final PacManGame game;
 
 	private final int baselineY = t(20);
@@ -47,10 +45,8 @@ public class IntermissionScene1 implements GameScene {
 
 	private Phase phase;
 
-	public IntermissionScene1(V2i size, PacManGameRendering rendering, SoundManager soundManager, PacManGame game) {
+	public IntermissionScene1(V2i size, PacManGame game) {
 		this.size = size;
-		this.rendering = rendering;
-		this.soundManager = soundManager;
 		this.game = game;
 
 		pac = new Pac("Pac-Man", Direction.LEFT);

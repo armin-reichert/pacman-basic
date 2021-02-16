@@ -1,26 +1,22 @@
 package de.amr.games.pacman.ui.swing.mspacman;
 
+import static de.amr.games.pacman.ui.swing.mspacman.MsPacManGameScenes.soundManager;
+
 import java.awt.Graphics2D;
 
 import de.amr.games.pacman.heaven.God;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.PacManGameModel;
 import de.amr.games.pacman.sound.PacManGameSound;
-import de.amr.games.pacman.sound.SoundManager;
 import de.amr.games.pacman.ui.swing.GameScene;
 
 public class IntermissionScene3 implements GameScene {
 
 	private final V2i size;
-	private final MsPacManGameRendering rendering;
-	private final SoundManager soundManager;
 	private final PacManGameModel game;
 
-	public IntermissionScene3(V2i size, MsPacManGameRendering rendering, SoundManager soundManager,
-			PacManGameModel game) {
+	public IntermissionScene3(V2i size, PacManGameModel game) {
 		this.size = size;
-		this.rendering = rendering;
-		this.soundManager = soundManager;
 		this.game = game;
 	}
 

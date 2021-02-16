@@ -1,6 +1,8 @@
 package de.amr.games.pacman.ui.swing.mspacman;
 
 import static de.amr.games.pacman.heaven.God.clock;
+import static de.amr.games.pacman.ui.swing.mspacman.MsPacManGameScenes.rendering;
+import static de.amr.games.pacman.ui.swing.mspacman.MsPacManGameScenes.soundManager;
 import static de.amr.games.pacman.world.PacManGameWorld.t;
 
 import java.awt.Color;
@@ -18,7 +20,6 @@ import de.amr.games.pacman.model.Ghost;
 import de.amr.games.pacman.model.Pac;
 import de.amr.games.pacman.model.PacManGameModel;
 import de.amr.games.pacman.sound.PacManGameSound;
-import de.amr.games.pacman.sound.SoundManager;
 import de.amr.games.pacman.ui.swing.GameScene;
 import de.amr.games.pacman.ui.swing.assets.Spritesheet;
 
@@ -37,8 +38,6 @@ public class IntermissionScene1 implements GameScene {
 	}
 
 	private final V2i size;
-	private final MsPacManGameRendering rendering;
-	private final SoundManager soundManager;
 	private final PacManGameModel game;
 
 	private Phase phase;
@@ -56,11 +55,8 @@ public class IntermissionScene1 implements GameScene {
 		phase.timer.setDuration(ticks);
 	}
 
-	public IntermissionScene1(V2i size, MsPacManGameRendering rendering, SoundManager soundManager,
-			PacManGameModel game) {
+	public IntermissionScene1(V2i size, PacManGameModel game) {
 		this.size = size;
-		this.rendering = rendering;
-		this.soundManager = soundManager;
 		this.game = game;
 
 		Spritesheet sheet = rendering.assets;

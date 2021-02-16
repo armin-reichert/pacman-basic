@@ -191,9 +191,9 @@ public class PacManGameSwingUI implements PacManGameUI {
 	@Override
 	public Optional<PacManGameAnimation> animation() {
 		if (game instanceof MsPacManGame) {
-			return Optional.of(msPacManGameScenes.rendering);
+			return Optional.of(MsPacManGameScenes.rendering);
 		} else {
-			return Optional.of(pacManGameScenes.rendering);
+			return Optional.of(PacManGameScenes.rendering);
 		}
 	}
 
@@ -204,9 +204,9 @@ public class PacManGameSwingUI implements PacManGameUI {
 			return Optional.empty();
 		}
 		if (game instanceof MsPacManGame) {
-			return Optional.ofNullable(msPacManGameScenes.soundManager);
+			return Optional.ofNullable(MsPacManGameScenes.soundManager);
 		} else {
-			return Optional.ofNullable(pacManGameScenes.soundManager);
+			return Optional.ofNullable(PacManGameScenes.soundManager);
 		}
 	}
 
