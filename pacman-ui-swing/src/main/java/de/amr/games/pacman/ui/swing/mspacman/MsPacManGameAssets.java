@@ -56,6 +56,8 @@ public class MsPacManGameAssets extends Spritesheet {
 	};
 	//@formatter:on
 
+	final Font scoreFont;
+
 	final V2i[] symbolTiles;
 	final Map<Integer, V2i> bonusValueTiles;
 	final Map<Integer, V2i> bountyNumberTiles;
@@ -71,8 +73,7 @@ public class MsPacManGameAssets extends Spritesheet {
 	final Animation<BufferedImage> ghostBlueAnim;
 	final Animation<BufferedImage> ghostFlashingAnim;
 	final Animation<Integer> bonusJumpAnim;
-
-	final Font scoreFont;
+	final Animation<BufferedImage> flapAnim;
 
 	public MsPacManGameAssets() {
 		super(image("/mspacman/graphics/sprites.png"), 16);
@@ -151,6 +152,15 @@ public class MsPacManGameAssets extends Spritesheet {
 		ghostFlashingAnim.frameDuration(5).endless();
 
 		bonusJumpAnim = Animation.of(2, -2).frameDuration(15).endless().run();
+
+		flapAnim = Animation.of( //
+				sheet.getSubimage(456, 208, 32, 32), //
+				sheet.getSubimage(488, 208, 32, 32), //
+				sheet.getSubimage(520, 208, 32, 32), //
+				sheet.getSubimage(488, 208, 32, 32), //
+				sheet.getSubimage(456, 208, 32, 32)//
+		);
+		flapAnim.repetitions(1).frameDuration(4);
 	}
 
 	/**
