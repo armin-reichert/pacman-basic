@@ -1,21 +1,23 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>de.amr.games.pacman.ui.swing</groupId>
-  <artifactId>pacman-ui-swing</artifactId>
-  <version>1.0</version>
- 	<properties>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>de.amr.games.pacman.ui.swing</groupId>
+	<artifactId>pacman-ui-swing</artifactId>
+	<version>1.0</version>
+	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>8</maven.compiler.source>
 		<maven.compiler.target>8</maven.compiler.target>
 	</properties>
-  <dependencies>
-  	<dependency>
-  		<groupId>de.amr.games.pacman</groupId>
-  		<artifactId>pacman-basic</artifactId>
-  		<version>1.0</version>
-  	</dependency>
-  </dependencies>
-  	<build>
+	<dependencies>
+		<dependency>
+			<groupId>de.amr.games.pacman</groupId>
+			<artifactId>pacman-basic</artifactId>
+			<version>1.0</version>
+		</dependency>
+	</dependencies>
+	<build>
 		<plugins>
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
@@ -29,7 +31,7 @@
 						<descriptorRef>jar-with-dependencies</descriptorRef>
 					</descriptorRefs>
 				</configuration>
-								<executions>
+				<executions>
 					<execution>
 						<id>assembly</id>
 						<phase>package</phase>
@@ -38,7 +40,6 @@
 						</goals>
 					</execution>
 				</executions>
-				
 			</plugin>
 		</plugins>
 	</build>
