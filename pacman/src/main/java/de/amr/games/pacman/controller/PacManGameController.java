@@ -529,11 +529,9 @@ public class PacManGameController {
 
 	private PacManGameState runChangingLevelState() {
 		if (game.state.hasExpired()) {
-			if (!playingMsPacMan()) { // TODO
-				if (Arrays.asList(2, 5, 9, 13, 17).contains(game.currentLevelNumber)) {
-					game.intermissionNumber = intermissionNumber(game.currentLevelNumber);
-					return changeState(INTERMISSION, this::exitChangingLevelState, this::enterIntermissionState);
-				}
+			if (Arrays.asList(2, 5, 9, 13, 17).contains(game.currentLevelNumber)) {
+				game.intermissionNumber = intermissionNumber(game.currentLevelNumber);
+				return changeState(INTERMISSION, this::exitChangingLevelState, this::enterIntermissionState);
 			}
 			return changeState(READY, this::exitChangingLevelState, this::enterReadyState);
 		}
