@@ -24,7 +24,7 @@ import de.amr.games.pacman.sound.PacManGameSound;
 import de.amr.games.pacman.ui.swing.GameScene;
 
 /**
- * Intermission scene 2: "They meet".
+ * Intermission scene 1: "They meet".
  * <p>
  * Pac-Man leads Inky and Ms. Pac-Man leads Pinky. Soon, the two Pac-Men are about to collide, they
  * quickly move upwards, causing Inky and Pinky to collide and vanish. Finally, Pac-Man and Ms.
