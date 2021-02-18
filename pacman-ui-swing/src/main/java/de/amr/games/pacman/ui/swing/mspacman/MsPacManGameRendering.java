@@ -206,14 +206,17 @@ class MsPacManGameRendering extends GameRenderingUsingAnimatedSprites {
 	}
 
 	public void drawBirdAnim(Graphics2D g, float x, float y) {
-		drawImage(g, assets.birdAnim.animate(), x, y, true);
+		BufferedImage frame = assets.birdAnim.animate();
+		drawImage(g, frame, x + 4 - frame.getWidth() / 2, y + 4 - frame.getHeight() / 2, true);
 	}
 
 	public void drawJunior(Graphics2D g, float x, float y) {
-		drawImage(g, assets.junior, x, y, true);
+		BufferedImage frame = assets.junior;
+		drawImage(g, frame, x + 4 - frame.getWidth() / 2, y + 4 - frame.getHeight() / 2, true);
 	}
 
 	public void drawBlueBag(Graphics2D g, float x, float y) {
-		drawImage(g, assets.blueBag, x, y, true);
+		BufferedImage frame = assets.blueBag;
+		drawImage(g, frame, x + 4 - frame.getWidth() / 2, y + 4 - frame.getHeight() / 2, true);
 	}
 }

@@ -182,8 +182,8 @@ public class MsPacManGameAssets extends Spritesheet {
 				sheet.getSubimage(521, 176, 32, 16));
 		birdAnim.endless().frameDuration(10).restart();
 
-		blueBag = sheet.getSubimage(488, 199, 7, 8);
-		junior = sheet.getSubimage(509, 200, 7, 7);
+		blueBag = sheet.getSubimage(488, 199, 8, 8);
+		junior = sheet.getSubimage(509, 200, 8, 8);
 	}
 
 	/**
