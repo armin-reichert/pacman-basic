@@ -50,7 +50,6 @@ import de.amr.games.pacman.ui.PacManGameUI;
  * Missing:
  * <ul>
  * <li>Pac-Man "cornering"</li>
- * <li>Ms. Pac-Man intermission scenes</li>
  * <li>Exact level data for Ms. Pac-Man still unclear
  * <li>Multiple players</li>
  * </ul>
