@@ -35,7 +35,7 @@ public class PacManGameNoUI implements PacManGameUI {
 	}
 
 	@Override
-	public void showFlashMessage(String message) {
+	public void showFlashMessage(String message, long ticks) {
 	}
 
 	@Override

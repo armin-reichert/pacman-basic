@@ -22,7 +22,7 @@ public interface PacManGameUI {
 
 	void render();
 
-	void showFlashMessage(String message);
+	void showFlashMessage(String message, long ticks);
 
 	boolean keyPressed(String keySpec);
 

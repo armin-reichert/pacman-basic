@@ -7,7 +7,7 @@ package de.amr.games.pacman.lib;
  */
 public class Clock {
 
-	public int targetFrequency = 60;
+	public int targetFreq = 60;
 	public long frequency;
 	public long ticksTotal;
 
@@ -32,7 +32,7 @@ public class Clock {
 			ticksCounted = 0;
 			ticksCountStart = System.nanoTime();
 		}
-		long targetFrameDuration = 1_000_000_000L / targetFrequency;
+		long targetFrameDuration = 1_000_000_000L / targetFreq;
 		long sleep = Math.max((targetFrameDuration - duration) * 93 / 100, 0);
 		if (sleep > 0) {
 			try {
@@ -49,7 +49,7 @@ public class Clock {
 	 *         frequency
 	 */
 	public int sec(double seconds) {
-		return (int) (seconds * targetFrequency);
+		return (int) (seconds * targetFreq);
 	}
 
 	/**

@@ -143,10 +143,10 @@ public class PacManGameSwingUI implements PacManGameUI {
 	}
 
 	@Override
-	public void showFlashMessage(String message) {
+	public void showFlashMessage(String message, long ticks) {
 		flashMessages.add(message);
 		if (flashMessageTicksLeft == 0) {
-			flashMessageTicksLeft = FLASH_MESSAGE_TICKS;
+			flashMessageTicksLeft = ticks;
 		}
 	}
 
@@ -225,16 +225,20 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 	private void handleKeyboardInput(KeyEvent e) {
 		switch (e.getKeyCode()) {
-		case KEY_SLOW_MODE:
-			clock.targetFrequency = clock.targetFrequency == 60 ? 30 : 60;
-			log("Clock frequency changed to %d Hz", clock.targetFrequency);
-			showFlashMessage(clock.targetFrequency == 60 ? "Normal speed" : "Slow speed");
+		case KEY_SLOW_MODE: {
+			clock.targetFreq = clock.targetFreq == 60 ? 30 : 60;
+			String text = clock.targetFreq == 60 ? "Normal speed" : "Slow speed";
+			showFlashMessage(text, clock.sec(1.5));
+			log("Clock frequency changed to %d Hz", clock.targetFreq);
 			break;
-		case KEY_FAST_MODE:
-			clock.targetFrequency = clock.targetFrequency == 60 ? 120 : 60;
-			log("Clock frequency changed to %d Hz", clock.targetFrequency);
-			showFlashMessage(clock.targetFrequency == 60 ? "Normal speed" : "Fast speed");
+		}
+		case KEY_FAST_MODE: {
+			clock.targetFreq = clock.targetFreq == 60 ? 120 : 60;
+			String text = clock.targetFreq == 60 ? "Normal speed" : "Fast speed";
+			showFlashMessage(text, clock.sec(1.5));
+			log("Clock frequency changed to %d Hz", clock.targetFreq);
 			break;
+		}
 		case KEY_DEBUG_MODE:
 			DebugRendering.on = !DebugRendering.on;
 			log("UI debug mode is %s", DebugRendering.on ? "on" : "off");

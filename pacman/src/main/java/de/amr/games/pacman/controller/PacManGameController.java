@@ -178,14 +178,14 @@ public class PacManGameController {
 	private void toggleAutopilot() {
 		autopilotOn = !autopilotOn;
 		String msg = "Autopilot " + (autopilotOn ? "on" : "off");
-		views.forEach(view -> view.showFlashMessage(msg));
+		views.forEach(view -> view.showFlashMessage(msg, clock.sec(1.5)));
 		log(msg);
 	}
 
 	private void togglePacImmunity() {
 		game.pac.immune = !game.pac.immune;
 		String msg = game.pac.name + " is " + (game.pac.immune ? "immune" : "vulnerable");
-		views.forEach(view -> view.showFlashMessage(msg));
+		views.forEach(view -> view.showFlashMessage(msg, clock.sec(1.5)));
 		log(msg);
 	}
 
