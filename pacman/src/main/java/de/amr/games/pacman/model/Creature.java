@@ -19,7 +19,8 @@ import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.world.PacManGameWorld;
 
 /**
- * Base class for Pac-Man, the ghosts and the bonus. Creatures can move through their world.
+ * Base class for Pac-Man, Ms. Pac-Man the ghosts and the bonus. Creatures can move through the
+ * world.
  * 
  * @author Armin Reichert
  */
@@ -29,47 +30,61 @@ public class Creature {
 	public PacManGameWorld world;
 
 	/** Left upper corner of TSxTS collision box. Sprites can be larger. */
-	public V2f position = V2f.NULL;
+	public V2f position = new V2f(Float.MAX_VALUE, Float.MAX_VALUE);
 
-	/** The current move direction. */
-	public Direction dir;
+	/** The current move direction. Initially, (s)he moves to the right direction :-) */
+	public Direction dir = Direction.RIGHT;
 
 	/** The intended move direction that will be taken as soon as possible. */
-	public Direction wishDir;
+	public Direction wishDir = Direction.RIGHT;
 
 	/** The first move direction. */
-	public Direction startDir;
+	public Direction startDir = Direction.RIGHT;
 
 	/** The tile that the guy tries to reach. Can be inaccessible or outside of the maze. */
 	public V2i targetTile = V2i.NULL;
 
 	/** Relative speed (between 0 and 1). */
-	public float speed;
+	public float speed = 0.0f;
 
 	/** If the creature is drawn on the screen. */
-	public boolean visible;
+	public boolean visible = false;
 
 	/** If the creature entered a new tile with its last movement or placement. */
-	public boolean changedTile;
+	public boolean changedTile = true;
 
 	/** If the creature could move in the last try. */
-	public boolean couldMove;
+	public boolean couldMove = true;
 
 	/** If the next move will in any case take the intended direction if possible. */
-	public boolean forcedDirection;
+	public boolean forcedDirection = false;
 
 	/** If movement is constrained to be aligned with the tiles. */
-	public boolean forcedOnTrack;
+	public boolean forcedOnTrack = false;
 
+	/**
+	 * Places this creature at the given tile with the given position offsets. Sets the
+	 * {@code changedTile} flag to trigger a potential steering.
+	 * 
+	 * @param tile    the tile where this creature will be placed
+	 * @param offsetX the pixel offset in x-direction
+	 * @param offsetY the pixel offset in y-direction
+	 */
 	public void placeAt(V2i tile, float offsetX, float offsetY) {
 		position = new V2f(tile.x * TS + offsetX, tile.y * TS + offsetY);
 		changedTile = true;
 	}
 
+	/**
+	 * @return the current tile position
+	 */
 	public V2i tile() {
 		return PacManGameWorld.tile(position);
 	}
 
+	/**
+	 * @return the current pixel offset
+	 */
 	public V2f offset() {
 		return PacManGameWorld.offset(position);
 	}

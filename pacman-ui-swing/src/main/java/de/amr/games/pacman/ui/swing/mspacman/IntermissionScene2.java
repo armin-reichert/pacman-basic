@@ -80,7 +80,7 @@ public class IntermissionScene2 implements GameScene {
 		default:
 			break;
 		}
-		phase.timer.tick();
+		phase.timer.run();
 	}
 
 	@Override

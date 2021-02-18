@@ -100,7 +100,7 @@ public class IntermissionScene1 implements GameScene {
 		msPac.position = new V2f(t(30), lowerY);
 		msPac.visible = true;
 		msPac.couldMove = true;
-		rendering.pacMunching(msPac).forEach(Animation::restart);
+		rendering.msPacManMunching(msPac).forEach(Animation::restart);
 
 		pinky = new Ghost(1, "Pinky", Direction.LEFT);
 		pinky.position = msPac.position.sum(t(3), 0);
@@ -174,7 +174,7 @@ public class IntermissionScene1 implements GameScene {
 		default:
 			break;
 		}
-		phase.timer.tick();
+		phase.timer.run();
 	}
 
 	private void startChasedByGhosts() {
