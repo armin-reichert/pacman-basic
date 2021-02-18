@@ -3,7 +3,6 @@ package de.amr.games.pacman.ui.swing;
 import static de.amr.games.pacman.heaven.God.clock;
 import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.world.PacManGameWorld.TS;
-import static java.lang.Math.cos;
 
 import java.awt.AWTException;
 import java.awt.Canvas;
@@ -18,8 +17,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferStrategy;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.Optional;
 
 import javax.swing.JFrame;
@@ -32,6 +31,7 @@ import de.amr.games.pacman.model.MsPacManGame;
 import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.model.PacManGameModel;
 import de.amr.games.pacman.sound.SoundManager;
+import de.amr.games.pacman.ui.FlashMessage;
 import de.amr.games.pacman.ui.PacManGameAnimation;
 import de.amr.games.pacman.ui.PacManGameUI;
 import de.amr.games.pacman.ui.swing.assets.AssetLoader;
@@ -50,8 +50,6 @@ public class PacManGameSwingUI implements PacManGameUI {
 	static final int KEY_FAST_MODE = KeyEvent.VK_F;
 	static final int KEY_DEBUG_MODE = KeyEvent.VK_D;
 
-	static final int FLASH_MESSAGE_TICKS = 90;
-
 	private final Dimension unscaledSize_px;
 	private final V2i scaledSize_px;
 	private final float scaling;
@@ -66,8 +64,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 	private PacManGameModel game;
 	private GameScene currentScene;
 
-	private final List<String> flashMessages = new ArrayList<>();
-	private long flashMessageTicksLeft;
+	private final Deque<FlashMessage> flashMessageQ = new ArrayDeque<>();
 
 	private boolean muted;
 
@@ -144,10 +141,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 	@Override
 	public void showFlashMessage(String message, long ticks) {
-		flashMessages.add(message);
-		if (flashMessageTicksLeft == 0) {
-			flashMessageTicksLeft = ticks;
-		}
+		flashMessageQ.add(new FlashMessage(message, ticks));
 	}
 
 	@Override
@@ -170,6 +164,14 @@ public class PacManGameSwingUI implements PacManGameUI {
 		}
 		currentScene = newScene;
 		currentScene.update();
+
+		FlashMessage message = flashMessageQ.peek();
+		if (message != null) {
+			message.timer.tick();
+			if (message.timer.expired()) {
+				flashMessageQ.remove();
+			}
+		}
 	}
 
 	@Override
@@ -182,7 +184,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 				g.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 				g.scale(scaling, scaling);
 				currentScene.render(g);
-				drawFlashMessages(g);
+				drawFlashMessage(g);
 				g.dispose();
 			} while (buffers.contentsRestored());
 			buffers.show();
@@ -248,26 +250,18 @@ public class PacManGameSwingUI implements PacManGameUI {
 		}
 	}
 
-	private void drawFlashMessages(Graphics2D g) {
-		if (flashMessages.size() > 0 && flashMessageTicksLeft > 0) {
-			float t = FLASH_MESSAGE_TICKS - flashMessageTicksLeft;
-			float alpha = (float) cos(Math.PI * t / (2 * FLASH_MESSAGE_TICKS));
-			String text = flashMessages.get(0);
+	private void drawFlashMessage(Graphics2D g) {
+		FlashMessage message = flashMessageQ.peek();
+		if (message != null) {
+			double alpha = Math.cos(Math.PI * message.timer.running() / (2 * message.timer.getDuration()));
 			g.setColor(Color.BLACK);
 			g.fillRect(0, unscaledSize_px.height - 16, unscaledSize_px.width, 16);
-			g.setColor(new Color(1, 1, 0, alpha));
+			g.setColor(new Color(1, 1, 0, (float) alpha));
 			g.setFont(new Font(Font.SERIF, Font.BOLD, 10));
 			g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-			g.drawString(text, (unscaledSize_px.width - g.getFontMetrics().stringWidth(text)) / 2,
+			g.drawString(message.text, (unscaledSize_px.width - g.getFontMetrics().stringWidth(message.text)) / 2,
 					unscaledSize_px.height - 3);
 			g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
-			--flashMessageTicksLeft;
-			if (flashMessageTicksLeft == 0) {
-				flashMessages.remove(0);
-				if (flashMessages.size() > 0) {
-					flashMessageTicksLeft = FLASH_MESSAGE_TICKS;
-				}
-			}
 		}
 	}
 
