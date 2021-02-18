@@ -217,7 +217,7 @@ public class IntroScene implements GameScene {
 	}
 
 	private void drawGuys(Graphics2D g) {
-		rendering.drawMsPacMan(g, pac, game);
+		rendering.drawPac(g, pac, game);
 		for (Ghost ghost : ghosts) {
 			rendering.drawGhost(g, ghost, game);
 		}

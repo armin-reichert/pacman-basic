@@ -32,7 +32,7 @@ public interface GameRendering {
 
 	void drawFullMaze(Graphics2D g, PacManGameModel game, int mazeNumber, int x, int y);
 
-	void drawMsPacMan(Graphics2D g, Pac pac, PacManGameModel game);
+	void drawPac(Graphics2D g, Pac pac, PacManGameModel game);
 
 	void drawGhost(Graphics2D g, Ghost ghost, PacManGameModel game);
 

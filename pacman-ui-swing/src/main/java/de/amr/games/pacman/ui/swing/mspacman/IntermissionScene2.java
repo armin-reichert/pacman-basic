@@ -6,7 +6,6 @@ import static de.amr.games.pacman.ui.swing.mspacman.MsPacManGameScenes.rendering
 import static de.amr.games.pacman.ui.swing.mspacman.MsPacManGameScenes.soundManager;
 import static de.amr.games.pacman.world.PacManGameWorld.t;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -128,9 +127,11 @@ public class IntermissionScene2 implements GameScene {
 
 	@Override
 	public void render(Graphics2D g) {
-		drawFlapAnimation(g, t(3), t(10));
+		if (flapVisible) {
+			rendering.drawFlapAnimation(g, t(3), t(10), "2", "THE CHASE");
+		}
 		drawPacMan(g);
-		rendering.drawMsPacMan(g, msPac, game);
+		rendering.drawPac(g, msPac, game);
 	}
 
 	private void drawPacMan(Graphics2D g) {
@@ -140,18 +141,6 @@ public class IntermissionScene2 implements GameScene {
 				rendering.drawImage(g, munching.animate(), pac.position.x - 4, pac.position.y - 4, true);
 			} else {
 				rendering.drawImage(g, munching.frame(1), pac.position.x - 4, pac.position.y - 4, true);
-			}
-		}
-	}
-
-	private void drawFlapAnimation(Graphics2D g, int flapX, int flapY) {
-		if (flapVisible) {
-			rendering.drawImage(g, assets.flapAnim.animate(), flapX, flapY, true);
-			g.setColor(new Color(222, 222, 225));
-			g.setFont(assets.getScoreFont());
-			g.drawString("2", flapX + 20, flapY + 30);
-			if (assets.flapAnim.isRunning()) {
-				g.drawString("THE CHASE", flapX + 40, flapY + 20);
 			}
 		}
 	}

@@ -75,6 +75,9 @@ public class MsPacManGameAssets extends Spritesheet {
 	final Animation<BufferedImage> ghostFlashingAnim;
 	final Animation<Integer> bonusJumpAnim;
 	final Animation<BufferedImage> flapAnim;
+	final Animation<BufferedImage> birdAnim;
+	final BufferedImage blueBag;
+	final BufferedImage junior;
 
 	public MsPacManGameAssets() {
 		super(image("/mspacman/graphics/sprites.png"), 16);
@@ -173,6 +176,14 @@ public class MsPacManGameAssets extends Spritesheet {
 				sheet.getSubimage(456, 208, 32, 32)//
 		);
 		flapAnim.repetitions(1).frameDuration(4);
+
+		birdAnim = Animation.of(//
+				sheet.getSubimage(489, 176, 32, 16), //
+				sheet.getSubimage(521, 176, 32, 16));
+		birdAnim.endless().frameDuration(10).restart();
+
+		blueBag = sheet.getSubimage(488, 199, 7, 8);
+		junior = sheet.getSubimage(509, 200, 7, 7);
 	}
 
 	/**

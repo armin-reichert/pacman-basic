@@ -45,7 +45,7 @@ public class PlayScene implements GameScene {
 			DebugRendering.drawMazeStructure(g, game);
 		}
 		rendering.signalGameState(g, game);
-		rendering.drawMsPacMan(g, game.pac, game);
+		rendering.drawPac(g, game.pac, game);
 		game.ghosts().forEach(ghost -> rendering.drawGhost(g, ghost, game));
 		if (DebugRendering.on) {
 			DebugRendering.drawPlaySceneDebugInfo(g, game);

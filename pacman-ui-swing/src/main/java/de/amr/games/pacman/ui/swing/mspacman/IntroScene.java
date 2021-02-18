@@ -188,7 +188,7 @@ public class IntroScene implements GameScene {
 		for (Ghost ghost : ghosts) {
 			rendering.drawGhost(g, ghost, game);
 		}
-		rendering.drawMsPacMan(g, msPac, game);
+		rendering.drawPac(g, msPac, game);
 		presentGhost(g);
 		presentMsPacMan(g);
 		if (phase == Phase.END) {
