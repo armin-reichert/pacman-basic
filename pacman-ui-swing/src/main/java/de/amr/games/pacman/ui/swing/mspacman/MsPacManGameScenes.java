@@ -5,7 +5,7 @@ import java.awt.Dimension;
 import de.amr.games.pacman.controller.PacManGameState;
 import de.amr.games.pacman.model.MsPacManGame;
 import de.amr.games.pacman.model.PacManGameModel;
-import de.amr.games.pacman.sound.PacManGameSoundAssets;
+import de.amr.games.pacman.sound.PacManGameSounds;
 import de.amr.games.pacman.sound.PacManGameSoundManager;
 import de.amr.games.pacman.sound.SoundManager;
 import de.amr.games.pacman.ui.swing.GameScene;
@@ -20,7 +20,7 @@ public class MsPacManGameScenes {
 
 	public static final MsPacManGameRendering rendering = new MsPacManGameRendering();
 	public static final SoundManager soundManager = new PacManGameSoundManager(
-			PacManGameSoundAssets::getMsPacManSoundURL);
+			PacManGameSounds::getMsPacManSoundURL);
 
 	private GameScene introScene;
 	private GameScene playScene;

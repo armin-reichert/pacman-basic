@@ -4,9 +4,9 @@ import java.net.URL;
 import java.util.EnumMap;
 import java.util.Map;
 
-public class PacManGameSoundAssets {
+public class PacManGameSounds {
 
-	private static final PacManGameSoundAssets IT = new PacManGameSoundAssets();
+	private static final PacManGameSounds IT = new PacManGameSounds();
 
 	private final Map<PacManGameSound, URL> pacManSounds = new EnumMap<>(PacManGameSound.class);
 	private final Map<PacManGameSound, URL> msPacManSounds = new EnumMap<>(PacManGameSound.class);
@@ -23,7 +23,7 @@ public class PacManGameSoundAssets {
 		return IT.msPacManSounds.get(sound);
 	}
 
-	private PacManGameSoundAssets() {
+	private PacManGameSounds() {
 		//@formatter:off
 		pacManSounds.put(PacManGameSound.CREDIT,             url("/pacman/sound/credit.wav"));
 		pacManSounds.put(PacManGameSound.EXTRA_LIFE,         url("/pacman/sound/extend.wav"));
