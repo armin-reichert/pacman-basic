@@ -24,13 +24,13 @@ import de.amr.games.pacman.world.PacManGameWorld;
  * 
  * @author Armin Reichert
  */
-public class Creature {
+public class Creature extends GameEntity {
 
 	/** The world where this creature lives. */
 	public PacManGameWorld world;
 
-	/** Left upper corner of TSxTS collision box. Sprites can be larger. */
-	public V2f position = new V2f(Float.MAX_VALUE, Float.MAX_VALUE);
+	/** Relative speed (between 0 and 1). */
+	public float speed = 0.0f;
 
 	/** The current move direction. Initially, (s)he moves to the right direction :-) */
 	public Direction dir = Direction.RIGHT;
@@ -43,12 +43,6 @@ public class Creature {
 
 	/** The tile that the guy tries to reach. Can be inaccessible or outside of the maze. */
 	public V2i targetTile = V2i.NULL;
-
-	/** Relative speed (between 0 and 1). */
-	public float speed = 0.0f;
-
-	/** If the creature is drawn on the screen. */
-	public boolean visible = false;
 
 	/** If the creature entered a new tile with its last movement or placement. */
 	public boolean changedTile = true;
@@ -111,8 +105,10 @@ public class Creature {
 		return tile().equals(other.tile());
 	}
 
+	@Override
 	public void move() {
-		position = position.sum(new V2f(dir.vec).scaled(speed));
+		velocity = new V2f(dir.vec).scaled(speed);
+		position = position.sum(velocity);
 	}
 
 	public void tryMoving() {
@@ -161,7 +157,7 @@ public class Creature {
 			}
 		}
 
-		V2f velocity = new V2f(moveDir.vec).scaled(pixels);
+		velocity = new V2f(moveDir.vec).scaled(pixels);
 		V2f newPosition = position.sum(velocity);
 		V2i newTile = PacManGameWorld.tile(newPosition);
 		V2f newOffset = PacManGameWorld.offset(newPosition);
