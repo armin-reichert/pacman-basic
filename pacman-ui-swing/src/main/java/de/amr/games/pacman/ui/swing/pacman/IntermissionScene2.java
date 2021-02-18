@@ -92,7 +92,7 @@ public class IntermissionScene2 implements GameScene {
 		blinky.speed = 1;
 		blinky.dir = blinky.wishDir = LEFT;
 
-		rendering.msPacManMunching(pac).forEach(Animation::restart);
+		rendering.pacMunching(pac).forEach(Animation::restart);
 		rendering.ghostKickingToDir(blinky, blinky.dir).restart();
 		soundManager.play(PacManGameSound.INTERMISSION_2);
 

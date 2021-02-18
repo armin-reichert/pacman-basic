@@ -17,7 +17,7 @@ public interface PacManGameAnimation {
 
 	Animation<?> pacMunchingToDir(Pac pac, Direction dir);
 
-	default Stream<Animation<?>> msPacManMunching(Pac pac) {
+	default Stream<Animation<?>> pacMunching(Pac pac) {
 		return Stream.of(Direction.values()).map(dir -> pacMunchingToDir(pac, dir));
 	}
 
@@ -57,15 +57,18 @@ public interface PacManGameAnimation {
 
 	Animation<?> mazeFlashing(int mazeNumber);
 
+	Stream<Animation<?>> mazeFlashings();
+
 	Animation<Boolean> energizerBlinking();
 
 	default void reset(PacManGameModel game) {
+		mazeFlashings().forEach(Animation::reset);
 		energizerBlinking().reset();
 		ghostFlashing().reset();
 		ghostsFrightened(game.ghosts()).forEach(Animation::reset);
 		ghostsKicking(game.ghosts()).forEach(Animation::reset);
 		ghostsReturningHome(game.ghosts()).forEach(Animation::reset);
-		msPacManMunching(game.pac).forEach(Animation::reset);
+		pacMunching(game.pac).forEach(Animation::reset);
 		pacDying().reset();
 	}
 }

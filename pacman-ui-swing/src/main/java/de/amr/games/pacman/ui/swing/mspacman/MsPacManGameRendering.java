@@ -9,6 +9,7 @@ import static de.amr.games.pacman.world.PacManGameWorld.t;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.util.stream.Stream;
 
 import de.amr.games.pacman.controller.PacManGameState;
 import de.amr.games.pacman.lib.Animation;
@@ -67,6 +68,12 @@ class MsPacManGameRendering extends GameRenderingUsingAnimatedSprites {
 	@Override
 	public Animation<BufferedImage> mazeFlashing(int mazeNumber) {
 		return assets.mazesFlashingAnims.get(mazeNumber - 1);
+	}
+
+	@Override
+	public Stream<Animation<?>> mazeFlashings() {
+		// TODO this is silly
+		return assets.mazesFlashingAnims.stream().map(Animation.class::cast);
 	}
 
 	@Override
