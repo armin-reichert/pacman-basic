@@ -162,7 +162,7 @@ public class IntermissionScene1 implements GameScene {
 			break;
 
 		case READY_TO_PLAY:
-			if (phase.timer.running() == clock.sec(1)) {
+			if (phase.timer.running() == clock.sec(0.5)) {
 				inky.visible = false;
 				pinky.visible = false;
 			}

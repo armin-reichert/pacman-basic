@@ -78,7 +78,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 		canvas.setFocusable(false);
 
 		window = new JFrame();
-		window.setTitle("Pac-Man");
+		window.setTitle("Swing: Pac-Man");
 		window.setResizable(false);
 		window.setFocusable(true);
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -102,7 +102,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 		keyboard = new Keyboard(window);
 
 		titleUpdateTimer = new Timer(1000,
-				e -> window.setTitle(String.format("Pac-Man / Ms. Pac-Man (%d fps)", clock.frequency)));
+				e -> window.setTitle(String.format("Swing: Pac-Man / Ms. Pac-Man (%d fps)", clock.frequency)));
 		titleUpdateTimer.start();
 
 		pacManGameScenes = new PacManGameScenes();
