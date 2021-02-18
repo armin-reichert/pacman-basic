@@ -120,7 +120,7 @@ public class IntermissionScene1 implements GameScene {
 	public void render(Graphics2D g) {
 		rendering.drawGhost(g, blinky, game);
 		if (phase == Phase.BLINKY_CHASING_PACMAN) {
-			rendering.drawPac(g, pac, game);
+			rendering.drawMsPacMan(g, pac, game);
 		} else {
 			rendering.drawImage(g, bigPac.animate(), pac.position.x - 12, pac.position.y - 22, true);
 		}

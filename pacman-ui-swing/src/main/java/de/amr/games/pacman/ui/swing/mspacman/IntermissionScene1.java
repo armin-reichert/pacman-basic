@@ -202,7 +202,7 @@ public class IntermissionScene1 implements GameScene {
 		}
 		drawPacMan(g);
 		rendering.drawGhost(g, inky, game);
-		rendering.drawPac(g, msPac, game);
+		rendering.drawMsPacMan(g, msPac, game);
 		rendering.drawGhost(g, pinky, game);
 		if (heartVisible) {
 			rendering.drawImage(g, heart, msPac.position.x + 4, pac.position.y - 20, true);

@@ -66,8 +66,9 @@ public class MsPacManGameAssets extends Spritesheet {
 	final List<BufferedImage> mazeFullImages;
 	final List<Animation<BufferedImage>> mazesFlashingAnims;
 	final Animation<Boolean> energizerBlinkingAnim;
-	final EnumMap<Direction, Animation<BufferedImage>> pacMunchingAnimByDir;
-	final Animation<BufferedImage> pacSpinningAnim;
+	final EnumMap<Direction, Animation<BufferedImage>> msPacManMunchingAnimByDir;
+	final Animation<BufferedImage> msPacManSpinningAnim;
+	final Map<Direction, Animation<BufferedImage>> pacManMunching; // used in intermission scene
 	final List<EnumMap<Direction, Animation<BufferedImage>>> ghostsKickingAnimsByGhost;
 	final EnumMap<Direction, Animation<BufferedImage>> ghostEyesAnimByDir;
 	final Animation<BufferedImage> ghostBlueAnim;
@@ -118,16 +119,26 @@ public class MsPacManGameAssets extends Spritesheet {
 		bountyNumberSprites.put(1600, spriteAt(3,8));
 		//@formatter:on
 
-		pacMunchingAnimByDir = new EnumMap<>(Direction.class);
+		msPacManMunchingAnimByDir = new EnumMap<>(Direction.class);
 		for (Direction dir : Direction.values()) {
 			int d = index(dir);
 			Animation<BufferedImage> munching = Animation.of(spriteAt(0, d), spriteAt(1, d), spriteAt(2, d), spriteAt(1, d));
 			munching.frameDuration(2).endless();
-			pacMunchingAnimByDir.put(dir, munching);
+			msPacManMunchingAnimByDir.put(dir, munching);
 		}
 
-		pacSpinningAnim = Animation.of(spriteAt(0, 3), spriteAt(0, 0), spriteAt(0, 1), spriteAt(0, 2));
-		pacSpinningAnim.frameDuration(10).repetitions(2);
+		msPacManSpinningAnim = Animation.of(spriteAt(0, 3), spriteAt(0, 0), spriteAt(0, 1), spriteAt(0, 2));
+		msPacManSpinningAnim.frameDuration(10).repetitions(2);
+
+		pacManMunching = new EnumMap<>(Direction.class);
+		pacManMunching.put(Direction.RIGHT,
+				Animation.of(spriteAt(0, 9), spriteAt(1, 9), spriteAt(2, 9)).endless().frameDuration(2));
+		pacManMunching.put(Direction.LEFT,
+				Animation.of(spriteAt(0, 10), spriteAt(1, 10), spriteAt(2, 9)).endless().frameDuration(2));
+		pacManMunching.put(Direction.UP,
+				Animation.of(spriteAt(0, 11), spriteAt(1, 11), spriteAt(2, 9)).endless().frameDuration(2));
+		pacManMunching.put(Direction.DOWN,
+				Animation.of(spriteAt(0, 12), spriteAt(1, 12), spriteAt(2, 9)).endless().frameDuration(2));
 
 		ghostsKickingAnimsByGhost = new ArrayList<>(4);
 		for (int g = 0; g < 4; ++g) {

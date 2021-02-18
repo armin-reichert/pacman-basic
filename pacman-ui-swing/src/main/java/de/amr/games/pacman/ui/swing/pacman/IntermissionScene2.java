@@ -160,7 +160,7 @@ public class IntermissionScene2 implements GameScene {
 	public void render(Graphics2D g) {
 		rendering.drawLevelCounter(g, game, t(25), t(34));
 		rendering.drawImage(g, nail, nailPosition.x, nailPosition.y, true);
-		rendering.drawPac(g, pac, game);
+		rendering.drawMsPacMan(g, pac, game);
 		drawBlinky(g);
 	}
 

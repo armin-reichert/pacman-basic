@@ -118,7 +118,7 @@ public class IntermissionScene3 implements GameScene {
 	public void render(Graphics2D g) {
 		Graphics2D g2 = rendering.smoothGC(g);
 		rendering.drawLevelCounter(g2, game, t(25), t(34));
-		rendering.drawPac(g2, pac, game);
+		rendering.drawMsPacMan(g2, pac, game);
 		drawBlinky(g2);
 		g2.dispose();
 	}

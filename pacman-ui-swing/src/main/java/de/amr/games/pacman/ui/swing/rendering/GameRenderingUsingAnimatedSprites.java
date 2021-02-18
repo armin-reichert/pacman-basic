@@ -46,7 +46,7 @@ public abstract class GameRenderingUsingAnimatedSprites implements SpriteBasedSc
 	}
 
 	@Override
-	public void drawPac(Graphics2D g, Pac pac, PacManGameModel game) {
+	public void drawMsPacMan(Graphics2D g, Pac pac, PacManGameModel game) {
 		drawGuy(g, pac, game);
 	}
 

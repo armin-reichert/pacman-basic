@@ -37,12 +37,12 @@ class MsPacManGameRendering extends GameRenderingUsingAnimatedSprites {
 
 	@Override
 	public Animation<BufferedImage> pacMunchingToDir(Pac pac, Direction dir) {
-		return assets.pacMunchingAnimByDir.get(dir);
+		return assets.msPacManMunchingAnimByDir.get(dir);
 	}
 
 	@Override
 	public Animation<BufferedImage> pacDying() {
-		return assets.pacSpinningAnim;
+		return assets.msPacManSpinningAnim;
 	}
 
 	@Override
