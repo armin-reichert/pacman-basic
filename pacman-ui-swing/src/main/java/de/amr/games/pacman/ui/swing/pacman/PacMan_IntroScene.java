@@ -8,9 +8,11 @@ import static de.amr.games.pacman.world.PacManGameWorld.t;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.Animation;
+import de.amr.games.pacman.lib.CountdownTimer;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.model.Ghost;
@@ -21,40 +23,47 @@ import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
 import de.amr.games.pacman.ui.swing.common.AbstractGameScene;
 
 /**
- * Intro presenting the ghosts and showing the chasing animations.
+ * Intro scene of the PacMan game.
+ * <p>
+ * The ghost are presented one after another, then Pac-Man is chased by the ghosts, turns the card
+ * and hunts the ghost himself.
  * 
  * @author Armin Reichert
  */
 public class PacMan_IntroScene extends AbstractGameScene implements GameScene {
 
+	static class GhostPortrait {
+
+		Ghost ghost;
+		String character;
+		boolean characterVisible;
+		boolean nicknameVisible;
+		Color color;
+	}
+
 	enum Phase {
 
 		BEGIN, GHOST_GALLERY, CHASING_PAC, CHASING_GHOSTS, READY_TO_PLAY;
 
-		public long start;
-
-		private boolean at(long ticks) {
-			return clock.ticksTotal - start == ticks;
-		}
+		final CountdownTimer timer = new CountdownTimer();
 	}
 
 	private final PacMan_GameRendering rendering = PacManGameSwingUI.pacManGameRendering;
-
 	private final Animation<Boolean> blinking = Animation.pulse().frameDuration(20).restart();
+
 	private final int topY = t(6);
-	private Ghost[] gallery;
-	private int currentGhost;
-	private boolean[] characterVisible;
-	private boolean[] nickVisible;
+
+	private GhostPortrait[] gallery;
+	private int presentedGhostIndex;
 	private long ghostKilledTime;
 	private Pac pac;
 	private Ghost[] ghosts;
+
 	private Phase phase;
 
 	private void enterPhase(Phase newPhase) {
 		phase = newPhase;
-		phase.start = clock.ticksTotal;
-		log("Phase %s entered at %d", phase, phase.start);
+		phase.timer.setDuration(Long.MAX_VALUE);
 	}
 
 	public PacMan_IntroScene(Dimension size) {
@@ -62,23 +71,26 @@ public class PacMan_IntroScene extends AbstractGameScene implements GameScene {
 	}
 
 	@Override
-	public Dimension sizeInPixel() {
-		return size;
-	}
-
-	@Override
 	public void start() {
-		gallery = new Ghost[] { //
-				new Ghost(0, "Blinky", Direction.RIGHT), //
-				new Ghost(1, "Pinky", Direction.RIGHT), //
-				new Ghost(2, "Inky", Direction.RIGHT), //
-				new Ghost(3, "Clyde", Direction.RIGHT), //
-		};
-		for (Ghost ghost : gallery) {
-			ghost.position = new V2f(t(3), topY + t(2 + 3 * ghost.id));
+		gallery = new GhostPortrait[4];
+		for (int i = 0; i < 4; ++i) {
+			gallery[i] = new GhostPortrait();
 		}
-		characterVisible = new boolean[4];
-		nickVisible = new boolean[4];
+		gallery[0].ghost = new Ghost(0, "Blinky", Direction.RIGHT);
+		gallery[0].character = "SHADOW";
+		gallery[0].color = Color.RED;
+
+		gallery[1].ghost = new Ghost(1, "Pinky", Direction.RIGHT);
+		gallery[1].character = "SPEEDY";
+		gallery[1].color = Color.PINK;
+
+		gallery[2].ghost = new Ghost(2, "Inky", Direction.RIGHT);
+		gallery[2].character = "BASHFUL";
+		gallery[2].color = Color.CYAN;
+
+		gallery[3].ghost = new Ghost(3, "Clyde", Direction.RIGHT);
+		gallery[3].character = "POKEY";
+		gallery[3].color = Color.ORANGE;
 
 		pac = new Pac("Ms. Pac-Man", Direction.LEFT);
 
@@ -98,24 +110,23 @@ public class PacMan_IntroScene extends AbstractGameScene implements GameScene {
 		for (Ghost ghost : ghosts) {
 			ghost.move();
 		}
-		blinking.animate();
 		switch (phase) {
 		case BEGIN:
-			if (phase.at(clock.sec(2))) {
+			if (phase.timer.running() == clock.sec(2)) {
 				presentGhost(0);
 				enterPhase(Phase.GHOST_GALLERY);
 			}
 			break;
 		case GHOST_GALLERY:
-			if (phase.at(clock.sec(0.5))) {
-				characterVisible[currentGhost] = true;
+			if (phase.timer.running() == clock.sec(0.5)) {
+				gallery[presentedGhostIndex].characterVisible = true;
 			}
-			if (phase.at(clock.sec(1))) {
-				nickVisible[currentGhost] = true;
+			if (phase.timer.running() == clock.sec(1)) {
+				gallery[presentedGhostIndex].nicknameVisible = true;
 			}
-			if (phase.at(clock.sec(2))) {
-				if (currentGhost < 3) {
-					presentGhost(currentGhost + 1);
+			if (phase.timer.running() == clock.sec(2)) {
+				if (presentedGhostIndex < 3) {
+					presentGhost(presentedGhostIndex + 1);
 					enterPhase(Phase.GHOST_GALLERY);
 				} else {
 					startGhostsChasingPac();
@@ -154,7 +165,8 @@ public class PacMan_IntroScene extends AbstractGameScene implements GameScene {
 			}
 			break;
 		case READY_TO_PLAY:
-			if (phase.at(clock.sec(5))) {
+			blinking.animate();
+			if (phase.timer.running() == clock.sec(5)) {
 				game.attractMode = true;
 				log("Entering attract mode at %d", clock.ticksTotal);
 			}
@@ -162,6 +174,7 @@ public class PacMan_IntroScene extends AbstractGameScene implements GameScene {
 		default:
 			break;
 		}
+		phase.timer.run();
 	}
 
 	private void startGhostsChasingPac() {
@@ -216,9 +229,9 @@ public class PacMan_IntroScene extends AbstractGameScene implements GameScene {
 		}
 	}
 
-	private void presentGhost(int id) {
-		currentGhost = id;
-		gallery[id].visible = true;
+	private void presentGhost(int ghostIndex) {
+		presentedGhostIndex = ghostIndex;
+		gallery[presentedGhostIndex].ghost.visible = true;
 	}
 
 	private void drawGallery(Graphics2D g) {
@@ -228,25 +241,21 @@ public class PacMan_IntroScene extends AbstractGameScene implements GameScene {
 		g.drawString("CHARACTER", t(6), topY);
 		g.drawString("/", t(16), topY);
 		g.drawString("NICKNAME", t(18), topY);
-		showInGallery(g, gallery[0], "SHADOW", Color.RED, x, topY + t(2), characterVisible[0], nickVisible[0]);
-		showInGallery(g, gallery[1], "SPEEDY", Color.PINK, x, topY + t(5), characterVisible[1], nickVisible[1]);
-		showInGallery(g, gallery[2], "BASHFUL", Color.CYAN, x, topY + t(8), characterVisible[2], nickVisible[2]);
-		showInGallery(g, gallery[3], "POKEY", Color.ORANGE, x, topY + t(11), characterVisible[3], nickVisible[3]);
-	}
-
-	private void showInGallery(Graphics2D g, Ghost ghost, String character, Color color, int x, int y,
-			boolean showCharacter, boolean showName) {
-		if (!ghost.visible) {
-			return;
-		}
-		rendering.drawGhost(g, ghost, game);
-		g.setColor(color);
-		g.setFont(rendering.assets.getScoreFont());
-		if (showCharacter) {
-			g.drawString("-" + character, t(6), y + 8);
-		}
-		if (showName) {
-			g.drawString("\"" + ghost.name + "\"", t(18), y + 8);
+		for (int i = 0; i < 4; ++i) {
+			GhostPortrait portrait = gallery[i];
+			if (portrait.ghost.visible) {
+				int y = topY + t(2 + 3 * i);
+				BufferedImage ghostTile = rendering.ghostKickingToDir(portrait.ghost, Direction.RIGHT).frame(0);
+				rendering.drawImage(g, ghostTile, x, y - 4, true);
+				g.setColor(portrait.color);
+				g.setFont(rendering.assets.getScoreFont());
+				if (portrait.characterVisible) {
+					g.drawString("-" + portrait.character, t(6), y + 8);
+				}
+				if (portrait.nicknameVisible) {
+					g.drawString("\"" + portrait.ghost.name + "\"", t(18), y + 8);
+				}
+			}
 		}
 	}
 
