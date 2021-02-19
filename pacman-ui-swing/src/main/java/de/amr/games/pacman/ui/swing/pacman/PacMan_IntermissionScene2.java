@@ -1,8 +1,6 @@
 package de.amr.games.pacman.ui.swing.pacman;
 
 import static de.amr.games.pacman.heaven.God.clock;
-import static de.amr.games.pacman.lib.Direction.LEFT;
-import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.model.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.world.PacManGameWorld.t;
 
@@ -38,61 +36,44 @@ public class PacMan_IntermissionScene2 extends AbstractGameScene {
 	}
 
 	private final PacMan_GameRendering rendering = PacManGameSwingUI.pacManGameRendering;
+	private final Spritesheet spritesheet = rendering.assets;
 	private final SoundManager sounds = PacManGameSwingUI.pacManGameSounds;
 
-	private final Spritesheet spritesheet;
-
 	private final int chaseTileY = 20;
-	private final Ghost blinky;
-	private final Pac pac;
-	private final BufferedImage nail, blinkyLookingUp, blinkyLookingRight, shred, stretchedDress[];
-	private final V2i nailPosition;
+	private final V2i nailPosition = new V2i(t(14), t(chaseTileY) - 6);
+	private final BufferedImage nail = spritesheet.spriteAt(8, 6);
+	private final BufferedImage blinkyLookingUp = spritesheet.spriteAt(8, 7);
+	private final BufferedImage blinkyLookingRight = spritesheet.spriteAt(9, 7);
+	private final BufferedImage shred = spritesheet.spriteAt(12, 6);
+	private final BufferedImage[] stretchedDress = new BufferedImage[] { //
+			spritesheet.spriteAt(9, 6), //
+			spritesheet.spriteAt(10, 6), //
+			spritesheet.spriteAt(11, 6) };
+
+	private Ghost blinky;
+	private Pac pac;
 
 	private Phase phase;
 
 	public PacMan_IntermissionScene2(Dimension size) {
 		super(size);
-		this.spritesheet = rendering.assets;
-
-		blinky = new Ghost(0, "Blinky", Direction.LEFT);
-		pac = new Pac("Pac-Man", Direction.LEFT);
-		nailPosition = new V2i(t(14), t(chaseTileY) - 6);
-
-		// Sprites
-		nail = spritesheet.spriteAt(8, 6);
-		shred = spritesheet.spriteAt(12, 6);
-		blinkyLookingUp = spritesheet.spriteAt(8, 7);
-		blinkyLookingRight = spritesheet.spriteAt(9, 7);
-		stretchedDress = new BufferedImage[] { //
-				spritesheet.spriteAt(9, 6), //
-				spritesheet.spriteAt(10, 6), //
-				spritesheet.spriteAt(11, 6) };
-	}
-
-	@Override
-	public Dimension sizeInPixel() {
-		return size;
 	}
 
 	@Override
 	public void start() {
-		log("Start of intermission scene %s at %d", this, clock.ticksTotal);
-
+		pac = new Pac("Pac-Man", Direction.LEFT);
 		pac.visible = true;
-		pac.dead = false;
-		pac.couldMove = true;
 		pac.position = new V2f(t(30), t(chaseTileY));
 		pac.speed = 1;
-		pac.dir = LEFT;
+		rendering.pacMunching(pac).forEach(Animation::restart);
 
+		blinky = new Ghost(0, "Blinky", Direction.LEFT);
 		blinky.visible = true;
 		blinky.state = HUNTING_PAC;
 		blinky.position = pac.position.sum(t(14), 0);
 		blinky.speed = 1;
-		blinky.dir = blinky.wishDir = LEFT;
-
-		rendering.pacMunching(pac).forEach(Animation::restart);
 		rendering.ghostKickingToDir(blinky, blinky.dir).restart();
+
 		sounds.play(PacManGameSound.INTERMISSION_2);
 
 		enter(Phase.APPROACHING_NAIL, Long.MAX_VALUE);
