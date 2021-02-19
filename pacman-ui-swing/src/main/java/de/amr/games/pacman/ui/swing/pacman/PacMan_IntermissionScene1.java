@@ -1,9 +1,6 @@
 package de.amr.games.pacman.ui.swing.pacman;
 
-import static de.amr.games.pacman.heaven.God.clock;
-import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
-import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.model.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.ui.swing.pacman.PacMan_IntermissionScene1.Phase.BLINKY_CHASING_PACMAN;
@@ -34,46 +31,41 @@ public class PacMan_IntermissionScene1 extends AbstractGameScene {
 		BLINKY_CHASING_PACMAN, BIGPACMAN_CHASING_BLINKY;
 	}
 
+	private static final int baselineY = t(20);
+
 	private final PacMan_GameRendering rendering = PacManGameSwingUI.pacManGameRendering;
 	private final SoundManager sounds = PacManGameSwingUI.pacManGameSounds;
 
-	private final int baselineY = t(20);
-	private final Ghost blinky;
-	private final Pac pac;
-	private final Animation<BufferedImage> bigPac;
-
+	private Ghost blinky;
+	private Pac pac;
+	private Animation<BufferedImage> bigPac;
 	private Phase phase;
 
 	public PacMan_IntermissionScene1(Dimension size) {
 		super(size);
-
-		pac = new Pac("Pac-Man", Direction.LEFT);
-		blinky = new Ghost(0, "Blinky", Direction.LEFT);
-		bigPac = Animation.of(rendering.assets.spritesAt(2, 1, 2, 2), rendering.assets.spritesAt(4, 1, 2, 2),
-				rendering.assets.spritesAt(6, 1, 2, 2));
-		bigPac.endless().frameDuration(4).run();
 	}
 
 	@Override
 	public void start() {
-		log("Start of intermission scene %s at tick %d", this, clock.ticksTotal);
 
+		pac = new Pac("Pac-Man", Direction.LEFT);
 		pac.visible = true;
-		pac.dead = false;
-		pac.couldMove = true;
 		pac.position = new V2f(t(30), baselineY);
 		pac.speed = 1f;
-		pac.dir = LEFT;
+		rendering.pacMunching(pac).forEach(Animation::restart);
 
+		bigPac = Animation.of(rendering.assets.spritesAt(2, 1, 2, 2), rendering.assets.spritesAt(4, 1, 2, 2),
+				rendering.assets.spritesAt(6, 1, 2, 2));
+		bigPac.frameDuration(4).endless().run();
+
+		blinky = new Ghost(0, "Blinky", Direction.LEFT);
 		blinky.visible = true;
 		blinky.state = HUNTING_PAC;
 		blinky.position = pac.position.sum(t(3), 0);
 		blinky.speed = pac.speed * 1.04f;
-		blinky.dir = blinky.wishDir = LEFT;
-
-		rendering.pacMunching(pac).forEach(Animation::restart);
 		rendering.ghostKickingToDir(blinky, blinky.dir).restart();
 		rendering.ghostFrightenedToDir(blinky, blinky.dir).restart();
+
 		sounds.loop(PacManGameSound.INTERMISSION_1, 2);
 
 		phase = BLINKY_CHASING_PACMAN;
