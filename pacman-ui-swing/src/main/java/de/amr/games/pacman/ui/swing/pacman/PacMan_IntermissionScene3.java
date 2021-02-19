@@ -61,11 +61,6 @@ public class PacMan_IntermissionScene3 extends AbstractGameScene {
 	}
 
 	@Override
-	public Dimension sizeInPixel() {
-		return size;
-	}
-
-	@Override
 	public void start() {
 		log("Start intermission scene %s at %d", this, clock.ticksTotal);
 
