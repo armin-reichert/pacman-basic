@@ -2,7 +2,6 @@ package de.amr.games.pacman.ui.swing.mspacman;
 
 import static de.amr.games.pacman.heaven.God.clock;
 import static de.amr.games.pacman.heaven.God.differsAtMost;
-import static de.amr.games.pacman.ui.swing.mspacman.MsPacMan_GameRendering.assets;
 import static de.amr.games.pacman.world.PacManGameWorld.t;
 
 import java.awt.Dimension;
@@ -44,13 +43,12 @@ public class MsPacMan_IntermissionScene3 extends AbstractGameScene {
 	private final MsPacMan_GameRendering rendering = PacManGameSwingUI.msPacManGameRendering;
 	private final SoundManager sounds = PacManGameSwingUI.msPacManGameSounds;
 
-	private boolean flapVisible;
-
 	private Pac pacMan, msPac;
-	private GameEntity bird = new GameEntity();
-	private GameEntity bag = new GameEntity();
+	private GameEntity bird;
+	private GameEntity bag;
 	private boolean bagDropped;
 	private boolean bagOpened;
+	private boolean flapVisible;
 	private int bounces;
 
 	private Phase phase;
@@ -65,20 +63,23 @@ public class MsPacMan_IntermissionScene3 extends AbstractGameScene {
 	}
 
 	@Override
-	public Dimension sizeInPixel() {
-		return size;
-	}
-
-	@Override
 	public void start() {
 		pacMan = new Pac("Pac-Man", Direction.RIGHT);
-		msPac = new Pac("Ms. Pac-Man", Direction.RIGHT);
-		flapVisible = true;
-		assets.flapAnim.restart();
 		pacMan.position = new V2f(t(3), GROUND_Y - 4);
+
+		msPac = new Pac("Ms. Pac-Man", Direction.RIGHT);
 		msPac.position = new V2f(t(5), GROUND_Y - 4);
+
+		bird = new GameEntity();
 		bird.position = new V2f(t(30), BIRD_Y);
+
+		bag = new GameEntity();
 		bag.position = bird.position.sum(-14, 3);
+		bagDropped = bagOpened = false;
+
+		flapVisible = true;
+		MsPacMan_GameRendering.assets.flapAnim.restart();
+
 		sounds.play(PacManGameSound.INTERMISSION_3);
 		enter(Phase.ANIMATION, Long.MAX_VALUE);
 	}
