@@ -4,8 +4,8 @@ import static de.amr.games.pacman.heaven.God.clock;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Logging.log;
-import static de.amr.games.pacman.ui.swing.pacman.PacManGameScenes.rendering;
-import static de.amr.games.pacman.ui.swing.pacman.PacManGameScenes.soundManager;
+import static de.amr.games.pacman.ui.swing.pacman.PacMan_Scenes.rendering;
+import static de.amr.games.pacman.ui.swing.pacman.PacMan_Scenes.soundManager;
 import static de.amr.games.pacman.world.PacManGameWorld.t;
 
 import java.awt.Dimension;
@@ -29,7 +29,7 @@ import de.amr.games.pacman.ui.swing.assets.Spritesheet;
  * 
  * @author Armin Reichert
  */
-public class IntermissionScene3 implements GameScene {
+public class PacMan_IntermissionScene3 implements GameScene {
 
 	enum Phase {
 		CHASING_PACMAN, RETURNING_HALF_NAKED;
@@ -47,7 +47,7 @@ public class IntermissionScene3 implements GameScene {
 
 	private Phase phase;
 
-	public IntermissionScene3(Dimension size, PacManGame game) {
+	public PacMan_IntermissionScene3(Dimension size, PacManGame game) {
 		this.size = size;
 		this.game = game;
 		this.spritesheet = rendering.assets;

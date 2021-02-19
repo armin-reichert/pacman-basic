@@ -24,10 +24,10 @@ import de.amr.games.pacman.ui.swing.GameScene;
  * 
  * @author Armin Reichert
  */
-public class IntroScene implements GameScene {
+public class PacMan_IntroScene implements GameScene {
 
 	private final Dimension size;
-	private final PacManGameRendering rendering;
+	private final PacMan_GameRendering rendering;
 	private final PacManGameModel game;
 
 	enum Phase {
@@ -62,7 +62,7 @@ public class IntroScene implements GameScene {
 		log("Phase %s entered at %d", phase, phase.start);
 	}
 
-	public IntroScene(Dimension size, PacManGameRendering rendering, PacManGameModel game) {
+	public PacMan_IntroScene(Dimension size, PacMan_GameRendering rendering, PacManGameModel game) {
 		this.size = size;
 		this.game = game;
 		this.rendering = rendering;

@@ -26,7 +26,7 @@ import de.amr.games.pacman.ui.swing.assets.Spritesheet;
  * 
  * @author Armin Reichert
  */
-public class MsPacManGameAssets extends Spritesheet {
+public class MsPacMan_Assets extends Spritesheet {
 
 	/** Sprite sheet order of directions. */
 	static final List<Direction> order = Arrays.asList(RIGHT, LEFT, UP, DOWN);
@@ -79,7 +79,7 @@ public class MsPacManGameAssets extends Spritesheet {
 	final BufferedImage blueBag;
 	final BufferedImage junior;
 
-	public MsPacManGameAssets() {
+	public MsPacMan_Assets() {
 		super(image("/mspacman/graphics/sprites.png"), 16);
 
 		scoreFont = font("/emulogic.ttf", 8);

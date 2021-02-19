@@ -6,17 +6,17 @@ import de.amr.games.pacman.model.PacManGameModel;
 import de.amr.games.pacman.sound.SoundManager;
 
 /**
- * Interface through which the game controller can access the views.
+ * Interface through which the game controller accesses the views.
  * 
  * @author Armin Reichert
  */
 public interface PacManGameUI {
 
-	void setGame(PacManGameModel game);
-
-	void reset();
+	void onGameChanged(PacManGameModel game);
 
 	void show();
+
+	void reset();
 
 	void update();
 

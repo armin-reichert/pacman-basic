@@ -16,23 +16,23 @@ import de.amr.games.pacman.ui.swing.common.PlayScene;
  * 
  * @author Armin Reichert
  */
-public class PacManGameScenes {
+public class PacMan_Scenes {
 
 	public static final SoundManager soundManager = new PacManGameSoundManager(PacManGameSounds::getPacManSoundURL);
-	public static final PacManGameRendering rendering = new PacManGameRendering();
+	public static final PacMan_GameRendering rendering = new PacMan_GameRendering();
 
-	private IntroScene introScene;
+	private PacMan_IntroScene introScene;
 	private PlayScene playScene;
 	private GameScene intermissionScene1;
 	private GameScene intermissionScene2;
 	private GameScene intermissionScene3;
 
 	public void createScenes(PacManGame game, Dimension unscaledSize) {
-		introScene = new IntroScene(unscaledSize, rendering, game);
+		introScene = new PacMan_IntroScene(unscaledSize, rendering, game);
 		playScene = new PlayScene(unscaledSize, rendering, game);
-		intermissionScene1 = new IntermissionScene1(unscaledSize, game);
-		intermissionScene2 = new IntermissionScene2(unscaledSize, game);
-		intermissionScene3 = new IntermissionScene3(unscaledSize, game);
+		intermissionScene1 = new PacMan_IntermissionScene1(unscaledSize, game);
+		intermissionScene2 = new PacMan_IntermissionScene2(unscaledSize, game);
+		intermissionScene3 = new PacMan_IntermissionScene3(unscaledSize, game);
 	}
 
 	public GameScene selectScene(PacManGameModel game) {

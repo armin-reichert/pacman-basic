@@ -15,7 +15,7 @@ public class PacManGameNoUI implements PacManGameUI {
 	public static final PacManGameUI IT = new PacManGameNoUI();
 
 	@Override
-	public void setGame(PacManGameModel game) {
+	public void onGameChanged(PacManGameModel game) {
 	}
 
 	@Override

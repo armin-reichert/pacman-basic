@@ -150,7 +150,7 @@ public class PacManGameController {
 		game = newGame;
 		autopilot = new Autopilot(game);
 		changeState(INTRO, null, this::enterIntroState);
-		views.forEach(view -> view.setGame(game));
+		views.forEach(view -> view.onGameChanged(game));
 	}
 
 	private void toggleGameVariant() {
@@ -215,7 +215,7 @@ public class PacManGameController {
 			view.mute(false);
 			view.sound().ifPresent(SoundManager::stopAll);
 			view.animation().ifPresent(animations -> animations.reset(game));
-			view.setGame(game);
+			view.onGameChanged(game);
 		});
 	}
 

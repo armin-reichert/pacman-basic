@@ -1,9 +1,9 @@
 package de.amr.games.pacman.ui.swing.mspacman;
 
 import static de.amr.games.pacman.heaven.God.clock;
-import static de.amr.games.pacman.ui.swing.mspacman.MsPacManGameRendering.assets;
-import static de.amr.games.pacman.ui.swing.mspacman.MsPacManGameScenes.rendering;
-import static de.amr.games.pacman.ui.swing.mspacman.MsPacManGameScenes.soundManager;
+import static de.amr.games.pacman.ui.swing.mspacman.MsPacMan_GameRendering.assets;
+import static de.amr.games.pacman.ui.swing.mspacman.MsPacMan_Scenes.rendering;
+import static de.amr.games.pacman.ui.swing.mspacman.MsPacMan_Scenes.soundManager;
 import static de.amr.games.pacman.world.PacManGameWorld.t;
 
 import java.awt.Dimension;
@@ -27,7 +27,7 @@ import de.amr.games.pacman.ui.swing.GameScene;
  * 
  * @author Armin Reichert
  */
-public class IntermissionScene2 implements GameScene {
+public class MsPacMan_IntermissionScene2 implements GameScene {
 
 	enum Phase {
 
@@ -54,7 +54,7 @@ public class IntermissionScene2 implements GameScene {
 		return size;
 	}
 
-	public IntermissionScene2(Dimension size, PacManGameModel game) {
+	public MsPacMan_IntermissionScene2(Dimension size, PacManGameModel game) {
 		this.size = size;
 		this.game = game;
 	}

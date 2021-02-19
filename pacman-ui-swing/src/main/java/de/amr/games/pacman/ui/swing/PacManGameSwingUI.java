@@ -35,8 +35,8 @@ import de.amr.games.pacman.ui.FlashMessage;
 import de.amr.games.pacman.ui.PacManGameAnimation;
 import de.amr.games.pacman.ui.PacManGameUI;
 import de.amr.games.pacman.ui.swing.assets.AssetLoader;
-import de.amr.games.pacman.ui.swing.mspacman.MsPacManGameScenes;
-import de.amr.games.pacman.ui.swing.pacman.PacManGameScenes;
+import de.amr.games.pacman.ui.swing.mspacman.MsPacMan_Scenes;
+import de.amr.games.pacman.ui.swing.pacman.PacMan_Scenes;
 import de.amr.games.pacman.ui.swing.rendering.DebugRendering;
 
 /**
@@ -58,8 +58,8 @@ public class PacManGameSwingUI implements PacManGameUI {
 	private final Canvas canvas;
 	private final Keyboard keyboard;
 
-	private final PacManGameScenes pacManGameScenes;
-	private final MsPacManGameScenes msPacManGameScenes;
+	private final PacMan_Scenes pacManGameScenes;
+	private final MsPacMan_Scenes msPacManGameScenes;
 
 	private PacManGameModel game;
 	private GameScene currentScene;
@@ -105,15 +105,15 @@ public class PacManGameSwingUI implements PacManGameUI {
 				e -> window.setTitle(String.format("Swing: Pac-Man / Ms. Pac-Man (%d fps)", clock.frequency)));
 		titleUpdateTimer.start();
 
-		pacManGameScenes = new PacManGameScenes();
-		msPacManGameScenes = new MsPacManGameScenes();
-		setGame(controller.getGame());
+		pacManGameScenes = new PacMan_Scenes();
+		msPacManGameScenes = new MsPacMan_Scenes();
+		onGameChanged(controller.getGame());
 
 		log("Pac-Man Swing UI created");
 	}
 
 	@Override
-	public void setGame(PacManGameModel newGame) {
+	public void onGameChanged(PacManGameModel newGame) {
 		if (newGame instanceof PacManGame) {
 			pacManGameScenes.createScenes((PacManGame) newGame, unscaledSize_px);
 		} else if (newGame instanceof MsPacManGame) {
@@ -194,9 +194,9 @@ public class PacManGameSwingUI implements PacManGameUI {
 	@Override
 	public Optional<PacManGameAnimation> animation() {
 		if (game instanceof MsPacManGame) {
-			return Optional.of(MsPacManGameScenes.rendering);
+			return Optional.of(MsPacMan_Scenes.rendering);
 		} else {
-			return Optional.of(PacManGameScenes.rendering);
+			return Optional.of(PacMan_Scenes.rendering);
 		}
 	}
 
@@ -207,9 +207,9 @@ public class PacManGameSwingUI implements PacManGameUI {
 			return Optional.empty();
 		}
 		if (game instanceof MsPacManGame) {
-			return Optional.ofNullable(MsPacManGameScenes.soundManager);
+			return Optional.ofNullable(MsPacMan_Scenes.soundManager);
 		} else {
-			return Optional.ofNullable(PacManGameScenes.soundManager);
+			return Optional.ofNullable(PacMan_Scenes.soundManager);
 		}
 	}
 

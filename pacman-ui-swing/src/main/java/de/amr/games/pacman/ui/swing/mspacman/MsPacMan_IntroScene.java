@@ -4,8 +4,8 @@ import static de.amr.games.pacman.heaven.God.clock;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.lib.Logging.log;
-import static de.amr.games.pacman.ui.swing.mspacman.MsPacManGameRendering.assets;
-import static de.amr.games.pacman.ui.swing.mspacman.MsPacManGameScenes.rendering;
+import static de.amr.games.pacman.ui.swing.mspacman.MsPacMan_GameRendering.assets;
+import static de.amr.games.pacman.ui.swing.mspacman.MsPacMan_Scenes.rendering;
 import static de.amr.games.pacman.world.PacManGameWorld.t;
 
 import java.awt.Color;
@@ -26,7 +26,7 @@ import de.amr.games.pacman.ui.swing.GameScene;
  * 
  * @author Armin Reichert
  */
-public class IntroScene implements GameScene {
+public class MsPacMan_IntroScene implements GameScene {
 
 	enum Phase {
 
@@ -60,7 +60,7 @@ public class IntroScene implements GameScene {
 		return size;
 	}
 
-	public IntroScene(Dimension size, PacManGameModel game) {
+	public MsPacMan_IntroScene(Dimension size, PacManGameModel game) {
 		this.game = game;
 		this.size = size;
 	}
