@@ -13,6 +13,7 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 
 import de.amr.games.pacman.lib.Animation;
+import de.amr.games.pacman.lib.CountdownTimer;
 import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.Ghost;
@@ -32,11 +33,7 @@ public class MsPacMan_IntroScene implements GameScene {
 
 		BEGIN, GHOSTS, MSPACMAN, END;
 
-		private long start;
-
-		private boolean at(long ticks) {
-			return clock.ticksTotal - start == ticks;
-		}
+		private final CountdownTimer timer = new CountdownTimer();
 	}
 
 	private final Dimension size;
@@ -67,7 +64,7 @@ public class MsPacMan_IntroScene implements GameScene {
 
 	private void enterPhase(Phase newPhase) {
 		phase = newPhase;
-		phase.start = clock.ticksTotal;
+		phase.timer.setDuration(Long.MAX_VALUE);
 	}
 
 	@Override
@@ -110,7 +107,7 @@ public class MsPacMan_IntroScene implements GameScene {
 		msPac.move();
 		switch (phase) {
 		case BEGIN:
-			if (phase.at(clock.sec(1))) {
+			if (phase.timer.running() == clock.sec(1)) {
 				currentGhost = ghosts[0];
 				enterPhase(Phase.GHOSTS);
 			}
@@ -135,20 +132,21 @@ public class MsPacMan_IntroScene implements GameScene {
 			}
 			break;
 		case END:
-			if (phase.at(clock.sec(5))) {
+			if (phase.timer.running() == clock.sec(5)) {
 				game.attractMode = true;
 			}
 			break;
 		default:
 			break;
 		}
+		phase.timer.run();
 	}
 
 	private boolean letCurrentGhostWalkToEndPosition() {
 		if (currentGhost == null) {
 			return false;
 		}
-		if (phase.at(1)) {
+		if (phase.timer.running() == 0) {
 			currentGhost.speed = 1;
 			rendering.ghostKicking(currentGhost).forEach(Animation::restart);
 		}
@@ -164,7 +162,7 @@ public class MsPacMan_IntroScene implements GameScene {
 	}
 
 	private boolean letMsPacManWalkToEndPosition() {
-		if (phase.at(1)) {
+		if (phase.timer.running() == 0) {
 			msPac.visible = true;
 			msPac.couldMove = true;
 			msPac.speed = 1;
