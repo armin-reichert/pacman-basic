@@ -4,8 +4,6 @@ import static de.amr.games.pacman.heaven.God.clock;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.model.GhostState.HUNTING_PAC;
-import static de.amr.games.pacman.ui.swing.pacman.PacMan_Scenes.rendering;
-import static de.amr.games.pacman.ui.swing.pacman.PacMan_Scenes.soundManager;
 import static de.amr.games.pacman.world.PacManGameWorld.t;
 
 import java.awt.Dimension;
@@ -19,17 +17,18 @@ import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.Ghost;
 import de.amr.games.pacman.model.Pac;
-import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.sound.PacManGameSound;
-import de.amr.games.pacman.ui.swing.GameScene;
+import de.amr.games.pacman.sound.SoundManager;
+import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
 import de.amr.games.pacman.ui.swing.assets.Spritesheet;
+import de.amr.games.pacman.ui.swing.common.AbstractGameScene;
 
 /**
  * Second intermission scene: Blinky pursues Pac but kicks a nail that tears his dress apart.
  * 
  * @author Armin Reichert
  */
-public class PacMan_IntermissionScene2 implements GameScene {
+public class PacMan_IntermissionScene2 extends AbstractGameScene {
 
 	enum Phase {
 
@@ -38,8 +37,9 @@ public class PacMan_IntermissionScene2 implements GameScene {
 		final CountdownTimer timer = new CountdownTimer();
 	}
 
-	private final Dimension size;
-	private final PacManGame game;
+	private final PacMan_GameRendering rendering = PacManGameSwingUI.pacManGameRendering;
+	private final SoundManager sounds = PacManGameSwingUI.pacManGameSounds;
+
 	private final Spritesheet spritesheet;
 
 	private final int chaseTileY = 20;
@@ -50,9 +50,8 @@ public class PacMan_IntermissionScene2 implements GameScene {
 
 	private Phase phase;
 
-	public PacMan_IntermissionScene2(Dimension size, PacManGame game) {
-		this.size = size;
-		this.game = game;
+	public PacMan_IntermissionScene2(Dimension size) {
+		super(size);
 		this.spritesheet = rendering.assets;
 
 		blinky = new Ghost(0, "Blinky", Direction.LEFT);
@@ -94,7 +93,7 @@ public class PacMan_IntermissionScene2 implements GameScene {
 
 		rendering.pacMunching(pac).forEach(Animation::restart);
 		rendering.ghostKickingToDir(blinky, blinky.dir).restart();
-		soundManager.play(PacManGameSound.INTERMISSION_2);
+		sounds.play(PacManGameSound.INTERMISSION_2);
 
 		enter(Phase.APPROACHING_NAIL, Long.MAX_VALUE);
 	}

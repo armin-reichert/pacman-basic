@@ -4,7 +4,6 @@ import static de.amr.games.pacman.model.GhostState.DEAD;
 import static de.amr.games.pacman.model.GhostState.ENTERING_HOUSE;
 import static de.amr.games.pacman.model.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.GhostState.LOCKED;
-import static de.amr.games.pacman.ui.swing.mspacman.MsPacMan_Scenes.rendering;
 import static de.amr.games.pacman.world.PacManGameWorld.t;
 
 import java.awt.Color;
@@ -27,7 +26,7 @@ import de.amr.games.pacman.ui.swing.rendering.GameRenderingUsingAnimatedSprites;
  * 
  * @author Armin Reichert
  */
-class MsPacMan_GameRendering extends GameRenderingUsingAnimatedSprites {
+public class MsPacMan_GameRendering extends GameRenderingUsingAnimatedSprites {
 
 	public static final MsPacMan_Assets assets = new MsPacMan_Assets();
 
@@ -190,13 +189,13 @@ class MsPacMan_GameRendering extends GameRenderingUsingAnimatedSprites {
 	public void drawMrPacMan(Graphics2D g, Pac pacMan) {
 		if (pacMan.visible) {
 			Animation<BufferedImage> munching = assets.pacManMunching.get(pacMan.dir);
-			rendering.drawImage(g, pacMan.speed > 0 ? munching.animate() : munching.frame(1), pacMan.position.x - 4,
+			drawImage(g, pacMan.speed > 0 ? munching.animate() : munching.frame(1), pacMan.position.x - 4,
 					pacMan.position.y - 4, true);
 		}
 	}
 
 	public void drawFlapAnimation(Graphics2D g, int x, int y, String sceneNumber, String sceneTitle) {
-		rendering.drawImage(g, assets.flapAnim.animate(), x, y, true);
+		drawImage(g, assets.flapAnim.animate(), x, y, true);
 		g.setColor(new Color(222, 222, 225));
 		g.setFont(assets.getScoreFont());
 		g.drawString(sceneNumber, x + 20, y + 30);

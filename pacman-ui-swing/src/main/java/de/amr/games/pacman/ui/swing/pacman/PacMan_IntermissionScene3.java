@@ -4,8 +4,6 @@ import static de.amr.games.pacman.heaven.God.clock;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Logging.log;
-import static de.amr.games.pacman.ui.swing.pacman.PacMan_Scenes.rendering;
-import static de.amr.games.pacman.ui.swing.pacman.PacMan_Scenes.soundManager;
 import static de.amr.games.pacman.world.PacManGameWorld.t;
 
 import java.awt.Dimension;
@@ -18,10 +16,11 @@ import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.model.Ghost;
 import de.amr.games.pacman.model.GhostState;
 import de.amr.games.pacman.model.Pac;
-import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.sound.PacManGameSound;
-import de.amr.games.pacman.ui.swing.GameScene;
+import de.amr.games.pacman.sound.SoundManager;
+import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
 import de.amr.games.pacman.ui.swing.assets.Spritesheet;
+import de.amr.games.pacman.ui.swing.common.AbstractGameScene;
 
 /**
  * Third intermission scene: Blinky in shred dress chases Pac-Man, comes back half-naked drawing
@@ -29,14 +28,14 @@ import de.amr.games.pacman.ui.swing.assets.Spritesheet;
  * 
  * @author Armin Reichert
  */
-public class PacMan_IntermissionScene3 implements GameScene {
+public class PacMan_IntermissionScene3 extends AbstractGameScene {
 
 	enum Phase {
 		CHASING_PACMAN, RETURNING_HALF_NAKED;
 	}
 
-	private final Dimension size;
-	private final PacManGame game;
+	private final PacMan_GameRendering rendering = PacManGameSwingUI.pacManGameRendering;
+	private final SoundManager sounds = PacManGameSwingUI.pacManGameSounds;
 
 	private final Spritesheet spritesheet;
 	private final Animation<BufferedImage> blinkyDamaged, blinkyHalfNaked;
@@ -47,9 +46,9 @@ public class PacMan_IntermissionScene3 implements GameScene {
 
 	private Phase phase;
 
-	public PacMan_IntermissionScene3(Dimension size, PacManGame game) {
-		this.size = size;
-		this.game = game;
+	public PacMan_IntermissionScene3(Dimension size) {
+		super(size);
+
 		this.spritesheet = rendering.assets;
 
 		pac = new Pac("Pac-Man", Direction.LEFT);
@@ -86,7 +85,7 @@ public class PacMan_IntermissionScene3 implements GameScene {
 
 		rendering.pacMunching(pac).forEach(Animation::restart);
 		blinkyDamaged.restart();
-		soundManager.loop(PacManGameSound.INTERMISSION_3, 2);
+		sounds.loop(PacManGameSound.INTERMISSION_3, 2);
 
 		phase = Phase.CHASING_PACMAN;
 	}

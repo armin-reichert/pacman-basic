@@ -2,8 +2,6 @@ package de.amr.games.pacman.ui.swing.mspacman;
 
 import static de.amr.games.pacman.heaven.God.clock;
 import static de.amr.games.pacman.ui.swing.mspacman.MsPacMan_GameRendering.assets;
-import static de.amr.games.pacman.ui.swing.mspacman.MsPacMan_Scenes.rendering;
-import static de.amr.games.pacman.ui.swing.mspacman.MsPacMan_Scenes.soundManager;
 import static de.amr.games.pacman.world.PacManGameWorld.t;
 
 import java.awt.Dimension;
@@ -15,9 +13,10 @@ import de.amr.games.pacman.lib.CountdownTimer;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.model.Pac;
-import de.amr.games.pacman.model.PacManGameModel;
 import de.amr.games.pacman.sound.PacManGameSound;
-import de.amr.games.pacman.ui.swing.GameScene;
+import de.amr.games.pacman.sound.SoundManager;
+import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
+import de.amr.games.pacman.ui.swing.common.AbstractGameScene;
 
 /**
  * Intermission scene 2: "The chase".
@@ -27,7 +26,7 @@ import de.amr.games.pacman.ui.swing.GameScene;
  * 
  * @author Armin Reichert
  */
-public class MsPacMan_IntermissionScene2 implements GameScene {
+public class MsPacMan_IntermissionScene2 extends AbstractGameScene {
 
 	enum Phase {
 
@@ -36,8 +35,8 @@ public class MsPacMan_IntermissionScene2 implements GameScene {
 		final CountdownTimer timer = new CountdownTimer();
 	}
 
-	private final Dimension size;
-	private final PacManGameModel game;
+	private final MsPacMan_GameRendering rendering = PacManGameSwingUI.msPacManGameRendering;
+	private final SoundManager sounds = PacManGameSwingUI.msPacManGameSounds;
 
 	private Phase phase;
 	private int upperY = t(12), lowerY = t(24), middleY = t(18);
@@ -49,14 +48,8 @@ public class MsPacMan_IntermissionScene2 implements GameScene {
 		phase.timer.setDuration(ticks);
 	}
 
-	@Override
-	public Dimension sizeInPixel() {
-		return size;
-	}
-
-	public MsPacMan_IntermissionScene2(Dimension size, PacManGameModel game) {
-		this.size = size;
-		this.game = game;
+	public MsPacMan_IntermissionScene2(Dimension size) {
+		super(size);
 	}
 
 	@Override
@@ -71,7 +64,7 @@ public class MsPacMan_IntermissionScene2 implements GameScene {
 		switch (phase) {
 		case ANIMATION:
 			if (phase.timer.running() == 0) {
-				soundManager.play(PacManGameSound.INTERMISSION_2);
+				sounds.play(PacManGameSound.INTERMISSION_2);
 				flapVisible = true;
 				assets.flapAnim.restart();
 			}

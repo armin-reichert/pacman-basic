@@ -26,7 +26,7 @@ import de.amr.games.pacman.ui.swing.rendering.GameRenderingUsingAnimatedSprites;
  * 
  * @author Armin Reichert
  */
-class PacMan_GameRendering extends GameRenderingUsingAnimatedSprites {
+public class PacMan_GameRendering extends GameRenderingUsingAnimatedSprites {
 
 	public final PacMan_Assets assets;
 

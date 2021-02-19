@@ -5,7 +5,6 @@ import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.ui.swing.mspacman.MsPacMan_GameRendering.assets;
-import static de.amr.games.pacman.ui.swing.mspacman.MsPacMan_Scenes.rendering;
 import static de.amr.games.pacman.world.PacManGameWorld.t;
 
 import java.awt.Color;
@@ -19,15 +18,15 @@ import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.Ghost;
 import de.amr.games.pacman.model.GhostState;
 import de.amr.games.pacman.model.Pac;
-import de.amr.games.pacman.model.PacManGameModel;
-import de.amr.games.pacman.ui.swing.GameScene;
+import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
+import de.amr.games.pacman.ui.swing.common.AbstractGameScene;
 
 /**
  * Intro scene of the Ms. Pac-Man game. The ghosts and Ms. Pac-Man are introduced one after another.
  * 
  * @author Armin Reichert
  */
-public class MsPacMan_IntroScene implements GameScene {
+public class MsPacMan_IntroScene extends AbstractGameScene {
 
 	enum Phase {
 
@@ -36,8 +35,7 @@ public class MsPacMan_IntroScene implements GameScene {
 		private final CountdownTimer timer = new CountdownTimer();
 	}
 
-	private final Dimension size;
-	private final PacManGameModel game;
+	private final MsPacMan_GameRendering rendering = PacManGameSwingUI.msPacManGameRendering;
 
 	private final V2i frameTopLeftTile = new V2i(6, 8);
 	private final int belowFrame = t(17);
@@ -52,14 +50,8 @@ public class MsPacMan_IntroScene implements GameScene {
 	private Ghost currentGhost;
 	private boolean presentingMsPac;
 
-	@Override
-	public Dimension sizeInPixel() {
-		return size;
-	}
-
-	public MsPacMan_IntroScene(Dimension size, PacManGameModel game) {
-		this.game = game;
-		this.size = size;
+	public MsPacMan_IntroScene(Dimension size) {
+		super(size);
 	}
 
 	private void enterPhase(Phase newPhase) {

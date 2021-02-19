@@ -2,8 +2,6 @@ package de.amr.games.pacman.ui.swing.mspacman;
 
 import static de.amr.games.pacman.heaven.God.clock;
 import static de.amr.games.pacman.ui.swing.mspacman.MsPacMan_GameRendering.assets;
-import static de.amr.games.pacman.ui.swing.mspacman.MsPacMan_Scenes.rendering;
-import static de.amr.games.pacman.ui.swing.mspacman.MsPacMan_Scenes.soundManager;
 import static de.amr.games.pacman.world.PacManGameWorld.t;
 
 import java.awt.Dimension;
@@ -18,9 +16,10 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.model.Ghost;
 import de.amr.games.pacman.model.Pac;
-import de.amr.games.pacman.model.PacManGameModel;
 import de.amr.games.pacman.sound.PacManGameSound;
-import de.amr.games.pacman.ui.swing.GameScene;
+import de.amr.games.pacman.sound.SoundManager;
+import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
+import de.amr.games.pacman.ui.swing.common.AbstractGameScene;
 
 /**
  * Intermission scene 1: "They meet".
@@ -32,7 +31,7 @@ import de.amr.games.pacman.ui.swing.GameScene;
  * 
  * @author Armin Reichert
  */
-public class MsPacMan_IntermissionScene1 implements GameScene {
+public class MsPacMan_IntermissionScene1 extends AbstractGameScene {
 
 	enum Phase {
 
@@ -41,8 +40,8 @@ public class MsPacMan_IntermissionScene1 implements GameScene {
 		final CountdownTimer timer = new CountdownTimer();
 	}
 
-	private final Dimension size;
-	private final PacManGameModel game;
+	private final MsPacMan_GameRendering rendering = PacManGameSwingUI.msPacManGameRendering;
+	private final SoundManager sounds = PacManGameSwingUI.msPacManGameSounds;
 
 	private Phase phase;
 
@@ -59,9 +58,8 @@ public class MsPacMan_IntermissionScene1 implements GameScene {
 		phase.timer.setDuration(ticks);
 	}
 
-	public MsPacMan_IntermissionScene1(Dimension size, PacManGameModel game) {
-		this.size = size;
-		this.game = game;
+	public MsPacMan_IntermissionScene1(Dimension size) {
+		super(size);
 
 		assets.setOrigin(456, 0);
 		heart = assets.spriteAt(2, 10);
@@ -107,7 +105,7 @@ public class MsPacMan_IntermissionScene1 implements GameScene {
 
 		rendering.ghostsKicking(Stream.of(inky, pinky)).forEach(Animation::restart);
 		assets.flapAnim.restart();
-		soundManager.loop(PacManGameSound.INTERMISSION_1, 1);
+		sounds.loop(PacManGameSound.INTERMISSION_1, 1);
 
 		heartVisible = false;
 		ghostsMet = false;

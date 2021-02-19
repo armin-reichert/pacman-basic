@@ -16,19 +16,16 @@ import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.model.Ghost;
 import de.amr.games.pacman.model.GhostState;
 import de.amr.games.pacman.model.Pac;
-import de.amr.games.pacman.model.PacManGameModel;
 import de.amr.games.pacman.ui.swing.GameScene;
+import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
+import de.amr.games.pacman.ui.swing.common.AbstractGameScene;
 
 /**
  * Intro presenting the ghosts and showing the chasing animations.
  * 
  * @author Armin Reichert
  */
-public class PacMan_IntroScene implements GameScene {
-
-	private final Dimension size;
-	private final PacMan_GameRendering rendering;
-	private final PacManGameModel game;
+public class PacMan_IntroScene extends AbstractGameScene implements GameScene {
 
 	enum Phase {
 
@@ -41,19 +38,17 @@ public class PacMan_IntroScene implements GameScene {
 		}
 	}
 
+	private final PacMan_GameRendering rendering = PacManGameSwingUI.pacManGameRendering;
+
 	private final Animation<Boolean> blinking = Animation.pulse().frameDuration(20).restart();
-
 	private final int topY = t(6);
-
 	private Ghost[] gallery;
 	private int currentGhost;
 	private boolean[] characterVisible;
 	private boolean[] nickVisible;
 	private long ghostKilledTime;
-
 	private Pac pac;
 	private Ghost[] ghosts;
-
 	private Phase phase;
 
 	private void enterPhase(Phase newPhase) {
@@ -62,10 +57,8 @@ public class PacMan_IntroScene implements GameScene {
 		log("Phase %s entered at %d", phase, phase.start);
 	}
 
-	public PacMan_IntroScene(Dimension size, PacMan_GameRendering rendering, PacManGameModel game) {
-		this.size = size;
-		this.game = game;
-		this.rendering = rendering;
+	public PacMan_IntroScene(Dimension size) {
+		super(size);
 	}
 
 	@Override

@@ -5,8 +5,6 @@ import static de.amr.games.pacman.world.PacManGameWorld.t;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 
-import de.amr.games.pacman.model.PacManGameModel;
-import de.amr.games.pacman.ui.swing.GameScene;
 import de.amr.games.pacman.ui.swing.rendering.DebugRendering;
 import de.amr.games.pacman.ui.swing.rendering.GameRendering;
 
@@ -15,25 +13,13 @@ import de.amr.games.pacman.ui.swing.rendering.GameRendering;
  * 
  * @author Armin Reichert
  */
-public class PlayScene implements GameScene {
+public class PlayScene extends AbstractGameScene {
 
-	private final Dimension size;
 	private final GameRendering rendering;
-	private final PacManGameModel game;
 
-	public PlayScene(Dimension size, GameRendering rendering, PacManGameModel game) {
-		this.size = size;
+	public PlayScene(Dimension size, GameRendering rendering) {
+		super(size);
 		this.rendering = rendering;
-		this.game = game;
-	}
-
-	@Override
-	public Dimension sizeInPixel() {
-		return size;
-	}
-
-	@Override
-	public void update() {
 	}
 
 	@Override

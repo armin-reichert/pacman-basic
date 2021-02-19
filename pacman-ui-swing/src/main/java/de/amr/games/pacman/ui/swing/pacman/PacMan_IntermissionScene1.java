@@ -7,8 +7,6 @@ import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.model.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.ui.swing.pacman.PacMan_IntermissionScene1.Phase.BLINKY_CHASING_PACMAN;
-import static de.amr.games.pacman.ui.swing.pacman.PacMan_Scenes.rendering;
-import static de.amr.games.pacman.ui.swing.pacman.PacMan_Scenes.soundManager;
 import static de.amr.games.pacman.world.PacManGameWorld.t;
 
 import java.awt.Dimension;
@@ -20,23 +18,24 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.model.Ghost;
 import de.amr.games.pacman.model.Pac;
-import de.amr.games.pacman.model.PacManGame;
 import de.amr.games.pacman.sound.PacManGameSound;
-import de.amr.games.pacman.ui.swing.GameScene;
+import de.amr.games.pacman.sound.SoundManager;
+import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
+import de.amr.games.pacman.ui.swing.common.AbstractGameScene;
 
 /**
  * First intermission scene: Blinky chases Pac-Man and is then chased by a huge Pac-Man.
  * 
  * @author Armin Reichert
  */
-public class PacMan_IntermissionScene1 implements GameScene {
+public class PacMan_IntermissionScene1 extends AbstractGameScene {
 
 	enum Phase {
 		BLINKY_CHASING_PACMAN, BIGPACMAN_CHASING_BLINKY;
 	}
 
-	private final Dimension size;
-	private final PacManGame game;
+	private final PacMan_GameRendering rendering = PacManGameSwingUI.pacManGameRendering;
+	private final SoundManager sounds = PacManGameSwingUI.pacManGameSounds;
 
 	private final int baselineY = t(20);
 	private final Ghost blinky;
@@ -45,20 +44,14 @@ public class PacMan_IntermissionScene1 implements GameScene {
 
 	private Phase phase;
 
-	public PacMan_IntermissionScene1(Dimension size, PacManGame game) {
-		this.size = size;
-		this.game = game;
+	public PacMan_IntermissionScene1(Dimension size) {
+		super(size);
 
 		pac = new Pac("Pac-Man", Direction.LEFT);
 		blinky = new Ghost(0, "Blinky", Direction.LEFT);
 		bigPac = Animation.of(rendering.assets.spritesAt(2, 1, 2, 2), rendering.assets.spritesAt(4, 1, 2, 2),
 				rendering.assets.spritesAt(6, 1, 2, 2));
 		bigPac.endless().frameDuration(4).run();
-	}
-
-	@Override
-	public Dimension sizeInPixel() {
-		return size;
 	}
 
 	@Override
@@ -81,7 +74,7 @@ public class PacMan_IntermissionScene1 implements GameScene {
 		rendering.pacMunching(pac).forEach(Animation::restart);
 		rendering.ghostKickingToDir(blinky, blinky.dir).restart();
 		rendering.ghostFrightenedToDir(blinky, blinky.dir).restart();
-		soundManager.loop(PacManGameSound.INTERMISSION_1, 2);
+		sounds.loop(PacManGameSound.INTERMISSION_1, 2);
 
 		phase = BLINKY_CHASING_PACMAN;
 	}

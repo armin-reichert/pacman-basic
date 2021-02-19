@@ -3,8 +3,6 @@ package de.amr.games.pacman.ui.swing.mspacman;
 import static de.amr.games.pacman.heaven.God.clock;
 import static de.amr.games.pacman.heaven.God.differsAtMost;
 import static de.amr.games.pacman.ui.swing.mspacman.MsPacMan_GameRendering.assets;
-import static de.amr.games.pacman.ui.swing.mspacman.MsPacMan_Scenes.rendering;
-import static de.amr.games.pacman.ui.swing.mspacman.MsPacMan_Scenes.soundManager;
 import static de.amr.games.pacman.world.PacManGameWorld.t;
 
 import java.awt.Dimension;
@@ -15,9 +13,10 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.model.GameEntity;
 import de.amr.games.pacman.model.Pac;
-import de.amr.games.pacman.model.PacManGameModel;
 import de.amr.games.pacman.sound.PacManGameSound;
-import de.amr.games.pacman.ui.swing.GameScene;
+import de.amr.games.pacman.sound.SoundManager;
+import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
+import de.amr.games.pacman.ui.swing.common.AbstractGameScene;
 
 /**
  * Intermission scene 3: "Junior".
@@ -29,7 +28,7 @@ import de.amr.games.pacman.ui.swing.GameScene;
  * 
  * @author Armin Reichert
  */
-public class MsPacMan_IntermissionScene3 implements GameScene {
+public class MsPacMan_IntermissionScene3 extends AbstractGameScene {
 
 	enum Phase {
 
@@ -38,12 +37,12 @@ public class MsPacMan_IntermissionScene3 implements GameScene {
 		final CountdownTimer timer = new CountdownTimer();
 	}
 
-	private final Dimension size;
-	private final PacManGameModel game;
-
 	private static final int BIRD_Y = t(12), GROUND_Y = t(24);
 	private static final float BIRD_SPEED = 1.5f;
 	private static final V2f GRAVITY = new V2f(0, 0.04f);
+
+	private final MsPacMan_GameRendering rendering = PacManGameSwingUI.msPacManGameRendering;
+	private final SoundManager sounds = PacManGameSwingUI.msPacManGameSounds;
 
 	private boolean flapVisible;
 
@@ -56,9 +55,8 @@ public class MsPacMan_IntermissionScene3 implements GameScene {
 
 	private Phase phase;
 
-	public MsPacMan_IntermissionScene3(Dimension size, PacManGameModel game) {
-		this.size = size;
-		this.game = game;
+	public MsPacMan_IntermissionScene3(Dimension size) {
+		super(size);
 	}
 
 	private void enter(Phase newPhase, long ticks) {
@@ -81,7 +79,7 @@ public class MsPacMan_IntermissionScene3 implements GameScene {
 		msPac.position = new V2f(t(5), GROUND_Y - 4);
 		bird.position = new V2f(t(30), BIRD_Y);
 		bag.position = bird.position.sum(-14, 3);
-		soundManager.play(PacManGameSound.INTERMISSION_3);
+		sounds.play(PacManGameSound.INTERMISSION_3);
 		enter(Phase.ANIMATION, Long.MAX_VALUE);
 	}
 
