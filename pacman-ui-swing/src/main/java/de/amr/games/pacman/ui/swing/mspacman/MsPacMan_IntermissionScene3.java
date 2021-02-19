@@ -48,8 +48,8 @@ public class MsPacMan_IntermissionScene3 extends AbstractGameScene {
 	private GameEntity bag;
 	private boolean bagDropped;
 	private boolean bagOpened;
+	private int bagBounces;
 	private boolean flapVisible;
-	private int bounces;
 
 	private Phase phase;
 
@@ -76,6 +76,7 @@ public class MsPacMan_IntermissionScene3 extends AbstractGameScene {
 		bag = new GameEntity();
 		bag.position = bird.position.sum(-14, 3);
 		bagDropped = bagOpened = false;
+		bagBounces = 0;
 
 		flapVisible = true;
 		MsPacMan_GameRendering.assets.flapAnim.restart();
@@ -108,9 +109,9 @@ public class MsPacMan_IntermissionScene3 extends AbstractGameScene {
 			}
 			// ground contact?
 			if (!bagOpened && bagDropped && bag.position.y > GROUND_Y) {
-				++bounces;
-				if (bounces < 3) {
-					bag.velocity = new V2f(-0.2f, -0.9f / bounces);
+				++bagBounces;
+				if (bagBounces < 3) {
+					bag.velocity = new V2f(-0.2f, -0.9f / bagBounces);
 					bag.position = new V2f(bag.position.x, GROUND_Y);
 				} else {
 					bag.velocity = V2f.NULL;
