@@ -124,7 +124,7 @@ public class PacMan_IntermissionScene2 extends AbstractGameScene {
 			break;
 		case LOOKING_RIGHT:
 			if (phase.timer.expired()) {
-				game.state.duration(0); // signal end of this scene
+				game.state.timer.setDuration(0); // signal end of this scene
 			}
 			break;
 		default:

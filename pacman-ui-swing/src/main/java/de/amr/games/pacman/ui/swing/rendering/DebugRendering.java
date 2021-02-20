@@ -14,8 +14,8 @@ import java.awt.Stroke;
 
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.model.PacManGameModel;
 import de.amr.games.pacman.model.Ghost;
+import de.amr.games.pacman.model.PacManGameModel;
 
 public class DebugRendering {
 
@@ -23,7 +23,7 @@ public class DebugRendering {
 
 	public static void drawPlaySceneDebugInfo(Graphics2D g, PacManGameModel game) {
 		final Color[] GHOST_COLORS = { Color.RED, Color.PINK, Color.CYAN, Color.ORANGE };
-		long remaining = game.state.remaining();
+		long remaining = game.state.timer.remaining();
 		String ticksText = remaining == Long.MAX_VALUE ? "forever" : remaining + " ticks remaining";
 		String stateText = String.format("%s (%s)", game.stateDescription(), ticksText);
 		g.setColor(Color.WHITE);

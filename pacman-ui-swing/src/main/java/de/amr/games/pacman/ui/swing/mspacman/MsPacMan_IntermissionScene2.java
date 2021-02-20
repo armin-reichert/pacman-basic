@@ -106,7 +106,7 @@ public class MsPacMan_IntermissionScene2 extends AbstractGameScene {
 				msPac.speed = pac.speed = 4;
 			}
 			if (phase.timer.running() == clock.sec(24)) {
-				game.state.duration(0);
+				game.state.timer.setDuration(0);
 			}
 			break;
 		default:

@@ -197,7 +197,7 @@ public class PacManGameController {
 	// INTRO
 
 	private void enterIntroState() {
-		game.state.duration(Long.MAX_VALUE);
+		game.state.timer.setDuration(Long.MAX_VALUE);
 		game.reset();
 		autopilotOn = false;
 		previousState = null;
@@ -234,7 +234,7 @@ public class PacManGameController {
 			return changeState(INTERMISSION, null, this::enterIntermissionState);
 		}
 
-		return game.state.run();
+		return game.state.tick();
 	}
 
 	private void exitIntroState() {
@@ -244,7 +244,7 @@ public class PacManGameController {
 
 	private void enterReadyState() {
 		boolean playReadyMusic = !game.started && !game.attractMode;
-		game.state.duration(clock.sec(playReadyMusic ? 4.5 : 2));
+		game.state.timer.setDuration(clock.sec(playReadyMusic ? 4.5 : 2));
 		game.resetGuys();
 		animations().forEach(animations -> animations.reset(game));
 		views().forEach(view -> view.mute(game.attractMode));
@@ -256,19 +256,19 @@ public class PacManGameController {
 	}
 
 	private PacManGameState runReadyState() {
-		if (game.state.hasExpired()) {
+		if (game.state.timer.expired()) {
 			return changeState(PacManGameState.HUNTING, this::exitReadyState, this::enterHuntingState);
 		}
-		if (game.state.ticksLeftEquals(clock.sec(1.5))) {
+		if (game.state.timer.remaining() == clock.sec(1.5)) {
 			for (Ghost ghost : game.ghosts) {
 				ghost.visible = true;
 			}
 			game.pac.visible = true;
 		}
-		if (game.state.ticksLeftEquals(clock.sec(1.0))) {
+		if (game.state.timer.remaining() == clock.sec(1.0)) {
 			enableGhostKickingAnimation(true);
 		}
-		return game.state.run();
+		return game.state.tick();
 	}
 
 	private void exitReadyState() {
@@ -319,7 +319,7 @@ public class PacManGameController {
 
 	private void startHuntingPhase(int phase) {
 		game.huntingPhase = (byte) phase;
-		game.state.duration(huntingPhaseDuration(game.huntingPhase));
+		game.state.timer.setDuration(huntingPhaseDuration(game.huntingPhase));
 		if (game.inScatteringPhase()) {
 			sounds().forEach(sound -> { // TODO not sure about when which siren should play
 				if (game.huntingPhase >= 2) {
@@ -367,7 +367,7 @@ public class PacManGameController {
 		}
 
 		// Hunting phase complete?
-		if (game.state.hasExpired()) {
+		if (game.state.timer.expired()) {
 			game.ghosts().filter(ghost -> ghost.is(HUNTING_PAC)).forEach(Ghost::forceTurningBack);
 			startHuntingPhase(++game.huntingPhase);
 		}
@@ -435,7 +435,7 @@ public class PacManGameController {
 
 		// hunting state timer is suspended if Pac has power
 		if (game.pac.powerTicksLeft == 0) {
-			game.state.run();
+			game.state.tick();
 		}
 
 		return game.state;
@@ -444,7 +444,7 @@ public class PacManGameController {
 	// PACMAN_DYING
 
 	private void enterPacManDyingState() {
-		game.state.duration(clock.sec(5));
+		game.state.timer.setDuration(clock.sec(5));
 		game.pac.speed = 0;
 		game.bonus.edibleTicksLeft = game.bonus.eatenTicksLeft = 0;
 		enableGhostKickingAnimation(false);
@@ -452,7 +452,7 @@ public class PacManGameController {
 	}
 
 	private PacManGameState runPacManDyingState() {
-		if (game.state.hasExpired()) {
+		if (game.state.timer.expired()) {
 			if (game.attractMode) {
 				return changeState(INTRO, this::exitPacManDyingState, this::enterIntroState);
 			} else if (game.lives > 1) {
@@ -462,12 +462,12 @@ public class PacManGameController {
 				return changeState(GAME_OVER, this::exitPacManDyingState, this::enterGameOverState);
 			}
 		}
-		if (game.state.ticksRun() == clock.sec(2)) {
+		if (game.state.timer.running() == clock.sec(2)) {
 			game.ghosts().forEach(ghost -> ghost.visible = false);
 			animations().forEach(animations -> animations.pacDying().restart());
 			sounds().forEach(sm -> sm.play(PacManGameSound.PACMAN_DEATH));
 		}
-		return game.state.run();
+		return game.state.tick();
 	}
 
 	private void exitPacManDyingState() {
@@ -477,7 +477,7 @@ public class PacManGameController {
 	// GHOST_DYING
 
 	private void enterGhostDyingState() {
-		game.state.duration(clock.sec(1));
+		game.state.timer.setDuration(clock.sec(1));
 		game.pac.visible = false;
 		sounds().forEach(sm -> sm.play(PacManGameSound.GHOST_EATEN));
 		animations().forEach(animations -> {
@@ -486,7 +486,7 @@ public class PacManGameController {
 	}
 
 	private PacManGameState runGhostDyingState() {
-		if (game.state.hasExpired()) {
+		if (game.state.timer.expired()) {
 			log("Resume state '%s' after ghost died", previousState);
 			return changeState(previousState, this::exitGhostDyingState, () -> {
 			});
@@ -494,7 +494,7 @@ public class PacManGameController {
 		steerPac();
 		game.ghosts().filter(ghost -> ghost.is(DEAD) && ghost.bounty == 0 || ghost.is(GhostState.ENTERING_HOUSE))
 				.forEach(ghost -> ghost.update(game.level));
-		return game.state.run();
+		return game.state.tick();
 	}
 
 	private void exitGhostDyingState() {
@@ -510,28 +510,28 @@ public class PacManGameController {
 	// CHANGING_LEVEL
 
 	private void enterChangingLevelState() {
-		game.state.duration(clock.sec(game.level.numFlashes + 3));
+		game.state.timer.setDuration(clock.sec(game.level.numFlashes + 3));
 		game.bonus.edibleTicksLeft = game.bonus.eatenTicksLeft = 0;
 		game.pac.speed = 0;
 		sounds().forEach(SoundManager::stopAll);
 	}
 
 	private PacManGameState runChangingLevelState() {
-		if (game.state.hasExpired()) {
+		if (game.state.timer.expired()) {
 			if (Arrays.asList(2, 5, 9, 13, 17).contains(game.currentLevelNumber)) {
 				game.intermissionNumber = intermissionNumber(game.currentLevelNumber);
 				return changeState(INTERMISSION, this::exitChangingLevelState, this::enterIntermissionState);
 			}
 			return changeState(READY, this::exitChangingLevelState, this::enterReadyState);
 		}
-		if (game.state.ticksRun() == clock.sec(2)) {
+		if (game.state.timer.running() == clock.sec(2)) {
 			game.ghosts().forEach(ghost -> ghost.visible = false);
 		}
-		if (game.state.ticksRun() == clock.sec(3)) {
+		if (game.state.timer.running() == clock.sec(3)) {
 			animations().forEach(
 					animations -> animations.mazeFlashing(game.level.mazeNumber).repetitions(game.level.numFlashes).restart());
 		}
-		return game.state.run();
+		return game.state.tick();
 	}
 
 	private void exitChangingLevelState() {
@@ -545,7 +545,7 @@ public class PacManGameController {
 	// GAME_OVER
 
 	private void enterGameOverState() {
-		game.state.duration(clock.sec(10));
+		game.state.timer.setDuration(clock.sec(10));
 		game.ghosts().forEach(ghost -> ghost.speed = 0);
 		game.pac.speed = 0;
 		game.saveHighscore();
@@ -553,10 +553,10 @@ public class PacManGameController {
 	}
 
 	private PacManGameState runGameOverState() {
-		if (game.state.hasExpired() || keyPressed("space")) {
+		if (game.state.timer.expired() || keyPressed("space")) {
 			return changeState(INTRO, null, this::enterIntroState);
 		}
-		return game.state.run();
+		return game.state.tick();
 	}
 
 	// INTERMISSION
@@ -577,15 +577,15 @@ public class PacManGameController {
 	}
 
 	private void enterIntermissionState() {
-		game.state.duration(Long.MAX_VALUE);
+		game.state.timer.setDuration(Long.MAX_VALUE);
 		log("Starting intermission #%d", game.intermissionNumber);
 	}
 
 	private PacManGameState runIntermissionState() {
-		if (game.state.hasExpired()) {
+		if (game.state.timer.expired()) {
 			return changeState(READY, this::exitIntermissionState, this::enterReadyState);
 		}
-		return game.state.run();
+		return game.state.tick();
 	}
 
 	private void exitIntermissionState() {
@@ -607,7 +607,7 @@ public class PacManGameController {
 		if (onEntry != null) {
 			onEntry.run();
 		}
-		log("Entered state '%s' for %s", game.stateDescription(), ticksDescription(game.state.duration()));
+		log("Entered state '%s' for %s", game.stateDescription(), ticksDescription(game.state.timer.getDuration()));
 		return game.state;
 	}
 

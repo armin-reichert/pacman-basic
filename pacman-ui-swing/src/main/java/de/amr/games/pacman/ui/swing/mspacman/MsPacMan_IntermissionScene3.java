@@ -125,7 +125,7 @@ public class MsPacMan_IntermissionScene3 extends AbstractGameScene {
 		case READY_TO_PLAY:
 			bird.move();
 			if (phase.timer.expired()) {
-				game.state.duration(0);
+				game.state.timer.setDuration(0); // expires game state
 			}
 			break;
 		default:
