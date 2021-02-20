@@ -26,7 +26,7 @@ import de.amr.games.pacman.ui.PacManGameAnimation;
  */
 public abstract class DefaultGameRendering implements SpriteBasedSceneRendering, PacManGameAnimation {
 
-	public static boolean foodAnimationOn = false; // experimental
+	public boolean foodAnimationOn;
 
 	protected void drawGuy(Graphics2D g, Creature guy, GameModel game) {
 		if (guy.visible) {
@@ -74,7 +74,6 @@ public abstract class DefaultGameRendering implements SpriteBasedSceneRendering,
 	@Override
 	public void drawMaze(Graphics2D g, GameModel game, int x, int y) {
 		if (mazeFlashing(game.level.mazeNumber).hasStarted()) {
-			// TODO avoid this cats
 			BufferedImage image = (BufferedImage) mazeFlashing(game.level.mazeNumber).animate();
 			g.drawImage(image, x, y, null);
 			return;
