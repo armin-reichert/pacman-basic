@@ -62,10 +62,6 @@ import de.amr.games.pacman.ui.swing.rendering.DebugRendering;
  */
 public class PacManGameSwingUI implements PacManGameUI {
 
-	static final int KEY_SLOW_MODE = KeyEvent.VK_S;
-	static final int KEY_FAST_MODE = KeyEvent.VK_F;
-	static final int KEY_DEBUG_MODE = KeyEvent.VK_D;
-
 	public static final PacMan_GameRendering pacManGameRendering = new PacMan_GameRendering();
 	public static final MsPacMan_GameRendering msPacManGameRendering = new MsPacMan_GameRendering();
 
@@ -268,21 +264,21 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 	private void handleGlobalKeys(KeyEvent e) {
 		switch (e.getKeyCode()) {
-		case KEY_SLOW_MODE: {
+		case KeyEvent.VK_S: {
 			clock.targetFreq = clock.targetFreq != 30 ? 30 : 60;
 			String text = clock.targetFreq == 60 ? "Normal speed" : "Slow speed";
 			showFlashMessage(text, clock.sec(1.5));
 			log("Clock frequency changed to %d Hz", clock.targetFreq);
 			break;
 		}
-		case KEY_FAST_MODE: {
+		case KeyEvent.VK_F: {
 			clock.targetFreq = clock.targetFreq != 120 ? 120 : 60;
 			String text = clock.targetFreq == 60 ? "Normal speed" : "Fast speed";
 			showFlashMessage(text, clock.sec(1.5));
 			log("Clock frequency changed to %d Hz", clock.targetFreq);
 			break;
 		}
-		case KEY_DEBUG_MODE:
+		case KeyEvent.VK_D:
 			DebugRendering.on = !DebugRendering.on;
 			log("UI debug mode is %s", DebugRendering.on ? "on" : "off");
 			break;
