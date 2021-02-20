@@ -63,8 +63,8 @@ import de.amr.games.pacman.ui.PacManGameUI;
  */
 public class PacManGameController {
 
-	private final PacManGame pacManGame = new PacManGame();
-	private final MsPacManGame msPacManGame = new MsPacManGame();
+	private final PacManGameModel pacManGame = new PacManGame();
+	private final PacManGameModel msPacManGame = new MsPacManGame();
 
 	private PacManGameModel game;
 
