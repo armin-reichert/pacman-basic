@@ -22,4 +22,8 @@ public class GameEntity {
 	public void setPosition(double x, double y) {
 		position = new V2f((float) x, (float) y);
 	}
+
+	public void setPosition(V2f v) {
+		position = v;
+	}
 }

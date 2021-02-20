@@ -11,7 +11,6 @@ import java.awt.image.BufferedImage;
 import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.CountdownTimer;
 import de.amr.games.pacman.lib.Direction;
-import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.model.Pac;
 import de.amr.games.pacman.sound.PacManGameSound;
 import de.amr.games.pacman.sound.SoundManager;
@@ -73,36 +72,36 @@ public class MsPacMan_IntermissionScene2 extends AbstractGameScene {
 			}
 			if (phase.timer.running() == clock.sec(4.5)) {
 				pac.visible = true;
-				pac.position = new V2f(-t(2), upperY);
+				pac.setPosition(-t(2), upperY);
 				msPac.visible = true;
-				msPac.position = new V2f(-t(8), upperY);
+				msPac.setPosition(-t(8), upperY);
 				pac.dir = msPac.dir = Direction.RIGHT;
 				pac.speed = msPac.speed = 2;
 				assets.pacManMunching.values().forEach(Animation::restart);
 				rendering.pacMunching(msPac).forEach(Animation::restart);
 			}
 			if (phase.timer.running() == clock.sec(9)) {
-				msPac.position = new V2f(t(30), lowerY);
+				msPac.setPosition(t(30), lowerY);
 				msPac.visible = true;
-				pac.position = new V2f(t(36), lowerY);
+				pac.setPosition(t(36), lowerY);
 				msPac.dir = pac.dir = Direction.LEFT;
 				msPac.speed = pac.speed = 2;
 			}
 			if (phase.timer.running() == clock.sec(13.5)) {
-				msPac.position = new V2f(t(-8), middleY);
-				pac.position = new V2f(t(-2), middleY);
+				msPac.setPosition(t(-8), middleY);
+				pac.setPosition(t(-2), middleY);
 				msPac.dir = pac.dir = Direction.RIGHT;
 				msPac.speed = pac.speed = 2;
 			}
 			if (phase.timer.running() == clock.sec(18)) {
-				msPac.position = new V2f(t(30), upperY);
-				pac.position = new V2f(t(42), upperY);
+				msPac.setPosition(t(30), upperY);
+				pac.setPosition(t(42), upperY);
 				msPac.dir = pac.dir = Direction.LEFT;
 				msPac.speed = pac.speed = 4;
 			}
 			if (phase.timer.running() == clock.sec(19)) {
-				msPac.position = new V2f(t(-14), lowerY);
-				pac.position = new V2f(t(-2), lowerY);
+				msPac.setPosition(t(-14), lowerY);
+				pac.setPosition(t(-2), lowerY);
 				msPac.dir = pac.dir = Direction.RIGHT;
 				msPac.speed = pac.speed = 4;
 			}

@@ -13,7 +13,6 @@ import java.awt.Graphics2D;
 
 import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.CountdownTimer;
-import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.Ghost;
 import de.amr.games.pacman.model.GhostState;
@@ -64,7 +63,7 @@ public class MsPacMan_IntroScene extends AbstractGameScene {
 		log("Intro scene started at clock time %d", clock.ticksTotal);
 
 		msPac = new Pac("Ms. Pac-Man", LEFT);
-		msPac.position = new V2f(t(37), belowFrame);
+		msPac.setPosition(t(37), belowFrame);
 		msPac.visible = true;
 		msPac.speed = 0;
 		msPac.dead = false;
@@ -78,7 +77,7 @@ public class MsPacMan_IntroScene extends AbstractGameScene {
 		};
 
 		for (Ghost ghost : ghosts) {
-			ghost.position = new V2f(t(37), belowFrame);
+			ghost.setPosition(t(37), belowFrame);
 			ghost.visible = true;
 			ghost.bounty = 0;
 			ghost.speed = 0;

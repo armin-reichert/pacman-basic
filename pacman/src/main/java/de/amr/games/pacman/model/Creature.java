@@ -65,7 +65,7 @@ public class Creature extends GameEntity {
 	 * @param offsetY the pixel offset in y-direction
 	 */
 	public void placeAt(V2i tile, float offsetX, float offsetY) {
-		position = new V2f(tile.x * TS + offsetX, tile.y * TS + offsetY);
+		setPosition(tile.x * TS + offsetX, tile.y * TS + offsetY);
 		changedTile = true;
 	}
 
