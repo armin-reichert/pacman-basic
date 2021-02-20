@@ -108,7 +108,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 			@Override
 			public void keyPressed(KeyEvent e) {
-				handleKeyboardInput(e);
+				handleGlobalKeys(e);
 			}
 		});
 		window.addWindowListener(new WindowAdapter() {
@@ -267,7 +267,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 		return pressed;
 	}
 
-	private void handleKeyboardInput(KeyEvent e) {
+	private void handleGlobalKeys(KeyEvent e) {
 		switch (e.getKeyCode()) {
 		case KEY_SLOW_MODE: {
 			clock.targetFreq = clock.targetFreq == 60 ? 30 : 60;
