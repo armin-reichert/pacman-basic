@@ -20,6 +20,8 @@ import java.awt.image.BufferStrategy;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Deque;
+import java.util.EnumMap;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -30,6 +32,7 @@ import de.amr.games.pacman.controller.PacManGameController;
 import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.GameModel;
+import de.amr.games.pacman.model.GameType;
 import de.amr.games.pacman.model.mspacman.MsPacManGame;
 import de.amr.games.pacman.sound.PacManGameSoundManager;
 import de.amr.games.pacman.sound.PacManGameSounds;
@@ -59,8 +62,6 @@ import de.amr.games.pacman.ui.swing.rendering.DebugRendering;
  */
 public class PacManGameSwingUI implements PacManGameUI {
 
-	static final int MS_PACMAN = 0, PACMAN = 1;
-
 	static final int KEY_SLOW_MODE = KeyEvent.VK_S;
 	static final int KEY_FAST_MODE = KeyEvent.VK_F;
 	static final int KEY_DEBUG_MODE = KeyEvent.VK_D;
@@ -72,6 +73,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 	public static final SoundManager msPacManGameSounds = new PacManGameSoundManager(
 			PacManGameSounds::getMsPacManSoundURL);
 
+	private final PacManGameController controller;
 	private final Dimension unscaledSize;
 	private final V2i scaledSize;
 	private final float scaling;
@@ -80,16 +82,17 @@ public class PacManGameSwingUI implements PacManGameUI {
 	private final Canvas canvas;
 	private final Keyboard keyboard;
 
-	private final AbstractGameScene[][] scenes = new AbstractGameScene[2][5];
+	private final EnumMap<GameType, List<AbstractGameScene>> scenes = new EnumMap<>(GameType.class);
+	private GameScene currentScene;
 
 	private GameModel game;
-	private GameScene currentScene;
 
 	private final Deque<FlashMessage> flashMessageQ = new ArrayDeque<>();
 
 	private boolean muted;
 
 	public PacManGameSwingUI(PacManGameController controller, double scalingFactor) {
+		this.controller = controller;
 		scaling = (float) scalingFactor;
 		unscaledSize = new Dimension(28 * TS, 36 * TS);
 		scaledSize = new V2f(unscaledSize.width, unscaledSize.height).scaled(this.scaling).toV2i();
@@ -128,47 +131,41 @@ public class PacManGameSwingUI implements PacManGameUI {
 				e -> window.setTitle(String.format("Swing: Pac-Man / Ms. Pac-Man (%d fps)", clock.frequency)));
 		titleUpdateTimer.start();
 
-		scenes[MS_PACMAN][0] = new MsPacMan_IntroScene(unscaledSize);
-		scenes[MS_PACMAN][1] = new MsPacMan_IntermissionScene1(unscaledSize);
-		scenes[MS_PACMAN][2] = new MsPacMan_IntermissionScene2(unscaledSize);
-		scenes[MS_PACMAN][3] = new MsPacMan_IntermissionScene3(unscaledSize);
-		scenes[MS_PACMAN][4] = new PlayScene(unscaledSize, msPacManGameRendering);
+		scenes.put(GameType.MS_PACMAN, Arrays.asList(//
+				new MsPacMan_IntroScene(unscaledSize), //
+				new MsPacMan_IntermissionScene1(unscaledSize), //
+				new MsPacMan_IntermissionScene2(unscaledSize), //
+				new MsPacMan_IntermissionScene3(unscaledSize), //
+				new PlayScene(unscaledSize, msPacManGameRendering)//
+		));
 
-		scenes[PACMAN][0] = new PacMan_IntroScene(unscaledSize);
-		scenes[PACMAN][1] = new PacMan_IntermissionScene1(unscaledSize);
-		scenes[PACMAN][2] = new PacMan_IntermissionScene2(unscaledSize);
-		scenes[PACMAN][3] = new PacMan_IntermissionScene3(unscaledSize);
-		scenes[PACMAN][4] = new PlayScene(unscaledSize, pacManGameRendering);
+		scenes.put(GameType.PACMAN, Arrays.asList(//
+				new PacMan_IntroScene(unscaledSize), //
+				new PacMan_IntermissionScene1(unscaledSize), //
+				new PacMan_IntermissionScene2(unscaledSize), //
+				new PacMan_IntermissionScene3(unscaledSize), //
+				new PlayScene(unscaledSize, pacManGameRendering)//
+		));
 
 		onGameChanged(controller.getGame());
-
 		log("Pac-Man Swing UI created");
 	}
 
-	private int currentGameType() {
-		if (game instanceof MsPacManGame) {
-			return MS_PACMAN;
-		} else {
-			return PACMAN;
-		}
-	}
-
 	private GameScene currentGameScene() {
-		int gameType = currentGameType();
 		switch (game.state) {
 		case INTRO:
-			return scenes[gameType][0];
+			return scenes.get(controller.currentGameType()).get(0);
 		case INTERMISSION:
-			return scenes[gameType][game.intermissionNumber];
+			return scenes.get(controller.currentGameType()).get(game.intermissionNumber);
 		default:
-			return scenes[gameType][4];
+			return scenes.get(controller.currentGameType()).get(4);
 		}
 	}
 
 	@Override
 	public void onGameChanged(GameModel newGame) {
 		this.game = Objects.requireNonNull(newGame);
-		Arrays.stream(scenes[currentGameType()]).forEach(scene -> scene.setGame(newGame));
+		scenes.get(controller.currentGameType()).forEach(scene -> scene.setGame(newGame));
 		currentScene = currentGameScene();
 		currentScene.start();
 	}
