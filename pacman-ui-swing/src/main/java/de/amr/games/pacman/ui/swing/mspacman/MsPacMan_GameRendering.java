@@ -204,6 +204,10 @@ public class MsPacMan_GameRendering extends GameRenderingUsingAnimatedSprites {
 		}
 	}
 
+	public void drawHeart(Graphics2D g, float x, float y) {
+		drawImage(g, assets.spriteAt(2, 10), x, y, true);
+	}
+
 	public void drawBirdAnim(Graphics2D g, float x, float y) {
 		BufferedImage frame = assets.birdAnim.animate();
 		drawImage(g, frame, x + 4 - frame.getWidth() / 2, y + 4 - frame.getHeight() / 2, true);
