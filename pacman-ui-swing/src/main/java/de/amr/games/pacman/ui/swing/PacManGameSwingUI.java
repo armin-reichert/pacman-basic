@@ -95,11 +95,13 @@ public class PacManGameSwingUI implements PacManGameUI {
 		scaledSize = new V2f(unscaledSize.width, unscaledSize.height).scaled(this.scaling).toV2i();
 
 		canvas = new Canvas();
+		canvas.setBackground(Color.BLACK);
 		canvas.setSize(scaledSize.x, scaledSize.y);
 		canvas.setFocusable(false);
 
 		window = new JFrame();
 		window.setTitle("Swing: Pac-Man");
+		window.setBackground(Color.BLACK);
 		window.setResizable(false);
 		window.setFocusable(true);
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
