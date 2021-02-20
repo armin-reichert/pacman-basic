@@ -32,8 +32,8 @@ public class PacMan_IntermissionScene1 extends AbstractGameScene {
 
 	private static final int baselineY = t(20);
 
-	private final PacMan_GameRendering rendering = PacManGameSwingUI.pacManGameRendering;
-	private final SoundManager sounds = PacManGameSwingUI.pacManGameSounds;
+	private final MrPacMan_GameRendering rendering = PacManGameSwingUI.mrPacManGameRendering;
+	private final SoundManager sounds = PacManGameSwingUI.mrPacManGameSounds;
 
 	private Ghost blinky;
 	private Pac pac;

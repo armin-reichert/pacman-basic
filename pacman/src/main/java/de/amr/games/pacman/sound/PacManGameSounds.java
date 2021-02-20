@@ -15,11 +15,11 @@ public class PacManGameSounds {
 		return getClass().getResource(path);
 	}
 
-	public static URL getPacManSoundURL(PacManGameSound sound) {
+	public static URL mrPacManSoundURL(PacManGameSound sound) {
 		return IT.pacManSounds.get(sound);
 	}
 
-	public static URL getMsPacManSoundURL(PacManGameSound sound) {
+	public static URL msPacManSoundURL(PacManGameSound sound) {
 		return IT.msPacManSounds.get(sound);
 	}
 

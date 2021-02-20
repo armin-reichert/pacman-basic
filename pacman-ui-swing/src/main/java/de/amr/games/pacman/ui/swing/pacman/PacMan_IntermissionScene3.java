@@ -33,8 +33,8 @@ public class PacMan_IntermissionScene3 extends AbstractGameScene {
 		CHASING_PACMAN, RETURNING_HALF_NAKED;
 	}
 
-	private final PacMan_GameRendering rendering = PacManGameSwingUI.pacManGameRendering;
-	private final SoundManager sounds = PacManGameSwingUI.pacManGameSounds;
+	private final MrPacMan_GameRendering rendering = PacManGameSwingUI.mrPacManGameRendering;
+	private final SoundManager sounds = PacManGameSwingUI.mrPacManGameSounds;
 
 	private final Spritesheet spritesheet;
 	private final Animation<BufferedImage> blinkyDamaged, blinkyHalfNaked;

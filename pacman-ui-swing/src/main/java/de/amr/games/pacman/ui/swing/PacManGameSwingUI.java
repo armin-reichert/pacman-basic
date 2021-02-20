@@ -2,6 +2,8 @@ package de.amr.games.pacman.ui.swing;
 
 import static de.amr.games.pacman.heaven.God.clock;
 import static de.amr.games.pacman.lib.Logging.log;
+import static de.amr.games.pacman.model.GameType.MS_PACMAN;
+import static de.amr.games.pacman.model.GameType.PACMAN;
 import static de.amr.games.pacman.world.PacManGameWorld.TS;
 
 import java.awt.AWTException;
@@ -33,7 +35,6 @@ import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.GameModel;
 import de.amr.games.pacman.model.GameType;
-import de.amr.games.pacman.model.mspacman.MsPacManGame;
 import de.amr.games.pacman.sound.PacManGameSoundManager;
 import de.amr.games.pacman.sound.PacManGameSounds;
 import de.amr.games.pacman.sound.SoundManager;
@@ -48,7 +49,7 @@ import de.amr.games.pacman.ui.swing.mspacman.MsPacMan_IntermissionScene1;
 import de.amr.games.pacman.ui.swing.mspacman.MsPacMan_IntermissionScene2;
 import de.amr.games.pacman.ui.swing.mspacman.MsPacMan_IntermissionScene3;
 import de.amr.games.pacman.ui.swing.mspacman.MsPacMan_IntroScene;
-import de.amr.games.pacman.ui.swing.pacman.PacMan_GameRendering;
+import de.amr.games.pacman.ui.swing.pacman.MrPacMan_GameRendering;
 import de.amr.games.pacman.ui.swing.pacman.PacMan_IntermissionScene1;
 import de.amr.games.pacman.ui.swing.pacman.PacMan_IntermissionScene2;
 import de.amr.games.pacman.ui.swing.pacman.PacMan_IntermissionScene3;
@@ -62,14 +63,15 @@ import de.amr.games.pacman.ui.swing.rendering.DebugRendering;
  */
 public class PacManGameSwingUI implements PacManGameUI {
 
-	public static final PacMan_GameRendering pacManGameRendering = new PacMan_GameRendering();
+	public static final MrPacMan_GameRendering mrPacManGameRendering = new MrPacMan_GameRendering();
 	public static final MsPacMan_GameRendering msPacManGameRendering = new MsPacMan_GameRendering();
 
-	public static final SoundManager pacManGameSounds = new PacManGameSoundManager(PacManGameSounds::getPacManSoundURL);
-	public static final SoundManager msPacManGameSounds = new PacManGameSoundManager(
-			PacManGameSounds::getMsPacManSoundURL);
+	public static final SoundManager mrPacManGameSounds = new PacManGameSoundManager(PacManGameSounds::mrPacManSoundURL);
+	public static final SoundManager msPacManGameSounds = new PacManGameSoundManager(PacManGameSounds::msPacManSoundURL);
 
 	private final PacManGameController controller;
+	private final EnumMap<GameType, List<AbstractGameScene>> scenes = new EnumMap<>(GameType.class);
+	private final Deque<FlashMessage> flashMessageQ = new ArrayDeque<>();
 	private final Dimension unscaledSize;
 	private final V2i scaledSize;
 	private final float scaling;
@@ -78,13 +80,8 @@ public class PacManGameSwingUI implements PacManGameUI {
 	private final Canvas canvas;
 	private final Keyboard keyboard;
 
-	private final EnumMap<GameType, List<AbstractGameScene>> scenes = new EnumMap<>(GameType.class);
 	private GameScene currentScene;
-
 	private GameModel game;
-
-	private final Deque<FlashMessage> flashMessageQ = new ArrayDeque<>();
-
 	private boolean muted;
 
 	public PacManGameSwingUI(PacManGameController controller, double scalingFactor) {
@@ -124,10 +121,9 @@ public class PacManGameSwingUI implements PacManGameUI {
 		keyboard = new Keyboard(window);
 
 		titleUpdateTimer = new Timer(1000,
-				e -> window.setTitle(String.format("Swing: Pac-Man / Ms. Pac-Man (%d fps)", clock.frequency)));
-		titleUpdateTimer.start();
+				e -> window.setTitle(String.format("Pac-Man / Ms. Pac-Man (%d fps, JFC Swing)", clock.frequency)));
 
-		scenes.put(GameType.MS_PACMAN, Arrays.asList(//
+		scenes.put(MS_PACMAN, Arrays.asList(//
 				new MsPacMan_IntroScene(unscaledSize), //
 				new MsPacMan_IntermissionScene1(unscaledSize), //
 				new MsPacMan_IntermissionScene2(unscaledSize), //
@@ -135,12 +131,12 @@ public class PacManGameSwingUI implements PacManGameUI {
 				new PlayScene(unscaledSize, msPacManGameRendering)//
 		));
 
-		scenes.put(GameType.PACMAN, Arrays.asList(//
+		scenes.put(PACMAN, Arrays.asList(//
 				new PacMan_IntroScene(unscaledSize), //
 				new PacMan_IntermissionScene1(unscaledSize), //
 				new PacMan_IntermissionScene2(unscaledSize), //
 				new PacMan_IntermissionScene3(unscaledSize), //
-				new PlayScene(unscaledSize, pacManGameRendering)//
+				new PlayScene(unscaledSize, mrPacManGameRendering)//
 		));
 
 		onGameChanged(controller.getGame());
@@ -174,6 +170,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 		window.requestFocus();
 		canvas.createBufferStrategy(2);
 		moveMousePointerOutOfSight();
+		titleUpdateTimer.start();
 	}
 
 	@Override
@@ -230,24 +227,15 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 	@Override
 	public Optional<PacManGameAnimation> animation() {
-		if (game instanceof MsPacManGame) {
-			return Optional.of(msPacManGameRendering);
-		} else {
-			return Optional.of(pacManGameRendering);
-		}
+		return Optional.of(controller.currentGameType() == MS_PACMAN ? msPacManGameRendering : mrPacManGameRendering);
 	}
 
 	@Override
 	public Optional<SoundManager> sound() {
 		if (muted) {
-			// TODO that's just a hack, should have real mute functionality
-			return Optional.empty();
+			return Optional.empty(); // TODO that's just a hack, should have real mute functionality
 		}
-		if (game instanceof MsPacManGame) {
-			return Optional.of(msPacManGameSounds);
-		} else {
-			return Optional.of(pacManGameSounds);
-		}
+		return Optional.of(controller.currentGameType() == MS_PACMAN ? msPacManGameSounds : mrPacManGameSounds);
 	}
 
 	@Override

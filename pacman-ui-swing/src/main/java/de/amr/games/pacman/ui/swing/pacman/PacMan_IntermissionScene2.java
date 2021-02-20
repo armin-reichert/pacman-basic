@@ -34,9 +34,9 @@ public class PacMan_IntermissionScene2 extends AbstractGameScene {
 		final CountdownTimer timer = new CountdownTimer();
 	}
 
-	private final PacMan_GameRendering rendering = PacManGameSwingUI.pacManGameRendering;
+	private final MrPacMan_GameRendering rendering = PacManGameSwingUI.mrPacManGameRendering;
 	private final Spritesheet spritesheet = rendering.assets;
-	private final SoundManager sounds = PacManGameSwingUI.pacManGameSounds;
+	private final SoundManager sounds = PacManGameSwingUI.mrPacManGameSounds;
 
 	private final int chaseTileY = 20;
 	private final V2i nailPosition = new V2i(t(14), t(chaseTileY) - 6);
