@@ -9,7 +9,6 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-import java.util.ResourceBundle;
 
 import de.amr.games.pacman.controller.PacManGameState;
 import de.amr.games.pacman.heaven.God;
@@ -25,11 +24,9 @@ public abstract class GameRenderingUsingAnimatedSprites implements SpriteBasedSc
 
 	public static boolean foodAnimationOn = false; // experimental
 
-	public final ResourceBundle translations;
 	public final Font font;
 
 	public GameRenderingUsingAnimatedSprites() {
-		translations = ResourceBundle.getBundle("localization.translation");
 		font = AssetLoader.font("/emulogic.ttf", 8);
 	}
 
@@ -143,12 +140,12 @@ public abstract class GameRenderingUsingAnimatedSprites implements SpriteBasedSc
 		if (game.state == PacManGameState.READY && !game.attractMode) {
 			g.setFont(font);
 			g.setColor(Color.YELLOW);
-			g.drawString(translations.getString("READY"), t(11), t(21));
+			g.drawString("READY", t(11), t(21));
 		} else if (game.state == PacManGameState.GAME_OVER || game.attractMode) {
 			g.setFont(font);
 			g.setColor(Color.RED);
-			g.drawString(translations.getString("GAME"), t(9), t(21));
-			g.drawString(translations.getString("OVER"), t(15), t(21));
+			g.drawString("GAME", t(9), t(21));
+			g.drawString("OVER", t(15), t(21));
 		}
 	}
 }

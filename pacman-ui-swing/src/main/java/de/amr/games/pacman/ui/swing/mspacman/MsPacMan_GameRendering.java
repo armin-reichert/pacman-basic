@@ -138,7 +138,7 @@ public class MsPacMan_GameRendering extends GameRenderingUsingAnimatedSprites {
 		g.setFont(assets.getScoreFont());
 		g.translate(0, assets.scoreFont.getSize() + 1);
 		g.setColor(Color.WHITE);
-		g.drawString(translations.getString("SCORE"), x, y);
+		g.drawString("SCORE", x, y);
 		g.translate(0, 1);
 		if (game.state != PacManGameState.INTRO && !game.attractMode) {
 			g.setColor(assets.getMazeWallColor(game.level.mazeNumber - 1));
@@ -154,7 +154,7 @@ public class MsPacMan_GameRendering extends GameRenderingUsingAnimatedSprites {
 		g.setFont(assets.getScoreFont());
 		g.translate(0, assets.scoreFont.getSize() + 1);
 		g.setColor(Color.WHITE);
-		g.drawString(translations.getString("HI_SCORE"), x, y);
+		g.drawString("HIGHSCORE", x, y);
 		g.translate(0, 1);
 		if (game.state != PacManGameState.INTRO && !game.attractMode) {
 			g.setColor(assets.getMazeWallColor(game.level.mazeNumber - 1));
