@@ -33,7 +33,7 @@ public class MsPacMan_IntermissionScene3 extends AbstractGameScene {
 
 	static class Bird extends GameEntity {
 
-		Animation<BufferedImage> animation;
+		Animation<BufferedImage> animation = assets.birdAnim;
 
 		public void draw(Graphics2D g) {
 			if (visible) {
@@ -110,7 +110,6 @@ public class MsPacMan_IntermissionScene3 extends AbstractGameScene {
 
 		bird = new Bird();
 		bird.setPosition(t(30), BIRD_Y);
-		bird.animation = assets.birdAnim;
 		bird.animation.restart();
 
 		bag = new Bag();
