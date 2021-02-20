@@ -7,6 +7,7 @@ import static de.amr.games.pacman.model.guys.GhostState.LOCKED;
 import static de.amr.games.pacman.world.PacManGameWorld.t;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.stream.Stream;
@@ -19,16 +20,21 @@ import de.amr.games.pacman.model.guys.Bonus;
 import de.amr.games.pacman.model.guys.Ghost;
 import de.amr.games.pacman.model.guys.Pac;
 import de.amr.games.pacman.ui.swing.assets.Spritesheet;
-import de.amr.games.pacman.ui.swing.rendering.GameRenderingUsingAnimatedSprites;
+import de.amr.games.pacman.ui.swing.rendering.DefaultGameRendering;
 
 /**
  * Rendering for the Ms. Pac-Man game.
  * 
  * @author Armin Reichert
  */
-public class MsPacMan_GameRendering extends GameRenderingUsingAnimatedSprites {
+public class MsPacMan_GameRendering extends DefaultGameRendering {
 
 	public static final MsPacMan_Assets assets = new MsPacMan_Assets();
+
+	@Override
+	public Font scoreFont() {
+		return assets.scoreFont;
+	}
 
 	@Override
 	public Spritesheet spritesheet() {

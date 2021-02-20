@@ -1,5 +1,6 @@
 package de.amr.games.pacman.ui.swing.rendering;
 
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
@@ -15,6 +16,8 @@ import de.amr.games.pacman.model.guys.Pac;
  * @author Armin Reichert
  */
 public interface GameRendering {
+
+	Font scoreFont();
 
 	void signalGameState(Graphics2D g, GameModel game);
 

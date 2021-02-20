@@ -18,17 +18,15 @@ import de.amr.games.pacman.model.guys.Creature;
 import de.amr.games.pacman.model.guys.Ghost;
 import de.amr.games.pacman.model.guys.Pac;
 import de.amr.games.pacman.ui.PacManGameAnimation;
-import de.amr.games.pacman.ui.swing.assets.AssetLoader;
 
-public abstract class GameRenderingUsingAnimatedSprites implements SpriteBasedSceneRendering, PacManGameAnimation {
+/**
+ * Default game rendering using animated sprites.
+ * 
+ * @author Armin Reichert
+ */
+public abstract class DefaultGameRendering implements SpriteBasedSceneRendering, PacManGameAnimation {
 
 	public static boolean foodAnimationOn = false; // experimental
-
-	public final Font font;
-
-	public GameRenderingUsingAnimatedSprites() {
-		font = AssetLoader.font("/emulogic.ttf", 8);
-	}
 
 	protected void drawGuy(Graphics2D g, Creature guy, GameModel game) {
 		if (guy.visible) {
@@ -138,11 +136,11 @@ public abstract class GameRenderingUsingAnimatedSprites implements SpriteBasedSc
 	@Override
 	public void signalGameState(Graphics2D g, GameModel game) {
 		if (game.state == PacManGameState.READY && !game.attractMode) {
-			g.setFont(font);
+			g.setFont(scoreFont());
 			g.setColor(Color.YELLOW);
 			g.drawString("READY", t(11), t(21));
 		} else if (game.state == PacManGameState.GAME_OVER || game.attractMode) {
-			g.setFont(font);
+			g.setFont(scoreFont());
 			g.setColor(Color.RED);
 			g.drawString("GAME", t(9), t(21));
 			g.drawString("OVER", t(15), t(21));
