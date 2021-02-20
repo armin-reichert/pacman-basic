@@ -148,7 +148,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 		));
 
 		onGameChanged(controller.getGame());
-		log("Pac-Man Swing UI created");
+		log("Swing UI created at clock tick %d", clock.ticksTotal);
 	}
 
 	private GameScene currentGameScene() {

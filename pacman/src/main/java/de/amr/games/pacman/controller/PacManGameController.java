@@ -149,7 +149,9 @@ public class PacManGameController {
 	}
 
 	public void addView(PacManGameUI view) {
-		this.views.add(view);
+		if (views.add(view)) {
+			log("Added view %s", view);
+		}
 	}
 
 	public void showViews() {
