@@ -23,16 +23,16 @@ import static de.amr.games.pacman.model.PacManGameModel.CLYDE;
 import static de.amr.games.pacman.model.PacManGameModel.INKY;
 import static de.amr.games.pacman.model.PacManGameModel.PINKY;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.model.GameType;
 import de.amr.games.pacman.model.Ghost;
 import de.amr.games.pacman.model.GhostState;
 import de.amr.games.pacman.model.MsPacManGame;
@@ -45,7 +45,7 @@ import de.amr.games.pacman.ui.PacManGameNoUI;
 import de.amr.games.pacman.ui.PacManGameUI;
 
 /**
- * Pac-Man and Ms. Pac-Man currentGame with original "AI", levels, timers.
+ * Pac-Man and Ms. Pac-Man game implementation.
  * <p>
  * Missing:
  * <ul>
@@ -63,41 +63,31 @@ import de.amr.games.pacman.ui.PacManGameUI;
  */
 public class PacManGameController {
 
-	private final PacManGame pacManGame;
-	private final MsPacManGame msPacManGame;
+	private final PacManGame pacManGame = new PacManGame();
+	private final MsPacManGame msPacManGame = new MsPacManGame();
+
 	private PacManGameModel game;
+
+	private final List<PacManGameUI> views = new ArrayList<>(Arrays.asList(PacManGameNoUI.THE_ONE));
 
 	private Autopilot autopilot;
 	private boolean autopilotOn;
 	private PacManGameState previousState;
 
-	private final Set<PacManGameUI> views;
-
 	private Thread gameLoopThread;
 	private volatile boolean gameLoopRunning;
 
-	public PacManGameController() {
-		pacManGame = new PacManGame();
-		msPacManGame = new MsPacManGame();
-		views = new LinkedHashSet<>();
-		views.add(PacManGameNoUI.IT);
-	}
-
-	public void startGame() {
+	public void startGameLoop() {
 		if (gameLoopRunning) {
-			log("Game already started");
+			log("Game loop is already started");
 			return;
 		}
-		gameLoopRunning = true;
-		gameLoopThread = new Thread(this::loop, "PacManGameLoop");
+		gameLoopThread = new Thread(this::gameLoop, "PacManGameLoop");
 		gameLoopThread.start();
+		gameLoopRunning = true;
 	}
 
-	public void endGame() {
-		if (!gameLoopRunning) {
-			log("Game not started");
-			return;
-		}
+	public void endGameLoop() {
 		gameLoopRunning = false;
 		try {
 			gameLoopThread.join();
@@ -108,7 +98,7 @@ public class PacManGameController {
 		System.exit(0);
 	}
 
-	private void loop() {
+	private void gameLoop() {
 		while (gameLoopRunning) {
 			clock.tick(this::step);
 		}
@@ -136,30 +126,27 @@ public class PacManGameController {
 		return views().map(PacManGameUI::sound).filter(Optional::isPresent).map(Optional::get);
 	}
 
-	public void playPacMan() {
-		log("Play Pac-Man");
-		play(pacManGame);
+	public GameType currentGameType() {
+		if (game == msPacManGame) {
+			return GameType.MS_PACMAN;
+		}
+		if (game == pacManGame) {
+			return GameType.PACMAN;
+		}
+		throw new IllegalStateException();
 	}
 
-	public void playMsPacMan() {
-		log("Play Ms. Pac-Man");
-		play(msPacManGame);
-	}
-
-	private void play(PacManGameModel newGame) {
-		game = newGame;
+	public void play(GameType type) {
+		if (type == GameType.MS_PACMAN) {
+			game = msPacManGame;
+		} else if (type == GameType.PACMAN) {
+			game = pacManGame;
+		} else {
+			throw new IllegalArgumentException();
+		}
 		autopilot = new Autopilot(game);
 		changeState(INTRO, null, this::enterIntroState);
 		views.forEach(view -> view.onGameChanged(game));
-	}
-
-	private void toggleGameVariant() {
-		if (playingMsPacMan()) {
-			playPacMan();
-		} else {
-			playMsPacMan();
-		}
-		sounds().forEach(SoundManager::stopAll);
 	}
 
 	public void addView(PacManGameUI view) {
@@ -170,31 +157,32 @@ public class PacManGameController {
 		views.forEach(PacManGameUI::show);
 	}
 
-	private boolean playingMsPacMan() {
-		return game instanceof MsPacManGame;
+	public void toggleGameType() {
+		if (currentGameType() == GameType.MS_PACMAN) {
+			play(GameType.PACMAN);
+		} else {
+			play(GameType.MS_PACMAN);
+		}
+		sounds().forEach(SoundManager::stopAll);
 	}
 
-	private void toggleAutopilot() {
+	public void toggleAutopilot() {
 		autopilotOn = !autopilotOn;
 		String msg = "Autopilot " + (autopilotOn ? "on" : "off");
 		views.forEach(view -> view.showFlashMessage(msg, clock.sec(1.5)));
 		log(msg);
 	}
 
-	private void togglePacImmunity() {
+	public void togglePacImmunity() {
 		game.pac.immune = !game.pac.immune;
 		String msg = game.pac.name + " is " + (game.pac.immune ? "immune" : "vulnerable");
 		views.forEach(view -> view.showFlashMessage(msg, clock.sec(1.5)));
 		log(msg);
 	}
 
-	private void ghostsKicking(boolean on) {
-		animations().forEach(animations -> {
-			if (on) {
-				animations.ghostsKicking(game.ghosts()).forEach(Animation::restart);
-			} else {
-				animations.ghostsKicking(game.ghosts()).forEach(Animation::reset);
-			}
+	private void enableGhostKickingAnimation(boolean enabled) {
+		animations().map(animations -> animations.ghostsKicking(game.ghosts())).forEach(kicking -> {
+			kicking.forEach(enabled ? Animation::restart : Animation::reset);
 		});
 	}
 
@@ -202,7 +190,9 @@ public class PacManGameController {
 		return views.stream().anyMatch(view -> view.keyPressed(keySpec));
 	}
 
-	// BEGIN STATE-MACHINE
+	/*
+	 * The finite-state machine controlling the game play:
+	 */
 
 	// INTRO
 
@@ -228,9 +218,9 @@ public class PacManGameController {
 			return changeState(READY, this::exitIntroState, this::enterReadyState);
 		}
 		if (keyPressed("v")) {
-			toggleGameVariant();
+			toggleGameType();
 		}
-		// test intermissions
+		// test intermission scenes
 		if (keyPressed("1")) {
 			game.intermissionNumber = 1;
 			return changeState(INTERMISSION, null, this::enterIntermissionState);
@@ -276,7 +266,7 @@ public class PacManGameController {
 			game.pac.visible = true;
 		}
 		if (game.state.ticksLeftEquals(clock.sec(1.0))) {
-			ghostsKicking(true);
+			enableGhostKickingAnimation(true);
 		}
 		return game.state.run();
 	}
@@ -457,7 +447,7 @@ public class PacManGameController {
 		game.state.duration(clock.sec(5));
 		game.pac.speed = 0;
 		game.bonus.edibleTicksLeft = game.bonus.eatenTicksLeft = 0;
-		ghostsKicking(false);
+		enableGhostKickingAnimation(false);
 		sounds().forEach(SoundManager::stopAll);
 	}
 
@@ -559,7 +549,7 @@ public class PacManGameController {
 		game.ghosts().forEach(ghost -> ghost.speed = 0);
 		game.pac.speed = 0;
 		game.saveHighscore();
-		ghostsKicking(false);
+		enableGhostKickingAnimation(false);
 	}
 
 	private PacManGameState runGameOverState() {
@@ -786,8 +776,9 @@ public class PacManGameController {
 	}
 
 	private void setGhostHuntingTarget(Ghost ghost) {
-		if (playingMsPacMan() && game.huntingPhase == 0 && (ghost.id == BLINKY || ghost.id == PINKY)) {
-			// In Ms. Pac-Man, Blinky and Pinky move randomly during *first* scatter phase
+		// In Ms. Pac-Man, Blinky and Pinky move randomly during the *first* scatter phase:
+		if (currentGameType() == GameType.MS_PACMAN && game.huntingPhase == 0
+				&& (ghost.id == BLINKY || ghost.id == PINKY)) {
 			ghost.targetTile = null;
 		} else if (game.inScatteringPhase() && ghost.elroy == 0) {
 			ghost.targetTile = game.level.world.ghostScatterTile(ghost.id);
@@ -796,6 +787,9 @@ public class PacManGameController {
 		}
 	}
 
+	/*
+	 * The so called "ghost AI":
+	 */
 	private V2i ghostHuntingTarget(int ghostID) {
 		switch (ghostID) {
 		case 0:

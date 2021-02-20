@@ -115,7 +115,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 			@Override
 			public void windowClosing(WindowEvent e) {
-				controller.endGame();
+				controller.endGameLoop();
 			}
 		});
 		window.getContentPane().add(canvas);
@@ -270,14 +270,14 @@ public class PacManGameSwingUI implements PacManGameUI {
 	private void handleGlobalKeys(KeyEvent e) {
 		switch (e.getKeyCode()) {
 		case KEY_SLOW_MODE: {
-			clock.targetFreq = clock.targetFreq == 60 ? 30 : 60;
+			clock.targetFreq = clock.targetFreq != 30 ? 30 : 60;
 			String text = clock.targetFreq == 60 ? "Normal speed" : "Slow speed";
 			showFlashMessage(text, clock.sec(1.5));
 			log("Clock frequency changed to %d Hz", clock.targetFreq);
 			break;
 		}
 		case KEY_FAST_MODE: {
-			clock.targetFreq = clock.targetFreq == 60 ? 120 : 60;
+			clock.targetFreq = clock.targetFreq != 120 ? 120 : 60;
 			String text = clock.targetFreq == 60 ? "Normal speed" : "Fast speed";
 			showFlashMessage(text, clock.sec(1.5));
 			log("Clock frequency changed to %d Hz", clock.targetFreq);

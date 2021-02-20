@@ -12,7 +12,7 @@ import de.amr.games.pacman.sound.SoundManager;
  */
 public class PacManGameNoUI implements PacManGameUI {
 
-	public static final PacManGameUI IT = new PacManGameNoUI();
+	public static final PacManGameUI THE_ONE = new PacManGameNoUI();
 
 	@Override
 	public void onGameChanged(PacManGameModel game) {
