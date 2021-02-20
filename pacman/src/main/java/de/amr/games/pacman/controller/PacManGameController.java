@@ -41,7 +41,6 @@ import de.amr.games.pacman.model.pacman.PacManGame;
 import de.amr.games.pacman.sound.PacManGameSound;
 import de.amr.games.pacman.sound.SoundManager;
 import de.amr.games.pacman.ui.PacManGameAnimation;
-import de.amr.games.pacman.ui.PacManGameNoUI;
 import de.amr.games.pacman.ui.PacManGameUI;
 
 /**
@@ -68,7 +67,7 @@ public class PacManGameController {
 
 	private GameModel game;
 
-	private final List<PacManGameUI> views = new ArrayList<>(Arrays.asList(PacManGameNoUI.THE_ONE));
+	private final List<PacManGameUI> views = new ArrayList<>();
 
 	private Autopilot autopilot;
 	private boolean autopilotOn;
