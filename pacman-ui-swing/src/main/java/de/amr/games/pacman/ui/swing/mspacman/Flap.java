@@ -27,10 +27,8 @@ public class Flap extends GameEntity {
 			g.setFont(font);
 			g.setColor(new Color(222, 222, 225, 200));
 			g.drawString(sceneNumber + "", position.x + 20, position.y + 30);
-			if (animation.isRunning()) {
-				g.setFont(assets.getScoreFont());
-				g.drawString(sceneTitle, position.x + 40, position.y + 20);
-			}
+			g.setFont(assets.getScoreFont());
+			g.drawString(sceneTitle, position.x + 40, position.y + 20);
 		}
 	}
 }
