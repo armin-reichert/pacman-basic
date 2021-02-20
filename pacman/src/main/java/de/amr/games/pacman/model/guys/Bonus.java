@@ -1,4 +1,4 @@
-package de.amr.games.pacman.model;
+package de.amr.games.pacman.model.guys;
 
 /**
  * Bonus symbol. In Ms. Pac-Man, the bonus wanders the maze.

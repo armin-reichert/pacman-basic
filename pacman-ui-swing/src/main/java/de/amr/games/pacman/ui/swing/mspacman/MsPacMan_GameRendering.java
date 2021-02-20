@@ -1,9 +1,9 @@
 package de.amr.games.pacman.ui.swing.mspacman;
 
-import static de.amr.games.pacman.model.GhostState.DEAD;
-import static de.amr.games.pacman.model.GhostState.ENTERING_HOUSE;
-import static de.amr.games.pacman.model.GhostState.FRIGHTENED;
-import static de.amr.games.pacman.model.GhostState.LOCKED;
+import static de.amr.games.pacman.model.guys.GhostState.DEAD;
+import static de.amr.games.pacman.model.guys.GhostState.ENTERING_HOUSE;
+import static de.amr.games.pacman.model.guys.GhostState.FRIGHTENED;
+import static de.amr.games.pacman.model.guys.GhostState.LOCKED;
 import static de.amr.games.pacman.world.PacManGameWorld.t;
 
 import java.awt.Color;
@@ -14,10 +14,10 @@ import java.util.stream.Stream;
 import de.amr.games.pacman.controller.PacManGameState;
 import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.Direction;
-import de.amr.games.pacman.model.Bonus;
-import de.amr.games.pacman.model.Ghost;
-import de.amr.games.pacman.model.Pac;
-import de.amr.games.pacman.model.PacManGameModel;
+import de.amr.games.pacman.model.GameModel;
+import de.amr.games.pacman.model.guys.Bonus;
+import de.amr.games.pacman.model.guys.Ghost;
+import de.amr.games.pacman.model.guys.Pac;
 import de.amr.games.pacman.ui.swing.assets.Spritesheet;
 import de.amr.games.pacman.ui.swing.rendering.GameRenderingUsingAnimatedSprites;
 
@@ -82,7 +82,7 @@ public class MsPacMan_GameRendering extends GameRenderingUsingAnimatedSprites {
 	}
 
 	@Override
-	public BufferedImage bonusSprite(Bonus bonus, PacManGameModel game) {
+	public BufferedImage bonusSprite(Bonus bonus, GameModel game) {
 		if (bonus.edibleTicksLeft > 0) {
 			return assets.symbolSprites[bonus.symbol];
 		}
@@ -98,7 +98,7 @@ public class MsPacMan_GameRendering extends GameRenderingUsingAnimatedSprites {
 	}
 
 	@Override
-	public BufferedImage pacSprite(Pac pac, PacManGameModel game) {
+	public BufferedImage pacSprite(Pac pac, GameModel game) {
 		if (pac.dead) {
 			return pacDying().hasStarted() ? pacDying().animate() : pacMunchingToDir(pac, pac.dir).frame();
 		}
@@ -107,7 +107,7 @@ public class MsPacMan_GameRendering extends GameRenderingUsingAnimatedSprites {
 	}
 
 	@Override
-	public BufferedImage ghostSprite(Ghost ghost, PacManGameModel game) {
+	public BufferedImage ghostSprite(Ghost ghost, GameModel game) {
 		if (ghost.bounty > 0) {
 			return assets.bountyNumberSprites.get(ghost.bounty);
 		}
@@ -124,17 +124,17 @@ public class MsPacMan_GameRendering extends GameRenderingUsingAnimatedSprites {
 	}
 
 	@Override
-	public void drawFullMaze(Graphics2D g, PacManGameModel game, int mazeNumber, int x, int y) {
+	public void drawFullMaze(Graphics2D g, GameModel game, int mazeNumber, int x, int y) {
 		g.drawImage(assets.mazeFullImages.get(mazeNumber - 1), x, y, null);
 	}
 
 	@Override
-	public void drawEmptyMaze(Graphics2D g, PacManGameModel game, int mazeNumber, int x, int y) {
+	public void drawEmptyMaze(Graphics2D g, GameModel game, int mazeNumber, int x, int y) {
 		g.drawImage(assets.mazeEmptyImages.get(mazeNumber - 1), x, y, null);
 	}
 
 	@Override
-	public void drawScore(Graphics2D g, PacManGameModel game, int x, int y) {
+	public void drawScore(Graphics2D g, GameModel game, int x, int y) {
 		g.setFont(assets.getScoreFont());
 		g.translate(0, assets.scoreFont.getSize() + 1);
 		g.setColor(Color.WHITE);
@@ -150,7 +150,7 @@ public class MsPacMan_GameRendering extends GameRenderingUsingAnimatedSprites {
 	}
 
 	@Override
-	public void drawHiScore(Graphics2D g, PacManGameModel game, int x, int y) {
+	public void drawHiScore(Graphics2D g, GameModel game, int x, int y) {
 		g.setFont(assets.getScoreFont());
 		g.translate(0, assets.scoreFont.getSize() + 1);
 		g.setColor(Color.WHITE);
@@ -166,7 +166,7 @@ public class MsPacMan_GameRendering extends GameRenderingUsingAnimatedSprites {
 	}
 
 	@Override
-	public void drawLevelCounter(Graphics2D g, PacManGameModel game, int rightX, int y) {
+	public void drawLevelCounter(Graphics2D g, GameModel game, int rightX, int y) {
 		Graphics2D g2 = smoothGC(g);
 		int x = rightX;
 		for (int levelNumber = 1; levelNumber <= Math.min(game.currentLevelNumber, 7); ++levelNumber) {
@@ -178,7 +178,7 @@ public class MsPacMan_GameRendering extends GameRenderingUsingAnimatedSprites {
 	}
 
 	@Override
-	public void drawBonus(Graphics2D g, Bonus bonus, PacManGameModel game) {
+	public void drawBonus(Graphics2D g, Bonus bonus, GameModel game) {
 		// Ms. Pac.Man bonus is jumping while wandering the maze
 		int dy = game.bonus.edibleTicksLeft > 0 ? assets.bonusJumpAnim.animate() : 0;
 		g.translate(0, dy);

@@ -2,26 +2,26 @@ package de.amr.games.pacman.ui.swing.rendering;
 
 import java.awt.image.BufferedImage;
 
-import de.amr.games.pacman.model.Bonus;
-import de.amr.games.pacman.model.Creature;
-import de.amr.games.pacman.model.Ghost;
-import de.amr.games.pacman.model.Pac;
-import de.amr.games.pacman.model.PacManGameModel;
+import de.amr.games.pacman.model.GameModel;
+import de.amr.games.pacman.model.guys.Bonus;
+import de.amr.games.pacman.model.guys.Creature;
+import de.amr.games.pacman.model.guys.Ghost;
+import de.amr.games.pacman.model.guys.Pac;
 import de.amr.games.pacman.ui.swing.assets.Spritesheet;
 
 public interface SpriteBasedSceneRendering extends GameRendering {
 
 	Spritesheet spritesheet();
 
-	BufferedImage bonusSprite(Bonus guy, PacManGameModel game);
+	BufferedImage bonusSprite(Bonus guy, GameModel game);
 
-	BufferedImage ghostSprite(Ghost guy, PacManGameModel game);
+	BufferedImage ghostSprite(Ghost guy, GameModel game);
 
-	BufferedImage pacSprite(Pac guy, PacManGameModel game);
+	BufferedImage pacSprite(Pac guy, GameModel game);
 
 	BufferedImage lifeSprite();
 
-	default BufferedImage sprite(Creature guy, PacManGameModel game) {
+	default BufferedImage sprite(Creature guy, GameModel game) {
 		// we don't need polymorphism yet
 		if (guy instanceof Pac) {
 			return pacSprite((Pac) guy, game);

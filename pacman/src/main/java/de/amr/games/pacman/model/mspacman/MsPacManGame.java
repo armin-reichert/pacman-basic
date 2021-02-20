@@ -1,11 +1,20 @@
-package de.amr.games.pacman.model;
+package de.amr.games.pacman.model.mspacman;
 
 import static de.amr.games.pacman.heaven.God.random;
 import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.lib.Logging.log;
+import static de.amr.games.pacman.model.guys.Ghost.BLINKY;
+import static de.amr.games.pacman.model.guys.Ghost.INKY;
+import static de.amr.games.pacman.model.guys.Ghost.PINKY;
+import static de.amr.games.pacman.model.guys.Ghost.SUE;
 
+import de.amr.games.pacman.model.GameLevel;
+import de.amr.games.pacman.model.GameModel;
+import de.amr.games.pacman.model.guys.Ghost;
+import de.amr.games.pacman.model.guys.MovingBonus;
+import de.amr.games.pacman.model.guys.Pac;
 import de.amr.games.pacman.world.MapBasedPacManGameWorld;
 import de.amr.games.pacman.world.WorldMap;
 
@@ -14,7 +23,7 @@ import de.amr.games.pacman.world.WorldMap;
  * 
  * @author Armin Reichert
  */
-public class MsPacManGame extends PacManGameModel {
+public class MsPacManGame extends GameModel {
 
 	/*@formatter:off*/
 	public static final int[][] MSPACMAN_LEVELS = {

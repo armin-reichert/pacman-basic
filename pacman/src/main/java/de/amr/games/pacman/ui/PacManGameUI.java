@@ -2,7 +2,7 @@ package de.amr.games.pacman.ui;
 
 import java.util.Optional;
 
-import de.amr.games.pacman.model.PacManGameModel;
+import de.amr.games.pacman.model.GameModel;
 import de.amr.games.pacman.sound.SoundManager;
 
 /**
@@ -12,7 +12,7 @@ import de.amr.games.pacman.sound.SoundManager;
  */
 public interface PacManGameUI {
 
-	void onGameChanged(PacManGameModel game);
+	void onGameChanged(GameModel game);
 
 	void show();
 

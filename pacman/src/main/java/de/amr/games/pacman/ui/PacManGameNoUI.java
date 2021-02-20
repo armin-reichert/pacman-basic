@@ -2,7 +2,7 @@ package de.amr.games.pacman.ui;
 
 import java.util.Optional;
 
-import de.amr.games.pacman.model.PacManGameModel;
+import de.amr.games.pacman.model.GameModel;
 import de.amr.games.pacman.sound.SoundManager;
 
 /**
@@ -15,7 +15,7 @@ public class PacManGameNoUI implements PacManGameUI {
 	public static final PacManGameUI THE_ONE = new PacManGameNoUI();
 
 	@Override
-	public void onGameChanged(PacManGameModel game) {
+	public void onGameChanged(GameModel game) {
 	}
 
 	@Override

@@ -1,4 +1,4 @@
-package de.amr.games.pacman.model;
+package de.amr.games.pacman.model.pacman;
 
 import static de.amr.games.pacman.heaven.God.clock;
 import static de.amr.games.pacman.heaven.God.random;
@@ -7,10 +7,19 @@ import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.lib.Logging.log;
+import static de.amr.games.pacman.model.guys.Ghost.BLINKY;
+import static de.amr.games.pacman.model.guys.Ghost.CLYDE;
+import static de.amr.games.pacman.model.guys.Ghost.INKY;
+import static de.amr.games.pacman.model.guys.Ghost.PINKY;
 import static de.amr.games.pacman.world.PacManGameWorld.HTS;
 import static de.amr.games.pacman.world.PacManGameWorld.TS;
 
 import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.model.GameLevel;
+import de.amr.games.pacman.model.GameModel;
+import de.amr.games.pacman.model.guys.Bonus;
+import de.amr.games.pacman.model.guys.Ghost;
+import de.amr.games.pacman.model.guys.Pac;
 import de.amr.games.pacman.world.MapBasedPacManGameWorld;
 import de.amr.games.pacman.world.WorldMap;
 
@@ -19,7 +28,7 @@ import de.amr.games.pacman.world.WorldMap;
  * 
  * @author Armin Reichert
  */
-public class PacManGame extends PacManGameModel {
+public class PacManGame extends GameModel {
 
 	/*@formatter:off*/
 	public static final int[][] PACMAN_LEVELS = {

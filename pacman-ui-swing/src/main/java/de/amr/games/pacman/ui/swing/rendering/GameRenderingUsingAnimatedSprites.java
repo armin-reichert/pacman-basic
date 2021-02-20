@@ -13,11 +13,11 @@ import java.util.ResourceBundle;
 
 import de.amr.games.pacman.controller.PacManGameState;
 import de.amr.games.pacman.heaven.God;
-import de.amr.games.pacman.model.Bonus;
-import de.amr.games.pacman.model.Creature;
-import de.amr.games.pacman.model.Ghost;
-import de.amr.games.pacman.model.Pac;
-import de.amr.games.pacman.model.PacManGameModel;
+import de.amr.games.pacman.model.GameModel;
+import de.amr.games.pacman.model.guys.Bonus;
+import de.amr.games.pacman.model.guys.Creature;
+import de.amr.games.pacman.model.guys.Ghost;
+import de.amr.games.pacman.model.guys.Pac;
 import de.amr.games.pacman.ui.PacManGameAnimation;
 import de.amr.games.pacman.ui.swing.assets.AssetLoader;
 
@@ -33,7 +33,7 @@ public abstract class GameRenderingUsingAnimatedSprites implements SpriteBasedSc
 		font = AssetLoader.font("/emulogic.ttf", 8);
 	}
 
-	protected void drawGuy(Graphics2D g, Creature guy, PacManGameModel game) {
+	protected void drawGuy(Graphics2D g, Creature guy, GameModel game) {
 		if (guy.visible) {
 			BufferedImage sprite = sprite(guy, game);
 			if (sprite != null) {
@@ -46,22 +46,22 @@ public abstract class GameRenderingUsingAnimatedSprites implements SpriteBasedSc
 	}
 
 	@Override
-	public void drawPac(Graphics2D g, Pac pac, PacManGameModel game) {
+	public void drawPac(Graphics2D g, Pac pac, GameModel game) {
 		drawGuy(g, pac, game);
 	}
 
 	@Override
-	public void drawGhost(Graphics2D g, Ghost ghost, PacManGameModel game) {
+	public void drawGhost(Graphics2D g, Ghost ghost, GameModel game) {
 		drawGuy(g, ghost, game);
 	}
 
 	@Override
-	public void drawBonus(Graphics2D g, Bonus bonus, PacManGameModel game) {
+	public void drawBonus(Graphics2D g, Bonus bonus, GameModel game) {
 		drawGuy(g, bonus, game);
 	}
 
 	@Override
-	public void drawLivesCounter(Graphics2D g, PacManGameModel game, int x, int y) {
+	public void drawLivesCounter(Graphics2D g, GameModel game, int x, int y) {
 		int maxLivesDisplayed = 5;
 		int livesDisplayed = game.started ? game.lives - 1 : game.lives;
 		Graphics2D g2 = smoothGC(g);
@@ -77,7 +77,7 @@ public abstract class GameRenderingUsingAnimatedSprites implements SpriteBasedSc
 	}
 
 	@Override
-	public void drawMaze(Graphics2D g, PacManGameModel game, int x, int y) {
+	public void drawMaze(Graphics2D g, GameModel game, int x, int y) {
 		if (mazeFlashing(game.level.mazeNumber).hasStarted()) {
 			// TODO avoid this cats
 			BufferedImage image = (BufferedImage) mazeFlashing(game.level.mazeNumber).animate();
@@ -107,7 +107,7 @@ public abstract class GameRenderingUsingAnimatedSprites implements SpriteBasedSc
 		drawBonus(g, game.bonus, game);
 	}
 
-	private void drawMazeWithFood(Graphics2D g, PacManGameModel game, int mazeNumber, int x, int y) {
+	private void drawMazeWithFood(Graphics2D g, GameModel game, int mazeNumber, int x, int y) {
 		Graphics2D g2 = smoothGC(g);
 		drawFullMaze(g2, game, mazeNumber, x, y);
 		g2.dispose();
@@ -117,7 +117,7 @@ public abstract class GameRenderingUsingAnimatedSprites implements SpriteBasedSc
 		});
 	}
 
-	private void drawMazeWithFoodAnimation(Graphics2D g, PacManGameModel game, int mazeNumber, int x, int y) {
+	private void drawMazeWithFoodAnimation(Graphics2D g, GameModel game, int mazeNumber, int x, int y) {
 		drawEmptyMaze(g, game, mazeNumber, x, y);
 		game.level.world.tiles().filter(game.level::containsFood).forEach(tile -> {
 			if (game.level.world.isEnergizerTile(tile)) {
@@ -139,7 +139,7 @@ public abstract class GameRenderingUsingAnimatedSprites implements SpriteBasedSc
 	}
 
 	@Override
-	public void signalGameState(Graphics2D g, PacManGameModel game) {
+	public void signalGameState(Graphics2D g, GameModel game) {
 		if (game.state == PacManGameState.READY && !game.attractMode) {
 			g.setFont(font);
 			g.setColor(Color.YELLOW);

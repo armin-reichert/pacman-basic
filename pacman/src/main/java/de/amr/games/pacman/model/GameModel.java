@@ -1,7 +1,8 @@
 package de.amr.games.pacman.model;
 
 import static de.amr.games.pacman.lib.Logging.log;
-import static de.amr.games.pacman.model.GhostState.LOCKED;
+import static de.amr.games.pacman.model.guys.Ghost.BLINKY;
+import static de.amr.games.pacman.model.guys.GhostState.LOCKED;
 import static de.amr.games.pacman.world.PacManGameWorld.HTS;
 
 import java.io.File;
@@ -11,15 +12,16 @@ import java.util.stream.Stream;
 
 import de.amr.games.pacman.controller.PacManGameState;
 import de.amr.games.pacman.lib.Hiscore;
+import de.amr.games.pacman.model.guys.Bonus;
+import de.amr.games.pacman.model.guys.Ghost;
+import de.amr.games.pacman.model.guys.Pac;
 
 /**
- * Common base class for the game variants.
+ * Common base class for the models.
  * 
  * @author Armin Reichert
  */
-public abstract class PacManGameModel {
-
-	public static final byte BLINKY = 0, PINKY = 1, INKY = 2, CLYDE = 3, SUE = 3;
+public abstract class GameModel {
 
 	public PacManGameState state;
 	public boolean started;

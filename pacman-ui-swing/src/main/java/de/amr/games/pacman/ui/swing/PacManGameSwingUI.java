@@ -29,8 +29,8 @@ import javax.swing.Timer;
 import de.amr.games.pacman.controller.PacManGameController;
 import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.model.MsPacManGame;
-import de.amr.games.pacman.model.PacManGameModel;
+import de.amr.games.pacman.model.GameModel;
+import de.amr.games.pacman.model.mspacman.MsPacManGame;
 import de.amr.games.pacman.sound.PacManGameSoundManager;
 import de.amr.games.pacman.sound.PacManGameSounds;
 import de.amr.games.pacman.sound.SoundManager;
@@ -82,7 +82,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 
 	private final AbstractGameScene[][] scenes = new AbstractGameScene[2][5];
 
-	private PacManGameModel game;
+	private GameModel game;
 	private GameScene currentScene;
 
 	private final Deque<FlashMessage> flashMessageQ = new ArrayDeque<>();
@@ -164,7 +164,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 	}
 
 	@Override
-	public void onGameChanged(PacManGameModel newGame) {
+	public void onGameChanged(GameModel newGame) {
 		this.game = Objects.requireNonNull(newGame);
 		Arrays.stream(scenes[currentGameType()]).forEach(scene -> scene.setGame(newGame));
 		currentScene = currentGameScene();

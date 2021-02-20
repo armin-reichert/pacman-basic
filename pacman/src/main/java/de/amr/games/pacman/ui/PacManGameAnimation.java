@@ -4,9 +4,9 @@ import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.Direction;
-import de.amr.games.pacman.model.Ghost;
-import de.amr.games.pacman.model.Pac;
-import de.amr.games.pacman.model.PacManGameModel;
+import de.amr.games.pacman.model.GameModel;
+import de.amr.games.pacman.model.guys.Ghost;
+import de.amr.games.pacman.model.guys.Pac;
 
 /**
  * Optional visual animation provided by a game view.
@@ -61,7 +61,7 @@ public interface PacManGameAnimation {
 
 	Animation<Boolean> energizerBlinking();
 
-	default void reset(PacManGameModel game) {
+	default void reset(GameModel game) {
 		mazeFlashings().forEach(Animation::reset);
 		energizerBlinking().reset();
 		ghostFlashing().reset();

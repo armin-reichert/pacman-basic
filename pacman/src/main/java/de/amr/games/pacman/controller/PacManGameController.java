@@ -14,14 +14,14 @@ import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.lib.Logging.log;
-import static de.amr.games.pacman.model.GhostState.DEAD;
-import static de.amr.games.pacman.model.GhostState.HUNTING_PAC;
-import static de.amr.games.pacman.model.GhostState.LEAVING_HOUSE;
-import static de.amr.games.pacman.model.GhostState.LOCKED;
-import static de.amr.games.pacman.model.PacManGameModel.BLINKY;
-import static de.amr.games.pacman.model.PacManGameModel.CLYDE;
-import static de.amr.games.pacman.model.PacManGameModel.INKY;
-import static de.amr.games.pacman.model.PacManGameModel.PINKY;
+import static de.amr.games.pacman.model.guys.Ghost.BLINKY;
+import static de.amr.games.pacman.model.guys.Ghost.CLYDE;
+import static de.amr.games.pacman.model.guys.Ghost.INKY;
+import static de.amr.games.pacman.model.guys.Ghost.PINKY;
+import static de.amr.games.pacman.model.guys.GhostState.DEAD;
+import static de.amr.games.pacman.model.guys.GhostState.HUNTING_PAC;
+import static de.amr.games.pacman.model.guys.GhostState.LEAVING_HOUSE;
+import static de.amr.games.pacman.model.guys.GhostState.LOCKED;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,12 +32,12 @@ import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.model.GameModel;
 import de.amr.games.pacman.model.GameType;
-import de.amr.games.pacman.model.Ghost;
-import de.amr.games.pacman.model.GhostState;
-import de.amr.games.pacman.model.MsPacManGame;
-import de.amr.games.pacman.model.PacManGame;
-import de.amr.games.pacman.model.PacManGameModel;
+import de.amr.games.pacman.model.guys.Ghost;
+import de.amr.games.pacman.model.guys.GhostState;
+import de.amr.games.pacman.model.mspacman.MsPacManGame;
+import de.amr.games.pacman.model.pacman.PacManGame;
 import de.amr.games.pacman.sound.PacManGameSound;
 import de.amr.games.pacman.sound.SoundManager;
 import de.amr.games.pacman.ui.PacManGameAnimation;
@@ -63,10 +63,10 @@ import de.amr.games.pacman.ui.PacManGameUI;
  */
 public class PacManGameController {
 
-	private final PacManGameModel pacManGame = new PacManGame();
-	private final PacManGameModel msPacManGame = new MsPacManGame();
+	private final GameModel pacManGame = new PacManGame();
+	private final GameModel msPacManGame = new MsPacManGame();
 
-	private PacManGameModel game;
+	private GameModel game;
 
 	private final List<PacManGameUI> views = new ArrayList<>(Arrays.asList(PacManGameNoUI.THE_ONE));
 
@@ -110,7 +110,7 @@ public class PacManGameController {
 		views.forEach(PacManGameUI::render);
 	}
 
-	public PacManGameModel getGame() {
+	public GameModel getGame() {
 		return game;
 	}
 

@@ -4,10 +4,10 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
-import de.amr.games.pacman.model.Bonus;
-import de.amr.games.pacman.model.Ghost;
-import de.amr.games.pacman.model.Pac;
-import de.amr.games.pacman.model.PacManGameModel;
+import de.amr.games.pacman.model.GameModel;
+import de.amr.games.pacman.model.guys.Bonus;
+import de.amr.games.pacman.model.guys.Ghost;
+import de.amr.games.pacman.model.guys.Pac;
 
 /**
  * Interface used to render game scenes.
@@ -16,27 +16,27 @@ import de.amr.games.pacman.model.PacManGameModel;
  */
 public interface GameRendering {
 
-	void signalGameState(Graphics2D g, PacManGameModel game);
+	void signalGameState(Graphics2D g, GameModel game);
 
-	void drawScore(Graphics2D g, PacManGameModel game, int x, int y);
+	void drawScore(Graphics2D g, GameModel game, int x, int y);
 
-	void drawHiScore(Graphics2D g, PacManGameModel game, int x, int y);
+	void drawHiScore(Graphics2D g, GameModel game, int x, int y);
 
-	void drawLivesCounter(Graphics2D g, PacManGameModel game, int x, int y);
+	void drawLivesCounter(Graphics2D g, GameModel game, int x, int y);
 
-	void drawLevelCounter(Graphics2D g, PacManGameModel game, int rightX, int y);
+	void drawLevelCounter(Graphics2D g, GameModel game, int rightX, int y);
 
-	void drawMaze(Graphics2D g, PacManGameModel game, int x, int y);
+	void drawMaze(Graphics2D g, GameModel game, int x, int y);
 
-	void drawEmptyMaze(Graphics2D g, PacManGameModel game, int mazeNumber, int x, int y);
+	void drawEmptyMaze(Graphics2D g, GameModel game, int mazeNumber, int x, int y);
 
-	void drawFullMaze(Graphics2D g, PacManGameModel game, int mazeNumber, int x, int y);
+	void drawFullMaze(Graphics2D g, GameModel game, int mazeNumber, int x, int y);
 
-	void drawPac(Graphics2D g, Pac pac, PacManGameModel game);
+	void drawPac(Graphics2D g, Pac pac, GameModel game);
 
-	void drawGhost(Graphics2D g, Ghost ghost, PacManGameModel game);
+	void drawGhost(Graphics2D g, Ghost ghost, GameModel game);
 
-	void drawBonus(Graphics2D g, Bonus bonus, PacManGameModel game);
+	void drawBonus(Graphics2D g, Bonus bonus, GameModel game);
 
 	default Graphics2D smoothGC(Graphics2D g) {
 		Graphics2D g2 = (Graphics2D) g.create();

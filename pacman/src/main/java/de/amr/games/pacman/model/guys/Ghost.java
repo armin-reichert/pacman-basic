@@ -1,19 +1,20 @@
-package de.amr.games.pacman.model;
+package de.amr.games.pacman.model.guys;
 
 import static de.amr.games.pacman.heaven.God.differsAtMost;
 import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Direction.UP;
-import static de.amr.games.pacman.model.GhostState.ENTERING_HOUSE;
-import static de.amr.games.pacman.model.GhostState.HUNTING_PAC;
-import static de.amr.games.pacman.model.GhostState.LEAVING_HOUSE;
+import static de.amr.games.pacman.model.guys.GhostState.ENTERING_HOUSE;
+import static de.amr.games.pacman.model.guys.GhostState.HUNTING_PAC;
+import static de.amr.games.pacman.model.guys.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.world.PacManGameWorld.HTS;
 import static de.amr.games.pacman.world.PacManGameWorld.t;
 
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.model.GameLevel;
 
 /**
  * A ghost.
@@ -21,6 +22,8 @@ import de.amr.games.pacman.lib.V2i;
  * @author Armin Reichert
  */
 public class Ghost extends Creature {
+
+	public static final byte BLINKY = 0, PINKY = 1, INKY = 2, CLYDE = 3, SUE = 3;
 
 	/** The unique ID of the ghost (0..3). */
 	public final byte id;
