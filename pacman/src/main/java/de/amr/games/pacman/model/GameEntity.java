@@ -17,4 +17,9 @@ public class GameEntity {
 	public void move() {
 		position = position.sum(velocity);
 	}
+
+	/** Sets the entity's position. */
+	public void setPosition(double x, double y) {
+		position = new V2f((float) x, (float) y);
+	}
 }
