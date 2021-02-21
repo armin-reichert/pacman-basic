@@ -2,7 +2,7 @@ package de.amr.games.pacman.ui.swing.pacman;
 
 import static de.amr.games.pacman.heaven.God.clock;
 import static de.amr.games.pacman.lib.Logging.log;
-import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.mrPacManGameRendering;
+import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.PACMAN_GAME_RENDERING;
 import static de.amr.games.pacman.world.PacManGameWorld.TS;
 import static de.amr.games.pacman.world.PacManGameWorld.t;
 
@@ -18,7 +18,7 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.model.guys.Ghost;
 import de.amr.games.pacman.model.guys.GhostState;
 import de.amr.games.pacman.model.guys.Pac;
-import de.amr.games.pacman.ui.swing.scene.AbstractGameScene;
+import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
 import de.amr.games.pacman.ui.swing.scene.GameScene;
 
 /**
@@ -29,7 +29,7 @@ import de.amr.games.pacman.ui.swing.scene.GameScene;
  * 
  * @author Armin Reichert
  */
-public class PacMan_IntroScene extends AbstractGameScene implements GameScene {
+public class PacMan_IntroScene extends GameScene<PacMan_GameRendering> {
 
 	static class GhostPortrait {
 
@@ -64,7 +64,7 @@ public class PacMan_IntroScene extends AbstractGameScene implements GameScene {
 	}
 
 	public PacMan_IntroScene(Dimension size) {
-		super(size);
+		super(size, PacManGameSwingUI.PACMAN_GAME_RENDERING);
 	}
 
 	@Override
@@ -180,7 +180,7 @@ public class PacMan_IntroScene extends AbstractGameScene implements GameScene {
 		pac.speed = 1;
 		pac.dir = Direction.LEFT;
 		pac.couldMove = true;
-		mrPacManGameRendering.pacMunching(pac).forEach(Animation::restart);
+		PACMAN_GAME_RENDERING.pacMunching(pac).forEach(Animation::restart);
 
 		for (Ghost ghost : ghosts) {
 			ghost.setPosition(pac.position.sum(8 + (ghost.id + 1) * 18, 0));
@@ -188,7 +188,7 @@ public class PacMan_IntroScene extends AbstractGameScene implements GameScene {
 			ghost.dir = ghost.wishDir = Direction.LEFT;
 			ghost.speed = pac.speed * 1.05f;
 			ghost.state = GhostState.HUNTING_PAC;
-			mrPacManGameRendering.ghostsKicking(Stream.of(ghosts)).forEach(Animation::restart);
+			PACMAN_GAME_RENDERING.ghostsKicking(Stream.of(ghosts)).forEach(Animation::restart);
 		}
 	}
 
@@ -202,7 +202,7 @@ public class PacMan_IntroScene extends AbstractGameScene implements GameScene {
 
 	@Override
 	public void render(Graphics2D g) {
-		mrPacManGameRendering.drawScore(g, game, t(1), t(0));
+		PACMAN_GAME_RENDERING.drawScore(g, game, t(1), t(0));
 		drawGallery(g);
 		if (phase == Phase.CHASING_PAC) {
 			if (blinking.animate()) {
@@ -220,9 +220,9 @@ public class PacMan_IntroScene extends AbstractGameScene implements GameScene {
 	}
 
 	private void drawGuys(Graphics2D g) {
-		mrPacManGameRendering.drawPac(g, pac, game);
+		PACMAN_GAME_RENDERING.drawPac(g, pac, game);
 		for (Ghost ghost : ghosts) {
-			mrPacManGameRendering.drawGhost(g, ghost, game);
+			PACMAN_GAME_RENDERING.drawGhost(g, ghost, game);
 		}
 	}
 
@@ -234,7 +234,7 @@ public class PacMan_IntroScene extends AbstractGameScene implements GameScene {
 	private void drawGallery(Graphics2D g) {
 		int x = t(2);
 		g.setColor(Color.WHITE);
-		g.setFont(mrPacManGameRendering.assets.getScoreFont());
+		g.setFont(rendering.assets.getScoreFont());
 		g.drawString("CHARACTER", t(6), TOP_Y);
 		g.drawString("/", t(16), TOP_Y);
 		g.drawString("NICKNAME", t(18), TOP_Y);
@@ -242,10 +242,10 @@ public class PacMan_IntroScene extends AbstractGameScene implements GameScene {
 			GhostPortrait portrait = gallery[i];
 			if (portrait.ghost.visible) {
 				int y = TOP_Y + t(2 + 3 * i);
-				BufferedImage ghostTile = mrPacManGameRendering.ghostKickingToDir(portrait.ghost, Direction.RIGHT).frame(0);
-				mrPacManGameRendering.drawImage(g, ghostTile, x, y - 4, true);
+				BufferedImage ghostTile = rendering.ghostKickingToDir(portrait.ghost, Direction.RIGHT).frame(0);
+				rendering.drawImage(g, ghostTile, x, y - 4, true);
 				g.setColor(portrait.color);
-				g.setFont(mrPacManGameRendering.assets.getScoreFont());
+				g.setFont(rendering.assets.getScoreFont());
 				if (portrait.characterVisible) {
 					g.drawString("-" + portrait.character, t(6), y + 8);
 				}
@@ -260,7 +260,7 @@ public class PacMan_IntroScene extends AbstractGameScene implements GameScene {
 		if (blinking.frame()) {
 			String text = "PRESS SPACE TO PLAY";
 			g.setColor(Color.ORANGE);
-			g.setFont(mrPacManGameRendering.assets.getScoreFont());
+			g.setFont(rendering.assets.getScoreFont());
 			g.drawString(text, t(14 - text.length() / 2), t(yTile));
 		}
 	}
@@ -272,10 +272,10 @@ public class PacMan_IntroScene extends AbstractGameScene implements GameScene {
 			g.fillOval(t(tileX), t(tileY + 1) - 2, 10, 10);
 		}
 		g.setColor(Color.WHITE);
-		g.setFont(mrPacManGameRendering.assets.getScoreFont());
+		g.setFont(rendering.assets.getScoreFont());
 		g.drawString("10", t(tileX + 2), t(tileY));
 		g.drawString("50", t(tileX + 2), t(tileY + 2));
-		g.setFont(mrPacManGameRendering.assets.getScoreFont().deriveFont(6f));
+		g.setFont(rendering.assets.getScoreFont().deriveFont(6f));
 		g.drawString("PTS", t(tileX + 5), t(tileY));
 		g.drawString("PTS", t(tileX + 5), t(tileY + 2));
 	}

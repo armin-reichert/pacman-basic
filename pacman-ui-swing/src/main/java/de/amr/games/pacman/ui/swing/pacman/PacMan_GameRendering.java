@@ -27,11 +27,11 @@ import de.amr.games.pacman.ui.swing.rendering.DefaultGameRendering;
  * 
  * @author Armin Reichert
  */
-public class MrPacMan_GameRendering extends DefaultGameRendering {
+public class PacMan_GameRendering extends DefaultGameRendering {
 
 	public final PacMan_Assets assets;
 
-	public MrPacMan_GameRendering() {
+	public PacMan_GameRendering() {
 		assets = new PacMan_Assets();
 	}
 

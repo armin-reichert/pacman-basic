@@ -1,8 +1,7 @@
 package de.amr.games.pacman.ui.swing.mspacman;
 
 import static de.amr.games.pacman.heaven.God.clock;
-import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.msPacManGameRendering;
-import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.msPacManGameSounds;
+import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.MSPACMAN_GAME_SOUNDS;
 import static de.amr.games.pacman.ui.swing.mspacman.MsPacMan_GameRendering.assets;
 import static de.amr.games.pacman.world.PacManGameWorld.t;
 
@@ -14,7 +13,8 @@ import de.amr.games.pacman.lib.CountdownTimer;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.model.guys.Pac;
 import de.amr.games.pacman.sound.PacManGameSound;
-import de.amr.games.pacman.ui.swing.scene.AbstractGameScene;
+import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
+import de.amr.games.pacman.ui.swing.scene.GameScene;
 
 /**
  * Intermission scene 2: "The chase".
@@ -24,7 +24,7 @@ import de.amr.games.pacman.ui.swing.scene.AbstractGameScene;
  * 
  * @author Armin Reichert
  */
-public class MsPacMan_IntermissionScene2 extends AbstractGameScene {
+public class MsPacMan_IntermissionScene2 extends GameScene<MsPacMan_GameRendering> {
 
 	enum Phase {
 
@@ -46,7 +46,7 @@ public class MsPacMan_IntermissionScene2 extends AbstractGameScene {
 	}
 
 	public MsPacMan_IntermissionScene2(Dimension size) {
-		super(size);
+		super(size, PacManGameSwingUI.MSPACMAN_GAME_RENDERING);
 	}
 
 	@Override
@@ -62,7 +62,7 @@ public class MsPacMan_IntermissionScene2 extends AbstractGameScene {
 		pacMan = new Pac("Pac-Man", Direction.RIGHT);
 		msPacMan = new Pac("Ms. Pac-Man", Direction.RIGHT);
 
-		msPacManGameSounds.play(PacManGameSound.INTERMISSION_2);
+		MSPACMAN_GAME_SOUNDS.play(PacManGameSound.INTERMISSION_2);
 		enter(Phase.FLAP, Long.MAX_VALUE);
 	}
 
@@ -87,7 +87,7 @@ public class MsPacMan_IntermissionScene2 extends AbstractGameScene {
 				pacMan.dir = msPacMan.dir = Direction.RIGHT;
 				pacMan.speed = msPacMan.speed = 2;
 				assets.pacManMunching.values().forEach(Animation::restart);
-				msPacManGameRendering.pacMunching(msPacMan).forEach(Animation::restart);
+				rendering.pacMunching(msPacMan).forEach(Animation::restart);
 			}
 			if (phase.timer.running() == clock.sec(6)) {
 				msPacMan.setPosition(t(30), LOWER_Y);
@@ -129,7 +129,7 @@ public class MsPacMan_IntermissionScene2 extends AbstractGameScene {
 	@Override
 	public void render(Graphics2D g) {
 		flap.draw(g);
-		msPacManGameRendering.drawMrPacMan(g, pacMan);
-		msPacManGameRendering.drawPac(g, msPacMan, game);
+		rendering.drawMrPacMan(g, pacMan);
+		rendering.drawPac(g, msPacMan, game);
 	}
 }

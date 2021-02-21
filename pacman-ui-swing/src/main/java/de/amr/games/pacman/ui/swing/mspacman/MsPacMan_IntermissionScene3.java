@@ -1,8 +1,7 @@
 package de.amr.games.pacman.ui.swing.mspacman;
 
 import static de.amr.games.pacman.heaven.God.clock;
-import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.msPacManGameRendering;
-import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.msPacManGameSounds;
+import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.MSPACMAN_GAME_SOUNDS;
 import static de.amr.games.pacman.ui.swing.mspacman.MsPacMan_GameRendering.assets;
 import static de.amr.games.pacman.world.PacManGameWorld.t;
 
@@ -17,7 +16,8 @@ import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.model.guys.GameEntity;
 import de.amr.games.pacman.model.guys.Pac;
 import de.amr.games.pacman.sound.PacManGameSound;
-import de.amr.games.pacman.ui.swing.scene.AbstractGameScene;
+import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
+import de.amr.games.pacman.ui.swing.scene.GameScene;
 
 /**
  * Intermission scene 3: "Junior".
@@ -29,20 +29,20 @@ import de.amr.games.pacman.ui.swing.scene.AbstractGameScene;
  * 
  * @author Armin Reichert
  */
-public class MsPacMan_IntermissionScene3 extends AbstractGameScene {
+public class MsPacMan_IntermissionScene3 extends GameScene<MsPacMan_GameRendering> {
 
-	static class Bird extends GameEntity {
+	class Bird extends GameEntity {
 
 		Animation<BufferedImage> animation = assets.birdAnim;
 
 		public void draw(Graphics2D g) {
 			if (visible) {
-				msPacManGameRendering.drawBirdAnim(g, position.x, position.y);
+				rendering.drawBirdAnim(g, position.x, position.y);
 			}
 		}
 	}
 
-	static class Bag extends GameEntity {
+	class Bag extends GameEntity {
 
 		boolean released;
 		boolean open;
@@ -58,9 +58,9 @@ public class MsPacMan_IntermissionScene3 extends AbstractGameScene {
 
 		public void draw(Graphics2D g) {
 			if (open) {
-				msPacManGameRendering.drawJunior(g, position.x, position.y);
+				rendering.drawJunior(g, position.x, position.y);
 			} else {
-				msPacManGameRendering.drawBlueBag(g, position.x, position.y);
+				rendering.drawBlueBag(g, position.x, position.y);
 			}
 		}
 	}
@@ -84,7 +84,7 @@ public class MsPacMan_IntermissionScene3 extends AbstractGameScene {
 	private Phase phase;
 
 	public MsPacMan_IntermissionScene3(Dimension size) {
-		super(size);
+		super(size, PacManGameSwingUI.MSPACMAN_GAME_RENDERING);
 	}
 
 	private void enter(Phase newPhase, long ticks) {
@@ -115,7 +115,7 @@ public class MsPacMan_IntermissionScene3 extends AbstractGameScene {
 		bag = new Bag();
 		bag.setPosition(bird.position.sum(-14, 3));
 
-		msPacManGameSounds.play(PacManGameSound.INTERMISSION_3);
+		MSPACMAN_GAME_SOUNDS.play(PacManGameSound.INTERMISSION_3);
 		enter(Phase.FLAP, Long.MAX_VALUE);
 	}
 
@@ -172,8 +172,8 @@ public class MsPacMan_IntermissionScene3 extends AbstractGameScene {
 	@Override
 	public void render(Graphics2D g) {
 		flap.draw(g);
-		msPacManGameRendering.drawPac(g, msPacMan, game);
-		msPacManGameRendering.drawMrPacMan(g, pacMan);
+		rendering.drawPac(g, msPacMan, game);
+		rendering.drawMrPacMan(g, pacMan);
 		bird.draw(g);
 		bag.draw(g);
 	}

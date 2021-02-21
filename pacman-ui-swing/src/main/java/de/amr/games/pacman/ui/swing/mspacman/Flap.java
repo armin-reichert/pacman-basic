@@ -13,7 +13,7 @@ import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
 
 public class Flap extends GameEntity {
 
-	static final MsPacMan_GameRendering rendering = PacManGameSwingUI.msPacManGameRendering;
+	static final MsPacMan_GameRendering rendering = PacManGameSwingUI.MSPACMAN_GAME_RENDERING;
 
 	public int sceneNumber = 1;
 	public String sceneTitle = "Scene #" + sceneNumber;

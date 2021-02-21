@@ -17,14 +17,14 @@ import de.amr.games.pacman.model.guys.Pac;
 import de.amr.games.pacman.sound.PacManGameSound;
 import de.amr.games.pacman.sound.SoundManager;
 import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
-import de.amr.games.pacman.ui.swing.scene.AbstractGameScene;
+import de.amr.games.pacman.ui.swing.scene.GameScene;
 
 /**
  * First intermission scene: Blinky chases Pac-Man and is then chased by a huge Pac-Man.
  * 
  * @author Armin Reichert
  */
-public class PacMan_IntermissionScene1 extends AbstractGameScene {
+public class PacMan_IntermissionScene1 extends GameScene<PacMan_GameRendering> {
 
 	enum Phase {
 		BLINKY_CHASING_PACMAN, BIGPACMAN_CHASING_BLINKY;
@@ -32,8 +32,7 @@ public class PacMan_IntermissionScene1 extends AbstractGameScene {
 
 	private static final int baselineY = t(20);
 
-	private final MrPacMan_GameRendering rendering = PacManGameSwingUI.mrPacManGameRendering;
-	private final SoundManager sounds = PacManGameSwingUI.mrPacManGameSounds;
+	private final SoundManager sounds = PacManGameSwingUI.PACMAN_GAME_SOUNDS;
 
 	private Ghost blinky;
 	private Pac pac;
@@ -41,7 +40,7 @@ public class PacMan_IntermissionScene1 extends AbstractGameScene {
 	private Phase phase;
 
 	public PacMan_IntermissionScene1(Dimension size) {
-		super(size);
+		super(size, PacManGameSwingUI.PACMAN_GAME_RENDERING);
 	}
 
 	@Override

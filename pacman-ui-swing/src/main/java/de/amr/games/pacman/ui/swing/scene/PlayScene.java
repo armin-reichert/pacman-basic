@@ -13,13 +13,14 @@ import de.amr.games.pacman.ui.swing.rendering.GameRendering;
  * 
  * @author Armin Reichert
  */
-public class PlayScene extends AbstractGameScene {
+public class PlayScene<R extends GameRendering> extends GameScene<R> {
 
-	private final GameRendering rendering;
+	public PlayScene(Dimension size, R rendering) {
+		super(size, rendering);
+	}
 
-	public PlayScene(Dimension size, GameRendering rendering) {
-		super(size);
-		this.rendering = rendering;
+	@Override
+	public void update() {
 	}
 
 	@Override

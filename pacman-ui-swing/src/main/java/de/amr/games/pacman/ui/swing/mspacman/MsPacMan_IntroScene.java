@@ -18,14 +18,14 @@ import de.amr.games.pacman.model.guys.Ghost;
 import de.amr.games.pacman.model.guys.GhostState;
 import de.amr.games.pacman.model.guys.Pac;
 import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
-import de.amr.games.pacman.ui.swing.scene.AbstractGameScene;
+import de.amr.games.pacman.ui.swing.scene.GameScene;
 
 /**
  * Intro scene of the Ms. Pac-Man game. The ghosts and Ms. Pac-Man are introduced one after another.
  * 
  * @author Armin Reichert
  */
-public class MsPacMan_IntroScene extends AbstractGameScene {
+public class MsPacMan_IntroScene extends GameScene<MsPacMan_GameRendering> {
 
 	enum Phase {
 
@@ -33,8 +33,6 @@ public class MsPacMan_IntroScene extends AbstractGameScene {
 
 		private final CountdownTimer timer = new CountdownTimer();
 	}
-
-	private final MsPacMan_GameRendering rendering = PacManGameSwingUI.msPacManGameRendering;
 
 	private final V2i frameTopLeftTile = new V2i(6, 8);
 	private final int belowFrame = t(17);
@@ -50,7 +48,7 @@ public class MsPacMan_IntroScene extends AbstractGameScene {
 	private boolean presentingMsPac;
 
 	public MsPacMan_IntroScene(Dimension size) {
-		super(size);
+		super(size, PacManGameSwingUI.MSPACMAN_GAME_RENDERING);
 	}
 
 	private void enterPhase(Phase newPhase) {

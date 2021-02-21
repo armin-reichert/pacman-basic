@@ -1,8 +1,7 @@
 package de.amr.games.pacman.ui.swing.mspacman;
 
 import static de.amr.games.pacman.heaven.God.clock;
-import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.msPacManGameRendering;
-import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.msPacManGameSounds;
+import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.MSPACMAN_GAME_SOUNDS;
 import static de.amr.games.pacman.ui.swing.mspacman.MsPacMan_GameRendering.assets;
 import static de.amr.games.pacman.world.PacManGameWorld.t;
 
@@ -16,7 +15,8 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.model.guys.Ghost;
 import de.amr.games.pacman.model.guys.Pac;
 import de.amr.games.pacman.sound.PacManGameSound;
-import de.amr.games.pacman.ui.swing.scene.AbstractGameScene;
+import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
+import de.amr.games.pacman.ui.swing.scene.GameScene;
 
 /**
  * Intermission scene 1: "They meet".
@@ -28,7 +28,7 @@ import de.amr.games.pacman.ui.swing.scene.AbstractGameScene;
  * 
  * @author Armin Reichert
  */
-public class MsPacMan_IntermissionScene1 extends AbstractGameScene {
+public class MsPacMan_IntermissionScene1 extends GameScene<MsPacMan_GameRendering> {
 
 	enum Phase {
 
@@ -53,7 +53,7 @@ public class MsPacMan_IntermissionScene1 extends AbstractGameScene {
 	}
 
 	public MsPacMan_IntermissionScene1(Dimension size) {
-		super(size);
+		super(size, PacManGameSwingUI.MSPACMAN_GAME_RENDERING);
 	}
 
 	@Override
@@ -78,15 +78,15 @@ public class MsPacMan_IntermissionScene1 extends AbstractGameScene {
 		msPac = new Pac("Ms. Pac-Man", Direction.LEFT);
 		msPac.setPosition(t(30), lowerY);
 		msPac.visible = true;
-		msPacManGameRendering.pacMunching(msPac).forEach(Animation::restart);
+		rendering.pacMunching(msPac).forEach(Animation::restart);
 
 		pinky = new Ghost(1, "Pinky", Direction.LEFT);
 		pinky.setPosition(msPac.position.sum(t(3), 0));
 		pinky.visible = true;
 
-		msPacManGameRendering.ghostsKicking(Stream.of(inky, pinky)).forEach(Animation::restart);
+		rendering.ghostsKicking(Stream.of(inky, pinky)).forEach(Animation::restart);
 
-		msPacManGameSounds.loop(PacManGameSound.INTERMISSION_1, 1);
+		MSPACMAN_GAME_SOUNDS.loop(PacManGameSound.INTERMISSION_1, 1);
 
 		heartVisible = false;
 		ghostsMet = false;
@@ -128,8 +128,8 @@ public class MsPacMan_IntermissionScene1 extends AbstractGameScene {
 				pacMan.dir = Direction.LEFT;
 				msPac.dir = Direction.RIGHT;
 				heartVisible = true;
-				msPacManGameRendering.ghostKicking(inky).forEach(Animation::reset);
-				msPacManGameRendering.ghostKicking(pinky).forEach(Animation::reset);
+				rendering.ghostKicking(inky).forEach(Animation::reset);
+				rendering.ghostKicking(pinky).forEach(Animation::reset);
 				enter(Phase.READY_TO_PLAY, clock.sec(3));
 			}
 			if (!ghostsMet && inky.position.x - pinky.position.x < 16) {
@@ -177,12 +177,12 @@ public class MsPacMan_IntermissionScene1 extends AbstractGameScene {
 	@Override
 	public void render(Graphics2D g) {
 		flap.draw(g);
-		msPacManGameRendering.drawMrPacMan(g, pacMan);
-		msPacManGameRendering.drawGhost(g, inky, game);
-		msPacManGameRendering.drawPac(g, msPac, game);
-		msPacManGameRendering.drawGhost(g, pinky, game);
+		rendering.drawMrPacMan(g, pacMan);
+		rendering.drawGhost(g, inky, game);
+		rendering.drawPac(g, msPac, game);
+		rendering.drawGhost(g, pinky, game);
 		if (heartVisible) {
-			msPacManGameRendering.drawHeart(g, msPac.position.x + 4, pacMan.position.y - 20);
+			rendering.drawHeart(g, msPac.position.x + 4, pacMan.position.y - 20);
 		}
 	}
 }
