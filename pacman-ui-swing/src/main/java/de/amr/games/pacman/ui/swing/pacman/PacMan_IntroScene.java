@@ -28,7 +28,7 @@ import de.amr.games.pacman.ui.swing.scene.GameScene;
  * 
  * @author Armin Reichert
  */
-public class PacMan_IntroScene extends GameScene<PacMan_GameRendering> {
+public class PacMan_IntroScene extends GameScene<PacMan_Rendering> {
 
 	static class GhostPortrait {
 

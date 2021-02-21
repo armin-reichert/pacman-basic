@@ -42,12 +42,12 @@ import de.amr.games.pacman.ui.FlashMessage;
 import de.amr.games.pacman.ui.PacManGameAnimation;
 import de.amr.games.pacman.ui.PacManGameUI;
 import de.amr.games.pacman.ui.swing.assets.AssetLoader;
-import de.amr.games.pacman.ui.swing.mspacman.MsPacMan_GameRendering;
+import de.amr.games.pacman.ui.swing.mspacman.MsPacMan_Rendering;
 import de.amr.games.pacman.ui.swing.mspacman.MsPacMan_IntermissionScene1;
 import de.amr.games.pacman.ui.swing.mspacman.MsPacMan_IntermissionScene2;
 import de.amr.games.pacman.ui.swing.mspacman.MsPacMan_IntermissionScene3;
 import de.amr.games.pacman.ui.swing.mspacman.MsPacMan_IntroScene;
-import de.amr.games.pacman.ui.swing.pacman.PacMan_GameRendering;
+import de.amr.games.pacman.ui.swing.pacman.PacMan_Rendering;
 import de.amr.games.pacman.ui.swing.pacman.PacMan_IntermissionScene1;
 import de.amr.games.pacman.ui.swing.pacman.PacMan_IntermissionScene2;
 import de.amr.games.pacman.ui.swing.pacman.PacMan_IntermissionScene3;
@@ -63,8 +63,8 @@ import de.amr.games.pacman.ui.swing.scene.PlayScene;
  */
 public class PacManGameSwingUI implements PacManGameUI {
 
-	public static final PacMan_GameRendering RENDERING_PACMAN = new PacMan_GameRendering();
-	public static final MsPacMan_GameRendering RENDERING_MSPACMAN = new MsPacMan_GameRendering();
+	public static final PacMan_Rendering RENDERING_PACMAN = new PacMan_Rendering();
+	public static final MsPacMan_Rendering RENDERING_MSPACMAN = new MsPacMan_Rendering();
 
 	public static final SoundManager SOUNDS_PACMAN = new PacManGameSoundManager(PacManGameSounds::mrPacManSoundURL);
 	public static final SoundManager SOUNDS_MSPACMAN = new PacManGameSoundManager(PacManGameSounds::msPacManSoundURL);
@@ -128,7 +128,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 				new MsPacMan_IntermissionScene1(unscaledSize), //
 				new MsPacMan_IntermissionScene2(unscaledSize), //
 				new MsPacMan_IntermissionScene3(unscaledSize), //
-				new PlayScene<MsPacMan_GameRendering>(unscaledSize, RENDERING_MSPACMAN, SOUNDS_MSPACMAN)//
+				new PlayScene<MsPacMan_Rendering>(unscaledSize, RENDERING_MSPACMAN, SOUNDS_MSPACMAN)//
 		));
 
 		scenes.put(PACMAN, Arrays.asList(//
@@ -136,7 +136,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 				new PacMan_IntermissionScene1(unscaledSize), //
 				new PacMan_IntermissionScene2(unscaledSize), //
 				new PacMan_IntermissionScene3(unscaledSize), //
-				new PlayScene<PacMan_GameRendering>(unscaledSize, RENDERING_PACMAN, SOUNDS_PACMAN)//
+				new PlayScene<PacMan_Rendering>(unscaledSize, RENDERING_PACMAN, SOUNDS_PACMAN)//
 		));
 
 		onGameChanged(controller.getGame());

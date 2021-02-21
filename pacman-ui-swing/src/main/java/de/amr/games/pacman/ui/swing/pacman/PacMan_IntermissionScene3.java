@@ -27,7 +27,7 @@ import de.amr.games.pacman.ui.swing.scene.GameScene;
  * 
  * @author Armin Reichert
  */
-public class PacMan_IntermissionScene3 extends GameScene<PacMan_GameRendering> {
+public class PacMan_IntermissionScene3 extends GameScene<PacMan_Rendering> {
 
 	enum Phase {
 		CHASING_PACMAN, RETURNING_HALF_NAKED;

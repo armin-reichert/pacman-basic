@@ -79,7 +79,7 @@ public class MsPacMan_Assets extends Spritesheet {
 	final BufferedImage junior;
 
 	// get sprite from right part of the sheet, on the left are the maze images
-	private BufferedImage s(int tileX, int tileY) {
+	BufferedImage s(int tileX, int tileY) {
 		return sprite(456, 0, tileX, tileY);
 	}
 

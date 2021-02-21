@@ -24,7 +24,7 @@ import de.amr.games.pacman.ui.swing.scene.GameScene;
  * 
  * @author Armin Reichert
  */
-public class PacMan_IntermissionScene1 extends GameScene<PacMan_GameRendering> {
+public class PacMan_IntermissionScene1 extends GameScene<PacMan_Rendering> {
 
 	enum Phase {
 		BLINKY_CHASING_PACMAN, BIGPACMAN_CHASING_BLINKY;

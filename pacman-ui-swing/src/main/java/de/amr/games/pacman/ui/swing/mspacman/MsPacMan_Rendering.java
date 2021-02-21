@@ -1,4 +1,4 @@
-package de.amr.games.pacman.ui.swing.pacman;
+package de.amr.games.pacman.ui.swing.mspacman;
 
 import static de.amr.games.pacman.model.guys.GhostState.DEAD;
 import static de.amr.games.pacman.model.guys.GhostState.ENTERING_HOUSE;
@@ -23,17 +23,13 @@ import de.amr.games.pacman.ui.swing.assets.Spritesheet;
 import de.amr.games.pacman.ui.swing.rendering.DefaultGameRendering;
 
 /**
- * Rendering for the classic Pac-Man game.
+ * Rendering for the Ms. Pac-Man game.
  * 
  * @author Armin Reichert
  */
-public class PacMan_GameRendering extends DefaultGameRendering {
+public class MsPacMan_Rendering extends DefaultGameRendering {
 
-	public final PacMan_Assets assets;
-
-	public PacMan_GameRendering() {
-		assets = new PacMan_Assets();
-	}
+	public static final MsPacMan_Assets assets = new MsPacMan_Assets();
 
 	@Override
 	public Font scoreFont() {
@@ -47,17 +43,17 @@ public class PacMan_GameRendering extends DefaultGameRendering {
 
 	@Override
 	public Animation<BufferedImage> pacMunchingToDir(Pac pac, Direction dir) {
-		return assets.getOrCreatePacMunchingAnimation(pac).get(dir);
+		return assets.msPacManMunchingAnimByDir.get(dir);
 	}
 
 	@Override
 	public Animation<BufferedImage> pacDying() {
-		return assets.pacCollapsingAnim;
+		return assets.msPacManSpinningAnim;
 	}
 
 	@Override
 	public Animation<BufferedImage> ghostKickingToDir(Ghost ghost, Direction dir) {
-		return assets.getOrCreateGhostsWalkingAnimation(ghost).get(dir);
+		return assets.ghostsKickingAnimsByGhost.get(ghost.id).get(dir);
 	}
 
 	@Override
@@ -72,17 +68,18 @@ public class PacMan_GameRendering extends DefaultGameRendering {
 
 	@Override
 	public Animation<BufferedImage> ghostReturningHomeToDir(Ghost ghost, Direction dir) {
-		return assets.ghostEyesAnimsByDir.get(dir);
+		return assets.ghostEyesAnimByDir.get(dir);
 	}
 
 	@Override
 	public Animation<BufferedImage> mazeFlashing(int mazeNumber) {
-		return assets.mazeFlashingAnim;
+		return assets.mazesFlashingAnims.get(mazeNumber - 1);
 	}
 
 	@Override
 	public Stream<Animation<?>> mazeFlashings() {
-		return Stream.of(assets.mazeFlashingAnim);
+		// TODO this is silly
+		return assets.mazesFlashingAnims.stream().map(Animation.class::cast);
 	}
 
 	@Override
@@ -96,14 +93,14 @@ public class PacMan_GameRendering extends DefaultGameRendering {
 			return assets.symbolSprites[bonus.symbol];
 		}
 		if (bonus.eatenTicksLeft > 0) {
-			return assets.numberSprites.get(bonus.points);
+			return assets.bonusValueSprites.get(bonus.points);
 		}
 		return null;
 	}
 
 	@Override
 	public BufferedImage lifeSprite() {
-		return assets.sprite(8, 1);
+		return assets.lifeSprite;
 	}
 
 	@Override
@@ -111,19 +108,14 @@ public class PacMan_GameRendering extends DefaultGameRendering {
 		if (pac.dead) {
 			return pacDying().hasStarted() ? pacDying().animate() : pacMunchingToDir(pac, pac.dir).frame();
 		}
-		if (pac.speed == 0) {
-			return pacMunchingToDir(pac, pac.dir).frame(0);
-		}
-		if (!pac.couldMove) {
-			return pacMunchingToDir(pac, pac.dir).frame(1);
-		}
-		return pacMunchingToDir(pac, pac.dir).animate();
+		return pac.speed == 0 || !pac.couldMove ? pacMunchingToDir(pac, pac.dir).frame(1)
+				: pacMunchingToDir(pac, pac.dir).animate();
 	}
 
 	@Override
 	public BufferedImage ghostSprite(Ghost ghost, GameModel game) {
 		if (ghost.bounty > 0) {
-			return assets.numberSprites.get(ghost.bounty);
+			return assets.bountyNumberSprites.get(ghost.bounty);
 		}
 		if (ghost.is(DEAD) || ghost.is(ENTERING_HOUSE)) {
 			return ghostReturningHomeToDir(ghost, ghost.dir).animate();
@@ -134,28 +126,28 @@ public class PacMan_GameRendering extends DefaultGameRendering {
 		if (ghost.is(LOCKED) && game.pac.powerTicksLeft > 0) {
 			return ghostFrightenedToDir(ghost, ghost.dir).animate();
 		}
-		return ghostKickingToDir(ghost, ghost.wishDir).animate(); // Looks towards wish dir!
+		return ghostKickingToDir(ghost, ghost.wishDir).animate();
 	}
 
 	@Override
 	public void drawFullMaze(Graphics2D g, GameModel game, int mazeNumber, int x, int y) {
-		g.drawImage(assets.mazeFullImage, x, y, null);
+		g.drawImage(assets.mazeFullImages.get(mazeNumber - 1), x, y, null);
 	}
 
 	@Override
 	public void drawEmptyMaze(Graphics2D g, GameModel game, int mazeNumber, int x, int y) {
-		g.drawImage(assets.mazeEmptyImage, x, y, null);
+		g.drawImage(assets.mazeEmptyImages.get(mazeNumber - 1), x, y, null);
 	}
 
 	@Override
 	public void drawScore(Graphics2D g, GameModel game, int x, int y) {
-		g.setFont(assets.scoreFont);
+		g.setFont(assets.getScoreFont());
 		g.translate(0, assets.scoreFont.getSize() + 1);
 		g.setColor(Color.WHITE);
 		g.drawString("SCORE", x, y);
 		g.translate(0, 1);
 		if (game.state != PacManGameState.INTRO && !game.attractMode) {
-			g.setColor(Color.YELLOW);
+			g.setColor(assets.getMazeWallColor(game.level.mazeNumber - 1));
 			g.drawString(String.format("%08d", game.score), x, y + t(1));
 			g.setColor(Color.LIGHT_GRAY);
 			g.drawString(String.format("L%02d", game.currentLevelNumber), x + t(8), y + t(1));
@@ -165,13 +157,13 @@ public class PacMan_GameRendering extends DefaultGameRendering {
 
 	@Override
 	public void drawHiScore(Graphics2D g, GameModel game, int x, int y) {
-		g.setFont(assets.scoreFont);
+		g.setFont(assets.getScoreFont());
 		g.translate(0, assets.scoreFont.getSize() + 1);
 		g.setColor(Color.WHITE);
 		g.drawString("HIGHSCORE", x, y);
 		g.translate(0, 1);
 		if (game.state != PacManGameState.INTRO && !game.attractMode) {
-			g.setColor(Color.YELLOW);
+			g.setColor(assets.getMazeWallColor(game.level.mazeNumber - 1));
 			g.drawString(String.format("%08d", game.highscorePoints), x, y + t(1));
 			g.setColor(Color.LIGHT_GRAY);
 			g.drawString(String.format("L%02d", game.highscoreLevel), x + t(8), y + t(1));
@@ -183,13 +175,47 @@ public class PacMan_GameRendering extends DefaultGameRendering {
 	public void drawLevelCounter(Graphics2D g, GameModel game, int rightX, int y) {
 		Graphics2D g2 = smoothGC(g);
 		int x = rightX;
-		int firstLevelNumber = Math.max(1, game.currentLevelNumber - 6);
-		for (int levelNumber = firstLevelNumber; levelNumber <= game.currentLevelNumber; ++levelNumber) {
-			BufferedImage sprite = assets.symbolSprites[game.levelSymbols.get(levelNumber - 1)];
-			g2.drawImage(sprite, x, y, null);
+		for (int levelNumber = 1; levelNumber <= Math.min(game.currentLevelNumber, 7); ++levelNumber) {
+			byte symbol = game.levelSymbols.get(levelNumber - 1);
+			g2.drawImage(assets.symbolSprites[symbol], x, y, null);
 			x -= t(2);
 		}
 		g2.dispose();
 	}
 
+	@Override
+	public void drawBonus(Graphics2D g, Bonus bonus, GameModel game) {
+		// Ms. Pac.Man bonus is jumping while wandering the maze
+		int dy = game.bonus.edibleTicksLeft > 0 ? assets.bonusJumpAnim.animate() : 0;
+		g.translate(0, dy);
+		drawGuy(g, game.bonus, game);
+		g.translate(0, -dy);
+	}
+
+	public void drawMrPacMan(Graphics2D g, Pac pacMan) {
+		if (pacMan.visible) {
+			Animation<BufferedImage> munching = assets.pacManMunching.get(pacMan.dir);
+			drawImage(g, pacMan.speed > 0 ? munching.animate() : munching.frame(1), pacMan.position.x - 4,
+					pacMan.position.y - 4, true);
+		}
+	}
+
+	public void drawHeart(Graphics2D g, float x, float y) {
+		drawImage(g, assets.s(2, 10), x, y, true);
+	}
+
+	public void drawBirdAnim(Graphics2D g, float x, float y) {
+		BufferedImage frame = assets.birdAnim.animate();
+		drawImage(g, frame, x + 4 - frame.getWidth() / 2, y + 4 - frame.getHeight() / 2, true);
+	}
+
+	public void drawJunior(Graphics2D g, float x, float y) {
+		BufferedImage frame = assets.junior;
+		drawImage(g, frame, x + 4 - frame.getWidth() / 2, y + 4 - frame.getHeight() / 2, true);
+	}
+
+	public void drawBlueBag(Graphics2D g, float x, float y) {
+		BufferedImage frame = assets.blueBag;
+		drawImage(g, frame, x + 4 - frame.getWidth() / 2, y + 4 - frame.getHeight() / 2, true);
+	}
 }

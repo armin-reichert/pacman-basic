@@ -4,7 +4,7 @@ import static de.amr.games.pacman.heaven.God.clock;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.lib.Logging.log;
-import static de.amr.games.pacman.ui.swing.mspacman.MsPacMan_GameRendering.assets;
+import static de.amr.games.pacman.ui.swing.mspacman.MsPacMan_Rendering.assets;
 import static de.amr.games.pacman.world.PacManGameWorld.t;
 
 import java.awt.Color;
@@ -25,7 +25,7 @@ import de.amr.games.pacman.ui.swing.scene.GameScene;
  * 
  * @author Armin Reichert
  */
-public class MsPacMan_IntroScene extends GameScene<MsPacMan_GameRendering> {
+public class MsPacMan_IntroScene extends GameScene<MsPacMan_Rendering> {
 
 	enum Phase {
 

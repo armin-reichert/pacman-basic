@@ -1,7 +1,7 @@
 package de.amr.games.pacman.ui.swing.mspacman;
 
 import static de.amr.games.pacman.heaven.God.clock;
-import static de.amr.games.pacman.ui.swing.mspacman.MsPacMan_GameRendering.assets;
+import static de.amr.games.pacman.ui.swing.mspacman.MsPacMan_Rendering.assets;
 import static de.amr.games.pacman.world.PacManGameWorld.t;
 
 import java.awt.Dimension;
@@ -28,7 +28,7 @@ import de.amr.games.pacman.ui.swing.scene.GameScene;
  * 
  * @author Armin Reichert
  */
-public class MsPacMan_IntermissionScene3 extends GameScene<MsPacMan_GameRendering> {
+public class MsPacMan_IntermissionScene3 extends GameScene<MsPacMan_Rendering> {
 
 	class Bird extends GameEntity {
 
