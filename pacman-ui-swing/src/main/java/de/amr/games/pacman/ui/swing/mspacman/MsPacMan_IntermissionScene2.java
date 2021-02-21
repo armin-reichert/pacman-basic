@@ -14,7 +14,7 @@ import de.amr.games.pacman.lib.CountdownTimer;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.model.guys.Pac;
 import de.amr.games.pacman.sound.PacManGameSound;
-import de.amr.games.pacman.ui.swing.common.AbstractGameScene;
+import de.amr.games.pacman.ui.swing.scene.AbstractGameScene;
 
 /**
  * Intermission scene 2: "The chase".

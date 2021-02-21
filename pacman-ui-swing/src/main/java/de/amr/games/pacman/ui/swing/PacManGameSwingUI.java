@@ -42,8 +42,6 @@ import de.amr.games.pacman.ui.FlashMessage;
 import de.amr.games.pacman.ui.PacManGameAnimation;
 import de.amr.games.pacman.ui.PacManGameUI;
 import de.amr.games.pacman.ui.swing.assets.AssetLoader;
-import de.amr.games.pacman.ui.swing.common.AbstractGameScene;
-import de.amr.games.pacman.ui.swing.common.PlayScene;
 import de.amr.games.pacman.ui.swing.mspacman.MsPacMan_GameRendering;
 import de.amr.games.pacman.ui.swing.mspacman.MsPacMan_IntermissionScene1;
 import de.amr.games.pacman.ui.swing.mspacman.MsPacMan_IntermissionScene2;
@@ -55,6 +53,9 @@ import de.amr.games.pacman.ui.swing.pacman.PacMan_IntermissionScene2;
 import de.amr.games.pacman.ui.swing.pacman.PacMan_IntermissionScene3;
 import de.amr.games.pacman.ui.swing.pacman.PacMan_IntroScene;
 import de.amr.games.pacman.ui.swing.rendering.DebugRendering;
+import de.amr.games.pacman.ui.swing.scene.AbstractGameScene;
+import de.amr.games.pacman.ui.swing.scene.GameScene;
+import de.amr.games.pacman.ui.swing.scene.PlayScene;
 
 /**
  * A Swing implementation of the Pac-Man game UI interface.

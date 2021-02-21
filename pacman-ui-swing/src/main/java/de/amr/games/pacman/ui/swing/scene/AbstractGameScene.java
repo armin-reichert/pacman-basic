@@ -1,10 +1,9 @@
-package de.amr.games.pacman.ui.swing.common;
+package de.amr.games.pacman.ui.swing.scene;
 
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 
 import de.amr.games.pacman.model.GameModel;
-import de.amr.games.pacman.ui.swing.GameScene;
 
 public class AbstractGameScene implements GameScene {
 
