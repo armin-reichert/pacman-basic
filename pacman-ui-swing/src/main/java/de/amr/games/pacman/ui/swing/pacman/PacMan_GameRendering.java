@@ -103,7 +103,7 @@ public class PacMan_GameRendering extends DefaultGameRendering {
 
 	@Override
 	public BufferedImage lifeSprite() {
-		return assets.spriteAt(8, 1);
+		return assets.sprite(8, 1);
 	}
 
 	@Override

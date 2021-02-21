@@ -29,30 +29,36 @@ public class Spritesheet {
 		return dst;
 	}
 
-	protected final BufferedImage sheet;
-	protected final int gridSize;
+	public final BufferedImage sheet;
+	public final int raster;
 
-	protected V2i origin = V2i.NULL;
-
-	public Spritesheet(BufferedImage image, int rasterSize) {
+	public Spritesheet(BufferedImage image, int pixels) {
 		sheet = image;
-		gridSize = rasterSize;
+		raster = pixels;
 	}
 
-	public void setOrigin(int x, int y) {
-		origin = new V2i(x, y);
+	public BufferedImage region(int x, int y, int width, int height) {
+		return sheet.getSubimage(x, y, width, height);
 	}
 
-	public BufferedImage spritesAt(int tileX, int tileY, int numTilesX, int numTilesY) {
-		return sheet.getSubimage(origin.x + tileX * gridSize, origin.y + tileY * gridSize, numTilesX * gridSize,
-				numTilesY * gridSize);
+	public BufferedImage spriteRegion(int originX, int originY, int tileX, int tileY, int numTilesX, int numTilesY) {
+		return sheet.getSubimage(originX + tileX * raster, originY + tileY * raster, numTilesX * raster,
+				numTilesY * raster);
 	}
 
-	public BufferedImage spriteAt(int tileX, int tileY) {
-		return spritesAt(tileX, tileY, 1, 1);
+	public BufferedImage spriteRegion(int tileX, int tileY, int numTilesX, int numTilesY) {
+		return spriteRegion(0, 0, tileX, tileY, numTilesX, numTilesY);
+	}
+
+	public BufferedImage sprite(int originX, int originY, int tileX, int tileY) {
+		return spriteRegion(originX, originY, tileX, tileY, 1, 1);
+	}
+
+	public BufferedImage sprite(int tileX, int tileY) {
+		return sprite(0, 0, tileX, tileY);
 	}
 
 	public BufferedImage spriteAt(V2i tile) {
-		return spriteAt(tile.x, tile.y);
+		return sprite(tile.x, tile.y);
 	}
 }

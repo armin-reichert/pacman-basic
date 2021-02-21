@@ -69,25 +69,25 @@ public class PacMan_Assets extends Spritesheet {
 		mazeFullImage = image("/pacman/graphics/maze_full.png");
 		mazeEmptyImage = image("/pacman/graphics/maze_empty.png");
 
-		symbolSprites = new BufferedImage[] { spriteAt(2, 3), spriteAt(3, 3), spriteAt(4, 3), spriteAt(5, 3),
-				spriteAt(6, 3), spriteAt(7, 3), spriteAt(8, 3), spriteAt(9, 3) };
+		symbolSprites = new BufferedImage[] { sprite(2, 3), sprite(3, 3), sprite(4, 3), sprite(5, 3),
+				sprite(6, 3), sprite(7, 3), sprite(8, 3), sprite(9, 3) };
 
 		//@formatter:off
 		numberSprites = new HashMap<>();
-		numberSprites.put(200,  spriteAt(0, 8));
-		numberSprites.put(400,  spriteAt(1, 8));
-		numberSprites.put(800,  spriteAt(2, 8));
-		numberSprites.put(1600, spriteAt(3, 8));
+		numberSprites.put(200,  sprite(0, 8));
+		numberSprites.put(400,  sprite(1, 8));
+		numberSprites.put(800,  sprite(2, 8));
+		numberSprites.put(1600, sprite(3, 8));
 		
-		numberSprites.put(100,  spriteAt(0, 9));
-		numberSprites.put(300,  spriteAt(1, 9));
-		numberSprites.put(500,  spriteAt(2, 9));
-		numberSprites.put(700,  spriteAt(3, 9));
+		numberSprites.put(100,  sprite(0, 9));
+		numberSprites.put(300,  sprite(1, 9));
+		numberSprites.put(500,  sprite(2, 9));
+		numberSprites.put(700,  sprite(3, 9));
 		
-		numberSprites.put(1000, spritesAt(4, 9, 2, 1)); // left-aligned
-		numberSprites.put(2000, spritesAt(3, 10, 3, 1));
-		numberSprites.put(3000, spritesAt(3, 11, 3, 1));
-		numberSprites.put(5000, spritesAt(3, 12, 3, 1));
+		numberSprites.put(1000, spriteRegion(4, 9, 2, 1)); // left-aligned
+		numberSprites.put(2000, spriteRegion(3, 10, 3, 1));
+		numberSprites.put(3000, spriteRegion(3, 11, 3, 1));
+		numberSprites.put(5000, spriteRegion(3, 12, 3, 1));
 		//@formatter:on
 
 		// Animations
@@ -98,19 +98,19 @@ public class PacMan_Assets extends Spritesheet {
 
 		energizerBlinkingAnim = Animation.pulse().frameDuration(15);
 
-		pacCollapsingAnim = Animation.of(spriteAt(3, 0), spriteAt(4, 0), spriteAt(5, 0), spriteAt(6, 0), spriteAt(7, 0),
-				spriteAt(8, 0), spriteAt(9, 0), spriteAt(10, 0), spriteAt(11, 0), spriteAt(12, 0), spriteAt(13, 0));
+		pacCollapsingAnim = Animation.of(sprite(3, 0), sprite(4, 0), sprite(5, 0), sprite(6, 0), sprite(7, 0),
+				sprite(8, 0), sprite(9, 0), sprite(10, 0), sprite(11, 0), sprite(12, 0), sprite(13, 0));
 		pacCollapsingAnim.frameDuration(8);
 
 		ghostEyesAnimsByDir = new EnumMap<>(Direction.class);
 		for (Direction dir : Direction.values()) {
-			ghostEyesAnimsByDir.put(dir, Animation.ofSingle(spriteAt(8 + index(dir), 5)));
+			ghostEyesAnimsByDir.put(dir, Animation.ofSingle(sprite(8 + index(dir), 5)));
 		}
 
-		ghostBlueAnim = Animation.of(spriteAt(8, 4), spriteAt(9, 4));
+		ghostBlueAnim = Animation.of(sprite(8, 4), sprite(9, 4));
 		ghostBlueAnim.frameDuration(20).endless();
 
-		ghostFlashingAnim = Animation.of(spriteAt(8, 4), spriteAt(9, 4), spriteAt(10, 4), spriteAt(11, 4));
+		ghostFlashingAnim = Animation.of(sprite(8, 4), sprite(9, 4), sprite(10, 4), sprite(11, 4));
 		ghostFlashingAnim.frameDuration(5).endless();
 	}
 
@@ -124,8 +124,8 @@ public class PacMan_Assets extends Spritesheet {
 	private EnumMap<Direction, Animation<BufferedImage>> createPacMunchingAnimation() {
 		EnumMap<Direction, Animation<BufferedImage>> munching = new EnumMap<>(Direction.class);
 		for (Direction dir : Direction.values()) {
-			Animation<BufferedImage> animation = Animation.of(spriteAt(2, 0), spriteAt(1, index(dir)),
-					spriteAt(0, index(dir)), spriteAt(1, index(dir)));
+			Animation<BufferedImage> animation = Animation.of(sprite(2, 0), sprite(1, index(dir)),
+					sprite(0, index(dir)), sprite(1, index(dir)));
 			animation.frameDuration(2).endless().run();
 			munching.put(dir, animation);
 		}
@@ -135,8 +135,8 @@ public class PacMan_Assets extends Spritesheet {
 	private EnumMap<Direction, Animation<BufferedImage>> createGhostWalkingAnimation(int ghostType) {
 		EnumMap<Direction, Animation<BufferedImage>> walkingTo = new EnumMap<>(Direction.class);
 		for (Direction dir : Direction.values()) {
-			Animation<BufferedImage> anim = Animation.of(spriteAt(2 * index(dir), 4 + ghostType),
-					spriteAt(2 * index(dir) + 1, 4 + ghostType));
+			Animation<BufferedImage> anim = Animation.of(sprite(2 * index(dir), 4 + ghostType),
+					sprite(2 * index(dir) + 1, 4 + ghostType));
 			anim.frameDuration(10).endless();
 			walkingTo.put(dir, anim);
 		}
@@ -155,6 +155,6 @@ public class PacMan_Assets extends Spritesheet {
 	}
 
 	public BufferedImage ghostImageByGhostByDir(int ghostID, Direction dir) {
-		return spriteAt(2 * index(dir), 4 + ghostID);
+		return sprite(2 * index(dir), 4 + ghostID);
 	}
 }

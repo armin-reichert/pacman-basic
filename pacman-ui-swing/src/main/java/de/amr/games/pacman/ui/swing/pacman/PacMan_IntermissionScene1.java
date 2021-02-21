@@ -52,8 +52,8 @@ public class PacMan_IntermissionScene1 extends GameScene<PacMan_GameRendering> {
 		pac.speed = 1f;
 		rendering.pacMunching(pac).forEach(Animation::restart);
 
-		bigPac = Animation.of(rendering.assets.spritesAt(2, 1, 2, 2), rendering.assets.spritesAt(4, 1, 2, 2),
-				rendering.assets.spritesAt(6, 1, 2, 2));
+		bigPac = Animation.of(rendering.assets.spriteRegion(2, 1, 2, 2), rendering.assets.spriteRegion(4, 1, 2, 2),
+				rendering.assets.spriteRegion(6, 1, 2, 2));
 		bigPac.frameDuration(4).endless().run();
 
 		blinky = new Ghost(0, "Blinky", Direction.LEFT);

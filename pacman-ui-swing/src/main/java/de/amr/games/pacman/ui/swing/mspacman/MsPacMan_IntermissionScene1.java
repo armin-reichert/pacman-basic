@@ -58,11 +58,9 @@ public class MsPacMan_IntermissionScene1 extends GameScene<MsPacMan_GameRenderin
 	@Override
 	public void start() {
 
-		flap = new Flap();
+		flap = new Flap(1, "THEY MEET");
 		flap.setPosition(t(3), t(10));
 		flap.visible = true;
-		flap.sceneNumber = 1;
-		flap.sceneTitle = "THEY MEET";
 		flap.animation.restart();
 
 		pacMan = new Pac("Pac-Man", Direction.RIGHT);
@@ -90,7 +88,6 @@ public class MsPacMan_IntermissionScene1 extends GameScene<MsPacMan_GameRenderin
 		heartVisible = false;
 		ghostsMet = false;
 
-		assets.flapAnim.restart();
 		enter(Phase.FLAP, clock.sec(1));
 	}
 

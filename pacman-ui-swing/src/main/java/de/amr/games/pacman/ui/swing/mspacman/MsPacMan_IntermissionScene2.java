@@ -51,11 +51,9 @@ public class MsPacMan_IntermissionScene2 extends GameScene<MsPacMan_GameRenderin
 	@Override
 	public void start() {
 
-		flap = new Flap();
+		flap = new Flap(2, "THE CHASE");
 		flap.setPosition(t(3), t(10));
 		flap.visible = true;
-		flap.sceneNumber = 2;
-		flap.sceneTitle = "THE CHASE";
 		flap.animation.restart();
 
 		pacMan = new Pac("Pac-Man", Direction.RIGHT);

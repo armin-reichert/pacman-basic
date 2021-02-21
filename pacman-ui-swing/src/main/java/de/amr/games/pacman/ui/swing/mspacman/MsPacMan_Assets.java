@@ -74,7 +74,6 @@ public class MsPacMan_Assets extends Spritesheet {
 	final Animation<BufferedImage> ghostBlueAnim;
 	final Animation<BufferedImage> ghostFlashingAnim;
 	final Animation<Integer> bonusJumpAnim;
-	final Animation<BufferedImage> flapAnim;
 	final Animation<BufferedImage> birdAnim;
 	final BufferedImage blueBag;
 	final BufferedImage junior;
@@ -99,56 +98,59 @@ public class MsPacMan_Assets extends Spritesheet {
 		energizerBlinkingAnim = Animation.pulse().frameDuration(10);
 
 		// Switch to right part of spritesheet
-		setOrigin(456, 0);
+		int originX = 456;
 
-		lifeSprite = spriteAt(1, 0);
-		symbolSprites = new BufferedImage[] { spriteAt(3, 0), spriteAt(4, 0), spriteAt(5, 0), spriteAt(6, 0),
-				spriteAt(7, 0), spriteAt(8, 0), spriteAt(9, 0) };
+		lifeSprite = sprite(originX, 0, 1, 0);
+		symbolSprites = new BufferedImage[] { sprite(originX, 0, 3, 0), sprite(originX, 0, 4, 0), sprite(originX, 0, 5, 0),
+				sprite(originX, 0, 6, 0), sprite(originX, 0, 7, 0), sprite(originX, 0, 8, 0), sprite(originX, 0, 9, 0) };
 
 		//@formatter:off
 		bonusValueSprites = new HashMap<>();
-		bonusValueSprites.put(100,  spriteAt(3, 1));
-		bonusValueSprites.put(200,  spriteAt(4, 1));
-		bonusValueSprites.put(500,  spriteAt(5, 1));
-		bonusValueSprites.put(700,  spriteAt(6, 1));
-		bonusValueSprites.put(1000, spriteAt(7, 1));
-		bonusValueSprites.put(2000, spriteAt(8, 1));
-		bonusValueSprites.put(5000, spriteAt(9, 1));
+		bonusValueSprites.put(100,  sprite(originX, 0, 3, 1));
+		bonusValueSprites.put(200,  sprite(originX, 0, 4, 1));
+		bonusValueSprites.put(500,  sprite(originX, 0, 5, 1));
+		bonusValueSprites.put(700,  sprite(originX, 0, 6, 1));
+		bonusValueSprites.put(1000, sprite(originX, 0, 7, 1));
+		bonusValueSprites.put(2000, sprite(originX, 0, 8, 1));
+		bonusValueSprites.put(5000, sprite(originX, 0, 9, 1));
 		
 		bountyNumberSprites = new HashMap<>();
-		bountyNumberSprites.put(200, spriteAt(0,8));
-		bountyNumberSprites.put(400, spriteAt(1,8));
-		bountyNumberSprites.put(800, spriteAt(2,8));
-		bountyNumberSprites.put(1600, spriteAt(3,8));
+		bountyNumberSprites.put(200, sprite(originX, 0, 0,8));
+		bountyNumberSprites.put(400, sprite(originX, 0, 1,8));
+		bountyNumberSprites.put(800, sprite(originX, 0, 2,8));
+		bountyNumberSprites.put(1600, sprite(originX, 0, 3,8));
 		//@formatter:on
 
 		msPacManMunchingAnimByDir = new EnumMap<>(Direction.class);
 		for (Direction dir : Direction.values()) {
 			int d = index(dir);
-			Animation<BufferedImage> munching = Animation.of(spriteAt(0, d), spriteAt(1, d), spriteAt(2, d), spriteAt(1, d));
+			Animation<BufferedImage> munching = Animation.of(sprite(originX, 0, 0, d), sprite(originX, 0, 1, d),
+					sprite(originX, 0, 2, d), sprite(originX, 0, 1, d));
 			munching.frameDuration(2).endless();
 			msPacManMunchingAnimByDir.put(dir, munching);
 		}
 
-		msPacManSpinningAnim = Animation.of(spriteAt(0, 3), spriteAt(0, 0), spriteAt(0, 1), spriteAt(0, 2));
+		msPacManSpinningAnim = Animation.of(sprite(originX, 0, 0, 3), sprite(originX, 0, 0, 0), sprite(originX, 0, 0, 1),
+				sprite(originX, 0, 0, 2));
 		msPacManSpinningAnim.frameDuration(10).repetitions(2);
 
 		pacManMunching = new EnumMap<>(Direction.class);
-		pacManMunching.put(Direction.RIGHT,
-				Animation.of(spriteAt(0, 9), spriteAt(1, 9), spriteAt(2, 9)).endless().frameDuration(2));
-		pacManMunching.put(Direction.LEFT,
-				Animation.of(spriteAt(0, 10), spriteAt(1, 10), spriteAt(2, 9)).endless().frameDuration(2));
-		pacManMunching.put(Direction.UP,
-				Animation.of(spriteAt(0, 11), spriteAt(1, 11), spriteAt(2, 9)).endless().frameDuration(2));
-		pacManMunching.put(Direction.DOWN,
-				Animation.of(spriteAt(0, 12), spriteAt(1, 12), spriteAt(2, 9)).endless().frameDuration(2));
+		pacManMunching.put(Direction.RIGHT, Animation
+				.of(sprite(originX, 0, 0, 9), sprite(originX, 0, 1, 9), sprite(originX, 0, 2, 9)).endless().frameDuration(2));
+		pacManMunching.put(Direction.LEFT, Animation
+				.of(sprite(originX, 0, 0, 10), sprite(originX, 0, 1, 10), sprite(originX, 0, 2, 9)).endless().frameDuration(2));
+		pacManMunching.put(Direction.UP, Animation
+				.of(sprite(originX, 0, 0, 11), sprite(originX, 0, 1, 11), sprite(originX, 0, 2, 9)).endless().frameDuration(2));
+		pacManMunching.put(Direction.DOWN, Animation
+				.of(sprite(originX, 0, 0, 12), sprite(originX, 0, 1, 12), sprite(originX, 0, 2, 9)).endless().frameDuration(2));
 
 		ghostsKickingAnimsByGhost = new ArrayList<>(4);
 		for (int g = 0; g < 4; ++g) {
 			EnumMap<Direction, Animation<BufferedImage>> kickingByDir = new EnumMap<>(Direction.class);
 			for (Direction dir : Direction.values()) {
 				int d = index(dir);
-				Animation<BufferedImage> kicking = Animation.of(spriteAt(2 * d, 4 + g), spriteAt(2 * d + 1, 4 + g));
+				Animation<BufferedImage> kicking = Animation.of(sprite(originX, 0, 2 * d, 4 + g),
+						sprite(originX, 0, 2 * d + 1, 4 + g));
 				kicking.frameDuration(4).endless();
 				kickingByDir.put(dir, kicking);
 			}
@@ -157,33 +159,25 @@ public class MsPacMan_Assets extends Spritesheet {
 
 		ghostEyesAnimByDir = new EnumMap<>(Direction.class);
 		for (Direction dir : Direction.values()) {
-			ghostEyesAnimByDir.put(dir, Animation.ofSingle(spriteAt(8 + index(dir), 5)));
+			ghostEyesAnimByDir.put(dir, Animation.ofSingle(sprite(originX, 0, 8 + index(dir), 5)));
 		}
 
-		ghostBlueAnim = Animation.of(spriteAt(8, 4), spriteAt(9, 4));
+		ghostBlueAnim = Animation.of(sprite(originX, 0, 8, 4), sprite(originX, 0, 9, 4));
 		ghostBlueAnim.frameDuration(20).endless().run();
 
-		ghostFlashingAnim = Animation.of(spriteAt(8, 4), spriteAt(9, 4), spriteAt(10, 4), spriteAt(11, 4));
+		ghostFlashingAnim = Animation.of(sprite(originX, 0, 8, 4), sprite(originX, 0, 9, 4), sprite(originX, 0, 10, 4),
+				sprite(originX, 0, 11, 4));
 		ghostFlashingAnim.frameDuration(5).endless();
 
 		bonusJumpAnim = Animation.of(2, -2).frameDuration(15).endless().run();
 
-		flapAnim = Animation.of( //
-				sheet.getSubimage(456, 208, 32, 32), //
-				sheet.getSubimage(488, 208, 32, 32), //
-				sheet.getSubimage(520, 208, 32, 32), //
-				sheet.getSubimage(488, 208, 32, 32), //
-				sheet.getSubimage(456, 208, 32, 32)//
-		);
-		flapAnim.repetitions(1).frameDuration(4);
-
 		birdAnim = Animation.of(//
-				sheet.getSubimage(489, 176, 32, 16), //
-				sheet.getSubimage(521, 176, 32, 16));
+				region(489, 176, 32, 16), //
+				region(521, 176, 32, 16));
 		birdAnim.endless().frameDuration(10).restart();
 
-		blueBag = sheet.getSubimage(488, 199, 8, 8);
-		junior = sheet.getSubimage(509, 200, 8, 8);
+		blueBag = region(488, 199, 8, 8);
+		junior = region(509, 200, 8, 8);
 	}
 
 	/**

@@ -52,9 +52,9 @@ public class PacMan_IntermissionScene3 extends GameScene<PacMan_GameRendering> {
 		pac = new Pac("Pac-Man", Direction.LEFT);
 		blinky = new Ghost(0, "Blinky", Direction.LEFT);
 
-		blinkyDamaged = Animation.of(spritesheet.spriteAt(10, 7), spritesheet.spriteAt(11, 7));
+		blinkyDamaged = Animation.of(spritesheet.sprite(10, 7), spritesheet.sprite(11, 7));
 		blinkyDamaged.frameDuration(4).endless();
-		blinkyHalfNaked = Animation.of(spritesheet.spritesAt(8, 8, 2, 1), spritesheet.spritesAt(10, 8, 2, 1));
+		blinkyHalfNaked = Animation.of(spritesheet.spriteRegion(8, 8, 2, 1), spritesheet.spriteRegion(10, 8, 2, 1));
 		blinkyHalfNaked.frameDuration(4).endless();
 	}
 

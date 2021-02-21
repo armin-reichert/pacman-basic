@@ -39,14 +39,14 @@ public class PacMan_IntermissionScene2 extends GameScene<PacMan_GameRendering> {
 
 	private final int chaseTileY = 20;
 	private final V2i nailPosition = new V2i(t(14), t(chaseTileY) - 6);
-	private final BufferedImage nail = spritesheet.spriteAt(8, 6);
-	private final BufferedImage blinkyLookingUp = spritesheet.spriteAt(8, 7);
-	private final BufferedImage blinkyLookingRight = spritesheet.spriteAt(9, 7);
-	private final BufferedImage shred = spritesheet.spriteAt(12, 6);
+	private final BufferedImage nail = spritesheet.sprite(8, 6);
+	private final BufferedImage blinkyLookingUp = spritesheet.sprite(8, 7);
+	private final BufferedImage blinkyLookingRight = spritesheet.sprite(9, 7);
+	private final BufferedImage shred = spritesheet.sprite(12, 6);
 	private final BufferedImage[] stretchedDress = new BufferedImage[] { //
-			spritesheet.spriteAt(9, 6), //
-			spritesheet.spriteAt(10, 6), //
-			spritesheet.spriteAt(11, 6) };
+			spritesheet.sprite(9, 6), //
+			spritesheet.sprite(10, 6), //
+			spritesheet.sprite(11, 6) };
 
 	private Ghost blinky;
 	private Pac pac;
