@@ -2,7 +2,6 @@ package de.amr.games.pacman.ui.swing.pacman;
 
 import static de.amr.games.pacman.heaven.God.clock;
 import static de.amr.games.pacman.lib.Logging.log;
-import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.PACMAN_GAME_RENDERING;
 import static de.amr.games.pacman.world.PacManGameWorld.TS;
 import static de.amr.games.pacman.world.PacManGameWorld.t;
 
@@ -180,7 +179,7 @@ public class PacMan_IntroScene extends GameScene<PacMan_GameRendering> {
 		pac.speed = 1;
 		pac.dir = Direction.LEFT;
 		pac.couldMove = true;
-		PACMAN_GAME_RENDERING.pacMunching(pac).forEach(Animation::restart);
+		rendering.pacMunching(pac).forEach(Animation::restart);
 
 		for (Ghost ghost : ghosts) {
 			ghost.setPosition(pac.position.sum(8 + (ghost.id + 1) * 18, 0));
@@ -188,7 +187,7 @@ public class PacMan_IntroScene extends GameScene<PacMan_GameRendering> {
 			ghost.dir = ghost.wishDir = Direction.LEFT;
 			ghost.speed = pac.speed * 1.05f;
 			ghost.state = GhostState.HUNTING_PAC;
-			PACMAN_GAME_RENDERING.ghostsKicking(Stream.of(ghosts)).forEach(Animation::restart);
+			rendering.ghostsKicking(Stream.of(ghosts)).forEach(Animation::restart);
 		}
 	}
 
@@ -202,7 +201,7 @@ public class PacMan_IntroScene extends GameScene<PacMan_GameRendering> {
 
 	@Override
 	public void render(Graphics2D g) {
-		PACMAN_GAME_RENDERING.drawScore(g, game, t(1), t(0));
+		rendering.drawScore(g, game, t(1), t(0));
 		drawGallery(g);
 		if (phase == Phase.CHASING_PAC) {
 			if (blinking.animate()) {
@@ -220,9 +219,9 @@ public class PacMan_IntroScene extends GameScene<PacMan_GameRendering> {
 	}
 
 	private void drawGuys(Graphics2D g) {
-		PACMAN_GAME_RENDERING.drawPac(g, pac, game);
+		rendering.drawPac(g, pac, game);
 		for (Ghost ghost : ghosts) {
-			PACMAN_GAME_RENDERING.drawGhost(g, ghost, game);
+			rendering.drawGhost(g, ghost, game);
 		}
 	}
 
