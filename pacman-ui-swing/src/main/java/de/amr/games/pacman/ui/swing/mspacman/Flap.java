@@ -39,8 +39,7 @@ class Flap extends GameEntity {
 
 	public void draw(Graphics2D g) {
 		if (visible) {
-			animation.animate();
-			rendering.drawImage(g, animation.frame(), position.x, position.y, true);
+			rendering.drawImage(g, animation.animate(), position.x, position.y, true);
 			g.setFont(font);
 			g.setColor(new Color(222, 222, 225, 192));
 			g.drawString(sceneNumber + "", position.x + 20, position.y + 30);
