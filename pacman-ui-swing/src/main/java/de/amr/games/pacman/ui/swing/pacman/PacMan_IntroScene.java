@@ -17,7 +17,7 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.model.guys.Ghost;
 import de.amr.games.pacman.model.guys.GhostState;
 import de.amr.games.pacman.model.guys.Pac;
-import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
+import de.amr.games.pacman.ui.swing.PacManGameUI_Swing;
 import de.amr.games.pacman.ui.swing.scene.GameScene;
 
 /**
@@ -63,7 +63,7 @@ public class PacMan_IntroScene extends GameScene<PacMan_Rendering> {
 	}
 
 	public PacMan_IntroScene(Dimension size) {
-		super(size, PacManGameSwingUI.RENDERING_PACMAN);
+		super(size, PacManGameUI_Swing.RENDERING_PACMAN);
 	}
 
 	@Override

@@ -5,7 +5,7 @@ import static java.awt.EventQueue.invokeLater;
 
 import de.amr.games.pacman.controller.PacManGameController;
 import de.amr.games.pacman.model.GameType;
-import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
+import de.amr.games.pacman.ui.swing.PacManGameUI_Swing;
 
 /**
  * The Pac-Man game app.
@@ -66,7 +66,7 @@ public class PacManGameAppSwing {
 			} else {
 				controller.play(GameType.MS_PACMAN);
 			}
-			controller.addView(new PacManGameSwingUI(controller, options.scaling));
+			controller.addView(new PacManGameUI_Swing(controller, options.scaling));
 			controller.showViews();
 			controller.startGameLoop();
 		});

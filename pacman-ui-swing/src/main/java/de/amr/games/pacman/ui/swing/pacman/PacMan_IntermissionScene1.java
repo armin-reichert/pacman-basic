@@ -16,7 +16,7 @@ import de.amr.games.pacman.model.guys.Ghost;
 import de.amr.games.pacman.model.guys.Pac;
 import de.amr.games.pacman.sound.PacManGameSound;
 import de.amr.games.pacman.sound.SoundManager;
-import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
+import de.amr.games.pacman.ui.swing.PacManGameUI_Swing;
 import de.amr.games.pacman.ui.swing.scene.GameScene;
 
 /**
@@ -32,7 +32,7 @@ public class PacMan_IntermissionScene1 extends GameScene<PacMan_Rendering> {
 
 	private static final int baselineY = t(20);
 
-	private final SoundManager sounds = PacManGameSwingUI.SOUNDS_PACMAN;
+	private final SoundManager sounds = PacManGameUI_Swing.SOUNDS_PACMAN;
 
 	private Ghost blinky;
 	private Pac pac;
@@ -40,7 +40,7 @@ public class PacMan_IntermissionScene1 extends GameScene<PacMan_Rendering> {
 	private Phase phase;
 
 	public PacMan_IntermissionScene1(Dimension size) {
-		super(size, PacManGameSwingUI.RENDERING_PACMAN);
+		super(size, PacManGameUI_Swing.RENDERING_PACMAN);
 	}
 
 	@Override

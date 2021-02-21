@@ -61,7 +61,7 @@ import de.amr.games.pacman.ui.swing.scene.PlayScene;
  * 
  * @author Armin Reichert
  */
-public class PacManGameSwingUI implements PacManGameUI {
+public class PacManGameUI_Swing implements PacManGameUI {
 
 	public static final PacMan_Rendering RENDERING_PACMAN = new PacMan_Rendering();
 	public static final MsPacMan_Rendering RENDERING_MSPACMAN = new MsPacMan_Rendering();
@@ -84,7 +84,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 	private GameModel game;
 	private boolean muted;
 
-	public PacManGameSwingUI(PacManGameController controller, double scalingFactor) {
+	public PacManGameUI_Swing(PacManGameController controller, double scalingFactor) {
 		this.controller = controller;
 		scaling = (float) scalingFactor;
 		unscaledSize = new Dimension(28 * TS, 36 * TS);

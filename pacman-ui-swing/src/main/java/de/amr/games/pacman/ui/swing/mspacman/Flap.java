@@ -9,7 +9,7 @@ import java.awt.image.BufferedImage;
 
 import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.model.guys.GameEntity;
-import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
+import de.amr.games.pacman.ui.swing.PacManGameUI_Swing;
 
 /**
  * The flap used in the intermission scenes.
@@ -18,7 +18,7 @@ import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
  */
 class Flap extends GameEntity {
 
-	private final MsPacMan_Rendering rendering = PacManGameSwingUI.RENDERING_MSPACMAN;
+	private final MsPacMan_Rendering rendering = PacManGameUI_Swing.RENDERING_MSPACMAN;
 	private final Font font = new Font(assets.getScoreFont().getName(), Font.PLAIN, 8);
 
 	public final Animation<BufferedImage> animation = Animation.of( //

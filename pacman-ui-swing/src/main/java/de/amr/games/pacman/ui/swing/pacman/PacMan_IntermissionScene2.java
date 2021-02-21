@@ -16,7 +16,7 @@ import de.amr.games.pacman.model.guys.Ghost;
 import de.amr.games.pacman.model.guys.Pac;
 import de.amr.games.pacman.sound.PacManGameSound;
 import de.amr.games.pacman.sound.SoundManager;
-import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
+import de.amr.games.pacman.ui.swing.PacManGameUI_Swing;
 import de.amr.games.pacman.ui.swing.assets.Spritesheet;
 import de.amr.games.pacman.ui.swing.scene.GameScene;
 
@@ -35,7 +35,7 @@ public class PacMan_IntermissionScene2 extends GameScene<PacMan_Rendering> {
 	}
 
 	private final Spritesheet spritesheet = rendering.assets;
-	private final SoundManager sounds = PacManGameSwingUI.SOUNDS_PACMAN;
+	private final SoundManager sounds = PacManGameUI_Swing.SOUNDS_PACMAN;
 
 	private final int chaseTileY = 20;
 	private final V2i nailPosition = new V2i(t(14), t(chaseTileY) - 6);
@@ -54,7 +54,7 @@ public class PacMan_IntermissionScene2 extends GameScene<PacMan_Rendering> {
 	private Phase phase;
 
 	public PacMan_IntermissionScene2(Dimension size) {
-		super(size, PacManGameSwingUI.RENDERING_PACMAN);
+		super(size, PacManGameUI_Swing.RENDERING_PACMAN);
 	}
 
 	@Override

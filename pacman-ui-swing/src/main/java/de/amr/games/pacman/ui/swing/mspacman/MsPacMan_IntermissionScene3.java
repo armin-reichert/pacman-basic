@@ -15,7 +15,7 @@ import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.model.guys.GameEntity;
 import de.amr.games.pacman.model.guys.Pac;
 import de.amr.games.pacman.sound.PacManGameSound;
-import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
+import de.amr.games.pacman.ui.swing.PacManGameUI_Swing;
 import de.amr.games.pacman.ui.swing.scene.GameScene;
 
 /**
@@ -83,7 +83,7 @@ public class MsPacMan_IntermissionScene3 extends GameScene<MsPacMan_Rendering> {
 	private Phase phase;
 
 	public MsPacMan_IntermissionScene3(Dimension size) {
-		super(size, PacManGameSwingUI.RENDERING_MSPACMAN, PacManGameSwingUI.SOUNDS_MSPACMAN);
+		super(size, PacManGameUI_Swing.RENDERING_MSPACMAN, PacManGameUI_Swing.SOUNDS_MSPACMAN);
 	}
 
 	private void enter(Phase newPhase, long ticks) {

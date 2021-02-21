@@ -14,7 +14,7 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.model.guys.Ghost;
 import de.amr.games.pacman.model.guys.Pac;
 import de.amr.games.pacman.sound.PacManGameSound;
-import de.amr.games.pacman.ui.swing.PacManGameSwingUI;
+import de.amr.games.pacman.ui.swing.PacManGameUI_Swing;
 import de.amr.games.pacman.ui.swing.scene.GameScene;
 
 /**
@@ -52,7 +52,7 @@ public class MsPacMan_IntermissionScene1 extends GameScene<MsPacMan_Rendering> {
 	}
 
 	public MsPacMan_IntermissionScene1(Dimension size) {
-		super(size, PacManGameSwingUI.RENDERING_MSPACMAN, PacManGameSwingUI.SOUNDS_MSPACMAN);
+		super(size, PacManGameUI_Swing.RENDERING_MSPACMAN, PacManGameUI_Swing.SOUNDS_MSPACMAN);
 	}
 
 	@Override
