@@ -17,22 +17,19 @@ public class Animation<T> {
 		public SingleFrameAnimation(TT thing) {
 			things = Collections.singletonList(thing);
 		}
-
-		@Override
-		public Animation<TT> add(TT thing) {
-			throw new UnsupportedOperationException("Cannot add frame to OneFrame animation");
-		}
 	}
 
 	@SafeVarargs
 	public static <TT> Animation<TT> of(TT... things) {
+		if (things.length == 0) {
+			throw new IllegalArgumentException("Animation must have at least one frame");
+		}
+		if (things.length == 1) {
+			return new SingleFrameAnimation<TT>(things[0]);
+		}
 		Animation<TT> a = new Animation<>();
 		a.things = Stream.of(things).collect(Collectors.toList());
 		return a;
-	}
-
-	public static <TT> Animation<TT> ofSingle(TT thing) {
-		return new SingleFrameAnimation<TT>(thing);
 	}
 
 	public static Animation<Boolean> pulse() {
@@ -60,11 +57,6 @@ public class Animation<T> {
 		loopIndex = 0;
 		running = false;
 		complete = false;
-		return this;
-	}
-
-	public Animation<T> add(T thing) {
-		things.add(thing);
 		return this;
 	}
 

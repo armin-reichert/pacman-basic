@@ -69,8 +69,8 @@ public class PacMan_Assets extends Spritesheet {
 		mazeFullImage = image("/pacman/graphics/maze_full.png");
 		mazeEmptyImage = image("/pacman/graphics/maze_empty.png");
 
-		symbolSprites = new BufferedImage[] { sprite(2, 3), sprite(3, 3), sprite(4, 3), sprite(5, 3),
-				sprite(6, 3), sprite(7, 3), sprite(8, 3), sprite(9, 3) };
+		symbolSprites = new BufferedImage[] { sprite(2, 3), sprite(3, 3), sprite(4, 3), sprite(5, 3), sprite(6, 3),
+				sprite(7, 3), sprite(8, 3), sprite(9, 3) };
 
 		//@formatter:off
 		numberSprites = new HashMap<>();
@@ -98,13 +98,13 @@ public class PacMan_Assets extends Spritesheet {
 
 		energizerBlinkingAnim = Animation.pulse().frameDuration(15);
 
-		pacCollapsingAnim = Animation.of(sprite(3, 0), sprite(4, 0), sprite(5, 0), sprite(6, 0), sprite(7, 0),
-				sprite(8, 0), sprite(9, 0), sprite(10, 0), sprite(11, 0), sprite(12, 0), sprite(13, 0));
+		pacCollapsingAnim = Animation.of(sprite(3, 0), sprite(4, 0), sprite(5, 0), sprite(6, 0), sprite(7, 0), sprite(8, 0),
+				sprite(9, 0), sprite(10, 0), sprite(11, 0), sprite(12, 0), sprite(13, 0));
 		pacCollapsingAnim.frameDuration(8);
 
 		ghostEyesAnimsByDir = new EnumMap<>(Direction.class);
 		for (Direction dir : Direction.values()) {
-			ghostEyesAnimsByDir.put(dir, Animation.ofSingle(sprite(8 + index(dir), 5)));
+			ghostEyesAnimsByDir.put(dir, Animation.of(sprite(8 + index(dir), 5)));
 		}
 
 		ghostBlueAnim = Animation.of(sprite(8, 4), sprite(9, 4));
@@ -124,8 +124,8 @@ public class PacMan_Assets extends Spritesheet {
 	private EnumMap<Direction, Animation<BufferedImage>> createPacMunchingAnimation() {
 		EnumMap<Direction, Animation<BufferedImage>> munching = new EnumMap<>(Direction.class);
 		for (Direction dir : Direction.values()) {
-			Animation<BufferedImage> animation = Animation.of(sprite(2, 0), sprite(1, index(dir)),
-					sprite(0, index(dir)), sprite(1, index(dir)));
+			Animation<BufferedImage> animation = Animation.of(sprite(2, 0), sprite(1, index(dir)), sprite(0, index(dir)),
+					sprite(1, index(dir)));
 			animation.frameDuration(2).endless().run();
 			munching.put(dir, animation);
 		}

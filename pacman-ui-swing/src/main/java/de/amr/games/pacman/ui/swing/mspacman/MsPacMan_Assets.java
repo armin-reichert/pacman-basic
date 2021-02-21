@@ -78,6 +78,11 @@ public class MsPacMan_Assets extends Spritesheet {
 	final BufferedImage blueBag;
 	final BufferedImage junior;
 
+	// get sprite from right part of the sheet, on the left are the maze images
+	private BufferedImage s(int tileX, int tileY) {
+		return sprite(456, 0, tileX, tileY);
+	}
+
 	public MsPacMan_Assets() {
 		super(image("/mspacman/graphics/sprites.png"), 16);
 
@@ -97,60 +102,49 @@ public class MsPacMan_Assets extends Spritesheet {
 
 		energizerBlinkingAnim = Animation.pulse().frameDuration(10);
 
-		// Switch to right part of spritesheet
-		int originX = 456;
-
-		lifeSprite = sprite(originX, 0, 1, 0);
-		symbolSprites = new BufferedImage[] { sprite(originX, 0, 3, 0), sprite(originX, 0, 4, 0), sprite(originX, 0, 5, 0),
-				sprite(originX, 0, 6, 0), sprite(originX, 0, 7, 0), sprite(originX, 0, 8, 0), sprite(originX, 0, 9, 0) };
+		lifeSprite = s(1, 0);
+		symbolSprites = new BufferedImage[] { s(3, 0), s(4, 0), s(5, 0), s(6, 0), s(7, 0), s(8, 0), s(9, 0) };
 
 		//@formatter:off
-		bonusValueSprites = new HashMap<>();
-		bonusValueSprites.put(100,  sprite(originX, 0, 3, 1));
-		bonusValueSprites.put(200,  sprite(originX, 0, 4, 1));
-		bonusValueSprites.put(500,  sprite(originX, 0, 5, 1));
-		bonusValueSprites.put(700,  sprite(originX, 0, 6, 1));
-		bonusValueSprites.put(1000, sprite(originX, 0, 7, 1));
-		bonusValueSprites.put(2000, sprite(originX, 0, 8, 1));
-		bonusValueSprites.put(5000, sprite(originX, 0, 9, 1));
+		bonusValueSprites = new HashMap<>(7);
+		bonusValueSprites.put(100,  s(3, 1));
+		bonusValueSprites.put(200,  s(4, 1));
+		bonusValueSprites.put(500,  s(5, 1));
+		bonusValueSprites.put(700,  s(6, 1));
+		bonusValueSprites.put(1000, s(7, 1));
+		bonusValueSprites.put(2000, s(8, 1));
+		bonusValueSprites.put(5000, s(9, 1));
 		
-		bountyNumberSprites = new HashMap<>();
-		bountyNumberSprites.put(200, sprite(originX, 0, 0,8));
-		bountyNumberSprites.put(400, sprite(originX, 0, 1,8));
-		bountyNumberSprites.put(800, sprite(originX, 0, 2,8));
-		bountyNumberSprites.put(1600, sprite(originX, 0, 3,8));
+		bountyNumberSprites = new HashMap<>(4);
+		bountyNumberSprites.put(200, s(0,8));
+		bountyNumberSprites.put(400, s(1,8));
+		bountyNumberSprites.put(800, s(2,8));
+		bountyNumberSprites.put(1600, s(3,8));
 		//@formatter:on
 
 		msPacManMunchingAnimByDir = new EnumMap<>(Direction.class);
 		for (Direction dir : Direction.values()) {
 			int d = index(dir);
-			Animation<BufferedImage> munching = Animation.of(sprite(originX, 0, 0, d), sprite(originX, 0, 1, d),
-					sprite(originX, 0, 2, d), sprite(originX, 0, 1, d));
+			Animation<BufferedImage> munching = Animation.of(s(0, d), s(1, d), s(2, d), s(1, d));
 			munching.frameDuration(2).endless();
 			msPacManMunchingAnimByDir.put(dir, munching);
 		}
 
-		msPacManSpinningAnim = Animation.of(sprite(originX, 0, 0, 3), sprite(originX, 0, 0, 0), sprite(originX, 0, 0, 1),
-				sprite(originX, 0, 0, 2));
+		msPacManSpinningAnim = Animation.of(s(0, 3), s(0, 0), s(0, 1), s(0, 2));
 		msPacManSpinningAnim.frameDuration(10).repetitions(2);
 
 		pacManMunching = new EnumMap<>(Direction.class);
-		pacManMunching.put(Direction.RIGHT, Animation
-				.of(sprite(originX, 0, 0, 9), sprite(originX, 0, 1, 9), sprite(originX, 0, 2, 9)).endless().frameDuration(2));
-		pacManMunching.put(Direction.LEFT, Animation
-				.of(sprite(originX, 0, 0, 10), sprite(originX, 0, 1, 10), sprite(originX, 0, 2, 9)).endless().frameDuration(2));
-		pacManMunching.put(Direction.UP, Animation
-				.of(sprite(originX, 0, 0, 11), sprite(originX, 0, 1, 11), sprite(originX, 0, 2, 9)).endless().frameDuration(2));
-		pacManMunching.put(Direction.DOWN, Animation
-				.of(sprite(originX, 0, 0, 12), sprite(originX, 0, 1, 12), sprite(originX, 0, 2, 9)).endless().frameDuration(2));
+		for (Direction dir : Direction.values()) {
+			int d = index(dir);
+			pacManMunching.put(dir, Animation.of(s(0, 9 + d), s(1, 9 + d), s(2, 9)).endless().frameDuration(2));
+		}
 
 		ghostsKickingAnimsByGhost = new ArrayList<>(4);
 		for (int g = 0; g < 4; ++g) {
 			EnumMap<Direction, Animation<BufferedImage>> kickingByDir = new EnumMap<>(Direction.class);
 			for (Direction dir : Direction.values()) {
 				int d = index(dir);
-				Animation<BufferedImage> kicking = Animation.of(sprite(originX, 0, 2 * d, 4 + g),
-						sprite(originX, 0, 2 * d + 1, 4 + g));
+				Animation<BufferedImage> kicking = Animation.of(s(2 * d, 4 + g), s(2 * d + 1, 4 + g));
 				kicking.frameDuration(4).endless();
 				kickingByDir.put(dir, kicking);
 			}
@@ -159,14 +153,13 @@ public class MsPacMan_Assets extends Spritesheet {
 
 		ghostEyesAnimByDir = new EnumMap<>(Direction.class);
 		for (Direction dir : Direction.values()) {
-			ghostEyesAnimByDir.put(dir, Animation.ofSingle(sprite(originX, 0, 8 + index(dir), 5)));
+			ghostEyesAnimByDir.put(dir, Animation.of(s(8 + index(dir), 5)));
 		}
 
-		ghostBlueAnim = Animation.of(sprite(originX, 0, 8, 4), sprite(originX, 0, 9, 4));
+		ghostBlueAnim = Animation.of(s(8, 4), s(9, 4));
 		ghostBlueAnim.frameDuration(20).endless().run();
 
-		ghostFlashingAnim = Animation.of(sprite(originX, 0, 8, 4), sprite(originX, 0, 9, 4), sprite(originX, 0, 10, 4),
-				sprite(originX, 0, 11, 4));
+		ghostFlashingAnim = Animation.of(s(8, 4), s(9, 4), s(10, 4), s(11, 4));
 		ghostFlashingAnim.frameDuration(5).endless();
 
 		bonusJumpAnim = Animation.of(2, -2).frameDuration(15).endless().run();
