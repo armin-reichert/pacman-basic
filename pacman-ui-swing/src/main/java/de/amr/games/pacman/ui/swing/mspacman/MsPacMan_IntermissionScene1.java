@@ -1,7 +1,6 @@
 package de.amr.games.pacman.ui.swing.mspacman;
 
 import static de.amr.games.pacman.heaven.God.clock;
-import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.MSPACMAN_GAME_SOUNDS;
 import static de.amr.games.pacman.ui.swing.mspacman.MsPacMan_GameRendering.assets;
 import static de.amr.games.pacman.world.PacManGameWorld.t;
 
@@ -53,7 +52,7 @@ public class MsPacMan_IntermissionScene1 extends GameScene<MsPacMan_GameRenderin
 	}
 
 	public MsPacMan_IntermissionScene1(Dimension size) {
-		super(size, PacManGameSwingUI.MSPACMAN_GAME_RENDERING);
+		super(size, PacManGameSwingUI.MSPACMAN_GAME_RENDERING, PacManGameSwingUI.MSPACMAN_GAME_SOUNDS);
 	}
 
 	@Override
@@ -86,7 +85,7 @@ public class MsPacMan_IntermissionScene1 extends GameScene<MsPacMan_GameRenderin
 
 		rendering.ghostsKicking(Stream.of(inky, pinky)).forEach(Animation::restart);
 
-		MSPACMAN_GAME_SOUNDS.loop(PacManGameSound.INTERMISSION_1, 1);
+		sounds.loop(PacManGameSound.INTERMISSION_1, 1);
 
 		heartVisible = false;
 		ghostsMet = false;

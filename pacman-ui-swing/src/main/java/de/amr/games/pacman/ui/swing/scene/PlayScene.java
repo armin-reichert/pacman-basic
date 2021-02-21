@@ -5,6 +5,7 @@ import static de.amr.games.pacman.world.PacManGameWorld.t;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 
+import de.amr.games.pacman.sound.SoundManager;
 import de.amr.games.pacman.ui.swing.rendering.DebugRendering;
 import de.amr.games.pacman.ui.swing.rendering.GameRendering;
 
@@ -15,8 +16,8 @@ import de.amr.games.pacman.ui.swing.rendering.GameRendering;
  */
 public class PlayScene<R extends GameRendering> extends GameScene<R> {
 
-	public PlayScene(Dimension size, R rendering) {
-		super(size, rendering);
+	public PlayScene(Dimension size, R rendering, SoundManager sounds) {
+		super(size, rendering, sounds);
 	}
 
 	@Override

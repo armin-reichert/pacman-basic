@@ -1,7 +1,6 @@
 package de.amr.games.pacman.ui.swing.mspacman;
 
 import static de.amr.games.pacman.heaven.God.clock;
-import static de.amr.games.pacman.ui.swing.PacManGameSwingUI.MSPACMAN_GAME_SOUNDS;
 import static de.amr.games.pacman.ui.swing.mspacman.MsPacMan_GameRendering.assets;
 import static de.amr.games.pacman.world.PacManGameWorld.t;
 
@@ -84,7 +83,7 @@ public class MsPacMan_IntermissionScene3 extends GameScene<MsPacMan_GameRenderin
 	private Phase phase;
 
 	public MsPacMan_IntermissionScene3(Dimension size) {
-		super(size, PacManGameSwingUI.MSPACMAN_GAME_RENDERING);
+		super(size, PacManGameSwingUI.MSPACMAN_GAME_RENDERING, PacManGameSwingUI.MSPACMAN_GAME_SOUNDS);
 	}
 
 	private void enter(Phase newPhase, long ticks) {
@@ -115,7 +114,7 @@ public class MsPacMan_IntermissionScene3 extends GameScene<MsPacMan_GameRenderin
 		bag = new Bag();
 		bag.setPosition(bird.position.sum(-14, 3));
 
-		MSPACMAN_GAME_SOUNDS.play(PacManGameSound.INTERMISSION_3);
+		sounds.play(PacManGameSound.INTERMISSION_3);
 		enter(Phase.FLAP, Long.MAX_VALUE);
 	}
 

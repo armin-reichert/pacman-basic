@@ -5,6 +5,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
 import de.amr.games.pacman.model.GameModel;
+import de.amr.games.pacman.sound.SoundManager;
 import de.amr.games.pacman.ui.swing.rendering.GameRendering;
 
 /**
@@ -17,6 +18,13 @@ public abstract class GameScene<R extends GameRendering> {
 	protected final Dimension size;
 	protected final R rendering;
 	protected GameModel game;
+	protected SoundManager sounds;
+
+	public GameScene(Dimension size, R rendering, SoundManager sounds) {
+		this.size = size;
+		this.rendering = rendering;
+		this.sounds = sounds;
+	}
 
 	public GameScene(Dimension size, R rendering) {
 		this.size = size;

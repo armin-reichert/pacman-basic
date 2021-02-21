@@ -129,7 +129,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 				new MsPacMan_IntermissionScene1(unscaledSize), //
 				new MsPacMan_IntermissionScene2(unscaledSize), //
 				new MsPacMan_IntermissionScene3(unscaledSize), //
-				new PlayScene<MsPacMan_GameRendering>(unscaledSize, MSPACMAN_GAME_RENDERING)//
+				new PlayScene<MsPacMan_GameRendering>(unscaledSize, MSPACMAN_GAME_RENDERING, MSPACMAN_GAME_SOUNDS)//
 		));
 
 		scenes.put(PACMAN, Arrays.asList(//
@@ -137,7 +137,7 @@ public class PacManGameSwingUI implements PacManGameUI {
 				new PacMan_IntermissionScene1(unscaledSize), //
 				new PacMan_IntermissionScene2(unscaledSize), //
 				new PacMan_IntermissionScene3(unscaledSize), //
-				new PlayScene<PacMan_GameRendering>(unscaledSize, PACMAN_GAME_RENDERING)//
+				new PlayScene<PacMan_GameRendering>(unscaledSize, PACMAN_GAME_RENDERING, PACMAN_GAME_SOUNDS)//
 		));
 
 		onGameChanged(controller.getGame());
