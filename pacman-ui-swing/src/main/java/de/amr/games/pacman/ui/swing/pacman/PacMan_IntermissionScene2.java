@@ -35,7 +35,7 @@ public class PacMan_IntermissionScene2 extends GameScene<PacMan_GameRendering> {
 	}
 
 	private final Spritesheet spritesheet = rendering.assets;
-	private final SoundManager sounds = PacManGameSwingUI.PACMAN_GAME_SOUNDS;
+	private final SoundManager sounds = PacManGameSwingUI.SOUNDS_PACMAN;
 
 	private final int chaseTileY = 20;
 	private final V2i nailPosition = new V2i(t(14), t(chaseTileY) - 6);
@@ -54,7 +54,7 @@ public class PacMan_IntermissionScene2 extends GameScene<PacMan_GameRendering> {
 	private Phase phase;
 
 	public PacMan_IntermissionScene2(Dimension size) {
-		super(size, PacManGameSwingUI.PACMAN_GAME_RENDERING);
+		super(size, PacManGameSwingUI.RENDERING_PACMAN);
 	}
 
 	@Override

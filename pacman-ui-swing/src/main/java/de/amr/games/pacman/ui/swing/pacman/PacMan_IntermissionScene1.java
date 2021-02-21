@@ -32,7 +32,7 @@ public class PacMan_IntermissionScene1 extends GameScene<PacMan_GameRendering> {
 
 	private static final int baselineY = t(20);
 
-	private final SoundManager sounds = PacManGameSwingUI.PACMAN_GAME_SOUNDS;
+	private final SoundManager sounds = PacManGameSwingUI.SOUNDS_PACMAN;
 
 	private Ghost blinky;
 	private Pac pac;
@@ -40,7 +40,7 @@ public class PacMan_IntermissionScene1 extends GameScene<PacMan_GameRendering> {
 	private Phase phase;
 
 	public PacMan_IntermissionScene1(Dimension size) {
-		super(size, PacManGameSwingUI.PACMAN_GAME_RENDERING);
+		super(size, PacManGameSwingUI.RENDERING_PACMAN);
 	}
 
 	@Override

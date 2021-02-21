@@ -63,7 +63,7 @@ public class PacMan_IntroScene extends GameScene<PacMan_GameRendering> {
 	}
 
 	public PacMan_IntroScene(Dimension size) {
-		super(size, PacManGameSwingUI.PACMAN_GAME_RENDERING);
+		super(size, PacManGameSwingUI.RENDERING_PACMAN);
 	}
 
 	@Override

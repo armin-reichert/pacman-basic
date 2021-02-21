@@ -48,7 +48,7 @@ public class MsPacMan_IntroScene extends GameScene<MsPacMan_GameRendering> {
 	private boolean presentingMsPac;
 
 	public MsPacMan_IntroScene(Dimension size) {
-		super(size, PacManGameSwingUI.MSPACMAN_GAME_RENDERING);
+		super(size, PacManGameSwingUI.RENDERING_MSPACMAN);
 	}
 
 	private void enterPhase(Phase newPhase) {

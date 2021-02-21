@@ -52,7 +52,7 @@ public class MsPacMan_IntermissionScene1 extends GameScene<MsPacMan_GameRenderin
 	}
 
 	public MsPacMan_IntermissionScene1(Dimension size) {
-		super(size, PacManGameSwingUI.MSPACMAN_GAME_RENDERING, PacManGameSwingUI.MSPACMAN_GAME_SOUNDS);
+		super(size, PacManGameSwingUI.RENDERING_MSPACMAN, PacManGameSwingUI.SOUNDS_MSPACMAN);
 	}
 
 	@Override

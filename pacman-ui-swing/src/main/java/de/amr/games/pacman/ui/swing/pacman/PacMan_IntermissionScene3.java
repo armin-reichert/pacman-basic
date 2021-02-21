@@ -33,7 +33,7 @@ public class PacMan_IntermissionScene3 extends GameScene<PacMan_GameRendering> {
 		CHASING_PACMAN, RETURNING_HALF_NAKED;
 	}
 
-	private final SoundManager sounds = PacManGameSwingUI.PACMAN_GAME_SOUNDS;
+	private final SoundManager sounds = PacManGameSwingUI.SOUNDS_PACMAN;
 
 	private final Spritesheet spritesheet;
 	private final Animation<BufferedImage> blinkyDamaged, blinkyHalfNaked;
@@ -45,7 +45,7 @@ public class PacMan_IntermissionScene3 extends GameScene<PacMan_GameRendering> {
 	private Phase phase;
 
 	public PacMan_IntermissionScene3(Dimension size) {
-		super(size, PacManGameSwingUI.PACMAN_GAME_RENDERING);
+		super(size, PacManGameSwingUI.RENDERING_PACMAN);
 
 		this.spritesheet = rendering.assets;
 

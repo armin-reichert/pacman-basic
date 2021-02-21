@@ -11,7 +11,7 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 
 /**
- * Sound manager for Pac-Man game.
+ * Sound manager for Pac-Man game variants.
  * 
  * @author Armin Reichert
  */
@@ -44,6 +44,8 @@ public class PacManGameSoundManager implements SoundManager {
 		}
 	}
 
+	// TODO how to avoid warning about potential resource leak?
+	@SuppressWarnings("resource")
 	private Clip getClip(PacManGameSound sound) {
 		Clip clip = null;
 		if (sound == PacManGameSound.PACMAN_MUNCH) {
@@ -59,11 +61,13 @@ public class PacManGameSoundManager implements SoundManager {
 		return clip;
 	}
 
+	@SuppressWarnings("resource")
 	@Override
 	public void play(PacManGameSound sound) {
 		getClip(sound).start();
 	}
 
+	@SuppressWarnings("resource")
 	@Override
 	public void loop(PacManGameSound sound, int repetitions) {
 		Clip clip = getClip(sound);
@@ -71,6 +75,7 @@ public class PacManGameSoundManager implements SoundManager {
 		clip.loop(repetitions == Integer.MAX_VALUE ? Clip.LOOP_CONTINUOUSLY : repetitions - 1);
 	}
 
+	@SuppressWarnings("resource")
 	@Override
 	public void stop(PacManGameSound sound) {
 		getClip(sound).stop();

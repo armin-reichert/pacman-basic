@@ -83,7 +83,7 @@ public class MsPacMan_IntermissionScene3 extends GameScene<MsPacMan_GameRenderin
 	private Phase phase;
 
 	public MsPacMan_IntermissionScene3(Dimension size) {
-		super(size, PacManGameSwingUI.MSPACMAN_GAME_RENDERING, PacManGameSwingUI.MSPACMAN_GAME_SOUNDS);
+		super(size, PacManGameSwingUI.RENDERING_MSPACMAN, PacManGameSwingUI.SOUNDS_MSPACMAN);
 	}
 
 	private void enter(Phase newPhase, long ticks) {
