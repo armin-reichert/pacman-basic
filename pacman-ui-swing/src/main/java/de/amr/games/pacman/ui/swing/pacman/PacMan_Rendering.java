@@ -168,7 +168,7 @@ public class PacMan_Rendering extends DefaultGameRendering {
 		g.setFont(assets.scoreFont);
 		g.translate(0, assets.scoreFont.getSize() + 1);
 		g.setColor(Color.WHITE);
-		g.drawString("HIGHSCORE", x, y);
+		g.drawString("HIGH SCORE", x, y);
 		g.translate(0, 1);
 		if (game.state != PacManGameState.INTRO && !game.attractMode) {
 			g.setColor(Color.YELLOW);
