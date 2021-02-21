@@ -202,6 +202,7 @@ public class PacMan_IntroScene extends GameScene<PacMan_Rendering> {
 	@Override
 	public void render(Graphics2D g) {
 		rendering.drawScore(g, game, t(1), t(0));
+		rendering.drawHiScore(g, game, t(15), t(0));
 		drawGallery(g);
 		if (phase == Phase.CHASING_PAC) {
 			if (blinking.animate()) {
