@@ -15,6 +15,17 @@ import de.amr.games.pacman.model.guys.Pac;
  */
 public interface PacManGameAnimations {
 
+	default void reset(GameModel game) {
+		mazeFlashings().forEach(Animation::reset);
+		energizerBlinking().reset();
+		ghostFlashing().reset();
+		ghostsFrightened(game.ghosts()).forEach(Animation::reset);
+		ghostsKicking(game.ghosts()).forEach(Animation::reset);
+		ghostsReturningHome(game.ghosts()).forEach(Animation::reset);
+		playerMunching(game.pac).forEach(Animation::reset);
+		playerDying().reset();
+	}
+
 	Animation<?> playerMunching(Pac pac, Direction dir);
 
 	default Stream<Animation<?>> playerMunching(Pac pac) {
@@ -61,14 +72,7 @@ public interface PacManGameAnimations {
 
 	Animation<Boolean> energizerBlinking();
 
-	default void reset(GameModel game) {
-		mazeFlashings().forEach(Animation::reset);
-		energizerBlinking().reset();
-		ghostFlashing().reset();
-		ghostsFrightened(game.ghosts()).forEach(Animation::reset);
-		ghostsKicking(game.ghosts()).forEach(Animation::reset);
-		ghostsReturningHome(game.ghosts()).forEach(Animation::reset);
-		playerMunching(game.pac).forEach(Animation::reset);
-		playerDying().reset();
-	}
+	// Ms. Pac-Man only:
+
+	Animation<?> storkFlying();
 }

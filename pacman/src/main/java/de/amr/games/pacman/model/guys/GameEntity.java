@@ -1,5 +1,6 @@
 package de.amr.games.pacman.model.guys;
 
+import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.V2f;
 
 public class GameEntity {
@@ -12,6 +13,8 @@ public class GameEntity {
 
 	/** Velocity vector. */
 	public V2f velocity = V2f.NULL;
+
+	public Animation<?> animation;
 
 	/** Move with current velocity. */
 	public void move() {

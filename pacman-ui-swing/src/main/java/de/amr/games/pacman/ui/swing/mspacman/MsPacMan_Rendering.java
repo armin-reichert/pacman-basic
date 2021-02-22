@@ -42,38 +42,8 @@ public class MsPacMan_Rendering extends DefaultGameRendering {
 	}
 
 	@Override
-	public Animation<BufferedImage> playerMunching(Pac pac, Direction dir) {
-		return assets.msPacManMunchingAnimByDir.get(dir);
-	}
-
-	@Override
-	public Animation<BufferedImage> playerDying() {
-		return assets.msPacManSpinningAnim;
-	}
-
-	@Override
-	public Animation<BufferedImage> ghostKicking(Ghost ghost, Direction dir) {
-		return assets.ghostsKickingAnimsByGhost.get(ghost.id).get(dir);
-	}
-
-	@Override
-	public Animation<BufferedImage> ghostFrightened(Ghost ghost, Direction dir) {
-		return assets.ghostBlueAnim;
-	}
-
-	@Override
-	public Animation<BufferedImage> ghostFlashing() {
-		return assets.ghostFlashingAnim;
-	}
-
-	@Override
-	public Animation<BufferedImage> ghostReturningHomeToDir(Ghost ghost, Direction dir) {
-		return assets.ghostEyesAnimByDir.get(dir);
-	}
-
-	@Override
-	public Animation<BufferedImage> mazeFlashing(int mazeNumber) {
-		return assets.mazesFlashingAnims.get(mazeNumber - 1);
+	public Animation<Boolean> energizerBlinking() {
+		return assets.energizerBlinkingAnim;
 	}
 
 	@Override
@@ -83,8 +53,8 @@ public class MsPacMan_Rendering extends DefaultGameRendering {
 	}
 
 	@Override
-	public Animation<Boolean> energizerBlinking() {
-		return assets.energizerBlinkingAnim;
+	public Animation<BufferedImage> mazeFlashing(int mazeNumber) {
+		return assets.mazesFlashingAnims.get(mazeNumber - 1);
 	}
 
 	@Override
@@ -127,6 +97,41 @@ public class MsPacMan_Rendering extends DefaultGameRendering {
 			return ghostFrightened(ghost, ghost.dir).animate();
 		}
 		return ghostKicking(ghost, ghost.wishDir).animate();
+	}
+
+	@Override
+	public Animation<BufferedImage> playerMunching(Pac pac, Direction dir) {
+		return assets.msPacManMunchingAnimByDir.get(dir);
+	}
+
+	@Override
+	public Animation<BufferedImage> playerDying() {
+		return assets.msPacManSpinningAnim;
+	}
+
+	@Override
+	public Animation<BufferedImage> ghostKicking(Ghost ghost, Direction dir) {
+		return assets.ghostsKickingAnimsByGhost.get(ghost.id).get(dir);
+	}
+
+	@Override
+	public Animation<BufferedImage> ghostFrightened(Ghost ghost, Direction dir) {
+		return assets.ghostBlueAnim;
+	}
+
+	@Override
+	public Animation<BufferedImage> ghostFlashing() {
+		return assets.ghostFlashingAnim;
+	}
+
+	@Override
+	public Animation<BufferedImage> ghostReturningHomeToDir(Ghost ghost, Direction dir) {
+		return assets.ghostEyesAnimByDir.get(dir);
+	}
+
+	@Override
+	public Animation<?> storkFlying() {
+		return null; // TODO
 	}
 
 	@Override
