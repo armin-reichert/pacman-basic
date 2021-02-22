@@ -59,6 +59,7 @@ public class PacManGame extends GameModel {
 	private final MapBasedPacManGameWorld world;
 
 	public PacManGame() {
+
 		world = new MapBasedPacManGameWorld();
 		world.setMap(new WorldMap("/pacman/maps/map1.txt"));
 		world.setUpwardsBlocked(new V2i(12, 13), new V2i(15, 13), new V2i(12, 25), new V2i(15, 25));
@@ -88,6 +89,7 @@ public class PacManGame extends GameModel {
 	protected void buildLevel(int levelNumber) {
 		level = new GameLevel(PACMAN_LEVELS[levelNumber <= 21 ? levelNumber - 1 : 20]);
 		level.setWorld(world);
+		level.mazeNumber = mazeNumber(levelNumber);
 		log("Pac-Man classic level %d created", levelNumber);
 	}
 
