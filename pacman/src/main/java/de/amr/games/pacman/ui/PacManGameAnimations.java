@@ -15,6 +15,7 @@ import de.amr.games.pacman.model.guys.Pac;
  */
 public interface PacManGameAnimations {
 
+	// TODO remove this
 	default void reset(GameModel game) {
 		mazeFlashings().forEach(Animation::reset);
 		energizerBlinking().reset();
@@ -26,10 +27,16 @@ public interface PacManGameAnimations {
 		playerDying().reset();
 	}
 
-	Animation<?> playerMunching(Pac pac, Direction dir);
+	Animation<?> playerMunching(Pac player, Direction dir);
 
-	default Stream<Animation<?>> playerMunching(Pac pac) {
-		return Direction.stream().map(dir -> playerMunching(pac, dir));
+	default Stream<Animation<?>> playerMunching(Pac player) {
+		return Direction.stream().map(dir -> playerMunching(player, dir));
+	}
+
+	Animation<?> spouseMunching(Pac spouse, Direction dir);
+
+	default Stream<Animation<?>> spouseMunching(Pac spouse) {
+		return Direction.stream().map(dir -> spouseMunching(spouse, dir));
 	}
 
 	Animation<?> playerDying();
@@ -71,6 +78,14 @@ public interface PacManGameAnimations {
 	Stream<Animation<?>> mazeFlashings();
 
 	Animation<Boolean> energizerBlinking();
+
+	// Pac-Man only
+
+	Animation<?> bigPacMan();
+
+	Animation<?> blinkyNaked();
+
+	Animation<?> blinkyDamaged();
 
 	// Ms. Pac-Man only:
 

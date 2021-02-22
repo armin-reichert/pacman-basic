@@ -1,4 +1,4 @@
-package de.amr.games.pacman.ui.swing.mspacman;
+package de.amr.games.pacman.ui.swing.mspacman.entities;
 
 import static de.amr.games.pacman.ui.swing.mspacman.MsPacMan_Rendering.assets;
 
@@ -10,13 +10,14 @@ import java.awt.image.BufferedImage;
 import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.model.guys.GameEntity;
 import de.amr.games.pacman.ui.swing.PacManGameUI_Swing;
+import de.amr.games.pacman.ui.swing.mspacman.MsPacMan_Rendering;
 
 /**
  * The flap used in the intermission scenes.
  * 
  * @author Armin Reichert
  */
-class Flap extends GameEntity {
+public class Flap extends GameEntity {
 
 	private final MsPacMan_Rendering rendering = PacManGameUI_Swing.RENDERING_MSPACMAN;
 	private final Font font = new Font(assets.getScoreFont().getName(), Font.PLAIN, 8);
@@ -39,7 +40,7 @@ class Flap extends GameEntity {
 
 	public void draw(Graphics2D g) {
 		if (visible) {
-			rendering.drawImage(g, animation.animate(), position.x, position.y, true);
+			rendering.drawSprite(g, animation.animate(), position.x, position.y);
 			g.setFont(font);
 			g.setColor(new Color(222, 222, 225, 192));
 			g.drawString(sceneNumber + "", position.x + 20, position.y + 30);

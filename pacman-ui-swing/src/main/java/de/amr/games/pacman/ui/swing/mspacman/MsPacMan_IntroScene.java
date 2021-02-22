@@ -25,7 +25,7 @@ import de.amr.games.pacman.ui.swing.scene.GameScene;
  * 
  * @author Armin Reichert
  */
-public class MsPacMan_IntroScene extends GameScene<MsPacMan_Rendering> {
+public class MsPacMan_IntroScene extends GameScene {
 
 	enum Phase {
 
@@ -173,9 +173,9 @@ public class MsPacMan_IntroScene extends GameScene<MsPacMan_Rendering> {
 		g.drawString("\"MS PAC-MAN\"", t(8), t(5));
 		drawAnimatedFrame(g, 32, 16, game.state.timer.running());
 		for (Ghost ghost : ghosts) {
-			rendering.drawGhost(g, ghost, game);
+			rendering.drawGhost(g, ghost, false);
 		}
-		rendering.drawPac(g, msPac, game);
+		rendering.drawPlayer(g, msPac);
 		presentGhost(g);
 		presentMsPacMan(g);
 		if (phase == Phase.END) {

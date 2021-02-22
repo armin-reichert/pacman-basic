@@ -16,6 +16,7 @@ import de.amr.games.pacman.model.guys.GameEntity;
 import de.amr.games.pacman.model.guys.Pac;
 import de.amr.games.pacman.sound.PacManGameSound;
 import de.amr.games.pacman.ui.swing.PacManGameUI_Swing;
+import de.amr.games.pacman.ui.swing.mspacman.entities.Flap;
 import de.amr.games.pacman.ui.swing.scene.GameScene;
 
 /**
@@ -28,15 +29,15 @@ import de.amr.games.pacman.ui.swing.scene.GameScene;
  * 
  * @author Armin Reichert
  */
-public class MsPacMan_IntermissionScene3 extends GameScene<MsPacMan_Rendering> {
+public class MsPacMan_IntermissionScene3 extends GameScene {
 
 	class Bird extends GameEntity {
 
-		Animation<BufferedImage> animation = assets.birdAnim;
+		Animation<BufferedImage> animation = assets.storkAnim;
 
 		public void draw(Graphics2D g) {
 			if (visible) {
-				rendering.drawBirdAnim(g, position.x, position.y);
+				rendering.drawStorkSprite(g, position.x, position.y);
 			}
 		}
 	}
@@ -57,9 +58,9 @@ public class MsPacMan_IntermissionScene3 extends GameScene<MsPacMan_Rendering> {
 
 		public void draw(Graphics2D g) {
 			if (open) {
-				rendering.drawJunior(g, position.x, position.y);
+				rendering.drawJuniorSprite(g, position.x, position.y);
 			} else {
-				rendering.drawBlueBag(g, position.x, position.y);
+				rendering.drawBlueBagSprite(g, position.x, position.y);
 			}
 		}
 	}
@@ -169,8 +170,8 @@ public class MsPacMan_IntermissionScene3 extends GameScene<MsPacMan_Rendering> {
 	@Override
 	public void render(Graphics2D g) {
 		flap.draw(g);
-		rendering.drawPac(g, msPacMan, game);
-		rendering.drawMrPacMan(g, pacMan);
+		rendering.drawPlayer(g, msPacMan);
+		rendering.drawSpouse(g, pacMan);
 		bird.draw(g);
 		bag.draw(g);
 	}

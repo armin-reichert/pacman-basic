@@ -28,7 +28,7 @@ import de.amr.games.pacman.ui.swing.scene.GameScene;
  * 
  * @author Armin Reichert
  */
-public class PacMan_IntroScene extends GameScene<PacMan_Rendering> {
+public class PacMan_IntroScene extends GameScene {
 
 	static class GhostPortrait {
 
@@ -201,8 +201,7 @@ public class PacMan_IntroScene extends GameScene<PacMan_Rendering> {
 
 	@Override
 	public void render(Graphics2D g) {
-		rendering.drawScore(g, game, t(1), t(0));
-		rendering.drawHiScore(g, game, t(15), t(0));
+		rendering.drawScore(g, game, true);
 		drawGallery(g);
 		if (phase == Phase.CHASING_PAC) {
 			if (blinking.animate()) {
@@ -220,9 +219,9 @@ public class PacMan_IntroScene extends GameScene<PacMan_Rendering> {
 	}
 
 	private void drawGuys(Graphics2D g) {
-		rendering.drawPac(g, pac, game);
+		rendering.drawPlayer(g, pac);
 		for (Ghost ghost : ghosts) {
-			rendering.drawGhost(g, ghost, game);
+			rendering.drawGhost(g, ghost, false);
 		}
 	}
 
@@ -234,7 +233,7 @@ public class PacMan_IntroScene extends GameScene<PacMan_Rendering> {
 	private void drawGallery(Graphics2D g) {
 		int x = t(2);
 		g.setColor(Color.WHITE);
-		g.setFont(rendering.assets.getScoreFont());
+		g.setFont(rendering.getScoreFont());
 		g.drawString("CHARACTER", t(6), TOP_Y);
 		g.drawString("/", t(16), TOP_Y);
 		g.drawString("NICKNAME", t(18), TOP_Y);
@@ -242,10 +241,10 @@ public class PacMan_IntroScene extends GameScene<PacMan_Rendering> {
 			GhostPortrait portrait = gallery[i];
 			if (portrait.ghost.visible) {
 				int y = TOP_Y + t(2 + 3 * i);
-				BufferedImage ghostTile = rendering.ghostKicking(portrait.ghost, Direction.RIGHT).frame(0);
-				rendering.drawImage(g, ghostTile, x, y - 4, true);
+				BufferedImage sprite = (BufferedImage) rendering.ghostKicking(portrait.ghost, Direction.RIGHT).frame(0);
+				rendering.drawSprite(g, sprite, x, y - 4);
 				g.setColor(portrait.color);
-				g.setFont(rendering.assets.getScoreFont());
+				g.setFont(rendering.getScoreFont());
 				if (portrait.characterVisible) {
 					g.drawString("-" + portrait.character, t(6), y + 8);
 				}
@@ -260,7 +259,7 @@ public class PacMan_IntroScene extends GameScene<PacMan_Rendering> {
 		if (blinking.frame()) {
 			String text = "PRESS SPACE TO PLAY";
 			g.setColor(Color.ORANGE);
-			g.setFont(rendering.assets.getScoreFont());
+			g.setFont(rendering.getScoreFont());
 			g.drawString(text, t(14 - text.length() / 2), t(yTile));
 		}
 	}
@@ -272,10 +271,10 @@ public class PacMan_IntroScene extends GameScene<PacMan_Rendering> {
 			g.fillOval(t(tileX), t(tileY + 1) - 2, 10, 10);
 		}
 		g.setColor(Color.WHITE);
-		g.setFont(rendering.assets.getScoreFont());
+		g.setFont(rendering.getScoreFont());
 		g.drawString("10", t(tileX + 2), t(tileY));
 		g.drawString("50", t(tileX + 2), t(tileY + 2));
-		g.setFont(rendering.assets.getScoreFont().deriveFont(6f));
+		g.setFont(rendering.getScoreFont().deriveFont(6f));
 		g.drawString("PTS", t(tileX + 5), t(tileY));
 		g.drawString("PTS", t(tileX + 5), t(tileY + 2));
 	}

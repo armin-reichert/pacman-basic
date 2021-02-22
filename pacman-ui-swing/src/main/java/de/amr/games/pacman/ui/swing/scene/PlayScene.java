@@ -5,18 +5,18 @@ import static de.amr.games.pacman.world.PacManGameWorld.t;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 
+import de.amr.games.pacman.controller.PacManGameState;
 import de.amr.games.pacman.sound.SoundManager;
-import de.amr.games.pacman.ui.swing.rendering.DebugRendering;
-import de.amr.games.pacman.ui.swing.rendering.GameRendering;
+import de.amr.games.pacman.ui.swing.rendering.DefaultRendering;
 
 /**
  * Play scene for Pac-Man and Ms. Pac-Man.
  * 
  * @author Armin Reichert
  */
-public class PlayScene<R extends GameRendering> extends GameScene<R> {
+public class PlayScene extends GameScene {
 
-	public PlayScene(Dimension size, R rendering, SoundManager sounds) {
+	public PlayScene(Dimension size, DefaultRendering rendering, SoundManager sounds) {
 		super(size, rendering, sounds);
 	}
 
@@ -26,21 +26,21 @@ public class PlayScene<R extends GameRendering> extends GameScene<R> {
 
 	@Override
 	public void render(Graphics2D g) {
-		rendering.drawScore(g, game, t(1), t(0));
-		rendering.drawHiScore(g, game, t(15), t(0));
-		rendering.drawMaze(g, game, 0, t(3));
-		if (DebugRendering.on) {
-			DebugRendering.drawMazeStructure(g, game);
+		boolean flashing = rendering.mazeFlashing(game.level.mazeNumber).hasStarted();
+		rendering.drawMaze(g, game.level.mazeNumber, 0, t(3), flashing);
+		if (!flashing) {
+			rendering.drawFoodTiles(g, game.level.world.tiles().filter(game.level.world::isFoodTile),
+					game.level::containsEatenFood);
+			rendering.drawEnergizerTiles(g, game.level.world.energizerTiles());
 		}
-		rendering.signalGameState(g, game);
-		rendering.drawPac(g, game.pac, game);
-		game.ghosts().forEach(ghost -> rendering.drawGhost(g, ghost, game));
-		if (DebugRendering.on) {
-			DebugRendering.drawPlaySceneDebugInfo(g, game);
-		}
+		rendering.drawGameState(g, game);
+		rendering.drawPlayer(g, game.pac);
+		game.ghosts().forEach(ghost -> rendering.drawGhost(g, ghost, game.pac.powerTicksLeft > 0));
+		rendering.drawBonus(g, game.bonus);
+		rendering.drawScore(g, game, game.state == PacManGameState.INTRO || game.attractMode);
 		if (!game.attractMode) {
-			rendering.drawLivesCounter(g, game, t(2), size.height - t(2));
+			rendering.drawLivesCounter(g, game, t(2), t(34));
 		}
-		rendering.drawLevelCounter(g, game, t(game.level.world.xTiles() - 4), size.height - t(2));
+		rendering.drawLevelCounter(g, game, t(25), t(34));
 	}
 }

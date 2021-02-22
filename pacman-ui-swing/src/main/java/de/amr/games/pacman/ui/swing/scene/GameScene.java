@@ -6,27 +6,27 @@ import java.awt.image.BufferedImage;
 
 import de.amr.games.pacman.model.GameModel;
 import de.amr.games.pacman.sound.SoundManager;
-import de.amr.games.pacman.ui.swing.rendering.GameRendering;
+import de.amr.games.pacman.ui.swing.rendering.DefaultRendering;
 
 /**
  * Common game scene base class.
  * 
  * @author Armin Reichert
  */
-public abstract class GameScene<R extends GameRendering> {
+public abstract class GameScene {
 
 	protected final Dimension size;
-	protected final R rendering;
+	protected final DefaultRendering rendering;
 	protected GameModel game;
 	protected SoundManager sounds;
 
-	public GameScene(Dimension size, R rendering, SoundManager sounds) {
+	public GameScene(Dimension size, DefaultRendering rendering, SoundManager sounds) {
 		this.size = size;
 		this.rendering = rendering;
 		this.sounds = sounds;
 	}
 
-	public GameScene(Dimension size, R rendering) {
+	public GameScene(Dimension size, DefaultRendering rendering) {
 		this.size = size;
 		this.rendering = rendering;
 	}

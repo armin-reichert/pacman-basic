@@ -13,6 +13,7 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.model.guys.Pac;
 import de.amr.games.pacman.sound.PacManGameSound;
 import de.amr.games.pacman.ui.swing.PacManGameUI_Swing;
+import de.amr.games.pacman.ui.swing.mspacman.entities.Flap;
 import de.amr.games.pacman.ui.swing.scene.GameScene;
 
 /**
@@ -23,7 +24,7 @@ import de.amr.games.pacman.ui.swing.scene.GameScene;
  * 
  * @author Armin Reichert
  */
-public class MsPacMan_IntermissionScene2 extends GameScene<MsPacMan_Rendering> {
+public class MsPacMan_IntermissionScene2 extends GameScene {
 
 	enum Phase {
 
@@ -126,7 +127,7 @@ public class MsPacMan_IntermissionScene2 extends GameScene<MsPacMan_Rendering> {
 	@Override
 	public void render(Graphics2D g) {
 		flap.draw(g);
-		rendering.drawMrPacMan(g, pacMan);
-		rendering.drawPac(g, msPacMan, game);
+		rendering.drawPlayer(g, msPacMan);
+		rendering.drawSpouse(g, pacMan);
 	}
 }

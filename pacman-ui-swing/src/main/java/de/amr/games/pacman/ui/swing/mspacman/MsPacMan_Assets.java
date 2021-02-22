@@ -74,7 +74,7 @@ public class MsPacMan_Assets extends Spritesheet {
 	final Animation<BufferedImage> ghostBlueAnim;
 	final Animation<BufferedImage> ghostFlashingAnim;
 	final Animation<Integer> bonusJumpAnim;
-	final Animation<BufferedImage> birdAnim;
+	final Animation<BufferedImage> storkAnim;
 	final BufferedImage blueBag;
 	final BufferedImage junior;
 
@@ -164,10 +164,10 @@ public class MsPacMan_Assets extends Spritesheet {
 
 		bonusJumpAnim = Animation.of(2, -2).frameDuration(15).endless().run();
 
-		birdAnim = Animation.of(//
+		storkAnim = Animation.of(//
 				region(489, 176, 32, 16), //
 				region(521, 176, 32, 16));
-		birdAnim.endless().frameDuration(10).restart();
+		storkAnim.endless().frameDuration(10).restart();
 
 		blueBag = region(488, 199, 8, 8);
 		junior = region(509, 200, 8, 8);

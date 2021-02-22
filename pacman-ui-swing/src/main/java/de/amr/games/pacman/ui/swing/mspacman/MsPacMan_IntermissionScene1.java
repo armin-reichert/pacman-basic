@@ -1,6 +1,8 @@
 package de.amr.games.pacman.ui.swing.mspacman;
 
 import static de.amr.games.pacman.heaven.God.clock;
+import static de.amr.games.pacman.ui.swing.PacManGameUI_Swing.RENDERING_MSPACMAN;
+import static de.amr.games.pacman.ui.swing.PacManGameUI_Swing.SOUNDS_MSPACMAN;
 import static de.amr.games.pacman.ui.swing.mspacman.MsPacMan_Rendering.assets;
 import static de.amr.games.pacman.world.PacManGameWorld.t;
 
@@ -14,7 +16,8 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.model.guys.Ghost;
 import de.amr.games.pacman.model.guys.Pac;
 import de.amr.games.pacman.sound.PacManGameSound;
-import de.amr.games.pacman.ui.swing.PacManGameUI_Swing;
+import de.amr.games.pacman.ui.swing.mspacman.entities.Flap;
+import de.amr.games.pacman.ui.swing.mspacman.entities.Heart;
 import de.amr.games.pacman.ui.swing.scene.GameScene;
 
 /**
@@ -27,7 +30,7 @@ import de.amr.games.pacman.ui.swing.scene.GameScene;
  * 
  * @author Armin Reichert
  */
-public class MsPacMan_IntermissionScene1 extends GameScene<MsPacMan_Rendering> {
+public class MsPacMan_IntermissionScene1 extends GameScene {
 
 	enum Phase {
 
@@ -43,7 +46,7 @@ public class MsPacMan_IntermissionScene1 extends GameScene<MsPacMan_Rendering> {
 	private Flap flap;
 	private Pac pacMan, msPac;
 	private Ghost pinky, inky;
-	private boolean heartVisible;
+	private Heart heart;
 	private boolean ghostsMet;
 
 	private void enter(Phase newPhase, long ticks) {
@@ -52,7 +55,7 @@ public class MsPacMan_IntermissionScene1 extends GameScene<MsPacMan_Rendering> {
 	}
 
 	public MsPacMan_IntermissionScene1(Dimension size) {
-		super(size, PacManGameUI_Swing.RENDERING_MSPACMAN, PacManGameUI_Swing.SOUNDS_MSPACMAN);
+		super(size, RENDERING_MSPACMAN, SOUNDS_MSPACMAN);
 	}
 
 	@Override
@@ -81,11 +84,13 @@ public class MsPacMan_IntermissionScene1 extends GameScene<MsPacMan_Rendering> {
 		pinky.setPosition(msPac.position.sum(t(3), 0));
 		pinky.visible = true;
 
+		heart = new Heart();
+		heart.visible = false;
+
 		rendering.ghostsKicking(Stream.of(inky, pinky)).forEach(Animation::restart);
 
 		sounds.loop(PacManGameSound.INTERMISSION_1, 1);
 
-		heartVisible = false;
 		ghostsMet = false;
 
 		enter(Phase.FLAP, clock.sec(1));
@@ -123,7 +128,8 @@ public class MsPacMan_IntermissionScene1 extends GameScene<MsPacMan_Rendering> {
 				pacMan.speed = msPac.speed = 0;
 				pacMan.dir = Direction.LEFT;
 				msPac.dir = Direction.RIGHT;
-				heartVisible = true;
+				heart.setPosition((pacMan.position.x + msPac.position.x) / 2, pacMan.position.y - t(2));
+				heart.visible = true;
 				rendering.ghostKicking(inky).forEach(Animation::reset);
 				rendering.ghostKicking(pinky).forEach(Animation::reset);
 				enter(Phase.READY_TO_PLAY, clock.sec(3));
@@ -173,12 +179,10 @@ public class MsPacMan_IntermissionScene1 extends GameScene<MsPacMan_Rendering> {
 	@Override
 	public void render(Graphics2D g) {
 		flap.draw(g);
-		rendering.drawMrPacMan(g, pacMan);
-		rendering.drawGhost(g, inky, game);
-		rendering.drawPac(g, msPac, game);
-		rendering.drawGhost(g, pinky, game);
-		if (heartVisible) {
-			rendering.drawHeart(g, msPac.position.x + 4, pacMan.position.y - 20);
-		}
+		rendering.drawPlayer(g, msPac);
+		rendering.drawSpouse(g, pacMan);
+		rendering.drawGhost(g, inky, false);
+		rendering.drawGhost(g, pinky, false);
+		heart.draw(g);
 	}
 }

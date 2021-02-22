@@ -3,6 +3,7 @@ package de.amr.games.pacman.ui.swing.pacman;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.model.guys.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.guys.GhostState.HUNTING_PAC;
+import static de.amr.games.pacman.ui.swing.PacManGameUI_Swing.RENDERING_PACMAN;
 import static de.amr.games.pacman.ui.swing.pacman.PacMan_IntermissionScene1.Phase.BLINKY_CHASING_PACMAN;
 import static de.amr.games.pacman.world.PacManGameWorld.t;
 
@@ -24,7 +25,7 @@ import de.amr.games.pacman.ui.swing.scene.GameScene;
  * 
  * @author Armin Reichert
  */
-public class PacMan_IntermissionScene1 extends GameScene<PacMan_Rendering> {
+public class PacMan_IntermissionScene1 extends GameScene {
 
 	enum Phase {
 		BLINKY_CHASING_PACMAN, BIGPACMAN_CHASING_BLINKY;
@@ -34,13 +35,14 @@ public class PacMan_IntermissionScene1 extends GameScene<PacMan_Rendering> {
 
 	private final SoundManager sounds = PacManGameUI_Swing.SOUNDS_PACMAN;
 
+	private Animation<?> bigPacManAnimation;
 	private Ghost blinky;
 	private Pac pac;
-	private Animation<BufferedImage> bigPac;
+
 	private Phase phase;
 
 	public PacMan_IntermissionScene1(Dimension size) {
-		super(size, PacManGameUI_Swing.RENDERING_PACMAN);
+		super(size, RENDERING_PACMAN);
 	}
 
 	@Override
@@ -52,9 +54,7 @@ public class PacMan_IntermissionScene1 extends GameScene<PacMan_Rendering> {
 		pac.speed = 1f;
 		rendering.playerMunching(pac).forEach(Animation::restart);
 
-		bigPac = Animation.of(rendering.assets.spriteRegion(2, 1, 2, 2), rendering.assets.spriteRegion(4, 1, 2, 2),
-				rendering.assets.spriteRegion(6, 1, 2, 2));
-		bigPac.frameDuration(4).endless().run();
+		bigPacManAnimation = RENDERING_PACMAN.bigPacMan();
 
 		blinky = new Ghost(0, "Blinky", Direction.LEFT);
 		blinky.visible = true;
@@ -87,6 +87,7 @@ public class PacMan_IntermissionScene1 extends GameScene<PacMan_Rendering> {
 		case BIGPACMAN_CHASING_BLINKY:
 			if ((int) blinky.position.x + 4 == t(13)) {
 				pac.speed = blinky.speed * 1.8f;
+				bigPacManAnimation.restart();
 			}
 			if (pac.position.x > t(28) + 100) {
 				game.state.timer.setDuration(0);
@@ -101,11 +102,12 @@ public class PacMan_IntermissionScene1 extends GameScene<PacMan_Rendering> {
 
 	@Override
 	public void render(Graphics2D g) {
-		rendering.drawGhost(g, blinky, game);
+		rendering.drawGhost(g, blinky, false);
 		if (phase == Phase.BLINKY_CHASING_PACMAN) {
-			rendering.drawPac(g, pac, game);
+			rendering.drawPlayer(g, pac);
 		} else {
-			rendering.drawImage(g, bigPac.animate(), pac.position.x - 12, pac.position.y - 22, true);
+			BufferedImage sprite = (BufferedImage) bigPacManAnimation.animate();
+			rendering.drawSprite(g, sprite, pac.position.x - 12, pac.position.y - 22);
 		}
 		rendering.drawLevelCounter(g, game, t(25), t(34));
 	}

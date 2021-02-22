@@ -2,11 +2,11 @@ package de.amr.games.pacman.ui.swing.pacman;
 
 import static de.amr.games.pacman.heaven.God.clock;
 import static de.amr.games.pacman.model.guys.GhostState.HUNTING_PAC;
+import static de.amr.games.pacman.ui.swing.PacManGameUI_Swing.RENDERING_PACMAN;
 import static de.amr.games.pacman.world.PacManGameWorld.t;
 
 import java.awt.Dimension;
 import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
 
 import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.CountdownTimer;
@@ -17,7 +17,6 @@ import de.amr.games.pacman.model.guys.Pac;
 import de.amr.games.pacman.sound.PacManGameSound;
 import de.amr.games.pacman.sound.SoundManager;
 import de.amr.games.pacman.ui.swing.PacManGameUI_Swing;
-import de.amr.games.pacman.ui.swing.assets.Spritesheet;
 import de.amr.games.pacman.ui.swing.scene.GameScene;
 
 /**
@@ -25,7 +24,7 @@ import de.amr.games.pacman.ui.swing.scene.GameScene;
  * 
  * @author Armin Reichert
  */
-public class PacMan_IntermissionScene2 extends GameScene<PacMan_Rendering> {
+public class PacMan_IntermissionScene2 extends GameScene {
 
 	enum Phase {
 
@@ -34,27 +33,17 @@ public class PacMan_IntermissionScene2 extends GameScene<PacMan_Rendering> {
 		final CountdownTimer timer = new CountdownTimer();
 	}
 
-	private final Spritesheet spritesheet = rendering.assets;
 	private final SoundManager sounds = PacManGameUI_Swing.SOUNDS_PACMAN;
 
 	private final int chaseTileY = 20;
 	private final V2i nailPosition = new V2i(t(14), t(chaseTileY) - 6);
-	private final BufferedImage nail = spritesheet.sprite(8, 6);
-	private final BufferedImage blinkyLookingUp = spritesheet.sprite(8, 7);
-	private final BufferedImage blinkyLookingRight = spritesheet.sprite(9, 7);
-	private final BufferedImage shred = spritesheet.sprite(12, 6);
-	private final BufferedImage[] stretchedDress = new BufferedImage[] { //
-			spritesheet.sprite(9, 6), //
-			spritesheet.sprite(10, 6), //
-			spritesheet.sprite(11, 6) };
-
 	private Ghost blinky;
 	private Pac pac;
 
 	private Phase phase;
 
 	public PacMan_IntermissionScene2(Dimension size) {
-		super(size, PacManGameUI_Swing.RENDERING_PACMAN);
+		super(size, RENDERING_PACMAN);
 	}
 
 	@Override
@@ -137,8 +126,8 @@ public class PacMan_IntermissionScene2 extends GameScene<PacMan_Rendering> {
 	@Override
 	public void render(Graphics2D g) {
 		rendering.drawLevelCounter(g, game, t(25), t(34));
-		rendering.drawImage(g, nail, nailPosition.x, nailPosition.y, true);
-		rendering.drawPac(g, pac, game);
+		rendering.drawSprite(g, RENDERING_PACMAN.assets.nailImage, nailPosition.x, nailPosition.y);
+		rendering.drawPlayer(g, pac);
 		drawBlinky(g);
 	}
 
@@ -148,27 +137,27 @@ public class PacMan_IntermissionScene2 extends GameScene<PacMan_Rendering> {
 		switch (phase) {
 		case APPROACHING_NAIL:
 		case HITTING_NAIL:
-			rendering.drawGhost(g, blinky, game);
+			rendering.drawGhost(g, blinky, false);
 			break;
 		case STRETCHED_1:
-			rendering.drawImage(g, stretchedDress[0], blinkySpriteRightEdge - 8, baselineY, true);
-			rendering.drawGhost(g, blinky, game);
+			rendering.drawSprite(g, RENDERING_PACMAN.assets.stretchedDress[0], blinkySpriteRightEdge - 8, baselineY);
+			rendering.drawGhost(g, blinky, false);
 			break;
 		case STRETCHED_2:
-			rendering.drawImage(g, stretchedDress[1], blinkySpriteRightEdge - 4, baselineY, true);
-			rendering.drawGhost(g, blinky, game);
+			rendering.drawSprite(g, RENDERING_PACMAN.assets.stretchedDress[1], blinkySpriteRightEdge - 4, baselineY);
+			rendering.drawGhost(g, blinky, false);
 			break;
 		case STRETCHED_3:
-			rendering.drawImage(g, stretchedDress[2], blinkySpriteRightEdge - 2, baselineY, true);
-			rendering.drawGhost(g, blinky, game);
+			rendering.drawSprite(g, RENDERING_PACMAN.assets.stretchedDress[2], blinkySpriteRightEdge - 2, baselineY);
+			rendering.drawGhost(g, blinky, false);
 			break;
 		case LOOKING_UP:
-			rendering.drawImage(g, blinkyLookingUp, blinky.position.x - 4, blinky.position.y - 4, true);
-			rendering.drawImage(g, shred, nailPosition.x, baselineY, true);
+			rendering.drawSprite(g, RENDERING_PACMAN.assets.blinkyLookingUp, blinky.position.x - 4, blinky.position.y - 4);
+			rendering.drawSprite(g, RENDERING_PACMAN.assets.shred, nailPosition.x, baselineY);
 			break;
 		case LOOKING_RIGHT:
-			rendering.drawImage(g, blinkyLookingRight, blinky.position.x - 4, blinky.position.y - 4, true);
-			rendering.drawImage(g, shred, nailPosition.x, baselineY, true);
+			rendering.drawSprite(g, RENDERING_PACMAN.assets.blinkyLookingRight, blinky.position.x - 4, blinky.position.y - 4);
+			rendering.drawSprite(g, RENDERING_PACMAN.assets.shred, nailPosition.x, baselineY);
 			break;
 		default:
 			break;
