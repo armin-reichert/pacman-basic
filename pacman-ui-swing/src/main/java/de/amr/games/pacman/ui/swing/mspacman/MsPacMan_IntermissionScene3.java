@@ -95,12 +95,8 @@ public class MsPacMan_IntermissionScene3 extends GameScene {
 			stork.move();
 			bag.move();
 			if (phase.timer.running() == 0) {
-				pacMan.visible = true;
-				msPacMan.visible = true;
-				stork.visible = true;
-				bag.visible = true;
-				stork.velocity = new V2f(-1.25f, 0);
-				bag.velocity = stork.velocity;
+				pacMan.visible = msPacMan.visible = stork.visible = bag.visible = true;
+				stork.velocity = bag.velocity = new V2f(-1.25f, 0);
 			}
 			// release bag?
 			if (!bag.released && stork.position.x <= t(24)) {
