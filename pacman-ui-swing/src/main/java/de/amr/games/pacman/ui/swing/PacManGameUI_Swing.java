@@ -39,7 +39,7 @@ import de.amr.games.pacman.sound.PacManGameSoundManager;
 import de.amr.games.pacman.sound.PacManGameSounds;
 import de.amr.games.pacman.sound.SoundManager;
 import de.amr.games.pacman.ui.FlashMessage;
-import de.amr.games.pacman.ui.PacManGameAnimation;
+import de.amr.games.pacman.ui.PacManGameAnimations;
 import de.amr.games.pacman.ui.PacManGameUI;
 import de.amr.games.pacman.ui.swing.assets.AssetLoader;
 import de.amr.games.pacman.ui.swing.mspacman.MsPacMan_Rendering;
@@ -226,7 +226,7 @@ public class PacManGameUI_Swing implements PacManGameUI {
 	}
 
 	@Override
-	public Optional<PacManGameAnimation> animation() {
+	public Optional<PacManGameAnimations> animation() {
 		return Optional.of(controller.currentGameType() == MS_PACMAN ? RENDERING_MSPACMAN : RENDERING_PACMAN);
 	}
 

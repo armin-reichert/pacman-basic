@@ -17,14 +17,14 @@ import de.amr.games.pacman.model.guys.Bonus;
 import de.amr.games.pacman.model.guys.Creature;
 import de.amr.games.pacman.model.guys.Ghost;
 import de.amr.games.pacman.model.guys.Pac;
-import de.amr.games.pacman.ui.PacManGameAnimation;
+import de.amr.games.pacman.ui.PacManGameAnimations;
 
 /**
  * Default game rendering using animated sprites.
  * 
  * @author Armin Reichert
  */
-public abstract class DefaultGameRendering implements SpriteBasedSceneRendering, PacManGameAnimation {
+public abstract class DefaultGameRendering implements SpriteBasedSceneRendering, PacManGameAnimations {
 
 	public boolean foodAnimationOn;
 

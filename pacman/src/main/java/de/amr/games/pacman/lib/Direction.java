@@ -3,6 +3,7 @@ package de.amr.games.pacman.lib;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * The move directions inside the world.
@@ -15,6 +16,10 @@ public enum Direction {
 
 	private static final Direction[] OPPOSITE = { RIGHT, LEFT, DOWN, UP };
 
+	public static Stream<Direction> stream() {
+		return Stream.of(values());
+	}
+
 	public static List<Direction> shuffled() {
 		List<Direction> dirs = Arrays.asList(values());
 		Collections.shuffle(dirs);
@@ -22,6 +27,10 @@ public enum Direction {
 	}
 
 	public final V2i vec;
+
+	private Direction(int x, int y) {
+		vec = new V2i(x, y);
+	}
 
 	public Direction opposite() {
 		return OPPOSITE[ordinal()];
@@ -33,9 +42,5 @@ public enum Direction {
 
 	public Direction turnRight() {
 		return this == UP ? RIGHT : this == RIGHT ? DOWN : this == DOWN ? LEFT : UP;
-	}
-
-	private Direction(int x, int y) {
-		vec = new V2i(x, y);
 	}
 }

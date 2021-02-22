@@ -50,7 +50,7 @@ public class PacMan_IntermissionScene1 extends GameScene<PacMan_Rendering> {
 		pac.visible = true;
 		pac.setPosition(t(30), baselineY);
 		pac.speed = 1f;
-		rendering.pacMunching(pac).forEach(Animation::restart);
+		rendering.playerMunching(pac).forEach(Animation::restart);
 
 		bigPac = Animation.of(rendering.assets.spriteRegion(2, 1, 2, 2), rendering.assets.spriteRegion(4, 1, 2, 2),
 				rendering.assets.spriteRegion(6, 1, 2, 2));

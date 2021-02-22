@@ -9,24 +9,24 @@ import de.amr.games.pacman.model.guys.Ghost;
 import de.amr.games.pacman.model.guys.Pac;
 
 /**
- * Optional visual animation provided by a game view.
+ * Visual animations inside the scenes..
  * 
  * @author Armin Reichert
  */
-public interface PacManGameAnimation {
+public interface PacManGameAnimations {
 
-	Animation<?> pacMunchingToDir(Pac pac, Direction dir);
+	Animation<?> playerMunching(Pac pac, Direction dir);
 
-	default Stream<Animation<?>> pacMunching(Pac pac) {
-		return Stream.of(Direction.values()).map(dir -> pacMunchingToDir(pac, dir));
+	default Stream<Animation<?>> playerMunching(Pac pac) {
+		return Direction.stream().map(dir -> playerMunching(pac, dir));
 	}
 
-	Animation<?> pacDying();
+	Animation<?> playerDying();
 
 	Animation<?> ghostKickingToDir(Ghost ghost, Direction dir);
 
 	default Stream<Animation<?>> ghostKicking(Ghost ghost) {
-		return Stream.of(Direction.values()).map(dir -> ghostKickingToDir(ghost, dir));
+		return Direction.stream().map(dir -> ghostKickingToDir(ghost, dir));
 	}
 
 	default Stream<Animation<?>> ghostsKicking(Stream<Ghost> ghosts) {
@@ -36,7 +36,7 @@ public interface PacManGameAnimation {
 	Animation<?> ghostFrightenedToDir(Ghost ghost, Direction dir);
 
 	default Stream<Animation<?>> ghostFrightened(Ghost ghost) {
-		return Stream.of(Direction.values()).map(dir -> ghostFrightenedToDir(ghost, dir));
+		return Direction.stream().map(dir -> ghostFrightenedToDir(ghost, dir));
 	}
 
 	default Stream<Animation<?>> ghostsFrightened(Stream<Ghost> ghosts) {
@@ -48,7 +48,7 @@ public interface PacManGameAnimation {
 	Animation<?> ghostReturningHomeToDir(Ghost ghost, Direction dir);
 
 	default Stream<Animation<?>> ghostReturningHome(Ghost ghost) {
-		return Stream.of(Direction.values()).map(dir -> ghostReturningHomeToDir(ghost, dir));
+		return Direction.stream().map(dir -> ghostReturningHomeToDir(ghost, dir));
 	}
 
 	default Stream<Animation<?>> ghostsReturningHome(Stream<Ghost> ghosts) {
@@ -68,7 +68,7 @@ public interface PacManGameAnimation {
 		ghostsFrightened(game.ghosts()).forEach(Animation::reset);
 		ghostsKicking(game.ghosts()).forEach(Animation::reset);
 		ghostsReturningHome(game.ghosts()).forEach(Animation::reset);
-		pacMunching(game.pac).forEach(Animation::reset);
-		pacDying().reset();
+		playerMunching(game.pac).forEach(Animation::reset);
+		playerDying().reset();
 	}
 }

@@ -40,7 +40,7 @@ import de.amr.games.pacman.model.mspacman.MsPacManGame;
 import de.amr.games.pacman.model.pacman.PacManGame;
 import de.amr.games.pacman.sound.PacManGameSound;
 import de.amr.games.pacman.sound.SoundManager;
-import de.amr.games.pacman.ui.PacManGameAnimation;
+import de.amr.games.pacman.ui.PacManGameAnimations;
 import de.amr.games.pacman.ui.PacManGameUI;
 
 /**
@@ -117,7 +117,7 @@ public class PacManGameController {
 		return views.stream();
 	}
 
-	public Stream<PacManGameAnimation> animations() {
+	public Stream<PacManGameAnimations> animations() {
 		return views().map(PacManGameUI::animation).filter(Optional::isPresent).map(Optional::get);
 	}
 
@@ -336,7 +336,7 @@ public class PacManGameController {
 		startHuntingPhase(0);
 		animations().forEach(animations -> {
 			animations.energizerBlinking().restart();
-			animations.pacMunching(game.pac).forEach(Animation::restart);
+			animations.playerMunching(game.pac).forEach(Animation::restart);
 		});
 	}
 
@@ -465,7 +465,7 @@ public class PacManGameController {
 		}
 		if (game.state.timer.running() == clock.sec(2)) {
 			game.ghosts().forEach(ghost -> ghost.visible = false);
-			animations().forEach(animations -> animations.pacDying().restart());
+			animations().forEach(animations -> animations.playerDying().restart());
 			sounds().forEach(sm -> sm.play(PacManGameSound.PACMAN_DEATH));
 		}
 		return game.state.tick();

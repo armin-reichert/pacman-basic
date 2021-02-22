@@ -42,12 +42,12 @@ public class MsPacMan_Rendering extends DefaultGameRendering {
 	}
 
 	@Override
-	public Animation<BufferedImage> pacMunchingToDir(Pac pac, Direction dir) {
+	public Animation<BufferedImage> playerMunching(Pac pac, Direction dir) {
 		return assets.msPacManMunchingAnimByDir.get(dir);
 	}
 
 	@Override
-	public Animation<BufferedImage> pacDying() {
+	public Animation<BufferedImage> playerDying() {
 		return assets.msPacManSpinningAnim;
 	}
 
@@ -106,10 +106,10 @@ public class MsPacMan_Rendering extends DefaultGameRendering {
 	@Override
 	public BufferedImage pacSprite(Pac pac, GameModel game) {
 		if (pac.dead) {
-			return pacDying().hasStarted() ? pacDying().animate() : pacMunchingToDir(pac, pac.dir).frame();
+			return playerDying().hasStarted() ? playerDying().animate() : playerMunching(pac, pac.dir).frame();
 		}
-		return pac.speed == 0 || !pac.couldMove ? pacMunchingToDir(pac, pac.dir).frame(1)
-				: pacMunchingToDir(pac, pac.dir).animate();
+		return pac.speed == 0 || !pac.couldMove ? playerMunching(pac, pac.dir).frame(1)
+				: playerMunching(pac, pac.dir).animate();
 	}
 
 	@Override
