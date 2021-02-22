@@ -46,13 +46,13 @@ import de.amr.games.pacman.ui.swing.mspacman.MsPacMan_IntermissionScene1;
 import de.amr.games.pacman.ui.swing.mspacman.MsPacMan_IntermissionScene2;
 import de.amr.games.pacman.ui.swing.mspacman.MsPacMan_IntermissionScene3;
 import de.amr.games.pacman.ui.swing.mspacman.MsPacMan_IntroScene;
-import de.amr.games.pacman.ui.swing.mspacman.MsPacMan_Rendering;
 import de.amr.games.pacman.ui.swing.pacman.PacMan_IntermissionScene1;
 import de.amr.games.pacman.ui.swing.pacman.PacMan_IntermissionScene2;
 import de.amr.games.pacman.ui.swing.pacman.PacMan_IntermissionScene3;
 import de.amr.games.pacman.ui.swing.pacman.PacMan_IntroScene;
-import de.amr.games.pacman.ui.swing.pacman.PacMan_Rendering;
 import de.amr.games.pacman.ui.swing.rendering.DebugRendering;
+import de.amr.games.pacman.ui.swing.rendering.MsPacMan_Rendering;
+import de.amr.games.pacman.ui.swing.rendering.PacMan_Rendering;
 import de.amr.games.pacman.ui.swing.scene.GameScene;
 import de.amr.games.pacman.ui.swing.scene.PlayScene;
 

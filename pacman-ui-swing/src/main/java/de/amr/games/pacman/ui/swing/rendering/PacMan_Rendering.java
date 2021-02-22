@@ -1,4 +1,4 @@
-package de.amr.games.pacman.ui.swing.pacman;
+package de.amr.games.pacman.ui.swing.rendering;
 
 import static de.amr.games.pacman.model.guys.GhostState.DEAD;
 import static de.amr.games.pacman.model.guys.GhostState.ENTERING_HOUSE;
@@ -17,7 +17,6 @@ import de.amr.games.pacman.model.guys.Bonus;
 import de.amr.games.pacman.model.guys.GameEntity;
 import de.amr.games.pacman.model.guys.Ghost;
 import de.amr.games.pacman.model.guys.Pac;
-import de.amr.games.pacman.ui.swing.rendering.DefaultRendering;
 
 /**
  * Rendering for the classic Pac-Man game.

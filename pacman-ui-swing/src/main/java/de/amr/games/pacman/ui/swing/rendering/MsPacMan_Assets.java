@@ -1,4 +1,4 @@
-package de.amr.games.pacman.ui.swing.mspacman;
+package de.amr.games.pacman.ui.swing.rendering;
 
 import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
@@ -68,7 +68,7 @@ public class MsPacMan_Assets extends Spritesheet {
 	final Animation<Boolean> energizerBlinkingAnim;
 	final EnumMap<Direction, Animation<BufferedImage>> msPacManMunchingAnimByDir;
 	final Animation<BufferedImage> msPacManSpinningAnim;
-	final Map<Direction, Animation<BufferedImage>> pacManMunching; // used in intermission scene
+	public final Map<Direction, Animation<BufferedImage>> pacManMunching; // used in intermission scene
 	final List<EnumMap<Direction, Animation<BufferedImage>>> ghostsKickingAnimsByGhost;
 	final EnumMap<Direction, Animation<BufferedImage>> ghostEyesAnimByDir;
 	final Animation<BufferedImage> ghostBlueAnim;

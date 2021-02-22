@@ -3,7 +3,7 @@ package de.amr.games.pacman.ui.swing.mspacman;
 import static de.amr.games.pacman.heaven.God.clock;
 import static de.amr.games.pacman.ui.swing.PacManGameUI_Swing.RENDERING_MSPACMAN;
 import static de.amr.games.pacman.ui.swing.PacManGameUI_Swing.SOUNDS_MSPACMAN;
-import static de.amr.games.pacman.ui.swing.mspacman.MsPacMan_Rendering.assets;
+import static de.amr.games.pacman.ui.swing.rendering.MsPacMan_Rendering.assets;
 import static de.amr.games.pacman.world.PacManGameWorld.t;
 
 import java.awt.Dimension;

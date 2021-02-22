@@ -1,4 +1,4 @@
-package de.amr.games.pacman.ui.swing.pacman;
+package de.amr.games.pacman.ui.swing.rendering;
 
 import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
@@ -57,11 +57,11 @@ public class PacMan_Assets extends Spritesheet {
 	final Animation<BufferedImage> bigPacManAnim;
 	final Animation<BufferedImage> blinkyNaked;
 	final Animation<BufferedImage> blinkyDamaged;
-	final BufferedImage nailImage;
-	final BufferedImage blinkyLookingUp;
-	final BufferedImage blinkyLookingRight;
-	final BufferedImage shred;
-	final BufferedImage[] stretchedDress;
+	public final BufferedImage nailImage;
+	public final BufferedImage blinkyLookingUp;
+	public final BufferedImage blinkyLookingRight;
+	public final BufferedImage shred;
+	public final BufferedImage[] stretchedDress;
 
 	public PacMan_Assets() {
 		super(image("/pacman/graphics/sprites.png"), 16);

@@ -1,22 +1,21 @@
 package de.amr.games.pacman.ui.swing.mspacman;
 
 import static de.amr.games.pacman.heaven.God.clock;
-import static de.amr.games.pacman.ui.swing.mspacman.MsPacMan_Rendering.assets;
+import static de.amr.games.pacman.ui.swing.PacManGameUI_Swing.RENDERING_MSPACMAN;
+import static de.amr.games.pacman.ui.swing.PacManGameUI_Swing.SOUNDS_MSPACMAN;
 import static de.amr.games.pacman.world.PacManGameWorld.t;
 
 import java.awt.Dimension;
 import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
 
-import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.CountdownTimer;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2f;
-import de.amr.games.pacman.model.guys.GameEntity;
 import de.amr.games.pacman.model.guys.Pac;
 import de.amr.games.pacman.sound.PacManGameSound;
-import de.amr.games.pacman.ui.swing.PacManGameUI_Swing;
 import de.amr.games.pacman.ui.swing.mspacman.entities.Flap;
+import de.amr.games.pacman.ui.swing.mspacman.entities.JuniorBag;
+import de.amr.games.pacman.ui.swing.mspacman.entities.Stork;
 import de.amr.games.pacman.ui.swing.scene.GameScene;
 
 /**
@@ -31,40 +30,6 @@ import de.amr.games.pacman.ui.swing.scene.GameScene;
  */
 public class MsPacMan_IntermissionScene3 extends GameScene {
 
-	class Bird extends GameEntity {
-
-		Animation<BufferedImage> animation = assets.storkAnim;
-
-		public void draw(Graphics2D g) {
-			if (visible) {
-				rendering.drawStorkSprite(g, position.x, position.y);
-			}
-		}
-	}
-
-	class Bag extends GameEntity {
-
-		boolean released;
-		boolean open;
-		int bounces;
-
-		@Override
-		public void move() {
-			if (released) {
-				velocity = velocity.sum(GRAVITY);
-			}
-			super.move();
-		}
-
-		public void draw(Graphics2D g) {
-			if (open) {
-				rendering.drawJuniorSprite(g, position.x, position.y);
-			} else {
-				rendering.drawBlueBagSprite(g, position.x, position.y);
-			}
-		}
-	}
-
 	enum Phase {
 
 		FLAP, ACTION, READY_TO_PLAY;
@@ -73,18 +38,17 @@ public class MsPacMan_IntermissionScene3 extends GameScene {
 	}
 
 	private static final int BIRD_Y = t(12), GROUND_Y = t(24);
-	private static final V2f GRAVITY = new V2f(0, 0.04f);
 
 	private Flap flap;
 	private Pac pacMan;
 	private Pac msPacMan;
-	private Bird bird;
-	private Bag bag;
+	private Stork bird;
+	private JuniorBag bag;
 
 	private Phase phase;
 
 	public MsPacMan_IntermissionScene3(Dimension size) {
-		super(size, PacManGameUI_Swing.RENDERING_MSPACMAN, PacManGameUI_Swing.SOUNDS_MSPACMAN);
+		super(size, RENDERING_MSPACMAN, SOUNDS_MSPACMAN);
 	}
 
 	private void enter(Phase newPhase, long ticks) {
@@ -106,11 +70,11 @@ public class MsPacMan_IntermissionScene3 extends GameScene {
 		msPacMan = new Pac("Ms. Pac-Man", Direction.RIGHT);
 		msPacMan.setPosition(t(5), GROUND_Y - 4);
 
-		bird = new Bird();
+		bird = new Stork();
 		bird.setPosition(t(30), BIRD_Y);
 		bird.animation.restart();
 
-		bag = new Bag();
+		bag = new JuniorBag();
 		bag.setPosition(bird.position.sum(-14, 3));
 
 		sounds.play(PacManGameSound.INTERMISSION_3);
