@@ -42,7 +42,7 @@ public class MsPacMan_IntermissionScene3 extends GameScene {
 	private Flap flap;
 	private Pac pacMan;
 	private Pac msPacMan;
-	private Stork bird;
+	private Stork stork;
 	private JuniorBag bag;
 
 	private Phase phase;
@@ -70,12 +70,12 @@ public class MsPacMan_IntermissionScene3 extends GameScene {
 		msPacMan = new Pac("Ms. Pac-Man", Direction.RIGHT);
 		msPacMan.setPosition(t(5), GROUND_Y - 4);
 
-		bird = new Stork();
-		bird.setPosition(t(30), BIRD_Y);
-		bird.animation.restart();
+		stork = new Stork();
+		stork.setPosition(t(30), BIRD_Y);
+		stork.animation.restart();
 
 		bag = new JuniorBag();
-		bag.setPosition(bird.position.sum(-14, 3));
+		bag.setPosition(stork.position.sum(-14, 3));
 
 		sounds.play(PacManGameSound.INTERMISSION_3);
 		enter(Phase.FLAP, Long.MAX_VALUE);
@@ -92,18 +92,18 @@ public class MsPacMan_IntermissionScene3 extends GameScene {
 			break;
 
 		case ACTION:
-			bird.move();
+			stork.move();
 			bag.move();
 			if (phase.timer.running() == 0) {
 				pacMan.visible = true;
 				msPacMan.visible = true;
-				bird.visible = true;
+				stork.visible = true;
 				bag.visible = true;
-				bird.velocity = new V2f(-1.25f, 0);
-				bag.velocity = bird.velocity;
+				stork.velocity = new V2f(-1.25f, 0);
+				bag.velocity = stork.velocity;
 			}
 			// release bag?
-			if (!bag.released && bird.position.x <= t(24)) {
+			if (!bag.released && stork.position.x <= t(24)) {
 				bag.released = true;
 			}
 			// closed bag reaches ground?
@@ -120,7 +120,7 @@ public class MsPacMan_IntermissionScene3 extends GameScene {
 			}
 			break;
 		case READY_TO_PLAY:
-			bird.move();
+			stork.move();
 			if (phase.timer.expired()) {
 				game.state.timer.setDuration(0);
 			}
@@ -136,7 +136,7 @@ public class MsPacMan_IntermissionScene3 extends GameScene {
 		flap.draw(g);
 		rendering.drawPlayer(g, msPacMan);
 		rendering.drawSpouse(g, pacMan);
-		bird.draw(g);
+		stork.draw(g);
 		bag.draw(g);
 	}
 }
