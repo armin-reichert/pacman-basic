@@ -66,7 +66,7 @@ public abstract class DefaultGameRendering implements SpriteBasedSceneRendering,
 		if (game.lives > maxLivesDisplayed) {
 			g2.setColor(Color.YELLOW);
 			g2.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 6));
-			g2.drawString("+" + (game.lives - maxLivesDisplayed), x + t(10) - 4, y + t(2));
+			g2.drawString("+" + (game.lives - maxLivesDisplayed), x + t(10), y + t(1) - 2);
 		}
 		g2.dispose();
 	}
