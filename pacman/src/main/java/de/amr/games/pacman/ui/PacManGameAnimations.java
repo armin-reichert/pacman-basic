@@ -23,20 +23,20 @@ public interface PacManGameAnimations {
 
 	Animation<?> playerDying();
 
-	Animation<?> ghostKickingToDir(Ghost ghost, Direction dir);
+	Animation<?> ghostKicking(Ghost ghost, Direction dir);
 
 	default Stream<Animation<?>> ghostKicking(Ghost ghost) {
-		return Direction.stream().map(dir -> ghostKickingToDir(ghost, dir));
+		return Direction.stream().map(dir -> ghostKicking(ghost, dir));
 	}
 
 	default Stream<Animation<?>> ghostsKicking(Stream<Ghost> ghosts) {
 		return ghosts.flatMap(this::ghostKicking);
 	}
 
-	Animation<?> ghostFrightenedToDir(Ghost ghost, Direction dir);
+	Animation<?> ghostFrightened(Ghost ghost, Direction dir);
 
 	default Stream<Animation<?>> ghostFrightened(Ghost ghost) {
-		return Direction.stream().map(dir -> ghostFrightenedToDir(ghost, dir));
+		return Direction.stream().map(dir -> ghostFrightened(ghost, dir));
 	}
 
 	default Stream<Animation<?>> ghostsFrightened(Stream<Ghost> ghosts) {

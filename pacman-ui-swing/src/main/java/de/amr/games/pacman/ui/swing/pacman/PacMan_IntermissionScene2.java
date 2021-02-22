@@ -70,7 +70,7 @@ public class PacMan_IntermissionScene2 extends GameScene<PacMan_Rendering> {
 		blinky.state = HUNTING_PAC;
 		blinky.setPosition(pac.position.sum(t(14), 0));
 		blinky.speed = 1;
-		rendering.ghostKickingToDir(blinky, blinky.dir).restart();
+		rendering.ghostKicking(blinky, blinky.dir).restart();
 
 		sounds.play(PacManGameSound.INTERMISSION_2);
 

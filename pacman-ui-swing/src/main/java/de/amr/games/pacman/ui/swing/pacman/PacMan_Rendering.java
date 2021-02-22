@@ -56,12 +56,12 @@ public class PacMan_Rendering extends DefaultGameRendering {
 	}
 
 	@Override
-	public Animation<BufferedImage> ghostKickingToDir(Ghost ghost, Direction dir) {
+	public Animation<BufferedImage> ghostKicking(Ghost ghost, Direction dir) {
 		return assets.getOrCreateGhostsWalkingAnimation(ghost).get(dir);
 	}
 
 	@Override
-	public Animation<BufferedImage> ghostFrightenedToDir(Ghost ghost, Direction dir) {
+	public Animation<BufferedImage> ghostFrightened(Ghost ghost, Direction dir) {
 		return assets.ghostBlueAnim;
 	}
 
@@ -129,12 +129,12 @@ public class PacMan_Rendering extends DefaultGameRendering {
 			return ghostReturningHomeToDir(ghost, ghost.dir).animate();
 		}
 		if (ghost.is(FRIGHTENED)) {
-			return ghostFlashing().isRunning() ? ghostFlashing().frame() : ghostFrightenedToDir(ghost, ghost.dir).animate();
+			return ghostFlashing().isRunning() ? ghostFlashing().frame() : ghostFrightened(ghost, ghost.dir).animate();
 		}
 		if (ghost.is(LOCKED) && game.pac.powerTicksLeft > 0) {
-			return ghostFrightenedToDir(ghost, ghost.dir).animate();
+			return ghostFrightened(ghost, ghost.dir).animate();
 		}
-		return ghostKickingToDir(ghost, ghost.wishDir).animate(); // Looks towards wish dir!
+		return ghostKicking(ghost, ghost.wishDir).animate(); // Looks towards wish dir!
 	}
 
 	@Override
