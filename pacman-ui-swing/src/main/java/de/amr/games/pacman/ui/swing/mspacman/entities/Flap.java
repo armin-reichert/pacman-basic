@@ -1,5 +1,6 @@
 package de.amr.games.pacman.ui.swing.mspacman.entities;
 
+import static de.amr.games.pacman.ui.swing.PacManGameUI_Swing.RENDERING_MSPACMAN;
 import static de.amr.games.pacman.ui.swing.mspacman.MsPacMan_Rendering.assets;
 
 import java.awt.Color;
@@ -9,8 +10,6 @@ import java.awt.image.BufferedImage;
 
 import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.model.guys.GameEntity;
-import de.amr.games.pacman.ui.swing.PacManGameUI_Swing;
-import de.amr.games.pacman.ui.swing.mspacman.MsPacMan_Rendering;
 
 /**
  * The flap used in the intermission scenes.
@@ -19,29 +18,25 @@ import de.amr.games.pacman.ui.swing.mspacman.MsPacMan_Rendering;
  */
 public class Flap extends GameEntity {
 
-	private final MsPacMan_Rendering rendering = PacManGameUI_Swing.RENDERING_MSPACMAN;
-	private final Font font = new Font(assets.getScoreFont().getName(), Font.PLAIN, 8);
-
-	public final Animation<BufferedImage> animation = Animation.of( //
-			assets.region(456, 208, 32, 32), //
-			assets.region(488, 208, 32, 32), //
-			assets.region(520, 208, 32, 32), //
-			assets.region(488, 208, 32, 32), //
-			assets.region(456, 208, 32, 32)//
-	).repetitions(1).frameDuration(4);
-
-	public final int sceneNumber;
-	public final String sceneTitle;
+	private final int sceneNumber;
+	private final String sceneTitle;
 
 	public Flap(int number, String title) {
 		sceneNumber = number;
 		sceneTitle = title;
+		animation = Animation.of( //
+				assets.region(456, 208, 32, 32), //
+				assets.region(488, 208, 32, 32), //
+				assets.region(520, 208, 32, 32), //
+				assets.region(488, 208, 32, 32), //
+				assets.region(456, 208, 32, 32)//
+		).repetitions(1).frameDuration(4);
 	}
 
 	public void draw(Graphics2D g) {
 		if (visible) {
-			rendering.drawSprite(g, animation.animate(), position.x, position.y);
-			g.setFont(font);
+			RENDERING_MSPACMAN.drawSprite(g, (BufferedImage) animation.animate(), position.x, position.y);
+			g.setFont(new Font(assets.getScoreFont().getName(), Font.PLAIN, 8));
 			g.setColor(new Color(222, 222, 225, 192));
 			g.drawString(sceneNumber + "", position.x + 20, position.y + 30);
 			g.setFont(assets.getScoreFont());
