@@ -44,10 +44,9 @@ public class Keyboard {
 	}
 
 	private int keyCode(String keySpec) {
-		keySpec = keySpec.toLowerCase();
 		if (keySpec.length() == 1) {
 			int c = keySpec.charAt(0);
-			int index = "abcdefghijklmnopqrstuvwxyz".indexOf(c);
+			int index = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".indexOf(c);
 			if (index != -1) {
 				return KeyEvent.VK_A + index;
 			}
@@ -57,23 +56,21 @@ public class Keyboard {
 			}
 		}
 		switch (keySpec) {
-		case "up":
+		case "Up":
 			return KeyEvent.VK_UP;
-		case "down":
+		case "Down":
 			return KeyEvent.VK_DOWN;
-		case "left":
+		case "Left":
 			return KeyEvent.VK_LEFT;
-		case "right":
+		case "Right":
 			return KeyEvent.VK_RIGHT;
-		case "escape":
+		case "Esc":
 			return KeyEvent.VK_ESCAPE;
-		case "space":
+		case "Space":
 			return KeyEvent.VK_SPACE;
-		case "plus":
-		case "+":
+		case "Plus":
 			return KeyEvent.VK_PLUS;
-		case "minus":
-		case "-":
+		case "Minus":
 			return KeyEvent.VK_MINUS;
 		default:
 			throw new IllegalArgumentException(String.format("Unknown key specification: %s", keySpec));

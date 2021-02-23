@@ -215,10 +215,10 @@ public class PacManGameController {
 			views.forEach(view -> view.mute(true));
 			return changeState(READY, this::exitIntroState, this::enterReadyState);
 		}
-		if (keyPressed("space")) {
+		if (keyPressed("Space")) {
 			return changeState(READY, this::exitIntroState, this::enterReadyState);
 		}
-		if (keyPressed("v")) {
+		if (keyPressed("V")) {
 			toggleGameType();
 		}
 		// test intermission scenes
@@ -554,7 +554,7 @@ public class PacManGameController {
 	}
 
 	private PacManGameState runGameOverState() {
-		if (game.state.timer.expired() || keyPressed("space")) {
+		if (game.state.timer.expired() || keyPressed("Space")) {
 			return changeState(INTRO, null, this::enterIntroState);
 		}
 		return game.state.tick();
@@ -613,7 +613,7 @@ public class PacManGameController {
 	}
 
 	private void updateGameState() {
-		if (keyPressed("escape")) {
+		if (keyPressed("Esc")) {
 			changeState(INTRO, null, this::enterIntroState);
 			return;
 		}
@@ -675,13 +675,13 @@ public class PacManGameController {
 		if (autopilotOn || game.attractMode) {
 			autopilot.run();
 		} else {
-			if (keyPressed("left")) {
+			if (keyPressed("Left")) {
 				game.pac.wishDir = LEFT;
-			} else if (keyPressed("right")) {
+			} else if (keyPressed("Right")) {
 				game.pac.wishDir = RIGHT;
-			} else if (keyPressed("up")) {
+			} else if (keyPressed("Up")) {
 				game.pac.wishDir = UP;
-			} else if (keyPressed("down")) {
+			} else if (keyPressed("Down")) {
 				game.pac.wishDir = DOWN;
 			}
 		}
@@ -885,23 +885,23 @@ public class PacManGameController {
 			return;
 		}
 		boolean r = game.state == READY, h = game.state == HUNTING;
-		if (keyPressed("a")) {
+		if (keyPressed("A")) {
 			toggleAutopilot();
 		}
-		if (keyPressed("e") && h) {
+		if (keyPressed("E") && h) {
 			game.level.world.tiles().filter(tile -> game.level.containsFood(tile) && !game.level.world.isEnergizerTile(tile))
 					.forEach(game.level::removeFood);
 		}
-		if (keyPressed("i")) {
+		if (keyPressed("I")) {
 			togglePacImmunity();
 		}
-		if (keyPressed("l")) {
+		if (keyPressed("L")) {
 			game.lives++;
 		}
-		if (keyPressed("n") && (r || h)) {
+		if (keyPressed("N") && (r || h)) {
 			changeState(CHANGING_LEVEL, this::exitHuntingState, this::enterChangingLevelState);
 		}
-		if (keyPressed("x") && h) {
+		if (keyPressed("X") && h) {
 			killAllGhosts();
 			changeState(GHOST_DYING, this::exitHuntingState, this::enterGhostDyingState);
 		}
