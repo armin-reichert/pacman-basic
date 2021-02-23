@@ -1,4 +1,4 @@
-package de.amr.games.pacman.ui.swing.rendering;
+package de.amr.games.pacman.ui.swing.rendering.standard;
 
 import static de.amr.games.pacman.model.guys.GhostState.DEAD;
 import static de.amr.games.pacman.model.guys.GhostState.ENTERING_HOUSE;
@@ -28,9 +28,9 @@ import de.amr.games.pacman.ui.swing.mspacman.entities.Stork;
  * 
  * @author Armin Reichert
  */
-public class MsPacMan_Rendering extends DefaultRendering {
+public class MsPacMan_StandardRendering extends StandardRendering {
 
-	public static final MsPacMan_Assets assets = new MsPacMan_Assets();
+	public static final MsPacMan_StandardAssets assets = new MsPacMan_StandardAssets();
 
 	@Override
 	public Font getScoreFont() {

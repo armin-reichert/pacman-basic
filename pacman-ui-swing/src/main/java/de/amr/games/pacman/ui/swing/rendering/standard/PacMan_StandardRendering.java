@@ -1,4 +1,4 @@
-package de.amr.games.pacman.ui.swing.rendering;
+package de.amr.games.pacman.ui.swing.rendering.standard;
 
 import static de.amr.games.pacman.model.guys.GhostState.DEAD;
 import static de.amr.games.pacman.model.guys.GhostState.ENTERING_HOUSE;
@@ -22,12 +22,12 @@ import de.amr.games.pacman.model.guys.Pac;
  * 
  * @author Armin Reichert
  */
-public class PacMan_Rendering extends DefaultRendering {
+public class PacMan_StandardRendering extends StandardRendering {
 
-	public final PacMan_Assets assets;
+	public final PacMan_StandardAssets assets;
 
-	public PacMan_Rendering() {
-		assets = new PacMan_Assets();
+	public PacMan_StandardRendering() {
+		assets = new PacMan_StandardAssets();
 	}
 
 	@Override

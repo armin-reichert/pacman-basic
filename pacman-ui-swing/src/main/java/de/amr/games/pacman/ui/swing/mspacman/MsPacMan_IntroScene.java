@@ -4,7 +4,7 @@ import static de.amr.games.pacman.heaven.God.clock;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.lib.Logging.log;
-import static de.amr.games.pacman.ui.swing.rendering.MsPacMan_Rendering.assets;
+import static de.amr.games.pacman.ui.swing.rendering.standard.MsPacMan_StandardRendering.assets;
 import static de.amr.games.pacman.world.PacManGameWorld.t;
 
 import java.awt.Color;

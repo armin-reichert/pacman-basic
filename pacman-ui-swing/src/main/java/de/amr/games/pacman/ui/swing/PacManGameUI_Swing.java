@@ -50,9 +50,9 @@ import de.amr.games.pacman.ui.swing.pacman.PacMan_IntermissionScene1;
 import de.amr.games.pacman.ui.swing.pacman.PacMan_IntermissionScene2;
 import de.amr.games.pacman.ui.swing.pacman.PacMan_IntermissionScene3;
 import de.amr.games.pacman.ui.swing.pacman.PacMan_IntroScene;
-import de.amr.games.pacman.ui.swing.rendering.DebugRendering;
-import de.amr.games.pacman.ui.swing.rendering.MsPacMan_Rendering;
-import de.amr.games.pacman.ui.swing.rendering.PacMan_Rendering;
+import de.amr.games.pacman.ui.swing.rendering.Debug;
+import de.amr.games.pacman.ui.swing.rendering.standard.MsPacMan_StandardRendering;
+import de.amr.games.pacman.ui.swing.rendering.standard.PacMan_StandardRendering;
 import de.amr.games.pacman.ui.swing.scene.GameScene;
 import de.amr.games.pacman.ui.swing.scene.PlayScene;
 
@@ -63,8 +63,8 @@ import de.amr.games.pacman.ui.swing.scene.PlayScene;
  */
 public class PacManGameUI_Swing implements PacManGameUI {
 
-	public static final PacMan_Rendering RENDERING_PACMAN = new PacMan_Rendering();
-	public static final MsPacMan_Rendering RENDERING_MSPACMAN = new MsPacMan_Rendering();
+	public static final PacMan_StandardRendering RENDERING_PACMAN = new PacMan_StandardRendering();
+	public static final MsPacMan_StandardRendering RENDERING_MSPACMAN = new MsPacMan_StandardRendering();
 
 	public static final SoundManager SOUNDS_PACMAN = new PacManGameSoundManager(PacManGameSounds::mrPacManSoundURL);
 	public static final SoundManager SOUNDS_MSPACMAN = new PacManGameSoundManager(PacManGameSounds::msPacManSoundURL);
@@ -267,8 +267,8 @@ public class PacManGameUI_Swing implements PacManGameUI {
 			break;
 		}
 		case KeyEvent.VK_D:
-			DebugRendering.on = !DebugRendering.on;
-			log("UI debug mode is %s", DebugRendering.on ? "on" : "off");
+			Debug.on = !Debug.on;
+			log("UI debug mode is %s", Debug.on ? "on" : "off");
 			break;
 		default:
 			break;

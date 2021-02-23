@@ -1,4 +1,4 @@
-package de.amr.games.pacman.ui.swing.rendering;
+package de.amr.games.pacman.ui.swing.rendering.standard;
 
 import static de.amr.games.pacman.world.PacManGameWorld.HTS;
 import static de.amr.games.pacman.world.PacManGameWorld.TS;
@@ -24,8 +24,9 @@ import de.amr.games.pacman.ui.swing.mspacman.entities.Flap;
 import de.amr.games.pacman.ui.swing.mspacman.entities.Heart;
 import de.amr.games.pacman.ui.swing.mspacman.entities.JuniorBag;
 import de.amr.games.pacman.ui.swing.mspacman.entities.Stork;
+import de.amr.games.pacman.ui.swing.rendering.SwingRendering;
 
-public abstract class DefaultRendering implements SwingRendering, PacManGameAnimations {
+public abstract class StandardRendering implements SwingRendering, PacManGameAnimations {
 
 	public boolean foodAnimationOn;
 

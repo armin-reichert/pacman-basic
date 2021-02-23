@@ -1,6 +1,6 @@
 package de.amr.games.pacman.ui.swing.mspacman.entities;
 
-import static de.amr.games.pacman.ui.swing.rendering.MsPacMan_Rendering.assets;
+import static de.amr.games.pacman.ui.swing.rendering.standard.MsPacMan_StandardRendering.assets;
 
 import java.awt.image.BufferedImage;
 

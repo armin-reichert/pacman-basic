@@ -17,7 +17,7 @@ import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.GameModel;
 import de.amr.games.pacman.model.guys.Ghost;
 
-public class DebugRendering {
+public class Debug {
 
 	public static boolean on = false;
 

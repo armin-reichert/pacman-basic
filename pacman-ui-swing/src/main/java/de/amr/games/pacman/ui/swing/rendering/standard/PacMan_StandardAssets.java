@@ -1,4 +1,4 @@
-package de.amr.games.pacman.ui.swing.rendering;
+package de.amr.games.pacman.ui.swing.rendering.standard;
 
 import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
@@ -27,7 +27,7 @@ import de.amr.games.pacman.ui.swing.assets.Spritesheet;
  * 
  * @author Armin Reichert
  */
-public class PacMan_Assets extends Spritesheet {
+public class PacMan_StandardAssets extends Spritesheet {
 
 	/** Sprite sheet order of directions. */
 	static final List<Direction> order = Arrays.asList(RIGHT, LEFT, UP, DOWN);
@@ -63,7 +63,7 @@ public class PacMan_Assets extends Spritesheet {
 	public final BufferedImage shred;
 	public final BufferedImage[] stretchedDress;
 
-	public PacMan_Assets() {
+	public PacMan_StandardAssets() {
 		super(image("/pacman/graphics/sprites.png"), 16);
 
 		scoreFont = font("/emulogic.ttf", 8);
