@@ -18,6 +18,8 @@ import de.amr.games.pacman.model.guys.GameEntity;
 import de.amr.games.pacman.model.guys.Ghost;
 import de.amr.games.pacman.model.guys.Pac;
 import de.amr.games.pacman.ui.swing.mspacman.entities.Flap;
+import de.amr.games.pacman.ui.swing.mspacman.entities.JuniorBag;
+import de.amr.games.pacman.ui.swing.mspacman.entities.Stork;
 
 /**
  * Rendering for the classic Pac-Man game.
@@ -142,15 +144,7 @@ public class PacMan_Rendering extends DefaultRendering {
 	}
 
 	@Override
-	public void drawBag(Graphics2D g, GameEntity bag) {
-	}
-
-	@Override
 	public void drawHeart(Graphics2D g, GameEntity heart) {
-	}
-
-	@Override
-	public void drawJunior(Graphics2D g, GameEntity junior) {
 	}
 
 	@Override
@@ -158,17 +152,11 @@ public class PacMan_Rendering extends DefaultRendering {
 	}
 
 	@Override
-	public void drawStork(Graphics2D g, GameEntity stork) {
+	public void drawJuniorBag(Graphics2D g, JuniorBag bag) {
 	}
 
 	@Override
-	public void drawBlueBagSprite(Graphics2D g, float x, float y) {
-		// TODO remove this
-	}
-
-	@Override
-	public void drawJuniorSprite(Graphics2D g, float x, float y) {
-		// TODO remove this
+	public void drawStork(Graphics2D g, Stork stork) {
 	}
 
 	// Sprites

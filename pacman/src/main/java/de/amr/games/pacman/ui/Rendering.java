@@ -66,12 +66,5 @@ public interface Rendering<GC, COLOR, FONT, SPRITE> {
 
 	void drawSpouse(GC g, Pac pac);
 
-	void drawStork(GC g, GameEntity stork);
-
-	void drawBag(GC g, GameEntity bag);
-
-	void drawJunior(GC g, GameEntity junior);
-
 	void drawHeart(GC g, GameEntity heart);
-
 }

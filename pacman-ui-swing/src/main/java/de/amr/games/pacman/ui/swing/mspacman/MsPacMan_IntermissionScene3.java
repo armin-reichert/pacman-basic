@@ -133,6 +133,6 @@ public class MsPacMan_IntermissionScene3 extends GameScene {
 		rendering.drawPlayer(g, msPacMan);
 		rendering.drawSpouse(g, pacMan);
 		rendering.drawStork(g, stork);
-		bag.draw(g);
+		rendering.drawJuniorBag(g, bag);
 	}
 }

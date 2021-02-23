@@ -20,6 +20,7 @@ import de.amr.games.pacman.model.guys.GameEntity;
 import de.amr.games.pacman.model.guys.Ghost;
 import de.amr.games.pacman.model.guys.Pac;
 import de.amr.games.pacman.ui.swing.mspacman.entities.Flap;
+import de.amr.games.pacman.ui.swing.mspacman.entities.JuniorBag;
 import de.amr.games.pacman.ui.swing.mspacman.entities.Stork;
 
 /**
@@ -261,8 +262,7 @@ public class MsPacMan_Rendering extends DefaultRendering {
 	}
 
 	@Override
-	public void drawStork(Graphics2D g, GameEntity storkEntity) {
-		Stork stork = (Stork) storkEntity;
+	public void drawStork(Graphics2D g, Stork stork) {
 		drawGuy(g, stork, stork.flying.animate());
 	}
 
@@ -272,30 +272,18 @@ public class MsPacMan_Rendering extends DefaultRendering {
 	}
 
 	@Override
-	public void drawJunior(Graphics2D g, GameEntity junior) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void drawJuniorSprite(Graphics2D g, float x, float y) {
-		BufferedImage juniorSprite = assets.junior;
-		drawSprite(g, juniorSprite, x + 4 - juniorSprite.getWidth() / 2, y + 4 - juniorSprite.getHeight() / 2);
-	}
-
-	@Override
-	public void drawBag(Graphics2D g, GameEntity bag) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void drawBlueBagSprite(Graphics2D g, float x, float y) {
-		BufferedImage bagSprite = assets.blueBag;
-		drawSprite(g, bagSprite, x + 4 - bagSprite.getWidth() / 2, y + 4 - bagSprite.getHeight() / 2);
+	public void drawJuniorBag(Graphics2D g, JuniorBag bag) {
+		if (bag.visible) {
+			if (bag.open) {
+				drawGuy(g, bag, assets.junior);
+			} else {
+				drawGuy(g, bag, assets.blueBag);
+			}
+		}
 	}
 
 	// Pac-Man only:
+
 	@Override
 	public Animation<?> bigPacMan() {
 		// TODO Auto-generated method stub

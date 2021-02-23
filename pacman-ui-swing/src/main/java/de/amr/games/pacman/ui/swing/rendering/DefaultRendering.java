@@ -21,6 +21,8 @@ import de.amr.games.pacman.model.guys.Ghost;
 import de.amr.games.pacman.model.guys.Pac;
 import de.amr.games.pacman.ui.PacManGameAnimations;
 import de.amr.games.pacman.ui.swing.mspacman.entities.Flap;
+import de.amr.games.pacman.ui.swing.mspacman.entities.JuniorBag;
+import de.amr.games.pacman.ui.swing.mspacman.entities.Stork;
 
 public abstract class DefaultRendering implements SwingRendering, PacManGameAnimations {
 
@@ -157,9 +159,9 @@ public abstract class DefaultRendering implements SwingRendering, PacManGameAnim
 
 	public abstract void drawFlap(Graphics2D g, Flap flap);
 
-	public abstract void drawJuniorSprite(Graphics2D g, float x, float y);
+	public abstract void drawStork(Graphics2D g, Stork stork);
 
-	public abstract void drawBlueBagSprite(Graphics2D g, float x, float y);
+	public abstract void drawJuniorBag(Graphics2D g, JuniorBag bag);
 
 //	public void drawMaze(Graphics2D g, GameModel game, int x, int y) {
 //		if (mazeFlashing(game.level.mazeNumber).hasStarted()) {
