@@ -2,7 +2,6 @@ package de.amr.games.pacman.ui.swing.scene;
 
 import java.awt.Dimension;
 import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
 
 import de.amr.games.pacman.model.GameModel;
 import de.amr.games.pacman.sound.SoundManager;
@@ -47,13 +46,5 @@ public abstract class GameScene {
 
 	public void setGame(GameModel game) {
 		this.game = game;
-	}
-
-	public void drawHCenteredText(Graphics2D g, String text, int y) {
-		g.drawString(text, (size().width - g.getFontMetrics().stringWidth(text)) / 2, y);
-	}
-
-	public void drawHCenteredImage(Graphics2D g, BufferedImage image, int y) {
-		g.drawImage(image, (size().width - image.getWidth()) / 2, y, null);
 	}
 }
