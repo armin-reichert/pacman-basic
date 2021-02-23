@@ -16,10 +16,10 @@ import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.model.GameModel;
 import de.amr.games.pacman.model.guys.Bonus;
-import de.amr.games.pacman.model.guys.GameEntity;
 import de.amr.games.pacman.model.guys.Ghost;
 import de.amr.games.pacman.model.guys.Pac;
 import de.amr.games.pacman.ui.swing.mspacman.entities.Flap;
+import de.amr.games.pacman.ui.swing.mspacman.entities.Heart;
 import de.amr.games.pacman.ui.swing.mspacman.entities.JuniorBag;
 import de.amr.games.pacman.ui.swing.mspacman.entities.Stork;
 
@@ -266,7 +266,8 @@ public class MsPacMan_Rendering extends DefaultRendering {
 		drawGuy(g, stork, stork.flying.animate());
 	}
 
-	public void drawHeart(Graphics2D g, GameEntity heart) {
+	@Override
+	public void drawHeart(Graphics2D g, Heart heart) {
 		drawGuy(g, heart, assets.s(2, 10));
 	}
 

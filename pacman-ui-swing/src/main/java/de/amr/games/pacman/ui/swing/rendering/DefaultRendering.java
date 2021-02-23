@@ -21,6 +21,7 @@ import de.amr.games.pacman.model.guys.Ghost;
 import de.amr.games.pacman.model.guys.Pac;
 import de.amr.games.pacman.ui.PacManGameAnimations;
 import de.amr.games.pacman.ui.swing.mspacman.entities.Flap;
+import de.amr.games.pacman.ui.swing.mspacman.entities.Heart;
 import de.amr.games.pacman.ui.swing.mspacman.entities.JuniorBag;
 import de.amr.games.pacman.ui.swing.mspacman.entities.Stork;
 
@@ -162,6 +163,9 @@ public abstract class DefaultRendering implements SwingRendering, PacManGameAnim
 	protected abstract BufferedImage lifeSprite();
 
 	public void drawFlap(Graphics2D g, Flap flap) {
+	}
+
+	public void drawHeart(Graphics2D g, Heart heart) {
 	}
 
 	public void drawStork(Graphics2D g, Stork stork) {

@@ -183,6 +183,6 @@ public class MsPacMan_IntermissionScene1 extends GameScene {
 		rendering.drawSpouse(g, pacMan);
 		rendering.drawGhost(g, inky, false);
 		rendering.drawGhost(g, pinky, false);
-		heart.draw(g);
+		rendering.drawHeart(g, heart);
 	}
 }
