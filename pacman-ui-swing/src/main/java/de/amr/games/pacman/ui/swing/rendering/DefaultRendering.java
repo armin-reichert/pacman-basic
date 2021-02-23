@@ -22,12 +22,8 @@ import de.amr.games.pacman.model.guys.Pac;
 import de.amr.games.pacman.ui.PacManGameAnimations;
 import de.amr.games.pacman.ui.Rendering;
 
-/**
- * Default game rendering using animated sprites.
- * 
- * @author Armin Reichert
- */
-public abstract class DefaultRendering implements Rendering<Graphics2D, Color>, PacManGameAnimations {
+public abstract class DefaultRendering
+		implements Rendering<Graphics2D, Color, Font, BufferedImage>, PacManGameAnimations {
 
 	public boolean foodAnimationOn;
 
@@ -37,6 +33,7 @@ public abstract class DefaultRendering implements Rendering<Graphics2D, Color>, 
 		return gc;
 	}
 
+	@Override
 	public abstract Font getScoreFont();
 
 	public void drawSprite(Graphics2D g, BufferedImage sprite, float x, float y) {

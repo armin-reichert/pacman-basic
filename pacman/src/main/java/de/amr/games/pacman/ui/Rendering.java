@@ -18,7 +18,9 @@ import de.amr.games.pacman.model.guys.Pac;
  * @param <GC>    specific graphics context type
  * @param <COLOR> specific color type
  */
-public interface Rendering<GC, COLOR> {
+public interface Rendering<GC, COLOR, FONT, SPRITE> {
+
+	FONT getScoreFont();
 
 	/**
 	 * Note: maze numbers are 1-based, maze index as stored here is 0-based.
