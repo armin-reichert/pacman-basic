@@ -1,9 +1,9 @@
 package de.amr.games.pacman.ui.swing.rendering.standard;
 
-import static de.amr.games.pacman.model.guys.GhostState.DEAD;
-import static de.amr.games.pacman.model.guys.GhostState.ENTERING_HOUSE;
-import static de.amr.games.pacman.model.guys.GhostState.FRIGHTENED;
-import static de.amr.games.pacman.model.guys.GhostState.LOCKED;
+import static de.amr.games.pacman.model.common.GhostState.DEAD;
+import static de.amr.games.pacman.model.common.GhostState.ENTERING_HOUSE;
+import static de.amr.games.pacman.model.common.GhostState.FRIGHTENED;
+import static de.amr.games.pacman.model.common.GhostState.LOCKED;
 import static de.amr.games.pacman.world.PacManGameWorld.t;
 
 import java.awt.Color;
@@ -14,10 +14,10 @@ import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.Direction;
-import de.amr.games.pacman.model.GameModel;
-import de.amr.games.pacman.model.guys.Bonus;
-import de.amr.games.pacman.model.guys.Ghost;
-import de.amr.games.pacman.model.guys.Pac;
+import de.amr.games.pacman.model.common.GameModel;
+import de.amr.games.pacman.model.common.Ghost;
+import de.amr.games.pacman.model.common.Pac;
+import de.amr.games.pacman.model.pacman.Bonus;
 import de.amr.games.pacman.ui.swing.mspacman.entities.Flap;
 import de.amr.games.pacman.ui.swing.mspacman.entities.Heart;
 import de.amr.games.pacman.ui.swing.mspacman.entities.JuniorBag;

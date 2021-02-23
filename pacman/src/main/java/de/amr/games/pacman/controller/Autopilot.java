@@ -12,9 +12,9 @@ import java.util.stream.Stream;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.Logging;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.model.GameModel;
-import de.amr.games.pacman.model.guys.Ghost;
-import de.amr.games.pacman.model.guys.GhostState;
+import de.amr.games.pacman.model.common.GameModel;
+import de.amr.games.pacman.model.common.Ghost;
+import de.amr.games.pacman.model.common.GhostState;
 
 /**
  * Controls Pac-Man movement.

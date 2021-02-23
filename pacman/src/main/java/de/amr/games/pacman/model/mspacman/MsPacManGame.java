@@ -5,16 +5,15 @@ import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.lib.Logging.log;
-import static de.amr.games.pacman.model.guys.Ghost.BLINKY;
-import static de.amr.games.pacman.model.guys.Ghost.INKY;
-import static de.amr.games.pacman.model.guys.Ghost.PINKY;
-import static de.amr.games.pacman.model.guys.Ghost.SUE;
+import static de.amr.games.pacman.model.common.Ghost.BLINKY;
+import static de.amr.games.pacman.model.common.Ghost.INKY;
+import static de.amr.games.pacman.model.common.Ghost.PINKY;
+import static de.amr.games.pacman.model.common.Ghost.SUE;
 
-import de.amr.games.pacman.model.GameLevel;
-import de.amr.games.pacman.model.GameModel;
-import de.amr.games.pacman.model.guys.Ghost;
-import de.amr.games.pacman.model.guys.MovingBonus;
-import de.amr.games.pacman.model.guys.Pac;
+import de.amr.games.pacman.model.common.GameLevel;
+import de.amr.games.pacman.model.common.GameModel;
+import de.amr.games.pacman.model.common.Ghost;
+import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.world.MapBasedPacManGameWorld;
 import de.amr.games.pacman.world.WorldMap;
 

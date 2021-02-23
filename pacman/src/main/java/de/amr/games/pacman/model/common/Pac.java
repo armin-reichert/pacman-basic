@@ -1,4 +1,4 @@
-package de.amr.games.pacman.model.guys;
+package de.amr.games.pacman.model.common;
 
 import de.amr.games.pacman.lib.Direction;
 

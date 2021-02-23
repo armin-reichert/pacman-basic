@@ -1,17 +1,16 @@
-package de.amr.games.pacman.model.guys;
+package de.amr.games.pacman.model.mspacman;
 
 import static de.amr.games.pacman.heaven.God.random;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
 
+import de.amr.games.pacman.model.pacman.Bonus;
+
 public class MovingBonus extends Bonus {
 
 	@Override
-	public void activate(byte bonusSymbol, int bonusPoints, long ticks) {
-		symbol = bonusSymbol;
-		points = bonusPoints;
+	public void activate(long ticks) {
 		edibleTicksLeft = ticks;
-		visible = true;
 		couldMove = true;
 		speed = 0.25f; // TODO what is the correct speed?
 		if (random.nextBoolean()) {

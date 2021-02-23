@@ -10,7 +10,7 @@ import java.awt.Graphics2D;
 import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.CountdownTimer;
 import de.amr.games.pacman.lib.Direction;
-import de.amr.games.pacman.model.guys.Pac;
+import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.sound.PacManGameSound;
 import de.amr.games.pacman.ui.swing.PacManGameUI_Swing;
 import de.amr.games.pacman.ui.swing.mspacman.entities.Flap;

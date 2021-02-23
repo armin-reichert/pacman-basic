@@ -14,8 +14,8 @@ import java.awt.Stroke;
 
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.model.GameModel;
-import de.amr.games.pacman.model.guys.Ghost;
+import de.amr.games.pacman.model.common.GameModel;
+import de.amr.games.pacman.model.common.Ghost;
 
 public class Debug {
 

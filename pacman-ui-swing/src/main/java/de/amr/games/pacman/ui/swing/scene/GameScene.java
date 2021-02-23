@@ -3,7 +3,7 @@ package de.amr.games.pacman.ui.swing.scene;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 
-import de.amr.games.pacman.model.GameModel;
+import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.sound.SoundManager;
 import de.amr.games.pacman.ui.swing.rendering.SwingRendering;
 

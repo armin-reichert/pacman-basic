@@ -2,8 +2,8 @@ package de.amr.games.pacman.ui.swing;
 
 import static de.amr.games.pacman.heaven.God.clock;
 import static de.amr.games.pacman.lib.Logging.log;
-import static de.amr.games.pacman.model.GameType.MS_PACMAN;
-import static de.amr.games.pacman.model.GameType.PACMAN;
+import static de.amr.games.pacman.model.common.GameType.MS_PACMAN;
+import static de.amr.games.pacman.model.common.GameType.PACMAN;
 import static de.amr.games.pacman.world.PacManGameWorld.TS;
 
 import java.awt.AWTException;
@@ -33,8 +33,8 @@ import javax.swing.Timer;
 import de.amr.games.pacman.controller.PacManGameController;
 import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.model.GameModel;
-import de.amr.games.pacman.model.GameType;
+import de.amr.games.pacman.model.common.GameModel;
+import de.amr.games.pacman.model.common.GameType;
 import de.amr.games.pacman.sound.PacManGameSoundManager;
 import de.amr.games.pacman.sound.PacManGameSounds;
 import de.amr.games.pacman.sound.SoundManager;

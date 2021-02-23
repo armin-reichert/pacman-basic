@@ -1,4 +1,4 @@
-package de.amr.games.pacman.model;
+package de.amr.games.pacman.model.common;
 
 /**
  * Game types that can be played.

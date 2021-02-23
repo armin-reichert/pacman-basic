@@ -1,4 +1,6 @@
-package de.amr.games.pacman.model.guys;
+package de.amr.games.pacman.model.pacman;
+
+import de.amr.games.pacman.model.common.Creature;
 
 /**
  * Bonus symbol. In Ms. Pac-Man, the bonus wanders the maze.
@@ -19,10 +21,7 @@ public class Bonus extends Creature {
 	/** Number of clock ticks the consumed bonus is still displayed. */
 	public long eatenTicksLeft;
 
-	public void activate(byte bonusSymbol, int bonusPoints, long ticks) {
-		visible = true;
-		symbol = bonusSymbol;
-		points = bonusPoints;
+	public void activate(long ticks) {
 		edibleTicksLeft = ticks;
 	}
 

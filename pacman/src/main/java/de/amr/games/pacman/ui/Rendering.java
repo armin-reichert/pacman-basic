@@ -4,10 +4,10 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.model.GameModel;
-import de.amr.games.pacman.model.guys.Bonus;
-import de.amr.games.pacman.model.guys.Ghost;
-import de.amr.games.pacman.model.guys.Pac;
+import de.amr.games.pacman.model.common.GameModel;
+import de.amr.games.pacman.model.common.Ghost;
+import de.amr.games.pacman.model.common.Pac;
+import de.amr.games.pacman.model.pacman.Bonus;
 
 /**
  * Can be used by UI implementations.

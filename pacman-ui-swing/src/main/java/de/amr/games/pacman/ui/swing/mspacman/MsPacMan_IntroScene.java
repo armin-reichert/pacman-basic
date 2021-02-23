@@ -14,9 +14,9 @@ import java.awt.Graphics2D;
 import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.CountdownTimer;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.model.guys.Ghost;
-import de.amr.games.pacman.model.guys.GhostState;
-import de.amr.games.pacman.model.guys.Pac;
+import de.amr.games.pacman.model.common.Ghost;
+import de.amr.games.pacman.model.common.GhostState;
+import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.ui.swing.PacManGameUI_Swing;
 import de.amr.games.pacman.ui.swing.scene.GameScene;
 

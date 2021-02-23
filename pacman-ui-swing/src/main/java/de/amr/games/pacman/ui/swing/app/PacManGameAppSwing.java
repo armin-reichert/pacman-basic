@@ -4,7 +4,7 @@ import static de.amr.games.pacman.lib.Logging.log;
 import static java.awt.EventQueue.invokeLater;
 
 import de.amr.games.pacman.controller.PacManGameController;
-import de.amr.games.pacman.model.GameType;
+import de.amr.games.pacman.model.common.GameType;
 import de.amr.games.pacman.ui.swing.PacManGameUI_Swing;
 
 /**

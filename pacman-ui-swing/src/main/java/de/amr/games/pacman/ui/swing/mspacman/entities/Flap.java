@@ -5,7 +5,7 @@ import static de.amr.games.pacman.ui.swing.rendering.standard.MsPacMan_StandardR
 import java.awt.image.BufferedImage;
 
 import de.amr.games.pacman.lib.Animation;
-import de.amr.games.pacman.model.guys.GameEntity;
+import de.amr.games.pacman.model.common.GameEntity;
 
 /**
  * The flap used in the intermission scenes.

@@ -14,14 +14,14 @@ import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.lib.Logging.log;
-import static de.amr.games.pacman.model.guys.Ghost.BLINKY;
-import static de.amr.games.pacman.model.guys.Ghost.CLYDE;
-import static de.amr.games.pacman.model.guys.Ghost.INKY;
-import static de.amr.games.pacman.model.guys.Ghost.PINKY;
-import static de.amr.games.pacman.model.guys.GhostState.DEAD;
-import static de.amr.games.pacman.model.guys.GhostState.HUNTING_PAC;
-import static de.amr.games.pacman.model.guys.GhostState.LEAVING_HOUSE;
-import static de.amr.games.pacman.model.guys.GhostState.LOCKED;
+import static de.amr.games.pacman.model.common.Ghost.BLINKY;
+import static de.amr.games.pacman.model.common.Ghost.CLYDE;
+import static de.amr.games.pacman.model.common.Ghost.INKY;
+import static de.amr.games.pacman.model.common.Ghost.PINKY;
+import static de.amr.games.pacman.model.common.GhostState.DEAD;
+import static de.amr.games.pacman.model.common.GhostState.HUNTING_PAC;
+import static de.amr.games.pacman.model.common.GhostState.LEAVING_HOUSE;
+import static de.amr.games.pacman.model.common.GhostState.LOCKED;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,10 +32,10 @@ import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.model.GameModel;
-import de.amr.games.pacman.model.GameType;
-import de.amr.games.pacman.model.guys.Ghost;
-import de.amr.games.pacman.model.guys.GhostState;
+import de.amr.games.pacman.model.common.GameModel;
+import de.amr.games.pacman.model.common.GameType;
+import de.amr.games.pacman.model.common.Ghost;
+import de.amr.games.pacman.model.common.GhostState;
 import de.amr.games.pacman.model.mspacman.MsPacManGame;
 import de.amr.games.pacman.model.pacman.PacManGame;
 import de.amr.games.pacman.sound.PacManGameSound;
@@ -703,8 +703,10 @@ public class PacManGameController {
 
 		// Bonus gets edible?
 		if (game.level.eatenFoodCount() == 70 || game.level.eatenFoodCount() == 170) {
-			game.bonus.activate(game.level.bonusSymbol, game.bonusValues[game.level.bonusSymbol],
-					game.bonusActivationTicks(game.currentLevelNumber));
+			game.bonus.visible = true;
+			game.bonus.symbol = game.level.bonusSymbol;
+			game.bonus.points = game.bonusValues[game.level.bonusSymbol];
+			game.bonus.activate(game.bonusActivationTicks(game.currentLevelNumber));
 			log("Bonus %s (value %d) activated", game.bonusNames[game.bonus.symbol], game.bonus.points);
 		}
 

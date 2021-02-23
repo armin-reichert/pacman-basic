@@ -1,8 +1,8 @@
-package de.amr.games.pacman.model;
+package de.amr.games.pacman.model.common;
 
 import static de.amr.games.pacman.lib.Logging.log;
-import static de.amr.games.pacman.model.guys.Ghost.BLINKY;
-import static de.amr.games.pacman.model.guys.GhostState.LOCKED;
+import static de.amr.games.pacman.model.common.Ghost.BLINKY;
+import static de.amr.games.pacman.model.common.GhostState.LOCKED;
 import static de.amr.games.pacman.world.PacManGameWorld.HTS;
 
 import java.io.File;
@@ -12,9 +12,7 @@ import java.util.stream.Stream;
 
 import de.amr.games.pacman.controller.PacManGameState;
 import de.amr.games.pacman.lib.Hiscore;
-import de.amr.games.pacman.model.guys.Bonus;
-import de.amr.games.pacman.model.guys.Ghost;
-import de.amr.games.pacman.model.guys.Pac;
+import de.amr.games.pacman.model.pacman.Bonus;
 
 /**
  * Common base class for the models.

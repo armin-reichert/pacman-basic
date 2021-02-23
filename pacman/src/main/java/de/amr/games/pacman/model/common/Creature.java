@@ -1,4 +1,4 @@
-package de.amr.games.pacman.model.guys;
+package de.amr.games.pacman.model.common;
 
 import static de.amr.games.pacman.heaven.God.random;
 import static de.amr.games.pacman.lib.Direction.DOWN;

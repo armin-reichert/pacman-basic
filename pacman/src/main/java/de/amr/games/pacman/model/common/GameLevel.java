@@ -1,4 +1,4 @@
-package de.amr.games.pacman.model;
+package de.amr.games.pacman.model.common;
 
 import static de.amr.games.pacman.lib.Logging.log;
 
