@@ -56,6 +56,10 @@ public abstract class DefaultRendering implements SwingRendering, PacManGameAnim
 	}
 
 	@Override
+	public void drawSpouse(Graphics2D g, Pac pac) {
+	}
+
+	@Override
 	public void drawGhost(Graphics2D g, Ghost ghost, boolean frightened) {
 		drawGuy(g, ghost, ghostSprite(ghost, frightened));
 	}
@@ -157,11 +161,14 @@ public abstract class DefaultRendering implements SwingRendering, PacManGameAnim
 
 	protected abstract BufferedImage lifeSprite();
 
-	public abstract void drawFlap(Graphics2D g, Flap flap);
+	public void drawFlap(Graphics2D g, Flap flap) {
+	}
 
-	public abstract void drawStork(Graphics2D g, Stork stork);
+	public void drawStork(Graphics2D g, Stork stork) {
+	}
 
-	public abstract void drawJuniorBag(Graphics2D g, JuniorBag bag);
+	public void drawJuniorBag(Graphics2D g, JuniorBag bag) {
+	}
 
 //	public void drawMaze(Graphics2D g, GameModel game, int x, int y) {
 //		if (mazeFlashing(game.level.mazeNumber).hasStarted()) {

@@ -6,7 +6,6 @@ import java.util.stream.Stream;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.GameModel;
 import de.amr.games.pacman.model.guys.Bonus;
-import de.amr.games.pacman.model.guys.GameEntity;
 import de.amr.games.pacman.model.guys.Ghost;
 import de.amr.games.pacman.model.guys.Pac;
 
@@ -65,6 +64,4 @@ public interface Rendering<GC, COLOR, FONT, SPRITE> {
 	// Ms. Pac-Man only
 
 	void drawSpouse(GC g, Pac pac);
-
-	void drawHeart(GC g, GameEntity heart);
 }

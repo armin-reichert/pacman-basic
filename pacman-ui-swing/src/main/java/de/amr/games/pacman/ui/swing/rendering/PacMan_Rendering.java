@@ -14,12 +14,8 @@ import java.util.stream.Stream;
 import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.model.guys.Bonus;
-import de.amr.games.pacman.model.guys.GameEntity;
 import de.amr.games.pacman.model.guys.Ghost;
 import de.amr.games.pacman.model.guys.Pac;
-import de.amr.games.pacman.ui.swing.mspacman.entities.Flap;
-import de.amr.games.pacman.ui.swing.mspacman.entities.JuniorBag;
-import de.amr.games.pacman.ui.swing.mspacman.entities.Stork;
 
 /**
  * Rendering for the classic Pac-Man game.
@@ -135,28 +131,6 @@ public class PacMan_Rendering extends DefaultRendering {
 	@Override
 	public void drawLifeCounterSymbol(Graphics2D g, int x, int y) {
 		g.drawImage(lifeSprite(), x, y, null);
-	}
-
-	// Ms. Pac-Man only:
-
-	@Override
-	public void drawFlap(Graphics2D g, Flap flap) {
-	}
-
-	@Override
-	public void drawHeart(Graphics2D g, GameEntity heart) {
-	}
-
-	@Override
-	public void drawSpouse(Graphics2D g, Pac pac) {
-	}
-
-	@Override
-	public void drawJuniorBag(Graphics2D g, JuniorBag bag) {
-	}
-
-	@Override
-	public void drawStork(Graphics2D g, Stork stork) {
 	}
 
 	// Sprites

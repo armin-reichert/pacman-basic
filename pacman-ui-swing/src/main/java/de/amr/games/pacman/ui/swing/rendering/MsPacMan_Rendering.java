@@ -266,7 +266,6 @@ public class MsPacMan_Rendering extends DefaultRendering {
 		drawGuy(g, stork, stork.flying.animate());
 	}
 
-	@Override
 	public void drawHeart(Graphics2D g, GameEntity heart) {
 		drawGuy(g, heart, assets.s(2, 10));
 	}
