@@ -20,10 +20,9 @@ import de.amr.games.pacman.model.guys.GameEntity;
 import de.amr.games.pacman.model.guys.Ghost;
 import de.amr.games.pacman.model.guys.Pac;
 import de.amr.games.pacman.ui.PacManGameAnimations;
-import de.amr.games.pacman.ui.Rendering;
+import de.amr.games.pacman.ui.swing.mspacman.entities.Flap;
 
-public abstract class DefaultRendering
-		implements Rendering<Graphics2D, Color, Font, BufferedImage>, PacManGameAnimations {
+public abstract class DefaultRendering implements SwingRendering, PacManGameAnimations {
 
 	public boolean foodAnimationOn;
 
@@ -156,8 +155,7 @@ public abstract class DefaultRendering
 
 	protected abstract BufferedImage lifeSprite();
 
-	// TODO replace
-	public abstract void drawStorkSprite(Graphics2D g, float x, float y);
+	public abstract void drawFlap(Graphics2D g, Flap flap);
 
 	public abstract void drawJuniorSprite(Graphics2D g, float x, float y);
 

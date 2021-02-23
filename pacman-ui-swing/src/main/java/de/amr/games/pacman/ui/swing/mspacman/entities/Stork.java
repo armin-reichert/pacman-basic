@@ -1,20 +1,20 @@
 package de.amr.games.pacman.ui.swing.mspacman.entities;
 
-import static de.amr.games.pacman.ui.swing.PacManGameUI_Swing.RENDERING_MSPACMAN;
+import static de.amr.games.pacman.ui.swing.rendering.MsPacMan_Rendering.assets;
 
-import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 
+import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.model.guys.GameEntity;
 
 public class Stork extends GameEntity {
 
-	public Stork() {
-		animation = RENDERING_MSPACMAN.storkFlying();
-	}
+	public final Animation<BufferedImage> flying;
 
-	public void draw(Graphics2D g) {
-		if (visible) {
-			RENDERING_MSPACMAN.drawStorkSprite(g, position.x, position.y);
-		}
+	public Stork() {
+		flying = Animation.of(//
+				assets.region(489, 176, 32, 16), //
+				assets.region(521, 176, 32, 16)//
+		).endless().frameDuration(10);
 	}
 }

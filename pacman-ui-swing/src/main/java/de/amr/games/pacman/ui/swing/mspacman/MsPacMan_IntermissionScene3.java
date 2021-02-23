@@ -62,7 +62,7 @@ public class MsPacMan_IntermissionScene3 extends GameScene {
 		flap = new Flap(3, "JUNIOR");
 		flap.setPosition(t(3), t(10));
 		flap.visible = true;
-		flap.animation.restart();
+		flap.flapping.restart();
 
 		pacMan = new Pac("Pac-Man", Direction.RIGHT);
 		pacMan.setPosition(t(3), GROUND_Y - 4);
@@ -72,7 +72,7 @@ public class MsPacMan_IntermissionScene3 extends GameScene {
 
 		stork = new Stork();
 		stork.setPosition(t(30), BIRD_Y);
-		stork.animation.restart();
+		stork.flying.restart();
 
 		bag = new JuniorBag();
 		bag.setPosition(stork.position.sum(-14, 3));
@@ -129,10 +129,10 @@ public class MsPacMan_IntermissionScene3 extends GameScene {
 
 	@Override
 	public void render(Graphics2D g) {
-		flap.draw(g);
+		rendering.drawFlap(g, flap);
 		rendering.drawPlayer(g, msPacMan);
 		rendering.drawSpouse(g, pacMan);
-		stork.draw(g);
+		rendering.drawStork(g, stork);
 		bag.draw(g);
 	}
 }

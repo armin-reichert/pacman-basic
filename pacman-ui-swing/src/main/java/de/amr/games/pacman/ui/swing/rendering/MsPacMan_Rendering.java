@@ -19,6 +19,8 @@ import de.amr.games.pacman.model.guys.Bonus;
 import de.amr.games.pacman.model.guys.GameEntity;
 import de.amr.games.pacman.model.guys.Ghost;
 import de.amr.games.pacman.model.guys.Pac;
+import de.amr.games.pacman.ui.swing.mspacman.entities.Flap;
+import de.amr.games.pacman.ui.swing.mspacman.entities.Stork;
 
 /**
  * Rendering for the Ms. Pac-Man game.
@@ -247,16 +249,21 @@ public class MsPacMan_Rendering extends DefaultRendering {
 	}
 
 	@Override
-	public void drawStork(Graphics2D g, GameEntity stork) {
-		// TODO Auto-generated method stub
-
+	public void drawFlap(Graphics2D g, Flap flap) {
+		if (flap.visible) {
+			drawSprite(g, flap.flapping.animate(), flap.position.x, flap.position.y);
+			g.setFont(new Font(assets.getScoreFont().getName(), Font.PLAIN, 8));
+			g.setColor(new Color(222, 222, 225, 192));
+			g.drawString(flap.sceneNumber + "", flap.position.x + 20, flap.position.y + 30);
+			g.setFont(assets.getScoreFont());
+			g.drawString(flap.sceneTitle, flap.position.x + 40, flap.position.y + 20);
+		}
 	}
 
-	// TODO
 	@Override
-	public void drawStorkSprite(Graphics2D g, float x, float y) {
-		BufferedImage storkSprite = assets.storkAnim.animate();
-		drawSprite(g, storkSprite, x + 4 - storkSprite.getWidth() / 2, y + 4 - storkSprite.getHeight() / 2);
+	public void drawStork(Graphics2D g, GameEntity storkEntity) {
+		Stork stork = (Stork) storkEntity;
+		drawGuy(g, stork, stork.flying.animate());
 	}
 
 	@Override

@@ -64,7 +64,7 @@ public class MsPacMan_IntermissionScene1 extends GameScene {
 		flap = new Flap(1, "THEY MEET");
 		flap.setPosition(t(3), t(10));
 		flap.visible = true;
-		flap.animation.restart();
+		flap.flapping.restart();
 
 		pacMan = new Pac("Pac-Man", Direction.RIGHT);
 		pacMan.setPosition(-t(2), upperY);
@@ -178,7 +178,7 @@ public class MsPacMan_IntermissionScene1 extends GameScene {
 
 	@Override
 	public void render(Graphics2D g) {
-		flap.draw(g);
+		rendering.drawFlap(g, flap);
 		rendering.drawPlayer(g, msPac);
 		rendering.drawSpouse(g, pacMan);
 		rendering.drawGhost(g, inky, false);

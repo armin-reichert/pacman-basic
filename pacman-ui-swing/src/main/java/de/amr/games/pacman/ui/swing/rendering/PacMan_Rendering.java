@@ -17,6 +17,7 @@ import de.amr.games.pacman.model.guys.Bonus;
 import de.amr.games.pacman.model.guys.GameEntity;
 import de.amr.games.pacman.model.guys.Ghost;
 import de.amr.games.pacman.model.guys.Pac;
+import de.amr.games.pacman.ui.swing.mspacman.entities.Flap;
 
 /**
  * Rendering for the classic Pac-Man game.
@@ -137,6 +138,10 @@ public class PacMan_Rendering extends DefaultRendering {
 	// Ms. Pac-Man only:
 
 	@Override
+	public void drawFlap(Graphics2D g, Flap flap) {
+	}
+
+	@Override
 	public void drawBag(Graphics2D g, GameEntity bag) {
 	}
 
@@ -154,11 +159,6 @@ public class PacMan_Rendering extends DefaultRendering {
 
 	@Override
 	public void drawStork(Graphics2D g, GameEntity stork) {
-	}
-
-	@Override
-	public void drawStorkSprite(Graphics2D g, float x, float y) {
-		// TODO remove this
 	}
 
 	@Override
