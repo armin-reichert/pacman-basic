@@ -7,7 +7,7 @@ import java.awt.Graphics2D;
 
 import de.amr.games.pacman.controller.PacManGameState;
 import de.amr.games.pacman.sound.SoundManager;
-import de.amr.games.pacman.ui.swing.rendering.DefaultRendering;
+import de.amr.games.pacman.ui.swing.rendering.SwingRendering;
 
 /**
  * Play scene for Pac-Man and Ms. Pac-Man.
@@ -16,7 +16,7 @@ import de.amr.games.pacman.ui.swing.rendering.DefaultRendering;
  */
 public class PlayScene extends GameScene {
 
-	public PlayScene(Dimension size, DefaultRendering rendering, SoundManager sounds) {
+	public PlayScene(Dimension size, SwingRendering rendering, SoundManager sounds) {
 		super(size, rendering, sounds);
 	}
 

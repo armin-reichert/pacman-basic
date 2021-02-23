@@ -38,6 +38,7 @@ public abstract class DefaultRendering implements SwingRendering, PacManGameAnim
 	@Override
 	public abstract Font getScoreFont();
 
+	@Override
 	public void drawSprite(Graphics2D g, BufferedImage sprite, float x, float y) {
 		Graphics2D gc = smoothGC(g);
 		gc.drawImage(sprite, (int) x, (int) y, null);
@@ -162,15 +163,19 @@ public abstract class DefaultRendering implements SwingRendering, PacManGameAnim
 
 	protected abstract BufferedImage lifeSprite();
 
+	@Override
 	public void drawFlap(Graphics2D g, Flap flap) {
 	}
 
+	@Override
 	public void drawHeart(Graphics2D g, Heart heart) {
 	}
 
+	@Override
 	public void drawStork(Graphics2D g, Stork stork) {
 	}
 
+	@Override
 	public void drawJuniorBag(Graphics2D g, JuniorBag bag) {
 	}
 

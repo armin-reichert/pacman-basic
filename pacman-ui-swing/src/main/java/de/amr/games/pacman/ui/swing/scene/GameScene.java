@@ -5,7 +5,7 @@ import java.awt.Graphics2D;
 
 import de.amr.games.pacman.model.GameModel;
 import de.amr.games.pacman.sound.SoundManager;
-import de.amr.games.pacman.ui.swing.rendering.DefaultRendering;
+import de.amr.games.pacman.ui.swing.rendering.SwingRendering;
 
 /**
  * Common game scene base class.
@@ -15,17 +15,17 @@ import de.amr.games.pacman.ui.swing.rendering.DefaultRendering;
 public abstract class GameScene {
 
 	protected final Dimension size;
-	protected final DefaultRendering rendering;
+	protected final SwingRendering rendering;
 	protected GameModel game;
 	protected SoundManager sounds;
 
-	public GameScene(Dimension size, DefaultRendering rendering, SoundManager sounds) {
+	public GameScene(Dimension size, SwingRendering rendering, SoundManager sounds) {
 		this.size = size;
 		this.rendering = rendering;
 		this.sounds = sounds;
 	}
 
-	public GameScene(Dimension size, DefaultRendering rendering) {
+	public GameScene(Dimension size, SwingRendering rendering) {
 		this.size = size;
 		this.rendering = rendering;
 	}
