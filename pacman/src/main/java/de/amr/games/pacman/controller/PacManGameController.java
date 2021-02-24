@@ -294,7 +294,7 @@ public class PacManGameController {
 
 	// TODO not sure about when which siren should play
 	private void startHuntingPhase(int phase) {
-		game.huntingPhase = (byte) phase;
+		game.huntingPhase = phase;
 		game.state.timer.setDuration(game.getHuntingPhaseDuration(game.huntingPhase));
 		if (game.inScatteringPhase()) {
 			sounds().forEach(sound -> {
@@ -720,9 +720,9 @@ public class PacManGameController {
 	private void onPacKilled(Ghost killer) {
 		log("%s killed by %s at tile %s", game.pac.name, killer.name, killer.tile());
 		game.pac.dead = true;
-		byte elroyMode = game.ghosts[BLINKY].elroy;
+		int elroyMode = game.ghosts[BLINKY].elroy;
 		if (elroyMode > 0) {
-			game.ghosts[BLINKY].elroy = (byte) -elroyMode; // negative value means "disabled"
+			game.ghosts[BLINKY].elroy = -elroyMode; // negative value means "disabled"
 			log("Blinky Elroy mode %d disabled", elroyMode);
 		}
 		game.globalDotCounter = 0;
@@ -817,7 +817,7 @@ public class PacManGameController {
 	private void releaseGhost(Ghost ghost, String reason, Object... args) {
 		ghost.state = LEAVING_HOUSE;
 		if (ghost.id == CLYDE && game.ghosts[BLINKY].elroy < 0) {
-			game.ghosts[BLINKY].elroy = (byte) -game.ghosts[BLINKY].elroy; // resume Elroy mode
+			game.ghosts[BLINKY].elroy -= 1; // resume Elroy mode
 			log("Blinky Elroy mode %d resumed", game.ghosts[BLINKY].elroy);
 		}
 		log("Ghost %s released: %s", ghost.name, String.format(reason, args));

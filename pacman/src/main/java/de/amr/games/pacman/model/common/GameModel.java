@@ -32,11 +32,11 @@ public abstract class GameModel {
 	public Bonus bonus;
 	public String[] bonusNames;
 	public int[] bonusValues;
-	public byte lives;
+	public int lives;
 	public int score;
 	public String highscoreFileName;
 	public int highscoreLevel, highscorePoints;
-	public byte huntingPhase;
+	public int huntingPhase;
 	public short ghostBounty;
 	public List<Byte> levelSymbols;
 	public short globalDotCounter;

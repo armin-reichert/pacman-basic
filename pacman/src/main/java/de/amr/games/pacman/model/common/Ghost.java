@@ -22,10 +22,10 @@ import de.amr.games.pacman.lib.V2i;
  */
 public class Ghost extends Creature {
 
-	public static final byte BLINKY = 0, PINKY = 1, INKY = 2, CLYDE = 3, SUE = 3;
+	public static final int BLINKY = 0, PINKY = 1, INKY = 2, CLYDE = 3, SUE = 3;
 
 	/** The unique ID of the ghost (0..3). */
-	public final byte id;
+	public final int id;
 
 	/** The readable name of the ghost. */
 	public String name;
@@ -42,7 +42,7 @@ public class Ghost extends Creature {
 	/**
 	 * The "Cruise Elroy" mode of Blinky, the red ghost. Value is 1, 2 or -1, -2 (disabled Elroy mode).
 	 */
-	public byte elroy;
+	public int elroy;
 
 	@Override
 	public String toString() {
@@ -50,7 +50,7 @@ public class Ghost extends Creature {
 	}
 
 	public Ghost(int ghostID, String ghostName, Direction ghostStartDir) {
-		id = (byte) ghostID;
+		id = ghostID;
 		name = ghostName;
 		dir = wishDir = startDir = ghostStartDir;
 	}
