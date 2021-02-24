@@ -12,12 +12,12 @@ import java.awt.image.BufferedImage;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.controller.PacManGameState;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.GameEntity;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
+import de.amr.games.pacman.model.common.PacManGameState;
 import de.amr.games.pacman.model.pacman.Bonus;
 import de.amr.games.pacman.ui.PacManGameAnimations;
 import de.amr.games.pacman.ui.swing.mspacman.entities.Flap;

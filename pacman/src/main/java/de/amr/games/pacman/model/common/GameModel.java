@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.controller.PacManGameState;
 import de.amr.games.pacman.lib.Hiscore;
 import de.amr.games.pacman.model.pacman.Bonus;
 

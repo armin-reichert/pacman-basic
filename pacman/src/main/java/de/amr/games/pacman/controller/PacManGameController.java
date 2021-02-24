@@ -1,13 +1,5 @@
 package de.amr.games.pacman.controller;
 
-import static de.amr.games.pacman.controller.PacManGameState.CHANGING_LEVEL;
-import static de.amr.games.pacman.controller.PacManGameState.GAME_OVER;
-import static de.amr.games.pacman.controller.PacManGameState.GHOST_DYING;
-import static de.amr.games.pacman.controller.PacManGameState.HUNTING;
-import static de.amr.games.pacman.controller.PacManGameState.INTERMISSION;
-import static de.amr.games.pacman.controller.PacManGameState.INTRO;
-import static de.amr.games.pacman.controller.PacManGameState.PACMAN_DYING;
-import static de.amr.games.pacman.controller.PacManGameState.READY;
 import static de.amr.games.pacman.heaven.God.clock;
 import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
@@ -22,6 +14,14 @@ import static de.amr.games.pacman.model.common.GhostState.DEAD;
 import static de.amr.games.pacman.model.common.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.model.common.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.model.common.GhostState.LOCKED;
+import static de.amr.games.pacman.model.common.PacManGameState.CHANGING_LEVEL;
+import static de.amr.games.pacman.model.common.PacManGameState.GAME_OVER;
+import static de.amr.games.pacman.model.common.PacManGameState.GHOST_DYING;
+import static de.amr.games.pacman.model.common.PacManGameState.HUNTING;
+import static de.amr.games.pacman.model.common.PacManGameState.INTERMISSION;
+import static de.amr.games.pacman.model.common.PacManGameState.INTRO;
+import static de.amr.games.pacman.model.common.PacManGameState.PACMAN_DYING;
+import static de.amr.games.pacman.model.common.PacManGameState.READY;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,6 +36,7 @@ import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameType;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.GhostState;
+import de.amr.games.pacman.model.common.PacManGameState;
 import de.amr.games.pacman.model.mspacman.MsPacManGame;
 import de.amr.games.pacman.model.pacman.PacManGame;
 import de.amr.games.pacman.sound.PacManGameSound;
