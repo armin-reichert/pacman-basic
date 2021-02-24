@@ -862,29 +862,31 @@ public class PacManGameController {
 			return;
 		}
 		boolean r = game.state == READY, h = game.state == HUNTING;
+		// A = toggle autopilot
 		if (keyPressed("A")) {
 			toggleAutopilot();
 		}
+		// E = eat all food without the energizers
 		if (keyPressed("E") && h) {
-			game.level.world.tiles().filter(tile -> game.level.containsFood(tile) && !game.level.world.isEnergizerTile(tile))
+			game.level.world.tiles().filter(game.level::containsFood).filter(tile -> !game.level.world.isEnergizerTile(tile))
 					.forEach(game.level::removeFood);
 		}
+		// I = toggle Pac immune/vulnerable
 		if (keyPressed("I")) {
 			togglePacImmunity();
 		}
+		// L = add live
 		if (keyPressed("L")) {
 			game.lives++;
 		}
+		// N = change to next level
 		if (keyPressed("N") && (r || h)) {
 			changeState(CHANGING_LEVEL, this::exitHuntingState, this::enterChangingLevelState);
 		}
+		// X = kill all ghosts outside of ghost house
 		if (keyPressed("X") && h) {
 			killAllGhosts();
 			changeState(GHOST_DYING, this::exitHuntingState, this::enterGhostDyingState);
 		}
-//		if (view.keyPressed("6")) {
-//			PacManGameRendering.foodAnimationOn = !PacManGameRendering.foodAnimationOn;
-//			view.showFlashMessage("Fancy food " + (PacManGameRendering.foodAnimationOn ? "on" : "off"));
-//		}
 	}
 }
