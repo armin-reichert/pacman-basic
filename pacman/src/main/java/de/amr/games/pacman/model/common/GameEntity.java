@@ -1,5 +1,7 @@
 package de.amr.games.pacman.model.common;
 
+import static de.amr.games.pacman.world.PacManGameWorld.t;
+
 import de.amr.games.pacman.lib.V2f;
 
 public class GameEntity {
@@ -25,5 +27,9 @@ public class GameEntity {
 
 	public void setPosition(V2f v) {
 		position = v;
+	}
+
+	public void setTilePosition(int col, int row) {
+		setPosition(t(col), t(row));
 	}
 }
