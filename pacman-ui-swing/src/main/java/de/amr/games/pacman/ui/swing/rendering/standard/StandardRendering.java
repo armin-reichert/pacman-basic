@@ -7,7 +7,6 @@ import static de.amr.games.pacman.world.PacManGameWorld.t;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -29,12 +28,6 @@ import de.amr.games.pacman.ui.swing.rendering.SwingRendering;
 public abstract class StandardRendering implements SwingRendering, PacManGameAnimations {
 
 	public boolean foodAnimationOn;
-
-	protected Graphics2D smoothGC(Graphics2D g) {
-		Graphics2D gc = (Graphics2D) g.create();
-		gc.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-		return gc;
-	}
 
 	@Override
 	public abstract Font getScoreFont();

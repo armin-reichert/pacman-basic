@@ -8,6 +8,7 @@ import static de.amr.games.pacman.world.PacManGameWorld.t;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.util.stream.Stream;
 
@@ -201,21 +202,24 @@ public class PacMan_IntroScene extends GameScene {
 
 	@Override
 	public void render(Graphics2D g) {
+		Graphics2D g2 = (Graphics2D) g.create();
+		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		rendering.drawScore(g, game, true);
 		drawGallery(g);
 		if (phase == Phase.CHASING_PAC) {
 			if (blinking.animate()) {
-				g.setColor(Color.PINK);
-				g.fillOval(t(2), (int) pac.position.y, TS, TS);
+				g2.setColor(Color.PINK);
+				g2.fillOval(t(2), (int) pac.position.y, TS, TS);
 			}
 		}
 		drawGuys(g);
 		if (phase.ordinal() >= Phase.CHASING_GHOSTS.ordinal()) {
-			drawPointsAnimation(g, 11, 26);
+			drawPointsAnimation(g2, 11, 26);
 		}
 		if (phase == Phase.READY_TO_PLAY) {
 			drawPressKeyToStart(g, 32);
 		}
+		g2.dispose();
 	}
 
 	private void drawGuys(Graphics2D g) {
