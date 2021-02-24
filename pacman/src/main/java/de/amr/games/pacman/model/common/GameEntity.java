@@ -4,6 +4,11 @@ import static de.amr.games.pacman.world.PacManGameWorld.t;
 
 import de.amr.games.pacman.lib.V2f;
 
+/**
+ * Entity base class.
+ * 
+ * @author Armin Reichert
+ */
 public class GameEntity {
 
 	/** If the creature is drawn on the screen. */
@@ -25,11 +30,13 @@ public class GameEntity {
 		position = new V2f((float) x, (float) y);
 	}
 
-	public void setPosition(V2f v) {
-		position = v;
-	}
-
+	/** Sets the position given in tile coordinates */
 	public void setTilePosition(int col, int row) {
 		setPosition(t(col), t(row));
+	}
+
+	/** Sets the position relative to another entity's position */
+	public void setPositionRelativeTo(GameEntity other, float dx, float dy) {
+		setPosition(other.position.x + dx, other.position.y + dy);
 	}
 }

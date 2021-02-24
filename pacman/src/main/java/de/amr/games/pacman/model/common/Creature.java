@@ -5,7 +5,7 @@ import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Direction.UP;
-import static de.amr.games.pacman.world.PacManGameWorld.TS;
+import static de.amr.games.pacman.world.PacManGameWorld.t;
 import static java.lang.Math.abs;
 
 import java.util.List;
@@ -65,7 +65,7 @@ public class Creature extends GameEntity {
 	 * @param offsetY the pixel offset in y-direction
 	 */
 	public void placeAt(V2i tile, float offsetX, float offsetY) {
-		setPosition(tile.x * TS + offsetX, tile.y * TS + offsetY);
+		setPosition(t(tile.x) + offsetX, t(tile.y) + offsetY);
 		changedTile = true;
 	}
 

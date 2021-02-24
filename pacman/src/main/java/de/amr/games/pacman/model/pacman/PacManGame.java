@@ -12,7 +12,7 @@ import static de.amr.games.pacman.model.common.Ghost.CLYDE;
 import static de.amr.games.pacman.model.common.Ghost.INKY;
 import static de.amr.games.pacman.model.common.Ghost.PINKY;
 import static de.amr.games.pacman.world.PacManGameWorld.HTS;
-import static de.amr.games.pacman.world.PacManGameWorld.TS;
+import static de.amr.games.pacman.world.PacManGameWorld.t;
 
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.GameLevel;
@@ -66,7 +66,7 @@ public class PacManGame extends GameModel {
 		bonusNames = new String[] { "CHERRIES", "STRAWBERRY", "PEACH", "APPLE", "GRAPES", "GALAXIAN", "BELL", "KEY" };
 		bonusValues = new int[] { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
 		bonus = new Bonus();
-		bonus.setPosition(13 * TS + HTS, 20 * TS);
+		bonus.setPosition(t(13) + HTS, t(20));
 
 		pac = new Pac("Pac-Man", RIGHT);
 
