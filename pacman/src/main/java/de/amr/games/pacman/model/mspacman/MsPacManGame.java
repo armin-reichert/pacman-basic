@@ -62,8 +62,18 @@ public class MsPacManGame extends GameModel {
 	private final MapBasedPacManGameWorld world;
 
 	public MsPacManGame() {
-		// all levels share this world
+		// all levels share one game world
 		world = new MapBasedPacManGameWorld();
+
+		// sanity check
+		log("Checking Ms. Pac-Man game maps...");
+		for (int mapNumber = 1; mapNumber <= 4; ++mapNumber) {
+			try {
+				new WorldMap("/mspacman/maps/map" + mapNumber + ".txt");
+			} catch (Exception x) {
+				log("Map '%s' contains errors, see log for details");
+			}
+		}
 
 		bonusNames = new String[] { "CHERRIES", "STRAWBERRY", "PEACH", "PRETZEL", "APPLE", "PEAR", "BANANA" };
 		bonusValues = new int[] { 100, 200, 500, 700, 1000, 2000, 5000 };

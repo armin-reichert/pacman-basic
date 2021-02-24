@@ -3,8 +3,12 @@ package de.amr.games.pacman.world;
 import static de.amr.games.pacman.lib.Logging.log;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import de.amr.games.pacman.lib.V2i;
 
@@ -15,10 +19,18 @@ import de.amr.games.pacman.lib.V2i;
  */
 public class WorldMap {
 
-	static final byte SPACE = 0, WALL = 1, PILL = 2, ENERGIZER = 3, DOOR = 4, TUNNEL = 5;
+	public static final byte UNDEFINED = -1, SPACE = 0, WALL = 1, PILL = 2, ENERGIZER = 3, DOOR = 4, TUNNEL = 5;
+
+	private static List<String> variableNames = Arrays.asList("width", "height");
+
+	private static void parseError(String message, Object... args) {
+		throw new RuntimeException("Error parsing map: " + String.format(message, args));
+	}
 
 	private byte[][] data;
 	private String path;
+
+	private Map<String, String> variables = new HashMap<>();
 
 	private byte decode(char c) {
 		switch (c) {
@@ -35,21 +47,84 @@ public class WorldMap {
 		case '*':
 			return ENERGIZER;
 		default:
-			throw new RuntimeException();
+			return UNDEFINED;
 		}
 	}
 
 	public WorldMap(String path) {
 		this.path = path;
-		setMapSize();
-		readMapContent();
+		parse();
 	}
 
-	public int sizeX() {
+	private void parse() {
+		log("Parsing map '%s'", path);
+		List<String> dataLines = new ArrayList<>();
+		try (BufferedReader rdr = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(path)))) {
+			rdr.lines().forEach(line -> {
+				if (line.startsWith("!")) {
+					// comment line, ignore
+				} else if (line.startsWith(":")) {
+					// line with variable assignment <variable> = <value>
+					line = line.substring(1).trim();
+					String[] parts = line.split("=");
+					if (parts.length != 2) {
+						parseError("Unparseable line: %s", line);
+					}
+					String lhs = parts[0].trim();
+					String rhs = parts[1].trim();
+					if (variableNames.contains(lhs)) {
+						variables.put(lhs, rhs);
+					}
+				} else {
+					// data line
+					dataLines.add(line);
+				}
+			});
+			int width = 0, height = 0;
+			try {
+				width = Integer.parseInt(variables.get("width"));
+			} catch (Exception x) {
+				parseError("Map contains no valid width definition");
+			}
+			if (width == 0) {
+				parseError("Map width must be a positive number");
+			}
+			log("Map width is defined as %d", width);
+			try {
+				height = Integer.parseInt(variables.get("height"));
+			} catch (Exception x) {
+				parseError("Map contains no valid height definition");
+			}
+			if (height == 0) {
+				parseError("Map height must be a positive number");
+			}
+			log("Map height is defined as %d", height);
+			if (dataLines.size() != height) {
+				parseError("Specified height %d is not consistent with number of data lines %d", height, dataLines.size());
+			}
+			data = new byte[height][width];
+			for (int row = 0; row < height; ++row) {
+				for (int col = 0; col < width; ++col) {
+					char c = dataLines.get(row).charAt(col);
+					byte value = decode(c);
+					if (value == UNDEFINED) {
+						parseError("Found undefined map character at row %d, col %d: '%s'", row, col, c);
+						data[row][col] = SPACE;
+					} else {
+						data[row][col] = value;
+					}
+				}
+			}
+		} catch (Exception x) {
+			x.printStackTrace();
+		}
+	}
+
+	public int width() {
 		return data[0].length;
 	}
 
-	public int sizeY() {
+	public int height() {
 		return data.length;
 	}
 
@@ -57,56 +132,7 @@ public class WorldMap {
 		return data[tile.y][tile.x];
 	}
 
-	public byte data(int x, int y) {
-		return data[y][x];
-	}
-
-	private void setMapSize() {
-		int sizeX = 0;
-		int sizeY = 0;
-		try (BufferedReader rdr = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(path)))) {
-			for (String line = rdr.readLine(); line != null; line = rdr.readLine()) {
-				if (line.startsWith("!") || line.isBlank()) {
-					continue; // skip comments and blank lines
-				}
-				if (sizeX == 0) {
-					sizeX = line.length();
-				} else if (sizeX != line.length()) {
-					throw new RuntimeException(String.format("Inconsistent line length in map %s", path));
-				}
-				++sizeY;
-			}
-		} catch (IOException e) {
-			throw new RuntimeException(String.format("Error reading map '%s'", path, e));
-		}
-		if (sizeX == 0 || sizeY == 0) {
-			throw new RuntimeException(String.format("Invalid map size: x=%d y=%d", sizeX, sizeY));
-		}
-		data = new byte[sizeY][sizeX];
-	}
-
-	private void readMapContent() {
-		int lineNumber = 0;
-		int y = 0;
-		try (BufferedReader rdr = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(path)))) {
-			for (String line = rdr.readLine(); line != null; line = rdr.readLine()) {
-				++lineNumber;
-				if (line.startsWith("!") || line.isBlank()) {
-					continue; // skip comments and blank lines
-				}
-				for (int x = 0; x < line.length(); ++x) {
-					char c = line.charAt(x);
-					try {
-						data[y][x] = decode(c);
-					} catch (Exception cause) {
-						data[y][x] = SPACE;
-						log("*** Error in map '%s': Illegal char '%c' at line %d, column %d", path, c, lineNumber, x + 1);
-					}
-				}
-				++y;
-			}
-		} catch (IOException e) {
-			throw new RuntimeException(String.format("Error reading map '%s'", path, e));
-		}
+	public byte data(int col, int row) {
+		return data[row][col];
 	}
 }

@@ -51,10 +51,10 @@ public class MapBasedPacManGameWorld implements PacManGameWorld {
 		// find portals
 		portalsLeft.clear();
 		portalsRight.clear();
-		for (int y = 0; y < map.sizeY(); ++y) {
-			if (map.data(0, y) == TUNNEL && map.data(map.sizeX() - 1, y) == TUNNEL) {
+		for (int y = 0; y < map.height(); ++y) {
+			if (map.data(0, y) == TUNNEL && map.data(map.width() - 1, y) == TUNNEL) {
 				portalsLeft.add(new V2i(-1, y));
-				portalsRight.add(new V2i(map.sizeX(), y));
+				portalsRight.add(new V2i(map.width(), y));
 			}
 		}
 
@@ -79,17 +79,17 @@ public class MapBasedPacManGameWorld implements PacManGameWorld {
 
 	@Override
 	public int xTiles() {
-		return map.sizeX();
+		return map.width();
 	}
 
 	@Override
 	public int yTiles() {
-		return map.sizeY();
+		return map.height();
 	}
 
 	@Override
 	public boolean insideMap(V2i tile) {
-		return 0 <= tile.x && tile.x < map.sizeX() && 0 <= tile.y && tile.y < map.sizeY();
+		return 0 <= tile.x && tile.x < map.width() && 0 <= tile.y && tile.y < map.height();
 	}
 
 	@Override
