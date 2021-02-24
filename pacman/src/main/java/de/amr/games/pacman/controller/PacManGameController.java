@@ -539,16 +539,12 @@ public class PacManGameController {
 
 	private int intermissionNumber(int levelNumber) {
 		switch (levelNumber) {
-		case 2:
-			return 1;
-		case 5:
-			return 2;
-		case 9:
-		case 13:
-		case 17:
-			return 3;
-		default:
-			return 0;
+		//@formatter:off
+		case 2:	return 1;
+		case 5:	return 2;
+		case 9:	case 13: case 17:	return 3;
+		default: return 0;
+		//@formatter:on
 		}
 	}
 
