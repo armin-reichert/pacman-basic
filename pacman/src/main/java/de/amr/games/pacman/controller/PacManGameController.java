@@ -555,12 +555,9 @@ public class PacManGameController {
 
 	private PacManGameState runIntermissionState() {
 		if (game.state.timer.expired()) {
-			return changeState(READY, this::exitIntermissionState, this::enterReadyState);
+			return changeState(READY, null, this::enterReadyState);
 		}
 		return game.state.tick();
-	}
-
-	private void exitIntermissionState() {
 	}
 
 	// END STATE-MACHINE
