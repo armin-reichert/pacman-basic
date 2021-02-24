@@ -1,5 +1,6 @@
 package de.amr.games.pacman.model.mspacman;
 
+import static de.amr.games.pacman.heaven.God.clock;
 import static de.amr.games.pacman.heaven.God.random;
 import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
@@ -49,6 +50,14 @@ public class MsPacManGame extends GameModel {
 	/*21*/ {0,  90, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
 	};
 	/*@formatter:on*/
+
+	public static final short[][] HUNTING_PHASE_DURATION = {
+		//@formatter:off
+		{ 7, 20, 7, 20, 5,   20,  5, Short.MAX_VALUE },
+		{ 7, 20, 7, 20, 5, 1033, -1, Short.MAX_VALUE },
+		{ 5, 20, 5, 20, 5, 1037, -1, Short.MAX_VALUE },
+		//@formatter:on
+	};
 
 	private final MapBasedPacManGameWorld world;
 
@@ -131,4 +140,21 @@ public class MsPacManGame extends GameModel {
 	public long bonusActivationTicks(int levelNumber) {
 		return Long.MAX_VALUE;
 	}
+
+	@Override
+	public long getHuntingPhaseDuration(int phase) {
+		int row = currentLevelNumber == 1 ? 0 : currentLevelNumber <= 4 ? 1 : 2;
+		return huntingTicks(HUNTING_PHASE_DURATION[row][phase]);
+	}
+
+	private long huntingTicks(short duration) {
+		if (duration == -1) {
+			return 1; // -1 means a single tick
+		}
+		if (duration == Short.MAX_VALUE) {
+			return Long.MAX_VALUE;
+		}
+		return clock.sec(duration);
+	}
+
 }

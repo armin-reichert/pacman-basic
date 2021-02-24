@@ -55,6 +55,14 @@ public class PacManGame extends GameModel {
 	};
 	/*@formatter:on*/
 
+	public static final short[][] HUNTING_PHASE_DURATION = {
+		//@formatter:off
+		{ 7, 20, 7, 20, 5,   20,  5, Short.MAX_VALUE },
+		{ 7, 20, 7, 20, 5, 1033, -1, Short.MAX_VALUE },
+		{ 5, 20, 5, 20, 5, 1037, -1, Short.MAX_VALUE },
+		//@formatter:on
+	};
+
 	private final MapBasedPacManGameWorld world;
 
 	public PacManGame() {
@@ -95,6 +103,22 @@ public class PacManGame extends GameModel {
 	@Override
 	public long bonusActivationTicks(int levelNumber) {
 		return clock.sec(9 + random.nextFloat());
+	}
+
+	@Override
+	public long getHuntingPhaseDuration(int phase) {
+		int row = currentLevelNumber == 1 ? 0 : currentLevelNumber <= 4 ? 1 : 2;
+		return huntingTicks(HUNTING_PHASE_DURATION[row][phase]);
+	}
+
+	private long huntingTicks(short duration) {
+		if (duration == -1) {
+			return 1; // -1 means a single tick
+		}
+		if (duration == Short.MAX_VALUE) {
+			return Long.MAX_VALUE;
+		}
+		return clock.sec(duration);
 	}
 
 	@Override

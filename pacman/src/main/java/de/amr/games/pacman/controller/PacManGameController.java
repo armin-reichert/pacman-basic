@@ -289,53 +289,19 @@ public class PacManGameController {
 
 	// HUNTING
 
-	static final short[][] HUNTING_PHASE_DURATION = {
-		//@formatter:off
-		{ 7, 20, 7, 20, 5,   20,  5, Short.MAX_VALUE },
-		{ 7, 20, 7, 20, 5, 1033, -1, Short.MAX_VALUE },
-		{ 5, 20, 5, 20, 5, 1037, -1, Short.MAX_VALUE },
-		//@formatter:on
-	};
+	static final List<PacManGameSound> SIRENS = Arrays.asList(PacManGameSound.GHOST_SIREN_1,
+			PacManGameSound.GHOST_SIREN_2, PacManGameSound.GHOST_SIREN_3, PacManGameSound.GHOST_SIREN_4);
 
-	private long huntingPhaseDuration(int phase) {
-		int row = game.currentLevelNumber == 1 ? 0 : game.currentLevelNumber <= 4 ? 1 : 2;
-		return huntingTicks(HUNTING_PHASE_DURATION[row][phase]);
-	}
-
-	private long huntingTicks(short duration) {
-		if (duration == -1) {
-			return 1; // -1 means a single tick
-		}
-		if (duration == Short.MAX_VALUE) {
-			return Long.MAX_VALUE;
-		}
-		return clock.sec(duration);
-	}
-
-	private static PacManGameSound siren(int huntingPhase) {
-		switch (huntingPhase / 2) {
-		case 0:
-			return PacManGameSound.GHOST_SIREN_1;
-		case 1:
-			return PacManGameSound.GHOST_SIREN_2;
-		case 2:
-			return PacManGameSound.GHOST_SIREN_3;
-		case 3:
-			return PacManGameSound.GHOST_SIREN_4;
-		default:
-			throw new IllegalArgumentException("Illegal hunting phase: " + huntingPhase);
-		}
-	}
-
+	// TODO not sure about when which siren should play
 	private void startHuntingPhase(int phase) {
 		game.huntingPhase = (byte) phase;
-		game.state.timer.setDuration(huntingPhaseDuration(game.huntingPhase));
+		game.state.timer.setDuration(game.getHuntingPhaseDuration(game.huntingPhase));
 		if (game.inScatteringPhase()) {
-			sounds().forEach(sound -> { // TODO not sure about when which siren should play
+			sounds().forEach(sound -> {
 				if (game.huntingPhase >= 2) {
-					sound.stop(siren(game.huntingPhase - 2));
+					sound.stop(SIRENS.get((game.huntingPhase - 1) / 2));
 				}
-				sound.loopForever(siren(game.huntingPhase));
+				sound.loopForever(SIRENS.get(game.huntingPhase / 2));
 			});
 		}
 		log("Hunting phase %d started, state is now %s", phase, game.stateDescription());

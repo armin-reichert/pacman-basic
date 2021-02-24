@@ -145,6 +145,8 @@ public abstract class GameModel {
 		return huntingPhase % 2 == 0;
 	}
 
+	public abstract long getHuntingPhaseDuration(int phase);
+
 	public Hiscore loadHighScore() {
 		File dir = new File(System.getProperty("user.home"));
 		Hiscore hiscore = new Hiscore(new File(dir, highscoreFileName));
