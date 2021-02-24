@@ -10,6 +10,7 @@ import java.awt.AWTException;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -208,8 +209,7 @@ public class PacManGameUI_Swing implements PacManGameUI {
 		}
 	}
 
-	@Override
-	public void render() {
+	private void renderScreen() {
 		BufferStrategy buffers = canvas.getBufferStrategy();
 		do {
 			do {
@@ -223,6 +223,11 @@ public class PacManGameUI_Swing implements PacManGameUI {
 			} while (buffers.contentsRestored());
 			buffers.show();
 		} while (buffers.contentsLost());
+	}
+
+	@Override
+	public void render() {
+		EventQueue.invokeLater(this::renderScreen);
 	}
 
 	@Override

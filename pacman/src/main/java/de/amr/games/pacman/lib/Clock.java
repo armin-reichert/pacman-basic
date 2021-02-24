@@ -33,7 +33,7 @@ public class Clock {
 			ticksCountStart = System.nanoTime();
 		}
 		long targetFrameDuration = 1_000_000_000L / targetFreq;
-		long sleep = Math.max((targetFrameDuration - duration) * 93 / 100, 0);
+		long sleep = Math.max((targetFrameDuration - duration) * 98 / 100, 0);
 		if (sleep > 0) {
 			try {
 				Thread.sleep(sleep / 1_000_000); // nanos -> millis
