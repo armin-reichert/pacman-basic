@@ -44,17 +44,25 @@ import de.amr.games.pacman.ui.PacManGameAnimations;
 import de.amr.games.pacman.ui.PacManGameUI;
 
 /**
- * Pac-Man and Ms. Pac-Man game implementation.
+ * Controller for Pac-Man and Ms. Pac-Man game.
  * <p>
- * Missing:
+ * This is essentially a finite-state machine with states defined in {@link PacManGameState}. All
+ * game data are stored in the model of the selected game, see {@link MsPacManGame} and
+ * {@link PacManGame}. The views are decoupled by the interface {@link PacManGameUI}, scene
+ * selection is not controlled by this class but left to the user interface implementation.
+ * <p>
+ * Missing functionality:
  * <ul>
- * <li>Pac-Man "cornering"</li>
- * <li>Exact level data for Ms. Pac-Man still unclear
- * <li>Multiple players</li>
+ * <li><a href="https://pacman.holenet.info/#CH2_Cornering"><em>Cornering</em></a>: I do not
+ * consider cornering as important when the player is controlled by keyboard keys, for a joystick
+ * that probably would be more important.</li>
+ * <li>Exact level data for Ms. Pac-Man still unclear. Any hints appreciated!
+ * <li>Multiple players, credits.</li>
  * </ul>
  * 
  * @author Armin Reichert
  * 
+ * @see <a href="https://github.com/armin-reichert">GitHub</a>
  * @see <a href="https://pacman.holenet.info">Jamey Pittman: The Pac-Man Dossier</a>
  * @see <a href="https://gameinternals.com/understanding-pac-man-ghost-behavior">Chad Birch:
  *      Understanding ghost behavior</a>
