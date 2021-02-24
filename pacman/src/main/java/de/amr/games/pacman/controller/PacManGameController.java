@@ -167,6 +167,10 @@ public class PacManGameController {
 		views.forEach(PacManGameUI::show);
 	}
 
+	public void showFlashMessage(String message, long ticks) {
+		views.forEach(view -> view.showFlashMessage(message, ticks));
+	}
+
 	public void toggleGameType() {
 		if (currentGameType() == GameType.MS_PACMAN) {
 			play(GameType.PACMAN);
@@ -174,19 +178,21 @@ public class PacManGameController {
 			play(GameType.MS_PACMAN);
 		}
 		sounds().forEach(SoundManager::stopAll);
+		showFlashMessage("Now playing " + (currentGameType() == GameType.MS_PACMAN ? "Ms. Pac-Man" : "Pac-Man"),
+				clock.sec(2));
 	}
 
 	public void toggleAutopilot() {
 		autopilotOn = !autopilotOn;
 		String msg = "Autopilot " + (autopilotOn ? "on" : "off");
-		views.forEach(view -> view.showFlashMessage(msg, clock.sec(1.5)));
+		showFlashMessage(msg, clock.sec(1.5));
 		log(msg);
 	}
 
 	public void togglePacImmunity() {
 		game.pac.immune = !game.pac.immune;
 		String msg = game.pac.name + " is " + (game.pac.immune ? "immune" : "vulnerable");
-		views.forEach(view -> view.showFlashMessage(msg, clock.sec(1.5)));
+		showFlashMessage(msg, clock.sec(1.5));
 		log(msg);
 	}
 
@@ -233,14 +239,17 @@ public class PacManGameController {
 		// test intermission scenes
 		if (keyPressed("1")) {
 			game.intermissionNumber = 1;
+			showFlashMessage("Intermission #1", clock.sec(3));
 			return changeState(INTERMISSION, null, this::enterIntermissionState);
 		}
 		if (keyPressed("2")) {
 			game.intermissionNumber = 2;
+			showFlashMessage("Intermission #2", clock.sec(3));
 			return changeState(INTERMISSION, null, this::enterIntermissionState);
 		}
 		if (keyPressed("3")) {
 			game.intermissionNumber = 3;
+			showFlashMessage("Intermission #3", clock.sec(3));
 			return changeState(INTERMISSION, null, this::enterIntermissionState);
 		}
 
@@ -632,6 +641,7 @@ public class PacManGameController {
 			game.lives++;
 			sounds().forEach(sm -> sm.play(PacManGameSound.EXTRA_LIFE));
 			log("Extra life. Now you have %d lives!", game.lives);
+			showFlashMessage("Extra life!", clock.sec(1));
 		}
 		if (game.score > game.highscorePoints) {
 			game.highscorePoints = game.score;
