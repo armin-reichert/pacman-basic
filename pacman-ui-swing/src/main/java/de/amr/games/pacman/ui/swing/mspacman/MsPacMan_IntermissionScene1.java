@@ -84,16 +84,14 @@ public class MsPacMan_IntermissionScene1 extends GameScene {
 		pinky.setPositionRelativeTo(msPac, t(3), 0);
 		pinky.visible = true;
 
+		rendering.ghostsKicking(Stream.of(inky, pinky)).forEach(Animation::restart);
+
 		heart = new Heart();
 		heart.visible = false;
 
-		rendering.ghostsKicking(Stream.of(inky, pinky)).forEach(Animation::restart);
-
-		sounds.loop(PacManGameSound.INTERMISSION_1, 1);
-
 		ghostsMet = false;
 
-		enter(Phase.FLAP, clock.sec(1));
+		enter(Phase.FLAP, clock.sec(2));
 	}
 
 	@Override
@@ -102,6 +100,7 @@ public class MsPacMan_IntermissionScene1 extends GameScene {
 		case FLAP:
 			if (phase.timer.expired()) {
 				flap.visible = false;
+				sounds.loop(PacManGameSound.INTERMISSION_1, 1);
 				startChasedByGhosts();
 			}
 			break;
@@ -159,8 +158,8 @@ public class MsPacMan_IntermissionScene1 extends GameScene {
 	}
 
 	private void startChasedByGhosts() {
-		pacMan.speed = msPac.speed = 1.25f;
-		inky.speed = pinky.speed = 1.30f;
+		pacMan.speed = msPac.speed = 1.2f;
+		inky.speed = pinky.speed = 1.25f;
 		enter(Phase.CHASED_BY_GHOSTS, Long.MAX_VALUE);
 	}
 
