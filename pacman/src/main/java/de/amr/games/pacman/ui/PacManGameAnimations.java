@@ -82,12 +82,4 @@ public interface PacManGameAnimations {
 	// Pac-Man only
 
 	Animation<?> bigPacMan();
-
-	Animation<?> blinkyNaked();
-
-	Animation<?> blinkyDamaged();
-
-	// Ms. Pac-Man only:
-
-	Animation<?> storkFlying();
 }

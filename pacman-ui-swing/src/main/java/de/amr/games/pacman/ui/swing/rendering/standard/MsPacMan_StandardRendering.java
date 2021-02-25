@@ -200,14 +200,6 @@ public class MsPacMan_StandardRendering extends StandardRendering {
 	}
 
 	@Override
-	public Animation<?> storkFlying() {
-		return Animation.of(//
-				assets.region(489, 176, 32, 16), //
-				assets.region(521, 176, 32, 16)//
-		).endless().frameDuration(10);
-	}
-
-	@Override
 	public void drawMaze(Graphics2D g, int mazeNumber, int x, int y, boolean flashing) {
 		if (flashing) {
 			g.drawImage(mazeFlashing(mazeNumber).animate(), x, y, null);
@@ -295,18 +287,15 @@ public class MsPacMan_StandardRendering extends StandardRendering {
 	}
 
 	@Override
+	public void drawPatchedBlinky(Graphics2D g, Ghost blinky) {
+	}
+
+	@Override
+	public void drawNakedBlinky(Graphics2D g, Ghost blinky) {
+	}
+
+	@Override
 	public Animation<?> bigPacMan() {
 		return null;
 	}
-
-	@Override
-	public Animation<?> blinkyDamaged() {
-		return null;
-	}
-
-	@Override
-	public Animation<?> blinkyNaked() {
-		return null;
-	}
-
 }

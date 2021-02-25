@@ -25,9 +25,14 @@ import de.amr.games.pacman.ui.swing.mspacman.entities.JuniorBag;
 import de.amr.games.pacman.ui.swing.mspacman.entities.Stork;
 import de.amr.games.pacman.ui.swing.rendering.SwingRendering;
 
+/**
+ * Standard rendering functionality for both, Pac-Man and Ms. Pac-Man.
+ * 
+ * @author Armin Reichert
+ */
 public abstract class StandardRendering implements SwingRendering, PacManGameAnimations {
 
-	public boolean foodAnimationOn;
+	public boolean foodAnimationOn; // TODO not used
 
 	@Override
 	public abstract Font getScoreFont();

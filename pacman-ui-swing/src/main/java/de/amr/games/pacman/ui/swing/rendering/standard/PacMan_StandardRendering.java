@@ -20,7 +20,7 @@ import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.pacman.PacManBonus;
 
 /**
- * Rendering for the classic Pac-Man game.
+ * Standard rendering for the Pac-Man game using the original sprites and animations.
  * 
  * @author Armin Reichert
  */
@@ -100,21 +100,6 @@ public class PacMan_StandardRendering extends StandardRendering {
 	}
 
 	@Override
-	public Animation<?> blinkyDamaged() {
-		return assets.blinkyDamaged;
-	}
-
-	@Override
-	public Animation<?> blinkyNaked() {
-		return assets.blinkyNaked;
-	}
-
-	@Override
-	public Animation<?> storkFlying() {
-		return null;
-	}
-
-	@Override
 	public Animation<?> bigPacMan() {
 		return assets.bigPacManAnim;
 	}
@@ -137,18 +122,27 @@ public class PacMan_StandardRendering extends StandardRendering {
 
 	@Override
 	public void drawNail(Graphics2D g, GameEntity nail) {
-		drawEntity(g, nail, assets.nailImage);
+		drawEntity(g, nail, assets.nailSprite);
 	}
 
 	@Override
 	public void drawStretchedBlinky(Graphics2D g, Ghost blinky, V2f nailPosition, int stretching) {
-		drawSprite(g, assets.stretchedDress[stretching], nailPosition.x - 4, nailPosition.y - 4);
+		drawSprite(g, assets.blinkyStretched.frame(stretching), nailPosition.x - 4, nailPosition.y - 4);
 		if (stretching < 3) {
 			drawGhost(g, blinky, false);
 		} else {
-			drawEntity(g, blinky,
-					blinky.dir == Direction.RIGHT ? assets.damagedBlinkyLookingRight : assets.damagedBlinkyLookingUp);
+			drawEntity(g, blinky, assets.blinkyDamaged.frame(blinky.dir == Direction.UP ? 0 : 1));
 		}
+	}
+
+	@Override
+	public void drawPatchedBlinky(Graphics2D g, Ghost blinky) {
+		drawEntity(g, blinky, assets.blinkyPatched.animate());
+	}
+
+	@Override
+	public void drawNakedBlinky(Graphics2D g, Ghost blinky) {
+		drawEntity(g, blinky, assets.blinkyHalfNaked.animate());
 	}
 
 	// Sprites

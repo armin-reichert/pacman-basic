@@ -40,27 +40,26 @@ public class PacMan_StandardAssets extends Spritesheet {
 		return ghostType == 0 ? Color.RED : ghostType == 1 ? Color.pink : ghostType == 2 ? Color.CYAN : Color.ORANGE;
 	}
 
-	final Font scoreFont;
+	public final Font scoreFont;
 
-	final BufferedImage mazeFullImage;
-	final BufferedImage mazeEmptyImage;
-	final Animation<BufferedImage> mazeFlashingAnim;
-	final BufferedImage[] symbolSprites;
-	final Map<Integer, BufferedImage> numberSprites;
-	final Map<Pac, EnumMap<Direction, Animation<BufferedImage>>> pacMunchingAnimations = new HashMap<>();
-	final Animation<BufferedImage> pacCollapsingAnim;
-	final Map<Ghost, EnumMap<Direction, Animation<BufferedImage>>> ghostsWalkingAnimsByGhost = new HashMap<>();
-	final EnumMap<Direction, Animation<BufferedImage>> ghostEyesAnimsByDir;
-	final Animation<BufferedImage> ghostBlueAnim;
-	final Animation<BufferedImage> ghostFlashingAnim;
-	final Animation<Boolean> energizerBlinkingAnim;
-	final Animation<BufferedImage> bigPacManAnim;
-	final Animation<BufferedImage> blinkyNaked;
-	final Animation<BufferedImage> blinkyDamaged;
-	public final BufferedImage nailImage;
-	public final BufferedImage damagedBlinkyLookingUp;
-	public final BufferedImage damagedBlinkyLookingRight;
-	public final BufferedImage[] stretchedDress;
+	public final BufferedImage mazeFullImage;
+	public final BufferedImage mazeEmptyImage;
+	public final Animation<BufferedImage> mazeFlashingAnim;
+	public final BufferedImage[] symbolSprites;
+	public final Map<Integer, BufferedImage> numberSprites;
+	public final Map<Pac, EnumMap<Direction, Animation<BufferedImage>>> pacMunchingAnimations = new HashMap<>();
+	public final Animation<BufferedImage> pacCollapsingAnim;
+	public final Map<Ghost, EnumMap<Direction, Animation<BufferedImage>>> ghostsWalkingAnimsByGhost = new HashMap<>();
+	public final EnumMap<Direction, Animation<BufferedImage>> ghostEyesAnimsByDir;
+	public final Animation<BufferedImage> ghostBlueAnim;
+	public final Animation<BufferedImage> ghostFlashingAnim;
+	public final Animation<Boolean> energizerBlinkingAnim;
+	public final Animation<BufferedImage> bigPacManAnim;
+	public final Animation<BufferedImage> blinkyHalfNaked;
+	public final Animation<BufferedImage> blinkyDamaged;
+	public final Animation<BufferedImage> blinkyStretched;
+	public final Animation<BufferedImage> blinkyPatched;
+	public final BufferedImage nailSprite;
 
 	public PacMan_StandardAssets() {
 		super(image("/pacman/graphics/sprites.png"), 16);
@@ -119,16 +118,13 @@ public class PacMan_StandardAssets extends Spritesheet {
 		bigPacManAnim = Animation.of(spriteRegion(2, 1, 2, 2), spriteRegion(4, 1, 2, 2), spriteRegion(6, 1, 2, 2));
 		bigPacManAnim.frameDuration(4).endless();
 
-		blinkyDamaged = Animation.of(sprite(10, 7), sprite(11, 7));
-		blinkyDamaged.frameDuration(4).endless();
+		blinkyPatched = Animation.of(sprite(10, 7), sprite(11, 7)).restart().frameDuration(4).endless();
+		blinkyDamaged = Animation.of(sprite(8, 7), sprite(9, 7));
+		blinkyStretched = Animation.of(sprite(9, 6), sprite(10, 6), sprite(11, 6), sprite(12, 6));
+		blinkyHalfNaked = Animation.of(spriteRegion(8, 8, 2, 1), spriteRegion(10, 8, 2, 1)).endless().frameDuration(4)
+				.restart();
 
-		blinkyNaked = Animation.of(spriteRegion(8, 8, 2, 1), spriteRegion(10, 8, 2, 1));
-		blinkyNaked.frameDuration(4).endless();
-
-		nailImage = sprite(8, 6);
-		damagedBlinkyLookingUp = sprite(8, 7);
-		damagedBlinkyLookingRight = sprite(9, 7);
-		stretchedDress = new BufferedImage[] { sprite(9, 6), sprite(10, 6), sprite(11, 6), sprite(12, 6) };
+		nailSprite = sprite(8, 6);
 	}
 
 	public EnumMap<Direction, Animation<BufferedImage>> getOrCreatePacMunchingAnimation(Pac pac) {

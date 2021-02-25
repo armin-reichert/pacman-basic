@@ -8,7 +8,6 @@ import static de.amr.games.pacman.world.PacManGameWorld.t;
 
 import java.awt.Dimension;
 import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
 
 import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.Direction;
@@ -33,40 +32,35 @@ public class PacMan_IntermissionScene3 extends GameScene {
 	}
 
 	private final int chaseTileY = 20;
-	private final Animation<?> blinkyDamaged;
-	private final Animation<?> blinkyNaked;
-	private final Ghost blinky;
-	private final Pac pac;
+	private Ghost blinky;
+	private Pac pac;
 
 	private Phase phase;
 
 	public PacMan_IntermissionScene3(Dimension size, SwingRendering rendering, SoundManager sounds) {
 		super(size, rendering, sounds);
-		blinkyDamaged = rendering.blinkyDamaged();
-		blinkyNaked = rendering.blinkyNaked();
-		pac = new Pac("Pac-Man", Direction.LEFT);
-		blinky = new Ghost(0, "Blinky", Direction.LEFT);
 	}
 
 	@Override
 	public void start() {
 		log("Start intermission scene %s at %d", this, clock.ticksTotal);
 
+		pac = new Pac("Pac-Man", Direction.LEFT);
+		pac.setTilePosition(30, chaseTileY);
 		pac.visible = true;
 		pac.dead = false;
-		pac.setTilePosition(30, chaseTileY);
 		pac.speed = 1.2f;
 		pac.couldMove = true;
 		pac.dir = LEFT;
 		pac.couldMove = true;
 		rendering.playerMunching(pac).forEach(Animation::restart);
 
+		blinky = new Ghost(0, "Blinky", Direction.LEFT);
+		blinky.setPositionRelativeTo(pac, t(8), 0);
 		blinky.visible = true;
 		blinky.state = GhostState.HUNTING_PAC;
-		blinky.setPositionRelativeTo(pac, t(8), 0);
 		blinky.speed = pac.speed;
 		blinky.dir = blinky.wishDir = LEFT;
-		blinkyDamaged.restart();
 
 		sounds.loop(PacManGameSound.INTERMISSION_3, 2);
 
@@ -80,7 +74,6 @@ public class PacMan_IntermissionScene3 extends GameScene {
 			if (blinky.position.x <= -50) {
 				pac.speed = 0;
 				blinky.dir = blinky.wishDir = RIGHT;
-				blinkyNaked.restart();
 				phase = Phase.RETURNING_HALF_NAKED;
 			}
 			break;
@@ -100,19 +93,10 @@ public class PacMan_IntermissionScene3 extends GameScene {
 	public void render(Graphics2D g) {
 		rendering.drawLevelCounter(g, game, t(25), t(34));
 		rendering.drawPlayer(g, pac);
-		drawBlinky(g);
-	}
-
-	private void drawBlinky(Graphics2D g) {
-		switch (phase) {
-		case CHASING_PACMAN:
-			rendering.drawSprite(g, (BufferedImage) blinkyDamaged.animate(), blinky.position.x - 4, blinky.position.y - 4);
-			break;
-		case RETURNING_HALF_NAKED:
-			rendering.drawSprite(g, (BufferedImage) blinkyNaked.animate(), blinky.position.x - 4, blinky.position.y - 4);
-			break;
-		default:
-			break;
+		if (phase == Phase.CHASING_PACMAN) {
+			rendering.drawPatchedBlinky(g, blinky);
+		} else {
+			rendering.drawNakedBlinky(g, blinky);
 		}
 	}
 }
