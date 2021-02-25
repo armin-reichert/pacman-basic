@@ -141,7 +141,7 @@ public class PacMan_StandardRendering extends StandardRendering {
 	}
 
 	@Override
-	public void drawBlinkyHalfNaked(Graphics2D g, Ghost blinky) {
+	public void drawBlinkyNaked(Graphics2D g, Ghost blinky) {
 		drawEntity(g, blinky, assets.blinkyHalfNaked.animate());
 	}
 

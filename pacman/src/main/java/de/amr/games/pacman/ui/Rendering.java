@@ -3,9 +3,13 @@ package de.amr.games.pacman.ui;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.model.common.Flap;
+import de.amr.games.pacman.model.common.GameEntity;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Ghost;
+import de.amr.games.pacman.model.common.JuniorBag;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.pacman.PacManBonus;
 
@@ -61,7 +65,25 @@ public interface Rendering<GC, COLOR, FONT, SPRITE> {
 
 	void drawLevelCounter(GC g, GameModel game, int rightX, int y);
 
-	// Ms. Pac-Man only
+	// Pac-Man game only:
+
+	void drawNail(GC g, GameEntity nail);
+
+	void drawBlinkyStretched(GC g, Ghost blinky, V2f nailPosition, int stretching);
+
+	void drawBlinkyPatched(GC g, Ghost blinky);
+
+	void drawBlinkyNaked(GC g, Ghost blinky);
+
+	// Ms. Pac-Man game only:
+
+	void drawFlap(GC g, Flap flap);
+
+	void drawHeart(GC g, GameEntity heart);
+
+	void drawStork(GC g, GameEntity stork);
+
+	void drawJuniorBag(GC g, JuniorBag bag);
 
 	void drawSpouse(GC g, Pac pac);
 }

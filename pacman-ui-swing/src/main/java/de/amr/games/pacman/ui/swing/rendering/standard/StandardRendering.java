@@ -12,17 +12,15 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.model.common.Flap;
 import de.amr.games.pacman.model.common.GameEntity;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Ghost;
+import de.amr.games.pacman.model.common.JuniorBag;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.common.PacManGameState;
 import de.amr.games.pacman.model.pacman.PacManBonus;
 import de.amr.games.pacman.ui.PacManGameAnimations;
-import de.amr.games.pacman.ui.swing.mspacman.entities.Flap;
-import de.amr.games.pacman.ui.swing.mspacman.entities.Heart;
-import de.amr.games.pacman.ui.swing.mspacman.entities.JuniorBag;
-import de.amr.games.pacman.ui.swing.mspacman.entities.Stork;
 import de.amr.games.pacman.ui.swing.rendering.SwingRendering;
 
 /**
@@ -167,11 +165,11 @@ public abstract class StandardRendering implements SwingRendering, PacManGameAni
 	}
 
 	@Override
-	public void drawHeart(Graphics2D g, Heart heart) {
+	public void drawHeart(Graphics2D g, GameEntity heart) {
 	}
 
 	@Override
-	public void drawStork(Graphics2D g, Stork stork) {
+	public void drawStork(Graphics2D g, GameEntity stork) {
 	}
 
 	@Override

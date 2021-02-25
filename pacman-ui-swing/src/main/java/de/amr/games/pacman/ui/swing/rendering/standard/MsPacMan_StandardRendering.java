@@ -15,15 +15,12 @@ import java.util.stream.Stream;
 import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2f;
+import de.amr.games.pacman.model.common.Flap;
 import de.amr.games.pacman.model.common.GameEntity;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.pacman.PacManBonus;
-import de.amr.games.pacman.ui.swing.mspacman.entities.Flap;
-import de.amr.games.pacman.ui.swing.mspacman.entities.Heart;
-import de.amr.games.pacman.ui.swing.mspacman.entities.JuniorBag;
-import de.amr.games.pacman.ui.swing.mspacman.entities.Stork;
 
 /**
  * Rendering for the Ms. Pac-Man game.
@@ -246,7 +243,8 @@ public class MsPacMan_StandardRendering extends StandardRendering {
 	@Override
 	public void drawFlap(Graphics2D g, Flap flap) {
 		if (flap.visible) {
-			drawSprite(g, flap.flapping.animate(), flap.position.x, flap.position.y);
+			FlapUI flapUI = (FlapUI) flap;
+			drawSprite(g, flapUI.flapping.animate(), flap.position.x, flap.position.y);
 			g.setFont(new Font(assets.getScoreFont().getName(), Font.PLAIN, 8));
 			g.setColor(new Color(222, 222, 225, 192));
 			g.drawString(flap.sceneNumber + "", flap.position.x + 20, flap.position.y + 30);
@@ -256,17 +254,18 @@ public class MsPacMan_StandardRendering extends StandardRendering {
 	}
 
 	@Override
-	public void drawStork(Graphics2D g, Stork stork) {
-		drawEntity(g, stork, stork.flying.animate());
+	public void drawStork(Graphics2D g, GameEntity stork) {
+		StorkUI storkUI = (StorkUI) stork;
+		drawEntity(g, stork, storkUI.flying.animate());
 	}
 
 	@Override
-	public void drawHeart(Graphics2D g, Heart heart) {
+	public void drawHeart(Graphics2D g, GameEntity heart) {
 		drawEntity(g, heart, assets.s(2, 10));
 	}
 
 	@Override
-	public void drawJuniorBag(Graphics2D g, JuniorBag bag) {
+	public void drawJuniorBag(Graphics2D g, de.amr.games.pacman.model.common.JuniorBag bag) {
 		if (bag.visible) {
 			if (bag.open) {
 				drawEntity(g, bag, assets.junior);
@@ -291,7 +290,7 @@ public class MsPacMan_StandardRendering extends StandardRendering {
 	}
 
 	@Override
-	public void drawBlinkyHalfNaked(Graphics2D g, Ghost blinky) {
+	public void drawBlinkyNaked(Graphics2D g, Ghost blinky) {
 	}
 
 	@Override

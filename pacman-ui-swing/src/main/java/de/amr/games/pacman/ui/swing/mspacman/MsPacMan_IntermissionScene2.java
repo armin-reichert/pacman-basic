@@ -14,8 +14,8 @@ import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.sound.PacManGameSound;
 import de.amr.games.pacman.sound.SoundManager;
 import de.amr.games.pacman.ui.swing.common.GameScene;
-import de.amr.games.pacman.ui.swing.mspacman.entities.Flap;
 import de.amr.games.pacman.ui.swing.rendering.SwingRendering;
+import de.amr.games.pacman.ui.swing.rendering.standard.FlapUI;
 
 /**
  * Intermission scene 2: "The chase".
@@ -38,7 +38,7 @@ public class MsPacMan_IntermissionScene2 extends GameScene {
 
 	private Phase phase;
 
-	private Flap flap;
+	private FlapUI flap;
 	private Pac pacMan, msPacMan;
 
 	private void enter(Phase newPhase, long ticks) {
@@ -53,7 +53,7 @@ public class MsPacMan_IntermissionScene2 extends GameScene {
 	@Override
 	public void start() {
 
-		flap = new Flap(2, "THE CHASE");
+		flap = new FlapUI(2, "THE CHASE");
 		flap.setTilePosition(3, 10);
 		flap.visible = true;
 		flap.flapping.restart();

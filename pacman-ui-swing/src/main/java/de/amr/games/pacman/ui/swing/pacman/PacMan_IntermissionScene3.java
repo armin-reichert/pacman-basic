@@ -96,7 +96,7 @@ public class PacMan_IntermissionScene3 extends GameScene {
 		if (phase == Phase.CHASING_PACMAN) {
 			rendering.drawBlinkyPatched(g, blinky);
 		} else {
-			rendering.drawBlinkyHalfNaked(g, blinky);
+			rendering.drawBlinkyNaked(g, blinky);
 		}
 	}
 }

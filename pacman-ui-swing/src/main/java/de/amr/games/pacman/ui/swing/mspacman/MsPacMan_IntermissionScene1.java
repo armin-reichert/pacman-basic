@@ -11,14 +11,14 @@ import java.util.stream.Stream;
 import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.CountdownTimer;
 import de.amr.games.pacman.lib.Direction;
+import de.amr.games.pacman.model.common.GameEntity;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.sound.PacManGameSound;
 import de.amr.games.pacman.sound.SoundManager;
 import de.amr.games.pacman.ui.swing.common.GameScene;
-import de.amr.games.pacman.ui.swing.mspacman.entities.Flap;
-import de.amr.games.pacman.ui.swing.mspacman.entities.Heart;
 import de.amr.games.pacman.ui.swing.rendering.SwingRendering;
+import de.amr.games.pacman.ui.swing.rendering.standard.FlapUI;
 
 /**
  * Intermission scene 1: "They meet".
@@ -43,10 +43,10 @@ public class MsPacMan_IntermissionScene1 extends GameScene {
 
 	private Phase phase;
 
-	private Flap flap;
+	private FlapUI flap;
 	private Pac pacMan, msPac;
 	private Ghost pinky, inky;
-	private Heart heart;
+	private GameEntity heart;
 	private boolean ghostsMet;
 
 	private void enter(Phase newPhase, long ticks) {
@@ -61,7 +61,7 @@ public class MsPacMan_IntermissionScene1 extends GameScene {
 	@Override
 	public void start() {
 
-		flap = new Flap(1, "THEY MEET");
+		flap = new FlapUI(1, "THEY MEET");
 		flap.setTilePosition(3, 10);
 		flap.visible = true;
 		flap.flapping.restart();
@@ -86,8 +86,7 @@ public class MsPacMan_IntermissionScene1 extends GameScene {
 
 		rendering.ghostsKicking(Stream.of(inky, pinky)).forEach(Animation::restart);
 
-		heart = new Heart();
-		heart.visible = false;
+		heart = new GameEntity();
 
 		ghostsMet = false;
 

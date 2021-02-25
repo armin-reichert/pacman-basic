@@ -9,14 +9,14 @@ import java.awt.Graphics2D;
 import de.amr.games.pacman.lib.CountdownTimer;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2f;
+import de.amr.games.pacman.model.common.JuniorBag;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.sound.PacManGameSound;
 import de.amr.games.pacman.sound.SoundManager;
 import de.amr.games.pacman.ui.swing.common.GameScene;
-import de.amr.games.pacman.ui.swing.mspacman.entities.Flap;
-import de.amr.games.pacman.ui.swing.mspacman.entities.JuniorBag;
-import de.amr.games.pacman.ui.swing.mspacman.entities.Stork;
 import de.amr.games.pacman.ui.swing.rendering.SwingRendering;
+import de.amr.games.pacman.ui.swing.rendering.standard.FlapUI;
+import de.amr.games.pacman.ui.swing.rendering.standard.StorkUI;
 
 /**
  * Intermission scene 3: "Junior".
@@ -39,10 +39,10 @@ public class MsPacMan_IntermissionScene3 extends GameScene {
 
 	private static final int BIRD_Y = t(12), GROUND_Y = t(24);
 
-	private Flap flap;
+	private FlapUI flap;
 	private Pac pacMan;
 	private Pac msPacMan;
-	private Stork stork;
+	private StorkUI stork;
 	private JuniorBag bag;
 
 	private Phase phase;
@@ -59,7 +59,7 @@ public class MsPacMan_IntermissionScene3 extends GameScene {
 	@Override
 	public void start() {
 
-		flap = new Flap(3, "JUNIOR");
+		flap = new FlapUI(3, "JUNIOR");
 		flap.setTilePosition(3, 10);
 		flap.visible = true;
 		flap.flapping.restart();
@@ -70,7 +70,7 @@ public class MsPacMan_IntermissionScene3 extends GameScene {
 		msPacMan = new Pac("Ms. Pac-Man", Direction.RIGHT);
 		msPacMan.setPosition(t(5), GROUND_Y - 4);
 
-		stork = new Stork();
+		stork = new StorkUI();
 		stork.setPosition(t(30), BIRD_Y);
 		stork.flying.restart();
 
