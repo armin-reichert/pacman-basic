@@ -8,8 +8,10 @@ This implementation follows the Model-View-Controller pattern:
 
 The code here is more "to the point" than the one in my other [state-machine focussed implementation](https://github.com/armin-reichert/pacman).
 
-YouTube: https://www.youtube.com/watch?v=oZh2oAnoJbk
+YouTube: 
+[![YouTube video](https://i9.ytimg.com/vi/q5biOTj9GIU/mq2.jpg?sqp=CMTI3IEG&rs=AOn4CLDNhugLyh6O0LgjaKK55FgUxOfimw)](https://youtu.be/q5biOTj9GIU)
 
+### Build
 To build the executable jar file, run `mvn clean install` in each subproject.
 
 ### Intro scene
