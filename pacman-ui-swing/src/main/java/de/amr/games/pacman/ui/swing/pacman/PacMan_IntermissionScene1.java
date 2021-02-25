@@ -3,7 +3,6 @@ package de.amr.games.pacman.ui.swing.pacman;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.model.common.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.common.GhostState.HUNTING_PAC;
-import static de.amr.games.pacman.ui.swing.PacManGameUI_Swing.RENDERING_PACMAN;
 import static de.amr.games.pacman.ui.swing.pacman.PacMan_IntermissionScene1.Phase.BLINKY_CHASING_PACMAN;
 import static de.amr.games.pacman.world.PacManGameWorld.t;
 
@@ -17,8 +16,8 @@ import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.sound.PacManGameSound;
 import de.amr.games.pacman.sound.SoundManager;
-import de.amr.games.pacman.ui.swing.PacManGameUI_Swing;
-import de.amr.games.pacman.ui.swing.scene.GameScene;
+import de.amr.games.pacman.ui.swing.common.GameScene;
+import de.amr.games.pacman.ui.swing.rendering.SwingRendering;
 
 /**
  * First intermission scene: Blinky chases Pac-Man and is then chased by a huge Pac-Man.
@@ -33,16 +32,14 @@ public class PacMan_IntermissionScene1 extends GameScene {
 
 	private static final int baselineY = t(20);
 
-	private final SoundManager sounds = PacManGameUI_Swing.SOUNDS_PACMAN;
-
 	private Animation<?> bigPacManAnimation;
 	private Ghost blinky;
 	private Pac pac;
 
 	private Phase phase;
 
-	public PacMan_IntermissionScene1(Dimension size) {
-		super(size, RENDERING_PACMAN);
+	public PacMan_IntermissionScene1(Dimension size, SwingRendering rendering, SoundManager sounds) {
+		super(size, rendering, sounds);
 	}
 
 	@Override
@@ -54,7 +51,7 @@ public class PacMan_IntermissionScene1 extends GameScene {
 		pac.speed = 1f;
 		rendering.playerMunching(pac).forEach(Animation::restart);
 
-		bigPacManAnimation = RENDERING_PACMAN.bigPacMan();
+		bigPacManAnimation = rendering.bigPacMan();
 
 		blinky = new Ghost(0, "Blinky", Direction.LEFT);
 		blinky.visible = true;

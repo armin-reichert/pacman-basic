@@ -17,8 +17,9 @@ import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.GhostState;
 import de.amr.games.pacman.model.common.Pac;
-import de.amr.games.pacman.ui.swing.PacManGameUI_Swing;
-import de.amr.games.pacman.ui.swing.scene.GameScene;
+import de.amr.games.pacman.sound.SoundManager;
+import de.amr.games.pacman.ui.swing.common.GameScene;
+import de.amr.games.pacman.ui.swing.rendering.SwingRendering;
 
 /**
  * Intro scene of the Ms. Pac-Man game. The ghosts and Ms. Pac-Man are introduced one after another.
@@ -47,8 +48,8 @@ public class MsPacMan_IntroScene extends GameScene {
 	private Ghost currentGhost;
 	private boolean presentingMsPac;
 
-	public MsPacMan_IntroScene(Dimension size) {
-		super(size, PacManGameUI_Swing.RENDERING_MSPACMAN);
+	public MsPacMan_IntroScene(Dimension size, SwingRendering rendering, SoundManager sounds) {
+		super(size, rendering, sounds);
 	}
 
 	private void enterPhase(Phase newPhase) {

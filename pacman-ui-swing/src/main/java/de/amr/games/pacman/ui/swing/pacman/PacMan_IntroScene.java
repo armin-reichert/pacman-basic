@@ -18,8 +18,9 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.GhostState;
 import de.amr.games.pacman.model.common.Pac;
-import de.amr.games.pacman.ui.swing.PacManGameUI_Swing;
-import de.amr.games.pacman.ui.swing.scene.GameScene;
+import de.amr.games.pacman.sound.SoundManager;
+import de.amr.games.pacman.ui.swing.common.GameScene;
+import de.amr.games.pacman.ui.swing.rendering.SwingRendering;
 
 /**
  * Intro scene of the PacMan game.
@@ -63,8 +64,8 @@ public class PacMan_IntroScene extends GameScene {
 		phase.timer.setDuration(Long.MAX_VALUE);
 	}
 
-	public PacMan_IntroScene(Dimension size) {
-		super(size, PacManGameUI_Swing.RENDERING_PACMAN);
+	public PacMan_IntroScene(Dimension size, SwingRendering rendering, SoundManager sounds) {
+		super(size, rendering, sounds);
 	}
 
 	@Override

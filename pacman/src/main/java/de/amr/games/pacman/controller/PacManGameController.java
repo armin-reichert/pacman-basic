@@ -7,6 +7,8 @@ import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.lib.Logging.log;
+import static de.amr.games.pacman.model.common.GameType.MS_PACMAN;
+import static de.amr.games.pacman.model.common.GameType.PACMAN;
 import static de.amr.games.pacman.model.common.Ghost.BLINKY;
 import static de.amr.games.pacman.model.common.Ghost.CLYDE;
 import static de.amr.games.pacman.model.common.Ghost.INKY;
@@ -135,20 +137,20 @@ public class PacManGameController {
 		return views().map(PacManGameUI::sound).filter(Optional::isPresent).map(Optional::get);
 	}
 
-	public GameType currentGameType() {
+	public boolean isPlaying(GameType type) {
 		if (game == msPacManGame) {
-			return GameType.MS_PACMAN;
+			return type == MS_PACMAN;
 		}
 		if (game == pacManGame) {
-			return GameType.PACMAN;
+			return type == PACMAN;
 		}
 		throw new IllegalStateException();
 	}
 
 	public void play(GameType type) {
-		if (type == GameType.MS_PACMAN) {
+		if (type == MS_PACMAN) {
 			game = msPacManGame;
-		} else if (type == GameType.PACMAN) {
+		} else if (type == PACMAN) {
 			game = pacManGame;
 		} else {
 			throw new IllegalArgumentException();
@@ -173,14 +175,13 @@ public class PacManGameController {
 	}
 
 	public void toggleGameType() {
-		if (currentGameType() == GameType.MS_PACMAN) {
-			play(GameType.PACMAN);
+		if (isPlaying(MS_PACMAN)) {
+			play(PACMAN);
 		} else {
-			play(GameType.MS_PACMAN);
+			play(MS_PACMAN);
 		}
 		sounds().forEach(SoundManager::stopAll);
-		showFlashMessage("Now playing " + (currentGameType() == GameType.MS_PACMAN ? "Ms. Pac-Man" : "Pac-Man"),
-				clock.sec(2));
+		showFlashMessage("Now playing " + (isPlaying(MS_PACMAN) ? "Ms. Pac-Man" : "Pac-Man"), clock.sec(2));
 	}
 
 	public void toggleAutopilot() {
@@ -685,7 +686,7 @@ public class PacManGameController {
 			game.bonus.visible = true;
 			game.bonus.symbol = game.level.bonusSymbol;
 			game.bonus.points = game.bonusValues[game.level.bonusSymbol];
-			game.bonus.activate(currentGameType() == GameType.PACMAN ? clock.sec(9 + random.nextFloat()) : Long.MAX_VALUE);
+			game.bonus.activate(isPlaying(PACMAN) ? clock.sec(9 + random.nextFloat()) : Long.MAX_VALUE);
 			log("Bonus %s (value %d) activated", game.bonusNames[game.bonus.symbol], game.bonus.points);
 		}
 
@@ -759,8 +760,7 @@ public class PacManGameController {
 
 	private void setGhostHuntingTarget(Ghost ghost) {
 		// In Ms. Pac-Man, Blinky and Pinky move randomly during the *first* scatter phase:
-		if (currentGameType() == GameType.MS_PACMAN && game.huntingPhase == 0
-				&& (ghost.id == BLINKY || ghost.id == PINKY)) {
+		if (isPlaying(MS_PACMAN) && game.huntingPhase == 0 && (ghost.id == BLINKY || ghost.id == PINKY)) {
 			ghost.targetTile = null;
 		} else if (game.inScatteringPhase() && ghost.elroy == 0) {
 			ghost.targetTile = game.level.world.ghostScatterTile(ghost.id);

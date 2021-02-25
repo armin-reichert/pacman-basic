@@ -6,6 +6,9 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
+import de.amr.games.pacman.lib.V2f;
+import de.amr.games.pacman.model.common.GameEntity;
+import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.ui.PacManGameAnimations;
 import de.amr.games.pacman.ui.Rendering;
 import de.amr.games.pacman.ui.swing.mspacman.entities.Flap;
@@ -23,12 +26,20 @@ public interface SwingRendering extends Rendering<Graphics2D, Color, Font, Buffe
 
 	void drawSprite(Graphics2D g, BufferedImage sprite, float x, float y);
 
-	void drawJuniorBag(Graphics2D g, JuniorBag bag);
+	// Pac-Man game only:
 
-	void drawStork(Graphics2D g, Stork stork);
+	void drawNail(Graphics2D g, GameEntity nail);
+
+	void drawStretchedBlinky(Graphics2D g, Ghost blinky, V2f nailPosition, int stretching);
+
+	// Ms. Pac-Man game only:
+
+	void drawFlap(Graphics2D g, Flap flap);
 
 	void drawHeart(Graphics2D g, Heart heart);
 
-	void drawFlap(Graphics2D g, Flap flap);
+	void drawStork(Graphics2D g, Stork stork);
+
+	void drawJuniorBag(Graphics2D g, JuniorBag bag);
 
 }

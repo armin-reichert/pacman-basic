@@ -1,8 +1,6 @@
 package de.amr.games.pacman.ui.swing.mspacman;
 
 import static de.amr.games.pacman.heaven.God.clock;
-import static de.amr.games.pacman.ui.swing.PacManGameUI_Swing.RENDERING_MSPACMAN;
-import static de.amr.games.pacman.ui.swing.PacManGameUI_Swing.SOUNDS_MSPACMAN;
 import static de.amr.games.pacman.ui.swing.rendering.standard.MsPacMan_StandardRendering.assets;
 import static de.amr.games.pacman.world.PacManGameWorld.t;
 
@@ -16,9 +14,11 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.sound.PacManGameSound;
+import de.amr.games.pacman.sound.SoundManager;
+import de.amr.games.pacman.ui.swing.common.GameScene;
 import de.amr.games.pacman.ui.swing.mspacman.entities.Flap;
 import de.amr.games.pacman.ui.swing.mspacman.entities.Heart;
-import de.amr.games.pacman.ui.swing.scene.GameScene;
+import de.amr.games.pacman.ui.swing.rendering.SwingRendering;
 
 /**
  * Intermission scene 1: "They meet".
@@ -54,8 +54,8 @@ public class MsPacMan_IntermissionScene1 extends GameScene {
 		phase.timer.setDuration(ticks);
 	}
 
-	public MsPacMan_IntermissionScene1(Dimension size) {
-		super(size, RENDERING_MSPACMAN, SOUNDS_MSPACMAN);
+	public MsPacMan_IntermissionScene1(Dimension size, SwingRendering rendering, SoundManager sounds) {
+		super(size, rendering, sounds);
 	}
 
 	@Override

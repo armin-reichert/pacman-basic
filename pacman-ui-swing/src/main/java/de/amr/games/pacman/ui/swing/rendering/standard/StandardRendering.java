@@ -39,7 +39,7 @@ public abstract class StandardRendering implements SwingRendering, PacManGameAni
 		gc.dispose();
 	}
 
-	protected void drawGuy(Graphics2D g, GameEntity guy, BufferedImage guySprite) {
+	protected void drawEntity(Graphics2D g, GameEntity guy, BufferedImage guySprite) {
 		if (guy.visible && guySprite != null) {
 			int dx = guySprite.getWidth() / 2 - HTS, dy = guySprite.getHeight() / 2 - HTS;
 			drawSprite(g, guySprite, guy.position.x - dx, guy.position.y - dy);
@@ -48,7 +48,7 @@ public abstract class StandardRendering implements SwingRendering, PacManGameAni
 
 	@Override
 	public void drawPlayer(Graphics2D g, Pac pac) {
-		drawGuy(g, pac, pacSprite(pac));
+		drawEntity(g, pac, pacSprite(pac));
 	}
 
 	@Override
@@ -57,7 +57,7 @@ public abstract class StandardRendering implements SwingRendering, PacManGameAni
 
 	@Override
 	public void drawGhost(Graphics2D g, Ghost ghost, boolean frightened) {
-		drawGuy(g, ghost, ghostSprite(ghost, frightened));
+		drawEntity(g, ghost, ghostSprite(ghost, frightened));
 	}
 
 	@Override
@@ -80,7 +80,7 @@ public abstract class StandardRendering implements SwingRendering, PacManGameAni
 
 	@Override
 	public void drawBonus(Graphics2D g, PacManBonus bonus) {
-		drawGuy(g, bonus, bonusSprite(bonus));
+		drawEntity(g, bonus, bonusSprite(bonus));
 	}
 
 	@Override

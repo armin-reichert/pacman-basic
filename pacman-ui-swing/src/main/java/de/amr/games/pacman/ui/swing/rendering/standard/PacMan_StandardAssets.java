@@ -58,9 +58,8 @@ public class PacMan_StandardAssets extends Spritesheet {
 	final Animation<BufferedImage> blinkyNaked;
 	final Animation<BufferedImage> blinkyDamaged;
 	public final BufferedImage nailImage;
-	public final BufferedImage blinkyLookingUp;
-	public final BufferedImage blinkyLookingRight;
-	public final BufferedImage shred;
+	public final BufferedImage damagedBlinkyLookingUp;
+	public final BufferedImage damagedBlinkyLookingRight;
 	public final BufferedImage[] stretchedDress;
 
 	public PacMan_StandardAssets() {
@@ -127,10 +126,9 @@ public class PacMan_StandardAssets extends Spritesheet {
 		blinkyNaked.frameDuration(4).endless();
 
 		nailImage = sprite(8, 6);
-		blinkyLookingUp = sprite(8, 7);
-		blinkyLookingRight = sprite(9, 7);
-		shred = sprite(12, 6);
-		stretchedDress = new BufferedImage[] { sprite(9, 6), sprite(10, 6), sprite(11, 6) };
+		damagedBlinkyLookingUp = sprite(8, 7);
+		damagedBlinkyLookingRight = sprite(9, 7);
+		stretchedDress = new BufferedImage[] { sprite(9, 6), sprite(10, 6), sprite(11, 6), sprite(12, 6) };
 	}
 
 	public EnumMap<Direction, Animation<BufferedImage>> getOrCreatePacMunchingAnimation(Pac pac) {

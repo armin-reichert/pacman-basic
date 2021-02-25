@@ -17,8 +17,8 @@ import de.amr.games.pacman.model.common.GhostState;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.sound.PacManGameSound;
 import de.amr.games.pacman.sound.SoundManager;
-import de.amr.games.pacman.ui.swing.PacManGameUI_Swing;
-import de.amr.games.pacman.ui.swing.scene.GameScene;
+import de.amr.games.pacman.ui.swing.common.GameScene;
+import de.amr.games.pacman.ui.swing.rendering.SwingRendering;
 
 /**
  * Third intermission scene: Blinky in shred dress chases Pac-Man, comes back half-naked drawing
@@ -32,8 +32,6 @@ public class PacMan_IntermissionScene3 extends GameScene {
 		CHASING_PACMAN, RETURNING_HALF_NAKED;
 	}
 
-	private final SoundManager sounds = PacManGameUI_Swing.SOUNDS_PACMAN;
-
 	private final int chaseTileY = 20;
 	private final Animation<?> blinkyDamaged;
 	private final Animation<?> blinkyNaked;
@@ -42,8 +40,8 @@ public class PacMan_IntermissionScene3 extends GameScene {
 
 	private Phase phase;
 
-	public PacMan_IntermissionScene3(Dimension size) {
-		super(size, PacManGameUI_Swing.RENDERING_PACMAN);
+	public PacMan_IntermissionScene3(Dimension size, SwingRendering rendering, SoundManager sounds) {
+		super(size, rendering, sounds);
 		blinkyDamaged = rendering.blinkyDamaged();
 		blinkyNaked = rendering.blinkyNaked();
 		pac = new Pac("Pac-Man", Direction.LEFT);

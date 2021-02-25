@@ -14,6 +14,8 @@ import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.Direction;
+import de.amr.games.pacman.lib.V2f;
+import de.amr.games.pacman.model.common.GameEntity;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
@@ -236,7 +238,7 @@ public class MsPacMan_StandardRendering extends StandardRendering {
 		// Ms. Pac.Man bonus is jumping while wandering the maze
 		int dy = bonus.edibleTicksLeft > 0 ? assets.bonusJumpAnim.animate() : 0;
 		g.translate(0, dy);
-		drawGuy(g, bonus, bonusSprite(bonus));
+		drawEntity(g, bonus, bonusSprite(bonus));
 		g.translate(0, -dy);
 	}
 
@@ -263,21 +265,21 @@ public class MsPacMan_StandardRendering extends StandardRendering {
 
 	@Override
 	public void drawStork(Graphics2D g, Stork stork) {
-		drawGuy(g, stork, stork.flying.animate());
+		drawEntity(g, stork, stork.flying.animate());
 	}
 
 	@Override
 	public void drawHeart(Graphics2D g, Heart heart) {
-		drawGuy(g, heart, assets.s(2, 10));
+		drawEntity(g, heart, assets.s(2, 10));
 	}
 
 	@Override
 	public void drawJuniorBag(Graphics2D g, JuniorBag bag) {
 		if (bag.visible) {
 			if (bag.open) {
-				drawGuy(g, bag, assets.junior);
+				drawEntity(g, bag, assets.junior);
 			} else {
-				drawGuy(g, bag, assets.blueBag);
+				drawEntity(g, bag, assets.blueBag);
 			}
 		}
 	}
@@ -285,20 +287,25 @@ public class MsPacMan_StandardRendering extends StandardRendering {
 	// Pac-Man only:
 
 	@Override
+	public void drawNail(Graphics2D g, GameEntity nail) {
+	}
+
+	@Override
+	public void drawStretchedBlinky(Graphics2D g, Ghost ghost, V2f nailPosition, int stretching) {
+	}
+
+	@Override
 	public Animation<?> bigPacMan() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Animation<?> blinkyDamaged() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Animation<?> blinkyNaked() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

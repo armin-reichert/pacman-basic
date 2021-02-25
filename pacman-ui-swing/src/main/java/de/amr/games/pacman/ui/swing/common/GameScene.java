@@ -1,4 +1,4 @@
-package de.amr.games.pacman.ui.swing.scene;
+package de.amr.games.pacman.ui.swing.common;
 
 import java.awt.Dimension;
 import java.awt.Graphics2D;
@@ -23,11 +23,6 @@ public abstract class GameScene {
 		this.size = size;
 		this.rendering = rendering;
 		this.sounds = sounds;
-	}
-
-	public GameScene(Dimension size, SwingRendering rendering) {
-		this.size = size;
-		this.rendering = rendering;
 	}
 
 	public abstract void update();

@@ -13,6 +13,8 @@ import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.Direction;
+import de.amr.games.pacman.lib.V2f;
+import de.amr.games.pacman.model.common.GameEntity;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.pacman.PacManBonus;
@@ -131,6 +133,22 @@ public class PacMan_StandardRendering extends StandardRendering {
 	@Override
 	public void drawLifeCounterSymbol(Graphics2D g, int x, int y) {
 		g.drawImage(lifeSprite(), x, y, null);
+	}
+
+	@Override
+	public void drawNail(Graphics2D g, GameEntity nail) {
+		drawEntity(g, nail, assets.nailImage);
+	}
+
+	@Override
+	public void drawStretchedBlinky(Graphics2D g, Ghost blinky, V2f nailPosition, int stretching) {
+		drawSprite(g, assets.stretchedDress[stretching], nailPosition.x - 4, nailPosition.y - 4);
+		if (stretching < 3) {
+			drawGhost(g, blinky, false);
+		} else {
+			drawEntity(g, blinky,
+					blinky.dir == Direction.RIGHT ? assets.damagedBlinkyLookingRight : assets.damagedBlinkyLookingUp);
+		}
 	}
 
 	// Sprites

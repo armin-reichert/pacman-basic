@@ -1,8 +1,6 @@
 package de.amr.games.pacman.ui.swing.mspacman;
 
 import static de.amr.games.pacman.heaven.God.clock;
-import static de.amr.games.pacman.ui.swing.PacManGameUI_Swing.RENDERING_MSPACMAN;
-import static de.amr.games.pacman.ui.swing.PacManGameUI_Swing.SOUNDS_MSPACMAN;
 import static de.amr.games.pacman.world.PacManGameWorld.t;
 
 import java.awt.Dimension;
@@ -13,10 +11,12 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2f;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.sound.PacManGameSound;
+import de.amr.games.pacman.sound.SoundManager;
+import de.amr.games.pacman.ui.swing.common.GameScene;
 import de.amr.games.pacman.ui.swing.mspacman.entities.Flap;
 import de.amr.games.pacman.ui.swing.mspacman.entities.JuniorBag;
 import de.amr.games.pacman.ui.swing.mspacman.entities.Stork;
-import de.amr.games.pacman.ui.swing.scene.GameScene;
+import de.amr.games.pacman.ui.swing.rendering.SwingRendering;
 
 /**
  * Intermission scene 3: "Junior".
@@ -47,8 +47,8 @@ public class MsPacMan_IntermissionScene3 extends GameScene {
 
 	private Phase phase;
 
-	public MsPacMan_IntermissionScene3(Dimension size) {
-		super(size, RENDERING_MSPACMAN, SOUNDS_MSPACMAN);
+	public MsPacMan_IntermissionScene3(Dimension size, SwingRendering rendering, SoundManager sounds) {
+		super(size, rendering, sounds);
 	}
 
 	private void enter(Phase newPhase, long ticks) {
