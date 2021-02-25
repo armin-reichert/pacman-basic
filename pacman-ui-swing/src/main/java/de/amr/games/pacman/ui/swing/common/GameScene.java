@@ -16,24 +16,14 @@ public abstract class GameScene {
 
 	protected final Dimension size;
 	protected final SwingRendering rendering;
+	protected final SoundManager sounds;
 	protected GameModel game;
-	protected SoundManager sounds;
 
 	public GameScene(Dimension size, SwingRendering rendering, SoundManager sounds) {
 		this.size = size;
 		this.rendering = rendering;
 		this.sounds = sounds;
 	}
-
-	public abstract void update();
-
-	public void start() {
-	}
-
-	public void end() {
-	}
-
-	public abstract void render(Graphics2D g);
 
 	public Dimension size() {
 		return size;
@@ -42,4 +32,15 @@ public abstract class GameScene {
 	public void setGame(GameModel game) {
 		this.game = game;
 	}
+
+	public void start() {
+	}
+
+	public abstract void update();
+
+	public void end() {
+	}
+
+	public abstract void render(Graphics2D g);
+
 }

@@ -10,7 +10,7 @@ import de.amr.games.pacman.sound.SoundManager;
 import de.amr.games.pacman.ui.swing.rendering.SwingRendering;
 
 /**
- * Play scene for Pac-Man and Ms. Pac-Man.
+ * Play scene (Pac-Man and Ms. Pac-Man).
  * 
  * @author Armin Reichert
  */
@@ -22,13 +22,14 @@ public class PlayScene extends GameScene {
 
 	@Override
 	public void update() {
+		// nothing to do
 	}
 
 	@Override
 	public void render(Graphics2D g) {
-		boolean flashing = rendering.mazeFlashing(game.level.mazeNumber).hasStarted();
-		rendering.drawMaze(g, game.level.mazeNumber, 0, t(3), flashing);
-		if (!flashing) {
+		boolean mazeFlashing = rendering.mazeFlashing(game.level.mazeNumber).hasStarted();
+		rendering.drawMaze(g, game.level.mazeNumber, 0, t(3), mazeFlashing);
+		if (!mazeFlashing) {
 			rendering.drawFoodTiles(g, game.level.world.tiles().filter(game.level.world::isFoodTile),
 					game.level::containsEatenFood);
 			rendering.drawEnergizerTiles(g, game.level.world.energizerTiles());
