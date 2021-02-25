@@ -283,15 +283,15 @@ public class MsPacMan_StandardRendering extends StandardRendering {
 	}
 
 	@Override
-	public void drawStretchedBlinky(Graphics2D g, Ghost ghost, V2f nailPosition, int stretching) {
+	public void drawBlinkyStretched(Graphics2D g, Ghost ghost, V2f nailPosition, int stretching) {
 	}
 
 	@Override
-	public void drawPatchedBlinky(Graphics2D g, Ghost blinky) {
+	public void drawBlinkyPatched(Graphics2D g, Ghost blinky) {
 	}
 
 	@Override
-	public void drawNakedBlinky(Graphics2D g, Ghost blinky) {
+	public void drawBlinkyHalfNaked(Graphics2D g, Ghost blinky) {
 	}
 
 	@Override

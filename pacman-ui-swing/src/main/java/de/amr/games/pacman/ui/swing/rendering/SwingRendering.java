@@ -30,11 +30,11 @@ public interface SwingRendering extends Rendering<Graphics2D, Color, Font, Buffe
 
 	void drawNail(Graphics2D g, GameEntity nail);
 
-	void drawStretchedBlinky(Graphics2D g, Ghost blinky, V2f nailPosition, int stretching);
+	void drawBlinkyStretched(Graphics2D g, Ghost blinky, V2f nailPosition, int stretching);
 
-	void drawPatchedBlinky(Graphics2D g, Ghost blinky);
+	void drawBlinkyPatched(Graphics2D g, Ghost blinky);
 
-	void drawNakedBlinky(Graphics2D g, Ghost blinky);
+	void drawBlinkyHalfNaked(Graphics2D g, Ghost blinky);
 
 	// Ms. Pac-Man game only:
 
