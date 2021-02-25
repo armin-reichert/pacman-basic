@@ -17,7 +17,7 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
-import de.amr.games.pacman.model.pacman.Bonus;
+import de.amr.games.pacman.model.pacman.PacManBonus;
 import de.amr.games.pacman.ui.swing.mspacman.entities.Flap;
 import de.amr.games.pacman.ui.swing.mspacman.entities.Heart;
 import de.amr.games.pacman.ui.swing.mspacman.entities.JuniorBag;
@@ -105,7 +105,7 @@ public class MsPacMan_StandardRendering extends StandardRendering {
 		return assets.mazesFlashingAnims.get(mazeNumber - 1);
 	}
 
-	public BufferedImage bonusSprite(Bonus bonus, GameModel game) {
+	public BufferedImage bonusSprite(PacManBonus bonus, GameModel game) {
 		if (bonus.edibleTicksLeft > 0) {
 			return assets.symbolSprites[bonus.symbol];
 		}
@@ -147,7 +147,7 @@ public class MsPacMan_StandardRendering extends StandardRendering {
 	}
 
 	@Override
-	protected BufferedImage bonusSprite(Bonus bonus) {
+	protected BufferedImage bonusSprite(PacManBonus bonus) {
 		if (bonus.edibleTicksLeft > 0) {
 			return assets.symbolSprites[bonus.symbol];
 		}
@@ -232,7 +232,7 @@ public class MsPacMan_StandardRendering extends StandardRendering {
 	}
 
 	@Override
-	public void drawBonus(Graphics2D g, Bonus bonus) {
+	public void drawBonus(Graphics2D g, PacManBonus bonus) {
 		// Ms. Pac.Man bonus is jumping while wandering the maze
 		int dy = bonus.edibleTicksLeft > 0 ? assets.bonusJumpAnim.animate() : 0;
 		g.translate(0, dy);

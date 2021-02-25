@@ -73,7 +73,7 @@ public class PacManGame extends GameModel {
 
 		bonusNames = new String[] { "CHERRIES", "STRAWBERRY", "PEACH", "APPLE", "GRAPES", "GALAXIAN", "BELL", "KEY" };
 		bonusValues = new int[] { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
-		bonus = new Bonus();
+		bonus = new PacManBonus();
 		bonus.setPosition(t(13) + HTS, t(20));
 
 		pac = new Pac("Pac-Man", RIGHT);

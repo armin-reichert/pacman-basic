@@ -17,7 +17,7 @@ import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.common.PacManGameState;
-import de.amr.games.pacman.model.pacman.Bonus;
+import de.amr.games.pacman.model.pacman.PacManBonus;
 import de.amr.games.pacman.ui.PacManGameAnimations;
 import de.amr.games.pacman.ui.swing.mspacman.entities.Flap;
 import de.amr.games.pacman.ui.swing.mspacman.entities.Heart;
@@ -79,7 +79,7 @@ public abstract class StandardRendering implements SwingRendering, PacManGameAni
 	}
 
 	@Override
-	public void drawBonus(Graphics2D g, Bonus bonus) {
+	public void drawBonus(Graphics2D g, PacManBonus bonus) {
 		drawGuy(g, bonus, bonusSprite(bonus));
 	}
 
@@ -153,7 +153,7 @@ public abstract class StandardRendering implements SwingRendering, PacManGameAni
 
 	protected abstract BufferedImage symbolSprite(byte symbol);
 
-	protected abstract BufferedImage bonusSprite(Bonus bonus);
+	protected abstract BufferedImage bonusSprite(PacManBonus bonus);
 
 	protected abstract BufferedImage lifeSprite();
 

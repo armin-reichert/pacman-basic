@@ -15,7 +15,7 @@ import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
-import de.amr.games.pacman.model.pacman.Bonus;
+import de.amr.games.pacman.model.pacman.PacManBonus;
 
 /**
  * Rendering for the classic Pac-Man game.
@@ -136,7 +136,7 @@ public class PacMan_StandardRendering extends StandardRendering {
 	// Sprites
 
 	@Override
-	public BufferedImage bonusSprite(Bonus bonus) {
+	public BufferedImage bonusSprite(PacManBonus bonus) {
 		if (bonus.edibleTicksLeft > 0) {
 			return assets.symbolSprites[bonus.symbol];
 		}

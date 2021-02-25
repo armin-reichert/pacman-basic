@@ -4,9 +4,9 @@ import static de.amr.games.pacman.heaven.God.random;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
 
-import de.amr.games.pacman.model.pacman.Bonus;
+import de.amr.games.pacman.model.pacman.PacManBonus;
 
-public class MovingBonus extends Bonus {
+public class MsPacManBonus extends PacManBonus {
 
 	@Override
 	public void activate(long ticks) {

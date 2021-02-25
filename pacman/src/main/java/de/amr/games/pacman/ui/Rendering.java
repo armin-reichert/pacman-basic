@@ -7,7 +7,7 @@ import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
-import de.amr.games.pacman.model.pacman.Bonus;
+import de.amr.games.pacman.model.pacman.PacManBonus;
 
 /**
  * Can be used by UI implementations.
@@ -45,7 +45,7 @@ public interface Rendering<GC, COLOR, FONT, SPRITE> {
 
 	void drawGhost(GC g, Ghost ghost, boolean frightened);
 
-	void drawBonus(GC g, Bonus bonus);
+	void drawBonus(GC g, PacManBonus bonus);
 
 	void drawTileCovered(GC g, V2i tile);
 

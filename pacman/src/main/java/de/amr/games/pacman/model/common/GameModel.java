@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.Hiscore;
-import de.amr.games.pacman.model.pacman.Bonus;
+import de.amr.games.pacman.model.pacman.PacManBonus;
 
 /**
  * Common base class for the models.
@@ -29,7 +29,7 @@ public abstract class GameModel {
 	public int intermissionNumber;
 	public Pac pac;
 	public Ghost[] ghosts;
-	public Bonus bonus;
+	public PacManBonus bonus;
 	public String[] bonusNames;
 	public int[] bonusValues;
 	public int lives;

@@ -77,7 +77,7 @@ public class MsPacManGame extends GameModel {
 
 		bonusNames = new String[] { "CHERRIES", "STRAWBERRY", "PEACH", "PRETZEL", "APPLE", "PEAR", "BANANA" };
 		bonusValues = new int[] { 100, 200, 500, 700, 1000, 2000, 5000 };
-		bonus = new MovingBonus();
+		bonus = new MsPacManBonus();
 
 		pac = new Pac("Ms. Pac-Man", LEFT);
 

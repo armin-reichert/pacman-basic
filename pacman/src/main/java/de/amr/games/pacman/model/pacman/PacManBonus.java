@@ -7,7 +7,7 @@ import de.amr.games.pacman.model.common.Creature;
  * 
  * @author Armin Reichert
  */
-public class Bonus extends Creature {
+public class PacManBonus extends Creature {
 
 	/** ID of the bonus symbol. */
 	public byte symbol;
