@@ -124,6 +124,10 @@ public abstract class GameModel {
 		return Stream.of(ghosts);
 	}
 
+	public Stream<Ghost> ghosts(GhostState ghostState) {
+		return Stream.of(ghosts).filter(ghost -> ghost.state.equals(ghostState));
+	}
+
 	public String stateDescription() {
 		if (state == null) {
 			return "not initialized";

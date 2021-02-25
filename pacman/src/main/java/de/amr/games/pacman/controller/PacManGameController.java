@@ -14,6 +14,8 @@ import static de.amr.games.pacman.model.common.Ghost.CLYDE;
 import static de.amr.games.pacman.model.common.Ghost.INKY;
 import static de.amr.games.pacman.model.common.Ghost.PINKY;
 import static de.amr.games.pacman.model.common.GhostState.DEAD;
+import static de.amr.games.pacman.model.common.GhostState.ENTERING_HOUSE;
+import static de.amr.games.pacman.model.common.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.common.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.model.common.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.model.common.GhostState.LOCKED;
@@ -38,7 +40,6 @@ import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameType;
 import de.amr.games.pacman.model.common.Ghost;
-import de.amr.games.pacman.model.common.GhostState;
 import de.amr.games.pacman.model.common.PacManGameState;
 import de.amr.games.pacman.model.mspacman.MsPacManGame;
 import de.amr.games.pacman.model.pacman.PacManGame;
@@ -336,51 +337,48 @@ public class PacManGameController {
 			return changeState(CHANGING_LEVEL, this::exitHuntingState, this::enterChangingLevelState);
 		}
 
-		// Pac kills ghost(s)?
-		List<Ghost> prey = Stream.of(game.ghosts).filter(ghost -> ghost.is(GhostState.FRIGHTENED) && ghost.meets(game.pac))
-				.collect(Collectors.toList());
+		// Pac killing ghost(s)?
+		List<Ghost> prey = game.ghosts(FRIGHTENED).filter(game.pac::meets).collect(Collectors.toList());
 		if (!prey.isEmpty()) {
 			prey.forEach(this::killGhost);
 			return changeState(GHOST_DYING, this::exitHuntingState, this::enterGhostDyingState);
 		}
 
-		// Pac killed by ghost?
-		Optional<Ghost> killer = game.ghosts().filter(ghost -> ghost.is(HUNTING_PAC) && ghost.meets(game.pac)).findAny();
-		if (!game.pac.immune && killer.isPresent()) {
+		// Pac getting killed by ghost?
+		Optional<Ghost> killer = game.ghosts(HUNTING_PAC).filter(game.pac::meets).findAny();
+		if (killer.isPresent() && !game.pac.immune) {
 			onPacKilled(killer.get());
 			return changeState(PACMAN_DYING, this::exitHuntingState, this::enterPacManDyingState);
 		}
 
 		// Hunting phase complete?
 		if (game.state.timer.expired()) {
-			game.ghosts().filter(ghost -> ghost.is(HUNTING_PAC)).forEach(Ghost::forceTurningBack);
+			game.ghosts(HUNTING_PAC).forEach(Ghost::forceTurningBack);
 			startHuntingPhase(++game.huntingPhase);
 		}
 
 		// Can Pac move?
 		steerPac();
+		game.pac.speed = game.pac.powerTicksLeft == 0 ? game.level.pacSpeed : game.level.pacSpeedPowered;
 		if (game.pac.restingTicksLeft > 0) {
 			game.pac.restingTicksLeft--;
 		} else {
-			game.pac.speed = game.pac.powerTicksLeft == 0 ? game.level.pacSpeed : game.level.pacSpeedPowered;
 			game.pac.tryMoving();
 		}
 
-		// Does Pac find food?
+		// Did Pac find food?
 		if (game.level.containsFood(game.pac.tile())) {
 			onPacFoundFood(game.pac.tile());
 		} else {
 			game.pac.starvingTicks++;
 		}
 
-		// Pac losing power?
+		// Is Pac losing power?
 		if (game.pac.powerTicksLeft > 0) {
 			game.pac.powerTicksLeft--;
 			if (game.pac.powerTicksLeft == 0) {
 				log("%s lost power", game.pac.name);
-				game.ghosts().filter(ghost -> ghost.is(GhostState.FRIGHTENED)).forEach(ghost -> {
-					ghost.state = HUNTING_PAC;
-				});
+				game.ghosts(FRIGHTENED).forEach(ghost -> ghost.state = HUNTING_PAC);
 			}
 			animations().forEach(animations -> {
 				Animation<?> flashing = animations.ghostFlashing();
@@ -398,7 +396,7 @@ public class PacManGameController {
 		}
 
 		tryReleasingGhosts();
-		game.ghosts().filter(ghost -> ghost.is(HUNTING_PAC)).forEach(this::setGhostHuntingTarget);
+		game.ghosts(HUNTING_PAC).forEach(this::setGhostHuntingTarget);
 		game.ghosts().forEach(ghost -> ghost.update(game.level));
 
 		game.bonus.update();
@@ -477,7 +475,7 @@ public class PacManGameController {
 			});
 		}
 		steerPac();
-		game.ghosts().filter(ghost -> ghost.is(DEAD) && ghost.bounty == 0 || ghost.is(GhostState.ENTERING_HOUSE))
+		game.ghosts().filter(ghost -> ghost.is(DEAD) && ghost.bounty == 0 || ghost.is(ENTERING_HOUSE))
 				.forEach(ghost -> ghost.update(game.level));
 		return game.state.tick();
 	}
@@ -705,8 +703,8 @@ public class PacManGameController {
 		game.pac.powerTicksLeft = clock.sec(frightenedSec);
 		if (frightenedSec > 0) {
 			log("Pac-Man got power for %d seconds", frightenedSec);
-			game.ghosts().filter(ghost -> ghost.is(HUNTING_PAC)).forEach(ghost -> {
-				ghost.state = GhostState.FRIGHTENED;
+			game.ghosts(HUNTING_PAC).forEach(ghost -> {
+				ghost.state = FRIGHTENED;
 				ghost.wishDir = ghost.dir.opposite();
 				ghost.forcedDirection = true;
 				animations().forEach(animations -> {
@@ -753,7 +751,7 @@ public class PacManGameController {
 
 	private void killAllGhosts() {
 		game.ghostBounty = 200;
-		game.ghosts().filter(ghost -> ghost.is(HUNTING_PAC) || ghost.is(GhostState.FRIGHTENED)).forEach(this::killGhost);
+		game.ghosts().filter(ghost -> ghost.is(HUNTING_PAC) || ghost.is(FRIGHTENED)).forEach(this::killGhost);
 	}
 
 	private void setGhostHuntingTarget(Ghost ghost) {
