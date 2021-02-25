@@ -1,7 +1,6 @@
 package de.amr.games.pacman.model.pacman;
 
 import static de.amr.games.pacman.heaven.God.clock;
-import static de.amr.games.pacman.heaven.God.random;
 import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
@@ -98,11 +97,6 @@ public class PacManGame extends GameModel {
 		level.setWorld(world);
 		level.mazeNumber = mazeNumber(levelNumber);
 		log("Pac-Man classic level %d created", levelNumber);
-	}
-
-	@Override
-	public long bonusActivationTicks(int levelNumber) {
-		return clock.sec(9 + random.nextFloat());
 	}
 
 	@Override

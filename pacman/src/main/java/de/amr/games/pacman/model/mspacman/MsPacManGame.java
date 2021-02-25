@@ -147,11 +147,6 @@ public class MsPacManGame extends GameModel {
 	}
 
 	@Override
-	public long bonusActivationTicks(int levelNumber) {
-		return Long.MAX_VALUE;
-	}
-
-	@Override
 	public long getHuntingPhaseDuration(int phase) {
 		int row = currentLevelNumber == 1 ? 0 : currentLevelNumber <= 4 ? 1 : 2;
 		return huntingTicks(HUNTING_PHASE_DURATION[row][phase]);

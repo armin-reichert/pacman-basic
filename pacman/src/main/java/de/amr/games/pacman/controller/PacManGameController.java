@@ -1,6 +1,7 @@
 package de.amr.games.pacman.controller;
 
 import static de.amr.games.pacman.heaven.God.clock;
+import static de.amr.games.pacman.heaven.God.random;
 import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
@@ -684,7 +685,7 @@ public class PacManGameController {
 			game.bonus.visible = true;
 			game.bonus.symbol = game.level.bonusSymbol;
 			game.bonus.points = game.bonusValues[game.level.bonusSymbol];
-			game.bonus.activate(game.bonusActivationTicks(game.currentLevelNumber));
+			game.bonus.activate(currentGameType() == GameType.PACMAN ? clock.sec(9 + random.nextFloat()) : Long.MAX_VALUE);
 			log("Bonus %s (value %d) activated", game.bonusNames[game.bonus.symbol], game.bonus.points);
 		}
 

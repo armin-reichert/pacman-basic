@@ -69,11 +69,6 @@ public abstract class GameModel {
 	 */
 	public abstract int mapNumber(int mazeNumber);
 
-	/**
-	 * @return number of ticks the bonus stays active
-	 */
-	public abstract long bonusActivationTicks(int levelNumber);
-
 	public void enterLevel(int levelNumber) {
 		currentLevelNumber = levelNumber;
 		buildLevel(levelNumber);
