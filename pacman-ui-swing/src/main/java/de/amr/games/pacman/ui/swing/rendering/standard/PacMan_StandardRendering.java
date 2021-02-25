@@ -99,6 +99,16 @@ public class PacMan_StandardRendering extends StandardRendering {
 		return assets.ghostEyesAnimsByDir.get(dir);
 	}
 
+	@Override
+	public Animation<?> flapFlapping() {
+		return null;
+	}
+
+	@Override
+	public Animation<?> storkFlying() {
+		return null;
+	}
+
 	// draw functions
 
 	@Override

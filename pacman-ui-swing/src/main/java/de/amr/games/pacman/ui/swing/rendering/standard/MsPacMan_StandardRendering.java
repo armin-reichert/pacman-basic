@@ -244,7 +244,7 @@ public class MsPacMan_StandardRendering extends StandardRendering {
 	public void drawFlap(Graphics2D g, Flap flap) {
 		if (flap.visible) {
 			FlapUI flapUI = (FlapUI) flap;
-			drawSprite(g, flapUI.flapping.animate(), flap.position.x, flap.position.y);
+			drawSprite(g, (BufferedImage) flapUI.flapping.animate(), flap.position.x, flap.position.y);
 			g.setFont(new Font(assets.getScoreFont().getName(), Font.PLAIN, 8));
 			g.setColor(new Color(222, 222, 225, 192));
 			g.drawString(flap.sceneNumber + "", flap.position.x + 20, flap.position.y + 30);
@@ -254,9 +254,28 @@ public class MsPacMan_StandardRendering extends StandardRendering {
 	}
 
 	@Override
+	public Animation<?> flapFlapping() {
+		return Animation.of( //
+				assets.region(456, 208, 32, 32), //
+				assets.region(488, 208, 32, 32), //
+				assets.region(520, 208, 32, 32), //
+				assets.region(488, 208, 32, 32), //
+				assets.region(456, 208, 32, 32)//
+		).repetitions(1).frameDuration(4);
+	}
+
+	@Override
 	public void drawStork(Graphics2D g, GameEntity stork) {
 		StorkUI storkUI = (StorkUI) stork;
-		drawEntity(g, stork, storkUI.flying.animate());
+		drawEntity(g, stork, (BufferedImage) storkUI.flying.animate());
+	}
+
+	@Override
+	public Animation<?> storkFlying() {
+		return Animation.of(//
+				assets.region(489, 176, 32, 16), //
+				assets.region(521, 176, 32, 16)//
+		).endless().frameDuration(10);
 	}
 
 	@Override

@@ -53,7 +53,7 @@ public class MsPacMan_IntermissionScene2 extends GameScene {
 	@Override
 	public void start() {
 
-		flap = new FlapUI(2, "THE CHASE");
+		flap = new FlapUI(2, "THE CHASE", rendering);
 		flap.setTilePosition(3, 10);
 		flap.visible = true;
 		flap.flapping.restart();
