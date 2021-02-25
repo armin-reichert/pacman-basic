@@ -25,6 +25,10 @@ import de.amr.games.pacman.ui.swing.rendering.SwingRendering;
  */
 public class PacMan_IntermissionScene2 extends GameScene {
 
+	public PacMan_IntermissionScene2(Dimension size, SwingRendering rendering, SoundManager sounds) {
+		super(size, rendering, sounds);
+	}
+
 	enum Phase {
 
 		WALKING, GETTING_STUCK, STUCK;
@@ -39,10 +43,6 @@ public class PacMan_IntermissionScene2 extends GameScene {
 	private GameEntity nail;
 
 	private Phase phase;
-
-	public PacMan_IntermissionScene2(Dimension size, SwingRendering rendering, SoundManager sounds) {
-		super(size, rendering, sounds);
-	}
 
 	@Override
 	public void start() {
