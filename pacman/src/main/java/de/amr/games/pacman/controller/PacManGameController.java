@@ -48,7 +48,7 @@ import de.amr.games.pacman.ui.PacManGameAnimations;
 import de.amr.games.pacman.ui.PacManGameUI;
 
 /**
- * Controller for Pac-Man and Ms. Pac-Man game.
+ * Controller (in the sense of MVC) for the Pac-Man and Ms. Pac-Man game.
  * <p>
  * This is essentially a finite-state machine with states defined in {@link PacManGameState}. All
  * game data are stored in the model of the selected game, see {@link MsPacManGame} and
@@ -198,6 +198,10 @@ public class PacManGameController {
 		log(msg);
 	}
 
+	private Ghost ghost(int id) {
+		return game.ghosts[id];
+	}
+
 	private void enableGhostKickingAnimation(boolean enabled) {
 		animations().map(animations -> animations.ghostsKicking(game.ghosts())).forEach(kicking -> {
 			kicking.forEach(enabled ? Animation::restart : Animation::reset);
@@ -230,10 +234,10 @@ public class PacManGameController {
 	private PacManGameState runIntroState() {
 		if (game.attractMode) {
 			views.forEach(view -> view.mute(true));
-			return changeState(READY, this::exitIntroState, this::enterReadyState);
+			return changeState(READY, null, this::enterReadyState);
 		}
 		if (keyPressed("Space")) {
-			return changeState(READY, this::exitIntroState, this::enterReadyState);
+			return changeState(READY, null, this::enterReadyState);
 		}
 		if (keyPressed("V")) {
 			toggleGameType();
@@ -258,36 +262,30 @@ public class PacManGameController {
 		return game.state.tick();
 	}
 
-	private void exitIntroState() {
-	}
-
 	// READY
 
 	private void enterReadyState() {
-		boolean playReadyMusic = !game.started && !game.attractMode;
-		game.state.timer.setDuration(clock.sec(playReadyMusic ? 4.5 : 2));
 		game.resetGuys();
-		animations().forEach(animations -> animations.reset(game));
 		views().forEach(view -> view.mute(game.attractMode));
-		sounds().forEach(sound -> {
-			if (playReadyMusic) {
-				sound.play(PacManGameSound.GAME_READY);
-			}
-		});
+		animations().forEach(animations -> animations.reset(game));
+		if (game.started || game.attractMode) {
+			game.state.timer.setDuration(clock.sec(2));
+		} else {
+			game.state.timer.setDuration(clock.sec(4.5));
+			sounds().forEach(sound -> sound.play(PacManGameSound.GAME_READY));
+		}
 	}
 
 	private PacManGameState runReadyState() {
 		if (game.state.timer.expired()) {
+			enableGhostKickingAnimation(true);
 			return changeState(PacManGameState.HUNTING, this::exitReadyState, this::enterHuntingState);
 		}
-		if (game.state.timer.remaining() == clock.sec(1.5)) {
+		if (game.state.timer.running() == clock.sec(0.5)) {
+			game.pac.visible = true;
 			for (Ghost ghost : game.ghosts) {
 				ghost.visible = true;
 			}
-			game.pac.visible = true;
-		}
-		if (game.state.timer.remaining() == clock.sec(1.0)) {
-			enableGhostKickingAnimation(true);
 		}
 		return game.state.tick();
 	}
@@ -692,10 +690,10 @@ public class PacManGameController {
 
 		// Blinky becomes Elroy?
 		if (game.level.foodRemaining == game.level.elroy1DotsLeft) {
-			game.ghosts[BLINKY].elroy = 1;
+			ghost(BLINKY).elroy = 1;
 			log("Blinky becomes Cruise Elroy 1");
 		} else if (game.level.foodRemaining == game.level.elroy2DotsLeft) {
-			game.ghosts[BLINKY].elroy = 2;
+			ghost(BLINKY).elroy = 2;
 			log("Blinky becomes Cruise Elroy 2");
 		}
 
@@ -725,9 +723,9 @@ public class PacManGameController {
 	private void onPacKilled(Ghost killer) {
 		log("%s killed by %s at tile %s", game.pac.name, killer.name, killer.tile());
 		game.pac.dead = true;
-		int elroyMode = game.ghosts[BLINKY].elroy;
+		int elroyMode = ghost(BLINKY).elroy;
 		if (elroyMode > 0) {
-			game.ghosts[BLINKY].elroy = -elroyMode; // negative value means "disabled"
+			ghost(BLINKY).elroy = -elroyMode; // negative value means "disabled"
 			log("Blinky Elroy mode %d disabled", elroyMode);
 		}
 		game.globalDotCounter = 0;
@@ -774,24 +772,24 @@ public class PacManGameController {
 	 */
 	private V2i ghostHuntingTarget(int ghostID) {
 		switch (ghostID) {
-		case 0:
+		case BLINKY:
 			return game.pac.tile();
-		case 1: {
+		case PINKY: {
 			V2i fourAheadPac = game.pac.tile().sum(game.pac.dir.vec.scaled(4));
 			if (game.pac.dir == UP) { // simulate overflow bug
 				fourAheadPac = fourAheadPac.sum(LEFT.vec.scaled(4));
 			}
 			return fourAheadPac;
 		}
-		case 2: {
+		case INKY: {
 			V2i twoAheadPac = game.pac.tile().sum(game.pac.dir.vec.scaled(2));
 			if (game.pac.dir == UP) { // simulate overflow bug
 				twoAheadPac = twoAheadPac.sum(LEFT.vec.scaled(2));
 			}
-			return game.ghosts[0].tile().scaled(-1).sum(twoAheadPac.scaled(2));
+			return ghost(BLINKY).tile().scaled(-1).sum(twoAheadPac.scaled(2));
 		}
-		case 3:
-			return game.ghosts[3].tile().euclideanDistance(game.pac.tile()) < 8 ? game.level.world.ghostScatterTile(3)
+		case CLYDE: /* SUE */
+			return ghost(CLYDE).tile().euclideanDistance(game.pac.tile()) < 8 ? game.level.world.ghostScatterTile(CLYDE)
 					: game.pac.tile();
 		default:
 			throw new IllegalArgumentException("Unknown ghost id: " + ghostID);
@@ -801,8 +799,8 @@ public class PacManGameController {
 	// Ghost house
 
 	private void tryReleasingGhosts() {
-		if (game.ghosts[BLINKY].is(LOCKED)) {
-			game.ghosts[BLINKY].state = HUNTING_PAC;
+		if (ghost(BLINKY).is(LOCKED)) {
+			ghost(BLINKY).state = HUNTING_PAC;
 		}
 		preferredLockedGhostInHouse().ifPresent(ghost -> {
 			if (game.globalDotCounterEnabled && game.globalDotCounter >= ghostGlobalDotLimit(ghost)) {
@@ -820,34 +818,34 @@ public class PacManGameController {
 
 	private void releaseGhost(Ghost ghost, String reason, Object... args) {
 		ghost.state = LEAVING_HOUSE;
-		if (ghost.id == CLYDE && game.ghosts[BLINKY].elroy < 0) {
-			game.ghosts[BLINKY].elroy -= 1; // resume Elroy mode
-			log("Blinky Elroy mode %d resumed", game.ghosts[BLINKY].elroy);
+		if (ghost == ghost(CLYDE) && ghost(BLINKY).elroy < 0) {
+			ghost(BLINKY).elroy -= 1; // resume Elroy mode
+			log("Blinky Elroy mode %d resumed", ghost(BLINKY).elroy);
 		}
 		log("Ghost %s released: %s", ghost.name, String.format(reason, args));
 	}
 
 	private Optional<Ghost> preferredLockedGhostInHouse() {
-		return Stream.of(PINKY, INKY, CLYDE).map(id -> game.ghosts[id]).filter(ghost -> ghost.is(LOCKED)).findFirst();
+		return Stream.of(PINKY, INKY, CLYDE).map(this::ghost).filter(ghost -> ghost.is(LOCKED)).findFirst();
 	}
 
 	private int ghostPrivateDotLimit(Ghost ghost) {
-		if (ghost.id == INKY) {
+		if (ghost == ghost(INKY)) {
 			return game.currentLevelNumber == 1 ? 30 : 0;
 		}
-		if (ghost.id == CLYDE) {
+		if (ghost == ghost(CLYDE)) {
 			return game.currentLevelNumber == 1 ? 60 : game.currentLevelNumber == 2 ? 50 : 0;
 		}
 		return 0;
 	}
 
 	private int ghostGlobalDotLimit(Ghost ghost) {
-		return ghost.id == PINKY ? 7 : ghost.id == INKY ? 17 : Integer.MAX_VALUE;
+		return ghost == ghost(PINKY) ? 7 : ghost == ghost(INKY) ? 17 : Integer.MAX_VALUE;
 	}
 
 	private void updateGhostDotCounters() {
 		if (game.globalDotCounterEnabled) {
-			if (game.ghosts[CLYDE].is(LOCKED) && game.globalDotCounter == 32) {
+			if (ghost(CLYDE).is(LOCKED) && game.globalDotCounter == 32) {
 				game.globalDotCounterEnabled = false;
 				game.globalDotCounter = 0;
 				log("Global dot counter disabled and reset, Clyde was in house when counter reached 32");
