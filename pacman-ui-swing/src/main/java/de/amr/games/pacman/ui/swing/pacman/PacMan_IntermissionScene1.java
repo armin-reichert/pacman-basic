@@ -8,7 +8,6 @@ import static de.amr.games.pacman.world.PacManGameWorld.t;
 
 import java.awt.Dimension;
 import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
 
 import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.Direction;
@@ -32,7 +31,6 @@ public class PacMan_IntermissionScene1 extends GameScene {
 
 	private static final int baselineY = t(20);
 
-	private Animation<?> bigPacManAnimation;
 	private Ghost blinky;
 	private Pac pac;
 
@@ -50,8 +48,6 @@ public class PacMan_IntermissionScene1 extends GameScene {
 		pac.setPosition(t(30), baselineY);
 		pac.speed = 1f;
 		rendering.playerMunching(pac).forEach(Animation::restart);
-
-		bigPacManAnimation = rendering.bigPacMan();
 
 		blinky = new Ghost(0, "Blinky", Direction.LEFT);
 		blinky.visible = true;
@@ -84,7 +80,6 @@ public class PacMan_IntermissionScene1 extends GameScene {
 		case BIGPACMAN_CHASING_BLINKY:
 			if ((int) blinky.position.x + 4 == t(13)) {
 				pac.speed = blinky.speed * 1.8f;
-				bigPacManAnimation.restart();
 			}
 			if (pac.position.x > t(28) + 100) {
 				game.state.timer.setDuration(0);
@@ -103,8 +98,7 @@ public class PacMan_IntermissionScene1 extends GameScene {
 		if (phase == Phase.BLINKY_CHASING_PACMAN) {
 			rendering.drawPlayer(g, pac);
 		} else {
-			BufferedImage sprite = (BufferedImage) bigPacManAnimation.animate();
-			rendering.drawSprite(g, sprite, pac.position.x - 12, pac.position.y - 22);
+			rendering.drawBigPacMan(g, pac);
 		}
 		rendering.drawLevelCounter(g, game, t(25), t(34));
 	}

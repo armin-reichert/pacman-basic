@@ -115,8 +115,8 @@ public class PacMan_StandardAssets extends Spritesheet {
 		ghostFlashingAnim = Animation.of(sprite(8, 4), sprite(9, 4), sprite(10, 4), sprite(11, 4));
 		ghostFlashingAnim.frameDuration(5).endless();
 
-		bigPacManAnim = Animation.of(spriteRegion(2, 1, 2, 2), spriteRegion(4, 1, 2, 2), spriteRegion(6, 1, 2, 2));
-		bigPacManAnim.frameDuration(4).endless();
+		bigPacManAnim = Animation.of(spriteRegion(2, 1, 2, 2), spriteRegion(4, 1, 2, 2), spriteRegion(6, 1, 2, 2))
+				.frameDuration(4).endless().run();
 
 		blinkyPatched = Animation.of(sprite(10, 7), sprite(11, 7)).restart().frameDuration(4).endless();
 		blinkyDamaged = Animation.of(sprite(8, 7), sprite(9, 7));

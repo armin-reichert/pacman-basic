@@ -67,6 +67,8 @@ public interface Rendering<GC, COLOR, FONT, SPRITE> {
 
 	// Pac-Man game only:
 
+	void drawBigPacMan(GC g, Pac bigPacMan);
+
 	void drawNail(GC g, GameEntity nail);
 
 	void drawBlinkyStretched(GC g, Ghost blinky, V2f nailPosition, int stretching);

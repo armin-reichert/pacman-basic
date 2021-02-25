@@ -99,11 +99,6 @@ public class PacMan_StandardRendering extends StandardRendering {
 		return assets.ghostEyesAnimsByDir.get(dir);
 	}
 
-	@Override
-	public Animation<?> bigPacMan() {
-		return assets.bigPacManAnim;
-	}
-
 	// draw functions
 
 	@Override
@@ -118,6 +113,11 @@ public class PacMan_StandardRendering extends StandardRendering {
 	@Override
 	public void drawLifeCounterSymbol(Graphics2D g, int x, int y) {
 		g.drawImage(lifeSprite(), x, y, null);
+	}
+
+	@Override
+	public void drawBigPacMan(Graphics2D g, Pac bigPacMan) {
+		drawEntity(g, bigPacMan, assets.bigPacManAnim.animate());
 	}
 
 	@Override

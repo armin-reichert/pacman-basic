@@ -78,8 +78,4 @@ public interface PacManGameAnimations {
 	Stream<Animation<?>> mazeFlashings();
 
 	Animation<Boolean> energizerBlinking();
-
-	// Pac-Man only
-
-	Animation<?> bigPacMan();
 }

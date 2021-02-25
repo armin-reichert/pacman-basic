@@ -278,6 +278,10 @@ public class MsPacMan_StandardRendering extends StandardRendering {
 	// Pac-Man only:
 
 	@Override
+	public void drawBigPacMan(Graphics2D g, Pac bigPacMan) {
+	}
+
+	@Override
 	public void drawNail(Graphics2D g, GameEntity nail) {
 	}
 
@@ -291,10 +295,5 @@ public class MsPacMan_StandardRendering extends StandardRendering {
 
 	@Override
 	public void drawBlinkyNaked(Graphics2D g, Ghost blinky) {
-	}
-
-	@Override
-	public Animation<?> bigPacMan() {
-		return null;
 	}
 }
