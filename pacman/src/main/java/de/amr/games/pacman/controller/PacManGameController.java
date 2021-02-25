@@ -278,7 +278,6 @@ public class PacManGameController {
 
 	private PacManGameState runReadyState() {
 		if (game.state.timer.expired()) {
-			enableGhostKickingAnimation(true);
 			return changeState(PacManGameState.HUNTING, this::exitReadyState, this::enterHuntingState);
 		}
 		if (game.state.timer.running() == clock.sec(0.5)) {
@@ -294,6 +293,7 @@ public class PacManGameController {
 		if (!game.attractMode) {
 			game.started = true;
 		}
+		enableGhostKickingAnimation(true);
 	}
 
 	// HUNTING
