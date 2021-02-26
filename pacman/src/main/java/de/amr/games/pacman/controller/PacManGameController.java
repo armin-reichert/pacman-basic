@@ -318,14 +318,14 @@ public class PacManGameController {
 	private void enterHuntingState() {
 		startHuntingPhase(0);
 		animations().forEach(animations -> {
-			animations.energizerBlinking().restart();
+			animations.mazeAnimations().energizerBlinking().restart();
 			animations.playerAnimations().playerMunching(game.pac).forEach(Animation::restart);
 		});
 	}
 
 	private void exitHuntingState() {
 		animations().forEach(animations -> {
-			animations.energizerBlinking().reset();
+			animations.mazeAnimations().energizerBlinking().reset();
 		});
 	}
 
@@ -466,7 +466,7 @@ public class PacManGameController {
 		game.pac.visible = false;
 		sounds().forEach(sm -> sm.play(PacManGameSound.GHOST_EATEN));
 		animations().forEach(animations -> {
-			animations.energizerBlinking().restart();
+			animations.mazeAnimations().energizerBlinking().restart();
 		});
 	}
 
@@ -513,8 +513,8 @@ public class PacManGameController {
 			game.ghosts().forEach(ghost -> ghost.visible = false);
 		}
 		if (game.state.timer.running() == clock.sec(3)) {
-			animations().forEach(
-					animations -> animations.mazeFlashing(game.level.mazeNumber).repetitions(game.level.numFlashes).restart());
+			animations().forEach(animations -> animations.mazeAnimations().mazeFlashing(game.level.mazeNumber)
+					.repetitions(game.level.numFlashes).restart());
 		}
 		return game.state.tick();
 	}
@@ -523,8 +523,8 @@ public class PacManGameController {
 		log("Level %d complete, entering level %d", game.currentLevelNumber, game.currentLevelNumber + 1);
 		game.enterLevel(game.currentLevelNumber + 1);
 		game.levelSymbols.add(game.level.bonusSymbol);
-		views.forEach(
-				view -> view.animation().ifPresent(animations -> animations.mazeFlashing(game.level.mazeNumber).reset()));
+		views.forEach(view -> view.animation()
+				.ifPresent(animations -> animations.mazeAnimations().mazeFlashing(game.level.mazeNumber).reset()));
 	}
 
 	// GAME_OVER

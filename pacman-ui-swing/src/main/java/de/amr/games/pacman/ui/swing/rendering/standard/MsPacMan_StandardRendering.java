@@ -22,6 +22,7 @@ import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.pacman.PacManBonus;
 import de.amr.games.pacman.ui.GhostAnimations;
+import de.amr.games.pacman.ui.MazeAnimations;
 import de.amr.games.pacman.ui.PlayerAnimations;
 
 /**
@@ -30,8 +31,7 @@ import de.amr.games.pacman.ui.PlayerAnimations;
  * @author Armin Reichert
  */
 public class MsPacMan_StandardRendering extends StandardRendering
-
-		implements PlayerAnimations, GhostAnimations {
+		implements PlayerAnimations, GhostAnimations, MazeAnimations {
 
 	public static final MsPacMan_StandardAssets assets = new MsPacMan_StandardAssets();
 
@@ -42,6 +42,11 @@ public class MsPacMan_StandardRendering extends StandardRendering
 
 	@Override
 	public GhostAnimations ghostAnimations() {
+		return this;
+	}
+
+	@Override
+	public MazeAnimations mazeAnimations() {
 		return this;
 	}
 

@@ -27,7 +27,7 @@ public class PlayScene extends GameScene {
 
 	@Override
 	public void render(Graphics2D g) {
-		boolean mazeFlashing = rendering.mazeFlashing(game.level.mazeNumber).hasStarted();
+		boolean mazeFlashing = rendering.mazeAnimations().mazeFlashing(game.level.mazeNumber).hasStarted();
 		rendering.drawMaze(g, game.level.mazeNumber, 0, t(3), mazeFlashing);
 		if (!mazeFlashing) {
 			rendering.drawFoodTiles(g, game.level.world.tiles().filter(game.level.world::isFoodTile),
