@@ -8,7 +8,8 @@ This implementation follows the Model-View-Controller pattern:
 
 The code here is more "to the point" than the one in my other [state-machine focussed implementation](https://github.com/armin-reichert/pacman).
 
-YouTube: 
+YouTube:
+
 [![YouTube video](https://i9.ytimg.com/vi/q5biOTj9GIU/mq2.jpg?sqp=CMS24oEG&rs=AOn4CLCHkb03p2MYDMChrXQGPkOdC3XCWw)](https://youtu.be/q5biOTj9GIU)
 
 ### Build
