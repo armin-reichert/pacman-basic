@@ -24,7 +24,7 @@ public abstract class GameModel {
 	public boolean started;
 	public boolean attractMode;
 
-	public int currentLevelNumber; // counting from 1
+	public int levelNumber; // counting from 1
 	public GameLevel level;
 	public int intermissionNumber;
 	public Pac pac;
@@ -55,13 +55,13 @@ public abstract class GameModel {
 		levelSymbols.add(level.bonusSymbol);
 	}
 
-	protected abstract void buildLevel(int levelNumber);
+	protected abstract void buildLevel(int number);
 
 	/**
 	 * @param levelNumber 1-based game level number
 	 * @return 1-based maze number of the maze used in that level
 	 */
-	public abstract int mazeNumber(int levelNumber);
+	public abstract int mazeNumber(int number);
 
 	/**
 	 * @param mazeNumber 1-based number of a maze
@@ -69,9 +69,9 @@ public abstract class GameModel {
 	 */
 	public abstract int mapNumber(int mazeNumber);
 
-	public void enterLevel(int levelNumber) {
-		currentLevelNumber = levelNumber;
-		buildLevel(levelNumber);
+	public void enterLevel(int number) {
+		levelNumber = number;
+		buildLevel(number);
 		ghostBounty = 200;
 		huntingPhase = 0;
 		bonus.edibleTicksLeft = 0;

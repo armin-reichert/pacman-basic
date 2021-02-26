@@ -92,16 +92,16 @@ public class PacManGame extends GameModel {
 	}
 
 	@Override
-	protected void buildLevel(int levelNumber) {
-		level = new GameLevel(PACMAN_LEVELS[levelNumber <= 21 ? levelNumber - 1 : 20]);
+	protected void buildLevel(int someLevelNumber) {
+		level = new GameLevel(PACMAN_LEVELS[someLevelNumber <= 21 ? someLevelNumber - 1 : 20]);
 		level.setWorld(world);
-		level.mazeNumber = mazeNumber(levelNumber);
-		log("Pac-Man classic level %d created", levelNumber);
+		level.mazeNumber = mazeNumber(someLevelNumber);
+		log("Pac-Man classic level %d created", someLevelNumber);
 	}
 
 	@Override
 	public long getHuntingPhaseDuration(int phase) {
-		int row = currentLevelNumber == 1 ? 0 : currentLevelNumber <= 4 ? 1 : 2;
+		int row = levelNumber == 1 ? 0 : levelNumber <= 4 ? 1 : 2;
 		return huntingTicks(HUNTING_PHASE_DURATION[row][phase]);
 	}
 
@@ -121,7 +121,7 @@ public class PacManGame extends GameModel {
 	}
 
 	@Override
-	public int mazeNumber(int levelNumber) {
+	public int mazeNumber(int someLevelNumber) {
 		return 1;
 	}
 }

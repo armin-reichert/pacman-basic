@@ -97,8 +97,8 @@ public class MsPacManGame extends GameModel {
 	}
 
 	@Override
-	public int mazeNumber(int levelNumber) {
-		switch (levelNumber) {
+	public int mazeNumber(int somelevelNumber) {
+		switch (somelevelNumber) {
 		case 1:
 		case 2:
 			return 1; // pink maze, white dots
@@ -117,13 +117,13 @@ public class MsPacManGame extends GameModel {
 		case 13:
 			return 4; // dark blue maze, white dots
 		default:
-			if (levelNumber < 1) {
-				throw new IllegalArgumentException("Illegal level number: " + levelNumber);
+			if (somelevelNumber < 1) {
+				throw new IllegalArgumentException("Illegal level number: " + somelevelNumber);
 			}
 			// From level 14 on, maze switches between 5 and 6 every 4 levels
 			// Maze #5 = pink maze, cyan dots (same map as maze 3)
 			// Maze #6 = orange maze, white dots (same map as maze 4)
-			return (levelNumber - 14) % 8 < 4 ? 5 : 6;
+			return (somelevelNumber - 14) % 8 < 4 ? 5 : 6;
 		}
 	}
 
@@ -134,21 +134,21 @@ public class MsPacManGame extends GameModel {
 	}
 
 	@Override
-	protected void buildLevel(int levelNumber) {
-		int mazeNumber = mazeNumber(levelNumber);
+	protected void buildLevel(int someLevelNumber) {
+		int mazeNumber = mazeNumber(someLevelNumber);
 		world.setMap(new WorldMap("/mspacman/maps/map" + mapNumber(mazeNumber) + ".txt"));
-		level = new GameLevel(MSPACMAN_LEVELS[levelNumber <= 21 ? levelNumber - 1 : 20]);
+		level = new GameLevel(MSPACMAN_LEVELS[someLevelNumber <= 21 ? someLevelNumber - 1 : 20]);
 		level.setWorld(world);
 		level.mazeNumber = mazeNumber;
-		if (levelNumber > 7) {
+		if (someLevelNumber > 7) {
 			level.bonusSymbol = (byte) random.nextInt(7);
 		}
-		log("Ms. Pac-Man level %d created, maze index is %d", levelNumber, mazeNumber);
+		log("Ms. Pac-Man level %d created, maze index is %d", someLevelNumber, mazeNumber);
 	}
 
 	@Override
 	public long getHuntingPhaseDuration(int phase) {
-		int row = currentLevelNumber == 1 ? 0 : currentLevelNumber <= 4 ? 1 : 2;
+		int row = levelNumber == 1 ? 0 : levelNumber <= 4 ? 1 : 2;
 		return huntingTicks(HUNTING_PHASE_DURATION[row][phase]);
 	}
 

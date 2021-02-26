@@ -109,7 +109,7 @@ public abstract class StandardRendering implements SwingRendering, PacManGameAni
 			g.setColor(pointsColor);
 			g.drawString(String.format("%08d", game.score), t(1), t(2));
 			g.setColor(Color.LIGHT_GRAY);
-			g.drawString(String.format("L%02d", game.currentLevelNumber), t(9), t(2));
+			g.drawString(String.format("L%02d", game.levelNumber), t(9), t(2));
 			g.setColor(pointsColor);
 			g.drawString(String.format("%08d", game.highscorePoints), t(15), t(2));
 			g.setColor(Color.LIGHT_GRAY);
@@ -135,8 +135,8 @@ public abstract class StandardRendering implements SwingRendering, PacManGameAni
 	@Override
 	public void drawLevelCounter(Graphics2D g, GameModel game, int rightX, int y) {
 		int x = rightX;
-		int firstLevel = Math.max(1, game.currentLevelNumber - 6);
-		for (int level = firstLevel; level <= game.currentLevelNumber; ++level) {
+		int firstLevel = Math.max(1, game.levelNumber - 6);
+		for (int level = firstLevel; level <= game.levelNumber; ++level) {
 			byte symbol = game.levelSymbols.get(level - 1);
 			drawSprite(g, symbolSprite(symbol), x, y);
 			x -= t(2);
