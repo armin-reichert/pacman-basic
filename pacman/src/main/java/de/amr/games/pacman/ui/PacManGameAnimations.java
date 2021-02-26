@@ -5,7 +5,6 @@ import java.util.stream.Stream;
 import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.model.common.GameModel;
-import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
 
 /**
@@ -15,14 +14,11 @@ import de.amr.games.pacman.model.common.Pac;
  */
 public interface PacManGameAnimations {
 
-	// TODO remove this
+	// TODO improve this
 	default void reset(GameModel game) {
 		mazeFlashings().forEach(Animation::reset);
 		energizerBlinking().reset();
-		ghostFlashing().reset();
-		ghostsFrightened(game.ghosts()).forEach(Animation::reset);
-		ghostsKicking(game.ghosts()).forEach(Animation::reset);
-		ghostsReturningHome(game.ghosts()).forEach(Animation::reset);
+		game.ghosts().forEach(ghostAnimations()::reset);
 		playerMunching(game.pac).forEach(Animation::reset);
 		playerDying().reset();
 	}
@@ -41,37 +37,7 @@ public interface PacManGameAnimations {
 
 	Animation<?> playerDying();
 
-	Animation<?> ghostKicking(Ghost ghost, Direction dir);
-
-	default Stream<Animation<?>> ghostKicking(Ghost ghost) {
-		return Direction.stream().map(dir -> ghostKicking(ghost, dir));
-	}
-
-	default Stream<Animation<?>> ghostsKicking(Stream<Ghost> ghosts) {
-		return ghosts.flatMap(this::ghostKicking);
-	}
-
-	Animation<?> ghostFrightened(Ghost ghost, Direction dir);
-
-	default Stream<Animation<?>> ghostFrightened(Ghost ghost) {
-		return Direction.stream().map(dir -> ghostFrightened(ghost, dir));
-	}
-
-	default Stream<Animation<?>> ghostsFrightened(Stream<Ghost> ghosts) {
-		return ghosts.flatMap(this::ghostFrightened);
-	}
-
-	Animation<?> ghostFlashing();
-
-	Animation<?> ghostReturningHomeToDir(Ghost ghost, Direction dir);
-
-	default Stream<Animation<?>> ghostReturningHome(Ghost ghost) {
-		return Direction.stream().map(dir -> ghostReturningHomeToDir(ghost, dir));
-	}
-
-	default Stream<Animation<?>> ghostsReturningHome(Stream<Ghost> ghosts) {
-		return ghosts.flatMap(this::ghostReturningHome);
-	}
+	GhostAnimations ghostAnimations();
 
 	Animation<?> mazeFlashing(int mazeNumber);
 

@@ -21,15 +21,21 @@ import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.pacman.PacManBonus;
+import de.amr.games.pacman.ui.GhostAnimations;
 
 /**
  * Rendering for the Ms. Pac-Man game.
  * 
  * @author Armin Reichert
  */
-public class MsPacMan_StandardRendering extends StandardRendering {
+public class MsPacMan_StandardRendering extends StandardRendering implements GhostAnimations {
 
 	public static final MsPacMan_StandardAssets assets = new MsPacMan_StandardAssets();
+
+	@Override
+	public GhostAnimations ghostAnimations() {
+		return this;
+	}
 
 	@Override
 	public Font getScoreFont() {
@@ -134,7 +140,7 @@ public class MsPacMan_StandardRendering extends StandardRendering {
 			return assets.bountyNumberSprites.get(ghost.bounty);
 		}
 		if (ghost.is(DEAD) || ghost.is(ENTERING_HOUSE)) {
-			return ghostReturningHomeToDir(ghost, ghost.dir).animate();
+			return ghostReturningHome(ghost, ghost.dir).animate();
 		}
 		if (ghost.is(FRIGHTENED)) {
 			return ghostFlashing().isRunning() ? ghostFlashing().frame() : ghostFrightened(ghost, ghost.dir).animate();
@@ -192,7 +198,7 @@ public class MsPacMan_StandardRendering extends StandardRendering {
 	}
 
 	@Override
-	public Animation<BufferedImage> ghostReturningHomeToDir(Ghost ghost, Direction dir) {
+	public Animation<BufferedImage> ghostReturningHome(Ghost ghost, Direction dir) {
 		return assets.ghostEyesAnimByDir.get(dir);
 	}
 

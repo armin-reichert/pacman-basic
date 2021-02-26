@@ -18,18 +18,24 @@ import de.amr.games.pacman.model.common.GameEntity;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.pacman.PacManBonus;
+import de.amr.games.pacman.ui.GhostAnimations;
 
 /**
  * Standard rendering for the Pac-Man game using the original sprites and animations.
  * 
  * @author Armin Reichert
  */
-public class PacMan_StandardRendering extends StandardRendering {
+public class PacMan_StandardRendering extends StandardRendering implements GhostAnimations {
 
 	public final PacMan_StandardAssets assets;
 
 	public PacMan_StandardRendering() {
 		assets = new PacMan_StandardAssets();
+	}
+
+	@Override
+	public GhostAnimations ghostAnimations() {
+		return this;
 	}
 
 	@Override
@@ -95,7 +101,7 @@ public class PacMan_StandardRendering extends StandardRendering {
 	}
 
 	@Override
-	public Animation<BufferedImage> ghostReturningHomeToDir(Ghost ghost, Direction dir) {
+	public Animation<BufferedImage> ghostReturningHome(Ghost ghost, Direction dir) {
 		return assets.ghostEyesAnimsByDir.get(dir);
 	}
 
@@ -198,7 +204,7 @@ public class PacMan_StandardRendering extends StandardRendering {
 			return assets.numberSprites.get(ghost.bounty);
 		}
 		if (ghost.is(DEAD) || ghost.is(ENTERING_HOUSE)) {
-			return ghostReturningHomeToDir(ghost, ghost.dir).animate();
+			return ghostReturningHome(ghost, ghost.dir).animate();
 		}
 		if (ghost.is(FRIGHTENED)) {
 			return ghostFlashing().isRunning() ? ghostFlashing().frame() : ghostFrightened(ghost, ghost.dir).animate();

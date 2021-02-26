@@ -10,7 +10,6 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.CountdownTimer;
@@ -189,7 +188,7 @@ public class PacMan_IntroScene extends GameScene {
 			ghost.dir = ghost.wishDir = Direction.LEFT;
 			ghost.speed = pac.speed * 1.05f;
 			ghost.state = GhostState.HUNTING_PAC;
-			rendering.ghostsKicking(Stream.of(ghosts)).forEach(Animation::restart);
+			rendering.ghostAnimations().ghostKicking(ghost).forEach(Animation::restart);
 		}
 	}
 
@@ -247,7 +246,8 @@ public class PacMan_IntroScene extends GameScene {
 			GhostPortrait portrait = gallery[i];
 			if (portrait.ghost.visible) {
 				int y = TOP_Y + t(2 + 3 * i);
-				BufferedImage sprite = (BufferedImage) rendering.ghostKicking(portrait.ghost, Direction.RIGHT).frame(0);
+				BufferedImage sprite = (BufferedImage) rendering.ghostAnimations().ghostKicking(portrait.ghost, Direction.RIGHT)
+						.frame(0);
 				rendering.drawSprite(g, sprite, x, y - 4);
 				g.setColor(portrait.color);
 				g.setFont(rendering.getScoreFont());

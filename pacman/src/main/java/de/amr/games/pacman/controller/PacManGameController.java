@@ -203,12 +203,6 @@ public class PacManGameController {
 		return game.ghosts[id];
 	}
 
-	private void enableGhostKickingAnimation(boolean enabled) {
-		animations().map(animations -> animations.ghostsKicking(game.ghosts())).forEach(kicking -> {
-			kicking.forEach(enabled ? Animation::restart : Animation::reset);
-		});
-	}
-
 	private boolean keyPressed(String keySpec) {
 		return views.stream().anyMatch(view -> view.keyPressed(keySpec));
 	}
@@ -294,7 +288,11 @@ public class PacManGameController {
 		if (!game.attractMode) {
 			game.started = true;
 		}
-		enableGhostKickingAnimation(true);
+		animations().forEach(animation -> {
+			game.ghosts().forEach(ghost -> {
+				animation.ghostAnimations().ghostKicking(ghost).forEach(Animation::restart);
+			});
+		});
 	}
 
 	// HUNTING
@@ -381,7 +379,7 @@ public class PacManGameController {
 				game.ghosts(FRIGHTENED).forEach(ghost -> ghost.state = HUNTING_PAC);
 			}
 			animations().forEach(animations -> {
-				Animation<?> flashing = animations.ghostFlashing();
+				Animation<?> flashing = animations.ghostAnimations().ghostFlashing();
 				if (game.level.numFlashes > 0 && game.pac.powerTicksLeft == game.level.numFlashes * flashing.duration()) {
 					flashing.restart();
 					log("Ghost flashing started (%d flashes, %d ticks each), Pac power left: %d ticks", game.level.numFlashes,
@@ -430,7 +428,11 @@ public class PacManGameController {
 		game.state.timer.setDuration(clock.sec(5));
 		game.pac.speed = 0;
 		game.bonus.edibleTicksLeft = game.bonus.eatenTicksLeft = 0;
-		enableGhostKickingAnimation(false);
+		animations().forEach(animation -> {
+			game.ghosts().forEach(ghost -> {
+				animation.ghostAnimations().ghostKicking(ghost).forEach(Animation::reset);
+			});
+		});
 		sounds().forEach(SoundManager::stopAll);
 	}
 
@@ -532,7 +534,11 @@ public class PacManGameController {
 		game.ghosts().forEach(ghost -> ghost.speed = 0);
 		game.pac.speed = 0;
 		game.saveHighscore();
-		enableGhostKickingAnimation(false);
+		animations().forEach(animation -> {
+			game.ghosts().forEach(ghost -> {
+				animation.ghostAnimations().ghostKicking(ghost).forEach(Animation::reset);
+			});
+		});
 	}
 
 	private PacManGameState runGameOverState() {
@@ -708,11 +714,11 @@ public class PacManGameController {
 				ghost.wishDir = ghost.dir.opposite();
 				ghost.forcedDirection = true;
 				animations().forEach(animations -> {
-					animations.ghostFrightened(ghost).forEach(Animation::restart);
+					animations.ghostAnimations().ghostFrightened(ghost).forEach(Animation::restart);
 				});
 			});
 			animations().forEach(animations -> {
-				animations.ghostFlashing().reset(); // in case flashing is active now
+				animations.ghostAnimations().ghostFlashing().reset(); // in case flashing is active now
 			});
 			sounds().forEach(sm -> sm.loopForever(PacManGameSound.PACMAN_POWER));
 		}
