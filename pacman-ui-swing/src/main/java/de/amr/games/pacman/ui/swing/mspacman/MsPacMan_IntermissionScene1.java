@@ -78,7 +78,7 @@ public class MsPacMan_IntermissionScene1 extends GameScene {
 		msPac = new Pac("Ms. Pac-Man", Direction.LEFT);
 		msPac.setPosition(t(30), lowerY);
 		msPac.visible = true;
-		rendering.playerMunching(msPac).forEach(Animation::restart);
+		rendering.playerAnimations().playerMunching(msPac).forEach(Animation::restart);
 
 		pinky = new Ghost(1, "Pinky", Direction.LEFT);
 		pinky.setPositionRelativeTo(msPac, t(3), 0);

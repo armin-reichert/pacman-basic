@@ -19,18 +19,24 @@ import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.pacman.PacManBonus;
 import de.amr.games.pacman.ui.GhostAnimations;
+import de.amr.games.pacman.ui.PlayerAnimations;
 
 /**
  * Standard rendering for the Pac-Man game using the original sprites and animations.
  * 
  * @author Armin Reichert
  */
-public class PacMan_StandardRendering extends StandardRendering implements GhostAnimations {
+public class PacMan_StandardRendering extends StandardRendering implements PlayerAnimations, GhostAnimations {
 
 	public final PacMan_StandardAssets assets;
 
 	public PacMan_StandardRendering() {
 		assets = new PacMan_StandardAssets();
+	}
+
+	@Override
+	public PlayerAnimations playerAnimations() {
+		return this;
 	}
 
 	@Override

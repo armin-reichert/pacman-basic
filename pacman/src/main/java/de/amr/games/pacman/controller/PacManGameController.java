@@ -319,7 +319,7 @@ public class PacManGameController {
 		startHuntingPhase(0);
 		animations().forEach(animations -> {
 			animations.energizerBlinking().restart();
-			animations.playerMunching(game.pac).forEach(Animation::restart);
+			animations.playerAnimations().playerMunching(game.pac).forEach(Animation::restart);
 		});
 	}
 
@@ -449,7 +449,7 @@ public class PacManGameController {
 		}
 		if (game.state.timer.running() == clock.sec(2)) {
 			game.ghosts().forEach(ghost -> ghost.visible = false);
-			animations().forEach(animations -> animations.playerDying().restart());
+			animations().forEach(animations -> animations.playerAnimations().playerDying().restart());
 			sounds().forEach(sm -> sm.play(PacManGameSound.PACMAN_DEATH));
 		}
 		return game.state.tick();

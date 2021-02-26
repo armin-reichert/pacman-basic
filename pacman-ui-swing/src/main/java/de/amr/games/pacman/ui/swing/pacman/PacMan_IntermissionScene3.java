@@ -53,7 +53,7 @@ public class PacMan_IntermissionScene3 extends GameScene {
 		pac.couldMove = true;
 		pac.dir = LEFT;
 		pac.couldMove = true;
-		rendering.playerMunching(pac).forEach(Animation::restart);
+		rendering.playerAnimations().playerMunching(pac).forEach(Animation::restart);
 
 		blinky = new Ghost(0, "Blinky", Direction.LEFT);
 		blinky.setPositionRelativeTo(pac, t(8), 0);

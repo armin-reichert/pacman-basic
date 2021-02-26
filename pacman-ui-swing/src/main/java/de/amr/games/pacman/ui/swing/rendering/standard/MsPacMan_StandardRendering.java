@@ -22,15 +22,23 @@ import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.pacman.PacManBonus;
 import de.amr.games.pacman.ui.GhostAnimations;
+import de.amr.games.pacman.ui.PlayerAnimations;
 
 /**
  * Rendering for the Ms. Pac-Man game.
  * 
  * @author Armin Reichert
  */
-public class MsPacMan_StandardRendering extends StandardRendering implements GhostAnimations {
+public class MsPacMan_StandardRendering extends StandardRendering
+
+		implements PlayerAnimations, GhostAnimations {
 
 	public static final MsPacMan_StandardAssets assets = new MsPacMan_StandardAssets();
+
+	@Override
+	public PlayerAnimations playerAnimations() {
+		return this;
+	}
 
 	@Override
 	public GhostAnimations ghostAnimations() {

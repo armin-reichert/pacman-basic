@@ -3,9 +3,7 @@ package de.amr.games.pacman.ui;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.Animation;
-import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.model.common.GameModel;
-import de.amr.games.pacman.model.common.Pac;
 
 /**
  * Visual animations inside the scenes..
@@ -19,23 +17,10 @@ public interface PacManGameAnimations {
 		mazeFlashings().forEach(Animation::reset);
 		energizerBlinking().reset();
 		game.ghosts().forEach(ghostAnimations()::reset);
-		playerMunching(game.pac).forEach(Animation::reset);
-		playerDying().reset();
+		playerAnimations().reset(game.pac);
 	}
 
-	Animation<?> playerMunching(Pac player, Direction dir);
-
-	default Stream<Animation<?>> playerMunching(Pac player) {
-		return Direction.stream().map(dir -> playerMunching(player, dir));
-	}
-
-	Animation<?> spouseMunching(Pac spouse, Direction dir);
-
-	default Stream<Animation<?>> spouseMunching(Pac spouse) {
-		return Direction.stream().map(dir -> spouseMunching(spouse, dir));
-	}
-
-	Animation<?> playerDying();
+	PlayerAnimations playerAnimations();
 
 	GhostAnimations ghostAnimations();
 
