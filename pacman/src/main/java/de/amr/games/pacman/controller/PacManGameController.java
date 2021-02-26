@@ -414,6 +414,8 @@ public class PacManGameController {
 			}
 		});
 
+		animations().forEach(animation -> animation.mazeAnimations().energizerBlinking().animate());
+
 		// hunting state timer is suspended if Pac has power
 		if (game.pac.powerTicksLeft == 0) {
 			game.state.tick();
