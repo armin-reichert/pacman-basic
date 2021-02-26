@@ -45,11 +45,11 @@ import de.amr.games.pacman.model.mspacman.MsPacManGame;
 import de.amr.games.pacman.model.pacman.PacManGame;
 import de.amr.games.pacman.sound.PacManGameSound;
 import de.amr.games.pacman.sound.SoundManager;
-import de.amr.games.pacman.ui.GhostAnimations;
-import de.amr.games.pacman.ui.MazeAnimations;
-import de.amr.games.pacman.ui.PacManGameAnimations;
 import de.amr.games.pacman.ui.PacManGameUI;
-import de.amr.games.pacman.ui.PlayerAnimations;
+import de.amr.games.pacman.ui.animation.GhostAnimations;
+import de.amr.games.pacman.ui.animation.MazeAnimations;
+import de.amr.games.pacman.ui.animation.PacManGameAnimations;
+import de.amr.games.pacman.ui.animation.PlayerAnimations;
 
 /**
  * Controller (in the sense of MVC) for the Pac-Man and Ms. Pac-Man game.

@@ -1,4 +1,4 @@
-package de.amr.games.pacman.ui;
+package de.amr.games.pacman.ui.animation;
 
 import java.util.stream.Stream;
 
@@ -6,6 +6,11 @@ import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.model.common.Pac;
 
+/**
+ * Animations for the player (Pac-Man and Ms. Pac-Man).
+ * 
+ * @author Armin Reichert
+ */
 public interface PlayerAnimations {
 
 	default void reset(Pac player) {

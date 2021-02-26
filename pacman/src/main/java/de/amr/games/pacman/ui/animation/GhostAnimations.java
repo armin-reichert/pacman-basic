@@ -1,4 +1,4 @@
-package de.amr.games.pacman.ui;
+package de.amr.games.pacman.ui.animation;
 
 import java.util.stream.Stream;
 
@@ -6,6 +6,11 @@ import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.model.common.Ghost;
 
+/**
+ * Animations for a ghost.
+ * 
+ * @author Armin Reichert
+ */
 public interface GhostAnimations {
 
 	default void reset(Ghost ghost) {

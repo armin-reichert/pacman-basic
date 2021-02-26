@@ -1,16 +1,15 @@
-package de.amr.games.pacman.ui;
+package de.amr.games.pacman.ui.animation;
 
 import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.model.common.GameModel;
 
 /**
- * Visual animations inside the scenes..
+ * Animations for a game.
  * 
  * @author Armin Reichert
  */
 public interface PacManGameAnimations {
 
-	// TODO improve this
 	default void reset(GameModel game) {
 		mazeAnimations().reset();
 		game.ghosts().forEach(ghostAnimations()::reset);

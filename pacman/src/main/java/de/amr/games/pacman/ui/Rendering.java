@@ -14,7 +14,8 @@ import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.pacman.PacManBonus;
 
 /**
- * Can be used by UI implementations.
+ * This interface is used to discriminate the Swing and JavaFX UI implementations. It is not
+ * mandatory for other UI implementations.
  * 
  * @author Armin Reichert
  *

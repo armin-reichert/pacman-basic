@@ -21,9 +21,9 @@ import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.pacman.PacManBonus;
-import de.amr.games.pacman.ui.GhostAnimations;
-import de.amr.games.pacman.ui.MazeAnimations;
-import de.amr.games.pacman.ui.PlayerAnimations;
+import de.amr.games.pacman.ui.animation.GhostAnimations;
+import de.amr.games.pacman.ui.animation.MazeAnimations;
+import de.amr.games.pacman.ui.animation.PlayerAnimations;
 
 /**
  * Rendering for the Ms. Pac-Man game.

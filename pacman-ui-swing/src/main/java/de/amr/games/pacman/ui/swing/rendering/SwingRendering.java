@@ -5,8 +5,8 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
-import de.amr.games.pacman.ui.PacManGameAnimations;
 import de.amr.games.pacman.ui.Rendering;
+import de.amr.games.pacman.ui.animation.PacManGameAnimations;
 
 public interface SwingRendering extends Rendering<Graphics2D, Color, Font, BufferedImage>, PacManGameAnimations {
 

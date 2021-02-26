@@ -18,9 +18,9 @@ import de.amr.games.pacman.model.common.GameEntity;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.pacman.PacManBonus;
-import de.amr.games.pacman.ui.GhostAnimations;
-import de.amr.games.pacman.ui.MazeAnimations;
-import de.amr.games.pacman.ui.PlayerAnimations;
+import de.amr.games.pacman.ui.animation.GhostAnimations;
+import de.amr.games.pacman.ui.animation.MazeAnimations;
+import de.amr.games.pacman.ui.animation.PlayerAnimations;
 
 /**
  * Standard rendering for the Pac-Man game using the original sprites and animations.
