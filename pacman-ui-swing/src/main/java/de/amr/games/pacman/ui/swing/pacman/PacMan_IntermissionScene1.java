@@ -104,7 +104,9 @@ public class PacMan_IntermissionScene1 extends GameScene {
 		if (phase == Phase.BLINKY_CHASING_PACMAN) {
 			rendering.drawPlayer(g, pac);
 		} else {
+			g.translate(0, -12);
 			rendering.drawBigPacMan(g, pac);
+			g.translate(0, 12);
 		}
 	}
 }
