@@ -3,7 +3,7 @@ package de.amr.games.pacman.world;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.lib.V2f;
+import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
 
 /**
@@ -19,12 +19,12 @@ public interface PacManGameWorld {
 		return (int) nTiles * TS;
 	}
 
-	public static V2i tile(V2f position) {
+	public static V2i tile(V2d position) {
 		return new V2i((int) position.x / TS, (int) position.y / TS);
 	}
 
-	public static V2f offset(V2f position) {
-		return new V2f(position.x - (int) (position.x / TS) * TS, position.y - (int) (position.y / TS) * TS);
+	public static V2d offset(V2d position) {
+		return new V2d(position.x - (int) (position.x / TS) * TS, position.y - (int) (position.y / TS) * TS);
 	}
 
 	int xTiles();

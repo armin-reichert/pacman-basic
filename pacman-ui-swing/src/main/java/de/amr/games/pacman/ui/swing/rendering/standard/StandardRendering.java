@@ -43,7 +43,7 @@ public abstract class StandardRendering implements SwingRendering, PacManGameAni
 	}
 
 	@Override
-	public void drawSprite(Graphics2D g, BufferedImage sprite, float x, float y) {
+	public void drawSprite(Graphics2D g, BufferedImage sprite, double x, double y) {
 		Graphics2D gc = smoothGC(g);
 		gc.drawImage(sprite, (int) x, (int) y, null);
 		gc.dispose();

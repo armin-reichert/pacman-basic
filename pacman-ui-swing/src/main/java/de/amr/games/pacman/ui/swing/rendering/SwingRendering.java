@@ -10,6 +10,6 @@ import de.amr.games.pacman.ui.animation.PacManGameAnimations;
 
 public interface SwingRendering extends Rendering<Graphics2D, Color, Font, BufferedImage>, PacManGameAnimations {
 
-	void drawSprite(Graphics2D g, BufferedImage sprite, float x, float y);
+	void drawSprite(Graphics2D g, BufferedImage sprite, double x, double y);
 
 }

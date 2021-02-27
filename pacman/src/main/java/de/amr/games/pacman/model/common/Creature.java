@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.Direction;
-import de.amr.games.pacman.lib.V2f;
+import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.world.PacManGameWorld;
 
@@ -30,7 +30,7 @@ public class Creature extends GameEntity {
 	public PacManGameWorld world;
 
 	/** Relative speed (between 0 and 1). */
-	public float speed = 0.0f;
+	public double speed = 0.0;
 
 	/** The current move direction. Initially, (s)he moves to the right direction :-) */
 	public Direction dir = Direction.RIGHT;
@@ -64,7 +64,7 @@ public class Creature extends GameEntity {
 	 * @param offsetX the pixel offset in x-direction
 	 * @param offsetY the pixel offset in y-direction
 	 */
-	public void placeAt(V2i tile, float offsetX, float offsetY) {
+	public void placeAt(V2i tile, double offsetX, double offsetY) {
 		setPosition(t(tile.x) + offsetX, t(tile.y) + offsetY);
 		changedTile = true;
 	}
@@ -79,11 +79,11 @@ public class Creature extends GameEntity {
 	/**
 	 * @return the current pixel offset
 	 */
-	public V2f offset() {
+	public V2d offset() {
 		return PacManGameWorld.offset(position);
 	}
 
-	public void setOffset(float offsetX, float offsetY) {
+	public void setOffset(double offsetX, double offsetY) {
 		placeAt(tile(), offsetX, offsetY);
 	}
 
@@ -107,7 +107,7 @@ public class Creature extends GameEntity {
 
 	@Override
 	public void move() {
-		velocity = new V2f(dir.vec).scaled(speed);
+		velocity = new V2d(dir.vec).scaled(speed);
 		position = position.sum(velocity);
 	}
 
@@ -134,10 +134,10 @@ public class Creature extends GameEntity {
 
 	public void tryMoving(Direction moveDir) {
 		// 100% speed corresponds to 1.25 pixels/tick (75px/sec)
-		float pixels = speed * 1.25f;
+		double pixels = speed * 1.25f;
 
 		V2i guyLocationBeforeMove = tile();
-		V2f offset = offset();
+		V2d offset = offset();
 		V2i neighbor = guyLocationBeforeMove.sum(moveDir.vec);
 
 		// check if guy can change its direction now
@@ -157,10 +157,10 @@ public class Creature extends GameEntity {
 			}
 		}
 
-		velocity = new V2f(moveDir.vec).scaled(pixels);
-		V2f newPosition = position.sum(velocity);
+		velocity = new V2d(moveDir.vec).scaled(pixels);
+		V2d newPosition = position.sum(velocity);
 		V2i newTile = PacManGameWorld.tile(newPosition);
-		V2f newOffset = PacManGameWorld.offset(newPosition);
+		V2d newOffset = PacManGameWorld.offset(newPosition);
 
 		// block moving into inaccessible tile
 		if (!canAccessTile(newTile)) {

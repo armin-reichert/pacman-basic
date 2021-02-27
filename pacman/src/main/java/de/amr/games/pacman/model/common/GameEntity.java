@@ -2,7 +2,7 @@ package de.amr.games.pacman.model.common;
 
 import static de.amr.games.pacman.world.PacManGameWorld.t;
 
-import de.amr.games.pacman.lib.V2f;
+import de.amr.games.pacman.lib.V2d;
 
 /**
  * Entity base class.
@@ -15,10 +15,10 @@ public class GameEntity {
 	public boolean visible = false;
 
 	/** Left upper corner of TSxTS collision box. Sprites can be larger. */
-	public V2f position = V2f.NULL;
+	public V2d position = V2d.NULL;
 
 	/** Velocity vector. */
-	public V2f velocity = V2f.NULL;
+	public V2d velocity = V2d.NULL;
 
 	/** Move with current velocity. */
 	public void move() {
@@ -27,7 +27,7 @@ public class GameEntity {
 
 	/** Sets the entity's position. */
 	public void setPosition(double x, double y) {
-		position = new V2f((float) x, (float) y);
+		position = new V2d((float) x, (float) y);
 	}
 
 	/** Sets the position given in tile coordinates */

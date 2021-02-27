@@ -12,7 +12,7 @@ import static de.amr.games.pacman.world.PacManGameWorld.HTS;
 import static de.amr.games.pacman.world.PacManGameWorld.t;
 
 import de.amr.games.pacman.lib.Direction;
-import de.amr.games.pacman.lib.V2f;
+import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
 
 /**
@@ -150,7 +150,7 @@ public class Ghost extends Creature {
 
 	private void enterHouse() {
 		V2i location = tile();
-		V2f offset = offset();
+		V2d offset = offset();
 		// Target inside house reached? Start leaving house.
 		if (location.equals(targetTile) && offset.y >= 0) {
 			wishDir = dir.opposite();
@@ -166,7 +166,7 @@ public class Ghost extends Creature {
 
 	private void leaveHouse() {
 		V2i location = tile();
-		V2f offset = offset();
+		V2d offset = offset();
 		// House left? Resume hunting.
 		if (location.equals(world.houseEntry()) && differsAtMost(offset.y, 0, 1)) {
 			setOffset(HTS, 0);

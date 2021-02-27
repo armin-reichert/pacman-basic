@@ -33,7 +33,7 @@ import javax.swing.JFrame;
 import javax.swing.Timer;
 
 import de.amr.games.pacman.controller.PacManGameController;
-import de.amr.games.pacman.lib.V2f;
+import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameType;
@@ -87,7 +87,7 @@ public class PacManGameUI_Swing implements PacManGameUI {
 		this.controller = controller;
 		scaling = (float) scalingFactor;
 		unscaledSize = new Dimension(28 * TS, 36 * TS);
-		scaledSize = new V2f(unscaledSize.width, unscaledSize.height).scaled(this.scaling).toV2i();
+		scaledSize = new V2d(unscaledSize.width, unscaledSize.height).scaled(this.scaling).toV2i();
 
 		canvas = new Canvas();
 		canvas.setBackground(Color.BLACK);
@@ -214,6 +214,9 @@ public class PacManGameUI_Swing implements PacManGameUI {
 
 	private void renderScreen() {
 		BufferStrategy buffers = canvas.getBufferStrategy();
+		if (buffers == null) {
+			return;
+		}
 		do {
 			do {
 				Graphics2D g = (Graphics2D) buffers.getDrawGraphics();

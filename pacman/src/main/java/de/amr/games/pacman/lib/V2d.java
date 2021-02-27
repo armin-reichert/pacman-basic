@@ -3,22 +3,22 @@ package de.amr.games.pacman.lib;
 import java.util.Objects;
 
 /**
- * Immutable float 2D vector.
+ * Immutable 2D vector with double precision.
  * 
  * @author Armin Reichert
  */
-public class V2f {
+public class V2d {
 
-	public static final V2f NULL = new V2f(0, 0);
+	public static final V2d NULL = new V2d(0, 0);
 
-	private static float EPS = 0.000001f;
+	private static double EPS = 1e-6;
 
-	private static boolean almostEquals(float x, float y) {
+	private static boolean almostEquals(double x, double y) {
 		return x >= y - EPS && x <= y + EPS;
 	}
 
-	public final float x;
-	public final float y;
+	public final double x;
+	public final double y;
 
 	@Override
 	public int hashCode() {
@@ -33,7 +33,7 @@ public class V2f {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		V2f other = (V2f) obj;
+		V2d other = (V2d) obj;
 		return almostEquals(x, other.x) && almostEquals(y, other.y);
 	}
 
@@ -42,12 +42,12 @@ public class V2f {
 		return String.format("(%.2f, %.2f)", x, y);
 	}
 
-	public V2f(float x, float y) {
+	public V2d(double x, double y) {
 		this.x = x;
 		this.y = y;
 	}
 
-	public V2f(V2i v) {
+	public V2d(V2i v) {
 		this(v.x, v.y);
 	}
 
@@ -55,15 +55,15 @@ public class V2f {
 		return new V2i((int) x, (int) y);
 	}
 
-	public V2f sum(V2f v) {
-		return new V2f(x + v.x, y + v.y);
+	public V2d sum(V2d v) {
+		return new V2d(x + v.x, y + v.y);
 	}
 
-	public V2f sum(float xx, float yy) {
-		return new V2f(x + xx, y + yy);
+	public V2d sum(double xx, double yy) {
+		return new V2d(x + xx, y + yy);
 	}
 
-	public V2f scaled(float s) {
-		return new V2f(s * x, s * y);
+	public V2d scaled(double s) {
+		return new V2d(s * x, s * y);
 	}
 }

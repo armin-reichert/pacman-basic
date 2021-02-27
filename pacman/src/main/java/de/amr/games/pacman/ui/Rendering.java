@@ -3,7 +3,7 @@ package de.amr.games.pacman.ui;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.lib.V2f;
+import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.Flap;
 import de.amr.games.pacman.model.common.GameEntity;
@@ -72,7 +72,7 @@ public interface Rendering<GC, COLOR, FONT, SPRITE> {
 
 	void drawNail(GC g, GameEntity nail);
 
-	void drawBlinkyStretched(GC g, Ghost blinky, V2f nailPosition, int stretching);
+	void drawBlinkyStretched(GC g, Ghost blinky, V2d nailPosition, int stretching);
 
 	void drawBlinkyPatched(GC g, Ghost blinky);
 

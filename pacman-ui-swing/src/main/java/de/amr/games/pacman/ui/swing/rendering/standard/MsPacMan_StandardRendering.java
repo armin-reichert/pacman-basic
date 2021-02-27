@@ -14,7 +14,7 @@ import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.Direction;
-import de.amr.games.pacman.lib.V2f;
+import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.model.common.Flap;
 import de.amr.games.pacman.model.common.GameEntity;
 import de.amr.games.pacman.model.common.GameModel;
@@ -266,9 +266,9 @@ public class MsPacMan_StandardRendering extends StandardRendering
 			drawSprite(g, (BufferedImage) flapUI.flapping.animate(), flap.position.x, flap.position.y);
 			g.setFont(new Font(assets.getScoreFont().getName(), Font.PLAIN, 8));
 			g.setColor(new Color(222, 222, 225, 192));
-			g.drawString(flap.sceneNumber + "", flap.position.x + 20, flap.position.y + 30);
+			g.drawString(flap.sceneNumber + "", (int) flap.position.x + 20, (int) flap.position.y + 30);
 			g.setFont(assets.getScoreFont());
-			g.drawString(flap.sceneTitle, flap.position.x + 40, flap.position.y + 20);
+			g.drawString(flap.sceneTitle, (int) flap.position.x + 40, (int) flap.position.y + 20);
 		}
 	}
 
@@ -324,7 +324,7 @@ public class MsPacMan_StandardRendering extends StandardRendering
 	}
 
 	@Override
-	public void drawBlinkyStretched(Graphics2D g, Ghost ghost, V2f nailPosition, int stretching) {
+	public void drawBlinkyStretched(Graphics2D g, Ghost ghost, V2d nailPosition, int stretching) {
 	}
 
 	@Override

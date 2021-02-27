@@ -3,7 +3,6 @@ package de.amr.games.pacman.ui.swing.rendering;
 import static de.amr.games.pacman.world.PacManGameWorld.HTS;
 import static de.amr.games.pacman.world.PacManGameWorld.TS;
 import static de.amr.games.pacman.world.PacManGameWorld.t;
-import static java.lang.Math.round;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -31,7 +30,7 @@ public class Debug {
 		g.drawString(stateText, t(1), t(3));
 		for (Ghost ghost : game.ghosts) {
 			g.setColor(Color.WHITE);
-			g.drawRect(round(ghost.position.x), round(ghost.position.y), TS, TS);
+			g.drawRect((int) ghost.position.x, (int) ghost.position.y, TS, TS);
 			if (ghost.targetTile != null) {
 				Color c = GHOST_COLORS[ghost.id];
 				g.setColor(c);
