@@ -591,7 +591,7 @@ public class PacManGameController {
 	}
 
 	private void updateGameState() {
-		if (keyPressed("Esc")) {
+		if (keyPressed("M")) {
 			changeState(INTRO, null, this::enterIntroState);
 			return;
 		}
