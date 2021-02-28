@@ -186,6 +186,10 @@ public class PacManGameController {
 		views.forEach(view -> view.showFlashMessage(message, ticks));
 	}
 
+	public void finishCurrentState() {
+		game.state.timer.setDuration(0);
+	}
+
 	public void toggleGameType() {
 		if (isPlaying(MS_PACMAN)) {
 			play(PACMAN);
