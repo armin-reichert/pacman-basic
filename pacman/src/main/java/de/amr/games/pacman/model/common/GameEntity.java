@@ -22,7 +22,7 @@ public class GameEntity {
 
 	/** Move with current velocity. */
 	public void move() {
-		position = position.sum(velocity);
+		position = position.plus(velocity);
 	}
 
 	/** Sets the entity's position. */

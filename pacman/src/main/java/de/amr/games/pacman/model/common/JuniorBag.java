@@ -14,7 +14,7 @@ public class JuniorBag extends GameEntity {
 	@Override
 	public void move() {
 		if (released) {
-			velocity = velocity.sum(0, 0.04f); // gravity
+			velocity = velocity.plus(0, 0.04f); // gravity
 		}
 		super.move();
 	}

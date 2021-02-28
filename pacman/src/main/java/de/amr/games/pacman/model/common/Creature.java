@@ -108,7 +108,7 @@ public class Creature extends GameEntity {
 	@Override
 	public void move() {
 		velocity = new V2d(dir.vec).scaled(speed);
-		position = position.sum(velocity);
+		position = position.plus(velocity);
 	}
 
 	public void tryMoving() {
@@ -158,7 +158,7 @@ public class Creature extends GameEntity {
 		}
 
 		velocity = new V2d(moveDir.vec).scaled(pixels);
-		V2d newPosition = position.sum(velocity);
+		V2d newPosition = position.plus(velocity);
 		V2i newTile = PacManGameWorld.tile(newPosition);
 		V2d newOffset = PacManGameWorld.offset(newPosition);
 

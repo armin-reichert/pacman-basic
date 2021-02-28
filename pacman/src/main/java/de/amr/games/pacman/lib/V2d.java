@@ -55,15 +55,27 @@ public class V2d {
 		return new V2i((int) x, (int) y);
 	}
 
-	public V2d sum(V2d v) {
+	public V2d plus(V2d v) {
 		return new V2d(x + v.x, y + v.y);
 	}
 
-	public V2d sum(double xx, double yy) {
+	public V2d plus(double xx, double yy) {
 		return new V2d(x + xx, y + yy);
+	}
+
+	public V2d minus(V2d v) {
+		return new V2d(x - v.x, y - v.y);
+	}
+
+	public V2d minus(double xx, double yy) {
+		return new V2d(x - xx, y - yy);
 	}
 
 	public V2d scaled(double s) {
 		return new V2d(s * x, s * y);
+	}
+
+	public V2d inverse() {
+		return new V2d(-x, -y);
 	}
 }
