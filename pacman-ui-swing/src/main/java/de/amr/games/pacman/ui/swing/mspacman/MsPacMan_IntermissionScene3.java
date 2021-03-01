@@ -6,6 +6,7 @@ import static de.amr.games.pacman.world.PacManGameWorld.t;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 
+import de.amr.games.pacman.controller.PacManGameController;
 import de.amr.games.pacman.lib.CountdownTimer;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2d;
@@ -47,8 +48,9 @@ public class MsPacMan_IntermissionScene3 extends GameScene {
 
 	private Phase phase;
 
-	public MsPacMan_IntermissionScene3(Dimension size, SwingRendering rendering, SoundManager sounds) {
-		super(size, rendering, sounds);
+	public MsPacMan_IntermissionScene3(PacManGameController controller, Dimension size, SwingRendering rendering,
+			SoundManager sounds) {
+		super(controller, size, rendering, sounds);
 	}
 
 	private void enter(Phase newPhase, long ticks) {

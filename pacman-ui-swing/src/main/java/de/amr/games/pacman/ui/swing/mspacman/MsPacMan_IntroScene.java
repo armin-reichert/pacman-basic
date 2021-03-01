@@ -11,6 +11,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 
+import de.amr.games.pacman.controller.PacManGameController;
 import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.lib.CountdownTimer;
 import de.amr.games.pacman.lib.V2i;
@@ -48,8 +49,9 @@ public class MsPacMan_IntroScene extends GameScene {
 	private Ghost currentGhost;
 	private boolean presentingMsPac;
 
-	public MsPacMan_IntroScene(Dimension size, SwingRendering rendering, SoundManager sounds) {
-		super(size, rendering, sounds);
+	public MsPacMan_IntroScene(PacManGameController controller, Dimension size, SwingRendering rendering,
+			SoundManager sounds) {
+		super(controller, size, rendering, sounds);
 	}
 
 	private void enterPhase(Phase newPhase) {

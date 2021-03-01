@@ -129,19 +129,19 @@ public class PacManGameUI_Swing implements PacManGameUI {
 		sounds.put(PACMAN, new PacManGameSoundManager(PacManGameSounds::mrPacManSoundURL));
 
 		scenes.put(MS_PACMAN, Arrays.asList(//
-				new MsPacMan_IntroScene(unscaledSize, renderings.get(MS_PACMAN), sounds.get(MS_PACMAN)), //
-				new MsPacMan_IntermissionScene1(unscaledSize, renderings.get(MS_PACMAN), sounds.get(MS_PACMAN)), //
-				new MsPacMan_IntermissionScene2(unscaledSize, renderings.get(MS_PACMAN), sounds.get(MS_PACMAN)), //
-				new MsPacMan_IntermissionScene3(unscaledSize, renderings.get(MS_PACMAN), sounds.get(MS_PACMAN)), //
-				new PlayScene(unscaledSize, renderings.get(MS_PACMAN), sounds.get(MS_PACMAN))//
+				new MsPacMan_IntroScene(controller, unscaledSize, renderings.get(MS_PACMAN), sounds.get(MS_PACMAN)), //
+				new MsPacMan_IntermissionScene1(controller, unscaledSize, renderings.get(MS_PACMAN), sounds.get(MS_PACMAN)), //
+				new MsPacMan_IntermissionScene2(controller, unscaledSize, renderings.get(MS_PACMAN), sounds.get(MS_PACMAN)), //
+				new MsPacMan_IntermissionScene3(controller, unscaledSize, renderings.get(MS_PACMAN), sounds.get(MS_PACMAN)), //
+				new PlayScene(controller, unscaledSize, renderings.get(MS_PACMAN), sounds.get(MS_PACMAN))//
 		));
 
 		scenes.put(PACMAN, Arrays.asList(//
-				new PacMan_IntroScene(unscaledSize, renderings.get(PACMAN), sounds.get(PACMAN)), //
-				new PacMan_IntermissionScene1(unscaledSize, renderings.get(PACMAN), sounds.get(PACMAN)), //
-				new PacMan_IntermissionScene2(unscaledSize, renderings.get(PACMAN), sounds.get(PACMAN)), //
-				new PacMan_IntermissionScene3(unscaledSize, renderings.get(PACMAN), sounds.get(PACMAN)), //
-				new PlayScene(unscaledSize, renderings.get(PACMAN), sounds.get(PACMAN))//
+				new PacMan_IntroScene(controller, unscaledSize, renderings.get(PACMAN), sounds.get(PACMAN)), //
+				new PacMan_IntermissionScene1(controller, unscaledSize, renderings.get(PACMAN), sounds.get(PACMAN)), //
+				new PacMan_IntermissionScene2(controller, unscaledSize, renderings.get(PACMAN), sounds.get(PACMAN)), //
+				new PacMan_IntermissionScene3(controller, unscaledSize, renderings.get(PACMAN), sounds.get(PACMAN)), //
+				new PlayScene(controller, unscaledSize, renderings.get(PACMAN), sounds.get(PACMAN))//
 		));
 
 		onGameChanged(controller.getGame());
@@ -210,6 +210,7 @@ public class PacManGameUI_Swing implements PacManGameUI {
 				flashMessageQ.remove();
 			}
 		}
+		EventQueue.invokeLater(this::renderScreen);
 	}
 
 	private void renderScreen() {
@@ -229,11 +230,6 @@ public class PacManGameUI_Swing implements PacManGameUI {
 			} while (buffers.contentsRestored());
 			buffers.show();
 		} while (buffers.contentsLost());
-	}
-
-	@Override
-	public void render() {
-		EventQueue.invokeLater(this::renderScreen);
 	}
 
 	@Override

@@ -121,8 +121,7 @@ public class PacManGameController {
 
 	private void step() {
 		updateGameState();
-		views.forEach(PacManGameUI::update);
-		views.forEach(PacManGameUI::render);
+		views.forEach(view -> view.update());
 	}
 
 	public GameModel getGame() {
