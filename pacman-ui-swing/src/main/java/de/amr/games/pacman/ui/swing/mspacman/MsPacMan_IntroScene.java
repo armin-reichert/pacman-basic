@@ -1,9 +1,5 @@
 package de.amr.games.pacman.ui.swing.mspacman;
 
-import static de.amr.games.pacman.heaven.God.clock;
-import static de.amr.games.pacman.lib.Direction.LEFT;
-import static de.amr.games.pacman.lib.Direction.UP;
-import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.ui.swing.rendering.standard.MsPacMan_StandardRendering.assets;
 import static de.amr.games.pacman.world.PacManGameWorld.t;
 
@@ -12,13 +8,10 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 
 import de.amr.games.pacman.controller.PacManGameController;
-import de.amr.games.pacman.lib.Animation;
-import de.amr.games.pacman.lib.CountdownTimer;
-import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.Ghost;
-import de.amr.games.pacman.model.common.GhostState;
-import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.sound.SoundManager;
+import de.amr.games.pacman.ui.mspacman.MsPacMan_IntroScene_Controller;
+import de.amr.games.pacman.ui.mspacman.MsPacMan_IntroScene_Controller.Phase;
 import de.amr.games.pacman.ui.swing.common.GameScene;
 import de.amr.games.pacman.ui.swing.rendering.SwingRendering;
 
@@ -29,144 +22,22 @@ import de.amr.games.pacman.ui.swing.rendering.SwingRendering;
  */
 public class MsPacMan_IntroScene extends GameScene {
 
-	enum Phase {
-
-		BEGIN, GHOSTS, MSPACMAN, END;
-
-		private final CountdownTimer timer = new CountdownTimer();
-	}
-
-	private final V2i frameTopLeftTile = new V2i(6, 8);
-	private final int belowFrame = t(17);
-	private final int leftOfFrame = t(4);
-	private final Animation<Boolean> blinking = Animation.pulse().frameDuration(30).restart();
-
-	private Phase phase;
-
-	private Pac msPac;
-	private Ghost[] ghosts;
-
-	private Ghost currentGhost;
-	private boolean presentingMsPac;
+	private MsPacMan_IntroScene_Controller animation;
 
 	public MsPacMan_IntroScene(PacManGameController controller, Dimension size, SwingRendering rendering,
 			SoundManager sounds) {
 		super(controller, size, rendering, sounds);
 	}
 
-	private void enterPhase(Phase newPhase) {
-		phase = newPhase;
-		phase.timer.setDuration(Long.MAX_VALUE);
-	}
-
 	@Override
 	public void start() {
-		log("Intro scene started at clock time %d", clock.ticksTotal);
-
-		msPac = new Pac("Ms. Pac-Man", LEFT);
-		msPac.setPosition(t(37), belowFrame);
-		msPac.visible = true;
-		msPac.speed = 0;
-		msPac.dead = false;
-		msPac.dir = LEFT;
-
-		ghosts = new Ghost[] { //
-				new Ghost(0, "Blinky", LEFT), //
-				new Ghost(1, "Pinky", LEFT), //
-				new Ghost(2, "Inky", LEFT), //
-				new Ghost(3, "Sue", LEFT),//
-		};
-
-		for (Ghost ghost : ghosts) {
-			ghost.setPosition(t(37), belowFrame);
-			ghost.visible = true;
-			ghost.bounty = 0;
-			ghost.speed = 0;
-			ghost.state = GhostState.HUNTING_PAC;
-		}
-
-		currentGhost = null;
-		presentingMsPac = false;
-
-		enterPhase(Phase.BEGIN);
+		animation = new MsPacMan_IntroScene_Controller(controller, rendering, sounds);
+		animation.start();
 	}
 
 	@Override
 	public void update() {
-		for (Ghost ghost : ghosts) {
-			ghost.move();
-		}
-		msPac.move();
-		switch (phase) {
-		case BEGIN:
-			if (phase.timer.running() == clock.sec(1)) {
-				currentGhost = ghosts[0];
-				enterPhase(Phase.GHOSTS);
-			}
-			break;
-		case GHOSTS:
-			boolean ghostComplete = letCurrentGhostWalkToEndPosition();
-			if (ghostComplete) {
-				if (currentGhost == ghosts[3]) {
-					currentGhost = null;
-					presentingMsPac = true;
-					enterPhase(Phase.MSPACMAN);
-				} else {
-					currentGhost = ghosts[currentGhost.id + 1];
-					enterPhase(Phase.GHOSTS);
-				}
-			}
-			break;
-		case MSPACMAN:
-			boolean msPacComplete = letMsPacManWalkToEndPosition();
-			if (msPacComplete) {
-				enterPhase(Phase.END);
-			}
-			break;
-		case END:
-			if (phase.timer.running() == clock.sec(5)) {
-				game.attractMode = true;
-			}
-			break;
-		default:
-			break;
-		}
-		phase.timer.run();
-	}
-
-	private boolean letCurrentGhostWalkToEndPosition() {
-		if (currentGhost == null) {
-			return false;
-		}
-		if (phase.timer.running() == 0) {
-			currentGhost.speed = 1;
-			rendering.ghostAnimations().ghostKicking(currentGhost).forEach(Animation::restart);
-		}
-		if (currentGhost.dir == LEFT && currentGhost.position.x <= leftOfFrame) {
-			currentGhost.dir = currentGhost.wishDir = UP;
-		}
-		if (currentGhost.dir == UP && currentGhost.position.y <= t(frameTopLeftTile.y) + currentGhost.id * 18) {
-			currentGhost.speed = 0;
-			rendering.ghostAnimations().ghostKicking(currentGhost).forEach(Animation::reset);
-			return true;
-		}
-		return false;
-	}
-
-	private boolean letMsPacManWalkToEndPosition() {
-		if (phase.timer.running() == 0) {
-			msPac.visible = true;
-			msPac.couldMove = true;
-			msPac.speed = 1;
-			msPac.dir = LEFT;
-			rendering.playerAnimations().playerMunching(msPac).forEach(Animation::restart);
-		}
-		if (msPac.speed != 0 && msPac.position.x <= t(13)) {
-			msPac.speed = 0;
-			rendering.playerAnimations().playerMunching(msPac).forEach(Animation::reset);
-			return true;
-		}
-		return false;
+		animation.update();
 	}
 
 	@Override
@@ -175,34 +46,34 @@ public class MsPacMan_IntroScene extends GameScene {
 		g.setColor(Color.ORANGE);
 		g.drawString("\"MS PAC-MAN\"", t(8), t(5));
 		drawAnimatedFrame(g, 32, 16, game.state.timer.running());
-		for (Ghost ghost : ghosts) {
+		for (Ghost ghost : animation.ghosts) {
 			rendering.drawGhost(g, ghost, false);
 		}
-		rendering.drawPlayer(g, msPac);
+		rendering.drawPlayer(g, animation.msPac);
 		presentGhost(g);
 		presentMsPacMan(g);
-		if (phase == Phase.END) {
+		if (animation.phase == Phase.END) {
 			drawPointsAnimation(g, 26);
 			drawPressKeyToStart(g, 32);
 		}
 	}
 
 	private void presentGhost(Graphics2D g) {
-		if (currentGhost == null) {
+		if (animation.currentGhost == null) {
 			return;
 		}
 		g.setColor(Color.WHITE);
 		g.setFont(assets.getScoreFont());
-		if (currentGhost == ghosts[0]) {
+		if (animation.currentGhost == animation.ghosts[0]) {
 			g.drawString("WITH", t(8), t(11));
 		}
-		g.setColor(currentGhost.id == 0 ? Color.RED
-				: currentGhost.id == 1 ? Color.PINK : currentGhost.id == 2 ? Color.CYAN : Color.ORANGE);
-		g.drawString(currentGhost.name.toUpperCase(), t(13 - currentGhost.name.length() / 2), t(14));
+		g.setColor(animation.currentGhost.id == 0 ? Color.RED
+				: animation.currentGhost.id == 1 ? Color.PINK : animation.currentGhost.id == 2 ? Color.CYAN : Color.ORANGE);
+		g.drawString(animation.currentGhost.name.toUpperCase(), t(13 - animation.currentGhost.name.length() / 2), t(14));
 	}
 
 	private void presentMsPacMan(Graphics2D g) {
-		if (!presentingMsPac) {
+		if (!animation.presentingMsPac) {
 			return;
 		}
 		g.setColor(Color.WHITE);
@@ -228,12 +99,12 @@ public class MsPacMan_IntroScene extends GameScene {
 				y = 2 * (numDotsX + numDotsY) - dot;
 			}
 			g.setColor((dot + light) % (numDotsX / 2) == 0 ? Color.PINK : Color.RED);
-			g.fillRect(t(frameTopLeftTile.x) + 4 * x, t(frameTopLeftTile.y) + 4 * y, 2, 2);
+			g.fillRect(t(animation.frameTopLeftTile.x) + 4 * x, t(animation.frameTopLeftTile.y) + 4 * y, 2, 2);
 		}
 	}
 
 	private void drawPressKeyToStart(Graphics2D g, int tileY) {
-		if (blinking.animate()) {
+		if (animation.blinking.frame()) {
 			String text = "PRESS SPACE TO PLAY";
 			g.setColor(Color.ORANGE);
 			g.setFont(assets.getScoreFont());
@@ -243,7 +114,7 @@ public class MsPacMan_IntroScene extends GameScene {
 
 	private void drawPointsAnimation(Graphics2D g, int tileY) {
 		int x = t(10), y = t(tileY);
-		if (blinking.animate()) {
+		if (animation.blinking.frame()) {
 			g.setColor(Color.PINK);
 			g.fillOval(x, y + t(1) - 2, 10, 10);
 			g.fillRect(x + 6, y - t(1) + 2, 2, 2);
