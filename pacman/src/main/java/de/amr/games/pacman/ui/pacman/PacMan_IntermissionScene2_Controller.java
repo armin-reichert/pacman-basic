@@ -17,17 +17,22 @@ import de.amr.games.pacman.ui.animation.PacManGameAnimations;
 
 public class PacMan_IntermissionScene2_Controller {
 
-	public static final int groundTileY = 20;
-
 	public enum Phase {
 
 		WALKING, GETTING_STUCK, STUCK;
 	}
 
+	public static final int groundTileY = 20;
+
 	public final CountdownTimer timer = new CountdownTimer();
 	public final PacManGameController controller;
 	public final PacManGameAnimations animations;
 	public final SoundManager sounds;
+
+	public Ghost blinky;
+	public Pac pac;
+	public GameEntity nail;
+	public Phase phase;
 
 	public PacMan_IntermissionScene2_Controller(PacManGameController controller, PacManGameAnimations animations,
 			SoundManager sounds) {
@@ -35,11 +40,6 @@ public class PacMan_IntermissionScene2_Controller {
 		this.animations = animations;
 		this.sounds = sounds;
 	}
-
-	public Ghost blinky;
-	public Pac pac;
-	public GameEntity nail;
-	public Phase phase;
 
 	public void start() {
 		pac = new Pac("Pac-Man", Direction.LEFT);

@@ -13,7 +13,7 @@ import de.amr.games.pacman.model.common.GhostState;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.ui.animation.PacManGameAnimations;
 
-public class PacMan_IntroAnimation {
+public class PacMan_IntroScene_Controller {
 
 	public static class GhostPortrait {
 
@@ -43,7 +43,7 @@ public class PacMan_IntroAnimation {
 
 	public Phase phase;
 
-	public PacMan_IntroAnimation(PacManGameController controller, PacManGameAnimations animations) {
+	public PacMan_IntroScene_Controller(PacManGameController controller, PacManGameAnimations animations) {
 		this.controller = controller;
 		this.animations = animations;
 	}
