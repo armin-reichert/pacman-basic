@@ -49,7 +49,7 @@ public class PacMan_IntroScene extends GameScene {
 
 	private static final int TOP_Y = t(6);
 
-	private final Animation<Boolean> blinking = Animation.pulse().frameDuration(20).restart();
+	private final Animation<Boolean> blinking = Animation.pulse().frameDuration(20);
 	private GhostPortrait[] gallery;
 	private int presentedGhostIndex;
 	private long ghostKilledTime;
@@ -162,11 +162,14 @@ public class PacMan_IntroScene extends GameScene {
 			}
 			break;
 		case READY_TO_PLAY:
-			blinking.animate();
+			if (phase.timer.running() == 0) {
+				blinking.restart();
+			}
 			if (phase.timer.running() == clock.sec(5)) {
 				game.attractMode = true;
-				log("Entering attract mode at %d", clock.ticksTotal);
+				log("Entering attract mode at clock tick %d", clock.ticksTotal);
 			}
+			blinking.animate();
 			break;
 		default:
 			break;
