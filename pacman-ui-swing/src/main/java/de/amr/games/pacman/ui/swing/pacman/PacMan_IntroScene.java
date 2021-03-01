@@ -72,10 +72,10 @@ public class PacMan_IntroScene extends GameScene {
 	}
 
 	private void drawGuys(Graphics2D g) {
-		rendering.drawPlayer(g, animation.pac);
 		for (Ghost ghost : animation.ghosts) {
 			rendering.drawGhost(g, ghost, false);
 		}
+		rendering.drawPlayer(g, animation.pac);
 	}
 
 	private void drawGallery(Graphics2D g) {
