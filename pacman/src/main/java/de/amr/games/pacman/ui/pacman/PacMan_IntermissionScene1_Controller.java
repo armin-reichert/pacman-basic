@@ -16,7 +16,7 @@ import de.amr.games.pacman.sound.PacManGameSound;
 import de.amr.games.pacman.sound.SoundManager;
 import de.amr.games.pacman.ui.animation.PacManGameAnimations;
 
-public class PacMan_Intermission1Animation {
+public class PacMan_IntermissionScene1_Controller {
 
 	public enum Phase {
 
@@ -34,7 +34,7 @@ public class PacMan_Intermission1Animation {
 	public Pac pac;
 	public Phase phase;
 
-	public PacMan_Intermission1Animation(PacManGameController controller, PacManGameAnimations animations,
+	public PacMan_IntermissionScene1_Controller(PacManGameController controller, PacManGameAnimations animations,
 			SoundManager sounds) {
 		this.controller = controller;
 		this.animations = animations;
