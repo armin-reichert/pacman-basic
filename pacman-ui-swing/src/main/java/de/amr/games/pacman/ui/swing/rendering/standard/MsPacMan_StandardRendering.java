@@ -20,6 +20,7 @@ import de.amr.games.pacman.model.common.GameEntity;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
+import de.amr.games.pacman.model.common.Stork;
 import de.amr.games.pacman.model.pacman.PacManBonus;
 import de.amr.games.pacman.ui.animation.GhostAnimations;
 import de.amr.games.pacman.ui.animation.MazeAnimations;
@@ -262,8 +263,7 @@ public class MsPacMan_StandardRendering extends StandardRendering
 	@Override
 	public void drawFlap(Graphics2D g, Flap flap) {
 		if (flap.visible) {
-			FlapUI flapUI = (FlapUI) flap;
-			drawSprite(g, (BufferedImage) flapUI.flapping.animate(), flap.position.x, flap.position.y);
+			drawSprite(g, (BufferedImage) flap.flapping.frame(), flap.position.x, flap.position.y);
 			g.setFont(new Font(assets.getScoreFont().getName(), Font.PLAIN, 8));
 			g.setColor(new Color(222, 222, 225, 192));
 			g.drawString(flap.sceneNumber + "", (int) flap.position.x + 20, (int) flap.position.y + 30);
@@ -284,9 +284,8 @@ public class MsPacMan_StandardRendering extends StandardRendering
 	}
 
 	@Override
-	public void drawStork(Graphics2D g, GameEntity stork) {
-		StorkUI storkUI = (StorkUI) stork;
-		drawEntity(g, stork, (BufferedImage) storkUI.flying.animate());
+	public void drawStork(Graphics2D g, Stork stork) {
+		drawEntity(g, stork, (BufferedImage) stork.flying.frame());
 	}
 
 	@Override

@@ -1,5 +1,7 @@
 package de.amr.games.pacman.model.common;
 
+import de.amr.games.pacman.lib.Animation;
+
 /**
  * The flap used in the intermission scenes.
  * 
@@ -10,8 +12,11 @@ public class Flap extends GameEntity {
 	public final int sceneNumber;
 	public final String sceneTitle;
 
-	public Flap(int number, String title) {
+	public Animation<?> flapping;
+
+	public Flap(int number, String title, Animation<?> animation) {
 		sceneNumber = number;
 		sceneTitle = title;
+		this.flapping = animation;
 	}
 }

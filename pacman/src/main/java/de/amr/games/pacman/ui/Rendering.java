@@ -11,6 +11,7 @@ import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.JuniorBag;
 import de.amr.games.pacman.model.common.Pac;
+import de.amr.games.pacman.model.common.Stork;
 import de.amr.games.pacman.model.pacman.PacManBonus;
 
 /**
@@ -84,7 +85,7 @@ public interface Rendering<GC, COLOR, FONT, SPRITE> {
 
 	void drawHeart(GC g, GameEntity heart);
 
-	void drawStork(GC g, GameEntity stork);
+	void drawStork(GC g, Stork stork);
 
 	void drawJuniorBag(GC g, JuniorBag bag);
 

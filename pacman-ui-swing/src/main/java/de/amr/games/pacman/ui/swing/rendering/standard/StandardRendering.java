@@ -20,6 +20,7 @@ import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.JuniorBag;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.common.PacManGameState;
+import de.amr.games.pacman.model.common.Stork;
 import de.amr.games.pacman.model.pacman.PacManBonus;
 import de.amr.games.pacman.ui.animation.PacManGameAnimations;
 import de.amr.games.pacman.ui.swing.rendering.SwingRendering;
@@ -176,7 +177,7 @@ public abstract class StandardRendering implements SwingRendering, PacManGameAni
 	}
 
 	@Override
-	public void drawStork(Graphics2D g, GameEntity stork) {
+	public void drawStork(Graphics2D g, Stork stork) {
 	}
 
 	@Override

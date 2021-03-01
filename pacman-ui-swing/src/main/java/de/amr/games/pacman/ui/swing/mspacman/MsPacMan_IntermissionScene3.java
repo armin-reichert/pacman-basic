@@ -1,23 +1,13 @@
 package de.amr.games.pacman.ui.swing.mspacman;
 
-import static de.amr.games.pacman.heaven.God.clock;
-import static de.amr.games.pacman.world.PacManGameWorld.t;
-
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 
 import de.amr.games.pacman.controller.PacManGameController;
-import de.amr.games.pacman.lib.CountdownTimer;
-import de.amr.games.pacman.lib.Direction;
-import de.amr.games.pacman.lib.V2d;
-import de.amr.games.pacman.model.common.JuniorBag;
-import de.amr.games.pacman.model.common.Pac;
-import de.amr.games.pacman.sound.PacManGameSound;
 import de.amr.games.pacman.sound.SoundManager;
+import de.amr.games.pacman.ui.mspacman.MsPacMan_IntermissionScene3_Controller;
 import de.amr.games.pacman.ui.swing.common.GameScene;
 import de.amr.games.pacman.ui.swing.rendering.SwingRendering;
-import de.amr.games.pacman.ui.swing.rendering.standard.FlapUI;
-import de.amr.games.pacman.ui.swing.rendering.standard.StorkUI;
 
 /**
  * Intermission scene 3: "Junior".
@@ -31,110 +21,30 @@ import de.amr.games.pacman.ui.swing.rendering.standard.StorkUI;
  */
 public class MsPacMan_IntermissionScene3 extends GameScene {
 
-	enum Phase {
-
-		FLAP, ACTION, READY_TO_PLAY;
-
-		final CountdownTimer timer = new CountdownTimer();
-	}
-
-	private static final int BIRD_Y = t(12), GROUND_Y = t(24);
-
-	private FlapUI flap;
-	private Pac pacMan;
-	private Pac msPacMan;
-	private StorkUI stork;
-	private JuniorBag bag;
-
-	private Phase phase;
+	private MsPacMan_IntermissionScene3_Controller animation;
 
 	public MsPacMan_IntermissionScene3(PacManGameController controller, Dimension size, SwingRendering rendering,
 			SoundManager sounds) {
 		super(controller, size, rendering, sounds);
 	}
 
-	private void enter(Phase newPhase, long ticks) {
-		phase = newPhase;
-		phase.timer.setDuration(ticks);
-	}
-
 	@Override
 	public void start() {
-
-		flap = new FlapUI(3, "JUNIOR", rendering);
-		flap.setTilePosition(3, 10);
-		flap.visible = true;
-		flap.flapping.restart();
-
-		pacMan = new Pac("Pac-Man", Direction.RIGHT);
-		pacMan.setPosition(t(3), GROUND_Y - 4);
-
-		msPacMan = new Pac("Ms. Pac-Man", Direction.RIGHT);
-		msPacMan.setPosition(t(5), GROUND_Y - 4);
-
-		stork = new StorkUI(rendering);
-		stork.setPosition(t(30), BIRD_Y);
-		stork.flying.restart();
-
-		bag = new JuniorBag();
-		bag.setPositionRelativeTo(stork, -14, 3);
-
-		enter(Phase.FLAP, Long.MAX_VALUE);
+		animation = new MsPacMan_IntermissionScene3_Controller(controller, rendering, sounds);
+		animation.start();
 	}
 
 	@Override
 	public void update() {
-		switch (phase) {
-		case FLAP:
-			if (phase.timer.running() == clock.sec(2)) {
-				flap.visible = false;
-				sounds.play(PacManGameSound.INTERMISSION_3);
-				enter(Phase.ACTION, Long.MAX_VALUE);
-			}
-			break;
-
-		case ACTION:
-			stork.move();
-			bag.move();
-			if (phase.timer.running() == 0) {
-				pacMan.visible = msPacMan.visible = stork.visible = bag.visible = true;
-				stork.velocity = bag.velocity = new V2d(-1.25f, 0);
-			}
-			// release bag?
-			if (!bag.released && stork.position.x <= t(24)) {
-				bag.released = true;
-			}
-			// closed bag reaches ground?
-			if (!bag.open && bag.position.y > GROUND_Y) {
-				++bag.bounces;
-				if (bag.bounces < 5) {
-					bag.velocity = new V2d(-0.2f, -1f / bag.bounces);
-					bag.setPosition(bag.position.x, GROUND_Y);
-				} else {
-					bag.open = true;
-					bag.velocity = V2d.NULL;
-					enter(Phase.READY_TO_PLAY, clock.sec(3));
-				}
-			}
-			break;
-		case READY_TO_PLAY:
-			stork.move();
-			if (phase.timer.expired()) {
-				game.state.timer.setDuration(0);
-			}
-			break;
-		default:
-			break;
-		}
-		phase.timer.run();
+		animation.update();
 	}
 
 	@Override
 	public void render(Graphics2D g) {
-		rendering.drawFlap(g, flap);
-		rendering.drawPlayer(g, msPacMan);
-		rendering.drawSpouse(g, pacMan);
-		rendering.drawStork(g, stork);
-		rendering.drawJuniorBag(g, bag);
+		rendering.drawFlap(g, animation.flap);
+		rendering.drawPlayer(g, animation.msPacMan);
+		rendering.drawSpouse(g, animation.pacMan);
+		rendering.drawStork(g, animation.stork);
+		rendering.drawJuniorBag(g, animation.bag);
 	}
 }
