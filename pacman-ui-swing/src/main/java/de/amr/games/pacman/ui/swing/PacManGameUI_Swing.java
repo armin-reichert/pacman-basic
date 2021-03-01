@@ -73,7 +73,7 @@ public class PacManGameUI_Swing implements PacManGameUI {
 	private final Deque<FlashMessage> flashMessageQ = new ArrayDeque<>();
 	private final Dimension unscaledSize;
 	private final V2i scaledSize;
-	private final float scaling;
+	private final double scaling;
 	private final JFrame window;
 	private final Timer titleUpdateTimer;
 	private final Canvas canvas;
@@ -83,10 +83,10 @@ public class PacManGameUI_Swing implements PacManGameUI {
 	private GameModel game;
 	private boolean muted;
 
-	public PacManGameUI_Swing(PacManGameController controller, double scalingFactor) {
+	public PacManGameUI_Swing(PacManGameController controller, double height) {
 		this.controller = controller;
-		scaling = (float) scalingFactor;
 		unscaledSize = new Dimension(28 * TS, 36 * TS);
+		scaling = Math.round(height / unscaledSize.height);
 		scaledSize = new V2d(unscaledSize.width, unscaledSize.height).scaled(this.scaling).toV2i();
 
 		canvas = new Canvas();
