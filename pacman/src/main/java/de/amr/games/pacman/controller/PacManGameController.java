@@ -434,7 +434,7 @@ public class PacManGameController {
 	// PACMAN_DYING
 
 	private void enterPacManDyingState() {
-		game.state.timer.setDuration(clock.sec(5));
+		game.state.timer.setDuration(clock.sec(4));
 		game.pac.speed = 0;
 		game.bonus.edibleTicksLeft = game.bonus.eatenTicksLeft = 0;
 		ghostAnimationsAllViews().forEach(ga -> {
@@ -454,7 +454,7 @@ public class PacManGameController {
 				return changeState(GAME_OVER, this::exitPacManDyingState, this::enterGameOverState);
 			}
 		}
-		if (game.state.timer.running() == clock.sec(2)) {
+		if (game.state.timer.running() == clock.sec(1)) {
 			game.ghosts().forEach(ghost -> ghost.visible = false);
 			playerAnimationsAllViews().map(PlayerAnimations::playerDying).forEach(Animation::restart);
 			soundsAllViews().forEach(snd -> snd.play(PacManGameSound.PACMAN_DEATH));
