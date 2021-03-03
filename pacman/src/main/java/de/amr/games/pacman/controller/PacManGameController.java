@@ -254,17 +254,17 @@ public class PacManGameController {
 		// test intermission scenes
 		if (keyPressed("1")) {
 			game.intermissionNumber = 1;
-			showFlashMessage("Intermission #1", clock.sec(3));
+			showFlashMessage("Intermission #1", clock.sec(0.5));
 			return changeState(INTERMISSION, null, this::enterIntermissionState);
 		}
 		if (keyPressed("2")) {
 			game.intermissionNumber = 2;
-			showFlashMessage("Intermission #2", clock.sec(3));
+			showFlashMessage("Intermission #2", clock.sec(0.5));
 			return changeState(INTERMISSION, null, this::enterIntermissionState);
 		}
 		if (keyPressed("3")) {
 			game.intermissionNumber = 3;
-			showFlashMessage("Intermission #3", clock.sec(3));
+			showFlashMessage("Intermission #3", clock.sec(0.5));
 			return changeState(INTERMISSION, null, this::enterIntermissionState);
 		}
 
