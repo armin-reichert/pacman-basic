@@ -31,4 +31,6 @@ public interface PacManGameUI {
 	Optional<SoundManager> sound();
 
 	Optional<PacManGameAnimations> animation();
+
+	void onEnterLevel(int levelNumber);
 }

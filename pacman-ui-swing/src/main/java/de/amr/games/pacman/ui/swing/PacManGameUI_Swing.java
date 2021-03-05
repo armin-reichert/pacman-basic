@@ -174,6 +174,10 @@ public class PacManGameUI_Swing implements PacManGameUI {
 		changeScene(currentScene());
 	}
 
+	@Override
+	public void onEnterLevel(int levelNumber) {
+	}
+
 	private void changeScene(GameScene newScene) {
 		currentScene = currentScene();
 		currentScene.start();

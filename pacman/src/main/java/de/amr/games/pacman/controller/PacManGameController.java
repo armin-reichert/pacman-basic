@@ -89,6 +89,8 @@ public class PacManGameController {
 	private boolean autopilotOn;
 	private PacManGameState previousState;
 
+	private boolean intermissionScenesEnabled = false;
+
 	public void step() {
 		updateGameState();
 		views.forEach(PacManGameUI::update);
@@ -481,9 +483,11 @@ public class PacManGameController {
 
 	private PacManGameState runChangingLevelState() {
 		if (game.state.timer.expired()) {
-			if (Arrays.asList(2, 5, 9, 13, 17).contains(game.levelNumber)) {
-				game.intermissionNumber = intermissionNumber(game.levelNumber);
-				return changeState(INTERMISSION, this::exitChangingLevelState, this::enterIntermissionState);
+			if (intermissionScenesEnabled) {
+				if (Arrays.asList(2, 5, 9, 13, 17).contains(game.levelNumber)) {
+					game.intermissionNumber = intermissionNumber(game.levelNumber);
+					return changeState(INTERMISSION, this::exitChangingLevelState, this::enterIntermissionState);
+				}
 			}
 			return changeState(READY, this::exitChangingLevelState, this::enterReadyState);
 		}
@@ -502,6 +506,7 @@ public class PacManGameController {
 		game.enterLevel(game.levelNumber + 1);
 		game.levelSymbols.add(game.level.bonusSymbol);
 		mazeAnimationsAllViews().forEach(ma -> ma.mazeFlashing(game.level.mazeNumber).reset());
+		views.forEach(view -> view.onEnterLevel(game.levelNumber));
 	}
 
 	// GAME_OVER
