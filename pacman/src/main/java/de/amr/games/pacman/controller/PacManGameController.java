@@ -89,39 +89,9 @@ public class PacManGameController {
 	private boolean autopilotOn;
 	private PacManGameState previousState;
 
-	private Thread gameLoopThread;
-	private volatile boolean gameLoopRunning;
-
-	public void startGameLoop() {
-		if (gameLoopRunning) {
-			log("Game loop is already started");
-			return;
-		}
-		gameLoopThread = new Thread(this::gameLoop, "PacManGameLoop");
-		gameLoopThread.start();
-		gameLoopRunning = true;
-	}
-
-	public void endGameLoop() {
-		gameLoopRunning = false;
-		try {
-			gameLoopThread.join();
-		} catch (Exception x) {
-			x.printStackTrace();
-		}
-		log("Exit game and terminate VM");
-		System.exit(0);
-	}
-
-	private void gameLoop() {
-		while (gameLoopRunning) {
-			clock.tick(this::step);
-		}
-	}
-
-	private void step() {
+	public void step() {
 		updateGameState();
-		views.forEach(view -> view.update());
+		views.forEach(PacManGameUI::update);
 	}
 
 	public GameModel getGame() {
@@ -386,17 +356,20 @@ public class PacManGameController {
 				log("%s lost power", game.pac.name);
 				game.ghosts(FRIGHTENED).forEach(ghost -> ghost.state = HUNTING_PAC);
 			}
-			ghostAnimationsAllViews().map(GhostAnimations::ghostFlashing).forEach(flashing -> {
-				if (game.level.numFlashes > 0 && game.pac.powerTicksLeft == game.level.numFlashes * flashing.duration()) {
-					flashing.restart();
-					log("Ghost flashing started (%d flashes, %d ticks each), Pac power left: %d ticks", game.level.numFlashes,
-							flashing.duration(), game.pac.powerTicksLeft);
-				} else if (game.pac.powerTicksLeft == 0) {
-					flashing.reset();
-					log("Ghost flashing stopped");
-				} else {
-					flashing.advance();
-				}
+			// TODO fixme
+			game.ghosts(FRIGHTENED).forEach(ghost -> {
+				ghostAnimationsAllViews().map(ga -> ga.ghostFlashing(ghost)).forEach(flashing -> {
+					if (game.level.numFlashes > 0 && game.pac.powerTicksLeft == game.level.numFlashes * flashing.duration()) {
+						flashing.restart();
+						log("Ghost flashing started (%d flashes, %d ticks each), Pac power left: %d ticks", game.level.numFlashes,
+								flashing.duration(), game.pac.powerTicksLeft);
+					} else if (game.pac.powerTicksLeft == 0) {
+						flashing.reset();
+						log("Ghost flashing stopped");
+					} else {
+						flashing.advance();
+					}
+				});
 			});
 		}
 
@@ -594,8 +567,9 @@ public class PacManGameController {
 	}
 
 	private void updateGameState() {
+		// Quit and show "Menu"?
 		if (keyPressed("M")) {
-			changeState(INTRO, null, this::enterIntroState);
+			changeState(INTRO, this::exitHuntingState, this::enterIntroState);
 			return;
 		}
 		handleCheatsAndStuff();
@@ -714,8 +688,8 @@ public class PacManGameController {
 				ghost.wishDir = ghost.dir.opposite();
 				ghost.forcedDirection = true;
 				ghostAnimationsAllViews().forEach(ga -> ga.ghostFrightened(ghost).forEach(Animation::restart));
+				ghostAnimationsAllViews().forEach(ga -> ga.ghostFlashing(ghost).reset()); // in case flashing is active now
 			});
-			ghostAnimationsAllViews().forEach(ga -> ga.ghostFlashing().reset()); // in case flashing is active now
 			soundsAllViews().forEach(snd -> snd.loopForever(PacManGameSound.PACMAN_POWER));
 		}
 	}

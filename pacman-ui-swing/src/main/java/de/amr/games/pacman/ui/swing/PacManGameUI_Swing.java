@@ -108,13 +108,6 @@ public class PacManGameUI_Swing implements PacManGameUI {
 				handleGlobalKeys(e);
 			}
 		});
-		window.addWindowListener(new WindowAdapter() {
-
-			@Override
-			public void windowClosing(WindowEvent e) {
-				controller.endGameLoop();
-			}
-		});
 		window.getContentPane().add(canvas);
 
 		keyboard = new Keyboard(window);
@@ -146,6 +139,16 @@ public class PacManGameUI_Swing implements PacManGameUI {
 
 		onGameChanged(controller.getGame());
 		log("Swing UI created at clock tick %d", clock.ticksTotal);
+	}
+
+	public void addWindowClosingHandler(Runnable handler) {
+		window.addWindowListener(new WindowAdapter() {
+
+			@Override
+			public void windowClosing(WindowEvent e) {
+				handler.run();
+			}
+		});
 	}
 
 	private GameType currentGame() {
