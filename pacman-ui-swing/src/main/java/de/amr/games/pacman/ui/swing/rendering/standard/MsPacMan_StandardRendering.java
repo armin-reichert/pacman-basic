@@ -157,7 +157,8 @@ public class MsPacMan_StandardRendering extends StandardRendering
 			return ghostReturningHome(ghost, ghost.dir).animate();
 		}
 		if (ghost.is(FRIGHTENED)) {
-			return ghostFlashing().isRunning() ? ghostFlashing().frame() : ghostFrightened(ghost, ghost.dir).animate();
+			return ghostFlashing(ghost).isRunning() ? ghostFlashing(ghost).frame()
+					: ghostFrightened(ghost, ghost.dir).animate();
 		}
 		if (ghost.is(LOCKED) && frightened) {
 			return ghostFrightened(ghost, ghost.dir).animate();
@@ -207,7 +208,7 @@ public class MsPacMan_StandardRendering extends StandardRendering
 	}
 
 	@Override
-	public Animation<BufferedImage> ghostFlashing() {
+	public Animation<BufferedImage> ghostFlashing(Ghost ghost) {
 		return assets.ghostFlashingAnim;
 	}
 

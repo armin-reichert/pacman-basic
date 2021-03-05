@@ -14,7 +14,7 @@ import de.amr.games.pacman.model.common.Ghost;
 public interface GhostAnimations {
 
 	default void reset(Ghost ghost) {
-		ghostFlashing().reset();
+		ghostFlashing(ghost).reset();
 		ghostFrightened(ghost).forEach(Animation::reset);
 		ghostKicking(ghost).forEach(Animation::reset);
 		ghostReturningHome(ghost).forEach(Animation::reset);
@@ -32,7 +32,7 @@ public interface GhostAnimations {
 		return Direction.stream().map(dir -> ghostFrightened(ghost, dir));
 	}
 
-	Animation<?> ghostFlashing();
+	Animation<?> ghostFlashing(Ghost ghost);
 
 	Animation<?> ghostReturningHome(Ghost ghost, Direction dir);
 
