@@ -177,18 +177,27 @@ public class PacManGameController {
 		showFlashMessage("Now playing " + (isPlaying(MS_PACMAN) ? "Ms. Pac-Man" : "Pac-Man"), clock.sec(2));
 	}
 
-	public void toggleAutopilot() {
+	public void setAutopilot(boolean enabled) {
+		autopilotOn = enabled;
 		autopilotOn = !autopilotOn;
 		String msg = "Autopilot " + (autopilotOn ? "on" : "off");
 		showFlashMessage(msg, clock.sec(1.5));
 		log(msg);
 	}
 
-	public void togglePacImmunity() {
-		game.pac.immune = !game.pac.immune;
+	public void toggleAutopilot() {
+		setAutopilot(!autopilotOn);
+	}
+
+	public void setPlayerImmune(boolean immune) {
+		game.pac.immune = immune;
 		String msg = game.pac.name + " is " + (game.pac.immune ? "immune" : "vulnerable");
 		showFlashMessage(msg, clock.sec(1.5));
 		log(msg);
+	}
+
+	public void togglePlayerImmune() {
+		setPlayerImmune(!game.pac.immune);
 	}
 
 	private Ghost ghost(int id) {
@@ -854,7 +863,7 @@ public class PacManGameController {
 		}
 		// I = toggle Pac immune/vulnerable
 		if (keyPressed("I")) {
-			togglePacImmunity();
+			togglePlayerImmune();
 		}
 		// L = add live
 		if (keyPressed("L")) {
