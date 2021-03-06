@@ -92,6 +92,12 @@ public class PacManGameController {
 	private boolean intermissionScenesEnabled = false;
 
 	public void step() {
+		// Quit current state and enter intro state?
+		if (keyPressed("Q")) {
+			changeState(INTRO, this::exitHuntingState, this::enterIntroState);
+			return;
+		}
+		handleCheatsAndStuff();
 		updateGameState();
 		views.forEach(PacManGameUI::update);
 	}
@@ -506,7 +512,6 @@ public class PacManGameController {
 		game.enterLevel(game.levelNumber + 1);
 		game.levelSymbols.add(game.level.bonusSymbol);
 		mazeAnimationsAllViews().forEach(ma -> ma.mazeFlashing(game.level.mazeNumber).reset());
-		views.forEach(view -> view.onEnterLevel(game.levelNumber));
 	}
 
 	// GAME_OVER
@@ -568,16 +573,11 @@ public class PacManGameController {
 			onEntry.run();
 		}
 		log("Entered state '%s' for %s", game.stateDescription(), ticksDescription(game.state.timer.getDuration()));
+		views.forEach(view -> view.onGameStateChanged(previousState, game.state));
 		return game.state;
 	}
 
 	private void updateGameState() {
-		// Quit and show "Menu"?
-		if (keyPressed("M")) {
-			changeState(INTRO, this::exitHuntingState, this::enterIntroState);
-			return;
-		}
-		handleCheatsAndStuff();
 		switch (game.state) {
 		case INTRO:
 			runIntroState();

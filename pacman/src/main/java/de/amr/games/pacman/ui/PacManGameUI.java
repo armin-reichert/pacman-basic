@@ -3,6 +3,7 @@ package de.amr.games.pacman.ui;
 import java.util.Optional;
 
 import de.amr.games.pacman.model.common.GameModel;
+import de.amr.games.pacman.model.common.PacManGameState;
 import de.amr.games.pacman.sound.SoundManager;
 import de.amr.games.pacman.ui.animation.PacManGameAnimations;
 
@@ -15,6 +16,8 @@ import de.amr.games.pacman.ui.animation.PacManGameAnimations;
 public interface PacManGameUI {
 
 	void onGameChanged(GameModel game);
+
+	void onGameStateChanged(PacManGameState from, PacManGameState to);
 
 	void show();
 
@@ -31,6 +34,4 @@ public interface PacManGameUI {
 	Optional<SoundManager> sound();
 
 	Optional<PacManGameAnimations> animation();
-
-	void onEnterLevel(int levelNumber);
 }

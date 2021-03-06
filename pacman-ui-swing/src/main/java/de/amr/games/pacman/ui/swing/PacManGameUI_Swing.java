@@ -37,6 +37,7 @@ import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameType;
+import de.amr.games.pacman.model.common.PacManGameState;
 import de.amr.games.pacman.sound.PacManGameSoundManager;
 import de.amr.games.pacman.sound.PacManGameSounds;
 import de.amr.games.pacman.sound.SoundManager;
@@ -175,7 +176,7 @@ public class PacManGameUI_Swing implements PacManGameUI {
 	}
 
 	@Override
-	public void onEnterLevel(int levelNumber) {
+	public void onGameStateChanged(PacManGameState from, PacManGameState to) {
 	}
 
 	private void changeScene(GameScene newScene) {
