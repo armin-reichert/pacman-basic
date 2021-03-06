@@ -179,7 +179,6 @@ public class PacManGameController {
 
 	public void setAutopilot(boolean enabled) {
 		autopilotOn = enabled;
-		autopilotOn = !autopilotOn;
 		String msg = "Autopilot " + (autopilotOn ? "on" : "off");
 		showFlashMessage(msg, clock.sec(1.5));
 		log(msg);
