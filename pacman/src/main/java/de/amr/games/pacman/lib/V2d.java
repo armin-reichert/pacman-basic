@@ -78,4 +78,13 @@ public class V2d {
 	public V2d inverse() {
 		return new V2d(-x, -y);
 	}
+
+	public double length() {
+		return Math.hypot(x, y);
+	}
+
+	public V2d normalized() {
+		double l = length();
+		return new V2d(x / l, y / l);
+	}
 }
