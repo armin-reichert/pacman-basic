@@ -138,6 +138,7 @@ public class PacManGameController {
 
 	public void play(GameType type) {
 		currentGame = gameModels.get(type);
+		currentGame.reset();
 		autopilot = new Autopilot(currentGame);
 		changeState(INTRO, null, this::enterIntroState);
 		views.forEach(view -> view.onGameChanged(currentGame));
@@ -147,10 +148,6 @@ public class PacManGameController {
 		if (views.add(view)) {
 			log("Added view %s", view);
 		}
-	}
-
-	public void showViews() {
-		views.forEach(PacManGameUI::show);
 	}
 
 	public void showFlashMessage(String message, long ticks) {

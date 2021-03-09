@@ -49,7 +49,7 @@ public class PacManGameAppSwing {
 			PacManGameUI_Swing ui = new PacManGameUI_Swing(controller, options.height);
 			ui.addWindowClosingHandler(this::endGameLoop);
 			controller.addView(ui);
-			controller.showViews();
+			ui.show();
 			startGameLoop();
 		});
 	}
