@@ -1,6 +1,6 @@
 package de.amr.games.pacman.ui.swing;
 
-import static de.amr.games.pacman.heaven.God.clock;
+import static de.amr.games.pacman.lib.God.clock;
 import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.model.common.GameType.MS_PACMAN;
 import static de.amr.games.pacman.model.common.GameType.PACMAN;

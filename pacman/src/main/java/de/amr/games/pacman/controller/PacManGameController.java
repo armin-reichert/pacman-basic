@@ -1,11 +1,11 @@
 package de.amr.games.pacman.controller;
 
-import static de.amr.games.pacman.heaven.God.clock;
-import static de.amr.games.pacman.heaven.God.random;
 import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Direction.UP;
+import static de.amr.games.pacman.lib.God.clock;
+import static de.amr.games.pacman.lib.God.random;
 import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.model.common.GameType.MS_PACMAN;
 import static de.amr.games.pacman.model.common.GameType.PACMAN;

@@ -1,8 +1,6 @@
-package de.amr.games.pacman.heaven;
+package de.amr.games.pacman.lib;
 
 import java.util.Random;
-
-import de.amr.games.pacman.lib.Clock;
 
 /**
  * He is everywhere and he does not roll the dices.

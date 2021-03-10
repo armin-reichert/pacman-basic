@@ -1,10 +1,10 @@
 package de.amr.games.pacman.model.common;
 
-import static de.amr.games.pacman.heaven.God.random;
 import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Direction.UP;
+import static de.amr.games.pacman.lib.God.random;
 import static de.amr.games.pacman.world.PacManGameWorld.t;
 import static java.lang.Math.abs;
 

@@ -10,7 +10,7 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 
 import de.amr.games.pacman.controller.PacManGameController;
-import de.amr.games.pacman.heaven.God;
+import de.amr.games.pacman.lib.God;
 import de.amr.games.pacman.lib.Logging;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.sound.SoundManager;

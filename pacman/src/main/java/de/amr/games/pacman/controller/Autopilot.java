@@ -1,6 +1,6 @@
 package de.amr.games.pacman.controller;
 
-import static de.amr.games.pacman.heaven.God.clock;
+import static de.amr.games.pacman.lib.God.clock;
 
 import java.util.ArrayList;
 import java.util.Collection;

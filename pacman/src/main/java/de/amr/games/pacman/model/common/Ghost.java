@@ -1,10 +1,10 @@
 package de.amr.games.pacman.model.common;
 
-import static de.amr.games.pacman.heaven.God.differsAtMost;
 import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Direction.UP;
+import static de.amr.games.pacman.lib.God.differsAtMost;
 import static de.amr.games.pacman.model.common.GhostState.ENTERING_HOUSE;
 import static de.amr.games.pacman.model.common.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.model.common.GhostState.LEAVING_HOUSE;

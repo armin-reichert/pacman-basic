@@ -1,6 +1,6 @@
 package de.amr.games.pacman.ui.swing.app;
 
-import static de.amr.games.pacman.heaven.God.clock;
+import static de.amr.games.pacman.lib.God.clock;
 import static de.amr.games.pacman.lib.Logging.log;
 import static java.awt.EventQueue.invokeLater;
 

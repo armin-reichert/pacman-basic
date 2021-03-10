@@ -1,10 +1,10 @@
 package de.amr.games.pacman.model.pacman;
 
-import static de.amr.games.pacman.heaven.God.clock;
 import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Direction.UP;
+import static de.amr.games.pacman.lib.God.clock;
 import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.model.common.Ghost.BLINKY;
 import static de.amr.games.pacman.model.common.Ghost.CLYDE;
