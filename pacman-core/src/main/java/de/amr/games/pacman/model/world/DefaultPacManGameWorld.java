@@ -19,26 +19,26 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
 
 /**
- * Common base of Pac-Man classic and Ms. Pac-man worlds. All maps used in these game variants have
- * the same ghost house structure and location.
+ * Default world of Pac-Man and Ms. Pac-Man games. All maps have the same ghost house structure and
+ * location.
  * 
  * @author Armin Reichert
  */
-public class MapBasedPacManGameWorld implements PacManGameWorld {
+public class DefaultPacManGameWorld implements PacManGameWorld {
 
-	// these are assumed to be equal in all world maps
+	// assumed to be equal for all world maps
 	private final V2i houseEntry = new V2i(13, 14);
 	private final V2i houseLeft = new V2i(11, 17);
-	private final V2i houseMiddle = new V2i(13, 17);
+	private final V2i houseCenter = new V2i(13, 17);
 	private final V2i houseRight = new V2i(15, 17);
 	private final V2i pacHome = new V2i(13, 26);
-	private final V2i[] ghostHomes = { houseEntry, houseMiddle, houseLeft, houseRight };
+	private final V2i[] ghostHomes = { houseEntry, houseCenter, houseLeft, houseRight };
 	private final V2i[] ghostScatterTargets = { new V2i(25, 0), new V2i(2, 0), new V2i(27, 35), new V2i(27, 35) };
 
 	protected WorldMap map;
 
-	protected final List<V2i> portalsLeft = new ArrayList<>(2);
-	protected final List<V2i> portalsRight = new ArrayList<>(2);
+	protected List<V2i> portalsLeft;
+	protected List<V2i> portalsRight;
 	protected BitSet intersections;
 	protected List<V2i> upwardsBlockedTiles;
 	protected List<V2i> energizerTiles;
@@ -48,9 +48,9 @@ public class MapBasedPacManGameWorld implements PacManGameWorld {
 
 		upwardsBlockedTiles = Collections.emptyList();
 
-		// find portals
-		portalsLeft.clear();
-		portalsRight.clear();
+		// find portal tiles
+		portalsLeft = new ArrayList<>(2);
+		portalsRight = new ArrayList<>(2);
 		for (int y = 0; y < map.height(); ++y) {
 			if (map.data(0, y) == TUNNEL && map.data(map.width() - 1, y) == TUNNEL) {
 				portalsLeft.add(new V2i(-1, y));
@@ -78,18 +78,13 @@ public class MapBasedPacManGameWorld implements PacManGameWorld {
 	}
 
 	@Override
-	public int xTiles() {
+	public int numCols() {
 		return map.width();
 	}
 
 	@Override
-	public int yTiles() {
+	public int numRows() {
 		return map.height();
-	}
-
-	@Override
-	public boolean insideMap(V2i tile) {
-		return 0 <= tile.x && tile.x < map.width() && 0 <= tile.y && tile.y < map.height();
 	}
 
 	@Override
@@ -139,7 +134,7 @@ public class MapBasedPacManGameWorld implements PacManGameWorld {
 
 	@Override
 	public V2i houseCenter() {
-		return houseMiddle;
+		return houseCenter;
 	}
 
 	@Override

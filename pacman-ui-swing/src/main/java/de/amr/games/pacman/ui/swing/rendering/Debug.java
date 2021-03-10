@@ -49,8 +49,8 @@ public class Debug {
 		Stroke thin = new BasicStroke(0.1f);
 		g.setColor(dark);
 		g.setStroke(thin);
-		for (int x = 0; x < game.level.world.xTiles(); ++x) {
-			for (int y = 0; y < game.level.world.yTiles(); ++y) {
+		for (int x = 0; x < game.level.world.numCols(); ++x) {
+			for (int y = 0; y < game.level.world.numRows(); ++y) {
 				V2i tile = new V2i(x, y);
 				if (game.level.world.isIntersection(tile)) {
 					for (Direction dir : Direction.values()) {

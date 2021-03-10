@@ -63,8 +63,8 @@ public class GameLevel {
 		// find food
 		totalFoodCount = 0;
 		int energizerCount = 0;
-		for (int x = 0; x < gameWorld.xTiles(); ++x) {
-			for (int y = 0; y < gameWorld.yTiles(); ++y) {
+		for (int x = 0; x < gameWorld.numCols(); ++x) {
+			for (int y = 0; y < gameWorld.numRows(); ++y) {
 				V2i tile = new V2i(x, y);
 				if (gameWorld.isFoodTile(tile)) {
 					++totalFoodCount;

@@ -15,7 +15,7 @@ import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
-import de.amr.games.pacman.model.world.MapBasedPacManGameWorld;
+import de.amr.games.pacman.model.world.DefaultPacManGameWorld;
 import de.amr.games.pacman.model.world.WorldMap;
 
 /**
@@ -59,11 +59,11 @@ public class MsPacManGame extends GameModel {
 		//@formatter:on
 	};
 
-	private final MapBasedPacManGameWorld world;
+	private final DefaultPacManGameWorld world;
 
 	public MsPacManGame() {
 		// all levels share one game world
-		world = new MapBasedPacManGameWorld();
+		world = new DefaultPacManGameWorld();
 
 		// sanity check
 		log("Checking Ms. Pac-Man game maps...");

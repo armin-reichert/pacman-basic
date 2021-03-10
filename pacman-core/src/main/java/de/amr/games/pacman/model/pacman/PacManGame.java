@@ -18,7 +18,7 @@ import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
-import de.amr.games.pacman.model.world.MapBasedPacManGameWorld;
+import de.amr.games.pacman.model.world.DefaultPacManGameWorld;
 import de.amr.games.pacman.model.world.WorldMap;
 
 /**
@@ -62,11 +62,11 @@ public class PacManGame extends GameModel {
 		//@formatter:on
 	};
 
-	private final MapBasedPacManGameWorld world;
+	private final DefaultPacManGameWorld world;
 
 	public PacManGame() {
 
-		world = new MapBasedPacManGameWorld();
+		world = new DefaultPacManGameWorld();
 		world.setMap(new WorldMap("/pacman/maps/map1.txt"));
 		world.setUpwardsBlocked(new V2i(12, 13), new V2i(15, 13), new V2i(12, 25), new V2i(15, 25));
 
