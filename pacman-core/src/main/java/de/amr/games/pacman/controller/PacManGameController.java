@@ -43,12 +43,12 @@ import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.PacManGameState;
 import de.amr.games.pacman.model.mspacman.MsPacManGame;
 import de.amr.games.pacman.model.pacman.PacManGame;
-import de.amr.games.pacman.sound.PacManGameSound;
-import de.amr.games.pacman.sound.SoundManager;
 import de.amr.games.pacman.ui.PacManGameUI;
 import de.amr.games.pacman.ui.animation.MazeAnimations;
 import de.amr.games.pacman.ui.animation.PacManGameAnimations;
 import de.amr.games.pacman.ui.animation.PlayerAnimations;
+import de.amr.games.pacman.ui.sound.PacManGameSound;
+import de.amr.games.pacman.ui.sound.SoundManager;
 
 /**
  * Controller (in the sense of MVC) for the Pac-Man and Ms. Pac-Man game.
@@ -86,7 +86,7 @@ public class PacManGameController {
 	private GameModel game;
 	private PacManGameUI userInterface;
 
-	private final Autopilot autopilot;
+	public final Autopilot autopilot;
 	private PacManGameState previousState;
 	private boolean intermissionScenesEnabled = true;
 

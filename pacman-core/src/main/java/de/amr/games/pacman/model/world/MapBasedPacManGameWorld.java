@@ -1,11 +1,11 @@
-package de.amr.games.pacman.world;
+package de.amr.games.pacman.model.world;
 
 import static de.amr.games.pacman.lib.Direction.DOWN;
-import static de.amr.games.pacman.world.WorldMap.DOOR;
-import static de.amr.games.pacman.world.WorldMap.ENERGIZER;
-import static de.amr.games.pacman.world.WorldMap.PILL;
-import static de.amr.games.pacman.world.WorldMap.TUNNEL;
-import static de.amr.games.pacman.world.WorldMap.WALL;
+import static de.amr.games.pacman.model.world.WorldMap.DOOR;
+import static de.amr.games.pacman.model.world.WorldMap.ENERGIZER;
+import static de.amr.games.pacman.model.world.WorldMap.PILL;
+import static de.amr.games.pacman.model.world.WorldMap.TUNNEL;
+import static de.amr.games.pacman.model.world.WorldMap.WALL;
 
 import java.util.ArrayList;
 import java.util.Arrays;

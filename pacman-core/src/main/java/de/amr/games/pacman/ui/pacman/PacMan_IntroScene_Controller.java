@@ -2,7 +2,7 @@ package de.amr.games.pacman.ui.pacman;
 
 import static de.amr.games.pacman.lib.God.clock;
 import static de.amr.games.pacman.lib.Logging.log;
-import static de.amr.games.pacman.world.PacManGameWorld.t;
+import static de.amr.games.pacman.model.world.PacManGameWorld.t;
 
 import de.amr.games.pacman.controller.PacManGameController;
 import de.amr.games.pacman.lib.Animation;

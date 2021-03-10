@@ -4,8 +4,8 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 
 import de.amr.games.pacman.controller.PacManGameController;
-import de.amr.games.pacman.sound.SoundManager;
 import de.amr.games.pacman.ui.mspacman.MsPacMan_IntermissionScene3_Controller;
+import de.amr.games.pacman.ui.sound.SoundManager;
 import de.amr.games.pacman.ui.swing.common.GameScene;
 import de.amr.games.pacman.ui.swing.rendering.SwingRendering;
 

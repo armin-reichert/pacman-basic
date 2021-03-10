@@ -15,8 +15,8 @@ import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
-import de.amr.games.pacman.world.MapBasedPacManGameWorld;
-import de.amr.games.pacman.world.WorldMap;
+import de.amr.games.pacman.model.world.MapBasedPacManGameWorld;
+import de.amr.games.pacman.model.world.WorldMap;
 
 /**
  * Game model of the Ms. Pac-Man game variant.

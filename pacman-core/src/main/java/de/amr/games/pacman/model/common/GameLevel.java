@@ -5,7 +5,7 @@ import static de.amr.games.pacman.lib.Logging.log;
 import java.util.BitSet;
 
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.world.PacManGameWorld;
+import de.amr.games.pacman.model.world.PacManGameWorld;
 
 /**
  * Data comprising a game level.

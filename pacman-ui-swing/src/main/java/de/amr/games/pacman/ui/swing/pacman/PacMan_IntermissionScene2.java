@@ -1,13 +1,13 @@
 package de.amr.games.pacman.ui.swing.pacman;
 
-import static de.amr.games.pacman.world.PacManGameWorld.t;
+import static de.amr.games.pacman.model.world.PacManGameWorld.t;
 
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 
 import de.amr.games.pacman.controller.PacManGameController;
-import de.amr.games.pacman.sound.SoundManager;
 import de.amr.games.pacman.ui.pacman.PacMan_IntermissionScene2_Controller;
+import de.amr.games.pacman.ui.sound.SoundManager;
 import de.amr.games.pacman.ui.swing.common.GameScene;
 import de.amr.games.pacman.ui.swing.rendering.SwingRendering;
 

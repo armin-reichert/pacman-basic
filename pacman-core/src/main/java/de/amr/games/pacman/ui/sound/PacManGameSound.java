@@ -1,4 +1,4 @@
-package de.amr.games.pacman.sound;
+package de.amr.games.pacman.ui.sound;
 
 /**
  * Constants for the sounds used in the Pac-Man and Ms. Pac-Man games.

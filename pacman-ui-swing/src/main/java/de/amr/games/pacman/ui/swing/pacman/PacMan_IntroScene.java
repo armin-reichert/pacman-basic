@@ -1,8 +1,8 @@
 package de.amr.games.pacman.ui.swing.pacman;
 
+import static de.amr.games.pacman.model.world.PacManGameWorld.TS;
+import static de.amr.games.pacman.model.world.PacManGameWorld.t;
 import static de.amr.games.pacman.ui.pacman.PacMan_IntroScene_Controller.TOP_Y;
-import static de.amr.games.pacman.world.PacManGameWorld.TS;
-import static de.amr.games.pacman.world.PacManGameWorld.t;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -13,10 +13,10 @@ import de.amr.games.pacman.controller.PacManGameController;
 import de.amr.games.pacman.lib.God;
 import de.amr.games.pacman.lib.Logging;
 import de.amr.games.pacman.model.common.Ghost;
-import de.amr.games.pacman.sound.SoundManager;
 import de.amr.games.pacman.ui.pacman.PacMan_IntroScene_Controller;
 import de.amr.games.pacman.ui.pacman.PacMan_IntroScene_Controller.GhostPortrait;
 import de.amr.games.pacman.ui.pacman.PacMan_IntroScene_Controller.Phase;
+import de.amr.games.pacman.ui.sound.SoundManager;
 import de.amr.games.pacman.ui.swing.common.GameScene;
 import de.amr.games.pacman.ui.swing.rendering.SwingRendering;
 

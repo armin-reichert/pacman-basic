@@ -3,7 +3,7 @@ package de.amr.games.pacman.model.common;
 import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.model.common.Ghost.BLINKY;
 import static de.amr.games.pacman.model.common.GhostState.LOCKED;
-import static de.amr.games.pacman.world.PacManGameWorld.HTS;
+import static de.amr.games.pacman.model.world.PacManGameWorld.HTS;
 
 import java.io.File;
 import java.util.ArrayList;

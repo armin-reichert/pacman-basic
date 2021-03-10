@@ -1,4 +1,4 @@
-package de.amr.games.pacman.sound;
+package de.amr.games.pacman.ui.sound;
 
 /**
  * Sound interface used by game controller.

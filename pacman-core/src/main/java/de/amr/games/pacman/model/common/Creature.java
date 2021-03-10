@@ -5,7 +5,7 @@ import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.lib.God.random;
-import static de.amr.games.pacman.world.PacManGameWorld.t;
+import static de.amr.games.pacman.model.world.PacManGameWorld.t;
 import static java.lang.Math.abs;
 
 import java.util.List;
@@ -16,7 +16,7 @@ import java.util.stream.Stream;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.world.PacManGameWorld;
+import de.amr.games.pacman.model.world.PacManGameWorld;
 
 /**
  * Base class for Pac-Man, Ms. Pac-Man the ghosts and the bonus. Creatures can move through the

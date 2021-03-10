@@ -1,6 +1,6 @@
 package de.amr.games.pacman.model.common;
 
-import static de.amr.games.pacman.world.PacManGameWorld.t;
+import static de.amr.games.pacman.model.world.PacManGameWorld.t;
 
 import de.amr.games.pacman.lib.V2d;
 
