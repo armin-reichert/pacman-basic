@@ -237,9 +237,7 @@ public class PacManGameController {
 		if (userInterface.keyPressed("Space")) {
 			return changeState(READY, null, this::enterReadyState);
 		}
-		if (userInterface.keyPressed("V")) {
-			toggleGameType();
-		}
+
 		// test intermission scenes
 		if (userInterface.keyPressed("1")) {
 			game.intermissionNumber = 1;

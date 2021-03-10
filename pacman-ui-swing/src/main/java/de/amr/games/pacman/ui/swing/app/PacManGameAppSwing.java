@@ -9,11 +9,50 @@ import de.amr.games.pacman.model.common.GameType;
 import de.amr.games.pacman.ui.swing.PacManGameUI_Swing;
 
 /**
- * The Pac-Man game app.
+ * The Pac-Man game Swing application variant. Runs the game loop in its own thread.
  * 
  * @author Armin Reichert
  */
 public class PacManGameAppSwing {
+
+	private static class GameLoop {
+
+		private final PacManGameController controller;
+		private Thread thread;
+		private boolean running;
+
+		public GameLoop(PacManGameController controller) {
+			this.controller = controller;
+		}
+
+		private void start() {
+			if (running) {
+				log("Cannot start: Game loop is already running");
+				return;
+			}
+			thread = new Thread(this::run, "GameLoop");
+			thread.start();
+			running = true;
+		}
+
+		private void run() {
+			while (running) {
+				clock.tick(controller::step);
+			}
+		}
+
+		private void end() {
+			running = false;
+			try {
+				thread.join();
+			} catch (Exception x) {
+				x.printStackTrace();
+			}
+			log("Exit game and terminate VM");
+			System.exit(0);
+		}
+
+	}
 
 	/**
 	 * Starts the Pac-Man game application.
@@ -26,53 +65,15 @@ public class PacManGameAppSwing {
 	 *             </ul>
 	 */
 	public static void main(String[] args) {
-		new PacManGameAppSwing(new CommandLineArgs(args)).launch();
-	}
-
-	private CommandLineArgs options;
-	private Thread gameLoopThread;
-	private volatile boolean gameLoopRunning;
-	private PacManGameController controller;
-
-	public PacManGameAppSwing(CommandLineArgs options) {
-		this.options = options;
-	}
-
-	public void launch() {
+		Options options = new Options(args);
+		PacManGameController controller = new PacManGameController(options.pacman ? GameType.PACMAN : GameType.MS_PACMAN);
 		invokeLater(() -> {
-			controller = new PacManGameController(options.pacman ? GameType.PACMAN : GameType.MS_PACMAN);
 			PacManGameUI_Swing ui = new PacManGameUI_Swing(controller, options.height);
-			ui.addWindowClosingHandler(this::endGameLoop);
+			GameLoop gameLoop = new GameLoop(controller);
+			ui.addWindowClosingHandler(gameLoop::end);
 			controller.setUserInterface(ui);
 			ui.show();
-			startGameLoop();
+			gameLoop.start();
 		});
-	}
-
-	private void gameLoop() {
-		while (gameLoopRunning) {
-			clock.tick(controller::step);
-		}
-	}
-
-	private void startGameLoop() {
-		if (gameLoopRunning) {
-			log("Game loop is already started");
-			return;
-		}
-		gameLoopThread = new Thread(this::gameLoop, "PacManGameLoop");
-		gameLoopThread.start();
-		gameLoopRunning = true;
-	}
-
-	private void endGameLoop() {
-		gameLoopRunning = false;
-		try {
-			gameLoopThread.join();
-		} catch (Exception x) {
-			x.printStackTrace();
-		}
-		log("Exit game and terminate VM");
-		System.exit(0);
 	}
 }

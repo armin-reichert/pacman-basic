@@ -271,6 +271,9 @@ public class PacManGameUI_Swing implements PacManGameUI {
 
 	private void handleGlobalKeys(KeyEvent e) {
 		switch (e.getKeyCode()) {
+		case KeyEvent.VK_V:
+			controller.toggleGameType();
+			break;
 		case KeyEvent.VK_S: {
 			clock.targetFreq = clock.targetFreq != 30 ? 30 : 60;
 			String text = clock.targetFreq == 60 ? "Normal speed" : "Slow speed";
