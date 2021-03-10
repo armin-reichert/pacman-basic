@@ -36,19 +36,14 @@ public class PacManGameAppSwing {
 
 	public PacManGameAppSwing(CommandLineArgs options) {
 		this.options = options;
-		controller = new PacManGameController();
-		if (options.pacman) {
-			controller.play(GameType.PACMAN);
-		} else {
-			controller.play(GameType.MS_PACMAN);
-		}
 	}
 
 	public void launch() {
 		invokeLater(() -> {
+			controller = new PacManGameController(options.pacman ? GameType.PACMAN : GameType.MS_PACMAN);
 			PacManGameUI_Swing ui = new PacManGameUI_Swing(controller, options.height);
 			ui.addWindowClosingHandler(this::endGameLoop);
-			controller.addView(ui);
+			controller.setUserInterface(ui);
 			ui.show();
 			startGameLoop();
 		});

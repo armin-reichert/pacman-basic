@@ -10,13 +10,6 @@
 		<maven.compiler.source>15</maven.compiler.source>
 		<maven.compiler.target>15</maven.compiler.target>
 	</properties>
-	<dependencies>
-		<dependency>
-			<groupId>de.amr.games.pacman</groupId>
-			<artifactId>pacman-basic</artifactId>
-			<version>1.0</version>
-		</dependency>
-	</dependencies>
 	<build>
 		<plugins>
 			<plugin>
@@ -43,4 +36,11 @@
 			</plugin>
 		</plugins>
 	</build>
+	<dependencies>
+		<dependency>
+			<groupId>de.amr.games.pacman</groupId>
+			<artifactId>pacman-core</artifactId>
+			<version>1.0</version>
+		</dependency>
+	</dependencies>
 </project>

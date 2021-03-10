@@ -25,7 +25,6 @@ import java.util.Arrays;
 import java.util.Deque;
 import java.util.EnumMap;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -81,7 +80,6 @@ public class PacManGameUI_Swing implements PacManGameUI {
 	private final Keyboard keyboard;
 
 	private GameScene currentScene;
-	private GameModel game;
 	private boolean muted;
 
 	public PacManGameUI_Swing(PacManGameController controller, double height) {
@@ -137,8 +135,6 @@ public class PacManGameUI_Swing implements PacManGameUI {
 				new PacMan_IntermissionScene3(controller, unscaledSize, renderings.get(PACMAN), sounds.get(PACMAN)), //
 				new PlayScene(controller, unscaledSize, renderings.get(PACMAN), sounds.get(PACMAN))//
 		));
-
-		onGameChanged(controller.getGame());
 		log("Swing UI created at clock tick %d", clock.ticksTotal);
 	}
 
@@ -158,11 +154,11 @@ public class PacManGameUI_Swing implements PacManGameUI {
 
 	private GameScene currentScene() {
 		GameType currentGame = currentGame();
-		switch (game.state) {
+		switch (controller.getGame().state) {
 		case INTRO:
 			return scenes.get(currentGame).get(0);
 		case INTERMISSION:
-			return scenes.get(currentGame).get(game.intermissionNumber);
+			return scenes.get(currentGame).get(controller.getGame().intermissionNumber);
 		default:
 			return scenes.get(currentGame).get(4);
 		}
@@ -170,7 +166,6 @@ public class PacManGameUI_Swing implements PacManGameUI {
 
 	@Override
 	public void onGameChanged(GameModel newGame) {
-		game = Objects.requireNonNull(newGame);
 		scenes.get(currentGame()).forEach(scene -> scene.setGame(newGame));
 		changeScene(currentScene());
 	}
@@ -199,7 +194,7 @@ public class PacManGameUI_Swing implements PacManGameUI {
 	public void update() {
 		GameScene newScene = currentScene();
 		if (newScene == null) {
-			throw new IllegalStateException("No scene found for game state " + game.state);
+			throw new IllegalStateException("No scene found for game state " + controller.getGame().state);
 		}
 		if (currentScene != newScene) {
 			if (currentScene != null) {
