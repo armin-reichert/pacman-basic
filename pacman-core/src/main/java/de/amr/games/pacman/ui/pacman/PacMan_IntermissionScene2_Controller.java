@@ -5,8 +5,8 @@ import static de.amr.games.pacman.model.common.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.model.world.PacManGameWorld.t;
 
 import de.amr.games.pacman.controller.PacManGameController;
-import de.amr.games.pacman.lib.CountdownTimer;
 import de.amr.games.pacman.lib.Direction;
+import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.common.GameEntity;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
@@ -24,7 +24,7 @@ public class PacMan_IntermissionScene2_Controller {
 
 	public static final int groundTileY = 20;
 
-	public final CountdownTimer timer = new CountdownTimer();
+	public final TickTimer timer = new TickTimer();
 	public final PacManGameController controller;
 	public final PacManGameAnimations animations;
 	public final SoundManager sounds;
@@ -66,7 +66,8 @@ public class PacMan_IntermissionScene2_Controller {
 
 	public void enter(Phase nextPhase) {
 		phase = nextPhase;
-		timer.setDuration(Long.MAX_VALUE);
+		timer.reset();
+		timer.start();
 	}
 
 	public int nailDistance() {
@@ -79,6 +80,7 @@ public class PacMan_IntermissionScene2_Controller {
 			if (nailDistance() == 0) {
 				enter(Phase.GETTING_STUCK);
 			}
+			timer.tick();
 			break;
 		case GETTING_STUCK:
 			int stretching = nailDistance() / 4;
@@ -88,20 +90,22 @@ public class PacMan_IntermissionScene2_Controller {
 				blinky.dir = Direction.UP;
 				enter(Phase.STUCK);
 			}
+			timer.tick();
 			break;
 		case STUCK:
-			if (timer.running() == clock.sec(3)) {
+			if (timer.ticksRunning() == clock.sec(3)) {
 				blinky.dir = Direction.RIGHT;
 			}
-			if (timer.running() == clock.sec(6)) {
-				controller.finishCurrentState();
+			if (timer.ticksRunning() == clock.sec(6)) {
+				controller.getGame().state.timer.forceExpiration();
+				return;
 			}
+			timer.tick();
 			break;
 		default:
 			throw new IllegalStateException("Illegal phase: " + phase);
 		}
 		blinky.move();
 		pac.move();
-		timer.run();
 	}
 }

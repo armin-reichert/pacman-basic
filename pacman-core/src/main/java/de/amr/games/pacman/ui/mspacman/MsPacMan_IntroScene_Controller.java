@@ -6,7 +6,7 @@ import static de.amr.games.pacman.lib.God.clock;
 import static de.amr.games.pacman.model.world.PacManGameWorld.t;
 
 import de.amr.games.pacman.controller.PacManGameController;
-import de.amr.games.pacman.lib.CountdownTimer;
+import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.GhostState;
@@ -29,7 +29,7 @@ public class MsPacMan_IntroScene_Controller {
 	public final PacManGameController controller;
 	public final PacManGameAnimations animations;
 	public final SoundManager sounds;
-	public final CountdownTimer timer = new CountdownTimer();
+	public final TickTimer timer = new TickTimer();
 	public final Animation<Boolean> blinking = Animation.pulse().frameDuration(30);
 	public Pac msPac;
 	public Ghost[] ghosts;
@@ -46,7 +46,9 @@ public class MsPacMan_IntroScene_Controller {
 
 	public void enterPhase(Phase newPhase) {
 		phase = newPhase;
+		timer.reset();
 		timer.setDuration(Long.MAX_VALUE);
+		timer.start();
 	}
 
 	public void start() {
@@ -85,10 +87,11 @@ public class MsPacMan_IntroScene_Controller {
 		msPac.move();
 		switch (phase) {
 		case BEGIN:
-			if (timer.running() == clock.sec(1)) {
+			if (timer.ticksRunning() == clock.sec(1)) {
 				currentGhost = ghosts[0];
 				enterPhase(Phase.GHOSTS);
 			}
+			timer.tick();
 			break;
 		case GHOSTS:
 			boolean ghostComplete = letCurrentGhostWalkToEndPosition();
@@ -102,33 +105,35 @@ public class MsPacMan_IntroScene_Controller {
 					enterPhase(Phase.GHOSTS);
 				}
 			}
+			timer.tick();
 			break;
 		case MSPACMAN:
 			boolean msPacComplete = letMsPacManWalkToEndPosition();
 			if (msPacComplete) {
 				enterPhase(Phase.END);
 			}
+			timer.tick();
 			break;
 		case END:
-			if (timer.running() == 0) {
+			if (timer.ticksRunning() == 1) {
 				blinking.restart();
 			}
-			if (timer.running() == clock.sec(5)) {
+			if (timer.ticksRunning() == clock.sec(5)) {
 				controller.getGame().attractMode = true;
 			}
 			blinking.animate();
+			timer.tick();
 			break;
 		default:
 			break;
 		}
-		timer.run();
 	}
 
 	public boolean letCurrentGhostWalkToEndPosition() {
 		if (currentGhost == null) {
 			return false;
 		}
-		if (timer.running() == 0) {
+		if (timer.ticksRunning() == 1) {
 			currentGhost.speed = 1;
 			animations.ghostAnimations().ghostKicking(currentGhost).forEach(Animation::restart);
 		}
@@ -144,7 +149,7 @@ public class MsPacMan_IntroScene_Controller {
 	}
 
 	public boolean letMsPacManWalkToEndPosition() {
-		if (timer.running() == 0) {
+		if (timer.ticksRunning() == 1) {
 			msPac.visible = true;
 			msPac.couldMove = true;
 			msPac.speed = 1;

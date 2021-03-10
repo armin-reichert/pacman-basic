@@ -5,8 +5,8 @@ import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.model.world.PacManGameWorld.t;
 
 import de.amr.games.pacman.controller.PacManGameController;
-import de.amr.games.pacman.lib.CountdownTimer;
 import de.amr.games.pacman.lib.Direction;
+import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.GhostState;
 import de.amr.games.pacman.model.common.Pac;
@@ -29,7 +29,7 @@ public class PacMan_IntermissionScene3_Controller {
 
 	public static final int chaseTileY = 20;
 
-	public final CountdownTimer timer = new CountdownTimer();
+	public final TickTimer timer = new TickTimer();
 	public final PacManGameController controller;
 	public final PacManGameAnimations animations;
 	public final SoundManager sounds;
@@ -79,7 +79,8 @@ public class PacMan_IntermissionScene3_Controller {
 			break;
 		case RETURNING_HALF_NAKED:
 			if (blinky.position.x > t(28) + 200) {
-				controller.finishCurrentState();
+				controller.getGame().state.timer.forceExpiration();
+				return;
 			}
 			break;
 		default:

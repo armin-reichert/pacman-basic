@@ -5,8 +5,8 @@ import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.model.world.PacManGameWorld.t;
 
 import de.amr.games.pacman.controller.PacManGameController;
-import de.amr.games.pacman.lib.CountdownTimer;
 import de.amr.games.pacman.lib.Direction;
+import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.GhostState;
 import de.amr.games.pacman.model.common.Pac;
@@ -25,18 +25,18 @@ public class PacMan_IntroScene_Controller {
 
 	public enum Phase {
 
-		BEGIN, PRESENTING, CHASING_PAC, CHASING_GHOSTS, READY_TO_PLAY;
+		BEGIN, PRESENTING_GHOST, CHASING_PAC, CHASING_GHOSTS, READY_TO_PLAY;
 	}
 
 	public static final int TOP_Y = t(6);
 
-	public final CountdownTimer timer = new CountdownTimer();
+	public final TickTimer timer = new TickTimer();
 	public final PacManGameController controller;
 	public final PacManGameAnimations animations;
 
 	public final Animation<Boolean> blinking = Animation.pulse().frameDuration(20);
 	public GhostPortrait[] gallery;
-	public int presentedGhostIndex;
+	public int selectedGhost;
 	public long ghostKilledTime;
 	public Pac pac;
 	public Ghost[] ghosts;
@@ -48,9 +48,10 @@ public class PacMan_IntroScene_Controller {
 		this.animations = animations;
 	}
 
-	public void enterPhase(Phase newPhase) {
+	private void enterPhase(Phase newPhase) {
 		phase = newPhase;
-		timer.setDuration(Long.MAX_VALUE);
+		timer.reset();
+		timer.start();
 		log("%s: Phase %s entered at clock tick %d", this, phase, clock.ticksTotal);
 	}
 
@@ -97,37 +98,42 @@ public class PacMan_IntroScene_Controller {
 			ghost.move();
 		}
 		switch (phase) {
+
 		case BEGIN:
-			if (timer.running() == clock.sec(2)) {
-				presentedGhostIndex = -1;
-				enterPhase(Phase.PRESENTING);
+			if (timer.ticksRunning() == clock.sec(2)) {
+				selectGhost(0);
+				enterPhase(Phase.PRESENTING_GHOST);
 			}
+			timer.tick();
 			break;
-		case PRESENTING:
-			if (timer.running() == 0) {
-				presentGhost(presentedGhostIndex + 1);
+
+		case PRESENTING_GHOST:
+			if (timer.ticksRunning() == clock.sec(0.5)) {
+				gallery[selectedGhost].characterVisible = true;
 			}
-			if (timer.running() == clock.sec(0.5)) {
-				gallery[presentedGhostIndex].characterVisible = true;
+			if (timer.ticksRunning() == clock.sec(1)) {
+				gallery[selectedGhost].nicknameVisible = true;
 			}
-			if (timer.running() == clock.sec(1)) {
-				gallery[presentedGhostIndex].nicknameVisible = true;
-			}
-			if (timer.running() == clock.sec(2)) {
-				if (presentedGhostIndex < 3) {
-					enterPhase(Phase.PRESENTING);
+			if (timer.ticksRunning() == clock.sec(2)) {
+				if (selectedGhost < 3) {
+					selectGhost(selectedGhost + 1);
+					enterPhase(Phase.PRESENTING_GHOST);
 				} else {
 					startGhostsChasingPac();
 					enterPhase(Phase.CHASING_PAC);
 				}
 			}
+			timer.tick();
 			break;
+
 		case CHASING_PAC:
 			if (pac.position.x < t(2)) {
 				startPacChasingGhosts();
 				enterPhase(Phase.CHASING_GHOSTS);
 			}
+			timer.tick();
 			break;
+
 		case CHASING_GHOSTS:
 			if (pac.position.x > t(28)) {
 				enterPhase(Phase.READY_TO_PLAY);
@@ -151,21 +157,24 @@ public class PacMan_IntroScene_Controller {
 					ghostKilledTime = clock.ticksTotal;
 				}
 			}
+			timer.tick();
 			break;
+
 		case READY_TO_PLAY:
-			if (timer.running() == 0) {
+			if (timer.ticksRunning() == 1) {
 				blinking.restart();
 			}
-			if (timer.running() == clock.sec(5)) {
+			if (timer.ticksRunning() == clock.sec(5)) {
 				controller.getGame().attractMode = true;
 				log("Entering attract mode at clock tick %d", clock.ticksTotal);
 			}
 			blinking.animate();
+			timer.tick();
 			break;
+
 		default:
 			break;
 		}
-		timer.run();
 	}
 
 	public void startGhostsChasingPac() {
@@ -196,8 +205,9 @@ public class PacMan_IntroScene_Controller {
 		}
 	}
 
-	public void presentGhost(int ghostIndex) {
-		presentedGhostIndex = ghostIndex;
-		gallery[presentedGhostIndex].ghost.visible = true;
+	public void selectGhost(int ghostIndex) {
+		selectedGhost = ghostIndex;
+		gallery[selectedGhost].ghost.visible = true;
+		log("Presenting %s", gallery[selectedGhost].ghost.name);
 	}
 }

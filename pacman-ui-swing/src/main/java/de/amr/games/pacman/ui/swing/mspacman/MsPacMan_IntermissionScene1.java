@@ -21,7 +21,7 @@ import de.amr.games.pacman.ui.swing.rendering.PacManGameRendering2D;
  */
 public class MsPacMan_IntermissionScene1 extends GameScene {
 
-	private MsPacMan_IntermissionScene1_Controller animation;
+	private MsPacMan_IntermissionScene1_Controller sceneController;
 
 	public MsPacMan_IntermissionScene1(PacManGameController controller, Dimension size, PacManGameRendering2D rendering,
 			SoundManager sounds) {
@@ -30,22 +30,22 @@ public class MsPacMan_IntermissionScene1 extends GameScene {
 
 	@Override
 	public void start() {
-		animation = new MsPacMan_IntermissionScene1_Controller(controller, rendering, sounds);
-		animation.start();
+		sceneController = new MsPacMan_IntermissionScene1_Controller(controller, rendering, sounds);
+		sceneController.start();
 	}
 
 	@Override
 	public void update() {
-		animation.update();
+		sceneController.update();
 	}
 
 	@Override
 	public void render(Graphics2D g) {
-		rendering.drawFlap(g, animation.flap);
-		rendering.drawPlayer(g, animation.msPac);
-		rendering.drawSpouse(g, animation.pacMan);
-		rendering.drawGhost(g, animation.inky, false);
-		rendering.drawGhost(g, animation.pinky, false);
-		rendering.drawHeart(g, animation.heart);
+		rendering.drawFlap(g, sceneController.flap);
+		rendering.drawPlayer(g, sceneController.msPac);
+		rendering.drawSpouse(g, sceneController.pacMan);
+		rendering.drawGhost(g, sceneController.inky, false);
+		rendering.drawGhost(g, sceneController.pinky, false);
+		rendering.drawHeart(g, sceneController.heart);
 	}
 }

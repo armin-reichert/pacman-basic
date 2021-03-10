@@ -177,10 +177,6 @@ public class PacManGameController {
 		userInterface.onGameChanged(game);
 	}
 
-	public void finishCurrentState() {
-		game.state.timer.setDuration(0);
-	}
-
 	public void toggleGameType() {
 		userInterface.sound().ifPresent(SoundManager::stopAll);
 		if (isPlaying(MS_PACMAN)) {
@@ -225,7 +221,6 @@ public class PacManGameController {
 	// INTRO
 
 	private void enterIntroState() {
-		game.state.timer.setDuration(Long.MAX_VALUE);
 		game.reset();
 		previousState = null;
 		if (userInterface != null) {
@@ -234,6 +229,8 @@ public class PacManGameController {
 			userInterface.animation().ifPresent(va -> va.reset(game));
 			userInterface.onGameChanged(game);
 		}
+		game.state.timer.reset();
+		game.state.timer.start();
 	}
 
 	private PacManGameState runIntroState() {
@@ -271,19 +268,21 @@ public class PacManGameController {
 		game.resetGuys();
 		userInterface.mute(game.attractMode);
 		userInterface.animation().ifPresent(animation -> animation.reset(game));
+		game.state.timer.reset();
 		if (game.started || game.attractMode) {
 			game.state.timer.setDuration(clock.sec(2));
 		} else {
 			game.state.timer.setDuration(clock.sec(4.5));
 			userInterface.sound().ifPresent(snd -> snd.play(PacManGameSound.GAME_READY));
 		}
+		game.state.timer.start();
 	}
 
 	private PacManGameState runReadyState() {
 		if (game.state.timer.expired()) {
 			return changeState(PacManGameState.HUNTING, this::exitReadyState, this::enterHuntingState);
 		}
-		if (game.state.timer.running() == clock.sec(0.5)) {
+		if (game.state.timer.ticksRunning() == clock.sec(0.5)) {
 			game.pac.visible = true;
 			for (Ghost ghost : game.ghosts) {
 				ghost.visible = true;
@@ -309,7 +308,9 @@ public class PacManGameController {
 	// TODO not sure about when which siren should play
 	private void startHuntingPhase(int phase) {
 		game.huntingPhase = phase;
+		game.state.timer.reset();
 		game.state.timer.setDuration(game.getHuntingPhaseDuration(game.huntingPhase));
+		game.state.timer.start();
 		if (game.inScatteringPhase()) {
 			userInterface.sound().ifPresent(sound -> {
 				if (game.huntingPhase >= 2) {
@@ -361,7 +362,7 @@ public class PacManGameController {
 
 		// Can Pac move?
 		steerPlayer();
-		game.pac.speed = game.pac.powerTicksLeft == 0 ? game.level.pacSpeed : game.level.pacSpeedPowered;
+		game.pac.speed = game.pac.powerTimer.running() ? game.level.pacSpeedPowered : game.level.pacSpeed;
 		if (game.pac.restingTicksLeft > 0) {
 			game.pac.restingTicksLeft--;
 		} else {
@@ -375,31 +376,30 @@ public class PacManGameController {
 			game.pac.starvingTicks++;
 		}
 
-		// Is Pac losing power?
-		if (game.pac.powerTicksLeft > 0) {
-			game.pac.powerTicksLeft--;
-			if (game.pac.powerTicksLeft == 0) {
-				log("%s lost power", game.pac.name);
-				game.ghosts(FRIGHTENED).forEach(ghost -> ghost.state = HUNTING_PAC);
-			}
-
-			// TODO fixme
-			userInterface.animation().map(PacManGameAnimations::ghostAnimations).ifPresent(ga -> {
+		// Pac-Man empowered?
+		if (game.pac.powerTimer.running()) {
+			if (game.pac.powerTimer.ticksRemaining() == clock.sec(1)) {
 				game.ghosts(FRIGHTENED).forEach(ghost -> {
-					Animation<?> flashing = ga.ghostFlashing(ghost);
-					if (game.level.numFlashes > 0 && game.pac.powerTicksLeft == game.level.numFlashes * flashing.duration()) {
-						flashing.restart();
-						log("Ghost flashing started (%d flashes, %d ticks each), Pac power left: %d ticks", game.level.numFlashes,
-								flashing.duration(), game.pac.powerTicksLeft);
-					} else if (game.pac.powerTicksLeft == 0) {
-						flashing.reset();
-						log("Ghost flashing stopped");
-					} else {
-						flashing.advance();
-					}
+					userInterface.animation().map(PacManGameAnimations::ghostAnimations).ifPresent(ga -> {
+						ga.ghostFlashing(ghost).restart();
+						log("Start flashing for %s", ghost.name);
+					});
+				});
+			}
+			game.pac.powerTimer.tick();
+		} else if (game.pac.powerTimer.expired()) {
+			game.ghosts(FRIGHTENED).forEach(ghost -> {
+				ghost.state = HUNTING_PAC;
+				userInterface.animation().map(PacManGameAnimations::ghostAnimations).ifPresent(ga -> {
+					ga.ghostFlashing(ghost).reset();
+					log("Reset flashing for %s", ghost.name);
+				});
+				userInterface.sound().ifPresent(sm -> {
+					sm.stop(PacManGameSound.PACMAN_POWER);
 				});
 			});
-
+			log("%s lost power", game.pac.name);
+			game.pac.powerTimer.reset();
 		}
 
 		tryReleasingGhosts();
@@ -418,16 +418,13 @@ public class PacManGameController {
 			if (game.ghosts().noneMatch(ghost -> ghost.is(DEAD))) {
 				sm.stop(PacManGameSound.GHOST_EYES);
 			}
-			if (game.pac.powerTicksLeft == 0) {
-				sm.stop(PacManGameSound.PACMAN_POWER);
-			}
 		});
 
 		userInterface.animation().map(PacManGameAnimations::mazeAnimations)
 				.ifPresent(ma -> ma.energizerBlinking().animate());
 
-		// hunting state timer is suspended if Pac has power
-		if (game.pac.powerTicksLeft == 0) {
+		// hunting state timer is suspended when Pac has power
+		if (!game.pac.powerTimer.running()) {
 			game.state.tick();
 		}
 
@@ -437,7 +434,9 @@ public class PacManGameController {
 	// PACMAN_DYING
 
 	private void enterPacManDyingState() {
+		game.state.timer.reset();
 		game.state.timer.setDuration(clock.sec(4));
+		game.state.timer.start();
 		game.pac.speed = 0;
 		game.bonus.edibleTicksLeft = game.bonus.eatenTicksLeft = 0;
 
@@ -458,7 +457,7 @@ public class PacManGameController {
 				return changeState(GAME_OVER, this::exitPacManDyingState, this::enterGameOverState);
 			}
 		}
-		if (game.state.timer.running() == clock.sec(1)) {
+		if (game.state.timer.ticksRunning() == clock.sec(1)) {
 			game.ghosts().forEach(ghost -> ghost.visible = false);
 			userInterface.animation().map(PacManGameAnimations::playerAnimations).map(PlayerAnimations::playerDying)
 					.ifPresent(da -> da.restart());
@@ -474,7 +473,9 @@ public class PacManGameController {
 	// GHOST_DYING
 
 	private void enterGhostDyingState() {
+		game.state.timer.reset();
 		game.state.timer.setDuration(clock.sec(1));
+		game.state.timer.start();
 		game.pac.visible = false;
 
 		userInterface.animation().map(PacManGameAnimations::mazeAnimations).map(MazeAnimations::energizerBlinking)
@@ -508,6 +509,7 @@ public class PacManGameController {
 
 	private void enterChangingLevelState() {
 		game.state.timer.setDuration(clock.sec(game.level.numFlashes + 3));
+		game.state.timer.start();
 		game.bonus.edibleTicksLeft = game.bonus.eatenTicksLeft = 0;
 		game.pac.speed = 0;
 		userInterface.sound().ifPresent(SoundManager::stopAll);
@@ -523,10 +525,10 @@ public class PacManGameController {
 			}
 			return changeState(READY, this::exitChangingLevelState, this::enterReadyState);
 		}
-		if (game.state.timer.running() == clock.sec(2)) {
+		if (game.state.timer.ticksRunning() == clock.sec(2)) {
 			game.ghosts().forEach(ghost -> ghost.visible = false);
 		}
-		if (game.state.timer.running() == clock.sec(3)) {
+		if (game.state.timer.ticksRunning() == clock.sec(3)) {
 			userInterface.animation().map(PacManGameAnimations::mazeAnimations)
 					.ifPresent(ma -> ma.mazeFlashing(game.level.mazeNumber).repetitions(game.level.numFlashes).restart());
 		}
@@ -544,7 +546,9 @@ public class PacManGameController {
 	// GAME_OVER
 
 	private void enterGameOverState() {
+		game.state.timer.reset();
 		game.state.timer.setDuration(clock.sec(10));
+		game.state.timer.start();
 		game.ghosts().forEach(ghost -> ghost.speed = 0);
 		game.pac.speed = 0;
 		game.saveHighscore();
@@ -573,7 +577,8 @@ public class PacManGameController {
 	}
 
 	private void enterIntermissionState() {
-		game.state.timer.setDuration(Long.MAX_VALUE);
+		game.state.timer.reset();
+		game.state.timer.start();
 		log("Starting intermission #%d", game.intermissionNumber);
 	}
 
@@ -718,7 +723,9 @@ public class PacManGameController {
 	}
 
 	private void letPacFrightenGhosts(int frightenedSec) {
-		game.pac.powerTicksLeft = clock.sec(frightenedSec);
+		game.pac.powerTimer.reset();
+		game.pac.powerTimer.setDuration(clock.sec(frightenedSec));
+		game.pac.powerTimer.start();
 		if (frightenedSec > 0) {
 			log("Pac-Man got power for %d seconds", frightenedSec);
 			game.ghosts(HUNTING_PAC).forEach(ghost -> {

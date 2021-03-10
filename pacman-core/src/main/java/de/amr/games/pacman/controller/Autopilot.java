@@ -135,7 +135,7 @@ public class Autopilot {
 		if (game.pac.couldMove && !game.level.world.isIntersection(game.pac.tile()))
 			return;
 
-		if (data.frightenedGhosts.size() != 0 && game.pac.powerTicksLeft >= clock.sec(1)) {
+		if (data.frightenedGhosts.size() != 0 && game.pac.powerTimer.ticksRemaining() >= clock.sec(1)) {
 			Ghost prey = data.frightenedGhosts.get(0);
 			log("Detected frightened ghost %s %.0g tiles away", prey.name, prey.tile().manhattanDistance(game.pac.tile()));
 			game.pac.targetTile = prey.tile();
@@ -228,7 +228,7 @@ public class Autopilot {
 				if (!game.level.world.isFoodTile(tile) || game.level.isFoodRemoved(tile)) {
 					continue;
 				}
-				if (game.level.world.isEnergizerTile(tile) && game.pac.powerTicksLeft > clock.sec(1)
+				if (game.level.world.isEnergizerTile(tile) && game.pac.powerTimer.ticksRemaining() > clock.sec(1)
 						&& game.level.foodRemaining > 1) {
 					continue;
 				}

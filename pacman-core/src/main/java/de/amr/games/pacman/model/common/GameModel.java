@@ -91,9 +91,9 @@ public abstract class GameModel {
 		pac.couldMove = true;
 		pac.forcedOnTrack = true;
 		pac.dead = false;
-		pac.powerTicksLeft = 0;
 		pac.restingTicksLeft = 0;
 		pac.starvingTicks = 0;
+		pac.powerTimer.reset();
 
 		for (Ghost ghost : ghosts) {
 			ghost.placeAt(level.world.ghostHome(ghost.id), HTS, 0);

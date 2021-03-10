@@ -19,7 +19,7 @@ import de.amr.games.pacman.ui.swing.rendering.PacManGameRendering2D;
  */
 public class MsPacMan_IntermissionScene2 extends GameScene {
 
-	private MsPacMan_IntermissionScene2_Controller animation;
+	private MsPacMan_IntermissionScene2_Controller sceneController;
 
 	public MsPacMan_IntermissionScene2(PacManGameController controller, Dimension size, PacManGameRendering2D rendering,
 			SoundManager sounds) {
@@ -28,19 +28,19 @@ public class MsPacMan_IntermissionScene2 extends GameScene {
 
 	@Override
 	public void start() {
-		animation = new MsPacMan_IntermissionScene2_Controller(controller, rendering, sounds);
-		animation.start();
+		sceneController = new MsPacMan_IntermissionScene2_Controller(controller, rendering, sounds);
+		sceneController.start();
 	}
 
 	@Override
 	public void update() {
-		animation.update();
+		sceneController.update();
 	}
 
 	@Override
 	public void render(Graphics2D g) {
-		rendering.drawFlap(g, animation.flap);
-		rendering.drawPlayer(g, animation.msPacMan);
-		rendering.drawSpouse(g, animation.pacMan);
+		rendering.drawFlap(g, sceneController.flap);
+		rendering.drawPlayer(g, sceneController.msPacMan);
+		rendering.drawSpouse(g, sceneController.pacMan);
 	}
 }

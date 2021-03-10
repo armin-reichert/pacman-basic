@@ -6,8 +6,8 @@ import static de.amr.games.pacman.model.world.PacManGameWorld.t;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.controller.PacManGameController;
-import de.amr.games.pacman.lib.CountdownTimer;
 import de.amr.games.pacman.lib.Direction;
+import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.common.Flap;
 import de.amr.games.pacman.model.common.GameEntity;
 import de.amr.games.pacman.model.common.Ghost;
@@ -40,18 +40,13 @@ public class MsPacMan_IntermissionScene1_Controller {
 	public final PacManGameController controller;
 	public final PacManGameAnimations animations;
 	public final SoundManager sounds;
-	public final CountdownTimer timer = new CountdownTimer();
+	public final TickTimer timer = new TickTimer();
 	public Phase phase;
 	public Flap flap;
 	public Pac pacMan, msPac;
 	public Ghost pinky, inky;
 	public GameEntity heart;
 	public boolean ghostsMet;
-
-	public void enter(Phase newPhase, long ticks) {
-		phase = newPhase;
-		timer.setDuration(ticks);
-	}
 
 	public MsPacMan_IntermissionScene1_Controller(PacManGameController controller, PacManGameAnimations animations,
 			SoundManager sounds) {
@@ -93,18 +88,28 @@ public class MsPacMan_IntermissionScene1_Controller {
 		enter(Phase.FLAP, clock.sec(2));
 	}
 
+	private void enter(Phase newPhase, long ticks) {
+		phase = newPhase;
+		timer.reset();
+		timer.setDuration(ticks);
+		timer.start();
+	}
+
 	public void update() {
 		switch (phase) {
+
 		case FLAP:
-			if (timer.running() == clock.sec(1)) {
+			if (timer.ticksRunning() == clock.sec(1)) {
 				flap.flapping.restart();
 			}
 			if (timer.expired()) {
 				flap.visible = false;
 				sounds.loop(PacManGameSound.INTERMISSION_1, 1);
 				startChasedByGhosts();
+				return;
 			}
 			flap.flapping.animate();
+			timer.tick();
 			break;
 
 		case CHASED_BY_GHOSTS:
@@ -115,6 +120,7 @@ public class MsPacMan_IntermissionScene1_Controller {
 			if (inky.position.x > t(30)) {
 				startComingTogether();
 			}
+			timer.tick();
 			break;
 
 		case COMING_TOGETHER:
@@ -141,22 +147,24 @@ public class MsPacMan_IntermissionScene1_Controller {
 				pinky.dir = pinky.wishDir = pinky.dir.opposite();
 				inky.speed = pinky.speed = 0.2f;
 			}
+			timer.tick();
 			break;
 
 		case READY_TO_PLAY:
-			if (timer.running() == clock.sec(0.5)) {
+			if (timer.ticksRunning() == clock.sec(0.5)) {
 				inky.visible = false;
 				pinky.visible = false;
 			}
 			if (timer.expired()) {
-				controller.finishCurrentState();
+				controller.getGame().state.timer.forceExpiration();
+				return;
 			}
+			timer.tick();
 			break;
 
 		default:
 			break;
 		}
-		timer.run();
 	}
 
 	public void startChasedByGhosts() {

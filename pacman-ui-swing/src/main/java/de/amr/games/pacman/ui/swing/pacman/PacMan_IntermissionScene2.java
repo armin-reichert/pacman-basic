@@ -18,7 +18,7 @@ import de.amr.games.pacman.ui.swing.rendering.PacManGameRendering2D;
  */
 public class PacMan_IntermissionScene2 extends GameScene {
 
-	private PacMan_IntermissionScene2_Controller animation;
+	private PacMan_IntermissionScene2_Controller sceneController;
 
 	public PacMan_IntermissionScene2(PacManGameController controller, Dimension size, PacManGameRendering2D rendering,
 			SoundManager sounds) {
@@ -27,24 +27,24 @@ public class PacMan_IntermissionScene2 extends GameScene {
 
 	@Override
 	public void start() {
-		animation = new PacMan_IntermissionScene2_Controller(controller, rendering, sounds);
-		animation.start();
+		sceneController = new PacMan_IntermissionScene2_Controller(controller, rendering, sounds);
+		sceneController.start();
 	}
 
 	@Override
 	public void update() {
-		animation.update();
+		sceneController.update();
 	}
 
 	@Override
 	public void render(Graphics2D g) {
 		rendering.drawLevelCounter(g, controller.getGame(), t(25), t(34));
-		rendering.drawNail(g, animation.nail);
-		rendering.drawPlayer(g, animation.pac);
-		if (animation.nailDistance() < 0) {
-			rendering.drawGhost(g, animation.blinky, false);
+		rendering.drawNail(g, sceneController.nail);
+		rendering.drawPlayer(g, sceneController.pac);
+		if (sceneController.nailDistance() < 0) {
+			rendering.drawGhost(g, sceneController.blinky, false);
 		} else {
-			rendering.drawBlinkyStretched(g, animation.blinky, animation.nail.position, animation.nailDistance() / 4);
+			rendering.drawBlinkyStretched(g, sceneController.blinky, sceneController.nail.position, sceneController.nailDistance() / 4);
 		}
 	}
 }

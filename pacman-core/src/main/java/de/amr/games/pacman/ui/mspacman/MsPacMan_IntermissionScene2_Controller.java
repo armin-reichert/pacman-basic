@@ -4,8 +4,8 @@ import static de.amr.games.pacman.lib.God.clock;
 import static de.amr.games.pacman.model.world.PacManGameWorld.t;
 
 import de.amr.games.pacman.controller.PacManGameController;
-import de.amr.games.pacman.lib.CountdownTimer;
 import de.amr.games.pacman.lib.Direction;
+import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.common.Flap;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.ui.animation.Animation;
@@ -33,14 +33,16 @@ public class MsPacMan_IntermissionScene2_Controller {
 	public final PacManGameController controller;
 	public final PacManGameAnimations animations;
 	public final SoundManager sounds;
-	public final CountdownTimer timer = new CountdownTimer();
+	public final TickTimer timer = new TickTimer();
 	public Phase phase;
 	public Flap flap;
 	public Pac pacMan, msPacMan;
 
 	public void enter(Phase newPhase, long ticks) {
 		phase = newPhase;
+		timer.reset();
 		timer.setDuration(ticks);
+		timer.start();
 	}
 
 	public MsPacMan_IntermissionScene2_Controller(PacManGameController controller, PacManGameAnimations animations,
@@ -64,21 +66,22 @@ public class MsPacMan_IntermissionScene2_Controller {
 	public void update() {
 		switch (phase) {
 		case FLAP:
-			if (timer.running() == clock.sec(1)) {
+			if (timer.ticksRunning() == clock.sec(1)) {
 				flap.flapping.restart();
 			}
-			if (timer.running() == clock.sec(2)) {
+			if (timer.ticksRunning() == clock.sec(2)) {
 				flap.visible = false;
 				sounds.play(PacManGameSound.INTERMISSION_2);
 			}
-			if (timer.running() == clock.sec(4.5)) {
+			if (timer.ticksRunning() == clock.sec(4.5)) {
 				enter(Phase.ACTION, Long.MAX_VALUE);
 			}
 			flap.flapping.animate();
+			timer.tick();
 			break;
 
 		case ACTION:
-			if (timer.running() == clock.sec(1.5)) {
+			if (timer.ticksRunning() == clock.sec(1.5)) {
 				pacMan.visible = true;
 				pacMan.setPosition(-t(2), UPPER_Y);
 				msPacMan.visible = true;
@@ -88,40 +91,41 @@ public class MsPacMan_IntermissionScene2_Controller {
 				animations.playerAnimations().spouseMunching(pacMan).forEach(Animation::restart);
 				animations.playerAnimations().playerMunching(msPacMan).forEach(Animation::restart);
 			}
-			if (timer.running() == clock.sec(6)) {
+			if (timer.ticksRunning() == clock.sec(6)) {
 				msPacMan.setPosition(t(30), LOWER_Y);
 				msPacMan.visible = true;
 				pacMan.setPosition(t(36), LOWER_Y);
 				msPacMan.dir = pacMan.dir = Direction.LEFT;
 				msPacMan.speed = pacMan.speed = 2;
 			}
-			if (timer.running() == clock.sec(10.5)) {
+			if (timer.ticksRunning() == clock.sec(10.5)) {
 				msPacMan.setPosition(t(-8), MIDDLE_Y);
 				pacMan.setPosition(t(-2), MIDDLE_Y);
 				msPacMan.dir = pacMan.dir = Direction.RIGHT;
 				msPacMan.speed = pacMan.speed = 2;
 			}
-			if (timer.running() == clock.sec(14.5)) {
+			if (timer.ticksRunning() == clock.sec(14.5)) {
 				msPacMan.setPosition(t(30), UPPER_Y);
 				pacMan.setPosition(t(42), UPPER_Y);
 				msPacMan.dir = pacMan.dir = Direction.LEFT;
 				msPacMan.speed = pacMan.speed = 4;
 			}
-			if (timer.running() == clock.sec(15.5)) {
+			if (timer.ticksRunning() == clock.sec(15.5)) {
 				msPacMan.setPosition(t(-14), LOWER_Y);
 				pacMan.setPosition(t(-2), LOWER_Y);
 				msPacMan.dir = pacMan.dir = Direction.RIGHT;
 				msPacMan.speed = pacMan.speed = 4;
 			}
-			if (timer.running() == clock.sec(20)) {
-				controller.finishCurrentState();
+			if (timer.ticksRunning() == clock.sec(20)) {
+				controller.getGame().state.timer.forceExpiration();
+				return;
 			}
+			timer.tick();
 			break;
 		default:
 			break;
 		}
 		pacMan.move();
 		msPacMan.move();
-		timer.run();
 	}
 }

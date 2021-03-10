@@ -22,7 +22,7 @@ public class Debug {
 
 	public static void drawPlaySceneDebugInfo(Graphics2D g, GameModel game) {
 		final Color[] GHOST_COLORS = { Color.RED, Color.PINK, Color.CYAN, Color.ORANGE };
-		long remaining = game.state.timer.remaining();
+		long remaining = game.state.timer.ticksRemaining();
 		String ticksText = remaining == Long.MAX_VALUE ? "forever" : remaining + " ticks remaining";
 		String stateText = String.format("%s (%s)", game.stateDescription(), ticksText);
 		g.setColor(Color.WHITE);

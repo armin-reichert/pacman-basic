@@ -18,7 +18,8 @@ import de.amr.games.pacman.ui.swing.rendering.PacManGameRendering2D;
  */
 public class PlayScene extends GameScene {
 
-	public PlayScene(PacManGameController controller, Dimension size, PacManGameRendering2D rendering, SoundManager sounds) {
+	public PlayScene(PacManGameController controller, Dimension size, PacManGameRendering2D rendering,
+			SoundManager sounds) {
 		super(controller, size, rendering, sounds);
 	}
 
@@ -40,7 +41,7 @@ public class PlayScene extends GameScene {
 		rendering.drawGameState(g, game);
 		rendering.drawBonus(g, game.bonus);
 		rendering.drawPlayer(g, game.pac);
-		game.ghosts().forEach(ghost -> rendering.drawGhost(g, ghost, game.pac.powerTicksLeft > 0));
+		game.ghosts().forEach(ghost -> rendering.drawGhost(g, ghost, game.pac.powerTimer.running()));
 		rendering.drawScore(g, game, game.state == PacManGameState.INTRO || game.attractMode);
 		if (!game.attractMode) {
 			rendering.drawLivesCounter(g, game, t(2), t(34));

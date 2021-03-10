@@ -7,8 +7,8 @@ import static de.amr.games.pacman.model.common.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.model.world.PacManGameWorld.t;
 
 import de.amr.games.pacman.controller.PacManGameController;
-import de.amr.games.pacman.lib.CountdownTimer;
 import de.amr.games.pacman.lib.Direction;
+import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.ui.animation.Animation;
@@ -26,7 +26,7 @@ public class PacMan_IntermissionScene1_Controller {
 
 	public static final int groundY = t(20);
 
-	public final CountdownTimer timer = new CountdownTimer();
+	public final TickTimer timer = new TickTimer();
 	public final PacManGameController controller;
 	public final PacManGameAnimations animations;
 	public final SoundManager sounds;
@@ -60,6 +60,7 @@ public class PacMan_IntermissionScene1_Controller {
 
 		phase = Phase.BLINKY_CHASING_PACMAN;
 		timer.setDuration(clock.sec(5));
+		timer.start();
 	}
 
 	public void update() {
@@ -67,11 +68,14 @@ public class PacMan_IntermissionScene1_Controller {
 		case BLINKY_CHASING_PACMAN:
 			if (timer.expired()) {
 				phase = Phase.BIGPACMAN_CHASING_BLINKY;
+				timer.reset();
 				timer.setDuration(clock.sec(7));
+				timer.start();
 			}
+			timer.tick();
 			break;
 		case BIGPACMAN_CHASING_BLINKY:
-			if (timer.running() == 0) {
+			if (timer.ticksRunning() == 1) {
 				blinky.setPosition(-t(2), groundY);
 				blinky.dir = blinky.wishDir = RIGHT;
 				blinky.speed = 1f;
@@ -81,14 +85,15 @@ public class PacMan_IntermissionScene1_Controller {
 				pac.setPositionRelativeTo(blinky, -t(13), 0);
 			}
 			if (timer.expired()) {
-				controller.finishCurrentState();
+				controller.getGame().state.timer.forceExpiration();
+				return;
 			}
+			timer.tick();
 			break;
 		default:
 			break;
 		}
 		pac.move();
 		blinky.move();
-		timer.run();
 	}
 }

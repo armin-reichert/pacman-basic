@@ -22,7 +22,7 @@ import de.amr.games.pacman.ui.swing.rendering.PacManGameRendering2D;
  */
 public class MsPacMan_IntroScene extends GameScene {
 
-	private MsPacMan_IntroScene_Controller animation;
+	private MsPacMan_IntroScene_Controller sceneController;
 
 	public MsPacMan_IntroScene(PacManGameController controller, Dimension size, PacManGameRendering2D rendering,
 			SoundManager sounds) {
@@ -31,13 +31,13 @@ public class MsPacMan_IntroScene extends GameScene {
 
 	@Override
 	public void start() {
-		animation = new MsPacMan_IntroScene_Controller(controller, rendering, sounds);
-		animation.start();
+		sceneController = new MsPacMan_IntroScene_Controller(controller, rendering, sounds);
+		sceneController.start();
 	}
 
 	@Override
 	public void update() {
-		animation.update();
+		sceneController.update();
 	}
 
 	@Override
@@ -45,35 +45,35 @@ public class MsPacMan_IntroScene extends GameScene {
 		g.setFont(assets.getScoreFont());
 		g.setColor(Color.ORANGE);
 		g.drawString("\"MS PAC-MAN\"", t(8), t(5));
-		drawAnimatedFrame(g, 32, 16, controller.getGame().state.timer.running());
-		for (Ghost ghost : animation.ghosts) {
+		drawAnimatedFrame(g, 32, 16, controller.getGame().state.timer.ticksRunning());
+		for (Ghost ghost : sceneController.ghosts) {
 			rendering.drawGhost(g, ghost, false);
 		}
-		rendering.drawPlayer(g, animation.msPac);
+		rendering.drawPlayer(g, sceneController.msPac);
 		presentGhost(g);
 		presentMsPacMan(g);
-		if (animation.phase == Phase.END) {
+		if (sceneController.phase == Phase.END) {
 			drawPointsAnimation(g, 26);
 			drawPressKeyToStart(g, 32);
 		}
 	}
 
 	private void presentGhost(Graphics2D g) {
-		if (animation.currentGhost == null) {
+		if (sceneController.currentGhost == null) {
 			return;
 		}
 		g.setColor(Color.WHITE);
 		g.setFont(assets.getScoreFont());
-		if (animation.currentGhost == animation.ghosts[0]) {
+		if (sceneController.currentGhost == sceneController.ghosts[0]) {
 			g.drawString("WITH", t(8), t(11));
 		}
-		g.setColor(animation.currentGhost.id == 0 ? Color.RED
-				: animation.currentGhost.id == 1 ? Color.PINK : animation.currentGhost.id == 2 ? Color.CYAN : Color.ORANGE);
-		g.drawString(animation.currentGhost.name.toUpperCase(), t(13 - animation.currentGhost.name.length() / 2), t(14));
+		g.setColor(sceneController.currentGhost.id == 0 ? Color.RED
+				: sceneController.currentGhost.id == 1 ? Color.PINK : sceneController.currentGhost.id == 2 ? Color.CYAN : Color.ORANGE);
+		g.drawString(sceneController.currentGhost.name.toUpperCase(), t(13 - sceneController.currentGhost.name.length() / 2), t(14));
 	}
 
 	private void presentMsPacMan(Graphics2D g) {
-		if (!animation.presentingMsPac) {
+		if (!sceneController.presentingMsPac) {
 			return;
 		}
 		g.setColor(Color.WHITE);
@@ -99,12 +99,12 @@ public class MsPacMan_IntroScene extends GameScene {
 				y = 2 * (numDotsX + numDotsY) - dot;
 			}
 			g.setColor((dot + light) % (numDotsX / 2) == 0 ? Color.PINK : Color.RED);
-			g.fillRect(t(animation.frameTopLeftTile.x) + 4 * x, t(animation.frameTopLeftTile.y) + 4 * y, 2, 2);
+			g.fillRect(t(sceneController.frameTopLeftTile.x) + 4 * x, t(sceneController.frameTopLeftTile.y) + 4 * y, 2, 2);
 		}
 	}
 
 	private void drawPressKeyToStart(Graphics2D g, int tileY) {
-		if (animation.blinking.frame()) {
+		if (sceneController.blinking.frame()) {
 			String text = "PRESS SPACE TO PLAY";
 			g.setColor(Color.ORANGE);
 			g.setFont(assets.getScoreFont());
@@ -114,7 +114,7 @@ public class MsPacMan_IntroScene extends GameScene {
 
 	private void drawPointsAnimation(Graphics2D g, int tileY) {
 		int x = t(10), y = t(tileY);
-		if (animation.blinking.frame()) {
+		if (sceneController.blinking.frame()) {
 			g.setColor(Color.PINK);
 			g.fillOval(x, y + t(1) - 2, 10, 10);
 			g.fillRect(x + 6, y - t(1) + 2, 2, 2);

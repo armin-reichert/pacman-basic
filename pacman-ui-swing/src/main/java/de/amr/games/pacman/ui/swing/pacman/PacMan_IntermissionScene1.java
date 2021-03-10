@@ -19,7 +19,7 @@ import de.amr.games.pacman.ui.swing.rendering.PacManGameRendering2D;
  */
 public class PacMan_IntermissionScene1 extends GameScene {
 
-	private PacMan_IntermissionScene1_Controller animation;
+	private PacMan_IntermissionScene1_Controller sceneController;
 
 	public PacMan_IntermissionScene1(PacManGameController controller, Dimension size, PacManGameRendering2D rendering,
 			SoundManager sounds) {
@@ -28,23 +28,23 @@ public class PacMan_IntermissionScene1 extends GameScene {
 
 	@Override
 	public void start() {
-		animation = new PacMan_IntermissionScene1_Controller(controller, rendering, sounds);
-		animation.start();
+		sceneController = new PacMan_IntermissionScene1_Controller(controller, rendering, sounds);
+		sceneController.start();
 	}
 
 	@Override
 	public void update() {
-		animation.update();
+		sceneController.update();
 	}
 
 	@Override
 	public void render(Graphics2D g) {
-		rendering.drawGhost(g, animation.blinky, false);
-		if (animation.phase == Phase.BLINKY_CHASING_PACMAN) {
-			rendering.drawPlayer(g, animation.pac);
+		rendering.drawGhost(g, sceneController.blinky, false);
+		if (sceneController.phase == Phase.BLINKY_CHASING_PACMAN) {
+			rendering.drawPlayer(g, sceneController.pac);
 		} else {
 			g.translate(0, -10);
-			rendering.drawBigPacMan(g, animation.pac);
+			rendering.drawBigPacMan(g, sceneController.pac);
 			g.translate(0, 10);
 		}
 		rendering.drawLevelCounter(g, controller.getGame(), t(25), t(34));

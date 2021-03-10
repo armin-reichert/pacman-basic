@@ -30,7 +30,7 @@ import de.amr.games.pacman.ui.swing.rendering.PacManGameRendering2D;
  */
 public class PacMan_IntroScene extends GameScene {
 
-	private PacMan_IntroScene_Controller animation;
+	private PacMan_IntroScene_Controller sceneController;
 
 	public PacMan_IntroScene(PacManGameController controller, Dimension size, PacManGameRendering2D rendering,
 			SoundManager sounds) {
@@ -39,14 +39,14 @@ public class PacMan_IntroScene extends GameScene {
 
 	@Override
 	public void start() {
-		animation = new PacMan_IntroScene_Controller(controller, rendering);
-		animation.start();
+		sceneController = new PacMan_IntroScene_Controller(controller, rendering);
+		sceneController.start();
 		Logging.log("%s: PacMan intro scene started at clock tick %d", this, God.clock.ticksTotal);
 	}
 
 	@Override
 	public void update() {
-		animation.update();
+		sceneController.update();
 	}
 
 	@Override
@@ -55,27 +55,27 @@ public class PacMan_IntroScene extends GameScene {
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		rendering.drawScore(g, controller.getGame(), true);
 		drawGallery(g);
-		if (animation.phase == Phase.CHASING_PAC) {
-			if (animation.blinking.animate()) {
+		if (sceneController.phase == Phase.CHASING_PAC) {
+			if (sceneController.blinking.animate()) {
 				g2.setColor(Color.PINK);
-				g2.fillOval(t(2), (int) animation.pac.position.y, TS, TS);
+				g2.fillOval(t(2), (int) sceneController.pac.position.y, TS, TS);
 			}
 		}
 		drawGuys(g);
-		if (animation.phase.ordinal() >= Phase.CHASING_GHOSTS.ordinal()) {
+		if (sceneController.phase.ordinal() >= Phase.CHASING_GHOSTS.ordinal()) {
 			drawPointsAnimation(g2, 11, 26);
 		}
-		if (animation.phase == Phase.READY_TO_PLAY) {
+		if (sceneController.phase == Phase.READY_TO_PLAY) {
 			drawPressKeyToStart(g, 32);
 		}
 		g2.dispose();
 	}
 
 	private void drawGuys(Graphics2D g) {
-		for (Ghost ghost : animation.ghosts) {
+		for (Ghost ghost : sceneController.ghosts) {
 			rendering.drawGhost(g, ghost, false);
 		}
-		rendering.drawPlayer(g, animation.pac);
+		rendering.drawPlayer(g, sceneController.pac);
 	}
 
 	private void drawGallery(Graphics2D g) {
@@ -85,10 +85,10 @@ public class PacMan_IntroScene extends GameScene {
 		g.drawString("/", t(16), TOP_Y);
 		g.drawString("NICKNAME", t(18), TOP_Y);
 		for (int i = 0; i < 4; ++i) {
-			GhostPortrait portrait = animation.gallery[i];
+			GhostPortrait portrait = sceneController.gallery[i];
 			if (portrait.ghost.visible) {
 				int y = TOP_Y + t(2 + 3 * i);
-				rendering.drawGhost(g, animation.gallery[i].ghost, false);
+				rendering.drawGhost(g, sceneController.gallery[i].ghost, false);
 				g.setColor(getGhostColor(i));
 				g.setFont(rendering.getScoreFont());
 				if (portrait.characterVisible) {
@@ -106,7 +106,7 @@ public class PacMan_IntroScene extends GameScene {
 	}
 
 	private void drawPressKeyToStart(Graphics2D g, int yTile) {
-		if (animation.blinking.frame()) {
+		if (sceneController.blinking.frame()) {
 			String text = "PRESS SPACE TO PLAY";
 			g.setColor(Color.ORANGE);
 			g.setFont(rendering.getScoreFont());
@@ -115,7 +115,7 @@ public class PacMan_IntroScene extends GameScene {
 	}
 
 	private void drawPointsAnimation(Graphics2D g, int tileX, int tileY) {
-		if (animation.blinking.frame()) {
+		if (sceneController.blinking.frame()) {
 			g.setColor(Color.PINK);
 			g.fillRect(t(tileX) + 6, t(tileY - 1) + 2, 2, 2);
 			g.fillOval(t(tileX), t(tileY + 1) - 2, 10, 10);

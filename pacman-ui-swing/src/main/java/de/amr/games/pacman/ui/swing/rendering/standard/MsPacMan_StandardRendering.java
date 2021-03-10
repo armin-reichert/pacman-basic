@@ -157,7 +157,7 @@ public class MsPacMan_StandardRendering extends StandardRendering
 			return ghostReturningHome(ghost, ghost.dir).animate();
 		}
 		if (ghost.is(FRIGHTENED)) {
-			return ghostFlashing(ghost).isRunning() ? ghostFlashing(ghost).frame()
+			return ghostFlashing(ghost).isRunning() ? ghostFlashing(ghost).animate()
 					: ghostFrightened(ghost, ghost.dir).animate();
 		}
 		if (ghost.is(LOCKED) && frightened) {

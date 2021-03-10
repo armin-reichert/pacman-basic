@@ -1,6 +1,6 @@
 package de.amr.games.pacman.model.common;
 
-import de.amr.games.pacman.lib.CountdownTimer;
+import de.amr.games.pacman.lib.TickTimer;
 
 /**
  * The states of the game. Each state has a timer.
@@ -11,10 +11,10 @@ public enum PacManGameState {
 
 	INTRO, READY, HUNTING, CHANGING_LEVEL, PACMAN_DYING, GHOST_DYING, GAME_OVER, INTERMISSION;
 
-	public final CountdownTimer timer = new CountdownTimer();
+	public final TickTimer timer = new TickTimer();
 
 	public PacManGameState tick() {
-		timer.run();
+		timer.tick();
 		return this;
 	}
 }

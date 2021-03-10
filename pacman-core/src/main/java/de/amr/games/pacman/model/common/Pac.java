@@ -1,5 +1,6 @@
 package de.amr.games.pacman.model.common;
 
+import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.Direction;
 
 /**
@@ -15,8 +16,8 @@ public class Pac extends Creature {
 	/** If Pac is dead. */
 	public boolean dead = false;
 
-	/** Number of clock ticks Pac still has power. */
-	public long powerTicksLeft = 0;
+	/** Controls the time Pac has power. */
+	public TickTimer powerTimer = new TickTimer();
 
 	/** Number of clock ticks Pac is resting and will not move. */
 	public long restingTicksLeft = 0;
