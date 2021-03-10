@@ -8,7 +8,7 @@ import java.awt.image.BufferedImage;
 import de.amr.games.pacman.ui.Rendering;
 import de.amr.games.pacman.ui.animation.PacManGameAnimations;
 
-public interface SwingRendering extends Rendering<Graphics2D, Color, Font, BufferedImage>, PacManGameAnimations {
+public interface PacManGameRendering2D extends Rendering<Graphics2D, Color, Font, BufferedImage>, PacManGameAnimations {
 
 	void drawSprite(Graphics2D g, BufferedImage sprite, double x, double y);
 

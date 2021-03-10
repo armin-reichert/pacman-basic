@@ -13,7 +13,7 @@ import de.amr.games.pacman.ui.mspacman.MsPacMan_IntroScene_Controller;
 import de.amr.games.pacman.ui.mspacman.MsPacMan_IntroScene_Controller.Phase;
 import de.amr.games.pacman.ui.sound.SoundManager;
 import de.amr.games.pacman.ui.swing.common.GameScene;
-import de.amr.games.pacman.ui.swing.rendering.SwingRendering;
+import de.amr.games.pacman.ui.swing.rendering.PacManGameRendering2D;
 
 /**
  * Intro scene of the Ms. Pac-Man game. The ghosts and Ms. Pac-Man are introduced one after another.
@@ -24,7 +24,7 @@ public class MsPacMan_IntroScene extends GameScene {
 
 	private MsPacMan_IntroScene_Controller animation;
 
-	public MsPacMan_IntroScene(PacManGameController controller, Dimension size, SwingRendering rendering,
+	public MsPacMan_IntroScene(PacManGameController controller, Dimension size, PacManGameRendering2D rendering,
 			SoundManager sounds) {
 		super(controller, size, rendering, sounds);
 	}

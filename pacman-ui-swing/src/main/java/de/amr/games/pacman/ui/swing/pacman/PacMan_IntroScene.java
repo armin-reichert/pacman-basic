@@ -18,7 +18,7 @@ import de.amr.games.pacman.ui.pacman.PacMan_IntroScene_Controller.GhostPortrait;
 import de.amr.games.pacman.ui.pacman.PacMan_IntroScene_Controller.Phase;
 import de.amr.games.pacman.ui.sound.SoundManager;
 import de.amr.games.pacman.ui.swing.common.GameScene;
-import de.amr.games.pacman.ui.swing.rendering.SwingRendering;
+import de.amr.games.pacman.ui.swing.rendering.PacManGameRendering2D;
 
 /**
  * Intro scene of the PacMan game.
@@ -32,7 +32,7 @@ public class PacMan_IntroScene extends GameScene {
 
 	private PacMan_IntroScene_Controller animation;
 
-	public PacMan_IntroScene(PacManGameController controller, Dimension size, SwingRendering rendering,
+	public PacMan_IntroScene(PacManGameController controller, Dimension size, PacManGameRendering2D rendering,
 			SoundManager sounds) {
 		super(controller, size, rendering, sounds);
 	}

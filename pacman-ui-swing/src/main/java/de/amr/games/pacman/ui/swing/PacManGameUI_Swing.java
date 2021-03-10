@@ -55,7 +55,7 @@ import de.amr.games.pacman.ui.swing.pacman.PacMan_IntermissionScene2;
 import de.amr.games.pacman.ui.swing.pacman.PacMan_IntermissionScene3;
 import de.amr.games.pacman.ui.swing.pacman.PacMan_IntroScene;
 import de.amr.games.pacman.ui.swing.rendering.Debug;
-import de.amr.games.pacman.ui.swing.rendering.SwingRendering;
+import de.amr.games.pacman.ui.swing.rendering.PacManGameRendering2D;
 import de.amr.games.pacman.ui.swing.rendering.standard.MsPacMan_StandardRendering;
 import de.amr.games.pacman.ui.swing.rendering.standard.PacMan_StandardRendering;
 
@@ -67,7 +67,7 @@ import de.amr.games.pacman.ui.swing.rendering.standard.PacMan_StandardRendering;
 public class PacManGameUI_Swing implements PacManGameUI {
 
 	private final PacManGameController controller;
-	private final EnumMap<GameType, SwingRendering> renderings = new EnumMap<>(GameType.class);
+	private final EnumMap<GameType, PacManGameRendering2D> renderings = new EnumMap<>(GameType.class);
 	private final EnumMap<GameType, SoundManager> sounds = new EnumMap<>(GameType.class);
 	private final EnumMap<GameType, List<GameScene>> scenes = new EnumMap<>(GameType.class);
 	private final Deque<FlashMessage> flashMessageQ = new ArrayDeque<>();

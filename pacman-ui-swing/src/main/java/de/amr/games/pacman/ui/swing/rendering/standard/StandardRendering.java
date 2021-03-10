@@ -23,14 +23,14 @@ import de.amr.games.pacman.model.common.PacManGameState;
 import de.amr.games.pacman.model.common.Stork;
 import de.amr.games.pacman.model.pacman.PacManBonus;
 import de.amr.games.pacman.ui.animation.PacManGameAnimations;
-import de.amr.games.pacman.ui.swing.rendering.SwingRendering;
+import de.amr.games.pacman.ui.swing.rendering.PacManGameRendering2D;
 
 /**
  * Standard rendering functionality for both, Pac-Man and Ms. Pac-Man.
  * 
  * @author Armin Reichert
  */
-public abstract class StandardRendering implements SwingRendering, PacManGameAnimations {
+public abstract class StandardRendering implements PacManGameRendering2D, PacManGameAnimations {
 
 	public boolean foodAnimationOn; // TODO not used
 

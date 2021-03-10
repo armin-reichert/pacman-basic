@@ -9,7 +9,7 @@ import de.amr.games.pacman.controller.PacManGameController;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.PacManGameState;
 import de.amr.games.pacman.ui.sound.SoundManager;
-import de.amr.games.pacman.ui.swing.rendering.SwingRendering;
+import de.amr.games.pacman.ui.swing.rendering.PacManGameRendering2D;
 
 /**
  * Play scene (Pac-Man and Ms. Pac-Man).
@@ -18,7 +18,7 @@ import de.amr.games.pacman.ui.swing.rendering.SwingRendering;
  */
 public class PlayScene extends GameScene {
 
-	public PlayScene(PacManGameController controller, Dimension size, SwingRendering rendering, SoundManager sounds) {
+	public PlayScene(PacManGameController controller, Dimension size, PacManGameRendering2D rendering, SoundManager sounds) {
 		super(controller, size, rendering, sounds);
 	}
 

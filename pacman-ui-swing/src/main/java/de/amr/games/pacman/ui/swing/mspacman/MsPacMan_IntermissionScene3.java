@@ -7,7 +7,7 @@ import de.amr.games.pacman.controller.PacManGameController;
 import de.amr.games.pacman.ui.mspacman.MsPacMan_IntermissionScene3_Controller;
 import de.amr.games.pacman.ui.sound.SoundManager;
 import de.amr.games.pacman.ui.swing.common.GameScene;
-import de.amr.games.pacman.ui.swing.rendering.SwingRendering;
+import de.amr.games.pacman.ui.swing.rendering.PacManGameRendering2D;
 
 /**
  * Intermission scene 3: "Junior".
@@ -23,7 +23,7 @@ public class MsPacMan_IntermissionScene3 extends GameScene {
 
 	private MsPacMan_IntermissionScene3_Controller animation;
 
-	public MsPacMan_IntermissionScene3(PacManGameController controller, Dimension size, SwingRendering rendering,
+	public MsPacMan_IntermissionScene3(PacManGameController controller, Dimension size, PacManGameRendering2D rendering,
 			SoundManager sounds) {
 		super(controller, size, rendering, sounds);
 	}
