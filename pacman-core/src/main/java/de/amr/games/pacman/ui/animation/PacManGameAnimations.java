@@ -1,6 +1,5 @@
 package de.amr.games.pacman.ui.animation;
 
-import de.amr.games.pacman.lib.Animation;
 import de.amr.games.pacman.model.common.GameModel;
 
 /**

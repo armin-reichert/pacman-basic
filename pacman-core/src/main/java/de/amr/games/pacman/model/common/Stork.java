@@ -1,6 +1,6 @@
 package de.amr.games.pacman.model.common;
 
-import de.amr.games.pacman.lib.Animation;
+import de.amr.games.pacman.ui.animation.Animation;
 
 public class Stork extends GameEntity {
 

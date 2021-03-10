@@ -2,8 +2,6 @@ package de.amr.games.pacman.ui.animation;
 
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.lib.Animation;
-
 /**
  * Animations for a maze.
  * 
