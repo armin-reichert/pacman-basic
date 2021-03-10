@@ -77,22 +77,27 @@ import de.amr.games.pacman.ui.animation.PlayerAnimations;
  */
 public class PacManGameController {
 
-	private final EnumMap<GameType, GameModel> gameModels = new EnumMap<>(GameType.class);
+	private final EnumMap<GameType, GameModel> games = new EnumMap<>(GameType.class);
 	{
-		gameModels.put(PACMAN, new PacManGame());
-		gameModels.put(MS_PACMAN, new MsPacManGame());
+		games.put(PACMAN, new PacManGame());
+		games.put(MS_PACMAN, new MsPacManGame());
 	}
 
-	private GameModel currentGame;
+	private GameModel game;
 	private PacManGameUI userInterface;
 
-	private Autopilot autopilot;
-	private boolean autopilotOn;
+	private final Autopilot autopilot;
 	private PacManGameState previousState;
-	private boolean intermissionScenesEnabled = false;
+	private boolean intermissionScenesEnabled = true;
 
 	public PacManGameController(GameType initialGameType) {
-		play(initialGameType);
+		game = games.get(initialGameType);
+		autopilot = new Autopilot(game);
+		game.reset();
+		changeState(INTRO, null, this::enterIntroState);
+		if (userInterface != null) {
+			userInterface.onGameChanged(game);
+		}
 	}
 
 	public void step() {
@@ -101,17 +106,51 @@ public class PacManGameController {
 			changeState(INTRO, this::exitHuntingState, this::enterIntroState);
 			return;
 		}
-		handleKeys();
+		handleCheatsAndStuff();
 		updateGameState();
 		userInterface.update();
 	}
 
+	private void handleCheatsAndStuff() {
+		if (game.attractMode) {
+			return;
+		}
+		boolean ready = game.state == READY, hunting = game.state == HUNTING;
+
+		// A = toggle autopilot
+		if (userInterface.keyPressed("A")) {
+			toggleAutopilot();
+		}
+		// E = eat all food except the energizers
+		if (userInterface.keyPressed("E") && hunting) {
+			game.level.world.tiles().filter(game.level::containsFood).filter(tile -> !game.level.world.isEnergizerTile(tile))
+					.forEach(game.level::removeFood);
+		}
+		// I = toggle Pac immune/vulnerable
+		if (userInterface.keyPressed("I")) {
+			togglePlayerImmunity();
+		}
+		// L = add live
+		if (userInterface.keyPressed("L")) {
+			game.lives++;
+		}
+		// N = change to next level
+		if (userInterface.keyPressed("N") && (ready || hunting)) {
+			changeState(CHANGING_LEVEL, this::exitHuntingState, this::enterChangingLevelState);
+		}
+		// X = kill all ghosts outside of ghost house
+		if (userInterface.keyPressed("X") && hunting) {
+			killAllGhosts();
+			changeState(GHOST_DYING, this::exitHuntingState, this::enterGhostDyingState);
+		}
+	}
+
 	public GameModel getGame() {
-		return currentGame;
+		return game;
 	}
 
 	public boolean isPlaying(GameType type) {
-		return currentGame == gameModels.get(type);
+		return game == games.get(type);
 	}
 
 	public GameType currentlyPlaying() {
@@ -119,12 +158,11 @@ public class PacManGameController {
 	}
 
 	public void play(GameType type) {
-		currentGame = gameModels.get(type);
-		currentGame.reset();
-		autopilot = new Autopilot(currentGame);
+		game = games.get(type);
+		game.reset();
 		changeState(INTRO, null, this::enterIntroState);
 		if (userInterface != null) {
-			userInterface.onGameChanged(currentGame);
+			userInterface.onGameChanged(game);
 		}
 	}
 
@@ -133,7 +171,7 @@ public class PacManGameController {
 	}
 
 	public void finishCurrentState() {
-		currentGame.state.timer.setDuration(0);
+		game.state.timer.setDuration(0);
 	}
 
 	public void toggleGameType() {
@@ -147,30 +185,30 @@ public class PacManGameController {
 		}
 	}
 
-	public void setAutopilot(boolean enabled) {
-		autopilotOn = enabled;
-		String msg = "Autopilot " + (autopilotOn ? "on" : "off");
+	private void enableAutopilot(boolean enabled) {
+		autopilot.enabled = enabled;
+		String msg = "Autopilot " + (enabled ? "on" : "off");
 		userInterface.showFlashMessage(msg, clock.sec(1));
 		log(msg);
 	}
 
 	public void toggleAutopilot() {
-		setAutopilot(!autopilotOn);
+		enableAutopilot(!autopilot.enabled);
 	}
 
 	public void setPlayerImmune(boolean immune) {
-		currentGame.pac.immune = immune;
-		String msg = currentGame.pac.name + " is " + (currentGame.pac.immune ? "immune" : "vulnerable");
+		game.pac.immune = immune;
+		String msg = game.pac.name + " is " + (game.pac.immune ? "immune" : "vulnerable");
 		userInterface.showFlashMessage(msg, clock.sec(1));
 		log(msg);
 	}
 
-	public void togglePlayerImmune() {
-		setPlayerImmune(!currentGame.pac.immune);
+	public void togglePlayerImmunity() {
+		setPlayerImmune(!game.pac.immune);
 	}
 
 	private Ghost ghost(int id) {
-		return currentGame.ghosts[id];
+		return game.ghosts[id];
 	}
 
 	/*
@@ -180,20 +218,19 @@ public class PacManGameController {
 	// INTRO
 
 	private void enterIntroState() {
-		currentGame.state.timer.setDuration(Long.MAX_VALUE);
-		currentGame.reset();
-		autopilotOn = false;
+		game.state.timer.setDuration(Long.MAX_VALUE);
+		game.reset();
 		previousState = null;
 		if (userInterface != null) {
 			userInterface.mute(false);
 			userInterface.sound().ifPresent(SoundManager::stopAll);
-			userInterface.animation().ifPresent(va -> va.reset(currentGame));
-			userInterface.onGameChanged(currentGame);
+			userInterface.animation().ifPresent(va -> va.reset(game));
+			userInterface.onGameChanged(game);
 		}
 	}
 
 	private PacManGameState runIntroState() {
-		if (currentGame.attractMode) {
+		if (game.attractMode) {
 			userInterface.mute(true);
 			return changeState(READY, null, this::enterReadyState);
 		}
@@ -205,57 +242,57 @@ public class PacManGameController {
 		}
 		// test intermission scenes
 		if (userInterface.keyPressed("1")) {
-			currentGame.intermissionNumber = 1;
+			game.intermissionNumber = 1;
 			userInterface.showFlashMessage("Intermission #1", clock.sec(0.5));
 			return changeState(INTERMISSION, null, this::enterIntermissionState);
 		}
 		if (userInterface.keyPressed("2")) {
-			currentGame.intermissionNumber = 2;
+			game.intermissionNumber = 2;
 			userInterface.showFlashMessage("Intermission #2", clock.sec(0.5));
 			return changeState(INTERMISSION, null, this::enterIntermissionState);
 		}
 		if (userInterface.keyPressed("3")) {
-			currentGame.intermissionNumber = 3;
+			game.intermissionNumber = 3;
 			userInterface.showFlashMessage("Intermission #3", clock.sec(0.5));
 			return changeState(INTERMISSION, null, this::enterIntermissionState);
 		}
 
-		return currentGame.state.tick();
+		return game.state.tick();
 	}
 
 	// READY
 
 	private void enterReadyState() {
-		currentGame.resetGuys();
-		userInterface.mute(currentGame.attractMode);
-		userInterface.animation().ifPresent(animation -> animation.reset(currentGame));
-		if (currentGame.started || currentGame.attractMode) {
-			currentGame.state.timer.setDuration(clock.sec(2));
+		game.resetGuys();
+		userInterface.mute(game.attractMode);
+		userInterface.animation().ifPresent(animation -> animation.reset(game));
+		if (game.started || game.attractMode) {
+			game.state.timer.setDuration(clock.sec(2));
 		} else {
-			currentGame.state.timer.setDuration(clock.sec(4.5));
+			game.state.timer.setDuration(clock.sec(4.5));
 			userInterface.sound().ifPresent(snd -> snd.play(PacManGameSound.GAME_READY));
 		}
 	}
 
 	private PacManGameState runReadyState() {
-		if (currentGame.state.timer.expired()) {
+		if (game.state.timer.expired()) {
 			return changeState(PacManGameState.HUNTING, this::exitReadyState, this::enterHuntingState);
 		}
-		if (currentGame.state.timer.running() == clock.sec(0.5)) {
-			currentGame.pac.visible = true;
-			for (Ghost ghost : currentGame.ghosts) {
+		if (game.state.timer.running() == clock.sec(0.5)) {
+			game.pac.visible = true;
+			for (Ghost ghost : game.ghosts) {
 				ghost.visible = true;
 			}
 		}
-		return currentGame.state.tick();
+		return game.state.tick();
 	}
 
 	private void exitReadyState() {
-		if (!currentGame.attractMode) {
-			currentGame.started = true;
+		if (!game.attractMode) {
+			game.started = true;
 		}
 		userInterface.animation().map(PacManGameAnimations::ghostAnimations).ifPresent(ga -> {
-			currentGame.ghosts().flatMap(ga::ghostKicking).forEach(Animation::restart);
+			game.ghosts().flatMap(ga::ghostKicking).forEach(Animation::restart);
 		});
 	}
 
@@ -266,17 +303,17 @@ public class PacManGameController {
 
 	// TODO not sure about when which siren should play
 	private void startHuntingPhase(int phase) {
-		currentGame.huntingPhase = phase;
-		currentGame.state.timer.setDuration(currentGame.getHuntingPhaseDuration(currentGame.huntingPhase));
-		if (currentGame.inScatteringPhase()) {
+		game.huntingPhase = phase;
+		game.state.timer.setDuration(game.getHuntingPhaseDuration(game.huntingPhase));
+		if (game.inScatteringPhase()) {
 			userInterface.sound().ifPresent(sound -> {
-				if (currentGame.huntingPhase >= 2) {
-					sound.stop(SIRENS.get((currentGame.huntingPhase - 1) / 2));
+				if (game.huntingPhase >= 2) {
+					sound.stop(SIRENS.get((game.huntingPhase - 1) / 2));
 				}
-				sound.loopForever(SIRENS.get(currentGame.huntingPhase / 2));
+				sound.loopForever(SIRENS.get(game.huntingPhase / 2));
 			});
 		}
-		log("Hunting phase %d started, state is now %s", phase, currentGame.stateDescription());
+		log("Hunting phase %d started, state is now %s", phase, game.stateDescription());
 	}
 
 	private void enterHuntingState() {
@@ -284,7 +321,7 @@ public class PacManGameController {
 		userInterface.animation().map(PacManGameAnimations::mazeAnimations)
 				.ifPresent(ma -> ma.energizerBlinking().restart());
 		userInterface.animation().map(PacManGameAnimations::playerAnimations)
-				.ifPresent(pa -> pa.playerMunching(currentGame.pac).forEach(Animation::restart));
+				.ifPresent(pa -> pa.playerMunching(game.pac).forEach(Animation::restart));
 	}
 
 	private void exitHuntingState() {
@@ -293,65 +330,63 @@ public class PacManGameController {
 
 	private PacManGameState runHuntingState() {
 		// Level completed?
-		if (currentGame.level.foodRemaining == 0) {
+		if (game.level.foodRemaining == 0) {
 			return changeState(CHANGING_LEVEL, this::exitHuntingState, this::enterChangingLevelState);
 		}
 
 		// Pac killing ghost(s)?
-		List<Ghost> prey = currentGame.ghosts(FRIGHTENED).filter(currentGame.pac::meets).collect(Collectors.toList());
+		List<Ghost> prey = game.ghosts(FRIGHTENED).filter(game.pac::meets).collect(Collectors.toList());
 		if (!prey.isEmpty()) {
 			prey.forEach(this::killGhost);
 			return changeState(GHOST_DYING, this::exitHuntingState, this::enterGhostDyingState);
 		}
 
 		// Pac getting killed by ghost?
-		Optional<Ghost> killer = currentGame.ghosts(HUNTING_PAC).filter(currentGame.pac::meets).findAny();
-		if (killer.isPresent() && !currentGame.pac.immune) {
+		Optional<Ghost> killer = game.ghosts(HUNTING_PAC).filter(game.pac::meets).findAny();
+		if (killer.isPresent() && !game.pac.immune) {
 			onPacKilled(killer.get());
 			return changeState(PACMAN_DYING, this::exitHuntingState, this::enterPacManDyingState);
 		}
 
 		// Hunting phase complete?
-		if (currentGame.state.timer.expired()) {
-			currentGame.ghosts(HUNTING_PAC).forEach(Ghost::forceTurningBack);
-			startHuntingPhase(++currentGame.huntingPhase);
+		if (game.state.timer.expired()) {
+			game.ghosts(HUNTING_PAC).forEach(Ghost::forceTurningBack);
+			startHuntingPhase(++game.huntingPhase);
 		}
 
 		// Can Pac move?
-		steerPac();
-		currentGame.pac.speed = currentGame.pac.powerTicksLeft == 0 ? currentGame.level.pacSpeed
-				: currentGame.level.pacSpeedPowered;
-		if (currentGame.pac.restingTicksLeft > 0) {
-			currentGame.pac.restingTicksLeft--;
+		steerPlayer();
+		game.pac.speed = game.pac.powerTicksLeft == 0 ? game.level.pacSpeed : game.level.pacSpeedPowered;
+		if (game.pac.restingTicksLeft > 0) {
+			game.pac.restingTicksLeft--;
 		} else {
-			currentGame.pac.tryMoving();
+			game.pac.tryMoving();
 		}
 
 		// Did Pac find food?
-		if (currentGame.level.containsFood(currentGame.pac.tile())) {
-			onPacFoundFood(currentGame.pac.tile());
+		if (game.level.containsFood(game.pac.tile())) {
+			onPacFoundFood(game.pac.tile());
 		} else {
-			currentGame.pac.starvingTicks++;
+			game.pac.starvingTicks++;
 		}
 
 		// Is Pac losing power?
-		if (currentGame.pac.powerTicksLeft > 0) {
-			currentGame.pac.powerTicksLeft--;
-			if (currentGame.pac.powerTicksLeft == 0) {
-				log("%s lost power", currentGame.pac.name);
-				currentGame.ghosts(FRIGHTENED).forEach(ghost -> ghost.state = HUNTING_PAC);
+		if (game.pac.powerTicksLeft > 0) {
+			game.pac.powerTicksLeft--;
+			if (game.pac.powerTicksLeft == 0) {
+				log("%s lost power", game.pac.name);
+				game.ghosts(FRIGHTENED).forEach(ghost -> ghost.state = HUNTING_PAC);
 			}
 
 			// TODO fixme
 			userInterface.animation().map(PacManGameAnimations::ghostAnimations).ifPresent(ga -> {
-				currentGame.ghosts(FRIGHTENED).forEach(ghost -> {
+				game.ghosts(FRIGHTENED).forEach(ghost -> {
 					Animation<?> flashing = ga.ghostFlashing(ghost);
-					if (currentGame.level.numFlashes > 0
-							&& currentGame.pac.powerTicksLeft == currentGame.level.numFlashes * flashing.duration()) {
+					if (game.level.numFlashes > 0 && game.pac.powerTicksLeft == game.level.numFlashes * flashing.duration()) {
 						flashing.restart();
-						log("Ghost flashing started (%d flashes, %d ticks each), Pac power left: %d ticks",
-								currentGame.level.numFlashes, flashing.duration(), currentGame.pac.powerTicksLeft);
-					} else if (currentGame.pac.powerTicksLeft == 0) {
+						log("Ghost flashing started (%d flashes, %d ticks each), Pac power left: %d ticks", game.level.numFlashes,
+								flashing.duration(), game.pac.powerTicksLeft);
+					} else if (game.pac.powerTicksLeft == 0) {
 						flashing.reset();
 						log("Ghost flashing stopped");
 					} else {
@@ -363,23 +398,22 @@ public class PacManGameController {
 		}
 
 		tryReleasingGhosts();
-		currentGame.ghosts(HUNTING_PAC).forEach(this::setGhostHuntingTarget);
-		currentGame.ghosts().forEach(ghost -> ghost.update(currentGame.level));
+		game.ghosts(HUNTING_PAC).forEach(this::setGhostHuntingTarget);
+		game.ghosts().forEach(ghost -> ghost.update(game.level));
 
-		currentGame.bonus.update();
-		if (currentGame.bonus.edibleTicksLeft > 0 && currentGame.pac.meets(currentGame.bonus)) {
-			log("Pac-Man found bonus (%s) of value %d", currentGame.bonusNames[currentGame.bonus.symbol],
-					currentGame.bonus.points);
-			currentGame.bonus.eatAndDisplayValue(clock.sec(2));
-			score(currentGame.bonus.points);
+		game.bonus.update();
+		if (game.bonus.edibleTicksLeft > 0 && game.pac.meets(game.bonus)) {
+			log("Pac-Man found bonus (%s) of value %d", game.bonusNames[game.bonus.symbol], game.bonus.points);
+			game.bonus.eatAndDisplayValue(clock.sec(2));
+			score(game.bonus.points);
 			userInterface.sound().ifPresent(snd -> snd.play(PacManGameSound.BONUS_EATEN));
 		}
 
 		userInterface.sound().ifPresent(sm -> {
-			if (currentGame.ghosts().noneMatch(ghost -> ghost.is(DEAD))) {
+			if (game.ghosts().noneMatch(ghost -> ghost.is(DEAD))) {
 				sm.stop(PacManGameSound.GHOST_EYES);
 			}
-			if (currentGame.pac.powerTicksLeft == 0) {
+			if (game.pac.powerTicksLeft == 0) {
 				sm.stop(PacManGameSound.PACMAN_POWER);
 			}
 		});
@@ -388,55 +422,55 @@ public class PacManGameController {
 				.ifPresent(ma -> ma.energizerBlinking().animate());
 
 		// hunting state timer is suspended if Pac has power
-		if (currentGame.pac.powerTicksLeft == 0) {
-			currentGame.state.tick();
+		if (game.pac.powerTicksLeft == 0) {
+			game.state.tick();
 		}
 
-		return currentGame.state;
+		return game.state;
 	}
 
 	// PACMAN_DYING
 
 	private void enterPacManDyingState() {
-		currentGame.state.timer.setDuration(clock.sec(4));
-		currentGame.pac.speed = 0;
-		currentGame.bonus.edibleTicksLeft = currentGame.bonus.eatenTicksLeft = 0;
+		game.state.timer.setDuration(clock.sec(4));
+		game.pac.speed = 0;
+		game.bonus.edibleTicksLeft = game.bonus.eatenTicksLeft = 0;
 
 		userInterface.animation().map(PacManGameAnimations::ghostAnimations).ifPresent(ga -> {
-			currentGame.ghosts().flatMap(ga::ghostKicking).forEach(Animation::reset);
+			game.ghosts().flatMap(ga::ghostKicking).forEach(Animation::reset);
 		});
 		userInterface.sound().ifPresent(SoundManager::stopAll);
 	}
 
 	private PacManGameState runPacManDyingState() {
-		if (currentGame.state.timer.expired()) {
-			if (currentGame.attractMode) {
+		if (game.state.timer.expired()) {
+			if (game.attractMode) {
 				return changeState(INTRO, this::exitPacManDyingState, this::enterIntroState);
-			} else if (currentGame.lives > 1) {
-				currentGame.lives--;
+			} else if (game.lives > 1) {
+				game.lives--;
 				return changeState(READY, this::exitPacManDyingState, this::enterReadyState);
 			} else {
 				return changeState(GAME_OVER, this::exitPacManDyingState, this::enterGameOverState);
 			}
 		}
-		if (currentGame.state.timer.running() == clock.sec(1)) {
-			currentGame.ghosts().forEach(ghost -> ghost.visible = false);
+		if (game.state.timer.running() == clock.sec(1)) {
+			game.ghosts().forEach(ghost -> ghost.visible = false);
 			userInterface.animation().map(PacManGameAnimations::playerAnimations).map(PlayerAnimations::playerDying)
 					.ifPresent(da -> da.restart());
 			userInterface.sound().ifPresent(snd -> snd.play(PacManGameSound.PACMAN_DEATH));
 		}
-		return currentGame.state.tick();
+		return game.state.tick();
 	}
 
 	private void exitPacManDyingState() {
-		currentGame.ghosts().forEach(ghost -> ghost.visible = true);
+		game.ghosts().forEach(ghost -> ghost.visible = true);
 	}
 
 	// GHOST_DYING
 
 	private void enterGhostDyingState() {
-		currentGame.state.timer.setDuration(clock.sec(1));
-		currentGame.pac.visible = false;
+		game.state.timer.setDuration(clock.sec(1));
+		game.pac.visible = false;
 
 		userInterface.animation().map(PacManGameAnimations::mazeAnimations).map(MazeAnimations::energizerBlinking)
 				.ifPresent(Animation::restart);
@@ -444,20 +478,20 @@ public class PacManGameController {
 	}
 
 	private PacManGameState runGhostDyingState() {
-		if (currentGame.state.timer.expired()) {
+		if (game.state.timer.expired()) {
 			log("Resume state '%s' after ghost died", previousState);
 			return changeState(previousState, this::exitGhostDyingState, () -> {
 			});
 		}
-		steerPac();
-		currentGame.ghosts().filter(ghost -> ghost.is(DEAD) && ghost.bounty == 0 || ghost.is(ENTERING_HOUSE))
-				.forEach(ghost -> ghost.update(currentGame.level));
-		return currentGame.state.tick();
+		steerPlayer();
+		game.ghosts().filter(ghost -> ghost.is(DEAD) && ghost.bounty == 0 || ghost.is(ENTERING_HOUSE))
+				.forEach(ghost -> ghost.update(game.level));
+		return game.state.tick();
 	}
 
 	private void exitGhostDyingState() {
-		currentGame.pac.visible = true;
-		currentGame.ghosts().forEach(ghost -> {
+		game.pac.visible = true;
+		game.ghosts().forEach(ghost -> {
 			if (ghost.bounty > 0) {
 				ghost.bounty = 0;
 				userInterface.sound().ifPresent(snd -> snd.loopForever(PacManGameSound.GHOST_EYES));
@@ -468,56 +502,56 @@ public class PacManGameController {
 	// CHANGING_LEVEL
 
 	private void enterChangingLevelState() {
-		currentGame.state.timer.setDuration(clock.sec(currentGame.level.numFlashes + 3));
-		currentGame.bonus.edibleTicksLeft = currentGame.bonus.eatenTicksLeft = 0;
-		currentGame.pac.speed = 0;
+		game.state.timer.setDuration(clock.sec(game.level.numFlashes + 3));
+		game.bonus.edibleTicksLeft = game.bonus.eatenTicksLeft = 0;
+		game.pac.speed = 0;
 		userInterface.sound().ifPresent(SoundManager::stopAll);
 	}
 
 	private PacManGameState runChangingLevelState() {
-		if (currentGame.state.timer.expired()) {
+		if (game.state.timer.expired()) {
 			if (intermissionScenesEnabled) {
-				if (Arrays.asList(2, 5, 9, 13, 17).contains(currentGame.levelNumber)) {
-					currentGame.intermissionNumber = intermissionNumber(currentGame.levelNumber);
+				if (Arrays.asList(2, 5, 9, 13, 17).contains(game.levelNumber)) {
+					game.intermissionNumber = intermissionNumber(game.levelNumber);
 					return changeState(INTERMISSION, this::exitChangingLevelState, this::enterIntermissionState);
 				}
 			}
 			return changeState(READY, this::exitChangingLevelState, this::enterReadyState);
 		}
-		if (currentGame.state.timer.running() == clock.sec(2)) {
-			currentGame.ghosts().forEach(ghost -> ghost.visible = false);
+		if (game.state.timer.running() == clock.sec(2)) {
+			game.ghosts().forEach(ghost -> ghost.visible = false);
 		}
-		if (currentGame.state.timer.running() == clock.sec(3)) {
-			userInterface.animation().map(PacManGameAnimations::mazeAnimations).ifPresent(
-					ma -> ma.mazeFlashing(currentGame.level.mazeNumber).repetitions(currentGame.level.numFlashes).restart());
+		if (game.state.timer.running() == clock.sec(3)) {
+			userInterface.animation().map(PacManGameAnimations::mazeAnimations)
+					.ifPresent(ma -> ma.mazeFlashing(game.level.mazeNumber).repetitions(game.level.numFlashes).restart());
 		}
-		return currentGame.state.tick();
+		return game.state.tick();
 	}
 
 	private void exitChangingLevelState() {
-		log("Level %d complete, entering level %d", currentGame.levelNumber, currentGame.levelNumber + 1);
-		currentGame.enterLevel(currentGame.levelNumber + 1);
-		currentGame.levelSymbols.add(currentGame.level.bonusSymbol);
+		log("Level %d complete, entering level %d", game.levelNumber, game.levelNumber + 1);
+		game.enterLevel(game.levelNumber + 1);
+		game.levelSymbols.add(game.level.bonusSymbol);
 		userInterface.animation().map(PacManGameAnimations::mazeAnimations)
-				.ifPresent(ma -> ma.mazeFlashing(currentGame.level.mazeNumber).reset());
+				.ifPresent(ma -> ma.mazeFlashing(game.level.mazeNumber).reset());
 	}
 
 	// GAME_OVER
 
 	private void enterGameOverState() {
-		currentGame.state.timer.setDuration(clock.sec(10));
-		currentGame.ghosts().forEach(ghost -> ghost.speed = 0);
-		currentGame.pac.speed = 0;
-		currentGame.saveHighscore();
+		game.state.timer.setDuration(clock.sec(10));
+		game.ghosts().forEach(ghost -> ghost.speed = 0);
+		game.pac.speed = 0;
+		game.saveHighscore();
 		userInterface.animation().map(PacManGameAnimations::ghostAnimations)
-				.ifPresent(ga -> currentGame.ghosts().flatMap(ga::ghostKicking).forEach(Animation::reset));
+				.ifPresent(ga -> game.ghosts().flatMap(ga::ghostKicking).forEach(Animation::reset));
 	}
 
 	private PacManGameState runGameOverState() {
-		if (currentGame.state.timer.expired() || userInterface.keyPressed("Space")) {
+		if (game.state.timer.expired() || userInterface.keyPressed("Space")) {
 			return changeState(INTRO, null, this::enterIntroState);
 		}
-		return currentGame.state.tick();
+		return game.state.tick();
 	}
 
 	// INTERMISSION
@@ -534,15 +568,15 @@ public class PacManGameController {
 	}
 
 	private void enterIntermissionState() {
-		currentGame.state.timer.setDuration(Long.MAX_VALUE);
-		log("Starting intermission #%d", currentGame.intermissionNumber);
+		game.state.timer.setDuration(Long.MAX_VALUE);
+		log("Starting intermission #%d", game.intermissionNumber);
 	}
 
 	private PacManGameState runIntermissionState() {
-		if (currentGame.state.timer.expired()) {
+		if (game.state.timer.expired()) {
 			return changeState(READY, null, this::enterReadyState);
 		}
-		return currentGame.state.tick();
+		return game.state.tick();
 	}
 
 	// END STATE-MACHINE
@@ -550,27 +584,26 @@ public class PacManGameController {
 	// BEGIN STATE_MACHINE INFRASTRUCTURE
 
 	private PacManGameState changeState(PacManGameState newState, Runnable onExit, Runnable onEntry) {
-		if (currentGame.state != null) {
-			log("Exit state '%s'", currentGame.stateDescription());
+		if (game.state != null) {
+			log("Exit state '%s'", game.stateDescription());
 		}
 		if (onExit != null) {
 			onExit.run();
 		}
-		previousState = currentGame.state;
-		currentGame.state = newState;
+		previousState = game.state;
+		game.state = newState;
 		if (onEntry != null) {
 			onEntry.run();
 		}
-		log("Entered state '%s' for %s", currentGame.stateDescription(),
-				ticksDescription(currentGame.state.timer.getDuration()));
+		log("Entered state '%s' for %s", game.stateDescription(), ticksDescription(game.state.timer.getDuration()));
 		if (userInterface != null) {
-			userInterface.onGameStateChanged(previousState, currentGame.state);
+			userInterface.onGameStateChanged(previousState, game.state);
 		}
-		return currentGame.state;
+		return game.state;
 	}
 
 	private void updateGameState() {
-		switch (currentGame.state) {
+		switch (game.state) {
 		case INTRO:
 			runIntroState();
 			break;
@@ -596,7 +629,7 @@ public class PacManGameController {
 			runIntermissionState();
 			break;
 		default:
-			throw new IllegalStateException("Illegal state: " + currentGame.state);
+			throw new IllegalStateException("Illegal state: " + game.state);
 		}
 	}
 
@@ -607,67 +640,67 @@ public class PacManGameController {
 	// END STATE_MACHINE INFRASTRUCTURE
 
 	private void score(int points) {
-		if (currentGame.attractMode) {
+		if (game.attractMode) {
 			return;
 		}
-		int oldscore = currentGame.score;
-		currentGame.score += points;
-		if (oldscore < 10000 && currentGame.score >= 10000) {
-			currentGame.lives++;
+		int oldscore = game.score;
+		game.score += points;
+		if (oldscore < 10000 && game.score >= 10000) {
+			game.lives++;
 			userInterface.sound().ifPresent(snd -> snd.play(PacManGameSound.EXTRA_LIFE));
-			log("Extra life. Now you have %d lives!", currentGame.lives);
+			log("Extra life. Now you have %d lives!", game.lives);
 			userInterface.showFlashMessage("Extra life!", clock.sec(1));
 		}
-		if (currentGame.score > currentGame.highscorePoints) {
-			currentGame.highscorePoints = currentGame.score;
-			currentGame.highscoreLevel = currentGame.levelNumber;
+		if (game.score > game.highscorePoints) {
+			game.highscorePoints = game.score;
+			game.highscoreLevel = game.levelNumber;
 		}
 	}
 
-	private void steerPac() {
-		if (autopilotOn || currentGame.attractMode) {
-			autopilot.run();
-		} else {
-			if (userInterface.keyPressed("Left")) {
-				currentGame.pac.wishDir = LEFT;
-			} else if (userInterface.keyPressed("Right")) {
-				currentGame.pac.wishDir = RIGHT;
-			} else if (userInterface.keyPressed("Up")) {
-				currentGame.pac.wishDir = UP;
-			} else if (userInterface.keyPressed("Down")) {
-				currentGame.pac.wishDir = DOWN;
-			}
+	private void steerPlayer() {
+		if (autopilot.enabled || game.attractMode) {
+			autopilot.run(game);
+			return;
+		}
+		if (userInterface.keyPressed("Left")) {
+			game.pac.wishDir = LEFT;
+		} else if (userInterface.keyPressed("Right")) {
+			game.pac.wishDir = RIGHT;
+		} else if (userInterface.keyPressed("Up")) {
+			game.pac.wishDir = UP;
+		} else if (userInterface.keyPressed("Down")) {
+			game.pac.wishDir = DOWN;
 		}
 	}
 
 	private void onPacFoundFood(V2i foodLocation) {
-		currentGame.level.removeFood(foodLocation);
-		if (currentGame.level.world.isEnergizerTile(foodLocation)) {
-			currentGame.pac.starvingTicks = 0;
-			currentGame.pac.restingTicksLeft = 3;
-			currentGame.ghostBounty = 200;
-			letPacFrightenGhosts(currentGame.level.ghostFrightenedSeconds);
+		game.level.removeFood(foodLocation);
+		if (game.level.world.isEnergizerTile(foodLocation)) {
+			game.pac.starvingTicks = 0;
+			game.pac.restingTicksLeft = 3;
+			game.ghostBounty = 200;
+			letPacFrightenGhosts(game.level.ghostFrightenedSeconds);
 			score(50);
 		} else {
-			currentGame.pac.starvingTicks = 0;
-			currentGame.pac.restingTicksLeft = 1;
+			game.pac.starvingTicks = 0;
+			game.pac.restingTicksLeft = 1;
 			score(10);
 		}
 
 		// Bonus gets edible?
-		if (currentGame.level.eatenFoodCount() == 70 || currentGame.level.eatenFoodCount() == 170) {
-			currentGame.bonus.visible = true;
-			currentGame.bonus.symbol = currentGame.level.bonusSymbol;
-			currentGame.bonus.points = currentGame.bonusValues[currentGame.level.bonusSymbol];
-			currentGame.bonus.activate(isPlaying(PACMAN) ? clock.sec(9 + random.nextFloat()) : Long.MAX_VALUE);
-			log("Bonus %s (value %d) activated", currentGame.bonusNames[currentGame.bonus.symbol], currentGame.bonus.points);
+		if (game.level.eatenFoodCount() == 70 || game.level.eatenFoodCount() == 170) {
+			game.bonus.visible = true;
+			game.bonus.symbol = game.level.bonusSymbol;
+			game.bonus.points = game.bonusValues[game.level.bonusSymbol];
+			game.bonus.activate(isPlaying(PACMAN) ? clock.sec(9 + random.nextFloat()) : Long.MAX_VALUE);
+			log("Bonus %s (value %d) activated", game.bonusNames[game.bonus.symbol], game.bonus.points);
 		}
 
 		// Blinky becomes Elroy?
-		if (currentGame.level.foodRemaining == currentGame.level.elroy1DotsLeft) {
+		if (game.level.foodRemaining == game.level.elroy1DotsLeft) {
 			ghost(BLINKY).elroy = 1;
 			log("Blinky becomes Cruise Elroy 1");
-		} else if (currentGame.level.foodRemaining == currentGame.level.elroy2DotsLeft) {
+		} else if (game.level.foodRemaining == game.level.elroy2DotsLeft) {
 			ghost(BLINKY).elroy = 2;
 			log("Blinky becomes Cruise Elroy 2");
 		}
@@ -677,10 +710,10 @@ public class PacManGameController {
 	}
 
 	private void letPacFrightenGhosts(int frightenedSec) {
-		currentGame.pac.powerTicksLeft = clock.sec(frightenedSec);
+		game.pac.powerTicksLeft = clock.sec(frightenedSec);
 		if (frightenedSec > 0) {
 			log("Pac-Man got power for %d seconds", frightenedSec);
-			currentGame.ghosts(HUNTING_PAC).forEach(ghost -> {
+			game.ghosts(HUNTING_PAC).forEach(ghost -> {
 				ghost.state = FRIGHTENED;
 				ghost.wishDir = ghost.dir.opposite();
 				ghost.forcedDirection = true;
@@ -694,47 +727,47 @@ public class PacManGameController {
 	}
 
 	private void onPacKilled(Ghost killer) {
-		log("%s killed by %s at tile %s", currentGame.pac.name, killer.name, killer.tile());
-		currentGame.pac.dead = true;
+		log("%s killed by %s at tile %s", game.pac.name, killer.name, killer.tile());
+		game.pac.dead = true;
 		int elroyMode = ghost(BLINKY).elroy;
 		if (elroyMode > 0) {
 			ghost(BLINKY).elroy = -elroyMode; // negative value means "disabled"
 			log("Blinky Elroy mode %d disabled", elroyMode);
 		}
-		currentGame.globalDotCounter = 0;
-		currentGame.globalDotCounterEnabled = true;
+		game.globalDotCounter = 0;
+		game.globalDotCounterEnabled = true;
 		log("Global dot counter reset and enabled");
 	}
 
 	private int pacStarvingTimeLimit() {
-		return currentGame.levelNumber < 5 ? clock.sec(4) : clock.sec(3);
+		return game.levelNumber < 5 ? clock.sec(4) : clock.sec(3);
 	}
 
 	// Ghosts
 
 	private void killGhost(Ghost ghost) {
 		ghost.state = DEAD;
-		ghost.targetTile = currentGame.level.world.houseEntry();
-		ghost.bounty = currentGame.ghostBounty;
+		ghost.targetTile = game.level.world.houseEntry();
+		ghost.bounty = game.ghostBounty;
 		score(ghost.bounty);
-		if (++currentGame.level.numGhostsKilled == 16) {
+		if (++game.level.numGhostsKilled == 16) {
 			score(12000);
 		}
-		currentGame.ghostBounty *= 2;
+		game.ghostBounty *= 2;
 		log("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name, ghost.tile(), ghost.bounty);
 	}
 
 	private void killAllGhosts() {
-		currentGame.ghostBounty = 200;
-		currentGame.ghosts().filter(ghost -> ghost.is(HUNTING_PAC) || ghost.is(FRIGHTENED)).forEach(this::killGhost);
+		game.ghostBounty = 200;
+		game.ghosts().filter(ghost -> ghost.is(HUNTING_PAC) || ghost.is(FRIGHTENED)).forEach(this::killGhost);
 	}
 
 	private void setGhostHuntingTarget(Ghost ghost) {
 		// In Ms. Pac-Man, Blinky and Pinky move randomly during the *first* scatter phase:
-		if (isPlaying(MS_PACMAN) && currentGame.huntingPhase == 0 && (ghost.id == BLINKY || ghost.id == PINKY)) {
+		if (isPlaying(MS_PACMAN) && game.huntingPhase == 0 && (ghost.id == BLINKY || ghost.id == PINKY)) {
 			ghost.targetTile = null;
-		} else if (currentGame.inScatteringPhase() && ghost.elroy == 0) {
-			ghost.targetTile = currentGame.level.world.ghostScatterTile(ghost.id);
+		} else if (game.inScatteringPhase() && ghost.elroy == 0) {
+			ghost.targetTile = game.level.world.ghostScatterTile(ghost.id);
 		} else {
 			ghost.targetTile = ghostHuntingTarget(ghost.id);
 		}
@@ -746,25 +779,24 @@ public class PacManGameController {
 	private V2i ghostHuntingTarget(int ghostID) {
 		switch (ghostID) {
 		case BLINKY:
-			return currentGame.pac.tile();
+			return game.pac.tile();
 		case PINKY: {
-			V2i fourAheadPac = currentGame.pac.tile().sum(currentGame.pac.dir.vec.scaled(4));
-			if (currentGame.pac.dir == UP) { // simulate overflow bug
+			V2i fourAheadPac = game.pac.tile().sum(game.pac.dir.vec.scaled(4));
+			if (game.pac.dir == UP) { // simulate overflow bug
 				fourAheadPac = fourAheadPac.sum(LEFT.vec.scaled(4));
 			}
 			return fourAheadPac;
 		}
 		case INKY: {
-			V2i twoAheadPac = currentGame.pac.tile().sum(currentGame.pac.dir.vec.scaled(2));
-			if (currentGame.pac.dir == UP) { // simulate overflow bug
+			V2i twoAheadPac = game.pac.tile().sum(game.pac.dir.vec.scaled(2));
+			if (game.pac.dir == UP) { // simulate overflow bug
 				twoAheadPac = twoAheadPac.sum(LEFT.vec.scaled(2));
 			}
 			return ghost(BLINKY).tile().scaled(-1).sum(twoAheadPac.scaled(2));
 		}
 		case CLYDE: /* A Boy Named Sue */
-			return ghost(CLYDE).tile().euclideanDistance(currentGame.pac.tile()) < 8
-					? currentGame.level.world.ghostScatterTile(CLYDE)
-					: currentGame.pac.tile();
+			return ghost(CLYDE).tile().euclideanDistance(game.pac.tile()) < 8 ? game.level.world.ghostScatterTile(CLYDE)
+					: game.pac.tile();
 		default:
 			throw new IllegalArgumentException("Unknown ghost id: " + ghostID);
 		}
@@ -777,15 +809,15 @@ public class PacManGameController {
 			ghost(BLINKY).state = HUNTING_PAC;
 		}
 		preferredLockedGhostInHouse().ifPresent(ghost -> {
-			if (currentGame.globalDotCounterEnabled && currentGame.globalDotCounter >= ghostGlobalDotLimit(ghost)) {
-				releaseGhost(ghost, "Global dot counter (%d) reached limit (%d)", currentGame.globalDotCounter,
+			if (game.globalDotCounterEnabled && game.globalDotCounter >= ghostGlobalDotLimit(ghost)) {
+				releaseGhost(ghost, "Global dot counter (%d) reached limit (%d)", game.globalDotCounter,
 						ghostGlobalDotLimit(ghost));
-			} else if (!currentGame.globalDotCounterEnabled && ghost.dotCounter >= ghostPrivateDotLimit(ghost)) {
+			} else if (!game.globalDotCounterEnabled && ghost.dotCounter >= ghostPrivateDotLimit(ghost)) {
 				releaseGhost(ghost, "%s's dot counter (%d) reached limit (%d)", ghost.name, ghost.dotCounter,
 						ghostPrivateDotLimit(ghost));
-			} else if (currentGame.pac.starvingTicks >= pacStarvingTimeLimit()) {
-				releaseGhost(ghost, "%s has been starving for %d ticks", currentGame.pac.name, currentGame.pac.starvingTicks);
-				currentGame.pac.starvingTicks = 0;
+			} else if (game.pac.starvingTicks >= pacStarvingTimeLimit()) {
+				releaseGhost(ghost, "%s has been starving for %d ticks", game.pac.name, game.pac.starvingTicks);
+				game.pac.starvingTicks = 0;
 			}
 		});
 	}
@@ -805,10 +837,10 @@ public class PacManGameController {
 
 	private int ghostPrivateDotLimit(Ghost ghost) {
 		if (ghost == ghost(INKY)) {
-			return currentGame.levelNumber == 1 ? 30 : 0;
+			return game.levelNumber == 1 ? 30 : 0;
 		}
 		if (ghost == ghost(CLYDE)) {
-			return currentGame.levelNumber == 1 ? 60 : currentGame.levelNumber == 2 ? 50 : 0;
+			return game.levelNumber == 1 ? 60 : game.levelNumber == 2 ? 50 : 0;
 		}
 		return 0;
 	}
@@ -818,52 +850,17 @@ public class PacManGameController {
 	}
 
 	private void updateGhostDotCounters() {
-		if (currentGame.globalDotCounterEnabled) {
-			if (ghost(CLYDE).is(LOCKED) && currentGame.globalDotCounter == 32) {
-				currentGame.globalDotCounterEnabled = false;
-				currentGame.globalDotCounter = 0;
+		if (game.globalDotCounterEnabled) {
+			if (ghost(CLYDE).is(LOCKED) && game.globalDotCounter == 32) {
+				game.globalDotCounterEnabled = false;
+				game.globalDotCounter = 0;
 				log("Global dot counter disabled and reset, Clyde was in house when counter reached 32");
 			} else {
-				++currentGame.globalDotCounter;
+				++game.globalDotCounter;
 			}
 		} else {
 			preferredLockedGhostInHouse().ifPresent(ghost -> ++ghost.dotCounter);
 		}
 	}
 
-	// Settings changes, cheats and stuff
-
-	private void handleKeys() {
-		if (currentGame.attractMode) {
-			return;
-		}
-		boolean ready = currentGame.state == READY, hunting = currentGame.state == HUNTING;
-
-		// A = toggle autopilot
-		if (userInterface.keyPressed("A")) {
-			toggleAutopilot();
-		}
-		// E = eat all food without the energizers
-		if (userInterface.keyPressed("E") && hunting) {
-			currentGame.level.world.tiles().filter(currentGame.level::containsFood)
-					.filter(tile -> !currentGame.level.world.isEnergizerTile(tile)).forEach(currentGame.level::removeFood);
-		}
-		// I = toggle Pac immune/vulnerable
-		if (userInterface.keyPressed("I")) {
-			togglePlayerImmune();
-		}
-		// L = add live
-		if (userInterface.keyPressed("L")) {
-			currentGame.lives++;
-		}
-		// N = change to next level
-		if (userInterface.keyPressed("N") && (ready || hunting)) {
-			changeState(CHANGING_LEVEL, this::exitHuntingState, this::enterChangingLevelState);
-		}
-		// X = kill all ghosts outside of ghost house
-		if (userInterface.keyPressed("X") && hunting) {
-			killAllGhosts();
-			changeState(GHOST_DYING, this::exitHuntingState, this::enterGhostDyingState);
-		}
-	}
 }

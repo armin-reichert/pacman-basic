@@ -63,15 +63,17 @@ public class Autopilot {
 
 	}
 
+	public boolean enabled;
 	public boolean logEnabled;
 
-	private final GameModel game;
-
 	public Autopilot(GameModel game) {
-		this.game = game;
+		enabled = true;
 	}
 
-	public void run() {
+	public void run(GameModel game) {
+		if (!enabled) {
+			return;
+		}
 		if (game.pac.forcedDirection) {
 			game.pac.forcedDirection = false;
 			return;
@@ -79,11 +81,11 @@ public class Autopilot {
 		if (game.pac.couldMove && !game.pac.changedTile) {
 			return;
 		}
-		GameInfo data = collectData();
+		GameInfo data = collectData(game);
 		if (data.hunterAhead != null || data.hunterBehind != null || !data.frightenedGhosts.isEmpty()) {
 			log("\n%s", data);
 		}
-		takeAction(data);
+		takeAction(game, data);
 	}
 
 	private void log(String msg, Object... args) {
@@ -92,14 +94,14 @@ public class Autopilot {
 		}
 	}
 
-	private GameInfo collectData() {
+	private GameInfo collectData(GameModel game) {
 		GameInfo data = new GameInfo();
-		Ghost hunterAhead = findHuntingGhostAhead(); // Where is Hunter?
+		Ghost hunterAhead = findHuntingGhostAhead(game); // Where is Hunter?
 		if (hunterAhead != null) {
 			data.hunterAhead = hunterAhead;
 			data.hunterAheadDistance = game.pac.tile().manhattanDistance(hunterAhead.tile());
 		}
-		Ghost hunterBehind = findHuntingGhostBehind();
+		Ghost hunterBehind = findHuntingGhostBehind(game);
 		if (hunterBehind != null) {
 			data.hunterBehind = hunterBehind;
 			data.hunterBehindDistance = game.pac.tile().manhattanDistance(hunterBehind.tile());
@@ -112,14 +114,14 @@ public class Autopilot {
 		return data;
 	}
 
-	private void takeAction(GameInfo data) {
+	private void takeAction(GameModel game, GameInfo data) {
 		if (data.hunterAhead != null) {
 			Direction escapeDir = null;
 			if (data.hunterBehind != null) {
-				escapeDir = findEscapeDirectionExcluding(EnumSet.of(game.pac.dir, game.pac.dir.opposite()));
+				escapeDir = findEscapeDirectionExcluding(game, EnumSet.of(game.pac.dir, game.pac.dir.opposite()));
 				log("Detected ghost %s behind, escape direction is %s", data.hunterAhead.name, escapeDir);
 			} else {
-				escapeDir = findEscapeDirectionExcluding(EnumSet.of(game.pac.dir));
+				escapeDir = findEscapeDirectionExcluding(game, EnumSet.of(game.pac.dir));
 				log("Detected ghost %s ahead, escape direction is %s", data.hunterAhead.name, escapeDir);
 			}
 			if (escapeDir != null) {
@@ -142,7 +144,7 @@ public class Autopilot {
 			log("Detected active bonus");
 			game.pac.targetTile = game.bonus.tile();
 		} else {
-			V2i foodTile = findTileFarestFromGhosts(findNearestFoodTiles());
+			V2i foodTile = findTileFarestFromGhosts(game, findNearestFoodTiles(game));
 			game.pac.targetTile = foodTile;
 		}
 		if (game.pac.targetTile != null) {
@@ -150,7 +152,7 @@ public class Autopilot {
 		}
 	}
 
-	private Ghost findHuntingGhostAhead() {
+	private Ghost findHuntingGhostAhead(GameModel game) {
 		V2i pacManTile = game.pac.tile();
 		boolean energizerFound = false;
 		for (int i = 1; i <= MAX_GHOST_AHEAD_DETECTION_DIST; ++i) {
@@ -178,7 +180,7 @@ public class Autopilot {
 		return null;
 	}
 
-	private Ghost findHuntingGhostBehind() {
+	private Ghost findHuntingGhostBehind(GameModel game) {
 		V2i pacManTile = game.pac.tile();
 		for (int i = 1; i <= MAX_GHOST_BEHIND_DETECTION_DIST; ++i) {
 			V2i behind = pacManTile.sum(game.pac.dir.opposite().vec.scaled(i));
@@ -194,7 +196,7 @@ public class Autopilot {
 		return null;
 	}
 
-	private Direction findEscapeDirectionExcluding(Collection<Direction> forbidden) {
+	private Direction findEscapeDirectionExcluding(GameModel game, Collection<Direction> forbidden) {
 		V2i pacManTile = game.pac.tile();
 		List<Direction> escapes = new ArrayList<>(4);
 		for (Direction dir : Direction.shuffled()) {
@@ -215,7 +217,7 @@ public class Autopilot {
 		return escapes.isEmpty() ? null : escapes.get(0);
 	}
 
-	private List<V2i> findNearestFoodTiles() {
+	private List<V2i> findNearestFoodTiles(GameModel game) {
 		long time = System.nanoTime();
 		List<V2i> foodTiles = new ArrayList<>();
 		V2i pacManTile = game.pac.tile();
@@ -244,16 +246,16 @@ public class Autopilot {
 		log("Nearest food tiles from Pac-Man location %s: (time %.2f millis)", pacManTile, time / 1_000_000f);
 		for (V2i t : foodTiles) {
 			log("\t%s (%.2g tiles away from Pac-Man, %.2g tiles away from ghosts)", t, t.manhattanDistance(pacManTile),
-					minDistanceFromGhosts());
+					minDistanceFromGhosts(game));
 		}
 		return foodTiles;
 	}
 
-	private V2i findTileFarestFromGhosts(List<V2i> tiles) {
+	private V2i findTileFarestFromGhosts(GameModel game, List<V2i> tiles) {
 		V2i farestTile = null;
 		double maxDist = -1;
 		for (V2i tile : tiles) {
-			double dist = minDistanceFromGhosts();
+			double dist = minDistanceFromGhosts(game);
 			if (dist > maxDist) {
 				maxDist = dist;
 				farestTile = tile;
@@ -262,7 +264,7 @@ public class Autopilot {
 		return farestTile;
 	}
 
-	private double minDistanceFromGhosts() {
+	private double minDistanceFromGhosts(GameModel game) {
 		return Stream.of(game.ghosts).map(Ghost::tile).mapToDouble(game.pac.tile()::manhattanDistance).min().getAsDouble();
 	}
 }
