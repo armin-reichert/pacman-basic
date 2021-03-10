@@ -45,7 +45,7 @@ public class MsPacMan_IntroScene extends GameScene {
 		g.setFont(assets.getScoreFont());
 		g.setColor(Color.ORANGE);
 		g.drawString("\"MS PAC-MAN\"", t(8), t(5));
-		drawAnimatedFrame(g, 32, 16, game.state.timer.running());
+		drawAnimatedFrame(g, 32, 16, controller.getGame().state.timer.running());
 		for (Ghost ghost : animation.ghosts) {
 			rendering.drawGhost(g, ghost, false);
 		}

@@ -1,8 +1,10 @@
-package de.amr.games.pacman.sound;
+package de.amr.games.pacman.ui.swing.assets;
 
 import java.net.URL;
 import java.util.EnumMap;
 import java.util.Map;
+
+import de.amr.games.pacman.sound.PacManGameSound;
 
 public class PacManGameSounds {
 

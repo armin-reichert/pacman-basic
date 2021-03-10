@@ -38,12 +38,12 @@ import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameType;
 import de.amr.games.pacman.model.common.PacManGameState;
 import de.amr.games.pacman.sound.PacManGameSoundManager;
-import de.amr.games.pacman.sound.PacManGameSounds;
 import de.amr.games.pacman.sound.SoundManager;
 import de.amr.games.pacman.ui.FlashMessage;
 import de.amr.games.pacman.ui.PacManGameUI;
 import de.amr.games.pacman.ui.animation.PacManGameAnimations;
 import de.amr.games.pacman.ui.swing.assets.AssetLoader;
+import de.amr.games.pacman.ui.swing.assets.PacManGameSounds;
 import de.amr.games.pacman.ui.swing.common.GameScene;
 import de.amr.games.pacman.ui.swing.common.PlayScene;
 import de.amr.games.pacman.ui.swing.mspacman.MsPacMan_IntermissionScene1;
@@ -166,7 +166,6 @@ public class PacManGameUI_Swing implements PacManGameUI {
 
 	@Override
 	public void onGameChanged(GameModel newGame) {
-		scenes.get(currentGame()).forEach(scene -> scene.setGame(newGame));
 		changeScene(currentScene());
 	}
 
