@@ -93,7 +93,6 @@ public class PacManGameController {
 	public PacManGameController(GameType initialGameType) {
 		game = games.get(initialGameType);
 		autopilot = new Autopilot(game);
-		game.reset();
 		changeState(INTRO, null, this::enterIntroState);
 		if (userInterface != null) {
 			userInterface.onGameChanged(game);
@@ -168,6 +167,7 @@ public class PacManGameController {
 
 	public void setUserInterface(PacManGameUI ui) {
 		userInterface = ui;
+		userInterface.onGameChanged(game);
 	}
 
 	public void finishCurrentState() {
