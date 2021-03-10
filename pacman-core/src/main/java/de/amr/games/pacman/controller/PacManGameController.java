@@ -106,7 +106,14 @@ public class PacManGameController {
 			return;
 		}
 		handleCheatsAndStuff();
-		updateGameState();
+		if (game.state == null) {
+			return;
+		}
+		try {
+			updateGameState();
+		} catch (Exception x) {
+			x.printStackTrace();
+		}
 		userInterface.update();
 	}
 
@@ -175,7 +182,6 @@ public class PacManGameController {
 	}
 
 	public void toggleGameType() {
-		userInterface.sound().ifPresent(SoundManager::stopAll);
 		if (isPlaying(MS_PACMAN)) {
 			play(PACMAN);
 			userInterface.showFlashMessage("Now playing Pac-Man", clock.sec(1));
@@ -183,6 +189,7 @@ public class PacManGameController {
 			play(MS_PACMAN);
 			userInterface.showFlashMessage("Now playing Ms. Pac-Man", clock.sec(1));
 		}
+		userInterface.sound().ifPresent(SoundManager::stopAll);
 	}
 
 	private void enableAutopilot(boolean enabled) {
@@ -601,6 +608,9 @@ public class PacManGameController {
 	}
 
 	private void updateGameState() {
+		if (game.state == null) {
+			throw new IllegalStateException();
+		}
 		switch (game.state) {
 		case INTRO:
 			runIntroState();
