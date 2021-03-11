@@ -19,8 +19,6 @@ public interface PacManGameUI {
 
 	void onGameStateChanged(PacManGameState from, PacManGameState to);
 
-	void show();
-
 	void reset();
 
 	void update();

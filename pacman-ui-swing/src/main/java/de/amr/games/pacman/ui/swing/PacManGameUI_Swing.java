@@ -180,7 +180,6 @@ public class PacManGameUI_Swing implements PacManGameUI {
 		}
 	}
 
-	@Override
 	public void show() {
 		window.pack();
 		window.setLocationRelativeTo(null);
