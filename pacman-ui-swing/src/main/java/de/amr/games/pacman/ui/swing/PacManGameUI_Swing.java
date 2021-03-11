@@ -207,11 +207,11 @@ public class PacManGameUI_Swing implements PacManGameUI {
 
 		FlashMessage message = flashMessageQ.peek();
 		if (message != null) {
-			if (!message.timer.running()) {
+			if (!message.timer.isRunning()) {
 				message.timer.start();
 			}
 			message.timer.tick();
-			if (message.timer.expired()) {
+			if (message.timer.hasExpired()) {
 				flashMessageQ.remove();
 			}
 		}
@@ -303,7 +303,7 @@ public class PacManGameUI_Swing implements PacManGameUI {
 	private void drawFlashMessage(Graphics2D g) {
 		FlashMessage message = flashMessageQ.peek();
 		if (message != null) {
-			double alpha = Math.cos(Math.PI * message.timer.ticksRunning() / (2 * message.timer.getDuration()));
+			double alpha = Math.cos(Math.PI * message.timer.ticked() / (2 * message.timer.duration()));
 			g.setColor(Color.BLACK);
 			g.fillRect(0, unscaledSize.height - 16, unscaledSize.width, 16);
 			g.setColor(new Color(1, 1, 0, (float) alpha));

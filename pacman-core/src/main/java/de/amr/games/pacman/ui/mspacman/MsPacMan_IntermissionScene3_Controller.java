@@ -56,8 +56,7 @@ public class MsPacMan_IntermissionScene3_Controller {
 
 	public void enter(Phase newPhase, long ticks) {
 		phase = newPhase;
-		timer.reset();
-		timer.setDuration(ticks);
+		timer.reset(ticks);
 		timer.start();
 	}
 
@@ -85,10 +84,10 @@ public class MsPacMan_IntermissionScene3_Controller {
 	public void update() {
 		switch (phase) {
 		case FLAP:
-			if (timer.ticksRunning() == clock.sec(1)) {
+			if (timer.ticked() == clock.sec(1)) {
 				flap.flapping.restart();
 			}
-			if (timer.ticksRunning() == clock.sec(2)) {
+			if (timer.ticked() == clock.sec(2)) {
 				flap.visible = false;
 				sounds.play(PacManGameSound.INTERMISSION_3);
 				enter(Phase.ACTION, Long.MAX_VALUE);
@@ -100,7 +99,7 @@ public class MsPacMan_IntermissionScene3_Controller {
 		case ACTION:
 			stork.move();
 			bag.move();
-			if (timer.ticksRunning() == 1) {
+			if (timer.ticked() == 1) {
 				pacMan.visible = msPacMan.visible = stork.visible = bag.visible = true;
 				stork.velocity = bag.velocity = new V2d(-1.25f, 0);
 				stork.flying.restart();
@@ -126,7 +125,7 @@ public class MsPacMan_IntermissionScene3_Controller {
 
 		case READY_TO_PLAY:
 			stork.move();
-			if (timer.expired()) {
+			if (timer.hasExpired()) {
 				controller.getGame().state.timer.forceExpiration();
 				return;
 			}

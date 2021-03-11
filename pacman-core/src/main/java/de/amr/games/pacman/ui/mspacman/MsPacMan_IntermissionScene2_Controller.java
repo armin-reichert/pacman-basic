@@ -40,8 +40,7 @@ public class MsPacMan_IntermissionScene2_Controller {
 
 	public void enter(Phase newPhase, long ticks) {
 		phase = newPhase;
-		timer.reset();
-		timer.setDuration(ticks);
+		timer.reset(ticks);
 		timer.start();
 	}
 
@@ -66,14 +65,14 @@ public class MsPacMan_IntermissionScene2_Controller {
 	public void update() {
 		switch (phase) {
 		case FLAP:
-			if (timer.ticksRunning() == clock.sec(1)) {
+			if (timer.ticked() == clock.sec(1)) {
 				flap.flapping.restart();
 			}
-			if (timer.ticksRunning() == clock.sec(2)) {
+			if (timer.ticked() == clock.sec(2)) {
 				flap.visible = false;
 				sounds.play(PacManGameSound.INTERMISSION_2);
 			}
-			if (timer.ticksRunning() == clock.sec(4.5)) {
+			if (timer.ticked() == clock.sec(4.5)) {
 				enter(Phase.ACTION, Long.MAX_VALUE);
 			}
 			flap.flapping.animate();
@@ -81,7 +80,7 @@ public class MsPacMan_IntermissionScene2_Controller {
 			break;
 
 		case ACTION:
-			if (timer.ticksRunning() == clock.sec(1.5)) {
+			if (timer.ticked() == clock.sec(1.5)) {
 				pacMan.visible = true;
 				pacMan.setPosition(-t(2), UPPER_Y);
 				msPacMan.visible = true;
@@ -91,32 +90,32 @@ public class MsPacMan_IntermissionScene2_Controller {
 				animations.playerAnimations().spouseMunching(pacMan).forEach(Animation::restart);
 				animations.playerAnimations().playerMunching(msPacMan).forEach(Animation::restart);
 			}
-			if (timer.ticksRunning() == clock.sec(6)) {
+			if (timer.ticked() == clock.sec(6)) {
 				msPacMan.setPosition(t(30), LOWER_Y);
 				msPacMan.visible = true;
 				pacMan.setPosition(t(36), LOWER_Y);
 				msPacMan.dir = pacMan.dir = Direction.LEFT;
 				msPacMan.speed = pacMan.speed = 2;
 			}
-			if (timer.ticksRunning() == clock.sec(10.5)) {
+			if (timer.ticked() == clock.sec(10.5)) {
 				msPacMan.setPosition(t(-8), MIDDLE_Y);
 				pacMan.setPosition(t(-2), MIDDLE_Y);
 				msPacMan.dir = pacMan.dir = Direction.RIGHT;
 				msPacMan.speed = pacMan.speed = 2;
 			}
-			if (timer.ticksRunning() == clock.sec(14.5)) {
+			if (timer.ticked() == clock.sec(14.5)) {
 				msPacMan.setPosition(t(30), UPPER_Y);
 				pacMan.setPosition(t(42), UPPER_Y);
 				msPacMan.dir = pacMan.dir = Direction.LEFT;
 				msPacMan.speed = pacMan.speed = 4;
 			}
-			if (timer.ticksRunning() == clock.sec(15.5)) {
+			if (timer.ticked() == clock.sec(15.5)) {
 				msPacMan.setPosition(t(-14), LOWER_Y);
 				pacMan.setPosition(t(-2), LOWER_Y);
 				msPacMan.dir = pacMan.dir = Direction.RIGHT;
 				msPacMan.speed = pacMan.speed = 4;
 			}
-			if (timer.ticksRunning() == clock.sec(20)) {
+			if (timer.ticked() == clock.sec(20)) {
 				controller.getGame().state.timer.forceExpiration();
 				return;
 			}

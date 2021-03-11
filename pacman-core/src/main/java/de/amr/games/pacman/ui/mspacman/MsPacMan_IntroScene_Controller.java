@@ -47,7 +47,6 @@ public class MsPacMan_IntroScene_Controller {
 	public void enterPhase(Phase newPhase) {
 		phase = newPhase;
 		timer.reset();
-		timer.setDuration(Long.MAX_VALUE);
 		timer.start();
 	}
 
@@ -87,7 +86,7 @@ public class MsPacMan_IntroScene_Controller {
 		msPac.move();
 		switch (phase) {
 		case BEGIN:
-			if (timer.ticksRunning() == clock.sec(1)) {
+			if (timer.ticked() == clock.sec(1)) {
 				currentGhost = ghosts[0];
 				enterPhase(Phase.GHOSTS);
 			}
@@ -115,10 +114,10 @@ public class MsPacMan_IntroScene_Controller {
 			timer.tick();
 			break;
 		case END:
-			if (timer.ticksRunning() == 1) {
+			if (timer.ticked() == 1) {
 				blinking.restart();
 			}
-			if (timer.ticksRunning() == clock.sec(5)) {
+			if (timer.ticked() == clock.sec(5)) {
 				controller.getGame().attractMode = true;
 			}
 			blinking.animate();
@@ -133,7 +132,7 @@ public class MsPacMan_IntroScene_Controller {
 		if (currentGhost == null) {
 			return false;
 		}
-		if (timer.ticksRunning() == 1) {
+		if (timer.ticked() == 1) {
 			currentGhost.speed = 1;
 			animations.ghostAnimations().ghostKicking(currentGhost).forEach(Animation::restart);
 		}
@@ -149,7 +148,7 @@ public class MsPacMan_IntroScene_Controller {
 	}
 
 	public boolean letMsPacManWalkToEndPosition() {
-		if (timer.ticksRunning() == 1) {
+		if (timer.ticked() == 1) {
 			msPac.visible = true;
 			msPac.couldMove = true;
 			msPac.speed = 1;

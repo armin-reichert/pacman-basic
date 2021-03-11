@@ -93,10 +93,10 @@ public class PacMan_IntermissionScene2_Controller {
 			timer.tick();
 			break;
 		case STUCK:
-			if (timer.ticksRunning() == clock.sec(3)) {
+			if (timer.ticked() == clock.sec(3)) {
 				blinky.dir = Direction.RIGHT;
 			}
-			if (timer.ticksRunning() == clock.sec(6)) {
+			if (timer.ticked() == clock.sec(6)) {
 				controller.getGame().state.timer.forceExpiration();
 				return;
 			}

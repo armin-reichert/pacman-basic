@@ -9,6 +9,6 @@ public class FlashMessage {
 
 	public FlashMessage(String text, long displayDuration) {
 		this.text = text;
-		timer.setDuration(displayDuration);
+		timer.reset(displayDuration);
 	}
 }

@@ -90,8 +90,7 @@ public class MsPacMan_IntermissionScene1_Controller {
 
 	private void enter(Phase newPhase, long ticks) {
 		phase = newPhase;
-		timer.reset();
-		timer.setDuration(ticks);
+		timer.reset(ticks);
 		timer.start();
 	}
 
@@ -99,10 +98,10 @@ public class MsPacMan_IntermissionScene1_Controller {
 		switch (phase) {
 
 		case FLAP:
-			if (timer.ticksRunning() == clock.sec(1)) {
+			if (timer.ticked() == clock.sec(1)) {
 				flap.flapping.restart();
 			}
-			if (timer.expired()) {
+			if (timer.hasExpired()) {
 				flap.visible = false;
 				sounds.loop(PacManGameSound.INTERMISSION_1, 1);
 				startChasedByGhosts();
@@ -151,11 +150,11 @@ public class MsPacMan_IntermissionScene1_Controller {
 			break;
 
 		case READY_TO_PLAY:
-			if (timer.ticksRunning() == clock.sec(0.5)) {
+			if (timer.ticked() == clock.sec(0.5)) {
 				inky.visible = false;
 				pinky.visible = false;
 			}
-			if (timer.expired()) {
+			if (timer.hasExpired()) {
 				controller.getGame().state.timer.forceExpiration();
 				return;
 			}

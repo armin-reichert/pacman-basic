@@ -1,14 +1,18 @@
 package de.amr.games.pacman.lib;
 
 import static de.amr.games.pacman.lib.TickTimer.TickTimerState.EXPIRED;
-import static de.amr.games.pacman.lib.TickTimer.TickTimerState.IDLE;
+import static de.amr.games.pacman.lib.TickTimer.TickTimerState.READY;
 import static de.amr.games.pacman.lib.TickTimer.TickTimerState.RUNNING;
 
-//TODO unit test
+/**
+ * A simple, but useful, passive timer counting ticks.
+ * 
+ * @author Armin Reichert
+ */
 public class TickTimer {
 
 	public enum TickTimerState {
-		IDLE, RUNNING, EXPIRED;
+		READY, RUNNING, EXPIRED;
 	}
 
 	private TickTimerState state;
@@ -20,30 +24,25 @@ public class TickTimer {
 	}
 
 	public void reset() {
-		state = IDLE;
-		ticked = 0;
-		duration = Long.MAX_VALUE;
+		reset(Long.MAX_VALUE);
 	}
 
-	public void setDuration(long durationTicks) {
-		if (state != IDLE) {
-			throw new IllegalStateException("Duration can only be set when timer is IDLE");
-		}
+	public void reset(long durationTicks) {
+		state = READY;
 		ticked = 0;
 		duration = durationTicks;
 	}
 
 	public void start() {
-		if (state != IDLE) {
-			throw new IllegalStateException("Timer is not IDLE and cannot be started. State=" + state);
+		if (state != READY) {
+			throw new IllegalStateException("Timer is not READY and cannot be started. State=" + state);
 		}
 		state = RUNNING;
-		ticked = 0;
 	}
 
 	public void tick() {
 		if (state != RUNNING) {
-			throw new IllegalStateException("Timer has not been started");
+			throw new IllegalStateException(state == READY ? "Timer has not been started" : "Timer has expired");
 		}
 		++ticked;
 		if (ticked == duration) {
@@ -53,23 +52,22 @@ public class TickTimer {
 	}
 
 	public void forceExpiration() {
-		ticked = duration;
 		state = EXPIRED;
 	}
 
-	public boolean expired() {
+	public boolean hasExpired() {
 		return state == EXPIRED;
 	}
 
-	public boolean running() {
+	public boolean isRunning() {
 		return state == RUNNING;
 	}
 
-	public long getDuration() {
+	public long duration() {
 		return duration;
 	}
 
-	public long ticksRunning() {
+	public long ticked() {
 		return ticked;
 	}
 

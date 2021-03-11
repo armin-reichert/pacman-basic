@@ -59,23 +59,22 @@ public class PacMan_IntermissionScene1_Controller {
 		sounds.loop(PacManGameSound.INTERMISSION_1, 2);
 
 		phase = Phase.BLINKY_CHASING_PACMAN;
-		timer.setDuration(clock.sec(5));
+		timer.reset(clock.sec(5));
 		timer.start();
 	}
 
 	public void update() {
 		switch (phase) {
 		case BLINKY_CHASING_PACMAN:
-			if (timer.expired()) {
+			if (timer.hasExpired()) {
 				phase = Phase.BIGPACMAN_CHASING_BLINKY;
-				timer.reset();
-				timer.setDuration(clock.sec(7));
+				timer.reset(clock.sec(7));
 				timer.start();
 			}
 			timer.tick();
 			break;
 		case BIGPACMAN_CHASING_BLINKY:
-			if (timer.ticksRunning() == 1) {
+			if (timer.ticked() == 1) {
 				blinky.setPosition(-t(2), groundY);
 				blinky.dir = blinky.wishDir = RIGHT;
 				blinky.speed = 1f;
@@ -84,7 +83,7 @@ public class PacMan_IntermissionScene1_Controller {
 				pac.speed = 1.3f;
 				pac.setPositionRelativeTo(blinky, -t(13), 0);
 			}
-			if (timer.expired()) {
+			if (timer.hasExpired()) {
 				controller.getGame().state.timer.forceExpiration();
 				return;
 			}

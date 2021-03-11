@@ -100,7 +100,7 @@ public class PacMan_IntroScene_Controller {
 		switch (phase) {
 
 		case BEGIN:
-			if (timer.ticksRunning() == clock.sec(2)) {
+			if (timer.ticked() == clock.sec(2)) {
 				selectGhost(0);
 				enterPhase(Phase.PRESENTING_GHOST);
 			}
@@ -108,13 +108,13 @@ public class PacMan_IntroScene_Controller {
 			break;
 
 		case PRESENTING_GHOST:
-			if (timer.ticksRunning() == clock.sec(0.5)) {
+			if (timer.ticked() == clock.sec(0.5)) {
 				gallery[selectedGhost].characterVisible = true;
 			}
-			if (timer.ticksRunning() == clock.sec(1)) {
+			if (timer.ticked() == clock.sec(1)) {
 				gallery[selectedGhost].nicknameVisible = true;
 			}
-			if (timer.ticksRunning() == clock.sec(2)) {
+			if (timer.ticked() == clock.sec(2)) {
 				if (selectedGhost < 3) {
 					selectGhost(selectedGhost + 1);
 					enterPhase(Phase.PRESENTING_GHOST);
@@ -161,10 +161,10 @@ public class PacMan_IntroScene_Controller {
 			break;
 
 		case READY_TO_PLAY:
-			if (timer.ticksRunning() == 1) {
+			if (timer.ticked() == 1) {
 				blinking.restart();
 			}
-			if (timer.ticksRunning() == clock.sec(5)) {
+			if (timer.ticked() == clock.sec(5)) {
 				controller.getGame().attractMode = true;
 				log("Entering attract mode at clock tick %d", clock.ticksTotal);
 			}
