@@ -130,7 +130,7 @@ public class MsPacMan_IntroScene_Controller {
 				blinking.restart();
 			}
 			if (phaseTimer.ticked() == clock.sec(5)) {
-				controller.game.attractMode = true;
+				controller.attractMode = true;
 				return;
 			}
 			blinking.animate();

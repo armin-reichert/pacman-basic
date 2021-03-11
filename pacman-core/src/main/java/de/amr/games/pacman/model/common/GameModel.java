@@ -20,9 +20,6 @@ import de.amr.games.pacman.model.pacman.PacManBonus;
  */
 public abstract class GameModel {
 
-	public boolean started;
-	public boolean attractMode;
-
 	public int levelNumber; // counting from 1
 	public GameLevel level;
 	public int intermissionNumber;
@@ -47,8 +44,6 @@ public abstract class GameModel {
 		highscorePoints = hiscore.points;
 		score = 0;
 		lives = 3;
-		started = false;
-		attractMode = false;
 		levelSymbols = new ArrayList<>();
 		enterLevel(1);
 		levelSymbols.add(level.bonusSymbol);

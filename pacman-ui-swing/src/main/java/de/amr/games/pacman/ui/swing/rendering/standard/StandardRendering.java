@@ -122,8 +122,7 @@ public abstract class StandardRendering implements PacManGameRendering2D, PacMan
 	@Override
 	public void drawLivesCounter(Graphics2D g, GameModel game, int x, int y) {
 		int maxLivesDisplayed = 5;
-		int livesDisplayed = game.started ? game.lives - 1 : game.lives;
-		for (int i = 0; i < Math.min(livesDisplayed, maxLivesDisplayed); ++i) {
+		for (int i = 0; i < Math.min(game.lives, maxLivesDisplayed); ++i) {
 			drawSprite(g, lifeSprite(), x + t(2 * i), y);
 		}
 		if (game.lives > maxLivesDisplayed) {
@@ -146,11 +145,11 @@ public abstract class StandardRendering implements PacManGameRendering2D, PacMan
 
 	@Override
 	public void drawGameState(Graphics2D g, GameModel game, PacManGameState gameState) {
-		if (gameState == PacManGameState.READY && !game.attractMode) {
+		if (gameState == PacManGameState.READY) {
 			g.setFont(getScoreFont());
 			g.setColor(Color.YELLOW);
 			g.drawString("READY", t(11), t(21));
-		} else if (gameState == PacManGameState.GAME_OVER || game.attractMode) {
+		} else if (gameState == PacManGameState.GAME_OVER) {
 			g.setFont(getScoreFont());
 			g.setColor(Color.RED);
 			g.drawString("GAME", t(9), t(21));

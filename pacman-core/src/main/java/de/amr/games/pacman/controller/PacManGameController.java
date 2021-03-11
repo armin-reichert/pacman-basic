@@ -113,6 +113,9 @@ public class PacManGameController {
 	public final Autopilot autopilot;
 	public GameModel game;
 	public PacManGameUI userInterface;
+	public boolean playing;
+	public boolean attractMode;
+
 	public boolean intermissionScenesEnabled = true;
 
 	public PacManGameController(GameType initialGameType) {
@@ -134,7 +137,7 @@ public class PacManGameController {
 	}
 
 	private void handleCheatsAndStuff() {
-		if (game.attractMode) {
+		if (attractMode) {
 			return;
 		}
 		boolean ready = fsm.state == READY, hunting = fsm.state == HUNTING;
@@ -186,6 +189,8 @@ public class PacManGameController {
 		if (userInterface != null) {
 			userInterface.onGameChanged(game);
 		}
+		playing = false;
+		attractMode = false;
 	}
 
 	public void setUserInterface(PacManGameUI ui) {
@@ -222,6 +227,8 @@ public class PacManGameController {
 		fsm.state.timer.reset();
 		fsm.state.timer.start();
 		game.reset();
+		attractMode = false;
+		playing = false;
 		if (userInterface != null) {
 			userInterface.mute(false);
 			userInterface.sound().ifPresent(SoundManager::stopAll);
@@ -231,7 +238,7 @@ public class PacManGameController {
 	}
 
 	private void updateIntroState() {
-		if (game.attractMode) {
+		if (attractMode) {
 			userInterface.mute(true);
 			fsm.changeState(READY);
 			return;
@@ -262,9 +269,9 @@ public class PacManGameController {
 
 	private void enterReadyState() {
 		game.resetGuys();
-		userInterface.mute(game.attractMode);
+		userInterface.mute(attractMode);
 		userInterface.animation().ifPresent(animation -> animation.reset(game));
-		if (game.started || game.attractMode) {
+		if (playing || attractMode) {
 			fsm.state.timer.reset(clock.sec(2));
 		} else {
 			fsm.state.timer.reset(clock.sec(4.5));
@@ -287,8 +294,8 @@ public class PacManGameController {
 	}
 
 	private void exitReadyState() {
-		if (!game.attractMode) {
-			game.started = true;
+		if (!attractMode) {
+			playing = true;
 		}
 		userInterface.animation().map(PacManGameAnimations::ghostAnimations).ifPresent(ga -> {
 			game.ghosts().flatMap(ga::ghostKicking).forEach(Animation::restart);
@@ -437,20 +444,23 @@ public class PacManGameController {
 	private void updatePacManDyingState() {
 
 		if (fsm.state.timer.hasExpired()) {
-			if (game.attractMode) {
+			if (attractMode) {
+				attractMode = false;
 				fsm.changeState(INTRO);
 				return;
-			} else if (game.lives > 1) {
-				game.lives--;
-				fsm.changeState(READY);
-				return;
-			} else {
-				fsm.changeState(GAME_OVER);
-				return;
 			}
+			game.lives--;
+			if (game.lives == 0) {
+				fsm.changeState(GAME_OVER);
+			} else {
+				fsm.changeState(READY);
+			}
+			return;
 		}
 
-		if (fsm.state.timer.ticked() == clock.sec(1)) {
+		if (fsm.state.timer.ticked() == clock.sec(1))
+
+		{
 			game.ghosts().forEach(ghost -> ghost.visible = false);
 			userInterface.animation().map(PacManGameAnimations::playerAnimations).map(PlayerAnimations::playerDying)
 					.ifPresent(da -> da.restart());
@@ -577,7 +587,7 @@ public class PacManGameController {
 	// END STATE-MACHINE
 
 	private void score(int points) {
-		if (game.attractMode) {
+		if (attractMode) {
 			return;
 		}
 		int oldscore = game.score;
@@ -595,7 +605,7 @@ public class PacManGameController {
 	}
 
 	private void steerPlayer() {
-		if (autopilot.enabled || game.attractMode) {
+		if (autopilot.enabled || attractMode) {
 			autopilot.run(game);
 			return;
 		}
