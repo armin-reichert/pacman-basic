@@ -506,12 +506,10 @@ public class PacManGameController {
 		game.bonus.edibleTicksLeft = game.bonus.eatenTicksLeft = 0;
 		game.player.speed = 0;
 		userInterface.sound().ifPresent(SoundManager::stopAll);
-
-		fsm.state.timer.reset(clock.sec(game.level.numFlashes + 3));
+		fsm.state.timer.reset();
 	}
 
 	private void updateChangingLevelState() {
-
 		if (fsm.state.timer.hasExpired()) {
 			if (Arrays.asList(2, 5, 9, 13, 17).contains(game.levelNumber)) {
 				game.intermissionNumber = intermissionNumber(game.levelNumber);
@@ -521,23 +519,12 @@ public class PacManGameController {
 			fsm.changeState(READY);
 			return;
 		}
-
-		if (fsm.state.timer.isRunningSeconds(2)) {
-			game.ghosts().forEach(ghost -> ghost.visible = false);
-		}
-
-		if (fsm.state.timer.isRunningSeconds(3)) {
-			userInterface.animation().map(PacManGameAnimations::mazeAnimations)
-					.ifPresent(ma -> ma.mazeFlashing(game.level.mazeNumber).repetitions(game.level.numFlashes).restart());
-		}
 	}
 
 	private void exitChangingLevelState() {
 		log("Level %d complete, entering level %d", game.levelNumber, game.levelNumber + 1);
 		game.enterLevel(game.levelNumber + 1);
 		game.levelSymbols.add(game.level.bonusSymbol);
-		userInterface.animation().map(PacManGameAnimations::mazeAnimations)
-				.ifPresent(ma -> ma.mazeFlashing(game.level.mazeNumber).reset());
 	}
 
 	private void enterGameOverState() {
