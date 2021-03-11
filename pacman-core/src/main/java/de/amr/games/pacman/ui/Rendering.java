@@ -3,6 +3,7 @@ package de.amr.games.pacman.ui;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import de.amr.games.pacman.controller.PacManGameState;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.Flap;
@@ -61,7 +62,7 @@ public interface Rendering<GC, COLOR, FONT, SPRITE> {
 
 	void drawEnergizerTiles(GC g, Stream<V2i> energizerTiles);
 
-	void drawGameState(GC g, GameModel game);
+	void drawGameState(GC g, GameModel game, PacManGameState gameState);
 
 	void drawScore(GC g, GameModel game, boolean titleOnly);
 

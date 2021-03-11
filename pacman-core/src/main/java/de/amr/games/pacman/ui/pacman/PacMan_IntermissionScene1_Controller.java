@@ -89,7 +89,7 @@ public class PacMan_IntermissionScene1_Controller {
 				pac.setPositionRelativeTo(blinky, -t(13), 0);
 			}
 			if (timer.hasExpired()) {
-				controller.getGame().state.timer.forceExpiration();
+				controller.letCurrentGameStateExpire();
 				return;
 			}
 			timer.tick();

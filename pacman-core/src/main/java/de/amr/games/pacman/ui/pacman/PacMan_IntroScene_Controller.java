@@ -1,7 +1,6 @@
 package de.amr.games.pacman.ui.pacman;
 
 import static de.amr.games.pacman.lib.God.clock;
-import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.model.world.PacManGameWorld.t;
 
 import de.amr.games.pacman.controller.PacManGameController;
@@ -57,7 +56,6 @@ public class PacMan_IntroScene_Controller {
 		phase = newPhase;
 		timer.reset();
 		timer.start();
-		log("%s: Phase %s entered at clock tick %d", this, phase, clock.ticksTotal);
 	}
 
 	public void start() {
@@ -171,7 +169,6 @@ public class PacMan_IntroScene_Controller {
 			}
 			if (timer.ticked() == clock.sec(5)) {
 				controller.getGame().attractMode = true;
-				log("Entering attract mode at clock tick %d", clock.ticksTotal);
 			}
 			blinking.animate();
 			timer.tick();
@@ -213,6 +210,5 @@ public class PacMan_IntroScene_Controller {
 	public void selectGhost(int ghostIndex) {
 		selectedGhost = ghostIndex;
 		gallery[selectedGhost].ghost.visible = true;
-		log("Presenting %s", gallery[selectedGhost].ghost.name);
 	}
 }

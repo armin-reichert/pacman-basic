@@ -102,7 +102,7 @@ public class PacMan_IntermissionScene2_Controller {
 				blinky.dir = Direction.RIGHT;
 			}
 			if (timer.ticked() == clock.sec(6)) {
-				controller.getGame().state.timer.forceExpiration();
+				controller.letCurrentGameStateExpire();
 				return;
 			}
 			timer.tick();

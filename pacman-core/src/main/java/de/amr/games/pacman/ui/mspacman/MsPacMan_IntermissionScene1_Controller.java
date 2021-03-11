@@ -155,7 +155,7 @@ public class MsPacMan_IntermissionScene1_Controller {
 				pinky.visible = false;
 			}
 			if (timer.hasExpired()) {
-				controller.getGame().state.timer.forceExpiration();
+				controller.letCurrentGameStateExpire();
 				return;
 			}
 			timer.tick();

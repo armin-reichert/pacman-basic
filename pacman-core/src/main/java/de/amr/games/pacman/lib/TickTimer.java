@@ -3,6 +3,7 @@ package de.amr.games.pacman.lib;
 import static de.amr.games.pacman.lib.TickTimer.TickTimerState.EXPIRED;
 import static de.amr.games.pacman.lib.TickTimer.TickTimerState.READY;
 import static de.amr.games.pacman.lib.TickTimer.TickTimerState.RUNNING;
+import static de.amr.games.pacman.lib.TickTimer.TickTimerState.STOPPED;
 
 /**
  * A simple, but useful, passive timer counting ticks.
@@ -12,7 +13,7 @@ import static de.amr.games.pacman.lib.TickTimer.TickTimerState.RUNNING;
 public class TickTimer {
 
 	public enum TickTimerState {
-		READY, RUNNING, EXPIRED;
+		READY, RUNNING, STOPPED, EXPIRED;
 	}
 
 	private TickTimerState state;
@@ -34,13 +35,26 @@ public class TickTimer {
 	}
 
 	public void start() {
-		if (state != READY) {
-			throw new IllegalStateException("Timer is not READY and cannot be started. State=" + state);
+		if (state == STOPPED || state == READY) {
+			state = RUNNING;
+		} else {
+			throw new IllegalStateException("Timer cannot be started from state " + state);
 		}
-		state = RUNNING;
+	}
+
+	public void stop() {
+		if (state == STOPPED) {
+			return;
+		}
+		if (state == RUNNING) {
+			state = STOPPED;
+		}
 	}
 
 	public void tick() {
+		if (state == STOPPED) {
+			return;
+		}
 		if (state != RUNNING) {
 			throw new IllegalStateException(state == READY ? "Timer has not been started" : "Timer has expired");
 		}
@@ -61,6 +75,10 @@ public class TickTimer {
 
 	public boolean isRunning() {
 		return state == RUNNING;
+	}
+
+	public boolean isStopped() {
+		return state == STOPPED;
 	}
 
 	public long duration() {

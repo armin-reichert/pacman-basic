@@ -12,6 +12,7 @@ import java.awt.image.BufferedImage;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import de.amr.games.pacman.controller.PacManGameState;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.Flap;
 import de.amr.games.pacman.model.common.GameEntity;
@@ -19,7 +20,6 @@ import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.JuniorBag;
 import de.amr.games.pacman.model.common.Pac;
-import de.amr.games.pacman.model.common.PacManGameState;
 import de.amr.games.pacman.model.common.Stork;
 import de.amr.games.pacman.model.pacman.PacManBonus;
 import de.amr.games.pacman.ui.animation.PacManGameAnimations;
@@ -145,12 +145,12 @@ public abstract class StandardRendering implements PacManGameRendering2D, PacMan
 	}
 
 	@Override
-	public void drawGameState(Graphics2D g, GameModel game) {
-		if (game.state == PacManGameState.READY && !game.attractMode) {
+	public void drawGameState(Graphics2D g, GameModel game, PacManGameState gameState) {
+		if (gameState == PacManGameState.READY && !game.attractMode) {
 			g.setFont(getScoreFont());
 			g.setColor(Color.YELLOW);
 			g.drawString("READY", t(11), t(21));
-		} else if (game.state == PacManGameState.GAME_OVER || game.attractMode) {
+		} else if (gameState == PacManGameState.GAME_OVER || game.attractMode) {
 			g.setFont(getScoreFont());
 			g.setColor(Color.RED);
 			g.drawString("GAME", t(9), t(21));

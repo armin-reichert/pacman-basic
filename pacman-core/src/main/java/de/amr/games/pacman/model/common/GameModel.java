@@ -20,7 +20,6 @@ import de.amr.games.pacman.model.pacman.PacManBonus;
  */
 public abstract class GameModel {
 
-	public PacManGameState state;
 	public boolean started;
 	public boolean attractMode;
 
@@ -126,18 +125,6 @@ public abstract class GameModel {
 
 	public Stream<Ghost> ghosts(GhostState ghostState) {
 		return Stream.of(ghosts).filter(ghost -> ghost.state.equals(ghostState));
-	}
-
-	public String stateDescription() {
-		if (state == null) {
-			return "not initialized";
-		}
-		if (state == PacManGameState.HUNTING) {
-			String phaseName = inScatteringPhase() ? "Scattering" : "Chasing";
-			int phaseIndex = huntingPhase / 2;
-			return String.format("%s-%s (%d of 4)", state, phaseName, phaseIndex + 1);
-		}
-		return state.name();
 	}
 
 	public boolean inScatteringPhase() {

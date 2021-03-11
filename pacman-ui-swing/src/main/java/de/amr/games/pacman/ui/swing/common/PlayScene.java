@@ -6,8 +6,8 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 
 import de.amr.games.pacman.controller.PacManGameController;
+import de.amr.games.pacman.controller.PacManGameState;
 import de.amr.games.pacman.model.common.GameModel;
-import de.amr.games.pacman.model.common.PacManGameState;
 import de.amr.games.pacman.ui.sound.SoundManager;
 import de.amr.games.pacman.ui.swing.rendering.PacManGameRendering2D;
 
@@ -38,11 +38,11 @@ public class PlayScene extends GameScene {
 					game.level::containsEatenFood);
 			rendering.drawEnergizerTiles(g, game.level.world.energizerTiles());
 		}
-		rendering.drawGameState(g, game);
+		rendering.drawGameState(g, game, controller.fsm.state);
 		rendering.drawBonus(g, game.bonus);
 		rendering.drawPlayer(g, game.player);
 		game.ghosts().forEach(ghost -> rendering.drawGhost(g, ghost, game.player.powerTimer.isRunning()));
-		rendering.drawScore(g, game, game.state == PacManGameState.INTRO || game.attractMode);
+		rendering.drawScore(g, game, controller.fsm.state == PacManGameState.INTRO || game.attractMode);
 		if (!game.attractMode) {
 			rendering.drawLivesCounter(g, game, t(2), t(34));
 		}

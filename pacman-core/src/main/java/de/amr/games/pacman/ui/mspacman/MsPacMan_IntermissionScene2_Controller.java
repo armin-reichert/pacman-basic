@@ -116,7 +116,7 @@ public class MsPacMan_IntermissionScene2_Controller {
 				msPacMan.speed = pacMan.speed = 4;
 			}
 			if (timer.ticked() == clock.sec(20)) {
-				controller.getGame().state.timer.forceExpiration();
+				controller.letCurrentGameStateExpire();
 				return;
 			}
 			timer.tick();

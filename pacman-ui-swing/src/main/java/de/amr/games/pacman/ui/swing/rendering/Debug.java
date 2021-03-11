@@ -11,6 +11,7 @@ import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.Stroke;
 
+import de.amr.games.pacman.controller.PacManGameController;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.GameModel;
@@ -20,11 +21,12 @@ public class Debug {
 
 	public static boolean on = false;
 
-	public static void drawPlaySceneDebugInfo(Graphics2D g, GameModel game) {
+	public static void drawPlaySceneDebugInfo(Graphics2D g, PacManGameController controller) {
+		GameModel game = controller.getGame();
 		final Color[] GHOST_COLORS = { Color.RED, Color.PINK, Color.CYAN, Color.ORANGE };
-		long remaining = game.state.timer.ticksRemaining();
+		long remaining = controller.fsm.state.timer.ticksRemaining();
 		String ticksText = remaining == Long.MAX_VALUE ? "forever" : remaining + " ticks remaining";
-		String stateText = String.format("%s (%s)", game.stateDescription(), ticksText);
+		String stateText = String.format("%s (%s)", controller.fsm.stateDescription(), ticksText);
 		g.setColor(Color.WHITE);
 		g.setFont(new Font("Arial", Font.PLAIN, 6));
 		g.drawString(stateText, t(1), t(3));
