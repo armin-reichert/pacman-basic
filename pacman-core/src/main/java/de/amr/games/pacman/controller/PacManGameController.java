@@ -113,7 +113,7 @@ public class PacManGameController {
 	public final Autopilot autopilot;
 	public GameModel game;
 	public PacManGameUI userInterface;
-	public boolean playing;
+	public boolean gameStarted;
 	public boolean attractMode;
 
 	public PacManGameController(GameType initialGameType) {
@@ -128,11 +128,12 @@ public class PacManGameController {
 	public void step() {
 		if (userInterface.keyPressed("Q")) {
 			fsm.init();
+		} else {
+			if (!attractMode) {
+				handleCheatsAndStuff();
+			}
+			fsm.updateState();
 		}
-		if (!attractMode) {
-			handleCheatsAndStuff();
-		}
-		fsm.updateState();
 		userInterface.update();
 	}
 
@@ -185,14 +186,14 @@ public class PacManGameController {
 	}
 
 	public void play(GameType type) {
+		gameStarted = false;
+		attractMode = false;
 		game = games.get(type);
 		game.reset();
 		fsm.changeState(INTRO);
 		if (userInterface != null) {
 			userInterface.onGameChanged(game);
 		}
-		playing = false;
-		attractMode = false;
 	}
 
 	public void setUserInterface(PacManGameUI ui) {
@@ -204,31 +205,31 @@ public class PacManGameController {
 		userInterface.sound().ifPresent(SoundManager::stopAll);
 		if (isPlaying(MS_PACMAN)) {
 			play(PACMAN);
-			userInterface.showFlashMessage("Now playing Pac-Man", clock.sec(1));
+			userInterface.showFlashMessage("Now playing Pac-Man");
 		} else {
 			play(MS_PACMAN);
-			userInterface.showFlashMessage("Now playing Ms. Pac-Man", clock.sec(1));
+			userInterface.showFlashMessage("Now playing Ms. Pac-Man");
 		}
 	}
 
 	private void enableAutopilot(boolean enabled) {
 		autopilot.enabled = enabled;
 		String msg = "Autopilot " + (enabled ? "on" : "off");
-		userInterface.showFlashMessage(msg, clock.sec(1));
+		userInterface.showFlashMessage(msg);
 		log(msg);
 	}
 
 	public void setPlayerImmune(boolean immune) {
 		game.player.immune = immune;
 		String msg = game.player.name + " is " + (game.player.immune ? "immune" : "vulnerable");
-		userInterface.showFlashMessage(msg, clock.sec(1));
+		userInterface.showFlashMessage(msg);
 		log(msg);
 	}
 
 	private void enterIntroState() {
 		game.reset();
 		attractMode = false;
-		playing = false;
+		gameStarted = false;
 		if (userInterface != null) {
 			userInterface.mute(false);
 			userInterface.sound().ifPresent(SoundManager::stopAll);
@@ -253,18 +254,18 @@ public class PacManGameController {
 		// test intermission scenes
 		if (userInterface.keyPressed("1")) {
 			game.intermissionNumber = 1;
-			userInterface.showFlashMessage("Test Intermission #1", clock.sec(0.5));
+			userInterface.showFlashMessage("Test Intermission #1");
 			fsm.changeState(INTERMISSION);
 			return;
 		}
 		if (userInterface.keyPressed("2")) {
 			game.intermissionNumber = 2;
-			userInterface.showFlashMessage("Test Intermission #2", clock.sec(0.5));
+			userInterface.showFlashMessage("Test Intermission #2");
 			fsm.changeState(INTERMISSION);
 		}
 		if (userInterface.keyPressed("3")) {
 			game.intermissionNumber = 3;
-			userInterface.showFlashMessage("Test Intermission #3", clock.sec(0.5));
+			userInterface.showFlashMessage("Test Intermission #3");
 			fsm.changeState(INTERMISSION);
 		}
 	}
@@ -273,7 +274,7 @@ public class PacManGameController {
 		game.resetGuys();
 		userInterface.mute(attractMode);
 		userInterface.animation().ifPresent(animation -> animation.reset(game));
-		if (playing || attractMode) {
+		if (gameStarted || attractMode) {
 			fsm.state.timer.reset(clock.sec(2));
 		} else {
 			userInterface.sound().ifPresent(snd -> snd.play(PacManGameSound.GAME_READY));
@@ -296,7 +297,7 @@ public class PacManGameController {
 
 	private void exitReadyState() {
 		if (!attractMode) {
-			playing = true;
+			gameStarted = true;
 		}
 		userInterface.animation().map(PacManGameAnimations::ghostAnimations).ifPresent(ga -> {
 			game.ghosts().flatMap(ga::ghostKicking).forEach(Animation::restart);
@@ -590,7 +591,7 @@ public class PacManGameController {
 			game.lives++;
 			userInterface.sound().ifPresent(snd -> snd.play(PacManGameSound.EXTRA_LIFE));
 			log("Extra life. Now you have %d lives!", game.lives);
-			userInterface.showFlashMessage("Extra life!", clock.sec(1));
+			userInterface.showFlashMessage("Extra life!");
 		}
 		if (game.score > game.highscorePoints) {
 			game.highscorePoints = game.score;
