@@ -244,8 +244,8 @@ public class PacManGameUI_Swing implements PacManGameUI {
 	}
 
 	@Override
-	public void showFlashMessage(String message, long ticks) {
-		flashMessageQ.add(new FlashMessage(message, ticks));
+	public void showFlashMessage(String message, double seconds) {
+		flashMessageQ.add(new FlashMessage(message, (long) (60 * seconds)));
 	}
 
 	@Override
