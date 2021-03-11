@@ -16,6 +16,11 @@ import de.amr.games.pacman.ui.animation.PacManGameAnimations;
 import de.amr.games.pacman.ui.sound.PacManGameSound;
 import de.amr.games.pacman.ui.sound.SoundManager;
 
+/**
+ * Controller for the Pac-Man intermission scene 1.
+ * 
+ * @author Armin Reichert
+ */
 public class PacMan_IntermissionScene1_Controller {
 
 	public enum Phase {

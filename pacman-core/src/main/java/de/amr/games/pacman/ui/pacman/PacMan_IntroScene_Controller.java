@@ -13,6 +13,11 @@ import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.ui.animation.Animation;
 import de.amr.games.pacman.ui.animation.PacManGameAnimations;
 
+/**
+ * Controller for the Pac-Man intro scene.
+ * 
+ * @author Armin Reichert
+ */
 public class PacMan_IntroScene_Controller {
 
 	public static class GhostPortrait {
