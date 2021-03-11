@@ -15,27 +15,34 @@ import de.amr.games.pacman.ui.animation.Animation;
 import de.amr.games.pacman.ui.animation.PacManGameAnimations;
 import de.amr.games.pacman.ui.sound.SoundManager;
 
+/**
+ * Controls the Ms. Pac-Man intro scene execution.
+ * 
+ * @author Armin Reichert
+ */
 public class MsPacMan_IntroScene_Controller {
 
 	public enum Phase {
 
-		BEGIN, GHOSTS, MSPACMAN, END;
+		BEGIN, PRESENTING_GHOST, PRESENTING_MSPACMAN, END;
 	}
 
-	public final V2i frameTopLeftTile = new V2i(6, 8);
-	public final int belowFrame = t(17);
-	public final int leftOfFrame = t(4);
+	// the board where the actors are presented
+	public final V2i tileBoardTopLeft = new V2i(6, 8);
+	public final int tileBelowBoard = 17;
+	public final int tileLeftOfBoard = 4;
 
 	public final PacManGameController controller;
 	public final PacManGameAnimations animations;
 	public final SoundManager sounds;
-	public final TickTimer timer = new TickTimer();
-	public final Animation<Boolean> blinking = Animation.pulse().frameDuration(30);
-	public Pac msPac;
-	public Ghost[] ghosts;
-	public Ghost currentGhost;
-	public boolean presentingMsPac;
+
 	public Phase phase;
+	public final TickTimer phaseTimer = new TickTimer();
+
+	public Pac msPacMan;
+	public Ghost[] ghosts;
+	public int currentGhostIndex;
+	public final Animation<Boolean> blinking = Animation.pulse().frameDuration(30);
 
 	public MsPacMan_IntroScene_Controller(PacManGameController controller, PacManGameAnimations animations,
 			SoundManager sounds) {
@@ -44,19 +51,15 @@ public class MsPacMan_IntroScene_Controller {
 		this.sounds = sounds;
 	}
 
-	public void enterPhase(Phase newPhase) {
+	private void enterPhase(Phase newPhase) {
 		phase = newPhase;
-		timer.reset();
-		timer.start();
+		phaseTimer.reset();
+		phaseTimer.start();
 	}
 
 	public void start() {
-		msPac = new Pac("Ms. Pac-Man", LEFT);
-		msPac.setPosition(t(37), belowFrame);
-		msPac.visible = true;
-		msPac.speed = 0;
-		msPac.dead = false;
-		msPac.dir = LEFT;
+		msPacMan = new Pac("Ms. Pac-Man", LEFT);
+		msPacMan.setPosition(t(37), t(tileBelowBoard));
 
 		ghosts = new Ghost[] { //
 				new Ghost(0, "Blinky", LEFT), //
@@ -66,98 +69,96 @@ public class MsPacMan_IntroScene_Controller {
 		};
 
 		for (Ghost ghost : ghosts) {
-			ghost.setPosition(t(37), belowFrame);
-			ghost.visible = true;
-			ghost.bounty = 0;
-			ghost.speed = 0;
+			ghost.setPosition(t(37), t(tileBelowBoard));
 			ghost.state = GhostState.HUNTING_PAC;
 		}
 
-		currentGhost = null;
-		presentingMsPac = false;
+		currentGhostIndex = -1;
 
 		enterPhase(Phase.BEGIN);
 	}
 
 	public void update() {
-		for (Ghost ghost : ghosts) {
-			ghost.move();
-		}
-		msPac.move();
 		switch (phase) {
+
 		case BEGIN:
-			if (timer.ticked() == clock.sec(1)) {
-				currentGhost = ghosts[0];
-				enterPhase(Phase.GHOSTS);
+			if (phaseTimer.ticked() == clock.sec(2)) {
+				currentGhostIndex = 0;
+				enterPhase(Phase.PRESENTING_GHOST);
 			}
-			timer.tick();
+			phaseTimer.tick();
 			break;
-		case GHOSTS:
-			boolean ghostComplete = letCurrentGhostWalkToEndPosition();
-			if (ghostComplete) {
-				if (currentGhost == ghosts[3]) {
-					currentGhost = null;
-					presentingMsPac = true;
-					enterPhase(Phase.MSPACMAN);
+
+		case PRESENTING_GHOST:
+			if (phaseTimer.ticked() == 1) {
+				ghosts[currentGhostIndex].visible = true;
+				ghosts[currentGhostIndex].speed = 1.0;
+				animations.ghostAnimations().ghostKicking(ghosts[currentGhostIndex]).forEach(Animation::restart);
+			}
+			boolean ghostReachedFinalPosition = ghostEnteringStage(ghosts[currentGhostIndex]);
+			if (ghostReachedFinalPosition) {
+				if (currentGhostIndex == 3) {
+					enterPhase(Phase.PRESENTING_MSPACMAN);
 				} else {
-					currentGhost = ghosts[currentGhost.id + 1];
-					enterPhase(Phase.GHOSTS);
+					currentGhostIndex++;
+					enterPhase(Phase.PRESENTING_GHOST);
 				}
 			}
-			timer.tick();
+			for (Ghost ghost : ghosts) {
+				ghost.move();
+			}
+			phaseTimer.tick();
 			break;
-		case MSPACMAN:
-			boolean msPacComplete = letMsPacManWalkToEndPosition();
-			if (msPacComplete) {
+
+		case PRESENTING_MSPACMAN:
+			if (phaseTimer.ticked() == 1) {
+				msPacMan.visible = true;
+				msPacMan.couldMove = true;
+				msPacMan.speed = 1;
+				animations.playerAnimations().playerMunching(msPacMan).forEach(Animation::restart);
+			}
+			boolean msPacReachedFinalPosition = msPacManEnteringStage();
+			if (msPacReachedFinalPosition) {
 				enterPhase(Phase.END);
 			}
-			timer.tick();
+			msPacMan.move();
+			phaseTimer.tick();
 			break;
+
 		case END:
-			if (timer.ticked() == 1) {
+			if (phaseTimer.ticked() == 1) {
 				blinking.restart();
 			}
-			if (timer.ticked() == clock.sec(5)) {
+			if (phaseTimer.ticked() == clock.sec(5)) {
 				controller.getGame().attractMode = true;
+				return;
 			}
 			blinking.animate();
-			timer.tick();
+			phaseTimer.tick();
 			break;
+
 		default:
 			break;
 		}
 	}
 
-	public boolean letCurrentGhostWalkToEndPosition() {
-		if (currentGhost == null) {
+	public boolean ghostEnteringStage(Ghost ghost) {
+		if (ghost.dir == LEFT && ghost.position.x <= t(tileLeftOfBoard)) {
+			ghost.dir = ghost.wishDir = UP;
 			return false;
 		}
-		if (timer.ticked() == 1) {
-			currentGhost.speed = 1;
-			animations.ghostAnimations().ghostKicking(currentGhost).forEach(Animation::restart);
-		}
-		if (currentGhost.dir == LEFT && currentGhost.position.x <= leftOfFrame) {
-			currentGhost.dir = currentGhost.wishDir = UP;
-		}
-		if (currentGhost.dir == UP && currentGhost.position.y <= t(frameTopLeftTile.y) + currentGhost.id * 18) {
-			currentGhost.speed = 0;
-			animations.ghostAnimations().ghostKicking(currentGhost).forEach(Animation::reset);
+		if (ghost.dir == UP && ghost.position.y <= t(tileBoardTopLeft.y) + ghost.id * 18) {
+			ghost.speed = 0;
+			animations.ghostAnimations().ghostKicking(ghost).forEach(Animation::reset);
 			return true;
 		}
 		return false;
 	}
 
-	public boolean letMsPacManWalkToEndPosition() {
-		if (timer.ticked() == 1) {
-			msPac.visible = true;
-			msPac.couldMove = true;
-			msPac.speed = 1;
-			msPac.dir = LEFT;
-			animations.playerAnimations().playerMunching(msPac).forEach(Animation::restart);
-		}
-		if (msPac.speed != 0 && msPac.position.x <= t(13)) {
-			msPac.speed = 0;
-			animations.playerAnimations().playerMunching(msPac).forEach(Animation::reset);
+	public boolean msPacManEnteringStage() {
+		if (msPacMan.speed != 0 && msPacMan.position.x <= t(13)) {
+			msPacMan.speed = 0;
+			animations.playerAnimations().playerMunching(msPacMan).forEach(Animation::reset);
 			return true;
 		}
 		return false;

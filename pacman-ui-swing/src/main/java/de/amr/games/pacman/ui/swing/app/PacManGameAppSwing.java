@@ -67,9 +67,9 @@ public class PacManGameAppSwing {
 	public static void main(String[] args) {
 		Options options = new Options(args);
 		PacManGameController controller = new PacManGameController(options.pacman ? GameType.PACMAN : GameType.MS_PACMAN);
+		GameLoop gameLoop = new GameLoop(controller);
 		invokeLater(() -> {
 			PacManGameUI_Swing ui = new PacManGameUI_Swing(controller, options.height);
-			GameLoop gameLoop = new GameLoop(controller);
 			ui.addWindowClosingHandler(gameLoop::end);
 			controller.setUserInterface(ui);
 			ui.show();

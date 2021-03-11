@@ -8,6 +8,7 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 
 import de.amr.games.pacman.controller.PacManGameController;
+import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.ui.mspacman.MsPacMan_IntroScene_Controller;
 import de.amr.games.pacman.ui.mspacman.MsPacMan_IntroScene_Controller.Phase;
@@ -23,6 +24,7 @@ import de.amr.games.pacman.ui.swing.rendering.PacManGameRendering2D;
 public class MsPacMan_IntroScene extends GameScene {
 
 	private MsPacMan_IntroScene_Controller sceneController;
+	private TickTimer boardAnimationTimer = new TickTimer();
 
 	public MsPacMan_IntroScene(PacManGameController controller, Dimension size, PacManGameRendering2D rendering,
 			SoundManager sounds) {
@@ -31,6 +33,8 @@ public class MsPacMan_IntroScene extends GameScene {
 
 	@Override
 	public void start() {
+		boardAnimationTimer.reset();
+		boardAnimationTimer.start();
 		sceneController = new MsPacMan_IntroScene_Controller(controller, rendering, sounds);
 		sceneController.start();
 	}
@@ -38,6 +42,7 @@ public class MsPacMan_IntroScene extends GameScene {
 	@Override
 	public void update() {
 		sceneController.update();
+		boardAnimationTimer.tick();
 	}
 
 	@Override
@@ -45,37 +50,33 @@ public class MsPacMan_IntroScene extends GameScene {
 		g.setFont(assets.getScoreFont());
 		g.setColor(Color.ORANGE);
 		g.drawString("\"MS PAC-MAN\"", t(8), t(5));
-		drawAnimatedFrame(g, 32, 16, controller.getGame().state.timer.ticked());
-		for (Ghost ghost : sceneController.ghosts) {
-			rendering.drawGhost(g, ghost, false);
-		}
-		rendering.drawPlayer(g, sceneController.msPac);
-		presentGhost(g);
-		presentMsPacMan(g);
-		if (sceneController.phase == Phase.END) {
+		drawAnimatedBoard(g, 32, 16);
+		if (sceneController.phase == Phase.PRESENTING_GHOST) {
+			drawPresentingGhost(g, sceneController.ghosts[sceneController.currentGhostIndex]);
+		} else if (sceneController.phase == Phase.PRESENTING_MSPACMAN) {
+			drawStarringMsPacMan(g);
+		} else if (sceneController.phase == Phase.END) {
+			drawStarringMsPacMan(g);
 			drawPointsAnimation(g, 26);
 			drawPressKeyToStart(g, 32);
 		}
+		for (Ghost ghost : sceneController.ghosts) {
+			rendering.drawGhost(g, ghost, false);
+		}
+		rendering.drawPlayer(g, sceneController.msPacMan);
 	}
 
-	private void presentGhost(Graphics2D g) {
-		if (sceneController.currentGhost == null) {
-			return;
-		}
+	private void drawPresentingGhost(Graphics2D g, Ghost ghost) {
 		g.setColor(Color.WHITE);
 		g.setFont(assets.getScoreFont());
-		if (sceneController.currentGhost == sceneController.ghosts[0]) {
+		if (ghost == sceneController.ghosts[0]) {
 			g.drawString("WITH", t(8), t(11));
 		}
-		g.setColor(sceneController.currentGhost.id == 0 ? Color.RED
-				: sceneController.currentGhost.id == 1 ? Color.PINK : sceneController.currentGhost.id == 2 ? Color.CYAN : Color.ORANGE);
-		g.drawString(sceneController.currentGhost.name.toUpperCase(), t(13 - sceneController.currentGhost.name.length() / 2), t(14));
+		g.setColor(ghost.id == 0 ? Color.RED : ghost.id == 1 ? Color.PINK : ghost.id == 2 ? Color.CYAN : Color.ORANGE);
+		g.drawString(ghost.name.toUpperCase(), t(13 - ghost.name.length() / 2), t(14));
 	}
 
-	private void presentMsPacMan(Graphics2D g) {
-		if (!sceneController.presentingMsPac) {
-			return;
-		}
+	private void drawStarringMsPacMan(Graphics2D g) {
 		g.setColor(Color.WHITE);
 		g.setFont(assets.getScoreFont());
 		g.drawString("STARRING", t(8), t(11));
@@ -83,7 +84,8 @@ public class MsPacMan_IntroScene extends GameScene {
 		g.drawString("MS PAC-MAN", t(8), t(14));
 	}
 
-	private void drawAnimatedFrame(Graphics2D g, int numDotsX, int numDotsY, long time) {
+	private void drawAnimatedBoard(Graphics2D g, int numDotsX, int numDotsY) {
+		long time = boardAnimationTimer.ticked();
 		int light = (int) (time / 2) % (numDotsX / 2);
 		for (int dot = 0; dot < 2 * (numDotsX + numDotsY); ++dot) {
 			int x = 0, y = 0;
@@ -99,7 +101,7 @@ public class MsPacMan_IntroScene extends GameScene {
 				y = 2 * (numDotsX + numDotsY) - dot;
 			}
 			g.setColor((dot + light) % (numDotsX / 2) == 0 ? Color.PINK : Color.RED);
-			g.fillRect(t(sceneController.frameTopLeftTile.x) + 4 * x, t(sceneController.frameTopLeftTile.y) + 4 * y, 2, 2);
+			g.fillRect(t(sceneController.tileBoardTopLeft.x) + 4 * x, t(sceneController.tileBoardTopLeft.y) + 4 * y, 2, 2);
 		}
 	}
 
