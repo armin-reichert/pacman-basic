@@ -98,7 +98,7 @@ public class MsPacMan_IntermissionScene1_Controller {
 		switch (phase) {
 
 		case FLAP:
-			if (timer.ticked() == clock.sec(1)) {
+			if (timer.isRunningSeconds(1)) {
 				flap.flapping.restart();
 			}
 			if (timer.hasExpired()) {
@@ -150,7 +150,7 @@ public class MsPacMan_IntermissionScene1_Controller {
 			break;
 
 		case READY_TO_PLAY:
-			if (timer.ticked() == clock.sec(0.5)) {
+			if (timer.isRunningSeconds(0.5)) {
 				inky.visible = false;
 				pinky.visible = false;
 			}

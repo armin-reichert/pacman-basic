@@ -84,10 +84,10 @@ public class MsPacMan_IntermissionScene3_Controller {
 	public void update() {
 		switch (phase) {
 		case FLAP:
-			if (timer.ticked() == clock.sec(1)) {
+			if (timer.isRunningSeconds(1)) {
 				flap.flapping.restart();
 			}
-			if (timer.ticked() == clock.sec(2)) {
+			if (timer.isRunningSeconds(2)) {
 				flap.visible = false;
 				sounds.play(PacManGameSound.INTERMISSION_3);
 				enter(Phase.ACTION, Long.MAX_VALUE);
@@ -99,7 +99,7 @@ public class MsPacMan_IntermissionScene3_Controller {
 		case ACTION:
 			stork.move();
 			bag.move();
-			if (timer.ticked() == 1) {
+			if (timer.hasJustStarted()) {
 				pacMan.visible = msPacMan.visible = stork.visible = bag.visible = true;
 				stork.velocity = bag.velocity = new V2d(-1.25f, 0);
 				stork.flying.restart();

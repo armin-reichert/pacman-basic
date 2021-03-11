@@ -109,14 +109,12 @@ public class PacManGameController {
 		games.put(MS_PACMAN, new MsPacManGame());
 	}
 
-	public PacManGameStateMachine fsm = new PacManGameStateMachine();
+	public final PacManGameStateMachine fsm = new PacManGameStateMachine();
 	public final Autopilot autopilot;
 	public GameModel game;
 	public PacManGameUI userInterface;
 	public boolean playing;
 	public boolean attractMode;
-
-	public boolean intermissionScenesEnabled = true;
 
 	public PacManGameController(GameType initialGameType) {
 		game = games.get(initialGameType);
@@ -285,7 +283,7 @@ public class PacManGameController {
 			fsm.changeState(PacManGameState.HUNTING);
 			return;
 		}
-		if (fsm.state.timer.ticked() == clock.sec(0.5)) {
+		if (fsm.state.timer.isRunningSeconds(0.5)) {
 			game.player.visible = true;
 			for (Ghost ghost : game.ghosts) {
 				ghost.visible = true;
@@ -458,9 +456,7 @@ public class PacManGameController {
 			return;
 		}
 
-		if (fsm.state.timer.ticked() == clock.sec(1))
-
-		{
+		if (fsm.state.timer.isRunningSeconds(1)) {
 			game.ghosts().forEach(ghost -> ghost.visible = false);
 			userInterface.animation().map(PacManGameAnimations::playerAnimations).map(PlayerAnimations::playerDying)
 					.ifPresent(da -> da.restart());
@@ -515,22 +511,20 @@ public class PacManGameController {
 	private void updateChangingLevelState() {
 
 		if (fsm.state.timer.hasExpired()) {
-			if (intermissionScenesEnabled) {
-				if (Arrays.asList(2, 5, 9, 13, 17).contains(game.levelNumber)) {
-					game.intermissionNumber = intermissionNumber(game.levelNumber);
-					fsm.changeState(INTERMISSION);
-					return;
-				}
+			if (Arrays.asList(2, 5, 9, 13, 17).contains(game.levelNumber)) {
+				game.intermissionNumber = intermissionNumber(game.levelNumber);
+				fsm.changeState(INTERMISSION);
+				return;
 			}
 			fsm.changeState(READY);
 			return;
 		}
 
-		if (fsm.state.timer.ticked() == clock.sec(2)) {
+		if (fsm.state.timer.isRunningSeconds(2)) {
 			game.ghosts().forEach(ghost -> ghost.visible = false);
 		}
 
-		if (fsm.state.timer.ticked() == clock.sec(3)) {
+		if (fsm.state.timer.isRunningSeconds(3)) {
 			userInterface.animation().map(PacManGameAnimations::mazeAnimations)
 					.ifPresent(ma -> ma.mazeFlashing(game.level.mazeNumber).repetitions(game.level.numFlashes).restart());
 		}

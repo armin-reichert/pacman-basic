@@ -1,6 +1,5 @@
 package de.amr.games.pacman.ui.pacman;
 
-import static de.amr.games.pacman.lib.God.clock;
 import static de.amr.games.pacman.model.common.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.model.world.PacManGameWorld.t;
 
@@ -98,10 +97,10 @@ public class PacMan_IntermissionScene2_Controller {
 			timer.tick();
 			break;
 		case STUCK:
-			if (timer.ticked() == clock.sec(3)) {
+			if (timer.isRunningSeconds(3)) {
 				blinky.dir = Direction.RIGHT;
 			}
-			if (timer.ticked() == clock.sec(6)) {
+			if (timer.isRunningSeconds(6)) {
 				controller.letCurrentGameStateExpire();
 				return;
 			}

@@ -79,7 +79,7 @@ public class PacMan_IntermissionScene1_Controller {
 			timer.tick();
 			break;
 		case BIGPACMAN_CHASING_BLINKY:
-			if (timer.ticked() == 1) {
+			if (timer.hasJustStarted()) {
 				blinky.setPosition(-t(2), groundY);
 				blinky.dir = blinky.wishDir = RIGHT;
 				blinky.speed = 1f;

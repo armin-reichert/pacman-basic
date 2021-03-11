@@ -92,4 +92,13 @@ public class TickTimer {
 	public long ticksRemaining() {
 		return duration == Long.MAX_VALUE ? Long.MAX_VALUE : duration - ticked;
 	}
+
+	public boolean isRunningSeconds(double sec) {
+		return ticked == (long) (sec * 60);
+	}
+
+	public boolean hasJustStarted() {
+		return ticked == 1;
+	}
+
 }

@@ -2,7 +2,6 @@ package de.amr.games.pacman.ui.mspacman;
 
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.UP;
-import static de.amr.games.pacman.lib.God.clock;
 import static de.amr.games.pacman.model.world.PacManGameWorld.t;
 
 import de.amr.games.pacman.controller.PacManGameController;
@@ -82,7 +81,7 @@ public class MsPacMan_IntroScene_Controller {
 		switch (phase) {
 
 		case BEGIN:
-			if (phaseTimer.ticked() == clock.sec(2)) {
+			if (phaseTimer.isRunningSeconds(2)) {
 				currentGhostIndex = 0;
 				enterPhase(Phase.PRESENTING_GHOST);
 			}
@@ -90,7 +89,7 @@ public class MsPacMan_IntroScene_Controller {
 			break;
 
 		case PRESENTING_GHOST:
-			if (phaseTimer.ticked() == 1) {
+			if (phaseTimer.hasJustStarted()) {
 				ghosts[currentGhostIndex].visible = true;
 				ghosts[currentGhostIndex].speed = 1.0;
 				animations.ghostAnimations().ghostKicking(ghosts[currentGhostIndex]).forEach(Animation::restart);
@@ -111,7 +110,7 @@ public class MsPacMan_IntroScene_Controller {
 			break;
 
 		case PRESENTING_MSPACMAN:
-			if (phaseTimer.ticked() == 1) {
+			if (phaseTimer.hasJustStarted()) {
 				msPacMan.visible = true;
 				msPacMan.couldMove = true;
 				msPacMan.speed = 1;
@@ -126,10 +125,10 @@ public class MsPacMan_IntroScene_Controller {
 			break;
 
 		case END:
-			if (phaseTimer.ticked() == 1) {
+			if (phaseTimer.hasJustStarted()) {
 				blinking.restart();
 			}
-			if (phaseTimer.ticked() == clock.sec(5)) {
+			if (phaseTimer.isRunningSeconds(5)) {
 				controller.attractMode = true;
 				return;
 			}

@@ -103,7 +103,7 @@ public class PacMan_IntroScene_Controller {
 		switch (phase) {
 
 		case BEGIN:
-			if (timer.ticked() == clock.sec(2)) {
+			if (timer.isRunningSeconds(2)) {
 				selectGhost(0);
 				enterPhase(Phase.PRESENTING_GHOST);
 			}
@@ -111,13 +111,13 @@ public class PacMan_IntroScene_Controller {
 			break;
 
 		case PRESENTING_GHOST:
-			if (timer.ticked() == clock.sec(0.5)) {
+			if (timer.isRunningSeconds(0.5)) {
 				gallery[selectedGhost].characterVisible = true;
 			}
-			if (timer.ticked() == clock.sec(1)) {
+			if (timer.isRunningSeconds(1)) {
 				gallery[selectedGhost].nicknameVisible = true;
 			}
-			if (timer.ticked() == clock.sec(2)) {
+			if (timer.isRunningSeconds(2)) {
 				if (selectedGhost < 3) {
 					selectGhost(selectedGhost + 1);
 					enterPhase(Phase.PRESENTING_GHOST);
@@ -164,10 +164,10 @@ public class PacMan_IntroScene_Controller {
 			break;
 
 		case READY_TO_PLAY:
-			if (timer.ticked() == 1) {
+			if (timer.hasJustStarted()) {
 				blinking.restart();
 			}
-			if (timer.ticked() == clock.sec(5)) {
+			if (timer.isRunningSeconds(5)) {
 				controller.attractMode = true;
 			}
 			blinking.animate();
