@@ -2,7 +2,6 @@ package de.amr.games.pacman.ui;
 
 import java.util.Optional;
 
-import de.amr.games.pacman.controller.PacManGameState;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.ui.animation.PacManGameAnimations;
 import de.amr.games.pacman.ui.sound.SoundManager;
@@ -16,8 +15,6 @@ import de.amr.games.pacman.ui.sound.SoundManager;
 public interface PacManGameUI {
 
 	void onGameChanged(GameModel game);
-
-	void onGameStateChanged(PacManGameState from, PacManGameState to);
 
 	void reset();
 

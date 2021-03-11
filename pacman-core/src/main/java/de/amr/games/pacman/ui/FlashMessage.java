@@ -7,8 +7,8 @@ public class FlashMessage {
 	public final TickTimer timer = new TickTimer();
 	public String text;
 
-	public FlashMessage(String text, long displayDuration) {
+	public FlashMessage(String text, long displayTicks) {
 		this.text = text;
-		timer.reset(displayDuration);
+		timer.reset(displayTicks);
 	}
 }

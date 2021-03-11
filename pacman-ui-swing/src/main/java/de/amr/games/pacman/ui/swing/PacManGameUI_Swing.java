@@ -32,7 +32,6 @@ import javax.swing.JFrame;
 import javax.swing.Timer;
 
 import de.amr.games.pacman.controller.PacManGameController;
-import de.amr.games.pacman.controller.PacManGameState;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.GameModel;
@@ -167,10 +166,6 @@ public class PacManGameUI_Swing implements PacManGameUI {
 	@Override
 	public void onGameChanged(GameModel newGame) {
 		changeScene(getSceneForCurrentGameState());
-	}
-
-	@Override
-	public void onGameStateChanged(PacManGameState from, PacManGameState to) {
 	}
 
 	private void changeScene(GameScene newScene) {
