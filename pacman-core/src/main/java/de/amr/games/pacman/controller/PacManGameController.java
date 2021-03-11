@@ -129,40 +129,44 @@ public class PacManGameController {
 		if (userInterface.keyPressed("Q")) {
 			fsm.init();
 		}
-		handleCheatsAndStuff();
+		if (!attractMode) {
+			handleCheatsAndStuff();
+		}
 		fsm.updateState();
 		userInterface.update();
 	}
 
 	private void handleCheatsAndStuff() {
-		if (attractMode) {
-			return;
-		}
 		boolean ready = fsm.state == READY, hunting = fsm.state == HUNTING;
 
 		// A = toggle autopilot
 		if (userInterface.keyPressed("A")) {
 			enableAutopilot(!autopilot.enabled);
 		}
+
 		// E = eat all food except the energizers
-		if (userInterface.keyPressed("E") && hunting) {
+		else if (userInterface.keyPressed("E") && hunting) {
 			game.level.world.tiles().filter(game.level::containsFood).filter(tile -> !game.level.world.isEnergizerTile(tile))
 					.forEach(game.level::removeFood);
 		}
+
 		// I = toggle player's immunity against ghost bites
-		if (userInterface.keyPressed("I")) {
+		else if (userInterface.keyPressed("I")) {
 			setPlayerImmune(!game.player.immune);
 		}
+
 		// L = add live
-		if (userInterface.keyPressed("L")) {
+		else if (userInterface.keyPressed("L")) {
 			game.lives++;
 		}
+
 		// N = change to next level
-		if (userInterface.keyPressed("N") && (ready || hunting)) {
+		else if (userInterface.keyPressed("N") && (ready || hunting)) {
 			fsm.changeState(CHANGING_LEVEL);
 		}
+
 		// X = exterminate all ghosts outside of ghost house
-		if (userInterface.keyPressed("X") && hunting) {
+		else if (userInterface.keyPressed("X") && hunting) {
 			killAllGhosts();
 			fsm.changeState(GHOST_DYING);
 		}
