@@ -24,17 +24,24 @@ public class TickTimer {
 		reset();
 	}
 
-	public void reset() {
-		reset(Long.MAX_VALUE);
-	}
-
 	public void reset(long durationTicks) {
 		state = READY;
 		ticked = 0;
 		duration = durationTicks;
 	}
 
+	public void reset() {
+		reset(Long.MAX_VALUE);
+	}
+
+	public void resetSeconds(double seconds) {
+		reset((long) (seconds * 60));
+	}
+
 	public void start() {
+		if (state == RUNNING) {
+			return;
+		}
 		if (state == STOPPED || state == READY) {
 			state = RUNNING;
 		} else {
@@ -93,12 +100,11 @@ public class TickTimer {
 		return duration == Long.MAX_VALUE ? Long.MAX_VALUE : duration - ticked;
 	}
 
-	public boolean isRunningSeconds(double sec) {
-		return ticked == (long) (sec * 60);
+	public boolean isRunningSeconds(double seconds) {
+		return ticked == (long) (seconds * 60);
 	}
 
 	public boolean hasJustStarted() {
 		return ticked == 1;
 	}
-
 }

@@ -17,11 +17,13 @@ public class PacManGameStateMachine {
 	public PacManGameState state;
 
 	public void init() {
+		state = INTRO;
+		previousState = null;
 		if (logging) {
 			log("Initialize game state machine, enter state %s", state);
 		}
-		state = INTRO;
-		changeState(INTRO);
+		state.onEnter.run(); // assuming INTRO state has onEnter action
+		state.timer.start();
 	}
 
 	public PacManGameState changeState(PacManGameState newState) {
@@ -42,6 +44,7 @@ public class PacManGameStateMachine {
 		if (newState.onEnter != null) {
 			newState.onEnter.run();
 		}
+		newState.timer.start();
 		// TODO fire change event to listeners
 		return newState;
 	}

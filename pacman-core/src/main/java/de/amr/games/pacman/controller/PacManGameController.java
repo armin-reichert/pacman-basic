@@ -226,8 +226,6 @@ public class PacManGameController {
 	}
 
 	private void enterIntroState() {
-		fsm.state.timer.reset();
-		fsm.state.timer.start();
 		game.reset();
 		attractMode = false;
 		playing = false;
@@ -237,6 +235,8 @@ public class PacManGameController {
 			userInterface.animation().ifPresent(va -> va.reset(game));
 			userInterface.onGameChanged(game);
 		}
+
+		fsm.state.timer.reset();
 	}
 
 	private void updateIntroState() {
@@ -276,10 +276,9 @@ public class PacManGameController {
 		if (playing || attractMode) {
 			fsm.state.timer.reset(clock.sec(2));
 		} else {
-			fsm.state.timer.reset(clock.sec(4.5));
 			userInterface.sound().ifPresent(snd -> snd.play(PacManGameSound.GAME_READY));
+			fsm.state.timer.reset(clock.sec(4.5));
 		}
-		fsm.state.timer.start();
 	}
 
 	private void updateReadyState() {
@@ -320,19 +319,18 @@ public class PacManGameController {
 		}
 		fsm.state.timer.reset(game.getHuntingPhaseDuration(game.huntingPhase));
 		fsm.state.timer.start();
-		log("Hunting phase %d started, state is now %s", phase, fsm.stateDescription());
+		log("Hunting phase %d started, duration: %d ticks", phase, fsm.state.timer.duration());
 	}
 
 	private void enterHuntingState() {
-		startHuntingPhase(0);
 		userInterface.animation().map(PacManGameAnimations::mazeAnimations)
 				.ifPresent(ma -> ma.energizerBlinking().restart());
 		userInterface.animation().map(PacManGameAnimations::playerAnimations)
 				.ifPresent(pa -> pa.playerMunching(game.player).forEach(Animation::restart));
+		startHuntingPhase(0);
 	}
 
 	private void updateHuntingState() {
-
 		// Level completed?
 		if (game.level.foodRemaining == 0) {
 			fsm.changeState(CHANGING_LEVEL);
@@ -432,15 +430,14 @@ public class PacManGameController {
 	}
 
 	private void enterPacManDyingState() {
-		fsm.state.timer.reset(clock.sec(4));
-		fsm.state.timer.start();
 		game.player.speed = 0;
 		game.bonus.edibleTicksLeft = game.bonus.eatenTicksLeft = 0;
-
 		userInterface.animation().map(PacManGameAnimations::ghostAnimations).ifPresent(ga -> {
 			game.ghosts().flatMap(ga::ghostKicking).forEach(Animation::reset);
 		});
 		userInterface.sound().ifPresent(SoundManager::stopAll);
+
+		fsm.state.timer.reset(clock.sec(4));
 	}
 
 	private void updatePacManDyingState() {
@@ -473,12 +470,12 @@ public class PacManGameController {
 	}
 
 	private void enterGhostDyingState() {
-		fsm.state.timer.reset(clock.sec(1));
-		fsm.state.timer.start();
 		game.player.visible = false;
 		userInterface.animation().map(PacManGameAnimations::mazeAnimations).map(MazeAnimations::energizerBlinking)
 				.ifPresent(Animation::restart);
 		userInterface.sound().ifPresent(snd -> snd.play(PacManGameSound.GHOST_EATEN));
+
+		fsm.state.timer.reset(clock.sec(1));
 	}
 
 	private void updateGhostDyingState() {
@@ -508,8 +505,8 @@ public class PacManGameController {
 		game.bonus.edibleTicksLeft = game.bonus.eatenTicksLeft = 0;
 		game.player.speed = 0;
 		userInterface.sound().ifPresent(SoundManager::stopAll);
+
 		fsm.state.timer.reset(clock.sec(game.level.numFlashes + 3));
-		fsm.state.timer.start();
 	}
 
 	private void updateChangingLevelState() {
@@ -548,8 +545,8 @@ public class PacManGameController {
 		game.saveHighscore();
 		userInterface.animation().map(PacManGameAnimations::ghostAnimations)
 				.ifPresent(ga -> game.ghosts().flatMap(ga::ghostKicking).forEach(Animation::reset));
+
 		fsm.state.timer.reset(clock.sec(10));
-		fsm.state.timer.start();
 	}
 
 	private void updateGameOverState() {
@@ -571,9 +568,8 @@ public class PacManGameController {
 	}
 
 	private void enterIntermissionState() {
-		fsm.state.timer.reset();
-		fsm.state.timer.start();
 		log("Starting intermission #%d", game.intermissionNumber);
+		fsm.state.timer.reset();
 	}
 
 	private void updateIntermissionState() {
