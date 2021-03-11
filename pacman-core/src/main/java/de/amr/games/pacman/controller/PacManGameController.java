@@ -76,6 +76,33 @@ import de.amr.games.pacman.ui.sound.SoundManager;
  */
 public class PacManGameController {
 
+	/*
+	 * The finite-state machine controlling the game play:
+	 */
+	{
+		PacManGameState.INTRO.onEnter = this::enterIntroState;
+		PacManGameState.INTRO.onUpdate = this::updateIntroState;
+		PacManGameState.READY.onEnter = this::enterReadyState;
+		PacManGameState.READY.onUpdate = this::updateReadyState;
+		PacManGameState.READY.onExit = this::exitReadyState;
+		PacManGameState.HUNTING.onEnter = this::enterHuntingState;
+		PacManGameState.HUNTING.onUpdate = this::updateHuntingState;
+		PacManGameState.HUNTING.onExit = this::exitHuntingState;
+		PacManGameState.GHOST_DYING.onEnter = this::enterGhostDyingState;
+		PacManGameState.GHOST_DYING.onUpdate = this::updateGhostDyingState;
+		PacManGameState.GHOST_DYING.onExit = this::exitGhostDyingState;
+		PacManGameState.PACMAN_DYING.onEnter = this::enterPacManDyingState;
+		PacManGameState.PACMAN_DYING.onUpdate = this::updatePacManDyingState;
+		PacManGameState.PACMAN_DYING.onExit = this::exitPacManDyingState;
+		PacManGameState.CHANGING_LEVEL.onEnter = this::enterChangingLevelState;
+		PacManGameState.CHANGING_LEVEL.onUpdate = this::updateChangingLevelState;
+		PacManGameState.CHANGING_LEVEL.onExit = this::exitChangingLevelState;
+		PacManGameState.GAME_OVER.onEnter = this::enterGameOverState;
+		PacManGameState.GAME_OVER.onUpdate = this::updateGameOverState;
+		PacManGameState.INTERMISSION.onEnter = this::enterIntermissionState;
+		PacManGameState.INTERMISSION.onUpdate = this::updateIntermissionState;
+	}
+
 	private final EnumMap<GameType, GameModel> games = new EnumMap<>(GameType.class);
 	{
 		games.put(PACMAN, new PacManGame());
@@ -191,15 +218,6 @@ public class PacManGameController {
 		log(msg);
 	}
 
-	/*
-	 * The finite-state machine controlling the game play:
-	 */
-
-	{
-		PacManGameState.INTRO.onEnter = this::enterIntroState;
-		PacManGameState.INTRO.onUpdate = this::updateIntroState;
-	}
-
 	private void enterIntroState() {
 		fsm.state.timer.reset();
 		fsm.state.timer.start();
@@ -242,12 +260,6 @@ public class PacManGameController {
 		}
 	}
 
-	{
-		PacManGameState.READY.onEnter = this::enterReadyState;
-		PacManGameState.READY.onUpdate = this::updateReadyState;
-		PacManGameState.READY.onExit = this::exitReadyState;
-	}
-
 	private void enterReadyState() {
 		game.resetGuys();
 		userInterface.mute(game.attractMode);
@@ -281,12 +293,6 @@ public class PacManGameController {
 		userInterface.animation().map(PacManGameAnimations::ghostAnimations).ifPresent(ga -> {
 			game.ghosts().flatMap(ga::ghostKicking).forEach(Animation::restart);
 		});
-	}
-
-	{
-		PacManGameState.HUNTING.onEnter = this::enterHuntingState;
-		PacManGameState.HUNTING.onUpdate = this::updateHuntingState;
-		PacManGameState.HUNTING.onExit = this::exitHuntingState;
 	}
 
 	static final List<PacManGameSound> SIRENS = Arrays.asList(PacManGameSound.GHOST_SIREN_1,
@@ -416,12 +422,6 @@ public class PacManGameController {
 		userInterface.animation().map(PacManGameAnimations::mazeAnimations).ifPresent(ma -> ma.energizerBlinking().reset());
 	}
 
-	{
-		PacManGameState.PACMAN_DYING.onEnter = this::enterPacManDyingState;
-		PacManGameState.PACMAN_DYING.onUpdate = this::updatePacManDyingState;
-		PacManGameState.PACMAN_DYING.onExit = this::exitPacManDyingState;
-	}
-
 	private void enterPacManDyingState() {
 		fsm.state.timer.reset(clock.sec(4));
 		fsm.state.timer.start();
@@ -462,12 +462,6 @@ public class PacManGameController {
 		game.ghosts().forEach(ghost -> ghost.visible = true);
 	}
 
-	{
-		PacManGameState.GHOST_DYING.onEnter = this::enterGhostDyingState;
-		PacManGameState.GHOST_DYING.onUpdate = this::updateGhostDyingState;
-		PacManGameState.GHOST_DYING.onExit = this::exitGhostDyingState;
-	}
-
 	private void enterGhostDyingState() {
 		fsm.state.timer.reset(clock.sec(1));
 		fsm.state.timer.start();
@@ -498,12 +492,6 @@ public class PacManGameController {
 				userInterface.sound().ifPresent(snd -> snd.loopForever(PacManGameSound.GHOST_EYES));
 			}
 		});
-	}
-
-	{
-		PacManGameState.CHANGING_LEVEL.onEnter = this::enterChangingLevelState;
-		PacManGameState.CHANGING_LEVEL.onUpdate = this::updateChangingLevelState;
-		PacManGameState.CHANGING_LEVEL.onExit = this::exitChangingLevelState;
 	}
 
 	private void enterChangingLevelState() {
@@ -546,11 +534,6 @@ public class PacManGameController {
 				.ifPresent(ma -> ma.mazeFlashing(game.level.mazeNumber).reset());
 	}
 
-	{
-		PacManGameState.GAME_OVER.onEnter = this::enterGameOverState;
-		PacManGameState.GAME_OVER.onUpdate = this::updateGameOverState;
-	}
-
 	private void enterGameOverState() {
 		game.ghosts().forEach(ghost -> ghost.speed = 0);
 		game.player.speed = 0;
@@ -566,11 +549,6 @@ public class PacManGameController {
 			fsm.changeState(INTRO);
 			return;
 		}
-	}
-
-	{
-		PacManGameState.INTERMISSION.onEnter = this::enterIntermissionState;
-		PacManGameState.INTERMISSION.onUpdate = this::updateIntermissionState;
 	}
 
 	private int intermissionNumber(int levelNumber) {
