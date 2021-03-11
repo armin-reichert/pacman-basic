@@ -12,7 +12,7 @@ public interface PacManGameAnimations {
 	default void reset(GameModel game) {
 		mazeAnimations().reset();
 		game.ghosts().forEach(ghostAnimations()::reset);
-		playerAnimations().reset(game.pac);
+		playerAnimations().reset(game.player);
 	}
 
 	PlayerAnimations playerAnimations();

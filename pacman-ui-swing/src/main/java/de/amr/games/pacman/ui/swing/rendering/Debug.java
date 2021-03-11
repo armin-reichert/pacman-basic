@@ -37,9 +37,9 @@ public class Debug {
 				g.fillRect(t(ghost.targetTile.x) + HTS / 2, t(ghost.targetTile.y) + HTS / 2, HTS, HTS);
 			}
 		}
-		if (game.pac.targetTile != null) {
+		if (game.player.targetTile != null) {
 			g.setColor(new Color(255, 255, 0, 200));
-			g.fillRect(t(game.pac.targetTile.x), t(game.pac.targetTile.y), TS, TS);
+			g.fillRect(t(game.player.targetTile.x), t(game.player.targetTile.y), TS, TS);
 		}
 	}
 

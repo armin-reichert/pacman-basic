@@ -75,7 +75,7 @@ public class PacManGame extends GameModel {
 		bonus = new PacManBonus();
 		bonus.setPosition(t(13) + HTS, t(20));
 
-		pac = new Pac("Pac-Man", RIGHT);
+		player = new Pac("Pac-Man", RIGHT);
 
 		ghosts = new Ghost[4];
 		ghosts[BLINKY] = new Ghost(BLINKY, "Blinky", LEFT);
@@ -84,7 +84,7 @@ public class PacManGame extends GameModel {
 		ghosts[CLYDE] = new Ghost(CLYDE, "Clyde", DOWN);
 
 		bonus.world = world;
-		pac.world = world;
+		player.world = world;
 		for (Ghost ghost : ghosts) {
 			ghost.world = world;
 		}

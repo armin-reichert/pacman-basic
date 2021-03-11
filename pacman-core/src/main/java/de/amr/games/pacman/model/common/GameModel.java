@@ -27,7 +27,7 @@ public abstract class GameModel {
 	public int levelNumber; // counting from 1
 	public GameLevel level;
 	public int intermissionNumber;
-	public Pac pac;
+	public Pac player;
 	public Ghost[] ghosts;
 	public PacManBonus bonus;
 	public String[] bonusNames;
@@ -83,17 +83,17 @@ public abstract class GameModel {
 	}
 
 	public void resetGuys() {
-		pac.placeAt(level.world.pacHome(), HTS, 0);
-		pac.dir = pac.wishDir = pac.startDir;
-		pac.visible = false;
-		pac.speed = 0;
-		pac.targetTile = null; // used in autopilot mode
-		pac.couldMove = true;
-		pac.forcedOnTrack = true;
-		pac.dead = false;
-		pac.restingTicksLeft = 0;
-		pac.starvingTicks = 0;
-		pac.powerTimer.reset();
+		player.placeAt(level.world.pacHome(), HTS, 0);
+		player.dir = player.wishDir = player.startDir;
+		player.visible = false;
+		player.speed = 0;
+		player.targetTile = null; // used in autopilot mode
+		player.couldMove = true;
+		player.forcedOnTrack = true;
+		player.dead = false;
+		player.restingTicksLeft = 0;
+		player.starvingTicks = 0;
+		player.powerTimer.reset();
 
 		for (Ghost ghost : ghosts) {
 			ghost.placeAt(level.world.ghostHome(ghost.id), HTS, 0);

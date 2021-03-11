@@ -79,7 +79,7 @@ public class MsPacManGame extends GameModel {
 		bonusValues = new int[] { 100, 200, 500, 700, 1000, 2000, 5000 };
 		bonus = new MsPacManBonus();
 
-		pac = new Pac("Ms. Pac-Man", LEFT);
+		player = new Pac("Ms. Pac-Man", LEFT);
 
 		ghosts = new Ghost[4];
 		ghosts[BLINKY] = new Ghost(BLINKY, "Blinky", LEFT);
@@ -88,7 +88,7 @@ public class MsPacManGame extends GameModel {
 		ghosts[SUE] = new Ghost(SUE, "Sue", DOWN);
 
 		bonus.world = world;
-		pac.world = world;
+		player.world = world;
 		for (Ghost ghost : ghosts) {
 			ghost.world = world;
 		}
