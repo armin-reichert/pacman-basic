@@ -84,9 +84,9 @@ public class PacManGameController {
 
 	public PacManGameStateMachine fsm = new PacManGameStateMachine();
 	public final Autopilot autopilot;
-	private GameModel game;
-	private PacManGameUI userInterface;
-	private boolean intermissionScenesEnabled = true;
+	public GameModel game;
+	public PacManGameUI userInterface;
+	public boolean intermissionScenesEnabled = true;
 
 	public PacManGameController(GameType initialGameType) {
 		game = games.get(initialGameType);
@@ -138,10 +138,6 @@ public class PacManGameController {
 			killAllGhosts();
 			fsm.changeState(GHOST_DYING);
 		}
-	}
-
-	public GameModel getGame() {
-		return game;
 	}
 
 	public void letCurrentGameStateExpire() {

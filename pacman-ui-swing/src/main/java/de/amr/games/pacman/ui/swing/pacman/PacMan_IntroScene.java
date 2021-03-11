@@ -53,7 +53,7 @@ public class PacMan_IntroScene extends GameScene {
 	public void render(Graphics2D g) {
 		Graphics2D g2 = (Graphics2D) g.create();
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		rendering.drawScore(g, controller.getGame(), true);
+		rendering.drawScore(g, controller.game, true);
 		drawGallery(g);
 		if (sceneController.phase == Phase.CHASING_PAC) {
 			if (sceneController.blinking.animate()) {

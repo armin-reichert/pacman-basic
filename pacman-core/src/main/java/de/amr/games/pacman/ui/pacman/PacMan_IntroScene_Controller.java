@@ -168,7 +168,7 @@ public class PacMan_IntroScene_Controller {
 				blinking.restart();
 			}
 			if (timer.ticked() == clock.sec(5)) {
-				controller.getGame().attractMode = true;
+				controller.game.attractMode = true;
 			}
 			blinking.animate();
 			timer.tick();

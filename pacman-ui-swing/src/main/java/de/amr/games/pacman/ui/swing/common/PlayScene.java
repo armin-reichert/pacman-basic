@@ -30,7 +30,7 @@ public class PlayScene extends GameScene {
 
 	@Override
 	public void render(Graphics2D g) {
-		GameModel game = controller.getGame();
+		GameModel game = controller.game;
 		boolean mazeFlashing = rendering.mazeAnimations().mazeFlashing(game.level.mazeNumber).hasStarted();
 		rendering.drawMaze(g, game.level.mazeNumber, 0, t(3), mazeFlashing);
 		if (!mazeFlashing) {

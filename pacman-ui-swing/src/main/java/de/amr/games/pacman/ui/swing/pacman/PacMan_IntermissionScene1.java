@@ -47,6 +47,6 @@ public class PacMan_IntermissionScene1 extends GameScene {
 			rendering.drawBigPacMan(g, sceneController.pac);
 			g.translate(0, 10);
 		}
-		rendering.drawLevelCounter(g, controller.getGame(), t(25), t(34));
+		rendering.drawLevelCounter(g, controller.game, t(25), t(34));
 	}
 }
