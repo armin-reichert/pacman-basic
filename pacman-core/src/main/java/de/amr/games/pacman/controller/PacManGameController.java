@@ -406,11 +406,7 @@ public class PacManGameController {
 	private void enterPacManDyingState() {
 		game.player.speed = 0;
 		game.bonus.edibleTicksLeft = game.bonus.eatenTicksLeft = 0;
-		userInterface.animation().map(PacManGameAnimations::ghostAnimations).ifPresent(ga -> {
-			game.ghosts().flatMap(ga::ghostKicking).forEach(Animation::reset);
-		});
 		userInterface.sound().ifPresent(SoundManager::stopAll);
-
 		fsm.state.timer.resetSeconds(4);
 	}
 
