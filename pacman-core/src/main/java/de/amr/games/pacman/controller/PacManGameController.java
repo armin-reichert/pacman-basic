@@ -110,7 +110,7 @@ public class PacManGameController {
 	}
 
 	public final PacManGameStateMachine fsm = new PacManGameStateMachine();
-	public final Autopilot autopilot;
+	public final Autopilot autopilot = new Autopilot();
 	public GameModel game;
 	public PacManGameUI userInterface;
 	public boolean gameStarted;
@@ -118,11 +118,7 @@ public class PacManGameController {
 
 	public PacManGameController(GameType initialGameType) {
 		game = games.get(initialGameType);
-		autopilot = new Autopilot(game);
 		fsm.init();
-		if (userInterface != null) {
-			userInterface.onGameChanged(game);
-		}
 	}
 
 	public void step() {

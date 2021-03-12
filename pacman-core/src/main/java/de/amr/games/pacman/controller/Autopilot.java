@@ -66,8 +66,7 @@ public class Autopilot {
 	public boolean enabled;
 	public boolean logEnabled;
 
-	public Autopilot(GameModel game) {
-		enabled = true;
+	public Autopilot() {
 	}
 
 	public void run(GameModel game) {
@@ -163,7 +162,8 @@ public class Autopilot {
 			if (game.level.world.isEnergizerTile(ahead) && !game.level.isFoodRemoved(ahead)) {
 				energizerFound = true;
 			}
-			V2i aheadLeft = ahead.sum(game.player.dir.turnLeft().vec), aheadRight = ahead.sum(game.player.dir.turnRight().vec);
+			V2i aheadLeft = ahead.sum(game.player.dir.turnLeft().vec),
+					aheadRight = ahead.sum(game.player.dir.turnRight().vec);
 			for (Ghost ghost : game.ghosts) {
 				if (ghost.state != GhostState.HUNTING_PAC) {
 					continue;
@@ -265,6 +265,7 @@ public class Autopilot {
 	}
 
 	private double minDistanceFromGhosts(GameModel game) {
-		return Stream.of(game.ghosts).map(Ghost::tile).mapToDouble(game.player.tile()::manhattanDistance).min().getAsDouble();
+		return Stream.of(game.ghosts).map(Ghost::tile).mapToDouble(game.player.tile()::manhattanDistance).min()
+				.getAsDouble();
 	}
 }
