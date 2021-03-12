@@ -122,10 +122,6 @@ public abstract class GameModel {
 		return Stream.of(ghosts).filter(ghost -> ghost.state.equals(ghostState));
 	}
 
-	public boolean inScatteringPhase() {
-		return huntingPhase % 2 == 0;
-	}
-
 	public abstract long getHuntingPhaseDuration(int phase);
 
 	public Hiscore loadHighScore() {

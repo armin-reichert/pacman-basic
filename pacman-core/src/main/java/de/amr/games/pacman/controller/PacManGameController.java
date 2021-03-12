@@ -232,6 +232,7 @@ public class PacManGameController {
 	private void updateIntroState() {
 		if (attractMode) {
 			autopilot.enabled = true;
+			userInterface.mute(true);
 			fsm.changeState(READY);
 			return;
 		}
@@ -258,13 +259,12 @@ public class PacManGameController {
 
 	private void enterReadyState() {
 		game.resetGuys();
-		userInterface.mute(attractMode);
 		userInterface.animation().ifPresent(animation -> animation.reset(game));
 		if (gameStarted || attractMode) {
-			fsm.state.timer.reset(clock.sec(2));
+			fsm.state.timer.resetSeconds(2);
 		} else {
 			userInterface.sound().ifPresent(snd -> snd.play(PacManGameSound.GAME_READY));
-			fsm.state.timer.reset(clock.sec(4.5));
+			fsm.state.timer.resetSeconds(4.5);
 		}
 	}
 
@@ -282,9 +282,6 @@ public class PacManGameController {
 	}
 
 	private void exitReadyState() {
-		if (!attractMode) {
-			gameStarted = true;
-		}
 		userInterface.animation().map(PacManGameAnimations::ghostAnimations).ifPresent(ga -> {
 			game.ghosts().flatMap(ga::ghostKicking).forEach(Animation::restart);
 		});
@@ -295,7 +292,7 @@ public class PacManGameController {
 
 	private void startHuntingPhase(int phase) {
 		game.huntingPhase = phase;
-		if (game.inScatteringPhase()) {
+		if (inScatteringPhase()) {
 			// TODO not sure about when which siren should play
 			userInterface.sound().ifPresent(sound -> {
 				if (game.huntingPhase >= 2) {
@@ -309,7 +306,14 @@ public class PacManGameController {
 		log("Hunting phase %d started, duration: %d ticks", phase, fsm.state.timer.duration());
 	}
 
+	public boolean inScatteringPhase() {
+		return game.huntingPhase % 2 == 0;
+	}
+
 	private void enterHuntingState() {
+		if (!attractMode) {
+			gameStarted = true;
+		}
 		userInterface.animation().map(PacManGameAnimations::mazeAnimations)
 				.ifPresent(ma -> ma.energizerBlinking().restart());
 		userInterface.animation().map(PacManGameAnimations::playerAnimations)
@@ -684,7 +688,7 @@ public class PacManGameController {
 		// In Ms. Pac-Man, Blinky and Pinky move randomly during the *first* scatter phase:
 		if (isPlaying(MS_PACMAN) && game.huntingPhase == 0 && (ghost.id == BLINKY || ghost.id == PINKY)) {
 			ghost.targetTile = null;
-		} else if (game.inScatteringPhase() && ghost.elroy == 0) {
+		} else if (inScatteringPhase() && ghost.elroy == 0) {
 			ghost.targetTile = game.level.world.ghostScatterTile(ghost.id);
 		} else {
 			ghost.targetTile = ghostHuntingTarget(ghost.id);
