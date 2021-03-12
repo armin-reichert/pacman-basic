@@ -64,7 +64,7 @@ public class PlayScene extends GameScene {
 	public void render(Graphics2D g) {
 		GameModel game = controller.game;
 		rendering.drawMaze(g, game.level.mazeNumber, 0, t(3), mazeFlashing.isRunning());
-		if (mazeFlashing.isRunning()) {
+		if (!mazeFlashing.isRunning()) {
 			rendering.drawFoodTiles(g, game.level.world.tiles().filter(game.level.world::isFoodTile),
 					game.level::containsEatenFood);
 			rendering.drawEnergizerTiles(g, game.level.world.energizerTiles());
