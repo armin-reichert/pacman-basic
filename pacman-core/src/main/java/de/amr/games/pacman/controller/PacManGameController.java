@@ -306,10 +306,6 @@ public class PacManGameController {
 		if (!attractMode) {
 			gameStarted = true;
 		}
-		userInterface.animation().map(PacManGameAnimations::mazeAnimations)
-				.ifPresent(ma -> ma.energizerBlinking().restart());
-		userInterface.animation().map(PacManGameAnimations::playerAnimations)
-				.ifPresent(pa -> pa.playerMunching(game.player).forEach(Animation::restart));
 		startHuntingPhase(0);
 	}
 
