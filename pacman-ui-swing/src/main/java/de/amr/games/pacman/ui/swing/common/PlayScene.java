@@ -29,6 +29,7 @@ public class PlayScene extends GameScene {
 		controller.fsm.addStateEntryListener(PacManGameState.CHANGING_LEVEL, this::onChangingLevelEntry);
 		controller.fsm.addStateEntryListener(PacManGameState.PACMAN_DYING, this::onPacManDyingEntry);
 		controller.fsm.addStateEntryListener(PacManGameState.GHOST_DYING, this::onGhostDyingEntry);
+		controller.fsm.addStateEntryListener(PacManGameState.GAME_OVER, this::onGameOverStateEntry);
 	}
 
 	private void onHuntingStateEntry(PacManGameState state) {
@@ -66,6 +67,10 @@ public class PlayScene extends GameScene {
 		if (mazeFlashing.isComplete()) {
 			controller.letCurrentGameStateExpire();
 		}
+	}
+
+	private void onGameOverStateEntry(PacManGameState state) {
+		controller.game.ghosts().flatMap(rendering.ghostAnimations()::ghostKicking).forEach(Animation::reset);
 	}
 
 	@Override

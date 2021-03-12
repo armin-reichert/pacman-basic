@@ -444,13 +444,11 @@ public class PacManGameController {
 	}
 
 	private void updateGhostDyingState() {
-
 		if (fsm.state.timer.hasExpired()) {
-			log("Resume state '%s' after ghost died", fsm.previousState);
 			fsm.resumePreviousState();
+			log("Resumed state '%s'", fsm.state);
 			return;
 		}
-
 		steerPlayer();
 		game.ghosts().filter(ghost -> ghost.is(DEAD) && ghost.bounty == 0 || ghost.is(ENTERING_HOUSE))
 				.forEach(ghost -> ghost.update(game.level));
@@ -458,12 +456,12 @@ public class PacManGameController {
 
 	private void exitGhostDyingState() {
 		game.player.visible = true;
-		game.ghosts().forEach(ghost -> {
-			if (ghost.bounty > 0) {
-				ghost.bounty = 0;
-				userInterface.sound().ifPresent(snd -> snd.loopForever(PacManGameSound.GHOST_EYES));
-			}
+		game.ghosts(DEAD).filter(ghost -> ghost.bounty > 0).forEach(ghost -> {
+			ghost.bounty = 0;
 		});
+		if (game.ghosts(DEAD).count() > 0) {
+			userInterface.sound().ifPresent(snd -> snd.loopForever(PacManGameSound.GHOST_EYES));
+		}
 	}
 
 	private void enterChangingLevelState() {
@@ -495,9 +493,6 @@ public class PacManGameController {
 		game.ghosts().forEach(ghost -> ghost.speed = 0);
 		game.player.speed = 0;
 		game.saveHighscore();
-		userInterface.animation().map(PacManGameAnimations::ghostAnimations)
-				.ifPresent(ga -> game.ghosts().flatMap(ga::ghostKicking).forEach(Animation::reset));
-
 		fsm.state.timer.resetSeconds(10);
 	}
 
