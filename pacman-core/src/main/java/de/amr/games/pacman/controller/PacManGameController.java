@@ -81,28 +81,26 @@ public class PacManGameController {
 	 * The finite-state machine controlling the game play:
 	 */
 	{
-		//@formatter:off
-		PacManGameState.INTRO.onEnter 					=	this::enterIntroState;
-		PacManGameState.INTRO.onUpdate 					=	this::updateIntroState;
-		PacManGameState.READY.onEnter						=	this::enterReadyState;
-		PacManGameState.READY.onUpdate 					= this::updateReadyState;
-		PacManGameState.HUNTING.onEnter 				= this::enterHuntingState;
-		PacManGameState.HUNTING.onUpdate 				= this::updateHuntingState;
-		PacManGameState.GHOST_DYING.onEnter 		= this::enterGhostDyingState;
-		PacManGameState.GHOST_DYING.onUpdate 		= this::updateGhostDyingState;
-		PacManGameState.GHOST_DYING.onExit 			= this::exitGhostDyingState;
-		PacManGameState.PACMAN_DYING.onEnter 		= this::enterPacManDyingState;
-		PacManGameState.PACMAN_DYING.onUpdate 	= this::updatePacManDyingState;
-		PacManGameState.PACMAN_DYING.onExit 		= this::exitPacManDyingState;
-		PacManGameState.LEVEL_STARTING.onEnter 	= this::enterLevelStartingState;
+		PacManGameState.INTRO.onEnter = this::enterIntroState;
+		PacManGameState.INTRO.onUpdate = this::updateIntroState;
+		PacManGameState.READY.onEnter = this::enterReadyState;
+		PacManGameState.READY.onUpdate = this::updateReadyState;
+		PacManGameState.HUNTING.onEnter = this::enterHuntingState;
+		PacManGameState.HUNTING.onUpdate = this::updateHuntingState;
+		PacManGameState.GHOST_DYING.onEnter = this::enterGhostDyingState;
+		PacManGameState.GHOST_DYING.onUpdate = this::updateGhostDyingState;
+		PacManGameState.GHOST_DYING.onExit = this::exitGhostDyingState;
+		PacManGameState.PACMAN_DYING.onEnter = this::enterPacManDyingState;
+		PacManGameState.PACMAN_DYING.onUpdate = this::updatePacManDyingState;
+		PacManGameState.PACMAN_DYING.onExit = this::exitPacManDyingState;
+		PacManGameState.LEVEL_STARTING.onEnter = this::enterLevelStartingState;
 		PacManGameState.LEVEL_STARTING.onUpdate = this::updateLevelStartingState;
-		PacManGameState.LEVEL_COMPLETE.onEnter 	= this::enterLevelCompleteState;
+		PacManGameState.LEVEL_COMPLETE.onEnter = this::enterLevelCompleteState;
 		PacManGameState.LEVEL_COMPLETE.onUpdate = this::updateLevelCompleteState;
-		PacManGameState.GAME_OVER.onEnter 			= this::enterGameOverState;
-		PacManGameState.GAME_OVER.onUpdate 			= this::updateGameOverState;
-		PacManGameState.INTERMISSION.onEnter 		= this::enterIntermissionState;
-		PacManGameState.INTERMISSION.onUpdate 	= this::updateIntermissionState;
-		//@formatter:on
+		PacManGameState.GAME_OVER.onEnter = this::enterGameOverState;
+		PacManGameState.GAME_OVER.onUpdate = this::updateGameOverState;
+		PacManGameState.INTERMISSION.onEnter = this::enterIntermissionState;
+		PacManGameState.INTERMISSION.onUpdate = this::updateIntermissionState;
 	}
 
 	private final EnumMap<GameType, GameModel> games = new EnumMap<>(GameType.class);
