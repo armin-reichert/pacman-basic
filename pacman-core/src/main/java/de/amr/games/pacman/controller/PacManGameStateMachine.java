@@ -120,8 +120,4 @@ public class PacManGameStateMachine {
 		}
 		changeState(previousState);
 	}
-
-	public String stateDescription() {
-		return state.name();
-	}
 }

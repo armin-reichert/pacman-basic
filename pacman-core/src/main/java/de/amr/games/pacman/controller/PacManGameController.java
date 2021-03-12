@@ -44,7 +44,6 @@ import de.amr.games.pacman.model.pacman.PacManGame;
 import de.amr.games.pacman.ui.PacManGameUI;
 import de.amr.games.pacman.ui.animation.Animation;
 import de.amr.games.pacman.ui.animation.GhostAnimations;
-import de.amr.games.pacman.ui.animation.MazeAnimations;
 import de.amr.games.pacman.ui.animation.PacManGameAnimations;
 import de.amr.games.pacman.ui.animation.PlayerAnimations;
 import de.amr.games.pacman.ui.sound.PacManGameSound;
@@ -76,32 +75,6 @@ import de.amr.games.pacman.ui.sound.SoundManager;
  * @see <a href="http://superpacman.com/mspacman/">Ms. Pac-Man</a>
  */
 public class PacManGameController {
-
-	/*
-	 * The finite-state machine controlling the game play:
-	 */
-	{
-		PacManGameState.INTRO.onEnter = this::enterIntroState;
-		PacManGameState.INTRO.onUpdate = this::updateIntroState;
-		PacManGameState.READY.onEnter = this::enterReadyState;
-		PacManGameState.READY.onUpdate = this::updateReadyState;
-		PacManGameState.HUNTING.onEnter = this::enterHuntingState;
-		PacManGameState.HUNTING.onUpdate = this::updateHuntingState;
-		PacManGameState.GHOST_DYING.onEnter = this::enterGhostDyingState;
-		PacManGameState.GHOST_DYING.onUpdate = this::updateGhostDyingState;
-		PacManGameState.GHOST_DYING.onExit = this::exitGhostDyingState;
-		PacManGameState.PACMAN_DYING.onEnter = this::enterPacManDyingState;
-		PacManGameState.PACMAN_DYING.onUpdate = this::updatePacManDyingState;
-		PacManGameState.PACMAN_DYING.onExit = this::exitPacManDyingState;
-		PacManGameState.LEVEL_STARTING.onEnter = this::enterLevelStartingState;
-		PacManGameState.LEVEL_STARTING.onUpdate = this::updateLevelStartingState;
-		PacManGameState.LEVEL_COMPLETE.onEnter = this::enterLevelCompleteState;
-		PacManGameState.LEVEL_COMPLETE.onUpdate = this::updateLevelCompleteState;
-		PacManGameState.GAME_OVER.onEnter = this::enterGameOverState;
-		PacManGameState.GAME_OVER.onUpdate = this::updateGameOverState;
-		PacManGameState.INTERMISSION.onEnter = this::enterIntermissionState;
-		PacManGameState.INTERMISSION.onUpdate = this::updateIntermissionState;
-	}
 
 	private final EnumMap<GameType, GameModel> games = new EnumMap<>(GameType.class);
 	{
@@ -207,6 +180,32 @@ public class PacManGameController {
 		String msg = game.player.name + " is " + (game.player.immune ? "immune" : "vulnerable");
 		userInterface.showFlashMessage(msg);
 		log(msg);
+	}
+
+	/*
+	 * The finite-state machine controlling the game play:
+	 */
+	{
+		PacManGameState.INTRO.onEnter = this::enterIntroState;
+		PacManGameState.INTRO.onUpdate = this::updateIntroState;
+		PacManGameState.READY.onEnter = this::enterReadyState;
+		PacManGameState.READY.onUpdate = this::updateReadyState;
+		PacManGameState.HUNTING.onEnter = this::enterHuntingState;
+		PacManGameState.HUNTING.onUpdate = this::updateHuntingState;
+		PacManGameState.GHOST_DYING.onEnter = this::enterGhostDyingState;
+		PacManGameState.GHOST_DYING.onUpdate = this::updateGhostDyingState;
+		PacManGameState.GHOST_DYING.onExit = this::exitGhostDyingState;
+		PacManGameState.PACMAN_DYING.onEnter = this::enterPacManDyingState;
+		PacManGameState.PACMAN_DYING.onUpdate = this::updatePacManDyingState;
+		PacManGameState.PACMAN_DYING.onExit = this::exitPacManDyingState;
+		PacManGameState.LEVEL_STARTING.onEnter = this::enterLevelStartingState;
+		PacManGameState.LEVEL_STARTING.onUpdate = this::updateLevelStartingState;
+		PacManGameState.LEVEL_COMPLETE.onEnter = this::enterLevelCompleteState;
+		PacManGameState.LEVEL_COMPLETE.onUpdate = this::updateLevelCompleteState;
+		PacManGameState.GAME_OVER.onEnter = this::enterGameOverState;
+		PacManGameState.GAME_OVER.onUpdate = this::updateGameOverState;
+		PacManGameState.INTERMISSION.onEnter = this::enterIntermissionState;
+		PacManGameState.INTERMISSION.onUpdate = this::updateIntermissionState;
 	}
 
 	private void enterIntroState() {
@@ -407,7 +406,6 @@ public class PacManGameController {
 	}
 
 	private void updatePacManDyingState() {
-
 		if (fsm.state.timer.hasExpired()) {
 			if (attractMode) {
 				attractMode = false;
@@ -422,7 +420,6 @@ public class PacManGameController {
 			}
 			return;
 		}
-
 		if (fsm.state.timer.isRunningSeconds(1)) {
 			game.ghosts().forEach(ghost -> ghost.visible = false);
 			userInterface.animation().map(PacManGameAnimations::playerAnimations).map(PlayerAnimations::playerDying)
@@ -437,10 +434,7 @@ public class PacManGameController {
 
 	private void enterGhostDyingState() {
 		game.player.visible = false;
-		userInterface.animation().map(PacManGameAnimations::mazeAnimations).map(MazeAnimations::energizerBlinking)
-				.ifPresent(Animation::restart);
 		userInterface.sound().ifPresent(snd -> snd.play(PacManGameSound.GHOST_EATEN));
-
 		fsm.state.timer.resetSeconds(1);
 	}
 
@@ -467,6 +461,7 @@ public class PacManGameController {
 
 	private void enterLevelStartingState() {
 		fsm.state.timer.reset();
+		log("Level %d complete, entering level %d", game.levelNumber, game.levelNumber + 1);
 		game.enterLevel(game.levelNumber + 1);
 		game.levelSymbols.add(game.level.bonusSymbol);
 	}
@@ -486,14 +481,24 @@ public class PacManGameController {
 
 	private void updateLevelCompleteState() {
 		if (fsm.state.timer.hasExpired()) {
-			if (Arrays.asList(2, 5, 9, 13, 17).contains(game.levelNumber)) {
-				game.intermissionNumber = intermissionNumber(game.levelNumber);
+			game.intermissionNumber = intermissionNumber(game.levelNumber);
+			if (game.intermissionNumber != 0) {
 				fsm.changeState(INTERMISSION);
 				return;
 			}
-			log("Level %d complete, entering level %d", game.levelNumber, game.levelNumber + 1);
 			fsm.changeState(LEVEL_STARTING);
 			return;
+		}
+	}
+
+	private int intermissionNumber(int levelNumber) {
+		switch (levelNumber) {
+		//@formatter:off
+		case 2:	return 1;
+		case 5:	return 2;
+		case 9:	case 13: case 17: return 3;
+		default: return 0;
+		//@formatter:on
 		}
 	}
 
@@ -507,18 +512,6 @@ public class PacManGameController {
 	private void updateGameOverState() {
 		if (fsm.state.timer.hasExpired() || userInterface.keyPressed("Space")) {
 			fsm.changeState(INTRO);
-			return;
-		}
-	}
-
-	private int intermissionNumber(int levelNumber) {
-		switch (levelNumber) {
-		//@formatter:off
-		case 2:	return 1;
-		case 5:	return 2;
-		case 9:	case 13: case 17: return 3;
-		default: return 0;
-		//@formatter:on
 		}
 	}
 

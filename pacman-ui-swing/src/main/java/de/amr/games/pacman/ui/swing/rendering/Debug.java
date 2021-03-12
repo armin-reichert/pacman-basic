@@ -26,7 +26,7 @@ public class Debug {
 		final Color[] GHOST_COLORS = { Color.RED, Color.PINK, Color.CYAN, Color.ORANGE };
 		long remaining = controller.fsm.state.timer.ticksRemaining();
 		String ticksText = remaining == Long.MAX_VALUE ? "forever" : remaining + " ticks remaining";
-		String stateText = String.format("%s (%s)", controller.fsm.stateDescription(), ticksText);
+		String stateText = String.format("%s (%s)", controller.fsm.state, ticksText);
 		g.setColor(Color.WHITE);
 		g.setFont(new Font("Arial", Font.PLAIN, 6));
 		g.drawString(stateText, t(1), t(3));
