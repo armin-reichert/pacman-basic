@@ -23,8 +23,16 @@ public class V2i {
 		return new V2i(s * x, s * y);
 	}
 
-	public V2i sum(V2i v) {
+	public V2i plus(V2i v) {
 		return new V2i(x + v.x, y + v.y);
+	}
+
+	public V2i plus(int dx, int dy) {
+		return new V2i(x + dx, y + dy);
+	}
+
+	public V2i minus(V2i v) {
+		return new V2i(x - v.x, y - v.y);
 	}
 
 	public double euclideanDistance(V2i v) {

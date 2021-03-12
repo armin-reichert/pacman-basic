@@ -63,7 +63,7 @@ public class DefaultPacManGameWorld implements PacManGameWorld {
 		//@formatter:off
 		tiles()
 			.filter(tile -> !isInsideGhostHouse(tile))
-			.filter(tile -> !isGhostHouseDoor(tile.sum(DOWN.vec)))
+			.filter(tile -> !isGhostHouseDoor(tile.plus(DOWN.vec)))
 			.filter(tile -> neighborTiles(tile).filter(neighbor-> !isWall(neighbor)).count() >= 3)
 			.map(tile -> index(tile))
 			.forEach(intersections::set);
@@ -74,7 +74,7 @@ public class DefaultPacManGameWorld implements PacManGameWorld {
 	}
 
 	private Stream<V2i> neighborTiles(V2i tile) {
-		return Stream.of(Direction.values()).map(dir -> tile.sum(dir.vec));
+		return Stream.of(Direction.values()).map(dir -> tile.plus(dir.vec));
 	}
 
 	@Override

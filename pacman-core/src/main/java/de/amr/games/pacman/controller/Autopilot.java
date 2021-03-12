@@ -155,15 +155,15 @@ public class Autopilot {
 		V2i pacManTile = game.player.tile();
 		boolean energizerFound = false;
 		for (int i = 1; i <= MAX_GHOST_AHEAD_DETECTION_DIST; ++i) {
-			V2i ahead = pacManTile.sum(game.player.dir.vec.scaled(i));
+			V2i ahead = pacManTile.plus(game.player.dir.vec.scaled(i));
 			if (!game.player.canAccessTile(ahead)) {
 				break;
 			}
 			if (game.level.world.isEnergizerTile(ahead) && !game.level.isFoodRemoved(ahead)) {
 				energizerFound = true;
 			}
-			V2i aheadLeft = ahead.sum(game.player.dir.turnLeft().vec),
-					aheadRight = ahead.sum(game.player.dir.turnRight().vec);
+			V2i aheadLeft = ahead.plus(game.player.dir.turnLeft().vec),
+					aheadRight = ahead.plus(game.player.dir.turnRight().vec);
 			for (Ghost ghost : game.ghosts) {
 				if (ghost.state != GhostState.HUNTING_PAC) {
 					continue;
@@ -183,7 +183,7 @@ public class Autopilot {
 	private Ghost findHuntingGhostBehind(GameModel game) {
 		V2i pacManTile = game.player.tile();
 		for (int i = 1; i <= MAX_GHOST_BEHIND_DETECTION_DIST; ++i) {
-			V2i behind = pacManTile.sum(game.player.dir.opposite().vec.scaled(i));
+			V2i behind = pacManTile.plus(game.player.dir.opposite().vec.scaled(i));
 			if (!game.player.canAccessTile(behind)) {
 				break;
 			}
@@ -203,13 +203,13 @@ public class Autopilot {
 			if (forbidden.contains(dir)) {
 				continue;
 			}
-			V2i neighbor = pacManTile.sum(dir.vec);
+			V2i neighbor = pacManTile.plus(dir.vec);
 			if (game.player.canAccessTile(neighbor)) {
 				escapes.add(dir);
 			}
 		}
 		for (Direction escape : escapes) {
-			V2i escapeTile = pacManTile.sum(escape.vec);
+			V2i escapeTile = pacManTile.plus(escape.vec);
 			if (game.level.world.isTunnel(escapeTile)) {
 				return escape;
 			}

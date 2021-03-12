@@ -138,7 +138,7 @@ public class Creature extends GameEntity {
 
 		V2i guyLocationBeforeMove = tile();
 		V2d offset = offset();
-		V2i neighbor = guyLocationBeforeMove.sum(moveDir.vec);
+		V2i neighbor = guyLocationBeforeMove.plus(moveDir.vec);
 
 		// check if guy can change its direction now
 		if (forcedOnTrack && canAccessTile(neighbor)) {
@@ -219,7 +219,7 @@ public class Creature extends GameEntity {
 			if (targetDir == dir.opposite()) {
 				continue;
 			}
-			V2i neighbor = tile().sum(targetDir.vec);
+			V2i neighbor = tile().plus(targetDir.vec);
 			if (!canAccessTile(neighbor)) {
 				continue;
 			}
@@ -249,7 +249,7 @@ public class Creature extends GameEntity {
 		//@formatter:off
 		return Stream.of(Direction.values())
 			.filter(direction -> Stream.of(excludedDirections).noneMatch(excludedDir -> excludedDir == direction))
-			.filter(direction -> canAccessTile(tile.sum(direction.vec)));
+			.filter(direction -> canAccessTile(tile.plus(direction.vec)));
 		//@formatter:on
 	}
 

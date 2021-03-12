@@ -56,7 +56,7 @@ public class Debug {
 				V2i tile = new V2i(x, y);
 				if (game.level.world.isIntersection(tile)) {
 					for (Direction dir : Direction.values()) {
-						V2i neighbor = tile.sum(dir.vec);
+						V2i neighbor = tile.plus(dir.vec);
 						if (game.level.world.isWall(neighbor)) {
 							continue;
 						}
