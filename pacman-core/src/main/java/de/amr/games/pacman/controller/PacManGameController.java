@@ -1,11 +1,12 @@
 package de.amr.games.pacman.controller;
 
-import static de.amr.games.pacman.controller.PacManGameState.CHANGING_LEVEL;
 import static de.amr.games.pacman.controller.PacManGameState.GAME_OVER;
 import static de.amr.games.pacman.controller.PacManGameState.GHOST_DYING;
 import static de.amr.games.pacman.controller.PacManGameState.HUNTING;
 import static de.amr.games.pacman.controller.PacManGameState.INTERMISSION;
 import static de.amr.games.pacman.controller.PacManGameState.INTRO;
+import static de.amr.games.pacman.controller.PacManGameState.LEVEL_COMPLETE;
+import static de.amr.games.pacman.controller.PacManGameState.LEVEL_STARTING;
 import static de.amr.games.pacman.controller.PacManGameState.PACMAN_DYING;
 import static de.amr.games.pacman.controller.PacManGameState.READY;
 import static de.amr.games.pacman.lib.Direction.DOWN;
@@ -92,9 +93,10 @@ public class PacManGameController {
 		PacManGameState.PACMAN_DYING.onEnter = this::enterPacManDyingState;
 		PacManGameState.PACMAN_DYING.onUpdate = this::updatePacManDyingState;
 		PacManGameState.PACMAN_DYING.onExit = this::exitPacManDyingState;
-		PacManGameState.CHANGING_LEVEL.onEnter = this::enterChangingLevelState;
-		PacManGameState.CHANGING_LEVEL.onUpdate = this::updateChangingLevelState;
-		PacManGameState.CHANGING_LEVEL.onExit = this::exitChangingLevelState;
+		PacManGameState.LEVEL_STARTING.onEnter = this::enterLevelStartingState;
+		PacManGameState.LEVEL_STARTING.onUpdate = this::updateLevelStartingState;
+		PacManGameState.LEVEL_COMPLETE.onEnter = this::enterLevelCompleteState;
+		PacManGameState.LEVEL_COMPLETE.onUpdate = this::updateLevelCompleteState;
 		PacManGameState.GAME_OVER.onEnter = this::enterGameOverState;
 		PacManGameState.GAME_OVER.onUpdate = this::updateGameOverState;
 		PacManGameState.INTERMISSION.onEnter = this::enterIntermissionState;
@@ -156,7 +158,7 @@ public class PacManGameController {
 
 		// N = change to next level
 		else if (userInterface.keyPressed("N") && (ready || hunting)) {
-			fsm.changeState(CHANGING_LEVEL);
+			fsm.changeState(LEVEL_COMPLETE);
 		}
 
 		// X = exterminate all ghosts outside of ghost house
@@ -304,7 +306,7 @@ public class PacManGameController {
 	private void updateHuntingState() {
 		// Level completed?
 		if (game.level.foodRemaining == 0) {
-			fsm.changeState(CHANGING_LEVEL);
+			fsm.changeState(LEVEL_COMPLETE);
 			return;
 		}
 
@@ -463,29 +465,36 @@ public class PacManGameController {
 		}
 	}
 
-	private void enterChangingLevelState() {
+	private void enterLevelStartingState() {
+		fsm.state.timer.reset();
+		game.enterLevel(game.levelNumber + 1);
+		game.levelSymbols.add(game.level.bonusSymbol);
+	}
+
+	private void updateLevelStartingState() {
+		if (fsm.state.timer.hasExpired()) {
+			fsm.changeState(READY);
+		}
+	}
+
+	private void enterLevelCompleteState() {
 		game.bonus.edibleTicksLeft = game.bonus.eatenTicksLeft = 0;
 		game.player.speed = 0;
 		userInterface.sound().ifPresent(SoundManager::stopAll);
 		fsm.state.timer.reset();
 	}
 
-	private void updateChangingLevelState() {
+	private void updateLevelCompleteState() {
 		if (fsm.state.timer.hasExpired()) {
 			if (Arrays.asList(2, 5, 9, 13, 17).contains(game.levelNumber)) {
 				game.intermissionNumber = intermissionNumber(game.levelNumber);
 				fsm.changeState(INTERMISSION);
 				return;
 			}
-			fsm.changeState(READY);
+			log("Level %d complete, entering level %d", game.levelNumber, game.levelNumber + 1);
+			fsm.changeState(LEVEL_STARTING);
 			return;
 		}
-	}
-
-	private void exitChangingLevelState() {
-		log("Level %d complete, entering level %d", game.levelNumber, game.levelNumber + 1);
-		game.enterLevel(game.levelNumber + 1);
-		game.levelSymbols.add(game.level.bonusSymbol);
 	}
 
 	private void enterGameOverState() {
@@ -520,7 +529,7 @@ public class PacManGameController {
 
 	private void updateIntermissionState() {
 		if (fsm.state.timer.hasExpired()) {
-			fsm.changeState(READY);
+			fsm.changeState(LEVEL_STARTING);
 		}
 	}
 

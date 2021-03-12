@@ -9,7 +9,7 @@ import de.amr.games.pacman.lib.TickTimer;
  */
 public enum PacManGameState {
 
-	INTRO, READY, HUNTING, CHANGING_LEVEL, PACMAN_DYING, GHOST_DYING, GAME_OVER, INTERMISSION;
+	INTRO, READY, HUNTING, LEVEL_COMPLETE, LEVEL_STARTING, PACMAN_DYING, GHOST_DYING, GAME_OVER, INTERMISSION;
 
 	public final TickTimer timer = new TickTimer();
 	public Runnable onEnter, onUpdate, onExit;
