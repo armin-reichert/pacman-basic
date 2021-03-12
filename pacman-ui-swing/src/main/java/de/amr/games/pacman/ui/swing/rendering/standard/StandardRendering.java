@@ -73,7 +73,7 @@ public abstract class StandardRendering implements PacManGameRendering2D, PacMan
 
 	@Override
 	public void drawEnergizerTiles(Graphics2D g, Stream<V2i> energizerTiles) {
-		if (!mazeAnimations().energizerBlinking().frame()) {
+		if (!mazeAnimations().energizerBlinking().animate()) {
 			energizerTiles.forEach(tile -> drawTileCovered(g, tile));
 		}
 	}

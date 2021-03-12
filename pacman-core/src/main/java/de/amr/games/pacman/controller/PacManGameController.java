@@ -403,9 +403,6 @@ public class PacManGameController {
 				sm.stop(PacManGameSound.GHOST_EYES);
 			}
 		});
-
-		userInterface.animation().map(PacManGameAnimations::mazeAnimations)
-				.ifPresent(ma -> ma.energizerBlinking().animate());
 	}
 
 	private void exitHuntingState() {
