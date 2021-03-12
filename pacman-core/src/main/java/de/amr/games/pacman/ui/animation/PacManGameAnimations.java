@@ -9,7 +9,7 @@ import de.amr.games.pacman.model.common.GameModel;
  */
 public interface PacManGameAnimations {
 
-	default void reset(GameModel game) {
+	default void resetAllAnimations(GameModel game) {
 		mazeAnimations().reset();
 		game.ghosts().forEach(ghostAnimations()::reset);
 		playerAnimations().reset(game.player);

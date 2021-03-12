@@ -24,12 +24,17 @@ public class PlayScene extends GameScene {
 	public PlayScene(PacManGameController controller, Dimension size, PacManGameRendering2D rendering,
 			SoundManager sounds) {
 		super(controller, size, rendering, sounds);
+		controller.fsm.addStateEntryListener(PacManGameState.READY, this::onReadyStateEntry);
 		controller.fsm.addStateEntryListener(PacManGameState.HUNTING, this::onHuntingStateEntry);
 		controller.fsm.addStateExitListener(PacManGameState.HUNTING, this::onHuntingStateExit);
-		controller.fsm.addStateEntryListener(PacManGameState.CHANGING_LEVEL, this::onChangingLevelEntry);
-		controller.fsm.addStateEntryListener(PacManGameState.PACMAN_DYING, this::onPacManDyingEntry);
-		controller.fsm.addStateEntryListener(PacManGameState.GHOST_DYING, this::onGhostDyingEntry);
+		controller.fsm.addStateEntryListener(PacManGameState.CHANGING_LEVEL, this::onChangingLevelStateEntry);
+		controller.fsm.addStateEntryListener(PacManGameState.PACMAN_DYING, this::onPacManDyingStateEntry);
+		controller.fsm.addStateEntryListener(PacManGameState.GHOST_DYING, this::onGhostDyingStateEntry);
 		controller.fsm.addStateEntryListener(PacManGameState.GAME_OVER, this::onGameOverStateEntry);
+	}
+
+	private void onReadyStateEntry(PacManGameState state) {
+		rendering.resetAllAnimations(controller.game);
 	}
 
 	private void onHuntingStateEntry(PacManGameState state) {
@@ -42,15 +47,15 @@ public class PlayScene extends GameScene {
 		rendering.mazeAnimations().energizerBlinking().reset();
 	}
 
-	private void onPacManDyingEntry(PacManGameState state) {
+	private void onPacManDyingStateEntry(PacManGameState state) {
 		controller.game.ghosts().flatMap(rendering.ghostAnimations()::ghostKicking).forEach(Animation::reset);
 	}
 
-	private void onGhostDyingEntry(PacManGameState state) {
+	private void onGhostDyingStateEntry(PacManGameState state) {
 		rendering.mazeAnimations().energizerBlinking().restart();
 	}
 
-	private void onChangingLevelEntry(PacManGameState state) {
+	private void onChangingLevelStateEntry(PacManGameState state) {
 		GameModel game = controller.game;
 		mazeFlashing = rendering.mazeAnimations().mazeFlashing(game.level.mazeNumber);
 	}

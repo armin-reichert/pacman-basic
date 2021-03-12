@@ -215,7 +215,7 @@ public class PacManGameController {
 		if (userInterface != null) {
 			userInterface.mute(false);
 			userInterface.sound().ifPresent(SoundManager::stopAll);
-			userInterface.animation().ifPresent(anim -> anim.reset(game));
+			userInterface.animation().ifPresent(anim -> anim.resetAllAnimations(game));
 		}
 		fsm.state.timer.reset();
 	}
@@ -250,7 +250,6 @@ public class PacManGameController {
 
 	private void enterReadyState() {
 		game.resetGuys();
-		userInterface.animation().ifPresent(animation -> animation.reset(game));
 		if (gameStarted || attractMode) {
 			fsm.state.timer.resetSeconds(2);
 		} else {
