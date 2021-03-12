@@ -209,7 +209,7 @@ public class MsPacMan_StandardRendering extends StandardRendering
 
 	@Override
 	public Animation<BufferedImage> ghostFlashing(Ghost ghost) {
-		return assets.ghostFlashingAnim;
+		return assets.ghostFlashingAnim.get(ghost.id);
 	}
 
 	@Override

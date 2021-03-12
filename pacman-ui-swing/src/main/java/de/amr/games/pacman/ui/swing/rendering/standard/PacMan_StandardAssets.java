@@ -10,6 +10,7 @@ import static de.amr.games.pacman.ui.swing.assets.AssetLoader.image;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -52,7 +53,7 @@ public class PacMan_StandardAssets extends Spritesheet {
 	public final Map<Ghost, EnumMap<Direction, Animation<BufferedImage>>> ghostsWalkingAnimsByGhost = new HashMap<>();
 	public final EnumMap<Direction, Animation<BufferedImage>> ghostEyesAnimsByDir;
 	public final Animation<BufferedImage> ghostBlueAnim;
-	public final Animation<BufferedImage> ghostFlashingAnim;
+	public final List<Animation<BufferedImage>> ghostFlashingAnim;
 	public final Animation<Boolean> energizerBlinkingAnim;
 	public final Animation<BufferedImage> bigPacManAnim;
 	public final Animation<BufferedImage> blinkyHalfNaked;
@@ -112,8 +113,10 @@ public class PacMan_StandardAssets extends Spritesheet {
 		ghostBlueAnim = Animation.of(sprite(8, 4), sprite(9, 4));
 		ghostBlueAnim.frameDuration(20).endless();
 
-		ghostFlashingAnim = Animation.of(sprite(8, 4), sprite(9, 4), sprite(10, 4), sprite(11, 4));
-		ghostFlashingAnim.frameDuration(5).endless();
+		ghostFlashingAnim = new ArrayList<>();
+		for (int i = 0; i < 4; ++i) {
+			ghostFlashingAnim.add(Animation.of(sprite(8, 4), sprite(9, 4), sprite(10, 4), sprite(11, 4)).frameDuration(4));
+		}
 
 		bigPacManAnim = Animation.of(spriteRegion(2, 1, 2, 2), spriteRegion(4, 1, 2, 2), spriteRegion(6, 1, 2, 2))
 				.frameDuration(4).endless().run();

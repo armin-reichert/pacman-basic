@@ -72,7 +72,7 @@ public class MsPacMan_StandardAssets extends Spritesheet {
 	final List<EnumMap<Direction, Animation<BufferedImage>>> ghostsKickingAnimsByGhost;
 	final EnumMap<Direction, Animation<BufferedImage>> ghostEyesAnimByDir;
 	final Animation<BufferedImage> ghostBlueAnim;
-	final Animation<BufferedImage> ghostFlashingAnim;
+	final List<Animation<BufferedImage>> ghostFlashingAnim;
 	final Animation<Integer> bonusJumpAnim;
 	final Animation<BufferedImage> storkAnim;
 	final BufferedImage blueBag;
@@ -159,8 +159,10 @@ public class MsPacMan_StandardAssets extends Spritesheet {
 		ghostBlueAnim = Animation.of(s(8, 4), s(9, 4));
 		ghostBlueAnim.frameDuration(20).endless().run();
 
-		ghostFlashingAnim = Animation.of(s(8, 4), s(9, 4), s(10, 4), s(11, 4));
-		ghostFlashingAnim.frameDuration(5).endless();
+		ghostFlashingAnim = new ArrayList<>();
+		for (int i = 0; i < 4; ++i) {
+			ghostFlashingAnim.add(Animation.of(s(8, 4), s(9, 4), s(10, 4), s(11, 4)).frameDuration(4));
+		}
 
 		bonusJumpAnim = Animation.of(2, -2).frameDuration(15).endless().run();
 

@@ -43,6 +43,7 @@ import de.amr.games.pacman.model.mspacman.MsPacManGame;
 import de.amr.games.pacman.model.pacman.PacManGame;
 import de.amr.games.pacman.ui.PacManGameUI;
 import de.amr.games.pacman.ui.animation.Animation;
+import de.amr.games.pacman.ui.animation.GhostAnimations;
 import de.amr.games.pacman.ui.animation.MazeAnimations;
 import de.amr.games.pacman.ui.animation.PacManGameAnimations;
 import de.amr.games.pacman.ui.animation.PlayerAnimations;
@@ -371,29 +372,31 @@ public class PacManGameController {
 
 		// Player has power?
 		if (game.player.powerTimer.isRunning()) {
-			if (game.player.powerTimer.ticksRemaining() == 60) {
-				game.ghosts(FRIGHTENED).forEach(ghost -> {
-					userInterface.animation().map(PacManGameAnimations::ghostAnimations).ifPresent(ga -> {
-						ga.ghostFlashing(ghost).restart();
-						log("Start flashing for %s", ghost.name);
+			// TODO this is not good:
+			Optional<GhostAnimations> ghostAnim = userInterface.animation().map(PacManGameAnimations::ghostAnimations);
+			if (ghostAnim.isPresent()) {
+				int singleFlashingTicks = ghostAnim.get().ghostFlashing(game.ghosts[0]).duration();
+				if (game.player.powerTimer.ticksRemaining() == game.level.numFlashes * singleFlashingTicks) {
+					game.ghosts(FRIGHTENED).forEach(ghost -> {
+						ghostAnim.ifPresent(ga -> {
+							ga.ghostFlashing(ghost).repetitions(game.level.numFlashes).restart();
+							log("Start flashing for %s, power ticks remaining: %d", ghost.name,
+									game.player.powerTimer.ticksRemaining());
+						});
 					});
-				});
+				}
 			}
 			game.player.powerTimer.tick();
 		} else if (game.player.powerTimer.hasExpired()) {
-			fsm.state.timer.start();
+			log("%s lost power, power ticks remaining: %d", game.player.name, game.player.powerTimer.ticksRemaining());
+			game.player.powerTimer.reset();
 			game.ghosts(FRIGHTENED).forEach(ghost -> {
 				ghost.state = HUNTING_PAC;
-				userInterface.animation().map(PacManGameAnimations::ghostAnimations).ifPresent(ga -> {
-					ga.ghostFlashing(ghost).reset();
-					log("Reset flashing for %s", ghost.name);
-				});
-				userInterface.sound().ifPresent(sm -> {
-					sm.stop(PacManGameSound.PACMAN_POWER);
-				});
 			});
-			log("%s lost power", game.player.name);
-			game.player.powerTimer.reset();
+			userInterface.sound().ifPresent(sm -> {
+				sm.stop(PacManGameSound.PACMAN_POWER);
+			});
+			fsm.state.timer.start();
 		}
 
 		tryReleasingGhosts();
