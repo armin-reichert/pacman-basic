@@ -245,14 +245,11 @@ public class PacManGameController {
 			userInterface.showFlashMessage("Test Intermission #1");
 			game.intermissionNumber = 1;
 			fsm.changeState(INTERMISSION);
-			return;
-		}
-		if (userInterface.keyPressed("2")) {
+		} else if (userInterface.keyPressed("2")) {
 			userInterface.showFlashMessage("Test Intermission #2");
 			game.intermissionNumber = 2;
 			fsm.changeState(INTERMISSION);
-		}
-		if (userInterface.keyPressed("3")) {
+		} else if (userInterface.keyPressed("3")) {
 			userInterface.showFlashMessage("Test Intermission #3");
 			game.intermissionNumber = 3;
 			fsm.changeState(INTERMISSION);
