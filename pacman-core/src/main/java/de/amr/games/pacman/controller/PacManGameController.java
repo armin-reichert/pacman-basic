@@ -182,14 +182,8 @@ public class PacManGameController {
 	}
 
 	public void play(GameType type) {
-		gameStarted = false;
-		attractMode = false;
 		game = games.get(type);
-		game.reset();
 		fsm.changeState(INTRO);
-		if (userInterface != null) {
-			userInterface.onGameChanged(game);
-		}
 	}
 
 	public void setUserInterface(PacManGameUI ui) {
