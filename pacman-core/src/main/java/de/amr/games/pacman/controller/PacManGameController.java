@@ -425,7 +425,7 @@ public class PacManGameController {
 		if (fsm.state.timer.isRunningSeconds(1)) {
 			game.ghosts().forEach(ghost -> ghost.visible = false);
 			userInterface.animation().map(PacManGameAnimations::playerAnimations).map(PlayerAnimations::playerDying)
-					.ifPresent(da -> da.restart());
+					.ifPresent(Animation::restart);
 			userInterface.sound().ifPresent(snd -> snd.play(PacManGameSound.PACMAN_DEATH));
 		}
 	}

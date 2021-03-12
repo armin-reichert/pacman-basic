@@ -28,6 +28,7 @@ public class PlayScene extends GameScene {
 		controller.fsm.addStateExitListener(PacManGameState.HUNTING, this::onHuntingStateExit);
 		controller.fsm.addStateEntryListener(PacManGameState.CHANGING_LEVEL, this::onChangingLevelEntry);
 		controller.fsm.addStateEntryListener(PacManGameState.PACMAN_DYING, this::onPacManDyingEntry);
+		controller.fsm.addStateEntryListener(PacManGameState.GHOST_DYING, this::onGhostDyingEntry);
 	}
 
 	private void onHuntingStateEntry(PacManGameState state) {
@@ -42,6 +43,10 @@ public class PlayScene extends GameScene {
 
 	private void onPacManDyingEntry(PacManGameState state) {
 		controller.game.ghosts().flatMap(rendering.ghostAnimations()::ghostKicking).forEach(Animation::reset);
+	}
+
+	private void onGhostDyingEntry(PacManGameState state) {
+		rendering.mazeAnimations().energizerBlinking().restart();
 	}
 
 	private void onChangingLevelEntry(PacManGameState state) {
