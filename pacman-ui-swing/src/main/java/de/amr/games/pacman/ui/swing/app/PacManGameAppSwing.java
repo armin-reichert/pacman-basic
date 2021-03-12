@@ -1,10 +1,8 @@
 package de.amr.games.pacman.ui.swing.app;
 
-import static de.amr.games.pacman.lib.Logging.log;
 import static java.awt.EventQueue.invokeLater;
 
 import de.amr.games.pacman.controller.PacManGameController;
-import de.amr.games.pacman.lib.Clock;
 import de.amr.games.pacman.model.common.GameType;
 import de.amr.games.pacman.ui.swing.PacManGameUI_Swing;
 
@@ -14,47 +12,6 @@ import de.amr.games.pacman.ui.swing.PacManGameUI_Swing;
  * @author Armin Reichert
  */
 public class PacManGameAppSwing {
-
-	private static class GameLoop {
-
-		private final Clock clock = new Clock();
-		private final PacManGameController controller;
-		private Thread thread;
-		private boolean running;
-
-		public GameLoop(PacManGameController controller) {
-			this.controller = controller;
-		}
-
-		private void start() {
-			if (running) {
-				log("Cannot start: Game loop is already running");
-				return;
-			}
-			thread = new Thread(this::run, "GameLoop");
-			thread.start();
-			running = true;
-		}
-
-		private void run() {
-			while (running) {
-				clock.tick(controller::step);
-				controller.userInterface.update();
-			}
-		}
-
-		private void end() {
-			running = false;
-			try {
-				thread.join();
-			} catch (Exception x) {
-				x.printStackTrace();
-			}
-			log("Exit game and terminate VM");
-			System.exit(0);
-		}
-
-	}
 
 	/**
 	 * Starts the Pac-Man game application.
@@ -71,10 +28,7 @@ public class PacManGameAppSwing {
 		PacManGameController controller = new PacManGameController(options.pacman ? GameType.PACMAN : GameType.MS_PACMAN);
 		GameLoop gameLoop = new GameLoop(controller);
 		invokeLater(() -> {
-			PacManGameUI_Swing ui = new PacManGameUI_Swing(gameLoop.clock, controller, options.height);
-			ui.addWindowClosingHandler(gameLoop::end);
-			controller.setUserInterface(ui);
-			ui.show();
+			controller.userInterface = new PacManGameUI_Swing(gameLoop, controller, options.height);
 			gameLoop.start();
 		});
 	}

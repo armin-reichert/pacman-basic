@@ -184,11 +184,6 @@ public class PacManGameController {
 		fsm.changeState(INTRO);
 	}
 
-	public void setUserInterface(PacManGameUI ui) {
-		userInterface = ui;
-		userInterface.onGameChanged(game);
-	}
-
 	public void toggleGameType() {
 		if (isPlaying(MS_PACMAN)) {
 			play(PACMAN);
@@ -222,7 +217,6 @@ public class PacManGameController {
 			userInterface.mute(false);
 			userInterface.sound().ifPresent(SoundManager::stopAll);
 			userInterface.animation().ifPresent(anim -> anim.reset(game));
-			userInterface.onGameChanged(game);
 		}
 		fsm.state.timer.reset();
 	}

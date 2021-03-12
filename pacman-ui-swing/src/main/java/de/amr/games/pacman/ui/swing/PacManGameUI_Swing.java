@@ -31,15 +31,14 @@ import javax.swing.JFrame;
 import javax.swing.Timer;
 
 import de.amr.games.pacman.controller.PacManGameController;
-import de.amr.games.pacman.lib.Clock;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameType;
 import de.amr.games.pacman.ui.FlashMessage;
 import de.amr.games.pacman.ui.PacManGameUI;
 import de.amr.games.pacman.ui.animation.PacManGameAnimations;
 import de.amr.games.pacman.ui.sound.SoundManager;
+import de.amr.games.pacman.ui.swing.app.GameLoop;
 import de.amr.games.pacman.ui.swing.assets.AssetLoader;
 import de.amr.games.pacman.ui.swing.assets.PacManGameSoundManager;
 import de.amr.games.pacman.ui.swing.assets.PacManGameSounds;
@@ -65,7 +64,7 @@ import de.amr.games.pacman.ui.swing.rendering.standard.PacMan_StandardRendering;
  */
 public class PacManGameUI_Swing implements PacManGameUI {
 
-	private final Clock clock;
+	private final GameLoop gameLoop;
 	private final PacManGameController controller;
 	private final EnumMap<GameType, PacManGameRendering2D> renderings = new EnumMap<>(GameType.class);
 	private final EnumMap<GameType, SoundManager> sounds = new EnumMap<>(GameType.class);
@@ -82,8 +81,8 @@ public class PacManGameUI_Swing implements PacManGameUI {
 	private GameScene currentScene;
 	private boolean muted;
 
-	public PacManGameUI_Swing(Clock clock, PacManGameController controller, double height) {
-		this.clock = clock;
+	public PacManGameUI_Swing(GameLoop gameLoop, PacManGameController controller, double height) {
+		this.gameLoop = gameLoop;
 		this.controller = controller;
 		unscaledSize = new Dimension(28 * TS, 36 * TS);
 		scaling = Math.round(height / unscaledSize.height);
@@ -108,12 +107,20 @@ public class PacManGameUI_Swing implements PacManGameUI {
 				handleGlobalKeys(e);
 			}
 		});
+		window.addWindowListener(new WindowAdapter() {
+
+			@Override
+			public void windowClosing(WindowEvent e) {
+				gameLoop.end();
+			}
+		});
+
 		window.getContentPane().add(canvas);
 
 		keyboard = new Keyboard(window);
 
 		titleUpdateTimer = new Timer(1000,
-				e -> window.setTitle(String.format("Pac-Man / Ms. Pac-Man (%d fps, JFC Swing)", clock.frequency)));
+				e -> window.setTitle(String.format("Pac-Man / Ms. Pac-Man (%d fps, JFC Swing)", gameLoop.clock.frequency)));
 
 		renderings.put(MS_PACMAN, new MsPacMan_StandardRendering());
 		renderings.put(PACMAN, new PacMan_StandardRendering());
@@ -136,17 +143,17 @@ public class PacManGameUI_Swing implements PacManGameUI {
 				new PacMan_IntermissionScene3(controller, unscaledSize, renderings.get(PACMAN), sounds.get(PACMAN)), //
 				new PlayScene(controller, unscaledSize, renderings.get(PACMAN), sounds.get(PACMAN))//
 		));
-		log("Swing UI created at clock tick %d", clock.ticksTotal);
+		show();
 	}
 
-	public void addWindowClosingHandler(Runnable handler) {
-		window.addWindowListener(new WindowAdapter() {
-
-			@Override
-			public void windowClosing(WindowEvent e) {
-				handler.run();
-			}
-		});
+	private void show() {
+		window.pack();
+		window.setLocationRelativeTo(null);
+		window.setVisible(true);
+		window.requestFocus();
+		canvas.createBufferStrategy(2);
+		moveMousePointerOutOfSight();
+		titleUpdateTimer.start();
 	}
 
 	private GameType currentGame() {
@@ -163,28 +170,6 @@ public class PacManGameUI_Swing implements PacManGameUI {
 		default:
 			return scenes.get(currentGame).get(4);
 		}
-	}
-
-	@Override
-	public void onGameChanged(GameModel newGame) {
-		changeScene(getSceneForCurrentGameState());
-	}
-
-	private void changeScene(GameScene newScene) {
-		if (newScene != currentScene) {
-			currentScene = getSceneForCurrentGameState();
-			currentScene.start();
-		}
-	}
-
-	public void show() {
-		window.pack();
-		window.setLocationRelativeTo(null);
-		window.setVisible(true);
-		window.requestFocus();
-		canvas.createBufferStrategy(2);
-		moveMousePointerOutOfSight();
-		titleUpdateTimer.start();
 	}
 
 	@Override
@@ -276,17 +261,17 @@ public class PacManGameUI_Swing implements PacManGameUI {
 			controller.toggleGameType();
 			break;
 		case KeyEvent.VK_S: {
-			clock.targetFreq = clock.targetFreq != 30 ? 30 : 60;
-			String text = clock.targetFreq == 60 ? "Normal speed" : "Slow speed";
+			gameLoop.clock.targetFreq = gameLoop.clock.targetFreq != 30 ? 30 : 60;
+			String text = gameLoop.clock.targetFreq == 60 ? "Normal speed" : "Slow speed";
 			showFlashMessage(text);
-			log("Clock frequency changed to %d Hz", clock.targetFreq);
+			log("Clock frequency changed to %d Hz", gameLoop.clock.targetFreq);
 			break;
 		}
 		case KeyEvent.VK_F: {
-			clock.targetFreq = clock.targetFreq != 120 ? 120 : 60;
-			String text = clock.targetFreq == 60 ? "Normal speed" : "Fast speed";
+			gameLoop.clock.targetFreq = gameLoop.clock.targetFreq != 120 ? 120 : 60;
+			String text = gameLoop.clock.targetFreq == 60 ? "Normal speed" : "Fast speed";
 			showFlashMessage(text);
-			log("Clock frequency changed to %d Hz", clock.targetFreq);
+			log("Clock frequency changed to %d Hz", gameLoop.clock.targetFreq);
 			break;
 		}
 		case KeyEvent.VK_D:
