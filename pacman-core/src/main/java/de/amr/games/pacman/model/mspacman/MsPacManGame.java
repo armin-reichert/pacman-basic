@@ -3,7 +3,6 @@ package de.amr.games.pacman.model.mspacman;
 import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.UP;
-import static de.amr.games.pacman.lib.God.clock;
 import static de.amr.games.pacman.lib.God.random;
 import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.model.common.Ghost.BLINKY;
@@ -159,7 +158,6 @@ public class MsPacManGame extends GameModel {
 		if (duration == Short.MAX_VALUE) {
 			return Long.MAX_VALUE;
 		}
-		return clock.sec(duration);
+		return duration * 60;
 	}
-
 }

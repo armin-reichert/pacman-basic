@@ -1,6 +1,5 @@
 package de.amr.games.pacman.ui.mspacman;
 
-import static de.amr.games.pacman.lib.God.clock;
 import static de.amr.games.pacman.model.world.PacManGameWorld.t;
 
 import java.util.stream.Stream;
@@ -85,12 +84,18 @@ public class MsPacMan_IntermissionScene1_Controller {
 		heart = new GameEntity();
 		ghostsMet = false;
 
-		enter(Phase.FLAP, clock.sec(2));
+		enterSeconds(Phase.FLAP, 2);
 	}
 
-	private void enter(Phase newPhase, long ticks) {
+	private void enter(Phase newPhase) {
 		phase = newPhase;
-		timer.reset(ticks);
+		timer.reset();
+		timer.start();
+	}
+
+	private void enterSeconds(Phase newPhase, double seconds) {
+		phase = newPhase;
+		timer.resetSeconds(seconds);
 		timer.start();
 	}
 
@@ -138,7 +143,7 @@ public class MsPacMan_IntermissionScene1_Controller {
 				heart.visible = true;
 				animations.ghostAnimations().ghostKicking(inky).forEach(Animation::reset);
 				animations.ghostAnimations().ghostKicking(pinky).forEach(Animation::reset);
-				enter(Phase.READY_TO_PLAY, clock.sec(3));
+				enterSeconds(Phase.READY_TO_PLAY, 2);
 			}
 			if (!ghostsMet && inky.position.x - pinky.position.x < 16) {
 				ghostsMet = true;
@@ -169,7 +174,7 @@ public class MsPacMan_IntermissionScene1_Controller {
 	public void startChasedByGhosts() {
 		pacMan.speed = msPac.speed = 1.2f;
 		inky.speed = pinky.speed = 1.25f;
-		enter(Phase.CHASED_BY_GHOSTS, Long.MAX_VALUE);
+		enter(Phase.CHASED_BY_GHOSTS);
 	}
 
 	public void startComingTogether() {
@@ -181,6 +186,6 @@ public class MsPacMan_IntermissionScene1_Controller {
 		msPac.setPosition(t(-2), middleY);
 		msPac.dir = Direction.RIGHT;
 		pinky.dir = pinky.wishDir = Direction.RIGHT;
-		enter(Phase.COMING_TOGETHER, Long.MAX_VALUE);
+		enter(Phase.COMING_TOGETHER);
 	}
 }

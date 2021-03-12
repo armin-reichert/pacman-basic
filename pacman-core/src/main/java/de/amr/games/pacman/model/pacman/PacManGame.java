@@ -4,7 +4,6 @@ import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Direction.UP;
-import static de.amr.games.pacman.lib.God.clock;
 import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.model.common.Ghost.BLINKY;
 import static de.amr.games.pacman.model.common.Ghost.CLYDE;
@@ -54,11 +53,11 @@ public class PacManGame extends GameModel {
 	};
 	/*@formatter:on*/
 
-	public static final short[][] HUNTING_PHASE_DURATION = {
+	public static final int[][] HUNTING_PHASE_DURATION = {
 		//@formatter:off
-		{ 7, 20, 7, 20, 5,   20,  5, Short.MAX_VALUE },
-		{ 7, 20, 7, 20, 5, 1033, -1, Short.MAX_VALUE },
-		{ 5, 20, 5, 20, 5, 1037, -1, Short.MAX_VALUE },
+		{ 7, 20, 7, 20, 5,   20,  5, Integer.MAX_VALUE },
+		{ 7, 20, 7, 20, 5, 1033, -1, Integer.MAX_VALUE },
+		{ 5, 20, 5, 20, 5, 1037, -1, Integer.MAX_VALUE },
 		//@formatter:on
 	};
 
@@ -105,14 +104,14 @@ public class PacManGame extends GameModel {
 		return huntingTicks(HUNTING_PHASE_DURATION[row][phase]);
 	}
 
-	private long huntingTicks(short duration) {
+	private long huntingTicks(int duration) {
 		if (duration == -1) {
 			return 1; // -1 means a single tick
 		}
-		if (duration == Short.MAX_VALUE) {
+		if (duration == Integer.MAX_VALUE) {
 			return Long.MAX_VALUE;
 		}
-		return clock.sec(duration);
+		return duration * 60;
 	}
 
 	@Override

@@ -1,7 +1,6 @@
 package de.amr.games.pacman.ui.pacman;
 
 import static de.amr.games.pacman.lib.Direction.RIGHT;
-import static de.amr.games.pacman.lib.God.clock;
 import static de.amr.games.pacman.model.common.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.common.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.model.world.PacManGameWorld.t;
@@ -64,7 +63,7 @@ public class PacMan_IntermissionScene1_Controller {
 		sounds.loop(PacManGameSound.INTERMISSION_1, 2);
 
 		phase = Phase.BLINKY_CHASING_PACMAN;
-		timer.reset(clock.sec(5));
+		timer.resetSeconds(5);
 		timer.start();
 	}
 
@@ -73,7 +72,7 @@ public class PacMan_IntermissionScene1_Controller {
 		case BLINKY_CHASING_PACMAN:
 			if (timer.hasExpired()) {
 				phase = Phase.BIGPACMAN_CHASING_BLINKY;
-				timer.reset(clock.sec(7));
+				timer.resetSeconds(7);
 				timer.start();
 			}
 			timer.tick();

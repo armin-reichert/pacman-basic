@@ -12,7 +12,6 @@ import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Direction.UP;
-import static de.amr.games.pacman.lib.God.clock;
 import static de.amr.games.pacman.lib.God.random;
 import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.model.common.GameType.MS_PACMAN;
@@ -405,7 +404,7 @@ public class PacManGameController {
 		game.bonus.update();
 		if (game.bonus.edibleTicksLeft > 0 && game.player.meets(game.bonus)) {
 			log("Pac-Man found bonus (%s) of value %d", game.bonusNames[game.bonus.symbol], game.bonus.points);
-			game.bonus.eatAndDisplayValue(clock.sec(2));
+			game.bonus.eatAndDisplayValue(2 * 60);
 			score(game.bonus.points);
 			userInterface.sound().ifPresent(snd -> snd.play(PacManGameSound.BONUS_EATEN));
 		}
@@ -432,7 +431,7 @@ public class PacManGameController {
 		});
 		userInterface.sound().ifPresent(SoundManager::stopAll);
 
-		fsm.state.timer.reset(clock.sec(4));
+		fsm.state.timer.resetSeconds(4);
 	}
 
 	private void updatePacManDyingState() {
@@ -470,7 +469,7 @@ public class PacManGameController {
 				.ifPresent(Animation::restart);
 		userInterface.sound().ifPresent(snd -> snd.play(PacManGameSound.GHOST_EATEN));
 
-		fsm.state.timer.reset(clock.sec(1));
+		fsm.state.timer.resetSeconds(1);
 	}
 
 	private void updateGhostDyingState() {
@@ -528,7 +527,7 @@ public class PacManGameController {
 		userInterface.animation().map(PacManGameAnimations::ghostAnimations)
 				.ifPresent(ga -> game.ghosts().flatMap(ga::ghostKicking).forEach(Animation::reset));
 
-		fsm.state.timer.reset(clock.sec(10));
+		fsm.state.timer.resetSeconds(10);
 	}
 
 	private void updateGameOverState() {
@@ -619,7 +618,7 @@ public class PacManGameController {
 			game.bonus.visible = true;
 			game.bonus.symbol = game.level.bonusSymbol;
 			game.bonus.points = game.bonusValues[game.level.bonusSymbol];
-			game.bonus.activate(isPlaying(PACMAN) ? clock.sec(9 + random.nextFloat()) : Long.MAX_VALUE);
+			game.bonus.activate(isPlaying(PACMAN) ? (long) ((9 + random.nextFloat()) * 60) : Long.MAX_VALUE);
 			log("Bonus %s (value %d) activated", game.bonusNames[game.bonus.symbol], game.bonus.points);
 		}
 
@@ -768,7 +767,7 @@ public class PacManGameController {
 	}
 
 	private int pacStarvingTimeLimit() {
-		return game.levelNumber < 5 ? clock.sec(4) : clock.sec(3);
+		return game.levelNumber < 5 ? 4 * 60 : 3 * 60;
 	}
 
 	private int ghostPrivateDotLimit(Ghost ghost) {

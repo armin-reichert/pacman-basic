@@ -1,6 +1,5 @@
 package de.amr.games.pacman.ui.swing;
 
-import static de.amr.games.pacman.lib.God.clock;
 import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.model.common.GameType.MS_PACMAN;
 import static de.amr.games.pacman.model.common.GameType.PACMAN;
@@ -32,6 +31,7 @@ import javax.swing.JFrame;
 import javax.swing.Timer;
 
 import de.amr.games.pacman.controller.PacManGameController;
+import de.amr.games.pacman.lib.Clock;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.GameModel;
@@ -65,6 +65,7 @@ import de.amr.games.pacman.ui.swing.rendering.standard.PacMan_StandardRendering;
  */
 public class PacManGameUI_Swing implements PacManGameUI {
 
+	private final Clock clock;
 	private final PacManGameController controller;
 	private final EnumMap<GameType, PacManGameRendering2D> renderings = new EnumMap<>(GameType.class);
 	private final EnumMap<GameType, SoundManager> sounds = new EnumMap<>(GameType.class);
@@ -81,7 +82,8 @@ public class PacManGameUI_Swing implements PacManGameUI {
 	private GameScene currentScene;
 	private boolean muted;
 
-	public PacManGameUI_Swing(PacManGameController controller, double height) {
+	public PacManGameUI_Swing(Clock clock, PacManGameController controller, double height) {
+		this.clock = clock;
 		this.controller = controller;
 		unscaledSize = new Dimension(28 * TS, 36 * TS);
 		scaling = Math.round(height / unscaledSize.height);
@@ -276,14 +278,14 @@ public class PacManGameUI_Swing implements PacManGameUI {
 		case KeyEvent.VK_S: {
 			clock.targetFreq = clock.targetFreq != 30 ? 30 : 60;
 			String text = clock.targetFreq == 60 ? "Normal speed" : "Slow speed";
-			showFlashMessage(text, clock.sec(1.5));
+			showFlashMessage(text);
 			log("Clock frequency changed to %d Hz", clock.targetFreq);
 			break;
 		}
 		case KeyEvent.VK_F: {
 			clock.targetFreq = clock.targetFreq != 120 ? 120 : 60;
 			String text = clock.targetFreq == 60 ? "Normal speed" : "Fast speed";
-			showFlashMessage(text, clock.sec(1.5));
+			showFlashMessage(text);
 			log("Clock frequency changed to %d Hz", clock.targetFreq);
 			break;
 		}

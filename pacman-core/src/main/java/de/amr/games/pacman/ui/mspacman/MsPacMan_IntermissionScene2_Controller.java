@@ -37,9 +37,9 @@ public class MsPacMan_IntermissionScene2_Controller {
 	public Flap flap;
 	public Pac pacMan, msPacMan;
 
-	public void enter(Phase newPhase, long ticks) {
+	public void enter(Phase newPhase) {
 		phase = newPhase;
-		timer.reset(ticks);
+		timer.reset();
 		timer.start();
 	}
 
@@ -58,7 +58,7 @@ public class MsPacMan_IntermissionScene2_Controller {
 		pacMan = new Pac("Pac-Man", Direction.RIGHT);
 		msPacMan = new Pac("Ms. Pac-Man", Direction.RIGHT);
 
-		enter(Phase.FLAP, Long.MAX_VALUE);
+		enter(Phase.FLAP);
 	}
 
 	public void update() {
@@ -72,7 +72,7 @@ public class MsPacMan_IntermissionScene2_Controller {
 				sounds.play(PacManGameSound.INTERMISSION_2);
 			}
 			if (timer.isRunningSeconds(4.5)) {
-				enter(Phase.ACTION, Long.MAX_VALUE);
+				enter(Phase.ACTION);
 			}
 			flap.flapping.animate();
 			timer.tick();

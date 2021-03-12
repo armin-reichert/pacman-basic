@@ -1,6 +1,5 @@
 package de.amr.games.pacman.ui.pacman;
 
-import static de.amr.games.pacman.lib.God.clock;
 import static de.amr.games.pacman.model.world.PacManGameWorld.t;
 
 import de.amr.games.pacman.controller.PacManGameController;
@@ -141,7 +140,7 @@ public class PacMan_IntroScene_Controller {
 			if (pac.position.x > t(28)) {
 				enterPhase(Phase.READY_TO_PLAY);
 			}
-			if (clock.ticksTotal - ghostKilledTime == clock.sec(0.25)) {
+			if (controller.fsm.state.timer.ticked() - ghostKilledTime == 15) {
 				ghostKilledTime = 0;
 				pac.visible = true;
 				pac.speed = 1;
@@ -157,7 +156,7 @@ public class PacMan_IntroScene_Controller {
 					ghost.bounty = (int) Math.pow(2, ghost.id + 1) * 100;
 					pac.visible = false;
 					pac.speed = 0;
-					ghostKilledTime = clock.ticksTotal;
+					ghostKilledTime = controller.fsm.state.timer.ticked();
 				}
 			}
 			timer.tick();

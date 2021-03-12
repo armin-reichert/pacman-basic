@@ -1,7 +1,5 @@
 package de.amr.games.pacman.controller;
 
-import static de.amr.games.pacman.lib.God.clock;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
@@ -134,7 +132,7 @@ public class Autopilot {
 		if (game.player.couldMove && !game.level.world.isIntersection(game.player.tile()))
 			return;
 
-		if (data.frightenedGhosts.size() != 0 && game.player.powerTimer.ticksRemaining() >= clock.sec(1)) {
+		if (data.frightenedGhosts.size() != 0 && game.player.powerTimer.ticksRemaining() >= 1 * 60) {
 			Ghost prey = data.frightenedGhosts.get(0);
 			log("Detected frightened ghost %s %.0g tiles away", prey.name, prey.tile().manhattanDistance(game.player.tile()));
 			game.player.targetTile = prey.tile();
@@ -228,7 +226,7 @@ public class Autopilot {
 				if (!game.level.world.isFoodTile(tile) || game.level.isFoodRemoved(tile)) {
 					continue;
 				}
-				if (game.level.world.isEnergizerTile(tile) && game.player.powerTimer.ticksRemaining() > clock.sec(1)
+				if (game.level.world.isEnergizerTile(tile) && game.player.powerTimer.ticksRemaining() > 1 * 60
 						&& game.level.foodRemaining > 1) {
 					continue;
 				}

@@ -10,8 +10,6 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 
 import de.amr.games.pacman.controller.PacManGameController;
-import de.amr.games.pacman.lib.God;
-import de.amr.games.pacman.lib.Logging;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.ui.pacman.PacMan_IntroScene_Controller;
 import de.amr.games.pacman.ui.pacman.PacMan_IntroScene_Controller.GhostPortrait;
@@ -41,7 +39,6 @@ public class PacMan_IntroScene extends GameScene {
 	public void start() {
 		sceneController = new PacMan_IntroScene_Controller(controller, rendering);
 		sceneController.start();
-		Logging.log("%s: PacMan intro scene started at clock tick %d", this, God.clock.ticksTotal);
 	}
 
 	@Override

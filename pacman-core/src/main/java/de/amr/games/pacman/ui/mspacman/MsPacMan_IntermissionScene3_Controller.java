@@ -1,6 +1,5 @@
 package de.amr.games.pacman.ui.mspacman;
 
-import static de.amr.games.pacman.lib.God.clock;
 import static de.amr.games.pacman.model.world.PacManGameWorld.t;
 
 import de.amr.games.pacman.controller.PacManGameController;
@@ -54,9 +53,15 @@ public class MsPacMan_IntermissionScene3_Controller {
 		this.sounds = sounds;
 	}
 
-	public void enter(Phase newPhase, long ticks) {
+	private void enter(Phase newPhase) {
 		phase = newPhase;
-		timer.reset(ticks);
+		timer.reset();
+		timer.start();
+	}
+
+	private void enterSeconds(Phase newPhase, double seconds) {
+		phase = newPhase;
+		timer.resetSeconds(seconds);
 		timer.start();
 	}
 
@@ -78,7 +83,7 @@ public class MsPacMan_IntermissionScene3_Controller {
 		bag = new JuniorBag();
 		bag.setPositionRelativeTo(stork, -14, 3);
 
-		enter(Phase.FLAP, Long.MAX_VALUE);
+		enter(Phase.FLAP);
 	}
 
 	public void update() {
@@ -90,7 +95,7 @@ public class MsPacMan_IntermissionScene3_Controller {
 			if (timer.isRunningSeconds(2)) {
 				flap.visible = false;
 				sounds.play(PacManGameSound.INTERMISSION_3);
-				enter(Phase.ACTION, Long.MAX_VALUE);
+				enter(Phase.ACTION);
 			}
 			flap.flapping.animate();
 			timer.tick();
@@ -117,7 +122,7 @@ public class MsPacMan_IntermissionScene3_Controller {
 				} else {
 					bag.open = true;
 					bag.velocity = V2d.NULL;
-					enter(Phase.READY_TO_PLAY, clock.sec(3));
+					enterSeconds(Phase.READY_TO_PLAY, 3);
 				}
 			}
 			timer.tick();

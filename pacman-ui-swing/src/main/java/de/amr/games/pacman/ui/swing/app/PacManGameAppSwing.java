@@ -1,10 +1,10 @@
 package de.amr.games.pacman.ui.swing.app;
 
-import static de.amr.games.pacman.lib.God.clock;
 import static de.amr.games.pacman.lib.Logging.log;
 import static java.awt.EventQueue.invokeLater;
 
 import de.amr.games.pacman.controller.PacManGameController;
+import de.amr.games.pacman.lib.Clock;
 import de.amr.games.pacman.model.common.GameType;
 import de.amr.games.pacman.ui.swing.PacManGameUI_Swing;
 
@@ -17,6 +17,7 @@ public class PacManGameAppSwing {
 
 	private static class GameLoop {
 
+		private final Clock clock = new Clock();
 		private final PacManGameController controller;
 		private Thread thread;
 		private boolean running;
@@ -70,7 +71,7 @@ public class PacManGameAppSwing {
 		PacManGameController controller = new PacManGameController(options.pacman ? GameType.PACMAN : GameType.MS_PACMAN);
 		GameLoop gameLoop = new GameLoop(controller);
 		invokeLater(() -> {
-			PacManGameUI_Swing ui = new PacManGameUI_Swing(controller, options.height);
+			PacManGameUI_Swing ui = new PacManGameUI_Swing(gameLoop.clock, controller, options.height);
 			ui.addWindowClosingHandler(gameLoop::end);
 			controller.setUserInterface(ui);
 			ui.show();
