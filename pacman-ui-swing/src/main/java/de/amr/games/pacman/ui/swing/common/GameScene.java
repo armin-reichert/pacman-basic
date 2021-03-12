@@ -19,7 +19,8 @@ public abstract class GameScene {
 	protected final PacManGameRendering2D rendering;
 	protected final SoundManager sounds;
 
-	public GameScene(PacManGameController controller, Dimension size, PacManGameRendering2D rendering, SoundManager sounds) {
+	public GameScene(PacManGameController controller, Dimension size, PacManGameRendering2D rendering,
+			SoundManager sounds) {
 		this.controller = controller;
 		this.size = size;
 		this.rendering = rendering;

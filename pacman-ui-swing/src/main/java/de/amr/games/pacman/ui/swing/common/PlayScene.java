@@ -24,7 +24,12 @@ public class PlayScene extends GameScene {
 	public PlayScene(PacManGameController controller, Dimension size, PacManGameRendering2D rendering,
 			SoundManager sounds) {
 		super(controller, size, rendering, sounds);
+		controller.fsm.addStateEntryListener(PacManGameState.HUNTING, this::onHuntingStarted);
 		controller.fsm.addStateEntryListener(PacManGameState.CHANGING_LEVEL, this::onChangingGameLevel);
+	}
+
+	private void onHuntingStarted(PacManGameState state) {
+		controller.game.ghosts().flatMap(rendering.ghostAnimations()::ghostKicking).forEach(Animation::restart);
 	}
 
 	private void onChangingGameLevel(PacManGameState state) {

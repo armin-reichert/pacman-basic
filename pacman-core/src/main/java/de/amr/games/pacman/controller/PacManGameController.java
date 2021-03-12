@@ -84,7 +84,6 @@ public class PacManGameController {
 		PacManGameState.INTRO.onUpdate = this::updateIntroState;
 		PacManGameState.READY.onEnter = this::enterReadyState;
 		PacManGameState.READY.onUpdate = this::updateReadyState;
-		PacManGameState.READY.onExit = this::exitReadyState;
 		PacManGameState.HUNTING.onEnter = this::enterHuntingState;
 		PacManGameState.HUNTING.onUpdate = this::updateHuntingState;
 		PacManGameState.HUNTING.onExit = this::exitHuntingState;
@@ -278,12 +277,6 @@ public class PacManGameController {
 				ghost.visible = true;
 			}
 		}
-	}
-
-	private void exitReadyState() {
-		userInterface.animation().map(PacManGameAnimations::ghostAnimations).ifPresent(ga -> {
-			game.ghosts().flatMap(ga::ghostKicking).forEach(Animation::restart);
-		});
 	}
 
 	static final List<PacManGameSound> SIRENS = Arrays.asList(PacManGameSound.GHOST_SIREN_1,
