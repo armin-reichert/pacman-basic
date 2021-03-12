@@ -131,7 +131,6 @@ public class PacManGameController {
 			}
 			fsm.updateState();
 		}
-		userInterface.update();
 	}
 
 	private void handleCheatsAndStuff() {

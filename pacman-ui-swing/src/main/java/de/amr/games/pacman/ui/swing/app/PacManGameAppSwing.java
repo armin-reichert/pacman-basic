@@ -38,6 +38,7 @@ public class PacManGameAppSwing {
 		private void run() {
 			while (running) {
 				clock.tick(controller::step);
+				controller.userInterface.update();
 			}
 		}
 
