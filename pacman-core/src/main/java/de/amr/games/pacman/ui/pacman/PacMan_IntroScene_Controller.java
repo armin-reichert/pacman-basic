@@ -183,7 +183,7 @@ public class PacMan_IntroScene_Controller {
 		pac.visible = true;
 		pac.speed = 1;
 		pac.dir = Direction.LEFT;
-		pac.couldMove = true;
+		pac.stuck = false;
 		animations.playerAnimations().playerMunching(pac).forEach(Animation::restart);
 
 		for (Ghost ghost : ghosts) {

@@ -205,7 +205,7 @@ public class PacMan_StandardRendering extends StandardRendering
 		if (pac.speed == 0) {
 			return playerMunching(pac, pac.dir).frame(0);
 		}
-		if (!pac.couldMove) {
+		if (pac.stuck) {
 			return playerMunching(pac, pac.dir).frame(1);
 		}
 		return playerMunching(pac, pac.dir).animate();

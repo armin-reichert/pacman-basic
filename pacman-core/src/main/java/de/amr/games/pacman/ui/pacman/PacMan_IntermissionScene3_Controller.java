@@ -51,9 +51,8 @@ public class PacMan_IntermissionScene3_Controller {
 		pac.visible = true;
 		pac.dead = false;
 		pac.speed = 1.2f;
-		pac.couldMove = true;
+		pac.stuck = false;
 		pac.dir = LEFT;
-		pac.couldMove = true;
 		animations.playerAnimations().playerMunching(pac).forEach(Animation::restart);
 
 		blinky = new Ghost(0, "Blinky", Direction.LEFT);

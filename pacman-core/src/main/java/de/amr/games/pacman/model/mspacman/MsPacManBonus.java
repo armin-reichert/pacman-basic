@@ -11,7 +11,7 @@ public class MsPacManBonus extends PacManBonus {
 	@Override
 	public void activate(long ticks) {
 		edibleTicksLeft = ticks;
-		couldMove = true;
+		stuck = false;
 		speed = 0.25f; // TODO what is the correct speed?
 		if (random.nextBoolean()) {
 			placeAt(world.portalLeft(random.nextInt(world.numPortals())), 0, 0);

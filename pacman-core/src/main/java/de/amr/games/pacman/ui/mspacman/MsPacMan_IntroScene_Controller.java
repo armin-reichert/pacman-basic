@@ -112,7 +112,7 @@ public class MsPacMan_IntroScene_Controller {
 		case PRESENTING_MSPACMAN:
 			if (phaseTimer.hasJustStarted()) {
 				msPacMan.visible = true;
-				msPacMan.couldMove = true;
+				msPacMan.stuck = false;
 				msPacMan.speed = 1;
 				animations.playerAnimations().playerMunching(msPacMan).forEach(Animation::restart);
 			}

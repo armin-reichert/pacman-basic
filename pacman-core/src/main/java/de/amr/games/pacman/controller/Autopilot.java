@@ -75,7 +75,7 @@ public class Autopilot {
 			game.player.forcedDirection = false;
 			return;
 		}
-		if (game.player.couldMove && !game.player.changedTile) {
+		if (!game.player.stuck && !game.player.changedTile) {
 			return;
 		}
 		GameInfo data = collectData(game);
@@ -129,7 +129,7 @@ public class Autopilot {
 		}
 
 		// when not escaping ghost, keep move direction at least until next intersection
-		if (game.player.couldMove && !game.level.world.isIntersection(game.player.tile()))
+		if (!game.player.stuck && !game.level.world.isIntersection(game.player.tile()))
 			return;
 
 		if (data.frightenedGhosts.size() != 0 && game.player.powerTimer.ticksRemaining() >= 1 * 60) {

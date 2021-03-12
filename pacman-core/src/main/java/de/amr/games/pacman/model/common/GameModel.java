@@ -82,7 +82,7 @@ public abstract class GameModel {
 		player.visible = false;
 		player.speed = 0;
 		player.targetTile = null; // used in autopilot mode
-		player.couldMove = true;
+		player.stuck = false;
 		player.forcedOnTrack = true;
 		player.dead = false;
 		player.restingTicksLeft = 0;
@@ -95,7 +95,7 @@ public abstract class GameModel {
 			ghost.visible = false;
 			ghost.speed = 0;
 			ghost.targetTile = null;
-			ghost.couldMove = true;
+			ghost.stuck = false;
 			ghost.forcedDirection = ghost.id == BLINKY;
 			ghost.forcedOnTrack = ghost.id == BLINKY;
 			ghost.state = LOCKED;
@@ -108,7 +108,7 @@ public abstract class GameModel {
 		bonus.visible = false;
 		bonus.speed = 0;
 		bonus.changedTile = true;
-		bonus.couldMove = true;
+		bonus.stuck = false;
 		bonus.forcedOnTrack = true;
 		bonus.edibleTicksLeft = 0;
 		bonus.eatenTicksLeft = 0;

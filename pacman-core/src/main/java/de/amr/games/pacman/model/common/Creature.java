@@ -47,8 +47,8 @@ public class Creature extends GameEntity {
 	/** If the creature entered a new tile with its last movement or placement. */
 	public boolean changedTile = true;
 
-	/** If the creature could move in the last try. */
-	public boolean couldMove = true;
+	/** If the creature got stuck trying to move through the world. */
+	public boolean stuck = false;
 
 	/** If the next move will in any case take the intended direction if possible. */
 	public boolean forcedDirection = false;
@@ -125,7 +125,7 @@ public class Creature extends GameEntity {
 			}
 		}
 		tryMoving(wishDir);
-		if (couldMove) {
+		if (!stuck) {
 			dir = wishDir;
 		} else {
 			tryMoving(dir);
@@ -144,13 +144,13 @@ public class Creature extends GameEntity {
 		if (forcedOnTrack && canAccessTile(neighbor)) {
 			if (moveDir == LEFT || moveDir == RIGHT) {
 				if (abs(offset.y) > pixels) {
-					couldMove = false;
+					stuck = true;
 					return;
 				}
 				setOffset(offset.x, 0);
 			} else if (moveDir == UP || moveDir == DOWN) {
 				if (abs(offset.x) > pixels) {
-					couldMove = false;
+					stuck = true;
 					return;
 				}
 				setOffset(0, offset.y);
@@ -164,7 +164,7 @@ public class Creature extends GameEntity {
 
 		// block moving into inaccessible tile
 		if (!canAccessTile(newTile)) {
-			couldMove = false;
+			stuck = true;
 			return;
 		}
 
@@ -172,19 +172,19 @@ public class Creature extends GameEntity {
 		if (!canAccessTile(neighbor)) {
 			if (moveDir == RIGHT && newOffset.x > 0 || moveDir == LEFT && newOffset.x < 0) {
 				setOffset(0, offset.y);
-				couldMove = false;
+				stuck = true;
 				return;
 			}
 			if (moveDir == DOWN && newOffset.y > 0 || moveDir == UP && newOffset.y < 0) {
 				setOffset(offset.x, 0);
-				couldMove = false;
+				stuck = true;
 				return;
 			}
 		}
 
 		placeAt(newTile, newOffset.x, newOffset.y);
 		changedTile = !tile().equals(guyLocationBeforeMove);
-		couldMove = true;
+		stuck = false;
 	}
 
 	public void headForTargetTile() {
@@ -193,7 +193,7 @@ public class Creature extends GameEntity {
 	}
 
 	public Optional<Direction> newWishDir(boolean randomWalk) {
-		if (couldMove && !changedTile) {
+		if (!stuck && !changedTile) {
 			return Optional.empty();
 		}
 		if (forcedDirection) {
@@ -234,7 +234,7 @@ public class Creature extends GameEntity {
 
 	public void wanderRandomly() {
 		V2i location = tile();
-		if (world.isIntersection(location) || !couldMove) {
+		if (world.isIntersection(location) || stuck) {
 			randomMoveDirection().ifPresent(randomDir -> wishDir = randomDir);
 		}
 		tryMoving();

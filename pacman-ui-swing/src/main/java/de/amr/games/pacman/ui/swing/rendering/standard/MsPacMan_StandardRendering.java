@@ -144,8 +144,7 @@ public class MsPacMan_StandardRendering extends StandardRendering
 		if (pac.dead) {
 			return playerDying().hasStarted() ? playerDying().animate() : playerMunching(pac, pac.dir).frame();
 		}
-		return pac.speed == 0 || !pac.couldMove ? playerMunching(pac, pac.dir).frame(1)
-				: playerMunching(pac, pac.dir).animate();
+		return pac.speed == 0 || pac.stuck ? playerMunching(pac, pac.dir).frame(1) : playerMunching(pac, pac.dir).animate();
 	}
 
 	@Override
