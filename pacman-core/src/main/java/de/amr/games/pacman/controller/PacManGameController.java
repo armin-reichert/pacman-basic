@@ -192,7 +192,6 @@ public class PacManGameController {
 	}
 
 	public void toggleGameType() {
-		userInterface.sound().ifPresent(SoundManager::stopAll);
 		if (isPlaying(MS_PACMAN)) {
 			play(PACMAN);
 			userInterface.showFlashMessage("Now playing Pac-Man");
@@ -220,19 +219,19 @@ public class PacManGameController {
 		game.reset();
 		attractMode = false;
 		gameStarted = false;
+		autopilot.enabled = false;
 		if (userInterface != null) {
 			userInterface.mute(false);
 			userInterface.sound().ifPresent(SoundManager::stopAll);
-			userInterface.animation().ifPresent(va -> va.reset(game));
+			userInterface.animation().ifPresent(anim -> anim.reset(game));
 			userInterface.onGameChanged(game);
 		}
-
 		fsm.state.timer.reset();
 	}
 
 	private void updateIntroState() {
 		if (attractMode) {
-			userInterface.mute(true);
+			autopilot.enabled = true;
 			fsm.changeState(READY);
 			return;
 		}
@@ -243,19 +242,19 @@ public class PacManGameController {
 
 		// test intermission scenes
 		if (userInterface.keyPressed("1")) {
-			game.intermissionNumber = 1;
 			userInterface.showFlashMessage("Test Intermission #1");
+			game.intermissionNumber = 1;
 			fsm.changeState(INTERMISSION);
 			return;
 		}
 		if (userInterface.keyPressed("2")) {
-			game.intermissionNumber = 2;
 			userInterface.showFlashMessage("Test Intermission #2");
+			game.intermissionNumber = 2;
 			fsm.changeState(INTERMISSION);
 		}
 		if (userInterface.keyPressed("3")) {
-			game.intermissionNumber = 3;
 			userInterface.showFlashMessage("Test Intermission #3");
+			game.intermissionNumber = 3;
 			fsm.changeState(INTERMISSION);
 		}
 	}
