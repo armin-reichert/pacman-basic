@@ -86,7 +86,6 @@ public class PacManGameController {
 		PacManGameState.READY.onUpdate = this::updateReadyState;
 		PacManGameState.HUNTING.onEnter = this::enterHuntingState;
 		PacManGameState.HUNTING.onUpdate = this::updateHuntingState;
-		PacManGameState.HUNTING.onExit = this::exitHuntingState;
 		PacManGameState.GHOST_DYING.onEnter = this::enterGhostDyingState;
 		PacManGameState.GHOST_DYING.onUpdate = this::updateGhostDyingState;
 		PacManGameState.GHOST_DYING.onExit = this::exitGhostDyingState;
@@ -397,10 +396,6 @@ public class PacManGameController {
 				sm.stop(PacManGameSound.GHOST_EYES);
 			}
 		});
-	}
-
-	private void exitHuntingState() {
-		userInterface.animation().map(PacManGameAnimations::mazeAnimations).ifPresent(ma -> ma.energizerBlinking().reset());
 	}
 
 	private void enterPacManDyingState() {
