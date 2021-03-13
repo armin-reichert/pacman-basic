@@ -250,7 +250,7 @@ public class PacManGameController {
 		if (gameStarted || attractMode) {
 			fsm.state.timer.resetSeconds(2);
 		} else {
-			userInterface.sound().ifPresent(snd -> snd.play(PacManGameSound.GAME_READY));
+			userInterface.sound().ifPresent(sound -> sound.play(PacManGameSound.GAME_READY));
 			fsm.state.timer.resetSeconds(4.5);
 		}
 	}
@@ -351,7 +351,7 @@ public class PacManGameController {
 		} else if (game.player.powerTimer.hasExpired()) {
 			log("%s lost power", game.player.name);
 			game.ghosts(FRIGHTENED).forEach(ghost -> ghost.state = HUNTING_PAC);
-			userInterface.sound().ifPresent(sm -> sm.stop(PacManGameSound.PACMAN_POWER));
+			userInterface.sound().ifPresent(sound -> sound.stop(PacManGameSound.PACMAN_POWER));
 			game.player.powerTimer.reset();
 			fsm.state.timer.start();
 		}
@@ -365,12 +365,12 @@ public class PacManGameController {
 			log("Pac-Man found bonus (%s) of value %d", game.bonusNames[game.bonus.symbol], game.bonus.points);
 			game.bonus.eatAndDisplayValue(2 * 60);
 			score(game.bonus.points);
-			userInterface.sound().ifPresent(snd -> snd.play(PacManGameSound.BONUS_EATEN));
+			userInterface.sound().ifPresent(sound -> sound.play(PacManGameSound.BONUS_EATEN));
 		}
 
-		userInterface.sound().ifPresent(sm -> {
+		userInterface.sound().ifPresent(sound -> {
 			if (game.ghosts().noneMatch(ghost -> ghost.is(DEAD))) {
-				sm.stop(PacManGameSound.GHOST_EYES);
+				sound.stop(PacManGameSound.GHOST_EYES);
 			}
 		});
 	}
@@ -391,13 +391,13 @@ public class PacManGameController {
 			game.ghosts().forEach(ghost -> ghost.visible = false);
 			userInterface.animation().map(PacManGameAnimations2D::playerAnimations).map(PlayerAnimations2D::playerDying)
 					.ifPresent(TimedSequence::restart);
-			userInterface.sound().ifPresent(snd -> snd.play(PacManGameSound.PACMAN_DEATH));
+			userInterface.sound().ifPresent(sound -> sound.play(PacManGameSound.PACMAN_DEATH));
 		}
 	}
 
 	private void enterGhostDyingState() {
 		game.player.visible = false;
-		userInterface.sound().ifPresent(snd -> snd.play(PacManGameSound.GHOST_EATEN));
+		userInterface.sound().ifPresent(sound -> sound.play(PacManGameSound.GHOST_EATEN));
 		fsm.state.timer.resetSeconds(1);
 	}
 
@@ -418,7 +418,7 @@ public class PacManGameController {
 			ghost.bounty = 0;
 		});
 		if (game.ghosts(DEAD).count() > 0) {
-			userInterface.sound().ifPresent(snd -> snd.loopForever(PacManGameSound.GHOST_EYES));
+			userInterface.sound().ifPresent(sound -> sound.loopForever(PacManGameSound.GHOST_EYES));
 		}
 	}
 
@@ -499,7 +499,7 @@ public class PacManGameController {
 		game.score += points;
 		if (oldscore < 10000 && game.score >= 10000) {
 			game.lives++;
-			userInterface.sound().ifPresent(snd -> snd.play(PacManGameSound.EXTRA_LIFE));
+			userInterface.sound().ifPresent(sound -> sound.play(PacManGameSound.EXTRA_LIFE));
 			log("Extra life. Now you have %d lives!", game.lives);
 			userInterface.showFlashMessage("Extra life!");
 		}
@@ -562,7 +562,7 @@ public class PacManGameController {
 		}
 
 		updateGhostDotCounters();
-		userInterface.sound().ifPresent(snd -> snd.play(PacManGameSound.PACMAN_MUNCH));
+		userInterface.sound().ifPresent(sound -> sound.play(PacManGameSound.PACMAN_MUNCH));
 	}
 
 	private void startPlayerFrighteningGhosts(int seconds) {
@@ -577,7 +577,7 @@ public class PacManGameController {
 				ga.ghostFrightened(ghost).forEach(TimedSequence::restart);
 			});
 		});
-		userInterface.sound().ifPresent(snd -> snd.loopForever(PacManGameSound.PACMAN_POWER));
+		userInterface.sound().ifPresent(sound -> sound.loopForever(PacManGameSound.PACMAN_POWER));
 		game.player.powerTimer.resetSeconds(seconds);
 		game.player.powerTimer.start();
 		log("Pac-Man got power for %d seconds", seconds);
