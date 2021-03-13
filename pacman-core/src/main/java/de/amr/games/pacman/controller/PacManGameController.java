@@ -197,7 +197,6 @@ public class PacManGameController {
 		PacManGameState.GHOST_DYING.onExit = this::exitGhostDyingState;
 		PacManGameState.PACMAN_DYING.onEnter = this::enterPacManDyingState;
 		PacManGameState.PACMAN_DYING.onUpdate = this::updatePacManDyingState;
-		PacManGameState.PACMAN_DYING.onExit = this::exitPacManDyingState;
 		PacManGameState.LEVEL_STARTING.onEnter = this::enterLevelStartingState;
 		PacManGameState.LEVEL_STARTING.onUpdate = this::updateLevelStartingState;
 		PacManGameState.LEVEL_COMPLETE.onEnter = this::enterLevelCompleteState;
@@ -405,18 +404,8 @@ public class PacManGameController {
 
 	private void updatePacManDyingState() {
 		if (fsm.state.timer.hasExpired()) {
-			if (attractMode) {
-				attractMode = false;
-				fsm.changeState(INTRO);
-				return;
-			}
-			game.lives--;
-			if (game.lives == 0) {
-				fsm.changeState(GAME_OVER);
-			} else {
-				fsm.changeState(READY);
-			}
-			return;
+			game.ghosts().forEach(ghost -> ghost.visible = true);
+			fsm.changeState(attractMode ? INTRO : --game.lives > 0 ? READY : GAME_OVER);
 		}
 		if (fsm.state.timer.isRunningSeconds(1)) {
 			game.ghosts().forEach(ghost -> ghost.visible = false);
@@ -424,10 +413,6 @@ public class PacManGameController {
 					.ifPresent(TimedSequence::restart);
 			userInterface.sound().ifPresent(snd -> snd.play(PacManGameSound.PACMAN_DEATH));
 		}
-	}
-
-	private void exitPacManDyingState() {
-		game.ghosts().forEach(ghost -> ghost.visible = true);
 	}
 
 	private void enterGhostDyingState() {

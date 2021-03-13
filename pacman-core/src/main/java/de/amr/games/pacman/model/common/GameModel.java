@@ -119,7 +119,7 @@ public abstract class GameModel {
 	}
 
 	public Stream<Ghost> ghosts(GhostState ghostState) {
-		return Stream.of(ghosts).filter(ghost -> ghost.state.equals(ghostState));
+		return Stream.of(ghosts).filter(ghost -> ghost.state == ghostState);
 	}
 
 	public abstract long getHuntingPhaseDuration(int phase);
