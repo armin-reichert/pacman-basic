@@ -5,6 +5,10 @@ import static de.amr.games.pacman.lib.TickTimer.TickTimerState.READY;
 import static de.amr.games.pacman.lib.TickTimer.TickTimerState.RUNNING;
 import static de.amr.games.pacman.lib.TickTimer.TickTimerState.STOPPED;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.function.Consumer;
+
 /**
  * A simple, but useful, passive timer counting ticks.
  * 
@@ -16,6 +20,11 @@ public class TickTimer {
 		READY, RUNNING, STOPPED, EXPIRED;
 	}
 
+	public enum TimerEvent {
+		RESET, STARTED, STOPPED, EXPIRED;
+	}
+
+	private final Collection<Consumer<TimerEvent>> subscribers = new HashSet<>();
 	private TickTimerState state;
 	private long duration;
 	private long ticked; // 0 .. duration - 1
@@ -24,10 +33,23 @@ public class TickTimer {
 		reset();
 	}
 
+	public void addEventListener(Consumer<TimerEvent> subscriber) {
+		subscribers.add(subscriber);
+	}
+
+	public void removeEventListener(Consumer<TimerEvent> subscriber) {
+		subscribers.remove(subscriber);
+	}
+
+	private void fireEvent(TimerEvent e) {
+		subscribers.forEach(subscriber -> subscriber.accept(e));
+	}
+
 	public void reset(long durationTicks) {
 		state = READY;
 		ticked = 0;
 		duration = durationTicks;
+		fireEvent(TimerEvent.RESET);
 	}
 
 	public void reset() {
@@ -44,6 +66,7 @@ public class TickTimer {
 		}
 		if (state == STOPPED || state == READY) {
 			state = RUNNING;
+			fireEvent(TimerEvent.STARTED);
 		} else {
 			throw new IllegalStateException("Timer cannot be started from state " + state);
 		}
@@ -55,6 +78,7 @@ public class TickTimer {
 		}
 		if (state == RUNNING) {
 			state = STOPPED;
+			fireEvent(TimerEvent.STOPPED);
 		}
 	}
 
@@ -68,12 +92,14 @@ public class TickTimer {
 		++ticked;
 		if (ticked == duration) {
 			state = EXPIRED;
+			fireEvent(TimerEvent.EXPIRED);
 			return;
 		}
 	}
 
 	public void forceExpiration() {
 		state = EXPIRED;
+		fireEvent(TimerEvent.EXPIRED);
 	}
 
 	public boolean hasExpired() {
