@@ -7,8 +7,8 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.common.Flap;
 import de.amr.games.pacman.model.common.Pac;
-import de.amr.games.pacman.ui.animation.Animation;
-import de.amr.games.pacman.ui.animation.PacManGameAnimations;
+import de.amr.games.pacman.ui.animation.TimedSequence;
+import de.amr.games.pacman.ui.animation.PacManGameAnimations2D;
 import de.amr.games.pacman.ui.sound.PacManGameSound;
 import de.amr.games.pacman.ui.sound.SoundManager;
 
@@ -30,7 +30,7 @@ public class MsPacMan_IntermissionScene2_Controller {
 	public static final int UPPER_Y = t(12), LOWER_Y = t(24), MIDDLE_Y = t(18);
 
 	public final PacManGameController controller;
-	public final PacManGameAnimations animations;
+	public final PacManGameAnimations2D animations;
 	public final SoundManager sounds;
 	public final TickTimer timer = new TickTimer();
 	public Phase phase;
@@ -43,7 +43,7 @@ public class MsPacMan_IntermissionScene2_Controller {
 		timer.start();
 	}
 
-	public MsPacMan_IntermissionScene2_Controller(PacManGameController controller, PacManGameAnimations animations,
+	public MsPacMan_IntermissionScene2_Controller(PacManGameController controller, PacManGameAnimations2D animations,
 			SoundManager sounds) {
 		this.controller = controller;
 		this.animations = animations;
@@ -86,8 +86,8 @@ public class MsPacMan_IntermissionScene2_Controller {
 				msPacMan.setPosition(-t(8), UPPER_Y);
 				pacMan.dir = msPacMan.dir = Direction.RIGHT;
 				pacMan.speed = msPacMan.speed = 2;
-				animations.playerAnimations().spouseMunching(pacMan).forEach(Animation::restart);
-				animations.playerAnimations().playerMunching(msPacMan).forEach(Animation::restart);
+				animations.playerAnimations().spouseMunching(pacMan).forEach(TimedSequence::restart);
+				animations.playerAnimations().playerMunching(msPacMan).forEach(TimedSequence::restart);
 			}
 			if (timer.isRunningSeconds(6)) {
 				msPacMan.setPosition(t(30), LOWER_Y);

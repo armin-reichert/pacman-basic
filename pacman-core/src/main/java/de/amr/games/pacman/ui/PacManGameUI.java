@@ -2,7 +2,7 @@ package de.amr.games.pacman.ui;
 
 import java.util.Optional;
 
-import de.amr.games.pacman.ui.animation.PacManGameAnimations;
+import de.amr.games.pacman.ui.animation.PacManGameAnimations2D;
 import de.amr.games.pacman.ui.sound.SoundManager;
 
 /**
@@ -29,5 +29,5 @@ public interface PacManGameUI {
 
 	Optional<SoundManager> sound();
 
-	Optional<PacManGameAnimations> animation();
+	Optional<PacManGameAnimations2D> animation();
 }

@@ -20,7 +20,7 @@ import java.util.Map;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
-import de.amr.games.pacman.ui.animation.Animation;
+import de.amr.games.pacman.ui.animation.TimedSequence;
 import de.amr.games.pacman.ui.swing.assets.Spritesheet;
 
 /**
@@ -45,21 +45,21 @@ public class PacMan_StandardAssets extends Spritesheet {
 
 	public final BufferedImage mazeFullImage;
 	public final BufferedImage mazeEmptyImage;
-	public final Animation<BufferedImage> mazeFlashingAnim;
+	public final TimedSequence<BufferedImage> mazeFlashingAnim;
 	public final BufferedImage[] symbolSprites;
 	public final Map<Integer, BufferedImage> numberSprites;
-	public final Map<Pac, EnumMap<Direction, Animation<BufferedImage>>> pacMunchingAnimations = new HashMap<>();
-	public final Animation<BufferedImage> pacCollapsingAnim;
-	public final Map<Ghost, EnumMap<Direction, Animation<BufferedImage>>> ghostsWalkingAnimsByGhost = new HashMap<>();
-	public final EnumMap<Direction, Animation<BufferedImage>> ghostEyesAnimsByDir;
-	public final Animation<BufferedImage> ghostBlueAnim;
-	public final List<Animation<BufferedImage>> ghostFlashingAnim;
-	public final Animation<Boolean> energizerBlinkingAnim;
-	public final Animation<BufferedImage> bigPacManAnim;
-	public final Animation<BufferedImage> blinkyHalfNaked;
-	public final Animation<BufferedImage> blinkyDamaged;
-	public final Animation<BufferedImage> blinkyStretched;
-	public final Animation<BufferedImage> blinkyPatched;
+	public final Map<Pac, EnumMap<Direction, TimedSequence<BufferedImage>>> pacMunchingAnimations = new HashMap<>();
+	public final TimedSequence<BufferedImage> pacCollapsingAnim;
+	public final Map<Ghost, EnumMap<Direction, TimedSequence<BufferedImage>>> ghostsWalkingAnimsByGhost = new HashMap<>();
+	public final EnumMap<Direction, TimedSequence<BufferedImage>> ghostEyesAnimsByDir;
+	public final TimedSequence<BufferedImage> ghostBlueAnim;
+	public final List<TimedSequence<BufferedImage>> ghostFlashingAnim;
+	public final TimedSequence<Boolean> energizerBlinkingAnim;
+	public final TimedSequence<BufferedImage> bigPacManAnim;
+	public final TimedSequence<BufferedImage> blinkyHalfNaked;
+	public final TimedSequence<BufferedImage> blinkyDamaged;
+	public final TimedSequence<BufferedImage> blinkyStretched;
+	public final TimedSequence<BufferedImage> blinkyPatched;
 	public final BufferedImage nailSprite;
 
 	public PacMan_StandardAssets() {
@@ -97,50 +97,50 @@ public class PacMan_StandardAssets extends Spritesheet {
 
 		BufferedImage mazeEmptyDarkImage = image("/pacman/graphics/maze_empty.png");
 		BufferedImage mazeEmptyBrightImage = createBrightEffect(mazeEmptyDarkImage, new Color(33, 33, 255), Color.BLACK);
-		mazeFlashingAnim = Animation.of(mazeEmptyBrightImage, mazeEmptyDarkImage).frameDuration(15);
+		mazeFlashingAnim = TimedSequence.of(mazeEmptyBrightImage, mazeEmptyDarkImage).frameDuration(15);
 
-		energizerBlinkingAnim = Animation.pulse().frameDuration(15);
+		energizerBlinkingAnim = TimedSequence.pulse().frameDuration(15);
 
-		pacCollapsingAnim = Animation.of(sprite(3, 0), sprite(4, 0), sprite(5, 0), sprite(6, 0), sprite(7, 0), sprite(8, 0),
+		pacCollapsingAnim = TimedSequence.of(sprite(3, 0), sprite(4, 0), sprite(5, 0), sprite(6, 0), sprite(7, 0), sprite(8, 0),
 				sprite(9, 0), sprite(10, 0), sprite(11, 0), sprite(12, 0), sprite(13, 0));
 		pacCollapsingAnim.frameDuration(8);
 
 		ghostEyesAnimsByDir = new EnumMap<>(Direction.class);
 		for (Direction dir : Direction.values()) {
-			ghostEyesAnimsByDir.put(dir, Animation.of(sprite(8 + index(dir), 5)));
+			ghostEyesAnimsByDir.put(dir, TimedSequence.of(sprite(8 + index(dir), 5)));
 		}
 
-		ghostBlueAnim = Animation.of(sprite(8, 4), sprite(9, 4));
+		ghostBlueAnim = TimedSequence.of(sprite(8, 4), sprite(9, 4));
 		ghostBlueAnim.frameDuration(20).endless();
 
 		ghostFlashingAnim = new ArrayList<>();
 		for (int i = 0; i < 4; ++i) {
-			ghostFlashingAnim.add(Animation.of(sprite(8, 4), sprite(9, 4), sprite(10, 4), sprite(11, 4)).frameDuration(4));
+			ghostFlashingAnim.add(TimedSequence.of(sprite(8, 4), sprite(9, 4), sprite(10, 4), sprite(11, 4)).frameDuration(4));
 		}
 
-		bigPacManAnim = Animation.of(spriteRegion(2, 1, 2, 2), spriteRegion(4, 1, 2, 2), spriteRegion(6, 1, 2, 2))
+		bigPacManAnim = TimedSequence.of(spriteRegion(2, 1, 2, 2), spriteRegion(4, 1, 2, 2), spriteRegion(6, 1, 2, 2))
 				.frameDuration(4).endless().run();
 
-		blinkyPatched = Animation.of(sprite(10, 7), sprite(11, 7)).restart().frameDuration(4).endless();
-		blinkyDamaged = Animation.of(sprite(8, 7), sprite(9, 7));
-		blinkyStretched = Animation.of(sprite(9, 6), sprite(10, 6), sprite(11, 6), sprite(12, 6));
-		blinkyHalfNaked = Animation.of(spriteRegion(8, 8, 2, 1), spriteRegion(10, 8, 2, 1)).endless().frameDuration(4)
+		blinkyPatched = TimedSequence.of(sprite(10, 7), sprite(11, 7)).restart().frameDuration(4).endless();
+		blinkyDamaged = TimedSequence.of(sprite(8, 7), sprite(9, 7));
+		blinkyStretched = TimedSequence.of(sprite(9, 6), sprite(10, 6), sprite(11, 6), sprite(12, 6));
+		blinkyHalfNaked = TimedSequence.of(spriteRegion(8, 8, 2, 1), spriteRegion(10, 8, 2, 1)).endless().frameDuration(4)
 				.restart();
 
 		nailSprite = sprite(8, 6);
 	}
 
-	public EnumMap<Direction, Animation<BufferedImage>> getOrCreatePacMunchingAnimation(Pac pac) {
+	public EnumMap<Direction, TimedSequence<BufferedImage>> getOrCreatePacMunchingAnimation(Pac pac) {
 		if (!pacMunchingAnimations.containsKey(pac)) {
 			pacMunchingAnimations.put(pac, createPacMunchingAnimation());
 		}
 		return pacMunchingAnimations.get(pac);
 	}
 
-	private EnumMap<Direction, Animation<BufferedImage>> createPacMunchingAnimation() {
-		EnumMap<Direction, Animation<BufferedImage>> munching = new EnumMap<>(Direction.class);
+	private EnumMap<Direction, TimedSequence<BufferedImage>> createPacMunchingAnimation() {
+		EnumMap<Direction, TimedSequence<BufferedImage>> munching = new EnumMap<>(Direction.class);
 		for (Direction dir : Direction.values()) {
-			Animation<BufferedImage> animation = Animation.of(sprite(2, 0), sprite(1, index(dir)), sprite(0, index(dir)),
+			TimedSequence<BufferedImage> animation = TimedSequence.of(sprite(2, 0), sprite(1, index(dir)), sprite(0, index(dir)),
 					sprite(1, index(dir)));
 			animation.frameDuration(2).endless().run();
 			munching.put(dir, animation);
@@ -148,10 +148,10 @@ public class PacMan_StandardAssets extends Spritesheet {
 		return munching;
 	}
 
-	private EnumMap<Direction, Animation<BufferedImage>> createGhostWalkingAnimation(int ghostType) {
-		EnumMap<Direction, Animation<BufferedImage>> walkingTo = new EnumMap<>(Direction.class);
+	private EnumMap<Direction, TimedSequence<BufferedImage>> createGhostWalkingAnimation(int ghostType) {
+		EnumMap<Direction, TimedSequence<BufferedImage>> walkingTo = new EnumMap<>(Direction.class);
 		for (Direction dir : Direction.values()) {
-			Animation<BufferedImage> anim = Animation.of(sprite(2 * index(dir), 4 + ghostType),
+			TimedSequence<BufferedImage> anim = TimedSequence.of(sprite(2 * index(dir), 4 + ghostType),
 					sprite(2 * index(dir) + 1, 4 + ghostType));
 			anim.frameDuration(10).endless();
 			walkingTo.put(dir, anim);
@@ -159,7 +159,7 @@ public class PacMan_StandardAssets extends Spritesheet {
 		return walkingTo;
 	}
 
-	public EnumMap<Direction, Animation<BufferedImage>> getOrCreateGhostsWalkingAnimation(Ghost ghost) {
+	public EnumMap<Direction, TimedSequence<BufferedImage>> getOrCreateGhostsWalkingAnimation(Ghost ghost) {
 		if (!ghostsWalkingAnimsByGhost.containsKey(ghost)) {
 			ghostsWalkingAnimsByGhost.put(ghost, createGhostWalkingAnimation(ghost.id));
 		}

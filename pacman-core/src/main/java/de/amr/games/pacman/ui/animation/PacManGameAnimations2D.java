@@ -7,7 +7,7 @@ import de.amr.games.pacman.model.common.GameModel;
  * 
  * @author Armin Reichert
  */
-public interface PacManGameAnimations {
+public interface PacManGameAnimations2D {
 
 	default void resetAllAnimations(GameModel game) {
 		mazeAnimations().reset();
@@ -15,13 +15,13 @@ public interface PacManGameAnimations {
 		playerAnimations().reset(game.player);
 	}
 
-	PlayerAnimations playerAnimations();
+	PlayerAnimations2D playerAnimations();
 
-	GhostAnimations ghostAnimations();
+	GhostAnimations2D ghostAnimations();
 
-	MazeAnimations mazeAnimations();
+	MazeAnimations2D mazeAnimations();
 
-	Animation<?> storkFlying();
+	TimedSequence<?> storkFlying();
 
-	Animation<?> flapFlapping();
+	TimedSequence<?> flapFlapping();
 }

@@ -11,8 +11,8 @@ import de.amr.games.pacman.model.common.Flap;
 import de.amr.games.pacman.model.common.GameEntity;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
-import de.amr.games.pacman.ui.animation.Animation;
-import de.amr.games.pacman.ui.animation.PacManGameAnimations;
+import de.amr.games.pacman.ui.animation.TimedSequence;
+import de.amr.games.pacman.ui.animation.PacManGameAnimations2D;
 import de.amr.games.pacman.ui.sound.PacManGameSound;
 import de.amr.games.pacman.ui.sound.SoundManager;
 
@@ -37,7 +37,7 @@ public class MsPacMan_IntermissionScene1_Controller {
 	public static final int upperY = t(12), lowerY = t(24), middleY = t(18);
 
 	public final PacManGameController controller;
-	public final PacManGameAnimations animations;
+	public final PacManGameAnimations2D animations;
 	public final SoundManager sounds;
 	public final TickTimer timer = new TickTimer();
 	public Phase phase;
@@ -47,7 +47,7 @@ public class MsPacMan_IntermissionScene1_Controller {
 	public GameEntity heart;
 	public boolean ghostsMet;
 
-	public MsPacMan_IntermissionScene1_Controller(PacManGameController controller, PacManGameAnimations animations,
+	public MsPacMan_IntermissionScene1_Controller(PacManGameController controller, PacManGameAnimations2D animations,
 			SoundManager sounds) {
 		this.controller = controller;
 		this.animations = animations;
@@ -62,7 +62,7 @@ public class MsPacMan_IntermissionScene1_Controller {
 		pacMan = new Pac("Pac-Man", Direction.RIGHT);
 		pacMan.setPosition(-t(2), upperY);
 		pacMan.visible = true;
-		animations.playerAnimations().spouseMunching(pacMan).forEach(Animation::restart);
+		animations.playerAnimations().spouseMunching(pacMan).forEach(TimedSequence::restart);
 
 		inky = new Ghost(2, "Inky", Direction.RIGHT);
 		inky.setPositionRelativeTo(pacMan, -t(3), 0);
@@ -71,14 +71,14 @@ public class MsPacMan_IntermissionScene1_Controller {
 		msPac = new Pac("Ms. Pac-Man", Direction.LEFT);
 		msPac.setPosition(t(30), lowerY);
 		msPac.visible = true;
-		animations.playerAnimations().playerMunching(msPac).forEach(Animation::restart);
+		animations.playerAnimations().playerMunching(msPac).forEach(TimedSequence::restart);
 
 		pinky = new Ghost(1, "Pinky", Direction.LEFT);
 		pinky.setPositionRelativeTo(msPac, t(3), 0);
 		pinky.visible = true;
 
 		Stream.of(inky, pinky).forEach(ghost -> {
-			animations.ghostAnimations().ghostKicking(ghost).forEach(Animation::restart);
+			animations.ghostAnimations().ghostKicking(ghost).forEach(TimedSequence::restart);
 		});
 
 		heart = new GameEntity();
@@ -141,8 +141,8 @@ public class MsPacMan_IntermissionScene1_Controller {
 				msPac.dir = Direction.RIGHT;
 				heart.setPosition((pacMan.position.x + msPac.position.x) / 2, pacMan.position.y - t(2));
 				heart.visible = true;
-				animations.ghostAnimations().ghostKicking(inky).forEach(Animation::reset);
-				animations.ghostAnimations().ghostKicking(pinky).forEach(Animation::reset);
+				animations.ghostAnimations().ghostKicking(inky).forEach(TimedSequence::reset);
+				animations.ghostAnimations().ghostKicking(pinky).forEach(TimedSequence::reset);
 				enterSeconds(Phase.READY_TO_PLAY, 2);
 			}
 			if (!ghostsMet && inky.position.x - pinky.position.x < 16) {

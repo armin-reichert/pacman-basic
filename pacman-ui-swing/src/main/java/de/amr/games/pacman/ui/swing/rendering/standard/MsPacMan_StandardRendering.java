@@ -21,10 +21,10 @@ import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.common.Stork;
 import de.amr.games.pacman.model.pacman.PacManBonus;
-import de.amr.games.pacman.ui.animation.Animation;
-import de.amr.games.pacman.ui.animation.GhostAnimations;
-import de.amr.games.pacman.ui.animation.MazeAnimations;
-import de.amr.games.pacman.ui.animation.PlayerAnimations;
+import de.amr.games.pacman.ui.animation.TimedSequence;
+import de.amr.games.pacman.ui.animation.GhostAnimations2D;
+import de.amr.games.pacman.ui.animation.MazeAnimations2D;
+import de.amr.games.pacman.ui.animation.PlayerAnimations2D;
 
 /**
  * Rendering for the Ms. Pac-Man game.
@@ -32,22 +32,22 @@ import de.amr.games.pacman.ui.animation.PlayerAnimations;
  * @author Armin Reichert
  */
 public class MsPacMan_StandardRendering extends StandardRendering
-		implements PlayerAnimations, GhostAnimations, MazeAnimations {
+		implements PlayerAnimations2D, GhostAnimations2D, MazeAnimations2D {
 
 	public static final MsPacMan_StandardAssets assets = new MsPacMan_StandardAssets();
 
 	@Override
-	public PlayerAnimations playerAnimations() {
+	public PlayerAnimations2D playerAnimations() {
 		return this;
 	}
 
 	@Override
-	public GhostAnimations ghostAnimations() {
+	public GhostAnimations2D ghostAnimations() {
 		return this;
 	}
 
 	@Override
-	public MazeAnimations mazeAnimations() {
+	public MazeAnimations2D mazeAnimations() {
 		return this;
 	}
 
@@ -109,18 +109,18 @@ public class MsPacMan_StandardRendering extends StandardRendering
 	}
 
 	@Override
-	public Animation<Boolean> energizerBlinking() {
+	public TimedSequence<Boolean> energizerBlinking() {
 		return assets.energizerBlinkingAnim;
 	}
 
 	@Override
-	public Stream<Animation<?>> mazeFlashings() {
+	public Stream<TimedSequence<?>> mazeFlashings() {
 		// TODO this is silly
-		return assets.mazesFlashingAnims.stream().map(Animation.class::cast);
+		return assets.mazesFlashingAnims.stream().map(TimedSequence.class::cast);
 	}
 
 	@Override
-	public Animation<BufferedImage> mazeFlashing(int mazeNumber) {
+	public TimedSequence<BufferedImage> mazeFlashing(int mazeNumber) {
 		return assets.mazesFlashingAnims.get(mazeNumber - 1);
 	}
 
@@ -182,37 +182,37 @@ public class MsPacMan_StandardRendering extends StandardRendering
 	}
 
 	@Override
-	public Animation<BufferedImage> playerMunching(Pac pac, Direction dir) {
+	public TimedSequence<BufferedImage> playerMunching(Pac pac, Direction dir) {
 		return assets.msPacManMunchingAnimByDir.get(dir);
 	}
 
 	@Override
-	public Animation<?> spouseMunching(Pac spouse, Direction dir) {
+	public TimedSequence<?> spouseMunching(Pac spouse, Direction dir) {
 		return assets.pacManMunching.get(dir);
 	}
 
 	@Override
-	public Animation<BufferedImage> playerDying() {
+	public TimedSequence<BufferedImage> playerDying() {
 		return assets.msPacManSpinningAnim;
 	}
 
 	@Override
-	public Animation<BufferedImage> ghostKicking(Ghost ghost, Direction dir) {
+	public TimedSequence<BufferedImage> ghostKicking(Ghost ghost, Direction dir) {
 		return assets.ghostsKickingAnimsByGhost.get(ghost.id).get(dir);
 	}
 
 	@Override
-	public Animation<BufferedImage> ghostFrightened(Ghost ghost, Direction dir) {
+	public TimedSequence<BufferedImage> ghostFrightened(Ghost ghost, Direction dir) {
 		return assets.ghostBlueAnim;
 	}
 
 	@Override
-	public Animation<BufferedImage> ghostFlashing(Ghost ghost) {
+	public TimedSequence<BufferedImage> ghostFlashing(Ghost ghost) {
 		return assets.ghostFlashingAnim.get(ghost.id);
 	}
 
 	@Override
-	public Animation<BufferedImage> ghostReturningHome(Ghost ghost, Direction dir) {
+	public TimedSequence<BufferedImage> ghostReturningHome(Ghost ghost, Direction dir) {
 		return assets.ghostEyesAnimByDir.get(dir);
 	}
 
@@ -254,7 +254,7 @@ public class MsPacMan_StandardRendering extends StandardRendering
 	@Override
 	public void drawSpouse(Graphics2D g, Pac pacMan) {
 		if (pacMan.visible) {
-			Animation<BufferedImage> munching = assets.pacManMunching.get(pacMan.dir);
+			TimedSequence<BufferedImage> munching = assets.pacManMunching.get(pacMan.dir);
 			drawSprite(g, pacMan.speed > 0 ? munching.animate() : munching.frame(1), pacMan.position.x - 4,
 					pacMan.position.y - 4);
 		}
@@ -273,8 +273,8 @@ public class MsPacMan_StandardRendering extends StandardRendering
 	}
 
 	@Override
-	public Animation<?> flapFlapping() {
-		return Animation.of( //
+	public TimedSequence<?> flapFlapping() {
+		return TimedSequence.of( //
 				assets.region(456, 208, 32, 32), //
 				assets.region(488, 208, 32, 32), //
 				assets.region(520, 208, 32, 32), //
@@ -289,8 +289,8 @@ public class MsPacMan_StandardRendering extends StandardRendering
 	}
 
 	@Override
-	public Animation<?> storkFlying() {
-		return Animation.of(//
+	public TimedSequence<?> storkFlying() {
+		return TimedSequence.of(//
 				assets.region(489, 176, 32, 16), //
 				assets.region(521, 176, 32, 16)//
 		).endless().frameDuration(10);

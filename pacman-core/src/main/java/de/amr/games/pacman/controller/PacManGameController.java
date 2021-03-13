@@ -42,10 +42,10 @@ import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.mspacman.MsPacManGame;
 import de.amr.games.pacman.model.pacman.PacManGame;
 import de.amr.games.pacman.ui.PacManGameUI;
-import de.amr.games.pacman.ui.animation.Animation;
-import de.amr.games.pacman.ui.animation.GhostAnimations;
-import de.amr.games.pacman.ui.animation.PacManGameAnimations;
-import de.amr.games.pacman.ui.animation.PlayerAnimations;
+import de.amr.games.pacman.ui.animation.TimedSequence;
+import de.amr.games.pacman.ui.animation.GhostAnimations2D;
+import de.amr.games.pacman.ui.animation.PacManGameAnimations2D;
+import de.amr.games.pacman.ui.animation.PlayerAnimations2D;
 import de.amr.games.pacman.ui.sound.PacManGameSound;
 import de.amr.games.pacman.ui.sound.SoundManager;
 
@@ -353,7 +353,7 @@ public class PacManGameController {
 		// Player has power?
 		if (game.player.powerTimer.isRunning()) {
 			// TODO this is not good:
-			Optional<GhostAnimations> ghostAnim = userInterface.animation().map(PacManGameAnimations::ghostAnimations);
+			Optional<GhostAnimations2D> ghostAnim = userInterface.animation().map(PacManGameAnimations2D::ghostAnimations);
 			if (ghostAnim.isPresent()) {
 				int singleFlashingTicks = ghostAnim.get().ghostFlashing(game.ghosts[0]).duration();
 				if (game.player.powerTimer.ticksRemaining() == game.level.numFlashes * singleFlashingTicks) {
@@ -422,8 +422,8 @@ public class PacManGameController {
 		}
 		if (fsm.state.timer.isRunningSeconds(1)) {
 			game.ghosts().forEach(ghost -> ghost.visible = false);
-			userInterface.animation().map(PacManGameAnimations::playerAnimations).map(PlayerAnimations::playerDying)
-					.ifPresent(Animation::restart);
+			userInterface.animation().map(PacManGameAnimations2D::playerAnimations).map(PlayerAnimations2D::playerDying)
+					.ifPresent(TimedSequence::restart);
 			userInterface.sound().ifPresent(snd -> snd.play(PacManGameSound.PACMAN_DEATH));
 		}
 	}
@@ -609,9 +609,9 @@ public class PacManGameController {
 			ghost.wishDir = ghost.dir.opposite();
 			ghost.forcedDirection = true;
 			// if flashing, stop. Turn blue.
-			userInterface.animation().map(PacManGameAnimations::ghostAnimations).ifPresent(ga -> {
+			userInterface.animation().map(PacManGameAnimations2D::ghostAnimations).ifPresent(ga -> {
 				ga.ghostFlashing(ghost).reset();
-				ga.ghostFrightened(ghost).forEach(Animation::restart);
+				ga.ghostFrightened(ghost).forEach(TimedSequence::restart);
 			});
 		});
 		userInterface.sound().ifPresent(snd -> snd.loopForever(PacManGameSound.PACMAN_POWER));

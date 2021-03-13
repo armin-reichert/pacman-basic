@@ -1,10 +1,10 @@
 package de.amr.games.pacman.model.common;
 
-import de.amr.games.pacman.ui.animation.Animation;
+import de.amr.games.pacman.ui.animation.TimedSequence;
 
 public class Stork extends GameEntity {
 
-	public Animation<?> flying;
+	public TimedSequence<?> flying;
 
 	@Override
 	public void move() {

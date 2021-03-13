@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import de.amr.games.pacman.lib.Direction;
-import de.amr.games.pacman.ui.animation.Animation;
+import de.amr.games.pacman.ui.animation.TimedSequence;
 import de.amr.games.pacman.ui.swing.assets.Spritesheet;
 
 /**
@@ -64,17 +64,17 @@ public class MsPacMan_StandardAssets extends Spritesheet {
 	final BufferedImage lifeSprite;
 	final List<BufferedImage> mazeEmptyImages;
 	final List<BufferedImage> mazeFullImages;
-	final List<Animation<BufferedImage>> mazesFlashingAnims;
-	final Animation<Boolean> energizerBlinkingAnim;
-	final EnumMap<Direction, Animation<BufferedImage>> msPacManMunchingAnimByDir;
-	final Animation<BufferedImage> msPacManSpinningAnim;
-	public final Map<Direction, Animation<BufferedImage>> pacManMunching; // used in intermission scene
-	final List<EnumMap<Direction, Animation<BufferedImage>>> ghostsKickingAnimsByGhost;
-	final EnumMap<Direction, Animation<BufferedImage>> ghostEyesAnimByDir;
-	final Animation<BufferedImage> ghostBlueAnim;
-	final List<Animation<BufferedImage>> ghostFlashingAnim;
-	final Animation<Integer> bonusJumpAnim;
-	final Animation<BufferedImage> storkAnim;
+	final List<TimedSequence<BufferedImage>> mazesFlashingAnims;
+	final TimedSequence<Boolean> energizerBlinkingAnim;
+	final EnumMap<Direction, TimedSequence<BufferedImage>> msPacManMunchingAnimByDir;
+	final TimedSequence<BufferedImage> msPacManSpinningAnim;
+	public final Map<Direction, TimedSequence<BufferedImage>> pacManMunching; // used in intermission scene
+	final List<EnumMap<Direction, TimedSequence<BufferedImage>>> ghostsKickingAnimsByGhost;
+	final EnumMap<Direction, TimedSequence<BufferedImage>> ghostEyesAnimByDir;
+	final TimedSequence<BufferedImage> ghostBlueAnim;
+	final List<TimedSequence<BufferedImage>> ghostFlashingAnim;
+	final TimedSequence<Integer> bonusJumpAnim;
+	final TimedSequence<BufferedImage> storkAnim;
 	final BufferedImage blueBag;
 	final BufferedImage junior;
 
@@ -97,10 +97,10 @@ public class MsPacMan_StandardAssets extends Spritesheet {
 			mazeEmptyImages.add(sheet.getSubimage(226, i * 248, 226, 248));
 			BufferedImage mazeEmpzyBright = createBrightEffect(mazeEmptyImages.get(i), getMazeWallBorderColor(i),
 					getMazeWallColor(i));
-			mazesFlashingAnims.add(Animation.of(mazeEmpzyBright, mazeEmptyImages.get(i)).frameDuration(15));
+			mazesFlashingAnims.add(TimedSequence.of(mazeEmpzyBright, mazeEmptyImages.get(i)).frameDuration(15));
 		}
 
-		energizerBlinkingAnim = Animation.pulse().frameDuration(10);
+		energizerBlinkingAnim = TimedSequence.pulse().frameDuration(10);
 
 		lifeSprite = s(1, 0);
 		symbolSprites = new BufferedImage[] { s(3, 0), s(4, 0), s(5, 0), s(6, 0), s(7, 0), s(8, 0), s(9, 0) };
@@ -125,26 +125,26 @@ public class MsPacMan_StandardAssets extends Spritesheet {
 		msPacManMunchingAnimByDir = new EnumMap<>(Direction.class);
 		for (Direction dir : Direction.values()) {
 			int d = index(dir);
-			Animation<BufferedImage> munching = Animation.of(s(0, d), s(1, d), s(2, d), s(1, d));
+			TimedSequence<BufferedImage> munching = TimedSequence.of(s(0, d), s(1, d), s(2, d), s(1, d));
 			munching.frameDuration(2).endless();
 			msPacManMunchingAnimByDir.put(dir, munching);
 		}
 
-		msPacManSpinningAnim = Animation.of(s(0, 3), s(0, 0), s(0, 1), s(0, 2));
+		msPacManSpinningAnim = TimedSequence.of(s(0, 3), s(0, 0), s(0, 1), s(0, 2));
 		msPacManSpinningAnim.frameDuration(10).repetitions(2);
 
 		pacManMunching = new EnumMap<>(Direction.class);
 		for (Direction dir : Direction.values()) {
 			int d = index(dir);
-			pacManMunching.put(dir, Animation.of(s(0, 9 + d), s(1, 9 + d), s(2, 9)).endless().frameDuration(2));
+			pacManMunching.put(dir, TimedSequence.of(s(0, 9 + d), s(1, 9 + d), s(2, 9)).endless().frameDuration(2));
 		}
 
 		ghostsKickingAnimsByGhost = new ArrayList<>(4);
 		for (int g = 0; g < 4; ++g) {
-			EnumMap<Direction, Animation<BufferedImage>> kickingByDir = new EnumMap<>(Direction.class);
+			EnumMap<Direction, TimedSequence<BufferedImage>> kickingByDir = new EnumMap<>(Direction.class);
 			for (Direction dir : Direction.values()) {
 				int d = index(dir);
-				Animation<BufferedImage> kicking = Animation.of(s(2 * d, 4 + g), s(2 * d + 1, 4 + g));
+				TimedSequence<BufferedImage> kicking = TimedSequence.of(s(2 * d, 4 + g), s(2 * d + 1, 4 + g));
 				kicking.frameDuration(4).endless();
 				kickingByDir.put(dir, kicking);
 			}
@@ -153,20 +153,20 @@ public class MsPacMan_StandardAssets extends Spritesheet {
 
 		ghostEyesAnimByDir = new EnumMap<>(Direction.class);
 		for (Direction dir : Direction.values()) {
-			ghostEyesAnimByDir.put(dir, Animation.of(s(8 + index(dir), 5)));
+			ghostEyesAnimByDir.put(dir, TimedSequence.of(s(8 + index(dir), 5)));
 		}
 
-		ghostBlueAnim = Animation.of(s(8, 4), s(9, 4));
+		ghostBlueAnim = TimedSequence.of(s(8, 4), s(9, 4));
 		ghostBlueAnim.frameDuration(20).endless().run();
 
 		ghostFlashingAnim = new ArrayList<>();
 		for (int i = 0; i < 4; ++i) {
-			ghostFlashingAnim.add(Animation.of(s(8, 4), s(9, 4), s(10, 4), s(11, 4)).frameDuration(4));
+			ghostFlashingAnim.add(TimedSequence.of(s(8, 4), s(9, 4), s(10, 4), s(11, 4)).frameDuration(4));
 		}
 
-		bonusJumpAnim = Animation.of(2, -2).frameDuration(15).endless().run();
+		bonusJumpAnim = TimedSequence.of(2, -2).frameDuration(15).endless().run();
 
-		storkAnim = Animation.of(//
+		storkAnim = TimedSequence.of(//
 				region(489, 176, 32, 16), //
 				region(521, 176, 32, 16));
 		storkAnim.endless().frameDuration(10).restart();

@@ -8,8 +8,8 @@ import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.GhostState;
 import de.amr.games.pacman.model.common.Pac;
-import de.amr.games.pacman.ui.animation.Animation;
-import de.amr.games.pacman.ui.animation.PacManGameAnimations;
+import de.amr.games.pacman.ui.animation.TimedSequence;
+import de.amr.games.pacman.ui.animation.PacManGameAnimations2D;
 
 /**
  * Controller for the Pac-Man intro scene.
@@ -35,9 +35,9 @@ public class PacMan_IntroScene_Controller {
 
 	public final TickTimer timer = new TickTimer();
 	public final PacManGameController controller;
-	public final PacManGameAnimations animations;
+	public final PacManGameAnimations2D animations;
 
-	public final Animation<Boolean> blinking = Animation.pulse().frameDuration(20);
+	public final TimedSequence<Boolean> blinking = TimedSequence.pulse().frameDuration(20);
 	public GhostPortrait[] gallery;
 	public int selectedGhost;
 	public long ghostKilledTime;
@@ -46,7 +46,7 @@ public class PacMan_IntroScene_Controller {
 
 	public Phase phase;
 
-	public PacMan_IntroScene_Controller(PacManGameController controller, PacManGameAnimations animations) {
+	public PacMan_IntroScene_Controller(PacManGameController controller, PacManGameAnimations2D animations) {
 		this.controller = controller;
 		this.animations = animations;
 	}
@@ -79,7 +79,7 @@ public class PacMan_IntroScene_Controller {
 		gallery[3].ghost.setPosition(t(2), TOP_Y + t(11));
 
 		for (int i = 0; i < 4; ++i) {
-			animations.ghostAnimations().ghostKicking(gallery[i].ghost).forEach(Animation::reset);
+			animations.ghostAnimations().ghostKicking(gallery[i].ghost).forEach(TimedSequence::reset);
 		}
 
 		pac = new Pac("Ms. Pac-Man", Direction.LEFT);
@@ -184,7 +184,7 @@ public class PacMan_IntroScene_Controller {
 		pac.speed = 1;
 		pac.dir = Direction.LEFT;
 		pac.stuck = false;
-		animations.playerAnimations().playerMunching(pac).forEach(Animation::restart);
+		animations.playerAnimations().playerMunching(pac).forEach(TimedSequence::restart);
 
 		for (Ghost ghost : ghosts) {
 			ghost.setPositionRelativeTo(pac, 8 + (ghost.id + 1) * 18, 0);
@@ -192,7 +192,7 @@ public class PacMan_IntroScene_Controller {
 			ghost.dir = ghost.wishDir = Direction.LEFT;
 			ghost.speed = pac.speed * 1.05f;
 			ghost.state = GhostState.HUNTING_PAC;
-			animations.ghostAnimations().ghostKicking(ghost).forEach(Animation::restart);
+			animations.ghostAnimations().ghostKicking(ghost).forEach(TimedSequence::restart);
 		}
 	}
 
@@ -202,7 +202,7 @@ public class PacMan_IntroScene_Controller {
 			ghost.state = GhostState.FRIGHTENED;
 			ghost.dir = ghost.wishDir = Direction.RIGHT;
 			ghost.speed = 0.5f;
-			animations.ghostAnimations().ghostFrightened(ghost).forEach(Animation::restart);
+			animations.ghostAnimations().ghostFrightened(ghost).forEach(TimedSequence::restart);
 		}
 	}
 

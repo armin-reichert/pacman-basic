@@ -17,10 +17,10 @@ import de.amr.games.pacman.model.common.GameEntity;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.pacman.PacManBonus;
-import de.amr.games.pacman.ui.animation.Animation;
-import de.amr.games.pacman.ui.animation.GhostAnimations;
-import de.amr.games.pacman.ui.animation.MazeAnimations;
-import de.amr.games.pacman.ui.animation.PlayerAnimations;
+import de.amr.games.pacman.ui.animation.TimedSequence;
+import de.amr.games.pacman.ui.animation.GhostAnimations2D;
+import de.amr.games.pacman.ui.animation.MazeAnimations2D;
+import de.amr.games.pacman.ui.animation.PlayerAnimations2D;
 
 /**
  * Standard rendering for the Pac-Man game using the original sprites and animations.
@@ -28,7 +28,7 @@ import de.amr.games.pacman.ui.animation.PlayerAnimations;
  * @author Armin Reichert
  */
 public class PacMan_StandardRendering extends StandardRendering
-		implements MazeAnimations, PlayerAnimations, GhostAnimations {
+		implements MazeAnimations2D, PlayerAnimations2D, GhostAnimations2D {
 
 	public final PacMan_StandardAssets assets;
 
@@ -37,17 +37,17 @@ public class PacMan_StandardRendering extends StandardRendering
 	}
 
 	@Override
-	public MazeAnimations mazeAnimations() {
+	public MazeAnimations2D mazeAnimations() {
 		return this;
 	}
 
 	@Override
-	public PlayerAnimations playerAnimations() {
+	public PlayerAnimations2D playerAnimations() {
 		return this;
 	}
 
 	@Override
-	public GhostAnimations ghostAnimations() {
+	public GhostAnimations2D ghostAnimations() {
 		return this;
 	}
 
@@ -69,62 +69,62 @@ public class PacMan_StandardRendering extends StandardRendering
 	// Animations
 
 	@Override
-	public Animation<Boolean> energizerBlinking() {
+	public TimedSequence<Boolean> energizerBlinking() {
 		return assets.energizerBlinkingAnim;
 	}
 
 	@Override
-	public Stream<Animation<?>> mazeFlashings() {
+	public Stream<TimedSequence<?>> mazeFlashings() {
 		return Stream.of(assets.mazeFlashingAnim);
 	}
 
 	@Override
-	public Animation<BufferedImage> mazeFlashing(int mazeNumber) {
+	public TimedSequence<BufferedImage> mazeFlashing(int mazeNumber) {
 		return assets.mazeFlashingAnim;
 	}
 
 	@Override
-	public Animation<BufferedImage> playerMunching(Pac pac, Direction dir) {
+	public TimedSequence<BufferedImage> playerMunching(Pac pac, Direction dir) {
 		return assets.getOrCreatePacMunchingAnimation(pac).get(dir);
 	}
 
 	@Override
-	public Animation<?> spouseMunching(Pac spouse, Direction dir) {
+	public TimedSequence<?> spouseMunching(Pac spouse, Direction dir) {
 		return null;
 	}
 
 	@Override
-	public Animation<BufferedImage> playerDying() {
+	public TimedSequence<BufferedImage> playerDying() {
 		return assets.pacCollapsingAnim;
 	}
 
 	@Override
-	public Animation<BufferedImage> ghostKicking(Ghost ghost, Direction dir) {
+	public TimedSequence<BufferedImage> ghostKicking(Ghost ghost, Direction dir) {
 		return assets.getOrCreateGhostsWalkingAnimation(ghost).get(dir);
 	}
 
 	@Override
-	public Animation<BufferedImage> ghostFrightened(Ghost ghost, Direction dir) {
+	public TimedSequence<BufferedImage> ghostFrightened(Ghost ghost, Direction dir) {
 		return assets.ghostBlueAnim;
 	}
 
 	@Override
-	public Animation<BufferedImage> ghostFlashing(Ghost ghost) {
+	public TimedSequence<BufferedImage> ghostFlashing(Ghost ghost) {
 		return assets.ghostFlashingAnim.get(ghost.id);
 	}
 
 	@Override
-	public Animation<BufferedImage> ghostReturningHome(Ghost ghost, Direction dir) {
+	public TimedSequence<BufferedImage> ghostReturningHome(Ghost ghost, Direction dir) {
 		return assets.ghostEyesAnimsByDir.get(dir);
 	}
 
 	@Override
-	public Animation<?> flapFlapping() {
+	public TimedSequence<?> flapFlapping() {
 		return null;
 	}
 
 	@Override
-	public Animation<?> storkFlying() {
+	public TimedSequence<?> storkFlying() {
 		return null;
 	}
 

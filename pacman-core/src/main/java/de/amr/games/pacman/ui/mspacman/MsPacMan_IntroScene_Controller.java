@@ -10,8 +10,8 @@ import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.GhostState;
 import de.amr.games.pacman.model.common.Pac;
-import de.amr.games.pacman.ui.animation.Animation;
-import de.amr.games.pacman.ui.animation.PacManGameAnimations;
+import de.amr.games.pacman.ui.animation.TimedSequence;
+import de.amr.games.pacman.ui.animation.PacManGameAnimations2D;
 import de.amr.games.pacman.ui.sound.SoundManager;
 
 /**
@@ -32,7 +32,7 @@ public class MsPacMan_IntroScene_Controller {
 	public final int tileLeftOfBoard = 4;
 
 	public final PacManGameController controller;
-	public final PacManGameAnimations animations;
+	public final PacManGameAnimations2D animations;
 	public final SoundManager sounds;
 
 	public Phase phase;
@@ -41,9 +41,9 @@ public class MsPacMan_IntroScene_Controller {
 	public Pac msPacMan;
 	public Ghost[] ghosts;
 	public int currentGhostIndex;
-	public final Animation<Boolean> blinking = Animation.pulse().frameDuration(30);
+	public final TimedSequence<Boolean> blinking = TimedSequence.pulse().frameDuration(30);
 
-	public MsPacMan_IntroScene_Controller(PacManGameController controller, PacManGameAnimations animations,
+	public MsPacMan_IntroScene_Controller(PacManGameController controller, PacManGameAnimations2D animations,
 			SoundManager sounds) {
 		this.controller = controller;
 		this.animations = animations;
@@ -92,7 +92,7 @@ public class MsPacMan_IntroScene_Controller {
 			if (phaseTimer.hasJustStarted()) {
 				ghosts[currentGhostIndex].visible = true;
 				ghosts[currentGhostIndex].speed = 1.0;
-				animations.ghostAnimations().ghostKicking(ghosts[currentGhostIndex]).forEach(Animation::restart);
+				animations.ghostAnimations().ghostKicking(ghosts[currentGhostIndex]).forEach(TimedSequence::restart);
 			}
 			boolean ghostReachedFinalPosition = ghostEnteringStage(ghosts[currentGhostIndex]);
 			if (ghostReachedFinalPosition) {
@@ -114,7 +114,7 @@ public class MsPacMan_IntroScene_Controller {
 				msPacMan.visible = true;
 				msPacMan.stuck = false;
 				msPacMan.speed = 1;
-				animations.playerAnimations().playerMunching(msPacMan).forEach(Animation::restart);
+				animations.playerAnimations().playerMunching(msPacMan).forEach(TimedSequence::restart);
 			}
 			boolean msPacReachedFinalPosition = msPacManEnteringStage();
 			if (msPacReachedFinalPosition) {
@@ -148,7 +148,7 @@ public class MsPacMan_IntroScene_Controller {
 		}
 		if (ghost.dir == UP && ghost.position.y <= t(tileBoardTopLeft.y) + ghost.id * 18) {
 			ghost.speed = 0;
-			animations.ghostAnimations().ghostKicking(ghost).forEach(Animation::reset);
+			animations.ghostAnimations().ghostKicking(ghost).forEach(TimedSequence::reset);
 			return true;
 		}
 		return false;
@@ -157,7 +157,7 @@ public class MsPacMan_IntroScene_Controller {
 	public boolean msPacManEnteringStage() {
 		if (msPacMan.speed != 0 && msPacMan.position.x <= t(13)) {
 			msPacMan.speed = 0;
-			animations.playerAnimations().playerMunching(msPacMan).forEach(Animation::reset);
+			animations.playerAnimations().playerMunching(msPacMan).forEach(TimedSequence::reset);
 			return true;
 		}
 		return false;

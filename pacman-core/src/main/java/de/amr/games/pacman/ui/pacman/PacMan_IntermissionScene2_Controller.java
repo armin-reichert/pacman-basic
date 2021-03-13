@@ -9,8 +9,8 @@ import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.common.GameEntity;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
-import de.amr.games.pacman.ui.animation.Animation;
-import de.amr.games.pacman.ui.animation.PacManGameAnimations;
+import de.amr.games.pacman.ui.animation.TimedSequence;
+import de.amr.games.pacman.ui.animation.PacManGameAnimations2D;
 import de.amr.games.pacman.ui.sound.PacManGameSound;
 import de.amr.games.pacman.ui.sound.SoundManager;
 
@@ -30,7 +30,7 @@ public class PacMan_IntermissionScene2_Controller {
 
 	public final TickTimer timer = new TickTimer();
 	public final PacManGameController controller;
-	public final PacManGameAnimations animations;
+	public final PacManGameAnimations2D animations;
 	public final SoundManager sounds;
 
 	public Ghost blinky;
@@ -38,7 +38,7 @@ public class PacMan_IntermissionScene2_Controller {
 	public GameEntity nail;
 	public Phase phase;
 
-	public PacMan_IntermissionScene2_Controller(PacManGameController controller, PacManGameAnimations animations,
+	public PacMan_IntermissionScene2_Controller(PacManGameController controller, PacManGameAnimations2D animations,
 			SoundManager sounds) {
 		this.controller = controller;
 		this.animations = animations;
@@ -50,7 +50,7 @@ public class PacMan_IntermissionScene2_Controller {
 		pac.setTilePosition(30, groundTileY);
 		pac.visible = true;
 		pac.speed = 1;
-		animations.playerAnimations().playerMunching(pac).forEach(Animation::restart);
+		animations.playerAnimations().playerMunching(pac).forEach(TimedSequence::restart);
 
 		blinky = new Ghost(0, "Blinky", Direction.LEFT);
 		blinky.setPositionRelativeTo(pac, t(14), 0);

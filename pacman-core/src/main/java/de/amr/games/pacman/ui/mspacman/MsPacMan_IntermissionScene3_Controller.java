@@ -10,7 +10,7 @@ import de.amr.games.pacman.model.common.Flap;
 import de.amr.games.pacman.model.common.JuniorBag;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.common.Stork;
-import de.amr.games.pacman.ui.animation.PacManGameAnimations;
+import de.amr.games.pacman.ui.animation.PacManGameAnimations2D;
 import de.amr.games.pacman.ui.sound.PacManGameSound;
 import de.amr.games.pacman.ui.sound.SoundManager;
 
@@ -34,7 +34,7 @@ public class MsPacMan_IntermissionScene3_Controller {
 	public static final int BIRD_Y = t(12), GROUND_Y = t(24);
 
 	public final PacManGameController controller;
-	public final PacManGameAnimations animations;
+	public final PacManGameAnimations2D animations;
 	public final SoundManager sounds;
 	public final TickTimer timer = new TickTimer();
 
@@ -46,7 +46,7 @@ public class MsPacMan_IntermissionScene3_Controller {
 
 	public Phase phase;
 
-	public MsPacMan_IntermissionScene3_Controller(PacManGameController controller, PacManGameAnimations animations,
+	public MsPacMan_IntermissionScene3_Controller(PacManGameController controller, PacManGameAnimations2D animations,
 			SoundManager sounds) {
 		this.controller = controller;
 		this.animations = animations;

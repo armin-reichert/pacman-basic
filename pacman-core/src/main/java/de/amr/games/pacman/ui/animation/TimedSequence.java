@@ -10,9 +10,9 @@ import java.util.stream.Stream;
  * 
  * @author Armin Reichert
  */
-public class Animation<T> {
+public class TimedSequence<T> {
 
-	static class SingleFrameAnimation<TT> extends Animation<TT> {
+	static class SingleFrameAnimation<TT> extends TimedSequence<TT> {
 
 		public SingleFrameAnimation(TT thing) {
 			things = Collections.singletonList(thing);
@@ -20,20 +20,20 @@ public class Animation<T> {
 	}
 
 	@SafeVarargs
-	public static <TT> Animation<TT> of(TT... things) {
+	public static <TT> TimedSequence<TT> of(TT... things) {
 		if (things.length == 0) {
 			throw new IllegalArgumentException("Animation must have at least one frame");
 		}
 		if (things.length == 1) {
 			return new SingleFrameAnimation<TT>(things[0]);
 		}
-		Animation<TT> a = new Animation<>();
+		TimedSequence<TT> a = new TimedSequence<>();
 		a.things = Stream.of(things).collect(Collectors.toList());
 		return a;
 	}
 
-	public static Animation<Boolean> pulse() {
-		return Animation.of(true, false).endless();
+	public static TimedSequence<Boolean> pulse() {
+		return TimedSequence.of(true, false).endless();
 	}
 
 	protected List<T> things;
@@ -45,13 +45,13 @@ public class Animation<T> {
 	protected boolean running;
 	protected boolean complete;
 
-	protected Animation() {
+	protected TimedSequence() {
 		repetitions = 1;
 		frameDurationTicks = 6; // 0.1 sec
 		reset();
 	}
 
-	public Animation<T> reset() {
+	public TimedSequence<T> reset() {
 		frameRunningTicks = 0;
 		frameIndex = 0;
 		loopIndex = 0;
@@ -60,7 +60,7 @@ public class Animation<T> {
 		return this;
 	}
 
-	public Animation<T> frameDuration(int ticks) {
+	public TimedSequence<T> frameDuration(int ticks) {
 		frameDurationTicks = ticks;
 		return this;
 	}
@@ -69,28 +69,28 @@ public class Animation<T> {
 		return repetitions;
 	}
 
-	public Animation<T> repetitions(int n) {
+	public TimedSequence<T> repetitions(int n) {
 		repetitions = n;
 		return this;
 	}
 
-	public Animation<T> endless() {
+	public TimedSequence<T> endless() {
 		repetitions = Integer.MAX_VALUE;
 		return this;
 	}
 
-	public Animation<T> restart() {
+	public TimedSequence<T> restart() {
 		reset();
 		run();
 		return this;
 	}
 
-	public Animation<T> run() {
+	public TimedSequence<T> run() {
 		running = true;
 		return this;
 	}
 
-	public Animation<T> stop() {
+	public TimedSequence<T> stop() {
 		running = false;
 		return this;
 	}

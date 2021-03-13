@@ -36,7 +36,7 @@ import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.GameType;
 import de.amr.games.pacman.ui.FlashMessage;
 import de.amr.games.pacman.ui.PacManGameUI;
-import de.amr.games.pacman.ui.animation.PacManGameAnimations;
+import de.amr.games.pacman.ui.animation.PacManGameAnimations2D;
 import de.amr.games.pacman.ui.sound.SoundManager;
 import de.amr.games.pacman.ui.swing.app.GameLoop;
 import de.amr.games.pacman.ui.swing.assets.AssetLoader;
@@ -251,7 +251,7 @@ public class PacManGameUI_Swing implements PacManGameUI {
 	}
 
 	@Override
-	public Optional<PacManGameAnimations> animation() {
+	public Optional<PacManGameAnimations2D> animation() {
 		return Optional.of(renderings.get(currentGame()));
 	}
 

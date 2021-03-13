@@ -10,24 +10,24 @@ import de.amr.games.pacman.model.common.Pac;
  * 
  * @author Armin Reichert
  */
-public interface PlayerAnimations {
+public interface PlayerAnimations2D {
 
 	default void reset(Pac player) {
-		playerMunching(player).forEach(Animation::reset);
+		playerMunching(player).forEach(TimedSequence::reset);
 		playerDying().reset();
 	}
 
-	Animation<?> playerMunching(Pac player, Direction dir);
+	TimedSequence<?> playerMunching(Pac player, Direction dir);
 
-	default Stream<Animation<?>> playerMunching(Pac player) {
+	default Stream<TimedSequence<?>> playerMunching(Pac player) {
 		return Direction.stream().map(dir -> playerMunching(player, dir));
 	}
 
-	Animation<?> spouseMunching(Pac spouse, Direction dir);
+	TimedSequence<?> spouseMunching(Pac spouse, Direction dir);
 
-	default Stream<Animation<?>> spouseMunching(Pac spouse) {
+	default Stream<TimedSequence<?>> spouseMunching(Pac spouse) {
 		return Direction.stream().map(dir -> spouseMunching(spouse, dir));
 	}
 
-	Animation<?> playerDying();
+	TimedSequence<?> playerDying();
 }
