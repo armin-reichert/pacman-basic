@@ -79,7 +79,6 @@ public class PacManGameUI_Swing implements PacManGameUI {
 	private final Keyboard keyboard;
 
 	private GameScene currentScene;
-	private boolean muted;
 
 	public PacManGameUI_Swing(GameLoop gameLoop, PacManGameController controller, double height) {
 		this.gameLoop = gameLoop;
@@ -238,15 +237,7 @@ public class PacManGameUI_Swing implements PacManGameUI {
 	}
 
 	@Override
-	public void mute(boolean b) {
-		muted = b;
-	}
-
-	@Override
 	public Optional<SoundManager> sound() {
-		if (muted) {
-			return Optional.empty(); // TODO that's just a hack, should have real mute functionality
-		}
 		return Optional.of(sounds.get(currentGame()));
 	}
 

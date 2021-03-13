@@ -42,10 +42,10 @@ import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.mspacman.MsPacManGame;
 import de.amr.games.pacman.model.pacman.PacManGame;
 import de.amr.games.pacman.ui.PacManGameUI;
-import de.amr.games.pacman.ui.animation.TimedSequence;
 import de.amr.games.pacman.ui.animation.GhostAnimations2D;
 import de.amr.games.pacman.ui.animation.PacManGameAnimations2D;
 import de.amr.games.pacman.ui.animation.PlayerAnimations2D;
+import de.amr.games.pacman.ui.animation.TimedSequence;
 import de.amr.games.pacman.ui.sound.PacManGameSound;
 import de.amr.games.pacman.ui.sound.SoundManager;
 
@@ -214,7 +214,6 @@ public class PacManGameController {
 		gameStarted = false;
 		autopilot.enabled = false;
 		if (userInterface != null) {
-			userInterface.mute(false);
 			userInterface.sound().ifPresent(SoundManager::stopAll);
 			userInterface.animation().ifPresent(anim -> anim.resetAllAnimations(game));
 		}
@@ -224,7 +223,6 @@ public class PacManGameController {
 	private void updateIntroState() {
 		if (attractMode) {
 			autopilot.enabled = true;
-			userInterface.mute(true);
 			fsm.changeState(READY);
 			return;
 		}

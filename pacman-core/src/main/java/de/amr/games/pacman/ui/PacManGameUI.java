@@ -25,8 +25,6 @@ public interface PacManGameUI {
 
 	boolean keyPressed(String keySpec);
 
-	void mute(boolean muted);
-
 	Optional<SoundManager> sound();
 
 	Optional<PacManGameAnimations2D> animation();
