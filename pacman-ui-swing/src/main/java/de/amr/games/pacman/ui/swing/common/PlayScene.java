@@ -7,7 +7,9 @@ import java.awt.Graphics2D;
 
 import de.amr.games.pacman.controller.PacManGameController;
 import de.amr.games.pacman.controller.PacManGameState;
+import de.amr.games.pacman.lib.TickTimerEvent;
 import de.amr.games.pacman.model.common.GameModel;
+import de.amr.games.pacman.model.common.GhostState;
 import de.amr.games.pacman.ui.animation.TimedSequence;
 import de.amr.games.pacman.ui.sound.SoundManager;
 import de.amr.games.pacman.ui.swing.rendering.PacManGameRendering2D;
@@ -82,6 +84,15 @@ public class PlayScene extends GameScene {
 		GameModel game = controller.game;
 		mazeFlashing = rendering.mazeAnimations().mazeFlashing(game.level.mazeNumber).repetitions(game.level.numFlashes);
 		mazeFlashing.reset();
+		game.player.powerTimer.addEventListener(e -> {
+			if (e.type == TickTimerEvent.Type.HALF_EXPIRED) {
+				game.ghosts(GhostState.FRIGHTENED).forEach(ghost -> {
+					TimedSequence<?> flashing = rendering.ghostAnimations().ghostFlashing(ghost);
+					long frameTime = e.ticks / (game.level.numFlashes * flashing.numFrames());
+					flashing.frameDuration(frameTime).repetitions(game.level.numFlashes).restart();
+				});
+			}
+		});
 	}
 
 	@Override

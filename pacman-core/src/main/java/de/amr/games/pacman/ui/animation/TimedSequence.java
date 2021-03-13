@@ -38,10 +38,10 @@ public class TimedSequence<T> {
 
 	protected List<T> things;
 	protected int repetitions;
-	protected int frameDurationTicks;
-	protected int frameRunningTicks;
+	protected long frameDurationTicks;
+	protected long frameRunningTicks;
 	protected int frameIndex;
-	protected int loopIndex;
+	protected long loopIndex;
 	protected boolean running;
 	protected boolean complete;
 
@@ -60,7 +60,7 @@ public class TimedSequence<T> {
 		return this;
 	}
 
-	public TimedSequence<T> frameDuration(int ticks) {
+	public TimedSequence<T> frameDuration(long ticks) {
 		frameDurationTicks = ticks;
 		return this;
 	}
@@ -138,11 +138,11 @@ public class TimedSequence<T> {
 		return frameIndex;
 	}
 
-	public int getFrameDuration() {
+	public long getFrameDuration() {
 		return frameDurationTicks;
 	}
 
-	public int duration() {
+	public long duration() {
 		return things.size() * frameDurationTicks;
 	}
 

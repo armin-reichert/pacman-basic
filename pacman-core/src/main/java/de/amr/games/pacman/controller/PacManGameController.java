@@ -42,7 +42,6 @@ import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.mspacman.MsPacManGame;
 import de.amr.games.pacman.model.pacman.PacManGame;
 import de.amr.games.pacman.ui.PacManGameUI;
-import de.amr.games.pacman.ui.animation.GhostAnimations2D;
 import de.amr.games.pacman.ui.animation.PacManGameAnimations2D;
 import de.amr.games.pacman.ui.animation.PlayerAnimations2D;
 import de.amr.games.pacman.ui.animation.TimedSequence;
@@ -347,32 +346,13 @@ public class PacManGameController {
 			game.player.starvingTicks++;
 		}
 
-		// Player has power?
 		if (game.player.powerTimer.isRunning()) {
-			// TODO this is not good:
-			Optional<GhostAnimations2D> ghostAnim = userInterface.animation().map(PacManGameAnimations2D::ghostAnimations);
-			if (ghostAnim.isPresent()) {
-				int singleFlashingTicks = ghostAnim.get().ghostFlashing(game.ghosts[0]).duration();
-				if (game.player.powerTimer.ticksRemaining() == game.level.numFlashes * singleFlashingTicks) {
-					game.ghosts(FRIGHTENED).forEach(ghost -> {
-						ghostAnim.ifPresent(ga -> {
-							ga.ghostFlashing(ghost).repetitions(game.level.numFlashes).restart();
-							log("Start flashing for %s, power ticks remaining: %d", ghost.name,
-									game.player.powerTimer.ticksRemaining());
-						});
-					});
-				}
-			}
 			game.player.powerTimer.tick();
 		} else if (game.player.powerTimer.hasExpired()) {
-			log("%s lost power, power ticks remaining: %d", game.player.name, game.player.powerTimer.ticksRemaining());
+			log("%s lost power", game.player.name);
+			game.ghosts(FRIGHTENED).forEach(ghost -> ghost.state = HUNTING_PAC);
+			userInterface.sound().ifPresent(sm -> sm.stop(PacManGameSound.PACMAN_POWER));
 			game.player.powerTimer.reset();
-			game.ghosts(FRIGHTENED).forEach(ghost -> {
-				ghost.state = HUNTING_PAC;
-			});
-			userInterface.sound().ifPresent(sm -> {
-				sm.stop(PacManGameSound.PACMAN_POWER);
-			});
 			fsm.state.timer.start();
 		}
 
