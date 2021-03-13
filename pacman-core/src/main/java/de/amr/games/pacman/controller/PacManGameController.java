@@ -234,7 +234,8 @@ public class PacManGameController {
 	}
 
 	private void updateIntroState() {
-		if (attractMode) {
+		if (fsm.state.timer.hasExpired()) {
+			attractMode = true;
 			autopilot.enabled = true;
 			fsm.changeState(READY);
 			return;

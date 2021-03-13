@@ -8,8 +8,8 @@ import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.GhostState;
 import de.amr.games.pacman.model.common.Pac;
-import de.amr.games.pacman.ui.animation.TimedSequence;
 import de.amr.games.pacman.ui.animation.PacManGameAnimations2D;
+import de.amr.games.pacman.ui.animation.TimedSequence;
 
 /**
  * Controller for the Pac-Man intro scene.
@@ -167,7 +167,7 @@ public class PacMan_IntroScene_Controller {
 				blinking.restart();
 			}
 			if (timer.isRunningSeconds(5)) {
-				controller.attractMode = true;
+				controller.letCurrentGameStateExpire();
 			}
 			blinking.animate();
 			timer.tick();
