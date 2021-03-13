@@ -106,7 +106,7 @@ public class PacManGameController {
 	}
 
 	private void handleCheatsAndStuff() {
-		boolean ready = fsm.state == READY, hunting = fsm.state == HUNTING;
+		boolean intro = fsm.state == INTRO, ready = fsm.state == READY, hunting = fsm.state == HUNTING;
 
 		// A = toggle autopilot
 		if (userInterface.keyPressed("A")) {
@@ -139,6 +139,22 @@ public class PacManGameController {
 			killAllGhosts();
 			fsm.changeState(GHOST_DYING);
 		}
+
+		// test intermission scenes
+		else if (userInterface.keyPressed("1") && intro) {
+			userInterface.showFlashMessage("Test Intermission #1");
+			game.intermissionNumber = 1;
+			fsm.changeState(INTERMISSION);
+		} else if (userInterface.keyPressed("2") && intro) {
+			userInterface.showFlashMessage("Test Intermission #2");
+			game.intermissionNumber = 2;
+			fsm.changeState(INTERMISSION);
+		} else if (userInterface.keyPressed("3") && intro) {
+			userInterface.showFlashMessage("Test Intermission #3");
+			game.intermissionNumber = 3;
+			fsm.changeState(INTERMISSION);
+		}
+
 	}
 
 	public void letCurrentGameStateExpire() {
@@ -214,7 +230,6 @@ public class PacManGameController {
 		autopilot.enabled = false;
 		if (userInterface != null) {
 			userInterface.sound().ifPresent(SoundManager::stopAll);
-			userInterface.animation().ifPresent(anim -> anim.resetAllAnimations(game));
 		}
 		fsm.state.timer.reset();
 	}
@@ -228,21 +243,6 @@ public class PacManGameController {
 		if (userInterface.keyPressed("Space")) {
 			fsm.changeState(READY);
 			return;
-		}
-
-		// test intermission scenes
-		if (userInterface.keyPressed("1")) {
-			userInterface.showFlashMessage("Test Intermission #1");
-			game.intermissionNumber = 1;
-			fsm.changeState(INTERMISSION);
-		} else if (userInterface.keyPressed("2")) {
-			userInterface.showFlashMessage("Test Intermission #2");
-			game.intermissionNumber = 2;
-			fsm.changeState(INTERMISSION);
-		} else if (userInterface.keyPressed("3")) {
-			userInterface.showFlashMessage("Test Intermission #3");
-			game.intermissionNumber = 3;
-			fsm.changeState(INTERMISSION);
 		}
 	}
 
