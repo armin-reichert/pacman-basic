@@ -377,7 +377,7 @@ public class PacManGameController extends PacManGameStateMachine {
 		}
 
 		userInterface.sound().ifPresent(sound -> {
-			if (game.ghosts().noneMatch(ghost -> ghost.is(DEAD))) {
+			if (game.ghosts(DEAD).count() == 0) {
 				sound.stop(PacManGameSound.GHOST_EYES);
 			}
 		});
@@ -394,8 +394,8 @@ public class PacManGameController extends PacManGameStateMachine {
 		if (state.timer.hasExpired()) {
 			game.ghosts().forEach(ghost -> ghost.visible = true);
 			changeState(attractMode ? INTRO : --game.lives > 0 ? READY : GAME_OVER);
-		}
-		if (state.timer.isRunningSeconds(1)) {
+		} else if (state.timer.isRunningSeconds(1)) {
+			// TODO move to UI:
 			game.ghosts().forEach(ghost -> ghost.visible = false);
 			userInterface.animation().map(PacManGameAnimations2D::playerAnimations).map(PlayerAnimations2D::playerDying)
 					.ifPresent(TimedSequence::restart);
@@ -412,7 +412,6 @@ public class PacManGameController extends PacManGameStateMachine {
 	private void updateGhostDyingState() {
 		if (state.timer.hasExpired()) {
 			resumePreviousState();
-			log("Resumed state '%s'", state);
 			return;
 		}
 		steerPlayer();
@@ -422,9 +421,7 @@ public class PacManGameController extends PacManGameStateMachine {
 
 	private void exitGhostDyingState() {
 		game.player.visible = true;
-		game.ghosts(DEAD).filter(ghost -> ghost.bounty > 0).forEach(ghost -> {
-			ghost.bounty = 0;
-		});
+		game.ghosts(DEAD).forEach(ghost -> ghost.bounty = 0);
 		if (game.ghosts(DEAD).count() > 0) {
 			userInterface.sound().ifPresent(sound -> sound.loopForever(PacManGameSound.GHOST_EYES));
 		}
@@ -452,24 +449,26 @@ public class PacManGameController extends PacManGameStateMachine {
 
 	private void updateLevelCompleteState() {
 		if (state.timer.hasExpired()) {
-			game.intermissionNumber = intermissionNumber(game.levelNumber);
-			if (game.intermissionNumber != 0) {
+			switch (game.levelNumber) {
+			case 2:
+				game.intermissionNumber = 1;
 				changeState(INTERMISSION);
 				return;
+			case 5:
+				game.intermissionNumber = 2;
+				changeState(INTERMISSION);
+				return;
+			case 9:
+			case 13:
+			case 17:
+				game.intermissionNumber = 3;
+				changeState(INTERMISSION);
+				return;
+			default:
+				game.intermissionNumber = 0;
+				changeState(LEVEL_STARTING);
+				return;
 			}
-			changeState(LEVEL_STARTING);
-			return;
-		}
-	}
-
-	private int intermissionNumber(int levelNumber) {
-		switch (levelNumber) {
-		//@formatter:off
-		case 2:	return 1;
-		case 5:	return 2;
-		case 9:	case 13: case 17: return 3;
-		default: return 0;
-		//@formatter:on
 		}
 	}
 
