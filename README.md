@@ -10,7 +10,7 @@ The code here is more "to the point" than the one in my other [state-machine foc
 
 YouTube:
 
-[![YouTube video](https://i9.ytimg.com/vi/q5biOTj9GIU/mq2.jpg?sqp=CMS24oEG&rs=AOn4CLCHkb03p2MYDMChrXQGPkOdC3XCWw)](https://youtu.be/q5biOTj9GIU)
+[![YouTube video](https://i9.ytimg.com/vi/q5biOTj9GIU/mq2.jpg?sqp=CMiitoIG&rs=AOn4CLC4DcaXdJYoXZrSsX7-OQMmH50QFQ)](https://youtu.be/q5biOTj9GIU)
 
 ### Build
 To build the executable jar file, run `mvn clean install` in each subproject.
