@@ -32,7 +32,6 @@ import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.V2i;
@@ -91,7 +90,9 @@ public class PacManGameController extends PacManGameStateMachine {
 	public PacManGameUI userInterface;
 
 	public PacManGameController(GameType type) {
-		selectGame(type);
+		selectedGameType = type;
+		game = games.get(selectedGameType);
+		init();
 	}
 
 	public GameType selectedGameType() {
@@ -187,7 +188,6 @@ public class PacManGameController extends PacManGameStateMachine {
 			game.intermissionNumber = 3;
 			changeState(INTERMISSION);
 		}
-
 	}
 
 	public void letCurrentGameStateExpire() {
@@ -249,11 +249,8 @@ public class PacManGameController extends PacManGameStateMachine {
 			attractMode = true;
 			autopilot.enabled = true;
 			changeState(READY);
-			return;
-		}
-		if (userInterface.keyPressed("Space")) {
+		} else if (userInterface.keyPressed("Space")) {
 			changeState(READY);
-			return;
 		}
 	}
 
@@ -318,9 +315,8 @@ public class PacManGameController extends PacManGameStateMachine {
 		}
 
 		// Player killing ghost(s)?
-		List<Ghost> prey = game.ghosts(FRIGHTENED).filter(game.player::meets).collect(Collectors.toList());
-		if (!prey.isEmpty()) {
-			prey.forEach(this::killGhost);
+		long killed = game.ghosts(FRIGHTENED).filter(game.player::meets).map(this::killGhost).count();
+		if (killed > 0) {
 			changeState(GHOST_DYING);
 			return;
 		}
@@ -610,7 +606,7 @@ public class PacManGameController extends PacManGameStateMachine {
 
 	// Ghosts
 
-	private void killGhost(Ghost ghost) {
+	private int killGhost(Ghost ghost) {
 		ghost.state = DEAD;
 		ghost.targetTile = game.level.world.houseEntry();
 		ghost.bounty = game.ghostBounty;
@@ -620,6 +616,7 @@ public class PacManGameController extends PacManGameStateMachine {
 		}
 		game.ghostBounty *= 2;
 		log("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name, ghost.tile(), ghost.bounty);
+		return 1;
 	}
 
 	private void killAllGhosts() {
