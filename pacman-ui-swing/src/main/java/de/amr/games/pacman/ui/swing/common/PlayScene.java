@@ -26,13 +26,13 @@ public class PlayScene extends GameScene {
 	public PlayScene(PacManGameController controller, Dimension size, PacManGameRendering2D rendering,
 			SoundManager sounds) {
 		super(controller, size, rendering, sounds);
-		controller.fsm.addStateEntryListener(PacManGameState.READY, this::onReadyStateEntry);
-		controller.fsm.addStateEntryListener(PacManGameState.HUNTING, this::onHuntingStateEntry);
-		controller.fsm.addStateExitListener(PacManGameState.HUNTING, this::onHuntingStateExit);
-		controller.fsm.addStateEntryListener(PacManGameState.LEVEL_COMPLETE, this::onLevelCompleteStateEntry);
-		controller.fsm.addStateEntryListener(PacManGameState.PACMAN_DYING, this::onPacManDyingStateEntry);
-		controller.fsm.addStateEntryListener(PacManGameState.GHOST_DYING, this::onGhostDyingStateEntry);
-		controller.fsm.addStateEntryListener(PacManGameState.GAME_OVER, this::onGameOverStateEntry);
+		controller.addStateEntryListener(PacManGameState.READY, this::onReadyStateEntry);
+		controller.addStateEntryListener(PacManGameState.HUNTING, this::onHuntingStateEntry);
+		controller.addStateExitListener(PacManGameState.HUNTING, this::onHuntingStateExit);
+		controller.addStateEntryListener(PacManGameState.LEVEL_COMPLETE, this::onLevelCompleteStateEntry);
+		controller.addStateEntryListener(PacManGameState.PACMAN_DYING, this::onPacManDyingStateEntry);
+		controller.addStateEntryListener(PacManGameState.GHOST_DYING, this::onGhostDyingStateEntry);
+		controller.addStateEntryListener(PacManGameState.GAME_OVER, this::onGameOverStateEntry);
 	}
 
 	private void onReadyStateEntry(PacManGameState state) {
@@ -42,7 +42,8 @@ public class PlayScene extends GameScene {
 	private void onHuntingStateEntry(PacManGameState state) {
 		rendering.mazeAnimations().energizerBlinking().restart();
 		rendering.playerAnimations().playerMunching(controller.selectedGame().player).forEach(TimedSequence::restart);
-		controller.selectedGame().ghosts().flatMap(rendering.ghostAnimations()::ghostKicking).forEach(TimedSequence::restart);
+		controller.selectedGame().ghosts().flatMap(rendering.ghostAnimations()::ghostKicking)
+				.forEach(TimedSequence::restart);
 	}
 
 	private void onHuntingStateExit(PacManGameState state) {
@@ -97,9 +98,9 @@ public class PlayScene extends GameScene {
 
 	@Override
 	public void update() {
-		if (controller.fsm.state == PacManGameState.LEVEL_COMPLETE) {
-			runLevelCompleteState(controller.fsm.state);
-		} else if (controller.fsm.state == PacManGameState.LEVEL_STARTING) {
+		if (controller.state == PacManGameState.LEVEL_COMPLETE) {
+			runLevelCompleteState(controller.state);
+		} else if (controller.state == PacManGameState.LEVEL_STARTING) {
 			controller.letCurrentGameStateExpire();
 		}
 	}
@@ -116,12 +117,12 @@ public class PlayScene extends GameScene {
 		if (controller.attractMode) {
 			rendering.drawGameState(g, game, PacManGameState.GAME_OVER);
 		} else {
-			rendering.drawGameState(g, game, controller.fsm.state);
+			rendering.drawGameState(g, game, controller.state);
 		}
 		rendering.drawBonus(g, game.bonus);
 		rendering.drawPlayer(g, game.player);
 		game.ghosts().forEach(ghost -> rendering.drawGhost(g, ghost, game.player.powerTimer.isRunning()));
-		rendering.drawScore(g, game, controller.fsm.state == PacManGameState.INTRO || controller.attractMode);
+		rendering.drawScore(g, game, controller.state == PacManGameState.INTRO || controller.attractMode);
 		if (!controller.attractMode) {
 			rendering.drawLivesCounter(g, game, t(2), t(34));
 		}

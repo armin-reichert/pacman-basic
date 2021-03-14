@@ -161,7 +161,7 @@ public class PacManGameUI_Swing implements PacManGameUI {
 
 	private GameScene getSceneForCurrentGameState() {
 		GameType currentGame = currentGame();
-		switch (controller.fsm.state) {
+		switch (controller.state) {
 		case INTRO:
 			return scenes.get(currentGame).get(0);
 		case INTERMISSION:
@@ -175,7 +175,7 @@ public class PacManGameUI_Swing implements PacManGameUI {
 	public void update() {
 		GameScene newScene = getSceneForCurrentGameState();
 		if (newScene == null) {
-			throw new IllegalStateException("No scene found for game state " + controller.fsm.state);
+			throw new IllegalStateException("No scene found for game state " + controller.state);
 		}
 		if (currentScene != newScene) {
 			if (currentScene != null) {

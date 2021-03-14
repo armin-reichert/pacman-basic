@@ -51,10 +51,10 @@ import de.amr.games.pacman.ui.sound.SoundManager;
 /**
  * Controller (in the sense of MVC) for the Pac-Man and Ms. Pac-Man game.
  * <p>
- * This is essentially a finite-state machine with states defined in {@link PacManGameState}. All
- * game data are stored in the model of the selected game, see {@link MsPacManGame} and
- * {@link PacManGame}. The views are decoupled by the interface {@link PacManGameUI}, scene
- * selection is not controlled by this class but left to the user interface implementation.
+ * This is a finite-state machine with states defined in {@link PacManGameState}. The game data are
+ * stored in the model of the selected game, see {@link MsPacManGame} and {@link PacManGame}. The
+ * user interface is abstracted via an interface ({@link PacManGameUI}). Scene selection is not
+ * controlled by this class but left to the user interface implementations.
  * <p>
  * Missing functionality:
  * <ul>
@@ -73,7 +73,7 @@ import de.amr.games.pacman.ui.sound.SoundManager;
  *      Understanding ghost behavior</a>
  * @see <a href="http://superpacman.com/mspacman/">Ms. Pac-Man</a>
  */
-public class PacManGameController {
+public class PacManGameController extends PacManGameStateMachine {
 
 	private final EnumMap<GameType, GameModel> games = new EnumMap<>(GameType.class);
 	{
@@ -81,7 +81,6 @@ public class PacManGameController {
 		games.put(MS_PACMAN, new MsPacManGame());
 	}
 
-	public final PacManGameStateMachine fsm = new PacManGameStateMachine();
 	public final Autopilot autopilot = new Autopilot();
 
 	private GameType selectedGameType;
@@ -102,7 +101,7 @@ public class PacManGameController {
 	public void selectGame(GameType type) {
 		selectedGameType = type;
 		game = games.get(selectedGameType);
-		fsm.changeState(INTRO);
+		changeState(INTRO);
 	}
 
 	public GameModel selectedGame() {
@@ -130,17 +129,17 @@ public class PacManGameController {
 
 	public void step() {
 		if (userInterface.keyPressed("Q")) {
-			fsm.init();
+			init();
 		} else {
 			if (!attractMode) {
 				handleCheatsAndStuff();
 			}
-			fsm.updateState();
+			updateState();
 		}
 	}
 
 	private void handleCheatsAndStuff() {
-		boolean intro = fsm.state == INTRO, ready = fsm.state == READY, hunting = fsm.state == HUNTING;
+		boolean intro = state == INTRO, ready = state == READY, hunting = state == HUNTING;
 
 		// A = toggle autopilot
 		if (userInterface.keyPressed("A")) {
@@ -165,34 +164,34 @@ public class PacManGameController {
 
 		// N = change to next level
 		else if (userInterface.keyPressed("N") && (ready || hunting)) {
-			fsm.changeState(LEVEL_COMPLETE);
+			changeState(LEVEL_COMPLETE);
 		}
 
 		// X = exterminate all ghosts outside of ghost house
 		else if (userInterface.keyPressed("X") && hunting) {
 			killAllGhosts();
-			fsm.changeState(GHOST_DYING);
+			changeState(GHOST_DYING);
 		}
 
 		// test intermission scenes
 		else if (userInterface.keyPressed("1") && intro) {
 			userInterface.showFlashMessage("Test Intermission #1");
 			game.intermissionNumber = 1;
-			fsm.changeState(INTERMISSION);
+			changeState(INTERMISSION);
 		} else if (userInterface.keyPressed("2") && intro) {
 			userInterface.showFlashMessage("Test Intermission #2");
 			game.intermissionNumber = 2;
-			fsm.changeState(INTERMISSION);
+			changeState(INTERMISSION);
 		} else if (userInterface.keyPressed("3") && intro) {
 			userInterface.showFlashMessage("Test Intermission #3");
 			game.intermissionNumber = 3;
-			fsm.changeState(INTERMISSION);
+			changeState(INTERMISSION);
 		}
 
 	}
 
 	public void letCurrentGameStateExpire() {
-		fsm.state.timer.forceExpiration();
+		state.timer.forceExpiration();
 	}
 
 	private void enableAutopilot(boolean enabled) {
@@ -242,18 +241,18 @@ public class PacManGameController {
 		if (userInterface != null) {
 			userInterface.sound().ifPresent(SoundManager::stopAll);
 		}
-		fsm.state.timer.reset();
+		state.timer.reset();
 	}
 
 	private void updateIntroState() {
-		if (fsm.state.timer.hasExpired()) {
+		if (state.timer.hasExpired()) {
 			attractMode = true;
 			autopilot.enabled = true;
-			fsm.changeState(READY);
+			changeState(READY);
 			return;
 		}
 		if (userInterface.keyPressed("Space")) {
-			fsm.changeState(READY);
+			changeState(READY);
 			return;
 		}
 	}
@@ -261,19 +260,19 @@ public class PacManGameController {
 	private void enterReadyState() {
 		game.resetGuys();
 		if (gameStarted || attractMode) {
-			fsm.state.timer.resetSeconds(2);
+			state.timer.resetSeconds(2);
 		} else {
 			userInterface.sound().ifPresent(sound -> sound.play(PacManGameSound.GAME_READY));
-			fsm.state.timer.resetSeconds(4.5);
+			state.timer.resetSeconds(4.5);
 		}
 	}
 
 	private void updateReadyState() {
-		if (fsm.state.timer.hasExpired()) {
-			fsm.changeState(PacManGameState.HUNTING);
+		if (state.timer.hasExpired()) {
+			changeState(PacManGameState.HUNTING);
 			return;
 		}
-		if (fsm.state.timer.isRunningSeconds(0.5)) {
+		if (state.timer.isRunningSeconds(0.5)) {
 			game.player.visible = true;
 			for (Ghost ghost : game.ghosts) {
 				ghost.visible = true;
@@ -295,9 +294,9 @@ public class PacManGameController {
 				sound.loopForever(SIRENS.get(game.huntingPhase / 2));
 			});
 		}
-		fsm.state.timer.reset(game.getHuntingPhaseDuration(game.huntingPhase));
-		fsm.state.timer.start();
-		log("Hunting phase %d started, duration: %d ticks", phase, fsm.state.timer.duration());
+		state.timer.reset(game.getHuntingPhaseDuration(game.huntingPhase));
+		state.timer.start();
+		log("Hunting phase %d started, duration: %d ticks", phase, state.timer.duration());
 	}
 
 	public boolean inScatteringPhase() {
@@ -314,7 +313,7 @@ public class PacManGameController {
 	private void updateHuntingState() {
 		// Level completed?
 		if (game.level.foodRemaining == 0) {
-			fsm.changeState(LEVEL_COMPLETE);
+			changeState(LEVEL_COMPLETE);
 			return;
 		}
 
@@ -322,7 +321,7 @@ public class PacManGameController {
 		List<Ghost> prey = game.ghosts(FRIGHTENED).filter(game.player::meets).collect(Collectors.toList());
 		if (!prey.isEmpty()) {
 			prey.forEach(this::killGhost);
-			fsm.changeState(GHOST_DYING);
+			changeState(GHOST_DYING);
 			return;
 		}
 
@@ -331,13 +330,13 @@ public class PacManGameController {
 			Optional<Ghost> killer = game.ghosts(HUNTING_PAC).filter(game.player::meets).findAny();
 			if (killer.isPresent()) {
 				killPlayer(killer.get());
-				fsm.changeState(PACMAN_DYING);
+				changeState(PACMAN_DYING);
 				return;
 			}
 		}
 
 		// Hunting phase complete?
-		if (fsm.state.timer.hasExpired()) {
+		if (state.timer.hasExpired()) {
 			game.ghosts(HUNTING_PAC).forEach(Ghost::forceTurningBack);
 			startHuntingPhase(++game.huntingPhase);
 			return;
@@ -366,7 +365,7 @@ public class PacManGameController {
 			game.ghosts(FRIGHTENED).forEach(ghost -> ghost.state = HUNTING_PAC);
 			userInterface.sound().ifPresent(sound -> sound.stop(PacManGameSound.PACMAN_POWER));
 			game.player.powerTimer.reset();
-			fsm.state.timer.start();
+			state.timer.start();
 		}
 
 		tryReleasingGhosts();
@@ -392,15 +391,15 @@ public class PacManGameController {
 		game.player.speed = 0;
 		game.bonus.edibleTicksLeft = game.bonus.eatenTicksLeft = 0;
 		userInterface.sound().ifPresent(SoundManager::stopAll);
-		fsm.state.timer.resetSeconds(4);
+		state.timer.resetSeconds(4);
 	}
 
 	private void updatePacManDyingState() {
-		if (fsm.state.timer.hasExpired()) {
+		if (state.timer.hasExpired()) {
 			game.ghosts().forEach(ghost -> ghost.visible = true);
-			fsm.changeState(attractMode ? INTRO : --game.lives > 0 ? READY : GAME_OVER);
+			changeState(attractMode ? INTRO : --game.lives > 0 ? READY : GAME_OVER);
 		}
-		if (fsm.state.timer.isRunningSeconds(1)) {
+		if (state.timer.isRunningSeconds(1)) {
 			game.ghosts().forEach(ghost -> ghost.visible = false);
 			userInterface.animation().map(PacManGameAnimations2D::playerAnimations).map(PlayerAnimations2D::playerDying)
 					.ifPresent(TimedSequence::restart);
@@ -411,13 +410,13 @@ public class PacManGameController {
 	private void enterGhostDyingState() {
 		game.player.visible = false;
 		userInterface.sound().ifPresent(sound -> sound.play(PacManGameSound.GHOST_EATEN));
-		fsm.state.timer.resetSeconds(1);
+		state.timer.resetSeconds(1);
 	}
 
 	private void updateGhostDyingState() {
-		if (fsm.state.timer.hasExpired()) {
-			fsm.resumePreviousState();
-			log("Resumed state '%s'", fsm.state);
+		if (state.timer.hasExpired()) {
+			resumePreviousState();
+			log("Resumed state '%s'", state);
 			return;
 		}
 		steerPlayer();
@@ -436,15 +435,15 @@ public class PacManGameController {
 	}
 
 	private void enterLevelStartingState() {
-		fsm.state.timer.reset();
+		state.timer.reset();
 		log("Level %d complete, entering level %d", game.levelNumber, game.levelNumber + 1);
 		game.enterLevel(game.levelNumber + 1);
 		game.levelSymbols.add(game.level.bonusSymbol);
 	}
 
 	private void updateLevelStartingState() {
-		if (fsm.state.timer.hasExpired()) {
-			fsm.changeState(READY);
+		if (state.timer.hasExpired()) {
+			changeState(READY);
 		}
 	}
 
@@ -452,17 +451,17 @@ public class PacManGameController {
 		game.bonus.edibleTicksLeft = game.bonus.eatenTicksLeft = 0;
 		game.player.speed = 0;
 		userInterface.sound().ifPresent(SoundManager::stopAll);
-		fsm.state.timer.reset();
+		state.timer.reset();
 	}
 
 	private void updateLevelCompleteState() {
-		if (fsm.state.timer.hasExpired()) {
+		if (state.timer.hasExpired()) {
 			game.intermissionNumber = intermissionNumber(game.levelNumber);
 			if (game.intermissionNumber != 0) {
-				fsm.changeState(INTERMISSION);
+				changeState(INTERMISSION);
 				return;
 			}
-			fsm.changeState(LEVEL_STARTING);
+			changeState(LEVEL_STARTING);
 			return;
 		}
 	}
@@ -482,23 +481,23 @@ public class PacManGameController {
 		game.ghosts().forEach(ghost -> ghost.speed = 0);
 		game.player.speed = 0;
 		game.saveHighscore();
-		fsm.state.timer.resetSeconds(10);
+		state.timer.resetSeconds(10);
 	}
 
 	private void updateGameOverState() {
-		if (fsm.state.timer.hasExpired() || userInterface.keyPressed("Space")) {
-			fsm.changeState(INTRO);
+		if (state.timer.hasExpired() || userInterface.keyPressed("Space")) {
+			changeState(INTRO);
 		}
 	}
 
 	private void enterIntermissionState() {
 		log("Starting intermission #%d", game.intermissionNumber);
-		fsm.state.timer.reset();
+		state.timer.reset();
 	}
 
 	private void updateIntermissionState() {
-		if (fsm.state.timer.hasExpired()) {
-			fsm.changeState(LEVEL_STARTING);
+		if (state.timer.hasExpired()) {
+			changeState(LEVEL_STARTING);
 		}
 	}
 
@@ -547,7 +546,7 @@ public class PacManGameController {
 			score(50);
 			if (game.level.ghostFrightenedSeconds > 0) {
 				// HUNTING state timer is stopped while player has power
-				fsm.state.timer.stop();
+				state.timer.stop();
 				startPlayerFrighteningGhosts(game.level.ghostFrightenedSeconds);
 			}
 		} else {
