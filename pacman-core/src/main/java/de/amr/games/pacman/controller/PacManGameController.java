@@ -83,14 +83,49 @@ public class PacManGameController {
 
 	public final PacManGameStateMachine fsm = new PacManGameStateMachine();
 	public final Autopilot autopilot = new Autopilot();
-	public GameModel game;
-	public PacManGameUI userInterface;
+
+	private GameType selectedGameType;
+	private GameModel game;
 	public boolean gameStarted;
 	public boolean attractMode;
 
-	public PacManGameController(GameType initialGameType) {
-		game = games.get(initialGameType);
-		fsm.init();
+	public PacManGameUI userInterface;
+
+	public PacManGameController(GameType type) {
+		selectGame(type);
+	}
+
+	public GameType selectedGameType() {
+		return selectedGameType;
+	}
+
+	public void selectGame(GameType type) {
+		selectedGameType = type;
+		game = games.get(selectedGameType);
+		fsm.changeState(INTRO);
+	}
+
+	public GameModel selectedGame() {
+		return games.get(selectedGameType);
+	}
+
+	public boolean isPlaying(GameType type) {
+		return selectedGameType == type;
+	}
+
+	public void toggleGameType() {
+		switch (selectedGameType) {
+		case MS_PACMAN:
+			userInterface.showFlashMessage("Now playing Pac-Man");
+			selectGame(PACMAN);
+			break;
+		case PACMAN:
+			userInterface.showFlashMessage("Now playing Ms. Pac-Man");
+			selectGame(MS_PACMAN);
+			break;
+		default:
+			break;
+		}
 	}
 
 	public void step() {
@@ -158,29 +193,6 @@ public class PacManGameController {
 
 	public void letCurrentGameStateExpire() {
 		fsm.state.timer.forceExpiration();
-	}
-
-	public boolean isPlaying(GameType type) {
-		return game == games.get(type);
-	}
-
-	public GameType currentlyPlaying() {
-		return Stream.of(GameType.values()).filter(this::isPlaying).findFirst().get();
-	}
-
-	public void play(GameType type) {
-		game = games.get(type);
-		fsm.changeState(INTRO);
-	}
-
-	public void toggleGameType() {
-		if (isPlaying(MS_PACMAN)) {
-			play(PACMAN);
-			userInterface.showFlashMessage("Now playing Pac-Man");
-		} else {
-			play(MS_PACMAN);
-			userInterface.showFlashMessage("Now playing Ms. Pac-Man");
-		}
 	}
 
 	private void enableAutopilot(boolean enabled) {
