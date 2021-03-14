@@ -3,12 +3,13 @@ package de.amr.games.pacman.model.mspacman;
 import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.UP;
-import static de.amr.games.pacman.lib.God.random;
 import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.model.common.Ghost.BLINKY;
 import static de.amr.games.pacman.model.common.Ghost.INKY;
 import static de.amr.games.pacman.model.common.Ghost.PINKY;
 import static de.amr.games.pacman.model.common.Ghost.SUE;
+
+import java.util.Random;
 
 import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
@@ -140,7 +141,7 @@ public class MsPacManGame extends GameModel {
 		level.setWorld(world);
 		level.mazeNumber = mazeNumber;
 		if (someLevelNumber > 7) {
-			level.bonusSymbol = (byte) random.nextInt(7);
+			level.bonusSymbol = (byte) new Random().nextInt(7);
 		}
 		log("Ms. Pac-Man level %d created, maze index is %d", someLevelNumber, mazeNumber);
 	}

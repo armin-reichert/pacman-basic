@@ -4,12 +4,12 @@ import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Direction.UP;
-import static de.amr.games.pacman.lib.God.random;
 import static de.amr.games.pacman.model.world.PacManGameWorld.t;
 import static java.lang.Math.abs;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -242,7 +242,7 @@ public class Creature extends GameEntity {
 
 	public Optional<Direction> randomMoveDirection() {
 		List<Direction> dirs = accessibleDirections(tile(), dir.opposite()).collect(Collectors.toList());
-		return dirs.isEmpty() ? Optional.empty() : Optional.of(dirs.get(random.nextInt(dirs.size())));
+		return dirs.isEmpty() ? Optional.empty() : Optional.of(dirs.get(new Random().nextInt(dirs.size())));
 	}
 
 	public Stream<Direction> accessibleDirections(V2i tile, Direction... excludedDirections) {

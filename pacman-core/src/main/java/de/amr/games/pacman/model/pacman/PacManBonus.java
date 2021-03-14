@@ -1,5 +1,7 @@
 package de.amr.games.pacman.model.pacman;
 
+import java.util.Random;
+
 import de.amr.games.pacman.model.common.Creature;
 
 /**
@@ -8,6 +10,8 @@ import de.amr.games.pacman.model.common.Creature;
  * @author Armin Reichert
  */
 public class PacManBonus extends Creature {
+
+	public Random random = new Random();
 
 	/** ID of the bonus symbol. */
 	public byte symbol;

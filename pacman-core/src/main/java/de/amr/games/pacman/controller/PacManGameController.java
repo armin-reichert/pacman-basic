@@ -13,7 +13,6 @@ import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Direction.UP;
-import static de.amr.games.pacman.lib.God.random;
 import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.model.common.GameType.MS_PACMAN;
 import static de.amr.games.pacman.model.common.GameType.PACMAN;
@@ -32,6 +31,7 @@ import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.V2i;
@@ -549,7 +549,7 @@ public class PacManGameController extends PacManGameStateMachine {
 			game.bonus.visible = true;
 			game.bonus.symbol = game.level.bonusSymbol;
 			game.bonus.points = game.bonusValues[game.level.bonusSymbol];
-			game.bonus.activate(isPlaying(PACMAN) ? (long) ((9 + random.nextFloat()) * 60) : Long.MAX_VALUE);
+			game.bonus.activate(isPlaying(PACMAN) ? (long) ((9 + new Random().nextFloat()) * 60) : Long.MAX_VALUE);
 			log("Bonus %s (value %d) activated", game.bonusNames[game.bonus.symbol], game.bonus.points);
 		}
 

@@ -2,7 +2,6 @@ package de.amr.games.pacman.model.mspacman;
 
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
-import static de.amr.games.pacman.lib.God.random;
 
 import de.amr.games.pacman.model.pacman.PacManBonus;
 
