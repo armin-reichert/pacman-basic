@@ -11,6 +11,7 @@ import de.amr.games.pacman.lib.TickTimerEvent;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GhostState;
 import de.amr.games.pacman.ui.animation.TimedSequence;
+import de.amr.games.pacman.ui.sound.PacManGameSound;
 import de.amr.games.pacman.ui.sound.SoundManager;
 import de.amr.games.pacman.ui.swing.rendering.PacManGameRendering2D;
 
@@ -26,13 +27,6 @@ public class PlayScene extends GameScene {
 	public PlayScene(PacManGameController controller, Dimension size, PacManGameRendering2D rendering,
 			SoundManager sounds) {
 		super(controller, size, rendering, sounds);
-		controller.addStateEntryListener(PacManGameState.READY, this::onReadyStateEntry);
-		controller.addStateEntryListener(PacManGameState.HUNTING, this::onHuntingStateEntry);
-		controller.addStateExitListener(PacManGameState.HUNTING, this::onHuntingStateExit);
-		controller.addStateEntryListener(PacManGameState.LEVEL_COMPLETE, this::onLevelCompleteStateEntry);
-		controller.addStateEntryListener(PacManGameState.PACMAN_DYING, this::onPacManDyingStateEntry);
-		controller.addStateEntryListener(PacManGameState.GHOST_DYING, this::onGhostDyingStateEntry);
-		controller.addStateEntryListener(PacManGameState.GAME_OVER, this::onGameOverStateEntry);
 	}
 
 	private void onReadyStateEntry(PacManGameState state) {
@@ -50,8 +44,12 @@ public class PlayScene extends GameScene {
 		rendering.mazeAnimations().energizerBlinking().reset();
 	}
 
-	private void onPacManDyingStateEntry(PacManGameState state) {
-		controller.selectedGame().ghosts().flatMap(rendering.ghostAnimations()::ghostKicking).forEach(TimedSequence::reset);
+	private void startPlayerDyingAnimation(PacManGameState state) {
+		GameModel game = controller.selectedGame();
+		game.ghosts().flatMap(rendering.ghostAnimations()::ghostKicking).forEach(TimedSequence::reset);
+		game.ghosts().forEach(ghost -> ghost.visible = false);
+		rendering.playerAnimations().playerDying().restart();
+		sounds.play(PacManGameSound.PACMAN_DEATH);
 	}
 
 	private void onGhostDyingStateEntry(PacManGameState state) {
@@ -80,8 +78,30 @@ public class PlayScene extends GameScene {
 		controller.selectedGame().ghosts().flatMap(rendering.ghostAnimations()::ghostKicking).forEach(TimedSequence::reset);
 	}
 
+	private void addListeners() {
+		controller.addStateEntryListener(PacManGameState.READY, this::onReadyStateEntry);
+		controller.addStateEntryListener(PacManGameState.HUNTING, this::onHuntingStateEntry);
+		controller.addStateExitListener(PacManGameState.HUNTING, this::onHuntingStateExit);
+		controller.addStateEntryListener(PacManGameState.LEVEL_COMPLETE, this::onLevelCompleteStateEntry);
+		controller.addStateTimeListener(PacManGameState.PACMAN_DYING, this::startPlayerDyingAnimation, 1.0);
+		controller.addStateEntryListener(PacManGameState.GHOST_DYING, this::onGhostDyingStateEntry);
+		controller.addStateEntryListener(PacManGameState.GAME_OVER, this::onGameOverStateEntry);
+	}
+
+	private void removeListeners() {
+		controller.removeStateEntryListener(this::onReadyStateEntry);
+		controller.removeStateEntryListener(this::onHuntingStateEntry);
+		controller.removeStateEntryListener(this::onHuntingStateExit);
+		controller.removeStateEntryListener(this::onLevelCompleteStateEntry);
+		controller.removeStateTimeListener(this::startPlayerDyingAnimation);
+		controller.removeStateEntryListener(this::onGhostDyingStateEntry);
+		controller.removeStateEntryListener(this::onGameOverStateEntry);
+	}
+
 	@Override
 	public void start() {
+		addListeners();
+
 		GameModel game = controller.selectedGame();
 		mazeFlashing = rendering.mazeAnimations().mazeFlashing(game.level.mazeNumber).repetitions(game.level.numFlashes);
 		mazeFlashing.reset();
@@ -94,6 +114,11 @@ public class PlayScene extends GameScene {
 				});
 			}
 		});
+	}
+
+	@Override
+	public void end() {
+		removeListeners();
 	}
 
 	@Override

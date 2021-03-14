@@ -77,7 +77,7 @@ public class Ghost extends Creature {
 			}
 			break;
 		case ENTERING_HOUSE:
-			speed = level.ghostSpeed * 2;
+			speed = level.ghostSpeed;
 			enterHouse();
 			break;
 		case LEAVING_HOUSE:
@@ -109,7 +109,7 @@ public class Ghost extends Creature {
 			}
 			break;
 		case DEAD:
-			speed = level.ghostSpeed * 2;
+			speed = level.ghostSpeed * 1.5;
 			returnHome();
 			break;
 		default:

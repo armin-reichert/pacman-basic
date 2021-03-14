@@ -21,10 +21,16 @@ public class PacManGameStateMachine {
 
 		final PacManGameState state;
 		final Consumer<PacManGameState> handler;
+		final long time;
 
 		public PacManGameStateListener(PacManGameState state, Consumer<PacManGameState> consumer) {
+			this(state, consumer, 0);
+		}
+
+		public PacManGameStateListener(PacManGameState state, Consumer<PacManGameState> consumer, double seconds) {
 			this.state = state;
 			handler = consumer;
+			this.time = Math.round(seconds * 60);
 		}
 	}
 
@@ -34,24 +40,40 @@ public class PacManGameStateMachine {
 
 	private final List<PacManGameStateListener> entryListeners = new ArrayList<>();
 	private final List<PacManGameStateListener> exitListeners = new ArrayList<>();
+	private final List<PacManGameStateListener> timeListeners = new ArrayList<>();
 
-	public void addStateEntryListener(PacManGameState subscribedState, Consumer<PacManGameState> subscriber) {
-		entryListeners.add(new PacManGameStateListener(subscribedState, subscriber));
+	public void addStateEntryListener(PacManGameState subscribedState, Consumer<PacManGameState> handler) {
+		entryListeners.add(new PacManGameStateListener(subscribedState, handler));
 	}
 
-	public void removeStateEntryListener(Consumer<PacManGameState> subscriber) {
+	public void removeStateEntryListener(Consumer<PacManGameState> handler) {
 		Iterator<PacManGameStateListener> it = entryListeners.iterator();
 		while (it.hasNext()) {
 			PacManGameStateListener listener = it.next();
-			if (listener.handler == subscriber) {
+			if (listener.handler == handler) {
 				it.remove();
 				return;
 			}
 		}
 	}
 
-	public void addStateExitListener(PacManGameState subscribedState, Consumer<PacManGameState> subscriber) {
-		exitListeners.add(new PacManGameStateListener(subscribedState, subscriber));
+	public void addStateTimeListener(PacManGameState subscribedState, Consumer<PacManGameState> handler, double time) {
+		timeListeners.add(new PacManGameStateListener(subscribedState, handler, time));
+	}
+
+	public void removeStateTimeListener(Consumer<PacManGameState> handler) {
+		Iterator<PacManGameStateListener> it = timeListeners.iterator();
+		while (it.hasNext()) {
+			PacManGameStateListener subscriber = it.next();
+			if (subscriber.handler == handler) {
+				it.remove();
+				return;
+			}
+		}
+	}
+
+	public void addStateExitListener(PacManGameState subscribedState, Consumer<PacManGameState> handler) {
+		exitListeners.add(new PacManGameStateListener(subscribedState, handler));
 	}
 
 	public void removeStateExitListener(Consumer<PacManGameState> subscriber) {
@@ -85,7 +107,7 @@ public class PacManGameStateMachine {
 		if (state.onExit != null) {
 			state.onExit.run();
 		}
-		exitListeners.stream().filter(l -> l.state.equals(state)).forEach(listener -> listener.handler.accept(state));
+		exitListeners.stream().filter(l -> l.state.equals(state)).forEach(l -> l.handler.accept(state));
 		previousState = state;
 		state = newState;
 		if (logging) {
@@ -94,7 +116,7 @@ public class PacManGameStateMachine {
 		if (newState.onEnter != null) {
 			newState.onEnter.run();
 		}
-		entryListeners.stream().filter(l -> l.state.equals(state)).forEach(listener -> listener.handler.accept(state));
+		entryListeners.stream().filter(l -> l.state.equals(state)).forEach(l -> l.handler.accept(state));
 		newState.timer.start();
 		return newState;
 	}
@@ -105,6 +127,8 @@ public class PacManGameStateMachine {
 				state.onUpdate.run();
 			}
 			state.timer.tick();
+			timeListeners.stream().filter(l -> l.state == state).filter(l -> l.time == state.timer.ticked())
+					.forEach(l -> l.handler.accept(state));
 		} catch (Exception x) {
 			Logging.log("Error updating state %s", state);
 			x.printStackTrace();

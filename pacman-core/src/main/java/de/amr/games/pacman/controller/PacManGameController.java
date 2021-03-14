@@ -42,7 +42,6 @@ import de.amr.games.pacman.model.mspacman.MsPacManGame;
 import de.amr.games.pacman.model.pacman.PacManGame;
 import de.amr.games.pacman.ui.PacManGameUI;
 import de.amr.games.pacman.ui.animation.PacManGameAnimations2D;
-import de.amr.games.pacman.ui.animation.PlayerAnimations2D;
 import de.amr.games.pacman.ui.animation.TimedSequence;
 import de.amr.games.pacman.ui.sound.PacManGameSound;
 import de.amr.games.pacman.ui.sound.SoundManager;
@@ -326,6 +325,7 @@ public class PacManGameController extends PacManGameStateMachine {
 			Optional<Ghost> killer = game.ghosts(HUNTING_PAC).filter(game.player::meets).findAny();
 			if (killer.isPresent()) {
 				killPlayer(killer.get());
+				userInterface.sound().ifPresent(SoundManager::stopAll);
 				changeState(PACMAN_DYING);
 				return;
 			}
@@ -386,7 +386,6 @@ public class PacManGameController extends PacManGameStateMachine {
 	private void enterPacManDyingState() {
 		game.player.speed = 0;
 		game.bonus.edibleTicksLeft = game.bonus.eatenTicksLeft = 0;
-		userInterface.sound().ifPresent(SoundManager::stopAll);
 		state.timer.resetSeconds(4);
 	}
 
@@ -394,12 +393,7 @@ public class PacManGameController extends PacManGameStateMachine {
 		if (state.timer.hasExpired()) {
 			game.ghosts().forEach(ghost -> ghost.visible = true);
 			changeState(attractMode ? INTRO : --game.lives > 0 ? READY : GAME_OVER);
-		} else if (state.timer.isRunningSeconds(1)) {
-			// TODO move to UI:
-			game.ghosts().forEach(ghost -> ghost.visible = false);
-			userInterface.animation().map(PacManGameAnimations2D::playerAnimations).map(PlayerAnimations2D::playerDying)
-					.ifPresent(TimedSequence::restart);
-			userInterface.sound().ifPresent(sound -> sound.play(PacManGameSound.PACMAN_DEATH));
+			return;
 		}
 	}
 
