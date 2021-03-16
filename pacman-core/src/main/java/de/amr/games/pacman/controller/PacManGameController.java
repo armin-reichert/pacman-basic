@@ -84,7 +84,7 @@ public class PacManGameController extends PacManGameStateMachine {
 	private GameType selectedGameType;
 	private GameModel game;
 	public boolean gameStarted;
-	public boolean attractMode;
+	private boolean attractMode;
 
 	public PacManGameUI userInterface;
 
@@ -110,6 +110,10 @@ public class PacManGameController extends PacManGameStateMachine {
 
 	public boolean isPlaying(GameType type) {
 		return selectedGameType == type;
+	}
+
+	public boolean isAttractMode() {
+		return attractMode;
 	}
 
 	public void toggleGameType() {
@@ -244,11 +248,13 @@ public class PacManGameController extends PacManGameStateMachine {
 	}
 
 	private void updateIntroState() {
+		if (userInterface.keyPressed("Space")) {
+			changeState(READY);
+			return;
+		}
 		if (state.timer.hasExpired()) {
 			attractMode = true;
 			autopilot.enabled = true;
-			changeState(READY);
-		} else if (userInterface.keyPressed("Space")) {
 			changeState(READY);
 		}
 	}

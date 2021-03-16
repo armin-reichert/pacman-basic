@@ -139,7 +139,7 @@ public class PlayScene extends GameScene {
 					game.level::containsEatenFood);
 			rendering.drawEnergizerTiles(g, game.level.world.energizerTiles());
 		}
-		if (controller.attractMode) {
+		if (controller.isAttractMode()) {
 			rendering.drawGameState(g, game, PacManGameState.GAME_OVER);
 		} else {
 			rendering.drawGameState(g, game, controller.state);
@@ -147,8 +147,8 @@ public class PlayScene extends GameScene {
 		rendering.drawBonus(g, game.bonus);
 		rendering.drawPlayer(g, game.player);
 		game.ghosts().forEach(ghost -> rendering.drawGhost(g, ghost, game.player.powerTimer.isRunning()));
-		rendering.drawScore(g, game, controller.state == PacManGameState.INTRO || controller.attractMode);
-		if (!controller.attractMode) {
+		rendering.drawScore(g, game, controller.state == PacManGameState.INTRO || controller.isAttractMode());
+		if (!controller.isAttractMode()) {
 			rendering.drawLivesCounter(g, game, t(2), t(34));
 		}
 		rendering.drawLevelCounter(g, game, t(25), t(34));
