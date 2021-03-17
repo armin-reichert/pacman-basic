@@ -4,15 +4,11 @@ import java.io.BufferedInputStream;
 import java.net.URL;
 import java.util.EnumMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Function;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.BooleanControl;
 import javax.sound.sampled.Clip;
-import javax.sound.sampled.Line;
-import javax.sound.sampled.Mixer;
 
 import de.amr.games.pacman.ui.sound.PacManGameSound;
 import de.amr.games.pacman.ui.sound.SoundManager;
@@ -95,21 +91,6 @@ public class PacManGameSoundManager implements SoundManager {
 		}
 		for (Clip clip : munchClips) {
 			clip.stop();
-		}
-	}
-
-	private static Optional<BooleanControl> muteControl(Line line) {
-		return Optional.ofNullable((BooleanControl) line.getControl(BooleanControl.Type.MUTE));
-	}
-
-	@Override
-	public void setMuted(boolean muted) {
-		for (Mixer.Info info : AudioSystem.getMixerInfo()) {
-			try (Mixer mixer = AudioSystem.getMixer(info)) {
-				for (Line line : mixer.getSourceLines()) {
-					muteControl(line).ifPresent(control -> control.setValue(muted));
-				}
-			}
 		}
 	}
 }

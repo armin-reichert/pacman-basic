@@ -49,7 +49,9 @@ public class PlayScene extends GameScene {
 		game.ghosts().flatMap(rendering.ghostAnimations()::ghostKicking).forEach(TimedSequence::reset);
 		game.ghosts().forEach(ghost -> ghost.visible = false);
 		rendering.playerAnimations().playerDying().restart();
-		sounds.play(PacManGameSound.PACMAN_DEATH);
+		if (!controller.isAttractMode()) {
+			sounds.play(PacManGameSound.PACMAN_DEATH);
+		}
 	}
 
 	private void onGhostDyingStateEntry(PacManGameState state) {
