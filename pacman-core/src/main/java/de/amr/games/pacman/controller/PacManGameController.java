@@ -456,6 +456,10 @@ public class PacManGameController extends PacManGameStateMachine {
 
 	private void updateLevelCompleteState() {
 		if (state.timer.hasExpired()) {
+			if (attractMode) {
+				changeState(INTRO);
+				return;
+			}
 			switch (game.levelNumber) {
 			case 2:
 				game.intermissionNumber = 1;
