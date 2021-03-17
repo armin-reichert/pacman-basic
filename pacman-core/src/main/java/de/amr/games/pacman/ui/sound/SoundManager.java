@@ -18,4 +18,6 @@ public interface SoundManager {
 	void stop(PacManGameSound sound);
 
 	void stopAll();
+
+	void setMuted(boolean muted);
 }

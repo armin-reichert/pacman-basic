@@ -254,6 +254,7 @@ public class PacManGameController extends PacManGameStateMachine {
 		}
 		if (state.timer.hasExpired()) {
 			attractMode = true;
+			log("Attract Mode ON!");
 			autopilot.enabled = true;
 			changeState(READY);
 		}
@@ -262,6 +263,7 @@ public class PacManGameController extends PacManGameStateMachine {
 	private void enterReadyState() {
 		game.resetGuys();
 		if (gameStarted || attractMode) {
+			userInterface.sound().ifPresent(sound -> sound.setMuted(attractMode));
 			state.timer.resetSeconds(2);
 		} else {
 			userInterface.sound().ifPresent(sound -> sound.play(PacManGameSound.GAME_READY));
@@ -432,6 +434,8 @@ public class PacManGameController extends PacManGameStateMachine {
 		log("Level %d complete, entering level %d", game.levelNumber, game.levelNumber + 1);
 		game.enterLevel(game.levelNumber + 1);
 		game.levelSymbols.add(game.level.bonusSymbol);
+		game.player.visible = true;
+		game.ghosts().forEach(ghost -> ghost.visible = true);
 	}
 
 	private void updateLevelStartingState() {
