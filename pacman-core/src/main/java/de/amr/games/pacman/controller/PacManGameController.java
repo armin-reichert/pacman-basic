@@ -241,14 +241,12 @@ public class PacManGameController extends PacManGameStateMachine {
 	}
 
 	private void enterIntroState() {
+		state.timer.reset();
 		game.reset();
 		attractMode = false;
 		gameStarted = false;
 		autopilot.enabled = false;
-		if (userInterface != null) {
-			sound().ifPresent(SoundManager::stopAll);
-		}
-		state.timer.reset();
+		sound().ifPresent(SoundManager::stopAll);
 	}
 
 	private void updateIntroState() {
@@ -258,7 +256,6 @@ public class PacManGameController extends PacManGameStateMachine {
 		}
 		if (state.timer.hasExpired()) {
 			attractMode = true;
-			log("Attract Mode ON!");
 			autopilot.enabled = true;
 			changeState(READY);
 		}
@@ -301,9 +298,16 @@ public class PacManGameController extends PacManGameStateMachine {
 				sound.loopForever(SIRENS.get(game.huntingPhase / 2));
 			});
 		}
-		state.timer.reset(game.getHuntingPhaseDuration(game.huntingPhase));
-		state.timer.start();
-		log("Hunting phase %d started, duration: %d ticks", phase, state.timer.duration());
+		if (state.timer.isStopped()) {
+			state.timer.start();
+			log("Hunting phase %d continues, %d of %d ticks remaining", phase, state.timer.ticksRemaining(),
+					state.timer.duration());
+		} else {
+			state.timer.reset(game.getHuntingPhaseDuration(game.huntingPhase));
+			state.timer.start();
+			log("Hunting phase %d starts, %d of %d ticks remaining", phase, state.timer.ticksRemaining(),
+					state.timer.duration());
+		}
 	}
 
 	public boolean inScatteringPhase() {
@@ -332,7 +336,7 @@ public class PacManGameController extends PacManGameStateMachine {
 		}
 
 		// Player getting killed by ghost?
-		if (!game.player.immune) {
+		if (!game.player.immune || attractMode) {
 			Optional<Ghost> killer = game.ghosts(HUNTING_PAC).filter(game.player::meets).findAny();
 			if (killer.isPresent()) {
 				killPlayer(killer.get());
@@ -437,12 +441,12 @@ public class PacManGameController extends PacManGameStateMachine {
 		log("Level %d complete, entering level %d", game.levelNumber, game.levelNumber + 1);
 		game.enterLevel(game.levelNumber + 1);
 		game.levelSymbols.add(game.level.bonusSymbol);
-		game.player.visible = true;
-		game.ghosts().forEach(ghost -> ghost.visible = true);
 	}
 
 	private void updateLevelStartingState() {
 		if (state.timer.hasExpired()) {
+			game.player.visible = true;
+			game.ghosts().forEach(ghost -> ghost.visible = true);
 			changeState(READY);
 		}
 	}
@@ -553,6 +557,7 @@ public class PacManGameController extends PacManGameStateMachine {
 			if (game.level.ghostFrightenedSeconds > 0) {
 				// HUNTING state timer is stopped while player has power
 				state.timer.stop();
+				log("%s timer stopped", state);
 				startPlayerFrighteningGhosts(game.level.ghostFrightenedSeconds);
 			}
 		} else {
@@ -586,9 +591,10 @@ public class PacManGameController extends PacManGameStateMachine {
 	private void startPlayerFrighteningGhosts(int seconds) {
 		game.ghosts(HUNTING_PAC).forEach(ghost -> {
 			ghost.state = FRIGHTENED;
-			// force 180 degrees turn
 			ghost.wishDir = ghost.dir.opposite();
 			ghost.forcedDirection = true;
+
+			// TODO move into UI:
 			// if flashing, stop. Turn blue.
 			userInterface.animation().map(PacManGameAnimations2D::ghostAnimations).ifPresent(ga -> {
 				ga.ghostFlashing(ghost).reset();
@@ -596,6 +602,7 @@ public class PacManGameController extends PacManGameStateMachine {
 			});
 		});
 		sound().ifPresent(sound -> sound.loopForever(PacManGameSound.PACMAN_POWER));
+
 		game.player.powerTimer.resetSeconds(seconds);
 		game.player.powerTimer.start();
 		log("Pac-Man got power for %d seconds", seconds);
