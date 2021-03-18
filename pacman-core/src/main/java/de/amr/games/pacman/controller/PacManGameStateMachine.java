@@ -17,20 +17,20 @@ import de.amr.games.pacman.lib.Logging;
  */
 public class PacManGameStateMachine {
 
-	static class PacManGameStateListener {
+	private static class StateListener {
 
 		final PacManGameState state;
 		final Consumer<PacManGameState> handler;
-		final long time;
+		final long ticks;
 
-		public PacManGameStateListener(PacManGameState state, Consumer<PacManGameState> consumer) {
+		public StateListener(PacManGameState state, Consumer<PacManGameState> consumer) {
 			this(state, consumer, 0);
 		}
 
-		public PacManGameStateListener(PacManGameState state, Consumer<PacManGameState> consumer, double seconds) {
+		public StateListener(PacManGameState state, Consumer<PacManGameState> consumer, double seconds) {
 			this.state = state;
 			handler = consumer;
-			this.time = Math.round(seconds * 60);
+			this.ticks = Math.round(seconds * 60);
 		}
 	}
 
@@ -38,49 +38,39 @@ public class PacManGameStateMachine {
 	public PacManGameState previousState;
 	public PacManGameState state;
 
-	private final List<PacManGameStateListener> entryListeners = new ArrayList<>();
-	private final List<PacManGameStateListener> exitListeners = new ArrayList<>();
-	private final List<PacManGameStateListener> timeListeners = new ArrayList<>();
+	private final List<StateListener> entryListeners = new ArrayList<>();
+	private final List<StateListener> exitListeners = new ArrayList<>();
+	private final List<StateListener> tickListeners = new ArrayList<>();
 
-	public void addStateEntryListener(PacManGameState subscribedState, Consumer<PacManGameState> handler) {
-		entryListeners.add(new PacManGameStateListener(subscribedState, handler));
+	public void addStateEntryListener(PacManGameState gameState, Consumer<PacManGameState> handler) {
+		entryListeners.add(new StateListener(gameState, handler));
 	}
 
 	public void removeStateEntryListener(Consumer<PacManGameState> handler) {
-		Iterator<PacManGameStateListener> it = entryListeners.iterator();
-		while (it.hasNext()) {
-			PacManGameStateListener listener = it.next();
-			if (listener.handler == handler) {
-				it.remove();
-				return;
-			}
-		}
+		removeListener(handler, entryListeners);
 	}
 
-	public void addStateTimeListener(PacManGameState subscribedState, Consumer<PacManGameState> handler, double time) {
-		timeListeners.add(new PacManGameStateListener(subscribedState, handler, time));
+	public void addStateTimeListener(PacManGameState gameState, Consumer<PacManGameState> handler, double seconds) {
+		tickListeners.add(new StateListener(gameState, handler, seconds));
 	}
 
 	public void removeStateTimeListener(Consumer<PacManGameState> handler) {
-		Iterator<PacManGameStateListener> it = timeListeners.iterator();
-		while (it.hasNext()) {
-			PacManGameStateListener subscriber = it.next();
-			if (subscriber.handler == handler) {
-				it.remove();
-				return;
-			}
-		}
+		removeListener(handler, tickListeners);
 	}
 
-	public void addStateExitListener(PacManGameState subscribedState, Consumer<PacManGameState> handler) {
-		exitListeners.add(new PacManGameStateListener(subscribedState, handler));
+	public void addStateExitListener(PacManGameState gameState, Consumer<PacManGameState> handler) {
+		exitListeners.add(new StateListener(gameState, handler));
 	}
 
-	public void removeStateExitListener(Consumer<PacManGameState> subscriber) {
-		Iterator<PacManGameStateListener> it = exitListeners.iterator();
+	public void removeStateExitListener(Consumer<PacManGameState> handler) {
+		removeListener(handler, exitListeners);
+	}
+
+	private void removeListener(Consumer<PacManGameState> handler, List<StateListener> list) {
+		Iterator<StateListener> it = list.iterator();
 		while (it.hasNext()) {
-			PacManGameStateListener listener = it.next();
-			if (listener.handler == subscriber) {
+			StateListener listener = it.next();
+			if (listener.handler == handler) {
 				it.remove();
 				return;
 			}
@@ -93,7 +83,9 @@ public class PacManGameStateMachine {
 		if (logging) {
 			log("Initialize game state machine, enter state %s", state);
 		}
-		state.onEnter.run(); // assuming INTRO state has onEnter action
+		if (state.onEnter != null) {
+			state.onEnter.run();
+		}
 		state.timer.start();
 	}
 
@@ -127,7 +119,7 @@ public class PacManGameStateMachine {
 				state.onUpdate.run();
 			}
 			state.timer.tick();
-			timeListeners.stream().filter(l -> l.state == state).filter(l -> l.time == state.timer.ticked())
+			tickListeners.stream().filter(l -> l.state == state).filter(l -> l.ticks == state.timer.ticked())
 					.forEach(l -> l.handler.accept(state));
 		} catch (Exception x) {
 			Logging.log("Error updating state %s", state);
