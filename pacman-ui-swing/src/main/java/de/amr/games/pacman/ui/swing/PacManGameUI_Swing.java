@@ -31,6 +31,7 @@ import javax.swing.JFrame;
 import javax.swing.Timer;
 
 import de.amr.games.pacman.controller.PacManGameController;
+import de.amr.games.pacman.controller.PacManGameState;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.GameType;
@@ -83,6 +84,9 @@ public class PacManGameUI_Swing implements PacManGameUI {
 	public PacManGameUI_Swing(GameLoop gameLoop, PacManGameController controller, double height) {
 		this.gameLoop = gameLoop;
 		this.controller = controller;
+
+		controller.addStateChangeListener(this::handleGameStateChange);
+
 		unscaledSize = new Dimension(28 * TS, 36 * TS);
 		scaling = Math.round(height / unscaledSize.height);
 		scaledSize = new V2d(unscaledSize.width, unscaledSize.height).scaled(this.scaling).toV2i();
@@ -142,7 +146,26 @@ public class PacManGameUI_Swing implements PacManGameUI {
 				new PacMan_IntermissionScene3(controller, unscaledSize, renderings.get(PACMAN), sounds.get(PACMAN)), //
 				new PlayScene(controller, unscaledSize, renderings.get(PACMAN), sounds.get(PACMAN))//
 		));
+
+		// start initial game scene
+		handleGameStateChange(null, controller.state);
 		show();
+	}
+
+	private void handleGameStateChange(PacManGameState oldState, PacManGameState newState) {
+		GameScene newScene = getSceneForGameState(newState);
+		if (newScene == null) {
+			throw new IllegalStateException("No scene found for game state " + newState);
+		}
+		if (currentScene != newScene) {
+			if (currentScene != null) {
+				currentScene.end();
+			}
+			newScene.start();
+			log("Current scene changed from %s to %s", currentScene, newScene);
+		}
+		currentScene = newScene;
+		currentScene.onGameStateChange(oldState, newState);
 	}
 
 	private void show() {
@@ -159,9 +182,9 @@ public class PacManGameUI_Swing implements PacManGameUI {
 		return Stream.of(GameType.values()).filter(controller::isPlaying).findFirst().get();
 	}
 
-	private GameScene getSceneForCurrentGameState() {
+	private GameScene getSceneForGameState(PacManGameState state) {
 		GameType currentGame = currentGame();
-		switch (controller.state) {
+		switch (state) {
 		case INTRO:
 			return scenes.get(currentGame).get(0);
 		case INTERMISSION:
@@ -173,20 +196,9 @@ public class PacManGameUI_Swing implements PacManGameUI {
 
 	@Override
 	public void update() {
-		GameScene newScene = getSceneForCurrentGameState();
-		if (newScene == null) {
-			throw new IllegalStateException("No scene found for game state " + controller.state);
+		if (currentScene != null) {
+			currentScene.update();
 		}
-		if (currentScene != newScene) {
-			if (currentScene != null) {
-				currentScene.end();
-			}
-			newScene.start();
-			log("Current scene changed from %s to %s", currentScene, newScene);
-		}
-		currentScene = newScene;
-		currentScene.update();
-
 		FlashMessage message = flashMessageQ.peek();
 		if (message != null) {
 			if (!message.timer.isRunning()) {

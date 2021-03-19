@@ -6,6 +6,7 @@ import static de.amr.games.pacman.lib.Logging.log;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import de.amr.games.pacman.lib.Logging;
@@ -23,10 +24,6 @@ public class PacManGameStateMachine {
 		final Consumer<PacManGameState> handler;
 		final long ticks;
 
-		public StateListener(PacManGameState state, Consumer<PacManGameState> consumer) {
-			this(state, consumer, 0);
-		}
-
 		public StateListener(PacManGameState state, Consumer<PacManGameState> consumer, double seconds) {
 			this.state = state;
 			handler = consumer;
@@ -34,21 +31,21 @@ public class PacManGameStateMachine {
 		}
 	}
 
+	private static class StateChangeListener {
+
+		final BiConsumer<PacManGameState, PacManGameState> handler;
+
+		public StateChangeListener(BiConsumer<PacManGameState, PacManGameState> handler) {
+			this.handler = handler;
+		}
+	}
+
 	public boolean logging = true;
 	public PacManGameState previousState;
 	public PacManGameState state;
 
-	private final List<StateListener> entryListeners = new ArrayList<>();
-	private final List<StateListener> exitListeners = new ArrayList<>();
 	private final List<StateListener> tickListeners = new ArrayList<>();
-
-	public void addStateEntryListener(PacManGameState gameState, Consumer<PacManGameState> handler) {
-		entryListeners.add(new StateListener(gameState, handler));
-	}
-
-	public void removeStateEntryListener(Consumer<PacManGameState> handler) {
-		removeListener(handler, entryListeners);
-	}
+	private final List<StateChangeListener> changeListeners = new ArrayList<>();
 
 	public void addStateTimeListener(PacManGameState gameState, Consumer<PacManGameState> handler, double seconds) {
 		tickListeners.add(new StateListener(gameState, handler, seconds));
@@ -58,12 +55,12 @@ public class PacManGameStateMachine {
 		removeListener(handler, tickListeners);
 	}
 
-	public void addStateExitListener(PacManGameState gameState, Consumer<PacManGameState> handler) {
-		exitListeners.add(new StateListener(gameState, handler));
+	public void addStateChangeListener(BiConsumer<PacManGameState, PacManGameState> handler) {
+		changeListeners.add(new StateChangeListener(handler));
 	}
 
-	public void removeStateExitListener(Consumer<PacManGameState> handler) {
-		removeListener(handler, exitListeners);
+	public void removeStateChangeListener(BiConsumer<PacManGameState, PacManGameState> handler) {
+		changeListeners.removeIf(entry -> entry.handler == handler);
 	}
 
 	private void removeListener(Consumer<PacManGameState> handler, List<StateListener> list) {
@@ -86,6 +83,7 @@ public class PacManGameStateMachine {
 		if (state.onEnter != null) {
 			state.onEnter.run();
 		}
+		fireStateChange();
 		state.timer.start();
 	}
 
@@ -99,18 +97,25 @@ public class PacManGameStateMachine {
 		if (state.onExit != null) {
 			state.onExit.run();
 		}
-		exitListeners.stream().filter(l -> l.state.equals(state)).forEach(l -> l.handler.accept(state));
+
 		previousState = state;
 		state = newState;
+
 		if (logging) {
-			log("Enter game state %s", newState);
+			log("Enter game state %s", state);
 		}
-		if (newState.onEnter != null) {
-			newState.onEnter.run();
+		if (state.onEnter != null) {
+			state.onEnter.run();
 		}
-		entryListeners.stream().filter(l -> l.state.equals(state)).forEach(l -> l.handler.accept(state));
-		newState.timer.start();
+		fireStateChange();
+		state.timer.start();
 		return newState;
+	}
+
+	private void fireStateChange() {
+		// TODO find solution instead of workaround to avoid ConcurrentModificationException
+		List<StateChangeListener> changeListenersBefore = new ArrayList<>(changeListeners);
+		changeListenersBefore.stream().forEach(listener -> listener.handler.accept(previousState, state));
 	}
 
 	public void updateState() {
