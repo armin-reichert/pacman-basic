@@ -158,7 +158,8 @@ public class PacManGameController extends PacManGameStateMachine {
 
 		// I = toggle player's immunity against ghost bites
 		else if (userInterface.keyPressed("I")) {
-			setPlayerImmune(!game.player.immune);
+			game.player.immune = !game.player.immune;
+			userInterface.showFlashMessage("Player immunity " + (game.player.immune ? "ON" : "OFF"));
 		}
 
 		// L = add live
@@ -200,13 +201,6 @@ public class PacManGameController extends PacManGameStateMachine {
 	private void enableAutopilot(boolean enabled) {
 		autopilot.enabled = enabled;
 		String msg = "Autopilot " + (enabled ? "on" : "off");
-		userInterface.showFlashMessage(msg);
-		log(msg);
-	}
-
-	public void setPlayerImmune(boolean immune) {
-		game.player.immune = immune;
-		String msg = game.player.name + " is " + (game.player.immune ? "immune" : "vulnerable");
 		userInterface.showFlashMessage(msg);
 		log(msg);
 	}
