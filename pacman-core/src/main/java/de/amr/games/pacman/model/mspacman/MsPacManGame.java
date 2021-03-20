@@ -66,7 +66,6 @@ public class MsPacManGame extends GameModel {
 		world = new DefaultPacManGameWorld();
 
 		// sanity check
-		log("Checking Ms. Pac-Man game maps...");
 		for (int mapNumber = 1; mapNumber <= 4; ++mapNumber) {
 			try {
 				new WorldMap("/mspacman/maps/map" + mapNumber + ".txt");

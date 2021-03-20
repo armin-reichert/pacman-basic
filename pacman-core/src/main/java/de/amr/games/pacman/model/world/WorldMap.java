@@ -1,7 +1,5 @@
 package de.amr.games.pacman.model.world;
 
-import static de.amr.games.pacman.lib.Logging.log;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -57,7 +55,6 @@ public class WorldMap {
 	}
 
 	private void parse() {
-		log("Parsing map '%s'", path);
 		List<String> dataLines = new ArrayList<>();
 		try (BufferedReader rdr = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(path)))) {
 			rdr.lines().forEach(line -> {
@@ -89,7 +86,6 @@ public class WorldMap {
 			if (width == 0) {
 				parseError("Map width must be a positive number");
 			}
-			log("Map width is defined as %d", width);
 			try {
 				height = Integer.parseInt(variables.get("height"));
 			} catch (Exception x) {
@@ -98,7 +94,6 @@ public class WorldMap {
 			if (height == 0) {
 				parseError("Map height must be a positive number");
 			}
-			log("Map height is defined as %d", height);
 			if (dataLines.size() != height) {
 				parseError("Specified height %d is not consistent with number of data lines %d", height, dataLines.size());
 			}
