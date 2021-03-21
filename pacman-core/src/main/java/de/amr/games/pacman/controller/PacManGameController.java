@@ -28,11 +28,13 @@ import static de.amr.games.pacman.model.common.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.model.common.GhostState.LOCKED;
 
 import java.util.Arrays;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Stream;
 
+import de.amr.games.pacman.lib.FiniteStateMachine;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
@@ -70,7 +72,7 @@ import de.amr.games.pacman.ui.sound.SoundManager;
  *      Understanding ghost behavior</a>
  * @see <a href="http://superpacman.com/mspacman/">Ms. Pac-Man</a>
  */
-public class PacManGameController extends PacManGameStateMachine {
+public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	private final GameModel[] games = new GameModel[2];
 	{
@@ -88,8 +90,19 @@ public class PacManGameController extends PacManGameStateMachine {
 	public final Autopilot autopilot = new Autopilot();
 
 	public PacManGameController(GameVariant variant) {
+		super(new EnumMap<>(PacManGameState.class));
 		gameVariant = variant;
 		game = games[gameVariant.ordinal()];
+		createStates(Stream.of(PacManGameState.values()));
+		configure(INTRO, this::enterIntroState, this::updateIntroState, null);
+		configure(READY, this::enterReadyState, this::updateReadyState, null);
+		configure(HUNTING, this::enterHuntingState, this::updateHuntingState, null);
+		configure(GHOST_DYING, this::enterGhostDyingState, this::updateGhostDyingState, this::exitGhostDyingState);
+		configure(PACMAN_DYING, this::enterPacManDyingState, this::updatePacManDyingState, null);
+		configure(LEVEL_STARTING, this::enterLevelStartingState, this::updateLevelStartingState, null);
+		configure(LEVEL_COMPLETE, this::enterLevelCompleteState, this::updateLevelCompleteState, null);
+		configure(INTERMISSION, this::enterIntermissionState, this::updateIntermissionState, null);
+		configure(GAME_OVER, this::enterGameOverState, this::updateGameOverState, null);
 		changeState(INTRO);
 	}
 
@@ -198,21 +211,6 @@ public class PacManGameController extends PacManGameStateMachine {
 
 	private Optional<SoundManager> sound() {
 		return attractMode || userInterface == null ? Optional.empty() : userInterface.sound();
-	}
-
-	/*
-	 * Configure the finite-state machine:
-	 */
-	{
-		configure(INTRO, this::enterIntroState, this::updateIntroState, null);
-		configure(READY, this::enterReadyState, this::updateReadyState, null);
-		configure(HUNTING, this::enterHuntingState, this::updateHuntingState, null);
-		configure(GHOST_DYING, this::enterGhostDyingState, this::updateGhostDyingState, this::exitGhostDyingState);
-		configure(PACMAN_DYING, this::enterPacManDyingState, this::updatePacManDyingState, null);
-		configure(LEVEL_STARTING, this::enterLevelStartingState, this::updateLevelStartingState, null);
-		configure(LEVEL_COMPLETE, this::enterLevelCompleteState, this::updateLevelCompleteState, null);
-		configure(INTERMISSION, this::enterIntermissionState, this::updateIntermissionState, null);
-		configure(GAME_OVER, this::enterGameOverState, this::updateGameOverState, null);
 	}
 
 	private void enterIntroState() {
