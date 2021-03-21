@@ -117,6 +117,10 @@ public class PacManGameController extends PacManGameStateMachine {
 		changeState(INTRO);
 	}
 
+	public void toggleGameVariant() {
+		setGameVariant(gameVariant == MS_PACMAN ? PACMAN : MS_PACMAN);
+	}
+
 	public GameModel selectedGame() {
 		return games[gameVariant.ordinal()];
 	}
@@ -127,10 +131,6 @@ public class PacManGameController extends PacManGameStateMachine {
 
 	public boolean isAttractMode() {
 		return attractMode;
-	}
-
-	public void toggleGameVariant() {
-		setGameVariant(gameVariant == MS_PACMAN ? PACMAN : MS_PACMAN);
 	}
 
 	private void handleCheatsAndStuff() {
@@ -186,7 +186,7 @@ public class PacManGameController extends PacManGameStateMachine {
 	}
 
 	public void letCurrentGameStateExpire() {
-		state.timer.forceExpiration();
+		timer().forceExpiration();
 	}
 
 	private void enableAutopilot(boolean enabled) {
@@ -201,32 +201,22 @@ public class PacManGameController extends PacManGameStateMachine {
 	}
 
 	/*
-	 * The finite-state machine controlling the game play:
+	 * Configure the finite-state machine:
 	 */
 	{
-		PacManGameState.INTRO.onEnter = this::enterIntroState;
-		PacManGameState.INTRO.onUpdate = this::updateIntroState;
-		PacManGameState.READY.onEnter = this::enterReadyState;
-		PacManGameState.READY.onUpdate = this::updateReadyState;
-		PacManGameState.HUNTING.onEnter = this::enterHuntingState;
-		PacManGameState.HUNTING.onUpdate = this::updateHuntingState;
-		PacManGameState.GHOST_DYING.onEnter = this::enterGhostDyingState;
-		PacManGameState.GHOST_DYING.onUpdate = this::updateGhostDyingState;
-		PacManGameState.GHOST_DYING.onExit = this::exitGhostDyingState;
-		PacManGameState.PACMAN_DYING.onEnter = this::enterPacManDyingState;
-		PacManGameState.PACMAN_DYING.onUpdate = this::updatePacManDyingState;
-		PacManGameState.LEVEL_STARTING.onEnter = this::enterLevelStartingState;
-		PacManGameState.LEVEL_STARTING.onUpdate = this::updateLevelStartingState;
-		PacManGameState.LEVEL_COMPLETE.onEnter = this::enterLevelCompleteState;
-		PacManGameState.LEVEL_COMPLETE.onUpdate = this::updateLevelCompleteState;
-		PacManGameState.GAME_OVER.onEnter = this::enterGameOverState;
-		PacManGameState.GAME_OVER.onUpdate = this::updateGameOverState;
-		PacManGameState.INTERMISSION.onEnter = this::enterIntermissionState;
-		PacManGameState.INTERMISSION.onUpdate = this::updateIntermissionState;
+		configure(INTRO, this::enterIntroState, this::updateIntroState, null);
+		configure(READY, this::enterReadyState, this::updateReadyState, null);
+		configure(HUNTING, this::enterHuntingState, this::updateHuntingState, null);
+		configure(GHOST_DYING, this::enterGhostDyingState, this::updateGhostDyingState, this::exitGhostDyingState);
+		configure(PACMAN_DYING, this::enterPacManDyingState, this::updatePacManDyingState, null);
+		configure(LEVEL_STARTING, this::enterLevelStartingState, this::updateLevelStartingState, null);
+		configure(LEVEL_COMPLETE, this::enterLevelCompleteState, this::updateLevelCompleteState, null);
+		configure(INTERMISSION, this::enterIntermissionState, this::updateIntermissionState, null);
+		configure(GAME_OVER, this::enterGameOverState, this::updateGameOverState, null);
 	}
 
 	private void enterIntroState() {
-		state.timer.reset();
+		timer().reset();
 		game.reset();
 		attractMode = false;
 		gameStarted = false;
@@ -239,7 +229,7 @@ public class PacManGameController extends PacManGameStateMachine {
 			changeState(READY);
 			return;
 		}
-		if (state.timer.hasExpired()) {
+		if (timer().hasExpired()) {
 			attractMode = true;
 			autopilot.enabled = true;
 			changeState(READY);
@@ -249,19 +239,19 @@ public class PacManGameController extends PacManGameStateMachine {
 	private void enterReadyState() {
 		game.resetGuys();
 		if (gameStarted || attractMode) {
-			state.timer.resetSeconds(2);
+			timer().resetSeconds(2);
 		} else {
 			sound().ifPresent(sound -> sound.play(PacManGameSound.GAME_READY));
-			state.timer.resetSeconds(4.5);
+			timer().resetSeconds(4.5);
 		}
 	}
 
 	private void updateReadyState() {
-		if (state.timer.hasExpired()) {
+		if (timer().hasExpired()) {
 			changeState(PacManGameState.HUNTING);
 			return;
 		}
-		if (state.timer.isRunningSeconds(0.5)) {
+		if (timer().isRunningSeconds(0.5)) {
 			game.player.visible = true;
 			for (Ghost ghost : game.ghosts) {
 				ghost.visible = true;
@@ -283,15 +273,13 @@ public class PacManGameController extends PacManGameStateMachine {
 				sound.loopForever(SIRENS.get(game.huntingPhase / 2));
 			});
 		}
-		if (state.timer.isStopped()) {
-			state.timer.start();
-			log("Hunting phase %d continues, %d of %d ticks remaining", phase, state.timer.ticksRemaining(),
-					state.timer.duration());
+		if (timer().isStopped()) {
+			timer().start();
+			log("Hunting phase %d continues, %d of %d ticks remaining", phase, timer().ticksRemaining(), timer().duration());
 		} else {
-			state.timer.reset(game.getHuntingPhaseDuration(game.huntingPhase));
-			state.timer.start();
-			log("Hunting phase %d starts, %d of %d ticks remaining", phase, state.timer.ticksRemaining(),
-					state.timer.duration());
+			timer().reset(game.getHuntingPhaseDuration(game.huntingPhase));
+			timer().start();
+			log("Hunting phase %d starts, %d of %d ticks remaining", phase, timer().ticksRemaining(), timer().duration());
 		}
 	}
 
@@ -332,7 +320,7 @@ public class PacManGameController extends PacManGameStateMachine {
 		}
 
 		// Hunting phase complete?
-		if (state.timer.hasExpired()) {
+		if (timer().hasExpired()) {
 			game.ghosts(HUNTING_PAC).forEach(Ghost::forceTurningBack);
 			startHuntingPhase(++game.huntingPhase);
 			return;
@@ -361,7 +349,7 @@ public class PacManGameController extends PacManGameStateMachine {
 			game.ghosts(FRIGHTENED).forEach(ghost -> ghost.state = HUNTING_PAC);
 			sound().ifPresent(sound -> sound.stop(PacManGameSound.PACMAN_POWER));
 			game.player.powerTimer.reset();
-			state.timer.start();
+			timer().start();
 		}
 
 		tryReleasingGhosts();
@@ -386,11 +374,11 @@ public class PacManGameController extends PacManGameStateMachine {
 	private void enterPacManDyingState() {
 		game.player.speed = 0;
 		game.bonus.edibleTicksLeft = game.bonus.eatenTicksLeft = 0;
-		state.timer.resetSeconds(4);
+		timer().resetSeconds(4);
 	}
 
 	private void updatePacManDyingState() {
-		if (state.timer.hasExpired()) {
+		if (timer().hasExpired()) {
 			game.ghosts().forEach(ghost -> ghost.visible = true);
 			changeState(attractMode ? INTRO : --game.lives > 0 ? READY : GAME_OVER);
 			return;
@@ -400,11 +388,11 @@ public class PacManGameController extends PacManGameStateMachine {
 	private void enterGhostDyingState() {
 		game.player.visible = false;
 		sound().ifPresent(sound -> sound.play(PacManGameSound.GHOST_EATEN));
-		state.timer.resetSeconds(1);
+		timer().resetSeconds(1);
 	}
 
 	private void updateGhostDyingState() {
-		if (state.timer.hasExpired()) {
+		if (timer().hasExpired()) {
 			resumePreviousState();
 			return;
 		}
@@ -422,14 +410,14 @@ public class PacManGameController extends PacManGameStateMachine {
 	}
 
 	private void enterLevelStartingState() {
-		state.timer.reset();
+		timer().reset();
 		log("Level %d complete, entering level %d", game.levelNumber, game.levelNumber + 1);
 		game.enterLevel(game.levelNumber + 1);
 		game.levelSymbols.add(game.level.bonusSymbol);
 	}
 
 	private void updateLevelStartingState() {
-		if (state.timer.hasExpired()) {
+		if (timer().hasExpired()) {
 			game.player.visible = true;
 			game.ghosts().forEach(ghost -> ghost.visible = true);
 			changeState(READY);
@@ -440,11 +428,11 @@ public class PacManGameController extends PacManGameStateMachine {
 		game.bonus.edibleTicksLeft = game.bonus.eatenTicksLeft = 0;
 		game.player.speed = 0;
 		sound().ifPresent(SoundManager::stopAll);
-		state.timer.reset();
+		timer().reset();
 	}
 
 	private void updateLevelCompleteState() {
-		if (state.timer.hasExpired()) {
+		if (timer().hasExpired()) {
 			if (attractMode) {
 				changeState(INTRO);
 				return;
@@ -476,22 +464,22 @@ public class PacManGameController extends PacManGameStateMachine {
 		game.ghosts().forEach(ghost -> ghost.speed = 0);
 		game.player.speed = 0;
 		game.saveHighscore();
-		state.timer.resetSeconds(10);
+		timer().resetSeconds(10);
 	}
 
 	private void updateGameOverState() {
-		if (state.timer.hasExpired() || userInterface.keyPressed("Space")) {
+		if (timer().hasExpired() || userInterface.keyPressed("Space")) {
 			changeState(INTRO);
 		}
 	}
 
 	private void enterIntermissionState() {
 		log("Starting intermission #%d", game.intermissionNumber);
-		state.timer.reset();
+		timer().reset();
 	}
 
 	private void updateIntermissionState() {
-		if (state.timer.hasExpired()) {
+		if (timer().hasExpired()) {
 			changeState(LEVEL_STARTING);
 		}
 	}
@@ -541,7 +529,7 @@ public class PacManGameController extends PacManGameStateMachine {
 			score(50);
 			if (game.level.ghostFrightenedSeconds > 0) {
 				// HUNTING state timer is stopped while player has power
-				state.timer.stop();
+				timer().stop();
 				log("%s timer stopped", state);
 				startPlayerFrighteningGhosts(game.level.ghostFrightenedSeconds);
 			}

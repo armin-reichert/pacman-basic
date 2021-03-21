@@ -3,12 +3,15 @@ package de.amr.games.pacman.controller;
 import static de.amr.games.pacman.lib.Logging.log;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.Logging;
+import de.amr.games.pacman.lib.TickTimer;
 
 /**
  * Finite-state machine controlling the Pac-Man and Ms. Pac-Man game play.
@@ -19,20 +22,20 @@ public class PacManGameStateMachine {
 
 	private static class StateListener {
 
-		final PacManGameState state;
-		final Consumer<PacManGameState> handler;
-		final long ticks;
+		private final PacManGameState state;
+		private final Consumer<PacManGameState> handler;
+		private final long ticks;
 
-		public StateListener(PacManGameState state, Consumer<PacManGameState> consumer, double seconds) {
+		public StateListener(PacManGameState state, Consumer<PacManGameState> handler, double seconds) {
 			this.state = state;
-			handler = consumer;
+			this.handler = handler;
 			this.ticks = Math.round(seconds * 60);
 		}
 	}
 
 	private static class StateChangeListener {
 
-		final BiConsumer<PacManGameState, PacManGameState> handler;
+		private final BiConsumer<PacManGameState, PacManGameState> handler;
 
 		public StateChangeListener(BiConsumer<PacManGameState, PacManGameState> handler) {
 			this.handler = handler;
@@ -40,11 +43,23 @@ public class PacManGameStateMachine {
 	}
 
 	public boolean logging = true;
+
 	public PacManGameState previousState;
 	public PacManGameState state;
 
+	private final EnumMap<PacManGameState, GameState> stateObjects = new EnumMap<>(PacManGameState.class);
 	private final List<StateListener> tickListeners = new ArrayList<>();
 	private final List<StateChangeListener> changeListeners = new ArrayList<>();
+
+	public PacManGameStateMachine() {
+		Stream.of(PacManGameState.values()).forEach(id -> stateObjects.put(id, new GameState(id)));
+	}
+
+	public void configure(PacManGameState gameState, Runnable onEnter, Runnable onUpdate, Runnable onExit) {
+		stateObject(gameState).onEnter = onEnter;
+		stateObject(gameState).onUpdate = onUpdate;
+		stateObject(gameState).onExit = onExit;
+	}
 
 	public void addStateTimeListener(PacManGameState gameState, Consumer<PacManGameState> handler, double seconds) {
 		tickListeners.add(new StateListener(gameState, handler, seconds));
@@ -74,12 +89,13 @@ public class PacManGameStateMachine {
 	}
 
 	public PacManGameState changeState(PacManGameState newState) {
+		// when not yet initialized, state object is NULL
 		if (state != null) {
 			if (logging) {
 				log("Exit game state %s", state);
 			}
-			if (state.onExit != null) {
-				state.onExit.run();
+			if (stateObject(state).onExit != null) {
+				stateObject(state).onExit.run();
 			}
 		}
 		previousState = state;
@@ -87,13 +103,21 @@ public class PacManGameStateMachine {
 		if (logging) {
 			log("Enter game state %s", state);
 		}
-		state.timer.reset();
-		state.timer.start();
-		if (state.onEnter != null) {
-			state.onEnter.run();
+		stateObject(state).timer.reset();
+		stateObject(state).timer.start();
+		if (stateObject(state).onEnter != null) {
+			stateObject(state).onEnter.run();
 		}
 		fireStateChange();
 		return newState;
+	}
+
+	public TickTimer timer() {
+		return stateObject(state).timer;
+	}
+
+	private GameState stateObject(PacManGameState id) {
+		return stateObjects.get(id);
 	}
 
 	private void fireStateChange() {
@@ -104,15 +128,17 @@ public class PacManGameStateMachine {
 
 	public void updateState() {
 		try {
-			if (state.onUpdate != null) {
-				state.onUpdate.run();
+			if (stateObject(state).onUpdate != null) {
+				stateObject(state).onUpdate.run();
 			}
-			if (!state.timer.isRunning()) {
-				state.timer.start();
+			if (!stateObject(state).timer.isRunning()) {
+				stateObject(state).timer.start();
 			}
-			state.timer.tick();
-			tickListeners.stream().filter(l -> l.state == state).filter(l -> l.ticks == state.timer.ticked())
-					.forEach(l -> l.handler.accept(state));
+			stateObject(state).timer.tick();
+			tickListeners.stream()//
+					.filter(listener -> listener.state == state)//
+					.filter(listener -> listener.ticks == stateObject(state).timer.ticked())//
+					.forEach(listener -> listener.handler.accept(state));
 		} catch (Exception x) {
 			Logging.log("Error updating state %s", state);
 			x.printStackTrace();

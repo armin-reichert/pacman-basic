@@ -24,7 +24,7 @@ public class Debug {
 	public static void drawPlaySceneDebugInfo(Graphics2D g, PacManGameController controller) {
 		GameModel game = controller.selectedGame();
 		final Color[] GHOST_COLORS = { Color.RED, Color.PINK, Color.CYAN, Color.ORANGE };
-		long remaining = controller.state.timer.ticksRemaining();
+		long remaining = controller.timer().ticksRemaining();
 		String ticksText = remaining == Long.MAX_VALUE ? "forever" : remaining + " ticks remaining";
 		String stateText = String.format("%s (%s)", controller.state, ticksText);
 		g.setColor(Color.WHITE);
