@@ -87,11 +87,12 @@ public class PacManGameStateMachine {
 		if (logging) {
 			log("Enter game state %s", state);
 		}
+		state.timer.reset();
+		state.timer.start();
 		if (state.onEnter != null) {
 			state.onEnter.run();
 		}
 		fireStateChange();
-		state.timer.start();
 		return newState;
 	}
 
@@ -105,6 +106,9 @@ public class PacManGameStateMachine {
 		try {
 			if (state.onUpdate != null) {
 				state.onUpdate.run();
+			}
+			if (!state.timer.isRunning()) {
+				state.timer.start();
 			}
 			state.timer.tick();
 			tickListeners.stream().filter(l -> l.state == state).filter(l -> l.ticks == state.timer.ticked())
