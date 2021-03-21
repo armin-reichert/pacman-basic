@@ -3,7 +3,7 @@ package de.amr.games.pacman.ui.swing.app;
 import static java.awt.EventQueue.invokeLater;
 
 import de.amr.games.pacman.controller.PacManGameController;
-import de.amr.games.pacman.model.common.GameType;
+import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.ui.swing.PacManGameUI_Swing;
 
 /**
@@ -25,7 +25,7 @@ public class PacManGameAppSwing {
 	 */
 	public static void main(String[] args) {
 		Options options = new Options(args);
-		PacManGameController controller = new PacManGameController(options.pacman ? GameType.PACMAN : GameType.MS_PACMAN);
+		PacManGameController controller = new PacManGameController(options.pacman ? GameVariant.PACMAN : GameVariant.MS_PACMAN);
 		GameLoop gameLoop = new GameLoop(controller);
 		invokeLater(() -> {
 			controller.userInterface = new PacManGameUI_Swing(gameLoop, controller, options.height);

@@ -14,8 +14,8 @@ import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.lib.Logging.log;
-import static de.amr.games.pacman.model.common.GameType.MS_PACMAN;
-import static de.amr.games.pacman.model.common.GameType.PACMAN;
+import static de.amr.games.pacman.model.common.GameVariant.MS_PACMAN;
+import static de.amr.games.pacman.model.common.GameVariant.PACMAN;
 import static de.amr.games.pacman.model.common.Ghost.BLINKY;
 import static de.amr.games.pacman.model.common.Ghost.CLYDE;
 import static de.amr.games.pacman.model.common.Ghost.INKY;
@@ -28,7 +28,6 @@ import static de.amr.games.pacman.model.common.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.model.common.GhostState.LOCKED;
 
 import java.util.Arrays;
-import java.util.EnumMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -36,7 +35,7 @@ import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.GameModel;
-import de.amr.games.pacman.model.common.GameType;
+import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.mspacman.MsPacManGame;
 import de.amr.games.pacman.model.pacman.PacManGame;
@@ -73,73 +72,65 @@ import de.amr.games.pacman.ui.sound.SoundManager;
  */
 public class PacManGameController extends PacManGameStateMachine {
 
-	private final EnumMap<GameType, GameModel> games = new EnumMap<>(GameType.class);
+	private final GameModel[] games = new GameModel[2];
 	{
-		games.put(PACMAN, new PacManGame());
-		games.put(MS_PACMAN, new MsPacManGame());
+		games[MS_PACMAN.ordinal()] = new MsPacManGame();
+		games[PACMAN.ordinal()] = new PacManGame();
 	}
 
-	public final Autopilot autopilot = new Autopilot();
-
-	private GameType selectedGameType;
+	private GameVariant gameVariant;
 	private GameModel game;
-	public boolean gameStarted;
+
+	private boolean gameStarted;
 	private boolean attractMode;
 
 	public PacManGameUI userInterface;
+	public final Autopilot autopilot = new Autopilot();
 
-	public PacManGameController(GameType type) {
-		selectedGameType = type;
-		game = games.get(selectedGameType);
-		init();
-	}
-
-	public GameType selectedGameType() {
-		return selectedGameType;
-	}
-
-	public void selectGame(GameType type) {
-		selectedGameType = type;
-		game = games.get(selectedGameType);
+	public PacManGameController(GameVariant variant) {
+		gameVariant = variant;
+		game = games[gameVariant.ordinal()];
 		changeState(INTRO);
 	}
 
-	public GameModel selectedGame() {
-		return games.get(selectedGameType);
-	}
-
-	public boolean isPlaying(GameType type) {
-		return selectedGameType == type;
-	}
-
-	public boolean isAttractMode() {
-		return attractMode;
-	}
-
-	public void toggleGameType() {
-		switch (selectedGameType) {
-		case MS_PACMAN:
-			userInterface.showFlashMessage("Now playing Pac-Man");
-			selectGame(PACMAN);
-			break;
-		case PACMAN:
-			userInterface.showFlashMessage("Now playing Ms. Pac-Man");
-			selectGame(MS_PACMAN);
-			break;
-		default:
-			break;
-		}
-	}
-
+	/**
+	 * Runs a single step of the game.
+	 */
 	public void step() {
 		if (userInterface.keyPressed("Q")) {
-			init();
+			changeState(PacManGameState.INTRO);
 		} else {
 			if (!attractMode) {
 				handleCheatsAndStuff();
 			}
 			updateState();
 		}
+	}
+
+	public GameVariant gameVariant() {
+		return gameVariant;
+	}
+
+	public void setGameVariant(GameVariant variant) {
+		gameVariant = variant;
+		game = games[gameVariant.ordinal()];
+		changeState(INTRO);
+	}
+
+	public GameModel selectedGame() {
+		return games[gameVariant.ordinal()];
+	}
+
+	public boolean isPlaying(GameVariant variant) {
+		return gameVariant == variant;
+	}
+
+	public boolean isAttractMode() {
+		return attractMode;
+	}
+
+	public void toggleGameVariant() {
+		setGameVariant(gameVariant == MS_PACMAN ? PACMAN : MS_PACMAN);
 	}
 
 	private void handleCheatsAndStuff() {

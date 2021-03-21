@@ -1,6 +1,5 @@
 package de.amr.games.pacman.controller;
 
-import static de.amr.games.pacman.controller.PacManGameState.INTRO;
 import static de.amr.games.pacman.lib.Logging.log;
 
 import java.util.ArrayList;
@@ -74,33 +73,17 @@ public class PacManGameStateMachine {
 		}
 	}
 
-	public void init() {
-		state = INTRO;
-		previousState = null;
-		if (logging) {
-			log("Initialize game state machine, enter state %s", state);
-		}
-		if (state.onEnter != null) {
-			state.onEnter.run();
-		}
-		fireStateChange();
-		state.timer.start();
-	}
-
 	public PacManGameState changeState(PacManGameState newState) {
-		if (state == null) {
-			throw new IllegalStateException("State machine not initialized");
+		if (state != null) {
+			if (logging) {
+				log("Exit game state %s", state);
+			}
+			if (state.onExit != null) {
+				state.onExit.run();
+			}
 		}
-		if (logging) {
-			log("Exit game state %s", state);
-		}
-		if (state.onExit != null) {
-			state.onExit.run();
-		}
-
 		previousState = state;
 		state = newState;
-
 		if (logging) {
 			log("Enter game state %s", state);
 		}

@@ -5,7 +5,7 @@ package de.amr.games.pacman.model.common;
  * 
  * @author Armin Reichert
  */
-public enum GameType {
+public enum GameVariant {
 
 	MS_PACMAN, PACMAN;
 }

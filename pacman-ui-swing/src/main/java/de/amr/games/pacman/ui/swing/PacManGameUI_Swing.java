@@ -1,8 +1,8 @@
 package de.amr.games.pacman.ui.swing;
 
 import static de.amr.games.pacman.lib.Logging.log;
-import static de.amr.games.pacman.model.common.GameType.MS_PACMAN;
-import static de.amr.games.pacman.model.common.GameType.PACMAN;
+import static de.amr.games.pacman.model.common.GameVariant.MS_PACMAN;
+import static de.amr.games.pacman.model.common.GameVariant.PACMAN;
 import static de.amr.games.pacman.model.world.PacManGameWorld.TS;
 
 import java.awt.AWTException;
@@ -34,7 +34,7 @@ import de.amr.games.pacman.controller.PacManGameController;
 import de.amr.games.pacman.controller.PacManGameState;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.model.common.GameType;
+import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.ui.FlashMessage;
 import de.amr.games.pacman.ui.PacManGameUI;
 import de.amr.games.pacman.ui.animation.PacManGameAnimations2D;
@@ -67,9 +67,9 @@ public class PacManGameUI_Swing implements PacManGameUI {
 
 	private final GameLoop gameLoop;
 	private final PacManGameController controller;
-	private final EnumMap<GameType, PacManGameRendering2D> renderings = new EnumMap<>(GameType.class);
-	private final EnumMap<GameType, SoundManager> sounds = new EnumMap<>(GameType.class);
-	private final EnumMap<GameType, List<GameScene>> scenes = new EnumMap<>(GameType.class);
+	private final EnumMap<GameVariant, PacManGameRendering2D> renderings = new EnumMap<>(GameVariant.class);
+	private final EnumMap<GameVariant, SoundManager> sounds = new EnumMap<>(GameVariant.class);
+	private final EnumMap<GameVariant, List<GameScene>> scenes = new EnumMap<>(GameVariant.class);
 	private final Deque<FlashMessage> flashMessageQ = new ArrayDeque<>();
 	private final Dimension unscaledSize;
 	private final V2i scaledSize;
@@ -178,12 +178,12 @@ public class PacManGameUI_Swing implements PacManGameUI {
 		titleUpdateTimer.start();
 	}
 
-	private GameType currentGame() {
-		return Stream.of(GameType.values()).filter(controller::isPlaying).findFirst().get();
+	private GameVariant currentGame() {
+		return Stream.of(GameVariant.values()).filter(controller::isPlaying).findFirst().get();
 	}
 
 	private GameScene getSceneForGameState(PacManGameState state) {
-		GameType currentGame = currentGame();
+		GameVariant currentGame = currentGame();
 		switch (state) {
 		case INTRO:
 			return scenes.get(currentGame).get(0);
@@ -261,7 +261,7 @@ public class PacManGameUI_Swing implements PacManGameUI {
 	private void handleGlobalKeys(KeyEvent e) {
 		switch (e.getKeyCode()) {
 		case KeyEvent.VK_V:
-			controller.toggleGameType();
+			controller.toggleGameVariant();
 			break;
 		case KeyEvent.VK_S: {
 			gameLoop.clock.targetFreq = gameLoop.clock.targetFreq != 30 ? 30 : 60;
