@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import de.amr.games.pacman.lib.Logging;
+
 /**
  * Timed sequence of things, for example of images or spritesheet regions
  * 
@@ -38,12 +40,16 @@ public class TimedSequence<T> {
 
 	protected List<T> things;
 	protected int repetitions;
+	protected long delay;
+	protected long delayRemainingTicks;
+	protected long totalRunningTicks;
 	protected long frameDurationTicks;
 	protected long frameRunningTicks;
 	protected int frameIndex;
 	protected long loopIndex;
 	protected boolean running;
 	protected boolean complete;
+	protected Runnable onStart;
 
 	protected TimedSequence() {
 		repetitions = 1;
@@ -52,6 +58,8 @@ public class TimedSequence<T> {
 	}
 
 	public TimedSequence<T> reset() {
+		delayRemainingTicks = delay;
+		totalRunningTicks = 0;
 		frameRunningTicks = 0;
 		frameIndex = 0;
 		loopIndex = 0;
@@ -60,8 +68,23 @@ public class TimedSequence<T> {
 		return this;
 	}
 
+	public TimedSequence<T> onStart(Runnable code) {
+		onStart = code;
+		return this;
+	}
+
 	public TimedSequence<T> frameDuration(long ticks) {
 		frameDurationTicks = ticks;
+		return this;
+	}
+
+	public long delay() {
+		return delay;
+	}
+
+	public TimedSequence<T> delay(long ticks) {
+		delay = ticks;
+		delayRemainingTicks = ticks;
 		return this;
 	}
 
@@ -107,7 +130,15 @@ public class TimedSequence<T> {
 
 	public void advance() {
 		if (running) {
-			if (frameRunningTicks + 1 < frameDurationTicks) {
+			if (delayRemainingTicks > 0) {
+				delayRemainingTicks--;
+			} else if (totalRunningTicks++ == 0) {
+				if (onStart != null) {
+					onStart.run();
+				} else {
+					Logging.log("Start animation %s", this);
+				}
+			} else if (frameRunningTicks + 1 < frameDurationTicks) {
 				frameRunningTicks++;
 			} else if (frameIndex + 1 < things.size()) {
 				// start next frame

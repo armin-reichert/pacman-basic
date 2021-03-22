@@ -31,13 +31,14 @@ public class PlayScene extends GameScene {
 
 	@Override
 	public void onGameStateChange(PacManGameState oldState, PacManGameState newState) {
+		GameModel game = gameController.game();
 
-		// exit state
+		// exit HUNTING
 		if (oldState == PacManGameState.HUNTING) {
 			rendering.mazeAnimations().energizerBlinking().reset();
 		}
 
-		// enter state
+		// enter READY
 		if (newState == PacManGameState.READY) {
 			rendering.resetAllAnimations(gameController.game());
 			if (gameController.isPlayingRequested()) {
@@ -46,27 +47,44 @@ public class PlayScene extends GameScene {
 			} else {
 				gameController.timer().resetSeconds(2);
 			}
-		} else if (newState == PacManGameState.HUNTING) {
+		}
+
+		// enter HUNTING
+		else if (newState == PacManGameState.HUNTING) {
 			rendering.mazeAnimations().energizerBlinking().restart();
-			rendering.playerAnimations().playerMunching(gameController.game().player).forEach(TimedSequence::restart);
-			gameController.game().ghosts().flatMap(rendering.ghostAnimations()::ghostKicking).forEach(TimedSequence::restart);
-		} else if (newState == PacManGameState.GHOST_DYING) {
+			rendering.playerAnimations().playerMunching(game.player).forEach(TimedSequence::restart);
+			game.ghosts().flatMap(rendering.ghostAnimations()::ghostKicking).forEach(TimedSequence::restart);
+		}
+
+		// enter PACMAN_DYING
+		else if (newState == PacManGameState.PACMAN_DYING) {
+			playAnimationPlayerDying(game);
+		}
+
+		// enter GHOST_DYING
+		else if (newState == PacManGameState.GHOST_DYING) {
 			rendering.mazeAnimations().energizerBlinking().restart();
-		} else if (newState == PacManGameState.LEVEL_COMPLETE) {
-			mazeFlashing = rendering.mazeAnimations().mazeFlashing(gameController.game().level.mazeNumber);
-		} else if (newState == PacManGameState.GAME_OVER) {
-			gameController.game().ghosts().flatMap(rendering.ghostAnimations()::ghostKicking).forEach(TimedSequence::reset);
+		}
+
+		// enter LEVEL_COMPLETE
+		else if (newState == PacManGameState.LEVEL_COMPLETE) {
+			mazeFlashing = rendering.mazeAnimations().mazeFlashing(game.level.mazeNumber);
+		}
+
+		// enter GAME_OVER
+		else if (newState == PacManGameState.GAME_OVER) {
+			game.ghosts().flatMap(rendering.ghostAnimations()::ghostKicking).forEach(TimedSequence::reset);
 		}
 	}
 
-	private void startPlayerDyingAnimation(PacManGameState state) {
-		GameModel game = gameController.game();
+	private void playAnimationPlayerDying(GameModel game) {
 		game.ghosts().flatMap(rendering.ghostAnimations()::ghostKicking).forEach(TimedSequence::reset);
-		game.ghosts().forEach(ghost -> ghost.visible = false);
-		rendering.playerAnimations().playerDying().restart();
-		if (gameController.isPlaying()) {
-			sounds.play(PacManGameSound.PACMAN_DEATH);
-		}
+		rendering.playerAnimations().playerDying().delay(120).onStart(() -> {
+			game.ghosts().forEach(ghost -> ghost.visible = false);
+			if (gameController.isPlaying()) {
+				sounds.play(PacManGameSound.PACMAN_DEATH);
+			}
+		}).restart();
 	}
 
 	private void runLevelCompleteState(PacManGameState state) {
@@ -83,18 +101,8 @@ public class PlayScene extends GameScene {
 		}
 	}
 
-	private void addListeners() {
-		gameController.addStateTimeListener(PacManGameState.PACMAN_DYING, this::startPlayerDyingAnimation, 1.0);
-	}
-
-	private void removeListeners() {
-		gameController.removeStateTimeListener(this::startPlayerDyingAnimation);
-	}
-
 	@Override
 	public void start() {
-		addListeners();
-
 		GameModel game = gameController.game();
 		mazeFlashing = rendering.mazeAnimations().mazeFlashing(game.level.mazeNumber).repetitions(game.level.numFlashes);
 		mazeFlashing.reset();
@@ -107,11 +115,6 @@ public class PlayScene extends GameScene {
 				});
 			}
 		});
-	}
-
-	@Override
-	public void end() {
-		removeListeners();
 	}
 
 	@Override

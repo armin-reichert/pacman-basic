@@ -4,10 +4,8 @@ import static de.amr.games.pacman.lib.Logging.log;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 /**
@@ -16,19 +14,6 @@ import java.util.stream.Stream;
  * @author Armin Reichert
  */
 public class FiniteStateMachine<S extends Enum<S>> {
-
-	private static class StateListener<S> {
-
-		private final S state;
-		private final Consumer<S> handler;
-		private final long ticks;
-
-		public StateListener(S state, Consumer<S> handler, double seconds) {
-			this.state = state;
-			this.handler = handler;
-			this.ticks = Math.round(seconds * 60);
-		}
-	}
 
 	private static class StateChangeListener<S> {
 
@@ -45,7 +30,6 @@ public class FiniteStateMachine<S extends Enum<S>> {
 	public S state;
 
 	private final EnumMap<S, StateRepresentation> stateMap;
-	private final List<StateListener<S>> tickListeners = new ArrayList<>();
 	private final List<StateChangeListener<S>> changeListeners = new ArrayList<>();
 
 	public FiniteStateMachine(EnumMap<S, StateRepresentation> stateMap, S[] stateIdentifiers) {
@@ -59,31 +43,12 @@ public class FiniteStateMachine<S extends Enum<S>> {
 		stateObject(gameState).onExit = onExit;
 	}
 
-	public void addStateTimeListener(S gameState, Consumer<S> handler, double seconds) {
-		tickListeners.add(new StateListener<S>(gameState, handler, seconds));
-	}
-
-	public void removeStateTimeListener(Consumer<S> handler) {
-		removeListener(handler, tickListeners);
-	}
-
 	public void addStateChangeListener(BiConsumer<S, S> handler) {
 		changeListeners.add(new StateChangeListener<S>(handler));
 	}
 
 	public void removeStateChangeListener(BiConsumer<S, S> handler) {
 		changeListeners.removeIf(entry -> entry.handler == handler);
-	}
-
-	private void removeListener(Consumer<S> handler, List<StateListener<S>> list) {
-		Iterator<StateListener<S>> it = list.iterator();
-		while (it.hasNext()) {
-			StateListener<S> listener = it.next();
-			if (listener.handler == handler) {
-				it.remove();
-				return;
-			}
-		}
 	}
 
 	public S changeState(S newState) {
@@ -133,10 +98,6 @@ public class FiniteStateMachine<S extends Enum<S>> {
 				stateObject(state).timer.start();
 			}
 			stateObject(state).timer.tick();
-			tickListeners.stream()//
-					.filter(listener -> listener.state == state)//
-					.filter(listener -> listener.ticks == stateObject(state).timer.ticked())//
-					.forEach(listener -> listener.handler.accept(state));
 		} catch (Exception x) {
 			Logging.log("Error updating state %s", state);
 			x.printStackTrace();
