@@ -90,10 +90,9 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	public final Autopilot autopilot = new Autopilot();
 
 	public PacManGameController(GameVariant variant) {
-		super(new EnumMap<>(PacManGameState.class));
+		super(new EnumMap<>(PacManGameState.class), PacManGameState.values());
 		gameVariant = variant;
 		game = games[gameVariant.ordinal()];
-		createStates(Stream.of(PacManGameState.values()));
 		configure(INTRO, this::enterIntroState, this::updateIntroState, null);
 		configure(READY, this::enterReadyState, this::updateReadyState, null);
 		configure(HUNTING, this::enterHuntingState, this::updateHuntingState, null);

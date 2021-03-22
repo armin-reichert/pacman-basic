@@ -44,16 +44,13 @@ public class FiniteStateMachine<S extends Enum<S>> {
 	public S previousState;
 	public S state;
 
-	private final EnumMap<S, StateRepresentation> stateObjects;
+	private final EnumMap<S, StateRepresentation> stateMap;
 	private final List<StateListener<S>> tickListeners = new ArrayList<>();
 	private final List<StateChangeListener<S>> changeListeners = new ArrayList<>();
 
-	public FiniteStateMachine(EnumMap<S, StateRepresentation> stateObjects) {
-		this.stateObjects = stateObjects;
-	}
-
-	protected void createStates(Stream<S> stateIdentifiers) {
-		stateIdentifiers.forEach(id -> stateObjects.put(id, new StateRepresentation(id)));
+	public FiniteStateMachine(EnumMap<S, StateRepresentation> stateMap, S[] stateIdentifiers) {
+		this.stateMap = stateMap;
+		Stream.of(stateIdentifiers).forEach(id -> stateMap.put(id, new StateRepresentation(id)));
 	}
 
 	public void configure(S gameState, Runnable onEnter, Runnable onUpdate, Runnable onExit) {
@@ -118,7 +115,7 @@ public class FiniteStateMachine<S extends Enum<S>> {
 	}
 
 	private StateRepresentation stateObject(S id) {
-		return stateObjects.get(id);
+		return stateMap.get(id);
 	}
 
 	private void fireStateChange() {
