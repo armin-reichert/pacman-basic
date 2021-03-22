@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.lib.Logging;
-
 /**
  * Timed sequence of things, for example of images or spritesheet regions
  * 
@@ -135,8 +133,6 @@ public class TimedSequence<T> {
 			} else if (totalRunningTicks++ == 0) {
 				if (onStart != null) {
 					onStart.run();
-				} else {
-					Logging.log("Start animation %s", this);
 				}
 			} else if (frameRunningTicks + 1 < frameDurationTicks) {
 				frameRunningTicks++;
