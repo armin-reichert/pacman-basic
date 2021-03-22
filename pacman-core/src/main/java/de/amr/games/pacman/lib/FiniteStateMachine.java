@@ -94,10 +94,11 @@ public class FiniteStateMachine<S extends Enum<S>> {
 			if (stateObject(state).onUpdate != null) {
 				stateObject(state).onUpdate.run();
 			}
-			if (!stateObject(state).timer.isRunning()) {
-				stateObject(state).timer.start();
+			TickTimer stateTimer = stateObject(state).timer;
+			if (!stateTimer.isRunning() && !stateTimer.hasExpired()) { // TODO check this
+				stateTimer.start();
 			}
-			stateObject(state).timer.tick();
+			stateTimer.tick();
 		} catch (Exception x) {
 			Logging.log("Error updating state %s", state);
 			x.printStackTrace();

@@ -418,8 +418,6 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	private void updateLevelStartingState() {
 		if (timer().hasExpired()) {
-			game.player.visible = true;
-			game.ghosts().forEach(ghost -> ghost.visible = true);
 			changeState(READY);
 		}
 	}
