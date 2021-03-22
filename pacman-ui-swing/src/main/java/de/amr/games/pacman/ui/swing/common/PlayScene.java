@@ -138,7 +138,9 @@ public class PlayScene extends GameScene {
 		rendering.drawBonus(g, game.bonus);
 		rendering.drawPlayer(g, game.player);
 		game.ghosts().forEach(ghost -> rendering.drawGhost(g, ghost, game.player.powerTimer.isRunning()));
-		rendering.drawScore(g, game, !(gameController.isPlaying() || gameController.isPlayingRequested()));
+		boolean showHiscoreOnly = gameController.state == PacManGameState.INTRO
+				|| !(gameController.isPlaying() || gameController.isPlayingRequested());
+		rendering.drawScore(g, game, showHiscoreOnly);
 		if (gameController.isPlaying() || gameController.isPlayingRequested()) {
 			rendering.drawLivesCounter(g, game, t(2), t(34));
 		}

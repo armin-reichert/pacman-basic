@@ -64,7 +64,7 @@ public interface Rendering<GC, COLOR, FONT, SPRITE> {
 
 	void drawGameState(GC g, GameModel game, PacManGameState gameState);
 
-	void drawScore(GC g, GameModel game, boolean titleOnly);
+	void drawScore(GC g, GameModel game, boolean hiscoreOnly);
 
 	void drawLevelCounter(GC g, GameModel game, int rightX, int y);
 
