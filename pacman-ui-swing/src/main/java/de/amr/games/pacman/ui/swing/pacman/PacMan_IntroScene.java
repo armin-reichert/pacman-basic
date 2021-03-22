@@ -37,7 +37,7 @@ public class PacMan_IntroScene extends GameScene {
 
 	@Override
 	public void start() {
-		sceneController = new PacMan_IntroScene_Controller(controller, rendering);
+		sceneController = new PacMan_IntroScene_Controller(gameController, rendering);
 		sceneController.start();
 	}
 
@@ -50,7 +50,7 @@ public class PacMan_IntroScene extends GameScene {
 	public void render(Graphics2D g) {
 		Graphics2D g2 = (Graphics2D) g.create();
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-		rendering.drawScore(g, controller.game(), true);
+		rendering.drawScore(g, gameController.game(), true);
 		drawGallery(g);
 		if (sceneController.phase == Phase.CHASING_PAC) {
 			if (sceneController.blinking.animate()) {

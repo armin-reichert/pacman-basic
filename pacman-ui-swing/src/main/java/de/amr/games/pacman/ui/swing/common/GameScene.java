@@ -15,14 +15,14 @@ import de.amr.games.pacman.ui.swing.rendering.PacManGameRendering2D;
  */
 public abstract class GameScene {
 
-	protected final PacManGameController controller;
+	protected final PacManGameController gameController;
 	protected final Dimension size;
 	protected final PacManGameRendering2D rendering;
 	protected final SoundManager sounds;
 
 	public GameScene(PacManGameController controller, Dimension size, PacManGameRendering2D rendering,
 			SoundManager sounds) {
-		this.controller = controller;
+		this.gameController = controller;
 		this.size = size;
 		this.rendering = rendering;
 		this.sounds = sounds;
