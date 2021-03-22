@@ -1,11 +1,15 @@
 package de.amr.games.pacman.ui.sound;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Constants for the sounds used in the Pac-Man and Ms. Pac-Man games.
  * 
  * @author Armin Reichert
  */
 public enum PacManGameSound {
+
 	//@formatter:off
 	BONUS_EATEN, 
 	CREDIT, 
@@ -25,4 +29,7 @@ public enum PacManGameSound {
 	PACMAN_MUNCH, 
 	PACMAN_POWER;
 	//@formatter:on
+
+	public static final List<PacManGameSound> SIRENS = Arrays.asList(GHOST_SIREN_1, GHOST_SIREN_2, GHOST_SIREN_3,
+			GHOST_SIREN_4);
 }

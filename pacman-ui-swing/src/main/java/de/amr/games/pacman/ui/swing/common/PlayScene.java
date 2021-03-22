@@ -39,24 +39,24 @@ public class PlayScene extends GameScene {
 
 		// enter state
 		if (newState == PacManGameState.READY) {
-			rendering.resetAllAnimations(controller.selectedGame());
+			rendering.resetAllAnimations(controller.game());
 		} else if (newState == PacManGameState.HUNTING) {
 			rendering.mazeAnimations().energizerBlinking().restart();
-			rendering.playerAnimations().playerMunching(controller.selectedGame().player).forEach(TimedSequence::restart);
-			controller.selectedGame().ghosts().flatMap(rendering.ghostAnimations()::ghostKicking)
+			rendering.playerAnimations().playerMunching(controller.game().player).forEach(TimedSequence::restart);
+			controller.game().ghosts().flatMap(rendering.ghostAnimations()::ghostKicking)
 					.forEach(TimedSequence::restart);
 		} else if (newState == PacManGameState.GHOST_DYING) {
 			rendering.mazeAnimations().energizerBlinking().restart();
 		} else if (newState == PacManGameState.LEVEL_COMPLETE) {
-			mazeFlashing = rendering.mazeAnimations().mazeFlashing(controller.selectedGame().level.mazeNumber);
+			mazeFlashing = rendering.mazeAnimations().mazeFlashing(controller.game().level.mazeNumber);
 		} else if (newState == PacManGameState.GAME_OVER) {
-			controller.selectedGame().ghosts().flatMap(rendering.ghostAnimations()::ghostKicking)
+			controller.game().ghosts().flatMap(rendering.ghostAnimations()::ghostKicking)
 					.forEach(TimedSequence::reset);
 		}
 	}
 
 	private void startPlayerDyingAnimation(PacManGameState state) {
-		GameModel game = controller.selectedGame();
+		GameModel game = controller.game();
 		game.ghosts().flatMap(rendering.ghostAnimations()::ghostKicking).forEach(TimedSequence::reset);
 		game.ghosts().forEach(ghost -> ghost.visible = false);
 		rendering.playerAnimations().playerDying().restart();
@@ -66,7 +66,7 @@ public class PlayScene extends GameScene {
 	}
 
 	private void runLevelCompleteState(PacManGameState state) {
-		GameModel game = controller.selectedGame();
+		GameModel game = controller.game();
 		if (controller.timer().isRunningSeconds(2)) {
 			game.ghosts().forEach(ghost -> ghost.visible = false);
 		}
@@ -91,7 +91,7 @@ public class PlayScene extends GameScene {
 	public void start() {
 		addListeners();
 
-		GameModel game = controller.selectedGame();
+		GameModel game = controller.game();
 		mazeFlashing = rendering.mazeAnimations().mazeFlashing(game.level.mazeNumber).repetitions(game.level.numFlashes);
 		mazeFlashing.reset();
 		game.player.powerTimer.addEventListener(e -> {
@@ -121,7 +121,7 @@ public class PlayScene extends GameScene {
 
 	@Override
 	public void render(Graphics2D g) {
-		GameModel game = controller.selectedGame();
+		GameModel game = controller.game();
 		rendering.drawMaze(g, game.level.mazeNumber, 0, t(3), mazeFlashing.isRunning());
 		if (!mazeFlashing.isRunning()) {
 			rendering.drawFoodTiles(g, game.level.world.tiles().filter(game.level.world::isFoodTile),

@@ -38,7 +38,7 @@ public class PacMan_IntermissionScene2 extends GameScene {
 
 	@Override
 	public void render(Graphics2D g) {
-		rendering.drawLevelCounter(g, controller.selectedGame(), t(25), t(34));
+		rendering.drawLevelCounter(g, controller.game(), t(25), t(34));
 		rendering.drawNail(g, sceneController.nail);
 		rendering.drawPlayer(g, sceneController.pac);
 		if (sceneController.nailDistance() < 0) {

@@ -27,9 +27,7 @@ import static de.amr.games.pacman.model.common.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.model.common.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.model.common.GhostState.LOCKED;
 
-import java.util.Arrays;
 import java.util.EnumMap;
-import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Stream;
@@ -74,6 +72,19 @@ import de.amr.games.pacman.ui.sound.SoundManager;
  */
 public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
+	private static final String KEY_TOGGLE_AUTOPILOT = "A";
+	private static final String KEY_EAT_ALL_NORMAL_PELLETS = "E";
+	private static final String KEY_TOGGLE_IMMUNITY = "I";
+	private static final String KEY_ADD_LIVE = "L";
+	private static final String KEY_NEXT_LEVEL = "N";
+	private static final String KEY_QUIT = "Q";
+	private static final String KEY_EXTERMINATE_GHOSTS = "X";
+	private static final String KEY_START_PLAYING = "Space";
+	private static final String KEY_PLAYER_UP = "Up";
+	private static final String KEY_PLAYER_DOWN = "Down";
+	private static final String KEY_PLAYER_LEFT = "Left";
+	private static final String KEY_PLAYER_RIGHT = "Right";
+
 	private final GameModel[] games = new GameModel[2];
 	{
 		games[MS_PACMAN.ordinal()] = new MsPacManGame();
@@ -91,8 +102,6 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	public PacManGameController(GameVariant variant) {
 		super(new EnumMap<>(PacManGameState.class), PacManGameState.values());
-		gameVariant = variant;
-		game = games[gameVariant.ordinal()];
 		configure(INTRO, this::enterIntroState, this::updateIntroState, null);
 		configure(READY, this::enterReadyState, this::updateReadyState, null);
 		configure(HUNTING, this::enterHuntingState, this::updateHuntingState, null);
@@ -102,86 +111,86 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		configure(LEVEL_COMPLETE, this::enterLevelCompleteState, this::updateLevelCompleteState, null);
 		configure(INTERMISSION, this::enterIntermissionState, this::updateIntermissionState, null);
 		configure(GAME_OVER, this::enterGameOverState, this::updateGameOverState, null);
-		changeState(INTRO);
+		play(variant);
 	}
 
-	/**
-	 * Runs a single step of the game.
-	 */
 	public void step() {
-		if (userInterface.keyPressed("Q")) {
-			changeState(PacManGameState.INTRO);
-		} else {
-			if (!attractMode) {
-				handleCheatsAndStuff();
-			}
-			updateState();
-		}
+		handleKeys();
+		updateState();
 	}
 
 	public GameVariant gameVariant() {
 		return gameVariant;
 	}
 
-	public void setGameVariant(GameVariant variant) {
+	public void play(GameVariant variant) {
 		gameVariant = variant;
 		game = games[gameVariant.ordinal()];
 		changeState(INTRO);
-	}
-
-	public void toggleGameVariant() {
-		setGameVariant(gameVariant == MS_PACMAN ? PACMAN : MS_PACMAN);
-	}
-
-	public GameModel selectedGame() {
-		return games[gameVariant.ordinal()];
 	}
 
 	public boolean isPlaying(GameVariant variant) {
 		return gameVariant == variant;
 	}
 
+	public void toggleGameVariant() {
+		play(gameVariant == MS_PACMAN ? PACMAN : MS_PACMAN);
+	}
+
+	public GameModel game() {
+		return games[gameVariant.ordinal()];
+	}
+
 	public boolean isAttractMode() {
 		return attractMode;
 	}
 
-	private void handleCheatsAndStuff() {
+	private void handleKeys() {
 		boolean intro = state == INTRO, ready = state == READY, hunting = state == HUNTING;
 
-		// A = toggle autopilot
-		if (userInterface.keyPressed("A")) {
+		if (userInterface.keyPressed(KEY_QUIT) && !intro) {
+			changeState(PacManGameState.INTRO);
+			return;
+		}
+
+		if (attractMode) {
+			return;
+		}
+
+		// toggle autopilot
+		if (userInterface.keyPressed(KEY_TOGGLE_AUTOPILOT)) {
 			enableAutopilot(!autopilot.enabled);
 		}
 
-		// E = eat all food except the energizers
-		else if (userInterface.keyPressed("E") && hunting) {
+		// eat all food except the energizers
+		else if (userInterface.keyPressed(KEY_EAT_ALL_NORMAL_PELLETS) && hunting) {
 			game.level.world.tiles().filter(game.level::containsFood).filter(tile -> !game.level.world.isEnergizerTile(tile))
 					.forEach(game.level::removeFood);
 		}
 
-		// I = toggle player's immunity against ghost bites
-		else if (userInterface.keyPressed("I")) {
+		// toggle player's immunity against ghost bites
+		else if (userInterface.keyPressed(KEY_TOGGLE_IMMUNITY)) {
 			game.player.immune = !game.player.immune;
 			userInterface.showFlashMessage("Player immunity " + (game.player.immune ? "ON" : "OFF"));
 		}
 
-		// L = add live
-		else if (userInterface.keyPressed("L")) {
+		// add live
+		else if (userInterface.keyPressed(KEY_ADD_LIVE)) {
 			game.lives++;
 		}
 
-		// N = change to next level
-		else if (userInterface.keyPressed("N") && (ready || hunting)) {
+		// change to next level
+		else if (userInterface.keyPressed(KEY_NEXT_LEVEL) && (ready || hunting)) {
 			changeState(LEVEL_COMPLETE);
 		}
 
-		// X = exterminate all ghosts outside of ghost house
-		else if (userInterface.keyPressed("X") && hunting) {
+		// exterminate all ghosts outside of ghost house
+		else if (userInterface.keyPressed(KEY_EXTERMINATE_GHOSTS) && hunting) {
 			killAllGhosts();
 			changeState(GHOST_DYING);
 		}
 
-		// test intermission scenes
+		// test intermission scenes (TODO remove)
 		else if (userInterface.keyPressed("1") && intro) {
 			userInterface.showFlashMessage("Test Intermission #1");
 			game.intermissionNumber = 1;
@@ -222,7 +231,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	private void updateIntroState() {
-		if (userInterface.keyPressed("Space")) {
+		if (userInterface.keyPressed(KEY_START_PLAYING)) {
 			changeState(READY);
 			return;
 		}
@@ -256,18 +265,15 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		}
 	}
 
-	static final List<PacManGameSound> SIRENS = Arrays.asList(PacManGameSound.GHOST_SIREN_1,
-			PacManGameSound.GHOST_SIREN_2, PacManGameSound.GHOST_SIREN_3, PacManGameSound.GHOST_SIREN_4);
-
 	private void startHuntingPhase(int phase) {
 		game.huntingPhase = phase;
 		if (inScatteringPhase()) {
 			// TODO not sure about when which siren should play
 			sound().ifPresent(sound -> {
 				if (game.huntingPhase >= 2) {
-					sound.stop(SIRENS.get((game.huntingPhase - 1) / 2));
+					sound.stop(PacManGameSound.SIRENS.get((game.huntingPhase - 1) / 2));
 				}
-				sound.loopForever(SIRENS.get(game.huntingPhase / 2));
+				sound.loopForever(PacManGameSound.SIRENS.get(game.huntingPhase / 2));
 			});
 		}
 		if (timer().isStopped()) {
@@ -465,7 +471,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	private void updateGameOverState() {
-		if (timer().hasExpired() || userInterface.keyPressed("Space")) {
+		if (timer().hasExpired() || userInterface.keyPressed(KEY_START_PLAYING)) {
 			changeState(INTRO);
 		}
 	}
@@ -504,15 +510,13 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	private void steerPlayer() {
 		if (autopilot.enabled || attractMode) {
 			autopilot.run(game);
-			return;
-		}
-		if (userInterface.keyPressed("Left")) {
+		} else if (userInterface.keyPressed(KEY_PLAYER_LEFT)) {
 			game.player.wishDir = LEFT;
-		} else if (userInterface.keyPressed("Right")) {
+		} else if (userInterface.keyPressed(KEY_PLAYER_RIGHT)) {
 			game.player.wishDir = RIGHT;
-		} else if (userInterface.keyPressed("Up")) {
+		} else if (userInterface.keyPressed(KEY_PLAYER_UP)) {
 			game.player.wishDir = UP;
-		} else if (userInterface.keyPressed("Down")) {
+		} else if (userInterface.keyPressed(KEY_PLAYER_DOWN)) {
 			game.player.wishDir = DOWN;
 		}
 	}

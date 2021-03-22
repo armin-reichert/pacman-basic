@@ -40,7 +40,7 @@ public class PacMan_IntermissionScene3 extends GameScene {
 
 	@Override
 	public void render(Graphics2D g) {
-		rendering.drawLevelCounter(g, controller.selectedGame(), t(25), t(34));
+		rendering.drawLevelCounter(g, controller.game(), t(25), t(34));
 		rendering.drawPlayer(g, sceneController.pac);
 		if (sceneController.phase == Phase.CHASING_PACMAN) {
 			rendering.drawBlinkyPatched(g, sceneController.blinky);
