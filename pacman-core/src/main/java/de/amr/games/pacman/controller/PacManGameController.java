@@ -468,9 +468,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	private void updateGameOverState() {
-		if (userInterface.keyPressed(KEY_START_PLAYING)) {
-			changeState(INTRO);
-		} else if (timer().hasExpired()) {
+		if (timer().hasExpired()) {
 			changeState(INTRO);
 		}
 	}
