@@ -157,6 +157,21 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			return;
 		}
 
+		// test intermission scenes (TODO remove)
+		if (userInterface.keyPressed("1") && intro) {
+			userInterface.showFlashMessage("Test Intermission #1");
+			game.intermissionNumber = 1;
+			changeState(INTERMISSION);
+		} else if (userInterface.keyPressed("2") && intro) {
+			userInterface.showFlashMessage("Test Intermission #2");
+			game.intermissionNumber = 2;
+			changeState(INTERMISSION);
+		} else if (userInterface.keyPressed("3") && intro) {
+			userInterface.showFlashMessage("Test Intermission #3");
+			game.intermissionNumber = 3;
+			changeState(INTERMISSION);
+		}
+
 		if (!playing) {
 			return;
 		}
@@ -194,20 +209,6 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			changeState(GHOST_DYING);
 		}
 
-		// test intermission scenes (TODO remove)
-		else if (userInterface.keyPressed("1") && intro) {
-			userInterface.showFlashMessage("Test Intermission #1");
-			game.intermissionNumber = 1;
-			changeState(INTERMISSION);
-		} else if (userInterface.keyPressed("2") && intro) {
-			userInterface.showFlashMessage("Test Intermission #2");
-			game.intermissionNumber = 2;
-			changeState(INTERMISSION);
-		} else if (userInterface.keyPressed("3") && intro) {
-			userInterface.showFlashMessage("Test Intermission #3");
-			game.intermissionNumber = 3;
-			changeState(INTERMISSION);
-		}
 	}
 
 	public void letCurrentGameStateExpire() {
@@ -478,7 +479,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	private void updateIntermissionState() {
 		if (timer().hasExpired()) {
-			changeState(LEVEL_STARTING);
+			changeState(playing ? LEVEL_STARTING : INTRO);
 		}
 	}
 
