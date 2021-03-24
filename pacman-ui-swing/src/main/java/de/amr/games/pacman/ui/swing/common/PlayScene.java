@@ -38,11 +38,6 @@ public class PlayScene extends GameScene {
 	public void onGameStateChange(PacManGameState oldState, PacManGameState newState) {
 		GameModel game = gameController.game();
 
-		// exit HUNTING
-		if (oldState == PacManGameState.HUNTING) {
-			rendering.mazeAnimations().energizerBlinking().reset();
-		}
-
 		// enter READY
 		if (newState == PacManGameState.READY) {
 			rendering.resetAllAnimations(gameController.game());
@@ -55,30 +50,44 @@ public class PlayScene extends GameScene {
 		}
 
 		// enter HUNTING
-		else if (newState == PacManGameState.HUNTING) {
+		if (newState == PacManGameState.HUNTING) {
 			rendering.mazeAnimations().energizerBlinking().restart();
 			rendering.playerAnimations().playerMunching(game.player).forEach(TimedSequence::restart);
 			game.ghosts().flatMap(rendering.ghostAnimations()::ghostKicking).forEach(TimedSequence::restart);
 		}
 
+		// exit HUNTING
+		if (oldState == PacManGameState.HUNTING) {
+			rendering.mazeAnimations().energizerBlinking().reset();
+		}
+
 		// enter PACMAN_DYING
-		else if (newState == PacManGameState.PACMAN_DYING) {
+		if (newState == PacManGameState.PACMAN_DYING) {
 			sounds.stopAll();
 			playAnimationPlayerDying(game);
 		}
 
 		// enter GHOST_DYING
-		else if (newState == PacManGameState.GHOST_DYING) {
+		if (newState == PacManGameState.GHOST_DYING) {
+			sounds.play(PacManGameSound.GHOST_EATEN);
 			rendering.mazeAnimations().energizerBlinking().restart();
 		}
 
+		// exit GHOST_DYING
+		if (oldState == PacManGameState.GHOST_DYING) {
+			// the dead ghost(s) will return home now
+			if (game.ghosts(GhostState.DEAD).count() > 0) {
+				sounds.loopForever(PacManGameSound.GHOST_RETURNING_HOME);
+			}
+		}
+
 		// enter LEVEL_COMPLETE
-		else if (newState == PacManGameState.LEVEL_COMPLETE) {
+		if (newState == PacManGameState.LEVEL_COMPLETE) {
 			mazeFlashing = rendering.mazeAnimations().mazeFlashing(game.level.mazeNumber);
 		}
 
 		// enter GAME_OVER
-		else if (newState == PacManGameState.GAME_OVER) {
+		if (newState == PacManGameState.GAME_OVER) {
 			game.ghosts().flatMap(rendering.ghostAnimations()::ghostKicking).forEach(TimedSequence::reset);
 		}
 	}

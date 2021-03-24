@@ -364,7 +364,8 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		gameModel.ghosts().forEach(ghost -> ghost.update(gameModel.level));
 		int deadGhostsAfterUpdate = (int) gameModel.ghosts(DEAD).count();
 		if (deadGhostsBeforeUpdate != deadGhostsAfterUpdate) {
-			fireGameEvent(new DeadGhostCountChangeEvent(gameVariant, gameModel, deadGhostsBeforeUpdate, deadGhostsAfterUpdate));
+			fireGameEvent(
+					new DeadGhostCountChangeEvent(gameVariant, gameModel, deadGhostsBeforeUpdate, deadGhostsAfterUpdate));
 		}
 
 		gameModel.bonus.update();
@@ -392,7 +393,6 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	private void enterGhostDyingState() {
 		gameModel.player.visible = false;
-		sound().ifPresent(sound -> sound.play(PacManGameSound.GHOST_EATEN));
 		stateTimer().resetSeconds(1);
 	}
 
@@ -409,9 +409,6 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	private void exitGhostDyingState() {
 		gameModel.player.visible = true;
 		gameModel.ghosts(DEAD).forEach(ghost -> ghost.bounty = 0);
-		if (gameModel.ghosts(DEAD).count() > 0) {
-			sound().ifPresent(sound -> sound.loopForever(PacManGameSound.GHOST_RETURNING_HOME));
-		}
 	}
 
 	private void enterLevelStartingState() {
