@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 
 import de.amr.games.pacman.controller.BonusEatenEvent;
+import de.amr.games.pacman.controller.DeadGhostCountChangeEvent;
 import de.amr.games.pacman.controller.PacManGameController;
 import de.amr.games.pacman.controller.PacManGameEvent;
 import de.amr.games.pacman.controller.PacManGameState;
@@ -98,6 +99,15 @@ public class PlayScene extends GameScene {
 
 		else if (gameEvent instanceof BonusEatenEvent) {
 			sounds.play(PacManGameSound.BONUS_EATEN);
+		}
+
+		else if (gameEvent instanceof DeadGhostCountChangeEvent) {
+			DeadGhostCountChangeEvent e = (DeadGhostCountChangeEvent) gameEvent;
+			if (e.oldCount == 0 && e.newCount > 0) {
+				sounds.play(PacManGameSound.GHOST_RETURNING_HOME);
+			} else if (e.oldCount > 0 && e.newCount == 0) {
+				sounds.stop(PacManGameSound.GHOST_RETURNING_HOME);
+			}
 		}
 	}
 

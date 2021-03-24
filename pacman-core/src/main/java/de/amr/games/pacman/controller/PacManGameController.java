@@ -359,7 +359,13 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 		tryReleasingGhosts();
 		gameModel.ghosts(HUNTING_PAC).forEach(this::setGhostHuntingTarget);
+
+		int deadGhostsBeforeUpdate = (int) gameModel.ghosts(DEAD).count();
 		gameModel.ghosts().forEach(ghost -> ghost.update(gameModel.level));
+		int deadGhostsAfterUpdate = (int) gameModel.ghosts(DEAD).count();
+		if (deadGhostsBeforeUpdate != deadGhostsAfterUpdate) {
+			fireGameEvent(new DeadGhostCountChangeEvent(gameVariant, gameModel, deadGhostsBeforeUpdate, deadGhostsAfterUpdate));
+		}
 
 		gameModel.bonus.update();
 		if (gameModel.bonus.edibleTicksLeft > 0 && gameModel.player.meets(gameModel.bonus)) {
@@ -368,13 +374,6 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			score(gameModel.bonus.points);
 			fireGameEvent(new BonusEatenEvent(gameVariant, gameModel));
 		}
-
-		// TODO
-		sound().ifPresent(sound -> {
-			if (gameModel.ghosts(DEAD).count() == 0) {
-				sound.stop(PacManGameSound.GHOST_EYES);
-			}
-		});
 	}
 
 	private void enterPacManDyingState() {
@@ -411,7 +410,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		gameModel.player.visible = true;
 		gameModel.ghosts(DEAD).forEach(ghost -> ghost.bounty = 0);
 		if (gameModel.ghosts(DEAD).count() > 0) {
-			sound().ifPresent(sound -> sound.loopForever(PacManGameSound.GHOST_EYES));
+			sound().ifPresent(sound -> sound.loopForever(PacManGameSound.GHOST_RETURNING_HOME));
 		}
 	}
 
