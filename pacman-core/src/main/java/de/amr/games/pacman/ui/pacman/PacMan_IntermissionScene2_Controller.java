@@ -9,8 +9,8 @@ import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.common.GameEntity;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
-import de.amr.games.pacman.ui.animation.TimedSequence;
 import de.amr.games.pacman.ui.animation.PacManGameAnimations2D;
+import de.amr.games.pacman.ui.animation.TimedSequence;
 import de.amr.games.pacman.ui.sound.PacManGameSound;
 import de.amr.games.pacman.ui.sound.SoundManager;
 
@@ -101,7 +101,7 @@ public class PacMan_IntermissionScene2_Controller {
 				blinky.dir = Direction.RIGHT;
 			}
 			if (timer.isRunningSeconds(6)) {
-				controller.letCurrentGameStateExpire();
+				controller.timer().forceExpiration();
 				return;
 			}
 			timer.tick();

@@ -7,8 +7,8 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.common.Flap;
 import de.amr.games.pacman.model.common.Pac;
-import de.amr.games.pacman.ui.animation.TimedSequence;
 import de.amr.games.pacman.ui.animation.PacManGameAnimations2D;
+import de.amr.games.pacman.ui.animation.TimedSequence;
 import de.amr.games.pacman.ui.sound.PacManGameSound;
 import de.amr.games.pacman.ui.sound.SoundManager;
 
@@ -115,7 +115,7 @@ public class MsPacMan_IntermissionScene2_Controller {
 				msPacMan.speed = pacMan.speed = 4;
 			}
 			if (timer.isRunningSeconds(20)) {
-				controller.letCurrentGameStateExpire();
+				controller.timer().forceExpiration();
 				return;
 			}
 			timer.tick();

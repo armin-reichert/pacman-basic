@@ -97,7 +97,7 @@ public class PlayScene extends GameScene {
 		}
 		mazeFlashing.animate();
 		if (mazeFlashing.isComplete()) {
-			gameController.letCurrentGameStateExpire();
+			gameController.timer().forceExpiration();
 		}
 	}
 
@@ -122,7 +122,7 @@ public class PlayScene extends GameScene {
 		if (gameController.state == PacManGameState.LEVEL_COMPLETE) {
 			runLevelCompleteState(gameController.state);
 		} else if (gameController.state == PacManGameState.LEVEL_STARTING) {
-			gameController.letCurrentGameStateExpire();
+			gameController.timer().forceExpiration();
 		}
 	}
 

@@ -167,7 +167,7 @@ public class PacMan_IntroScene_Controller {
 				blinking.restart();
 			}
 			if (timer.isRunningSeconds(5)) {
-				controller.letCurrentGameStateExpire();
+				controller.timer().forceExpiration();
 			}
 			blinking.animate();
 			timer.tick();

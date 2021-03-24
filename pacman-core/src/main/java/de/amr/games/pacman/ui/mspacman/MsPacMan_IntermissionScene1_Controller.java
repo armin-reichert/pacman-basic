@@ -11,8 +11,8 @@ import de.amr.games.pacman.model.common.Flap;
 import de.amr.games.pacman.model.common.GameEntity;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
-import de.amr.games.pacman.ui.animation.TimedSequence;
 import de.amr.games.pacman.ui.animation.PacManGameAnimations2D;
+import de.amr.games.pacman.ui.animation.TimedSequence;
 import de.amr.games.pacman.ui.sound.PacManGameSound;
 import de.amr.games.pacman.ui.sound.SoundManager;
 
@@ -160,7 +160,7 @@ public class MsPacMan_IntermissionScene1_Controller {
 				pinky.visible = false;
 			}
 			if (timer.hasExpired()) {
-				controller.letCurrentGameStateExpire();
+				controller.timer().forceExpiration();
 				return;
 			}
 			timer.tick();
