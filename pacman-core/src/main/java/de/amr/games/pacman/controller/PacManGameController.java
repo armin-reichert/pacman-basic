@@ -179,7 +179,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 		// toggle autopilot
 		if (userInterface.keyPressed(KEY_TOGGLE_AUTOPILOT)) {
-			enableAutopilot(!autopilot.enabled);
+			autopilot.enabled = !autopilot.enabled;
 		}
 
 		// eat all food except the energizers
@@ -209,13 +209,6 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			killAllGhosts();
 			changeState(GHOST_DYING);
 		}
-	}
-
-	private void enableAutopilot(boolean enabled) {
-		autopilot.enabled = enabled;
-		String msg = "Autopilot " + (enabled ? "on" : "off");
-		userInterface.showFlashMessage(msg);
-		log(msg);
 	}
 
 	private Optional<SoundManager> sound() {
