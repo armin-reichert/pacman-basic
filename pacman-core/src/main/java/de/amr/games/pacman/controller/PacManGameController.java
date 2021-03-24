@@ -28,6 +28,7 @@ import static de.amr.games.pacman.model.common.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.model.common.GhostState.LOCKED;
 
 import java.util.EnumMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Stream;
@@ -84,6 +85,8 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	private static final String KEY_PLAYER_DOWN = "Down";
 	private static final String KEY_PLAYER_LEFT = "Left";
 	private static final String KEY_PLAYER_RIGHT = "Right";
+
+	private static final Map<Integer, Integer> INTERMISSION_NUMBER_BY_LEVEL = Map.of(2, 1, 5, 2, 9, 3, 13, 3, 17, 3);
 
 	private final GameModel[] gameModels = new GameModel[2];
 	{
@@ -426,27 +429,9 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		if (stateTimer().hasExpired()) {
 			if (attractMode) {
 				changeState(INTRO);
-				return;
-			}
-			switch (gameModel.levelNumber) {
-			case 2:
-				gameModel.intermissionNumber = 1;
-				changeState(INTERMISSION);
-				return;
-			case 5:
-				gameModel.intermissionNumber = 2;
-				changeState(INTERMISSION);
-				return;
-			case 9:
-			case 13:
-			case 17:
-				gameModel.intermissionNumber = 3;
-				changeState(INTERMISSION);
-				return;
-			default:
-				gameModel.intermissionNumber = 0;
-				changeState(LEVEL_STARTING);
-				return;
+			} else {
+				gameModel.intermissionNumber = INTERMISSION_NUMBER_BY_LEVEL.getOrDefault(gameModel.levelNumber, 0);
+				changeState(gameModel.intermissionNumber != 0 ? INTERMISSION : LEVEL_STARTING);
 			}
 		}
 	}
