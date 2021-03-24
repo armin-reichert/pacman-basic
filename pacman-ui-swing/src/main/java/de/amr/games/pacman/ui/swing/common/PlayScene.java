@@ -7,6 +7,8 @@ import java.awt.Graphics2D;
 
 import de.amr.games.pacman.controller.BonusEatenEvent;
 import de.amr.games.pacman.controller.DeadGhostCountChangeEvent;
+import de.amr.games.pacman.controller.ExtraLifeEvent;
+import de.amr.games.pacman.controller.PacManFoundFoodEvent;
 import de.amr.games.pacman.controller.PacManGameController;
 import de.amr.games.pacman.controller.PacManGameEvent;
 import de.amr.games.pacman.controller.PacManGameState;
@@ -84,6 +86,7 @@ public class PlayScene extends GameScene {
 		// enter LEVEL_COMPLETE
 		if (newState == PacManGameState.LEVEL_COMPLETE) {
 			mazeFlashing = rendering.mazeAnimations().mazeFlashing(game.level.mazeNumber);
+			sounds.stopAll();
 		}
 
 		// enter GAME_OVER
@@ -106,8 +109,17 @@ public class PlayScene extends GameScene {
 			sounds.stop(PacManGameSound.PACMAN_POWER);
 		}
 
+		else if (gameEvent instanceof PacManFoundFoodEvent) {
+			sounds.play(PacManGameSound.PACMAN_MUNCH);
+		}
+
 		else if (gameEvent instanceof BonusEatenEvent) {
 			sounds.play(PacManGameSound.BONUS_EATEN);
+		}
+
+		else if (gameEvent instanceof ExtraLifeEvent) {
+			sounds.play(PacManGameSound.EXTRA_LIFE);
+			gameController.userInterface.showFlashMessage("Extra life!");
 		}
 
 		else if (gameEvent instanceof DeadGhostCountChangeEvent) {

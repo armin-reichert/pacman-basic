@@ -427,7 +427,6 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	private void enterLevelCompleteState() {
 		gameModel.bonus.edibleTicksLeft = gameModel.bonus.eatenTicksLeft = 0;
 		gameModel.player.speed = 0;
-		sound().ifPresent(SoundManager::stopAll);
 		stateTimer().reset();
 	}
 
@@ -477,9 +476,8 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		gameModel.score += points;
 		if (oldscore < 10000 && gameModel.score >= 10000) {
 			gameModel.lives++;
-			sound().ifPresent(sound -> sound.play(PacManGameSound.EXTRA_LIFE));
-			log("Extra life. Now you have %d lives!", gameModel.lives);
-			userInterface.showFlashMessage("Extra life!");
+			log("Extra life. Player has %d lives now", gameModel.lives);
+			fireGameEvent(new ExtraLifeEvent(gameVariant, gameModel));
 		}
 		if (gameModel.score > gameModel.highscorePoints) {
 			gameModel.highscorePoints = gameModel.score;
@@ -539,7 +537,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		}
 
 		updateGhostDotCounters();
-		sound().ifPresent(sound -> sound.play(PacManGameSound.PACMAN_MUNCH));
+		fireGameEvent(new PacManFoundFoodEvent(gameVariant, gameModel));
 	}
 
 	private void startPlayerFrighteningGhosts(int seconds) {
