@@ -9,6 +9,7 @@ import de.amr.games.pacman.controller.BonusEatenEvent;
 import de.amr.games.pacman.controller.DeadGhostCountChangeEvent;
 import de.amr.games.pacman.controller.ExtraLifeEvent;
 import de.amr.games.pacman.controller.PacManFoundFoodEvent;
+import de.amr.games.pacman.controller.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.PacManGameController;
 import de.amr.games.pacman.controller.PacManGameEvent;
 import de.amr.games.pacman.controller.PacManGameState;
@@ -111,6 +112,10 @@ public class PlayScene extends GameScene {
 
 		else if (gameEvent instanceof PacManFoundFoodEvent) {
 			sounds.play(PacManGameSound.PACMAN_MUNCH);
+		}
+
+		else if (gameEvent instanceof PacManGainsPowerEvent) {
+			sounds.loopForever(PacManGameSound.PACMAN_POWER);
 		}
 
 		else if (gameEvent instanceof BonusEatenEvent) {

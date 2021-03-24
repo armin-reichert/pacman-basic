@@ -45,8 +45,6 @@ import de.amr.games.pacman.model.pacman.PacManGame;
 import de.amr.games.pacman.ui.PacManGameUI;
 import de.amr.games.pacman.ui.animation.PacManGameAnimations2D;
 import de.amr.games.pacman.ui.animation.TimedSequence;
-import de.amr.games.pacman.ui.sound.PacManGameSound;
-import de.amr.games.pacman.ui.sound.SoundManager;
 
 /**
  * Controller (in the sense of MVC) for the Pac-Man and Ms. Pac-Man game.
@@ -228,10 +226,6 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			killAllGhosts();
 			changeState(GHOST_DYING);
 		}
-	}
-
-	private Optional<SoundManager> sound() {
-		return !gameRunning || userInterface == null ? Optional.empty() : userInterface.sound();
 	}
 
 	private void enterIntroState() {
@@ -553,11 +547,10 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 				ga.ghostFrightened(ghost).forEach(TimedSequence::restart);
 			});
 		});
-		sound().ifPresent(sound -> sound.loopForever(PacManGameSound.PACMAN_POWER));
-
 		gameModel.player.powerTimer.resetSeconds(seconds);
 		gameModel.player.powerTimer.start();
 		log("Pac-Man got power for %d seconds", seconds);
+		fireGameEvent(new PacManGainsPowerEvent(gameVariant, gameModel));
 	}
 
 	private void killPlayer(Ghost killer) {
