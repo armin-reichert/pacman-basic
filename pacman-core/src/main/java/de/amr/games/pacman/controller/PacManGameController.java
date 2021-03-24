@@ -229,6 +229,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			gameRequested = true;
 			changeState(READY);
 		} else if (stateTimer().hasExpired()) {
+			attractMode = true;
 			autopilot.enabled = true;
 			changeState(READY);
 		}
@@ -240,9 +241,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	private void updateReadyState() {
 		if (stateTimer().hasExpired()) {
-			if (!gameRequested) {
-				attractMode = true;
-			} else {
+			if (gameRequested) {
 				gameRunning = true;
 			}
 			changeState(PacManGameState.HUNTING);
@@ -368,7 +367,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	private void enterPacManDyingState() {
 		gameModel.player.speed = 0;
 		gameModel.bonus.edibleTicksLeft = gameModel.bonus.eatenTicksLeft = 0;
-		stateTimer().resetSeconds(4);
+		stateTimer().resetSeconds(5);
 	}
 
 	private void updatePacManDyingState() {
