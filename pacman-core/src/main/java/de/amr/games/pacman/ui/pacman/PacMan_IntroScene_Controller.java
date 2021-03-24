@@ -140,7 +140,7 @@ public class PacMan_IntroScene_Controller {
 			if (pac.position.x > t(28)) {
 				enterPhase(Phase.READY_TO_PLAY);
 			}
-			if (controller.timer().ticked() - ghostKilledTime == 15) {
+			if (controller.stateTimer().ticked() - ghostKilledTime == 15) {
 				ghostKilledTime = 0;
 				pac.visible = true;
 				pac.speed = 1;
@@ -156,7 +156,7 @@ public class PacMan_IntroScene_Controller {
 					ghost.bounty = (int) Math.pow(2, ghost.id + 1) * 100;
 					pac.visible = false;
 					pac.speed = 0;
-					ghostKilledTime = controller.timer().ticked();
+					ghostKilledTime = controller.stateTimer().ticked();
 				}
 			}
 			timer.tick();
@@ -167,7 +167,7 @@ public class PacMan_IntroScene_Controller {
 				blinking.restart();
 			}
 			if (timer.isRunningSeconds(5)) {
-				controller.timer().forceExpiration();
+				controller.stateTimer().forceExpiration();
 			}
 			blinking.animate();
 			timer.tick();

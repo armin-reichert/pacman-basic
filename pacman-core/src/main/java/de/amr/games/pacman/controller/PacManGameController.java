@@ -222,7 +222,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	private void enterIntroState() {
-		timer().reset();
+		stateTimer().reset();
 		gameModel.reset();
 		playingRequested = false;
 		playing = false;
@@ -233,7 +233,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		if (userInterface.keyPressed(KEY_START_PLAYING)) {
 			playingRequested = true;
 			changeState(READY);
-		} else if (timer().hasExpired()) {
+		} else if (stateTimer().hasExpired()) {
 			autopilot.enabled = true;
 			changeState(READY);
 		}
@@ -244,7 +244,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	private void updateReadyState() {
-		if (timer().hasExpired()) {
+		if (stateTimer().hasExpired()) {
 			if (playingRequested) {
 				playing = true;
 				playingRequested = false;
@@ -252,7 +252,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			changeState(PacManGameState.HUNTING);
 			return;
 		}
-		if (timer().isRunningSeconds(0.5)) {
+		if (stateTimer().isRunningSeconds(0.5)) {
 			gameModel.player.visible = true;
 			for (Ghost ghost : gameModel.ghosts) {
 				ghost.visible = true;
@@ -271,13 +271,13 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 				sound.loopForever(PacManGameSound.SIRENS.get(gameModel.huntingPhase / 2));
 			});
 		}
-		if (timer().isStopped()) {
-			timer().start();
-			log("Hunting phase %d continues, %d of %d ticks remaining", phase, timer().ticksRemaining(), timer().duration());
+		if (stateTimer().isStopped()) {
+			stateTimer().start();
+			log("Hunting phase %d continues, %d of %d ticks remaining", phase, stateTimer().ticksRemaining(), stateTimer().duration());
 		} else {
-			timer().reset(gameModel.getHuntingPhaseDuration(gameModel.huntingPhase));
-			timer().start();
-			log("Hunting phase %d starts, %d of %d ticks remaining", phase, timer().ticksRemaining(), timer().duration());
+			stateTimer().reset(gameModel.getHuntingPhaseDuration(gameModel.huntingPhase));
+			stateTimer().start();
+			log("Hunting phase %d starts, %d of %d ticks remaining", phase, stateTimer().ticksRemaining(), stateTimer().duration());
 		}
 	}
 
@@ -315,7 +315,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		}
 
 		// Hunting phase complete?
-		if (timer().hasExpired()) {
+		if (stateTimer().hasExpired()) {
 			gameModel.ghosts(HUNTING_PAC).forEach(Ghost::forceTurningBack);
 			startHuntingPhase(++gameModel.huntingPhase);
 			return;
@@ -345,7 +345,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			gameModel.ghosts(FRIGHTENED).forEach(ghost -> ghost.state = HUNTING_PAC);
 			sound().ifPresent(sound -> sound.stop(PacManGameSound.PACMAN_POWER));
 			gameModel.player.powerTimer.reset();
-			timer().start();
+			stateTimer().start();
 		}
 
 		tryReleasingGhosts();
@@ -370,11 +370,11 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	private void enterPacManDyingState() {
 		gameModel.player.speed = 0;
 		gameModel.bonus.edibleTicksLeft = gameModel.bonus.eatenTicksLeft = 0;
-		timer().resetSeconds(4);
+		stateTimer().resetSeconds(4);
 	}
 
 	private void updatePacManDyingState() {
-		if (timer().hasExpired()) {
+		if (stateTimer().hasExpired()) {
 			gameModel.ghosts().forEach(ghost -> ghost.visible = true);
 			changeState(!playing ? INTRO : --gameModel.lives > 0 ? READY : GAME_OVER);
 			return;
@@ -384,11 +384,11 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	private void enterGhostDyingState() {
 		gameModel.player.visible = false;
 		sound().ifPresent(sound -> sound.play(PacManGameSound.GHOST_EATEN));
-		timer().resetSeconds(1);
+		stateTimer().resetSeconds(1);
 	}
 
 	private void updateGhostDyingState() {
-		if (timer().hasExpired()) {
+		if (stateTimer().hasExpired()) {
 			resumePreviousState();
 			return;
 		}
@@ -406,14 +406,14 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	private void enterLevelStartingState() {
-		timer().reset();
+		stateTimer().reset();
 		log("Level %d complete, entering level %d", gameModel.levelNumber, gameModel.levelNumber + 1);
 		gameModel.enterLevel(gameModel.levelNumber + 1);
 		gameModel.levelSymbols.add(gameModel.level.bonusSymbol);
 	}
 
 	private void updateLevelStartingState() {
-		if (timer().hasExpired()) {
+		if (stateTimer().hasExpired()) {
 			changeState(READY);
 		}
 	}
@@ -422,11 +422,11 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		gameModel.bonus.edibleTicksLeft = gameModel.bonus.eatenTicksLeft = 0;
 		gameModel.player.speed = 0;
 		sound().ifPresent(SoundManager::stopAll);
-		timer().reset();
+		stateTimer().reset();
 	}
 
 	private void updateLevelCompleteState() {
-		if (timer().hasExpired()) {
+		if (stateTimer().hasExpired()) {
 			if (!playing) {
 				changeState(INTRO);
 				return;
@@ -458,22 +458,22 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		gameModel.ghosts().forEach(ghost -> ghost.speed = 0);
 		gameModel.player.speed = 0;
 		gameModel.saveHighscore();
-		timer().resetSeconds(10);
+		stateTimer().resetSeconds(10);
 	}
 
 	private void updateGameOverState() {
-		if (timer().hasExpired()) {
+		if (stateTimer().hasExpired()) {
 			changeState(INTRO);
 		}
 	}
 
 	private void enterIntermissionState() {
 		log("Starting intermission #%d", gameModel.intermissionNumber);
-		timer().reset();
+		stateTimer().reset();
 	}
 
 	private void updateIntermissionState() {
-		if (timer().hasExpired()) {
+		if (stateTimer().hasExpired()) {
 			changeState(playing ? LEVEL_STARTING : INTRO);
 		}
 	}
@@ -521,7 +521,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			score(50);
 			if (gameModel.level.ghostFrightenedSeconds > 0) {
 				// HUNTING state timer is stopped while player has power
-				timer().stop();
+				stateTimer().stop();
 				log("%s timer stopped", state);
 				startPlayerFrighteningGhosts(gameModel.level.ghostFrightenedSeconds);
 			}

@@ -101,7 +101,7 @@ public class PacMan_IntermissionScene2_Controller {
 				blinky.dir = Direction.RIGHT;
 			}
 			if (timer.isRunningSeconds(6)) {
-				controller.timer().forceExpiration();
+				controller.stateTimer().forceExpiration();
 				return;
 			}
 			timer.tick();

@@ -78,7 +78,7 @@ public class PacMan_IntermissionScene3_Controller {
 			break;
 		case RETURNING_HALF_NAKED:
 			if (blinky.position.x > t(28) + 200) {
-				controller.timer().forceExpiration();
+				controller.stateTimer().forceExpiration();
 				return;
 			}
 			break;

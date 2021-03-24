@@ -42,10 +42,10 @@ public class PlayScene extends GameScene {
 		if (newState == PacManGameState.READY) {
 			rendering.resetAllAnimations(gameController.game());
 			if (gameController.isPlayingRequested()) {
-				gameController.timer().resetSeconds(4.5);
+				gameController.stateTimer().resetSeconds(4.5);
 				sounds.play(PacManGameSound.GAME_READY);
 			} else {
-				gameController.timer().resetSeconds(2);
+				gameController.stateTimer().resetSeconds(2);
 			}
 		}
 
@@ -89,15 +89,15 @@ public class PlayScene extends GameScene {
 
 	private void runLevelCompleteState(PacManGameState state) {
 		GameModel game = gameController.game();
-		if (gameController.timer().isRunningSeconds(2)) {
+		if (gameController.stateTimer().isRunningSeconds(2)) {
 			game.ghosts().forEach(ghost -> ghost.visible = false);
 		}
-		if (gameController.timer().isRunningSeconds(3)) {
+		if (gameController.stateTimer().isRunningSeconds(3)) {
 			mazeFlashing.restart();
 		}
 		mazeFlashing.animate();
 		if (mazeFlashing.isComplete()) {
-			gameController.timer().forceExpiration();
+			gameController.stateTimer().forceExpiration();
 		}
 	}
 
@@ -122,7 +122,7 @@ public class PlayScene extends GameScene {
 		if (gameController.state == PacManGameState.LEVEL_COMPLETE) {
 			runLevelCompleteState(gameController.state);
 		} else if (gameController.state == PacManGameState.LEVEL_STARTING) {
-			gameController.timer().forceExpiration();
+			gameController.stateTimer().forceExpiration();
 		}
 	}
 

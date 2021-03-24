@@ -75,7 +75,7 @@ public class FiniteStateMachine<S extends Enum<S>> {
 		return newState;
 	}
 
-	public TickTimer timer() {
+	public TickTimer stateTimer() {
 		return stateObject(state).timer;
 	}
 

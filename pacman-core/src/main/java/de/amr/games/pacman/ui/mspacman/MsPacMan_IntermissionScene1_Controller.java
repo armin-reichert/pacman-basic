@@ -160,7 +160,7 @@ public class MsPacMan_IntermissionScene1_Controller {
 				pinky.visible = false;
 			}
 			if (timer.hasExpired()) {
-				controller.timer().forceExpiration();
+				controller.stateTimer().forceExpiration();
 				return;
 			}
 			timer.tick();
