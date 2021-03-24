@@ -35,6 +35,15 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Stream;
 
+import de.amr.games.pacman.controller.event.BonusEatenEvent;
+import de.amr.games.pacman.controller.event.DeadGhostCountChangeEvent;
+import de.amr.games.pacman.controller.event.ExtraLifeEvent;
+import de.amr.games.pacman.controller.event.PacManFoundFoodEvent;
+import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
+import de.amr.games.pacman.controller.event.PacManGameEvent;
+import de.amr.games.pacman.controller.event.PacManGameEventListener;
+import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
+import de.amr.games.pacman.controller.event.ScatterPhaseStartedEvent;
 import de.amr.games.pacman.lib.FiniteStateMachine;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.GameModel;
