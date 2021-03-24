@@ -5,8 +5,12 @@ import static de.amr.games.pacman.model.world.PacManGameWorld.t;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 
+import de.amr.games.pacman.controller.BonusEatenEvent;
 import de.amr.games.pacman.controller.PacManGameController;
+import de.amr.games.pacman.controller.PacManGameEvent;
 import de.amr.games.pacman.controller.PacManGameState;
+import de.amr.games.pacman.controller.PacManLostPowerEvent;
+import de.amr.games.pacman.controller.ScatterPhaseStartedEvent;
 import de.amr.games.pacman.lib.TickTimerEvent;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GhostState;
@@ -58,6 +62,7 @@ public class PlayScene extends GameScene {
 
 		// enter PACMAN_DYING
 		else if (newState == PacManGameState.PACMAN_DYING) {
+			sounds.stopAll();
 			playAnimationPlayerDying(game);
 		}
 
@@ -74,6 +79,25 @@ public class PlayScene extends GameScene {
 		// enter GAME_OVER
 		else if (newState == PacManGameState.GAME_OVER) {
 			game.ghosts().flatMap(rendering.ghostAnimations()::ghostKicking).forEach(TimedSequence::reset);
+		}
+	}
+
+	@Override
+	protected void onGameEvent(PacManGameEvent gameEvent) {
+		if (gameEvent instanceof ScatterPhaseStartedEvent) {
+			ScatterPhaseStartedEvent e = (ScatterPhaseStartedEvent) gameEvent;
+			if (e.scatterPhase > 0) {
+				sounds.stop(PacManGameSound.SIRENS.get((e.scatterPhase - 1) / 2));
+			}
+			sounds.loopForever(PacManGameSound.SIRENS.get(e.scatterPhase / 2));
+		}
+
+		else if (gameEvent instanceof PacManLostPowerEvent) {
+			sounds.stop(PacManGameSound.PACMAN_POWER);
+		}
+
+		else if (gameEvent instanceof BonusEatenEvent) {
+			sounds.play(PacManGameSound.BONUS_EATEN);
 		}
 	}
 
@@ -103,6 +127,7 @@ public class PlayScene extends GameScene {
 
 	@Override
 	public void start() {
+		super.start();
 		GameModel game = gameController.game();
 		mazeFlashing = rendering.mazeAnimations().mazeFlashing(game.level.mazeNumber).repetitions(game.level.numFlashes);
 		mazeFlashing.reset();
@@ -115,6 +140,11 @@ public class PlayScene extends GameScene {
 				});
 			}
 		});
+	}
+
+	@Override
+	public void end() {
+		super.end();
 	}
 
 	@Override

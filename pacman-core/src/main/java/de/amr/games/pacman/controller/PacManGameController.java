@@ -27,7 +27,9 @@ import static de.amr.games.pacman.model.common.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.model.common.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.model.common.GhostState.LOCKED;
 
+import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
@@ -103,6 +105,20 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	public PacManGameUI userInterface;
 	public final Autopilot autopilot = new Autopilot();
+
+	private final List<PacManGameEventListener> gameEventListeners = new ArrayList<>();
+
+	public void addGameEventListener(PacManGameEventListener listener) {
+		gameEventListeners.add(listener);
+	}
+
+	public void removeGameEventListener(PacManGameEventListener listener) {
+		gameEventListeners.remove(listener);
+	}
+
+	public void fireGameEvent(PacManGameEvent gameEvent) {
+		gameEventListeners.forEach(listener -> listener.accept(gameEvent));
+	}
 
 	public PacManGameController(GameVariant variant) {
 		super(new EnumMap<>(PacManGameState.class), PacManGameState.values());
@@ -261,13 +277,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	private void startHuntingPhase(int phase) {
 		gameModel.huntingPhase = phase;
 		if (inScatteringPhase()) {
-			// TODO not sure about when which siren should play
-			sound().ifPresent(sound -> {
-				if (gameModel.huntingPhase >= 2) {
-					sound.stop(PacManGameSound.SIRENS.get((gameModel.huntingPhase - 1) / 2));
-				}
-				sound.loopForever(PacManGameSound.SIRENS.get(gameModel.huntingPhase / 2));
-			});
+			fireGameEvent(new ScatterPhaseStartedEvent(gameVariant, gameModel, phase / 2));
 		}
 		if (stateTimer().isStopped()) {
 			stateTimer().start();
@@ -308,7 +318,6 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			Optional<Ghost> killer = gameModel.ghosts(HUNTING_PAC).filter(gameModel.player::meets).findAny();
 			if (killer.isPresent()) {
 				killPlayer(killer.get());
-				sound().ifPresent(SoundManager::stopAll);
 				changeState(PACMAN_DYING);
 				return;
 			}
@@ -343,9 +352,9 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		} else if (gameModel.player.powerTimer.hasExpired()) {
 			log("%s lost power", gameModel.player.name);
 			gameModel.ghosts(FRIGHTENED).forEach(ghost -> ghost.state = HUNTING_PAC);
-			sound().ifPresent(sound -> sound.stop(PacManGameSound.PACMAN_POWER));
 			gameModel.player.powerTimer.reset();
 			stateTimer().start();
+			fireGameEvent(new PacManLostPowerEvent(gameVariant, gameModel));
 		}
 
 		tryReleasingGhosts();
@@ -357,9 +366,10 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			log("Pac-Man found bonus (%s) of value %d", gameModel.bonusNames[gameModel.bonus.symbol], gameModel.bonus.points);
 			gameModel.bonus.eatAndDisplayValue(2 * 60);
 			score(gameModel.bonus.points);
-			sound().ifPresent(sound -> sound.play(PacManGameSound.BONUS_EATEN));
+			fireGameEvent(new BonusEatenEvent(gameVariant, gameModel));
 		}
 
+		// TODO
 		sound().ifPresent(sound -> {
 			if (gameModel.ghosts(DEAD).count() == 0) {
 				sound.stop(PacManGameSound.GHOST_EYES);
