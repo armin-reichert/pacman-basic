@@ -94,8 +94,9 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	private GameVariant gameVariant;
 	private GameModel gameModel;
 
-	private boolean playingRequested;
-	private boolean playing;
+	private boolean gameRequested;
+	private boolean gameRunning;
+	private boolean attractMode;
 
 	public PacManGameUI userInterface;
 	public final Autopilot autopilot = new Autopilot();
@@ -141,12 +142,12 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		return gameModels[gameVariant.ordinal()];
 	}
 
-	public boolean isPlaying() {
-		return playing;
+	public boolean isAttractMode() {
+		return attractMode;
 	}
 
-	public boolean isPlayingRequested() {
-		return playingRequested;
+	public boolean isGameRunning() {
+		return gameRunning;
 	}
 
 	private void handleKeys() {
@@ -172,7 +173,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			changeState(INTERMISSION);
 		}
 
-		if (!playing) {
+		if (!isGameRunning()) {
 			return;
 		}
 
@@ -218,20 +219,21 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	private Optional<SoundManager> sound() {
-		return !playing || userInterface == null ? Optional.empty() : userInterface.sound();
+		return !gameRunning || userInterface == null ? Optional.empty() : userInterface.sound();
 	}
 
 	private void enterIntroState() {
 		stateTimer().reset();
 		gameModel.reset();
-		playingRequested = false;
-		playing = false;
+		gameRequested = false;
+		gameRunning = false;
+		attractMode = false;
 		autopilot.enabled = false;
 	}
 
 	private void updateIntroState() {
 		if (userInterface.keyPressed(KEY_START_PLAYING)) {
-			playingRequested = true;
+			gameRequested = true;
 			changeState(READY);
 		} else if (stateTimer().hasExpired()) {
 			autopilot.enabled = true;
@@ -245,9 +247,10 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	private void updateReadyState() {
 		if (stateTimer().hasExpired()) {
-			if (playingRequested) {
-				playing = true;
-				playingRequested = false;
+			if (!gameRequested) {
+				attractMode = true;
+			} else {
+				gameRunning = true;
 			}
 			changeState(PacManGameState.HUNTING);
 			return;
@@ -273,11 +276,13 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		}
 		if (stateTimer().isStopped()) {
 			stateTimer().start();
-			log("Hunting phase %d continues, %d of %d ticks remaining", phase, stateTimer().ticksRemaining(), stateTimer().duration());
+			log("Hunting phase %d continues, %d of %d ticks remaining", phase, stateTimer().ticksRemaining(),
+					stateTimer().duration());
 		} else {
 			stateTimer().reset(gameModel.getHuntingPhaseDuration(gameModel.huntingPhase));
 			stateTimer().start();
-			log("Hunting phase %d starts, %d of %d ticks remaining", phase, stateTimer().ticksRemaining(), stateTimer().duration());
+			log("Hunting phase %d starts, %d of %d ticks remaining", phase, stateTimer().ticksRemaining(),
+					stateTimer().duration());
 		}
 	}
 
@@ -304,7 +309,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		}
 
 		// Player getting killed by ghost?
-		if (!gameModel.player.immune || !playing) {
+		if (!gameModel.player.immune || attractMode) {
 			Optional<Ghost> killer = gameModel.ghosts(HUNTING_PAC).filter(gameModel.player::meets).findAny();
 			if (killer.isPresent()) {
 				killPlayer(killer.get());
@@ -376,7 +381,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	private void updatePacManDyingState() {
 		if (stateTimer().hasExpired()) {
 			gameModel.ghosts().forEach(ghost -> ghost.visible = true);
-			changeState(!playing ? INTRO : --gameModel.lives > 0 ? READY : GAME_OVER);
+			changeState(attractMode ? INTRO : --gameModel.lives > 0 ? READY : GAME_OVER);
 			return;
 		}
 	}
@@ -427,7 +432,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	private void updateLevelCompleteState() {
 		if (stateTimer().hasExpired()) {
-			if (!playing) {
+			if (attractMode) {
 				changeState(INTRO);
 				return;
 			}
@@ -455,6 +460,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	private void enterGameOverState() {
+		gameRunning = false;
 		gameModel.ghosts().forEach(ghost -> ghost.speed = 0);
 		gameModel.player.speed = 0;
 		gameModel.saveHighscore();
@@ -474,14 +480,14 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	private void updateIntermissionState() {
 		if (stateTimer().hasExpired()) {
-			changeState(playing ? LEVEL_STARTING : INTRO);
+			changeState(attractMode || !gameRunning ? INTRO : LEVEL_STARTING);
 		}
 	}
 
 	// END STATE-MACHINE
 
 	private void score(int points) {
-		if (!playing) {
+		if (attractMode) {
 			return;
 		}
 		int oldscore = gameModel.score;

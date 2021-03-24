@@ -41,7 +41,7 @@ public class PlayScene extends GameScene {
 		// enter READY
 		if (newState == PacManGameState.READY) {
 			rendering.resetAllAnimations(gameController.game());
-			if (gameController.isPlayingRequested()) {
+			if (!gameController.isAttractMode() && !gameController.isGameRunning()) {
 				gameController.stateTimer().resetSeconds(4.5);
 				sounds.play(PacManGameSound.GAME_READY);
 			} else {
@@ -81,7 +81,7 @@ public class PlayScene extends GameScene {
 		game.ghosts().flatMap(rendering.ghostAnimations()::ghostKicking).forEach(TimedSequence::reset);
 		rendering.playerAnimations().playerDying().delay(120).onStart(() -> {
 			game.ghosts().forEach(ghost -> ghost.visible = false);
-			if (gameController.isPlaying()) {
+			if (gameController.isGameRunning()) {
 				sounds.play(PacManGameSound.PACMAN_DEATH);
 			}
 		}).restart();
@@ -135,17 +135,19 @@ public class PlayScene extends GameScene {
 					game.level::containsEatenFood);
 			rendering.drawEnergizerTiles(g, game.level.world.energizerTiles());
 		}
-		rendering.drawGameState(g, game,
-				gameController.isPlaying() || gameController.isPlayingRequested() ? gameController.state
-						: PacManGameState.GAME_OVER);
+		if (gameController.isAttractMode()) {
+			rendering.drawGameState(g, game, PacManGameState.GAME_OVER);
+		} else {
+			rendering.drawGameState(g, game, gameController.state);
+		}
 		rendering.drawBonus(g, game.bonus);
 		rendering.drawPlayer(g, game.player);
 		game.ghosts().forEach(ghost -> rendering.drawGhost(g, ghost, game.player.powerTimer.isRunning()));
-		boolean showHiscoreOnly = gameController.state == PacManGameState.INTRO
-				|| !(gameController.isPlaying() || gameController.isPlayingRequested());
-		rendering.drawScore(g, game, showHiscoreOnly);
-		if (gameController.isPlaying() || gameController.isPlayingRequested()) {
+		if (gameController.isGameRunning()) {
+			rendering.drawScore(g, game, false);
 			rendering.drawLivesCounter(g, game, t(2), t(34));
+		} else {
+			rendering.drawScore(g, game, true);
 		}
 		rendering.drawLevelCounter(g, game, t(25), t(34));
 	}
