@@ -153,9 +153,6 @@ public class PacManGameUI_Swing implements PacManGameUI {
 	}
 
 	private void handleGameStateChange(PacManGameState oldState, PacManGameState newState) {
-		if (newState == PacManGameState.INTRO) {
-			sound().ifPresent(SoundManager::stopAll);
-		}
 		GameScene newScene = getSceneForGameState(newState);
 		if (newScene == null) {
 			throw new IllegalStateException("No scene found for game state " + newState);
@@ -249,11 +246,6 @@ public class PacManGameUI_Swing implements PacManGameUI {
 		boolean pressed = keyboard.keyPressed(keySpec);
 		keyboard.clearKey(keySpec); // TODO
 		return pressed;
-	}
-
-	@Override
-	public Optional<SoundManager> sound() {
-		return Optional.of(sounds.get(currentGame()));
 	}
 
 	@Override

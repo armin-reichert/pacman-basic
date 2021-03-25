@@ -3,7 +3,6 @@ package de.amr.games.pacman.ui;
 import java.util.Optional;
 
 import de.amr.games.pacman.ui.animation.PacManGameAnimations2D;
-import de.amr.games.pacman.ui.sound.SoundManager;
 
 /**
  * Interface through which the game controller accesses the views. This interface must be
@@ -24,8 +23,6 @@ public interface PacManGameUI {
 	}
 
 	boolean keyPressed(String keySpec);
-
-	Optional<SoundManager> sound();
 
 	Optional<PacManGameAnimations2D> animation();
 }
