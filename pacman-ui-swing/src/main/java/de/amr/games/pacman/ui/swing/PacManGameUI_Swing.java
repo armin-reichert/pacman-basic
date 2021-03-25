@@ -123,7 +123,7 @@ public class PacManGameUI_Swing implements PacManGameUI {
 		keyboard = new Keyboard(window);
 
 		titleUpdateTimer = new Timer(1000,
-				e -> window.setTitle(String.format("Pac-Man / Ms. Pac-Man (%d fps, JFC Swing)", gameLoop.clock.frequency)));
+				e -> window.setTitle(String.format("Pac-Man / Ms. Pac-Man (%d fps, JFC Swing)", gameLoop.clock.getLastFPS())));
 
 		renderings.put(MS_PACMAN, new MsPacMan_StandardRendering());
 		renderings.put(PACMAN, new PacMan_StandardRendering());
@@ -259,17 +259,17 @@ public class PacManGameUI_Swing implements PacManGameUI {
 			controller.toggleGameVariant();
 			break;
 		case KeyEvent.VK_S: {
-			gameLoop.clock.targetFreq = gameLoop.clock.targetFreq != 30 ? 30 : 60;
-			String text = gameLoop.clock.targetFreq == 60 ? "Normal speed" : "Slow speed";
+			gameLoop.clock.setTargetFPS(gameLoop.clock.getTargetFPS() != 30 ? 30 : 60);
+			String text = gameLoop.clock.getTargetFPS() == 60 ? "Normal speed" : "Slow speed";
 			showFlashMessage(text);
-			log("Clock frequency changed to %d Hz", gameLoop.clock.targetFreq);
+			log("Clock frequency changed to %d Hz", gameLoop.clock.getTargetFPS());
 			break;
 		}
 		case KeyEvent.VK_F: {
-			gameLoop.clock.targetFreq = gameLoop.clock.targetFreq != 120 ? 120 : 60;
-			String text = gameLoop.clock.targetFreq == 60 ? "Normal speed" : "Fast speed";
+			gameLoop.clock.setTargetFPS(gameLoop.clock.getTargetFPS() != 120 ? 120 : 60);
+			String text = gameLoop.clock.getTargetFPS() == 60 ? "Normal speed" : "Fast speed";
 			showFlashMessage(text);
-			log("Clock frequency changed to %d Hz", gameLoop.clock.targetFreq);
+			log("Clock frequency changed to %d Hz", gameLoop.clock.getTargetFPS());
 			break;
 		}
 		case KeyEvent.VK_D:

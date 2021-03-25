@@ -3,11 +3,11 @@ package de.amr.games.pacman.ui.swing.app;
 import static de.amr.games.pacman.lib.Logging.log;
 
 import de.amr.games.pacman.controller.PacManGameController;
-import de.amr.games.pacman.lib.Clock;
+import de.amr.games.pacman.lib.SpeedControl;
 
 public class GameLoop {
 
-	public final Clock clock = new Clock();
+	public final SpeedControl clock = new SpeedControl();
 	private final PacManGameController controller;
 	private Thread thread;
 	private boolean running;
@@ -18,7 +18,7 @@ public class GameLoop {
 
 	private void run() {
 		while (running) {
-			clock.tick(controller::step);
+			clock.frame(controller::step);
 			controller.userInterface.update();
 		}
 	}
