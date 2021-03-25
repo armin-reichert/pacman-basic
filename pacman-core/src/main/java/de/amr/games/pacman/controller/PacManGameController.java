@@ -391,6 +391,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	private void enterPacManDyingState() {
 		gameModel.player.speed = 0;
+		gameModel.ghosts(FRIGHTENED).forEach(ghost -> ghost.state = HUNTING_PAC);
 		gameModel.bonus.edibleTicksLeft = gameModel.bonus.eatenTicksLeft = 0;
 		stateTimer().resetSeconds(5);
 	}
