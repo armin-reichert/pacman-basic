@@ -15,22 +15,13 @@ import java.util.stream.Stream;
  */
 public class FiniteStateMachine<S extends Enum<S>> {
 
-	private static class StateChangeListener<S> {
-
-		private final BiConsumer<S, S> handler;
-
-		public StateChangeListener(BiConsumer<S, S> handler) {
-			this.handler = handler;
-		}
-	}
-
-	public boolean logging = true;
+	public static boolean logging = true;
 
 	public S previousState;
 	public S state;
 
 	private final EnumMap<S, StateRepresentation> stateMap;
-	private final List<StateChangeListener<S>> changeListeners = new ArrayList<>();
+	private final List<BiConsumer<S, S>> changeListeners = new ArrayList<>();
 
 	public FiniteStateMachine(EnumMap<S, StateRepresentation> stateMap, S[] stateIdentifiers) {
 		this.stateMap = stateMap;
@@ -43,12 +34,12 @@ public class FiniteStateMachine<S extends Enum<S>> {
 		stateObject(gameState).onExit = onExit;
 	}
 
-	public void addStateChangeListener(BiConsumer<S, S> handler) {
-		changeListeners.add(new StateChangeListener<S>(handler));
+	public void addStateChangeListener(BiConsumer<S, S> listener) {
+		changeListeners.add(listener);
 	}
 
-	public void removeStateChangeListener(BiConsumer<S, S> handler) {
-		changeListeners.removeIf(entry -> entry.handler == handler);
+	public void removeStateChangeListener(BiConsumer<S, S> listener) {
+		changeListeners.remove(listener);
 	}
 
 	public S changeState(S newState) {
@@ -71,7 +62,7 @@ public class FiniteStateMachine<S extends Enum<S>> {
 		if (stateObject(state).onEnter != null) {
 			stateObject(state).onEnter.run();
 		}
-		fireStateChange();
+		fireStateChange(previousState, state);
 		return newState;
 	}
 
@@ -83,10 +74,8 @@ public class FiniteStateMachine<S extends Enum<S>> {
 		return stateMap.get(id);
 	}
 
-	private void fireStateChange() {
-		// TODO find solution instead of workaround to avoid ConcurrentModificationException
-		List<StateChangeListener<S>> changeListenersBefore = new ArrayList<>(changeListeners);
-		changeListenersBefore.stream().forEach(listener -> listener.handler.accept(previousState, state));
+	private void fireStateChange(S oldState, S newState) {
+		changeListeners.stream().forEach(listener -> listener.accept(oldState, newState));
 	}
 
 	public void updateState() {
