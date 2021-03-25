@@ -189,6 +189,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		boolean intro = state == INTRO, ready = state == READY, hunting = state == HUNTING;
 
 		if (userInterface.keyPressed(KEY_QUIT) && !intro) {
+			userInterface.reset();
 			changeState(PacManGameState.INTRO);
 			return;
 		}

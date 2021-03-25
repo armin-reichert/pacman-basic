@@ -1,5 +1,6 @@
 package de.amr.games.pacman.ui.swing.pacman;
 
+import static de.amr.games.pacman.model.common.GameVariant.PACMAN;
 import static de.amr.games.pacman.model.world.PacManGameWorld.t;
 
 import java.awt.Dimension;
@@ -7,9 +8,8 @@ import java.awt.Graphics2D;
 
 import de.amr.games.pacman.controller.PacManGameController;
 import de.amr.games.pacman.ui.pacman.PacMan_IntermissionScene2_Controller;
-import de.amr.games.pacman.ui.sound.SoundManager;
+import de.amr.games.pacman.ui.swing.PacManGameUI_Swing;
 import de.amr.games.pacman.ui.swing.common.GameScene;
-import de.amr.games.pacman.ui.swing.rendering.PacManGameRendering2D;
 
 /**
  * Second intermission scene: Blinky pursues Pac but kicks a nail that tears his dress apart.
@@ -20,9 +20,8 @@ public class PacMan_IntermissionScene2 extends GameScene {
 
 	private PacMan_IntermissionScene2_Controller sceneController;
 
-	public PacMan_IntermissionScene2(PacManGameController controller, Dimension size, PacManGameRendering2D rendering,
-			SoundManager sounds) {
-		super(controller, size, rendering, sounds);
+	public PacMan_IntermissionScene2(PacManGameController controller, Dimension size) {
+		super(controller, size, PacManGameUI_Swing.RENDERING.get(PACMAN), PacManGameUI_Swing.SOUND.get(PACMAN));
 	}
 
 	@Override

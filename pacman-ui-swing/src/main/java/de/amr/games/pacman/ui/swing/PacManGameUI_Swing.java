@@ -65,11 +65,22 @@ import de.amr.games.pacman.ui.swing.rendering.standard.PacMan_StandardRendering;
  */
 public class PacManGameUI_Swing implements PacManGameUI {
 
-	private final GameLoop gameLoop;
-	private final PacManGameController controller;
-	private final EnumMap<GameVariant, PacManGameRendering2D> renderings = new EnumMap<>(GameVariant.class);
-	private final EnumMap<GameVariant, SoundManager> sounds = new EnumMap<>(GameVariant.class);
+	public static final EnumMap<GameVariant, PacManGameRendering2D> RENDERING = new EnumMap<>(GameVariant.class);
+	static {
+		RENDERING.put(MS_PACMAN, new MsPacMan_StandardRendering());
+		RENDERING.put(PACMAN, new PacMan_StandardRendering());
+	}
+
+	public static final EnumMap<GameVariant, SoundManager> SOUND = new EnumMap<>(GameVariant.class);
+	static {
+		SOUND.put(MS_PACMAN, new PacManGameSoundManager(PacManGameSounds::msPacManSoundURL));
+		SOUND.put(PACMAN, new PacManGameSoundManager(PacManGameSounds::mrPacManSoundURL));
+	}
+
 	private final EnumMap<GameVariant, List<GameScene>> scenes = new EnumMap<>(GameVariant.class);
+
+	private final GameLoop gameLoop;
+	private final PacManGameController gameController;
 	private final Deque<FlashMessage> flashMessageQ = new ArrayDeque<>();
 	private final Dimension unscaledSize;
 	private final V2i scaledSize;
@@ -79,13 +90,14 @@ public class PacManGameUI_Swing implements PacManGameUI {
 	private final Canvas canvas;
 	private final Keyboard keyboard;
 
-	private GameScene currentScene;
+	private GameScene currentGameScene;
 
 	public PacManGameUI_Swing(GameLoop gameLoop, PacManGameController controller, double height) {
 		this.gameLoop = gameLoop;
-		this.controller = controller;
-
+		this.gameController = controller;
 		controller.addStateChangeListener(this::handleGameStateChange);
+
+		createGameScenes();
 
 		unscaledSize = new Dimension(28 * TS, 36 * TS);
 		scaling = Math.round(height / unscaledSize.height);
@@ -125,31 +137,27 @@ public class PacManGameUI_Swing implements PacManGameUI {
 		titleUpdateTimer = new Timer(1000,
 				e -> window.setTitle(String.format("Pac-Man / Ms. Pac-Man (%d fps, JFC Swing)", gameLoop.clock.getLastFPS())));
 
-		renderings.put(MS_PACMAN, new MsPacMan_StandardRendering());
-		renderings.put(PACMAN, new PacMan_StandardRendering());
-
-		sounds.put(MS_PACMAN, new PacManGameSoundManager(PacManGameSounds::msPacManSoundURL));
-		sounds.put(PACMAN, new PacManGameSoundManager(PacManGameSounds::mrPacManSoundURL));
-
-		scenes.put(MS_PACMAN, Arrays.asList(//
-				new MsPacMan_IntroScene(controller, unscaledSize, renderings.get(MS_PACMAN), sounds.get(MS_PACMAN)), //
-				new MsPacMan_IntermissionScene1(controller, unscaledSize, renderings.get(MS_PACMAN), sounds.get(MS_PACMAN)), //
-				new MsPacMan_IntermissionScene2(controller, unscaledSize, renderings.get(MS_PACMAN), sounds.get(MS_PACMAN)), //
-				new MsPacMan_IntermissionScene3(controller, unscaledSize, renderings.get(MS_PACMAN), sounds.get(MS_PACMAN)), //
-				new PlayScene(controller, unscaledSize, renderings.get(MS_PACMAN), sounds.get(MS_PACMAN))//
-		));
-
-		scenes.put(PACMAN, Arrays.asList(//
-				new PacMan_IntroScene(controller, unscaledSize, renderings.get(PACMAN), sounds.get(PACMAN)), //
-				new PacMan_IntermissionScene1(controller, unscaledSize, renderings.get(PACMAN), sounds.get(PACMAN)), //
-				new PacMan_IntermissionScene2(controller, unscaledSize, renderings.get(PACMAN), sounds.get(PACMAN)), //
-				new PacMan_IntermissionScene3(controller, unscaledSize, renderings.get(PACMAN), sounds.get(PACMAN)), //
-				new PlayScene(controller, unscaledSize, renderings.get(PACMAN), sounds.get(PACMAN))//
-		));
-
 		// start initial game scene
 		handleGameStateChange(null, controller.state);
 		show();
+	}
+
+	private void createGameScenes() {
+		scenes.put(MS_PACMAN, Arrays.asList(//
+				new MsPacMan_IntroScene(gameController, unscaledSize), //
+				new MsPacMan_IntermissionScene1(gameController, unscaledSize), //
+				new MsPacMan_IntermissionScene2(gameController, unscaledSize), //
+				new MsPacMan_IntermissionScene3(gameController, unscaledSize), //
+				new PlayScene(gameController, unscaledSize, RENDERING.get(MS_PACMAN), SOUND.get(MS_PACMAN))//
+		));
+
+		scenes.put(PACMAN, Arrays.asList(//
+				new PacMan_IntroScene(gameController, unscaledSize), //
+				new PacMan_IntermissionScene1(gameController, unscaledSize), //
+				new PacMan_IntermissionScene2(gameController, unscaledSize), //
+				new PacMan_IntermissionScene3(gameController, unscaledSize), //
+				new PlayScene(gameController, unscaledSize, RENDERING.get(PACMAN), SOUND.get(PACMAN))//
+		));
 	}
 
 	private void handleGameStateChange(PacManGameState oldState, PacManGameState newState) {
@@ -157,15 +165,15 @@ public class PacManGameUI_Swing implements PacManGameUI {
 		if (newScene == null) {
 			throw new IllegalStateException("No scene found for game state " + newState);
 		}
-		if (currentScene != newScene) {
-			if (currentScene != null) {
-				currentScene.end();
+		if (currentGameScene != newScene) {
+			if (currentGameScene != null) {
+				currentGameScene.end();
 			}
 			newScene.start();
-			log("Current scene changed from %s to %s", currentScene, newScene);
+			log("Current scene changed from %s to %s", currentGameScene, newScene);
 		}
-		currentScene = newScene;
-		currentScene.onGameStateChange(oldState, newState);
+		currentGameScene = newScene;
+		currentGameScene.onGameStateChange(oldState, newState);
 	}
 
 	private void show() {
@@ -179,7 +187,7 @@ public class PacManGameUI_Swing implements PacManGameUI {
 	}
 
 	private GameVariant currentGame() {
-		return Stream.of(GameVariant.values()).filter(controller::isPlaying).findFirst().get();
+		return Stream.of(GameVariant.values()).filter(gameController::isPlaying).findFirst().get();
 	}
 
 	private GameScene getSceneForGameState(PacManGameState state) {
@@ -188,7 +196,7 @@ public class PacManGameUI_Swing implements PacManGameUI {
 		case INTRO:
 			return scenes.get(currentGame).get(0);
 		case INTERMISSION:
-			return scenes.get(currentGame).get(controller.game().intermissionNumber);
+			return scenes.get(currentGame).get(gameController.game().intermissionNumber);
 		default:
 			return scenes.get(currentGame).get(4);
 		}
@@ -196,8 +204,8 @@ public class PacManGameUI_Swing implements PacManGameUI {
 
 	@Override
 	public void update() {
-		if (currentScene != null) {
-			currentScene.update();
+		if (currentGameScene != null) {
+			currentGameScene.update();
 		}
 		FlashMessage message = flashMessageQ.peek();
 		if (message != null) {
@@ -223,7 +231,7 @@ public class PacManGameUI_Swing implements PacManGameUI {
 				g.setColor(Color.BLACK);
 				g.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 				g.scale(scaling, scaling);
-				currentScene.render(g);
+				currentGameScene.render(g);
 				drawFlashMessage(g);
 				g.dispose();
 			} while (buffers.contentsRestored());
@@ -233,7 +241,8 @@ public class PacManGameUI_Swing implements PacManGameUI {
 
 	@Override
 	public void reset() {
-		currentScene.end();
+		currentGameScene.end();
+		SOUND.get(gameController.gameVariant()).stopAll();
 	}
 
 	@Override
@@ -250,13 +259,13 @@ public class PacManGameUI_Swing implements PacManGameUI {
 
 	@Override
 	public Optional<PacManGameAnimations2D> animation() {
-		return Optional.of(renderings.get(currentGame()));
+		return Optional.of(RENDERING.get(currentGame()));
 	}
 
 	private void handleGlobalKeys(KeyEvent e) {
 		switch (e.getKeyCode()) {
 		case KeyEvent.VK_V:
-			controller.toggleGameVariant();
+			gameController.toggleGameVariant();
 			break;
 		case KeyEvent.VK_S: {
 			gameLoop.clock.setTargetFPS(gameLoop.clock.getTargetFPS() != 30 ? 30 : 60);

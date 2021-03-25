@@ -1,13 +1,14 @@
 package de.amr.games.pacman.ui.swing.mspacman;
 
+import static de.amr.games.pacman.model.common.GameVariant.MS_PACMAN;
+
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 
 import de.amr.games.pacman.controller.PacManGameController;
 import de.amr.games.pacman.ui.mspacman.MsPacMan_IntermissionScene3_Controller;
-import de.amr.games.pacman.ui.sound.SoundManager;
+import de.amr.games.pacman.ui.swing.PacManGameUI_Swing;
 import de.amr.games.pacman.ui.swing.common.GameScene;
-import de.amr.games.pacman.ui.swing.rendering.PacManGameRendering2D;
 
 /**
  * Intermission scene 3: "Junior".
@@ -23,9 +24,8 @@ public class MsPacMan_IntermissionScene3 extends GameScene {
 
 	private MsPacMan_IntermissionScene3_Controller sceneController;
 
-	public MsPacMan_IntermissionScene3(PacManGameController controller, Dimension size, PacManGameRendering2D rendering,
-			SoundManager sounds) {
-		super(controller, size, rendering, sounds);
+	public MsPacMan_IntermissionScene3(PacManGameController controller, Dimension size) {
+		super(controller, size, PacManGameUI_Swing.RENDERING.get(MS_PACMAN), PacManGameUI_Swing.SOUND.get(MS_PACMAN));
 	}
 
 	@Override
