@@ -109,6 +109,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	private boolean gameRequested;
 	private boolean gameRunning;
 	private boolean attractMode;
+	private boolean playerImmune;
 
 	public PacManGameUI userInterface;
 	public final Autopilot autopilot = new Autopilot();
@@ -176,6 +177,14 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		return gameRunning;
 	}
 
+	public boolean isPlayerImmune() {
+		return playerImmune;
+	}
+
+	public void setPlayerImmune(boolean playerImmune) {
+		this.playerImmune = playerImmune;
+	}
+
 	private void handleKeys() {
 		boolean intro = state == INTRO, ready = state == READY, hunting = state == HUNTING;
 
@@ -216,8 +225,8 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 		// toggle player's immunity against ghost bites
 		else if (userInterface.keyPressed(KEY_TOGGLE_IMMUNITY)) {
-			gameModel.player.immune = !gameModel.player.immune;
-			userInterface.showFlashMessage("Player immunity " + (gameModel.player.immune ? "ON" : "OFF"));
+			playerImmune = !playerImmune;
+			userInterface.showFlashMessage("Player immunity " + (playerImmune ? "ON" : "OFF"));
 		}
 
 		// add live
@@ -310,14 +319,14 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		}
 
 		// Player killing ghost(s)?
-		long killed = gameModel.ghosts(FRIGHTENED).filter(gameModel.player::meets).map(this::killGhost).count();
-		if (killed > 0) {
+		long numGhostsKilled = gameModel.ghosts(FRIGHTENED).filter(gameModel.player::meets).map(this::killGhost).count();
+		if (numGhostsKilled > 0) {
 			changeState(GHOST_DYING);
 			return;
 		}
 
 		// Player getting killed by ghost?
-		if (!gameModel.player.immune || attractMode) {
+		if (!playerImmune || attractMode) {
 			Optional<Ghost> killer = gameModel.ghosts(HUNTING_PAC).filter(gameModel.player::meets).findAny();
 			if (killer.isPresent()) {
 				killPlayer(killer.get());
@@ -477,14 +486,14 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		}
 		int oldscore = gameModel.score;
 		gameModel.score += points;
+		if (gameModel.score > gameModel.highscorePoints) {
+			gameModel.highscorePoints = gameModel.score;
+			gameModel.highscoreLevel = gameModel.levelNumber;
+		}
 		if (oldscore < 10000 && gameModel.score >= 10000) {
 			gameModel.lives++;
 			log("Extra life. Player has %d lives now", gameModel.lives);
 			fireGameEvent(new ExtraLifeEvent(gameVariant, gameModel));
-		}
-		if (gameModel.score > gameModel.highscorePoints) {
-			gameModel.highscorePoints = gameModel.score;
-			gameModel.highscoreLevel = gameModel.levelNumber;
 		}
 	}
 

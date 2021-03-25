@@ -1,7 +1,7 @@
 package de.amr.games.pacman.model.common;
 
-import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.Direction;
+import de.amr.games.pacman.lib.TickTimer;
 
 /**
  * Pac-Man or Ms. Pac-Man.
@@ -24,9 +24,6 @@ public class Pac extends Creature {
 
 	/** Number of clock ticks Pac has not eaten any pellet. */
 	public long starvingTicks = 0;
-
-	/** Used for demo/autopilot mode. */
-	public boolean immune = false;
 
 	@Override
 	public String toString() {
