@@ -141,6 +141,9 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	public void step() {
 		handleKeys();
+		if (gameRunning) {
+			steerPlayer();
+		}
 		updateState();
 	}
 
@@ -297,6 +300,8 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	private void updateHuntingState() {
 		final Pac player = gameModel.player;
+		int deadGhostCount, newDeadGhostCount;
+		int preyCount;
 
 		// Is level complete?
 		if (gameModel.level.foodRemaining == 0) {
@@ -305,11 +310,11 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		}
 
 		// Is player killing ghost(s)?
-		int deadGhostCount = (int) gameModel.ghosts(DEAD).count();
-		int preyCount = (int) gameModel.ghosts(FRIGHTENED).filter(player::meets).count();
+		deadGhostCount = (int) gameModel.ghosts(DEAD).count();
+		preyCount = (int) gameModel.ghosts(FRIGHTENED).filter(player::meets).count();
 		if (preyCount > 0) {
 			gameModel.ghosts(FRIGHTENED).filter(player::meets).forEach(this::killGhost);
-			int newDeadGhostCount = (int) gameModel.ghosts(DEAD).count();
+			newDeadGhostCount = (int) gameModel.ghosts(DEAD).count();
 			fireGameEvent(new DeadGhostCountChangeEvent(gameVariant, gameModel, deadGhostCount, newDeadGhostCount));
 			changeState(GHOST_DYING);
 			return;
@@ -342,7 +347,6 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		}
 
 		// Move player if possible
-		steerPlayer();
 		if (player.restingTicksLeft > 0) {
 			player.restingTicksLeft--;
 		} else {
@@ -372,7 +376,12 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		// Update ghosts
 		tryReleasingGhosts();
 		gameModel.ghosts(HUNTING_PAC).forEach(this::setGhostHuntingTarget);
+		deadGhostCount = (int) gameModel.ghosts(DEAD).count();
 		gameModel.ghosts().forEach(ghost -> ghost.update(gameModel.level));
+		newDeadGhostCount = (int) gameModel.ghosts(DEAD).count();
+		if (newDeadGhostCount != deadGhostCount) {
+			fireGameEvent(new DeadGhostCountChangeEvent(gameVariant, gameModel, deadGhostCount, newDeadGhostCount));
+		}
 
 		// Update bonus
 		final PacManBonus bonus = gameModel.bonus;
@@ -410,7 +419,6 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			resumePreviousState();
 			return;
 		}
-		steerPlayer();
 		gameModel.ghosts().filter(ghost -> ghost.is(DEAD) && ghost.bounty == 0 || ghost.is(ENTERING_HOUSE))
 				.forEach(ghost -> ghost.update(gameModel.level));
 	}
