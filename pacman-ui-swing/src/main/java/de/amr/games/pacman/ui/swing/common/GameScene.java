@@ -6,7 +6,7 @@ import java.awt.Graphics2D;
 import de.amr.games.pacman.controller.PacManGameController;
 import de.amr.games.pacman.controller.PacManGameState;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
-import de.amr.games.pacman.ui.sound.SoundManager;
+import de.amr.games.pacman.ui.swing.assets.SoundManager;
 import de.amr.games.pacman.ui.swing.rendering.PacManGameRendering2D;
 
 /**

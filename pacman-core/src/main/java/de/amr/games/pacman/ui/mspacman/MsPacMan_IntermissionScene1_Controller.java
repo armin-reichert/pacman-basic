@@ -13,8 +13,6 @@ import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.ui.animation.PacManGameAnimations2D;
 import de.amr.games.pacman.ui.animation.TimedSequence;
-import de.amr.games.pacman.ui.sound.PacManGameSound;
-import de.amr.games.pacman.ui.sound.SoundManager;
 
 /**
  * Intermission scene 1: "They meet".
@@ -26,7 +24,7 @@ import de.amr.games.pacman.ui.sound.SoundManager;
  * 
  * @author Armin Reichert
  */
-public class MsPacMan_IntermissionScene1_Controller {
+public abstract class MsPacMan_IntermissionScene1_Controller {
 
 	public enum Phase {
 
@@ -38,7 +36,6 @@ public class MsPacMan_IntermissionScene1_Controller {
 
 	public final PacManGameController gameController;
 	public final PacManGameAnimations2D animations;
-	public final SoundManager sounds;
 	public final TickTimer timer = new TickTimer();
 	public Phase phase;
 	public Flap flap;
@@ -47,12 +44,13 @@ public class MsPacMan_IntermissionScene1_Controller {
 	public GameEntity heart;
 	public boolean ghostsMet;
 
-	public MsPacMan_IntermissionScene1_Controller(PacManGameController gameController, PacManGameAnimations2D animations,
-			SoundManager sounds) {
+	public MsPacMan_IntermissionScene1_Controller(PacManGameController gameController,
+			PacManGameAnimations2D animations) {
 		this.gameController = gameController;
 		this.animations = animations;
-		this.sounds = sounds;
 	}
+
+	public abstract void playIntermissionSound();
 
 	public void start() {
 		flap = new Flap(1, "THEY MEET", animations.flapFlapping());
@@ -108,7 +106,8 @@ public class MsPacMan_IntermissionScene1_Controller {
 			}
 			if (timer.hasExpired()) {
 				flap.visible = false;
-				sounds.loop(PacManGameSound.INTERMISSION_1, 1);
+				playIntermissionSound();
+//				sounds.loop(PacManGameSound.INTERMISSION_1, 1);
 				startChasedByGhosts();
 				return;
 			}

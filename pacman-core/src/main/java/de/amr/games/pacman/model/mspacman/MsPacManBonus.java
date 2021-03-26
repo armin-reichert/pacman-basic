@@ -1,8 +1,6 @@
 package de.amr.games.pacman.model.mspacman;
 
-import static de.amr.games.pacman.lib.Direction.LEFT;
-import static de.amr.games.pacman.lib.Direction.RIGHT;
-
+import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.model.pacman.PacManBonus;
 
 public class MsPacManBonus extends PacManBonus {
@@ -15,11 +13,11 @@ public class MsPacManBonus extends PacManBonus {
 		if (random.nextBoolean()) {
 			placeAt(world.portalLeft(random.nextInt(world.numPortals())), 0, 0);
 			targetTile = world.portalRight(random.nextInt(world.numPortals()));
-			dir = wishDir = RIGHT;
+			dir = wishDir = Direction.RIGHT;
 		} else {
 			placeAt(world.portalRight(random.nextInt(world.numPortals())), 0, 0);
 			targetTile = world.portalLeft(random.nextInt(world.numPortals()));
-			dir = wishDir = LEFT;
+			dir = wishDir = Direction.LEFT;
 		}
 	}
 

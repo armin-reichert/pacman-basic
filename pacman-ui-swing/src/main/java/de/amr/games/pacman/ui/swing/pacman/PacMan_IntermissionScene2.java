@@ -7,7 +7,9 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 
 import de.amr.games.pacman.controller.PacManGameController;
+import de.amr.games.pacman.ui.animation.PacManGameAnimations2D;
 import de.amr.games.pacman.ui.pacman.PacMan_IntermissionScene2_Controller;
+import de.amr.games.pacman.ui.sound.PacManGameSound;
 import de.amr.games.pacman.ui.swing.PacManGameUI_Swing;
 import de.amr.games.pacman.ui.swing.common.GameScene;
 
@@ -18,7 +20,19 @@ import de.amr.games.pacman.ui.swing.common.GameScene;
  */
 public class PacMan_IntermissionScene2 extends GameScene {
 
-	private PacMan_IntermissionScene2_Controller sceneController;
+	private class SceneController extends PacMan_IntermissionScene2_Controller {
+
+		public SceneController(PacManGameController gameController, PacManGameAnimations2D animations) {
+			super(gameController, animations);
+		}
+
+		@Override
+		public void playIntermissionSound() {
+			sounds.play(PacManGameSound.INTERMISSION_2);
+		}
+	}
+
+	private SceneController sceneController;
 
 	public PacMan_IntermissionScene2(PacManGameController controller, Dimension size) {
 		super(controller, size, PacManGameUI_Swing.RENDERING.get(PACMAN), PacManGameUI_Swing.SOUND.get(PACMAN));
@@ -26,7 +40,7 @@ public class PacMan_IntermissionScene2 extends GameScene {
 
 	@Override
 	public void start() {
-		sceneController = new PacMan_IntermissionScene2_Controller(gameController, rendering, sounds);
+		sceneController = new SceneController(gameController, rendering);
 		sceneController.start();
 	}
 

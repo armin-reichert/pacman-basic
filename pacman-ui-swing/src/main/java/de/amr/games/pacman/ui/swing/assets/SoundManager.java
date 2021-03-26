@@ -11,14 +11,13 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 
 import de.amr.games.pacman.ui.sound.PacManGameSound;
-import de.amr.games.pacman.ui.sound.SoundManager;
 
 /**
  * Sound manager for Pac-Man game variants.
  * 
  * @author Armin Reichert
  */
-public class PacManGameSoundManager implements SoundManager {
+public class SoundManager {
 
 	private static final int MUNCHES = 2;
 
@@ -27,7 +26,7 @@ public class PacManGameSoundManager implements SoundManager {
 	private final Clip[] munchClips = new Clip[MUNCHES];
 	private int munchIndex;
 
-	public PacManGameSoundManager(Function<PacManGameSound, URL> fnSoundURL) {
+	public SoundManager(Function<PacManGameSound, URL> fnSoundURL) {
 		this.fnSoundURL = fnSoundURL;
 		for (int i = 0; i < MUNCHES; ++i) {
 			munchClips[i] = createAndOpenClip(fnSoundURL.apply(PacManGameSound.PACMAN_MUNCH));
@@ -65,13 +64,11 @@ public class PacManGameSoundManager implements SoundManager {
 	}
 
 	@SuppressWarnings("resource")
-	@Override
 	public void play(PacManGameSound sound) {
 		getClip(sound).start();
 	}
 
 	@SuppressWarnings("resource")
-	@Override
 	public void loop(PacManGameSound sound, int repetitions) {
 		Clip clip = getClip(sound);
 		clip.setFramePosition(0);
@@ -79,12 +76,10 @@ public class PacManGameSoundManager implements SoundManager {
 	}
 
 	@SuppressWarnings("resource")
-	@Override
 	public void stop(PacManGameSound sound) {
 		getClip(sound).stop();
 	}
 
-	@Override
 	public void stopAll() {
 		for (Clip clip : clipCache.values()) {
 			clip.stop();

@@ -1,7 +1,5 @@
 package de.amr.games.pacman.ui.pacman;
 
-import static de.amr.games.pacman.lib.Direction.LEFT;
-import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.model.world.PacManGameWorld.t;
 
 import de.amr.games.pacman.controller.PacManGameController;
@@ -12,8 +10,6 @@ import de.amr.games.pacman.model.common.GhostState;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.ui.animation.PacManGameAnimations2D;
 import de.amr.games.pacman.ui.animation.TimedSequence;
-import de.amr.games.pacman.ui.sound.PacManGameSound;
-import de.amr.games.pacman.ui.sound.SoundManager;
 
 /**
  * Third intermission scene: Blinky in shred dress chases Pac-Man, comes back half-naked drawing
@@ -21,7 +17,7 @@ import de.amr.games.pacman.ui.sound.SoundManager;
  * 
  * @author Armin Reichert
  */
-public class PacMan_IntermissionScene3_Controller {
+public abstract class PacMan_IntermissionScene3_Controller {
 
 	public enum Phase {
 		CHASING_PACMAN, RETURNING_HALF_NAKED;
@@ -32,18 +28,17 @@ public class PacMan_IntermissionScene3_Controller {
 	public final TickTimer timer = new TickTimer();
 	public final PacManGameController gameController;
 	public final PacManGameAnimations2D animations;
-	public final SoundManager sounds;
 
 	public Ghost blinky;
 	public Pac pac;
 	public Phase phase;
 
-	public PacMan_IntermissionScene3_Controller(PacManGameController gameController, PacManGameAnimations2D animations,
-			SoundManager sounds) {
+	public PacMan_IntermissionScene3_Controller(PacManGameController gameController, PacManGameAnimations2D animations) {
 		this.gameController = gameController;
 		this.animations = animations;
-		this.sounds = sounds;
 	}
+
+	public abstract void playIntermissionSound();
 
 	public void start() {
 		pac = new Pac("Pac-Man", Direction.LEFT);
@@ -52,7 +47,7 @@ public class PacMan_IntermissionScene3_Controller {
 		pac.dead = false;
 		pac.speed = 1.2f;
 		pac.stuck = false;
-		pac.dir = LEFT;
+		pac.dir = Direction.LEFT;
 		animations.playerAnimations().playerMunching(pac).forEach(TimedSequence::restart);
 
 		blinky = new Ghost(0, "Blinky", Direction.LEFT);
@@ -60,9 +55,10 @@ public class PacMan_IntermissionScene3_Controller {
 		blinky.visible = true;
 		blinky.state = GhostState.HUNTING_PAC;
 		blinky.speed = pac.speed;
-		blinky.dir = blinky.wishDir = LEFT;
+		blinky.dir = blinky.wishDir = Direction.LEFT;
 
-		sounds.loop(PacManGameSound.INTERMISSION_3, 2);
+		playIntermissionSound();
+//		sounds.loop(PacManGameSound.INTERMISSION_3, 2);
 
 		phase = Phase.CHASING_PACMAN;
 	}
@@ -72,7 +68,7 @@ public class PacMan_IntermissionScene3_Controller {
 		case CHASING_PACMAN:
 			if (blinky.position.x <= -50) {
 				pac.speed = 0;
-				blinky.dir = blinky.wishDir = RIGHT;
+				blinky.dir = blinky.wishDir = Direction.RIGHT;
 				phase = Phase.RETURNING_HALF_NAKED;
 			}
 			break;

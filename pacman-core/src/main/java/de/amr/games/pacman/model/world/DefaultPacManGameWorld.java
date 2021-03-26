@@ -1,12 +1,5 @@
 package de.amr.games.pacman.model.world;
 
-import static de.amr.games.pacman.lib.Direction.DOWN;
-import static de.amr.games.pacman.model.world.WorldMap.DOOR;
-import static de.amr.games.pacman.model.world.WorldMap.ENERGIZER;
-import static de.amr.games.pacman.model.world.WorldMap.PILL;
-import static de.amr.games.pacman.model.world.WorldMap.TUNNEL;
-import static de.amr.games.pacman.model.world.WorldMap.WALL;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
@@ -52,7 +45,7 @@ public class DefaultPacManGameWorld implements PacManGameWorld {
 		portalsLeft = new ArrayList<>(2);
 		portalsRight = new ArrayList<>(2);
 		for (int y = 0; y < map.height(); ++y) {
-			if (map.data(0, y) == TUNNEL && map.data(map.width() - 1, y) == TUNNEL) {
+			if (map.data(0, y) == WorldMap.TUNNEL && map.data(map.width() - 1, y) == WorldMap.TUNNEL) {
 				portalsLeft.add(new V2i(-1, y));
 				portalsRight.add(new V2i(map.width(), y));
 			}
@@ -63,14 +56,14 @@ public class DefaultPacManGameWorld implements PacManGameWorld {
 		//@formatter:off
 		tiles()
 			.filter(tile -> !isInsideGhostHouse(tile))
-			.filter(tile -> !isGhostHouseDoor(tile.plus(DOWN.vec)))
+			.filter(tile -> !isGhostHouseDoor(tile.plus(Direction.DOWN.vec)))
 			.filter(tile -> neighborTiles(tile).filter(neighbor-> !isWall(neighbor)).count() >= 3)
 			.map(tile -> index(tile))
 			.forEach(intersections::set);
 		//@formatter:on
 
 		// find energizer tiles
-		energizerTiles = tiles().filter(tile -> map.data(tile) == ENERGIZER).collect(Collectors.toList());
+		energizerTiles = tiles().filter(tile -> map.data(tile) == WorldMap.ENERGIZER).collect(Collectors.toList());
 	}
 
 	private Stream<V2i> neighborTiles(V2i tile) {
@@ -149,17 +142,17 @@ public class DefaultPacManGameWorld implements PacManGameWorld {
 
 	@Override
 	public boolean isWall(V2i tile) {
-		return insideMap(tile) && map.data(tile) == WALL;
+		return insideMap(tile) && map.data(tile) == WorldMap.WALL;
 	}
 
 	@Override
 	public boolean isTunnel(V2i tile) {
-		return insideMap(tile) && map.data(tile) == TUNNEL;
+		return insideMap(tile) && map.data(tile) == WorldMap.TUNNEL;
 	}
 
 	@Override
 	public boolean isGhostHouseDoor(V2i tile) {
-		return insideMap(tile) && map.data(tile) == DOOR;
+		return insideMap(tile) && map.data(tile) == WorldMap.DOOR;
 	}
 
 	@Override
@@ -178,7 +171,7 @@ public class DefaultPacManGameWorld implements PacManGameWorld {
 
 	@Override
 	public boolean isFoodTile(V2i tile) {
-		return insideMap(tile) && (map.data(tile) == PILL || map.data(tile) == ENERGIZER);
+		return insideMap(tile) && (map.data(tile) == WorldMap.PILL || map.data(tile) == WorldMap.ENERGIZER);
 	}
 
 	@Override

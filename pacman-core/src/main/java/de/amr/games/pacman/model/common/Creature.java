@@ -1,9 +1,5 @@
 package de.amr.games.pacman.model.common;
 
-import static de.amr.games.pacman.lib.Direction.DOWN;
-import static de.amr.games.pacman.lib.Direction.LEFT;
-import static de.amr.games.pacman.lib.Direction.RIGHT;
-import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.model.world.PacManGameWorld.t;
 import static java.lang.Math.abs;
 
@@ -115,11 +111,11 @@ public class Creature extends GameEntity {
 		V2i guyLocation = tile();
 		// teleport?
 		for (int i = 0; i < world.numPortals(); ++i) {
-			if (guyLocation.equals(world.portalRight(i)) && dir == RIGHT) {
+			if (guyLocation.equals(world.portalRight(i)) && dir == Direction.RIGHT) {
 				placeAt(world.portalLeft(i), 0, 0);
 				return;
 			}
-			if (guyLocation.equals(world.portalLeft(i)) && dir == LEFT) {
+			if (guyLocation.equals(world.portalLeft(i)) && dir == Direction.LEFT) {
 				placeAt(world.portalRight(i), 0, 0);
 				return;
 			}
@@ -142,13 +138,13 @@ public class Creature extends GameEntity {
 
 		// check if guy can change its direction now
 		if (forcedOnTrack && canAccessTile(neighbor)) {
-			if (moveDir == LEFT || moveDir == RIGHT) {
+			if (moveDir == Direction.LEFT || moveDir == Direction.RIGHT) {
 				if (abs(offset.y) > pixels) {
 					stuck = true;
 					return;
 				}
 				setOffset(offset.x, 0);
-			} else if (moveDir == UP || moveDir == DOWN) {
+			} else if (moveDir == Direction.UP || moveDir == Direction.DOWN) {
 				if (abs(offset.x) > pixels) {
 					stuck = true;
 					return;
@@ -170,12 +166,12 @@ public class Creature extends GameEntity {
 
 		// align with edge of inaccessible neighbor
 		if (!canAccessTile(neighbor)) {
-			if (moveDir == RIGHT && newOffset.x > 0 || moveDir == LEFT && newOffset.x < 0) {
+			if (moveDir == Direction.RIGHT && newOffset.x > 0 || moveDir == Direction.LEFT && newOffset.x < 0) {
 				setOffset(0, offset.y);
 				stuck = true;
 				return;
 			}
-			if (moveDir == DOWN && newOffset.y > 0 || moveDir == UP && newOffset.y < 0) {
+			if (moveDir == Direction.DOWN && newOffset.y > 0 || moveDir == Direction.UP && newOffset.y < 0) {
 				setOffset(offset.x, 0);
 				stuck = true;
 				return;
@@ -210,7 +206,8 @@ public class Creature extends GameEntity {
 		return targetDirection();
 	}
 
-	private static final Direction[] DIRECTION_PRIORITY = { UP, LEFT, DOWN, RIGHT };
+	private static final Direction[] DIRECTION_PRIORITY = { Direction.UP, Direction.LEFT, Direction.DOWN,
+			Direction.RIGHT };
 
 	public Optional<Direction> targetDirection() {
 		double minDist = Double.MAX_VALUE;

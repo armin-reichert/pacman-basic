@@ -12,7 +12,6 @@ import de.amr.games.pacman.model.common.GhostState;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.ui.animation.PacManGameAnimations2D;
 import de.amr.games.pacman.ui.animation.TimedSequence;
-import de.amr.games.pacman.ui.sound.SoundManager;
 
 /**
  * Intro scene of the Ms. Pac-Man game. The ghosts and Ms. Pac-Man are introduced one after another.
@@ -33,7 +32,6 @@ public class MsPacMan_IntroScene_Controller {
 
 	public final PacManGameController gameController;
 	public final PacManGameAnimations2D animations;
-	public final SoundManager sounds;
 
 	public Phase phase;
 	public final TickTimer phaseTimer = new TickTimer();
@@ -43,11 +41,9 @@ public class MsPacMan_IntroScene_Controller {
 	public int currentGhostIndex;
 	public final TimedSequence<Boolean> blinking = TimedSequence.pulse().frameDuration(30);
 
-	public MsPacMan_IntroScene_Controller(PacManGameController gameController, PacManGameAnimations2D animations,
-			SoundManager sounds) {
+	public MsPacMan_IntroScene_Controller(PacManGameController gameController, PacManGameAnimations2D animations) {
 		this.gameController = gameController;
 		this.animations = animations;
-		this.sounds = sounds;
 	}
 
 	private void enterPhase(Phase newPhase) {

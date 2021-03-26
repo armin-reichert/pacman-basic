@@ -1,26 +1,22 @@
 package de.amr.games.pacman.ui.pacman;
 
-import static de.amr.games.pacman.lib.Direction.RIGHT;
-import static de.amr.games.pacman.model.common.GhostState.FRIGHTENED;
-import static de.amr.games.pacman.model.common.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.model.world.PacManGameWorld.t;
 
 import de.amr.games.pacman.controller.PacManGameController;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.common.Ghost;
+import de.amr.games.pacman.model.common.GhostState;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.ui.animation.PacManGameAnimations2D;
 import de.amr.games.pacman.ui.animation.TimedSequence;
-import de.amr.games.pacman.ui.sound.PacManGameSound;
-import de.amr.games.pacman.ui.sound.SoundManager;
 
 /**
  * First intermission scene: Blinky chases Pac-Man and is then chased by a huge Pac-Man.
  * 
  * @author Armin Reichert
  */
-public class PacMan_IntermissionScene1_Controller {
+public abstract class PacMan_IntermissionScene1_Controller {
 
 	public enum Phase {
 
@@ -33,17 +29,16 @@ public class PacMan_IntermissionScene1_Controller {
 	public final TickTimer timer = new TickTimer();
 	public final PacManGameController gameController;
 	public final PacManGameAnimations2D animations;
-	public final SoundManager sounds;
 	public Ghost blinky;
 	public Pac pac;
 	public Phase phase;
 
-	public PacMan_IntermissionScene1_Controller(PacManGameController gameController, PacManGameAnimations2D animations,
-			SoundManager sounds) {
+	public PacMan_IntermissionScene1_Controller(PacManGameController gameController, PacManGameAnimations2D animations) {
 		this.gameController = gameController;
 		this.animations = animations;
-		this.sounds = sounds;
 	}
+
+	public abstract void playIntermissionSound();
 
 	public void start() {
 		pac = new Pac("Pac-Man", Direction.LEFT);
@@ -54,13 +49,14 @@ public class PacMan_IntermissionScene1_Controller {
 
 		blinky = new Ghost(0, "Blinky", Direction.LEFT);
 		blinky.visible = true;
-		blinky.state = HUNTING_PAC;
+		blinky.state = GhostState.HUNTING_PAC;
 		blinky.setPositionRelativeTo(pac, t(3), 0);
 		blinky.speed = pac.speed * 1.04f;
 		animations.ghostAnimations().ghostKicking(blinky, blinky.dir).restart();
 		animations.ghostAnimations().ghostFrightened(blinky, blinky.dir).restart();
 
-		sounds.loop(PacManGameSound.INTERMISSION_1, 2);
+		playIntermissionSound();
+//		sounds.loop(PacManGameSound.INTERMISSION_1, 2);
 
 		phase = Phase.BLINKY_CHASING_PACMAN;
 		timer.resetSeconds(5);
@@ -80,10 +76,10 @@ public class PacMan_IntermissionScene1_Controller {
 		case BIGPACMAN_CHASING_BLINKY:
 			if (timer.hasJustStarted()) {
 				blinky.setPosition(-t(2), groundY);
-				blinky.dir = blinky.wishDir = RIGHT;
+				blinky.dir = blinky.wishDir = Direction.RIGHT;
 				blinky.speed = 1f;
-				blinky.state = FRIGHTENED;
-				pac.dir = RIGHT;
+				blinky.state = GhostState.FRIGHTENED;
+				pac.dir = Direction.RIGHT;
 				pac.speed = 1.3f;
 				pac.setPositionRelativeTo(blinky, -t(13), 0);
 			}

@@ -38,11 +38,10 @@ import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.ui.FlashMessage;
 import de.amr.games.pacman.ui.PacManGameUI;
 import de.amr.games.pacman.ui.animation.PacManGameAnimations2D;
-import de.amr.games.pacman.ui.sound.SoundManager;
 import de.amr.games.pacman.ui.swing.app.GameLoop;
 import de.amr.games.pacman.ui.swing.assets.AssetLoader;
-import de.amr.games.pacman.ui.swing.assets.PacManGameSoundManager;
 import de.amr.games.pacman.ui.swing.assets.PacManGameSounds;
+import de.amr.games.pacman.ui.swing.assets.SoundManager;
 import de.amr.games.pacman.ui.swing.common.GameScene;
 import de.amr.games.pacman.ui.swing.common.PlayScene;
 import de.amr.games.pacman.ui.swing.mspacman.MsPacMan_IntermissionScene1;
@@ -73,8 +72,8 @@ public class PacManGameUI_Swing implements PacManGameUI {
 
 	public static final EnumMap<GameVariant, SoundManager> SOUND = new EnumMap<>(GameVariant.class);
 	static {
-		SOUND.put(MS_PACMAN, new PacManGameSoundManager(PacManGameSounds::msPacManSoundURL));
-		SOUND.put(PACMAN, new PacManGameSoundManager(PacManGameSounds::mrPacManSoundURL));
+		SOUND.put(MS_PACMAN, new SoundManager(PacManGameSounds::msPacManSoundURL));
+		SOUND.put(PACMAN, new SoundManager(PacManGameSounds::mrPacManSoundURL));
 	}
 
 	private final EnumMap<GameVariant, List<GameScene>> scenes = new EnumMap<>(GameVariant.class);

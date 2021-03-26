@@ -2,7 +2,6 @@ package de.amr.games.pacman.model.common;
 
 import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.model.common.Ghost.BLINKY;
-import static de.amr.games.pacman.model.common.GhostState.LOCKED;
 import static de.amr.games.pacman.model.world.PacManGameWorld.HTS;
 
 import java.io.File;
@@ -98,7 +97,7 @@ public abstract class GameModel {
 			ghost.stuck = false;
 			ghost.forcedDirection = ghost.id == BLINKY;
 			ghost.forcedOnTrack = ghost.id == BLINKY;
-			ghost.state = LOCKED;
+			ghost.state = GhostState.LOCKED;
 			ghost.bounty = 0;
 			// these are only reset when entering level:
 //		ghost.dotCounter = 0;

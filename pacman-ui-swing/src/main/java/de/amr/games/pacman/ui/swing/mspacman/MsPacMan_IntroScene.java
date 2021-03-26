@@ -32,10 +32,10 @@ public class MsPacMan_IntroScene extends GameScene {
 
 	@Override
 	public void start() {
+		sceneController = new MsPacMan_IntroScene_Controller(gameController, rendering);
+		sceneController.start();
 		boardAnimationTimer.reset();
 		boardAnimationTimer.start();
-		sceneController = new MsPacMan_IntroScene_Controller(gameController, rendering, sounds);
-		sceneController.start();
 	}
 
 	@Override

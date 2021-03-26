@@ -1,12 +1,5 @@
 package de.amr.games.pacman.model.common;
 
-import static de.amr.games.pacman.lib.Direction.DOWN;
-import static de.amr.games.pacman.lib.Direction.LEFT;
-import static de.amr.games.pacman.lib.Direction.RIGHT;
-import static de.amr.games.pacman.lib.Direction.UP;
-import static de.amr.games.pacman.model.common.GhostState.ENTERING_HOUSE;
-import static de.amr.games.pacman.model.common.GhostState.HUNTING_PAC;
-import static de.amr.games.pacman.model.common.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.model.world.PacManGameWorld.HTS;
 import static de.amr.games.pacman.model.world.PacManGameWorld.t;
 
@@ -119,13 +112,13 @@ public class Ghost extends Creature {
 	@Override
 	public boolean canAccessTile(V2i tile) {
 		if (world.isGhostHouseDoor(tile)) {
-			return is(ENTERING_HOUSE) || is(LEAVING_HOUSE);
+			return is(GhostState.ENTERING_HOUSE) || is(GhostState.LEAVING_HOUSE);
 		}
 		if (world.isUpwardsBlocked(tile)) {
 			if (offset().y != 0) {
 				return true; // maybe already on the way up
 			}
-			return !is(HUNTING_PAC);
+			return !is(GhostState.HUNTING_PAC);
 		}
 		return super.canAccessTile(tile);
 	}
@@ -138,7 +131,7 @@ public class Ghost extends Creature {
 		// Ghost house door reached? Start falling into house.
 		if (atGhostHouseDoor()) {
 			setOffset(HTS, 0);
-			dir = wishDir = DOWN;
+			dir = wishDir = Direction.DOWN;
 			forcedOnTrack = false;
 			targetTile = (id == 0) ? world.houseCenter() : world.ghostHome(id);
 			state = GhostState.ENTERING_HOUSE;
@@ -158,7 +151,7 @@ public class Ghost extends Creature {
 		}
 		// House center reached? Move sidewards towards target tile
 		if (location.equals(world.houseCenter()) && offset.y >= 0) {
-			wishDir = targetTile.x < world.houseCenter().x ? LEFT : RIGHT;
+			wishDir = targetTile.x < world.houseCenter().x ? Direction.LEFT : Direction.RIGHT;
 		}
 		tryMoving(wishDir);
 	}
@@ -169,7 +162,7 @@ public class Ghost extends Creature {
 		// House left? Resume hunting.
 		if (location.equals(world.houseEntry()) && differsAtMost(offset.y, 0, 1)) {
 			setOffset(HTS, 0);
-			dir = wishDir = LEFT;
+			dir = wishDir = Direction.LEFT;
 			forcedOnTrack = true;
 			state = GhostState.HUNTING_PAC;
 			return;
@@ -179,11 +172,11 @@ public class Ghost extends Creature {
 		int ground = t(houseCenter.y) + HTS;
 		if (differsAtMost(position.x, center, 1)) {
 			setOffset(HTS, offset.y);
-			wishDir = UP;
+			wishDir = Direction.UP;
 		} else if (position.y < ground) {
-			wishDir = DOWN;
+			wishDir = Direction.DOWN;
 		} else {
-			wishDir = position.x < center ? RIGHT : LEFT;
+			wishDir = position.x < center ? Direction.RIGHT : Direction.LEFT;
 		}
 		tryMoving(wishDir);
 	}

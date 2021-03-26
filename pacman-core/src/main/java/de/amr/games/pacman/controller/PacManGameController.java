@@ -9,10 +9,6 @@ import static de.amr.games.pacman.controller.PacManGameState.LEVEL_COMPLETE;
 import static de.amr.games.pacman.controller.PacManGameState.LEVEL_STARTING;
 import static de.amr.games.pacman.controller.PacManGameState.PACMAN_DYING;
 import static de.amr.games.pacman.controller.PacManGameState.READY;
-import static de.amr.games.pacman.lib.Direction.DOWN;
-import static de.amr.games.pacman.lib.Direction.LEFT;
-import static de.amr.games.pacman.lib.Direction.RIGHT;
-import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.model.common.GameVariant.MS_PACMAN;
 import static de.amr.games.pacman.model.common.GameVariant.PACMAN;
@@ -44,6 +40,7 @@ import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManGameEventListener;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.controller.event.ScatterPhaseStartedEvent;
+import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.FiniteStateMachine;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.GameModel;
@@ -504,13 +501,13 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		if (autopilot.enabled) {
 			autopilot.run(gameModel);
 		} else if (userInterface.keyPressed(KEY_PLAYER_LEFT)) {
-			gameModel.player.wishDir = LEFT;
+			gameModel.player.wishDir = Direction.LEFT;
 		} else if (userInterface.keyPressed(KEY_PLAYER_RIGHT)) {
-			gameModel.player.wishDir = RIGHT;
+			gameModel.player.wishDir = Direction.RIGHT;
 		} else if (userInterface.keyPressed(KEY_PLAYER_UP)) {
-			gameModel.player.wishDir = UP;
+			gameModel.player.wishDir = Direction.UP;
 		} else if (userInterface.keyPressed(KEY_PLAYER_DOWN)) {
-			gameModel.player.wishDir = DOWN;
+			gameModel.player.wishDir = Direction.DOWN;
 		}
 	}
 
@@ -621,7 +618,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 		case PINKY: {
 			V2i target = playerTile.plus(gameModel.player.dir.vec.scaled(4));
-			if (gameModel.player.dir == UP) {
+			if (gameModel.player.dir == Direction.UP) {
 				// simulate overflow bug
 				target = target.plus(-4, 0);
 			}
@@ -630,7 +627,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 		case INKY: {
 			V2i twoAheadPlayer = playerTile.plus(gameModel.player.dir.vec.scaled(2));
-			if (gameModel.player.dir == UP) {
+			if (gameModel.player.dir == Direction.UP) {
 				// simulate overflow bug
 				twoAheadPlayer = twoAheadPlayer.plus(-2, 0);
 			}

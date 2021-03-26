@@ -9,8 +9,6 @@ import de.amr.games.pacman.model.common.Flap;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.ui.animation.PacManGameAnimations2D;
 import de.amr.games.pacman.ui.animation.TimedSequence;
-import de.amr.games.pacman.ui.sound.PacManGameSound;
-import de.amr.games.pacman.ui.sound.SoundManager;
 
 /**
  * Intermission scene 2: "The chase".
@@ -20,7 +18,7 @@ import de.amr.games.pacman.ui.sound.SoundManager;
  * 
  * @author Armin Reichert
  */
-public class MsPacMan_IntermissionScene2_Controller {
+public abstract class MsPacMan_IntermissionScene2_Controller {
 
 	public enum Phase {
 
@@ -31,7 +29,6 @@ public class MsPacMan_IntermissionScene2_Controller {
 
 	public final PacManGameController gameController;
 	public final PacManGameAnimations2D animations;
-	public final SoundManager sounds;
 	public final TickTimer timer = new TickTimer();
 	public Phase phase;
 	public Flap flap;
@@ -43,12 +40,13 @@ public class MsPacMan_IntermissionScene2_Controller {
 		timer.start();
 	}
 
-	public MsPacMan_IntermissionScene2_Controller(PacManGameController gameController, PacManGameAnimations2D animations,
-			SoundManager sounds) {
+	public MsPacMan_IntermissionScene2_Controller(PacManGameController gameController,
+			PacManGameAnimations2D animations) {
 		this.gameController = gameController;
 		this.animations = animations;
-		this.sounds = sounds;
 	}
+
+	public abstract void playIntermissionSound();
 
 	public void start() {
 		flap = new Flap(2, "THE CHASE", animations.flapFlapping());
@@ -69,7 +67,8 @@ public class MsPacMan_IntermissionScene2_Controller {
 			}
 			if (timer.isRunningSeconds(2)) {
 				flap.visible = false;
-				sounds.play(PacManGameSound.INTERMISSION_2);
+				playIntermissionSound();
+//				sounds.play(PacManGameSound.INTERMISSION_2);
 			}
 			if (timer.isRunningSeconds(4.5)) {
 				enter(Phase.ACTION);
