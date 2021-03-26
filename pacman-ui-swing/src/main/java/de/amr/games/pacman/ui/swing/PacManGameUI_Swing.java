@@ -1,5 +1,6 @@
 package de.amr.games.pacman.ui.swing;
 
+import static de.amr.games.pacman.controller.PacManGameState.INTERMISSION;
 import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.model.common.GameVariant.MS_PACMAN;
 import static de.amr.games.pacman.model.common.GameVariant.PACMAN;
@@ -283,6 +284,27 @@ public class PacManGameUI_Swing implements PacManGameUI {
 		case KeyEvent.VK_D:
 			Debug.on = !Debug.on;
 			log("UI debug mode is %s", Debug.on ? "on" : "off");
+			break;
+		case KeyEvent.VK_1:
+			if (gameController.state == PacManGameState.INTRO) {
+				showFlashMessage("Test Intermission #1");
+				gameController.game().intermissionNumber = 1;
+				gameController.changeState(INTERMISSION);
+			}
+			break;
+		case KeyEvent.VK_2:
+			if (gameController.state == PacManGameState.INTRO) {
+				showFlashMessage("Test Intermission #2");
+				gameController.game().intermissionNumber = 2;
+				gameController.changeState(INTERMISSION);
+			}
+			break;
+		case KeyEvent.VK_3:
+			if (gameController.state == PacManGameState.INTRO) {
+				showFlashMessage("Test Intermission #3");
+				gameController.game().intermissionNumber = 3;
+				gameController.changeState(INTERMISSION);
+			}
 			break;
 		default:
 			break;

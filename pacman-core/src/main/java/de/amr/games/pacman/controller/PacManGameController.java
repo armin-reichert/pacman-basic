@@ -191,21 +191,6 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			return;
 		}
 
-		// test intermission scenes (TODO remove)
-		if (userInterface.keyPressed("1") && intro) {
-			userInterface.showFlashMessage("Test Intermission #1");
-			gameModel.intermissionNumber = 1;
-			changeState(INTERMISSION);
-		} else if (userInterface.keyPressed("2") && intro) {
-			userInterface.showFlashMessage("Test Intermission #2");
-			gameModel.intermissionNumber = 2;
-			changeState(INTERMISSION);
-		} else if (userInterface.keyPressed("3") && intro) {
-			userInterface.showFlashMessage("Test Intermission #3");
-			gameModel.intermissionNumber = 3;
-			changeState(INTERMISSION);
-		}
-
 		if (!isGameRunning()) {
 			return;
 		}
