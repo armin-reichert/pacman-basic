@@ -29,7 +29,7 @@ public class PacMan_IntermissionScene2_Controller {
 	public static final int groundTileY = 20;
 
 	public final TickTimer timer = new TickTimer();
-	public final PacManGameController controller;
+	public final PacManGameController gameController;
 	public final PacManGameAnimations2D animations;
 	public final SoundManager sounds;
 
@@ -38,9 +38,9 @@ public class PacMan_IntermissionScene2_Controller {
 	public GameEntity nail;
 	public Phase phase;
 
-	public PacMan_IntermissionScene2_Controller(PacManGameController controller, PacManGameAnimations2D animations,
+	public PacMan_IntermissionScene2_Controller(PacManGameController gameController, PacManGameAnimations2D animations,
 			SoundManager sounds) {
-		this.controller = controller;
+		this.gameController = gameController;
 		this.animations = animations;
 		this.sounds = sounds;
 	}
@@ -101,7 +101,7 @@ public class PacMan_IntermissionScene2_Controller {
 				blinky.dir = Direction.RIGHT;
 			}
 			if (timer.isRunningSeconds(6)) {
-				controller.stateTimer().forceExpiration();
+				gameController.stateTimer().forceExpiration();
 				return;
 			}
 			timer.tick();

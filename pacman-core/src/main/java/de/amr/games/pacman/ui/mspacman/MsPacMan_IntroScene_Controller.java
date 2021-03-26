@@ -31,7 +31,7 @@ public class MsPacMan_IntroScene_Controller {
 	public final int tileBelowBoard = 17;
 	public final int tileLeftOfBoard = 4;
 
-	public final PacManGameController controller;
+	public final PacManGameController gameController;
 	public final PacManGameAnimations2D animations;
 	public final SoundManager sounds;
 
@@ -43,9 +43,9 @@ public class MsPacMan_IntroScene_Controller {
 	public int currentGhostIndex;
 	public final TimedSequence<Boolean> blinking = TimedSequence.pulse().frameDuration(30);
 
-	public MsPacMan_IntroScene_Controller(PacManGameController controller, PacManGameAnimations2D animations,
+	public MsPacMan_IntroScene_Controller(PacManGameController gameController, PacManGameAnimations2D animations,
 			SoundManager sounds) {
-		this.controller = controller;
+		this.gameController = gameController;
 		this.animations = animations;
 		this.sounds = sounds;
 	}
@@ -129,7 +129,7 @@ public class MsPacMan_IntroScene_Controller {
 				blinking.restart();
 			}
 			if (phaseTimer.isRunningSeconds(5)) {
-				controller.stateTimer().forceExpiration();
+				gameController.stateTimer().forceExpiration();
 				return;
 			}
 			blinking.animate();

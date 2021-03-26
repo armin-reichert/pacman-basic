@@ -36,7 +36,7 @@ public class MsPacMan_IntermissionScene1_Controller {
 
 	public static final int upperY = t(12), lowerY = t(24), middleY = t(18);
 
-	public final PacManGameController controller;
+	public final PacManGameController gameController;
 	public final PacManGameAnimations2D animations;
 	public final SoundManager sounds;
 	public final TickTimer timer = new TickTimer();
@@ -47,9 +47,9 @@ public class MsPacMan_IntermissionScene1_Controller {
 	public GameEntity heart;
 	public boolean ghostsMet;
 
-	public MsPacMan_IntermissionScene1_Controller(PacManGameController controller, PacManGameAnimations2D animations,
+	public MsPacMan_IntermissionScene1_Controller(PacManGameController gameController, PacManGameAnimations2D animations,
 			SoundManager sounds) {
-		this.controller = controller;
+		this.gameController = gameController;
 		this.animations = animations;
 		this.sounds = sounds;
 	}
@@ -160,7 +160,7 @@ public class MsPacMan_IntermissionScene1_Controller {
 				pinky.visible = false;
 			}
 			if (timer.hasExpired()) {
-				controller.stateTimer().forceExpiration();
+				gameController.stateTimer().forceExpiration();
 				return;
 			}
 			timer.tick();

@@ -37,7 +37,7 @@ public class PacMan_IntroScene_Controller {
 	public static final int TOP_Y = t(6);
 
 	public final TickTimer timer = new TickTimer();
-	public final PacManGameController controller;
+	public final PacManGameController gameController;
 	public final PacManGameAnimations2D animations;
 
 	public final TimedSequence<Boolean> blinking = TimedSequence.pulse().frameDuration(20);
@@ -49,8 +49,8 @@ public class PacMan_IntroScene_Controller {
 
 	public Phase phase;
 
-	public PacMan_IntroScene_Controller(PacManGameController controller, PacManGameAnimations2D animations) {
-		this.controller = controller;
+	public PacMan_IntroScene_Controller(PacManGameController gameController, PacManGameAnimations2D animations) {
+		this.gameController = gameController;
 		this.animations = animations;
 	}
 
@@ -143,7 +143,7 @@ public class PacMan_IntroScene_Controller {
 			if (pac.position.x > t(28)) {
 				enterPhase(Phase.READY_TO_PLAY);
 			}
-			if (controller.stateTimer().ticked() - ghostKilledTime == 15) {
+			if (gameController.stateTimer().ticked() - ghostKilledTime == 15) {
 				ghostKilledTime = 0;
 				pac.visible = true;
 				pac.speed = 1;
@@ -159,7 +159,7 @@ public class PacMan_IntroScene_Controller {
 					ghost.bounty = (int) Math.pow(2, ghost.id + 1) * 100;
 					pac.visible = false;
 					pac.speed = 0;
-					ghostKilledTime = controller.stateTimer().ticked();
+					ghostKilledTime = gameController.stateTimer().ticked();
 				}
 			}
 			timer.tick();
@@ -170,7 +170,7 @@ public class PacMan_IntroScene_Controller {
 				blinking.restart();
 			}
 			if (timer.isRunningSeconds(5)) {
-				controller.stateTimer().forceExpiration();
+				gameController.stateTimer().forceExpiration();
 			}
 			blinking.animate();
 			timer.tick();

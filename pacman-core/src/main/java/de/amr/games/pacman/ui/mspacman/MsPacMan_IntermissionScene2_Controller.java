@@ -29,7 +29,7 @@ public class MsPacMan_IntermissionScene2_Controller {
 
 	public static final int UPPER_Y = t(12), LOWER_Y = t(24), MIDDLE_Y = t(18);
 
-	public final PacManGameController controller;
+	public final PacManGameController gameController;
 	public final PacManGameAnimations2D animations;
 	public final SoundManager sounds;
 	public final TickTimer timer = new TickTimer();
@@ -43,9 +43,9 @@ public class MsPacMan_IntermissionScene2_Controller {
 		timer.start();
 	}
 
-	public MsPacMan_IntermissionScene2_Controller(PacManGameController controller, PacManGameAnimations2D animations,
+	public MsPacMan_IntermissionScene2_Controller(PacManGameController gameController, PacManGameAnimations2D animations,
 			SoundManager sounds) {
-		this.controller = controller;
+		this.gameController = gameController;
 		this.animations = animations;
 		this.sounds = sounds;
 	}
@@ -115,7 +115,7 @@ public class MsPacMan_IntermissionScene2_Controller {
 				msPacMan.speed = pacMan.speed = 4;
 			}
 			if (timer.isRunningSeconds(20)) {
-				controller.stateTimer().forceExpiration();
+				gameController.stateTimer().forceExpiration();
 				return;
 			}
 			timer.tick();

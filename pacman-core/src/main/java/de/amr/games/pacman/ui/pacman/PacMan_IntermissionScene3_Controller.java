@@ -30,7 +30,7 @@ public class PacMan_IntermissionScene3_Controller {
 	public static final int chaseTileY = 20;
 
 	public final TickTimer timer = new TickTimer();
-	public final PacManGameController controller;
+	public final PacManGameController gameController;
 	public final PacManGameAnimations2D animations;
 	public final SoundManager sounds;
 
@@ -38,9 +38,9 @@ public class PacMan_IntermissionScene3_Controller {
 	public Pac pac;
 	public Phase phase;
 
-	public PacMan_IntermissionScene3_Controller(PacManGameController controller, PacManGameAnimations2D animations,
+	public PacMan_IntermissionScene3_Controller(PacManGameController gameController, PacManGameAnimations2D animations,
 			SoundManager sounds) {
-		this.controller = controller;
+		this.gameController = gameController;
 		this.animations = animations;
 		this.sounds = sounds;
 	}
@@ -78,7 +78,7 @@ public class PacMan_IntermissionScene3_Controller {
 			break;
 		case RETURNING_HALF_NAKED:
 			if (blinky.position.x > t(28) + 200) {
-				controller.stateTimer().forceExpiration();
+				gameController.stateTimer().forceExpiration();
 				return;
 			}
 			break;

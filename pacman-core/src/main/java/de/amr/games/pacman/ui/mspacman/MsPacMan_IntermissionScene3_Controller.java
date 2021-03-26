@@ -33,7 +33,7 @@ public class MsPacMan_IntermissionScene3_Controller {
 
 	public static final int BIRD_Y = t(12), GROUND_Y = t(24);
 
-	public final PacManGameController controller;
+	public final PacManGameController gameController;
 	public final PacManGameAnimations2D animations;
 	public final SoundManager sounds;
 	public final TickTimer timer = new TickTimer();
@@ -46,9 +46,9 @@ public class MsPacMan_IntermissionScene3_Controller {
 
 	public Phase phase;
 
-	public MsPacMan_IntermissionScene3_Controller(PacManGameController controller, PacManGameAnimations2D animations,
+	public MsPacMan_IntermissionScene3_Controller(PacManGameController gameController, PacManGameAnimations2D animations,
 			SoundManager sounds) {
-		this.controller = controller;
+		this.gameController = gameController;
 		this.animations = animations;
 		this.sounds = sounds;
 	}
@@ -131,7 +131,7 @@ public class MsPacMan_IntermissionScene3_Controller {
 		case READY_TO_PLAY:
 			stork.move();
 			if (timer.hasExpired()) {
-				controller.stateTimer().forceExpiration();
+				gameController.stateTimer().forceExpiration();
 				return;
 			}
 			timer.tick();
