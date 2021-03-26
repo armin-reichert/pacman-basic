@@ -224,7 +224,8 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 		// exterminate all ghosts outside of ghost house
 		else if (userInterface.keyPressed(KEY_EXTERMINATE_GHOSTS) && hunting) {
-			killAllGhosts();
+			gameModel.ghostBounty = 200;
+			gameModel.ghosts().filter(ghost -> ghost.is(HUNTING_PAC) || ghost.is(FRIGHTENED)).forEach(this::killGhost);
 			changeState(GHOST_DYING);
 		}
 	}
@@ -573,13 +574,13 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		log("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name, ghost.tile(), ghost.bounty);
 	}
 
-	private void killAllGhosts() {
-		gameModel.ghostBounty = 200;
-		gameModel.ghosts().filter(ghost -> ghost.is(HUNTING_PAC) || ghost.is(FRIGHTENED)).forEach(this::killGhost);
-	}
-
 	private void setGhostHuntingTarget(Ghost ghost) {
-		// In Ms. Pac-Man, Blinky and Pinky move randomly during the *first* scatter phase:
+		/*
+		 * In Ms. Pac-Man, Blinky and Pinky move randomly during the *first* scatter phase. Some say, the
+		 * origial intention had been to randomize the scatter target of *all* ghosts in Ms. Pac-Man but
+		 * because of a bug, only the scatter target of Blinky and Pinky would have been affected. Who
+		 * knows?
+		 */
 		if (isPlaying(MS_PACMAN) && gameModel.huntingPhase == 0 && (ghost.id == BLINKY || ghost.id == PINKY)) {
 			ghost.targetTile = null;
 		} else if (inScatteringPhase() && ghost.elroy == 0) {
@@ -627,20 +628,39 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		}
 	}
 
-	// Ghost house
+	// Ghost house rules
+
+	private static int playerStarvingTimeLimit(int levelNumber) {
+		return levelNumber < 5 ? 4 * 60 : 3 * 60;
+	}
+
+	private static int ghostPrivateDotLimit(int ghostID, int levelNumber) {
+		if (ghostID == INKY) {
+			return levelNumber == 1 ? 30 : 0;
+		} else if (ghostID == CLYDE) {
+			return levelNumber == 1 ? 60 : levelNumber == 2 ? 50 : 0;
+		} else {
+			return 0;
+		}
+	}
+
+	private static int ghostGlobalDotLimit(int ghostID) {
+		return ghostID == PINKY ? 7 : ghostID == INKY ? 17 : Integer.MAX_VALUE;
+	}
 
 	private void tryReleasingGhosts() {
 		if (gameModel.ghosts[BLINKY].is(LOCKED)) {
 			gameModel.ghosts[BLINKY].state = HUNTING_PAC;
 		}
 		preferredLockedGhostInHouse().ifPresent(ghost -> {
-			if (gameModel.globalDotCounterEnabled && gameModel.globalDotCounter >= ghostGlobalDotLimit(ghost)) {
+			if (gameModel.globalDotCounterEnabled && gameModel.globalDotCounter >= ghostGlobalDotLimit(ghost.id)) {
 				releaseGhost(ghost, "Global dot counter (%d) reached limit (%d)", gameModel.globalDotCounter,
-						ghostGlobalDotLimit(ghost));
-			} else if (!gameModel.globalDotCounterEnabled && ghost.dotCounter >= ghostPrivateDotLimit(ghost)) {
+						ghostGlobalDotLimit(ghost.id));
+			} else if (!gameModel.globalDotCounterEnabled
+					&& ghost.dotCounter >= ghostPrivateDotLimit(ghost.id, gameModel.levelNumber)) {
 				releaseGhost(ghost, "%s's dot counter (%d) reached limit (%d)", ghost.name, ghost.dotCounter,
-						ghostPrivateDotLimit(ghost));
-			} else if (gameModel.player.starvingTicks >= pacStarvingTimeLimit()) {
+						ghostPrivateDotLimit(ghost.id, gameModel.levelNumber));
+			} else if (gameModel.player.starvingTicks >= playerStarvingTimeLimit(gameModel.levelNumber)) {
 				releaseGhost(ghost, "%s has been starving for %d ticks", gameModel.player.name, gameModel.player.starvingTicks);
 				gameModel.player.starvingTicks = 0;
 			}
@@ -649,7 +669,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	private void releaseGhost(Ghost ghost, String reason, Object... args) {
 		ghost.state = LEAVING_HOUSE;
-		if (ghost == gameModel.ghosts[CLYDE] && gameModel.ghosts[BLINKY].elroy < 0) {
+		if (ghost.id == CLYDE && gameModel.ghosts[BLINKY].elroy < 0) {
 			gameModel.ghosts[BLINKY].elroy -= 1; // resume Elroy mode
 			log("Blinky Elroy mode %d resumed", gameModel.ghosts[BLINKY].elroy);
 		}
@@ -658,24 +678,6 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	private Optional<Ghost> preferredLockedGhostInHouse() {
 		return Stream.of(PINKY, INKY, CLYDE).map(id -> gameModel.ghosts[id]).filter(ghost -> ghost.is(LOCKED)).findFirst();
-	}
-
-	private int pacStarvingTimeLimit() {
-		return gameModel.levelNumber < 5 ? 4 * 60 : 3 * 60;
-	}
-
-	private int ghostPrivateDotLimit(Ghost ghost) {
-		if (ghost == gameModel.ghosts[INKY]) {
-			return gameModel.levelNumber == 1 ? 30 : 0;
-		}
-		if (ghost == gameModel.ghosts[CLYDE]) {
-			return gameModel.levelNumber == 1 ? 60 : gameModel.levelNumber == 2 ? 50 : 0;
-		}
-		return 0;
-	}
-
-	private int ghostGlobalDotLimit(Ghost ghost) {
-		return ghost == gameModel.ghosts[PINKY] ? 7 : ghost == gameModel.ghosts[INKY] ? 17 : Integer.MAX_VALUE;
 	}
 
 	private void updateGhostDotCounters() {
