@@ -16,7 +16,7 @@ import de.amr.games.pacman.ui.sound.PacManGameSound;
 import de.amr.games.pacman.ui.sound.SoundManager;
 
 /**
- * Controller for the Pac-Man intermission scene 1.
+ * First intermission scene: Blinky chases Pac-Man and is then chased by a huge Pac-Man.
  * 
  * @author Armin Reichert
  */

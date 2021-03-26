@@ -15,7 +15,7 @@ import de.amr.games.pacman.ui.animation.TimedSequence;
 import de.amr.games.pacman.ui.sound.SoundManager;
 
 /**
- * Controls the Ms. Pac-Man intro scene execution.
+ * Intro scene of the Ms. Pac-Man game. The ghosts and Ms. Pac-Man are introduced one after another.
  * 
  * @author Armin Reichert
  */

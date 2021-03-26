@@ -15,7 +15,7 @@ import de.amr.games.pacman.ui.sound.PacManGameSound;
 import de.amr.games.pacman.ui.sound.SoundManager;
 
 /**
- * Controller for the Pac-Man intermission scene 2.
+ * Second intermission scene: Blinky pursues Pac but kicks a nail that tears his dress apart.
  * 
  * @author Armin Reichert
  */

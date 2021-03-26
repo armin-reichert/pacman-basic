@@ -12,7 +12,10 @@ import de.amr.games.pacman.ui.animation.PacManGameAnimations2D;
 import de.amr.games.pacman.ui.animation.TimedSequence;
 
 /**
- * Controller for the Pac-Man intro scene.
+ * Intro scene of the PacMan game.
+ * <p>
+ * The ghost are presented one after another, then Pac-Man is chased by the ghosts, turns the card
+ * and hunts the ghost himself.
  * 
  * @author Armin Reichert
  */
