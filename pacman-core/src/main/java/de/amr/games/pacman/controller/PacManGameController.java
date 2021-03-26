@@ -312,20 +312,24 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	private void updateHuntingState() {
 		final Pac player = gameModel.player;
 
-		// Level completed?
+		// Is level complete?
 		if (gameModel.level.foodRemaining == 0) {
 			changeState(LEVEL_COMPLETE);
 			return;
 		}
 
-		// Player killing ghost(s)?
-		long numGhostsKilled = gameModel.ghosts(FRIGHTENED).filter(player::meets).map(this::killGhost).count();
-		if (numGhostsKilled > 0) {
+		// Is player killing ghost(s)?
+		int deadGhostCount = (int) gameModel.ghosts(DEAD).count();
+		int preyCount = (int) gameModel.ghosts(FRIGHTENED).filter(player::meets).count();
+		if (preyCount > 0) {
+			gameModel.ghosts(FRIGHTENED).filter(player::meets).forEach(this::killGhost);
+			int newDeadGhostCount = (int) gameModel.ghosts(DEAD).count();
+			fireGameEvent(new DeadGhostCountChangeEvent(gameVariant, gameModel, deadGhostCount, newDeadGhostCount));
 			changeState(GHOST_DYING);
 			return;
 		}
 
-		// Player getting killed by ghost?
+		// Is player getting killed by any ghost?
 		if (!playerImmune || attractMode) {
 			Optional<Ghost> killer = gameModel.ghosts(HUNTING_PAC).filter(player::meets).findAny();
 			if (killer.isPresent()) {
@@ -344,55 +348,53 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			}
 		}
 
-		// Hunting phase complete?
+		// Is hunting phase (chasing, scattering) complete?
 		if (stateTimer().hasExpired()) {
 			gameModel.ghosts(HUNTING_PAC).forEach(Ghost::forceTurningBack);
 			startHuntingPhase(++gameModel.huntingPhase);
 			return;
 		}
 
-		// Let player move
+		// Move player if possible
 		steerPlayer();
 		if (player.restingTicksLeft > 0) {
 			player.restingTicksLeft--;
 		} else {
-			player.speed = player.powerTimer.isRunning() ? gameModel.level.pacSpeedPowered : gameModel.level.pacSpeed;
+			player.speed = player.powerTimer.isRunning() ? gameModel.level.playerSpeedPowered : gameModel.level.playerSpeed;
 			player.tryMoving();
 		}
 
 		// Did player find food?
 		if (gameModel.level.containsFood(player.tile())) {
-			onPlayerFoundFood(player, player.tile());
+			onPlayerFoundFood(player);
 		} else {
 			player.starvingTicks++;
 		}
 
+		// Consume power
 		if (player.powerTimer.isRunning()) {
 			player.powerTimer.tick();
 		} else if (player.powerTimer.hasExpired()) {
 			log("%s lost power", player.name);
 			gameModel.ghosts(FRIGHTENED).forEach(ghost -> ghost.state = HUNTING_PAC);
 			player.powerTimer.reset();
+			// start HUNTING state timer again
 			stateTimer().start();
 			fireGameEvent(new PacManLostPowerEvent(gameVariant, gameModel));
 		}
 
+		// Update ghosts
 		tryReleasingGhosts();
 		gameModel.ghosts(HUNTING_PAC).forEach(this::setGhostHuntingTarget);
-
-		int deadGhostsBeforeUpdate = (int) gameModel.ghosts(DEAD).count();
 		gameModel.ghosts().forEach(ghost -> ghost.update(gameModel.level));
-		int deadGhostsAfterUpdate = (int) gameModel.ghosts(DEAD).count();
-		if (deadGhostsBeforeUpdate != deadGhostsAfterUpdate) {
-			fireGameEvent(
-					new DeadGhostCountChangeEvent(gameVariant, gameModel, deadGhostsBeforeUpdate, deadGhostsAfterUpdate));
-		}
 
-		gameModel.bonus.update();
-		if (gameModel.bonus.edibleTicksLeft > 0 && player.meets(gameModel.bonus)) {
-			log("Pac-Man found bonus (%s) of value %d", gameModel.bonusNames[gameModel.bonus.symbol], gameModel.bonus.points);
-			gameModel.bonus.eatAndDisplayValue(2 * 60);
-			score(gameModel.bonus.points);
+		// Update bonus
+		final PacManBonus bonus = gameModel.bonus;
+		bonus.update();
+		if (bonus.edibleTicksLeft > 0 && player.meets(bonus)) {
+			log("Pac-Man found bonus (%s) of value %d", gameModel.bonusNames[bonus.symbol], bonus.points);
+			bonus.eatAndDisplayValue(2 * 60);
+			score(bonus.points);
 			fireGameEvent(new BonusEatenEvent(gameVariant, gameModel));
 		}
 	}
@@ -520,7 +522,8 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		}
 	}
 
-	private void onPlayerFoundFood(Pac player, V2i foodLocation) {
+	private void onPlayerFoundFood(Pac player) {
+		V2i foodLocation = player.tile();
 		gameModel.level.removeFood(foodLocation);
 		if (gameModel.level.world.isEnergizerTile(foodLocation)) {
 			player.starvingTicks = 0;
@@ -573,7 +576,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	// Ghosts
 
-	private int killGhost(Ghost ghost) {
+	private void killGhost(Ghost ghost) {
 		ghost.state = DEAD;
 		ghost.targetTile = gameModel.level.world.houseEntry();
 		ghost.bounty = gameModel.ghostBounty;
@@ -583,7 +586,6 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		}
 		gameModel.ghostBounty *= 2;
 		log("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name, ghost.tile(), ghost.bounty);
-		return 1;
 	}
 
 	private void killAllGhosts() {
