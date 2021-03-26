@@ -49,11 +49,11 @@ import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.Ghost;
+import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.mspacman.MsPacManGame;
+import de.amr.games.pacman.model.pacman.PacManBonus;
 import de.amr.games.pacman.model.pacman.PacManGame;
 import de.amr.games.pacman.ui.PacManGameUI;
-import de.amr.games.pacman.ui.animation.PacManGameAnimations2D;
-import de.amr.games.pacman.ui.animation.TimedSequence;
 
 /**
  * Controller (in the sense of MVC) for the Pac-Man and Ms. Pac-Man game.
@@ -313,6 +313,8 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	private void updateHuntingState() {
+		final Pac player = gameModel.player;
+
 		// Level completed?
 		if (gameModel.level.foodRemaining == 0) {
 			changeState(LEVEL_COMPLETE);
@@ -320,7 +322,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		}
 
 		// Player killing ghost(s)?
-		long numGhostsKilled = gameModel.ghosts(FRIGHTENED).filter(gameModel.player::meets).map(this::killGhost).count();
+		long numGhostsKilled = gameModel.ghosts(FRIGHTENED).filter(player::meets).map(this::killGhost).count();
 		if (numGhostsKilled > 0) {
 			changeState(GHOST_DYING);
 			return;
@@ -328,7 +330,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 		// Player getting killed by ghost?
 		if (!playerImmune || attractMode) {
-			Optional<Ghost> killer = gameModel.ghosts(HUNTING_PAC).filter(gameModel.player::meets).findAny();
+			Optional<Ghost> killer = gameModel.ghosts(HUNTING_PAC).filter(player::meets).findAny();
 			if (killer.isPresent()) {
 				killPlayer(killer.get());
 				changeState(PACMAN_DYING);
@@ -345,27 +347,26 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 		// Let player move
 		steerPlayer();
-		if (gameModel.player.restingTicksLeft > 0) {
-			gameModel.player.restingTicksLeft--;
+		if (player.restingTicksLeft > 0) {
+			player.restingTicksLeft--;
 		} else {
-			gameModel.player.speed = gameModel.player.powerTimer.isRunning() ? gameModel.level.pacSpeedPowered
-					: gameModel.level.pacSpeed;
-			gameModel.player.tryMoving();
+			player.speed = player.powerTimer.isRunning() ? gameModel.level.pacSpeedPowered : gameModel.level.pacSpeed;
+			player.tryMoving();
 		}
 
 		// Did player find food?
-		if (gameModel.level.containsFood(gameModel.player.tile())) {
-			onPlayerFoundFood(gameModel.player.tile());
+		if (gameModel.level.containsFood(player.tile())) {
+			onPlayerFoundFood(player, player.tile());
 		} else {
-			gameModel.player.starvingTicks++;
+			player.starvingTicks++;
 		}
 
-		if (gameModel.player.powerTimer.isRunning()) {
-			gameModel.player.powerTimer.tick();
-		} else if (gameModel.player.powerTimer.hasExpired()) {
-			log("%s lost power", gameModel.player.name);
+		if (player.powerTimer.isRunning()) {
+			player.powerTimer.tick();
+		} else if (player.powerTimer.hasExpired()) {
+			log("%s lost power", player.name);
 			gameModel.ghosts(FRIGHTENED).forEach(ghost -> ghost.state = HUNTING_PAC);
-			gameModel.player.powerTimer.reset();
+			player.powerTimer.reset();
 			stateTimer().start();
 			fireGameEvent(new PacManLostPowerEvent(gameVariant, gameModel));
 		}
@@ -382,7 +383,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		}
 
 		gameModel.bonus.update();
-		if (gameModel.bonus.edibleTicksLeft > 0 && gameModel.player.meets(gameModel.bonus)) {
+		if (gameModel.bonus.edibleTicksLeft > 0 && player.meets(gameModel.bonus)) {
 			log("Pac-Man found bonus (%s) of value %d", gameModel.bonusNames[gameModel.bonus.symbol], gameModel.bonus.points);
 			gameModel.bonus.eatAndDisplayValue(2 * 60);
 			score(gameModel.bonus.points);
@@ -513,32 +514,42 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		}
 	}
 
-	private void onPlayerFoundFood(V2i foodLocation) {
+	private void onPlayerFoundFood(Pac player, V2i foodLocation) {
 		gameModel.level.removeFood(foodLocation);
 		if (gameModel.level.world.isEnergizerTile(foodLocation)) {
-			gameModel.player.starvingTicks = 0;
-			gameModel.player.restingTicksLeft = 3;
+			player.starvingTicks = 0;
+			player.restingTicksLeft = 3;
 			gameModel.ghostBounty = 200;
 			score(50);
-			if (gameModel.level.ghostFrightenedSeconds > 0) {
-				// HUNTING state timer is stopped while player has power
+			int powerSeconds = gameModel.level.ghostFrightenedSeconds;
+			if (powerSeconds > 0) {
+				// stop HUNTING state timer while player has power
 				stateTimer().stop();
 				log("%s timer stopped", state);
-				startPlayerFrighteningGhosts(gameModel.level.ghostFrightenedSeconds);
+				gameModel.ghosts(HUNTING_PAC).forEach(ghost -> {
+					ghost.state = FRIGHTENED;
+					ghost.wishDir = ghost.dir.opposite();
+					ghost.forcedDirection = true;
+				});
+				player.powerTimer.resetSeconds(powerSeconds);
+				player.powerTimer.start();
+				log("%s got power for %d seconds", player.name, powerSeconds);
+				fireGameEvent(new PacManGainsPowerEvent(gameVariant, gameModel));
 			}
 		} else {
-			gameModel.player.starvingTicks = 0;
-			gameModel.player.restingTicksLeft = 1;
+			player.starvingTicks = 0;
+			player.restingTicksLeft = 1;
 			score(10);
 		}
 
 		// Bonus gets edible?
 		if (gameModel.level.eatenFoodCount() == 70 || gameModel.level.eatenFoodCount() == 170) {
-			gameModel.bonus.visible = true;
-			gameModel.bonus.symbol = gameModel.level.bonusSymbol;
-			gameModel.bonus.points = gameModel.bonusValues[gameModel.level.bonusSymbol];
-			gameModel.bonus.activate(isPlaying(PACMAN) ? (long) ((9 + new Random().nextFloat()) * 60) : Long.MAX_VALUE);
-			log("Bonus %s (value %d) activated", gameModel.bonusNames[gameModel.bonus.symbol], gameModel.bonus.points);
+			final PacManBonus bonus = gameModel.bonus;
+			bonus.visible = true;
+			bonus.symbol = gameModel.level.bonusSymbol;
+			bonus.points = gameModel.bonusValues[gameModel.level.bonusSymbol];
+			bonus.activate(isPlaying(PACMAN) ? (long) ((9 + new Random().nextFloat()) * 60) : Long.MAX_VALUE);
+			log("Bonus %s (value %d) activated", gameModel.bonusNames[bonus.symbol], bonus.points);
 		}
 
 		// Blinky becomes Elroy?
@@ -552,25 +563,6 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 		updateGhostDotCounters();
 		fireGameEvent(new PacManFoundFoodEvent(gameVariant, gameModel));
-	}
-
-	private void startPlayerFrighteningGhosts(int seconds) {
-		gameModel.ghosts(HUNTING_PAC).forEach(ghost -> {
-			ghost.state = FRIGHTENED;
-			ghost.wishDir = ghost.dir.opposite();
-			ghost.forcedDirection = true;
-
-			// TODO move into UI:
-			// if flashing, stop. Turn blue.
-			userInterface.animation().map(PacManGameAnimations2D::ghostAnimations).ifPresent(ga -> {
-				ga.ghostFlashing(ghost).reset();
-				ga.ghostFrightened(ghost).forEach(TimedSequence::restart);
-			});
-		});
-		gameModel.player.powerTimer.resetSeconds(seconds);
-		gameModel.player.powerTimer.start();
-		log("Pac-Man got power for %d seconds", seconds);
-		fireGameEvent(new PacManGainsPowerEvent(gameVariant, gameModel));
 	}
 
 	private void killPlayer(Ghost killer) {

@@ -116,6 +116,13 @@ public class PlayScene extends GameScene {
 
 		else if (gameEvent instanceof PacManGainsPowerEvent) {
 			sounds.loopForever(PacManGameSound.PACMAN_POWER);
+			gameEvent.gameModel.ghosts(GhostState.FRIGHTENED).forEach(ghost -> {
+				rendering.ghostAnimations().ghostFlashing(ghost).reset();
+				rendering.ghostAnimations().ghostFrightened(ghost).forEach(TimedSequence::restart);
+			});
+			gameEvent.gameModel.ghosts(GhostState.HUNTING_PAC).forEach(ghost -> {
+				rendering.ghostAnimations().ghostFrightened(ghost).forEach(TimedSequence::restart);
+			});
 		}
 
 		else if (gameEvent instanceof BonusEatenEvent) {

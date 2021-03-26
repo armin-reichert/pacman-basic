@@ -5,8 +5,7 @@ import java.util.Optional;
 import de.amr.games.pacman.ui.animation.PacManGameAnimations2D;
 
 /**
- * Interface through which the game controller accesses the views. This interface must be
- * implemented, the animation and sound interfaces are optional.
+ * Interface through which the game controller accesses the UI.
  * 
  * @author Armin Reichert
  */
