@@ -329,7 +329,16 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		if (!playerImmune || attractMode) {
 			Optional<Ghost> killer = gameModel.ghosts(HUNTING_PAC).filter(player::meets).findAny();
 			if (killer.isPresent()) {
-				killPlayer(killer.get());
+				log("%s got killed by %s at tile %s", player.name, killer.get().name, player.tile());
+				player.dead = true;
+				// Elroy mode gets disabled when player gets killed
+				if (gameModel.ghosts[BLINKY].elroy > 0) {
+					log("Disable Elroy mode %d for Blinky", gameModel.ghosts[BLINKY].elroy);
+					gameModel.ghosts[BLINKY].elroy -= 1; // negative value means "disabled"
+				}
+				gameModel.globalDotCounter = 0;
+				gameModel.globalDotCounterEnabled = true;
+				log("Global dot counter got reset and enabled");
 				changeState(PACMAN_DYING);
 				return;
 			}
@@ -560,19 +569,6 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 		updateGhostDotCounters();
 		fireGameEvent(new PacManFoundFoodEvent(gameVariant, gameModel));
-	}
-
-	private void killPlayer(Ghost killer) {
-		gameModel.player.dead = true;
-		// Elroy mode is disabled when player gets killed
-		if (gameModel.ghosts[BLINKY].elroy > 0) {
-			gameModel.ghosts[BLINKY].elroy -= 1; // negative value means "disabled"
-			log("Blinky Elroy mode %d has been disabled", -gameModel.ghosts[BLINKY].elroy);
-		}
-		gameModel.globalDotCounter = 0;
-		gameModel.globalDotCounterEnabled = true;
-		log("Global dot counter reset and enabled");
-		log("%s was killed by %s at tile %s", gameModel.player.name, killer.name, killer.tile());
 	}
 
 	// Ghosts
