@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
 
 import de.amr.games.pacman.lib.Logging;
 import de.amr.games.pacman.lib.V2i;
@@ -24,17 +23,13 @@ public class WorldMap {
 		throw new RuntimeException("Error parsing map: " + String.format(message, args));
 	}
 
-	private final Map<String, Integer> definitions = new HashMap<>();
+	private final Map<String, Object> assignments = new HashMap<>();
 	private String path;
 	private byte[][] data;
 
-	public int width;
-	public int height;
-
-	public int house_x_min;
-	public int house_x_max;
-	public int house_y_min;
-	public int house_y_max;
+	public V2i size;
+	public V2i house_top_left;
+	public V2i house_bottom_right;
 	public V2i house_entry;
 	public V2i house_seat_left;
 	public V2i house_seat_center;
@@ -67,8 +62,20 @@ public class WorldMap {
 		parse();
 	}
 
-	private void parse() {
+	public byte data(V2i tile) {
+		return data[tile.y][tile.x];
+	}
 
+	public byte data(int col, int row) {
+		return data[row][col];
+	}
+
+	public boolean isInsideGhostHouse(V2i tile) {
+		return tile.x >= house_top_left.x && tile.x <= house_bottom_right.x //
+				&& tile.y >= house_top_left.y && tile.y <= house_bottom_right.y;
+	}
+
+	private void parse() {
 		Logging.log("Parsing map %s", path);
 
 		List<String> dataLines = new ArrayList<>();
@@ -88,7 +95,7 @@ public class WorldMap {
 					}
 					String lhs = tokens[0].trim();
 					String rhs = tokens[1].trim();
-					definitions.put(lhs, parseIntVar(lhs, rhs));
+					assignments.put(lhs, parseRhs(rhs));
 				}
 
 				else {
@@ -97,24 +104,22 @@ public class WorldMap {
 
 			});
 
-			// assign variables from definitions found in map
-			width = assignInt("width", w -> w > 0, "Width must be greater than 0, but is %d");
-			height = assignInt("height", h -> h > 0, "Height must be greater than 0, but is %d");
-			if (dataLines.size() != height) {
-				parseError("Specified height %d is not consistent with number of data lines %d", height, dataLines.size());
-			}
-			house_x_min = assignInt("house_x_min", x -> x > 0, "House min_x must be in map range, but is %d");
-			house_x_max = assignInt("house_x_max", x -> x > 0, "House max_x must be in map range, but is %d");
-			house_y_min = assignInt("house_y_min", y -> y > 0, "House min_y must be in map range, but is %d");
-			house_y_max = assignInt("house_y_max", x -> x > 0, "House max_y must be in map range, but is %d");
-			house_entry = assignVec("house_entry_x", "house_entry_y");
-			house_seat_left = assignVec("house_seat_left_x", "house_seat_left_y");
-			house_seat_center = assignVec("house_seat_center_x", "house_seat_center_y");
-			house_seat_right = assignVec("house_seat_right_x", "house_seat_right_y");
+			// assign property values from definitions found in map:
 
-			data = new byte[height][width];
-			for (int row = 0; row < height; ++row) {
-				for (int col = 0; col < width; ++col) {
+			size = assignVec("size");
+			if (dataLines.size() != size.y) {
+				parseError("Specified map height %d does not match number of data lines %d", size.y, dataLines.size());
+			}
+			house_top_left = assignVec("house_top_left");
+			house_bottom_right = assignVec("house_bottom_right");
+			house_entry = assignVec("house_entry");
+			house_seat_left = assignVec("house_seat_left");
+			house_seat_center = assignVec("house_seat_center");
+			house_seat_right = assignVec("house_seat_right");
+
+			data = new byte[size.y][size.x];
+			for (int row = 0; row < size.y; ++row) {
+				for (int col = 0; col < size.x; ++col) {
 					char c = dataLines.get(row).charAt(col);
 					byte value = decode(c);
 					if (value == UNDEFINED) {
@@ -130,49 +135,51 @@ public class WorldMap {
 		}
 	}
 
-	private int parseIntVar(String varName, String text) {
+	private Object parseRhs(String rhs) {
+		rhs = rhs.trim();
+		if (rhs.startsWith("(")) {
+			return parseV2i(rhs);
+		} else {
+			return parseInt(rhs);
+		}
+	}
+
+	private V2i parseV2i(final String rhs) {
+		String s = rhs;
+		if (!s.endsWith(")")) {
+			parseError("Error parsing vector from %s", rhs);
+			return null;
+		}
+		s = s.substring(1, s.length() - 1); // chomp parentheses
+		String[] components = s.split(",");
+		if (components.length != 2) {
+			parseError("Error parsing vector from %s", rhs);
+			return null;
+		}
+		int x = parseInt(components[0]);
+		int y = parseInt(components[1]);
+		return new V2i(x, y);
+	}
+
+	private Integer parseInt(String rhs) {
 		try {
-			return Integer.parseInt(text);
+			return Integer.parseInt(rhs);
 		} catch (Exception x) {
-			parseError("Could not parse integer variable %s from text '%s'", varName, text);
-			return 0;
+			parseError("Could not parse integer variable from text '%s'", rhs);
+			return null;
 		}
 	}
 
-	private int assignInt(String varName, Predicate<Integer> validity, String errorMessage) {
-		if (!definitions.containsKey(varName)) {
-			parseError("Variable %s is not defined", varName);
-			return -1;
-		}
-		int value = definitions.get(varName);
-		if (validity.test(value)) {
-			return value;
-		}
-		parseError(errorMessage, value);
-		return -1;
-	}
-
-	private V2i assignVec(String x, String y) {
-		if (!definitions.containsKey(x)) {
-			parseError("x-component '%s' not defined", x);
+	private V2i assignVec(String varName) {
+		if (!assignments.containsKey(varName)) {
+			parseError("Variable '%s' is not defined", varName);
 			return V2i.NULL;
 		}
-		if (!definitions.containsKey(y)) {
-			parseError("y-component '%s' not defined", y);
+		if (!(assignments.get(varName) instanceof V2i)) {
+			parseError("Variable '%s' does not contain a vector", varName);
 			return V2i.NULL;
 		}
-		return new V2i(definitions.get(x), definitions.get(y));
+		return (V2i) assignments.get(varName);
 	}
 
-	public byte data(V2i tile) {
-		return data[tile.y][tile.x];
-	}
-
-	public byte data(int col, int row) {
-		return data[row][col];
-	}
-
-	public boolean isInsideGhostHouse(V2i tile) {
-		return tile.x >= house_x_min && tile.x <= house_x_max && tile.y >= house_y_min && tile.y <= house_y_max;
-	}
 }

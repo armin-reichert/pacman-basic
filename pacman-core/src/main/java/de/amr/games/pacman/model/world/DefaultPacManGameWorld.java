@@ -33,10 +33,10 @@ public class DefaultPacManGameWorld implements PacManGameWorld {
 		// find portal tiles
 		portalsLeft = new ArrayList<>(2);
 		portalsRight = new ArrayList<>(2);
-		for (int y = 0; y < map.height; ++y) {
-			if (map.data(0, y) == WorldMap.TUNNEL && map.data(map.width - 1, y) == WorldMap.TUNNEL) {
+		for (int y = 0; y < map.size.y; ++y) {
+			if (map.data(0, y) == WorldMap.TUNNEL && map.data(map.size.x - 1, y) == WorldMap.TUNNEL) {
 				portalsLeft.add(new V2i(-1, y));
-				portalsRight.add(new V2i(map.width, y));
+				portalsRight.add(new V2i(map.size.x, y));
 			}
 		}
 
@@ -61,12 +61,12 @@ public class DefaultPacManGameWorld implements PacManGameWorld {
 
 	@Override
 	public int numCols() {
-		return map.width;
+		return map.size.x;
 	}
 
 	@Override
 	public int numRows() {
-		return map.height;
+		return map.size.y;
 	}
 
 	@Override
