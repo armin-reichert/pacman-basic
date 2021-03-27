@@ -12,7 +12,6 @@ import static de.amr.games.pacman.model.common.Ghost.PINKY;
 import static de.amr.games.pacman.model.world.PacManGameWorld.HTS;
 import static de.amr.games.pacman.model.world.PacManGameWorld.t;
 
-import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Ghost;
@@ -67,7 +66,6 @@ public class PacManGame extends GameModel {
 
 		world = new DefaultPacManGameWorld();
 		world.setMap(WorldMap.from("/pacman/maps/map1.txt"));
-		world.setUpwardsBlocked(new V2i(12, 13), new V2i(15, 13), new V2i(12, 25), new V2i(15, 25));
 
 		bonusNames = new String[] { "CHERRIES", "STRAWBERRY", "PEACH", "APPLE", "GRAPES", "GALAXIAN", "BELL", "KEY" };
 		bonusValues = new int[] { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import de.amr.games.pacman.lib.Logging;
 import de.amr.games.pacman.lib.V2i;
@@ -46,11 +47,9 @@ public class WorldMap {
 	public V2i house_seat_left;
 	public V2i house_seat_center;
 	public V2i house_seat_right;
-	public V2i scatter_blinky;
-	public V2i scatter_pinky;
-	public V2i scatter_inky;
-	public V2i scatter_clyde;
+	public List<V2i> scatterTiles;
 	public V2i pacman_home;
+	public List<V2i> upwardsBlockedTiles;
 
 	private byte decode(char c) {
 		switch (c) {
@@ -113,20 +112,22 @@ public class WorldMap {
 
 			// assign property values from definitions found in map:
 
-			size = getVector("size");
-			house_top_left = getVector("house_top_left");
-			house_bottom_right = getVector("house_bottom_right");
-			house_entry = getVector("house_entry");
-			house_seat_left = getVector("house_seat_left");
-			house_seat_center = getVector("house_seat_center");
-			house_seat_right = getVector("house_seat_right");
+			size = getV2i("size");
 
-			scatter_blinky = getVector("scatter_blinky");
-			scatter_pinky = getVector("scatter_pinky");
-			scatter_inky = getVector("scatter_inky");
-			scatter_clyde = getVector("scatter_clyde");
+			house_top_left = getV2i("house_top_left");
+			house_bottom_right = getV2i("house_bottom_right");
+			house_entry = getV2i("house_entry");
+			house_seat_left = getV2i("house_seat_left");
+			house_seat_center = getV2i("house_seat_center");
+			house_seat_right = getV2i("house_seat_right");
 
-			pacman_home = getVector("pacman_home");
+			pacman_home = getV2i("pacman_home");
+
+			scatterTiles = assignments.keySet().stream().filter(key -> key.startsWith("scatter.")).sorted().map(this::getV2i)
+					.collect(Collectors.toList());
+
+			upwardsBlockedTiles = assignments.keySet().stream().filter(key -> key.startsWith("upwards_blocked."))
+					.map(this::getV2i).collect(Collectors.toList());
 
 			if (dataLines.size() != size.y) {
 				parseError("Specified map height %d does not match number of data lines %d", size.y, dataLines.size());
@@ -184,7 +185,7 @@ public class WorldMap {
 		}
 	}
 
-	private V2i getVector(String varName) {
+	private V2i getV2i(String varName) {
 		if (!assignments.containsKey(varName)) {
 			parseError("Variable '%s' is not defined", varName);
 			return V2i.NULL;

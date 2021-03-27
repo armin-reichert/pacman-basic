@@ -128,14 +128,6 @@ public interface PacManGameWorld {
 	boolean isPortal(V2i tile);
 
 	/**
-	 * Marks tiles as being accessible only from above.
-	 * 
-	 * @param tiles upwards blocked tiles
-	 */
-	default void setUpwardsBlocked(V2i... tiles) {
-	}
-
-	/**
 	 * @param tile a tile
 	 * @return tells if the tile can only be access from above
 	 */

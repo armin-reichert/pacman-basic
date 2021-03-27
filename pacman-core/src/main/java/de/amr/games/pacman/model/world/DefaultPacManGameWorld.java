@@ -1,9 +1,7 @@
 package de.amr.games.pacman.model.world;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.BitSet;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -22,13 +20,10 @@ public class DefaultPacManGameWorld implements PacManGameWorld {
 	protected List<V2i> portalsLeft;
 	protected List<V2i> portalsRight;
 	protected BitSet intersections;
-	protected List<V2i> upwardsBlockedTiles;
 	protected List<V2i> energizerTiles;
 
 	public void setMap(WorldMap worldMap) {
 		map = worldMap;
-
-		upwardsBlockedTiles = Collections.emptyList();
 
 		// find portal tiles
 		portalsLeft = new ArrayList<>(2);
@@ -82,8 +77,7 @@ public class DefaultPacManGameWorld implements PacManGameWorld {
 
 	@Override
 	public V2i ghostScatterTile(int ghostID) {
-		return ghostID == 0 ? map.scatter_blinky
-				: ghostID == 1 ? map.scatter_pinky : ghostID == 2 ? map.scatter_inky : map.scatter_clyde;
+		return map.scatterTiles.get(ghostID);
 	}
 
 	@Override
@@ -102,13 +96,8 @@ public class DefaultPacManGameWorld implements PacManGameWorld {
 	}
 
 	@Override
-	public void setUpwardsBlocked(V2i... tiles) {
-		upwardsBlockedTiles = Arrays.asList(tiles);
-	}
-
-	@Override
 	public boolean isUpwardsBlocked(V2i tile) {
-		return upwardsBlockedTiles.contains(tile);
+		return map.upwardsBlockedTiles.contains(tile);
 	}
 
 	@Override
