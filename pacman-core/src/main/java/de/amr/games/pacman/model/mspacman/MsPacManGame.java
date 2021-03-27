@@ -147,7 +147,7 @@ public class MsPacManGame extends GameModel {
 
 	@Override
 	public long getHuntingPhaseDuration(int phase) {
-		int row = levelNumber == 1 ? 0 : levelNumber <= 4 ? 1 : 2;
+		int row = currentLevelNumber == 1 ? 0 : currentLevelNumber <= 4 ? 1 : 2;
 		return huntingTicks(HUNTING_PHASE_DURATION[row][phase]);
 	}
 

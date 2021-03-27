@@ -383,8 +383,8 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	private void enterLevelStartingState() {
 		stateTimer().reset();
-		log("Level %d complete, entering level %d", gameModel.levelNumber, gameModel.levelNumber + 1);
-		gameModel.enterLevel(gameModel.levelNumber + 1);
+		log("Level %d complete, entering level %d", gameModel.currentLevelNumber, gameModel.currentLevelNumber + 1);
+		gameModel.enterLevel(gameModel.currentLevelNumber + 1);
 		gameModel.levelSymbols.add(gameModel.level.bonusSymbol);
 	}
 
@@ -405,7 +405,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			if (attractMode) {
 				changeState(INTRO);
 			} else {
-				gameModel.intermissionNumber = INTERMISSION_NUMBER_BY_LEVEL.getOrDefault(gameModel.levelNumber, 0);
+				gameModel.intermissionNumber = INTERMISSION_NUMBER_BY_LEVEL.getOrDefault(gameModel.currentLevelNumber, 0);
 				changeState(gameModel.intermissionNumber != 0 ? INTERMISSION : LEVEL_STARTING);
 			}
 		}
@@ -446,7 +446,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		gameModel.score += points;
 		if (gameModel.score > gameModel.highscorePoints) {
 			gameModel.highscorePoints = gameModel.score;
-			gameModel.highscoreLevel = gameModel.levelNumber;
+			gameModel.highscoreLevel = gameModel.currentLevelNumber;
 		}
 		if (oldscore < 10000 && gameModel.score >= 10000) {
 			gameModel.lives++;
@@ -618,10 +618,10 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 				releaseGhost(ghost, "Global dot counter (%d) reached limit (%d)", gameModel.globalDotCounter,
 						ghostGlobalDotLimit(ghost.id));
 			} else if (!gameModel.globalDotCounterEnabled
-					&& ghost.dotCounter >= ghostPrivateDotLimit(ghost.id, gameModel.levelNumber)) {
+					&& ghost.dotCounter >= ghostPrivateDotLimit(ghost.id, gameModel.currentLevelNumber)) {
 				releaseGhost(ghost, "%s's dot counter (%d) reached limit (%d)", ghost.name, ghost.dotCounter,
-						ghostPrivateDotLimit(ghost.id, gameModel.levelNumber));
-			} else if (gameModel.player.starvingTicks >= playerStarvingTimeLimit(gameModel.levelNumber)) {
+						ghostPrivateDotLimit(ghost.id, gameModel.currentLevelNumber));
+			} else if (gameModel.player.starvingTicks >= playerStarvingTimeLimit(gameModel.currentLevelNumber)) {
 				releaseGhost(ghost, "%s has been starving for %d ticks", gameModel.player.name, gameModel.player.starvingTicks);
 				gameModel.player.starvingTicks = 0;
 			}

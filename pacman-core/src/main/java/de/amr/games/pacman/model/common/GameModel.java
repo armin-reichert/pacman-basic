@@ -19,7 +19,7 @@ import de.amr.games.pacman.model.pacman.PacManBonus;
  */
 public abstract class GameModel {
 
-	public int levelNumber; // counting from 1
+	public int currentLevelNumber; // counting from 1
 	public GameLevel level;
 	public int intermissionNumber;
 	public Pac player;
@@ -54,7 +54,7 @@ public abstract class GameModel {
 	 * @param levelNumber 1-based game level number
 	 * @return 1-based maze number of the maze used in that level
 	 */
-	public abstract int mazeNumber(int number);
+	public abstract int mazeNumber(int levelNumber);
 
 	/**
 	 * @param mazeNumber 1-based number of a maze
@@ -62,9 +62,9 @@ public abstract class GameModel {
 	 */
 	public abstract int mapNumber(int mazeNumber);
 
-	public void enterLevel(int number) {
-		levelNumber = number;
-		buildLevel(number);
+	public void enterLevel(int levelNumber) {
+		currentLevelNumber = levelNumber;
+		buildLevel(currentLevelNumber);
 		ghostBounty = 200;
 		huntingPhase = 0;
 		bonus.edibleTicksLeft = 0;

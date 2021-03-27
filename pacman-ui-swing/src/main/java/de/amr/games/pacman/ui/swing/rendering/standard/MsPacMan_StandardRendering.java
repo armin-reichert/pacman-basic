@@ -229,7 +229,7 @@ public class MsPacMan_StandardRendering extends StandardRendering
 	public void drawLevelCounter(Graphics2D g, GameModel game, int rightX, int y) {
 		Graphics2D g2 = smoothGC(g);
 		int x = rightX;
-		for (int levelNumber = 1; levelNumber <= Math.min(game.levelNumber, 7); ++levelNumber) {
+		for (int levelNumber = 1; levelNumber <= Math.min(game.currentLevelNumber, 7); ++levelNumber) {
 			byte symbol = game.levelSymbols.get(levelNumber - 1);
 			g2.drawImage(assets.symbolSprites[symbol], x, y, null);
 			x -= t(2);
