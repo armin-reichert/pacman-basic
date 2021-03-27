@@ -3,33 +3,29 @@ package de.amr.games.pacman.ui.swing.app;
 import static java.awt.EventQueue.invokeLater;
 
 import de.amr.games.pacman.controller.PacManGameController;
-import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.ui.swing.PacManGameUI_Swing;
 
 /**
- * The Pac-Man game Swing application variant. Runs the game loop in its own thread.
+ * The Pac-Man application.
+ * 
+ * Command-line arguments:
+ * <ul>
+ * <li><code>-height</code> &lt;pixels&gt;: Height of UI in pixels (default: 576)</li>
+ * <li><code>-pacman</code>: Starts the game in Pac-Man mode</li>
+ * <li><code>-mspacman</code>: Starts game in Ms. Pac-Man mode</li>
+ * </ul>
  * 
  * @author Armin Reichert
  */
-public class PacManGameAppSwing {
+public class PacManGameAppSwing extends PacManGameController {
 
-	/**
-	 * Starts the Pac-Man game application.
-	 * 
-	 * @param args command-line arguments
-	 *             <ul>
-	 *             <li><code>-height</code> <em>value</em>: height of UI, default is 600</li>
-	 *             <li><code>-pacman</code>: start in Pac-Man mode</li>
-	 *             <li><code>-mspacman</code>: start in Ms. Pac-Man mode</li>
-	 *             </ul>
-	 */
 	public static void main(String[] args) {
 		Options options = new Options(args);
+		PacManGameAppSwing app = new PacManGameAppSwing();
+		app.play(options.gameVariant);
 		invokeLater(() -> {
-			PacManGameController controller = new PacManGameController(
-					options.pacman ? GameVariant.PACMAN : GameVariant.MS_PACMAN);
-			GameLoop gameLoop = new GameLoop(controller);
-			controller.userInterface = new PacManGameUI_Swing(gameLoop, controller, options.height);
+			GameLoop gameLoop = new GameLoop(app);
+			app.userInterface = new PacManGameUI_Swing(gameLoop, app, options.height);
 			gameLoop.start();
 		});
 	}

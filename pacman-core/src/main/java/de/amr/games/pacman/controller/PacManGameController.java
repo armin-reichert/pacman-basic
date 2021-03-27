@@ -125,7 +125,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		gameEventListeners.forEach(listener -> listener.accept(gameEvent));
 	}
 
-	public PacManGameController(GameVariant variant) {
+	public PacManGameController() {
 		super(new EnumMap<>(PacManGameState.class), PacManGameState.values());
 		configure(INTRO, this::enterIntroState, this::updateIntroState, null);
 		configure(READY, this::enterReadyState, this::updateReadyState, null);
@@ -136,7 +136,6 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		configure(LEVEL_COMPLETE, this::enterLevelCompleteState, this::updateLevelCompleteState, null);
 		configure(INTERMISSION, this::enterIntermissionState, this::updateIntermissionState, null);
 		configure(GAME_OVER, this::enterGameOverState, this::updateGameOverState, null);
-		play(variant);
 	}
 
 	public void step() {
