@@ -1,11 +1,16 @@
-! Ms. Pac-Man Map 1
-: size = (28,36)
-: house_top_left = (10,17)
+! Ms. Pac-Man Map #1
+: size               = (28,36)
+: house_top_left     = (10,17)
 : house_bottom_right = (15,22)
-: house_entry = (13,14)
-: house_seat_left = (11,17)
-: house_seat_center = (13,17)
-: house_seat_right = (15,17)
+: house_entry        = (13,14)
+: house_seat_left    = (11,17)
+: house_seat_center  = (13,17)
+: house_seat_right   = (15,17)
+: scatter_pinky      = ( 2, 0)
+: scatter_blinky     = (25, 0)
+: scatter_clyde      = ( 0,34)
+: scatter_inky       = (27,34)
+: pacman_home        = (13,26)
 ############################
 ############################
 ############################

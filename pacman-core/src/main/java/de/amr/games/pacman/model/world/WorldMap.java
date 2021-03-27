@@ -34,9 +34,11 @@ public class WorldMap {
 	public V2i house_seat_left;
 	public V2i house_seat_center;
 	public V2i house_seat_right;
-
-	public V2i pacHome = new V2i(13, 26);
-	public V2i[] ghostScatterTargets = { new V2i(25, 0), new V2i(2, 0), new V2i(27, 35), new V2i(27, 35) };
+	public V2i scatter_blinky;
+	public V2i scatter_pinky;
+	public V2i scatter_inky;
+	public V2i scatter_clyde;
+	public V2i pacman_home;
 
 	private byte decode(char c) {
 		switch (c) {
@@ -106,17 +108,24 @@ public class WorldMap {
 
 			// assign property values from definitions found in map:
 
-			size = assignVec("size");
+			size = getVector("size");
+			house_top_left = getVector("house_top_left");
+			house_bottom_right = getVector("house_bottom_right");
+			house_entry = getVector("house_entry");
+			house_seat_left = getVector("house_seat_left");
+			house_seat_center = getVector("house_seat_center");
+			house_seat_right = getVector("house_seat_right");
+
+			scatter_blinky = getVector("scatter_blinky");
+			scatter_pinky = getVector("scatter_pinky");
+			scatter_inky = getVector("scatter_inky");
+			scatter_clyde = getVector("scatter_clyde");
+
+			pacman_home = getVector("pacman_home");
+
 			if (dataLines.size() != size.y) {
 				parseError("Specified map height %d does not match number of data lines %d", size.y, dataLines.size());
 			}
-			house_top_left = assignVec("house_top_left");
-			house_bottom_right = assignVec("house_bottom_right");
-			house_entry = assignVec("house_entry");
-			house_seat_left = assignVec("house_seat_left");
-			house_seat_center = assignVec("house_seat_center");
-			house_seat_right = assignVec("house_seat_right");
-
 			data = new byte[size.y][size.x];
 			for (int row = 0; row < size.y; ++row) {
 				for (int col = 0; col < size.x; ++col) {
@@ -138,13 +147,13 @@ public class WorldMap {
 	private Object parseRhs(String rhs) {
 		rhs = rhs.trim();
 		if (rhs.startsWith("(")) {
-			return parseV2i(rhs);
+			return parseVector(rhs);
 		} else {
 			return parseInt(rhs);
 		}
 	}
 
-	private V2i parseV2i(final String rhs) {
+	private V2i parseVector(final String rhs) {
 		String s = rhs;
 		if (!s.endsWith(")")) {
 			parseError("Error parsing vector from %s", rhs);
@@ -156,8 +165,8 @@ public class WorldMap {
 			parseError("Error parsing vector from %s", rhs);
 			return null;
 		}
-		int x = parseInt(components[0]);
-		int y = parseInt(components[1]);
+		int x = parseInt(components[0].trim());
+		int y = parseInt(components[1].trim());
 		return new V2i(x, y);
 	}
 
@@ -170,7 +179,7 @@ public class WorldMap {
 		}
 	}
 
-	private V2i assignVec(String varName) {
+	private V2i getVector(String varName) {
 		if (!assignments.containsKey(varName)) {
 			parseError("Variable '%s' is not defined", varName);
 			return V2i.NULL;
@@ -181,5 +190,4 @@ public class WorldMap {
 		}
 		return (V2i) assignments.get(varName);
 	}
-
 }

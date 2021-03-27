@@ -71,7 +71,7 @@ public class DefaultPacManGameWorld implements PacManGameWorld {
 
 	@Override
 	public V2i pacHome() {
-		return map.pacHome;
+		return map.pacman_home;
 	}
 
 	@Override
@@ -82,7 +82,8 @@ public class DefaultPacManGameWorld implements PacManGameWorld {
 
 	@Override
 	public V2i ghostScatterTile(int ghostID) {
-		return map.ghostScatterTargets[ghostID];
+		return ghostID == 0 ? map.scatter_blinky
+				: ghostID == 1 ? map.scatter_pinky : ghostID == 2 ? map.scatter_inky : map.scatter_clyde;
 	}
 
 	@Override
