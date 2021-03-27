@@ -2,36 +2,61 @@ package de.amr.games.pacman.lib;
 
 import static de.amr.games.pacman.lib.Logging.log;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.stream.Stream;
 
 /**
- * Finite-state machine.
+ * Finite-state machine, a graph of vertices (states) connected by transitions. Transitions are not
+ * defined explicitly but implicitly defined by calls of the {@link #changeState(Enum)} method.
+ * <p>
+ * Each transition triggers firing of a state change event.
  * 
  * @author Armin Reichert
+ * 
+ * @param <S> Type (enum) for identifying the states
  */
 public class FiniteStateMachine<S extends Enum<S>> {
+
+	@SuppressWarnings({ "unchecked" })
+	private static <STATE_KEY extends Enum<STATE_KEY>> Map<STATE_KEY, Vertex> createStateMap(Class<STATE_KEY> keyClass,
+			STATE_KEY[] stateKeys) {
+		try {
+			EnumMap<STATE_KEY, Vertex> enumMap = EnumMap.class.getDeclaredConstructor(Class.class).newInstance(keyClass);
+			return enumMap;
+		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+				| NoSuchMethodException | SecurityException x) {
+			throw new RuntimeException(x);
+		}
+	}
+
+	private static class Vertex {
+
+		public final TickTimer timer = new TickTimer();
+		public Runnable onEnter, onUpdate, onExit;
+	}
 
 	public static boolean logging = true;
 
 	public S previousState;
 	public S state;
 
-	private final EnumMap<S, StateRepresentation> stateMap;
+	private final Map<S, Vertex> stateMap;
 	private final List<BiConsumer<S, S>> changeListeners = new ArrayList<>();
 
-	public FiniteStateMachine(EnumMap<S, StateRepresentation> stateMap, S[] stateIdentifiers) {
-		this.stateMap = stateMap;
-		Stream.of(stateIdentifiers).forEach(id -> stateMap.put(id, new StateRepresentation(id)));
+	public FiniteStateMachine(Class<S> enumClass, S[] stateIdentifiers) {
+		stateMap = createStateMap(enumClass, stateIdentifiers);
+		Stream.of(stateIdentifiers).forEach(id -> stateMap.put(id, new Vertex()));
 	}
 
 	public void configure(S gameState, Runnable onEnter, Runnable onUpdate, Runnable onExit) {
-		stateObject(gameState).onEnter = onEnter;
-		stateObject(gameState).onUpdate = onUpdate;
-		stateObject(gameState).onExit = onExit;
+		vertex(gameState).onEnter = onEnter;
+		vertex(gameState).onUpdate = onUpdate;
+		vertex(gameState).onExit = onExit;
 	}
 
 	public void addStateChangeListener(BiConsumer<S, S> listener) {
@@ -48,8 +73,8 @@ public class FiniteStateMachine<S extends Enum<S>> {
 			if (logging) {
 				log("Exit game state %s", state);
 			}
-			if (stateObject(state).onExit != null) {
-				stateObject(state).onExit.run();
+			if (vertex(state).onExit != null) {
+				vertex(state).onExit.run();
 			}
 		}
 		previousState = state;
@@ -57,20 +82,20 @@ public class FiniteStateMachine<S extends Enum<S>> {
 		if (logging) {
 			log("Enter game state %s", state);
 		}
-		stateObject(state).timer.reset();
-		stateObject(state).timer.start();
-		if (stateObject(state).onEnter != null) {
-			stateObject(state).onEnter.run();
+		vertex(state).timer.reset();
+		vertex(state).timer.start();
+		if (vertex(state).onEnter != null) {
+			vertex(state).onEnter.run();
 		}
 		fireStateChange(previousState, state);
 		return newState;
 	}
 
 	public TickTimer stateTimer() {
-		return stateObject(state).timer;
+		return vertex(state).timer;
 	}
 
-	private StateRepresentation stateObject(S id) {
+	private Vertex vertex(S id) {
 		return stateMap.get(id);
 	}
 
@@ -80,10 +105,10 @@ public class FiniteStateMachine<S extends Enum<S>> {
 
 	public void updateState() {
 		try {
-			if (stateObject(state).onUpdate != null) {
-				stateObject(state).onUpdate.run();
+			if (vertex(state).onUpdate != null) {
+				vertex(state).onUpdate.run();
 			}
-			TickTimer stateTimer = stateObject(state).timer;
+			TickTimer stateTimer = vertex(state).timer;
 			if (!stateTimer.isRunning() && !stateTimer.hasExpired()) { // TODO check this
 				stateTimer.start();
 			}

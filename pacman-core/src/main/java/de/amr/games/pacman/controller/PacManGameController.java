@@ -24,7 +24,6 @@ import static de.amr.games.pacman.model.common.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.model.common.GhostState.LOCKED;
 
 import java.util.ArrayList;
-import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -119,7 +118,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	public PacManGameController() {
-		super(new EnumMap<>(PacManGameState.class), PacManGameState.values());
+		super(PacManGameState.class, PacManGameState.values());
 		configure(INTRO, this::enterIntroState, this::updateIntroState, null);
 		configure(READY, this::enterReadyState, this::updateReadyState, null);
 		configure(HUNTING, this::enterHuntingState, this::updateHuntingState, null);
