@@ -174,12 +174,12 @@ public class WorldMap {
 		return new V2i(x, y);
 	}
 
-	private Integer parseInt(String rhs) {
+	private int parseInt(String rhs) {
 		try {
 			return Integer.parseInt(rhs);
 		} catch (Exception x) {
 			error("Could not parse integer variable from text '%s'", rhs);
-			return null;
+			return 0;
 		}
 	}
 }

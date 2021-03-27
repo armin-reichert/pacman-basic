@@ -22,10 +22,10 @@ val scatter.0          = (25, 0)
 val scatter.1          = ( 2, 0)
 val scatter.2          = (27,34)
 val scatter.3          = ( 0,34)
-val upwards_blocked.0  = (12, 13)
-val upwards_blocked.1  = (15, 13)
-val upwards_blocked.2  = (12, 25)
-val upwards_blocked.3  = (15, 25)
+val upwards_blocked.0  = (12,13)
+val upwards_blocked.1  = (15,13)
+val upwards_blocked.2  = (12,25)
+val upwards_blocked.3  = (15,25)
 !
 ! Data:
 ############################
