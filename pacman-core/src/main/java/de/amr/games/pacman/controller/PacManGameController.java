@@ -79,13 +79,6 @@ import de.amr.games.pacman.ui.PacManGameUI;
  */
 public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
-	private static final String KEY_TOGGLE_AUTOPILOT = "A";
-	private static final String KEY_EAT_ALL_NORMAL_PELLETS = "E";
-	private static final String KEY_TOGGLE_IMMUNITY = "I";
-	private static final String KEY_ADD_LIVE = "L";
-	private static final String KEY_NEXT_LEVEL = "N";
-	private static final String KEY_QUIT = "Q";
-	private static final String KEY_EXTERMINATE_GHOSTS = "X";
 	private static final String KEY_START_PLAYING = "Space";
 	private static final String KEY_PLAYER_UP = "Up";
 	private static final String KEY_PLAYER_DOWN = "Down";
@@ -139,7 +132,6 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	public void step() {
-		handleKeys();
 		if (gameRunning) {
 			steerPlayer();
 		}
@@ -184,52 +176,15 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		this.playerImmune = playerImmune;
 	}
 
-	private void handleKeys() {
-		boolean intro = state == INTRO, ready = state == READY, hunting = state == HUNTING;
+	public void killGhosts() {
+		gameModel.ghostBounty = 200;
+		gameModel.ghosts().filter(ghost -> ghost.is(HUNTING_PAC) || ghost.is(FRIGHTENED)).forEach(this::killGhost);
+		changeState(GHOST_DYING);
+	}
 
-		if (userInterface.keyPressed(KEY_QUIT) && !intro) {
-			userInterface.reset();
-			changeState(PacManGameState.INTRO);
-			return;
-		}
-
-		if (!isGameRunning()) {
-			return;
-		}
-
-		// toggle autopilot
-		if (userInterface.keyPressed(KEY_TOGGLE_AUTOPILOT)) {
-			autopilot.enabled = !autopilot.enabled;
-		}
-
-		// eat all food except the energizers
-		else if (userInterface.keyPressed(KEY_EAT_ALL_NORMAL_PELLETS) && hunting) {
-			gameModel.level.world.tiles().filter(gameModel.level::containsFood)
-					.filter(tile -> !gameModel.level.world.isEnergizerTile(tile)).forEach(gameModel.level::removeFood);
-		}
-
-		// toggle player's immunity against ghost bites
-		else if (userInterface.keyPressed(KEY_TOGGLE_IMMUNITY)) {
-			playerImmune = !playerImmune;
-			userInterface.showFlashMessage("Player immunity " + (playerImmune ? "ON" : "OFF"));
-		}
-
-		// add live
-		else if (userInterface.keyPressed(KEY_ADD_LIVE)) {
-			gameModel.lives++;
-		}
-
-		// change to next level
-		else if (userInterface.keyPressed(KEY_NEXT_LEVEL) && (ready || hunting)) {
-			changeState(LEVEL_COMPLETE);
-		}
-
-		// exterminate all ghosts outside of ghost house
-		else if (userInterface.keyPressed(KEY_EXTERMINATE_GHOSTS) && hunting) {
-			gameModel.ghostBounty = 200;
-			gameModel.ghosts().filter(ghost -> ghost.is(HUNTING_PAC) || ghost.is(FRIGHTENED)).forEach(this::killGhost);
-			changeState(GHOST_DYING);
-		}
+	public void eatAllPellets() {
+		gameModel.level.world.tiles().filter(gameModel.level::containsFood)
+				.filter(tile -> !gameModel.level.world.isEnergizerTile(tile)).forEach(gameModel.level::removeFood);
 	}
 
 	private void enterIntroState() {

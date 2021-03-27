@@ -119,7 +119,7 @@ public class PacManGameUI_Swing implements PacManGameUI {
 
 			@Override
 			public void keyPressed(KeyEvent e) {
-				handleGlobalKeys(e);
+				handleKey(e);
 			}
 		});
 		window.addWindowListener(new WindowAdapter() {
@@ -262,18 +262,28 @@ public class PacManGameUI_Swing implements PacManGameUI {
 		return Optional.of(RENDERING.get(currentGame()));
 	}
 
-	private void handleGlobalKeys(KeyEvent e) {
+	private void handleKey(KeyEvent e) {
 		switch (e.getKeyCode()) {
-		case KeyEvent.VK_V:
-			gameController.toggleGameVariant();
+
+		case KeyEvent.VK_A:
+			gameController.autopilot.enabled = !gameController.autopilot.enabled;
+			showFlashMessage(gameController.autopilot.enabled ? "Autopilot ON" : "Autopilot OFF");
 			break;
-		case KeyEvent.VK_S: {
-			gameLoop.clock.setTargetFPS(gameLoop.clock.getTargetFPS() != 30 ? 30 : 60);
-			String text = gameLoop.clock.getTargetFPS() == 60 ? "Normal speed" : "Slow speed";
-			showFlashMessage(text);
-			log("Clock frequency changed to %d Hz", gameLoop.clock.getTargetFPS());
+
+		case KeyEvent.VK_D:
+			Debug.on = !Debug.on;
+			log("UI debug mode is %s", Debug.on ? "on" : "off");
 			break;
-		}
+
+		case KeyEvent.VK_E:
+			gameController.eatAllPellets();
+			break;
+
+		case KeyEvent.VK_I:
+			gameController.setPlayerImmune(!gameController.isPlayerImmune());
+			showFlashMessage(gameController.isPlayerImmune() ? "Player IMMUNE" : "Player VULNERABLE");
+			break;
+
 		case KeyEvent.VK_F: {
 			gameLoop.clock.setTargetFPS(gameLoop.clock.getTargetFPS() != 120 ? 120 : 60);
 			String text = gameLoop.clock.getTargetFPS() == 60 ? "Normal speed" : "Fast speed";
@@ -281,10 +291,38 @@ public class PacManGameUI_Swing implements PacManGameUI {
 			log("Clock frequency changed to %d Hz", gameLoop.clock.getTargetFPS());
 			break;
 		}
-		case KeyEvent.VK_D:
-			Debug.on = !Debug.on;
-			log("UI debug mode is %s", Debug.on ? "on" : "off");
+
+		case KeyEvent.VK_L:
+			gameController.game().lives++;
 			break;
+
+		case KeyEvent.VK_N:
+			if (gameController.isGameRunning()) {
+				gameController.changeState(PacManGameState.LEVEL_COMPLETE);
+			}
+			break;
+
+		case KeyEvent.VK_Q:
+			reset();
+			gameController.changeState(PacManGameState.INTRO);
+			break;
+
+		case KeyEvent.VK_S: {
+			gameLoop.clock.setTargetFPS(gameLoop.clock.getTargetFPS() != 30 ? 30 : 60);
+			String text = gameLoop.clock.getTargetFPS() == 60 ? "Normal speed" : "Slow speed";
+			showFlashMessage(text);
+			log("Clock frequency changed to %d Hz", gameLoop.clock.getTargetFPS());
+			break;
+		}
+
+		case KeyEvent.VK_V:
+			gameController.toggleGameVariant();
+			break;
+
+		case KeyEvent.VK_X:
+			gameController.killGhosts();
+			break;
+
 		case KeyEvent.VK_1:
 			if (gameController.state == PacManGameState.INTRO) {
 				showFlashMessage("Test Intermission #1");
@@ -292,6 +330,7 @@ public class PacManGameUI_Swing implements PacManGameUI {
 				gameController.changeState(INTERMISSION);
 			}
 			break;
+
 		case KeyEvent.VK_2:
 			if (gameController.state == PacManGameState.INTRO) {
 				showFlashMessage("Test Intermission #2");
@@ -299,6 +338,7 @@ public class PacManGameUI_Swing implements PacManGameUI {
 				gameController.changeState(INTERMISSION);
 			}
 			break;
+
 		case KeyEvent.VK_3:
 			if (gameController.state == PacManGameState.INTRO) {
 				showFlashMessage("Test Intermission #3");
@@ -306,6 +346,7 @@ public class PacManGameUI_Swing implements PacManGameUI {
 				gameController.changeState(INTERMISSION);
 			}
 			break;
+
 		default:
 			break;
 		}
