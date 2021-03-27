@@ -1,4 +1,14 @@
 ! Ms. Pac-Man Map #1
+!
+! Map symbols:
+! ' ' = empty
+! '#' = wall
+! '.' = pill
+! '*' = energizer
+! 'T' = tunnel
+! '-' = door
+!
+! Declarations:
 : size               = (28,36)
 : house_top_left     = (10,17)
 : house_bottom_right = (15,22)
@@ -11,6 +21,8 @@
 : scatter_clyde      = ( 0,34)
 : scatter_inky       = (27,34)
 : pacman_home        = (13,26)
+!
+! Data:
 ############################
 ############################
 ############################
