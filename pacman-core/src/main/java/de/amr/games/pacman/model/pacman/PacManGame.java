@@ -10,7 +10,7 @@ import static de.amr.games.pacman.model.common.Ghost.CLYDE;
 import static de.amr.games.pacman.model.common.Ghost.INKY;
 import static de.amr.games.pacman.model.common.Ghost.PINKY;
 import static de.amr.games.pacman.model.world.PacManGameWorld.HTS;
-import static de.amr.games.pacman.model.world.PacManGameWorld.t;
+import static de.amr.games.pacman.model.world.PacManGameWorld.TS;
 
 import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
@@ -60,6 +60,11 @@ public class PacManGame extends GameModel {
 		//@formatter:on
 	};
 
+	public static final String[] BONUS_NAMES = { "CHERRIES", "STRAWBERRY", "PEACH", "APPLE", "GRAPES", "GALAXIAN", "BELL",
+			"KEY" };
+
+	public static final int[] BONUS_VALUES = { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
+
 	private final DefaultPacManGameWorld world;
 
 	public PacManGame() {
@@ -67,10 +72,10 @@ public class PacManGame extends GameModel {
 		world = new DefaultPacManGameWorld();
 		world.setMap(WorldMap.from("/pacman/maps/map1.txt"));
 
-		bonusNames = new String[] { "CHERRIES", "STRAWBERRY", "PEACH", "APPLE", "GRAPES", "GALAXIAN", "BELL", "KEY" };
-		bonusValues = new int[] { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
 		bonus = new PacManBonus();
-		bonus.setPosition(t(13) + HTS, t(20));
+		bonus.setPosition(world.bonusHomeTile().x * TS + HTS, world.bonusHomeTile().y * TS);
+		bonusNames = BONUS_NAMES;
+		bonusValues = BONUS_VALUES;
 
 		player = new Pac("Pac-Man", RIGHT);
 

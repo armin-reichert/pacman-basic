@@ -159,4 +159,9 @@ public class DefaultPacManGameWorld implements PacManGameWorld {
 	public Stream<V2i> energizerTiles() {
 		return energizerTiles.stream();
 	}
+
+	@Override
+	public V2i bonusHomeTile() {
+		return map.bonus_home;
+	}
 }

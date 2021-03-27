@@ -173,4 +173,9 @@ public interface PacManGameWorld {
 	 * @return all energizer tiles in the world
 	 */
 	Stream<V2i> energizerTiles();
+
+	/**
+	 * @return bonus home location in case this is fixed
+	 */
+	V2i bonusHomeTile();
 }

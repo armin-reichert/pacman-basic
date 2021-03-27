@@ -17,6 +17,7 @@
 : house_seat_center  = (13,17)
 : house_seat_right   = (15,17)
 : pacman_home        = (13,26)
+: bonus_home         = (13,20)
 : scatter.0          = (25, 0)
 : scatter.1          = ( 2, 0)
 : scatter.2          = (27,34)
