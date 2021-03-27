@@ -133,7 +133,7 @@ public class Ghost extends Creature {
 			setOffset(HTS, 0);
 			dir = wishDir = Direction.DOWN;
 			forcedOnTrack = false;
-			targetTile = (id == 0) ? world.houseCenter() : world.ghostHome(id);
+			targetTile = (id == 0) ? world.houseSeatCenter() : world.ghostHome(id);
 			state = GhostState.ENTERING_HOUSE;
 			return;
 		}
@@ -150,8 +150,8 @@ public class Ghost extends Creature {
 			return;
 		}
 		// House center reached? Move sidewards towards target tile
-		if (location.equals(world.houseCenter()) && offset.y >= 0) {
-			wishDir = targetTile.x < world.houseCenter().x ? Direction.LEFT : Direction.RIGHT;
+		if (location.equals(world.houseSeatCenter()) && offset.y >= 0) {
+			wishDir = targetTile.x < world.houseSeatCenter().x ? Direction.LEFT : Direction.RIGHT;
 		}
 		tryMoving(wishDir);
 	}
@@ -167,7 +167,7 @@ public class Ghost extends Creature {
 			state = GhostState.HUNTING_PAC;
 			return;
 		}
-		V2i houseCenter = world.houseCenter();
+		V2i houseCenter = world.houseSeatCenter();
 		int center = t(houseCenter.x) + HTS;
 		int ground = t(houseCenter.y) + HTS;
 		if (differsAtMost(position.x, center, 1)) {
@@ -182,7 +182,7 @@ public class Ghost extends Creature {
 	}
 
 	private void bounce() {
-		int centerY = t(world.houseCenter().y);
+		int centerY = t(world.houseSeatCenter().y);
 		if (position.y < centerY - HTS || position.y > centerY + HTS) {
 			wishDir = dir.opposite();
 		}

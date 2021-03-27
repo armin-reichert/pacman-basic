@@ -12,24 +12,13 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
 
 /**
- * Default world of Pac-Man and Ms. Pac-Man games. All maps have the same ghost house structure and
- * location.
+ * Default world of Pac-Man and Ms. Pac-Man games.
  * 
  * @author Armin Reichert
  */
 public class DefaultPacManGameWorld implements PacManGameWorld {
 
-	// assumed to be equal for all world maps
-	private final V2i houseEntry = new V2i(13, 14);
-	private final V2i houseLeft = new V2i(11, 17);
-	private final V2i houseCenter = new V2i(13, 17);
-	private final V2i houseRight = new V2i(15, 17);
-	private final V2i pacHome = new V2i(13, 26);
-	private final V2i[] ghostHomes = { houseEntry, houseCenter, houseLeft, houseRight };
-	private final V2i[] ghostScatterTargets = { new V2i(25, 0), new V2i(2, 0), new V2i(27, 35), new V2i(27, 35) };
-
 	protected WorldMap map;
-
 	protected List<V2i> portalsLeft;
 	protected List<V2i> portalsRight;
 	protected BitSet intersections;
@@ -44,10 +33,10 @@ public class DefaultPacManGameWorld implements PacManGameWorld {
 		// find portal tiles
 		portalsLeft = new ArrayList<>(2);
 		portalsRight = new ArrayList<>(2);
-		for (int y = 0; y < map.height(); ++y) {
-			if (map.data(0, y) == WorldMap.TUNNEL && map.data(map.width() - 1, y) == WorldMap.TUNNEL) {
+		for (int y = 0; y < map.height; ++y) {
+			if (map.data(0, y) == WorldMap.TUNNEL && map.data(map.width - 1, y) == WorldMap.TUNNEL) {
 				portalsLeft.add(new V2i(-1, y));
-				portalsRight.add(new V2i(map.width(), y));
+				portalsRight.add(new V2i(map.width, y));
 			}
 		}
 
@@ -55,7 +44,7 @@ public class DefaultPacManGameWorld implements PacManGameWorld {
 		intersections = new BitSet();
 		//@formatter:off
 		tiles()
-			.filter(tile -> !isInsideGhostHouse(tile))
+			.filter(tile -> !map.isInsideGhostHouse(tile))
 			.filter(tile -> !isGhostHouseDoor(tile.plus(Direction.DOWN.vec)))
 			.filter(tile -> neighborTiles(tile).filter(neighbor-> !isWall(neighbor)).count() >= 3)
 			.map(tile -> index(tile))
@@ -72,27 +61,28 @@ public class DefaultPacManGameWorld implements PacManGameWorld {
 
 	@Override
 	public int numCols() {
-		return map.width();
+		return map.width;
 	}
 
 	@Override
 	public int numRows() {
-		return map.height();
+		return map.height;
 	}
 
 	@Override
 	public V2i pacHome() {
-		return pacHome;
+		return map.pacHome;
 	}
 
 	@Override
-	public V2i ghostHome(int ghost) {
-		return ghostHomes[ghost];
+	public V2i ghostHome(int ghostID) {
+		return ghostID == 0 ? map.house_entry
+				: ghostID == 1 ? map.house_seat_center : ghostID == 2 ? map.house_seat_left : map.house_seat_right;
 	}
 
 	@Override
-	public V2i ghostScatterTile(int ghost) {
-		return ghostScatterTargets[ghost];
+	public V2i ghostScatterTile(int ghostID) {
+		return map.ghostScatterTargets[ghostID];
 	}
 
 	@Override
@@ -122,22 +112,22 @@ public class DefaultPacManGameWorld implements PacManGameWorld {
 
 	@Override
 	public V2i houseEntry() {
-		return houseEntry;
+		return map.house_entry;
 	}
 
 	@Override
-	public V2i houseCenter() {
-		return houseCenter;
+	public V2i houseSeatCenter() {
+		return map.house_seat_center;
 	}
 
 	@Override
-	public V2i houseLeft() {
-		return houseLeft;
+	public V2i houseSeatLeft() {
+		return map.house_seat_left;
 	}
 
 	@Override
-	public V2i houseRight() {
-		return houseRight;
+	public V2i houseSeatRight() {
+		return map.house_seat_right;
 	}
 
 	@Override
@@ -158,10 +148,6 @@ public class DefaultPacManGameWorld implements PacManGameWorld {
 	@Override
 	public boolean isPortal(V2i tile) {
 		return portalsLeft.contains(tile) || portalsRight.contains(tile);
-	}
-
-	private boolean isInsideGhostHouse(V2i tile) {
-		return tile.x >= 10 && tile.x <= 17 && tile.y >= 15 && tile.y <= 22;
 	}
 
 	@Override

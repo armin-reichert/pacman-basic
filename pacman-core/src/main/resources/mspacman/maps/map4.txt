@@ -1,6 +1,18 @@
 ! Ms. Pac-Man Map 4
-:width = 28
-:height = 36
+: width = 28
+: height = 36
+: house_x_min = 10
+: house_x_max = 17
+: house_y_min = 15
+: house_y_max = 22
+: house_entry_x = 13
+: house_entry_y = 14
+: house_seat_left_x = 11
+: house_seat_left_y = 17
+: house_seat_center_x = 13
+: house_seat_center_y = 17
+: house_seat_right_x = 15
+: house_seat_right_y = 17
 ############################
 ############################
 ############################

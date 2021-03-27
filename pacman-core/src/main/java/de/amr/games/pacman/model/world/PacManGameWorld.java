@@ -92,17 +92,17 @@ public interface PacManGameWorld {
 	/**
 	 * @return middle position inside the house
 	 */
-	V2i houseCenter();
+	V2i houseSeatCenter();
 
 	/**
 	 * @return left position inside the house
 	 */
-	V2i houseLeft();
+	V2i houseSeatLeft();
 
 	/**
 	 * @return right position inside the house
 	 */
-	V2i houseRight();
+	V2i houseSeatRight();
 
 	/**
 	 * @return number of portals tiles
