@@ -10,28 +10,50 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
 
 /**
- * Default world of Pac-Man and Ms. Pac-Man games.
+ * Default world of Pac-Man and Ms. Pac-Man games (using maps).
  * 
  * @author Armin Reichert
  */
 public class DefaultPacManGameWorld implements PacManGameWorld {
 
-	protected WorldMap map;
-	protected List<V2i> portalsLeft;
-	protected List<V2i> portalsRight;
-	protected BitSet intersections;
-	protected List<V2i> energizerTiles;
+	private WorldMap map;
+	private V2i size;
+	private V2i house_top_left;
+	private V2i house_bottom_right;
+	private V2i house_entry;
+	private V2i house_seat_left;
+	private V2i house_seat_center;
+	private V2i house_seat_right;
+	private List<V2i> scatterTiles;
+	private V2i pacman_home;
+	private V2i bonus_home;
+	private List<V2i> upwardsBlockedTiles;
+	private List<V2i> portalsLeft;
+	private List<V2i> portalsRight;
+	private BitSet intersections;
+	private List<V2i> energizerTiles;
 
-	public void setMap(WorldMap worldMap) {
-		map = worldMap;
+	public void setMap(WorldMap map) {
+		this.map = map;
+		size = map.vector("size");
+		house_top_left = map.vector("house_top_left");
+		house_bottom_right = map.vector("house_bottom_right");
+		house_entry = map.vector("house_entry");
+		house_seat_left = map.vector("house_seat_left");
+		house_seat_center = map.vector("house_seat_center");
+		house_seat_right = map.vector("house_seat_right");
+		pacman_home = map.vector("pacman_home");
+		bonus_home = map.vectorOptional("bonus_home").orElse(V2i.NULL);
+		scatterTiles = map.list("scatter");
+		upwardsBlockedTiles = map.list("upwards_blocked");
 
 		// find portal tiles
 		portalsLeft = new ArrayList<>(2);
 		portalsRight = new ArrayList<>(2);
-		for (int y = 0; y < map.size.y; ++y) {
-			if (map.data(0, y) == WorldMap.TUNNEL && map.data(map.size.x - 1, y) == WorldMap.TUNNEL) {
+		for (int y = 0; y < size.y; ++y) {
+			if (map.data(0, y) == WorldMap.TUNNEL && map.data(size.x - 1, y) == WorldMap.TUNNEL) {
 				portalsLeft.add(new V2i(-1, y));
-				portalsRight.add(new V2i(map.size.x, y));
+				portalsRight.add(new V2i(size.x, y));
 			}
 		}
 
@@ -39,7 +61,7 @@ public class DefaultPacManGameWorld implements PacManGameWorld {
 		intersections = new BitSet();
 		//@formatter:off
 		tiles()
-			.filter(tile -> !map.isInsideGhostHouse(tile))
+			.filter(tile -> !isInsideGhostHouse(tile))
 			.filter(tile -> !isGhostHouseDoor(tile.plus(Direction.DOWN.vec)))
 			.filter(tile -> neighborTiles(tile).filter(neighbor-> !isWall(neighbor)).count() >= 3)
 			.map(tile -> index(tile))
@@ -54,30 +76,35 @@ public class DefaultPacManGameWorld implements PacManGameWorld {
 		return Stream.of(Direction.values()).map(dir -> tile.plus(dir.vec));
 	}
 
+	public boolean isInsideGhostHouse(V2i tile) {
+		return tile.x >= house_top_left.x && tile.x <= house_bottom_right.x //
+				&& tile.y >= house_top_left.y && tile.y <= house_bottom_right.y;
+	}
+
 	@Override
 	public int numCols() {
-		return map.size.x;
+		return size.x;
 	}
 
 	@Override
 	public int numRows() {
-		return map.size.y;
+		return size.y;
 	}
 
 	@Override
 	public V2i pacHome() {
-		return map.pacman_home;
+		return pacman_home;
 	}
 
 	@Override
 	public V2i ghostHome(int ghostID) {
-		return ghostID == 0 ? map.house_entry
-				: ghostID == 1 ? map.house_seat_center : ghostID == 2 ? map.house_seat_left : map.house_seat_right;
+		return ghostID == 0 ? house_entry
+				: ghostID == 1 ? house_seat_center : ghostID == 2 ? house_seat_left : house_seat_right;
 	}
 
 	@Override
 	public V2i ghostScatterTile(int ghostID) {
-		return map.scatterTiles.get(ghostID);
+		return scatterTiles.get(ghostID);
 	}
 
 	@Override
@@ -97,27 +124,27 @@ public class DefaultPacManGameWorld implements PacManGameWorld {
 
 	@Override
 	public boolean isUpwardsBlocked(V2i tile) {
-		return map.upwardsBlockedTiles.contains(tile);
+		return upwardsBlockedTiles.contains(tile);
 	}
 
 	@Override
 	public V2i houseEntry() {
-		return map.house_entry;
+		return house_entry;
 	}
 
 	@Override
 	public V2i houseSeatCenter() {
-		return map.house_seat_center;
+		return house_seat_center;
 	}
 
 	@Override
 	public V2i houseSeatLeft() {
-		return map.house_seat_left;
+		return house_seat_left;
 	}
 
 	@Override
 	public V2i houseSeatRight() {
-		return map.house_seat_right;
+		return house_seat_right;
 	}
 
 	@Override
@@ -162,6 +189,6 @@ public class DefaultPacManGameWorld implements PacManGameWorld {
 
 	@Override
 	public V2i bonusHomeTile() {
-		return map.bonus_home;
+		return bonus_home;
 	}
 }

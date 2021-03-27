@@ -1,5 +1,7 @@
 package de.amr.games.pacman.model.world;
 
+import static de.amr.games.pacman.lib.Logging.log;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -7,13 +9,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import de.amr.games.pacman.lib.Logging;
 import de.amr.games.pacman.lib.V2i;
 
 /**
- * Map of the game world. Normally created from a textual representation.
+ * Map of the game world, created from a textual representation.
  * 
  * @author Armin Reichert
  */
@@ -21,37 +24,7 @@ public class WorldMap {
 
 	public static final byte UNDEFINED = -1, SPACE = 0, WALL = 1, PILL = 2, ENERGIZER = 3, DOOR = 4, TUNNEL = 5;
 
-	public static WorldMap from(String resourcePath) {
-		Logging.log("Read world map from %s", resourcePath);
-		try (BufferedReader rdr = new BufferedReader(
-				new InputStreamReader(WorldMap.class.getResourceAsStream(resourcePath)))) {
-			WorldMap map = new WorldMap();
-			map.parse(rdr);
-			return map;
-		} catch (IOException x) {
-			throw new RuntimeException(x);
-		}
-	}
-
-	private static void error(String message, Object... args) {
-		throw new RuntimeException("Error parsing map: " + String.format(message, args));
-	}
-
-	private byte[][] data;
-
-	public V2i size;
-	public V2i house_top_left;
-	public V2i house_bottom_right;
-	public V2i house_entry;
-	public V2i house_seat_left;
-	public V2i house_seat_center;
-	public V2i house_seat_right;
-	public List<V2i> scatterTiles;
-	public V2i pacman_home;
-	public V2i bonus_home;
-	public List<V2i> upwardsBlockedTiles;
-
-	private byte decode(char c) {
+	private static byte decode(char c) {
 		switch (c) {
 		case ' ':
 			return SPACE;
@@ -70,78 +43,108 @@ public class WorldMap {
 		}
 	}
 
+	private static void error(String message, Object... args) {
+		log("Error parsing map: %s", String.format(message, args));
+	}
+
+	public static WorldMap from(String resourcePath) {
+		log("Read world map '%s'", resourcePath);
+		try (BufferedReader rdr = new BufferedReader(
+				new InputStreamReader(WorldMap.class.getResourceAsStream(resourcePath)))) {
+			WorldMap map = new WorldMap();
+			map.parse(rdr.lines());
+			return map;
+		} catch (IOException x) {
+			throw new RuntimeException(x);
+		}
+	}
+
+	private Map<String, Object> values = new HashMap<>();
+	private List<String> dataLines = new ArrayList<>();
+	private byte[][] content;
+
 	public byte data(V2i tile) {
-		return data[tile.y][tile.x];
+		return data(tile.x, tile.y);
 	}
 
-	public byte data(int col, int row) {
-		return data[row][col];
+	public byte data(int x, int y) {
+		return content[y][x]; // row-wise order!
 	}
 
-	public boolean isInsideGhostHouse(V2i tile) {
-		return tile.x >= house_top_left.x && tile.x <= house_bottom_right.x //
-				&& tile.y >= house_top_left.y && tile.y <= house_bottom_right.y;
+	public V2i vector(String varName) {
+		Object value = values.get(varName);
+		if (value == null) {
+			error("Variable '%s' is not defined", varName);
+			return V2i.NULL;
+		}
+		if (!(value instanceof V2i)) {
+			error("Variable '%s' does not contain a vector", varName);
+			return V2i.NULL;
+		}
+		return (V2i) value;
 	}
 
-	private void parse(BufferedReader rdr) {
-		Map<String, Object> storedValues = new HashMap<>();
-		List<String> dataLines = new ArrayList<>();
-		try {
-			rdr.lines().forEach(line -> {
+	public Optional<V2i> vectorOptional(String varName) {
+		Object value = values.get(varName);
+		if (value == null) {
+			return Optional.empty();
+		}
+		if (!(value instanceof V2i)) {
+			error("Variable '%s' does not contain a vector", varName);
+			return Optional.empty();
+		}
+		return Optional.of((V2i) value);
+	}
 
-				if (line.startsWith("!")) {
-					// skip comment line
+	/**
+	 * 
+	 * @param listName the list name (prefix before the dot in list variable assignments), e.g.
+	 *                 <code>level</code> for list entries like <code>level.42</code>
+	 * @return list of all values for given list name
+	 */
+	public List<V2i> list(String listName) {
+		return values.keySet().stream()//
+				.filter(varName -> varName.startsWith(listName + "."))//
+				.sorted()//
+				.map(this::vector)//
+				.collect(Collectors.toList());
+	}
+
+	private void parse(Stream<String> lines) {
+		lines.forEach(line -> {
+			if (line.startsWith("!")) {
+				// skip comment lines
+			} else if (line.startsWith("val ")) {
+				// val <variable> = <value>
+				line = line.substring(4).trim();
+				String[] tokens = line.split("=");
+				if (tokens.length != 2) {
+					error("Unparseable line: %s", line);
 				}
-
-				else if (line.startsWith(":")) {
-					// <variable> = <value>
-					line = line.substring(1).trim();
-					String[] tokens = line.split("=");
-					if (tokens.length != 2) {
-						error("Unparseable line: %s", line);
-					}
-					String lhs = tokens[0].trim();
-					String rhs = tokens[1].trim();
-					storedValues.put(lhs, parseRhs(rhs));
-				}
-
-				else {
-					dataLines.add(line);
-				}
-
-			});
-
-			// assign property values from parsed definitions:
-			size = getV2i("size", storedValues);
-			house_top_left = getV2i("house_top_left", storedValues);
-			house_bottom_right = getV2i("house_bottom_right", storedValues);
-			house_entry = getV2i("house_entry", storedValues);
-			house_seat_left = getV2i("house_seat_left", storedValues);
-			house_seat_center = getV2i("house_seat_center", storedValues);
-			house_seat_right = getV2i("house_seat_right", storedValues);
-			pacman_home = getV2i("pacman_home", storedValues);
-			bonus_home = getOptionalV2i("bonus_home", storedValues);
-			scatterTiles = getV2iList("scatter", storedValues);
-			upwardsBlockedTiles = getV2iList("upwards_blocked", storedValues);
-
-			if (dataLines.size() != size.y) {
-				error("Specified map height %d does not match number of data lines %d", size.y, dataLines.size());
+				String lhs = tokens[0].trim();
+				String rhs = tokens[1].trim();
+				values.put(lhs, parseRhs(rhs));
+			} else {
+				dataLines.add(line);
 			}
-			data = new byte[size.y][size.x];
-			for (int row = 0; row < size.y; ++row) {
-				for (int col = 0; col < size.x; ++col) {
-					char c = dataLines.get(row).charAt(col);
-					byte value = decode(c);
-					if (value == UNDEFINED) {
-						error("Found undefined map character at row %d, col %d: '%s'", row, col, c);
-						data[row][col] = SPACE;
-					} else {
-						data[row][col] = value;
-					}
+		});
+
+		V2i size = vector("size");
+		if (dataLines.size() != size.y) {
+			error("Specified map height %d does not match number of data lines %d", size.y, dataLines.size());
+		}
+		content = new byte[size.y][size.x]; // stored row-wise!
+		for (int row = 0; row < size.y; ++row) {
+			for (int col = 0; col < size.x; ++col) {
+				char c = dataLines.get(row).charAt(col);
+				byte value = decode(c);
+				if (value == UNDEFINED) {
+					error("Found undefined map character at row %d, col %d: '%s'", row, col, c);
+					content[row][col] = SPACE;
+				} else {
+					content[row][col] = value;
 				}
 			}
-		} catch (Exception x) {
-			x.printStackTrace();
 		}
 	}
 
@@ -160,7 +163,7 @@ public class WorldMap {
 			error("Error parsing vector from %s", rhs);
 			return null;
 		}
-		s = s.substring(1, s.length() - 1); // chomp parentheses
+		s = s.substring(1, s.length() - 1); // remove enclosing parentheses
 		String[] components = s.split(",");
 		if (components.length != 2) {
 			error("Error parsing vector from %s", rhs);
@@ -178,35 +181,5 @@ public class WorldMap {
 			error("Could not parse integer variable from text '%s'", rhs);
 			return null;
 		}
-	}
-
-	private V2i getV2i(String varName, Map<String, Object> storedValues) {
-		Object storedValue = storedValues.get(varName);
-		if (storedValue == null) {
-			error("Variable '%s' is not defined", varName);
-			return V2i.NULL;
-		}
-		if (!(storedValue instanceof V2i)) {
-			error("Variable '%s' does not contain a vector", varName);
-			return V2i.NULL;
-		}
-		return (V2i) storedValue;
-	}
-
-	private V2i getOptionalV2i(String varName, Map<String, Object> storedValues) {
-		Object storedValue = storedValues.get(varName);
-		if (storedValue == null) {
-			return null;
-		}
-		if (!(storedValue instanceof V2i)) {
-			error("Variable '%s' does not contain a vector", varName);
-			return V2i.NULL;
-		}
-		return (V2i) storedValue;
-	}
-
-	private List<V2i> getV2iList(String listVarPrefix, Map<String, Object> storedValues) {
-		return storedValues.keySet().stream().filter(varName -> varName.startsWith(listVarPrefix + ".")).sorted()
-				.map(varName -> getV2i(varName, storedValues)).collect(Collectors.toList());
 	}
 }

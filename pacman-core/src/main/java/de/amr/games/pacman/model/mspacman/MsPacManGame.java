@@ -67,10 +67,12 @@ public class MsPacManGame extends GameModel {
 
 		// sanity check
 		for (int mapNumber = 1; mapNumber <= 4; ++mapNumber) {
+			String mapPath = "/mspacman/maps/map" + mapNumber + ".txt";
 			try {
-				WorldMap.from("/mspacman/maps/map" + mapNumber + ".txt");
+				WorldMap.from(mapPath);
+				log("Map '%s' ok", mapPath);
 			} catch (Exception x) {
-				log("Map '%s' contains errors, see log for details");
+				log("Map '%s' contains errors", mapPath);
 			}
 		}
 

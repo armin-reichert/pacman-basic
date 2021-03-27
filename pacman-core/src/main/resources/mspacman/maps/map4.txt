@@ -9,18 +9,18 @@
 ! '-' = door
 !
 ! Declarations:
-: size               = (28,36)
-: house_top_left     = (10,17)
-: house_bottom_right = (15,22)
-: house_entry        = (13,14)
-: house_seat_left    = (11,17)
-: house_seat_center  = (13,17)
-: house_seat_right   = (15,17)
-: pacman_home        = (13,26)
-: scatter.0          = (25, 0)
-: scatter.1          = ( 2, 0)
-: scatter.2          = (27,34)
-: scatter.3          = ( 0,34)
+val size               = (28,36)
+val house_top_left     = (10,17)
+val house_bottom_right = (15,22)
+val house_entry        = (13,14)
+val house_seat_left    = (11,17)
+val house_seat_center  = (13,17)
+val house_seat_right   = (15,17)
+val pacman_home        = (13,26)
+val scatter.0          = (25, 0)
+val scatter.1          = ( 2, 0)
+val scatter.2          = (27,34)
+val scatter.3          = ( 0,34)
 !
 ! Data:
 ############################
