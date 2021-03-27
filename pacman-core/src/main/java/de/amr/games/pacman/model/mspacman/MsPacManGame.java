@@ -68,7 +68,7 @@ public class MsPacManGame extends GameModel {
 		// sanity check
 		for (int mapNumber = 1; mapNumber <= 4; ++mapNumber) {
 			try {
-				new WorldMap("/mspacman/maps/map" + mapNumber + ".txt");
+				WorldMap.from("/mspacman/maps/map" + mapNumber + ".txt");
 			} catch (Exception x) {
 				log("Map '%s' contains errors, see log for details");
 			}
@@ -135,7 +135,7 @@ public class MsPacManGame extends GameModel {
 	@Override
 	protected void buildLevel(int someLevelNumber) {
 		int mazeNumber = mazeNumber(someLevelNumber);
-		world.setMap(new WorldMap("/mspacman/maps/map" + mapNumber(mazeNumber) + ".txt"));
+		world.setMap(WorldMap.from("/mspacman/maps/map" + mapNumber(mazeNumber) + ".txt"));
 		level = new GameLevel(MSPACMAN_LEVELS[someLevelNumber <= 21 ? someLevelNumber - 1 : 20]);
 		level.setWorld(world);
 		level.mazeNumber = mazeNumber;

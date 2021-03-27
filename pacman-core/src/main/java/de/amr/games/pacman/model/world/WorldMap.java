@@ -1,6 +1,7 @@
 package de.amr.games.pacman.model.world;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,12 +20,23 @@ public class WorldMap {
 
 	public static final byte UNDEFINED = -1, SPACE = 0, WALL = 1, PILL = 2, ENERGIZER = 3, DOOR = 4, TUNNEL = 5;
 
+	public static WorldMap from(String resourcePath) {
+		Logging.log("Read world map from %s", resourcePath);
+		try (BufferedReader rdr = new BufferedReader(
+				new InputStreamReader(WorldMap.class.getResourceAsStream(resourcePath)))) {
+			WorldMap map = new WorldMap();
+			map.parse(rdr);
+			return map;
+		} catch (IOException x) {
+			throw new RuntimeException(x);
+		}
+	}
+
 	private static void parseError(String message, Object... args) {
 		throw new RuntimeException("Error parsing map: " + String.format(message, args));
 	}
 
 	private final Map<String, Object> assignments = new HashMap<>();
-	private String path;
 	private byte[][] data;
 
 	public V2i size;
@@ -59,11 +71,6 @@ public class WorldMap {
 		}
 	}
 
-	public WorldMap(String path) {
-		this.path = path;
-		parse();
-	}
-
 	public byte data(V2i tile) {
 		return data[tile.y][tile.x];
 	}
@@ -77,11 +84,9 @@ public class WorldMap {
 				&& tile.y >= house_top_left.y && tile.y <= house_bottom_right.y;
 	}
 
-	private void parse() {
-		Logging.log("Parsing map %s", path);
-
+	private void parse(BufferedReader rdr) {
 		List<String> dataLines = new ArrayList<>();
-		try (BufferedReader rdr = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(path)))) {
+		try {
 			rdr.lines().forEach(line -> {
 
 				if (line.startsWith("!")) {

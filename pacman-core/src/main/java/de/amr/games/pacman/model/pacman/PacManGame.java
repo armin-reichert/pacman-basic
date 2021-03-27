@@ -66,7 +66,7 @@ public class PacManGame extends GameModel {
 	public PacManGame() {
 
 		world = new DefaultPacManGameWorld();
-		world.setMap(new WorldMap("/pacman/maps/map1.txt"));
+		world.setMap(WorldMap.from("/pacman/maps/map1.txt"));
 		world.setUpwardsBlocked(new V2i(12, 13), new V2i(15, 13), new V2i(12, 25), new V2i(15, 25));
 
 		bonusNames = new String[] { "CHERRIES", "STRAWBERRY", "PEACH", "APPLE", "GRAPES", "GALAXIAN", "BELL", "KEY" };
