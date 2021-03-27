@@ -100,7 +100,8 @@ public class FiniteStateMachine<S extends Enum<S>> {
 	}
 
 	private void fireStateChange(S oldState, S newState) {
-		changeListeners.stream().forEach(listener -> listener.accept(oldState, newState));
+		// create copy to avoid concurrent modification
+		new ArrayList<>(changeListeners).stream().forEach(listener -> listener.accept(oldState, newState));
 	}
 
 	public void updateState() {
