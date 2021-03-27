@@ -62,10 +62,11 @@ public class MsPacManGame extends GameModel {
 	private final DefaultPacManGameWorld world;
 
 	public MsPacManGame() {
-		// all levels share one game world
+		highscoreFileName = "hiscore-mspacman.xml";
+
 		world = new DefaultPacManGameWorld();
 
-		// sanity check
+		// validate maps
 		for (int mapNumber = 1; mapNumber <= 4; ++mapNumber) {
 			String mapPath = "/mspacman/maps/map" + mapNumber + ".txt";
 			try {
@@ -79,27 +80,24 @@ public class MsPacManGame extends GameModel {
 		bonusNames = new String[] { "CHERRIES", "STRAWBERRY", "PEACH", "PRETZEL", "APPLE", "PEAR", "BANANA" };
 		bonusValues = new int[] { 100, 200, 500, 700, 1000, 2000, 5000 };
 		bonus = new MsPacManBonus();
+		bonus.world = world;
 
 		player = new Pac("Ms. Pac-Man", LEFT);
+		player.world = world;
 
 		ghosts = new Ghost[4];
 		ghosts[BLINKY] = new Ghost(BLINKY, "Blinky", LEFT);
 		ghosts[PINKY] = new Ghost(PINKY, "Pinky", UP);
 		ghosts[INKY] = new Ghost(INKY, "Inky", DOWN);
 		ghosts[SUE] = new Ghost(SUE, "Sue", DOWN);
-
-		bonus.world = world;
-		player.world = world;
 		for (Ghost ghost : ghosts) {
 			ghost.world = world;
 		}
-
-		highscoreFileName = "hiscore-mspacman.xml";
 	}
 
 	@Override
-	public int mazeNumber(int somelevelNumber) {
-		switch (somelevelNumber) {
+	public int mazeNumber(int n) {
+		switch (n) {
 		case 1:
 		case 2:
 			return 1; // pink maze, white dots
@@ -118,13 +116,13 @@ public class MsPacManGame extends GameModel {
 		case 13:
 			return 4; // dark blue maze, white dots
 		default:
-			if (somelevelNumber < 1) {
-				throw new IllegalArgumentException("Illegal level number: " + somelevelNumber);
+			if (n < 1) {
+				throw new IllegalArgumentException("Illegal level number: " + n);
 			}
 			// From level 14 on, maze switches between 5 and 6 every 4 levels
 			// Maze #5 = pink maze, cyan dots (same map as maze 3)
 			// Maze #6 = orange maze, white dots (same map as maze 4)
-			return (somelevelNumber - 14) % 8 < 4 ? 5 : 6;
+			return (n - 14) % 8 < 4 ? 5 : 6;
 		}
 	}
 
@@ -135,16 +133,16 @@ public class MsPacManGame extends GameModel {
 	}
 
 	@Override
-	protected void buildLevel(int someLevelNumber) {
-		int mazeNumber = mazeNumber(someLevelNumber);
+	protected void buildLevel(int n) {
+		int mazeNumber = mazeNumber(n);
 		world.setMap(WorldMap.from("/mspacman/maps/map" + mapNumber(mazeNumber) + ".txt"));
-		level = new GameLevel(MSPACMAN_LEVELS[someLevelNumber <= 21 ? someLevelNumber - 1 : 20]);
+		level = new GameLevel(MSPACMAN_LEVELS[n <= 21 ? n - 1 : 20]);
 		level.setWorld(world);
 		level.mazeNumber = mazeNumber;
-		if (someLevelNumber > 7) {
+		if (n > 7) {
 			level.bonusSymbol = (byte) new Random().nextInt(7);
 		}
-		log("Ms. Pac-Man level %d created, maze index is %d", someLevelNumber, mazeNumber);
+		log("Ms. Pac-Man level %d created, maze index is %d", n, mazeNumber);
 	}
 
 	@Override

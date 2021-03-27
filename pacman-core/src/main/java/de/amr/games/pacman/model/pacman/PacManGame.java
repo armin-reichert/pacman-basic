@@ -68,29 +68,28 @@ public class PacManGame extends GameModel {
 	private final DefaultPacManGameWorld world;
 
 	public PacManGame() {
+		highscoreFileName = "hiscore-pacman.xml";
 
 		world = new DefaultPacManGameWorld();
 		world.setMap(WorldMap.from("/pacman/maps/map1.txt"));
 
 		bonus = new PacManBonus();
+		bonus.world = world;
 		bonus.setPosition(world.bonusHomeTile().x * TS + HTS, world.bonusHomeTile().y * TS);
 		bonusNames = BONUS_NAMES;
 		bonusValues = BONUS_VALUES;
 
 		player = new Pac("Pac-Man", RIGHT);
+		player.world = world;
 
 		ghosts = new Ghost[4];
 		ghosts[BLINKY] = new Ghost(BLINKY, "Blinky", LEFT);
 		ghosts[PINKY] = new Ghost(PINKY, "Pinky", UP);
 		ghosts[INKY] = new Ghost(INKY, "Inky", DOWN);
 		ghosts[CLYDE] = new Ghost(CLYDE, "Clyde", DOWN);
-
-		bonus.world = world;
-		player.world = world;
 		for (Ghost ghost : ghosts) {
 			ghost.world = world;
 		}
-		highscoreFileName = "hiscore-pacman.xml";
 	}
 
 	@Override
@@ -118,12 +117,12 @@ public class PacManGame extends GameModel {
 	}
 
 	@Override
-	public int mapNumber(int mazeNumber) {
+	public int mapNumber(int anyMazeNumber) {
 		return 1;
 	}
 
 	@Override
-	public int mazeNumber(int someLevelNumber) {
+	public int mazeNumber(int anyLevelNumber) {
 		return 1;
 	}
 }
