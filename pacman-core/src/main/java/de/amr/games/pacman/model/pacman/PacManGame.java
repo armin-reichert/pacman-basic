@@ -16,7 +16,7 @@ import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.AbstractGameModel;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
-import de.amr.games.pacman.model.world.DefaultPacManGameWorld;
+import de.amr.games.pacman.model.world.MapBasedPacManGameWorld;
 import de.amr.games.pacman.model.world.WorldMap;
 
 /**
@@ -65,7 +65,7 @@ public class PacManGame extends AbstractGameModel {
 
 	static final int[] BONUS_VALUES = { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
 
-	private final DefaultPacManGameWorld world = new DefaultPacManGameWorld();
+	private final MapBasedPacManGameWorld world = new MapBasedPacManGameWorld();
 
 	public PacManGame() {
 		highscoreFileName = "hiscore-pacman.xml";

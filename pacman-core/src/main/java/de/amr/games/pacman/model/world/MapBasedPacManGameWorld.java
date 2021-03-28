@@ -10,11 +10,11 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
 
 /**
- * Default world of Pac-Man and Ms. Pac-Man games (using maps).
+ * Game world using maps.
  * 
  * @author Armin Reichert
  */
-public class DefaultPacManGameWorld implements PacManGameWorld {
+public class MapBasedPacManGameWorld implements PacManGameWorld {
 
 	private WorldMap map;
 	private V2i size;
@@ -34,6 +34,7 @@ public class DefaultPacManGameWorld implements PacManGameWorld {
 
 	public void setMap(WorldMap map) {
 		this.map = map;
+
 		size = map.vector("size");
 		house_top_left = map.vector("house_top_left");
 		house_bottom_right = map.vector("house_bottom_right");

@@ -15,7 +15,7 @@ import de.amr.games.pacman.model.common.AbstractGameModel;
 import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
-import de.amr.games.pacman.model.world.DefaultPacManGameWorld;
+import de.amr.games.pacman.model.world.MapBasedPacManGameWorld;
 import de.amr.games.pacman.model.world.WorldMap;
 
 /**
@@ -69,7 +69,7 @@ public class MsPacManGame extends AbstractGameModel {
 		return duration * 60;
 	}
 
-	private final DefaultPacManGameWorld world = new DefaultPacManGameWorld();
+	private final MapBasedPacManGameWorld world = new MapBasedPacManGameWorld();
 
 	public MsPacManGame() {
 		highscoreFileName = "hiscore-mspacman.xml";
