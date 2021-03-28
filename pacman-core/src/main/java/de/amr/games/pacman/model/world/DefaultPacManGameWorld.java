@@ -1,9 +1,9 @@
 package de.amr.games.pacman.model.world;
 
-import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.Direction;
@@ -28,8 +28,7 @@ public class DefaultPacManGameWorld implements PacManGameWorld {
 	private V2i pacman_home;
 	private V2i bonus_home;
 	private List<V2i> upwardsBlockedTiles;
-	private List<V2i> portalsLeft;
-	private List<V2i> portalsRight;
+	private List<Integer> portalRows;
 	private BitSet intersections;
 	private List<V2i> energizerTiles;
 
@@ -48,14 +47,9 @@ public class DefaultPacManGameWorld implements PacManGameWorld {
 		upwardsBlockedTiles = map.list("upwards_blocked");
 
 		// find portal tiles
-		portalsLeft = new ArrayList<>(2);
-		portalsRight = new ArrayList<>(2);
-		for (int y = 0; y < size.y; ++y) {
-			if (map.data(0, y) == WorldMap.TUNNEL && map.data(size.x - 1, y) == WorldMap.TUNNEL) {
-				portalsLeft.add(new V2i(-1, y));
-				portalsRight.add(new V2i(size.x, y));
-			}
-		}
+		portalRows = IntStream.range(0, size.y)
+				.filter(y -> map.data(0, y) == WorldMap.TUNNEL && map.data(size.x - 1, y) == WorldMap.TUNNEL)
+				.mapToObj(Integer::valueOf).collect(Collectors.toList());
 
 		// find intersections ("waypoints"), i.e. tiles with at least 3 accessible neighbor tiles
 		intersections = new BitSet();
@@ -109,17 +103,17 @@ public class DefaultPacManGameWorld implements PacManGameWorld {
 
 	@Override
 	public int numPortals() {
-		return portalsLeft.size();
+		return portalRows.size();
 	}
 
 	@Override
 	public V2i portalLeft(int i) {
-		return portalsLeft.get(i);
+		return new V2i(-1, portalRows.get(i));
 	}
 
 	@Override
 	public V2i portalRight(int i) {
-		return portalsRight.get(i);
+		return new V2i(size.x, portalRows.get(i));
 	}
 
 	@Override
@@ -164,7 +158,7 @@ public class DefaultPacManGameWorld implements PacManGameWorld {
 
 	@Override
 	public boolean isPortal(V2i tile) {
-		return portalsLeft.contains(tile) || portalsRight.contains(tile);
+		return (tile.x == -1 || tile.x == size.x) && portalRows.contains(tile.y);
 	}
 
 	@Override
