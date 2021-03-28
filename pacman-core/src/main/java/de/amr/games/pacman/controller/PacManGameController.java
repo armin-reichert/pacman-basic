@@ -187,6 +187,8 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 				.forEach(gameModel.currentLevel::removeFood);
 	}
 
+	// BEGIN STATE-MACHINE METHODS
+
 	private void enterIntroState() {
 		stateTimer().reset();
 		gameModel.reset();
@@ -228,24 +230,25 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	private void startHuntingPhase(int phase) {
+		boolean scattering = isScatteringPhase(phase);
 		gameModel.huntingPhase = phase;
-		if (inScatteringPhase()) {
+		if (scattering) {
 			fireGameEvent(new ScatterPhaseStartedEvent(gameVariant, gameModel, phase / 2));
 		}
 		if (stateTimer().isStopped()) {
 			stateTimer().start();
-			log("Hunting phase %d continues, %d of %d ticks remaining", phase, stateTimer().ticksRemaining(),
-					stateTimer().duration());
+			log("Hunting phase %d (%s) continues, %d of %d ticks remaining", phase, scattering ? "Scattering" : "Chasing",
+					stateTimer().ticksRemaining(), stateTimer().duration());
 		} else {
 			stateTimer().reset(gameModel.getHuntingPhaseDuration(gameModel.huntingPhase));
 			stateTimer().start();
-			log("Hunting phase %d starts, %d of %d ticks remaining", phase, stateTimer().ticksRemaining(),
-					stateTimer().duration());
+			log("Hunting phase %d (%s) starts, %d of %d ticks remaining", phase, scattering ? "Scattering" : "Chasing",
+					stateTimer().ticksRemaining(), stateTimer().duration());
 		}
 	}
 
-	public boolean inScatteringPhase() {
-		return gameModel.huntingPhase % 2 == 0;
+	public static boolean isScatteringPhase(int phase) {
+		return phase % 2 == 0;
 	}
 
 	private void enterHuntingState() {
@@ -546,7 +549,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		 */
 		if (isPlaying(MS_PACMAN) && gameModel.huntingPhase == 0 && (ghost.id == BLINKY || ghost.id == PINKY)) {
 			ghost.targetTile = null;
-		} else if (inScatteringPhase() && ghost.elroy == 0) {
+		} else if (isScatteringPhase(gameModel.huntingPhase) && ghost.elroy == 0) {
 			ghost.targetTile = gameModel.currentLevel.world.ghostScatterTile(ghost.id);
 		} else {
 			ghost.targetTile = ghostHuntingTarget(ghost.id);

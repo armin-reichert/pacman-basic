@@ -25,6 +25,7 @@ public class SoundManager {
 	private final Map<PacManGameSound, Clip> clipCache = new EnumMap<>(PacManGameSound.class);
 	private final Clip[] munchClips = new Clip[MUNCHES];
 	private int munchIndex;
+	private boolean muted;
 
 	public SoundManager(Function<PacManGameSound, URL> fnSoundURL) {
 		this.fnSoundURL = fnSoundURL;
@@ -32,6 +33,10 @@ public class SoundManager {
 			munchClips[i] = createAndOpenClip(fnSoundURL.apply(PacManGameSound.PACMAN_MUNCH));
 		}
 		munchIndex = 0;
+	}
+
+	public void setMuted(boolean muted) {
+		this.muted = muted;
 	}
 
 	private Clip createAndOpenClip(URL url) {
@@ -65,14 +70,18 @@ public class SoundManager {
 
 	@SuppressWarnings("resource")
 	public void play(PacManGameSound sound) {
-		getClip(sound).start();
+		if (!muted) {
+			getClip(sound).start();
+		}
 	}
 
 	@SuppressWarnings("resource")
 	public void loop(PacManGameSound sound, int repetitions) {
-		Clip clip = getClip(sound);
-		clip.setFramePosition(0);
-		clip.loop(repetitions == Integer.MAX_VALUE ? Clip.LOOP_CONTINUOUSLY : repetitions - 1);
+		if (!muted) {
+			Clip clip = getClip(sound);
+			clip.setFramePosition(0);
+			clip.loop(repetitions == Integer.MAX_VALUE ? Clip.LOOP_CONTINUOUSLY : repetitions - 1);
+		}
 	}
 
 	@SuppressWarnings("resource")

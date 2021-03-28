@@ -40,6 +40,7 @@ public class PlayScene extends GameScene {
 	@Override
 	public void onGameStateChange(PacManGameState oldState, PacManGameState newState) {
 		AbstractGameModel game = gameController.game();
+		sounds.setMuted(gameController.isAttractMode());
 
 		// enter READY
 		if (newState == PacManGameState.READY) {
@@ -98,6 +99,8 @@ public class PlayScene extends GameScene {
 
 	@Override
 	protected void onGameEvent(PacManGameEvent gameEvent) {
+		sounds.setMuted(gameController.isAttractMode());
+
 		if (gameEvent instanceof ScatterPhaseStartedEvent) {
 			ScatterPhaseStartedEvent e = (ScatterPhaseStartedEvent) gameEvent;
 			if (e.scatterPhase > 0) {
@@ -172,7 +175,8 @@ public class PlayScene extends GameScene {
 	public void start() {
 		super.start();
 		AbstractGameModel game = gameController.game();
-		mazeFlashing = rendering.mazeAnimations().mazeFlashing(game.currentLevel.mazeNumber).repetitions(game.currentLevel.numFlashes);
+		mazeFlashing = rendering.mazeAnimations().mazeFlashing(game.currentLevel.mazeNumber)
+				.repetitions(game.currentLevel.numFlashes);
 		mazeFlashing.reset();
 		game.player.powerTimer.addEventListener(e -> {
 			if (e.type == TickTimerEvent.Type.HALF_EXPIRED) {
