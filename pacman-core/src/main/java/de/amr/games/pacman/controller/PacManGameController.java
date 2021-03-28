@@ -131,7 +131,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	public void step() {
-		if (gameRunning) {
+		if (gameRunning || attractMode) {
 			steerPlayer();
 		}
 		updateState();
@@ -183,7 +183,8 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	public void eatAllPellets() {
 		gameModel.currentLevel.world.tiles().filter(gameModel.currentLevel::containsFood)
-				.filter(tile -> !gameModel.currentLevel.world.isEnergizerTile(tile)).forEach(gameModel.currentLevel::removeFood);
+				.filter(tile -> !gameModel.currentLevel.world.isEnergizerTile(tile))
+				.forEach(gameModel.currentLevel::removeFood);
 	}
 
 	private void enterIntroState() {
@@ -303,7 +304,8 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		if (player.restingTicksLeft > 0) {
 			player.restingTicksLeft--;
 		} else {
-			player.speed = player.powerTimer.isRunning() ? gameModel.currentLevel.playerSpeedPowered : gameModel.currentLevel.playerSpeed;
+			player.speed = player.powerTimer.isRunning() ? gameModel.currentLevel.playerSpeedPowered
+					: gameModel.currentLevel.playerSpeed;
 			player.tryMoving();
 		}
 
