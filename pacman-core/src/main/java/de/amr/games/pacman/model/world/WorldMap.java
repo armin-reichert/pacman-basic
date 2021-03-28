@@ -22,6 +22,10 @@ import de.amr.games.pacman.lib.V2i;
  */
 public class WorldMap {
 
+	private static void error(String message, Object... args) {
+		log("Error parsing map: %s", String.format(message, args));
+	}
+
 	public static final byte UNDEFINED = -1, SPACE = 0, WALL = 1, PILL = 2, ENERGIZER = 3, DOOR = 4, TUNNEL = 5;
 
 	private static byte decode(char c) {
@@ -43,10 +47,6 @@ public class WorldMap {
 		}
 	}
 
-	private static void error(String message, Object... args) {
-		log("Error parsing map: %s", String.format(message, args));
-	}
-
 	public static WorldMap from(String resourcePath) {
 		log("Read world map '%s'", resourcePath);
 		try (BufferedReader rdr = new BufferedReader(
@@ -59,76 +59,25 @@ public class WorldMap {
 		}
 	}
 
-	private Map<String, Object> values = new HashMap<>();
+	public final ValueDefinitionParser parser = new ValueDefinitionParser();
+	private Map<String, Object> definitions = new HashMap<>();
 	private byte[][] content;
-
-	public byte data(V2i tile) {
-		return data(tile.x, tile.y);
-	}
-
-	public byte data(int x, int y) {
-		return content[y][x]; // row-wise order!
-	}
-
-	public V2i vector(String varName) {
-		Object value = values.get(varName);
-		if (value == null) {
-			error("Variable '%s' is not defined", varName);
-			return V2i.NULL;
-		}
-		if (!(value instanceof V2i)) {
-			error("Variable '%s' does not contain a vector", varName);
-			return V2i.NULL;
-		}
-		return (V2i) value;
-	}
-
-	public Optional<V2i> vectorOptional(String varName) {
-		Object value = values.get(varName);
-		if (value == null) {
-			return Optional.empty();
-		}
-		if (!(value instanceof V2i)) {
-			error("Variable '%s' does not contain a vector", varName);
-			return Optional.empty();
-		}
-		return Optional.of((V2i) value);
-	}
-
-	/**
-	 * 
-	 * @param listName the list name (prefix before the dot in list variable assignments), e.g.
-	 *                 <code>level</code> for list entries like <code>level.42</code>
-	 * @return list of all values for given list name
-	 */
-	public List<V2i> vector_list(String listName) {
-		return values.keySet().stream()//
-				.filter(varName -> varName.startsWith(listName + "."))//
-				.sorted()//
-				.map(this::vector)//
-				.collect(Collectors.toList());
-	}
 
 	private void parse(Stream<String> lines) {
 		List<String> dataLines = new ArrayList<>();
 		lines.forEach(line -> {
 			if (line.startsWith("!")) {
 				// skip comment lines
-			} else if (line.startsWith("val ")) {
-				// val <variable> = <value>
-				line = line.substring(4).trim();
-				String[] sides = line.split("=");
-				if (sides.length != 2) {
-					error("Malformed val statement: %s", line);
-				}
-				String lhs = sides[0].trim();
-				String rhs = sides[1].trim();
-				values.put(lhs, parseRightHandSide(rhs));
 			} else {
-				dataLines.add(line);
+				// value definition?
+				Map.Entry<String, ?> definition = parser.parse(line);
+				if (definition != null) {
+					definitions.put(definition.getKey(), definition.getValue());
+				} else {
+					dataLines.add(line);
+				}
 			}
 		});
-
 		V2i size = vector("size");
 		if (dataLines.size() != size.y) {
 			error("Specified map height %d does not match number of data lines %d", size.y, dataLines.size());
@@ -148,38 +97,49 @@ public class WorldMap {
 		}
 	}
 
-	private Object parseRightHandSide(final String text) {
-		String s = text.trim();
-		if (s.startsWith("(")) {
-			return parseVector(s);
-		} else {
-			return parseInt(s);
-		}
+	public byte data(V2i tile) {
+		return data(tile.x, tile.y);
 	}
 
-	private V2i parseVector(final String text) {
-		String s = text;
-		if (!s.endsWith(")")) {
-			error("Error parsing vector from %s", text);
-			return null;
-		}
-		s = s.substring(1, s.length() - 1); // remove enclosing parentheses
-		String[] components = s.split(",");
-		if (components.length != 2) {
-			error("Error parsing vector from %s", text);
-			return null;
-		}
-		int x = parseInt(components[0].trim());
-		int y = parseInt(components[1].trim());
-		return new V2i(x, y);
+	public byte data(int x, int y) {
+		return content[y][x]; // row-wise order!
 	}
 
-	private int parseInt(final String text) {
-		try {
-			return Integer.parseInt(text);
-		} catch (Exception x) {
-			error("Could not parse integer variable from text '%s'", text);
-			return 0;
+	public V2i vector(String varName) {
+		Object value = definitions.get(varName);
+		if (value == null) {
+			error("Value '%s' is not defined", varName);
+			return V2i.NULL;
 		}
+		if (!(value instanceof V2i)) {
+			error("Value '%s' does not contain a vector", varName);
+			return V2i.NULL;
+		}
+		return (V2i) value;
+	}
+
+	public Optional<V2i> vectorOpt(String varName) {
+		Object value = definitions.get(varName);
+		if (value == null) {
+			return Optional.empty();
+		}
+		if (!(value instanceof V2i)) {
+			error("Value '%s' does not contain a vector", varName);
+			return Optional.empty();
+		}
+		return Optional.of((V2i) value);
+	}
+
+	/**
+	 * @param listName the list name (prefix before the dot in list variable assignments), e.g.
+	 *                 <code>level</code> for list entries like <code>level.42</code>
+	 * @return list of all values for given list name
+	 */
+	public List<V2i> vector_list(String listName) {
+		return definitions.keySet().stream()//
+				.filter(varName -> varName.startsWith(listName + "."))//
+				.sorted()//
+				.map(this::vector)//
+				.collect(Collectors.toList());
 	}
 }

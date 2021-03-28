@@ -42,7 +42,7 @@ public class DefaultPacManGameWorld implements PacManGameWorld {
 		house_seat_center = map.vector("house_seat_center");
 		house_seat_right = map.vector("house_seat_right");
 		pacman_home = map.vector("pacman_home");
-		bonus_home = map.vectorOptional("bonus_home").orElse(V2i.NULL);
+		bonus_home = map.vectorOpt("bonus_home").orElse(V2i.NULL);
 		scatterTiles = map.vector_list("scatter");
 		upwardsBlockedTiles = map.vector_list("upwards_blocked");
 
