@@ -8,7 +8,7 @@ import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.Flap;
 import de.amr.games.pacman.model.common.GameEntity;
-import de.amr.games.pacman.model.common.GameModel;
+import de.amr.games.pacman.model.common.AbstractGameModel;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.JuniorBag;
 import de.amr.games.pacman.model.common.Pac;
@@ -46,7 +46,7 @@ public interface Rendering<GC, COLOR, FONT, SPRITE> {
 
 	void drawLifeCounterSymbol(GC g, int x, int y);
 
-	void drawLivesCounter(GC g, GameModel game, int x, int y);
+	void drawLivesCounter(GC g, AbstractGameModel game, int x, int y);
 
 	void drawPlayer(GC g, Pac pac);
 
@@ -62,11 +62,11 @@ public interface Rendering<GC, COLOR, FONT, SPRITE> {
 
 	void drawEnergizerTiles(GC g, Stream<V2i> energizerTiles);
 
-	void drawGameState(GC g, GameModel game, PacManGameState gameState);
+	void drawGameState(GC g, AbstractGameModel game, PacManGameState gameState);
 
-	void drawScore(GC g, GameModel game, boolean hiscoreOnly);
+	void drawScore(GC g, AbstractGameModel game, boolean hiscoreOnly);
 
-	void drawLevelCounter(GC g, GameModel game, int rightX, int y);
+	void drawLevelCounter(GC g, AbstractGameModel game, int rightX, int y);
 
 	// Pac-Man game only:
 

@@ -13,15 +13,15 @@ import de.amr.games.pacman.lib.Hiscore;
 import de.amr.games.pacman.model.pacman.PacManBonus;
 
 /**
- * Common base class for the models.
+ * Common base class for the game models.
  * 
  * @author Armin Reichert
  */
-public abstract class GameModel {
+public abstract class AbstractGameModel {
 
 	public int currentLevelNumber; // counting from 1
-	public GameLevel level;
-	public int intermissionNumber;
+	public GameLevel currentLevel;
+	public int intermissionNumber; // 1,2,3
 	public Pac player;
 	public Ghost[] ghosts;
 	public PacManBonus bonus;
@@ -32,9 +32,9 @@ public abstract class GameModel {
 	public String highscoreFileName;
 	public int highscoreLevel, highscorePoints;
 	public int huntingPhase;
-	public short ghostBounty;
+	public int ghostBounty;
 	public List<Byte> levelSymbols;
-	public short globalDotCounter;
+	public int globalDotCounter;
 	public boolean globalDotCounterEnabled;
 
 	public void reset() {
@@ -45,26 +45,34 @@ public abstract class GameModel {
 		lives = 3;
 		levelSymbols = new ArrayList<>();
 		enterLevel(1);
-		levelSymbols.add(level.bonusSymbol);
+		levelSymbols.add(currentLevel.bonusSymbol);
 	}
-
-	protected abstract void buildLevel(int number);
 
 	/**
 	 * @param levelNumber 1-based game level number
 	 * @return 1-based maze number of the maze used in that level
 	 */
-	public abstract int mazeNumber(int levelNumber);
+	protected abstract void buildLevel(int number);
 
 	/**
-	 * @param mazeNumber 1-based number of a maze
+	 * @param number 1-based game level number
+	 * @return 1-based maze number of the maze used in that level
+	 */
+	public abstract int mazeNumber(int number);
+
+	/**
+	 * @param number 1-based number of a maze
 	 * @return 1-based number of the world map used by that maze
 	 */
-	public abstract int mapNumber(int mazeNumber);
+	public abstract int mapNumber(int number);
 
-	public void enterLevel(int levelNumber) {
-		currentLevelNumber = levelNumber;
-		buildLevel(currentLevelNumber);
+	/**
+	 * @param number 1-based number of a maze
+	 * @return 1-based number of the world map used by that maze
+	 */
+	public void enterLevel(int number) {
+		currentLevelNumber = number;
+		buildLevel(number);
 		ghostBounty = 200;
 		huntingPhase = 0;
 		bonus.edibleTicksLeft = 0;
@@ -76,7 +84,7 @@ public abstract class GameModel {
 	}
 
 	public void resetGuys() {
-		player.placeAt(level.world.pacHome(), HTS, 0);
+		player.placeAt(currentLevel.world.pacHome(), HTS, 0);
 		player.dir = player.wishDir = player.startDir;
 		player.visible = false;
 		player.speed = 0;
@@ -89,7 +97,7 @@ public abstract class GameModel {
 		player.powerTimer.reset();
 
 		for (Ghost ghost : ghosts) {
-			ghost.placeAt(level.world.ghostHome(ghost.id), HTS, 0);
+			ghost.placeAt(currentLevel.world.ghostHome(ghost.id), HTS, 0);
 			ghost.dir = ghost.wishDir = ghost.startDir;
 			ghost.visible = false;
 			ghost.speed = 0;
@@ -99,7 +107,7 @@ public abstract class GameModel {
 			ghost.forcedOnTrack = ghost.id == BLINKY;
 			ghost.state = GhostState.LOCKED;
 			ghost.bounty = 0;
-			// these are only reset when entering level:
+			// these are reset when entering level:
 //		ghost.dotCounter = 0;
 //		ghost.elroyMode = 0;
 		}
@@ -118,7 +126,7 @@ public abstract class GameModel {
 	}
 
 	public Stream<Ghost> ghosts(GhostState ghostState) {
-		return Stream.of(ghosts).filter(ghost -> ghost.state == ghostState);
+		return ghosts().filter(ghost -> ghost.state == ghostState);
 	}
 
 	public abstract long getHuntingPhaseDuration(int phase);
@@ -136,7 +144,7 @@ public abstract class GameModel {
 			hiscore.points = highscorePoints;
 			hiscore.level = highscoreLevel;
 			hiscore.save();
-			log("New hiscore saved. %d points in level %d", hiscore.points, hiscore.level);
+			log("New hiscore saved: %d points in level %d.", hiscore.points, hiscore.level);
 		}
 	}
 }

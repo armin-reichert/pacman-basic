@@ -10,7 +10,7 @@ import java.util.stream.Stream;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.Logging;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.model.common.GameModel;
+import de.amr.games.pacman.model.common.AbstractGameModel;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.GhostState;
 
@@ -67,7 +67,7 @@ public class Autopilot {
 	public Autopilot() {
 	}
 
-	public void run(GameModel game) {
+	public void run(AbstractGameModel game) {
 		if (!enabled) {
 			return;
 		}
@@ -91,7 +91,7 @@ public class Autopilot {
 		}
 	}
 
-	private GameInfo collectData(GameModel game) {
+	private GameInfo collectData(AbstractGameModel game) {
 		GameInfo data = new GameInfo();
 		Ghost hunterAhead = findHuntingGhostAhead(game); // Where is Hunter?
 		if (hunterAhead != null) {
@@ -111,7 +111,7 @@ public class Autopilot {
 		return data;
 	}
 
-	private void takeAction(GameModel game, GameInfo data) {
+	private void takeAction(AbstractGameModel game, GameInfo data) {
 		if (data.hunterAhead != null) {
 			Direction escapeDir = null;
 			if (data.hunterBehind != null) {
@@ -129,7 +129,7 @@ public class Autopilot {
 		}
 
 		// when not escaping ghost, keep move direction at least until next intersection
-		if (!game.player.stuck && !game.level.world.isIntersection(game.player.tile()))
+		if (!game.player.stuck && !game.currentLevel.world.isIntersection(game.player.tile()))
 			return;
 
 		if (data.frightenedGhosts.size() != 0 && game.player.powerTimer.ticksRemaining() >= 1 * 60) {
@@ -149,7 +149,7 @@ public class Autopilot {
 		}
 	}
 
-	private Ghost findHuntingGhostAhead(GameModel game) {
+	private Ghost findHuntingGhostAhead(AbstractGameModel game) {
 		V2i pacManTile = game.player.tile();
 		boolean energizerFound = false;
 		for (int i = 1; i <= MAX_GHOST_AHEAD_DETECTION_DIST; ++i) {
@@ -157,7 +157,7 @@ public class Autopilot {
 			if (!game.player.canAccessTile(ahead)) {
 				break;
 			}
-			if (game.level.world.isEnergizerTile(ahead) && !game.level.isFoodRemoved(ahead)) {
+			if (game.currentLevel.world.isEnergizerTile(ahead) && !game.currentLevel.isFoodRemoved(ahead)) {
 				energizerFound = true;
 			}
 			V2i aheadLeft = ahead.plus(game.player.dir.turnLeft().vec),
@@ -178,7 +178,7 @@ public class Autopilot {
 		return null;
 	}
 
-	private Ghost findHuntingGhostBehind(GameModel game) {
+	private Ghost findHuntingGhostBehind(AbstractGameModel game) {
 		V2i pacManTile = game.player.tile();
 		for (int i = 1; i <= MAX_GHOST_BEHIND_DETECTION_DIST; ++i) {
 			V2i behind = pacManTile.plus(game.player.dir.opposite().vec.scaled(i));
@@ -194,7 +194,7 @@ public class Autopilot {
 		return null;
 	}
 
-	private Direction findEscapeDirectionExcluding(GameModel game, Collection<Direction> forbidden) {
+	private Direction findEscapeDirectionExcluding(AbstractGameModel game, Collection<Direction> forbidden) {
 		V2i pacManTile = game.player.tile();
 		List<Direction> escapes = new ArrayList<>(4);
 		for (Direction dir : Direction.shuffled()) {
@@ -208,26 +208,26 @@ public class Autopilot {
 		}
 		for (Direction escape : escapes) {
 			V2i escapeTile = pacManTile.plus(escape.vec);
-			if (game.level.world.isTunnel(escapeTile)) {
+			if (game.currentLevel.world.isTunnel(escapeTile)) {
 				return escape;
 			}
 		}
 		return escapes.isEmpty() ? null : escapes.get(0);
 	}
 
-	private List<V2i> findNearestFoodTiles(GameModel game) {
+	private List<V2i> findNearestFoodTiles(AbstractGameModel game) {
 		long time = System.nanoTime();
 		List<V2i> foodTiles = new ArrayList<>();
 		V2i pacManTile = game.player.tile();
 		double minDist = Double.MAX_VALUE;
-		for (int x = 0; x < game.level.world.numCols(); ++x) {
-			for (int y = 0; y < game.level.world.numRows(); ++y) {
+		for (int x = 0; x < game.currentLevel.world.numCols(); ++x) {
+			for (int y = 0; y < game.currentLevel.world.numRows(); ++y) {
 				V2i tile = new V2i(x, y);
-				if (!game.level.world.isFoodTile(tile) || game.level.isFoodRemoved(tile)) {
+				if (!game.currentLevel.world.isFoodTile(tile) || game.currentLevel.isFoodRemoved(tile)) {
 					continue;
 				}
-				if (game.level.world.isEnergizerTile(tile) && game.player.powerTimer.ticksRemaining() > 1 * 60
-						&& game.level.foodRemaining > 1) {
+				if (game.currentLevel.world.isEnergizerTile(tile) && game.player.powerTimer.ticksRemaining() > 1 * 60
+						&& game.currentLevel.foodRemaining > 1) {
 					continue;
 				}
 				double dist = pacManTile.manhattanDistance(tile);
@@ -249,7 +249,7 @@ public class Autopilot {
 		return foodTiles;
 	}
 
-	private V2i findTileFarestFromGhosts(GameModel game, List<V2i> tiles) {
+	private V2i findTileFarestFromGhosts(AbstractGameModel game, List<V2i> tiles) {
 		V2i farestTile = null;
 		double maxDist = -1;
 		for (V2i tile : tiles) {
@@ -262,7 +262,7 @@ public class Autopilot {
 		return farestTile;
 	}
 
-	private double minDistanceFromGhosts(GameModel game) {
+	private double minDistanceFromGhosts(AbstractGameModel game) {
 		return Stream.of(game.ghosts).map(Ghost::tile).mapToDouble(game.player.tile()::manhattanDistance).min()
 				.getAsDouble();
 	}

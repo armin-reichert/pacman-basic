@@ -16,7 +16,7 @@ import de.amr.games.pacman.controller.PacManGameState;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.Flap;
 import de.amr.games.pacman.model.common.GameEntity;
-import de.amr.games.pacman.model.common.GameModel;
+import de.amr.games.pacman.model.common.AbstractGameModel;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.JuniorBag;
 import de.amr.games.pacman.model.common.Pac;
@@ -95,14 +95,14 @@ public abstract class StandardRendering implements PacManGameRendering2D, PacMan
 	}
 
 	@Override
-	public void drawScore(Graphics2D g, GameModel game, boolean showHiscoreOnly) {
+	public void drawScore(Graphics2D g, AbstractGameModel game, boolean showHiscoreOnly) {
 		g.setFont(getScoreFont());
 		g.translate(0, 2);
 		g.setColor(Color.WHITE);
 		g.drawString("SCORE", t(1), t(1));
 		g.drawString("HIGH SCORE", t(15), t(1));
 		g.translate(0, 1);
-		Color pointsColor = getMazeWallColor(game.level.mazeNumber - 1);
+		Color pointsColor = getMazeWallColor(game.currentLevel.mazeNumber - 1);
 		if (pointsColor == Color.BLACK) {
 			pointsColor = Color.YELLOW;
 		}
@@ -120,7 +120,7 @@ public abstract class StandardRendering implements PacManGameRendering2D, PacMan
 	}
 
 	@Override
-	public void drawLivesCounter(Graphics2D g, GameModel game, int x, int y) {
+	public void drawLivesCounter(Graphics2D g, AbstractGameModel game, int x, int y) {
 		int maxLivesDisplayed = 5;
 		for (int i = 0; i < Math.min(game.lives, maxLivesDisplayed); ++i) {
 			drawSprite(g, lifeSprite(), x + t(2 * i), y);
@@ -133,7 +133,7 @@ public abstract class StandardRendering implements PacManGameRendering2D, PacMan
 	}
 
 	@Override
-	public void drawLevelCounter(Graphics2D g, GameModel game, int rightX, int y) {
+	public void drawLevelCounter(Graphics2D g, AbstractGameModel game, int rightX, int y) {
 		int x = rightX;
 		int firstLevel = Math.max(1, game.currentLevelNumber - 6);
 		for (int level = firstLevel; level <= game.currentLevelNumber; ++level) {
@@ -144,7 +144,7 @@ public abstract class StandardRendering implements PacManGameRendering2D, PacMan
 	}
 
 	@Override
-	public void drawGameState(Graphics2D g, GameModel game, PacManGameState gameState) {
+	public void drawGameState(Graphics2D g, AbstractGameModel game, PacManGameState gameState) {
 		if (gameState == PacManGameState.READY) {
 			g.setFont(getScoreFont());
 			g.setColor(Color.YELLOW);

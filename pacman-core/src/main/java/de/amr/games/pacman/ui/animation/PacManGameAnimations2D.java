@@ -1,6 +1,6 @@
 package de.amr.games.pacman.ui.animation;
 
-import de.amr.games.pacman.model.common.GameModel;
+import de.amr.games.pacman.model.common.AbstractGameModel;
 
 /**
  * Animations for a game.
@@ -9,7 +9,7 @@ import de.amr.games.pacman.model.common.GameModel;
  */
 public interface PacManGameAnimations2D {
 
-	default void resetAllAnimations(GameModel game) {
+	default void resetAllAnimations(AbstractGameModel game) {
 		mazeAnimations().reset();
 		game.ghosts().forEach(ghostAnimations()::reset);
 		playerAnimations().reset(game.player);

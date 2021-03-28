@@ -16,7 +16,7 @@ import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.controller.event.ScatterPhaseStartedEvent;
 import de.amr.games.pacman.lib.TickTimerEvent;
-import de.amr.games.pacman.model.common.GameModel;
+import de.amr.games.pacman.model.common.AbstractGameModel;
 import de.amr.games.pacman.model.common.GhostState;
 import de.amr.games.pacman.ui.animation.TimedSequence;
 import de.amr.games.pacman.ui.sound.PacManGameSound;
@@ -39,7 +39,7 @@ public class PlayScene extends GameScene {
 
 	@Override
 	public void onGameStateChange(PacManGameState oldState, PacManGameState newState) {
-		GameModel game = gameController.game();
+		AbstractGameModel game = gameController.game();
 
 		// enter READY
 		if (newState == PacManGameState.READY) {
@@ -86,7 +86,7 @@ public class PlayScene extends GameScene {
 
 		// enter LEVEL_COMPLETE
 		if (newState == PacManGameState.LEVEL_COMPLETE) {
-			mazeFlashing = rendering.mazeAnimations().mazeFlashing(game.level.mazeNumber);
+			mazeFlashing = rendering.mazeAnimations().mazeFlashing(game.currentLevel.mazeNumber);
 			sounds.stopAll();
 		}
 
@@ -144,7 +144,7 @@ public class PlayScene extends GameScene {
 		}
 	}
 
-	private void playAnimationPlayerDying(GameModel game) {
+	private void playAnimationPlayerDying(AbstractGameModel game) {
 		game.ghosts().flatMap(rendering.ghostAnimations()::ghostKicking).forEach(TimedSequence::reset);
 		rendering.playerAnimations().playerDying().delay(120).onStart(() -> {
 			game.ghosts().forEach(ghost -> ghost.visible = false);
@@ -155,7 +155,7 @@ public class PlayScene extends GameScene {
 	}
 
 	private void runLevelCompleteState(PacManGameState state) {
-		GameModel game = gameController.game();
+		AbstractGameModel game = gameController.game();
 		if (gameController.stateTimer().isRunningSeconds(2)) {
 			game.ghosts().forEach(ghost -> ghost.visible = false);
 		}
@@ -171,15 +171,15 @@ public class PlayScene extends GameScene {
 	@Override
 	public void start() {
 		super.start();
-		GameModel game = gameController.game();
-		mazeFlashing = rendering.mazeAnimations().mazeFlashing(game.level.mazeNumber).repetitions(game.level.numFlashes);
+		AbstractGameModel game = gameController.game();
+		mazeFlashing = rendering.mazeAnimations().mazeFlashing(game.currentLevel.mazeNumber).repetitions(game.currentLevel.numFlashes);
 		mazeFlashing.reset();
 		game.player.powerTimer.addEventListener(e -> {
 			if (e.type == TickTimerEvent.Type.HALF_EXPIRED) {
 				game.ghosts(GhostState.FRIGHTENED).forEach(ghost -> {
 					TimedSequence<?> flashing = rendering.ghostAnimations().ghostFlashing(ghost);
-					long frameTime = e.ticks / (game.level.numFlashes * flashing.numFrames());
-					flashing.frameDuration(frameTime).repetitions(game.level.numFlashes).restart();
+					long frameTime = e.ticks / (game.currentLevel.numFlashes * flashing.numFrames());
+					flashing.frameDuration(frameTime).repetitions(game.currentLevel.numFlashes).restart();
 				});
 			}
 		});
@@ -201,12 +201,12 @@ public class PlayScene extends GameScene {
 
 	@Override
 	public void render(Graphics2D g) {
-		GameModel game = gameController.game();
-		rendering.drawMaze(g, game.level.mazeNumber, 0, t(3), mazeFlashing.isRunning());
+		AbstractGameModel game = gameController.game();
+		rendering.drawMaze(g, game.currentLevel.mazeNumber, 0, t(3), mazeFlashing.isRunning());
 		if (!mazeFlashing.isRunning()) {
-			rendering.drawFoodTiles(g, game.level.world.tiles().filter(game.level.world::isFoodTile),
-					game.level::containsEatenFood);
-			rendering.drawEnergizerTiles(g, game.level.world.energizerTiles());
+			rendering.drawFoodTiles(g, game.currentLevel.world.tiles().filter(game.currentLevel.world::isFoodTile),
+					game.currentLevel::containsEatenFood);
+			rendering.drawEnergizerTiles(g, game.currentLevel.world.energizerTiles());
 		}
 		if (gameController.isAttractMode()) {
 			rendering.drawGameState(g, game, PacManGameState.GAME_OVER);

@@ -14,7 +14,7 @@ import java.awt.Stroke;
 import de.amr.games.pacman.controller.PacManGameController;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.model.common.GameModel;
+import de.amr.games.pacman.model.common.AbstractGameModel;
 import de.amr.games.pacman.model.common.Ghost;
 
 public class Debug {
@@ -22,7 +22,7 @@ public class Debug {
 	public static boolean on = false;
 
 	public static void drawPlaySceneDebugInfo(Graphics2D g, PacManGameController controller) {
-		GameModel game = controller.game();
+		AbstractGameModel game = controller.game();
 		final Color[] GHOST_COLORS = { Color.RED, Color.PINK, Color.CYAN, Color.ORANGE };
 		long remaining = controller.stateTimer().ticksRemaining();
 		String ticksText = remaining == Long.MAX_VALUE ? "forever" : remaining + " ticks remaining";
@@ -45,24 +45,24 @@ public class Debug {
 		}
 	}
 
-	public static void drawMazeStructure(Graphics2D g, GameModel game) {
+	public static void drawMazeStructure(Graphics2D g, AbstractGameModel game) {
 		final Polygon TRIANGLE = new Polygon(new int[] { -4, 4, 0 }, new int[] { 0, 0, 4 }, 3);
 		Color dark = new Color(80, 80, 80, 200);
 		Stroke thin = new BasicStroke(0.1f);
 		g.setColor(dark);
 		g.setStroke(thin);
-		for (int x = 0; x < game.level.world.numCols(); ++x) {
-			for (int y = 0; y < game.level.world.numRows(); ++y) {
+		for (int x = 0; x < game.currentLevel.world.numCols(); ++x) {
+			for (int y = 0; y < game.currentLevel.world.numRows(); ++y) {
 				V2i tile = new V2i(x, y);
-				if (game.level.world.isIntersection(tile)) {
+				if (game.currentLevel.world.isIntersection(tile)) {
 					for (Direction dir : Direction.values()) {
 						V2i neighbor = tile.plus(dir.vec);
-						if (game.level.world.isWall(neighbor)) {
+						if (game.currentLevel.world.isWall(neighbor)) {
 							continue;
 						}
 						g.drawLine(t(x) + HTS, t(y) + HTS, t(neighbor.x) + HTS, t(neighbor.y) + HTS);
 					}
-				} else if (game.level.world.isUpwardsBlocked(tile)) {
+				} else if (game.currentLevel.world.isUpwardsBlocked(tile)) {
 					g.translate(t(x) + HTS, t(y));
 					g.fillPolygon(TRIANGLE);
 					g.translate(-t(x) - HTS, -t(y));

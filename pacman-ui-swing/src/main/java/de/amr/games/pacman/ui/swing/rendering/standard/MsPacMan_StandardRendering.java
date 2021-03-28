@@ -16,7 +16,7 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.model.common.Flap;
 import de.amr.games.pacman.model.common.GameEntity;
-import de.amr.games.pacman.model.common.GameModel;
+import de.amr.games.pacman.model.common.AbstractGameModel;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.common.Stork;
@@ -124,7 +124,7 @@ public class MsPacMan_StandardRendering extends StandardRendering
 		return assets.mazesFlashingAnims.get(mazeNumber - 1);
 	}
 
-	public BufferedImage bonusSprite(PacManBonus bonus, GameModel game) {
+	public BufferedImage bonusSprite(PacManBonus bonus, AbstractGameModel game) {
 		if (bonus.edibleTicksLeft > 0) {
 			return assets.symbolSprites[bonus.symbol];
 		}
@@ -226,7 +226,7 @@ public class MsPacMan_StandardRendering extends StandardRendering
 	}
 
 	@Override
-	public void drawLevelCounter(Graphics2D g, GameModel game, int rightX, int y) {
+	public void drawLevelCounter(Graphics2D g, AbstractGameModel game, int rightX, int y) {
 		Graphics2D g2 = smoothGC(g);
 		int x = rightX;
 		for (int levelNumber = 1; levelNumber <= Math.min(game.currentLevelNumber, 7); ++levelNumber) {

@@ -11,8 +11,8 @@ import static de.amr.games.pacman.model.common.Ghost.SUE;
 
 import java.util.Random;
 
+import de.amr.games.pacman.model.common.AbstractGameModel;
 import de.amr.games.pacman.model.common.GameLevel;
-import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.world.DefaultPacManGameWorld;
@@ -23,7 +23,7 @@ import de.amr.games.pacman.model.world.WorldMap;
  * 
  * @author Armin Reichert
  */
-public class MsPacManGame extends GameModel {
+public class MsPacManGame extends AbstractGameModel {
 
 	/*@formatter:off*/
 	public static final int[][] MSPACMAN_LEVELS = {
@@ -59,12 +59,20 @@ public class MsPacManGame extends GameModel {
 		//@formatter:on
 	};
 
-	private final DefaultPacManGameWorld world;
+	private static long huntingTicks(short duration) {
+		if (duration == -1) {
+			return 1; // -1 means a single tick
+		}
+		if (duration == Short.MAX_VALUE) {
+			return Long.MAX_VALUE;
+		}
+		return duration * 60;
+	}
+
+	private final DefaultPacManGameWorld world = new DefaultPacManGameWorld();
 
 	public MsPacManGame() {
 		highscoreFileName = "hiscore-mspacman.xml";
-
-		world = new DefaultPacManGameWorld();
 
 		// validate maps
 		for (int mapNumber = 1; mapNumber <= 4; ++mapNumber) {
@@ -96,33 +104,22 @@ public class MsPacManGame extends GameModel {
 	}
 
 	@Override
-	public int mazeNumber(int n) {
-		switch (n) {
-		case 1:
-		case 2:
+	public int mazeNumber(int levelNumber) {
+		if (levelNumber < 1) {
+			throw new IllegalArgumentException("Illegal level number: " + levelNumber);
+		} else if (levelNumber <= 2) {
 			return 1; // pink maze, white dots
-		case 3:
-		case 4:
-		case 5:
+		} else if (levelNumber <= 5) {
 			return 2; // light blue maze, yellow dots
-		case 6:
-		case 7:
-		case 8:
-		case 9:
+		} else if (levelNumber <= 9) {
 			return 3; // orange maze, red dots
-		case 10:
-		case 11:
-		case 12:
-		case 13:
+		} else if (levelNumber <= 13) {
 			return 4; // dark blue maze, white dots
-		default:
-			if (n < 1) {
-				throw new IllegalArgumentException("Illegal level number: " + n);
-			}
-			// From level 14 on, maze switches between 5 and 6 every 4 levels
-			// Maze #5 = pink maze, cyan dots (same map as maze 3)
-			// Maze #6 = orange maze, white dots (same map as maze 4)
-			return (n - 14) % 8 < 4 ? 5 : 6;
+		} else {
+			// From level 14 on, maze number alternates between 5 and 6 every 4th level
+			// Maze #5 = pink maze, cyan dots (same map as maze #3)
+			// Maze #6 = orange maze, white dots (same map as maze #4)
+			return (levelNumber - 14) % 8 < 4 ? 5 : 6;
 		}
 	}
 
@@ -133,31 +130,23 @@ public class MsPacManGame extends GameModel {
 	}
 
 	@Override
-	protected void buildLevel(int n) {
-		int mazeNumber = mazeNumber(n);
-		world.setMap(WorldMap.from("/mspacman/maps/map" + mapNumber(mazeNumber) + ".txt"));
-		level = new GameLevel(MSPACMAN_LEVELS[n <= 21 ? n - 1 : 20]);
-		level.setWorld(world);
-		level.mazeNumber = mazeNumber;
-		if (n > 7) {
-			level.bonusSymbol = (byte) new Random().nextInt(7);
+	protected void buildLevel(int levelNumber) {
+		int mazeNumber = mazeNumber(levelNumber);
+		int mapNumber = mapNumber(mazeNumber);
+		WorldMap map = WorldMap.from("/mspacman/maps/map" + mapNumber + ".txt");
+		world.setMap(map);
+		currentLevel = new GameLevel(MSPACMAN_LEVELS[levelNumber <= 21 ? levelNumber - 1 : 20]);
+		currentLevel.setWorld(world);
+		currentLevel.mazeNumber = mazeNumber;
+		if (levelNumber > 7) {
+			currentLevel.bonusSymbol = (byte) new Random().nextInt(7);
 		}
-		log("Ms. Pac-Man level %d created, maze index is %d", n, mazeNumber);
+		log("Ms. Pac-Man level %d created, maze index is %d", levelNumber, mazeNumber);
 	}
 
 	@Override
 	public long getHuntingPhaseDuration(int phase) {
 		int row = currentLevelNumber == 1 ? 0 : currentLevelNumber <= 4 ? 1 : 2;
 		return huntingTicks(HUNTING_PHASE_DURATION[row][phase]);
-	}
-
-	private long huntingTicks(short duration) {
-		if (duration == -1) {
-			return 1; // -1 means a single tick
-		}
-		if (duration == Short.MAX_VALUE) {
-			return Long.MAX_VALUE;
-		}
-		return duration * 60;
 	}
 }

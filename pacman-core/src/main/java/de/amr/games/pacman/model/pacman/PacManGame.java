@@ -13,7 +13,7 @@ import static de.amr.games.pacman.model.world.PacManGameWorld.HTS;
 import static de.amr.games.pacman.model.world.PacManGameWorld.TS;
 
 import de.amr.games.pacman.model.common.GameLevel;
-import de.amr.games.pacman.model.common.GameModel;
+import de.amr.games.pacman.model.common.AbstractGameModel;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.world.DefaultPacManGameWorld;
@@ -24,10 +24,10 @@ import de.amr.games.pacman.model.world.WorldMap;
  * 
  * @author Armin Reichert
  */
-public class PacManGame extends GameModel {
+public class PacManGame extends AbstractGameModel {
 
 	/*@formatter:off*/
-	public static final int[][] PACMAN_LEVELS = {
+	static final int[][] PACMAN_LEVELS = {
 	/* 1*/ {0,  80, 75, 40,  20,  80, 10,  85,  90, 50, 6, 5},
 	/* 2*/ {1,  90, 85, 45,  30,  90, 15,  95,  95, 55, 5, 5},
 	/* 3*/ {2,  90, 85, 45,  40,  90, 20,  95,  95, 55, 4, 5},
@@ -52,7 +52,7 @@ public class PacManGame extends GameModel {
 	};
 	/*@formatter:on*/
 
-	public static final int[][] HUNTING_PHASE_DURATION = {
+	static final int[][] HUNTING_PHASE_DURATION = {
 		//@formatter:off
 		{ 7, 20, 7, 20, 5,   20,  5, Integer.MAX_VALUE },
 		{ 7, 20, 7, 20, 5, 1033, -1, Integer.MAX_VALUE },
@@ -60,22 +60,20 @@ public class PacManGame extends GameModel {
 		//@formatter:on
 	};
 
-	public static final String[] BONUS_NAMES = { "CHERRIES", "STRAWBERRY", "PEACH", "APPLE", "GRAPES", "GALAXIAN", "BELL",
+	static final String[] BONUS_NAMES = { "CHERRIES", "STRAWBERRY", "PEACH", "APPLE", "GRAPES", "GALAXIAN", "BELL",
 			"KEY" };
 
-	public static final int[] BONUS_VALUES = { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
+	static final int[] BONUS_VALUES = { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
 
-	private final DefaultPacManGameWorld world;
+	private final DefaultPacManGameWorld world = new DefaultPacManGameWorld();
 
 	public PacManGame() {
 		highscoreFileName = "hiscore-pacman.xml";
 
-		world = new DefaultPacManGameWorld();
 		String mapPath = "/pacman/maps/map1.txt";
 		try {
 			WorldMap map = WorldMap.from(mapPath);
 			world.setMap(map);
-			log("Map '%s' ok", mapPath);
 		} catch (Exception x) {
 			log("Map '%s' contains errors", mapPath);
 		}
@@ -100,11 +98,11 @@ public class PacManGame extends GameModel {
 	}
 
 	@Override
-	protected void buildLevel(int someLevelNumber) {
-		level = new GameLevel(PACMAN_LEVELS[someLevelNumber <= 21 ? someLevelNumber - 1 : 20]);
-		level.setWorld(world);
-		level.mazeNumber = mazeNumber(someLevelNumber);
-		log("Pac-Man classic level %d created", someLevelNumber);
+	protected void buildLevel(int n) {
+		currentLevel = new GameLevel(PACMAN_LEVELS[n <= 21 ? n - 1 : 20]);
+		currentLevel.setWorld(world);
+		currentLevel.mazeNumber = mazeNumber(n);
+		log("Pac-Man classic level %d created", n);
 	}
 
 	@Override
