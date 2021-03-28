@@ -1,4 +1,4 @@
-package de.amr.games.pacman.lib;
+package de.amr.games.pacman.ui.swing.app;
 
 import java.time.Duration;
 
