@@ -101,7 +101,7 @@ public class WorldMap {
 	 *                 <code>level</code> for list entries like <code>level.42</code>
 	 * @return list of all values for given list name
 	 */
-	public List<V2i> list(String listName) {
+	public List<V2i> vector_list(String listName) {
 		return values.keySet().stream()//
 				.filter(varName -> varName.startsWith(listName + "."))//
 				.sorted()//
