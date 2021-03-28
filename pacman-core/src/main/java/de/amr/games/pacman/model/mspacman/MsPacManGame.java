@@ -79,7 +79,6 @@ public class MsPacManGame extends AbstractGameModel {
 			String mapPath = "/mspacman/maps/map" + mapNumber + ".txt";
 			try {
 				WorldMap.from(mapPath);
-				log("Map '%s' ok", mapPath);
 			} catch (Exception x) {
 				log("Map '%s' contains errors", mapPath);
 			}
