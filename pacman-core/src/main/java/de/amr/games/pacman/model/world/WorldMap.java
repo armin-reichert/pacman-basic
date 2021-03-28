@@ -48,10 +48,9 @@ public class WorldMap {
 	}
 
 	public static WorldMap from(String resourcePath) {
-		log("Read world map '%s'", resourcePath);
+		WorldMap map = new WorldMap();
 		try (BufferedReader rdr = new BufferedReader(
 				new InputStreamReader(WorldMap.class.getResourceAsStream(resourcePath)))) {
-			WorldMap map = new WorldMap();
 			map.parse(rdr.lines());
 			return map;
 		} catch (IOException x) {
@@ -105,26 +104,26 @@ public class WorldMap {
 		return content[y][x]; // row-wise order!
 	}
 
-	public V2i vector(String varName) {
-		Object value = definitions.get(varName);
+	public V2i vector(String valueName) {
+		Object value = definitions.get(valueName);
 		if (value == null) {
-			error("Value '%s' is not defined", varName);
+			error("Value '%s' is not defined", valueName);
 			return V2i.NULL;
 		}
 		if (!(value instanceof V2i)) {
-			error("Value '%s' does not contain a vector", varName);
+			error("Value '%s' does not contain a vector", valueName);
 			return V2i.NULL;
 		}
 		return (V2i) value;
 	}
 
-	public Optional<V2i> vectorOpt(String varName) {
-		Object value = definitions.get(varName);
+	public Optional<V2i> vectorOpt(String valueName) {
+		Object value = definitions.get(valueName);
 		if (value == null) {
 			return Optional.empty();
 		}
 		if (!(value instanceof V2i)) {
-			error("Value '%s' does not contain a vector", varName);
+			error("Value '%s' does not contain a vector", valueName);
 			return Optional.empty();
 		}
 		return Optional.of((V2i) value);

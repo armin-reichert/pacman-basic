@@ -71,7 +71,14 @@ public class PacManGame extends GameModel {
 		highscoreFileName = "hiscore-pacman.xml";
 
 		world = new DefaultPacManGameWorld();
-		world.setMap(WorldMap.from("/pacman/maps/map1.txt"));
+		String mapPath = "/pacman/maps/map1.txt";
+		try {
+			WorldMap map = WorldMap.from(mapPath);
+			world.setMap(map);
+			log("Map '%s' ok", mapPath);
+		} catch (Exception x) {
+			log("Map '%s' contains errors", mapPath);
+		}
 
 		bonus = new PacManBonus();
 		bonus.world = world;
