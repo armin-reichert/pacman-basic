@@ -58,8 +58,8 @@ public class WorldMap {
 		}
 	}
 
-	public final ValueDefinitionParser parser = new ValueDefinitionParser();
-	private Map<String, Object> definitions = new HashMap<>();
+	private final ValueDefinitionParser parser = new ValueDefinitionParser();
+	private final Map<String, Object> definitions = new HashMap<>();
 	private byte[][] content;
 
 	private void parse(Stream<String> lines) {
