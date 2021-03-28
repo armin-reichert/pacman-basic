@@ -1,6 +1,5 @@
 package de.amr.games.pacman.ui.swing.assets;
 
-import java.io.BufferedInputStream;
 import java.net.URL;
 import java.util.EnumMap;
 import java.util.Map;
@@ -19,20 +18,17 @@ import de.amr.games.pacman.ui.sound.PacManGameSound;
  */
 public class SoundManager {
 
-	private static final int MUNCHES = 2;
-
 	private final Function<PacManGameSound, URL> fnSoundURL;
 	private final Map<PacManGameSound, Clip> clipCache = new EnumMap<>(PacManGameSound.class);
-	private final Clip[] munchClips = new Clip[MUNCHES];
+	private final Clip munch0, munch1;
 	private int munchIndex;
 	private boolean muted;
 
 	public SoundManager(Function<PacManGameSound, URL> fnSoundURL) {
 		this.fnSoundURL = fnSoundURL;
-		for (int i = 0; i < MUNCHES; ++i) {
-			munchClips[i] = createAndOpenClip(fnSoundURL.apply(PacManGameSound.PACMAN_MUNCH));
-		}
 		munchIndex = 0;
+		munch0 = createAndOpenClip(fnSoundURL.apply(PacManGameSound.PACMAN_MUNCH));
+		munch1 = createAndOpenClip(fnSoundURL.apply(PacManGameSound.PACMAN_MUNCH));
 	}
 
 	public void setMuted(boolean muted) {
@@ -40,12 +36,10 @@ public class SoundManager {
 	}
 
 	private Clip createAndOpenClip(URL url) {
-		try (BufferedInputStream bs = new BufferedInputStream(url.openStream())) {
-			try (AudioInputStream as = AudioSystem.getAudioInputStream(bs)) {
-				Clip clip = AudioSystem.getClip();
-				clip.open(as);
-				return clip;
-			}
+		try (AudioInputStream as = AudioSystem.getAudioInputStream(url)) {
+			Clip clip = AudioSystem.getClip();
+			clip.open(as);
+			return clip;
 		} catch (Exception x) {
 			throw new RuntimeException("Error opening audio clip", x);
 		}
@@ -56,8 +50,8 @@ public class SoundManager {
 	private Clip getClip(PacManGameSound sound) {
 		Clip clip = null;
 		if (sound == PacManGameSound.PACMAN_MUNCH) {
-			clip = munchClips[munchIndex];
-			munchIndex = (munchIndex + 1) % MUNCHES;
+			clip = munchIndex == 0 ? munch0 : munch1;
+			munchIndex = (munchIndex + 1) % 2;
 		} else if (clipCache.containsKey(sound)) {
 			clip = clipCache.get(sound);
 		} else {
@@ -93,9 +87,8 @@ public class SoundManager {
 		for (Clip clip : clipCache.values()) {
 			clip.stop();
 		}
-		for (Clip clip : munchClips) {
-			clip.stop();
-		}
+		munch0.stop();
+		munch1.stop();
 		clipCache.clear();
 	}
 }
