@@ -87,8 +87,8 @@ public class SoundManager {
 		for (Clip clip : clipCache.values()) {
 			clip.stop();
 		}
+		clipCache.clear();
 		munch0.stop();
 		munch1.stop();
-		clipCache.clear();
 	}
 }
