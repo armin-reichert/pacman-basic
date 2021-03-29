@@ -1,10 +1,5 @@
 package de.amr.games.pacman.ui.swing.rendering.pacman;
 
-import static de.amr.games.pacman.model.common.GhostState.DEAD;
-import static de.amr.games.pacman.model.common.GhostState.ENTERING_HOUSE;
-import static de.amr.games.pacman.model.common.GhostState.FRIGHTENED;
-import static de.amr.games.pacman.model.common.GhostState.LOCKED;
-
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
@@ -19,7 +14,6 @@ import de.amr.games.pacman.model.common.GameEntity;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.pacman.PacManBonus;
-import de.amr.games.pacman.ui.animation.GhostAnimations2D;
 import de.amr.games.pacman.ui.animation.MazeAnimations2D;
 import de.amr.games.pacman.ui.animation.PacManGameAnimations2D;
 import de.amr.games.pacman.ui.animation.TimedSequence;
@@ -30,8 +24,7 @@ import de.amr.games.pacman.ui.swing.rendering.common.CommonPacManGameRendering;
  * 
  * @author Armin Reichert
  */
-public class PacManGameRendering extends CommonPacManGameRendering
-		implements PacManGameAnimations2D, MazeAnimations2D, GhostAnimations2D {
+public class PacManGameRendering extends CommonPacManGameRendering implements PacManGameAnimations2D, MazeAnimations2D {
 
 	public final PacManGameRenderingAssets assets;
 
@@ -55,12 +48,32 @@ public class PacManGameRendering extends CommonPacManGameRendering
 	}
 
 	@Override
-	public MazeAnimations2D mazeAnimations() {
-		return this;
+	public Map<Direction, TimedSequence<BufferedImage>> createGhostKickingAnimations(int ghostID) {
+		return assets.createGhostKickingAnimations(ghostID);
 	}
 
 	@Override
-	public GhostAnimations2D ghostAnimations() {
+	public TimedSequence<BufferedImage> createGhostFrightenedAnimation() {
+		return assets.createGhostFrightenedAnimation();
+	}
+
+	@Override
+	public TimedSequence<BufferedImage> createGhostFlashingAnimation() {
+		return assets.createGhostFlashingAnimation();
+	}
+
+	@Override
+	public Map<Direction, TimedSequence<BufferedImage>> createGhostReturningHomeAnimations() {
+		return assets.createGhostsReturningHomeAnimations();
+	}
+
+	@Override
+	public Map<Integer, BufferedImage> getNumberSpritesMap() {
+		return assets.getNumberSpritesMap();
+	}
+
+	@Override
+	public MazeAnimations2D mazeAnimations() {
 		return this;
 	}
 
@@ -93,26 +106,6 @@ public class PacManGameRendering extends CommonPacManGameRendering
 	@Override
 	public TimedSequence<BufferedImage> mazeFlashing(int mazeNumber) {
 		return assets.mazeFlashingAnim;
-	}
-
-	@Override
-	public TimedSequence<BufferedImage> ghostKicking(Ghost ghost, Direction dir) {
-		return assets.getOrCreateGhostsWalkingAnimation(ghost).get(dir);
-	}
-
-	@Override
-	public TimedSequence<BufferedImage> ghostFrightened(Ghost ghost, Direction dir) {
-		return assets.ghostBlueAnim;
-	}
-
-	@Override
-	public TimedSequence<BufferedImage> ghostFlashing(Ghost ghost) {
-		return assets.ghostFlashingAnim.get(ghost.id);
-	}
-
-	@Override
-	public TimedSequence<BufferedImage> ghostReturningHome(Ghost ghost, Direction dir) {
-		return assets.ghostEyesAnimsByDir.get(dir);
 	}
 
 	@Override
@@ -158,7 +151,8 @@ public class PacManGameRendering extends CommonPacManGameRendering
 	public void drawBlinkyStretched(Graphics2D g, Ghost blinky, V2d nailPosition, int stretching) {
 		drawSprite(g, assets.blinkyStretched.frame(stretching), nailPosition.x - 4, nailPosition.y - 4);
 		if (stretching < 3) {
-			drawGhost(g, blinky, false);
+			// TODO
+//			drawGhost(g, blinky, false);
 		} else {
 			drawEntity(g, blinky, assets.blinkyDamaged.frame(blinky.dir == Direction.UP ? 0 : 1));
 		}
@@ -195,21 +189,4 @@ public class PacManGameRendering extends CommonPacManGameRendering
 		return assets.symbolSprites[symbol];
 	}
 
-	@Override
-	public BufferedImage ghostSprite(Ghost ghost, boolean frightened) {
-		if (ghost.bounty > 0) {
-			return assets.numberSprites.get(ghost.bounty);
-		}
-		if (ghost.is(DEAD) || ghost.is(ENTERING_HOUSE)) {
-			return ghostReturningHome(ghost, ghost.dir).animate();
-		}
-		if (ghost.is(FRIGHTENED)) {
-			return ghostFlashing(ghost).isRunning() ? ghostFlashing(ghost).animate()
-					: ghostFrightened(ghost, ghost.dir).animate();
-		}
-		if (ghost.is(LOCKED) && frightened) {
-			return ghostFrightened(ghost, ghost.dir).animate();
-		}
-		return ghostKicking(ghost, ghost.wishDir).animate(); // Looks towards wish dir!
-	}
 }

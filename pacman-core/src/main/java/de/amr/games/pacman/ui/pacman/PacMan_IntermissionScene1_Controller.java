@@ -44,18 +44,13 @@ public abstract class PacMan_IntermissionScene1_Controller {
 		pac.visible = true;
 		pac.setPosition(t(30), groundY);
 		pac.speed = 1.0f;
-//TODO		animations.playerAnimations().playerMunching(pac).forEach(TimedSequence::restart);
 
 		blinky = new Ghost(0, "Blinky", Direction.LEFT);
 		blinky.visible = true;
 		blinky.state = GhostState.HUNTING_PAC;
 		blinky.setPositionRelativeTo(pac, t(3), 0);
 		blinky.speed = pac.speed * 1.04f;
-		animations.ghostAnimations().ghostKicking(blinky, blinky.dir).restart();
-		animations.ghostAnimations().ghostFrightened(blinky, blinky.dir).restart();
-
 		playIntermissionSound();
-//		sounds.loop(PacManGameSound.INTERMISSION_1, 2);
 
 		phase = Phase.BLINKY_CHASING_PACMAN;
 		timer.resetSeconds(5);

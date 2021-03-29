@@ -81,10 +81,6 @@ public class PacMan_IntroScene_Controller {
 		gallery[3].character = "POKEY";
 		gallery[3].ghost.setPosition(t(2), TOP_Y + t(11));
 
-		for (int i = 0; i < 4; ++i) {
-			animations.ghostAnimations().ghostKicking(gallery[i].ghost).forEach(TimedSequence::reset);
-		}
-
 		pac = new Pac("Ms. Pac-Man", Direction.LEFT);
 
 		ghosts = new Ghost[] { //
@@ -187,7 +183,6 @@ public class PacMan_IntroScene_Controller {
 		pac.speed = 1;
 		pac.dir = Direction.LEFT;
 		pac.stuck = false;
-//TODO		animations.playerAnimations().playerMunching(pac).forEach(TimedSequence::restart);
 
 		for (Ghost ghost : ghosts) {
 			ghost.setPositionRelativeTo(pac, 8 + (ghost.id + 1) * 18, 0);
@@ -195,7 +190,6 @@ public class PacMan_IntroScene_Controller {
 			ghost.dir = ghost.wishDir = Direction.LEFT;
 			ghost.speed = pac.speed * 1.05f;
 			ghost.state = GhostState.HUNTING_PAC;
-			animations.ghostAnimations().ghostKicking(ghost).forEach(TimedSequence::restart);
 		}
 	}
 
@@ -205,7 +199,6 @@ public class PacMan_IntroScene_Controller {
 			ghost.state = GhostState.FRIGHTENED;
 			ghost.dir = ghost.wishDir = Direction.RIGHT;
 			ghost.speed = 0.5f;
-			animations.ghostAnimations().ghostFrightened(ghost).forEach(TimedSequence::restart);
 		}
 	}
 

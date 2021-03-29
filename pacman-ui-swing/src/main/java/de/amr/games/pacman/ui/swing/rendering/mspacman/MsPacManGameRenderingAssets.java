@@ -66,10 +66,6 @@ public class MsPacManGameRenderingAssets extends Spritesheet {
 	final List<BufferedImage> mazeFullImages;
 	final List<TimedSequence<BufferedImage>> mazesFlashingAnims;
 	final TimedSequence<Boolean> energizerBlinkingAnim;
-	final List<EnumMap<Direction, TimedSequence<BufferedImage>>> ghostsKickingAnimsByGhost;
-	final EnumMap<Direction, TimedSequence<BufferedImage>> ghostEyesAnimByDir;
-	final TimedSequence<BufferedImage> ghostBlueAnim;
-	final List<TimedSequence<BufferedImage>> ghostFlashingAnim;
 	final TimedSequence<Integer> bonusJumpAnim;
 	final TimedSequence<BufferedImage> storkAnim;
 	final BufferedImage blueBag;
@@ -119,31 +115,6 @@ public class MsPacManGameRenderingAssets extends Spritesheet {
 		bountyNumberSprites.put(1600, s(3,8));
 		//@formatter:on
 
-		ghostsKickingAnimsByGhost = new ArrayList<>(4);
-		for (int g = 0; g < 4; ++g) {
-			EnumMap<Direction, TimedSequence<BufferedImage>> kickingByDir = new EnumMap<>(Direction.class);
-			for (Direction dir : Direction.values()) {
-				int d = index(dir);
-				TimedSequence<BufferedImage> kicking = TimedSequence.of(s(2 * d, 4 + g), s(2 * d + 1, 4 + g));
-				kicking.frameDuration(4).endless();
-				kickingByDir.put(dir, kicking);
-			}
-			ghostsKickingAnimsByGhost.add(kickingByDir);
-		}
-
-		ghostEyesAnimByDir = new EnumMap<>(Direction.class);
-		for (Direction dir : Direction.values()) {
-			ghostEyesAnimByDir.put(dir, TimedSequence.of(s(8 + index(dir), 5)));
-		}
-
-		ghostBlueAnim = TimedSequence.of(s(8, 4), s(9, 4));
-		ghostBlueAnim.frameDuration(20).endless().run();
-
-		ghostFlashingAnim = new ArrayList<>();
-		for (int i = 0; i < 4; ++i) {
-			ghostFlashingAnim.add(TimedSequence.of(s(8, 4), s(9, 4), s(10, 4), s(11, 4)).frameDuration(4));
-		}
-
 		bonusJumpAnim = TimedSequence.of(2, -2).frameDuration(15).endless().run();
 
 		storkAnim = TimedSequence.of(//
@@ -153,6 +124,34 @@ public class MsPacManGameRenderingAssets extends Spritesheet {
 
 		blueBag = region(488, 199, 8, 8);
 		junior = region(509, 200, 8, 8);
+	}
+
+	public Font getScoreFont() {
+		return scoreFont;
+	}
+
+	/**
+	 * Note: maze numbers are 1-based, maze index as stored here is 0-based.
+	 * 
+	 * @param mazeIndex 0-based maze index
+	 * @return color of maze walls
+	 */
+	public Color getMazeWallColor(int mazeIndex) {
+		return mazeWallColors[mazeIndex];
+	}
+
+	/**
+	 * Note: maze numbers are 1-based, maze index as stored here is 0-based.
+	 * 
+	 * @param mazeIndex 0-based maze index
+	 * @return color of maze wall borders
+	 */
+	public Color getMazeWallBorderColor(int mazeIndex) {
+		return mazeWallBorderColors[mazeIndex];
+	}
+
+	public Map<Integer, BufferedImage> getNumberSpritesMap() {
+		return bountyNumberSprites;
 	}
 
 	public TimedSequence<BufferedImage> createPlayerDyingAnimation() {
@@ -183,27 +182,32 @@ public class MsPacManGameRenderingAssets extends Spritesheet {
 		return munchings;
 	}
 
-	/**
-	 * Note: maze numbers are 1-based, maze index as stored here is 0-based.
-	 * 
-	 * @param mazeIndex 0-based maze index
-	 * @return color of maze walls
-	 */
-	public Color getMazeWallColor(int mazeIndex) {
-		return mazeWallColors[mazeIndex];
+	public Map<Direction, TimedSequence<BufferedImage>> createGhostKickingAnimations(int ghostID) {
+		EnumMap<Direction, TimedSequence<BufferedImage>> kickingByDir = new EnumMap<>(Direction.class);
+		for (Direction dir : Direction.values()) {
+			int d = index(dir);
+			TimedSequence<BufferedImage> kicking = TimedSequence.of(s(2 * d, 4 + ghostID), s(2 * d + 1, 4 + ghostID));
+			kicking.frameDuration(4).endless();
+			kickingByDir.put(dir, kicking);
+		}
+		return kickingByDir;
 	}
 
-	/**
-	 * Note: maze numbers are 1-based, maze index as stored here is 0-based.
-	 * 
-	 * @param mazeIndex 0-based maze index
-	 * @return color of maze wall borders
-	 */
-	public Color getMazeWallBorderColor(int mazeIndex) {
-		return mazeWallBorderColors[mazeIndex];
+	public TimedSequence<BufferedImage> createGhostFrightenedAnimation() {
+		TimedSequence<BufferedImage> animation = TimedSequence.of(s(8, 4), s(9, 4));
+		animation.frameDuration(20).endless().run();
+		return animation;
 	}
 
-	public Font getScoreFont() {
-		return scoreFont;
+	public TimedSequence<BufferedImage> createGhostFlashingAnimation() {
+		return TimedSequence.of(s(8, 4), s(9, 4), s(10, 4), s(11, 4)).frameDuration(4);
+	}
+
+	public Map<Direction, TimedSequence<BufferedImage>> createGhostReturningHomeAnimations() {
+		Map<Direction, TimedSequence<BufferedImage>> ghostEyesAnimByDir = new EnumMap<>(Direction.class);
+		for (Direction dir : Direction.values()) {
+			ghostEyesAnimByDir.put(dir, TimedSequence.of(s(8 + index(dir), 5)));
+		}
+		return ghostEyesAnimByDir;
 	}
 }

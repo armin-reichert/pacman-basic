@@ -10,7 +10,6 @@ import static de.amr.games.pacman.ui.swing.assets.AssetLoader.image;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -18,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 
 import de.amr.games.pacman.lib.Direction;
-import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.ui.animation.TimedSequence;
 import de.amr.games.pacman.ui.swing.assets.Spritesheet;
 
@@ -48,10 +46,6 @@ public class PacManGameRenderingAssets extends Spritesheet {
 	public final BufferedImage[] symbolSprites;
 	public final Map<Integer, BufferedImage> numberSprites;
 	public final TimedSequence<BufferedImage> pacCollapsingAnim;
-	public final Map<Ghost, EnumMap<Direction, TimedSequence<BufferedImage>>> ghostsWalkingAnimsByGhost = new HashMap<>();
-	public final EnumMap<Direction, TimedSequence<BufferedImage>> ghostEyesAnimsByDir;
-	public final TimedSequence<BufferedImage> ghostBlueAnim;
-	public final List<TimedSequence<BufferedImage>> ghostFlashingAnim;
 	public final TimedSequence<Boolean> energizerBlinkingAnim;
 	public final TimedSequence<BufferedImage> bigPacManAnim;
 	public final TimedSequence<BufferedImage> blinkyHalfNaked;
@@ -103,20 +97,6 @@ public class PacManGameRenderingAssets extends Spritesheet {
 				sprite(8, 0), sprite(9, 0), sprite(10, 0), sprite(11, 0), sprite(12, 0), sprite(13, 0));
 		pacCollapsingAnim.frameDuration(8);
 
-		ghostEyesAnimsByDir = new EnumMap<>(Direction.class);
-		for (Direction dir : Direction.values()) {
-			ghostEyesAnimsByDir.put(dir, TimedSequence.of(sprite(8 + index(dir), 5)));
-		}
-
-		ghostBlueAnim = TimedSequence.of(sprite(8, 4), sprite(9, 4));
-		ghostBlueAnim.frameDuration(20).endless();
-
-		ghostFlashingAnim = new ArrayList<>();
-		for (int i = 0; i < 4; ++i) {
-			ghostFlashingAnim
-					.add(TimedSequence.of(sprite(8, 4), sprite(9, 4), sprite(10, 4), sprite(11, 4)).frameDuration(4));
-		}
-
 		bigPacManAnim = TimedSequence.of(spriteRegion(2, 1, 2, 2), spriteRegion(4, 1, 2, 2), spriteRegion(6, 1, 2, 2))
 				.frameDuration(4).endless().run();
 
@@ -147,22 +127,37 @@ public class PacManGameRenderingAssets extends Spritesheet {
 		return munching;
 	}
 
-	private EnumMap<Direction, TimedSequence<BufferedImage>> createGhostWalkingAnimation(int ghostType) {
+	public Map<Direction, TimedSequence<BufferedImage>> createGhostKickingAnimations(int ghostID) {
 		EnumMap<Direction, TimedSequence<BufferedImage>> walkingTo = new EnumMap<>(Direction.class);
 		for (Direction dir : Direction.values()) {
-			TimedSequence<BufferedImage> anim = TimedSequence.of(sprite(2 * index(dir), 4 + ghostType),
-					sprite(2 * index(dir) + 1, 4 + ghostType));
+			TimedSequence<BufferedImage> anim = TimedSequence.of(sprite(2 * index(dir), 4 + ghostID),
+					sprite(2 * index(dir) + 1, 4 + ghostID));
 			anim.frameDuration(10).endless();
 			walkingTo.put(dir, anim);
 		}
 		return walkingTo;
 	}
 
-	public EnumMap<Direction, TimedSequence<BufferedImage>> getOrCreateGhostsWalkingAnimation(Ghost ghost) {
-		if (!ghostsWalkingAnimsByGhost.containsKey(ghost)) {
-			ghostsWalkingAnimsByGhost.put(ghost, createGhostWalkingAnimation(ghost.id));
+	public TimedSequence<BufferedImage> createGhostFrightenedAnimation() {
+		TimedSequence<BufferedImage> animation = TimedSequence.of(sprite(8, 4), sprite(9, 4));
+		animation.frameDuration(20).endless();
+		return animation;
+	}
+
+	public TimedSequence<BufferedImage> createGhostFlashingAnimation() {
+		return TimedSequence.of(sprite(8, 4), sprite(9, 4), sprite(10, 4), sprite(11, 4)).frameDuration(4);
+	}
+
+	public Map<Direction, TimedSequence<BufferedImage>> createGhostsReturningHomeAnimations() {
+		Map<Direction, TimedSequence<BufferedImage>> ghostEyesAnimsByDir = new EnumMap<>(Direction.class);
+		for (Direction dir : Direction.values()) {
+			ghostEyesAnimsByDir.put(dir, TimedSequence.of(sprite(8 + index(dir), 5)));
 		}
-		return ghostsWalkingAnimsByGhost.get(ghost);
+		return ghostEyesAnimsByDir;
+	}
+
+	public Map<Integer, BufferedImage> getNumberSpritesMap() {
+		return numberSprites;
 	}
 
 	public Font getScoreFont() {

@@ -11,6 +11,7 @@ import de.amr.games.pacman.ui.animation.TimedSequence;
 import de.amr.games.pacman.ui.mspacman.MsPacMan_IntermissionScene1_Controller;
 import de.amr.games.pacman.ui.sound.PacManGameSound;
 import de.amr.games.pacman.ui.swing.PacManGameUI_Swing;
+import de.amr.games.pacman.ui.swing.rendering.common.Ghost2D;
 import de.amr.games.pacman.ui.swing.rendering.common.Player2D;
 import de.amr.games.pacman.ui.swing.rendering.mspacman.MsPacManGameRendering;
 import de.amr.games.pacman.ui.swing.scenes.common.GameScene;
@@ -42,6 +43,8 @@ public class MsPacMan_IntermissionScene1 extends GameScene {
 	private SceneController sceneController;
 	private Player2D msPacMan2D;
 	private Player2D pacMan2D;
+	private Ghost2D inky2D;
+	private Ghost2D pinky2D;
 
 	public MsPacMan_IntermissionScene1(PacManGameController controller, Dimension size) {
 		super(controller, size, PacManGameUI_Swing.RENDERING_MS_PACMAN, PacManGameUI_Swing.SOUND.get(MS_PACMAN));
@@ -57,6 +60,12 @@ public class MsPacMan_IntermissionScene1 extends GameScene {
 		pacMan2D = new Player2D(sceneController.pacMan);
 		pacMan2D.setMunchingAnimations(rendering.createSpouseMunchingAnimations());
 		pacMan2D.getMunchingAnimations().values().forEach(TimedSequence::restart);
+		inky2D = new Ghost2D(sceneController.inky);
+		inky2D.setKickingAnimations(rendering.createGhostKickingAnimations(inky2D.ghost.id));
+		inky2D.getKickingAnimations().values().forEach(TimedSequence::restart);
+		pinky2D = new Ghost2D(sceneController.pinky);
+		pinky2D.setKickingAnimations(rendering.createGhostKickingAnimations(pinky2D.ghost.id));
+		pinky2D.getKickingAnimations().values().forEach(TimedSequence::restart);
 	}
 
 	@Override
@@ -70,8 +79,8 @@ public class MsPacMan_IntermissionScene1 extends GameScene {
 		r.drawFlap(g, sceneController.flap);
 		msPacMan2D.render(g);
 		pacMan2D.render(g);
-		r.drawGhost(g, sceneController.inky, false);
-		r.drawGhost(g, sceneController.pinky, false);
+		inky2D.render(g);
+		pinky2D.render(g);
 		r.drawHeart(g, sceneController.heart);
 	}
 }

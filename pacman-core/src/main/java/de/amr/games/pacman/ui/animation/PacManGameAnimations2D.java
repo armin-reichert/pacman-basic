@@ -11,10 +11,7 @@ public interface PacManGameAnimations2D {
 
 	default void resetAllAnimations(AbstractGameModel game) {
 		mazeAnimations().reset();
-		game.ghosts().forEach(ghostAnimations()::reset);
 	}
-
-	GhostAnimations2D ghostAnimations();
 
 	MazeAnimations2D mazeAnimations();
 

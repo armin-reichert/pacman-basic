@@ -1,9 +1,5 @@
 package de.amr.games.pacman.ui.swing.rendering.mspacman;
 
-import static de.amr.games.pacman.model.common.GhostState.DEAD;
-import static de.amr.games.pacman.model.common.GhostState.ENTERING_HOUSE;
-import static de.amr.games.pacman.model.common.GhostState.FRIGHTENED;
-import static de.amr.games.pacman.model.common.GhostState.LOCKED;
 import static de.amr.games.pacman.model.world.PacManGameWorld.t;
 
 import java.awt.Color;
@@ -17,7 +13,6 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.AbstractGameModel;
 import de.amr.games.pacman.model.common.GameEntity;
-import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.mspacman.Flap;
 import de.amr.games.pacman.model.mspacman.JuniorBag;
 import de.amr.games.pacman.model.mspacman.Stork;
@@ -54,8 +49,28 @@ public class MsPacManGameRendering extends CommonPacManGameRendering
 	}
 
 	@Override
-	public GhostAnimations2D ghostAnimations() {
-		return this;
+	public Map<Direction, TimedSequence<BufferedImage>> createGhostKickingAnimations(int ghostID) {
+		return assets.createGhostKickingAnimations(ghostID);
+	}
+
+	@Override
+	public TimedSequence<BufferedImage> createGhostFrightenedAnimation() {
+		return assets.createGhostFrightenedAnimation();
+	}
+
+	@Override
+	public TimedSequence<BufferedImage> createGhostFlashingAnimation() {
+		return assets.createGhostFlashingAnimation();
+	}
+
+	@Override
+	public Map<Direction, TimedSequence<BufferedImage>> createGhostReturningHomeAnimations() {
+		return assets.createGhostReturningHomeAnimations();
+	}
+
+	@Override
+	public Map<Integer, BufferedImage> getNumberSpritesMap() {
+		return assets.getNumberSpritesMap();
 	}
 
 	@Override
@@ -151,24 +166,6 @@ public class MsPacManGameRendering extends CommonPacManGameRendering
 	}
 
 	@Override
-	public BufferedImage ghostSprite(Ghost ghost, boolean frightened) {
-		if (ghost.bounty > 0) {
-			return assets.bountyNumberSprites.get(ghost.bounty);
-		}
-		if (ghost.is(DEAD) || ghost.is(ENTERING_HOUSE)) {
-			return ghostReturningHome(ghost, ghost.dir).animate();
-		}
-		if (ghost.is(FRIGHTENED)) {
-			return ghostFlashing(ghost).isRunning() ? ghostFlashing(ghost).animate()
-					: ghostFrightened(ghost, ghost.dir).animate();
-		}
-		if (ghost.is(LOCKED) && frightened) {
-			return ghostFrightened(ghost, ghost.dir).animate();
-		}
-		return ghostKicking(ghost, ghost.wishDir).animate();
-	}
-
-	@Override
 	protected BufferedImage bonusSprite(PacManBonus bonus) {
 		if (bonus.edibleTicksLeft > 0) {
 			return assets.symbolSprites[bonus.symbol];
@@ -182,26 +179,6 @@ public class MsPacManGameRendering extends CommonPacManGameRendering
 	@Override
 	protected BufferedImage symbolSprite(byte symbol) {
 		return assets.symbolSprites[symbol];
-	}
-
-	@Override
-	public TimedSequence<BufferedImage> ghostKicking(Ghost ghost, Direction dir) {
-		return assets.ghostsKickingAnimsByGhost.get(ghost.id).get(dir);
-	}
-
-	@Override
-	public TimedSequence<BufferedImage> ghostFrightened(Ghost ghost, Direction dir) {
-		return assets.ghostBlueAnim;
-	}
-
-	@Override
-	public TimedSequence<BufferedImage> ghostFlashing(Ghost ghost) {
-		return assets.ghostFlashingAnim.get(ghost.id);
-	}
-
-	@Override
-	public TimedSequence<BufferedImage> ghostReturningHome(Ghost ghost, Direction dir) {
-		return assets.ghostEyesAnimByDir.get(dir);
 	}
 
 	@Override

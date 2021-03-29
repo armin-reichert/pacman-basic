@@ -131,7 +131,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	public void step() {
-		if (gameRunning || attractMode) {
+		if (gameRunning || (attractMode && state != INTRO)) {
 			steerPlayer();
 		}
 		updateState();

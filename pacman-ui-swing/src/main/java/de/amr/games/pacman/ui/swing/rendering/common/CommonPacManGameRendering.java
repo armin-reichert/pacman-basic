@@ -18,7 +18,6 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.AbstractGameModel;
 import de.amr.games.pacman.model.common.GameEntity;
-import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.pacman.PacManBonus;
 import de.amr.games.pacman.ui.animation.PacManGameAnimations2D;
 import de.amr.games.pacman.ui.animation.TimedSequence;
@@ -38,6 +37,16 @@ public abstract class CommonPacManGameRendering implements PacManGameAnimations2
 
 	public abstract Map<Direction, TimedSequence<BufferedImage>> createSpouseMunchingAnimations();
 
+	public abstract Map<Direction, TimedSequence<BufferedImage>> createGhostKickingAnimations(int ghostID);
+
+	public abstract TimedSequence<BufferedImage> createGhostFrightenedAnimation();
+
+	public abstract TimedSequence<BufferedImage> createGhostFlashingAnimation();
+
+	public abstract Map<Direction, TimedSequence<BufferedImage>> createGhostReturningHomeAnimations();
+
+	public abstract Map<Integer, BufferedImage> getNumberSpritesMap();
+
 	protected Graphics2D smoothGC(Graphics2D g) {
 		Graphics2D gc = (Graphics2D) g.create();
 		gc.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
@@ -55,10 +64,6 @@ public abstract class CommonPacManGameRendering implements PacManGameAnimations2
 			int dx = guySprite.getWidth() / 2 - HTS, dy = guySprite.getHeight() / 2 - HTS;
 			drawSprite(g, guySprite, guy.position.x - dx, guy.position.y - dy);
 		}
-	}
-
-	public void drawGhost(Graphics2D g, Ghost ghost, boolean frightened) {
-		drawEntity(g, ghost, ghostSprite(ghost, frightened));
 	}
 
 	public void drawFoodTiles(Graphics2D g, Stream<V2i> tiles, Predicate<V2i> eaten) {
@@ -138,8 +143,6 @@ public abstract class CommonPacManGameRendering implements PacManGameAnimations2
 			g.drawString("OVER", t(15), t(21));
 		}
 	}
-
-	public abstract BufferedImage ghostSprite(Ghost ghost, boolean frightened);
 
 	protected abstract BufferedImage symbolSprite(byte symbol);
 

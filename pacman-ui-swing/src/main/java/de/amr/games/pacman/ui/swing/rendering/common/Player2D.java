@@ -35,7 +35,7 @@ public class Player2D {
 		return munchingAnimations;
 	}
 
-	protected void drawEntity(Graphics2D g, BufferedImage guySprite) {
+	private void drawEntity(Graphics2D g, BufferedImage guySprite) {
 		if (player.visible && guySprite != null) {
 			int dx = guySprite.getWidth() / 2 - 4, dy = guySprite.getHeight() / 2 - 4;
 			Graphics2D gc = (Graphics2D) g.create();

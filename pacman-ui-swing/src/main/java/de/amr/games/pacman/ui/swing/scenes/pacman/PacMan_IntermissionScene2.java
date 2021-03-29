@@ -8,9 +8,11 @@ import java.awt.Graphics2D;
 
 import de.amr.games.pacman.controller.PacManGameController;
 import de.amr.games.pacman.ui.animation.PacManGameAnimations2D;
+import de.amr.games.pacman.ui.animation.TimedSequence;
 import de.amr.games.pacman.ui.pacman.PacMan_IntermissionScene2_Controller;
 import de.amr.games.pacman.ui.sound.PacManGameSound;
 import de.amr.games.pacman.ui.swing.PacManGameUI_Swing;
+import de.amr.games.pacman.ui.swing.rendering.common.Ghost2D;
 import de.amr.games.pacman.ui.swing.rendering.common.Player2D;
 import de.amr.games.pacman.ui.swing.rendering.pacman.PacManGameRendering;
 import de.amr.games.pacman.ui.swing.scenes.common.GameScene;
@@ -36,6 +38,7 @@ public class PacMan_IntermissionScene2 extends GameScene {
 
 	private SceneController sceneController;
 	private Player2D pacMan2D;
+	private Ghost2D blinky2D;
 
 	public PacMan_IntermissionScene2(PacManGameController controller, Dimension size) {
 		super(controller, size, PacManGameUI_Swing.RENDERING_PACMAN, PacManGameUI_Swing.SOUND.get(PACMAN));
@@ -47,6 +50,10 @@ public class PacMan_IntermissionScene2 extends GameScene {
 		sceneController.start();
 		pacMan2D = new Player2D(sceneController.pac);
 		pacMan2D.setMunchingAnimations(rendering.createPlayerMunchingAnimations());
+		pacMan2D.getMunchingAnimations().values().forEach(TimedSequence::restart);
+		blinky2D = new Ghost2D(sceneController.blinky);
+		blinky2D.setKickingAnimations(rendering.createGhostKickingAnimations(blinky2D.ghost.id));
+		blinky2D.getKickingAnimations().values().forEach(TimedSequence::restart);
 	}
 
 	@Override
@@ -61,7 +68,7 @@ public class PacMan_IntermissionScene2 extends GameScene {
 		r.drawNail(g, sceneController.nail);
 		pacMan2D.render(g);
 		if (sceneController.nailDistance() < 0) {
-			r.drawGhost(g, sceneController.blinky, false);
+			blinky2D.render(g);
 		} else {
 			r.drawBlinkyStretched(g, sceneController.blinky, sceneController.nail.position,
 					sceneController.nailDistance() / 4);

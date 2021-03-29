@@ -2,8 +2,6 @@ package de.amr.games.pacman.ui.mspacman;
 
 import static de.amr.games.pacman.model.world.PacManGameWorld.t;
 
-import java.util.stream.Stream;
-
 import de.amr.games.pacman.controller.PacManGameController;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
@@ -12,7 +10,6 @@ import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.mspacman.Flap;
 import de.amr.games.pacman.ui.animation.PacManGameAnimations2D;
-import de.amr.games.pacman.ui.animation.TimedSequence;
 
 /**
  * Intermission scene 1: "They meet".
@@ -72,10 +69,6 @@ public abstract class MsPacMan_IntermissionScene1_Controller {
 		pinky = new Ghost(1, "Pinky", Direction.LEFT);
 		pinky.setPositionRelativeTo(msPac, t(3), 0);
 		pinky.visible = true;
-
-		Stream.of(inky, pinky).forEach(ghost -> {
-			animations.ghostAnimations().ghostKicking(ghost).forEach(TimedSequence::restart);
-		});
 
 		heart = new GameEntity();
 		ghostsMet = false;
@@ -137,8 +130,8 @@ public abstract class MsPacMan_IntermissionScene1_Controller {
 				msPac.dir = Direction.RIGHT;
 				heart.setPosition((pacMan.position.x + msPac.position.x) / 2, pacMan.position.y - t(2));
 				heart.visible = true;
-				animations.ghostAnimations().ghostKicking(inky).forEach(TimedSequence::reset);
-				animations.ghostAnimations().ghostKicking(pinky).forEach(TimedSequence::reset);
+//				animations.ghostAnimations().ghostKicking(inky).forEach(TimedSequence::reset);
+//				animations.ghostAnimations().ghostKicking(pinky).forEach(TimedSequence::reset);
 				enterSeconds(Phase.READY_TO_PLAY, 2);
 			}
 			if (!ghostsMet && inky.position.x - pinky.position.x < 16) {

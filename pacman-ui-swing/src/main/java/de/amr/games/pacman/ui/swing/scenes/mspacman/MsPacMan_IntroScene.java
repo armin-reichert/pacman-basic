@@ -7,13 +7,18 @@ import static de.amr.games.pacman.ui.swing.rendering.mspacman.MsPacManGameRender
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import de.amr.games.pacman.controller.PacManGameController;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.common.Ghost;
+import de.amr.games.pacman.ui.animation.TimedSequence;
 import de.amr.games.pacman.ui.mspacman.MsPacMan_IntroScene_Controller;
 import de.amr.games.pacman.ui.mspacman.MsPacMan_IntroScene_Controller.Phase;
 import de.amr.games.pacman.ui.swing.PacManGameUI_Swing;
+import de.amr.games.pacman.ui.swing.rendering.common.Ghost2D;
 import de.amr.games.pacman.ui.swing.rendering.common.Player2D;
 import de.amr.games.pacman.ui.swing.scenes.common.GameScene;
 
@@ -27,6 +32,7 @@ public class MsPacMan_IntroScene extends GameScene {
 	private MsPacMan_IntroScene_Controller sceneController;
 	private TickTimer boardAnimationTimer = new TickTimer();
 	private Player2D msPacMan2D;
+	private List<Ghost2D> ghosts2D;
 
 	public MsPacMan_IntroScene(PacManGameController controller, Dimension size) {
 		super(controller, size, PacManGameUI_Swing.RENDERING_MS_PACMAN, PacManGameUI_Swing.SOUND.get(MS_PACMAN));
@@ -38,6 +44,15 @@ public class MsPacMan_IntroScene extends GameScene {
 		sceneController.start();
 		msPacMan2D = new Player2D(sceneController.msPacMan);
 		msPacMan2D.setMunchingAnimations(rendering.createPlayerMunchingAnimations());
+		msPacMan2D.getMunchingAnimations().values().forEach(TimedSequence::restart);
+		ghosts2D = Stream.of(sceneController.ghosts).map(Ghost2D::new).collect(Collectors.toList());
+		ghosts2D.forEach(ghost2D -> {
+			ghost2D.setKickingAnimations(rendering.createGhostKickingAnimations(ghost2D.ghost.id));
+			ghost2D.getKickingAnimations().values().forEach(TimedSequence::restart);
+//			ghost2D.setFrightenedAnimation(rendering.createGhostFrightenedAnimation());
+//			ghost2D.setFlashingAnimation(rendering.createGhostFlashingAnimation());
+//			ghost2D.setReturningHomeAnimations(rendering.createGhostReturningHomeAnimations());
+		});
 		boardAnimationTimer.reset();
 		boardAnimationTimer.start();
 	}
@@ -63,9 +78,7 @@ public class MsPacMan_IntroScene extends GameScene {
 			drawPointsAnimation(g, 26);
 			drawPressKeyToStart(g, 32);
 		}
-		for (Ghost ghost : sceneController.ghosts) {
-			rendering.drawGhost(g, ghost, false);
-		}
+		ghosts2D.forEach(ghost2D -> ghost2D.render(g));
 		msPacMan2D.render(g);
 	}
 

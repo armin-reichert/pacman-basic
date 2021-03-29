@@ -46,21 +46,18 @@ public abstract class PacMan_IntermissionScene2_Controller {
 		pac.setTilePosition(30, groundTileY);
 		pac.visible = true;
 		pac.speed = 1;
-//TODO		animations.playerAnimations().playerMunching(pac).forEach(TimedSequence::restart);
 
 		blinky = new Ghost(0, "Blinky", Direction.LEFT);
 		blinky.setPositionRelativeTo(pac, t(14), 0);
 		blinky.visible = true;
 		blinky.state = GhostState.HUNTING_PAC;
 		blinky.speed = 1;
-		animations.ghostAnimations().ghostKicking(blinky, blinky.dir).restart();
 
 		nail = new GameEntity();
 		nail.visible = true;
 		nail.setPosition(t(14), t(groundTileY) - 1);
 
 		playIntermissionSound();
-//		sounds.play(PacManGameSound.INTERMISSION_2);
 
 		enter(Phase.WALKING);
 	}

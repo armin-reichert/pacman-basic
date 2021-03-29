@@ -9,13 +9,19 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import de.amr.games.pacman.controller.PacManGameController;
 import de.amr.games.pacman.model.common.Ghost;
+import de.amr.games.pacman.ui.animation.TimedSequence;
 import de.amr.games.pacman.ui.pacman.PacMan_IntroScene_Controller;
 import de.amr.games.pacman.ui.pacman.PacMan_IntroScene_Controller.GhostPortrait;
 import de.amr.games.pacman.ui.pacman.PacMan_IntroScene_Controller.Phase;
 import de.amr.games.pacman.ui.swing.PacManGameUI_Swing;
+import de.amr.games.pacman.ui.swing.rendering.common.Ghost2D;
 import de.amr.games.pacman.ui.swing.rendering.common.Player2D;
 import de.amr.games.pacman.ui.swing.scenes.common.GameScene;
 
@@ -31,6 +37,8 @@ public class PacMan_IntroScene extends GameScene {
 
 	private PacMan_IntroScene_Controller sceneController;
 	private Player2D pacMan2D;
+	private List<Ghost2D> ghosts2D;
+	private List<Ghost2D> ghostsInGallery2D;
 
 	public PacMan_IntroScene(PacManGameController controller, Dimension size) {
 		super(controller, size, PacManGameUI_Swing.RENDERING_PACMAN, PacManGameUI_Swing.SOUND.get(PACMAN));
@@ -40,9 +48,25 @@ public class PacMan_IntroScene extends GameScene {
 	public void start() {
 		sceneController = new PacMan_IntroScene_Controller(gameController, rendering);
 		sceneController.start();
-		// TODO must be done after scene controller start at the moment
 		pacMan2D = new Player2D(sceneController.pac);
 		pacMan2D.setMunchingAnimations(rendering.createPlayerMunchingAnimations());
+		ghosts2D = Stream.of(sceneController.ghosts).map(Ghost2D::new).collect(Collectors.toList());
+		ghosts2D.forEach(ghost2D -> {
+			ghost2D.setKickingAnimations(rendering.createGhostKickingAnimations(ghost2D.ghost.id));
+			ghost2D.getKickingAnimations().values().forEach(TimedSequence::restart);
+			ghost2D.setFrightenedAnimation(rendering.createGhostFrightenedAnimation());
+			ghost2D.getFrightenedAnimation().restart();
+			ghost2D.setFlashingAnimation(rendering.createGhostFlashingAnimation());
+			ghost2D.getFlashingAnimation().restart();
+			ghost2D.setNumberSprites(rendering.getNumberSpritesMap());
+		});
+		ghostsInGallery2D = new ArrayList<>();
+		for (int i = 0; i < 4; ++i) {
+			Ghost ghost = sceneController.gallery[i].ghost;
+			Ghost2D ghost2D = new Ghost2D(ghost);
+			ghost2D.setKickingAnimations(rendering.createGhostKickingAnimations(ghost.id));
+			ghostsInGallery2D.add(ghost2D);
+		}
 	}
 
 	@Override
@@ -73,9 +97,7 @@ public class PacMan_IntroScene extends GameScene {
 	}
 
 	private void drawGuys(Graphics2D g) {
-		for (Ghost ghost : sceneController.ghosts) {
-			rendering.drawGhost(g, ghost, false);
-		}
+		ghosts2D.forEach(ghost2D -> ghost2D.render(g));
 		pacMan2D.render(g);
 	}
 
@@ -89,7 +111,7 @@ public class PacMan_IntroScene extends GameScene {
 			GhostPortrait portrait = sceneController.gallery[i];
 			if (portrait.ghost.visible) {
 				int y = TOP_Y + t(2 + 3 * i);
-				rendering.drawGhost(g, sceneController.gallery[i].ghost, false);
+				ghostsInGallery2D.get(i).render(g);
 				g.setColor(getGhostColor(i));
 				g.setFont(rendering.getScoreFont());
 				if (portrait.characterVisible) {

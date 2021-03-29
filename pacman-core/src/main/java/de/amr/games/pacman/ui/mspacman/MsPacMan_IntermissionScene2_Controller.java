@@ -8,7 +8,6 @@ import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.mspacman.Flap;
 import de.amr.games.pacman.ui.animation.PacManGameAnimations2D;
-import de.amr.games.pacman.ui.animation.TimedSequence;
 
 /**
  * Intermission scene 2: "The chase".

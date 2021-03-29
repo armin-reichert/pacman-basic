@@ -88,7 +88,8 @@ public class MsPacMan_IntroScene_Controller {
 			if (phaseTimer.hasJustStarted()) {
 				ghosts[currentGhostIndex].visible = true;
 				ghosts[currentGhostIndex].speed = 1.0;
-				animations.ghostAnimations().ghostKicking(ghosts[currentGhostIndex]).forEach(TimedSequence::restart);
+				// TODO
+//				animations.ghostAnimations().ghostKicking(ghosts[currentGhostIndex]).forEach(TimedSequence::restart);
 			}
 			boolean ghostReachedFinalPosition = ghostEnteringStage(ghosts[currentGhostIndex]);
 			if (ghostReachedFinalPosition) {
@@ -144,7 +145,8 @@ public class MsPacMan_IntroScene_Controller {
 		}
 		if (ghost.dir == UP && ghost.position.y <= t(tileBoardTopLeft.y) + ghost.id * 18) {
 			ghost.speed = 0;
-			animations.ghostAnimations().ghostKicking(ghost).forEach(TimedSequence::reset);
+			// TODO
+//			animations.ghostAnimations().ghostKicking(ghost).forEach(TimedSequence::reset);
 			return true;
 		}
 		return false;
