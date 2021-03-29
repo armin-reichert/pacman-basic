@@ -13,12 +13,14 @@ import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2d;
+import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.GameEntity;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.pacman.PacManBonus;
 import de.amr.games.pacman.ui.animation.GhostAnimations2D;
 import de.amr.games.pacman.ui.animation.MazeAnimations2D;
+import de.amr.games.pacman.ui.animation.PacManGameAnimations2D;
 import de.amr.games.pacman.ui.animation.PlayerAnimations2D;
 import de.amr.games.pacman.ui.animation.TimedSequence;
 import de.amr.games.pacman.ui.pacman.PacManGameRendering2D;
@@ -28,8 +30,9 @@ import de.amr.games.pacman.ui.pacman.PacManGameRendering2D;
  * 
  * @author Armin Reichert
  */
-public class PacManGameRendering extends SwingPacManGameRendering2D implements
-		PacManGameRendering2D<Graphics2D, Color, Font, BufferedImage>, MazeAnimations2D, PlayerAnimations2D, GhostAnimations2D {
+public class PacManGameRendering extends CommonPacManGameRendering
+		implements PacManGameRendering2D<Graphics2D, Color, Font, BufferedImage>, PacManGameAnimations2D, MazeAnimations2D,
+		PlayerAnimations2D, GhostAnimations2D {
 
 	public final PacManGameRenderingAssets assets;
 
@@ -137,6 +140,13 @@ public class PacManGameRendering extends SwingPacManGameRendering2D implements
 			g.drawImage(mazeFlashing(mazeNumber).animate(), x, y, null);
 		} else {
 			g.drawImage(assets.mazeFullImage, x, y, null);
+		}
+	}
+
+	@Override
+	public void drawEnergizerTiles(Graphics2D g, Stream<V2i> energizerTiles) {
+		if (!mazeAnimations().energizerBlinking().animate()) {
+			energizerTiles.forEach(tile -> drawTileCovered(g, tile));
 		}
 	}
 

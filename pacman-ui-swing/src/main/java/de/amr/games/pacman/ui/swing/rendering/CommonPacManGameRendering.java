@@ -26,7 +26,7 @@ import de.amr.games.pacman.ui.animation.PacManGameAnimations2D;
  * 
  * @author Armin Reichert
  */
-public abstract class SwingPacManGameRendering2D implements PacManGameAnimations2D {
+public abstract class CommonPacManGameRendering implements PacManGameAnimations2D {
 
 	public abstract Font getScoreFont();
 
@@ -57,12 +57,6 @@ public abstract class SwingPacManGameRendering2D implements PacManGameAnimations
 		drawEntity(g, ghost, ghostSprite(ghost, frightened));
 	}
 
-	public void drawEnergizerTiles(Graphics2D g, Stream<V2i> energizerTiles) {
-		if (!mazeAnimations().energizerBlinking().animate()) {
-			energizerTiles.forEach(tile -> drawTileCovered(g, tile));
-		}
-	}
-
 	public void drawFoodTiles(Graphics2D g, Stream<V2i> tiles, Predicate<V2i> eaten) {
 		tiles.filter(eaten).forEach(tile -> drawTileCovered(g, tile));
 	}
@@ -77,6 +71,8 @@ public abstract class SwingPacManGameRendering2D implements PacManGameAnimations
 	}
 
 	public abstract void drawMaze(Graphics2D g, int mazeNumber, int i, int t, boolean running);
+
+	public abstract void drawEnergizerTiles(Graphics2D g, Stream<V2i> energizerTiles);
 
 	public void drawScore(Graphics2D g, AbstractGameModel game, boolean showHiscoreOnly) {
 		g.setFont(getScoreFont());
