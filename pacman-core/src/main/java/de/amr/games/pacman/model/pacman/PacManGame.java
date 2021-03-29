@@ -28,6 +28,12 @@ import de.amr.games.pacman.model.world.WorldMap;
  */
 public class PacManGame extends AbstractGameModel {
 
+	enum BonusSymbol {
+		CHERRIES, STRAWBERRY, PEACH, APPLE, GRAPES, GALAXIAN, BELL, KEY;
+	}
+
+	static final int[] BONUS_VALUES = { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
+
 	/*@formatter:off*/
 	static final int[][] PACMAN_LEVELS = {
 	/* 1*/ {0,  80, 75, 40,  20,  80, 10,  85,  90, 50, 6, 5},
@@ -62,8 +68,6 @@ public class PacManGame extends AbstractGameModel {
 		//@formatter:on
 	};
 
-	static final int[] BONUS_VALUES = { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
-
 	private final MapBasedPacManGameWorld world = new MapBasedPacManGameWorld();
 
 	public PacManGame() {
@@ -77,7 +81,7 @@ public class PacManGame extends AbstractGameModel {
 			log("Map '%s' contains errors", mapPath);
 		}
 
-		bonusNames = Stream.of(PacManSymbols.values()).map(Enum<PacManSymbols>::name).toArray(String[]::new);
+		bonusNames = Stream.of(BonusSymbol.values()).map(Enum<BonusSymbol>::name).toArray(String[]::new);
 		bonusValues = BONUS_VALUES;
 
 		bonus = new PacManBonus();

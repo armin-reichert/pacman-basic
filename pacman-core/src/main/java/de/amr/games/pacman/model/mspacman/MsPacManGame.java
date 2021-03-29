@@ -10,6 +10,7 @@ import static de.amr.games.pacman.model.common.Ghost.PINKY;
 import static de.amr.games.pacman.model.common.Ghost.SUE;
 
 import java.util.Random;
+import java.util.stream.Stream;
 
 import de.amr.games.pacman.model.common.AbstractGameModel;
 import de.amr.games.pacman.model.common.GameLevel;
@@ -24,6 +25,12 @@ import de.amr.games.pacman.model.world.WorldMap;
  * @author Armin Reichert
  */
 public class MsPacManGame extends AbstractGameModel {
+
+	enum BonusSymbol {
+		CHERRIES, STRAWBERRY, PEACH, PRETZEL, APPLE, PEAR, BANANA;
+	}
+
+	static final int[] BONUS_VALUES = { 100, 200, 500, 700, 1000, 2000, 5000 };
 
 	/*@formatter:off*/
 	public static final int[][] MSPACMAN_LEVELS = {
@@ -84,8 +91,8 @@ public class MsPacManGame extends AbstractGameModel {
 			}
 		}
 
-		bonusNames = new String[] { "CHERRIES", "STRAWBERRY", "PEACH", "PRETZEL", "APPLE", "PEAR", "BANANA" };
-		bonusValues = new int[] { 100, 200, 500, 700, 1000, 2000, 5000 };
+		bonusNames = Stream.of(BonusSymbol.values()).map(Enum<BonusSymbol>::name).toArray(String[]::new);
+		bonusValues = BONUS_VALUES;
 		bonus = new MsPacManBonus();
 		bonus.world = world;
 
