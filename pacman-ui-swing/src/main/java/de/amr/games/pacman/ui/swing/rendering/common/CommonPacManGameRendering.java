@@ -81,8 +81,6 @@ public abstract class CommonPacManGameRendering implements PacManGameAnimations2
 
 	public abstract void drawMaze(Graphics2D g, int mazeNumber, int i, int t, boolean running);
 
-	public abstract void drawEnergizerTiles(Graphics2D g, Stream<V2i> energizerTiles);
-
 	public void drawScore(Graphics2D g, AbstractGameModel game, boolean showHiscoreOnly) {
 		g.setFont(getScoreFont());
 		g.translate(0, 2);

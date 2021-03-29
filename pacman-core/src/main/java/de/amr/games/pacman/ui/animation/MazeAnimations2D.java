@@ -11,12 +11,9 @@ public interface MazeAnimations2D {
 
 	default void reset() {
 		mazeFlashings().forEach(TimedSequence::reset);
-		energizerBlinking().reset();
 	}
 
 	TimedSequence<?> mazeFlashing(int mazeNumber);
 
 	Stream<TimedSequence<?>> mazeFlashings();
-
-	TimedSequence<Boolean> energizerBlinking();
 }

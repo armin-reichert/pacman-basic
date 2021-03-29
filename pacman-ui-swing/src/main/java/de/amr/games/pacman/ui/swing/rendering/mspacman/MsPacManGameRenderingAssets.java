@@ -65,7 +65,6 @@ public class MsPacManGameRenderingAssets extends Spritesheet {
 	final List<BufferedImage> mazeEmptyImages;
 	final List<BufferedImage> mazeFullImages;
 	final List<TimedSequence<BufferedImage>> mazesFlashingAnims;
-	final TimedSequence<Boolean> energizerBlinkingAnim;
 	final TimedSequence<Integer> bonusJumpAnim;
 	final TimedSequence<BufferedImage> storkAnim;
 	final BufferedImage blueBag;
@@ -92,8 +91,6 @@ public class MsPacManGameRenderingAssets extends Spritesheet {
 					getMazeWallColor(i));
 			mazesFlashingAnims.add(TimedSequence.of(mazeEmpzyBright, mazeEmptyImages.get(i)).frameDuration(15));
 		}
-
-		energizerBlinkingAnim = TimedSequence.pulse().frameDuration(10);
 
 		lifeSprite = s(1, 0);
 		symbolSprites = new BufferedImage[] { s(3, 0), s(4, 0), s(5, 0), s(6, 0), s(7, 0), s(8, 0), s(9, 0) };

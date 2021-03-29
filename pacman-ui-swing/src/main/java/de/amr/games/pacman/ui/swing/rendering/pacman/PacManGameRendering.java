@@ -9,7 +9,6 @@ import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2d;
-import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.GameEntity;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
@@ -94,11 +93,6 @@ public class PacManGameRendering extends CommonPacManGameRendering implements Pa
 	// Animations
 
 	@Override
-	public TimedSequence<Boolean> energizerBlinking() {
-		return assets.energizerBlinkingAnim;
-	}
-
-	@Override
 	public Stream<TimedSequence<?>> mazeFlashings() {
 		return Stream.of(assets.mazeFlashingAnim);
 	}
@@ -126,13 +120,6 @@ public class PacManGameRendering extends CommonPacManGameRendering implements Pa
 			g.drawImage(mazeFlashing(mazeNumber).animate(), x, y, null);
 		} else {
 			g.drawImage(assets.mazeFullImage, x, y, null);
-		}
-	}
-
-	@Override
-	public void drawEnergizerTiles(Graphics2D g, Stream<V2i> energizerTiles) {
-		if (!mazeAnimations().energizerBlinking().animate()) {
-			energizerTiles.forEach(tile -> drawTileCovered(g, tile));
 		}
 	}
 

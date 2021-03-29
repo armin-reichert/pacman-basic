@@ -24,6 +24,7 @@ import de.amr.games.pacman.ui.animation.TimedSequence;
 import de.amr.games.pacman.ui.sound.PacManGameSound;
 import de.amr.games.pacman.ui.swing.assets.SoundManager;
 import de.amr.games.pacman.ui.swing.rendering.common.CommonPacManGameRendering;
+import de.amr.games.pacman.ui.swing.rendering.common.Energizer2D;
 import de.amr.games.pacman.ui.swing.rendering.common.Ghost2D;
 import de.amr.games.pacman.ui.swing.rendering.common.Player2D;
 
@@ -36,6 +37,7 @@ public class PlayScene extends GameScene {
 
 	private Player2D player2D;
 	private List<Ghost2D> ghosts2D;
+	private List<Energizer2D> energizers2D;
 	private TimedSequence<?> mazeFlashing;
 
 	public PlayScene(PacManGameController controller, Dimension size, CommonPacManGameRendering rendering,
@@ -60,6 +62,8 @@ public class PlayScene extends GameScene {
 			ghost2D.setReturningHomeAnimations(rendering.createGhostReturningHomeAnimations());
 			ghost2D.setNumberSpriteMap(rendering.getNumberSpritesMap());
 		});
+
+		energizers2D = game.currentLevel.world.energizerTiles().map(Energizer2D::new).collect(Collectors.toList());
 
 		mazeFlashing = rendering.mazeAnimations().mazeFlashing(game.currentLevel.mazeNumber)
 				.repetitions(game.currentLevel.numFlashes);
@@ -98,7 +102,7 @@ public class PlayScene extends GameScene {
 
 		// enter HUNTING
 		if (newState == PacManGameState.HUNTING) {
-			rendering.mazeAnimations().energizerBlinking().restart();
+			energizers2D.forEach(energizer2D -> energizer2D.getBlinkingAnimation().restart());
 			player2D.getMunchingAnimations().values().forEach(TimedSequence::restart);
 			ghosts2D.forEach(ghost2D -> {
 				ghost2D.getKickingAnimations().values().forEach(TimedSequence::restart);
@@ -107,7 +111,7 @@ public class PlayScene extends GameScene {
 
 		// exit HUNTING
 		if (oldState == PacManGameState.HUNTING) {
-			rendering.mazeAnimations().energizerBlinking().reset();
+			energizers2D.forEach(energizer2D -> energizer2D.getBlinkingAnimation().reset());
 		}
 
 		// enter PACMAN_DYING
@@ -119,7 +123,7 @@ public class PlayScene extends GameScene {
 		// enter GHOST_DYING
 		if (newState == PacManGameState.GHOST_DYING) {
 			sounds.play(PacManGameSound.GHOST_EATEN);
-			rendering.mazeAnimations().energizerBlinking().restart();
+			energizers2D.forEach(energizer2D -> energizer2D.getBlinkingAnimation().restart());
 		}
 
 		// exit GHOST_DYING
@@ -236,7 +240,7 @@ public class PlayScene extends GameScene {
 		if (!mazeFlashing.isRunning()) {
 			rendering.drawFoodTiles(g, game.currentLevel.world.tiles().filter(game.currentLevel.world::isFoodTile),
 					game.currentLevel::containsEatenFood);
-			rendering.drawEnergizerTiles(g, game.currentLevel.world.energizerTiles());
+			energizers2D.forEach(energizer2D -> energizer2D.render(g));
 		}
 		if (gameController.isAttractMode()) {
 			rendering.drawGameState(g, game, PacManGameState.GAME_OVER);

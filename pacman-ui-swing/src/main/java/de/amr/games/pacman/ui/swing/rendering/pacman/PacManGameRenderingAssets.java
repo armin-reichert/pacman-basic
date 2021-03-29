@@ -46,7 +46,6 @@ public class PacManGameRenderingAssets extends Spritesheet {
 	public final BufferedImage[] symbolSprites;
 	public final Map<Integer, BufferedImage> numberSprites;
 	public final TimedSequence<BufferedImage> pacCollapsingAnim;
-	public final TimedSequence<Boolean> energizerBlinkingAnim;
 	public final TimedSequence<BufferedImage> bigPacManAnim;
 	public final TimedSequence<BufferedImage> blinkyHalfNaked;
 	public final TimedSequence<BufferedImage> blinkyDamaged;
@@ -90,8 +89,6 @@ public class PacManGameRenderingAssets extends Spritesheet {
 		BufferedImage mazeEmptyDarkImage = image("/pacman/graphics/maze_empty.png");
 		BufferedImage mazeEmptyBrightImage = createBrightEffect(mazeEmptyDarkImage, new Color(33, 33, 255), Color.BLACK);
 		mazeFlashingAnim = TimedSequence.of(mazeEmptyBrightImage, mazeEmptyDarkImage).frameDuration(15);
-
-		energizerBlinkingAnim = TimedSequence.pulse().frameDuration(15);
 
 		pacCollapsingAnim = TimedSequence.of(sprite(3, 0), sprite(4, 0), sprite(5, 0), sprite(6, 0), sprite(7, 0),
 				sprite(8, 0), sprite(9, 0), sprite(10, 0), sprite(11, 0), sprite(12, 0), sprite(13, 0));
