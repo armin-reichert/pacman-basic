@@ -2,7 +2,7 @@ package de.amr.games.pacman.ui.swing.scenes.mspacman;
 
 import static de.amr.games.pacman.model.common.GameVariant.MS_PACMAN;
 import static de.amr.games.pacman.model.world.PacManGameWorld.t;
-import static de.amr.games.pacman.ui.swing.rendering.MsPacManGameRendering.assets;
+import static de.amr.games.pacman.ui.swing.rendering.mspacman.MsPacManGameRendering.assets;
 
 import java.awt.Color;
 import java.awt.Dimension;
