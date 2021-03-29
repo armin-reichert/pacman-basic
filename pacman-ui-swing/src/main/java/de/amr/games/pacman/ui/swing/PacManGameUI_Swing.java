@@ -44,9 +44,9 @@ import de.amr.games.pacman.ui.swing.assets.AssetLoader;
 import de.amr.games.pacman.ui.swing.assets.PacManGameSounds;
 import de.amr.games.pacman.ui.swing.assets.SoundManager;
 import de.amr.games.pacman.ui.swing.rendering.Debug;
-import de.amr.games.pacman.ui.swing.rendering.PacManGameRendering2D;
-import de.amr.games.pacman.ui.swing.rendering.standard.MsPacMan_StandardRendering;
-import de.amr.games.pacman.ui.swing.rendering.standard.PacMan_StandardRendering;
+import de.amr.games.pacman.ui.swing.rendering.MsPacManGameRendering;
+import de.amr.games.pacman.ui.swing.rendering.SwingPacManGameRendering2D;
+import de.amr.games.pacman.ui.swing.rendering.PacManGameRendering;
 import de.amr.games.pacman.ui.swing.scenes.common.GameScene;
 import de.amr.games.pacman.ui.swing.scenes.common.PlayScene;
 import de.amr.games.pacman.ui.swing.scenes.mspacman.MsPacMan_IntermissionScene1;
@@ -65,10 +65,10 @@ import de.amr.games.pacman.ui.swing.scenes.pacman.PacMan_IntroScene;
  */
 public class PacManGameUI_Swing implements PacManGameUI {
 
-	public static final EnumMap<GameVariant, PacManGameRendering2D> RENDERING = new EnumMap<>(GameVariant.class);
+	public static final EnumMap<GameVariant, SwingPacManGameRendering2D> RENDERING = new EnumMap<>(GameVariant.class);
 	static {
-		RENDERING.put(MS_PACMAN, new MsPacMan_StandardRendering());
-		RENDERING.put(PACMAN, new PacMan_StandardRendering());
+		RENDERING.put(MS_PACMAN, new MsPacManGameRendering());
+		RENDERING.put(PACMAN, new PacManGameRendering());
 	}
 
 	public static final EnumMap<GameVariant, SoundManager> SOUND = new EnumMap<>(GameVariant.class);

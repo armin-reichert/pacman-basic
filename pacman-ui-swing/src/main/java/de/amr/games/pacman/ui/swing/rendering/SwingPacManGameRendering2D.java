@@ -1,4 +1,4 @@
-package de.amr.games.pacman.ui.swing.rendering.standard;
+package de.amr.games.pacman.ui.swing.rendering;
 
 import static de.amr.games.pacman.model.world.PacManGameWorld.HTS;
 import static de.amr.games.pacman.model.world.PacManGameWorld.TS;
@@ -22,17 +22,16 @@ import de.amr.games.pacman.model.mspacman.Flap;
 import de.amr.games.pacman.model.mspacman.JuniorBag;
 import de.amr.games.pacman.model.mspacman.Stork;
 import de.amr.games.pacman.model.pacman.PacManBonus;
+import de.amr.games.pacman.ui.PacManRendering2D;
 import de.amr.games.pacman.ui.animation.PacManGameAnimations2D;
-import de.amr.games.pacman.ui.swing.rendering.PacManGameRendering2D;
 
 /**
- * Standard rendering functionality for both, Pac-Man and Ms. Pac-Man.
+ * Spritesheet-based rendering for both, Pac-Man and Ms. Pac-Man.
  * 
  * @author Armin Reichert
  */
-public abstract class StandardRendering implements PacManGameRendering2D, PacManGameAnimations2D {
-
-	public boolean foodAnimationOn; // TODO not used
+public abstract class SwingPacManGameRendering2D
+		implements PacManRendering2D<Graphics2D, Color, Font, BufferedImage>, PacManGameAnimations2D {
 
 	@Override
 	public abstract Font getScoreFont();
@@ -43,7 +42,6 @@ public abstract class StandardRendering implements PacManGameRendering2D, PacMan
 		return gc;
 	}
 
-	@Override
 	public void drawSprite(Graphics2D g, BufferedImage sprite, double x, double y) {
 		Graphics2D gc = smoothGC(g);
 		gc.drawImage(sprite, (int) x, (int) y, null);

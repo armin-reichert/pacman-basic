@@ -1,4 +1,4 @@
-package de.amr.games.pacman.ui.swing.rendering.standard;
+package de.amr.games.pacman.ui.swing.rendering;
 
 import static de.amr.games.pacman.model.common.GhostState.DEAD;
 import static de.amr.games.pacman.model.common.GhostState.ENTERING_HOUSE;
@@ -23,17 +23,17 @@ import de.amr.games.pacman.ui.animation.PlayerAnimations2D;
 import de.amr.games.pacman.ui.animation.TimedSequence;
 
 /**
- * Standard rendering for the Pac-Man game using the original sprites and animations.
+ * Sprite-based rendering for the Pac-Man game.
  * 
  * @author Armin Reichert
  */
-public class PacMan_StandardRendering extends StandardRendering
+public class PacManGameRendering extends SwingPacManGameRendering2D
 		implements MazeAnimations2D, PlayerAnimations2D, GhostAnimations2D {
 
-	public final PacMan_StandardAssets assets;
+	public final PacManGameRenderingAssets assets;
 
-	public PacMan_StandardRendering() {
-		assets = new PacMan_StandardAssets();
+	public PacManGameRendering() {
+		assets = new PacManGameRenderingAssets();
 	}
 
 	@Override

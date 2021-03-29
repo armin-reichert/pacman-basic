@@ -1,4 +1,4 @@
-package de.amr.games.pacman.ui.swing.rendering.standard;
+package de.amr.games.pacman.ui.swing.rendering;
 
 import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
@@ -28,7 +28,7 @@ import de.amr.games.pacman.ui.swing.assets.Spritesheet;
  * 
  * @author Armin Reichert
  */
-public class PacMan_StandardAssets extends Spritesheet {
+public class PacManGameRenderingAssets extends Spritesheet {
 
 	/** Sprite sheet order of directions. */
 	static final List<Direction> order = Arrays.asList(RIGHT, LEFT, UP, DOWN);
@@ -62,7 +62,7 @@ public class PacMan_StandardAssets extends Spritesheet {
 	public final TimedSequence<BufferedImage> blinkyPatched;
 	public final BufferedImage nailSprite;
 
-	public PacMan_StandardAssets() {
+	public PacManGameRenderingAssets() {
 		super(image("/pacman/graphics/sprites.png"), 16);
 
 		scoreFont = font("/emulogic.ttf", 8);
@@ -101,8 +101,8 @@ public class PacMan_StandardAssets extends Spritesheet {
 
 		energizerBlinkingAnim = TimedSequence.pulse().frameDuration(15);
 
-		pacCollapsingAnim = TimedSequence.of(sprite(3, 0), sprite(4, 0), sprite(5, 0), sprite(6, 0), sprite(7, 0), sprite(8, 0),
-				sprite(9, 0), sprite(10, 0), sprite(11, 0), sprite(12, 0), sprite(13, 0));
+		pacCollapsingAnim = TimedSequence.of(sprite(3, 0), sprite(4, 0), sprite(5, 0), sprite(6, 0), sprite(7, 0),
+				sprite(8, 0), sprite(9, 0), sprite(10, 0), sprite(11, 0), sprite(12, 0), sprite(13, 0));
 		pacCollapsingAnim.frameDuration(8);
 
 		ghostEyesAnimsByDir = new EnumMap<>(Direction.class);
@@ -115,7 +115,8 @@ public class PacMan_StandardAssets extends Spritesheet {
 
 		ghostFlashingAnim = new ArrayList<>();
 		for (int i = 0; i < 4; ++i) {
-			ghostFlashingAnim.add(TimedSequence.of(sprite(8, 4), sprite(9, 4), sprite(10, 4), sprite(11, 4)).frameDuration(4));
+			ghostFlashingAnim
+					.add(TimedSequence.of(sprite(8, 4), sprite(9, 4), sprite(10, 4), sprite(11, 4)).frameDuration(4));
 		}
 
 		bigPacManAnim = TimedSequence.of(spriteRegion(2, 1, 2, 2), spriteRegion(4, 1, 2, 2), spriteRegion(6, 1, 2, 2))
@@ -140,8 +141,8 @@ public class PacMan_StandardAssets extends Spritesheet {
 	private EnumMap<Direction, TimedSequence<BufferedImage>> createPacMunchingAnimation() {
 		EnumMap<Direction, TimedSequence<BufferedImage>> munching = new EnumMap<>(Direction.class);
 		for (Direction dir : Direction.values()) {
-			TimedSequence<BufferedImage> animation = TimedSequence.of(sprite(2, 0), sprite(1, index(dir)), sprite(0, index(dir)),
-					sprite(1, index(dir)));
+			TimedSequence<BufferedImage> animation = TimedSequence.of(sprite(2, 0), sprite(1, index(dir)),
+					sprite(0, index(dir)), sprite(1, index(dir)));
 			animation.frameDuration(2).endless().run();
 			munching.put(dir, animation);
 		}

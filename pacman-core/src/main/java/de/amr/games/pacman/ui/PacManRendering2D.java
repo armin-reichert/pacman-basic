@@ -24,7 +24,7 @@ import de.amr.games.pacman.model.pacman.PacManBonus;
  * @param <GC>    specific graphics context type
  * @param <COLOR> specific color type
  */
-public interface Rendering<GC, COLOR, FONT, SPRITE> {
+public interface PacManRendering2D<GC, COLOR, FONT, SPRITE> {
 
 	FONT getScoreFont();
 

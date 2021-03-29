@@ -1,4 +1,4 @@
-package de.amr.games.pacman.ui.swing.rendering.standard;
+package de.amr.games.pacman.ui.swing.rendering;
 
 import static de.amr.games.pacman.model.common.GhostState.DEAD;
 import static de.amr.games.pacman.model.common.GhostState.ENTERING_HOUSE;
@@ -32,10 +32,10 @@ import de.amr.games.pacman.ui.animation.TimedSequence;
  * 
  * @author Armin Reichert
  */
-public class MsPacMan_StandardRendering extends StandardRendering
+public class MsPacManGameRendering extends SwingPacManGameRendering2D
 		implements PlayerAnimations2D, GhostAnimations2D, MazeAnimations2D {
 
-	public static final MsPacMan_StandardAssets assets = new MsPacMan_StandardAssets();
+	public static final MsPacManGameRenderingAssets assets = new MsPacManGameRenderingAssets();
 
 	@Override
 	public PlayerAnimations2D playerAnimations() {
