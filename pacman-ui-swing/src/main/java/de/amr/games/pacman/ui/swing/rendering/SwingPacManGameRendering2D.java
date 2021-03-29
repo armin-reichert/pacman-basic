@@ -19,7 +19,6 @@ import de.amr.games.pacman.model.common.GameEntity;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.pacman.PacManBonus;
-import de.amr.games.pacman.ui.CommonPacManRendering2D;
 import de.amr.games.pacman.ui.animation.PacManGameAnimations2D;
 
 /**
@@ -27,10 +26,8 @@ import de.amr.games.pacman.ui.animation.PacManGameAnimations2D;
  * 
  * @author Armin Reichert
  */
-public abstract class SwingPacManGameRendering2D
-		implements CommonPacManRendering2D<Graphics2D, Color, Font, BufferedImage>, PacManGameAnimations2D {
+public abstract class SwingPacManGameRendering2D implements PacManGameAnimations2D {
 
-	@Override
 	public abstract Font getScoreFont();
 
 	protected Graphics2D smoothGC(Graphics2D g) {
@@ -52,40 +49,35 @@ public abstract class SwingPacManGameRendering2D
 		}
 	}
 
-	@Override
 	public void drawPlayer(Graphics2D g, Pac pac) {
 		drawEntity(g, pac, pacSprite(pac));
 	}
 
-	@Override
 	public void drawGhost(Graphics2D g, Ghost ghost, boolean frightened) {
 		drawEntity(g, ghost, ghostSprite(ghost, frightened));
 	}
 
-	@Override
 	public void drawEnergizerTiles(Graphics2D g, Stream<V2i> energizerTiles) {
 		if (!mazeAnimations().energizerBlinking().animate()) {
 			energizerTiles.forEach(tile -> drawTileCovered(g, tile));
 		}
 	}
 
-	@Override
 	public void drawFoodTiles(Graphics2D g, Stream<V2i> tiles, Predicate<V2i> eaten) {
 		tiles.filter(eaten).forEach(tile -> drawTileCovered(g, tile));
 	}
 
-	@Override
 	public void drawTileCovered(Graphics2D g, V2i tile) {
 		g.setColor(Color.BLACK);
 		g.fillRect(tile.x * TS, tile.y * TS, TS, TS);
 	}
 
-	@Override
 	public void drawBonus(Graphics2D g, PacManBonus bonus) {
 		drawEntity(g, bonus, bonusSprite(bonus));
 	}
 
-	@Override
+	public abstract void drawMaze(Graphics2D g, int mazeNumber, int i, int t, boolean running);
+
 	public void drawScore(Graphics2D g, AbstractGameModel game, boolean showHiscoreOnly) {
 		g.setFont(getScoreFont());
 		g.translate(0, 2);
@@ -110,7 +102,8 @@ public abstract class SwingPacManGameRendering2D
 		g.translate(0, -3);
 	}
 
-	@Override
+	public abstract Color getMazeWallColor(int i);
+
 	public void drawLivesCounter(Graphics2D g, AbstractGameModel game, int x, int y) {
 		int maxLivesDisplayed = 5;
 		for (int i = 0; i < Math.min(game.lives, maxLivesDisplayed); ++i) {
@@ -123,7 +116,6 @@ public abstract class SwingPacManGameRendering2D
 		}
 	}
 
-	@Override
 	public void drawLevelCounter(Graphics2D g, AbstractGameModel game, int rightX, int y) {
 		int x = rightX;
 		int firstLevel = Math.max(1, game.currentLevelNumber - 6);
@@ -134,7 +126,6 @@ public abstract class SwingPacManGameRendering2D
 		}
 	}
 
-	@Override
 	public void drawGameState(Graphics2D g, AbstractGameModel game, PacManGameState gameState) {
 		if (gameState == PacManGameState.READY) {
 			g.setFont(getScoreFont());

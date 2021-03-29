@@ -21,7 +21,13 @@ public interface PacManGameAnimations2D {
 
 	MazeAnimations2D mazeAnimations();
 
-	TimedSequence<?> storkFlying();
+	// only used in Ms. Pac-Man intermission scenes
 
-	TimedSequence<?> flapFlapping();
+	default TimedSequence<?> storkFlying() {
+		return null;
+	}
+
+	default TimedSequence<?> flapFlapping() {
+		return null;
+	}
 }

@@ -19,7 +19,7 @@ import de.amr.games.pacman.model.pacman.PacManBonus;
  * @param <GC>    specific graphics context type
  * @param <COLOR> specific color type
  */
-public interface CommonPacManRendering2D<GC, COLOR, FONT, SPRITE> {
+public interface CommonPacManGameRendering2D<GC, COLOR, FONT, SPRITE> {
 
 	FONT getScoreFont();
 

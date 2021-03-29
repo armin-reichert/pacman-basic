@@ -21,11 +21,11 @@ import de.amr.games.pacman.model.mspacman.Flap;
 import de.amr.games.pacman.model.mspacman.JuniorBag;
 import de.amr.games.pacman.model.mspacman.Stork;
 import de.amr.games.pacman.model.pacman.PacManBonus;
-import de.amr.games.pacman.ui.MsPacManRendering2D;
 import de.amr.games.pacman.ui.animation.GhostAnimations2D;
 import de.amr.games.pacman.ui.animation.MazeAnimations2D;
 import de.amr.games.pacman.ui.animation.PlayerAnimations2D;
 import de.amr.games.pacman.ui.animation.TimedSequence;
+import de.amr.games.pacman.ui.mspacman.MsPacManGameRendering2D;
 
 /**
  * Rendering for the Ms. Pac-Man game.
@@ -33,7 +33,7 @@ import de.amr.games.pacman.ui.animation.TimedSequence;
  * @author Armin Reichert
  */
 public class MsPacManGameRendering extends SwingPacManGameRendering2D
-		implements MsPacManRendering2D<Graphics2D, Color, Font, BufferedImage>, PlayerAnimations2D, GhostAnimations2D,
+		implements MsPacManGameRendering2D<Graphics2D, Color, Font, BufferedImage>, PlayerAnimations2D, GhostAnimations2D,
 		MazeAnimations2D {
 
 	public static final MsPacManGameRenderingAssets assets = new MsPacManGameRenderingAssets();

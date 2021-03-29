@@ -1,9 +1,10 @@
-package de.amr.games.pacman.ui;
+package de.amr.games.pacman.ui.pacman;
 
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.model.common.GameEntity;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
+import de.amr.games.pacman.ui.CommonPacManGameRendering2D;
 
 /**
  * Pac-Man game 2D rendering interface.
@@ -13,7 +14,7 @@ import de.amr.games.pacman.model.common.Pac;
  * @param <GC>    specific graphics context type
  * @param <COLOR> specific color type
  */
-public interface PacManRendering2D<GC, COLOR, FONT, SPRITE> extends CommonPacManRendering2D<GC, COLOR, FONT, SPRITE> {
+public interface PacManGameRendering2D<GC, COLOR, FONT, SPRITE> extends CommonPacManGameRendering2D<GC, COLOR, FONT, SPRITE> {
 
 	void drawBigPacMan(GC g, Pac bigPacMan);
 
