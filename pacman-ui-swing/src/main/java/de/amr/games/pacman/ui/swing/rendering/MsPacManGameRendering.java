@@ -284,7 +284,7 @@ public class MsPacManGameRendering extends CommonPacManGameRendering
 	}
 
 	@Override
-	public TimedSequence<?> flapFlapping() {
+	public TimedSequence<?> flapFlappingAnimation() {
 		return TimedSequence.of( //
 				assets.region(456, 208, 32, 32), //
 				assets.region(488, 208, 32, 32), //
@@ -300,7 +300,7 @@ public class MsPacManGameRendering extends CommonPacManGameRendering
 	}
 
 	@Override
-	public TimedSequence<?> storkFlying() {
+	public TimedSequence<?> storkFlyingAnimation() {
 		return TimedSequence.of(//
 				assets.region(489, 176, 32, 16), //
 				assets.region(521, 176, 32, 16)//

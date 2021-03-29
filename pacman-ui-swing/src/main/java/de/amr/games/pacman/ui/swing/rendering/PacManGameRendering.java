@@ -123,12 +123,12 @@ public class PacManGameRendering extends CommonPacManGameRendering
 	}
 
 	@Override
-	public TimedSequence<?> flapFlapping() {
+	public TimedSequence<?> flapFlappingAnimation() {
 		return null;
 	}
 
 	@Override
-	public TimedSequence<?> storkFlying() {
+	public TimedSequence<?> storkFlyingAnimation() {
 		return null;
 	}
 

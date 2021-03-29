@@ -23,11 +23,11 @@ public interface PacManGameAnimations2D {
 
 	// only used in Ms. Pac-Man intermission scenes
 
-	default TimedSequence<?> storkFlying() {
+	default TimedSequence<?> storkFlyingAnimation() {
 		return null;
 	}
 
-	default TimedSequence<?> flapFlapping() {
+	default TimedSequence<?> flapFlappingAnimation() {
 		return null;
 	}
 }

@@ -64,7 +64,7 @@ public abstract class MsPacMan_IntermissionScene3_Controller {
 	}
 
 	public void start() {
-		flap = new Flap(3, "JUNIOR", animations.flapFlapping());
+		flap = new Flap(3, "JUNIOR", animations.flapFlappingAnimation());
 		flap.setTilePosition(3, 10);
 		flap.visible = true;
 
@@ -76,7 +76,7 @@ public abstract class MsPacMan_IntermissionScene3_Controller {
 
 		stork = new Stork();
 		stork.setPosition(t(30), BIRD_Y);
-		stork.flying = animations.storkFlying();
+		stork.flying = animations.storkFlyingAnimation();
 
 		bag = new JuniorBag();
 		bag.setPositionRelativeTo(stork, -14, 3);

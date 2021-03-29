@@ -53,7 +53,7 @@ public abstract class MsPacMan_IntermissionScene1_Controller {
 	public abstract void playIntermissionSound();
 
 	public void start() {
-		flap = new Flap(1, "THEY MEET", animations.flapFlapping());
+		flap = new Flap(1, "THEY MEET", animations.flapFlappingAnimation());
 		flap.setTilePosition(3, 10);
 		flap.visible = true;
 
