@@ -12,8 +12,10 @@ import static de.amr.games.pacman.model.common.Ghost.PINKY;
 import static de.amr.games.pacman.model.world.PacManGameWorld.HTS;
 import static de.amr.games.pacman.model.world.PacManGameWorld.TS;
 
-import de.amr.games.pacman.model.common.GameLevel;
+import java.util.stream.Stream;
+
 import de.amr.games.pacman.model.common.AbstractGameModel;
+import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.world.MapBasedPacManGameWorld;
@@ -60,9 +62,6 @@ public class PacManGame extends AbstractGameModel {
 		//@formatter:on
 	};
 
-	static final String[] BONUS_NAMES = { "CHERRIES", "STRAWBERRY", "PEACH", "APPLE", "GRAPES", "GALAXIAN", "BELL",
-			"KEY" };
-
 	static final int[] BONUS_VALUES = { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
 
 	private final MapBasedPacManGameWorld world = new MapBasedPacManGameWorld();
@@ -78,11 +77,12 @@ public class PacManGame extends AbstractGameModel {
 			log("Map '%s' contains errors", mapPath);
 		}
 
+		bonusNames = Stream.of(PacManSymbols.values()).map(Enum<PacManSymbols>::name).toArray(String[]::new);
+		bonusValues = BONUS_VALUES;
+
 		bonus = new PacManBonus();
 		bonus.world = world;
 		bonus.setPosition(world.bonusHomeTile().x * TS + HTS, world.bonusHomeTile().y * TS);
-		bonusNames = BONUS_NAMES;
-		bonusValues = BONUS_VALUES;
 
 		player = new Pac("Pac-Man", RIGHT);
 		player.world = world;

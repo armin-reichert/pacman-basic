@@ -1,4 +1,4 @@
-package de.amr.games.pacman.ui.swing.mspacman;
+package de.amr.games.pacman.ui.swing.scenes.mspacman;
 
 import static de.amr.games.pacman.model.common.GameVariant.MS_PACMAN;
 
@@ -7,24 +7,24 @@ import java.awt.Graphics2D;
 
 import de.amr.games.pacman.controller.PacManGameController;
 import de.amr.games.pacman.ui.animation.PacManGameAnimations2D;
-import de.amr.games.pacman.ui.mspacman.MsPacMan_IntermissionScene1_Controller;
+import de.amr.games.pacman.ui.mspacman.MsPacMan_IntermissionScene3_Controller;
 import de.amr.games.pacman.ui.sound.PacManGameSound;
 import de.amr.games.pacman.ui.swing.PacManGameUI_Swing;
-import de.amr.games.pacman.ui.swing.common.GameScene;
+import de.amr.games.pacman.ui.swing.scenes.common.GameScene;
 
 /**
- * Intermission scene 1: "They meet".
+ * Intermission scene 3: "Junior".
+ * 
  * <p>
- * Pac-Man leads Inky and Ms. Pac-Man leads Pinky. Soon, the two Pac-Men are about to collide, they
- * quickly move upwards, causing Inky and Pinky to collide and vanish. Finally, Pac-Man and Ms.
- * Pac-Man face each other at the top of the screen and a big pink heart appears above them. (Played
- * after round 2)
+ * Pac-Man and Ms. Pac-Man gradually wait for a stork, who flies overhead with a little blue bundle.
+ * The stork drops the bundle, which falls to the ground in front of Pac-Man and Ms. Pac-Man, and
+ * finally opens up to reveal a tiny Pac-Man. (Played after rounds 9, 13, and 17)
  * 
  * @author Armin Reichert
  */
-public class MsPacMan_IntermissionScene1 extends GameScene {
+public class MsPacMan_IntermissionScene3 extends GameScene {
 
-	private class SceneController extends MsPacMan_IntermissionScene1_Controller {
+	private class SceneController extends MsPacMan_IntermissionScene3_Controller {
 
 		public SceneController(PacManGameController gameController, PacManGameAnimations2D animations) {
 			super(gameController, animations);
@@ -32,15 +32,14 @@ public class MsPacMan_IntermissionScene1 extends GameScene {
 
 		@Override
 		public void playIntermissionSound() {
-			sounds.loop(PacManGameSound.INTERMISSION_1, 1);
-
+			sounds.play(PacManGameSound.INTERMISSION_3);
 		}
 
 	}
 
 	private SceneController sceneController;
 
-	public MsPacMan_IntermissionScene1(PacManGameController controller, Dimension size) {
+	public MsPacMan_IntermissionScene3(PacManGameController controller, Dimension size) {
 		super(controller, size, PacManGameUI_Swing.RENDERING.get(MS_PACMAN), PacManGameUI_Swing.SOUND.get(MS_PACMAN));
 	}
 
@@ -58,10 +57,9 @@ public class MsPacMan_IntermissionScene1 extends GameScene {
 	@Override
 	public void render(Graphics2D g) {
 		rendering.drawFlap(g, sceneController.flap);
-		rendering.drawPlayer(g, sceneController.msPac);
+		rendering.drawPlayer(g, sceneController.msPacMan);
 		rendering.drawSpouse(g, sceneController.pacMan);
-		rendering.drawGhost(g, sceneController.inky, false);
-		rendering.drawGhost(g, sceneController.pinky, false);
-		rendering.drawHeart(g, sceneController.heart);
+		rendering.drawStork(g, sceneController.stork);
+		rendering.drawJuniorBag(g, sceneController.bag);
 	}
 }

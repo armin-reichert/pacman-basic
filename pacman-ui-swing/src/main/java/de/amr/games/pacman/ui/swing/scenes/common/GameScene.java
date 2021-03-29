@@ -1,4 +1,4 @@
-package de.amr.games.pacman.ui.swing.common;
+package de.amr.games.pacman.ui.swing.scenes.common;
 
 import java.awt.Dimension;
 import java.awt.Graphics2D;

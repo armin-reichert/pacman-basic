@@ -1,4 +1,4 @@
-package de.amr.games.pacman.ui.swing.pacman;
+package de.amr.games.pacman.ui.swing.scenes.pacman;
 
 import static de.amr.games.pacman.model.common.GameVariant.PACMAN;
 import static de.amr.games.pacman.model.world.PacManGameWorld.t;
@@ -12,7 +12,7 @@ import de.amr.games.pacman.ui.pacman.PacMan_IntermissionScene3_Controller;
 import de.amr.games.pacman.ui.pacman.PacMan_IntermissionScene3_Controller.Phase;
 import de.amr.games.pacman.ui.sound.PacManGameSound;
 import de.amr.games.pacman.ui.swing.PacManGameUI_Swing;
-import de.amr.games.pacman.ui.swing.common.GameScene;
+import de.amr.games.pacman.ui.swing.scenes.common.GameScene;
 
 /**
  * Third intermission scene: Blinky in shred dress chases Pac-Man, comes back half-naked drawing

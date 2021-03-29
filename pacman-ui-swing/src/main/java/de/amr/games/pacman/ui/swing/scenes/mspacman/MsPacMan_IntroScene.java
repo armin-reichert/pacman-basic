@@ -1,4 +1,4 @@
-package de.amr.games.pacman.ui.swing.mspacman;
+package de.amr.games.pacman.ui.swing.scenes.mspacman;
 
 import static de.amr.games.pacman.model.common.GameVariant.MS_PACMAN;
 import static de.amr.games.pacman.model.world.PacManGameWorld.t;
@@ -14,7 +14,7 @@ import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.ui.mspacman.MsPacMan_IntroScene_Controller;
 import de.amr.games.pacman.ui.mspacman.MsPacMan_IntroScene_Controller.Phase;
 import de.amr.games.pacman.ui.swing.PacManGameUI_Swing;
-import de.amr.games.pacman.ui.swing.common.GameScene;
+import de.amr.games.pacman.ui.swing.scenes.common.GameScene;
 
 /**
  * Intro scene of the Ms. Pac-Man game. The ghosts and Ms. Pac-Man are introduced one after another.

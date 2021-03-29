@@ -1,4 +1,4 @@
-package de.amr.games.pacman.ui.swing.pacman;
+package de.amr.games.pacman.ui.swing.scenes.pacman;
 
 import static de.amr.games.pacman.model.common.GameVariant.PACMAN;
 import static de.amr.games.pacman.model.world.PacManGameWorld.t;
@@ -12,7 +12,7 @@ import de.amr.games.pacman.ui.pacman.PacMan_IntermissionScene1_Controller;
 import de.amr.games.pacman.ui.pacman.PacMan_IntermissionScene1_Controller.Phase;
 import de.amr.games.pacman.ui.sound.PacManGameSound;
 import de.amr.games.pacman.ui.swing.PacManGameUI_Swing;
-import de.amr.games.pacman.ui.swing.common.GameScene;
+import de.amr.games.pacman.ui.swing.scenes.common.GameScene;
 
 /**
  * First intermission scene: Blinky chases Pac-Man and is then chased by a huge Pac-Man.

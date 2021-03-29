@@ -1,4 +1,4 @@
-package de.amr.games.pacman.ui.swing.mspacman;
+package de.amr.games.pacman.ui.swing.scenes.mspacman;
 
 import static de.amr.games.pacman.model.common.GameVariant.MS_PACMAN;
 
@@ -10,7 +10,7 @@ import de.amr.games.pacman.ui.animation.PacManGameAnimations2D;
 import de.amr.games.pacman.ui.mspacman.MsPacMan_IntermissionScene2_Controller;
 import de.amr.games.pacman.ui.sound.PacManGameSound;
 import de.amr.games.pacman.ui.swing.PacManGameUI_Swing;
-import de.amr.games.pacman.ui.swing.common.GameScene;
+import de.amr.games.pacman.ui.swing.scenes.common.GameScene;
 
 /**
  * Intermission scene 2: "The chase".
