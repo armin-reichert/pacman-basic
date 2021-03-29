@@ -18,11 +18,8 @@ import de.amr.games.pacman.model.common.AbstractGameModel;
 import de.amr.games.pacman.model.common.GameEntity;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
-import de.amr.games.pacman.model.mspacman.Flap;
-import de.amr.games.pacman.model.mspacman.JuniorBag;
-import de.amr.games.pacman.model.mspacman.Stork;
 import de.amr.games.pacman.model.pacman.PacManBonus;
-import de.amr.games.pacman.ui.PacManRendering2D;
+import de.amr.games.pacman.ui.CommonPacManRendering2D;
 import de.amr.games.pacman.ui.animation.PacManGameAnimations2D;
 
 /**
@@ -31,7 +28,7 @@ import de.amr.games.pacman.ui.animation.PacManGameAnimations2D;
  * @author Armin Reichert
  */
 public abstract class SwingPacManGameRendering2D
-		implements PacManRendering2D<Graphics2D, Color, Font, BufferedImage>, PacManGameAnimations2D {
+		implements CommonPacManRendering2D<Graphics2D, Color, Font, BufferedImage>, PacManGameAnimations2D {
 
 	@Override
 	public abstract Font getScoreFont();
@@ -58,10 +55,6 @@ public abstract class SwingPacManGameRendering2D
 	@Override
 	public void drawPlayer(Graphics2D g, Pac pac) {
 		drawEntity(g, pac, pacSprite(pac));
-	}
-
-	@Override
-	public void drawSpouse(Graphics2D g, Pac pac) {
 	}
 
 	@Override
@@ -164,22 +157,6 @@ public abstract class SwingPacManGameRendering2D
 	protected abstract BufferedImage bonusSprite(PacManBonus bonus);
 
 	protected abstract BufferedImage lifeSprite();
-
-	@Override
-	public void drawFlap(Graphics2D g, Flap flap) {
-	}
-
-	@Override
-	public void drawHeart(Graphics2D g, GameEntity heart) {
-	}
-
-	@Override
-	public void drawStork(Graphics2D g, Stork stork) {
-	}
-
-	@Override
-	public void drawJuniorBag(Graphics2D g, JuniorBag bag) {
-	}
 
 //	public void drawMaze(Graphics2D g, GameModel game, int x, int y) {
 //		if (mazeFlashing(game.level.mazeNumber).hasStarted()) {

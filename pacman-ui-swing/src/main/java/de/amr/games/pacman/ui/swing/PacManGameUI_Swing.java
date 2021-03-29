@@ -45,7 +45,6 @@ import de.amr.games.pacman.ui.swing.assets.PacManGameSounds;
 import de.amr.games.pacman.ui.swing.assets.SoundManager;
 import de.amr.games.pacman.ui.swing.rendering.Debug;
 import de.amr.games.pacman.ui.swing.rendering.MsPacManGameRendering;
-import de.amr.games.pacman.ui.swing.rendering.SwingPacManGameRendering2D;
 import de.amr.games.pacman.ui.swing.rendering.PacManGameRendering;
 import de.amr.games.pacman.ui.swing.scenes.common.GameScene;
 import de.amr.games.pacman.ui.swing.scenes.common.PlayScene;
@@ -65,11 +64,8 @@ import de.amr.games.pacman.ui.swing.scenes.pacman.PacMan_IntroScene;
  */
 public class PacManGameUI_Swing implements PacManGameUI {
 
-	public static final EnumMap<GameVariant, SwingPacManGameRendering2D> RENDERING = new EnumMap<>(GameVariant.class);
-	static {
-		RENDERING.put(MS_PACMAN, new MsPacManGameRendering());
-		RENDERING.put(PACMAN, new PacManGameRendering());
-	}
+	public static MsPacManGameRendering RENDERING_MS_PACMAN = new MsPacManGameRendering();
+	public static PacManGameRendering RENDERING_PACMAN = new PacManGameRendering();
 
 	public static final EnumMap<GameVariant, SoundManager> SOUND = new EnumMap<>(GameVariant.class);
 	static {
@@ -148,7 +144,7 @@ public class PacManGameUI_Swing implements PacManGameUI {
 				new MsPacMan_IntermissionScene1(gameController, unscaledSize), //
 				new MsPacMan_IntermissionScene2(gameController, unscaledSize), //
 				new MsPacMan_IntermissionScene3(gameController, unscaledSize), //
-				new PlayScene(gameController, unscaledSize, RENDERING.get(MS_PACMAN), SOUND.get(MS_PACMAN))//
+				new PlayScene(gameController, unscaledSize, RENDERING_MS_PACMAN, SOUND.get(MS_PACMAN))//
 		));
 
 		scenes.put(PACMAN, Arrays.asList(//
@@ -156,7 +152,7 @@ public class PacManGameUI_Swing implements PacManGameUI {
 				new PacMan_IntermissionScene1(gameController, unscaledSize), //
 				new PacMan_IntermissionScene2(gameController, unscaledSize), //
 				new PacMan_IntermissionScene3(gameController, unscaledSize), //
-				new PlayScene(gameController, unscaledSize, RENDERING.get(PACMAN), SOUND.get(PACMAN))//
+				new PlayScene(gameController, unscaledSize, RENDERING_PACMAN, SOUND.get(PACMAN))//
 		));
 	}
 
@@ -259,7 +255,7 @@ public class PacManGameUI_Swing implements PacManGameUI {
 
 	@Override
 	public Optional<PacManGameAnimations2D> animation() {
-		return Optional.of(RENDERING.get(currentGame()));
+		return Optional.of(currentGame() == MS_PACMAN ? RENDERING_MS_PACMAN : RENDERING_PACMAN);
 	}
 
 	private void handleKey(KeyEvent e) {

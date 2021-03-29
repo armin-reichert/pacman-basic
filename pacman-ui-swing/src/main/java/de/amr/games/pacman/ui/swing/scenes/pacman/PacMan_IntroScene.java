@@ -31,7 +31,7 @@ public class PacMan_IntroScene extends GameScene {
 	private PacMan_IntroScene_Controller sceneController;
 
 	public PacMan_IntroScene(PacManGameController controller, Dimension size) {
-		super(controller, size, PacManGameUI_Swing.RENDERING.get(PACMAN), PacManGameUI_Swing.SOUND.get(PACMAN));
+		super(controller, size, PacManGameUI_Swing.RENDERING_PACMAN, PacManGameUI_Swing.SOUND.get(PACMAN));
 	}
 
 	@Override

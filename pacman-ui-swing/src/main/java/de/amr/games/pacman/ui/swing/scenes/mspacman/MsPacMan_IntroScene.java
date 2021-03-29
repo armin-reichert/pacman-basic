@@ -27,7 +27,7 @@ public class MsPacMan_IntroScene extends GameScene {
 	private TickTimer boardAnimationTimer = new TickTimer();
 
 	public MsPacMan_IntroScene(PacManGameController controller, Dimension size) {
-		super(controller, size, PacManGameUI_Swing.RENDERING.get(MS_PACMAN), PacManGameUI_Swing.SOUND.get(MS_PACMAN));
+		super(controller, size, PacManGameUI_Swing.RENDERING_MS_PACMAN, PacManGameUI_Swing.SOUND.get(MS_PACMAN));
 	}
 
 	@Override

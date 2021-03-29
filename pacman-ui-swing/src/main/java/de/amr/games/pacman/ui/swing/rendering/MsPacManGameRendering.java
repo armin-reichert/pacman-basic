@@ -13,7 +13,6 @@ import java.awt.image.BufferedImage;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.Direction;
-import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.model.common.AbstractGameModel;
 import de.amr.games.pacman.model.common.GameEntity;
 import de.amr.games.pacman.model.common.Ghost;
@@ -22,6 +21,7 @@ import de.amr.games.pacman.model.mspacman.Flap;
 import de.amr.games.pacman.model.mspacman.JuniorBag;
 import de.amr.games.pacman.model.mspacman.Stork;
 import de.amr.games.pacman.model.pacman.PacManBonus;
+import de.amr.games.pacman.ui.MsPacManRendering2D;
 import de.amr.games.pacman.ui.animation.GhostAnimations2D;
 import de.amr.games.pacman.ui.animation.MazeAnimations2D;
 import de.amr.games.pacman.ui.animation.PlayerAnimations2D;
@@ -33,7 +33,8 @@ import de.amr.games.pacman.ui.animation.TimedSequence;
  * @author Armin Reichert
  */
 public class MsPacManGameRendering extends SwingPacManGameRendering2D
-		implements PlayerAnimations2D, GhostAnimations2D, MazeAnimations2D {
+		implements MsPacManRendering2D<Graphics2D, Color, Font, BufferedImage>, PlayerAnimations2D, GhostAnimations2D,
+		MazeAnimations2D {
 
 	public static final MsPacManGameRenderingAssets assets = new MsPacManGameRenderingAssets();
 
@@ -311,27 +312,5 @@ public class MsPacManGameRendering extends SwingPacManGameRendering2D
 				drawEntity(g, bag, assets.blueBag);
 			}
 		}
-	}
-
-	// Pac-Man only:
-
-	@Override
-	public void drawBigPacMan(Graphics2D g, Pac bigPacMan) {
-	}
-
-	@Override
-	public void drawNail(Graphics2D g, GameEntity nail) {
-	}
-
-	@Override
-	public void drawBlinkyStretched(Graphics2D g, Ghost ghost, V2d nailPosition, int stretching) {
-	}
-
-	@Override
-	public void drawBlinkyPatched(Graphics2D g, Ghost blinky) {
-	}
-
-	@Override
-	public void drawBlinkyNaked(Graphics2D g, Ghost blinky) {
 	}
 }

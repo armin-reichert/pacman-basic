@@ -12,6 +12,7 @@ import de.amr.games.pacman.ui.pacman.PacMan_IntermissionScene3_Controller;
 import de.amr.games.pacman.ui.pacman.PacMan_IntermissionScene3_Controller.Phase;
 import de.amr.games.pacman.ui.sound.PacManGameSound;
 import de.amr.games.pacman.ui.swing.PacManGameUI_Swing;
+import de.amr.games.pacman.ui.swing.rendering.PacManGameRendering;
 import de.amr.games.pacman.ui.swing.scenes.common.GameScene;
 
 /**
@@ -37,7 +38,7 @@ public class PacMan_IntermissionScene3 extends GameScene {
 	private SceneController sceneController;
 
 	public PacMan_IntermissionScene3(PacManGameController controller, Dimension size) {
-		super(controller, size, PacManGameUI_Swing.RENDERING.get(PACMAN), PacManGameUI_Swing.SOUND.get(PACMAN));
+		super(controller, size, PacManGameUI_Swing.RENDERING_PACMAN, PacManGameUI_Swing.SOUND.get(PACMAN));
 	}
 
 	@Override
@@ -53,12 +54,13 @@ public class PacMan_IntermissionScene3 extends GameScene {
 
 	@Override
 	public void render(Graphics2D g) {
-		rendering.drawLevelCounter(g, gameController.game(), t(25), t(34));
-		rendering.drawPlayer(g, sceneController.pac);
+		PacManGameRendering r = (PacManGameRendering) rendering;
+		r.drawLevelCounter(g, gameController.game(), t(25), t(34));
+		r.drawPlayer(g, sceneController.pac);
 		if (sceneController.phase == Phase.CHASING_PACMAN) {
-			rendering.drawBlinkyPatched(g, sceneController.blinky);
+			r.drawBlinkyPatched(g, sceneController.blinky);
 		} else {
-			rendering.drawBlinkyNaked(g, sceneController.blinky);
+			r.drawBlinkyNaked(g, sceneController.blinky);
 		}
 	}
 }

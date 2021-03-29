@@ -10,6 +10,7 @@ import de.amr.games.pacman.ui.animation.PacManGameAnimations2D;
 import de.amr.games.pacman.ui.mspacman.MsPacMan_IntermissionScene2_Controller;
 import de.amr.games.pacman.ui.sound.PacManGameSound;
 import de.amr.games.pacman.ui.swing.PacManGameUI_Swing;
+import de.amr.games.pacman.ui.swing.rendering.MsPacManGameRendering;
 import de.amr.games.pacman.ui.swing.scenes.common.GameScene;
 
 /**
@@ -37,7 +38,7 @@ public class MsPacMan_IntermissionScene2 extends GameScene {
 	private SceneController sceneController;
 
 	public MsPacMan_IntermissionScene2(PacManGameController controller, Dimension size) {
-		super(controller, size, PacManGameUI_Swing.RENDERING.get(MS_PACMAN), PacManGameUI_Swing.SOUND.get(MS_PACMAN));
+		super(controller, size, PacManGameUI_Swing.RENDERING_MS_PACMAN, PacManGameUI_Swing.SOUND.get(MS_PACMAN));
 	}
 
 	@Override
@@ -53,8 +54,9 @@ public class MsPacMan_IntermissionScene2 extends GameScene {
 
 	@Override
 	public void render(Graphics2D g) {
-		rendering.drawFlap(g, sceneController.flap);
-		rendering.drawPlayer(g, sceneController.msPacMan);
-		rendering.drawSpouse(g, sceneController.pacMan);
+		MsPacManGameRendering r = (MsPacManGameRendering) rendering;
+		r.drawFlap(g, sceneController.flap);
+		r.drawPlayer(g, sceneController.msPacMan);
+		r.drawSpouse(g, sceneController.pacMan);
 	}
 }

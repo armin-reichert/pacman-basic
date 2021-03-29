@@ -10,6 +10,7 @@ import de.amr.games.pacman.ui.animation.PacManGameAnimations2D;
 import de.amr.games.pacman.ui.mspacman.MsPacMan_IntermissionScene1_Controller;
 import de.amr.games.pacman.ui.sound.PacManGameSound;
 import de.amr.games.pacman.ui.swing.PacManGameUI_Swing;
+import de.amr.games.pacman.ui.swing.rendering.MsPacManGameRendering;
 import de.amr.games.pacman.ui.swing.scenes.common.GameScene;
 
 /**
@@ -33,15 +34,13 @@ public class MsPacMan_IntermissionScene1 extends GameScene {
 		@Override
 		public void playIntermissionSound() {
 			sounds.loop(PacManGameSound.INTERMISSION_1, 1);
-
 		}
-
 	}
 
 	private SceneController sceneController;
 
 	public MsPacMan_IntermissionScene1(PacManGameController controller, Dimension size) {
-		super(controller, size, PacManGameUI_Swing.RENDERING.get(MS_PACMAN), PacManGameUI_Swing.SOUND.get(MS_PACMAN));
+		super(controller, size, PacManGameUI_Swing.RENDERING_MS_PACMAN, PacManGameUI_Swing.SOUND.get(MS_PACMAN));
 	}
 
 	@Override
@@ -57,11 +56,12 @@ public class MsPacMan_IntermissionScene1 extends GameScene {
 
 	@Override
 	public void render(Graphics2D g) {
-		rendering.drawFlap(g, sceneController.flap);
-		rendering.drawPlayer(g, sceneController.msPac);
-		rendering.drawSpouse(g, sceneController.pacMan);
-		rendering.drawGhost(g, sceneController.inky, false);
-		rendering.drawGhost(g, sceneController.pinky, false);
-		rendering.drawHeart(g, sceneController.heart);
+		MsPacManGameRendering r = (MsPacManGameRendering) rendering;
+		r.drawFlap(g, sceneController.flap);
+		r.drawPlayer(g, sceneController.msPac);
+		r.drawSpouse(g, sceneController.pacMan);
+		r.drawGhost(g, sceneController.inky, false);
+		r.drawGhost(g, sceneController.pinky, false);
+		r.drawHeart(g, sceneController.heart);
 	}
 }

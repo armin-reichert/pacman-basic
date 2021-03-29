@@ -12,6 +12,7 @@ import de.amr.games.pacman.ui.pacman.PacMan_IntermissionScene1_Controller;
 import de.amr.games.pacman.ui.pacman.PacMan_IntermissionScene1_Controller.Phase;
 import de.amr.games.pacman.ui.sound.PacManGameSound;
 import de.amr.games.pacman.ui.swing.PacManGameUI_Swing;
+import de.amr.games.pacman.ui.swing.rendering.PacManGameRendering;
 import de.amr.games.pacman.ui.swing.scenes.common.GameScene;
 
 /**
@@ -36,7 +37,7 @@ public class PacMan_IntermissionScene1 extends GameScene {
 	private SceneController sceneController;
 
 	public PacMan_IntermissionScene1(PacManGameController controller, Dimension size) {
-		super(controller, size, PacManGameUI_Swing.RENDERING.get(PACMAN), PacManGameUI_Swing.SOUND.get(PACMAN));
+		super(controller, size, PacManGameUI_Swing.RENDERING_PACMAN, PacManGameUI_Swing.SOUND.get(PACMAN));
 	}
 
 	@Override
@@ -52,14 +53,15 @@ public class PacMan_IntermissionScene1 extends GameScene {
 
 	@Override
 	public void render(Graphics2D g) {
-		rendering.drawGhost(g, sceneController.blinky, false);
+		PacManGameRendering r = (PacManGameRendering) rendering;
+		r.drawGhost(g, sceneController.blinky, false);
 		if (sceneController.phase == Phase.BLINKY_CHASING_PACMAN) {
-			rendering.drawPlayer(g, sceneController.pac);
+			r.drawPlayer(g, sceneController.pac);
 		} else {
 			g.translate(0, -10);
-			rendering.drawBigPacMan(g, sceneController.pac);
+			r.drawBigPacMan(g, sceneController.pac);
 			g.translate(0, 10);
 		}
-		rendering.drawLevelCounter(g, gameController.game(), t(25), t(34));
+		r.drawLevelCounter(g, gameController.game(), t(25), t(34));
 	}
 }

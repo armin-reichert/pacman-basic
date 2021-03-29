@@ -17,6 +17,7 @@ import de.amr.games.pacman.model.common.GameEntity;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.pacman.PacManBonus;
+import de.amr.games.pacman.ui.PacManRendering2D;
 import de.amr.games.pacman.ui.animation.GhostAnimations2D;
 import de.amr.games.pacman.ui.animation.MazeAnimations2D;
 import de.amr.games.pacman.ui.animation.PlayerAnimations2D;
@@ -27,8 +28,8 @@ import de.amr.games.pacman.ui.animation.TimedSequence;
  * 
  * @author Armin Reichert
  */
-public class PacManGameRendering extends SwingPacManGameRendering2D
-		implements MazeAnimations2D, PlayerAnimations2D, GhostAnimations2D {
+public class PacManGameRendering extends SwingPacManGameRendering2D implements
+		PacManRendering2D<Graphics2D, Color, Font, BufferedImage>, MazeAnimations2D, PlayerAnimations2D, GhostAnimations2D {
 
 	public final PacManGameRenderingAssets assets;
 
