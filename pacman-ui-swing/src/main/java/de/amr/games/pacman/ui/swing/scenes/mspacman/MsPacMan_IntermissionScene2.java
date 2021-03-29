@@ -7,9 +7,11 @@ import java.awt.Graphics2D;
 
 import de.amr.games.pacman.controller.PacManGameController;
 import de.amr.games.pacman.ui.animation.PacManGameAnimations2D;
+import de.amr.games.pacman.ui.animation.TimedSequence;
 import de.amr.games.pacman.ui.mspacman.MsPacMan_IntermissionScene2_Controller;
 import de.amr.games.pacman.ui.sound.PacManGameSound;
 import de.amr.games.pacman.ui.swing.PacManGameUI_Swing;
+import de.amr.games.pacman.ui.swing.rendering.common.Player2D;
 import de.amr.games.pacman.ui.swing.rendering.mspacman.MsPacManGameRendering;
 import de.amr.games.pacman.ui.swing.scenes.common.GameScene;
 
@@ -36,6 +38,8 @@ public class MsPacMan_IntermissionScene2 extends GameScene {
 	}
 
 	private SceneController sceneController;
+	private Player2D msPacMan2D;
+	private Player2D pacMan2D;
 
 	public MsPacMan_IntermissionScene2(PacManGameController controller, Dimension size) {
 		super(controller, size, PacManGameUI_Swing.RENDERING_MS_PACMAN, PacManGameUI_Swing.SOUND.get(MS_PACMAN));
@@ -45,6 +49,12 @@ public class MsPacMan_IntermissionScene2 extends GameScene {
 	public void start() {
 		sceneController = new SceneController(gameController, rendering);
 		sceneController.start();
+		msPacMan2D = new Player2D(sceneController.msPacMan);
+		msPacMan2D.setMunchingAnimations(rendering.createPlayerMunchingAnimations());
+		msPacMan2D.getMunchingAnimations().values().forEach(TimedSequence::restart);
+		pacMan2D = new Player2D(sceneController.pacMan);
+		pacMan2D.setMunchingAnimations(rendering.createSpouseMunchingAnimations());
+		pacMan2D.getMunchingAnimations().values().forEach(TimedSequence::restart);
 	}
 
 	@Override
@@ -56,7 +66,7 @@ public class MsPacMan_IntermissionScene2 extends GameScene {
 	public void render(Graphics2D g) {
 		MsPacManGameRendering r = (MsPacManGameRendering) rendering;
 		r.drawFlap(g, sceneController.flap);
-		r.drawPlayer(g, sceneController.msPacMan);
-		r.drawSpouse(g, sceneController.pacMan);
+		msPacMan2D.render(g);
+		pacMan2D.render(g);
 	}
 }

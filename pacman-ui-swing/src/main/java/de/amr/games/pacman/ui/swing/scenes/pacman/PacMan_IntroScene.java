@@ -16,6 +16,7 @@ import de.amr.games.pacman.ui.pacman.PacMan_IntroScene_Controller;
 import de.amr.games.pacman.ui.pacman.PacMan_IntroScene_Controller.GhostPortrait;
 import de.amr.games.pacman.ui.pacman.PacMan_IntroScene_Controller.Phase;
 import de.amr.games.pacman.ui.swing.PacManGameUI_Swing;
+import de.amr.games.pacman.ui.swing.rendering.common.Player2D;
 import de.amr.games.pacman.ui.swing.scenes.common.GameScene;
 
 /**
@@ -29,6 +30,7 @@ import de.amr.games.pacman.ui.swing.scenes.common.GameScene;
 public class PacMan_IntroScene extends GameScene {
 
 	private PacMan_IntroScene_Controller sceneController;
+	private Player2D pacMan2D;
 
 	public PacMan_IntroScene(PacManGameController controller, Dimension size) {
 		super(controller, size, PacManGameUI_Swing.RENDERING_PACMAN, PacManGameUI_Swing.SOUND.get(PACMAN));
@@ -38,6 +40,9 @@ public class PacMan_IntroScene extends GameScene {
 	public void start() {
 		sceneController = new PacMan_IntroScene_Controller(gameController, rendering);
 		sceneController.start();
+		// TODO must be done after scene controller start at the moment
+		pacMan2D = new Player2D(sceneController.pac);
+		pacMan2D.setMunchingAnimations(rendering.createPlayerMunchingAnimations());
 	}
 
 	@Override
@@ -71,7 +76,7 @@ public class PacMan_IntroScene extends GameScene {
 		for (Ghost ghost : sceneController.ghosts) {
 			rendering.drawGhost(g, ghost, false);
 		}
-		rendering.drawPlayer(g, sceneController.pac);
+		pacMan2D.render(g);
 	}
 
 	private void drawGallery(Graphics2D g) {

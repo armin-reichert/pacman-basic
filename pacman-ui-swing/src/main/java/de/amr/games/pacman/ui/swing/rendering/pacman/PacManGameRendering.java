@@ -9,6 +9,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.Direction;
@@ -21,9 +22,8 @@ import de.amr.games.pacman.model.pacman.PacManBonus;
 import de.amr.games.pacman.ui.animation.GhostAnimations2D;
 import de.amr.games.pacman.ui.animation.MazeAnimations2D;
 import de.amr.games.pacman.ui.animation.PacManGameAnimations2D;
-import de.amr.games.pacman.ui.animation.PlayerAnimations2D;
 import de.amr.games.pacman.ui.animation.TimedSequence;
-import de.amr.games.pacman.ui.swing.rendering.CommonPacManGameRendering;
+import de.amr.games.pacman.ui.swing.rendering.common.CommonPacManGameRendering;
 
 /**
  * Sprite-based rendering for the Pac-Man game.
@@ -31,7 +31,7 @@ import de.amr.games.pacman.ui.swing.rendering.CommonPacManGameRendering;
  * @author Armin Reichert
  */
 public class PacManGameRendering extends CommonPacManGameRendering
-		implements PacManGameAnimations2D, MazeAnimations2D, PlayerAnimations2D, GhostAnimations2D {
+		implements PacManGameAnimations2D, MazeAnimations2D, GhostAnimations2D {
 
 	public final PacManGameRenderingAssets assets;
 
@@ -40,12 +40,22 @@ public class PacManGameRendering extends CommonPacManGameRendering
 	}
 
 	@Override
-	public MazeAnimations2D mazeAnimations() {
-		return this;
+	public TimedSequence<BufferedImage> createPlayerDyingAnimation() {
+		return assets.createPlayerDyingAnimation();
 	}
 
 	@Override
-	public PlayerAnimations2D playerAnimations() {
+	public Map<Direction, TimedSequence<BufferedImage>> createPlayerMunchingAnimations() {
+		return assets.createPlayerMunchingAnimations();
+	}
+
+	@Override
+	public Map<Direction, TimedSequence<BufferedImage>> createSpouseMunchingAnimations() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public MazeAnimations2D mazeAnimations() {
 		return this;
 	}
 
@@ -83,21 +93,6 @@ public class PacManGameRendering extends CommonPacManGameRendering
 	@Override
 	public TimedSequence<BufferedImage> mazeFlashing(int mazeNumber) {
 		return assets.mazeFlashingAnim;
-	}
-
-	@Override
-	public TimedSequence<BufferedImage> playerMunching(Pac pac, Direction dir) {
-		return assets.getOrCreatePacMunchingAnimation(pac).get(dir);
-	}
-
-	@Override
-	public TimedSequence<?> spouseMunching(Pac spouse, Direction dir) {
-		return null;
-	}
-
-	@Override
-	public TimedSequence<BufferedImage> playerDying() {
-		return assets.pacCollapsingAnim;
 	}
 
 	@Override
@@ -198,20 +193,6 @@ public class PacManGameRendering extends CommonPacManGameRendering
 	@Override
 	protected BufferedImage symbolSprite(byte symbol) {
 		return assets.symbolSprites[symbol];
-	}
-
-	@Override
-	public BufferedImage pacSprite(Pac pac) {
-		if (pac.dead) {
-			return playerDying().hasStarted() ? playerDying().animate() : playerMunching(pac, pac.dir).frame();
-		}
-		if (pac.speed == 0) {
-			return playerMunching(pac, pac.dir).frame(0);
-		}
-		if (pac.stuck) {
-			return playerMunching(pac, pac.dir).frame(1);
-		}
-		return playerMunching(pac, pac.dir).animate();
 	}
 
 	@Override

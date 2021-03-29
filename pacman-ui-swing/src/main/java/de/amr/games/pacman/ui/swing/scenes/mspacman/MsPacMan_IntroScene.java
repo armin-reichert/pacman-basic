@@ -14,6 +14,7 @@ import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.ui.mspacman.MsPacMan_IntroScene_Controller;
 import de.amr.games.pacman.ui.mspacman.MsPacMan_IntroScene_Controller.Phase;
 import de.amr.games.pacman.ui.swing.PacManGameUI_Swing;
+import de.amr.games.pacman.ui.swing.rendering.common.Player2D;
 import de.amr.games.pacman.ui.swing.scenes.common.GameScene;
 
 /**
@@ -25,6 +26,7 @@ public class MsPacMan_IntroScene extends GameScene {
 
 	private MsPacMan_IntroScene_Controller sceneController;
 	private TickTimer boardAnimationTimer = new TickTimer();
+	private Player2D msPacMan2D;
 
 	public MsPacMan_IntroScene(PacManGameController controller, Dimension size) {
 		super(controller, size, PacManGameUI_Swing.RENDERING_MS_PACMAN, PacManGameUI_Swing.SOUND.get(MS_PACMAN));
@@ -34,6 +36,8 @@ public class MsPacMan_IntroScene extends GameScene {
 	public void start() {
 		sceneController = new MsPacMan_IntroScene_Controller(gameController, rendering);
 		sceneController.start();
+		msPacMan2D = new Player2D(sceneController.msPacMan);
+		msPacMan2D.setMunchingAnimations(rendering.createPlayerMunchingAnimations());
 		boardAnimationTimer.reset();
 		boardAnimationTimer.start();
 	}
@@ -62,7 +66,7 @@ public class MsPacMan_IntroScene extends GameScene {
 		for (Ghost ghost : sceneController.ghosts) {
 			rendering.drawGhost(g, ghost, false);
 		}
-		rendering.drawPlayer(g, sceneController.msPacMan);
+		msPacMan2D.render(g);
 	}
 
 	private void drawPresentingGhost(Graphics2D g, Ghost ghost) {

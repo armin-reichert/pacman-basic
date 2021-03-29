@@ -85,8 +85,8 @@ public abstract class MsPacMan_IntermissionScene2_Controller {
 				msPacMan.setPosition(-t(8), UPPER_Y);
 				pacMan.dir = msPacMan.dir = Direction.RIGHT;
 				pacMan.speed = msPacMan.speed = 2;
-				animations.playerAnimations().spouseMunching(pacMan).forEach(TimedSequence::restart);
-				animations.playerAnimations().playerMunching(msPacMan).forEach(TimedSequence::restart);
+//TODO				animations.playerAnimations().spouseMunching(pacMan).forEach(TimedSequence::restart);
+//TODO				animations.playerAnimations().playerMunching(msPacMan).forEach(TimedSequence::restart);
 			}
 			if (timer.isRunningSeconds(6)) {
 				msPacMan.setPosition(t(30), LOWER_Y);

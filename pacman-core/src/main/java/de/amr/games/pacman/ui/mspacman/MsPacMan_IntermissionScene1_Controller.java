@@ -60,7 +60,6 @@ public abstract class MsPacMan_IntermissionScene1_Controller {
 		pacMan = new Pac("Pac-Man", Direction.RIGHT);
 		pacMan.setPosition(-t(2), upperY);
 		pacMan.visible = true;
-		animations.playerAnimations().spouseMunching(pacMan).forEach(TimedSequence::restart);
 
 		inky = new Ghost(2, "Inky", Direction.RIGHT);
 		inky.setPositionRelativeTo(pacMan, -t(3), 0);
@@ -69,7 +68,6 @@ public abstract class MsPacMan_IntermissionScene1_Controller {
 		msPac = new Pac("Ms. Pac-Man", Direction.LEFT);
 		msPac.setPosition(t(30), lowerY);
 		msPac.visible = true;
-		animations.playerAnimations().playerMunching(msPac).forEach(TimedSequence::restart);
 
 		pinky = new Ghost(1, "Pinky", Direction.LEFT);
 		pinky.setPositionRelativeTo(msPac, t(3), 0);
@@ -107,7 +105,6 @@ public abstract class MsPacMan_IntermissionScene1_Controller {
 			if (timer.hasExpired()) {
 				flap.visible = false;
 				playIntermissionSound();
-//				sounds.loop(PacManGameSound.INTERMISSION_1, 1);
 				startChasedByGhosts();
 				return;
 			}

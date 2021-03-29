@@ -21,7 +21,8 @@ import de.amr.games.pacman.model.common.GhostState;
 import de.amr.games.pacman.ui.animation.TimedSequence;
 import de.amr.games.pacman.ui.sound.PacManGameSound;
 import de.amr.games.pacman.ui.swing.assets.SoundManager;
-import de.amr.games.pacman.ui.swing.rendering.CommonPacManGameRendering;
+import de.amr.games.pacman.ui.swing.rendering.common.CommonPacManGameRendering;
+import de.amr.games.pacman.ui.swing.rendering.common.Player2D;
 
 /**
  * Play scene (Pac-Man and Ms. Pac-Man).
@@ -30,10 +31,40 @@ import de.amr.games.pacman.ui.swing.rendering.CommonPacManGameRendering;
  */
 public class PlayScene extends GameScene {
 
+	private Player2D player2D;
 	private TimedSequence<?> mazeFlashing;
 
-	public PlayScene(PacManGameController controller, Dimension size, CommonPacManGameRendering rendering, SoundManager sounds) {
+	public PlayScene(PacManGameController controller, Dimension size, CommonPacManGameRendering rendering,
+			SoundManager sounds) {
 		super(controller, size, rendering, sounds);
+	}
+
+	@Override
+	public void start() {
+		super.start();
+		AbstractGameModel game = gameController.game();
+
+		player2D = new Player2D(game.player);
+		player2D.setDyingAnimation(rendering.createPlayerDyingAnimation());
+		player2D.setMunchingAnimations(rendering.createPlayerMunchingAnimations());
+
+		mazeFlashing = rendering.mazeAnimations().mazeFlashing(game.currentLevel.mazeNumber)
+				.repetitions(game.currentLevel.numFlashes);
+		mazeFlashing.reset();
+		game.player.powerTimer.addEventListener(e -> {
+			if (e.type == TickTimerEvent.Type.HALF_EXPIRED) {
+				game.ghosts(GhostState.FRIGHTENED).forEach(ghost -> {
+					TimedSequence<?> flashing = rendering.ghostAnimations().ghostFlashing(ghost);
+					long frameTime = e.ticks / (game.currentLevel.numFlashes * flashing.numFrames());
+					flashing.frameDuration(frameTime).repetitions(game.currentLevel.numFlashes).restart();
+				});
+			}
+		});
+	}
+
+	@Override
+	public void end() {
+		super.end();
 	}
 
 	@Override
@@ -55,7 +86,7 @@ public class PlayScene extends GameScene {
 		// enter HUNTING
 		if (newState == PacManGameState.HUNTING) {
 			rendering.mazeAnimations().energizerBlinking().restart();
-			rendering.playerAnimations().playerMunching(game.player).forEach(TimedSequence::restart);
+			player2D.getMunchingAnimations().values().forEach(TimedSequence::restart);
 			game.ghosts().flatMap(rendering.ghostAnimations()::ghostKicking).forEach(TimedSequence::restart);
 		}
 
@@ -148,7 +179,7 @@ public class PlayScene extends GameScene {
 
 	private void playAnimationPlayerDying(AbstractGameModel game) {
 		game.ghosts().flatMap(rendering.ghostAnimations()::ghostKicking).forEach(TimedSequence::reset);
-		rendering.playerAnimations().playerDying().delay(120).onStart(() -> {
+		player2D.getDyingAnimation().delay(120).onStart(() -> {
 			game.ghosts().forEach(ghost -> ghost.visible = false);
 			if (gameController.isGameRunning()) {
 				sounds.play(PacManGameSound.PACMAN_DEATH);
@@ -168,29 +199,6 @@ public class PlayScene extends GameScene {
 		if (mazeFlashing.isComplete()) {
 			gameController.stateTimer().forceExpiration();
 		}
-	}
-
-	@Override
-	public void start() {
-		super.start();
-		AbstractGameModel game = gameController.game();
-		mazeFlashing = rendering.mazeAnimations().mazeFlashing(game.currentLevel.mazeNumber)
-				.repetitions(game.currentLevel.numFlashes);
-		mazeFlashing.reset();
-		game.player.powerTimer.addEventListener(e -> {
-			if (e.type == TickTimerEvent.Type.HALF_EXPIRED) {
-				game.ghosts(GhostState.FRIGHTENED).forEach(ghost -> {
-					TimedSequence<?> flashing = rendering.ghostAnimations().ghostFlashing(ghost);
-					long frameTime = e.ticks / (game.currentLevel.numFlashes * flashing.numFrames());
-					flashing.frameDuration(frameTime).repetitions(game.currentLevel.numFlashes).restart();
-				});
-			}
-		});
-	}
-
-	@Override
-	public void end() {
-		super.end();
 	}
 
 	@Override
@@ -217,7 +225,8 @@ public class PlayScene extends GameScene {
 			rendering.drawGameState(g, game, gameController.state);
 		}
 		rendering.drawBonus(g, game.bonus);
-		rendering.drawPlayer(g, game.player);
+		player2D.render(g);
+//		rendering.drawPlayer(g, game.player);
 		game.ghosts().forEach(ghost -> rendering.drawGhost(g, ghost, game.player.powerTimer.isRunning()));
 		if (gameController.isGameRunning()) {
 			rendering.drawScore(g, game, false);

@@ -187,7 +187,7 @@ public class PacMan_IntroScene_Controller {
 		pac.speed = 1;
 		pac.dir = Direction.LEFT;
 		pac.stuck = false;
-		animations.playerAnimations().playerMunching(pac).forEach(TimedSequence::restart);
+//TODO		animations.playerAnimations().playerMunching(pac).forEach(TimedSequence::restart);
 
 		for (Ghost ghost : ghosts) {
 			ghost.setPositionRelativeTo(pac, 8 + (ghost.id + 1) * 18, 0);

@@ -10,7 +10,6 @@ import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.GhostState;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.ui.animation.PacManGameAnimations2D;
-import de.amr.games.pacman.ui.animation.TimedSequence;
 
 /**
  * Second intermission scene: Blinky pursues Pac but kicks a nail that tears his dress apart.
@@ -47,7 +46,7 @@ public abstract class PacMan_IntermissionScene2_Controller {
 		pac.setTilePosition(30, groundTileY);
 		pac.visible = true;
 		pac.speed = 1;
-		animations.playerAnimations().playerMunching(pac).forEach(TimedSequence::restart);
+//TODO		animations.playerAnimations().playerMunching(pac).forEach(TimedSequence::restart);
 
 		blinky = new Ghost(0, "Blinky", Direction.LEFT);
 		blinky.setPositionRelativeTo(pac, t(14), 0);

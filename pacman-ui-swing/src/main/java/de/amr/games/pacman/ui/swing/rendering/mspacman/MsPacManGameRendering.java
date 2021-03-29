@@ -10,6 +10,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.Direction;
@@ -17,7 +18,6 @@ import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.AbstractGameModel;
 import de.amr.games.pacman.model.common.GameEntity;
 import de.amr.games.pacman.model.common.Ghost;
-import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.mspacman.Flap;
 import de.amr.games.pacman.model.mspacman.JuniorBag;
 import de.amr.games.pacman.model.mspacman.Stork;
@@ -25,9 +25,8 @@ import de.amr.games.pacman.model.pacman.PacManBonus;
 import de.amr.games.pacman.ui.animation.GhostAnimations2D;
 import de.amr.games.pacman.ui.animation.MazeAnimations2D;
 import de.amr.games.pacman.ui.animation.PacManGameAnimations2D;
-import de.amr.games.pacman.ui.animation.PlayerAnimations2D;
 import de.amr.games.pacman.ui.animation.TimedSequence;
-import de.amr.games.pacman.ui.swing.rendering.CommonPacManGameRendering;
+import de.amr.games.pacman.ui.swing.rendering.common.CommonPacManGameRendering;
 
 /**
  * Rendering for the Ms. Pac-Man game.
@@ -35,13 +34,23 @@ import de.amr.games.pacman.ui.swing.rendering.CommonPacManGameRendering;
  * @author Armin Reichert
  */
 public class MsPacManGameRendering extends CommonPacManGameRendering
-		implements PacManGameAnimations2D, PlayerAnimations2D, GhostAnimations2D, MazeAnimations2D {
+		implements PacManGameAnimations2D, GhostAnimations2D, MazeAnimations2D {
 
 	public static final MsPacManGameRenderingAssets assets = new MsPacManGameRenderingAssets();
 
 	@Override
-	public PlayerAnimations2D playerAnimations() {
-		return this;
+	public TimedSequence<BufferedImage> createPlayerDyingAnimation() {
+		return assets.createPlayerDyingAnimation();
+	}
+
+	@Override
+	public Map<Direction, TimedSequence<BufferedImage>> createPlayerMunchingAnimations() {
+		return assets.createPlayerMunchingAnimations();
+	}
+
+	@Override
+	public Map<Direction, TimedSequence<BufferedImage>> createSpouseMunchingAnimations() {
+		return assets.createSpouseMunchingAnimations();
 	}
 
 	@Override
@@ -142,14 +151,6 @@ public class MsPacManGameRendering extends CommonPacManGameRendering
 	}
 
 	@Override
-	public BufferedImage pacSprite(Pac pac) {
-		if (pac.dead) {
-			return playerDying().hasStarted() ? playerDying().animate() : playerMunching(pac, pac.dir).frame();
-		}
-		return pac.speed == 0 || pac.stuck ? playerMunching(pac, pac.dir).frame(1) : playerMunching(pac, pac.dir).animate();
-	}
-
-	@Override
 	public BufferedImage ghostSprite(Ghost ghost, boolean frightened) {
 		if (ghost.bounty > 0) {
 			return assets.bountyNumberSprites.get(ghost.bounty);
@@ -181,21 +182,6 @@ public class MsPacManGameRendering extends CommonPacManGameRendering
 	@Override
 	protected BufferedImage symbolSprite(byte symbol) {
 		return assets.symbolSprites[symbol];
-	}
-
-	@Override
-	public TimedSequence<BufferedImage> playerMunching(Pac pac, Direction dir) {
-		return assets.msPacManMunchingAnimByDir.get(dir);
-	}
-
-	@Override
-	public TimedSequence<?> spouseMunching(Pac spouse, Direction dir) {
-		return assets.pacManMunching.get(dir);
-	}
-
-	@Override
-	public TimedSequence<BufferedImage> playerDying() {
-		return assets.msPacManSpinningAnim;
 	}
 
 	@Override
@@ -259,13 +245,13 @@ public class MsPacManGameRendering extends CommonPacManGameRendering
 		g.translate(0, -dy);
 	}
 
-	public void drawSpouse(Graphics2D g, Pac pacMan) {
-		if (pacMan.visible) {
-			TimedSequence<BufferedImage> munching = assets.pacManMunching.get(pacMan.dir);
-			drawSprite(g, pacMan.speed > 0 ? munching.animate() : munching.frame(1), pacMan.position.x - 4,
-					pacMan.position.y - 4);
-		}
-	}
+//	public void drawSpouse(Graphics2D g, Pac pacMan) {
+//		if (pacMan.visible) {
+//			TimedSequence<BufferedImage> munching = assets.pacManMunching.get(pacMan.dir);
+//			drawSprite(g, pacMan.speed > 0 ? munching.animate() : munching.frame(1), pacMan.position.x - 4,
+//					pacMan.position.y - 4);
+//		}
+//	}
 
 	public void drawFlap(Graphics2D g, Flap flap) {
 		if (flap.visible) {

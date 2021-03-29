@@ -9,7 +9,6 @@ import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.GhostState;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.ui.animation.PacManGameAnimations2D;
-import de.amr.games.pacman.ui.animation.TimedSequence;
 
 /**
  * Third intermission scene: Blinky in shred dress chases Pac-Man, comes back half-naked drawing
@@ -48,7 +47,7 @@ public abstract class PacMan_IntermissionScene3_Controller {
 		pac.speed = 1.2f;
 		pac.stuck = false;
 		pac.dir = Direction.LEFT;
-		animations.playerAnimations().playerMunching(pac).forEach(TimedSequence::restart);
+//TODO		animations.playerAnimations().playerMunching(pac).forEach(TimedSequence::restart);
 
 		blinky = new Ghost(0, "Blinky", Direction.LEFT);
 		blinky.setPositionRelativeTo(pac, t(8), 0);

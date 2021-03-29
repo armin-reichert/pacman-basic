@@ -19,7 +19,6 @@ import java.util.Map;
 
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.model.common.Ghost;
-import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.ui.animation.TimedSequence;
 import de.amr.games.pacman.ui.swing.assets.Spritesheet;
 
@@ -48,7 +47,6 @@ public class PacManGameRenderingAssets extends Spritesheet {
 	public final TimedSequence<BufferedImage> mazeFlashingAnim;
 	public final BufferedImage[] symbolSprites;
 	public final Map<Integer, BufferedImage> numberSprites;
-	public final Map<Pac, EnumMap<Direction, TimedSequence<BufferedImage>>> pacMunchingAnimations = new HashMap<>();
 	public final TimedSequence<BufferedImage> pacCollapsingAnim;
 	public final Map<Ghost, EnumMap<Direction, TimedSequence<BufferedImage>>> ghostsWalkingAnimsByGhost = new HashMap<>();
 	public final EnumMap<Direction, TimedSequence<BufferedImage>> ghostEyesAnimsByDir;
@@ -131,14 +129,14 @@ public class PacManGameRenderingAssets extends Spritesheet {
 		nailSprite = sprite(8, 6);
 	}
 
-	public EnumMap<Direction, TimedSequence<BufferedImage>> getOrCreatePacMunchingAnimation(Pac pac) {
-		if (!pacMunchingAnimations.containsKey(pac)) {
-			pacMunchingAnimations.put(pac, createPacMunchingAnimation());
-		}
-		return pacMunchingAnimations.get(pac);
+	public TimedSequence<BufferedImage> createPlayerDyingAnimation() {
+		TimedSequence<BufferedImage> animation = TimedSequence.of(sprite(3, 0), sprite(4, 0), sprite(5, 0), sprite(6, 0),
+				sprite(7, 0), sprite(8, 0), sprite(9, 0), sprite(10, 0), sprite(11, 0), sprite(12, 0), sprite(13, 0));
+		animation.frameDuration(8);
+		return animation;
 	}
 
-	private EnumMap<Direction, TimedSequence<BufferedImage>> createPacMunchingAnimation() {
+	public Map<Direction, TimedSequence<BufferedImage>> createPlayerMunchingAnimations() {
 		EnumMap<Direction, TimedSequence<BufferedImage>> munching = new EnumMap<>(Direction.class);
 		for (Direction dir : Direction.values()) {
 			TimedSequence<BufferedImage> animation = TimedSequence.of(sprite(2, 0), sprite(1, index(dir)),

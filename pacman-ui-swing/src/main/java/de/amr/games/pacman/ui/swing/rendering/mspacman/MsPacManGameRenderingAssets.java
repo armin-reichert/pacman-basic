@@ -66,9 +66,6 @@ public class MsPacManGameRenderingAssets extends Spritesheet {
 	final List<BufferedImage> mazeFullImages;
 	final List<TimedSequence<BufferedImage>> mazesFlashingAnims;
 	final TimedSequence<Boolean> energizerBlinkingAnim;
-	final EnumMap<Direction, TimedSequence<BufferedImage>> msPacManMunchingAnimByDir;
-	final TimedSequence<BufferedImage> msPacManSpinningAnim;
-	public final Map<Direction, TimedSequence<BufferedImage>> pacManMunching; // used in intermission scene
 	final List<EnumMap<Direction, TimedSequence<BufferedImage>>> ghostsKickingAnimsByGhost;
 	final EnumMap<Direction, TimedSequence<BufferedImage>> ghostEyesAnimByDir;
 	final TimedSequence<BufferedImage> ghostBlueAnim;
@@ -122,23 +119,6 @@ public class MsPacManGameRenderingAssets extends Spritesheet {
 		bountyNumberSprites.put(1600, s(3,8));
 		//@formatter:on
 
-		msPacManMunchingAnimByDir = new EnumMap<>(Direction.class);
-		for (Direction dir : Direction.values()) {
-			int d = index(dir);
-			TimedSequence<BufferedImage> munching = TimedSequence.of(s(0, d), s(1, d), s(2, d), s(1, d));
-			munching.frameDuration(2).endless();
-			msPacManMunchingAnimByDir.put(dir, munching);
-		}
-
-		msPacManSpinningAnim = TimedSequence.of(s(0, 3), s(0, 0), s(0, 1), s(0, 2));
-		msPacManSpinningAnim.frameDuration(10).repetitions(2);
-
-		pacManMunching = new EnumMap<>(Direction.class);
-		for (Direction dir : Direction.values()) {
-			int d = index(dir);
-			pacManMunching.put(dir, TimedSequence.of(s(0, 9 + d), s(1, 9 + d), s(2, 9)).endless().frameDuration(2));
-		}
-
 		ghostsKickingAnimsByGhost = new ArrayList<>(4);
 		for (int g = 0; g < 4; ++g) {
 			EnumMap<Direction, TimedSequence<BufferedImage>> kickingByDir = new EnumMap<>(Direction.class);
@@ -173,6 +153,34 @@ public class MsPacManGameRenderingAssets extends Spritesheet {
 
 		blueBag = region(488, 199, 8, 8);
 		junior = region(509, 200, 8, 8);
+	}
+
+	public TimedSequence<BufferedImage> createPlayerDyingAnimation() {
+		TimedSequence<BufferedImage> animation = TimedSequence.of(s(0, 3), s(0, 0), s(0, 1), s(0, 2));
+		animation.frameDuration(10).repetitions(2);
+		return animation;
+	}
+
+	public Map<Direction, TimedSequence<BufferedImage>> createPlayerMunchingAnimations() {
+		Map<Direction, TimedSequence<BufferedImage>> munchings = new EnumMap<>(Direction.class);
+		for (Direction dir : Direction.values()) {
+			int d = index(dir);
+			TimedSequence<BufferedImage> munching = TimedSequence.of(s(0, d), s(1, d), s(2, d), s(1, d));
+			munching.frameDuration(2).endless();
+			munchings.put(dir, munching);
+		}
+		return munchings;
+	}
+
+	public Map<Direction, TimedSequence<BufferedImage>> createSpouseMunchingAnimations() {
+		Map<Direction, TimedSequence<BufferedImage>> munchings = new EnumMap<>(Direction.class);
+		for (Direction dir : Direction.values()) {
+			int d = index(dir);
+			TimedSequence<BufferedImage> munching = TimedSequence.of(s(0, 9 + d), s(1, 9 + d), s(2, 9));
+			munching.frameDuration(2).endless();
+			munchings.put(dir, munching);
+		}
+		return munchings;
 	}
 
 	/**

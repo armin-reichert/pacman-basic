@@ -9,7 +9,6 @@ import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.GhostState;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.ui.animation.PacManGameAnimations2D;
-import de.amr.games.pacman.ui.animation.TimedSequence;
 
 /**
  * First intermission scene: Blinky chases Pac-Man and is then chased by a huge Pac-Man.
@@ -45,7 +44,7 @@ public abstract class PacMan_IntermissionScene1_Controller {
 		pac.visible = true;
 		pac.setPosition(t(30), groundY);
 		pac.speed = 1.0f;
-		animations.playerAnimations().playerMunching(pac).forEach(TimedSequence::restart);
+//TODO		animations.playerAnimations().playerMunching(pac).forEach(TimedSequence::restart);
 
 		blinky = new Ghost(0, "Blinky", Direction.LEFT);
 		blinky.visible = true;

@@ -1,4 +1,4 @@
-package de.amr.games.pacman.ui.swing.rendering;
+package de.amr.games.pacman.ui.swing.rendering.common;
 
 import static de.amr.games.pacman.model.world.PacManGameWorld.HTS;
 import static de.amr.games.pacman.model.world.PacManGameWorld.TS;
@@ -9,17 +9,19 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
+import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.controller.PacManGameState;
+import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.AbstractGameModel;
 import de.amr.games.pacman.model.common.GameEntity;
 import de.amr.games.pacman.model.common.Ghost;
-import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.pacman.PacManBonus;
 import de.amr.games.pacman.ui.animation.PacManGameAnimations2D;
+import de.amr.games.pacman.ui.animation.TimedSequence;
 
 /**
  * Spritesheet-based rendering for both, Pac-Man and Ms. Pac-Man.
@@ -29,6 +31,12 @@ import de.amr.games.pacman.ui.animation.PacManGameAnimations2D;
 public abstract class CommonPacManGameRendering implements PacManGameAnimations2D {
 
 	public abstract Font getScoreFont();
+
+	public abstract Map<Direction, TimedSequence<BufferedImage>> createPlayerMunchingAnimations();
+
+	public abstract TimedSequence<BufferedImage> createPlayerDyingAnimation();
+
+	public abstract Map<Direction, TimedSequence<BufferedImage>> createSpouseMunchingAnimations();
 
 	protected Graphics2D smoothGC(Graphics2D g) {
 		Graphics2D gc = (Graphics2D) g.create();
@@ -47,10 +55,6 @@ public abstract class CommonPacManGameRendering implements PacManGameAnimations2
 			int dx = guySprite.getWidth() / 2 - HTS, dy = guySprite.getHeight() / 2 - HTS;
 			drawSprite(g, guySprite, guy.position.x - dx, guy.position.y - dy);
 		}
-	}
-
-	public void drawPlayer(Graphics2D g, Pac pac) {
-		drawEntity(g, pac, pacSprite(pac));
 	}
 
 	public void drawGhost(Graphics2D g, Ghost ghost, boolean frightened) {
@@ -134,8 +138,6 @@ public abstract class CommonPacManGameRendering implements PacManGameAnimations2
 			g.drawString("OVER", t(15), t(21));
 		}
 	}
-
-	public abstract BufferedImage pacSprite(Pac pac);
 
 	public abstract BufferedImage ghostSprite(Ghost ghost, boolean frightened);
 

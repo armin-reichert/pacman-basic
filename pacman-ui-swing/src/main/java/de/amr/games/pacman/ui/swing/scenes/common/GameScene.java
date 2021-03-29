@@ -7,7 +7,7 @@ import de.amr.games.pacman.controller.PacManGameController;
 import de.amr.games.pacman.controller.PacManGameState;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.ui.swing.assets.SoundManager;
-import de.amr.games.pacman.ui.swing.rendering.CommonPacManGameRendering;
+import de.amr.games.pacman.ui.swing.rendering.common.CommonPacManGameRendering;
 
 /**
  * Common game scene base class.

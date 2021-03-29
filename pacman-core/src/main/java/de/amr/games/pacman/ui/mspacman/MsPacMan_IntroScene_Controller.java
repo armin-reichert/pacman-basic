@@ -110,7 +110,7 @@ public class MsPacMan_IntroScene_Controller {
 				msPacMan.visible = true;
 				msPacMan.stuck = false;
 				msPacMan.speed = 1;
-				animations.playerAnimations().playerMunching(msPacMan).forEach(TimedSequence::restart);
+//TODO				animations.playerAnimations().playerMunching(msPacMan).forEach(TimedSequence::restart);
 			}
 			boolean msPacReachedFinalPosition = msPacManEnteringStage();
 			if (msPacReachedFinalPosition) {
@@ -153,7 +153,7 @@ public class MsPacMan_IntroScene_Controller {
 	public boolean msPacManEnteringStage() {
 		if (msPacMan.speed != 0 && msPacMan.position.x <= t(13)) {
 			msPacMan.speed = 0;
-			animations.playerAnimations().playerMunching(msPacMan).forEach(TimedSequence::reset);
+//TODO			animations.playerAnimations().playerMunching(msPacMan).forEach(TimedSequence::reset);
 			return true;
 		}
 		return false;
