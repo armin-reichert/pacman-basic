@@ -58,7 +58,7 @@ public class PlayScene extends GameScene {
 			ghost2D.setFrightenedAnimation(rendering.createGhostFrightenedAnimation());
 			ghost2D.setFlashingAnimation(rendering.createGhostFlashingAnimation());
 			ghost2D.setReturningHomeAnimations(rendering.createGhostReturningHomeAnimations());
-			ghost2D.setNumberSprites(rendering.getNumberSpritesMap());
+			ghost2D.setNumberSpriteMap(rendering.getNumberSpritesMap());
 		});
 
 		mazeFlashing = rendering.mazeAnimations().mazeFlashing(game.currentLevel.mazeNumber)

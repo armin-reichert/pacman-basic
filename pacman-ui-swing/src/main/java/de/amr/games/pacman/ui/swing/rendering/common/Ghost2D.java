@@ -70,12 +70,19 @@ public class Ghost2D {
 		return numberSprites;
 	}
 
-	public void setNumberSprites(Map<Integer, BufferedImage> numberSprites) {
+	public void setNumberSpriteMap(Map<Integer, BufferedImage> numberSprites) {
 		this.numberSprites = numberSprites;
 	}
 
 	public void render(Graphics2D g) {
-		drawEntity(g, currentSprite());
+		BufferedImage sprite = currentSprite();
+		if (ghost.visible) {
+			int dx = sprite.getWidth() / 2 - 4, dy = sprite.getHeight() / 2 - 4;
+			Graphics2D gc = (Graphics2D) g.create();
+			gc.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+			gc.drawImage(sprite, (int) (ghost.position.x - dx), (int) (ghost.position.y - dy), null);
+			gc.dispose();
+		}
 	}
 
 	private BufferedImage currentSprite() {
@@ -95,15 +102,5 @@ public class Ghost2D {
 			return kickingAnimations.get(ghost.wishDir).frame();
 		}
 		return kickingAnimations.get(ghost.wishDir).animate(); // Looks towards wish dir!
-	}
-
-	private void drawEntity(Graphics2D g, BufferedImage sprite) {
-		if (ghost.visible && sprite != null) {
-			int dx = sprite.getWidth() / 2 - 4, dy = sprite.getHeight() / 2 - 4;
-			Graphics2D gc = (Graphics2D) g.create();
-			gc.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-			gc.drawImage(sprite, (int) (ghost.position.x - dx), (int) (ghost.position.y - dy), null);
-			gc.dispose();
-		}
 	}
 }

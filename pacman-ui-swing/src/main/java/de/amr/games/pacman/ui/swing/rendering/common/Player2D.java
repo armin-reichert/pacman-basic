@@ -35,12 +35,13 @@ public class Player2D {
 		return munchingAnimations;
 	}
 
-	private void drawEntity(Graphics2D g, BufferedImage guySprite) {
-		if (player.visible && guySprite != null) {
-			int dx = guySprite.getWidth() / 2 - 4, dy = guySprite.getHeight() / 2 - 4;
+	public void render(Graphics2D g) {
+		BufferedImage sprite = currentSprite();
+		if (player.visible) {
+			int dx = sprite.getWidth() / 2 - 4, dy = sprite.getHeight() / 2 - 4;
 			Graphics2D gc = (Graphics2D) g.create();
 			gc.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-			gc.drawImage(guySprite, (int) (player.position.x - dx), (int) (player.position.y - dy), null);
+			gc.drawImage(sprite, (int) (player.position.x - dx), (int) (player.position.y - dy), null);
 			gc.dispose();
 		}
 	}
@@ -56,9 +57,5 @@ public class Player2D {
 			return munchingAnimations.get(player.dir).frame(1);
 		}
 		return munchingAnimations.get(player.dir).animate();
-	}
-
-	public void render(Graphics2D g) {
-		drawEntity(g, currentSprite());
 	}
 }
