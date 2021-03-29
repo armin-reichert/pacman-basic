@@ -23,7 +23,6 @@ import de.amr.games.pacman.ui.animation.MazeAnimations2D;
 import de.amr.games.pacman.ui.animation.PacManGameAnimations2D;
 import de.amr.games.pacman.ui.animation.PlayerAnimations2D;
 import de.amr.games.pacman.ui.animation.TimedSequence;
-import de.amr.games.pacman.ui.pacman.PacManGameRendering2D;
 
 /**
  * Sprite-based rendering for the Pac-Man game.
@@ -31,8 +30,7 @@ import de.amr.games.pacman.ui.pacman.PacManGameRendering2D;
  * @author Armin Reichert
  */
 public class PacManGameRendering extends CommonPacManGameRendering
-		implements PacManGameRendering2D<Graphics2D, Color, Font, BufferedImage>, PacManGameAnimations2D, MazeAnimations2D,
-		PlayerAnimations2D, GhostAnimations2D {
+		implements PacManGameAnimations2D, MazeAnimations2D, PlayerAnimations2D, GhostAnimations2D {
 
 	public final PacManGameRenderingAssets assets;
 
@@ -60,7 +58,6 @@ public class PacManGameRendering extends CommonPacManGameRendering
 		return assets.getScoreFont();
 	}
 
-	@Override
 	public Color getMazeWallBorderColor(int mazeIndex) {
 		return new Color(33, 33, 255);
 	}
@@ -150,22 +147,18 @@ public class PacManGameRendering extends CommonPacManGameRendering
 		}
 	}
 
-	@Override
 	public void drawLifeCounterSymbol(Graphics2D g, int x, int y) {
 		g.drawImage(lifeSprite(), x, y, null);
 	}
 
-	@Override
 	public void drawBigPacMan(Graphics2D g, Pac bigPacMan) {
 		drawEntity(g, bigPacMan, assets.bigPacManAnim.animate());
 	}
 
-	@Override
 	public void drawNail(Graphics2D g, GameEntity nail) {
 		drawEntity(g, nail, assets.nailSprite);
 	}
 
-	@Override
 	public void drawBlinkyStretched(Graphics2D g, Ghost blinky, V2d nailPosition, int stretching) {
 		drawSprite(g, assets.blinkyStretched.frame(stretching), nailPosition.x - 4, nailPosition.y - 4);
 		if (stretching < 3) {
@@ -175,12 +168,10 @@ public class PacManGameRendering extends CommonPacManGameRendering
 		}
 	}
 
-	@Override
 	public void drawBlinkyPatched(Graphics2D g, Ghost blinky) {
 		drawEntity(g, blinky, assets.blinkyPatched.animate());
 	}
 
-	@Override
 	public void drawBlinkyNaked(Graphics2D g, Ghost blinky) {
 		drawEntity(g, blinky, assets.blinkyHalfNaked.animate());
 	}

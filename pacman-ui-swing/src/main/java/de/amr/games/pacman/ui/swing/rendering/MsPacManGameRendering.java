@@ -27,7 +27,6 @@ import de.amr.games.pacman.ui.animation.MazeAnimations2D;
 import de.amr.games.pacman.ui.animation.PacManGameAnimations2D;
 import de.amr.games.pacman.ui.animation.PlayerAnimations2D;
 import de.amr.games.pacman.ui.animation.TimedSequence;
-import de.amr.games.pacman.ui.mspacman.MsPacManGameRendering2D;
 
 /**
  * Rendering for the Ms. Pac-Man game.
@@ -35,8 +34,7 @@ import de.amr.games.pacman.ui.mspacman.MsPacManGameRendering2D;
  * @author Armin Reichert
  */
 public class MsPacManGameRendering extends CommonPacManGameRendering
-		implements MsPacManGameRendering2D<Graphics2D, Color, Font, BufferedImage>, PacManGameAnimations2D,
-		PlayerAnimations2D, GhostAnimations2D, MazeAnimations2D {
+		implements PacManGameAnimations2D, PlayerAnimations2D, GhostAnimations2D, MazeAnimations2D {
 
 	public static final MsPacManGameRenderingAssets assets = new MsPacManGameRenderingAssets();
 
@@ -92,7 +90,6 @@ public class MsPacManGameRendering extends CommonPacManGameRendering
 	 * @param mazeIndex
 	 * @return
 	 */
-	@Override
 	public Color getMazeWallBorderColor(int mazeIndex) {
 		switch (mazeIndex) {
 		case 0:
@@ -248,7 +245,6 @@ public class MsPacManGameRendering extends CommonPacManGameRendering
 		g2.dispose();
 	}
 
-	@Override
 	public void drawLifeCounterSymbol(Graphics2D g, int x, int y) {
 		drawSprite(g, assets.lifeSprite, x, y);
 	}
@@ -262,7 +258,6 @@ public class MsPacManGameRendering extends CommonPacManGameRendering
 		g.translate(0, -dy);
 	}
 
-	@Override
 	public void drawSpouse(Graphics2D g, Pac pacMan) {
 		if (pacMan.visible) {
 			TimedSequence<BufferedImage> munching = assets.pacManMunching.get(pacMan.dir);
@@ -271,7 +266,6 @@ public class MsPacManGameRendering extends CommonPacManGameRendering
 		}
 	}
 
-	@Override
 	public void drawFlap(Graphics2D g, Flap flap) {
 		if (flap.visible) {
 			drawSprite(g, (BufferedImage) flap.flapping.frame(), flap.position.x, flap.position.y);
@@ -294,7 +288,6 @@ public class MsPacManGameRendering extends CommonPacManGameRendering
 		).repetitions(1).frameDuration(4);
 	}
 
-	@Override
 	public void drawStork(Graphics2D g, Stork stork) {
 		drawEntity(g, stork, (BufferedImage) stork.flying.frame());
 	}
@@ -307,12 +300,10 @@ public class MsPacManGameRendering extends CommonPacManGameRendering
 		).endless().frameDuration(10);
 	}
 
-	@Override
 	public void drawHeart(Graphics2D g, GameEntity heart) {
 		drawEntity(g, heart, assets.s(2, 10));
 	}
 
-	@Override
 	public void drawJuniorBag(Graphics2D g, JuniorBag bag) {
 		if (bag.visible) {
 			if (bag.open) {
