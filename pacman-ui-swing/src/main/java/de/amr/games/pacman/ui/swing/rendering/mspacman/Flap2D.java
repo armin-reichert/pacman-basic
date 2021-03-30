@@ -36,7 +36,7 @@ public class Flap2D {
 
 	public void render(Graphics2D g) {
 		if (flap.visible) {
-			g.drawImage(animation.frame(), (int) flap.position.x, (int) flap.position.y, null);
+			g.drawImage(animation.animate(), (int) flap.position.x, (int) flap.position.y, null);
 			g.setFont(font);
 			g.setColor(new Color(222, 222, 225, 192));
 			g.drawString(flap.sceneNumber + "", (int) flap.position.x + 20, (int) flap.position.y + 30);
