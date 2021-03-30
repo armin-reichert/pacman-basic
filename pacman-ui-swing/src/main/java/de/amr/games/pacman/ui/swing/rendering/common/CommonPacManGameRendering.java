@@ -7,7 +7,6 @@ import static de.amr.games.pacman.model.world.PacManGameWorld.t;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.util.Map;
 import java.util.function.Predicate;
@@ -27,12 +26,6 @@ import de.amr.games.pacman.ui.animation.TimedSequence;
  * @author Armin Reichert
  */
 public abstract class CommonPacManGameRendering implements PacManGameAnimations2D {
-
-	public static Graphics2D smoothDrawing(Graphics2D g) {
-		Graphics2D gc = (Graphics2D) g.create();
-		gc.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-		return gc;
-	}
 
 	public abstract Font getScoreFont();
 
@@ -82,16 +75,10 @@ public abstract class CommonPacManGameRendering implements PacManGameAnimations2
 
 	public abstract BufferedImage[] getSymbolSprites();
 
-	public void drawSprite(Graphics2D g, BufferedImage sprite, double x, double y) {
-		Graphics2D gc = smoothDrawing(g);
-		gc.drawImage(sprite, (int) x, (int) y, null);
-		gc.dispose();
-	}
-
-	protected void drawEntity(Graphics2D g, GameEntity guy, BufferedImage guySprite) {
-		if (guy.visible && guySprite != null) {
-			int dx = guySprite.getWidth() / 2 - HTS, dy = guySprite.getHeight() / 2 - HTS;
-			drawSprite(g, guySprite, guy.position.x - dx, guy.position.y - dy);
+	protected void drawEntity(Graphics2D g, GameEntity guy, BufferedImage sprite) {
+		if (guy.visible && sprite != null) {
+			int dx = sprite.getWidth() / 2 - HTS, dy = sprite.getHeight() / 2 - HTS;
+			g.drawImage(sprite, (int) (guy.position.x - dx), (int) (guy.position.y - dy), null);
 		}
 	}
 
@@ -135,7 +122,7 @@ public abstract class CommonPacManGameRendering implements PacManGameAnimations2
 	public void drawLivesCounter(Graphics2D g, AbstractGameModel game, int x, int y) {
 		int maxLivesDisplayed = 5;
 		for (int i = 0; i < Math.min(game.lives, maxLivesDisplayed); ++i) {
-			drawSprite(g, lifeSprite(), x + t(2 * i), y);
+			g.drawImage(lifeSprite(), x + t(2 * i), y, null);
 		}
 		if (game.lives > maxLivesDisplayed) {
 			g.setColor(Color.YELLOW);
@@ -149,7 +136,7 @@ public abstract class CommonPacManGameRendering implements PacManGameAnimations2
 		int firstLevel = Math.max(1, game.currentLevelNumber - 6);
 		for (int level = firstLevel; level <= game.currentLevelNumber; ++level) {
 			byte symbol = game.levelSymbols.get(level - 1);
-			drawSprite(g, symbolSprite(symbol), x, y);
+			g.drawImage(symbolSprite(symbol), x, y, null);
 			x -= t(2);
 		}
 	}

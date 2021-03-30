@@ -215,22 +215,19 @@ public class MsPacManGameRendering extends CommonPacManGameRendering
 
 	@Override
 	public void drawLevelCounter(Graphics2D g, AbstractGameModel game, int rightX, int y) {
-		Graphics2D g2 = smoothDrawing(g);
 		int x = rightX;
 		for (int levelNumber = 1; levelNumber <= Math.min(game.currentLevelNumber, 7); ++levelNumber) {
 			byte symbol = game.levelSymbols.get(levelNumber - 1);
-			g2.drawImage(assets.symbolSprites[symbol], x, y, null);
+			g.drawImage(assets.symbolSprites[symbol], x, y, null);
 			x -= t(2);
 		}
-		g2.dispose();
 	}
 
 	public void drawLifeCounterSymbol(Graphics2D g, int x, int y) {
-		drawSprite(g, assets.lifeSprite, x, y);
+		g.drawImage(assets.lifeSprite, x, y, null);
 	}
 
 	public void drawHeart(Graphics2D g, GameEntity heart) {
 		drawEntity(g, heart, assets.s(2, 10));
 	}
-
 }
