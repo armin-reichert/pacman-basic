@@ -18,7 +18,6 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.AbstractGameModel;
 import de.amr.games.pacman.model.common.GameEntity;
-import de.amr.games.pacman.model.pacman.PacManBonus;
 import de.amr.games.pacman.ui.animation.PacManGameAnimations2D;
 import de.amr.games.pacman.ui.animation.TimedSequence;
 
@@ -45,16 +44,22 @@ public abstract class CommonPacManGameRendering implements PacManGameAnimations2
 
 	public abstract Map<Direction, TimedSequence<BufferedImage>> createGhostReturningHomeAnimations();
 
-	public abstract Map<Integer, BufferedImage> getNumberSpritesMap();
+	public abstract TimedSequence<Integer> createBonusAnimation();
 
-	protected Graphics2D smoothGC(Graphics2D g) {
+	public abstract Map<Integer, BufferedImage> getBountyNumbersSpritesMap();
+
+	public abstract Map<Integer, BufferedImage> getBonusNumbersSpritesMap();
+
+	public abstract BufferedImage[] getSymbolSprites();
+
+	public static Graphics2D smoothDrawing(Graphics2D g) {
 		Graphics2D gc = (Graphics2D) g.create();
 		gc.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 		return gc;
 	}
 
 	public void drawSprite(Graphics2D g, BufferedImage sprite, double x, double y) {
-		Graphics2D gc = smoothGC(g);
+		Graphics2D gc = smoothDrawing(g);
 		gc.drawImage(sprite, (int) x, (int) y, null);
 		gc.dispose();
 	}
@@ -70,13 +75,9 @@ public abstract class CommonPacManGameRendering implements PacManGameAnimations2
 		tiles.filter(eaten).forEach(tile -> drawTileCovered(g, tile));
 	}
 
-	public void drawTileCovered(Graphics2D g, V2i tile) {
+	private void drawTileCovered(Graphics2D g, V2i tile) {
 		g.setColor(Color.BLACK);
 		g.fillRect(tile.x * TS, tile.y * TS, TS, TS);
-	}
-
-	public void drawBonus(Graphics2D g, PacManBonus bonus) {
-		drawEntity(g, bonus, bonusSprite(bonus));
 	}
 
 	public abstract void drawMaze(Graphics2D g, int mazeNumber, int i, int t, boolean running);
@@ -143,8 +144,6 @@ public abstract class CommonPacManGameRendering implements PacManGameAnimations2
 	}
 
 	protected abstract BufferedImage symbolSprite(byte symbol);
-
-	protected abstract BufferedImage bonusSprite(PacManBonus bonus);
 
 	protected abstract BufferedImage lifeSprite();
 

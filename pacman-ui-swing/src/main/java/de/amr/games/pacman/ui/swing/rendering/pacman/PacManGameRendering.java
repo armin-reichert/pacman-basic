@@ -12,7 +12,6 @@ import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.model.common.GameEntity;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
-import de.amr.games.pacman.model.pacman.PacManBonus;
 import de.amr.games.pacman.ui.animation.MazeAnimations2D;
 import de.amr.games.pacman.ui.animation.PacManGameAnimations2D;
 import de.amr.games.pacman.ui.animation.TimedSequence;
@@ -67,8 +66,23 @@ public class PacManGameRendering extends CommonPacManGameRendering implements Pa
 	}
 
 	@Override
-	public Map<Integer, BufferedImage> getNumberSpritesMap() {
-		return assets.getNumberSpritesMap();
+	public TimedSequence<Integer> createBonusAnimation() {
+		return null;
+	}
+
+	@Override
+	public Map<Integer, BufferedImage> getBountyNumbersSpritesMap() {
+		return assets.numberSprites;
+	}
+
+	@Override
+	public Map<Integer, BufferedImage> getBonusNumbersSpritesMap() {
+		return assets.numberSprites;
+	}
+
+	@Override
+	public BufferedImage[] getSymbolSprites() {
+		return assets.symbolSprites;
 	}
 
 	@Override
@@ -154,17 +168,6 @@ public class PacManGameRendering extends CommonPacManGameRendering implements Pa
 	}
 
 	// Sprites
-
-	@Override
-	public BufferedImage bonusSprite(PacManBonus bonus) {
-		if (bonus.edibleTicksLeft > 0) {
-			return assets.symbolSprites[bonus.symbol];
-		}
-		if (bonus.eatenTicksLeft > 0) {
-			return assets.numberSprites.get(bonus.points);
-		}
-		return null;
-	}
 
 	@Override
 	public BufferedImage lifeSprite() {

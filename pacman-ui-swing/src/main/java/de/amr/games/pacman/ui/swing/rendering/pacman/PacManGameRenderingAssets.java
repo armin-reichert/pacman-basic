@@ -45,7 +45,6 @@ public class PacManGameRenderingAssets extends Spritesheet {
 	public final TimedSequence<BufferedImage> mazeFlashingAnim;
 	public final BufferedImage[] symbolSprites;
 	public final Map<Integer, BufferedImage> numberSprites;
-	public final TimedSequence<BufferedImage> pacCollapsingAnim;
 	public final TimedSequence<BufferedImage> bigPacManAnim;
 	public final TimedSequence<BufferedImage> blinkyHalfNaked;
 	public final TimedSequence<BufferedImage> blinkyDamaged;
@@ -90,10 +89,6 @@ public class PacManGameRenderingAssets extends Spritesheet {
 		BufferedImage mazeEmptyBrightImage = createBrightEffect(mazeEmptyDarkImage, new Color(33, 33, 255), Color.BLACK);
 		mazeFlashingAnim = TimedSequence.of(mazeEmptyBrightImage, mazeEmptyDarkImage).frameDuration(15);
 
-		pacCollapsingAnim = TimedSequence.of(sprite(3, 0), sprite(4, 0), sprite(5, 0), sprite(6, 0), sprite(7, 0),
-				sprite(8, 0), sprite(9, 0), sprite(10, 0), sprite(11, 0), sprite(12, 0), sprite(13, 0));
-		pacCollapsingAnim.frameDuration(8);
-
 		bigPacManAnim = TimedSequence.of(spriteRegion(2, 1, 2, 2), spriteRegion(4, 1, 2, 2), spriteRegion(6, 1, 2, 2))
 				.frameDuration(4).endless().run();
 
@@ -106,11 +101,19 @@ public class PacManGameRenderingAssets extends Spritesheet {
 		nailSprite = sprite(8, 6);
 	}
 
+	public Font getScoreFont() {
+		return scoreFont;
+	}
+
+	public BufferedImage ghostImageByGhostByDir(int ghostID, Direction dir) {
+		return sprite(2 * index(dir), 4 + ghostID);
+	}
+
 	public TimedSequence<BufferedImage> createPlayerDyingAnimation() {
-		TimedSequence<BufferedImage> animation = TimedSequence.of(sprite(3, 0), sprite(4, 0), sprite(5, 0), sprite(6, 0),
-				sprite(7, 0), sprite(8, 0), sprite(9, 0), sprite(10, 0), sprite(11, 0), sprite(12, 0), sprite(13, 0));
-		animation.frameDuration(8);
-		return animation;
+		return TimedSequence.of(//
+				sprite(3, 0), sprite(4, 0), sprite(5, 0), sprite(6, 0), sprite(7, 0), //
+				sprite(8, 0), sprite(9, 0), sprite(10, 0), sprite(11, 0), sprite(12, 0), sprite(13, 0))//
+				.frameDuration(8);
 	}
 
 	public Map<Direction, TimedSequence<BufferedImage>> createPlayerMunchingAnimations() {
@@ -151,17 +154,5 @@ public class PacManGameRenderingAssets extends Spritesheet {
 			ghostEyesAnimsByDir.put(dir, TimedSequence.of(sprite(8 + index(dir), 5)));
 		}
 		return ghostEyesAnimsByDir;
-	}
-
-	public Map<Integer, BufferedImage> getNumberSpritesMap() {
-		return numberSprites;
-	}
-
-	public Font getScoreFont() {
-		return scoreFont;
-	}
-
-	public BufferedImage ghostImageByGhostByDir(int ghostID, Direction dir) {
-		return sprite(2 * index(dir), 4 + ghostID);
 	}
 }

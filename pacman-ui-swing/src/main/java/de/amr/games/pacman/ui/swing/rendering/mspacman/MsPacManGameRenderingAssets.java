@@ -13,7 +13,6 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -58,14 +57,13 @@ public class MsPacManGameRenderingAssets extends Spritesheet {
 	final Font scoreFont;
 
 	final BufferedImage[] symbolSprites;
-	final Map<Integer, BufferedImage> bonusValueSprites;
+	final Map<Integer, BufferedImage> bonusNumberSprites;
 	final Map<Integer, BufferedImage> bountyNumberSprites;
 
 	final BufferedImage lifeSprite;
 	final List<BufferedImage> mazeEmptyImages;
 	final List<BufferedImage> mazeFullImages;
 	final List<TimedSequence<BufferedImage>> mazesFlashingAnims;
-	final TimedSequence<Integer> bonusJumpAnim;
 	final TimedSequence<BufferedImage> storkAnim;
 	final BufferedImage blueBag;
 	final BufferedImage junior;
@@ -93,26 +91,13 @@ public class MsPacManGameRenderingAssets extends Spritesheet {
 		}
 
 		lifeSprite = s(1, 0);
+
 		symbolSprites = new BufferedImage[] { s(3, 0), s(4, 0), s(5, 0), s(6, 0), s(7, 0), s(8, 0), s(9, 0) };
 
-		//@formatter:off
-		bonusValueSprites = new HashMap<>(7);
-		bonusValueSprites.put(100,  s(3, 1));
-		bonusValueSprites.put(200,  s(4, 1));
-		bonusValueSprites.put(500,  s(5, 1));
-		bonusValueSprites.put(700,  s(6, 1));
-		bonusValueSprites.put(1000, s(7, 1));
-		bonusValueSprites.put(2000, s(8, 1));
-		bonusValueSprites.put(5000, s(9, 1));
-		
-		bountyNumberSprites = new HashMap<>(4);
-		bountyNumberSprites.put(200, s(0,8));
-		bountyNumberSprites.put(400, s(1,8));
-		bountyNumberSprites.put(800, s(2,8));
-		bountyNumberSprites.put(1600, s(3,8));
-		//@formatter:on
+		bonusNumberSprites = Map.of(100, s(3, 1), 200, s(4, 1), 500, s(5, 1), 700, s(6, 1), 1000, s(7, 1), 2000, s(8, 1),
+				5000, s(9, 1));
 
-		bonusJumpAnim = TimedSequence.of(2, -2).frameDuration(15).endless().run();
+		bountyNumberSprites = Map.of(200, s(0, 8), 400, s(1, 8), 800, s(2, 8), 1600, s(3, 8));
 
 		storkAnim = TimedSequence.of(//
 				region(489, 176, 32, 16), //
@@ -147,8 +132,12 @@ public class MsPacManGameRenderingAssets extends Spritesheet {
 		return mazeWallBorderColors[mazeIndex];
 	}
 
-	public Map<Integer, BufferedImage> getNumberSpritesMap() {
+	public Map<Integer, BufferedImage> getBountyNumbersSpritesMap() {
 		return bountyNumberSprites;
+	}
+
+	public Map<Integer, BufferedImage> getBonusNumbersSpritesMap() {
+		return bonusNumberSprites;
 	}
 
 	public TimedSequence<BufferedImage> createPlayerDyingAnimation() {

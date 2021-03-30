@@ -67,8 +67,23 @@ public class MsPacManGameRendering extends CommonPacManGameRendering
 	}
 
 	@Override
-	public Map<Integer, BufferedImage> getNumberSpritesMap() {
-		return assets.getNumberSpritesMap();
+	public TimedSequence<Integer> createBonusAnimation() {
+		return TimedSequence.of(2, -2).frameDuration(10).endless();
+	}
+
+	@Override
+	public Map<Integer, BufferedImage> getBountyNumbersSpritesMap() {
+		return assets.getBountyNumbersSpritesMap();
+	}
+
+	@Override
+	public Map<Integer, BufferedImage> getBonusNumbersSpritesMap() {
+		return assets.getBonusNumbersSpritesMap();
+	}
+
+	@Override
+	public BufferedImage[] getSymbolSprites() {
+		return assets.symbolSprites;
 	}
 
 	@Override
@@ -148,7 +163,7 @@ public class MsPacManGameRendering extends CommonPacManGameRendering
 			return assets.symbolSprites[bonus.symbol];
 		}
 		if (bonus.eatenTicksLeft > 0) {
-			return assets.bonusValueSprites.get(bonus.points);
+			return assets.bonusNumberSprites.get(bonus.points);
 		}
 		return null;
 	}
@@ -156,17 +171,6 @@ public class MsPacManGameRendering extends CommonPacManGameRendering
 	@Override
 	public BufferedImage lifeSprite() {
 		return assets.lifeSprite;
-	}
-
-	@Override
-	protected BufferedImage bonusSprite(PacManBonus bonus) {
-		if (bonus.edibleTicksLeft > 0) {
-			return assets.symbolSprites[bonus.symbol];
-		}
-		if (bonus.eatenTicksLeft > 0) {
-			return assets.bonusValueSprites.get(bonus.points);
-		}
-		return null;
 	}
 
 	@Override
@@ -185,7 +189,7 @@ public class MsPacManGameRendering extends CommonPacManGameRendering
 
 	@Override
 	public void drawLevelCounter(Graphics2D g, AbstractGameModel game, int rightX, int y) {
-		Graphics2D g2 = smoothGC(g);
+		Graphics2D g2 = smoothDrawing(g);
 		int x = rightX;
 		for (int levelNumber = 1; levelNumber <= Math.min(game.currentLevelNumber, 7); ++levelNumber) {
 			byte symbol = game.levelSymbols.get(levelNumber - 1);
@@ -198,23 +202,6 @@ public class MsPacManGameRendering extends CommonPacManGameRendering
 	public void drawLifeCounterSymbol(Graphics2D g, int x, int y) {
 		drawSprite(g, assets.lifeSprite, x, y);
 	}
-
-	@Override
-	public void drawBonus(Graphics2D g, PacManBonus bonus) {
-		// Ms. Pac.Man bonus is jumping while wandering the maze
-		int dy = bonus.edibleTicksLeft > 0 ? assets.bonusJumpAnim.animate() : 0;
-		g.translate(0, dy);
-		drawEntity(g, bonus, bonusSprite(bonus));
-		g.translate(0, -dy);
-	}
-
-//	public void drawSpouse(Graphics2D g, Pac pacMan) {
-//		if (pacMan.visible) {
-//			TimedSequence<BufferedImage> munching = assets.pacManMunching.get(pacMan.dir);
-//			drawSprite(g, pacMan.speed > 0 ? munching.animate() : munching.frame(1), pacMan.position.x - 4,
-//					pacMan.position.y - 4);
-//		}
-//	}
 
 	public void drawFlap(Graphics2D g, Flap flap) {
 		if (flap.visible) {
