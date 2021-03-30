@@ -1,5 +1,7 @@
 package de.amr.games.pacman.ui.swing.rendering.mspacman;
 
+import static de.amr.games.pacman.model.world.PacManGameWorld.TS;
+
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
@@ -24,8 +26,8 @@ public class Heart2D {
 
 	public void render(Graphics2D g) {
 		if (heart.visible) {
-			int dx = image.getWidth() / 2, dy = image.getHeight() / 2;
-			g.drawImage(image, (int) heart.position.x - dx, (int) heart.position.y - dy, null);
+			int dx = -(image.getWidth() - TS) / 2, dy = -(image.getHeight() - TS) / 2;
+			g.drawImage(image, (int) heart.position.x + dx, (int) heart.position.y + dy, null);
 		}
 	}
 }

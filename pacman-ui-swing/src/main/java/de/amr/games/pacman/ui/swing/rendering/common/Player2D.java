@@ -1,7 +1,8 @@
 package de.amr.games.pacman.ui.swing.rendering.common;
 
+import static de.amr.games.pacman.model.world.PacManGameWorld.TS;
+
 import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.util.Map;
 
@@ -38,11 +39,8 @@ public class Player2D {
 	public void render(Graphics2D g) {
 		BufferedImage sprite = currentSprite();
 		if (player.visible) {
-			int dx = sprite.getWidth() / 2 - 4, dy = sprite.getHeight() / 2 - 4;
-			Graphics2D gc = (Graphics2D) g.create();
-			gc.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-			gc.drawImage(sprite, (int) (player.position.x - dx), (int) (player.position.y - dy), null);
-			gc.dispose();
+			int dx = -(sprite.getWidth() - TS) / 2, dy = -(sprite.getHeight() - TS) / 2;
+			g.drawImage(sprite, (int) (player.position.x + dx), (int) (player.position.y + dy), null);
 		}
 	}
 

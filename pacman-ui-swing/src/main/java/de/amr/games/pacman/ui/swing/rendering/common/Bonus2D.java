@@ -1,9 +1,8 @@
 package de.amr.games.pacman.ui.swing.rendering.common;
 
-import static de.amr.games.pacman.model.world.PacManGameWorld.HTS;
+import static de.amr.games.pacman.model.world.PacManGameWorld.TS;
 
 import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.util.Map;
 
@@ -47,13 +46,10 @@ public class Bonus2D {
 		}
 		// Ms. Pac.Man bonus is jumping up and down while wandering the maze
 		int jump = jumpAnimation != null ? jumpAnimation.animate() : 0;
-		int dx = sprite.getWidth() / 2 - HTS, dy = sprite.getHeight() / 2 - HTS;
-		Graphics2D gc = (Graphics2D) g.create();
-		gc.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-		gc.translate(0, jump);
-		gc.drawImage(sprite, (int) (bonus.position.x - dx), (int) (bonus.position.y - dy), null);
-		gc.translate(0, -jump);
-		gc.dispose();
+		int dx = -(sprite.getWidth() - TS) / 2, dy = -(sprite.getHeight() - TS) / 2;
+		g.translate(0, jump);
+		g.drawImage(sprite, (int) (bonus.position.x + dx), (int) (bonus.position.y + dy), null);
+		g.translate(0, -jump);
 	}
 
 	private BufferedImage currentSprite() {

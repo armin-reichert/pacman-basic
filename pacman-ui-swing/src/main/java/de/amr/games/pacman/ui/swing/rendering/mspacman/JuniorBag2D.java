@@ -1,6 +1,6 @@
 package de.amr.games.pacman.ui.swing.rendering.mspacman;
 
-import static de.amr.games.pacman.model.world.PacManGameWorld.HTS;
+import static de.amr.games.pacman.model.world.PacManGameWorld.TS;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -27,8 +27,8 @@ public class JuniorBag2D {
 	}
 
 	private void drawEntity(Graphics2D g, GameEntity entity, BufferedImage sprite) {
-		int dx = sprite.getWidth() / 2 - HTS, dy = sprite.getHeight() / 2 - HTS;
-		g.drawImage(sprite, (int) (entity.position.x - dx), (int) (entity.position.y - dy), null);
+		int dx = -(sprite.getWidth() - TS) / 2, dy = -(sprite.getHeight() - TS) / 2;
+		g.drawImage(sprite, (int) (entity.position.x + dx), (int) (entity.position.y + dy), null);
 	}
 
 	public void render(Graphics2D g) {

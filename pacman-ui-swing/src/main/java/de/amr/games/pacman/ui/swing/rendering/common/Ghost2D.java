@@ -4,9 +4,9 @@ import static de.amr.games.pacman.model.common.GhostState.DEAD;
 import static de.amr.games.pacman.model.common.GhostState.ENTERING_HOUSE;
 import static de.amr.games.pacman.model.common.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.common.GhostState.LOCKED;
+import static de.amr.games.pacman.model.world.PacManGameWorld.TS;
 
 import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.util.EnumMap;
 import java.util.Map;
@@ -77,11 +77,8 @@ public class Ghost2D {
 	public void render(Graphics2D g) {
 		BufferedImage sprite = currentSprite();
 		if (ghost.visible) {
-			int dx = sprite.getWidth() / 2 - 4, dy = sprite.getHeight() / 2 - 4;
-			Graphics2D gc = (Graphics2D) g.create();
-			gc.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-			gc.drawImage(sprite, (int) (ghost.position.x - dx), (int) (ghost.position.y - dy), null);
-			gc.dispose();
+			int dx = -(sprite.getWidth() - TS) / 2, dy = -(sprite.getHeight() - TS) / 2;
+			g.drawImage(sprite, (int) (ghost.position.x + dx), (int) (ghost.position.y + dy), null);
 		}
 	}
 
