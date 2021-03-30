@@ -25,7 +25,7 @@ import de.amr.games.pacman.ui.animation.TimedSequence;
  * 
  * @author Armin Reichert
  */
-public abstract class CommonPacManGameRendering implements PacManGameAnimations2D {
+public abstract class AbstractPacManGameRendering implements PacManGameAnimations2D {
 
 	public abstract Font getScoreFont();
 
@@ -70,6 +70,10 @@ public abstract class CommonPacManGameRendering implements PacManGameAnimations2
 	}
 
 	public BufferedImage getJunior() {
+		return null;
+	}
+
+	public BufferedImage getHeart() {
 		return null;
 	}
 

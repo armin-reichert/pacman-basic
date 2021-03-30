@@ -14,7 +14,7 @@ import de.amr.games.pacman.ui.swing.PacManGameUI_Swing;
 import de.amr.games.pacman.ui.swing.rendering.common.Ghost2D;
 import de.amr.games.pacman.ui.swing.rendering.common.Player2D;
 import de.amr.games.pacman.ui.swing.rendering.mspacman.Flap2D;
-import de.amr.games.pacman.ui.swing.rendering.mspacman.MsPacManGameRendering;
+import de.amr.games.pacman.ui.swing.rendering.mspacman.Heart2D;
 import de.amr.games.pacman.ui.swing.scenes.common.GameScene;
 
 /**
@@ -52,6 +52,7 @@ public class MsPacMan_IntermissionScene1 extends GameScene {
 	private Ghost2D inky2D;
 	private Ghost2D pinky2D;
 	private Flap2D flap2D;
+	private Heart2D heart2D;
 
 	public MsPacMan_IntermissionScene1(PacManGameController controller, Dimension size) {
 		super(controller, size, PacManGameUI_Swing.RENDERING_MS_PACMAN, PacManGameUI_Swing.SOUND.get(MS_PACMAN));
@@ -75,6 +76,8 @@ public class MsPacMan_IntermissionScene1 extends GameScene {
 		pinky2D = new Ghost2D(sceneController.pinky);
 		pinky2D.setKickingAnimations(rendering.createGhostKickingAnimations(pinky2D.ghost.id));
 		pinky2D.getKickingAnimations().values().forEach(TimedSequence::restart);
+		heart2D = new Heart2D(sceneController.heart);
+		heart2D.setImage(rendering.getHeart());
 	}
 
 	@Override
@@ -84,12 +87,11 @@ public class MsPacMan_IntermissionScene1 extends GameScene {
 
 	@Override
 	public void render(Graphics2D g) {
-		MsPacManGameRendering r = (MsPacManGameRendering) rendering;
 		flap2D.render(g);
 		msPacMan2D.render(g);
 		pacMan2D.render(g);
 		inky2D.render(g);
 		pinky2D.render(g);
-		r.drawHeart(g, sceneController.heart);
+		heart2D.render(g);
 	}
 }

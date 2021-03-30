@@ -24,7 +24,7 @@ import de.amr.games.pacman.ui.animation.TimedSequence;
 import de.amr.games.pacman.ui.sound.PacManGameSound;
 import de.amr.games.pacman.ui.swing.assets.SoundManager;
 import de.amr.games.pacman.ui.swing.rendering.common.Bonus2D;
-import de.amr.games.pacman.ui.swing.rendering.common.CommonPacManGameRendering;
+import de.amr.games.pacman.ui.swing.rendering.common.AbstractPacManGameRendering;
 import de.amr.games.pacman.ui.swing.rendering.common.Energizer2D;
 import de.amr.games.pacman.ui.swing.rendering.common.Ghost2D;
 import de.amr.games.pacman.ui.swing.rendering.common.Player2D;
@@ -43,7 +43,7 @@ public class PlayScene extends GameScene {
 
 	private TimedSequence<?> mazeFlashing;
 
-	public PlayScene(PacManGameController controller, Dimension size, CommonPacManGameRendering rendering,
+	public PlayScene(PacManGameController controller, Dimension size, AbstractPacManGameRendering rendering,
 			SoundManager sounds) {
 		super(controller, size, rendering, sounds);
 	}

@@ -11,19 +11,18 @@ import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.model.common.AbstractGameModel;
-import de.amr.games.pacman.model.common.GameEntity;
 import de.amr.games.pacman.model.pacman.PacManBonus;
 import de.amr.games.pacman.ui.animation.MazeAnimations2D;
 import de.amr.games.pacman.ui.animation.PacManGameAnimations2D;
 import de.amr.games.pacman.ui.animation.TimedSequence;
-import de.amr.games.pacman.ui.swing.rendering.common.CommonPacManGameRendering;
+import de.amr.games.pacman.ui.swing.rendering.common.AbstractPacManGameRendering;
 
 /**
  * Rendering for the Ms. Pac-Man game.
  * 
  * @author Armin Reichert
  */
-public class MsPacManGameRendering extends CommonPacManGameRendering
+public class MsPacManGameRendering extends AbstractPacManGameRendering
 		implements PacManGameAnimations2D, MazeAnimations2D {
 
 	public static final MsPacManGameRenderingAssets assets = new MsPacManGameRenderingAssets();
@@ -95,6 +94,11 @@ public class MsPacManGameRendering extends CommonPacManGameRendering
 	@Override
 	public BufferedImage getJunior() {
 		return assets.junior;
+	}
+
+	@Override
+	public BufferedImage getHeart() {
+		return assets.s(2, 10);
 	}
 
 	@Override
@@ -225,9 +229,5 @@ public class MsPacManGameRendering extends CommonPacManGameRendering
 
 	public void drawLifeCounterSymbol(Graphics2D g, int x, int y) {
 		g.drawImage(assets.lifeSprite, x, y, null);
-	}
-
-	public void drawHeart(Graphics2D g, GameEntity heart) {
-		drawEntity(g, heart, assets.s(2, 10));
 	}
 }

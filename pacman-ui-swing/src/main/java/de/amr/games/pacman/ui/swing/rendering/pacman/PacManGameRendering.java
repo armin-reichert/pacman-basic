@@ -14,14 +14,14 @@ import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.ui.animation.MazeAnimations2D;
 import de.amr.games.pacman.ui.animation.PacManGameAnimations2D;
 import de.amr.games.pacman.ui.animation.TimedSequence;
-import de.amr.games.pacman.ui.swing.rendering.common.CommonPacManGameRendering;
+import de.amr.games.pacman.ui.swing.rendering.common.AbstractPacManGameRendering;
 
 /**
  * Sprite-based rendering for the Pac-Man game.
  * 
  * @author Armin Reichert
  */
-public class PacManGameRendering extends CommonPacManGameRendering implements PacManGameAnimations2D, MazeAnimations2D {
+public class PacManGameRendering extends AbstractPacManGameRendering implements PacManGameAnimations2D, MazeAnimations2D {
 
 	public final PacManGameRenderingAssets assets;
 
