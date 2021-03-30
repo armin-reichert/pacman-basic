@@ -14,6 +14,8 @@ import de.amr.games.pacman.ui.sound.PacManGameSound;
 /**
  * Sound manager for Pac-Man game variants.
  * 
+ * TODO how to avoid warning about potential resource leak?
+ * 
  * @author Armin Reichert
  */
 public class SoundManager {
@@ -45,7 +47,6 @@ public class SoundManager {
 		}
 	}
 
-	// TODO how to avoid warning about potential resource leak?
 	@SuppressWarnings("resource")
 	private Clip getClip(PacManGameSound sound) {
 		Clip clip = null;
