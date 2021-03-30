@@ -47,8 +47,10 @@ public abstract class MsPacMan_IntermissionScene2_Controller {
 
 	public abstract void playIntermissionSound();
 
+	public abstract void playFlapAnimation();
+
 	public void start() {
-		flap = new Flap(2, "THE CHASE", animations.flapFlappingAnimation());
+		flap = new Flap(2, "THE CHASE");
 		flap.setTilePosition(3, 10);
 		flap.visible = true;
 
@@ -62,17 +64,15 @@ public abstract class MsPacMan_IntermissionScene2_Controller {
 		switch (phase) {
 		case FLAP:
 			if (timer.isRunningSeconds(1)) {
-				flap.flapping.restart();
+				playFlapAnimation();
 			}
 			if (timer.isRunningSeconds(2)) {
 				flap.visible = false;
 				playIntermissionSound();
-//				sounds.play(PacManGameSound.INTERMISSION_2);
 			}
 			if (timer.isRunningSeconds(4.5)) {
 				enter(Phase.ACTION);
 			}
-			flap.flapping.animate();
 			timer.tick();
 			break;
 

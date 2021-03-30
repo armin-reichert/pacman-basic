@@ -47,8 +47,6 @@ public class PacManGameRenderingAssets extends Spritesheet {
 	public final Map<Integer, BufferedImage> numberSprites;
 	public final TimedSequence<BufferedImage> bigPacManAnim;
 	public final TimedSequence<BufferedImage> blinkyHalfNaked;
-	public final TimedSequence<BufferedImage> blinkyDamaged;
-	public final TimedSequence<BufferedImage> blinkyStretched;
 	public final TimedSequence<BufferedImage> blinkyPatched;
 	public final BufferedImage nailSprite;
 
@@ -93,8 +91,6 @@ public class PacManGameRenderingAssets extends Spritesheet {
 				.frameDuration(4).endless().run();
 
 		blinkyPatched = TimedSequence.of(sprite(10, 7), sprite(11, 7)).restart().frameDuration(4).endless();
-		blinkyDamaged = TimedSequence.of(sprite(8, 7), sprite(9, 7));
-		blinkyStretched = TimedSequence.of(sprite(9, 6), sprite(10, 6), sprite(11, 6), sprite(12, 6));
 		blinkyHalfNaked = TimedSequence.of(spriteRegion(8, 8, 2, 1), spriteRegion(10, 8, 2, 1)).endless().frameDuration(4)
 				.restart();
 
@@ -154,5 +150,13 @@ public class PacManGameRenderingAssets extends Spritesheet {
 			ghostEyesAnimsByDir.put(dir, TimedSequence.of(sprite(8 + index(dir), 5)));
 		}
 		return ghostEyesAnimsByDir;
+	}
+
+	public TimedSequence<BufferedImage> createBlinkyStretchedAnimation() {
+		return TimedSequence.of(sprite(9, 6), sprite(10, 6), sprite(11, 6), sprite(12, 6));
+	}
+
+	public TimedSequence<BufferedImage> createBlinkyDamagedAnimation() {
+		return TimedSequence.of(sprite(8, 7), sprite(9, 7));
 	}
 }

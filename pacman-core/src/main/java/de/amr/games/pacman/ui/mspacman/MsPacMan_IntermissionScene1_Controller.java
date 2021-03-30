@@ -49,8 +49,10 @@ public abstract class MsPacMan_IntermissionScene1_Controller {
 
 	public abstract void playIntermissionSound();
 
+	public abstract void playFlapAnimation();
+
 	public void start() {
-		flap = new Flap(1, "THEY MEET", animations.flapFlappingAnimation());
+		flap = new Flap(1, "THEY MEET");
 		flap.setTilePosition(3, 10);
 		flap.visible = true;
 
@@ -93,7 +95,7 @@ public abstract class MsPacMan_IntermissionScene1_Controller {
 
 		case FLAP:
 			if (timer.isRunningSeconds(1)) {
-				flap.flapping.restart();
+				playFlapAnimation();
 			}
 			if (timer.hasExpired()) {
 				flap.visible = false;
@@ -101,7 +103,6 @@ public abstract class MsPacMan_IntermissionScene1_Controller {
 				startChasedByGhosts();
 				return;
 			}
-			flap.flapping.animate();
 			timer.tick();
 			break;
 
@@ -130,8 +131,6 @@ public abstract class MsPacMan_IntermissionScene1_Controller {
 				msPac.dir = Direction.RIGHT;
 				heart.setPosition((pacMan.position.x + msPac.position.x) / 2, pacMan.position.y - t(2));
 				heart.visible = true;
-//				animations.ghostAnimations().ghostKicking(inky).forEach(TimedSequence::reset);
-//				animations.ghostAnimations().ghostKicking(pinky).forEach(TimedSequence::reset);
 				enterSeconds(Phase.READY_TO_PLAY, 2);
 			}
 			if (!ghostsMet && inky.position.x - pinky.position.x < 16) {

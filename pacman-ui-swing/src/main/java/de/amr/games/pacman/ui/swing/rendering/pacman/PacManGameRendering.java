@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.Direction;
-import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.model.common.GameEntity;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
@@ -66,6 +65,16 @@ public class PacManGameRendering extends CommonPacManGameRendering implements Pa
 	}
 
 	@Override
+	public TimedSequence<BufferedImage> createBlinkyStretchedAnimation() {
+		return assets.createBlinkyStretchedAnimation();
+	}
+
+	@Override
+	public TimedSequence<BufferedImage> createBlinkyDamagedAnimation() {
+		return assets.createBlinkyDamagedAnimation();
+	}
+
+	@Override
 	public TimedSequence<Integer> createBonusAnimation() {
 		return null;
 	}
@@ -104,8 +113,6 @@ public class PacManGameRendering extends CommonPacManGameRendering implements Pa
 		return Color.BLACK;
 	}
 
-	// Animations
-
 	@Override
 	public Stream<TimedSequence<?>> mazeFlashings() {
 		return Stream.of(assets.mazeFlashingAnim);
@@ -115,18 +122,6 @@ public class PacManGameRendering extends CommonPacManGameRendering implements Pa
 	public TimedSequence<BufferedImage> mazeFlashing(int mazeNumber) {
 		return assets.mazeFlashingAnim;
 	}
-
-	@Override
-	public TimedSequence<?> flapFlappingAnimation() {
-		return null;
-	}
-
-	@Override
-	public TimedSequence<?> storkFlyingAnimation() {
-		return null;
-	}
-
-	// draw functions
 
 	@Override
 	public void drawMaze(Graphics2D g, int mazeNumber, int x, int y, boolean flashing) {
@@ -149,16 +144,6 @@ public class PacManGameRendering extends CommonPacManGameRendering implements Pa
 		drawEntity(g, nail, assets.nailSprite);
 	}
 
-	public void drawBlinkyStretched(Graphics2D g, Ghost blinky, V2d nailPosition, int stretching) {
-		drawSprite(g, assets.blinkyStretched.frame(stretching), nailPosition.x - 4, nailPosition.y - 4);
-		if (stretching < 3) {
-			// TODO
-//			drawGhost(g, blinky, false);
-		} else {
-			drawEntity(g, blinky, assets.blinkyDamaged.frame(blinky.dir == Direction.UP ? 0 : 1));
-		}
-	}
-
 	public void drawBlinkyPatched(Graphics2D g, Ghost blinky) {
 		drawEntity(g, blinky, assets.blinkyPatched.animate());
 	}
@@ -166,8 +151,6 @@ public class PacManGameRendering extends CommonPacManGameRendering implements Pa
 	public void drawBlinkyNaked(Graphics2D g, Ghost blinky) {
 		drawEntity(g, blinky, assets.blinkyHalfNaked.animate());
 	}
-
-	// Sprites
 
 	@Override
 	public BufferedImage lifeSprite() {
@@ -178,5 +161,4 @@ public class PacManGameRendering extends CommonPacManGameRendering implements Pa
 	protected BufferedImage symbolSprite(byte symbol) {
 		return assets.symbolSprites[symbol];
 	}
-
 }

@@ -64,7 +64,7 @@ public class MsPacManGameRenderingAssets extends Spritesheet {
 	final List<BufferedImage> mazeEmptyImages;
 	final List<BufferedImage> mazeFullImages;
 	final List<TimedSequence<BufferedImage>> mazesFlashingAnims;
-	final TimedSequence<BufferedImage> storkAnim;
+
 	final BufferedImage blueBag;
 	final BufferedImage junior;
 
@@ -98,11 +98,6 @@ public class MsPacManGameRenderingAssets extends Spritesheet {
 				5000, s(9, 1));
 
 		bountyNumberSprites = Map.of(200, s(0, 8), 400, s(1, 8), 800, s(2, 8), 1600, s(3, 8));
-
-		storkAnim = TimedSequence.of(//
-				region(489, 176, 32, 16), //
-				region(521, 176, 32, 16));
-		storkAnim.endless().frameDuration(10).restart();
 
 		blueBag = region(488, 199, 8, 8);
 		junior = region(509, 200, 8, 8);

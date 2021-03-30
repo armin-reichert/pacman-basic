@@ -28,6 +28,12 @@ import de.amr.games.pacman.ui.animation.TimedSequence;
  */
 public abstract class CommonPacManGameRendering implements PacManGameAnimations2D {
 
+	public static Graphics2D smoothDrawing(Graphics2D g) {
+		Graphics2D gc = (Graphics2D) g.create();
+		gc.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+		return gc;
+	}
+
 	public abstract Font getScoreFont();
 
 	public abstract Map<Direction, TimedSequence<BufferedImage>> createPlayerMunchingAnimations();
@@ -44,19 +50,37 @@ public abstract class CommonPacManGameRendering implements PacManGameAnimations2
 
 	public abstract Map<Direction, TimedSequence<BufferedImage>> createGhostReturningHomeAnimations();
 
+	public TimedSequence<BufferedImage> createBlinkyStretchedAnimation() {
+		return null;
+	}
+
+	public TimedSequence<BufferedImage> createBlinkyDamagedAnimation() {
+		return null;
+	}
+
 	public abstract TimedSequence<Integer> createBonusAnimation();
 
 	public abstract Map<Integer, BufferedImage> getBountyNumbersSpritesMap();
 
 	public abstract Map<Integer, BufferedImage> getBonusNumbersSpritesMap();
 
-	public abstract BufferedImage[] getSymbolSprites();
-
-	public static Graphics2D smoothDrawing(Graphics2D g) {
-		Graphics2D gc = (Graphics2D) g.create();
-		gc.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-		return gc;
+	public TimedSequence<BufferedImage> createFlapAnimation() {
+		return null;
 	}
+
+	public TimedSequence<BufferedImage> createStorkFlyingAnimation() {
+		return null;
+	}
+
+	public BufferedImage getBlueBag() {
+		return null;
+	}
+
+	public BufferedImage getJunior() {
+		return null;
+	}
+
+	public abstract BufferedImage[] getSymbolSprites();
 
 	public void drawSprite(Graphics2D g, BufferedImage sprite, double x, double y) {
 		Graphics2D gc = smoothDrawing(g);

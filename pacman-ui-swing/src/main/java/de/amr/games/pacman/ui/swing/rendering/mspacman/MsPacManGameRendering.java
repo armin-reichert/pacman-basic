@@ -12,9 +12,6 @@ import java.util.stream.Stream;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.model.common.AbstractGameModel;
 import de.amr.games.pacman.model.common.GameEntity;
-import de.amr.games.pacman.model.mspacman.Flap;
-import de.amr.games.pacman.model.mspacman.JuniorBag;
-import de.amr.games.pacman.model.mspacman.Stork;
 import de.amr.games.pacman.model.pacman.PacManBonus;
 import de.amr.games.pacman.ui.animation.MazeAnimations2D;
 import de.amr.games.pacman.ui.animation.PacManGameAnimations2D;
@@ -69,6 +66,35 @@ public class MsPacManGameRendering extends CommonPacManGameRendering
 	@Override
 	public TimedSequence<Integer> createBonusAnimation() {
 		return TimedSequence.of(2, -2).frameDuration(10).endless();
+	}
+
+	@Override
+	public TimedSequence<BufferedImage> createFlapAnimation() {
+		return TimedSequence.of( //
+				assets.region(456, 208, 32, 32), //
+				assets.region(488, 208, 32, 32), //
+				assets.region(520, 208, 32, 32), //
+				assets.region(488, 208, 32, 32), //
+				assets.region(456, 208, 32, 32)//
+		).repetitions(1).frameDuration(4);
+	}
+
+	@Override
+	public TimedSequence<BufferedImage> createStorkFlyingAnimation() {
+		return TimedSequence.of(//
+				assets.region(489, 176, 32, 16), //
+				assets.region(521, 176, 32, 16)//
+		).endless().frameDuration(10);
+	}
+
+	@Override
+	public BufferedImage getBlueBag() {
+		return assets.blueBag;
+	}
+
+	@Override
+	public BufferedImage getJunior() {
+		return assets.junior;
 	}
 
 	@Override
@@ -203,51 +229,8 @@ public class MsPacManGameRendering extends CommonPacManGameRendering
 		drawSprite(g, assets.lifeSprite, x, y);
 	}
 
-	public void drawFlap(Graphics2D g, Flap flap) {
-		if (flap.visible) {
-			drawSprite(g, (BufferedImage) flap.flapping.frame(), flap.position.x, flap.position.y);
-			g.setFont(new Font(assets.getScoreFont().getName(), Font.PLAIN, 8));
-			g.setColor(new Color(222, 222, 225, 192));
-			g.drawString(flap.sceneNumber + "", (int) flap.position.x + 20, (int) flap.position.y + 30);
-			g.setFont(assets.getScoreFont());
-			g.drawString(flap.sceneTitle, (int) flap.position.x + 40, (int) flap.position.y + 20);
-		}
-	}
-
-	@Override
-	public TimedSequence<?> flapFlappingAnimation() {
-		return TimedSequence.of( //
-				assets.region(456, 208, 32, 32), //
-				assets.region(488, 208, 32, 32), //
-				assets.region(520, 208, 32, 32), //
-				assets.region(488, 208, 32, 32), //
-				assets.region(456, 208, 32, 32)//
-		).repetitions(1).frameDuration(4);
-	}
-
-	public void drawStork(Graphics2D g, Stork stork) {
-		drawEntity(g, stork, (BufferedImage) stork.flying.frame());
-	}
-
-	@Override
-	public TimedSequence<?> storkFlyingAnimation() {
-		return TimedSequence.of(//
-				assets.region(489, 176, 32, 16), //
-				assets.region(521, 176, 32, 16)//
-		).endless().frameDuration(10);
-	}
-
 	public void drawHeart(Graphics2D g, GameEntity heart) {
 		drawEntity(g, heart, assets.s(2, 10));
 	}
 
-	public void drawJuniorBag(Graphics2D g, JuniorBag bag) {
-		if (bag.visible) {
-			if (bag.open) {
-				drawEntity(g, bag, assets.junior);
-			} else {
-				drawEntity(g, bag, assets.blueBag);
-			}
-		}
-	}
 }

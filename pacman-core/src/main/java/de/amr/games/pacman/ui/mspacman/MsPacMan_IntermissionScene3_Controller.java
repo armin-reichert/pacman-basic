@@ -51,6 +51,8 @@ public abstract class MsPacMan_IntermissionScene3_Controller {
 
 	public abstract void playIntermissionSound();
 
+	public abstract void playFlapAnimation();
+
 	private void enter(Phase newPhase) {
 		phase = newPhase;
 		timer.reset();
@@ -64,7 +66,7 @@ public abstract class MsPacMan_IntermissionScene3_Controller {
 	}
 
 	public void start() {
-		flap = new Flap(3, "JUNIOR", animations.flapFlappingAnimation());
+		flap = new Flap(3, "JUNIOR");
 		flap.setTilePosition(3, 10);
 		flap.visible = true;
 
@@ -76,7 +78,6 @@ public abstract class MsPacMan_IntermissionScene3_Controller {
 
 		stork = new Stork();
 		stork.setPosition(t(30), BIRD_Y);
-		stork.flying = animations.storkFlyingAnimation();
 
 		bag = new JuniorBag();
 		bag.setPositionRelativeTo(stork, -14, 3);
@@ -88,15 +89,13 @@ public abstract class MsPacMan_IntermissionScene3_Controller {
 		switch (phase) {
 		case FLAP:
 			if (timer.isRunningSeconds(1)) {
-				flap.flapping.restart();
+				playFlapAnimation();
 			}
 			if (timer.isRunningSeconds(2)) {
 				flap.visible = false;
 				playIntermissionSound();
-//				sounds.play(PacManGameSound.INTERMISSION_3);
 				enter(Phase.ACTION);
 			}
-			flap.flapping.animate();
 			timer.tick();
 			break;
 
@@ -106,7 +105,6 @@ public abstract class MsPacMan_IntermissionScene3_Controller {
 			if (timer.hasJustStarted()) {
 				pacMan.visible = msPacMan.visible = stork.visible = bag.visible = true;
 				stork.velocity = bag.velocity = new V2d(-1.25f, 0);
-				stork.flying.restart();
 			}
 			// release bag?
 			if (!bag.released && stork.position.x <= t(24)) {

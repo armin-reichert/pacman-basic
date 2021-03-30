@@ -55,7 +55,9 @@ public class PacMan_IntermissionScene1 extends GameScene {
 		blinky2D = new Ghost2D(sceneController.blinky);
 		blinky2D.setKickingAnimations(rendering.createGhostKickingAnimations(blinky2D.ghost.id));
 		blinky2D.getKickingAnimations().values().forEach(TimedSequence::restart);
+		blinky2D.setFrightenedAnimation(rendering.createGhostFrightenedAnimation());
 		blinky2D.getFrightenedAnimation().restart();
+		blinky2D.setFlashingAnimation(rendering.createGhostFlashingAnimation());
 	}
 
 	@Override

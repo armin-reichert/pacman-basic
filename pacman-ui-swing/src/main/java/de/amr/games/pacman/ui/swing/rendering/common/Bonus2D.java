@@ -46,7 +46,7 @@ public class Bonus2D {
 			return;
 		}
 		// Ms. Pac.Man bonus is jumping up and down while wandering the maze
-		int jump = jumpAnimation.animate();
+		int jump = jumpAnimation != null ? jumpAnimation.animate() : 0;
 		int dx = sprite.getWidth() / 2 - HTS, dy = sprite.getHeight() / 2 - HTS;
 		Graphics2D gc = (Graphics2D) g.create();
 		gc.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
