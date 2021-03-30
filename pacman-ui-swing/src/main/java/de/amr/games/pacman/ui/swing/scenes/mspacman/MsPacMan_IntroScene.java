@@ -49,9 +49,6 @@ public class MsPacMan_IntroScene extends GameScene {
 		ghosts2D.forEach(ghost2D -> {
 			ghost2D.setKickingAnimations(rendering.createGhostKickingAnimations(ghost2D.ghost.id));
 			ghost2D.getKickingAnimations().values().forEach(TimedSequence::restart);
-//			ghost2D.setFrightenedAnimation(rendering.createGhostFrightenedAnimation());
-//			ghost2D.setFlashingAnimation(rendering.createGhostFlashingAnimation());
-//			ghost2D.setReturningHomeAnimations(rendering.createGhostReturningHomeAnimations());
 		});
 		boardAnimationTimer.reset();
 		boardAnimationTimer.start();

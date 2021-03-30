@@ -62,7 +62,7 @@ public class PlayScene extends GameScene {
 			ghost2D.setFrightenedAnimation(rendering.createGhostFrightenedAnimation());
 			ghost2D.setFlashingAnimation(rendering.createGhostFlashingAnimation());
 			ghost2D.setReturningHomeAnimations(rendering.createGhostReturningHomeAnimations());
-			ghost2D.setNumberSpriteMap(rendering.getBountyNumbersSpritesMap());
+			ghost2D.setNumberSpriteMap(rendering.getBountyNumberSpritesMap());
 		});
 
 		energizers2D = game().currentLevel.world.energizerTiles().map(Energizer2D::new).collect(Collectors.toList());
@@ -81,8 +81,8 @@ public class PlayScene extends GameScene {
 
 	@Override
 	public void end() {
-		super.end();
 		game().player.powerTimer.removeEventListener(this::handleGhostsFlashing);
+		super.end();
 	}
 
 	@Override
@@ -91,7 +91,7 @@ public class PlayScene extends GameScene {
 
 		// enter READY
 		if (newState == PacManGameState.READY) {
-			rendering.resetAllAnimations(gameController.game());
+			rendering.resetAllAnimations(game());
 			if (!gameController.isAttractMode() && !gameController.isGameRunning()) {
 				gameController.stateTimer().resetSeconds(4.5);
 				sounds.play(PacManGameSound.GAME_READY);
@@ -172,9 +172,6 @@ public class PlayScene extends GameScene {
 			sounds.loop(PacManGameSound.PACMAN_POWER, Integer.MAX_VALUE);
 			ghosts2D.stream().filter(ghost2D -> ghost2D.ghost.is(GhostState.FRIGHTENED)).forEach(ghost2D -> {
 				ghost2D.getFlashingAnimation().reset();
-				ghost2D.getFrightenedAnimation().restart();
-			});
-			ghosts2D.stream().filter(ghost2D -> ghost2D.ghost.is(GhostState.FRIGHTENED)).forEach(ghost2D -> {
 				ghost2D.getFrightenedAnimation().restart();
 			});
 		}

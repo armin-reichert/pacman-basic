@@ -102,7 +102,7 @@ public class MsPacManGameRendering extends AbstractPacManGameRendering
 	}
 
 	@Override
-	public Map<Integer, BufferedImage> getBountyNumbersSpritesMap() {
+	public Map<Integer, BufferedImage> getBountyNumberSpritesMap() {
 		return assets.getBountyNumbersSpritesMap();
 	}
 

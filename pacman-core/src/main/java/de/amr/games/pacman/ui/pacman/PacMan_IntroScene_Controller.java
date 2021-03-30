@@ -191,6 +191,8 @@ public class PacMan_IntroScene_Controller {
 			ghost.speed = pac.speed * 1.05f;
 			ghost.state = GhostState.HUNTING_PAC;
 		}
+
+		blinking.restart();
 	}
 
 	public void startPacChasingGhosts() {

@@ -53,7 +53,7 @@ public abstract class AbstractPacManGameRendering implements PacManGameAnimation
 
 	public abstract TimedSequence<Integer> createBonusAnimation();
 
-	public abstract Map<Integer, BufferedImage> getBountyNumbersSpritesMap();
+	public abstract Map<Integer, BufferedImage> getBountyNumberSpritesMap();
 
 	public abstract Map<Integer, BufferedImage> getBonusNumbersSpritesMap();
 
