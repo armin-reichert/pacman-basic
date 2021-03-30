@@ -131,7 +131,8 @@ public abstract class MsPacMan_IntermissionScene1_Controller {
 				msPac.dir = Direction.RIGHT;
 				heart.setPosition((pacMan.position.x + msPac.position.x) / 2, pacMan.position.y - t(2));
 				heart.visible = true;
-				enterSeconds(Phase.READY_TO_PLAY, 2);
+				inky.speed = pinky.speed = 0;
+				enterSeconds(Phase.READY_TO_PLAY, 4);
 			}
 			if (!ghostsMet && inky.position.x - pinky.position.x < 16) {
 				ghostsMet = true;
@@ -143,7 +144,7 @@ public abstract class MsPacMan_IntermissionScene1_Controller {
 			break;
 
 		case READY_TO_PLAY:
-			if (timer.isRunningSeconds(0.5)) {
+			if (timer.isRunningSeconds(2)) {
 				inky.visible = false;
 				pinky.visible = false;
 			}
@@ -160,8 +161,8 @@ public abstract class MsPacMan_IntermissionScene1_Controller {
 	}
 
 	public void startChasedByGhosts() {
-		pacMan.speed = msPac.speed = 1.2f;
-		inky.speed = pinky.speed = 1.25f;
+		pacMan.speed = msPac.speed = 1.0;
+		inky.speed = pinky.speed = 1.0;
 		enter(Phase.CHASED_BY_GHOSTS);
 	}
 
