@@ -12,7 +12,6 @@ import de.amr.games.pacman.model.common.GameEntity;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.ui.animation.MazeAnimations2D;
-import de.amr.games.pacman.ui.animation.PacManGameAnimations2D;
 import de.amr.games.pacman.ui.animation.TimedSequence;
 import de.amr.games.pacman.ui.swing.rendering.common.AbstractPacManGameRendering;
 
@@ -21,18 +20,9 @@ import de.amr.games.pacman.ui.swing.rendering.common.AbstractPacManGameRendering
  * 
  * @author Armin Reichert
  */
-public class PacManGameRendering extends AbstractPacManGameRendering implements PacManGameAnimations2D, MazeAnimations2D {
+public class PacManGameRendering extends AbstractPacManGameRendering {
 
-	public final PacManGameRenderingAssets assets;
-
-	public PacManGameRendering() {
-		assets = new PacManGameRenderingAssets();
-	}
-
-	@Override
-	public TimedSequence<BufferedImage> createPlayerDyingAnimation() {
-		return assets.createPlayerDyingAnimation();
-	}
+	public final PacManGameRenderingAssets assets = new PacManGameRenderingAssets();
 
 	@Override
 	public Map<Direction, TimedSequence<BufferedImage>> createPlayerMunchingAnimations() {
@@ -40,8 +30,8 @@ public class PacManGameRendering extends AbstractPacManGameRendering implements 
 	}
 
 	@Override
-	public Map<Direction, TimedSequence<BufferedImage>> createSpouseMunchingAnimations() {
-		throw new UnsupportedOperationException();
+	public TimedSequence<BufferedImage> createPlayerDyingAnimation() {
+		return assets.createPlayerDyingAnimation();
 	}
 
 	@Override
@@ -75,17 +65,12 @@ public class PacManGameRendering extends AbstractPacManGameRendering implements 
 	}
 
 	@Override
-	public TimedSequence<Integer> createBonusAnimation() {
-		return null;
-	}
-
-	@Override
 	public Map<Integer, BufferedImage> getBountyNumberSpritesMap() {
 		return assets.numberSprites;
 	}
 
 	@Override
-	public Map<Integer, BufferedImage> getBonusNumbersSpritesMap() {
+	public Map<Integer, BufferedImage> getBonusNumberSpritesMap() {
 		return assets.numberSprites;
 	}
 
@@ -104,6 +89,7 @@ public class PacManGameRendering extends AbstractPacManGameRendering implements 
 		return assets.getScoreFont();
 	}
 
+	@Override
 	public Color getMazeWallBorderColor(int mazeIndex) {
 		return new Color(33, 33, 255);
 	}
@@ -132,24 +118,20 @@ public class PacManGameRendering extends AbstractPacManGameRendering implements 
 		}
 	}
 
-	public void drawLifeCounterSymbol(Graphics2D g, int x, int y) {
-		g.drawImage(lifeSprite(), x, y, null);
-	}
-
 	public void drawBigPacMan(Graphics2D g, Pac bigPacMan) {
-		drawEntity(g, bigPacMan, assets.bigPacManAnim.animate());
+		drawEntitySprite(g, bigPacMan, assets.bigPacManAnim.animate());
 	}
 
 	public void drawNail(Graphics2D g, GameEntity nail) {
-		drawEntity(g, nail, assets.nailSprite);
+		drawEntitySprite(g, nail, assets.nailSprite);
 	}
 
 	public void drawBlinkyPatched(Graphics2D g, Ghost blinky) {
-		drawEntity(g, blinky, assets.blinkyPatched.animate());
+		drawEntitySprite(g, blinky, assets.blinkyPatched.animate());
 	}
 
 	public void drawBlinkyNaked(Graphics2D g, Ghost blinky) {
-		drawEntity(g, blinky, assets.blinkyHalfNaked.animate());
+		drawEntitySprite(g, blinky, assets.blinkyHalfNaked.animate());
 	}
 
 	@Override
@@ -158,7 +140,7 @@ public class PacManGameRendering extends AbstractPacManGameRendering implements 
 	}
 
 	@Override
-	protected BufferedImage symbolSprite(byte symbol) {
+	public BufferedImage symbolSprite(byte symbol) {
 		return assets.symbolSprites[symbol];
 	}
 }

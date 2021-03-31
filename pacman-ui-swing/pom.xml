@@ -43,4 +43,7 @@
 			<version>1.0</version>
 		</dependency>
 	</dependencies>
+	<organization>
+		<name>armin.reichert@web.de</name>
+	</organization>
 </project>

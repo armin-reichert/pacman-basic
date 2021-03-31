@@ -17,23 +17,25 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.AbstractGameModel;
 import de.amr.games.pacman.model.common.GameEntity;
+import de.amr.games.pacman.ui.animation.MazeAnimations2D;
 import de.amr.games.pacman.ui.animation.PacManGameAnimations2D;
 import de.amr.games.pacman.ui.animation.TimedSequence;
 
 /**
- * Spritesheet-based rendering for both, Pac-Man and Ms. Pac-Man.
+ * Spritesheet-based rendering for Pac-Man and Ms. Pac-Man game.
  * 
  * @author Armin Reichert
  */
-public abstract class AbstractPacManGameRendering implements PacManGameAnimations2D {
+public abstract class AbstractPacManGameRendering implements PacManGameAnimations2D, MazeAnimations2D {
 
-	public abstract Font getScoreFont();
+	@Override
+	public MazeAnimations2D mazeAnimations() {
+		return this; // TODO remove
+	}
 
 	public abstract Map<Direction, TimedSequence<BufferedImage>> createPlayerMunchingAnimations();
 
 	public abstract TimedSequence<BufferedImage> createPlayerDyingAnimation();
-
-	public abstract Map<Direction, TimedSequence<BufferedImage>> createSpouseMunchingAnimations();
 
 	public abstract Map<Direction, TimedSequence<BufferedImage>> createGhostKickingAnimations(int ghostID);
 
@@ -43,6 +45,24 @@ public abstract class AbstractPacManGameRendering implements PacManGameAnimation
 
 	public abstract Map<Direction, TimedSequence<BufferedImage>> createGhostReturningHomeAnimations();
 
+	public abstract BufferedImage[] getSymbolSprites();
+
+	public abstract Map<Integer, BufferedImage> getBountyNumberSpritesMap();
+
+	public abstract Map<Integer, BufferedImage> getBonusNumberSpritesMap();
+
+	public abstract BufferedImage symbolSprite(byte symbol);
+
+	public abstract BufferedImage lifeSprite();
+
+	public abstract Color getMazeWallColor(int mazeIndex);
+
+	public abstract Color getMazeWallBorderColor(int mazeIndex);
+
+	public abstract Font getScoreFont();
+
+	// only use in Pac-Man:
+
 	public TimedSequence<BufferedImage> createBlinkyStretchedAnimation() {
 		return null;
 	}
@@ -51,11 +71,15 @@ public abstract class AbstractPacManGameRendering implements PacManGameAnimation
 		return null;
 	}
 
-	public abstract TimedSequence<Integer> createBonusAnimation();
+	// only used in Ms. Pac-Man:
 
-	public abstract Map<Integer, BufferedImage> getBountyNumberSpritesMap();
+	public TimedSequence<Integer> createBonusAnimation() {
+		return null;
+	}
 
-	public abstract Map<Integer, BufferedImage> getBonusNumbersSpritesMap();
+	public Map<Direction, TimedSequence<BufferedImage>> createSpouseMunchingAnimations() {
+		return null;
+	}
 
 	public TimedSequence<BufferedImage> createFlapAnimation() {
 		return null;
@@ -77,22 +101,20 @@ public abstract class AbstractPacManGameRendering implements PacManGameAnimation
 		return null;
 	}
 
-	public abstract BufferedImage[] getSymbolSprites();
+	// drawing
 
-	protected void drawEntity(Graphics2D g, GameEntity guy, BufferedImage sprite) {
-		if (guy.visible && sprite != null) {
-			int dx = sprite.getWidth() / 2 - HTS, dy = sprite.getHeight() / 2 - HTS;
-			g.drawImage(sprite, (int) (guy.position.x - dx), (int) (guy.position.y - dy), null);
+	protected void drawEntitySprite(Graphics2D g, GameEntity entity, BufferedImage sprite) {
+		if (entity.visible && sprite != null) {
+			int dx = HTS - sprite.getWidth() / 2, dy = HTS - sprite.getHeight() / 2;
+			g.drawImage(sprite, (int) (entity.position.x + dx), (int) (entity.position.y + dy), null);
 		}
 	}
 
-	public void drawFoodTiles(Graphics2D g, Stream<V2i> tiles, Predicate<V2i> eaten) {
-		tiles.filter(eaten).forEach(tile -> drawTileCovered(g, tile));
-	}
-
-	private void drawTileCovered(Graphics2D g, V2i tile) {
+	public void hideEatenFood(Graphics2D g, Stream<V2i> tiles, Predicate<V2i> eaten) {
 		g.setColor(Color.BLACK);
-		g.fillRect(tile.x * TS, tile.y * TS, TS, TS);
+		tiles.filter(eaten).forEach(tile -> {
+			g.fillRect(tile.x * TS, tile.y * TS, TS, TS);
+		});
 	}
 
 	public abstract void drawMaze(Graphics2D g, int mazeNumber, int i, int t, boolean running);
@@ -120,8 +142,6 @@ public abstract class AbstractPacManGameRendering implements PacManGameAnimation
 		g.drawString(String.format("L%02d", game.highscoreLevel), t(23), t(2));
 		g.translate(0, -3);
 	}
-
-	public abstract Color getMazeWallColor(int i);
 
 	public void drawLivesCounter(Graphics2D g, AbstractGameModel game, int x, int y) {
 		int maxLivesDisplayed = 5;
@@ -157,10 +177,6 @@ public abstract class AbstractPacManGameRendering implements PacManGameAnimation
 			g.drawString("OVER", t(15), t(21));
 		}
 	}
-
-	protected abstract BufferedImage symbolSprite(byte symbol);
-
-	protected abstract BufferedImage lifeSprite();
 
 //	public void drawMaze(Graphics2D g, GameModel game, int x, int y) {
 //		if (mazeFlashing(game.level.mazeNumber).hasStarted()) {

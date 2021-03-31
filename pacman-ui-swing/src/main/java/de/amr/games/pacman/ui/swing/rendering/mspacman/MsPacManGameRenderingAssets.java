@@ -35,6 +35,7 @@ public class MsPacManGameRenderingAssets extends Spritesheet {
 	}
 
 	//@formatter:off
+
 	static final Color[] mazeWallColors = { 
 		new Color(255, 183, 174), 
 		new Color(71, 183, 255), 
@@ -52,6 +53,7 @@ public class MsPacManGameRenderingAssets extends Spritesheet {
 		new Color(255, 255, 0), 
 		new Color(255, 0, 0),
 	};
+	
 	//@formatter:on
 
 	final Font scoreFont;
@@ -60,18 +62,9 @@ public class MsPacManGameRenderingAssets extends Spritesheet {
 	final Map<Integer, BufferedImage> bonusNumberSprites;
 	final Map<Integer, BufferedImage> bountyNumberSprites;
 
-	final BufferedImage lifeSprite;
 	final List<BufferedImage> mazeEmptyImages;
 	final List<BufferedImage> mazeFullImages;
 	final List<TimedSequence<BufferedImage>> mazesFlashingAnims;
-
-	final BufferedImage blueBag;
-	final BufferedImage junior;
-
-	// get sprite from right part of the sheet, on the left are the maze images
-	BufferedImage s(int tileX, int tileY) {
-		return sprite(456, 0, tileX, tileY);
-	}
 
 	public MsPacManGameRenderingAssets() {
 		super(image("/mspacman/graphics/sprites.png"), 16);
@@ -90,8 +83,6 @@ public class MsPacManGameRenderingAssets extends Spritesheet {
 			mazesFlashingAnims.add(TimedSequence.of(mazeEmpzyBright, mazeEmptyImages.get(i)).frameDuration(15));
 		}
 
-		lifeSprite = s(1, 0);
-
 		symbolSprites = new BufferedImage[] { s(3, 0), s(4, 0), s(5, 0), s(6, 0), s(7, 0), s(8, 0), s(9, 0) };
 
 		bonusNumberSprites = Map.of(100, s(3, 1), 200, s(4, 1), 500, s(5, 1), 700, s(6, 1), 1000, s(7, 1), 2000, s(8, 1),
@@ -99,12 +90,13 @@ public class MsPacManGameRenderingAssets extends Spritesheet {
 
 		bountyNumberSprites = Map.of(200, s(0, 8), 400, s(1, 8), 800, s(2, 8), 1600, s(3, 8));
 
-		blueBag = region(488, 199, 8, 8);
-		junior = region(509, 200, 8, 8);
 	}
 
-	public Font getScoreFont() {
-		return scoreFont;
+	/**
+	 * Picks sprite from the right part of the sheet, on the left are the maze images
+	 */
+	public BufferedImage s(int tileX, int tileY) {
+		return sprite(456, 0, tileX, tileY);
 	}
 
 	/**

@@ -68,7 +68,7 @@ public class PlayScene extends GameScene {
 		energizers2D = game().currentLevel.world.energizerTiles().map(Energizer2D::new).collect(Collectors.toList());
 
 		bonus2D = new Bonus2D();
-		bonus2D.setNumberSprites(rendering.getBonusNumbersSpritesMap());
+		bonus2D.setNumberSprites(rendering.getBonusNumberSpritesMap());
 		bonus2D.setSymbolSprites(rendering.getSymbolSprites());
 		bonus2D.setJumpAnimation(rendering.createBonusAnimation());
 
@@ -253,7 +253,7 @@ public class PlayScene extends GameScene {
 	public void render(Graphics2D g) {
 		rendering.drawMaze(g, game().currentLevel.mazeNumber, 0, t(3), mazeFlashing.isRunning());
 		if (!mazeFlashing.isRunning()) {
-			rendering.drawFoodTiles(g, game().currentLevel.world.tiles().filter(game().currentLevel.world::isFoodTile),
+			rendering.hideEatenFood(g, game().currentLevel.world.tiles().filter(game().currentLevel.world::isFoodTile),
 					game().currentLevel::containsEatenFood);
 			energizers2D.forEach(energizer2D -> energizer2D.render(g));
 		}

@@ -1,7 +1,5 @@
 package de.amr.games.pacman.ui.swing.rendering.mspacman;
 
-import static de.amr.games.pacman.model.world.PacManGameWorld.t;
-
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
@@ -10,10 +8,6 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.Direction;
-import de.amr.games.pacman.model.common.AbstractGameModel;
-import de.amr.games.pacman.model.pacman.PacManBonus;
-import de.amr.games.pacman.ui.animation.MazeAnimations2D;
-import de.amr.games.pacman.ui.animation.PacManGameAnimations2D;
 import de.amr.games.pacman.ui.animation.TimedSequence;
 import de.amr.games.pacman.ui.swing.rendering.common.AbstractPacManGameRendering;
 
@@ -22,10 +16,20 @@ import de.amr.games.pacman.ui.swing.rendering.common.AbstractPacManGameRendering
  * 
  * @author Armin Reichert
  */
-public class MsPacManGameRendering extends AbstractPacManGameRendering
-		implements PacManGameAnimations2D, MazeAnimations2D {
+public class MsPacManGameRendering extends AbstractPacManGameRendering {
 
-	public static final MsPacManGameRenderingAssets assets = new MsPacManGameRenderingAssets();
+	public final MsPacManGameRenderingAssets assets = new MsPacManGameRenderingAssets();
+
+	@Override
+	public Stream<TimedSequence<?>> mazeFlashings() {
+		// TODO this is silly, remove
+		return assets.mazesFlashingAnims.stream().map(TimedSequence.class::cast);
+	}
+
+	@Override
+	public TimedSequence<BufferedImage> mazeFlashing(int mazeNumber) {
+		return assets.mazesFlashingAnims.get(mazeNumber - 1);
+	}
 
 	@Override
 	public TimedSequence<BufferedImage> createPlayerDyingAnimation() {
@@ -64,7 +68,7 @@ public class MsPacManGameRendering extends AbstractPacManGameRendering
 
 	@Override
 	public TimedSequence<Integer> createBonusAnimation() {
-		return TimedSequence.of(2, -2).frameDuration(10).endless();
+		return TimedSequence.of(2, -2).frameDuration(15).endless();
 	}
 
 	@Override
@@ -88,12 +92,12 @@ public class MsPacManGameRendering extends AbstractPacManGameRendering
 
 	@Override
 	public BufferedImage getBlueBag() {
-		return assets.blueBag;
+		return assets.region(488, 199, 8, 8);
 	}
 
 	@Override
 	public BufferedImage getJunior() {
-		return assets.junior;
+		return assets.region(509, 200, 8, 8);
 	}
 
 	@Override
@@ -107,7 +111,7 @@ public class MsPacManGameRendering extends AbstractPacManGameRendering
 	}
 
 	@Override
-	public Map<Integer, BufferedImage> getBonusNumbersSpritesMap() {
+	public Map<Integer, BufferedImage> getBonusNumberSpritesMap() {
 		return assets.getBonusNumbersSpritesMap();
 	}
 
@@ -117,19 +121,14 @@ public class MsPacManGameRendering extends AbstractPacManGameRendering
 	}
 
 	@Override
-	public MazeAnimations2D mazeAnimations() {
-		return this;
-	}
-
-	@Override
 	public Font getScoreFont() {
-		return assets.getScoreFont();
+		return assets.scoreFont;
 	}
 
 	/**
 	 * Note: maze numbers are 1-based, maze index as stored here is 0-based.
 	 * 
-	 * @param mazeIndex
+	 * @param mazeIndex 0-based index
 	 * @return
 	 */
 	@Override
@@ -155,9 +154,10 @@ public class MsPacManGameRendering extends AbstractPacManGameRendering
 	/**
 	 * Note: maze numbers are 1-based, maze index as stored here is 0-based.
 	 * 
-	 * @param mazeIndex
+	 * @param mazeIndex 0-based index
 	 * @return
 	 */
+	@Override
 	public Color getMazeWallBorderColor(int mazeIndex) {
 		switch (mazeIndex) {
 		case 0:
@@ -178,33 +178,12 @@ public class MsPacManGameRendering extends AbstractPacManGameRendering
 	}
 
 	@Override
-	public Stream<TimedSequence<?>> mazeFlashings() {
-		// TODO this is silly
-		return assets.mazesFlashingAnims.stream().map(TimedSequence.class::cast);
-	}
-
-	@Override
-	public TimedSequence<BufferedImage> mazeFlashing(int mazeNumber) {
-		return assets.mazesFlashingAnims.get(mazeNumber - 1);
-	}
-
-	public BufferedImage bonusSprite(PacManBonus bonus, AbstractGameModel game) {
-		if (bonus.edibleTicksLeft > 0) {
-			return assets.symbolSprites[bonus.symbol];
-		}
-		if (bonus.eatenTicksLeft > 0) {
-			return assets.bonusNumberSprites.get(bonus.points);
-		}
-		return null;
-	}
-
-	@Override
 	public BufferedImage lifeSprite() {
-		return assets.lifeSprite;
+		return assets.s(1, 0);
 	}
 
 	@Override
-	protected BufferedImage symbolSprite(byte symbol) {
+	public BufferedImage symbolSprite(byte symbol) {
 		return assets.symbolSprites[symbol];
 	}
 
@@ -215,19 +194,5 @@ public class MsPacManGameRendering extends AbstractPacManGameRendering
 		} else {
 			g.drawImage(assets.mazeFullImages.get(mazeNumber - 1), x, y, null);
 		}
-	}
-
-	@Override
-	public void drawLevelCounter(Graphics2D g, AbstractGameModel game, int rightX, int y) {
-		int x = rightX;
-		for (int levelNumber = 1; levelNumber <= Math.min(game.currentLevelNumber, 7); ++levelNumber) {
-			byte symbol = game.levelSymbols.get(levelNumber - 1);
-			g.drawImage(assets.symbolSprites[symbol], x, y, null);
-			x -= t(2);
-		}
-	}
-
-	public void drawLifeCounterSymbol(Graphics2D g, int x, int y) {
-		g.drawImage(assets.lifeSprite, x, y, null);
 	}
 }
