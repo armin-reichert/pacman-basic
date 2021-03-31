@@ -16,7 +16,10 @@ public class Bonus2D {
 	private Map<Integer, BufferedImage> numberSprites;
 	private TimedSequence<Integer> jumpAnimation;
 
-	public Bonus2D() {
+	public void setRendering(AbstractPacManGameRendering rendering) {
+		setJumpAnimation(rendering.createBonusAnimation());
+		setSymbolSprites(rendering.getSymbolSprites());
+		setNumberSprites(rendering.getBonusNumberSpritesMap());
 	}
 
 	public TimedSequence<Integer> getJumpAnimation() {

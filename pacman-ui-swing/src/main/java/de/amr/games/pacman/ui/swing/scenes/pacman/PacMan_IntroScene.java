@@ -58,7 +58,7 @@ public class PacMan_IntroScene extends GameScene {
 			ghost2D.getFrightenedAnimation().restart();
 			ghost2D.setFlashingAnimation(rendering.createGhostFlashingAnimation());
 			ghost2D.getFlashingAnimation().restart();
-			ghost2D.setNumberSpriteMap(rendering.getBountyNumberSpritesMap());
+			ghost2D.setBountyNumberSprites(rendering.getBountyNumberSpritesMap());
 		});
 		ghostsInGallery2D = new ArrayList<>();
 		for (int i = 0; i < 4; ++i) {

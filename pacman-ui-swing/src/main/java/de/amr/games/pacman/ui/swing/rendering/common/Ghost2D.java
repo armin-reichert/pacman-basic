@@ -8,7 +8,6 @@ import static de.amr.games.pacman.model.world.PacManGameWorld.TS;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.util.EnumMap;
 import java.util.Map;
 
 import de.amr.games.pacman.lib.Direction;
@@ -19,15 +18,24 @@ public class Ghost2D {
 
 	public final Ghost ghost;
 
-	private boolean displayFrightened;
-	private Map<Direction, TimedSequence<BufferedImage>> kickingAnimations = new EnumMap<>(Direction.class);
+	private Map<Direction, TimedSequence<BufferedImage>> kickingAnimations;
 	private TimedSequence<BufferedImage> flashingAnimation;
 	private TimedSequence<BufferedImage> frightenedAnimation;
-	private Map<Direction, TimedSequence<BufferedImage>> returningHomeAnimations = new EnumMap<>(Direction.class);
-	private Map<Integer, BufferedImage> numberSprites;
+	private Map<Direction, TimedSequence<BufferedImage>> returningHomeAnimations;
+	private Map<Integer, BufferedImage> bountyNumberSprites;
+
+	private boolean displayFrightened;
 
 	public Ghost2D(Ghost ghost) {
 		this.ghost = ghost;
+	}
+
+	public void setRendering(AbstractPacManGameRendering rendering) {
+		setKickingAnimations(rendering.createGhostKickingAnimations(ghost.id));
+		setFrightenedAnimation(rendering.createGhostFrightenedAnimation());
+		setFlashingAnimation(rendering.createGhostFlashingAnimation());
+		setReturningHomeAnimations(rendering.createGhostReturningHomeAnimations());
+		setBountyNumberSprites(rendering.getBountyNumberSpritesMap());
 	}
 
 	public void setDisplayFrightened(boolean displayFrightened) {
@@ -66,25 +74,25 @@ public class Ghost2D {
 		this.returningHomeAnimations = returningHomeAnimations;
 	}
 
-	public Map<Integer, BufferedImage> getNumberSprites() {
-		return numberSprites;
+	public Map<Integer, BufferedImage> getBountyNumberSprites() {
+		return bountyNumberSprites;
 	}
 
-	public void setNumberSpriteMap(Map<Integer, BufferedImage> numberSprites) {
-		this.numberSprites = numberSprites;
+	public void setBountyNumberSprites(Map<Integer, BufferedImage> sprites) {
+		this.bountyNumberSprites = sprites;
 	}
 
 	public void render(Graphics2D g) {
 		BufferedImage sprite = currentSprite();
 		if (ghost.visible) {
-			int dx = -(sprite.getWidth() - TS) / 2, dy = -(sprite.getHeight() - TS) / 2;
+			int dx = (TS - sprite.getWidth()) / 2, dy = (TS - sprite.getHeight()) / 2;
 			g.drawImage(sprite, (int) (ghost.position.x + dx), (int) (ghost.position.y + dy), null);
 		}
 	}
 
 	private BufferedImage currentSprite() {
 		if (ghost.bounty > 0) {
-			return numberSprites.get(ghost.bounty);
+			return bountyNumberSprites.get(ghost.bounty);
 		}
 		if (ghost.is(DEAD) || ghost.is(ENTERING_HOUSE)) {
 			return returningHomeAnimations.get(ghost.dir).animate();

@@ -23,8 +23,8 @@ import de.amr.games.pacman.model.common.GhostState;
 import de.amr.games.pacman.ui.animation.TimedSequence;
 import de.amr.games.pacman.ui.sound.PacManGameSound;
 import de.amr.games.pacman.ui.swing.assets.SoundManager;
-import de.amr.games.pacman.ui.swing.rendering.common.Bonus2D;
 import de.amr.games.pacman.ui.swing.rendering.common.AbstractPacManGameRendering;
+import de.amr.games.pacman.ui.swing.rendering.common.Bonus2D;
 import de.amr.games.pacman.ui.swing.rendering.common.Energizer2D;
 import de.amr.games.pacman.ui.swing.rendering.common.Ghost2D;
 import de.amr.games.pacman.ui.swing.rendering.common.Player2D;
@@ -53,24 +53,15 @@ public class PlayScene extends GameScene {
 		super.start();
 
 		player2D = new Player2D(game().player);
-		player2D.setDyingAnimation(rendering.createPlayerDyingAnimation());
-		player2D.setMunchingAnimations(rendering.createPlayerMunchingAnimations());
+		player2D.setRendering(rendering);
 
 		ghosts2D = game().ghosts().map(Ghost2D::new).collect(Collectors.toList());
-		ghosts2D.forEach(ghost2D -> {
-			ghost2D.setKickingAnimations(rendering.createGhostKickingAnimations(ghost2D.ghost.id));
-			ghost2D.setFrightenedAnimation(rendering.createGhostFrightenedAnimation());
-			ghost2D.setFlashingAnimation(rendering.createGhostFlashingAnimation());
-			ghost2D.setReturningHomeAnimations(rendering.createGhostReturningHomeAnimations());
-			ghost2D.setNumberSpriteMap(rendering.getBountyNumberSpritesMap());
-		});
+		ghosts2D.forEach(ghost2D -> ghost2D.setRendering(rendering));
 
 		energizers2D = game().currentLevel.world.energizerTiles().map(Energizer2D::new).collect(Collectors.toList());
 
 		bonus2D = new Bonus2D();
-		bonus2D.setNumberSprites(rendering.getBonusNumberSpritesMap());
-		bonus2D.setSymbolSprites(rendering.getSymbolSprites());
-		bonus2D.setJumpAnimation(rendering.createBonusAnimation());
+		bonus2D.setRendering(rendering);
 
 		mazeFlashing = rendering.mazeAnimations().mazeFlashing(game().currentLevel.mazeNumber)
 				.repetitions(game().currentLevel.numFlashes);

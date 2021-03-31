@@ -20,6 +20,11 @@ public class Player2D {
 		this.player = pac;
 	}
 
+	public void setRendering(AbstractPacManGameRendering rendering) {
+		setMunchingAnimations(rendering.createPlayerMunchingAnimations());
+		setDyingAnimation(rendering.createPlayerDyingAnimation());
+	}
+
 	public TimedSequence<BufferedImage> getDyingAnimation() {
 		return dyingAnimation;
 	}
@@ -39,7 +44,7 @@ public class Player2D {
 	public void render(Graphics2D g) {
 		BufferedImage sprite = currentSprite();
 		if (player.visible) {
-			int dx = -(sprite.getWidth() - TS) / 2, dy = -(sprite.getHeight() - TS) / 2;
+			int dx = (TS - sprite.getWidth()) / 2, dy = (TS - sprite.getHeight()) / 2;
 			g.drawImage(sprite, (int) (player.position.x + dx), (int) (player.position.y + dy), null);
 		}
 	}
