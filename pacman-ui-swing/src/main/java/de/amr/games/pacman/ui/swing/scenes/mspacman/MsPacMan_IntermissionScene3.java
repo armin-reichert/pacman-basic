@@ -58,7 +58,7 @@ public class MsPacMan_IntermissionScene3 extends GameScene {
 	@Override
 	public void start() {
 		sceneController = new SceneController(gameController);
-		sceneController.start();
+		sceneController.init();
 		flap2D = new Flap2D(sceneController.flap);
 		flap2D.setAnimation(rendering.createFlapAnimation());
 		msPacMan2D = new Player2D(sceneController.msPacMan);

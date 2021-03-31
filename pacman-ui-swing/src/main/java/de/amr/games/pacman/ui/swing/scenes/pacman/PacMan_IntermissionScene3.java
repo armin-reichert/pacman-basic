@@ -45,7 +45,7 @@ public class PacMan_IntermissionScene3 extends GameScene {
 	@Override
 	public void start() {
 		sceneController = new SceneController(gameController);
-		sceneController.start();
+		sceneController.init();
 		pacMan2D = new Player2D(sceneController.pac);
 		pacMan2D.setMunchingAnimations(rendering.createPlayerMunchingAnimations());
 	}

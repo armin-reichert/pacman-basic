@@ -47,7 +47,7 @@ public abstract class MsPacMan_IntermissionScene1_Controller {
 
 	public abstract void playFlapAnimation();
 
-	public void start() {
+	public void init() {
 		flap = new Flap(1, "THEY MEET");
 		flap.setTilePosition(3, 10);
 		flap.visible = true;

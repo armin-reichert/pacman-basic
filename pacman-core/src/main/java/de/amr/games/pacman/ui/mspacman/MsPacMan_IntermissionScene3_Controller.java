@@ -61,7 +61,7 @@ public abstract class MsPacMan_IntermissionScene3_Controller {
 		timer.start();
 	}
 
-	public void start() {
+	public void init() {
 		flap = new Flap(3, "JUNIOR");
 		flap.setTilePosition(3, 10);
 		flap.visible = true;

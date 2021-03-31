@@ -49,7 +49,7 @@ public class MsPacMan_IntroScene_Controller {
 		phaseTimer.start();
 	}
 
-	public void start() {
+	public void init() {
 		msPacMan = new Pac("Ms. Pac-Man", LEFT);
 		msPacMan.setPosition(t(37), t(tileBelowBoard));
 

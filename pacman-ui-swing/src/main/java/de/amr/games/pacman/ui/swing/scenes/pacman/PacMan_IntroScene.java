@@ -47,7 +47,7 @@ public class PacMan_IntroScene extends GameScene {
 	@Override
 	public void start() {
 		sceneController = new PacMan_IntroScene_Controller(gameController);
-		sceneController.start();
+		sceneController.init();
 		pacMan2D = new Player2D(sceneController.pac);
 		pacMan2D.setMunchingAnimations(rendering.createPlayerMunchingAnimations());
 		ghosts2D = Stream.of(sceneController.ghosts).map(Ghost2D::new).collect(Collectors.toList());

@@ -36,7 +36,7 @@ public abstract class PacMan_IntermissionScene1_Controller {
 
 	public abstract void playIntermissionSound();
 
-	public void start() {
+	public void init() {
 		pac = new Pac("Pac-Man", Direction.LEFT);
 		pac.visible = true;
 		pac.setPosition(t(30), groundY);

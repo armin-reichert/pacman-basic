@@ -36,7 +36,7 @@ public abstract class PacMan_IntermissionScene3_Controller {
 
 	public abstract void playIntermissionSound();
 
-	public void start() {
+	public void init() {
 		pac = new Pac("Pac-Man", Direction.LEFT);
 		pac.setTilePosition(30, chaseTileY);
 		pac.visible = true;
@@ -44,7 +44,6 @@ public abstract class PacMan_IntermissionScene3_Controller {
 		pac.speed = 1.2f;
 		pac.stuck = false;
 		pac.dir = Direction.LEFT;
-//TODO		animations.playerAnimations().playerMunching(pac).forEach(TimedSequence::restart);
 
 		blinky = new Ghost(0, "Blinky", Direction.LEFT);
 		blinky.setPositionRelativeTo(pac, t(8), 0);
@@ -54,7 +53,6 @@ public abstract class PacMan_IntermissionScene3_Controller {
 		blinky.dir = blinky.wishDir = Direction.LEFT;
 
 		playIntermissionSound();
-//		sounds.loop(PacManGameSound.INTERMISSION_3, 2);
 
 		phase = Phase.CHASING_PACMAN;
 	}

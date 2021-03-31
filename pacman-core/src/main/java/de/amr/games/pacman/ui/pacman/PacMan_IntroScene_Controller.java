@@ -57,7 +57,7 @@ public class PacMan_IntroScene_Controller {
 		timer.start();
 	}
 
-	public void start() {
+	public void init() {
 		gallery = new GhostPortrait[4];
 		for (int i = 0; i < 4; ++i) {
 			gallery[i] = new GhostPortrait();
