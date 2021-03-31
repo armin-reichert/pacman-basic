@@ -8,7 +8,7 @@ import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.GhostState;
 import de.amr.games.pacman.model.common.Pac;
-import de.amr.games.pacman.ui.animation.PacManGameAnimations2D;
+import de.amr.games.pacman.ui.animation.MazeAnimations2D;
 
 /**
  * Third intermission scene: Blinky in shred dress chases Pac-Man, comes back half-naked drawing
@@ -26,13 +26,13 @@ public abstract class PacMan_IntermissionScene3_Controller {
 
 	public final TickTimer timer = new TickTimer();
 	public final PacManGameController gameController;
-	public final PacManGameAnimations2D animations;
+	public final MazeAnimations2D animations;
 
 	public Ghost blinky;
 	public Pac pac;
 	public Phase phase;
 
-	public PacMan_IntermissionScene3_Controller(PacManGameController gameController, PacManGameAnimations2D animations) {
+	public PacMan_IntermissionScene3_Controller(PacManGameController gameController, MazeAnimations2D animations) {
 		this.gameController = gameController;
 		this.animations = animations;
 	}

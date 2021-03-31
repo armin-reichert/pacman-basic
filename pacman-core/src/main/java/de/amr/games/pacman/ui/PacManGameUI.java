@@ -1,9 +1,5 @@
 package de.amr.games.pacman.ui;
 
-import java.util.Optional;
-
-import de.amr.games.pacman.ui.animation.PacManGameAnimations2D;
-
 /**
  * Interface through which the game controller accesses the UI.
  * 
@@ -22,6 +18,4 @@ public interface PacManGameUI {
 	}
 
 	boolean keyPressed(String keySpec);
-
-	Optional<PacManGameAnimations2D> animation();
 }

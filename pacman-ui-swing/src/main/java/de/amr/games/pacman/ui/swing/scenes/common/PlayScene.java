@@ -63,8 +63,7 @@ public class PlayScene extends GameScene {
 		bonus2D = new Bonus2D();
 		bonus2D.setRendering(rendering);
 
-		mazeFlashing = rendering.mazeAnimations().mazeFlashing(game().currentLevel.mazeNumber)
-				.repetitions(game().currentLevel.numFlashes);
+		mazeFlashing = rendering.mazeFlashing(game().currentLevel.mazeNumber).repetitions(game().currentLevel.numFlashes);
 		mazeFlashing.reset();
 
 		game().player.powerTimer.addEventListener(this::handleGhostsFlashing);
@@ -82,7 +81,7 @@ public class PlayScene extends GameScene {
 
 		// enter READY
 		if (newState == PacManGameState.READY) {
-			rendering.resetAllAnimations(game());
+			rendering.mazeFlashings().forEach(TimedSequence::reset);
 			if (!gameController.isAttractMode() && !gameController.isGameRunning()) {
 				gameController.stateTimer().resetSeconds(4.5);
 				sounds.play(PacManGameSound.GAME_READY);
@@ -127,7 +126,7 @@ public class PlayScene extends GameScene {
 
 		// enter LEVEL_COMPLETE
 		if (newState == PacManGameState.LEVEL_COMPLETE) {
-			mazeFlashing = rendering.mazeAnimations().mazeFlashing(game().currentLevel.mazeNumber);
+			mazeFlashing = rendering.mazeFlashing(game().currentLevel.mazeNumber);
 			sounds.stopAll();
 		}
 

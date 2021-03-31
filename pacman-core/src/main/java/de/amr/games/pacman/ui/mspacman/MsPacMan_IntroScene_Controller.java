@@ -10,7 +10,7 @@ import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.GhostState;
 import de.amr.games.pacman.model.common.Pac;
-import de.amr.games.pacman.ui.animation.PacManGameAnimations2D;
+import de.amr.games.pacman.ui.animation.MazeAnimations2D;
 import de.amr.games.pacman.ui.animation.TimedSequence;
 
 /**
@@ -31,7 +31,7 @@ public class MsPacMan_IntroScene_Controller {
 	public final int tileLeftOfBoard = 4;
 
 	public final PacManGameController gameController;
-	public final PacManGameAnimations2D animations;
+	public final MazeAnimations2D animations;
 
 	public Phase phase;
 	public final TickTimer phaseTimer = new TickTimer();
@@ -41,7 +41,7 @@ public class MsPacMan_IntroScene_Controller {
 	public int currentGhostIndex;
 	public final TimedSequence<Boolean> blinking = TimedSequence.pulse().frameDuration(30);
 
-	public MsPacMan_IntroScene_Controller(PacManGameController gameController, PacManGameAnimations2D animations) {
+	public MsPacMan_IntroScene_Controller(PacManGameController gameController, MazeAnimations2D animations) {
 		this.gameController = gameController;
 		this.animations = animations;
 	}

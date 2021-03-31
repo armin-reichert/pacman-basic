@@ -25,7 +25,6 @@ import java.util.Arrays;
 import java.util.Deque;
 import java.util.EnumMap;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 import javax.swing.JFrame;
@@ -38,7 +37,6 @@ import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.ui.FlashMessage;
 import de.amr.games.pacman.ui.PacManGameUI;
-import de.amr.games.pacman.ui.animation.PacManGameAnimations2D;
 import de.amr.games.pacman.ui.swing.app.GameLoop;
 import de.amr.games.pacman.ui.swing.assets.AssetLoader;
 import de.amr.games.pacman.ui.swing.assets.PacManGameSounds;
@@ -252,11 +250,6 @@ public class PacManGameUI_Swing implements PacManGameUI {
 		boolean pressed = keyboard.keyPressed(keySpec);
 		keyboard.clearKey(keySpec); // TODO
 		return pressed;
-	}
-
-	@Override
-	public Optional<PacManGameAnimations2D> animation() {
-		return Optional.of(currentGame() == MS_PACMAN ? RENDERING_MS_PACMAN : RENDERING_PACMAN);
 	}
 
 	private void handleKey(KeyEvent e) {

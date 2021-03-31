@@ -11,7 +11,6 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.model.common.GameEntity;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
-import de.amr.games.pacman.ui.animation.MazeAnimations2D;
 import de.amr.games.pacman.ui.animation.TimedSequence;
 import de.amr.games.pacman.ui.swing.rendering.common.AbstractPacManGameRendering;
 
@@ -77,11 +76,6 @@ public class PacManGameRendering extends AbstractPacManGameRendering {
 	@Override
 	public BufferedImage[] getSymbolSprites() {
 		return assets.symbolSprites;
-	}
-
-	@Override
-	public MazeAnimations2D mazeAnimations() {
-		return this;
 	}
 
 	@Override

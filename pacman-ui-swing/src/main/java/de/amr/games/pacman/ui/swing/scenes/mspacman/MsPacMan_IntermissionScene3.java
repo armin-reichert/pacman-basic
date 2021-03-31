@@ -6,7 +6,7 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 
 import de.amr.games.pacman.controller.PacManGameController;
-import de.amr.games.pacman.ui.animation.PacManGameAnimations2D;
+import de.amr.games.pacman.ui.animation.MazeAnimations2D;
 import de.amr.games.pacman.ui.mspacman.MsPacMan_IntermissionScene3_Controller;
 import de.amr.games.pacman.ui.sound.PacManGameSound;
 import de.amr.games.pacman.ui.swing.PacManGameUI_Swing;
@@ -30,7 +30,7 @@ public class MsPacMan_IntermissionScene3 extends GameScene {
 
 	private class SceneController extends MsPacMan_IntermissionScene3_Controller {
 
-		public SceneController(PacManGameController gameController, PacManGameAnimations2D animations) {
+		public SceneController(PacManGameController gameController, MazeAnimations2D animations) {
 			super(gameController, animations);
 		}
 

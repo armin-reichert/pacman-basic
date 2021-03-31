@@ -9,7 +9,7 @@ import de.amr.games.pacman.model.common.GameEntity;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.mspacman.Flap;
-import de.amr.games.pacman.ui.animation.PacManGameAnimations2D;
+import de.amr.games.pacman.ui.animation.MazeAnimations2D;
 
 /**
  * Intermission scene 1: "They meet".
@@ -32,7 +32,7 @@ public abstract class MsPacMan_IntermissionScene1_Controller {
 	public static final int upperY = t(12), lowerY = t(24), middleY = t(18);
 
 	public final PacManGameController gameController;
-	public final PacManGameAnimations2D animations;
+	public final MazeAnimations2D animations;
 	public final TickTimer timer = new TickTimer();
 	public Phase phase;
 	public Flap flap;
@@ -41,8 +41,7 @@ public abstract class MsPacMan_IntermissionScene1_Controller {
 	public GameEntity heart;
 	public boolean ghostsMet;
 
-	public MsPacMan_IntermissionScene1_Controller(PacManGameController gameController,
-			PacManGameAnimations2D animations) {
+	public MsPacMan_IntermissionScene1_Controller(PacManGameController gameController, MazeAnimations2D animations) {
 		this.gameController = gameController;
 		this.animations = animations;
 	}
