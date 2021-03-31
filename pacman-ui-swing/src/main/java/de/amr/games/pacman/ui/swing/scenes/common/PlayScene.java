@@ -81,7 +81,8 @@ public class PlayScene extends GameScene {
 
 		// enter READY
 		if (newState == PacManGameState.READY) {
-			rendering.mazeFlashings().forEach(TimedSequence::reset);
+			// TODO check this
+			rendering.mazeFlashing(game().currentLevel.mazeNumber).reset();
 			if (!gameController.isAttractMode() && !gameController.isGameRunning()) {
 				gameController.stateTimer().resetSeconds(4.5);
 				sounds.play(PacManGameSound.GAME_READY);

@@ -8,7 +8,6 @@ import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.GhostState;
 import de.amr.games.pacman.model.common.Pac;
-import de.amr.games.pacman.ui.animation.MazeAnimations2D;
 import de.amr.games.pacman.ui.animation.TimedSequence;
 
 /**
@@ -38,7 +37,6 @@ public class PacMan_IntroScene_Controller {
 
 	public final TickTimer timer = new TickTimer();
 	public final PacManGameController gameController;
-	public final MazeAnimations2D animations;
 
 	public final TimedSequence<Boolean> blinking = TimedSequence.pulse().frameDuration(20);
 	public GhostPortrait[] gallery;
@@ -49,9 +47,8 @@ public class PacMan_IntroScene_Controller {
 
 	public Phase phase;
 
-	public PacMan_IntroScene_Controller(PacManGameController gameController, MazeAnimations2D animations) {
+	public PacMan_IntroScene_Controller(PacManGameController gameController) {
 		this.gameController = gameController;
-		this.animations = animations;
 	}
 
 	private void enterPhase(Phase newPhase) {

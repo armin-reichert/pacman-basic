@@ -17,7 +17,6 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.AbstractGameModel;
 import de.amr.games.pacman.model.common.GameEntity;
-import de.amr.games.pacman.ui.animation.MazeAnimations2D;
 import de.amr.games.pacman.ui.animation.TimedSequence;
 
 /**
@@ -25,7 +24,7 @@ import de.amr.games.pacman.ui.animation.TimedSequence;
  * 
  * @author Armin Reichert
  */
-public abstract class AbstractPacManGameRendering implements MazeAnimations2D {
+public abstract class AbstractPacManGameRendering {
 
 	public abstract Map<Direction, TimedSequence<BufferedImage>> createPlayerMunchingAnimations();
 
@@ -48,6 +47,8 @@ public abstract class AbstractPacManGameRendering implements MazeAnimations2D {
 	public abstract BufferedImage symbolSprite(byte symbol);
 
 	public abstract BufferedImage lifeSprite();
+
+	public abstract TimedSequence<BufferedImage> mazeFlashing(int mazeNumber);
 
 	public abstract Color getMazeWallColor(int mazeIndex);
 

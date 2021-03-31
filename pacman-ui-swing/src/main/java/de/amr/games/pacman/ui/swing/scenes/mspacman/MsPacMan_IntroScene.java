@@ -39,7 +39,7 @@ public class MsPacMan_IntroScene extends GameScene {
 
 	@Override
 	public void start() {
-		sceneController = new MsPacMan_IntroScene_Controller(gameController, rendering);
+		sceneController = new MsPacMan_IntroScene_Controller(gameController);
 		sceneController.start();
 		msPacMan2D = new Player2D(sceneController.msPacMan);
 		msPacMan2D.setMunchingAnimations(rendering.createPlayerMunchingAnimations());

@@ -46,7 +46,7 @@ public class PacMan_IntroScene extends GameScene {
 
 	@Override
 	public void start() {
-		sceneController = new PacMan_IntroScene_Controller(gameController, rendering);
+		sceneController = new PacMan_IntroScene_Controller(gameController);
 		sceneController.start();
 		pacMan2D = new Player2D(sceneController.pac);
 		pacMan2D.setMunchingAnimations(rendering.createPlayerMunchingAnimations());

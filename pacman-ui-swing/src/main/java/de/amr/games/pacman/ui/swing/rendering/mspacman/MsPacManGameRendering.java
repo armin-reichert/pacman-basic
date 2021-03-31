@@ -5,7 +5,6 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.Map;
-import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.ui.animation.TimedSequence;
@@ -19,12 +18,6 @@ import de.amr.games.pacman.ui.swing.rendering.common.AbstractPacManGameRendering
 public class MsPacManGameRendering extends AbstractPacManGameRendering {
 
 	public final MsPacManGameRenderingAssets assets = new MsPacManGameRenderingAssets();
-
-	@Override
-	public Stream<TimedSequence<?>> mazeFlashings() {
-		// TODO this is silly, remove
-		return assets.mazesFlashingAnims.stream().map(TimedSequence.class::cast);
-	}
 
 	@Override
 	public TimedSequence<BufferedImage> mazeFlashing(int mazeNumber) {

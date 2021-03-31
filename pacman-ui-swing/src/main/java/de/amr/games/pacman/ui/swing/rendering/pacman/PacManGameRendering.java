@@ -5,7 +5,6 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.Map;
-import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.model.common.GameEntity;
@@ -91,11 +90,6 @@ public class PacManGameRendering extends AbstractPacManGameRendering {
 	@Override
 	public Color getMazeWallColor(int mazeIndex) {
 		return Color.BLACK;
-	}
-
-	@Override
-	public Stream<TimedSequence<?>> mazeFlashings() {
-		return Stream.of(assets.mazeFlashingAnim);
 	}
 
 	@Override

@@ -7,7 +7,6 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.mspacman.Flap;
-import de.amr.games.pacman.ui.animation.MazeAnimations2D;
 
 /**
  * Intermission scene 2: "The chase".
@@ -27,7 +26,6 @@ public abstract class MsPacMan_IntermissionScene2_Controller {
 	public static final int UPPER_Y = t(12), LOWER_Y = t(24), MIDDLE_Y = t(18);
 
 	public final PacManGameController gameController;
-	public final MazeAnimations2D animations;
 	public final TickTimer timer = new TickTimer();
 	public Phase phase;
 	public Flap flap;
@@ -39,9 +37,8 @@ public abstract class MsPacMan_IntermissionScene2_Controller {
 		timer.start();
 	}
 
-	public MsPacMan_IntermissionScene2_Controller(PacManGameController gameController, MazeAnimations2D animations) {
+	public MsPacMan_IntermissionScene2_Controller(PacManGameController gameController) {
 		this.gameController = gameController;
-		this.animations = animations;
 	}
 
 	public abstract void playIntermissionSound();

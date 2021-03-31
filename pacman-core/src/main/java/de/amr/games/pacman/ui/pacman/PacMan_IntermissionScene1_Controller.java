@@ -8,7 +8,6 @@ import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.GhostState;
 import de.amr.games.pacman.model.common.Pac;
-import de.amr.games.pacman.ui.animation.MazeAnimations2D;
 
 /**
  * First intermission scene: Blinky chases Pac-Man and is then chased by a huge Pac-Man.
@@ -27,14 +26,12 @@ public abstract class PacMan_IntermissionScene1_Controller {
 
 	public final TickTimer timer = new TickTimer();
 	public final PacManGameController gameController;
-	public final MazeAnimations2D animations;
 	public Ghost blinky;
 	public Pac pac;
 	public Phase phase;
 
-	public PacMan_IntermissionScene1_Controller(PacManGameController gameController, MazeAnimations2D animations) {
+	public PacMan_IntermissionScene1_Controller(PacManGameController gameController) {
 		this.gameController = gameController;
-		this.animations = animations;
 	}
 
 	public abstract void playIntermissionSound();

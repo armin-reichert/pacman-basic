@@ -10,7 +10,6 @@ import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.mspacman.Flap;
 import de.amr.games.pacman.model.mspacman.JuniorBag;
 import de.amr.games.pacman.model.mspacman.Stork;
-import de.amr.games.pacman.ui.animation.MazeAnimations2D;
 
 /**
  * Intermission scene 3: "Junior".
@@ -32,7 +31,6 @@ public abstract class MsPacMan_IntermissionScene3_Controller {
 	public static final int BIRD_Y = t(12), GROUND_Y = t(24);
 
 	public final PacManGameController gameController;
-	public final MazeAnimations2D animations;
 	public final TickTimer timer = new TickTimer();
 
 	public Flap flap;
@@ -43,9 +41,8 @@ public abstract class MsPacMan_IntermissionScene3_Controller {
 
 	public Phase phase;
 
-	public MsPacMan_IntermissionScene3_Controller(PacManGameController gameController, MazeAnimations2D animations) {
+	public MsPacMan_IntermissionScene3_Controller(PacManGameController gameController) {
 		this.gameController = gameController;
-		this.animations = animations;
 	}
 
 	public abstract void playIntermissionSound();

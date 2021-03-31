@@ -7,7 +7,6 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 
 import de.amr.games.pacman.controller.PacManGameController;
-import de.amr.games.pacman.ui.animation.MazeAnimations2D;
 import de.amr.games.pacman.ui.animation.TimedSequence;
 import de.amr.games.pacman.ui.pacman.PacMan_IntermissionScene1_Controller;
 import de.amr.games.pacman.ui.pacman.PacMan_IntermissionScene1_Controller.Phase;
@@ -27,8 +26,8 @@ public class PacMan_IntermissionScene1 extends GameScene {
 
 	private class SceneController extends PacMan_IntermissionScene1_Controller {
 
-		public SceneController(PacManGameController gameController, MazeAnimations2D animations) {
-			super(gameController, animations);
+		public SceneController(PacManGameController gameController) {
+			super(gameController);
 		}
 
 		@Override
@@ -47,7 +46,7 @@ public class PacMan_IntermissionScene1 extends GameScene {
 
 	@Override
 	public void start() {
-		sceneController = new SceneController(gameController, rendering);
+		sceneController = new SceneController(gameController);
 		sceneController.start();
 		pacMan2D = new Player2D(sceneController.pac);
 		pacMan2D.setMunchingAnimations(rendering.createPlayerMunchingAnimations());
