@@ -215,18 +215,18 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	private void updateReadyState() {
+		if (stateTimer().ticksRemaining() == 120 || stateTimer().hasExpired()) {
+			gameModel.player.visible = true;
+			for (Ghost ghost : gameModel.ghosts) {
+				ghost.visible = true;
+			}
+		}
 		if (stateTimer().hasExpired()) {
 			if (gameRequested) {
 				gameRunning = true;
 			}
 			changeState(PacManGameState.HUNTING);
 			return;
-		}
-		if (stateTimer().isRunningSeconds(0.5)) {
-			gameModel.player.visible = true;
-			for (Ghost ghost : gameModel.ghosts) {
-				ghost.visible = true;
-			}
 		}
 	}
 
