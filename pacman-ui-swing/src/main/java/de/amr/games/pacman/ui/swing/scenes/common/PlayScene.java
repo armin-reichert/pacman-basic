@@ -140,7 +140,7 @@ public class PlayScene extends GameScene {
 	}
 
 	@Override
-	protected void onGameEvent(PacManGameEvent gameEvent) {
+	public void onGameEvent(PacManGameEvent gameEvent) {
 		sounds.setMuted(gameController.isAttractMode());
 
 		if (gameEvent instanceof ScatterPhaseStartedEvent) {

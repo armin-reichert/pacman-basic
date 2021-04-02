@@ -108,14 +108,16 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	public void addGameEventListener(PacManGameEventListener listener) {
 		gameEventListeners.add(listener);
+		log("Added game event listener %s, num listeners=%d", listener, gameEventListeners.size());
 	}
 
 	public void removeGameEventListener(PacManGameEventListener listener) {
 		gameEventListeners.remove(listener);
+		log("Removed game event listener %s, num listeners=%d", listener, gameEventListeners.size());
 	}
 
 	public void fireGameEvent(PacManGameEvent gameEvent) {
-		gameEventListeners.forEach(listener -> listener.accept(gameEvent));
+		gameEventListeners.forEach(listener -> listener.onGameEvent(gameEvent));
 	}
 
 	public PacManGameController() {

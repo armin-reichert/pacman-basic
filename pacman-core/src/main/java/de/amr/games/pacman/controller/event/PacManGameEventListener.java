@@ -1,7 +1,8 @@
 package de.amr.games.pacman.controller.event;
 
-import java.util.function.Consumer;
+@FunctionalInterface
+public interface PacManGameEventListener {
 
-public interface PacManGameEventListener extends Consumer<PacManGameEvent> {
+	void onGameEvent(PacManGameEvent event);
 
 }

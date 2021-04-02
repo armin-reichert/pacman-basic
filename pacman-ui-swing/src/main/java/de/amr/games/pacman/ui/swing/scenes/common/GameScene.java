@@ -6,6 +6,7 @@ import java.awt.Graphics2D;
 import de.amr.games.pacman.controller.PacManGameController;
 import de.amr.games.pacman.controller.PacManGameState;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
+import de.amr.games.pacman.controller.event.PacManGameEventListener;
 import de.amr.games.pacman.model.common.AbstractGameModel;
 import de.amr.games.pacman.ui.swing.assets.SoundManager;
 import de.amr.games.pacman.ui.swing.rendering.common.AbstractPacManGameRendering;
@@ -15,7 +16,7 @@ import de.amr.games.pacman.ui.swing.rendering.common.AbstractPacManGameRendering
  * 
  * @author Armin Reichert
  */
-public abstract class GameScene {
+public abstract class GameScene implements PacManGameEventListener {
 
 	protected final PacManGameController gameController;
 	protected final Dimension size;
@@ -39,19 +40,20 @@ public abstract class GameScene {
 	}
 
 	public void start() {
-		gameController.addGameEventListener(this::onGameEvent);
+		gameController.addGameEventListener(this);
 	}
 
 	public abstract void update();
 
 	public void end() {
-		gameController.removeGameEventListener(this::onGameEvent);
-	}
-
-	protected void onGameEvent(PacManGameEvent gameEvent) {
+		gameController.removeGameEventListener(this);
 	}
 
 	public void onGameStateChange(PacManGameState oldState, PacManGameState newState) {
+	}
+
+	@Override
+	public void onGameEvent(PacManGameEvent event) {
 	}
 
 	public abstract void render(Graphics2D g);
