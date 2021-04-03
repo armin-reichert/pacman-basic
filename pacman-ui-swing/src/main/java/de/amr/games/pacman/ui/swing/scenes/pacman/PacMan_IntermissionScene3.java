@@ -7,9 +7,9 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 
 import de.amr.games.pacman.controller.PacManGameController;
+import de.amr.games.pacman.ui.PacManGameSound;
 import de.amr.games.pacman.ui.pacman.PacMan_IntermissionScene3_Controller;
 import de.amr.games.pacman.ui.pacman.PacMan_IntermissionScene3_Controller.Phase;
-import de.amr.games.pacman.ui.sound.PacManGameSound;
 import de.amr.games.pacman.ui.swing.PacManGameUI_Swing;
 import de.amr.games.pacman.ui.swing.rendering.common.Player2D;
 import de.amr.games.pacman.ui.swing.rendering.pacman.PacManGameRendering;

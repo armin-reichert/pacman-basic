@@ -3,8 +3,8 @@ package de.amr.games.pacman.ui.swing.rendering.mspacman;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
+import de.amr.games.pacman.lib.TimedSequence;
 import de.amr.games.pacman.model.mspacman.Stork;
-import de.amr.games.pacman.ui.animation.TimedSequence;
 
 public class Stork2D {
 

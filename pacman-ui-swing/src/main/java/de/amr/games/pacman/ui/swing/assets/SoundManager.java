@@ -9,7 +9,7 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 
-import de.amr.games.pacman.ui.sound.PacManGameSound;
+import de.amr.games.pacman.ui.PacManGameSound;
 
 /**
  * Sound manager for Pac-Man game variants.

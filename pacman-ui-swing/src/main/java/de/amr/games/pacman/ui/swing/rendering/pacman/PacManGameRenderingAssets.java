@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 import de.amr.games.pacman.lib.Direction;
-import de.amr.games.pacman.ui.animation.TimedSequence;
+import de.amr.games.pacman.lib.TimedSequence;
 import de.amr.games.pacman.ui.swing.assets.Spritesheet;
 
 /**

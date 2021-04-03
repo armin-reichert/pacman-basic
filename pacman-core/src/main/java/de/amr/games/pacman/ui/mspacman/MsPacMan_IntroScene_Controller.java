@@ -6,11 +6,11 @@ import static de.amr.games.pacman.model.world.PacManGameWorld.t;
 
 import de.amr.games.pacman.controller.PacManGameController;
 import de.amr.games.pacman.lib.TickTimer;
+import de.amr.games.pacman.lib.TimedSequence;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.GhostState;
 import de.amr.games.pacman.model.common.Pac;
-import de.amr.games.pacman.ui.animation.TimedSequence;
 
 /**
  * Intro scene of the Ms. Pac-Man game. The ghosts and Ms. Pac-Man are introduced one after another.

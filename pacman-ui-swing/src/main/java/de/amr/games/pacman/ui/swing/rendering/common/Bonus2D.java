@@ -6,8 +6,8 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.Map;
 
+import de.amr.games.pacman.lib.TimedSequence;
 import de.amr.games.pacman.model.pacman.PacManBonus;
-import de.amr.games.pacman.ui.animation.TimedSequence;
 
 public class Bonus2D {
 

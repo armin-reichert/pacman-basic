@@ -11,8 +11,8 @@ import java.awt.image.BufferedImage;
 import java.util.Map;
 
 import de.amr.games.pacman.lib.Direction;
+import de.amr.games.pacman.lib.TimedSequence;
 import de.amr.games.pacman.model.common.Ghost;
-import de.amr.games.pacman.ui.animation.TimedSequence;
 
 public class Ghost2D {
 

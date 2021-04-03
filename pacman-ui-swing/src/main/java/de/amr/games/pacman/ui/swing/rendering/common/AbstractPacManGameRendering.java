@@ -14,10 +14,10 @@ import java.util.stream.Stream;
 
 import de.amr.games.pacman.controller.PacManGameState;
 import de.amr.games.pacman.lib.Direction;
+import de.amr.games.pacman.lib.TimedSequence;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.AbstractGameModel;
 import de.amr.games.pacman.model.common.GameEntity;
-import de.amr.games.pacman.ui.animation.TimedSequence;
 
 /**
  * Spritesheet-based rendering for Pac-Man and Ms. Pac-Man game.

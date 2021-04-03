@@ -15,8 +15,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.controller.PacManGameController;
+import de.amr.games.pacman.lib.TimedSequence;
 import de.amr.games.pacman.model.common.Ghost;
-import de.amr.games.pacman.ui.animation.TimedSequence;
 import de.amr.games.pacman.ui.pacman.PacMan_IntroScene_Controller;
 import de.amr.games.pacman.ui.pacman.PacMan_IntroScene_Controller.GhostPortrait;
 import de.amr.games.pacman.ui.pacman.PacMan_IntroScene_Controller.Phase;

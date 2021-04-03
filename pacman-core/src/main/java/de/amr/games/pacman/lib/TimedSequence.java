@@ -1,4 +1,4 @@
-package de.amr.games.pacman.ui.animation;
+package de.amr.games.pacman.lib;
 
 import java.util.Collections;
 import java.util.List;

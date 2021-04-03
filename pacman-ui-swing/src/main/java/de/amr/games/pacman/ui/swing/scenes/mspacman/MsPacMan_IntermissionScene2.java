@@ -6,9 +6,9 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 
 import de.amr.games.pacman.controller.PacManGameController;
-import de.amr.games.pacman.ui.animation.TimedSequence;
+import de.amr.games.pacman.lib.TimedSequence;
+import de.amr.games.pacman.ui.PacManGameSound;
 import de.amr.games.pacman.ui.mspacman.MsPacMan_IntermissionScene2_Controller;
-import de.amr.games.pacman.ui.sound.PacManGameSound;
 import de.amr.games.pacman.ui.swing.PacManGameUI_Swing;
 import de.amr.games.pacman.ui.swing.rendering.common.Player2D;
 import de.amr.games.pacman.ui.swing.rendering.mspacman.Flap2D;

@@ -1,27 +1,27 @@
 package de.amr.games.pacman.ui.swing.assets;
 
-import static de.amr.games.pacman.ui.sound.PacManGameSound.BONUS_EATEN;
-import static de.amr.games.pacman.ui.sound.PacManGameSound.CREDIT;
-import static de.amr.games.pacman.ui.sound.PacManGameSound.EXTRA_LIFE;
-import static de.amr.games.pacman.ui.sound.PacManGameSound.GAME_READY;
-import static de.amr.games.pacman.ui.sound.PacManGameSound.GHOST_EATEN;
-import static de.amr.games.pacman.ui.sound.PacManGameSound.GHOST_RETURNING_HOME;
-import static de.amr.games.pacman.ui.sound.PacManGameSound.GHOST_SIREN_1;
-import static de.amr.games.pacman.ui.sound.PacManGameSound.GHOST_SIREN_2;
-import static de.amr.games.pacman.ui.sound.PacManGameSound.GHOST_SIREN_3;
-import static de.amr.games.pacman.ui.sound.PacManGameSound.GHOST_SIREN_4;
-import static de.amr.games.pacman.ui.sound.PacManGameSound.INTERMISSION_1;
-import static de.amr.games.pacman.ui.sound.PacManGameSound.INTERMISSION_2;
-import static de.amr.games.pacman.ui.sound.PacManGameSound.INTERMISSION_3;
-import static de.amr.games.pacman.ui.sound.PacManGameSound.PACMAN_DEATH;
-import static de.amr.games.pacman.ui.sound.PacManGameSound.PACMAN_MUNCH;
-import static de.amr.games.pacman.ui.sound.PacManGameSound.PACMAN_POWER;
+import static de.amr.games.pacman.ui.PacManGameSound.BONUS_EATEN;
+import static de.amr.games.pacman.ui.PacManGameSound.CREDIT;
+import static de.amr.games.pacman.ui.PacManGameSound.EXTRA_LIFE;
+import static de.amr.games.pacman.ui.PacManGameSound.GAME_READY;
+import static de.amr.games.pacman.ui.PacManGameSound.GHOST_EATEN;
+import static de.amr.games.pacman.ui.PacManGameSound.GHOST_RETURNING_HOME;
+import static de.amr.games.pacman.ui.PacManGameSound.GHOST_SIREN_1;
+import static de.amr.games.pacman.ui.PacManGameSound.GHOST_SIREN_2;
+import static de.amr.games.pacman.ui.PacManGameSound.GHOST_SIREN_3;
+import static de.amr.games.pacman.ui.PacManGameSound.GHOST_SIREN_4;
+import static de.amr.games.pacman.ui.PacManGameSound.INTERMISSION_1;
+import static de.amr.games.pacman.ui.PacManGameSound.INTERMISSION_2;
+import static de.amr.games.pacman.ui.PacManGameSound.INTERMISSION_3;
+import static de.amr.games.pacman.ui.PacManGameSound.PACMAN_DEATH;
+import static de.amr.games.pacman.ui.PacManGameSound.PACMAN_MUNCH;
+import static de.amr.games.pacman.ui.PacManGameSound.PACMAN_POWER;
 
 import java.net.URL;
 import java.util.EnumMap;
 import java.util.Map;
 
-import de.amr.games.pacman.ui.sound.PacManGameSound;
+import de.amr.games.pacman.ui.PacManGameSound;
 
 /**
  * Maps the sound constants to the sound resources.

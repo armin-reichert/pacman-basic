@@ -12,8 +12,8 @@ import java.util.stream.Stream;
 
 import de.amr.games.pacman.controller.PacManGameController;
 import de.amr.games.pacman.lib.TickTimer;
+import de.amr.games.pacman.lib.TimedSequence;
 import de.amr.games.pacman.model.common.Ghost;
-import de.amr.games.pacman.ui.animation.TimedSequence;
 import de.amr.games.pacman.ui.mspacman.MsPacMan_IntroScene_Controller;
 import de.amr.games.pacman.ui.mspacman.MsPacMan_IntroScene_Controller.Phase;
 import de.amr.games.pacman.ui.swing.PacManGameUI_Swing;

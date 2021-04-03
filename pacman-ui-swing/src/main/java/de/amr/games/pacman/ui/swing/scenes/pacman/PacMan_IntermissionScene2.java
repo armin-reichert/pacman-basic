@@ -9,10 +9,10 @@ import java.awt.image.BufferedImage;
 
 import de.amr.games.pacman.controller.PacManGameController;
 import de.amr.games.pacman.lib.Direction;
+import de.amr.games.pacman.lib.TimedSequence;
 import de.amr.games.pacman.lib.V2d;
-import de.amr.games.pacman.ui.animation.TimedSequence;
+import de.amr.games.pacman.ui.PacManGameSound;
 import de.amr.games.pacman.ui.pacman.PacMan_IntermissionScene2_Controller;
-import de.amr.games.pacman.ui.sound.PacManGameSound;
 import de.amr.games.pacman.ui.swing.PacManGameUI_Swing;
 import de.amr.games.pacman.ui.swing.rendering.common.Ghost2D;
 import de.amr.games.pacman.ui.swing.rendering.common.Player2D;

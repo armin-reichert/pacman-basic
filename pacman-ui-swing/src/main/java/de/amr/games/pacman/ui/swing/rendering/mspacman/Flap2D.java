@@ -5,8 +5,8 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
+import de.amr.games.pacman.lib.TimedSequence;
 import de.amr.games.pacman.model.mspacman.Flap;
-import de.amr.games.pacman.ui.animation.TimedSequence;
 
 public class Flap2D {
 

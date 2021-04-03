@@ -5,8 +5,8 @@ import static de.amr.games.pacman.model.world.PacManGameWorld.TS;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
+import de.amr.games.pacman.lib.TimedSequence;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.ui.animation.TimedSequence;
 
 public class Energizer2D {
 
