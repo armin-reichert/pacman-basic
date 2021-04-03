@@ -31,57 +31,10 @@ public abstract class AbstractGameModel {
 	public int score;
 	public String highscoreFileName;
 	public int highscoreLevel, highscorePoints;
-	public int huntingPhase;
 	public int ghostBounty;
 	public List<Byte> levelSymbols;
 	public int globalDotCounter;
 	public boolean globalDotCounterEnabled;
-
-	public void reset() {
-		Hiscore hiscore = loadHighScore();
-		highscoreLevel = hiscore.level;
-		highscorePoints = hiscore.points;
-		score = 0;
-		lives = 3;
-		levelSymbols = new ArrayList<>();
-		enterLevel(1);
-		levelSymbols.add(currentLevel.bonusSymbol);
-	}
-
-	/**
-	 * @param levelNumber 1-based game level number
-	 * @return 1-based maze number of the maze used in that level
-	 */
-	protected abstract void buildLevel(int number);
-
-	/**
-	 * @param number 1-based game level number
-	 * @return 1-based maze number of the maze used in that level
-	 */
-	public abstract int mazeNumber(int number);
-
-	/**
-	 * @param number 1-based number of a maze
-	 * @return 1-based number of the world map used by that maze
-	 */
-	public abstract int mapNumber(int number);
-
-	/**
-	 * @param number 1-based number of a maze
-	 * @return 1-based number of the world map used by that maze
-	 */
-	public void enterLevel(int number) {
-		currentLevelNumber = number;
-		buildLevel(number);
-		ghostBounty = 200;
-		huntingPhase = 0;
-		bonus.edibleTicksLeft = 0;
-		bonus.eatenTicksLeft = 0;
-		for (Ghost ghost : ghosts) {
-			ghost.dotCounter = 0;
-			ghost.elroy = 0;
-		}
-	}
 
 	public void resetGuys() {
 		player.placeAt(currentLevel.world.pacHome(), HTS, 0);
@@ -108,8 +61,8 @@ public abstract class AbstractGameModel {
 			ghost.state = GhostState.LOCKED;
 			ghost.bounty = 0;
 			// these are reset when entering level:
-//		ghost.dotCounter = 0;
-//		ghost.elroyMode = 0;
+			// ghost.dotCounter = 0;
+			// ghost.elroyMode = 0;
 		}
 
 		bonus.visible = false;
@@ -120,6 +73,49 @@ public abstract class AbstractGameModel {
 		bonus.edibleTicksLeft = 0;
 		bonus.eatenTicksLeft = 0;
 	}
+
+	public void reset() {
+		score = 0;
+		lives = 3;
+		initLevel(1);
+		levelSymbols = new ArrayList<>();
+		levelSymbols.add(currentLevel.bonusSymbol);
+		Hiscore hiscore = loadHighScore();
+		highscoreLevel = hiscore.level;
+		highscorePoints = hiscore.points;
+	}
+
+	/**
+	 * @param levelNumber 1-based game level number
+	 */
+	public void initLevel(int levelNumber) {
+		createLevel(levelNumber);
+		ghostBounty = 200;
+		for (Ghost ghost : ghosts) {
+			ghost.dotCounter = 0;
+			ghost.elroy = 0;
+		}
+		bonus.edibleTicksLeft = 0;
+		bonus.eatenTicksLeft = 0;
+		currentLevelNumber = levelNumber;
+	}
+
+	/**
+	 * @param levelNumber 1-based game level number
+	 */
+	protected abstract void createLevel(int levelNumber);
+
+	/**
+	 * @param levelNumber 1-based game level number
+	 * @return 1-based maze number of the maze used in that level
+	 */
+	public abstract int mazeNumber(int levelNumber);
+
+	/**
+	 * @param mazeNumber 1-based number of a maze
+	 * @return 1-based number of the world map used by that maze
+	 */
+	public abstract int mapNumber(int mazeNumber);
 
 	public Stream<Ghost> ghosts() {
 		return Stream.of(ghosts);

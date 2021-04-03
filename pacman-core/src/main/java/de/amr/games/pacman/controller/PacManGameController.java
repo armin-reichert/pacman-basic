@@ -100,6 +100,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	private boolean gameRunning;
 	private boolean attractMode;
 	private boolean playerImmune;
+	private int huntingPhase;
 
 	public PacManGameUI userInterface;
 	public final Autopilot autopilot = new Autopilot();
@@ -234,7 +235,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	private void startHuntingPhase(int phase) {
 		boolean scattering = isScatteringPhase(phase);
-		gameModel.huntingPhase = phase;
+		huntingPhase = phase;
 		if (scattering) {
 			fireGameEvent(new ScatterPhaseStartedEvent(gameVariant, gameModel, phase / 2));
 		}
@@ -243,7 +244,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			log("Hunting phase %d (%s) continues, %d of %d ticks remaining", phase, scattering ? "Scattering" : "Chasing",
 					stateTimer().ticksRemaining(), stateTimer().duration());
 		} else {
-			stateTimer().reset(gameModel.getHuntingPhaseDuration(gameModel.huntingPhase));
+			stateTimer().reset(gameModel.getHuntingPhaseDuration(huntingPhase));
 			stateTimer().start();
 			log("Hunting phase %d (%s) starts, %d of %d ticks remaining", phase, scattering ? "Scattering" : "Chasing",
 					stateTimer().ticksRemaining(), stateTimer().duration());
@@ -302,7 +303,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		// Is hunting phase (chasing, scattering) complete?
 		if (stateTimer().hasExpired()) {
 			gameModel.ghosts(HUNTING_PAC).forEach(Ghost::forceTurningBack);
-			startHuntingPhase(++gameModel.huntingPhase);
+			startHuntingPhase(++huntingPhase);
 			return;
 		}
 
@@ -392,7 +393,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	private void enterLevelStartingState() {
 		stateTimer().reset();
 		log("Level %d complete, entering level %d", gameModel.currentLevelNumber, gameModel.currentLevelNumber + 1);
-		gameModel.enterLevel(gameModel.currentLevelNumber + 1);
+		gameModel.initLevel(gameModel.currentLevelNumber + 1);
 		gameModel.levelSymbols.add(gameModel.currentLevel.bonusSymbol);
 	}
 
@@ -551,9 +552,9 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		 * because of a bug, only the scatter target of Blinky and Pinky would have been affected. Who
 		 * knows?
 		 */
-		if (isPlaying(MS_PACMAN) && gameModel.huntingPhase == 0 && (ghost.id == BLINKY || ghost.id == PINKY)) {
+		if (isPlaying(MS_PACMAN) && huntingPhase == 0 && (ghost.id == BLINKY || ghost.id == PINKY)) {
 			ghost.targetTile = null;
-		} else if (isScatteringPhase(gameModel.huntingPhase) && ghost.elroy == 0) {
+		} else if (isScatteringPhase(huntingPhase) && ghost.elroy == 0) {
 			ghost.targetTile = gameModel.currentLevel.world.ghostScatterTile(ghost.id);
 		} else {
 			ghost.targetTile = ghostHuntingTarget(ghost.id);

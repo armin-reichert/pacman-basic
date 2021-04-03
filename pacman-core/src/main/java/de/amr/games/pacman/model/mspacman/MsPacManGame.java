@@ -136,7 +136,7 @@ public class MsPacManGame extends AbstractGameModel {
 	}
 
 	@Override
-	protected void buildLevel(int levelNumber) {
+	protected void createLevel(int levelNumber) {
 		int mazeNumber = mazeNumber(levelNumber);
 		int mapNumber = mapNumber(mazeNumber);
 		WorldMap map = WorldMap.from("/mspacman/maps/map" + mapNumber + ".txt");
