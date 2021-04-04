@@ -10,7 +10,8 @@ import de.amr.games.pacman.model.common.GhostState;
 import de.amr.games.pacman.model.common.Pac;
 
 /**
- * First intermission scene: Blinky chases Pac-Man and is then chased by a huge Pac-Man.
+ * First intermission scene: Blinky chases Pac-Man and is then chased by a huge
+ * Pac-Man.
  * 
  * @author Armin Reichert
  */

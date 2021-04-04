@@ -28,11 +28,15 @@ public class Ghost extends Creature {
 	/** The bounty earned for killing this ghost. */
 	public int bounty;
 
-	/** The individual food counter, used to compute when the ghost can leave the house. */
+	/**
+	 * The individual food counter, used to compute when the ghost can leave the
+	 * house.
+	 */
 	public int dotCounter;
 
 	/**
-	 * The "Cruise Elroy" mode of Blinky, the red ghost. Value is 1, 2 or -1, -2 (disabled Elroy mode).
+	 * The "Cruise Elroy" mode of Blinky, the red ghost. Value is 1, 2 or -1, -2
+	 * (disabled Elroy mode).
 	 */
 	public int elroy;
 

@@ -15,8 +15,8 @@ import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.world.PacManGameWorld;
 
 /**
- * Base class for Pac-Man, Ms. Pac-Man the ghosts and the bonus. Creatures can move through the
- * world.
+ * Base class for Pac-Man, Ms. Pac-Man the ghosts and the bonus. Creatures can
+ * move through the world.
  * 
  * @author Armin Reichert
  */
@@ -28,7 +28,9 @@ public class Creature extends GameEntity {
 	/** Relative speed (between 0 and 1). */
 	public double speed = 0.0;
 
-	/** The current move direction. Initially, (s)he moves to the right direction :-) */
+	/**
+	 * The current move direction. Initially, (s)he moves to the right direction :-)
+	 */
 	public Direction dir = Direction.RIGHT;
 
 	/** The intended move direction that will be taken as soon as possible. */
@@ -37,7 +39,10 @@ public class Creature extends GameEntity {
 	/** The first move direction. */
 	public Direction startDir = Direction.RIGHT;
 
-	/** The tile that the guy tries to reach. Can be inaccessible or outside of the maze. */
+	/**
+	 * The tile that the guy tries to reach. Can be inaccessible or outside of the
+	 * maze.
+	 */
 	public V2i targetTile = V2i.NULL;
 
 	/** If the creature entered a new tile with its last movement or placement. */
@@ -46,15 +51,17 @@ public class Creature extends GameEntity {
 	/** If the creature got stuck trying to move through the world. */
 	public boolean stuck = false;
 
-	/** If the next move will in any case take the intended direction if possible. */
+	/**
+	 * If the next move will in any case take the intended direction if possible.
+	 */
 	public boolean forcedDirection = false;
 
 	/** If movement is constrained to be aligned with the tiles. */
 	public boolean forcedOnTrack = false;
 
 	/**
-	 * Places this creature at the given tile with the given position offsets. Sets the
-	 * {@code changedTile} flag to trigger a potential steering.
+	 * Places this creature at the given tile with the given position offsets. Sets
+	 * the {@code changedTile} flag to trigger a potential steering.
 	 * 
 	 * @param tile    the tile where this creature will be placed
 	 * @param offsetX the pixel offset in x-direction
