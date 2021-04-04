@@ -18,7 +18,8 @@ import de.amr.games.pacman.ui.swing.rendering.pacman.PacManGameRendering;
 import de.amr.games.pacman.ui.swing.scenes.common.GameScene;
 
 /**
- * First intermission scene: Blinky chases Pac-Man and is then chased by a huge Pac-Man.
+ * First intermission scene: Blinky chases Pac-Man and is then chased by a huge
+ * Pac-Man.
  * 
  * @author Armin Reichert
  */
@@ -62,6 +63,10 @@ public class PacMan_IntermissionScene1 extends GameScene {
 	@Override
 	public void update() {
 		sceneController.update();
+	}
+
+	@Override
+	public void end() {
 	}
 
 	@Override

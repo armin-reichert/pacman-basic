@@ -17,8 +17,9 @@ import de.amr.games.pacman.ui.swing.scenes.common.GameScene;
 /**
  * Intermission scene 2: "The chase".
  * <p>
- * Pac-Man and Ms. Pac-Man chase each other across the screen over and over. After three turns, they
- * both rapidly run from left to right and right to left. (Played after round 5)
+ * Pac-Man and Ms. Pac-Man chase each other across the screen over and over.
+ * After three turns, they both rapidly run from left to right and right to
+ * left. (Played after round 5)
  * 
  * @author Armin Reichert
  */
@@ -68,6 +69,10 @@ public class MsPacMan_IntermissionScene2 extends GameScene {
 	@Override
 	public void update() {
 		sceneController.update();
+	}
+
+	@Override
+	public void end() {
 	}
 
 	@Override

@@ -11,8 +11,9 @@ import java.util.function.BiConsumer;
 import java.util.stream.Stream;
 
 /**
- * Finite-state machine, a graph of vertices (states) connected by transitions. Transitions are not
- * defined explicitly but implicitly defined by calls of the {@link #changeState(Enum)} method.
+ * Finite-state machine, a graph of vertices (states) connected by transitions.
+ * Transitions are not defined explicitly but implicitly defined by calls of the
+ * {@link #changeState(Enum)} method.
  * <p>
  * Each transition triggers firing of a state change event.
  * 
@@ -26,7 +27,8 @@ public class FiniteStateMachine<S extends Enum<S>> {
 	private static <STATE_KEY extends Enum<STATE_KEY>> Map<STATE_KEY, Vertex> createStateMap(Class<STATE_KEY> keyClass,
 			STATE_KEY[] stateKeys) {
 		try {
-			EnumMap<STATE_KEY, Vertex> enumMap = EnumMap.class.getDeclaredConstructor(Class.class).newInstance(keyClass);
+			EnumMap<STATE_KEY, Vertex> enumMap = EnumMap.class.getDeclaredConstructor(Class.class)
+					.newInstance(keyClass);
 			return enumMap;
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
 				| NoSuchMethodException | SecurityException x) {
@@ -99,7 +101,7 @@ public class FiniteStateMachine<S extends Enum<S>> {
 		return stateMap.get(id);
 	}
 
-	private void fireStateChange(S oldState, S newState) {
+	protected void fireStateChange(S oldState, S newState) {
 		// create copy to avoid concurrent modification
 		new ArrayList<>(changeListeners).stream().forEach(listener -> listener.accept(oldState, newState));
 	}

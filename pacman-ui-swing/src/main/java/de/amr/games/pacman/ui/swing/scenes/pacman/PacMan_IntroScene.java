@@ -28,8 +28,8 @@ import de.amr.games.pacman.ui.swing.scenes.common.GameScene;
 /**
  * Intro scene of the PacMan game.
  * <p>
- * The ghost are presented one after another, then Pac-Man is chased by the ghosts, turns the card
- * and hunts the ghost himself.
+ * The ghost are presented one after another, then Pac-Man is chased by the
+ * ghosts, turns the card and hunts the ghost himself.
  * 
  * @author Armin Reichert
  */
@@ -72,6 +72,10 @@ public class PacMan_IntroScene extends GameScene {
 	@Override
 	public void update() {
 		sceneController.update();
+	}
+
+	@Override
+	public void end() {
 	}
 
 	@Override

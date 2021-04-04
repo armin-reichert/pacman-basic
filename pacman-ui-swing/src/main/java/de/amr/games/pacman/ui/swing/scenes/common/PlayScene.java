@@ -16,6 +16,7 @@ import de.amr.games.pacman.controller.event.ExtraLifeEvent;
 import de.amr.games.pacman.controller.event.PacManFoundFoodEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
+import de.amr.games.pacman.controller.event.PacManGameStateChangedEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.controller.event.ScatterPhaseStartedEvent;
 import de.amr.games.pacman.lib.TickTimerEvent;
@@ -50,8 +51,6 @@ public class PlayScene extends GameScene {
 
 	@Override
 	public void start() {
-		super.start();
-
 		player2D = new Player2D(game().player);
 		player2D.setRendering(rendering);
 
@@ -63,7 +62,8 @@ public class PlayScene extends GameScene {
 		bonus2D = new Bonus2D();
 		bonus2D.setRendering(rendering);
 
-		mazeFlashing = rendering.mazeFlashing(game().currentLevel.mazeNumber).repetitions(game().currentLevel.numFlashes);
+		mazeFlashing = rendering.mazeFlashing(game().currentLevel.mazeNumber)
+				.repetitions(game().currentLevel.numFlashes);
 		mazeFlashing.reset();
 
 		game().player.powerTimer.addEventListener(this::handleGhostsFlashing);
@@ -72,15 +72,13 @@ public class PlayScene extends GameScene {
 	@Override
 	public void end() {
 		game().player.powerTimer.removeEventListener(this::handleGhostsFlashing);
-		super.end();
 	}
 
-	@Override
-	public void onGameStateChange(PacManGameState oldState, PacManGameState newState) {
+	private void onGameStateChange(PacManGameStateChangedEvent stateChange) {
 		sounds.setMuted(gameController.isAttractMode());
 
 		// enter READY
-		if (newState == PacManGameState.READY) {
+		if (stateChange.newGameState == PacManGameState.READY) {
 			// TODO check this
 			rendering.mazeFlashing(game().currentLevel.mazeNumber).reset();
 			if (!gameController.isAttractMode() && !gameController.isGameRunning()) {
@@ -92,7 +90,7 @@ public class PlayScene extends GameScene {
 		}
 
 		// enter HUNTING
-		if (newState == PacManGameState.HUNTING) {
+		if (stateChange.newGameState == PacManGameState.HUNTING) {
 			energizers2D.forEach(energizer2D -> energizer2D.getBlinkingAnimation().restart());
 			player2D.getMunchingAnimations().values().forEach(TimedSequence::restart);
 			ghosts2D.forEach(ghost2D -> {
@@ -101,24 +99,24 @@ public class PlayScene extends GameScene {
 		}
 
 		// exit HUNTING
-		if (oldState == PacManGameState.HUNTING) {
+		if (stateChange.oldGameState == PacManGameState.HUNTING) {
 			energizers2D.forEach(energizer2D -> energizer2D.getBlinkingAnimation().reset());
 		}
 
 		// enter PACMAN_DYING
-		if (newState == PacManGameState.PACMAN_DYING) {
+		if (stateChange.newGameState == PacManGameState.PACMAN_DYING) {
 			sounds.stopAll();
 			playAnimationPlayerDying();
 		}
 
 		// enter GHOST_DYING
-		if (newState == PacManGameState.GHOST_DYING) {
+		if (stateChange.newGameState == PacManGameState.GHOST_DYING) {
 			sounds.play(PacManGameSound.GHOST_EATEN);
 			energizers2D.forEach(energizer2D -> energizer2D.getBlinkingAnimation().restart());
 		}
 
 		// exit GHOST_DYING
-		if (oldState == PacManGameState.GHOST_DYING) {
+		if (stateChange.oldGameState == PacManGameState.GHOST_DYING) {
 			// the dead ghost(s) will return home now
 			if (game().ghosts(GhostState.DEAD).count() > 0) {
 				sounds.loop(PacManGameSound.GHOST_RETURNING_HOME, Integer.MAX_VALUE);
@@ -126,13 +124,13 @@ public class PlayScene extends GameScene {
 		}
 
 		// enter LEVEL_COMPLETE
-		if (newState == PacManGameState.LEVEL_COMPLETE) {
+		if (stateChange.newGameState == PacManGameState.LEVEL_COMPLETE) {
 			mazeFlashing = rendering.mazeFlashing(game().currentLevel.mazeNumber);
 			sounds.stopAll();
 		}
 
 		// enter GAME_OVER
-		if (newState == PacManGameState.GAME_OVER) {
+		if (stateChange.newGameState == PacManGameState.GAME_OVER) {
 			ghosts2D.forEach(ghost2D -> {
 				ghost2D.getKickingAnimations().values().forEach(TimedSequence::reset);
 			});
@@ -143,7 +141,11 @@ public class PlayScene extends GameScene {
 	public void onGameEvent(PacManGameEvent gameEvent) {
 		sounds.setMuted(gameController.isAttractMode());
 
-		if (gameEvent instanceof ScatterPhaseStartedEvent) {
+		if (gameEvent instanceof PacManGameStateChangedEvent) {
+			onGameStateChange((PacManGameStateChangedEvent) gameEvent);
+		}
+
+		else if (gameEvent instanceof ScatterPhaseStartedEvent) {
 			ScatterPhaseStartedEvent e = (ScatterPhaseStartedEvent) gameEvent;
 			if (e.scatterPhase > 0) {
 				sounds.stop(PacManGameSound.SIRENS.get(e.scatterPhase - 1));

@@ -22,7 +22,8 @@ import de.amr.games.pacman.ui.swing.rendering.common.Player2D;
 import de.amr.games.pacman.ui.swing.scenes.common.GameScene;
 
 /**
- * Intro scene of the Ms. Pac-Man game. The ghosts and Ms. Pac-Man are introduced one after another.
+ * Intro scene of the Ms. Pac-Man game. The ghosts and Ms. Pac-Man are
+ * introduced one after another.
  * 
  * @author Armin Reichert
  */
@@ -57,6 +58,10 @@ public class MsPacMan_IntroScene extends GameScene {
 	public void update() {
 		sceneController.update();
 		boardAnimationTimer.tick();
+	}
+
+	@Override
+	public void end() {
 	}
 
 	@Override
@@ -113,7 +118,8 @@ public class MsPacMan_IntroScene extends GameScene {
 				y = 2 * (numDotsX + numDotsY) - dot;
 			}
 			g.setColor((dot + light) % (numDotsX / 2) == 0 ? Color.PINK : Color.RED);
-			g.fillRect(t(sceneController.tileBoardTopLeft.x) + 4 * x, t(sceneController.tileBoardTopLeft.y) + 4 * y, 2, 2);
+			g.fillRect(t(sceneController.tileBoardTopLeft.x) + 4 * x, t(sceneController.tileBoardTopLeft.y) + 4 * y, 2,
+					2);
 		}
 	}
 

@@ -38,6 +38,7 @@ import de.amr.games.pacman.controller.event.PacManFoundFoodEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManGameEventListener;
+import de.amr.games.pacman.controller.event.PacManGameStateChangedEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.controller.event.ScatterPhaseStartedEvent;
 import de.amr.games.pacman.lib.Direction;
@@ -55,16 +56,19 @@ import de.amr.games.pacman.ui.PacManGameUI;
 /**
  * Controller (in the sense of MVC) for the Pac-Man and Ms. Pac-Man game.
  * <p>
- * This is a finite-state machine with states defined in {@link PacManGameState}. The game data are
- * stored in the model of the selected game, see {@link MsPacManGame} and {@link PacManGame}. The
- * user interface is abstracted via an interface ({@link PacManGameUI}). Scene selection is not
- * controlled by this class but left to the user interface implementations.
+ * This is a finite-state machine with states defined in
+ * {@link PacManGameState}. The game data are stored in the model of the
+ * selected game, see {@link MsPacManGame} and {@link PacManGame}. The user
+ * interface is abstracted via an interface ({@link PacManGameUI}). Scene
+ * selection is not controlled by this class but left to the user interface
+ * implementations.
  * <p>
  * Missing functionality:
  * <ul>
- * <li><a href="https://pacman.holenet.info/#CH2_Cornering"><em>Cornering</em></a>: I do not
- * consider cornering as important when the player is controlled by keyboard keys, for a joystick
- * that probably would be more important.</li>
+ * <li><a href=
+ * "https://pacman.holenet.info/#CH2_Cornering"><em>Cornering</em></a>: I do not
+ * consider cornering as important when the player is controlled by keyboard
+ * keys, for a joystick that probably would be more important.</li>
  * <li>Exact level data for Ms. Pac-Man still unclear. Any hints appreciated!
  * <li>Multiple players, credits.</li>
  * </ul>
@@ -72,9 +76,11 @@ import de.amr.games.pacman.ui.PacManGameUI;
  * @author Armin Reichert
  * 
  * @see <a href="https://github.com/armin-reichert">GitHub</a>
- * @see <a href="https://pacman.holenet.info">Jamey Pittman: The Pac-Man Dossier</a>
- * @see <a href="https://gameinternals.com/understanding-pac-man-ghost-behavior">Chad Birch:
- *      Understanding ghost behavior</a>
+ * @see <a href="https://pacman.holenet.info">Jamey Pittman: The Pac-Man
+ *      Dossier</a>
+ * @see <a href=
+ *      "https://gameinternals.com/understanding-pac-man-ghost-behavior">Chad
+ *      Birch: Understanding ghost behavior</a>
  * @see <a href="http://superpacman.com/mspacman/">Ms. Pac-Man</a>
  */
 public class PacManGameController extends FiniteStateMachine<PacManGameState> {
@@ -119,6 +125,13 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	public void fireGameEvent(PacManGameEvent gameEvent) {
 		gameEventListeners.forEach(listener -> listener.onGameEvent(gameEvent));
+	}
+
+	@Override
+	protected void fireStateChange(PacManGameState oldState, PacManGameState newState) {
+
+		gameEventListeners.forEach(listener -> listener
+				.onGameEvent(new PacManGameStateChangedEvent(gameVariant, gameModel, oldState, newState)));
 	}
 
 	public PacManGameController() {
@@ -241,8 +254,8 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		}
 		if (stateTimer().isStopped()) {
 			stateTimer().start();
-			log("Hunting phase %d (%s) continues, %d of %d ticks remaining", phase, scattering ? "Scattering" : "Chasing",
-					stateTimer().ticksRemaining(), stateTimer().duration());
+			log("Hunting phase %d (%s) continues, %d of %d ticks remaining", phase,
+					scattering ? "Scattering" : "Chasing", stateTimer().ticksRemaining(), stateTimer().duration());
 		} else {
 			stateTimer().reset(gameModel.getHuntingPhaseDuration(huntingPhase));
 			stateTimer().start();
@@ -414,7 +427,8 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			if (attractMode) {
 				changeState(INTRO);
 			} else {
-				gameModel.intermissionNumber = INTERMISSION_NUMBER_BY_LEVEL.getOrDefault(gameModel.currentLevelNumber, 0);
+				gameModel.intermissionNumber = INTERMISSION_NUMBER_BY_LEVEL.getOrDefault(gameModel.currentLevelNumber,
+						0);
 				changeState(gameModel.intermissionNumber != 0 ? INTERMISSION : LEVEL_STARTING);
 			}
 		}
@@ -547,10 +561,10 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	private void setGhostHuntingTarget(Ghost ghost) {
 		/*
-		 * In Ms. Pac-Man, Blinky and Pinky move randomly during the *first* scatter phase. Some say, the
-		 * origial intention had been to randomize the scatter target of *all* ghosts in Ms. Pac-Man but
-		 * because of a bug, only the scatter target of Blinky and Pinky would have been affected. Who
-		 * knows?
+		 * In Ms. Pac-Man, Blinky and Pinky move randomly during the *first* scatter
+		 * phase. Some say, the origial intention had been to randomize the scatter
+		 * target of *all* ghosts in Ms. Pac-Man but because of a bug, only the scatter
+		 * target of Blinky and Pinky would have been affected. Who knows?
 		 */
 		if (isPlaying(MS_PACMAN) && huntingPhase == 0 && (ghost.id == BLINKY || ghost.id == PINKY)) {
 			ghost.targetTile = null;
@@ -632,7 +646,8 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 				releaseGhost(ghost, "%s's dot counter (%d) reached limit (%d)", ghost.name, ghost.dotCounter,
 						ghostPrivateDotLimit(ghost.id, gameModel.currentLevelNumber));
 			} else if (gameModel.player.starvingTicks >= playerStarvingTimeLimit(gameModel.currentLevelNumber)) {
-				releaseGhost(ghost, "%s has been starving for %d ticks", gameModel.player.name, gameModel.player.starvingTicks);
+				releaseGhost(ghost, "%s has been starving for %d ticks", gameModel.player.name,
+						gameModel.player.starvingTicks);
 				gameModel.player.starvingTicks = 0;
 			}
 		});
@@ -648,7 +663,8 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	private Optional<Ghost> preferredLockedGhostInHouse() {
-		return Stream.of(PINKY, INKY, CLYDE).map(id -> gameModel.ghosts[id]).filter(ghost -> ghost.is(LOCKED)).findFirst();
+		return Stream.of(PINKY, INKY, CLYDE).map(id -> gameModel.ghosts[id]).filter(ghost -> ghost.is(LOCKED))
+				.findFirst();
 	}
 
 	private void updateGhostDotCounters() {

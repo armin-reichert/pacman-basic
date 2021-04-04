@@ -32,6 +32,8 @@ import javax.swing.Timer;
 
 import de.amr.games.pacman.controller.PacManGameController;
 import de.amr.games.pacman.controller.PacManGameState;
+import de.amr.games.pacman.controller.event.PacManGameEvent;
+import de.amr.games.pacman.controller.event.PacManGameStateChangedEvent;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.GameVariant;
@@ -89,7 +91,8 @@ public class PacManGameUI_Swing implements PacManGameUI {
 	public PacManGameUI_Swing(GameLoop gameLoop, PacManGameController controller, double height) {
 		this.gameLoop = gameLoop;
 		this.gameController = controller;
-		controller.addStateChangeListener(this::handleGameStateChange);
+
+		controller.addGameEventListener(this);
 
 		createGameScenes();
 
@@ -128,8 +131,8 @@ public class PacManGameUI_Swing implements PacManGameUI {
 
 		keyboard = new Keyboard(window);
 
-		titleUpdateTimer = new Timer(1000,
-				e -> window.setTitle(String.format("Pac-Man / Ms. Pac-Man (%d fps, JFC Swing)", gameLoop.clock.getLastFPS())));
+		titleUpdateTimer = new Timer(1000, e -> window
+				.setTitle(String.format("Pac-Man / Ms. Pac-Man (%d fps, JFC Swing)", gameLoop.clock.getLastFPS())));
 
 		// start initial game scene
 		handleGameStateChange(null, controller.state);
@@ -154,6 +157,15 @@ public class PacManGameUI_Swing implements PacManGameUI {
 		));
 	}
 
+	@Override
+	public void onGameEvent(PacManGameEvent event) {
+		if (event instanceof PacManGameStateChangedEvent) {
+			PacManGameStateChangedEvent stateChange = (PacManGameStateChangedEvent) event;
+			handleGameStateChange(stateChange.oldGameState, stateChange.newGameState);
+		}
+		currentGameScene.onGameEvent(event);
+	}
+
 	private void handleGameStateChange(PacManGameState oldState, PacManGameState newState) {
 		GameScene newScene = getSceneForGameState(newState);
 		if (newScene == null) {
@@ -167,7 +179,6 @@ public class PacManGameUI_Swing implements PacManGameUI {
 			log("Current scene changed from %s to %s", currentGameScene, newScene);
 		}
 		currentGameScene = newScene;
-		currentGameScene.onGameStateChange(oldState, newState);
 	}
 
 	private void show() {

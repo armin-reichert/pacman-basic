@@ -4,7 +4,6 @@ import java.awt.Dimension;
 import java.awt.Graphics2D;
 
 import de.amr.games.pacman.controller.PacManGameController;
-import de.amr.games.pacman.controller.PacManGameState;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManGameEventListener;
 import de.amr.games.pacman.model.common.AbstractGameModel;
@@ -39,18 +38,11 @@ public abstract class GameScene implements PacManGameEventListener {
 		return size;
 	}
 
-	public void start() {
-		gameController.addGameEventListener(this);
-	}
+	public abstract void start();
 
 	public abstract void update();
 
-	public void end() {
-		gameController.removeGameEventListener(this);
-	}
-
-	public void onGameStateChange(PacManGameState oldState, PacManGameState newState) {
-	}
+	public abstract void end();
 
 	@Override
 	public void onGameEvent(PacManGameEvent event) {
