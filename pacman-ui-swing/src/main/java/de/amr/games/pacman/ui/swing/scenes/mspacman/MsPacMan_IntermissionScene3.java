@@ -60,6 +60,7 @@ public class MsPacMan_IntermissionScene3 extends GameScene {
 		sceneController = new SceneController(gameController);
 		sceneController.init();
 		flap2D = new Flap2D(sceneController.flap);
+		flap2D.setFont(rendering.getScoreFont());
 		flap2D.setAnimation(rendering.createFlapAnimation());
 		msPacMan2D = new Player2D(sceneController.msPacMan);
 		msPacMan2D.setMunchingAnimations(rendering.createPlayerMunchingAnimations());
