@@ -32,6 +32,7 @@ import java.util.stream.Stream;
 
 import de.amr.games.pacman.controller.event.BonusActivatedEvent;
 import de.amr.games.pacman.controller.event.BonusEatenEvent;
+import de.amr.games.pacman.controller.event.BonusExpiredEvent;
 import de.amr.games.pacman.controller.event.DeadGhostCountChangeEvent;
 import de.amr.games.pacman.controller.event.ExtraLifeEvent;
 import de.amr.games.pacman.controller.event.PacManFoundFoodEvent;
@@ -359,12 +360,19 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		}
 
 		// Update bonus
-		final PacManBonus bonus = gameModel.bonus;
-		bonus.update();
-		if (bonus.edibleTicksLeft > 0 && player.meets(bonus)) {
-			log("Pac-Man found bonus (%s) of value %d", gameModel.bonusNames[bonus.symbol], bonus.points);
-			bonus.eatAndDisplayValue(2 * 60);
-			score(bonus.points);
+		updateBonus();
+	}
+
+	private void updateBonus() {
+		boolean edibleBeforeUpdate = gameModel.bonus.edibleTicksLeft > 0;
+		gameModel.bonus.update();
+		if (gameModel.bonus.edibleTicksLeft == 0 && edibleBeforeUpdate) {
+			fireGameEvent(new BonusExpiredEvent(gameVariant, gameModel));
+		} else if (gameModel.bonus.edibleTicksLeft > 0 && gameModel.player.meets(gameModel.bonus)) {
+			log("Pac-Man found bonus (%s) of value %d", gameModel.bonusNames[gameModel.bonus.symbol],
+					gameModel.bonus.points);
+			gameModel.bonus.eatAndDisplayValue(2 * 60);
+			score(gameModel.bonus.points);
 			fireGameEvent(new BonusEatenEvent(gameVariant, gameModel));
 		}
 	}
@@ -385,7 +393,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	private void enterGhostDyingState() {
-		gameModel.player.visible = false;
+//		gameModel.player.visible = false;
 		stateTimer().resetSeconds(1);
 	}
 
@@ -399,7 +407,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	private void exitGhostDyingState() {
-		gameModel.player.visible = true;
+//		gameModel.player.visible = true;
 		gameModel.ghosts(DEAD).forEach(ghost -> ghost.bounty = 0);
 	}
 
