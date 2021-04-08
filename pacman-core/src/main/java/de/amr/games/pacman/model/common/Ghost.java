@@ -29,14 +29,12 @@ public class Ghost extends Creature {
 	public int bounty;
 
 	/**
-	 * The individual food counter, used to compute when the ghost can leave the
-	 * house.
+	 * The individual food counter, used to compute when the ghost can leave the house.
 	 */
 	public int dotCounter;
 
 	/**
-	 * The "Cruise Elroy" mode of Blinky, the red ghost. Value is 1, 2 or -1, -2
-	 * (disabled Elroy mode).
+	 * The "Cruise Elroy" mode of Blinky, the red ghost. Value is 1, 2 or -1, -2 (disabled Elroy mode).
 	 */
 	public int elroy;
 
@@ -86,7 +84,7 @@ public class Ghost extends Creature {
 			} else {
 				speed = level.ghostSpeedFrightened;
 			}
-			wanderRandomly();
+			walkRandomly();
 			break;
 		case HUNTING_PAC:
 			if (world.isTunnel(tile())) {
@@ -101,7 +99,7 @@ public class Ghost extends Creature {
 			if (targetTile != null) {
 				headForTargetTile();
 			} else {
-				wanderRandomly();
+				walkRandomly();
 			}
 			break;
 		case DEAD:
@@ -118,6 +116,7 @@ public class Ghost extends Creature {
 		if (world.isGhostHouseDoor(tile)) {
 			return is(GhostState.ENTERING_HOUSE) || is(GhostState.LEAVING_HOUSE);
 		}
+		// TODO there is still a bug causing ghost get stuck
 		if (world.isUpwardsBlocked(tile)) {
 			if (offset().y != 0) {
 				return true; // maybe already on the way up
@@ -193,8 +192,7 @@ public class Ghost extends Creature {
 		tryMoving();
 	}
 
-	private boolean differsAtMost(double value, double target, double tolerance) {
+	private static boolean differsAtMost(double value, double target, double tolerance) {
 		return Math.abs(value - target) <= tolerance;
 	}
-
 }

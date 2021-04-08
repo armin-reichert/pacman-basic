@@ -15,8 +15,8 @@ import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.world.PacManGameWorld;
 
 /**
- * Base class for Pac-Man, Ms. Pac-Man the ghosts and the bonus. Creatures can
- * move through the world.
+ * Base class for Pac-Man, Ms. Pac-Man the ghosts and the bonus. Creatures can move through the
+ * world.
  * 
  * @author Armin Reichert
  */
@@ -39,29 +39,24 @@ public class Creature extends GameEntity {
 	/** The first move direction. */
 	public Direction startDir = Direction.RIGHT;
 
-	/**
-	 * The tile that the guy tries to reach. Can be inaccessible or outside of the
-	 * maze.
-	 */
+	/** The target tile, can be inaccessible or outside of the maze. */
 	public V2i targetTile = V2i.NULL;
 
 	/** If the creature entered a new tile with its last movement or placement. */
 	public boolean changedTile = true;
 
-	/** If the creature got stuck trying to move through the world. */
+	/** If the creature got stuck in the maze. */
 	public boolean stuck = false;
 
-	/**
-	 * If the next move will in any case take the intended direction if possible.
-	 */
+	/** If the next move must take the intended direction. */
 	public boolean forcedDirection = false;
 
 	/** If movement is constrained to be aligned with the tiles. */
 	public boolean forcedOnTrack = false;
 
 	/**
-	 * Places this creature at the given tile with the given position offsets. Sets
-	 * the {@code changedTile} flag to trigger a potential steering.
+	 * Places this creature at the given tile with the given position offsets. Sets the
+	 * {@code changedTile} flag to trigger a potential steering.
 	 * 
 	 * @param tile    the tile where this creature will be placed
 	 * @param offsetX the pixel offset in x-direction
@@ -106,6 +101,11 @@ public class Creature extends GameEntity {
 
 	public boolean meets(Creature other) {
 		return tile().equals(other.tile());
+	}
+
+	public void forceTurningBack() {
+		wishDir = dir.opposite();
+		forcedDirection = true;
 	}
 
 	@Override
@@ -203,8 +203,7 @@ public class Creature extends GameEntity {
 			forcedDirection = false;
 			return Optional.of(wishDir);
 		}
-		V2i location = tile();
-		if (world.isPortal(location)) {
+		if (world.isPortal(tile())) {
 			return Optional.empty();
 		}
 		if (randomWalk) {
@@ -216,14 +215,22 @@ public class Creature extends GameEntity {
 	private static final Direction[] DIRECTION_PRIORITY = { Direction.UP, Direction.LEFT, Direction.DOWN,
 			Direction.RIGHT };
 
-	public Optional<Direction> targetDirection() {
+	/**
+	 * As described in the Pac-Man dossier: ghosts check all accessble neighbor tiles in the order
+	 * UP,LEFT,DOWN,RIGHT and select the tile with the minimal distance to the current target tile.
+	 * Reversing the current direction is not allowed.
+	 * 
+	 * @return next direction Pac-Man will take
+	 */
+	private Optional<Direction> targetDirection() {
+		V2i currentTile = tile();
 		double minDist = Double.MAX_VALUE;
 		Direction minDistDir = null;
 		for (Direction targetDir : DIRECTION_PRIORITY) {
 			if (targetDir == dir.opposite()) {
 				continue;
 			}
-			V2i neighbor = tile().plus(targetDir.vec);
+			V2i neighbor = currentTile.plus(targetDir.vec);
 			if (!canAccessTile(neighbor)) {
 				continue;
 			}
@@ -236,29 +243,23 @@ public class Creature extends GameEntity {
 		return Optional.ofNullable(minDistDir);
 	}
 
-	public void wanderRandomly() {
-		V2i location = tile();
-		if (world.isIntersection(location) || stuck) {
-			randomMoveDirection().ifPresent(randomDir -> wishDir = randomDir);
+	public void walkRandomly() {
+		if (stuck || world.isIntersection(tile())) {
+			wishDir = randomMoveDirection().orElse(wishDir);
 		}
 		tryMoving();
 	}
 
-	public Optional<Direction> randomMoveDirection() {
+	private Optional<Direction> randomMoveDirection() {
 		List<Direction> dirs = accessibleDirections(tile(), dir.opposite()).collect(Collectors.toList());
 		return dirs.isEmpty() ? Optional.empty() : Optional.of(dirs.get(new Random().nextInt(dirs.size())));
 	}
 
-	public Stream<Direction> accessibleDirections(V2i tile, Direction... excludedDirections) {
+	private Stream<Direction> accessibleDirections(V2i tile, Direction... excludedDirections) {
 		//@formatter:off
 		return Stream.of(Direction.values())
 			.filter(direction -> Stream.of(excludedDirections).noneMatch(excludedDir -> excludedDir == direction))
 			.filter(direction -> canAccessTile(tile.plus(direction.vec)));
 		//@formatter:on
-	}
-
-	public void forceTurningBack() {
-		wishDir = dir.opposite();
-		forcedDirection = true;
 	}
 }
