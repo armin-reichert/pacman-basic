@@ -25,7 +25,7 @@ public class PacManGameAppSwing extends PacManGameController {
 		app.play(options.gameVariant);
 		invokeLater(() -> {
 			GameLoop gameLoop = new GameLoop(app);
-			app.userInterface = new PacManGameUI_Swing(gameLoop, app, options.height);
+			app.setUI(new PacManGameUI_Swing(gameLoop, app, options.height));
 			gameLoop.start();
 		});
 	}

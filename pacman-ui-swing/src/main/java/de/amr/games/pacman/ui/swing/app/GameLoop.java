@@ -18,7 +18,7 @@ public class GameLoop {
 	private void run() {
 		while (running) {
 			clock.frame(controller::step);
-			controller.userInterface.update();
+			controller.getUI().update();
 		}
 	}
 

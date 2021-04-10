@@ -104,7 +104,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	private boolean playerImmune;
 	private int huntingPhase;
 
-	public PacManGameUI userInterface;
+	private PacManGameUI ui;
 	public final Autopilot autopilot = new Autopilot();
 
 	private final List<PacManGameEventListener> gameEventListeners = new ArrayList<>();
@@ -148,6 +148,18 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			steerPlayer();
 		}
 		updateState();
+	}
+
+	public PacManGameUI getUI() {
+		return ui;
+	}
+
+	public void setUI(PacManGameUI ui) {
+		if (ui != null) {
+			removeGameEventListener(ui);
+		}
+		this.ui = ui;
+		addGameEventListener(ui);
 	}
 
 	public GameVariant gameVariant() {
@@ -212,7 +224,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	private void updateIntroState() {
-		if (userInterface.keyPressed(KEY_START_PLAYING)) {
+		if (ui.keyPressed(KEY_START_PLAYING)) {
 			gameRequested = true;
 			changeState(READY);
 		} else if (stateTimer().hasExpired()) {
@@ -481,13 +493,13 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	private void steerPlayer() {
 		if (autopilot.enabled) {
 			autopilot.run(gameModel);
-		} else if (userInterface.keyPressed(KEY_PLAYER_LEFT)) {
+		} else if (ui.keyPressed(KEY_PLAYER_LEFT)) {
 			gameModel.player.wishDir = Direction.LEFT;
-		} else if (userInterface.keyPressed(KEY_PLAYER_RIGHT)) {
+		} else if (ui.keyPressed(KEY_PLAYER_RIGHT)) {
 			gameModel.player.wishDir = Direction.RIGHT;
-		} else if (userInterface.keyPressed(KEY_PLAYER_UP)) {
+		} else if (ui.keyPressed(KEY_PLAYER_UP)) {
 			gameModel.player.wishDir = Direction.UP;
-		} else if (userInterface.keyPressed(KEY_PLAYER_DOWN)) {
+		} else if (ui.keyPressed(KEY_PLAYER_DOWN)) {
 			gameModel.player.wishDir = Direction.DOWN;
 		}
 	}

@@ -62,8 +62,7 @@ public class PlayScene extends GameScene {
 		bonus2D = new Bonus2D();
 		bonus2D.setRendering(rendering);
 
-		mazeFlashing = rendering.mazeFlashing(game().currentLevel.mazeNumber)
-				.repetitions(game().currentLevel.numFlashes);
+		mazeFlashing = rendering.mazeFlashing(game().currentLevel.mazeNumber).repetitions(game().currentLevel.numFlashes);
 		mazeFlashing.reset();
 
 		game().player.powerTimer.addEventListener(this::handleGhostsFlashing);
@@ -185,7 +184,7 @@ public class PlayScene extends GameScene {
 
 		else if (gameEvent instanceof ExtraLifeEvent) {
 			sounds.play(PacManGameSound.EXTRA_LIFE);
-			gameController.userInterface.showFlashMessage("Extra life!");
+			gameController.getUI().showFlashMessage("Extra life!");
 		}
 
 		else if (gameEvent instanceof DeadGhostCountChangeEvent) {

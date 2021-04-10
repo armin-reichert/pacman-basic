@@ -92,8 +92,6 @@ public class PacManGameUI_Swing implements PacManGameUI {
 		this.gameLoop = gameLoop;
 		this.gameController = controller;
 
-		controller.addGameEventListener(this);
-
 		createGameScenes();
 
 		unscaledSize = new Dimension(28 * TS, 36 * TS);
@@ -131,8 +129,8 @@ public class PacManGameUI_Swing implements PacManGameUI {
 
 		keyboard = new Keyboard(window);
 
-		titleUpdateTimer = new Timer(1000, e -> window
-				.setTitle(String.format("Pac-Man / Ms. Pac-Man (%d fps, JFC Swing)", gameLoop.clock.getLastFPS())));
+		titleUpdateTimer = new Timer(1000,
+				e -> window.setTitle(String.format("Pac-Man / Ms. Pac-Man (%d fps, JFC Swing)", gameLoop.clock.getLastFPS())));
 
 		// start initial game scene
 		handleGameStateChange(null, controller.state);
