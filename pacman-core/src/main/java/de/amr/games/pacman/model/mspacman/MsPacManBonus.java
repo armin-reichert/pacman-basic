@@ -13,11 +13,13 @@ public class MsPacManBonus extends PacManBonus {
 		if (random.nextBoolean()) {
 			placeAt(world.portalLeft(random.nextInt(world.numPortals())), 0, 0);
 			targetTile = world.portalRight(random.nextInt(world.numPortals()));
-			dir = wishDir = Direction.RIGHT;
+			turnTo(Direction.RIGHT);
+			wishDir = Direction.RIGHT;
 		} else {
 			placeAt(world.portalRight(random.nextInt(world.numPortals())), 0, 0);
 			targetTile = world.portalLeft(random.nextInt(world.numPortals()));
-			dir = wishDir = Direction.LEFT;
+			turnTo(Direction.LEFT);
+			wishDir = Direction.LEFT;
 		}
 	}
 

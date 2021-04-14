@@ -27,11 +27,12 @@ public class Pac extends Creature {
 
 	@Override
 	public String toString() {
-		return String.format("%s: position: %s, speed=%.2f, dir=%s, wishDir=%s", name, position, speed, dir, wishDir);
+		return String.format("%s: position: %s, speed=%.2f, dir=%s, wishDir=%s", name, position, speed, dir(), wishDir);
 	}
 
 	public Pac(String name, Direction initialDir) {
 		this.name = name;
-		this.dir = this.wishDir = this.startDir = initialDir;
+		this.wishDir = this.startDir = initialDir;
+		turnTo(initialDir);
 	}
 }

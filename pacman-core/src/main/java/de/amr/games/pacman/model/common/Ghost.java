@@ -40,13 +40,14 @@ public class Ghost extends Creature {
 
 	@Override
 	public String toString() {
-		return String.format("%s: position: %s, speed=%.2f, dir=%s, wishDir=%s", name, position, speed, dir, wishDir);
+		return String.format("%s: position: %s, speed=%.2f, dir=%s, wishDir=%s", name, position, speed, dir(), wishDir);
 	}
 
 	public Ghost(int ghostID, String ghostName, Direction ghostStartDir) {
 		id = ghostID;
 		name = ghostName;
-		dir = wishDir = startDir = ghostStartDir;
+		wishDir = startDir = ghostStartDir;
+		turnTo(ghostStartDir);
 	}
 
 	public boolean is(GhostState ghostState) {
@@ -134,7 +135,8 @@ public class Ghost extends Creature {
 		// Ghost house door reached? Start falling into house.
 		if (atGhostHouseDoor()) {
 			setOffset(HTS, 0);
-			dir = wishDir = Direction.DOWN;
+			turnTo(Direction.DOWN);
+			wishDir = Direction.DOWN;
 			forcedOnTrack = false;
 			targetTile = (id == 0) ? world.houseSeatCenter() : world.ghostHome(id);
 			state = GhostState.ENTERING_HOUSE;
@@ -148,7 +150,7 @@ public class Ghost extends Creature {
 		V2d offset = offset();
 		// Target inside house reached? Start leaving house.
 		if (location.equals(targetTile) && offset.y >= 0) {
-			wishDir = dir.opposite();
+			wishDir = dir().opposite();
 			state = GhostState.LEAVING_HOUSE;
 			return;
 		}
@@ -165,7 +167,8 @@ public class Ghost extends Creature {
 		// House left? Resume hunting.
 		if (location.equals(world.houseEntry()) && differsAtMost(offset.y, 0, 1)) {
 			setOffset(HTS, 0);
-			dir = wishDir = Direction.LEFT;
+			turnTo(Direction.LEFT);
+			wishDir = Direction.LEFT;
 			forcedOnTrack = true;
 			state = GhostState.HUNTING_PAC;
 			return;
@@ -187,7 +190,7 @@ public class Ghost extends Creature {
 	private void bounce() {
 		int centerY = t(world.houseSeatCenter().y);
 		if (position.y < centerY - HTS || position.y > centerY + HTS) {
-			wishDir = dir.opposite();
+			wishDir = dir().opposite();
 		}
 		tryMoving();
 	}

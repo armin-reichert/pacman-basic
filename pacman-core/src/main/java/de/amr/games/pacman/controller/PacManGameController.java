@@ -542,7 +542,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 				log("%s timer stopped", state);
 				gameModel.ghosts(HUNTING_PAC).forEach(ghost -> {
 					ghost.state = FRIGHTENED;
-					ghost.wishDir = ghost.dir.opposite();
+					ghost.wishDir = ghost.dir().opposite();
 					ghost.forcedDirection = true;
 				});
 				player.powerTimer.resetSeconds(powerSeconds);
@@ -621,8 +621,8 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			return playerTile;
 
 		case PINKY: {
-			V2i target = playerTile.plus(gameModel.player.dir.vec.scaled(4));
-			if (gameModel.player.dir == Direction.UP) {
+			V2i target = playerTile.plus(gameModel.player.dir().vec.scaled(4));
+			if (gameModel.player.dir() == Direction.UP) {
 				// simulate overflow bug
 				target = target.plus(-4, 0);
 			}
@@ -630,8 +630,8 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		}
 
 		case INKY: {
-			V2i twoAheadPlayer = playerTile.plus(gameModel.player.dir.vec.scaled(2));
-			if (gameModel.player.dir == Direction.UP) {
+			V2i twoAheadPlayer = playerTile.plus(gameModel.player.dir().vec.scaled(2));
+			if (gameModel.player.dir() == Direction.UP) {
 				// simulate overflow bug
 				twoAheadPlayer = twoAheadPlayer.plus(-2, 0);
 			}

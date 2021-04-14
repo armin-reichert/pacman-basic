@@ -13,11 +13,10 @@ import de.amr.games.pacman.model.mspacman.Flap;
 /**
  * Intermission scene 1: "They meet".
  * <p>
- * Pac-Man leads Inky and Ms. Pac-Man leads Pinky. Soon, the two Pac-Men are
- * about to collide, they quickly move upwards, causing Inky and Pinky to
- * collide and vanish. Finally, Pac-Man and Ms. Pac-Man face each other at the
- * top of the screen and a big pink heart appears above them. (Played after
- * round 2)
+ * Pac-Man leads Inky and Ms. Pac-Man leads Pinky. Soon, the two Pac-Men are about to collide, they
+ * quickly move upwards, causing Inky and Pinky to collide and vanish. Finally, Pac-Man and Ms.
+ * Pac-Man face each other at the top of the screen and a big pink heart appears above them. (Played
+ * after round 2)
  * 
  * @author Armin Reichert
  */
@@ -119,13 +118,14 @@ public abstract class MsPacMan_IntermissionScene1_Controller {
 			pinky.move();
 			pacMan.move();
 			msPac.move();
-			if (pacMan.dir == Direction.LEFT && pacMan.position.x < t(15)) {
-				pacMan.dir = msPac.dir = Direction.UP;
+			if (pacMan.dir() == Direction.LEFT && pacMan.position.x < t(15)) {
+				pacMan.turnTo(Direction.UP);
+				msPac.turnTo(Direction.UP);
 			}
-			if (pacMan.dir == Direction.UP && pacMan.position.y < upperY) {
+			if (pacMan.dir() == Direction.UP && pacMan.position.y < upperY) {
 				pacMan.speed = msPac.speed = 0;
-				pacMan.dir = Direction.LEFT;
-				msPac.dir = Direction.RIGHT;
+				pacMan.turnTo(Direction.LEFT);
+				msPac.turnTo(Direction.RIGHT);
 				heart.setPosition((pacMan.position.x + msPac.position.x) / 2, pacMan.position.y - t(2));
 				heart.visible = true;
 				inky.speed = pinky.speed = 0;
@@ -133,8 +133,10 @@ public abstract class MsPacMan_IntermissionScene1_Controller {
 			}
 			if (!ghostsMet && inky.position.x - pinky.position.x < 16) {
 				ghostsMet = true;
-				inky.dir = inky.wishDir = inky.dir.opposite();
-				pinky.dir = pinky.wishDir = pinky.dir.opposite();
+				inky.turnTo(inky.dir().opposite());
+				inky.wishDir = inky.dir().opposite();
+				pinky.turnTo(pinky.dir().opposite());
+				pinky.wishDir = pinky.dir().opposite();
 				inky.speed = pinky.speed = 0.2f;
 			}
 			timer.tick();
@@ -164,14 +166,16 @@ public abstract class MsPacMan_IntermissionScene1_Controller {
 	}
 
 	public void startComingTogether() {
-		pacMan.setPosition(t(30), middleY);
-		inky.setPosition(t(33), middleY);
-		pacMan.dir = Direction.LEFT;
-		inky.dir = inky.wishDir = Direction.LEFT;
-		pinky.setPosition(t(-5), middleY);
 		msPac.setPosition(t(-2), middleY);
-		msPac.dir = Direction.RIGHT;
-		pinky.dir = pinky.wishDir = Direction.RIGHT;
+		msPac.turnTo(Direction.RIGHT);
+		pacMan.setPosition(t(30), middleY);
+		pacMan.turnTo(Direction.LEFT);
+		inky.setPosition(t(33), middleY);
+		inky.turnTo(Direction.LEFT);
+		inky.wishDir = Direction.LEFT;
+		pinky.setPosition(t(-5), middleY);
+		pinky.turnTo(Direction.RIGHT);
+		pinky.wishDir = Direction.RIGHT;
 		enter(Phase.COMING_TOGETHER);
 	}
 }

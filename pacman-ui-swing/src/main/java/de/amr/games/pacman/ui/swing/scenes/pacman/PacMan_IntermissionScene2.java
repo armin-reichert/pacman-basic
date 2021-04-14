@@ -20,8 +20,7 @@ import de.amr.games.pacman.ui.swing.rendering.pacman.PacManGameRendering;
 import de.amr.games.pacman.ui.swing.scenes.common.GameScene;
 
 /**
- * Second intermission scene: Blinky pursues Pac but kicks a nail that tears his
- * dress apart.
+ * Second intermission scene: Blinky pursues Pac but kicks a nail that tears his dress apart.
  * 
  * @author Armin Reichert
  */
@@ -91,9 +90,8 @@ public class PacMan_IntermissionScene2 extends GameScene {
 		if (stretching < 3) {
 			blinky2D.render(g);
 		} else {
-			BufferedImage blinkyDamaged = blinkyDamagedAnimation.frame(blinky2D.ghost.dir == Direction.UP ? 0 : 1);
-			g.drawImage(blinkyDamaged, (int) (blinky2D.ghost.position.x - 4), (int) (blinky2D.ghost.position.y - 4),
-					null);
+			BufferedImage blinkyDamaged = blinkyDamagedAnimation.frame(blinky2D.ghost.dir() == Direction.UP ? 0 : 1);
+			g.drawImage(blinkyDamaged, (int) (blinky2D.ghost.position.x - 4), (int) (blinky2D.ghost.position.y - 4), null);
 		}
 	}
 }
