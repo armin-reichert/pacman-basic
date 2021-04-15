@@ -11,8 +11,7 @@ import de.amr.games.pacman.model.common.GhostState;
 import de.amr.games.pacman.model.common.Pac;
 
 /**
- * Second intermission scene: Blinky pursues Pac but kicks a nail that tears his
- * dress apart.
+ * Second intermission scene: Blinky pursues Pac but kicks a nail that tears his dress apart.
  * 
  * @author Armin Reichert
  */
@@ -83,14 +82,14 @@ public abstract class PacMan_IntermissionScene2_Controller {
 			blinky.speed = 0.3f - 0.1f * stretching;
 			if (stretching == 3) {
 				blinky.speed = 0;
-				blinky.dir = Direction.UP;
+				blinky.turnTo(Direction.UP);
 				enter(Phase.STUCK);
 			}
 			timer.tick();
 			break;
 		case STUCK:
 			if (timer.isRunningSeconds(3)) {
-				blinky.dir = Direction.RIGHT;
+				blinky.turnTo(Direction.RIGHT);
 			}
 			if (timer.isRunningSeconds(6)) {
 				gameController.stateTimer().forceExpiration();

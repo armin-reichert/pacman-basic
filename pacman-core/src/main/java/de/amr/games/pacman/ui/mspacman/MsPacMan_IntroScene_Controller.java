@@ -136,14 +136,13 @@ public class MsPacMan_IntroScene_Controller {
 	}
 
 	public boolean ghostEnteringStage(Ghost ghost) {
-		if (ghost.dir == LEFT && ghost.position.x <= t(tileLeftOfBoard)) {
-			ghost.dir = ghost.wishDir = UP;
+		if (ghost.dir() == LEFT && ghost.position.x <= t(tileLeftOfBoard)) {
+			ghost.turnTo(UP);
+			ghost.wishDir = UP;
 			return false;
 		}
-		if (ghost.dir == UP && ghost.position.y <= t(tileBoardTopLeft.y) + ghost.id * 18) {
+		if (ghost.dir() == UP && ghost.position.y <= t(tileBoardTopLeft.y) + ghost.id * 18) {
 			ghost.speed = 0;
-			// TODO
-//			animations.ghostAnimations().ghostKicking(ghost).forEach(TimedSequence::reset);
 			return true;
 		}
 		return false;
@@ -152,7 +151,6 @@ public class MsPacMan_IntroScene_Controller {
 	public boolean msPacManEnteringStage() {
 		if (msPacMan.speed != 0 && msPacMan.position.x <= t(13)) {
 			msPacMan.speed = 0;
-//TODO			animations.playerAnimations().playerMunching(msPacMan).forEach(TimedSequence::reset);
 			return true;
 		}
 		return false;

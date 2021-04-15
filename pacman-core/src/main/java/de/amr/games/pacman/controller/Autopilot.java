@@ -115,10 +115,10 @@ public class Autopilot {
 		if (data.hunterAhead != null) {
 			Direction escapeDir = null;
 			if (data.hunterBehind != null) {
-				escapeDir = findEscapeDirectionExcluding(game, EnumSet.of(game.player.dir, game.player.dir.opposite()));
+				escapeDir = findEscapeDirectionExcluding(game, EnumSet.of(game.player.dir(), game.player.dir().opposite()));
 				log("Detected ghost %s behind, escape direction is %s", data.hunterAhead.name, escapeDir);
 			} else {
-				escapeDir = findEscapeDirectionExcluding(game, EnumSet.of(game.player.dir));
+				escapeDir = findEscapeDirectionExcluding(game, EnumSet.of(game.player.dir()));
 				log("Detected ghost %s ahead, escape direction is %s", data.hunterAhead.name, escapeDir);
 			}
 			if (escapeDir != null) {
@@ -153,15 +153,15 @@ public class Autopilot {
 		V2i pacManTile = game.player.tile();
 		boolean energizerFound = false;
 		for (int i = 1; i <= MAX_GHOST_AHEAD_DETECTION_DIST; ++i) {
-			V2i ahead = pacManTile.plus(game.player.dir.vec.scaled(i));
+			V2i ahead = pacManTile.plus(game.player.dir().vec.scaled(i));
 			if (!game.player.canAccessTile(ahead)) {
 				break;
 			}
 			if (game.currentLevel.world.isEnergizerTile(ahead) && !game.currentLevel.isFoodRemoved(ahead)) {
 				energizerFound = true;
 			}
-			V2i aheadLeft = ahead.plus(game.player.dir.turnLeft().vec),
-					aheadRight = ahead.plus(game.player.dir.turnRight().vec);
+			V2i aheadLeft = ahead.plus(game.player.dir().turnLeft().vec),
+					aheadRight = ahead.plus(game.player.dir().turnRight().vec);
 			for (Ghost ghost : game.ghosts) {
 				if (ghost.state != GhostState.HUNTING_PAC) {
 					continue;
@@ -181,7 +181,7 @@ public class Autopilot {
 	private Ghost findHuntingGhostBehind(AbstractGameModel game) {
 		V2i pacManTile = game.player.tile();
 		for (int i = 1; i <= MAX_GHOST_BEHIND_DETECTION_DIST; ++i) {
-			V2i behind = pacManTile.plus(game.player.dir.opposite().vec.scaled(i));
+			V2i behind = pacManTile.plus(game.player.dir().opposite().vec.scaled(i));
 			if (!game.player.canAccessTile(behind)) {
 				break;
 			}
