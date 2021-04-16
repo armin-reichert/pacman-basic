@@ -118,11 +118,11 @@ public abstract class MsPacMan_IntermissionScene1_Controller {
 			pinky.move();
 			pacMan.move();
 			msPac.move();
-			if (pacMan.dir() == Direction.LEFT && pacMan.position.x < t(15)) {
+			if (pacMan.dir == Direction.LEFT && pacMan.position.x < t(15)) {
 				pacMan.turnTo(Direction.UP);
 				msPac.turnTo(Direction.UP);
 			}
-			if (pacMan.dir() == Direction.UP && pacMan.position.y < upperY) {
+			if (pacMan.dir == Direction.UP && pacMan.position.y < upperY) {
 				pacMan.speed = msPac.speed = 0;
 				pacMan.turnTo(Direction.LEFT);
 				msPac.turnTo(Direction.RIGHT);
@@ -133,10 +133,10 @@ public abstract class MsPacMan_IntermissionScene1_Controller {
 			}
 			if (!ghostsMet && inky.position.x - pinky.position.x < 16) {
 				ghostsMet = true;
-				inky.turnTo(inky.dir().opposite());
-				inky.wishDir = inky.dir().opposite();
-				pinky.turnTo(pinky.dir().opposite());
-				pinky.wishDir = pinky.dir().opposite();
+				inky.turnTo(inky.dir.opposite());
+				inky.wishDir = inky.dir.opposite();
+				pinky.turnTo(pinky.dir.opposite());
+				pinky.wishDir = pinky.dir.opposite();
 				inky.speed = pinky.speed = 0.2f;
 			}
 			timer.tick();

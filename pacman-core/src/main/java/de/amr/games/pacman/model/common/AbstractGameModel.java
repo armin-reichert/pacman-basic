@@ -38,8 +38,7 @@ public abstract class AbstractGameModel {
 
 	public void resetGuys() {
 		player.placeAt(currentLevel.world.pacHome(), HTS, 0);
-		player.turnTo(player.startDir);
-		player.wishDir = player.startDir;
+		player.turnBothTo(player.startDir);
 		player.visible = true;
 		player.speed = 0;
 		player.targetTile = null; // used in autopilot mode
@@ -52,8 +51,7 @@ public abstract class AbstractGameModel {
 
 		for (Ghost ghost : ghosts) {
 			ghost.placeAt(currentLevel.world.ghostHome(ghost.id), HTS, 0);
-			ghost.turnTo(ghost.startDir);
-			ghost.wishDir = ghost.startDir;
+			ghost.turnBothTo(ghost.startDir);
 			ghost.visible = true;
 			ghost.speed = 0;
 			ghost.targetTile = null;

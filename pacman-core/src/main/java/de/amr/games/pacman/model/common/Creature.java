@@ -31,12 +31,12 @@ public class Creature extends GameEntity {
 	/**
 	 * The current move direction. Initially, (s)he moves to the right direction :-)
 	 */
-	private Direction dir = Direction.RIGHT;
+	public Direction dir = Direction.RIGHT;
 
 	/**
 	 * The previous move direction.
 	 */
-	private Direction prevDir = Direction.RIGHT;
+	public Direction prevDir = Direction.RIGHT;
 
 	/** The intended move direction that will be taken as soon as possible. */
 	public Direction wishDir = Direction.RIGHT;
@@ -90,17 +90,14 @@ public class Creature extends GameEntity {
 		placeAt(tile(), offsetX, offsetY);
 	}
 
-	public void turnTo(Direction direction) {
-		this.prevDir = this.dir;
-		this.dir = direction;
+	public void turnTo(Direction d) {
+		prevDir = this.dir;
+		dir = d;
 	}
-
-	public Direction dir() {
-		return dir;
-	}
-
-	public Direction prevDir() {
-		return prevDir;
+	
+	public void turnBothTo(Direction d) {
+		turnTo(d);
+		wishDir = d;
 	}
 
 	public boolean canAccessTile(V2i tile) {

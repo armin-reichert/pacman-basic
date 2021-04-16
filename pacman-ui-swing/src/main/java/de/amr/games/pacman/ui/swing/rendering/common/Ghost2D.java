@@ -95,7 +95,7 @@ public class Ghost2D {
 			return bountyNumberSprites.get(ghost.bounty);
 		}
 		if (ghost.is(DEAD) || ghost.is(ENTERING_HOUSE)) {
-			return returningHomeAnimations.get(ghost.dir()).animate();
+			return returningHomeAnimations.get(ghost.dir).animate();
 		}
 		if (ghost.is(FRIGHTENED)) {
 			return flashingAnimation.isRunning() ? flashingAnimation.animate() : frightenedAnimation.animate();
