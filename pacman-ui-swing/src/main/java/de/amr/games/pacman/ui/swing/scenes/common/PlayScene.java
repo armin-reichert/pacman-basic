@@ -11,8 +11,8 @@ import de.amr.games.pacman.controller.PacManGameController;
 import de.amr.games.pacman.controller.PacManGameState;
 import de.amr.games.pacman.controller.event.BonusActivatedEvent;
 import de.amr.games.pacman.controller.event.BonusEatenEvent;
-import de.amr.games.pacman.controller.event.DeadGhostCountChangeEvent;
 import de.amr.games.pacman.controller.event.ExtraLifeEvent;
+import de.amr.games.pacman.controller.event.GhostReturningHomeEvent;
 import de.amr.games.pacman.controller.event.PacManFoundFoodEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
@@ -62,7 +62,8 @@ public class PlayScene extends GameScene {
 		bonus2D = new Bonus2D();
 		bonus2D.setRendering(rendering);
 
-		mazeFlashing = rendering.mazeFlashing(game().currentLevel.mazeNumber).repetitions(game().currentLevel.numFlashes);
+		mazeFlashing = rendering.mazeFlashing(game().currentLevel.mazeNumber)
+				.repetitions(game().currentLevel.numFlashes);
 		mazeFlashing.reset();
 
 		game().player.powerTimer.addEventListener(this::handleGhostsFlashing);
@@ -187,13 +188,8 @@ public class PlayScene extends GameScene {
 			gameController.getUI().showFlashMessage("Extra life!");
 		}
 
-		else if (gameEvent instanceof DeadGhostCountChangeEvent) {
-			DeadGhostCountChangeEvent e = (DeadGhostCountChangeEvent) gameEvent;
-			if (e.oldCount == 0 && e.newCount > 0) {
-				sounds.play(PacManGameSound.GHOST_RETURNING_HOME);
-			} else if (e.oldCount > 0 && e.newCount == 0) {
-				sounds.stop(PacManGameSound.GHOST_RETURNING_HOME);
-			}
+		else if (gameEvent instanceof GhostReturningHomeEvent) {
+			sounds.play(PacManGameSound.GHOST_RETURNING_HOME);
 		}
 	}
 
