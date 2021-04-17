@@ -173,7 +173,7 @@ public class PacManGameUI_Swing implements PacManGameUI {
 			if (currentGameScene != null) {
 				currentGameScene.end();
 			}
-			newScene.start();
+			newScene.init();
 			log("Current scene changed from %s to %s", currentGameScene, newScene);
 		}
 		currentGameScene = newScene;

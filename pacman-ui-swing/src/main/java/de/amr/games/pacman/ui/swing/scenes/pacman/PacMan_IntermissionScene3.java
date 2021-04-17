@@ -43,7 +43,7 @@ public class PacMan_IntermissionScene3 extends GameScene {
 	}
 
 	@Override
-	public void start() {
+	public void init() {
 		sceneController = new SceneController(gameController);
 		sceneController.init();
 		pacMan2D = new Player2D(sceneController.pac);

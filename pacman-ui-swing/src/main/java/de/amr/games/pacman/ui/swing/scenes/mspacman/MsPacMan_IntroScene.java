@@ -39,7 +39,7 @@ public class MsPacMan_IntroScene extends GameScene {
 	}
 
 	@Override
-	public void start() {
+	public void init() {
 		sceneController = new MsPacMan_IntroScene_Controller(gameController);
 		sceneController.init();
 		msPacMan2D = new Player2D(sceneController.msPacMan);

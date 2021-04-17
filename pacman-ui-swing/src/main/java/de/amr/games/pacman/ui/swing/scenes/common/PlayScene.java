@@ -50,7 +50,7 @@ public class PlayScene extends GameScene {
 	}
 
 	@Override
-	public void start() {
+	public void init() {
 		player2D = new Player2D(game().player);
 		player2D.setRendering(rendering);
 

@@ -57,7 +57,7 @@ public class MsPacMan_IntermissionScene3 extends GameScene {
 	}
 
 	@Override
-	public void start() {
+	public void init() {
 		sceneController = new SceneController(gameController);
 		sceneController.init();
 		flap2D = new Flap2D(sceneController.flap);

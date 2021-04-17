@@ -38,7 +38,7 @@ public abstract class GameScene implements PacManGameEventListener {
 		return size;
 	}
 
-	public abstract void start();
+	public abstract void init();
 
 	public abstract void update();
 
