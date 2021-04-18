@@ -267,7 +267,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	private void updateReadyState() {
-		if (stateTimer().ticksRemaining() == 120 || stateTimer().hasExpired()) {
+		if (stateTimer().ticksRemaining() == 60) {
 			gameModel.player.visible = true;
 			for (Ghost ghost : gameModel.ghosts) {
 				ghost.visible = true;
@@ -419,6 +419,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	private void enterGhostDyingState() {
 		stateTimer().resetSeconds(1);
+		gameModel.player.visible=false;
 	}
 
 	private void updateGhostDyingState() {
@@ -431,6 +432,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	private void exitGhostDyingState() {
+		gameModel.player.visible=true;
 		gameModel.ghosts(DEAD).forEach(ghost -> ghost.bounty = 0);
 		gameModel.ghosts(DEAD).forEach(ghost -> fireGameEvent(new GhostReturningHomeEvent(gameVariant, gameModel, ghost)));
 	}
