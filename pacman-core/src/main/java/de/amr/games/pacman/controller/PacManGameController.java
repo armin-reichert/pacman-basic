@@ -62,7 +62,7 @@ import de.amr.games.pacman.controller.event.PacManFoundFoodEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManGameEventListener;
-import de.amr.games.pacman.controller.event.PacManGameStateChangedEvent;
+import de.amr.games.pacman.controller.event.PacManGameStateChangeEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.controller.event.ScatterPhaseStartedEvent;
 import de.amr.games.pacman.lib.Direction;
@@ -150,7 +150,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	protected void fireStateChange(PacManGameState oldState, PacManGameState newState) {
 
 		gameEventListeners.forEach(
-				listener -> listener.onGameEvent(new PacManGameStateChangedEvent(gameVariant, gameModel, oldState, newState)));
+				listener -> listener.onGameEvent(new PacManGameStateChangeEvent(gameVariant, gameModel, oldState, newState)));
 	}
 
 	public PacManGameController() {

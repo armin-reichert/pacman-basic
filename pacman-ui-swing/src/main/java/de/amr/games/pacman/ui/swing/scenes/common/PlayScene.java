@@ -16,7 +16,7 @@ import de.amr.games.pacman.controller.event.GhostReturningHomeEvent;
 import de.amr.games.pacman.controller.event.PacManFoundFoodEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
-import de.amr.games.pacman.controller.event.PacManGameStateChangedEvent;
+import de.amr.games.pacman.controller.event.PacManGameStateChangeEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.controller.event.ScatterPhaseStartedEvent;
 import de.amr.games.pacman.lib.TickTimerEvent;
@@ -74,7 +74,7 @@ public class PlayScene extends GameScene {
 		game().player.powerTimer.removeEventListener(this::handleGhostsFlashing);
 	}
 
-	private void onGameStateChange(PacManGameStateChangedEvent stateChange) {
+	private void onGameStateChange(PacManGameStateChangeEvent stateChange) {
 		sounds.setMuted(gameController.isAttractMode());
 
 		// enter READY
@@ -141,8 +141,8 @@ public class PlayScene extends GameScene {
 	public void onGameEvent(PacManGameEvent gameEvent) {
 		sounds.setMuted(gameController.isAttractMode());
 
-		if (gameEvent instanceof PacManGameStateChangedEvent) {
-			onGameStateChange((PacManGameStateChangedEvent) gameEvent);
+		if (gameEvent instanceof PacManGameStateChangeEvent) {
+			onGameStateChange((PacManGameStateChangeEvent) gameEvent);
 		}
 
 		else if (gameEvent instanceof ScatterPhaseStartedEvent) {

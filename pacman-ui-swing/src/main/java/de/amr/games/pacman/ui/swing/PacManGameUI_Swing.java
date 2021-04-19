@@ -33,7 +33,7 @@ import javax.swing.Timer;
 import de.amr.games.pacman.controller.PacManGameController;
 import de.amr.games.pacman.controller.PacManGameState;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
-import de.amr.games.pacman.controller.event.PacManGameStateChangedEvent;
+import de.amr.games.pacman.controller.event.PacManGameStateChangeEvent;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.GameVariant;
@@ -157,8 +157,8 @@ public class PacManGameUI_Swing implements PacManGameUI {
 
 	@Override
 	public void onGameEvent(PacManGameEvent event) {
-		if (event instanceof PacManGameStateChangedEvent) {
-			PacManGameStateChangedEvent stateChange = (PacManGameStateChangedEvent) event;
+		if (event instanceof PacManGameStateChangeEvent) {
+			PacManGameStateChangeEvent stateChange = (PacManGameStateChangeEvent) event;
 			handleGameStateChange(stateChange.oldGameState, stateChange.newGameState);
 		}
 		currentGameScene.onGameEvent(event);
