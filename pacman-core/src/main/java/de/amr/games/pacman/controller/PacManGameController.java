@@ -63,6 +63,7 @@ import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManGameEventListener;
 import de.amr.games.pacman.controller.event.PacManGameStateChangeEvent;
+import de.amr.games.pacman.controller.event.PacManLosingPowerEvent;
 import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.controller.event.ScatterPhaseStartedEvent;
 import de.amr.games.pacman.lib.Direction;
@@ -367,6 +368,9 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		// Consume power
 		if (player.powerTimer.isRunning()) {
 			player.powerTimer.tick();
+			if (player.powerTimer.ticksRemaining() == 60) {
+				fireGameEvent(new PacManLosingPowerEvent(gameVariant, gameModel));
+			}
 		} else if (player.powerTimer.hasExpired()) {
 			log("%s lost power", player.name);
 			gameModel.ghosts(FRIGHTENED).forEach(ghost -> ghost.state = HUNTING_PAC);
