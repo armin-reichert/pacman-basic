@@ -133,7 +133,8 @@ public class PacManGameUI_Swing implements PacManGameUI {
 				e -> window.setTitle(String.format("Pac-Man / Ms. Pac-Man (%d fps, JFC Swing)", gameLoop.clock.getLastFPS())));
 
 		// start initial game scene
-		handleGameStateChange(null, controller.state);
+		onPacManGameStateChange(
+				new PacManGameStateChangeEvent(currentGameVariant(), gameController.game(), null, controller.state));
 		show();
 	}
 
@@ -157,17 +158,16 @@ public class PacManGameUI_Swing implements PacManGameUI {
 
 	@Override
 	public void onGameEvent(PacManGameEvent event) {
-		if (event instanceof PacManGameStateChangeEvent) {
-			PacManGameStateChangeEvent stateChange = (PacManGameStateChangeEvent) event;
-			handleGameStateChange(stateChange.oldGameState, stateChange.newGameState);
-		}
+		PacManGameUI.super.onGameEvent(event);
+		// delegate to current scene
 		currentGameScene.onGameEvent(event);
 	}
 
-	private void handleGameStateChange(PacManGameState oldState, PacManGameState newState) {
-		GameScene newScene = getSceneForGameState(newState);
+	@Override
+	public void onPacManGameStateChange(PacManGameStateChangeEvent e) {
+		GameScene newScene = getSceneForGameState(e.newGameState);
 		if (newScene == null) {
-			throw new IllegalStateException("No scene found for game state " + newState);
+			throw new IllegalStateException("No scene found for game state " + e.newGameState);
 		}
 		if (currentGameScene != newScene) {
 			if (currentGameScene != null) {
@@ -189,12 +189,12 @@ public class PacManGameUI_Swing implements PacManGameUI {
 		titleUpdateTimer.start();
 	}
 
-	private GameVariant currentGame() {
+	private GameVariant currentGameVariant() {
 		return Stream.of(GameVariant.values()).filter(gameController::isPlaying).findFirst().get();
 	}
 
 	private GameScene getSceneForGameState(PacManGameState state) {
-		GameVariant currentGame = currentGame();
+		GameVariant currentGame = currentGameVariant();
 		switch (state) {
 		case INTRO:
 			return scenes.get(currentGame).get(0);
