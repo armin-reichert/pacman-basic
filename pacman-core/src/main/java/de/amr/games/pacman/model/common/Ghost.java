@@ -181,11 +181,15 @@ public class Ghost extends Creature {
 		int ground = t(houseCenter.y) + HTS;
 		if (differsAtMost(position.x, center, 1)) {
 			setOffset(HTS, offset.y);
+			setDir(Direction.UP);
 			setWishDir(Direction.UP);
 		} else if (position.y < ground) {
+			setDir(Direction.DOWN);
 			setWishDir(Direction.DOWN);
 		} else {
-			setWishDir(position.x < center ? Direction.RIGHT : Direction.LEFT);
+			Direction newDir = position.x < center ? Direction.RIGHT : Direction.LEFT; 
+			setDir(newDir);
+			setWishDir(newDir);
 		}
 		tryMoving(wishDir());
 	}
