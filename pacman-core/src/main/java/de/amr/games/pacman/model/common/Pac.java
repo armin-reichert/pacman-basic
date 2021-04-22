@@ -33,6 +33,7 @@ public class Pac extends Creature {
 	public Pac(String name, Direction startDir) {
 		this.name = name;
 		this.startDir = startDir;
-		turnBothTo(startDir);
+		setDir(startDir);
+		setWishDir(startDir);
 	}
 }

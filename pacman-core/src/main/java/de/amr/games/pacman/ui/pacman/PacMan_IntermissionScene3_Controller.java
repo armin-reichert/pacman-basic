@@ -10,8 +10,8 @@ import de.amr.games.pacman.model.common.GhostState;
 import de.amr.games.pacman.model.common.Pac;
 
 /**
- * Third intermission scene: Blinky in shred dress chases Pac-Man, comes back half-naked drawing
- * dress over the floor.
+ * Third intermission scene: Blinky in shred dress chases Pac-Man, comes back
+ * half-naked drawing dress over the floor.
  * 
  * @author Armin Reichert
  */
@@ -43,15 +43,15 @@ public abstract class PacMan_IntermissionScene3_Controller {
 		pac.dead = false;
 		pac.speed = 1.2f;
 		pac.stuck = false;
-		pac.turnTo(Direction.LEFT);
+		pac.setDir(Direction.LEFT);
 
 		blinky = new Ghost(0, "Blinky", Direction.LEFT);
 		blinky.setPositionRelativeTo(pac, t(8), 0);
 		blinky.visible = true;
 		blinky.state = GhostState.HUNTING_PAC;
 		blinky.speed = pac.speed;
-		blinky.turnTo(Direction.LEFT);
-		blinky.wishDir = Direction.LEFT;
+		blinky.setDir(Direction.LEFT);
+		blinky.setWishDir(Direction.LEFT);
 
 		playIntermissionSound();
 
@@ -63,8 +63,8 @@ public abstract class PacMan_IntermissionScene3_Controller {
 		case CHASING_PACMAN:
 			if (blinky.position.x <= -50) {
 				pac.speed = 0;
-				blinky.turnTo(Direction.RIGHT);
-				blinky.wishDir = Direction.RIGHT;
+				blinky.setDir(Direction.RIGHT);
+				blinky.setWishDir(Direction.RIGHT);
 				phase = Phase.RETURNING_HALF_NAKED;
 			}
 			break;

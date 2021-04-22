@@ -76,43 +76,43 @@ public abstract class MsPacMan_IntermissionScene2_Controller {
 			if (timer.isRunningSeconds(1.5)) {
 				pacMan.visible = true;
 				pacMan.setPosition(-t(2), UPPER_Y);
-				pacMan.turnTo(Direction.RIGHT);
+				pacMan.setDir(Direction.RIGHT);
 				msPacMan.visible = true;
 				msPacMan.setPosition(-t(8), UPPER_Y);
-				msPacMan.turnTo(Direction.RIGHT);
+				msPacMan.setDir(Direction.RIGHT);
 				pacMan.speed = msPacMan.speed = 2;
 			}
 			if (timer.isRunningSeconds(6)) {
 				msPacMan.setPosition(t(30), LOWER_Y);
 				msPacMan.visible = true;
-				msPacMan.turnTo(Direction.LEFT);
+				msPacMan.setDir(Direction.LEFT);
 				msPacMan.speed = 2;
 				pacMan.setPosition(t(36), LOWER_Y);
-				pacMan.turnTo(Direction.LEFT);
+				pacMan.setDir(Direction.LEFT);
 				pacMan.speed = 2;
 			}
 			if (timer.isRunningSeconds(10.5)) {
 				msPacMan.setPosition(t(-8), MIDDLE_Y);
-				msPacMan.turnTo(Direction.RIGHT);
+				msPacMan.setDir(Direction.RIGHT);
 				msPacMan.speed = 2;
 				pacMan.setPosition(t(-2), MIDDLE_Y);
-				pacMan.turnTo(Direction.RIGHT);
+				pacMan.setDir(Direction.RIGHT);
 				pacMan.speed = 2;
 			}
 			if (timer.isRunningSeconds(14.5)) {
 				msPacMan.setPosition(t(30), UPPER_Y);
-				msPacMan.turnTo(Direction.LEFT);
+				msPacMan.setDir(Direction.LEFT);
 				msPacMan.speed = 4;
 				pacMan.setPosition(t(42), UPPER_Y);
-				pacMan.turnTo(Direction.LEFT);
+				pacMan.setDir(Direction.LEFT);
 				pacMan.speed = 4;
 			}
 			if (timer.isRunningSeconds(15.5)) {
 				msPacMan.setPosition(t(-14), LOWER_Y);
-				msPacMan.turnTo(Direction.RIGHT);
+				msPacMan.setDir(Direction.RIGHT);
 				msPacMan.speed = 4;
 				pacMan.setPosition(t(-2), LOWER_Y);
-				pacMan.turnTo(Direction.RIGHT);
+				pacMan.setDir(Direction.RIGHT);
 				pacMan.speed = 4;
 			}
 			if (timer.isRunningSeconds(20)) {

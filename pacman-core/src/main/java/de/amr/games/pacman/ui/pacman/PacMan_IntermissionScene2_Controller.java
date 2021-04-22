@@ -82,14 +82,14 @@ public abstract class PacMan_IntermissionScene2_Controller {
 			blinky.speed = 0.3f - 0.1f * stretching;
 			if (stretching == 3) {
 				blinky.speed = 0;
-				blinky.turnTo(Direction.UP);
+				blinky.setDir(Direction.UP);
 				enter(Phase.STUCK);
 			}
 			timer.tick();
 			break;
 		case STUCK:
 			if (timer.isRunningSeconds(3)) {
-				blinky.turnTo(Direction.RIGHT);
+				blinky.setDir(Direction.RIGHT);
 			}
 			if (timer.isRunningSeconds(6)) {
 				gameController.stateTimer().forceExpiration();

@@ -178,14 +178,14 @@ public class PacMan_IntroScene_Controller {
 		pac.setTilePosition(28, 22);
 		pac.visible = true;
 		pac.speed = 1;
-		pac.turnTo(Direction.LEFT);
+		pac.setDir(Direction.LEFT);
 		pac.stuck = false;
 
 		for (Ghost ghost : ghosts) {
 			ghost.setPositionRelativeTo(pac, 8 + (ghost.id + 1) * 18, 0);
 			ghost.visible = true;
 			ghost.wishDir = Direction.LEFT;
-			ghost.turnTo(Direction.LEFT);
+			ghost.setDir(Direction.LEFT);
 			ghost.speed = pac.speed * 1.05f;
 			ghost.state = GhostState.HUNTING_PAC;
 		}
@@ -194,11 +194,11 @@ public class PacMan_IntroScene_Controller {
 	}
 
 	public void startPacChasingGhosts() {
-		pac.turnTo(Direction.RIGHT);
+		pac.setDir(Direction.RIGHT);
 		for (Ghost ghost : ghosts) {
 			ghost.state = GhostState.FRIGHTENED;
 			ghost.wishDir = Direction.RIGHT;
-			ghost.turnTo(Direction.RIGHT);
+			ghost.setDir(Direction.RIGHT);
 			ghost.speed = 0.5f;
 		}
 	}

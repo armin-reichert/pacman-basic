@@ -137,8 +137,8 @@ public class MsPacMan_IntroScene_Controller {
 
 	public boolean ghostEnteringStage(Ghost ghost) {
 		if (ghost.dir == LEFT && ghost.position.x <= t(tileLeftOfBoard)) {
-			ghost.turnTo(UP);
-			ghost.wishDir = UP;
+			ghost.setDir(UP);
+			ghost.setWishDir(UP);
 			return false;
 		}
 		if (ghost.dir == UP && ghost.position.y <= t(tileBoardTopLeft.y) + ghost.id * 18) {

@@ -68,10 +68,10 @@ public abstract class PacMan_IntermissionScene1_Controller {
 			if (timer.hasJustStarted()) {
 				blinky.setPosition(-t(2), groundY);
 				blinky.wishDir = Direction.RIGHT;
-				blinky.turnTo(Direction.RIGHT);
+				blinky.setDir(Direction.RIGHT);
 				blinky.speed = 1f;
 				blinky.state = GhostState.FRIGHTENED;
-				pac.turnTo(Direction.RIGHT);
+				pac.setDir(Direction.RIGHT);
 				pac.speed = 1.3f;
 				pac.setPositionRelativeTo(blinky, -t(13), 0);
 			}

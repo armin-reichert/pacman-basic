@@ -15,8 +15,8 @@ import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.world.PacManGameWorld;
 
 /**
- * Base class for Pac-Man, Ms. Pac-Man the ghosts and the bonus. Creatures can move through the
- * world.
+ * Base class for Pac-Man, Ms. Pac-Man the ghosts and the bonus. Creatures can
+ * move through the world.
  * 
  * @author Armin Reichert
  */
@@ -32,11 +32,6 @@ public class Creature extends GameEntity {
 	 * The current move direction. Initially, (s)he moves to the right direction :-)
 	 */
 	public Direction dir = Direction.RIGHT;
-
-	/**
-	 * The previous move direction.
-	 */
-	public Direction prevDir = Direction.RIGHT;
 
 	/** The intended move direction that will be taken as soon as possible. */
 	public Direction wishDir = Direction.RIGHT;
@@ -60,8 +55,8 @@ public class Creature extends GameEntity {
 	public boolean forcedOnTrack = false;
 
 	/**
-	 * Places this creature at the given tile with the given position offsets. Sets the
-	 * {@code changedTile} flag to trigger a potential steering.
+	 * Places this creature at the given tile with the given position offsets. Sets
+	 * the {@code changedTile} flag to trigger a potential steering.
 	 * 
 	 * @param tile    the tile where this creature will be placed
 	 * @param offsetX the pixel offset in x-direction
@@ -90,14 +85,12 @@ public class Creature extends GameEntity {
 		placeAt(tile(), offsetX, offsetY);
 	}
 
-	public void turnTo(Direction d) {
-		prevDir = this.dir;
-		dir = d;
+	public void setDir(Direction newDir) {
+		dir = newDir;
 	}
-	
-	public void turnBothTo(Direction d) {
-		turnTo(d);
-		wishDir = d;
+
+	public void setWishDir(Direction newDir) {
+		wishDir = newDir;
 	}
 
 	public boolean canAccessTile(V2i tile) {
@@ -231,9 +224,10 @@ public class Creature extends GameEntity {
 			Direction.RIGHT };
 
 	/**
-	 * As described in the Pac-Man dossier: ghosts check all accessble neighbor tiles in the order
-	 * UP,LEFT,DOWN,RIGHT and select the tile with the minimal distance to the current target tile.
-	 * Reversing the current direction is not allowed.
+	 * As described in the Pac-Man dossier: ghosts check all accessble neighbor
+	 * tiles in the order UP,LEFT,DOWN,RIGHT and select the tile with the minimal
+	 * distance to the current target tile. Reversing the current direction is not
+	 * allowed.
 	 * 
 	 * @return next direction Pac-Man will take
 	 */
