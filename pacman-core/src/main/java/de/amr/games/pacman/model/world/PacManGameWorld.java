@@ -156,7 +156,13 @@ public interface PacManGameWorld {
 	 * @return tells if the tile contains a ghosthouse door
 	 */
 	boolean isGhostHouseDoor(V2i tile);
-
+	
+	/**
+	 * @param tile a tile
+	 * @return tells if the tile is part of the ghosthouse
+	 */
+	boolean isGhostHouse(V2i tile);
+	
 	/**
 	 * @param tile a tile
 	 * @return tells if the tile may contain food (not if it currently contains food!)

@@ -10,8 +10,8 @@
 !
 ! Declarations:
 val size               = (28,36)
-val house_top_left     = (10,17)
-val house_bottom_right = (15,22)
+val house_top_left     = (10,15)
+val house_bottom_right = (17,19)
 val house_entry        = (13,14)
 val house_seat_left    = (11,17)
 val house_seat_center  = (13,17)

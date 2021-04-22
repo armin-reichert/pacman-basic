@@ -75,7 +75,7 @@ public class PacManGame extends AbstractGameModel {
 
 		String mapPath = "/pacman/maps/map1.txt";
 		try {
-			WorldMap map = WorldMap.from(mapPath);
+			WorldMap map = WorldMap.load(mapPath);
 			world.setMap(map);
 		} catch (Exception x) {
 			log("Map '%s' contains errors", mapPath);

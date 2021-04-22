@@ -85,7 +85,7 @@ public class MsPacManGame extends AbstractGameModel {
 		for (int mapNumber = 1; mapNumber <= 4; ++mapNumber) {
 			String mapPath = "/mspacman/maps/map" + mapNumber + ".txt";
 			try {
-				WorldMap.from(mapPath);
+				WorldMap.load(mapPath);
 			} catch (Exception x) {
 				log("Map '%s' contains errors", mapPath);
 			}
@@ -139,7 +139,7 @@ public class MsPacManGame extends AbstractGameModel {
 	protected void createLevel(int levelNumber) {
 		int mazeNumber = mazeNumber(levelNumber);
 		int mapNumber = mapNumber(mazeNumber);
-		WorldMap map = WorldMap.from("/mspacman/maps/map" + mapNumber + ".txt");
+		WorldMap map = WorldMap.load("/mspacman/maps/map" + mapNumber + ".txt");
 		world.setMap(map);
 		currentLevel = new GameLevel(MSPACMAN_LEVELS[levelNumber <= 21 ? levelNumber - 1 : 20]);
 		currentLevel.setWorld(world);

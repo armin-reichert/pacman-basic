@@ -1,5 +1,7 @@
 package de.amr.games.pacman.model.world;
 
+import static java.util.function.Predicate.not;
+
 import java.util.BitSet;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -10,7 +12,7 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
 
 /**
- * Game world using maps.
+ * Game world using map(s).
  * 
  * @author Armin Reichert
  */
@@ -43,35 +45,36 @@ public class MapBasedPacManGameWorld implements PacManGameWorld {
 		house_seat_center = map.vector("house_seat_center");
 		house_seat_right = map.vector("house_seat_right");
 		pacman_home = map.vector("pacman_home");
-		bonus_home = map.vectorOpt("bonus_home").orElse(V2i.NULL);
-		scatterTiles = map.vector_list("scatter");
-		upwardsBlockedTiles = map.vector_list("upwards_blocked");
+		bonus_home = map.vectorOptional("bonus_home").orElse(V2i.NULL);
+		scatterTiles = map.vectorList("scatter");
+		upwardsBlockedTiles = map.vectorList("upwards_blocked");
 
-		// find portal tiles
+		// Collect portal tiles
 		portalRows = IntStream.range(0, size.y)
 				.filter(y -> map.data(0, y) == WorldMap.TUNNEL && map.data(size.x - 1, y) == WorldMap.TUNNEL)
 				.mapToObj(Integer::valueOf).collect(Collectors.toList());
 
-		// find intersections ("waypoints"), i.e. tiles with at least 3 accessible neighbor tiles
+		/*
+		 * Collect "waypoints".
+		 */
 		intersections = new BitSet();
-		//@formatter:off
-		tiles()
-			.filter(tile -> !isInsideGhostHouse(tile))
-			.filter(tile -> !isGhostHouseDoor(tile.plus(Direction.DOWN.vec)))
-			.filter(tile -> neighborTiles(tile).filter(neighbor-> !isWall(neighbor)).count() >= 3)
-			.map(tile -> index(tile))
-			.forEach(intersections::set);
-		//@formatter:on
+		tiles() //
+				.filter(not(this::isGhostHouse)) //
+				.filter(tile -> !isGhostHouseDoor(tile.plus(Direction.DOWN.vec))) //
+				.filter(tile -> neighbors(tile).filter(not(this::isWall)).count() > 2) //
+				.map(this::index) //
+				.forEach(intersections::set);
 
-		// find energizer tiles
+		// Collect energizer tiles
 		energizerTiles = tiles().filter(tile -> map.data(tile) == WorldMap.ENERGIZER).collect(Collectors.toList());
 	}
 
-	private Stream<V2i> neighborTiles(V2i tile) {
+	private Stream<V2i> neighbors(V2i tile) {
 		return Stream.of(Direction.values()).map(dir -> tile.plus(dir.vec));
 	}
 
-	public boolean isInsideGhostHouse(V2i tile) {
+	@Override
+	public boolean isGhostHouse(V2i tile) {
 		return tile.x >= house_top_left.x && tile.x <= house_bottom_right.x //
 				&& tile.y >= house_top_left.y && tile.y <= house_bottom_right.y;
 	}
