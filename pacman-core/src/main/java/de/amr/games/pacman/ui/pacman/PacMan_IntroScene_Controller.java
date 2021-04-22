@@ -13,8 +13,8 @@ import de.amr.games.pacman.model.common.Pac;
 /**
  * Intro scene of the PacMan game.
  * <p>
- * The ghost are presented one after another, then Pac-Man is chased by the ghosts, turns the card
- * and hunts the ghost himself.
+ * The ghost are presented one after another, then Pac-Man is chased by the
+ * ghosts, turns the card and hunts the ghost himself.
  * 
  * @author Armin Reichert
  */
@@ -184,7 +184,7 @@ public class PacMan_IntroScene_Controller {
 		for (Ghost ghost : ghosts) {
 			ghost.setPositionRelativeTo(pac, 8 + (ghost.id + 1) * 18, 0);
 			ghost.visible = true;
-			ghost.wishDir = Direction.LEFT;
+			ghost.setWishDir(Direction.LEFT);
 			ghost.setDir(Direction.LEFT);
 			ghost.speed = pac.speed * 1.05f;
 			ghost.state = GhostState.HUNTING_PAC;
@@ -197,7 +197,7 @@ public class PacMan_IntroScene_Controller {
 		pac.setDir(Direction.RIGHT);
 		for (Ghost ghost : ghosts) {
 			ghost.state = GhostState.FRIGHTENED;
-			ghost.wishDir = Direction.RIGHT;
+			ghost.setWishDir(Direction.RIGHT);
 			ghost.setDir(Direction.RIGHT);
 			ghost.speed = 0.5f;
 		}

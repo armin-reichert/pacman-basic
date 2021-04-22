@@ -31,10 +31,10 @@ public class Creature extends GameEntity {
 	/**
 	 * The current move direction. Initially, (s)he moves to the right direction :-)
 	 */
-	public Direction dir = Direction.RIGHT;
+	private Direction dir = Direction.RIGHT;
 
 	/** The intended move direction that will be taken as soon as possible. */
-	public Direction wishDir = Direction.RIGHT;
+	private Direction wishDir = Direction.RIGHT;
 
 	/** The first move direction. */
 	public Direction startDir = Direction.RIGHT;
@@ -88,9 +88,17 @@ public class Creature extends GameEntity {
 	public void setDir(Direction newDir) {
 		dir = newDir;
 	}
+	
+	public Direction dir() {
+		return dir;
+	}
 
 	public void setWishDir(Direction newDir) {
 		wishDir = newDir;
+	}
+	
+	public Direction wishDir() {
+		return wishDir;
 	}
 
 	public boolean canAccessTile(V2i tile) {

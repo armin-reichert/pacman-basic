@@ -29,18 +29,20 @@ public class Ghost extends Creature {
 	public int bounty;
 
 	/**
-	 * The individual food counter, used to compute when the ghost can leave the house.
+	 * The individual food counter, used to compute when the ghost can leave the
+	 * house.
 	 */
 	public int dotCounter;
 
 	/**
-	 * The "Cruise Elroy" mode of Blinky, the red ghost. Value is 1, 2 or -1, -2 (disabled Elroy mode).
+	 * The "Cruise Elroy" mode of Blinky, the red ghost. Value is 1, 2 or -1, -2
+	 * (disabled Elroy mode).
 	 */
 	public int elroy;
 
 	@Override
 	public String toString() {
-		return String.format("%s: position: %s, speed=%.2f, dir=%s, wishDir=%s", name, position, speed, dir, wishDir);
+		return String.format("%s: position: %s, speed=%.2f, dir=%s, wishDir=%s", name, position, speed, dir(), wishDir());
 	}
 
 	public Ghost(int id, String name, Direction startDir) {
@@ -133,7 +135,7 @@ public class Ghost extends Creature {
 	}
 
 	private void returnHome() {
-		if (atGhostHouseDoor() && dir != Direction.DOWN) {
+		if (atGhostHouseDoor() && dir() != Direction.DOWN) {
 			// start falling
 			setOffset(HTS, 0);
 			setDir(Direction.DOWN);
@@ -151,15 +153,15 @@ public class Ghost extends Creature {
 		V2d offset = offset();
 		// Target inside house reached? Start leaving house.
 		if (location.equals(targetTile) && offset.y >= 0) {
-			wishDir = dir.opposite();
+			setWishDir(dir().opposite());
 			state = GhostState.LEAVING_HOUSE;
 			return;
 		}
 		// House center reached? Move sidewards towards target tile
 		if (location.equals(world.houseSeatCenter()) && offset.y >= 0) {
-			wishDir = targetTile.x < world.houseSeatCenter().x ? Direction.LEFT : Direction.RIGHT;
+			setWishDir(targetTile.x < world.houseSeatCenter().x ? Direction.LEFT : Direction.RIGHT);
 		}
-		tryMoving(wishDir);
+		tryMoving(wishDir());
 	}
 
 	private void leaveHouse() {
@@ -179,19 +181,19 @@ public class Ghost extends Creature {
 		int ground = t(houseCenter.y) + HTS;
 		if (differsAtMost(position.x, center, 1)) {
 			setOffset(HTS, offset.y);
-			wishDir = Direction.UP;
+			setWishDir(Direction.UP);
 		} else if (position.y < ground) {
-			wishDir = Direction.DOWN;
+			setWishDir(Direction.DOWN);
 		} else {
-			wishDir = position.x < center ? Direction.RIGHT : Direction.LEFT;
+			setWishDir(position.x < center ? Direction.RIGHT : Direction.LEFT);
 		}
-		tryMoving(wishDir);
+		tryMoving(wishDir());
 	}
 
 	private void bounce() {
 		int centerY = t(world.houseSeatCenter().y);
 		if (position.y < centerY - HTS || position.y > centerY + HTS) {
-			wishDir = dir.opposite();
+			setWishDir(dir().opposite());
 		}
 		tryMoving();
 	}
