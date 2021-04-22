@@ -193,7 +193,9 @@ public class Ghost extends Creature {
 	private void bounce() {
 		int centerY = t(world.houseSeatCenter().y);
 		if (position.y < centerY - HTS || position.y > centerY + HTS) {
-			setWishDir(dir().opposite());
+			Direction opposite = dir().opposite();
+			setDir(opposite);
+			setWishDir(opposite);
 		}
 		tryMoving();
 	}
