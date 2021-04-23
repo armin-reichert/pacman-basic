@@ -546,7 +546,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 				gameModel.ghosts(HUNTING_PAC).forEach(ghost -> {
 					ghost.state = FRIGHTENED;
 					ghost.setWishDir(ghost.dir().opposite());
-					ghost.forcedDirection = true;
+					ghost.forced = true;
 				});
 				player.powerTimer.resetSeconds(powerSeconds);
 				player.powerTimer.start();

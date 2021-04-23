@@ -172,7 +172,7 @@ public class Ghost extends Creature {
 		if (location.equals(world.houseSeatCenter()) && offset.y >= 0) {
 			setWishDir(targetTile.x < world.houseSeatCenter().x ? Direction.LEFT : Direction.RIGHT);
 		}
-		tryMoving(wishDir());
+		tryMovingTowards(wishDir());
 	}
 
 	private void leaveHouse() {
@@ -202,7 +202,7 @@ public class Ghost extends Creature {
 			setDir(newDir);
 			setWishDir(newDir);
 		}
-		tryMoving(wishDir());
+		tryMovingTowards(wishDir());
 	}
 
 	private void bounce() {

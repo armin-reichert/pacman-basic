@@ -71,11 +71,11 @@ public class Autopilot {
 		if (!enabled) {
 			return;
 		}
-		if (game.player.forcedDirection) {
-			game.player.forcedDirection = false;
+		if (game.player.forced) {
+			game.player.forced = false;
 			return;
 		}
-		if (!game.player.stuck && !game.player.changedTile) {
+		if (!game.player.stuck && !game.player.newTileEntered) {
 			return;
 		}
 		GameInfo data = collectData(game);
@@ -123,7 +123,7 @@ public class Autopilot {
 			}
 			if (escapeDir != null) {
 				game.player.setWishDir(escapeDir);
-				game.player.forcedDirection = true;
+				game.player.forced = true;
 			}
 			return;
 		}

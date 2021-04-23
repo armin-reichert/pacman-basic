@@ -1,5 +1,9 @@
 package de.amr.games.pacman.model.common;
 
+import static de.amr.games.pacman.lib.Direction.DOWN;
+import static de.amr.games.pacman.lib.Direction.LEFT;
+import static de.amr.games.pacman.lib.Direction.RIGHT;
+import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.model.world.PacManGameWorld.t;
 import static java.lang.Math.abs;
 
@@ -15,12 +19,13 @@ import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.world.PacManGameWorld;
 
 /**
- * Base class for Pac-Man, Ms. Pac-Man the ghosts and the bonus. Creatures can
- * move through the world.
+ * Base class for creatures which can move through the world.
  * 
  * @author Armin Reichert
  */
 public class Creature extends GameEntity {
+
+	private static final Direction[] PRIORITY = { UP, LEFT, DOWN, RIGHT };
 
 	/** The world where this creature lives. */
 	public PacManGameWorld world;
@@ -31,32 +36,35 @@ public class Creature extends GameEntity {
 	/**
 	 * The current move direction. Initially, (s)he moves to the right direction :-)
 	 */
-	private Direction dir = Direction.RIGHT;
+	private Direction dir = RIGHT;
 
 	/** The intended move direction that will be taken as soon as possible. */
-	private Direction wishDir = Direction.RIGHT;
+	private Direction wishDir = RIGHT;
 
 	/** The first move direction. */
-	public Direction startDir = Direction.RIGHT;
+	public Direction startDir = RIGHT;
 
-	/** The target tile, can be inaccessible or outside of the maze. */
+	/** The target tile, can be inaccessible or outside of the world! */
 	public V2i targetTile = V2i.NULL;
 
 	/** If the creature entered a new tile with its last movement or placement. */
-	public boolean changedTile = true;
+	public boolean newTileEntered = true;
 
-	/** If the creature got stuck in the maze. */
+	/** If the creature got stuck in the world. */
 	public boolean stuck = false;
 
-	/** If the next move must take the intended direction. */
-	public boolean forcedDirection = false;
+	/** If the created is forced take its current wish direction. */
+	public boolean forced = false;
 
-	/** If movement is constrained to be aligned with the tiles. */
+	/**
+	 * If movement is constrained to be aligned with the "track" defined by the
+	 * tiles.
+	 */
 	public boolean forcedOnTrack = false;
 
 	/**
 	 * Places this creature at the given tile with the given position offsets. Sets
-	 * the {@code changedTile} flag to trigger a potential steering.
+	 * the {@link #newTileEntered} flag to trigger steering.
 	 * 
 	 * @param tile    the tile where this creature will be placed
 	 * @param offsetX the pixel offset in x-direction
@@ -64,7 +72,7 @@ public class Creature extends GameEntity {
 	 */
 	public void placeAt(V2i tile, double offsetX, double offsetY) {
 		setPosition(t(tile.x) + offsetX, t(tile.y) + offsetY);
-		changedTile = true;
+		newTileEntered = true;
 	}
 
 	/**
@@ -81,20 +89,27 @@ public class Creature extends GameEntity {
 		return PacManGameWorld.offset(position);
 	}
 
+	/**
+	 * Places the creature on its current tile with given offset. This is for
+	 * example used to place the ghosts exactly between two tiles.
+	 * 
+	 * @param offsetX offset in x-direction
+	 * @param offsetY offset in y-direction
+	 */
 	public void setOffset(double offsetX, double offsetY) {
 		placeAt(tile(), offsetX, offsetY);
 	}
 
-	public void setDir(Direction newDir) {
-		dir = newDir;
+	public void setDir(Direction d) {
+		dir = d;
 	}
 
 	public Direction dir() {
 		return dir;
 	}
 
-	public void setWishDir(Direction newDir) {
-		wishDir = newDir;
+	public void setWishDir(Direction d) {
+		wishDir = d;
 	}
 
 	public Direction wishDir() {
@@ -115,7 +130,7 @@ public class Creature extends GameEntity {
 
 	public void forceTurningBack() {
 		wishDir = dir.opposite();
-		forcedDirection = true;
+		forced = true;
 	}
 
 	@Override
@@ -125,44 +140,48 @@ public class Creature extends GameEntity {
 	}
 
 	public void tryMoving() {
-		V2i guyLocation = tile();
+		V2i currentTile = tile();
 		// teleport?
-		for (int i = 0; i < world.numPortals(); ++i) {
-			if (guyLocation.equals(world.portalRight(i)) && dir == Direction.RIGHT) {
-				placeAt(world.portalLeft(i), 0, 0);
-				return;
+		if (dir == RIGHT) {
+			for (int i = 0; i < world.numPortals(); ++i) {
+				if (currentTile.equals(world.portalRight(i))) {
+					placeAt(world.portalLeft(i), 0, 0);
+					return;
+				}
 			}
-			if (guyLocation.equals(world.portalLeft(i)) && dir == Direction.LEFT) {
-				placeAt(world.portalRight(i), 0, 0);
-				return;
+		} else if (dir == LEFT) {
+			for (int i = 0; i < world.numPortals(); ++i) {
+				if (currentTile.equals(world.portalLeft(i))) {
+					placeAt(world.portalRight(i), 0, 0);
+					return;
+				}
 			}
 		}
-		tryMoving(wishDir);
+		tryMovingTowards(wishDir);
 		if (!stuck) {
 			dir = wishDir;
 		} else {
-			tryMoving(dir);
+			tryMovingTowards(dir);
 		}
 	}
 
-	public void tryMoving(Direction moveDir) {
-		// 100% speed corresponds to 1.25 pixels/tick (75px/sec)
-		double pixels = speed * 1.25f;
+	public void tryMovingTowards(Direction d) {
+		// 100% speed corresponds to 1.25 pixels/tick (75px/sec at 60Hz)
+		final double moveDistance = speed * 1.25f;
+		final V2i tileBefore = tile();
+		final V2d offset = offset();
+		final V2i neighbor = tileBefore.plus(d.vec);
 
-		V2i guyLocationBeforeMove = tile();
-		V2d offset = offset();
-		V2i neighbor = guyLocationBeforeMove.plus(moveDir.vec);
-
-		// check if guy can change its direction now
+		// check if guy can change its direction at this position
 		if (forcedOnTrack && canAccessTile(neighbor)) {
-			if (moveDir == Direction.LEFT || moveDir == Direction.RIGHT) {
-				if (abs(offset.y) > pixels) {
+			if (d == LEFT || d == RIGHT) {
+				if (abs(offset.y) > moveDistance) {
 					stuck = true;
 					return;
 				}
 				setOffset(offset.x, 0);
-			} else if (moveDir == Direction.UP || moveDir == Direction.DOWN) {
-				if (abs(offset.x) > pixels) {
+			} else if (d == UP || d == DOWN) {
+				if (abs(offset.x) > moveDistance) {
 					stuck = true;
 					return;
 				}
@@ -170,12 +189,13 @@ public class Creature extends GameEntity {
 			}
 		}
 
-		velocity = new V2d(moveDir.vec).scaled(pixels);
-		V2d newPosition = position.plus(velocity);
-		V2i newTile = PacManGameWorld.tile(newPosition);
-		V2d newOffset = PacManGameWorld.offset(newPosition);
+		velocity = new V2d(d.vec).scaled(moveDistance);
 
-		// block moving into inaccessible tile
+		final V2d newPosition = position.plus(velocity);
+		final V2i newTile = PacManGameWorld.tile(newPosition);
+		final V2d newOffset = PacManGameWorld.offset(newPosition);
+
+		// avoid moving into inaccessible neighbor tile
 		if (!canAccessTile(newTile)) {
 			stuck = true;
 			return;
@@ -183,21 +203,22 @@ public class Creature extends GameEntity {
 
 		// align with edge of inaccessible neighbor
 		if (!canAccessTile(neighbor)) {
-			if (moveDir == Direction.RIGHT && newOffset.x > 0 || moveDir == Direction.LEFT && newOffset.x < 0) {
+			if (d == RIGHT && newOffset.x > 0 || d == LEFT && newOffset.x < 0) {
 				setOffset(0, offset.y);
 				stuck = true;
 				return;
 			}
-			if (moveDir == Direction.DOWN && newOffset.y > 0 || moveDir == Direction.UP && newOffset.y < 0) {
+			if (d == DOWN && newOffset.y > 0 || d == UP && newOffset.y < 0) {
 				setOffset(offset.x, 0);
 				stuck = true;
 				return;
 			}
 		}
 
-		placeAt(newTile, newOffset.x, newOffset.y);
-		changedTile = !tile().equals(guyLocationBeforeMove);
+		// yes, we can (move)
 		stuck = false;
+		placeAt(newTile, newOffset.x, newOffset.y);
+		newTileEntered = !tile().equals(tileBefore);
 	}
 
 	public void selectDirectionTowardsTarget() {
@@ -206,31 +227,28 @@ public class Creature extends GameEntity {
 
 	public void selectRandomDirection() {
 		if (stuck || world.isIntersection(tile())) {
-			randomMoveDirection().ifPresent(this::setWishDir);
+			randomAccessibleDirection().ifPresent(this::setWishDir);
 		}
 	}
 
-	protected Optional<Direction> randomMoveDirection() {
-		List<Direction> dirs = accessibleDirections(tile(), dir.opposite()).collect(Collectors.toList());
+	protected Optional<Direction> randomAccessibleDirection() {
+		List<Direction> dirs = accessibleFromExcept(tile(), dir.opposite()).collect(Collectors.toList());
 		return dirs.isEmpty() ? Optional.empty() : Optional.of(dirs.get(new Random().nextInt(dirs.size())));
 	}
 
-	public Optional<Direction> newWishDir() {
-		if (!stuck && !changedTile) {
-			return Optional.empty();
-		}
-		if (forcedDirection) {
-			forcedDirection = false;
+	private Optional<Direction> newWishDir() {
+		if (forced) {
+			forced = false;
 			return Optional.of(wishDir);
+		}
+		if (!stuck && !newTileEntered) {
+			return Optional.empty();
 		}
 		if (world.isPortal(tile())) {
 			return Optional.empty();
 		}
 		return bestDirectionTowardsTargetTile();
 	}
-
-	private static final Direction[] DIRECTION_PRIORITY = { Direction.UP, Direction.LEFT, Direction.DOWN,
-			Direction.RIGHT };
 
 	/**
 	 * As described in the Pac-Man dossier: checks all accessible neighbor tiles in
@@ -246,7 +264,7 @@ public class Creature extends GameEntity {
 		final V2i currentTile = tile();
 		double minDist = Double.MAX_VALUE;
 		Direction bestDir = null;
-		for (Direction d : DIRECTION_PRIORITY) {
+		for (Direction d : PRIORITY) {
 			if (d == dir.opposite()) {
 				continue;
 			}
@@ -262,11 +280,11 @@ public class Creature extends GameEntity {
 		return Optional.ofNullable(bestDir);
 	}
 
-	private Stream<Direction> accessibleDirections(V2i tile, Direction... excludedDirections) {
+	private Stream<Direction> accessibleFromExcept(V2i tile, Direction... excludedDirs) {
 		//@formatter:off
 		return Stream.of(Direction.values())
-			.filter(direction -> Stream.of(excludedDirections).noneMatch(excludedDir -> excludedDir == direction))
-			.filter(direction -> canAccessTile(tile.plus(direction.vec)));
+			.filter(d -> Stream.of(excludedDirs).noneMatch(excluded -> excluded == d))
+			.filter(d -> canAccessTile(tile.plus(d.vec)));
 		//@formatter:on
 	}
 }

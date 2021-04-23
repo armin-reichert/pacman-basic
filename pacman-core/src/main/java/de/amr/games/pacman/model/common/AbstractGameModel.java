@@ -58,7 +58,7 @@ public abstract class AbstractGameModel {
 			ghost.speed = 0;
 			ghost.targetTile = null;
 			ghost.stuck = false;
-			ghost.forcedDirection = ghost.id == BLINKY;
+			ghost.forced = ghost.id == BLINKY;
 			ghost.forcedOnTrack = ghost.id == BLINKY;
 			ghost.state = GhostState.LOCKED;
 			ghost.bounty = 0;
@@ -69,7 +69,7 @@ public abstract class AbstractGameModel {
 
 		bonus.visible = false;
 		bonus.speed = 0;
-		bonus.changedTile = true;
+		bonus.newTileEntered = true;
 		bonus.stuck = false;
 		bonus.forcedOnTrack = true;
 		bonus.edibleTicksLeft = 0;
