@@ -175,7 +175,7 @@ public class PacMan_IntroScene_Controller {
 	}
 
 	public void startGhostsChasingPac() {
-		pac.setTilePosition(28, 22);
+		pac.setPosition(t(28), t(22));
 		pac.visible = true;
 		pac.speed = 1;
 		pac.setDir(Direction.LEFT);

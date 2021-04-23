@@ -1,7 +1,5 @@
 package de.amr.games.pacman.model.common;
 
-import static de.amr.games.pacman.model.world.PacManGameWorld.t;
-
 import de.amr.games.pacman.lib.V2d;
 
 /**
@@ -27,12 +25,7 @@ public class GameEntity {
 
 	/** Sets the entity's position. */
 	public void setPosition(double x, double y) {
-		position = new V2d((float) x, (float) y);
-	}
-
-	/** Sets the position given in tile coordinates */
-	public void setTilePosition(int col, int row) {
-		setPosition(t(col), t(row));
+		position = new V2d(x, y);
 	}
 
 	/** Sets the position relative to another entity's position */

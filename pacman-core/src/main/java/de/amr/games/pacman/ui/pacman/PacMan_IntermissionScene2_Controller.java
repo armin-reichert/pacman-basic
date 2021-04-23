@@ -40,7 +40,7 @@ public abstract class PacMan_IntermissionScene2_Controller {
 
 	public void init() {
 		pac = new Pac("Pac-Man", Direction.LEFT);
-		pac.setTilePosition(30, groundTileY);
+		pac.setPosition(t(30), t(groundTileY));
 		pac.visible = true;
 		pac.speed = 1;
 

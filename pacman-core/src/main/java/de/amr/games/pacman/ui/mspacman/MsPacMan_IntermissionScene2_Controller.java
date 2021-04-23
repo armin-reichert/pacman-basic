@@ -47,7 +47,7 @@ public abstract class MsPacMan_IntermissionScene2_Controller {
 
 	public void init() {
 		flap = new Flap(2, "THE CHASE");
-		flap.setTilePosition(3, 10);
+		flap.setPosition(t(3), t(10));
 		flap.visible = true;
 
 		pacMan = new Pac("Pac-Man", Direction.RIGHT);

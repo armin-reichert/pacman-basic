@@ -50,7 +50,7 @@ public abstract class MsPacMan_IntermissionScene1_Controller {
 
 	public void init() {
 		flap = new Flap(1, "THEY MEET");
-		flap.setTilePosition(3, 10);
+		flap.setPosition(t(3), t(10));
 		flap.visible = true;
 
 		pacMan = new Pac("Pac-Man", Direction.RIGHT);

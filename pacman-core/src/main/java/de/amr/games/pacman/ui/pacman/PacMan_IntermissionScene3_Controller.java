@@ -38,7 +38,7 @@ public abstract class PacMan_IntermissionScene3_Controller {
 
 	public void init() {
 		pac = new Pac("Pac-Man", Direction.LEFT);
-		pac.setTilePosition(30, chaseTileY);
+		pac.setPosition(t(30), t(chaseTileY));
 		pac.visible = true;
 		pac.dead = false;
 		pac.speed = 1.2f;
