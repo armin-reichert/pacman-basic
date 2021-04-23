@@ -66,6 +66,7 @@ public class Ghost extends Creature {
 	 */
 	public void update(GameLevel level) {
 		switch (state) {
+		
 		case LOCKED:
 			if (atGhostHouseDoor()) {
 				speed = 0;
@@ -74,23 +75,27 @@ public class Ghost extends Creature {
 				bounce();
 			}
 			break;
+		
 		case ENTERING_HOUSE:
 			speed = level.ghostSpeed * 2;
 			enterHouse();
 			break;
+		
 		case LEAVING_HOUSE:
 			speed = level.ghostSpeed / 2;
 			leaveHouse();
 			break;
+		
 		case FRIGHTENED:
 			if (world.isTunnel(tile())) {
 				speed = level.ghostSpeedTunnel;
 			} else {
 				speed = level.ghostSpeedFrightened;
+				selectRandomDirection();
 			}
-			selectRandomDirection();
 			tryMoving();
 			break;
+		
 		case HUNTING_PAC:
 			if (world.isTunnel(tile())) {
 				speed = level.ghostSpeedTunnel;
@@ -102,12 +107,13 @@ public class Ghost extends Creature {
 				speed = level.ghostSpeed;
 			}
 			if (targetTile != null) {
-				headForTargetTile();
+				selectDirectionTowardsTarget();
 			} else {
 				selectRandomDirection();
-				tryMoving();
 			}
+			tryMoving();
 			break;
+		
 		case DEAD:
 			speed = level.ghostSpeed * 2;
 			returnHome();
@@ -147,7 +153,8 @@ public class Ghost extends Creature {
 			state = GhostState.ENTERING_HOUSE;
 			return;
 		}
-		headForTargetTile();
+		selectDirectionTowardsTarget();
+		tryMoving();
 	}
 
 	private void enterHouse() {

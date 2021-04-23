@@ -33,7 +33,8 @@ public class MsPacManBonus extends PacManBonus {
 	@Override
 	public void update() {
 		if (edibleTicksLeft > 0) {
-			headForTargetTile();
+			selectDirectionTowardsTarget();
+			tryMoving();
 			if (world.isPortal(tile())) {
 				edibleTicksLeft = 0;
 				visible = false;

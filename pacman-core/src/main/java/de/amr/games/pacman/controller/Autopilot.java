@@ -145,7 +145,7 @@ public class Autopilot {
 			game.player.targetTile = foodTile;
 		}
 		if (game.player.targetTile != null) {
-			game.player.headForTargetTile();
+			game.player.selectDirectionTowardsTarget();
 		}
 	}
 

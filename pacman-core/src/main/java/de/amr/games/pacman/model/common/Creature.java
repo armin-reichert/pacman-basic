@@ -200,12 +200,11 @@ public class Creature extends GameEntity {
 		stuck = false;
 	}
 
-	public void headForTargetTile() {
-		newWishDir(false).ifPresent(newWishDir -> wishDir = newWishDir);
-		tryMoving();
+	public void selectDirectionTowardsTarget() {
+		newWishDir(false).ifPresent(this::setWishDir);
 	}
 
-	public Optional<Direction> newWishDir(boolean randomWalk) {
+	public Optional<Direction> newWishDir(boolean random) {
 		if (!stuck && !changedTile) {
 			return Optional.empty();
 		}
@@ -216,7 +215,7 @@ public class Creature extends GameEntity {
 		if (world.isPortal(tile())) {
 			return Optional.empty();
 		}
-		if (randomWalk) {
+		if (random) {
 			return randomMoveDirection();
 		}
 		return targetDirection();
