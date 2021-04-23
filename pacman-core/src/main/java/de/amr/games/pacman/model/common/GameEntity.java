@@ -29,7 +29,7 @@ public class GameEntity {
 	}
 
 	/** Sets the position relative to another entity's position */
-	public void setPositionRelativeTo(GameEntity other, float dx, float dy) {
-		setPosition(other.position.x + dx, other.position.y + dy);
+	public void setPositionRelativeTo(GameEntity e, double dx, double dy) {
+		setPosition(e.position.x + dx, e.position.y + dy);
 	}
 }
