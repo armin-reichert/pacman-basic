@@ -88,7 +88,7 @@ public class Creature extends GameEntity {
 	public void setDir(Direction newDir) {
 		dir = newDir;
 	}
-	
+
 	public Direction dir() {
 		return dir;
 	}
@@ -96,20 +96,14 @@ public class Creature extends GameEntity {
 	public void setWishDir(Direction newDir) {
 		wishDir = newDir;
 	}
-	
+
 	public Direction wishDir() {
 		return wishDir;
 	}
 
 	public boolean canAccessTile(V2i tile) {
 		if (world.insideMap(tile)) {
-			if (world.isWall(tile)) {
-				return false;
-			}
-			if (world.isGhostHouseDoor(tile)) {
-				return false;
-			}
-			return true;
+			return !world.isWall(tile) && !world.isGhostHouseDoor(tile);
 		} else {
 			return world.isPortal(tile);
 		}
