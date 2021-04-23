@@ -10,7 +10,7 @@ The code here is more "to the point" than the one in my other [state-machine foc
 
 YouTube:
 
-[![YouTube video](https://i9.ytimg.com/vi/q5biOTj9GIU/mq2.jpg?sqp=CMiitoIG&rs=AOn4CLC4DcaXdJYoXZrSsX7-OQMmH50QFQ)](https://youtu.be/q5biOTj9GIU)
+[![YouTube video](https://i9.ytimg.com/vi/6ztHwLJuPNw/mq1.jpg?sqp=CMiaiYQG&rs=AOn4CLA0mj6QhDLpWFdlWjDcFXkmn21hnA)](https://youtu.be/q5biOTj9GIU)
 
 ### Build
 To build the executable jar file, run `mvn clean install` in each subproject.
@@ -30,11 +30,11 @@ To build the executable jar file, run `mvn clean install` in each subproject.
   - "V" = Toggle game variant (Pac-Man <-> Ms. Pac-Man)
 
 - Play screen
-  - "Q" = Quit game, return to intro screen
   - Cursor LEFT, RIGHT, UP, DOWN = Move Pac-Man
   - "A" = Toggle Pac-Man autopilot
   - "E" = Eat all non-energizer pellets
   - "L" = Add life
   - "N" = Enter next level
+  - "Q" = Quit game, return to intro screen
   - "X" = Kill all ghosts
   
