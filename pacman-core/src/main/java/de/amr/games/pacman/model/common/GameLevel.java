@@ -58,17 +58,17 @@ public class GameLevel {
 		numFlashes = (byte) values[i++];
 	}
 
-	public void setWorld(PacManGameWorld gameWorld) {
-		world = gameWorld;
+	public void setWorld(PacManGameWorld world) {
+		this.world = world;
 		// find food
 		totalFoodCount = 0;
 		int energizerCount = 0;
-		for (int x = 0; x < gameWorld.numCols(); ++x) {
-			for (int y = 0; y < gameWorld.numRows(); ++y) {
+		for (int x = 0; x < world.numCols(); ++x) {
+			for (int y = 0; y < world.numRows(); ++y) {
 				V2i tile = new V2i(x, y);
-				if (gameWorld.isFoodTile(tile)) {
+				if (world.isFoodTile(tile)) {
 					++totalFoodCount;
-					if (gameWorld.isEnergizerTile(tile)) {
+					if (world.isEnergizerTile(tile)) {
 						energizerCount++;
 					}
 				}
@@ -78,7 +78,6 @@ public class GameLevel {
 		foodRemaining = totalFoodCount;
 		log("Total food count=%d (%d pellets + %d energizers)", totalFoodCount, totalFoodCount - energizerCount,
 				energizerCount);
-
 	}
 
 	public int eatenFoodCount() {
