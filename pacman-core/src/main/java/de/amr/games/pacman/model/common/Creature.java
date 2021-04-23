@@ -201,10 +201,21 @@ public class Creature extends GameEntity {
 	}
 
 	public void selectDirectionTowardsTarget() {
-		newWishDir(false).ifPresent(this::setWishDir);
+		newWishDir().ifPresent(this::setWishDir);
 	}
 
-	public Optional<Direction> newWishDir(boolean random) {
+	public void selectRandomDirection() {
+		if (stuck || world.isIntersection(tile())) {
+			randomMoveDirection().ifPresent(this::setWishDir);
+		}
+	}
+
+	protected Optional<Direction> randomMoveDirection() {
+		List<Direction> dirs = accessibleDirections(tile(), dir.opposite()).collect(Collectors.toList());
+		return dirs.isEmpty() ? Optional.empty() : Optional.of(dirs.get(new Random().nextInt(dirs.size())));
+	}
+
+	public Optional<Direction> newWishDir() {
 		if (!stuck && !changedTile) {
 			return Optional.empty();
 		}
@@ -215,50 +226,40 @@ public class Creature extends GameEntity {
 		if (world.isPortal(tile())) {
 			return Optional.empty();
 		}
-		if (random) {
-			return randomMoveDirection();
-		}
-		return targetDirection();
+		return bestDirectionTowardsTargetTile();
 	}
 
 	private static final Direction[] DIRECTION_PRIORITY = { Direction.UP, Direction.LEFT, Direction.DOWN,
 			Direction.RIGHT };
 
 	/**
-	 * As described in the Pac-Man dossier: ghosts check all accessble neighbor
-	 * tiles in the order UP,LEFT,DOWN,RIGHT and select the tile with the minimal
-	 * distance to the current target tile. Reversing the current direction is not
-	 * allowed.
+	 * As described in the Pac-Man dossier: checks all accessible neighbor tiles in
+	 * order UP, LEFT, DOWN, RIGHT and selects the one with smallest Euclidean
+	 * distance to the target tile. Reversing the current direction is not allowed.
 	 * 
-	 * @return next direction Pac-Man will take
+	 * @return next direction creature wants to take
 	 */
-	private Optional<Direction> targetDirection() {
+	private Optional<Direction> bestDirectionTowardsTargetTile() {
 		if (targetTile == null) {
 			return Optional.empty();
 		}
-		V2i currentTile = tile();
+		final V2i currentTile = tile();
 		double minDist = Double.MAX_VALUE;
-		Direction minDistDir = null;
-		for (Direction targetDir : DIRECTION_PRIORITY) {
-			if (targetDir == dir.opposite()) {
+		Direction bestDir = null;
+		for (Direction d : DIRECTION_PRIORITY) {
+			if (d == dir.opposite()) {
 				continue;
 			}
-			V2i neighbor = currentTile.plus(targetDir.vec);
-			if (!canAccessTile(neighbor)) {
-				continue;
-			}
-			double dist = neighbor.euclideanDistance(targetTile);
-			if (dist < minDist) {
-				minDist = dist;
-				minDistDir = targetDir;
+			V2i neighbor = currentTile.plus(d.vec);
+			if (canAccessTile(neighbor)) {
+				double dist = neighbor.euclideanDistance(targetTile);
+				if (dist < minDist) {
+					minDist = dist;
+					bestDir = d;
+				}
 			}
 		}
-		return Optional.ofNullable(minDistDir);
-	}
-
-	protected Optional<Direction> randomMoveDirection() {
-		List<Direction> dirs = accessibleDirections(tile(), dir.opposite()).collect(Collectors.toList());
-		return dirs.isEmpty() ? Optional.empty() : Optional.of(dirs.get(new Random().nextInt(dirs.size())));
+		return Optional.ofNullable(bestDir);
 	}
 
 	private Stream<Direction> accessibleDirections(V2i tile, Direction... excludedDirections) {

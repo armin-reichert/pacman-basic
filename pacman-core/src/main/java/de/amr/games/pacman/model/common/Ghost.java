@@ -215,12 +215,6 @@ public class Ghost extends Creature {
 		tryMoving();
 	}
 
-	private void selectRandomDirection() {
-		if (stuck || world.isIntersection(tile())) {
-			randomMoveDirection().ifPresent(this::setWishDir);
-		}
-	}
-
 	private static boolean differsAtMost(double value, double target, double tolerance) {
 		return Math.abs(value - target) <= tolerance;
 	}
