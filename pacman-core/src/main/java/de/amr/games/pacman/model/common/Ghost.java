@@ -88,7 +88,8 @@ public class Ghost extends Creature {
 			} else {
 				speed = level.ghostSpeedFrightened;
 			}
-			walkRandomly();
+			selectRandomDirection();
+			tryMoving();
 			break;
 		case HUNTING_PAC:
 			if (world.isTunnel(tile())) {
@@ -103,7 +104,8 @@ public class Ghost extends Creature {
 			if (targetTile != null) {
 				headForTargetTile();
 			} else {
-				walkRandomly();
+				selectRandomDirection();
+				tryMoving();
 			}
 			break;
 		case DEAD:
@@ -187,7 +189,7 @@ public class Ghost extends Creature {
 			setDir(Direction.DOWN);
 			setWishDir(Direction.DOWN);
 		} else {
-			Direction newDir = position.x < center ? Direction.RIGHT : Direction.LEFT; 
+			Direction newDir = position.x < center ? Direction.RIGHT : Direction.LEFT;
 			setDir(newDir);
 			setWishDir(newDir);
 		}
@@ -202,6 +204,12 @@ public class Ghost extends Creature {
 			setWishDir(opposite);
 		}
 		tryMoving();
+	}
+
+	private void selectRandomDirection() {
+		if (stuck || world.isIntersection(tile())) {
+			randomMoveDirection().ifPresent(this::setWishDir);
+		}
 	}
 
 	private static boolean differsAtMost(double value, double target, double tolerance) {

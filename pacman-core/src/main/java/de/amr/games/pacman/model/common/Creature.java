@@ -254,14 +254,7 @@ public class Creature extends GameEntity {
 		return Optional.ofNullable(minDistDir);
 	}
 
-	public void walkRandomly() {
-		if (stuck || world.isIntersection(tile())) {
-			wishDir = randomMoveDirection().orElse(wishDir);
-		}
-		tryMoving();
-	}
-
-	private Optional<Direction> randomMoveDirection() {
+	protected Optional<Direction> randomMoveDirection() {
 		List<Direction> dirs = accessibleDirections(tile(), dir.opposite()).collect(Collectors.toList());
 		return dirs.isEmpty() ? Optional.empty() : Optional.of(dirs.get(new Random().nextInt(dirs.size())));
 	}
