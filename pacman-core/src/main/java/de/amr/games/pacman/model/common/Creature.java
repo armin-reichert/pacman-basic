@@ -233,6 +233,9 @@ public class Creature extends GameEntity {
 	 * @return next direction Pac-Man will take
 	 */
 	private Optional<Direction> targetDirection() {
+		if (targetTile == null) {
+			return Optional.empty();
+		}
 		V2i currentTile = tile();
 		double minDist = Double.MAX_VALUE;
 		Direction minDistDir = null;

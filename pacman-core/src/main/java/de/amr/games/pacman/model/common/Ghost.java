@@ -66,7 +66,7 @@ public class Ghost extends Creature {
 	 */
 	public void update(GameLevel level) {
 		switch (state) {
-		
+
 		case LOCKED:
 			if (atGhostHouseDoor()) {
 				speed = 0;
@@ -75,17 +75,17 @@ public class Ghost extends Creature {
 				bounce();
 			}
 			break;
-		
+
 		case ENTERING_HOUSE:
 			speed = level.ghostSpeed * 2;
 			enterHouse();
 			break;
-		
+
 		case LEAVING_HOUSE:
 			speed = level.ghostSpeed / 2;
 			leaveHouse();
 			break;
-		
+
 		case FRIGHTENED:
 			if (world.isTunnel(tile())) {
 				speed = level.ghostSpeedTunnel;
@@ -95,7 +95,7 @@ public class Ghost extends Creature {
 			}
 			tryMoving();
 			break;
-		
+
 		case HUNTING_PAC:
 			if (world.isTunnel(tile())) {
 				speed = level.ghostSpeedTunnel;
@@ -106,18 +106,20 @@ public class Ghost extends Creature {
 			} else {
 				speed = level.ghostSpeed;
 			}
-			if (targetTile != null) {
-				selectDirectionTowardsTarget();
-			} else {
+			if (targetTile == null) {
+				// this can happen in Ms. Pac-Man
 				selectRandomDirection();
+			} else {
+				selectDirectionTowardsTarget();
 			}
 			tryMoving();
 			break;
-		
+
 		case DEAD:
 			speed = level.ghostSpeed * 2;
 			returnHome();
 			break;
+
 		default:
 			throw new IllegalArgumentException("Illegal ghost state: " + state);
 		}
