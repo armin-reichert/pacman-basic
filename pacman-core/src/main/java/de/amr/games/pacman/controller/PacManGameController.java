@@ -657,11 +657,12 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	private static int ghostPrivateDotLimit(int ghostID, int levelNumber) {
-		if (ghostID == INKY) {
+		switch (ghostID) {
+		case INKY:
 			return levelNumber == 1 ? 30 : 0;
-		} else if (ghostID == CLYDE) {
+		case CLYDE:
 			return levelNumber == 1 ? 60 : levelNumber == 2 ? 50 : 0;
-		} else {
+		default:
 			return 0;
 		}
 	}
