@@ -51,6 +51,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.controller.event.BonusActivatedEvent;
@@ -81,19 +82,16 @@ import de.amr.games.pacman.ui.PacManGameUI;
 /**
  * Controller (in the sense of MVC) for the Pac-Man and Ms. Pac-Man game.
  * <p>
- * This is a finite-state machine with states defined in
- * {@link PacManGameState}. The game data are stored in the model of the
- * selected game, see {@link MsPacManGame} and {@link PacManGame}. The user
- * interface is abstracted via an interface ({@link PacManGameUI}). Scene
- * selection is not controlled by this class but left to the user interface
- * implementations.
+ * This is a finite-state machine with states defined in {@link PacManGameState}. The game data are
+ * stored in the model of the selected game, see {@link MsPacManGame} and {@link PacManGame}. The
+ * user interface is abstracted via an interface ({@link PacManGameUI}). Scene selection is not
+ * controlled by this class but left to the user interface implementations.
  * <p>
  * Missing functionality:
  * <ul>
- * <li><a href=
- * "https://pacman.holenet.info/#CH2_Cornering"><em>Cornering</em></a>: I do not
- * consider cornering as important when the player is controlled by keyboard
- * keys, for a joystick that probably would be more important.</li>
+ * <li><a href= "https://pacman.holenet.info/#CH2_Cornering"><em>Cornering</em></a>: I do not
+ * consider cornering as important when the player is controlled by keyboard keys, for a joystick
+ * that probably would be more important.</li>
  * <li>Exact level data for Ms. Pac-Man still unclear. Any hints appreciated!
  * <li>Multiple players, credits.</li>
  * </ul>
@@ -101,11 +99,9 @@ import de.amr.games.pacman.ui.PacManGameUI;
  * @author Armin Reichert
  * 
  * @see <a href="https://github.com/armin-reichert">GitHub</a>
- * @see <a href="https://pacman.holenet.info">Jamey Pittman: The Pac-Man
- *      Dossier</a>
- * @see <a href=
- *      "https://gameinternals.com/understanding-pac-man-ghost-behavior">Chad
- *      Birch: Understanding ghost behavior</a>
+ * @see <a href="https://pacman.holenet.info">Jamey Pittman: The Pac-Man Dossier</a>
+ * @see <a href= "https://gameinternals.com/understanding-pac-man-ghost-behavior">Chad Birch:
+ *      Understanding ghost behavior</a>
  * @see <a href="http://superpacman.com/mspacman/">Ms. Pac-Man</a>
  */
 public class PacManGameController extends FiniteStateMachine<PacManGameState> {
@@ -149,16 +145,21 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	public void fireGameEvent(PacManGameEvent gameEvent) {
-		gameEventListeners.forEach(listener -> listener.onGameEvent(gameEvent));
+		// copying shall avoid concurrent modification, not sure if this is really necessary
+		new ArrayList<>(gameEventListeners).forEach(listener -> listener.onGameEvent(gameEvent));
 	}
 
+	/**
+	 * Wraps state change into game event.
+	 */
 	@Override
 	protected void fireStateChange(PacManGameState oldState, PacManGameState newState) {
-
-		gameEventListeners.forEach(
-				listener -> listener.onGameEvent(new PacManGameStateChangeEvent(gameVariant, gameModel, oldState, newState)));
+		fireGameEvent(new PacManGameStateChangeEvent(gameVariant, gameModel, oldState, newState));
 	}
 
+	/**
+	 * Configures this state machine.
+	 */
 	public PacManGameController() {
 		super(PacManGameState.class, PacManGameState.values());
 		configure(INTRO, this::enterIntroState, this::updateIntroState, null);
@@ -172,6 +173,9 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		configure(GAME_OVER, this::enterGameOverState, this::updateGameOverState, null);
 	}
 
+	/**
+	 * Executes a single simulation step.
+	 */
 	public void step() {
 		if (gameRunning || (attractMode && state != INTRO)) {
 			steerPlayer();
@@ -183,11 +187,11 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		return ui;
 	}
 
-	public void setUI(PacManGameUI ui) {
+	public void setUI(PacManGameUI gameUI) {
 		if (ui != null) {
 			removeGameEventListener(ui);
 		}
-		this.ui = ui;
+		ui = gameUI;
 		addGameEventListener(ui);
 	}
 
@@ -285,11 +289,8 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	private void startHuntingPhase(int phase) {
-		boolean scattering = isScatteringPhase(phase);
 		huntingPhase = phase;
-		if (scattering) {
-			fireGameEvent(new ScatterPhaseStartedEvent(gameVariant, gameModel, phase / 2));
-		}
+		boolean scattering = isScatteringPhase(phase);
 		if (stateTimer().isStopped()) {
 			stateTimer().start();
 			log("Hunting phase %d (%s) continues, %d of %d ticks remaining", phase, scattering ? "Scattering" : "Chasing",
@@ -299,6 +300,9 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			stateTimer().start();
 			log("Hunting phase %d (%s) starts, %d of %d ticks remaining", phase, scattering ? "Scattering" : "Chasing",
 					stateTimer().ticksRemaining(), stateTimer().duration());
+		}
+		if (scattering) {
+			fireGameEvent(new ScatterPhaseStartedEvent(gameVariant, gameModel, phase / 2));
 		}
 	}
 
@@ -312,7 +316,6 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	private void updateHuntingState() {
 		final Pac player = gameModel.player;
-		int preyCount;
 
 		// Is level complete?
 		if (gameModel.currentLevel.foodRemaining == 0) {
@@ -321,23 +324,24 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		}
 
 		// Is player killing ghost(s)?
-		preyCount = (int) gameModel.ghosts(FRIGHTENED).filter(player::meets).count();
-		if (preyCount > 0) {
-			gameModel.ghosts(FRIGHTENED).filter(player::meets).forEach(this::killGhost);
+		List<Ghost> prey = gameModel.ghosts(FRIGHTENED).filter(player::meets).collect(Collectors.toList());
+		if (prey.size() > 0) {
+			prey.forEach(this::killGhost);
 			changeState(GHOST_DYING);
 			return;
 		}
 
-		// Is player getting killed by any ghost?
+		// Is player getting killed by a ghost?
 		if (!playerImmune || attractMode) {
 			Optional<Ghost> killer = gameModel.ghosts(HUNTING_PAC).filter(player::meets).findAny();
 			if (killer.isPresent()) {
 				log("%s got killed by %s at tile %s", player.name, killer.get().name, player.tile());
 				player.dead = true;
 				// Elroy mode gets disabled when player gets killed
-				if (gameModel.ghosts[BLINKY].elroy > 0) {
-					log("Disable Elroy mode %d for Blinky", gameModel.ghosts[BLINKY].elroy);
-					gameModel.ghosts[BLINKY].elroy -= 1; // negative value means "disabled"
+				int elroyMode = gameModel.ghosts[BLINKY].elroy;
+				if (elroyMode > 0) {
+					gameModel.ghosts[BLINKY].elroy = -elroyMode; // negative value means "disabled"
+					log("Elroy mode %d for Blinky has been disabled", elroyMode);
 				}
 				gameModel.globalDotCounter = 0;
 				gameModel.globalDotCounterEnabled = true;
@@ -352,15 +356,6 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			gameModel.ghosts(HUNTING_PAC).forEach(Ghost::forceTurningBack);
 			startHuntingPhase(++huntingPhase);
 			return;
-		}
-
-		// Move player if possible
-		if (player.restingTicksLeft > 0) {
-			player.restingTicksLeft--;
-		} else {
-			player.speed = player.powerTimer.isRunning() ? gameModel.currentLevel.playerSpeedPowered
-					: gameModel.currentLevel.playerSpeed;
-			player.tryMoving();
 		}
 
 		// Did player find food?
@@ -385,24 +380,30 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			fireGameEvent(new PacManLostPowerEvent(gameVariant, gameModel));
 		}
 
-		// Update ghosts
+		// Move player through world
+		if (player.restingTicksLeft > 0) {
+			player.restingTicksLeft--;
+		} else {
+			player.speed = player.powerTimer.isRunning() ? gameModel.currentLevel.playerSpeedPowered
+					: gameModel.currentLevel.playerSpeed;
+			player.tryMoving();
+		}
+
+		// Ghosts
 		tryReleasingGhosts();
 		gameModel.ghosts(HUNTING_PAC).forEach(this::setGhostHuntingTarget);
 		gameModel.ghosts().forEach(ghost -> ghost.update(gameModel.currentLevel));
 
-		// Update bonus
-		updateBonus();
-	}
-
-	private void updateBonus() {
-		boolean edibleBeforeUpdate = gameModel.bonus.edibleTicksLeft > 0;
-		gameModel.bonus.update();
-		if (gameModel.bonus.edibleTicksLeft == 0 && edibleBeforeUpdate) {
+		// Bonus
+		final Bonus bonus = gameModel.bonus;
+		final boolean edible = bonus.edibleTicksLeft > 0;
+		bonus.update();
+		if (edible && bonus.edibleTicksLeft == 0) {
 			fireGameEvent(new BonusExpiredEvent(gameVariant, gameModel));
-		} else if (gameModel.bonus.edibleTicksLeft > 0 && gameModel.player.meets(gameModel.bonus)) {
-			log("Pac-Man found bonus (%s) of value %d", gameModel.bonusNames[gameModel.bonus.symbol], gameModel.bonus.points);
-			gameModel.bonus.eatAndDisplayValue(2 * 60);
-			score(gameModel.bonus.points);
+		} else if (bonus.edibleTicksLeft > 0 && player.meets(bonus)) {
+			score(bonus.points);
+			bonus.eaten(2 * 60); // 2 seconds
+			log("%s found bonus (%s, value %d)", player.name, gameModel.bonusNames[bonus.symbol], bonus.points);
 			fireGameEvent(new BonusEatenEvent(gameVariant, gameModel));
 		}
 	}
@@ -599,10 +600,10 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	private void setGhostHuntingTarget(Ghost ghost) {
 		/*
-		 * In Ms. Pac-Man, Blinky and Pinky move randomly during the *first* scatter
-		 * phase. Some say, the origial intention had been to randomize the scatter
-		 * target of *all* ghosts in Ms. Pac-Man but because of a bug, only the scatter
-		 * target of Blinky and Pinky would have been affected. Who knows?
+		 * In Ms. Pac-Man, Blinky and Pinky move randomly during the *first* scatter phase. Some say, the
+		 * origial intention had been to randomize the scatter target of *all* ghosts in Ms. Pac-Man but
+		 * because of a bug, only the scatter target of Blinky and Pinky would have been affected. Who
+		 * knows?
 		 */
 		if (isPlaying(MS_PACMAN) && huntingPhase == 0 && (ghost.id == BLINKY || ghost.id == PINKY)) {
 			ghost.targetTile = null;

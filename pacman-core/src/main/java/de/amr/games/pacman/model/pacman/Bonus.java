@@ -29,7 +29,7 @@ public class Bonus extends Creature {
 		edibleTicksLeft = ticks;
 	}
 
-	public void eatAndDisplayValue(long ticks) {
+	public void eaten(long ticks) {
 		edibleTicksLeft = 0;
 		eatenTicksLeft = ticks;
 	}

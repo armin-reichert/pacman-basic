@@ -30,7 +30,7 @@ public class MovingBonus extends Bonus {
 	}
 
 	@Override
-	public void eatAndDisplayValue(long ticks) {
+	public void eaten(long ticks) {
 		edibleTicksLeft = 0;
 		eatenTicksLeft = ticks;
 		speed = 0;
