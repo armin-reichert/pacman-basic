@@ -62,7 +62,7 @@ public class Debug {
 						}
 						g.drawLine(t(x) + HTS, t(y) + HTS, t(neighbor.x) + HTS, t(neighbor.y) + HTS);
 					}
-				} else if (game.currentLevel.world.isUpwardsBlocked(tile)) {
+				} else if (game.currentLevel.world.isOneWayDown(tile)) {
 					g.translate(t(x) + HTS, t(y));
 					g.fillPolygon(TRIANGLE);
 					g.translate(-t(x) - HTS, -t(y));

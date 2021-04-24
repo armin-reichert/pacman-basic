@@ -59,7 +59,7 @@ public class MapBasedPacManGameWorld implements PacManGameWorld {
 		 */
 		intersections = new BitSet();
 		tiles() //
-				.filter(not(this::isGhostHouse)) //
+				.filter(not(this::isGhostHousePart)) //
 				.filter(tile -> !isGhostHouseDoor(tile.plus(Direction.DOWN.vec))) //
 				.filter(tile -> neighbors(tile).filter(not(this::isWall)).count() > 2) //
 				.map(this::index) //
@@ -74,7 +74,7 @@ public class MapBasedPacManGameWorld implements PacManGameWorld {
 	}
 
 	@Override
-	public boolean isGhostHouse(V2i tile) {
+	public boolean isGhostHousePart(V2i tile) {
 		return tile.x >= house_top_left.x && tile.x <= house_bottom_right.x //
 				&& tile.y >= house_top_left.y && tile.y <= house_bottom_right.y;
 	}
@@ -90,12 +90,12 @@ public class MapBasedPacManGameWorld implements PacManGameWorld {
 	}
 
 	@Override
-	public V2i pacHome() {
+	public V2i playerHomeTile() {
 		return pacman_home;
 	}
 
 	@Override
-	public V2i ghostHome(int ghostID) {
+	public V2i ghostHomeTile(int ghostID) {
 		return ghostID == 0 ? house_entry
 				: ghostID == 1 ? house_seat_center : ghostID == 2 ? house_seat_left : house_seat_right;
 	}
@@ -121,12 +121,12 @@ public class MapBasedPacManGameWorld implements PacManGameWorld {
 	}
 
 	@Override
-	public boolean isUpwardsBlocked(V2i tile) {
+	public boolean isOneWayDown(V2i tile) {
 		return upwardsBlockedTiles.contains(tile);
 	}
 
 	@Override
-	public V2i houseEntry() {
+	public V2i houseEntryLeftPart() {
 		return house_entry;
 	}
 
@@ -147,17 +147,17 @@ public class MapBasedPacManGameWorld implements PacManGameWorld {
 
 	@Override
 	public boolean isWall(V2i tile) {
-		return insideMap(tile) && map.data(tile) == WorldMap.WALL;
+		return insideWorld(tile) && map.data(tile) == WorldMap.WALL;
 	}
 
 	@Override
 	public boolean isTunnel(V2i tile) {
-		return insideMap(tile) && map.data(tile) == WorldMap.TUNNEL;
+		return insideWorld(tile) && map.data(tile) == WorldMap.TUNNEL;
 	}
 
 	@Override
 	public boolean isGhostHouseDoor(V2i tile) {
-		return insideMap(tile) && map.data(tile) == WorldMap.DOOR;
+		return insideWorld(tile) && map.data(tile) == WorldMap.DOOR;
 	}
 
 	@Override
@@ -172,7 +172,7 @@ public class MapBasedPacManGameWorld implements PacManGameWorld {
 
 	@Override
 	public boolean isFoodTile(V2i tile) {
-		return insideMap(tile) && (map.data(tile) == WorldMap.PILL || map.data(tile) == WorldMap.ENERGIZER);
+		return insideWorld(tile) && (map.data(tile) == WorldMap.PILL || map.data(tile) == WorldMap.ENERGIZER);
 	}
 
 	@Override
@@ -186,7 +186,7 @@ public class MapBasedPacManGameWorld implements PacManGameWorld {
 	}
 
 	@Override
-	public V2i bonusHomeTile() {
+	public V2i bonusTile() {
 		return bonus_home;
 	}
 }

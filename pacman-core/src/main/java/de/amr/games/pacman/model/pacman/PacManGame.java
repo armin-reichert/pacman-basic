@@ -86,7 +86,7 @@ public class PacManGame extends AbstractGameModel {
 
 		bonus = new Bonus();
 		bonus.world = world;
-		bonus.setPosition(world.bonusHomeTile().x * TS + HTS, world.bonusHomeTile().y * TS);
+		bonus.setPosition(world.bonusTile().x * TS + HTS, world.bonusTile().y * TS);
 
 		player = new Pac("Pac-Man", RIGHT);
 		player.world = world;

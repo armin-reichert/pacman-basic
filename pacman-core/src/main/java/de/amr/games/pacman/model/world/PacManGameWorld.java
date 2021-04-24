@@ -7,7 +7,7 @@ import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
 
 /**
- * Interface of the world as seen by game controller.
+ * Interface for accessing the game world.
  * 
  * @author Armin Reichert
  */
@@ -45,10 +45,11 @@ public interface PacManGameWorld {
 	int numRows();
 
 	/**
-	 * @return Stream over all tiles in the world from top to bottom left-to-right.
+	 * @return all tiles in the world in order top to bottom, left-to-right.
 	 */
 	default Stream<V2i> tiles() {
-		return IntStream.range(0, numCols() * numRows()).mapToObj(index -> new V2i(index % numCols(), index / numCols()));
+		int w = numCols(), h = numRows();
+		return IntStream.range(0, w * h).mapToObj(i -> new V2i(i % w, i / w));
 	}
 
 	/**
@@ -61,33 +62,33 @@ public interface PacManGameWorld {
 
 	/**
 	 * @param tile a tile
-	 * @return tells if this tile is located inside the map area
+	 * @return tells if this tile is located inside the world bounds
 	 */
-	default boolean insideMap(V2i tile) {
+	default boolean insideWorld(V2i tile) {
 		return 0 <= tile.x && tile.x < numCols() && 0 <= tile.y && tile.y < numRows();
 	}
 
 	/**
-	 * @return Pac-Man's home position
+	 * @return the player's home tile
 	 */
-	V2i pacHome();
+	V2i playerHomeTile();
 
 	/**
 	 * @param ghost a ghost
-	 * @return ghost's home position
+	 * @return ghost's home tile
 	 */
-	V2i ghostHome(int ghost);
+	V2i ghostHomeTile(int ghost);
 
 	/**
 	 * @param ghost a ghost
-	 * @return ghost scattering target (outside of the accessible maze)
+	 * @return ghost scattering target tile (an inaccessible tile)
 	 */
 	V2i ghostScatterTile(int ghost);
 
 	/**
 	 * @return ghost house entry (left one of the two tiles above the doors)
 	 */
-	V2i houseEntry();
+	V2i houseEntryLeftPart();
 
 	/**
 	 * @return middle position inside the house
@@ -110,16 +111,16 @@ public interface PacManGameWorld {
 	int numPortals();
 
 	/**
-	 * @param i index
+	 * @param portalIndex index
 	 * @return i'th portal tile at the left edge of the world
 	 */
-	V2i portalLeft(int i);
+	V2i portalLeft(int portalIndex);
 
 	/**
-	 * @param i index
+	 * @param portalIndex index
 	 * @return i'th portal tile at the right edge of the world
 	 */
-	V2i portalRight(int i);
+	V2i portalRight(int portalIndex);
 
 	/**
 	 * @param tile a tile
@@ -129,9 +130,9 @@ public interface PacManGameWorld {
 
 	/**
 	 * @param tile a tile
-	 * @return tells if the tile can only be access from above
+	 * @return tells if the tile can only be traversed from top to bottom
 	 */
-	boolean isUpwardsBlocked(V2i tile);
+	boolean isOneWayDown(V2i tile);
 
 	/**
 	 * @param tile a tile
@@ -156,16 +157,17 @@ public interface PacManGameWorld {
 	 * @return tells if the tile contains a ghosthouse door
 	 */
 	boolean isGhostHouseDoor(V2i tile);
-	
+
 	/**
 	 * @param tile a tile
 	 * @return tells if the tile is part of the ghosthouse
 	 */
-	boolean isGhostHouse(V2i tile);
-	
+	boolean isGhostHousePart(V2i tile);
+
 	/**
 	 * @param tile a tile
-	 * @return tells if the tile may contain food (not if it currently contains food!)
+	 * @return tells if the tile may contain food (not if it currently contains
+	 *         food!)
 	 */
 	boolean isFoodTile(V2i tile);
 
@@ -181,7 +183,7 @@ public interface PacManGameWorld {
 	Stream<V2i> energizerTiles();
 
 	/**
-	 * @return bonus home location in case this is fixed
+	 * @return bonus location in case this is fixed
 	 */
-	V2i bonusHomeTile();
+	V2i bonusTile();
 }

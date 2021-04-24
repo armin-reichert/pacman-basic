@@ -37,7 +37,7 @@ public abstract class AbstractGameModel {
 	public boolean globalDotCounterEnabled;
 
 	public void resetGuys() {
-		player.placeAt(currentLevel.world.pacHome(), HTS, 0);
+		player.placeAt(currentLevel.world.playerHomeTile(), HTS, 0);
 		player.setDir(player.startDir);
 		player.setWishDir(player.startDir);
 		player.visible = true;
@@ -51,7 +51,7 @@ public abstract class AbstractGameModel {
 		player.powerTimer.reset();
 
 		for (Ghost ghost : ghosts) {
-			ghost.placeAt(currentLevel.world.ghostHome(ghost.id), HTS, 0);
+			ghost.placeAt(currentLevel.world.ghostHomeTile(ghost.id), HTS, 0);
 			ghost.setDir(ghost.startDir);
 			ghost.setWishDir(ghost.startDir);
 			ghost.visible = true;

@@ -131,7 +131,7 @@ public class Ghost extends Creature {
 			return is(GhostState.ENTERING_HOUSE) || is(GhostState.LEAVING_HOUSE);
 		}
 		// TODO there is still a bug causing ghost get stuck
-		if (world.isUpwardsBlocked(tile)) {
+		if (world.isOneWayDown(tile)) {
 			if (offset().y != 0) {
 				return true; // maybe already on the way up
 			}
@@ -141,7 +141,7 @@ public class Ghost extends Creature {
 	}
 
 	public boolean atGhostHouseDoor() {
-		return tile().equals(world.houseEntry()) && differsAtMost(offset().x, HTS, 2);
+		return tile().equals(world.houseEntryLeftPart()) && differsAtMost(offset().x, HTS, 2);
 	}
 
 	private void returnHome() {
@@ -151,7 +151,7 @@ public class Ghost extends Creature {
 			setDir(Direction.DOWN);
 			setWishDir(Direction.DOWN);
 			forcedOnTrack = false;
-			targetTile = (id == 0) ? world.houseSeatCenter() : world.ghostHome(id);
+			targetTile = (id == 0) ? world.houseSeatCenter() : world.ghostHomeTile(id);
 			state = GhostState.ENTERING_HOUSE;
 			return;
 		}
@@ -179,7 +179,7 @@ public class Ghost extends Creature {
 		V2i location = tile();
 		V2d offset = offset();
 		// House left? Resume hunting.
-		if (location.equals(world.houseEntry()) && differsAtMost(offset.y, 0, 1)) {
+		if (location.equals(world.houseEntryLeftPart()) && differsAtMost(offset.y, 0, 1)) {
 			setOffset(HTS, 0);
 			setDir(Direction.LEFT);
 			setWishDir(Direction.LEFT);

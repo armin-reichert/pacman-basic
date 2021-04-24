@@ -117,7 +117,7 @@ public class Creature extends GameEntity {
 	}
 
 	public boolean canAccessTile(V2i tile) {
-		if (world.insideMap(tile)) {
+		if (world.insideWorld(tile)) {
 			return !world.isWall(tile) && !world.isGhostHouseDoor(tile);
 		} else {
 			return world.isPortal(tile);
