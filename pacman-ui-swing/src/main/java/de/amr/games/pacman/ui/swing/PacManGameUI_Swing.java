@@ -257,7 +257,6 @@ public class PacManGameUI_Swing implements PacManGameUI {
 		flashMessageQ.add(new FlashMessage(message, (long) (60 * seconds)));
 	}
 
-
 	@Override
 	public Optional<Direction> playerDirectionChangeRequested() {
 		if (keyboard.keyPressed("Up")) {
@@ -274,7 +273,7 @@ public class PacManGameUI_Swing implements PacManGameUI {
 		}
 		return Optional.empty();
 	}
-	
+
 	@Override
 	public boolean gameStartRequested() {
 		return keyboard.keyPressed("Space");
@@ -284,8 +283,8 @@ public class PacManGameUI_Swing implements PacManGameUI {
 		switch (e.getKeyCode()) {
 
 		case KeyEvent.VK_A:
-			gameController.autopilot.enabled = !gameController.autopilot.enabled;
-			showFlashMessage(gameController.autopilot.enabled ? "Autopilot ON" : "Autopilot OFF");
+			gameController.autopilotOn = !gameController.autopilotOn;
+			showFlashMessage(gameController.autopilotOn ? "Autopilot ON" : "Autopilot OFF");
 			break;
 
 		case KeyEvent.VK_D:

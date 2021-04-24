@@ -21,13 +21,9 @@ import de.amr.games.pacman.model.common.GhostState;
  */
 public class Autopilot {
 
-	public boolean enabled;
 	public boolean logEnabled;
 
-	public void run(AbstractGameModel game) {
-		if (!enabled) {
-			return;
-		}
+	public void steer(AbstractGameModel game) {
 		if (game.player.forced) {
 			game.player.forced = false;
 			return;

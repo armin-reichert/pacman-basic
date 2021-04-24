@@ -124,7 +124,9 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	private int huntingPhase;
 
 	private PacManGameUI ui;
+
 	public final Autopilot autopilot = new Autopilot();
+	public boolean autopilotOn;
 
 	private final List<PacManGameEventListener> gameEventListeners = new ArrayList<>();
 
@@ -172,7 +174,11 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	 */
 	public void step() {
 		if (gameRunning || (attractMode && state != INTRO)) {
-			steerPlayer();
+			if (autopilotOn) {
+				autopilot.steer(game);
+			} else {
+				ui.playerDirectionChangeRequested().ifPresent(game.player::setWishDir);
+			}
 		}
 		updateState();
 	}
@@ -246,7 +252,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		gameRequested = false;
 		gameRunning = false;
 		attractMode = false;
-		autopilot.enabled = false;
+		autopilotOn = false;
 	}
 
 	private void updateIntroState() {
@@ -255,7 +261,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			changeState(READY);
 		} else if (stateTimer().hasExpired()) {
 			attractMode = true;
-			autopilot.enabled = true;
+			autopilotOn = true;
 			changeState(READY);
 		}
 	}
@@ -507,14 +513,6 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			game.lives++;
 			log("Extra life. Player has %d lives now", game.lives);
 			fireGameEvent(new ExtraLifeEvent(variant, game));
-		}
-	}
-
-	private void steerPlayer() {
-		if (autopilot.enabled) {
-			autopilot.run(game);
-		} else {
-			ui.playerDirectionChangeRequested().ifPresent(game.player::setWishDir);
 		}
 	}
 
