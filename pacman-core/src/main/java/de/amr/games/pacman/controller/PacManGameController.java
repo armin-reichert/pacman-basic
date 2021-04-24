@@ -106,6 +106,10 @@ import de.amr.games.pacman.ui.PacManGameUI;
  */
 public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
+	private static final long sec_to_ticks(double sec) {
+		return Math.round(sec * 60);
+	}
+
 	private static final String KEY_START_GAME = "Space";
 	private static final String KEY_PLAYER_UP = "Up";
 	private static final String KEY_PLAYER_DOWN = "Down";
@@ -264,11 +268,11 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	private void enterReadyState() {
 		game.resetGuys();
-		stateTimer().reset(6 * 60);
+		stateTimer().reset(sec_to_ticks(6));
 	}
 
 	private void updateReadyState() {
-		if (stateTimer().ticksRemaining() == 60) {
+		if (stateTimer().ticksRemaining() == sec_to_ticks(1)) {
 			game.player.visible = true;
 			for (Ghost ghost : game.ghosts) {
 				ghost.visible = true;
@@ -355,7 +359,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 		// Did player find food?
 		if (game.currentLevel.containsFood(player.tile())) {
-			onPlayerFoundFood(player);
+			onPlayerFoundFood();
 		} else {
 			player.starvingTicks++;
 		}
@@ -363,7 +367,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		// Consume power
 		if (player.powerTimer.isRunning()) {
 			player.powerTimer.tick();
-			if (player.powerTimer.ticksRemaining() == 60) {
+			if (player.powerTimer.ticksRemaining() == sec_to_ticks(1)) {
 				fireGameEvent(new PacManLosingPowerEvent(variant, game));
 			}
 		} else if (player.powerTimer.hasExpired()) {
@@ -386,7 +390,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 		// Ghosts
 		tryReleasingGhosts();
-		game.ghosts(HUNTING_PAC).forEach(this::setGhostHuntingTarget);
+		game.ghosts(HUNTING_PAC).forEach(this::setTargetTile);
 		game.ghosts().forEach(ghost -> ghost.update(game.currentLevel));
 
 		// Bonus
@@ -397,7 +401,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			fireGameEvent(new BonusExpiredEvent(variant, game));
 		} else if (bonus.edibleTicksLeft > 0 && player.meets(bonus)) {
 			score(bonus.points);
-			bonus.eaten(2 * 60); // 2 seconds
+			bonus.eaten(sec_to_ticks(2));
 			log("%s found bonus (%s, value %d)", player.name, game.bonusNames[bonus.symbol], bonus.points);
 			fireGameEvent(new BonusEatenEvent(variant, game));
 		}
@@ -526,7 +530,8 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		}
 	}
 
-	private void onPlayerFoundFood(Pac player) {
+	private void onPlayerFoundFood() {
+		final Pac player = game.player;
 		V2i foodLocation = player.tile();
 		game.currentLevel.removeFood(foodLocation);
 		if (game.currentLevel.world.isEnergizerTile(foodLocation)) {
@@ -561,7 +566,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			bonus.visible = true;
 			bonus.symbol = game.currentLevel.bonusSymbol;
 			bonus.points = game.bonusValues[game.currentLevel.bonusSymbol];
-			bonus.activate(isPlaying(PACMAN) ? (long) ((9 + new Random().nextFloat()) * 60) : Long.MAX_VALUE);
+			bonus.activate(isPlaying(PACMAN) ? sec_to_ticks(9 + new Random().nextFloat()) : Long.MAX_VALUE);
 			log("Bonus %s (value %d) activated", game.bonusNames[bonus.symbol], bonus.points);
 			fireGameEvent(new BonusActivatedEvent(variant, game));
 		}
@@ -593,13 +598,13 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		log("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name, ghost.tile(), ghost.bounty);
 	}
 
-	private void setGhostHuntingTarget(Ghost ghost) {
-		/*
-		 * In Ms. Pac-Man, Blinky and Pinky move randomly during the *first* scatter phase. Some say, the
-		 * origial intention had been to randomize the scatter target of *all* ghosts in Ms. Pac-Man but
-		 * because of a bug, only the scatter target of Blinky and Pinky would have been affected. Who
-		 * knows?
-		 */
+	/*
+	 * In Ms. Pac-Man, Blinky and Pinky move randomly during the *first* scatter phase. Some say, the
+	 * origial intention had been to randomize the scatter target of *all* ghosts in Ms. Pac-Man but
+	 * because of a bug, only the scatter target of Blinky and Pinky would have been affected. Who
+	 * knows?
+	 */
+	private void setTargetTile(Ghost ghost) {
 		if (isPlaying(MS_PACMAN) && huntingPhase == 0 && (ghost.id == BLINKY || ghost.id == PINKY)) {
 			ghost.targetTile = null;
 		} else if (isScatteringPhase(huntingPhase) && ghost.elroy == 0) {
@@ -613,28 +618,26 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	 * The so called "ghost AI".
 	 */
 	private V2i ghostHuntingTarget(int ghostID) {
-		V2i playerTile = game.player.tile();
+		final V2i playerTile = game.player.tile();
 		switch (ghostID) {
 
 		case BLINKY:
 			return playerTile;
 
 		case PINKY: {
-			V2i target = playerTile.plus(game.player.dir().vec.scaled(4));
-			if (game.player.dir() == Direction.UP) {
-				// simulate overflow bug
-				target = target.plus(-4, 0);
+			V2i fourAheadOfPlayer = playerTile.plus(game.player.dir().vec.scaled(4));
+			if (game.player.dir() == Direction.UP) { // simulate overflow bug
+				fourAheadOfPlayer = fourAheadOfPlayer.plus(-4, 0);
 			}
-			return target;
+			return fourAheadOfPlayer;
 		}
 
 		case INKY: {
-			V2i twoAheadPlayer = playerTile.plus(game.player.dir().vec.scaled(2));
-			if (game.player.dir() == Direction.UP) {
-				// simulate overflow bug
-				twoAheadPlayer = twoAheadPlayer.plus(-2, 0);
+			V2i twoAheadOfPlayer = playerTile.plus(game.player.dir().vec.scaled(2));
+			if (game.player.dir() == Direction.UP) { // simulate overflow bug
+				twoAheadOfPlayer = twoAheadOfPlayer.plus(-2, 0);
 			}
-			return twoAheadPlayer.scaled(2).minus(game.ghosts[BLINKY].tile());
+			return twoAheadOfPlayer.scaled(2).minus(game.ghosts[BLINKY].tile());
 		}
 
 		case CLYDE: /* A Boy Named Sue */
@@ -649,8 +652,8 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	// Ghost house rules
 
-	private static int playerStarvingTimeLimit(int levelNumber) {
-		return levelNumber < 5 ? 4 * 60 : 3 * 60;
+	private static long playerStarvingTimeLimit(int levelNumber) {
+		return sec_to_ticks(levelNumber < 5 ? 4 : 3);
 	}
 
 	private static int ghostPrivateDotLimit(int ghostID, int levelNumber) {
