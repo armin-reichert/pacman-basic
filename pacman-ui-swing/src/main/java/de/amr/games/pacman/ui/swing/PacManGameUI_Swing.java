@@ -259,7 +259,7 @@ public class PacManGameUI_Swing implements PacManGameUI {
 
 
 	@Override
-	public Optional<Direction> triggerPlayerDirectionChange() {
+	public Optional<Direction> playerDirectionChangeRequested() {
 		if (keyboard.keyPressed("Up")) {
 			return Optional.of(Direction.UP);
 		}
@@ -276,7 +276,7 @@ public class PacManGameUI_Swing implements PacManGameUI {
 	}
 	
 	@Override
-	public boolean triggerGameStart() {
+	public boolean gameStartRequested() {
 		return keyboard.keyPressed("Space");
 	}
 

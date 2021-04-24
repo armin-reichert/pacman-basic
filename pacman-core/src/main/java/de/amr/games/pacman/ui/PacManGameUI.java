@@ -22,7 +22,7 @@ public interface PacManGameUI extends PacManGameEventFacade {
 		showFlashMessage(message, 1);
 	}
 
-	Optional<Direction> triggerPlayerDirectionChange();
+	Optional<Direction> playerDirectionChangeRequested();
 
-	boolean triggerGameStart();
+	boolean gameStartRequested();
 }

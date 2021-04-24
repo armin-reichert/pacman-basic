@@ -250,7 +250,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	private void updateIntroState() {
-		if (ui.triggerGameStart()) {
+		if (ui.gameStartRequested()) {
 			gameRequested = true;
 			changeState(READY);
 		} else if (stateTimer().hasExpired()) {
@@ -514,7 +514,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		if (autopilot.enabled) {
 			autopilot.run(game);
 		} else {
-			ui.triggerPlayerDirectionChange().ifPresent(game.player::setWishDir);
+			ui.playerDirectionChangeRequested().ifPresent(game.player::setWishDir);
 		}
 	}
 

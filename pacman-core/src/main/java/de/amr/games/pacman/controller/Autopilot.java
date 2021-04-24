@@ -15,57 +15,14 @@ import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.GhostState;
 
 /**
- * Controls Pac-Man movement.
+ * Controls automatic movement of the player.
  * 
  * @author Armin Reichert
  */
 public class Autopilot {
 
-	static final int MAX_GHOST_AHEAD_DETECTION_DIST = 4; // tiles
-	static final int MAX_GHOST_BEHIND_DETECTION_DIST = 2; // tiles
-	static final int MAX_GHOST_CHASE_DIST = 10; // tiles
-	static final int MAX_BONUS_HARVEST_DIST = 20; // tiles
-
-	static class GameInfo {
-
-		Ghost hunterAhead;
-		double hunterAheadDistance;
-		Ghost hunterBehind;
-		double hunterBehindDistance;
-		List<Ghost> frightenedGhosts;
-		List<Double> frightenedGhostsDistance;
-
-		@Override
-		public String toString() {
-			String s = "-- Begin autopilot info\n";
-			if (hunterAhead != null) {
-				s += String.format("Hunter ahead:  %s, distance: %.2g\n", hunterAhead.name, hunterAheadDistance);
-			} else {
-				s += "No hunter ahead\n";
-			}
-			if (hunterBehind != null) {
-				s += String.format("Hunter behind: %s, distance: %.2g\n", hunterBehind.name, hunterBehindDistance);
-			} else {
-				s += "No hunter behind\n";
-			}
-			for (int i = 0; i < frightenedGhosts.size(); ++i) {
-				Ghost ghost = frightenedGhosts.get(i);
-				s += String.format("Prey: %s, distance: %.2g\n", ghost.name, frightenedGhostsDistance.get(i));
-			}
-			if (frightenedGhosts.isEmpty()) {
-				s += "No prey\n";
-			}
-			s += "-- End autopilot info";
-			return s;
-		}
-
-	}
-
 	public boolean enabled;
 	public boolean logEnabled;
-
-	public Autopilot() {
-	}
 
 	public void run(AbstractGameModel game) {
 		if (!enabled) {
@@ -78,7 +35,7 @@ public class Autopilot {
 		if (!game.player.stuck && !game.player.newTileEntered) {
 			return;
 		}
-		GameInfo data = collectData(game);
+		AutopilotData data = collectData(game);
 		if (data.hunterAhead != null || data.hunterBehind != null || !data.frightenedGhosts.isEmpty()) {
 			log("\n%s", data);
 		}
@@ -91,8 +48,8 @@ public class Autopilot {
 		}
 	}
 
-	private GameInfo collectData(AbstractGameModel game) {
-		GameInfo data = new GameInfo();
+	private AutopilotData collectData(AbstractGameModel game) {
+		AutopilotData data = new AutopilotData();
 		Ghost hunterAhead = findHuntingGhostAhead(game); // Where is Hunter?
 		if (hunterAhead != null) {
 			data.hunterAhead = hunterAhead;
@@ -104,14 +61,14 @@ public class Autopilot {
 			data.hunterBehindDistance = game.player.tile().manhattanDistance(hunterBehind.tile());
 		}
 		data.frightenedGhosts = Stream.of(game.ghosts).filter(ghost -> ghost.is(GhostState.FRIGHTENED))
-				.filter(ghost -> ghost.tile().manhattanDistance(game.player.tile()) <= MAX_GHOST_CHASE_DIST)
+				.filter(ghost -> ghost.tile().manhattanDistance(game.player.tile()) <= AutopilotData.MAX_GHOST_CHASE_DIST)
 				.collect(Collectors.toList());
 		data.frightenedGhostsDistance = data.frightenedGhosts.stream()
 				.map(ghost -> ghost.tile().manhattanDistance(game.player.tile())).collect(Collectors.toList());
 		return data;
 	}
 
-	private void takeAction(AbstractGameModel game, GameInfo data) {
+	private void takeAction(AbstractGameModel game, AutopilotData data) {
 		if (data.hunterAhead != null) {
 			Direction escapeDir = null;
 			if (data.hunterBehind != null) {
@@ -137,7 +94,7 @@ public class Autopilot {
 			log("Detected frightened ghost %s %.0g tiles away", prey.name, prey.tile().manhattanDistance(game.player.tile()));
 			game.player.targetTile = prey.tile();
 		} else if (game.bonus.edibleTicksLeft > 0
-				&& game.bonus.tile().manhattanDistance(game.player.tile()) <= MAX_BONUS_HARVEST_DIST) {
+				&& game.bonus.tile().manhattanDistance(game.player.tile()) <= AutopilotData.MAX_BONUS_HARVEST_DIST) {
 			log("Detected active bonus");
 			game.player.targetTile = game.bonus.tile();
 		} else {
@@ -152,7 +109,7 @@ public class Autopilot {
 	private Ghost findHuntingGhostAhead(AbstractGameModel game) {
 		V2i pacManTile = game.player.tile();
 		boolean energizerFound = false;
-		for (int i = 1; i <= MAX_GHOST_AHEAD_DETECTION_DIST; ++i) {
+		for (int i = 1; i <= AutopilotData.MAX_GHOST_AHEAD_DETECTION_DIST; ++i) {
 			V2i ahead = pacManTile.plus(game.player.dir().vec.scaled(i));
 			if (!game.player.canAccessTile(ahead)) {
 				break;
@@ -180,7 +137,7 @@ public class Autopilot {
 
 	private Ghost findHuntingGhostBehind(AbstractGameModel game) {
 		V2i pacManTile = game.player.tile();
-		for (int i = 1; i <= MAX_GHOST_BEHIND_DETECTION_DIST; ++i) {
+		for (int i = 1; i <= AutopilotData.MAX_GHOST_BEHIND_DETECTION_DIST; ++i) {
 			V2i behind = pacManTile.plus(game.player.dir().opposite().vec.scaled(i));
 			if (!game.player.canAccessTile(behind)) {
 				break;
