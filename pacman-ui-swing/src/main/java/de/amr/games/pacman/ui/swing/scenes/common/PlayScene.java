@@ -75,6 +75,10 @@ public class PlayScene extends GameScene {
 		} else if (gameController.state == PacManGameState.LEVEL_STARTING) {
 			gameController.stateTimer().forceExpiration();
 		}
+		//TODO use event?
+		if (game().ghosts(GhostState.DEAD).count() == 0) {
+			sounds.stop(PacManGameSound.GHOST_RETURNING_HOME);
+		}
 	}
 
 	@Override
