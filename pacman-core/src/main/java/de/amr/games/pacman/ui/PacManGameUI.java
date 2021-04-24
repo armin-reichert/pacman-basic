@@ -1,6 +1,9 @@
 package de.amr.games.pacman.ui;
 
+import java.util.Optional;
+
 import de.amr.games.pacman.controller.event.PacManGameEventFacade;
+import de.amr.games.pacman.lib.Direction;
 
 /**
  * Interface through which the game controller accesses the UI.
@@ -18,6 +21,8 @@ public interface PacManGameUI extends PacManGameEventFacade {
 	default void showFlashMessage(String message) {
 		showFlashMessage(message, 1);
 	}
+	
+	Optional<Direction> playerDirectionChange();
 
 	boolean keyPressed(String keySpec);
 }

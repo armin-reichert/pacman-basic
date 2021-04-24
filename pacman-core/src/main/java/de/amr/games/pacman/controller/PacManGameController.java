@@ -111,10 +111,6 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	private static final String KEY_START_GAME = "Space";
-	private static final String KEY_PLAYER_UP = "Up";
-	private static final String KEY_PLAYER_DOWN = "Down";
-	private static final String KEY_PLAYER_LEFT = "Left";
-	private static final String KEY_PLAYER_RIGHT = "Right";
 
 	private static final Map<Integer, Integer> INTERMISSION_NUMBER_BY_LEVEL = Map.of(2, 1, 5, 2, 9, 3, 13, 3, 17, 3);
 
@@ -519,14 +515,8 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	private void steerPlayer() {
 		if (autopilot.enabled) {
 			autopilot.run(game);
-		} else if (ui.keyPressed(KEY_PLAYER_LEFT)) {
-			game.player.setWishDir(Direction.LEFT);
-		} else if (ui.keyPressed(KEY_PLAYER_RIGHT)) {
-			game.player.setWishDir(Direction.RIGHT);
-		} else if (ui.keyPressed(KEY_PLAYER_UP)) {
-			game.player.setWishDir(Direction.UP);
-		} else if (ui.keyPressed(KEY_PLAYER_DOWN)) {
-			game.player.setWishDir(Direction.DOWN);
+		} else {
+			ui.playerDirectionChange().ifPresent(game.player::setWishDir);
 		}
 	}
 

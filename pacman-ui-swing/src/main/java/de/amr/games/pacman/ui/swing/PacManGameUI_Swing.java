@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.Deque;
 import java.util.EnumMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import javax.swing.JFrame;
@@ -34,6 +35,7 @@ import de.amr.games.pacman.controller.PacManGameController;
 import de.amr.games.pacman.controller.PacManGameState;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManGameStateChangeEvent;
+import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.GameVariant;
@@ -259,6 +261,23 @@ public class PacManGameUI_Swing implements PacManGameUI {
 		boolean pressed = keyboard.keyPressed(keySpec);
 		keyboard.clearKey(keySpec); // TODO
 		return pressed;
+	}
+
+	@Override
+	public Optional<Direction> playerDirectionChange() {
+		if (keyPressed("Up")) {
+			return Optional.of(Direction.UP);
+		}
+		if (keyPressed("Down")) {
+			return Optional.of(Direction.DOWN);
+		}
+		if (keyPressed("Left")) {
+			return Optional.of(Direction.LEFT);
+		}
+		if (keyPressed("Right")) {
+			return Optional.of(Direction.RIGHT);
+		}
+		return Optional.empty();
 	}
 
 	private void handleKey(KeyEvent e) {
