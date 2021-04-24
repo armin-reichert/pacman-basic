@@ -9,7 +9,7 @@ import de.amr.games.pacman.model.common.Creature;
  * 
  * @author Armin Reichert
  */
-public class PacManBonus extends Creature {
+public class Bonus extends Creature {
 
 	public Random random = new Random();
 

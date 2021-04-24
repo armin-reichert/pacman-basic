@@ -74,7 +74,7 @@ import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.mspacman.MsPacManGame;
-import de.amr.games.pacman.model.pacman.PacManBonus;
+import de.amr.games.pacman.model.pacman.Bonus;
 import de.amr.games.pacman.model.pacman.PacManGame;
 import de.amr.games.pacman.ui.PacManGameUI;
 
@@ -561,7 +561,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 		// Bonus gets edible?
 		if (gameModel.currentLevel.eatenFoodCount() == 70 || gameModel.currentLevel.eatenFoodCount() == 170) {
-			final PacManBonus bonus = gameModel.bonus;
+			final Bonus bonus = gameModel.bonus;
 			bonus.visible = true;
 			bonus.symbol = gameModel.currentLevel.bonusSymbol;
 			bonus.points = gameModel.bonusValues[gameModel.currentLevel.bonusSymbol];

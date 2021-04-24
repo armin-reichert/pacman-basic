@@ -93,7 +93,7 @@ public class MsPacManGame extends AbstractGameModel {
 
 		bonusNames = Stream.of(BonusSymbol.values()).map(Enum<BonusSymbol>::name).toArray(String[]::new);
 		bonusValues = BONUS_VALUES;
-		bonus = new MsPacManBonus();
+		bonus = new MovingBonus();
 		bonus.world = world;
 
 		player = new Pac("Ms. Pac-Man", LEFT);

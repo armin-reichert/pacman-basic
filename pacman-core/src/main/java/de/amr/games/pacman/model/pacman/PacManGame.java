@@ -84,7 +84,7 @@ public class PacManGame extends AbstractGameModel {
 		bonusNames = Stream.of(BonusSymbol.values()).map(Enum<BonusSymbol>::name).toArray(String[]::new);
 		bonusValues = BONUS_VALUES;
 
-		bonus = new PacManBonus();
+		bonus = new Bonus();
 		bonus.world = world;
 		bonus.setPosition(world.bonusHomeTile().x * TS + HTS, world.bonusHomeTile().y * TS);
 

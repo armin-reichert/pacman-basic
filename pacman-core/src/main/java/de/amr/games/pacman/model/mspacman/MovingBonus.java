@@ -1,9 +1,15 @@
 package de.amr.games.pacman.model.mspacman;
 
 import de.amr.games.pacman.lib.Direction;
-import de.amr.games.pacman.model.pacman.PacManBonus;
+import de.amr.games.pacman.model.pacman.Bonus;
 
-public class MsPacManBonus extends PacManBonus {
+/**
+ * In Ms. Pac-Man, the bonus walks through the world, starting at some portal
+ * and leaving through some portal at the other side of the world.
+ * 
+ * @author Armin Reichert
+ */
+public class MovingBonus extends Bonus {
 
 	@Override
 	public void activate(long ticks) {

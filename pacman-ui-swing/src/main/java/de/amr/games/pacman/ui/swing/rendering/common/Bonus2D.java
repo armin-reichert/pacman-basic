@@ -7,11 +7,11 @@ import java.awt.image.BufferedImage;
 import java.util.Map;
 
 import de.amr.games.pacman.lib.TimedSequence;
-import de.amr.games.pacman.model.pacman.PacManBonus;
+import de.amr.games.pacman.model.pacman.Bonus;
 
 public class Bonus2D {
 
-	private PacManBonus bonus;
+	private Bonus bonus;
 	private BufferedImage[] symbolSprites;
 	private Map<Integer, BufferedImage> numberSprites;
 	private TimedSequence<Integer> jumpAnimation;
@@ -30,7 +30,7 @@ public class Bonus2D {
 		this.jumpAnimation = jumpAnimation;
 	}
 
-	public void setBonus(PacManBonus bonus) {
+	public void setBonus(Bonus bonus) {
 		this.bonus = bonus;
 	}
 
