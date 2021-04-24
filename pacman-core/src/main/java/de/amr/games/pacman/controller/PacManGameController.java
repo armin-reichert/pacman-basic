@@ -600,7 +600,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	/*
 	 * In Ms. Pac-Man, Blinky and Pinky move randomly during the *first* scatter phase. Some say, the
-	 * origial intention had been to randomize the scatter target of *all* ghosts in Ms. Pac-Man but
+	 * original intention had been to randomize the scatter target of *all* ghosts in Ms. Pac-Man but
 	 * because of a bug, only the scatter target of Blinky and Pinky would have been affected. Who
 	 * knows?
 	 */
