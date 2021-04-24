@@ -21,8 +21,8 @@ public interface PacManGameUI extends PacManGameEventFacade {
 	default void showFlashMessage(String message) {
 		showFlashMessage(message, 1);
 	}
-	
-	Optional<Direction> playerDirectionChange();
 
-	boolean keyPressed(String keySpec);
+	Optional<Direction> triggerPlayerDirectionChange();
+
+	boolean triggerGameStart();
 }

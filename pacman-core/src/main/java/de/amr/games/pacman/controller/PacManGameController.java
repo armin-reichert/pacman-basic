@@ -110,8 +110,6 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		return Math.round(sec * 60);
 	}
 
-	private static final String KEY_START_GAME = "Space";
-
 	private static final Map<Integer, Integer> INTERMISSION_NUMBER_BY_LEVEL = Map.of(2, 1, 5, 2, 9, 3, 13, 3, 17, 3);
 
 	private final AbstractGameModel[] games = { new MsPacManGame(), new PacManGame() };
@@ -252,7 +250,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	private void updateIntroState() {
-		if (ui.keyPressed(KEY_START_GAME)) {
+		if (ui.triggerGameStart()) {
 			gameRequested = true;
 			changeState(READY);
 		} else if (stateTimer().hasExpired()) {
@@ -516,7 +514,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		if (autopilot.enabled) {
 			autopilot.run(game);
 		} else {
-			ui.playerDirectionChange().ifPresent(game.player::setWishDir);
+			ui.triggerPlayerDirectionChange().ifPresent(game.player::setWishDir);
 		}
 	}
 

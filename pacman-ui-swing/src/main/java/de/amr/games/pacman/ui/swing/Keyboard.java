@@ -38,6 +38,10 @@ public class Keyboard {
 	public boolean anyKeyPressed() {
 		return !pressedKeys.isEmpty();
 	}
+	
+	public void clear() {
+		pressedKeys.clear();
+	}
 
 	public void clearKey(String keySpec) {
 		pressedKeys.clear(keyCode(keySpec));
