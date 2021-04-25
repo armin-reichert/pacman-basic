@@ -2,7 +2,7 @@ package de.amr.games.pacman.ui;
 
 import java.util.Optional;
 
-import de.amr.games.pacman.controller.event.PacManGameEventFacade;
+import de.amr.games.pacman.controller.event.DefaultPacManGameEventHandler;
 import de.amr.games.pacman.lib.Direction;
 
 /**
@@ -10,7 +10,7 @@ import de.amr.games.pacman.lib.Direction;
  * 
  * @author Armin Reichert
  */
-public interface PacManGameUI extends PacManGameEventFacade {
+public interface PacManGameUI extends DefaultPacManGameEventHandler {
 
 	void reset();
 

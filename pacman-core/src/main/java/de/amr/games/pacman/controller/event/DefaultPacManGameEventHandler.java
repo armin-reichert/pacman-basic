@@ -6,7 +6,7 @@ package de.amr.games.pacman.controller.event;
  * 
  * @author Armin Reichert
  */
-public interface PacManGameEventFacade extends PacManGameEventListener {
+public interface DefaultPacManGameEventHandler extends PacManGameEventListener {
 
 	@Override
 	default void onGameEvent(PacManGameEvent event) {
