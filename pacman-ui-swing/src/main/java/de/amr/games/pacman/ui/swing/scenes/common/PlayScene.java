@@ -12,6 +12,7 @@ import de.amr.games.pacman.controller.PacManGameState;
 import de.amr.games.pacman.controller.event.BonusActivatedEvent;
 import de.amr.games.pacman.controller.event.BonusEatenEvent;
 import de.amr.games.pacman.controller.event.ExtraLifeEvent;
+import de.amr.games.pacman.controller.event.GhostEntersHouseEvent;
 import de.amr.games.pacman.controller.event.GhostReturningHomeEvent;
 import de.amr.games.pacman.controller.event.PacManFoundFoodEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
@@ -74,10 +75,6 @@ public class PlayScene extends GameScene {
 			playLevelCompleteAnimation(gameController.state);
 		} else if (gameController.state == PacManGameState.LEVEL_STARTING) {
 			gameController.stateTimer().forceExpiration();
-		}
-		//TODO use event?
-		if (game().ghosts(GhostState.DEAD).count() == 0) {
-			sounds.stop(PacManGameSound.GHOST_RETURNING_HOME);
 		}
 	}
 
@@ -209,6 +206,13 @@ public class PlayScene extends GameScene {
 	public void onGhostReturningHome(GhostReturningHomeEvent e) {
 		sounds.play(PacManGameSound.GHOST_RETURNING_HOME);
 	}
+
+	@Override
+	public void onGhostEntersHouse(GhostEntersHouseEvent e) {
+		if (game().ghosts(GhostState.DEAD).count() == 0) {
+			sounds.stop(PacManGameSound.GHOST_RETURNING_HOME);
+		}
+	};
 
 	@Override
 	public void render(Graphics2D g) {
