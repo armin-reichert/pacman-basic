@@ -391,7 +391,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		// Ghosts
 		tryReleasingGhosts();
 		game.ghosts(HUNTING_PAC).forEach(this::setTargetTile);
-		game.ghosts().forEach(ghost -> ghost.update(game.currentLevel));
+		game.ghosts().forEach(this::updateGhost);
 
 		// Bonus
 		final Bonus bonus = game.bonus;
@@ -432,7 +432,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			return;
 		}
 		game.ghosts().filter(ghost -> ghost.is(DEAD) && ghost.bounty == 0 || ghost.is(ENTERING_HOUSE))
-				.forEach(ghost -> ghost.update(game.currentLevel));
+				.forEach(this::updateGhost);
 	}
 
 	private void exitGhostDyingState() {
@@ -571,6 +571,74 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	// Ghosts
+
+	/**
+	 * Updates speed and behavior depending on current state.
+	 * 
+	 * TODO: not sure about correct speed
+	 * 
+	 * @param level current game level
+	 */
+	private void updateGhost(Ghost ghost) {
+		switch (ghost.state) {
+
+		case LOCKED:
+			if (ghost.atGhostHouseDoor()) {
+				ghost.speed = 0;
+			} else {
+				ghost.speed = game.currentLevel.ghostSpeed / 2;
+				ghost.bounce();
+			}
+			break;
+
+		case ENTERING_HOUSE:
+			ghost.speed = game.currentLevel.ghostSpeed * 2;
+			ghost.enterHouse();
+			break;
+
+		case LEAVING_HOUSE:
+			ghost.speed = game.currentLevel.ghostSpeed / 2;
+			ghost.leaveHouse();
+			break;
+
+		case FRIGHTENED:
+			if (game.currentLevel.world.isTunnel(ghost.tile())) {
+				ghost.speed = game.currentLevel.ghostSpeedTunnel;
+			} else {
+				ghost.speed = game.currentLevel.ghostSpeedFrightened;
+				ghost.selectRandomDirection();
+			}
+			ghost.tryMoving();
+			break;
+
+		case HUNTING_PAC:
+			if (game.currentLevel.world.isTunnel(ghost.tile())) {
+				ghost.speed = game.currentLevel.ghostSpeedTunnel;
+			} else if (ghost.elroy == 1) {
+				ghost.speed = game.currentLevel.elroy1Speed;
+			} else if (ghost.elroy == 2) {
+				ghost.speed = game.currentLevel.elroy2Speed;
+			} else {
+				ghost.speed = game.currentLevel.ghostSpeed;
+			}
+			if (ghost.targetTile == null) {
+				// this can happen in Ms. Pac-Man
+				ghost.selectRandomDirection();
+			} else {
+				ghost.selectDirectionTowardsTarget();
+			}
+			ghost.tryMoving();
+			break;
+
+		case DEAD:
+			ghost.speed = game.currentLevel.ghostSpeed * 2;
+			ghost.returnHome();
+			break;
+
+		default:
+			throw new IllegalArgumentException("Illegal ghost state: " + state);
+		}
+	}
 
 	private void killGhost(Ghost ghost) {
 		ghost.state = DEAD;

@@ -223,7 +223,7 @@ public class PacManGameUI_Swing implements PacManGameUI {
 			}
 		}
 		EventQueue.invokeLater(this::renderScreen);
-		keyboard.clear();
+//		keyboard.clear();
 	}
 
 	private void renderScreen() {

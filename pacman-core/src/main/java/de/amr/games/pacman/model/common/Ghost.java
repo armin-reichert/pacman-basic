@@ -14,6 +14,10 @@ import de.amr.games.pacman.lib.V2i;
  */
 public class Ghost extends Creature {
 
+	private static boolean differsAtMost(double value, double target, double tolerance) {
+		return Math.abs(value - target) <= tolerance;
+	}
+
 	public static final int BLINKY = 0, PINKY = 1, INKY = 2, CLYDE = 3, SUE = 3;
 
 	/** The unique ID of the ghost (0..3). */
@@ -29,14 +33,12 @@ public class Ghost extends Creature {
 	public int bounty;
 
 	/**
-	 * The individual food counter, used to compute when the ghost can leave the
-	 * house.
+	 * The individual food counter, used to compute when the ghost can leave the house.
 	 */
 	public int dotCounter;
 
 	/**
-	 * The "Cruise Elroy" mode of Blinky, the red ghost. Value is 1, 2 or -1, -2
-	 * (disabled Elroy mode).
+	 * The "Cruise Elroy" mode of Blinky, the red ghost. Value is 1, 2 or -1, -2 (disabled Elroy mode).
 	 */
 	public int elroy;
 
@@ -55,74 +57,6 @@ public class Ghost extends Creature {
 
 	public boolean is(GhostState ghostState) {
 		return state == ghostState;
-	}
-
-	/**
-	 * Updates speed and behavior depending on current state.
-	 * 
-	 * TODO: not sure about correct speed
-	 * 
-	 * @param level current game level
-	 */
-	public void update(GameLevel level) {
-		switch (state) {
-
-		case LOCKED:
-			if (atGhostHouseDoor()) {
-				speed = 0;
-			} else {
-				speed = level.ghostSpeed / 2;
-				bounce();
-			}
-			break;
-
-		case ENTERING_HOUSE:
-			speed = level.ghostSpeed * 2;
-			enterHouse();
-			break;
-
-		case LEAVING_HOUSE:
-			speed = level.ghostSpeed / 2;
-			leaveHouse();
-			break;
-
-		case FRIGHTENED:
-			if (world.isTunnel(tile())) {
-				speed = level.ghostSpeedTunnel;
-			} else {
-				speed = level.ghostSpeedFrightened;
-				selectRandomDirection();
-			}
-			tryMoving();
-			break;
-
-		case HUNTING_PAC:
-			if (world.isTunnel(tile())) {
-				speed = level.ghostSpeedTunnel;
-			} else if (elroy == 1) {
-				speed = level.elroy1Speed;
-			} else if (elroy == 2) {
-				speed = level.elroy2Speed;
-			} else {
-				speed = level.ghostSpeed;
-			}
-			if (targetTile == null) {
-				// this can happen in Ms. Pac-Man
-				selectRandomDirection();
-			} else {
-				selectDirectionTowardsTarget();
-			}
-			tryMoving();
-			break;
-
-		case DEAD:
-			speed = level.ghostSpeed * 2;
-			returnHome();
-			break;
-
-		default:
-			throw new IllegalArgumentException("Illegal ghost state: " + state);
-		}
 	}
 
 	@Override
@@ -144,38 +78,58 @@ public class Ghost extends Creature {
 		return tile().equals(world.houseEntryLeftPart()) && differsAtMost(offset().x, HTS, 2);
 	}
 
-	private void returnHome() {
+	/**
+	 * Lets the ghost return back to the ghost house.
+	 * 
+	 * @return {@code true} if the ghost has reached the house
+	 */
+	public boolean returnHome() {
 		if (atGhostHouseDoor() && dir() != Direction.DOWN) {
-			// start falling
+			// house reached, start entering
 			setOffset(HTS, 0);
 			setDir(Direction.DOWN);
 			setWishDir(Direction.DOWN);
 			forcedOnTrack = false;
 			targetTile = (id == 0) ? world.houseSeatCenter() : world.ghostHomeTile(id);
 			state = GhostState.ENTERING_HOUSE;
-			return;
+			return true;
 		}
 		selectDirectionTowardsTarget();
 		tryMoving();
+		return false;
 	}
 
-	private void enterHouse() {
+	/**
+	 * Lets the ghost enter the house and moving to its home position.
+	 * 
+	 * @return {@code true} if the ghost has reached its home position
+	 */
+	public boolean enterHouse() {
 		V2i location = tile();
 		V2d offset = offset();
 		// Target inside house reached? Start leaving house.
 		if (location.equals(targetTile) && offset.y >= 0) {
 			setWishDir(dir().opposite());
 			state = GhostState.LEAVING_HOUSE;
-			return;
+			return true;
 		}
 		// House center reached? Move sidewards towards target tile
 		if (location.equals(world.houseSeatCenter()) && offset.y >= 0) {
-			setWishDir(targetTile.x < world.houseSeatCenter().x ? Direction.LEFT : Direction.RIGHT);
+			Direction dir = targetTile.x < world.houseSeatCenter().x ? Direction.LEFT : Direction.RIGHT;
+			setDir(dir);
+			setWishDir(dir);
 		}
-		tryMovingTowards(wishDir());
+		tryMovingTowards(dir());
+		return false;
 	}
 
-	private void leaveHouse() {
+	/**
+	 * Lets the ghost leave the house from its home position to the middle of the house and then upwards
+	 * to the house door.
+	 * 
+	 * @return {@code true} if the ghost has left the house
+	 */
+	public boolean leaveHouse() {
 		V2i location = tile();
 		V2d offset = offset();
 		// House left? Resume hunting.
@@ -185,7 +139,7 @@ public class Ghost extends Creature {
 			setWishDir(Direction.LEFT);
 			forcedOnTrack = true;
 			state = GhostState.HUNTING_PAC;
-			return;
+			return true;
 		}
 		V2i houseCenter = world.houseSeatCenter();
 		int center = t(houseCenter.x) + HTS;
@@ -203,9 +157,15 @@ public class Ghost extends Creature {
 			setWishDir(newDir);
 		}
 		tryMovingTowards(wishDir());
+		return false;
 	}
 
-	private void bounce() {
+	/**
+	 * Lets the ghost bounce at its home position inside the house.
+	 * 
+	 * @return {@code true]
+	 */
+	public boolean bounce() {
 		int centerY = t(world.houseSeatCenter().y);
 		if (position.y < centerY - HTS || position.y > centerY + HTS) {
 			Direction opposite = dir().opposite();
@@ -213,9 +173,6 @@ public class Ghost extends Creature {
 			setWishDir(opposite);
 		}
 		tryMoving();
-	}
-
-	private static boolean differsAtMost(double value, double target, double tolerance) {
-		return Math.abs(value - target) <= tolerance;
+		return true;
 	}
 }
