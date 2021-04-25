@@ -18,11 +18,6 @@ public class GameEntity {
 	/** Velocity vector. */
 	public V2d velocity = V2d.NULL;
 
-	/** Move with current velocity. */
-	public void move() {
-		position = position.plus(velocity);
-	}
-
 	/** Sets the entity's position. */
 	public void setPosition(double x, double y) {
 		position = new V2d(x, y);

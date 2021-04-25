@@ -57,14 +57,13 @@ public class Creature extends GameEntity {
 	public boolean forced = false;
 
 	/**
-	 * If movement is constrained to be aligned with the "track" defined by the
-	 * tiles.
+	 * If movement is constrained to be aligned with the "track" defined by the tiles.
 	 */
 	public boolean forcedOnTrack = false;
 
 	/**
-	 * Places this creature at the given tile with the given position offsets. Sets
-	 * the {@link #newTileEntered} flag to trigger steering.
+	 * Places this creature at the given tile with the given position offsets. Sets the
+	 * {@link #newTileEntered} flag to trigger steering.
 	 * 
 	 * @param tile    the tile where this creature will be placed
 	 * @param offsetX the pixel offset in x-direction
@@ -90,8 +89,8 @@ public class Creature extends GameEntity {
 	}
 
 	/**
-	 * Places the creature on its current tile with given offset. This is for
-	 * example used to place the ghosts exactly between two tiles.
+	 * Places the creature on its current tile with given offset. This is for example used to place the
+	 * ghosts exactly between two tiles.
 	 * 
 	 * @param offsetX offset in x-direction
 	 * @param offsetY offset in y-direction
@@ -133,7 +132,6 @@ public class Creature extends GameEntity {
 		forced = true;
 	}
 
-	@Override
 	public void move() {
 		velocity = new V2d(dir.vec).scaled(speed);
 		position = position.plus(velocity);
@@ -251,9 +249,9 @@ public class Creature extends GameEntity {
 	}
 
 	/**
-	 * As described in the Pac-Man dossier: checks all accessible neighbor tiles in
-	 * order UP, LEFT, DOWN, RIGHT and selects the one with smallest Euclidean
-	 * distance to the target tile. Reversing the current direction is not allowed.
+	 * As described in the Pac-Man dossier: checks all accessible neighbor tiles in order UP, LEFT,
+	 * DOWN, RIGHT and selects the one with smallest Euclidean distance to the target tile. Reversing
+	 * the current direction is not allowed.
 	 * 
 	 * @return next direction creature wants to take
 	 */

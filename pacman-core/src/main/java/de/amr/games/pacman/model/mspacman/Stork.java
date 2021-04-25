@@ -1,7 +1,7 @@
 package de.amr.games.pacman.model.mspacman;
 
-import de.amr.games.pacman.model.common.GameEntity;
+import de.amr.games.pacman.model.common.Creature;
 
-public class Stork extends GameEntity {
+public class Stork extends Creature {
 
 }
