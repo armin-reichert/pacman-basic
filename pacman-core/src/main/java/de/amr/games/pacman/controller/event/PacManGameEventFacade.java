@@ -1,9 +1,8 @@
 package de.amr.games.pacman.controller.event;
 
 /**
- * Provides empty default implementations for each game event such that a game
- * event handler implementing this interface can just override the needed
- * method(s).
+ * Provides empty default implementations for each game event such that a game event handler
+ * implementing this interface can just override the needed method(s).
  * 
  * @author Armin Reichert
  */
@@ -21,6 +20,8 @@ public interface PacManGameEventFacade extends PacManGameEventListener {
 			onExtraLife((ExtraLifeEvent) event);
 		} else if (event instanceof GhostReturningHomeEvent) {
 			onGhostReturningHome((GhostReturningHomeEvent) event);
+		} else if (event instanceof GhostEntersHouseEvent) {
+			onGhostEntersHouse((GhostEntersHouseEvent) event);
 		} else if (event instanceof PacManFoundFoodEvent) {
 			onPacManFoundFood((PacManFoundFoodEvent) event);
 		} else if (event instanceof PacManGainsPowerEvent) {
@@ -46,6 +47,9 @@ public interface PacManGameEventFacade extends PacManGameEventListener {
 	}
 
 	default void onExtraLife(ExtraLifeEvent e) {
+	}
+
+	default void onGhostEntersHouse(GhostEntersHouseEvent e) {
 	}
 
 	default void onGhostReturningHome(GhostReturningHomeEvent e) {
