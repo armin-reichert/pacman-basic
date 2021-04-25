@@ -90,7 +90,7 @@ public class Ghost extends Creature {
 			setDir(Direction.DOWN);
 			setWishDir(Direction.DOWN);
 			forcedOnTrack = false;
-			targetTile = (id == 0) ? world.houseSeatCenter() : world.ghostHomeTile(id);
+			targetTile = (id == BLINKY) ? world.houseSeatCenter() : world.ghostHomeTile(id);
 			state = GhostState.ENTERING_HOUSE;
 			return true;
 		}
@@ -105,16 +105,16 @@ public class Ghost extends Creature {
 	 * @return {@code true} if the ghost has reached its home position
 	 */
 	public boolean enterHouse() {
-		V2i location = tile();
+		V2i tile = tile();
 		V2d offset = offset();
-		// Target inside house reached? Start leaving house.
-		if (location.equals(targetTile) && offset.y >= 0) {
+		// Target position inside house reached? Turn around and start leaving house.
+		if (tile.equals(targetTile) && offset.y >= 0) {
 			setWishDir(dir().opposite());
 			state = GhostState.LEAVING_HOUSE;
 			return true;
 		}
-		// House center reached? Move sidewards towards target tile
-		if (location.equals(world.houseSeatCenter()) && offset.y >= 0) {
+		// Center reached? If target tile is left or right seat, move towards target tile
+		if (tile.equals(world.houseSeatCenter()) && offset.y >= 0) {
 			Direction dir = targetTile.x < world.houseSeatCenter().x ? Direction.LEFT : Direction.RIGHT;
 			setDir(dir);
 			setWishDir(dir);
@@ -130,10 +130,10 @@ public class Ghost extends Creature {
 	 * @return {@code true} if the ghost has left the house
 	 */
 	public boolean leaveHouse() {
-		V2i location = tile();
+		V2i tile = tile();
 		V2d offset = offset();
 		// House left? Resume hunting.
-		if (location.equals(world.houseEntryLeftPart()) && differsAtMost(offset.y, 0, 1)) {
+		if (tile.equals(world.houseEntryLeftPart()) && differsAtMost(offset.y, 0, 1)) {
 			setOffset(HTS, 0);
 			setDir(Direction.LEFT);
 			setWishDir(Direction.LEFT);
