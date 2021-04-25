@@ -1,8 +1,8 @@
 package de.amr.games.pacman.controller.event;
 
 /**
- * Provides empty default implementations for each game event such that a game event handler
- * implementing this interface can just override the needed method(s).
+ * Provides an empty default handler for each game event such that a class implementing this
+ * interface just needs to override the needed method(s).
  * 
  * @author Armin Reichert
  */
