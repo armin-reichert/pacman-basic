@@ -21,7 +21,7 @@ public class GameLevel {
 	public PacManGameWorld world;
 
 	/** 1, 2, 3... */
-	public int number;
+	public final int number;
 
 	public byte bonusSymbol;
 	public float playerSpeed;
@@ -46,7 +46,11 @@ public class GameLevel {
 	/** Ms. Pac-Man: maze number (1, 2, ..., 6) */
 	public int mazeNumber;
 
-	public GameLevel(int... values) {
+	public GameLevel(int number) {
+		this.number = number;
+	}
+
+	public void setValues(int... values) {
 		int i = 0;
 		bonusSymbol = (byte) values[i++];
 		playerSpeed = percent(values[i++]);

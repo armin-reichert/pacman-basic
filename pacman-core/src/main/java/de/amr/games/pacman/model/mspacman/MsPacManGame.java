@@ -33,7 +33,7 @@ public class MsPacManGame extends AbstractGameModel {
 	static final int[] BONUS_VALUES = { 100, 200, 500, 700, 1000, 2000, 5000 };
 
 	/*@formatter:off*/
-	public static final int[][] MSPACMAN_LEVELS = {
+  static final int[][] LEVELS = {
 	/* 1*/ {0,  80, 75, 40,  20,  80, 10,  85,  90, 50, 6, 5},
 	/* 2*/ {1,  90, 85, 45,  30,  90, 15,  95,  95, 55, 5, 5},
 	/* 3*/ {2,  90, 85, 45,  40,  90, 20,  95,  95, 55, 4, 5},
@@ -137,12 +137,12 @@ public class MsPacManGame extends AbstractGameModel {
 
 	@Override
 	protected void createLevel(int levelNumber) {
+		currentLevel = new GameLevel(levelNumber);
+		currentLevel.setValues(LEVELS[levelNumber <= 21 ? levelNumber - 1 : 20]);
 		int mazeNumber = mazeNumber(levelNumber);
 		int mapNumber = mapNumber(mazeNumber);
 		WorldMap map = WorldMap.load("/mspacman/maps/map" + mapNumber + ".txt");
 		world.setMap(map);
-		currentLevel = new GameLevel(MSPACMAN_LEVELS[levelNumber <= 21 ? levelNumber - 1 : 20]);
-		currentLevel.number = levelNumber;
 		currentLevel.setWorld(world);
 		currentLevel.mazeNumber = mazeNumber;
 		if (levelNumber > 7) {

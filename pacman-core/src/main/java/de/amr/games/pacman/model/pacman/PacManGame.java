@@ -35,7 +35,7 @@ public class PacManGame extends AbstractGameModel {
 	static final int[] BONUS_VALUES = { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
 
 	/*@formatter:off*/
-	static final int[][] PACMAN_LEVELS = {
+	static final int[][] LEVELS = {
 	/* 1*/ {0,  80, 75, 40,  20,  80, 10,  85,  90, 50, 6, 5},
 	/* 2*/ {1,  90, 85, 45,  30,  90, 15,  95,  95, 55, 5, 5},
 	/* 3*/ {2,  90, 85, 45,  40,  90, 20,  95,  95, 55, 4, 5},
@@ -102,12 +102,22 @@ public class PacManGame extends AbstractGameModel {
 	}
 
 	@Override
-	protected void createLevel(int n) {
-		currentLevel = new GameLevel(PACMAN_LEVELS[n <= 21 ? n - 1 : 20]);
-		currentLevel.number = n;
+	public int mapNumber(int levelNumber) {
+		return 1;
+	}
+
+	@Override
+	public int mazeNumber(int levelNumber) {
+		return 1;
+	}
+
+	@Override
+	protected void createLevel(int levelNumber) {
+		currentLevel = new GameLevel(levelNumber);
+		currentLevel.setValues(LEVELS[levelNumber <= 21 ? levelNumber - 1 : 20]);
 		currentLevel.setWorld(world);
-		currentLevel.mazeNumber = mazeNumber(n);
-		log("Pac-Man classic level %d created", n);
+		currentLevel.mazeNumber = mazeNumber(levelNumber);
+		log("Pac-Man classic level %d created", levelNumber);
 	}
 
 	@Override
@@ -124,15 +134,5 @@ public class PacManGame extends AbstractGameModel {
 			return Long.MAX_VALUE;
 		}
 		return duration * 60;
-	}
-
-	@Override
-	public int mapNumber(int anyMazeNumber) {
-		return 1;
-	}
-
-	@Override
-	public int mazeNumber(int anyLevelNumber) {
-		return 1;
 	}
 }
