@@ -18,28 +18,32 @@ public class GameLevel {
 		return value / 100f;
 	}
 
-	public byte bonusSymbol;
-	public final float playerSpeed;
-	public final float ghostSpeed;
-	public final float ghostSpeedTunnel;
-	public final byte elroy1DotsLeft;
-	public final float elroy1Speed;
-	public final byte elroy2DotsLeft;
-	public final float elroy2Speed;
-	public final float playerSpeedPowered;
-	public final float ghostSpeedFrightened;
-	public final byte ghostFrightenedSeconds;
-	public final byte numFlashes;
-
 	public PacManGameWorld world;
 
-	protected final BitSet eaten = new BitSet();
+	/** 1, 2, 3... */
+	public int number;
+
+	public byte bonusSymbol;
+	public float playerSpeed;
+	public float ghostSpeed;
+	public float ghostSpeedTunnel;
+	public byte elroy1DotsLeft;
+	public float elroy1Speed;
+	public byte elroy2DotsLeft;
+	public float elroy2Speed;
+	public float playerSpeedPowered;
+	public float ghostSpeedFrightened;
+	public byte ghostFrightenedSeconds;
+	public byte numFlashes;
+
+	// food
+	protected BitSet eaten = new BitSet();
 	public int totalFoodCount;
 	public int foodRemaining;
 
 	public int numGhostsKilled;
 
-	/** Ms. Pac-Man maze number (1..6) */
+	/** Ms. Pac-Man: maze number (1, 2, ..., 6) */
 	public int mazeNumber;
 
 	public GameLevel(int... values) {
@@ -60,7 +64,7 @@ public class GameLevel {
 
 	public void setWorld(PacManGameWorld world) {
 		this.world = world;
-		// find food
+		// count food
 		totalFoodCount = 0;
 		int energizerCount = 0;
 		for (int x = 0; x < world.numCols(); ++x) {
@@ -74,10 +78,13 @@ public class GameLevel {
 				}
 			}
 		}
+		restoreFood();
+		log("Total food: %d (%d pellets, %d energizers)", totalFoodCount, totalFoodCount - energizerCount, energizerCount);
+	}
+
+	public void restoreFood() {
 		eaten.clear();
 		foodRemaining = totalFoodCount;
-		log("Total food count=%d (%d pellets + %d energizers)", totalFoodCount, totalFoodCount - energizerCount,
-				energizerCount);
 	}
 
 	public int eatenFoodCount() {
@@ -101,10 +108,5 @@ public class GameLevel {
 			eaten.set(world.index(tile));
 			--foodRemaining;
 		}
-	}
-
-	public void restoreFood() {
-		eaten.clear();
-		foodRemaining = totalFoodCount;
 	}
 }

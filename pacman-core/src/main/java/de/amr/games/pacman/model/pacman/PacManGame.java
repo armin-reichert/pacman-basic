@@ -104,6 +104,7 @@ public class PacManGame extends AbstractGameModel {
 	@Override
 	protected void createLevel(int n) {
 		currentLevel = new GameLevel(PACMAN_LEVELS[n <= 21 ? n - 1 : 20]);
+		currentLevel.number = n;
 		currentLevel.setWorld(world);
 		currentLevel.mazeNumber = mazeNumber(n);
 		log("Pac-Man classic level %d created", n);
@@ -111,7 +112,7 @@ public class PacManGame extends AbstractGameModel {
 
 	@Override
 	public long getHuntingPhaseDuration(int phase) {
-		int row = currentLevelNumber == 1 ? 0 : currentLevelNumber <= 4 ? 1 : 2;
+		int row = currentLevel.number == 1 ? 0 : currentLevel.number <= 4 ? 1 : 2;
 		return huntingTicks(HUNTING_PHASE_DURATION[row][phase]);
 	}
 

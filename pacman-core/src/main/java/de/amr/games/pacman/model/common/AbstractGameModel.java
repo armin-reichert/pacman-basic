@@ -19,7 +19,6 @@ import de.amr.games.pacman.model.pacman.Bonus;
  */
 public abstract class AbstractGameModel {
 
-	public int currentLevelNumber; // counting from 1
 	public GameLevel currentLevel;
 	public int intermissionNumber; // 1,2,3
 	public Pac player;
@@ -99,7 +98,6 @@ public abstract class AbstractGameModel {
 		}
 		bonus.edibleTicksLeft = 0;
 		bonus.eatenTicksLeft = 0;
-		currentLevelNumber = levelNumber;
 	}
 
 	/**

@@ -142,6 +142,7 @@ public class MsPacManGame extends AbstractGameModel {
 		WorldMap map = WorldMap.load("/mspacman/maps/map" + mapNumber + ".txt");
 		world.setMap(map);
 		currentLevel = new GameLevel(MSPACMAN_LEVELS[levelNumber <= 21 ? levelNumber - 1 : 20]);
+		currentLevel.number = levelNumber;
 		currentLevel.setWorld(world);
 		currentLevel.mazeNumber = mazeNumber;
 		if (levelNumber > 7) {
@@ -152,7 +153,7 @@ public class MsPacManGame extends AbstractGameModel {
 
 	@Override
 	public long getHuntingPhaseDuration(int phase) {
-		int row = currentLevelNumber == 1 ? 0 : currentLevelNumber <= 4 ? 1 : 2;
+		int row = currentLevel.number == 1 ? 0 : currentLevel.number <= 4 ? 1 : 2;
 		return huntingTicks(HUNTING_PHASE_DURATION[row][phase]);
 	}
 }
