@@ -220,11 +220,6 @@ public abstract class AbstractGameModel implements GameModel {
 		return bonusMap().get(bonusName);
 	}
 
-	public String bonusName(int bonusValue) {
-		return bonusMap().entrySet().stream().filter(e -> e.getValue() == bonusValue).map(e -> e.getKey()).findFirst()
-				.orElseThrow();
-	}
-
 	@Override
 	public long getHuntingPhaseDuration(int phase) {
 		int row = currentLevel.number == 1 ? 0 : currentLevel.number <= 4 ? 1 : 2;

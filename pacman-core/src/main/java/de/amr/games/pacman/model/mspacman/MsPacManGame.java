@@ -95,7 +95,8 @@ public class MsPacManGame extends AbstractGameModel {
 		currentLevel.mazeNumber = mazeNumber;
 		if (levelNumber > 7) {
 			int random = new Random().nextInt(BONUS_MAP.size());
-			currentLevel.bonusSymbol = bonusName(random);
+			String randomBonus = BONUS_MAP.keySet().toArray(String[]::new)[random];
+			currentLevel.bonusSymbol = randomBonus;
 		}
 		log("Ms. Pac-Man level %d created, maze index is %d", levelNumber, mazeNumber);
 	}
