@@ -73,7 +73,7 @@ public class PacManGameRendering extends AbstractPacManGameRendering {
 	}
 
 	@Override
-	public BufferedImage[] getSymbolSprites() {
+	public Map<String, BufferedImage> getSymbolSpritesMap() {
 		return assets.symbolSprites;
 	}
 
@@ -128,7 +128,7 @@ public class PacManGameRendering extends AbstractPacManGameRendering {
 	}
 
 	@Override
-	public BufferedImage symbolSprite(byte symbol) {
-		return assets.symbolSprites[symbol];
+	public BufferedImage symbolSprite(String symbol) {
+		return assets.symbolSprites.get(symbol);
 	}
 }

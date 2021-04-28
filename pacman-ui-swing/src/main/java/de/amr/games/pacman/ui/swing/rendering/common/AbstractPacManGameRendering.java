@@ -38,13 +38,13 @@ public abstract class AbstractPacManGameRendering {
 
 	public abstract Map<Direction, TimedSequence<BufferedImage>> createGhostReturningHomeAnimations();
 
-	public abstract BufferedImage[] getSymbolSprites();
+	public abstract Map<String, BufferedImage> getSymbolSpritesMap();
 
 	public abstract Map<Integer, BufferedImage> getBountyNumberSpritesMap();
 
 	public abstract Map<Integer, BufferedImage> getBonusNumberSpritesMap();
 
-	public abstract BufferedImage symbolSprite(byte symbol);
+	public abstract BufferedImage symbolSprite(String symbol);
 
 	public abstract BufferedImage lifeSprite();
 
@@ -154,7 +154,7 @@ public abstract class AbstractPacManGameRendering {
 		int x = rightX;
 		int firstLevel = Math.max(1, game.currentLevel.number - 6);
 		for (int level = firstLevel; level <= game.currentLevel.number; ++level) {
-			byte symbol = game.levelSymbols.get(level - 1);
+			String symbol = game.levelSymbols.get(level - 1);
 			g.drawImage(symbolSprite(symbol), x, y, null);
 			x -= t(2);
 		}

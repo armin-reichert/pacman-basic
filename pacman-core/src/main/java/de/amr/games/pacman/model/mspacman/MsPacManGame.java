@@ -9,8 +9,8 @@ import static de.amr.games.pacman.model.common.Ghost.INKY;
 import static de.amr.games.pacman.model.common.Ghost.PINKY;
 import static de.amr.games.pacman.model.common.Ghost.SUE;
 
+import java.util.Map;
 import java.util.Random;
-import java.util.stream.Stream;
 
 import de.amr.games.pacman.model.common.AbstractGameModel;
 import de.amr.games.pacman.model.common.GameLevel;
@@ -28,35 +28,41 @@ import de.amr.games.pacman.model.world.WorldMap;
  */
 public class MsPacManGame extends AbstractGameModel {
 
-	enum BonusSymbol {
-		CHERRIES, STRAWBERRY, PEACH, PRETZEL, APPLE, PEAR, BANANA;
-	}
-
-	static final int[] BONUS_VALUES = { 100, 200, 500, 700, 1000, 2000, 5000 };
+	//@formatter:off
+	static Map<String, Integer> BONUS_MAP = Map.of(
+			"CHERRIES", 	100,
+			"STRAWBERRY", 200,
+			"PEACH",			500,
+			"PRETZEL",		700,
+			"APPLE",			1000,
+			"PEAR",				2000,
+			"BANANA",			5000
+	);
+	//@formatter:on
 
 	/*@formatter:off*/
-  static final int[][] LEVELS = {
-	/* 1*/ {0,  80, 75, 40,  20,  80, 10,  85,  90, 50, 6, 5},
-	/* 2*/ {1,  90, 85, 45,  30,  90, 15,  95,  95, 55, 5, 5},
-	/* 3*/ {2,  90, 85, 45,  40,  90, 20,  95,  95, 55, 4, 5},
-	/* 4*/ {3,  90, 85, 45,  40,  90, 20,  95,  95, 55, 3, 5},
-	/* 5*/ {4, 100, 95, 50,  40, 100, 20, 105, 100, 60, 2, 5},
-	/* 6*/ {5, 100, 95, 50,  50, 100, 25, 105, 100, 60, 5, 5},
-	/* 7*/ {6, 100, 95, 50,  50, 100, 25, 105, 100, 60, 2, 5},
-	/* 8*/ {0, 100, 95, 50,  50, 100, 25, 105, 100, 60, 2, 5},
-	/* 9*/ {0, 100, 95, 50,  60, 100, 30, 105, 100, 60, 1, 3},
-	/*10*/ {0, 100, 95, 50,  60, 100, 30, 105, 100, 60, 5, 5},
-	/*11*/ {0, 100, 95, 50,  60, 100, 30, 105, 100, 60, 2, 5},
-	/*12*/ {0, 100, 95, 50,  80, 100, 40, 105, 100, 60, 1, 3},
-	/*13*/ {0, 100, 95, 50,  80, 100, 40, 105, 100, 60, 1, 3},
-	/*14*/ {0, 100, 95, 50,  80, 100, 40, 105, 100, 60, 3, 5},
-	/*15*/ {0, 100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3},
-	/*16*/ {0, 100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3},
-	/*17*/ {0, 100, 95, 50, 100, 100, 50, 105,   0,  0, 0, 0},
-	/*18*/ {0, 100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3},
-	/*19*/ {0, 100, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
-	/*20*/ {0, 100, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
-	/*21*/ {0,  90, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
+  static final Object[][] LEVELS = {
+	/* 1*/ {"CHERRIES",    80, 75, 40,  20,  80, 10,  85,  90, 50, 6, 5},
+	/* 2*/ {"STRAWBERRY",  90, 85, 45,  30,  90, 15,  95,  95, 55, 5, 5},
+	/* 3*/ {"PEACH",       90, 85, 45,  40,  90, 20,  95,  95, 55, 4, 5},
+	/* 4*/ {"PRETZEL",     90, 85, 45,  40,  90, 20,  95,  95, 55, 3, 5},
+	/* 5*/ {"APPLE",      100, 95, 50,  40, 100, 20, 105, 100, 60, 2, 5},
+	/* 6*/ {"PEAR",       100, 95, 50,  50, 100, 25, 105, 100, 60, 5, 5},
+	/* 7*/ {"BANANA",     100, 95, 50,  50, 100, 25, 105, 100, 60, 2, 5},
+	/* 8*/ {"BANANA",     100, 95, 50,  50, 100, 25, 105, 100, 60, 2, 5},
+	/* 9*/ {"BANANA",     100, 95, 50,  60, 100, 30, 105, 100, 60, 1, 3},
+	/*10*/ {"BANANA",     100, 95, 50,  60, 100, 30, 105, 100, 60, 5, 5},
+	/*11*/ {"BANANA",     100, 95, 50,  60, 100, 30, 105, 100, 60, 2, 5},
+	/*12*/ {"BANANA",     100, 95, 50,  80, 100, 40, 105, 100, 60, 1, 3},
+	/*13*/ {"BANANA",     100, 95, 50,  80, 100, 40, 105, 100, 60, 1, 3},
+	/*14*/ {"BANANA",     100, 95, 50,  80, 100, 40, 105, 100, 60, 3, 5},
+	/*15*/ {"BANANA",     100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3},
+	/*16*/ {"BANANA",     100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3},
+	/*17*/ {"BANANA",     100, 95, 50, 100, 100, 50, 105,   0,  0, 0, 0},
+	/*18*/ {"BANANA",     100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3},
+	/*19*/ {"BANANA",     100, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
+	/*20*/ {"BANANA",     100, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
+	/*21*/ {"BANANA",      90, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
 	};
 	/*@formatter:on*/
 
@@ -75,8 +81,6 @@ public class MsPacManGame extends AbstractGameModel {
 			}
 		}
 
-		bonusNames = Stream.of(BonusSymbol.values()).map(Enum<BonusSymbol>::name).toArray(String[]::new);
-		bonusValues = BONUS_VALUES;
 		bonus = new MovingBonus();
 		bonus.world = world;
 
@@ -102,7 +106,8 @@ public class MsPacManGame extends AbstractGameModel {
 		currentLevel.setValues(LEVELS[levelNumber <= 21 ? levelNumber - 1 : 20]);
 		currentLevel.mazeNumber = mazeNumber;
 		if (levelNumber > 7) {
-			currentLevel.bonusSymbol = (byte) new Random().nextInt(7);
+			int random = new Random().nextInt(BONUS_MAP.size());
+			currentLevel.bonusSymbol = bonusName(random);
 		}
 		log("Ms. Pac-Man level %d created, maze index is %d", levelNumber, mazeNumber);
 	}
@@ -133,4 +138,8 @@ public class MsPacManGame extends AbstractGameModel {
 		return mazeNumber == 5 ? 3 : mazeNumber == 6 ? 4 : mazeNumber;
 	}
 
+	@Override
+	public Map<String, Integer> bonusMap() {
+		return BONUS_MAP;
+	}
 }

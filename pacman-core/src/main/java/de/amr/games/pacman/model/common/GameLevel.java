@@ -14,26 +14,26 @@ import de.amr.games.pacman.model.world.PacManGameWorld;
  */
 public class GameLevel {
 
-	private static float percent(int value) {
-		return value / 100f;
+	private static float percent(Object value) {
+		return ((Integer) value) / 100f;
 	}
 
 	/** 1, 2, 3... */
 	public final int number;
 	public final PacManGameWorld world;
 
-	public byte bonusSymbol;
+	public String bonusSymbol;
 	public float playerSpeed;
 	public float ghostSpeed;
 	public float ghostSpeedTunnel;
-	public byte elroy1DotsLeft;
+	public int elroy1DotsLeft;
 	public float elroy1Speed;
-	public byte elroy2DotsLeft;
+	public int elroy2DotsLeft;
 	public float elroy2Speed;
 	public float playerSpeedPowered;
 	public float ghostSpeedFrightened;
-	public byte ghostFrightenedSeconds;
-	public byte numFlashes;
+	public int ghostFrightenedSeconds;
+	public int numFlashes;
 
 	// food in game world
 	private BitSet eaten = new BitSet();
@@ -66,20 +66,20 @@ public class GameLevel {
 		log("Total food: %d (%d pellets, %d energizers)", totalFoodCount, totalFoodCount - energizerCount, energizerCount);
 	}
 
-	public void setValues(int[] values) {
+	public void setValues(Object[] values) {
 		int i = 0;
-		bonusSymbol = (byte) values[i++];
+		bonusSymbol = (String) values[i++];
 		playerSpeed = percent(values[i++]);
 		ghostSpeed = percent(values[i++]);
 		ghostSpeedTunnel = percent(values[i++]);
-		elroy1DotsLeft = (byte) values[i++];
+		elroy1DotsLeft = (Integer) values[i++];
 		elroy1Speed = percent(values[i++]);
-		elroy2DotsLeft = (byte) values[i++];
+		elroy2DotsLeft = (Integer) values[i++];
 		elroy2Speed = percent(values[i++]);
 		playerSpeedPowered = percent(values[i++]);
 		ghostSpeedFrightened = percent(values[i++]);
-		ghostFrightenedSeconds = (byte) values[i++];
-		numFlashes = (byte) values[i++];
+		ghostFrightenedSeconds = (Integer) values[i++];
+		numFlashes = (Integer) values[i++];
 	}
 
 	public int eatenFoodCount() {

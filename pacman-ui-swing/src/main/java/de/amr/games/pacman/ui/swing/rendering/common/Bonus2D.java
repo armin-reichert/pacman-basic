@@ -12,13 +12,13 @@ import de.amr.games.pacman.model.pacman.Bonus;
 public class Bonus2D {
 
 	private Bonus bonus;
-	private BufferedImage[] symbolSprites;
+	private Map<String, BufferedImage> symbolSprites;
 	private Map<Integer, BufferedImage> numberSprites;
 	private TimedSequence<Integer> jumpAnimation;
 
 	public void setRendering(AbstractPacManGameRendering rendering) {
 		setJumpAnimation(rendering.createBonusAnimation());
-		setSymbolSprites(rendering.getSymbolSprites());
+		setSymbolSprites(rendering.getSymbolSpritesMap());
 		setNumberSprites(rendering.getBonusNumberSpritesMap());
 	}
 
@@ -34,7 +34,7 @@ public class Bonus2D {
 		this.bonus = bonus;
 	}
 
-	public void setSymbolSprites(BufferedImage[] symbolSprites) {
+	public void setSymbolSprites(Map<String, BufferedImage> symbolSprites) {
 		this.symbolSprites = symbolSprites;
 	}
 
@@ -60,7 +60,7 @@ public class Bonus2D {
 			return null;
 		}
 		if (bonus.edibleTicksLeft > 0) {
-			return symbolSprites[bonus.symbol];
+			return symbolSprites.get(bonus.symbol);
 		}
 		if (bonus.eatenTicksLeft > 0) {
 			return numberSprites.get(bonus.points);

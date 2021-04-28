@@ -403,7 +403,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		} else if (bonus.edibleTicksLeft > 0 && player.meets(bonus)) {
 			score(bonus.points);
 			bonus.eaten(sec_to_ticks(2));
-			log("%s found bonus (%s, value %d)", player.name, game.bonusNames[bonus.symbol], bonus.points);
+			log("%s found bonus (%s, value %d)", player.name, bonus.symbol, bonus.points);
 			fireGameEvent(new BonusEatenEvent(variant, game));
 		}
 	}
@@ -552,9 +552,9 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			final Bonus bonus = game.bonus;
 			bonus.visible = true;
 			bonus.symbol = game.currentLevel.bonusSymbol;
-			bonus.points = game.bonusValues[game.currentLevel.bonusSymbol];
+			bonus.points = game.bonusValue(game.currentLevel.bonusSymbol);
 			bonus.activate(isPlaying(PACMAN) ? sec_to_ticks(9 + new Random().nextFloat()) : Long.MAX_VALUE);
-			log("Bonus %s (value %d) activated", game.bonusNames[bonus.symbol], bonus.points);
+			log("Bonus %s (value %d) activated", bonus.symbol, bonus.points);
 			fireGameEvent(new BonusActivatedEvent(variant, game));
 		}
 

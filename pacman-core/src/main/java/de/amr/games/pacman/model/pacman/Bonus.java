@@ -14,7 +14,7 @@ public class Bonus extends Creature {
 	public Random random = new Random();
 
 	/** ID of the bonus symbol. */
-	public byte symbol;
+	public String symbol;
 
 	/** Value of this bonus. */
 	public int points;

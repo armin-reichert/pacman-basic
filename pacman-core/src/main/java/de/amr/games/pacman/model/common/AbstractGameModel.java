@@ -7,6 +7,7 @@ import static de.amr.games.pacman.model.world.PacManGameWorld.HTS;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.Hiscore;
@@ -42,14 +43,12 @@ public abstract class AbstractGameModel {
 	public Pac player;
 	public Ghost[] ghosts;
 	public Bonus bonus;
-	public String[] bonusNames;
-	public int[] bonusValues;
 	public int lives;
 	public int score;
 	public String highscoreFileName;
 	public int highscoreLevel, highscorePoints;
 	public int ghostBounty;
-	public List<Byte> levelSymbols;
+	public List<String> levelSymbols;
 	public int globalDotCounter;
 	public boolean globalDotCounterEnabled;
 
@@ -141,6 +140,17 @@ public abstract class AbstractGameModel {
 
 	public Stream<Ghost> ghosts(GhostState ghostState) {
 		return ghosts().filter(ghost -> ghost.state == ghostState);
+	}
+
+	public abstract Map<String, Integer> bonusMap();
+
+	public int bonusValue(String bonusName) {
+		return bonusMap().get(bonusName);
+	}
+
+	public String bonusName(int bonusValue) {
+		return bonusMap().entrySet().stream().filter(e -> e.getValue() == bonusValue).map(e -> e.getKey()).findFirst()
+				.orElseThrow();
 	}
 
 	public long getHuntingPhaseDuration(int phase) {

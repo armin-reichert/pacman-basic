@@ -58,7 +58,7 @@ public class MsPacManGameRenderingAssets extends Spritesheet {
 
 	final Font scoreFont;
 
-	final BufferedImage[] symbolSprites;
+	final Map<String, BufferedImage> symbolSprites;
 	final Map<Integer, BufferedImage> bonusNumberSprites;
 	final Map<Integer, BufferedImage> bountyNumberSprites;
 
@@ -83,13 +83,34 @@ public class MsPacManGameRenderingAssets extends Spritesheet {
 			mazesFlashingAnims.add(TimedSequence.of(mazeEmpzyBright, mazeEmptyImages.get(i)).frameDuration(15));
 		}
 
-		symbolSprites = new BufferedImage[] { s(3, 0), s(4, 0), s(5, 0), s(6, 0), s(7, 0), s(8, 0), s(9, 0) };
+		//@formatter:off
+		symbolSprites = Map.of(
+			"CHERRIES", 	s(3,0),
+			"STRAWBERRY", s(4,0),
+			"PEACH",			s(5,0),
+			"PRETZEL",		s(6,0),
+			"APPLE",			s(7,0),
+			"PEAR",				s(8,0),
+			"BANANA",			s(9,0)
+		);
 
-		bonusNumberSprites = Map.of(100, s(3, 1), 200, s(4, 1), 500, s(5, 1), 700, s(6, 1), 1000, s(7, 1), 2000, s(8, 1),
-				5000, s(9, 1));
+		bonusNumberSprites = Map.of(
+				100, s(3, 1), 
+				200, s(4, 1), 
+				500, s(5, 1), 
+				700, s(6, 1), 
+				1000, s(7, 1), 
+				2000, s(8, 1),
+				5000, s(9, 1)
+		);
 
-		bountyNumberSprites = Map.of(200, s(0, 8), 400, s(1, 8), 800, s(2, 8), 1600, s(3, 8));
-
+		bountyNumberSprites = Map.of(
+				200, s(0, 8), 
+				400, s(1, 8), 
+				800, s(2, 8), 
+				1600, s(3, 8)
+		);
+		//@formatter:on
 	}
 
 	/**

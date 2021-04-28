@@ -6,13 +6,13 @@ import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.ui.swing.assets.AssetLoader.font;
 import static de.amr.games.pacman.ui.swing.assets.AssetLoader.image;
+import static java.util.Map.entry;
 
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -43,7 +43,7 @@ public class PacManGameRenderingAssets extends Spritesheet {
 	public final BufferedImage mazeFullImage;
 	public final BufferedImage mazeEmptyImage;
 	public final TimedSequence<BufferedImage> mazeFlashingAnim;
-	public final BufferedImage[] symbolSprites;
+	public final Map<String, BufferedImage> symbolSprites;
 	public final Map<Integer, BufferedImage> numberSprites;
 	public final TimedSequence<BufferedImage> bigPacManAnim;
 	public final TimedSequence<BufferedImage> blinkyHalfNaked;
@@ -60,25 +60,34 @@ public class PacManGameRenderingAssets extends Spritesheet {
 		mazeFullImage = image("/pacman/graphics/maze_full.png");
 		mazeEmptyImage = image("/pacman/graphics/maze_empty.png");
 
-		symbolSprites = new BufferedImage[] { sprite(2, 3), sprite(3, 3), sprite(4, 3), sprite(5, 3), sprite(6, 3),
-				sprite(7, 3), sprite(8, 3), sprite(9, 3) };
-
 		//@formatter:off
-		numberSprites = new HashMap<>();
-		numberSprites.put(200,  sprite(0, 8));
-		numberSprites.put(400,  sprite(1, 8));
-		numberSprites.put(800,  sprite(2, 8));
-		numberSprites.put(1600, sprite(3, 8));
-		
-		numberSprites.put(100,  sprite(0, 9));
-		numberSprites.put(300,  sprite(1, 9));
-		numberSprites.put(500,  sprite(2, 9));
-		numberSprites.put(700,  sprite(3, 9));
-		
-		numberSprites.put(1000, spriteRegion(4, 9, 2, 1)); // left-aligned
-		numberSprites.put(2000, spriteRegion(3, 10, 3, 1));
-		numberSprites.put(3000, spriteRegion(3, 11, 3, 1));
-		numberSprites.put(5000, spriteRegion(3, 12, 3, 1));
+		symbolSprites = Map.of(
+				"CHERRIES", 	sprite(2, 3),
+				"STRAWBERRY", sprite(3, 3),
+				"PEACH",			sprite(4, 3),
+				"APPLE",			sprite(5, 3),
+				"GRAPES",			sprite(6, 3),
+				"GALAXIAN",		sprite(7, 3),
+				"BELL",				sprite(8, 3),
+				"KEY",				sprite(9, 3)
+		);
+
+		numberSprites = Map.ofEntries(
+			entry(200,  sprite(0, 8)),
+			entry(400,  sprite(1, 8)),
+			entry(800,  sprite(2, 8)),
+			entry(1600, sprite(3, 8)),
+			
+			entry(100,  sprite(0, 9)),
+			entry(300,  sprite(1, 9)),
+			entry(500,  sprite(2, 9)),
+			entry(700,  sprite(3, 9)),
+			
+			entry(1000, spriteRegion(4, 9, 2, 1)), // left-aligned
+			entry(2000, spriteRegion(3, 10, 3, 1)),
+			entry(3000, spriteRegion(3, 11, 3, 1)),
+			entry(5000, spriteRegion(3, 12, 3, 1))
+		);
 		//@formatter:on
 
 		// Animations
