@@ -39,9 +39,7 @@ public class PacManGame extends AbstractGameModel {
 			"BELL",				3000,
 			"KEY",				5000
 	);
-	//@formatter:on
 
-	/*@formatter:off*/
 	static final Object[][] LEVELS = {
 	/* 1*/ {"CHERRIES",    80, 75, 40,  20,  80, 10,  85,  90, 50, 6, 5},
 	/* 2*/ {"STRAWBERRY",  90, 85, 45,  30,  90, 15,  95,  95, 55, 5, 5},
@@ -70,8 +68,6 @@ public class PacManGame extends AbstractGameModel {
 	private final MapBasedPacManGameWorld world = new MapBasedPacManGameWorld();
 
 	public PacManGame() {
-		hiscoreFileName = "hiscore-pacman.xml";
-
 		String mapPath = "/pacman/maps/map1.txt";
 		try {
 			world.setMap(WorldMap.load(mapPath));
@@ -79,10 +75,6 @@ public class PacManGame extends AbstractGameModel {
 			log("Map '%s' contains errors", mapPath);
 			throw new RuntimeException();
 		}
-
-		bonus = new Bonus();
-		bonus.world = world;
-		bonus.setPosition(world.bonusTile().x * TS + HTS, world.bonusTile().y * TS);
 
 		player = new Pac("Pac-Man", RIGHT);
 		player.world = world;
@@ -95,6 +87,10 @@ public class PacManGame extends AbstractGameModel {
 		for (Ghost ghost : ghosts) {
 			ghost.world = world;
 		}
+
+		bonus = new Bonus();
+		bonus.world = world;
+		bonus.setPosition(world.bonusTile().x * TS + HTS, world.bonusTile().y * TS);
 	}
 
 	@Override
@@ -103,6 +99,11 @@ public class PacManGame extends AbstractGameModel {
 		currentLevel.setValues(LEVELS[levelNumber <= 21 ? levelNumber - 1 : 20]);
 		currentLevel.mazeNumber = 1;
 		log("Pac-Man classic level %d created", levelNumber);
+	}
+
+	@Override
+	protected String hiscoreFileName() {
+		return "hiscore-pacman.xml";
 	}
 
 	@Override

@@ -69,21 +69,6 @@ public class MsPacManGame extends AbstractGameModel {
 	private final MapBasedPacManGameWorld world = new MapBasedPacManGameWorld();
 
 	public MsPacManGame() {
-		hiscoreFileName = "hiscore-mspacman.xml";
-
-		// validate maps
-		for (int mapNumber = 1; mapNumber <= 4; ++mapNumber) {
-			String mapPath = "/mspacman/maps/map" + mapNumber + ".txt";
-			try {
-				WorldMap.load(mapPath);
-			} catch (Exception x) {
-				log("Map '%s' contains errors", mapPath);
-			}
-		}
-
-		bonus = new MovingBonus();
-		bonus.world = world;
-
 		player = new Pac("Ms. Pac-Man", LEFT);
 		player.world = world;
 
@@ -95,6 +80,9 @@ public class MsPacManGame extends AbstractGameModel {
 		for (Ghost ghost : ghosts) {
 			ghost.world = world;
 		}
+
+		bonus = new MovingBonus();
+		bonus.world = world;
 	}
 
 	@Override
@@ -110,6 +98,11 @@ public class MsPacManGame extends AbstractGameModel {
 			currentLevel.bonusSymbol = bonusName(random);
 		}
 		log("Ms. Pac-Man level %d created, maze index is %d", levelNumber, mazeNumber);
+	}
+
+	@Override
+	protected String hiscoreFileName() {
+		return "hiscore-mspacman.xml";
 	}
 
 	@Override

@@ -46,7 +46,6 @@ public abstract class AbstractGameModel implements GameModel {
 	protected Bonus bonus;
 	protected int lives;
 	protected int score;
-	protected String hiscoreFileName;
 	protected int hiscoreLevel;
 	protected int hiscorePoints;
 	protected int ghostBounty;
@@ -232,13 +231,6 @@ public abstract class AbstractGameModel implements GameModel {
 		return huntingTicks(HUNTING_PHASE_DURATION[row][phase]);
 	}
 
-	public Hiscore loadHiscore() {
-		File dir = new File(System.getProperty("user.home"));
-		Hiscore hiscore = new Hiscore(new File(dir, hiscoreFileName));
-		hiscore.load();
-		return hiscore;
-	}
-
 	@Override
 	public void saveHiscore() {
 		Hiscore hiscore = loadHiscore();
@@ -269,6 +261,15 @@ public abstract class AbstractGameModel implements GameModel {
 	public void enableGlobalDotCounter(boolean enable) {
 		globalDotCounterEnabled = enable;
 	}
+
+	protected Hiscore loadHiscore() {
+		File dir = new File(System.getProperty("user.home"));
+		Hiscore hiscore = new Hiscore(new File(dir, hiscoreFileName()));
+		hiscore.load();
+		return hiscore;
+	}
+
+	protected abstract String hiscoreFileName();
 
 	/**
 	 * @param levelNumber 1-based game level number
