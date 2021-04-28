@@ -137,13 +137,11 @@ public class MsPacManGame extends AbstractGameModel {
 
 	@Override
 	protected void createLevel(int levelNumber) {
-		currentLevel = new GameLevel(levelNumber);
-		currentLevel.setValues(LEVELS[levelNumber <= 21 ? levelNumber - 1 : 20]);
 		int mazeNumber = mazeNumber(levelNumber);
 		int mapNumber = mapNumber(mazeNumber);
-		WorldMap map = WorldMap.load("/mspacman/maps/map" + mapNumber + ".txt");
-		world.setMap(map);
-		currentLevel.setWorld(world);
+		world.setMap(WorldMap.load("/mspacman/maps/map" + mapNumber + ".txt"));
+		currentLevel = new GameLevel(levelNumber, world);
+		currentLevel.setValues(LEVELS[levelNumber <= 21 ? levelNumber - 1 : 20]);
 		currentLevel.mazeNumber = mazeNumber;
 		if (levelNumber > 7) {
 			currentLevel.bonusSymbol = (byte) new Random().nextInt(7);

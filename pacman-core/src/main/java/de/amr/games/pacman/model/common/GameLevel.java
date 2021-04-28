@@ -18,10 +18,9 @@ public class GameLevel {
 		return value / 100f;
 	}
 
-	public PacManGameWorld world;
-
 	/** 1, 2, 3... */
 	public final int number;
+	public final PacManGameWorld world;
 
 	public byte bonusSymbol;
 	public float playerSpeed;
@@ -36,8 +35,8 @@ public class GameLevel {
 	public byte ghostFrightenedSeconds;
 	public byte numFlashes;
 
-	// food
-	protected BitSet eaten = new BitSet();
+	// food in game world
+	private BitSet eaten = new BitSet();
 	public int totalFoodCount;
 	public int foodRemaining;
 
@@ -46,11 +45,28 @@ public class GameLevel {
 	/** Ms. Pac-Man: maze number (1, 2, ..., 6) */
 	public int mazeNumber;
 
-	public GameLevel(int number) {
+	public GameLevel(int number, PacManGameWorld world) {
 		this.number = number;
+		this.world = world;
+		totalFoodCount = 0;
+		int energizerCount = 0;
+		for (int x = 0; x < world.numCols(); ++x) {
+			for (int y = 0; y < world.numRows(); ++y) {
+				V2i tile = new V2i(x, y);
+				if (world.isFoodTile(tile)) {
+					++totalFoodCount;
+					if (world.isEnergizerTile(tile)) {
+						energizerCount++;
+					}
+				}
+			}
+		}
+		eaten.clear();
+		foodRemaining = totalFoodCount;
+		log("Total food: %d (%d pellets, %d energizers)", totalFoodCount, totalFoodCount - energizerCount, energizerCount);
 	}
 
-	public void setValues(int... values) {
+	public void setValues(int[] values) {
 		int i = 0;
 		bonusSymbol = (byte) values[i++];
 		playerSpeed = percent(values[i++]);
@@ -66,31 +82,6 @@ public class GameLevel {
 		numFlashes = (byte) values[i++];
 	}
 
-	public void setWorld(PacManGameWorld world) {
-		this.world = world;
-		// count food
-		totalFoodCount = 0;
-		int energizerCount = 0;
-		for (int x = 0; x < world.numCols(); ++x) {
-			for (int y = 0; y < world.numRows(); ++y) {
-				V2i tile = new V2i(x, y);
-				if (world.isFoodTile(tile)) {
-					++totalFoodCount;
-					if (world.isEnergizerTile(tile)) {
-						energizerCount++;
-					}
-				}
-			}
-		}
-		restoreFood();
-		log("Total food: %d (%d pellets, %d energizers)", totalFoodCount, totalFoodCount - energizerCount, energizerCount);
-	}
-
-	public void restoreFood() {
-		eaten.clear();
-		foodRemaining = totalFoodCount;
-	}
-
 	public int eatenFoodCount() {
 		return totalFoodCount - foodRemaining;
 	}
@@ -103,12 +94,8 @@ public class GameLevel {
 		return world.isFoodTile(tile) && !isFoodRemoved(tile);
 	}
 
-	public boolean containsEatenFood(V2i tile) {
-		return world.isFoodTile(tile) && isFoodRemoved(tile);
-	}
-
 	public void removeFood(V2i tile) {
-		if (!isFoodRemoved(tile)) {
+		if (containsFood(tile)) {
 			eaten.set(world.index(tile));
 			--foodRemaining;
 		}

@@ -218,8 +218,7 @@ public class PlayScene extends GameScene {
 	public void render(Graphics2D g) {
 		rendering.drawMaze(g, game().currentLevel.mazeNumber, 0, t(3), mazeFlashing.isRunning());
 		if (!mazeFlashing.isRunning()) {
-			rendering.hideEatenFood(g, game().currentLevel.world.tiles().filter(game().currentLevel.world::isFoodTile),
-					game().currentLevel::containsEatenFood);
+			rendering.hideEatenFood(g, game().currentLevel.world.tiles(), game().currentLevel::isFoodRemoved);
 			energizers2D.forEach(energizer2D -> energizer2D.render(g));
 		}
 		if (gameController.isAttractMode()) {

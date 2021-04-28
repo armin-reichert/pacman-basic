@@ -113,9 +113,8 @@ public class PacManGame extends AbstractGameModel {
 
 	@Override
 	protected void createLevel(int levelNumber) {
-		currentLevel = new GameLevel(levelNumber);
+		currentLevel = new GameLevel(levelNumber, world);
 		currentLevel.setValues(LEVELS[levelNumber <= 21 ? levelNumber - 1 : 20]);
-		currentLevel.setWorld(world);
 		currentLevel.mazeNumber = mazeNumber(levelNumber);
 		log("Pac-Man classic level %d created", levelNumber);
 	}
