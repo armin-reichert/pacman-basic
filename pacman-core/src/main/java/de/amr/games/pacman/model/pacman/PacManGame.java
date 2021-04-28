@@ -60,14 +60,6 @@ public class PacManGame extends AbstractGameModel {
 	};
 	/*@formatter:on*/
 
-	static final int[][] HUNTING_PHASE_DURATION = {
-		//@formatter:off
-		{ 7, 20, 7, 20, 5,   20,  5, Integer.MAX_VALUE },
-		{ 7, 20, 7, 20, 5, 1033, -1, Integer.MAX_VALUE },
-		{ 5, 20, 5, 20, 5, 1037, -1, Integer.MAX_VALUE },
-		//@formatter:on
-	};
-
 	private final MapBasedPacManGameWorld world = new MapBasedPacManGameWorld();
 
 	public PacManGame() {
@@ -75,10 +67,10 @@ public class PacManGame extends AbstractGameModel {
 
 		String mapPath = "/pacman/maps/map1.txt";
 		try {
-			WorldMap map = WorldMap.load(mapPath);
-			world.setMap(map);
+			world.setMap(WorldMap.load(mapPath));
 		} catch (Exception x) {
 			log("Map '%s' contains errors", mapPath);
+			throw new RuntimeException();
 		}
 
 		bonusNames = Stream.of(BonusSymbol.values()).map(Enum<BonusSymbol>::name).toArray(String[]::new);
@@ -102,6 +94,14 @@ public class PacManGame extends AbstractGameModel {
 	}
 
 	@Override
+	protected void createLevel(int levelNumber) {
+		currentLevel = new GameLevel(levelNumber, world);
+		currentLevel.setValues(LEVELS[levelNumber <= 21 ? levelNumber - 1 : 20]);
+		currentLevel.mazeNumber = 1;
+		log("Pac-Man classic level %d created", levelNumber);
+	}
+
+	@Override
 	public int mapNumber(int levelNumber) {
 		return 1;
 	}
@@ -109,29 +109,5 @@ public class PacManGame extends AbstractGameModel {
 	@Override
 	public int mazeNumber(int levelNumber) {
 		return 1;
-	}
-
-	@Override
-	protected void createLevel(int levelNumber) {
-		currentLevel = new GameLevel(levelNumber, world);
-		currentLevel.setValues(LEVELS[levelNumber <= 21 ? levelNumber - 1 : 20]);
-		currentLevel.mazeNumber = mazeNumber(levelNumber);
-		log("Pac-Man classic level %d created", levelNumber);
-	}
-
-	@Override
-	public long getHuntingPhaseDuration(int phase) {
-		int row = currentLevel.number == 1 ? 0 : currentLevel.number <= 4 ? 1 : 2;
-		return huntingTicks(HUNTING_PHASE_DURATION[row][phase]);
-	}
-
-	private long huntingTicks(int duration) {
-		if (duration == -1) {
-			return 1; // -1 means a single tick
-		}
-		if (duration == Integer.MAX_VALUE) {
-			return Long.MAX_VALUE;
-		}
-		return duration * 60;
 	}
 }

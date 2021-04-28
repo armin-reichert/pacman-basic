@@ -22,6 +22,8 @@ import de.amr.games.pacman.model.world.WorldMap;
 /**
  * Game model of the Ms. Pac-Man game variant.
  * 
+ * TODO: are the level specifications the same as in Pac-Man?
+ * 
  * @author Armin Reichert
  */
 public class MsPacManGame extends AbstractGameModel {
@@ -58,24 +60,6 @@ public class MsPacManGame extends AbstractGameModel {
 	};
 	/*@formatter:on*/
 
-	public static final short[][] HUNTING_PHASE_DURATION = {
-		//@formatter:off
-		{ 7, 20, 7, 20, 5,   20,  5, Short.MAX_VALUE },
-		{ 7, 20, 7, 20, 5, 1033, -1, Short.MAX_VALUE },
-		{ 5, 20, 5, 20, 5, 1037, -1, Short.MAX_VALUE },
-		//@formatter:on
-	};
-
-	private static long huntingTicks(short duration) {
-		if (duration == -1) {
-			return 1; // -1 means a single tick
-		}
-		if (duration == Short.MAX_VALUE) {
-			return Long.MAX_VALUE;
-		}
-		return duration * 60;
-	}
-
 	private final MapBasedPacManGameWorld world = new MapBasedPacManGameWorld();
 
 	public MsPacManGame() {
@@ -110,6 +94,20 @@ public class MsPacManGame extends AbstractGameModel {
 	}
 
 	@Override
+	protected void createLevel(int levelNumber) {
+		int mazeNumber = mazeNumber(levelNumber);
+		int mapNumber = mapNumber(mazeNumber);
+		world.setMap(WorldMap.load("/mspacman/maps/map" + mapNumber + ".txt"));
+		currentLevel = new GameLevel(levelNumber, world);
+		currentLevel.setValues(LEVELS[levelNumber <= 21 ? levelNumber - 1 : 20]);
+		currentLevel.mazeNumber = mazeNumber;
+		if (levelNumber > 7) {
+			currentLevel.bonusSymbol = (byte) new Random().nextInt(7);
+		}
+		log("Ms. Pac-Man level %d created, maze index is %d", levelNumber, mazeNumber);
+	}
+
+	@Override
 	public int mazeNumber(int levelNumber) {
 		if (levelNumber < 1) {
 			throw new IllegalArgumentException("Illegal level number: " + levelNumber);
@@ -135,23 +133,4 @@ public class MsPacManGame extends AbstractGameModel {
 		return mazeNumber == 5 ? 3 : mazeNumber == 6 ? 4 : mazeNumber;
 	}
 
-	@Override
-	protected void createLevel(int levelNumber) {
-		int mazeNumber = mazeNumber(levelNumber);
-		int mapNumber = mapNumber(mazeNumber);
-		world.setMap(WorldMap.load("/mspacman/maps/map" + mapNumber + ".txt"));
-		currentLevel = new GameLevel(levelNumber, world);
-		currentLevel.setValues(LEVELS[levelNumber <= 21 ? levelNumber - 1 : 20]);
-		currentLevel.mazeNumber = mazeNumber;
-		if (levelNumber > 7) {
-			currentLevel.bonusSymbol = (byte) new Random().nextInt(7);
-		}
-		log("Ms. Pac-Man level %d created, maze index is %d", levelNumber, mazeNumber);
-	}
-
-	@Override
-	public long getHuntingPhaseDuration(int phase) {
-		int row = currentLevel.number == 1 ? 0 : currentLevel.number <= 4 ? 1 : 2;
-		return huntingTicks(HUNTING_PHASE_DURATION[row][phase]);
-	}
 }

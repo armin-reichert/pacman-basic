@@ -19,6 +19,24 @@ import de.amr.games.pacman.model.pacman.Bonus;
  */
 public abstract class AbstractGameModel {
 
+	static final int[][] HUNTING_PHASE_DURATION = {
+			//@formatter:off
+			{ 7, 20, 7, 20, 5,   20,  5, Integer.MAX_VALUE },
+			{ 7, 20, 7, 20, 5, 1033, -1, Integer.MAX_VALUE },
+			{ 5, 20, 5, 20, 5, 1037, -1, Integer.MAX_VALUE },
+			//@formatter:on
+	};
+
+	private static long huntingTicks(int duration) {
+		if (duration == -1) {
+			return 1; // -1 means a single tick
+		}
+		if (duration == Integer.MAX_VALUE) {
+			return Long.MAX_VALUE;
+		}
+		return duration * 60;
+	}
+
 	public GameLevel currentLevel;
 	public int intermissionNumber; // 1,2,3
 	public Pac player;
@@ -125,7 +143,10 @@ public abstract class AbstractGameModel {
 		return ghosts().filter(ghost -> ghost.state == ghostState);
 	}
 
-	public abstract long getHuntingPhaseDuration(int phase);
+	public long getHuntingPhaseDuration(int phase) {
+		int row = currentLevel.number == 1 ? 0 : currentLevel.number <= 4 ? 1 : 2;
+		return huntingTicks(HUNTING_PHASE_DURATION[row][phase]);
+	}
 
 	public Hiscore loadHighScore() {
 		File dir = new File(System.getProperty("user.home"));
