@@ -70,7 +70,7 @@ public class PacManGame extends AbstractGameModel {
 	private final MapBasedPacManGameWorld world = new MapBasedPacManGameWorld();
 
 	public PacManGame() {
-		highscoreFileName = "hiscore-pacman.xml";
+		hiscoreFileName = "hiscore-pacman.xml";
 
 		String mapPath = "/pacman/maps/map1.txt";
 		try {

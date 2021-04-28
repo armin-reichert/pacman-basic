@@ -46,8 +46,9 @@ public abstract class AbstractGameModel implements GameModel {
 	protected Bonus bonus;
 	protected int lives;
 	protected int score;
-	protected String highscoreFileName;
-	protected int hiscoreLevel, hiscorePoints;
+	protected String hiscoreFileName;
+	protected int hiscoreLevel;
+	protected int hiscorePoints;
 	protected int ghostBounty;
 	protected List<String> levelSymbols;
 	protected int globalDotCounter;
@@ -203,9 +204,6 @@ public abstract class AbstractGameModel implements GameModel {
 		hiscorePoints = hiscore.points;
 	}
 
-	/**
-	 * @param levelNumber 1-based game level number
-	 */
 	@Override
 	public void initLevel(int levelNumber) {
 		createLevel(levelNumber);
@@ -217,25 +215,6 @@ public abstract class AbstractGameModel implements GameModel {
 		bonus.edibleTicksLeft = 0;
 		bonus.eatenTicksLeft = 0;
 	}
-
-	/**
-	 * @param levelNumber 1-based game level number
-	 */
-	protected abstract void createLevel(int levelNumber);
-
-	/**
-	 * @param levelNumber 1-based game level number
-	 * @return 1-based maze number of the maze used in that level
-	 */
-	public abstract int mazeNumber(int levelNumber);
-
-	/**
-	 * @param mazeNumber 1-based number of a maze
-	 * @return 1-based number of the world map used by that maze
-	 */
-	public abstract int mapNumber(int mazeNumber);
-
-	public abstract Map<String, Integer> bonusMap();
 
 	@Override
 	public int bonusValue(String bonusName) {
@@ -255,7 +234,7 @@ public abstract class AbstractGameModel implements GameModel {
 
 	public Hiscore loadHiscore() {
 		File dir = new File(System.getProperty("user.home"));
-		Hiscore hiscore = new Hiscore(new File(dir, highscoreFileName));
+		Hiscore hiscore = new Hiscore(new File(dir, hiscoreFileName));
 		hiscore.load();
 		return hiscore;
 	}
@@ -290,4 +269,23 @@ public abstract class AbstractGameModel implements GameModel {
 	public void enableGlobalDotCounter(boolean enable) {
 		globalDotCounterEnabled = enable;
 	}
+
+	/**
+	 * @param levelNumber 1-based game level number
+	 */
+	protected abstract void createLevel(int levelNumber);
+
+	/**
+	 * @param levelNumber 1-based game level number
+	 * @return 1-based maze number of the maze used in that level
+	 */
+	protected abstract int mazeNumber(int levelNumber);
+
+	/**
+	 * @param mazeNumber 1-based number of a maze
+	 * @return 1-based number of the world map used by that maze
+	 */
+	protected abstract int mapNumber(int mazeNumber);
+
+	protected abstract Map<String, Integer> bonusMap();
 }

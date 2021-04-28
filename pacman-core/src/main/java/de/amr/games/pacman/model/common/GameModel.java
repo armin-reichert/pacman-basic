@@ -4,12 +4,20 @@ import java.util.stream.Stream;
 
 import de.amr.games.pacman.model.pacman.Bonus;
 
+/**
+ * Game model interface for Pac-Man and Ms. Pac-Man
+ * 
+ * @author Armin Reichert
+ */
 public interface GameModel {
 
 	void reset();
 
 	void resetGuys();
 
+	/**
+	 * @param levelNumber 1-based game level number
+	 */
 	void initLevel(int levelNumber);
 
 	GameLevel currentLevel();
@@ -57,12 +65,12 @@ public interface GameModel {
 	Bonus bonus();
 
 	int bonusValue(String bonus);
-	
+
 	int globalDotCounter();
-	
+
 	void setGlobalDotCounter(int value);
-	
+
 	boolean isGlobalDotCounterEnabled();
-	
+
 	void enableGlobalDotCounter(boolean enable);
 }

@@ -69,7 +69,7 @@ public class MsPacManGame extends AbstractGameModel {
 	private final MapBasedPacManGameWorld world = new MapBasedPacManGameWorld();
 
 	public MsPacManGame() {
-		highscoreFileName = "hiscore-mspacman.xml";
+		hiscoreFileName = "hiscore-mspacman.xml";
 
 		// validate maps
 		for (int mapNumber = 1; mapNumber <= 4; ++mapNumber) {
