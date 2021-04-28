@@ -746,7 +746,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	private void releaseGhost(Ghost ghost, String reason, Object... args) {
 		ghost.state = LEAVING_HOUSE;
 		if (ghost.id == CLYDE && game.ghost(BLINKY).elroy < 0) {
-			game.ghost(BLINKY).elroy -= 1; // resume Elroy mode
+			game.ghost(BLINKY).elroy = -game.ghost(BLINKY).elroy; // resume Elroy mode
 			log("Blinky Elroy mode %d resumed", game.ghost(BLINKY).elroy);
 		}
 		log("Ghost %s released: %s", ghost.name, String.format(reason, args));
