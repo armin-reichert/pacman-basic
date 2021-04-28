@@ -40,7 +40,6 @@ import static de.amr.games.pacman.model.common.Ghost.CLYDE;
 import static de.amr.games.pacman.model.common.Ghost.INKY;
 import static de.amr.games.pacman.model.common.Ghost.PINKY;
 import static de.amr.games.pacman.model.common.GhostState.DEAD;
-import static de.amr.games.pacman.model.common.GhostState.ENTERING_HOUSE;
 import static de.amr.games.pacman.model.common.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.common.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.model.common.GhostState.LEAVING_HOUSE;
@@ -48,7 +47,6 @@ import static de.amr.games.pacman.model.common.GhostState.LOCKED;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
@@ -71,9 +69,10 @@ import de.amr.games.pacman.controller.event.ScatterPhaseStartedEvent;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.FiniteStateMachine;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.model.common.AbstractGameModel;
+import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.Ghost;
+import de.amr.games.pacman.model.common.GhostState;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.mspacman.MsPacManGame;
 import de.amr.games.pacman.model.pacman.Bonus;
@@ -111,12 +110,10 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		return Math.round(sec * 60);
 	}
 
-	private static final Map<Integer, Integer> INTERMISSION_NUMBER_BY_LEVEL = Map.of(2, 1, 5, 2, 9, 3, 13, 3, 17, 3);
-
-	private final AbstractGameModel[] games = { new MsPacManGame(), new PacManGame() };
+	private final GameModel[] games = { new MsPacManGame(), new PacManGame() };
 
 	private GameVariant variant;
-	private AbstractGameModel game;
+	private GameModel game;
 
 	private boolean gameRequested;
 	private boolean gameRunning;
@@ -178,7 +175,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			if (autopilotOn) {
 				autopilot.steer(game);
 			} else {
-				ui.playerDirectionChangeRequested().ifPresent(game.player::setWishDir);
+				ui.playerDirectionChangeRequested().ifPresent(game.player()::setWishDir);
 			}
 		}
 		updateState();
@@ -214,7 +211,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		play(variant == MS_PACMAN ? PACMAN : MS_PACMAN);
 	}
 
-	public AbstractGameModel game() {
+	public GameModel game() {
 		return games[variant.ordinal()];
 	}
 
@@ -235,14 +232,14 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	public void killGhosts() {
-		game.ghostBounty = 200;
+		game.setGhostBounty(200);
 		game.ghosts().filter(ghost -> ghost.is(HUNTING_PAC) || ghost.is(FRIGHTENED)).forEach(this::killGhost);
 		changeState(GHOST_DYING);
 	}
 
 	public void eatAllPellets() {
-		game.currentLevel.world.tiles().filter(game.currentLevel::containsFood)
-				.filter(tile -> !game.currentLevel.world.isEnergizerTile(tile)).forEach(game.currentLevel::removeFood);
+		game.currentLevel().world.tiles().filter(game.currentLevel()::containsFood)
+				.filter(tile -> !game.currentLevel().world.isEnergizerTile(tile)).forEach(game.currentLevel()::removeFood);
 	}
 
 	// BEGIN STATE-MACHINE METHODS
@@ -274,10 +271,8 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	private void updateReadyState() {
 		if (stateTimer().ticksRemaining() == sec_to_ticks(1)) {
-			game.player.visible = true;
-			for (Ghost ghost : game.ghosts) {
-				ghost.visible = true;
-			}
+			game.player().visible = true;
+			game.ghosts().forEach(ghost -> ghost.visible = true);
 		}
 		if (stateTimer().hasExpired()) {
 			if (gameRequested) {
@@ -315,10 +310,10 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	private void updateHuntingState() {
-		final Pac player = game.player;
+		final Pac player = game.player();
 
 		// Is level complete?
-		if (game.currentLevel.foodRemaining == 0) {
+		if (game.currentLevel().foodRemaining == 0) {
 			changeState(LEVEL_COMPLETE);
 			return;
 		}
@@ -338,13 +333,13 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 				log("%s got killed by %s at tile %s", player.name, killer.get().name, player.tile());
 				player.dead = true;
 				// Elroy mode gets disabled when player gets killed
-				int elroyMode = game.ghosts[BLINKY].elroy;
+				int elroyMode = game.ghost(BLINKY).elroy;
 				if (elroyMode > 0) {
-					game.ghosts[BLINKY].elroy = -elroyMode; // negative value means "disabled"
+					game.ghost(BLINKY).elroy = -elroyMode; // negative value means "disabled"
 					log("Elroy mode %d for Blinky has been disabled", elroyMode);
 				}
-				game.globalDotCounter = 0;
-				game.globalDotCounterEnabled = true;
+				game.setGlobalDotCounter(0);
+				game.enableGlobalDotCounter(true);
 				log("Global dot counter got reset and enabled");
 				changeState(PACMAN_DYING);
 				return;
@@ -359,7 +354,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		}
 
 		// Did player find food?
-		if (game.currentLevel.containsFood(player.tile())) {
+		if (game.currentLevel().containsFood(player.tile())) {
 			onPlayerFoundFood();
 		} else {
 			player.starvingTicks++;
@@ -384,8 +379,8 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		if (player.restingTicksLeft > 0) {
 			player.restingTicksLeft--;
 		} else {
-			player.speed = player.powerTimer.isRunning() ? game.currentLevel.playerSpeedPowered
-					: game.currentLevel.playerSpeed;
+			player.speed = player.powerTimer.isRunning() ? game.currentLevel().playerSpeedPowered
+					: game.currentLevel().playerSpeed;
 			player.tryMoving();
 		}
 
@@ -395,7 +390,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		game.ghosts().forEach(this::updateGhost);
 
 		// Bonus
-		final Bonus bonus = game.bonus;
+		final Bonus bonus = game.bonus();
 		final boolean edible = bonus.edibleTicksLeft > 0;
 		bonus.update();
 		if (edible && bonus.edibleTicksLeft == 0) {
@@ -409,22 +404,23 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	private void enterPacManDyingState() {
-		game.player.speed = 0;
+		game.player().speed = 0;
 		game.ghosts(FRIGHTENED).forEach(ghost -> ghost.state = HUNTING_PAC);
-		game.bonus.edibleTicksLeft = game.bonus.eatenTicksLeft = 0;
+		game.bonus().edibleTicksLeft = game.bonus().eatenTicksLeft = 0;
 		stateTimer().resetSeconds(5);// TODO
 	}
 
 	private void updatePacManDyingState() {
 		if (stateTimer().hasExpired()) {
-			changeState(attractMode ? INTRO : --game.lives > 0 ? READY : GAME_OVER);
+			game.removeLife();
+			changeState(attractMode ? INTRO : game.lives() > 0 ? READY : GAME_OVER);
 			return;
 		}
 	}
 
 	private void enterGhostDyingState() {
 		stateTimer().resetSeconds(1);
-		game.player.visible = false;
+		game.player().visible = false;
 	}
 
 	private void updateGhostDyingState() {
@@ -432,21 +428,21 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			resumePreviousState();
 			return;
 		}
-		game.ghosts().filter(ghost -> ghost.is(DEAD) && ghost.bounty == 0 || ghost.is(ENTERING_HOUSE))
+		game.ghosts().filter(ghost -> ghost.is(DEAD) && ghost.bounty == 0 || ghost.is(GhostState.ENTERING_HOUSE))
 				.forEach(this::updateGhost);
 	}
 
 	private void exitGhostDyingState() {
-		game.player.visible = true;
+		game.player().visible = true;
 		game.ghosts(DEAD).forEach(ghost -> ghost.bounty = 0);
 		game.ghosts(DEAD).forEach(ghost -> fireGameEvent(new GhostReturningHomeEvent(variant, game, ghost)));
 	}
 
 	private void enterLevelStartingState() {
 		stateTimer().reset();
-		log("Level %d complete, entering level %d", game.currentLevel.number, game.currentLevel.number + 1);
-		game.initLevel(game.currentLevel.number + 1);
-		game.levelSymbols.add(game.currentLevel.bonusSymbol);
+		log("Level %d complete, entering level %d", game.currentLevel().number, game.currentLevel().number + 1);
+		game.initLevel(game.currentLevel().number + 1);
+		game.addLevelSymbol(game.currentLevel().bonusSymbol);
 		game.resetGuys();
 	}
 
@@ -457,8 +453,8 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	private void enterLevelCompleteState() {
-		game.bonus.edibleTicksLeft = game.bonus.eatenTicksLeft = 0;
-		game.player.speed = 0;
+		game.bonus().edibleTicksLeft = game.bonus().eatenTicksLeft = 0;
+		game.player().speed = 0;
 		stateTimer().reset();
 	}
 
@@ -467,8 +463,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			if (attractMode) {
 				changeState(INTRO);
 			} else {
-				game.intermissionNumber = INTERMISSION_NUMBER_BY_LEVEL.getOrDefault(game.currentLevel.number, 0);
-				changeState(game.intermissionNumber != 0 ? INTERMISSION : LEVEL_STARTING);
+				changeState(game.intermissionNumber() != 0 ? INTERMISSION : LEVEL_STARTING);
 			}
 		}
 	}
@@ -476,8 +471,8 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	private void enterGameOverState() {
 		gameRunning = false;
 		game.ghosts().forEach(ghost -> ghost.speed = 0);
-		game.player.speed = 0;
-		game.saveHighscore();
+		game.player().speed = 0;
+		game.saveHiscore();
 		stateTimer().resetSeconds(10);
 	}
 
@@ -488,7 +483,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	private void enterIntermissionState() {
-		log("Starting intermission #%d", game.intermissionNumber);
+		log("Starting intermission #%d", game.intermissionNumber());
 		stateTimer().reset();
 	}
 
@@ -504,29 +499,29 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		if (attractMode) {
 			return;
 		}
-		int oldscore = game.score;
-		game.score += points;
-		if (game.score > game.highscorePoints) {
-			game.highscorePoints = game.score;
-			game.highscoreLevel = game.currentLevel.number;
+		int oldscore = game.score();
+		game.addScore(points);
+		if (game.score() > game.hiscorePoints()) {
+			game.setHiscorePoints(game.score());
+			game.setHiscoreLevel(game.currentLevel().number);
 		}
-		if (oldscore < 10000 && game.score >= 10000) {
-			game.lives++;
-			log("Extra life. Player has %d lives now", game.lives);
+		if (oldscore < 10000 && game.score() >= 10000) {
+			game.addLife();
+			log("Extra life. Player has %d lives now", game.lives());
 			fireGameEvent(new ExtraLifeEvent(variant, game));
 		}
 	}
 
 	private void onPlayerFoundFood() {
-		final Pac player = game.player;
+		final Pac player = game.player();
 		V2i foodLocation = player.tile();
-		game.currentLevel.removeFood(foodLocation);
-		if (game.currentLevel.world.isEnergizerTile(foodLocation)) {
+		game.currentLevel().removeFood(foodLocation);
+		if (game.currentLevel().world.isEnergizerTile(foodLocation)) {
 			player.starvingTicks = 0;
 			player.restingTicksLeft = 3;
-			game.ghostBounty = 200;
+			game.setGhostBounty(200);
 			score(50);
-			int powerSeconds = game.currentLevel.ghostFrightenedSeconds;
+			int powerSeconds = game.currentLevel().ghostFrightenedSeconds;
 			if (powerSeconds > 0) {
 				// stop HUNTING state timer while player has power
 				stateTimer().stop();
@@ -548,22 +543,22 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		}
 
 		// Bonus gets edible?
-		if (game.currentLevel.eatenFoodCount() == 70 || game.currentLevel.eatenFoodCount() == 170) {
-			final Bonus bonus = game.bonus;
+		if (game.currentLevel().eatenFoodCount() == 70 || game.currentLevel().eatenFoodCount() == 170) {
+			final Bonus bonus = game.bonus();
 			bonus.visible = true;
-			bonus.symbol = game.currentLevel.bonusSymbol;
-			bonus.points = game.bonusValue(game.currentLevel.bonusSymbol);
+			bonus.symbol = game.currentLevel().bonusSymbol;
+			bonus.points = game.bonusValue(game.currentLevel().bonusSymbol);
 			bonus.activate(isPlaying(PACMAN) ? sec_to_ticks(9 + new Random().nextFloat()) : Long.MAX_VALUE);
 			log("Bonus %s (value %d) activated", bonus.symbol, bonus.points);
 			fireGameEvent(new BonusActivatedEvent(variant, game));
 		}
 
 		// Blinky becomes Elroy?
-		if (game.currentLevel.foodRemaining == game.currentLevel.elroy1DotsLeft) {
-			game.ghosts[BLINKY].elroy = 1;
+		if (game.currentLevel().foodRemaining == game.currentLevel().elroy1DotsLeft) {
+			game.ghost(BLINKY).elroy = 1;
 			log("Blinky becomes Cruise Elroy 1");
-		} else if (game.currentLevel.foodRemaining == game.currentLevel.elroy2DotsLeft) {
-			game.ghosts[BLINKY].elroy = 2;
+		} else if (game.currentLevel().foodRemaining == game.currentLevel().elroy2DotsLeft) {
+			game.ghost(BLINKY).elroy = 2;
 			log("Blinky becomes Cruise Elroy 2");
 		}
 
@@ -587,40 +582,40 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			if (ghost.atGhostHouseDoor()) {
 				ghost.speed = 0;
 			} else {
-				ghost.speed = game.currentLevel.ghostSpeed / 2;
+				ghost.speed = game.currentLevel().ghostSpeed / 2;
 				ghost.bounce();
 			}
 			break;
 
 		case ENTERING_HOUSE:
-			ghost.speed = game.currentLevel.ghostSpeed * 2;
+			ghost.speed = game.currentLevel().ghostSpeed * 2;
 			ghost.enterHouse();
 			break;
 
 		case LEAVING_HOUSE:
-			ghost.speed = game.currentLevel.ghostSpeed / 2;
+			ghost.speed = game.currentLevel().ghostSpeed / 2;
 			ghost.leaveHouse();
 			break;
 
 		case FRIGHTENED:
-			if (game.currentLevel.world.isTunnel(ghost.tile())) {
-				ghost.speed = game.currentLevel.ghostSpeedTunnel;
+			if (game.currentLevel().world.isTunnel(ghost.tile())) {
+				ghost.speed = game.currentLevel().ghostSpeedTunnel;
 			} else {
-				ghost.speed = game.currentLevel.ghostSpeedFrightened;
+				ghost.speed = game.currentLevel().ghostSpeedFrightened;
 				ghost.selectRandomDirection();
 			}
 			ghost.tryMoving();
 			break;
 
 		case HUNTING_PAC:
-			if (game.currentLevel.world.isTunnel(ghost.tile())) {
-				ghost.speed = game.currentLevel.ghostSpeedTunnel;
+			if (game.currentLevel().world.isTunnel(ghost.tile())) {
+				ghost.speed = game.currentLevel().ghostSpeedTunnel;
 			} else if (ghost.elroy == 1) {
-				ghost.speed = game.currentLevel.elroy1Speed;
+				ghost.speed = game.currentLevel().elroy1Speed;
 			} else if (ghost.elroy == 2) {
-				ghost.speed = game.currentLevel.elroy2Speed;
+				ghost.speed = game.currentLevel().elroy2Speed;
 			} else {
-				ghost.speed = game.currentLevel.ghostSpeed;
+				ghost.speed = game.currentLevel().ghostSpeed;
 			}
 			if (ghost.targetTile == null) {
 				// this can happen in Ms. Pac-Man
@@ -632,7 +627,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			break;
 
 		case DEAD:
-			ghost.speed = game.currentLevel.ghostSpeed * 2;
+			ghost.speed = game.currentLevel().ghostSpeed * 2;
 			boolean reachedHouse = ghost.returnHome();
 			if (reachedHouse) {
 				fireGameEvent(new GhostEntersHouseEvent(variant, game, ghost));
@@ -646,13 +641,13 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	private void killGhost(Ghost ghost) {
 		ghost.state = DEAD;
-		ghost.targetTile = game.currentLevel.world.houseEntryLeftPart();
-		ghost.bounty = game.ghostBounty;
+		ghost.targetTile = game.currentLevel().world.houseEntryLeftPart();
+		ghost.bounty = game.ghostBounty();
 		score(ghost.bounty);
-		if (++game.currentLevel.numGhostsKilled == 16) {
+		if (++game.currentLevel().numGhostsKilled == 16) {
 			score(12000);
 		}
-		game.ghostBounty *= 2;
+		game.setGhostBounty(2 * game.ghostBounty());
 		log("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name, ghost.tile(), ghost.bounty);
 	}
 
@@ -666,7 +661,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		if (isPlaying(MS_PACMAN) && huntingPhase == 0 && (ghost.id == BLINKY || ghost.id == PINKY)) {
 			ghost.targetTile = null;
 		} else if (isScatteringPhase(huntingPhase) && ghost.elroy == 0) {
-			ghost.targetTile = game.currentLevel.world.ghostScatterTile(ghost.id);
+			ghost.targetTile = game.currentLevel().world.ghostScatterTile(ghost.id);
 		} else {
 			ghost.targetTile = ghostHuntingTarget(ghost.id);
 		}
@@ -676,31 +671,31 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	 * The so called "ghost AI".
 	 */
 	private V2i ghostHuntingTarget(int ghostID) {
-		final V2i playerTile = game.player.tile();
+		final V2i playerTile = game.player().tile();
 		switch (ghostID) {
 
 		case BLINKY:
 			return playerTile;
 
 		case PINKY: {
-			V2i fourAheadOfPlayer = playerTile.plus(game.player.dir().vec.scaled(4));
-			if (game.player.dir() == Direction.UP) { // simulate overflow bug
+			V2i fourAheadOfPlayer = playerTile.plus(game.player().dir().vec.scaled(4));
+			if (game.player().dir() == Direction.UP) { // simulate overflow bug
 				fourAheadOfPlayer = fourAheadOfPlayer.plus(-4, 0);
 			}
 			return fourAheadOfPlayer;
 		}
 
 		case INKY: {
-			V2i twoAheadOfPlayer = playerTile.plus(game.player.dir().vec.scaled(2));
-			if (game.player.dir() == Direction.UP) { // simulate overflow bug
+			V2i twoAheadOfPlayer = playerTile.plus(game.player().dir().vec.scaled(2));
+			if (game.player().dir() == Direction.UP) { // simulate overflow bug
 				twoAheadOfPlayer = twoAheadOfPlayer.plus(-2, 0);
 			}
-			return twoAheadOfPlayer.scaled(2).minus(game.ghosts[BLINKY].tile());
+			return twoAheadOfPlayer.scaled(2).minus(game.ghost(BLINKY).tile());
 		}
 
 		case CLYDE: /* A Boy Named Sue */
-			return game.ghosts[CLYDE].tile().euclideanDistance(playerTile) < 8
-					? game.currentLevel.world.ghostScatterTile(CLYDE)
+			return game.ghost(CLYDE).tile().euclideanDistance(playerTile) < 8
+					? game.currentLevel().world.ghostScatterTile(CLYDE)
 					: playerTile;
 
 		default:
@@ -730,45 +725,45 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	private void tryReleasingGhosts() {
-		if (game.ghosts[BLINKY].is(LOCKED)) {
-			game.ghosts[BLINKY].state = HUNTING_PAC;
+		if (game.ghost(BLINKY).is(LOCKED)) {
+			game.ghost(BLINKY).state = HUNTING_PAC;
 		}
 		preferredLockedGhostInHouse().ifPresent(ghost -> {
-			if (game.globalDotCounterEnabled && game.globalDotCounter >= ghostGlobalDotLimit(ghost.id)) {
-				releaseGhost(ghost, "Global dot counter (%d) reached limit (%d)", game.globalDotCounter,
+			if (game.isGlobalDotCounterEnabled() && game.globalDotCounter() >= ghostGlobalDotLimit(ghost.id)) {
+				releaseGhost(ghost, "Global dot counter (%d) reached limit (%d)", game.globalDotCounter(),
 						ghostGlobalDotLimit(ghost.id));
-			} else if (!game.globalDotCounterEnabled
-					&& ghost.dotCounter >= ghostPrivateDotLimit(ghost.id, game.currentLevel.number)) {
+			} else if (!game.isGlobalDotCounterEnabled()
+					&& ghost.dotCounter >= ghostPrivateDotLimit(ghost.id, game.currentLevel().number)) {
 				releaseGhost(ghost, "%s's dot counter (%d) reached limit (%d)", ghost.name, ghost.dotCounter,
-						ghostPrivateDotLimit(ghost.id, game.currentLevel.number));
-			} else if (game.player.starvingTicks >= playerStarvingTimeLimit(game.currentLevel.number)) {
-				releaseGhost(ghost, "%s has been starving for %d ticks", game.player.name, game.player.starvingTicks);
-				game.player.starvingTicks = 0;
+						ghostPrivateDotLimit(ghost.id, game.currentLevel().number));
+			} else if (game.player().starvingTicks >= playerStarvingTimeLimit(game.currentLevel().number)) {
+				releaseGhost(ghost, "%s has been starving for %d ticks", game.player().name, game.player().starvingTicks);
+				game.player().starvingTicks = 0;
 			}
 		});
 	}
 
 	private void releaseGhost(Ghost ghost, String reason, Object... args) {
 		ghost.state = LEAVING_HOUSE;
-		if (ghost.id == CLYDE && game.ghosts[BLINKY].elroy < 0) {
-			game.ghosts[BLINKY].elroy -= 1; // resume Elroy mode
-			log("Blinky Elroy mode %d resumed", game.ghosts[BLINKY].elroy);
+		if (ghost.id == CLYDE && game.ghost(BLINKY).elroy < 0) {
+			game.ghost(BLINKY).elroy -= 1; // resume Elroy mode
+			log("Blinky Elroy mode %d resumed", game.ghost(BLINKY).elroy);
 		}
 		log("Ghost %s released: %s", ghost.name, String.format(reason, args));
 	}
 
 	private Optional<Ghost> preferredLockedGhostInHouse() {
-		return Stream.of(PINKY, INKY, CLYDE).map(id -> game.ghosts[id]).filter(ghost -> ghost.is(LOCKED)).findFirst();
+		return Stream.of(PINKY, INKY, CLYDE).map(game::ghost).filter(ghost -> ghost.is(LOCKED)).findFirst();
 	}
 
 	private void updateGhostDotCounters() {
-		if (game.globalDotCounterEnabled) {
-			if (game.ghosts[CLYDE].is(LOCKED) && game.globalDotCounter == 32) {
-				game.globalDotCounterEnabled = false;
-				game.globalDotCounter = 0;
+		if (game.isGlobalDotCounterEnabled()) {
+			if (game.ghost(CLYDE).is(LOCKED) && game.globalDotCounter() == 32) {
+				game.enableGlobalDotCounter(false);
+				game.setGlobalDotCounter(0);
 				log("Global dot counter disabled and reset, Clyde was in house when counter reached 32");
 			} else {
-				++game.globalDotCounter;
+				game.setGlobalDotCounter(game.globalDotCounter() + 1);
 			}
 		} else {
 			preferredLockedGhostInHouse().ifPresent(ghost -> ++ghost.dotCounter);

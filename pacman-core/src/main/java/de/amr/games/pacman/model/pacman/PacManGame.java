@@ -106,6 +106,12 @@ public class PacManGame extends AbstractGameModel {
 	}
 
 	@Override
+	public String levelSymbol(int levelNumber) {
+		Object[] row = LEVELS[levelNumber <= 21 ? levelNumber - 1 : 20];
+		return (String) row[0];
+	}
+
+	@Override
 	public int mapNumber(int levelNumber) {
 		return 1;
 	}

@@ -18,14 +18,16 @@ import de.amr.games.pacman.model.pacman.Bonus;
  * 
  * @author Armin Reichert
  */
-public abstract class AbstractGameModel {
+public abstract class AbstractGameModel implements GameModel {
+
+	static final Map<Integer, Integer> INTERMISSION_NUMBER_BY_LEVEL = Map.of(2, 1, 5, 2, 9, 3, 13, 3, 17, 3);
 
 	static final int[][] HUNTING_PHASE_DURATION = {
-			//@formatter:off
-			{ 7, 20, 7, 20, 5,   20,  5, Integer.MAX_VALUE },
-			{ 7, 20, 7, 20, 5, 1033, -1, Integer.MAX_VALUE },
-			{ 5, 20, 5, 20, 5, 1037, -1, Integer.MAX_VALUE },
-			//@formatter:on
+		//@formatter:off
+		{ 7, 20, 7, 20, 5,   20,  5, Integer.MAX_VALUE },
+		{ 7, 20, 7, 20, 5, 1033, -1, Integer.MAX_VALUE },
+		{ 5, 20, 5, 20, 5, 1037, -1, Integer.MAX_VALUE },
+		//@formatter:on
 	};
 
 	private static long huntingTicks(int duration) {
@@ -38,20 +40,117 @@ public abstract class AbstractGameModel {
 		return duration * 60;
 	}
 
-	public GameLevel currentLevel;
-	public int intermissionNumber; // 1,2,3
-	public Pac player;
-	public Ghost[] ghosts;
-	public Bonus bonus;
-	public int lives;
-	public int score;
-	public String highscoreFileName;
-	public int highscoreLevel, highscorePoints;
-	public int ghostBounty;
-	public List<String> levelSymbols;
-	public int globalDotCounter;
-	public boolean globalDotCounterEnabled;
+	protected GameLevel currentLevel;
+	protected Pac player;
+	protected Ghost[] ghosts;
+	protected Bonus bonus;
+	protected int lives;
+	protected int score;
+	protected String highscoreFileName;
+	protected int hiscoreLevel, hiscorePoints;
+	protected int ghostBounty;
+	protected List<String> levelSymbols;
+	protected int globalDotCounter;
+	protected boolean globalDotCounterEnabled;
 
+	@Override
+	public GameLevel currentLevel() {
+		return currentLevel;
+	}
+
+	@Override
+	public void addLevelSymbol(String symbol) {
+		levelSymbols.add(symbol);
+	}
+
+	@Override
+	public int intermissionNumber() {
+		return INTERMISSION_NUMBER_BY_LEVEL.getOrDefault(currentLevel.number, 0);
+	}
+
+	@Override
+	public int lives() {
+		return lives;
+	}
+
+	@Override
+	public void addLife() {
+		++lives;
+	}
+
+	@Override
+	public void removeLife() {
+		if (lives > 0) {
+			lives--;
+		}
+	}
+
+	@Override
+	public int score() {
+		return score;
+	}
+
+	@Override
+	public void addScore(int points) {
+		score += points;
+	}
+
+	@Override
+	public int hiscorePoints() {
+		return hiscorePoints;
+	}
+
+	@Override
+	public void setHiscorePoints(int points) {
+		hiscorePoints = points;
+	}
+
+	@Override
+	public int hiscoreLevel() {
+		return hiscoreLevel;
+	}
+
+	@Override
+	public void setHiscoreLevel(int number) {
+		hiscoreLevel = number;
+	}
+
+	@Override
+	public Pac player() {
+		return player;
+	}
+
+	@Override
+	public Stream<Ghost> ghosts() {
+		return Stream.of(ghosts);
+	}
+
+	@Override
+	public Stream<Ghost> ghosts(GhostState state) {
+		return ghosts().filter(ghost -> ghost.state == state);
+	}
+
+	@Override
+	public Ghost ghost(int id) {
+		return ghosts[id];
+	}
+
+	@Override
+	public int ghostBounty() {
+		return ghostBounty;
+	}
+
+	@Override
+	public void setGhostBounty(int value) {
+		this.ghostBounty = value;
+	}
+
+	@Override
+	public Bonus bonus() {
+		return bonus;
+	}
+
+	@Override
 	public void resetGuys() {
 		player.placeAt(currentLevel.world.playerHomeTile(), HTS, 0);
 		player.setDir(player.startDir);
@@ -92,20 +191,22 @@ public abstract class AbstractGameModel {
 		bonus.eatenTicksLeft = 0;
 	}
 
+	@Override
 	public void reset() {
 		score = 0;
 		lives = 3;
 		initLevel(1);
 		levelSymbols = new ArrayList<>();
 		levelSymbols.add(currentLevel.bonusSymbol);
-		Hiscore hiscore = loadHighScore();
-		highscoreLevel = hiscore.level;
-		highscorePoints = hiscore.points;
+		Hiscore hiscore = loadHiscore();
+		hiscoreLevel = hiscore.level;
+		hiscorePoints = hiscore.points;
 	}
 
 	/**
 	 * @param levelNumber 1-based game level number
 	 */
+	@Override
 	public void initLevel(int levelNumber) {
 		createLevel(levelNumber);
 		ghostBounty = 200;
@@ -134,16 +235,9 @@ public abstract class AbstractGameModel {
 	 */
 	public abstract int mapNumber(int mazeNumber);
 
-	public Stream<Ghost> ghosts() {
-		return Stream.of(ghosts);
-	}
-
-	public Stream<Ghost> ghosts(GhostState ghostState) {
-		return ghosts().filter(ghost -> ghost.state == ghostState);
-	}
-
 	public abstract Map<String, Integer> bonusMap();
 
+	@Override
 	public int bonusValue(String bonusName) {
 		return bonusMap().get(bonusName);
 	}
@@ -153,25 +247,47 @@ public abstract class AbstractGameModel {
 				.orElseThrow();
 	}
 
+	@Override
 	public long getHuntingPhaseDuration(int phase) {
 		int row = currentLevel.number == 1 ? 0 : currentLevel.number <= 4 ? 1 : 2;
 		return huntingTicks(HUNTING_PHASE_DURATION[row][phase]);
 	}
 
-	public Hiscore loadHighScore() {
+	public Hiscore loadHiscore() {
 		File dir = new File(System.getProperty("user.home"));
 		Hiscore hiscore = new Hiscore(new File(dir, highscoreFileName));
 		hiscore.load();
 		return hiscore;
 	}
 
-	public void saveHighscore() {
-		Hiscore hiscore = loadHighScore();
-		if (highscorePoints > hiscore.points) {
-			hiscore.points = highscorePoints;
-			hiscore.level = highscoreLevel;
+	@Override
+	public void saveHiscore() {
+		Hiscore hiscore = loadHiscore();
+		if (hiscorePoints > hiscore.points) {
+			hiscore.points = hiscorePoints;
+			hiscore.level = hiscoreLevel;
 			hiscore.save();
 			log("New hiscore saved: %d points in level %d.", hiscore.points, hiscore.level);
 		}
+	}
+
+	@Override
+	public int globalDotCounter() {
+		return globalDotCounter;
+	}
+
+	@Override
+	public void setGlobalDotCounter(int globalDotCounter) {
+		this.globalDotCounter = globalDotCounter;
+	}
+
+	@Override
+	public boolean isGlobalDotCounterEnabled() {
+		return globalDotCounterEnabled;
+	}
+
+	@Override
+	public void enableGlobalDotCounter(boolean enable) {
+		globalDotCounterEnabled = enable;
 	}
 }

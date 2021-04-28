@@ -52,21 +52,21 @@ public class PlayScene extends GameScene {
 
 	@Override
 	public void init() {
-		player2D = new Player2D(game().player);
+		player2D = new Player2D(game().player());
 		player2D.setRendering(rendering);
 
 		ghosts2D = game().ghosts().map(Ghost2D::new).collect(Collectors.toList());
 		ghosts2D.forEach(ghost2D -> ghost2D.setRendering(rendering));
 
-		energizers2D = game().currentLevel.world.energizerTiles().map(Energizer2D::new).collect(Collectors.toList());
+		energizers2D = game().currentLevel().world.energizerTiles().map(Energizer2D::new).collect(Collectors.toList());
 
 		bonus2D = new Bonus2D();
 		bonus2D.setRendering(rendering);
 
-		mazeFlashing = rendering.mazeFlashing(game().currentLevel.mazeNumber).repetitions(game().currentLevel.numFlashes);
+		mazeFlashing = rendering.mazeFlashing(game().currentLevel().mazeNumber).repetitions(game().currentLevel().numFlashes);
 		mazeFlashing.reset();
 
-		game().player.powerTimer.addEventListener(this::handleGhostsFlashing);
+		game().player().powerTimer.addEventListener(this::handleGhostsFlashing);
 	}
 
 	@Override
@@ -80,7 +80,7 @@ public class PlayScene extends GameScene {
 
 	@Override
 	public void end() {
-		game().player.powerTimer.removeEventListener(this::handleGhostsFlashing);
+		game().player().powerTimer.removeEventListener(this::handleGhostsFlashing);
 	}
 
 	@Override
@@ -90,7 +90,7 @@ public class PlayScene extends GameScene {
 		// enter READY
 		if (e.newGameState == PacManGameState.READY) {
 			// TODO check this
-			rendering.mazeFlashing(game().currentLevel.mazeNumber).reset();
+			rendering.mazeFlashing(game().currentLevel().mazeNumber).reset();
 			if (!gameController.isAttractMode() && !gameController.isGameRunning()) {
 				gameController.stateTimer().resetSeconds(4.5);
 				sounds.play(PacManGameSound.GAME_READY);
@@ -135,7 +135,7 @@ public class PlayScene extends GameScene {
 
 		// enter LEVEL_COMPLETE
 		if (e.newGameState == PacManGameState.LEVEL_COMPLETE) {
-			mazeFlashing = rendering.mazeFlashing(game().currentLevel.mazeNumber);
+			mazeFlashing = rendering.mazeFlashing(game().currentLevel().mazeNumber);
 			sounds.stopAll();
 		}
 
@@ -182,7 +182,7 @@ public class PlayScene extends GameScene {
 
 	@Override
 	public void onBonusActivated(BonusActivatedEvent e) {
-		bonus2D.setBonus(gameController.game().bonus);
+		bonus2D.setBonus(gameController.game().bonus());
 		if (bonus2D.getJumpAnimation() != null) {
 			bonus2D.getJumpAnimation().restart();
 		}
@@ -216,9 +216,9 @@ public class PlayScene extends GameScene {
 
 	@Override
 	public void render(Graphics2D g) {
-		rendering.drawMaze(g, game().currentLevel.mazeNumber, 0, t(3), mazeFlashing.isRunning());
+		rendering.drawMaze(g, game().currentLevel().mazeNumber, 0, t(3), mazeFlashing.isRunning());
 		if (!mazeFlashing.isRunning()) {
-			rendering.hideEatenFood(g, game().currentLevel.world.tiles(), game().currentLevel::isFoodRemoved);
+			rendering.hideEatenFood(g, game().currentLevel().world.tiles(), game().currentLevel()::isFoodRemoved);
 			energizers2D.forEach(energizer2D -> energizer2D.render(g));
 		}
 		if (gameController.isAttractMode()) {
@@ -229,7 +229,7 @@ public class PlayScene extends GameScene {
 		bonus2D.render(g);
 		player2D.render(g);
 		ghosts2D.forEach(ghost2D -> {
-			ghost2D.setDisplayFrightened(game().player.powerTimer.isRunning());
+			ghost2D.setDisplayFrightened(game().player().powerTimer.isRunning());
 			ghost2D.render(g);
 		});
 		if (gameController.isGameRunning()) {
@@ -245,8 +245,8 @@ public class PlayScene extends GameScene {
 		if (e.type == TickTimerEvent.Type.HALF_EXPIRED) {
 			ghosts2D.stream().filter(ghost2D -> ghost2D.ghost.is(GhostState.FRIGHTENED)).forEach(ghost2D -> {
 				TimedSequence<?> flashing = ghost2D.getFlashingAnimation();
-				long frameTime = e.ticks / (game().currentLevel.numFlashes * flashing.numFrames());
-				flashing.frameDuration(frameTime).repetitions(game().currentLevel.numFlashes).restart();
+				long frameTime = e.ticks / (game().currentLevel().numFlashes * flashing.numFrames());
+				flashing.frameDuration(frameTime).repetitions(game().currentLevel().numFlashes).restart();
 			});
 		}
 	}

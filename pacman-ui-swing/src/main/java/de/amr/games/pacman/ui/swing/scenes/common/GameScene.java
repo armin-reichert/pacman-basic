@@ -5,7 +5,7 @@ import java.awt.Graphics2D;
 
 import de.amr.games.pacman.controller.PacManGameController;
 import de.amr.games.pacman.controller.event.DefaultPacManGameEventHandler;
-import de.amr.games.pacman.model.common.AbstractGameModel;
+import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.ui.swing.assets.SoundManager;
 import de.amr.games.pacman.ui.swing.rendering.common.AbstractPacManGameRendering;
 
@@ -29,7 +29,7 @@ public abstract class GameScene implements DefaultPacManGameEventHandler {
 		this.sounds = sounds;
 	}
 
-	public AbstractGameModel game() {
+	public GameModel game() {
 		return gameController.game();
 	}
 

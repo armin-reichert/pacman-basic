@@ -15,14 +15,14 @@ import de.amr.games.pacman.controller.PacManGameController;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.AbstractGameModel;
-import de.amr.games.pacman.model.common.Ghost;
+import de.amr.games.pacman.model.common.GameModel;
 
 public class Debug {
 
 	public static boolean on = false;
 
 	public static void drawPlaySceneDebugInfo(Graphics2D g, PacManGameController controller) {
-		AbstractGameModel game = controller.game();
+		GameModel game = controller.game();
 		final Color[] GHOST_COLORS = { Color.RED, Color.PINK, Color.CYAN, Color.ORANGE };
 		long remaining = controller.stateTimer().ticksRemaining();
 		String ticksText = remaining == Long.MAX_VALUE ? "forever" : remaining + " ticks remaining";
@@ -30,7 +30,7 @@ public class Debug {
 		g.setColor(Color.WHITE);
 		g.setFont(new Font("Arial", Font.PLAIN, 6));
 		g.drawString(stateText, t(1), t(3));
-		for (Ghost ghost : game.ghosts) {
+		game.ghosts().forEach(ghost -> {
 			g.setColor(Color.WHITE);
 			g.drawRect((int) ghost.position.x, (int) ghost.position.y, TS, TS);
 			if (ghost.targetTile != null) {
@@ -38,10 +38,10 @@ public class Debug {
 				g.setColor(c);
 				g.fillRect(t(ghost.targetTile.x) + HTS / 2, t(ghost.targetTile.y) + HTS / 2, HTS, HTS);
 			}
-		}
-		if (game.player.targetTile != null) {
+		});
+		if (game.player().targetTile != null) {
 			g.setColor(new Color(255, 255, 0, 200));
-			g.fillRect(t(game.player.targetTile.x), t(game.player.targetTile.y), TS, TS);
+			g.fillRect(t(game.player().targetTile.x), t(game.player().targetTile.y), TS, TS);
 		}
 	}
 
@@ -51,18 +51,18 @@ public class Debug {
 		Stroke thin = new BasicStroke(0.1f);
 		g.setColor(dark);
 		g.setStroke(thin);
-		for (int x = 0; x < game.currentLevel.world.numCols(); ++x) {
-			for (int y = 0; y < game.currentLevel.world.numRows(); ++y) {
+		for (int x = 0; x < game.currentLevel().world.numCols(); ++x) {
+			for (int y = 0; y < game.currentLevel().world.numRows(); ++y) {
 				V2i tile = new V2i(x, y);
-				if (game.currentLevel.world.isIntersection(tile)) {
+				if (game.currentLevel().world.isIntersection(tile)) {
 					for (Direction dir : Direction.values()) {
 						V2i neighbor = tile.plus(dir.vec);
-						if (game.currentLevel.world.isWall(neighbor)) {
+						if (game.currentLevel().world.isWall(neighbor)) {
 							continue;
 						}
 						g.drawLine(t(x) + HTS, t(y) + HTS, t(neighbor.x) + HTS, t(neighbor.y) + HTS);
 					}
-				} else if (game.currentLevel.world.isOneWayDown(tile)) {
+				} else if (game.currentLevel().world.isOneWayDown(tile)) {
 					g.translate(t(x) + HTS, t(y));
 					g.fillPolygon(TRIANGLE);
 					g.translate(-t(x) - HTS, -t(y));

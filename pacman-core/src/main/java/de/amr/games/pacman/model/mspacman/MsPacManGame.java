@@ -113,6 +113,12 @@ public class MsPacManGame extends AbstractGameModel {
 	}
 
 	@Override
+	public String levelSymbol(int levelNumber) {
+		Object[] row = LEVELS[levelNumber <= 21 ? levelNumber - 1 : 20];
+		return (String) row[0];
+	}
+
+	@Override
 	public int mazeNumber(int levelNumber) {
 		if (levelNumber < 1) {
 			throw new IllegalArgumentException("Illegal level number: " + levelNumber);

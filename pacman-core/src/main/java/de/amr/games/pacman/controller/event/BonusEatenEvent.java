@@ -1,11 +1,11 @@
 package de.amr.games.pacman.controller.event;
 
-import de.amr.games.pacman.model.common.AbstractGameModel;
+import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
 
 public class BonusEatenEvent extends PacManGameEvent {
 
-	public BonusEatenEvent(GameVariant gameVariant, AbstractGameModel gameModel) {
+	public BonusEatenEvent(GameVariant gameVariant, GameModel gameModel) {
 		super(gameVariant, gameModel);
 	}
 }
