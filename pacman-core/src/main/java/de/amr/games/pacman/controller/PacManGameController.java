@@ -57,6 +57,7 @@ import de.amr.games.pacman.controller.event.BonusEatenEvent;
 import de.amr.games.pacman.controller.event.BonusExpiredEvent;
 import de.amr.games.pacman.controller.event.ExtraLifeEvent;
 import de.amr.games.pacman.controller.event.GhostEntersHouseEvent;
+import de.amr.games.pacman.controller.event.GhostLeavesHouseEvent;
 import de.amr.games.pacman.controller.event.GhostReturningHomeEvent;
 import de.amr.games.pacman.controller.event.PacManFoundFoodEvent;
 import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
@@ -594,7 +595,10 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 		case LEAVING_HOUSE:
 			ghost.speed = game.currentLevel().ghostSpeed / 2;
-			ghost.leaveHouse();
+			boolean ghostLeavesHouse = ghost.leaveHouse();
+			if (ghostLeavesHouse) {
+				fireGameEvent(new GhostLeavesHouseEvent(variant, game, ghost));
+			}
 			break;
 
 		case FRIGHTENED:

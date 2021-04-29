@@ -22,6 +22,8 @@ public interface DefaultPacManGameEventHandler extends PacManGameEventListener {
 			onGhostReturningHome((GhostReturningHomeEvent) event);
 		} else if (event instanceof GhostEntersHouseEvent) {
 			onGhostEntersHouse((GhostEntersHouseEvent) event);
+		} else if (event instanceof GhostLeavesHouseEvent) {
+			onGhostLeavesHouse((GhostLeavesHouseEvent) event);
 		} else if (event instanceof PacManFoundFoodEvent) {
 			onPacManFoundFood((PacManFoundFoodEvent) event);
 		} else if (event instanceof PacManGainsPowerEvent) {
@@ -53,6 +55,9 @@ public interface DefaultPacManGameEventHandler extends PacManGameEventListener {
 	}
 
 	default void onGhostReturningHome(GhostReturningHomeEvent e) {
+	}
+
+	default void onGhostLeavesHouse(GhostLeavesHouseEvent e) {
 	}
 
 	default void onPacManFoundFood(PacManFoundFoodEvent e) {
