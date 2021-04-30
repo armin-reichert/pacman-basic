@@ -44,6 +44,7 @@ import static de.amr.games.pacman.model.common.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.common.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.model.common.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.model.common.GhostState.LOCKED;
+import static java.util.function.Predicate.not;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -233,8 +234,9 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	public void eatAllPellets() {
-		game.currentLevel().world.tiles().filter(game.currentLevel()::containsFood)
-				.filter(tile -> !game.currentLevel().world.isEnergizerTile(tile)).forEach(game.currentLevel()::removeFood);
+		game.currentLevel().world.tiles()//
+				.filter(not(game.currentLevel().world::isEnergizerTile))//
+				.forEach(game.currentLevel()::removeFood);
 	}
 
 	// BEGIN STATE-MACHINE METHODS

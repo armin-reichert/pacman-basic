@@ -11,7 +11,7 @@ public class PacManGameStateChangeEvent extends PacManGameEvent {
 
 	public PacManGameStateChangeEvent(GameVariant gameVariant, GameModel gameModel, PacManGameState oldGameState,
 			PacManGameState newGameState) {
-		super(gameVariant, gameModel, null);
+		super(gameVariant, gameModel);
 		this.oldGameState = oldGameState;
 		this.newGameState = newGameState;
 	}
