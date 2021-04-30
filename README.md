@@ -4,7 +4,7 @@ A Pac-Man and Ms. Pac-Man game implementation with levels, timing, ghost "AI" et
 
 This implementation follows the Model-View-Controller pattern:
 - The game controller is a finite-state machine with states INTRO, READY, HUNTING, LEVEL_STARTING, LEVEL_COMPLETE, PACMAN_DYING, GHOST_DYING, GAME_OVER and INTERMISSION. 
-- The UI is decoupled from the controller by an interface [PacManGameUI](pacman/src/main/java/de/amr/games/pacman/ui/PacManGameUI.java). A Swing UI implementation can be found in the repository [pacman-ui-siwng](https://github.com/armin-reichert/pacman-ui-swing), a JavaFX UI implementation in repository [pacman-javafx](https://github.com/armin-reichert/pacman-javafx).
+- The UI is decoupled from the controller by an interface [PacManGameUI](pacman-core/src/main/java/de/amr/games/pacman/ui/PacManGameUI.java). A Swing UI implementation can be found in the repository [pacman-ui-siwng](https://github.com/armin-reichert/pacman-ui-swing), a JavaFX UI implementation in repository [pacman-javafx](https://github.com/armin-reichert/pacman-javafx).
 
 The code here is more "to the point" than the one in my other [state-machine focussed implementation](https://github.com/armin-reichert/pacman).
 
