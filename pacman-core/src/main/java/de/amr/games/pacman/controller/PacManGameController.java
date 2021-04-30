@@ -145,9 +145,13 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		log("Removed game event listener %s, num listeners=%d", listener, gameEventListeners.size());
 	}
 
-	public void fireGameEvent(PacManGameEvent gameEvent) {
+	private void fireGameEvent(PacManGameEvent gameEvent) {
 		// copying shall avoid concurrent modification, not sure if this is really necessary
 		new ArrayList<>(gameEventListeners).forEach(listener -> listener.onGameEvent(gameEvent));
+	}
+
+	private void fireGameEvent(Info info) {
+		fireGameEvent(new PacManGameEvent(variant, game, info));
 	}
 
 	/**
@@ -355,7 +359,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		if (player.powerTimer.isRunning()) {
 			player.powerTimer.tick();
 			if (player.powerTimer.ticksRemaining() == sec_to_ticks(1)) {
-				fireGameEvent(new PacManGameEvent(variant, game, Info.PLAYER_LOSING_POWER));
+				fireGameEvent(Info.PLAYER_LOSING_POWER);
 			}
 		} else if (player.powerTimer.hasExpired()) {
 			log("%s lost power", player.name);
@@ -363,7 +367,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			player.powerTimer.reset();
 			// start HUNTING state timer again
 			stateTimer().start();
-			fireGameEvent(new PacManGameEvent(variant, game, Info.PLAYER_LOST_POWER));
+			fireGameEvent(Info.PLAYER_LOST_POWER);
 		}
 
 		// Move player through world
@@ -385,12 +389,12 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		final boolean edible = bonus.edibleTicksLeft > 0;
 		bonus.update();
 		if (edible && bonus.edibleTicksLeft == 0) {
-			fireGameEvent(new PacManGameEvent(variant, game, Info.BONUS_EXPIRED));
+			fireGameEvent(Info.BONUS_EXPIRED);
 		} else if (bonus.edibleTicksLeft > 0 && player.meets(bonus)) {
 			score(bonus.points);
 			bonus.eaten(sec_to_ticks(2));
 			log("%s found bonus (%s, value %d)", player.name, bonus.symbol, bonus.points);
-			fireGameEvent(new PacManGameEvent(variant, game, Info.BONUS_EATEN));
+			fireGameEvent(Info.BONUS_EATEN);
 		}
 	}
 
@@ -500,7 +504,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		if (oldscore < 10000 && game.score() >= 10000) {
 			game.addLife();
 			log("Extra life. Player has %d lives now", game.lives());
-			fireGameEvent(new PacManGameEvent(variant, game, Info.EXTRA_LIFE));
+			fireGameEvent(Info.EXTRA_LIFE);
 		}
 	}
 
@@ -526,7 +530,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 				player.powerTimer.resetSeconds(powerSeconds);
 				player.powerTimer.start();
 				log("%s got power for %d seconds", player.name, powerSeconds);
-				fireGameEvent(new PacManGameEvent(variant, game, Info.PLAYER_GAINS_POWER));
+				fireGameEvent(Info.PLAYER_GAINS_POWER);
 			}
 		} else {
 			player.starvingTicks = 0;
@@ -542,7 +546,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			bonus.points = game.bonusValue(game.currentLevel().bonusSymbol);
 			bonus.activate(isPlaying(PACMAN) ? sec_to_ticks(9 + new Random().nextFloat()) : Long.MAX_VALUE);
 			log("Bonus %s (value %d) activated", bonus.symbol, bonus.points);
-			fireGameEvent(new PacManGameEvent(variant, game, Info.BONUS_ACTIVATED));
+			fireGameEvent(Info.BONUS_ACTIVATED);
 		}
 
 		// Blinky becomes Elroy?
@@ -555,7 +559,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		}
 
 		updateGhostDotCounters();
-		fireGameEvent(new PacManGameEvent(variant, game, Info.PLAYER_FOUND_FOOD));
+		fireGameEvent(Info.PLAYER_FOUND_FOOD);
 	}
 
 	// Ghosts

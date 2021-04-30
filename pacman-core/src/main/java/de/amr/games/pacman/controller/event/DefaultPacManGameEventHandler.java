@@ -1,7 +1,5 @@
 package de.amr.games.pacman.controller.event;
 
-import de.amr.games.pacman.controller.event.PacManGameEvent.Info;
-
 /**
  * Provides an empty default handler for each game event such that a class implementing this
  * interface just needs to override the needed method(s).
@@ -12,32 +10,49 @@ public interface DefaultPacManGameEventHandler extends PacManGameEventListener {
 
 	@Override
 	default void onGameEvent(PacManGameEvent event) {
-		if (event.info == Info.BONUS_ACTIVATED) {
+		switch (event.info) {
+		case BONUS_ACTIVATED:
 			onBonusActivated(event);
-		} else if (event.info == Info.BONUS_EATEN) {
+			return;
+		case BONUS_EATEN:
 			onBonusEaten(event);
-		} else if (event.info == Info.BONUS_EXPIRED) {
+			return;
+		case BONUS_EXPIRED:
 			onBonusExpired(event);
-		} else if (event.info == Info.EXTRA_LIFE) {
+			return;
+		case EXTRA_LIFE:
 			onExtraLife(event);
-		} else if (event.info == Info.GHOST_ENTERS_HOUSE) {
+			return;
+		case GHOST_ENTERS_HOUSE:
 			onGhostEntersHouse(event);
-		} else if (event.info == Info.GHOST_LEAVES_HOUSE) {
+			return;
+		case GHOST_LEAVES_HOUSE:
 			onGhostLeavesHouse(event);
-		} else if (event.info == Info.GHOST_RETURNS_HOME) {
+			return;
+		case GHOST_RETURNS_HOME:
 			onGhostReturnsHome(event);
-		} else if (event.info == Info.PLAYER_FOUND_FOOD) {
+			return;
+		case PLAYER_FOUND_FOOD:
 			onPlayerFoundFood(event);
-		} else if (event.info == Info.PLAYER_GAINS_POWER) {
+			return;
+		case PLAYER_GAINS_POWER:
 			onPlayerGainsPower(event);
-		} else if (event.info == Info.PLAYER_LOSING_POWER) {
+			return;
+		case PLAYER_LOSING_POWER:
 			onPlayerLosingPower(event);
-		} else if (event.info == Info.PLAYER_LOST_POWER) {
+			return;
+		case PLAYER_LOST_POWER:
 			onPlayerLostPower(event);
-		} else if (event instanceof ScatterPhaseStartedEvent) {
-			onScatterPhaseStarted((ScatterPhaseStartedEvent) event);
-		} else if (event instanceof PacManGameStateChangeEvent) {
-			onPacManGameStateChange((PacManGameStateChangeEvent) event);
+			return;
+		default:
+			if (event instanceof ScatterPhaseStartedEvent) {
+				onScatterPhaseStarted((ScatterPhaseStartedEvent) event);
+				return;
+			}
+			if (event instanceof PacManGameStateChangeEvent) {
+				onPacManGameStateChange((PacManGameStateChangeEvent) event);
+				return;
+			}
 		}
 	}
 
