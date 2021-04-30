@@ -1,4 +1,4 @@
-## Pac-Man and Ms. Pac-Man
+## Pac-Man and Ms. Pac-Man (game logic,  no UI)
 
 A Pac-Man and Ms. Pac-Man game implementation with levels, timing, ghost "AI" etc. following the details given in the (highly appreciated) [Pac-Man Dossier](https://pacman.holenet.info) by Jamey Pittman. The Ms. Pac-Man levels probably are not 100% accurate because I could not find a similarly detailed description as the Pac-Man dossier. Any hints?
 
