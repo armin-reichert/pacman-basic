@@ -216,11 +216,6 @@ public abstract class AbstractGameModel implements GameModel {
 	}
 
 	@Override
-	public int bonusValue(String bonusName) {
-		return bonusMap().get(bonusName);
-	}
-
-	@Override
 	public long getHuntingPhaseDuration(int phase) {
 		int row = currentLevel.number == 1 ? 0 : currentLevel.number <= 4 ? 1 : 2;
 		return huntingTicks(HUNTING_PHASE_DURATION[row][phase]);
@@ -282,6 +277,4 @@ public abstract class AbstractGameModel implements GameModel {
 	 * @return 1-based number of the world map used by that maze
 	 */
 	protected abstract int mapNumber(int mazeNumber);
-
-	protected abstract Map<String, Integer> bonusMap();
 }

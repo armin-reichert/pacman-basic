@@ -139,7 +139,7 @@ public class MsPacManGame extends AbstractGameModel {
 	}
 
 	@Override
-	public Map<String, Integer> bonusMap() {
-		return BONUS_MAP;
+	public int bonusValue(String bonus) {
+		return BONUS_MAP.get(bonus);
 	}
 }
