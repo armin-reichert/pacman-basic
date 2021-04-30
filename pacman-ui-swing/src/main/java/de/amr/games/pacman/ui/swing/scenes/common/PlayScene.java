@@ -9,15 +9,8 @@ import java.util.stream.Collectors;
 
 import de.amr.games.pacman.controller.PacManGameController;
 import de.amr.games.pacman.controller.PacManGameState;
-import de.amr.games.pacman.controller.event.BonusStateChangeEvent;
-import de.amr.games.pacman.controller.event.ExtraLifeEvent;
-import de.amr.games.pacman.controller.event.GhostEntersHouseEvent;
-import de.amr.games.pacman.controller.event.GhostReturningHomeEvent;
-import de.amr.games.pacman.controller.event.PacManFoundFoodEvent;
-import de.amr.games.pacman.controller.event.PacManGainsPowerEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManGameStateChangeEvent;
-import de.amr.games.pacman.controller.event.PacManLostPowerEvent;
 import de.amr.games.pacman.controller.event.ScatterPhaseStartedEvent;
 import de.amr.games.pacman.lib.TickTimerEvent;
 import de.amr.games.pacman.lib.TimedSequence;
@@ -162,17 +155,17 @@ public class PlayScene extends GameScene {
 	}
 
 	@Override
-	public void onPacManLostPower(PacManLostPowerEvent e) {
+	public void onPlayerLostPower(PacManGameEvent e) {
 		sounds.stop(PacManGameSound.PACMAN_POWER);
 	}
 
 	@Override
-	public void onPacManFoundFood(PacManFoundFoodEvent e) {
+	public void onPlayerFoundFood(PacManGameEvent e) {
 		sounds.play(PacManGameSound.PACMAN_MUNCH);
 	}
 
 	@Override
-	public void onPacManGainsPower(PacManGainsPowerEvent e) {
+	public void onPlayerGainsPower(PacManGameEvent e) {
 		sounds.loop(PacManGameSound.PACMAN_POWER, Integer.MAX_VALUE);
 		ghosts2D.stream().filter(ghost2D -> ghost2D.ghost.is(GhostState.FRIGHTENED)).forEach(ghost2D -> {
 			ghost2D.getFlashingAnimation().reset();
@@ -181,7 +174,7 @@ public class PlayScene extends GameScene {
 	}
 
 	@Override
-	public void onBonusActivated(BonusStateChangeEvent e) {
+	public void onBonusActivated(PacManGameEvent e) {
 		bonus2D.setBonus(gameController.game().bonus());
 		if (bonus2D.getJumpAnimation() != null) {
 			bonus2D.getJumpAnimation().restart();
@@ -189,7 +182,7 @@ public class PlayScene extends GameScene {
 	}
 
 	@Override
-	public void onBonusEaten(BonusStateChangeEvent e) {
+	public void onBonusEaten(PacManGameEvent e) {
 		sounds.play(PacManGameSound.BONUS_EATEN);
 		if (bonus2D.getJumpAnimation() != null) {
 			bonus2D.getJumpAnimation().reset();
@@ -197,18 +190,18 @@ public class PlayScene extends GameScene {
 	}
 
 	@Override
-	public void onExtraLife(ExtraLifeEvent e) {
+	public void onExtraLife(PacManGameEvent e) {
 		sounds.play(PacManGameSound.EXTRA_LIFE);
 		gameController.getUI().showFlashMessage("Extra life!");
 	}
 
 	@Override
-	public void onGhostReturningHome(GhostReturningHomeEvent e) {
+	public void onGhostReturnsHome(PacManGameEvent e) {
 		sounds.play(PacManGameSound.GHOST_RETURNING_HOME);
 	}
 
 	@Override
-	public void onGhostEntersHouse(GhostEntersHouseEvent e) {
+	public void onGhostEntersHouse(PacManGameEvent e) {
 		if (game().ghosts(GhostState.DEAD).count() == 0) {
 			sounds.stop(PacManGameSound.GHOST_RETURNING_HOME);
 		}
