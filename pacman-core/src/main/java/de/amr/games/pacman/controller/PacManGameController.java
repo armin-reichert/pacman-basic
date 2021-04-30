@@ -52,9 +52,7 @@ import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.controller.event.BonusActivatedEvent;
-import de.amr.games.pacman.controller.event.BonusEatenEvent;
-import de.amr.games.pacman.controller.event.BonusExpiredEvent;
+import de.amr.games.pacman.controller.event.BonusStateChangeEvent;
 import de.amr.games.pacman.controller.event.ExtraLifeEvent;
 import de.amr.games.pacman.controller.event.GhostEntersHouseEvent;
 import de.amr.games.pacman.controller.event.GhostLeavesHouseEvent;
@@ -395,12 +393,12 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		final boolean edible = bonus.edibleTicksLeft > 0;
 		bonus.update();
 		if (edible && bonus.edibleTicksLeft == 0) {
-			fireGameEvent(new BonusExpiredEvent(variant, game));
+			fireGameEvent(new BonusStateChangeEvent(variant, game, BonusStateChangeEvent.EXPIRED));
 		} else if (bonus.edibleTicksLeft > 0 && player.meets(bonus)) {
 			score(bonus.points);
 			bonus.eaten(sec_to_ticks(2));
 			log("%s found bonus (%s, value %d)", player.name, bonus.symbol, bonus.points);
-			fireGameEvent(new BonusEatenEvent(variant, game));
+			fireGameEvent(new BonusStateChangeEvent(variant, game, BonusStateChangeEvent.EATEN));
 		}
 	}
 
@@ -551,7 +549,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			bonus.points = game.bonusValue(game.currentLevel().bonusSymbol);
 			bonus.activate(isPlaying(PACMAN) ? sec_to_ticks(9 + new Random().nextFloat()) : Long.MAX_VALUE);
 			log("Bonus %s (value %d) activated", bonus.symbol, bonus.points);
-			fireGameEvent(new BonusActivatedEvent(variant, game));
+			fireGameEvent(new BonusStateChangeEvent(variant, game, BonusStateChangeEvent.ACTIVATED));
 		}
 
 		// Blinky becomes Elroy?

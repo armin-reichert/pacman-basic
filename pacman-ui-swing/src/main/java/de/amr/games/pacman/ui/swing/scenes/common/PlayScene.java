@@ -9,8 +9,7 @@ import java.util.stream.Collectors;
 
 import de.amr.games.pacman.controller.PacManGameController;
 import de.amr.games.pacman.controller.PacManGameState;
-import de.amr.games.pacman.controller.event.BonusActivatedEvent;
-import de.amr.games.pacman.controller.event.BonusEatenEvent;
+import de.amr.games.pacman.controller.event.BonusStateChangeEvent;
 import de.amr.games.pacman.controller.event.ExtraLifeEvent;
 import de.amr.games.pacman.controller.event.GhostEntersHouseEvent;
 import de.amr.games.pacman.controller.event.GhostReturningHomeEvent;
@@ -63,7 +62,8 @@ public class PlayScene extends GameScene {
 		bonus2D = new Bonus2D();
 		bonus2D.setRendering(rendering);
 
-		mazeFlashing = rendering.mazeFlashing(game().currentLevel().mazeNumber).repetitions(game().currentLevel().numFlashes);
+		mazeFlashing = rendering.mazeFlashing(game().currentLevel().mazeNumber)
+				.repetitions(game().currentLevel().numFlashes);
 		mazeFlashing.reset();
 
 		game().player().powerTimer.addEventListener(this::handleGhostsFlashing);
@@ -181,7 +181,7 @@ public class PlayScene extends GameScene {
 	}
 
 	@Override
-	public void onBonusActivated(BonusActivatedEvent e) {
+	public void onBonusActivated(BonusStateChangeEvent e) {
 		bonus2D.setBonus(gameController.game().bonus());
 		if (bonus2D.getJumpAnimation() != null) {
 			bonus2D.getJumpAnimation().restart();
@@ -189,7 +189,7 @@ public class PlayScene extends GameScene {
 	}
 
 	@Override
-	public void onBonusEaten(BonusEatenEvent e) {
+	public void onBonusEaten(BonusStateChangeEvent e) {
 		sounds.play(PacManGameSound.BONUS_EATEN);
 		if (bonus2D.getJumpAnimation() != null) {
 			bonus2D.getJumpAnimation().reset();

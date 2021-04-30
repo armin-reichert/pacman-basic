@@ -10,12 +10,15 @@ public interface DefaultPacManGameEventHandler extends PacManGameEventListener {
 
 	@Override
 	default void onGameEvent(PacManGameEvent event) {
-		if (event instanceof BonusActivatedEvent) {
-			onBonusActivated((BonusActivatedEvent) event);
-		} else if (event instanceof BonusEatenEvent) {
-			onBonusEaten((BonusEatenEvent) event);
-		} else if (event instanceof BonusExpiredEvent) {
-			onBonusExpired((BonusExpiredEvent) event);
+		if (event instanceof BonusStateChangeEvent) {
+			BonusStateChangeEvent bonusChangeEvent = (BonusStateChangeEvent) event;
+			if (bonusChangeEvent.state == BonusStateChangeEvent.ACTIVATED) {
+				onBonusActivated(bonusChangeEvent);
+			} else if (bonusChangeEvent.state == BonusStateChangeEvent.EATEN) {
+				onBonusEaten(bonusChangeEvent);
+			} else if (bonusChangeEvent.state == BonusStateChangeEvent.EXPIRED) {
+				onBonusExpired(bonusChangeEvent);
+			}
 		} else if (event instanceof ExtraLifeEvent) {
 			onExtraLife((ExtraLifeEvent) event);
 		} else if (event instanceof GhostReturningHomeEvent) {
@@ -39,13 +42,13 @@ public interface DefaultPacManGameEventHandler extends PacManGameEventListener {
 		}
 	}
 
-	default void onBonusActivated(BonusActivatedEvent e) {
+	default void onBonusActivated(BonusStateChangeEvent e) {
 	}
 
-	default void onBonusEaten(BonusEatenEvent e) {
+	default void onBonusEaten(BonusStateChangeEvent e) {
 	}
 
-	default void onBonusExpired(BonusExpiredEvent e) {
+	default void onBonusExpired(BonusStateChangeEvent e) {
 	}
 
 	default void onExtraLife(ExtraLifeEvent e) {
