@@ -2,6 +2,7 @@ package de.amr.games.pacman.controller.event;
 
 import java.util.Objects;
 
+import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.Ghost;
@@ -17,6 +18,7 @@ public class PacManGameEvent {
 	public final GameModel gameModel;
 	public final Info info;
 	public final Ghost ghost; // only used for ghost-related events
+	public V2i tile; // the (optional) tile where this event occurred
 
 	public PacManGameEvent(GameVariant gameVariant, GameModel gameModel) {
 		this(gameVariant, gameModel, Info.ANY, null);

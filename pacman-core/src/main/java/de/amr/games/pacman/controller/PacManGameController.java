@@ -151,8 +151,10 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		new ArrayList<>(gameEventListeners).forEach(listener -> listener.onGameEvent(gameEvent));
 	}
 
-	private void fireGameEvent(Info info) {
-		fireGameEvent(new PacManGameEvent(variant, game, info));
+	private void fireGameEvent(Info info, V2i tile) {
+		PacManGameEvent event = new PacManGameEvent(variant, game, info);
+		event.tile = tile;
+		fireGameEvent(event);
 	}
 
 	/**
@@ -237,6 +239,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		game.currentLevel().world.tiles()//
 				.filter(not(game.currentLevel().world::isEnergizerTile))//
 				.forEach(game.currentLevel()::removeFood);
+		fireGameEvent(Info.PLAYER_FOUND_FOOD, null);
 	}
 
 	// BEGIN STATE-MACHINE METHODS
@@ -361,7 +364,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		if (player.powerTimer.isRunning()) {
 			player.powerTimer.tick();
 			if (player.powerTimer.ticksRemaining() == sec_to_ticks(1)) {
-				fireGameEvent(Info.PLAYER_LOSING_POWER);
+				fireGameEvent(Info.PLAYER_LOSING_POWER, player.tile());
 			}
 		} else if (player.powerTimer.hasExpired()) {
 			log("%s lost power", player.name);
@@ -369,7 +372,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			player.powerTimer.reset();
 			// start HUNTING state timer again
 			stateTimer().start();
-			fireGameEvent(Info.PLAYER_LOST_POWER);
+			fireGameEvent(Info.PLAYER_LOST_POWER, player.tile());
 		}
 
 		// Move player through world
@@ -391,12 +394,12 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		final boolean edible = bonus.edibleTicksLeft > 0;
 		bonus.update();
 		if (edible && bonus.edibleTicksLeft == 0) {
-			fireGameEvent(Info.BONUS_EXPIRED);
+			fireGameEvent(Info.BONUS_EXPIRED, bonus.tile());
 		} else if (bonus.edibleTicksLeft > 0 && player.meets(bonus)) {
 			score(bonus.points);
 			bonus.eaten(sec_to_ticks(2));
 			log("%s found bonus (%s, value %d)", player.name, bonus.symbol, bonus.points);
-			fireGameEvent(Info.BONUS_EATEN);
+			fireGameEvent(Info.BONUS_EATEN, bonus.tile());
 		}
 	}
 
@@ -506,7 +509,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		if (oldscore < 10000 && game.score() >= 10000) {
 			game.addLife();
 			log("Extra life. Player has %d lives now", game.lives());
-			fireGameEvent(Info.EXTRA_LIFE);
+			fireGameEvent(Info.EXTRA_LIFE, null);
 		}
 	}
 
@@ -532,7 +535,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 				player.powerTimer.resetSeconds(powerSeconds);
 				player.powerTimer.start();
 				log("%s got power for %d seconds", player.name, powerSeconds);
-				fireGameEvent(Info.PLAYER_GAINS_POWER);
+				fireGameEvent(Info.PLAYER_GAINS_POWER, player.tile());
 			}
 		} else {
 			player.starvingTicks = 0;
@@ -548,7 +551,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			bonus.points = game.bonusValue(game.currentLevel().bonusSymbol);
 			bonus.activate(isPlaying(PACMAN) ? sec_to_ticks(9 + new Random().nextFloat()) : Long.MAX_VALUE);
 			log("Bonus %s (value %d) activated", bonus.symbol, bonus.points);
-			fireGameEvent(Info.BONUS_ACTIVATED);
+			fireGameEvent(Info.BONUS_ACTIVATED, bonus.tile());
 		}
 
 		// Blinky becomes Elroy?
@@ -561,7 +564,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		}
 
 		updateGhostDotCounters();
-		fireGameEvent(Info.PLAYER_FOUND_FOOD);
+		fireGameEvent(Info.PLAYER_FOUND_FOOD, player.tile());
 	}
 
 	// Ghosts
