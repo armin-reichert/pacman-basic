@@ -7,6 +7,12 @@ import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.Ghost;
 
+/**
+ * Base class for events fired during game play. This class is a kind of compromise between separate
+ * subclasses for each event type and a fat base class.
+ * 
+ * @author Armin Reichert
+ */
 public class PacManGameEvent {
 
 	public enum Info {
