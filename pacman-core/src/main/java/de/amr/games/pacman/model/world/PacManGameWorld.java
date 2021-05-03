@@ -1,5 +1,6 @@
 package de.amr.games.pacman.model.world;
 
+import java.util.Optional;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -43,6 +44,16 @@ public interface PacManGameWorld {
 	 * @return Number of tiles in vertical direction.
 	 */
 	int numRows();
+
+	/**
+	 * Optional information where walls should be placed around inaccessible areas.
+	 * 
+	 * @param resolution resolution of wall map
+	 * @return optional wall map
+	 */
+	default Optional<WallMap> wallMap(int resolution) {
+		return Optional.empty();
+	}
 
 	/**
 	 * @return all tiles in the world in order top to bottom, left-to-right.
@@ -166,8 +177,7 @@ public interface PacManGameWorld {
 
 	/**
 	 * @param tile a tile
-	 * @return tells if the tile may contain food (not if it currently contains
-	 *         food!)
+	 * @return tells if the tile may contain food (not if it currently contains food!)
 	 */
 	boolean isFoodTile(V2i tile);
 

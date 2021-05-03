@@ -1,9 +1,11 @@
 package de.amr.games.pacman.model.world;
 
+import static de.amr.games.pacman.lib.Logging.log;
 import static java.util.function.Predicate.not;
 
 import java.util.BitSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -33,6 +35,8 @@ public class MapBasedPacManGameWorld implements PacManGameWorld {
 	private List<Integer> portalRows;
 	private BitSet intersections;
 	private List<V2i> energizerTiles;
+
+	private WallMap wallMap;
 
 	public void setMap(WorldMap map) {
 		this.map = map;
@@ -67,6 +71,36 @@ public class MapBasedPacManGameWorld implements PacManGameWorld {
 
 		// Collect energizer tiles
 		energizerTiles = tiles().filter(tile -> map.data(tile) == WorldMap.ENERGIZER).collect(Collectors.toList());
+	}
+
+	private void createWallMap(int resolution) {
+		long start = System.nanoTime();
+
+		WallScanner scanner = new WallScanner(resolution);
+		boolean[][] map = scanner.scan(this);
+		wallMap = new WallMap() {
+
+			@Override
+			public boolean[][] wallInfo() {
+				return map;
+			}
+
+			@Override
+			public int resolution() {
+				return resolution;
+			}
+		};
+
+		long time = System.nanoTime() - start;
+		log("MapBasedPacManWorld: building wall map took %.2f milliseconds", time * 1e-6);
+	}
+
+	@Override
+	public Optional<WallMap> wallMap(int blocksPerTile) {
+		if (wallMap == null || wallMap.resolution() != blocksPerTile) {
+			createWallMap(blocksPerTile);
+		}
+		return Optional.of(wallMap);
 	}
 
 	private Stream<V2i> neighbors(V2i tile) {
