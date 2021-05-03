@@ -39,6 +39,9 @@ public class MapBasedPacManGameWorld implements PacManGameWorld {
 	private WallMap wallMap;
 
 	public void setMap(WorldMap map) {
+		if (this.map != map) {
+			wallMap = null;
+		}
 		this.map = map;
 
 		size = map.vector("size");
@@ -73,6 +76,19 @@ public class MapBasedPacManGameWorld implements PacManGameWorld {
 		energizerTiles = tiles().filter(tile -> map.data(tile) == WorldMap.ENERGIZER).collect(Collectors.toList());
 	}
 
+	@Override
+	public Optional<WorldMap> getMap() {
+		return Optional.of(map);
+	}
+
+	@Override
+	public Optional<WallMap> getWallMap(int resolution) {
+		if (wallMap == null || wallMap.resolution() != resolution) {
+			createWallMap(resolution);
+		}
+		return Optional.of(wallMap);
+	}
+
 	private void createWallMap(int resolution) {
 		long start = System.nanoTime();
 
@@ -93,14 +109,6 @@ public class MapBasedPacManGameWorld implements PacManGameWorld {
 
 		long time = System.nanoTime() - start;
 		log("MapBasedPacManWorld: building wall map took %.2f milliseconds", time * 1e-6);
-	}
-
-	@Override
-	public Optional<WallMap> wallMap(int blocksPerTile) {
-		if (wallMap == null || wallMap.resolution() != blocksPerTile) {
-			createWallMap(blocksPerTile);
-		}
-		return Optional.of(wallMap);
 	}
 
 	private Stream<V2i> neighbors(V2i tile) {

@@ -46,12 +46,18 @@ public interface PacManGameWorld {
 	int numRows();
 
 	/**
+	 * 
+	 * @return optional map of the world
+	 */
+	Optional<WorldMap> getMap();
+
+	/**
 	 * Optional information where walls should be placed around inaccessible areas.
 	 * 
 	 * @param resolution resolution of wall map
 	 * @return optional wall map
 	 */
-	default Optional<WallMap> wallMap(int resolution) {
+	default Optional<WallMap> getWallMap(int resolution) {
 		return Optional.empty();
 	}
 
