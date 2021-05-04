@@ -1,6 +1,7 @@
 package de.amr.games.pacman.controller.event;
 
 import java.util.Objects;
+import java.util.Optional;
 
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.GameModel;
@@ -23,21 +24,14 @@ public class PacManGameEvent {
 	public final GameVariant gameVariant;
 	public final GameModel gameModel;
 	public final Info info;
-	public final Ghost ghost; // only used for ghost-related events
-	public V2i tile; // the (optional) tile where this event occurred
+	public final Optional<V2i> tile; // the optional tile where this event occurred
+	public final Optional<Ghost> ghost; // the optional ghost this event relates to
 
-	public PacManGameEvent(GameVariant gameVariant, GameModel gameModel) {
-		this(gameVariant, gameModel, Info.ANY, null);
-	}
-
-	public PacManGameEvent(GameVariant gameVariant, GameModel gameModel, Info info) {
-		this(gameVariant, gameModel, info, null);
-	}
-
-	public PacManGameEvent(GameVariant gameVariant, GameModel gameModel, Info info, Ghost ghost) {
+	public PacManGameEvent(GameVariant gameVariant, GameModel gameModel, Info info, Ghost ghost, V2i tile) {
 		this.gameVariant = Objects.requireNonNull(gameVariant);
 		this.gameModel = Objects.requireNonNull(gameModel);
 		this.info = Objects.requireNonNull(info);
-		this.ghost = ghost;
+		this.tile = Optional.ofNullable(tile);
+		this.ghost = Optional.ofNullable(ghost);
 	}
 }

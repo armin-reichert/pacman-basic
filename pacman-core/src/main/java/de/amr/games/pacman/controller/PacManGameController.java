@@ -152,9 +152,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	private void fireGameEvent(Info info, V2i tile) {
-		PacManGameEvent event = new PacManGameEvent(variant, game, info);
-		event.tile = tile;
-		fireGameEvent(event);
+		fireGameEvent(new PacManGameEvent(variant, game, info, null, tile));
 	}
 
 	/**
@@ -436,7 +434,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		game.player().visible = true;
 		game.ghosts(DEAD).forEach(ghost -> ghost.bounty = 0);
 		game.ghosts(DEAD)
-				.forEach(ghost -> fireGameEvent(new PacManGameEvent(variant, game, Info.GHOST_RETURNS_HOME, ghost)));
+				.forEach(ghost -> fireGameEvent(new PacManGameEvent(variant, game, Info.GHOST_RETURNS_HOME, ghost, null)));
 	}
 
 	private void enterLevelStartingState() {
@@ -597,7 +595,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			ghost.speed = game.currentLevel().ghostSpeed / 2;
 			boolean ghostLeavesHouse = ghost.leaveHouse();
 			if (ghostLeavesHouse) {
-				fireGameEvent(new PacManGameEvent(variant, game, Info.GHOST_LEAVES_HOUSE, ghost));
+				fireGameEvent(new PacManGameEvent(variant, game, Info.GHOST_LEAVES_HOUSE, ghost, ghost.tile()));
 			}
 			break;
 
@@ -634,7 +632,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			ghost.speed = game.currentLevel().ghostSpeed * 2;
 			boolean reachedHouse = ghost.returnHome();
 			if (reachedHouse) {
-				fireGameEvent(new PacManGameEvent(variant, game, Info.GHOST_ENTERS_HOUSE, ghost));
+				fireGameEvent(new PacManGameEvent(variant, game, Info.GHOST_ENTERS_HOUSE, ghost, ghost.tile()));
 			}
 			break;
 

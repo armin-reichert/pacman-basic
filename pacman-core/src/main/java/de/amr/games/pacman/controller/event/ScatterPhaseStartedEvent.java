@@ -8,7 +8,7 @@ public class ScatterPhaseStartedEvent extends PacManGameEvent {
 	public final int scatterPhase;
 
 	public ScatterPhaseStartedEvent(GameVariant gameVariant, GameModel gameModel, int scatterPhase) {
-		super(gameVariant, gameModel);
+		super(gameVariant, gameModel, Info.ANY, null, null);
 		this.scatterPhase = scatterPhase;
 	}
 }
