@@ -18,7 +18,7 @@ public class PacManGameEvent {
 
 	public enum Info {
 		BONUS_ACTIVATED, BONUS_EATEN, BONUS_EXPIRED, EXTRA_LIFE, PLAYER_FOUND_FOOD, PLAYER_GAINS_POWER, PLAYER_LOSING_POWER,
-		PLAYER_LOST_POWER, GHOST_ENTERS_HOUSE, GHOST_LEAVES_HOUSE, GHOST_RETURNS_HOME, ANY;
+		PLAYER_LOST_POWER, GHOST_ENTERS_HOUSE, GHOST_LEAVES_HOUSE, GHOST_RETURNS_HOME, GAME_STATE_CHANGE, OTHER;
 	}
 
 	public final GameVariant gameVariant;
@@ -33,5 +33,12 @@ public class PacManGameEvent {
 		this.info = Objects.requireNonNull(info);
 		this.tile = Optional.ofNullable(tile);
 		this.ghost = Optional.ofNullable(ghost);
+	}
+
+	@Override
+	public String toString() {
+		return ghost.isEmpty() ? //
+				String.format("%s: tile %s", info, tile.orElse(null))
+				: String.format("%s: tile %s, ghost %s", info, tile.orElse(null), ghost.orElse(null));
 	}
 }
