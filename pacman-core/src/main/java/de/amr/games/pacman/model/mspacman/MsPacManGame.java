@@ -83,6 +83,8 @@ public class MsPacManGame extends AbstractGameModel {
 
 		bonus = new MovingBonus();
 		bonus.world = world;
+
+		hiscoreFileName = "hiscore-mspacman.xml";
 	}
 
 	@Override
@@ -99,11 +101,6 @@ public class MsPacManGame extends AbstractGameModel {
 			currentLevel.bonusSymbol = randomBonus;
 		}
 		log("Ms. Pac-Man level %d created, maze index is %d", levelNumber, mazeNumber);
-	}
-
-	@Override
-	protected String hiscoreFileName() {
-		return "hiscore-mspacman.xml";
 	}
 
 	@Override

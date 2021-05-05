@@ -20,25 +20,17 @@ import de.amr.games.pacman.model.pacman.Bonus;
  */
 public abstract class AbstractGameModel implements GameModel {
 
+	static final int INITIAL_NUM_LIVES = 3;
+
 	static final Map<Integer, Integer> INTERMISSION_NUMBER_BY_LEVEL = Map.of(2, 1, 5, 2, 9, 3, 13, 3, 17, 3);
 
-	static final int[][] HUNTING_PHASE_DURATION = {
+	static final int[][] HUNTING_PHASE_TICKS = {
 		//@formatter:off
-		{ 7, 20, 7, 20, 5,   20,  5, Integer.MAX_VALUE },
-		{ 7, 20, 7, 20, 5, 1033, -1, Integer.MAX_VALUE },
-		{ 5, 20, 5, 20, 5, 1037, -1, Integer.MAX_VALUE },
+		{ 7 * 60, 20 * 60, 7 * 60, 20 * 60, 5 * 60,   20 * 60,  5 * 60, Integer.MAX_VALUE },
+		{ 7 * 60, 20 * 60, 7 * 60, 20 * 60, 5 * 60, 1033 * 60,       1, Integer.MAX_VALUE },
+		{ 5 * 60, 20 * 60, 5 * 60, 20 * 60, 5 * 60, 1037 * 60,       1, Integer.MAX_VALUE },
 		//@formatter:on
 	};
-
-	private static long huntingTicks(int duration) {
-		if (duration == -1) {
-			return 1; // -1 means a single tick
-		}
-		if (duration == Integer.MAX_VALUE) {
-			return Long.MAX_VALUE;
-		}
-		return duration * 60;
-	}
 
 	protected GameLevel currentLevel;
 	protected Pac player;
@@ -52,6 +44,7 @@ public abstract class AbstractGameModel implements GameModel {
 	protected List<String> levelSymbols;
 	protected int globalDotCounter;
 	protected boolean globalDotCounterEnabled;
+	protected String hiscoreFileName;
 
 	@Override
 	public GameLevel currentLevel() {
@@ -173,11 +166,12 @@ public abstract class AbstractGameModel implements GameModel {
 			ghost.speed = 0;
 			ghost.targetTile = null;
 			ghost.stuck = false;
-			ghost.forced = ghost.id == BLINKY;
-			ghost.forcedOnTrack = ghost.id == BLINKY;
+			// BLINKY starts outside of ghost house, so he must be on track initially
+			ghost.forced = (ghost.id == BLINKY);
+			ghost.forcedOnTrack = (ghost.id == BLINKY);
 			ghost.state = GhostState.LOCKED;
 			ghost.bounty = 0;
-			// these are reset when entering level:
+			// these are only reset when level starts:
 			// ghost.dotCounter = 0;
 			// ghost.elroyMode = 0;
 		}
@@ -194,7 +188,7 @@ public abstract class AbstractGameModel implements GameModel {
 	@Override
 	public void reset() {
 		score = 0;
-		lives = 3;
+		lives = INITIAL_NUM_LIVES;
 		initLevel(1);
 		levelSymbols = new ArrayList<>();
 		levelSymbols.add(currentLevel.bonusSymbol);
@@ -218,7 +212,7 @@ public abstract class AbstractGameModel implements GameModel {
 	@Override
 	public long getHuntingPhaseDuration(int phase) {
 		int row = currentLevel.number == 1 ? 0 : currentLevel.number <= 4 ? 1 : 2;
-		return huntingTicks(HUNTING_PHASE_DURATION[row][phase]);
+		return HUNTING_PHASE_TICKS[row][phase];
 	}
 
 	@Override
@@ -228,7 +222,7 @@ public abstract class AbstractGameModel implements GameModel {
 			hiscore.points = hiscorePoints;
 			hiscore.level = hiscoreLevel;
 			hiscore.save();
-			log("New hiscore saved: %d points in level %d.", hiscore.points, hiscore.level);
+			log("New hiscore: %d points in level %d.", hiscore.points, hiscore.level);
 		}
 	}
 
@@ -252,15 +246,6 @@ public abstract class AbstractGameModel implements GameModel {
 		globalDotCounterEnabled = enable;
 	}
 
-	protected Hiscore loadHiscore() {
-		File dir = new File(System.getProperty("user.home"));
-		Hiscore hiscore = new Hiscore(new File(dir, hiscoreFileName()));
-		hiscore.load();
-		return hiscore;
-	}
-
-	protected abstract String hiscoreFileName();
-
 	/**
 	 * @param levelNumber 1-based game level number
 	 */
@@ -277,4 +262,12 @@ public abstract class AbstractGameModel implements GameModel {
 	 * @return 1-based number of the world map used by that maze
 	 */
 	protected abstract int mapNumber(int mazeNumber);
+
+	protected Hiscore loadHiscore() {
+		File dir = new File(System.getProperty("user.home"));
+		Hiscore hiscore = new Hiscore(new File(dir, hiscoreFileName));
+		hiscore.load();
+		return hiscore;
+	}
+
 }

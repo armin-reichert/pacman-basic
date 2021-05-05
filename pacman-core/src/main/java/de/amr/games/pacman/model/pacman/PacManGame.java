@@ -91,6 +91,8 @@ public class PacManGame extends AbstractGameModel {
 		bonus = new Bonus();
 		bonus.world = world;
 		bonus.setPosition(world.bonusTile().x * TS + HTS, world.bonusTile().y * TS);
+
+		hiscoreFileName = "hiscore-pacman.xml";
 	}
 
 	@Override
@@ -99,11 +101,6 @@ public class PacManGame extends AbstractGameModel {
 		currentLevel.setValues(LEVELS[levelNumber <= 21 ? levelNumber - 1 : 20]);
 		currentLevel.mazeNumber = 1;
 		log("Pac-Man classic level %d created", levelNumber);
-	}
-
-	@Override
-	protected String hiscoreFileName() {
-		return "hiscore-pacman.xml";
 	}
 
 	@Override
