@@ -21,6 +21,7 @@ import de.amr.games.pacman.lib.V2i;
 public class MapBasedPacManGameWorld implements PacManGameWorld {
 
 	private WorldMap map;
+	private WallMap wallMap;
 	private V2i size;
 	private V2i house_top_left;
 	private V2i house_bottom_right;
@@ -36,14 +37,12 @@ public class MapBasedPacManGameWorld implements PacManGameWorld {
 	private BitSet intersections;
 	private List<V2i> energizerTiles;
 
-	private WallMap wallMap;
-
 	public void setMap(WorldMap map) {
 		if (this.map != map) {
 			wallMap = null;
 		}
 		this.map = map;
-
+	
 		size = map.vector("size");
 		house_top_left = map.vector("house_top_left");
 		house_bottom_right = map.vector("house_bottom_right");
@@ -55,15 +54,13 @@ public class MapBasedPacManGameWorld implements PacManGameWorld {
 		bonus_home = map.vectorOptional("bonus_home").orElse(V2i.NULL);
 		scatterTiles = map.vectorList("scatter");
 		upwardsBlockedTiles = map.vectorList("upwards_blocked");
-
+	
 		// Collect portal tiles
 		portalRows = IntStream.range(0, size.y)
-				.filter(y -> map.data(0, y) == WorldMap.TUNNEL && map.data(size.x - 1, y) == WorldMap.TUNNEL)
-				.mapToObj(Integer::valueOf).collect(Collectors.toList());
-
-		/*
-		 * Collect "waypoints".
-		 */
+				.filter(y -> map.data(0, y) == WorldMap.TUNNEL && map.data(size.x - 1, y) == WorldMap.TUNNEL).boxed()
+				.collect(Collectors.toList());
+	
+		// Collect intersections
 		intersections = new BitSet();
 		tiles() //
 				.filter(not(this::isGhostHousePart)) //
@@ -71,9 +68,19 @@ public class MapBasedPacManGameWorld implements PacManGameWorld {
 				.filter(tile -> neighbors(tile).filter(not(this::isWall)).count() > 2) //
 				.map(this::index) //
 				.forEach(intersections::set);
-
+	
 		// Collect energizer tiles
 		energizerTiles = tiles().filter(tile -> map.data(tile) == WorldMap.ENERGIZER).collect(Collectors.toList());
+	}
+
+	@Override
+	public int numCols() {
+		return size.x;
+	}
+
+	@Override
+	public int numRows() {
+		return size.y;
 	}
 
 	@Override
@@ -119,16 +126,6 @@ public class MapBasedPacManGameWorld implements PacManGameWorld {
 	public boolean isGhostHousePart(V2i tile) {
 		return tile.x >= house_top_left.x && tile.x <= house_bottom_right.x //
 				&& tile.y >= house_top_left.y && tile.y <= house_bottom_right.y;
-	}
-
-	@Override
-	public int numCols() {
-		return size.x;
-	}
-
-	@Override
-	public int numRows() {
-		return size.y;
 	}
 
 	@Override
