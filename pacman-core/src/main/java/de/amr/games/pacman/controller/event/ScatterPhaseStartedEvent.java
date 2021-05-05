@@ -11,4 +11,9 @@ public class ScatterPhaseStartedEvent extends PacManGameEvent {
 		super(gameVariant, gameModel, Info.OTHER, null, null);
 		this.scatterPhase = scatterPhase;
 	}
+	
+	@Override
+	public String toString() {
+		return String.format("ScatterPhaseStartedEvent: scatterPhase=%d", scatterPhase);
+	}
 }
