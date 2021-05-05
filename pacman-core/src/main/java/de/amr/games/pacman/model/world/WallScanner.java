@@ -3,8 +3,8 @@ package de.amr.games.pacman.model.world;
 import de.amr.games.pacman.lib.V2i;
 
 /**
- * Scans a world for inaccessible areas and creates a map where walls should be placed. These walls
- * are located at the outside border of the wall blocks.
+ * Scans a world for inaccessible areas and creates a map indicating where walls should be placed.
+ * These walls are located at the outside border of the wall blocks.
  * 
  * @author Armin Reichert
  */
@@ -43,7 +43,7 @@ public class WallScanner {
 		numBlocksX = resolution * world.numCols();
 		numBlocksY = resolution * world.numRows();
 		wallMap = new boolean[numBlocksY][numBlocksX];
-		// scan for blocks belonging to walls
+		// scan for walls
 		for (int y = 0; y < numBlocksY; ++y) {
 			for (int x = 0; x < numBlocksX; ++x) {
 				V2i tile = new V2i(x / resolution, y / resolution);

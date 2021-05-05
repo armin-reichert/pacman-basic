@@ -1,9 +1,14 @@
 package de.amr.games.pacman.model.world;
 
+/**
+ * Provides information about the location of walls around inaccessible areas in a world map.
+ * 
+ * @author Armin Reichert
+ */
 public interface WallMap {
 
 	/**
-	 * Resultion of this wall map. Each tile is divided into this number of blocks horizontally and
+	 * Resolution of this wall map. Each tile is divided into this number of blocks horizontally and
 	 * vertically.
 	 * 
 	 * @return resolution of this map
@@ -11,8 +16,8 @@ public interface WallMap {
 	int resolution();
 
 	/**
-	 * @return boolean array indicating where a wall should be placed
+	 * @return boolean array of size {@code resolution * world.numRows() x resolution * world.numCols()}
+	 *         indicating where a wall should be placed
 	 */
 	boolean[][] wallInfo();
-
 }
