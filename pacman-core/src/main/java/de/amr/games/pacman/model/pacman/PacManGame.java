@@ -10,7 +10,7 @@ import static de.amr.games.pacman.model.common.Ghost.CLYDE;
 import static de.amr.games.pacman.model.common.Ghost.INKY;
 import static de.amr.games.pacman.model.common.Ghost.PINKY;
 import static de.amr.games.pacman.model.world.PacManGameWorld.HTS;
-import static de.amr.games.pacman.model.world.PacManGameWorld.TS;
+import static de.amr.games.pacman.model.world.PacManGameWorld.t;
 
 import java.util.Map;
 
@@ -19,10 +19,9 @@ import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.world.MapBasedPacManGameWorld;
-import de.amr.games.pacman.model.world.WorldMap;
 
 /**
- * Game model of the classic Pac-Man game.
+ * Model of the Pac-Man game.
  * 
  * @author Armin Reichert
  */
@@ -65,16 +64,11 @@ public class PacManGame extends AbstractGameModel {
 	};
 	/*@formatter:on*/
 
-	private final MapBasedPacManGameWorld world = new MapBasedPacManGameWorld();
+	// in Pac-Man, all levels use the same world and map
+	private final MapBasedPacManGameWorld world;
 
 	public PacManGame() {
-		String mapPath = "/pacman/maps/map1.txt";
-		try {
-			world.setMap(WorldMap.load(mapPath));
-		} catch (Exception x) {
-			log("Map '%s' contains errors", mapPath);
-			throw new RuntimeException();
-		}
+		world = new MapBasedPacManGameWorld("/pacman/maps/map1.txt");
 
 		player = new Pac("Pac-Man", RIGHT);
 		player.world = world;
@@ -90,7 +84,7 @@ public class PacManGame extends AbstractGameModel {
 
 		bonus = new Bonus();
 		bonus.world = world;
-		bonus.setPosition(world.bonusTile().x * TS + HTS, world.bonusTile().y * TS);
+		bonus.setPosition(t(world.bonusTile().x) + HTS, t(world.bonusTile().y));
 
 		hiscoreFileName = "hiscore-pacman.xml";
 	}
@@ -98,15 +92,14 @@ public class PacManGame extends AbstractGameModel {
 	@Override
 	protected void createLevel(int levelNumber) {
 		currentLevel = new GameLevel(levelNumber, world);
-		currentLevel.setValues(LEVELS[levelNumber <= 21 ? levelNumber - 1 : 20]);
+		currentLevel.setValues(levelData(LEVELS, levelNumber));
 		currentLevel.mazeNumber = 1;
-		log("Pac-Man classic level %d created", levelNumber);
+		log("Pac-Man level #%d created", levelNumber);
 	}
 
 	@Override
 	public String levelSymbol(int levelNumber) {
-		Object[] row = LEVELS[levelNumber <= 21 ? levelNumber - 1 : 20];
-		return (String) row[0];
+		return (String) levelData(LEVELS, levelNumber)[0];
 	}
 
 	@Override

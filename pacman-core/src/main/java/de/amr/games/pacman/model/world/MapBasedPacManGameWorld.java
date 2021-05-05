@@ -37,12 +37,17 @@ public class MapBasedPacManGameWorld implements PacManGameWorld {
 	private BitSet intersections;
 	private List<V2i> energizerTiles;
 
+	public MapBasedPacManGameWorld() {
+	}
+
+	public MapBasedPacManGameWorld(String worldMapPath) {
+		setMap(WorldMap.load("/pacman/maps/map1.txt"));
+	}
+
 	public void setMap(WorldMap map) {
-		if (this.map != map) {
-			wallMap = null;
-		}
 		this.map = map;
-	
+		wallMap = null; // invalidate
+
 		size = map.vector("size");
 		house_top_left = map.vector("house_top_left");
 		house_bottom_right = map.vector("house_bottom_right");
@@ -54,12 +59,12 @@ public class MapBasedPacManGameWorld implements PacManGameWorld {
 		bonus_home = map.vectorOptional("bonus_home").orElse(V2i.NULL);
 		scatterTiles = map.vectorList("scatter");
 		upwardsBlockedTiles = map.vectorList("upwards_blocked");
-	
+
 		// Collect portal tiles
 		portalRows = IntStream.range(0, size.y)
 				.filter(y -> map.data(0, y) == WorldMap.TUNNEL && map.data(size.x - 1, y) == WorldMap.TUNNEL).boxed()
 				.collect(Collectors.toList());
-	
+
 		// Collect intersections
 		intersections = new BitSet();
 		tiles() //
@@ -68,7 +73,7 @@ public class MapBasedPacManGameWorld implements PacManGameWorld {
 				.filter(tile -> neighbors(tile).filter(not(this::isWall)).count() > 2) //
 				.map(this::index) //
 				.forEach(intersections::set);
-	
+
 		// Collect energizer tiles
 		energizerTiles = tiles().filter(tile -> map.data(tile) == WorldMap.ENERGIZER).collect(Collectors.toList());
 	}

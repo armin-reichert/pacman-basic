@@ -32,6 +32,10 @@ public abstract class AbstractGameModel implements GameModel {
 		//@formatter:on
 	};
 
+	protected static Object[] levelData(Object[][] levels, int levelNumber) {
+		return levelNumber - 1 < levels.length ? levels[levelNumber - 1] : levels[levels.length - 1];
+	}
+
 	protected GameLevel currentLevel;
 	protected Pac player;
 	protected Ghost[] ghosts;

@@ -20,15 +20,16 @@ import de.amr.games.pacman.model.world.MapBasedPacManGameWorld;
 import de.amr.games.pacman.model.world.WorldMap;
 
 /**
- * Game model of the Ms. Pac-Man game variant.
+ * Model of the Ms. Pac-Man game.
  * 
- * TODO: are the level specifications the same as in Pac-Man?
+ * TODO: are the level data except for the bonus symbols the same as in Pac-Man?
  * 
  * @author Armin Reichert
  */
 public class MsPacManGame extends AbstractGameModel {
 
 	//@formatter:off
+	
 	static Map<String, Integer> BONUS_MAP = Map.of(
 			"CHERRIES", 	100,
 			"STRAWBERRY", 200,
@@ -38,9 +39,7 @@ public class MsPacManGame extends AbstractGameModel {
 			"PEAR",				2000,
 			"BANANA",			5000
 	);
-	//@formatter:on
 
-	/*@formatter:off*/
   static final Object[][] LEVELS = {
 	/* 1*/ {"CHERRIES",    80, 75, 40,  20,  80, 10,  85,  90, 50, 6, 5},
 	/* 2*/ {"STRAWBERRY",  90, 85, 45,  30,  90, 15,  95,  95, 55, 5, 5},
@@ -64,7 +63,8 @@ public class MsPacManGame extends AbstractGameModel {
 	/*20*/ {"BANANA",     100, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
 	/*21*/ {"BANANA",      90, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
 	};
-	/*@formatter:on*/
+	
+  /*@formatter:on*/
 
 	private final MapBasedPacManGameWorld world = new MapBasedPacManGameWorld();
 
@@ -93,45 +93,55 @@ public class MsPacManGame extends AbstractGameModel {
 		int mapNumber = mapNumber(mazeNumber);
 		world.setMap(WorldMap.load("/mspacman/maps/map" + mapNumber + ".txt"));
 		currentLevel = new GameLevel(levelNumber, world);
-		currentLevel.setValues(LEVELS[levelNumber <= 21 ? levelNumber - 1 : 20]);
+		currentLevel.setValues(levelData(LEVELS, levelNumber));
 		currentLevel.mazeNumber = mazeNumber;
-		if (levelNumber > 7) {
+		// From level 8 on, bonus is chosen randomly
+		if (levelNumber >= 8) {
 			int random = new Random().nextInt(BONUS_MAP.size());
 			String randomBonus = BONUS_MAP.keySet().toArray(String[]::new)[random];
 			currentLevel.bonusSymbol = randomBonus;
 		}
-		log("Ms. Pac-Man level %d created, maze index is %d", levelNumber, mazeNumber);
+		log("Ms. Pac-Man level #%d created, maze number is %d", levelNumber, mazeNumber);
 	}
 
 	@Override
 	public String levelSymbol(int levelNumber) {
-		Object[] row = LEVELS[levelNumber <= 21 ? levelNumber - 1 : 20];
-		return (String) row[0];
+		return (String) levelData(LEVELS, levelNumber)[0];
 	}
 
+	/**
+	 * Returns the maze number used in the given game level.
+	 * <p>
+	 * Up to level 13, the used mazes are:
+	 * <ul>
+	 * <li>Maze #1: pink maze, white dots (level 1-2)
+	 * <li>Maze #2: light blue maze, yellow dots (level 3-5)
+	 * <li>Maze #3: orange maze, red dots (level 6-9)
+	 * <li>Maze #4: dark blue maze, white dots (level 10-13)
+	 * </ul>
+	 * From level 14 on, the maze alternates every 4th level between maze #5 and maze #6.
+	 * <ul>
+	 * <li>Maze #5: pink maze, cyan dots (same map as maze #3)
+	 * <li>Maze #6: orange maze, white dots (same map as maze #4)
+	 * </ul>
+	 */
 	@Override
 	public int mazeNumber(int levelNumber) {
 		if (levelNumber < 1) {
 			throw new IllegalArgumentException("Illegal level number: " + levelNumber);
-		} else if (levelNumber <= 2) {
-			return 1; // pink maze, white dots
-		} else if (levelNumber <= 5) {
-			return 2; // light blue maze, yellow dots
-		} else if (levelNumber <= 9) {
-			return 3; // orange maze, red dots
-		} else if (levelNumber <= 13) {
-			return 4; // dark blue maze, white dots
-		} else {
-			// From level 14 on, maze number alternates between 5 and 6 every 4th level
-			// Maze #5 = pink maze, cyan dots (same map as maze #3)
-			// Maze #6 = orange maze, white dots (same map as maze #4)
-			return (levelNumber - 14) % 8 < 4 ? 5 : 6;
 		}
+		//@formatter:off
+		return (levelNumber <= 2)  ? 1
+				 : (levelNumber <= 5)  ? 2
+				 : (levelNumber <= 9)  ? 3 
+				 : (levelNumber <= 13) ? 4
+				 : (levelNumber - 14) % 8 < 4 ? 5 : 6;
+		//@formatter:on
 	}
 
 	@Override
 	public int mapNumber(int mazeNumber) {
-		// Maze #5 has the same map as #3 but a different color, same for #6 vs. #4
+		// Maze #5 has the same map as #3, same for #6 vs. #4
 		return mazeNumber == 5 ? 3 : mazeNumber == 6 ? 4 : mazeNumber;
 	}
 
