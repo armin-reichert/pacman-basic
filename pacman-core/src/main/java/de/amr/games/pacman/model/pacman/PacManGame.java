@@ -16,6 +16,7 @@ import java.util.Map;
 
 import de.amr.games.pacman.model.common.AbstractGameModel;
 import de.amr.games.pacman.model.common.GameLevel;
+import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.world.MapBasedPacManGameWorld;
@@ -87,6 +88,11 @@ public class PacManGame extends AbstractGameModel {
 		bonus.setPosition(t(world.bonusTile().x) + HTS, t(world.bonusTile().y));
 
 		hiscoreFileName = "hiscore-pacman.xml";
+	}
+
+	@Override
+	public GameVariant variant() {
+		return GameVariant.PACMAN;
 	}
 
 	@Override

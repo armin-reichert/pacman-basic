@@ -11,6 +11,8 @@ import de.amr.games.pacman.model.pacman.Bonus;
  */
 public interface GameModel {
 
+	GameVariant variant();
+
 	void reset();
 
 	void resetGuys();

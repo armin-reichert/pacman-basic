@@ -104,7 +104,6 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	private final GameModel[] games = { new MsPacManGame(), new PacManGame() };
 
-	private GameVariant variant;
 	private GameModel game;
 
 	private boolean gameRequested;
@@ -152,7 +151,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	private void fireGameEvent(Info info, V2i tile) {
-		fireGameEvent(new PacManGameEvent(variant, game, info, null, tile));
+		fireGameEvent(new PacManGameEvent(game, info, null, tile));
 	}
 
 	/**
@@ -160,7 +159,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	 */
 	@Override
 	protected void fireStateChange(PacManGameState oldState, PacManGameState newState) {
-		fireGameEvent(new PacManGameStateChangeEvent(variant, game, oldState, newState));
+		fireGameEvent(new PacManGameStateChangeEvent(game, oldState, newState));
 	}
 
 	/**
@@ -189,26 +188,21 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		addGameEventListener(ui);
 	}
 
-	public GameVariant gameVariant() {
-		return variant;
-	}
-
 	public void play(GameVariant v) {
-		variant = v;
 		game = games[v.ordinal()];
 		changeState(INTRO);
 	}
 
 	public boolean isPlaying(GameVariant v) {
-		return variant == v;
+		return game.variant() == v;
 	}
 
 	public void toggleGameVariant() {
-		play(variant == MS_PACMAN ? PACMAN : MS_PACMAN);
+		play(game().variant() == MS_PACMAN ? PACMAN : MS_PACMAN);
 	}
 
 	public GameModel game() {
-		return games[variant.ordinal()];
+		return game;
 	}
 
 	public boolean isAttractMode() {
@@ -295,7 +289,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 					stateTimer().ticksRemaining(), stateTimer().duration());
 		}
 		if (scattering) {
-			fireGameEvent(new ScatterPhaseStartedEvent(variant, game, phase / 2));
+			fireGameEvent(new ScatterPhaseStartedEvent(game, phase / 2));
 		}
 	}
 
@@ -433,8 +427,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	private void exitGhostDyingState() {
 		game.player().visible = true;
 		game.ghosts(DEAD).forEach(ghost -> ghost.bounty = 0);
-		game.ghosts(DEAD)
-				.forEach(ghost -> fireGameEvent(new PacManGameEvent(variant, game, Info.GHOST_RETURNS_HOME, ghost, null)));
+		game.ghosts(DEAD).forEach(ghost -> fireGameEvent(new PacManGameEvent(game, Info.GHOST_RETURNS_HOME, ghost, null)));
 	}
 
 	private void enterLevelStartingState() {
@@ -595,7 +588,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			ghost.speed = game.currentLevel().ghostSpeed / 2;
 			boolean ghostLeavesHouse = ghost.leaveHouse();
 			if (ghostLeavesHouse) {
-				fireGameEvent(new PacManGameEvent(variant, game, Info.GHOST_LEAVES_HOUSE, ghost, ghost.tile()));
+				fireGameEvent(new PacManGameEvent(game, Info.GHOST_LEAVES_HOUSE, ghost, ghost.tile()));
 			}
 			break;
 
@@ -632,7 +625,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			ghost.speed = game.currentLevel().ghostSpeed * 2;
 			boolean reachedHouse = ghost.returnHome();
 			if (reachedHouse) {
-				fireGameEvent(new PacManGameEvent(variant, game, Info.GHOST_ENTERS_HOUSE, ghost, ghost.tile()));
+				fireGameEvent(new PacManGameEvent(game, Info.GHOST_ENTERS_HOUSE, ghost, ghost.tile()));
 			}
 			break;
 

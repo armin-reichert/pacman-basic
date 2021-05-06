@@ -14,6 +14,7 @@ import java.util.Random;
 
 import de.amr.games.pacman.model.common.AbstractGameModel;
 import de.amr.games.pacman.model.common.GameLevel;
+import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.world.MapBasedPacManGameWorld;
@@ -85,6 +86,11 @@ public class MsPacManGame extends AbstractGameModel {
 		bonus.world = world;
 
 		hiscoreFileName = "hiscore-mspacman.xml";
+	}
+
+	@Override
+	public GameVariant variant() {
+		return GameVariant.MS_PACMAN;
 	}
 
 	@Override
