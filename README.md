@@ -13,7 +13,7 @@ YouTube:
 [![YouTube video](pacman-core/doc/playing.png)](https://youtu.be/q5biOTj9GIU)
 
 ### Build
-To build the executable jar file, run `mvn clean install`.
+`mvn clean install`.
 
 ### Intro scene
 <img src="pacman-core/doc/intro.png">
