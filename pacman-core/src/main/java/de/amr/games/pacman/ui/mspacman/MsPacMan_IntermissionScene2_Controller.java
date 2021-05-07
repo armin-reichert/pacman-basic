@@ -49,7 +49,7 @@ public abstract class MsPacMan_IntermissionScene2_Controller {
 	public void init() {
 		flap = new Flap(2, "THE CHASE");
 		flap.setPosition(t(3), t(10));
-		flap.visible = true;
+		flap.setVisible(true);
 
 		pacMan = new Pac("Pac-Man", Direction.RIGHT);
 		msPacMan = new Pac("Ms. Pac-Man", Direction.RIGHT);
@@ -64,7 +64,7 @@ public abstract class MsPacMan_IntermissionScene2_Controller {
 				playFlapAnimation();
 			}
 			if (timer.isRunningSeconds(2)) {
-				flap.visible = false;
+				flap.setVisible(false);
 				playIntermissionSound();
 			}
 			if (timer.isRunningSeconds(4.5)) {
@@ -75,17 +75,17 @@ public abstract class MsPacMan_IntermissionScene2_Controller {
 
 		case ACTION:
 			if (timer.isRunningSeconds(1.5)) {
-				pacMan.visible = true;
+				pacMan.setVisible(true);
 				pacMan.setPosition(-t(2), UPPER_Y);
 				pacMan.setDir(Direction.RIGHT);
-				msPacMan.visible = true;
+				msPacMan.setVisible(true);
 				msPacMan.setPosition(-t(8), UPPER_Y);
 				msPacMan.setDir(Direction.RIGHT);
 				pacMan.speed = msPacMan.speed = 2;
 			}
 			if (timer.isRunningSeconds(6)) {
 				msPacMan.setPosition(t(30), LOWER_Y);
-				msPacMan.visible = true;
+				msPacMan.setVisible(true);
 				msPacMan.setDir(Direction.LEFT);
 				msPacMan.speed = 2;
 				pacMan.setPosition(t(PacManGameWorld.DEFAULT_HEIGHT), LOWER_Y);

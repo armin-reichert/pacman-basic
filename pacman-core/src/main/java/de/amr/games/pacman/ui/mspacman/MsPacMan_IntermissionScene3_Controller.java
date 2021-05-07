@@ -66,7 +66,7 @@ public abstract class MsPacMan_IntermissionScene3_Controller {
 	public void init() {
 		flap = new Flap(3, "JUNIOR");
 		flap.setPosition(t(3), t(10));
-		flap.visible = true;
+		flap.setVisible(true);
 
 		pacMan = new Pac("Pac-Man", Direction.RIGHT);
 		pacMan.setPosition(t(3), GROUND_Y - 4);
@@ -91,7 +91,7 @@ public abstract class MsPacMan_IntermissionScene3_Controller {
 				playFlapAnimation();
 			}
 			if (timer.isRunningSeconds(2)) {
-				flap.visible = false;
+				flap.setVisible(false);
 				playIntermissionSound();
 				enter(Phase.ACTION);
 			}
@@ -102,7 +102,10 @@ public abstract class MsPacMan_IntermissionScene3_Controller {
 			stork.move();
 			bag.move();
 			if (timer.hasJustStarted()) {
-				pacMan.visible = msPacMan.visible = stork.visible = bag.visible = true;
+				pacMan.setVisible(true);
+				msPacMan.setVisible(true);
+				stork.setVisible(true);
+				bag.setVisible(true);
 				stork.setDir(Direction.LEFT);
 				stork.speed = 1.25f;
 				bag.setVelocity(new V2d(-1.25f, 0));

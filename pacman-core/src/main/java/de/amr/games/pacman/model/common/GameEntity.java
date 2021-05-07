@@ -10,13 +10,21 @@ import de.amr.games.pacman.lib.V2d;
 public class GameEntity {
 
 	/** If the creature is drawn on the screen. */
-	public boolean visible = false;
+	protected boolean visible = false;
 
 	/** Left upper corner of TSxTS collision box. Sprites can be larger. */
 	public V2d position = V2d.NULL;
 
 	/** Velocity vector. */
 	protected V2d velocity = null;
+
+	public void setVisible(boolean visible) {
+		this.visible = visible;
+	}
+
+	public boolean isVisible() {
+		return visible;
+	}
 
 	/** Sets the entity's position. */
 	public void setPosition(double x, double y) {

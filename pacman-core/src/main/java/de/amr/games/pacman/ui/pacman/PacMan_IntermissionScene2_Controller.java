@@ -41,17 +41,17 @@ public abstract class PacMan_IntermissionScene2_Controller {
 	public void init() {
 		pac = new Pac("Pac-Man", Direction.LEFT);
 		pac.setPosition(t(30), t(groundTileY));
-		pac.visible = true;
+		pac.setVisible(true);
 		pac.speed = 1;
 
 		blinky = new Ghost(0, "Blinky", Direction.LEFT);
 		blinky.setPositionRelativeTo(pac, t(14), 0);
-		blinky.visible = true;
+		blinky.setVisible(true);
 		blinky.state = GhostState.HUNTING_PAC;
 		blinky.speed = 1;
 
 		nail = new GameEntity();
-		nail.visible = true;
+		nail.setVisible(true);
 		nail.setPosition(t(14), t(groundTileY) - 1);
 
 		playIntermissionSound();

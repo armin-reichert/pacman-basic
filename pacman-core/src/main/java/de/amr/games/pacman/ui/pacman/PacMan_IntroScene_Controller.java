@@ -139,11 +139,11 @@ public class PacMan_IntroScene_Controller {
 			}
 			if (gameController.stateTimer().ticked() - ghostKilledTime == 15) {
 				ghostKilledTime = 0;
-				pac.visible = true;
+				pac.setVisible(true);
 				pac.speed = 1;
 				for (Ghost ghost : ghosts) {
 					if (ghost.state == GhostState.DEAD) {
-						ghost.visible = false;
+						ghost.setVisible(false);
 					}
 				}
 			}
@@ -151,7 +151,7 @@ public class PacMan_IntroScene_Controller {
 				if (pac.meets(ghost) && ghost.state != GhostState.DEAD) {
 					ghost.state = GhostState.DEAD;
 					ghost.bounty = (int) Math.pow(2, ghost.id + 1) * 100;
-					pac.visible = false;
+					pac.setVisible(false);
 					pac.speed = 0;
 					ghostKilledTime = gameController.stateTimer().ticked();
 				}
@@ -177,14 +177,14 @@ public class PacMan_IntroScene_Controller {
 
 	public void startGhostsChasingPac() {
 		pac.setPosition(t(PacManGameWorld.DEFAULT_WIDTH), t(22));
-		pac.visible = true;
+		pac.setVisible(true);
 		pac.speed = 1;
 		pac.setDir(Direction.LEFT);
 		pac.stuck = false;
 
 		for (Ghost ghost : ghosts) {
 			ghost.setPositionRelativeTo(pac, 8 + (ghost.id + 1) * 18, 0);
-			ghost.visible = true;
+			ghost.setVisible(true);
 			ghost.setWishDir(Direction.LEFT);
 			ghost.setDir(Direction.LEFT);
 			ghost.speed = pac.speed * 1.05f;
@@ -206,6 +206,6 @@ public class PacMan_IntroScene_Controller {
 
 	public void selectGhost(int ghostIndex) {
 		selectedGhost = ghostIndex;
-		gallery[selectedGhost].ghost.visible = true;
+		gallery[selectedGhost].ghost.setVisible(true);
 	}
 }

@@ -51,23 +51,23 @@ public abstract class MsPacMan_IntermissionScene1_Controller {
 	public void init() {
 		flap = new Flap(1, "THEY MEET");
 		flap.setPosition(t(3), t(10));
-		flap.visible = true;
+		flap.setVisible(true);
 
 		pacMan = new Pac("Pac-Man", Direction.RIGHT);
 		pacMan.setPosition(-t(2), upperY);
-		pacMan.visible = true;
+		pacMan.setVisible(true);
 
 		inky = new Ghost(2, "Inky", Direction.RIGHT);
 		inky.setPositionRelativeTo(pacMan, -t(3), 0);
-		inky.visible = true;
+		inky.setVisible(true);
 
 		msPac = new Pac("Ms. Pac-Man", Direction.LEFT);
 		msPac.setPosition(t(30), lowerY);
-		msPac.visible = true;
+		msPac.setVisible(true);
 
 		pinky = new Ghost(1, "Pinky", Direction.LEFT);
 		pinky.setPositionRelativeTo(msPac, t(3), 0);
-		pinky.visible = true;
+		pinky.setVisible(true);
 
 		heart = new GameEntity();
 		ghostsMet = false;
@@ -95,7 +95,7 @@ public abstract class MsPacMan_IntermissionScene1_Controller {
 				playFlapAnimation();
 			}
 			if (timer.hasExpired()) {
-				flap.visible = false;
+				flap.setVisible(false);
 				playIntermissionSound();
 				startChasedByGhosts();
 				return;
@@ -128,7 +128,7 @@ public abstract class MsPacMan_IntermissionScene1_Controller {
 				pacMan.setDir(Direction.LEFT);
 				msPac.setDir(Direction.RIGHT);
 				heart.setPosition((pacMan.position.x + msPac.position.x) / 2, pacMan.position.y - t(2));
-				heart.visible = true;
+				heart.setVisible(true);
 				inky.speed = pinky.speed = 0;
 				enterSeconds(Phase.READY_TO_PLAY, 4);
 			}
@@ -145,8 +145,8 @@ public abstract class MsPacMan_IntermissionScene1_Controller {
 
 		case READY_TO_PLAY:
 			if (timer.isRunningSeconds(2)) {
-				inky.visible = false;
-				pinky.visible = false;
+				inky.setVisible(false);
+				pinky.setVisible(false);
 			}
 			if (timer.hasExpired()) {
 				gameController.stateTimer().forceExpiration();

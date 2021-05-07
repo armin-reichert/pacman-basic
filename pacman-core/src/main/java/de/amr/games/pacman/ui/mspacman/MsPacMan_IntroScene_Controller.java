@@ -83,7 +83,7 @@ public class MsPacMan_IntroScene_Controller {
 
 		case PRESENTING_GHOST:
 			if (phaseTimer.hasJustStarted()) {
-				ghosts[currentGhostIndex].visible = true;
+				ghosts[currentGhostIndex].setVisible(true);
 				ghosts[currentGhostIndex].speed = 1.0;
 				// TODO
 //				animations.ghostAnimations().ghostKicking(ghosts[currentGhostIndex]).forEach(TimedSequence::restart);
@@ -105,10 +105,9 @@ public class MsPacMan_IntroScene_Controller {
 
 		case PRESENTING_MSPACMAN:
 			if (phaseTimer.hasJustStarted()) {
-				msPacMan.visible = true;
+				msPacMan.setVisible(true);
 				msPacMan.stuck = false;
 				msPacMan.speed = 1;
-//TODO				animations.playerAnimations().playerMunching(msPacMan).forEach(TimedSequence::restart);
 			}
 			boolean msPacReachedFinalPosition = msPacManEnteringStage();
 			if (msPacReachedFinalPosition) {

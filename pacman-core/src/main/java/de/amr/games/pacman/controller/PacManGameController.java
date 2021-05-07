@@ -263,8 +263,8 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	private void updateReadyState() {
 		if (stateTimer().ticksRemaining() == sec_to_ticks(1)) {
-			game.player().visible = true;
-			game.ghosts().forEach(ghost -> ghost.visible = true);
+			game.player().setVisible(true);
+			game.ghosts().forEach(ghost -> ghost.setVisible(true));
 		}
 		if (stateTimer().hasExpired()) {
 			if (gameRequested) {
@@ -412,7 +412,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	private void enterGhostDyingState() {
 		stateTimer().resetSeconds(1);
-		game.player().visible = false;
+		game.player().setVisible(false);
 	}
 
 	private void updateGhostDyingState() {
@@ -425,7 +425,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	private void exitGhostDyingState() {
-		game.player().visible = true;
+		game.player().setVisible(true);
 		game.ghosts(DEAD).forEach(ghost -> ghost.bounty = 0);
 		game.ghosts(DEAD).forEach(ghost -> fireGameEvent(new PacManGameEvent(game, Info.GHOST_RETURNS_HOME, ghost, null)));
 	}
@@ -537,7 +537,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		// Bonus gets edible?
 		if (game.currentLevel().eatenFoodCount() == 70 || game.currentLevel().eatenFoodCount() == 170) {
 			final Bonus bonus = game.bonus();
-			bonus.visible = true;
+			bonus.setVisible(true);
 			bonus.symbol = game.currentLevel().bonusSymbol;
 			bonus.points = game.bonusValue(game.currentLevel().bonusSymbol);
 			bonus.activate(isPlaying(PACMAN) ? sec_to_ticks(9 + new Random().nextFloat()) : Long.MAX_VALUE);

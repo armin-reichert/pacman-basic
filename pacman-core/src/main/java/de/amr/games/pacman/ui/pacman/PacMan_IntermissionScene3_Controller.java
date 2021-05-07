@@ -40,7 +40,7 @@ public abstract class PacMan_IntermissionScene3_Controller {
 	public void init() {
 		pac = new Pac("Pac-Man", Direction.LEFT);
 		pac.setPosition(t(30), t(chaseTileY));
-		pac.visible = true;
+		pac.setVisible(true);
 		pac.dead = false;
 		pac.speed = 1.2f;
 		pac.stuck = false;
@@ -48,7 +48,7 @@ public abstract class PacMan_IntermissionScene3_Controller {
 
 		blinky = new Ghost(0, "Blinky", Direction.LEFT);
 		blinky.setPositionRelativeTo(pac, t(8), 0);
-		blinky.visible = true;
+		blinky.setVisible(true);
 		blinky.state = GhostState.HUNTING_PAC;
 		blinky.speed = pac.speed;
 		blinky.setDir(Direction.LEFT);
