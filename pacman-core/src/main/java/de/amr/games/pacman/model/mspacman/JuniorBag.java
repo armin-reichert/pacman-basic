@@ -18,6 +18,6 @@ public class JuniorBag extends Creature {
 		if (released) {
 			velocity = velocity.plus(0, 0.04f); // gravity
 		}
-		super.move();
+		position = position.plus(velocity);
 	}
 }

@@ -83,6 +83,7 @@ public abstract class MsPacMan_IntermissionScene3_Controller {
 
 	public void update() {
 		switch (phase) {
+
 		case FLAP:
 			if (timer.isRunningSeconds(1)) {
 				playFlapAnimation();
@@ -100,7 +101,9 @@ public abstract class MsPacMan_IntermissionScene3_Controller {
 			bag.move();
 			if (timer.hasJustStarted()) {
 				pacMan.visible = msPacMan.visible = stork.visible = bag.visible = true;
-				stork.velocity = bag.velocity = new V2d(-1.25f, 0);
+				stork.setDir(Direction.LEFT);
+				stork.speed = 1.25f;
+				bag.velocity = new V2d(-1.25f, 0);
 			}
 			// release bag?
 			if (!bag.released && stork.position.x <= t(24)) {
