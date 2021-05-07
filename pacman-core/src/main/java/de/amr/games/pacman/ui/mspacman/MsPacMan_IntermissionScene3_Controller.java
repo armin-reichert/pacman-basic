@@ -39,6 +39,8 @@ public abstract class MsPacMan_IntermissionScene3_Controller {
 	public Stork stork;
 	public JuniorBag bag;
 
+	private int bagBounces;
+
 	public Phase phase;
 
 	public MsPacMan_IntermissionScene3_Controller(PacManGameController gameController) {
@@ -103,21 +105,21 @@ public abstract class MsPacMan_IntermissionScene3_Controller {
 				pacMan.visible = msPacMan.visible = stork.visible = bag.visible = true;
 				stork.setDir(Direction.LEFT);
 				stork.speed = 1.25f;
-				bag.velocity = new V2d(-1.25f, 0);
+				bag.setVelocity(new V2d(-1.25f, 0));
 			}
 			// release bag?
-			if (!bag.released && stork.position.x <= t(24)) {
-				bag.released = true;
+			if ((int) stork.position.x == t(24)) {
+				bag.release();
 			}
-			// closed bag reaches ground?
+			// (closed) bag reaches ground for first time?
 			if (!bag.open && bag.position.y > GROUND_Y) {
-				++bag.bounces;
-				if (bag.bounces < 5) {
-					bag.velocity = new V2d(-0.2f, -1f / bag.bounces);
+				++bagBounces;
+				if (bagBounces < 5) {
+					bag.setVelocity(new V2d(-0.2f, -1f / bagBounces));
 					bag.setPosition(bag.position.x, GROUND_Y);
 				} else {
 					bag.open = true;
-					bag.velocity = V2d.NULL;
+					bag.setVelocity(V2d.NULL);
 					enterSeconds(Phase.READY_TO_PLAY, 3);
 				}
 			}

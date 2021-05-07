@@ -1,5 +1,6 @@
 package de.amr.games.pacman.model.mspacman;
 
+import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.model.common.Creature;
 
 /**
@@ -9,15 +10,20 @@ import de.amr.games.pacman.model.common.Creature;
  */
 public class JuniorBag extends Creature {
 
-	public boolean released = false;
-	public boolean open = false;
-	public int bounces = 0;
+	static final V2d GRAVITY = new V2d(0, 0.04);
+
+	private V2d gravity = V2d.NULL;
+	public boolean open;
 
 	@Override
 	public void move() {
-		if (released) {
-			velocity = velocity.plus(0, 0.04f); // gravity
+		if (velocity != null) {
+			position = position.plus(velocity);
+			velocity = velocity.plus(gravity);
 		}
-		position = position.plus(velocity);
+	}
+
+	public void release() {
+		gravity = GRAVITY;
 	}
 }

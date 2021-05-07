@@ -115,6 +115,16 @@ public class Creature extends GameEntity {
 		return wishDir;
 	}
 
+	@Override
+	public V2d getVelocity() {
+		if (velocity != null) {
+			// velocity has been set explicitly
+			return velocity;
+		}
+		// compute velocity from direction and speed
+		return dir != null ? new V2d(dir.vec).scaled(speed) : V2d.NULL;
+	}
+
 	public boolean canAccessTile(V2i tile) {
 		if (world.insideWorld(tile)) {
 			return !world.isWall(tile) && !world.isGhostHouseDoor(tile);

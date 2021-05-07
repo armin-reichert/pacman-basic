@@ -16,7 +16,7 @@ public class GameEntity {
 	public V2d position = V2d.NULL;
 
 	/** Velocity vector. */
-	public V2d velocity = V2d.NULL;
+	protected V2d velocity = null;
 
 	/** Sets the entity's position. */
 	public void setPosition(double x, double y) {
@@ -26,5 +26,13 @@ public class GameEntity {
 	/** Sets the position relative to another entity's position */
 	public void setPositionRelativeTo(GameEntity e, double dx, double dy) {
 		setPosition(e.position.x + dx, e.position.y + dy);
+	}
+
+	public void setVelocity(V2d velocity) {
+		this.velocity = velocity;
+	}
+
+	public V2d getVelocity() {
+		return velocity;
 	}
 }
