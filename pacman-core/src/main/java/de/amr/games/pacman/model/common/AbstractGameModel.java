@@ -22,7 +22,11 @@ public abstract class AbstractGameModel implements GameModel {
 
 	static final int INITIAL_NUM_LIVES = 3;
 
-	static final Map<Integer, Integer> INTERMISSION_NUMBER_BY_LEVEL = Map.of(2, 1, 5, 2, 9, 3, 13, 3, 17, 3);
+	static final Map<Integer, Integer> INTERMISSION_AFTER_LEVEL = Map.of(//
+			2, 1, // intermission #1 after level #2
+			5, 2, // intermission #2 after level #5
+			9, 3, 13, 3, 17, 3 // intermission #3 after levels #9, #13, #17
+	);
 
 	static final int[][] HUNTING_PHASE_TICKS = {
 		//@formatter:off
@@ -62,7 +66,7 @@ public abstract class AbstractGameModel implements GameModel {
 
 	@Override
 	public int intermissionNumber() {
-		return INTERMISSION_NUMBER_BY_LEVEL.getOrDefault(currentLevel.number, 0);
+		return INTERMISSION_AFTER_LEVEL.getOrDefault(currentLevel.number, 0);
 	}
 
 	@Override
