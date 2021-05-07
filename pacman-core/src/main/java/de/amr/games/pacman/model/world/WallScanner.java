@@ -13,7 +13,7 @@ public class WallScanner {
 	private int resolution;
 	private int numBlocksX;
 	private int numBlocksY;
-	private boolean[][] wallMap;
+	private byte[][] wallMap;
 
 	public WallScanner(int resolution) {
 		this.resolution = resolution;
@@ -39,17 +39,19 @@ public class WallScanner {
 		return new V2i(tileX + dx, tileY);
 	}
 
-	public boolean[][] scan(PacManGameWorld world) {
+	public byte[][] scan(PacManGameWorld world) {
 		numBlocksX = resolution * world.numCols();
 		numBlocksY = resolution * world.numRows();
-		wallMap = new boolean[numBlocksY][numBlocksX];
+		wallMap = new byte[numBlocksY][numBlocksX];
+
 		// scan for walls
 		for (int y = 0; y < numBlocksY; ++y) {
 			for (int x = 0; x < numBlocksX; ++x) {
 				V2i tile = new V2i(x / resolution, y / resolution);
-				wallMap[y][x] = world.isWall(tile);
+				wallMap[y][x] = world.isWall(tile) ? WallMap.CORNER : WallMap.EMPTY;
 			}
 		}
+
 		// clear blocks inside wall regions
 		for (int y = 0; y < numBlocksY; ++y) {
 			int tileY = y / resolution;
@@ -67,11 +69,43 @@ public class WallScanner {
 							|| world.isWall(sw) && !world.isWall(ne) || !world.isWall(sw) && world.isWall(ne)) {
 						// keep corner of wall region
 					} else {
-						wallMap[y][x] = false;
+						wallMap[y][x] = WallMap.EMPTY;
 					}
 				}
 			}
 		}
+
+		// separate horizontal walls, vertical walls and corners
+		for (int y = 0; y < numBlocksY; ++y) {
+			int horizontalWallStart = -1;
+			for (int x = 0; x < numBlocksX; ++x) {
+				if (wallMap[y][x] != WallMap.EMPTY) {
+					if (horizontalWallStart == -1) {
+						horizontalWallStart = x;
+					} else {
+						wallMap[y][x] = x < numBlocksX - 1 ? WallMap.HORIZONTAL : WallMap.CORNER;
+					}
+				} else {
+					horizontalWallStart = -1;
+				}
+			}
+		}
+
+		for (int x = 0; x < numBlocksX; ++x) {
+			int verticalWallStart = -1;
+			for (int y = 0; y < numBlocksY; ++y) {
+				if (wallMap[y][x] != WallMap.EMPTY) {
+					if (verticalWallStart == -1) {
+						verticalWallStart = y;
+					} else {
+						wallMap[y][x] = (y == numBlocksY - 1) ? WallMap.CORNER : WallMap.VERTICAL;
+					}
+				} else {
+					verticalWallStart = -1;
+				}
+			}
+		}
+
 		return wallMap;
 	}
 }

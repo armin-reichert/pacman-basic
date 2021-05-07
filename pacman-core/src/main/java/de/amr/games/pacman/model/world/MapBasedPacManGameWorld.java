@@ -105,11 +105,11 @@ public class MapBasedPacManGameWorld implements PacManGameWorld {
 		long start = System.nanoTime();
 
 		WallScanner scanner = new WallScanner(resolution);
-		boolean[][] map = scanner.scan(this);
+		byte[][] map = scanner.scan(this);
 		wallMap = new WallMap() {
 
 			@Override
-			public boolean[][] wallInfo() {
+			public byte[][] wallInfo() {
 				return map;
 			}
 
