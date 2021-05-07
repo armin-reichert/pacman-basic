@@ -26,6 +26,10 @@ public interface GameModel {
 
 	long getHuntingPhaseDuration(int phase);
 
+	/**
+	 * @return number (1,2,3) of intermission scene played after the current level or {@code 0} if no
+	 *         intermission occurs after current level
+	 */
 	int intermissionNumber();
 
 	String levelSymbol(int levelNumber);
