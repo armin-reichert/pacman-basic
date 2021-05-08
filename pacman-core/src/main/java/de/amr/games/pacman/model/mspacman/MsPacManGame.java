@@ -68,19 +68,19 @@ public class MsPacManGame extends AbstractGameModel {
 
 	public MsPacManGame() {
 		player = new Pac("Ms. Pac-Man");
-		player.world = world;
-
-		ghosts = new Ghost[4];
-		ghosts[BLINKY] = new Ghost(BLINKY, "Blinky");
-		ghosts[PINKY] = new Ghost(PINKY, "Pinky");
-		ghosts[INKY] = new Ghost(INKY, "Inky");
-		ghosts[SUE] = new Ghost(SUE, "Sue");
-		for (Ghost ghost : ghosts) {
-			ghost.world = world;
-		}
-
+		ghosts = new Ghost[] { //
+				new Ghost(BLINKY, "Blinky"), //
+				new Ghost(PINKY, "Pinky"), //
+				new Ghost(INKY, "Inky"), //
+				new Ghost(SUE, "Sue") //
+		};
 		bonus = new MovingBonus();
-		bonus.world = world;
+
+		player.setWorld(world);
+		for (Ghost ghost : ghosts) {
+			ghost.setWorld(world);
+		}
+		bonus.setWorld(world);
 
 		hiscoreFileName = "hiscore-mspacman.xml";
 	}

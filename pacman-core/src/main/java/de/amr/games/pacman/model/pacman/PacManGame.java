@@ -61,26 +61,25 @@ public class PacManGame extends AbstractGameModel {
 	};
 	/*@formatter:on*/
 
-	// in Pac-Man, all levels use the same world and map
+	// in Pac-Man, all levels use the same world and the same map
 	private final MapBasedPacManGameWorld world;
 
 	public PacManGame() {
 		world = new MapBasedPacManGameWorld("/pacman/maps/map1.txt");
-
 		player = new Pac("Pac-Man");
-		player.world = world;
-
-		ghosts = new Ghost[4];
-		ghosts[BLINKY] = new Ghost(BLINKY, "Blinky");
-		ghosts[PINKY] = new Ghost(PINKY, "Pinky");
-		ghosts[INKY] = new Ghost(INKY, "Inky");
-		ghosts[CLYDE] = new Ghost(CLYDE, "Clyde");
-		for (Ghost ghost : ghosts) {
-			ghost.world = world;
-		}
-
+		ghosts = new Ghost[] { //
+				new Ghost(BLINKY, "Blinky"), //
+				new Ghost(PINKY, "Pinky"), //
+				new Ghost(INKY, "Inky"), //
+				new Ghost(CLYDE, "Clyde") //
+		};
 		bonus = new Bonus();
-		bonus.world = world;
+
+		player.setWorld(world);
+		for (Ghost ghost : ghosts) {
+			ghost.setWorld(world);
+		}
+		bonus.setWorld(world);
 		bonus.setPosition(t(world.bonusTile().x) + HTS, t(world.bonusTile().y));
 
 		hiscoreFileName = "hiscore-pacman.xml";
