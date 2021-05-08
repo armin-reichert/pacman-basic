@@ -29,13 +29,13 @@ public class MsPacManGame extends AbstractGameModel {
 	//@formatter:off
 	
 	static Map<String, Integer> BONUS_MAP = Map.of(
-			"CHERRIES", 	100,
-			"STRAWBERRY", 200,
-			"PEACH",			500,
-			"PRETZEL",		700,
-			"APPLE",			1000,
-			"PEAR",				2000,
-			"BANANA",			5000
+			"CHERRIES",    100,
+			"STRAWBERRY",  200,
+			"PEACH",       500,
+			"PRETZEL",     700,
+			"APPLE",      1000,
+			"PEAR",       2000,
+			"BANANA",     5000
 	);
 
   static final Object[][] LEVELS = {
