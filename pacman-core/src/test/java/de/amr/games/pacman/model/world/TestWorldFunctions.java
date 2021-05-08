@@ -5,6 +5,9 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import de.amr.games.pacman.lib.Direction;
+import de.amr.games.pacman.lib.V2i;
+
 public class TestWorldFunctions {
 
 	@Test
@@ -16,6 +19,7 @@ public class TestWorldFunctions {
 		assertEquals(244, world.tiles().filter(world::isFoodTile).count());
 		assertEquals(240, world.tiles().filter(world::isFoodTile).filter(not(world::isEnergizerTile)).count());
 		assertEquals(1, world.numPortals());
+		assertEquals(Direction.RIGHT, world.playerStartDirection());
 	}
 
 	@Test
@@ -27,6 +31,16 @@ public class TestWorldFunctions {
 		assertEquals(220 + 4, world.tiles().filter(world::isFoodTile).count());
 		assertEquals(220, world.tiles().filter(world::isFoodTile).filter(not(world::isEnergizerTile)).count());
 		assertEquals(2, world.numPortals());
+		assertEquals(new V2i(13, 26), world.playerHomeTile());
+		assertEquals(Direction.LEFT, world.playerStartDirection());
+		assertEquals(Direction.LEFT, world.ghostStartDirection(0));
+		assertEquals(Direction.DOWN, world.ghostStartDirection(1));
+		assertEquals(Direction.UP, world.ghostStartDirection(2));
+		assertEquals(Direction.UP, world.ghostStartDirection(3));
+		assertEquals(new V2i(13,14), world.ghostHomeTile(0));
+		assertEquals(new V2i(13,17), world.ghostHomeTile(1));
+		assertEquals(new V2i(11,17), world.ghostHomeTile(2));
+		assertEquals(new V2i(15,17), world.ghostHomeTile(3));
 	}
 
 	@Test
@@ -38,6 +52,16 @@ public class TestWorldFunctions {
 		assertEquals(240 + 4, world.tiles().filter(world::isFoodTile).count());
 		assertEquals(240, world.tiles().filter(world::isFoodTile).filter(not(world::isEnergizerTile)).count());
 		assertEquals(2, world.numPortals());
+		assertEquals(new V2i(13, 26), world.playerHomeTile());
+		assertEquals(Direction.LEFT, world.playerStartDirection());
+		assertEquals(Direction.LEFT, world.ghostStartDirection(0));
+		assertEquals(Direction.DOWN, world.ghostStartDirection(1));
+		assertEquals(Direction.UP, world.ghostStartDirection(2));
+		assertEquals(Direction.UP, world.ghostStartDirection(3));
+		assertEquals(new V2i(13,14), world.ghostHomeTile(0));
+		assertEquals(new V2i(13,17), world.ghostHomeTile(1));
+		assertEquals(new V2i(11,17), world.ghostHomeTile(2));
+		assertEquals(new V2i(15,17), world.ghostHomeTile(3));
 	}
 
 	@Test
@@ -49,6 +73,16 @@ public class TestWorldFunctions {
 		assertEquals(238 + 4, world.tiles().filter(world::isFoodTile).count());
 		assertEquals(238, world.tiles().filter(world::isFoodTile).filter(not(world::isEnergizerTile)).count());
 		assertEquals(1, world.numPortals());
+		assertEquals(new V2i(13, 26), world.playerHomeTile());
+		assertEquals(Direction.LEFT, world.playerStartDirection());
+		assertEquals(Direction.LEFT, world.ghostStartDirection(0));
+		assertEquals(Direction.DOWN, world.ghostStartDirection(1));
+		assertEquals(Direction.UP, world.ghostStartDirection(2));
+		assertEquals(Direction.UP, world.ghostStartDirection(3));
+		assertEquals(new V2i(13,14), world.ghostHomeTile(0));
+		assertEquals(new V2i(13,17), world.ghostHomeTile(1));
+		assertEquals(new V2i(11,17), world.ghostHomeTile(2));
+		assertEquals(new V2i(15,17), world.ghostHomeTile(3));
 	}
 
 	@Test
@@ -60,5 +94,15 @@ public class TestWorldFunctions {
 		assertEquals(236 + 4, world.tiles().filter(world::isFoodTile).count());
 		assertEquals(236, world.tiles().filter(world::isFoodTile).filter(not(world::isEnergizerTile)).count());
 		assertEquals(2, world.numPortals());
+		assertEquals(new V2i(13, 26), world.playerHomeTile());
+		assertEquals(Direction.LEFT, world.playerStartDirection());
+		assertEquals(Direction.LEFT, world.ghostStartDirection(0));
+		assertEquals(Direction.DOWN, world.ghostStartDirection(1));
+		assertEquals(Direction.UP, world.ghostStartDirection(2));
+		assertEquals(Direction.UP, world.ghostStartDirection(3));
+		assertEquals(new V2i(13,14), world.ghostHomeTile(0));
+		assertEquals(new V2i(13,17), world.ghostHomeTile(1));
+		assertEquals(new V2i(11,17), world.ghostHomeTile(2));
+		assertEquals(new V2i(15,17), world.ghostHomeTile(3));
 	}
 }
