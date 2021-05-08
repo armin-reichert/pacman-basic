@@ -125,6 +125,10 @@ public class Creature extends GameEntity {
 		return dir != null ? new V2d(dir.vec).scaled(speed) : V2d.NULL;
 	}
 
+	public void move() {
+		position = position.plus(getVelocity());
+	}
+
 	public boolean canAccessTile(V2i tile) {
 		if (world.insideWorld(tile)) {
 			return !world.isWall(tile) && !world.isGhostHouseDoor(tile);
@@ -140,11 +144,6 @@ public class Creature extends GameEntity {
 	public void forceTurningBack() {
 		wishDir = dir.opposite();
 		forced = true;
-	}
-
-	public void move() {
-		velocity = new V2d(dir.vec).scaled(speed);
-		position = position.plus(velocity);
 	}
 
 	public void tryMoving() {
