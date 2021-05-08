@@ -41,7 +41,7 @@ public class MapBasedPacManGameWorld implements PacManGameWorld {
 	}
 
 	public MapBasedPacManGameWorld(String worldMapPath) {
-		setMap(WorldMap.load("/pacman/maps/map1.txt"));
+		setMap(WorldMap.load(worldMapPath));
 	}
 
 	public void setMap(WorldMap map) {
