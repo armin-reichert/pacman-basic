@@ -142,8 +142,10 @@ public class Creature extends GameEntity {
 	}
 
 	public void forceTurningBack() {
-		wishDir = dir.opposite();
-		forced = true;
+		if (canAccessTile(tile().plus(dir.opposite().vec))) {
+			wishDir = dir.opposite();
+			forced = true;
+		}
 	}
 
 	public void tryMoving() {
