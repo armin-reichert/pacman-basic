@@ -41,9 +41,6 @@ public class Creature extends GameEntity {
 	/** The intended move direction that will be taken as soon as possible. */
 	private Direction wishDir = RIGHT;
 
-	/** The first move direction. */
-	public Direction startDir = RIGHT;
-
 	/** The target tile, can be inaccessible or outside of the world! */
 	public V2i targetTile = V2i.NULL;
 

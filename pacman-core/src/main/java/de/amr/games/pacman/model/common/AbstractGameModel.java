@@ -12,6 +12,7 @@ import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.Hiscore;
 import de.amr.games.pacman.model.pacman.Bonus;
+import de.amr.games.pacman.model.world.PacManGameWorld;
 
 /**
  * Common base class for the game models.
@@ -23,8 +24,8 @@ public abstract class AbstractGameModel implements GameModel {
 	static final int INITIAL_NUM_LIVES = 3;
 
 	static final Map<Integer, Integer> INTERMISSION_AFTER_LEVEL = Map.of(//
-			2, 1,              // intermission #1 after level #2
-			5, 2,              // intermission #2 after level #5
+			2, 1, // intermission #1 after level #2
+			5, 2, // intermission #2 after level #5
 			9, 3, 13, 3, 17, 3 // intermission #3 after levels #9, #13, #17
 	);
 
@@ -153,9 +154,10 @@ public abstract class AbstractGameModel implements GameModel {
 
 	@Override
 	public void resetGuys() {
-		player.placeAt(currentLevel.world.playerHomeTile(), HTS, 0);
-		player.setDir(player.startDir);
-		player.setWishDir(player.startDir);
+		final PacManGameWorld world = currentLevel.world;
+		player.placeAt(world.playerHomeTile(), HTS, 0);
+		player.setDir(world.playerStartDirection());
+		player.setWishDir(world.playerStartDirection());
 		player.visible = true;
 		player.speed = 0;
 		player.targetTile = null; // used in autopilot mode
@@ -167,9 +169,9 @@ public abstract class AbstractGameModel implements GameModel {
 		player.powerTimer.reset();
 
 		for (Ghost ghost : ghosts) {
-			ghost.placeAt(currentLevel.world.ghostHomeTile(ghost.id), HTS, 0);
-			ghost.setDir(ghost.startDir);
-			ghost.setWishDir(ghost.startDir);
+			ghost.placeAt(world.ghostHomeTile(ghost.id), HTS, 0);
+			ghost.setDir(world.ghostStartDirection(ghost.id));
+			ghost.setWishDir(world.ghostStartDirection(ghost.id));
 			ghost.visible = true;
 			ghost.speed = 0;
 			ghost.targetTile = null;

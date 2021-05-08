@@ -14,8 +14,8 @@ import de.amr.games.pacman.model.world.PacManGameWorld;
 /**
  * Intro scene of the PacMan game.
  * <p>
- * The ghost are presented one after another, then Pac-Man is chased by the
- * ghosts, turns the card and hunts the ghost himself.
+ * The ghost are presented one after another, then Pac-Man is chased by the ghosts, turns the card
+ * and hunts the ghost himself.
  * 
  * @author Armin Reichert
  */
@@ -63,30 +63,43 @@ public class PacMan_IntroScene_Controller {
 		for (int i = 0; i < 4; ++i) {
 			gallery[i] = new GhostPortrait();
 		}
-		gallery[0].ghost = new Ghost(0, "Blinky", Direction.RIGHT);
+		gallery[0].ghost = new Ghost(0, "Blinky");
+		gallery[0].ghost.setDir(Direction.RIGHT);
+		gallery[0].ghost.setWishDir(Direction.RIGHT);
 		gallery[0].character = "SHADOW";
 		gallery[0].ghost.setPosition(t(2), TOP_Y + t(2));
 
-		gallery[1].ghost = new Ghost(1, "Pinky", Direction.RIGHT);
+		gallery[1].ghost = new Ghost(1, "Pinky");
+		gallery[1].ghost.setDir(Direction.RIGHT);
+		gallery[1].ghost.setWishDir(Direction.RIGHT);
 		gallery[1].character = "SPEEDY";
 		gallery[1].ghost.setPosition(t(2), TOP_Y + t(5));
 
-		gallery[2].ghost = new Ghost(2, "Inky", Direction.RIGHT);
+		gallery[2].ghost = new Ghost(2, "Inky");
+		gallery[2].ghost.setDir(Direction.RIGHT);
+		gallery[2].ghost.setWishDir(Direction.RIGHT);
 		gallery[2].character = "BASHFUL";
 		gallery[2].ghost.setPosition(t(2), TOP_Y + t(8));
 
-		gallery[3].ghost = new Ghost(3, "Clyde", Direction.RIGHT);
+		gallery[3].ghost = new Ghost(3, "Clyde");
+		gallery[3].ghost.setDir(Direction.RIGHT);
+		gallery[3].ghost.setWishDir(Direction.RIGHT);
 		gallery[3].character = "POKEY";
 		gallery[3].ghost.setPosition(t(2), TOP_Y + t(11));
 
-		pac = new Pac("Ms. Pac-Man", Direction.LEFT);
+		pac = new Pac("Ms. Pac-Man");
+		pac.setDir(Direction.LEFT);
 
 		ghosts = new Ghost[] { //
-				new Ghost(0, "Blinky", Direction.LEFT), //
-				new Ghost(1, "Pinky", Direction.LEFT), //
-				new Ghost(2, "Inky", Direction.LEFT), //
-				new Ghost(3, "Clyde", Direction.LEFT), //
+				new Ghost(0, "Blinky"), //
+				new Ghost(1, "Pinky"), //
+				new Ghost(2, "Inky"), //
+				new Ghost(3, "Clyde"), //
 		};
+		for (Ghost ghost : ghosts) {
+			ghost.setDir(Direction.LEFT);
+			ghost.setWishDir(Direction.LEFT);
+		}
 
 		enterPhase(Phase.BEGIN);
 	}

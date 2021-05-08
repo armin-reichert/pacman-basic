@@ -44,15 +44,13 @@ public class Ghost extends Creature {
 
 	@Override
 	public String toString() {
-		return String.format("%s: state: %s position: %s, speed=%.2f, dir=%s, wishDir=%s", name, state, position, speed, dir(), wishDir());
+		return String.format("%s: state: %s position: %s, speed=%.2f, dir=%s, wishDir=%s", name, state, position, speed,
+				dir(), wishDir());
 	}
 
-	public Ghost(int id, String name, Direction startDir) {
+	public Ghost(int id, String name) {
 		this.id = id;
 		this.name = name;
-		this.startDir = startDir;
-		setDir(startDir);
-		setWishDir(startDir);
 	}
 
 	public boolean is(GhostState ghostState) {

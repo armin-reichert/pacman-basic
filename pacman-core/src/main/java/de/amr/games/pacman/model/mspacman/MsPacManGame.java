@@ -1,8 +1,5 @@
 package de.amr.games.pacman.model.mspacman;
 
-import static de.amr.games.pacman.lib.Direction.DOWN;
-import static de.amr.games.pacman.lib.Direction.LEFT;
-import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.model.common.Ghost.BLINKY;
 import static de.amr.games.pacman.model.common.Ghost.INKY;
@@ -70,14 +67,14 @@ public class MsPacManGame extends AbstractGameModel {
 	private final MapBasedPacManGameWorld world = new MapBasedPacManGameWorld();
 
 	public MsPacManGame() {
-		player = new Pac("Ms. Pac-Man", LEFT);
+		player = new Pac("Ms. Pac-Man");
 		player.world = world;
 
 		ghosts = new Ghost[4];
-		ghosts[BLINKY] = new Ghost(BLINKY, "Blinky", LEFT);
-		ghosts[PINKY] = new Ghost(PINKY, "Pinky", UP);
-		ghosts[INKY] = new Ghost(INKY, "Inky", DOWN);
-		ghosts[SUE] = new Ghost(SUE, "Sue", DOWN);
+		ghosts[BLINKY] = new Ghost(BLINKY, "Blinky");
+		ghosts[PINKY] = new Ghost(PINKY, "Pinky");
+		ghosts[INKY] = new Ghost(INKY, "Inky");
+		ghosts[SUE] = new Ghost(SUE, "Sue");
 		for (Ghost ghost : ghosts) {
 			ghost.world = world;
 		}

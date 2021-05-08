@@ -31,6 +31,8 @@ public class MapBasedPacManGameWorld implements PacManGameWorld {
 	private V2i house_seat_right;
 	private List<V2i> scatterTiles;
 	private V2i pacman_home;
+	private V2i pacman_start_dir;
+	private List<V2i> ghost_start_dir;
 	private V2i bonus_home;
 	private List<V2i> upwardsBlockedTiles;
 	private List<Integer> portalRows;
@@ -56,6 +58,8 @@ public class MapBasedPacManGameWorld implements PacManGameWorld {
 		house_seat_center = map.vector("house_seat_center");
 		house_seat_right = map.vector("house_seat_right");
 		pacman_home = map.vector("pacman_home");
+		pacman_start_dir = map.vector("pacman_start_dir");
+		ghost_start_dir = map.vectorList("ghost_start_dir");
 		bonus_home = map.vectorOptional("bonus_home").orElse(V2i.NULL);
 		scatterTiles = map.vectorList("scatter");
 		upwardsBlockedTiles = map.vectorList("upwards_blocked");
@@ -139,9 +143,19 @@ public class MapBasedPacManGameWorld implements PacManGameWorld {
 	}
 
 	@Override
+	public Direction playerStartDirection() {
+		return Direction.of(pacman_start_dir);
+	}
+
+	@Override
 	public V2i ghostHomeTile(int ghostID) {
 		return ghostID == 0 ? house_entry
 				: ghostID == 1 ? house_seat_center : ghostID == 2 ? house_seat_left : house_seat_right;
+	}
+
+	@Override
+	public Direction ghostStartDirection(int ghostID) {
+		return Direction.of(ghost_start_dir.get(ghostID));
 	}
 
 	@Override

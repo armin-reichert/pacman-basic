@@ -4,6 +4,7 @@ import java.util.Optional;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
 
@@ -127,6 +128,17 @@ public interface PacManGameWorld {
 	 * @return right position inside the house
 	 */
 	V2i houseSeatRight();
+
+	/**
+	 * @return player start direction
+	 */
+	Direction playerStartDirection();
+
+	/**
+	 * @param ghostID ghost ID (0-3)
+	 * @return ghost start direction
+	 */
+	Direction ghostStartDirection(int ghostID);
 
 	/**
 	 * @return number of portals tiles

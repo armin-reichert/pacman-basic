@@ -50,17 +50,20 @@ public class MsPacMan_IntroScene_Controller {
 	}
 
 	public void init() {
-		msPacMan = new Pac("Ms. Pac-Man", LEFT);
+		msPacMan = new Pac("Ms. Pac-Man");
+		msPacMan.setDir(LEFT);
 		msPacMan.setPosition(t(37), t(tileBelowBoard));
 
 		ghosts = new Ghost[] { //
-				new Ghost(0, "Blinky", LEFT), //
-				new Ghost(1, "Pinky", LEFT), //
-				new Ghost(2, "Inky", LEFT), //
-				new Ghost(3, "Sue", LEFT),//
+				new Ghost(0, "Blinky"), //
+				new Ghost(1, "Pinky"), //
+				new Ghost(2, "Inky"), //
+				new Ghost(3, "Sue"),//
 		};
 
 		for (Ghost ghost : ghosts) {
+			ghost.setDir(LEFT);
+			ghost.setWishDir(LEFT);
 			ghost.setPosition(t(37), t(tileBelowBoard));
 			ghost.state = GhostState.HUNTING_PAC;
 		}
@@ -85,8 +88,6 @@ public class MsPacMan_IntroScene_Controller {
 			if (phaseTimer.hasJustStarted()) {
 				ghosts[currentGhostIndex].setVisible(true);
 				ghosts[currentGhostIndex].speed = 1.0;
-				// TODO
-//				animations.ghostAnimations().ghostKicking(ghosts[currentGhostIndex]).forEach(TimedSequence::restart);
 			}
 			boolean ghostReachedFinalPosition = ghostEnteringStage(ghosts[currentGhostIndex]);
 			if (ghostReachedFinalPosition) {

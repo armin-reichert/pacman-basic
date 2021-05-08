@@ -16,6 +16,10 @@ public enum Direction {
 
 	private static final Direction[] OPPOSITE = { RIGHT, LEFT, DOWN, UP };
 
+	public static Direction of(V2i vec) {
+		return stream().filter(dir -> dir.vec.equals(vec)).findFirst().orElseThrow();
+	}
+
 	public static Stream<Direction> stream() {
 		return Stream.of(values());
 	}

@@ -1,6 +1,5 @@
 package de.amr.games.pacman.model.common;
 
-import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
 
 /**
@@ -30,10 +29,7 @@ public class Pac extends Creature {
 		return String.format("%s: position: %s, speed=%.2f, dir=%s, wishDir=%s", name, position, speed, dir(), wishDir());
 	}
 
-	public Pac(String name, Direction startDir) {
+	public Pac(String name) {
 		this.name = name;
-		this.startDir = startDir;
-		setDir(startDir);
-		setWishDir(startDir);
 	}
 }

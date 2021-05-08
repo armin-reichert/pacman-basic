@@ -39,12 +39,15 @@ public abstract class PacMan_IntermissionScene2_Controller {
 	public abstract void playIntermissionSound();
 
 	public void init() {
-		pac = new Pac("Pac-Man", Direction.LEFT);
+		pac = new Pac("Pac-Man");
+		pac.setDir(Direction.LEFT);
 		pac.setPosition(t(30), t(groundTileY));
 		pac.setVisible(true);
 		pac.speed = 1;
 
-		blinky = new Ghost(0, "Blinky", Direction.LEFT);
+		blinky = new Ghost(0, "Blinky");
+		blinky.setDir(Direction.LEFT);
+		blinky.setWishDir(Direction.LEFT);
 		blinky.setPositionRelativeTo(pac, t(14), 0);
 		blinky.setVisible(true);
 		blinky.state = GhostState.HUNTING_PAC;
