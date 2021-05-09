@@ -62,6 +62,10 @@ public class PacManGame extends AbstractGameModel {
 	/*@formatter:on*/
 
 	public PacManGame() {
+		variant = GameVariant.PACMAN;
+		levels = LEVELS;
+		bonusValues = BONUS_MAP;
+		
 		player = new Pac("Pac-Man");
 		ghosts = new Ghost[] { //
 				new Ghost(BLINKY, "Blinky"), //
@@ -83,21 +87,11 @@ public class PacManGame extends AbstractGameModel {
 	}
 
 	@Override
-	public GameVariant variant() {
-		return GameVariant.PACMAN;
-	}
-
-	@Override
 	protected void createLevel(int levelNumber) {
 		currentLevel = new GameLevel(levelNumber, world);
-		currentLevel.setValues(levelData(LEVELS, levelNumber));
+		currentLevel.setValues(levelData(levelNumber));
 		currentLevel.mazeNumber = 1;
 		log("Pac-Man level #%d created", levelNumber);
-	}
-
-	@Override
-	public String levelSymbol(int levelNumber) {
-		return (String) levelData(LEVELS, levelNumber)[0];
 	}
 
 	@Override
@@ -108,10 +102,5 @@ public class PacManGame extends AbstractGameModel {
 	@Override
 	public int mazeNumber(int levelNumber) {
 		return 1;
-	}
-
-	@Override
-	public int bonusValue(String bonus) {
-		return BONUS_MAP.get(bonus);
 	}
 }

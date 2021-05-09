@@ -65,6 +65,10 @@ public class MsPacManGame extends AbstractGameModel {
   /*@formatter:on*/
 
 	public MsPacManGame() {
+		variant = GameVariant.MS_PACMAN;
+		levels = LEVELS;
+		bonusValues = BONUS_MAP;
+
 		player = new Pac("Ms. Pac-Man");
 		ghosts = new Ghost[] { //
 				new Ghost(BLINKY, "Blinky"), //
@@ -85,17 +89,12 @@ public class MsPacManGame extends AbstractGameModel {
 	}
 
 	@Override
-	public GameVariant variant() {
-		return GameVariant.MS_PACMAN;
-	}
-
-	@Override
 	protected void createLevel(int levelNumber) {
 		int mazeNumber = mazeNumber(levelNumber);
 		int mapNumber = mapNumber(mazeNumber);
 		((MapBasedPacManGameWorld) world).setMap(WorldMap.load("/mspacman/maps/map" + mapNumber + ".txt"));
 		currentLevel = new GameLevel(levelNumber, world);
-		currentLevel.setValues(levelData(LEVELS, levelNumber));
+		currentLevel.setValues(levelData(levelNumber));
 		currentLevel.mazeNumber = mazeNumber;
 		// From level 8 on, bonus is chosen randomly
 		if (levelNumber >= 8) {
@@ -104,11 +103,6 @@ public class MsPacManGame extends AbstractGameModel {
 			currentLevel.bonusSymbol = randomBonus;
 		}
 		log("Ms. Pac-Man level #%d created, maze number is %d", levelNumber, mazeNumber);
-	}
-
-	@Override
-	public String levelSymbol(int levelNumber) {
-		return (String) levelData(LEVELS, levelNumber)[0];
 	}
 
 	/**

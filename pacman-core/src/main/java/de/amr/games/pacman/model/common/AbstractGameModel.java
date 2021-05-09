@@ -37,10 +37,9 @@ public abstract class AbstractGameModel implements GameModel {
 		//@formatter:on
 	};
 
-	protected static Object[] levelData(Object[][] levels, int levelNumber) {
-		return levelNumber - 1 < levels.length ? levels[levelNumber - 1] : levels[levels.length - 1];
-	}
-
+	protected Object[][] levels;
+	protected Map<String, Integer> bonusValues;
+	protected GameVariant variant;
 	protected GameLevel currentLevel;
 	protected PacManGameWorld world;
 	protected Pac player;
@@ -56,9 +55,23 @@ public abstract class AbstractGameModel implements GameModel {
 	protected boolean globalDotCounterEnabled;
 	protected String hiscoreFileName;
 
+	protected Object[] levelData(int levelNumber) {
+		return levelNumber - 1 < levels.length ? levels[levelNumber - 1] : levels[levels.length - 1];
+	}
+
+	@Override
+	public GameVariant variant() {
+		return variant;
+	}
+
 	@Override
 	public GameLevel currentLevel() {
 		return currentLevel;
+	}
+
+	@Override
+	public String levelSymbol(int levelNumber) {
+		return (String) levelData(levelNumber)[0];
 	}
 
 	@Override
@@ -151,6 +164,11 @@ public abstract class AbstractGameModel implements GameModel {
 	@Override
 	public Bonus bonus() {
 		return bonus;
+	}
+
+	@Override
+	public int bonusValue(String bonus) {
+		return bonusValues.get(bonus);
 	}
 
 	@Override
