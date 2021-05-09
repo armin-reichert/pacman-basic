@@ -2,6 +2,7 @@ package de.amr.games.pacman.model.mspacman;
 
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.model.pacman.Bonus;
+import de.amr.games.pacman.model.world.Portal;
 
 /**
  * In Ms. Pac-Man, the bonus walks through the world, starting at some portal
@@ -15,15 +16,17 @@ public class MovingBonus extends Bonus {
 	public void activate(long ticks) {
 		edibleTicksLeft = ticks;
 		stuck = false;
-		speed = 0.25f; // TODO what is the correct speed?
+		speed = 0.25f; // TODO what is the correct speed of the bonus?
+		int numPortals = world.portals().size();
+		Portal portal = world.portals().get(random.nextInt(numPortals));
 		if (random.nextBoolean()) {
-			placeAt(world.portalLeft(random.nextInt(world.numPortals())), 0, 0);
-			targetTile = world.portalRight(random.nextInt(world.numPortals()));
+			placeAt(portal.left, 0, 0);
+			targetTile = world.portals().get(random.nextInt(numPortals)).right;
 			setDir(Direction.RIGHT);
 			setWishDir(Direction.RIGHT);
 		} else {
-			placeAt(world.portalRight(random.nextInt(world.numPortals())), 0, 0);
-			targetTile = world.portalLeft(random.nextInt(world.numPortals()));
+			placeAt(portal.right, 0, 0);
+			targetTile = world.portals().get(random.nextInt(numPortals)).left;
 			setDir(Direction.LEFT);
 			setWishDir(Direction.LEFT);
 		}

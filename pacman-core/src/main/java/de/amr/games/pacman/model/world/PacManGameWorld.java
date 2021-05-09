@@ -1,5 +1,6 @@
 package de.amr.games.pacman.model.world;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -141,21 +142,9 @@ public interface PacManGameWorld {
 	Direction ghostStartDirection(int ghostID);
 
 	/**
-	 * @return number of portals tiles
+	 * @return list of portals from north to south.
 	 */
-	int numPortals();
-
-	/**
-	 * @param portalIndex index
-	 * @return i'th portal tile at the left edge of the world
-	 */
-	V2i portalLeft(int portalIndex);
-
-	/**
-	 * @param portalIndex index
-	 * @return i'th portal tile at the right edge of the world
-	 */
-	V2i portalRight(int portalIndex);
+	List<Portal> portals();
 
 	/**
 	 * @param tile a tile

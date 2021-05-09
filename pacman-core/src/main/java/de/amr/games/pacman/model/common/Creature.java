@@ -17,6 +17,7 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.world.PacManGameWorld;
+import de.amr.games.pacman.model.world.Portal;
 
 /**
  * Base class for creatures which can move through the world.
@@ -153,16 +154,16 @@ public class Creature extends GameEntity {
 		V2i currentTile = tile();
 		// teleport?
 		if (dir == RIGHT) {
-			for (int i = 0; i < world.numPortals(); ++i) {
-				if (currentTile.equals(world.portalRight(i))) {
-					placeAt(world.portalLeft(i), 0, 0);
+			for (Portal portal : world.portals()) {
+				if (currentTile.equals(portal.right)) {
+					placeAt(portal.left, 0, 0);
 					return;
 				}
 			}
 		} else if (dir == LEFT) {
-			for (int i = 0; i < world.numPortals(); ++i) {
-				if (currentTile.equals(world.portalLeft(i))) {
-					placeAt(world.portalRight(i), 0, 0);
+			for (Portal portal : world.portals()) {
+				if (currentTile.equals(portal.left)) {
+					placeAt(portal.right, 0, 0);
 					return;
 				}
 			}

@@ -4,6 +4,7 @@ import static de.amr.games.pacman.lib.Logging.log;
 import static java.util.function.Predicate.not;
 
 import java.util.BitSet;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -35,7 +36,7 @@ public class MapBasedPacManGameWorld implements PacManGameWorld {
 	private List<V2i> ghost_start_dir;
 	private V2i bonus_home;
 	private List<V2i> upwardsBlockedTiles;
-	private List<Integer> portalRows;
+	private List<Portal> portals;
 	private BitSet intersections;
 	private List<V2i> energizerTiles;
 
@@ -57,12 +58,11 @@ public class MapBasedPacManGameWorld implements PacManGameWorld {
 		scatterTiles = map.vectorList("scatter");
 		upwardsBlockedTiles = map.vectorList("upwards_blocked");
 
-		// Collect portal tiles
-		portalRows = IntStream.range(0, size.y)
+		portals = IntStream.range(0, size.y)
 				.filter(y -> map.data(0, y) == WorldMap.TUNNEL && map.data(size.x - 1, y) == WorldMap.TUNNEL).boxed()
+				.map(y -> new Portal(new V2i(-1, y), new V2i(size.x, y))) //
 				.collect(Collectors.toList());
 
-		// Collect intersections
 		intersections = new BitSet();
 		tiles() //
 				.filter(not(this::isGhostHousePart)) //
@@ -71,7 +71,6 @@ public class MapBasedPacManGameWorld implements PacManGameWorld {
 				.map(this::index) //
 				.forEach(intersections::set);
 
-		// Collect energizer tiles
 		energizerTiles = tiles().filter(tile -> map.data(tile) == WorldMap.ENERGIZER).collect(Collectors.toList());
 	}
 
@@ -157,18 +156,8 @@ public class MapBasedPacManGameWorld implements PacManGameWorld {
 	}
 
 	@Override
-	public int numPortals() {
-		return portalRows.size();
-	}
-
-	@Override
-	public V2i portalLeft(int i) {
-		return new V2i(-1, portalRows.get(i));
-	}
-
-	@Override
-	public V2i portalRight(int i) {
-		return new V2i(size.x, portalRows.get(i));
+	public List<Portal> portals() {
+		return Collections.unmodifiableList(portals);
 	}
 
 	@Override
@@ -213,7 +202,7 @@ public class MapBasedPacManGameWorld implements PacManGameWorld {
 
 	@Override
 	public boolean isPortal(V2i tile) {
-		return (tile.x == -1 || tile.x == size.x) && portalRows.contains(tile.y);
+		return portals.stream().anyMatch(portal -> portal.left.equals(tile) || portal.right.equals(tile));
 	}
 
 	@Override
