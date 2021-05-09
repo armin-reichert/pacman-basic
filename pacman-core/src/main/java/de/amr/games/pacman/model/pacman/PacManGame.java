@@ -16,6 +16,7 @@ import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.world.MapBasedPacManGameWorld;
+import de.amr.games.pacman.model.world.WorldMap;
 
 /**
  * Model of the Pac-Man game.
@@ -75,7 +76,9 @@ public class PacManGame extends AbstractGameModel {
 		};
 		bonus = new Bonus();
 
-		world = new MapBasedPacManGameWorld("/pacman/maps/map1.txt");
+		world = new MapBasedPacManGameWorld();
+		((MapBasedPacManGameWorld) world).setMap(WorldMap.load("/pacman/maps/map1.txt"));
+
 		player.setWorld(world);
 		for (Ghost ghost : ghosts) {
 			ghost.setWorld(world);

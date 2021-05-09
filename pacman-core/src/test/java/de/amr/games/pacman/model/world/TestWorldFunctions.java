@@ -12,7 +12,8 @@ public class TestWorldFunctions {
 
 	@Test
 	public void testPacManWorld() {
-		PacManGameWorld world = new MapBasedPacManGameWorld("/pacman/maps/map1.txt");
+		MapBasedPacManGameWorld world = new MapBasedPacManGameWorld();
+		world.setMap(WorldMap.load("/pacman/maps/map1.txt"));
 		assertEquals(36, world.numRows());
 		assertEquals(28, world.numCols());
 		assertEquals(4, world.energizerTiles().count());
@@ -24,7 +25,8 @@ public class TestWorldFunctions {
 
 	@Test
 	public void testMsPacManWorld1() {
-		PacManGameWorld world = new MapBasedPacManGameWorld("/mspacman/maps/map1.txt");
+		MapBasedPacManGameWorld world = new MapBasedPacManGameWorld();
+		world.setMap(WorldMap.load("/mspacman/maps/map1.txt"));
 		assertEquals(36, world.numRows());
 		assertEquals(28, world.numCols());
 		assertEquals(4, world.energizerTiles().count());
@@ -37,15 +39,16 @@ public class TestWorldFunctions {
 		assertEquals(Direction.DOWN, world.ghostStartDirection(1));
 		assertEquals(Direction.UP, world.ghostStartDirection(2));
 		assertEquals(Direction.UP, world.ghostStartDirection(3));
-		assertEquals(new V2i(13,14), world.ghostHomeTile(0));
-		assertEquals(new V2i(13,17), world.ghostHomeTile(1));
-		assertEquals(new V2i(11,17), world.ghostHomeTile(2));
-		assertEquals(new V2i(15,17), world.ghostHomeTile(3));
+		assertEquals(new V2i(13, 14), world.ghostHomeTile(0));
+		assertEquals(new V2i(13, 17), world.ghostHomeTile(1));
+		assertEquals(new V2i(11, 17), world.ghostHomeTile(2));
+		assertEquals(new V2i(15, 17), world.ghostHomeTile(3));
 	}
 
 	@Test
 	public void testMsPacManWorld2() {
-		PacManGameWorld world = new MapBasedPacManGameWorld("/mspacman/maps/map2.txt");
+		MapBasedPacManGameWorld world = new MapBasedPacManGameWorld();
+		world.setMap(WorldMap.load("/mspacman/maps/map2.txt"));
 		assertEquals(36, world.numRows());
 		assertEquals(28, world.numCols());
 		assertEquals(4, world.energizerTiles().count());
@@ -58,15 +61,16 @@ public class TestWorldFunctions {
 		assertEquals(Direction.DOWN, world.ghostStartDirection(1));
 		assertEquals(Direction.UP, world.ghostStartDirection(2));
 		assertEquals(Direction.UP, world.ghostStartDirection(3));
-		assertEquals(new V2i(13,14), world.ghostHomeTile(0));
-		assertEquals(new V2i(13,17), world.ghostHomeTile(1));
-		assertEquals(new V2i(11,17), world.ghostHomeTile(2));
-		assertEquals(new V2i(15,17), world.ghostHomeTile(3));
+		assertEquals(new V2i(13, 14), world.ghostHomeTile(0));
+		assertEquals(new V2i(13, 17), world.ghostHomeTile(1));
+		assertEquals(new V2i(11, 17), world.ghostHomeTile(2));
+		assertEquals(new V2i(15, 17), world.ghostHomeTile(3));
 	}
 
 	@Test
 	public void testMsPacManWorld3() {
-		PacManGameWorld world = new MapBasedPacManGameWorld("/mspacman/maps/map3.txt");
+		MapBasedPacManGameWorld world = new MapBasedPacManGameWorld();
+		world.setMap(WorldMap.load("/mspacman/maps/map3.txt"));
 		assertEquals(36, world.numRows());
 		assertEquals(28, world.numCols());
 		assertEquals(4, world.energizerTiles().count());
@@ -79,15 +83,16 @@ public class TestWorldFunctions {
 		assertEquals(Direction.DOWN, world.ghostStartDirection(1));
 		assertEquals(Direction.UP, world.ghostStartDirection(2));
 		assertEquals(Direction.UP, world.ghostStartDirection(3));
-		assertEquals(new V2i(13,14), world.ghostHomeTile(0));
-		assertEquals(new V2i(13,17), world.ghostHomeTile(1));
-		assertEquals(new V2i(11,17), world.ghostHomeTile(2));
-		assertEquals(new V2i(15,17), world.ghostHomeTile(3));
+		assertEquals(new V2i(13, 14), world.ghostHomeTile(0));
+		assertEquals(new V2i(13, 17), world.ghostHomeTile(1));
+		assertEquals(new V2i(11, 17), world.ghostHomeTile(2));
+		assertEquals(new V2i(15, 17), world.ghostHomeTile(3));
 	}
 
 	@Test
 	public void testMsPacManWorld4() {
-		PacManGameWorld world = new MapBasedPacManGameWorld("/mspacman/maps/map4.txt");
+		MapBasedPacManGameWorld world = new MapBasedPacManGameWorld();
+		world.setMap(WorldMap.load("/mspacman/maps/map4.txt"));
 		assertEquals(36, world.numRows());
 		assertEquals(28, world.numCols());
 		assertEquals(4, world.energizerTiles().count());
@@ -100,9 +105,9 @@ public class TestWorldFunctions {
 		assertEquals(Direction.DOWN, world.ghostStartDirection(1));
 		assertEquals(Direction.UP, world.ghostStartDirection(2));
 		assertEquals(Direction.UP, world.ghostStartDirection(3));
-		assertEquals(new V2i(13,14), world.ghostHomeTile(0));
-		assertEquals(new V2i(13,17), world.ghostHomeTile(1));
-		assertEquals(new V2i(11,17), world.ghostHomeTile(2));
-		assertEquals(new V2i(15,17), world.ghostHomeTile(3));
+		assertEquals(new V2i(13, 14), world.ghostHomeTile(0));
+		assertEquals(new V2i(13, 17), world.ghostHomeTile(1));
+		assertEquals(new V2i(11, 17), world.ghostHomeTile(2));
+		assertEquals(new V2i(15, 17), world.ghostHomeTile(3));
 	}
 }
