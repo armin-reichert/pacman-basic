@@ -89,7 +89,7 @@ public class PacManGame extends AbstractGameModel {
 	@Override
 	protected void createLevel(int levelNumber) {
 		currentLevel = new GameLevel(levelNumber, world);
-		currentLevel.setValues(levelData(levelNumber));
+		currentLevel.setData(levelData(levelNumber));
 		currentLevel.mazeNumber = 1;
 		log("Pac-Man level #%d created", levelNumber);
 	}

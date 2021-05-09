@@ -66,20 +66,20 @@ public class GameLevel {
 		log("Total food: %d (%d pellets, %d energizers)", totalFoodCount, totalFoodCount - energizerCount, energizerCount);
 	}
 
-	public void setValues(Object[] values) {
+	public void setData(Object[] levelData) {
 		int i = 0;
-		bonusSymbol = (String) values[i++];
-		playerSpeed = percent(values[i++]);
-		ghostSpeed = percent(values[i++]);
-		ghostSpeedTunnel = percent(values[i++]);
-		elroy1DotsLeft = (Integer) values[i++];
-		elroy1Speed = percent(values[i++]);
-		elroy2DotsLeft = (Integer) values[i++];
-		elroy2Speed = percent(values[i++]);
-		playerSpeedPowered = percent(values[i++]);
-		ghostSpeedFrightened = percent(values[i++]);
-		ghostFrightenedSeconds = (Integer) values[i++];
-		numFlashes = (Integer) values[i++];
+		bonusSymbol = (String) levelData[i++];
+		playerSpeed = percent(levelData[i++]);
+		ghostSpeed = percent(levelData[i++]);
+		ghostSpeedTunnel = percent(levelData[i++]);
+		elroy1DotsLeft = (Integer) levelData[i++];
+		elroy1Speed = percent(levelData[i++]);
+		elroy2DotsLeft = (Integer) levelData[i++];
+		elroy2Speed = percent(levelData[i++]);
+		playerSpeedPowered = percent(levelData[i++]);
+		ghostSpeedFrightened = percent(levelData[i++]);
+		ghostFrightenedSeconds = (Integer) levelData[i++];
+		numFlashes = (Integer) levelData[i++];
 	}
 
 	public int eatenFoodCount() {
