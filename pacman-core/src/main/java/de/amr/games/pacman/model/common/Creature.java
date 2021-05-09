@@ -7,11 +7,10 @@ import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.model.world.PacManGameWorld.t;
 import static java.lang.Math.abs;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2d;
@@ -242,8 +241,13 @@ public class Creature extends GameEntity {
 		}
 	}
 
-	protected Optional<Direction> randomAccessibleDirection() {
-		List<Direction> dirs = accessibleFromExcept(tile(), dir.opposite()).collect(Collectors.toList());
+	private Optional<Direction> randomAccessibleDirection() {
+		List<Direction> dirs = new ArrayList<>();
+		for (Direction dir : Direction.values()) {
+			if (dir != this.dir.opposite() && canAccessTile(tile().plus(dir.vec))) {
+				dirs.add(dir);
+			}
+		}
 		return dirs.isEmpty() ? Optional.empty() : Optional.of(dirs.get(new Random().nextInt(dirs.size())));
 	}
 
@@ -289,13 +293,5 @@ public class Creature extends GameEntity {
 			}
 		}
 		return Optional.ofNullable(bestDir);
-	}
-
-	private Stream<Direction> accessibleFromExcept(V2i tile, Direction... excludedDirs) {
-		//@formatter:off
-		return Stream.of(Direction.values())
-			.filter(d -> Stream.of(excludedDirs).noneMatch(excluded -> excluded == d))
-			.filter(d -> canAccessTile(tile.plus(d.vec)));
-		//@formatter:on
 	}
 }
