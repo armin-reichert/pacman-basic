@@ -38,7 +38,7 @@ public class MsPacManGame extends AbstractGameModel {
 			"BANANA",     5000
 	);
 
-  static final Object[][] LEVELS = {
+	static final Object[][] LEVELS = {
 	/* 1*/ {"CHERRIES",    80, 75, 40,  20,  80, 10,  85,  90, 50, 6, 5},
 	/* 2*/ {"STRAWBERRY",  90, 85, 45,  30,  90, 15,  95,  95, 55, 5, 5},
 	/* 3*/ {"PEACH",       90, 85, 45,  40,  90, 20,  95,  95, 55, 4, 5},
@@ -139,10 +139,5 @@ public class MsPacManGame extends AbstractGameModel {
 	public int mapNumber(int mazeNumber) {
 		// Maze #5 has the same map as #3, same for #6 vs. #4
 		return mazeNumber == 5 ? 3 : mazeNumber == 6 ? 4 : mazeNumber;
-	}
-
-	@Override
-	public int bonusValue(String bonus) {
-		return BONUS_MAP.get(bonus);
 	}
 }
