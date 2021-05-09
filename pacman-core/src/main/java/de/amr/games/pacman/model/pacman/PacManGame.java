@@ -61,11 +61,7 @@ public class PacManGame extends AbstractGameModel {
 	};
 	/*@formatter:on*/
 
-	// in Pac-Man, all levels use the same world and the same map
-	private final MapBasedPacManGameWorld world;
-
 	public PacManGame() {
-		world = new MapBasedPacManGameWorld("/pacman/maps/map1.txt");
 		player = new Pac("Pac-Man");
 		ghosts = new Ghost[] { //
 				new Ghost(BLINKY, "Blinky"), //
@@ -75,6 +71,7 @@ public class PacManGame extends AbstractGameModel {
 		};
 		bonus = new Bonus();
 
+		world = new MapBasedPacManGameWorld("/pacman/maps/map1.txt");
 		player.setWorld(world);
 		for (Ghost ghost : ghosts) {
 			ghost.setWorld(world);

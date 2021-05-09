@@ -64,8 +64,6 @@ public class MsPacManGame extends AbstractGameModel {
 	
   /*@formatter:on*/
 
-	private final MapBasedPacManGameWorld world = new MapBasedPacManGameWorld();
-
 	public MsPacManGame() {
 		player = new Pac("Ms. Pac-Man");
 		ghosts = new Ghost[] { //
@@ -76,6 +74,7 @@ public class MsPacManGame extends AbstractGameModel {
 		};
 		bonus = new MovingBonus();
 
+		world = new MapBasedPacManGameWorld();
 		player.setWorld(world);
 		for (Ghost ghost : ghosts) {
 			ghost.setWorld(world);
@@ -94,7 +93,7 @@ public class MsPacManGame extends AbstractGameModel {
 	protected void createLevel(int levelNumber) {
 		int mazeNumber = mazeNumber(levelNumber);
 		int mapNumber = mapNumber(mazeNumber);
-		world.setMap(WorldMap.load("/mspacman/maps/map" + mapNumber + ".txt"));
+		((MapBasedPacManGameWorld) world).setMap(WorldMap.load("/mspacman/maps/map" + mapNumber + ".txt"));
 		currentLevel = new GameLevel(levelNumber, world);
 		currentLevel.setValues(levelData(LEVELS, levelNumber));
 		currentLevel.mazeNumber = mazeNumber;

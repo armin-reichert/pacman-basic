@@ -42,6 +42,7 @@ public abstract class AbstractGameModel implements GameModel {
 	}
 
 	protected GameLevel currentLevel;
+	protected PacManGameWorld world;
 	protected Pac player;
 	protected Ghost[] ghosts;
 	protected Bonus bonus;
