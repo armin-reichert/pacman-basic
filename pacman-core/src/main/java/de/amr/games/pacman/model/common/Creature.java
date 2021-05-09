@@ -236,19 +236,19 @@ public class Creature extends GameEntity {
 	}
 
 	public void selectRandomDirection() {
-		if (stuck || world.isIntersection(tile())) {
-			randomAccessibleDirection().ifPresent(this::setWishDir);
+		if (!stuck && !world.isIntersection(tile())) {
+			return;
 		}
-	}
-
-	private Optional<Direction> randomAccessibleDirection() {
 		List<Direction> dirs = new ArrayList<>();
 		for (Direction dir : Direction.values()) {
 			if (dir != this.dir.opposite() && canAccessTile(tile().plus(dir.vec))) {
 				dirs.add(dir);
 			}
 		}
-		return dirs.isEmpty() ? Optional.empty() : Optional.of(dirs.get(new Random().nextInt(dirs.size())));
+		if (!dirs.isEmpty()) {
+			Direction randomDir = dirs.get(new Random().nextInt(dirs.size()));
+			setWishDir(randomDir);
+		}
 	}
 
 	private Optional<Direction> newWishDir() {
