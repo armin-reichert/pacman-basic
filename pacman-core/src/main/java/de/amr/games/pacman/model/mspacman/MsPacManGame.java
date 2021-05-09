@@ -89,7 +89,7 @@ public class MsPacManGame extends AbstractGameModel {
 	}
 
 	@Override
-	protected void createLevel(int levelNumber) {
+	public void createLevel(int levelNumber) {
 		int mazeNumber = mazeNumber(levelNumber);
 		int mapNumber = mapNumber(mazeNumber);
 		((MapBasedPacManGameWorld) world).setMap(WorldMap.load("/mspacman/maps/map" + mapNumber + ".txt"));
@@ -102,6 +102,14 @@ public class MsPacManGame extends AbstractGameModel {
 			String randomBonus = BONUS_MAP.keySet().toArray(String[]::new)[random];
 			currentLevel.bonusSymbol = randomBonus;
 		}
+		ghostBounty = 200;
+		for (Ghost ghost : ghosts) {
+			ghost.dotCounter = 0;
+			ghost.elroy = 0;
+		}
+		bonus.edibleTicksLeft = 0;
+		bonus.eatenTicksLeft = 0;
+		
 		log("Ms. Pac-Man level #%d created, maze number is %d", levelNumber, mazeNumber);
 	}
 

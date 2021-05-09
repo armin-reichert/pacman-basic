@@ -11,16 +11,29 @@ import de.amr.games.pacman.model.pacman.Bonus;
  */
 public interface GameModel {
 
+	/**
+	 * @return the game variant identifier
+	 */
 	GameVariant variant();
 
-	void reset();
-
-	void resetGuys();
+	/**
+	 * Creates the level with the given number.
+	 * 
+	 * @param levelNumber 1-based game level number
+	 */
+	void createLevel(int levelNumber);
 
 	/**
 	 * @param levelNumber 1-based game level number
+	 * @return 1-based maze number of the maze used in that level
 	 */
-	void initLevel(int levelNumber);
+	int mazeNumber(int levelNumber);
+
+	/**
+	 * @param mazeNumber 1-based number of a maze
+	 * @return 1-based number of the world map used by that maze
+	 */
+	int mapNumber(int mazeNumber);
 
 	GameLevel currentLevel();
 
@@ -55,6 +68,10 @@ public interface GameModel {
 	void setHiscoreLevel(int number);
 
 	void saveHiscore();
+
+	void reset();
+
+	void resetGuys();
 
 	Pac player();
 

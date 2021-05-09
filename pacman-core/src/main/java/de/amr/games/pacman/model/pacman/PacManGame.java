@@ -65,7 +65,7 @@ public class PacManGame extends AbstractGameModel {
 		variant = GameVariant.PACMAN;
 		levels = LEVELS;
 		bonusValues = BONUS_MAP;
-		
+
 		player = new Pac("Pac-Man");
 		ghosts = new Ghost[] { //
 				new Ghost(BLINKY, "Blinky"), //
@@ -87,10 +87,17 @@ public class PacManGame extends AbstractGameModel {
 	}
 
 	@Override
-	protected void createLevel(int levelNumber) {
+	public void createLevel(int levelNumber) {
 		currentLevel = new GameLevel(levelNumber, world);
 		currentLevel.setData(levelData(levelNumber));
 		currentLevel.mazeNumber = 1;
+		ghostBounty = 200;
+		for (Ghost ghost : ghosts) {
+			ghost.dotCounter = 0;
+			ghost.elroy = 0;
+		}
+		bonus.edibleTicksLeft = 0;
+		bonus.eatenTicksLeft = 0;
 		log("Pac-Man level #%d created", levelNumber);
 	}
 

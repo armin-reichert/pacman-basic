@@ -218,24 +218,12 @@ public abstract class AbstractGameModel implements GameModel {
 	public void reset() {
 		score = 0;
 		lives = INITIAL_NUM_LIVES;
-		initLevel(1);
+		createLevel(1);
 		levelSymbols = new ArrayList<>();
 		levelSymbols.add(currentLevel.bonusSymbol);
 		Hiscore hiscore = loadHiscore();
 		hiscoreLevel = hiscore.level;
 		hiscorePoints = hiscore.points;
-	}
-
-	@Override
-	public void initLevel(int levelNumber) {
-		createLevel(levelNumber);
-		ghostBounty = 200;
-		for (Ghost ghost : ghosts) {
-			ghost.dotCounter = 0;
-			ghost.elroy = 0;
-		}
-		bonus.edibleTicksLeft = 0;
-		bonus.eatenTicksLeft = 0;
 	}
 
 	@Override
@@ -275,28 +263,10 @@ public abstract class AbstractGameModel implements GameModel {
 		globalDotCounterEnabled = enable;
 	}
 
-	/**
-	 * @param levelNumber 1-based game level number
-	 */
-	protected abstract void createLevel(int levelNumber);
-
-	/**
-	 * @param levelNumber 1-based game level number
-	 * @return 1-based maze number of the maze used in that level
-	 */
-	protected abstract int mazeNumber(int levelNumber);
-
-	/**
-	 * @param mazeNumber 1-based number of a maze
-	 * @return 1-based number of the world map used by that maze
-	 */
-	protected abstract int mapNumber(int mazeNumber);
-
 	protected Hiscore loadHiscore() {
 		File dir = new File(System.getProperty("user.home"));
 		Hiscore hiscore = new Hiscore(new File(dir, hiscoreFileName));
 		hiscore.load();
 		return hiscore;
 	}
-
 }
