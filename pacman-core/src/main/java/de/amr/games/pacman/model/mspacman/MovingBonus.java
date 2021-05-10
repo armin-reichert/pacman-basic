@@ -1,36 +1,44 @@
 package de.amr.games.pacman.model.mspacman;
 
+import de.amr.games.pacman.controller.event.PacManGameEvent;
+import de.amr.games.pacman.controller.event.PacManGameEvent.Info;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.model.pacman.Bonus;
 import de.amr.games.pacman.model.world.PacManGameWorld;
 import de.amr.games.pacman.model.world.Portal;
 
 /**
- * In Ms. Pac-Man, the bonus walks through the world, starting at some portal
- * and leaving through some portal at the other side of the world.
+ * In Ms. Pac-Man, the bonus tumbles through the world, starting at some random portal and leaving
+ * at some portal at the other border.
  * 
  * @author Armin Reichert
  */
 public class MovingBonus extends Bonus {
-	
+
 	public MovingBonus(PacManGameWorld world) {
 		super(world);
 	}
 
 	@Override
-	public void activate(long ticks) {
-		edibleTicksLeft = ticks;
+	public void init() {
+		super.init();
+		targetTile = null;
 		stuck = false;
 		speed = 0.25f; // TODO what is the correct speed of the bonus?
+	}
+
+	@Override
+	public void activate(long ticks) {
+		super.activate(ticks);
 		int numPortals = world.portals().size();
-		Portal portal = world.portals().get(random.nextInt(numPortals));
+		Portal randomPortal = world.portals().get(random.nextInt(numPortals));
 		if (random.nextBoolean()) {
-			placeAt(portal.left, 0, 0);
+			placeAt(randomPortal.left, 0, 0);
 			targetTile = world.portals().get(random.nextInt(numPortals)).right;
 			setDir(Direction.RIGHT);
 			setWishDir(Direction.RIGHT);
 		} else {
-			placeAt(portal.right, 0, 0);
+			placeAt(randomPortal.right, 0, 0);
 			targetTile = world.portals().get(random.nextInt(numPortals)).left;
 			setDir(Direction.LEFT);
 			setWishDir(Direction.LEFT);
@@ -38,28 +46,32 @@ public class MovingBonus extends Bonus {
 	}
 
 	@Override
-	public void eaten(long ticks) {
-		edibleTicksLeft = 0;
-		eatenTicksLeft = ticks;
-		speed = 0;
-	}
+	public PacManGameEvent.Info update() {
+		switch (state) {
+		case INACTIVE:
+			return null;
 
-	@Override
-	public void update() {
-		if (edibleTicksLeft > 0) {
+		case EDIBLE:
+			if (tile().equals(targetTile)) {
+				visible = false;
+				state = INACTIVE;
+				return Info.BONUS_EXPIRED;
+			}
 			selectDirectionTowardsTarget();
 			tryMoving();
-			if (world.isPortal(tile())) {
-				edibleTicksLeft = 0;
+			return null;
+
+		case EATEN:
+			if (timer == 0) {
 				visible = false;
+				state = INACTIVE;
+				return Info.BONUS_EXPIRED;
 			}
-		}
-		if (eatenTicksLeft > 0) {
-			eatenTicksLeft--;
-			if (eatenTicksLeft == 0) {
-				eatenTicksLeft = 0;
-				visible = false;
-			}
+			timer--;
+			return null;
+
+		default:
+			throw new IllegalStateException();
 		}
 	}
 }

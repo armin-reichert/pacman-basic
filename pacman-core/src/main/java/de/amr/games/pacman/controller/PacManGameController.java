@@ -383,11 +383,10 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 		// Bonus
 		final Bonus bonus = game.bonus();
-		final boolean edible = bonus.edibleTicksLeft > 0;
-		bonus.update();
-		if (edible && bonus.edibleTicksLeft == 0) {
+		final Info info = bonus.update();
+		if (info == Info.BONUS_EXPIRED) {
 			fireGameEvent(Info.BONUS_EXPIRED, bonus.tile());
-		} else if (bonus.edibleTicksLeft > 0 && player.meets(bonus)) {
+		} else if (bonus.state == Bonus.EDIBLE && player.meets(bonus)) {
 			score(bonus.points);
 			bonus.eaten(sec_to_ticks(2));
 			log("%s found bonus (%s, value %d)", player.name, bonus.symbol, bonus.points);
@@ -398,8 +397,8 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	private void enterPacManDyingState() {
 		game.player().speed = 0;
 		game.ghosts(FRIGHTENED).forEach(ghost -> ghost.state = HUNTING_PAC);
-		game.bonus().edibleTicksLeft = game.bonus().eatenTicksLeft = 0;
-		stateTimer().resetSeconds(5);// TODO
+		game.bonus().init();
+		stateTimer().resetSeconds(5); // TODO
 	}
 
 	private void updatePacManDyingState() {
@@ -445,7 +444,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	private void enterLevelCompleteState() {
-		game.bonus().edibleTicksLeft = game.bonus().eatenTicksLeft = 0;
+		game.bonus().init();
 		game.player().speed = 0;
 		stateTimer().reset();
 	}

@@ -12,6 +12,7 @@ import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.GhostState;
+import de.amr.games.pacman.model.pacman.Bonus;
 
 /**
  * Controls automatic movement of the player.
@@ -89,7 +90,7 @@ public class Autopilot {
 			log("Detected frightened ghost %s %.0g tiles away", prey.name,
 					prey.tile().manhattanDistance(game.player().tile()));
 			game.player().targetTile = prey.tile();
-		} else if (game.bonus().edibleTicksLeft > 0
+		} else if (game.bonus().state == Bonus.EDIBLE
 				&& game.bonus().tile().manhattanDistance(game.player().tile()) <= AutopilotData.MAX_BONUS_HARVEST_DIST) {
 			log("Detected active bonus");
 			game.player().targetTile = game.bonus().tile();

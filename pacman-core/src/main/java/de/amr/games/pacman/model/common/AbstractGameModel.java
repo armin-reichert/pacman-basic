@@ -205,13 +205,7 @@ public abstract class AbstractGameModel implements GameModel {
 			// ghost.elroyMode = 0;
 		}
 
-		bonus.visible = false;
-		bonus.speed = 0;
-		bonus.newTileEntered = true;
-		bonus.stuck = false;
-		bonus.forcedOnTrack = true;
-		bonus.edibleTicksLeft = 0;
-		bonus.eatenTicksLeft = 0;
+		bonus.init();
 	}
 
 	@Override

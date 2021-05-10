@@ -88,8 +88,7 @@ public class PacManGame extends AbstractGameModel {
 			ghost.dotCounter = 0;
 			ghost.elroy = 0;
 		}
-		bonus.edibleTicksLeft = 0;
-		bonus.eatenTicksLeft = 0;
+		bonus.init();
 		log("Pac-Man level #%d created", levelNumber);
 	}
 

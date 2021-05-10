@@ -2,6 +2,8 @@ package de.amr.games.pacman.model.pacman;
 
 import java.util.Random;
 
+import de.amr.games.pacman.controller.event.PacManGameEvent;
+import de.amr.games.pacman.controller.event.PacManGameEvent.Info;
 import de.amr.games.pacman.model.common.Creature;
 import de.amr.games.pacman.model.world.PacManGameWorld;
 
@@ -12,7 +14,9 @@ import de.amr.games.pacman.model.world.PacManGameWorld;
  */
 public class Bonus extends Creature {
 
-	protected Random random = new Random();
+	public static final int INACTIVE = 0;
+	public static final int EDIBLE = 1;
+	public static final int EATEN = 2;
 
 	/** ID of the bonus symbol. */
 	public String symbol;
@@ -20,39 +24,64 @@ public class Bonus extends Creature {
 	/** Value of this bonus. */
 	public int points;
 
-	/** Number of clock ticks the bonus is still available for eating. */
-	public long edibleTicksLeft;
+	/** Number of ticks left in current state. */
+	public long timer;
 
-	/** Number of clock ticks the consumed bonus is still displayed. */
-	public long eatenTicksLeft;
+	public int state;
+
+	protected Random random = new Random();
 
 	public Bonus(PacManGameWorld world) {
 		this.world = world;
+		init();
+	}
+
+	public void init() {
+		state = INACTIVE;
+		timer = 0;
+		visible = false;
+		speed = 0;
+		newTileEntered = true;
+		stuck = false;
+		forcedOnTrack = true;
 	}
 
 	public void activate(long ticks) {
-		edibleTicksLeft = ticks;
+		state = EDIBLE;
+		timer = ticks;
+		visible = true;
 	}
 
 	public void eaten(long ticks) {
-		edibleTicksLeft = 0;
-		eatenTicksLeft = ticks;
+		state = EATEN;
+		timer = ticks;
 	}
 
-	public void update() {
-		if (edibleTicksLeft > 0) {
-			edibleTicksLeft--;
-			if (edibleTicksLeft == 0) {
-				edibleTicksLeft = 0;
+	public PacManGameEvent.Info update() {
+		switch (state) {
+		case INACTIVE:
+			return null;
+
+		case EDIBLE:
+			if (timer == 0) {
 				visible = false;
+				state = INACTIVE;
+				return Info.BONUS_EXPIRED;
 			}
-		}
-		if (eatenTicksLeft > 0) {
-			eatenTicksLeft--;
-			if (eatenTicksLeft == 0) {
-				eatenTicksLeft = 0;
+			timer--;
+			return null;
+
+		case EATEN:
+			if (timer == 0) {
 				visible = false;
+				state = INACTIVE;
+				return Info.BONUS_EXPIRED;
 			}
+			timer--;
+			return null;
+
+		default:
+			throw new IllegalStateException();
 		}
 	}
 }
