@@ -1,6 +1,7 @@
 package de.amr.games.pacman.model.common;
 
 import de.amr.games.pacman.lib.TickTimer;
+import de.amr.games.pacman.model.world.PacManGameWorld;
 
 /**
  * Pac-Man or Ms. Pac-Man.
@@ -29,7 +30,8 @@ public class Pac extends Creature {
 		return String.format("%s: position: %s, speed=%.2f, dir=%s, wishDir=%s", name, position, speed, dir(), wishDir());
 	}
 
-	public Pac(String name) {
+	public Pac(String name, PacManGameWorld world) {
 		this.name = name;
+		this.world = world;
 	}
 }

@@ -6,6 +6,7 @@ import static de.amr.games.pacman.model.world.PacManGameWorld.t;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.model.world.PacManGameWorld;
 
 /**
  * A ghost.
@@ -48,9 +49,10 @@ public class Ghost extends Creature {
 				dir(), wishDir());
 	}
 
-	public Ghost(int id, String name) {
+	public Ghost(int id, String name, PacManGameWorld world) {
 		this.id = id;
 		this.name = name;
+		this.world = world;
 	}
 
 	public boolean is(GhostState ghostState) {

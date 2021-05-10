@@ -54,6 +54,7 @@ public class MsPacManGame extends AbstractGameModel {
 
 	public MsPacManGame() {
 		variant = GameVariant.MS_PACMAN;
+		world = new MapBasedPacManGameWorld();
 		levels = LEVELS;
 		bonusValues = Map.of(//
 				"CHERRIES", 100, //
@@ -64,22 +65,14 @@ public class MsPacManGame extends AbstractGameModel {
 				"PEAR", 2000, //
 				"BANANA", 5000 //
 		);
-		player = new Pac("Ms. Pac-Man");
+		player = new Pac("Ms. Pac-Man", world);
 		ghosts = new Ghost[] { //
-				new Ghost(BLINKY, "Blinky"), //
-				new Ghost(PINKY, "Pinky"), //
-				new Ghost(INKY, "Inky"), //
-				new Ghost(SUE, "Sue") //
+				new Ghost(BLINKY, "Blinky", world), //
+				new Ghost(PINKY, "Pinky", world), //
+				new Ghost(INKY, "Inky", world), //
+				new Ghost(SUE, "Sue", world) //
 		};
-		bonus = new MovingBonus();
-
-		world = new MapBasedPacManGameWorld();
-		player.setWorld(world);
-		for (Ghost ghost : ghosts) {
-			ghost.setWorld(world);
-		}
-		bonus.setWorld(world);
-
+		bonus = new MovingBonus(world);
 		hiscoreFileName = "hiscore-mspacman.xml";
 	}
 

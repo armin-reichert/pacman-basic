@@ -63,38 +63,38 @@ public class PacMan_IntroScene_Controller {
 		for (int i = 0; i < 4; ++i) {
 			gallery[i] = new GhostPortrait();
 		}
-		gallery[0].ghost = new Ghost(0, "Blinky");
+		gallery[0].ghost = new Ghost(0, "Blinky", null);
 		gallery[0].ghost.setDir(Direction.RIGHT);
 		gallery[0].ghost.setWishDir(Direction.RIGHT);
 		gallery[0].character = "SHADOW";
 		gallery[0].ghost.setPosition(t(2), TOP_Y + t(2));
 
-		gallery[1].ghost = new Ghost(1, "Pinky");
+		gallery[1].ghost = new Ghost(1, "Pinky", null);
 		gallery[1].ghost.setDir(Direction.RIGHT);
 		gallery[1].ghost.setWishDir(Direction.RIGHT);
 		gallery[1].character = "SPEEDY";
 		gallery[1].ghost.setPosition(t(2), TOP_Y + t(5));
 
-		gallery[2].ghost = new Ghost(2, "Inky");
+		gallery[2].ghost = new Ghost(2, "Inky", null);
 		gallery[2].ghost.setDir(Direction.RIGHT);
 		gallery[2].ghost.setWishDir(Direction.RIGHT);
 		gallery[2].character = "BASHFUL";
 		gallery[2].ghost.setPosition(t(2), TOP_Y + t(8));
 
-		gallery[3].ghost = new Ghost(3, "Clyde");
+		gallery[3].ghost = new Ghost(3, "Clyde", null);
 		gallery[3].ghost.setDir(Direction.RIGHT);
 		gallery[3].ghost.setWishDir(Direction.RIGHT);
 		gallery[3].character = "POKEY";
 		gallery[3].ghost.setPosition(t(2), TOP_Y + t(11));
 
-		pac = new Pac("Ms. Pac-Man");
+		pac = new Pac("Ms. Pac-Man", null);
 		pac.setDir(Direction.LEFT);
 
 		ghosts = new Ghost[] { //
-				new Ghost(0, "Blinky"), //
-				new Ghost(1, "Pinky"), //
-				new Ghost(2, "Inky"), //
-				new Ghost(3, "Clyde"), //
+				new Ghost(0, "Blinky", null), //
+				new Ghost(1, "Pinky", null), //
+				new Ghost(2, "Inky", null), //
+				new Ghost(3, "Clyde", null), //
 		};
 		for (Ghost ghost : ghosts) {
 			ghost.setDir(Direction.LEFT);

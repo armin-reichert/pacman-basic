@@ -3,6 +3,7 @@ package de.amr.games.pacman.model.pacman;
 import java.util.Random;
 
 import de.amr.games.pacman.model.common.Creature;
+import de.amr.games.pacman.model.world.PacManGameWorld;
 
 /**
  * Bonus symbol. In Ms. Pac-Man, the bonus wanders the maze.
@@ -11,7 +12,7 @@ import de.amr.games.pacman.model.common.Creature;
  */
 public class Bonus extends Creature {
 
-	public Random random = new Random();
+	protected Random random = new Random();
 
 	/** ID of the bonus symbol. */
 	public String symbol;
@@ -24,6 +25,10 @@ public class Bonus extends Creature {
 
 	/** Number of clock ticks the consumed bonus is still displayed. */
 	public long eatenTicksLeft;
+
+	public Bonus(PacManGameWorld world) {
+		this.world = world;
+	}
 
 	public void activate(long ticks) {
 		edibleTicksLeft = ticks;
