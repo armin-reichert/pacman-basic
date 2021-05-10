@@ -24,24 +24,20 @@ import de.amr.games.pacman.model.mspacman.Stork;
 public abstract class MsPacMan_IntermissionScene3_Controller {
 
 	public enum Phase {
-
 		FLAP, ACTION, READY_TO_PLAY;
 	}
 
-	public static final int BIRD_Y = t(12), GROUND_Y = t(24);
+	static final int GROUND_Y = t(24);
 
 	public final PacManGameController gameController;
 	public final TickTimer timer = new TickTimer();
-
+	public Phase phase;
 	public Flap flap;
 	public Pac pacMan;
 	public Pac msPacMan;
 	public Stork stork;
 	public JuniorBag bag;
-
-	private int bagBounces;
-
-	public Phase phase;
+	public int numBagBounces;
 
 	public MsPacMan_IntermissionScene3_Controller(PacManGameController gameController) {
 		this.gameController = gameController;
@@ -77,9 +73,11 @@ public abstract class MsPacMan_IntermissionScene3_Controller {
 		msPacMan.setPosition(t(5), GROUND_Y - 4);
 
 		stork = new Stork();
-		stork.setPosition(t(30), BIRD_Y);
+		stork.setPosition(t(30), t(12));
 
 		bag = new JuniorBag();
+		bag.hold = true;
+		bag.open = false;
 		bag.setPositionRelativeTo(stork, -14, 3);
 
 		enter(Phase.FLAP);
@@ -91,8 +89,7 @@ public abstract class MsPacMan_IntermissionScene3_Controller {
 		case FLAP:
 			if (timer.isRunningSeconds(1)) {
 				playFlapAnimation();
-			}
-			if (timer.isRunningSeconds(2)) {
+			} else if (timer.isRunningSeconds(2)) {
 				flap.setVisible(false);
 				playIntermissionSound();
 				enter(Phase.ACTION);
@@ -101,8 +98,6 @@ public abstract class MsPacMan_IntermissionScene3_Controller {
 			break;
 
 		case ACTION:
-			stork.move();
-			bag.move();
 			if (timer.hasJustStarted()) {
 				pacMan.setVisible(true);
 				msPacMan.setVisible(true);
@@ -112,15 +107,15 @@ public abstract class MsPacMan_IntermissionScene3_Controller {
 				stork.speed = 1.25f;
 				bag.setVelocity(new V2d(-1.25f, 0));
 			}
-			// release bag?
-			if ((int) stork.position.x == t(24)) {
-				bag.release();
+			// release bag from storks beak?
+			if (bag.hold && (int) stork.position.x == t(24)) {
+				bag.hold = false;
 			}
 			// (closed) bag reaches ground for first time?
 			if (!bag.open && bag.position.y > GROUND_Y) {
-				++bagBounces;
-				if (bagBounces < 5) {
-					bag.setVelocity(new V2d(-0.2f, -1f / bagBounces));
+				++numBagBounces;
+				if (numBagBounces < 5) {
+					bag.setVelocity(new V2d(-0.2f, -1f / numBagBounces));
 					bag.setPosition(bag.position.x, GROUND_Y);
 				} else {
 					bag.open = true;
@@ -128,15 +123,17 @@ public abstract class MsPacMan_IntermissionScene3_Controller {
 					enterSeconds(Phase.READY_TO_PLAY, 3);
 				}
 			}
+			stork.move();
+			bag.move();
 			timer.tick();
 			break;
 
 		case READY_TO_PLAY:
-			stork.move();
 			if (timer.hasExpired()) {
 				gameController.stateTimer().forceExpiration();
 				return;
 			}
+			stork.move();
 			timer.tick();
 			break;
 
