@@ -27,17 +27,6 @@ import de.amr.games.pacman.model.world.WorldMap;
 public class MsPacManGame extends AbstractGameModel {
 
 	//@formatter:off
-	
-	static Map<String, Integer> BONUS_MAP = Map.of(
-			"CHERRIES",    100,
-			"STRAWBERRY",  200,
-			"PEACH",       500,
-			"PRETZEL",     700,
-			"APPLE",      1000,
-			"PEAR",       2000,
-			"BANANA",     5000
-	);
-
 	static final Object[][] LEVELS = {
 	/* 1*/ {"CHERRIES",    80, 75, 40,  20,  80, 10,  85,  90, 50, 6, 5},
 	/* 2*/ {"STRAWBERRY",  90, 85, 45,  30,  90, 15,  95,  95, 55, 5, 5},
@@ -61,14 +50,20 @@ public class MsPacManGame extends AbstractGameModel {
 	/*20*/ {"BANANA",     100, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
 	/*21*/ {"BANANA",      90, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
 	};
-	
   /*@formatter:on*/
 
 	public MsPacManGame() {
 		variant = GameVariant.MS_PACMAN;
 		levels = LEVELS;
-		bonusValues = BONUS_MAP;
-
+		bonusValues = Map.of(//
+				"CHERRIES", 100, //
+				"STRAWBERRY", 200, //
+				"PEACH", 500, //
+				"PRETZEL", 700, //
+				"APPLE", 1000, //
+				"PEAR", 2000, //
+				"BANANA", 5000 //
+		);
 		player = new Pac("Ms. Pac-Man");
 		ghosts = new Ghost[] { //
 				new Ghost(BLINKY, "Blinky"), //
@@ -98,8 +93,8 @@ public class MsPacManGame extends AbstractGameModel {
 		currentLevel.mazeNumber = mazeNumber;
 		// From level 8 on, bonus is chosen randomly
 		if (levelNumber >= 8) {
-			int random = new Random().nextInt(BONUS_MAP.size());
-			String randomBonus = BONUS_MAP.keySet().toArray(String[]::new)[random];
+			int random = new Random().nextInt(bonusValues.size());
+			String randomBonus = bonusValues.keySet().toArray(String[]::new)[random];
 			currentLevel.bonusSymbol = randomBonus;
 		}
 		ghostBounty = 200;
@@ -109,7 +104,7 @@ public class MsPacManGame extends AbstractGameModel {
 		}
 		bonus.edibleTicksLeft = 0;
 		bonus.eatenTicksLeft = 0;
-		
+
 		log("Ms. Pac-Man level #%d created, maze number is %d", levelNumber, mazeNumber);
 	}
 

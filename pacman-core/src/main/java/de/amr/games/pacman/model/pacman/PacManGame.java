@@ -26,17 +26,6 @@ import de.amr.games.pacman.model.world.WorldMap;
 public class PacManGame extends AbstractGameModel {
 
 	//@formatter:off
-	static Map<String, Integer> BONUS_MAP = Map.of(
-			"CHERRIES",    100,
-			"STRAWBERRY",  300,
-			"PEACH",       500,
-			"APPLE",       700,
-			"GRAPES",     1000,
-			"GALAXIAN",   2000,
-			"BELL",       3000,
-			"KEY",        5000
-	);
-
 	static final Object[][] LEVELS = {
 	/* 1*/ {"CHERRIES",    80, 75, 40,  20,  80, 10,  85,  90, 50, 6, 5},
 	/* 2*/ {"STRAWBERRY",  90, 85, 45,  30,  90, 15,  95,  95, 55, 5, 5},
@@ -65,8 +54,16 @@ public class PacManGame extends AbstractGameModel {
 	public PacManGame() {
 		variant = GameVariant.PACMAN;
 		levels = LEVELS;
-		bonusValues = BONUS_MAP;
-
+		bonusValues = Map.of(//
+				"CHERRIES", 100, //
+				"STRAWBERRY", 300, //
+				"PEACH", 500, //
+				"APPLE", 700, //
+				"GRAPES", 1000, //
+				"GALAXIAN", 2000, //
+				"BELL", 3000, //
+				"KEY", 5000 //
+		);
 		player = new Pac("Pac-Man");
 		ghosts = new Ghost[] { //
 				new Ghost(BLINKY, "Blinky"), //
@@ -75,17 +72,14 @@ public class PacManGame extends AbstractGameModel {
 				new Ghost(CLYDE, "Clyde") //
 		};
 		bonus = new Bonus();
-
 		world = new MapBasedPacManGameWorld();
 		((MapBasedPacManGameWorld) world).setMap(WorldMap.load("/pacman/maps/map1.txt"));
-
 		player.setWorld(world);
 		for (Ghost ghost : ghosts) {
 			ghost.setWorld(world);
 		}
 		bonus.setWorld(world);
 		bonus.setPosition(t(world.bonusTile().x) + HTS, t(world.bonusTile().y));
-
 		hiscoreFileName = "hiscore-pacman.xml";
 	}
 
