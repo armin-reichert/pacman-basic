@@ -47,7 +47,7 @@ public interface GameModel {
 
 	String levelSymbol(int levelNumber);
 
-	void addLevelSymbol(String symbol);
+	void countLevel();
 
 	int lives();
 

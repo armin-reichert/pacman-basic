@@ -75,8 +75,8 @@ public abstract class AbstractGameModel implements GameModel {
 	}
 
 	@Override
-	public void addLevelSymbol(String symbol) {
-		levelSymbols.add(symbol);
+	public void countLevel() {
+		levelSymbols.add(currentLevel.bonusSymbol);
 	}
 
 	@Override
