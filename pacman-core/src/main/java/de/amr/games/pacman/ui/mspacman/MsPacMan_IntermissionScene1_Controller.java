@@ -60,7 +60,7 @@ public abstract class MsPacMan_IntermissionScene1_Controller {
 		inky = new Ghost(2, "Inky", null);
 		inky.setDir(Direction.RIGHT);
 		inky.setWishDir(Direction.RIGHT);
-		inky.setPosition(pacMan.position.plus(-t(3), 0));
+		inky.setPosition(pacMan.position().plus(-t(3), 0));
 		inky.setVisible(true);
 
 		msPac = new Pac("Ms. Pac-Man", null);
@@ -71,7 +71,7 @@ public abstract class MsPacMan_IntermissionScene1_Controller {
 		pinky = new Ghost(1, "Pinky", null);
 		pinky.setDir(Direction.LEFT);
 		pinky.setWishDir(Direction.LEFT);
-		pinky.setPosition(msPac.position.plus(t(3), 0));
+		pinky.setPosition(msPac.position().plus(t(3), 0));
 		pinky.setVisible(true);
 
 		heart = new GameEntity();
@@ -113,7 +113,7 @@ public abstract class MsPacMan_IntermissionScene1_Controller {
 			pacMan.move();
 			pinky.move();
 			msPac.move();
-			if (inky.position.x > t(30)) {
+			if (inky.position().x > t(30)) {
 				startComingTogether();
 			}
 			timer.tick();
@@ -124,22 +124,22 @@ public abstract class MsPacMan_IntermissionScene1_Controller {
 			pinky.move();
 			pacMan.move();
 			msPac.move();
-			if (pacMan.dir() == Direction.LEFT && pacMan.position.x < t(15)) {
+			if (pacMan.dir() == Direction.LEFT && pacMan.position().x < t(15)) {
 				pacMan.setDir(Direction.UP);
 				msPac.setDir(Direction.UP);
 			}
-			if (pacMan.dir() == Direction.UP && pacMan.position.y < upperY) {
+			if (pacMan.dir() == Direction.UP && pacMan.position().y < upperY) {
 				pacMan.setSpeed(0);
 				msPac.setSpeed(0);
 				pacMan.setDir(Direction.LEFT);
 				msPac.setDir(Direction.RIGHT);
-				heart.setPosition((pacMan.position.x + msPac.position.x) / 2, pacMan.position.y - t(2));
+				heart.setPosition((pacMan.position().x + msPac.position().x) / 2, pacMan.position().y - t(2));
 				heart.setVisible(true);
 				inky.setSpeed(0);
 				pinky.setSpeed(0);
 				enterSeconds(Phase.READY_TO_PLAY, 4);
 			}
-			if (!ghostsMet && inky.position.x - pinky.position.x < 16) {
+			if (!ghostsMet && inky.position().x - pinky.position().x < 16) {
 				ghostsMet = true;
 				inky.setDir(inky.dir().opposite());
 				inky.setWishDir(inky.dir());

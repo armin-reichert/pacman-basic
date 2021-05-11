@@ -139,7 +139,7 @@ public class PacMan_IntroScene_Controller {
 			break;
 
 		case CHASING_PAC:
-			if (pac.position.x < t(2)) {
+			if (pac.position().x < t(2)) {
 				startPacChasingGhosts();
 				enterPhase(Phase.CHASING_GHOSTS);
 			}
@@ -147,7 +147,7 @@ public class PacMan_IntroScene_Controller {
 			break;
 
 		case CHASING_GHOSTS:
-			if (pac.position.x > t(PacManGameWorld.DEFAULT_WIDTH)) {
+			if (pac.position().x > t(PacManGameWorld.DEFAULT_WIDTH)) {
 				enterPhase(Phase.READY_TO_PLAY);
 			}
 			if (gameController.stateTimer().ticked() - ghostKilledTime == 15) {
@@ -196,7 +196,7 @@ public class PacMan_IntroScene_Controller {
 		pac.stuck = false;
 
 		for (Ghost ghost : ghosts) {
-			ghost.setPosition(pac.position.plus(8 + (ghost.id + 1) * 18, 0));
+			ghost.setPosition(pac.position().plus(8 + (ghost.id + 1) * 18, 0));
 			ghost.setVisible(true);
 			ghost.setWishDir(Direction.LEFT);
 			ghost.setDir(Direction.LEFT);

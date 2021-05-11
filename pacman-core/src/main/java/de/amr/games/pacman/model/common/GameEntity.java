@@ -11,7 +11,7 @@ public class GameEntity {
 
 	protected boolean visible = false;
 
-	public V2d position = V2d.NULL;
+	protected V2d position = V2d.NULL;
 
 	protected V2d velocity = V2d.NULL;
 
@@ -21,6 +21,10 @@ public class GameEntity {
 
 	public boolean isVisible() {
 		return visible;
+	}
+
+	public V2d position() {
+		return position;
 	}
 
 	public void setPosition(V2d position) {

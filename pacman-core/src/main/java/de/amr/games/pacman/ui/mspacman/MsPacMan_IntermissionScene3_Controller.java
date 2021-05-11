@@ -78,7 +78,7 @@ public abstract class MsPacMan_IntermissionScene3_Controller {
 		bag = new JuniorBag();
 		bag.hold = true;
 		bag.open = false;
-		bag.setPosition(stork.position.plus(-14, 3));
+		bag.setPosition(stork.position().plus(-14, 3));
 
 		enter(Phase.FLAP);
 	}
@@ -108,15 +108,15 @@ public abstract class MsPacMan_IntermissionScene3_Controller {
 				bag.setVelocity(new V2d(-1.25f, 0));
 			}
 			// release bag from storks beak?
-			if (bag.hold && (int) stork.position.x == t(24)) {
+			if (bag.hold && (int) stork.position().x == t(24)) {
 				bag.hold = false;
 			}
 			// (closed) bag reaches ground for first time?
-			if (!bag.open && bag.position.y > GROUND_Y) {
+			if (!bag.open && bag.position().y > GROUND_Y) {
 				++numBagBounces;
 				if (numBagBounces < 5) {
 					bag.setVelocity(new V2d(-0.2f, -1f / numBagBounces));
-					bag.setPosition(bag.position.x, GROUND_Y);
+					bag.setPosition(bag.position().x, GROUND_Y);
 				} else {
 					bag.open = true;
 					bag.setVelocity(V2d.NULL);

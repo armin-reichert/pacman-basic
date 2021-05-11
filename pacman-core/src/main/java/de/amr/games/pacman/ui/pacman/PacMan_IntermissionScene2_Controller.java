@@ -48,7 +48,7 @@ public abstract class PacMan_IntermissionScene2_Controller {
 		blinky = new Ghost(0, "Blinky", null);
 		blinky.setDir(Direction.LEFT);
 		blinky.setWishDir(Direction.LEFT);
-		blinky.setPosition(pac.position.plus(t(14), 0));
+		blinky.setPosition(pac.position().plus(t(14), 0));
 		blinky.setSpeed(1.0);
 		blinky.setVisible(true);
 		blinky.state = GhostState.HUNTING_PAC;
@@ -69,7 +69,7 @@ public abstract class PacMan_IntermissionScene2_Controller {
 	}
 
 	public int nailDistance() {
-		return (int) (nail.position.x - blinky.position.x);
+		return (int) (nail.position().x - blinky.position().x);
 	}
 
 	public void update() {

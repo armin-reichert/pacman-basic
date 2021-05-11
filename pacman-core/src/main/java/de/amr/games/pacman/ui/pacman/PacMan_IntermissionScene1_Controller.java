@@ -48,7 +48,7 @@ public abstract class PacMan_IntermissionScene1_Controller {
 		blinky.setWishDir(Direction.LEFT);
 		blinky.setVisible(true);
 		blinky.state = GhostState.HUNTING_PAC;
-		blinky.setPosition(pac.position.plus(t(3), 0));
+		blinky.setPosition(pac.position().plus(t(3), 0));
 		blinky.setSpeed(1.04);
 
 		playIntermissionSound();
@@ -77,7 +77,7 @@ public abstract class PacMan_IntermissionScene1_Controller {
 				blinky.state = GhostState.FRIGHTENED;
 				pac.setDir(Direction.RIGHT);
 				pac.setSpeed(1.3);
-				pac.setPosition(blinky.position.plus(-t(13), 0));
+				pac.setPosition(blinky.position().plus(-t(13), 0));
 			}
 			if (timer.hasExpired()) {
 				gameController.stateTimer().forceExpiration();

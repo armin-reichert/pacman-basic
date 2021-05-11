@@ -50,7 +50,7 @@ public abstract class PacMan_IntermissionScene3_Controller {
 		blinky = new Ghost(0, "Blinky", null);
 		blinky.setDir(Direction.LEFT);
 		blinky.setWishDir(Direction.LEFT);
-		blinky.setPosition(pac.position.plus(t(8), 0));
+		blinky.setPosition(pac.position().plus(t(8), 0));
 		blinky.setVisible(true);
 		blinky.setSpeed(1.2);
 		blinky.setDir(Direction.LEFT);
@@ -66,7 +66,7 @@ public abstract class PacMan_IntermissionScene3_Controller {
 		switch (phase) {
 		
 		case CHASING_PACMAN:
-			if (blinky.position.x <= -50) {
+			if (blinky.position().x <= -50) {
 				pac.setSpeed(0);
 				blinky.setDir(Direction.RIGHT);
 				blinky.setWishDir(Direction.RIGHT);
@@ -75,7 +75,7 @@ public abstract class PacMan_IntermissionScene3_Controller {
 			break;
 			
 		case RETURNING_HALF_NAKED:
-			if (blinky.position.x > t(PacManGameWorld.DEFAULT_WIDTH) + 200) {
+			if (blinky.position().x > t(PacManGameWorld.DEFAULT_WIDTH) + 200) {
 				gameController.stateTimer().forceExpiration();
 				return;
 			}

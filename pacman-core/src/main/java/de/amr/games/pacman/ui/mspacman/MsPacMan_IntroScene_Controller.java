@@ -136,12 +136,12 @@ public class MsPacMan_IntroScene_Controller {
 	}
 
 	public boolean ghostEnteringStage(Ghost ghost) {
-		if (ghost.dir() == LEFT && ghost.position.x <= t(tileLeftOfBoard)) {
+		if (ghost.dir() == LEFT && ghost.position().x <= t(tileLeftOfBoard)) {
 			ghost.setDir(UP);
 			ghost.setWishDir(UP);
 			return false;
 		}
-		if (ghost.dir() == UP && ghost.position.y <= t(tileBoardTopLeft.y) + ghost.id * 18) {
+		if (ghost.dir() == UP && ghost.position().y <= t(tileBoardTopLeft.y) + ghost.id * 18) {
 			ghost.setSpeed(0);
 			return true;
 		}
@@ -149,7 +149,7 @@ public class MsPacMan_IntroScene_Controller {
 	}
 
 	public boolean msPacManEnteringStage() {
-		if (msPacMan.speed() > 0 && msPacMan.position.x <= t(13)) {
+		if (msPacMan.speed() > 0 && msPacMan.position().x <= t(13)) {
 			msPacMan.setSpeed(0);
 			return true;
 		}
