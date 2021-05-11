@@ -8,7 +8,7 @@ import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.common.GameEntity;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
-import de.amr.games.pacman.model.mspacman.Flap;
+import de.amr.games.pacman.model.mspacman.entities.Flap;
 
 /**
  * Intermission scene 1: "They meet".

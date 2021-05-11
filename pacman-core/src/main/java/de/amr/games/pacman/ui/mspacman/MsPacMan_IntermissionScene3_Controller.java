@@ -7,9 +7,9 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.model.common.Pac;
-import de.amr.games.pacman.model.mspacman.Flap;
-import de.amr.games.pacman.model.mspacman.JuniorBag;
-import de.amr.games.pacman.model.mspacman.Stork;
+import de.amr.games.pacman.model.mspacman.entities.Flap;
+import de.amr.games.pacman.model.mspacman.entities.JuniorBag;
+import de.amr.games.pacman.model.mspacman.entities.Stork;
 
 /**
  * Intermission scene 3: "Junior".

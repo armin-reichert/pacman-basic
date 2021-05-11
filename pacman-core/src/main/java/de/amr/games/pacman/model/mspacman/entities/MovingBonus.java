@@ -1,4 +1,4 @@
-package de.amr.games.pacman.model.mspacman;
+package de.amr.games.pacman.model.mspacman.entities;
 
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent.Info;
