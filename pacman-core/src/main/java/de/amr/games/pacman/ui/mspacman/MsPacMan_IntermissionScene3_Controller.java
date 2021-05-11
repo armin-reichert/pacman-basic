@@ -78,7 +78,7 @@ public abstract class MsPacMan_IntermissionScene3_Controller {
 		bag = new JuniorBag();
 		bag.hold = true;
 		bag.open = false;
-		bag.setPositionRelativeTo(stork, -14, 3);
+		bag.setPosition(stork.position.plus(-14, 3));
 
 		enter(Phase.FLAP);
 	}

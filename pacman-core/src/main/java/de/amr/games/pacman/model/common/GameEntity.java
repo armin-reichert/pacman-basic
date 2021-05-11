@@ -26,14 +26,13 @@ public class GameEntity {
 		return visible;
 	}
 
+	public void setPosition(V2d position) {
+		this.position = position;
+	}
+
 	/** Sets the entity's position. */
 	public void setPosition(double x, double y) {
 		position = new V2d(x, y);
-	}
-
-	/** Sets the position relative to another entity's position */
-	public void setPositionRelativeTo(GameEntity e, double dx, double dy) {
-		setPosition(e.position.x + dx, e.position.y + dy);
 	}
 
 	public void setVelocity(V2d velocity) {

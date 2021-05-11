@@ -196,7 +196,7 @@ public class PacMan_IntroScene_Controller {
 		pac.stuck = false;
 
 		for (Ghost ghost : ghosts) {
-			ghost.setPositionRelativeTo(pac, 8 + (ghost.id + 1) * 18, 0);
+			ghost.setPosition(pac.position.plus(8 + (ghost.id + 1) * 18, 0));
 			ghost.setVisible(true);
 			ghost.setWishDir(Direction.LEFT);
 			ghost.setDir(Direction.LEFT);

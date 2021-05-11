@@ -10,8 +10,7 @@ import de.amr.games.pacman.model.common.GhostState;
 import de.amr.games.pacman.model.common.Pac;
 
 /**
- * First intermission scene: Blinky chases Pac-Man and is then chased by a huge
- * Pac-Man.
+ * First intermission scene: Blinky chases Pac-Man and is then chased by a huge Pac-Man.
  * 
  * @author Armin Reichert
  */
@@ -49,7 +48,7 @@ public abstract class PacMan_IntermissionScene1_Controller {
 		blinky.setWishDir(Direction.LEFT);
 		blinky.setVisible(true);
 		blinky.state = GhostState.HUNTING_PAC;
-		blinky.setPositionRelativeTo(pac, t(3), 0);
+		blinky.setPosition(pac.position.plus(t(3), 0));
 		blinky.speed = pac.speed * 1.04f;
 		playIntermissionSound();
 
@@ -77,7 +76,7 @@ public abstract class PacMan_IntermissionScene1_Controller {
 				blinky.state = GhostState.FRIGHTENED;
 				pac.setDir(Direction.RIGHT);
 				pac.speed = 1.3f;
-				pac.setPositionRelativeTo(blinky, -t(13), 0);
+				pac.setPosition(blinky.position.plus(-t(13), 0));
 			}
 			if (timer.hasExpired()) {
 				gameController.stateTimer().forceExpiration();

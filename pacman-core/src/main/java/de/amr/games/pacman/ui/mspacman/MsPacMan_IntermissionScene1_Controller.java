@@ -13,11 +13,10 @@ import de.amr.games.pacman.model.mspacman.Flap;
 /**
  * Intermission scene 1: "They meet".
  * <p>
- * Pac-Man leads Inky and Ms. Pac-Man leads Pinky. Soon, the two Pac-Men are
- * about to collide, they quickly move upwards, causing Inky and Pinky to
- * collide and vanish. Finally, Pac-Man and Ms. Pac-Man face each other at the
- * top of the screen and a big pink heart appears above them. (Played after
- * round 2)
+ * Pac-Man leads Inky and Ms. Pac-Man leads Pinky. Soon, the two Pac-Men are about to collide, they
+ * quickly move upwards, causing Inky and Pinky to collide and vanish. Finally, Pac-Man and Ms.
+ * Pac-Man face each other at the top of the screen and a big pink heart appears above them. (Played
+ * after round 2)
  * 
  * @author Armin Reichert
  */
@@ -61,7 +60,7 @@ public abstract class MsPacMan_IntermissionScene1_Controller {
 		inky = new Ghost(2, "Inky", null);
 		inky.setDir(Direction.RIGHT);
 		inky.setWishDir(Direction.RIGHT);
-		inky.setPositionRelativeTo(pacMan, -t(3), 0);
+		inky.setPosition(pacMan.position.plus(-t(3), 0));
 		inky.setVisible(true);
 
 		msPac = new Pac("Ms. Pac-Man", null);
@@ -72,7 +71,7 @@ public abstract class MsPacMan_IntermissionScene1_Controller {
 		pinky = new Ghost(1, "Pinky", null);
 		pinky.setDir(Direction.LEFT);
 		pinky.setWishDir(Direction.LEFT);
-		pinky.setPositionRelativeTo(msPac, t(3), 0);
+		pinky.setPosition(msPac.position.plus(t(3), 0));
 		pinky.setVisible(true);
 
 		heart = new GameEntity();
