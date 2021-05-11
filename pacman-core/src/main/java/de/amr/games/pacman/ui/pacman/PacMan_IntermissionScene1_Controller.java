@@ -41,7 +41,7 @@ public abstract class PacMan_IntermissionScene1_Controller {
 		pac.setDir(Direction.LEFT);
 		pac.setVisible(true);
 		pac.setPosition(t(30), groundY);
-		pac.speed = 1.0f;
+		pac.setSpeed(1.0);
 
 		blinky = new Ghost(0, "Blinky", null);
 		blinky.setDir(Direction.LEFT);
@@ -49,7 +49,8 @@ public abstract class PacMan_IntermissionScene1_Controller {
 		blinky.setVisible(true);
 		blinky.state = GhostState.HUNTING_PAC;
 		blinky.setPosition(pac.position.plus(t(3), 0));
-		blinky.speed = pac.speed * 1.04f;
+		blinky.setSpeed(1.04);
+
 		playIntermissionSound();
 
 		phase = Phase.BLINKY_CHASING_PACMAN;
@@ -72,10 +73,10 @@ public abstract class PacMan_IntermissionScene1_Controller {
 				blinky.setPosition(-t(2), groundY);
 				blinky.setWishDir(Direction.RIGHT);
 				blinky.setDir(Direction.RIGHT);
-				blinky.speed = 1f;
+				blinky.setSpeed(1.0);
 				blinky.state = GhostState.FRIGHTENED;
 				pac.setDir(Direction.RIGHT);
-				pac.speed = 1.3f;
+				pac.setSpeed(1.3);
 				pac.setPosition(blinky.position.plus(-t(13), 0));
 			}
 			if (timer.hasExpired()) {
@@ -84,6 +85,7 @@ public abstract class PacMan_IntermissionScene1_Controller {
 			}
 			timer.tick();
 			break;
+
 		default:
 			break;
 		}

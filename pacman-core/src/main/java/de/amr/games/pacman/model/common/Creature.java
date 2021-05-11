@@ -31,7 +31,7 @@ public class Creature extends GameEntity {
 	public PacManGameWorld world;
 
 	/** Relative speed (between 0 and 1). */
-	public double speed = 0.0;
+	protected double speed = 0.0;
 
 	/**
 	 * The current move direction. Initially, (s)he moves to the right direction :-)
@@ -96,34 +96,48 @@ public class Creature extends GameEntity {
 		placeAt(tile(), offsetX, offsetY);
 	}
 
-	public void setDir(Direction d) {
-		dir = d;
+	public void setDir(Direction dir) {
+		this.dir = dir;
+		updateVelocity();
 	}
 
 	public Direction dir() {
 		return dir;
 	}
 
-	public void setWishDir(Direction d) {
-		wishDir = d;
+	public void setWishDir(Direction dir) {
+		wishDir = dir;
 	}
 
 	public Direction wishDir() {
 		return wishDir;
 	}
 
-	@Override
-	public V2d getVelocity() {
-		if (velocity != null) {
-			// velocity has been set explicitly
-			return velocity;
-		}
-		// compute velocity from direction and speed
-		return dir != null ? new V2d(dir.vec).scaled(speed) : V2d.NULL;
+//	@Override
+//	public V2d getVelocity() {
+//		if (velocity != null) {
+//			// velocity has been set explicitly
+//			return velocity;
+//		}
+//		// compute velocity from direction and speed
+//		return dir != null ? new V2d(dir.vec).scaled(speed) : V2d.NULL;
+//	}
+
+	public double speed() {
+		return speed;
+	}
+
+	public void setSpeed(double speed) {
+		this.speed = speed;
+		updateVelocity();
+	}
+
+	private void updateVelocity() {
+		velocity = dir == null ? V2d.NULL : new V2d(dir.vec).scaled(speed);
 	}
 
 	public void move() {
-		position = position.plus(getVelocity());
+		position = position.plus(velocity);
 	}
 
 	public boolean canAccessTile(V2i tile) {

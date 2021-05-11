@@ -129,21 +129,24 @@ public abstract class MsPacMan_IntermissionScene1_Controller {
 				msPac.setDir(Direction.UP);
 			}
 			if (pacMan.dir() == Direction.UP && pacMan.position.y < upperY) {
-				pacMan.speed = msPac.speed = 0;
+				pacMan.setSpeed(0);
+				msPac.setSpeed(0);
 				pacMan.setDir(Direction.LEFT);
 				msPac.setDir(Direction.RIGHT);
 				heart.setPosition((pacMan.position.x + msPac.position.x) / 2, pacMan.position.y - t(2));
 				heart.setVisible(true);
-				inky.speed = pinky.speed = 0;
+				inky.setSpeed(0);
+				pinky.setSpeed(0);
 				enterSeconds(Phase.READY_TO_PLAY, 4);
 			}
 			if (!ghostsMet && inky.position.x - pinky.position.x < 16) {
 				ghostsMet = true;
 				inky.setDir(inky.dir().opposite());
 				inky.setWishDir(inky.dir());
+				inky.setSpeed(0.2);
 				pinky.setDir(pinky.dir().opposite());
 				pinky.setWishDir(pinky.dir());
-				inky.speed = pinky.speed = 0.2f;
+				pinky.setSpeed(0.2);
 			}
 			timer.tick();
 			break;
@@ -166,8 +169,10 @@ public abstract class MsPacMan_IntermissionScene1_Controller {
 	}
 
 	public void startChasedByGhosts() {
-		pacMan.speed = msPac.speed = 1.0;
-		inky.speed = pinky.speed = 1.0;
+		pacMan.setSpeed(1.0);
+		msPac.setSpeed(1.0);
+		inky.setSpeed(1.0);
+		pinky.setSpeed(1.0);
 		enter(Phase.CHASED_BY_GHOSTS);
 	}
 

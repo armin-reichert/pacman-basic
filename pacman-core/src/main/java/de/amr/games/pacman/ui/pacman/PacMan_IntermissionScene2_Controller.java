@@ -43,15 +43,15 @@ public abstract class PacMan_IntermissionScene2_Controller {
 		pac.setDir(Direction.LEFT);
 		pac.setPosition(t(30), t(groundTileY));
 		pac.setVisible(true);
-		pac.speed = 1;
+		pac.setSpeed(1.0);
 
 		blinky = new Ghost(0, "Blinky", null);
 		blinky.setDir(Direction.LEFT);
 		blinky.setWishDir(Direction.LEFT);
 		blinky.setPosition(pac.position.plus(t(14), 0));
+		blinky.setSpeed(1.0);
 		blinky.setVisible(true);
 		blinky.state = GhostState.HUNTING_PAC;
-		blinky.speed = 1;
 
 		nail = new GameEntity();
 		nail.setVisible(true);
@@ -74,22 +74,25 @@ public abstract class PacMan_IntermissionScene2_Controller {
 
 	public void update() {
 		switch (phase) {
+
 		case WALKING:
 			if (nailDistance() == 0) {
 				enter(Phase.GETTING_STUCK);
 			}
 			timer.tick();
 			break;
+
 		case GETTING_STUCK:
 			int stretching = nailDistance() / 4;
-			blinky.speed = 0.3f - 0.1f * stretching;
+			blinky.setSpeed(0.3 - 0.1 * stretching);
 			if (stretching == 3) {
-				blinky.speed = 0;
+				blinky.setSpeed(0);
 				blinky.setDir(Direction.UP);
 				enter(Phase.STUCK);
 			}
 			timer.tick();
 			break;
+		
 		case STUCK:
 			if (timer.isRunningSeconds(3)) {
 				blinky.setDir(Direction.RIGHT);
@@ -100,6 +103,7 @@ public abstract class PacMan_IntermissionScene2_Controller {
 			}
 			timer.tick();
 			break;
+		
 		default:
 			throw new IllegalStateException("Illegal phase: " + phase);
 		}

@@ -87,7 +87,7 @@ public class MsPacMan_IntroScene_Controller {
 		case PRESENTING_GHOST:
 			if (phaseTimer.hasJustStarted()) {
 				ghosts[currentGhostIndex].setVisible(true);
-				ghosts[currentGhostIndex].speed = 1.0;
+				ghosts[currentGhostIndex].setSpeed(1.0);
 			}
 			boolean ghostReachedFinalPosition = ghostEnteringStage(ghosts[currentGhostIndex]);
 			if (ghostReachedFinalPosition) {
@@ -108,7 +108,7 @@ public class MsPacMan_IntroScene_Controller {
 			if (phaseTimer.hasJustStarted()) {
 				msPacMan.setVisible(true);
 				msPacMan.stuck = false;
-				msPacMan.speed = 1;
+				msPacMan.setSpeed(1.0);
 			}
 			boolean msPacReachedFinalPosition = msPacManEnteringStage();
 			if (msPacReachedFinalPosition) {
@@ -142,15 +142,15 @@ public class MsPacMan_IntroScene_Controller {
 			return false;
 		}
 		if (ghost.dir() == UP && ghost.position.y <= t(tileBoardTopLeft.y) + ghost.id * 18) {
-			ghost.speed = 0;
+			ghost.setSpeed(0);
 			return true;
 		}
 		return false;
 	}
 
 	public boolean msPacManEnteringStage() {
-		if (msPacMan.speed != 0 && msPacMan.position.x <= t(13)) {
-			msPacMan.speed = 0;
+		if (msPacMan.speed() > 0 && msPacMan.position.x <= t(13)) {
+			msPacMan.setSpeed(0);
 			return true;
 		}
 		return false;

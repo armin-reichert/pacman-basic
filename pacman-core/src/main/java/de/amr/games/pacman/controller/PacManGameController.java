@@ -371,8 +371,8 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		if (player.restingTicksLeft > 0) {
 			player.restingTicksLeft--;
 		} else {
-			player.speed = player.powerTimer.isRunning() ? game.currentLevel().playerSpeedPowered
-					: game.currentLevel().playerSpeed;
+			player.setSpeed(
+					player.powerTimer.isRunning() ? game.currentLevel().playerSpeedPowered : game.currentLevel().playerSpeed);
 			player.tryMoving();
 		}
 
@@ -395,7 +395,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	private void enterPacManDyingState() {
-		game.player().speed = 0;
+		game.player().setSpeed(0);
 		game.ghosts(FRIGHTENED).forEach(ghost -> ghost.state = HUNTING_PAC);
 		game.bonus().init();
 		stateTimer().resetSeconds(5); // TODO
@@ -445,7 +445,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	private void enterLevelCompleteState() {
 		game.bonus().init();
-		game.player().speed = 0;
+		game.player().setSpeed(0);
 		stateTimer().reset();
 	}
 
@@ -461,8 +461,8 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	private void enterGameOverState() {
 		gameRunning = false;
-		game.ghosts().forEach(ghost -> ghost.speed = 0);
-		game.player().speed = 0;
+		game.ghosts().forEach(ghost -> ghost.setSpeed(0));
+		game.player().setSpeed(0);
 		game.saveHiscore();
 		stateTimer().resetSeconds(10);
 	}
@@ -571,20 +571,20 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 		case LOCKED:
 			if (ghost.atGhostHouseDoor()) {
-				ghost.speed = 0;
+				ghost.setSpeed(0);
 			} else {
-				ghost.speed = game.currentLevel().ghostSpeed / 2;
+				ghost.setSpeed(game.currentLevel().ghostSpeed / 2);
 				ghost.bounce();
 			}
 			break;
 
 		case ENTERING_HOUSE:
-			ghost.speed = game.currentLevel().ghostSpeed * 2;
+			ghost.setSpeed(game.currentLevel().ghostSpeed * 2);
 			ghost.enterHouse();
 			break;
 
 		case LEAVING_HOUSE:
-			ghost.speed = game.currentLevel().ghostSpeed / 2;
+			ghost.setSpeed(game.currentLevel().ghostSpeed / 2);
 			boolean ghostLeavesHouse = ghost.leaveHouse();
 			if (ghostLeavesHouse) {
 				fireGameEvent(new PacManGameEvent(game, Info.GHOST_LEAVES_HOUSE, ghost, ghost.tile()));
@@ -593,9 +593,9 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 		case FRIGHTENED:
 			if (game.currentLevel().world.isTunnel(ghost.tile())) {
-				ghost.speed = game.currentLevel().ghostSpeedTunnel;
+				ghost.setSpeed(game.currentLevel().ghostSpeedTunnel);
 			} else {
-				ghost.speed = game.currentLevel().ghostSpeedFrightened;
+				ghost.setSpeed(game.currentLevel().ghostSpeedFrightened);
 				ghost.selectRandomDirection();
 			}
 			ghost.tryMoving();
@@ -603,13 +603,13 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 		case HUNTING_PAC:
 			if (game.currentLevel().world.isTunnel(ghost.tile())) {
-				ghost.speed = game.currentLevel().ghostSpeedTunnel;
+				ghost.setSpeed(game.currentLevel().ghostSpeedTunnel);
 			} else if (ghost.elroy == 1) {
-				ghost.speed = game.currentLevel().elroy1Speed;
+				ghost.setSpeed(game.currentLevel().elroy1Speed);
 			} else if (ghost.elroy == 2) {
-				ghost.speed = game.currentLevel().elroy2Speed;
+				ghost.setSpeed(game.currentLevel().elroy2Speed);
 			} else {
-				ghost.speed = game.currentLevel().ghostSpeed;
+				ghost.setSpeed(game.currentLevel().ghostSpeed);
 			}
 			if (ghost.targetTile == null) {
 				// this can happen in Ms. Pac-Man
@@ -621,7 +621,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			break;
 
 		case DEAD:
-			ghost.speed = game.currentLevel().ghostSpeed * 2;
+			ghost.setSpeed(game.currentLevel().ghostSpeed * 2);
 			boolean reachedHouse = ghost.returnHome();
 			if (reachedHouse) {
 				fireGameEvent(new PacManGameEvent(game, Info.GHOST_ENTERS_HOUSE, ghost, ghost.tile()));

@@ -43,7 +43,7 @@ public abstract class PacMan_IntermissionScene3_Controller {
 		pac.setPosition(t(30), t(chaseTileY));
 		pac.setVisible(true);
 		pac.dead = false;
-		pac.speed = 1.2f;
+		pac.setSpeed(1.2);
 		pac.stuck = false;
 		pac.setDir(Direction.LEFT);
 
@@ -52,10 +52,10 @@ public abstract class PacMan_IntermissionScene3_Controller {
 		blinky.setWishDir(Direction.LEFT);
 		blinky.setPosition(pac.position.plus(t(8), 0));
 		blinky.setVisible(true);
-		blinky.state = GhostState.HUNTING_PAC;
-		blinky.speed = pac.speed;
+		blinky.setSpeed(1.2);
 		blinky.setDir(Direction.LEFT);
 		blinky.setWishDir(Direction.LEFT);
+		blinky.state = GhostState.HUNTING_PAC;
 
 		playIntermissionSound();
 
@@ -64,20 +64,23 @@ public abstract class PacMan_IntermissionScene3_Controller {
 
 	public void update() {
 		switch (phase) {
+		
 		case CHASING_PACMAN:
 			if (blinky.position.x <= -50) {
-				pac.speed = 0;
+				pac.setSpeed(0);
 				blinky.setDir(Direction.RIGHT);
 				blinky.setWishDir(Direction.RIGHT);
 				phase = Phase.RETURNING_HALF_NAKED;
 			}
 			break;
+			
 		case RETURNING_HALF_NAKED:
 			if (blinky.position.x > t(PacManGameWorld.DEFAULT_WIDTH) + 200) {
 				gameController.stateTimer().forceExpiration();
 				return;
 			}
 			break;
+		
 		default:
 			throw new IllegalStateException("Illegal phase: " + phase);
 		}

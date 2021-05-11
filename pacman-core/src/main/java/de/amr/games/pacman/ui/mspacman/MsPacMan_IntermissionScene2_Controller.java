@@ -53,7 +53,7 @@ public abstract class MsPacMan_IntermissionScene2_Controller {
 
 		pacMan = new Pac("Pac-Man", null);
 		pacMan.setDir(Direction.RIGHT);
-		
+
 		msPacMan = new Pac("Ms. Pac-Man", null);
 		msPacMan.setDir(Direction.RIGHT);
 
@@ -62,6 +62,7 @@ public abstract class MsPacMan_IntermissionScene2_Controller {
 
 	public void update() {
 		switch (phase) {
+		
 		case FLAP:
 			if (timer.isRunningSeconds(1)) {
 				playFlapAnimation();
@@ -81,43 +82,44 @@ public abstract class MsPacMan_IntermissionScene2_Controller {
 				pacMan.setVisible(true);
 				pacMan.setPosition(-t(2), UPPER_Y);
 				pacMan.setDir(Direction.RIGHT);
+				pacMan.setSpeed(2.0);
 				msPacMan.setVisible(true);
 				msPacMan.setPosition(-t(8), UPPER_Y);
 				msPacMan.setDir(Direction.RIGHT);
-				pacMan.speed = msPacMan.speed = 2;
+				msPacMan.setSpeed(2.0);
 			}
 			if (timer.isRunningSeconds(6)) {
 				msPacMan.setPosition(t(30), LOWER_Y);
 				msPacMan.setVisible(true);
 				msPacMan.setDir(Direction.LEFT);
-				msPacMan.speed = 2;
+				msPacMan.setSpeed(2.0);
 				pacMan.setPosition(t(PacManGameWorld.DEFAULT_HEIGHT), LOWER_Y);
 				pacMan.setDir(Direction.LEFT);
-				pacMan.speed = 2;
+				pacMan.setSpeed(2.0);
 			}
 			if (timer.isRunningSeconds(10.5)) {
 				msPacMan.setPosition(t(-8), MIDDLE_Y);
 				msPacMan.setDir(Direction.RIGHT);
-				msPacMan.speed = 2;
+				msPacMan.setSpeed(2.0);
 				pacMan.setPosition(t(-2), MIDDLE_Y);
 				pacMan.setDir(Direction.RIGHT);
-				pacMan.speed = 2;
+				pacMan.setSpeed(2.0);
 			}
 			if (timer.isRunningSeconds(14.5)) {
 				msPacMan.setPosition(t(30), UPPER_Y);
 				msPacMan.setDir(Direction.LEFT);
-				msPacMan.speed = 4;
+				msPacMan.setSpeed(4.0);
 				pacMan.setPosition(t(42), UPPER_Y);
 				pacMan.setDir(Direction.LEFT);
-				pacMan.speed = 4;
+				pacMan.setSpeed(4.0);
 			}
 			if (timer.isRunningSeconds(15.5)) {
 				msPacMan.setPosition(t(-14), LOWER_Y);
 				msPacMan.setDir(Direction.RIGHT);
-				msPacMan.speed = 4;
+				msPacMan.setSpeed(4.0);
 				pacMan.setPosition(t(-2), LOWER_Y);
 				pacMan.setDir(Direction.RIGHT);
-				pacMan.speed = 4;
+				pacMan.setSpeed(4.0);
 			}
 			if (timer.isRunningSeconds(20)) {
 				gameController.stateTimer().forceExpiration();
@@ -125,6 +127,7 @@ public abstract class MsPacMan_IntermissionScene2_Controller {
 			}
 			timer.tick();
 			break;
+
 		default:
 			break;
 		}

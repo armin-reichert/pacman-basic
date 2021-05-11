@@ -153,7 +153,7 @@ public class PacMan_IntroScene_Controller {
 			if (gameController.stateTimer().ticked() - ghostKilledTime == 15) {
 				ghostKilledTime = 0;
 				pac.setVisible(true);
-				pac.speed = 1;
+				pac.setSpeed(1.0);
 				for (Ghost ghost : ghosts) {
 					if (ghost.state == GhostState.DEAD) {
 						ghost.setVisible(false);
@@ -165,7 +165,7 @@ public class PacMan_IntroScene_Controller {
 					ghost.state = GhostState.DEAD;
 					ghost.bounty = (int) Math.pow(2, ghost.id + 1) * 100;
 					pac.setVisible(false);
-					pac.speed = 0;
+					pac.setSpeed(0);
 					ghostKilledTime = gameController.stateTimer().ticked();
 				}
 			}
@@ -191,7 +191,7 @@ public class PacMan_IntroScene_Controller {
 	public void startGhostsChasingPac() {
 		pac.setPosition(t(PacManGameWorld.DEFAULT_WIDTH), t(22));
 		pac.setVisible(true);
-		pac.speed = 1;
+		pac.setSpeed(1.0);
 		pac.setDir(Direction.LEFT);
 		pac.stuck = false;
 
@@ -200,7 +200,7 @@ public class PacMan_IntroScene_Controller {
 			ghost.setVisible(true);
 			ghost.setWishDir(Direction.LEFT);
 			ghost.setDir(Direction.LEFT);
-			ghost.speed = pac.speed * 1.05f;
+			ghost.setSpeed(1.05);
 			ghost.state = GhostState.HUNTING_PAC;
 		}
 
@@ -213,7 +213,7 @@ public class PacMan_IntroScene_Controller {
 			ghost.state = GhostState.FRIGHTENED;
 			ghost.setWishDir(Direction.RIGHT);
 			ghost.setDir(Direction.RIGHT);
-			ghost.speed = 0.5f;
+			ghost.setSpeed(0.5);
 		}
 	}
 

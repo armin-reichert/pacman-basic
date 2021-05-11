@@ -104,7 +104,7 @@ public abstract class MsPacMan_IntermissionScene3_Controller {
 				stork.setVisible(true);
 				bag.setVisible(true);
 				stork.setDir(Direction.LEFT);
-				stork.speed = 1.25f;
+				stork.setSpeed(1.25);
 				bag.setVelocity(new V2d(-1.25f, 0));
 			}
 			// release bag from storks beak?

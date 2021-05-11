@@ -24,11 +24,9 @@ public class JuniorBag extends GameEntity {
 	}
 
 	public void move() {
-		if (velocity != null) {
-			position = position.plus(velocity);
-			if (!hold) {
-				velocity = velocity.plus(GRAVITY);
-			}
+		position = position.plus(velocity);
+		if (!hold) {
+			velocity = velocity.plus(GRAVITY);
 		}
 	}
 }
