@@ -55,17 +55,12 @@ public class MsPacManGame extends AbstractGameModel {
 
 	public MsPacManGame() {
 		variant = GameVariant.MS_PACMAN;
-		world = new MapBasedPacManGameWorld();
+		hiscoreFileName = "hiscore-mspacman.xml";
 		levels = LEVELS;
-		bonusValues = Map.of(//
-				"CHERRIES", 100, //
-				"STRAWBERRY", 200, //
-				"PEACH", 500, //
-				"PRETZEL", 700, //
-				"APPLE", 1000, //
-				"PEAR", 2000, //
-				"BANANA", 5000 //
-		);
+		bonusValues = Map.of("CHERRIES", 100, "STRAWBERRY", 200, "PEACH", 500, "PRETZEL", 700, //
+				"APPLE", 1000, "PEAR", 2000, "BANANA", 5000);
+
+		world = new MapBasedPacManGameWorld();
 		player = new Pac("Ms. Pac-Man", world);
 		ghosts = new Ghost[] { //
 				new Ghost(BLINKY, "Blinky", world), //
@@ -74,14 +69,15 @@ public class MsPacManGame extends AbstractGameModel {
 				new Ghost(SUE, "Sue", world) //
 		};
 		bonus = new MovingBonus(world);
-		hiscoreFileName = "hiscore-mspacman.xml";
 	}
 
 	@Override
 	public void createLevel(int levelNumber) {
-		int mazeNumber = mazeNumber(levelNumber);
-		int mapNumber = mapNumber(mazeNumber);
-		((MapBasedPacManGameWorld) world).setMap(WorldMap.load("/mspacman/maps/map" + mapNumber + ".txt"));
+		final int mazeNumber = mazeNumber(levelNumber);
+		final int mapNumber = mapNumber(mazeNumber);
+		final WorldMap map = WorldMap.load("/mspacman/maps/map" + mapNumber + ".txt");
+		((MapBasedPacManGameWorld) world).setMap(map);
+		
 		currentLevel = new GameLevel(levelNumber, world);
 		currentLevel.setData(levelData(levelNumber));
 		currentLevel.mazeNumber = mazeNumber;
@@ -130,9 +126,11 @@ public class MsPacManGame extends AbstractGameModel {
 		//@formatter:on
 	}
 
+	/**
+	 * Maze #5 has the same map as #3, same for #6 vs. #4.
+	 */
 	@Override
 	public int mapNumber(int mazeNumber) {
-		// Maze #5 has the same map as #3, same for #6 vs. #4
 		return mazeNumber == 5 ? 3 : mazeNumber == 6 ? 4 : mazeNumber;
 	}
 }
