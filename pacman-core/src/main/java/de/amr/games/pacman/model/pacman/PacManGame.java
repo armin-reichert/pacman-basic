@@ -53,19 +53,15 @@ public class PacManGame extends AbstractGameModel {
 
 	public PacManGame() {
 		variant = GameVariant.PACMAN;
-		world = new MapBasedPacManGameWorld();
-		((MapBasedPacManGameWorld) world).setMap(WorldMap.load("/pacman/maps/map1.txt"));
+		hiscoreFileName = "hiscore-pacman.xml";
 		levels = LEVELS;
-		bonusValues = Map.of(//
-				"CHERRIES", 100, //
-				"STRAWBERRY", 300, //
-				"PEACH", 500, //
-				"APPLE", 700, //
-				"GRAPES", 1000, //
-				"GALAXIAN", 2000, //
-				"BELL", 3000, //
-				"KEY", 5000 //
-		);
+		bonusValues = Map.of("CHERRIES", 100, "STRAWBERRY", 300, "PEACH", 500, "APPLE", 700, //
+				"GRAPES", 1000, "GALAXIAN", 2000, "BELL", 3000, "KEY", 5000);
+
+		world = new MapBasedPacManGameWorld();
+		WorldMap map = WorldMap.load("/pacman/maps/map1.txt");
+		((MapBasedPacManGameWorld) world).setMap(map);
+
 		player = new Pac("Pac-Man", world);
 		ghosts = new Ghost[] { //
 				new Ghost(BLINKY, "Blinky", world), //
@@ -75,14 +71,13 @@ public class PacManGame extends AbstractGameModel {
 		};
 		bonus = new Bonus(world);
 		bonus.setPosition(t(world.bonusTile().x) + HTS, t(world.bonusTile().y));
-		hiscoreFileName = "hiscore-pacman.xml";
 	}
 
 	@Override
 	public void createLevel(int levelNumber) {
 		currentLevel = new GameLevel(levelNumber, world);
 		currentLevel.setData(levelData(levelNumber));
-		currentLevel.mazeNumber = 1;
+		currentLevel.mazeNumber = mazeNumber(levelNumber);
 		ghostBounty = 200;
 		for (Ghost ghost : ghosts) {
 			ghost.dotCounter = 0;
