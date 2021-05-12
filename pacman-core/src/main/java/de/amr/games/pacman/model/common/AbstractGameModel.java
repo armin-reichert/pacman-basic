@@ -50,7 +50,7 @@ public abstract class AbstractGameModel implements GameModel {
 	protected int hiscoreLevel;
 	protected int hiscorePoints;
 	protected int ghostBounty;
-	protected List<String> levelSymbols;
+	protected List<String> levelCounter = new ArrayList<>();
 	protected int globalDotCounter;
 	protected boolean globalDotCounterEnabled;
 	protected String hiscoreFileName;
@@ -76,7 +76,7 @@ public abstract class AbstractGameModel implements GameModel {
 
 	@Override
 	public void countLevel() {
-		levelSymbols.add(currentLevel.bonusSymbol);
+		levelCounter.add(currentLevel.bonusSymbol);
 	}
 
 	@Override
@@ -213,8 +213,8 @@ public abstract class AbstractGameModel implements GameModel {
 		score = 0;
 		lives = INITIAL_NUM_LIVES;
 		createLevel(1);
-		levelSymbols = new ArrayList<>();
-		levelSymbols.add(currentLevel.bonusSymbol);
+		levelCounter.clear();
+		countLevel();
 		Hiscore hiscore = loadHiscore();
 		hiscoreLevel = hiscore.level;
 		hiscorePoints = hiscore.points;
