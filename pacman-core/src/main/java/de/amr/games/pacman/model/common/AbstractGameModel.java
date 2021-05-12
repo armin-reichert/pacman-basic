@@ -69,7 +69,7 @@ public abstract class AbstractGameModel implements GameModel {
 
 	@Override
 	public String levelSymbol(int levelNumber) {
-		return (String) levelData(levelNumber)[0];
+		return levelCounter.get(levelNumber-1);
 	}
 
 	@Override
