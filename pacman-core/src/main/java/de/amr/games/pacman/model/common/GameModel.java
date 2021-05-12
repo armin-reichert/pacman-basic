@@ -15,8 +15,8 @@ public interface GameModel {
 	public static final int PELLET_VALUE = 10;
 	public static final int ENERGIZER_VALUE = 50;
 	public static final int ALL_GHOSTS_KILLED_BONUS = 12000;
-	public static final int FIRST_BONUS_PELLETS_LEFT = 170;
-	public static final int SECOND_BONUS_PELLETS_LEFT = 70;
+	public static final int FIRST_BONUS_PELLETS_EATEN = 170;
+	public static final int SECOND_BONUS_PELLETS_EATEN = 70;
 
 	/**
 	 * @return the game variant identifier
