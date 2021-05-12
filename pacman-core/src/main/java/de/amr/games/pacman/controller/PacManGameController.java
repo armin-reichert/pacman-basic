@@ -328,7 +328,6 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		if (stateTimer().hasExpired()) {
 			game.ghosts(HUNTING_PAC).forEach(Ghost::forceTurningBack);
 			startHuntingPhase(++huntingPhase);
-			return;
 		}
 
 		// Did player find food?
