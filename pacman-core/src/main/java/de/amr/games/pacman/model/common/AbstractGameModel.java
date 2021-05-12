@@ -237,6 +237,13 @@ public abstract class AbstractGameModel implements GameModel {
 		}
 	}
 
+	private Hiscore loadHiscore() {
+		File dir = new File(System.getProperty("user.home"));
+		Hiscore hiscore = new Hiscore(new File(dir, hiscoreFileName));
+		hiscore.load();
+		return hiscore;
+	}
+
 	@Override
 	public int globalDotCounter() {
 		return globalDotCounter;
@@ -255,12 +262,5 @@ public abstract class AbstractGameModel implements GameModel {
 	@Override
 	public void enableGlobalDotCounter(boolean enable) {
 		globalDotCounterEnabled = enable;
-	}
-
-	protected Hiscore loadHiscore() {
-		File dir = new File(System.getProperty("user.home"));
-		Hiscore hiscore = new Hiscore(new File(dir, hiscoreFileName));
-		hiscore.load();
-		return hiscore;
 	}
 }
