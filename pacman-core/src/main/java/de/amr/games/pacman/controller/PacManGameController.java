@@ -103,8 +103,10 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	private final GameModel[] games = { new MsPacManGame(), new PacManGame() };
+	private final List<PacManGameEventListener> gameEventListeners = new ArrayList<>();
 
 	private GameModel game;
+	private PacManGameUI ui;
 
 	private boolean gameRequested;
 	private boolean gameRunning;
@@ -112,12 +114,8 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	private boolean playerImmune;
 	private int huntingPhase;
 
-	private PacManGameUI ui;
-
 	public final Autopilot autopilot = new Autopilot();
 	public boolean autopilotOn;
-
-	private final List<PacManGameEventListener> gameEventListeners = new ArrayList<>();
 
 	/**
 	 * Configures this state machine.
@@ -135,16 +133,6 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		configure(GAME_OVER, this::enterGameOverState, this::updateGameOverState, null);
 	}
 
-	public void addGameEventListener(PacManGameEventListener listener) {
-		gameEventListeners.add(listener);
-		log("Added game event listener %s, num listeners=%d", listener, gameEventListeners.size());
-	}
-
-	public void removeGameEventListener(PacManGameEventListener listener) {
-		gameEventListeners.remove(listener);
-		log("Removed game event listener %s, num listeners=%d", listener, gameEventListeners.size());
-	}
-
 	private void fireGameEvent(PacManGameEvent gameEvent) {
 		// copying shall avoid concurrent modification, not sure if this is really necessary
 		new ArrayList<>(gameEventListeners).forEach(listener -> listener.onGameEvent(gameEvent));
@@ -155,7 +143,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	/**
-	 * Wraps state change into game event.
+	 * Maps state change event to game event.
 	 */
 	@Override
 	protected void fireStateChange(PacManGameState oldState, PacManGameState newState) {
@@ -182,19 +170,19 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	public void setUI(PacManGameUI gameUI) {
 		if (ui != null) {
-			removeGameEventListener(ui);
+			gameEventListeners.remove(ui);
 		}
 		ui = gameUI;
-		addGameEventListener(ui);
+		gameEventListeners.add(ui);
 	}
 
-	public void play(GameVariant v) {
-		game = games[v.ordinal()];
+	public void play(GameVariant variant) {
+		game = games[variant.ordinal()];
 		changeState(INTRO);
 	}
 
-	public boolean isPlaying(GameVariant v) {
-		return game.variant() == v;
+	public boolean isPlaying(GameVariant variant) {
+		return game.variant() == variant;
 	}
 
 	public void toggleGameVariant() {
@@ -277,20 +265,18 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	private void startHuntingPhase(int phase) {
 		huntingPhase = phase;
-		boolean scattering = isScatteringPhase(phase);
-		if (stateTimer().isStopped()) {
-			stateTimer().start();
-			log("Hunting phase %d (%s) continues, %d of %d ticks remaining", phase, scattering ? "Scattering" : "Chasing",
-					stateTimer().ticksRemaining(), stateTimer().duration());
-		} else {
+		if (!stateTimer().isStopped()) {
+			// new hunting phase, not resuming stopped one
 			stateTimer().reset(game.getHuntingPhaseDuration(huntingPhase));
-			stateTimer().start();
-			log("Hunting phase %d (%s) starts, %d of %d ticks remaining", phase, scattering ? "Scattering" : "Chasing",
-					stateTimer().ticksRemaining(), stateTimer().duration());
 		}
+		stateTimer().start();
+		boolean scattering = isScatteringPhase(phase);
 		if (scattering) {
 			fireGameEvent(new ScatterPhaseStartedEvent(game, phase / 2));
 		}
+		String phaseType = scattering ? "Scattering" : "Chasing";
+		log("Hunting phase #%d (%s) started, %d of %d ticks remaining", phase, phaseType, stateTimer().ticksRemaining(),
+				stateTimer().duration());
 	}
 
 	public static boolean isScatteringPhase(int phase) {
