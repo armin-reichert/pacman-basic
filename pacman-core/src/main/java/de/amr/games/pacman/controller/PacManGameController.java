@@ -520,7 +520,8 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		game.currentLevel().removeFood(foodLocation);
 
 		// Bonus gets edible?
-		if (game.currentLevel().eatenFoodCount() == 70 || game.currentLevel().eatenFoodCount() == 170) {
+		if (game.currentLevel().eatenFoodCount() == GameModel.FIRST_BONUS_PELLETS_LEFT
+				|| game.currentLevel().eatenFoodCount() == GameModel.SECOND_BONUS_PELLETS_LEFT) {
 			final Bonus bonus = game.bonus();
 			final long bonusTicks = isPlaying(PACMAN) ? sec_to_ticks(9 + new Random().nextFloat()) : Long.MAX_VALUE;
 			bonus.activate(bonusTicks);
