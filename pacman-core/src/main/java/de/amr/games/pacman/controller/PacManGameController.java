@@ -61,6 +61,7 @@ import de.amr.games.pacman.controller.event.ScatterPhaseStartedEvent;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.FiniteStateMachine;
 import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.Ghost;
@@ -288,10 +289,11 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	private void updateHuntingState() {
+		final GameLevel level = game.currentLevel();
 		final Pac player = game.player();
 
 		// Is level complete?
-		if (game.currentLevel().foodRemaining == 0) {
+		if (level.foodRemaining == 0) {
 			changeState(LEVEL_COMPLETE);
 			return;
 		}
@@ -331,8 +333,8 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		}
 
 		// Did player find food?
-		if (game.currentLevel().containsFood(player.tile())) {
-			onPlayerFoundFood();
+		if (level.containsFood(player.tile())) {
+			onPlayerFoundFood(level, player);
 		} else {
 			player.starvingTicks++;
 		}
@@ -356,8 +358,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		if (player.restingTicksLeft > 0) {
 			player.restingTicksLeft--;
 		} else {
-			player.setSpeed(
-					player.powerTimer.isRunning() ? game.currentLevel().playerSpeedPowered : game.currentLevel().playerSpeed);
+			player.setSpeed(player.powerTimer.isRunning() ? level.playerSpeedPowered : level.playerSpeed);
 			player.tryMoving();
 		}
 
@@ -488,15 +489,13 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		}
 	}
 
-	private void onPlayerFoundFood() {
-		final Pac player = game.player();
-		final V2i foodLocation = player.tile();
-		if (game.currentLevel().world.isEnergizerTile(foodLocation)) {
+	private void onPlayerFoundFood(GameLevel level, Pac player) {
+		if (level.world.isEnergizerTile(player.tile())) {
 			score(GameModel.ENERGIZER_VALUE);
 			player.starvingTicks = 0;
 			player.restingTicksLeft = 3;
 			game.resetGhostBounty();
-			int powerSeconds = game.currentLevel().ghostFrightenedSeconds;
+			int powerSeconds = level.ghostFrightenedSeconds;
 			if (powerSeconds > 0) {
 				player.powerTimer.resetSeconds(powerSeconds);
 				player.powerTimer.start();
@@ -517,25 +516,25 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			player.starvingTicks = 0;
 			player.restingTicksLeft = 1;
 		}
-		game.currentLevel().removeFood(foodLocation);
+		level.removeFood(player.tile());
 
 		// Bonus gets edible?
-		if (game.currentLevel().eatenFoodCount() == GameModel.FIRST_BONUS_PELLETS_LEFT
-				|| game.currentLevel().eatenFoodCount() == GameModel.SECOND_BONUS_PELLETS_LEFT) {
+		if (level.eatenFoodCount() == GameModel.FIRST_BONUS_PELLETS_LEFT
+				|| level.eatenFoodCount() == GameModel.SECOND_BONUS_PELLETS_LEFT) {
 			final Bonus bonus = game.bonus();
 			final long bonusTicks = isPlaying(PACMAN) ? sec_to_ticks(9 + new Random().nextFloat()) : Long.MAX_VALUE;
 			bonus.activate(bonusTicks);
-			bonus.symbol = game.currentLevel().bonusSymbol;
+			bonus.symbol = level.bonusSymbol;
 			bonus.points = game.bonusValue(bonus.symbol);
 			log("Bonus %s (value %d) activated", bonus.symbol, bonus.points);
 			fireGameEvent(Info.BONUS_ACTIVATED, bonus.tile());
 		}
 
 		// Blinky becomes Elroy?
-		if (game.currentLevel().foodRemaining == game.currentLevel().elroy1DotsLeft) {
+		if (level.foodRemaining == level.elroy1DotsLeft) {
 			game.ghost(BLINKY).elroy = 1;
 			log("Blinky becomes Cruise Elroy 1");
-		} else if (game.currentLevel().foodRemaining == game.currentLevel().elroy2DotsLeft) {
+		} else if (level.foodRemaining == level.elroy2DotsLeft) {
 			game.ghost(BLINKY).elroy = 2;
 			log("Blinky becomes Cruise Elroy 2");
 		}
