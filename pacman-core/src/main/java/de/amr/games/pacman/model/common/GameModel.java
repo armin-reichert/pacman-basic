@@ -11,6 +11,11 @@ import de.amr.games.pacman.model.pacman.Bonus;
  */
 public interface GameModel {
 
+	public static final int INITIAL_NUM_LIVES = 3;
+	public static final int PELLET_VALUE = 10;
+	public static final int ENERGIZER_VALUE = 50;
+	public static final int ALL_GHOSTS_KILLED_BONUS = 12000;
+
 	/**
 	 * @return the game variant identifier
 	 */
@@ -81,9 +86,11 @@ public interface GameModel {
 
 	Ghost ghost(int id);
 
-	int ghostBounty();
+	void resetGhostBounty();
 
-	void setGhostBounty(int value);
+	int getNextGhostBounty();
+
+	void increaseNextGhostBounty();
 
 	Bonus bonus();
 

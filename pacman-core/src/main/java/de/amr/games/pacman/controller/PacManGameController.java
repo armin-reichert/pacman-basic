@@ -210,7 +210,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	public void killGhosts() {
-		game.setGhostBounty(200);
+		game.resetGhostBounty();
 		game.ghosts().filter(ghost -> ghost.is(HUNTING_PAC) || ghost.is(FRIGHTENED)).forEach(this::killGhost);
 		changeState(GHOST_DYING);
 	}
@@ -490,33 +490,34 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	private void onPlayerFoundFood() {
 		final Pac player = game.player();
-		V2i foodLocation = player.tile();
-		game.currentLevel().removeFood(foodLocation);
+		final V2i foodLocation = player.tile();
 		if (game.currentLevel().world.isEnergizerTile(foodLocation)) {
+			score(GameModel.ENERGIZER_VALUE);
 			player.starvingTicks = 0;
 			player.restingTicksLeft = 3;
-			game.setGhostBounty(200);
-			score(50);
+			game.resetGhostBounty();
 			int powerSeconds = game.currentLevel().ghostFrightenedSeconds;
 			if (powerSeconds > 0) {
-				// stop HUNTING state timer while player has power
-				stateTimer().stop();
-				log("%s timer stopped", state);
-				game.ghosts(HUNTING_PAC).forEach(ghost -> {
-					ghost.state = FRIGHTENED;
-					ghost.setWishDir(ghost.dir().opposite());
-					ghost.forced = true;
-				});
 				player.powerTimer.resetSeconds(powerSeconds);
 				player.powerTimer.start();
 				log("%s got power for %d seconds", player.name, powerSeconds);
+				// force ghosts to turn back
+				game.ghosts(HUNTING_PAC).forEach(ghost -> {
+					ghost.setWishDir(ghost.dir().opposite());
+					ghost.forced = true;
+					ghost.state = FRIGHTENED;
+				});
+				// stop HUNTING state timer while player has power
+				stateTimer().stop();
+				log("%s timer stopped", state);
 				fireGameEvent(Info.PLAYER_GAINS_POWER, player.tile());
 			}
 		} else {
+			score(GameModel.PELLET_VALUE);
 			player.starvingTicks = 0;
 			player.restingTicksLeft = 1;
-			score(10);
 		}
+		game.currentLevel().removeFood(foodLocation);
 
 		// Bonus gets edible?
 		if (game.currentLevel().eatenFoodCount() == 70 || game.currentLevel().eatenFoodCount() == 170) {
@@ -621,12 +622,13 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	private void killGhost(Ghost ghost) {
 		ghost.state = DEAD;
 		ghost.targetTile = game.currentLevel().world.houseEntryLeftPart();
-		ghost.bounty = game.ghostBounty();
+		ghost.bounty = game.getNextGhostBounty();
 		score(ghost.bounty);
-		if (++game.currentLevel().numGhostsKilled == 16) {
-			score(12000);
+		game.increaseNextGhostBounty();
+		game.currentLevel().numGhostsKilled++;
+		if (game.currentLevel().numGhostsKilled == 16) {
+			score(GameModel.ALL_GHOSTS_KILLED_BONUS);
 		}
-		game.setGhostBounty(2 * game.ghostBounty());
 		log("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name, ghost.tile(), ghost.bounty);
 	}
 

@@ -21,8 +21,6 @@ import de.amr.games.pacman.model.world.PacManGameWorld;
  */
 public abstract class AbstractGameModel implements GameModel {
 
-	static final int INITIAL_NUM_LIVES = 3;
-
 	static final Map<Integer, Integer> INTERMISSION_AFTER_LEVEL = Map.of(//
 			2, 1, // intermission #1 after level #2
 			5, 2, // intermission #2 after level #5
@@ -152,13 +150,18 @@ public abstract class AbstractGameModel implements GameModel {
 	}
 
 	@Override
-	public int ghostBounty() {
+	public int getNextGhostBounty() {
 		return ghostBounty;
 	}
 
 	@Override
-	public void setGhostBounty(int value) {
-		this.ghostBounty = value;
+	public void resetGhostBounty() {
+		ghostBounty = 200;
+	}
+
+	@Override
+	public void increaseNextGhostBounty() {
+		ghostBounty *= 2;
 	}
 
 	@Override
