@@ -69,7 +69,7 @@ public abstract class AbstractGameModel implements PacManGameModel {
 
 	@Override
 	public String levelSymbol(int levelNumber) {
-		return levelCounter.get(levelNumber-1);
+		return levelCounter.get(levelNumber - 1);
 	}
 
 	@Override
