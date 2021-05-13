@@ -526,7 +526,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			bonus.activate(bonusTicks);
 			bonus.symbol = level.bonusSymbol;
 			bonus.points = game.bonusValue(bonus.symbol);
-			log("Bonus %s (value %d) activated", bonus.symbol, bonus.points);
+			log("Bonus %s (value %d) activated for %d ticks", bonus.symbol, bonus.points, bonusTicks);
 			fireGameEvent(Info.BONUS_ACTIVATED, bonus.tile());
 		}
 
