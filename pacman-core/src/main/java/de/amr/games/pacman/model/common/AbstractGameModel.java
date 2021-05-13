@@ -19,7 +19,7 @@ import de.amr.games.pacman.model.world.PacManGameWorld;
  * 
  * @author Armin Reichert
  */
-public abstract class AbstractGameModel implements GameModel {
+public abstract class AbstractGameModel implements PacManGameModel {
 
 	static final Map<Integer, Integer> INTERMISSION_AFTER_LEVEL = Map.of(//
 			2, 1, // intermission #1 after level #2

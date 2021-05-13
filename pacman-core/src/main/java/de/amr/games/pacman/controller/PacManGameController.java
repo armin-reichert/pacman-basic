@@ -62,7 +62,7 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.FiniteStateMachine;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.GameLevel;
-import de.amr.games.pacman.model.common.GameModel;
+import de.amr.games.pacman.model.common.PacManGameModel;
 import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.GhostState;
@@ -103,10 +103,10 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		return Math.round(sec * 60);
 	}
 
-	private final GameModel[] games = { new MsPacManGame(), new PacManGame() };
+	private final PacManGameModel[] games = { new MsPacManGame(), new PacManGame() };
 	private final List<PacManGameEventListener> gameEventListeners = new ArrayList<>();
 
-	private GameModel game;
+	private PacManGameModel game;
 	private PacManGameUI ui;
 
 	private boolean gameRequested;
@@ -190,7 +190,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		play(game().variant() == MS_PACMAN ? PACMAN : MS_PACMAN);
 	}
 
-	public GameModel game() {
+	public PacManGameModel game() {
 		return game;
 	}
 
@@ -491,7 +491,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	private void onPlayerFoundFood(GameLevel level, Pac player) {
 		if (level.world.isEnergizerTile(player.tile())) {
-			score(GameModel.ENERGIZER_VALUE);
+			score(PacManGameModel.ENERGIZER_VALUE);
 			player.starvingTicks = 0;
 			player.restingTicksLeft = 3;
 			game.resetGhostBounty();
@@ -512,15 +512,15 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 				fireGameEvent(Info.PLAYER_GAINS_POWER, player.tile());
 			}
 		} else {
-			score(GameModel.PELLET_VALUE);
+			score(PacManGameModel.PELLET_VALUE);
 			player.starvingTicks = 0;
 			player.restingTicksLeft = 1;
 		}
 		level.removeFood(player.tile());
 
 		// Bonus gets edible?
-		if (level.eatenFoodCount() == GameModel.FIRST_BONUS_PELLETS_EATEN
-				|| level.eatenFoodCount() == GameModel.SECOND_BONUS_PELLETS_EATEN) {
+		if (level.eatenFoodCount() == PacManGameModel.FIRST_BONUS_PELLETS_EATEN
+				|| level.eatenFoodCount() == PacManGameModel.SECOND_BONUS_PELLETS_EATEN) {
 			final Bonus bonus = game.bonus();
 			final long bonusTicks = isPlaying(PACMAN) ? sec_to_ticks(9 + new Random().nextFloat()) : Long.MAX_VALUE;
 			bonus.activate(bonusTicks);
@@ -627,7 +627,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		game.increaseNextGhostBounty();
 		game.currentLevel().numGhostsKilled++;
 		if (game.currentLevel().numGhostsKilled == 16) {
-			score(GameModel.ALL_GHOSTS_KILLED_BONUS);
+			score(PacManGameModel.ALL_GHOSTS_KILLED_BONUS);
 		}
 		log("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name, ghost.tile(), ghost.bounty);
 	}

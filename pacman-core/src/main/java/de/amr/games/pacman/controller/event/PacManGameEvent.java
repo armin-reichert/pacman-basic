@@ -4,7 +4,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.model.common.GameModel;
+import de.amr.games.pacman.model.common.PacManGameModel;
 import de.amr.games.pacman.model.common.Ghost;
 
 /**
@@ -20,12 +20,12 @@ public class PacManGameEvent {
 		PLAYER_LOST_POWER, GHOST_ENTERS_HOUSE, GHOST_LEAVES_HOUSE, GHOST_RETURNS_HOME, GAME_STATE_CHANGE, OTHER;
 	}
 
-	public final GameModel gameModel;
+	public final PacManGameModel gameModel;
 	public final Info info;
 	public final Optional<V2i> tile; // the optional tile where this event occurred
 	public final Optional<Ghost> ghost; // the optional ghost this event relates to
 
-	public PacManGameEvent(GameModel gameModel, Info info, Ghost ghost, V2i tile) {
+	public PacManGameEvent(PacManGameModel gameModel, Info info, Ghost ghost, V2i tile) {
 		this.gameModel = Objects.requireNonNull(gameModel);
 		this.info = Objects.requireNonNull(info);
 		this.tile = Optional.ofNullable(tile);

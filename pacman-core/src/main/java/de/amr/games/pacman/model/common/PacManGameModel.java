@@ -9,7 +9,7 @@ import de.amr.games.pacman.model.pacman.Bonus;
  * 
  * @author Armin Reichert
  */
-public interface GameModel {
+public interface PacManGameModel {
 
 	public static final int INITIAL_NUM_LIVES = 3;
 	public static final int PELLET_VALUE = 10;
