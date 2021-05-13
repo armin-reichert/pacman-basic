@@ -96,7 +96,7 @@ public interface PacManGameModel {
 
 	Bonus bonus();
 
-	int bonusValue(String bonus);
+	int bonusValue(String bonusSymbol);
 
 	int globalDotCounter();
 

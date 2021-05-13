@@ -170,8 +170,8 @@ public abstract class AbstractGameModel implements PacManGameModel {
 	}
 
 	@Override
-	public int bonusValue(String bonus) {
-		return bonusValues.get(bonus);
+	public int bonusValue(String bonusSymbol) {
+		return bonusValues.get(bonusSymbol);
 	}
 
 	@Override
