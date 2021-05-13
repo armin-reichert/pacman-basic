@@ -363,8 +363,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		}
 
 		// Ghosts
-		tryReleasingGhosts();
-		game.ghosts(HUNTING_PAC).forEach(this::setTargetTile);
+		tryReleasingLockedGhosts();
 		game.ghosts().forEach(this::updateGhost);
 
 		// Bonus
@@ -450,7 +449,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		game.ghosts().forEach(ghost -> ghost.setSpeed(0));
 		game.player().setSpeed(0);
 		game.saveHiscore();
-		stateTimer().resetSeconds(10);
+		stateTimer().resetSeconds(5);
 	}
 
 	private void updateGameOverState() {
@@ -461,7 +460,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	private void enterIntermissionState() {
 		log("Starting intermission #%d", game.intermissionNumber());
-		stateTimer().reset();
+		stateTimer().reset(); // UI triggers timeout
 	}
 
 	private void updateIntermissionState() {
@@ -546,11 +545,11 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	// Ghosts
 
 	/**
-	 * Updates speed and behavior depending on current state.
+	 * Updates ghost's speed and behavior depending on its current state.
 	 * 
 	 * TODO: not sure about correct speed
 	 * 
-	 * @param level current game level
+	 * @param ghost ghost to update
 	 */
 	private void updateGhost(Ghost ghost) {
 		switch (ghost.state) {
@@ -571,8 +570,8 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 		case LEAVING_HOUSE:
 			ghost.setSpeed(game.currentLevel().ghostSpeed / 2);
-			boolean ghostLeavesHouse = ghost.leaveHouse();
-			if (ghostLeavesHouse) {
+			boolean ghostLeftHouse = ghost.leaveHouse();
+			if (ghostLeftHouse) {
 				fireGameEvent(new PacManGameEvent(game, Info.GHOST_LEAVES_HOUSE, ghost, ghost.tile()));
 			}
 			break;
@@ -597,6 +596,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			} else {
 				ghost.setSpeed(game.currentLevel().ghostSpeed);
 			}
+			setTargetTile(ghost);
 			if (ghost.targetTile == null) {
 				// this can happen in Ms. Pac-Man
 				ghost.selectRandomDirection();
@@ -705,7 +705,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		return ghostID == PINKY ? 7 : ghostID == INKY ? 17 : Integer.MAX_VALUE;
 	}
 
-	private void tryReleasingGhosts() {
+	private void tryReleasingLockedGhosts() {
 		if (game.ghost(BLINKY).is(LOCKED)) {
 			game.ghost(BLINKY).state = HUNTING_PAC;
 		}
