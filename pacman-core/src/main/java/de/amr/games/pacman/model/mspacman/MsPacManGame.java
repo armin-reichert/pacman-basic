@@ -77,9 +77,8 @@ public class MsPacManGame extends AbstractGameModel {
 		final int mapNumber = mapNumber(mazeNumber);
 		final WorldMap map = WorldMap.load("/mspacman/maps/map" + mapNumber + ".txt");
 		((MapBasedPacManGameWorld) world).setMap(map);
-		
-		currentLevel = new GameLevel(levelNumber, world);
-		currentLevel.setData(levelData(levelNumber));
+
+		currentLevel = new GameLevel(levelNumber, world, levelData(levelNumber));
 		currentLevel.mazeNumber = mazeNumber;
 		// From level 8 on, bonus is chosen randomly
 		if (levelNumber >= 8) {

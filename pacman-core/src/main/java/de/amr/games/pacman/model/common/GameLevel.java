@@ -45,9 +45,10 @@ public class GameLevel {
 	/** Ms. Pac-Man: maze number (1, 2, ..., 6) */
 	public int mazeNumber;
 
-	public GameLevel(int number, PacManGameWorld world) {
+	public GameLevel(int number, PacManGameWorld world, Object[] data) {
 		this.number = number;
 		this.world = world;
+		setData(data);
 		totalFoodCount = 0;
 		int energizerCount = 0;
 		for (int x = 0; x < world.numCols(); ++x) {
@@ -66,20 +67,19 @@ public class GameLevel {
 		log("Total food: %d (%d pellets, %d energizers)", totalFoodCount, totalFoodCount - energizerCount, energizerCount);
 	}
 
-	public void setData(Object[] levelData) {
-		int i = 0;
-		bonusSymbol = (String) levelData[i++];
-		playerSpeed = percent(levelData[i++]);
-		ghostSpeed = percent(levelData[i++]);
-		ghostSpeedTunnel = percent(levelData[i++]);
-		elroy1DotsLeft = (Integer) levelData[i++];
-		elroy1Speed = percent(levelData[i++]);
-		elroy2DotsLeft = (Integer) levelData[i++];
-		elroy2Speed = percent(levelData[i++]);
-		playerSpeedPowered = percent(levelData[i++]);
-		ghostSpeedFrightened = percent(levelData[i++]);
-		ghostFrightenedSeconds = (Integer) levelData[i++];
-		numFlashes = (Integer) levelData[i++];
+	private void setData(Object[] levelData) {
+		bonusSymbol = (String) levelData[0];
+		playerSpeed = percent(levelData[1]);
+		ghostSpeed = percent(levelData[2]);
+		ghostSpeedTunnel = percent(levelData[3]);
+		elroy1DotsLeft = (Integer) levelData[4];
+		elroy1Speed = percent(levelData[5]);
+		elroy2DotsLeft = (Integer) levelData[6];
+		elroy2Speed = percent(levelData[7]);
+		playerSpeedPowered = percent(levelData[8]);
+		ghostSpeedFrightened = percent(levelData[9]);
+		ghostFrightenedSeconds = (Integer) levelData[10];
+		numFlashes = (Integer) levelData[11];
 	}
 
 	public int eatenFoodCount() {
