@@ -133,6 +133,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		configure(LEVEL_COMPLETE, this::enterLevelCompleteState, this::updateLevelCompleteState, null);
 		configure(INTERMISSION, this::enterIntermissionState, this::updateIntermissionState, null);
 		configure(GAME_OVER, this::enterGameOverState, this::updateGameOverState, null);
+		autopilot.setGame(game);
 	}
 
 	private void fireGameEvent(PacManGameEvent gameEvent) {
@@ -157,10 +158,9 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	public void step() {
 		if (state == GHOST_DYING || state == HUNTING) {
 			if (attractMode) {
-				autopilot.setGame(game);
-				autopilot.steer(game().player());
+				autopilot.steer(game.player());
 			} else {
-				playerControl.steer(game().player());
+				playerControl.steer(game.player());
 			}
 		}
 		updateState();
@@ -181,6 +181,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	public void selectGame(GameVariant variant) {
 		game = games[variant.ordinal()];
+		autopilot.setGame(game);
 		changeState(INTRO);
 	}
 
