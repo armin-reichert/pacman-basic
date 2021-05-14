@@ -176,7 +176,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		gameEventListeners.add(ui);
 	}
 
-	public void play(GameVariant variant) {
+	public void selectGame(GameVariant variant) {
 		game = games[variant.ordinal()];
 		changeState(INTRO);
 	}
@@ -193,7 +193,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	public void toggleGameVariant() {
-		play(game().variant() == MS_PACMAN ? PACMAN : MS_PACMAN);
+		selectGame(game().variant() == MS_PACMAN ? PACMAN : MS_PACMAN);
 	}
 
 	public PacManGameModel game() {
