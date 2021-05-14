@@ -115,8 +115,9 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	private boolean playerImmune;
 	private int huntingPhase;
 
-	public final Autopilot autopilot = new Autopilot();
-	public boolean autopilotOn;
+	private final Autopilot autopilot = new Autopilot();
+	private boolean autoControlled;
+	private PlayerControl playerControl;
 
 	/**
 	 * Configures this state machine.
@@ -154,11 +155,12 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	 * Executes a single simulation step.
 	 */
 	public void step() {
-		if (gameRunning || (attractMode && state != INTRO)) {
-			if (autopilotOn) {
-				autopilot.steer(game);
+		if (state == GHOST_DYING || state == HUNTING) {
+			if (attractMode) {
+				autopilot.setGame(game);
+				autopilot.steer(game().player());
 			} else {
-				ui.playerDirectionChangeRequested().ifPresent(game.player()::setWishDir);
+				playerControl.steer(game().player());
 			}
 		}
 		updateState();
@@ -173,6 +175,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			gameEventListeners.remove(ui);
 		}
 		ui = gameUI;
+		playerControl = ui;
 		gameEventListeners.add(ui);
 	}
 
@@ -198,6 +201,15 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	public PacManGameModel game() {
 		return game;
+	}
+
+	public boolean isAutoControlled() {
+		return autoControlled;
+	}
+
+	public void setAutoControlled(boolean autoControlled) {
+		this.autoControlled = autoControlled;
+		playerControl = autoControlled ? autopilot : ui;
 	}
 
 	public boolean isAttractMode() {
@@ -237,13 +249,13 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		gameRequested = false;
 		gameRunning = false;
 		attractMode = false;
-		autopilotOn = false;
+		playerControl = ui;
 	}
 
 	private void updateIntroState() {
 		if (stateTimer().hasExpired()) {
 			attractMode = true;
-			autopilotOn = true;
+			playerControl = autopilot;
 			changeState(READY);
 		}
 	}

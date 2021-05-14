@@ -9,9 +9,10 @@ import java.util.stream.Collectors;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.Logging;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.model.common.PacManGameModel;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.GhostState;
+import de.amr.games.pacman.model.common.Pac;
+import de.amr.games.pacman.model.common.PacManGameModel;
 import de.amr.games.pacman.model.pacman.Bonus;
 
 /**
@@ -19,11 +20,13 @@ import de.amr.games.pacman.model.pacman.Bonus;
  * 
  * @author Armin Reichert
  */
-public class Autopilot {
+public class Autopilot implements PlayerControl {
 
+	private PacManGameModel game;
 	public boolean logEnabled;
 
-	public void steer(PacManGameModel game) {
+	@Override
+	public void steer(Pac player) {
 		if (game.player().forced) {
 			game.player().forced = false;
 			return;
@@ -36,6 +39,10 @@ public class Autopilot {
 			log("\n%s", data);
 		}
 		takeAction(game, data);
+	}
+
+	public void setGame(PacManGameModel game) {
+		this.game = game;
 	}
 
 	private void log(String msg, Object... args) {

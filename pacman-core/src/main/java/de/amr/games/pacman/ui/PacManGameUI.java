@@ -1,16 +1,14 @@
 package de.amr.games.pacman.ui;
 
-import java.util.Optional;
-
+import de.amr.games.pacman.controller.PlayerControl;
 import de.amr.games.pacman.controller.event.DefaultPacManGameEventHandler;
-import de.amr.games.pacman.lib.Direction;
 
 /**
  * Interface through which the game controller accesses the UI.
  * 
  * @author Armin Reichert
  */
-public interface PacManGameUI extends DefaultPacManGameEventHandler {
+public interface PacManGameUI extends DefaultPacManGameEventHandler, PlayerControl {
 
 	void reset();
 
@@ -21,6 +19,4 @@ public interface PacManGameUI extends DefaultPacManGameEventHandler {
 	default void showFlashMessage(String message) {
 		showFlashMessage(message, 1);
 	}
-
-	Optional<Direction> playerDirectionChangeRequested();
 }
