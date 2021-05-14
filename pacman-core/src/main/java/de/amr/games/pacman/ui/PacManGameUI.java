@@ -23,6 +23,4 @@ public interface PacManGameUI extends DefaultPacManGameEventHandler {
 	}
 
 	Optional<Direction> playerDirectionChangeRequested();
-
-	boolean gameStartRequested();
 }

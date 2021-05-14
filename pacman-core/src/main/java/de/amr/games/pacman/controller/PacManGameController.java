@@ -62,11 +62,11 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.FiniteStateMachine;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.GameLevel;
-import de.amr.games.pacman.model.common.PacManGameModel;
 import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.GhostState;
 import de.amr.games.pacman.model.common.Pac;
+import de.amr.games.pacman.model.common.PacManGameModel;
 import de.amr.games.pacman.model.mspacman.MsPacManGame;
 import de.amr.games.pacman.model.pacman.Bonus;
 import de.amr.games.pacman.model.pacman.PacManGame;
@@ -181,6 +181,13 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		changeState(INTRO);
 	}
 
+	public void startGame() {
+		if (state == INTRO) {
+			gameRequested = true;
+			changeState(READY);
+		}
+	}
+
 	public boolean isPlaying(GameVariant variant) {
 		return game.variant() == variant;
 	}
@@ -234,10 +241,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	private void updateIntroState() {
-		if (ui.gameStartRequested()) {
-			gameRequested = true;
-			changeState(READY);
-		} else if (stateTimer().hasExpired()) {
+		if (stateTimer().hasExpired()) {
 			attractMode = true;
 			autopilotOn = true;
 			changeState(READY);
