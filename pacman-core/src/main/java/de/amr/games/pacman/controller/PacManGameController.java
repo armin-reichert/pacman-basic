@@ -135,8 +135,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	private void fireGameEvent(PacManGameEvent gameEvent) {
-		// copying shall avoid concurrent modification, not sure if this is really necessary
-		new ArrayList<>(gameEventListeners).forEach(listener -> listener.onGameEvent(gameEvent));
+		gameEventListeners.forEach(listener -> listener.onGameEvent(gameEvent));
 	}
 
 	private void fireGameEvent(Info info, V2i tile) {
