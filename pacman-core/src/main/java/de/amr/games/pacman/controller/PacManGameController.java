@@ -192,10 +192,6 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		}
 	}
 
-	public boolean isPlaying(GameVariant variant) {
-		return game.variant() == variant;
-	}
-
 	public void toggleGameVariant() {
 		selectGame(game().variant() == MS_PACMAN ? PACMAN : MS_PACMAN);
 	}
@@ -537,7 +533,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		if (level.eatenFoodCount() == PacManGameModel.FIRST_BONUS_PELLETS_EATEN
 				|| level.eatenFoodCount() == PacManGameModel.SECOND_BONUS_PELLETS_EATEN) {
 			final Bonus bonus = game.bonus();
-			final long bonusTicks = isPlaying(PACMAN) ? sec_to_ticks(9 + new Random().nextFloat()) : Long.MAX_VALUE;
+			final long bonusTicks = game.variant() == PACMAN ? sec_to_ticks(9 + new Random().nextFloat()) : Long.MAX_VALUE;
 			bonus.activate(bonusTicks);
 			bonus.symbol = level.bonusSymbol;
 			bonus.points = game.bonusValue(bonus.symbol);
@@ -655,7 +651,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	 * knows?
 	 */
 	private void setTargetTile(Ghost ghost) {
-		if (isPlaying(MS_PACMAN) && huntingPhase == 0 && (ghost.id == BLINKY || ghost.id == PINKY)) {
+		if (game.variant() == MS_PACMAN && huntingPhase == 0 && (ghost.id == BLINKY || ghost.id == PINKY)) {
 			ghost.targetTile = null;
 		} else if (isScatteringPhase(huntingPhase) && ghost.elroy == 0) {
 			ghost.targetTile = game.currentLevel().world.ghostScatterTile(ghost.id);
