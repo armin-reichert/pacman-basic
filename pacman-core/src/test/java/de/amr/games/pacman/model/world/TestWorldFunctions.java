@@ -96,8 +96,8 @@ public class TestWorldFunctions {
 		assertEquals(36, world.numRows());
 		assertEquals(28, world.numCols());
 		assertEquals(4, world.energizerTiles().count());
-		assertEquals(236 + 4, world.tiles().filter(world::isFoodTile).count());
-		assertEquals(236, world.tiles().filter(world::isFoodTile).filter(not(world::isEnergizerTile)).count());
+		assertEquals(234 + 4, world.tiles().filter(world::isFoodTile).count());
+		assertEquals(234, world.tiles().filter(world::isFoodTile).filter(not(world::isEnergizerTile)).count());
 		assertEquals(2, world.portals().size());
 		assertEquals(new V2i(13, 26), world.playerHomeTile());
 		assertEquals(Direction.LEFT, world.playerStartDirection());
