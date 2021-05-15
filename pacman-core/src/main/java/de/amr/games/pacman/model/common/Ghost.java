@@ -163,7 +163,7 @@ public class Ghost extends Creature {
 	/**
 	 * Lets the ghost bounce at its home position inside the house.
 	 * 
-	 * @return {@code true]
+	 * @return {@code true}
 	 */
 	public boolean bounce() {
 		int centerY = t(world.houseSeatCenter().y);
