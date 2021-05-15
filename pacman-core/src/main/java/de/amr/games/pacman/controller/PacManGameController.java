@@ -608,13 +608,21 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			} else {
 				ghost.setSpeed(game.currentLevel().ghostSpeed);
 			}
-			setTargetTile(ghost);
-			if (ghost.targetTile == null) {
-				// this can happen in Ms. Pac-Man
+			if (game.variant() == MS_PACMAN && huntingPhase == 0 && (ghost.id == BLINKY || ghost.id == PINKY)) {
+				/*
+				 * In Ms. Pac-Man, Blinky and Pinky move randomly during the *first* scatter phase. Some say, the
+				 * original intention had been to randomize the scatter target of *all* ghosts in Ms. Pac-Man but
+				 * because of a bug, only the scatter target of Blinky and Pinky would have been affected. Who
+				 * knows?
+				 */
+				ghost.targetTile = null;
 				ghost.setRandomDirection();
+			} else if (isScatteringPhase(huntingPhase) && ghost.elroy == 0) {
+				ghost.targetTile = game.currentLevel().world.ghostScatterTile(ghost.id);
 			} else {
-				ghost.setDirectionTowardsTarget();
+				ghost.targetTile = ghostHuntingTarget(ghost.id);
 			}
+			ghost.setDirectionTowardsTarget();
 			ghost.tryMoving();
 			break;
 
@@ -629,6 +637,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		default:
 			throw new IllegalArgumentException("Illegal ghost state: " + state);
 		}
+
 	}
 
 	private void killGhost(Ghost ghost) {
@@ -642,22 +651,6 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			score(PacManGameModel.ALL_GHOSTS_KILLED_BONUS);
 		}
 		log("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name, ghost.tile(), ghost.bounty);
-	}
-
-	/*
-	 * In Ms. Pac-Man, Blinky and Pinky move randomly during the *first* scatter phase. Some say, the
-	 * original intention had been to randomize the scatter target of *all* ghosts in Ms. Pac-Man but
-	 * because of a bug, only the scatter target of Blinky and Pinky would have been affected. Who
-	 * knows?
-	 */
-	private void setTargetTile(Ghost ghost) {
-		if (game.variant() == MS_PACMAN && huntingPhase == 0 && (ghost.id == BLINKY || ghost.id == PINKY)) {
-			ghost.targetTile = null;
-		} else if (isScatteringPhase(huntingPhase) && ghost.elroy == 0) {
-			ghost.targetTile = game.currentLevel().world.ghostScatterTile(ghost.id);
-		} else {
-			ghost.targetTile = ghostHuntingTarget(ghost.id);
-		}
 	}
 
 	/*
