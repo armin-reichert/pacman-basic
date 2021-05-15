@@ -9,7 +9,6 @@ import static java.lang.Math.abs;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 
 import de.amr.games.pacman.lib.Direction;
@@ -30,18 +29,16 @@ public class Creature extends GameEntity {
 	/** The world where this creature lives. */
 	public PacManGameWorld world;
 
-	/** Relative speed (between 0 and 1). */
+	/** Relative speed (fraction of full speed), value between 0 and 1. */
 	protected double speed = 0.0;
 
-	/**
-	 * The current move direction. Initially, (s)he moves to the right direction :-)
-	 */
-	private Direction dir = RIGHT;
+	/** The current move direction. */
+	protected Direction dir = RIGHT;
 
-	/** The intended move direction that will be taken as soon as possible. */
-	private Direction wishDir = RIGHT;
+	/** The intended move direction. Will be taken as soon as possible. */
+	protected Direction wishDir = RIGHT;
 
-	/** The target tile, can be inaccessible or outside of the world! */
+	/** The target tile. Can be inaccessible or outside of the world. */
 	public V2i targetTile = V2i.NULL;
 
 	/** If the creature entered a new tile with its last movement or placement. */
@@ -175,22 +172,22 @@ public class Creature extends GameEntity {
 		}
 	}
 
-	public void tryMovingTowards(Direction d) {
+	public void tryMovingTowards(Direction direction) {
 		// 100% speed corresponds to 1.25 pixels/tick (75px/sec at 60Hz)
 		final double moveDistance = speed * 1.25f;
 		final V2i tileBefore = tile();
 		final V2d offset = offset();
-		final V2i neighbor = tileBefore.plus(d.vec);
+		final V2i neighbor = tileBefore.plus(direction.vec);
 
-		// check if guy can change its direction at this position
+		// check if guy can turn towards given direction at current position
 		if (forcedOnTrack && canAccessTile(neighbor)) {
-			if (d == LEFT || d == RIGHT) {
+			if (direction == LEFT || direction == RIGHT) {
 				if (abs(offset.y) > moveDistance) {
 					stuck = true;
 					return;
 				}
 				setOffset(offset.x, 0);
-			} else if (d == UP || d == DOWN) {
+			} else if (direction == UP || direction == DOWN) {
 				if (abs(offset.x) > moveDistance) {
 					stuck = true;
 					return;
@@ -199,7 +196,7 @@ public class Creature extends GameEntity {
 			}
 		}
 
-		velocity = new V2d(d.vec).scaled(moveDistance);
+		velocity = new V2d(direction.vec).scaled(moveDistance);
 
 		final V2d newPosition = position.plus(velocity);
 		final V2i newTile = PacManGameWorld.tile(newPosition);
@@ -213,12 +210,12 @@ public class Creature extends GameEntity {
 
 		// align with edge of inaccessible neighbor
 		if (!canAccessTile(neighbor)) {
-			if (d == RIGHT && newOffset.x > 0 || d == LEFT && newOffset.x < 0) {
+			if (direction == RIGHT && newOffset.x > 0 || direction == LEFT && newOffset.x < 0) {
 				setOffset(0, offset.y);
 				stuck = true;
 				return;
 			}
-			if (d == DOWN && newOffset.y > 0 || d == UP && newOffset.y < 0) {
+			if (direction == DOWN && newOffset.y > 0 || direction == UP && newOffset.y < 0) {
 				setOffset(offset.x, 0);
 				stuck = true;
 				return;
@@ -231,11 +228,7 @@ public class Creature extends GameEntity {
 		newTileEntered = !tile().equals(tileBefore);
 	}
 
-	public void selectDirectionTowardsTarget() {
-		newWishDir().ifPresent(this::setWishDir);
-	}
-
-	public void selectRandomDirection() {
+	public void setRandomDirection() {
 		if (!stuck && !world.isIntersection(tile())) {
 			return;
 		}
@@ -251,47 +244,39 @@ public class Creature extends GameEntity {
 		}
 	}
 
-	private Optional<Direction> newWishDir() {
-		if (forced) {
-			forced = false;
-			return Optional.of(wishDir);
-		}
-		if (!stuck && !newTileEntered) {
-			return Optional.empty();
-		}
-		if (world.isPortal(tile())) {
-			return Optional.empty();
-		}
-		return bestDirectionTowardsTargetTile();
-	}
-
 	/**
 	 * As described in the Pac-Man dossier: checks all accessible neighbor tiles in order UP, LEFT,
 	 * DOWN, RIGHT and selects the one with smallest Euclidean distance to the target tile. Reversing
-	 * the current direction is not allowed.
-	 * 
-	 * @return next direction creature wants to take
+	 * the move direction is not allowed.
 	 */
-	private Optional<Direction> bestDirectionTowardsTargetTile() {
+	public void setDirectionTowardsTarget() {
+		if (forced) {
+			forced = false;
+			return;
+		}
+		if (!stuck && !newTileEntered) {
+			return;
+		}
+		if (world.isPortal(tile())) {
+			return;
+		}
 		if (targetTile == null) {
-			return Optional.empty();
+			return;
 		}
 		final V2i currentTile = tile();
 		double minDist = Double.MAX_VALUE;
-		Direction bestDir = null;
-		for (Direction d : PRIORITY) {
-			if (d == dir.opposite()) {
+		for (Direction direction : PRIORITY) {
+			if (direction == dir.opposite()) {
 				continue;
 			}
-			V2i neighbor = currentTile.plus(d.vec);
-			if (canAccessTile(neighbor)) {
-				double dist = neighbor.euclideanDistance(targetTile);
-				if (dist < minDist) {
-					minDist = dist;
-					bestDir = d;
+			final V2i neighborTile = currentTile.plus(direction.vec);
+			if (canAccessTile(neighborTile)) {
+				final double distanceToTargetTile = neighborTile.euclideanDistance(targetTile);
+				if (distanceToTargetTile < minDist) {
+					minDist = distanceToTargetTile;
+					wishDir = direction;
 				}
 			}
 		}
-		return Optional.ofNullable(bestDir);
 	}
 }

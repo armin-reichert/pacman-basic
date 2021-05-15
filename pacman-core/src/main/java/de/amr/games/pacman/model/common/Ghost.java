@@ -94,7 +94,7 @@ public class Ghost extends Creature {
 			state = GhostState.ENTERING_HOUSE;
 			return true;
 		}
-		selectDirectionTowardsTarget();
+		setDirectionTowardsTarget();
 		tryMoving();
 		return false;
 	}

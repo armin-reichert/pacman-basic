@@ -106,7 +106,7 @@ public class Autopilot implements PlayerControl {
 			game.player().targetTile = foodTile;
 		}
 		if (game.player().targetTile != null) {
-			game.player().selectDirectionTowardsTarget();
+			game.player().setDirectionTowardsTarget();
 		}
 	}
 

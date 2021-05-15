@@ -57,7 +57,7 @@ public class MovingBonus extends Bonus {
 				state = INACTIVE;
 				return Info.BONUS_EXPIRED;
 			}
-			selectDirectionTowardsTarget();
+			setDirectionTowardsTarget();
 			tryMoving();
 			return null;
 

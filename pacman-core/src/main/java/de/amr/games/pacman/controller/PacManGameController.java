@@ -593,7 +593,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 				ghost.setSpeed(game.currentLevel().ghostSpeedTunnel);
 			} else {
 				ghost.setSpeed(game.currentLevel().ghostSpeedFrightened);
-				ghost.selectRandomDirection();
+				ghost.setRandomDirection();
 			}
 			ghost.tryMoving();
 			break;
@@ -611,9 +611,9 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			setTargetTile(ghost);
 			if (ghost.targetTile == null) {
 				// this can happen in Ms. Pac-Man
-				ghost.selectRandomDirection();
+				ghost.setRandomDirection();
 			} else {
-				ghost.selectDirectionTowardsTarget();
+				ghost.setDirectionTowardsTarget();
 			}
 			ghost.tryMoving();
 			break;
