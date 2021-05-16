@@ -585,8 +585,8 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 		case LEAVING_HOUSE:
 			ghost.setSpeed(game.currentLevel().ghostSpeed / 2);
-			boolean ghostLeftHouse = ghost.leaveHouse();
-			if (ghostLeftHouse) {
+			boolean leftHouse = ghost.leaveHouse();
+			if (leftHouse) {
 				fireGameEvent(new PacManGameEvent(game, Info.GHOST_LEFT_HOUSE, ghost, ghost.tile()));
 			}
 			break;
@@ -733,11 +733,12 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	private void releaseGhost(Ghost ghost, String reason, Object... args) {
-		ghost.state = LEAVING_HOUSE;
 		if (ghost.id == CLYDE && game.ghost(BLINKY).elroy < 0) {
 			game.ghost(BLINKY).elroy = -game.ghost(BLINKY).elroy; // resume Elroy mode
 			log("Blinky Elroy mode %d resumed", game.ghost(BLINKY).elroy);
 		}
+		ghost.state = LEAVING_HOUSE;
+		fireGameEvent(new PacManGameEvent(game, Info.GHOST_LEAVING_HOUSE, ghost, ghost.tile()));
 		log("Ghost %s released: %s", ghost.name, String.format(reason, args));
 	}
 
