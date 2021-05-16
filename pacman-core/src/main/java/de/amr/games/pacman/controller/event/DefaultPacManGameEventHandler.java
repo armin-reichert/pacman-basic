@@ -26,8 +26,8 @@ public interface DefaultPacManGameEventHandler extends PacManGameEventListener {
 		case GHOST_ENTERS_HOUSE:
 			onGhostEntersHouse(event);
 			return;
-		case GHOST_LEAVES_HOUSE:
-			onGhostLeavesHouse(event);
+		case GHOST_LEFT_HOUSE:
+			onGhostLeftHouse(event);
 			return;
 		case GHOST_RETURNS_HOME:
 			onGhostReturnsHome(event);
@@ -74,7 +74,10 @@ public interface DefaultPacManGameEventHandler extends PacManGameEventListener {
 	default void onGhostReturnsHome(PacManGameEvent e) {
 	}
 
-	default void onGhostLeavesHouse(PacManGameEvent e) {
+	default void onGhostLeavingHouse(PacManGameEvent e) {
+	}
+	
+	default void onGhostLeftHouse(PacManGameEvent e) {
 	}
 
 	default void onPlayerFoundFood(PacManGameEvent e) {

@@ -577,14 +577,17 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 		case ENTERING_HOUSE:
 			ghost.setSpeed(game.currentLevel().ghostSpeed * 2);
-			ghost.enterHouse();
+			boolean leavingHouse = ghost.enterHouse();
+			if (leavingHouse) {
+				fireGameEvent(new PacManGameEvent(game, Info.GHOST_LEAVING_HOUSE, ghost, ghost.tile()));
+			}
 			break;
 
 		case LEAVING_HOUSE:
 			ghost.setSpeed(game.currentLevel().ghostSpeed / 2);
 			boolean ghostLeftHouse = ghost.leaveHouse();
 			if (ghostLeftHouse) {
-				fireGameEvent(new PacManGameEvent(game, Info.GHOST_LEAVES_HOUSE, ghost, ghost.tile()));
+				fireGameEvent(new PacManGameEvent(game, Info.GHOST_LEFT_HOUSE, ghost, ghost.tile()));
 			}
 			break;
 
