@@ -229,7 +229,7 @@ public class Creature extends GameEntity {
 	}
 
 	public void setRandomDirection() {
-		if (!stuck && !world.isIntersection(tile())) {
+		if (!newTileEntered && !stuck) {
 			return;
 		}
 		List<Direction> dirs = new ArrayList<>();

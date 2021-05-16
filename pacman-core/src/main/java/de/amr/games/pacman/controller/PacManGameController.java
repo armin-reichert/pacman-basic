@@ -113,7 +113,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	private boolean gameRunning;
 	private boolean attractMode;
 	private boolean playerImmune;
-	private int huntingPhase;
+	public int huntingPhase;
 
 	private final Autopilot autopilot = new Autopilot();
 	private boolean autoControlled;
@@ -152,17 +152,18 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		fireGameEvent(new PacManGameStateChangeEvent(game, oldState, newState));
 	}
 
+	private void steerPlayer() {
+		if (attractMode) {
+			autopilot.steer(game.player());
+		} else {
+			playerControl.steer(game.player());
+		}
+	}
+
 	/**
 	 * Executes a single simulation step.
 	 */
 	public void step() {
-		if (state == GHOST_DYING || state == HUNTING) {
-			if (attractMode) {
-				autopilot.steer(game.player());
-			} else {
-				playerControl.steer(game.player());
-			}
-		}
 		updateState();
 	}
 
@@ -303,7 +304,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	private void updateHuntingState() {
 		final GameLevel level = game.currentLevel();
 		final Pac player = game.player();
-
+		
 		// Is level complete?
 		if (level.foodRemaining == 0) {
 			changeState(LEVEL_COMPLETE);
@@ -367,6 +368,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		}
 
 		// Move player through world
+		steerPlayer();
 		if (player.restingTicksLeft > 0) {
 			player.restingTicksLeft--;
 		} else {
@@ -416,6 +418,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			resumePreviousState();
 			return;
 		}
+		steerPlayer();
 		game.ghosts().filter(ghost -> ghost.is(DEAD) && ghost.bounty == 0 || ghost.is(GhostState.ENTERING_HOUSE))
 				.forEach(this::updateGhost);
 	}
