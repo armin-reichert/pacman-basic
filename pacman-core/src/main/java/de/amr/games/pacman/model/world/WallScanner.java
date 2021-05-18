@@ -4,16 +4,17 @@ import de.amr.games.pacman.lib.V2i;
 
 /**
  * Scans a world for inaccessible areas and creates a map indicating where walls should be placed.
- * These walls are located at the outside border of the wall blocks.
+ * These walls are located at the outside border of the inaccessible areas. The {@code resolution}
+ * value must be a divisor of the tile size (8, 4, 2, 1) and determines the number of vertical and
+ * horizontal scan lines for each tile. For example, if the resolution is set to 8, each tile is
+ * divided into 64 parts from which the wall structure is computed and each wall will have a
+ * thickness of 1.
  * 
  * @author Armin Reichert
  */
 public class WallScanner {
 
-	private int resolution;
-	private int numBlocksX;
-	private int numBlocksY;
-	private byte[][] wallMap;
+	private final int resolution;
 
 	public WallScanner(int resolution) {
 		this.resolution = resolution;
@@ -40,9 +41,9 @@ public class WallScanner {
 	}
 
 	public byte[][] scan(PacManGameWorld world) {
-		numBlocksX = resolution * world.numCols();
-		numBlocksY = resolution * world.numRows();
-		wallMap = new byte[numBlocksY][numBlocksX];
+		int numBlocksX = resolution * world.numCols();
+		int numBlocksY = resolution * world.numRows();
+		byte[][] wallMap = new byte[numBlocksY][numBlocksX];
 
 		// scan for walls
 		for (int y = 0; y < numBlocksY; ++y) {
