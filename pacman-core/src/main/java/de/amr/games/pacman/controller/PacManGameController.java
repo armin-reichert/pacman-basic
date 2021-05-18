@@ -247,7 +247,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		gameRequested = false;
 		gameRunning = false;
 		attractMode = false;
-		playerControl = ui;
+		setAutoControlled(false);
 	}
 
 	private void updateIntroState() {
