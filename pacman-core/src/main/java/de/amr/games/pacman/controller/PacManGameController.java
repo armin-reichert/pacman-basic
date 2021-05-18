@@ -425,8 +425,12 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	private void exitGhostDyingState() {
 		game.player().setVisible(true);
-		game.ghosts(DEAD).forEach(ghost -> ghost.bounty = 0);
-		game.ghosts(DEAD).forEach(ghost -> fireGameEvent(new PacManGameEvent(game, Info.GHOST_RETURNS_HOME, ghost, null)));
+		// fire event only for ghosts that have just been killed, not for dead ghosts that are already
+		// returning home
+		game.ghosts(DEAD).filter(ghost -> ghost.bounty != 0).forEach(ghost -> {
+			ghost.bounty = 0;
+			fireGameEvent(new PacManGameEvent(game, Info.GHOST_RETURNS_HOME, ghost, null));
+		});
 	}
 
 	private void enterLevelStartingState() {
