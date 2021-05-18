@@ -1,9 +1,14 @@
 package de.amr.games.pacman.model.world;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+
 import de.amr.games.pacman.lib.V2i;
 
 /**
- * Scans a world for inaccessible areas and creates a map indicating where walls should be placed.
+ * Scans a map for inaccessible areas and creates a map indicating where walls should be placed.
  * These walls are located at the outside border of the inaccessible areas. The {@code resolution}
  * value must be a divisor of the tile size (8, 4, 2, 1) and determines the number of vertical and
  * horizontal scan lines for each tile. For example, if the resolution is set to 8, each tile is
@@ -43,13 +48,13 @@ public class WallScanner {
 	public byte[][] scan(PacManGameWorld world) {
 		int numBlocksX = resolution * world.numCols();
 		int numBlocksY = resolution * world.numRows();
-		byte[][] wallMap = new byte[numBlocksY][numBlocksX];
+		byte[][] wm = new byte[numBlocksY][numBlocksX];
 
 		// scan for walls
 		for (int y = 0; y < numBlocksY; ++y) {
 			for (int x = 0; x < numBlocksX; ++x) {
 				V2i tile = new V2i(x / resolution, y / resolution);
-				wallMap[y][x] = world.isWall(tile) ? WallMap.CORNER : WallMap.EMPTY;
+				wm[y][x] = world.isWall(tile) ? WallMap.CORNER : WallMap.EMPTY;
 			}
 		}
 
@@ -70,7 +75,7 @@ public class WallScanner {
 							|| world.isWall(sw) && !world.isWall(ne) || !world.isWall(sw) && world.isWall(ne)) {
 						// keep corner of wall region
 					} else {
-						wallMap[y][x] = WallMap.EMPTY;
+						wm[y][x] = WallMap.EMPTY;
 					}
 				}
 			}
@@ -78,35 +83,90 @@ public class WallScanner {
 
 		// separate horizontal walls, vertical walls and corners
 		for (int y = 0; y < numBlocksY; ++y) {
-			int horizontalWallStart = -1;
+			int blockStartX = -1;
+			int blockLen = 0;
 			for (int x = 0; x < numBlocksX; ++x) {
-				if (wallMap[y][x] != WallMap.EMPTY) {
-					if (horizontalWallStart == -1) {
-						horizontalWallStart = x;
+				if (wm[y][x] == WallMap.CORNER) {
+					if (blockStartX == -1) {
+						blockStartX = x;
+						blockLen = 1;
 					} else {
-						wallMap[y][x] = x < numBlocksX - 1 ? WallMap.HORIZONTAL : WallMap.CORNER;
+						if (x == numBlocksX - 1) {
+							wm[y][x] = WallMap.CORNER;
+						} else {
+							wm[y][x] = WallMap.HORIZONTAL;
+						}
+						++blockLen;
 					}
 				} else {
-					horizontalWallStart = -1;
+					if (blockLen == 1) {
+						wm[y][blockStartX] = WallMap.CORNER;
+					} else if (blockLen > 1) {
+						wm[y][blockStartX + blockLen - 1] = WallMap.CORNER;
+					}
+					blockStartX = -1;
+					blockLen = 0;
 				}
 			}
 		}
 
 		for (int x = 0; x < numBlocksX; ++x) {
-			int verticalWallStart = -1;
+			int blockStartY = -1;
+			int blockLen = 0;
 			for (int y = 0; y < numBlocksY; ++y) {
-				if (wallMap[y][x] != WallMap.EMPTY) {
-					if (verticalWallStart == -1) {
-						verticalWallStart = y;
+				if (wm[y][x] == WallMap.CORNER) {
+					if (blockStartY == -1) {
+						blockStartY = y;
+						blockLen = 1;
 					} else {
-						wallMap[y][x] = (y == numBlocksY - 1) ? WallMap.CORNER : WallMap.VERTICAL;
+						wm[y][x] = (y == numBlocksY - 1) ? WallMap.CORNER : WallMap.VERTICAL;
+						++blockLen;
 					}
 				} else {
-					verticalWallStart = -1;
+					if (blockLen == 1) {
+						wm[blockStartY][x] = WallMap.CORNER;
+					} else if (blockLen > 1) {
+						wm[blockStartY + blockLen - 1][x] = WallMap.CORNER;
+					}
+					blockStartY = -1;
+					blockLen = 0;
 				}
 			}
 		}
 
-		return wallMap;
+		printWallMap(wm);
+
+		return wm;
+	}
+
+	private void printWallMap(byte[][] wallMap) {
+		try {
+			FileWriter w = new FileWriter(new File("wallmap" + System.nanoTime() + ".txt"));
+			PrintWriter p = new PrintWriter(w);
+			for (int y = 0; y < wallMap.length; ++y) {
+				for (int x = 0; x < wallMap[0].length; ++x) {
+					p.print(symbol(wallMap[y][x]));
+				}
+				p.println();
+			}
+			p.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private char symbol(byte b) {
+		switch (b) {
+		case WallMap.CORNER:
+			return '+';
+		case WallMap.EMPTY:
+			return ' ';
+		case WallMap.HORIZONTAL:
+			return '-';
+		case WallMap.VERTICAL:
+			return '|';
+		default:
+			return '?';
+		}
 	}
 }
