@@ -520,9 +520,8 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 				log("%s got power for %d seconds", player.name, powerSeconds);
 				// force ghosts to turn back
 				game.ghosts(HUNTING_PAC).forEach(ghost -> {
-					ghost.setWishDir(ghost.dir().opposite());
-					ghost.forced = true;
 					ghost.state = FRIGHTENED;
+					ghost.forceTurningBack();
 				});
 				// stop HUNTING state timer while player has power
 				stateTimer().stop();
