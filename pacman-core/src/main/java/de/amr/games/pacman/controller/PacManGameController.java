@@ -508,41 +508,38 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	private void onPlayerFoundFood(GameLevel level, Pac player) {
+		level.removeFood(player.tile());
+		player.starvingTicks = 0;
 		if (level.world.isEnergizerTile(player.tile())) {
-			score(PacManGameModel.ENERGIZER_VALUE);
-			player.starvingTicks = 0;
 			player.restingTicksLeft = 3;
+			score(PacManGameModel.ENERGIZER_VALUE);
 			game.resetGhostBounty();
-			int powerSeconds = level.ghostFrightenedSeconds;
-			if (powerSeconds > 0) {
-				player.powerTimer.resetSeconds(powerSeconds);
-				player.powerTimer.start();
-				log("%s got power for %d seconds", player.name, powerSeconds);
-				// force ghosts to turn back
+			if (level.ghostFrightenedSeconds > 0) {
 				game.ghosts(HUNTING_PAC).forEach(ghost -> {
 					ghost.state = FRIGHTENED;
 					ghost.forceTurningBack();
 				});
-				// stop HUNTING state timer while player has power
+				player.powerTimer.resetSeconds(level.ghostFrightenedSeconds);
+				player.powerTimer.start();
+				log("%s got power for %d seconds", player.name, level.ghostFrightenedSeconds);
+				// HUNTING state timer is stopped while player has power
 				stateTimer().stop();
 				log("%s timer stopped", state);
 				fireGameEvent(Info.PLAYER_GAINS_POWER, player.tile());
 			}
 		} else {
-			score(PacManGameModel.PELLET_VALUE);
-			player.starvingTicks = 0;
 			player.restingTicksLeft = 1;
+			score(PacManGameModel.PELLET_VALUE);
 		}
-		level.removeFood(player.tile());
 
-		// Bonus gets edible?
+		// Bonus becomes edible?
 		if (level.eatenFoodCount() == PacManGameModel.FIRST_BONUS_PELLETS_EATEN
 				|| level.eatenFoodCount() == PacManGameModel.SECOND_BONUS_PELLETS_EATEN) {
 			final Bonus bonus = game.bonus();
 			final long bonusTicks = game.variant() == PACMAN ? sec_to_ticks(9 + new Random().nextFloat()) : Long.MAX_VALUE;
-			bonus.activate(bonusTicks);
 			bonus.symbol = level.bonusSymbol;
 			bonus.points = game.bonusValue(bonus.symbol);
+			bonus.activate(bonusTicks);
 			log("Bonus %s (value %d) activated for %d ticks", bonus.symbol, bonus.points, bonusTicks);
 			fireGameEvent(Info.BONUS_ACTIVATED, bonus.tile());
 		}
