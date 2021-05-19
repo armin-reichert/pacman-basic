@@ -43,10 +43,13 @@ public abstract class AbstractGameModel implements PacManGameModel {
 	protected Pac player;
 	protected Ghost[] ghosts;
 	protected Bonus bonus;
+	protected int initialLives;
 	protected int lives;
 	protected int score;
 	protected int hiscoreLevel;
 	protected int hiscorePoints;
+	protected int pelletValue;
+	protected int energizerValue;
 	protected int ghostBounty;
 	protected List<String> levelCounter = new ArrayList<>();
 	protected int globalDotCounter;
@@ -97,6 +100,16 @@ public abstract class AbstractGameModel implements PacManGameModel {
 		if (lives > 0) {
 			lives--;
 		}
+	}
+
+	@Override
+	public int pelletValue() {
+		return pelletValue;
+	}
+
+	@Override
+	public int energizerValue() {
+		return energizerValue;
 	}
 
 	@Override
@@ -214,7 +227,7 @@ public abstract class AbstractGameModel implements PacManGameModel {
 	@Override
 	public void reset() {
 		score = 0;
-		lives = INITIAL_NUM_LIVES;
+		lives = initialLives;
 		createLevel(1);
 		levelCounter.clear();
 		countLevel();

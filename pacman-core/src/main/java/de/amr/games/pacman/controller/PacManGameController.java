@@ -42,8 +42,6 @@ import static de.amr.games.pacman.model.common.Ghost.PINKY;
 import static de.amr.games.pacman.model.common.GhostState.DEAD;
 import static de.amr.games.pacman.model.common.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.common.GhostState.HUNTING_PAC;
-import static de.amr.games.pacman.model.common.GhostState.LEAVING_HOUSE;
-import static de.amr.games.pacman.model.common.GhostState.LOCKED;
 import static java.util.function.Predicate.not;
 
 import java.util.ArrayList;
@@ -512,7 +510,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		player.starvingTicks = 0;
 		if (level.world.isEnergizerTile(player.tile())) {
 			player.restingTicksLeft = 3;
-			score(PacManGameModel.ENERGIZER_VALUE);
+			score(game.energizerValue());
 			game.resetGhostBounty();
 			if (level.ghostFrightenedSeconds > 0) {
 				game.ghosts(HUNTING_PAC).forEach(ghost -> {
@@ -529,7 +527,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			}
 		} else {
 			player.restingTicksLeft = 1;
-			score(PacManGameModel.PELLET_VALUE);
+			score(game.pelletValue());
 		}
 
 		// Bonus becomes edible?
@@ -718,7 +716,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	private void tryReleasingLockedGhosts() {
-		if (game.ghost(BLINKY).is(LOCKED)) {
+		if (game.ghost(BLINKY).is(GhostState.LOCKED)) {
 			game.ghost(BLINKY).state = HUNTING_PAC;
 		}
 		preferredLockedGhostInHouse().ifPresent(ghost -> {
@@ -741,18 +739,18 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			game.ghost(BLINKY).elroy = -game.ghost(BLINKY).elroy; // resume Elroy mode
 			log("Blinky Elroy mode %d resumed", game.ghost(BLINKY).elroy);
 		}
-		ghost.state = LEAVING_HOUSE;
+		ghost.state = GhostState.LEAVING_HOUSE;
 		fireGameEvent(new PacManGameEvent(game, Info.GHOST_LEAVING_HOUSE, ghost, ghost.tile()));
 		log("Ghost %s released: %s", ghost.name, String.format(reason, args));
 	}
 
 	private Optional<Ghost> preferredLockedGhostInHouse() {
-		return Stream.of(PINKY, INKY, CLYDE).map(game::ghost).filter(ghost -> ghost.is(LOCKED)).findFirst();
+		return Stream.of(PINKY, INKY, CLYDE).map(game::ghost).filter(ghost -> ghost.is(GhostState.LOCKED)).findFirst();
 	}
 
 	private void updateGhostDotCounters() {
 		if (game.isGlobalDotCounterEnabled()) {
-			if (game.ghost(CLYDE).is(LOCKED) && game.globalDotCounter() == 32) {
+			if (game.ghost(CLYDE).is(GhostState.LOCKED) && game.globalDotCounter() == 32) {
 				game.enableGlobalDotCounter(false);
 				game.setGlobalDotCounter(0);
 				log("Global dot counter disabled and reset, Clyde was in house when counter reached 32");

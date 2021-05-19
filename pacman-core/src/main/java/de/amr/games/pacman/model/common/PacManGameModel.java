@@ -11,9 +11,6 @@ import de.amr.games.pacman.model.pacman.Bonus;
  */
 public interface PacManGameModel {
 
-	public static final int INITIAL_NUM_LIVES = 3;
-	public static final int PELLET_VALUE = 10;
-	public static final int ENERGIZER_VALUE = 50;
 	public static final int ALL_GHOSTS_KILLED_BONUS = 12000;
 	public static final int FIRST_BONUS_PELLETS_EATEN = 170;
 	public static final int SECOND_BONUS_PELLETS_EATEN = 70;
@@ -61,6 +58,10 @@ public interface PacManGameModel {
 	void addLife();
 
 	void removeLife();
+
+	int energizerValue();
+
+	int pelletValue();
 
 	int score();
 

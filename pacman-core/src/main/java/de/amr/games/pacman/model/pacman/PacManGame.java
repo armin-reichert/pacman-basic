@@ -54,6 +54,9 @@ public class PacManGame extends AbstractGameModel {
 	public PacManGame() {
 		variant = GameVariant.PACMAN;
 		hiscoreFileName = "hiscore-pacman.xml";
+		initialLives = 3;
+		pelletValue = 10;
+		energizerValue = 50;
 		levels = LEVELS;
 		bonusValues = Map.of("CHERRIES", 100, "STRAWBERRY", 300, "PEACH", 500, "APPLE", 700, //
 				"GRAPES", 1000, "GALAXIAN", 2000, "BELL", 3000, "KEY", 5000);
