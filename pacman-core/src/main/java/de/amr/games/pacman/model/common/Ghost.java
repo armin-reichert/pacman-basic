@@ -24,9 +24,6 @@ public class Ghost extends Creature {
 	/** The unique ID of the ghost (0..3). */
 	public final int id;
 
-	/** The readable name of the ghost. */
-	public String name;
-
 	/** The current state of the ghost. */
 	public GhostState state;
 
@@ -50,9 +47,8 @@ public class Ghost extends Creature {
 	}
 
 	public Ghost(int id, String name, PacManGameWorld world) {
-		super(world);
+		super(world, name);
 		this.id = id;
-		this.name = name;
 	}
 
 	public boolean is(GhostState ghostState) {

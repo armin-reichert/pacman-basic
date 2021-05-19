@@ -29,6 +29,9 @@ public class Creature extends GameEntity {
 	/** The world where this creature lives. */
 	public final PacManGameWorld world;
 
+	/** Readable name, for display and logging purposes. */
+	public final String name;
+
 	/** Relative speed (fraction of full speed), value between 0 and 1. */
 	protected double speed = 0.0;
 
@@ -55,8 +58,10 @@ public class Creature extends GameEntity {
 	 */
 	public boolean forcedOnTrack = false;
 
-	public Creature(PacManGameWorld world) {
+	public Creature(PacManGameWorld world, String name) {
 		this.world = world;
+		this.name = name;
+		updateVelocity();
 	}
 
 	/**

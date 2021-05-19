@@ -32,7 +32,7 @@ public class Bonus extends Creature {
 	protected Random random = new Random();
 
 	public Bonus(PacManGameWorld world) {
-		super(world);
+		super(world, "Bonus");
 		init();
 	}
 
