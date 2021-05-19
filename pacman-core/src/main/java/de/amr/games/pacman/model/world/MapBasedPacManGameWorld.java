@@ -105,7 +105,7 @@ public class MapBasedPacManGameWorld implements PacManGameWorld {
 		wallMap = new WallMap() {
 
 			@Override
-			public byte[][] wallInfo() {
+			public byte[][] info() {
 				return map;
 			}
 

@@ -21,8 +21,8 @@ public interface WallMap {
 	int resolution();
 
 	/**
-	 * @return boolean array of size {@code resolution * world.numRows() x resolution * world.numCols()}
-	 *         indicating where a wall should be placed
+	 * @return array of size {@code resolution * world.numRows() x resolution * world.numCols()}
+	 *         indicating where and what kind of wall should be placed
 	 */
-	byte[][] wallInfo();
+	byte[][] info();
 }
