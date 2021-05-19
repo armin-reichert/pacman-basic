@@ -1,6 +1,5 @@
 package de.amr.games.pacman.model.world;
 
-import static de.amr.games.pacman.lib.Logging.log;
 import static java.util.function.Predicate.not;
 
 import java.util.BitSet;
@@ -98,25 +97,7 @@ public class MapBasedPacManGameWorld implements PacManGameWorld {
 	}
 
 	private void createWallMap(int resolution) {
-		long start = System.nanoTime();
-
-		WallScanner scanner = new WallScanner(resolution);
-		byte[][] map = scanner.scan(this);
-		wallMap = new WallMap() {
-
-			@Override
-			public byte[][] info() {
-				return map;
-			}
-
-			@Override
-			public int resolution() {
-				return resolution;
-			}
-		};
-
-		long time = System.nanoTime() - start;
-		log("MapBasedPacManWorld: building wall map took %.2f milliseconds", time * 1e-6);
+		wallMap = new WallScanner(resolution).scan(this);
 	}
 
 	private Stream<V2i> neighbors(V2i tile) {

@@ -1,10 +1,5 @@
 package de.amr.games.pacman.model.world;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-
 import de.amr.games.pacman.lib.V2i;
 
 /**
@@ -45,7 +40,7 @@ public class WallScanner {
 		return new V2i(tileX + dx, tileY);
 	}
 
-	public byte[][] scan(PacManGameWorld world) {
+	public WallMap scan(PacManGameWorld world) {
 		int numBlocksX = resolution * world.numCols();
 		int numBlocksY = resolution * world.numRows();
 		byte[][] wm = new byte[numBlocksY][numBlocksX];
@@ -134,37 +129,33 @@ public class WallScanner {
 			}
 		}
 
-		return wm;
-	}
+		return new WallMap() {
 
-	public static void printWallMap(byte[][] wallMap) {
-		try {
-			FileWriter w = new FileWriter(new File("wallmap" + System.nanoTime() + ".txt"));
-			PrintWriter p = new PrintWriter(w);
-			for (int y = 0; y < wallMap.length; ++y) {
-				for (int x = 0; x < wallMap[0].length; ++x) {
-					p.print(symbol(wallMap[y][x]));
-				}
-				p.println();
+			@Override
+			public int resolution() {
+				return resolution;
 			}
-			p.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+
+			@Override
+			public byte[][] info() {
+				return wm;
+			}
+			
+			@Override
+			public byte get(int x, int y) {
+				return wm[y][x];
+			}
+
+			@Override
+			public int sizeX() {
+				return wm[0].length;
+			}
+
+			@Override
+			public int sizeY() {
+				return wm.length;
+			}
+		};
 	}
 
-	private static char symbol(byte b) {
-		switch (b) {
-		case WallMap.CORNER:
-			return '+';
-		case WallMap.EMPTY:
-			return ' ';
-		case WallMap.HORIZONTAL:
-			return '-';
-		case WallMap.VERTICAL:
-			return '|';
-		default:
-			return '?';
-		}
-	}
 }
