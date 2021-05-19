@@ -50,9 +50,9 @@ public class Ghost extends Creature {
 	}
 
 	public Ghost(int id, String name, PacManGameWorld world) {
+		super(world);
 		this.id = id;
 		this.name = name;
-		this.world = world;
 	}
 
 	public boolean is(GhostState ghostState) {

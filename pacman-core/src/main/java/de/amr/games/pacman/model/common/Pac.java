@@ -31,7 +31,7 @@ public class Pac extends Creature {
 	}
 
 	public Pac(String name, PacManGameWorld world) {
+		super(world);
 		this.name = name;
-		this.world = world;
 	}
 }

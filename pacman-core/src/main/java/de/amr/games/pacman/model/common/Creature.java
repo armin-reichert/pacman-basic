@@ -27,7 +27,7 @@ public class Creature extends GameEntity {
 	private static final Direction[] PRIORITY = { UP, LEFT, DOWN, RIGHT };
 
 	/** The world where this creature lives. */
-	public PacManGameWorld world;
+	public final PacManGameWorld world;
 
 	/** Relative speed (fraction of full speed), value between 0 and 1. */
 	protected double speed = 0.0;
@@ -54,6 +54,10 @@ public class Creature extends GameEntity {
 	 * If movement is constrained to be aligned with the "track" defined by the tiles.
 	 */
 	public boolean forcedOnTrack = false;
+
+	public Creature(PacManGameWorld world) {
+		this.world = world;
+	}
 
 	/**
 	 * Places this creature at the given tile with the given position offsets. Sets the

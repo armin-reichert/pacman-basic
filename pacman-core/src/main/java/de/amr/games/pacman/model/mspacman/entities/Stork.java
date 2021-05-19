@@ -9,4 +9,7 @@ import de.amr.games.pacman.model.common.Creature;
  */
 public class Stork extends Creature {
 
+	public Stork() {
+		super(null); // no world
+	}
 }
