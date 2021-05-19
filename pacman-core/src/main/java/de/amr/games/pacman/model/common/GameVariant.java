@@ -1,7 +1,7 @@
 package de.amr.games.pacman.model.common;
 
 /**
- * Game types that can be played.
+ * Game variants that can be played.
  * 
  * @author Armin Reichert
  */
