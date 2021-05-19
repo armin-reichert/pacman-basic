@@ -134,12 +134,10 @@ public class WallScanner {
 			}
 		}
 
-		printWallMap(wm);
-
 		return wm;
 	}
 
-	private void printWallMap(byte[][] wallMap) {
+	public static void printWallMap(byte[][] wallMap) {
 		try {
 			FileWriter w = new FileWriter(new File("wallmap" + System.nanoTime() + ".txt"));
 			PrintWriter p = new PrintWriter(w);
@@ -155,7 +153,7 @@ public class WallScanner {
 		}
 	}
 
-	private char symbol(byte b) {
+	private static char symbol(byte b) {
 		switch (b) {
 		case WallMap.CORNER:
 			return '+';
