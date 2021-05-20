@@ -1,5 +1,7 @@
 package de.amr.games.pacman.model.mspacman.entities;
 
+import java.util.Random;
+
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent.Info;
 import de.amr.games.pacman.lib.Direction;
@@ -31,6 +33,7 @@ public class MovingBonus extends Bonus {
 	public void activate(long ticks) {
 		super.activate(ticks);
 		int numPortals = world.portals().size();
+		Random random = new Random();
 		Portal randomPortal = world.portals().get(random.nextInt(numPortals));
 		if (random.nextBoolean()) {
 			placeAt(randomPortal.left, 0, 0);

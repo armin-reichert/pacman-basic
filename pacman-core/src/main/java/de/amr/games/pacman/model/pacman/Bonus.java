@@ -1,7 +1,5 @@
 package de.amr.games.pacman.model.pacman;
 
-import java.util.Random;
-
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent.Info;
 import de.amr.games.pacman.model.common.Creature;
@@ -28,8 +26,6 @@ public class Bonus extends Creature {
 	public long timer;
 
 	public int state;
-
-	protected Random random = new Random();
 
 	public Bonus(PacManGameWorld world) {
 		super(world, "Bonus");
