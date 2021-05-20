@@ -12,7 +12,7 @@ import de.amr.games.pacman.lib.V2i;
  * 
  * @author Armin Reichert
  */
-public class WallScanner {
+class WallScanner {
 
 	private final int resolution;
 
@@ -40,7 +40,7 @@ public class WallScanner {
 		return new V2i(tileX + dx, tileY);
 	}
 
-	public WallMap scan(PacManGameWorld world) {
+	WallMap scan(PacManGameWorld world) {
 		int numBlocksX = resolution * world.numCols();
 		int numBlocksY = resolution * world.numRows();
 		byte[][] wm = new byte[numBlocksY][numBlocksX];
@@ -128,34 +128,6 @@ public class WallScanner {
 				}
 			}
 		}
-
-		return new WallMap() {
-
-			@Override
-			public int resolution() {
-				return resolution;
-			}
-
-			@Override
-			public byte[][] info() {
-				return wm;
-			}
-			
-			@Override
-			public byte get(int x, int y) {
-				return wm[y][x];
-			}
-
-			@Override
-			public int sizeX() {
-				return wm[0].length;
-			}
-
-			@Override
-			public int sizeY() {
-				return wm.length;
-			}
-		};
+		return new WallMap(resolution, wm);
 	}
-
 }

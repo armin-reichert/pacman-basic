@@ -8,24 +8,12 @@ import java.io.Writer;
  * 
  * @author Armin Reichert
  */
-public interface WallMap {
+public class WallMap {
 
 	public static final byte EMPTY = 0;
 	public static final byte CORNER = 1;
 	public static final byte HORIZONTAL = 2;
 	public static final byte VERTICAL = 3;
-
-	default void print(Writer w, boolean symbols) {
-		byte[][] info = info();
-		try (PrintWriter p = new PrintWriter(w)) {
-			for (int y = 0; y < info.length; ++y) {
-				for (int x = 0; x < info[0].length; ++x) {
-					p.print(symbols ? String.valueOf(symbol(get(x, y))) : get(x, y));
-				}
-				p.println();
-			}
-		}
-	}
 
 	private static char symbol(byte b) {
 		switch (b) {
@@ -42,23 +30,38 @@ public interface WallMap {
 		}
 	}
 
-	/**
-	 * Resolution of this wall map. Each tile is divided into this number of blocks horizontally and
-	 * vertically.
-	 * 
-	 * @return resolution of this map
-	 */
-	int resolution();
+	public static WallMap build(int resolution, PacManGameWorld world) {
+		return new WallScanner(resolution).scan(world);
+	}
 
-	/**
-	 * @return array of size {@code resolution * world.numRows() x resolution * world.numCols()}
-	 *         indicating where and what kind of wall should be placed
-	 */
-	byte[][] info();
+	public final int resolution;
+	public final byte[][] info;
 
-	byte get(int x, int y);
+	public WallMap(int resolution, byte[][] info) {
+		this.resolution = resolution;
+		this.info = info;
+	}
 
-	int sizeX();
+	public byte get(int x, int y) {
+		return info[y][x];
+	}
 
-	int sizeY();
+	public int sizeX() {
+		return info[0].length;
+	}
+
+	public int sizeY() {
+		return info.length;
+	}
+
+	public void print(Writer w, boolean symbols) {
+		try (PrintWriter p = new PrintWriter(w)) {
+			for (int y = 0; y < info.length; ++y) {
+				for (int x = 0; x < info[0].length; ++x) {
+					p.print(symbols ? String.valueOf(symbol(get(x, y))) : get(x, y));
+				}
+				p.println();
+			}
+		}
+	}
 }
