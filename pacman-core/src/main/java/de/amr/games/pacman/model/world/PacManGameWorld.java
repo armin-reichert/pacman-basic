@@ -60,16 +60,6 @@ public interface PacManGameWorld {
 	Optional<WorldMap> getMap();
 
 	/**
-	 * Optional information where walls should be placed around inaccessible areas.
-	 * 
-	 * @param resolution resolution of wall map
-	 * @return optional wall map
-	 */
-	default Optional<WallMap> getWallMap(int resolution) {
-		return Optional.empty();
-	}
-
-	/**
 	 * @return all tiles in the world in order top to bottom, left-to-right.
 	 */
 	default Stream<V2i> tiles() {

@@ -21,7 +21,6 @@ import de.amr.games.pacman.lib.V2i;
 public class MapBasedPacManGameWorld implements PacManGameWorld {
 
 	private WorldMap map;
-	private WallMap wallMap;
 	private V2i size;
 	private V2i house_top_left;
 	private V2i house_bottom_right;
@@ -41,7 +40,6 @@ public class MapBasedPacManGameWorld implements PacManGameWorld {
 
 	public void setMap(WorldMap map) {
 		this.map = map;
-		wallMap = null; // invalidate
 
 		size = map.vector("size");
 		house_top_left = map.vector("house_top_left");
@@ -86,18 +84,6 @@ public class MapBasedPacManGameWorld implements PacManGameWorld {
 	@Override
 	public Optional<WorldMap> getMap() {
 		return Optional.of(map);
-	}
-
-	@Override
-	public Optional<WallMap> getWallMap(int resolution) {
-		if (wallMap == null || wallMap.resolution() != resolution) {
-			createWallMap(resolution);
-		}
-		return Optional.of(wallMap);
-	}
-
-	private void createWallMap(int resolution) {
-		wallMap = new WallScanner(resolution).scan(this);
 	}
 
 	private Stream<V2i> neighbors(V2i tile) {
