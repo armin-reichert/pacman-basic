@@ -98,21 +98,22 @@ import de.amr.games.pacman.ui.PacManGameUI;
  */
 public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
+	// in same order as in enum type GameVariant
 	private final PacManGameModel[] games = { new MsPacManGame(), new PacManGame() };
-	private final List<PacManGameEventListener> gameEventListeners = new ArrayList<>();
 
 	private PacManGameModel game;
 	private PacManGameUI ui;
-	private PlayerControl playerControl;
 
+	private boolean autoControlled;
 	private boolean gameRequested;
 	private boolean gameRunning;
 	private boolean attractMode;
 	private boolean playerImmune;
 	public int huntingPhase;
 
-	private boolean autoControlled;
 	private final Autopilot autopilot = new Autopilot(this::game);
+
+	private final List<PacManGameEventListener> gameEventListeners = new ArrayList<>();
 
 	public PacManGameController() {
 		super(PacManGameState.class, PacManGameState.values());
@@ -141,16 +142,10 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	private void steerPlayer() {
-		if (attractMode) {
-			autopilot.steer(game.player());
-		} else {
-			playerControl.steer(game.player());
-		}
+		PlayerControl playerControl = autoControlled || attractMode ? autopilot : ui;
+		playerControl.steer(game.player());
 	}
 
-	/**
-	 * Executes a single simulation step.
-	 */
 	public void step() {
 		updateState();
 	}
@@ -164,13 +159,20 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			gameEventListeners.remove(ui);
 		}
 		ui = gameUI;
-		playerControl = ui;
 		gameEventListeners.add(ui);
 	}
 
-	public void selectGame(GameVariant variant) {
+	public void selectGameVariant(GameVariant variant) {
 		game = games[variant.ordinal()];
 		changeState(INTRO);
+	}
+
+	public void toggleGameVariant() {
+		selectGameVariant(game().variant() == MS_PACMAN ? PACMAN : MS_PACMAN);
+	}
+
+	public PacManGameModel game() {
+		return game;
 	}
 
 	public void startGame() {
@@ -180,21 +182,12 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		}
 	}
 
-	public void toggleGameVariant() {
-		selectGame(game().variant() == MS_PACMAN ? PACMAN : MS_PACMAN);
-	}
-
-	public PacManGameModel game() {
-		return game;
-	}
-
 	public boolean isAutoControlled() {
 		return autoControlled;
 	}
 
 	public void setAutoControlled(boolean autoControlled) {
 		this.autoControlled = autoControlled;
-		playerControl = autoControlled ? autopilot : ui;
 	}
 
 	public boolean isAttractMode() {
@@ -213,13 +206,13 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		this.playerImmune = playerImmune;
 	}
 
-	public void killGhosts() {
+	public void cheatKillGhosts() {
 		game.resetGhostBounty();
 		game.ghosts().filter(ghost -> ghost.is(HUNTING_PAC) || ghost.is(FRIGHTENED)).forEach(this::killGhost);
 		changeState(GHOST_DYING);
 	}
 
-	public void eatAllPellets() {
+	public void cheatEatAllPellets() {
 		game.currentLevel().world.tiles()//
 				.filter(not(game.currentLevel().world::isEnergizerTile))//
 				.forEach(game.currentLevel()::removeFood);
@@ -240,7 +233,6 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	private void updateIntroState() {
 		if (stateTimer().hasExpired()) {
 			attractMode = true;
-			playerControl = autopilot;
 			changeState(READY);
 		}
 	}
