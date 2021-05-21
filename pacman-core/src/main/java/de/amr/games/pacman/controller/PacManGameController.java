@@ -227,7 +227,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		gameRequested = false;
 		gameRunning = false;
 		attractMode = false;
-		setAutoControlled(false);
+		autoControlled = false;
 	}
 
 	private void updateIntroState() {
@@ -264,12 +264,12 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		}
 		stateTimer().start();
 		boolean scattering = isScatteringPhase(phase);
+		String phaseName = scattering ? "Scattering" : "Chasing";
+		log("Hunting phase #%d (%s) started, %d of %d ticks remaining", phase, phaseName, stateTimer().ticksRemaining(),
+				stateTimer().duration());
 		if (scattering) {
 			fireGameEvent(new ScatterPhaseStartedEvent(game, phase / 2));
 		}
-		String phaseType = scattering ? "Scattering" : "Chasing";
-		log("Hunting phase #%d (%s) started, %d of %d ticks remaining", phase, phaseType, stateTimer().ticksRemaining(),
-				stateTimer().duration());
 	}
 
 	public static boolean isScatteringPhase(int phase) {
@@ -280,9 +280,18 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		startHuntingPhase(0);
 	}
 
+	// here is the main logic of the game play
 	private void updateHuntingState() {
+
 		final GameLevel level = game.currentLevel();
 		final Pac player = game.player();
+
+		// Is hunting phase complete?
+		if (stateTimer().hasExpired()) {
+			game.ghosts(HUNTING_PAC).forEach(Ghost::forceTurningBack);
+			startHuntingPhase(++huntingPhase);
+			return;
+		}
 
 		// Is level complete?
 		if (level.foodRemaining == 0) {
@@ -292,20 +301,20 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 		// Is player killing ghost(s)?
 		List<Ghost> prey = game.ghosts(FRIGHTENED).filter(player::meets).collect(Collectors.toList());
-		if (prey.size() > 0) {
+		if (!prey.isEmpty()) {
 			prey.forEach(this::killGhost);
 			changeState(GHOST_DYING);
 			return;
 		}
 
 		// Is player getting killed by a ghost?
-		if (!playerImmune || attractMode) {
+		if (attractMode || !playerImmune) {
 			Optional<Ghost> killer = game.ghosts(HUNTING_PAC).filter(player::meets).findAny();
 			if (killer.isPresent()) {
-				log("%s got killed by %s at tile %s", player.name, killer.get().name, player.tile());
 				player.dead = true;
-				// Elroy mode gets disabled when player gets killed
-				int elroyMode = game.ghost(BLINKY).elroy;
+				log("%s got killed by %s at tile %s", player.name, killer.get().name, player.tile());
+				// Elroy mode gets disabled when player is killed
+				final int elroyMode = game.ghost(BLINKY).elroy;
 				if (elroyMode > 0) {
 					game.ghost(BLINKY).elroy = -elroyMode; // negative value means "disabled"
 					log("Elroy mode %d for Blinky has been disabled", elroyMode);
@@ -318,12 +327,6 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			}
 		}
 
-		// Is hunting phase (chasing, scattering) complete?
-		if (stateTimer().hasExpired()) {
-			game.ghosts(HUNTING_PAC).forEach(Ghost::forceTurningBack);
-			startHuntingPhase(++huntingPhase);
-		}
-
 		// Did player find food?
 		if (level.containsFood(player.tile())) {
 			onPlayerFoundFood(level, player);
@@ -331,7 +334,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			player.starvingTicks++;
 		}
 
-		// Consume power
+		// Consume power?
 		if (player.powerTimer.isRunning()) {
 			player.powerTimer.tick();
 			if (player.powerTimer.ticksRemaining() == sec_to_ticks(1)) {
