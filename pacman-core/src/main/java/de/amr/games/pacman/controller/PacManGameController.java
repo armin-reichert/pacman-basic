@@ -117,15 +117,15 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	public PacManGameController() {
 		super(PacManGameState.class, PacManGameState.values());
-		configure(INTRO, this::enterIntroState, this::updateIntroState, null);
-		configure(READY, this::enterReadyState, this::updateReadyState, null);
-		configure(HUNTING, this::enterHuntingState, this::updateHuntingState, null);
-		configure(GHOST_DYING, this::enterGhostDyingState, this::updateGhostDyingState, this::exitGhostDyingState);
-		configure(PACMAN_DYING, this::enterPacManDyingState, this::updatePacManDyingState, null);
-		configure(LEVEL_STARTING, this::enterLevelStartingState, this::updateLevelStartingState, null);
-		configure(LEVEL_COMPLETE, this::enterLevelCompleteState, this::updateLevelCompleteState, null);
-		configure(INTERMISSION, this::enterIntermissionState, this::updateIntermissionState, null);
-		configure(GAME_OVER, this::enterGameOverState, this::updateGameOverState, null);
+		configure(INTRO, this::state_Intro_enter, this::state_Intro_update, null);
+		configure(READY, this::state_Ready_enter, this::state_Ready_update, null);
+		configure(HUNTING, this::state_Hunting_enter, this::state_Hunting_update, null);
+		configure(GHOST_DYING, this::state_GhostDying_enter, this::state_GhostDying_update, this::state_GhostDying_exit);
+		configure(PACMAN_DYING, this::state_PacManDying_enter, this::state_PacManDying_update, null);
+		configure(LEVEL_STARTING, this::state_LevelStarting_enter, this::state_LevelStarting_update, null);
+		configure(LEVEL_COMPLETE, this::state_LevelComplete_enter, this::state_LevelComplete_update, null);
+		configure(INTERMISSION, this::state_Intermission_enter, this::state_Intermission_update, null);
+		configure(GAME_OVER, this::state_GameOver_enter, this::state_GameOver_update, null);
 	}
 
 	private void fireGameEvent(PacManGameEvent gameEvent) {
@@ -221,7 +221,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	// BEGIN STATE-MACHINE METHODS
 
-	private void enterIntroState() {
+	private void state_Intro_enter() {
 		stateTimer().reset();
 		game.reset();
 		gameRequested = false;
@@ -230,19 +230,19 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		autoControlled = false;
 	}
 
-	private void updateIntroState() {
+	private void state_Intro_update() {
 		if (stateTimer().hasExpired()) {
 			attractMode = true;
 			changeState(READY);
 		}
 	}
 
-	private void enterReadyState() {
+	private void state_Ready_enter() {
 		game.resetGuys();
 		stateTimer().reset(sec_to_ticks(6));
 	}
 
-	private void updateReadyState() {
+	private void state_Ready_update() {
 		if (stateTimer().ticksRemaining() == sec_to_ticks(1)) {
 			game.player().setVisible(true);
 			game.ghosts().forEach(ghost -> ghost.setVisible(true));
@@ -276,12 +276,12 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		return phase % 2 == 0;
 	}
 
-	private void enterHuntingState() {
+	private void state_Hunting_enter() {
 		startHuntingPhase(0);
 	}
 
 	// here is the main logic of the game play
-	private void updateHuntingState() {
+	private void state_Hunting_update() {
 
 		final GameLevel level = game.currentLevel();
 		final Pac player = game.player();
@@ -375,14 +375,14 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		}
 	}
 
-	private void enterPacManDyingState() {
+	private void state_PacManDying_enter() {
 		game.player().setSpeed(0);
 		game.ghosts(FRIGHTENED).forEach(ghost -> ghost.state = HUNTING_PAC);
 		game.bonus().init();
 		stateTimer().resetSeconds(5); // TODO
 	}
 
-	private void updatePacManDyingState() {
+	private void state_PacManDying_update() {
 		if (stateTimer().hasExpired()) {
 			game.removeLife();
 			changeState(attractMode ? INTRO : game.lives() > 0 ? READY : GAME_OVER);
@@ -390,12 +390,12 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		}
 	}
 
-	private void enterGhostDyingState() {
+	private void state_GhostDying_enter() {
 		stateTimer().resetSeconds(1);
 		game.player().setVisible(false);
 	}
 
-	private void updateGhostDyingState() {
+	private void state_GhostDying_update() {
 		if (stateTimer().hasExpired()) {
 			resumePreviousState();
 			return;
@@ -405,7 +405,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 				.forEach(this::updateGhost);
 	}
 
-	private void exitGhostDyingState() {
+	private void state_GhostDying_exit() {
 		game.player().setVisible(true);
 		// fire event only for ghosts that have just been killed, not for dead ghosts that are already
 		// returning home
@@ -415,7 +415,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		});
 	}
 
-	private void enterLevelStartingState() {
+	private void state_LevelStarting_enter() {
 		stateTimer().reset();
 		log("Level %d complete, entering level %d", game.currentLevel().number, game.currentLevel().number + 1);
 		game.createLevel(game.currentLevel().number + 1);
@@ -423,19 +423,19 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		game.resetGuys();
 	}
 
-	private void updateLevelStartingState() {
+	private void state_LevelStarting_update() {
 		if (stateTimer().hasExpired()) {
 			changeState(READY);
 		}
 	}
 
-	private void enterLevelCompleteState() {
+	private void state_LevelComplete_enter() {
 		game.bonus().init();
 		game.player().setSpeed(0);
 		stateTimer().reset();
 	}
 
-	private void updateLevelCompleteState() {
+	private void state_LevelComplete_update() {
 		if (stateTimer().hasExpired()) {
 			if (attractMode) {
 				changeState(INTRO);
@@ -445,7 +445,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		}
 	}
 
-	private void enterGameOverState() {
+	private void state_GameOver_enter() {
 		gameRunning = false;
 		game.ghosts().forEach(ghost -> ghost.setSpeed(0));
 		game.player().setSpeed(0);
@@ -453,18 +453,18 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		stateTimer().resetSeconds(5);
 	}
 
-	private void updateGameOverState() {
+	private void state_GameOver_update() {
 		if (stateTimer().hasExpired()) {
 			changeState(INTRO);
 		}
 	}
 
-	private void enterIntermissionState() {
+	private void state_Intermission_enter() {
 		log("Starting intermission #%d", game.intermissionNumber());
 		stateTimer().reset(); // UI triggers timeout
 	}
 
-	private void updateIntermissionState() {
+	private void state_Intermission_update() {
 		if (stateTimer().hasExpired()) {
 			changeState(attractMode || !gameRunning ? INTRO : LEVEL_STARTING);
 		}
