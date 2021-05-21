@@ -106,6 +106,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	private PacManGameModel game;
 	private PacManGameUI ui;
+	private PlayerControl playerControl;
 
 	private boolean gameRequested;
 	private boolean gameRunning;
@@ -113,9 +114,8 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	private boolean playerImmune;
 	public int huntingPhase;
 
-	private final Autopilot autopilot = new Autopilot();
 	private boolean autoControlled;
-	private PlayerControl playerControl;
+	private final Autopilot autopilot = new Autopilot(this::game);
 
 	/**
 	 * Configures this state machine.
@@ -131,7 +131,6 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		configure(LEVEL_COMPLETE, this::enterLevelCompleteState, this::updateLevelCompleteState, null);
 		configure(INTERMISSION, this::enterIntermissionState, this::updateIntermissionState, null);
 		configure(GAME_OVER, this::enterGameOverState, this::updateGameOverState, null);
-		autopilot.setGame(game);
 	}
 
 	private void fireGameEvent(PacManGameEvent gameEvent) {
@@ -180,7 +179,6 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	public void selectGame(GameVariant variant) {
 		game = games[variant.ordinal()];
-		autopilot.setGame(game);
 		changeState(INTRO);
 	}
 
