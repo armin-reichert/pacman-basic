@@ -18,6 +18,10 @@ import de.amr.games.pacman.lib.TickTimerEvent.Type;
  */
 public class TickTimer {
 
+	public static final long sec_to_ticks(double sec) {
+		return Math.round(sec * 60);
+	}
+
 	public enum TickTimerState {
 		READY, RUNNING, STOPPED, EXPIRED;
 	}

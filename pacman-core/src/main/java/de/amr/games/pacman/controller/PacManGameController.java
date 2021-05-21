@@ -33,6 +33,7 @@ import static de.amr.games.pacman.controller.PacManGameState.LEVEL_STARTING;
 import static de.amr.games.pacman.controller.PacManGameState.PACMAN_DYING;
 import static de.amr.games.pacman.controller.PacManGameState.READY;
 import static de.amr.games.pacman.lib.Logging.log;
+import static de.amr.games.pacman.lib.TickTimer.sec_to_ticks;
 import static de.amr.games.pacman.model.common.GameVariant.MS_PACMAN;
 import static de.amr.games.pacman.model.common.GameVariant.PACMAN;
 import static de.amr.games.pacman.model.common.Ghost.BLINKY;
@@ -97,10 +98,6 @@ import de.amr.games.pacman.ui.PacManGameUI;
  */
 public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
-	private static final long sec_to_ticks(double sec) {
-		return Math.round(sec * 60);
-	}
-
 	private final PacManGameModel[] games = { new MsPacManGame(), new PacManGame() };
 	private final List<PacManGameEventListener> gameEventListeners = new ArrayList<>();
 
@@ -117,9 +114,6 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	private boolean autoControlled;
 	private final Autopilot autopilot = new Autopilot(this::game);
 
-	/**
-	 * Configures this state machine.
-	 */
 	public PacManGameController() {
 		super(PacManGameState.class, PacManGameState.values());
 		configure(INTRO, this::enterIntroState, this::updateIntroState, null);
@@ -141,9 +135,6 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		fireGameEvent(new PacManGameEvent(game, info, null, tile));
 	}
 
-	/**
-	 * Maps state change event to game event.
-	 */
 	@Override
 	protected void fireStateChange(PacManGameState oldState, PacManGameState newState) {
 		fireGameEvent(new PacManGameStateChangeEvent(game, oldState, newState));
