@@ -636,7 +636,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		game.increaseNextGhostBounty();
 		game.currentLevel().numGhostsKilled++;
 		if (game.currentLevel().numGhostsKilled == 16) {
-			score(PacManGameModel.ALL_GHOSTS_KILLED_BONUS);
+			score(12000);
 		}
 		log("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name, ghost.tile(), ghost.bounty);
 	}

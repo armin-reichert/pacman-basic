@@ -11,8 +11,6 @@ import de.amr.games.pacman.model.pacman.Bonus;
  */
 public interface PacManGameModel {
 
-	public static final int ALL_GHOSTS_KILLED_BONUS = 12000;
-
 	/**
 	 * @return the game variant identifier
 	 */
@@ -74,7 +72,7 @@ public interface PacManGameModel {
 	void setHiscoreLevel(int number);
 
 	void saveHiscore();
-	
+
 	boolean isBonusReached();
 
 	void reset();
