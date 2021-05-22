@@ -14,9 +14,5 @@ public interface PacManGameUI extends DefaultPacManGameEventHandler, PlayerContr
 
 	void update();
 
-	void showFlashMessage(String message, double seconds);
-
-	default void showFlashMessage(String message) {
-		showFlashMessage(message, 1);
-	}
+	void showFlashMessage(double seconds, String message, Object... args);
 }
