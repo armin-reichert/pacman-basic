@@ -514,18 +514,6 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			score(game.pelletValue());
 		}
 
-		// Bonus becomes edible?
-		if (level.eatenFoodCount() == PacManGameModel.FIRST_BONUS_PELLETS_EATEN
-				|| level.eatenFoodCount() == PacManGameModel.SECOND_BONUS_PELLETS_EATEN) {
-			final Bonus bonus = game.bonus();
-			final long bonusTicks = game.variant() == PACMAN ? sec_to_ticks(9 + new Random().nextFloat()) : Long.MAX_VALUE;
-			bonus.symbol = level.bonusSymbol;
-			bonus.points = game.bonusValue(bonus.symbol);
-			bonus.activate(bonusTicks);
-			log("Bonus %s (value %d) activated for %d ticks", bonus.symbol, bonus.points, bonusTicks);
-			fireGameEvent(Info.BONUS_ACTIVATED, bonus.tile());
-		}
-
 		// Blinky becomes Elroy?
 		if (level.foodRemaining == level.elroy1DotsLeft) {
 			game.ghost(BLINKY).elroy = 1;
@@ -533,6 +521,17 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		} else if (level.foodRemaining == level.elroy2DotsLeft) {
 			game.ghost(BLINKY).elroy = 2;
 			log("Blinky becomes Cruise Elroy 2");
+		}
+
+		// Is bonus awarded?
+		if (game.isBonusReached()) {
+			final Bonus bonus = game.bonus();
+			final long bonusTicks = game.variant() == PACMAN ? sec_to_ticks(9 + new Random().nextFloat()) : Long.MAX_VALUE;
+			bonus.symbol = level.bonusSymbol;
+			bonus.points = game.bonusValue(bonus.symbol);
+			bonus.activate(bonusTicks);
+			log("Bonus %s (value %d) activated for %d ticks", bonus.symbol, bonus.points, bonusTicks);
+			fireGameEvent(Info.BONUS_ACTIVATED, bonus.tile());
 		}
 
 		updateGhostDotCounters();

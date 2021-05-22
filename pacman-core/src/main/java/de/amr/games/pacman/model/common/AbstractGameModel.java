@@ -188,6 +188,11 @@ public abstract class AbstractGameModel implements PacManGameModel {
 	}
 
 	@Override
+	public boolean isBonusReached() {
+		return currentLevel.eatenFoodCount() == 70 || currentLevel.eatenFoodCount() == 170;
+	}
+
+	@Override
 	public void resetGuys() {
 		final PacManGameWorld world = currentLevel.world;
 		player.placeAt(world.playerHomeTile(), HTS, 0);
