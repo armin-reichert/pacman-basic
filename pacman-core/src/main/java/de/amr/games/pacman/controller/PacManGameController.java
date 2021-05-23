@@ -288,7 +288,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 		// Is hunting phase complete?
 		if (stateTimer().hasExpired()) {
-			game.ghosts(HUNTING_PAC).forEach(Ghost::forceTurningBack);
+			game.ghosts().filter(ghost -> ghost.is(HUNTING_PAC) || ghost.is(FRIGHTENED)).forEach(Ghost::forceTurningBack);
 			startHuntingPhase(++huntingPhase);
 			return;
 		}
