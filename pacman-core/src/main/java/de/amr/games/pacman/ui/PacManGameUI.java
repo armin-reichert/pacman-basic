@@ -10,8 +10,6 @@ import de.amr.games.pacman.controller.event.DefaultPacManGameEventHandler;
  */
 public interface PacManGameUI extends DefaultPacManGameEventHandler, PlayerControl {
 
-	void reset();
-
 	void update();
 
 	void showFlashMessage(double seconds, String message, Object... args);
