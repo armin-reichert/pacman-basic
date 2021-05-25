@@ -8,8 +8,8 @@ This implementation follows the Model-View-Controller pattern.
 - The UI is decoupled from the controller by a small interface [PacManGameUI](pacman-core/src/main/java/de/amr/games/pacman/ui/PacManGameUI.java) and by a [game event listener](pacman-core/src/main/java/de/amr/games/pacman/controller/event/PacManGameEventListener.java) interface.
 
 The strict separation should enable developers to create different user interfaces for Pac-Man and Ms. Pac-Man without having to recreate the details of the game logic. As proof of concept I implemented the following two UI variants: 
-- A Swing UI implementation is provided in repository [pacman-ui-swing](https://github.com/armin-reichert/pacman-ui-swing).
-- A JavaFX UI implementation with play scenes in 2D and 3D is available in repository [pacman-javafx](https://github.com/armin-reichert/pacman-javafx).
+- A Swing UI implementation, see repository [pacman-ui-swing](https://github.com/armin-reichert/pacman-ui-swing).
+- A JavaFX UI implementation with play scenes in 2D and 3D, see repository [pacman-javafx](https://github.com/armin-reichert/pacman-javafx).
 
 YouTube:
 
