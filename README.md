@@ -13,7 +13,7 @@ The strict separation should enable developers to create different user interfac
 
 YouTube:
 
-[![YouTube video](pacman-core/doc/playing.png)](https://www.youtube.com/watch?v=t529vDUtCT0&t=125s)
+[![YouTube video](pacman-core/doc/thumbnail.jpg)](https://www.youtube.com/watch?v=t529vDUtCT0&t=125s)
 
 
 ### Build
