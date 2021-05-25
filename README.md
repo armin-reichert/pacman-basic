@@ -15,6 +15,7 @@ YouTube:
 
 [![YouTube video](pacman-core/doc/playing.png)](https://youtu.be/q5biOTj9GIU)
 
+
 ### Build
 `mvn clean install`
 
