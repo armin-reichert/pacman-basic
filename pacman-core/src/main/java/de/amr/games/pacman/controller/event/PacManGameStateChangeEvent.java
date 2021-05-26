@@ -8,7 +8,8 @@ public class PacManGameStateChangeEvent extends PacManGameEvent {
 	public final PacManGameState oldGameState;
 	public final PacManGameState newGameState;
 
-	public PacManGameStateChangeEvent(PacManGameModel gameModel, PacManGameState oldGameState, PacManGameState newGameState) {
+	public PacManGameStateChangeEvent(PacManGameModel gameModel, PacManGameState oldGameState,
+			PacManGameState newGameState) {
 		super(gameModel, Info.GAME_STATE_CHANGE, null, null);
 		this.oldGameState = oldGameState;
 		this.newGameState = newGameState;

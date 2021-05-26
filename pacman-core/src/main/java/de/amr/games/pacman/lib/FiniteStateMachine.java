@@ -32,8 +32,12 @@ public class FiniteStateMachine<S extends Enum<S>> {
 
 	private static class Vertex {
 
-		public final TickTimer timer = new TickTimer();
+		public final TickTimer timer;
 		public Runnable onEnter, onUpdate, onExit;
+
+		public Vertex(String name) {
+			timer = new TickTimer(name + "-timer");
+		}
 	}
 
 	public static boolean logging = true;
@@ -46,7 +50,7 @@ public class FiniteStateMachine<S extends Enum<S>> {
 
 	public FiniteStateMachine(Class<S> identifierClass, S[] stateIdentifiers) {
 		stateMap = createStateMap(identifierClass);
-		Stream.of(stateIdentifiers).forEach(id -> stateMap.put(id, new Vertex()));
+		Stream.of(stateIdentifiers).forEach(id -> stateMap.put(id, new Vertex(id.name())));
 	}
 
 	public void configure(S stateName, Runnable onEnter, Runnable onUpdate, Runnable onExit) {

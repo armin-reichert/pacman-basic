@@ -24,7 +24,7 @@ public abstract class PacMan_IntermissionScene2_Controller {
 
 	public static final int groundTileY = 20;
 
-	public final TickTimer timer = new TickTimer();
+	public final TickTimer timer = new TickTimer(getClass().getSimpleName() + "-timer");
 	public final PacManGameController gameController;
 
 	public Ghost blinky;
@@ -92,7 +92,7 @@ public abstract class PacMan_IntermissionScene2_Controller {
 			}
 			timer.tick();
 			break;
-		
+
 		case STUCK:
 			if (timer.isRunningSeconds(3)) {
 				blinky.setDir(Direction.RIGHT);
@@ -103,7 +103,7 @@ public abstract class PacMan_IntermissionScene2_Controller {
 			}
 			timer.tick();
 			break;
-		
+
 		default:
 			throw new IllegalStateException("Illegal phase: " + phase);
 		}

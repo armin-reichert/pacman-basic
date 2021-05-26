@@ -32,7 +32,7 @@ public class TestWorldFunctions {
 		assertEquals(4, world.energizerTiles().count());
 		assertEquals(220 + 4, world.tiles().filter(world::isFoodTile).count());
 		assertEquals(220, world.tiles().filter(world::isFoodTile).filter(not(world::isEnergizerTile)).count());
-		assertEquals(2,world.portals().size());
+		assertEquals(2, world.portals().size());
 		assertEquals(new V2i(13, 26), world.playerHomeTile());
 		assertEquals(Direction.LEFT, world.playerStartDirection());
 		assertEquals(Direction.LEFT, world.ghostStartDirection(0));

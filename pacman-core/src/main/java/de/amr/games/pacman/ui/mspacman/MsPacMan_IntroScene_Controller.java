@@ -32,7 +32,7 @@ public class MsPacMan_IntroScene_Controller {
 	public final PacManGameController gameController;
 
 	public Phase phase;
-	public final TickTimer phaseTimer = new TickTimer();
+	public final TickTimer phaseTimer = new TickTimer(getClass().getSimpleName() + "-timer");
 
 	public Pac msPacMan;
 	public Ghost[] ghosts;

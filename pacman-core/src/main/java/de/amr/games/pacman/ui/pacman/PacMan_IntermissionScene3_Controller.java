@@ -24,7 +24,7 @@ public abstract class PacMan_IntermissionScene3_Controller {
 
 	public static final int chaseTileY = 20;
 
-	public final TickTimer timer = new TickTimer();
+	public final TickTimer timer = new TickTimer(getClass().getSimpleName() + "-timer");
 	public final PacManGameController gameController;
 
 	public Ghost blinky;
@@ -64,7 +64,7 @@ public abstract class PacMan_IntermissionScene3_Controller {
 
 	public void update() {
 		switch (phase) {
-		
+
 		case CHASING_PACMAN:
 			if (blinky.position().x <= -50) {
 				pac.setSpeed(0);
@@ -73,14 +73,14 @@ public abstract class PacMan_IntermissionScene3_Controller {
 				phase = Phase.RETURNING_HALF_NAKED;
 			}
 			break;
-			
+
 		case RETURNING_HALF_NAKED:
 			if (blinky.position().x > t(PacManGameWorld.DEFAULT_WIDTH) + 200) {
 				gameController.stateTimer().forceExpiration();
 				return;
 			}
 			break;
-		
+
 		default:
 			throw new IllegalStateException("Illegal phase: " + phase);
 		}

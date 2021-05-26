@@ -4,7 +4,7 @@ import de.amr.games.pacman.lib.TickTimer;
 
 public class FlashMessage {
 
-	public final TickTimer timer = new TickTimer();
+	public final TickTimer timer = new TickTimer("FlashMessage-timer");
 	public String text;
 
 	public FlashMessage(String text, long displayTicks) {

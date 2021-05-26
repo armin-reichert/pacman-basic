@@ -24,7 +24,7 @@ public abstract class PacMan_IntermissionScene1_Controller {
 
 	public static final int groundY = t(20);
 
-	public final TickTimer timer = new TickTimer();
+	public final TickTimer timer = new TickTimer(getClass().getSimpleName() + "-timer");
 	public final PacManGameController gameController;
 	public Ghost blinky;
 	public Pac pac;

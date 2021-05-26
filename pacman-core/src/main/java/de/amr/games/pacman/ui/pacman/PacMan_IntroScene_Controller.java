@@ -36,7 +36,7 @@ public class PacMan_IntroScene_Controller {
 
 	public static final int TOP_Y = t(6);
 
-	public final TickTimer timer = new TickTimer();
+	public final TickTimer timer = new TickTimer(getClass().getSimpleName() + "-timer");
 	public final PacManGameController gameController;
 
 	public final TimedSequence<Boolean> blinking = TimedSequence.pulse().frameDuration(20);

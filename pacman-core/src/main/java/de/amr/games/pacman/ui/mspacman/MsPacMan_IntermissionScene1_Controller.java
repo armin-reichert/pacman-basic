@@ -31,7 +31,7 @@ public abstract class MsPacMan_IntermissionScene1_Controller {
 	public static final int upperY = t(12), lowerY = t(24), middleY = t(18);
 
 	public final PacManGameController gameController;
-	public final TickTimer timer = new TickTimer();
+	public final TickTimer timer = new TickTimer(getClass().getSimpleName() + "-timer");
 	public Phase phase;
 	public Flap flap;
 	public Pac pacMan, msPac;

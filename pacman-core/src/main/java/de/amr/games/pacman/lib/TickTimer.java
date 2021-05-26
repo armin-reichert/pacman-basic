@@ -27,12 +27,23 @@ public class TickTimer {
 	}
 
 	private final Collection<Consumer<TickTimerEvent>> subscribers = new HashSet<>();
+	private final String name;
 	private TickTimerState state;
 	private long duration;
 	private long ticked; // 0 .. duration - 1
 
-	public TickTimer() {
+	public TickTimer(String name) {
+		this.name = name;
 		reset();
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	@Override
+	public String toString() {
+		return String.format("TickTimer %s: ticked: %d remaining: %d", name, ticked, ticksRemaining());
 	}
 
 	public void addEventListener(Consumer<TickTimerEvent> subscriber) {

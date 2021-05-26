@@ -27,7 +27,7 @@ public abstract class MsPacMan_IntermissionScene2_Controller {
 	public static final int UPPER_Y = t(12), LOWER_Y = t(24), MIDDLE_Y = t(18);
 
 	public final PacManGameController gameController;
-	public final TickTimer timer = new TickTimer();
+	public final TickTimer timer = new TickTimer(getClass().getSimpleName() + "-timer");
 	public Phase phase;
 	public Flap flap;
 	public Pac pacMan, msPacMan;
@@ -62,7 +62,7 @@ public abstract class MsPacMan_IntermissionScene2_Controller {
 
 	public void update() {
 		switch (phase) {
-		
+
 		case FLAP:
 			if (timer.isRunningSeconds(1)) {
 				playFlapAnimation();
