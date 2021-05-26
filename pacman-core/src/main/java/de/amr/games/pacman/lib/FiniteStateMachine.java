@@ -30,7 +30,7 @@ public class FiniteStateMachine<S extends Enum<S>> {
 		}
 	}
 
-	private static class Vertex {
+	public static class Vertex {
 
 		public final TickTimer timer;
 		public Runnable onEnter, onUpdate, onExit;
@@ -96,7 +96,7 @@ public class FiniteStateMachine<S extends Enum<S>> {
 		return v(state).timer;
 	}
 
-	private Vertex v(S id) {
+	protected Vertex v(S id) {
 		return stateMap.get(id);
 	}
 

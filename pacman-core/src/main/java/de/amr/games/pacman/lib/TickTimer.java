@@ -26,6 +26,14 @@ public class TickTimer {
 		READY, RUNNING, STOPPED, EXPIRED;
 	}
 
+	public static boolean trace = false;
+
+	private void trace(String msg, Object... args) {
+		if (trace) {
+			Logging.log(msg, args);
+		}
+	}
+
 	private final Collection<Consumer<TickTimerEvent>> subscribers = new HashSet<>();
 	private final String name;
 	private TickTimerState state;
@@ -60,6 +68,7 @@ public class TickTimer {
 
 	public void reset(long durationTicks) {
 		state = READY;
+		trace("%s reset", name);
 		ticked = 0;
 		duration = durationTicks;
 		fireEvent(new TickTimerEvent(Type.RESET, duration));
@@ -79,9 +88,10 @@ public class TickTimer {
 		}
 		if (state == STOPPED || state == READY) {
 			state = RUNNING;
+			trace("%s started", name);
 			fireEvent(new TickTimerEvent(Type.STARTED));
 		} else {
-			throw new IllegalStateException("Timer cannot be started from state " + state);
+			throw new IllegalStateException(String.format("Timer %s cannot be started from state %s", name, state));
 		}
 	}
 
@@ -91,6 +101,7 @@ public class TickTimer {
 		}
 		if (state == RUNNING) {
 			state = STOPPED;
+			trace("%s stopped", name);
 			fireEvent(new TickTimerEvent(Type.STOPPED));
 		}
 	}
@@ -99,15 +110,20 @@ public class TickTimer {
 		if (state == STOPPED) {
 			return;
 		}
-		if (state != RUNNING) {
-			throw new IllegalStateException(state == READY ? "Timer has not been started" : "Timer has expired");
+		if (state == READY) {
+			throw new IllegalStateException(String.format("Timer %s has not been started", name));
+		}
+		if (state == EXPIRED) {
+			throw new IllegalStateException(String.format("Timer %s has expired", name));
 		}
 		++ticked;
+		trace("%s ticked", this);
 		if (ticked == duration / 2) {
 			fireEvent(new TickTimerEvent(Type.HALF_EXPIRED, ticked));
 		}
 		if (ticked == duration) {
 			state = EXPIRED;
+			trace("%s expired", name);
 			fireEvent(new TickTimerEvent(Type.EXPIRED, ticked));
 			return;
 		}
@@ -115,6 +131,7 @@ public class TickTimer {
 
 	public void forceExpiration() {
 		state = EXPIRED;
+		trace("%s expired", name);
 		fireEvent(new TickTimerEvent(Type.EXPIRED, ticked));
 	}
 
