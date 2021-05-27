@@ -109,7 +109,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	private boolean gameRunning;
 	private boolean attractMode;
 	private boolean playerImmune;
-	public int huntingPhase;
+	private int huntingPhase;
 
 	private final Autopilot autopilot = new Autopilot(this::game);
 
@@ -206,6 +206,14 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		this.playerImmune = playerImmune;
 	}
 
+	public int getHuntingPhase() {
+		return huntingPhase;
+	}
+
+	public boolean inScatteringPhase() {
+		return huntingPhase % 2 == 0;
+	}
+
 	public void cheatKillGhosts() {
 		game.resetGhostBounty();
 		game.ghosts().filter(ghost -> ghost.is(HUNTING_PAC) || ghost.is(FRIGHTENED)).forEach(this::killGhost);
@@ -262,19 +270,14 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	private void startHuntingPhase(int phase) {
 		huntingPhase = phase;
-		stateTimer().reset(game.getHuntingPhaseDuration(huntingPhase));
+		stateTimer().reset(game.getHuntingPhaseDuration(phase));
 		stateTimer().start();
-		boolean scattering = isScatteringPhase(phase);
-		String phaseName = scattering ? "Scattering" : "Chasing";
+		String phaseName = inScatteringPhase() ? "Scattering" : "Chasing";
 		log("Hunting phase #%d (%s) started, %d of %d ticks remaining", phase, phaseName, stateTimer().ticksRemaining(),
 				stateTimer().duration());
-		if (scattering) {
+		if (inScatteringPhase()) {
 			fireGameEvent(new ScatterPhaseStartedEvent(game, phase / 2));
 		}
-	}
-
-	public static boolean isScatteringPhase(int phase) {
-		return phase % 2 == 0;
 	}
 
 	private void state_Hunting_enter() {
@@ -616,7 +619,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 				 */
 				ghost.targetTile = null;
 				ghost.setRandomDirection();
-			} else if (isScatteringPhase(huntingPhase) && ghost.elroy == 0) {
+			} else if (inScatteringPhase() && ghost.elroy == 0) {
 				ghost.targetTile = level.world.ghostScatterTile(ghost.id);
 				ghost.setDirectionTowardsTarget();
 			} else {
