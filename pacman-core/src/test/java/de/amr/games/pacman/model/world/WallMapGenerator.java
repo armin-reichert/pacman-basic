@@ -10,11 +10,11 @@ public class WallMapGenerator {
 	public static void main(String[] args) {
 		WallMapGenerator gen = new WallMapGenerator();
 		int resolution = 8;
-		gen.run("/pacman/maps/map1.txt", "pacman-map1-%d.txt", resolution);
-		gen.run("/mspacman/maps/map1.txt", "mspacman-map1-%d.txt", resolution);
-		gen.run("/mspacman/maps/map2.txt", "mspacman-map2-%d.txt", resolution);
-		gen.run("/mspacman/maps/map3.txt", "mspacman-map3-%d.txt", resolution);
-		gen.run("/mspacman/maps/map4.txt", "mspacman-map4-%d.txt", resolution);
+		gen.run("/pacman/maps/map1.txt", "pacman-map1-res-%d.txt", resolution);
+		gen.run("/mspacman/maps/map1.txt", "mspacman-map1-res-%d.txt", resolution);
+		gen.run("/mspacman/maps/map2.txt", "mspacman-map2-res-%d.txt", resolution);
+		gen.run("/mspacman/maps/map3.txt", "mspacman-map3-res-%d.txt", resolution);
+		gen.run("/mspacman/maps/map4.txt", "mspacman-map4-res-%d.txt", resolution);
 	}
 
 	private void run(String mapPath, String outputFileName, int resolution) {
@@ -35,5 +35,6 @@ public class WallMapGenerator {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		System.out.println("Wall map file " + out.getAbsolutePath() + " created");
 	}
 }
