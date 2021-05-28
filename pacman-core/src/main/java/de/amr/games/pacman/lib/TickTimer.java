@@ -56,25 +56,27 @@ public class TickTimer {
 		return String.format("TickTimer %s: ticked: %d remaining: %d", name, ticked, ticksRemaining());
 	}
 
-	private void ensureSubscribers() {
+	private void ensureSubscribersCreated() {
 		if (subscribers == null) {
 			subscribers = new ArrayList<>(3);
 		}
 	}
 
 	public void addEventListener(Consumer<TickTimerEvent> subscriber) {
-		ensureSubscribers();
+		ensureSubscribersCreated();
 		subscribers.add(subscriber);
 	}
 
 	public void removeEventListener(Consumer<TickTimerEvent> subscriber) {
-		ensureSubscribers();
-		subscribers.remove(subscriber);
+		if (subscribers != null) {
+			subscribers.remove(subscriber);
+		}
 	}
 
 	private void fireEvent(TickTimerEvent e) {
-		ensureSubscribers();
-		subscribers.forEach(subscriber -> subscriber.accept(e));
+		if (subscribers != null) {
+			subscribers.forEach(subscriber -> subscriber.accept(e));
+		}
 	}
 
 	public void reset(long durationTicks) {
