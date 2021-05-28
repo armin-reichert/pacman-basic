@@ -5,8 +5,8 @@ import static de.amr.games.pacman.lib.TickTimer.TickTimerState.READY;
 import static de.amr.games.pacman.lib.TickTimer.TickTimerState.RUNNING;
 import static de.amr.games.pacman.lib.TickTimer.TickTimerState.STOPPED;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.function.Consumer;
 
 import de.amr.games.pacman.lib.TickTimerEvent.Type;
@@ -17,6 +17,8 @@ import de.amr.games.pacman.lib.TickTimerEvent.Type;
  * @author Armin Reichert
  */
 public class TickTimer {
+
+	public static final long INDEFINITE = Long.MAX_VALUE;
 
 	public static final long sec_to_ticks(double sec) {
 		return Math.round(sec * 60);
@@ -34,7 +36,7 @@ public class TickTimer {
 		}
 	}
 
-	private final Collection<Consumer<TickTimerEvent>> subscribers = new HashSet<>();
+	private Collection<Consumer<TickTimerEvent>> subscribers;
 	private final String name;
 	private TickTimerState state;
 	private long duration;
@@ -54,15 +56,24 @@ public class TickTimer {
 		return String.format("TickTimer %s: ticked: %d remaining: %d", name, ticked, ticksRemaining());
 	}
 
+	private void ensureSubscribers() {
+		if (subscribers == null) {
+			subscribers = new ArrayList<>(3);
+		}
+	}
+
 	public void addEventListener(Consumer<TickTimerEvent> subscriber) {
+		ensureSubscribers();
 		subscribers.add(subscriber);
 	}
 
 	public void removeEventListener(Consumer<TickTimerEvent> subscriber) {
+		ensureSubscribers();
 		subscribers.remove(subscriber);
 	}
 
 	private void fireEvent(TickTimerEvent e) {
+		ensureSubscribers();
 		subscribers.forEach(subscriber -> subscriber.accept(e));
 	}
 
@@ -75,7 +86,7 @@ public class TickTimer {
 	}
 
 	public void reset() {
-		reset(Long.MAX_VALUE);
+		reset(INDEFINITE);
 	}
 
 	public void resetSeconds(double seconds) {
@@ -156,7 +167,7 @@ public class TickTimer {
 	}
 
 	public long ticksRemaining() {
-		return duration == Long.MAX_VALUE ? Long.MAX_VALUE : duration - ticked;
+		return duration == INDEFINITE ? INDEFINITE : duration - ticked;
 	}
 
 	public boolean isRunningSeconds(double seconds) {
