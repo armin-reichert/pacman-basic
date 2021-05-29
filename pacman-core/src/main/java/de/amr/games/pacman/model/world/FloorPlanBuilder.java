@@ -3,20 +3,19 @@ package de.amr.games.pacman.model.world;
 import de.amr.games.pacman.lib.V2i;
 
 /**
- * Scans a map for inaccessible areas and creates a map indicating where walls should be placed.
- * These walls are located at the outside border of the inaccessible areas. The {@code resolution}
- * value must be a divisor of the tile size (8, 4, 2, 1) and determines the number of vertical and
- * horizontal scan lines for each tile. For example, if the resolution is set to 8, each tile is
- * divided into 64 parts from which the wall structure is computed and each wall will have a
- * thickness of 1.
+ * Scans a world map and creates a floor plan at a given resolution. Walls are placed at the outmost
+ * border of inaccessible areas. The {@code resolution} value must be a divisor of the tile size (8,
+ * 4, 2, 1) and determines the number of vertical and horizontal scan lines used for each tile. For
+ * example, if the resolution is set to 8, each tile is divided into 64 parts from which the wall
+ * structure is computed, and each wall will have a thickness of 1.
  * 
  * @author Armin Reichert
  */
-class WallScanner {
+class FloorPlanBuilder {
 
 	private final int resolution;
 
-	public WallScanner(int resolution) {
+	public FloorPlanBuilder(int resolution) {
 		this.resolution = resolution;
 	}
 
@@ -40,16 +39,16 @@ class WallScanner {
 		return new V2i(tileX + dx, tileY);
 	}
 
-	WallMap scan(PacManGameWorld world) {
+	FloorPlan build(PacManGameWorld world) {
 		int numBlocksX = resolution * world.numCols();
 		int numBlocksY = resolution * world.numRows();
-		byte[][] wm = new byte[numBlocksY][numBlocksX];
+		byte[][] info = new byte[numBlocksY][numBlocksX];
 
 		// scan for walls
 		for (int y = 0; y < numBlocksY; ++y) {
 			for (int x = 0; x < numBlocksX; ++x) {
 				V2i tile = new V2i(x / resolution, y / resolution);
-				wm[y][x] = world.isWall(tile) ? WallMap.CORNER : WallMap.EMPTY;
+				info[y][x] = world.isWall(tile) ? FloorPlan.CORNER : FloorPlan.EMPTY;
 			}
 		}
 
@@ -70,7 +69,7 @@ class WallScanner {
 							|| world.isWall(sw) && !world.isWall(ne) || !world.isWall(sw) && world.isWall(ne)) {
 						// keep corner of wall region
 					} else {
-						wm[y][x] = WallMap.EMPTY;
+						info[y][x] = FloorPlan.EMPTY;
 					}
 				}
 			}
@@ -81,23 +80,23 @@ class WallScanner {
 			int blockStartX = -1;
 			int blockLen = 0;
 			for (int x = 0; x < numBlocksX; ++x) {
-				if (wm[y][x] == WallMap.CORNER) {
+				if (info[y][x] == FloorPlan.CORNER) {
 					if (blockStartX == -1) {
 						blockStartX = x;
 						blockLen = 1;
 					} else {
 						if (x == numBlocksX - 1) {
-							wm[y][x] = WallMap.CORNER;
+							info[y][x] = FloorPlan.CORNER;
 						} else {
-							wm[y][x] = WallMap.HORIZONTAL;
+							info[y][x] = FloorPlan.HWALL;
 						}
 						++blockLen;
 					}
 				} else {
 					if (blockLen == 1) {
-						wm[y][blockStartX] = WallMap.CORNER;
+						info[y][blockStartX] = FloorPlan.CORNER;
 					} else if (blockLen > 1) {
-						wm[y][blockStartX + blockLen - 1] = WallMap.CORNER;
+						info[y][blockStartX + blockLen - 1] = FloorPlan.CORNER;
 					}
 					blockStartX = -1;
 					blockLen = 0;
@@ -109,25 +108,25 @@ class WallScanner {
 			int blockStartY = -1;
 			int blockLen = 0;
 			for (int y = 0; y < numBlocksY; ++y) {
-				if (wm[y][x] == WallMap.CORNER) {
+				if (info[y][x] == FloorPlan.CORNER) {
 					if (blockStartY == -1) {
 						blockStartY = y;
 						blockLen = 1;
 					} else {
-						wm[y][x] = (y == numBlocksY - 1) ? WallMap.CORNER : WallMap.VERTICAL;
+						info[y][x] = (y == numBlocksY - 1) ? FloorPlan.CORNER : FloorPlan.VWALL;
 						++blockLen;
 					}
 				} else {
 					if (blockLen == 1) {
-						wm[blockStartY][x] = WallMap.CORNER;
+						info[blockStartY][x] = FloorPlan.CORNER;
 					} else if (blockLen > 1) {
-						wm[blockStartY + blockLen - 1][x] = WallMap.CORNER;
+						info[blockStartY + blockLen - 1][x] = FloorPlan.CORNER;
 					}
 					blockStartY = -1;
 					blockLen = 0;
 				}
 			}
 		}
-		return new WallMap(resolution, wm);
+		return new FloorPlan(info);
 	}
 }

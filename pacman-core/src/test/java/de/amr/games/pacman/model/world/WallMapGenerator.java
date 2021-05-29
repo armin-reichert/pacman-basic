@@ -29,7 +29,7 @@ public class WallMapGenerator {
 		WorldMap map = WorldMap.load(mapPath);
 		MapBasedPacManGameWorld world = new MapBasedPacManGameWorld();
 		world.setMap(map);
-		WallMap wallMap = new WallScanner(resolution).scan(world);
+		FloorPlan wallMap = new FloorPlanBuilder(resolution).build(world);
 		try (FileWriter w = new FileWriter(out, StandardCharsets.UTF_8)) {
 			wallMap.print(w, true);
 		} catch (IOException e) {

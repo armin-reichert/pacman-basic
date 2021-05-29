@@ -4,41 +4,42 @@ import java.io.PrintWriter;
 import java.io.Writer;
 
 /**
- * Provides information about the location of walls around inaccessible areas in a world map.
+ * Provides information about rooms, walls, doors etc.
  * 
  * @author Armin Reichert
  */
-public class WallMap {
+public class FloorPlan {
 
 	public static final byte EMPTY = 0;
 	public static final byte CORNER = 1;
-	public static final byte HORIZONTAL = 2;
-	public static final byte VERTICAL = 3;
+	public static final byte HWALL = 2;
+	public static final byte VWALL = 3;
+	public static final byte DOOR = 4;
 
 	private static char symbol(byte b) {
 		switch (b) {
-		case WallMap.CORNER:
+		case FloorPlan.CORNER:
 			return '+';
-		case WallMap.EMPTY:
+		case FloorPlan.EMPTY:
 			return ' ';
-		case WallMap.HORIZONTAL:
+		case FloorPlan.HWALL:
 			return '-';
-		case WallMap.VERTICAL:
+		case FloorPlan.VWALL:
 			return '|';
+		case FloorPlan.DOOR:
+			return 'd';
 		default:
 			return '?';
 		}
 	}
 
-	public static WallMap build(int resolution, PacManGameWorld world) {
-		return new WallScanner(resolution).scan(world);
+	public static FloorPlan build(int resolution, PacManGameWorld world) {
+		return new FloorPlanBuilder(resolution).build(world);
 	}
 
-	public final int resolution;
-	public final byte[][] info;
+	private final byte[][] info;
 
-	public WallMap(int resolution, byte[][] info) {
-		this.resolution = resolution;
+	public FloorPlan(byte[][] info) {
 		this.info = info;
 	}
 
