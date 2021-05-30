@@ -17,9 +17,7 @@ import de.amr.games.pacman.model.common.Pac;
 public abstract class PacMan_IntermissionScene1_Controller {
 
 	public enum Phase {
-
-		BLINKY_CHASING_PACMAN, BIGPACMAN_CHASING_BLINKY;
-
+		BLINKY_CHASING_PACMAN, BIGPACMAN_CHASING_BLINKY
 	}
 
 	public static final int groundY = t(20);
@@ -60,14 +58,18 @@ public abstract class PacMan_IntermissionScene1_Controller {
 
 	public void update() {
 		switch (phase) {
+
 		case BLINKY_CHASING_PACMAN:
 			if (timer.hasExpired()) {
 				phase = Phase.BIGPACMAN_CHASING_BLINKY;
 				timer.resetSeconds(7);
 				timer.start();
 			}
+			pac.move();
+			blinky.move();
 			timer.tick();
 			break;
+
 		case BIGPACMAN_CHASING_BLINKY:
 			if (timer.hasJustStarted()) {
 				blinky.setPosition(-t(2), groundY);
@@ -83,13 +85,13 @@ public abstract class PacMan_IntermissionScene1_Controller {
 				gameController.stateTimer().forceExpiration();
 				return;
 			}
+			pac.move();
+			blinky.move();
 			timer.tick();
 			break;
 
 		default:
 			break;
 		}
-		pac.move();
-		blinky.move();
 	}
 }
