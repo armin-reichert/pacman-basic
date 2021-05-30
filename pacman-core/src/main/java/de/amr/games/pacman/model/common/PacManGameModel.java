@@ -5,14 +5,14 @@ import java.util.stream.Stream;
 import de.amr.games.pacman.model.pacman.Bonus;
 
 /**
- * Game model interface for Pac-Man and Ms. Pac-Man
+ * Game model interface for Pac-Man and Ms. Pac-Man games.
  * 
  * @author Armin Reichert
  */
 public interface PacManGameModel {
 
 	/**
-	 * @return the game variant identifier
+	 * @return the game variant (MS_PACMAN, PACMAN)
 	 */
 	GameVariant variant();
 
@@ -35,8 +35,15 @@ public interface PacManGameModel {
 	 */
 	int mapNumber(int mazeNumber);
 
-	GameLevel currentLevel();
+	/**
+	 * @return the current game level
+	 */
+	GameLevel level();
 
+	/**
+	 * @param phase hunting phase index (0..7)
+	 * @return duration (ticks) of specified hunting phase (scattering/chasing alternating)
+	 */
 	long getHuntingPhaseDuration(int phase);
 
 	/**
@@ -45,63 +52,166 @@ public interface PacManGameModel {
 	 */
 	int intermissionNumber();
 
+	/**
+	 * @param levelNumber 1-based level number
+	 * @return name of level symbol
+	 */
 	String levelSymbol(int levelNumber);
 
+	/**
+	 * Counts the current level.
+	 */
 	void countLevel();
 
+	/**
+	 * @return number of player lives left
+	 */
 	int lives();
 
+	/**
+	 * Adds one player life.
+	 */
 	void addLife();
 
+	/**
+	 * Removes one player life.
+	 */
 	void removeLife();
 
+	/**
+	 * @return value of an energizer pellet
+	 */
 	int energizerValue();
 
+	/**
+	 * @return value of a normal pellet
+	 */
 	int pelletValue();
 
+	/**
+	 * @return game score
+	 */
 	int score();
 
+	/**
+	 * Adds given number of points to game score.
+	 * 
+	 * @param points number of points
+	 */
 	void addScore(int points);
 
+	/**
+	 * @return high score points value
+	 */
 	int hiscorePoints();
 
+	/**
+	 * Sets the high score points value
+	 * 
+	 * @param score number of points
+	 */
 	void setHiscorePoints(int score);
 
+	/**
+	 * @return level at which current high score has been reached
+	 */
 	int hiscoreLevel();
 
-	void setHiscoreLevel(int number);
+	/**
+	 * Sets the level at which current high score has been reached.
+	 * 
+	 * @param number level number
+	 */
+	void setHiscoreLevel(int levelNumber);
 
+	/**
+	 * Saves the current highscore to the highscore file.
+	 */
 	void saveHiscore();
 
+	/**
+	 * @return if the score for granting a bonus is reached
+	 */
 	boolean isBonusReached();
 
+	/**
+	 * Resets the game model to the initial state.
+	 */
 	void reset();
 
+	/**
+	 * Resets the player and the ghosts to their initial state.
+	 */
 	void resetGuys();
 
+	/**
+	 * @return the player entity
+	 */
 	Pac player();
 
+	/**
+	 * @return stream of all ghost entities
+	 */
 	Stream<Ghost> ghosts();
 
+	/**
+	 * @return stream of all ghost entities which are in the specified state
+	 */
 	Stream<Ghost> ghosts(GhostState state);
 
+	/**
+	 * @param id ghost identifier (index)
+	 * @return ghost entity with specified identifier
+	 */
 	Ghost ghost(int id);
 
+	/**
+	 * Resets the ghost bounty value.
+	 */
 	void resetGhostBounty();
 
+	/**
+	 * @return next ghost bounty value (e.g. 200 -> 400 -> 800 -> 1600)
+	 */
 	int getNextGhostBounty();
 
+	/**
+	 * Advances the ghost bounty value.
+	 */
 	void increaseNextGhostBounty();
 
+	/**
+	 * @return the bonus entity
+	 */
 	Bonus bonus();
 
+	/**
+	 * @param bonusSymbol bonus symbol name
+	 * @return value of the specified bonus
+	 */
 	int bonusValue(String bonusSymbol);
 
+	/**
+	 * @return value of the global dot counter, used by the ghosthouse logic
+	 */
 	int globalDotCounter();
 
+	/**
+	 * Sets the value of the global dot counter.
+	 * 
+	 * @param value dot counter value
+	 */
 	void setGlobalDotCounter(int value);
 
+	/**
+	 * @return if the global dot counter is enabled
+	 */
 	boolean isGlobalDotCounterEnabled();
 
+	/**
+	 * Sets the global dot counter's enabled state.
+	 * 
+	 * @param enable new state
+	 */
 	void enableGlobalDotCounter(boolean enable);
 }

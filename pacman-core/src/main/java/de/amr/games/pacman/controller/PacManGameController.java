@@ -222,9 +222,9 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	public void cheatEatAllPellets() {
-		game.currentLevel().world.tiles()//
-				.filter(not(game.currentLevel().world::isEnergizerTile))//
-				.forEach(game.currentLevel()::removeFood);
+		game.level().world.tiles()//
+				.filter(not(game.level().world::isEnergizerTile))//
+				.forEach(game.level()::removeFood);
 		fireGameEvent(Info.PLAYER_FOUND_FOOD, null);
 	}
 
@@ -290,7 +290,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	// here is the main logic of the game play
 	private void state_Hunting_update() {
 
-		final GameLevel level = game.currentLevel();
+		final GameLevel level = game.level();
 		final Pac player = game.player();
 
 		// Is hunting phase complete?
@@ -427,8 +427,8 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	private void state_LevelStarting_enter() {
-		log("Level %d complete, entering level %d", game.currentLevel().number, game.currentLevel().number + 1);
-		game.createLevel(game.currentLevel().number + 1);
+		log("Level %d complete, entering level %d", game.level().number, game.level().number + 1);
+		game.createLevel(game.level().number + 1);
 		game.countLevel();
 		game.resetGuys();
 		stateTimer().reset();
@@ -495,7 +495,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		game.addScore(points);
 		if (game.score() > game.hiscorePoints()) {
 			game.setHiscorePoints(game.score());
-			game.setHiscoreLevel(game.currentLevel().number);
+			game.setHiscoreLevel(game.level().number);
 		}
 		if (oldscore < 10000 && game.score() >= 10000) {
 			game.addLife();
@@ -563,7 +563,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	 * @param ghost ghost to update
 	 */
 	private void updateGhost(Ghost ghost) {
-		final GameLevel level = game.currentLevel();
+		final GameLevel level = game.level();
 		switch (ghost.state) {
 
 		case LOCKED:
@@ -645,12 +645,12 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	private void killGhost(Ghost ghost) {
 		ghost.state = DEAD;
-		ghost.targetTile = game.currentLevel().world.houseEntryLeftPart();
+		ghost.targetTile = game.level().world.houseEntryLeftPart();
 		ghost.bounty = game.getNextGhostBounty();
 		score(ghost.bounty);
 		game.increaseNextGhostBounty();
-		game.currentLevel().numGhostsKilled++;
-		if (game.currentLevel().numGhostsKilled == 16) {
+		game.level().numGhostsKilled++;
+		if (game.level().numGhostsKilled == 16) {
 			score(12000);
 		}
 		log("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name, ghost.tile(), ghost.bounty);
@@ -684,7 +684,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 		case CLYDE: /* A Boy Named Sue */
 			return game.ghost(CLYDE).tile().euclideanDistance(playerTile) < 8
-					? game.currentLevel().world.ghostScatterTile(CLYDE)
+					? game.level().world.ghostScatterTile(CLYDE)
 					: playerTile;
 
 		default:
@@ -722,10 +722,10 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 				releaseGhost(ghost, "Global dot counter (%d) reached limit (%d)", game.globalDotCounter(),
 						ghostGlobalDotLimit(ghost.id));
 			} else if (!game.isGlobalDotCounterEnabled()
-					&& ghost.dotCounter >= ghostPrivateDotLimit(ghost.id, game.currentLevel().number)) {
+					&& ghost.dotCounter >= ghostPrivateDotLimit(ghost.id, game.level().number)) {
 				releaseGhost(ghost, "%s's dot counter (%d) reached limit (%d)", ghost.name, ghost.dotCounter,
-						ghostPrivateDotLimit(ghost.id, game.currentLevel().number));
-			} else if (game.player().starvingTicks >= playerStarvingTimeLimit(game.currentLevel().number)) {
+						ghostPrivateDotLimit(ghost.id, game.level().number));
+			} else if (game.player().starvingTicks >= playerStarvingTimeLimit(game.level().number)) {
 				releaseGhost(ghost, "%s has been starving for %d ticks", game.player().name, game.player().starvingTicks);
 				game.player().starvingTicks = 0;
 			}

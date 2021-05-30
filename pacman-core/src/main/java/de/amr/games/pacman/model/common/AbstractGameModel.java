@@ -66,7 +66,7 @@ public abstract class AbstractGameModel implements PacManGameModel {
 	}
 
 	@Override
-	public GameLevel currentLevel() {
+	public GameLevel level() {
 		return currentLevel;
 	}
 
