@@ -5,10 +5,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-public class WallMapGenerator {
+public class FloorPlanGenerator {
 
 	public static void main(String[] args) {
-		WallMapGenerator gen = new WallMapGenerator();
+		FloorPlanGenerator gen = new FloorPlanGenerator();
 		int resolution = 8;
 		gen.run("/pacman/maps/map1.txt", "pacman-map1-res-%d.txt", resolution);
 		gen.run("/mspacman/maps/map1.txt", "mspacman-map1-res-%d.txt", resolution);

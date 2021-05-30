@@ -23,7 +23,7 @@ public class FloorPlan {
 		case FloorPlan.EMPTY:
 			return ' ';
 		case FloorPlan.HWALL:
-			return '-';
+			return '\u2014';
 		case FloorPlan.VWALL:
 			return '|';
 		case FloorPlan.DOOR:
