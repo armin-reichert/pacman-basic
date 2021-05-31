@@ -24,7 +24,7 @@ import de.amr.games.pacman.model.world.Portal;
  */
 public class Creature extends GameEntity {
 
-	private static final Direction[] PRIORITY = { UP, LEFT, DOWN, RIGHT };
+	private static final Direction[] TURN_PRIORITY = { UP, LEFT, DOWN, RIGHT };
 
 	/** The world where this creature lives. */
 	public final PacManGameWorld world;
@@ -275,7 +275,7 @@ public class Creature extends GameEntity {
 		}
 		final V2i currentTile = tile();
 		double minDist = Double.MAX_VALUE;
-		for (Direction direction : PRIORITY) {
+		for (Direction direction : TURN_PRIORITY) {
 			if (direction == dir.opposite()) {
 				continue;
 			}
