@@ -9,6 +9,7 @@ import static java.lang.Math.abs;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 import de.amr.games.pacman.lib.Direction;
@@ -103,7 +104,7 @@ public class Creature extends GameEntity {
 	}
 
 	public void setDir(Direction dir) {
-		this.dir = dir;
+		this.dir = Objects.requireNonNull(dir);
 		updateVelocity();
 	}
 
@@ -129,7 +130,7 @@ public class Creature extends GameEntity {
 	}
 
 	private void updateVelocity() {
-		velocity = dir == null ? V2d.NULL : new V2d(dir.vec).scaled(speed);
+		velocity = new V2d(dir.vec).scaled(speed);
 	}
 
 	public void move() {
