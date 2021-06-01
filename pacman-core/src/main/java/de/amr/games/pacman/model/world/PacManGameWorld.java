@@ -199,4 +199,11 @@ public interface PacManGameWorld {
 	 * @return bonus location in case this is fixed
 	 */
 	V2i bonusTile();
+
+	/**
+	 * 
+	 * @param bonusIndex first or second bonus (index 0 or 1)
+	 * @return number of pellets to eat for earning bonus
+	 */
+	int pelletsToEatForBonus(int bonusIndex);
 }

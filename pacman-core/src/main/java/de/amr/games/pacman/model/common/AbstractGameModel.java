@@ -38,7 +38,7 @@ public abstract class AbstractGameModel implements PacManGameModel {
 	protected Object[][] levels;
 	protected Map<String, Integer> bonusValues;
 	protected GameVariant variant;
-	protected GameLevel currentLevel;
+	protected GameLevel level;
 	protected PacManGameWorld world;
 	protected Pac player;
 	protected Ghost[] ghosts;
@@ -67,7 +67,7 @@ public abstract class AbstractGameModel implements PacManGameModel {
 
 	@Override
 	public GameLevel level() {
-		return currentLevel;
+		return level;
 	}
 
 	@Override
@@ -77,12 +77,12 @@ public abstract class AbstractGameModel implements PacManGameModel {
 
 	@Override
 	public void countLevel() {
-		levelCounter.add(currentLevel.bonusSymbol);
+		levelCounter.add(level.bonusSymbol);
 	}
 
 	@Override
 	public int intermissionNumber() {
-		return INTERMISSION_AFTER_LEVEL.getOrDefault(currentLevel.number, 0);
+		return INTERMISSION_AFTER_LEVEL.getOrDefault(level.number, 0);
 	}
 
 	@Override
@@ -189,12 +189,13 @@ public abstract class AbstractGameModel implements PacManGameModel {
 
 	@Override
 	public boolean isBonusReached() {
-		return currentLevel.eatenFoodCount() == 70 || currentLevel.eatenFoodCount() == 170;
+		return level.eatenFoodCount() == level.world.pelletsToEatForBonus(0)
+				|| level.eatenFoodCount() == level.world.pelletsToEatForBonus(1);
 	}
 
 	@Override
 	public void resetGuys() {
-		final PacManGameWorld world = currentLevel.world;
+		final PacManGameWorld world = level.world;
 		player.placeAt(world.playerHomeTile(), HTS, 0);
 		player.setDir(world.playerStartDirection());
 		player.setWishDir(world.playerStartDirection());
@@ -243,7 +244,7 @@ public abstract class AbstractGameModel implements PacManGameModel {
 
 	@Override
 	public long getHuntingPhaseDuration(int phase) {
-		int row = currentLevel.number == 1 ? 0 : currentLevel.number <= 4 ? 1 : 2;
+		int row = level.number == 1 ? 0 : level.number <= 4 ? 1 : 2;
 		return HUNTING_PHASE_TICKS[row][phase];
 	}
 

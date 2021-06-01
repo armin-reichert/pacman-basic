@@ -31,6 +31,7 @@ val upwards_blocked.0  = (12,13)
 val upwards_blocked.1  = (15,13)
 val upwards_blocked.2  = (12,25)
 val upwards_blocked.3  = (15,25)
+val bonus_pellets_to_eat = (70,170)
 !
 ! Data:
 ############################

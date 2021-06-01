@@ -33,6 +33,7 @@ public class MapBasedPacManGameWorld implements PacManGameWorld {
 	private V2i pacman_start_dir;
 	private List<V2i> ghost_start_dir;
 	private V2i bonus_home;
+	private V2i bonus_pellets_to_eat;
 	private List<V2i> upwardsBlockedTiles;
 	private List<Portal> portals;
 	private BitSet intersections;
@@ -52,6 +53,7 @@ public class MapBasedPacManGameWorld implements PacManGameWorld {
 		pacman_start_dir = map.vector("pacman_start_dir");
 		ghost_start_dir = map.vectorList("ghost_start_dir");
 		bonus_home = map.vectorOptional("bonus_home").orElse(V2i.NULL);
+		bonus_pellets_to_eat = map.vector("bonus_pellets_to_eat");
 		scatterTiles = map.vectorList("scatter");
 		upwardsBlockedTiles = map.vectorList("upwards_blocked");
 
@@ -195,5 +197,10 @@ public class MapBasedPacManGameWorld implements PacManGameWorld {
 	@Override
 	public V2i bonusTile() {
 		return bonus_home;
+	}
+
+	@Override
+	public int pelletsToEatForBonus(int bonusIndex) {
+		return bonusIndex == 0 ? bonus_pellets_to_eat.x : bonus_pellets_to_eat.y;
 	}
 }
