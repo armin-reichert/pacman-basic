@@ -65,14 +65,9 @@ public interface PacManGameModel {
 	int lives();
 
 	/**
-	 * Adds one player life.
+	 * Changes the number of lives by the given delta.
 	 */
-	void addLife();
-
-	/**
-	 * Removes one player life.
-	 */
-	void removeLife();
+	void changeLivesBy(int delta);
 
 	/**
 	 * @return value of an energizer pellet

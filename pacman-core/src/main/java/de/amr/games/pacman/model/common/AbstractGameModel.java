@@ -50,8 +50,8 @@ public abstract class AbstractGameModel implements PacManGameModel {
 	protected int energizerValue;
 	protected int ghostBounty;
 	protected List<String> levelCounter = new ArrayList<>();
-	protected int globalDotCounter;
-	protected boolean globalDotCounterEnabled;
+	protected int dotCounter;
+	protected boolean dotCounterEnabled;
 
 	@Override
 	public GameVariant variant() {
@@ -80,15 +80,8 @@ public abstract class AbstractGameModel implements PacManGameModel {
 	}
 
 	@Override
-	public void addLife() {
-		++lives;
-	}
-
-	@Override
-	public void removeLife() {
-		if (lives > 0) {
-			lives--;
-		}
+	public void changeLivesBy(int delta) {
+		lives = Math.max(0, lives + delta);
 	}
 
 	@Override
@@ -253,21 +246,21 @@ public abstract class AbstractGameModel implements PacManGameModel {
 
 	@Override
 	public int globalDotCounter() {
-		return globalDotCounter;
+		return dotCounter;
 	}
 
 	@Override
 	public void setGlobalDotCounter(int globalDotCounter) {
-		this.globalDotCounter = globalDotCounter;
+		this.dotCounter = globalDotCounter;
 	}
 
 	@Override
 	public boolean isGlobalDotCounterEnabled() {
-		return globalDotCounterEnabled;
+		return dotCounterEnabled;
 	}
 
 	@Override
 	public void enableGlobalDotCounter(boolean enable) {
-		globalDotCounterEnabled = enable;
+		dotCounterEnabled = enable;
 	}
 }
