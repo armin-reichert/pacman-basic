@@ -59,11 +59,6 @@ public interface PacManGameModel {
 	String levelSymbol(int levelNumber);
 
 	/**
-	 * Counts the current level.
-	 */
-	void countLevel();
-
-	/**
 	 * @return number of player lives left
 	 */
 	int lives();

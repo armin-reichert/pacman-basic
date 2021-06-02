@@ -429,7 +429,6 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	private void state_LevelStarting_enter() {
 		log("Level %d complete, entering level %d", game.level().number, game.level().number + 1);
 		game.createLevel(game.level().number + 1);
-		game.countLevel();
 		game.resetGuys();
 		stateTimer().reset();
 		stateTimer().start();

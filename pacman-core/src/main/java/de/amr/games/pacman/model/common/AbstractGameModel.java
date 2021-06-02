@@ -76,11 +76,6 @@ public abstract class AbstractGameModel implements PacManGameModel {
 	}
 
 	@Override
-	public void countLevel() {
-		levelCounter.add(level.bonusSymbol);
-	}
-
-	@Override
 	public int intermissionNumber() {
 		return INTERMISSION_AFTER_LEVEL.getOrDefault(level.number, 0);
 	}
@@ -234,9 +229,8 @@ public abstract class AbstractGameModel implements PacManGameModel {
 	public void reset() {
 		score = 0;
 		lives = initialLives;
-		createLevel(1);
 		levelCounter.clear();
-		countLevel();
+		createLevel(1);
 		Hiscore hiscore = loadHiscore();
 		hiscoreLevel = hiscore.level;
 		hiscorePoints = hiscore.points;

@@ -80,6 +80,7 @@ public class PacManGame extends AbstractGameModel {
 	public void createLevel(int levelNumber) {
 		level = new GameLevel(levelNumber, world, levelData(levelNumber));
 		level.mazeNumber = mazeNumber(levelNumber);
+		levelCounter.add(level.bonusSymbol);
 		ghostBounty = 200;
 		for (Ghost ghost : ghosts) {
 			ghost.dotCounter = 0;

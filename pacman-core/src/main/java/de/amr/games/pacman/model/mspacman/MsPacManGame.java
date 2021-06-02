@@ -89,6 +89,7 @@ public class MsPacManGame extends AbstractGameModel {
 			String randomBonus = bonusValues.keySet().toArray(String[]::new)[random];
 			level.bonusSymbol = randomBonus;
 		}
+		levelCounter.add(level.bonusSymbol);
 		ghostBounty = 200;
 		for (Ghost ghost : ghosts) {
 			ghost.dotCounter = 0;
