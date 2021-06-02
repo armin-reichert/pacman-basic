@@ -53,6 +53,10 @@ public class MsPacManGame extends AbstractGameModel {
 	};
   /*@formatter:on*/
 
+	static Object[] levelData(int levelNumber) {
+		return levelNumber - 1 < LEVELS.length ? LEVELS[levelNumber - 1] : LEVELS[LEVELS.length - 1];
+	}
+
 	private final MapBasedPacManGameWorld world;
 
 	public MsPacManGame() {
@@ -61,7 +65,6 @@ public class MsPacManGame extends AbstractGameModel {
 		pelletValue = 10;
 		energizerValue = 50;
 		hiscoreFileName = "hiscore-mspacman.xml";
-		levels = LEVELS;
 		bonusValues = Map.of("CHERRIES", 100, "STRAWBERRY", 200, "PEACH", 500, "PRETZEL", 700, //
 				"APPLE", 1000, "PEAR", 2000, "BANANA", 5000);
 

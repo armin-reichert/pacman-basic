@@ -35,7 +35,6 @@ public abstract class AbstractGameModel implements PacManGameModel {
 		//@formatter:on
 	};
 
-	protected Object[][] levels;
 	protected Map<String, Integer> bonusValues;
 	protected GameVariant variant;
 	protected GameLevel level;
@@ -54,10 +53,6 @@ public abstract class AbstractGameModel implements PacManGameModel {
 	protected int globalDotCounter;
 	protected boolean globalDotCounterEnabled;
 	protected String hiscoreFileName;
-
-	protected Object[] levelData(int levelNumber) {
-		return levelNumber - 1 < levels.length ? levels[levelNumber - 1] : levels[levels.length - 1];
-	}
 
 	@Override
 	public GameVariant variant() {

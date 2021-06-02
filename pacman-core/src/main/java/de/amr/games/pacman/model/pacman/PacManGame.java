@@ -50,7 +50,11 @@ public class PacManGame extends AbstractGameModel {
 	/*21*/ {"KEY",         90, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
 	};
 	/*@formatter:on*/
-	
+
+	static Object[] levelData(int levelNumber) {
+		return levelNumber - 1 < LEVELS.length ? LEVELS[levelNumber - 1] : LEVELS[LEVELS.length - 1];
+	}
+
 	private final MapBasedPacManGameWorld world;
 
 	public PacManGame() {
@@ -59,7 +63,6 @@ public class PacManGame extends AbstractGameModel {
 		initialLives = 3;
 		pelletValue = 10;
 		energizerValue = 50;
-		levels = LEVELS;
 		bonusValues = Map.of("CHERRIES", 100, "STRAWBERRY", 300, "PEACH", 500, "APPLE", 700, //
 				"GRAPES", 1000, "GALAXIAN", 2000, "BELL", 3000, "KEY", 5000);
 
