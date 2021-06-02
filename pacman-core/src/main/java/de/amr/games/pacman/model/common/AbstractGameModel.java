@@ -39,7 +39,6 @@ public abstract class AbstractGameModel implements PacManGameModel {
 	protected Map<String, Integer> bonusValues;
 	protected GameVariant variant;
 	protected GameLevel level;
-	protected PacManGameWorld world;
 	protected Pac player;
 	protected Ghost[] ghosts;
 	protected Bonus bonus;
@@ -230,7 +229,7 @@ public abstract class AbstractGameModel implements PacManGameModel {
 		score = 0;
 		lives = initialLives;
 		levelCounter.clear();
-		createLevel(1);
+		enterLevel(1);
 		Hiscore hiscore = loadHiscore();
 		hiscoreLevel = hiscore.level;
 		hiscorePoints = hiscore.points;

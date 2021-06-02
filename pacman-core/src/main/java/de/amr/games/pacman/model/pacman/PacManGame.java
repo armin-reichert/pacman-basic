@@ -50,6 +50,8 @@ public class PacManGame extends AbstractGameModel {
 	/*21*/ {"KEY",         90, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
 	};
 	/*@formatter:on*/
+	
+	private final MapBasedPacManGameWorld world;
 
 	public PacManGame() {
 		variant = GameVariant.PACMAN;
@@ -77,7 +79,7 @@ public class PacManGame extends AbstractGameModel {
 	}
 
 	@Override
-	public void createLevel(int levelNumber) {
+	public void enterLevel(int levelNumber) {
 		level = new GameLevel(levelNumber, world, levelData(levelNumber));
 		level.mazeNumber = mazeNumber(levelNumber);
 		levelCounter.add(level.bonusSymbol);
@@ -87,7 +89,7 @@ public class PacManGame extends AbstractGameModel {
 			ghost.elroy = 0;
 		}
 		bonus.init();
-		log("Pac-Man level #%d created", levelNumber);
+		log("Pac-Man game level #%d created", levelNumber);
 	}
 
 	@Override

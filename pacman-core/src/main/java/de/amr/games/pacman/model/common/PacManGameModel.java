@@ -17,11 +17,11 @@ public interface PacManGameModel {
 	GameVariant variant();
 
 	/**
-	 * Creates the level with the given number.
+	 * Enters the level with the given number.
 	 * 
 	 * @param levelNumber 1-based game level number
 	 */
-	void createLevel(int levelNumber);
+	void enterLevel(int levelNumber);
 
 	/**
 	 * @param levelNumber 1-based game level number

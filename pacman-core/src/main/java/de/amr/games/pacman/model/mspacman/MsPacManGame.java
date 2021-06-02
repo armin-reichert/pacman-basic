@@ -53,6 +53,8 @@ public class MsPacManGame extends AbstractGameModel {
 	};
   /*@formatter:on*/
 
+	private final MapBasedPacManGameWorld world;
+
 	public MsPacManGame() {
 		variant = GameVariant.MS_PACMAN;
 		initialLives = 3;
@@ -75,12 +77,10 @@ public class MsPacManGame extends AbstractGameModel {
 	}
 
 	@Override
-	public void createLevel(int levelNumber) {
-		final int mazeNumber = mazeNumber(levelNumber);
-		final int mapNumber = mapNumber(mazeNumber);
-		final WorldMap map = WorldMap.load("/mspacman/maps/map" + mapNumber + ".txt");
-		((MapBasedPacManGameWorld) world).setMap(map);
-
+	public void enterLevel(int levelNumber) {
+		var mazeNumber = mazeNumber(levelNumber);
+		var mapNumber = mapNumber(mazeNumber);
+		world.setMap(WorldMap.load("/mspacman/maps/map" + mapNumber + ".txt"));
 		level = new GameLevel(levelNumber, world, levelData(levelNumber));
 		level.mazeNumber = mazeNumber;
 		// From level 8 on, bonus is chosen randomly
@@ -96,7 +96,7 @@ public class MsPacManGame extends AbstractGameModel {
 			ghost.elroy = 0;
 		}
 		bonus.init();
-		log("Ms. Pac-Man level #%d created, maze number is %d", levelNumber, mazeNumber);
+		log("Ms. Pac-Man game level #%d created, maze number is %d", levelNumber, mazeNumber);
 	}
 
 	/**
