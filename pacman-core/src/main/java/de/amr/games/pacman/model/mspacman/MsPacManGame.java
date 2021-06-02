@@ -97,11 +97,9 @@ public class MsPacManGame extends AbstractGameModel {
 		world.setMap(WorldMap.load("/mspacman/maps/map" + mapNumber + ".txt"));
 		level = new GameLevel(levelNumber, world, levelData(levelNumber));
 		level.mazeNumber = mazeNumber;
-		// From level 8 on, bonus is chosen randomly
 		if (levelNumber >= 8) {
-			int random = new Random().nextInt(BONI.size());
-			String randomBonus = BONI.keySet().toArray(String[]::new)[random];
-			level.bonusSymbol = randomBonus;
+			// From level 8 on, bonus is chosen randomly
+			level.bonusSymbol = BONI.keySet().toArray(String[]::new)[new Random().nextInt(BONI.size())];
 		}
 		levelCounter.add(level.bonusSymbol);
 		ghostBounty = 200;
@@ -143,11 +141,9 @@ public class MsPacManGame extends AbstractGameModel {
 		//@formatter:on
 	}
 
-	/**
-	 * Maze #5 has the same map as #3, same for #6 vs. #4.
-	 */
 	@Override
 	public int mapNumber(int mazeNumber) {
+		// Maze #5 has the same map as #3, same for #6 vs. #4.
 		return mazeNumber == 5 ? 3 : mazeNumber == 6 ? 4 : mazeNumber;
 	}
 
