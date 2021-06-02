@@ -35,7 +35,6 @@ public abstract class AbstractGameModel implements PacManGameModel {
 		//@formatter:on
 	};
 
-	protected Map<String, Integer> bonusValues;
 	protected GameVariant variant;
 	protected GameLevel level;
 	protected Pac player;
@@ -52,7 +51,6 @@ public abstract class AbstractGameModel implements PacManGameModel {
 	protected List<String> levelCounter = new ArrayList<>();
 	protected int globalDotCounter;
 	protected boolean globalDotCounterEnabled;
-	protected String hiscoreFileName;
 
 	@Override
 	public GameVariant variant() {
@@ -172,11 +170,6 @@ public abstract class AbstractGameModel implements PacManGameModel {
 	}
 
 	@Override
-	public int bonusValue(String bonusSymbol) {
-		return bonusValues.get(bonusSymbol);
-	}
-
-	@Override
 	public boolean isBonusReached() {
 		return level.eatenFoodCount() == level.world.pelletsToEatForBonus(0)
 				|| level.eatenFoodCount() == level.world.pelletsToEatForBonus(1);
@@ -247,9 +240,11 @@ public abstract class AbstractGameModel implements PacManGameModel {
 		}
 	}
 
+	protected abstract String highscoreFileName();
+
 	private Hiscore loadHiscore() {
 		File dir = new File(System.getProperty("user.home"));
-		Hiscore hiscore = new Hiscore(new File(dir, hiscoreFileName));
+		Hiscore hiscore = new Hiscore(new File(dir, highscoreFileName()));
 		hiscore.load();
 		return hiscore;
 	}

@@ -124,7 +124,9 @@ public class TickTimer {
 			return;
 		}
 		if (state == READY) {
-			throw new IllegalStateException(String.format("Timer %s has not been started", name));
+			Logging.log("WARNING: Timer %s has not been started", name);
+//			throw new IllegalStateException(String.format("Timer %s has not been started", name));
+			return;
 		}
 		if (state == EXPIRED) {
 			throw new IllegalStateException(String.format("Timer %s has expired", name));

@@ -55,17 +55,23 @@ public class PacManGame extends AbstractGameModel {
 		return levelNumber - 1 < LEVELS.length ? LEVELS[levelNumber - 1] : LEVELS[LEVELS.length - 1];
 	}
 
+	static final Map<String, Integer> BONI = Map.of(//
+			"CHERRIES", 100, //
+			"STRAWBERRY", 300, //
+			"PEACH", 500, //
+			"APPLE", 700, //
+			"GRAPES", 1000, //
+			"GALAXIAN", 2000, //
+			"BELL", 3000, //
+			"KEY", 5000);
+
 	private final MapBasedPacManGameWorld world;
 
 	public PacManGame() {
 		variant = GameVariant.PACMAN;
-		hiscoreFileName = "hiscore-pacman.xml";
 		initialLives = 3;
 		pelletValue = 10;
 		energizerValue = 50;
-		bonusValues = Map.of("CHERRIES", 100, "STRAWBERRY", 300, "PEACH", 500, "APPLE", 700, //
-				"GRAPES", 1000, "GALAXIAN", 2000, "BELL", 3000, "KEY", 5000);
-
 		world = new MapBasedPacManGameWorld();
 		WorldMap map = WorldMap.load("/pacman/maps/map1.txt");
 		((MapBasedPacManGameWorld) world).setMap(map);
@@ -79,6 +85,11 @@ public class PacManGame extends AbstractGameModel {
 		};
 		bonus = new Bonus(world);
 		bonus.setPosition(t(world.bonusTile().x) + HTS, t(world.bonusTile().y));
+	}
+
+	@Override
+	protected String highscoreFileName() {
+		return "hiscore-pacman.xml";
 	}
 
 	@Override
@@ -103,5 +114,10 @@ public class PacManGame extends AbstractGameModel {
 	@Override
 	public int mazeNumber(int levelNumber) {
 		return 1;
+	}
+
+	@Override
+	public int bonusValue(String bonusSymbol) {
+		return BONI.get(bonusSymbol);
 	}
 }

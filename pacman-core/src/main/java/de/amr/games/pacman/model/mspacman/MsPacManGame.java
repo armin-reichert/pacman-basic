@@ -57,6 +57,15 @@ public class MsPacManGame extends AbstractGameModel {
 		return levelNumber - 1 < LEVELS.length ? LEVELS[levelNumber - 1] : LEVELS[LEVELS.length - 1];
 	}
 
+	static final Map<String, Integer> BONI = Map.of(//
+			"CHERRIES", 100, //
+			"STRAWBERRY", 200, //
+			"PEACH", 500, //
+			"PRETZEL", 700, //
+			"APPLE", 1000, //
+			"PEAR", 2000, //
+			"BANANA", 5000);
+
 	private final MapBasedPacManGameWorld world;
 
 	public MsPacManGame() {
@@ -64,9 +73,6 @@ public class MsPacManGame extends AbstractGameModel {
 		initialLives = 3;
 		pelletValue = 10;
 		energizerValue = 50;
-		hiscoreFileName = "hiscore-mspacman.xml";
-		bonusValues = Map.of("CHERRIES", 100, "STRAWBERRY", 200, "PEACH", 500, "PRETZEL", 700, //
-				"APPLE", 1000, "PEAR", 2000, "BANANA", 5000);
 
 		world = new MapBasedPacManGameWorld();
 		player = new Pac("Ms. Pac-Man", world);
@@ -80,6 +86,11 @@ public class MsPacManGame extends AbstractGameModel {
 	}
 
 	@Override
+	protected String highscoreFileName() {
+		return "hiscore-mspacman.xml";
+	}
+
+	@Override
 	public void enterLevel(int levelNumber) {
 		var mazeNumber = mazeNumber(levelNumber);
 		var mapNumber = mapNumber(mazeNumber);
@@ -88,8 +99,8 @@ public class MsPacManGame extends AbstractGameModel {
 		level.mazeNumber = mazeNumber;
 		// From level 8 on, bonus is chosen randomly
 		if (levelNumber >= 8) {
-			int random = new Random().nextInt(bonusValues.size());
-			String randomBonus = bonusValues.keySet().toArray(String[]::new)[random];
+			int random = new Random().nextInt(BONI.size());
+			String randomBonus = BONI.keySet().toArray(String[]::new)[random];
 			level.bonusSymbol = randomBonus;
 		}
 		levelCounter.add(level.bonusSymbol);
@@ -138,5 +149,10 @@ public class MsPacManGame extends AbstractGameModel {
 	@Override
 	public int mapNumber(int mazeNumber) {
 		return mazeNumber == 5 ? 3 : mazeNumber == 6 ? 4 : mazeNumber;
+	}
+
+	@Override
+	public int bonusValue(String bonusSymbol) {
+		return BONI.get(bonusSymbol);
 	}
 }
