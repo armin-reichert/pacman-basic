@@ -8,6 +8,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.OptionalInt;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.Hiscore;
@@ -68,8 +69,9 @@ public abstract class AbstractGameModel implements PacManGameModel {
 	}
 
 	@Override
-	public int intermissionNumber() {
-		return INTERMISSION_AFTER_LEVEL.getOrDefault(level.number, 0);
+	public OptionalInt intermissionAfterLevel(int levelNumber) {
+		return INTERMISSION_AFTER_LEVEL.containsKey(levelNumber) ? OptionalInt.of(INTERMISSION_AFTER_LEVEL.get(levelNumber))
+				: OptionalInt.empty();
 	}
 
 	@Override

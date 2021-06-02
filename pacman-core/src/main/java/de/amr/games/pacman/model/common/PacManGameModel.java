@@ -1,5 +1,6 @@
 package de.amr.games.pacman.model.common;
 
+import java.util.OptionalInt;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.model.pacman.Bonus;
@@ -47,10 +48,10 @@ public interface PacManGameModel {
 	long getHuntingPhaseDuration(int phase);
 
 	/**
-	 * @return number (1,2,3) of intermission scene played after the current level or {@code 0} if no
-	 *         intermission occurs after current level
+	 * @return 1-based number of intermission scene played after the specified level number or
+	 *         {@code empty}, if no intermission is played after this level
 	 */
-	int intermissionNumber();
+	OptionalInt intermissionAfterLevel(int levelNumber);
 
 	/**
 	 * @param levelNumber 1-based level number

@@ -452,7 +452,11 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			if (attractMode) {
 				changeState(INTRO);
 			} else {
-				changeState(game.intermissionNumber() != 0 ? INTERMISSION : LEVEL_STARTING);
+				if (game.intermissionAfterLevel(game.level().number).isPresent()) {
+					changeState(INTERMISSION);
+				} else {
+					changeState(LEVEL_STARTING);
+				}
 			}
 		}
 	}
@@ -473,8 +477,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	private void state_Intermission_enter() {
-		log("Starting intermission #%d", game.intermissionNumber());
-		stateTimer().reset(); // UI triggers timeout
+		stateTimer().reset(); // UI triggers state timeout
 		stateTimer().start();
 	}
 
@@ -540,7 +543,8 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		// Is bonus awarded?
 		if (game.isBonusReached()) {
 			final Bonus bonus = game.bonus();
-			final long bonusTicks = game.variant() == PACMAN ? sec_to_ticks(9 + new Random().nextFloat()) : TickTimer.INDEFINITE;
+			final long bonusTicks = game.variant() == PACMAN ? sec_to_ticks(9 + new Random().nextFloat())
+					: TickTimer.INDEFINITE;
 			bonus.symbol = level.bonusSymbol;
 			bonus.points = game.bonusValue(bonus.symbol);
 			bonus.activate(bonusTicks);
@@ -682,8 +686,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		}
 
 		case CLYDE: /* A Boy Named Sue */
-			return game.ghost(CLYDE).tile().euclideanDistance(playerTile) < 8
-					? game.level().world.ghostScatterTile(CLYDE)
+			return game.ghost(CLYDE).tile().euclideanDistance(playerTile) < 8 ? game.level().world.ghostScatterTile(CLYDE)
 					: playerTile;
 
 		default:
