@@ -57,7 +57,7 @@ public class Ghost extends Creature {
 
 	@Override
 	public boolean canAccessTile(V2i tile) {
-		if (world.isGhostHouseDoor(tile)) {
+		if (world.ghostHouse().doorTiles().contains(tile)) {
 			return is(GhostState.ENTERING_HOUSE) || is(GhostState.LEAVING_HOUSE);
 		}
 		// TODO there is still a bug causing ghost get stuck
@@ -71,7 +71,7 @@ public class Ghost extends Creature {
 	}
 
 	public boolean atGhostHouseDoor() {
-		return tile().equals(world.houseEntryLeftPart()) && differsAtMost(offset().x, HTS, 2);
+		return tile().equals(world.ghostHouse().entryTile()) && differsAtMost(offset().x, HTS, 2);
 	}
 
 	/**
@@ -86,7 +86,7 @@ public class Ghost extends Creature {
 			setDir(Direction.DOWN);
 			setWishDir(Direction.DOWN);
 			forcedOnTrack = false;
-			targetTile = (id == BLINKY) ? world.houseSeatCenter() : world.ghostHomeTile(id);
+			targetTile = (id == BLINKY) ? world.ghostHouse().seat(1) : world.ghostHomeTile(id);
 			state = GhostState.ENTERING_HOUSE;
 			return true;
 		}
@@ -110,8 +110,8 @@ public class Ghost extends Creature {
 			return true;
 		}
 		// Center reached? If target tile is left or right seat, move towards target tile
-		if (tile.equals(world.houseSeatCenter()) && offset.y >= 0) {
-			Direction dir = targetTile.x < world.houseSeatCenter().x ? Direction.LEFT : Direction.RIGHT;
+		if (tile.equals(world.ghostHouse().seat(1)) && offset.y >= 0) {
+			Direction dir = targetTile.x < world.ghostHouse().seat(1).x ? Direction.LEFT : Direction.RIGHT;
 			setDir(dir);
 			setWishDir(dir);
 		}
@@ -129,7 +129,7 @@ public class Ghost extends Creature {
 		V2i tile = tile();
 		V2d offset = offset();
 		// House left? Resume hunting.
-		if (tile.equals(world.houseEntryLeftPart()) && differsAtMost(offset.y, 0, 1)) {
+		if (tile.equals(world.ghostHouse().entryTile()) && differsAtMost(offset.y, 0, 1)) {
 			setOffset(HTS, 0);
 			setDir(Direction.LEFT);
 			setWishDir(Direction.LEFT);
@@ -137,7 +137,7 @@ public class Ghost extends Creature {
 			state = GhostState.HUNTING_PAC;
 			return true;
 		}
-		V2i houseCenter = world.houseSeatCenter();
+		V2i houseCenter = world.ghostHouse().seat(1);
 		int center = t(houseCenter.x) + HTS;
 		int ground = t(houseCenter.y) + HTS;
 		if (differsAtMost(position.x, center, 1)) {
@@ -162,7 +162,7 @@ public class Ghost extends Creature {
 	 * @return {@code true}
 	 */
 	public boolean bounce() {
-		int centerY = t(world.houseSeatCenter().y);
+		int centerY = t(world.ghostHouse().seat(1).y);
 		if (position.y < centerY - HTS || position.y > centerY + HTS) {
 			Direction opposite = dir().opposite();
 			setDir(opposite);

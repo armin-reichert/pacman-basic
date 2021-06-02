@@ -101,26 +101,6 @@ public interface PacManGameWorld {
 	V2i ghostScatterTile(int ghost);
 
 	/**
-	 * @return ghost house entry (left one of the two tiles above the doors)
-	 */
-	V2i houseEntryLeftPart();
-
-	/**
-	 * @return middle position inside the house
-	 */
-	V2i houseSeatCenter();
-
-	/**
-	 * @return left position inside the house
-	 */
-	V2i houseSeatLeft();
-
-	/**
-	 * @return right position inside the house
-	 */
-	V2i houseSeatRight();
-
-	/**
 	 * @return player start direction
 	 */
 	Direction playerStartDirection();
@@ -167,16 +147,9 @@ public interface PacManGameWorld {
 	boolean isTunnel(V2i tile);
 
 	/**
-	 * @param tile a tile
-	 * @return tells if the tile contains a ghosthouse door
+	 * @return the ghost house in this world
 	 */
-	boolean isGhostHouseDoor(V2i tile);
-
-	/**
-	 * @param tile a tile
-	 * @return tells if the tile is part of the ghosthouse
-	 */
-	boolean isGhostHousePart(V2i tile);
+	GhostHouse ghostHouse();
 
 	/**
 	 * @param tile a tile

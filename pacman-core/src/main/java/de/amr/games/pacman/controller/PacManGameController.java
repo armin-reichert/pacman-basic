@@ -648,7 +648,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	private void killGhost(Ghost ghost) {
 		ghost.state = DEAD;
-		ghost.targetTile = game.level().world.houseEntryLeftPart();
+		ghost.targetTile = game.level().world.ghostHouse().entryTile();
 		ghost.bounty = game.getNextGhostBounty();
 		score(ghost.bounty);
 		game.increaseNextGhostBounty();
