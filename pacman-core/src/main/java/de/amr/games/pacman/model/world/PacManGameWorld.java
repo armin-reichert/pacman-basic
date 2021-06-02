@@ -89,16 +89,16 @@ public interface PacManGameWorld {
 	V2i playerHomeTile();
 
 	/**
-	 * @param ghost a ghost
+	 * @param ghostID ghost ID (0-3)
 	 * @return ghost's home tile
 	 */
-	V2i ghostHomeTile(int ghost);
+	V2i ghostHomeTile(int ghostID);
 
 	/**
-	 * @param ghost a ghost
+	 * @param ghostID ghost ID (0-3)
 	 * @return ghost scattering target tile (an inaccessible tile)
 	 */
-	V2i ghostScatterTile(int ghost);
+	V2i ghostScatterTile(int ghostID);
 
 	/**
 	 * @return player start direction

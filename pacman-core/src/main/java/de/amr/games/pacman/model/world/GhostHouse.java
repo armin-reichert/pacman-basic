@@ -4,6 +4,11 @@ import java.util.List;
 
 import de.amr.games.pacman.lib.V2i;
 
+/**
+ * Ghost house interface.
+ * 
+ * @author Armin Reichert
+ */
 public interface GhostHouse {
 
 	V2i topLeftTile();
