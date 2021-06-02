@@ -135,9 +135,9 @@ public class MsPacManGame extends AbstractGameModel {
 			throw new IllegalArgumentException("Illegal level number: " + levelNumber);
 		}
 		//@formatter:off
-		return (levelNumber <= 2)  ? 1
-				 : (levelNumber <= 5)  ? 2
-				 : (levelNumber <= 9)  ? 3 
+		return (levelNumber <=  2) ? 1
+				 : (levelNumber <=  5) ? 2
+				 : (levelNumber <=  9) ? 3 
 				 : (levelNumber <= 13) ? 4
 				 : (levelNumber - 14) % 8 < 4 ? 5 : 6;
 		//@formatter:on
@@ -152,7 +152,7 @@ public class MsPacManGame extends AbstractGameModel {
 	}
 
 	@Override
-	public int bonusValue(String bonusSymbol) {
-		return BONI.get(bonusSymbol);
+	public int bonusValue(String symbolName) {
+		return BONI.get(symbolName);
 	}
 }

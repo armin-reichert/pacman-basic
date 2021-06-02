@@ -117,7 +117,7 @@ public class PacManGame extends AbstractGameModel {
 	}
 
 	@Override
-	public int bonusValue(String bonusSymbol) {
-		return BONI.get(bonusSymbol);
+	public int bonusValue(String symbolName) {
+		return BONI.get(symbolName);
 	}
 }

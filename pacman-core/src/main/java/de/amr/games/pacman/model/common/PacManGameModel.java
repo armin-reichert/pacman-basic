@@ -177,10 +177,10 @@ public interface PacManGameModel {
 	Bonus bonus();
 
 	/**
-	 * @param bonusSymbol bonus symbol name
+	 * @param symbolName bonus symbol name
 	 * @return value of the specified bonus
 	 */
-	int bonusValue(String bonusSymbol);
+	int bonusValue(String symbolName);
 
 	/**
 	 * @return value of the global dot counter, used by the ghosthouse logic
