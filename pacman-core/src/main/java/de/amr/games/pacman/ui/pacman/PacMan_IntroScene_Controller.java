@@ -9,7 +9,6 @@ import de.amr.games.pacman.lib.TimedSequence;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.GhostState;
 import de.amr.games.pacman.model.common.Pac;
-import de.amr.games.pacman.model.world.PacManGameWorld;
 
 /**
  * Intro scene of the PacMan game.
@@ -147,7 +146,7 @@ public class PacMan_IntroScene_Controller {
 			break;
 
 		case CHASING_GHOSTS:
-			if (pac.position().x > t(PacManGameWorld.DEFAULT_WIDTH)) {
+			if (pac.position().x > t(28)) {
 				enterPhase(Phase.READY_TO_PLAY);
 			}
 			if (gameController.stateTimer().ticked() - ghostKilledTime == 15) {
@@ -189,7 +188,7 @@ public class PacMan_IntroScene_Controller {
 	}
 
 	public void startGhostsChasingPac() {
-		pac.setPosition(t(PacManGameWorld.DEFAULT_WIDTH), t(22));
+		pac.setPosition(t(28), t(22));
 		pac.setVisible(true);
 		pac.setSpeed(1.0);
 		pac.setDir(Direction.LEFT);

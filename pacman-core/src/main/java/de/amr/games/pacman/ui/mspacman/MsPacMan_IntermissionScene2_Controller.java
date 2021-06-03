@@ -7,7 +7,6 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.mspacman.entities.Flap;
-import de.amr.games.pacman.model.world.PacManGameWorld;
 
 /**
  * Intermission scene 2: "The chase".
@@ -93,7 +92,7 @@ public abstract class MsPacMan_IntermissionScene2_Controller {
 				msPacMan.setVisible(true);
 				msPacMan.setDir(Direction.LEFT);
 				msPacMan.setSpeed(2.0);
-				pacMan.setPosition(t(PacManGameWorld.DEFAULT_HEIGHT), LOWER_Y);
+				pacMan.setPosition(t(36), LOWER_Y);
 				pacMan.setDir(Direction.LEFT);
 				pacMan.setSpeed(2.0);
 			}

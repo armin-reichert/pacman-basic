@@ -8,7 +8,6 @@ import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.GhostState;
 import de.amr.games.pacman.model.common.Pac;
-import de.amr.games.pacman.model.world.PacManGameWorld;
 
 /**
  * Third intermission scene: Blinky in shred dress chases Pac-Man, comes back half-naked drawing
@@ -75,7 +74,7 @@ public abstract class PacMan_IntermissionScene3_Controller {
 			break;
 
 		case RETURNING_HALF_NAKED:
-			if (blinky.position().x > t(PacManGameWorld.DEFAULT_WIDTH) + 200) {
+			if (blinky.position().x > t(28) + 200) {
 				gameController.stateTimer().forceExpiration();
 				return;
 			}

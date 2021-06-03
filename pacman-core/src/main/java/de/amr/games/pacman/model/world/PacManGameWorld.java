@@ -16,12 +16,6 @@ import de.amr.games.pacman.lib.V2i;
  */
 public interface PacManGameWorld {
 
-	/** Default world width in number of tiles. */
-	public static final int DEFAULT_WIDTH = 28;
-
-	/** Default world height in number of tiles. */
-	public static final int DEFAULT_HEIGHT = 36;
-
 	/** Tile size in pixels. */
 	public static final int TS = 8;
 
@@ -46,12 +40,16 @@ public interface PacManGameWorld {
 	/**
 	 * @return Number of tiles in horizontal direction.
 	 */
-	int numCols();
+	default int numCols() {
+		return 28;
+	}
 
 	/**
 	 * @return Number of tiles in vertical direction.
 	 */
-	int numRows();
+	default int numRows() {
+		return 36;
+	}
 
 	/**
 	 * 
