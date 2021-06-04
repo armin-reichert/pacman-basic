@@ -6,7 +6,7 @@ import static de.amr.games.pacman.lib.TickTimer.TickTimerState.RUNNING;
 import static de.amr.games.pacman.lib.TickTimer.TickTimerState.STOPPED;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 import java.util.function.Consumer;
 
 import de.amr.games.pacman.lib.TickTimerEvent.Type;
@@ -28,7 +28,7 @@ public class TickTimer {
 		READY, RUNNING, STOPPED, EXPIRED;
 	}
 
-	public static boolean trace = false;
+	public static boolean trace = true;
 
 	private void trace(String msg, Object... args) {
 		if (trace) {
@@ -36,11 +36,11 @@ public class TickTimer {
 		}
 	}
 
-	private Collection<Consumer<TickTimerEvent>> subscribers;
 	private final String name;
+	private List<Consumer<TickTimerEvent>> subscribers;
 	private TickTimerState state;
 	private long duration;
-	private long ticked; // 0 .. duration - 1
+	private long t; // 0..(duration - 1)
 
 	public TickTimer(String name) {
 		this.name = name;
@@ -53,17 +53,13 @@ public class TickTimer {
 
 	@Override
 	public String toString() {
-		return String.format("TickTimer %s: ticked: %d remaining: %d", name, ticked, ticksRemaining());
-	}
-
-	private void ensureSubscribersCreated() {
-		if (subscribers == null) {
-			subscribers = new ArrayList<>(3);
-		}
+		return String.format("TickTimer %s: state=%s t=%d remaining=%d", state, name, t, ticksRemaining());
 	}
 
 	public void addEventListener(Consumer<TickTimerEvent> subscriber) {
-		ensureSubscribersCreated();
+		if (subscribers == null) {
+			subscribers = new ArrayList<>(3);
+		}
 		subscribers.add(subscriber);
 	}
 
@@ -79,11 +75,11 @@ public class TickTimer {
 		}
 	}
 
-	public void reset(long durationTicks) {
+	public void reset(long ticks) {
 		state = READY;
-		trace("%s reset", name);
-		ticked = 0;
-		duration = durationTicks;
+		t = 0;
+		duration = ticks;
+		trace("%s got reset", this);
 		fireEvent(new TickTimerEvent(Type.RESET, duration));
 	}
 
@@ -97,57 +93,58 @@ public class TickTimer {
 
 	public void start() {
 		if (state == RUNNING) {
+			trace("%s not started, already running", this);
 			return;
 		}
 		if (state == STOPPED || state == READY) {
 			state = RUNNING;
-			trace("%s started", name);
+			trace("%s started", this);
 			fireEvent(new TickTimerEvent(Type.STARTED));
 		} else {
-			throw new IllegalStateException(String.format("Timer %s cannot be started from state %s", name, state));
+			throw new IllegalStateException(String.format("Timer %s cannot be started when in state %s", this, state));
 		}
 	}
 
 	public void stop() {
 		if (state == STOPPED) {
+			trace("%s not stopped, already stopped", this);
 			return;
 		}
 		if (state == RUNNING) {
 			state = STOPPED;
-			trace("%s stopped", name);
+			trace("%s stopped", this);
 			fireEvent(new TickTimerEvent(Type.STOPPED));
 		}
 	}
 
 	public void tick() {
-		if (state == STOPPED) {
-			return;
-		}
 		if (state == READY) {
-			Logging.log("WARNING: Timer %s has not been started", name);
-//			throw new IllegalStateException(String.format("Timer %s has not been started", name));
-			return;
+			throw new IllegalStateException(String.format("Timer %s not ticked, is ready", this));
 		}
 		if (state == EXPIRED) {
 			throw new IllegalStateException(String.format("Timer %s has expired", name));
 		}
-		++ticked;
-		trace("%s ticked", this);
-		if (ticked == duration / 2) {
-			fireEvent(new TickTimerEvent(Type.HALF_EXPIRED, ticked));
+		if (state == STOPPED) {
+			trace("%s not ticked, is stopped", this);
+			return;
 		}
-		if (ticked == duration) {
+		++t;
+		trace("%s ticked", this);
+		if (t == duration / 2) {
+			fireEvent(new TickTimerEvent(Type.HALF_EXPIRED, t));
+		}
+		if (t == duration) {
 			state = EXPIRED;
-			trace("%s expired", name);
-			fireEvent(new TickTimerEvent(Type.EXPIRED, ticked));
+			trace("%s expired", this);
+			fireEvent(new TickTimerEvent(Type.EXPIRED, t));
 			return;
 		}
 	}
 
 	public void forceExpiration() {
 		state = EXPIRED;
-		trace("%s expired", name);
-		fireEvent(new TickTimerEvent(Type.EXPIRED, ticked));
+		trace("%s forced to expire", this);
+		fireEvent(new TickTimerEvent(Type.EXPIRED, t));
 	}
 
 	public boolean hasExpired() {
@@ -167,18 +164,18 @@ public class TickTimer {
 	}
 
 	public long ticked() {
-		return ticked;
+		return t;
 	}
 
 	public long ticksRemaining() {
-		return duration == INDEFINITE ? INDEFINITE : duration - ticked;
+		return duration == INDEFINITE ? INDEFINITE : duration - t;
 	}
 
 	public boolean isRunningSeconds(double seconds) {
-		return ticked == (long) (seconds * 60);
+		return t == (long) (seconds * 60);
 	}
 
 	public boolean hasJustStarted() {
-		return ticked == 1;
+		return t == 1;
 	}
 }
