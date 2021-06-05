@@ -53,7 +53,8 @@ public class TickTimer {
 
 	@Override
 	public String toString() {
-		return String.format("TickTimer %s: state=%s t=%d remaining=%d", state, name, t, ticksRemaining());
+		return String.format("[%s: state=%s t=%d remaining=%s]", name, state, t,
+				(ticksRemaining() == INDEFINITE ? "indefinite" : String.valueOf(ticksRemaining())));
 	}
 
 	public void addEventListener(Consumer<TickTimerEvent> subscriber) {
@@ -121,29 +122,22 @@ public class TickTimer {
 		if (state == READY) {
 			throw new IllegalStateException(String.format("Timer %s not ticked, is ready", this));
 		}
-		if (state == EXPIRED) {
-			throw new IllegalStateException(String.format("Timer %s has expired", name));
-		}
 		if (state == STOPPED) {
-			trace("%s not ticked, is stopped", this);
 			return;
 		}
 		++t;
-		trace("%s ticked", this);
+//		trace("%s ticked", this);
 		if (t == duration / 2) {
 			fireEvent(new TickTimerEvent(Type.HALF_EXPIRED, t));
 		}
 		if (t == duration) {
-			state = EXPIRED;
-			trace("%s expired", this);
-			fireEvent(new TickTimerEvent(Type.EXPIRED, t));
-			return;
+			expire();
 		}
 	}
 
-	public void forceExpiration() {
+	public void expire() {
 		state = EXPIRED;
-		trace("%s forced to expire", this);
+		trace("%s expired", this);
 		fireEvent(new TickTimerEvent(Type.EXPIRED, t));
 	}
 

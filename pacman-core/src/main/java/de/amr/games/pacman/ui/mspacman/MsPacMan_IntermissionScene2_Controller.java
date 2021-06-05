@@ -121,7 +121,7 @@ public abstract class MsPacMan_IntermissionScene2_Controller {
 				pacMan.setSpeed(4.0);
 			}
 			if (timer.isRunningSeconds(20)) {
-				gameController.stateTimer().forceExpiration();
+				gameController.stateTimer().expire();
 				return;
 			}
 			timer.tick();

@@ -130,7 +130,7 @@ public abstract class MsPacMan_IntermissionScene3_Controller {
 
 		case READY_TO_PLAY:
 			if (timer.hasExpired()) {
-				gameController.stateTimer().forceExpiration();
+				gameController.stateTimer().expire();
 				return;
 			}
 			stork.move();

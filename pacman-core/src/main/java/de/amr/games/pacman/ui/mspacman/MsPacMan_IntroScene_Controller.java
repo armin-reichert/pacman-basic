@@ -123,7 +123,7 @@ public class MsPacMan_IntroScene_Controller {
 				blinking.restart();
 			}
 			if (phaseTimer.isRunningSeconds(5)) {
-				gameController.stateTimer().forceExpiration();
+				gameController.stateTimer().expire();
 				return;
 			}
 			blinking.animate();
