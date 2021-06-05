@@ -451,12 +451,10 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		if (stateTimer().hasExpired()) {
 			if (attractMode) {
 				changeState(INTRO);
+			} else if (game.intermissionAfterLevel(game.level().number).isPresent()) {
+				changeState(INTERMISSION);
 			} else {
-				if (game.intermissionAfterLevel(game.level().number).isPresent()) {
-					changeState(INTERMISSION);
-				} else {
-					changeState(LEVEL_STARTING);
-				}
+				changeState(LEVEL_STARTING);
 			}
 		}
 	}
