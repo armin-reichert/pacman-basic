@@ -73,8 +73,7 @@ public class PacManGame extends AbstractGameModel {
 		pelletValue = 10;
 		energizerValue = 50;
 		world = new MapBasedPacManGameWorld();
-		WorldMap map = WorldMap.load("/pacman/maps/map1.txt");
-		((MapBasedPacManGameWorld) world).setMap(map);
+		world.setMap(WorldMap.load("/pacman/maps/map1.txt"));
 
 		player = new Pac("Pac-Man", world);
 		ghosts = new Ghost[] { //
