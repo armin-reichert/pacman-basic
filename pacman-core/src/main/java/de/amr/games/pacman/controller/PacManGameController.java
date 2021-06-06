@@ -168,10 +168,6 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		changeState(INTRO);
 	}
 
-	public void toggleGameVariant() {
-		selectGameVariant(game().variant() == MS_PACMAN ? PACMAN : MS_PACMAN);
-	}
-
 	public PacManGameModel game() {
 		return game;
 	}
