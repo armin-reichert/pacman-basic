@@ -28,7 +28,7 @@ public class TickTimer {
 		READY, RUNNING, STOPPED, EXPIRED;
 	}
 
-	public static boolean trace = true;
+	public static boolean trace = false;
 
 	private void trace(String msg, Object... args) {
 		if (trace) {
