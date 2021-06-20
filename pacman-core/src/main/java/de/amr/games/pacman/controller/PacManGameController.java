@@ -384,7 +384,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		game.player().setSpeed(0);
 		game.ghosts(FRIGHTENED).forEach(ghost -> ghost.state = HUNTING_PAC);
 		game.bonus().init();
-		stateTimer().resetSeconds(5); // TODO
+		stateTimer().reset();
 		stateTimer().start();
 	}
 
