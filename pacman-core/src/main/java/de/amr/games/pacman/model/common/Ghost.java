@@ -1,5 +1,6 @@
 package de.amr.games.pacman.model.common;
 
+import static de.amr.games.pacman.lib.MathFunctions.differsAtMost;
 import static de.amr.games.pacman.model.world.PacManGameWorld.HTS;
 import static de.amr.games.pacman.model.world.PacManGameWorld.t;
 
@@ -14,10 +15,6 @@ import de.amr.games.pacman.model.world.PacManGameWorld;
  * @author Armin Reichert
  */
 public class Ghost extends Creature {
-
-	private static boolean differsAtMost(double value, double target, double tolerance) {
-		return Math.abs(value - target) <= tolerance;
-	}
 
 	public static final int BLINKY = 0, PINKY = 1, INKY = 2, CLYDE = 3, SUE = 3;
 

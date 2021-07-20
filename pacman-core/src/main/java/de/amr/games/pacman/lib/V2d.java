@@ -1,5 +1,7 @@
 package de.amr.games.pacman.lib;
 
+import static de.amr.games.pacman.lib.MathFunctions.differsAtMost;
+
 import java.util.Objects;
 
 /**
@@ -11,11 +13,7 @@ public class V2d {
 
 	public static final V2d NULL = new V2d(0, 0);
 
-	private static double EPS = 1e-6;
-
-	private static boolean almostEquals(double x, double y) {
-		return x >= y - EPS && x <= y + EPS;
-	}
+	private static double EPSILON = 1e-6;
 
 	public final double x;
 	public final double y;
@@ -34,7 +32,7 @@ public class V2d {
 		if (getClass() != obj.getClass())
 			return false;
 		V2d other = (V2d) obj;
-		return almostEquals(x, other.x) && almostEquals(y, other.y);
+		return differsAtMost(x, other.x, EPSILON) && differsAtMost(y, other.y, EPSILON);
 	}
 
 	@Override
