@@ -22,19 +22,24 @@ import de.amr.games.pacman.model.world.PacManGameWorld;
  */
 public abstract class AbstractGameModel implements PacManGameModel {
 
-	static final Map<Integer, Integer> INTERMISSION_AFTER_LEVEL = Map.of(//
-			2, 1, // intermission #1 after level #2
-			5, 2, // intermission #2 after level #5
-			9, 3, 13, 3, 17, 3 // intermission #3 after levels #9, #13, #17
+	//@formatter:off
+	static final Map<Integer, Integer> INTERMISSION_AFTER_LEVEL = Map.of(
+			// intermission #1 after level #2
+			2, 1,
+			// intermission #2 after level #5
+			5, 2,
+			// intermission #3 after levels #9, #13, #17
+			 9, 3,
+			13, 3,
+			17, 3
 	);
 
 	static final int[][] HUNTING_PHASE_TICKS = {
-		//@formatter:off
 		{ 7 * 60, 20 * 60, 7 * 60, 20 * 60, 5 * 60,   20 * 60,  5 * 60, Integer.MAX_VALUE },
 		{ 7 * 60, 20 * 60, 7 * 60, 20 * 60, 5 * 60, 1033 * 60,       1, Integer.MAX_VALUE },
 		{ 5 * 60, 20 * 60, 5 * 60, 20 * 60, 5 * 60, 1037 * 60,       1, Integer.MAX_VALUE },
-		//@formatter:on
 	};
+	//@formatter:on
 
 	protected GameVariant variant;
 	protected GameLevel level;
