@@ -30,33 +30,41 @@ public class MsPacManGame extends AbstractGameModel {
 
 //@formatter:off
 	
+	static final String CHERRIES =   "Cherries";
+	static final String STRAWBERRY = "Strawberry";
+	static final String PEACH =      "Peach";
+	static final String PRETZEL =    "Pretzel";
+	static final String APPLE =      "Apple";
+	static final String PEAR =       "Pear";
+	static final String BANANA =     "Banana";
+	
 	static final Object[][] LEVELS = {
-	/* 1*/ {"CHERRIES",    80, 75, 40,  20,  80, 10,  85,  90, 50, 6, 5},
-	/* 2*/ {"STRAWBERRY",  90, 85, 45,  30,  90, 15,  95,  95, 55, 5, 5},
+	/* 1*/ {CHERRIES,    80, 75, 40,  20,  80, 10,  85,  90, 50, 6, 5},
+	/* 2*/ {STRAWBERRY,  90, 85, 45,  30,  90, 15,  95,  95, 55, 5, 5},
 	/* Intermision scene 1: "They Meet" */
-	/* 3*/ {"PEACH",       90, 85, 45,  40,  90, 20,  95,  95, 55, 4, 5},
-	/* 4*/ {"PRETZEL",     90, 85, 45,  40,  90, 20,  95,  95, 55, 3, 5},
-	/* 5*/ {"APPLE",      100, 95, 50,  40, 100, 20, 105, 100, 60, 2, 5},
+	/* 3*/ {PEACH,       90, 85, 45,  40,  90, 20,  95,  95, 55, 4, 5},
+	/* 4*/ {PRETZEL,     90, 85, 45,  40,  90, 20,  95,  95, 55, 3, 5},
+	/* 5*/ {APPLE,      100, 95, 50,  40, 100, 20, 105, 100, 60, 2, 5},
 	/* Intermision scene 2: "The Chase" */
-	/* 6*/ {"PEAR",       100, 95, 50,  50, 100, 25, 105, 100, 60, 5, 5},
-	/* 7*/ {"BANANA",     100, 95, 50,  50, 100, 25, 105, 100, 60, 2, 5},
-	/* 8*/ {"BANANA",     100, 95, 50,  50, 100, 25, 105, 100, 60, 2, 5},
-	/* 9*/ {"BANANA",     100, 95, 50,  60, 100, 30, 105, 100, 60, 1, 3},
+	/* 6*/ {PEAR,       100, 95, 50,  50, 100, 25, 105, 100, 60, 5, 5},
+	/* 7*/ {BANANA,     100, 95, 50,  50, 100, 25, 105, 100, 60, 2, 5},
+	/* 8*/ {BANANA,     100, 95, 50,  50, 100, 25, 105, 100, 60, 2, 5},
+	/* 9*/ {BANANA,     100, 95, 50,  60, 100, 30, 105, 100, 60, 1, 3},
 	/* Intermision scene 3: "Junior" */
-	/*10*/ {"BANANA",     100, 95, 50,  60, 100, 30, 105, 100, 60, 4, 5},
-	/*11*/ {"BANANA",     100, 95, 50,  60, 100, 30, 105, 100, 60, 2, 5},
-	/*12*/ {"BANANA",     100, 95, 50,  80, 100, 40, 105, 100, 60, 1, 3},
-	/*13*/ {"BANANA",     100, 95, 50,  80, 100, 40, 105, 100, 60, 1, 3},
+	/*10*/ {BANANA,     100, 95, 50,  60, 100, 30, 105, 100, 60, 4, 5},
+	/*11*/ {BANANA,     100, 95, 50,  60, 100, 30, 105, 100, 60, 2, 5},
+	/*12*/ {BANANA,     100, 95, 50,  80, 100, 40, 105, 100, 60, 1, 3},
+	/*13*/ {BANANA,     100, 95, 50,  80, 100, 40, 105, 100, 60, 1, 3},
 	/* Intermision scene 3: "Junior" */
-	/*14*/ {"BANANA",     100, 95, 50,  80, 100, 40, 105, 100, 60, 3, 5},
-	/*15*/ {"BANANA",     100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3},
-	/*16*/ {"BANANA",     100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3},
-	/*17*/ {"BANANA",     100, 95, 50, 100, 100, 50, 105,   0,  0, 0, 0},
+	/*14*/ {BANANA,     100, 95, 50,  80, 100, 40, 105, 100, 60, 3, 5},
+	/*15*/ {BANANA,     100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3},
+	/*16*/ {BANANA,     100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3},
+	/*17*/ {BANANA,     100, 95, 50, 100, 100, 50, 105,   0,  0, 0, 0},
 	/* Intermision scene 3: "Junior" */
-	/*18*/ {"BANANA",     100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3},
-	/*19*/ {"BANANA",     100, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
-	/*20*/ {"BANANA",     100, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
-	/*21*/ {"BANANA",      90, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
+	/*18*/ {BANANA,     100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3},
+	/*19*/ {BANANA,     100, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
+	/*20*/ {BANANA,     100, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
+	/*21*/ {BANANA,      90, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
 	};
 
 /*@formatter:on*/
@@ -144,19 +152,19 @@ public class MsPacManGame extends AbstractGameModel {
 	@Override
 	public int bonusValue(String symbolName) {
 		switch (symbolName) {
-		case "CHERRIES":
+		case CHERRIES:
 			return 100;
-		case "STRAWBERRY":
+		case STRAWBERRY:
 			return 200;
-		case "PEACH":
+		case PEACH:
 			return 500;
-		case "PRETZEL":
+		case PRETZEL:
 			return 700;
-		case "APPLE":
+		case APPLE:
 			return 1000;
-		case "PEAR":
+		case PEAR:
 			return 2000;
-		case "BANANA":
+		case BANANA:
 			return 5000;
 		default:
 			throw new IllegalArgumentException("Unknown symbol name: " + symbolName);
@@ -166,19 +174,19 @@ public class MsPacManGame extends AbstractGameModel {
 	private String randomBonusSymbol() {
 		switch (new Random().nextInt(7)) {
 		case 0:
-			return "CHERRIES";
+			return CHERRIES;
 		case 1:
-			return "STRAWBERRY";
+			return STRAWBERRY;
 		case 2:
-			return "PEACH";
+			return PEACH;
 		case 3:
-			return "PRETZEL";
+			return PRETZEL;
 		case 4:
-			return "APPLE";
+			return APPLE;
 		case 5:
-			return "PEAR";
+			return PEAR;
 		case 6:
-			return "BANANA";
+			return BANANA;
 		default:
 			throw new IllegalStateException();
 		}
