@@ -6,7 +6,6 @@ import static de.amr.games.pacman.model.common.Ghost.INKY;
 import static de.amr.games.pacman.model.common.Ghost.PINKY;
 import static de.amr.games.pacman.model.common.Ghost.SUE;
 
-import java.util.Map;
 import java.util.Random;
 
 import de.amr.games.pacman.model.common.AbstractGameModel;
@@ -29,7 +28,8 @@ import de.amr.games.pacman.model.world.WorldMap;
  */
 public class MsPacManGame extends AbstractGameModel {
 
-	//@formatter:off
+//@formatter:off
+	
 	static final Object[][] LEVELS = {
 	/* 1*/ {"CHERRIES",    80, 75, 40,  20,  80, 10,  85,  90, 50, 6, 5},
 	/* 2*/ {"STRAWBERRY",  90, 85, 45,  30,  90, 15,  95,  95, 55, 5, 5},
@@ -59,18 +59,7 @@ public class MsPacManGame extends AbstractGameModel {
 	/*21*/ {"BANANA",      90, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
 	};
 
-
-	static final Map<String, Integer> BONI = Map.of(
-			"CHERRIES",   100, 
-			"STRAWBERRY", 200,
-			"PEACH",      500,
-			"PRETZEL",    700,
-			"APPLE",     1000,
-			"PEAR",      2000,
-			"BANANA",    5000
-	);
-
-  /*@formatter:on*/
+/*@formatter:on*/
 
 	static Object[] levelData(int levelNumber) {
 		return levelNumber - 1 < LEVELS.length ? LEVELS[levelNumber - 1] : LEVELS[LEVELS.length - 1];
@@ -104,7 +93,7 @@ public class MsPacManGame extends AbstractGameModel {
 		level.mazeNumber = mazeNumber;
 		if (levelNumber >= 8) {
 			// From level 8 on, bonus is chosen randomly
-			level.bonusSymbol = BONI.keySet().toArray(String[]::new)[new Random().nextInt(BONI.size())];
+			level.bonusSymbol = randomBonusSymbol();
 		}
 		levelCounter.add(level.bonusSymbol);
 		ghostBounty = 200;
@@ -154,6 +143,44 @@ public class MsPacManGame extends AbstractGameModel {
 
 	@Override
 	public int bonusValue(String symbolName) {
-		return BONI.get(symbolName);
+		switch (symbolName) {
+		case "CHERRIES":
+			return 100;
+		case "STRAWBERRY":
+			return 200;
+		case "PEACH":
+			return 500;
+		case "PRETZEL":
+			return 700;
+		case "APPLE":
+			return 1000;
+		case "PEAR":
+			return 2000;
+		case "BANANA":
+			return 5000;
+		default:
+			throw new IllegalArgumentException("Unknown symbol name: " + symbolName);
+		}
+	}
+
+	private String randomBonusSymbol() {
+		switch (new Random().nextInt(7)) {
+		case 0:
+			return "CHERRIES";
+		case 1:
+			return "STRAWBERRY";
+		case 2:
+			return "PEACH";
+		case 3:
+			return "PRETZEL";
+		case 4:
+			return "APPLE";
+		case 5:
+			return "PEAR";
+		case 6:
+			return "BANANA";
+		default:
+			throw new IllegalStateException();
+		}
 	}
 }

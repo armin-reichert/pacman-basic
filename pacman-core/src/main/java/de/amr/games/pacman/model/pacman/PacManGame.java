@@ -8,8 +8,6 @@ import static de.amr.games.pacman.model.common.Ghost.PINKY;
 import static de.amr.games.pacman.model.world.PacManGameWorld.HTS;
 import static de.amr.games.pacman.model.world.PacManGameWorld.t;
 
-import java.util.Map;
-
 import de.amr.games.pacman.model.common.AbstractGameModel;
 import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameVariant;
@@ -25,7 +23,8 @@ import de.amr.games.pacman.model.world.WorldMap;
  */
 public class PacManGame extends AbstractGameModel {
 
-	//@formatter:off
+//@formatter:off
+	
 	static final Object[][] LEVELS = {
 	/* 1*/ {"CHERRIES",    80, 75, 40,  20,  80, 10,  85,  90, 50, 6, 5},
 	/* 2*/ {"STRAWBERRY",  90, 85, 45,  30,  90, 15,  95,  95, 55, 5, 5},
@@ -49,21 +48,12 @@ public class PacManGame extends AbstractGameModel {
 	/*20*/ {"KEY",        100, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
 	/*21*/ {"KEY",         90, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
 	};
-	/*@formatter:on*/
+	
+/*@formatter:on*/
 
 	static Object[] levelData(int levelNumber) {
 		return levelNumber - 1 < LEVELS.length ? LEVELS[levelNumber - 1] : LEVELS[LEVELS.length - 1];
 	}
-
-	static final Map<String, Integer> BONI = Map.of(//
-			"CHERRIES", 100, //
-			"STRAWBERRY", 300, //
-			"PEACH", 500, //
-			"APPLE", 700, //
-			"GRAPES", 1000, //
-			"GALAXIAN", 2000, //
-			"BELL", 3000, //
-			"KEY", 5000);
 
 	private final MapBasedPacManGameWorld world;
 
@@ -72,6 +62,7 @@ public class PacManGame extends AbstractGameModel {
 		initialLives = 3;
 		pelletValue = 10;
 		energizerValue = 50;
+
 		world = new MapBasedPacManGameWorld();
 		world.setMap(WorldMap.load("/pacman/maps/map1.txt"));
 
@@ -112,6 +103,25 @@ public class PacManGame extends AbstractGameModel {
 
 	@Override
 	public int bonusValue(String symbolName) {
-		return BONI.get(symbolName);
+		switch (symbolName) {
+		case "CHERRIES":
+			return 100;
+		case "STRAWBERRY":
+			return 300;
+		case "PEACH":
+			return 500;
+		case "APPLE":
+			return 700;
+		case "GRAPES":
+			return 1000;
+		case "GALAXIAN":
+			return 2000;
+		case "BELL":
+			return 3000;
+		case "KEY":
+			return 5000;
+		default:
+			throw new IllegalArgumentException("Unknown symbol name: " + symbolName);
+		}
 	}
 }
