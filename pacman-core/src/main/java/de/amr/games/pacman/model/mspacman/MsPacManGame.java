@@ -30,13 +30,13 @@ public class MsPacManGame extends AbstractGameModel {
 
 //@formatter:off
 	
-	static final String CHERRIES =   "Cherries";
-	static final String STRAWBERRY = "Strawberry";
-	static final String PEACH =      "Peach";
-	static final String PRETZEL =    "Pretzel";
-	static final String APPLE =      "Apple";
-	static final String PEAR =       "Pear";
-	static final String BANANA =     "Banana";
+	public static final String CHERRIES =   "Cherries";
+	public static final String STRAWBERRY = "Strawberry";
+	public static final String PEACH =      "Peach";
+	public static final String PRETZEL =    "Pretzel";
+	public static final String APPLE =      "Apple";
+	public static final String PEAR =       "Pear";
+	public static final String BANANA =     "Banana";
 	
 	static final Object[][] LEVELS = {
 	/* 1*/ {CHERRIES,    80, 75, 40,  20,  80, 10,  85,  90, 50, 6, 5},

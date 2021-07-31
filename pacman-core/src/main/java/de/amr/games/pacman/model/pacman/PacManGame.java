@@ -25,14 +25,14 @@ public class PacManGame extends AbstractGameModel {
 
 //@formatter:off
 	
-	static final String CHERRIES =   "Cherries";
-	static final String STRAWBERRY = "Strawberry";
-	static final String PEACH =      "Peach";
-	static final String APPLE =      "Apple";
-	static final String GRAPES =     "Grapes";
-	static final String GALAXIAN =   "Galaxian";
-	static final String BELL =       "Bell";
-	static final String KEY =        "Key";
+	public static final String CHERRIES =   "Cherries";
+	public static final String STRAWBERRY = "Strawberry";
+	public static final String PEACH =      "Peach";
+	public static final String APPLE =      "Apple";
+	public static final String GRAPES =     "Grapes";
+	public static final String GALAXIAN =   "Galaxian";
+	public static final String BELL =       "Bell";
+	public static final String KEY =        "Key";
 	
 	static final Object[][] LEVELS = {
 	/* 1*/ {CHERRIES,    80, 75, 40,  20,  80, 10,  85,  90, 50, 6, 5},
