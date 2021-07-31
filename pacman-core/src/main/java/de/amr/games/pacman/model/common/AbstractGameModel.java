@@ -240,11 +240,10 @@ public abstract class AbstractGameModel implements PacManGameModel {
 		}
 	}
 
-	protected abstract String highscoreFileName();
-
 	private Hiscore loadHiscore() {
 		File dir = new File(System.getProperty("user.home"));
-		Hiscore hiscore = new Hiscore(new File(dir, highscoreFileName()));
+		String fileName = "highscore-" + variant.name().toLowerCase() + ".xml";
+		Hiscore hiscore = new Hiscore(new File(dir, fileName));
 		hiscore.load();
 		return hiscore;
 	}

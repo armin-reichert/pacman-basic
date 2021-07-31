@@ -87,11 +87,6 @@ public class PacManGame extends AbstractGameModel {
 	}
 
 	@Override
-	protected String highscoreFileName() {
-		return "hiscore-pacman.xml";
-	}
-
-	@Override
 	public void enterLevel(int levelNumber) {
 		level = new GameLevel(levelNumber, world, levelData(levelNumber));
 		level.mazeNumber = mazeNumber(levelNumber);

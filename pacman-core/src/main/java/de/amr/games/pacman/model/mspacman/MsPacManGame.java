@@ -96,11 +96,6 @@ public class MsPacManGame extends AbstractGameModel {
 	}
 
 	@Override
-	protected String highscoreFileName() {
-		return "hiscore-mspacman.xml";
-	}
-
-	@Override
 	public void enterLevel(int levelNumber) {
 		var mazeNumber = mazeNumber(levelNumber);
 		var mapNumber = mapNumber(mazeNumber);
