@@ -19,13 +19,19 @@ YouTube:
 
 
 ### Build
+
 `mvn clean install`
 
 ### Intro scene
+
 <img src="pacman-core/doc/intro.png">
 
 ### Pac-Man play scene
+
 <img src="pacman-core/doc/playing.png">
 
-### Ms. Pac-Man play scene
+### Ms. Pac-Man play scene (2D vs. 3D)
+
 <img src="pacman-core/doc/mspacman_playing.png">
+
+<img src="pacman-core/doc/playscene3D.png">
