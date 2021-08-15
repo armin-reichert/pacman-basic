@@ -75,7 +75,8 @@ public abstract class AbstractGameModel implements PacManGameModel {
 
 	@Override
 	public OptionalInt intermissionAfterLevel(int levelNumber) {
-		return INTERMISSION_AFTER_LEVEL.containsKey(levelNumber) ? OptionalInt.of(INTERMISSION_AFTER_LEVEL.get(levelNumber))
+		return INTERMISSION_AFTER_LEVEL.containsKey(levelNumber)
+				? OptionalInt.of(INTERMISSION_AFTER_LEVEL.get(levelNumber))
 				: OptionalInt.empty();
 	}
 

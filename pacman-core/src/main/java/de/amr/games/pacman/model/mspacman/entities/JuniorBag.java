@@ -4,7 +4,8 @@ import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.model.common.GameEntity;
 
 /**
- * Blue bag dropped by the stork in intermission scene 3, contains Pac-Man junior.
+ * Blue bag dropped by the stork in intermission scene 3, contains Pac-Man
+ * junior.
  * 
  * @author Armin Reichert
  */

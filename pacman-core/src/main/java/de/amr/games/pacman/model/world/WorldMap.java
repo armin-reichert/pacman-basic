@@ -133,8 +133,9 @@ public class WorldMap {
 	}
 
 	/**
-	 * @param listName the list name (prefix before the dot in list variable assignments), e.g.
-	 *                 <code>level</code> for list entries like <code>level.42</code>
+	 * @param listName the list name (prefix before the dot in list variable
+	 *                 assignments), e.g. <code>level</code> for list entries like
+	 *                 <code>level.42</code>
 	 * @return list of all values for given list name
 	 */
 	public List<V2i> vectorList(String listName) {

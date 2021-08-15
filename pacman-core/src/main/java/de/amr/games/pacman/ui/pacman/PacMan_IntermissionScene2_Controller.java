@@ -11,7 +11,8 @@ import de.amr.games.pacman.model.common.GhostState;
 import de.amr.games.pacman.model.common.Pac;
 
 /**
- * Second intermission scene: Blinky pursues Pac but kicks a nail that tears his dress apart.
+ * Second intermission scene: Blinky pursues Pac but kicks a nail that tears his
+ * dress apart.
  * 
  * @author Armin Reichert
  */

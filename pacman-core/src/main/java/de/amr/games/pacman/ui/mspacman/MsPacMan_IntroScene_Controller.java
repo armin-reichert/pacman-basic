@@ -13,7 +13,8 @@ import de.amr.games.pacman.model.common.GhostState;
 import de.amr.games.pacman.model.common.Pac;
 
 /**
- * Intro scene of the Ms. Pac-Man game. The ghosts and Ms. Pac-Man are introduced one after another.
+ * Intro scene of the Ms. Pac-Man game. The ghosts and Ms. Pac-Man are
+ * introduced one after another.
  * 
  * @author Armin Reichert
  */

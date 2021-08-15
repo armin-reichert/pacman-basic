@@ -43,13 +43,15 @@ public interface PacManGameModel {
 
 	/**
 	 * @param phase hunting phase index (0..7)
-	 * @return duration (ticks) of specified hunting phase (scattering/chasing alternating)
+	 * @return duration (ticks) of specified hunting phase (scattering/chasing
+	 *         alternating)
 	 */
 	long getHuntingPhaseDuration(int phase);
 
 	/**
-	 * @return 1-based number of intermission scene played after the specified level number or
-	 *         {@code empty}, if no intermission is played after this level
+	 * @return 1-based number of intermission scene played after the specified level
+	 *         number or {@code empty}, if no intermission is played after this
+	 *         level
 	 */
 	OptionalInt intermissionAfterLevel(int levelNumber);
 

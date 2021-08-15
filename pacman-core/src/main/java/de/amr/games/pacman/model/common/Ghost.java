@@ -28,12 +28,14 @@ public class Ghost extends Creature {
 	public int bounty;
 
 	/**
-	 * The individual food counter, used to compute when the ghost can leave the house.
+	 * The individual food counter, used to compute when the ghost can leave the
+	 * house.
 	 */
 	public int dotCounter;
 
 	/**
-	 * The "Cruise Elroy" mode of Blinky, the red ghost. Value is 1, 2 or -1, -2 (disabled Elroy mode).
+	 * The "Cruise Elroy" mode of Blinky, the red ghost. Value is 1, 2 or -1, -2
+	 * (disabled Elroy mode).
 	 */
 	public int elroy;
 
@@ -106,7 +108,8 @@ public class Ghost extends Creature {
 			state = GhostState.LEAVING_HOUSE;
 			return true;
 		}
-		// Center reached? If target tile is left or right seat, move towards target tile
+		// Center reached? If target tile is left or right seat, move towards target
+		// tile
 		if (tile.equals(world.ghostHouse().seat(1)) && offset.y >= 0) {
 			Direction dir = targetTile.x < world.ghostHouse().seat(1).x ? Direction.LEFT : Direction.RIGHT;
 			setDir(dir);
@@ -117,8 +120,8 @@ public class Ghost extends Creature {
 	}
 
 	/**
-	 * Lets the ghost leave the house from its home position to the middle of the house and then upwards
-	 * to the house door.
+	 * Lets the ghost leave the house from its home position to the middle of the
+	 * house and then upwards to the house door.
 	 * 
 	 * @return {@code true} if the ghost has left the house
 	 */

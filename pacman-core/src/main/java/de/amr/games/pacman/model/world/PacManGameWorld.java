@@ -151,7 +151,8 @@ public interface PacManGameWorld {
 
 	/**
 	 * @param tile a tile
-	 * @return tells if the tile may contain food (not if it currently contains food!)
+	 * @return tells if the tile may contain food (not if it currently contains
+	 *         food!)
 	 */
 	boolean isFoodTile(V2i tile);
 

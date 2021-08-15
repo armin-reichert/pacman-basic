@@ -39,7 +39,7 @@ public class GameLevel {
 	private BitSet eaten = new BitSet();
 	public int totalFoodCount;
 	public int foodRemaining;
-	
+
 	public int numGhostsKilled;
 
 	/** Ms. Pac-Man: maze number (1, 2, ..., 6) */
@@ -64,7 +64,8 @@ public class GameLevel {
 		}
 		eaten.clear();
 		foodRemaining = totalFoodCount;
-		log("Total food: %d (%d pellets, %d energizers)", totalFoodCount, totalFoodCount - energizerCount, energizerCount);
+		log("Total food: %d (%d pellets, %d energizers)", totalFoodCount, totalFoodCount - energizerCount,
+				energizerCount);
 	}
 
 	private void setData(Object[] levelData) {

@@ -123,7 +123,8 @@ public class MsPacManGame extends AbstractGameModel {
 	 * <li>Maze #3: orange maze, red dots (level 6-9)
 	 * <li>Maze #4: dark blue maze, white dots (level 10-13)
 	 * </ul>
-	 * From level 14 on, the maze alternates every 4th level between maze #5 and maze #6.
+	 * From level 14 on, the maze alternates every 4th level between maze #5 and
+	 * maze #6.
 	 * <ul>
 	 * <li>Maze #5: pink maze, cyan dots (same map as maze #3)
 	 * <li>Maze #6: orange maze, white dots (same map as maze #4)
