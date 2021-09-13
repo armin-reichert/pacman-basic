@@ -42,9 +42,8 @@ public class MapBasedPacManGameWorld implements PacManGameWorld {
 
 		size = map.vector("size");
 
-		house = new DefaultGhostHouse();
-		house.topLeftTile = map.vector("house_top_left");
-		house.bottomRightTile = map.vector("house_bottom_right");
+		house = new DefaultGhostHouse(map.vector("house_top_left"),
+				map.vector("house_bottom_right").minus(map.vector("house_top_left")));
 		house.entryTile = map.vector("house_entry");
 		house.seats = new ArrayList<>();
 		house.seats.add(map.vector("house_seat_left"));

@@ -11,20 +11,30 @@ import de.amr.games.pacman.lib.V2i;
  */
 public class DefaultGhostHouse implements GhostHouse {
 
-	public V2i topLeftTile;
-	public V2i bottomRightTile;
+	public final V2i topLeftTile;
+	public final V2i size;
 	public List<V2i> seats;
 	public V2i entryTile;
 	public List<V2i> doorTiles;
 
-	@Override
-	public V2i topLeftTile() {
-		return topLeftTile;
+	public DefaultGhostHouse(V2i topLeftTile, V2i size) {
+		this.topLeftTile = topLeftTile;
+		this.size = size;
 	}
 
 	@Override
-	public V2i bottomRightTile() {
-		return bottomRightTile;
+	public int numTilesX() {
+		return size.x;
+	}
+
+	@Override
+	public int numTilesY() {
+		return size.y;
+	}
+
+	@Override
+	public V2i topLeftTile() {
+		return topLeftTile;
 	}
 
 	@Override

@@ -13,20 +13,15 @@ public interface GhostHouse {
 
 	V2i topLeftTile();
 
-	V2i bottomRightTile();
-
 	default boolean contains(V2i tile) {
-		return tile.x >= topLeftTile().x && tile.x <= bottomRightTile().x //
-				&& tile.y >= topLeftTile().y && tile.y <= bottomRightTile().y;
+		V2i bottomRightTile = topLeftTile().plus(numTilesX(), numTilesY());
+		return tile.x >= topLeftTile().x && tile.x <= bottomRightTile.x //
+				&& tile.y >= topLeftTile().y && tile.y <= bottomRightTile.y;
 	}
 
-	default int numTilesX() {
-		return bottomRightTile().x - topLeftTile().x;
-	}
+	int numTilesX();
 
-	default int numTilesY() {
-		return bottomRightTile().y - topLeftTile().y;
-	}
+	int numTilesY();
 
 	V2i seat(int index);
 
