@@ -2,7 +2,7 @@ package de.amr.games.pacman.model.world;
 
 import static java.util.function.Predicate.not;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Collections;
 import java.util.List;
@@ -45,10 +45,8 @@ public class MapBasedPacManGameWorld implements PacManGameWorld {
 		house = new DefaultGhostHouse(map.vector("house_top_left"),
 				map.vector("house_bottom_right").minus(map.vector("house_top_left")));
 		house.entryTile = map.vector("house_entry");
-		house.seats = new ArrayList<>();
-		house.seats.add(map.vector("house_seat_left"));
-		house.seats.add(map.vector("house_seat_center"));
-		house.seats.add(map.vector("house_seat_right"));
+		house.seats = Arrays.asList(map.vector("house_seat_left"), map.vector("house_seat_center"),
+				map.vector("house_seat_right"));
 		house.doorTiles = tiles().filter(this::isGhostHouseDoor).collect(Collectors.toList());
 
 		pacman_home = map.vector("pacman_home");
