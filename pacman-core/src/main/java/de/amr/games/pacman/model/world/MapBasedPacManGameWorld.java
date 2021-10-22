@@ -36,7 +36,6 @@ import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.model.common.Ghost;
 
 /**
  * Game world using map(s).
@@ -132,22 +131,6 @@ public class MapBasedPacManGameWorld implements PacManGameWorld {
 	@Override
 	public Direction playerStartDirection() {
 		return Direction.of(pacman_start_dir);
-	}
-
-	@Override
-	public V2i ghostHomeTile(int ghostID) {
-		switch (ghostID) {
-		case Ghost.BLINKY:
-			return house.entryTile;
-		case Ghost.PINKY:
-			return house.seat(1);
-		case Ghost.INKY:
-			return house.seat(0);
-		case Ghost.CLYDE:
-			return house.seat(2);
-		default:
-			throw new IllegalArgumentException("Illegal ghost ID: " + ghostID);
-		}
 	}
 
 	@Override

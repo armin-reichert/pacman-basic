@@ -24,10 +24,6 @@ SOFTWARE.
 package de.amr.games.pacman.model.mspacman;
 
 import static de.amr.games.pacman.lib.Logging.log;
-import static de.amr.games.pacman.model.common.Ghost.BLINKY;
-import static de.amr.games.pacman.model.common.Ghost.INKY;
-import static de.amr.games.pacman.model.common.Ghost.PINKY;
-import static de.amr.games.pacman.model.common.Ghost.SUE;
 
 import java.util.Random;
 
@@ -107,10 +103,10 @@ public class MsPacManGame extends AbstractGameModel {
 		world = new MapBasedPacManGameWorld();
 		player = new Pac("Ms. Pac-Man", world);
 		ghosts = new Ghost[] { //
-				new Ghost(BLINKY, "Blinky", world), //
-				new Ghost(PINKY, "Pinky", world), //
-				new Ghost(INKY, "Inky", world), //
-				new Ghost(SUE, "Sue", world) //
+				new Ghost(0, "Blinky", world), //
+				new Ghost(1, "Pinky", world), //
+				new Ghost(2, "Inky", world), //
+				new Ghost(3, "Sue", world) //
 		};
 		bonus = new MovingBonus(world);
 	}
@@ -128,10 +124,16 @@ public class MsPacManGame extends AbstractGameModel {
 		}
 		levelCounter.add(level.bonusSymbol);
 		ghostBounty = 200;
+		
+		ghosts[0].homeTile = world.ghostHouse().entryTile();
+		ghosts[1].homeTile = world.ghostHouse().seat(1);
+		ghosts[2].homeTile = world.ghostHouse().seat(0);
+		ghosts[3].homeTile = world.ghostHouse().seat(2);
 		for (Ghost ghost : ghosts) {
 			ghost.dotCounter = 0;
 			ghost.elroy = 0;
 		}
+		
 		bonus.init();
 		log("Ms. Pac-Man game level #%d created, maze number is %d", levelNumber, mazeNumber);
 	}
@@ -146,8 +148,7 @@ public class MsPacManGame extends AbstractGameModel {
 	 * <li>Maze #3: orange maze, red dots (level 6-9)
 	 * <li>Maze #4: dark blue maze, white dots (level 10-13)
 	 * </ul>
-	 * From level 14 on, the maze alternates every 4th level between maze #5 and
-	 * maze #6.
+	 * From level 14 on, the maze alternates every 4th level between maze #5 and maze #6.
 	 * <ul>
 	 * <li>Maze #5: pink maze, cyan dots (same map as maze #3)
 	 * <li>Maze #6: orange maze, white dots (same map as maze #4)

@@ -24,10 +24,6 @@ SOFTWARE.
 package de.amr.games.pacman.model.pacman;
 
 import static de.amr.games.pacman.lib.Logging.log;
-import static de.amr.games.pacman.model.common.Ghost.BLINKY;
-import static de.amr.games.pacman.model.common.Ghost.CLYDE;
-import static de.amr.games.pacman.model.common.Ghost.INKY;
-import static de.amr.games.pacman.model.common.Ghost.PINKY;
 import static de.amr.games.pacman.model.world.PacManGameWorld.HTS;
 import static de.amr.games.pacman.model.world.PacManGameWorld.t;
 
@@ -100,10 +96,10 @@ public class PacManGame extends AbstractGameModel {
 
 		player = new Pac("Pac-Man", world);
 		ghosts = new Ghost[] { //
-				new Ghost(BLINKY, "Blinky", world), //
-				new Ghost(PINKY, "Pinky", world), //
-				new Ghost(INKY, "Inky", world), //
-				new Ghost(CLYDE, "Clyde", world) //
+				new Ghost(0, "Blinky", world), //
+				new Ghost(1, "Pinky", world), //
+				new Ghost(2, "Inky", world), //
+				new Ghost(3, "Clyde", world) //
 		};
 		bonus = new Bonus(world);
 		bonus.setPosition(t(world.bonusTile().x) + HTS, t(world.bonusTile().y));
@@ -115,6 +111,10 @@ public class PacManGame extends AbstractGameModel {
 		level.mazeNumber = mazeNumber(levelNumber);
 		levelCounter.add(level.bonusSymbol);
 		ghostBounty = 200;
+		ghosts[0].homeTile = world.ghostHouse().entryTile();
+		ghosts[1].homeTile = world.ghostHouse().seat(1);
+		ghosts[2].homeTile = world.ghostHouse().seat(0);
+		ghosts[3].homeTile = world.ghostHouse().seat(2);
 		for (Ghost ghost : ghosts) {
 			ghost.dotCounter = 0;
 			ghost.elroy = 0;

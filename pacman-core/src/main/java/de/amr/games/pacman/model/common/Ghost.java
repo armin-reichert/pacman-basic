@@ -39,34 +39,27 @@ import de.amr.games.pacman.model.world.PacManGameWorld;
  */
 public class Ghost extends Creature {
 
-	public static final int BLINKY = 0, PINKY = 1, INKY = 2, CLYDE = 3, SUE = 3;
-
 	/** The unique ID of the ghost (0..3). */
 	public final int id;
 
 	/** The current state of the ghost. */
 	public GhostState state;
 
+	/** The home location of the ghost. */
+	public V2i homeTile;
+
 	/** The bounty earned for killing this ghost. */
 	public int bounty;
 
 	/**
-	 * The individual food counter, used to compute when the ghost can leave the
-	 * house.
+	 * The individual food counter, used to compute when the ghost can leave the house.
 	 */
 	public int dotCounter;
 
 	/**
-	 * The "Cruise Elroy" mode of Blinky, the red ghost. Value is 1, 2 or -1, -2
-	 * (disabled Elroy mode).
+	 * The "Cruise Elroy" mode of Blinky, the red ghost. Value is 1, 2 or -1, -2 (disabled Elroy mode).
 	 */
 	public int elroy;
-
-	@Override
-	public String toString() {
-		return String.format("%s: state: %s position: %s, speed=%.2f, dir=%s, wishDir=%s", name, state, position, speed,
-				dir(), wishDir());
-	}
 
 	public Ghost(int id, String name, PacManGameWorld world) {
 		super(world, name);
@@ -108,7 +101,8 @@ public class Ghost extends Creature {
 			setDir(Direction.DOWN);
 			setWishDir(Direction.DOWN);
 			forcedOnTrack = false;
-			targetTile = (id == BLINKY) ? world.ghostHouse().seat(1) : world.ghostHomeTile(id);
+			boolean homeOutsideHouse = homeTile.equals(world.ghostHouse().entryTile());
+			targetTile = homeOutsideHouse ? world.ghostHouse().seat(1) : homeTile;
 			state = GhostState.ENTERING_HOUSE;
 			return true;
 		}
@@ -143,8 +137,8 @@ public class Ghost extends Creature {
 	}
 
 	/**
-	 * Lets the ghost leave the house from its home position to the middle of the
-	 * house and then upwards to the house door.
+	 * Lets the ghost leave the house from its home position to the middle of the house and then upwards
+	 * to the house door.
 	 * 
 	 * @return {@code true} if the ghost has left the house
 	 */
@@ -193,5 +187,11 @@ public class Ghost extends Creature {
 		}
 		tryMoving();
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		return String.format("%s: state: %s position: %s, speed=%.2f, dir=%s, wishDir=%s", name, state, position, speed,
+				dir(), wishDir());
 	}
 }

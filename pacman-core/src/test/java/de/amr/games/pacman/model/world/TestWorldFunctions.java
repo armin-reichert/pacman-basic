@@ -43,10 +43,6 @@ public class TestWorldFunctions {
 		assertEquals(Direction.DOWN, world.ghostStartDirection(1));
 		assertEquals(Direction.UP, world.ghostStartDirection(2));
 		assertEquals(Direction.UP, world.ghostStartDirection(3));
-		assertEquals(new V2i(13, 14), world.ghostHomeTile(0));
-		assertEquals(new V2i(13, 17), world.ghostHomeTile(1));
-		assertEquals(new V2i(11, 17), world.ghostHomeTile(2));
-		assertEquals(new V2i(15, 17), world.ghostHomeTile(3));
 	}
 
 	@Test
@@ -67,10 +63,6 @@ public class TestWorldFunctions {
 		assertEquals(Direction.DOWN, world.ghostStartDirection(1));
 		assertEquals(Direction.UP, world.ghostStartDirection(2));
 		assertEquals(Direction.UP, world.ghostStartDirection(3));
-		assertEquals(new V2i(13, 14), world.ghostHomeTile(0));
-		assertEquals(new V2i(13, 17), world.ghostHomeTile(1));
-		assertEquals(new V2i(11, 17), world.ghostHomeTile(2));
-		assertEquals(new V2i(15, 17), world.ghostHomeTile(3));
 	}
 
 	@Test
@@ -91,10 +83,6 @@ public class TestWorldFunctions {
 		assertEquals(Direction.DOWN, world.ghostStartDirection(1));
 		assertEquals(Direction.UP, world.ghostStartDirection(2));
 		assertEquals(Direction.UP, world.ghostStartDirection(3));
-		assertEquals(new V2i(13, 14), world.ghostHomeTile(0));
-		assertEquals(new V2i(13, 17), world.ghostHomeTile(1));
-		assertEquals(new V2i(11, 17), world.ghostHomeTile(2));
-		assertEquals(new V2i(15, 17), world.ghostHomeTile(3));
 	}
 
 	@Test
@@ -115,9 +103,5 @@ public class TestWorldFunctions {
 		assertEquals(Direction.DOWN, world.ghostStartDirection(1));
 		assertEquals(Direction.UP, world.ghostStartDirection(2));
 		assertEquals(Direction.UP, world.ghostStartDirection(3));
-		assertEquals(new V2i(13, 14), world.ghostHomeTile(0));
-		assertEquals(new V2i(13, 17), world.ghostHomeTile(1));
-		assertEquals(new V2i(11, 17), world.ghostHomeTile(2));
-		assertEquals(new V2i(15, 17), world.ghostHomeTile(3));
 	}
 }

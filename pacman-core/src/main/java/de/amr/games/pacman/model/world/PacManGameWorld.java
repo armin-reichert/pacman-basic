@@ -111,12 +111,6 @@ public interface PacManGameWorld {
 
 	/**
 	 * @param ghostID ghost ID (0-3)
-	 * @return ghost's home tile
-	 */
-	V2i ghostHomeTile(int ghostID);
-
-	/**
-	 * @param ghostID ghost ID (0-3)
 	 * @return ghost scattering target tile (an inaccessible tile)
 	 */
 	V2i ghostScatterTile(int ghostID);

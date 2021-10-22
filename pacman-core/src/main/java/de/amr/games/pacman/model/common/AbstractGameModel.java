@@ -24,7 +24,6 @@ SOFTWARE.
 package de.amr.games.pacman.model.common;
 
 import static de.amr.games.pacman.lib.Logging.log;
-import static de.amr.games.pacman.model.common.Ghost.BLINKY;
 import static de.amr.games.pacman.model.world.PacManGameWorld.HTS;
 
 import java.io.File;
@@ -98,8 +97,7 @@ public abstract class AbstractGameModel implements PacManGameModel {
 
 	@Override
 	public OptionalInt intermissionAfterLevel(int levelNumber) {
-		return INTERMISSION_AFTER_LEVEL.containsKey(levelNumber)
-				? OptionalInt.of(INTERMISSION_AFTER_LEVEL.get(levelNumber))
+		return INTERMISSION_AFTER_LEVEL.containsKey(levelNumber) ? OptionalInt.of(INTERMISSION_AFTER_LEVEL.get(levelNumber))
 				: OptionalInt.empty();
 	}
 
@@ -216,19 +214,20 @@ public abstract class AbstractGameModel implements PacManGameModel {
 		player.powerTimer.reset();
 
 		for (Ghost ghost : ghosts) {
-			ghost.placeAt(world.ghostHomeTile(ghost.id), HTS, 0);
+			ghost.placeAt(ghost.homeTile, HTS, 0);
 			ghost.setDir(world.ghostStartDirection(ghost.id));
 			ghost.setWishDir(world.ghostStartDirection(ghost.id));
 			ghost.visible = true;
 			ghost.speed = 0;
 			ghost.targetTile = null;
 			ghost.stuck = false;
-			// BLINKY starts outside of ghost house, so he must be on track initially
-			ghost.forced = (ghost.id == BLINKY);
-			ghost.forcedOnTrack = (ghost.id == BLINKY);
+			// if ghost home is located outside of house, he must be on track initially
+			boolean homeOutsideOfHouse = ghost.homeTile.equals(world.ghostHouse().entryTile());
+			ghost.forced = homeOutsideOfHouse;
+			ghost.forcedOnTrack = homeOutsideOfHouse;
 			ghost.state = GhostState.LOCKED;
 			ghost.bounty = 0;
-			// these are only reset when level starts:
+			// these are only reset on level start:
 			// ghost.dotCounter = 0;
 			// ghost.elroyMode = 0;
 		}

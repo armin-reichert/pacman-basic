@@ -36,10 +36,6 @@ import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.lib.TickTimer.sec_to_ticks;
 import static de.amr.games.pacman.model.common.GameVariant.MS_PACMAN;
 import static de.amr.games.pacman.model.common.GameVariant.PACMAN;
-import static de.amr.games.pacman.model.common.Ghost.BLINKY;
-import static de.amr.games.pacman.model.common.Ghost.CLYDE;
-import static de.amr.games.pacman.model.common.Ghost.INKY;
-import static de.amr.games.pacman.model.common.Ghost.PINKY;
 import static de.amr.games.pacman.model.common.GhostState.DEAD;
 import static de.amr.games.pacman.model.common.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.common.GhostState.HUNTING_PAC;
@@ -75,19 +71,16 @@ import de.amr.games.pacman.ui.PacManGameUI;
 /**
  * Controller (in the sense of MVC) for the Pac-Man and Ms. Pac-Man game.
  * <p>
- * This is a finite-state machine with states defined in
- * {@link PacManGameState}. The game data are stored in the model of the
- * selected game, see {@link MsPacManGame} and {@link PacManGame}. The user
- * interface is abstracted via an interface ({@link PacManGameUI}). Scene
- * selection is not controlled by this class but left to the user interface
- * implementations.
+ * This is a finite-state machine with states defined in {@link PacManGameState}. The game data are
+ * stored in the model of the selected game, see {@link MsPacManGame} and {@link PacManGame}. The
+ * user interface is abstracted via an interface ({@link PacManGameUI}). Scene selection is not
+ * controlled by this class but left to the user interface implementations.
  * <p>
  * Missing functionality:
  * <ul>
- * <li><a href=
- * "https://pacman.holenet.info/#CH2_Cornering"><em>Cornering</em></a>: I do not
- * consider cornering as important when the player is controlled by keyboard
- * keys, for a joystick that probably would be more important.</li>
+ * <li><a href= "https://pacman.holenet.info/#CH2_Cornering"><em>Cornering</em></a>: I do not
+ * consider cornering as important when the player is controlled by keyboard keys, for a joystick
+ * that probably would be more important.</li>
  * <li>Exact level data for Ms. Pac-Man still unclear. Any hints appreciated!
  * <li>Multiple players, credits.</li>
  * </ul>
@@ -95,17 +88,19 @@ import de.amr.games.pacman.ui.PacManGameUI;
  * @author Armin Reichert
  * 
  * @see <a href="https://github.com/armin-reichert">GitHub</a>
- * @see <a href="https://pacman.holenet.info">Jamey Pittman: The Pac-Man
- *      Dossier</a>
- * @see <a href=
- *      "https://gameinternals.com/understanding-pac-man-ghost-behavior">Chad
- *      Birch: Understanding ghost behavior</a>
+ * @see <a href="https://pacman.holenet.info">Jamey Pittman: The Pac-Man Dossier</a>
+ * @see <a href= "https://gameinternals.com/understanding-pac-man-ghost-behavior">Chad Birch:
+ *      Understanding ghost behavior</a>
  * @see <a href="http://superpacman.com/mspacman/">Ms. Pac-Man</a>
  */
 public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
-	// in same order as in enum type GameVariant
-	private final PacManGameModel[] games = { new MsPacManGame(), new PacManGame() };
+	private static final int BLINKY = 0;
+	private static final int PINKY = 1;
+	private static final int INKY = 2;
+	private static final int CLYDE = 3; /* SUE */
+
+	private PacManGameModel[] games;
 
 	private PacManGameModel game;
 	private PacManGameUI ui;
@@ -126,13 +121,16 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		configure(INTRO, this::state_Intro_enter, this::state_Intro_update, null);
 		configure(READY, this::state_Ready_enter, this::state_Ready_update, null);
 		configure(HUNTING, this::state_Hunting_enter, this::state_Hunting_update, null);
-		configure(GHOST_DYING, this::state_GhostDying_enter, this::state_GhostDying_update,
-				this::state_GhostDying_exit);
+		configure(GHOST_DYING, this::state_GhostDying_enter, this::state_GhostDying_update, this::state_GhostDying_exit);
 		configure(PACMAN_DYING, this::state_PacManDying_enter, this::state_PacManDying_update, null);
 		configure(LEVEL_STARTING, this::state_LevelStarting_enter, this::state_LevelStarting_update, null);
 		configure(LEVEL_COMPLETE, this::state_LevelComplete_enter, this::state_LevelComplete_update, null);
 		configure(INTERMISSION, this::state_Intermission_enter, this::state_Intermission_update, null);
 		configure(GAME_OVER, this::state_GameOver_enter, this::state_GameOver_update, null);
+
+		games = new PacManGameModel[2];
+		games[GameVariant.MS_PACMAN.ordinal()] = new MsPacManGame();
+		games[GameVariant.PACMAN.ordinal()] = new PacManGame();
 	}
 
 	private void fireGameEvent(PacManGameEvent gameEvent) {
@@ -297,8 +295,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 		// Is hunting phase complete?
 		if (stateTimer().hasExpired()) {
-			game.ghosts().filter(ghost -> ghost.is(HUNTING_PAC) || ghost.is(FRIGHTENED))
-					.forEach(Ghost::forceTurningBack);
+			game.ghosts().filter(ghost -> ghost.is(HUNTING_PAC) || ghost.is(FRIGHTENED)).forEach(Ghost::forceTurningBack);
 			startHuntingPhase(++huntingPhase);
 			return;
 		}
@@ -618,10 +615,10 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			}
 			if (game.variant() == MS_PACMAN && huntingPhase == 0 && (ghost.id == BLINKY || ghost.id == PINKY)) {
 				/*
-				 * In Ms. Pac-Man, Blinky and Pinky move randomly during the *first* scatter
-				 * phase. Some say, the original intention had been to randomize the scatter
-				 * target of *all* ghosts in Ms. Pac-Man but because of a bug, only the scatter
-				 * target of Blinky and Pinky would have been affected. Who knows?
+				 * In Ms. Pac-Man, Blinky and Pinky move randomly during the *first* scatter phase. Some say, the
+				 * original intention had been to randomize the scatter target of *all* ghosts in Ms. Pac-Man but
+				 * because of a bug, only the scatter target of Blinky and Pinky would have been affected. Who
+				 * knows?
 				 */
 				ghost.targetTile = null;
 				ghost.setRandomDirection();
@@ -688,8 +685,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		}
 
 		case CLYDE: /* A Boy Named Sue */
-			return game.ghost(CLYDE).tile().euclideanDistance(playerTile) < 8
-					? game.level().world.ghostScatterTile(CLYDE)
+			return game.ghost(CLYDE).tile().euclideanDistance(playerTile) < 8 ? game.level().world.ghostScatterTile(CLYDE)
 					: playerTile;
 
 		default:
@@ -731,8 +727,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 				releaseGhost(ghost, "%s's dot counter (%d) reached limit (%d)", ghost.name, ghost.dotCounter,
 						ghostPrivateDotLimit(ghost.id, game.level().number));
 			} else if (game.player().starvingTicks >= playerStarvingTimeLimit(game.level().number)) {
-				releaseGhost(ghost, "%s has been starving for %d ticks", game.player().name,
-						game.player().starvingTicks);
+				releaseGhost(ghost, "%s has been starving for %d ticks", game.player().name, game.player().starvingTicks);
 				game.player().starvingTicks = 0;
 			}
 		});
