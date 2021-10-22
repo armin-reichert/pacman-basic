@@ -32,6 +32,7 @@ import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
+import de.amr.games.pacman.model.pacman.entities.Bonus;
 import de.amr.games.pacman.model.world.MapBasedPacManGameWorld;
 
 /**

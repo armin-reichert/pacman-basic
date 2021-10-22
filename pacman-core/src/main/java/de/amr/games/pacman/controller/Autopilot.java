@@ -37,7 +37,7 @@ import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.GhostState;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.common.PacManGameModel;
-import de.amr.games.pacman.model.pacman.Bonus;
+import de.amr.games.pacman.model.pacman.entities.Bonus;
 
 /**
  * Controls automatic movement of the player.

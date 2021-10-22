@@ -28,7 +28,7 @@ import java.util.Random;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent.Info;
 import de.amr.games.pacman.lib.Direction;
-import de.amr.games.pacman.model.pacman.Bonus;
+import de.amr.games.pacman.model.pacman.entities.Bonus;
 import de.amr.games.pacman.model.world.Portal;
 
 /**

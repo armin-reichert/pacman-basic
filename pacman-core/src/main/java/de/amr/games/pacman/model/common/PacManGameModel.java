@@ -26,7 +26,7 @@ package de.amr.games.pacman.model.common;
 import java.util.OptionalInt;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.model.pacman.Bonus;
+import de.amr.games.pacman.model.pacman.entities.Bonus;
 
 /**
  * Game model interface for Pac-Man and Ms. Pac-Man games.

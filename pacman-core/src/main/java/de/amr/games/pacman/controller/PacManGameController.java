@@ -65,8 +65,8 @@ import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.common.PacManGameModel;
 import de.amr.games.pacman.model.mspacman.MsPacManGame;
-import de.amr.games.pacman.model.pacman.Bonus;
 import de.amr.games.pacman.model.pacman.PacManGame;
+import de.amr.games.pacman.model.pacman.entities.Bonus;
 import de.amr.games.pacman.ui.PacManGameUI;
 
 /**
