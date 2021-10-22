@@ -34,7 +34,6 @@ import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.mspacman.entities.MovingBonus;
 import de.amr.games.pacman.model.world.MapBasedPacManGameWorld;
-import de.amr.games.pacman.model.world.WorldMap;
 
 /**
  * Model of the Ms. Pac-Man game.
@@ -92,25 +91,27 @@ public class MsPacManGame extends AbstractGameModel {
 		return levelNumber - 1 < LEVELS.length ? LEVELS[levelNumber - 1] : LEVELS[LEVELS.length - 1];
 	}
 
-	private final MapBasedPacManGameWorld world;
+	private MapBasedPacManGameWorld world;
 
 	public MsPacManGame() {
-		variant = GameVariant.MS_PACMAN;
+		super(GameVariant.MS_PACMAN);
+
 		initialLives = 3;
 		pelletValue = 10;
 		energizerValue = 50;
 
-		world = new MapBasedPacManGameWorld();
 		player = new Pac("Ms. Pac-Man");
 		createGhosts("Blinky", "Pinky", "Inky", "Sue");
-		bonus = new MovingBonus(world);
+		bonus = new MovingBonus();
 	}
 
 	@Override
 	public void enterLevel(int levelNumber) {
-		var mazeNumber = mazeNumber(levelNumber);
-		var mapNumber = mapNumber(mazeNumber);
-		world.setMap(WorldMap.load("/mspacman/maps/map" + mapNumber + ".txt"));
+		final int mazeNumber = mazeNumber(levelNumber);
+		final int mapNumber = mapNumber(mazeNumber);
+
+		world = new MapBasedPacManGameWorld("/mspacman/maps/map" + mapNumber + ".txt");
+
 		level = new GameLevel(levelNumber, world, levelData(levelNumber));
 		level.mazeNumber = mazeNumber;
 		if (levelNumber >= 8) {
@@ -118,9 +119,9 @@ public class MsPacManGame extends AbstractGameModel {
 			level.bonusSymbol = randomBonusSymbol();
 		}
 		levelCounter.add(level.bonusSymbol);
-		
+
 		player.world = world;
-		
+
 		ghostBounty = 200;
 		for (Ghost ghost : ghosts) {
 			ghost.world = world;
@@ -132,7 +133,9 @@ public class MsPacManGame extends AbstractGameModel {
 		ghosts[2].homeTile = world.ghostHouse().seat(0);
 		ghosts[3].homeTile = world.ghostHouse().seat(2);
 
+		bonus.world = world;
 		bonus.init();
+
 		log("Ms. Pac-Man game level #%d created, maze number is %d", levelNumber, mazeNumber);
 	}
 
@@ -146,7 +149,8 @@ public class MsPacManGame extends AbstractGameModel {
 	 * <li>Maze #3: orange maze, red dots (level 6-9)
 	 * <li>Maze #4: dark blue maze, white dots (level 10-13)
 	 * </ul>
-	 * From level 14 on, the maze alternates every 4th level between maze #5 and maze #6.
+	 * From level 14 on, the maze alternates every 4th level between maze #5 and
+	 * maze #6.
 	 * <ul>
 	 * <li>Maze #5: pink maze, cyan dots (same map as maze #3)
 	 * <li>Maze #6: orange maze, white dots (same map as maze #4)
@@ -159,10 +163,10 @@ public class MsPacManGame extends AbstractGameModel {
 		}
 		//@formatter:off
 		return (levelNumber <=  2) ? 1
-				 : (levelNumber <=  5) ? 2
-				 : (levelNumber <=  9) ? 3 
-				 : (levelNumber <= 13) ? 4
-				 : (levelNumber - 14) % 8 < 4 ? 5 : 6;
+		 : (levelNumber <=  5) ? 2
+		 : (levelNumber <=  9) ? 3 
+		 : (levelNumber <= 13) ? 4
+		 : (levelNumber - 14) % 8 < 4 ? 5 : 6;
 		//@formatter:on
 	}
 

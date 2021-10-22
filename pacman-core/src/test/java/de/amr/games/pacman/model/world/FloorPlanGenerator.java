@@ -22,9 +22,7 @@ public class FloorPlanGenerator {
 	}
 
 	private static void createFloorPlan(String mapPath, File dir, String outputFileNamePattern, int resolution) {
-		MapBasedPacManGameWorld world = new MapBasedPacManGameWorld();
-		WorldMap map = WorldMap.load(mapPath);
-		world.setMap(map);
+		MapBasedPacManGameWorld world = new MapBasedPacManGameWorld(mapPath);
 		FloorPlan wallMap = new FloorPlanBuilder(resolution).build(world);
 		File out = new File(dir, String.format(outputFileNamePattern, resolution));
 		try (FileWriter w = new FileWriter(out, StandardCharsets.UTF_8)) {

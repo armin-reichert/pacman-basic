@@ -33,7 +33,6 @@ import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.world.MapBasedPacManGameWorld;
-import de.amr.games.pacman.model.world.WorldMap;
 
 /**
  * Model of the Pac-Man game.
@@ -83,30 +82,31 @@ public class PacManGame extends AbstractGameModel {
 		return levelNumber - 1 < LEVELS.length ? LEVELS[levelNumber - 1] : LEVELS[LEVELS.length - 1];
 	}
 
-	private final MapBasedPacManGameWorld world;
+	private MapBasedPacManGameWorld world;
 
 	public PacManGame() {
-		variant = GameVariant.PACMAN;
+		super(GameVariant.PACMAN);
+
 		initialLives = 3;
 		pelletValue = 10;
 		energizerValue = 50;
 
-		world = new MapBasedPacManGameWorld();
-		world.setMap(WorldMap.load("/pacman/maps/map1.txt"));
-
 		player = new Pac("Pac-Man");
 		createGhosts("Blinky", "Pinky", "Inky", "Clyde");
-
-		bonus = new Bonus(world);
-		bonus.setPosition(t(world.bonusTile().x) + HTS, t(world.bonusTile().y));
+		bonus = new Bonus();
 	}
 
 	@Override
 	public void enterLevel(int levelNumber) {
+
+		world = new MapBasedPacManGameWorld("/pacman/maps/map1.txt");
+
 		level = new GameLevel(levelNumber, world, levelData(levelNumber));
 		level.mazeNumber = mazeNumber(levelNumber);
 		levelCounter.add(level.bonusSymbol);
+
 		player.world = world;
+
 		ghostBounty = 200;
 		for (Ghost ghost : ghosts) {
 			ghost.world = world;
@@ -117,7 +117,10 @@ public class PacManGame extends AbstractGameModel {
 		ghosts[1].homeTile = world.ghostHouse().seat(1);
 		ghosts[2].homeTile = world.ghostHouse().seat(0);
 		ghosts[3].homeTile = world.ghostHouse().seat(2);
+
 		bonus.init();
+		bonus.world = world;
+		bonus.setPosition(t(world.bonusTile().x) + HTS, t(world.bonusTile().y));
 		log("Pac-Man game level #%d created", levelNumber);
 	}
 

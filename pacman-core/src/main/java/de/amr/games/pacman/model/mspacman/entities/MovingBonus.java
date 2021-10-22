@@ -29,7 +29,6 @@ import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent.Info;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.model.pacman.Bonus;
-import de.amr.games.pacman.model.world.PacManGameWorld;
 import de.amr.games.pacman.model.world.Portal;
 
 /**
@@ -39,10 +38,6 @@ import de.amr.games.pacman.model.world.Portal;
  * @author Armin Reichert
  */
 public class MovingBonus extends Bonus {
-
-	public MovingBonus(PacManGameWorld world) {
-		super(world);
-	}
 
 	@Override
 	public void init() {

@@ -59,6 +59,10 @@ public class MapBasedPacManGameWorld implements PacManGameWorld {
 	private BitSet intersections;
 	private List<V2i> energizerTiles;
 
+	public MapBasedPacManGameWorld(String mapPath) {
+		setMap(WorldMap.load(mapPath));
+	}
+
 	public void setMap(WorldMap map) {
 		this.map = map;
 

@@ -63,7 +63,7 @@ public abstract class AbstractGameModel implements PacManGameModel {
 	};
 	//@formatter:on
 
-	protected GameVariant variant;
+	protected final GameVariant variant;
 	protected GameLevel level;
 	protected Pac player;
 	protected Ghost[] ghosts;
@@ -80,12 +80,16 @@ public abstract class AbstractGameModel implements PacManGameModel {
 	protected int dotCounter;
 	protected boolean dotCounterEnabled;
 
+	protected AbstractGameModel(GameVariant variant) {
+		this.variant = variant;
+	}
+
 	protected void createGhosts(String... names) {
 		ghosts = new Ghost[names.length];
 		for (int id = 0; id < names.length; ++id) {
 			ghosts[id] = new Ghost(id, names[id]);
 		}
-		
+
 		// Blinky
 		ghosts[0].fnChasingTargetTile = () -> player.tile();
 
@@ -131,8 +135,7 @@ public abstract class AbstractGameModel implements PacManGameModel {
 
 	@Override
 	public OptionalInt intermissionAfterLevel(int levelNumber) {
-		return INTERMISSIONS.containsKey(levelNumber)
-				? OptionalInt.of(INTERMISSIONS.get(levelNumber))
+		return INTERMISSIONS.containsKey(levelNumber) ? OptionalInt.of(INTERMISSIONS.get(levelNumber))
 				: OptionalInt.empty();
 	}
 

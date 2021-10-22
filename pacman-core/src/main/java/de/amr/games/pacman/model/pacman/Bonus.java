@@ -26,7 +26,6 @@ package de.amr.games.pacman.model.pacman;
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent.Info;
 import de.amr.games.pacman.model.common.Creature;
-import de.amr.games.pacman.model.world.PacManGameWorld;
 
 /**
  * Bonus symbol. In Ms. Pac-Man, the bonus wanders the maze.
@@ -50,9 +49,8 @@ public class Bonus extends Creature {
 
 	public int state;
 
-	public Bonus(PacManGameWorld world) {
+	public Bonus() {
 		super("Bonus");
-		this.world = world;
 		init();
 	}
 
