@@ -78,10 +78,10 @@ public class MsPacMan_IntroScene_Controller {
 		msPacMan.setPosition(t(37), t(tileBelowBoard));
 
 		ghosts = new Ghost[] { //
-				new Ghost(0, "Blinky", null), //
-				new Ghost(1, "Pinky", null), //
-				new Ghost(2, "Inky", null), //
-				new Ghost(3, "Sue", null),//
+				new Ghost(0, "Blinky"), //
+				new Ghost(1, "Pinky"), //
+				new Ghost(2, "Inky"), //
+				new Ghost(3, "Sue"),//
 		};
 
 		for (Ghost ghost : ghosts) {

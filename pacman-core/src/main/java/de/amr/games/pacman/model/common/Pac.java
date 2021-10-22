@@ -46,7 +46,8 @@ public class Pac extends Creature {
 	public long starvingTicks = 0;
 
 	public Pac(String name, PacManGameWorld world) {
-		super(world, name);
+		super(name);
+		this.world = world;
 	}
 
 	@Override

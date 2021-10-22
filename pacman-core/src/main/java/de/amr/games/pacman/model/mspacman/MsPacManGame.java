@@ -103,10 +103,10 @@ public class MsPacManGame extends AbstractGameModel {
 		world = new MapBasedPacManGameWorld();
 		player = new Pac("Ms. Pac-Man", world);
 		ghosts = new Ghost[] { //
-				new Ghost(0, "Blinky", world), //
-				new Ghost(1, "Pinky", world), //
-				new Ghost(2, "Inky", world), //
-				new Ghost(3, "Sue", world) //
+				new Ghost(0, "Blinky"), //
+				new Ghost(1, "Pinky"), //
+				new Ghost(2, "Inky"), //
+				new Ghost(3, "Sue") //
 		};
 		bonus = new MovingBonus(world);
 	}
@@ -124,16 +124,17 @@ public class MsPacManGame extends AbstractGameModel {
 		}
 		levelCounter.add(level.bonusSymbol);
 		ghostBounty = 200;
-		
+
+		for (Ghost ghost : ghosts) {
+			ghost.world = world;
+			ghost.dotCounter = 0;
+			ghost.elroy = 0;
+		}
 		ghosts[0].homeTile = world.ghostHouse().entryTile();
 		ghosts[1].homeTile = world.ghostHouse().seat(1);
 		ghosts[2].homeTile = world.ghostHouse().seat(0);
 		ghosts[3].homeTile = world.ghostHouse().seat(2);
-		for (Ghost ghost : ghosts) {
-			ghost.dotCounter = 0;
-			ghost.elroy = 0;
-		}
-		
+
 		bonus.init();
 		log("Ms. Pac-Man game level #%d created, maze number is %d", levelNumber, mazeNumber);
 	}

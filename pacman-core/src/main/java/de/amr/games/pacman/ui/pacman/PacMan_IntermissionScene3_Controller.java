@@ -69,7 +69,7 @@ public abstract class PacMan_IntermissionScene3_Controller {
 		pac.stuck = false;
 		pac.setDir(Direction.LEFT);
 
-		blinky = new Ghost(0, "Blinky", null);
+		blinky = new Ghost(0, "Blinky");
 		blinky.setDir(Direction.LEFT);
 		blinky.setWishDir(Direction.LEFT);
 		blinky.setPosition(pac.position().plus(t(8), 0));

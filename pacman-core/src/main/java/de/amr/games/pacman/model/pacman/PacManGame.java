@@ -96,10 +96,10 @@ public class PacManGame extends AbstractGameModel {
 
 		player = new Pac("Pac-Man", world);
 		ghosts = new Ghost[] { //
-				new Ghost(0, "Blinky", world), //
-				new Ghost(1, "Pinky", world), //
-				new Ghost(2, "Inky", world), //
-				new Ghost(3, "Clyde", world) //
+				new Ghost(0, "Blinky"), //
+				new Ghost(1, "Pinky"), //
+				new Ghost(2, "Inky"), //
+				new Ghost(3, "Clyde") //
 		};
 		bonus = new Bonus(world);
 		bonus.setPosition(t(world.bonusTile().x) + HTS, t(world.bonusTile().y));
@@ -111,14 +111,15 @@ public class PacManGame extends AbstractGameModel {
 		level.mazeNumber = mazeNumber(levelNumber);
 		levelCounter.add(level.bonusSymbol);
 		ghostBounty = 200;
+		for (Ghost ghost : ghosts) {
+			ghost.world = world;
+			ghost.dotCounter = 0;
+			ghost.elroy = 0;
+		}
 		ghosts[0].homeTile = world.ghostHouse().entryTile();
 		ghosts[1].homeTile = world.ghostHouse().seat(1);
 		ghosts[2].homeTile = world.ghostHouse().seat(0);
 		ghosts[3].homeTile = world.ghostHouse().seat(2);
-		for (Ghost ghost : ghosts) {
-			ghost.dotCounter = 0;
-			ghost.elroy = 0;
-		}
 		bonus.init();
 		log("Pac-Man game level #%d created", levelNumber);
 	}

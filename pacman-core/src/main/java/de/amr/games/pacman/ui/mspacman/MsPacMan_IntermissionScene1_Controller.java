@@ -81,7 +81,7 @@ public abstract class MsPacMan_IntermissionScene1_Controller {
 		pacMan.setPosition(-t(2), upperY);
 		pacMan.setVisible(true);
 
-		inky = new Ghost(2, "Inky", null);
+		inky = new Ghost(2, "Inky");
 		inky.setDir(Direction.RIGHT);
 		inky.setWishDir(Direction.RIGHT);
 		inky.setPosition(pacMan.position().plus(-t(3), 0));
@@ -92,7 +92,7 @@ public abstract class MsPacMan_IntermissionScene1_Controller {
 		msPac.setPosition(t(30), lowerY);
 		msPac.setVisible(true);
 
-		pinky = new Ghost(1, "Pinky", null);
+		pinky = new Ghost(1, "Pinky");
 		pinky.setDir(Direction.LEFT);
 		pinky.setWishDir(Direction.LEFT);
 		pinky.setPosition(msPac.position().plus(t(3), 0));

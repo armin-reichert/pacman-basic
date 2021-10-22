@@ -23,8 +23,6 @@ SOFTWARE.
  */
 package de.amr.games.pacman.lib;
 
-import static de.amr.games.pacman.lib.MathFunctions.differsAtMost;
-
 import java.util.Objects;
 
 /**
@@ -55,7 +53,7 @@ public class V2d {
 		if (getClass() != obj.getClass())
 			return false;
 		V2d other = (V2d) obj;
-		return differsAtMost(x, other.x, EPSILON) && differsAtMost(y, other.y, EPSILON);
+		return MathFunctions.differsAtMost(x, other.x, EPSILON) && MathFunctions.differsAtMost(y, other.y, EPSILON);
 	}
 
 	@Override

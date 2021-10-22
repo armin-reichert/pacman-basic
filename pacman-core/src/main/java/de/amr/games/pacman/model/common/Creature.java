@@ -23,10 +23,6 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.common;
 
-import static de.amr.games.pacman.lib.Direction.DOWN;
-import static de.amr.games.pacman.lib.Direction.LEFT;
-import static de.amr.games.pacman.lib.Direction.RIGHT;
-import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.model.world.PacManGameWorld.t;
 import static java.lang.Math.abs;
 
@@ -48,22 +44,22 @@ import de.amr.games.pacman.model.world.Portal;
  */
 public class Creature extends GameEntity {
 
-	private static final Direction[] TURN_PRIORITY = { UP, LEFT, DOWN, RIGHT };
-
-	/** The world where this creature lives. */
-	public final PacManGameWorld world;
+	private static final Direction[] TURN_PRIORITY = { Direction.UP, Direction.LEFT, Direction.DOWN, Direction.RIGHT };
 
 	/** Readable name, for display and logging purposes. */
 	public final String name;
+
+	/** The world where this creature lives. */
+	public PacManGameWorld world;
 
 	/** Relative speed (fraction of full speed), value between 0 and 1. */
 	protected double speed = 0.0;
 
 	/** The current move direction. */
-	protected Direction dir = RIGHT;
+	protected Direction dir = Direction.RIGHT;
 
 	/** The intended move direction. Will be taken as soon as possible. */
-	protected Direction wishDir = RIGHT;
+	protected Direction wishDir = Direction.RIGHT;
 
 	/** The target tile. Can be inaccessible or outside of the world. */
 	public V2i targetTile = V2i.NULL;
@@ -78,20 +74,17 @@ public class Creature extends GameEntity {
 	public boolean forced = false;
 
 	/**
-	 * If movement is constrained to be aligned with the "track" defined by the
-	 * tiles.
+	 * If movement is constrained to be aligned with the "track" defined by the tiles.
 	 */
 	public boolean forcedOnTrack = false;
 
-	public Creature(PacManGameWorld world, String name) {
-		this.world = world;
+	public Creature(String name) {
 		this.name = name;
-		updateVelocity();
 	}
 
 	/**
-	 * Places this creature at the given tile with the given position offsets. Sets
-	 * the {@link #newTileEntered} flag to trigger steering.
+	 * Places this creature at the given tile with the given position offsets. Sets the
+	 * {@link #newTileEntered} flag to trigger steering.
 	 * 
 	 * @param tile    the tile where this creature will be placed
 	 * @param offsetX the pixel offset in x-direction
@@ -117,8 +110,8 @@ public class Creature extends GameEntity {
 	}
 
 	/**
-	 * Places the creature on its current tile with given offset. This is for
-	 * example used to place the ghosts exactly between two tiles.
+	 * Places the creature on its current tile with given offset. This is for example used to place the
+	 * ghosts exactly between two tiles.
 	 * 
 	 * @param offsetX offset in x-direction
 	 * @param offsetY offset in y-direction
@@ -184,14 +177,14 @@ public class Creature extends GameEntity {
 	public void tryMoving() {
 		V2i currentTile = tile();
 		// teleport?
-		if (dir == RIGHT) {
+		if (dir == Direction.RIGHT) {
 			for (Portal portal : world.portals()) {
 				if (currentTile.equals(portal.right)) {
 					placeAt(portal.left, 0, 0);
 					return;
 				}
 			}
-		} else if (dir == LEFT) {
+		} else if (dir == Direction.LEFT) {
 			for (Portal portal : world.portals()) {
 				if (currentTile.equals(portal.left)) {
 					placeAt(portal.right, 0, 0);
@@ -216,13 +209,13 @@ public class Creature extends GameEntity {
 
 		// check if guy can turn towards given direction at current position
 		if (forcedOnTrack && canAccessTile(neighbor)) {
-			if (direction == LEFT || direction == RIGHT) {
+			if (direction == Direction.LEFT || direction == Direction.RIGHT) {
 				if (abs(offset.y) > moveDistance) {
 					stuck = true;
 					return;
 				}
 				setOffset(offset.x, 0);
-			} else if (direction == UP || direction == DOWN) {
+			} else if (direction == Direction.UP || direction == Direction.DOWN) {
 				if (abs(offset.x) > moveDistance) {
 					stuck = true;
 					return;
@@ -245,12 +238,12 @@ public class Creature extends GameEntity {
 
 		// align with edge of inaccessible neighbor
 		if (!canAccessTile(neighbor)) {
-			if (direction == RIGHT && newOffset.x > 0 || direction == LEFT && newOffset.x < 0) {
+			if (direction == Direction.RIGHT && newOffset.x > 0 || direction == Direction.LEFT && newOffset.x < 0) {
 				setOffset(0, offset.y);
 				stuck = true;
 				return;
 			}
-			if (direction == DOWN && newOffset.y > 0 || direction == UP && newOffset.y < 0) {
+			if (direction == Direction.DOWN && newOffset.y > 0 || direction == Direction.UP && newOffset.y < 0) {
 				setOffset(offset.x, 0);
 				stuck = true;
 				return;
@@ -280,9 +273,9 @@ public class Creature extends GameEntity {
 	}
 
 	/**
-	 * As described in the Pac-Man dossier: checks all accessible neighbor tiles in
-	 * order UP, LEFT, DOWN, RIGHT and selects the one with smallest Euclidean
-	 * distance to the target tile. Reversing the move direction is not allowed.
+	 * As described in the Pac-Man dossier: checks all accessible neighbor tiles in order UP, LEFT,
+	 * DOWN, RIGHT and selects the one with smallest Euclidean distance to the target tile. Reversing
+	 * the move direction is not allowed.
 	 */
 	public void setDirectionTowardsTarget() {
 		if (forced) {

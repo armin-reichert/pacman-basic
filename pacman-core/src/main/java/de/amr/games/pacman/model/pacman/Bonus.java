@@ -51,7 +51,8 @@ public class Bonus extends Creature {
 	public int state;
 
 	public Bonus(PacManGameWorld world) {
-		super(world, "Bonus");
+		super("Bonus");
+		this.world = world;
 		init();
 	}
 
