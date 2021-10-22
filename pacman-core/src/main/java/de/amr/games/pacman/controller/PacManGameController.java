@@ -56,7 +56,6 @@ import de.amr.games.pacman.controller.event.PacManGameEvent.Info;
 import de.amr.games.pacman.controller.event.PacManGameEventListener;
 import de.amr.games.pacman.controller.event.PacManGameStateChangeEvent;
 import de.amr.games.pacman.controller.event.ScatterPhaseStartedEvent;
-import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.FiniteStateMachine;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.V2i;
@@ -630,7 +629,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 				ghost.targetTile = level.world.ghostScatterTile(ghost.id);
 				ghost.setDirectionTowardsTarget();
 			} else {
-				ghost.targetTile = ghostHuntingTarget(ghost.id);
+				ghost.targetTile = ghost.fnChasingTargetTile.get();
 				ghost.setDirectionTowardsTarget();
 			}
 			ghost.tryMoving();
@@ -660,42 +659,6 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			score(12000);
 		}
 		log("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name, ghost.tile(), ghost.bounty);
-	}
-
-	/*
-	 * The so called "ghost AI".
-	 */
-	private V2i ghostHuntingTarget(int ghostID) {
-		final V2i playerTile = game.player().tile();
-		switch (ghostID) {
-
-		case BLINKY:
-			return playerTile;
-
-		case PINKY: {
-			V2i fourAheadOfPlayer = playerTile.plus(game.player().dir().vec.scaled(4));
-			if (game.player().dir() == Direction.UP) { // simulate overflow bug
-				fourAheadOfPlayer = fourAheadOfPlayer.plus(-4, 0);
-			}
-			return fourAheadOfPlayer;
-		}
-
-		case INKY: {
-			V2i twoAheadOfPlayer = playerTile.plus(game.player().dir().vec.scaled(2));
-			if (game.player().dir() == Direction.UP) { // simulate overflow bug
-				twoAheadOfPlayer = twoAheadOfPlayer.plus(-2, 0);
-			}
-			return twoAheadOfPlayer.scaled(2).minus(game.ghost(BLINKY).tile());
-		}
-
-		case CLYDE: /* A Boy Named Sue */
-			return game.ghost(CLYDE).tile().euclideanDistance(playerTile) < 8
-					? game.level().world.ghostScatterTile(CLYDE)
-					: playerTile;
-
-		default:
-			throw new IllegalArgumentException("Unknown ghost, id: " + ghostID);
-		}
 	}
 
 	// Ghost house rules

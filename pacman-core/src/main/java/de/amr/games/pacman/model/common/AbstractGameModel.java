@@ -33,7 +33,9 @@ import java.util.Map;
 import java.util.OptionalInt;
 import java.util.stream.Stream;
 
+import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.Hiscore;
+import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.pacman.Bonus;
 import de.amr.games.pacman.model.world.PacManGameWorld;
 
@@ -80,6 +82,40 @@ public abstract class AbstractGameModel implements PacManGameModel {
 	protected int dotCounter;
 	protected boolean dotCounterEnabled;
 
+	protected void createGhosts(String... names) {
+		ghosts = new Ghost[names.length];
+		for (int id = 0; id < names.length; ++id) {
+			ghosts[id] = new Ghost(id, names[id]);
+		}
+		
+		// Blinky
+		ghosts[0].fnChasingTargetTile = () -> player.tile();
+
+		// Pinky
+		ghosts[1].fnChasingTargetTile = () -> {
+			V2i fourAheadOfPlayer = player.tile().plus(player.dir().vec.scaled(4));
+			if (player.dir() == Direction.UP) { // simulate overflow bug
+				fourAheadOfPlayer = fourAheadOfPlayer.plus(-4, 0);
+			}
+			return fourAheadOfPlayer;
+		};
+
+		// Inky
+		ghosts[2].fnChasingTargetTile = () -> {
+			V2i twoAheadOfPlayer = player.tile().plus(player.dir().vec.scaled(2));
+			if (player.dir() == Direction.UP) { // simulate overflow bug
+				twoAheadOfPlayer = twoAheadOfPlayer.plus(-2, 0);
+			}
+			return twoAheadOfPlayer.scaled(2).minus(ghosts[0].tile());
+		};
+
+		// Clyde / Sue
+		ghosts[3].fnChasingTargetTile = () -> {
+			return ghosts[3].tile().euclideanDistance(player.tile()) < 8 ? level.world.ghostScatterTile(3)
+					: player.tile();
+		};
+	}
+
 	@Override
 	public GameVariant variant() {
 		return variant;
@@ -97,7 +133,8 @@ public abstract class AbstractGameModel implements PacManGameModel {
 
 	@Override
 	public OptionalInt intermissionAfterLevel(int levelNumber) {
-		return INTERMISSION_AFTER_LEVEL.containsKey(levelNumber) ? OptionalInt.of(INTERMISSION_AFTER_LEVEL.get(levelNumber))
+		return INTERMISSION_AFTER_LEVEL.containsKey(levelNumber)
+				? OptionalInt.of(INTERMISSION_AFTER_LEVEL.get(levelNumber))
 				: OptionalInt.empty();
 	}
 

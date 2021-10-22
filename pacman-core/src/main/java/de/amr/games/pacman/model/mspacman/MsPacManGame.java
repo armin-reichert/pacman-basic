@@ -102,12 +102,7 @@ public class MsPacManGame extends AbstractGameModel {
 
 		world = new MapBasedPacManGameWorld();
 		player = new Pac("Ms. Pac-Man", world);
-		ghosts = new Ghost[] { //
-				new Ghost(0, "Blinky"), //
-				new Ghost(1, "Pinky"), //
-				new Ghost(2, "Inky"), //
-				new Ghost(3, "Sue") //
-		};
+		createGhosts("Blinky", "Pinky", "Inky", "Sue");
 		bonus = new MovingBonus(world);
 	}
 

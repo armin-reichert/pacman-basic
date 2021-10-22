@@ -95,12 +95,8 @@ public class PacManGame extends AbstractGameModel {
 		world.setMap(WorldMap.load("/pacman/maps/map1.txt"));
 
 		player = new Pac("Pac-Man", world);
-		ghosts = new Ghost[] { //
-				new Ghost(0, "Blinky"), //
-				new Ghost(1, "Pinky"), //
-				new Ghost(2, "Inky"), //
-				new Ghost(3, "Clyde") //
-		};
+		createGhosts("Blinky", "Pinky", "Inky", "Clyde");
+		
 		bonus = new Bonus(world);
 		bonus.setPosition(t(world.bonusTile().x) + HTS, t(world.bonusTile().y));
 	}

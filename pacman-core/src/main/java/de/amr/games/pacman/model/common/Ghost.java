@@ -26,6 +26,8 @@ package de.amr.games.pacman.model.common;
 import static de.amr.games.pacman.model.world.PacManGameWorld.HTS;
 import static de.amr.games.pacman.model.world.PacManGameWorld.t;
 
+import java.util.function.Supplier;
+
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.MathFunctions;
 import de.amr.games.pacman.lib.V2d;
@@ -50,13 +52,18 @@ public class Ghost extends Creature {
 	/** The bounty earned for killing this ghost. */
 	public int bounty;
 
+	/** Function computing the target tile of this ghost. */
+	public Supplier<V2i> fnChasingTargetTile;
+
 	/**
-	 * The individual food counter, used to compute when the ghost can leave the house.
+	 * The individual food counter, used to compute when the ghost can leave the
+	 * house.
 	 */
 	public int dotCounter;
 
 	/**
-	 * The "Cruise Elroy" mode of Blinky, the red ghost. Value is 1, 2 or -1, -2 (disabled Elroy mode).
+	 * The "Cruise Elroy" mode of Blinky, the red ghost. Value is 1, 2 or -1, -2
+	 * (disabled Elroy mode).
 	 */
 	public int elroy;
 
@@ -136,8 +143,8 @@ public class Ghost extends Creature {
 	}
 
 	/**
-	 * Lets the ghost leave the house from its home position to the middle of the house and then upwards
-	 * to the house door.
+	 * Lets the ghost leave the house from its home position to the middle of the
+	 * house and then upwards to the house door.
 	 * 
 	 * @return {@code true} if the ghost has left the house
 	 */
