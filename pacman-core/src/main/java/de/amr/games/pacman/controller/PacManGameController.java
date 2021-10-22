@@ -37,8 +37,11 @@ import static de.amr.games.pacman.lib.TickTimer.sec_to_ticks;
 import static de.amr.games.pacman.model.common.GameVariant.MS_PACMAN;
 import static de.amr.games.pacman.model.common.GameVariant.PACMAN;
 import static de.amr.games.pacman.model.common.GhostState.DEAD;
+import static de.amr.games.pacman.model.common.GhostState.ENTERING_HOUSE;
 import static de.amr.games.pacman.model.common.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.common.GhostState.HUNTING_PAC;
+import static de.amr.games.pacman.model.common.GhostState.LEAVING_HOUSE;
+import static de.amr.games.pacman.model.common.GhostState.LOCKED;
 import static java.util.function.Predicate.not;
 
 import java.util.ArrayList;
@@ -60,7 +63,6 @@ import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.Ghost;
-import de.amr.games.pacman.model.common.GhostState;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.common.PacManGameModel;
 import de.amr.games.pacman.model.mspacman.MsPacManGame;
@@ -412,7 +414,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			return;
 		}
 		steerPlayer();
-		game.ghosts().filter(ghost -> ghost.is(DEAD) && ghost.bounty == 0 || ghost.is(GhostState.ENTERING_HOUSE))
+		game.ghosts().filter(ghost -> ghost.is(DEAD) && ghost.bounty == 0 || ghost.is(ENTERING_HOUSE))
 				.forEach(this::updateGhost);
 	}
 
@@ -715,7 +717,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	private void tryReleasingLockedGhosts() {
-		if (game.ghost(BLINKY).is(GhostState.LOCKED)) {
+		if (game.ghost(BLINKY).is(LOCKED)) {
 			game.ghost(BLINKY).state = HUNTING_PAC;
 		}
 		preferredLockedGhostInHouse().ifPresent(ghost -> {
@@ -738,18 +740,18 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			game.ghost(BLINKY).elroy = -game.ghost(BLINKY).elroy; // resume Elroy mode
 			log("Blinky Elroy mode %d resumed", game.ghost(BLINKY).elroy);
 		}
-		ghost.state = GhostState.LEAVING_HOUSE;
+		ghost.state = LEAVING_HOUSE;
 		fireGameEvent(new PacManGameEvent(game, Info.GHOST_LEAVING_HOUSE, ghost, ghost.tile()));
 		log("Ghost %s released: %s", ghost.name, String.format(reason, args));
 	}
 
 	private Optional<Ghost> preferredLockedGhostInHouse() {
-		return Stream.of(PINKY, INKY, CLYDE).map(game::ghost).filter(ghost -> ghost.is(GhostState.LOCKED)).findFirst();
+		return Stream.of(PINKY, INKY, CLYDE).map(game::ghost).filter(ghost -> ghost.is(LOCKED)).findFirst();
 	}
 
 	private void updateGhostDotCounters() {
 		if (game.isGlobalDotCounterEnabled()) {
-			if (game.ghost(CLYDE).is(GhostState.LOCKED) && game.globalDotCounter() == 32) {
+			if (game.ghost(CLYDE).is(LOCKED) && game.globalDotCounter() == 32) {
 				game.enableGlobalDotCounter(false);
 				game.setGlobalDotCounter(0);
 				log("Global dot counter disabled and reset, Clyde was in house when counter reached 32");
