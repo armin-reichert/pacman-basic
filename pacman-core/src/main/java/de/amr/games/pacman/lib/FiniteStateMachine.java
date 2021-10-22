@@ -77,7 +77,7 @@ public class FiniteStateMachine<S extends Enum<S>> {
 		Stream.of(stateIdentifiers).forEach(id -> stateMap.put(id, new Vertex(id.name())));
 	}
 
-	public void configure(S stateName, Runnable onEnter, Runnable onUpdate, Runnable onExit) {
+	public void configState(S stateName, Runnable onEnter, Runnable onUpdate, Runnable onExit) {
 		v(stateName).onEnter = onEnter;
 		v(stateName).onUpdate = onUpdate;
 		v(stateName).onExit = onExit;

@@ -124,16 +124,16 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	public PacManGameController() {
 		super(PacManGameState.class, PacManGameState.values());
-		configure(INTRO, this::state_Intro_enter, this::state_Intro_update, null);
-		configure(READY, this::state_Ready_enter, this::state_Ready_update, null);
-		configure(HUNTING, this::state_Hunting_enter, this::state_Hunting_update, null);
-		configure(GHOST_DYING, this::state_GhostDying_enter, this::state_GhostDying_update,
+		configState(INTRO, this::state_Intro_enter, this::state_Intro_update, null);
+		configState(READY, this::state_Ready_enter, this::state_Ready_update, null);
+		configState(HUNTING, this::state_Hunting_enter, this::state_Hunting_update, null);
+		configState(GHOST_DYING, this::state_GhostDying_enter, this::state_GhostDying_update,
 				this::state_GhostDying_exit);
-		configure(PACMAN_DYING, this::state_PacManDying_enter, this::state_PacManDying_update, null);
-		configure(LEVEL_STARTING, this::state_LevelStarting_enter, this::state_LevelStarting_update, null);
-		configure(LEVEL_COMPLETE, this::state_LevelComplete_enter, this::state_LevelComplete_update, null);
-		configure(INTERMISSION, this::state_Intermission_enter, this::state_Intermission_update, null);
-		configure(GAME_OVER, this::state_GameOver_enter, this::state_GameOver_update, null);
+		configState(PACMAN_DYING, this::state_PacManDying_enter, this::state_PacManDying_update, null);
+		configState(LEVEL_STARTING, this::state_LevelStarting_enter, this::state_LevelStarting_update, null);
+		configState(LEVEL_COMPLETE, this::state_LevelComplete_enter, this::state_LevelComplete_update, null);
+		configState(INTERMISSION, this::state_Intermission_enter, this::state_Intermission_update, null);
+		configState(GAME_OVER, this::state_GameOver_enter, this::state_GameOver_update, null);
 
 		games = new PacManGameModel[2];
 		games[GameVariant.MS_PACMAN.ordinal()] = new MsPacManGame();
