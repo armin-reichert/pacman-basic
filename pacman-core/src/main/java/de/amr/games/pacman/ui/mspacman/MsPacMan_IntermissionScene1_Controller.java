@@ -76,7 +76,7 @@ public abstract class MsPacMan_IntermissionScene1_Controller {
 		flap.setPosition(t(3), t(10));
 		flap.setVisible(true);
 
-		pacMan = new Pac("Pac-Man", null);
+		pacMan = new Pac("Pac-Man");
 		pacMan.setDir(Direction.RIGHT);
 		pacMan.setPosition(-t(2), upperY);
 		pacMan.setVisible(true);
@@ -87,7 +87,7 @@ public abstract class MsPacMan_IntermissionScene1_Controller {
 		inky.setPosition(pacMan.position().plus(-t(3), 0));
 		inky.setVisible(true);
 
-		msPac = new Pac("Ms. Pac-Man", null);
+		msPac = new Pac("Ms. Pac-Man");
 		msPac.setDir(Direction.LEFT);
 		msPac.setPosition(t(30), lowerY);
 		msPac.setVisible(true);

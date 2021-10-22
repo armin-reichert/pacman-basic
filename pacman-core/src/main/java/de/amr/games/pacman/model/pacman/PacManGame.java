@@ -94,9 +94,9 @@ public class PacManGame extends AbstractGameModel {
 		world = new MapBasedPacManGameWorld();
 		world.setMap(WorldMap.load("/pacman/maps/map1.txt"));
 
-		player = new Pac("Pac-Man", world);
+		player = new Pac("Pac-Man");
 		createGhosts("Blinky", "Pinky", "Inky", "Clyde");
-		
+
 		bonus = new Bonus(world);
 		bonus.setPosition(t(world.bonusTile().x) + HTS, t(world.bonusTile().y));
 	}
@@ -106,6 +106,7 @@ public class PacManGame extends AbstractGameModel {
 		level = new GameLevel(levelNumber, world, levelData(levelNumber));
 		level.mazeNumber = mazeNumber(levelNumber);
 		levelCounter.add(level.bonusSymbol);
+		player.world = world;
 		ghostBounty = 200;
 		for (Ghost ghost : ghosts) {
 			ghost.world = world;

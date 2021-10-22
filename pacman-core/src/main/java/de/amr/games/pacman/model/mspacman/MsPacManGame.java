@@ -101,7 +101,7 @@ public class MsPacManGame extends AbstractGameModel {
 		energizerValue = 50;
 
 		world = new MapBasedPacManGameWorld();
-		player = new Pac("Ms. Pac-Man", world);
+		player = new Pac("Ms. Pac-Man");
 		createGhosts("Blinky", "Pinky", "Inky", "Sue");
 		bonus = new MovingBonus(world);
 	}
@@ -118,8 +118,10 @@ public class MsPacManGame extends AbstractGameModel {
 			level.bonusSymbol = randomBonusSymbol();
 		}
 		levelCounter.add(level.bonusSymbol);
+		
+		player.world = world;
+		
 		ghostBounty = 200;
-
 		for (Ghost ghost : ghosts) {
 			ghost.world = world;
 			ghost.dotCounter = 0;

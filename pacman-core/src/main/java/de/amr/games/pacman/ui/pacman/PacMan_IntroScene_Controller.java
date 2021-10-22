@@ -109,7 +109,7 @@ public class PacMan_IntroScene_Controller {
 		gallery[3].character = "POKEY";
 		gallery[3].ghost.setPosition(t(2), TOP_Y + t(11));
 
-		pac = new Pac("Ms. Pac-Man", null);
+		pac = new Pac("Ms. Pac-Man");
 		pac.setDir(Direction.LEFT);
 
 		ghosts = new Ghost[] { //

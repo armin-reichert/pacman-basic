@@ -73,7 +73,7 @@ public class MsPacMan_IntroScene_Controller {
 	}
 
 	public void init() {
-		msPacMan = new Pac("Ms. Pac-Man", null);
+		msPacMan = new Pac("Ms. Pac-Man");
 		msPacMan.setDir(LEFT);
 		msPacMan.setPosition(t(37), t(tileBelowBoard));
 

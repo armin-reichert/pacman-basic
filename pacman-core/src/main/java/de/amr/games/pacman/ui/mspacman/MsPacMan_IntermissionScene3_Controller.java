@@ -88,11 +88,11 @@ public abstract class MsPacMan_IntermissionScene3_Controller {
 		flap.setPosition(t(3), t(10));
 		flap.setVisible(true);
 
-		pacMan = new Pac("Pac-Man", null);
+		pacMan = new Pac("Pac-Man");
 		pacMan.setDir(Direction.RIGHT);
 		pacMan.setPosition(t(3), GROUND_Y - 4);
 
-		msPacMan = new Pac("Ms. Pac-Man", null);
+		msPacMan = new Pac("Ms. Pac-Man");
 		msPacMan.setDir(Direction.RIGHT);
 		msPacMan.setPosition(t(5), GROUND_Y - 4);
 

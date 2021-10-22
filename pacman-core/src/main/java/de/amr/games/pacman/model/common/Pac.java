@@ -24,7 +24,6 @@ SOFTWARE.
 package de.amr.games.pacman.model.common;
 
 import de.amr.games.pacman.lib.TickTimer;
-import de.amr.games.pacman.model.world.PacManGameWorld;
 
 /**
  * Pac-Man or Ms. Pac-Man.
@@ -45,14 +44,12 @@ public class Pac extends Creature {
 	/** Number of clock ticks Pac has not eaten any pellet. */
 	public long starvingTicks = 0;
 
-	public Pac(String name, PacManGameWorld world) {
+	public Pac(String name) {
 		super(name);
-		this.world = world;
 	}
 
 	@Override
 	public String toString() {
 		return String.format("%s: pos: %s, speed=%.2f, dir=%s, wishDir=%s", name, position, speed, dir(), wishDir());
 	}
-
 }

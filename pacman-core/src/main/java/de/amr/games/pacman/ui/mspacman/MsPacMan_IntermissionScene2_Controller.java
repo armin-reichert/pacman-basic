@@ -74,10 +74,10 @@ public abstract class MsPacMan_IntermissionScene2_Controller {
 		flap.setPosition(t(3), t(10));
 		flap.setVisible(true);
 
-		pacMan = new Pac("Pac-Man", null);
+		pacMan = new Pac("Pac-Man");
 		pacMan.setDir(Direction.RIGHT);
 
-		msPacMan = new Pac("Ms. Pac-Man", null);
+		msPacMan = new Pac("Ms. Pac-Man");
 		msPacMan.setDir(Direction.RIGHT);
 
 		enter(Phase.FLAP);
