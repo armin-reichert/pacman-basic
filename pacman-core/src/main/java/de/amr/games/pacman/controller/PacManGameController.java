@@ -153,10 +153,6 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		playerControl.steer(game.player());
 	}
 
-	public void step() {
-		updateState();
-	}
-
 	public PacManGameUI getUI() {
 		return ui;
 	}
