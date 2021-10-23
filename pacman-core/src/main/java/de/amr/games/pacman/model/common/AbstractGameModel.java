@@ -29,7 +29,6 @@ import static de.amr.games.pacman.model.world.PacManGameWorld.HTS;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.OptionalInt;
 import java.util.stream.Stream;
 
@@ -46,15 +45,6 @@ import de.amr.games.pacman.model.world.PacManGameWorld;
 public abstract class AbstractGameModel implements PacManGameModel {
 
 	//@formatter:off
-	protected final Map<Integer, Integer> INTERMISSIONS = Map.of(
-		// intermission #1 after level #2
-		2, 1,
-		// intermission #2 after level #5
-		5, 2,
-		// intermission #3 after levels #9, #13, #17
-		9, 3, 13, 3, 17, 3
-	);
-
 	protected final int[][] HUNTING_PHASE_TICKS = {
 		{ 7 * 60, 20 * 60, 7 * 60, 20 * 60, 5 * 60,   20 * 60,  5 * 60, Integer.MAX_VALUE },
 		{ 7 * 60, 20 * 60, 7 * 60, 20 * 60, 5 * 60, 1033 * 60,       1, Integer.MAX_VALUE },
@@ -131,8 +121,16 @@ public abstract class AbstractGameModel implements PacManGameModel {
 
 	@Override
 	public OptionalInt intermissionAfterLevel(int levelNumber) {
-		return INTERMISSIONS.containsKey(levelNumber) ? OptionalInt.of(INTERMISSIONS.get(levelNumber))
-				: OptionalInt.empty();
+		if (levelNumber == 2) {
+			return OptionalInt.of(1);
+		}
+		if (levelNumber == 5) {
+			return OptionalInt.of(2);
+		}
+		if (levelNumber == 9 || levelNumber == 13 || levelNumber == 17) {
+			return OptionalInt.of(3);
+		}
+		return OptionalInt.empty();
 	}
 
 	@Override
