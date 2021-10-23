@@ -35,7 +35,6 @@ import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.Hiscore;
-import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.pacman.entities.Bonus;
 import de.amr.games.pacman.model.world.PacManGameWorld;
 
@@ -85,37 +84,34 @@ public abstract class AbstractGameModel implements PacManGameModel {
 	}
 
 	protected void createGhosts(String... names) {
+
+		if (names.length != 4) {
+			throw new IllegalArgumentException("We need all 4 ghosts");
+		}
+
 		ghosts = new Ghost[names.length];
 		for (int id = 0; id < names.length; ++id) {
 			ghosts[id] = new Ghost(id, names[id]);
 		}
 
-		// Blinky
-		ghosts[0].fnChasingTargetTile = () -> player.tile();
+		Ghost blinky = ghosts[0], pinky = ghosts[1], inky = ghosts[2], clyde = ghosts[3];
 
-		// Pinky
-		ghosts[1].fnChasingTargetTile = () -> {
-			V2i fourAheadOfPlayer = player.tile().plus(player.dir().vec.scaled(4));
-			if (player.dir() == Direction.UP) { // simulate overflow bug
-				fourAheadOfPlayer = fourAheadOfPlayer.plus(-4, 0);
-			}
-			return fourAheadOfPlayer;
-		};
+		// Blinky chases Pac-Man directly
+		blinky.fnChasingTargetTile = player::tile;
 
-		// Inky
-		ghosts[2].fnChasingTargetTile = () -> {
-			V2i twoAheadOfPlayer = player.tile().plus(player.dir().vec.scaled(2));
-			if (player.dir() == Direction.UP) { // simulate overflow bug
-				twoAheadOfPlayer = twoAheadOfPlayer.plus(-2, 0);
-			}
-			return twoAheadOfPlayer.scaled(2).minus(ghosts[0].tile());
-		};
+		// Pinky target is tile two ahead of Pac-Man (simulate overflow bug when player looks up)
+		pinky.fnChasingTargetTile = () -> player.dir() == Direction.UP ? player.tilesAhead(4).plus(-4, 0)
+				: player.tilesAhead(4);
 
-		// Clyde / Sue
-		ghosts[3].fnChasingTargetTile = () -> {
-			return ghosts[3].tile().euclideanDistance(player.tile()) < 8 ? level.world.ghostScatterTile(3)
-					: player.tile();
-		};
+		// Inky target, see Pac-Man dossier (simulate overflow bug when player looks up)
+		inky.fnChasingTargetTile = () -> player.dir() == Direction.UP
+				? player.tilesAhead(2).plus(-2, 0).scaled(2).minus(blinky.tile())
+				: player.tilesAhead(2).scaled(2).minus(blinky.tile());
+
+		// Clyde / Sue target is Pac-Man tile or scatter tile at the lower left maze corner
+		clyde.fnChasingTargetTile = () -> clyde.tile().euclideanDistance(player.tile()) < 8
+				? level.world.ghostScatterTile(3)
+				: player.tile();
 	}
 
 	@Override

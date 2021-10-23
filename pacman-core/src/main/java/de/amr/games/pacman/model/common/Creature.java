@@ -129,6 +129,10 @@ public class Creature extends GameEntity {
 		return dir;
 	}
 
+	public V2i tilesAhead(int numTiles) {
+		return tile().plus(dir.vec.scaled(numTiles));
+	}
+
 	public void setWishDir(Direction dir) {
 		wishDir = dir;
 	}
