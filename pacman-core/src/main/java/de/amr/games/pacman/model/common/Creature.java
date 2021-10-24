@@ -70,29 +70,14 @@ public class Creature extends GameEntity {
 	/** If the creature got stuck in the world. */
 	public boolean stuck = false;
 
-	/** If the created is forced take its current wish direction. */
+	/** If the creature is forced to take its wish direction. */
 	public boolean forced = false;
 
-	/**
-	 * If movement is constrained to be aligned with the "track" defined by the tiles.
-	 */
+	/** If movement must be aligned with the "track" defined by the tiles. */
 	public boolean forcedOnTrack = false;
 
 	public Creature(String name) {
 		this.name = name;
-	}
-
-	/**
-	 * Places this creature at the given tile with the given position offsets. Sets the
-	 * {@link #newTileEntered} flag to trigger steering.
-	 * 
-	 * @param tile    the tile where this creature will be placed
-	 * @param offsetX the pixel offset in x-direction
-	 * @param offsetY the pixel offset in y-direction
-	 */
-	public void placeAt(V2i tile, double offsetX, double offsetY) {
-		setPosition(t(tile.x) + offsetX, t(tile.y) + offsetY);
-		newTileEntered = true;
 	}
 
 	/**
@@ -110,8 +95,21 @@ public class Creature extends GameEntity {
 	}
 
 	/**
-	 * Places the creature on its current tile with given offset. This is for example used to place the
-	 * ghosts exactly between two tiles.
+	 * Places the creature at the given tile with the given position offsets. Sets the
+	 * {@link #newTileEntered} flag to trigger steering.
+	 * 
+	 * @param tile    the tile where this creature will be placed
+	 * @param offsetX the pixel offset in x-direction
+	 * @param offsetY the pixel offset in y-direction
+	 */
+	public void placeAt(V2i tile, double offsetX, double offsetY) {
+		setPosition(t(tile.x) + offsetX, t(tile.y) + offsetY);
+		newTileEntered = true;
+	}
+
+	/**
+	 * Places the creature on its current tile with given offset. This is for example used to place a
+	 * ghost exactly between two tiles like in the initial ghosthouse position.
 	 * 
 	 * @param offsetX offset in x-direction
 	 * @param offsetY offset in y-direction
@@ -120,6 +118,11 @@ public class Creature extends GameEntity {
 		placeAt(tile(), offsetX, offsetY);
 	}
 
+	/**
+	 * Sets the move direction and updates the velocity vector.
+	 * 
+	 * @param dir the new move direction
+	 */
 	public void setDir(Direction dir) {
 		this.dir = Objects.requireNonNull(dir);
 		updateVelocity();
