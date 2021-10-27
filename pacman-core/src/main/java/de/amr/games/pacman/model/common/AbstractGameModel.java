@@ -74,9 +74,8 @@ public abstract class AbstractGameModel implements PacManGameModel {
 	}
 
 	protected void createGhosts(String... names) {
-
 		if (names.length != 4) {
-			throw new IllegalArgumentException("We need all 4 ghosts");
+			throw new IllegalArgumentException("We need exactly 4 ghosts");
 		}
 
 		ghosts = new Ghost[names.length];
@@ -121,16 +120,18 @@ public abstract class AbstractGameModel implements PacManGameModel {
 
 	@Override
 	public OptionalInt intermissionAfterLevel(int levelNumber) {
-		if (levelNumber == 2) {
+		switch (levelNumber) {
+		case 2:
 			return OptionalInt.of(1);
-		}
-		if (levelNumber == 5) {
+		case 5:
 			return OptionalInt.of(2);
-		}
-		if (levelNumber == 9 || levelNumber == 13 || levelNumber == 17) {
+		case 9:
+		case 13:
+		case 17:
 			return OptionalInt.of(3);
+		default:
+			return OptionalInt.empty();
 		}
-		return OptionalInt.empty();
 	}
 
 	@Override
@@ -232,6 +233,7 @@ public abstract class AbstractGameModel implements PacManGameModel {
 	@Override
 	public void resetGuys() {
 		final PacManGameWorld world = level.world;
+
 		player.placeAt(world.playerHomeTile(), HTS, 0);
 		player.setDir(world.playerStartDirection());
 		player.setWishDir(world.playerStartDirection());
@@ -254,12 +256,12 @@ public abstract class AbstractGameModel implements PacManGameModel {
 			ghost.targetTile = null;
 			ghost.stuck = false;
 			// if ghost home is located outside of house, he must be on track initially
-			boolean homeOutsideOfHouse = ghost.homeTile.equals(world.ghostHouse().entryTile());
-			ghost.forced = homeOutsideOfHouse;
-			ghost.forcedOnTrack = homeOutsideOfHouse;
+			boolean ghostHomeOutsideOfHouse = !world.ghostHouse().contains(ghost.homeTile);
+			ghost.forced = ghostHomeOutsideOfHouse;
+			ghost.forcedOnTrack = ghostHomeOutsideOfHouse;
 			ghost.state = GhostState.LOCKED;
 			ghost.bounty = 0;
-			// these are only reset on level start:
+			// these are reset only when level is started:
 			// ghost.dotCounter = 0;
 			// ghost.elroyMode = 0;
 		}
