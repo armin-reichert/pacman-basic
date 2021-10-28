@@ -33,7 +33,7 @@ import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.pacman.entities.Bonus;
-import de.amr.games.pacman.model.world.MapBasedPacManGameWorld;
+import de.amr.games.pacman.model.world.MapBasedWorld;
 
 /**
  * Model of the Pac-Man game.
@@ -83,7 +83,7 @@ public class PacManGame extends AbstractGameModel {
 		return levelNumber - 1 < LEVELS.length ? LEVELS[levelNumber - 1] : LEVELS[LEVELS.length - 1];
 	}
 
-	private final MapBasedPacManGameWorld world;
+	private final MapBasedWorld world;
 
 	public PacManGame() {
 		super(GameVariant.PACMAN);
@@ -93,7 +93,7 @@ public class PacManGame extends AbstractGameModel {
 		energizerValue = 50;
 
 		// world is the same for all levels
-		world = new MapBasedPacManGameWorld("/pacman/maps/map1.txt");
+		world = new MapBasedWorld("/pacman/maps/map1.txt");
 		
 		player = new Pac("Pac-Man");
 		createGhosts("Blinky", "Pinky", "Inky", "Clyde");

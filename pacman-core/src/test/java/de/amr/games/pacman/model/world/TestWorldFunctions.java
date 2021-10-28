@@ -12,7 +12,7 @@ public class TestWorldFunctions {
 
 	@Test
 	public void testPacManWorld() {
-		MapBasedPacManGameWorld world = new MapBasedPacManGameWorld("/pacman/maps/map1.txt");
+		MapBasedWorld world = new MapBasedWorld("/pacman/maps/map1.txt");
 		assertEquals(36, world.numRows());
 		assertEquals(28, world.numCols());
 		assertEquals(4, world.energizerTiles().count());
@@ -26,7 +26,7 @@ public class TestWorldFunctions {
 
 	@Test
 	public void testMsPacManWorld1() {
-		MapBasedPacManGameWorld world = new MapBasedPacManGameWorld("/mspacman/maps/map1.txt");
+		MapBasedWorld world = new MapBasedWorld("/mspacman/maps/map1.txt");
 		assertEquals(36, world.numRows());
 		assertEquals(28, world.numCols());
 		assertEquals(4, world.energizerTiles().count());
@@ -45,7 +45,7 @@ public class TestWorldFunctions {
 
 	@Test
 	public void testMsPacManWorld2() {
-		MapBasedPacManGameWorld world = new MapBasedPacManGameWorld("/mspacman/maps/map2.txt");
+		MapBasedWorld world = new MapBasedWorld("/mspacman/maps/map2.txt");
 		assertEquals(36, world.numRows());
 		assertEquals(28, world.numCols());
 		assertEquals(4, world.energizerTiles().count());
@@ -64,7 +64,7 @@ public class TestWorldFunctions {
 
 	@Test
 	public void testMsPacManWorld3() {
-		MapBasedPacManGameWorld world = new MapBasedPacManGameWorld("/mspacman/maps/map3.txt");
+		MapBasedWorld world = new MapBasedWorld("/mspacman/maps/map3.txt");
 		assertEquals(36, world.numRows());
 		assertEquals(28, world.numCols());
 		assertEquals(4, world.energizerTiles().count());
@@ -83,7 +83,7 @@ public class TestWorldFunctions {
 
 	@Test
 	public void testMsPacManWorld4() {
-		MapBasedPacManGameWorld world = new MapBasedPacManGameWorld("/mspacman/maps/map4.txt");
+		MapBasedWorld world = new MapBasedWorld("/mspacman/maps/map4.txt");
 		assertEquals(36, world.numRows());
 		assertEquals(28, world.numCols());
 		assertEquals(4, world.energizerTiles().count());

@@ -33,7 +33,7 @@ import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.mspacman.entities.MovingBonus;
-import de.amr.games.pacman.model.world.MapBasedPacManGameWorld;
+import de.amr.games.pacman.model.world.MapBasedWorld;
 
 /**
  * Model of the Ms. Pac-Man game.
@@ -91,7 +91,7 @@ public class MsPacManGame extends AbstractGameModel {
 		return levelNumber - 1 < LEVELS.length ? LEVELS[levelNumber - 1] : LEVELS[LEVELS.length - 1];
 	}
 
-	private MapBasedPacManGameWorld world;
+	private MapBasedWorld world;
 
 	public MsPacManGame() {
 		super(GameVariant.MS_PACMAN);
@@ -110,7 +110,7 @@ public class MsPacManGame extends AbstractGameModel {
 		final int mazeNumber = mazeNumber(levelNumber);
 		final int mapNumber = mapNumber(mazeNumber);
 
-		world = new MapBasedPacManGameWorld("/mspacman/maps/map" + mapNumber + ".txt");
+		world = new MapBasedWorld("/mspacman/maps/map" + mapNumber + ".txt");
 
 		level = new GameLevel(levelNumber, world, levelData(levelNumber));
 		level.mazeNumber = mazeNumber;

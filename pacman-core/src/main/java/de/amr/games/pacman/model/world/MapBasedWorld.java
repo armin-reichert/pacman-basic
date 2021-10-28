@@ -42,7 +42,7 @@ import de.amr.games.pacman.lib.V2i;
  * 
  * @author Armin Reichert
  */
-public class MapBasedPacManGameWorld implements PacManGameWorld {
+public class MapBasedWorld implements PacManGameWorld {
 
 	private WorldMap map;
 	private V2i size;
@@ -59,7 +59,7 @@ public class MapBasedPacManGameWorld implements PacManGameWorld {
 	private BitSet intersections;
 	private List<V2i> energizerTiles;
 
-	public MapBasedPacManGameWorld(String mapPath) {
+	public MapBasedWorld(String mapPath) {
 		setMap(WorldMap.load(mapPath));
 	}
 
