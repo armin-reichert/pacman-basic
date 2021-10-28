@@ -83,7 +83,7 @@ public class PacManGame extends AbstractGameModel {
 		return levelNumber - 1 < LEVELS.length ? LEVELS[levelNumber - 1] : LEVELS[LEVELS.length - 1];
 	}
 
-	private MapBasedPacManGameWorld world;
+	private final MapBasedPacManGameWorld world;
 
 	public PacManGame() {
 		super(GameVariant.PACMAN);
@@ -92,6 +92,9 @@ public class PacManGame extends AbstractGameModel {
 		pelletValue = 10;
 		energizerValue = 50;
 
+		// world is the same for all levels
+		world = new MapBasedPacManGameWorld("/pacman/maps/map1.txt");
+		
 		player = new Pac("Pac-Man");
 		createGhosts("Blinky", "Pinky", "Inky", "Clyde");
 		bonus = new Bonus();
@@ -99,8 +102,6 @@ public class PacManGame extends AbstractGameModel {
 
 	@Override
 	public void enterLevel(int levelNumber) {
-
-		world = new MapBasedPacManGameWorld("/pacman/maps/map1.txt");
 
 		level = new GameLevel(levelNumber, world, levelData(levelNumber));
 		level.mazeNumber = mazeNumber(levelNumber);
