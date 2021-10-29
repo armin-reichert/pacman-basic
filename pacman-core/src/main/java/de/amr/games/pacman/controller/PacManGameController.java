@@ -115,7 +115,6 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	private boolean gameRequested;
 	private boolean gameRunning;
 	private boolean attractMode;
-	private boolean playerImmune;
 	private int huntingPhase;
 
 	private final Autopilot autopilot = new Autopilot(this::game);
@@ -199,14 +198,6 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	public boolean isGameRunning() {
 		return gameRunning;
-	}
-
-	public boolean isPlayerImmune() {
-		return playerImmune;
-	}
-
-	public void setPlayerImmune(boolean playerImmune) {
-		this.playerImmune = playerImmune;
 	}
 
 	public int getHuntingPhase() {
@@ -319,7 +310,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		}
 
 		// Is player getting killed by a ghost?
-		if (attractMode || !playerImmune) {
+		if (attractMode || !player.immune) {
 			Optional<Ghost> killer = game.ghosts(HUNTING_PAC).filter(player::meets).findAny();
 			if (killer.isPresent()) {
 				player.dead = true;

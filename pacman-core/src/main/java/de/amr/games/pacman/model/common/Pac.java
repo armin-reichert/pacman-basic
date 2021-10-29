@@ -35,6 +35,9 @@ public class Pac extends Creature {
 	/** If Pac is dead. */
 	public boolean dead = false;
 
+	/** If Pac can be killed by ghosts. Only used for demo purposes. */
+	public boolean immune = false;
+
 	/** Controls the time Pac has power. */
 	public TickTimer powerTimer = new TickTimer("Pac-power-timer");
 
