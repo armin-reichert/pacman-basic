@@ -96,7 +96,7 @@ public class PacManGame extends AbstractGameModel {
 		world = new MapBasedWorld("/pacman/maps/map1.txt");
 		
 		player = new Pac("Pac-Man");
-		createGhosts("Blinky", "Pinky", "Inky", "Clyde");
+		ghosts = createGhosts("Blinky", "Pinky", "Inky", "Clyde");
 		bonus = new Bonus();
 	}
 

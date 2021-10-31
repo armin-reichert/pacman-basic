@@ -101,7 +101,7 @@ public class MsPacManGame extends AbstractGameModel {
 		energizerValue = 50;
 
 		player = new Pac("Ms. Pac-Man");
-		createGhosts("Blinky", "Pinky", "Inky", "Sue");
+		ghosts = createGhosts("Blinky", "Pinky", "Inky", "Sue");
 		bonus = new MovingBonus();
 	}
 

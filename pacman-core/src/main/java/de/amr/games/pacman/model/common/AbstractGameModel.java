@@ -73,12 +73,12 @@ public abstract class AbstractGameModel implements PacManGameModel {
 		this.variant = variant;
 	}
 
-	protected void createGhosts(String... names) {
+	protected Ghost[] createGhosts(String... names) {
 		if (names.length != 4) {
 			throw new IllegalArgumentException("We need exactly 4 ghosts");
 		}
 
-		ghosts = new Ghost[names.length];
+		Ghost[] ghosts = new Ghost[names.length];
 		for (int id = 0; id < names.length; ++id) {
 			ghosts[id] = new Ghost(id, names[id]);
 		}
@@ -101,6 +101,8 @@ public abstract class AbstractGameModel implements PacManGameModel {
 		clyde.fnChasingTargetTile = () -> clyde.tile().euclideanDistance(player.tile()) < 8
 				? level.world.ghostScatterTile(3)
 				: player.tile();
+
+		return ghosts;
 	}
 
 	@Override
