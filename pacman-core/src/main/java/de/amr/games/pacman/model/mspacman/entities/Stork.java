@@ -31,7 +31,4 @@ import de.amr.games.pacman.model.common.GameEntity;
  * @author Armin Reichert
  */
 public class Stork extends GameEntity {
-
-	public Stork() {
-	}
 }
