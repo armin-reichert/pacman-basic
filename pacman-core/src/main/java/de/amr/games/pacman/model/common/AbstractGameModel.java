@@ -38,7 +38,7 @@ import de.amr.games.pacman.model.pacman.entities.Bonus;
 import de.amr.games.pacman.model.world.PacManGameWorld;
 
 /**
- * Common base class for the game models.
+ * Common part of game model for all variants.
  * 
  * @author Armin Reichert
  */
@@ -73,9 +73,13 @@ public abstract class AbstractGameModel implements PacManGameModel {
 		this.variant = variant;
 	}
 
+	/**
+	 * @param names the ghost's names in order: red, pink, cyan, orange
+	 * @return ghosts as named
+	 */
 	protected Ghost[] createGhosts(String... names) {
 		if (names.length != 4) {
-			throw new IllegalArgumentException("We need exactly 4 ghosts");
+			throw new IllegalArgumentException("We need exactly 4 ghost names in order red, pink, cyan, orange");
 		}
 
 		Ghost[] ghosts = new Ghost[names.length];
@@ -97,7 +101,7 @@ public abstract class AbstractGameModel implements PacManGameModel {
 				? player.tilesAhead(2).plus(-2, 0).scaled(2).minus(blinky.tile())
 				: player.tilesAhead(2).scaled(2).minus(blinky.tile());
 
-		// Clyde / Sue target is Pac-Man tile or scatter tile at the lower left maze corner
+		// Clyde/Sue target is Pac-Man tile or scatter tile at the lower left maze corner
 		clyde.fnChasingTargetTile = () -> clyde.tile().euclideanDistance(player.tile()) < 8
 				? level.world.ghostScatterTile(3)
 				: player.tile();
