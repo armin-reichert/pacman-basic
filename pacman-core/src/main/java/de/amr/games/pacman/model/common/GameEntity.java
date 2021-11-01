@@ -65,4 +65,12 @@ public class GameEntity {
 	public void setVelocity(V2d velocity) {
 		this.velocity = velocity;
 	}
+
+	public void setVelocity(double vx, double vy) {
+		velocity = new V2d(vx, vy);
+	}
+
+	public void move() {
+		position = position.plus(velocity);
+	}
 }

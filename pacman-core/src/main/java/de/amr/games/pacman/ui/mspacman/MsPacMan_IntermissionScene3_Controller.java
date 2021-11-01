@@ -38,10 +38,9 @@ import de.amr.games.pacman.model.mspacman.entities.Stork;
  * Intermission scene 3: "Junior".
  * 
  * <p>
- * Pac-Man and Ms. Pac-Man gradually wait for a stork, who flies overhead with a
- * little blue bundle. The stork drops the bundle, which falls to the ground in
- * front of Pac-Man and Ms. Pac-Man, and finally opens up to reveal a tiny
- * Pac-Man. (Played after rounds 9, 13, and 17)
+ * Pac-Man and Ms. Pac-Man gradually wait for a stork, who flies overhead with a little blue bundle.
+ * The stork drops the bundle, which falls to the ground in front of Pac-Man and Ms. Pac-Man, and
+ * finally opens up to reveal a tiny Pac-Man. (Played after rounds 9, 13, and 17)
  * 
  * @author Armin Reichert
  */
@@ -127,8 +126,7 @@ public abstract class MsPacMan_IntermissionScene3_Controller {
 				msPacMan.setVisible(true);
 				stork.setVisible(true);
 				bag.setVisible(true);
-				stork.setDir(Direction.LEFT);
-				stork.setSpeed(1.25);
+				stork.setVelocity(-1.25, 0);
 				bag.setVelocity(new V2d(-1.25f, 0));
 			}
 			// release bag from storks beak?

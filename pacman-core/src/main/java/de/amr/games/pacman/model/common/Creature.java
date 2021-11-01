@@ -157,10 +157,6 @@ public class Creature extends GameEntity {
 		velocity = new V2d(dir.vec).scaled(speed);
 	}
 
-	public void move() {
-		position = position.plus(velocity);
-	}
-
 	public boolean canAccessTile(V2i tile) {
 		if (world.insideWorld(tile)) {
 			return !world.isWall(tile) && !world.ghostHouse().doorTiles().contains(tile);
