@@ -25,6 +25,7 @@ package de.amr.games.pacman.model.pacman.entities;
 
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent.Info;
+import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.model.common.Creature;
 
 /**
@@ -58,7 +59,7 @@ public class Bonus extends Creature {
 		state = INACTIVE;
 		timer = 0;
 		visible = false;
-		speed = 0;
+		velocity = V2d.NULL;
 		newTileEntered = true;
 		stuck = false;
 		forcedOnTrack = true;

@@ -172,7 +172,7 @@ public class MsPacMan_IntroScene_Controller {
 	}
 
 	public boolean msPacManEnteringStage() {
-		if (msPacMan.speed() > 0 && msPacMan.position().x <= t(13)) {
+		if (msPacMan.velocity().length() > 0 && msPacMan.position().x <= t(13)) {
 			msPacMan.setSpeed(0);
 			return true;
 		}

@@ -32,8 +32,8 @@ import de.amr.games.pacman.model.pacman.entities.Bonus;
 import de.amr.games.pacman.model.world.Portal;
 
 /**
- * In Ms. Pac-Man, the bonus tumbles through the world, starting at some random
- * portal and leaving at some portal at the other border.
+ * In Ms. Pac-Man, the bonus tumbles through the world, starting at some random portal and leaving
+ * at some portal at the other border.
  * 
  * @author Armin Reichert
  */
@@ -44,7 +44,7 @@ public class MovingBonus extends Bonus {
 		super.init();
 		targetTile = null;
 		stuck = false;
-		speed = 0.25f; // TODO what is the correct speed of the bonus?
+		setSpeed(0.25);
 	}
 
 	@Override

@@ -56,14 +56,12 @@ public class Ghost extends Creature {
 	public Supplier<V2i> fnChasingTargetTile;
 
 	/**
-	 * The individual food counter, used to compute when the ghost can leave the
-	 * house.
+	 * The individual food counter, used to compute when the ghost can leave the house.
 	 */
 	public int dotCounter;
 
 	/**
-	 * The "Cruise Elroy" mode of Blinky, the red ghost. Value is 1, 2 or -1, -2
-	 * (disabled Elroy mode).
+	 * The "Cruise Elroy" mode of Blinky, the red ghost. Value is 1, 2 or -1, -2 (disabled Elroy mode).
 	 */
 	public int elroy;
 
@@ -143,8 +141,8 @@ public class Ghost extends Creature {
 	}
 
 	/**
-	 * Lets the ghost leave the house from its home position to the middle of the
-	 * house and then upwards to the house door.
+	 * Lets the ghost leave the house from its home position to the middle of the house and then upwards
+	 * to the house door.
 	 * 
 	 * @return {@code true} if the ghost has left the house
 	 */
@@ -197,7 +195,7 @@ public class Ghost extends Creature {
 
 	@Override
 	public String toString() {
-		return String.format("%s: state: %s position: %s, speed=%.2f, dir=%s, wishDir=%s", name, state, position, speed,
-				dir(), wishDir());
+		return String.format("%s: state: %s position: %s, speed=%.2f, dir=%s, wishDir=%s", name, state, position,
+				velocity.length(), dir(), wishDir());
 	}
 }

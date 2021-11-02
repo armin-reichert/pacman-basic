@@ -34,6 +34,7 @@ import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.Hiscore;
+import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.model.pacman.entities.Bonus;
 import de.amr.games.pacman.model.world.PacManGameWorld;
 
@@ -244,7 +245,7 @@ public abstract class AbstractGameModel implements PacManGameModel {
 		player.setDir(world.playerStartDirection());
 		player.setWishDir(world.playerStartDirection());
 		player.visible = true;
-		player.speed = 0;
+		player.velocity = V2d.NULL;
 		player.targetTile = null; // used in autopilot mode
 		player.stuck = false;
 		player.forcedOnTrack = true;
@@ -258,7 +259,7 @@ public abstract class AbstractGameModel implements PacManGameModel {
 			ghost.setDir(world.ghostStartDirection(ghost.id));
 			ghost.setWishDir(world.ghostStartDirection(ghost.id));
 			ghost.visible = true;
-			ghost.speed = 0;
+			ghost.velocity = V2d.NULL;
 			ghost.targetTile = null;
 			ghost.stuck = false;
 			// if ghost home is located outside of house, he must be on track initially

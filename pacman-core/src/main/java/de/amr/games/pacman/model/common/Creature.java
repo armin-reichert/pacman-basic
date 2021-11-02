@@ -44,6 +44,8 @@ import de.amr.games.pacman.model.world.Portal;
  */
 public class Creature extends GameEntity {
 
+	public static final double BASE_SPEED = 1.25; // pixel per frame at 100% speed
+
 	private static final Direction[] TURN_PRIORITY = { Direction.UP, Direction.LEFT, Direction.DOWN, Direction.RIGHT };
 
 	/** Readable name, for display and logging purposes. */
@@ -51,9 +53,6 @@ public class Creature extends GameEntity {
 
 	/** The world where this creature lives. */
 	public PacManGameWorld world;
-
-	/** Relative speed (fraction of full speed), value between 0 and 1. */
-	protected double speed = 0.0;
 
 	/** The current move direction. */
 	protected Direction dir = Direction.RIGHT;
@@ -144,16 +143,12 @@ public class Creature extends GameEntity {
 		return wishDir;
 	}
 
-	public double speed() {
-		return speed;
-	}
-
-	public void setSpeed(double speed) {
-		this.speed = speed;
-		updateVelocity();
+	public void setSpeed(double fraction) {
+		velocity = new V2d(dir.vec).scaled(fraction * BASE_SPEED);
 	}
 
 	private void updateVelocity() {
+		double speed = velocity.length();
 		velocity = new V2d(dir.vec).scaled(speed);
 	}
 
@@ -205,7 +200,7 @@ public class Creature extends GameEntity {
 
 	public void tryMovingTowards(Direction direction) {
 		// 100% speed corresponds to 1.25 pixels/tick (75px/sec at 60Hz)
-		final double moveDistance = speed * 1.25f;
+		final double moveDistance = velocity.length();
 		final V2i tileBefore = tile();
 		final V2d offset = offset();
 		final V2i neighbor = tileBefore.plus(direction.vec);
