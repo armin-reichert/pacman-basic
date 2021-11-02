@@ -124,7 +124,8 @@ public class Creature extends GameEntity {
 	 */
 	public void setDir(Direction dir) {
 		this.dir = Objects.requireNonNull(dir);
-		updateVelocity();
+		double speed = velocity.length();
+		velocity = new V2d(dir.vec).scaled(speed);
 	}
 
 	public Direction dir() {
@@ -145,11 +146,6 @@ public class Creature extends GameEntity {
 
 	public void setSpeed(double fraction) {
 		velocity = new V2d(dir.vec).scaled(fraction * BASE_SPEED);
-	}
-
-	private void updateVelocity() {
-		double speed = velocity.length();
-		velocity = new V2d(dir.vec).scaled(speed);
 	}
 
 	public boolean canAccessTile(V2i tile) {
