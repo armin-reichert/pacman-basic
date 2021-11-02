@@ -195,7 +195,6 @@ public class Creature extends GameEntity {
 	}
 
 	public void tryMovingTowards(Direction direction) {
-		// 100% speed corresponds to 1.25 pixels/tick (75px/sec at 60Hz)
 		final double moveDistance = velocity.length();
 		final V2i tileBefore = tile();
 		final V2d offset = offset();
