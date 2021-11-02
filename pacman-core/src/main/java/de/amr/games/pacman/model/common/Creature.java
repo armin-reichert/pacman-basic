@@ -194,50 +194,49 @@ public class Creature extends GameEntity {
 		}
 	}
 
-	public void tryMovingTowards(Direction direction) {
-		final double moveDistance = velocity.length();
-		final V2i tileBefore = tile();
-		final V2d offset = offset();
-		final V2i neighbor = tileBefore.plus(direction.vec);
+	public void tryMovingTowards(Direction moveDir) {
+		final V2i tileBeforeMove = tile();
+		final V2d offsetBeforeMove = offset();
+		final V2i neighborTile = tileBeforeMove.plus(moveDir.vec);
 
-		// check if guy can turn towards given direction at current position
-		if (forcedOnTrack && canAccessTile(neighbor)) {
-			if (direction == Direction.LEFT || direction == Direction.RIGHT) {
-				if (abs(offset.y) > moveDistance) {
+		velocity = new V2d(moveDir.vec).scaled(velocity.length());
+
+		// check if creature can turn towards move direction at its current position
+		if (forcedOnTrack && canAccessTile(neighborTile)) {
+			if (moveDir == Direction.LEFT || moveDir == Direction.RIGHT) {
+				if (abs(offsetBeforeMove.y) > velocity.length()) {
 					stuck = true;
 					return;
 				}
-				setOffset(offset.x, 0);
-			} else if (direction == Direction.UP || direction == Direction.DOWN) {
-				if (abs(offset.x) > moveDistance) {
+				setOffset(offsetBeforeMove.x, 0);
+			} else if (moveDir == Direction.UP || moveDir == Direction.DOWN) {
+				if (abs(offsetBeforeMove.x) > velocity.length()) {
 					stuck = true;
 					return;
 				}
-				setOffset(0, offset.y);
+				setOffset(0, offsetBeforeMove.y);
 			}
 		}
 
-		velocity = new V2d(direction.vec).scaled(moveDistance);
-
-		final V2d newPosition = position.plus(velocity);
-		final V2i newTile = PacManGameWorld.tile(newPosition);
-		final V2d newOffset = PacManGameWorld.offset(newPosition);
+		final V2d positionAfterMove = position.plus(velocity);
+		final V2i tileAfterMove = PacManGameWorld.tile(positionAfterMove);
+		final V2d offsetAfterMove = PacManGameWorld.offset(positionAfterMove);
 
 		// avoid moving into inaccessible neighbor tile
-		if (!canAccessTile(newTile)) {
+		if (!canAccessTile(tileAfterMove)) {
 			stuck = true;
 			return;
 		}
 
 		// align with edge of inaccessible neighbor
-		if (!canAccessTile(neighbor)) {
-			if (direction == Direction.RIGHT && newOffset.x > 0 || direction == Direction.LEFT && newOffset.x < 0) {
-				setOffset(0, offset.y);
+		if (!canAccessTile(neighborTile)) {
+			if (moveDir == Direction.RIGHT && offsetAfterMove.x > 0 || moveDir == Direction.LEFT && offsetAfterMove.x < 0) {
+				setOffset(0, offsetBeforeMove.y);
 				stuck = true;
 				return;
 			}
-			if (direction == Direction.DOWN && newOffset.y > 0 || direction == Direction.UP && newOffset.y < 0) {
-				setOffset(offset.x, 0);
+			if (moveDir == Direction.DOWN && offsetAfterMove.y > 0 || moveDir == Direction.UP && offsetAfterMove.y < 0) {
+				setOffset(offsetBeforeMove.x, 0);
 				stuck = true;
 				return;
 			}
@@ -245,8 +244,8 @@ public class Creature extends GameEntity {
 
 		// yes, we can (move)
 		stuck = false;
-		placeAt(newTile, newOffset.x, newOffset.y);
-		newTileEntered = !tile().equals(tileBefore);
+		placeAt(tileAfterMove, offsetAfterMove.x, offsetAfterMove.y);
+		newTileEntered = !tile().equals(tileBeforeMove);
 	}
 
 	public void setRandomDirection() {
