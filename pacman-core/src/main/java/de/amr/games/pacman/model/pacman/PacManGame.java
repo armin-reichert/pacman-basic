@@ -29,7 +29,6 @@ import static de.amr.games.pacman.model.world.PacManGameWorld.t;
 
 import de.amr.games.pacman.model.common.AbstractGameModel;
 import de.amr.games.pacman.model.common.GameLevel;
-import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.pacman.entities.Bonus;
@@ -86,15 +85,13 @@ public class PacManGame extends AbstractGameModel {
 	private final MapBasedWorld world;
 
 	public PacManGame() {
-		super(GameVariant.PACMAN);
-
 		initialLives = 3;
 		pelletValue = 10;
 		energizerValue = 50;
 
 		// world is the same for all levels
 		world = new MapBasedWorld("/pacman/maps/map1.txt");
-		
+
 		player = new Pac("Pac-Man");
 		ghosts = createGhosts("Blinky", "Pinky", "Inky", "Clyde");
 		bonus = new Bonus();
@@ -158,5 +155,10 @@ public class PacManGame extends AbstractGameModel {
 		default:
 			throw new IllegalArgumentException("Unknown symbol name: " + symbolName);
 		}
+	}
+
+	@Override
+	protected String hiscoreFilename() {
+		return "highscore-pacman.xml";
 	}
 }

@@ -29,7 +29,6 @@ import java.util.Random;
 
 import de.amr.games.pacman.model.common.AbstractGameModel;
 import de.amr.games.pacman.model.common.GameLevel;
-import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.mspacman.entities.MovingBonus;
@@ -94,8 +93,6 @@ public class MsPacManGame extends AbstractGameModel {
 	private MapBasedWorld world;
 
 	public MsPacManGame() {
-		super(GameVariant.MS_PACMAN);
-
 		initialLives = 3;
 		pelletValue = 10;
 		energizerValue = 50;
@@ -149,8 +146,7 @@ public class MsPacManGame extends AbstractGameModel {
 	 * <li>Maze #3: orange maze, red dots (level 6-9)
 	 * <li>Maze #4: dark blue maze, white dots (level 10-13)
 	 * </ul>
-	 * From level 14 on, the maze alternates every 4th level between maze #5 and
-	 * maze #6.
+	 * From level 14 on, the maze alternates every 4th level between maze #5 and maze #6.
 	 * <ul>
 	 * <li>Maze #5: pink maze, cyan dots (same map as maze #3)
 	 * <li>Maze #6: orange maze, white dots (same map as maze #4)
@@ -217,5 +213,10 @@ public class MsPacManGame extends AbstractGameModel {
 		default:
 			throw new IllegalStateException();
 		}
+	}
+
+	@Override
+	protected String hiscoreFilename() {
+		return "highscore-ms_pacman.xml";
 	}
 }

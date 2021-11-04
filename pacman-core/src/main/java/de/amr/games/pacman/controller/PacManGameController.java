@@ -72,15 +72,16 @@ import de.amr.games.pacman.ui.PacManGameUI;
 /**
  * Controller (in the sense of MVC) for the Pac-Man and Ms. Pac-Man game.
  * <p>
- * This is a finite-state machine with states defined in {@link PacManGameState}. The game data are stored in the model
- * of the selected game, see {@link MsPacManGame} and {@link PacManGame}. The user interface is abstracted via an
- * interface ({@link PacManGameUI}). Scene selection is not controlled by this class but left to the user interface
- * implementations.
+ * This is a finite-state machine with states defined in {@link PacManGameState}. The game data are
+ * stored in the model of the selected game, see {@link MsPacManGame} and {@link PacManGame}. The
+ * user interface is abstracted via an interface ({@link PacManGameUI}). Scene selection is not
+ * controlled by this class but left to the user interface implementations.
  * <p>
  * Missing functionality:
  * <ul>
- * <li><a href= "https://pacman.holenet.info/#CH2_Cornering"><em>Cornering</em></a>: I do not consider cornering as
- * important when the player is controlled by keyboard keys, for a joystick that probably would be more important.</li>
+ * <li><a href= "https://pacman.holenet.info/#CH2_Cornering"><em>Cornering</em></a>: I do not
+ * consider cornering as important when the player is controlled by keyboard keys, for a joystick
+ * that probably would be more important.</li>
  * <li>Exact level data for Ms. Pac-Man still unclear. Any hints appreciated!
  * <li>Multiple players, credits.</li>
  * </ul>
@@ -89,8 +90,8 @@ import de.amr.games.pacman.ui.PacManGameUI;
  * 
  * @see <a href="https://github.com/armin-reichert">GitHub</a>
  * @see <a href="https://pacman.holenet.info">Jamey Pittman: The Pac-Man Dossier</a>
- * @see <a href= "https://gameinternals.com/understanding-pac-man-ghost-behavior">Chad Birch: Understanding ghost
- *      behavior</a>
+ * @see <a href= "https://gameinternals.com/understanding-pac-man-ghost-behavior">Chad Birch:
+ *      Understanding ghost behavior</a>
  * @see <a href="http://superpacman.com/mspacman/">Ms. Pac-Man</a>
  */
 public class PacManGameController extends FiniteStateMachine<PacManGameState> {
@@ -105,6 +106,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	private PacManGameModel game;
 	private PacManGameUI ui;
 
+	private GameVariant gameVariant;
 	private boolean autoControlled;
 	private boolean gameRequested;
 	private boolean gameRunning;
@@ -120,8 +122,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		configState(INTRO, this::state_Intro_enter, this::state_Intro_update, null);
 		configState(READY, this::state_Ready_enter, this::state_Ready_update, null);
 		configState(HUNTING, this::state_Hunting_enter, this::state_Hunting_update, null);
-		configState(GHOST_DYING, this::state_GhostDying_enter, this::state_GhostDying_update,
-				this::state_GhostDying_exit);
+		configState(GHOST_DYING, this::state_GhostDying_enter, this::state_GhostDying_update, this::state_GhostDying_exit);
 		configState(PACMAN_DYING, this::state_PacManDying_enter, this::state_PacManDying_update, null);
 		configState(LEVEL_STARTING, this::state_LevelStarting_enter, this::state_LevelStarting_update, null);
 		configState(LEVEL_COMPLETE, this::state_LevelComplete_enter, this::state_LevelComplete_update, null);
@@ -162,7 +163,12 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		gameEventListeners.add(ui);
 	}
 
+	public GameVariant gameVariant() {
+		return gameVariant;
+	}
+
 	public void selectGameVariant(GameVariant variant) {
+		this.gameVariant = variant;
 		game = games[variant.ordinal()];
 		changeState(INTRO);
 	}
@@ -280,8 +286,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 		// Is hunting phase complete?
 		if (stateTimer().hasExpired()) {
-			game.ghosts().filter(ghost -> ghost.is(HUNTING_PAC) || ghost.is(FRIGHTENED))
-					.forEach(Ghost::forceTurningBack);
+			game.ghosts().filter(ghost -> ghost.is(HUNTING_PAC) || ghost.is(FRIGHTENED)).forEach(Ghost::forceTurningBack);
 			startHuntingPhase(++huntingPhase);
 			return;
 		}
@@ -528,8 +533,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		// Is bonus awarded?
 		if (game.isBonusReached()) {
 			final Bonus bonus = game.bonus();
-			final long bonusTicks = game.variant() == PACMAN ? sec_to_ticks(9 + new Random().nextFloat())
-					: TickTimer.INDEFINITE;
+			final long bonusTicks = gameVariant == PACMAN ? sec_to_ticks(9 + new Random().nextFloat()) : TickTimer.INDEFINITE;
 			bonus.symbol = level.bonusSymbol;
 			bonus.points = game.bonusValue(bonus.symbol);
 			bonus.activate(bonusTicks);
@@ -599,11 +603,12 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			} else {
 				ghost.setSpeed(level.ghostSpeed);
 			}
-			if (game.variant() == MS_PACMAN && huntingPhase == 0 && (ghost.id == BLINKY || ghost.id == PINKY)) {
+			if (gameVariant == MS_PACMAN && huntingPhase == 0 && (ghost.id == BLINKY || ghost.id == PINKY)) {
 				/*
 				 * In Ms. Pac-Man, Blinky and Pinky move randomly during the *first* scatter phase. Some say, the
 				 * original intention had been to randomize the scatter target of *all* ghosts in Ms. Pac-Man but
-				 * because of a bug, only the scatter target of Blinky and Pinky would have been affected. Who knows?
+				 * because of a bug, only the scatter target of Blinky and Pinky would have been affected. Who
+				 * knows?
 				 */
 				ghost.targetTile = null;
 				ghost.setRandomDirection();
@@ -677,8 +682,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 				releaseGhost(ghost, "%s's dot counter (%d) reached limit (%d)", ghost.name, ghost.dotCounter,
 						ghostPrivateDotLimit(ghost.id, game.level().number));
 			} else if (game.player().starvingTicks >= playerStarvingTimeLimit(game.level().number)) {
-				releaseGhost(ghost, "%s has been starving for %d ticks", game.player().name,
-						game.player().starvingTicks);
+				releaseGhost(ghost, "%s has been starving for %d ticks", game.player().name, game.player().starvingTicks);
 				game.player().starvingTicks = 0;
 			}
 		});

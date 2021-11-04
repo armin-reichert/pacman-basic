@@ -53,7 +53,6 @@ public abstract class AbstractGameModel implements PacManGameModel {
 	};
 	//@formatter:on
 
-	protected final GameVariant variant;
 	protected GameLevel level;
 	protected Pac player;
 	protected Ghost[] ghosts;
@@ -69,10 +68,6 @@ public abstract class AbstractGameModel implements PacManGameModel {
 	protected List<String> levelCounter = new ArrayList<>();
 	protected int dotCounter;
 	protected boolean dotCounterEnabled;
-
-	protected AbstractGameModel(GameVariant variant) {
-		this.variant = variant;
-	}
 
 	/**
 	 * @param names the ghost's names in order: red, pink, cyan, orange
@@ -108,11 +103,6 @@ public abstract class AbstractGameModel implements PacManGameModel {
 				: player.tile();
 
 		return ghosts;
-	}
-
-	@Override
-	public GameVariant variant() {
-		return variant;
 	}
 
 	@Override
@@ -306,11 +296,12 @@ public abstract class AbstractGameModel implements PacManGameModel {
 
 	private Hiscore loadHiscore() {
 		File dir = new File(System.getProperty("user.home"));
-		String fileName = "highscore-" + variant.name().toLowerCase() + ".xml";
-		Hiscore hiscore = new Hiscore(new File(dir, fileName));
+		Hiscore hiscore = new Hiscore(new File(dir, hiscoreFilename()));
 		hiscore.load();
 		return hiscore;
 	}
+
+	protected abstract String hiscoreFilename();
 
 	@Override
 	public int globalDotCounter() {
