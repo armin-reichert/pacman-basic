@@ -29,10 +29,10 @@ import de.amr.games.pacman.controller.PacManGameController;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.V2d;
+import de.amr.games.pacman.model.common.GameEntity;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.mspacman.entities.Flap;
 import de.amr.games.pacman.model.mspacman.entities.JuniorBag;
-import de.amr.games.pacman.model.mspacman.entities.Stork;
 
 /**
  * Intermission scene 3: "Junior".
@@ -58,7 +58,7 @@ public abstract class MsPacMan_IntermissionScene3_Controller {
 	public Flap flap;
 	public Pac pacMan;
 	public Pac msPacMan;
-	public Stork stork;
+	public GameEntity stork;
 	public JuniorBag bag;
 	public int numBagBounces;
 
@@ -95,7 +95,7 @@ public abstract class MsPacMan_IntermissionScene3_Controller {
 		msPacMan.setDir(Direction.RIGHT);
 		msPacMan.setPosition(t(5), GROUND_Y - 4);
 
-		stork = new Stork();
+		stork = new GameEntity();
 		stork.setPosition(t(30), t(12));
 
 		bag = new JuniorBag();
