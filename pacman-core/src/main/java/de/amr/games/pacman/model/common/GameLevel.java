@@ -73,7 +73,6 @@ public class GameLevel {
 		this.number = levelNumber;
 		this.world = world;
 		store(levelData);
-		totalFoodCount = 0;
 		totalFoodCount = (int) world.tiles().filter(world::isFoodTile).count();
 		energizerCount = (int) world.tiles().filter(world::isEnergizerTile).count();
 		foodRemaining = totalFoodCount;
