@@ -72,16 +72,6 @@ public class GameLevel {
 	public GameLevel(int levelNumber, PacManGameWorld world, Object[] levelData) {
 		this.number = levelNumber;
 		this.world = world;
-		store(levelData);
-		totalFoodCount = (int) world.tiles().filter(world::isFoodTile).count();
-		energizerCount = (int) world.tiles().filter(world::isEnergizerTile).count();
-		foodRemaining = totalFoodCount;
-		eaten = new BitSet();
-
-		log("Total food: %d (%d pellets, %d energizers)", totalFoodCount, totalFoodCount - energizerCount, energizerCount);
-	}
-
-	private void store(Object[] levelData) {
 		bonusSymbol = (String) levelData[0];
 		playerSpeed = percent(levelData[1]);
 		ghostSpeed = percent(levelData[2]);
@@ -94,6 +84,12 @@ public class GameLevel {
 		ghostSpeedFrightened = percent(levelData[9]);
 		ghostFrightenedSeconds = (Integer) levelData[10];
 		numFlashes = (Integer) levelData[11];
+		totalFoodCount = (int) world.tiles().filter(world::isFoodTile).count();
+		energizerCount = (int) world.tiles().filter(world::isEnergizerTile).count();
+		foodRemaining = totalFoodCount;
+		eaten = new BitSet();
+
+		log("Total food: %d (%d pellets, %d energizers)", totalFoodCount, totalFoodCount - energizerCount, energizerCount);
 	}
 
 	public int eatenFoodCount() {
