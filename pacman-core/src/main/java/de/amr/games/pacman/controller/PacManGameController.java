@@ -96,13 +96,12 @@ import de.amr.games.pacman.ui.PacManGameUI;
  */
 public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
-	private static final int BLINKY = 0;
-	private static final int PINKY = 1;
-	private static final int INKY = 2;
-	private static final int CLYDE = 3; /* SUE */
+	private static final int RED_GHOST = 0;
+	private static final int PINK_GHOST = 1;
+	private static final int CYAN_GHOST = 2;
+	private static final int ORANGE_GHOST = 3;
 
 	private PacManGameModel[] games;
-
 	private PacManGameModel game;
 	private PacManGameUI ui;
 
@@ -313,9 +312,9 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 				player.dead = true;
 				log("%s got killed by %s at tile %s", player.name, killer.get().name, player.tile());
 				// Elroy mode gets disabled when player is killed
-				final int elroyMode = game.ghost(BLINKY).elroy;
+				final int elroyMode = game.ghost(RED_GHOST).elroy;
 				if (elroyMode > 0) {
-					game.ghost(BLINKY).elroy = -elroyMode; // negative value means "disabled"
+					game.ghost(RED_GHOST).elroy = -elroyMode; // negative value means "disabled"
 					log("Elroy mode %d for Blinky has been disabled", elroyMode);
 				}
 				game.setGlobalDotCounter(0);
@@ -409,8 +408,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	private void state_GhostDying_exit() {
 		game.player().setVisible(true);
-		// fire event only for ghosts that have just been killed, not for dead ghosts
-		// that are already
+		// fire event only for ghosts that have just been killed, not for dead ghosts that are already
 		// returning home
 		game.ghosts(DEAD).filter(ghost -> ghost.bounty != 0).forEach(ghost -> {
 			ghost.bounty = 0;
@@ -523,10 +521,10 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 		// Blinky becomes Elroy?
 		if (level.foodRemaining == level.elroy1DotsLeft) {
-			game.ghost(BLINKY).elroy = 1;
+			game.ghost(RED_GHOST).elroy = 1;
 			log("Blinky becomes Cruise Elroy 1");
 		} else if (level.foodRemaining == level.elroy2DotsLeft) {
-			game.ghost(BLINKY).elroy = 2;
+			game.ghost(RED_GHOST).elroy = 2;
 			log("Blinky becomes Cruise Elroy 2");
 		}
 
@@ -603,7 +601,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			} else {
 				ghost.setSpeed(level.ghostSpeed);
 			}
-			if (gameVariant == MS_PACMAN && huntingPhase == 0 && (ghost.id == BLINKY || ghost.id == PINKY)) {
+			if (gameVariant == MS_PACMAN && huntingPhase == 0 && (ghost.id == RED_GHOST || ghost.id == PINK_GHOST)) {
 				/*
 				 * In Ms. Pac-Man, Blinky and Pinky move randomly during the *first* scatter phase. Some say, the
 				 * original intention had been to randomize the scatter target of *all* ghosts in Ms. Pac-Man but
@@ -656,9 +654,9 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	private static int ghostPrivateDotLimit(int ghostID, int levelNumber) {
 		switch (ghostID) {
-		case INKY:
+		case CYAN_GHOST:
 			return levelNumber == 1 ? 30 : 0;
-		case CLYDE:
+		case ORANGE_GHOST:
 			return levelNumber == 1 ? 60 : levelNumber == 2 ? 50 : 0;
 		default:
 			return 0;
@@ -666,12 +664,12 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	private static int ghostGlobalDotLimit(int ghostID) {
-		return ghostID == PINKY ? 7 : ghostID == INKY ? 17 : Integer.MAX_VALUE;
+		return ghostID == PINK_GHOST ? 7 : ghostID == CYAN_GHOST ? 17 : Integer.MAX_VALUE;
 	}
 
 	private void tryReleasingLockedGhosts() {
-		if (game.ghost(BLINKY).is(LOCKED)) {
-			game.ghost(BLINKY).state = HUNTING_PAC;
+		if (game.ghost(RED_GHOST).is(LOCKED)) {
+			game.ghost(RED_GHOST).state = HUNTING_PAC;
 		}
 		preferredLockedGhostInHouse().ifPresent(ghost -> {
 			if (game.isGlobalDotCounterEnabled() && game.globalDotCounter() >= ghostGlobalDotLimit(ghost.id)) {
@@ -689,9 +687,9 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	private void releaseGhost(Ghost ghost, String reason, Object... args) {
-		if (ghost.id == CLYDE && game.ghost(BLINKY).elroy < 0) {
-			game.ghost(BLINKY).elroy = -game.ghost(BLINKY).elroy; // resume Elroy mode
-			log("Blinky Elroy mode %d resumed", game.ghost(BLINKY).elroy);
+		if (ghost.id == ORANGE_GHOST && game.ghost(RED_GHOST).elroy < 0) {
+			game.ghost(RED_GHOST).elroy = -game.ghost(RED_GHOST).elroy; // resume Elroy mode
+			log("Blinky Elroy mode %d resumed", game.ghost(RED_GHOST).elroy);
 		}
 		ghost.state = LEAVING_HOUSE;
 		fireGameEvent(new PacManGameEvent(game, Info.GHOST_LEAVING_HOUSE, ghost, ghost.tile()));
@@ -699,12 +697,13 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	private Optional<Ghost> preferredLockedGhostInHouse() {
-		return Stream.of(PINKY, INKY, CLYDE).map(game::ghost).filter(ghost -> ghost.is(LOCKED)).findFirst();
+		return Stream.of(PINK_GHOST, CYAN_GHOST, ORANGE_GHOST).map(game::ghost).filter(ghost -> ghost.is(LOCKED))
+				.findFirst();
 	}
 
 	private void updateGhostDotCounters() {
 		if (game.isGlobalDotCounterEnabled()) {
-			if (game.ghost(CLYDE).is(LOCKED) && game.globalDotCounter() == 32) {
+			if (game.ghost(ORANGE_GHOST).is(LOCKED) && game.globalDotCounter() == 32) {
 				game.enableGlobalDotCounter(false);
 				game.setGlobalDotCounter(0);
 				log("Global dot counter disabled and reset, Clyde was in house when counter reached 32");
