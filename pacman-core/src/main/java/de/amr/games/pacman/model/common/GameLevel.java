@@ -59,39 +59,30 @@ public class GameLevel {
 	public int numFlashes;
 
 	// food in game world
-	private BitSet eaten = new BitSet();
 	public int totalFoodCount;
+	public int energizerCount;
 	public int foodRemaining;
+	private BitSet eaten;
 
 	public int numGhostsKilled;
 
 	/** Ms. Pac-Man: maze number (1, 2, ..., 6) */
 	public int mazeNumber;
 
-	public GameLevel(int number, PacManGameWorld world, Object[] data) {
-		this.number = number;
+	public GameLevel(int levelNumber, PacManGameWorld world, Object[] levelData) {
+		this.number = levelNumber;
 		this.world = world;
-		setData(data);
+		store(levelData);
 		totalFoodCount = 0;
-		int energizerCount = 0;
-		for (int x = 0; x < world.numCols(); ++x) {
-			for (int y = 0; y < world.numRows(); ++y) {
-				V2i tile = new V2i(x, y);
-				if (world.isFoodTile(tile)) {
-					++totalFoodCount;
-					if (world.isEnergizerTile(tile)) {
-						energizerCount++;
-					}
-				}
-			}
-		}
-		eaten.clear();
+		totalFoodCount = (int) world.tiles().filter(world::isFoodTile).count();
+		energizerCount = (int) world.tiles().filter(world::isEnergizerTile).count();
 		foodRemaining = totalFoodCount;
-		log("Total food: %d (%d pellets, %d energizers)", totalFoodCount, totalFoodCount - energizerCount,
-				energizerCount);
+		eaten = new BitSet();
+
+		log("Total food: %d (%d pellets, %d energizers)", totalFoodCount, totalFoodCount - energizerCount, energizerCount);
 	}
 
-	private void setData(Object[] levelData) {
+	private void store(Object[] levelData) {
 		bonusSymbol = (String) levelData[0];
 		playerSpeed = percent(levelData[1]);
 		ghostSpeed = percent(levelData[2]);
