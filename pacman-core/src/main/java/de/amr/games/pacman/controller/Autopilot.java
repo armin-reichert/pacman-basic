@@ -131,8 +131,8 @@ public class Autopilot implements PlayerControl {
 			data.hunterBehind = hunterBehind;
 			data.hunterBehindDistance = game().player().tile().manhattanDistance(hunterBehind.tile());
 		}
-		data.frightenedGhosts = game().ghosts(GhostState.FRIGHTENED).filter(
-				ghost -> ghost.tile().manhattanDistance(game().player().tile()) <= AutopilotData.MAX_GHOST_CHASE_DIST)
+		data.frightenedGhosts = game().ghosts(GhostState.FRIGHTENED)
+				.filter(ghost -> ghost.tile().manhattanDistance(game().player().tile()) <= AutopilotData.MAX_GHOST_CHASE_DIST)
 				.collect(Collectors.toList());
 		data.frightenedGhostsDistance = data.frightenedGhosts.stream()
 				.map(ghost -> ghost.tile().manhattanDistance(game().player().tile())).collect(Collectors.toList());
@@ -143,8 +143,7 @@ public class Autopilot implements PlayerControl {
 		if (data.hunterAhead != null) {
 			Direction escapeDir = null;
 			if (data.hunterBehind != null) {
-				escapeDir = findEscapeDirectionExcluding(
-						EnumSet.of(game().player().dir(), game().player().dir().opposite()));
+				escapeDir = findEscapeDirectionExcluding(EnumSet.of(game().player().dir(), game().player().dir().opposite()));
 				log("Detected ghost %s behind, escape direction is %s", data.hunterAhead.name, escapeDir);
 			} else {
 				escapeDir = findEscapeDirectionExcluding(EnumSet.of(game().player().dir()));
@@ -166,8 +165,8 @@ public class Autopilot implements PlayerControl {
 			log("Detected frightened ghost %s %.0g tiles away", prey.name,
 					prey.tile().manhattanDistance(game().player().tile()));
 			game().player().targetTile = prey.tile();
-		} else if (game().bonus().state == Bonus.EDIBLE && game().bonus().tile()
-				.manhattanDistance(game().player().tile()) <= AutopilotData.MAX_BONUS_HARVEST_DIST) {
+		} else if (game().bonus().state == Bonus.EDIBLE
+				&& game().bonus().tile().manhattanDistance(game().player().tile()) <= AutopilotData.MAX_BONUS_HARVEST_DIST) {
 			log("Detected active bonus");
 			game().player().targetTile = game().bonus().tile();
 		} else {
@@ -175,7 +174,7 @@ public class Autopilot implements PlayerControl {
 			game().player().targetTile = foodTile;
 		}
 		if (game().player().targetTile != null) {
-			game().player().setDirectionTowardsTarget();
+			game().player().headForTile(game().player().targetTile);
 		}
 	}
 
@@ -290,7 +289,6 @@ public class Autopilot implements PlayerControl {
 	}
 
 	private double minDistanceFromGhosts() {
-		return game().ghosts().map(Ghost::tile).mapToDouble(game().player().tile()::manhattanDistance).min()
-				.getAsDouble();
+		return game().ghosts().map(Ghost::tile).mapToDouble(game().player().tile()::manhattanDistance).min().getAsDouble();
 	}
 }

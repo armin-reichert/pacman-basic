@@ -611,11 +611,9 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 				ghost.targetTile = null;
 				ghost.setRandomDirection();
 			} else if (inScatteringPhase() && ghost.elroy == 0) {
-				ghost.targetTile = level.world.ghostScatterTile(ghost.id);
-				ghost.setDirectionTowardsTarget();
+				ghost.headForTile(level.world.ghostScatterTile(ghost.id));
 			} else {
-				ghost.targetTile = ghost.fnChasingTargetTile.get();
-				ghost.setDirectionTowardsTarget();
+				ghost.headForTile(ghost.fnChasingTargetTile.get());
 			}
 			ghost.tryMoving();
 			break;

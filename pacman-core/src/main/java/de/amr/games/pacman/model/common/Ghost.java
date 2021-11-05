@@ -110,7 +110,7 @@ public class Ghost extends Creature {
 			state = GhostState.ENTERING_HOUSE;
 			return true;
 		}
-		setDirectionTowardsTarget();
+		headForTile(targetTile);
 		tryMoving();
 		return false;
 	}

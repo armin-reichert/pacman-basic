@@ -78,7 +78,7 @@ public class MovingBonus extends Bonus {
 				state = INACTIVE;
 				return Info.BONUS_EXPIRED;
 			}
-			setDirectionTowardsTarget();
+			headForTile(targetTile);
 			tryMoving();
 			return null;
 

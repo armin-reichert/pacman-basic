@@ -269,7 +269,9 @@ public class Creature extends GameEntity {
 	 * DOWN, RIGHT and selects the one with smallest Euclidean distance to the target tile. Reversing
 	 * the move direction is not allowed.
 	 */
-	public void setDirectionTowardsTarget() {
+	public void headForTile(V2i targetTile) {
+		this.targetTile = targetTile;
+
 		if (forced) {
 			forced = false;
 			return;
