@@ -32,21 +32,20 @@ import de.amr.games.pacman.model.common.GameEntity;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.GhostState;
 import de.amr.games.pacman.model.common.Pac;
+import de.amr.games.pacman.model.common.PacManGameModel;
 
 /**
- * Second intermission scene: Blinky pursues Pac but kicks a nail that tears his
- * dress apart.
+ * Second intermission scene: Blinky pursues Pac but kicks a nail that tears his dress apart.
  * 
  * @author Armin Reichert
  */
 public abstract class PacMan_IntermissionScene2_Controller {
 
 	public enum Phase {
-
 		WALKING, GETTING_STUCK, STUCK;
 	}
 
-	public static final int groundTileY = 20;
+	public static final int groundY = t(20);
 
 	public final TickTimer timer = new TickTimer(getClass().getSimpleName() + "-timer");
 	public final PacManGameController gameController;
@@ -54,32 +53,36 @@ public abstract class PacMan_IntermissionScene2_Controller {
 	public Ghost blinky;
 	public Pac pac;
 	public GameEntity nail;
+
 	public Phase phase;
 
 	public PacMan_IntermissionScene2_Controller(PacManGameController gameController) {
 		this.gameController = gameController;
 	}
 
+	/**
+	 * Plays the sound for this intermission scene, differs for Pac-Man and Ms. Pac-Man.
+	 */
 	public abstract void playIntermissionSound();
 
 	public void init() {
 		pac = new Pac("Pac-Man");
 		pac.setDir(Direction.LEFT);
-		pac.setPosition(t(30), t(groundTileY));
 		pac.setVisible(true);
+		pac.setPosition(t(30), groundY);
 		pac.setSpeed(1.0);
 
-		blinky = new Ghost(0, "Blinky");
+		blinky = new Ghost(PacManGameModel.RED_GHOST, "Blinky");
 		blinky.setDir(Direction.LEFT);
 		blinky.setWishDir(Direction.LEFT);
+		blinky.setVisible(true);
 		blinky.setPosition(pac.position().plus(t(14), 0));
 		blinky.setSpeed(1.0);
-		blinky.setVisible(true);
 		blinky.state = GhostState.HUNTING_PAC;
 
 		nail = new GameEntity();
 		nail.setVisible(true);
-		nail.setPosition(t(14), t(groundTileY) - 1);
+		nail.setPosition(t(14), groundY - 1);
 
 		playIntermissionSound();
 
@@ -100,6 +103,8 @@ public abstract class PacMan_IntermissionScene2_Controller {
 		switch (phase) {
 
 		case WALKING:
+			blinky.move();
+			pac.move();
 			if (nailDistance() == 0) {
 				enter(Phase.GETTING_STUCK);
 			}
@@ -107,6 +112,8 @@ public abstract class PacMan_IntermissionScene2_Controller {
 			break;
 
 		case GETTING_STUCK:
+			blinky.move();
+			pac.move();
 			int stretching = nailDistance() / 4;
 			blinky.setSpeed(0.3 - 0.1 * stretching);
 			if (stretching == 3) {
@@ -118,6 +125,8 @@ public abstract class PacMan_IntermissionScene2_Controller {
 			break;
 
 		case STUCK:
+			blinky.move();
+			pac.move();
 			if (timer.isRunningSeconds(3)) {
 				blinky.setDir(Direction.RIGHT);
 			}
@@ -131,7 +140,5 @@ public abstract class PacMan_IntermissionScene2_Controller {
 		default:
 			throw new IllegalStateException("Illegal phase: " + phase);
 		}
-		blinky.move();
-		pac.move();
 	}
 }

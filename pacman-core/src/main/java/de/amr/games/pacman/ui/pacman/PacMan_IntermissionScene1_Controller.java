@@ -31,6 +31,7 @@ import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.GhostState;
 import de.amr.games.pacman.model.common.Pac;
+import de.amr.games.pacman.model.common.PacManGameModel;
 
 /**
  * First intermission scene: Blinky chases Pac-Man and is then chased by a huge Pac-Man.
@@ -47,14 +48,19 @@ public abstract class PacMan_IntermissionScene1_Controller {
 
 	public final TickTimer timer = new TickTimer(getClass().getSimpleName() + "-timer");
 	public final PacManGameController gameController;
+
 	public Ghost blinky;
 	public Pac pac;
+
 	public Phase phase;
 
 	public PacMan_IntermissionScene1_Controller(PacManGameController gameController) {
 		this.gameController = gameController;
 	}
 
+	/**
+	 * Plays the sound for this intermission scene, differs for Pac-Man and Ms. Pac-Man.
+	 */
 	public abstract void playIntermissionSound();
 
 	public void init() {
@@ -64,13 +70,13 @@ public abstract class PacMan_IntermissionScene1_Controller {
 		pac.setPosition(t(30), groundY);
 		pac.setSpeed(1.0);
 
-		blinky = new Ghost(0, "Blinky");
+		blinky = new Ghost(PacManGameModel.RED_GHOST, "Blinky");
 		blinky.setDir(Direction.LEFT);
 		blinky.setWishDir(Direction.LEFT);
 		blinky.setVisible(true);
-		blinky.state = GhostState.HUNTING_PAC;
 		blinky.setPosition(pac.position().plus(t(3), 0));
 		blinky.setSpeed(1.04);
+		blinky.state = GhostState.HUNTING_PAC;
 
 		playIntermissionSound();
 
@@ -83,17 +89,20 @@ public abstract class PacMan_IntermissionScene1_Controller {
 		switch (phase) {
 
 		case BLINKY_CHASING_PACMAN:
+			pac.move();
+			blinky.move();
+			timer.tick();
 			if (timer.hasExpired()) {
 				phase = Phase.BIGPACMAN_CHASING_BLINKY;
 				timer.resetSeconds(7);
 				timer.start();
 			}
-			pac.move();
-			blinky.move();
-			timer.tick();
 			break;
 
 		case BIGPACMAN_CHASING_BLINKY:
+			pac.move();
+			blinky.move();
+			timer.tick();
 			if (timer.hasJustStarted()) {
 				blinky.setPosition(-t(2), groundY);
 				blinky.setWishDir(Direction.RIGHT);
@@ -106,15 +115,11 @@ public abstract class PacMan_IntermissionScene1_Controller {
 			}
 			if (timer.hasExpired()) {
 				gameController.stateTimer().expire();
-				return;
 			}
-			pac.move();
-			blinky.move();
-			timer.tick();
 			break;
 
 		default:
-			break;
+			throw new IllegalStateException("Illegal phase: " + phase);
 		}
 	}
 }

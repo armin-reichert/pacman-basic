@@ -45,7 +45,7 @@ public abstract class PacMan_IntermissionScene3_Controller {
 		CHASING_PACMAN, RETURNING_HALF_NAKED;
 	}
 
-	public static final int groundTileY = 20;
+	public static final int groundY = t(20);
 
 	public final TickTimer timer = new TickTimer(getClass().getSimpleName() + "-timer");
 	public final PacManGameController gameController;
@@ -67,17 +67,15 @@ public abstract class PacMan_IntermissionScene3_Controller {
 	public void init() {
 		pac = new Pac("Pac-Man");
 		pac.setDir(Direction.LEFT);
-		pac.setPosition(t(40), t(groundTileY));
 		pac.setVisible(true);
+		pac.setPosition(t(40), groundY);
 		pac.setSpeed(1.2);
-		pac.dead = false;
-		pac.stuck = false;
 
 		blinky = new Ghost(PacManGameModel.RED_GHOST, "Blinky");
 		blinky.setDir(Direction.LEFT);
 		blinky.setWishDir(Direction.LEFT);
-		blinky.setPosition(pac.position().plus(t(8), 0));
 		blinky.setVisible(true);
+		blinky.setPosition(pac.position().plus(t(8), 0));
 		blinky.setSpeed(1.2);
 		blinky.state = GhostState.HUNTING_PAC;
 
@@ -90,8 +88,8 @@ public abstract class PacMan_IntermissionScene3_Controller {
 		switch (phase) {
 
 		case CHASING_PACMAN:
-			blinky.move();
 			pac.move();
+			blinky.move();
 			if (blinky.position().x <= -t(15)) {
 				pac.setSpeed(0);
 				blinky.setDir(Direction.RIGHT);
@@ -105,7 +103,6 @@ public abstract class PacMan_IntermissionScene3_Controller {
 			pac.move();
 			if (blinky.position().x > t(53)) {
 				gameController.stateTimer().expire();
-				return;
 			}
 			break;
 
