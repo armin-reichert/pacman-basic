@@ -32,6 +32,7 @@ import de.amr.games.pacman.lib.TimedSequence;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.GhostState;
 import de.amr.games.pacman.model.common.Pac;
+import de.amr.games.pacman.model.common.PacManGameModel;
 
 /**
  * Intro scene of the PacMan game.
@@ -85,25 +86,25 @@ public class PacMan_IntroScene_Controller {
 		for (int i = 0; i < 4; ++i) {
 			gallery[i] = new GhostPortrait();
 		}
-		gallery[0].ghost = new Ghost(0, "Blinky");
+		gallery[0].ghost = new Ghost(PacManGameModel.RED_GHOST, "Blinky");
 		gallery[0].ghost.setDir(Direction.RIGHT);
 		gallery[0].ghost.setWishDir(Direction.RIGHT);
 		gallery[0].character = "SHADOW";
 		gallery[0].ghost.setPosition(t(2), TOP_Y + t(2));
 
-		gallery[1].ghost = new Ghost(1, "Pinky");
+		gallery[1].ghost = new Ghost(PacManGameModel.PINK_GHOST, "Pinky");
 		gallery[1].ghost.setDir(Direction.RIGHT);
 		gallery[1].ghost.setWishDir(Direction.RIGHT);
 		gallery[1].character = "SPEEDY";
 		gallery[1].ghost.setPosition(t(2), TOP_Y + t(5));
 
-		gallery[2].ghost = new Ghost(2, "Inky");
+		gallery[2].ghost = new Ghost(PacManGameModel.CYAN_GHOST, "Inky");
 		gallery[2].ghost.setDir(Direction.RIGHT);
 		gallery[2].ghost.setWishDir(Direction.RIGHT);
 		gallery[2].character = "BASHFUL";
 		gallery[2].ghost.setPosition(t(2), TOP_Y + t(8));
 
-		gallery[3].ghost = new Ghost(3, "Clyde");
+		gallery[3].ghost = new Ghost(PacManGameModel.ORANGE_GHOST, "Clyde");
 		gallery[3].ghost.setDir(Direction.RIGHT);
 		gallery[3].ghost.setWishDir(Direction.RIGHT);
 		gallery[3].character = "POKEY";
@@ -113,10 +114,10 @@ public class PacMan_IntroScene_Controller {
 		pac.setDir(Direction.LEFT);
 
 		ghosts = new Ghost[] { //
-				new Ghost(0, "Blinky"), //
-				new Ghost(1, "Pinky"), //
-				new Ghost(2, "Inky"), //
-				new Ghost(3, "Clyde"), //
+				new Ghost(PacManGameModel.RED_GHOST, "Blinky"), //
+				new Ghost(PacManGameModel.PINK_GHOST, "Pinky"), //
+				new Ghost(PacManGameModel.CYAN_GHOST, "Inky"), //
+				new Ghost(PacManGameModel.ORANGE_GHOST, "Clyde"), //
 		};
 		for (Ghost ghost : ghosts) {
 			ghost.setDir(Direction.LEFT);
