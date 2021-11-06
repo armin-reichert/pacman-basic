@@ -42,6 +42,10 @@ import static de.amr.games.pacman.model.common.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.common.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.model.common.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.model.common.GhostState.LOCKED;
+import static de.amr.games.pacman.model.common.PacManGameModel.CYAN_GHOST;
+import static de.amr.games.pacman.model.common.PacManGameModel.ORANGE_GHOST;
+import static de.amr.games.pacman.model.common.PacManGameModel.PINK_GHOST;
+import static de.amr.games.pacman.model.common.PacManGameModel.RED_GHOST;
 import static java.util.function.Predicate.not;
 
 import java.util.ArrayList;
@@ -95,11 +99,6 @@ import de.amr.games.pacman.ui.PacManGameUI;
  * @see <a href="http://superpacman.com/mspacman/">Ms. Pac-Man</a>
  */
 public class PacManGameController extends FiniteStateMachine<PacManGameState> {
-
-	private static final int RED_GHOST = 0;
-	private static final int PINK_GHOST = 1;
-	private static final int CYAN_GHOST = 2;
-	private static final int ORANGE_GHOST = 3;
 
 	private PacManGameModel[] games;
 	private PacManGameModel game;

@@ -35,6 +35,11 @@ import de.amr.games.pacman.model.pacman.entities.Bonus;
  */
 public interface PacManGameModel {
 
+	public static final int RED_GHOST = 0;
+	public static final int PINK_GHOST = 1;
+	public static final int CYAN_GHOST = 2;
+	public static final int ORANGE_GHOST = 3;
+
 	/**
 	 * Enters the level with the given number.
 	 * 

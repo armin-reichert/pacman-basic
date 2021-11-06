@@ -31,9 +31,10 @@ import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.GhostState;
 import de.amr.games.pacman.model.common.Pac;
+import de.amr.games.pacman.model.common.PacManGameModel;
 
 /**
- * Third intermission scene: Blinky in shred dress chases Pac-Man, comes back half-naked drawing
+ * Third intermission scene: Blinky in shred dress chases Pac-Man, comes back half-naked drawing its
  * dress over the floor.
  * 
  * @author Armin Reichert
@@ -44,39 +45,40 @@ public abstract class PacMan_IntermissionScene3_Controller {
 		CHASING_PACMAN, RETURNING_HALF_NAKED;
 	}
 
-	public static final int chaseTileY = 20;
+	public static final int groundTileY = 20;
 
 	public final TickTimer timer = new TickTimer(getClass().getSimpleName() + "-timer");
 	public final PacManGameController gameController;
 
 	public Ghost blinky;
 	public Pac pac;
+
 	public Phase phase;
 
 	public PacMan_IntermissionScene3_Controller(PacManGameController gameController) {
 		this.gameController = gameController;
 	}
 
+	/**
+	 * Plays the sound for this intermission scene, differs for Pac-Man and Ms. Pac-Man.
+	 */
 	public abstract void playIntermissionSound();
 
 	public void init() {
 		pac = new Pac("Pac-Man");
 		pac.setDir(Direction.LEFT);
-		pac.setPosition(t(30), t(chaseTileY));
+		pac.setPosition(t(40), t(groundTileY));
 		pac.setVisible(true);
-		pac.dead = false;
 		pac.setSpeed(1.2);
+		pac.dead = false;
 		pac.stuck = false;
-		pac.setDir(Direction.LEFT);
 
-		blinky = new Ghost(0, "Blinky");
+		blinky = new Ghost(PacManGameModel.RED_GHOST, "Blinky");
 		blinky.setDir(Direction.LEFT);
 		blinky.setWishDir(Direction.LEFT);
 		blinky.setPosition(pac.position().plus(t(8), 0));
 		blinky.setVisible(true);
 		blinky.setSpeed(1.2);
-		blinky.setDir(Direction.LEFT);
-		blinky.setWishDir(Direction.LEFT);
 		blinky.state = GhostState.HUNTING_PAC;
 
 		playIntermissionSound();
@@ -88,7 +90,9 @@ public abstract class PacMan_IntermissionScene3_Controller {
 		switch (phase) {
 
 		case CHASING_PACMAN:
-			if (blinky.position().x <= -50) {
+			blinky.move();
+			pac.move();
+			if (blinky.position().x <= -t(15)) {
 				pac.setSpeed(0);
 				blinky.setDir(Direction.RIGHT);
 				blinky.setWishDir(Direction.RIGHT);
@@ -97,7 +101,9 @@ public abstract class PacMan_IntermissionScene3_Controller {
 			break;
 
 		case RETURNING_HALF_NAKED:
-			if (blinky.position().x > t(28) + 200) {
+			blinky.move();
+			pac.move();
+			if (blinky.position().x > t(53)) {
 				gameController.stateTimer().expire();
 				return;
 			}
@@ -106,7 +112,5 @@ public abstract class PacMan_IntermissionScene3_Controller {
 		default:
 			throw new IllegalStateException("Illegal phase: " + phase);
 		}
-		blinky.move();
-		pac.move();
 	}
 }
