@@ -69,40 +69,32 @@ public abstract class AbstractGameModel implements PacManGameModel {
 	protected int dotCounter;
 	protected boolean dotCounterEnabled;
 
-	/**
-	 * @param names the ghost's names in order: red, pink, cyan, orange
-	 * @return ghosts as named
-	 */
-	protected Ghost[] createGhosts(String... names) {
-		if (names.length != 4) {
-			throw new IllegalArgumentException("We need exactly 4 ghost names in order red, pink, cyan, orange");
-		}
+	protected Ghost[] createGhosts(String redGhostName, String pinkGhostName, String cyanGhostName,
+			String orangeGhostName) {
 
-		Ghost[] ghosts = new Ghost[names.length];
-		for (int id = 0; id < names.length; ++id) {
-			ghosts[id] = new Ghost(id, names[id]);
-		}
+		Ghost redGhost = new Ghost(RED_GHOST, redGhostName);
+		Ghost pinkGhost = new Ghost(PINK_GHOST, pinkGhostName);
+		Ghost cyanGhost = new Ghost(CYAN_GHOST, cyanGhostName);
+		Ghost orangeGhost = new Ghost(ORANGE_GHOST, orangeGhostName);
 
-		Ghost blinky = ghosts[0], pinky = ghosts[1], inky = ghosts[2], clyde = ghosts[3];
+		// Red ghost chases Pac-Man directly
+		redGhost.fnChasingTargetTile = player::tile;
 
-		// Blinky chases Pac-Man directly
-		blinky.fnChasingTargetTile = player::tile;
-
-		// Pinky target is tile two ahead of Pac-Man (simulate overflow bug when player looks up)
-		pinky.fnChasingTargetTile = () -> player.dir() == Direction.UP ? player.tilesAhead(4).plus(-4, 0)
+		// Pink ghost's target is two tiles ahead of Pac-Man (simulate overflow bug when player looks up)
+		pinkGhost.fnChasingTargetTile = () -> player.dir() == Direction.UP ? player.tilesAhead(4).plus(-4, 0)
 				: player.tilesAhead(4);
 
-		// Inky target, see Pac-Man dossier (simulate overflow bug when player looks up)
-		inky.fnChasingTargetTile = () -> player.dir() == Direction.UP
-				? player.tilesAhead(2).plus(-2, 0).scaled(2).minus(blinky.tile())
-				: player.tilesAhead(2).scaled(2).minus(blinky.tile());
+		// For cyan ghost's target, see Pac-Man dossier (simulate overflow bug when player looks up)
+		cyanGhost.fnChasingTargetTile = () -> player.dir() == Direction.UP
+				? player.tilesAhead(2).plus(-2, 0).scaled(2).minus(redGhost.tile())
+				: player.tilesAhead(2).scaled(2).minus(redGhost.tile());
 
-		// Clyde/Sue target is Pac-Man tile or scatter tile at the lower left maze corner
-		clyde.fnChasingTargetTile = () -> clyde.tile().euclideanDistance(player.tile()) < 8
+		// Orange ghost's target is either Pac-Man tile or scatter tile #3 at the lower left maze corner
+		orangeGhost.fnChasingTargetTile = () -> orangeGhost.tile().euclideanDistance(player.tile()) < 8
 				? level.world.ghostScatterTile(3)
 				: player.tile();
 
-		return ghosts;
+		return Stream.of(redGhost, pinkGhost, cyanGhost, orangeGhost).toArray(Ghost[]::new);
 	}
 
 	@Override
