@@ -41,15 +41,22 @@ public class MovingBonus extends Bonus {
 
 	@Override
 	public void init() {
-		super.init();
+		state = INACTIVE;
+		visible = false;
+		timer = 0;
 		targetTile = null;
+		newTileEntered = true;
+		forcedOnTrack = true;
 		stuck = false;
 		setSpeed(0.25);
 	}
 
 	@Override
 	public void activate(long ticks) {
-		super.activate(ticks);
+		state = EDIBLE;
+		timer = ticks;
+		visible = true;
+		// place at random portal tile
 		int numPortals = world.portals().size();
 		Random random = new Random();
 		Portal randomPortal = world.portals().get(random.nextInt(numPortals));
