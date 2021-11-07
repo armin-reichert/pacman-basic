@@ -25,7 +25,6 @@ package de.amr.games.pacman.model.pacman.entities;
 
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent.Info;
-import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.model.common.Creature;
 
 /**
@@ -35,19 +34,11 @@ import de.amr.games.pacman.model.common.Creature;
  */
 public class Bonus extends Creature {
 
-	public static final int INACTIVE = 0;
-	public static final int EDIBLE = 1;
-	public static final int EATEN = 2;
+	public static final int INACTIVE = 0, EDIBLE = 1, EATEN = 2;
 
-	/** ID of the bonus symbol. */
 	public String symbol;
-
-	/** Value of this bonus. */
 	public int points;
-
-	/** Number of ticks left in current state. */
 	public long timer;
-
 	public int state;
 
 	public Bonus() {
@@ -59,10 +50,6 @@ public class Bonus extends Creature {
 		state = INACTIVE;
 		timer = 0;
 		visible = false;
-		velocity = V2d.NULL;
-		newTileEntered = true;
-		stuck = false;
-		forcedOnTrack = true;
 	}
 
 	public void activate(long ticks) {
