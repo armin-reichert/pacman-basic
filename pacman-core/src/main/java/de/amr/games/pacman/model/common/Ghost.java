@@ -40,7 +40,7 @@ import de.amr.games.pacman.lib.V2i;
  */
 public class Ghost extends Creature {
 
-	/** The unique ID of the ghost (0..3). */
+	/** The ID (color) of the ghost (0=red, 1=pink, 2=cyan, 3=orange). */
 	public final int id;
 
 	/** The current state of the ghost. */
@@ -55,14 +55,10 @@ public class Ghost extends Creature {
 	/** Function computing the target tile of this ghost. */
 	public Supplier<V2i> fnChasingTargetTile;
 
-	/**
-	 * The individual food counter, used to compute when the ghost can leave the house.
-	 */
+	/** The individual food counter, used to determine when the ghost can leave the house. */
 	public int dotCounter;
 
-	/**
-	 * The "Cruise Elroy" mode of Blinky, the red ghost. Value is 1, 2 or -1, -2 (disabled Elroy mode).
-	 */
+	/** "Cruise Elroy" mode of the red ghost. Value is 1, 2 or -1, -2 (disabled modes). */
 	public int elroy;
 
 	public Ghost(int id, String name) {
@@ -99,14 +95,13 @@ public class Ghost extends Creature {
 	 * @return {@code true} if the ghost has reached the house
 	 */
 	public boolean returnHome() {
-		if (atGhostHouseDoor() && dir() != Direction.DOWN) {
+		if (atGhostHouseDoor() && dir != Direction.DOWN) {
 			// house reached, start entering
 			setOffset(HTS, 0);
 			setDir(Direction.DOWN);
 			setWishDir(Direction.DOWN);
 			forcedOnTrack = false;
-			boolean homeOutsideHouse = homeTile.equals(world.ghostHouse().entryTile());
-			targetTile = homeOutsideHouse ? world.ghostHouse().seat(1) : homeTile;
+			targetTile = id == PacManGameModel.RED_GHOST ? world.ghostHouse().seat(1) : homeTile;
 			state = GhostState.ENTERING_HOUSE;
 			return true;
 		}
@@ -125,24 +120,23 @@ public class Ghost extends Creature {
 		V2d offset = offset();
 		// Target position inside house reached? Turn around and start leaving house.
 		if (tile.equals(targetTile) && offset.y >= 0) {
-			setWishDir(dir().opposite());
+			setWishDir(dir.opposite());
 			state = GhostState.LEAVING_HOUSE;
 			return true;
 		}
-		// Center reached? If target tile is left or right seat, move towards target
-		// tile
+		// Center reached? If target tile is left or right seat, move towards target tile
 		if (tile.equals(world.ghostHouse().seat(1)) && offset.y >= 0) {
-			Direction dir = targetTile.x < world.ghostHouse().seat(1).x ? Direction.LEFT : Direction.RIGHT;
-			setDir(dir);
-			setWishDir(dir);
+			Direction newDir = targetTile.x < world.ghostHouse().seat(1).x ? Direction.LEFT : Direction.RIGHT;
+			setDir(newDir);
+			setWishDir(newDir);
 		}
-		tryMovingTowards(dir());
+		tryMovingTowards(dir);
 		return false;
 	}
 
 	/**
-	 * Lets the ghost leave the house from its home position to the middle of the house and then upwards
-	 * to the house door.
+	 * Lets the ghost leave the house from its home position towards the middle of the house and then
+	 * upwards towards the house door.
 	 * 
 	 * @return {@code true} if the ghost has left the house
 	 */
@@ -158,9 +152,9 @@ public class Ghost extends Creature {
 			state = GhostState.HUNTING_PAC;
 			return true;
 		}
-		V2i houseCenter = world.ghostHouse().seat(1);
-		int center = t(houseCenter.x) + HTS;
-		int ground = t(houseCenter.y) + HTS;
+		V2i middleSeat = world.ghostHouse().seat(1);
+		int center = t(middleSeat.x) + HTS;
+		int ground = t(middleSeat.y) + HTS;
 		if (MathFunctions.differsAtMost(position.x, center, 1)) {
 			setOffset(HTS, offset.y);
 			setDir(Direction.UP);
@@ -173,7 +167,7 @@ public class Ghost extends Creature {
 			setDir(newDir);
 			setWishDir(newDir);
 		}
-		tryMovingTowards(wishDir());
+		tryMovingTowards(wishDir);
 		return false;
 	}
 
@@ -185,7 +179,7 @@ public class Ghost extends Creature {
 	public boolean bounce() {
 		int centerY = t(world.ghostHouse().seat(1).y);
 		if (position.y < centerY - HTS || position.y > centerY + HTS) {
-			Direction opposite = dir().opposite();
+			Direction opposite = dir.opposite();
 			setDir(opposite);
 			setWishDir(opposite);
 		}
@@ -195,7 +189,7 @@ public class Ghost extends Creature {
 
 	@Override
 	public String toString() {
-		return String.format("%s: state: %s position: %s, speed=%.2f, dir=%s, wishDir=%s", name, state, position,
-				velocity.length(), dir(), wishDir());
+		return String.format("%s: state: %s, position: %s, speed: %.2f, dir: %s, wishDir: %s", name, state, position,
+				velocity.length(), dir, wishDir);
 	}
 }
