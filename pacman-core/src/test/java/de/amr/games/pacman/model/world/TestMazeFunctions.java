@@ -1,9 +1,11 @@
 package de.amr.games.pacman.model.world;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.PacManGameModel;
 import de.amr.games.pacman.model.mspacman.MsPacManGame;
 import de.amr.games.pacman.model.pacman.PacManGame;
@@ -16,6 +18,17 @@ public class TestMazeFunctions {
 		assertEquals(1, game.mazeNumber(1));
 		assertEquals(1, game.mazeNumber(10));
 		assertEquals(1, game.mazeNumber(100));
+	}
+
+	@Test
+	public void testPacManMapForLevel1() {
+		PacManGameModel game = new PacManGame();
+		game.enterLevel(1);
+
+		assertTrue(game.level().world.getMap().isPresent());
+		WorldMap map = game.level().world.getMap().get();
+		assertEquals(new V2i(28, 36), map.vector("size"));
+		assertEquals(new V2i(70, 170), map.vector("bonus_pellets_to_eat"));
 	}
 
 	@Test
@@ -43,5 +56,35 @@ public class TestMazeFunctions {
 		assertEquals(6, game.mazeNumber(20));
 		assertEquals(6, game.mazeNumber(21));
 		assertEquals(5, game.mazeNumber(22));
+	}
+
+	@Test
+	public void testMsPacManMapForLevels() {
+		MsPacManGame game = new MsPacManGame();
+		WorldMap map;
+
+		game.enterLevel(1);
+		assertTrue(game.level().world.getMap().isPresent());
+		map = game.level().world.getMap().get();
+		assertEquals(new V2i(28, 36), map.vector("size"));
+		assertEquals(new V2i(64, 172), map.vector("bonus_pellets_to_eat"));
+
+		game.enterLevel(5);
+		assertTrue(game.level().world.getMap().isPresent());
+		map = game.level().world.getMap().get();
+		assertEquals(new V2i(28, 36), map.vector("size"));
+		assertEquals(new V2i(64, 172), map.vector("bonus_pellets_to_eat"));
+
+		game.enterLevel(9);
+		assertTrue(game.level().world.getMap().isPresent());
+		map = game.level().world.getMap().get();
+		assertEquals(new V2i(28, 36), map.vector("size"));
+		assertEquals(new V2i(70, 170), map.vector("bonus_pellets_to_eat"));
+
+		game.enterLevel(13);
+		assertTrue(game.level().world.getMap().isPresent());
+		map = game.level().world.getMap().get();
+		assertEquals(new V2i(28, 36), map.vector("size"));
+		assertEquals(new V2i(70, 170), map.vector("bonus_pellets_to_eat"));
 	}
 }
