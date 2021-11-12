@@ -600,21 +600,21 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			} else {
 				ghost.setSpeed(level.ghostSpeed);
 			}
+
+			/*
+			 * In Ms. Pac-Man, Blinky and Pinky move randomly during the *first* scatter phase. Some say, the
+			 * original intention had been to randomize the scatter target of *all* ghosts in Ms. Pac-Man but
+			 * because of a bug, only the scatter target of Blinky and Pinky would have been affected. Who
+			 * knows?
+			 */
 			if (gameVariant == MS_PACMAN && huntingPhase == 0 && (ghost.id == RED_GHOST || ghost.id == PINK_GHOST)) {
-				/*
-				 * In Ms. Pac-Man, Blinky and Pinky move randomly during the *first* scatter phase. Some say, the
-				 * original intention had been to randomize the scatter target of *all* ghosts in Ms. Pac-Man but
-				 * because of a bug, only the scatter target of Blinky and Pinky would have been affected. Who
-				 * knows?
-				 */
-				ghost.targetTile = null;
-				ghost.setRandomDirection();
+				ghost.roam();
 			} else if (inScatteringPhase() && ghost.elroy == 0) {
-				ghost.headForTile(level.world.ghostScatterTile(ghost.id));
+				ghost.scatter();
 			} else {
-				ghost.headForTile(ghost.fnChasingTargetTile.get());
+				ghost.chase();
 			}
-			ghost.tryMoving();
+
 			break;
 
 		case DEAD:

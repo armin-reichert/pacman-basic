@@ -90,6 +90,31 @@ public class Ghost extends Creature {
 	}
 
 	/**
+	 * Lets the ghost head for its current chasing target.
+	 */
+	public void chase() {
+		headForTile(fnChasingTargetTile.get());
+		tryMoving();
+	}
+
+	/**
+	 * Lets the ghost head for its scatter tile.
+	 */
+	public void scatter() {
+		headForTile(world.ghostScatterTile(id));
+		tryMoving();
+	}
+
+	/**
+	 * Lets the ghost choose some random direction.
+	 */
+	public void roam() {
+		targetTile = null;
+		setRandomDirection();
+		tryMoving();
+	}
+
+	/**
 	 * Lets the ghost return back to the ghost house.
 	 * 
 	 * @return {@code true} if the ghost has reached the house
