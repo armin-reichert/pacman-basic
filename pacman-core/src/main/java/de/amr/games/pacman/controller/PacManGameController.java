@@ -566,8 +566,8 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 		case ENTERING_HOUSE:
 			ghost.setSpeed(level.ghostSpeed * 2);
-			boolean leavingHouse = ghost.enterHouse();
-			if (leavingHouse) {
+			boolean reachedHome = ghost.enterHouse();
+			if (reachedHome) {
 				fireGameEvent(new PacManGameEvent(game, Info.GHOST_LEAVING_HOUSE, ghost, ghost.tile()));
 			}
 			break;
@@ -583,11 +583,11 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		case FRIGHTENED:
 			if (level.world.isTunnel(ghost.tile())) {
 				ghost.setSpeed(level.ghostSpeedTunnel);
+				ghost.tryMoving();
 			} else {
 				ghost.setSpeed(level.ghostSpeedFrightened);
-				ghost.setRandomDirection();
+				ghost.roam();
 			}
-			ghost.tryMoving();
 			break;
 
 		case HUNTING_PAC:
