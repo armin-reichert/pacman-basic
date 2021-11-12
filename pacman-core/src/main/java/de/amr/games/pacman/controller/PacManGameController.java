@@ -348,7 +348,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		}
 
 		// Move player through world
-		playerControl().steer(game.player());
+		playerControl().steer(player);
 		if (player.restingTicksLeft > 0) {
 			player.restingTicksLeft--;
 		} else {
