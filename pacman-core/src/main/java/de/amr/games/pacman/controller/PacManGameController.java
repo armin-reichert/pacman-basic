@@ -667,8 +667,8 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			log("Blinky Elroy mode %d resumed", game.ghost(RED_GHOST).elroy);
 		}
 		ghost.state = LEAVING_HOUSE;
-		fireGameEvent(new PacManGameEvent(game, Info.GHOST_LEAVING_HOUSE, ghost, ghost.tile()));
 		log("Ghost %s released: %s", ghost.name, String.format(reason, args));
+		fireGameEvent(new PacManGameEvent(game, Info.GHOST_LEAVING_HOUSE, ghost, ghost.tile()));
 	}
 
 	private Optional<Ghost> preferredLockedGhostInHouse() {
