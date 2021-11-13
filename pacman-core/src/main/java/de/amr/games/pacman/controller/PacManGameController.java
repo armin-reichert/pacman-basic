@@ -643,35 +643,19 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		log("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name, ghost.tile(), ghost.bounty);
 	}
 
-	// Ghost house rules
-
-	private static int ghostPrivateDotLimit(int ghostID, int levelNumber) {
-		switch (ghostID) {
-		case CYAN_GHOST:
-			return levelNumber == 1 ? 30 : 0;
-		case ORANGE_GHOST:
-			return levelNumber == 1 ? 60 : levelNumber == 2 ? 50 : 0;
-		default:
-			return 0;
-		}
-	}
-
-	private static int ghostGlobalDotLimit(int ghostID) {
-		return ghostID == PINK_GHOST ? 7 : ghostID == CYAN_GHOST ? 17 : Integer.MAX_VALUE;
-	}
+	// Ghost house rules, see Pac-Man dossier
 
 	private void tryReleasingLockedGhosts() {
 		if (game.ghost(RED_GHOST).is(LOCKED)) {
 			game.ghost(RED_GHOST).state = HUNTING_PAC;
 		}
 		preferredLockedGhostInHouse().ifPresent(ghost -> {
-			if (game.isGlobalDotCounterEnabled() && game.globalDotCounter() >= ghostGlobalDotLimit(ghost.id)) {
+			if (game.isGlobalDotCounterEnabled() && game.globalDotCounter() >= ghost.globalDotLimit) {
 				releaseGhost(ghost, "Global dot counter (%d) reached limit (%d)", game.globalDotCounter(),
-						ghostGlobalDotLimit(ghost.id));
-			} else if (!game.isGlobalDotCounterEnabled()
-					&& ghost.dotCounter >= ghostPrivateDotLimit(ghost.id, game.level().number)) {
+						ghost.globalDotLimit);
+			} else if (!game.isGlobalDotCounterEnabled() && ghost.dotCounter >= ghost.privateDotLimit) {
 				releaseGhost(ghost, "%s's dot counter (%d) reached limit (%d)", ghost.name, ghost.dotCounter,
-						ghostPrivateDotLimit(ghost.id, game.level().number));
+						ghost.privateDotLimit);
 			} else if (game.player().starvingTicks >= game.player().starvingTimeLimit) {
 				releaseGhost(ghost, "%s has been starving for %d ticks", game.player().name, game.player().starvingTicks);
 				game.player().starvingTicks = 0;

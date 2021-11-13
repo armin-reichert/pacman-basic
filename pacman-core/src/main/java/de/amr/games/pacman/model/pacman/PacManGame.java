@@ -114,10 +114,20 @@ public class PacManGame extends AbstractGameModel {
 			ghost.dotCounter = 0;
 			ghost.elroy = 0;
 		}
-		ghosts[0].homeTile = world.ghostHouse().entryTile();
-		ghosts[1].homeTile = world.ghostHouse().seat(1);
-		ghosts[2].homeTile = world.ghostHouse().seat(0);
-		ghosts[3].homeTile = world.ghostHouse().seat(2);
+		ghosts[RED_GHOST].homeTile = world.ghostHouse().entryTile();
+		ghosts[PINK_GHOST].homeTile = world.ghostHouse().seat(1);
+		ghosts[CYAN_GHOST].homeTile = world.ghostHouse().seat(0);
+		ghosts[ORANGE_GHOST].homeTile = world.ghostHouse().seat(2);
+
+		// these values are used for controlling when ghosts are unlocked
+		ghosts[RED_GHOST].globalDotLimit = Integer.MAX_VALUE;
+		ghosts[RED_GHOST].privateDotLimit = 0;
+		ghosts[PINK_GHOST].globalDotLimit = 7;
+		ghosts[PINK_GHOST].privateDotLimit = 0;
+		ghosts[CYAN_GHOST].globalDotLimit = 17;
+		ghosts[CYAN_GHOST].privateDotLimit = levelNumber == 1 ? 30 : 0;
+		ghosts[ORANGE_GHOST].globalDotLimit = Integer.MAX_VALUE;
+		ghosts[ORANGE_GHOST].privateDotLimit = levelNumber == 1 ? 60 : levelNumber == 2 ? 50 : 0;
 
 		bonus.init();
 		bonus.world = world;
