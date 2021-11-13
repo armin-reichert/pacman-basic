@@ -651,13 +651,11 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		}
 		preferredLockedGhostInHouse().ifPresent(ghost -> {
 			if (game.isGlobalDotCounterEnabled() && game.globalDotCounter() >= ghost.globalDotLimit) {
-				releaseGhost(ghost, "Global dot counter (%d) reached limit (%d)", game.globalDotCounter(),
-						ghost.globalDotLimit);
+				releaseGhost(ghost, "Global dot counter reached limit (%d)", ghost.globalDotLimit);
 			} else if (!game.isGlobalDotCounterEnabled() && ghost.dotCounter >= ghost.privateDotLimit) {
-				releaseGhost(ghost, "%s's dot counter (%d) reached limit (%d)", ghost.name, ghost.dotCounter,
-						ghost.privateDotLimit);
+				releaseGhost(ghost, "Private dot counter reached limit (%d)", ghost.privateDotLimit);
 			} else if (game.player().starvingTicks >= game.player().starvingTimeLimit) {
-				releaseGhost(ghost, "%s has been starving for %d ticks", game.player().name, game.player().starvingTicks);
+				releaseGhost(ghost, "%s reached starving limit (%d ticks)", game.player().name, game.player().starvingTicks);
 				game.player().starvingTicks = 0;
 			}
 		});
