@@ -128,8 +128,8 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		configState(GAME_OVER, this::state_GameOver_enter, this::state_GameOver_update, null);
 
 		games = new PacManGameModel[2];
-		games[GameVariant.MS_PACMAN.ordinal()] = new MsPacManGame();
-		games[GameVariant.PACMAN.ordinal()] = new PacManGame();
+		games[MS_PACMAN.ordinal()] = new MsPacManGame();
+		games[PACMAN.ordinal()] = new PacManGame();
 	}
 
 	private void fireGameEvent(PacManGameEvent gameEvent) {
