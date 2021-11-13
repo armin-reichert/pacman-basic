@@ -645,10 +645,6 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	// Ghost house rules
 
-	private static long playerStarvingTimeLimit(int levelNumber) {
-		return sec_to_ticks(levelNumber < 5 ? 4 : 3);
-	}
-
 	private static int ghostPrivateDotLimit(int ghostID, int levelNumber) {
 		switch (ghostID) {
 		case CYAN_GHOST:
@@ -676,7 +672,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 					&& ghost.dotCounter >= ghostPrivateDotLimit(ghost.id, game.level().number)) {
 				releaseGhost(ghost, "%s's dot counter (%d) reached limit (%d)", ghost.name, ghost.dotCounter,
 						ghostPrivateDotLimit(ghost.id, game.level().number));
-			} else if (game.player().starvingTicks >= playerStarvingTimeLimit(game.level().number)) {
+			} else if (game.player().starvingTicks >= game.player().starvingTimeLimit) {
 				releaseGhost(ghost, "%s has been starving for %d ticks", game.player().name, game.player().starvingTicks);
 				game.player().starvingTicks = 0;
 			}

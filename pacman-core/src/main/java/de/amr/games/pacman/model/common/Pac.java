@@ -47,6 +47,9 @@ public class Pac extends Creature {
 	/** Number of clock ticks Pac has not eaten any pellet. */
 	public long starvingTicks = 0;
 
+	/** Max number of clock ticks Pac can be starving until ghost gets unlocked. */
+	public long starvingTimeLimit;
+
 	public Pac(String name) {
 		super(name);
 	}

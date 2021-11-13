@@ -24,6 +24,7 @@ SOFTWARE.
 package de.amr.games.pacman.model.pacman;
 
 import static de.amr.games.pacman.lib.Logging.log;
+import static de.amr.games.pacman.lib.TickTimer.sec_to_ticks;
 import static de.amr.games.pacman.model.world.PacManGameWorld.HTS;
 import static de.amr.games.pacman.model.world.PacManGameWorld.t;
 
@@ -105,6 +106,7 @@ public class PacManGame extends AbstractGameModel {
 		levelCounter.add(level.bonusSymbol);
 
 		player.world = world;
+		player.starvingTimeLimit = sec_to_ticks(levelNumber < 5 ? 4 : 3);
 
 		ghostBounty = 200;
 		for (Ghost ghost : ghosts) {
