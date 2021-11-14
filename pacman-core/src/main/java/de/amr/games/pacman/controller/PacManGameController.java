@@ -310,15 +310,19 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			if (killer.isPresent()) {
 				player.dead = true;
 				log("%s got killed by %s at tile %s", player.name, killer.get().name, player.tile());
-				// Elroy mode gets disabled when player is killed
-				final int elroyMode = game.ghost(RED_GHOST).elroy;
-				if (elroyMode > 0) {
-					game.ghost(RED_GHOST).elroy = -elroyMode; // negative value means "disabled"
-					log("Elroy mode %d for Blinky has been disabled", elroyMode);
+
+				// Elroy mode of red ghost gets disabled when player is killed
+				Ghost redGhost = game.ghost(RED_GHOST);
+				if (redGhost.elroy > 0) {
+					redGhost.elroy = -redGhost.elroy; // negative value means "disabled"
+					log("Elroy mode %d for %s has been disabled", redGhost.elroy, redGhost.name);
 				}
+
+				// reset global dot counter
 				game.setGlobalDotCounter(0);
 				game.enableGlobalDotCounter(true);
 				log("Global dot counter got reset and enabled");
+
 				stateTimer().reset();
 				changeState(PACMAN_DYING);
 				return;
