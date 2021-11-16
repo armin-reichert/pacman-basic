@@ -171,7 +171,7 @@ public class MsPacManGame extends AbstractGameModel {
 			throw new IllegalArgumentException("Illegal level number: " + levelNumber);
 		}
 		//@formatter:off
-		return (levelNumber <=  2) ? 1
+    return (levelNumber <=  2) ? 1
          : (levelNumber <=  5) ? 2
          : (levelNumber <=  9) ? 3 
          : (levelNumber <= 13) ? 4
