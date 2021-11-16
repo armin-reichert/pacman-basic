@@ -65,6 +65,7 @@ public abstract class AbstractGameModel implements PacManGameModel {
 	protected int pelletValue;
 	protected int energizerValue;
 	protected int ghostBounty;
+	protected int firstGhostBounty;
 	protected List<String> levelCounter = new ArrayList<>();
 	protected int dotCounter;
 	protected boolean dotCounterEnabled;

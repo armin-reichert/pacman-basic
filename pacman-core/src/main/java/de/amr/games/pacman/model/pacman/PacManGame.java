@@ -26,7 +26,6 @@ package de.amr.games.pacman.model.pacman;
 import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.lib.TickTimer.sec_to_ticks;
 import static de.amr.games.pacman.model.world.PacManGameWorld.HTS;
-import static de.amr.games.pacman.model.world.PacManGameWorld.t;
 
 import de.amr.games.pacman.model.common.AbstractGameModel;
 import de.amr.games.pacman.model.common.GameLevel;
@@ -89,6 +88,7 @@ public class PacManGame extends AbstractGameModel {
 		initialLives = 3;
 		pelletValue = 10;
 		energizerValue = 50;
+		firstGhostBounty = 200;
 
 		// world is the same for all levels
 		world = new MapBasedWorld("/pacman/maps/map1.txt");
@@ -108,7 +108,7 @@ public class PacManGame extends AbstractGameModel {
 		player.world = world;
 		player.starvingTimeLimit = sec_to_ticks(levelNumber < 5 ? 4 : 3);
 
-		ghostBounty = 200;
+		ghostBounty = firstGhostBounty;
 		for (Ghost ghost : ghosts) {
 			ghost.world = world;
 			ghost.dotCounter = 0;
@@ -131,7 +131,8 @@ public class PacManGame extends AbstractGameModel {
 
 		bonus.init();
 		bonus.world = world;
-		bonus.setPosition(t(world.bonusTile().x) + HTS, t(world.bonusTile().y));
+		bonus.placeAt(world.bonusTile(), HTS, 0);
+
 		log("Pac-Man game level #%d created", levelNumber);
 	}
 
