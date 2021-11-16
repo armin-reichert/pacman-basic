@@ -264,10 +264,10 @@ public abstract class AbstractGameModel implements PacManGameModel {
 		score = 0;
 		lives = initialLives;
 		levelCounter.clear();
-		enterLevel(1);
 		Hiscore hiscore = loadHiscore();
 		hiscoreLevel = hiscore.level;
 		hiscorePoints = hiscore.points;
+		enterLevel(1);
 	}
 
 	@Override
