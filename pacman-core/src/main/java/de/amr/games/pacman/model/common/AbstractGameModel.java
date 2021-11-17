@@ -77,6 +77,8 @@ public abstract class AbstractGameModel implements PacManGameModel {
 		firstGhostBounty = 200;
 	}
 
+	protected abstract String hiscoreFilename();
+
 	protected Ghost[] createGhosts(String redGhostName, String pinkGhostName, String cyanGhostName,
 			String orangeGhostName) {
 
@@ -300,8 +302,6 @@ public abstract class AbstractGameModel implements PacManGameModel {
 		hiscore.load();
 		return hiscore;
 	}
-
-	protected abstract String hiscoreFilename();
 
 	@Override
 	public int globalDotCounter() {
