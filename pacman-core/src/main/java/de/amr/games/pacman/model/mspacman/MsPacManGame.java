@@ -94,11 +94,6 @@ public class MsPacManGame extends AbstractGameModel {
 	private MapBasedWorld world;
 
 	public MsPacManGame() {
-		initialLives = 3;
-		pelletValue = 10;
-		energizerValue = 50;
-		firstGhostBounty = 200;
-
 		player = new Pac("Ms. Pac-Man");
 		ghosts = createGhosts("Blinky", "Pinky", "Inky", "Sue");
 		bonus = new MovingBonus();
@@ -114,7 +109,6 @@ public class MsPacManGame extends AbstractGameModel {
 		level = new GameLevel(levelNumber, world, levelData(levelNumber));
 		level.mazeNumber = mazeNumber;
 		if (levelNumber >= 8) {
-			// From level 8 on, bonus is chosen randomly
 			level.bonusSymbol = randomBonusSymbol();
 		}
 		levelCounter.add(level.bonusSymbol);
@@ -149,6 +143,12 @@ public class MsPacManGame extends AbstractGameModel {
 		log("Ms. Pac-Man game level #%d created, maze number is %d", levelNumber, mazeNumber);
 	}
 
+	@Override
+	public int mapNumber(int mazeNumber) {
+		// Maze #5 has the same map as #3, same for #6 vs. #4.
+		return mazeNumber == 5 ? 3 : mazeNumber == 6 ? 4 : mazeNumber;
+	}
+
 	/**
 	 * Returns the maze number used in the given game level.
 	 * <p>
@@ -177,12 +177,6 @@ public class MsPacManGame extends AbstractGameModel {
 		     : (levelNumber <= 13) ? 4
 		     : (levelNumber - 14) % 8 < 4 ? 5 : 6;
 		//@formatter:on
-	}
-
-	@Override
-	public int mapNumber(int mazeNumber) {
-		// Maze #5 has the same map as #3, same for #6 vs. #4.
-		return mazeNumber == 5 ? 3 : mazeNumber == 6 ? 4 : mazeNumber;
 	}
 
 	@Override

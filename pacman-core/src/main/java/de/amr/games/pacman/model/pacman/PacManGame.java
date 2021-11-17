@@ -82,17 +82,10 @@ public class PacManGame extends AbstractGameModel {
 		return levelNumber - 1 < LEVELS.length ? LEVELS[levelNumber - 1] : LEVELS[LEVELS.length - 1];
 	}
 
-	private final MapBasedWorld world;
+	private MapBasedWorld world;
 
 	public PacManGame() {
-		initialLives = 3;
-		pelletValue = 10;
-		energizerValue = 50;
-		firstGhostBounty = 200;
-
-		// world is the same for all levels
 		world = new MapBasedWorld("/pacman/maps/map1.txt");
-
 		player = new Pac("Pac-Man");
 		ghosts = createGhosts("Blinky", "Pinky", "Inky", "Clyde");
 		bonus = new Bonus();
@@ -129,8 +122,8 @@ public class PacManGame extends AbstractGameModel {
 		ghosts[ORANGE_GHOST].globalDotLimit = Integer.MAX_VALUE;
 		ghosts[ORANGE_GHOST].privateDotLimit = levelNumber == 1 ? 60 : levelNumber == 2 ? 50 : 0;
 
-		bonus.init();
 		bonus.world = world;
+		bonus.init();
 		bonus.placeAt(world.bonusTile(), HTS, 0);
 
 		log("Pac-Man game level #%d created", levelNumber);

@@ -70,6 +70,13 @@ public abstract class AbstractGameModel implements PacManGameModel {
 	protected int dotCounter;
 	protected boolean dotCounterEnabled;
 
+	public AbstractGameModel() {
+		initialLives = 3;
+		pelletValue = 10;
+		energizerValue = 50;
+		firstGhostBounty = 200;
+	}
+
 	protected Ghost[] createGhosts(String redGhostName, String pinkGhostName, String cyanGhostName,
 			String orangeGhostName) {
 
