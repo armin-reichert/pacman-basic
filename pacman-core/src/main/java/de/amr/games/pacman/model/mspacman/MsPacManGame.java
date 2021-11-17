@@ -116,7 +116,7 @@ public class MsPacManGame extends AbstractGameModel {
 		player.world = world;
 		player.starvingTimeLimit = sec_to_ticks(levelNumber < 5 ? 4 : 3);
 
-		ghostBounty = firstGhostBounty;
+		resetGhostBounty();
 		for (Ghost ghost : ghosts) {
 			ghost.world = world;
 			ghost.dotCounter = 0;

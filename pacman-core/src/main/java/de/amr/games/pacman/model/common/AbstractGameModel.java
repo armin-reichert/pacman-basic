@@ -208,7 +208,7 @@ public abstract class AbstractGameModel implements PacManGameModel {
 
 	@Override
 	public void resetGhostBounty() {
-		ghostBounty = 200;
+		ghostBounty = firstGhostBounty;
 	}
 
 	@Override
