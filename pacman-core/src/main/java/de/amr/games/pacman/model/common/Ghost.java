@@ -49,6 +49,9 @@ public class Ghost extends Creature {
 	/** The home location of the ghost. */
 	public V2i homeTile;
 
+	/** The revival location of the ghost. */
+	public V2i revivalTile;
+
 	/** The bounty earned for killing this ghost. */
 	public int bounty;
 
@@ -132,7 +135,7 @@ public class Ghost extends Creature {
 			setDir(Direction.DOWN);
 			setWishDir(Direction.DOWN);
 			forcedOnTrack = false;
-			targetTile = id == PacManGameModel.RED_GHOST ? world.ghostHouse().seat(1) : homeTile;
+			targetTile = revivalTile;
 			state = GhostState.ENTERING_HOUSE;
 			return true;
 		}
