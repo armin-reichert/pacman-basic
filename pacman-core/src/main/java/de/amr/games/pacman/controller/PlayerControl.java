@@ -25,8 +25,12 @@ package de.amr.games.pacman.controller;
 
 import de.amr.games.pacman.model.common.Pac;
 
+/**
+ * Interface for controlling the player steering.
+ * 
+ * @author Armin Reichert
+ */
 public interface PlayerControl {
-
+	
 	void steer(Pac player);
-
 }
