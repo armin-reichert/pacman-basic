@@ -26,11 +26,14 @@ package de.amr.games.pacman.controller;
 import de.amr.games.pacman.model.common.Pac;
 
 /**
- * Interface for controlling the player steering.
+ * Interface for steering the player through the maze.
+ * <p>
  * 
  * @author Armin Reichert
+ * 
+ * @see {@link PacManGameController#setPlayerControl(PlayerControl)}.
  */
 public interface PlayerControl {
-	
+
 	void steer(Pac player);
 }
