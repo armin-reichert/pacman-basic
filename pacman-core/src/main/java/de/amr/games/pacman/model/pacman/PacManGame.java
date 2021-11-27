@@ -85,6 +85,7 @@ public class PacManGame extends AbstractGameModel {
 	private MapBasedWorld world;
 
 	public PacManGame() {
+		super("highscore-pacman.xml");
 		world = new MapBasedWorld("/pacman/maps/map1.txt");
 		player = new Pac("Pac-Man");
 		ghosts = createGhosts("Blinky", "Pinky", "Inky", "Clyde");
@@ -167,10 +168,5 @@ public class PacManGame extends AbstractGameModel {
 		default:
 			throw new IllegalArgumentException("Unknown symbol name: " + symbolName);
 		}
-	}
-
-	@Override
-	protected String hiscoreFilename() {
-		return "highscore-pacman.xml";
 	}
 }

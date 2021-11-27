@@ -94,6 +94,7 @@ public class MsPacManGame extends AbstractGameModel {
 	private MapBasedWorld world;
 
 	public MsPacManGame() {
+		super("highscore-ms_pacman.xml");
 		player = new Pac("Ms. Pac-Man");
 		ghosts = createGhosts("Blinky", "Pinky", "Inky", "Sue");
 		bonus = new MovingBonus();
@@ -226,10 +227,5 @@ public class MsPacManGame extends AbstractGameModel {
 		default:
 			throw new IllegalStateException();
 		}
-	}
-
-	@Override
-	protected String hiscoreFilename() {
-		return "highscore-ms_pacman.xml";
 	}
 }

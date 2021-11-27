@@ -62,6 +62,7 @@ public abstract class AbstractGameModel implements PacManGameModel {
 	protected int score;
 	protected int hiscoreLevel;
 	protected int hiscorePoints;
+	protected String hiscoreFilename;
 	protected int pelletValue;
 	protected int energizerValue;
 	protected int ghostBounty;
@@ -70,14 +71,13 @@ public abstract class AbstractGameModel implements PacManGameModel {
 	protected int dotCounter;
 	protected boolean dotCounterEnabled;
 
-	public AbstractGameModel() {
+	protected AbstractGameModel(String hiscoreFilename) {
+		this.hiscoreFilename = hiscoreFilename;
 		initialLives = 3;
 		pelletValue = 10;
 		energizerValue = 50;
 		firstGhostBounty = 200;
 	}
-
-	protected abstract String hiscoreFilename();
 
 	protected Ghost[] createGhosts(String redGhostName, String pinkGhostName, String cyanGhostName,
 			String orangeGhostName) {
@@ -298,7 +298,7 @@ public abstract class AbstractGameModel implements PacManGameModel {
 
 	private Hiscore loadHiscore() {
 		File dir = new File(System.getProperty("user.home"));
-		Hiscore hiscore = new Hiscore(new File(dir, hiscoreFilename()));
+		Hiscore hiscore = new Hiscore(new File(dir, hiscoreFilename));
 		hiscore.load();
 		return hiscore;
 	}
