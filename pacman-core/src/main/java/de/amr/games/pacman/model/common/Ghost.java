@@ -145,9 +145,9 @@ public class Ghost extends Creature {
 	}
 
 	/**
-	 * Lets the ghost enter the house and moving to its home position.
+	 * Lets the ghost enter the house and moving to its revival position.
 	 * 
-	 * @return {@code true} if the ghost has reached its home position
+	 * @return {@code true} if the ghost has reached its revival position
 	 */
 	public boolean enterHouse() {
 		V2i tile = tile();
