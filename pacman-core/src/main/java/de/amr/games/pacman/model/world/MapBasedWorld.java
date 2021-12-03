@@ -71,7 +71,7 @@ public class MapBasedWorld implements PacManGameWorld {
 		house = new DefaultGhostHouse(map.vector("house_top_left"),
 				map.vector("house_bottom_right").minus(map.vector("house_top_left")));
 		house.entryTile = map.vector("house_entry");
-		house.seats = Arrays.asList(map.vector("house_seat_left"), map.vector("house_seat_center"),
+		house.seatTiles = Arrays.asList(map.vector("house_seat_left"), map.vector("house_seat_center"),
 				map.vector("house_seat_right"));
 		house.doorTiles = tiles().filter(this::isGhostHouseDoor).collect(Collectors.toList());
 

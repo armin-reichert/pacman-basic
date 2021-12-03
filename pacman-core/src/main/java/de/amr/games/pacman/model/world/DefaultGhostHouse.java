@@ -23,36 +23,37 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.world;
 
+import java.util.Collections;
 import java.util.List;
 
 import de.amr.games.pacman.lib.V2i;
 
 /**
- * Default implementation of ghost house interface.
+ * The ghost house as we know it.
  * 
  * @author Armin Reichert
  */
 public class DefaultGhostHouse implements GhostHouse {
 
-	public final V2i topLeftTile;
-	public final V2i size;
-	public List<V2i> seats;
+	public V2i sizeInTiles;
+	public V2i topLeftTile;
 	public V2i entryTile;
+	public List<V2i> seatTiles;
 	public List<V2i> doorTiles;
 
-	public DefaultGhostHouse(V2i topLeftTile, V2i size) {
+	public DefaultGhostHouse(V2i topLeftTile, V2i sizeInTiles) {
 		this.topLeftTile = topLeftTile;
-		this.size = size;
+		this.sizeInTiles = sizeInTiles;
 	}
 
 	@Override
 	public int numTilesX() {
-		return size.x;
+		return sizeInTiles.x;
 	}
 
 	@Override
 	public int numTilesY() {
-		return size.y;
+		return sizeInTiles.y;
 	}
 
 	@Override
@@ -62,7 +63,7 @@ public class DefaultGhostHouse implements GhostHouse {
 
 	@Override
 	public V2i seat(int index) {
-		return seats.get(index);
+		return seatTiles.get(index);
 	}
 
 	@Override
@@ -72,6 +73,6 @@ public class DefaultGhostHouse implements GhostHouse {
 
 	@Override
 	public List<V2i> doorTiles() {
-		return doorTiles;
+		return Collections.unmodifiableList(doorTiles);
 	}
 }
