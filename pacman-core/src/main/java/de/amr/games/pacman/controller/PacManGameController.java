@@ -248,7 +248,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	private void state_Ready_update() {
-		long duration = gameRunning ? sec_to_ticks(1.5) : sec_to_ticks(4.5);
+		long duration = gameRunning ? sec_to_ticks(1.5) : sec_to_ticks(5);
 		if (stateTimer().ticked() == duration - sec_to_ticks(1)) {
 			game.player().setVisible(true);
 			game.ghosts().forEach(ghost -> ghost.setVisible(true));
