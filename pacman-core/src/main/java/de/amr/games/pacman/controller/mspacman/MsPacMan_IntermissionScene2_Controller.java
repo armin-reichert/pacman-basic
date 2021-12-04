@@ -21,48 +21,47 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-package de.amr.games.pacman.ui.mspacman;
+package de.amr.games.pacman.controller.mspacman;
 
 import static de.amr.games.pacman.model.world.PacManGameWorld.t;
 
 import de.amr.games.pacman.controller.PacManGameController;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
-import de.amr.games.pacman.lib.V2d;
-import de.amr.games.pacman.model.common.GameEntity;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.mspacman.entities.Flap;
-import de.amr.games.pacman.model.mspacman.entities.JuniorBag;
 
 /**
- * Intermission scene 3: "Junior".
- * 
+ * Intermission scene 2: "The chase".
  * <p>
- * Pac-Man and Ms. Pac-Man gradually wait for a stork, who flies overhead with a little blue bundle.
- * The stork drops the bundle, which falls to the ground in front of Pac-Man and Ms. Pac-Man, and
- * finally opens up to reveal a tiny Pac-Man. (Played after rounds 9, 13, and 17)
+ * Pac-Man and Ms. Pac-Man chase each other across the screen over and over.
+ * After three turns, they both rapidly run from left to right and right to
+ * left. (Played after round 5)
  * 
  * @author Armin Reichert
  */
-public abstract class MsPacMan_IntermissionScene3_Controller {
+public abstract class MsPacMan_IntermissionScene2_Controller {
 
 	public enum Phase {
-		FLAP, ACTION, READY_TO_PLAY;
+
+		FLAP, ACTION;
 	}
 
-	static final int GROUND_Y = t(24);
+	public static final int UPPER_Y = t(12), LOWER_Y = t(24), MIDDLE_Y = t(18);
 
 	public final PacManGameController gameController;
 	public final TickTimer timer = new TickTimer(getClass().getSimpleName() + "-timer");
 	public Phase phase;
 	public Flap flap;
-	public Pac pacMan;
-	public Pac msPacMan;
-	public GameEntity stork;
-	public JuniorBag bag;
-	public int numBagBounces;
+	public Pac pacMan, msPacMan;
 
-	public MsPacMan_IntermissionScene3_Controller(PacManGameController gameController) {
+	public void enter(Phase newPhase) {
+		phase = newPhase;
+		timer.reset();
+		timer.start();
+	}
+
+	public MsPacMan_IntermissionScene2_Controller(PacManGameController gameController) {
 		this.gameController = gameController;
 	}
 
@@ -70,38 +69,16 @@ public abstract class MsPacMan_IntermissionScene3_Controller {
 
 	public abstract void playFlapAnimation();
 
-	private void enter(Phase newPhase) {
-		phase = newPhase;
-		timer.reset();
-		timer.start();
-	}
-
-	private void enterSeconds(Phase newPhase, double seconds) {
-		phase = newPhase;
-		timer.resetSeconds(seconds);
-		timer.start();
-	}
-
 	public void init() {
-		flap = new Flap(3, "JUNIOR");
+		flap = new Flap(2, "THE CHASE");
 		flap.setPosition(t(3), t(10));
 		flap.setVisible(true);
 
 		pacMan = new Pac("Pac-Man");
 		pacMan.setDir(Direction.RIGHT);
-		pacMan.setPosition(t(3), GROUND_Y - 4);
 
 		msPacMan = new Pac("Ms. Pac-Man");
 		msPacMan.setDir(Direction.RIGHT);
-		msPacMan.setPosition(t(5), GROUND_Y - 4);
-
-		stork = new GameEntity();
-		stork.setPosition(t(30), t(12));
-
-		bag = new JuniorBag();
-		bag.hold = true;
-		bag.open = false;
-		bag.setPosition(stork.position().plus(-14, 3));
 
 		enter(Phase.FLAP);
 	}
@@ -112,55 +89,72 @@ public abstract class MsPacMan_IntermissionScene3_Controller {
 		case FLAP:
 			if (timer.isRunningSeconds(1)) {
 				playFlapAnimation();
-			} else if (timer.isRunningSeconds(2)) {
+			}
+			if (timer.isRunningSeconds(2)) {
 				flap.setVisible(false);
 				playIntermissionSound();
+			}
+			if (timer.isRunningSeconds(4.5)) {
 				enter(Phase.ACTION);
 			}
 			timer.tick();
 			break;
 
 		case ACTION:
-			if (timer.hasJustStarted()) {
+			if (timer.isRunningSeconds(1.5)) {
 				pacMan.setVisible(true);
+				pacMan.setPosition(-t(2), UPPER_Y);
+				pacMan.setDir(Direction.RIGHT);
+				pacMan.setSpeed(2.0);
 				msPacMan.setVisible(true);
-				stork.setVisible(true);
-				bag.setVisible(true);
-				stork.setVelocity(-1.25, 0);
-				bag.setVelocity(new V2d(-1.25f, 0));
+				msPacMan.setPosition(-t(8), UPPER_Y);
+				msPacMan.setDir(Direction.RIGHT);
+				msPacMan.setSpeed(2.0);
 			}
-			// release bag from storks beak?
-			if (bag.hold && (int) stork.position().x == t(24)) {
-				bag.hold = false;
+			if (timer.isRunningSeconds(6)) {
+				msPacMan.setPosition(t(30), LOWER_Y);
+				msPacMan.setVisible(true);
+				msPacMan.setDir(Direction.LEFT);
+				msPacMan.setSpeed(2.0);
+				pacMan.setPosition(t(36), LOWER_Y);
+				pacMan.setDir(Direction.LEFT);
+				pacMan.setSpeed(2.0);
 			}
-			// (closed) bag reaches ground for first time?
-			if (!bag.open && bag.position().y > GROUND_Y) {
-				++numBagBounces;
-				if (numBagBounces < 5) {
-					bag.setVelocity(new V2d(-0.2f, -1f / numBagBounces));
-					bag.setPosition(bag.position().x, GROUND_Y);
-				} else {
-					bag.open = true;
-					bag.setVelocity(V2d.NULL);
-					enterSeconds(Phase.READY_TO_PLAY, 3);
-				}
+			if (timer.isRunningSeconds(10.5)) {
+				msPacMan.setPosition(t(-8), MIDDLE_Y);
+				msPacMan.setDir(Direction.RIGHT);
+				msPacMan.setSpeed(2.0);
+				pacMan.setPosition(t(-2), MIDDLE_Y);
+				pacMan.setDir(Direction.RIGHT);
+				pacMan.setSpeed(2.0);
 			}
-			stork.move();
-			bag.move();
-			timer.tick();
-			break;
-
-		case READY_TO_PLAY:
-			if (timer.hasExpired()) {
+			if (timer.isRunningSeconds(14.5)) {
+				msPacMan.setPosition(t(30), UPPER_Y);
+				msPacMan.setDir(Direction.LEFT);
+				msPacMan.setSpeed(4.0);
+				pacMan.setPosition(t(42), UPPER_Y);
+				pacMan.setDir(Direction.LEFT);
+				pacMan.setSpeed(4.0);
+			}
+			if (timer.isRunningSeconds(15.5)) {
+				msPacMan.setPosition(t(-14), LOWER_Y);
+				msPacMan.setDir(Direction.RIGHT);
+				msPacMan.setSpeed(4.0);
+				pacMan.setPosition(t(-2), LOWER_Y);
+				pacMan.setDir(Direction.RIGHT);
+				pacMan.setSpeed(4.0);
+			}
+			if (timer.isRunningSeconds(20)) {
 				gameController.stateTimer().expire();
 				return;
 			}
-			stork.move();
 			timer.tick();
 			break;
 
 		default:
 			break;
 		}
+		pacMan.move();
+		msPacMan.move();
 	}
 }

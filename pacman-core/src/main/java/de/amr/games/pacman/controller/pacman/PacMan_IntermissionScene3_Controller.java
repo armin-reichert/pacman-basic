@@ -21,7 +21,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-package de.amr.games.pacman.ui.pacman;
+package de.amr.games.pacman.controller.pacman;
 
 import static de.amr.games.pacman.model.world.PacManGameWorld.t;
 
@@ -34,14 +34,15 @@ import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.common.PacManGameModel;
 
 /**
- * First intermission scene: Blinky chases Pac-Man and is then chased by a huge Pac-Man.
+ * Third intermission scene: Blinky in shred dress chases Pac-Man, comes back half-naked drawing its
+ * dress over the floor.
  * 
  * @author Armin Reichert
  */
-public abstract class PacMan_IntermissionScene1_Controller {
+public abstract class PacMan_IntermissionScene3_Controller {
 
 	public enum Phase {
-		BLINKY_CHASING_PACMAN, BIGPACMAN_CHASING_BLINKY
+		CHASING_PACMAN, RETURNING_HALF_NAKED;
 	}
 
 	public static final int groundY = t(20);
@@ -54,7 +55,7 @@ public abstract class PacMan_IntermissionScene1_Controller {
 
 	public Phase phase;
 
-	public PacMan_IntermissionScene1_Controller(PacManGameController gameController) {
+	public PacMan_IntermissionScene3_Controller(PacManGameController gameController) {
 		this.gameController = gameController;
 	}
 
@@ -67,53 +68,40 @@ public abstract class PacMan_IntermissionScene1_Controller {
 		pac = new Pac("Pac-Man");
 		pac.setDir(Direction.LEFT);
 		pac.setVisible(true);
-		pac.setPosition(t(30), groundY);
-		pac.setSpeed(1.0);
+		pac.setPosition(t(40), groundY);
+		pac.setSpeed(1.2);
 
 		blinky = new Ghost(PacManGameModel.RED_GHOST, "Blinky");
 		blinky.setDir(Direction.LEFT);
 		blinky.setWishDir(Direction.LEFT);
 		blinky.setVisible(true);
-		blinky.setPosition(pac.position().plus(t(3), 0));
-		blinky.setSpeed(1.04);
+		blinky.setPosition(pac.position().plus(t(8), 0));
+		blinky.setSpeed(1.2);
 		blinky.state = GhostState.HUNTING_PAC;
 
 		playIntermissionSound();
 
-		phase = Phase.BLINKY_CHASING_PACMAN;
-		timer.resetSeconds(5);
-		timer.start();
+		phase = Phase.CHASING_PACMAN;
 	}
 
 	public void update() {
 		switch (phase) {
 
-		case BLINKY_CHASING_PACMAN:
+		case CHASING_PACMAN:
 			pac.move();
 			blinky.move();
-			timer.tick();
-			if (timer.hasExpired()) {
-				phase = Phase.BIGPACMAN_CHASING_BLINKY;
-				timer.resetSeconds(7);
-				timer.start();
+			if (blinky.position().x <= -t(15)) {
+				pac.setSpeed(0);
+				blinky.setDir(Direction.RIGHT);
+				blinky.setWishDir(Direction.RIGHT);
+				phase = Phase.RETURNING_HALF_NAKED;
 			}
 			break;
 
-		case BIGPACMAN_CHASING_BLINKY:
-			pac.move();
+		case RETURNING_HALF_NAKED:
 			blinky.move();
-			timer.tick();
-			if (timer.hasJustStarted()) {
-				blinky.setPosition(-t(2), groundY);
-				blinky.setWishDir(Direction.RIGHT);
-				blinky.setDir(Direction.RIGHT);
-				blinky.setSpeed(1.0);
-				blinky.state = GhostState.FRIGHTENED;
-				pac.setDir(Direction.RIGHT);
-				pac.setSpeed(1.3);
-				pac.setPosition(blinky.position().plus(-t(13), 0));
-			}
-			if (timer.hasExpired()) {
+			pac.move();
+			if (blinky.position().x > t(53)) {
 				gameController.stateTimer().expire();
 			}
 			break;

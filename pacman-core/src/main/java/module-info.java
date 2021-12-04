@@ -33,6 +33,6 @@ module de.amr.games.pacman {
 	exports de.amr.games.pacman.model.pacman.entities;
 	exports de.amr.games.pacman.model.world;
 	exports de.amr.games.pacman.ui;
-	exports de.amr.games.pacman.ui.mspacman;
-	exports de.amr.games.pacman.ui.pacman;
+	exports de.amr.games.pacman.controller.mspacman;
+	exports de.amr.games.pacman.controller.pacman;
 }
