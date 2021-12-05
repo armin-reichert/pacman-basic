@@ -42,7 +42,7 @@ import de.amr.games.pacman.model.common.PacManGameModel;
  * 
  * @author Armin Reichert
  */
-public class PacMan_IntroScene_Controller {
+public class IntroController {
 
 	public static class GhostPortrait {
 
@@ -71,7 +71,7 @@ public class PacMan_IntroScene_Controller {
 
 	public Phase phase;
 
-	public PacMan_IntroScene_Controller(PacManGameController gameController) {
+	public IntroController(PacManGameController gameController) {
 		this.gameController = gameController;
 	}
 

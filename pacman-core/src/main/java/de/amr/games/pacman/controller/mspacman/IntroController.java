@@ -41,7 +41,7 @@ import de.amr.games.pacman.model.common.PacManGameModel;
  * 
  * @author Armin Reichert
  */
-public class MsPacMan_IntroScene_Controller {
+public class IntroController {
 
 	public enum Phase {
 
@@ -63,7 +63,7 @@ public class MsPacMan_IntroScene_Controller {
 	public int currentGhostIndex;
 	public final TimedSequence<Boolean> blinking = TimedSequence.pulse().frameDuration(30);
 
-	public MsPacMan_IntroScene_Controller(PacManGameController gameController) {
+	public IntroController(PacManGameController gameController) {
 		this.gameController = gameController;
 	}
 

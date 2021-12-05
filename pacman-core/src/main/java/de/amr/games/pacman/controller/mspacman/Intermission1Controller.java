@@ -44,7 +44,7 @@ import de.amr.games.pacman.model.mspacman.entities.Flap;
  * 
  * @author Armin Reichert
  */
-public abstract class MsPacMan_IntermissionScene1_Controller {
+public abstract class Intermission1Controller {
 
 	public enum Phase {
 
@@ -63,7 +63,7 @@ public abstract class MsPacMan_IntermissionScene1_Controller {
 	public GameEntity heart;
 	public boolean ghostsMet;
 
-	public MsPacMan_IntermissionScene1_Controller(PacManGameController gameController) {
+	public Intermission1Controller(PacManGameController gameController) {
 		this.gameController = gameController;
 	}
 
