@@ -147,7 +147,7 @@ public class MsPacManGame extends AbstractGameModel {
 		bonus.world = world;
 		bonus.init();
 
-		log("Ms. Pac-Man game level #%d created, maze number is %d", levelNumber, mazeNumber);
+		log("Ms. Pac-Man game level #%d created, maze number is %d, map number is %d", levelNumber, mazeNumber, mapNumber);
 	}
 
 	@Override
