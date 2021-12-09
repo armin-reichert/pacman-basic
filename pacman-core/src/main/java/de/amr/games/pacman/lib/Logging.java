@@ -34,11 +34,15 @@ import java.time.format.DateTimeFormatter;
  */
 public class Logging {
 
+	public static boolean enabled = true;
+
 	public static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
 
 	public static void log(String msg, Object... args) {
-		String timestamp = TIME_FORMAT.format(LocalTime.now());
-		String message = String.format(msg, args);
-		System.err.printf("[%s] %s\n", timestamp, message);
+		if (enabled) {
+			String timestamp = TIME_FORMAT.format(LocalTime.now());
+			String message = String.format(msg, args);
+			System.err.printf("[%s] %s\n", timestamp, message);
+		}
 	}
 }
