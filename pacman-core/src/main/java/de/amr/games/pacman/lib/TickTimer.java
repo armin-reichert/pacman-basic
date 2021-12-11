@@ -143,7 +143,8 @@ public class TickTimer {
 
 	public void tick() {
 		if (state == READY) {
-			throw new IllegalStateException(String.format("Timer %s not ticked, is ready", this));
+//			throw new IllegalStateException(String.format("Timer %s not ticked, is ready", this));
+			return; //TODO handle this properly
 		}
 		if (state == STOPPED) {
 			return;
