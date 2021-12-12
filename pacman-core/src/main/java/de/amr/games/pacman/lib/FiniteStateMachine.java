@@ -33,20 +33,19 @@ import java.util.function.BiConsumer;
 import java.util.stream.Stream;
 
 /**
- * A finite-state machine, a graph of vertices (states) connected by
- * transitions. Transitions are defined dynamically by the calls of the
- * {@link #changeState(Enum)} method.
+ * A finite-state machine, a graph of vertices (states) connected by transitions. Transitions are
+ * defined dynamically by the calls of the {@link #changeState(Enum)} method.
  * <p>
  * Each state transition triggers a state change event.
  * 
  * @author Armin Reichert
  * 
- * @param <S> Enumeration type for naming the states
+ * @param <STATE_ID> Enumeration type for identifying the states
  */
-public class FiniteStateMachine<S extends Enum<S>> {
+public class FiniteStateMachine<STATE_ID extends Enum<STATE_ID>> {
 
 	@SuppressWarnings({ "unchecked" })
-	private static <ID extends Enum<ID>> Map<ID, Vertex> createStateMap(Class<ID> identifierType) {
+	private static <ID extends Enum<ID>> Map<ID, State> createStateMap(Class<ID> identifierType) {
 		try {
 			return EnumMap.class.getDeclaredConstructor(Class.class).newInstance(identifierType);
 		} catch (Exception x) {
@@ -54,100 +53,96 @@ public class FiniteStateMachine<S extends Enum<S>> {
 		}
 	}
 
-	public static class Vertex {
-
+	public static class State {
 		public final TickTimer timer;
 		public Runnable onEnter, onUpdate, onExit;
 
-		public Vertex(String name) {
+		public State(String name) {
 			timer = new TickTimer(name + "-timer");
 		}
 	}
 
 	public static boolean logging = true;
 
-	public S previousState;
-	public S state;
+	public STATE_ID previousStateID;
+	public STATE_ID currentStateID;
 
-	private final Map<S, Vertex> stateMap;
-	private final List<BiConsumer<S, S>> changeListeners = new ArrayList<>();
+	private final Map<STATE_ID, State> states_by_id;
+	private final List<BiConsumer<STATE_ID, STATE_ID>> changeListeners = new ArrayList<>();
 
-	public FiniteStateMachine(Class<S> identifierClass, S[] stateIdentifiers) {
-		stateMap = createStateMap(identifierClass);
-		Stream.of(stateIdentifiers).forEach(id -> stateMap.put(id, new Vertex(id.name())));
+	public FiniteStateMachine(Class<STATE_ID> identifierClass, STATE_ID[] stateIdentifiers) {
+		states_by_id = createStateMap(identifierClass);
+		Stream.of(stateIdentifiers).forEach(id -> states_by_id.put(id, new State(id.name())));
 	}
 
-	public void configState(S stateName, Runnable onEnter, Runnable onUpdate, Runnable onExit) {
-		v(stateName).onEnter = onEnter;
-		v(stateName).onUpdate = onUpdate;
-		v(stateName).onExit = onExit;
+	public void configState(STATE_ID stateID, Runnable onEnter, Runnable onUpdate, Runnable onExit) {
+		state(stateID).onEnter = onEnter;
+		state(stateID).onUpdate = onUpdate;
+		state(stateID).onExit = onExit;
 	}
 
-	public void addStateChangeListener(BiConsumer<S, S> listener) {
+	public void addStateChangeListener(BiConsumer<STATE_ID, STATE_ID> listener) {
 		changeListeners.add(listener);
 	}
 
-	public void removeStateChangeListener(BiConsumer<S, S> listener) {
+	public void removeStateChangeListener(BiConsumer<STATE_ID, STATE_ID> listener) {
 		changeListeners.remove(listener);
 	}
 
-	public S changeState(S newState) {
+	public STATE_ID changeState(STATE_ID newStateID) {
 		// before state machine is initialized, state object is null
-		if (state != null) {
+		if (currentStateID != null) {
 			if (logging) {
-				log("Exit game state %s", state);
+				log("Exit game state %s", currentStateID);
 			}
-			if (v(state).onExit != null) {
-				v(state).onExit.run();
+			if (state(currentStateID).onExit != null) {
+				state(currentStateID).onExit.run();
 			}
 		}
-		previousState = state;
-		state = newState;
+		previousStateID = currentStateID;
+		currentStateID = newStateID;
 		if (logging) {
-			log("Enter game state %s", state);
+			log("Enter game state %s", currentStateID);
 		}
-		// TODO maybe this should be configurable:
-//		vertex(state).timer.reset();
-//		vertex(state).timer.start();
-		if (v(state).onEnter != null) {
-			v(state).onEnter.run();
+		if (state(currentStateID).onEnter != null) {
+			state(currentStateID).onEnter.run();
 		}
-		fireStateChange(previousState, state);
-		return newState;
+		fireStateChange(previousStateID, currentStateID);
+		return currentStateID;
 	}
 
 	public TickTimer stateTimer() {
-		return v(state).timer;
+		return state(currentStateID).timer;
 	}
 
-	protected Vertex v(S id) {
-		return stateMap.get(id);
+	protected State state(STATE_ID id) {
+		return states_by_id.get(id);
 	}
 
-	protected void fireStateChange(S oldState, S newState) {
+	protected void fireStateChange(STATE_ID oldState, STATE_ID newState) {
 		// copy list to avoid concurrent modification exceptions
 		new ArrayList<>(changeListeners).stream().forEach(listener -> listener.accept(oldState, newState));
 	}
 
 	public void updateState() {
 		try {
-			if (v(state).onUpdate != null) {
-				v(state).onUpdate.run();
+			if (state(currentStateID).onUpdate != null) {
+				state(currentStateID).onUpdate.run();
 			}
-			v(state).timer.tick();
+			state(currentStateID).timer.tick();
 		} catch (Exception x) {
-			Logging.log("Error updating state %s", state);
+			Logging.log("Error updating state %s", currentStateID);
 			x.printStackTrace();
 		}
 	}
 
 	public void resumePreviousState() {
-		if (previousState == null) {
+		if (previousStateID == null) {
 			throw new IllegalStateException("State machine cannot resume previous state because there is none");
 		}
 		if (logging) {
-			log("Resume game state %s", previousState);
+			log("Resume game state %s", previousStateID);
 		}
-		changeState(previousState);
+		changeState(previousStateID);
 	}
 }

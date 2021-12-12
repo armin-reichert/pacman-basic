@@ -181,7 +181,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	public void startGame() {
-		if (state == INTRO) {
+		if (currentStateID == INTRO) {
 			gameRequested = true;
 			changeState(READY);
 		}
@@ -519,7 +519,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 				log("%s got power for %d seconds", player.name, level.ghostFrightenedSeconds);
 				// HUNTING state timer is stopped while player has power
 				stateTimer().stop();
-				log("%s timer stopped", state);
+				log("%s timer stopped", currentStateID);
 				fireGameEvent(Info.PLAYER_GAINS_POWER, player.tile());
 			}
 		} else {
@@ -635,7 +635,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			break;
 
 		default:
-			throw new IllegalArgumentException("Illegal ghost state: " + state);
+			throw new IllegalArgumentException("Illegal ghost state: " + currentStateID);
 		}
 	}
 

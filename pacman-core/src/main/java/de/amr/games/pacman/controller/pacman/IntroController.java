@@ -37,8 +37,8 @@ import de.amr.games.pacman.model.common.PacManGameModel;
 /**
  * Intro scene of the PacMan game.
  * <p>
- * The ghost are presented one after another, then Pac-Man is chased by the ghosts, turns the card
- * and hunts the ghost himself.
+ * The ghosts are presented one after another, then Pac-Man is chased by the ghosts, turns the card
+ * and hunts the ghosts himself.
  * 
  * @author Armin Reichert
  */
