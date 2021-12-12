@@ -44,15 +44,6 @@ import java.util.stream.Stream;
  */
 public class FiniteStateMachine<STATE_ID extends Enum<STATE_ID>> {
 
-	@SuppressWarnings({ "unchecked" })
-	private static <ID extends Enum<ID>> Map<ID, State> createStateMap(Class<ID> identifierType) {
-		try {
-			return EnumMap.class.getDeclaredConstructor(Class.class).newInstance(identifierType);
-		} catch (Exception x) {
-			throw new RuntimeException(x);
-		}
-	}
-
 	public static class State {
 		public final TickTimer timer;
 		public Runnable onEnter, onUpdate, onExit;
@@ -70,9 +61,22 @@ public class FiniteStateMachine<STATE_ID extends Enum<STATE_ID>> {
 	private final Map<STATE_ID, State> states_by_id;
 	private final List<BiConsumer<STATE_ID, STATE_ID>> changeListeners = new ArrayList<>();
 
-	public FiniteStateMachine(Class<STATE_ID> identifierClass, STATE_ID[] stateIdentifiers) {
-		states_by_id = createStateMap(identifierClass);
+	@SuppressWarnings("unchecked")
+	public FiniteStateMachine(STATE_ID[] stateIdentifiers) {
+		if (stateIdentifiers.length == 0) {
+			throw new IllegalArgumentException("State identifier set must not be empty");
+		}
+		states_by_id = createStateMap(stateIdentifiers[0].getClass());
 		Stream.of(stateIdentifiers).forEach(id -> states_by_id.put(id, new State(id.name())));
+	}
+
+	@SuppressWarnings({ "unchecked" })
+	private <ID extends Enum<ID>> Map<ID, State> createStateMap(Class<ID> identifierType) {
+		try {
+			return EnumMap.class.getDeclaredConstructor(Class.class).newInstance(identifierType);
+		} catch (Exception x) {
+			throw new RuntimeException(x);
+		}
 	}
 
 	public void configState(STATE_ID stateID, Runnable onEnter, Runnable onUpdate, Runnable onExit) {

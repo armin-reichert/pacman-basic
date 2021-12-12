@@ -117,7 +117,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	private final List<PacManGameEventListener> gameEventListeners = new ArrayList<>();
 
 	public PacManGameController() {
-		super(PacManGameState.class, PacManGameState.values());
+		super(PacManGameState.values());
 		configState(INTRO, this::state_Intro_enter, this::state_Intro_update, null);
 		configState(READY, this::state_Ready_enter, this::state_Ready_update, null);
 		configState(HUNTING, this::state_Hunting_enter, this::state_Hunting_update, null);
