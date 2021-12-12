@@ -66,16 +66,12 @@ public class FiniteStateMachine<STATE_ID extends Enum<STATE_ID>> {
 		if (stateIdentifiers.length == 0) {
 			throw new IllegalArgumentException("State identifier set must not be empty");
 		}
-		states_by_id = createStateMap(stateIdentifiers[0].getClass());
-		Stream.of(stateIdentifiers).forEach(id -> states_by_id.put(id, new State(id.name())));
-	}
-
-	@SuppressWarnings({ "unchecked" })
-	private <ID extends Enum<ID>> Map<ID, State> createStateMap(Class<ID> identifierType) {
 		try {
-			return EnumMap.class.getDeclaredConstructor(Class.class).newInstance(identifierType);
-		} catch (Exception x) {
-			throw new RuntimeException(x);
+			Class<?> identifierClass = stateIdentifiers[0].getClass();
+			states_by_id = EnumMap.class.getDeclaredConstructor(Class.class).newInstance(identifierClass);
+			Stream.of(stateIdentifiers).forEach(id -> states_by_id.put(id, new State(id.name())));
+		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
 	}
 
