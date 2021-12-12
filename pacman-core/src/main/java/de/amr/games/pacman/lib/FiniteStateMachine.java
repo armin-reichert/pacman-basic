@@ -58,7 +58,7 @@ public class FiniteStateMachine<STATE_ID extends Enum<STATE_ID>> {
 	public STATE_ID previousStateID;
 	public STATE_ID currentStateID;
 
-	private final Map<STATE_ID, State> states_by_id;
+	private final Map<STATE_ID, State> statesByID;
 	private final List<BiConsumer<STATE_ID, STATE_ID>> changeListeners = new ArrayList<>();
 
 	@SuppressWarnings("unchecked")
@@ -68,8 +68,8 @@ public class FiniteStateMachine<STATE_ID extends Enum<STATE_ID>> {
 		}
 		try {
 			Class<?> identifierClass = stateIdentifiers[0].getClass();
-			states_by_id = EnumMap.class.getDeclaredConstructor(Class.class).newInstance(identifierClass);
-			Stream.of(stateIdentifiers).forEach(id -> states_by_id.put(id, new State(id.name())));
+			statesByID = EnumMap.class.getDeclaredConstructor(Class.class).newInstance(identifierClass);
+			Stream.of(stateIdentifiers).forEach(id -> statesByID.put(id, new State(id.name())));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -116,7 +116,7 @@ public class FiniteStateMachine<STATE_ID extends Enum<STATE_ID>> {
 	}
 
 	protected State state(STATE_ID id) {
-		return states_by_id.get(id);
+		return statesByID.get(id);
 	}
 
 	protected void fireStateChange(STATE_ID oldState, STATE_ID newState) {
