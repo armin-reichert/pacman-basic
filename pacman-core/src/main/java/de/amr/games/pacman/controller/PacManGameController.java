@@ -100,21 +100,18 @@ import de.amr.games.pacman.ui.PacManGameUI;
  */
 public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
-	private PacManGameModel[] games;
+	private final PacManGameModel[] games;
+	private final List<PacManGameEventListener> gameEventListeners = new ArrayList<>();
 	private PacManGameModel game;
 	private PacManGameUI ui;
-
 	private PlayerControl playerControl;
+	private final Autopilot autopilot = new Autopilot(this::game);
 	private GameVariant gameVariant;
 	private boolean autoControlled;
 	private boolean gameRequested;
 	private boolean gameRunning;
 	private boolean attractMode;
 	private int huntingPhase;
-
-	private final Autopilot autopilot = new Autopilot(this::game);
-
-	private final List<PacManGameEventListener> gameEventListeners = new ArrayList<>();
 
 	public PacManGameController() {
 		super(PacManGameState.values());
