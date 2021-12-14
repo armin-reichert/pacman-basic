@@ -290,7 +290,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		}
 
 		// Is level complete?
-		if (game().foodRemaining == 0) {
+		if (game.foodRemaining == 0) {
 			stateTimer().reset();
 			changeState(LEVEL_COMPLETE);
 			return;
@@ -330,7 +330,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		}
 
 		// Did player find food?
-		if (game().containsFood(player.tile())) {
+		if (game.containsFood(player.tile())) {
 			onPlayerFoundFood();
 		} else {
 			player.starvingTicks++;

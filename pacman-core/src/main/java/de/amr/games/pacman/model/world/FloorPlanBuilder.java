@@ -26,12 +26,11 @@ package de.amr.games.pacman.model.world;
 import de.amr.games.pacman.lib.V2i;
 
 /**
- * Scans a world map and creates a floor plan at a given resolution. Walls are
- * placed at the outmost border of inaccessible areas. The {@code resolution}
- * value must be a divisor of the tile size (8, 4, 2, 1) and determines the
- * number of vertical and horizontal scan lines used for each tile. For example,
- * if the resolution is set to 8, each tile is divided into 64 parts from which
- * the wall structure is computed, and each wall will have a thickness of 1.
+ * Scans a world map and creates a floor plan at a given resolution. Walls are placed at the outmost
+ * border of inaccessible areas. The {@code resolution} value must be a divisor of the tile size (8,
+ * 4, 2, 1) and determines the number of vertical and horizontal scan lines used for each tile. For
+ * example, if the resolution is set to 8, each tile is divided into 64 parts from which the wall
+ * structure is computed, and each wall will have a thickness of 1.
  * 
  * @author Armin Reichert
  */

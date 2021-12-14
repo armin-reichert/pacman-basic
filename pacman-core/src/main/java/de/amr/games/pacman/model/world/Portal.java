@@ -28,8 +28,7 @@ import java.util.Objects;
 import de.amr.games.pacman.lib.V2i;
 
 /**
- * A portal is a tunnel end that is connected to the tunnel end on the opposite
- * side of the world.
+ * A portal is a tunnel end that is connected to the tunnel end on the opposite side of the world.
  * 
  * @author Armin Reichert
  */
