@@ -206,7 +206,10 @@ public abstract class GameModel {
 		bonus.init();
 	}
 
-	protected void loadLevelData(int levelNumber, Object[] levelData) {
+	protected abstract Object[] levelData(int levelNumber);
+
+	protected void loadLevel(int levelNumber) {
+		Object[] levelData = levelData(levelNumber);
 		bonusSymbol = (String) levelData[0];
 		playerSpeed = percent(levelData[1]);
 		ghostSpeed = percent(levelData[2]);

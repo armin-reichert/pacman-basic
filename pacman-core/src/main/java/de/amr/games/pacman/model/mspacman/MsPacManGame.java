@@ -55,7 +55,7 @@ public class MsPacManGame extends GameModel {
 	public static final String PEAR =       "Pear";
 	public static final String BANANA =     "Banana";
 	
-	static final Object[][] LEVELS = {
+	private final Object[][] LEVELS = {
 	/* 1*/ {CHERRIES,    80, 75, 40,  20,  80, 10,  85,  90, 50, 6, 5},
 	/* 2*/ {STRAWBERRY,  90, 85, 45,  30,  90, 15,  95,  95, 55, 5, 5},
 	/* Intermision scene 1: "They Meet" */
@@ -86,15 +86,16 @@ public class MsPacManGame extends GameModel {
 
 /*@formatter:on*/
 
-	private static Object[] levelData(int levelNumber) {
-		return levelNumber - 1 < LEVELS.length ? LEVELS[levelNumber - 1] : LEVELS[LEVELS.length - 1];
-	}
-
 	public MsPacManGame() {
 		super("highscore-ms_pacman.xml");
 		player = new Pac("Ms. Pac-Man");
 		ghosts = createGhosts("Blinky", "Pinky", "Inky", "Sue");
 		bonus = new MovingBonus();
+	}
+
+	@Override
+	protected Object[] levelData(int levelNumber) {
+		return levelNumber - 1 < LEVELS.length ? LEVELS[levelNumber - 1] : LEVELS[LEVELS.length - 1];
 	}
 
 	@Override
@@ -106,7 +107,7 @@ public class MsPacManGame extends GameModel {
 		world = new MapBasedWorld("/mspacman/maps/map" + mapNumber + ".txt");
 
 		// can only be called after world has been set!
-		loadLevelData(levelNumber, levelData(levelNumber));
+		loadLevel(levelNumber);
 
 		if (levelNumber >= 8) {
 			bonusSymbol = randomBonusSymbol();

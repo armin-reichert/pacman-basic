@@ -51,7 +51,7 @@ public class PacManGame extends GameModel {
 	public static final String BELL =       "Bell";
 	public static final String KEY =        "Key";
 	
-	static final Object[][] LEVELS = {
+	private final Object[][] LEVELS = {
 	/* 1*/ {CHERRIES,    80, 75, 40,  20,  80, 10,  85,  90, 50, 6, 5},
 	/* 2*/ {STRAWBERRY,  90, 85, 45,  30,  90, 15,  95,  95, 55, 5, 5},
 	/* 3*/ {PEACH,       90, 85, 45,  40,  90, 20,  95,  95, 55, 4, 5},
@@ -77,10 +77,6 @@ public class PacManGame extends GameModel {
 	
 /*@formatter:on*/
 
-	static Object[] levelData(int levelNumber) {
-		return levelNumber - 1 < LEVELS.length ? LEVELS[levelNumber - 1] : LEVELS[LEVELS.length - 1];
-	}
-
 	public PacManGame() {
 		super("highscore-pacman.xml");
 		mazeNumber = 1;
@@ -92,9 +88,14 @@ public class PacManGame extends GameModel {
 	}
 
 	@Override
+	protected Object[] levelData(int levelNumber) {
+		return levelNumber - 1 < LEVELS.length ? LEVELS[levelNumber - 1] : LEVELS[LEVELS.length - 1];
+	}
+
+	@Override
 	public void enterLevel(int levelNumber) {
 		this.levelNumber = levelNumber;
-		loadLevelData(levelNumber, levelData(levelNumber));
+		loadLevel(levelNumber);
 
 		levelCounter.add(bonusSymbol);
 
