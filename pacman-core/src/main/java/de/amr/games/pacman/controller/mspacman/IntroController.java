@@ -31,10 +31,10 @@ import de.amr.games.pacman.controller.PacManGameController;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.TimedSequence;
 import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.GhostState;
 import de.amr.games.pacman.model.common.Pac;
-import de.amr.games.pacman.model.common.PacManGameModel;
 
 /**
  * Intro scene of the Ms. Pac-Man game. The ghosts and Ms. Pac-Man are introduced one after another.
@@ -79,10 +79,10 @@ public class IntroController {
 		msPacMan.setPosition(t(37), t(tileBelowBoard));
 
 		ghosts = new Ghost[] { //
-				new Ghost(PacManGameModel.RED_GHOST, "Blinky"), //
-				new Ghost(PacManGameModel.PINK_GHOST, "Pinky"), //
-				new Ghost(PacManGameModel.CYAN_GHOST, "Inky"), //
-				new Ghost(PacManGameModel.ORANGE_GHOST, "Sue"),//
+				new Ghost(GameModel.RED_GHOST, "Blinky"), //
+				new Ghost(GameModel.PINK_GHOST, "Pinky"), //
+				new Ghost(GameModel.CYAN_GHOST, "Inky"), //
+				new Ghost(GameModel.ORANGE_GHOST, "Sue"),//
 		};
 
 		for (Ghost ghost : ghosts) {

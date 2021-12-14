@@ -29,10 +29,10 @@ import de.amr.games.pacman.controller.PacManGameController;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.TimedSequence;
+import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.GhostState;
 import de.amr.games.pacman.model.common.Pac;
-import de.amr.games.pacman.model.common.PacManGameModel;
 
 /**
  * Intro scene of the PacMan game.
@@ -86,25 +86,25 @@ public class IntroController {
 		for (int i = 0; i < 4; ++i) {
 			gallery[i] = new GhostPortrait();
 		}
-		gallery[0].ghost = new Ghost(PacManGameModel.RED_GHOST, "Blinky");
+		gallery[0].ghost = new Ghost(GameModel.RED_GHOST, "Blinky");
 		gallery[0].ghost.setDir(Direction.RIGHT);
 		gallery[0].ghost.setWishDir(Direction.RIGHT);
 		gallery[0].character = "SHADOW";
 		gallery[0].ghost.setPosition(t(2), TOP_Y + t(2));
 
-		gallery[1].ghost = new Ghost(PacManGameModel.PINK_GHOST, "Pinky");
+		gallery[1].ghost = new Ghost(GameModel.PINK_GHOST, "Pinky");
 		gallery[1].ghost.setDir(Direction.RIGHT);
 		gallery[1].ghost.setWishDir(Direction.RIGHT);
 		gallery[1].character = "SPEEDY";
 		gallery[1].ghost.setPosition(t(2), TOP_Y + t(5));
 
-		gallery[2].ghost = new Ghost(PacManGameModel.CYAN_GHOST, "Inky");
+		gallery[2].ghost = new Ghost(GameModel.CYAN_GHOST, "Inky");
 		gallery[2].ghost.setDir(Direction.RIGHT);
 		gallery[2].ghost.setWishDir(Direction.RIGHT);
 		gallery[2].character = "BASHFUL";
 		gallery[2].ghost.setPosition(t(2), TOP_Y + t(8));
 
-		gallery[3].ghost = new Ghost(PacManGameModel.ORANGE_GHOST, "Clyde");
+		gallery[3].ghost = new Ghost(GameModel.ORANGE_GHOST, "Clyde");
 		gallery[3].ghost.setDir(Direction.RIGHT);
 		gallery[3].ghost.setWishDir(Direction.RIGHT);
 		gallery[3].character = "POKEY";
@@ -114,10 +114,10 @@ public class IntroController {
 		pac.setDir(Direction.LEFT);
 
 		ghosts = new Ghost[] { //
-				new Ghost(PacManGameModel.RED_GHOST, "Blinky"), //
-				new Ghost(PacManGameModel.PINK_GHOST, "Pinky"), //
-				new Ghost(PacManGameModel.CYAN_GHOST, "Inky"), //
-				new Ghost(PacManGameModel.ORANGE_GHOST, "Clyde"), //
+				new Ghost(GameModel.RED_GHOST, "Blinky"), //
+				new Ghost(GameModel.PINK_GHOST, "Pinky"), //
+				new Ghost(GameModel.CYAN_GHOST, "Inky"), //
+				new Ghost(GameModel.ORANGE_GHOST, "Clyde"), //
 		};
 		for (Ghost ghost : ghosts) {
 			ghost.setDir(Direction.LEFT);

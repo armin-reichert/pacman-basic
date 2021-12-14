@@ -27,8 +27,7 @@ import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.lib.TickTimer.sec_to_ticks;
 import static de.amr.games.pacman.model.world.PacManGameWorld.HTS;
 
-import de.amr.games.pacman.model.common.AbstractGameModel;
-import de.amr.games.pacman.model.common.GameLevel;
+import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.pacman.entities.Bonus;
@@ -39,7 +38,7 @@ import de.amr.games.pacman.model.world.MapBasedWorld;
  * 
  * @author Armin Reichert
  */
-public class PacManGame extends AbstractGameModel {
+public class PacManGame extends GameModel {
 
 //@formatter:off
 	
@@ -82,8 +81,6 @@ public class PacManGame extends AbstractGameModel {
 		return levelNumber - 1 < LEVELS.length ? LEVELS[levelNumber - 1] : LEVELS[LEVELS.length - 1];
 	}
 
-	private MapBasedWorld world;
-
 	public PacManGame() {
 		super("highscore-pacman.xml");
 		world = new MapBasedWorld("/pacman/maps/map1.txt");
@@ -94,10 +91,11 @@ public class PacManGame extends AbstractGameModel {
 
 	@Override
 	public void enterLevel(int levelNumber) {
+		loadLevel(levelNumber, levelData(levelNumber));
+		this.mazeNumber = mazeNumber(levelNumber);
+		this.mapNumber = mapNumber(levelNumber);
 
-		level = new GameLevel(levelNumber, world, levelData(levelNumber));
-		level.mazeNumber = mazeNumber(levelNumber);
-		levelCounter.add(level.bonusSymbol);
+		levelCounter.add(bonusSymbol);
 
 		player.world = world;
 		player.starvingTimeLimit = sec_to_ticks(levelNumber < 5 ? 4 : 3);

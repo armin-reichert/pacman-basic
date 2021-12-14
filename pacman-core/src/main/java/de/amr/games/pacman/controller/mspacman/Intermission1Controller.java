@@ -29,9 +29,9 @@ import de.amr.games.pacman.controller.PacManGameController;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.common.GameEntity;
+import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
-import de.amr.games.pacman.model.common.PacManGameModel;
 import de.amr.games.pacman.model.mspacman.entities.Flap;
 
 /**
@@ -81,7 +81,7 @@ public abstract class Intermission1Controller {
 		pacMan.setPosition(-t(2), upperY);
 		pacMan.setVisible(true);
 
-		inky = new Ghost(PacManGameModel.CYAN_GHOST, "Inky");
+		inky = new Ghost(GameModel.CYAN_GHOST, "Inky");
 		inky.setDir(Direction.RIGHT);
 		inky.setWishDir(Direction.RIGHT);
 		inky.setPosition(pacMan.position().plus(-t(3), 0));
@@ -92,7 +92,7 @@ public abstract class Intermission1Controller {
 		msPac.setPosition(t(30), lowerY);
 		msPac.setVisible(true);
 
-		pinky = new Ghost(PacManGameModel.PINK_GHOST, "Pinky");
+		pinky = new Ghost(GameModel.PINK_GHOST, "Pinky");
 		pinky.setDir(Direction.LEFT);
 		pinky.setWishDir(Direction.LEFT);
 		pinky.setPosition(msPac.position().plus(t(3), 0));

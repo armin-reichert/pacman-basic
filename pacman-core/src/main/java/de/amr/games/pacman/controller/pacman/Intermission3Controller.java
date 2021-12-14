@@ -28,10 +28,10 @@ import static de.amr.games.pacman.model.world.PacManGameWorld.t;
 import de.amr.games.pacman.controller.PacManGameController;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
+import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.GhostState;
 import de.amr.games.pacman.model.common.Pac;
-import de.amr.games.pacman.model.common.PacManGameModel;
 
 /**
  * Third intermission scene: Blinky in shred dress chases Pac-Man, comes back half-naked drawing its
@@ -71,7 +71,7 @@ public abstract class Intermission3Controller {
 		pac.setPosition(t(40), groundY);
 		pac.setSpeed(1.2);
 
-		blinky = new Ghost(PacManGameModel.RED_GHOST, "Blinky");
+		blinky = new Ghost(GameModel.RED_GHOST, "Blinky");
 		blinky.setDir(Direction.LEFT);
 		blinky.setWishDir(Direction.LEFT);
 		blinky.setVisible(true);

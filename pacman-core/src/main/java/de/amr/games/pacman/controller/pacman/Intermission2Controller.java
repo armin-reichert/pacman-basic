@@ -29,10 +29,10 @@ import de.amr.games.pacman.controller.PacManGameController;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.common.GameEntity;
+import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.GhostState;
 import de.amr.games.pacman.model.common.Pac;
-import de.amr.games.pacman.model.common.PacManGameModel;
 
 /**
  * Second intermission scene: Blinky pursues Pac but kicks a nail that tears his dress apart.
@@ -72,7 +72,7 @@ public abstract class Intermission2Controller {
 		pac.setPosition(t(30), groundY);
 		pac.setSpeed(1.0);
 
-		blinky = new Ghost(PacManGameModel.RED_GHOST, "Blinky");
+		blinky = new Ghost(GameModel.RED_GHOST, "Blinky");
 		blinky.setDir(Direction.LEFT);
 		blinky.setWishDir(Direction.LEFT);
 		blinky.setVisible(true);

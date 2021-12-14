@@ -28,8 +28,7 @@ import static de.amr.games.pacman.lib.TickTimer.sec_to_ticks;
 
 import java.util.Random;
 
-import de.amr.games.pacman.model.common.AbstractGameModel;
-import de.amr.games.pacman.model.common.GameLevel;
+import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.mspacman.entities.MovingBonus;
@@ -44,7 +43,7 @@ import de.amr.games.pacman.model.world.MapBasedWorld;
  * 
  * @author Armin Reichert
  */
-public class MsPacManGame extends AbstractGameModel {
+public class MsPacManGame extends GameModel {
 
 //@formatter:off
 	
@@ -87,11 +86,9 @@ public class MsPacManGame extends AbstractGameModel {
 
 /*@formatter:on*/
 
-	static Object[] levelData(int levelNumber) {
+	private static Object[] levelData(int levelNumber) {
 		return levelNumber - 1 < LEVELS.length ? LEVELS[levelNumber - 1] : LEVELS[LEVELS.length - 1];
 	}
-
-	private MapBasedWorld world;
 
 	public MsPacManGame() {
 		super("highscore-ms_pacman.xml");
@@ -102,17 +99,16 @@ public class MsPacManGame extends AbstractGameModel {
 
 	@Override
 	public void enterLevel(int levelNumber) {
-		final int mazeNumber = mazeNumber(levelNumber);
-		final int mapNumber = mapNumber(mazeNumber);
+		this.mazeNumber = mazeNumber(levelNumber);
+		this.mapNumber = mapNumber(mazeNumber);
 
 		world = new MapBasedWorld("/mspacman/maps/map" + mapNumber + ".txt");
 
-		level = new GameLevel(levelNumber, world, levelData(levelNumber));
-		level.mazeNumber = mazeNumber;
+		loadLevel(levelNumber, levelData(levelNumber));
 		if (levelNumber >= 8) {
-			level.bonusSymbol = randomBonusSymbol();
+			bonusSymbol = randomBonusSymbol();
 		}
-		levelCounter.add(level.bonusSymbol);
+		levelCounter.add(bonusSymbol);
 
 		player.world = world;
 		player.starvingTimeLimit = sec_to_ticks(levelNumber < 5 ? 4 : 3);
