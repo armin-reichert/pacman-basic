@@ -275,10 +275,6 @@ public abstract class GameModel {
 		}
 	}
 
-	public void changeLivesBy(int delta) {
-		lives = Math.max(0, lives + delta);
-	}
-
 	public Stream<Ghost> ghosts() {
 		return Stream.of(ghosts);
 	}

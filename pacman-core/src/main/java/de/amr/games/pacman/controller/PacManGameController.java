@@ -386,7 +386,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	private void state_PacManDying_update() {
 		if (stateTimer().hasExpired()) {
-			game.changeLivesBy(-1);
+			game.lives--;
 			changeState(attractMode ? INTRO : game.lives > 0 ? READY : GAME_OVER);
 			return;
 		}
@@ -490,7 +490,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			game.hiscoreLevel = game.levelNumber;
 		}
 		if (oldscore < 10000 && game.score >= 10000) {
-			game.changeLivesBy(1);
+			game.lives++;
 			log("Extra life. Player has %d lives now", game.lives);
 			fireGameEvent(Info.EXTRA_LIFE, null);
 		}
