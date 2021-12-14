@@ -50,7 +50,7 @@ public abstract class GameModel {
 	public static final int RED_GHOST = 0, PINK_GHOST = 1, CYAN_GHOST = 2, ORANGE_GHOST = 3;
 
 	private static float percent(Object value) {
-		return ((Integer) value) / 100f;
+		return ((int) value) / 100f;
 	}
 
 	//@formatter:off
@@ -214,14 +214,14 @@ public abstract class GameModel {
 		playerSpeed = percent(levelData[1]);
 		ghostSpeed = percent(levelData[2]);
 		ghostSpeedTunnel = percent(levelData[3]);
-		elroy1DotsLeft = (Integer) levelData[4];
+		elroy1DotsLeft = (int) levelData[4];
 		elroy1Speed = percent(levelData[5]);
-		elroy2DotsLeft = (Integer) levelData[6];
+		elroy2DotsLeft = (int) levelData[6];
 		elroy2Speed = percent(levelData[7]);
 		playerSpeedPowered = percent(levelData[8]);
 		ghostSpeedFrightened = percent(levelData[9]);
-		ghostFrightenedSeconds = (Integer) levelData[10];
-		numFlashes = (Integer) levelData[11];
+		ghostFrightenedSeconds = (int) levelData[10];
+		numFlashes = (int) levelData[11];
 		totalFoodCount = (int) world.tiles().filter(world::isFoodTile).count();
 		energizerCount = (int) world.tiles().filter(world::isEnergizerTile).count();
 		foodRemaining = totalFoodCount;
