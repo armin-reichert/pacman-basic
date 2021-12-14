@@ -101,9 +101,9 @@ public class MsPacManGame extends GameModel {
 	@Override
 	public void enterLevel(int levelNumber) {
 		this.levelNumber = levelNumber;
-
 		mazeNumber = mazeNumber(levelNumber);
-		mapNumber = mapNumber(mazeNumber);
+		mapNumber = (mazeNumber == 5) ? 3 : (mazeNumber == 6) ? 4 : mazeNumber;
+
 		world = new MapBasedWorld("/mspacman/maps/map" + mapNumber + ".txt");
 
 		// can only be called after world has been set!
@@ -148,11 +148,6 @@ public class MsPacManGame extends GameModel {
 		bonus.init();
 
 		log("Ms. Pac-Man game entered level #%d, maze number is %d, map number is %d", levelNumber, mazeNumber, mapNumber);
-	}
-
-	private int mapNumber(int mazeNumber) {
-		// Maze #5 has the same map as #3, same for #6 vs. #4.
-		return mazeNumber == 5 ? 3 : mazeNumber == 6 ? 4 : mazeNumber;
 	}
 
 	/**
