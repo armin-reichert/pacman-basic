@@ -83,6 +83,8 @@ public class PacManGame extends GameModel {
 
 	public PacManGame() {
 		super("highscore-pacman.xml");
+		mazeNumber = 1;
+		mapNumber = 1;
 		world = new MapBasedWorld("/pacman/maps/map1.txt");
 		player = new Pac("Pac-Man");
 		ghosts = createGhosts("Blinky", "Pinky", "Inky", "Clyde");
@@ -91,9 +93,8 @@ public class PacManGame extends GameModel {
 
 	@Override
 	public void enterLevel(int levelNumber) {
-		loadLevel(levelNumber, levelData(levelNumber));
-		this.mazeNumber = mazeNumber(levelNumber);
-		this.mapNumber = mapNumber(levelNumber);
+		this.levelNumber = levelNumber;
+		loadLevelData(levelNumber, levelData(levelNumber));
 
 		levelCounter.add(bonusSymbol);
 
@@ -131,17 +132,7 @@ public class PacManGame extends GameModel {
 		bonus.init();
 		bonus.placeAt(world.bonusTile(), HTS, 0);
 
-		log("Pac-Man game level #%d created", levelNumber);
-	}
-
-	@Override
-	public int mapNumber(int levelNumber) {
-		return 1;
-	}
-
-	@Override
-	public int mazeNumber(int levelNumber) {
-		return 1;
+		log("Pac-Man game entered level #%d", levelNumber);
 	}
 
 	@Override

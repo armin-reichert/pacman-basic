@@ -99,12 +99,15 @@ public class MsPacManGame extends GameModel {
 
 	@Override
 	public void enterLevel(int levelNumber) {
-		this.mazeNumber = mazeNumber(levelNumber);
-		this.mapNumber = mapNumber(mazeNumber);
+		this.levelNumber = levelNumber;
 
+		mazeNumber = mazeNumber(levelNumber);
+		mapNumber = mapNumber(mazeNumber);
 		world = new MapBasedWorld("/mspacman/maps/map" + mapNumber + ".txt");
 
-		loadLevel(levelNumber, levelData(levelNumber));
+		// can only be called after world has been set!
+		loadLevelData(levelNumber, levelData(levelNumber));
+
 		if (levelNumber >= 8) {
 			bonusSymbol = randomBonusSymbol();
 		}
@@ -143,11 +146,10 @@ public class MsPacManGame extends GameModel {
 		bonus.world = world;
 		bonus.init();
 
-		log("Ms. Pac-Man game level #%d created, maze number is %d, map number is %d", levelNumber, mazeNumber, mapNumber);
+		log("Ms. Pac-Man game entered level #%d, maze number is %d, map number is %d", levelNumber, mazeNumber, mapNumber);
 	}
 
-	@Override
-	public int mapNumber(int mazeNumber) {
+	private int mapNumber(int mazeNumber) {
 		// Maze #5 has the same map as #3, same for #6 vs. #4.
 		return mazeNumber == 5 ? 3 : mazeNumber == 6 ? 4 : mazeNumber;
 	}
@@ -168,8 +170,7 @@ public class MsPacManGame extends GameModel {
 	 * <li>Maze #6: orange maze, white dots (same map as maze #4)
 	 * </ul>
 	 */
-	@Override
-	public int mazeNumber(int levelNumber) {
+	private int mazeNumber(int levelNumber) {
 		if (levelNumber < 1) {
 			throw new IllegalArgumentException("Illegal level number: " + levelNumber);
 		}

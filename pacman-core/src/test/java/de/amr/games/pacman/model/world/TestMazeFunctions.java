@@ -15,9 +15,12 @@ public class TestMazeFunctions {
 	@Test
 	public void testPacManMazeNumber() {
 		GameModel game = new PacManGame();
-		assertEquals(1, game.mazeNumber(1));
-		assertEquals(1, game.mazeNumber(10));
-		assertEquals(1, game.mazeNumber(100));
+		game.enterLevel(1);
+		assertEquals(1, game.mazeNumber);
+		game.enterLevel(10);
+		assertEquals(1, game.mazeNumber);
+		game.enterLevel(100);
+		assertEquals(1, game.mazeNumber);
 	}
 
 	@Test
@@ -34,28 +37,11 @@ public class TestMazeFunctions {
 	@Test
 	public void testMsPacManMazeNumber() {
 		GameModel game = new MsPacManGame();
-		assertEquals(1, game.mazeNumber(1));
-		assertEquals(1, game.mazeNumber(2));
-		assertEquals(2, game.mazeNumber(3));
-		assertEquals(2, game.mazeNumber(4));
-		assertEquals(2, game.mazeNumber(5));
-		assertEquals(3, game.mazeNumber(6));
-		assertEquals(3, game.mazeNumber(7));
-		assertEquals(3, game.mazeNumber(8));
-		assertEquals(3, game.mazeNumber(9));
-		assertEquals(4, game.mazeNumber(10));
-		assertEquals(4, game.mazeNumber(11));
-		assertEquals(4, game.mazeNumber(12));
-		assertEquals(4, game.mazeNumber(13));
-		assertEquals(5, game.mazeNumber(14));
-		assertEquals(5, game.mazeNumber(15));
-		assertEquals(5, game.mazeNumber(16));
-		assertEquals(5, game.mazeNumber(17));
-		assertEquals(6, game.mazeNumber(18));
-		assertEquals(6, game.mazeNumber(19));
-		assertEquals(6, game.mazeNumber(20));
-		assertEquals(6, game.mazeNumber(21));
-		assertEquals(5, game.mazeNumber(22));
+		final int[] mazeNumbers = { 0, 1, 1, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6, 5 };
+		for (int levelNumber = 1; levelNumber <= 22; ++levelNumber) {
+			game.enterLevel(levelNumber);
+			assertEquals(mazeNumbers[levelNumber], game.mazeNumber);
+		}
 	}
 
 	@Test

@@ -147,18 +147,6 @@ public abstract class GameModel {
 	public abstract void enterLevel(int levelNumber);
 
 	/**
-	 * @param mazeNumber 1-based maze number
-	 * @return 1-based map number corresponding to the maze
-	 */
-	public abstract int mapNumber(int mazeNumber);
-
-	/**
-	 * @param levelNumber 1-based level number
-	 * @return 1-based maze number corresponding to level
-	 */
-	public abstract int mazeNumber(int levelNumber);
-
-	/**
 	 * @param symbolName bonus symbol identifier
 	 * @return value of this bonus symbol
 	 */
@@ -218,8 +206,7 @@ public abstract class GameModel {
 		bonus.init();
 	}
 
-	protected void loadLevel(int levelNumber, Object[] levelData) {
-		this.levelNumber = levelNumber;
+	protected void loadLevelData(int levelNumber, Object[] levelData) {
 		bonusSymbol = (String) levelData[0];
 		playerSpeed = percent(levelData[1]);
 		ghostSpeed = percent(levelData[2]);
