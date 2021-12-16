@@ -35,6 +35,7 @@ import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.Hiscore;
+import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.pacman.entities.Bonus;
@@ -54,13 +55,18 @@ public abstract class GameModel {
 	}
 
 	//@formatter:off
-	public final int[][] HUNTING_PHASE_TICKS = {
+	public final long[][] HUNTING_PHASE_TICKS = {
   // scatter  chase   scatter  chase  scatter  chase    scatter  chase
-   { 7*60,    20*60,  7*60,    20*60, 5*60,      20*60, 5*60,    Integer.MAX_VALUE },
-   { 7*60,    20*60,  7*60,    20*60, 5*60,    1033*60,    1,    Integer.MAX_VALUE },
-   { 5*60,    20*60,  5*60,    20*60, 5*60,    1037*60,    1,    Integer.MAX_VALUE },
+   { 7*60,    20*60,  7*60,    20*60, 5*60,      20*60, 5*60,    TickTimer.INDEFINITE },
+   { 7*60,    20*60,  7*60,    20*60, 5*60,    1033*60,    1,    TickTimer.INDEFINITE },
+   { 5*60,    20*60,  5*60,    20*60, 5*60,    1037*60,    1,    TickTimer.INDEFINITE },
 	};
 	//@formatter:on
+
+	public long getHuntingPhaseDuration(int phase) {
+		int row = levelNumber == 1 ? 0 : levelNumber <= 4 ? 1 : 2;
+		return HUNTING_PHASE_TICKS[row][phase];
+	}
 
 	/** 1-based level number */
 	public int levelNumber;
@@ -301,11 +307,6 @@ public abstract class GameModel {
 
 	public boolean isBonusReached() {
 		return eatenFoodCount() == world.pelletsToEatForBonus(0) || eatenFoodCount() == world.pelletsToEatForBonus(1);
-	}
-
-	public long getHuntingPhaseDuration(int phase) {
-		int row = levelNumber == 1 ? 0 : levelNumber <= 4 ? 1 : 2;
-		return HUNTING_PHASE_TICKS[row][phase];
 	}
 
 	public void saveHiscore() {
