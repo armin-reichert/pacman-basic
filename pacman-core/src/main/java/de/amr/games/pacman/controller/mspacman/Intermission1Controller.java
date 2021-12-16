@@ -74,29 +74,29 @@ public abstract class Intermission1Controller {
 	public void init() {
 		flap = new Flap(1, "THEY MEET");
 		flap.setPosition(t(3), t(10));
-		flap.setVisible(true);
+		flap.visible = true;
 
 		pacMan = new Pac("Pac-Man");
 		pacMan.setDir(Direction.RIGHT);
 		pacMan.setPosition(-t(2), upperY);
-		pacMan.setVisible(true);
+		pacMan.visible = true;
 
 		inky = new Ghost(GameModel.CYAN_GHOST, "Inky");
 		inky.setDir(Direction.RIGHT);
 		inky.setWishDir(Direction.RIGHT);
-		inky.setPosition(pacMan.position().plus(-t(3), 0));
-		inky.setVisible(true);
+		inky.position = pacMan.position.plus(-t(3), 0);
+		inky.visible = true;
 
 		msPac = new Pac("Ms. Pac-Man");
 		msPac.setDir(Direction.LEFT);
 		msPac.setPosition(t(30), lowerY);
-		msPac.setVisible(true);
+		msPac.visible = true;
 
 		pinky = new Ghost(GameModel.PINK_GHOST, "Pinky");
 		pinky.setDir(Direction.LEFT);
 		pinky.setWishDir(Direction.LEFT);
-		pinky.setPosition(msPac.position().plus(t(3), 0));
-		pinky.setVisible(true);
+		pinky.position = msPac.position.plus(t(3), 0);
+		pinky.visible = true;
 
 		heart = new GameEntity();
 		ghostsMet = false;
@@ -124,7 +124,7 @@ public abstract class Intermission1Controller {
 				playFlapAnimation();
 			}
 			if (timer.hasExpired()) {
-				flap.setVisible(false);
+				flap.visible = false;
 				playIntermissionSound();
 				startChasedByGhosts();
 				return;
@@ -137,7 +137,7 @@ public abstract class Intermission1Controller {
 			pacMan.move();
 			pinky.move();
 			msPac.move();
-			if (inky.position().x > t(30)) {
+			if (inky.position.x > t(30)) {
 				startComingTogether();
 			}
 			timer.tick();
@@ -148,22 +148,22 @@ public abstract class Intermission1Controller {
 			pinky.move();
 			pacMan.move();
 			msPac.move();
-			if (pacMan.dir() == Direction.LEFT && pacMan.position().x < t(15)) {
+			if (pacMan.dir() == Direction.LEFT && pacMan.position.x < t(15)) {
 				pacMan.setDir(Direction.UP);
 				msPac.setDir(Direction.UP);
 			}
-			if (pacMan.dir() == Direction.UP && pacMan.position().y < upperY) {
+			if (pacMan.dir() == Direction.UP && pacMan.position.y < upperY) {
 				pacMan.setSpeed(0);
 				msPac.setSpeed(0);
 				pacMan.setDir(Direction.LEFT);
 				msPac.setDir(Direction.RIGHT);
-				heart.setPosition((pacMan.position().x + msPac.position().x) / 2, pacMan.position().y - t(2));
-				heart.setVisible(true);
+				heart.setPosition((pacMan.position.x + msPac.position.x) / 2, pacMan.position.y - t(2));
+				heart.visible = true;
 				inky.setSpeed(0);
 				pinky.setSpeed(0);
 				enterSeconds(Phase.READY_TO_PLAY, 4);
 			}
-			if (!ghostsMet && inky.position().x - pinky.position().x < 16) {
+			if (!ghostsMet && inky.position.x - pinky.position.x < 16) {
 				ghostsMet = true;
 				inky.setDir(inky.dir().opposite());
 				inky.setWishDir(inky.dir());
@@ -177,8 +177,8 @@ public abstract class Intermission1Controller {
 
 		case READY_TO_PLAY:
 			if (timer.isRunningSeconds(2)) {
-				inky.setVisible(false);
-				pinky.setVisible(false);
+				inky.visible = false;
+				pinky.visible = false;
 			}
 			if (timer.hasExpired()) {
 				gameController.stateTimer().expire();

@@ -66,15 +66,15 @@ public abstract class Intermission1Controller {
 	public void init() {
 		pac = new Pac("Pac-Man");
 		pac.setDir(Direction.LEFT);
-		pac.setVisible(true);
+		pac.visible = true;
 		pac.setPosition(t(30), groundY);
 		pac.setSpeed(1.0);
 
 		blinky = new Ghost(GameModel.RED_GHOST, "Blinky");
 		blinky.setDir(Direction.LEFT);
 		blinky.setWishDir(Direction.LEFT);
-		blinky.setVisible(true);
-		blinky.setPosition(pac.position().plus(t(3), 0));
+		blinky.visible = true;
+		blinky.position = pac.position.plus(t(3), 0);
 		blinky.setSpeed(1.04);
 		blinky.state = GhostState.HUNTING_PAC;
 
@@ -111,7 +111,7 @@ public abstract class Intermission1Controller {
 				blinky.state = GhostState.FRIGHTENED;
 				pac.setDir(Direction.RIGHT);
 				pac.setSpeed(1.3);
-				pac.setPosition(blinky.position().plus(-t(13), 0));
+				pac.position = blinky.position.plus(-t(13), 0);
 			}
 			if (timer.hasExpired()) {
 				gameController.stateTimer().expire();

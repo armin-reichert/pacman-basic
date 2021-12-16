@@ -67,15 +67,15 @@ public abstract class Intermission3Controller {
 	public void init() {
 		pac = new Pac("Pac-Man");
 		pac.setDir(Direction.LEFT);
-		pac.setVisible(true);
+		pac.visible = true;
 		pac.setPosition(t(40), groundY);
 		pac.setSpeed(1.2);
 
 		blinky = new Ghost(GameModel.RED_GHOST, "Blinky");
 		blinky.setDir(Direction.LEFT);
 		blinky.setWishDir(Direction.LEFT);
-		blinky.setVisible(true);
-		blinky.setPosition(pac.position().plus(t(8), 0));
+		blinky.visible = true;
+		blinky.position = pac.position.plus(t(8), 0);
 		blinky.setSpeed(1.2);
 		blinky.state = GhostState.HUNTING_PAC;
 
@@ -90,7 +90,7 @@ public abstract class Intermission3Controller {
 		case CHASING_PACMAN:
 			pac.move();
 			blinky.move();
-			if (blinky.position().x <= -t(15)) {
+			if (blinky.position.x <= -t(15)) {
 				pac.setSpeed(0);
 				blinky.setDir(Direction.RIGHT);
 				blinky.setWishDir(Direction.RIGHT);
@@ -101,7 +101,7 @@ public abstract class Intermission3Controller {
 		case RETURNING_HALF_NAKED:
 			blinky.move();
 			pac.move();
-			if (blinky.position().x > t(53)) {
+			if (blinky.position.x > t(53)) {
 				gameController.stateTimer().expire();
 			}
 			break;

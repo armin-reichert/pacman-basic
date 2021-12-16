@@ -162,7 +162,7 @@ public class IntroController {
 			break;
 
 		case CHASING_PAC:
-			if (pac.position().x < t(2)) {
+			if (pac.position.x < t(2)) {
 				startPacChasingGhosts();
 				enterPhase(Phase.CHASING_GHOSTS);
 			}
@@ -170,16 +170,16 @@ public class IntroController {
 			break;
 
 		case CHASING_GHOSTS:
-			if (pac.position().x > t(28)) {
+			if (pac.position.x > t(28)) {
 				enterPhase(Phase.READY_TO_PLAY);
 			}
 			if (gameController.stateTimer().ticked() - ghostKilledTime == 15) {
 				ghostKilledTime = 0;
-				pac.setVisible(true);
+				pac.visible = true;
 				pac.setSpeed(1.0);
 				for (Ghost ghost : ghosts) {
 					if (ghost.state == GhostState.DEAD) {
-						ghost.setVisible(false);
+						ghost.visible = false;
 					}
 				}
 			}
@@ -187,7 +187,7 @@ public class IntroController {
 				if (pac.meets(ghost) && ghost.state != GhostState.DEAD) {
 					ghost.state = GhostState.DEAD;
 					ghost.bounty = (int) Math.pow(2, ghost.id + 1) * 100;
-					pac.setVisible(false);
+					pac.visible = false;
 					pac.setSpeed(0);
 					ghostKilledTime = gameController.stateTimer().ticked();
 				}
@@ -213,14 +213,14 @@ public class IntroController {
 
 	public void startGhostsChasingPac() {
 		pac.setPosition(t(28), t(22));
-		pac.setVisible(true);
+		pac.visible = true;
 		pac.setSpeed(1.0);
 		pac.setDir(Direction.LEFT);
 		pac.stuck = false;
 
 		for (Ghost ghost : ghosts) {
-			ghost.setPosition(pac.position().plus(8 + (ghost.id + 1) * 18, 0));
-			ghost.setVisible(true);
+			ghost.position = pac.position.plus(8 + (ghost.id + 1) * 18, 0);
+			ghost.visible = true;
 			ghost.setWishDir(Direction.LEFT);
 			ghost.setDir(Direction.LEFT);
 			ghost.setSpeed(1.05);
@@ -242,6 +242,6 @@ public class IntroController {
 
 	public void selectGhost(int ghostIndex) {
 		selectedGhost = ghostIndex;
-		gallery[selectedGhost].ghost.setVisible(true);
+		gallery[selectedGhost].ghost.visible = true;
 	}
 }

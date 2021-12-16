@@ -110,7 +110,7 @@ public class IntroController {
 
 		case PRESENTING_GHOST:
 			if (phaseTimer.hasJustStarted()) {
-				ghosts[currentGhostIndex].setVisible(true);
+				ghosts[currentGhostIndex].visible = true;
 				ghosts[currentGhostIndex].setSpeed(1.0);
 			}
 			boolean ghostReachedFinalPosition = ghostEnteringStage(ghosts[currentGhostIndex]);
@@ -130,7 +130,7 @@ public class IntroController {
 
 		case PRESENTING_MSPACMAN:
 			if (phaseTimer.hasJustStarted()) {
-				msPacMan.setVisible(true);
+				msPacMan.visible = true;
 				msPacMan.stuck = false;
 				msPacMan.setSpeed(1.0);
 			}
@@ -160,12 +160,12 @@ public class IntroController {
 	}
 
 	public boolean ghostEnteringStage(Ghost ghost) {
-		if (ghost.dir() == LEFT && ghost.position().x <= t(tileLeftOfBoard)) {
+		if (ghost.dir() == LEFT && ghost.position.x <= t(tileLeftOfBoard)) {
 			ghost.setDir(UP);
 			ghost.setWishDir(UP);
 			return false;
 		}
-		if (ghost.dir() == UP && ghost.position().y <= t(tileBoardTopLeft.y) + ghost.id * 18) {
+		if (ghost.dir() == UP && ghost.position.y <= t(tileBoardTopLeft.y) + ghost.id * 18) {
 			ghost.setSpeed(0);
 			return true;
 		}
@@ -173,7 +173,7 @@ public class IntroController {
 	}
 
 	public boolean msPacManEnteringStage() {
-		if (msPacMan.velocity().length() > 0 && msPacMan.position().x <= t(13)) {
+		if (msPacMan.velocity.length() > 0 && msPacMan.position.x <= t(13)) {
 			msPacMan.setSpeed(0);
 			return true;
 		}

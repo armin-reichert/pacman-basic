@@ -85,7 +85,7 @@ public abstract class Intermission3Controller {
 	public void init() {
 		flap = new Flap(3, "JUNIOR");
 		flap.setPosition(t(3), t(10));
-		flap.setVisible(true);
+		flap.visible = true;
 
 		pacMan = new Pac("Pac-Man");
 		pacMan.setDir(Direction.RIGHT);
@@ -101,7 +101,7 @@ public abstract class Intermission3Controller {
 		bag = new JuniorBag();
 		bag.hold = true;
 		bag.open = false;
-		bag.setPosition(stork.position().plus(-14, 3));
+		bag.position = stork.position.plus(-14, 3);
 
 		enter(Phase.FLAP);
 	}
@@ -113,7 +113,7 @@ public abstract class Intermission3Controller {
 			if (timer.isRunningSeconds(1)) {
 				playFlapAnimation();
 			} else if (timer.isRunningSeconds(2)) {
-				flap.setVisible(false);
+				flap.visible = false;
 				playIntermissionSound();
 				enter(Phase.ACTION);
 			}
@@ -122,26 +122,26 @@ public abstract class Intermission3Controller {
 
 		case ACTION:
 			if (timer.hasJustStarted()) {
-				pacMan.setVisible(true);
-				msPacMan.setVisible(true);
-				stork.setVisible(true);
-				bag.setVisible(true);
+				pacMan.visible = true;
+				msPacMan.visible = true;
+				stork.visible = true;
+				bag.visible = true;
 				stork.setVelocity(-1.25, 0);
-				bag.setVelocity(new V2d(-1.25f, 0));
+				bag.setVelocity(-1.25f, 0);
 			}
 			// release bag from storks beak?
-			if (bag.hold && (int) stork.position().x == t(24)) {
+			if (bag.hold && (int) stork.position.x == t(24)) {
 				bag.hold = false;
 			}
 			// (closed) bag reaches ground for first time?
-			if (!bag.open && bag.position().y > GROUND_Y) {
+			if (!bag.open && bag.position.y > GROUND_Y) {
 				++numBagBounces;
 				if (numBagBounces < 5) {
-					bag.setVelocity(new V2d(-0.2f, -1f / numBagBounces));
-					bag.setPosition(bag.position().x, GROUND_Y);
+					bag.setVelocity(-0.2f, -1f / numBagBounces);
+					bag.setPosition(bag.position.x, GROUND_Y);
 				} else {
 					bag.open = true;
-					bag.setVelocity(V2d.NULL);
+					bag.velocity = V2d.NULL;
 					enterSeconds(Phase.READY_TO_PLAY, 3);
 				}
 			}

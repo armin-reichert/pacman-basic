@@ -71,7 +71,7 @@ public abstract class Intermission2Controller {
 	public void init() {
 		flap = new Flap(2, "THE CHASE");
 		flap.setPosition(t(3), t(10));
-		flap.setVisible(true);
+		flap.visible = true;
 
 		pacMan = new Pac("Pac-Man");
 		pacMan.setDir(Direction.RIGHT);
@@ -90,7 +90,7 @@ public abstract class Intermission2Controller {
 				playFlapAnimation();
 			}
 			if (timer.isRunningSeconds(2)) {
-				flap.setVisible(false);
+				flap.visible = false;
 				playIntermissionSound();
 			}
 			if (timer.isRunningSeconds(4.5)) {
@@ -101,18 +101,18 @@ public abstract class Intermission2Controller {
 
 		case ACTION:
 			if (timer.isRunningSeconds(1.5)) {
-				pacMan.setVisible(true);
+				pacMan.visible = true;
 				pacMan.setPosition(-t(2), UPPER_Y);
 				pacMan.setDir(Direction.RIGHT);
 				pacMan.setSpeed(2.0);
-				msPacMan.setVisible(true);
+				msPacMan.visible = true;
 				msPacMan.setPosition(-t(8), UPPER_Y);
 				msPacMan.setDir(Direction.RIGHT);
 				msPacMan.setSpeed(2.0);
 			}
 			if (timer.isRunningSeconds(6)) {
 				msPacMan.setPosition(t(30), LOWER_Y);
-				msPacMan.setVisible(true);
+				msPacMan.visible = true;
 				msPacMan.setDir(Direction.LEFT);
 				msPacMan.setSpeed(2.0);
 				pacMan.setPosition(t(36), LOWER_Y);

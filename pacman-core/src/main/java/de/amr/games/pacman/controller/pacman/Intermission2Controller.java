@@ -68,20 +68,20 @@ public abstract class Intermission2Controller {
 	public void init() {
 		pac = new Pac("Pac-Man");
 		pac.setDir(Direction.LEFT);
-		pac.setVisible(true);
+		pac.visible = true;
 		pac.setPosition(t(30), groundY);
 		pac.setSpeed(1.0);
 
 		blinky = new Ghost(GameModel.RED_GHOST, "Blinky");
 		blinky.setDir(Direction.LEFT);
 		blinky.setWishDir(Direction.LEFT);
-		blinky.setVisible(true);
-		blinky.setPosition(pac.position().plus(t(14), 0));
+		blinky.visible = true;
+		blinky.position = pac.position.plus(t(14), 0);
 		blinky.setSpeed(1.0);
 		blinky.state = GhostState.HUNTING_PAC;
 
 		nail = new GameEntity();
-		nail.setVisible(true);
+		nail.visible = true;
 		nail.setPosition(t(14), groundY - 1);
 
 		playIntermissionSound();
@@ -96,7 +96,7 @@ public abstract class Intermission2Controller {
 	}
 
 	public int nailDistance() {
-		return (int) (nail.position().x - blinky.position().x);
+		return (int) (nail.position.x - blinky.position.x);
 	}
 
 	public void update() {
