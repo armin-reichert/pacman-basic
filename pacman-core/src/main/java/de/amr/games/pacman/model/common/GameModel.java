@@ -328,12 +328,12 @@ public abstract class GameModel {
 		return totalFoodCount - foodRemaining;
 	}
 
-	public boolean isFoodRemoved(V2i tile) {
+	public boolean isFoodEaten(V2i tile) {
 		return eaten.get(world.index(tile));
 	}
 
 	public boolean containsFood(V2i tile) {
-		return world.isFoodTile(tile) && !isFoodRemoved(tile);
+		return world.isFoodTile(tile) && !isFoodEaten(tile);
 	}
 
 	public void removeFood(V2i tile) {

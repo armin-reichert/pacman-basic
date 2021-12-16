@@ -186,7 +186,7 @@ public class Autopilot implements PlayerControl {
 			if (!game().player.canAccessTile(ahead)) {
 				break;
 			}
-			if (game().world.isEnergizerTile(ahead) && !game().isFoodRemoved(ahead)) {
+			if (game().world.isEnergizerTile(ahead) && !game().isFoodEaten(ahead)) {
 				energizerFound = true;
 			}
 			V2i aheadLeft = ahead.plus(game().player.dir().turnLeft().vec),
@@ -249,7 +249,7 @@ public class Autopilot implements PlayerControl {
 		for (int x = 0; x < game().world.numCols(); ++x) {
 			for (int y = 0; y < game().world.numRows(); ++y) {
 				V2i tile = new V2i(x, y);
-				if (!game().world.isFoodTile(tile) || game().isFoodRemoved(tile)) {
+				if (!game().world.isFoodTile(tile) || game().isFoodEaten(tile)) {
 					continue;
 				}
 				if (game().world.isEnergizerTile(tile) && game().player.powerTimer.ticksRemaining() > 1 * 60
