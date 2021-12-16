@@ -56,9 +56,9 @@ public abstract class GameModel {
 	//@formatter:off
 	public final int[][] HUNTING_PHASE_TICKS = {
   // scatter  chase   scatter  chase  scatter  chase    scatter  chase
-    { 7*60,    20*60,  7*60,    20*60, 5*60,      20*60, 5*60,    Integer.MAX_VALUE },
-    { 7*60,    20*60,  7*60,    20*60, 5*60,    1033*60,    1,    Integer.MAX_VALUE },
-    { 5*60,    20*60,  5*60,    20*60, 5*60,    1037*60,    1,    Integer.MAX_VALUE },
+   { 7*60,    20*60,  7*60,    20*60, 5*60,      20*60, 5*60,    Integer.MAX_VALUE },
+   { 7*60,    20*60,  7*60,    20*60, 5*60,    1033*60,    1,    Integer.MAX_VALUE },
+   { 5*60,    20*60,  5*60,    20*60, 5*60,    1037*60,    1,    Integer.MAX_VALUE },
 	};
 	//@formatter:on
 
