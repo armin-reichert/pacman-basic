@@ -120,8 +120,6 @@ public abstract class GameModel {
 
 	public int initialLives;
 
-	public int lives;
-
 	public int score;
 
 	public int numGhostsKilled;
@@ -169,7 +167,7 @@ public abstract class GameModel {
 
 	public void reset() {
 		score = 0;
-		lives = initialLives;
+		player.lives = initialLives;
 		levelCounter.clear();
 		Hiscore hiscore = loadHiscore();
 		hiscoreLevel = hiscore.level;

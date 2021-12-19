@@ -32,6 +32,9 @@ import de.amr.games.pacman.lib.TickTimer;
  */
 public class Pac extends Creature {
 
+	/** Number of lives of this player. */
+	public int lives;
+
 	/** If Pac is dead. */
 	public boolean dead = false;
 
