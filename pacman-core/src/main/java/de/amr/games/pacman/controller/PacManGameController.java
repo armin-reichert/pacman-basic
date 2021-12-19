@@ -275,22 +275,21 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		}
 	}
 
-	// here is the main logic of the game play
+	// This method contains the main logic of the game play
 	private void state_Hunting_update() {
-
 		final Pac player = game.player;
-
-		// Is hunting phase complete?
-		if (stateTimer().hasExpired()) {
-			game.ghosts().filter(ghost -> ghost.is(HUNTING_PAC) || ghost.is(FRIGHTENED)).forEach(Ghost::forceTurningBack);
-			startHuntingPhase(++huntingPhase);
-			return;
-		}
 
 		// Is level complete?
 		if (game.foodRemaining == 0) {
 			stateTimer().reset();
 			changeState(LEVEL_COMPLETE);
+			return;
+		}
+
+		// Is hunting phase complete?
+		if (stateTimer().hasExpired()) {
+			game.ghosts().filter(ghost -> ghost.is(HUNTING_PAC) || ghost.is(FRIGHTENED)).forEach(Ghost::forceTurningBack);
+			startHuntingPhase(++huntingPhase);
 			return;
 		}
 
@@ -302,7 +301,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			return;
 		}
 
-		// Is player getting killed by a ghost?
+		// Is player getting killed by some ghost?
 		if (attractMode || !player.immune) {
 			Optional<Ghost> killer = game.ghosts(HUNTING_PAC).filter(player::meets).findAny();
 			if (killer.isPresent()) {
@@ -316,7 +315,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 					log("Elroy mode %d for %s has been disabled", redGhost.elroy, redGhost.name);
 				}
 
-				// reset global dot counter
+				// reset global dot counter (used by ghost house logic)
 				game.globalDotCounter = 0;
 				game.globalDotCounterEnabled = true;
 				log("Global dot counter got reset and enabled");
@@ -338,6 +337,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		if (player.powerTimer.isRunning()) {
 			player.powerTimer.tick();
 			if (player.powerTimer.ticksRemaining() == sec_to_ticks(1)) {
+				// TODO not sure exactly how long the player is losing power
 				fireGameEvent(Info.PLAYER_LOSING_POWER, player.tile());
 			}
 		} else if (player.powerTimer.hasExpired()) {
@@ -349,7 +349,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			fireGameEvent(Info.PLAYER_LOST_POWER, player.tile());
 		}
 
-		// Move player through world
+		// Move player through the world
 		currentPlayerControl().steer(player);
 		if (player.restingTicksLeft > 0) {
 			player.restingTicksLeft--;
