@@ -37,6 +37,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import de.amr.games.pacman.lib.Misc;
 import de.amr.games.pacman.lib.V2i;
 
 /**
@@ -161,10 +162,14 @@ public class WorldMap {
 	 * @return list of all values for given list name
 	 */
 	public List<V2i> vectorList(String listName) {
-		return definitions.keySet().stream()//
-				.filter(varName -> varName.startsWith(listName + "."))//
-				.sorted()//
-				.map(this::vector)//
-				.collect(Collectors.toList());
+		//@formatter:off
+		return Misc.trim(
+				definitions.keySet().stream()
+					.filter(varName -> varName.startsWith(listName + "."))
+					.sorted()
+					.map(this::vector)
+					.collect(Collectors.toList())
+		);
+		//@formatter:on
 	}
 }

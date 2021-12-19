@@ -23,7 +23,10 @@ SOFTWARE.
  */
 package de.amr.games.pacman.lib;
 
-public class MathFunctions {
+import java.util.ArrayList;
+import java.util.List;
+
+public class Misc {
 
 	/**
 	 * @param value     some double value
@@ -34,6 +37,20 @@ public class MathFunctions {
 	 */
 	public static boolean differsAtMost(double value, double target, double tolerance) {
 		return value >= target - tolerance && value <= target + tolerance;
+	}
+
+	/**
+	 * Trims given (array) list to its actual size. Lets other lists alone.
+	 * 
+	 * @param <T>  list entry type
+	 * @param list some list
+	 * @return trimmed list
+	 */
+	public static <T> List<T> trim(List<T> list) {
+		if (list instanceof ArrayList) {
+			((ArrayList<T>) list).trimToSize();
+		}
+		return list;
 	}
 
 }

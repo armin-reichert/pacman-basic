@@ -23,9 +23,9 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.world;
 
+import static de.amr.games.pacman.lib.Misc.trim;
 import static java.util.function.Predicate.not;
 
-import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Collections;
 import java.util.List;
@@ -71,9 +71,9 @@ public class MapBasedWorld implements PacManGameWorld {
 		house = new DefaultGhostHouse(map.vector("house_top_left"),
 				map.vector("house_bottom_right").minus(map.vector("house_top_left")));
 		house.entryTile = map.vector("house_entry");
-		house.seatTiles = Arrays.asList(map.vector("house_seat_left"), map.vector("house_seat_center"),
+		house.seatTiles = List.of(map.vector("house_seat_left"), map.vector("house_seat_center"),
 				map.vector("house_seat_right"));
-		house.doorTiles = tiles().filter(this::isGhostHouseDoor).collect(Collectors.toList());
+		house.doorTiles = trim(tiles().filter(this::isGhostHouseDoor).collect(Collectors.toList()));
 
 		pacman_home = map.vector("pacman_home");
 		pacman_start_dir = map.vector("pacman_start_dir");
@@ -83,10 +83,10 @@ public class MapBasedWorld implements PacManGameWorld {
 		scatterTiles = map.vectorList("scatter");
 		upwardsBlockedTiles = map.vectorList("upwards_blocked");
 
-		portals = IntStream.range(0, size.y)
+		portals = trim(IntStream.range(0, size.y)
 				.filter(y -> map.data(0, y) == WorldMap.TUNNEL && map.data(size.x - 1, y) == WorldMap.TUNNEL).boxed()
 				.map(y -> new Portal(new V2i(-1, y), new V2i(size.x, y))) //
-				.collect(Collectors.toList());
+				.collect(Collectors.toList()));
 
 		intersections = new BitSet();
 		tiles() //
@@ -96,7 +96,7 @@ public class MapBasedWorld implements PacManGameWorld {
 				.map(this::index) //
 				.forEach(intersections::set);
 
-		energizerTiles = tiles().filter(tile -> map.data(tile) == WorldMap.ENERGIZER).collect(Collectors.toList());
+		energizerTiles = trim(tiles().filter(tile -> map.data(tile) == WorldMap.ENERGIZER).collect(Collectors.toList()));
 	}
 
 	private boolean isGhostHouseDoor(V2i tile) {

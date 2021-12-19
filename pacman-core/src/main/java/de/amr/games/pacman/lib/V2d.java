@@ -53,7 +53,7 @@ public class V2d {
 		if (getClass() != obj.getClass())
 			return false;
 		V2d other = (V2d) obj;
-		return MathFunctions.differsAtMost(x, other.x, EPSILON) && MathFunctions.differsAtMost(y, other.y, EPSILON);
+		return Misc.differsAtMost(x, other.x, EPSILON) && Misc.differsAtMost(y, other.y, EPSILON);
 	}
 
 	@Override

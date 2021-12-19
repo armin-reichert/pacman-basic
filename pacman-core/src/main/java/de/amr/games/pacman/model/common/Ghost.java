@@ -29,7 +29,7 @@ import static de.amr.games.pacman.model.world.PacManGameWorld.t;
 import java.util.function.Supplier;
 
 import de.amr.games.pacman.lib.Direction;
-import de.amr.games.pacman.lib.MathFunctions;
+import de.amr.games.pacman.lib.Misc;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
 
@@ -95,7 +95,7 @@ public class Ghost extends Creature {
 	}
 
 	public boolean atGhostHouseDoor() {
-		return tile().equals(world.ghostHouse().entryTile()) && MathFunctions.differsAtMost(offset().x, HTS, 2);
+		return tile().equals(world.ghostHouse().entryTile()) && Misc.differsAtMost(offset().x, HTS, 2);
 	}
 
 	/**
@@ -178,7 +178,7 @@ public class Ghost extends Creature {
 		V2i tile = tile();
 		V2d offset = offset();
 		// House left? Resume hunting.
-		if (tile.equals(world.ghostHouse().entryTile()) && MathFunctions.differsAtMost(offset.y, 0, 1)) {
+		if (tile.equals(world.ghostHouse().entryTile()) && Misc.differsAtMost(offset.y, 0, 1)) {
 			setOffset(HTS, 0);
 			setDir(Direction.LEFT);
 			setWishDir(Direction.LEFT);
@@ -189,7 +189,7 @@ public class Ghost extends Creature {
 		V2i middleSeat = world.ghostHouse().seat(1);
 		int center = t(middleSeat.x) + HTS;
 		int ground = t(middleSeat.y) + HTS;
-		if (MathFunctions.differsAtMost(position.x, center, 1)) {
+		if (Misc.differsAtMost(position.x, center, 1)) {
 			setOffset(HTS, offset.y);
 			setDir(Direction.UP);
 			setWishDir(Direction.UP);
