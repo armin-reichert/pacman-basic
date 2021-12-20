@@ -11,7 +11,7 @@ The implementation follows the Model-View-Controller design pattern:
 
 <img src="pacman-core/doc/PacManGame.vpd.png">
 
-The strict separation should enable developers to create different user interfaces for Pac-Man and Ms. Pac-Man without having to recreate the details of the game logic. 
+The MVC design allows to implement different user interfaces for Pac-Man and Ms. Pac-Man without having to recreate the details of the game logic. 
 
 As proof of concept I implemented the following two UI variants: 
 - A Swing UI implementation, see repository [pacman-ui-swing](https://github.com/armin-reichert/pacman-ui-swing).
