@@ -42,7 +42,7 @@ import de.amr.games.pacman.model.pacman.entities.Bonus;
 import de.amr.games.pacman.model.world.PacManGameWorld;
 
 /**
- * Common part of all game models.
+ * Common part of the Pac-Man and Ms. Pac-Man game models.
  * 
  * @author Armin Reichert
  */
@@ -50,16 +50,16 @@ public abstract class GameModel {
 
 	public static final int RED_GHOST = 0, PINK_GHOST = 1, CYAN_GHOST = 2, ORANGE_GHOST = 3;
 
-	private static float percent(Object value) {
-		return ((int) value) / 100f;
+	private static float percent(Object intValue) {
+		return ((int) intValue) / 100f;
 	}
 
 	//@formatter:off
 	public final long[][] HUNTING_PHASE_TICKS = {
-  // scatter  chase   scatter  chase  scatter  chase    scatter  chase
-   { 7*60,    20*60,  7*60,    20*60, 5*60,      20*60, 5*60,    TickTimer.INDEFINITE },
-   { 7*60,    20*60,  7*60,    20*60, 5*60,    1033*60,    1,    TickTimer.INDEFINITE },
-   { 5*60,    20*60,  5*60,    20*60, 5*60,    1037*60,    1,    TickTimer.INDEFINITE },
+	  // scatter  chase   scatter  chase  scatter  chase    scatter  chase
+	   { 7*60,    20*60,  7*60,    20*60, 5*60,      20*60, 5*60,    TickTimer.INDEFINITE },
+	   { 7*60,    20*60,  7*60,    20*60, 5*60,    1033*60,    1,    TickTimer.INDEFINITE },
+	   { 5*60,    20*60,  5*60,    20*60, 5*60,    1037*60,    1,    TickTimer.INDEFINITE },
 	};
 	//@formatter:on
 
@@ -103,7 +103,6 @@ public abstract class GameModel {
 
 	public int numFlashes;
 
-	// food
 	private BitSet eaten;
 
 	public int totalFoodCount;
@@ -124,12 +123,6 @@ public abstract class GameModel {
 
 	public int numGhostsKilled;
 
-	public int hiscoreLevel;
-
-	public int hiscorePoints;
-
-	public String hiscoreFilename;
-
 	public int pelletValue;
 
 	public int energizerValue;
@@ -144,8 +137,14 @@ public abstract class GameModel {
 
 	public boolean globalDotCounterEnabled;
 
+	public int hiscoreLevel;
+
+	public int hiscorePoints;
+
+	public String hiscoreFilename;
+
 	/**
-	 * Enters given game level.
+	 * Initializes model for given game level.
 	 * 
 	 * @param levelNumber 1-based level number
 	 */
