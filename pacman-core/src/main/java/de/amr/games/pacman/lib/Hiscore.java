@@ -36,7 +36,6 @@ import java.util.Properties;
  * Hiscore management.
  * 
  * @author Armin Reichert
- *
  */
 public class Hiscore {
 
@@ -53,7 +52,7 @@ public class Hiscore {
 		time = ZonedDateTime.now();
 	}
 
-	public void load() {
+	public Hiscore load() {
 		try (FileInputStream in = new FileInputStream(file)) {
 			Properties content = new Properties();
 			content.loadFromXML(in);
@@ -65,9 +64,10 @@ public class Hiscore {
 		} catch (Exception x) {
 			log("Could not load hiscore file");
 		}
+		return this;
 	}
 
-	public void save() {
+	public Hiscore save() {
 		Properties content = new Properties();
 		content.setProperty("points", String.valueOf(points));
 		content.setProperty("level", String.valueOf(level));
@@ -79,5 +79,6 @@ public class Hiscore {
 			log("Could not save hiscore");
 			x.printStackTrace(System.err);
 		}
+		return this;
 	}
 }

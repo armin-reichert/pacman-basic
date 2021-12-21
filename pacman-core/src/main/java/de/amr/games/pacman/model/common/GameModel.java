@@ -177,7 +177,7 @@ public abstract class GameModel {
 	public int hiscorePoints;
 
 	/** High score file of current game variant. */
-	public File hiscoreFile;
+	public File hiscorePath;
 
 	/**
 	 * Initializes model for given game level.
@@ -352,9 +352,7 @@ public abstract class GameModel {
 	}
 
 	private Hiscore loadHiscore() {
-		Hiscore hiscore = new Hiscore(hiscoreFile);
-		hiscore.load();
-		return hiscore;
+		return new Hiscore(hiscorePath).load();
 	}
 
 	public int eatenFoodCount() {
