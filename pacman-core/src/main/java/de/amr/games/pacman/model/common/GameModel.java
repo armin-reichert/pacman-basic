@@ -50,6 +50,9 @@ public abstract class GameModel {
 
 	public static final int RED_GHOST = 0, PINK_GHOST = 1, CYAN_GHOST = 2, ORANGE_GHOST = 3;
 
+	/** Speed in pixels / tick at 100%. */
+	public static double BASE_SPEED = 1.25;
+
 	private static float percent(Object intValue) {
 		return ((int) intValue) / 100f;
 	}

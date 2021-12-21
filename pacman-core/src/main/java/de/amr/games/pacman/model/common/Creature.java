@@ -44,8 +44,6 @@ import de.amr.games.pacman.model.world.Portal;
  */
 public class Creature extends GameEntity {
 
-	public static final double BASE_SPEED = 1.25; // pixel per frame at 100% speed
-
 	private static final Direction[] TURN_PRIORITY = { Direction.UP, Direction.LEFT, Direction.DOWN, Direction.RIGHT };
 
 	/** Readable name, for display and logging purposes. */
@@ -53,6 +51,9 @@ public class Creature extends GameEntity {
 
 	/** The world where this creature lives. */
 	public PacManGameWorld world;
+
+	/** Number of pixels/second the creature moves at 100% speed. */
+	public final double baseSpeed = GameModel.BASE_SPEED;
 
 	/** The current move direction. */
 	protected Direction dir = Direction.RIGHT;
@@ -144,8 +145,13 @@ public class Creature extends GameEntity {
 		return wishDir;
 	}
 
+	/**
+	 * Sets the fraction of the base speed. See {@link GameModel#BASE_SPEED}.
+	 * 
+	 * @param fraction fraction of base speed
+	 */
 	public void setSpeed(double fraction) {
-		velocity = new V2d(dir.vec).scaled(fraction * BASE_SPEED);
+		velocity = new V2d(dir.vec).scaled(fraction * baseSpeed);
 	}
 
 	public boolean canAccessTile(V2i tile) {
