@@ -80,70 +80,103 @@ public abstract class GameModel {
 	/** 1-based map number */
 	public int mapNumber;
 
+	/** World of current level. */
 	public PacManGameWorld world;
 
+	/** Bonus symbol of current level. */
 	public String bonusSymbol;
 
+	/** Relative player speed at current level. */
 	public float playerSpeed;
 
+	/** Relative ghost speed at current level. */
 	public float ghostSpeed;
 
+	/** Relative ghost speed when inside tunnel at current level. */
 	public float ghostSpeedTunnel;
 
+	/** Number of pellets left before player becomes "Cruise Elroy" at severity 1. */
 	public int elroy1DotsLeft;
 
+	/** Relative speed of player being "Cruise Elroy" at severity 1. */
 	public float elroy1Speed;
 
+	/** Number of pellets left before player becomes "Cruise Elroy" at severity 2. */
 	public int elroy2DotsLeft;
 
+	/** Relative speed of player being "Cruise Elroy" at severity 2. */
 	public float elroy2Speed;
 
+	/** Relative speed of player in power mode. */
 	public float playerSpeedPowered;
 
+	/** Relative speed of frightened ghost. */
 	public float ghostSpeedFrightened;
 
+	/** Number of seconds ghost are frightened at current level. */
 	public int ghostFrightenedSeconds;
 
+	/** Number of maze flashes at end of current level. */
 	public int numFlashes;
 
+	/** Set of tile indices with eaten food. */
 	private BitSet eaten;
 
+	/** Total number of pellets at current level. */
 	public int totalFoodCount;
 
+	/** Total number of energizer pellets at current level. */
 	public int energizerCount;
 
+	/** Total number of pellets remaining at current level. */
 	public int foodRemaining;
 
+	/** The player, Pac-Man or Ms. Pac-Man. */
 	public Pac player;
 
+	/** The four ghosts in order RED, PINK, CYAN, ORANGE. */
 	public Ghost[] ghosts;
 
+	/** The bonus entity. */
 	public Bonus bonus;
 
+	/** Number of player lives when the game starts. */
 	public int initialLives;
 
+	/** Game score. */
 	public int score;
 
+	/** Number of ghosts killed at the current level. */
 	public int numGhostsKilled;
 
+	/** Value of a simple pellet. */
 	public int pelletValue;
 
+	/** Value of an energizer pellet. */
 	public int energizerValue;
 
+	/** Bounty for eating the next ghost. */
 	public int ghostBounty;
 
+	/** Bounty for eating the first ghost after Pac-Man entered power mode. */
 	public int firstGhostBounty;
 
+	/** List of collected level symbols. */
 	public List<String> levelCounter = new ArrayList<>();
 
+	/** Counter used by ghost house logic. */
 	public int globalDotCounter;
 
+	/** Enabled state of the counter used by ghost house logic. */
 	public boolean globalDotCounterEnabled;
 
+	/** Level at which current high score has been reached. */
 	public int hiscoreLevel;
 
+	/** Points scored at current high score. */
 	public int hiscorePoints;
 
+	/** High score file name of current game variant. */
 	public String hiscoreFilename;
 
 	/**
