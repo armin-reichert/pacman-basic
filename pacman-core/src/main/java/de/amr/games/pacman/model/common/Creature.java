@@ -53,7 +53,7 @@ public class Creature extends GameEntity {
 	public PacManGameWorld world;
 
 	/** Number of pixels/second the creature moves at 100% speed. */
-	public final double baseSpeed = GameModel.BASE_SPEED;
+	public double baseSpeed = GameModel.BASE_SPEED;
 
 	/** The current move direction. */
 	protected Direction dir = Direction.RIGHT;
