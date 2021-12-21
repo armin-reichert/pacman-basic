@@ -26,6 +26,7 @@ package de.amr.games.pacman.model.mspacman;
 import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.lib.TickTimer.sec_to_ticks;
 
+import java.io.File;
 import java.util.Random;
 
 import de.amr.games.pacman.model.common.GameModel;
@@ -87,10 +88,10 @@ public class MsPacManGame extends GameModel {
 /*@formatter:on*/
 
 	public MsPacManGame() {
-		super("highscore-ms_pacman.xml");
 		player = new Pac("Ms. Pac-Man");
 		ghosts = createGhosts("Blinky", "Pinky", "Inky", "Sue");
 		bonus = new MovingBonus();
+		hiscoreFile = new File(System.getProperty("user.home"), "highscore-ms_pacman.xml");
 	}
 
 	@Override

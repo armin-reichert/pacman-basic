@@ -176,8 +176,8 @@ public abstract class GameModel {
 	/** Points scored at current high score. */
 	public int hiscorePoints;
 
-	/** High score file name of current game variant. */
-	public String hiscoreFilename;
+	/** High score file of current game variant. */
+	public File hiscoreFile;
 
 	/**
 	 * Initializes model for given game level.
@@ -192,8 +192,7 @@ public abstract class GameModel {
 	 */
 	public abstract int bonusValue(String symbolName);
 
-	protected GameModel(String hiscoreFilename) {
-		this.hiscoreFilename = hiscoreFilename;
+	protected GameModel() {
 		initialLives = 3;
 		pelletValue = 10;
 		energizerValue = 50;
@@ -353,8 +352,7 @@ public abstract class GameModel {
 	}
 
 	private Hiscore loadHiscore() {
-		File dir = new File(System.getProperty("user.home"));
-		Hiscore hiscore = new Hiscore(new File(dir, hiscoreFilename));
+		Hiscore hiscore = new Hiscore(hiscoreFile);
 		hiscore.load();
 		return hiscore;
 	}

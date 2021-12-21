@@ -27,6 +27,8 @@ import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.lib.TickTimer.sec_to_ticks;
 import static de.amr.games.pacman.model.world.PacManGameWorld.HTS;
 
+import java.io.File;
+
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
@@ -78,13 +80,13 @@ public class PacManGame extends GameModel {
 /*@formatter:on*/
 
 	public PacManGame() {
-		super("highscore-pacman.xml");
 		mazeNumber = 1;
 		mapNumber = 1;
 		world = new MapBasedWorld("/pacman/maps/map1.txt");
 		player = new Pac("Pac-Man");
 		ghosts = createGhosts("Blinky", "Pinky", "Inky", "Clyde");
 		bonus = new Bonus();
+		hiscoreFile = new File(System.getProperty("user.home"), "highscore-pacman.xml");
 	}
 
 	@Override
