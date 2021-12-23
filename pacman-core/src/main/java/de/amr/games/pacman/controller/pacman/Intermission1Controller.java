@@ -26,8 +26,9 @@ package de.amr.games.pacman.controller.pacman;
 import static de.amr.games.pacman.model.world.PacManGameWorld.t;
 
 import de.amr.games.pacman.controller.PacManGameController;
+import de.amr.games.pacman.controller.pacman.Intermission1Controller.IntermissionState;
 import de.amr.games.pacman.lib.Direction;
-import de.amr.games.pacman.lib.TickTimer;
+import de.amr.games.pacman.lib.FiniteStateMachine;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.GhostState;
@@ -38,28 +39,28 @@ import de.amr.games.pacman.model.common.Pac;
  * 
  * @author Armin Reichert
  */
-public abstract class Intermission1Controller {
+public abstract class Intermission1Controller extends FiniteStateMachine<IntermissionState> {
 
-	public enum Phase {
+	public enum IntermissionState {
 		BLINKY_CHASING_PACMAN, BIGPACMAN_CHASING_BLINKY
 	}
 
-	public static final int groundY = t(20);
-
-	public final TickTimer timer = new TickTimer(getClass().getSimpleName() + "-timer");
+	public final int groundY = t(20);
 	public final PacManGameController gameController;
-
 	public Ghost blinky;
 	public Pac pac;
 
-	public Phase phase;
-
 	public Intermission1Controller(PacManGameController gameController) {
+		super(IntermissionState.values());
+		configState(IntermissionState.BLINKY_CHASING_PACMAN, () -> startStateTimer(5),
+				this::state_BLINKY_CHASING_PACMAN_update, null);
+		configState(IntermissionState.BIGPACMAN_CHASING_BLINKY, () -> startStateTimer(7),
+				this::state_BIGPACMAN_CHASING_BLINKY_update, null);
 		this.gameController = gameController;
 	}
 
 	/**
-	 * Plays the sound for this intermission scene, differs for Pac-Man and Ms. Pac-Man.
+	 * UI provides implementation.
 	 */
 	public abstract void playIntermissionSound();
 
@@ -79,47 +80,41 @@ public abstract class Intermission1Controller {
 		blinky.state = GhostState.HUNTING_PAC;
 
 		playIntermissionSound();
+		changeState(IntermissionState.BLINKY_CHASING_PACMAN);
+	}
 
-		phase = Phase.BLINKY_CHASING_PACMAN;
-		timer.resetSeconds(5);
-		timer.start();
+	private void startStateTimer(double seconds) {
+		stateTimer().resetSeconds(seconds);
+		stateTimer().start();
 	}
 
 	public void update() {
-		switch (phase) {
+		updateState();
+	}
 
-		case BLINKY_CHASING_PACMAN:
+	private void state_BLINKY_CHASING_PACMAN_update() {
+		pac.move();
+		blinky.move();
+		if (stateTimer().hasExpired()) {
+			changeState(IntermissionState.BIGPACMAN_CHASING_BLINKY);
+		}
+	}
+
+	private void state_BIGPACMAN_CHASING_BLINKY_update() {
+		if (stateTimer().hasJustStarted()) {
+			blinky.setPosition(-t(2), groundY);
+			blinky.setWishDir(Direction.RIGHT);
+			blinky.setDir(Direction.RIGHT);
+			blinky.setSpeed(1.0);
+			blinky.state = GhostState.FRIGHTENED;
+			pac.setDir(Direction.RIGHT);
+			pac.setSpeed(1.3);
+			pac.position = blinky.position.plus(-t(13), 0);
+		} else if (stateTimer().hasExpired()) {
+			gameController.stateTimer().expire();
+		} else {
 			pac.move();
 			blinky.move();
-			timer.tick();
-			if (timer.hasExpired()) {
-				phase = Phase.BIGPACMAN_CHASING_BLINKY;
-				timer.resetSeconds(7);
-				timer.start();
-			}
-			break;
-
-		case BIGPACMAN_CHASING_BLINKY:
-			pac.move();
-			blinky.move();
-			timer.tick();
-			if (timer.hasJustStarted()) {
-				blinky.setPosition(-t(2), groundY);
-				blinky.setWishDir(Direction.RIGHT);
-				blinky.setDir(Direction.RIGHT);
-				blinky.setSpeed(1.0);
-				blinky.state = GhostState.FRIGHTENED;
-				pac.setDir(Direction.RIGHT);
-				pac.setSpeed(1.3);
-				pac.position = blinky.position.plus(-t(13), 0);
-			}
-			if (timer.hasExpired()) {
-				gameController.stateTimer().expire();
-			}
-			break;
-
-		default:
-			throw new IllegalStateException("Illegal phase: " + phase);
 		}
 	}
 }
