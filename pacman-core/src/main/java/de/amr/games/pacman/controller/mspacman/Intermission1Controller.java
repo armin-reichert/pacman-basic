@@ -29,7 +29,6 @@ import de.amr.games.pacman.controller.PacManGameController;
 import de.amr.games.pacman.controller.mspacman.Intermission1Controller.IntermissonState;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.FiniteStateMachine;
-import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.common.GameEntity;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Ghost;
@@ -55,8 +54,6 @@ public abstract class Intermission1Controller extends FiniteStateMachine<Intermi
 	public static final int upperY = t(12), lowerY = t(24), middleY = t(18);
 
 	public final PacManGameController gameController;
-	public final TickTimer timer = new TickTimer(getClass().getSimpleName() + "-timer");
-	public IntermissonState phase;
 	public Flap flap;
 	public Pac pacMan, msPac;
 	public Ghost pinky, inky;
@@ -65,12 +62,20 @@ public abstract class Intermission1Controller extends FiniteStateMachine<Intermi
 
 	public Intermission1Controller(PacManGameController gameController) {
 		super(IntermissonState.values());
+		configState(IntermissonState.FLAP, () -> startStateTimer(2), this::state_FLAP_update, null);
+		configState(IntermissonState.CHASED_BY_GHOSTS, null, this::state_CHASED_BY_GHOSTS_update, null);
+		configState(IntermissonState.COMING_TOGETHER, null, this::state_COMING_TOGETHER_update, null);
+		configState(IntermissonState.READY_TO_PLAY, () -> startStateTimer(4), this::state_READY_TO_PLAY_update, null);
 		this.gameController = gameController;
 	}
 
 	public abstract void playIntermissionSound();
 
 	public abstract void playFlapAnimation();
+
+	public void update() {
+		updateState();
+	}
 
 	public void init() {
 		flap = new Flap(1, "THEY MEET");
@@ -102,116 +107,87 @@ public abstract class Intermission1Controller extends FiniteStateMachine<Intermi
 		heart = new GameEntity();
 		ghostsMet = false;
 
-		enterSeconds(IntermissonState.FLAP, 2);
+		changeState(IntermissonState.FLAP);
 	}
 
-	private void enter(IntermissonState newPhase) {
-		phase = newPhase;
-		timer.reset();
-		timer.start();
+	private void startStateTimer(double seconds) {
+		stateTimer().resetSeconds(seconds);
+		stateTimer().start();
 	}
 
-	private void enterSeconds(IntermissonState newPhase, double seconds) {
-		phase = newPhase;
-		timer.resetSeconds(seconds);
-		timer.start();
-	}
-
-	public void update() {
-		switch (phase) {
-
-		case FLAP:
-			if (timer.isRunningSeconds(1)) {
-				playFlapAnimation();
-			}
-			if (timer.hasExpired()) {
-				flap.visible = false;
-				playIntermissionSound();
-				startChasedByGhosts();
-				return;
-			}
-			timer.tick();
-			break;
-
-		case CHASED_BY_GHOSTS:
-			inky.move();
-			pacMan.move();
-			pinky.move();
-			msPac.move();
-			if (inky.position.x > t(30)) {
-				startComingTogether();
-			}
-			timer.tick();
-			break;
-
-		case COMING_TOGETHER:
-			inky.move();
-			pinky.move();
-			pacMan.move();
-			msPac.move();
-			if (pacMan.dir() == Direction.LEFT && pacMan.position.x < t(15)) {
-				pacMan.setDir(Direction.UP);
-				msPac.setDir(Direction.UP);
-			}
-			if (pacMan.dir() == Direction.UP && pacMan.position.y < upperY) {
-				pacMan.setSpeed(0);
-				msPac.setSpeed(0);
-				pacMan.setDir(Direction.LEFT);
-				msPac.setDir(Direction.RIGHT);
-				heart.setPosition((pacMan.position.x + msPac.position.x) / 2, pacMan.position.y - t(2));
-				heart.visible = true;
-				inky.setSpeed(0);
-				pinky.setSpeed(0);
-				enterSeconds(IntermissonState.READY_TO_PLAY, 4);
-			}
-			if (!ghostsMet && inky.position.x - pinky.position.x < 16) {
-				ghostsMet = true;
-				inky.setDir(inky.dir().opposite());
-				inky.setWishDir(inky.dir());
-				inky.setSpeed(0.2);
-				pinky.setDir(pinky.dir().opposite());
-				pinky.setWishDir(pinky.dir());
-				pinky.setSpeed(0.2);
-			}
-			timer.tick();
-			break;
-
-		case READY_TO_PLAY:
-			if (timer.isRunningSeconds(2)) {
-				inky.visible = false;
-				pinky.visible = false;
-			}
-			if (timer.hasExpired()) {
-				gameController.stateTimer().expire();
-				return;
-			}
-			timer.tick();
-			break;
-
-		default:
-			break;
+	private void state_FLAP_update() {
+		if (stateTimer().isRunningSeconds(1)) {
+			playFlapAnimation();
+		}
+		if (stateTimer().hasExpired()) {
+			flap.visible = false;
+			playIntermissionSound();
+			pacMan.setSpeed(1.0);
+			msPac.setSpeed(1.0);
+			inky.setSpeed(1.0);
+			pinky.setSpeed(1.0);
+			changeState(IntermissonState.CHASED_BY_GHOSTS);
 		}
 	}
 
-	private void startChasedByGhosts() {
-		pacMan.setSpeed(1.0);
-		msPac.setSpeed(1.0);
-		inky.setSpeed(1.0);
-		pinky.setSpeed(1.0);
-		enter(IntermissonState.CHASED_BY_GHOSTS);
+	private void state_CHASED_BY_GHOSTS_update() {
+		inky.move();
+		pacMan.move();
+		pinky.move();
+		msPac.move();
+		if (inky.position.x > t(30)) {
+			msPac.setPosition(t(-2), middleY);
+			msPac.setDir(Direction.RIGHT);
+			pacMan.setPosition(t(30), middleY);
+			pacMan.setDir(Direction.LEFT);
+			inky.setPosition(t(33), middleY);
+			inky.setDir(Direction.LEFT);
+			inky.setWishDir(Direction.LEFT);
+			pinky.setPosition(t(-5), middleY);
+			pinky.setDir(Direction.RIGHT);
+			pinky.setWishDir(Direction.RIGHT);
+			changeState(IntermissonState.COMING_TOGETHER);
+		}
 	}
 
-	private void startComingTogether() {
-		msPac.setPosition(t(-2), middleY);
-		msPac.setDir(Direction.RIGHT);
-		pacMan.setPosition(t(30), middleY);
-		pacMan.setDir(Direction.LEFT);
-		inky.setPosition(t(33), middleY);
-		inky.setDir(Direction.LEFT);
-		inky.setWishDir(Direction.LEFT);
-		pinky.setPosition(t(-5), middleY);
-		pinky.setDir(Direction.RIGHT);
-		pinky.setWishDir(Direction.RIGHT);
-		enter(IntermissonState.COMING_TOGETHER);
+	private void state_COMING_TOGETHER_update() {
+		inky.move();
+		pinky.move();
+		pacMan.move();
+		msPac.move();
+		if (pacMan.dir() == Direction.LEFT && pacMan.position.x < t(15)) {
+			pacMan.setDir(Direction.UP);
+			msPac.setDir(Direction.UP);
+		}
+		if (pacMan.dir() == Direction.UP && pacMan.position.y < upperY) {
+			pacMan.setSpeed(0);
+			msPac.setSpeed(0);
+			pacMan.setDir(Direction.LEFT);
+			msPac.setDir(Direction.RIGHT);
+			heart.setPosition((pacMan.position.x + msPac.position.x) / 2, pacMan.position.y - t(2));
+			heart.visible = true;
+			inky.setSpeed(0);
+			pinky.setSpeed(0);
+			changeState(IntermissonState.READY_TO_PLAY);
+		}
+		if (!ghostsMet && inky.position.x - pinky.position.x < 16) {
+			ghostsMet = true;
+			inky.setDir(inky.dir().opposite());
+			inky.setWishDir(inky.dir());
+			inky.setSpeed(0.2);
+			pinky.setDir(pinky.dir().opposite());
+			pinky.setWishDir(pinky.dir());
+			pinky.setSpeed(0.2);
+		}
+	}
+
+	private void state_READY_TO_PLAY_update() {
+		if (stateTimer().isRunningSeconds(2)) {
+			inky.visible = false;
+			pinky.visible = false;
+		}
+		if (stateTimer().hasExpired()) {
+			gameController.stateTimer().expire();
+		}
 	}
 }
