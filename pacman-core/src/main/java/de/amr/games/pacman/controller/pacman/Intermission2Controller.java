@@ -26,8 +26,9 @@ package de.amr.games.pacman.controller.pacman;
 import static de.amr.games.pacman.model.world.PacManGameWorld.t;
 
 import de.amr.games.pacman.controller.PacManGameController;
+import de.amr.games.pacman.controller.pacman.Intermission2Controller.IntermissionState;
 import de.amr.games.pacman.lib.Direction;
-import de.amr.games.pacman.lib.TickTimer;
+import de.amr.games.pacman.lib.FiniteStateMachine;
 import de.amr.games.pacman.model.common.GameEntity;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Ghost;
@@ -39,29 +40,36 @@ import de.amr.games.pacman.model.common.Pac;
  * 
  * @author Armin Reichert
  */
-public abstract class Intermission2Controller {
+public abstract class Intermission2Controller extends FiniteStateMachine<IntermissionState> {
 
-	public enum Phase {
+	public enum IntermissionState {
 		WALKING, GETTING_STUCK, STUCK;
 	}
 
-	public static final int groundY = t(20);
-
-	public final TickTimer timer = new TickTimer(getClass().getSimpleName() + "-timer");
+	public final int groundY = t(20);
 	public final PacManGameController gameController;
-
 	public Ghost blinky;
 	public Pac pac;
 	public GameEntity nail;
 
-	public Phase phase;
-
 	public Intermission2Controller(PacManGameController gameController) {
+		super(IntermissionState.values());
+		configState(IntermissionState.WALKING, this::startStateTimer, this::state_WALKING_update, null);
+		configState(IntermissionState.GETTING_STUCK, this::startStateTimer, this::state_GETTING_STUCK_update, null);
+		configState(IntermissionState.STUCK, this::startStateTimer, this::state_STUCK_update, null);
 		this.gameController = gameController;
 	}
 
+	private void startStateTimer() {
+		stateTimer().start();
+	}
+
+	public void update() {
+		updateState();
+	}
+
 	/**
-	 * Plays the sound for this intermission scene, differs for Pac-Man and Ms. Pac-Man.
+	 * UI provides implementation.
 	 */
 	public abstract void playIntermissionSound();
 
@@ -85,60 +93,40 @@ public abstract class Intermission2Controller {
 		nail.setPosition(t(14), groundY - 1);
 
 		playIntermissionSound();
-
-		enter(Phase.WALKING);
-	}
-
-	public void enter(Phase nextPhase) {
-		phase = nextPhase;
-		timer.reset();
-		timer.start();
+		changeState(IntermissionState.WALKING);
 	}
 
 	public int nailDistance() {
 		return (int) (nail.position.x - blinky.position.x);
 	}
 
-	public void update() {
-		switch (phase) {
+	private void state_WALKING_update() {
+		blinky.move();
+		pac.move();
+		if (nailDistance() == 0) {
+			changeState(IntermissionState.GETTING_STUCK);
+		}
+	}
 
-		case WALKING:
-			blinky.move();
-			pac.move();
-			if (nailDistance() == 0) {
-				enter(Phase.GETTING_STUCK);
-			}
-			timer.tick();
-			break;
+	private void state_GETTING_STUCK_update() {
+		blinky.move();
+		pac.move();
+		int stretching = nailDistance() / 4;
+		blinky.setSpeed(0.3 - 0.1 * stretching);
+		if (stretching == 3) {
+			blinky.setSpeed(0);
+			blinky.setDir(Direction.UP);
+			changeState(IntermissionState.STUCK);
+		}
+	}
 
-		case GETTING_STUCK:
-			blinky.move();
-			pac.move();
-			int stretching = nailDistance() / 4;
-			blinky.setSpeed(0.3 - 0.1 * stretching);
-			if (stretching == 3) {
-				blinky.setSpeed(0);
-				blinky.setDir(Direction.UP);
-				enter(Phase.STUCK);
-			}
-			timer.tick();
-			break;
-
-		case STUCK:
-			blinky.move();
-			pac.move();
-			if (timer.isRunningSeconds(3)) {
-				blinky.setDir(Direction.RIGHT);
-			}
-			if (timer.isRunningSeconds(6)) {
-				gameController.stateTimer().expire();
-				return;
-			}
-			timer.tick();
-			break;
-
-		default:
-			throw new IllegalStateException("Illegal phase: " + phase);
+	private void state_STUCK_update() {
+		blinky.move();
+		pac.move();
+		if (stateTimer().isRunningSeconds(3)) {
+			blinky.setDir(Direction.RIGHT);
+		} else if (stateTimer().isRunningSeconds(6)) {
+			gameController.stateTimer().expire();
 		}
 	}
 }
