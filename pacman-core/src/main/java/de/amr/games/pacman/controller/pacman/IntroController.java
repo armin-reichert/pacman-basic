@@ -26,8 +26,9 @@ package de.amr.games.pacman.controller.pacman;
 import static de.amr.games.pacman.model.world.PacManGameWorld.t;
 
 import de.amr.games.pacman.controller.PacManGameController;
+import de.amr.games.pacman.controller.pacman.IntroController.IntroState;
 import de.amr.games.pacman.lib.Direction;
-import de.amr.games.pacman.lib.TickTimer;
+import de.amr.games.pacman.lib.FiniteStateMachine;
 import de.amr.games.pacman.lib.TimedSequence;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Ghost;
@@ -42,26 +43,22 @@ import de.amr.games.pacman.model.common.Pac;
  * 
  * @author Armin Reichert
  */
-public class IntroController {
+public class IntroController extends FiniteStateMachine<IntroState> {
 
 	public static class GhostPortrait {
-
 		public Ghost ghost;
 		public String character;
 		public boolean characterVisible;
 		public boolean nicknameVisible;
 	}
 
-	public enum Phase {
-
+	public enum IntroState {
 		BEGIN, PRESENTING_GHOST, CHASING_PAC, CHASING_GHOSTS, READY_TO_PLAY;
 	}
 
 	public static final int TOP_Y = t(6);
 
-	public final TickTimer timer = new TickTimer(getClass().getSimpleName() + "-timer");
 	public final PacManGameController gameController;
-
 	public final TimedSequence<Boolean> blinking = TimedSequence.pulse().frameDuration(20);
 	public GhostPortrait[] gallery;
 	public int selectedGhost;
@@ -69,16 +66,18 @@ public class IntroController {
 	public Pac pac;
 	public Ghost[] ghosts;
 
-	public Phase phase;
-
 	public IntroController(PacManGameController gameController) {
+		super(IntroState.values());
+		configState(IntroState.BEGIN, this::startStateTimer, this::state_BEGIN_update, null);
+		configState(IntroState.PRESENTING_GHOST, this::startStateTimer, this::state_PRESENTING_GHOST_update, null);
+		configState(IntroState.CHASING_PAC, this::startStateTimer, this::state_CHASING_PAC_update, null);
+		configState(IntroState.CHASING_GHOSTS, this::startStateTimer, this::state_CHASING_GHOSTS_update, null);
+		configState(IntroState.READY_TO_PLAY, this::startStateTimer, this::state_READY_TO_PLAY_update, null);
 		this.gameController = gameController;
 	}
 
-	private void enterPhase(Phase newPhase) {
-		phase = newPhase;
-		timer.reset();
-		timer.start();
+	private void startStateTimer() {
+		stateTimer().start();
 	}
 
 	public void init() {
@@ -124,7 +123,75 @@ public class IntroController {
 			ghost.setWishDir(Direction.LEFT);
 		}
 
-		enterPhase(Phase.BEGIN);
+		changeState(IntroState.BEGIN);
+	}
+
+	private void state_BEGIN_update() {
+		if (stateTimer().isRunningSeconds(2)) {
+			selectGhost(0);
+			changeState(IntroState.PRESENTING_GHOST);
+		}
+	}
+
+	private void state_PRESENTING_GHOST_update() {
+		if (stateTimer().isRunningSeconds(0.5)) {
+			gallery[selectedGhost].characterVisible = true;
+		}
+		if (stateTimer().isRunningSeconds(1)) {
+			gallery[selectedGhost].nicknameVisible = true;
+		}
+		if (stateTimer().isRunningSeconds(2)) {
+			if (selectedGhost < 3) {
+				selectGhost(selectedGhost + 1);
+				stateTimer().reset();
+				stateTimer().start();
+			} else {
+				startGhostsChasingPac();
+				changeState(IntroState.CHASING_PAC);
+			}
+		}
+	}
+
+	private void state_CHASING_PAC_update() {
+		if (pac.position.x < t(2)) {
+			startPacChasingGhosts();
+			changeState(IntroState.CHASING_GHOSTS);
+		}
+	}
+
+	private void state_CHASING_GHOSTS_update() {
+		if (pac.position.x > t(28)) {
+			changeState(IntroState.READY_TO_PLAY);
+		}
+		if (gameController.stateTimer().ticked() - ghostKilledTime == 15) {
+			ghostKilledTime = 0;
+			pac.visible = true;
+			pac.setSpeed(1.0);
+			for (Ghost ghost : ghosts) {
+				if (ghost.state == GhostState.DEAD) {
+					ghost.visible = false;
+				}
+			}
+		}
+		for (Ghost ghost : ghosts) {
+			if (pac.meets(ghost) && ghost.state != GhostState.DEAD) {
+				ghost.state = GhostState.DEAD;
+				ghost.bounty = (int) Math.pow(2, ghost.id + 1) * 100;
+				pac.visible = false;
+				pac.setSpeed(0);
+				ghostKilledTime = gameController.stateTimer().ticked();
+			}
+		}
+	}
+
+	private void state_READY_TO_PLAY_update() {
+		if (stateTimer().hasJustStarted()) {
+			blinking.restart();
+		}
+		if (stateTimer().isRunningSeconds(5)) {
+			gameController.stateTimer().expire();
+		}
+		blinking.animate();
 	}
 
 	public void update() {
@@ -132,86 +199,10 @@ public class IntroController {
 		for (Ghost ghost : ghosts) {
 			ghost.move();
 		}
-		switch (phase) {
-
-		case BEGIN:
-			if (timer.isRunningSeconds(2)) {
-				selectGhost(0);
-				enterPhase(Phase.PRESENTING_GHOST);
-			}
-			timer.tick();
-			break;
-
-		case PRESENTING_GHOST:
-			if (timer.isRunningSeconds(0.5)) {
-				gallery[selectedGhost].characterVisible = true;
-			}
-			if (timer.isRunningSeconds(1)) {
-				gallery[selectedGhost].nicknameVisible = true;
-			}
-			if (timer.isRunningSeconds(2)) {
-				if (selectedGhost < 3) {
-					selectGhost(selectedGhost + 1);
-					enterPhase(Phase.PRESENTING_GHOST);
-				} else {
-					startGhostsChasingPac();
-					enterPhase(Phase.CHASING_PAC);
-				}
-			}
-			timer.tick();
-			break;
-
-		case CHASING_PAC:
-			if (pac.position.x < t(2)) {
-				startPacChasingGhosts();
-				enterPhase(Phase.CHASING_GHOSTS);
-			}
-			timer.tick();
-			break;
-
-		case CHASING_GHOSTS:
-			if (pac.position.x > t(28)) {
-				enterPhase(Phase.READY_TO_PLAY);
-			}
-			if (gameController.stateTimer().ticked() - ghostKilledTime == 15) {
-				ghostKilledTime = 0;
-				pac.visible = true;
-				pac.setSpeed(1.0);
-				for (Ghost ghost : ghosts) {
-					if (ghost.state == GhostState.DEAD) {
-						ghost.visible = false;
-					}
-				}
-			}
-			for (Ghost ghost : ghosts) {
-				if (pac.meets(ghost) && ghost.state != GhostState.DEAD) {
-					ghost.state = GhostState.DEAD;
-					ghost.bounty = (int) Math.pow(2, ghost.id + 1) * 100;
-					pac.visible = false;
-					pac.setSpeed(0);
-					ghostKilledTime = gameController.stateTimer().ticked();
-				}
-			}
-			timer.tick();
-			break;
-
-		case READY_TO_PLAY:
-			if (timer.hasJustStarted()) {
-				blinking.restart();
-			}
-			if (timer.isRunningSeconds(5)) {
-				gameController.stateTimer().expire();
-			}
-			blinking.animate();
-			timer.tick();
-			break;
-
-		default:
-			break;
-		}
+		updateState();
 	}
 
-	public void startGhostsChasingPac() {
+	private void startGhostsChasingPac() {
 		pac.setPosition(t(28), t(22));
 		pac.visible = true;
 		pac.setSpeed(1.0);
@@ -230,7 +221,7 @@ public class IntroController {
 		blinking.restart();
 	}
 
-	public void startPacChasingGhosts() {
+	private void startPacChasingGhosts() {
 		pac.setDir(Direction.RIGHT);
 		for (Ghost ghost : ghosts) {
 			ghost.state = GhostState.FRIGHTENED;
@@ -240,7 +231,7 @@ public class IntroController {
 		}
 	}
 
-	public void selectGhost(int ghostIndex) {
+	private void selectGhost(int ghostIndex) {
 		selectedGhost = ghostIndex;
 		gallery[selectedGhost].ghost.visible = true;
 	}
