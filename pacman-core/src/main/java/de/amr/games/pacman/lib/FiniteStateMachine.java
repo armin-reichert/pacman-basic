@@ -49,7 +49,7 @@ public class FiniteStateMachine<STATE_ID extends Enum<STATE_ID>> {
 		public Runnable onEnter, onUpdate, onExit;
 
 		public State(String name) {
-			timer = new TickTimer(name + "-timer");
+			timer = new TickTimer("Timer-of-state-" + name);
 		}
 	}
 
@@ -59,7 +59,7 @@ public class FiniteStateMachine<STATE_ID extends Enum<STATE_ID>> {
 	public STATE_ID currentStateID;
 
 	private final Map<STATE_ID, State> statesByID;
-	private final List<BiConsumer<STATE_ID, STATE_ID>> changeListeners = new ArrayList<>();
+	private final List<BiConsumer<STATE_ID, STATE_ID>> stateChangeListeners = new ArrayList<>();
 
 	@SuppressWarnings("unchecked")
 	public FiniteStateMachine(STATE_ID[] stateIdentifiers) {
@@ -82,11 +82,11 @@ public class FiniteStateMachine<STATE_ID extends Enum<STATE_ID>> {
 	}
 
 	public void addStateChangeListener(BiConsumer<STATE_ID, STATE_ID> listener) {
-		changeListeners.add(listener);
+		stateChangeListeners.add(listener);
 	}
 
 	public void removeStateChangeListener(BiConsumer<STATE_ID, STATE_ID> listener) {
-		changeListeners.remove(listener);
+		stateChangeListeners.remove(listener);
 	}
 
 	public STATE_ID changeState(STATE_ID newStateID) {
@@ -121,7 +121,7 @@ public class FiniteStateMachine<STATE_ID extends Enum<STATE_ID>> {
 
 	protected void fireStateChange(STATE_ID oldState, STATE_ID newState) {
 		// copy list to avoid concurrent modification exceptions
-		new ArrayList<>(changeListeners).stream().forEach(listener -> listener.accept(oldState, newState));
+		new ArrayList<>(stateChangeListeners).stream().forEach(listener -> listener.accept(oldState, newState));
 	}
 
 	public void updateState() {
