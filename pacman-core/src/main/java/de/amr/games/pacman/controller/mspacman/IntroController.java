@@ -45,7 +45,6 @@ import de.amr.games.pacman.model.common.Pac;
 public class IntroController extends FiniteStateMachine<IntroState> {
 
 	public enum IntroState {
-
 		BEGIN, PRESENTING_GHOST, PRESENTING_MSPACMAN, WAITING_FOR_GAME;
 	}
 
@@ -64,8 +63,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 		configState(IntroState.BEGIN, this::startStateTimer, this::state_BEGIN_update, null);
 		configState(IntroState.PRESENTING_GHOST, this::startStateTimer, this::state_PRESENTING_GHOST_update, null);
 		configState(IntroState.PRESENTING_MSPACMAN, this::startStateTimer, this::state_PRESENTING_MSPACMAN_update, null);
-		configState(IntroState.WAITING_FOR_GAME, this::startStateTimer, this::state_WAITING_FOR_GAMESTART_update,
-				null);
+		configState(IntroState.WAITING_FOR_GAME, this::startStateTimer, this::state_WAITING_FOR_GAMESTART_update, null);
 		this.gameController = gameController;
 	}
 
@@ -77,27 +75,24 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 		msPacMan = new Pac("Ms. Pac-Man");
 		msPacMan.setDir(LEFT);
 		msPacMan.setPosition(t(37), t(tileBelowBoard));
-
 		ghosts = new Ghost[] { //
 				new Ghost(GameModel.RED_GHOST, "Blinky"), //
 				new Ghost(GameModel.PINK_GHOST, "Pinky"), //
 				new Ghost(GameModel.CYAN_GHOST, "Inky"), //
 				new Ghost(GameModel.ORANGE_GHOST, "Sue"),//
 		};
-
 		for (Ghost ghost : ghosts) {
 			ghost.setDir(LEFT);
 			ghost.setWishDir(LEFT);
 			ghost.setPosition(t(37), t(tileBelowBoard));
 			ghost.state = GhostState.HUNTING_PAC;
 		}
-
 		currentGhostIndex = -1;
-
 		changeState(IntroState.BEGIN);
 	}
 
 	private void startStateTimer() {
+		stateTimer().reset();
 		stateTimer().start();
 	}
 
@@ -119,8 +114,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 				changeState(IntroState.PRESENTING_MSPACMAN);
 			} else {
 				currentGhostIndex++;
-				stateTimer().reset();
-				stateTimer().start();
+				startStateTimer();
 			}
 		}
 		for (Ghost ghost : ghosts) {
