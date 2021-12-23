@@ -26,7 +26,9 @@ package de.amr.games.pacman.controller.mspacman;
 import static de.amr.games.pacman.model.world.PacManGameWorld.t;
 
 import de.amr.games.pacman.controller.PacManGameController;
+import de.amr.games.pacman.controller.mspacman.Intermission3Controller.IntermissionState;
 import de.amr.games.pacman.lib.Direction;
+import de.amr.games.pacman.lib.FiniteStateMachine;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.model.common.GameEntity;
@@ -44,17 +46,15 @@ import de.amr.games.pacman.model.mspacman.entities.JuniorBag;
  * 
  * @author Armin Reichert
  */
-public abstract class Intermission3Controller {
+public abstract class Intermission3Controller extends FiniteStateMachine<IntermissionState> {
 
-	public enum Phase {
+	public enum IntermissionState {
 		FLAP, ACTION, READY_TO_PLAY;
 	}
 
 	static final int GROUND_Y = t(24);
 
 	public final PacManGameController gameController;
-	public final TickTimer timer = new TickTimer(getClass().getSimpleName() + "-timer");
-	public Phase phase;
 	public Flap flap;
 	public Pac pacMan;
 	public Pac msPacMan;
@@ -63,23 +63,24 @@ public abstract class Intermission3Controller {
 	public int numBagBounces;
 
 	public Intermission3Controller(PacManGameController gameController) {
+		super(IntermissionState.values());
+		configState(IntermissionState.FLAP, () -> startStateTimer(1), this::state_FLAP_update, null);
+		configState(IntermissionState.ACTION, () -> startStateTimer(TickTimer.INDEFINITE), this::state_ACTION_update, null);
+		configState(IntermissionState.READY_TO_PLAY, () -> startStateTimer(3), this::state_READY_TO_PLAY_update, null);
 		this.gameController = gameController;
+	}
+
+	public void update() {
+		updateState();
 	}
 
 	public abstract void playIntermissionSound();
 
 	public abstract void playFlapAnimation();
 
-	private void enter(Phase newPhase) {
-		phase = newPhase;
-		timer.reset();
-		timer.start();
-	}
-
-	private void enterSeconds(Phase newPhase, double seconds) {
-		phase = newPhase;
-		timer.resetSeconds(seconds);
-		timer.start();
+	private void startStateTimer(double seconds) {
+		stateTimer().resetSeconds(seconds);
+		stateTimer().start();
 	}
 
 	public void init() {
@@ -103,64 +104,52 @@ public abstract class Intermission3Controller {
 		bag.open = false;
 		bag.position = stork.position.plus(-14, 3);
 
-		enter(Phase.FLAP);
+		changeState(IntermissionState.FLAP);
 	}
 
-	public void update() {
-		switch (phase) {
+	private void state_FLAP_update() {
+		if (stateTimer().isRunningSeconds(1)) {
+			playFlapAnimation();
+		} else if (stateTimer().isRunningSeconds(2)) {
+			flap.visible = false;
+			playIntermissionSound();
+			changeState(IntermissionState.ACTION);
+		}
+	}
 
-		case FLAP:
-			if (timer.isRunningSeconds(1)) {
-				playFlapAnimation();
-			} else if (timer.isRunningSeconds(2)) {
-				flap.visible = false;
-				playIntermissionSound();
-				enter(Phase.ACTION);
+	private void state_ACTION_update() {
+		stork.move();
+		bag.move();
+		if (stateTimer().hasJustStarted()) {
+			pacMan.visible = true;
+			msPacMan.visible = true;
+			stork.visible = true;
+			bag.visible = true;
+			stork.setVelocity(-1.25, 0);
+			bag.setVelocity(-1.25f, 0);
+		}
+		// release bag from storks beak?
+		if (bag.hold && (int) stork.position.x == t(24)) {
+			bag.hold = false;
+		}
+		// (closed) bag reaches ground for first time?
+		if (!bag.open && bag.position.y > GROUND_Y) {
+			++numBagBounces;
+			if (numBagBounces < 5) {
+				bag.setVelocity(-0.2f, -1f / numBagBounces);
+				bag.setPosition(bag.position.x, GROUND_Y);
+			} else {
+				bag.open = true;
+				bag.velocity = V2d.NULL;
+				changeState(IntermissionState.READY_TO_PLAY);
 			}
-			timer.tick();
-			break;
+		}
+	}
 
-		case ACTION:
-			if (timer.hasJustStarted()) {
-				pacMan.visible = true;
-				msPacMan.visible = true;
-				stork.visible = true;
-				bag.visible = true;
-				stork.setVelocity(-1.25, 0);
-				bag.setVelocity(-1.25f, 0);
-			}
-			// release bag from storks beak?
-			if (bag.hold && (int) stork.position.x == t(24)) {
-				bag.hold = false;
-			}
-			// (closed) bag reaches ground for first time?
-			if (!bag.open && bag.position.y > GROUND_Y) {
-				++numBagBounces;
-				if (numBagBounces < 5) {
-					bag.setVelocity(-0.2f, -1f / numBagBounces);
-					bag.setPosition(bag.position.x, GROUND_Y);
-				} else {
-					bag.open = true;
-					bag.velocity = V2d.NULL;
-					enterSeconds(Phase.READY_TO_PLAY, 3);
-				}
-			}
-			stork.move();
-			bag.move();
-			timer.tick();
-			break;
-
-		case READY_TO_PLAY:
-			if (timer.hasExpired()) {
-				gameController.stateTimer().expire();
-				return;
-			}
-			stork.move();
-			timer.tick();
-			break;
-
-		default:
-			break;
+	private void state_READY_TO_PLAY_update() {
+		stork.move();
+		if (stateTimer().hasExpired()) {
+			gameController.stateTimer().expire();
 		}
 	}
 }
