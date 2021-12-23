@@ -60,7 +60,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 	public final PacManGameController gameController;
 	public final TimedSequence<Boolean> blinking = TimedSequence.pulse().frameDuration(20);
 	public final GhostPortrait[] gallery = new GhostPortrait[4];;
-	public int selectedGhost;
+	public int selectedGhostIndex;
 	public long ghostKilledTime;
 	public Pac pac;
 	public Ghost[] ghosts;
@@ -74,7 +74,13 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 		configState(IntroState.READY_TO_PLAY, this::startStateTimer, this::state_READY_TO_PLAY_update, null);
 		this.gameController = gameController;
 		createGhostGallery();
-		createGuys();
+		pac = new Pac("Ms. Pac-Man");
+		ghosts = new Ghost[] { //
+				new Ghost(GameModel.RED_GHOST, "Blinky"), //
+				new Ghost(GameModel.PINK_GHOST, "Pinky"), //
+				new Ghost(GameModel.CYAN_GHOST, "Inky"), //
+				new Ghost(GameModel.ORANGE_GHOST, "Clyde"), //
+		};
 	}
 
 	private void startStateTimer() {
@@ -111,18 +117,16 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 		gallery[3].ghost.setPosition(t(2), topY + t(11));
 	}
 
-	private void createGuys() {
-		pac = new Pac("Ms. Pac-Man");
-		ghosts = new Ghost[] { //
-				new Ghost(GameModel.RED_GHOST, "Blinky"), //
-				new Ghost(GameModel.PINK_GHOST, "Pinky"), //
-				new Ghost(GameModel.CYAN_GHOST, "Inky"), //
-				new Ghost(GameModel.ORANGE_GHOST, "Clyde"), //
-		};
-	}
-
 	public void init() {
 		changeState(IntroState.BEGIN);
+	}
+
+	public void update() {
+		pac.move();
+		for (Ghost ghost : ghosts) {
+			ghost.move();
+		}
+		updateState();
 	}
 
 	private void state_BEGIN_update() {
@@ -134,43 +138,43 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 
 	private void state_PRESENTING_GHOST_update() {
 		if (stateTimer().isRunningSeconds(0.5)) {
-			gallery[selectedGhost].characterVisible = true;
+			gallery[selectedGhostIndex].characterVisible = true;
 		} else if (stateTimer().isRunningSeconds(1)) {
-			gallery[selectedGhost].nicknameVisible = true;
+			gallery[selectedGhostIndex].nicknameVisible = true;
 		} else if (stateTimer().isRunningSeconds(2)) {
-			if (selectedGhost < 3) {
-				selectGhost(selectedGhost + 1);
+			if (selectedGhostIndex < 3) {
+				selectGhost(selectedGhostIndex + 1);
 				stateTimer().reset();
 				stateTimer().start();
 			} else {
-				startGhostsChasingPac();
+				pac.setPosition(t(28), t(22));
+				pac.visible = true;
+				pac.setSpeed(1.0);
+				pac.setDir(Direction.LEFT);
+				pac.stuck = false;
+				for (Ghost ghost : ghosts) {
+					ghost.position = pac.position.plus(8 + (ghost.id + 1) * 18, 0);
+					ghost.visible = true;
+					ghost.setWishDir(Direction.LEFT);
+					ghost.setDir(Direction.LEFT);
+					ghost.setSpeed(1.05);
+					ghost.state = GhostState.HUNTING_PAC;
+				}
+				blinking.restart();
 				changeState(IntroState.CHASING_PAC);
 			}
 		}
 	}
 
-	private void startGhostsChasingPac() {
-		pac.setPosition(t(28), t(22));
-		pac.visible = true;
-		pac.setSpeed(1.0);
-		pac.setDir(Direction.LEFT);
-		pac.stuck = false;
-
-		for (Ghost ghost : ghosts) {
-			ghost.position = pac.position.plus(8 + (ghost.id + 1) * 18, 0);
-			ghost.visible = true;
-			ghost.setWishDir(Direction.LEFT);
-			ghost.setDir(Direction.LEFT);
-			ghost.setSpeed(1.05);
-			ghost.state = GhostState.HUNTING_PAC;
-		}
-
-		blinking.restart();
-	}
-
 	private void state_CHASING_PAC_update() {
 		if (pac.position.x < t(2)) {
-			startPacChasingGhosts();
+			pac.setDir(Direction.RIGHT);
+			for (Ghost ghost : ghosts) {
+				ghost.state = GhostState.FRIGHTENED;
+				ghost.setWishDir(Direction.RIGHT);
+				ghost.setDir(Direction.RIGHT);
+				ghost.setSpeed(0.5);
+			}
 			changeState(IntroState.CHASING_GHOSTS);
 		}
 	}
@@ -210,26 +214,8 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 		blinking.animate();
 	}
 
-	public void update() {
-		pac.move();
-		for (Ghost ghost : ghosts) {
-			ghost.move();
-		}
-		updateState();
-	}
-
-	private void startPacChasingGhosts() {
-		pac.setDir(Direction.RIGHT);
-		for (Ghost ghost : ghosts) {
-			ghost.state = GhostState.FRIGHTENED;
-			ghost.setWishDir(Direction.RIGHT);
-			ghost.setDir(Direction.RIGHT);
-			ghost.setSpeed(0.5);
-		}
-	}
-
-	private void selectGhost(int ghostIndex) {
-		selectedGhost = ghostIndex;
-		gallery[selectedGhost].ghost.visible = true;
+	private void selectGhost(int index) {
+		selectedGhostIndex = index;
+		gallery[selectedGhostIndex].ghost.visible = true;
 	}
 }
