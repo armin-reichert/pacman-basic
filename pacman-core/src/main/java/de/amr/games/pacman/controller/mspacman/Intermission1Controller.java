@@ -26,7 +26,9 @@ package de.amr.games.pacman.controller.mspacman;
 import static de.amr.games.pacman.model.world.PacManGameWorld.t;
 
 import de.amr.games.pacman.controller.PacManGameController;
+import de.amr.games.pacman.controller.mspacman.Intermission1Controller.IntermissonState;
 import de.amr.games.pacman.lib.Direction;
+import de.amr.games.pacman.lib.FiniteStateMachine;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.common.GameEntity;
 import de.amr.games.pacman.model.common.GameModel;
@@ -44,19 +46,17 @@ import de.amr.games.pacman.model.mspacman.entities.Flap;
  * 
  * @author Armin Reichert
  */
-public abstract class Intermission1Controller {
+public abstract class Intermission1Controller extends FiniteStateMachine<IntermissonState> {
 
-	public enum Phase {
-
+	public enum IntermissonState {
 		FLAP, CHASED_BY_GHOSTS, COMING_TOGETHER, READY_TO_PLAY;
-
 	}
 
 	public static final int upperY = t(12), lowerY = t(24), middleY = t(18);
 
 	public final PacManGameController gameController;
 	public final TickTimer timer = new TickTimer(getClass().getSimpleName() + "-timer");
-	public Phase phase;
+	public IntermissonState phase;
 	public Flap flap;
 	public Pac pacMan, msPac;
 	public Ghost pinky, inky;
@@ -64,6 +64,7 @@ public abstract class Intermission1Controller {
 	public boolean ghostsMet;
 
 	public Intermission1Controller(PacManGameController gameController) {
+		super(IntermissonState.values());
 		this.gameController = gameController;
 	}
 
@@ -101,16 +102,16 @@ public abstract class Intermission1Controller {
 		heart = new GameEntity();
 		ghostsMet = false;
 
-		enterSeconds(Phase.FLAP, 2);
+		enterSeconds(IntermissonState.FLAP, 2);
 	}
 
-	private void enter(Phase newPhase) {
+	private void enter(IntermissonState newPhase) {
 		phase = newPhase;
 		timer.reset();
 		timer.start();
 	}
 
-	private void enterSeconds(Phase newPhase, double seconds) {
+	private void enterSeconds(IntermissonState newPhase, double seconds) {
 		phase = newPhase;
 		timer.resetSeconds(seconds);
 		timer.start();
@@ -161,7 +162,7 @@ public abstract class Intermission1Controller {
 				heart.visible = true;
 				inky.setSpeed(0);
 				pinky.setSpeed(0);
-				enterSeconds(Phase.READY_TO_PLAY, 4);
+				enterSeconds(IntermissonState.READY_TO_PLAY, 4);
 			}
 			if (!ghostsMet && inky.position.x - pinky.position.x < 16) {
 				ghostsMet = true;
@@ -192,15 +193,15 @@ public abstract class Intermission1Controller {
 		}
 	}
 
-	public void startChasedByGhosts() {
+	private void startChasedByGhosts() {
 		pacMan.setSpeed(1.0);
 		msPac.setSpeed(1.0);
 		inky.setSpeed(1.0);
 		pinky.setSpeed(1.0);
-		enter(Phase.CHASED_BY_GHOSTS);
+		enter(IntermissonState.CHASED_BY_GHOSTS);
 	}
 
-	public void startComingTogether() {
+	private void startComingTogether() {
 		msPac.setPosition(t(-2), middleY);
 		msPac.setDir(Direction.RIGHT);
 		pacMan.setPosition(t(30), middleY);
@@ -211,6 +212,6 @@ public abstract class Intermission1Controller {
 		pinky.setPosition(t(-5), middleY);
 		pinky.setDir(Direction.RIGHT);
 		pinky.setWishDir(Direction.RIGHT);
-		enter(Phase.COMING_TOGETHER);
+		enter(IntermissonState.COMING_TOGETHER);
 	}
 }
