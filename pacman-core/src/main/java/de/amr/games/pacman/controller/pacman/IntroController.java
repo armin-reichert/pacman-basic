@@ -122,11 +122,6 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 	}
 
 	public void init() {
-		pac.setDir(Direction.LEFT);
-		for (Ghost ghost : ghosts) {
-			ghost.setDir(Direction.LEFT);
-			ghost.setWishDir(Direction.LEFT);
-		}
 		changeState(IntroState.BEGIN);
 	}
 
@@ -152,6 +147,25 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 				changeState(IntroState.CHASING_PAC);
 			}
 		}
+	}
+
+	private void startGhostsChasingPac() {
+		pac.setPosition(t(28), t(22));
+		pac.visible = true;
+		pac.setSpeed(1.0);
+		pac.setDir(Direction.LEFT);
+		pac.stuck = false;
+
+		for (Ghost ghost : ghosts) {
+			ghost.position = pac.position.plus(8 + (ghost.id + 1) * 18, 0);
+			ghost.visible = true;
+			ghost.setWishDir(Direction.LEFT);
+			ghost.setDir(Direction.LEFT);
+			ghost.setSpeed(1.05);
+			ghost.state = GhostState.HUNTING_PAC;
+		}
+
+		blinking.restart();
 	}
 
 	private void state_CHASING_PAC_update() {
@@ -202,25 +216,6 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 			ghost.move();
 		}
 		updateState();
-	}
-
-	private void startGhostsChasingPac() {
-		pac.setPosition(t(28), t(22));
-		pac.visible = true;
-		pac.setSpeed(1.0);
-		pac.setDir(Direction.LEFT);
-		pac.stuck = false;
-
-		for (Ghost ghost : ghosts) {
-			ghost.position = pac.position.plus(8 + (ghost.id + 1) * 18, 0);
-			ghost.visible = true;
-			ghost.setWishDir(Direction.LEFT);
-			ghost.setDir(Direction.LEFT);
-			ghost.setSpeed(1.05);
-			ghost.state = GhostState.HUNTING_PAC;
-		}
-
-		blinking.restart();
 	}
 
 	private void startPacChasingGhosts() {
