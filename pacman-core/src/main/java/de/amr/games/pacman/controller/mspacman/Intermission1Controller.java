@@ -51,8 +51,7 @@ public abstract class Intermission1Controller extends FiniteStateMachine<Intermi
 		FLAP, CHASED_BY_GHOSTS, COMING_TOGETHER, READY_TO_PLAY;
 	}
 
-	public static final int upperY = t(12), lowerY = t(24), middleY = t(18);
-
+	public final int upperY = t(12), lowerY = t(24), middleY = t(18);
 	public final PacManGameController gameController;
 	public Flap flap;
 	public Pac pacMan, msPac;
