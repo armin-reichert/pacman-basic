@@ -26,8 +26,9 @@ package de.amr.games.pacman.controller.pacman;
 import static de.amr.games.pacman.model.world.PacManGameWorld.t;
 
 import de.amr.games.pacman.controller.PacManGameController;
+import de.amr.games.pacman.controller.pacman.Intermission3Controller.IntermissionState;
 import de.amr.games.pacman.lib.Direction;
-import de.amr.games.pacman.lib.TickTimer;
+import de.amr.games.pacman.lib.FiniteStateMachine;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.GhostState;
@@ -39,28 +40,31 @@ import de.amr.games.pacman.model.common.Pac;
  * 
  * @author Armin Reichert
  */
-public abstract class Intermission3Controller {
+public abstract class Intermission3Controller extends FiniteStateMachine<IntermissionState> {
 
-	public enum Phase {
+	public enum IntermissionState {
 		CHASING_PACMAN, RETURNING_HALF_NAKED;
 	}
 
-	public static final int groundY = t(20);
-
-	public final TickTimer timer = new TickTimer(getClass().getSimpleName() + "-timer");
+	public final int groundY = t(20);
 	public final PacManGameController gameController;
-
 	public Ghost blinky;
 	public Pac pac;
 
-	public Phase phase;
-
 	public Intermission3Controller(PacManGameController gameController) {
+		super(IntermissionState.values());
+		configState(IntermissionState.CHASING_PACMAN, this::startStateTimer, this::state_CHASING_PACMAN_update, null);
+		configState(IntermissionState.RETURNING_HALF_NAKED, this::startStateTimer, this::state_RETURNING_HALF_NAKED_update,
+				null);
 		this.gameController = gameController;
 	}
 
+	public void update() {
+		updateState();
+	}
+
 	/**
-	 * Plays the sound for this intermission scene, differs for Pac-Man and Ms. Pac-Man.
+	 * UI provides implementation.
 	 */
 	public abstract void playIntermissionSound();
 
@@ -80,34 +84,30 @@ public abstract class Intermission3Controller {
 		blinky.state = GhostState.HUNTING_PAC;
 
 		playIntermissionSound();
-
-		phase = Phase.CHASING_PACMAN;
+		changeState(IntermissionState.CHASING_PACMAN);
 	}
 
-	public void update() {
-		switch (phase) {
+	private void startStateTimer() {
+		stateTimer().reset();
+		stateTimer().start();
+	}
 
-		case CHASING_PACMAN:
-			pac.move();
-			blinky.move();
-			if (blinky.position.x <= -t(15)) {
-				pac.setSpeed(0);
-				blinky.setDir(Direction.RIGHT);
-				blinky.setWishDir(Direction.RIGHT);
-				phase = Phase.RETURNING_HALF_NAKED;
-			}
-			break;
+	private void state_CHASING_PACMAN_update() {
+		pac.move();
+		blinky.move();
+		if (blinky.position.x <= -t(15)) {
+			pac.setSpeed(0);
+			blinky.setDir(Direction.RIGHT);
+			blinky.setWishDir(Direction.RIGHT);
+			changeState(IntermissionState.RETURNING_HALF_NAKED);
+		}
+	}
 
-		case RETURNING_HALF_NAKED:
-			blinky.move();
-			pac.move();
-			if (blinky.position.x > t(53)) {
-				gameController.stateTimer().expire();
-			}
-			break;
-
-		default:
-			throw new IllegalStateException("Illegal phase: " + phase);
+	private void state_RETURNING_HALF_NAKED_update() {
+		blinky.move();
+		pac.move();
+		if (blinky.position.x > t(53)) {
+			gameController.stateTimer().expire();
 		}
 	}
 }
