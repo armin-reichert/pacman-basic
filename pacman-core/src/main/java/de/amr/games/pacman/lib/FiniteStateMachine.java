@@ -93,7 +93,7 @@ public class FiniteStateMachine<STATE_ID extends Enum<STATE_ID>> {
 		// before state machine is initialized, state object is null
 		if (currentStateID != null) {
 			if (logging) {
-				log("Exit game state %s", currentStateID);
+				log("Exit state %s", currentStateID);
 			}
 			if (state(currentStateID).onExit != null) {
 				state(currentStateID).onExit.run();
@@ -102,7 +102,7 @@ public class FiniteStateMachine<STATE_ID extends Enum<STATE_ID>> {
 		previousStateID = currentStateID;
 		currentStateID = newStateID;
 		if (logging) {
-			log("Enter game state %s", currentStateID);
+			log("Enter state %s", currentStateID);
 		}
 		if (state(currentStateID).onEnter != null) {
 			state(currentStateID).onEnter.run();
@@ -141,7 +141,7 @@ public class FiniteStateMachine<STATE_ID extends Enum<STATE_ID>> {
 			throw new IllegalStateException("State machine cannot resume previous state because there is none");
 		}
 		if (logging) {
-			log("Resume game state %s", previousStateID);
+			log("Resume state %s", previousStateID);
 		}
 		changeState(previousStateID);
 	}
