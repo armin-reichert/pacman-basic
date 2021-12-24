@@ -49,8 +49,8 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 	}
 
 	// the board where the actors are presented
-	public final V2i tileBoardTopLeft = new V2i(6, 8);
-	public final int tileBelowBoard = 17;
+	public final V2i tileBoardTopLeft = new V2i(6, 11);
+	public final int tileBelowBoard = 20;
 	public final int tileLeftOfBoard = 4;
 	public final PacManGameController gameController;
 	public Pac msPacMan;
