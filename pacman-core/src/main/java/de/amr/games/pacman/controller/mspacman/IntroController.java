@@ -25,6 +25,7 @@ package de.amr.games.pacman.controller.mspacman;
 
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.UP;
+import static de.amr.games.pacman.model.world.PacManGameWorld.HTS;
 import static de.amr.games.pacman.model.world.PacManGameWorld.t;
 
 import de.amr.games.pacman.controller.PacManGameController;
@@ -49,9 +50,10 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 	}
 
 	// the board where the actors are presented
-	public final V2i tileBoardTopLeft = new V2i(6, 11);
+	public final V2i tileTitle = new V2i(9, 8);
+	public final V2i tileBoardTopLeft = new V2i(7, 11);
 	public final int tileBelowBoard = 20;
-	public final int tileLeftOfBoard = 4;
+	public final int tileLeftOfBoard = 5;
 	public final PacManGameController gameController;
 	public Pac msPacMan;
 	public Ghost[] ghosts;
@@ -74,7 +76,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 	public void init() {
 		msPacMan = new Pac("Ms. Pac-Man");
 		msPacMan.setDir(LEFT);
-		msPacMan.setPosition(t(37), t(tileBelowBoard));
+		msPacMan.setPosition(t(37), t(tileBelowBoard) + HTS);
 		ghosts = new Ghost[] { //
 				new Ghost(GameModel.RED_GHOST, "Blinky"), //
 				new Ghost(GameModel.PINK_GHOST, "Pinky"), //
@@ -84,7 +86,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 		for (Ghost ghost : ghosts) {
 			ghost.setDir(LEFT);
 			ghost.setWishDir(LEFT);
-			ghost.setPosition(t(37), t(tileBelowBoard));
+			ghost.setPosition(t(37), t(tileBelowBoard) + HTS);
 			ghost.state = GhostState.HUNTING_PAC;
 		}
 		currentGhostIndex = -1;
@@ -106,7 +108,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 	private void state_PRESENTING_GHOST_update() {
 		if (stateTimer().hasJustStarted()) {
 			ghosts[currentGhostIndex].visible = true;
-			ghosts[currentGhostIndex].setSpeed(1.0);
+			ghosts[currentGhostIndex].setSpeed(0.95);
 		}
 		boolean ghostReachedFinalPosition = ghostEnteringStage(ghosts[currentGhostIndex]);
 		if (ghostReachedFinalPosition) {
@@ -126,7 +128,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 		if (stateTimer().hasJustStarted()) {
 			msPacMan.visible = true;
 			msPacMan.stuck = false;
-			msPacMan.setSpeed(1.0);
+			msPacMan.setSpeed(0.95);
 		}
 		boolean msPacReachedFinalPosition = msPacManEnteringStage();
 		if (msPacReachedFinalPosition) {
@@ -160,7 +162,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 	}
 
 	public boolean msPacManEnteringStage() {
-		if (msPacMan.velocity.length() > 0 && msPacMan.position.x <= t(13)) {
+		if (msPacMan.velocity.length() > 0 && msPacMan.position.x <= t(14)) {
 			msPacMan.setSpeed(0);
 			return true;
 		}
