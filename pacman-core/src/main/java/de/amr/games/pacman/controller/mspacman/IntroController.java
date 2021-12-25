@@ -90,6 +90,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 		}
 		currentGhostIndex = 0;
 		changeState(IntroState.BEGIN);
+		restartStateTimer();
 	}
 
 	private void state_BEGIN_update() {
@@ -103,8 +104,8 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 			ghosts[currentGhostIndex].visible = true;
 			ghosts[currentGhostIndex].setSpeed(0.95);
 		}
-		boolean ghostReachedFinalPosition = letGhostEnterStage(ghosts[currentGhostIndex]);
-		if (ghostReachedFinalPosition) {
+		boolean reachedFinalPosition = letGhostEnterStage(ghosts[currentGhostIndex]);
+		if (reachedFinalPosition) {
 			if (currentGhostIndex == 3) {
 				changeState(IntroState.PRESENTING_MSPACMAN);
 				return;
@@ -120,8 +121,8 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 			msPacMan.visible = true;
 			msPacMan.setSpeed(0.95);
 		}
-		boolean msPacReachedFinalPosition = letMsPacManEnterStage();
-		if (msPacReachedFinalPosition) {
+		boolean reachedFinalPosition = letMsPacManEnterStage();
+		if (reachedFinalPosition) {
 			blinking.restart();
 			changeState(IntroState.WAITING_FOR_GAME);
 			return;
