@@ -113,9 +113,6 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 				restartStateTimer();
 			}
 		}
-		for (Ghost ghost : ghosts) {
-			ghost.move();
-		}
 	}
 
 	private void state_PRESENTING_MSPACMAN_update() {
@@ -125,21 +122,17 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 		}
 		boolean msPacReachedFinalPosition = letMsPacManEnterStage();
 		if (msPacReachedFinalPosition) {
+			blinking.restart();
 			changeState(IntroState.WAITING_FOR_GAME);
 			return;
 		}
-		msPacMan.move();
 	}
 
 	private void state_WAITING_FOR_GAME_update() {
-		if (stateTimer().hasJustStarted()) {
-			blinking.restart();
-		}
+		blinking.animate();
 		if (stateTimer().isRunningSeconds(5)) {
 			gameController.stateTimer().expire();
-			return;
 		}
-		blinking.animate();
 	}
 
 	private void restartStateTimer() {
@@ -156,6 +149,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 			ghost.setDir(UP);
 			ghost.setWishDir(UP);
 		}
+		ghost.move();
 		return false;
 	}
 
@@ -164,6 +158,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 			msPacMan.setSpeed(0);
 			return true;
 		}
+		msPacMan.move();
 		return false;
 	}
 }
