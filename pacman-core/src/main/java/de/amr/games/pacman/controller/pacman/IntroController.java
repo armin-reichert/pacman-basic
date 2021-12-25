@@ -59,7 +59,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 	public final int topY = t(6);
 	public final PacManGameController gameController;
 	public final TimedSequence<Boolean> blinking = TimedSequence.pulse().frameDuration(20);
-	public final GhostPortrait[] gallery = new GhostPortrait[4];
+	public final GhostPortrait[] portraits = new GhostPortrait[4];
 	public int selectedGhostIndex;
 	public long ghostKilledTime;
 	public Pac pacMan;
@@ -90,31 +90,21 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 
 	private void createGhostGallery() {
 		for (int i = 0; i < 4; ++i) {
-			gallery[i] = new GhostPortrait();
+			portraits[i] = new GhostPortrait();
 		}
-		gallery[0].ghost = new Ghost(GameModel.RED_GHOST, "Blinky");
-		gallery[0].ghost.setDir(Direction.RIGHT);
-		gallery[0].ghost.setWishDir(Direction.RIGHT);
-		gallery[0].character = "SHADOW";
-		gallery[0].ghost.setPosition(t(2), topY + t(2));
-
-		gallery[1].ghost = new Ghost(GameModel.PINK_GHOST, "Pinky");
-		gallery[1].ghost.setDir(Direction.RIGHT);
-		gallery[1].ghost.setWishDir(Direction.RIGHT);
-		gallery[1].character = "SPEEDY";
-		gallery[1].ghost.setPosition(t(2), topY + t(5));
-
-		gallery[2].ghost = new Ghost(GameModel.CYAN_GHOST, "Inky");
-		gallery[2].ghost.setDir(Direction.RIGHT);
-		gallery[2].ghost.setWishDir(Direction.RIGHT);
-		gallery[2].character = "BASHFUL";
-		gallery[2].ghost.setPosition(t(2), topY + t(8));
-
-		gallery[3].ghost = new Ghost(GameModel.ORANGE_GHOST, "Clyde");
-		gallery[3].ghost.setDir(Direction.RIGHT);
-		gallery[3].ghost.setWishDir(Direction.RIGHT);
-		gallery[3].character = "POKEY";
-		gallery[3].ghost.setPosition(t(2), topY + t(11));
+		portraits[0].ghost = new Ghost(GameModel.RED_GHOST, "Blinky");
+		portraits[0].character = "SHADOW";
+		portraits[1].ghost = new Ghost(GameModel.PINK_GHOST, "Pinky");
+		portraits[1].character = "SPEEDY";
+		portraits[2].ghost = new Ghost(GameModel.CYAN_GHOST, "Inky");
+		portraits[2].character = "BASHFUL";
+		portraits[3].ghost = new Ghost(GameModel.ORANGE_GHOST, "Clyde");
+		portraits[3].character = "POKEY";
+		for (int i = 0; i < 4; ++i) {
+			portraits[i].ghost.setDir(Direction.RIGHT);
+			portraits[i].ghost.setWishDir(Direction.RIGHT);
+			portraits[i].ghost.setPosition(t(2), topY + t(2) + i * t(3));
+		}
 	}
 
 	public void init() {
@@ -134,11 +124,11 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 
 	private void state_PRESENTING_GHOSTS_update() {
 		if (stateTimer().isRunningSeconds(0.5)) {
-			gallery[selectedGhostIndex].characterVisible = true;
+			portraits[selectedGhostIndex].characterVisible = true;
 		}
 
 		else if (stateTimer().isRunningSeconds(1)) {
-			gallery[selectedGhostIndex].nicknameVisible = true;
+			portraits[selectedGhostIndex].nicknameVisible = true;
 		}
 
 		else if (stateTimer().isRunningSeconds(2)) {
@@ -150,7 +140,6 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 				pacMan.visible = true;
 				pacMan.setSpeed(1.0);
 				pacMan.setDir(Direction.LEFT);
-				pacMan.stuck = false;
 				for (Ghost ghost : ghosts) {
 					ghost.position = pacMan.position.plus(8 + (ghost.id + 1) * 18, 0);
 					ghost.visible = true;
@@ -226,6 +215,6 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 
 	private void selectGhost(int index) {
 		selectedGhostIndex = index;
-		gallery[selectedGhostIndex].ghost.visible = true;
+		portraits[selectedGhostIndex].ghost.visible = true;
 	}
 }
