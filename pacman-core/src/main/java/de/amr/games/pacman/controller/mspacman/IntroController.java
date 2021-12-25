@@ -46,14 +46,13 @@ import de.amr.games.pacman.model.common.Pac;
 public class IntroController extends FiniteStateMachine<IntroState> {
 
 	public enum IntroState {
-		BEGIN, PRESENTING_GHOST, PRESENTING_MSPACMAN, WAITING_FOR_GAME;
+		BEGIN, PRESENTING_GHOSTS, PRESENTING_MSPACMAN, WAITING_FOR_GAME;
 	}
 
-	// the board where the actors are presented
 	public final V2i tileTitle = new V2i(9, 8);
 	public final V2i tileBoardTopLeft = new V2i(7, 11);
-	public final int tileBelowBoard = 20;
-	public final int tileLeftOfBoard = 5;
+	public final int yBelowBoard = t(20) + HTS;
+	public final int xLeftOfBoard = t(5);
 	public final PacManGameController gameController;
 	public Pac msPacMan;
 	public Ghost[] ghosts;
@@ -63,7 +62,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 	public IntroController(PacManGameController gameController) {
 		super(IntroState.values());
 		configState(IntroState.BEGIN, this::startStateTimer, this::state_BEGIN_update, null);
-		configState(IntroState.PRESENTING_GHOST, this::startStateTimer, this::state_PRESENTING_GHOST_update, null);
+		configState(IntroState.PRESENTING_GHOSTS, this::startStateTimer, this::state_PRESENTING_GHOST_update, null);
 		configState(IntroState.PRESENTING_MSPACMAN, this::startStateTimer, this::state_PRESENTING_MSPACMAN_update, null);
 		configState(IntroState.WAITING_FOR_GAME, this::startStateTimer, this::state_WAITING_FOR_GAMESTART_update, null);
 		this.gameController = gameController;
@@ -76,7 +75,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 	public void init() {
 		msPacMan = new Pac("Ms. Pac-Man");
 		msPacMan.setDir(LEFT);
-		msPacMan.setPosition(t(37), t(tileBelowBoard) + HTS);
+		msPacMan.setPosition(t(36), yBelowBoard);
 		ghosts = new Ghost[] { //
 				new Ghost(GameModel.RED_GHOST, "Blinky"), //
 				new Ghost(GameModel.PINK_GHOST, "Pinky"), //
@@ -86,7 +85,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 		for (Ghost ghost : ghosts) {
 			ghost.setDir(LEFT);
 			ghost.setWishDir(LEFT);
-			ghost.setPosition(t(37), t(tileBelowBoard) + HTS);
+			ghost.setPosition(t(36), yBelowBoard);
 			ghost.state = GhostState.HUNTING_PAC;
 		}
 		currentGhostIndex = -1;
@@ -101,7 +100,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 	private void state_BEGIN_update() {
 		if (stateTimer().isRunningSeconds(2)) {
 			currentGhostIndex = 0;
-			changeState(IntroState.PRESENTING_GHOST);
+			changeState(IntroState.PRESENTING_GHOSTS);
 		}
 	}
 
@@ -149,7 +148,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 	}
 
 	public boolean ghostEnteringStage(Ghost ghost) {
-		if (ghost.dir() == LEFT && ghost.position.x <= t(tileLeftOfBoard)) {
+		if (ghost.dir() == LEFT && ghost.position.x <= xLeftOfBoard) {
 			ghost.setDir(UP);
 			ghost.setWishDir(UP);
 			return false;
