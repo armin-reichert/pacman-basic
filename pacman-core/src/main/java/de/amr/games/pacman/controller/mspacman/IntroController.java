@@ -61,10 +61,10 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 
 	public IntroController(PacManGameController gameController) {
 		super(IntroState.values());
-		configState(IntroState.BEGIN, this::startStateTimer, this::state_BEGIN_update, null);
-		configState(IntroState.PRESENTING_GHOSTS, this::startStateTimer, this::state_PRESENTING_GHOST_update, null);
-		configState(IntroState.PRESENTING_MSPACMAN, this::startStateTimer, this::state_PRESENTING_MSPACMAN_update, null);
-		configState(IntroState.WAITING_FOR_GAME, this::startStateTimer, this::state_WAITING_FOR_GAMESTART_update, null);
+		configState(IntroState.BEGIN, this::restartStateTimer, this::state_BEGIN_update, null);
+		configState(IntroState.PRESENTING_GHOSTS, this::restartStateTimer, this::state_PRESENTING_GHOSTS_update, null);
+		configState(IntroState.PRESENTING_MSPACMAN, this::restartStateTimer, this::state_PRESENTING_MSPACMAN_update, null);
+		configState(IntroState.WAITING_FOR_GAME, this::restartStateTimer, this::state_WAITING_FOR_GAME_update, null);
 		this.gameController = gameController;
 	}
 
@@ -88,34 +88,29 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 			ghost.setPosition(t(36), yBelowBoard);
 			ghost.state = GhostState.HUNTING_PAC;
 		}
-		currentGhostIndex = -1;
+		currentGhostIndex = 0;
 		changeState(IntroState.BEGIN);
-	}
-
-	private void startStateTimer() {
-		stateTimer().reset();
-		stateTimer().start();
 	}
 
 	private void state_BEGIN_update() {
 		if (stateTimer().isRunningSeconds(2)) {
-			currentGhostIndex = 0;
 			changeState(IntroState.PRESENTING_GHOSTS);
 		}
 	}
 
-	private void state_PRESENTING_GHOST_update() {
+	private void state_PRESENTING_GHOSTS_update() {
 		if (stateTimer().hasJustStarted()) {
 			ghosts[currentGhostIndex].visible = true;
 			ghosts[currentGhostIndex].setSpeed(0.95);
 		}
-		boolean ghostReachedFinalPosition = ghostEnteringStage(ghosts[currentGhostIndex]);
+		boolean ghostReachedFinalPosition = letGhostEnterStage(ghosts[currentGhostIndex]);
 		if (ghostReachedFinalPosition) {
 			if (currentGhostIndex == 3) {
 				changeState(IntroState.PRESENTING_MSPACMAN);
+				return;
 			} else {
 				currentGhostIndex++;
-				startStateTimer();
+				restartStateTimer();
 			}
 		}
 		for (Ghost ghost : ghosts) {
@@ -126,17 +121,17 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 	private void state_PRESENTING_MSPACMAN_update() {
 		if (stateTimer().hasJustStarted()) {
 			msPacMan.visible = true;
-			msPacMan.stuck = false;
 			msPacMan.setSpeed(0.95);
 		}
-		boolean msPacReachedFinalPosition = msPacManEnteringStage();
+		boolean msPacReachedFinalPosition = letMsPacManEnterStage();
 		if (msPacReachedFinalPosition) {
 			changeState(IntroState.WAITING_FOR_GAME);
+			return;
 		}
 		msPacMan.move();
 	}
 
-	private void state_WAITING_FOR_GAMESTART_update() {
+	private void state_WAITING_FOR_GAME_update() {
 		if (stateTimer().hasJustStarted()) {
 			blinking.restart();
 		}
@@ -147,21 +142,25 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 		blinking.animate();
 	}
 
-	public boolean ghostEnteringStage(Ghost ghost) {
-		if (ghost.dir() == LEFT && ghost.position.x <= xLeftOfBoard) {
-			ghost.setDir(UP);
-			ghost.setWishDir(UP);
-			return false;
-		}
-		if (ghost.dir() == UP && ghost.position.y <= t(tileBoardTopLeft.y) + ghost.id * 18) {
+	private void restartStateTimer() {
+		stateTimer().reset();
+		stateTimer().start();
+	}
+
+	private boolean letGhostEnterStage(Ghost ghost) {
+		if (ghost.position.y <= t(tileBoardTopLeft.y) + ghost.id * 18) {
 			ghost.setSpeed(0);
 			return true;
+		}
+		if (ghost.position.x <= xLeftOfBoard) {
+			ghost.setDir(UP);
+			ghost.setWishDir(UP);
 		}
 		return false;
 	}
 
-	public boolean msPacManEnteringStage() {
-		if (msPacMan.velocity.length() > 0 && msPacMan.position.x <= t(14)) {
+	private boolean letMsPacManEnterStage() {
+		if (msPacMan.position.x <= t(14)) {
 			msPacMan.setSpeed(0);
 			return true;
 		}
