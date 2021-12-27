@@ -46,7 +46,7 @@ import de.amr.games.pacman.model.common.Pac;
 public class IntroController extends FiniteStateMachine<IntroState> {
 
 	public enum IntroState {
-		BEGIN, PRESENTING_GHOSTS, CHASING_PAC, CHASING_GHOSTS, READY_TO_PLAY;
+		BEGIN, PRESENTING_GHOSTS, SHOWING_POINTS, CHASING_PAC, CHASING_GHOSTS, READY_TO_PLAY;
 	}
 
 	public static class GhostPortrait {
@@ -69,6 +69,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 		super(IntroState.values());
 		configState(IntroState.BEGIN, this::restartStateTimer, this::state_BEGIN_update, null);
 		configState(IntroState.PRESENTING_GHOSTS, this::restartStateTimer, this::state_PRESENTING_GHOSTS_update, null);
+		configState(IntroState.SHOWING_POINTS, () -> restartStateTimer(2), this::state_SHOWING_POINTS_update, null);
 		configState(IntroState.CHASING_PAC, this::restartStateTimer, this::state_CHASING_PAC_update, null);
 		configState(IntroState.CHASING_GHOSTS, this::restartStateTimer, this::state_CHASING_GHOSTS_update, null);
 		configState(IntroState.READY_TO_PLAY, this::restartStateTimer, this::state_READY_TO_PLAY_update, null);
@@ -85,6 +86,11 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 
 	private void restartStateTimer() {
 		stateTimer().reset();
+		stateTimer().start();
+	}
+
+	private void restartStateTimer(double seconds) {
+		stateTimer().resetSeconds(seconds);
 		stateTimer().start();
 	}
 
@@ -136,26 +142,33 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 				selectGhost(selectedGhostIndex + 1);
 				restartStateTimer();
 			} else {
-				pacMan.setPosition(t(28), t(22));
-				pacMan.visible = true;
-				pacMan.setSpeed(1.0);
-				pacMan.setDir(Direction.LEFT);
-				for (Ghost ghost : ghosts) {
-					ghost.position = pacMan.position.plus(26 + ghost.id * 18, 0);
-					ghost.visible = true;
-					ghost.setWishDir(Direction.LEFT);
-					ghost.setDir(Direction.LEFT);
-					ghost.setSpeed(1.05);
-					ghost.state = GhostState.HUNTING_PAC;
-				}
-				blinking.restart();
-				changeState(IntroState.CHASING_PAC);
+				changeState(IntroState.SHOWING_POINTS);
 				return;
 			}
 		}
 	}
 
+	private void state_SHOWING_POINTS_update() {
+		if (stateTimer().hasExpired()) {
+			blinking.restart();
+			pacMan.visible = true;
+			pacMan.setSpeed(1.0);
+			pacMan.setPosition(t(28), t(22));
+			pacMan.setDir(Direction.LEFT);
+			for (Ghost ghost : ghosts) {
+				ghost.position = pacMan.position.plus(26 + ghost.id * 18, 0);
+				ghost.setWishDir(Direction.LEFT);
+				ghost.setDir(Direction.LEFT);
+				ghost.visible = true;
+				ghost.setSpeed(1.05);
+				ghost.state = GhostState.HUNTING_PAC;
+			}
+			changeState(IntroState.CHASING_PAC);
+		}
+	}
+
 	private void state_CHASING_PAC_update() {
+		blinking.animate();
 		if (pacMan.position.x < t(2)) {
 			pacMan.setDir(Direction.RIGHT);
 			for (Ghost ghost : ghosts) {
@@ -174,6 +187,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 	}
 
 	private void state_CHASING_GHOSTS_update() {
+		blinking.animate();
 		if (pacMan.position.x > t(29)) {
 			changeState(IntroState.READY_TO_PLAY);
 			return;
@@ -204,13 +218,10 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 	}
 
 	private void state_READY_TO_PLAY_update() {
-		if (stateTimer().hasJustStarted()) {
-			blinking.restart();
-		}
+		blinking.animate();
 		if (stateTimer().isRunningSeconds(5)) {
 			gameController.stateTimer().expire();
 		}
-		blinking.animate();
 	}
 
 	private void selectGhost(int index) {
