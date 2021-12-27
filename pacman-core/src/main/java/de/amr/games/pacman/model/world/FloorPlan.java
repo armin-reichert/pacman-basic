@@ -56,14 +56,10 @@ public class FloorPlan {
 		}
 	}
 
-	public static FloorPlan build(int resolution, PacManGameWorld world) {
-		return new FloorPlanBuilder(resolution).build(world);
-	}
-
 	private final byte[][] info;
 
-	public FloorPlan(byte[][] info) {
-		this.info = info;
+	public FloorPlan(int resolution, PacManGameWorld world) {
+		info = new FloorPlanBuilder(resolution).createFloorPlanInfo(world);
 	}
 
 	public byte get(int x, int y) {

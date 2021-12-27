@@ -23,7 +23,7 @@ public class FloorPlanGenerator {
 
 	private static void createFloorPlan(String mapPath, File dir, String outputFileNamePattern, int resolution) {
 		MapBasedWorld world = new MapBasedWorld(mapPath);
-		FloorPlan wallMap = new FloorPlanBuilder(resolution).build(world);
+		FloorPlan wallMap = new FloorPlan(resolution, world);
 		File out = new File(dir, String.format(outputFileNamePattern, resolution));
 		try (FileWriter w = new FileWriter(out, StandardCharsets.UTF_8)) {
 			wallMap.print(w, true);

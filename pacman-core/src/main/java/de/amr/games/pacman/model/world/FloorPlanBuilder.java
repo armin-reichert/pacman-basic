@@ -62,7 +62,7 @@ class FloorPlanBuilder {
 		return new V2i(tileX + dx, tileY);
 	}
 
-	FloorPlan build(PacManGameWorld world) {
+	public byte[][] createFloorPlanInfo(PacManGameWorld world) {
 		int numBlocksX = resolution * world.numCols();
 		int numBlocksY = resolution * world.numRows();
 		byte[][] info = new byte[numBlocksY][numBlocksX];
@@ -150,6 +150,6 @@ class FloorPlanBuilder {
 				}
 			}
 		}
-		return new FloorPlan(info);
+		return info;
 	}
 }
