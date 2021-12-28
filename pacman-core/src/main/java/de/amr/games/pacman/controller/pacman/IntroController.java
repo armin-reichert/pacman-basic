@@ -109,7 +109,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 		for (int i = 0; i < 4; ++i) {
 			portraits[i].ghost.setDir(Direction.RIGHT);
 			portraits[i].ghost.setWishDir(Direction.RIGHT);
-			portraits[i].ghost.setPosition(t(2), topY + t(2) + i * t(3));
+			portraits[i].ghost.setPosition(t(4), topY + t(1) + i * t(3));
 		}
 	}
 
@@ -153,7 +153,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 			blinking.restart();
 			pacMan.visible = true;
 			pacMan.setSpeed(1.0);
-			pacMan.setPosition(t(28), t(22));
+			pacMan.setPosition(t(28), t(21));
 			pacMan.setDir(Direction.LEFT);
 			for (Ghost ghost : ghosts) {
 				ghost.position = pacMan.position.plus(26 + ghost.id * 18, 0);
