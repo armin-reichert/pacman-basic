@@ -146,6 +146,8 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 				selectGhost(selectedGhostIndex + 1);
 				restartStateTimer();
 			} else {
+				blinking.restart();
+				blinking.advance();
 				changeState(IntroState.SHOWING_POINTS);
 				return;
 			}
@@ -154,13 +156,13 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 
 	private void state_SHOWING_POINTS_update() {
 		if (stateTimer().isRunningSeconds(2)) {
+			blinking.animate();
 			changeState(IntroState.CHASING_PAC);
 		}
 	}
 
 	private void state_CHASING_PAC_enter() {
 		restartStateTimer();
-		blinking.restart();
 		pacMan.visible = true;
 		pacMan.setSpeed(0.95);
 		pacMan.setPosition(t(28), t(20));
@@ -176,7 +178,6 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 	}
 
 	private void state_CHASING_PAC_update() {
-		blinking.animate();
 		if (pacMan.position.x < t(2)) {
 			changeState(IntroState.CHASING_GHOSTS);
 			return;
@@ -185,6 +186,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 		for (Ghost ghost : ghosts) {
 			ghost.move();
 		}
+		blinking.animate();
 	}
 
 	private void state_CHASING_GHOSTS_enter() {
