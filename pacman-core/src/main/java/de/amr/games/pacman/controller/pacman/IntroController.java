@@ -158,7 +158,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 		restartStateTimer();
 		blinking.restart();
 		pacMan.visible = true;
-		pacMan.setSpeed(1.0);
+		pacMan.setSpeed(0.95);
 		pacMan.setPosition(t(28), t(21));
 		pacMan.setDir(Direction.LEFT);
 		for (Ghost ghost : ghosts) {
@@ -166,7 +166,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 			ghost.setWishDir(Direction.LEFT);
 			ghost.setDir(Direction.LEFT);
 			ghost.visible = true;
-			ghost.setSpeed(1.05);
+			ghost.setSpeed(1);
 			ghost.state = GhostState.HUNTING_PAC;
 		}
 	}
@@ -209,7 +209,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 				ghostKilledTime = stateTimer().ticked();
 			}
 		}
-		if (stateTimer().ticked() == ghostKilledTime + 15) {
+		if (stateTimer().ticked() == ghostKilledTime + 30) {
 			pacMan.visible = true;
 			pacMan.setSpeed(1.0);
 			for (Ghost ghost : ghosts) {
