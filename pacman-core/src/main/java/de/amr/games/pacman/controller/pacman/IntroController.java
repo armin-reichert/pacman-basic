@@ -69,8 +69,8 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 		super(IntroState.values());
 		configState(IntroState.BEGIN, this::restartStateTimer, this::state_BEGIN_update, null);
 		configState(IntroState.PRESENTING_GHOSTS, this::restartStateTimer, this::state_PRESENTING_GHOSTS_update, null);
-		configState(IntroState.SHOWING_POINTS, () -> restartStateTimer(2), this::state_SHOWING_POINTS_update, null);
-		configState(IntroState.CHASING_PAC, this::restartStateTimer, this::state_CHASING_PAC_update, null);
+		configState(IntroState.SHOWING_POINTS, this::restartStateTimer, this::state_SHOWING_POINTS_update, null);
+		configState(IntroState.CHASING_PAC, this::state_CHASING_PAC_enter, this::state_CHASING_PAC_update, null);
 		configState(IntroState.CHASING_GHOSTS, this::restartStateTimer, this::state_CHASING_GHOSTS_update, null);
 		configState(IntroState.READY_TO_PLAY, this::restartStateTimer, this::state_READY_TO_PLAY_update, null);
 		this.gameController = gameController;
@@ -89,9 +89,9 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 		stateTimer().start();
 	}
 
-	private void restartStateTimer(double seconds) {
-		stateTimer().resetSeconds(seconds);
-		stateTimer().start();
+	private void selectGhost(int index) {
+		selectedGhostIndex = index;
+		portraits[selectedGhostIndex].ghost.visible = true;
 	}
 
 	private void createGhostGallery() {
@@ -149,21 +149,25 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 	}
 
 	private void state_SHOWING_POINTS_update() {
-		if (stateTimer().hasExpired()) {
-			blinking.restart();
-			pacMan.visible = true;
-			pacMan.setSpeed(1.0);
-			pacMan.setPosition(t(28), t(21));
-			pacMan.setDir(Direction.LEFT);
-			for (Ghost ghost : ghosts) {
-				ghost.position = pacMan.position.plus(26 + ghost.id * 18, 0);
-				ghost.setWishDir(Direction.LEFT);
-				ghost.setDir(Direction.LEFT);
-				ghost.visible = true;
-				ghost.setSpeed(1.05);
-				ghost.state = GhostState.HUNTING_PAC;
-			}
+		if (stateTimer().isRunningSeconds(2)) {
 			changeState(IntroState.CHASING_PAC);
+		}
+	}
+
+	private void state_CHASING_PAC_enter() {
+		restartStateTimer();
+		blinking.restart();
+		pacMan.visible = true;
+		pacMan.setSpeed(1.0);
+		pacMan.setPosition(t(28), t(21));
+		pacMan.setDir(Direction.LEFT);
+		for (Ghost ghost : ghosts) {
+			ghost.position = pacMan.position.plus(26 + ghost.id * 18, 0);
+			ghost.setWishDir(Direction.LEFT);
+			ghost.setDir(Direction.LEFT);
+			ghost.visible = true;
+			ghost.setSpeed(1.05);
+			ghost.state = GhostState.HUNTING_PAC;
 		}
 	}
 
@@ -222,10 +226,5 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 		if (stateTimer().isRunningSeconds(5)) {
 			gameController.stateTimer().expire();
 		}
-	}
-
-	private void selectGhost(int index) {
-		selectedGhostIndex = index;
-		portraits[selectedGhostIndex].ghost.visible = true;
 	}
 }
