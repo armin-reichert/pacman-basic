@@ -61,7 +61,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 
 	public IntroController(PacManGameController gameController) {
 		super(IntroState.values());
-		configState(IntroState.BEGIN, this::restartStateTimer, this::state_BEGIN_update, null);
+		configState(IntroState.BEGIN, this::state_BEGIN_enter, this::state_BEGIN_update, null);
 		configState(IntroState.PRESENTING_GHOSTS, this::restartStateTimer, this::state_PRESENTING_GHOSTS_update, null);
 		configState(IntroState.PRESENTING_MSPACMAN, this::restartStateTimer, this::state_PRESENTING_MSPACMAN_update, null);
 		configState(IntroState.WAITING_FOR_GAME, this::restartStateTimer, this::state_WAITING_FOR_GAME_update, null);
@@ -73,6 +73,16 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 	}
 
 	public void init() {
+		changeState(IntroState.BEGIN);
+	}
+
+	private void restartStateTimer() {
+		stateTimer().reset();
+		stateTimer().start();
+	}
+
+	private void state_BEGIN_enter() {
+		restartStateTimer();
 		msPacMan = new Pac("Ms. Pac-Man");
 		msPacMan.setDir(LEFT);
 		msPacMan.setPosition(t(36), yBelowBoard);
@@ -89,8 +99,6 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 			ghost.state = GhostState.HUNTING_PAC;
 		}
 		currentGhostIndex = 0;
-		changeState(IntroState.BEGIN);
-		restartStateTimer();
 	}
 
 	private void state_BEGIN_update() {
@@ -130,15 +138,10 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 	}
 
 	private void state_WAITING_FOR_GAME_update() {
-		blinking.animate();
 		if (stateTimer().isRunningSeconds(5)) {
 			gameController.stateTimer().expire();
 		}
-	}
-
-	private void restartStateTimer() {
-		stateTimer().reset();
-		stateTimer().start();
+		blinking.animate();
 	}
 
 	private boolean letGhostEnterStage(Ghost ghost) {
