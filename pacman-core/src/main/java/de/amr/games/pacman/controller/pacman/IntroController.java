@@ -23,7 +23,11 @@ SOFTWARE.
  */
 package de.amr.games.pacman.controller.pacman;
 
+import static de.amr.games.pacman.lib.TickTimer.sec_to_ticks;
 import static de.amr.games.pacman.model.world.PacManGameWorld.t;
+
+import java.util.Optional;
+import java.util.stream.Stream;
 
 import de.amr.games.pacman.controller.PacManGameController;
 import de.amr.games.pacman.controller.pacman.IntroController.IntroState;
@@ -159,14 +163,14 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 		blinking.restart();
 		pacMan.visible = true;
 		pacMan.setSpeed(0.95);
-		pacMan.setPosition(t(28), t(21));
+		pacMan.setPosition(t(28), t(20));
 		pacMan.setDir(Direction.LEFT);
 		for (Ghost ghost : ghosts) {
 			ghost.position = pacMan.position.plus(26 + ghost.id * 18, 0);
 			ghost.setWishDir(Direction.LEFT);
 			ghost.setDir(Direction.LEFT);
+			ghost.setSpeed(1.0);
 			ghost.visible = true;
-			ghost.setSpeed(1);
 			ghost.state = GhostState.HUNTING_PAC;
 		}
 	}
@@ -190,7 +194,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 			ghost.state = GhostState.FRIGHTENED;
 			ghost.setWishDir(Direction.RIGHT);
 			ghost.setDir(Direction.RIGHT);
-			ghost.setSpeed(0.4);
+			ghost.setSpeed(0.55);
 		}
 		ghostKilledTime = stateTimer().ticked();
 	}
@@ -200,21 +204,27 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 			changeState(IntroState.READY_TO_PLAY);
 			return;
 		}
-		for (Ghost ghost : ghosts) {
-			if (pacMan.meets(ghost) && ghost.state != GhostState.DEAD) {
-				ghost.state = GhostState.DEAD;
-				ghost.bounty = (int) Math.pow(2, ghost.id + 1) * 100;
-				pacMan.visible = false;
-				pacMan.setSpeed(0);
-				ghostKilledTime = stateTimer().ticked();
-			}
-		}
-		if (stateTimer().ticked() == ghostKilledTime + 30) {
+		// check if Pac-Man kills a ghost
+		Optional<Ghost> killedGhost = Stream.of(ghosts).filter(ghost -> ghost.state != GhostState.DEAD)
+				.filter(pacMan::meets).findFirst();
+		killedGhost.ifPresent(victim -> {
+			ghostKilledTime = stateTimer().ticked();
+			victim.state = GhostState.DEAD;
+			victim.bounty = (int) Math.pow(2, victim.id + 1) * 100;
+			pacMan.visible = false;
+			pacMan.setSpeed(0);
+			Stream.of(ghosts).forEach(ghost -> ghost.setSpeed(0));
+		});
+		// After half a second, make Pac-Man and the surviving ghosts visible and moving again
+		if (stateTimer().ticked() - ghostKilledTime == sec_to_ticks(0.5)) {
 			pacMan.visible = true;
 			pacMan.setSpeed(1.0);
 			for (Ghost ghost : ghosts) {
 				if (ghost.state == GhostState.DEAD) {
 					ghost.visible = false;
+				} else {
+					ghost.visible = true;
+					ghost.setSpeed(0.55);
 				}
 			}
 			ghostKilledTime = stateTimer().ticked();
