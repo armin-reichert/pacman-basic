@@ -74,7 +74,7 @@ public class MovingBonus extends Bonus {
 	}
 
 	@Override
-	public PacManGameEvent.Info update() {
+	public PacManGameEvent.Info updateState() {
 		switch (state) {
 		case INACTIVE:
 			return null;

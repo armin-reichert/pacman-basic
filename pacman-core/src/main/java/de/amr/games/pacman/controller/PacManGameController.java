@@ -333,6 +333,19 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			player.starvingTicks++;
 		}
 
+		// Bonus active?
+		if (game.bonus.state != Bonus.INACTIVE) {
+			Info bonusInfo = game.bonus.updateState();
+			if (bonusInfo == Info.BONUS_EXPIRED) {
+				fireGameEvent(Info.BONUS_EXPIRED, game.bonus.tile());
+			} else if (player.meets(game.bonus) && game.bonus.state == Bonus.EDIBLE) {
+				log("%s found bonus (%s, value %d)", player.name, game.bonus.symbol, game.bonus.points);
+				game.bonus.eatAndShowValue(sec_to_ticks(2));
+				score(game.bonus.points);
+				fireGameEvent(Info.BONUS_EATEN, game.bonus.tile());
+			}
+		}
+
 		// Consume power?
 		if (player.powerTimer.isRunning()) {
 			player.powerTimer.tick();
@@ -362,16 +375,6 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		tryReleasingLockedGhosts();
 		game.ghosts().forEach(this::updateGhost);
 
-		// Bonus
-		final Info info = game.bonus.update();
-		if (info == Info.BONUS_EXPIRED) {
-			fireGameEvent(Info.BONUS_EXPIRED, game.bonus.tile());
-		} else if (game.bonus.state == Bonus.EDIBLE && player.meets(game.bonus)) {
-			score(game.bonus.points);
-			game.bonus.eaten(sec_to_ticks(2));
-			log("%s found bonus (%s, value %d)", player.name, game.bonus.symbol, game.bonus.points);
-			fireGameEvent(Info.BONUS_EATEN, game.bonus.tile());
-		}
 	}
 
 	private void state_PacManDying_enter() {
@@ -408,8 +411,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	private void state_GhostDying_exit() {
 		game.player.visible = true;
-		// fire event only for ghosts that have just been killed, not for dead ghosts that are already
-		// returning home
+		// fire event(s) for dead ghosts not yet returning home (bounty != 0)
 		game.ghosts(DEAD).filter(ghost -> ghost.bounty != 0).forEach(ghost -> {
 			ghost.bounty = 0;
 			fireGameEvent(new PacManGameEvent(game, Info.GHOST_RETURNS_HOME, ghost, null));

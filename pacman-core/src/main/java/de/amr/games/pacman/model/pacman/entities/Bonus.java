@@ -58,12 +58,17 @@ public class Bonus extends Creature {
 		visible = true;
 	}
 
-	public void eaten(long ticks) {
+	public void eatAndShowValue(long ticks) {
 		state = EATEN;
 		timer = ticks;
 	}
 
-	public PacManGameEvent.Info update() {
+	/**
+	 * Updates the bonus state and returns any usefule info about the new bonus state
+	 * 
+	 * @return info about bonus state ot <code>null</code>
+	 */
+	public PacManGameEvent.Info updateState() {
 		switch (state) {
 		case INACTIVE:
 			return null;
@@ -73,18 +78,20 @@ public class Bonus extends Creature {
 				visible = false;
 				state = INACTIVE;
 				return Info.BONUS_EXPIRED;
+			} else {
+				timer--;
+				return null;
 			}
-			timer--;
-			return null;
 
 		case EATEN:
 			if (timer == 0) {
 				visible = false;
 				state = INACTIVE;
 				return Info.BONUS_EXPIRED;
+			} else {
+				timer--;
+				return null;
 			}
-			timer--;
-			return null;
 
 		default:
 			throw new IllegalStateException();
