@@ -62,7 +62,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 
 	public final int topY = t(6);
 	public final PacManGameController gameController;
-	public final TimedSequence<Boolean> blinking = TimedSequence.pulse().frameDuration(20);
+	public final TimedSequence<Boolean> blinking = TimedSequence.pulse().frameDuration(10);
 	public final GhostPortrait[] portraits = new GhostPortrait[4];
 	public int selectedGhostIndex;
 	public long ghostKilledTime;
@@ -156,13 +156,13 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 
 	private void state_SHOWING_POINTS_update() {
 		if (stateTimer().isRunningSeconds(2)) {
-			blinking.animate();
 			changeState(IntroState.CHASING_PAC);
 		}
 	}
 
 	private void state_CHASING_PAC_enter() {
 		restartStateTimer();
+		blinking.animate();
 		pacMan.visible = true;
 		pacMan.setSpeed(0.95);
 		pacMan.setPosition(t(28), t(20));
