@@ -75,6 +75,10 @@ public class FiniteStateMachine<STATE_ID extends Enum<STATE_ID>> {
 		}
 	}
 
+	protected String name() {
+		return getClass().getSimpleName();
+	}
+
 	public void configState(STATE_ID stateID, Runnable onEnter, Runnable onUpdate, Runnable onExit) {
 		state(stateID).onEnter = onEnter;
 		state(stateID).onUpdate = onUpdate;
@@ -93,7 +97,7 @@ public class FiniteStateMachine<STATE_ID extends Enum<STATE_ID>> {
 		// before state machine is initialized, state object is null
 		if (currentStateID != null) {
 			if (logging) {
-				log("Exit state %s", currentStateID);
+				log("%s: Exit state %s", name(), currentStateID);
 			}
 			if (state(currentStateID).onExit != null) {
 				state(currentStateID).onExit.run();
@@ -102,7 +106,7 @@ public class FiniteStateMachine<STATE_ID extends Enum<STATE_ID>> {
 		previousStateID = currentStateID;
 		currentStateID = newStateID;
 		if (logging) {
-			log("Enter state %s", currentStateID);
+			log("%s: Enter state %s", name(), currentStateID);
 		}
 		if (state(currentStateID).onEnter != null) {
 			state(currentStateID).onEnter.run();
@@ -131,7 +135,7 @@ public class FiniteStateMachine<STATE_ID extends Enum<STATE_ID>> {
 			}
 			state(currentStateID).timer.tick();
 		} catch (Exception x) {
-			Logging.log("Error updating state %s", currentStateID);
+			Logging.log("%s: Error updating state %s", name(), currentStateID);
 			x.printStackTrace();
 		}
 	}
@@ -141,7 +145,7 @@ public class FiniteStateMachine<STATE_ID extends Enum<STATE_ID>> {
 			throw new IllegalStateException("State machine cannot resume previous state because there is none");
 		}
 		if (logging) {
-			log("Resume state %s", previousStateID);
+			log("%s: Resume state %s", name(), previousStateID);
 		}
 		changeState(previousStateID);
 	}
