@@ -160,7 +160,6 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 
 	private void state_CHASING_PAC_enter() {
 		restartStateTimer();
-		blinking.animate();
 		pacMan.visible = true;
 		pacMan.setSpeed(0.95);
 		pacMan.setPosition(t(28), t(20));
