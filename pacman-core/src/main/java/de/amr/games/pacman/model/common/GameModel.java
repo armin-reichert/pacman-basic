@@ -125,9 +125,6 @@ public abstract class GameModel {
 	/** Total number of pellets at current level. */
 	public int totalFoodCount;
 
-	/** Total number of energizer pellets at current level. */
-	public int energizerCount;
-
 	/** Total number of pellets remaining at current level. */
 	public int foodRemaining;
 
@@ -262,10 +259,10 @@ public abstract class GameModel {
 		ghostFrightenedSeconds = (int) levelData[10];
 		numFlashes = (int) levelData[11];
 		totalFoodCount = (int) world.tiles().filter(world::isFoodTile).count();
-		energizerCount = (int) world.tiles().filter(world::isEnergizerTile).count();
 		foodRemaining = totalFoodCount;
 		eaten = new BitSet();
 
+		long energizerCount = world.tiles().filter(world::isEnergizerTile).count();
 		log("Level %d loaded. Total food: %d (%d pellets, %d energizers)", levelNumber, totalFoodCount,
 				totalFoodCount - energizerCount, energizerCount);
 	}
