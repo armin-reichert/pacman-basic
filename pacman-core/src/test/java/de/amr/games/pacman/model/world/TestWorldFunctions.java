@@ -21,7 +21,7 @@ public class TestWorldFunctions {
 		assertEquals(70, world.pelletsToEatForBonus(0));
 		assertEquals(170, world.pelletsToEatForBonus(1));
 		assertEquals(1, world.portals().size());
-		assertEquals(Direction.RIGHT, world.playerStartDirection());
+		assertEquals(Direction.LEFT, world.playerStartDirection());
 	}
 
 	@Test
