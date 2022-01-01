@@ -189,6 +189,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 
 	private void state_CHASING_GHOSTS_enter() {
 		restartStateTimer();
+		pacMan.setSpeed(1.0);
 		pacMan.setDir(Direction.RIGHT);
 		for (Ghost ghost : ghosts) {
 			ghost.state = GhostState.FRIGHTENED;
@@ -215,7 +216,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 			pacMan.setSpeed(0);
 			Stream.of(ghosts).forEach(ghost -> ghost.setSpeed(0));
 		});
-		// After some time, Pac-Man and the surviving ghosts visible and moving again
+		// After some time, Pac-Man and the surviving ghosts get visible and move again
 		if (stateTimer().ticked() - ghostKilledTime == sec_to_ticks(1)) {
 			pacMan.visible = true;
 			pacMan.setSpeed(1.0);
