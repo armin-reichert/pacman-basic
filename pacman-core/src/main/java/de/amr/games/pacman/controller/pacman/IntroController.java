@@ -193,7 +193,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 			ghost.state = GhostState.FRIGHTENED;
 			ghost.setWishDir(Direction.RIGHT);
 			ghost.setDir(Direction.RIGHT);
-			ghost.setSpeed(0.55);
+			ghost.setSpeed(0.6);
 		}
 		ghostKilledTime = stateTimer().ticked();
 	}
@@ -214,8 +214,8 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 			pacMan.setSpeed(0);
 			Stream.of(ghosts).forEach(ghost -> ghost.setSpeed(0));
 		});
-		// After half a second, make Pac-Man and the surviving ghosts visible and moving again
-		if (stateTimer().ticked() - ghostKilledTime == sec_to_ticks(0.5)) {
+		// After some time, Pac-Man and the surviving ghosts visible and moving again
+		if (stateTimer().ticked() - ghostKilledTime == sec_to_ticks(1)) {
 			pacMan.visible = true;
 			pacMan.setSpeed(1.0);
 			for (Ghost ghost : ghosts) {
@@ -223,7 +223,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 					ghost.visible = false;
 				} else {
 					ghost.visible = true;
-					ghost.setSpeed(0.55);
+					ghost.setSpeed(0.6);
 				}
 			}
 			ghostKilledTime = stateTimer().ticked();
