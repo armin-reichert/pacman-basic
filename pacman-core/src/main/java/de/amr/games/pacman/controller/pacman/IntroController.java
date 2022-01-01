@@ -26,6 +26,7 @@ package de.amr.games.pacman.controller.pacman;
 import static de.amr.games.pacman.lib.TickTimer.sec_to_ticks;
 import static de.amr.games.pacman.model.world.PacManGameWorld.t;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -209,7 +210,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 		killedGhost.ifPresent(victim -> {
 			ghostKilledTime = stateTimer().ticked();
 			victim.state = GhostState.DEAD;
-			victim.bounty = (int) Math.pow(2, victim.id + 1) * 100;
+			victim.bounty = List.of(200, 400, 800, 1600).get(victim.id);
 			pacMan.visible = false;
 			pacMan.setSpeed(0);
 			Stream.of(ghosts).forEach(ghost -> ghost.setSpeed(0));
