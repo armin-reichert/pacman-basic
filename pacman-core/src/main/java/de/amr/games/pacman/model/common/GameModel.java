@@ -200,7 +200,7 @@ public abstract class GameModel {
 		score = 0;
 		player.lives = initialLives;
 		levelCounter.clear();
-		Hiscore hiscore = loadHiscore();
+		Hiscore hiscore = new Hiscore(hiscorePath).load();
 		hiscoreLevel = hiscore.level;
 		hiscorePoints = hiscore.points;
 		enterLevel(1);
@@ -339,17 +339,13 @@ public abstract class GameModel {
 	}
 
 	public void saveHiscore() {
-		Hiscore hiscore = loadHiscore();
+		Hiscore hiscore = new Hiscore(hiscorePath).load();
 		if (hiscorePoints > hiscore.points) {
 			hiscore.points = hiscorePoints;
 			hiscore.level = hiscoreLevel;
 			hiscore.save();
 			log("New hiscore: %d points in level %d.", hiscore.points, hiscore.level);
 		}
-	}
-
-	private Hiscore loadHiscore() {
-		return new Hiscore(hiscorePath).load();
 	}
 
 	public int eatenFoodCount() {
