@@ -115,7 +115,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	public int intermissionTestNumber;
 
-	public PacManGameController() {
+	public PacManGameController(GameVariant variant) {
 		super(PacManGameState.values());
 		configState(INTRO, this::state_Intro_enter, this::state_Intro_update, null);
 		configState(READY, this::state_Ready_enter, this::state_Ready_update, null);
@@ -131,6 +131,8 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		games = new GameModel[2];
 		games[MS_PACMAN.ordinal()] = new MsPacManGame();
 		games[PACMAN.ordinal()] = new PacManGame();
+
+		selectGameVariant(variant);
 	}
 
 	private void fireGameEvent(PacManGameEvent gameEvent) {
