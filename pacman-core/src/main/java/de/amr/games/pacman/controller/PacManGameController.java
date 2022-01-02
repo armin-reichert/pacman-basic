@@ -520,6 +520,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 				++intermissionTestNumber;
 				stateTimer().reset();
 				stateTimer().start();
+				log("Test intermission scene #%d", intermissionTestNumber);
 				// This is needed such that UI can update current scene
 				fireStateChange(INTERMISSION_TEST, INTERMISSION_TEST);
 			} else {
