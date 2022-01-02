@@ -218,6 +218,25 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		fireGameEvent(Info.PLAYER_FOUND_FOOD, null);
 	}
 
+	/**
+	 * @param levelNumber game level number
+	 * @return 1-based intermission (cut scene) number that is played after given level
+	 */
+	public int intermissionNumber(int levelNumber) {
+		switch (levelNumber) {
+		case 2:
+			return 1;
+		case 5:
+			return 2;
+		case 9:
+		case 13:
+		case 17:
+			return 3;
+		default:
+			return 0; // no intermission after this level
+		}
+	}
+
 	// BEGIN STATE-MACHINE METHODS
 
 	private void state_Intro_enter() {
@@ -443,7 +462,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		if (stateTimer().hasExpired()) {
 			if (attractMode) {
 				changeState(INTRO);
-			} else if (game.intermissionAfterLevel(game.levelNumber).isPresent()) {
+			} else if (intermissionNumber(game.levelNumber) != 0) {
 				changeState(INTERMISSION);
 			} else {
 				changeState(LEVEL_STARTING);

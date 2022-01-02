@@ -30,7 +30,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
-import java.util.OptionalInt;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.Direction;
@@ -297,21 +296,6 @@ public abstract class GameModel {
 
 	public String levelSymbol(int levelNumber) {
 		return levelCounter.get(levelNumber - 1);
-	}
-
-	public OptionalInt intermissionAfterLevel(int levelNumber) {
-		switch (levelNumber) {
-		case 2:
-			return OptionalInt.of(1);
-		case 5:
-			return OptionalInt.of(2);
-		case 9:
-		case 13:
-		case 17:
-			return OptionalInt.of(3);
-		default:
-			return OptionalInt.empty();
-		}
 	}
 
 	public Stream<Ghost> ghosts() {
