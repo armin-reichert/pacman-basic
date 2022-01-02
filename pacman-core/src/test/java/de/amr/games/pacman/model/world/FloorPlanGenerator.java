@@ -26,7 +26,7 @@ public class FloorPlanGenerator {
 		FloorPlan floorPlan = new FloorPlan(resolution, world);
 		File out = new File(dir, String.format(outputFileNamePattern, resolution));
 		try (FileWriter w = new FileWriter(out, StandardCharsets.UTF_8)) {
-			new FloorPlanPrinter().print(floorPlan, w, true);
+			floorPlan.print(w, true);
 			System.out.println("Floor plan " + out.getAbsolutePath() + " created");
 		} catch (IOException e) {
 			e.printStackTrace();
