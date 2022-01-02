@@ -27,6 +27,7 @@ import static de.amr.games.pacman.controller.PacManGameState.GAME_OVER;
 import static de.amr.games.pacman.controller.PacManGameState.GHOST_DYING;
 import static de.amr.games.pacman.controller.PacManGameState.HUNTING;
 import static de.amr.games.pacman.controller.PacManGameState.INTERMISSION;
+import static de.amr.games.pacman.controller.PacManGameState.INTERMISSION_TEST;
 import static de.amr.games.pacman.controller.PacManGameState.INTRO;
 import static de.amr.games.pacman.controller.PacManGameState.LEVEL_COMPLETE;
 import static de.amr.games.pacman.controller.PacManGameState.LEVEL_STARTING;
@@ -112,6 +113,8 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	private boolean attractMode;
 	private int huntingPhase;
 
+	public int intermissionTestNumber;
+
 	public PacManGameController() {
 		super(PacManGameState.values());
 		configState(INTRO, this::state_Intro_enter, this::state_Intro_update, null);
@@ -121,8 +124,9 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		configState(PACMAN_DYING, this::state_PacManDying_enter, this::state_PacManDying_update, null);
 		configState(LEVEL_STARTING, this::state_LevelStarting_enter, this::state_LevelStarting_update, null);
 		configState(LEVEL_COMPLETE, this::state_LevelComplete_enter, this::state_LevelComplete_update, null);
-		configState(INTERMISSION, this::state_Intermission_enter, this::state_Intermission_update, null);
 		configState(GAME_OVER, this::state_GameOver_enter, this::state_GameOver_update, null);
+		configState(INTERMISSION, this::state_Intermission_enter, this::state_Intermission_update, null);
+		configState(INTERMISSION_TEST, this::state_IntermissionTest_enter, this::state_IntermissionTest_update, null);
 
 		games = new GameModel[2];
 		games[MS_PACMAN.ordinal()] = new MsPacManGame();
@@ -180,6 +184,13 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		if (currentStateID == INTRO) {
 			gameRequested = true;
 			changeState(READY);
+		}
+	}
+
+	public void startIntermissionTest() {
+		if (currentStateID == INTRO) {
+			intermissionTestNumber = 1;
+			changeState(INTERMISSION_TEST);
 		}
 	}
 
@@ -493,6 +504,27 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	private void state_Intermission_update() {
 		if (stateTimer().hasExpired()) {
 			changeState(attractMode || !gameRunning ? INTRO : LEVEL_STARTING);
+		}
+	}
+
+	private void state_IntermissionTest_enter() {
+		intermissionTestNumber = 1;
+		stateTimer().reset();
+		stateTimer().start();
+		log("Test intermission scene #%d", intermissionTestNumber);
+	}
+
+	private void state_IntermissionTest_update() {
+		if (stateTimer().hasExpired()) {
+			if (intermissionTestNumber < 3) {
+				++intermissionTestNumber;
+				stateTimer().reset();
+				stateTimer().start();
+				// This is needed such that UI can update current scene
+				fireStateChange(INTERMISSION_TEST, INTERMISSION_TEST);
+			} else {
+				changeState(INTRO);
+			}
 		}
 	}
 
