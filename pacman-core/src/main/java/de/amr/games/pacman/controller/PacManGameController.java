@@ -74,7 +74,7 @@ import de.amr.games.pacman.model.pacman.entities.Bonus;
 import de.amr.games.pacman.ui.PacManGameUI;
 
 /**
- * Controller (in the sense of MVC) for the Pac-Man and Ms. Pac-Man game.
+ * Controller (in the sense of MVC) for both (Pac-Man, Ms. Pac-Man) game variants.
  * <p>
  * This is a finite-state machine with states defined in {@link PacManGameState}. The game data are
  * stored in the model of the selected game, see {@link MsPacManGame} and {@link PacManGame}. The
@@ -173,7 +173,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	public void selectGameVariant(GameVariant variant) {
-		this.gameVariant = variant;
+		gameVariant = variant;
 		game = games[variant.ordinal()];
 		changeState(INTRO);
 	}
@@ -621,8 +621,8 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 		case ENTERING_HOUSE:
 			ghost.setSpeed(game.ghostSpeed * 2);
-			boolean reachedHome = ghost.enterHouse();
-			if (reachedHome) {
+			boolean reachedRevivalTile = ghost.enterHouse();
+			if (reachedRevivalTile) {
 				fireGameEvent(new PacManGameEvent(game, Info.GHOST_LEAVING_HOUSE, ghost, ghost.tile()));
 			}
 			break;
