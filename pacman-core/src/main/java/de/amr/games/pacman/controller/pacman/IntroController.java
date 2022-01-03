@@ -74,6 +74,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 	public final Pac pacMan;
 	public final Ghost[] ghosts;
 	public final TimedSequence<Boolean> blinking = TimedSequence.pulse().frameDuration(10);
+	public final TimedSequence<Boolean> slowBlinking = TimedSequence.pulse().frameDuration(30);
 	public final int topY = t(6);
 	public int selectedGhostIndex;
 	public long ghostKilledTime;
@@ -202,6 +203,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 
 	private void state_CHASING_GHOSTS_update() {
 		if (pacMan.position.x > t(29)) {
+			slowBlinking.restart();
 			changeState(IntroState.READY_TO_PLAY);
 			return;
 		}
@@ -242,6 +244,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 	}
 
 	private void state_READY_TO_PLAY_update() {
+		slowBlinking.animate();
 		if (stateTimer().isRunningSeconds(5)) {
 			gameController.stateTimer().expire();
 		}
