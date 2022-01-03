@@ -58,6 +58,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 	public Ghost[] ghosts;
 	public int currentGhostIndex;
 	public final TimedSequence<Boolean> blinking = TimedSequence.pulse().frameDuration(30);
+	public final TimedSequence<Boolean> slowBlinking = TimedSequence.pulse().frameDuration(30);
 
 	public IntroController(PacManGameController gameController) {
 		super(IntroState.values());
@@ -131,13 +132,14 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 		}
 		boolean reachedFinalPosition = letMsPacManEnterStage();
 		if (reachedFinalPosition) {
-			blinking.restart();
+			slowBlinking.restart();
 			changeState(IntroState.WAITING_FOR_GAME);
 			return;
 		}
 	}
 
 	private void state_WAITING_FOR_GAME_update() {
+		slowBlinking.animate();
 		if (stateTimer().isRunningSeconds(5)) {
 			gameController.stateTimer().expire();
 		}
