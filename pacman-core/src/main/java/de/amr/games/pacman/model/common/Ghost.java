@@ -169,8 +169,8 @@ public class Ghost extends Creature {
 	}
 
 	/**
-	 * Lets the ghost leave the house from its home position towards the middle of the house and then
-	 * upwards towards the house door.
+	 * Lets the ghost leave the house from its home position towards the middle of the house and then upwards towards
+	 * the house door.
 	 * 
 	 * @return {@code true} if the ghost has left the house
 	 */

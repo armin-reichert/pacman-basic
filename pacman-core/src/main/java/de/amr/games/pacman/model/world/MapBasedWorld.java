@@ -96,7 +96,8 @@ public class MapBasedWorld implements PacManGameWorld {
 				.map(this::index) //
 				.forEach(intersections::set);
 
-		energizerTiles = trim(tiles().filter(tile -> map.data(tile) == WorldMap.ENERGIZER).collect(Collectors.toList()));
+		energizerTiles = trim(
+				tiles().filter(tile -> map.data(tile) == WorldMap.ENERGIZER).collect(Collectors.toList()));
 	}
 
 	private boolean isGhostHouseDoor(V2i tile) {

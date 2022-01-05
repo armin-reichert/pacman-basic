@@ -40,9 +40,9 @@ import de.amr.games.pacman.model.mspacman.entities.JuniorBag;
  * Intermission scene 3: "Junior".
  * 
  * <p>
- * Pac-Man and Ms. Pac-Man gradually wait for a stork, who flies overhead with a little blue bundle.
- * The stork drops the bundle, which falls to the ground in front of Pac-Man and Ms. Pac-Man, and
- * finally opens up to reveal a tiny Pac-Man. (Played after rounds 9, 13, and 17)
+ * Pac-Man and Ms. Pac-Man gradually wait for a stork, who flies overhead with a little blue bundle. The stork drops the
+ * bundle, which falls to the ground in front of Pac-Man and Ms. Pac-Man, and finally opens up to reveal a tiny Pac-Man.
+ * (Played after rounds 9, 13, and 17)
  * 
  * @author Armin Reichert
  */
@@ -65,7 +65,8 @@ public abstract class Intermission3Controller extends FiniteStateMachine<Intermi
 	public Intermission3Controller(PacManGameController gameController) {
 		super(IntermissionState.values());
 		configState(IntermissionState.FLAP, () -> startStateTimer(1), this::state_FLAP_update, null);
-		configState(IntermissionState.ACTION, () -> startStateTimer(TickTimer.INDEFINITE), this::state_ACTION_update, null);
+		configState(IntermissionState.ACTION, () -> startStateTimer(TickTimer.INDEFINITE), this::state_ACTION_update,
+				null);
 		configState(IntermissionState.READY_TO_PLAY, () -> startStateTimer(3), this::state_READY_TO_PLAY_update, null);
 		this.gameController = gameController;
 	}

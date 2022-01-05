@@ -95,8 +95,8 @@ public class Creature extends GameEntity {
 	}
 
 	/**
-	 * Places the creature at the given tile with the given position offsets. Sets the
-	 * {@link #newTileEntered} flag to trigger steering.
+	 * Places the creature at the given tile with the given position offsets. Sets the {@link #newTileEntered} flag to
+	 * trigger steering.
 	 * 
 	 * @param tile    the tile where this creature will be placed
 	 * @param offsetX the pixel offset in x-direction
@@ -108,8 +108,8 @@ public class Creature extends GameEntity {
 	}
 
 	/**
-	 * Places the creature on its current tile with given offset. This is for example used to place a
-	 * ghost exactly between two tiles like in the initial ghosthouse position.
+	 * Places the creature on its current tile with given offset. This is for example used to place a ghost exactly
+	 * between two tiles like in the initial ghosthouse position.
 	 * 
 	 * @param offsetX offset in x-direction
 	 * @param offsetY offset in y-direction
@@ -236,12 +236,14 @@ public class Creature extends GameEntity {
 
 		// align with edge of inaccessible neighbor
 		if (!canAccessTile(neighborTile)) {
-			if (moveDir == Direction.RIGHT && offsetAfterMove.x > 0 || moveDir == Direction.LEFT && offsetAfterMove.x < 0) {
+			if (moveDir == Direction.RIGHT && offsetAfterMove.x > 0
+					|| moveDir == Direction.LEFT && offsetAfterMove.x < 0) {
 				setOffset(0, offsetBeforeMove.y);
 				stuck = true;
 				return;
 			}
-			if (moveDir == Direction.DOWN && offsetAfterMove.y > 0 || moveDir == Direction.UP && offsetAfterMove.y < 0) {
+			if (moveDir == Direction.DOWN && offsetAfterMove.y > 0
+					|| moveDir == Direction.UP && offsetAfterMove.y < 0) {
 				setOffset(offsetBeforeMove.x, 0);
 				stuck = true;
 				return;
@@ -271,9 +273,8 @@ public class Creature extends GameEntity {
 	}
 
 	/**
-	 * As described in the Pac-Man dossier: checks all accessible neighbor tiles in order UP, LEFT,
-	 * DOWN, RIGHT and selects the one with smallest Euclidean distance to the target tile. Reversing
-	 * the move direction is not allowed.
+	 * As described in the Pac-Man dossier: checks all accessible neighbor tiles in order UP, LEFT, DOWN, RIGHT and
+	 * selects the one with smallest Euclidean distance to the target tile. Reversing the move direction is not allowed.
 	 */
 	public void headForTile(V2i targetTile) {
 		this.targetTile = targetTile;

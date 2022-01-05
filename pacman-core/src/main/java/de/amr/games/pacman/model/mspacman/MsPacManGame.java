@@ -148,7 +148,8 @@ public class MsPacManGame extends GameModel {
 		bonus.world = world;
 		bonus.init();
 
-		log("Ms. Pac-Man game entered level #%d, maze number is %d, map number is %d", levelNumber, mazeNumber, mapNumber);
+		log("Ms. Pac-Man game entered level #%d, maze number is %d, map number is %d", levelNumber, mazeNumber,
+				mapNumber);
 	}
 
 	/**

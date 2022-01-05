@@ -33,8 +33,8 @@ import java.util.function.BiConsumer;
 import java.util.stream.Stream;
 
 /**
- * A finite-state machine, a graph of vertices (states) connected by transitions. Transitions are
- * defined dynamically by the calls of the {@link #changeState(Enum)} method.
+ * A finite-state machine, a graph of vertices (states) connected by transitions. Transitions are defined dynamically by
+ * the calls of the {@link #changeState(Enum)} method.
  * <p>
  * Each state transition triggers a state change event.
  * 

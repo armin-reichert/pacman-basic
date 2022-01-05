@@ -43,8 +43,8 @@ import de.amr.games.pacman.model.common.Pac;
 /**
  * Intro scene of the PacMan game.
  * <p>
- * The ghosts are presented one after another, then Pac-Man is chased by the ghosts, turns the card
- * and hunts the ghosts himself.
+ * The ghosts are presented one after another, then Pac-Man is chased by the ghosts, turns the card and hunts the ghosts
+ * himself.
  * 
  * @author Armin Reichert
  */
@@ -85,7 +85,8 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 		configState(IntroState.PRESENTING_GHOSTS, this::restartStateTimer, this::state_PRESENTING_GHOSTS_update, null);
 		configState(IntroState.SHOWING_POINTS, this::restartStateTimer, this::state_SHOWING_POINTS_update, null);
 		configState(IntroState.CHASING_PAC, this::state_CHASING_PAC_enter, this::state_CHASING_PAC_update, null);
-		configState(IntroState.CHASING_GHOSTS, this::state_CHASING_GHOSTS_enter, this::state_CHASING_GHOSTS_update, null);
+		configState(IntroState.CHASING_GHOSTS, this::state_CHASING_GHOSTS_enter, this::state_CHASING_GHOSTS_update,
+				null);
 		configState(IntroState.READY_TO_PLAY, this::restartStateTimer, this::state_READY_TO_PLAY_update, null);
 		this.gameController = gameController;
 		portraits = new GhostPortrait[] { //

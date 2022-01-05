@@ -35,8 +35,8 @@ import de.amr.games.pacman.model.common.GhostState;
 import de.amr.games.pacman.model.common.Pac;
 
 /**
- * Third intermission scene: Blinky in shred dress chases Pac-Man, comes back half-naked drawing its
- * dress over the floor.
+ * Third intermission scene: Blinky in shred dress chases Pac-Man, comes back half-naked drawing its dress over the
+ * floor.
  * 
  * @author Armin Reichert
  */
@@ -54,8 +54,8 @@ public abstract class Intermission3Controller extends FiniteStateMachine<Intermi
 	public Intermission3Controller(PacManGameController gameController) {
 		super(IntermissionState.values());
 		configState(IntermissionState.CHASING_PACMAN, this::startStateTimer, this::state_CHASING_PACMAN_update, null);
-		configState(IntermissionState.RETURNING_HALF_NAKED, this::startStateTimer, this::state_RETURNING_HALF_NAKED_update,
-				null);
+		configState(IntermissionState.RETURNING_HALF_NAKED, this::startStateTimer,
+				this::state_RETURNING_HALF_NAKED_update, null);
 		this.gameController = gameController;
 	}
 

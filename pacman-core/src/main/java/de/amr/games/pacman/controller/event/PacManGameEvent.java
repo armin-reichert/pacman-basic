@@ -31,17 +31,17 @@ import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Ghost;
 
 /**
- * Base class for events fired during game play. This class is a kind of compromise between separate
- * subclasses for each event type and a fat base class.
+ * Base class for events fired during game play. This class is a kind of compromise between separate subclasses for each
+ * event type and a fat base class.
  * 
  * @author Armin Reichert
  */
 public class PacManGameEvent {
 
 	public enum Info {
-		BONUS_ACTIVATED, BONUS_EATEN, BONUS_EXPIRED, EXTRA_LIFE, PLAYER_FOUND_FOOD, PLAYER_GAINS_POWER, PLAYER_LOSING_POWER,
-		PLAYER_LOST_POWER, GHOST_ENTERS_HOUSE, GHOST_LEAVING_HOUSE, GHOST_LEFT_HOUSE, GHOST_RETURNS_HOME, GAME_STATE_CHANGE,
-		OTHER;
+		BONUS_ACTIVATED, BONUS_EATEN, BONUS_EXPIRED, EXTRA_LIFE, PLAYER_FOUND_FOOD, PLAYER_GAINS_POWER,
+		PLAYER_LOSING_POWER, PLAYER_LOST_POWER, GHOST_ENTERS_HOUSE, GHOST_LEAVING_HOUSE, GHOST_LEFT_HOUSE,
+		GHOST_RETURNS_HOME, GAME_STATE_CHANGE, OTHER;
 	}
 
 	public final GameModel game;
