@@ -183,6 +183,13 @@ public abstract class GameModel {
 	public abstract void enterLevel(int levelNumber);
 
 	/**
+	 * @param levelNumber game level number
+	 * @return 1-based intermission (cut scene) number that is played after given level or <code>0</code> if no
+	 *         intermission is played after given level.
+	 */
+	public abstract int intermissionNumber(int levelNumber);
+
+	/**
 	 * @param symbolName bonus symbol identifier
 	 * @return value of this bonus symbol
 	 */

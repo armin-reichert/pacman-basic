@@ -119,8 +119,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		configState(INTRO, this::state_Intro_enter, this::state_Intro_update, null);
 		configState(READY, this::state_Ready_enter, this::state_Ready_update, null);
 		configState(HUNTING, this::state_Hunting_enter, this::state_Hunting_update, null);
-		configState(GHOST_DYING, this::state_GhostDying_enter, this::state_GhostDying_update,
-				this::state_GhostDying_exit);
+		configState(GHOST_DYING, this::state_GhostDying_enter, this::state_GhostDying_update, this::state_GhostDying_exit);
 		configState(PACMAN_DYING, this::state_PacManDying_enter, this::state_PacManDying_update, null);
 		configState(LEVEL_STARTING, this::state_LevelStarting_enter, this::state_LevelStarting_update, null);
 		configState(LEVEL_COMPLETE, this::state_LevelComplete_enter, this::state_LevelComplete_update, null);
@@ -231,25 +230,6 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		fireGameEvent(Info.PLAYER_FOUND_FOOD, null);
 	}
 
-	/**
-	 * @param levelNumber game level number
-	 * @return 1-based intermission (cut scene) number that is played after given level
-	 */
-	public int intermissionNumber(int levelNumber) {
-		switch (levelNumber) {
-		case 2:
-			return 1;
-		case 5:
-			return 2;
-		case 9:
-		case 13:
-		case 17:
-			return 3;
-		default:
-			return 0; // no intermission after this level
-		}
-	}
-
 	// BEGIN STATE-MACHINE METHODS
 
 	private void state_Intro_enter() {
@@ -320,8 +300,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 		// Is hunting phase complete?
 		if (stateTimer().hasExpired()) {
-			game.ghosts().filter(ghost -> ghost.is(HUNTING_PAC) || ghost.is(FRIGHTENED))
-					.forEach(Ghost::forceTurningBack);
+			game.ghosts().filter(ghost -> ghost.is(HUNTING_PAC) || ghost.is(FRIGHTENED)).forEach(Ghost::forceTurningBack);
 			startHuntingPhase(++huntingPhase);
 			return;
 		}
@@ -476,7 +455,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		if (stateTimer().hasExpired()) {
 			if (attractMode) {
 				changeState(INTRO);
-			} else if (intermissionNumber(game.levelNumber) != 0) {
+			} else if (game.intermissionNumber(game.levelNumber) != 0) {
 				changeState(INTERMISSION);
 			} else {
 				changeState(LEVEL_STARTING);
@@ -587,8 +566,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 		// Is bonus awarded?
 		if (game.isBonusReached()) {
-			final long bonusTicks = gameVariant == PACMAN ? sec_to_ticks(9 + new Random().nextFloat())
-					: TickTimer.INDEFINITE;
+			final long bonusTicks = gameVariant == PACMAN ? sec_to_ticks(9 + new Random().nextFloat()) : TickTimer.INDEFINITE;
 			game.bonus.symbol = game.bonusSymbol;
 			game.bonus.points = game.bonusValue(game.bonus.symbol);
 			game.bonus.activate(bonusTicks);
@@ -660,8 +638,8 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 			/*
 			 * In Ms. Pac-Man, Blinky and Pinky move randomly during the *first* scatter phase. Some say, the original
-			 * intention had been to randomize the scatter target of *all* ghosts in Ms. Pac-Man but because of a bug,
-			 * only the scatter target of Blinky and Pinky would have been affected. Who knows?
+			 * intention had been to randomize the scatter target of *all* ghosts in Ms. Pac-Man but because of a bug, only
+			 * the scatter target of Blinky and Pinky would have been affected. Who knows?
 			 */
 			if (gameVariant == MS_PACMAN && huntingPhase == 0 && (ghost.id == RED_GHOST || ghost.id == PINK_GHOST)) {
 				ghost.roam();
@@ -711,8 +689,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			} else if (!game.globalDotCounterEnabled && ghost.dotCounter >= ghost.privateDotLimit) {
 				releaseGhost(ghost, "Private dot counter reached limit (%d)", ghost.privateDotLimit);
 			} else if (game.player.starvingTicks >= game.player.starvingTimeLimit) {
-				releaseGhost(ghost, "%s reached starving limit (%d ticks)", game.player.name,
-						game.player.starvingTicks);
+				releaseGhost(ghost, "%s reached starving limit (%d ticks)", game.player.name, game.player.starvingTicks);
 				game.player.starvingTicks = 0;
 			}
 		});
