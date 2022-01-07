@@ -23,7 +23,6 @@ SOFTWARE.
  */
 package de.amr.games.pacman.ui;
 
-import de.amr.games.pacman.controller.PlayerControl;
 import de.amr.games.pacman.controller.event.DefaultPacManGameEventHandler;
 
 /**
@@ -31,7 +30,7 @@ import de.amr.games.pacman.controller.event.DefaultPacManGameEventHandler;
  * 
  * @author Armin Reichert
  */
-public interface PacManGameUI extends DefaultPacManGameEventHandler, PlayerControl {
+public interface PacManGameUI extends DefaultPacManGameEventHandler {
 
 	void update();
 
