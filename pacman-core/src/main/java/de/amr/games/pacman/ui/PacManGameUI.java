@@ -23,14 +23,12 @@ SOFTWARE.
  */
 package de.amr.games.pacman.ui;
 
-import de.amr.games.pacman.controller.event.DefaultPacManGameEventHandler;
-
 /**
  * Interface through which the game controller accesses the UI.
  * 
  * @author Armin Reichert
  */
-public interface PacManGameUI extends DefaultPacManGameEventHandler {
+public interface PacManGameUI {
 
 	void update();
 
