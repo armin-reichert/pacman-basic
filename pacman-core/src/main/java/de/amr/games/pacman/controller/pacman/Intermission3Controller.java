@@ -54,8 +54,8 @@ public abstract class Intermission3Controller extends FiniteStateMachine<Intermi
 	public Intermission3Controller(PacManGameController gameController) {
 		super(IntermissionState.values());
 		configState(IntermissionState.CHASING_PACMAN, this::startStateTimer, this::state_CHASING_PACMAN_update, null);
-		configState(IntermissionState.RETURNING_HALF_NAKED, this::startStateTimer,
-				this::state_RETURNING_HALF_NAKED_update, null);
+		configState(IntermissionState.RETURNING_HALF_NAKED, this::startStateTimer, this::state_RETURNING_HALF_NAKED_update,
+				null);
 		this.gameController = gameController;
 	}
 
@@ -71,14 +71,14 @@ public abstract class Intermission3Controller extends FiniteStateMachine<Intermi
 	public void init() {
 		pac = new Pac("Pac-Man");
 		pac.setDir(Direction.LEFT);
-		pac.visible = true;
+		pac.show();
 		pac.setPosition(t(40), groundY);
 		pac.setSpeed(1.2);
 
 		blinky = new Ghost(GameModel.RED_GHOST, "Blinky");
 		blinky.setDir(Direction.LEFT);
 		blinky.setWishDir(Direction.LEFT);
-		blinky.visible = true;
+		blinky.show();
 		blinky.position = pac.position.plus(t(8), 0);
 		blinky.setSpeed(1.2);
 		blinky.state = GhostState.HUNTING_PAC;

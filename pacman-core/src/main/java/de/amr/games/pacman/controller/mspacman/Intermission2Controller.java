@@ -72,7 +72,7 @@ public abstract class Intermission2Controller extends FiniteStateMachine<Intermi
 	public void init() {
 		flap = new Flap(2, "THE CHASE");
 		flap.setPosition(t(3), t(10));
-		flap.visible = true;
+		flap.show();
 		pacMan = new Pac("Pac-Man");
 		pacMan.setDir(Direction.RIGHT);
 		msPacMan = new Pac("Ms. Pac-Man");
@@ -94,7 +94,7 @@ public abstract class Intermission2Controller extends FiniteStateMachine<Intermi
 		if (stateTimer().isRunningSeconds(1)) {
 			playFlapAnimation();
 		} else if (stateTimer().isRunningSeconds(2)) {
-			flap.visible = false;
+			flap.hide();
 			playIntermissionSound();
 		} else if (stateTimer().isRunningSeconds(4.5)) {
 			changeState(IntermissionState.ACTION);
@@ -103,17 +103,17 @@ public abstract class Intermission2Controller extends FiniteStateMachine<Intermi
 
 	private void state_ACTION_update() {
 		if (stateTimer().isRunningSeconds(1.5)) {
-			pacMan.visible = true;
+			pacMan.show();
 			pacMan.setPosition(-t(2), UPPER_Y);
 			pacMan.setDir(Direction.RIGHT);
 			pacMan.setSpeed(2.0);
-			msPacMan.visible = true;
+			msPacMan.show();
 			msPacMan.setPosition(-t(8), UPPER_Y);
 			msPacMan.setDir(Direction.RIGHT);
 			msPacMan.setSpeed(2.0);
 		} else if (stateTimer().isRunningSeconds(6)) {
 			msPacMan.setPosition(t(30), LOWER_Y);
-			msPacMan.visible = true;
+			msPacMan.show();
 			msPacMan.setDir(Direction.LEFT);
 			msPacMan.setSpeed(2.0);
 			pacMan.setPosition(t(36), LOWER_Y);

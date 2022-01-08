@@ -78,29 +78,29 @@ public abstract class Intermission1Controller extends FiniteStateMachine<Intermi
 	public void init() {
 		flap = new Flap(1, "THEY MEET");
 		flap.setPosition(t(3), t(10));
-		flap.visible = true;
+		flap.show();
 
 		pacMan = new Pac("Pac-Man");
 		pacMan.setDir(Direction.RIGHT);
 		pacMan.setPosition(-t(2), upperY);
-		pacMan.visible = true;
+		pacMan.show();
 
 		inky = new Ghost(GameModel.CYAN_GHOST, "Inky");
 		inky.setDir(Direction.RIGHT);
 		inky.setWishDir(Direction.RIGHT);
 		inky.position = pacMan.position.plus(-t(3), 0);
-		inky.visible = true;
+		inky.show();
 
 		msPac = new Pac("Ms. Pac-Man");
 		msPac.setDir(Direction.LEFT);
 		msPac.setPosition(t(30), lowerY);
-		msPac.visible = true;
+		msPac.show();
 
 		pinky = new Ghost(GameModel.PINK_GHOST, "Pinky");
 		pinky.setDir(Direction.LEFT);
 		pinky.setWishDir(Direction.LEFT);
 		pinky.position = msPac.position.plus(t(3), 0);
-		pinky.visible = true;
+		pinky.show();
 
 		heart = new GameEntity();
 		ghostsMet = false;
@@ -118,7 +118,7 @@ public abstract class Intermission1Controller extends FiniteStateMachine<Intermi
 			playFlapAnimation();
 		}
 		if (stateTimer().hasExpired()) {
-			flap.visible = false;
+			flap.hide();
 			playIntermissionSound();
 			pacMan.setSpeed(1.0);
 			msPac.setSpeed(1.0);
@@ -163,7 +163,7 @@ public abstract class Intermission1Controller extends FiniteStateMachine<Intermi
 			pacMan.setDir(Direction.LEFT);
 			msPac.setDir(Direction.RIGHT);
 			heart.setPosition((pacMan.position.x + msPac.position.x) / 2, pacMan.position.y - t(2));
-			heart.visible = true;
+			heart.show();
 			inky.setSpeed(0);
 			pinky.setSpeed(0);
 			changeState(IntermissonState.READY_TO_PLAY);
@@ -181,8 +181,8 @@ public abstract class Intermission1Controller extends FiniteStateMachine<Intermi
 
 	private void state_READY_TO_PLAY_update() {
 		if (stateTimer().isRunningSeconds(2)) {
-			inky.visible = false;
-			pinky.visible = false;
+			inky.hide();
+			pinky.hide();
 		}
 		if (stateTimer().hasExpired()) {
 			gameController.stateTimer().expire();

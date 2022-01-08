@@ -49,13 +49,13 @@ public class Bonus extends Creature {
 	public void init() {
 		state = INACTIVE;
 		timer = 0;
-		visible = false;
+		hide();
 	}
 
 	public void activate(long ticks) {
 		state = EDIBLE;
 		timer = ticks;
-		visible = true;
+		show();
 	}
 
 	public void eatAndShowValue(long ticks) {
@@ -75,7 +75,7 @@ public class Bonus extends Creature {
 
 		case EDIBLE:
 			if (timer == 0) {
-				visible = false;
+				hide();
 				state = INACTIVE;
 				return Info.BONUS_EXPIRED;
 			} else {
@@ -85,7 +85,7 @@ public class Bonus extends Creature {
 
 		case EATEN:
 			if (timer == 0) {
-				visible = false;
+				hide();
 				state = INACTIVE;
 				return Info.BONUS_EXPIRED;
 			} else {

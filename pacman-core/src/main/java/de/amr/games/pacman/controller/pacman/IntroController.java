@@ -85,8 +85,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 		configState(IntroState.PRESENTING_GHOSTS, this::restartStateTimer, this::state_PRESENTING_GHOSTS_update, null);
 		configState(IntroState.SHOWING_POINTS, this::restartStateTimer, this::state_SHOWING_POINTS_update, null);
 		configState(IntroState.CHASING_PAC, this::state_CHASING_PAC_enter, this::state_CHASING_PAC_update, null);
-		configState(IntroState.CHASING_GHOSTS, this::state_CHASING_GHOSTS_enter, this::state_CHASING_GHOSTS_update,
-				null);
+		configState(IntroState.CHASING_GHOSTS, this::state_CHASING_GHOSTS_enter, this::state_CHASING_GHOSTS_update, null);
 		configState(IntroState.READY_TO_PLAY, this::restartStateTimer, this::state_READY_TO_PLAY_update, null);
 		this.gameController = gameController;
 		portraits = new GhostPortrait[] { //
@@ -123,7 +122,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 
 	private void selectGhost(int index) {
 		selectedGhostIndex = index;
-		portraits[selectedGhostIndex].ghost.visible = true;
+		portraits[selectedGhostIndex].ghost.show();
 	}
 
 	private void state_BEGIN_update() {
@@ -163,7 +162,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 
 	private void state_CHASING_PAC_enter() {
 		restartStateTimer();
-		pacMan.visible = true;
+		pacMan.show();
 		pacMan.setSpeed(0.95);
 		pacMan.setPosition(t(28), t(20));
 		pacMan.setDir(Direction.LEFT);
@@ -172,7 +171,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 			ghost.setWishDir(Direction.LEFT);
 			ghost.setDir(Direction.LEFT);
 			ghost.setSpeed(1.0);
-			ghost.visible = true;
+			ghost.show();
 			ghost.state = GhostState.HUNTING_PAC;
 		}
 	}
@@ -215,19 +214,19 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 			ghostKilledTime = stateTimer().ticked();
 			victim.state = GhostState.DEAD;
 			victim.bounty = List.of(200, 400, 800, 1600).get(victim.id);
-			pacMan.visible = false;
+			pacMan.hide();
 			pacMan.setSpeed(0);
 			Stream.of(ghosts).forEach(ghost -> ghost.setSpeed(0));
 		});
 		// After some time, Pac-Man and the surviving ghosts get visible and move again
 		if (stateTimer().ticked() - ghostKilledTime == sec_to_ticks(1)) {
-			pacMan.visible = true;
+			pacMan.show();
 			pacMan.setSpeed(1.0);
 			for (Ghost ghost : ghosts) {
 				if (ghost.state == GhostState.DEAD) {
-					ghost.visible = false;
+					ghost.hide();
 				} else {
-					ghost.visible = true;
+					ghost.show();
 					ghost.setSpeed(0.6);
 				}
 			}
@@ -235,7 +234,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 		}
 		// When the last ghost has been killed, make Pac-Man invisible
 		if (Stream.of(ghosts).allMatch(ghost -> ghost.state == GhostState.DEAD)) {
-			pacMan.visible = false;
+			pacMan.hide();
 		}
 		pacMan.move();
 		for (Ghost ghost : ghosts) {

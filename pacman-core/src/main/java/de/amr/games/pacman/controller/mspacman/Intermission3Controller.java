@@ -65,8 +65,7 @@ public abstract class Intermission3Controller extends FiniteStateMachine<Intermi
 	public Intermission3Controller(PacManGameController gameController) {
 		super(IntermissionState.values());
 		configState(IntermissionState.FLAP, () -> startStateTimer(1), this::state_FLAP_update, null);
-		configState(IntermissionState.ACTION, () -> startStateTimer(TickTimer.INDEFINITE), this::state_ACTION_update,
-				null);
+		configState(IntermissionState.ACTION, () -> startStateTimer(TickTimer.INDEFINITE), this::state_ACTION_update, null);
 		configState(IntermissionState.READY_TO_PLAY, () -> startStateTimer(3), this::state_READY_TO_PLAY_update, null);
 		this.gameController = gameController;
 	}
@@ -87,7 +86,7 @@ public abstract class Intermission3Controller extends FiniteStateMachine<Intermi
 	public void init() {
 		flap = new Flap(3, "JUNIOR");
 		flap.setPosition(t(3), t(10));
-		flap.visible = true;
+		flap.show();
 
 		pacMan = new Pac("Pac-Man");
 		pacMan.setDir(Direction.RIGHT);
@@ -112,7 +111,7 @@ public abstract class Intermission3Controller extends FiniteStateMachine<Intermi
 		if (stateTimer().isRunningSeconds(1)) {
 			playFlapAnimation();
 		} else if (stateTimer().isRunningSeconds(2)) {
-			flap.visible = false;
+			flap.hide();
 			playIntermissionSound();
 			changeState(IntermissionState.ACTION);
 		}
@@ -122,10 +121,10 @@ public abstract class Intermission3Controller extends FiniteStateMachine<Intermi
 		stork.move();
 		bag.move();
 		if (stateTimer().hasJustStarted()) {
-			pacMan.visible = true;
-			msPacMan.visible = true;
-			stork.visible = true;
-			bag.visible = true;
+			pacMan.show();
+			msPacMan.show();
+			stork.show();
+			bag.show();
 			stork.setVelocity(-1.25, 0);
 			bag.setVelocity(-1.25f, 0);
 		}

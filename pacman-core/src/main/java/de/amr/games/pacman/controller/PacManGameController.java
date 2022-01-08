@@ -262,7 +262,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	private void state_Ready_update() {
 		long duration = gameRunning || attractMode ? sec_to_ticks(1.5) : sec_to_ticks(5);
 		if (stateTimer().ticked() == duration - sec_to_ticks(1)) {
-			game.player.visible = true;
+			game.player.show();
 			game.showGhosts();
 		} else if (stateTimer().ticked() == duration) {
 			if (gameRequested) {
@@ -410,7 +410,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	private void state_GhostDying_enter() {
-		game.player.visible = false;
+		game.player.hide();
 		stateTimer().resetSeconds(1);
 		stateTimer().start();
 	}
@@ -426,7 +426,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	private void state_GhostDying_exit() {
-		game.player.visible = true;
+		game.player.show();
 		// fire event(s) for dead ghosts not yet returning home (bounty != 0)
 		game.ghosts(DEAD).filter(ghost -> ghost.bounty != 0).forEach(ghost -> {
 			ghost.bounty = 0;

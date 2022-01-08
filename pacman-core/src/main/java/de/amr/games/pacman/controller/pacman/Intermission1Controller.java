@@ -67,14 +67,14 @@ public abstract class Intermission1Controller extends FiniteStateMachine<Intermi
 	public void init() {
 		pac = new Pac("Pac-Man");
 		pac.setDir(Direction.LEFT);
-		pac.visible = true;
+		pac.show();
 		pac.setPosition(t(30), groundY);
 		pac.setSpeed(1.0);
 
 		blinky = new Ghost(GameModel.RED_GHOST, "Blinky");
 		blinky.setDir(Direction.LEFT);
 		blinky.setWishDir(Direction.LEFT);
-		blinky.visible = true;
+		blinky.show();
 		blinky.position = pac.position.plus(t(3), 0);
 		blinky.setSpeed(1.04);
 		blinky.state = GhostState.HUNTING_PAC;

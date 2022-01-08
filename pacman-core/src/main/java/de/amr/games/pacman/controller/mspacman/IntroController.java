@@ -64,8 +64,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 		super(IntroState.values());
 		configState(IntroState.BEGIN, this::state_BEGIN_enter, this::state_BEGIN_update, null);
 		configState(IntroState.PRESENTING_GHOSTS, this::restartStateTimer, this::state_PRESENTING_GHOSTS_update, null);
-		configState(IntroState.PRESENTING_MSPACMAN, this::restartStateTimer, this::state_PRESENTING_MSPACMAN_update,
-				null);
+		configState(IntroState.PRESENTING_MSPACMAN, this::restartStateTimer, this::state_PRESENTING_MSPACMAN_update, null);
 		configState(IntroState.WAITING_FOR_GAME, this::restartStateTimer, this::state_WAITING_FOR_GAME_update, null);
 		this.gameController = gameController;
 	}
@@ -111,7 +110,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 
 	private void state_PRESENTING_GHOSTS_update() {
 		if (stateTimer().hasJustStarted()) {
-			ghosts[currentGhostIndex].visible = true;
+			ghosts[currentGhostIndex].show();
 			ghosts[currentGhostIndex].setSpeed(0.95);
 		}
 		boolean reachedFinalPosition = letGhostEnterStage(ghosts[currentGhostIndex]);
@@ -128,7 +127,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 
 	private void state_PRESENTING_MSPACMAN_update() {
 		if (stateTimer().hasJustStarted()) {
-			msPacMan.visible = true;
+			msPacMan.show();
 			msPacMan.setSpeed(0.95);
 		}
 		boolean reachedFinalPosition = letMsPacManEnterStage();

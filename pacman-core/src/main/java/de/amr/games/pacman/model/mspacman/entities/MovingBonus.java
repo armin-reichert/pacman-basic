@@ -42,20 +42,19 @@ public class MovingBonus extends Bonus {
 	@Override
 	public void init() {
 		state = INACTIVE;
-		visible = false;
 		timer = 0;
 		targetTile = null;
 		newTileEntered = true;
 		forcedOnTrack = true;
 		stuck = false;
 		setSpeed(0.25);
+		hide();
 	}
 
 	@Override
 	public void activate(long ticks) {
 		state = EDIBLE;
 		timer = ticks;
-		visible = true;
 		// place at random portal tile
 		int numPortals = world.portals().size();
 		Random random = new Random();
@@ -71,6 +70,7 @@ public class MovingBonus extends Bonus {
 			setDir(Direction.LEFT);
 			setWishDir(Direction.LEFT);
 		}
+		show();
 	}
 
 	@Override
@@ -81,7 +81,7 @@ public class MovingBonus extends Bonus {
 
 		case EDIBLE:
 			if (tile().equals(targetTile)) {
-				visible = false;
+				hide();
 				state = INACTIVE;
 				return Info.BONUS_EXPIRED;
 			}
@@ -91,7 +91,7 @@ public class MovingBonus extends Bonus {
 
 		case EATEN:
 			if (timer == 0) {
-				visible = false;
+				hide();
 				state = INACTIVE;
 				return Info.BONUS_EXPIRED;
 			}
