@@ -49,4 +49,12 @@ public class GameEntity {
 	public void move() {
 		position = position.plus(velocity);
 	}
+
+	public void show() {
+		visible = true;
+	}
+
+	public void hide() {
+		visible = false;
+	}
 }
