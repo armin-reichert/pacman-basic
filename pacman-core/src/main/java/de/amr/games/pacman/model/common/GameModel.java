@@ -317,6 +317,18 @@ public abstract class GameModel {
 		return ghosts[id];
 	}
 
+	public void hideGhosts() {
+		for (Ghost ghost : ghosts) {
+			ghost.visible = false;
+		}
+	}
+
+	public void showGhosts() {
+		for (Ghost ghost : ghosts) {
+			ghost.visible = true;
+		}
+	}
+
 	public void resetGhostBounty() {
 		ghostBounty = firstGhostBounty;
 	}
