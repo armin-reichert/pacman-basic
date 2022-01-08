@@ -216,7 +216,7 @@ public abstract class GameModel {
 		player.placeAt(world.playerHomeTile(), HTS, 0);
 		player.setDir(world.playerStartDirection());
 		player.setWishDir(world.playerStartDirection());
-		player.show();
+		player.hide();
 		player.velocity = V2d.NULL;
 		player.targetTile = null; // used in autopilot mode
 		player.stuck = false;
@@ -230,7 +230,7 @@ public abstract class GameModel {
 			ghost.placeAt(ghost.homeTile, HTS, 0);
 			ghost.setDir(world.ghostStartDirection(ghost.id));
 			ghost.setWishDir(world.ghostStartDirection(ghost.id));
-			ghost.show();
+			ghost.hide();
 			ghost.velocity = V2d.NULL;
 			ghost.targetTile = null;
 			ghost.stuck = false;

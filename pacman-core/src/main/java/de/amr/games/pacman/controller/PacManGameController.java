@@ -260,8 +260,8 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	private void state_Ready_update() {
-		long duration = gameRunning || attractMode ? sec_to_ticks(1.5) : sec_to_ticks(5);
-		if (stateTimer().ticked() == duration - sec_to_ticks(1)) {
+		long duration = gameRunning || attractMode ? sec_to_ticks(2) : sec_to_ticks(4.25);
+		if (stateTimer().ticked() == sec_to_ticks(1.5)) {
 			game.player.show();
 			game.showGhosts();
 		} else if (stateTimer().ticked() == duration) {
@@ -397,8 +397,6 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		game.player.setSpeed(0);
 		game.ghosts(FRIGHTENED).forEach(ghost -> ghost.state = HUNTING_PAC);
 		game.bonus.init();
-		stateTimer().reset();
-		stateTimer().start();
 	}
 
 	private void state_PacManDying_update() {
