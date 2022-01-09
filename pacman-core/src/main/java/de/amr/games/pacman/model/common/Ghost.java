@@ -169,8 +169,8 @@ public class Ghost extends Creature {
 	}
 
 	/**
-	 * Lets the ghost leave the house from its home position towards the middle of the house and then upwards towards
-	 * the house door.
+	 * Lets the ghost leave the house from its home position towards the middle of the house and then upwards towards the
+	 * house door.
 	 * 
 	 * @return {@code true} if the ghost has left the house
 	 */
@@ -223,7 +223,7 @@ public class Ghost extends Creature {
 
 	@Override
 	public String toString() {
-		return String.format("%s: state: %s, position: %s, speed: %.2f, dir: %s, wishDir: %s", name, state, position,
-				velocity.length(), dir, wishDir);
+		return String.format("%s: state: %s, position: %s, tile: %s, offset: %s speed: %.2f, dir: %s, wishDir: %s", name,
+				state, position, tile(), offset(), velocity.length(), dir, wishDir);
 	}
 }
