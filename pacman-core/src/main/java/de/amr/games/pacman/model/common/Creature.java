@@ -118,6 +118,10 @@ public class Creature extends GameEntity {
 		placeAt(tile(), offsetX, offsetY);
 	}
 
+	public void setOffset(V2d v) {
+		setOffset(v.x, v.y);
+	}
+
 	/**
 	 * Sets the move direction and updates the velocity vector.
 	 * 
@@ -236,14 +240,12 @@ public class Creature extends GameEntity {
 
 		// align with edge of inaccessible neighbor
 		if (!canAccessTile(neighborTile)) {
-			if (moveDir == Direction.RIGHT && offsetAfterMove.x > 0
-					|| moveDir == Direction.LEFT && offsetAfterMove.x < 0) {
+			if (moveDir == Direction.RIGHT && offsetAfterMove.x > 0 || moveDir == Direction.LEFT && offsetAfterMove.x < 0) {
 				setOffset(0, offsetBeforeMove.y);
 				stuck = true;
 				return;
 			}
-			if (moveDir == Direction.DOWN && offsetAfterMove.y > 0
-					|| moveDir == Direction.UP && offsetAfterMove.y < 0) {
+			if (moveDir == Direction.DOWN && offsetAfterMove.y > 0 || moveDir == Direction.UP && offsetAfterMove.y < 0) {
 				setOffset(offsetBeforeMove.x, 0);
 				stuck = true;
 				return;

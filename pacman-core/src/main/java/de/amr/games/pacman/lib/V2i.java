@@ -58,6 +58,10 @@ public class V2i {
 		return new V2i(x - v.x, y - v.y);
 	}
 
+	public V2i minus(int dx, int dy) {
+		return new V2i(x - dx, y - dy);
+	}
+
 	public double euclideanDistance(V2i v) {
 		return Math.hypot(x - v.x, y - v.y);
 	}
