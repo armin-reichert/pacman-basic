@@ -26,7 +26,7 @@ package de.amr.games.pacman.lib;
 import java.util.Objects;
 
 /**
- * Immutable 2D vector with double precision.
+ * Immutable 2D vector with double precision. Component values are treated as equal if they differ less than 1e-6.
  * 
  * @author Armin Reichert
  */
@@ -45,15 +45,15 @@ public class V2d {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
+	public boolean equals(Object v_object) {
+		if (this == v_object)
 			return true;
-		if (obj == null)
+		if (v_object == null)
 			return false;
-		if (getClass() != obj.getClass())
+		if (getClass() != v_object.getClass())
 			return false;
-		V2d other = (V2d) obj;
-		return Misc.differsAtMost(x, other.x, EPSILON) && Misc.differsAtMost(y, other.y, EPSILON);
+		V2d v = (V2d) v_object;
+		return Misc.differsAtMost(x, v.x, EPSILON) && Misc.differsAtMost(y, v.y, EPSILON);
 	}
 
 	@Override

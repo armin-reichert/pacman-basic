@@ -155,7 +155,11 @@ public class Creature extends GameEntity {
 	 * @param fraction fraction of base speed
 	 */
 	public void setSpeed(double fraction) {
-		velocity = new V2d(dir.vec).scaled(fraction * baseSpeed);
+		if (fraction == 0) {
+			velocity = V2d.NULL;
+		} else {
+			velocity = new V2d(dir.vec).scaled(fraction * baseSpeed);
+		}
 	}
 
 	public boolean canAccessTile(V2i tile) {

@@ -223,7 +223,7 @@ public class Ghost extends Creature {
 
 	@Override
 	public String toString() {
-		return String.format("%s: state: %s, position: %s, tile: %s, offset: %s speed: %.2f, dir: %s, wishDir: %s", name,
-				state, position, tile(), offset(), velocity.length(), dir, wishDir);
+		return String.format("[Ghost %s: state=%s, position=%s, tile=%s, offset=%s, velocity=%s, dir=%s, wishDir=%s]", name,
+				state, position, tile(), offset(), velocity, dir, wishDir);
 	}
 }
