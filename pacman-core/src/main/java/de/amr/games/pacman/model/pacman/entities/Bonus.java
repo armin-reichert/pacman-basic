@@ -25,6 +25,7 @@ package de.amr.games.pacman.model.pacman.entities;
 
 import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent.Info;
+import de.amr.games.pacman.model.common.BonusState;
 import de.amr.games.pacman.model.common.Creature;
 
 /**

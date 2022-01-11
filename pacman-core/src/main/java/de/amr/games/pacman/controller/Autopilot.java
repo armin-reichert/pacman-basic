@@ -33,11 +33,11 @@ import java.util.stream.Collectors;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.Logging;
 import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.model.common.BonusState;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.GhostState;
 import de.amr.games.pacman.model.common.Pac;
-import de.amr.games.pacman.model.pacman.entities.BonusState;
 
 /**
  * Controls automatic movement of the player.
