@@ -70,7 +70,7 @@ import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.mspacman.MsPacManGame;
 import de.amr.games.pacman.model.pacman.PacManGame;
-import de.amr.games.pacman.model.pacman.entities.Bonus;
+import de.amr.games.pacman.model.pacman.entities.BonusState;
 import de.amr.games.pacman.ui.PacManGameUI;
 
 /**
@@ -350,11 +350,11 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		}
 
 		// Bonus active?
-		if (game.bonus.state != Bonus.INACTIVE) {
+		if (game.bonus.state != BonusState.INACTIVE) {
 			Info bonusInfo = game.bonus.updateState();
 			if (bonusInfo == Info.BONUS_EXPIRED) {
 				fireGameEvent(Info.BONUS_EXPIRED, game.bonus.tile());
-			} else if (player.meets(game.bonus) && game.bonus.state == Bonus.EDIBLE) {
+			} else if (player.meets(game.bonus) && game.bonus.state == BonusState.EDIBLE) {
 				log("%s found bonus (%s, value %d)", player.name, game.bonus.symbol, game.bonus.points);
 				game.bonus.eatAndShowValue(sec_to_ticks(2));
 				score(game.bonus.points);

@@ -29,6 +29,7 @@ import de.amr.games.pacman.controller.event.PacManGameEvent;
 import de.amr.games.pacman.controller.event.PacManGameEvent.Info;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.model.pacman.entities.Bonus;
+import de.amr.games.pacman.model.pacman.entities.BonusState;
 import de.amr.games.pacman.model.world.Portal;
 
 /**
@@ -41,7 +42,7 @@ public class MovingBonus extends Bonus {
 
 	@Override
 	public void init() {
-		state = INACTIVE;
+		state = BonusState.INACTIVE;
 		timer = 0;
 		targetTile = null;
 		newTileEntered = true;
@@ -53,7 +54,7 @@ public class MovingBonus extends Bonus {
 
 	@Override
 	public void activate(long ticks) {
-		state = EDIBLE;
+		state = BonusState.EDIBLE;
 		timer = ticks;
 		// place at random portal tile
 		int numPortals = world.portals().size();
@@ -82,7 +83,7 @@ public class MovingBonus extends Bonus {
 		case EDIBLE:
 			if (tile().equals(targetTile)) {
 				hide();
-				state = INACTIVE;
+				state = BonusState.INACTIVE;
 				return Info.BONUS_EXPIRED;
 			}
 			headForTile(targetTile);
@@ -92,7 +93,7 @@ public class MovingBonus extends Bonus {
 		case EATEN:
 			if (timer == 0) {
 				hide();
-				state = INACTIVE;
+				state = BonusState.INACTIVE;
 				return Info.BONUS_EXPIRED;
 			}
 			timer--;

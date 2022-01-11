@@ -34,12 +34,10 @@ import de.amr.games.pacman.model.common.Creature;
  */
 public class Bonus extends Creature {
 
-	public static final int INACTIVE = 0, EDIBLE = 1, EATEN = 2;
-
+	public BonusState state;
 	public String symbol;
 	public int points;
 	public long timer;
-	public int state;
 
 	public Bonus() {
 		super("Bonus");
@@ -47,19 +45,19 @@ public class Bonus extends Creature {
 	}
 
 	public void init() {
-		state = INACTIVE;
+		state = BonusState.INACTIVE;
 		timer = 0;
 		hide();
 	}
 
 	public void activate(long ticks) {
-		state = EDIBLE;
+		state = BonusState.EDIBLE;
 		timer = ticks;
 		show();
 	}
 
 	public void eatAndShowValue(long ticks) {
-		state = EATEN;
+		state = BonusState.EATEN;
 		timer = ticks;
 	}
 
@@ -76,7 +74,7 @@ public class Bonus extends Creature {
 		case EDIBLE:
 			if (timer == 0) {
 				hide();
-				state = INACTIVE;
+				state = BonusState.INACTIVE;
 				return Info.BONUS_EXPIRED;
 			} else {
 				timer--;
@@ -86,7 +84,7 @@ public class Bonus extends Creature {
 		case EATEN:
 			if (timer == 0) {
 				hide();
-				state = INACTIVE;
+				state = BonusState.INACTIVE;
 				return Info.BONUS_EXPIRED;
 			} else {
 				timer--;
