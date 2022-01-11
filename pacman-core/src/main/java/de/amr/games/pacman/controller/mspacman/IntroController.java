@@ -49,7 +49,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 		BEGIN, PRESENTING_GHOSTS, PRESENTING_MSPACMAN, WAITING_FOR_GAME;
 	}
 
-	public final V2i tileTitle = new V2i(9, 8);
+//	public final V2i tileTitle = new V2i(9, 8);
 	public final V2i tileBoardTopLeft = new V2i(7, 11);
 	public final int yBelowBoard = t(20) + HTS;
 	public final int xLeftOfBoard = t(5);
