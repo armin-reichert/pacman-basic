@@ -82,7 +82,6 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 	}
 
 	private void state_BEGIN_enter() {
-		restartStateTimer();
 		msPacMan = new Pac("Ms. Pac-Man");
 		msPacMan.setDir(LEFT);
 		msPacMan.setPosition(t(36), yBelowBoard);
@@ -99,36 +98,34 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 			ghost.state = GhostState.HUNTING_PAC;
 		}
 		currentGhostIndex = 0;
+		restartStateTimer();
 	}
 
 	private void state_BEGIN_update() {
 		if (stateTimer().isRunningSeconds(2)) {
+			ghosts[currentGhostIndex].show();
+			ghosts[currentGhostIndex].setSpeed(0.95);
 			changeState(IntroState.PRESENTING_GHOSTS);
 		}
 	}
 
 	private void state_PRESENTING_GHOSTS_update() {
-		if (stateTimer().hasJustStarted()) {
-			ghosts[currentGhostIndex].show();
-			ghosts[currentGhostIndex].setSpeed(0.95);
-		}
 		boolean reachedFinalPosition = letGhostEnterStage(ghosts[currentGhostIndex]);
 		if (reachedFinalPosition) {
 			if (currentGhostIndex == 3) {
+				msPacMan.show();
+				msPacMan.setSpeed(0.95);
 				changeState(IntroState.PRESENTING_MSPACMAN);
-				return;
 			} else {
 				currentGhostIndex++;
+				ghosts[currentGhostIndex].show();
+				ghosts[currentGhostIndex].setSpeed(0.95);
 				restartStateTimer();
 			}
 		}
 	}
 
 	private void state_PRESENTING_MSPACMAN_update() {
-		if (stateTimer().hasJustStarted()) {
-			msPacMan.show();
-			msPacMan.setSpeed(0.95);
-		}
 		boolean reachedFinalPosition = letMsPacManEnterStage();
 		if (reachedFinalPosition) {
 			blinking.restart();
