@@ -61,11 +61,11 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 
 	public IntroController(PacManGameController gameController) {
 		super(IntroState.values());
+		this.gameController = gameController;
 		configState(IntroState.BEGIN, this::state_BEGIN_enter, this::state_BEGIN_update, null);
 		configState(IntroState.PRESENTING_GHOSTS, this::restartStateTimer, this::state_PRESENTING_GHOSTS_update, null);
 		configState(IntroState.PRESENTING_MSPACMAN, this::restartStateTimer, this::state_PRESENTING_MSPACMAN_update, null);
 		configState(IntroState.WAITING_FOR_GAME, this::restartStateTimer, this::state_WAITING_FOR_GAME_update, null);
-		this.gameController = gameController;
 	}
 
 	public void update() {
@@ -89,7 +89,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 				new Ghost(GameModel.RED_GHOST, "Blinky"), //
 				new Ghost(GameModel.PINK_GHOST, "Pinky"), //
 				new Ghost(GameModel.CYAN_GHOST, "Inky"), //
-				new Ghost(GameModel.ORANGE_GHOST, "Sue"),//
+				new Ghost(GameModel.ORANGE_GHOST, "Sue") //
 		};
 		for (Ghost ghost : ghosts) {
 			ghost.setDir(LEFT);
@@ -130,7 +130,6 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 		if (reachedFinalPosition) {
 			blinking.restart();
 			changeState(IntroState.WAITING_FOR_GAME);
-			return;
 		}
 	}
 
