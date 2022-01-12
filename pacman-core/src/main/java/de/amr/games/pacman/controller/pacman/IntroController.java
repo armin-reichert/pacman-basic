@@ -133,15 +133,15 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 	}
 
 	private void state_PRESENTING_GHOSTS_update() {
-		if (stateTimer().isRunningSeconds(0.5)) {
+		if (stateTimer().isRunningSeconds(1.0)) {
 			portraits[selectedGhostIndex].characterVisible = true;
 		}
 
-		else if (stateTimer().isRunningSeconds(1)) {
+		else if (stateTimer().isRunningSeconds(1.5)) {
 			portraits[selectedGhostIndex].nicknameVisible = true;
 		}
 
-		else if (stateTimer().isRunningSeconds(2)) {
+		else if (stateTimer().isRunningSeconds(2.0)) {
 			if (selectedGhostIndex < 3) {
 				selectGhost(selectedGhostIndex + 1);
 				restartStateTimer();
