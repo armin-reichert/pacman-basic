@@ -145,12 +145,13 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 			if (selectedGhostIndex < 3) {
 				selectGhost(selectedGhostIndex + 1);
 				restartStateTimer();
-			} else {
-				blinking.restart();
-				blinking.advance();
-				changeState(IntroState.SHOWING_POINTS);
-				return;
 			}
+		}
+
+		else if (stateTimer().isRunningSeconds(2.75)) {
+			blinking.restart();
+			blinking.advance();
+			changeState(IntroState.SHOWING_POINTS);
 		}
 	}
 
