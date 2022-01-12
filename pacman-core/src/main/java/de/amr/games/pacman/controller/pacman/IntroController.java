@@ -167,7 +167,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 		pacMan.setPosition(t(28), t(20));
 		pacMan.setDir(Direction.LEFT);
 		for (Ghost ghost : ghosts) {
-			ghost.position = pacMan.position.plus(26 + ghost.id * 16, 0);
+			ghost.position = pacMan.position.plus(24 + ghost.id * 16, 0);
 			ghost.setWishDir(Direction.LEFT);
 			ghost.setDir(Direction.LEFT);
 			ghost.setSpeed(1.0);
