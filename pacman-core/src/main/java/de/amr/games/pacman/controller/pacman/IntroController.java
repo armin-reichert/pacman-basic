@@ -57,29 +57,31 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 	public static class GhostPortrait {
 		public Ghost ghost;
 		public String character;
-		public boolean characterVisible;
-		public boolean nicknameVisible;
+		public boolean characterVisible = false;
+		public boolean nicknameVisible = false;
 
 		public GhostPortrait(int id, String name, String character, int tileY) {
 			ghost = new Ghost(id, name);
 			ghost.setDir(Direction.RIGHT);
 			ghost.setWishDir(Direction.RIGHT);
 			ghost.setPosition(t(4), t(tileY));
+			ghost.hide();
 			this.character = character;
 		}
 	}
 
-	public final PacManGameController gameController;
-	public final GhostPortrait[] portraits;
-	public final Pac pacMan;
-	public final Ghost[] ghosts;
 	public final TimedSequence<Boolean> blinking = TimedSequence.pulse().frameDuration(10);
 	public final TimedSequence<Boolean> slowBlinking = TimedSequence.pulse().frameDuration(30);
 	public final int topY = t(6);
+
+	public PacManGameController gameController;
+	public GhostPortrait[] portraits;
+	public Pac pacMan;
+	public Ghost[] ghosts;
 	public int selectedGhostIndex;
 	public long ghostKilledTime;
 
-	public IntroController(PacManGameController gameController) {
+	public IntroController() {
 		super(IntroState.values());
 		configState(IntroState.BEGIN, this::restartStateTimer, this::state_BEGIN_update, null);
 		configState(IntroState.PRESENTING_GHOSTS, this::restartStateTimer, this::state_PRESENTING_GHOSTS_update, null);
@@ -87,6 +89,9 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 		configState(IntroState.CHASING_PAC, this::state_CHASING_PAC_enter, this::state_CHASING_PAC_update, null);
 		configState(IntroState.CHASING_GHOSTS, this::state_CHASING_GHOSTS_enter, this::state_CHASING_GHOSTS_update, null);
 		configState(IntroState.READY_TO_PLAY, this::restartStateTimer, this::state_READY_TO_PLAY_update, null);
+	}
+
+	public void init(PacManGameController gameController) {
 		this.gameController = gameController;
 		portraits = new GhostPortrait[] { //
 				new GhostPortrait(GameModel.RED_GHOST, "Blinky", "SHADOW", 7), //
@@ -101,18 +106,12 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 				new Ghost(GameModel.CYAN_GHOST, "Inky"), //
 				new Ghost(GameModel.ORANGE_GHOST, "Clyde"), //
 		};
-	}
-
-	public void init() {
 		for (GhostPortrait portrait : portraits) {
+			portrait.ghost.hide();
 			portrait.characterVisible = false;
 			portrait.nicknameVisible = false;
 		}
 		changeState(IntroState.BEGIN);
-	}
-
-	public void update() {
-		updateState();
 	}
 
 	private void restartStateTimer() {
