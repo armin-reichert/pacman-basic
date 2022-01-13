@@ -67,10 +67,6 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 		configState(IntroState.WAITING_FOR_GAME, this::restartStateTimer, this::state_WAITING_FOR_GAME_update, null);
 	}
 
-	public void update() {
-		updateState();
-	}
-
 	public void init() {
 		changeState(IntroState.BEGIN);
 	}
