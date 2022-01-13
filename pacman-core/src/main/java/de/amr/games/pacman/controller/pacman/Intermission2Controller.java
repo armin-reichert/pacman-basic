@@ -40,7 +40,7 @@ import de.amr.games.pacman.model.common.Pac;
  * 
  * @author Armin Reichert
  */
-public abstract class Intermission2Controller extends FiniteStateMachine<IntermissionState> {
+public class Intermission2Controller extends FiniteStateMachine<IntermissionState> {
 
 	public enum IntermissionState {
 		WALKING, GETTING_STUCK, STUCK;
@@ -48,6 +48,9 @@ public abstract class Intermission2Controller extends FiniteStateMachine<Intermi
 
 	public final int groundY = t(20);
 	public final PacManGameController gameController;
+	public Runnable playIntermissionSound = () -> {
+	};
+
 	public Ghost blinky;
 	public Pac pac;
 	public GameEntity nail;
@@ -63,15 +66,6 @@ public abstract class Intermission2Controller extends FiniteStateMachine<Intermi
 	private void startStateTimer() {
 		stateTimer().start();
 	}
-
-	public void update() {
-		updateState();
-	}
-
-	/**
-	 * UI provides implementation.
-	 */
-	public abstract void playIntermissionSound();
 
 	public void init() {
 		pac = new Pac("Pac-Man");
@@ -92,7 +86,7 @@ public abstract class Intermission2Controller extends FiniteStateMachine<Intermi
 		nail.show();
 		nail.setPosition(t(14), groundY - 1);
 
-		playIntermissionSound();
+		playIntermissionSound.run();
 		changeState(IntermissionState.WALKING);
 	}
 

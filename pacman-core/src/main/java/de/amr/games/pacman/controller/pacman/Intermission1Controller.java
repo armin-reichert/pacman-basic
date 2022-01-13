@@ -39,7 +39,7 @@ import de.amr.games.pacman.model.common.Pac;
  * 
  * @author Armin Reichert
  */
-public abstract class Intermission1Controller extends FiniteStateMachine<IntermissionState> {
+public class Intermission1Controller extends FiniteStateMachine<IntermissionState> {
 
 	public enum IntermissionState {
 		BLINKY_CHASING_PACMAN, BIGPACMAN_CHASING_BLINKY
@@ -47,6 +47,8 @@ public abstract class Intermission1Controller extends FiniteStateMachine<Intermi
 
 	public final int groundY = t(20);
 	public final PacManGameController gameController;
+	public Runnable playIntermissionSound = () -> {
+	};
 	public Ghost blinky;
 	public Pac pac;
 
@@ -58,11 +60,6 @@ public abstract class Intermission1Controller extends FiniteStateMachine<Intermi
 				this::state_BIGPACMAN_CHASING_BLINKY_update, null);
 		this.gameController = gameController;
 	}
-
-	/**
-	 * UI provides implementation.
-	 */
-	public abstract void playIntermissionSound();
 
 	public void init() {
 		pac = new Pac("Pac-Man");
@@ -79,7 +76,7 @@ public abstract class Intermission1Controller extends FiniteStateMachine<Intermi
 		blinky.setSpeed(1.04);
 		blinky.state = GhostState.HUNTING_PAC;
 
-		playIntermissionSound();
+		playIntermissionSound.run();
 		changeState(IntermissionState.BLINKY_CHASING_PACMAN);
 	}
 
