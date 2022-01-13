@@ -73,10 +73,6 @@ public class Intermission1Controller extends FiniteStateMachine<IntermissonState
 	public Runnable playFlapAnimation = () -> {
 	};
 
-	public void update() {
-		updateState();
-	}
-
 	public void init() {
 		flap = new Flap(1, "THEY MEET");
 		flap.setPosition(t(3), t(10));
