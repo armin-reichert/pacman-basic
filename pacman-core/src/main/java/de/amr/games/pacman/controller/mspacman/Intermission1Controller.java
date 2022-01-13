@@ -44,7 +44,7 @@ import de.amr.games.pacman.model.mspacman.entities.Flap;
  * 
  * @author Armin Reichert
  */
-public abstract class Intermission1Controller extends FiniteStateMachine<IntermissonState> {
+public class Intermission1Controller extends FiniteStateMachine<IntermissonState> {
 
 	public enum IntermissonState {
 		FLAP, CHASED_BY_GHOSTS, COMING_TOGETHER, READY_TO_PLAY;
@@ -67,9 +67,11 @@ public abstract class Intermission1Controller extends FiniteStateMachine<Intermi
 		this.gameController = gameController;
 	}
 
-	public abstract void playIntermissionSound();
+	public Runnable playIntermissionSound = () -> {
+	};
 
-	public abstract void playFlapAnimation();
+	public Runnable playFlapAnimation = () -> {
+	};
 
 	public void update() {
 		updateState();
@@ -115,11 +117,11 @@ public abstract class Intermission1Controller extends FiniteStateMachine<Intermi
 
 	private void state_FLAP_update() {
 		if (stateTimer().isRunningSeconds(1)) {
-			playFlapAnimation();
+			playFlapAnimation.run();
 		}
 		if (stateTimer().hasExpired()) {
 			flap.hide();
-			playIntermissionSound();
+			playIntermissionSound.run();
 			pacMan.setSpeed(1.0);
 			msPac.setSpeed(1.0);
 			inky.setSpeed(1.0);
