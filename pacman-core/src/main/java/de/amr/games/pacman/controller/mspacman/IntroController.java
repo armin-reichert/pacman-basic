@@ -52,22 +52,23 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 	public final V2i tileBoardTopLeft = new V2i(7, 11);
 	public final int yBelowBoard = t(20) + HTS;
 	public final int xLeftOfBoard = t(5);
-	public final PacManGameController gameController;
+	public final TimedSequence<Boolean> blinking = TimedSequence.pulse().frameDuration(30);
+
+	public PacManGameController gameController;
 	public Pac msPacMan;
 	public Ghost[] ghosts;
 	public int currentGhostIndex;
-	public final TimedSequence<Boolean> blinking = TimedSequence.pulse().frameDuration(30);
 
-	public IntroController(PacManGameController gameController) {
+	public IntroController() {
 		super(IntroState.values());
-		this.gameController = gameController;
 		configState(IntroState.BEGIN, this::state_BEGIN_enter, this::state_BEGIN_update, null);
 		configState(IntroState.PRESENTING_GHOSTS, this::restartStateTimer, this::state_PRESENTING_GHOSTS_update, null);
 		configState(IntroState.PRESENTING_MSPACMAN, this::restartStateTimer, this::state_PRESENTING_MSPACMAN_update, null);
 		configState(IntroState.WAITING_FOR_GAME, this::restartStateTimer, this::state_WAITING_FOR_GAME_update, null);
 	}
 
-	public void init() {
+	public void init(PacManGameController gameController) {
+		this.gameController = gameController;
 		changeState(IntroState.BEGIN);
 	}
 
