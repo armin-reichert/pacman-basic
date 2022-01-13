@@ -51,29 +51,28 @@ public class Intermission1Controller extends FiniteStateMachine<IntermissonState
 	}
 
 	public final int upperY = t(12), lowerY = t(24), middleY = t(18);
-	public final PacManGameController gameController;
+
+	public PacManGameController gameController;
+	public Runnable playIntermissionSound = NOP;
+	public Runnable playFlapAnimation = NOP;
+
 	public Flap flap;
 	public Pac pacMan, msPac;
 	public Ghost pinky, inky;
 	public GameEntity heart;
 	public boolean ghostsMet;
 
-	public Intermission1Controller(PacManGameController gameController) {
+	public Intermission1Controller() {
 		super(IntermissonState.values());
 		configState(IntermissonState.FLAP, () -> startStateTimer(2), this::state_FLAP_update, null);
 		configState(IntermissonState.CHASED_BY_GHOSTS, null, this::state_CHASED_BY_GHOSTS_update, null);
 		configState(IntermissonState.COMING_TOGETHER, null, this::state_COMING_TOGETHER_update, null);
 		configState(IntermissonState.READY_TO_PLAY, () -> startStateTimer(4), this::state_READY_TO_PLAY_update, null);
-		this.gameController = gameController;
 	}
 
-	public Runnable playIntermissionSound = () -> {
-	};
+	public void init(PacManGameController gameController) {
+		this.gameController = gameController;
 
-	public Runnable playFlapAnimation = () -> {
-	};
-
-	public void init() {
 		flap = new Flap(1, "THEY MEET");
 		flap.setPosition(t(3), t(10));
 		flap.show();

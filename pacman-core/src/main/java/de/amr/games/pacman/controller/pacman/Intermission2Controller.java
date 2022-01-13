@@ -47,27 +47,24 @@ public class Intermission2Controller extends FiniteStateMachine<IntermissionStat
 	}
 
 	public final int groundY = t(20);
-	public final PacManGameController gameController;
-	public Runnable playIntermissionSound = () -> {
-	};
+
+	public PacManGameController gameController;
+	public Runnable playIntermissionSound = NOP;
 
 	public Ghost blinky;
 	public Pac pac;
 	public GameEntity nail;
 
-	public Intermission2Controller(PacManGameController gameController) {
+	public Intermission2Controller() {
 		super(IntermissionState.values());
 		configState(IntermissionState.WALKING, this::startStateTimer, this::state_WALKING_update, null);
 		configState(IntermissionState.GETTING_STUCK, this::startStateTimer, this::state_GETTING_STUCK_update, null);
 		configState(IntermissionState.STUCK, this::startStateTimer, this::state_STUCK_update, null);
+	}
+
+	public void init(PacManGameController gameController) {
 		this.gameController = gameController;
-	}
 
-	private void startStateTimer() {
-		stateTimer().start();
-	}
-
-	public void init() {
 		pac = new Pac("Pac-Man");
 		pac.setDir(Direction.LEFT);
 		pac.show();
@@ -88,6 +85,10 @@ public class Intermission2Controller extends FiniteStateMachine<IntermissionStat
 
 		playIntermissionSound.run();
 		changeState(IntermissionState.WALKING);
+	}
+
+	private void startStateTimer() {
+		stateTimer().start();
 	}
 
 	public int nailDistance() {

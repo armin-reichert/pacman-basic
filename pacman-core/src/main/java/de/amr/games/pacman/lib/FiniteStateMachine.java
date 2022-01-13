@@ -44,6 +44,9 @@ import java.util.stream.Stream;
  */
 public class FiniteStateMachine<STATE_ID extends Enum<STATE_ID>> {
 
+	public static final Runnable NOP = () -> {
+	};
+
 	public static class State {
 		public final TickTimer timer;
 		public Runnable onEnter, onUpdate, onExit;

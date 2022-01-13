@@ -48,13 +48,10 @@ public class Intermission2Controller extends FiniteStateMachine<IntermissionStat
 
 	public static final int UPPER_Y = t(12), LOWER_Y = t(24), MIDDLE_Y = t(18);
 
-	public Runnable playIntermissionSound = () -> {
-	};
+	public PacManGameController gameController;
+	public Runnable playIntermissionSound = NOP;
+	public Runnable playFlapAnimation = NOP;
 
-	public Runnable playFlapAnimation = () -> {
-	};
-
-	public final PacManGameController gameController;
 	public Flap flap;
 	public Pac pacMan, msPacMan;
 

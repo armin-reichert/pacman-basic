@@ -47,22 +47,23 @@ public class Intermission3Controller extends FiniteStateMachine<IntermissionStat
 	}
 
 	public final int groundY = t(20);
-	public final PacManGameController gameController;
-	public Runnable playIntermissionSound = () -> {
-	};
+
+	public PacManGameController gameController;
+	public Runnable playIntermissionSound = NOP;
 
 	public Ghost blinky;
 	public Pac pac;
 
-	public Intermission3Controller(PacManGameController gameController) {
+	public Intermission3Controller() {
 		super(IntermissionState.values());
 		configState(IntermissionState.CHASING_PACMAN, this::startStateTimer, this::state_CHASING_PACMAN_update, null);
 		configState(IntermissionState.RETURNING_HALF_NAKED, this::startStateTimer, this::state_RETURNING_HALF_NAKED_update,
 				null);
-		this.gameController = gameController;
 	}
 
-	public void init() {
+	public void init(PacManGameController gameController) {
+		this.gameController = gameController;
+
 		pac = new Pac("Pac-Man");
 		pac.setDir(Direction.LEFT);
 		pac.show();

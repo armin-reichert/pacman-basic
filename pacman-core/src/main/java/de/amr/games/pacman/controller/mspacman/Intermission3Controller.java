@@ -54,13 +54,9 @@ public class Intermission3Controller extends FiniteStateMachine<IntermissionStat
 
 	static final int GROUND_Y = t(24);
 
-	public final PacManGameController gameController;
-
-	public Runnable playIntermissionSound = () -> {
-	};
-
-	public Runnable playFlapAnimation = () -> {
-	};
+	public PacManGameController gameController;
+	public Runnable playIntermissionSound = NOP;
+	public Runnable playFlapAnimation = NOP;
 
 	public Flap flap;
 	public Pac pacMan;
@@ -69,20 +65,16 @@ public class Intermission3Controller extends FiniteStateMachine<IntermissionStat
 	public JuniorBag bag;
 	public int numBagBounces;
 
-	public Intermission3Controller(PacManGameController gameController) {
+	public Intermission3Controller() {
 		super(IntermissionState.values());
 		configState(IntermissionState.FLAP, () -> startStateTimer(1), this::state_FLAP_update, null);
 		configState(IntermissionState.ACTION, () -> startStateTimer(TickTimer.INDEFINITE), this::state_ACTION_update, null);
 		configState(IntermissionState.READY_TO_PLAY, () -> startStateTimer(3), this::state_READY_TO_PLAY_update, null);
+	}
+
+	public void init(PacManGameController gameController) {
 		this.gameController = gameController;
-	}
 
-	private void startStateTimer(double seconds) {
-		stateTimer().resetSeconds(seconds);
-		stateTimer().start();
-	}
-
-	public void init() {
 		flap = new Flap(3, "JUNIOR");
 		flap.setPosition(t(3), t(10));
 		flap.show();
@@ -104,6 +96,11 @@ public class Intermission3Controller extends FiniteStateMachine<IntermissionStat
 		bag.position = stork.position.plus(-14, 3);
 
 		changeState(IntermissionState.FLAP);
+	}
+
+	private void startStateTimer(double seconds) {
+		stateTimer().resetSeconds(seconds);
+		stateTimer().start();
 	}
 
 	private void state_FLAP_update() {
