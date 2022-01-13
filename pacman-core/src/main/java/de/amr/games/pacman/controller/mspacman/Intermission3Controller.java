@@ -46,7 +46,7 @@ import de.amr.games.pacman.model.mspacman.entities.JuniorBag;
  * 
  * @author Armin Reichert
  */
-public abstract class Intermission3Controller extends FiniteStateMachine<IntermissionState> {
+public class Intermission3Controller extends FiniteStateMachine<IntermissionState> {
 
 	public enum IntermissionState {
 		FLAP, ACTION, READY_TO_PLAY;
@@ -55,6 +55,13 @@ public abstract class Intermission3Controller extends FiniteStateMachine<Intermi
 	static final int GROUND_Y = t(24);
 
 	public final PacManGameController gameController;
+
+	public Runnable playIntermissionSound = () -> {
+	};
+
+	public Runnable playFlapAnimation = () -> {
+	};
+
 	public Flap flap;
 	public Pac pacMan;
 	public Pac msPacMan;
@@ -69,14 +76,6 @@ public abstract class Intermission3Controller extends FiniteStateMachine<Intermi
 		configState(IntermissionState.READY_TO_PLAY, () -> startStateTimer(3), this::state_READY_TO_PLAY_update, null);
 		this.gameController = gameController;
 	}
-
-	public void update() {
-		updateState();
-	}
-
-	public abstract void playIntermissionSound();
-
-	public abstract void playFlapAnimation();
 
 	private void startStateTimer(double seconds) {
 		stateTimer().resetSeconds(seconds);
@@ -109,10 +108,10 @@ public abstract class Intermission3Controller extends FiniteStateMachine<Intermi
 
 	private void state_FLAP_update() {
 		if (stateTimer().isRunningSeconds(1)) {
-			playFlapAnimation();
+			playFlapAnimation.run();
 		} else if (stateTimer().isRunningSeconds(2)) {
 			flap.hide();
-			playIntermissionSound();
+			playIntermissionSound.run();
 			changeState(IntermissionState.ACTION);
 		}
 	}
