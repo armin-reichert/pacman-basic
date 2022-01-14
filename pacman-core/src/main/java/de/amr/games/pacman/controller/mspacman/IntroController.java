@@ -98,7 +98,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 	}
 
 	private void state_BEGIN_update() {
-		if (stateTimer().isRunningSeconds(2)) {
+		if (stateTimer().isRunningSeconds(1)) {
 			ghosts[currentGhostIndex].show();
 			ghosts[currentGhostIndex].setSpeed(0.95);
 			changeState(IntroState.PRESENTING_GHOSTS);
