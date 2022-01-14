@@ -260,7 +260,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	private void state_Ready_update() {
-		long duration = gameRunning || attractMode ? sec_to_ticks(2) : sec_to_ticks(4.25);
+		long duration = gameRunning || attractMode ? sec_to_ticks(2) : sec_to_ticks(5);
 		if (stateTimer().ticked() == sec_to_ticks(1.5)) {
 			game.player.show();
 			game.showGhosts();
