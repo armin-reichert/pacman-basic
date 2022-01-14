@@ -23,11 +23,6 @@ SOFTWARE.
  */
 package de.amr.games.pacman.lib;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 /**
  * Timed sequence of things, for example of images or spritesheet regions
  * 
@@ -37,8 +32,10 @@ public class TimedSequence<T> {
 
 	static class SingleFrameAnimation<TT> extends TimedSequence<TT> {
 
+		@SuppressWarnings("unchecked")
 		public SingleFrameAnimation(TT thing) {
-			things = Collections.singletonList(thing);
+			things = (TT[]) new Object[1];
+			things[0] = thing;
 		}
 	}
 
@@ -51,7 +48,7 @@ public class TimedSequence<T> {
 			return new SingleFrameAnimation<TT>(things[0]);
 		}
 		TimedSequence<TT> a = new TimedSequence<>();
-		a.things = Stream.of(things).collect(Collectors.toList());
+		a.things = things;
 		return a;
 	}
 
@@ -59,7 +56,7 @@ public class TimedSequence<T> {
 		return TimedSequence.of(true, false).endless();
 	}
 
-	protected List<T> things;
+	protected T[] things;
 	protected int repetitions;
 	protected long delay;
 	protected long delayRemainingTicks;
@@ -140,13 +137,13 @@ public class TimedSequence<T> {
 	}
 
 	public T animate() {
-		T currentThing = things.get(frameIndex);
+		T currentThing = things[frameIndex];
 		advance();
 		return currentThing;
 	}
 
 	public T frame() {
-		return things.get(frameIndex);
+		return things[frameIndex];
 	}
 
 	public void advance() {
@@ -159,7 +156,7 @@ public class TimedSequence<T> {
 				}
 			} else if (frameRunningTicks + 1 < frameDurationTicks) {
 				frameRunningTicks++;
-			} else if (frameIndex + 1 < things.size()) {
+			} else if (frameIndex + 1 < things.length) {
 				// start next frame
 				frameIndex++;
 				frameRunningTicks = 0;
@@ -181,7 +178,7 @@ public class TimedSequence<T> {
 	}
 
 	public T frame(int i) {
-		return things.get(i);
+		return things[i];
 	}
 
 	public int frameIndex() {
@@ -193,11 +190,11 @@ public class TimedSequence<T> {
 	}
 
 	public long duration() {
-		return things.size() * frameDurationTicks;
+		return things.length * frameDurationTicks;
 	}
 
 	public int numFrames() {
-		return things.size();
+		return things.length;
 	}
 
 	public boolean isRunning() {
