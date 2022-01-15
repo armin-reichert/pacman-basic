@@ -41,8 +41,13 @@ import de.amr.games.pacman.lib.TickTimerEvent.Type;
  */
 public class TickTimer {
 
+	/** Timer value representing "forever". */
 	public static final long INDEFINITE = Long.MAX_VALUE;
 
+	/**
+	 * @param sec seconds
+	 * @return number of ticks representing given seconds at 60Hz
+	 */
 	public static final long sec_to_ticks(double sec) {
 		return Math.round(sec * 60);
 	}
@@ -67,7 +72,7 @@ public class TickTimer {
 
 	public TickTimer(String name) {
 		this.name = name;
-		reset();
+		resetIndefinite();
 	}
 
 	public String getName() {
@@ -107,12 +112,15 @@ public class TickTimer {
 		fireEvent(new TickTimerEvent(Type.RESET, duration));
 	}
 
-	public void reset() {
+	/**
+	 * Reset the time to run {@link #INDEFINITE}.
+	 */
+	public void resetIndefinite() {
 		reset(INDEFINITE);
 	}
 
 	public void resetSeconds(double seconds) {
-		reset((long) (seconds * 60));
+		reset(sec_to_ticks(seconds));
 	}
 
 	public void start() {

@@ -73,7 +73,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 	}
 
 	private void restartStateTimer() {
-		stateTimer().reset();
+		stateTimer().resetIndefinite();
 		stateTimer().start();
 	}
 
