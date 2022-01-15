@@ -242,8 +242,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		gameRunning = false;
 		attractMode = false;
 		autoControlled = false;
-		stateTimer().resetIndefinite();
-		stateTimer().start();
+		stateTimer().setIndefinite().start();
 	}
 
 	private void state_Intro_update() {
@@ -255,8 +254,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	private void state_Ready_enter() {
 		game.resetGuys();
-		stateTimer().resetIndefinite();
-		stateTimer().start();
+		stateTimer().setIndefinite().start();
 	}
 
 	private void state_Ready_update() {
@@ -275,7 +273,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	private void startHuntingPhase(int phase) {
 		huntingPhase = phase;
-		stateTimer().reset(game.getHuntingPhaseDuration(phase));
+		stateTimer().set(game.getHuntingPhaseDuration(phase));
 		stateTimer().start();
 		String phaseName = inScatteringPhase() ? "Scattering" : "Chasing";
 		log("Hunting phase #%d (%s) started, %d of %d ticks remaining", phase, phaseName, stateTimer().ticksRemaining(),
@@ -297,7 +295,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 		// Is level complete?
 		if (game.foodRemaining == 0) {
-			stateTimer().resetIndefinite();
+			stateTimer().setIndefinite();
 			changeState(LEVEL_COMPLETE);
 			return;
 		}
@@ -336,7 +334,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 				game.globalDotCounterEnabled = true;
 				log("Global dot counter got reset and enabled");
 
-				stateTimer().resetIndefinite();
+				stateTimer().setIndefinite();
 				changeState(PACMAN_DYING);
 				return;
 			}
@@ -372,7 +370,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		} else if (player.powerTimer.hasExpired()) {
 			log("%s lost power", player.name);
 			game.ghosts(FRIGHTENED).forEach(ghost -> ghost.state = HUNTING_PAC);
-			player.powerTimer.resetIndefinite();
+			player.powerTimer.setIndefinite();
 			// start HUNTING state timer again
 			stateTimer().start();
 			fireGameEvent(Info.PLAYER_LOST_POWER, player.tile());
@@ -409,7 +407,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	private void state_GhostDying_enter() {
 		game.player.hide();
-		stateTimer().resetSeconds(1);
+		stateTimer().setSeconds(1);
 		stateTimer().start();
 	}
 
@@ -436,8 +434,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		log("Level %d complete, entering level %d", game.levelNumber, game.levelNumber + 1);
 		game.enterLevel(game.levelNumber + 1);
 		game.resetGuys();
-		stateTimer().resetIndefinite();
-		stateTimer().start();
+		stateTimer().setIndefinite().start();
 	}
 
 	private void state_LevelStarting_update() {
@@ -449,8 +446,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	private void state_LevelComplete_enter() {
 		game.bonus.init();
 		game.player.setSpeed(0);
-		stateTimer().resetIndefinite();
-		stateTimer().start();
+		stateTimer().setIndefinite().start();
 	}
 
 	private void state_LevelComplete_update() {
@@ -470,7 +466,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		game.ghosts().forEach(ghost -> ghost.setSpeed(0));
 		game.player.setSpeed(0);
 		game.saveHiscore();
-		stateTimer().resetSeconds(5);
+		stateTimer().setSeconds(5);
 		stateTimer().start();
 	}
 
@@ -481,8 +477,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	private void state_Intermission_enter() {
-		stateTimer().resetIndefinite(); // UI triggers state timeout
-		stateTimer().start();
+		stateTimer().setIndefinite().start(); // UI triggers state timeout
 	}
 
 	private void state_Intermission_update() {
@@ -493,8 +488,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	private void state_IntermissionTest_enter() {
 		intermissionTestNumber = 1;
-		stateTimer().resetIndefinite();
-		stateTimer().start();
+		stateTimer().setIndefinite().start();
 		log("Test intermission scene #%d", intermissionTestNumber);
 	}
 
@@ -502,8 +496,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		if (stateTimer().hasExpired()) {
 			if (intermissionTestNumber < 3) {
 				++intermissionTestNumber;
-				stateTimer().resetIndefinite();
-				stateTimer().start();
+				stateTimer().setIndefinite().start();
 				log("Test intermission scene #%d", intermissionTestNumber);
 				// This is needed such that UI can update current scene
 				fireStateChange(INTERMISSION_TEST, INTERMISSION_TEST);
@@ -544,7 +537,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 					ghost.state = FRIGHTENED;
 					ghost.forceTurningBack();
 				});
-				game.player.powerTimer.resetSeconds(game.ghostFrightenedSeconds);
+				game.player.powerTimer.setSeconds(game.ghostFrightenedSeconds);
 				game.player.powerTimer.start();
 				log("%s got power for %d seconds", game.player.name, game.ghostFrightenedSeconds);
 				// HUNTING state timer is stopped while player has power

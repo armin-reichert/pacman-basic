@@ -224,7 +224,7 @@ public abstract class GameModel {
 		player.dead = false;
 		player.restingTicksLeft = 0;
 		player.starvingTicks = 0;
-		player.powerTimer.resetIndefinite();
+		player.powerTimer.setIndefinite();
 
 		for (Ghost ghost : ghosts) {
 			ghost.placeAt(ghost.homeTile, HTS, 0);

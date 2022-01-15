@@ -41,20 +41,12 @@ import de.amr.games.pacman.lib.TickTimerEvent.Type;
  */
 public class TickTimer {
 
-	/** Timer value representing "forever". */
-	public static final long INDEFINITE = Long.MAX_VALUE;
-
-	/**
-	 * @param sec seconds
-	 * @return number of ticks representing given seconds at 60Hz
-	 */
-	public static final long sec_to_ticks(double sec) {
-		return Math.round(sec * 60);
-	}
-
 	public enum TickTimerState {
 		READY, RUNNING, STOPPED, EXPIRED;
 	}
+
+	/** Timer value representing "forever". */
+	public static final long INDEFINITE = Long.MAX_VALUE;
 
 	public static boolean trace = false;
 
@@ -62,6 +54,14 @@ public class TickTimer {
 		if (trace) {
 			Logging.log(msg, args);
 		}
+	}
+
+	/**
+	 * @param sec seconds
+	 * @return number of ticks representing given seconds at 60Hz
+	 */
+	public static final long sec_to_ticks(double sec) {
+		return Math.round(sec * 60);
 	}
 
 	private final String name;
@@ -72,7 +72,7 @@ public class TickTimer {
 
 	public TickTimer(String name) {
 		this.name = name;
-		resetIndefinite();
+		setIndefinite();
 	}
 
 	public String getName() {
@@ -104,57 +104,60 @@ public class TickTimer {
 		}
 	}
 
-	public void reset(long ticks) {
+	public TickTimer set(long ticks) {
 		state = READY;
 		t = 0;
 		duration = ticks;
 		trace("%s got reset", this);
 		fireEvent(new TickTimerEvent(Type.RESET, duration));
+		return this;
 	}
 
 	/**
 	 * Reset the time to run {@link #INDEFINITE}.
 	 */
-	public void resetIndefinite() {
-		reset(INDEFINITE);
+	public TickTimer setIndefinite() {
+		set(INDEFINITE);
+		return this;
 	}
 
-	public void resetSeconds(double seconds) {
-		reset(sec_to_ticks(seconds));
+	public TickTimer setSeconds(double seconds) {
+		set(sec_to_ticks(seconds));
+		return this;
 	}
 
-	public void start() {
+	public TickTimer start() {
 		if (state == RUNNING) {
 			trace("%s not started, already running", this);
-			return;
+			return this;
 		}
 		if (state == STOPPED || state == READY) {
 			state = RUNNING;
 			trace("%s started", this);
 			fireEvent(new TickTimerEvent(Type.STARTED));
+			return this;
 		} else {
 			throw new IllegalStateException(String.format("Timer %s cannot be started when in state %s", this, state));
 		}
 	}
 
-	public void stop() {
+	public TickTimer stop() {
 		if (state == STOPPED) {
 			trace("%s not stopped, already stopped", this);
-			return;
-		}
-		if (state == RUNNING) {
+		} else if (state == RUNNING) {
 			state = STOPPED;
 			trace("%s stopped", this);
 			fireEvent(new TickTimerEvent(Type.STOPPED));
 		}
+		return this;
 	}
 
-	public void tick() {
+	public TickTimer tick() {
 		if (state == READY) {
-			return; // TODO handle this properly
+			return this; // TODO handle this properly
 		}
 		if (state == STOPPED) {
-			return;
+			return this;
 		}
 		++t;
 		if (t == duration / 2) {
@@ -163,12 +166,14 @@ public class TickTimer {
 		if (t == duration) {
 			expire();
 		}
+		return this;
 	}
 
-	public void expire() {
+	public TickTimer expire() {
 		state = EXPIRED;
 		trace("%s expired", this);
 		fireEvent(new TickTimerEvent(Type.EXPIRED, t));
+		return this;
 	}
 
 	public boolean hasExpired() {

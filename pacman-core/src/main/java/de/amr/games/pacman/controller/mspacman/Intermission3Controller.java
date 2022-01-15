@@ -99,7 +99,7 @@ public class Intermission3Controller extends FiniteStateMachine<IntermissionStat
 	}
 
 	private void startStateTimer(double seconds) {
-		stateTimer().resetSeconds(seconds);
+		stateTimer().setSeconds(seconds);
 		stateTimer().start();
 	}
 

@@ -83,8 +83,7 @@ public class Intermission3Controller extends FiniteStateMachine<IntermissionStat
 	}
 
 	private void startStateTimer() {
-		stateTimer().resetIndefinite();
-		stateTimer().start();
+		stateTimer().setIndefinite().start();
 	}
 
 	private void state_CHASING_PACMAN_update() {
