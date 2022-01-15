@@ -74,7 +74,7 @@ public class Creature extends GameEntity {
 	public boolean stuck = false;
 
 	/** If the creature is forced to take its wish direction. */
-	public boolean forced = false;
+//	public boolean forced = false;
 
 	/** If movement must be aligned with the "track" defined by the tiles. */
 	public boolean forcedOnTrack = false;
@@ -181,7 +181,6 @@ public class Creature extends GameEntity {
 		if (canAccessTile(tile().plus(dir.opposite().vec))) {
 			wishDir = dir.opposite();
 			dir = wishDir;
-			forced = true;
 		}
 	}
 
@@ -287,11 +286,6 @@ public class Creature extends GameEntity {
 	 */
 	public void headForTile(V2i targetTile) {
 		this.targetTile = targetTile;
-
-		if (forced) {
-			forced = false;
-			return;
-		}
 		if (!stuck && !newTileEntered) {
 			return;
 		}

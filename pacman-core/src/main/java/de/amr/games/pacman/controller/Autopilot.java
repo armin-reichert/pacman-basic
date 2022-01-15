@@ -105,10 +105,6 @@ public class Autopilot implements PlayerControl {
 
 	@Override
 	public void steer(Pac player) {
-		if (player.forced) {
-			player.forced = false;
-			return;
-		}
 		if (!player.stuck && !player.newTileEntered) {
 			return;
 		}
@@ -151,7 +147,6 @@ public class Autopilot implements PlayerControl {
 			}
 			if (escapeDir != null) {
 				game().player.setWishDir(escapeDir);
-				game().player.forced = true;
 			}
 			return;
 		}

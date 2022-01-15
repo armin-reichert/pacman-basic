@@ -236,7 +236,6 @@ public abstract class GameModel {
 			ghost.stuck = false;
 			// if ghost home is located outside of house, he must be on track initially
 			boolean ghostHomeOutsideOfHouse = !world.ghostHouse().contains(ghost.homeTile);
-			ghost.forced = ghostHomeOutsideOfHouse;
 			ghost.forcedOnTrack = ghostHomeOutsideOfHouse;
 			ghost.state = GhostState.LOCKED;
 			ghost.bounty = 0;
