@@ -162,14 +162,14 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 	private void state_CHASING_PAC_enter() {
 		restartStateTimer();
 		pacMan.show();
-		pacMan.setSpeed(0.95);
+		pacMan.setSpeed(1);
 		pacMan.setPosition(t(28), t(20));
 		pacMan.setDir(Direction.LEFT);
 		for (Ghost ghost : ghosts) {
 			ghost.position = pacMan.position.plus(24 + ghost.id * 16, 0);
 			ghost.setWishDir(Direction.LEFT);
 			ghost.setDir(Direction.LEFT);
-			ghost.setSpeed(1.0);
+			ghost.setSpeed(1.05);
 			ghost.show();
 			ghost.state = GhostState.HUNTING_PAC;
 		}
@@ -189,18 +189,26 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 
 	private void state_CHASING_GHOSTS_enter() {
 		restartStateTimer();
-		pacMan.setSpeed(0.9);
-		pacMan.setDir(Direction.RIGHT);
 		for (Ghost ghost : ghosts) {
 			ghost.state = GhostState.FRIGHTENED;
 			ghost.setWishDir(Direction.RIGHT);
 			ghost.setDir(Direction.RIGHT);
-			ghost.setSpeed(0.5);
+			ghost.setSpeed(0.6);
 		}
 		ghostKilledTime = stateTimer().ticked();
 	}
 
 	private void state_CHASING_GHOSTS_update() {
+		if (stateTimer().ticked() < 8) {
+			for (Ghost ghost : ghosts) {
+				ghost.move();
+			}
+			return;
+		}
+		if (stateTimer().ticked() == 8) {
+			pacMan.setDir(Direction.RIGHT);
+			pacMan.setSpeed(1);
+		}
 		if (pacMan.position.x > t(29)) {
 			slowBlinking.restart();
 			changeState(IntroState.READY_TO_PLAY);
