@@ -44,7 +44,10 @@ import de.amr.games.pacman.model.world.Portal;
  */
 public class Creature extends GameEntity {
 
-	private static final Direction[] TURN_PRIORITY = { Direction.UP, Direction.LEFT, Direction.DOWN, Direction.RIGHT };
+	public static final Direction[] DEFAULT_TURN_PRIORITY = { //
+			Direction.UP, Direction.LEFT, Direction.DOWN, Direction.RIGHT };
+
+	public Direction[] turnPriority = DEFAULT_TURN_PRIORITY;
 
 	/** Readable name, for display and logging purposes. */
 	public final String name;
@@ -300,15 +303,15 @@ public class Creature extends GameEntity {
 		}
 		final V2i currentTile = tile();
 		double minDist = Double.MAX_VALUE;
-		for (Direction direction : TURN_PRIORITY) {
+		for (Direction direction : turnPriority) {
 			if (direction == dir.opposite()) {
 				continue;
 			}
 			final V2i neighborTile = currentTile.plus(direction.vec);
 			if (canAccessTile(neighborTile)) {
-				final double distanceToTargetTile = neighborTile.euclideanDistance(targetTile);
-				if (distanceToTargetTile < minDist) {
-					minDist = distanceToTargetTile;
+				final double distToTarget = neighborTile.euclideanDistance(targetTile);
+				if (distToTarget < minDist) {
+					minDist = distToTarget;
 					wishDir = direction;
 				}
 			}
