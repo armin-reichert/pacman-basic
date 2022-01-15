@@ -273,8 +273,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	private void startHuntingPhase(int phase) {
 		huntingPhase = phase;
-		stateTimer().set(game.getHuntingPhaseDuration(phase));
-		stateTimer().start();
+		stateTimer().set(game.getHuntingPhaseDuration(phase)).start();
 		String phaseName = inScatteringPhase() ? "Scattering" : "Chasing";
 		log("Hunting phase #%d (%s) started, %d of %d ticks remaining", phase, phaseName, stateTimer().ticksRemaining(),
 				stateTimer().duration());
@@ -407,8 +406,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	private void state_GhostDying_enter() {
 		game.player.hide();
-		stateTimer().setSeconds(1);
-		stateTimer().start();
+		stateTimer().setSeconds(1).start();
 	}
 
 	private void state_GhostDying_update() {
@@ -466,8 +464,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		game.ghosts().forEach(ghost -> ghost.setSpeed(0));
 		game.player.setSpeed(0);
 		game.saveHiscore();
-		stateTimer().setSeconds(5);
-		stateTimer().start();
+		stateTimer().setSeconds(5).start();
 	}
 
 	private void state_GameOver_update() {
@@ -537,8 +534,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 					ghost.state = FRIGHTENED;
 					ghost.forceTurningBack();
 				});
-				game.player.powerTimer.setSeconds(game.ghostFrightenedSeconds);
-				game.player.powerTimer.start();
+				game.player.powerTimer.setSeconds(game.ghostFrightenedSeconds).start();
 				log("%s got power for %d seconds", game.player.name, game.ghostFrightenedSeconds);
 				// HUNTING state timer is stopped while player has power
 				stateTimer().stop();

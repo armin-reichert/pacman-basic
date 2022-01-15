@@ -29,7 +29,6 @@ import de.amr.games.pacman.controller.PacManGameController;
 import de.amr.games.pacman.controller.mspacman.Intermission3Controller.IntermissionState;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.FiniteStateMachine;
-import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.model.common.GameEntity;
 import de.amr.games.pacman.model.common.Pac;
@@ -67,9 +66,10 @@ public class Intermission3Controller extends FiniteStateMachine<IntermissionStat
 
 	public Intermission3Controller() {
 		super(IntermissionState.values());
-		configState(IntermissionState.FLAP, () -> startStateTimer(1), this::state_FLAP_update, null);
-		configState(IntermissionState.ACTION, () -> startStateTimer(TickTimer.INDEFINITE), this::state_ACTION_update, null);
-		configState(IntermissionState.READY_TO_PLAY, () -> startStateTimer(3), this::state_READY_TO_PLAY_update, null);
+		configState(IntermissionState.FLAP, () -> stateTimer().setSeconds(1).start(), this::state_FLAP_update, null);
+		configState(IntermissionState.ACTION, () -> stateTimer().setIndefinite().start(), this::state_ACTION_update, null);
+		configState(IntermissionState.READY_TO_PLAY, () -> stateTimer().setSeconds(3).start(),
+				this::state_READY_TO_PLAY_update, null);
 	}
 
 	public void init(PacManGameController gameController) {
@@ -96,11 +96,6 @@ public class Intermission3Controller extends FiniteStateMachine<IntermissionStat
 		bag.position = stork.position.plus(-14, 3);
 
 		changeState(IntermissionState.FLAP);
-	}
-
-	private void startStateTimer(double seconds) {
-		stateTimer().setSeconds(seconds);
-		stateTimer().start();
 	}
 
 	private void state_FLAP_update() {

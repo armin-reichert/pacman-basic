@@ -54,9 +54,9 @@ public class Intermission1Controller extends FiniteStateMachine<IntermissionStat
 
 	public Intermission1Controller() {
 		super(IntermissionState.values());
-		configState(IntermissionState.BLINKY_CHASING_PACMAN, () -> startStateTimer(5),
+		configState(IntermissionState.BLINKY_CHASING_PACMAN, () -> stateTimer().setSeconds(5).start(),
 				this::state_BLINKY_CHASING_PACMAN_update, null);
-		configState(IntermissionState.BIGPACMAN_CHASING_BLINKY, () -> startStateTimer(7),
+		configState(IntermissionState.BIGPACMAN_CHASING_BLINKY, () -> stateTimer().setSeconds(7).start(),
 				this::state_BIGPACMAN_CHASING_BLINKY_update, null);
 	}
 
@@ -79,15 +79,6 @@ public class Intermission1Controller extends FiniteStateMachine<IntermissionStat
 
 		playIntermissionSound.run();
 		changeState(IntermissionState.BLINKY_CHASING_PACMAN);
-	}
-
-	private void startStateTimer(double seconds) {
-		stateTimer().setSeconds(seconds);
-		stateTimer().start();
-	}
-
-	public void update() {
-		updateState();
 	}
 
 	private void state_BLINKY_CHASING_PACMAN_update() {

@@ -64,10 +64,11 @@ public class Intermission1Controller extends FiniteStateMachine<IntermissonState
 
 	public Intermission1Controller() {
 		super(IntermissonState.values());
-		configState(IntermissonState.FLAP, () -> startStateTimer(2), this::state_FLAP_update, null);
+		configState(IntermissonState.FLAP, () -> stateTimer().setSeconds(2).start(), this::state_FLAP_update, null);
 		configState(IntermissonState.CHASED_BY_GHOSTS, null, this::state_CHASED_BY_GHOSTS_update, null);
 		configState(IntermissonState.COMING_TOGETHER, null, this::state_COMING_TOGETHER_update, null);
-		configState(IntermissonState.READY_TO_PLAY, () -> startStateTimer(4), this::state_READY_TO_PLAY_update, null);
+		configState(IntermissonState.READY_TO_PLAY, () -> stateTimer().setSeconds(4).start(),
+				this::state_READY_TO_PLAY_update, null);
 	}
 
 	public void init(PacManGameController gameController) {
@@ -103,11 +104,6 @@ public class Intermission1Controller extends FiniteStateMachine<IntermissonState
 		ghostsMet = false;
 
 		changeState(IntermissonState.FLAP);
-	}
-
-	private void startStateTimer(double seconds) {
-		stateTimer().setSeconds(seconds);
-		stateTimer().start();
 	}
 
 	private void state_FLAP_update() {
