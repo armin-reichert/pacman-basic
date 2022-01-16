@@ -52,23 +52,14 @@ public abstract class GameModel {
 	/** Speed in pixels / tick at 100%. */
 	public static double BASE_SPEED = 1.25;
 
-	private static float percent(Object intValue) {
-		return ((int) intValue) / 100f;
-	}
-
 	//@formatter:off
-	public final long[][] HUNTING_PHASE_TICKS = {
+	public static final long[][] DEFAULT_HUNTING_PHASE_TICKS = {
 	  // scatter  chase   scatter  chase  scatter  chase    scatter  chase
 	   { 7*60,    20*60,  7*60,    20*60, 5*60,      20*60, 5*60,    TickTimer.INDEFINITE },
 	   { 7*60,    20*60,  7*60,    20*60, 5*60,    1033*60,    1,    TickTimer.INDEFINITE },
 	   { 5*60,    20*60,  5*60,    20*60, 5*60,    1037*60,    1,    TickTimer.INDEFINITE },
 	};
 	//@formatter:on
-
-	public long getHuntingPhaseDuration(int phase) {
-		int row = levelNumber == 1 ? 0 : levelNumber <= 4 ? 1 : 2;
-		return HUNTING_PHASE_TICKS[row][phase];
-	}
 
 	/** 1-based level number */
 	public int levelNumber;
@@ -81,6 +72,9 @@ public abstract class GameModel {
 
 	/** World of current level. */
 	public PacManGameWorld world;
+
+	/** Durations of scatter/chase hunting phases. */
+	public long[][] huntingPhaseTicks = DEFAULT_HUNTING_PHASE_TICKS;
 
 	/** Bonus symbol of current level. */
 	public String bonusSymbol;
@@ -183,6 +177,15 @@ public abstract class GameModel {
 	public abstract void enterLevel(int levelNumber);
 
 	/**
+	 * @param phase hunting phase index (0..7), scatter=0, 2, 4, 6, chase=1, 3, 5, 7
+	 * @return number of ticks of given phase
+	 */
+	public long getHuntingPhaseDuration(int phase) {
+		int row = levelNumber == 1 ? 0 : levelNumber <= 4 ? 1 : 2;
+		return huntingPhaseTicks[row][phase];
+	}
+
+	/**
 	 * @param levelNumber game level number
 	 * @return 1-based intermission (cut scene) number that is played after given level or <code>0</code> if no
 	 *         intermission is played after given level.
@@ -234,12 +237,11 @@ public abstract class GameModel {
 			ghost.velocity = V2d.NULL;
 			ghost.targetTile = null;
 			ghost.stuck = false;
-			// if ghost home is located outside of house, he must be on track initially
-			boolean ghostHomeOutsideOfHouse = !world.ghostHouse().contains(ghost.homeTile);
-			ghost.forcedOnTrack = ghostHomeOutsideOfHouse;
+			// if ghost home is outside of house (red ghost), ghost is forced on track initially
+			ghost.forcedOnTrack = !world.ghostHouse().contains(ghost.homeTile);
 			ghost.state = GhostState.LOCKED;
 			ghost.bounty = 0;
-			// these are reset only when level is started:
+			// these values are reset only when a level is started:
 			// ghost.dotCounter = 0;
 			// ghost.elroyMode = 0;
 		}
@@ -247,26 +249,33 @@ public abstract class GameModel {
 		bonus.init();
 	}
 
+	/**
+	 * @param percentValue percentage value
+	 * @return corresponding fraction, e.g. {@code 0.8} for {@code 80%}
+	 */
+	private float fraction(Object percentValue) {
+		return ((Integer) percentValue) / 100f;
+	}
+
 	protected abstract Object[] levelData(int levelNumber);
 
-	protected void loadLevel(int levelNumber) {
+	public void setLevelData(int levelNumber) {
 		Object[] levelData = levelData(levelNumber);
 		bonusSymbol = (String) levelData[0];
-		playerSpeed = percent(levelData[1]);
-		ghostSpeed = percent(levelData[2]);
-		ghostSpeedTunnel = percent(levelData[3]);
+		playerSpeed = fraction(levelData[1]);
+		ghostSpeed = fraction(levelData[2]);
+		ghostSpeedTunnel = fraction(levelData[3]);
 		elroy1DotsLeft = (int) levelData[4];
-		elroy1Speed = percent(levelData[5]);
+		elroy1Speed = fraction(levelData[5]);
 		elroy2DotsLeft = (int) levelData[6];
-		elroy2Speed = percent(levelData[7]);
-		playerSpeedPowered = percent(levelData[8]);
-		ghostSpeedFrightened = percent(levelData[9]);
+		elroy2Speed = fraction(levelData[7]);
+		playerSpeedPowered = fraction(levelData[8]);
+		ghostSpeedFrightened = fraction(levelData[9]);
 		ghostFrightenedSeconds = (int) levelData[10];
 		numFlashes = (int) levelData[11];
 		totalFoodCount = (int) world.tiles().filter(world::isFoodTile).count();
 		foodRemaining = totalFoodCount;
 		eaten = new BitSet();
-
 		long energizerCount = world.tiles().filter(world::isEnergizerTile).count();
 		log("Level %d loaded. Total food: %d (%d pellets, %d energizers)", levelNumber, totalFoodCount,
 				totalFoodCount - energizerCount, energizerCount);

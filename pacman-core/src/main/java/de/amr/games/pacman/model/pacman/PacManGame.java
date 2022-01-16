@@ -102,7 +102,7 @@ public class PacManGame extends GameModel {
 	@Override
 	public void enterLevel(int levelNumber) {
 		this.levelNumber = levelNumber;
-		loadLevel(levelNumber);
+		setLevelData(levelNumber);
 
 		levelCounter.add(bonusSymbol);
 

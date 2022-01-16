@@ -108,7 +108,7 @@ public class MsPacManGame extends GameModel {
 		world = new MapBasedWorld("/mspacman/maps/map" + mapNumber + ".txt");
 
 		// can only be called after world has been set!
-		loadLevel(levelNumber);
+		setLevelData(levelNumber);
 
 		if (levelNumber >= 8) {
 			bonusSymbol = randomBonusSymbol();
