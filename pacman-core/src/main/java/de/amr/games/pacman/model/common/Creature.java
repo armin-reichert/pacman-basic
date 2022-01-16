@@ -47,8 +47,6 @@ public class Creature extends GameEntity {
 	public static final Direction[] DEFAULT_TURN_PRIORITY = { //
 			Direction.UP, Direction.LEFT, Direction.DOWN, Direction.RIGHT };
 
-	public Direction[] turnPriority = DEFAULT_TURN_PRIORITY;
-
 	/** Readable name, for display and logging purposes. */
 	public final String name;
 
@@ -64,6 +62,9 @@ public class Creature extends GameEntity {
 	/** The intended move direction. Will be taken as soon as possible. */
 	protected Direction wishDir = Direction.RIGHT;
 
+	/** The order in which the creature computes the next direcion to take. */
+	public Direction[] turnPriority = DEFAULT_TURN_PRIORITY;
+
 	/** The target tile. Can be inaccessible or outside of the world. */
 	public V2i targetTile = V2i.NULL;
 
@@ -72,9 +73,6 @@ public class Creature extends GameEntity {
 
 	/** If the creature got stuck in the world. */
 	public boolean stuck = false;
-
-	/** If the creature is forced to take its wish direction. */
-//	public boolean forced = false;
 
 	/** If movement must be aligned with the "track" defined by the tiles. */
 	public boolean forcedOnTrack = false;
@@ -140,10 +138,6 @@ public class Creature extends GameEntity {
 		return dir;
 	}
 
-	public V2i tilesAhead(int numTiles) {
-		return tile().plus(dir.vec.scaled(numTiles));
-	}
-
 	public void setWishDir(Direction dir) {
 		wishDir = dir;
 	}
@@ -152,17 +146,17 @@ public class Creature extends GameEntity {
 		return wishDir;
 	}
 
+	public V2i tilesAhead(int numTiles) {
+		return tile().plus(dir.vec.scaled(numTiles));
+	}
+
 	/**
 	 * Sets the fraction of the base speed. See {@link GameModel#BASE_SPEED}.
 	 * 
 	 * @param fraction fraction of base speed
 	 */
 	public void setSpeed(double fraction) {
-		if (fraction == 0) {
-			velocity = V2d.NULL;
-		} else {
-			velocity = new V2d(dir.vec).scaled(fraction * baseSpeed);
-		}
+		velocity = fraction == 0 ? V2d.NULL : new V2d(dir.vec).scaled(fraction * baseSpeed);
 	}
 
 	public boolean canAccessTile(V2i tile) {
