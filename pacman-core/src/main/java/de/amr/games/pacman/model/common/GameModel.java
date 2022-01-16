@@ -51,7 +51,7 @@ public abstract class GameModel {
 	public static final int RED_GHOST = 0, PINK_GHOST = 1, CYAN_GHOST = 2, ORANGE_GHOST = 3;
 
 	/** Speed in pixels/tick at 100%. */
-	public static double BASE_SPEED = 1.25;
+	public static final double BASE_SPEED = 1.25;
 
 	//@formatter:off
 	public static final long[][] DEFAULT_HUNTING_PHASE_TICKS = {
@@ -252,19 +252,20 @@ public abstract class GameModel {
 	protected abstract Object[] levelData(int levelNumber);
 
 	public void setLevelData(int levelNumber) {
-		Object[] levelData = levelData(levelNumber);
-		bonusSymbol = (String) levelData[0];
-		playerSpeed = fraction(levelData[1]);
-		ghostSpeed = fraction(levelData[2]);
-		ghostSpeedTunnel = fraction(levelData[3]);
-		elroy1DotsLeft = (int) levelData[4];
-		elroy1Speed = fraction(levelData[5]);
-		elroy2DotsLeft = (int) levelData[6];
-		elroy2Speed = fraction(levelData[7]);
-		playerSpeedPowered = fraction(levelData[8]);
-		ghostSpeedFrightened = fraction(levelData[9]);
-		ghostFrightenedSeconds = (int) levelData[10];
-		numFlashes = (int) levelData[11];
+		Object[] row = levelData(levelNumber);
+		bonusSymbol = (String) row[0];
+		playerSpeed = fraction(row[1]);
+		ghostSpeed = fraction(row[2]);
+		ghostSpeedTunnel = fraction(row[3]);
+		elroy1DotsLeft = (int) row[4];
+		elroy1Speed = fraction(row[5]);
+		elroy2DotsLeft = (int) row[6];
+		elroy2Speed = fraction(row[7]);
+		playerSpeedPowered = fraction(row[8]);
+		ghostSpeedFrightened = fraction(row[9]);
+		ghostFrightenedSeconds = (int) row[10];
+		numFlashes = (int) row[11];
+
 		totalFoodCount = (int) world.tiles().filter(world::isFoodTile).count();
 		foodRemaining = totalFoodCount;
 		eaten = new BitSet();
