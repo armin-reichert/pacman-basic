@@ -103,6 +103,7 @@ public class PacManGame extends GameModel {
 	public void enterLevel(int levelNumber) {
 		this.levelNumber = levelNumber;
 		setLevelData(levelNumber);
+		huntingPhaseTicks = DEFAULT_HUNTING_PHASE_TICKS[levelNumber == 1 ? 0 : levelNumber <= 4 ? 1 : 2];
 
 		levelCounter.add(bonusSymbol);
 

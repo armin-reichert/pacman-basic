@@ -273,7 +273,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	private void startHuntingPhase(int phase) {
 		huntingPhase = phase;
-		stateTimer().set(game.getHuntingPhaseDuration(phase)).start();
+		stateTimer().set(game.huntingPhaseTicks[phase]).start();
 		String phaseName = inScatteringPhase() ? "Scattering" : "Chasing";
 		log("Hunting phase #%d (%s) started, %d of %d ticks remaining", phase, phaseName, stateTimer().ticksRemaining(),
 				stateTimer().duration());

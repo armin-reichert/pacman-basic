@@ -109,6 +109,7 @@ public class MsPacManGame extends GameModel {
 
 		// can only be called after world has been set!
 		setLevelData(levelNumber);
+		huntingPhaseTicks = DEFAULT_HUNTING_PHASE_TICKS[levelNumber == 1 ? 0 : levelNumber <= 4 ? 1 : 2];
 
 		if (levelNumber >= 8) {
 			bonusSymbol = randomBonusSymbol();

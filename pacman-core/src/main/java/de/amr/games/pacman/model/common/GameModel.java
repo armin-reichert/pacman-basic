@@ -47,9 +47,10 @@ import de.amr.games.pacman.model.world.PacManGameWorld;
  */
 public abstract class GameModel {
 
+	/** Ghost ID. */
 	public static final int RED_GHOST = 0, PINK_GHOST = 1, CYAN_GHOST = 2, ORANGE_GHOST = 3;
 
-	/** Speed in pixels / tick at 100%. */
+	/** Speed in pixels/tick at 100%. */
 	public static double BASE_SPEED = 1.25;
 
 	//@formatter:off
@@ -74,7 +75,7 @@ public abstract class GameModel {
 	public PacManGameWorld world;
 
 	/** Durations of scatter/chase hunting phases. */
-	public long[][] huntingPhaseTicks = DEFAULT_HUNTING_PHASE_TICKS;
+	public long[] huntingPhaseTicks;
 
 	/** Bonus symbol of current level. */
 	public String bonusSymbol;
@@ -177,15 +178,6 @@ public abstract class GameModel {
 	public abstract void enterLevel(int levelNumber);
 
 	/**
-	 * @param phase hunting phase index (0..7), scatter=0, 2, 4, 6, chase=1, 3, 5, 7
-	 * @return number of ticks of given phase
-	 */
-	public long getHuntingPhaseDuration(int phase) {
-		int row = levelNumber == 1 ? 0 : levelNumber <= 4 ? 1 : 2;
-		return huntingPhaseTicks[row][phase];
-	}
-
-	/**
 	 * @param levelNumber game level number
 	 * @return 1-based intermission (cut scene) number that is played after given level or <code>0</code> if no
 	 *         intermission is played after given level.
@@ -277,6 +269,7 @@ public abstract class GameModel {
 		foodRemaining = totalFoodCount;
 		eaten = new BitSet();
 		long energizerCount = world.tiles().filter(world::isEnergizerTile).count();
+
 		log("Level %d loaded. Total food: %d (%d pellets, %d energizers)", levelNumber, totalFoodCount,
 				totalFoodCount - energizerCount, energizerCount);
 	}
