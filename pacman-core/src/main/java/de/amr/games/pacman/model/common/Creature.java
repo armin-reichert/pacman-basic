@@ -230,8 +230,6 @@ public class Creature extends GameEntity {
 		final V2d offsetBeforeMove = offset();
 		final V2i neighborTile = tileBeforeMove.plus(moveDir.vec);
 
-		velocity = new V2d(moveDir.vec).scaled(velocity.length());
-
 		// check if creature can turn towards move direction at its current position
 		if (forcedOnTrack && canAccessTile(neighborTile)) {
 			if (moveDir == Direction.LEFT || moveDir == Direction.RIGHT) {
@@ -249,9 +247,9 @@ public class Creature extends GameEntity {
 			}
 		}
 
-		final V2d positionAfterMove = position.plus(velocity);
-		final V2i tileAfterMove = PacManGameWorld.tile(positionAfterMove);
-		final V2d offsetAfterMove = PacManGameWorld.offset(positionAfterMove);
+		final V2d posAfterMove = position.plus(new V2d(moveDir.vec).scaled(velocity.length()));
+		final V2i tileAfterMove = PacManGameWorld.tile(posAfterMove);
+		final V2d offsetAfterMove = PacManGameWorld.offset(posAfterMove);
 
 		// avoid moving into inaccessible neighbor tile
 		if (!canAccessTile(tileAfterMove)) {
