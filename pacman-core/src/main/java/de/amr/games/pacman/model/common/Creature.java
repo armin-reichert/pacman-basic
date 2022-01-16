@@ -26,10 +26,11 @@ package de.amr.games.pacman.model.common;
 import static de.amr.games.pacman.model.world.PacManGameWorld.t;
 import static java.lang.Math.abs;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2d;
@@ -159,25 +160,40 @@ public class Creature extends GameEntity {
 		velocity = fraction == 0 ? V2d.NULL : new V2d(dir.vec).scaled(fraction * baseSpeed);
 	}
 
+	/**
+	 * @param tile some tile inside or outside of the world
+	 * @return if this creature can access the given tile
+	 */
 	public boolean canAccessTile(V2i tile) {
 		if (world.insideWorld(tile)) {
 			return !world.isWall(tile) && !world.ghostHouse().doorTiles().contains(tile);
 		} else {
+			// avoid leaving track when teleporting
 			return world.isPortal(tile);
 		}
 	}
 
+	/**
+	 * @param other other creature
+	 * @return if both creatures occupy the same tile
+	 */
 	public boolean meets(Creature other) {
 		return tile().equals(other.tile());
 	}
 
+	/**
+	 * Force turning to the opposite direction. Used when hunting state changes.
+	 */
 	public void forceTurningBack() {
 		if (canAccessTile(tile().plus(dir.opposite().vec))) {
-			wishDir = dir.opposite();
-			dir = wishDir;
+			setWishDir(dir.opposite());
 		}
 	}
 
+	/**
+	 * Tries to move through the world. First checks if creature can teleport, then if the creature can move to its
+	 * current wish direction. Otherwise keeps going to its current move direction.
+	 */
 	public void tryMoving() {
 		V2i currentTile = tile();
 		// teleport?
@@ -204,6 +220,11 @@ public class Creature extends GameEntity {
 		}
 	}
 
+	/**
+	 * Tries to move to the given direction. If creature reaches an inaccessible tile, it gets stuck.
+	 * 
+	 * @param moveDir intended move direction
+	 */
 	public void tryMovingTowards(Direction moveDir) {
 		final V2i tileBeforeMove = tile();
 		final V2d offsetBeforeMove = offset();
@@ -258,19 +279,17 @@ public class Creature extends GameEntity {
 		newTileEntered = !tile().equals(tileBeforeMove);
 	}
 
+	/**
+	 * Selects a random accessible wish direction.
+	 */
 	public void setRandomDirection() {
-		if (!newTileEntered && !stuck) {
-			return;
-		}
-		List<Direction> dirs = new ArrayList<>();
-		for (Direction dir : Direction.values()) {
-			if (dir != this.dir.opposite() && canAccessTile(tile().plus(dir.vec))) {
-				dirs.add(dir);
+		if (newTileEntered || stuck) {
+			List<Direction> dirs = Stream.of(Direction.values())
+					.filter(dir -> dir != this.dir.opposite() && canAccessTile(tile().plus(dir.vec)))
+					.collect(Collectors.toList());
+			if (!dirs.isEmpty()) {
+				setWishDir(dirs.get(new Random().nextInt(dirs.size())));
 			}
-		}
-		if (!dirs.isEmpty()) {
-			Direction randomDir = dirs.get(new Random().nextInt(dirs.size()));
-			setWishDir(randomDir);
 		}
 	}
 
