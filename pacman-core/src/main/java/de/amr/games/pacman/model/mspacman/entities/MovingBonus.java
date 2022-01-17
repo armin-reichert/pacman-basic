@@ -25,8 +25,6 @@ package de.amr.games.pacman.model.mspacman.entities;
 
 import java.util.Random;
 
-import de.amr.games.pacman.controller.event.PacManGameEvent;
-import de.amr.games.pacman.controller.event.PacManGameEvent.Info;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.model.common.BonusState;
 import de.amr.games.pacman.model.pacman.entities.Bonus;
@@ -75,29 +73,29 @@ public class MovingBonus extends Bonus {
 	}
 
 	@Override
-	public PacManGameEvent.Info updateState() {
+	public boolean updateState() {
 		switch (state) {
 		case INACTIVE:
-			return null;
+			return false;
 
 		case EDIBLE:
 			if (tile().equals(targetTile)) {
 				hide();
 				state = BonusState.INACTIVE;
-				return Info.BONUS_EXPIRED;
+				return true;
 			}
 			headForTile(targetTile);
 			tryMoving();
-			return null;
+			return false;
 
 		case EATEN:
 			if (timer == 0) {
 				hide();
 				state = BonusState.INACTIVE;
-				return Info.BONUS_EXPIRED;
+				return true;
 			}
 			timer--;
-			return null;
+			return false;
 
 		default:
 			throw new IllegalStateException();

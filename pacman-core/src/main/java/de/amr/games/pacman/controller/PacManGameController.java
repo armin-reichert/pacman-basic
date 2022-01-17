@@ -64,7 +64,6 @@ import de.amr.games.pacman.controller.event.ScatterPhaseStartedEvent;
 import de.amr.games.pacman.lib.FiniteStateMachine;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.model.common.BonusState;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.Ghost;
@@ -314,7 +313,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		}
 
 		// Is player getting killed by some ghost?
-		if (attractMode || !player.immune) {
+		if (!player.immune || attractMode) {
 			Optional<Ghost> killer = game.ghosts(HUNTING_PAC).filter(player::meets).findAny();
 			if (killer.isPresent()) {
 				player.dead = true;
@@ -346,16 +345,28 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		}
 
 		// Bonus active?
-		if (game.bonus.state != BonusState.INACTIVE) {
-			Info bonusInfo = game.bonus.updateState();
-			if (bonusInfo == Info.BONUS_EXPIRED) {
-				fireGameEvent(Info.BONUS_EXPIRED, game.bonus.tile());
-			} else if (player.meets(game.bonus) && game.bonus.state == BonusState.EDIBLE) {
-				log("%s found bonus (%s, value %d)", player.name, game.bonus.symbol, game.bonus.points);
-				game.bonus.eatAndShowValue(sec_to_ticks(2));
+		switch (game.bonus.state) {
+		case EDIBLE:
+			if (player.meets(game.bonus)) {
+				log("%s found bonus '%s' of value %d", player.name, game.bonus.symbol, game.bonus.points);
 				score(game.bonus.points);
+				game.bonus.eatAndShowValue(sec_to_ticks(2));
 				fireGameEvent(Info.BONUS_EATEN, game.bonus.tile());
+			} else {
+				boolean expired = game.bonus.updateState();
+				if (expired) {
+					fireGameEvent(Info.BONUS_EXPIRED, game.bonus.tile());
+				}
 			}
+			break;
+		case EATEN:
+			boolean expired = game.bonus.updateState();
+			if (expired) {
+				fireGameEvent(Info.BONUS_EXPIRED, game.bonus.tile());
+			}
+			break;
+		default: // INACTIVE
+			break;
 		}
 
 		// Consume power?

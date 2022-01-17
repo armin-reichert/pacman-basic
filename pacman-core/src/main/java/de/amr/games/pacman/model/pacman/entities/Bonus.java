@@ -23,8 +23,6 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.pacman.entities;
 
-import de.amr.games.pacman.controller.event.PacManGameEvent;
-import de.amr.games.pacman.controller.event.PacManGameEvent.Info;
 import de.amr.games.pacman.model.common.BonusState;
 import de.amr.games.pacman.model.common.Creature;
 
@@ -65,35 +63,35 @@ public class Bonus extends Creature {
 	/**
 	 * Updates the bonus state and returns any usefule info about the new bonus state
 	 * 
-	 * @return info about bonus state ot <code>null</code>
+	 * @return {@code true} if the bonus expired
 	 */
-	public PacManGameEvent.Info updateState() {
+	public boolean updateState() {
 		switch (state) {
 		case INACTIVE:
-			return null;
+			return false;
 
 		case EDIBLE:
 			if (timer == 0) {
 				hide();
 				state = BonusState.INACTIVE;
-				return Info.BONUS_EXPIRED;
+				return true;
 			} else {
 				timer--;
-				return null;
+				return false;
 			}
 
 		case EATEN:
 			if (timer == 0) {
 				hide();
 				state = BonusState.INACTIVE;
-				return Info.BONUS_EXPIRED;
+				return true;
 			} else {
 				timer--;
-				return null;
+				return false;
 			}
 
 		default:
-			throw new IllegalStateException();
+			throw new IllegalStateException(String.format("Illegal bonus state '%s'", state));
 		}
 	}
 }
