@@ -101,7 +101,6 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	private final GameModel[] games;
 	private final List<PacManGameEventListener> gameEventListeners = new ArrayList<>();
 	private GameModel game;
-	private PacManGameUI ui;
 	private PlayerControl playerControl;
 	private final Autopilot autopilot = new Autopilot(this::game);
 	private GameVariant gameVariant;
@@ -160,14 +159,6 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	public PlayerControl getPlayerControl() {
 		return autoControlled || attractMode ? autopilot : playerControl;
-	}
-
-	public PacManGameUI getUI() {
-		return ui;
-	}
-
-	public void setUI(PacManGameUI gameUI) {
-		ui = gameUI;
 	}
 
 	public GameVariant gameVariant() {
