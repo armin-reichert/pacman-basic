@@ -23,9 +23,12 @@ SOFTWARE.
  */
 package de.amr.games.pacman.controller.event;
 
-@FunctionalInterface
+/**
+ * Implemented by classes that listen to game events.
+ * 
+ * @author Armin Reichert
+ */
 public interface PacManGameEventListener {
 
 	void onGameEvent(PacManGameEvent event);
-
 }

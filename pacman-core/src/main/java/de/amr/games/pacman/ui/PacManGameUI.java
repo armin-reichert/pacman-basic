@@ -30,7 +30,5 @@ package de.amr.games.pacman.ui;
  */
 public interface PacManGameUI {
 
-	void update();
-
 	void showFlashMessage(double seconds, String message, Object... args);
 }
