@@ -325,7 +325,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 		// Did player find food?
 		if (game.containsFood(player.tile())) {
-			onPlayerFoundFood();
+			onPlayerFoundFood(player);
 		} else {
 			player.starvingTicks++;
 		}
@@ -518,11 +518,11 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		}
 	}
 
-	private void onPlayerFoundFood() {
-		game.removeFood(game.player.tile());
-		game.player.starvingTicks = 0;
-		if (game.world.isEnergizerTile(game.player.tile())) {
-			game.player.restingTicksLeft = 3;
+	private void onPlayerFoundFood(Pac player) {
+		game.removeFood(player.tile());
+		player.starvingTicks = 0;
+		if (game.world.isEnergizerTile(player.tile())) {
+			player.restingTicksLeft = 3;
 			score(game.energizerValue);
 			game.resetGhostBounty();
 			if (game.ghostFrightenedSeconds > 0) {
@@ -530,19 +530,19 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 					ghost.state = FRIGHTENED;
 					ghost.forceTurningBack();
 				});
-				game.player.powerTimer.setSeconds(game.ghostFrightenedSeconds).start();
-				log("%s got power for %d seconds", game.player.name, game.ghostFrightenedSeconds);
+				player.powerTimer.setSeconds(game.ghostFrightenedSeconds).start();
+				log("%s got power for %d seconds", player.name, game.ghostFrightenedSeconds);
 				// HUNTING state timer is stopped while player has power
 				stateTimer().stop();
 				log("%s timer stopped", currentStateID);
-				publish(Info.PLAYER_GAINS_POWER, game.player.tile());
+				publish(Info.PLAYER_GAINS_POWER, player.tile());
 			}
 		} else {
-			game.player.restingTicksLeft = 1;
+			player.restingTicksLeft = 1;
 			score(game.pelletValue);
 		}
 
-		// Blinky becomes Elroy?
+		// Will Blinky become Cruise Elroy?
 		if (game.foodRemaining == game.elroy1DotsLeft) {
 			game.ghost(RED_GHOST).elroy = 1;
 			log("Blinky becomes Cruise Elroy 1");
@@ -553,16 +553,16 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 		// Is bonus awarded?
 		if (game.isBonusReached()) {
-			final long bonusTicks = gameVariant == PACMAN ? sec_to_ticks(9 + new Random().nextFloat()) : TickTimer.INDEFINITE;
+			long ticks = gameVariant == PACMAN ? sec_to_ticks(9 + new Random().nextFloat()) : TickTimer.INDEFINITE;
 			game.bonus.symbol = game.bonusSymbol;
 			game.bonus.points = game.bonusValue(game.bonus.symbol);
-			game.bonus.activate(bonusTicks);
-			log("Bonus %s (value %d) activated for %d ticks", game.bonus.symbol, game.bonus.points, bonusTicks);
+			game.bonus.activate(ticks);
+			log("Bonus '%s' (value %d) activated for %d ticks", game.bonus.symbol, game.bonus.points, ticks);
 			publish(Info.BONUS_ACTIVATED, game.bonus.tile());
 		}
 
 		updateGhostDotCounters();
-		publish(Info.PLAYER_FOUND_FOOD, game.player.tile());
+		publish(Info.PLAYER_FOUND_FOOD, player.tile());
 	}
 
 	// Ghosts
