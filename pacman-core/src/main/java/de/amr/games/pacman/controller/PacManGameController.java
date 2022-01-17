@@ -254,15 +254,14 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	private void state_Ready_enter() {
 		game.resetGuys();
-		stateTimer().setIndefinite().start();
+		stateTimer().setSeconds(gameRunning || attractMode ? 2 : 5).start();
 	}
 
 	private void state_Ready_update() {
-		long duration = gameRunning || attractMode ? sec_to_ticks(2) : sec_to_ticks(5);
 		if (stateTimer().ticked() == sec_to_ticks(1.5)) {
 			game.player.show();
 			game.showGhosts();
-		} else if (stateTimer().ticked() == duration) {
+		} else if (stateTimer().hasExpired()) {
 			if (gameRequested) {
 				gameRunning = true;
 			}
