@@ -70,15 +70,13 @@ import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.mspacman.MsPacManGame;
 import de.amr.games.pacman.model.pacman.PacManGame;
-import de.amr.games.pacman.ui.PacManGameUI;
 
 /**
  * Controller (in the sense of MVC) for both (Pac-Man, Ms. Pac-Man) game variants.
  * <p>
  * This is a finite-state machine with states defined in {@link PacManGameState}. The game data are stored in the model
- * of the selected game, see {@link MsPacManGame} and {@link PacManGame}. The user interface is abstracted via an
- * interface ({@link PacManGameUI}). Scene selection is not controlled by this class but left to the user interface
- * implementations.
+ * of the selected game, see {@link MsPacManGame} and {@link PacManGame}. Scene selection is not controlled by this
+ * class but left to the specific user interface implementations.
  * <p>
  * Missing functionality:
  * <ul>
@@ -99,17 +97,17 @@ import de.amr.games.pacman.ui.PacManGameUI;
 public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	private final GameModel[] games;
-	private final List<PacManGameEventListener> gameEventListeners = new ArrayList<>();
 	private GameModel game;
+	private GameVariant gameVariant;
+
 	private PlayerControl playerControl;
 	private final Autopilot autopilot = new Autopilot(this::game);
-	private GameVariant gameVariant;
+
 	private boolean autoControlled;
 	private boolean gameRequested;
 	private boolean gameRunning;
 	private boolean attractMode;
 	private int huntingPhase;
-
 	public int intermissionTestNumber;
 
 	public PacManGameController(GameVariant variant) {
@@ -132,26 +130,32 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		selectGameVariant(variant);
 	}
 
-	private void fireGameEvent(PacManGameEvent gameEvent) {
-		gameEventListeners.forEach(listener -> listener.onGameEvent(gameEvent));
+	// Event stuff
+
+	private final List<PacManGameEventListener> subscribers = new ArrayList<>();
+
+	private void publish(PacManGameEvent gameEvent) {
+		subscribers.forEach(subscriber -> subscriber.onGameEvent(gameEvent));
 	}
 
-	private void fireGameEvent(Info info, V2i tile) {
-		fireGameEvent(new PacManGameEvent(game, info, null, tile));
+	private void publish(Info info, V2i tile) {
+		publish(new PacManGameEvent(game, info, null, tile));
 	}
 
 	@Override
 	protected void fireStateChange(PacManGameState oldState, PacManGameState newState) {
-		fireGameEvent(new PacManGameStateChangeEvent(game, oldState, newState));
+		publish(new PacManGameStateChangeEvent(game, oldState, newState));
 	}
 
-	public void addGameEventListener(PacManGameEventListener l) {
-		gameEventListeners.add(l);
+	public void addGameEventListener(PacManGameEventListener subscriber) {
+		subscribers.add(subscriber);
 	}
 
-	public void removeGameEventListener(PacManGameEventListener l) {
-		gameEventListeners.remove(l);
+	public void removeGameEventListener(PacManGameEventListener subscriber) {
+		subscribers.remove(subscriber);
 	}
+
+	// ---
 
 	public void setPlayerControl(PlayerControl playerControl) {
 		this.playerControl = playerControl;
@@ -221,7 +225,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	public void cheatEatAllPellets() {
 		game.world.tiles().filter(not(game.world::isEnergizerTile)).forEach(game::removeFood);
-		fireGameEvent(Info.PLAYER_FOUND_FOOD, null);
+		publish(Info.PLAYER_FOUND_FOOD, null);
 	}
 
 	// BEGIN STATE-MACHINE METHODS
@@ -267,7 +271,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		log("Hunting phase #%d (%s) started, %d of %d ticks remaining", phase, phaseName, stateTimer().ticksRemaining(),
 				stateTimer().duration());
 		if (inScatteringPhase()) {
-			fireGameEvent(new ScatterPhaseStartedEvent(game, phase / 2));
+			publish(new ScatterPhaseStartedEvent(game, phase / 2));
 		}
 	}
 
@@ -342,18 +346,18 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 				log("%s found bonus '%s' of value %d", player.name, game.bonus.symbol, game.bonus.points);
 				score(game.bonus.points);
 				game.bonus.eatAndShowValue(sec_to_ticks(2));
-				fireGameEvent(Info.BONUS_EATEN, game.bonus.tile());
+				publish(Info.BONUS_EATEN, game.bonus.tile());
 			} else {
 				boolean expired = game.bonus.updateState();
 				if (expired) {
-					fireGameEvent(Info.BONUS_EXPIRED, game.bonus.tile());
+					publish(Info.BONUS_EXPIRED, game.bonus.tile());
 				}
 			}
 			break;
 		case EATEN:
 			boolean expired = game.bonus.updateState();
 			if (expired) {
-				fireGameEvent(Info.BONUS_EXPIRED, game.bonus.tile());
+				publish(Info.BONUS_EXPIRED, game.bonus.tile());
 			}
 			break;
 		default: // INACTIVE
@@ -365,7 +369,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			player.powerTimer.tick();
 			if (player.powerTimer.ticksRemaining() == sec_to_ticks(1)) {
 				// TODO not sure exactly how long the player is losing power
-				fireGameEvent(Info.PLAYER_LOSING_POWER, player.tile());
+				publish(Info.PLAYER_LOSING_POWER, player.tile());
 			}
 		} else if (player.powerTimer.hasExpired()) {
 			log("%s lost power", player.name);
@@ -373,7 +377,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			player.powerTimer.setIndefinite();
 			// start HUNTING state timer again
 			stateTimer().start();
-			fireGameEvent(Info.PLAYER_LOST_POWER, player.tile());
+			publish(Info.PLAYER_LOST_POWER, player.tile());
 		}
 
 		// Move player through the world
@@ -425,7 +429,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		// fire event(s) for dead ghosts not yet returning home (bounty != 0)
 		game.ghosts(DEAD).filter(ghost -> ghost.bounty != 0).forEach(ghost -> {
 			ghost.bounty = 0;
-			fireGameEvent(new PacManGameEvent(game, Info.GHOST_RETURNS_HOME, ghost, null));
+			publish(new PacManGameEvent(game, Info.GHOST_RETURNS_HOME, ghost, null));
 		});
 	}
 
@@ -519,7 +523,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		if (oldscore < 10000 && game.score >= 10000) {
 			game.player.lives++;
 			log("Extra life. Player has %d lives now", game.player.lives);
-			fireGameEvent(Info.EXTRA_LIFE, null);
+			publish(Info.EXTRA_LIFE, null);
 		}
 	}
 
@@ -540,7 +544,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 				// HUNTING state timer is stopped while player has power
 				stateTimer().stop();
 				log("%s timer stopped", currentStateID);
-				fireGameEvent(Info.PLAYER_GAINS_POWER, game.player.tile());
+				publish(Info.PLAYER_GAINS_POWER, game.player.tile());
 			}
 		} else {
 			game.player.restingTicksLeft = 1;
@@ -563,11 +567,11 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			game.bonus.points = game.bonusValue(game.bonus.symbol);
 			game.bonus.activate(bonusTicks);
 			log("Bonus %s (value %d) activated for %d ticks", game.bonus.symbol, game.bonus.points, bonusTicks);
-			fireGameEvent(Info.BONUS_ACTIVATED, game.bonus.tile());
+			publish(Info.BONUS_ACTIVATED, game.bonus.tile());
 		}
 
 		updateGhostDotCounters();
-		fireGameEvent(Info.PLAYER_FOUND_FOOD, game.player.tile());
+		publish(Info.PLAYER_FOUND_FOOD, game.player.tile());
 	}
 
 	// Ghosts
@@ -595,7 +599,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			ghost.setSpeed(game.ghostSpeed * 2);
 			boolean reachedRevivalTile = ghost.enterHouse();
 			if (reachedRevivalTile) {
-				fireGameEvent(new PacManGameEvent(game, Info.GHOST_LEAVING_HOUSE, ghost, ghost.tile()));
+				publish(new PacManGameEvent(game, Info.GHOST_LEAVING_HOUSE, ghost, ghost.tile()));
 			}
 			break;
 
@@ -603,7 +607,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			ghost.setSpeed(game.ghostSpeed / 2);
 			boolean leftHouse = ghost.leaveHouse();
 			if (leftHouse) {
-				fireGameEvent(new PacManGameEvent(game, Info.GHOST_LEFT_HOUSE, ghost, ghost.tile()));
+				publish(new PacManGameEvent(game, Info.GHOST_LEFT_HOUSE, ghost, ghost.tile()));
 			}
 			break;
 
@@ -647,7 +651,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			ghost.setSpeed(game.ghostSpeed * 2);
 			boolean reachedHouse = ghost.returnHome();
 			if (reachedHouse) {
-				fireGameEvent(new PacManGameEvent(game, Info.GHOST_ENTERS_HOUSE, ghost, ghost.tile()));
+				publish(new PacManGameEvent(game, Info.GHOST_ENTERS_HOUSE, ghost, ghost.tile()));
 			}
 			break;
 
@@ -694,7 +698,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		}
 		ghost.state = LEAVING_HOUSE;
 		log("Ghost %s released: %s", ghost.name, String.format(reason, args));
-		fireGameEvent(new PacManGameEvent(game, Info.GHOST_LEAVING_HOUSE, ghost, ghost.tile()));
+		publish(new PacManGameEvent(game, Info.GHOST_LEAVING_HOUSE, ghost, ghost.tile()));
 	}
 
 	private Optional<Ghost> preferredLockedGhostInHouse() {
