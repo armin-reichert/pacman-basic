@@ -107,7 +107,6 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	private boolean gameRequested;
 	private boolean gameRunning;
 	private boolean attractMode;
-	private int huntingPhase;
 	public int intermissionTestNumber;
 
 	public PacManGameController(GameVariant variant) {
@@ -209,14 +208,6 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		return gameRunning;
 	}
 
-	public int getHuntingPhase() {
-		return huntingPhase;
-	}
-
-	public boolean inScatteringPhase() {
-		return huntingPhase % 2 == 0;
-	}
-
 	public void cheatKillGhosts() {
 		game.resetGhostBounty();
 		game.ghosts().filter(ghost -> ghost.is(HUNTING_PAC) || ghost.is(FRIGHTENED)).forEach(this::killGhost);
@@ -265,12 +256,12 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	private void startHuntingPhase(int phase) {
-		huntingPhase = phase;
+		game.huntingPhase = phase;
 		stateTimer().set(game.huntingPhaseTicks[phase]).start();
-		String phaseName = inScatteringPhase() ? "Scattering" : "Chasing";
+		String phaseName = game.inScatteringPhase() ? "Scattering" : "Chasing";
 		log("Hunting phase #%d (%s) started, %d of %d ticks remaining", phase, phaseName, stateTimer().ticksRemaining(),
 				stateTimer().duration());
-		if (inScatteringPhase()) {
+		if (game.inScatteringPhase()) {
 			publish(new ScatterPhaseStartedEvent(game, phase / 2));
 		}
 	}
@@ -295,7 +286,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		// Is hunting phase complete?
 		if (stateTimer().hasExpired()) {
 			game.ghosts().filter(ghost -> ghost.is(HUNTING_PAC) || ghost.is(FRIGHTENED)).forEach(Ghost::forceTurningBack);
-			startHuntingPhase(++huntingPhase);
+			startHuntingPhase(++game.huntingPhase);
 			return;
 		}
 
@@ -637,9 +628,9 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			 * intention had been to randomize the scatter target of *all* ghosts in Ms. Pac-Man but because of a bug, only
 			 * the scatter target of Blinky and Pinky would have been affected. Who knows?
 			 */
-			if (gameVariant == MS_PACMAN && huntingPhase == 0 && (ghost.id == RED_GHOST || ghost.id == PINK_GHOST)) {
+			if (gameVariant == MS_PACMAN && game.huntingPhase == 0 && (ghost.id == RED_GHOST || ghost.id == PINK_GHOST)) {
 				ghost.roam();
-			} else if (inScatteringPhase() && ghost.elroy == 0) {
+			} else if (game.inScatteringPhase() && ghost.elroy == 0) {
 				ghost.scatter();
 			} else {
 				ghost.chase();

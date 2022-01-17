@@ -74,7 +74,15 @@ public abstract class GameModel {
 	/** World of current level. */
 	public PacManGameWorld world;
 
-	/** Durations of scatter/chase hunting phases. */
+	/** The hunting phase. Values: 0, 2, 4, 6 = "scattering", 1, 3, 5, 7 = "chasing". */
+	public int huntingPhase;
+
+	/** Tells if the current hunting phase is "scattering". */
+	public boolean inScatteringPhase() {
+		return huntingPhase % 2 == 0;
+	}
+
+	/** Durations (ticks) of hunting phases. */
 	public long[] huntingPhaseTicks;
 
 	/** Bonus symbol of current level. */
