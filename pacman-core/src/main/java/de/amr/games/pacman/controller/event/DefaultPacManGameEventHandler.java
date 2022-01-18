@@ -70,8 +70,6 @@ public interface DefaultPacManGameEventHandler extends PacManGameEventListener {
 		case PLAYER_LOST_POWER:
 			onPlayerLostPower(event);
 			return;
-		case TICK:
-			onTick();
 		default:
 			if (event instanceof ScatterPhaseStartedEvent) {
 				onScatterPhaseStarted((ScatterPhaseStartedEvent) event);
@@ -124,8 +122,5 @@ public interface DefaultPacManGameEventHandler extends PacManGameEventListener {
 	}
 
 	default void onScatterPhaseStarted(ScatterPhaseStartedEvent e) {
-	}
-
-	default void onTick() {
 	}
 }
