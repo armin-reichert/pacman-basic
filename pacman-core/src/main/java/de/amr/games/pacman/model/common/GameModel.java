@@ -339,6 +339,16 @@ public abstract class GameModel {
 		}
 	}
 
+	public void showGuys() {
+		showGhosts();
+		player.show();
+	}
+
+	public void hideGuys() {
+		hideGhosts();
+		player.hide();
+	}
+
 	public void resetGhostBounty() {
 		ghostBounty = firstGhostBounty;
 	}
