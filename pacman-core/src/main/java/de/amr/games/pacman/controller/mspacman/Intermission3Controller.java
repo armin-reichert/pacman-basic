@@ -94,6 +94,7 @@ public class Intermission3Controller extends FiniteStateMachine<IntermissionStat
 		bag.hold = true;
 		bag.open = false;
 		bag.position = stork.position.plus(-14, 3);
+		numBagBounces = 0;
 
 		changeState(IntermissionState.FLAP);
 	}
