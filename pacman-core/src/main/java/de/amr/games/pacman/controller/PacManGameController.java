@@ -53,7 +53,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.controller.event.PacManGameEvent;
@@ -244,8 +243,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	private void state_Ready_update() {
 		if (stateTimer().ticked() == sec_to_ticks(1.5)) {
-			game.player.show();
-			game.showGhosts();
+			game.showGuys();
 		} else if (stateTimer().hasExpired()) {
 			if (gameRequested) {
 				gameRunning = true;
@@ -278,7 +276,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 		// Is level complete?
 		if (game.foodRemaining == 0) {
-			stateTimer().setIndefinite();
+			stateTimer().setIndefinite(); // TODO check this
 			changeState(LEVEL_COMPLETE);
 			return;
 		}
@@ -291,9 +289,9 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		}
 
 		// Is player killing ghost(s)?
-		List<Ghost> prey = game.ghosts(FRIGHTENED).filter(player::meets).collect(Collectors.toList());
-		if (!prey.isEmpty()) {
-			prey.forEach(this::killGhost);
+		Ghost[] prey = game.ghosts(FRIGHTENED).filter(player::meets).toArray(Ghost[]::new);
+		if (prey.length > 0) {
+			Stream.of(prey).forEach(this::killGhost);
 			changeState(GHOST_DYING);
 			return;
 		}
