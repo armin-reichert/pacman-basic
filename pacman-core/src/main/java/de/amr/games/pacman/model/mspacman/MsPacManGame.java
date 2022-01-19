@@ -91,7 +91,7 @@ public class MsPacManGame extends GameModel {
 		mazeNumber = mazeNumber(levelNumber);
 		mapNumber = (mazeNumber == 5) ? 3 : (mazeNumber == 6) ? 4 : mazeNumber;
 		setLevelData(levelNumber, new MapBasedWorld("/mspacman/maps/map" + mapNumber + ".txt"));
-		huntingPhaseTicks = DEFAULT_HUNTING_PHASE_TICKS[levelNumber == 1 ? 0 : levelNumber <= 4 ? 1 : 2];
+		huntingPhaseDurations = huntingPhaseDurationsTable[levelNumber == 1 ? 0 : levelNumber <= 4 ? 1 : 2];
 		if (levelNumber >= 8) {
 			bonusSymbol = new Random().nextInt(7);
 		}

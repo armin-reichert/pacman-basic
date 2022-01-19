@@ -254,7 +254,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	private void startHuntingPhase(int phase) {
 		game.huntingPhase = phase;
-		stateTimer().set(game.huntingPhaseTicks[phase]).start();
+		stateTimer().set(game.huntingPhaseDurations[phase]).start();
 		String phaseName = game.inScatteringPhase() ? "Scattering" : "Chasing";
 		if (phase > 0) {
 			game.ghosts().filter(ghost -> ghost.is(HUNTING_PAC) || ghost.is(FRIGHTENED)).forEach(Ghost::forceTurningBack);

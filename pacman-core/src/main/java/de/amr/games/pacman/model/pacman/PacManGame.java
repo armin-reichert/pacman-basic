@@ -78,7 +78,7 @@ public class PacManGame extends GameModel {
 
 		// all levels use the same world
 		world = new MapBasedWorld("/pacman/maps/map1.txt");
-		
+
 		player = new Pac("Pac-Man");
 		ghosts = createGhosts("Blinky", "Pinky", "Inky", "Clyde");
 		bonus = new Bonus();
@@ -91,7 +91,7 @@ public class PacManGame extends GameModel {
 		mazeNumber = 1;
 		mapNumber = 1;
 		setLevelData(levelNumber, world);
-		huntingPhaseTicks = DEFAULT_HUNTING_PHASE_TICKS[levelNumber == 1 ? 0 : levelNumber <= 4 ? 1 : 2];
+		huntingPhaseDurations = huntingPhaseDurationsTable[levelNumber == 1 ? 0 : levelNumber <= 4 ? 1 : 2];
 		levelCounter.add(bonusSymbol);
 		player.world = world;
 		player.starvingTimeLimit = sec_to_ticks(levelNumber < 5 ? 4 : 3);

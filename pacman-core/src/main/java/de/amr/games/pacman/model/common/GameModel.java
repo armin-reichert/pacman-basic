@@ -59,15 +59,6 @@ public abstract class GameModel {
 	/** Speed in pixels/tick at 100%. */
 	public static final double BASE_SPEED = 1.25;
 
-	//@formatter:off
-	public static final long[][] DEFAULT_HUNTING_PHASE_TICKS = {
-	  // scatter  chase   scatter  chase  scatter  chase    scatter  chase
-	   { 7*60,    20*60,  7*60,    20*60, 5*60,      20*60, 5*60,    TickTimer.INDEFINITE },
-	   { 7*60,    20*60,  7*60,    20*60, 5*60,    1033*60,    1,    TickTimer.INDEFINITE },
-	   { 5*60,    20*60,  5*60,    20*60, 5*60,    1037*60,    1,    TickTimer.INDEFINITE },
-	};
-	//@formatter:on
-
 	/** The level data. */
 	protected Object[][] levels;
 
@@ -91,8 +82,18 @@ public abstract class GameModel {
 		return huntingPhase % 2 == 0;
 	}
 
-	/** Durations (ticks) of hunting phases. */
-	public long[] huntingPhaseTicks;
+	/** The durations of the hunting phases. */
+	//@formatter:off
+	public long[][] huntingPhaseDurationsTable = new long[][] {
+	  // scatter  chase   scatter  chase  scatter  chase    scatter  chase
+	   { 7*60,    20*60,  7*60,    20*60, 5*60,      20*60, 5*60,    TickTimer.INDEFINITE },
+	   { 7*60,    20*60,  7*60,    20*60, 5*60,    1033*60,    1,    TickTimer.INDEFINITE },
+	   { 5*60,    20*60,  5*60,    20*60, 5*60,    1037*60,    1,    TickTimer.INDEFINITE },
+	};
+	//@formatter:on
+
+	/** The currently active row in the {@link #huntingPhaseDurationsTable}. */
+	public long[] huntingPhaseDurations;
 
 	/** Bonus symbol of current level. */
 	public int bonusSymbol;
