@@ -30,7 +30,6 @@ import java.io.File;
 import java.util.Random;
 
 import de.amr.games.pacman.model.common.GameModel;
-import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.mspacman.entities.MovingBonus;
 import de.amr.games.pacman.model.world.MapBasedWorld;
@@ -46,48 +45,40 @@ import de.amr.games.pacman.model.world.MapBasedWorld;
  */
 public class MsPacManGame extends GameModel {
 
-//@formatter:off
-	
-	public static final int CHERRIES =   0;
-	public static final int STRAWBERRY = 1;
-	public static final int PEACH =      2;
-	public static final int PRETZEL =    3;
-	public static final int APPLE =      4;
-	public static final int PEAR =       5;
-	public static final int BANANA =     6;
-	
-	private final Object[][] LEVELS = {
-	/* 1*/ {CHERRIES,    80, 75, 40,  20,  80, 10,  85,  90, 50, 6, 5},
-	/* 2*/ {STRAWBERRY,  90, 85, 45,  30,  90, 15,  95,  95, 55, 5, 5},
-	/* Intermission scene 1: "They Meet" */
-	/* 3*/ {PEACH,       90, 85, 45,  40,  90, 20,  95,  95, 55, 4, 5},
-	/* 4*/ {PRETZEL,     90, 85, 45,  40,  90, 20,  95,  95, 55, 3, 5},
-	/* 5*/ {APPLE,      100, 95, 50,  40, 100, 20, 105, 100, 60, 2, 5},
-	/* Intermission scene 2: "The Chase" */
-	/* 6*/ {PEAR,       100, 95, 50,  50, 100, 25, 105, 100, 60, 5, 5},
-	/* 7*/ {BANANA,     100, 95, 50,  50, 100, 25, 105, 100, 60, 2, 5},
-	/* 8*/ {BANANA,     100, 95, 50,  50, 100, 25, 105, 100, 60, 2, 5},
-	/* 9*/ {BANANA,     100, 95, 50,  60, 100, 30, 105, 100, 60, 1, 3},
-	/* Intermission scene 3: "Junior" */
-	/*10*/ {BANANA,     100, 95, 50,  60, 100, 30, 105, 100, 60, 4, 5},
-	/*11*/ {BANANA,     100, 95, 50,  60, 100, 30, 105, 100, 60, 2, 5},
-	/*12*/ {BANANA,     100, 95, 50,  80, 100, 40, 105, 100, 60, 1, 3},
-	/*13*/ {BANANA,     100, 95, 50,  80, 100, 40, 105, 100, 60, 1, 3},
-	/* Intermission scene 3: "Junior" */
-	/*14*/ {BANANA,     100, 95, 50,  80, 100, 40, 105, 100, 60, 3, 5},
-	/*15*/ {BANANA,     100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3},
-	/*16*/ {BANANA,     100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3},
-	/*17*/ {BANANA,     100, 95, 50, 100, 100, 50, 105,   0,  0, 0, 0},
-	/* Intermission scene 3: "Junior" */
-	/*18*/ {BANANA,     100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3},
-	/*19*/ {BANANA,     100, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
-	/*20*/ {BANANA,     100, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
-	/*21*/ {BANANA,      90, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
-	};
-
-/*@formatter:on*/
+	public static final int CHERRIES = 0, STRAWBERRY = 1, PEACH = 2, PRETZEL = 3, APPLE = 4, PEAR = 5, BANANA = 6;
 
 	public MsPacManGame() {
+		levels = new Object[][] {
+		/*@formatter:off*/
+        /* 1*/ {CHERRIES,    80, 75, 40,  20,  80, 10,  85,  90, 50, 6, 5},
+		/* 2*/ {STRAWBERRY,  90, 85, 45,  30,  90, 15,  95,  95, 55, 5, 5},
+		/* Intermission scene 1: "They Meet" */
+		/* 3*/ {PEACH,       90, 85, 45,  40,  90, 20,  95,  95, 55, 4, 5},
+		/* 4*/ {PRETZEL,     90, 85, 45,  40,  90, 20,  95,  95, 55, 3, 5},
+		/* 5*/ {APPLE,      100, 95, 50,  40, 100, 20, 105, 100, 60, 2, 5},
+		/* Intermission scene 2: "The Chase" */
+		/* 6*/ {PEAR,       100, 95, 50,  50, 100, 25, 105, 100, 60, 5, 5},
+		/* 7*/ {BANANA,     100, 95, 50,  50, 100, 25, 105, 100, 60, 2, 5},
+		/* 8*/ {BANANA,     100, 95, 50,  50, 100, 25, 105, 100, 60, 2, 5},
+		/* 9*/ {BANANA,     100, 95, 50,  60, 100, 30, 105, 100, 60, 1, 3},
+		/* Intermission scene 3: "Junior" */
+		/*10*/ {BANANA,     100, 95, 50,  60, 100, 30, 105, 100, 60, 4, 5},
+		/*11*/ {BANANA,     100, 95, 50,  60, 100, 30, 105, 100, 60, 2, 5},
+		/*12*/ {BANANA,     100, 95, 50,  80, 100, 40, 105, 100, 60, 1, 3},
+		/*13*/ {BANANA,     100, 95, 50,  80, 100, 40, 105, 100, 60, 1, 3},
+		/* Intermission scene 3: "Junior" */
+		/*14*/ {BANANA,     100, 95, 50,  80, 100, 40, 105, 100, 60, 3, 5},
+		/*15*/ {BANANA,     100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3},
+		/*16*/ {BANANA,     100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3},
+		/*17*/ {BANANA,     100, 95, 50, 100, 100, 50, 105,   0,  0, 0, 0},
+		/* Intermission scene 3: "Junior" */
+		/*18*/ {BANANA,     100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3},
+		/*19*/ {BANANA,     100, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
+		/*20*/ {BANANA,     100, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
+		/*21*/ {BANANA,      90, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
+		/*@formatter:on*/
+		};
+
 		player = new Pac("Ms. Pac-Man");
 		ghosts = createGhosts("Blinky", "Pinky", "Inky", "Sue");
 		bonus = new MovingBonus();
@@ -95,76 +86,23 @@ public class MsPacManGame extends GameModel {
 	}
 
 	@Override
-	protected Object[] levelData(int levelNumber) {
-		return levelNumber - 1 < LEVELS.length ? LEVELS[levelNumber - 1] : LEVELS[LEVELS.length - 1];
-	}
-
-	@Override
-	public void enterLevel(int levelNumber) {
+	public void setLevel(int levelNumber) {
 		this.levelNumber = levelNumber;
-		
 		mazeNumber = mazeNumber(levelNumber);
 		mapNumber = (mazeNumber == 5) ? 3 : (mazeNumber == 6) ? 4 : mazeNumber;
 		setLevelData(levelNumber, new MapBasedWorld("/mspacman/maps/map" + mapNumber + ".txt"));
-		
 		huntingPhaseTicks = DEFAULT_HUNTING_PHASE_TICKS[levelNumber == 1 ? 0 : levelNumber <= 4 ? 1 : 2];
-
 		if (levelNumber >= 8) {
-			bonusSymbol = randomBonusSymbolID();
+			bonusSymbol = new Random().nextInt(7);
 		}
 		levelCounter.add(bonusSymbol);
-
 		player.world = world;
 		player.starvingTimeLimit = sec_to_ticks(levelNumber < 5 ? 4 : 3);
-
 		resetGhostBounty();
-		for (Ghost ghost : ghosts) {
-			ghost.world = world;
-			ghost.dotCounter = 0;
-			ghost.elroy = 0;
-		}
-
-		ghosts[RED_GHOST].homeTile = world.ghostHouse().entryTile();
-		ghosts[RED_GHOST].revivalTile = world.ghostHouse().seat(1);
-		ghosts[RED_GHOST].globalDotLimit = Integer.MAX_VALUE;
-		ghosts[RED_GHOST].privateDotLimit = 0;
-
-		ghosts[PINK_GHOST].homeTile = world.ghostHouse().seat(1);
-		ghosts[PINK_GHOST].revivalTile = world.ghostHouse().seat(1);
-		ghosts[PINK_GHOST].globalDotLimit = 7;
-		ghosts[PINK_GHOST].privateDotLimit = 0;
-
-		ghosts[CYAN_GHOST].homeTile = world.ghostHouse().seat(0);
-		ghosts[CYAN_GHOST].revivalTile = world.ghostHouse().seat(0);
-		ghosts[CYAN_GHOST].globalDotLimit = 17;
-		ghosts[CYAN_GHOST].privateDotLimit = levelNumber == 1 ? 30 : 0;
-
-		ghosts[ORANGE_GHOST].homeTile = world.ghostHouse().seat(2);
-		ghosts[ORANGE_GHOST].revivalTile = world.ghostHouse().seat(2);
-		ghosts[ORANGE_GHOST].globalDotLimit = Integer.MAX_VALUE;
-		ghosts[ORANGE_GHOST].privateDotLimit = levelNumber == 1 ? 60 : levelNumber == 2 ? 50 : 0;
-
+		resetGhosts(world);
 		bonus.world = world;
 		bonus.init();
-
-		log("Ms. Pac-Man game entered level #%d, maze number is %d, map number is %d", levelNumber, mazeNumber,
-				mapNumber);
-	}
-
-	@Override
-	public int intermissionNumber(int levelNumber) {
-		switch (levelNumber) {
-		case 2:
-			return 1;
-		case 5:
-			return 2;
-		case 9:
-		case 13:
-		case 17:
-			return 3;
-		default:
-			return 0; // no intermission after this level
-		}
+		log("Ms. Pac-Man game entered level #%d, maze number=%d, map number=%d", levelNumber, mazeNumber, mapNumber);
 	}
 
 	/**
@@ -216,9 +154,5 @@ public class MsPacManGame extends GameModel {
 		default:
 			throw new IllegalArgumentException("Unknown symbol ID: " + symbolID);
 		}
-	}
-
-	private int randomBonusSymbolID() {
-		return new Random().nextInt(7);
 	}
 }

@@ -68,6 +68,9 @@ public abstract class GameModel {
 	};
 	//@formatter:on
 
+	/** The level data. */
+	protected Object[][] levels;
+
 	/** 1-based level number */
 	public int levelNumber;
 
@@ -189,14 +192,27 @@ public abstract class GameModel {
 	 * 
 	 * @param levelNumber 1-based level number
 	 */
-	public abstract void enterLevel(int levelNumber);
+	public abstract void setLevel(int levelNumber);
 
 	/**
 	 * @param levelNumber game level number
 	 * @return 1-based intermission (cut scene) number that is played after given level or <code>0</code> if no
 	 *         intermission is played after given level.
 	 */
-	public abstract int intermissionNumber(int levelNumber);
+	public int intermissionNumber(int levelNumber) {
+		switch (levelNumber) {
+		case 2:
+			return 1;
+		case 5:
+			return 2;
+		case 9:
+		case 13:
+		case 17:
+			return 3;
+		default:
+			return 0; // no intermission after this level
+		}
+	}
 
 	/**
 	 * @param symbolID bonus symbol identifier
@@ -218,7 +234,7 @@ public abstract class GameModel {
 		Hiscore hiscore = new Hiscore(hiscorePath).load();
 		hiscoreLevel = hiscore.level;
 		hiscorePoints = hiscore.points;
-		enterLevel(1);
+		setLevel(1);
 	}
 
 	public void resetGuys() {
@@ -263,11 +279,13 @@ public abstract class GameModel {
 		return ((Integer) percentValue) / 100f;
 	}
 
-	protected abstract Object[] levelData(int levelNumber);
+	protected Object[] levelData(int levelNumber) {
+		return levelNumber - 1 < levels.length ? levels[levelNumber - 1] : levels[levels.length - 1];
+	}
 
 	protected void setLevelData(int levelNumber, PacManGameWorld world) {
 		this.world = world;
-		
+
 		Object[] row = levelData(levelNumber);
 		bonusSymbol = (int) row[0];
 		playerSpeed = fraction(row[1]);
@@ -317,6 +335,34 @@ public abstract class GameModel {
 				: player.tile();
 
 		return Stream.of(redGhost, pinkGhost, cyanGhost, orangeGhost).toArray(Ghost[]::new);
+	}
+
+	protected void resetGhosts(PacManGameWorld world) {
+		for (Ghost ghost : ghosts) {
+			ghost.world = world;
+			ghost.dotCounter = 0;
+			ghost.elroy = 0;
+		}
+
+		ghosts[RED_GHOST].homeTile = world.ghostHouse().entryTile();
+		ghosts[RED_GHOST].revivalTile = world.ghostHouse().seat(1);
+		ghosts[RED_GHOST].globalDotLimit = Integer.MAX_VALUE;
+		ghosts[RED_GHOST].privateDotLimit = 0;
+
+		ghosts[PINK_GHOST].homeTile = world.ghostHouse().seat(1);
+		ghosts[PINK_GHOST].revivalTile = world.ghostHouse().seat(1);
+		ghosts[PINK_GHOST].globalDotLimit = 7;
+		ghosts[PINK_GHOST].privateDotLimit = 0;
+
+		ghosts[CYAN_GHOST].homeTile = world.ghostHouse().seat(0);
+		ghosts[CYAN_GHOST].revivalTile = world.ghostHouse().seat(0);
+		ghosts[CYAN_GHOST].globalDotLimit = 17;
+		ghosts[CYAN_GHOST].privateDotLimit = levelNumber == 1 ? 30 : 0;
+
+		ghosts[ORANGE_GHOST].homeTile = world.ghostHouse().seat(2);
+		ghosts[ORANGE_GHOST].revivalTile = world.ghostHouse().seat(2);
+		ghosts[ORANGE_GHOST].globalDotLimit = Integer.MAX_VALUE;
+		ghosts[ORANGE_GHOST].privateDotLimit = levelNumber == 1 ? 60 : levelNumber == 2 ? 50 : 0;
 	}
 
 	public int levelSymbol(int levelNumber) {
