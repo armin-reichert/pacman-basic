@@ -388,7 +388,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			game.bonus.symbol = game.bonusSymbol;
 			game.bonus.points = game.bonusValue(game.bonus.symbol);
 			game.bonus.activate(ticks);
-			log("Bonus '%s' (value %d) activated for %d ticks", game.bonus.symbol, game.bonus.points, ticks);
+			log("Bonus id=%d, value=%d activated for %d ticks", game.bonus.symbol, game.bonus.points, ticks);
 			publish(Info.BONUS_ACTIVATED, game.bonus.tile());
 		}
 
@@ -427,7 +427,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		switch (game.bonus.state) {
 		case EDIBLE:
 			if (game.player.meets(game.bonus)) {
-				log("%s found bonus '%s' of value %d", game.player.name, game.bonus.symbol, game.bonus.points);
+				log("%s found bonus id=%d of value %d", game.player.name, game.bonus.symbol, game.bonus.points);
 				score(game.bonus.points);
 				game.bonus.eatAndShowValue(sec_to_ticks(2));
 				publish(Info.BONUS_EATEN, game.bonus.tile());
