@@ -66,7 +66,6 @@ import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.Ghost;
-import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.mspacman.MsPacManGame;
 import de.amr.games.pacman.model.pacman.PacManGame;
 
@@ -257,6 +256,9 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		game.huntingPhase = phase;
 		stateTimer().set(game.huntingPhaseTicks[phase]).start();
 		String phaseName = game.inScatteringPhase() ? "Scattering" : "Chasing";
+		if (phase > 0) {
+			game.ghosts().filter(ghost -> ghost.is(HUNTING_PAC) || ghost.is(FRIGHTENED)).forEach(Ghost::forceTurningBack);
+		}
 		log("Hunting phase #%d (%s) started, %d of %d ticks remaining", phase, phaseName, stateTimer().ticksRemaining(),
 				stateTimer().duration());
 		if (game.inScatteringPhase()) {
@@ -270,38 +272,54 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		}
 	}
 
-	// This method contains the main logic of the game play
+	//
+	// This method contains the main logic of the game play.
+	//
 	private void state_Hunting_update() {
-		final Pac player = game.player;
 
-		// Is level complete?
+		// Level complete?
 		if (game.foodRemaining == 0) {
 			stateTimer().setIndefinite(); // TODO check this
 			changeState(LEVEL_COMPLETE);
 			return;
 		}
 
-		// Is hunting phase complete?
+		// Hunting phase (scatter/chase) complete?
 		if (stateTimer().hasExpired()) {
-			game.ghosts().filter(ghost -> ghost.is(HUNTING_PAC) || ghost.is(FRIGHTENED)).forEach(Ghost::forceTurningBack);
 			startHuntingPhase(++game.huntingPhase);
 			return;
 		}
 
-		// Is player killing ghost(s)?
-		Ghost[] prey = game.ghosts(FRIGHTENED).filter(player::meets).toArray(Ghost[]::new);
+		if (checkPlayerKilled()) {
+			return;
+		}
+		if (checkGhostsKilled()) {
+			return;
+		}
+		checkFood();
+		checkBonus();
+		checkPower();
+		movePlayer();
+		tryReleasingLockedGhosts();
+		game.ghosts().forEach(this::updateGhost);
+	}
+
+	private boolean checkGhostsKilled() {
+		Ghost[] prey = game.ghosts(FRIGHTENED).filter(game.player::meets).toArray(Ghost[]::new);
 		if (prey.length > 0) {
 			Stream.of(prey).forEach(this::killGhost);
 			changeState(GHOST_DYING);
-			return;
+			return true;
 		}
+		return false;
+	}
 
-		// Is player getting killed by some ghost?
-		if (!player.immune || attractMode) {
-			Optional<Ghost> killer = game.ghosts(HUNTING_PAC).filter(player::meets).findAny();
+	private boolean checkPlayerKilled() {
+		if (!game.player.immune || attractMode) {
+			Optional<Ghost> killer = game.ghosts(HUNTING_PAC).filter(game.player::meets).findAny();
 			if (killer.isPresent()) {
-				player.dead = true;
-				log("%s got killed by %s at tile %s", player.name, killer.get().name, player.tile());
+				game.player.dead = true;
+				log("%s got killed by %s at tile %s", game.player.name, killer.get().name, game.player.tile());
 
 				// Elroy mode of red ghost gets disabled when player is killed
 				Ghost redGhost = game.ghost(GameModel.RED_GHOST);
@@ -317,22 +335,99 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 				stateTimer().setIndefinite();
 				changeState(PACMAN_DYING);
-				return;
+				return true;
 			}
 		}
+		return false;
+	}
 
-		// Did player find food?
-		if (game.containsFood(player.tile())) {
-			onPlayerFoundFood(player);
+	private void checkFood() {
+		if (game.containsFood(game.player.tile())) {
+			onPlayerFoundFood();
 		} else {
-			player.starvingTicks++;
+			game.player.starvingTicks++;
+		}
+	}
+
+	private void onPlayerFoundFood() {
+		game.removeFood(game.player.tile());
+		game.player.starvingTicks = 0;
+		if (game.world.isEnergizerTile(game.player.tile())) {
+			game.player.restingTicksLeft = 3;
+			score(game.energizerValue);
+			game.resetGhostBounty();
+			if (game.ghostFrightenedSeconds > 0) {
+				game.ghosts(HUNTING_PAC).forEach(ghost -> {
+					ghost.state = FRIGHTENED;
+					ghost.forceTurningBack();
+				});
+				game.player.powerTimer.setSeconds(game.ghostFrightenedSeconds).start();
+				log("%s got power for %d seconds", game.player.name, game.ghostFrightenedSeconds);
+				// HUNTING state timer is stopped while player has power
+				stateTimer().stop();
+				log("%s timer stopped", currentStateID);
+				publish(Info.PLAYER_GAINS_POWER, game.player.tile());
+			}
+		} else {
+			game.player.restingTicksLeft = 1;
+			score(game.pelletValue);
 		}
 
-		// Bonus active?
+		// Will Blinky become Cruise Elroy?
+		if (game.foodRemaining == game.elroy1DotsLeft) {
+			game.ghost(RED_GHOST).elroy = 1;
+			log("Blinky becomes Cruise Elroy 1");
+		} else if (game.foodRemaining == game.elroy2DotsLeft) {
+			game.ghost(RED_GHOST).elroy = 2;
+			log("Blinky becomes Cruise Elroy 2");
+		}
+
+		// Is bonus awarded?
+		if (game.isBonusReached()) {
+			long ticks = gameVariant == PACMAN ? sec_to_ticks(9 + new Random().nextFloat()) : TickTimer.INDEFINITE;
+			game.bonus.symbol = game.bonusSymbol;
+			game.bonus.points = game.bonusValue(game.bonus.symbol);
+			game.bonus.activate(ticks);
+			log("Bonus '%s' (value %d) activated for %d ticks", game.bonus.symbol, game.bonus.points, ticks);
+			publish(Info.BONUS_ACTIVATED, game.bonus.tile());
+		}
+
+		updateGhostDotCounters();
+		publish(Info.PLAYER_FOUND_FOOD, game.player.tile());
+	}
+
+	private void movePlayer() {
+		getPlayerControl().steer(game.player);
+		if (game.player.restingTicksLeft > 0) {
+			game.player.restingTicksLeft--;
+		} else {
+			game.player.setSpeed(game.player.powerTimer.isRunning() ? game.playerSpeedPowered : game.playerSpeed);
+			game.player.tryMoving();
+		}
+	}
+
+	private void checkPower() {
+		if (game.player.powerTimer.isRunning()) {
+			game.player.powerTimer.tick();
+			if (game.player.powerTimer.ticksRemaining() == sec_to_ticks(1)) {
+				// TODO not sure exactly how long the player is losing power
+				publish(Info.PLAYER_LOSING_POWER, game.player.tile());
+			}
+		} else if (game.player.powerTimer.hasExpired()) {
+			log("%s lost power", game.player.name);
+			game.ghosts(FRIGHTENED).forEach(ghost -> ghost.state = HUNTING_PAC);
+			game.player.powerTimer.setIndefinite();
+			// start HUNTING state timer again
+			stateTimer().start();
+			publish(Info.PLAYER_LOST_POWER, game.player.tile());
+		}
+	}
+
+	private void checkBonus() {
 		switch (game.bonus.state) {
 		case EDIBLE:
-			if (player.meets(game.bonus)) {
-				log("%s found bonus '%s' of value %d", player.name, game.bonus.symbol, game.bonus.points);
+			if (game.player.meets(game.bonus)) {
+				log("%s found bonus '%s' of value %d", game.player.name, game.bonus.symbol, game.bonus.points);
 				score(game.bonus.points);
 				game.bonus.eatAndShowValue(sec_to_ticks(2));
 				publish(Info.BONUS_EATEN, game.bonus.tile());
@@ -352,36 +447,6 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		default: // INACTIVE
 			break;
 		}
-
-		// Consume power?
-		if (player.powerTimer.isRunning()) {
-			player.powerTimer.tick();
-			if (player.powerTimer.ticksRemaining() == sec_to_ticks(1)) {
-				// TODO not sure exactly how long the player is losing power
-				publish(Info.PLAYER_LOSING_POWER, player.tile());
-			}
-		} else if (player.powerTimer.hasExpired()) {
-			log("%s lost power", player.name);
-			game.ghosts(FRIGHTENED).forEach(ghost -> ghost.state = HUNTING_PAC);
-			player.powerTimer.setIndefinite();
-			// start HUNTING state timer again
-			stateTimer().start();
-			publish(Info.PLAYER_LOST_POWER, player.tile());
-		}
-
-		// Move player through the world
-		getPlayerControl().steer(player);
-		if (player.restingTicksLeft > 0) {
-			player.restingTicksLeft--;
-		} else {
-			player.setSpeed(player.powerTimer.isRunning() ? game.playerSpeedPowered : game.playerSpeed);
-			player.tryMoving();
-		}
-
-		// Ghosts
-		tryReleasingLockedGhosts();
-		game.ghosts().forEach(this::updateGhost);
-
 	}
 
 	private void state_PacManDying_enter() {
@@ -514,53 +579,6 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			log("Extra life. Player has %d lives now", game.player.lives);
 			publish(Info.EXTRA_LIFE, null);
 		}
-	}
-
-	private void onPlayerFoundFood(Pac player) {
-		game.removeFood(player.tile());
-		player.starvingTicks = 0;
-		if (game.world.isEnergizerTile(player.tile())) {
-			player.restingTicksLeft = 3;
-			score(game.energizerValue);
-			game.resetGhostBounty();
-			if (game.ghostFrightenedSeconds > 0) {
-				game.ghosts(HUNTING_PAC).forEach(ghost -> {
-					ghost.state = FRIGHTENED;
-					ghost.forceTurningBack();
-				});
-				player.powerTimer.setSeconds(game.ghostFrightenedSeconds).start();
-				log("%s got power for %d seconds", player.name, game.ghostFrightenedSeconds);
-				// HUNTING state timer is stopped while player has power
-				stateTimer().stop();
-				log("%s timer stopped", currentStateID);
-				publish(Info.PLAYER_GAINS_POWER, player.tile());
-			}
-		} else {
-			player.restingTicksLeft = 1;
-			score(game.pelletValue);
-		}
-
-		// Will Blinky become Cruise Elroy?
-		if (game.foodRemaining == game.elroy1DotsLeft) {
-			game.ghost(RED_GHOST).elroy = 1;
-			log("Blinky becomes Cruise Elroy 1");
-		} else if (game.foodRemaining == game.elroy2DotsLeft) {
-			game.ghost(RED_GHOST).elroy = 2;
-			log("Blinky becomes Cruise Elroy 2");
-		}
-
-		// Is bonus awarded?
-		if (game.isBonusReached()) {
-			long ticks = gameVariant == PACMAN ? sec_to_ticks(9 + new Random().nextFloat()) : TickTimer.INDEFINITE;
-			game.bonus.symbol = game.bonusSymbol;
-			game.bonus.points = game.bonusValue(game.bonus.symbol);
-			game.bonus.activate(ticks);
-			log("Bonus '%s' (value %d) activated for %d ticks", game.bonus.symbol, game.bonus.points, ticks);
-			publish(Info.BONUS_ACTIVATED, game.bonus.tile());
-		}
-
-		updateGhostDotCounters();
-		publish(Info.PLAYER_FOUND_FOOD, player.tile());
 	}
 
 	// Ghosts
