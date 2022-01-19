@@ -34,7 +34,7 @@ import de.amr.games.pacman.model.common.Creature;
 public class Bonus extends Creature {
 
 	public BonusState state;
-	public String symbol;
+	public int symbol;
 	public int points;
 	public long timer;
 

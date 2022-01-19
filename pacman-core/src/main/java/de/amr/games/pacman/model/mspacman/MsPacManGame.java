@@ -48,13 +48,13 @@ public class MsPacManGame extends GameModel {
 
 //@formatter:off
 	
-	public static final String CHERRIES =   "Cherries";
-	public static final String STRAWBERRY = "Strawberry";
-	public static final String PEACH =      "Peach";
-	public static final String PRETZEL =    "Pretzel";
-	public static final String APPLE =      "Apple";
-	public static final String PEAR =       "Pear";
-	public static final String BANANA =     "Banana";
+	public static final int CHERRIES =   0;
+	public static final int STRAWBERRY = 1;
+	public static final int PEACH =      2;
+	public static final int PRETZEL =    3;
+	public static final int APPLE =      4;
+	public static final int PEAR =       5;
+	public static final int BANANA =     6;
 	
 	private final Object[][] LEVELS = {
 	/* 1*/ {CHERRIES,    80, 75, 40,  20,  80, 10,  85,  90, 50, 6, 5},
@@ -112,7 +112,7 @@ public class MsPacManGame extends GameModel {
 		huntingPhaseTicks = DEFAULT_HUNTING_PHASE_TICKS[levelNumber == 1 ? 0 : levelNumber <= 4 ? 1 : 2];
 
 		if (levelNumber >= 8) {
-			bonusSymbol = randomBonusSymbol();
+			bonusSymbol = randomBonusSymbolID();
 		}
 		levelCounter.add(bonusSymbol);
 
@@ -198,8 +198,8 @@ public class MsPacManGame extends GameModel {
 	}
 
 	@Override
-	public int bonusValue(String symbolName) {
-		switch (symbolName) {
+	public int bonusValue(int symbolID) {
+		switch (symbolID) {
 		case CHERRIES:
 			return 100;
 		case STRAWBERRY:
@@ -215,28 +215,11 @@ public class MsPacManGame extends GameModel {
 		case BANANA:
 			return 5000;
 		default:
-			throw new IllegalArgumentException("Unknown symbol name: " + symbolName);
+			throw new IllegalArgumentException("Unknown symbol ID: " + symbolID);
 		}
 	}
 
-	private String randomBonusSymbol() {
-		switch (new Random().nextInt(7)) {
-		case 0:
-			return CHERRIES;
-		case 1:
-			return STRAWBERRY;
-		case 2:
-			return PEACH;
-		case 3:
-			return PRETZEL;
-		case 4:
-			return APPLE;
-		case 5:
-			return PEAR;
-		case 6:
-			return BANANA;
-		default:
-			throw new IllegalStateException();
-		}
+	private int randomBonusSymbolID() {
+		return new Random().nextInt(7);
 	}
 }

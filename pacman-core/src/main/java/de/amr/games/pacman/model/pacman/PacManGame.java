@@ -44,14 +44,14 @@ public class PacManGame extends GameModel {
 
 //@formatter:off
 	
-	public static final String CHERRIES =   "Cherries";
-	public static final String STRAWBERRY = "Strawberry";
-	public static final String PEACH =      "Peach";
-	public static final String APPLE =      "Apple";
-	public static final String GRAPES =     "Grapes";
-	public static final String GALAXIAN =   "Galaxian";
-	public static final String BELL =       "Bell";
-	public static final String KEY =        "Key";
+	public static final int CHERRIES =   0;
+	public static final int STRAWBERRY = 1;
+	public static final int PEACH =      2;
+	public static final int APPLE =      3;
+	public static final int GRAPES =     4;
+	public static final int GALAXIAN =   5;
+	public static final int BELL =       6;
+	public static final int KEY =        7;
 	
 	private final Object[][] LEVELS = {
 	/* 1*/ {CHERRIES,    80, 75, 40,  20,  80, 10,  85,  90, 50, 6, 5},
@@ -161,8 +161,8 @@ public class PacManGame extends GameModel {
 	}
 
 	@Override
-	public int bonusValue(String symbolName) {
-		switch (symbolName) {
+	public int bonusValue(int symbolID) {
+		switch (symbolID) {
 		case CHERRIES:
 			return 100;
 		case STRAWBERRY:
@@ -180,7 +180,7 @@ public class PacManGame extends GameModel {
 		case KEY:
 			return 5000;
 		default:
-			throw new IllegalArgumentException("Unknown symbol name: " + symbolName);
+			throw new IllegalArgumentException("Unknown symbol name: " + symbolID);
 		}
 	}
 }

@@ -92,7 +92,7 @@ public abstract class GameModel {
 	public long[] huntingPhaseTicks;
 
 	/** Bonus symbol of current level. */
-	public String bonusSymbol;
+	public int bonusSymbol;
 
 	/** Relative player speed at current level. */
 	public float playerSpeed;
@@ -167,7 +167,7 @@ public abstract class GameModel {
 	public int firstGhostBounty;
 
 	/** List of collected level symbols. */
-	public List<String> levelCounter = new ArrayList<>();
+	public List<Integer> levelCounter = new ArrayList<>();
 
 	/** Counter used by ghost house logic. */
 	public int globalDotCounter;
@@ -199,10 +199,10 @@ public abstract class GameModel {
 	public abstract int intermissionNumber(int levelNumber);
 
 	/**
-	 * @param symbolName bonus symbol identifier
+	 * @param symbolID bonus symbol identifier
 	 * @return value of this bonus symbol
 	 */
-	public abstract int bonusValue(String symbolName);
+	public abstract int bonusValue(int symbolID);
 
 	protected GameModel() {
 		initialLives = 3;
@@ -267,7 +267,7 @@ public abstract class GameModel {
 
 	public void setLevelData(int levelNumber) {
 		Object[] row = levelData(levelNumber);
-		bonusSymbol = (String) row[0];
+		bonusSymbol = (int) row[0];
 		playerSpeed = fraction(row[1]);
 		ghostSpeed = fraction(row[2]);
 		ghostSpeedTunnel = fraction(row[3]);
@@ -317,7 +317,7 @@ public abstract class GameModel {
 		return Stream.of(redGhost, pinkGhost, cyanGhost, orangeGhost).toArray(Ghost[]::new);
 	}
 
-	public String levelSymbol(int levelNumber) {
+	public int levelSymbol(int levelNumber) {
 		return levelCounter.get(levelNumber - 1);
 	}
 
