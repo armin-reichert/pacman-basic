@@ -265,7 +265,9 @@ public abstract class GameModel {
 
 	protected abstract Object[] levelData(int levelNumber);
 
-	public void setLevelData(int levelNumber) {
+	protected void setLevelData(int levelNumber, PacManGameWorld world) {
+		this.world = world;
+		
 		Object[] row = levelData(levelNumber);
 		bonusSymbol = (int) row[0];
 		playerSpeed = fraction(row[1]);

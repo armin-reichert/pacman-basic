@@ -85,8 +85,6 @@ public class PacManGame extends GameModel {
 /*@formatter:on*/
 
 	public PacManGame() {
-		mazeNumber = 1;
-		mapNumber = 1;
 		world = new MapBasedWorld("/pacman/maps/map1.txt");
 		player = new Pac("Pac-Man");
 		ghosts = createGhosts("Blinky", "Pinky", "Inky", "Clyde");
@@ -102,7 +100,11 @@ public class PacManGame extends GameModel {
 	@Override
 	public void enterLevel(int levelNumber) {
 		this.levelNumber = levelNumber;
-		setLevelData(levelNumber);
+
+		mazeNumber = 1;
+		mapNumber = 1;
+		setLevelData(levelNumber, world);
+		
 		huntingPhaseTicks = DEFAULT_HUNTING_PHASE_TICKS[levelNumber == 1 ? 0 : levelNumber <= 4 ? 1 : 2];
 
 		levelCounter.add(bonusSymbol);
@@ -180,7 +182,7 @@ public class PacManGame extends GameModel {
 		case KEY:
 			return 5000;
 		default:
-			throw new IllegalArgumentException("Unknown symbol name: " + symbolID);
+			throw new IllegalArgumentException("Unknown symbol ID: " + symbolID);
 		}
 	}
 }

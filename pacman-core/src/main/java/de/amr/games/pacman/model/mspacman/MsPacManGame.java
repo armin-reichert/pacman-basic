@@ -102,13 +102,11 @@ public class MsPacManGame extends GameModel {
 	@Override
 	public void enterLevel(int levelNumber) {
 		this.levelNumber = levelNumber;
+		
 		mazeNumber = mazeNumber(levelNumber);
 		mapNumber = (mazeNumber == 5) ? 3 : (mazeNumber == 6) ? 4 : mazeNumber;
-
-		world = new MapBasedWorld("/mspacman/maps/map" + mapNumber + ".txt");
-
-		// can only be called after world has been set!
-		setLevelData(levelNumber);
+		setLevelData(levelNumber, new MapBasedWorld("/mspacman/maps/map" + mapNumber + ".txt"));
+		
 		huntingPhaseTicks = DEFAULT_HUNTING_PHASE_TICKS[levelNumber == 1 ? 0 : levelNumber <= 4 ? 1 : 2];
 
 		if (levelNumber >= 8) {
@@ -149,7 +147,8 @@ public class MsPacManGame extends GameModel {
 		bonus.world = world;
 		bonus.init();
 
-		log("Ms. Pac-Man game entered level #%d, maze number is %d, map number is %d", levelNumber, mazeNumber, mapNumber);
+		log("Ms. Pac-Man game entered level #%d, maze number is %d, map number is %d", levelNumber, mazeNumber,
+				mapNumber);
 	}
 
 	@Override
