@@ -31,8 +31,10 @@ import de.amr.games.pacman.model.pacman.entities.Bonus;
 import de.amr.games.pacman.model.world.Portal;
 
 /**
- * In Ms. Pac-Man, the bonus tumbles through the world, starting at some random portal and leaving at some portal at the
- * other border.
+ * In Ms. Pac-Man, the bonus tumbles through the world, starting at some portal and leaving the maze at some portal at
+ * the other border.
+ * 
+ * TODO: That's not quite true, in the original game there are predefined "fruit paths" and the behavior is not random.
  * 
  * @author Armin Reichert
  */
