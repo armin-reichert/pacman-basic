@@ -88,7 +88,7 @@ public class Intermission2Controller extends FiniteStateMachine<IntermissionStat
 	}
 
 	private void startStateTimer() {
-		stateTimer().start();
+		stateTimer().setIndefinite().start();
 	}
 
 	public int nailDistance() {
@@ -118,7 +118,7 @@ public class Intermission2Controller extends FiniteStateMachine<IntermissionStat
 	private void state_STUCK_update() {
 		blinky.move();
 		pac.move();
-		if (stateTimer().isRunningSeconds(3)) {
+		if (stateTimer().isRunningSeconds(2)) {
 			blinky.setDir(Direction.RIGHT);
 		} else if (stateTimer().isRunningSeconds(6)) {
 			gameController.stateTimer().expire();
