@@ -311,17 +311,18 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	private void eatFoodOrStarve() {
-		if (game.containsFood(game.player.tile())) {
-			eatFood();
+		V2i playerTile = game.player.tile();
+		if (game.containsFood(playerTile)) {
+			eatFood(playerTile);
 		} else {
 			game.player.starvingTicks++;
 		}
 	}
 
-	private void eatFood() {
-		game.removeFood(game.player.tile());
+	private void eatFood(V2i foodTile) {
+		game.removeFood(foodTile);
 		game.player.starvingTicks = 0;
-		if (game.world.isEnergizerTile(game.player.tile())) {
+		if (game.world.isEnergizerTile(foodTile)) {
 			game.player.restingTicksLeft = 3;
 			score(game.energizerValue);
 			game.resetGhostBounty();
@@ -335,7 +336,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 				// HUNTING is stopped while player has power
 				stateTimer().stop();
 				log("%s timer stopped", currentStateID);
-				publish(Info.PLAYER_GAINS_POWER, game.player.tile());
+				publish(Info.PLAYER_GAINS_POWER, foodTile);
 			}
 		} else {
 			game.player.restingTicksLeft = 1;
@@ -362,7 +363,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		}
 
 		updateGhostDotCounters();
-		publish(Info.PLAYER_FOUND_FOOD, game.player.tile());
+		publish(Info.PLAYER_FOUND_FOOD, foodTile);
 	}
 
 	private void movePlayer() {
