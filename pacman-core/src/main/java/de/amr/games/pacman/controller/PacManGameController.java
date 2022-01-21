@@ -49,10 +49,10 @@ import static de.amr.games.pacman.model.common.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.model.common.GhostState.LOCKED;
 import static java.util.function.Predicate.not;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.Random;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.controller.event.PacManGameEvent;
@@ -95,16 +95,16 @@ import de.amr.games.pacman.model.pacman.PacManGame;
 public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	private final GameModel[] games;
-	private GameModel game;
-	private GameVariant gameVariant;
+	public GameModel game;
+	public GameVariant gameVariant;
 
 	private PlayerControl playerControl;
-	private final Autopilot autopilot = new Autopilot(this::game);
+	private final Autopilot autopilot = new Autopilot(() -> game);
 
-	private boolean autoControlled;
-	private boolean gameRequested;
-	private boolean gameRunning;
-	private boolean attractMode;
+	public boolean autoControlled;
+	public boolean gameRequested;
+	public boolean gameRunning;
+	public boolean attractMode;
 	public int intermissionTestNumber;
 
 	public PacManGameController(GameVariant variant) {
@@ -129,7 +129,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	// Event stuff
 
-	private final List<PacManGameEventListener> subscribers = new ArrayList<>();
+	private final Collection<PacManGameEventListener> subscribers = new ConcurrentLinkedQueue<>();
 
 	private void publish(PacManGameEvent gameEvent) {
 		subscribers.forEach(subscriber -> subscriber.onGameEvent(gameEvent));
@@ -162,18 +162,10 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		return autoControlled || attractMode ? autopilot : playerControl;
 	}
 
-	public GameVariant gameVariant() {
-		return gameVariant;
-	}
-
 	public void selectGameVariant(GameVariant variant) {
 		gameVariant = variant;
 		game = games[variant.ordinal()];
 		changeState(INTRO);
-	}
-
-	public GameModel game() {
-		return game;
 	}
 
 	public void startGame() {
@@ -188,22 +180,6 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			intermissionTestNumber = 1;
 			changeState(INTERMISSION_TEST);
 		}
-	}
-
-	public boolean isAutoControlled() {
-		return autoControlled;
-	}
-
-	public void setAutoControlled(boolean autoControlled) {
-		this.autoControlled = autoControlled;
-	}
-
-	public boolean isAttractMode() {
-		return attractMode;
-	}
-
-	public boolean isGameRunning() {
-		return gameRunning;
 	}
 
 	public void cheatKillGhosts() {
