@@ -168,7 +168,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		changeState(INTRO);
 	}
 
-	public void startGame() {
+	public void requestGame() {
 		if (currentStateID == INTRO) {
 			gameRequested = true;
 			changeState(READY);
