@@ -158,7 +158,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		this.playerControl = playerControl;
 	}
 
-	public PlayerControl getPlayerControl() {
+	private PlayerControl currentPlayerControl() {
 		return autoControlled || attractMode ? autopilot : playerControl;
 	}
 
@@ -373,7 +373,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	private void movePlayer() {
-		getPlayerControl().steer(game.player);
+		currentPlayerControl().steer(game.player);
 		if (game.player.restingTicksLeft > 0) {
 			game.player.restingTicksLeft--;
 		} else {
@@ -449,7 +449,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			resumePreviousState();
 			return;
 		}
-		getPlayerControl().steer(game.player);
+		currentPlayerControl().steer(game.player);
 		game.ghosts().filter(ghost -> ghost.is(DEAD) && ghost.bounty == 0 || ghost.is(ENTERING_HOUSE))
 				.forEach(this::updateGhost);
 	}
