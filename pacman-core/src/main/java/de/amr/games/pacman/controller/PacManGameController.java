@@ -94,7 +94,7 @@ import de.amr.games.pacman.model.pacman.PacManGame;
  */
 public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
-	private final GameModel[] games;
+	private final GameModel[] games = { new MsPacManGame(), new PacManGame() };
 	public GameModel game;
 	public GameVariant gameVariant;
 
@@ -120,14 +120,12 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		configState(INTERMISSION, this::state_Intermission_enter, this::state_Intermission_update, null);
 		configState(INTERMISSION_TEST, this::state_IntermissionTest_enter, this::state_IntermissionTest_update, null);
 
-		games = new GameModel[2];
-		games[MS_PACMAN.ordinal()] = new MsPacManGame();
-		games[PACMAN.ordinal()] = new PacManGame();
-
 		selectGameVariant(variant);
 	}
 
+	//
 	// Event stuff
+	//
 
 	private final Collection<PacManGameEventListener> subscribers = new ConcurrentLinkedQueue<>();
 
@@ -193,7 +191,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		publish(Info.PLAYER_FOUND_FOOD, null);
 	}
 
-	// BEGIN STATE-MACHINE METHODS
+	// --- BEGIN STATE-MACHINE METHODS ---
 
 	private void state_Intro_enter() {
 		game.reset();
@@ -512,6 +510,10 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		}
 	}
 
+	//
+	// Intermission scenes test
+	//
+
 	private void state_IntermissionTest_enter() {
 		intermissionTestNumber = 1;
 		stateTimer().setIndefinite().start();
@@ -532,8 +534,11 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		}
 	}
 
-	// END STATE-MACHINE
+	// --- END STATE-MACHINE METHODS ---
 
+	/**
+	 * Scores the given numner of points. When 10.000 points are reached, an extra life is rewarded.
+	 */
 	private void score(int points) {
 		if (attractMode) {
 			return;
@@ -556,7 +561,8 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	/**
 	 * Updates ghost's speed and behavior depending on its current state.
 	 * 
-	 * TODO: not sure about correct speed
+	 * TODO: I am not sure about the exact speed values as the Pac-Man dossier has no info on this. Any help is
+	 * appreciated!
 	 * 
 	 * @param ghost ghost to update
 	 */
@@ -637,6 +643,10 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		}
 	}
 
+	/**
+	 * Killing ghosts wins 200, 400, 800, 1600 points in order when using the same energizer power. If all 16 ghosts on a
+	 * level are killed, additonal 12000 points are rewarded.
+	 */
 	private void killGhost(Ghost ghost) {
 		ghost.state = DEAD;
 		ghost.targetTile = game.world.ghostHouse().entryTile();
