@@ -252,80 +252,73 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	// This method contains the main logic of the game play.
 	//
 	private void state_Hunting_update() {
-
-		// Level complete?
 		if (game.foodRemaining == 0) {
 			stateTimer().setIndefinite(); // TODO check this
 			changeState(LEVEL_COMPLETE);
 			return;
 		}
-
-		// Hunting phase (scatter/chase) complete?
 		if (stateTimer().hasExpired()) {
 			startHuntingPhase(++game.huntingPhase);
 			return;
 		}
-
-		if (checkPlayerKilled()) {
+		if (killPlayer()) {
+			stateTimer().setIndefinite(); // TODO check this
+			changeState(PACMAN_DYING);
 			return;
 		}
-		if (checkGhostsKilled()) {
+		if (killGhosts()) {
+			changeState(GHOST_DYING);
 			return;
 		}
-		checkFood();
-		checkBonus();
-		checkPower();
+		eatFoodOrStarve();
+		consumeBonus();
+		consumePower();
 		movePlayer();
-		tryReleasingLockedGhosts();
+		releaseLockedGhosts();
+		moveGhosts();
+	}
+
+	private void moveGhosts() {
 		game.ghosts().forEach(this::updateGhost);
 	}
 
-	private boolean checkGhostsKilled() {
+	private boolean killGhosts() {
 		Ghost[] prey = game.ghosts(FRIGHTENED).filter(game.player::meets).toArray(Ghost[]::new);
-		if (prey.length > 0) {
-			Stream.of(prey).forEach(this::killGhost);
-			changeState(GHOST_DYING);
-			return true;
-		}
-		return false;
+		Stream.of(prey).forEach(this::killGhost);
+		return prey.length > 0;
 	}
 
-	private boolean checkPlayerKilled() {
-		if (!game.player.immune || attractMode) {
-			Optional<Ghost> killer = game.ghosts(HUNTING_PAC).filter(game.player::meets).findAny();
-			if (killer.isPresent()) {
-				game.player.dead = true;
-				log("%s got killed by %s at tile %s", game.player.name, killer.get().name, game.player.tile());
-
-				// Elroy mode of red ghost gets disabled when player is killed
-				Ghost redGhost = game.ghost(GameModel.RED_GHOST);
-				if (redGhost.elroy > 0) {
-					redGhost.elroy = -redGhost.elroy; // negative value means "disabled"
-					log("Elroy mode %d for %s has been disabled", redGhost.elroy, redGhost.name);
-				}
-
-				// reset global dot counter (used by ghost house logic)
-				game.globalDotCounter = 0;
-				game.globalDotCounterEnabled = true;
-				log("Global dot counter got reset and enabled");
-
-				stateTimer().setIndefinite();
-				changeState(PACMAN_DYING);
-				return true;
+	private boolean killPlayer() {
+		if (game.player.immune && !attractMode) {
+			return false;
+		}
+		Optional<Ghost> killer = game.ghosts(HUNTING_PAC).filter(game.player::meets).findAny();
+		killer.ifPresent(ghost -> {
+			game.player.dead = true;
+			log("%s got killed by %s at tile %s", game.player.name, ghost.name, game.player.tile());
+			// Elroy mode of red ghost gets disabled when player is killed
+			Ghost redGhost = game.ghost(GameModel.RED_GHOST);
+			if (redGhost.elroy > 0) {
+				redGhost.elroy = -redGhost.elroy; // negative value means "disabled"
+				log("Elroy mode %d for %s has been disabled", redGhost.elroy, redGhost.name);
 			}
-		}
-		return false;
+			// reset and disable global dot counter (used by ghost house logic)
+			game.globalDotCounter = 0;
+			game.globalDotCounterEnabled = true;
+			log("Global dot counter got reset and enabled");
+		});
+		return killer.isPresent();
 	}
 
-	private void checkFood() {
+	private void eatFoodOrStarve() {
 		if (game.containsFood(game.player.tile())) {
-			onPlayerFoundFood();
+			eatFood();
 		} else {
 			game.player.starvingTicks++;
 		}
 	}
 
-	private void onPlayerFoundFood() {
+	private void eatFood() {
 		game.removeFood(game.player.tile());
 		game.player.starvingTicks = 0;
 		if (game.world.isEnergizerTile(game.player.tile())) {
@@ -339,7 +332,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 				});
 				game.player.powerTimer.setSeconds(game.ghostFrightenedSeconds).start();
 				log("%s got power for %d seconds", game.player.name, game.ghostFrightenedSeconds);
-				// HUNTING state timer is stopped while player has power
+				// HUNTING is stopped while player has power
 				stateTimer().stop();
 				log("%s timer stopped", currentStateID);
 				publish(Info.PLAYER_GAINS_POWER, game.player.tile());
@@ -382,7 +375,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		}
 	}
 
-	private void checkPower() {
+	private void consumePower() {
 		if (game.player.powerTimer.isRunning()) {
 			game.player.powerTimer.tick();
 			if (game.player.powerTimer.ticksRemaining() == sec_to_ticks(1)) {
@@ -399,7 +392,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		}
 	}
 
-	private void checkBonus() {
+	private void consumeBonus() {
 		switch (game.bonus.state) {
 		case EDIBLE:
 			if (game.player.meets(game.bonus)) {
@@ -658,7 +651,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	// Ghost house rules, see Pac-Man dossier
 
-	private void tryReleasingLockedGhosts() {
+	private void releaseLockedGhosts() {
 		if (game.ghost(RED_GHOST).is(LOCKED)) {
 			game.ghost(RED_GHOST).state = HUNTING_PAC;
 		}
