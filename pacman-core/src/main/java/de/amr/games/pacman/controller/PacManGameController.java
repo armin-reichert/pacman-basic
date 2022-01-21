@@ -50,6 +50,7 @@ import static de.amr.games.pacman.model.common.GhostState.LOCKED;
 import static java.util.function.Predicate.not;
 
 import java.util.Collection;
+import java.util.EnumMap;
 import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -94,7 +95,7 @@ import de.amr.games.pacman.model.pacman.PacManGame;
  */
 public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
-	private final GameModel[] games = { new MsPacManGame(), new PacManGame() };
+	public final EnumMap<GameVariant, GameModel> games = new EnumMap<>(GameVariant.class);
 	public GameModel game;
 	public GameVariant gameVariant;
 
@@ -120,6 +121,8 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		configState(INTERMISSION, this::state_Intermission_enter, this::state_Intermission_update, null);
 		configState(INTERMISSION_TEST, this::state_IntermissionTest_enter, this::state_IntermissionTest_update, null);
 
+		games.put(GameVariant.MS_PACMAN, new MsPacManGame());
+		games.put(GameVariant.PACMAN, new PacManGame());
 		selectGameVariant(variant);
 	}
 
@@ -162,7 +165,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	public void selectGameVariant(GameVariant variant) {
 		gameVariant = variant;
-		game = games[variant.ordinal()];
+		game = games.get(variant);
 		changeState(INTRO);
 	}
 
