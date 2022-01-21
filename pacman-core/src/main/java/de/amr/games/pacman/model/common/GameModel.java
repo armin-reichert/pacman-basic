@@ -404,14 +404,6 @@ public abstract class GameModel {
 		player.hide();
 	}
 
-	public void resetGhostBounty() {
-		ghostBounty = firstGhostBounty;
-	}
-
-	public void increaseGhostBounty() {
-		ghostBounty *= 2;
-	}
-
 	public boolean isBonusReached() {
 		return eatenFoodCount() == world.pelletsToEatForBonus(0) || eatenFoodCount() == world.pelletsToEatForBonus(1);
 	}

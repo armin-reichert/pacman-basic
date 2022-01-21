@@ -183,7 +183,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	public void cheatKillGhosts() {
-		game.resetGhostBounty();
+		game.ghostBounty = game.firstGhostBounty;
 		game.ghosts().filter(ghost -> ghost.is(HUNTING_PAC) || ghost.is(FRIGHTENED)).forEach(this::killGhost);
 		changeState(GHOST_DYING);
 	}
@@ -325,7 +325,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		if (game.world.isEnergizerTile(foodTile)) {
 			game.player.restingTicksLeft = 3;
 			score(game.energizerValue);
-			game.resetGhostBounty();
+			game.ghostBounty = game.firstGhostBounty;
 			if (game.ghostFrightenedSeconds > 0) {
 				game.ghosts(HUNTING_PAC).forEach(ghost -> {
 					ghost.state = FRIGHTENED;
@@ -642,7 +642,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		ghost.targetTile = game.world.ghostHouse().entryTile();
 		ghost.bounty = game.ghostBounty;
 		score(ghost.bounty);
-		game.increaseGhostBounty();
+		game.ghostBounty *= 2;
 		game.numGhostsKilled++;
 		if (game.numGhostsKilled == 16) {
 			score(12000);
