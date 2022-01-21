@@ -537,7 +537,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	// --- END STATE-MACHINE METHODS ---
 
 	/**
-	 * Scores the given numner of points. When 10.000 points are reached, an extra life is rewarded.
+	 * Scores the given number of points. When 10.000 points are reached, an extra life is rewarded.
 	 */
 	private void score(int points) {
 		if (attractMode) {
