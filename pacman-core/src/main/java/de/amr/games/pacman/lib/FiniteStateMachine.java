@@ -129,9 +129,8 @@ public class FiniteStateMachine<STATE_ID extends Enum<STATE_ID>> {
 		return statesByID.get(id);
 	}
 
-	protected void fireStateChange(STATE_ID oldState, STATE_ID newState) {
-		// TODO check if concurrent modification exception can occur without copying array
-		new ArrayList<>(stateChangeListeners).stream().forEach(listener -> listener.accept(oldState, newState));
+	private void fireStateChange(STATE_ID oldState, STATE_ID newState) {
+		stateChangeListeners.stream().forEach(listener -> listener.accept(oldState, newState));
 	}
 
 	public void updateState() {

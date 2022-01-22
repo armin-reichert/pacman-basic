@@ -109,13 +109,18 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		configState(INTRO, this::state_Intro_enter, this::state_Intro_update, null);
 		configState(READY, this::state_Ready_enter, this::state_Ready_update, null);
 		configState(HUNTING, this::state_Hunting_enter, this::state_Hunting_update, null);
-		configState(GHOST_DYING, this::state_GhostDying_enter, this::state_GhostDying_update, this::state_GhostDying_exit);
+		configState(GHOST_DYING, this::state_GhostDying_enter, this::state_GhostDying_update,
+				this::state_GhostDying_exit);
 		configState(PACMAN_DYING, this::state_PacManDying_enter, this::state_PacManDying_update, null);
 		configState(LEVEL_STARTING, this::state_LevelStarting_enter, this::state_LevelStarting_update, null);
 		configState(LEVEL_COMPLETE, this::state_LevelComplete_enter, this::state_LevelComplete_update, null);
 		configState(GAME_OVER, this::state_GameOver_enter, this::state_GameOver_update, null);
 		configState(INTERMISSION, this::state_Intermission_enter, this::state_Intermission_update, null);
 		configState(INTERMISSION_TEST, this::state_IntermissionTest_enter, this::state_IntermissionTest_update, null);
+
+		// map state change events to game events
+		addStateChangeListener(
+				(oldState, newState) -> publish(new PacManGameStateChangeEvent(game, oldState, newState)));
 
 		games.put(GameVariant.MS_PACMAN, new MsPacManGame());
 		games.put(GameVariant.PACMAN, new PacManGame());
@@ -134,11 +139,6 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 	private void publish(Info info, V2i tile) {
 		publish(new PacManGameEvent(game, info, null, tile));
-	}
-
-	@Override
-	protected void fireStateChange(PacManGameState oldState, PacManGameState newState) {
-		publish(new PacManGameStateChangeEvent(game, oldState, newState));
 	}
 
 	public void addGameEventListener(PacManGameEventListener subscriber) {
@@ -213,12 +213,12 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			if (gameRequested) {
 				gameRunning = true;
 			}
-			//TODO reset hunting timer to INDEFINITE?
+			// TODO reset hunting timer to INDEFINITE?
 			changeState(PacManGameState.HUNTING);
 			return;
 		}
 	}
-	
+
 	private void resetAndStartHuntingTimer(int phase) {
 		long ticks = game.huntingPhaseDurations[phase];
 		log("Set %s timer to %d ticks", currentStateID, ticks);
@@ -229,7 +229,8 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		game.huntingPhase = phase;
 		resetAndStartHuntingTimer(phase);
 		if (phase > 0) {
-			game.ghosts().filter(ghost -> ghost.is(HUNTING_PAC) || ghost.is(FRIGHTENED)).forEach(Ghost::forceTurningBack);
+			game.ghosts().filter(ghost -> ghost.is(HUNTING_PAC) || ghost.is(FRIGHTENED))
+					.forEach(Ghost::forceTurningBack);
 		}
 		String phaseName = game.inScatteringPhase() ? "Scattering" : "Chasing";
 		log("Hunting phase #%d (%s) started, %d of %d ticks remaining", phase, phaseName, stateTimer().ticksRemaining(),
@@ -250,7 +251,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	//
 	private void state_Hunting_update() {
 		if (game.foodRemaining == 0) {
-			resetAndStartHuntingTimer(0); //TODO is this correct?
+			resetAndStartHuntingTimer(0); // TODO is this correct?
 			changeState(LEVEL_COMPLETE);
 			return;
 		}
@@ -259,7 +260,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			return;
 		}
 		if (killPlayer()) {
-			resetAndStartHuntingTimer(0); //TODO is this correct?
+			resetAndStartHuntingTimer(0); // TODO is this correct?
 			changeState(PACMAN_DYING);
 			return;
 		}
@@ -534,8 +535,8 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 				++intermissionTestNumber;
 				stateTimer().setIndefinite().start();
 				log("Test intermission scene #%d", intermissionTestNumber);
-				// This is needed such that UI can update current scene
-				fireStateChange(INTERMISSION_TEST, INTERMISSION_TEST);
+				// This is a hack to trigger the UI to update its current scene
+				publish(new PacManGameStateChangeEvent(game, currentStateID, currentStateID));
 			} else {
 				changeState(INTRO);
 			}
@@ -625,10 +626,11 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 			/*
 			 * In Ms. Pac-Man, Blinky and Pinky move randomly during the *first* scatter phase. Some say, the original
-			 * intention had been to randomize the scatter target of *all* ghosts in Ms. Pac-Man but because of a bug, only
-			 * the scatter target of Blinky and Pinky would have been affected. Who knows?
+			 * intention had been to randomize the scatter target of *all* ghosts in Ms. Pac-Man but because of a bug,
+			 * only the scatter target of Blinky and Pinky would have been affected. Who knows?
 			 */
-			if (gameVariant == MS_PACMAN && game.huntingPhase == 0 && (ghost.id == RED_GHOST || ghost.id == PINK_GHOST)) {
+			if (gameVariant == MS_PACMAN && game.huntingPhase == 0
+					&& (ghost.id == RED_GHOST || ghost.id == PINK_GHOST)) {
 				ghost.roam();
 			} else if (game.inScatteringPhase() && ghost.elroy == 0) {
 				ghost.scatter();
@@ -652,8 +654,8 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	}
 
 	/**
-	 * Killing ghosts wins 200, 400, 800, 1600 points in order when using the same energizer power. If all 16 ghosts on a
-	 * level are killed, additonal 12000 points are rewarded.
+	 * Killing ghosts wins 200, 400, 800, 1600 points in order when using the same energizer power. If all 16 ghosts on
+	 * a level are killed, additonal 12000 points are rewarded.
 	 */
 	private void killGhost(Ghost ghost) {
 		ghost.state = DEAD;
@@ -680,7 +682,8 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			} else if (!game.globalDotCounterEnabled && ghost.dotCounter >= ghost.privateDotLimit) {
 				releaseGhost(ghost, "Private dot counter reached limit (%d)", ghost.privateDotLimit);
 			} else if (game.player.starvingTicks >= game.player.starvingTimeLimit) {
-				releaseGhost(ghost, "%s reached starving limit (%d ticks)", game.player.name, game.player.starvingTicks);
+				releaseGhost(ghost, "%s reached starving limit (%d ticks)", game.player.name,
+						game.player.starvingTicks);
 				game.player.starvingTicks = 0;
 			}
 		});
