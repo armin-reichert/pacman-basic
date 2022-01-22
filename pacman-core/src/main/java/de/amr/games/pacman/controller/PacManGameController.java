@@ -353,9 +353,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		// Is bonus awarded?
 		if (game.isBonusReached()) {
 			long ticks = game.bonusActivationTicks();
-			game.bonus.symbol = game.bonusSymbol;
-			game.bonus.points = game.bonusValue(game.bonus.symbol);
-			game.bonus.activate(ticks);
+			game.bonus.activate(ticks, game.bonusSymbol, game.bonusValue(game.bonus.symbol));
 			log("Bonus id=%d, value=%d activated for %d ticks", game.bonus.symbol, game.bonus.points, ticks);
 			publish(Info.BONUS_ACTIVATED, game.bonus.tile());
 		}

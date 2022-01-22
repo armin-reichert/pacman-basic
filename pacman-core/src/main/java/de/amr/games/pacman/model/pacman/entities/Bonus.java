@@ -49,9 +49,11 @@ public class Bonus extends Creature {
 		hide();
 	}
 
-	public void activate(long ticks) {
+	public void activate(long ticks, int symbol, int points) {
 		state = BonusState.EDIBLE;
 		timer = ticks;
+		this.symbol = symbol;
+		this.points = points;
 		show();
 	}
 

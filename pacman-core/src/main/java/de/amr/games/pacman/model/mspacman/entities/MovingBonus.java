@@ -53,9 +53,11 @@ public class MovingBonus extends Bonus {
 	}
 
 	@Override
-	public void activate(long ticks) {
+	public void activate(long ticks, int symbol, int points) {
 		state = BonusState.EDIBLE;
 		timer = ticks;
+		this.symbol = symbol;
+		this.points = points;
 		// place at random portal tile
 		int numPortals = world.portals().size();
 		Random random = new Random();
