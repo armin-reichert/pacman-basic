@@ -275,11 +275,11 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		consumeBonus();
 		consumePower();
 		movePlayer();
-		releaseLockedGhosts();
 		moveGhosts();
 	}
 
 	private void moveGhosts() {
+		releaseLockedGhosts();
 		game.ghosts().forEach(this::updateGhost);
 	}
 
