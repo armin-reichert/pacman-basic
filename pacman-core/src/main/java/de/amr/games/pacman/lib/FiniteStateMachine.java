@@ -99,20 +99,23 @@ public class FiniteStateMachine<STATE_ID extends Enum<STATE_ID>> {
 	public STATE_ID changeState(STATE_ID newStateID) {
 		// before state machine is initialized, state object is null
 		if (currentStateID != null) {
-			if (logging) {
-				log("%s: Exit state %s", name(), currentStateID);
-			}
 			if (state(currentStateID).onExit != null) {
 				state(currentStateID).onExit.run();
+			}
+			if (logging) {
+				log("%s: After exit state %s, timer: %s", name(), currentStateID, state(currentStateID).timer);
 			}
 		}
 		previousStateID = currentStateID;
 		currentStateID = newStateID;
 		if (logging) {
-			log("%s: Enter state %s", name(), currentStateID);
+			log("%s: Before entering state %s, timer: %s", name(), currentStateID, state(currentStateID).timer);
 		}
 		if (state(currentStateID).onEnter != null) {
 			state(currentStateID).onEnter.run();
+		}
+		if (logging) {
+			log("%s: After entering state %s, timer: %s", name(), currentStateID, state(currentStateID).timer);
 		}
 		fireStateChange(previousStateID, currentStateID);
 		return currentStateID;
@@ -127,7 +130,7 @@ public class FiniteStateMachine<STATE_ID extends Enum<STATE_ID>> {
 	}
 
 	protected void fireStateChange(STATE_ID oldState, STATE_ID newState) {
-		// copy list to avoid concurrent modification exceptions
+		// TODO check if concurrent modification exception can occur without copying array
 		new ArrayList<>(stateChangeListeners).stream().forEach(listener -> listener.accept(oldState, newState));
 	}
 
@@ -138,7 +141,7 @@ public class FiniteStateMachine<STATE_ID extends Enum<STATE_ID>> {
 			}
 			state(currentStateID).timer.tick();
 		} catch (Exception x) {
-			Logging.log("%s: Error updating state %s", name(), currentStateID);
+			Logging.log("%s: Error updating state %s, timer: %s", name(), currentStateID, state(currentStateID).timer);
 			x.printStackTrace();
 		}
 	}
@@ -148,7 +151,7 @@ public class FiniteStateMachine<STATE_ID extends Enum<STATE_ID>> {
 			throw new IllegalStateException("State machine cannot resume previous state because there is none");
 		}
 		if (logging) {
-			log("%s: Resume state %s", name(), previousStateID);
+			log("%s: Resume state %s, timer: %s", name(), previousStateID, state(previousStateID).timer);
 		}
 		changeState(previousStateID);
 	}

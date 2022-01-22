@@ -213,18 +213,25 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			if (gameRequested) {
 				gameRunning = true;
 			}
+			//TODO reset hunting timer to INDEFINITE?
 			changeState(PacManGameState.HUNTING);
 			return;
 		}
 	}
+	
+	private void resetAndStartHuntingTimer(int phase) {
+		long ticks = game.huntingPhaseDurations[phase];
+		log("Set %s timer to %d ticks", currentStateID, ticks);
+		stateTimer().set(ticks).start();
+	}
 
 	private void startHuntingPhase(int phase) {
 		game.huntingPhase = phase;
-		stateTimer().set(game.huntingPhaseDurations[phase]).start();
-		String phaseName = game.inScatteringPhase() ? "Scattering" : "Chasing";
+		resetAndStartHuntingTimer(phase);
 		if (phase > 0) {
 			game.ghosts().filter(ghost -> ghost.is(HUNTING_PAC) || ghost.is(FRIGHTENED)).forEach(Ghost::forceTurningBack);
 		}
+		String phaseName = game.inScatteringPhase() ? "Scattering" : "Chasing";
 		log("Hunting phase #%d (%s) started, %d of %d ticks remaining", phase, phaseName, stateTimer().ticksRemaining(),
 				stateTimer().duration());
 		if (game.inScatteringPhase()) {
@@ -243,7 +250,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	//
 	private void state_Hunting_update() {
 		if (game.foodRemaining == 0) {
-			stateTimer().setIndefinite(); // TODO check this
+			resetAndStartHuntingTimer(0); //TODO is this correct?
 			changeState(LEVEL_COMPLETE);
 			return;
 		}
@@ -252,7 +259,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 			return;
 		}
 		if (killPlayer()) {
-			stateTimer().setIndefinite(); // TODO check this
+			resetAndStartHuntingTimer(0); //TODO is this correct?
 			changeState(PACMAN_DYING);
 			return;
 		}
@@ -322,10 +329,10 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 					ghost.forceTurningBack();
 				});
 				game.player.powerTimer.setSeconds(game.ghostFrightenedSeconds).start();
-				log("%s got power for %d seconds", game.player.name, game.ghostFrightenedSeconds);
+				log("%s got power, timer=%s", game.player.name, game.player.powerTimer);
 				// HUNTING is stopped while player has power
 				stateTimer().stop();
-				log("%s timer stopped", currentStateID);
+				log("%s timer stopped: %s", currentStateID, stateTimer());
 				publish(Info.PLAYER_GAINS_POWER, foodTile);
 			}
 		} else {
@@ -372,11 +379,12 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 				publish(Info.PLAYER_LOSING_POWER, game.player.tile());
 			}
 		} else if (game.player.powerTimer.hasExpired()) {
-			log("%s lost power", game.player.name);
+			log("%s lost power, timer=%s", game.player.name, game.player.powerTimer);
 			game.ghosts(FRIGHTENED).forEach(ghost -> ghost.state = HUNTING_PAC);
 			game.player.powerTimer.setIndefinite();
-			// start HUNTING state timer again
+			// restart HUNTING state timer
 			stateTimer().start();
+			log("HUNTING timer restarted: %s", stateTimer());
 			publish(Info.PLAYER_LOST_POWER, game.player.tile());
 		}
 	}
@@ -411,6 +419,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		game.player.setSpeed(0);
 		game.ghosts(FRIGHTENED).forEach(ghost -> ghost.state = HUNTING_PAC);
 		game.bonus.init();
+		stateTimer().setIndefinite().start();
 	}
 
 	private void state_PacManDying_update() {
