@@ -408,6 +408,8 @@ public abstract class GameModel {
 		return eatenFoodCount() == world.pelletsToEatForBonus(0) || eatenFoodCount() == world.pelletsToEatForBonus(1);
 	}
 
+	public abstract long bonusActivationTicks();
+
 	public void saveHiscore() {
 		Hiscore hiscore = new Hiscore(hiscorePath).load();
 		if (hiscorePoints > hiscore.points) {

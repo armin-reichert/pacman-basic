@@ -28,6 +28,7 @@ import static de.amr.games.pacman.lib.TickTimer.sec_to_ticks;
 import static de.amr.games.pacman.model.world.PacManGameWorld.HTS;
 
 import java.io.File;
+import java.util.Random;
 
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Pac;
@@ -125,5 +126,10 @@ public class PacManGame extends GameModel {
 		default:
 			throw new IllegalArgumentException("Unknown symbol ID: " + symbolID);
 		}
+	}
+
+	@Override
+	public long bonusActivationTicks() {
+		return sec_to_ticks(9.0 + new Random().nextDouble());
 	}
 }

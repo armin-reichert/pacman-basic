@@ -40,7 +40,6 @@ import static de.amr.games.pacman.model.common.GameModel.ORANGE_GHOST;
 import static de.amr.games.pacman.model.common.GameModel.PINK_GHOST;
 import static de.amr.games.pacman.model.common.GameModel.RED_GHOST;
 import static de.amr.games.pacman.model.common.GameVariant.MS_PACMAN;
-import static de.amr.games.pacman.model.common.GameVariant.PACMAN;
 import static de.amr.games.pacman.model.common.GhostState.DEAD;
 import static de.amr.games.pacman.model.common.GhostState.ENTERING_HOUSE;
 import static de.amr.games.pacman.model.common.GhostState.FRIGHTENED;
@@ -52,7 +51,6 @@ import static java.util.function.Predicate.not;
 import java.util.Collection;
 import java.util.EnumMap;
 import java.util.Optional;
-import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.stream.Stream;
 
@@ -62,7 +60,6 @@ import de.amr.games.pacman.controller.event.PacManGameEventListener;
 import de.amr.games.pacman.controller.event.PacManGameStateChangeEvent;
 import de.amr.games.pacman.controller.event.ScatterPhaseStartedEvent;
 import de.amr.games.pacman.lib.FiniteStateMachine;
-import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
@@ -355,7 +352,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 
 		// Is bonus awarded?
 		if (game.isBonusReached()) {
-			long ticks = gameVariant == PACMAN ? sec_to_ticks(9 + new Random().nextFloat()) : TickTimer.INDEFINITE;
+			long ticks = game.bonusActivationTicks();
 			game.bonus.symbol = game.bonusSymbol;
 			game.bonus.points = game.bonusValue(game.bonus.symbol);
 			game.bonus.activate(ticks);

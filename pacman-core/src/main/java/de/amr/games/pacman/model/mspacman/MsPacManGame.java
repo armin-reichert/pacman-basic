@@ -29,6 +29,7 @@ import static de.amr.games.pacman.lib.TickTimer.sec_to_ticks;
 import java.io.File;
 import java.util.Random;
 
+import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.mspacman.entities.MovingBonus;
@@ -154,5 +155,10 @@ public class MsPacManGame extends GameModel {
 		default:
 			throw new IllegalArgumentException("Unknown symbol ID: " + symbolID);
 		}
+	}
+
+	@Override
+	public long bonusActivationTicks() {
+		return TickTimer.INDEFINITE;
 	}
 }
