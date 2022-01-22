@@ -103,7 +103,6 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	public boolean gameRequested;
 	public boolean gameRunning;
 	public boolean attractMode;
-	public int intermissionTestNumber;
 
 	public PacManGameController(GameVariant variant) {
 		super(PacManGameState.values());
@@ -170,13 +169,6 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 		if (currentStateID == INTRO) {
 			gameRequested = true;
 			changeState(READY);
-		}
-	}
-
-	public void startIntermissionTest() {
-		if (currentStateID == INTRO) {
-			intermissionTestNumber = 1;
-			changeState(INTERMISSION_TEST);
 		}
 	}
 
@@ -511,6 +503,15 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	//
 	// Intermission scenes test
 	//
+
+	public int intermissionTestNumber;
+
+	public void startIntermissionTest() {
+		if (currentStateID == INTRO) {
+			intermissionTestNumber = 1;
+			changeState(INTERMISSION_TEST);
+		}
+	}
 
 	private void state_IntermissionTest_enter() {
 		intermissionTestNumber = 1;
