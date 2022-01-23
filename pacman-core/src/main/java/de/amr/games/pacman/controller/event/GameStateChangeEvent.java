@@ -31,12 +31,12 @@ import de.amr.games.pacman.model.common.GameModel;
  * 
  * @author Armin Reichert
  */
-public class PacManGameStateChangeEvent extends PacManGameEvent {
+public class GameStateChangeEvent extends GameEvent {
 
 	public final GameState oldGameState;
 	public final GameState newGameState;
 
-	public PacManGameStateChangeEvent(GameModel game, GameState oldGameState, GameState newGameState) {
+	public GameStateChangeEvent(GameModel game, GameState oldGameState, GameState newGameState) {
 		super(game, Info.OTHER, null, null);
 		this.oldGameState = oldGameState;
 		this.newGameState = newGameState;

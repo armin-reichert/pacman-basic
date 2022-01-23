@@ -54,10 +54,10 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.controller.event.PacManGameEvent;
-import de.amr.games.pacman.controller.event.PacManGameEvent.Info;
-import de.amr.games.pacman.controller.event.PacManGameEventListener;
-import de.amr.games.pacman.controller.event.PacManGameStateChangeEvent;
+import de.amr.games.pacman.controller.event.GameEvent;
+import de.amr.games.pacman.controller.event.GameEvent.Info;
+import de.amr.games.pacman.controller.event.GameEventListener;
+import de.amr.games.pacman.controller.event.GameStateChangeEvent;
 import de.amr.games.pacman.controller.event.ScatterPhaseStartedEvent;
 import de.amr.games.pacman.lib.FiniteStateMachine;
 import de.amr.games.pacman.lib.V2i;
@@ -118,7 +118,7 @@ public class GameController extends FiniteStateMachine<GameState> {
 		configState(INTERMISSION_TEST, this::state_IntermissionTest_enter, this::state_IntermissionTest_update, null);
 
 		// map state change events to game events
-		addStateChangeListener((oldState, newState) -> publish(new PacManGameStateChangeEvent(game, oldState, newState)));
+		addStateChangeListener((oldState, newState) -> publish(new GameStateChangeEvent(game, oldState, newState)));
 
 		games.put(GameVariant.MS_PACMAN, new MsPacManGame());
 		games.put(GameVariant.PACMAN, new PacManGame());
@@ -129,21 +129,21 @@ public class GameController extends FiniteStateMachine<GameState> {
 	// Event stuff
 	//
 
-	private final Collection<PacManGameEventListener> subscribers = new ConcurrentLinkedQueue<>();
+	private final Collection<GameEventListener> subscribers = new ConcurrentLinkedQueue<>();
 
-	private void publish(PacManGameEvent gameEvent) {
+	private void publish(GameEvent gameEvent) {
 		subscribers.forEach(subscriber -> subscriber.onGameEvent(gameEvent));
 	}
 
 	private void publish(Info info, V2i tile) {
-		publish(new PacManGameEvent(game, info, null, tile));
+		publish(new GameEvent(game, info, null, tile));
 	}
 
-	public void addGameEventListener(PacManGameEventListener subscriber) {
+	public void addGameEventListener(GameEventListener subscriber) {
 		subscribers.add(subscriber);
 	}
 
-	public void removeGameEventListener(PacManGameEventListener subscriber) {
+	public void removeGameEventListener(GameEventListener subscriber) {
 		subscribers.remove(subscriber);
 	}
 
@@ -448,7 +448,7 @@ public class GameController extends FiniteStateMachine<GameState> {
 		// fire event(s) for dead ghosts not yet returning home (bounty != 0)
 		game.ghosts(DEAD).filter(ghost -> ghost.bounty != 0).forEach(ghost -> {
 			ghost.bounty = 0;
-			publish(new PacManGameEvent(game, Info.GHOST_RETURNS_HOME, ghost, null));
+			publish(new GameEvent(game, Info.GHOST_RETURNS_HOME, ghost, null));
 		});
 	}
 
@@ -534,7 +534,7 @@ public class GameController extends FiniteStateMachine<GameState> {
 				stateTimer().setIndefinite().start();
 				log("Test intermission scene #%d", intermissionTestNumber);
 				// This is a hack to trigger the UI to update its current scene
-				publish(new PacManGameStateChangeEvent(game, currentStateID, currentStateID));
+				publish(new GameStateChangeEvent(game, currentStateID, currentStateID));
 			} else {
 				changeState(INTRO);
 			}
@@ -589,7 +589,7 @@ public class GameController extends FiniteStateMachine<GameState> {
 			ghost.setSpeed(game.ghostSpeed * 2);
 			boolean reachedRevivalTile = ghost.enterHouse();
 			if (reachedRevivalTile) {
-				publish(new PacManGameEvent(game, Info.GHOST_LEAVING_HOUSE, ghost, ghost.tile()));
+				publish(new GameEvent(game, Info.GHOST_LEAVING_HOUSE, ghost, ghost.tile()));
 			}
 			break;
 
@@ -597,7 +597,7 @@ public class GameController extends FiniteStateMachine<GameState> {
 			ghost.setSpeed(game.ghostSpeed / 2);
 			boolean leftHouse = ghost.leaveHouse();
 			if (leftHouse) {
-				publish(new PacManGameEvent(game, Info.GHOST_LEFT_HOUSE, ghost, ghost.tile()));
+				publish(new GameEvent(game, Info.GHOST_LEFT_HOUSE, ghost, ghost.tile()));
 			}
 			break;
 
@@ -641,7 +641,7 @@ public class GameController extends FiniteStateMachine<GameState> {
 			ghost.setSpeed(game.ghostSpeed * 2);
 			boolean reachedHouse = ghost.returnHome();
 			if (reachedHouse) {
-				publish(new PacManGameEvent(game, Info.GHOST_ENTERS_HOUSE, ghost, ghost.tile()));
+				publish(new GameEvent(game, Info.GHOST_ENTERS_HOUSE, ghost, ghost.tile()));
 			}
 			break;
 
@@ -692,7 +692,7 @@ public class GameController extends FiniteStateMachine<GameState> {
 		}
 		ghost.state = LEAVING_HOUSE;
 		log("Ghost %s released: %s", ghost.name, String.format(reason, args));
-		publish(new PacManGameEvent(game, Info.GHOST_LEAVING_HOUSE, ghost, ghost.tile()));
+		publish(new GameEvent(game, Info.GHOST_LEAVING_HOUSE, ghost, ghost.tile()));
 	}
 
 	private Optional<Ghost> preferredLockedGhostInHouse() {

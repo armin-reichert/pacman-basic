@@ -28,7 +28,7 @@ package de.amr.games.pacman.controller.event;
  * 
  * @author Armin Reichert
  */
-public interface PacManGameEventListener {
+public interface GameEventListener {
 
-	void onGameEvent(PacManGameEvent event);
+	void onGameEvent(GameEvent event);
 }

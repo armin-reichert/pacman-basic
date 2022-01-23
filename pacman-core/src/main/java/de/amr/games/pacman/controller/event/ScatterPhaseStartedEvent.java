@@ -25,7 +25,7 @@ package de.amr.games.pacman.controller.event;
 
 import de.amr.games.pacman.model.common.GameModel;
 
-public class ScatterPhaseStartedEvent extends PacManGameEvent {
+public class ScatterPhaseStartedEvent extends GameEvent {
 
 	public final int scatterPhase;
 

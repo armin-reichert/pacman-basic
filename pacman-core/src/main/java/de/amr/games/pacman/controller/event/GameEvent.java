@@ -36,7 +36,7 @@ import de.amr.games.pacman.model.common.Ghost;
  * 
  * @author Armin Reichert
  */
-public class PacManGameEvent {
+public class GameEvent {
 
 	public enum Info {
 		BONUS_ACTIVATED, BONUS_EATEN, BONUS_EXPIRED, EXTRA_LIFE, PLAYER_FOUND_FOOD, PLAYER_GAINS_POWER,
@@ -49,7 +49,7 @@ public class PacManGameEvent {
 	public final Optional<V2i> tile; // the optional tile where this event occurred
 	public final Optional<Ghost> ghost; // the optional ghost this event relates to
 
-	public PacManGameEvent(GameModel game, Info info, Ghost ghost, V2i tile) {
+	public GameEvent(GameModel game, Info info, Ghost ghost, V2i tile) {
 		this.game = Objects.requireNonNull(game);
 		this.info = Objects.requireNonNull(info);
 		this.tile = Optional.ofNullable(tile);

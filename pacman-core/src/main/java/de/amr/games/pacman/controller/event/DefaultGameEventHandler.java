@@ -29,10 +29,10 @@ package de.amr.games.pacman.controller.event;
  * 
  * @author Armin Reichert
  */
-public interface DefaultPacManGameEventHandler extends PacManGameEventListener {
+public interface DefaultGameEventHandler extends GameEventListener {
 
 	@Override
-	default void onGameEvent(PacManGameEvent event) {
+	default void onGameEvent(GameEvent event) {
 		switch (event.info) {
 		case BONUS_ACTIVATED:
 			onBonusActivated(event);
@@ -75,50 +75,50 @@ public interface DefaultPacManGameEventHandler extends PacManGameEventListener {
 				onScatterPhaseStarted((ScatterPhaseStartedEvent) event);
 				return;
 			}
-			if (event instanceof PacManGameStateChangeEvent) {
-				onPacManGameStateChange((PacManGameStateChangeEvent) event);
+			if (event instanceof GameStateChangeEvent) {
+				onPacManGameStateChange((GameStateChangeEvent) event);
 				return;
 			}
 		}
 	}
 
-	default void onBonusActivated(PacManGameEvent e) {
+	default void onBonusActivated(GameEvent e) {
 	}
 
-	default void onBonusEaten(PacManGameEvent e) {
+	default void onBonusEaten(GameEvent e) {
 	}
 
-	default void onBonusExpired(PacManGameEvent e) {
+	default void onBonusExpired(GameEvent e) {
 	}
 
-	default void onExtraLife(PacManGameEvent e) {
+	default void onExtraLife(GameEvent e) {
 	}
 
-	default void onGhostEntersHouse(PacManGameEvent e) {
+	default void onGhostEntersHouse(GameEvent e) {
 	}
 
-	default void onGhostReturnsHome(PacManGameEvent e) {
+	default void onGhostReturnsHome(GameEvent e) {
 	}
 
-	default void onGhostLeavingHouse(PacManGameEvent e) {
+	default void onGhostLeavingHouse(GameEvent e) {
 	}
 
-	default void onGhostLeftHouse(PacManGameEvent e) {
+	default void onGhostLeftHouse(GameEvent e) {
 	}
 
-	default void onPlayerFoundFood(PacManGameEvent e) {
+	default void onPlayerFoundFood(GameEvent e) {
 	}
 
-	default void onPlayerLosingPower(PacManGameEvent e) {
+	default void onPlayerLosingPower(GameEvent e) {
 	}
 
-	default void onPlayerLostPower(PacManGameEvent e) {
+	default void onPlayerLostPower(GameEvent e) {
 	}
 
-	default void onPlayerGainsPower(PacManGameEvent e) {
+	default void onPlayerGainsPower(GameEvent e) {
 	}
 
-	default void onPacManGameStateChange(PacManGameStateChangeEvent e) {
+	default void onPacManGameStateChange(GameStateChangeEvent e) {
 	}
 
 	default void onScatterPhaseStarted(ScatterPhaseStartedEvent e) {
