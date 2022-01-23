@@ -28,7 +28,7 @@ package de.amr.games.pacman.controller;
  * 
  * @author Armin Reichert
  */
-public enum PacManGameState {
+public enum GameState {
 
 	INTRO, READY, HUNTING, LEVEL_COMPLETE, LEVEL_STARTING, PACMAN_DYING, GHOST_DYING, GAME_OVER, INTERMISSION,
 	INTERMISSION_TEST;

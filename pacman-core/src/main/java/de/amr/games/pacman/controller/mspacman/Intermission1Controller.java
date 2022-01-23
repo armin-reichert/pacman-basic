@@ -25,7 +25,7 @@ package de.amr.games.pacman.controller.mspacman;
 
 import static de.amr.games.pacman.model.world.PacManGameWorld.t;
 
-import de.amr.games.pacman.controller.PacManGameController;
+import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.controller.mspacman.Intermission1Controller.IntermissonState;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.FiniteStateMachine;
@@ -52,7 +52,7 @@ public class Intermission1Controller extends FiniteStateMachine<IntermissonState
 
 	public final int upperY = t(12), lowerY = t(24), middleY = t(18);
 
-	public PacManGameController gameController;
+	public GameController gameController;
 	public Runnable playIntermissionSound = NOP;
 	public Runnable playFlapAnimation = NOP;
 
@@ -71,7 +71,7 @@ public class Intermission1Controller extends FiniteStateMachine<IntermissonState
 				this::state_READY_TO_PLAY_update, null);
 	}
 
-	public void init(PacManGameController gameController) {
+	public void init(GameController gameController) {
 		this.gameController = gameController;
 
 		flap = new Flap(1, "THEY MEET");

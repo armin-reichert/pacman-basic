@@ -28,7 +28,7 @@ import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.model.world.PacManGameWorld.HTS;
 import static de.amr.games.pacman.model.world.PacManGameWorld.t;
 
-import de.amr.games.pacman.controller.PacManGameController;
+import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.controller.mspacman.IntroController.IntroState;
 import de.amr.games.pacman.lib.FiniteStateMachine;
 import de.amr.games.pacman.lib.TimedSequence;
@@ -54,7 +54,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 	public final int xLeftOfBoard = t(5);
 	public final TimedSequence<Boolean> blinking = TimedSequence.pulse().frameDuration(30);
 
-	public PacManGameController gameController;
+	public GameController gameController;
 	public Pac msPacMan;
 	public Ghost[] ghosts;
 	public int currentGhostIndex;
@@ -67,7 +67,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 		configState(IntroState.WAITING_FOR_GAME, this::restartStateTimer, this::state_WAITING_FOR_GAME_update, null);
 	}
 
-	public void init(PacManGameController gameController) {
+	public void init(GameController gameController) {
 		this.gameController = gameController;
 		changeState(IntroState.BEGIN);
 	}

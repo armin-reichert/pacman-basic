@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.controller.PacManGameController;
+import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.controller.pacman.IntroController.IntroState;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.FiniteStateMachine;
@@ -74,7 +74,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 	public final TimedSequence<Boolean> slowBlinking = TimedSequence.pulse().frameDuration(30);
 	public final int topY = t(6);
 
-	public PacManGameController gameController;
+	public GameController gameController;
 	public GhostPortrait[] portraits;
 	public Pac pacMan;
 	public Ghost[] ghosts;
@@ -91,7 +91,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 		configState(IntroState.READY_TO_PLAY, this::restartStateTimer, this::state_READY_TO_PLAY_update, null);
 	}
 
-	public void init(PacManGameController gameController) {
+	public void init(GameController gameController) {
 		this.gameController = gameController;
 		portraits = new GhostPortrait[] { //
 				new GhostPortrait(GameModel.RED_GHOST, "Blinky", "SHADOW", 7), //

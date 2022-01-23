@@ -25,7 +25,7 @@ package de.amr.games.pacman.controller.pacman;
 
 import static de.amr.games.pacman.model.world.PacManGameWorld.t;
 
-import de.amr.games.pacman.controller.PacManGameController;
+import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.controller.pacman.Intermission2Controller.IntermissionState;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.FiniteStateMachine;
@@ -48,7 +48,7 @@ public class Intermission2Controller extends FiniteStateMachine<IntermissionStat
 
 	public final int groundY = t(20);
 
-	public PacManGameController gameController;
+	public GameController gameController;
 	public Runnable playIntermissionSound = NOP;
 
 	public Ghost blinky;
@@ -62,7 +62,7 @@ public class Intermission2Controller extends FiniteStateMachine<IntermissionStat
 		configState(IntermissionState.STUCK, this::startStateTimer, this::state_STUCK_update, null);
 	}
 
-	public void init(PacManGameController gameController) {
+	public void init(GameController gameController) {
 		this.gameController = gameController;
 
 		pac = new Pac("Pac-Man");

@@ -23,16 +23,16 @@ SOFTWARE.
 */
 package de.amr.games.pacman.controller;
 
-import static de.amr.games.pacman.controller.PacManGameState.GAME_OVER;
-import static de.amr.games.pacman.controller.PacManGameState.GHOST_DYING;
-import static de.amr.games.pacman.controller.PacManGameState.HUNTING;
-import static de.amr.games.pacman.controller.PacManGameState.INTERMISSION;
-import static de.amr.games.pacman.controller.PacManGameState.INTERMISSION_TEST;
-import static de.amr.games.pacman.controller.PacManGameState.INTRO;
-import static de.amr.games.pacman.controller.PacManGameState.LEVEL_COMPLETE;
-import static de.amr.games.pacman.controller.PacManGameState.LEVEL_STARTING;
-import static de.amr.games.pacman.controller.PacManGameState.PACMAN_DYING;
-import static de.amr.games.pacman.controller.PacManGameState.READY;
+import static de.amr.games.pacman.controller.GameState.GAME_OVER;
+import static de.amr.games.pacman.controller.GameState.GHOST_DYING;
+import static de.amr.games.pacman.controller.GameState.HUNTING;
+import static de.amr.games.pacman.controller.GameState.INTERMISSION;
+import static de.amr.games.pacman.controller.GameState.INTERMISSION_TEST;
+import static de.amr.games.pacman.controller.GameState.INTRO;
+import static de.amr.games.pacman.controller.GameState.LEVEL_COMPLETE;
+import static de.amr.games.pacman.controller.GameState.LEVEL_STARTING;
+import static de.amr.games.pacman.controller.GameState.PACMAN_DYING;
+import static de.amr.games.pacman.controller.GameState.READY;
 import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.lib.TickTimer.sec_to_ticks;
 import static de.amr.games.pacman.model.common.GameModel.CYAN_GHOST;
@@ -70,7 +70,7 @@ import de.amr.games.pacman.model.pacman.PacManGame;
 /**
  * Controller (in the sense of MVC) for both (Pac-Man, Ms. Pac-Man) game variants.
  * <p>
- * This is a finite-state machine with states defined in {@link PacManGameState}. The game data are stored in the model
+ * This is a finite-state machine with states defined in {@link GameState}. The game data are stored in the model
  * of the selected game, see {@link MsPacManGame} and {@link PacManGame}. Scene selection is not controlled by this
  * class but left to the specific user interface implementations.
  * <p>
@@ -90,7 +90,7 @@ import de.amr.games.pacman.model.pacman.PacManGame;
  *      behavior</a>
  * @see <a href="http://superpacman.com/mspacman/">Ms. Pac-Man</a>
  */
-public class PacManGameController extends FiniteStateMachine<PacManGameState> {
+public class GameController extends FiniteStateMachine<GameState> {
 
 	public final EnumMap<GameVariant, GameModel> games = new EnumMap<>(GameVariant.class);
 	public GameModel game;
@@ -104,8 +104,8 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 	public boolean gameRunning;
 	public boolean attractMode;
 
-	public PacManGameController(GameVariant variant) {
-		super(PacManGameState.values());
+	public GameController(GameVariant variant) {
+		super(GameState.values());
 		configState(INTRO, this::state_Intro_enter, this::state_Intro_update, null);
 		configState(READY, this::state_Ready_enter, this::state_Ready_update, null);
 		configState(HUNTING, this::state_Hunting_enter, this::state_Hunting_update, null);
@@ -212,7 +212,7 @@ public class PacManGameController extends FiniteStateMachine<PacManGameState> {
 				gameRunning = true;
 			}
 			// TODO reset hunting timer to INDEFINITE?
-			changeState(PacManGameState.HUNTING);
+			changeState(GameState.HUNTING);
 			return;
 		}
 	}

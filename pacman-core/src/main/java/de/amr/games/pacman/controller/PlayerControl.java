@@ -31,7 +31,7 @@ import de.amr.games.pacman.model.common.Pac;
  * 
  * @author Armin Reichert
  * 
- * @see {@link PacManGameController#setPlayerControl(PlayerControl)}.
+ * @see {@link GameController#setPlayerControl(PlayerControl)}.
  */
 public interface PlayerControl {
 

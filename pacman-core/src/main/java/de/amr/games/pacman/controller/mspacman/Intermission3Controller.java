@@ -25,7 +25,7 @@ package de.amr.games.pacman.controller.mspacman;
 
 import static de.amr.games.pacman.model.world.PacManGameWorld.t;
 
-import de.amr.games.pacman.controller.PacManGameController;
+import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.controller.mspacman.Intermission3Controller.IntermissionState;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.FiniteStateMachine;
@@ -53,7 +53,7 @@ public class Intermission3Controller extends FiniteStateMachine<IntermissionStat
 
 	static final int GROUND_Y = t(24);
 
-	public PacManGameController gameController;
+	public GameController gameController;
 	public Runnable playIntermissionSound = NOP;
 	public Runnable playFlapAnimation = NOP;
 
@@ -72,7 +72,7 @@ public class Intermission3Controller extends FiniteStateMachine<IntermissionStat
 				this::state_READY_TO_PLAY_update, null);
 	}
 
-	public void init(PacManGameController gameController) {
+	public void init(GameController gameController) {
 		this.gameController = gameController;
 
 		flap = new Flap(3, "JUNIOR");

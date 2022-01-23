@@ -23,7 +23,7 @@ SOFTWARE.
  */
 package de.amr.games.pacman.controller.event;
 
-import de.amr.games.pacman.controller.PacManGameState;
+import de.amr.games.pacman.controller.GameState;
 import de.amr.games.pacman.model.common.GameModel;
 
 /**
@@ -33,10 +33,10 @@ import de.amr.games.pacman.model.common.GameModel;
  */
 public class PacManGameStateChangeEvent extends PacManGameEvent {
 
-	public final PacManGameState oldGameState;
-	public final PacManGameState newGameState;
+	public final GameState oldGameState;
+	public final GameState newGameState;
 
-	public PacManGameStateChangeEvent(GameModel game, PacManGameState oldGameState, PacManGameState newGameState) {
+	public PacManGameStateChangeEvent(GameModel game, GameState oldGameState, GameState newGameState) {
 		super(game, Info.OTHER, null, null);
 		this.oldGameState = oldGameState;
 		this.newGameState = newGameState;
