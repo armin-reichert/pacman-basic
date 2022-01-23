@@ -23,7 +23,6 @@ SOFTWARE.
  */
 package de.amr.games.pacman.ui;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -31,27 +30,10 @@ import java.util.List;
  * 
  * @author Armin Reichert
  */
-public enum PacManGameSound {
+public enum GameSounds {
 
-	//@formatter:off
-	BONUS_EATEN, 
-	CREDIT, 
-	EXTRA_LIFE, 
-	GAME_READY, 
-	GHOST_EATEN, 
-	GHOST_RETURNING,
-	GHOST_SIREN_1, 
-	GHOST_SIREN_2, 
-	GHOST_SIREN_3, 
-	GHOST_SIREN_4, 
-	INTERMISSION_1, 
-	INTERMISSION_2,
-	INTERMISSION_3,
-	PACMAN_DEATH, 
-	PACMAN_MUNCH, 
-	PACMAN_POWER;
-	//@formatter:on
+	BONUS_EATEN, CREDIT, EXTRA_LIFE, GAME_READY, GHOST_EATEN, GHOST_RETURNING, INTERMISSION_1, INTERMISSION_2,
+	INTERMISSION_3, PACMAN_DEATH, PACMAN_MUNCH, PACMAN_POWER, SIREN_1, SIREN_2, SIREN_3, SIREN_4;
 
-	public static final List<PacManGameSound> SIRENS = Arrays.asList(GHOST_SIREN_1, GHOST_SIREN_2, GHOST_SIREN_3,
-			GHOST_SIREN_4);
+	public static final List<GameSounds> SIRENS = List.of(SIREN_1, SIREN_2, SIREN_3, SIREN_4);
 }
