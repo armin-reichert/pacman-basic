@@ -24,7 +24,7 @@ SOFTWARE.
 package de.amr.games.pacman.model.common;
 
 import static de.amr.games.pacman.lib.Logging.log;
-import static de.amr.games.pacman.model.world.PacManGameWorld.HTS;
+import static de.amr.games.pacman.model.world.World.HTS;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -38,7 +38,7 @@ import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.pacman.entities.Bonus;
-import de.amr.games.pacman.model.world.PacManGameWorld;
+import de.amr.games.pacman.model.world.World;
 
 /**
  * Common part of the Pac-Man and Ms. Pac-Man game models.
@@ -72,7 +72,7 @@ public abstract class GameModel {
 	public int mapNumber;
 
 	/** World of current level. */
-	public PacManGameWorld world;
+	public World world;
 
 	/** The hunting phase. Values: 0, 2, 4, 6 = "scattering", 1, 3, 5, 7 = "chasing". */
 	public int huntingPhase;
@@ -284,7 +284,7 @@ public abstract class GameModel {
 		return levelNumber - 1 < levels.length ? levels[levelNumber - 1] : levels[levels.length - 1];
 	}
 
-	protected void setLevelData(int levelNumber, PacManGameWorld world) {
+	protected void setLevelData(int levelNumber, World world) {
 		this.world = world;
 
 		Object[] row = levelData(levelNumber);
@@ -338,7 +338,7 @@ public abstract class GameModel {
 		return Stream.of(redGhost, pinkGhost, cyanGhost, orangeGhost).toArray(Ghost[]::new);
 	}
 
-	protected void resetGhosts(PacManGameWorld world) {
+	protected void resetGhosts(World world) {
 		for (Ghost ghost : ghosts) {
 			ghost.world = world;
 			ghost.dotCounter = 0;

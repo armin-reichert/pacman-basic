@@ -23,7 +23,7 @@ SOFTWARE.
  */
 package de.amr.games.pacman.controller.pacman;
 
-import static de.amr.games.pacman.model.world.PacManGameWorld.t;
+import static de.amr.games.pacman.model.world.World.t;
 
 import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.controller.pacman.Intermission2Controller.IntermissionState;

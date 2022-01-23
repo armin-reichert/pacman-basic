@@ -25,8 +25,8 @@ package de.amr.games.pacman.controller.mspacman;
 
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.UP;
-import static de.amr.games.pacman.model.world.PacManGameWorld.HTS;
-import static de.amr.games.pacman.model.world.PacManGameWorld.t;
+import static de.amr.games.pacman.model.world.World.HTS;
+import static de.amr.games.pacman.model.world.World.t;
 
 import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.controller.mspacman.IntroController.IntroState;

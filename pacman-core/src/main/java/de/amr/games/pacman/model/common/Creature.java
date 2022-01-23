@@ -23,7 +23,7 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.common;
 
-import static de.amr.games.pacman.model.world.PacManGameWorld.t;
+import static de.amr.games.pacman.model.world.World.t;
 import static java.lang.Math.abs;
 
 import java.util.List;
@@ -35,7 +35,7 @@ import java.util.stream.Stream;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.model.world.PacManGameWorld;
+import de.amr.games.pacman.model.world.World;
 import de.amr.games.pacman.model.world.Portal;
 
 /**
@@ -52,7 +52,7 @@ public class Creature extends GameEntity {
 	public final String name;
 
 	/** The world where this creature lives. */
-	public PacManGameWorld world;
+	public World world;
 
 	/** Number of pixels/second the creature moves at 100% speed. */
 	public double baseSpeed = GameModel.BASE_SPEED;
@@ -86,14 +86,14 @@ public class Creature extends GameEntity {
 	 * @return the current tile position
 	 */
 	public V2i tile() {
-		return PacManGameWorld.tile(position);
+		return World.tile(position);
 	}
 
 	/**
 	 * @return the current pixel offset
 	 */
 	public V2d offset() {
-		return PacManGameWorld.offset(position);
+		return World.offset(position);
 	}
 
 	/**
@@ -248,8 +248,8 @@ public class Creature extends GameEntity {
 		}
 
 		final V2d posAfterMove = position.plus(new V2d(moveDir.vec).scaled(velocity.length()));
-		final V2i tileAfterMove = PacManGameWorld.tile(posAfterMove);
-		final V2d offsetAfterMove = PacManGameWorld.offset(posAfterMove);
+		final V2i tileAfterMove = World.tile(posAfterMove);
+		final V2d offsetAfterMove = World.offset(posAfterMove);
 
 		// avoid moving into inaccessible neighbor tile
 		if (!canAccessTile(tileAfterMove)) {

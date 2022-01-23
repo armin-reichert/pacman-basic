@@ -33,7 +33,7 @@ import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.mspacman.entities.MovingBonus;
-import de.amr.games.pacman.model.world.MapBasedWorld;
+import de.amr.games.pacman.model.world.MapWorld;
 
 /**
  * Model of the Ms. Pac-Man game.
@@ -91,7 +91,7 @@ public class MsPacManGame extends GameModel {
 		this.levelNumber = levelNumber;
 		mazeNumber = mazeNumber(levelNumber);
 		mapNumber = (mazeNumber == 5) ? 3 : (mazeNumber == 6) ? 4 : mazeNumber;
-		setLevelData(levelNumber, new MapBasedWorld("/mspacman/maps/map" + mapNumber + ".txt"));
+		setLevelData(levelNumber, new MapWorld("/mspacman/maps/map" + mapNumber + ".txt"));
 		huntingPhaseDurations = huntingPhaseDurationsTable[levelNumber == 1 ? 0 : levelNumber <= 4 ? 1 : 2];
 		if (levelNumber >= 8) {
 			bonusSymbol = new Random().nextInt(7);

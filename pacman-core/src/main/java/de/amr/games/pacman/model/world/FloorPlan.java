@@ -61,7 +61,7 @@ public class FloorPlan {
 	private final byte[][] info;
 	private final int resolution;
 
-	public FloorPlan(int resolution, PacManGameWorld world) {
+	public FloorPlan(int resolution, World world) {
 		this.resolution = resolution;
 		info = createFloorPlanInfo(world);
 	}
@@ -108,7 +108,7 @@ public class FloorPlan {
 		return new V2i(tileX + dx, tileY);
 	}
 
-	public byte[][] createFloorPlanInfo(PacManGameWorld world) {
+	public byte[][] createFloorPlanInfo(World world) {
 		int numBlocksX = resolution * world.numCols();
 		int numBlocksY = resolution * world.numRows();
 		byte[][] info = new byte[numBlocksY][numBlocksX];

@@ -25,7 +25,7 @@ package de.amr.games.pacman.model.pacman;
 
 import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.lib.TickTimer.sec_to_ticks;
-import static de.amr.games.pacman.model.world.PacManGameWorld.HTS;
+import static de.amr.games.pacman.model.world.World.HTS;
 
 import java.io.File;
 import java.util.Random;
@@ -33,7 +33,7 @@ import java.util.Random;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.pacman.entities.Bonus;
-import de.amr.games.pacman.model.world.MapBasedWorld;
+import de.amr.games.pacman.model.world.MapWorld;
 
 /**
  * Model of the Pac-Man game.
@@ -78,7 +78,7 @@ public class PacManGame extends GameModel {
 		};
 
 		// all levels use the same world
-		world = new MapBasedWorld("/pacman/maps/map1.txt");
+		world = new MapWorld("/pacman/maps/map1.txt");
 
 		player = new Pac("Pac-Man");
 		ghosts = createGhosts("Blinky", "Pinky", "Inky", "Clyde");

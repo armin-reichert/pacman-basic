@@ -37,7 +37,7 @@ import de.amr.games.pacman.lib.V2i;
  * 
  * @author Armin Reichert
  */
-public interface PacManGameWorld {
+public interface World {
 
 	/** Tile size in pixels. */
 	public static final int TS = 8;

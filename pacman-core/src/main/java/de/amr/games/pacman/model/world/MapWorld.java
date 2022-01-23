@@ -42,7 +42,7 @@ import de.amr.games.pacman.lib.V2i;
  * 
  * @author Armin Reichert
  */
-public class MapBasedWorld implements PacManGameWorld {
+public class MapWorld implements World {
 
 	private WorldMap map;
 	private V2i size;
@@ -59,7 +59,7 @@ public class MapBasedWorld implements PacManGameWorld {
 	private BitSet intersections;
 	private List<V2i> energizerTiles;
 
-	public MapBasedWorld(String mapPath) {
+	public MapWorld(String mapPath) {
 		setMap(WorldMap.load(mapPath));
 	}
 
@@ -96,8 +96,7 @@ public class MapBasedWorld implements PacManGameWorld {
 				.map(this::index) //
 				.forEach(intersections::set);
 
-		energizerTiles = trim(
-				tiles().filter(tile -> map.data(tile) == WorldMap.ENERGIZER).collect(Collectors.toList()));
+		energizerTiles = trim(tiles().filter(tile -> map.data(tile) == WorldMap.ENERGIZER).collect(Collectors.toList()));
 	}
 
 	private boolean isGhostHouseDoor(V2i tile) {
