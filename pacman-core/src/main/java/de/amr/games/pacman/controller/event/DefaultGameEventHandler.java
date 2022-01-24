@@ -76,10 +76,13 @@ public interface DefaultGameEventHandler extends GameEventListener {
 				return;
 			}
 			if (event instanceof GameStateChangeEvent) {
-				onPacManGameStateChange((GameStateChangeEvent) event);
+				onGameStateChange((GameStateChangeEvent) event);
 				return;
 			}
 		}
+	}
+
+	default void onGameStateChange(GameStateChangeEvent e) {
 	}
 
 	default void onBonusActivated(GameEvent e) {
@@ -116,9 +119,6 @@ public interface DefaultGameEventHandler extends GameEventListener {
 	}
 
 	default void onPlayerGainsPower(GameEvent e) {
-	}
-
-	default void onPacManGameStateChange(GameStateChangeEvent e) {
 	}
 
 	default void onScatterPhaseStarted(ScatterPhaseStartedEvent e) {
