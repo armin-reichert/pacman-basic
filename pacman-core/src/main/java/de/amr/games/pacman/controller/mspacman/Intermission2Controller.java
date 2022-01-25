@@ -55,14 +55,14 @@ public class Intermission2Controller extends FiniteStateMachine<IntermissionStat
 	public Flap flap;
 	public Pac pacMan, msPacMan;
 
-	public Intermission2Controller(GameController gameController) {
+	public Intermission2Controller() {
 		super(IntermissionState.values());
 		configState(IntermissionState.FLAP, this::startStateTimer, this::state_FLAP_update, null);
 		configState(IntermissionState.ACTION, this::startStateTimer, this::state_ACTION_update, null);
-		this.gameController = gameController;
 	}
 
-	public void init() {
+	public void init(GameController gameController) {
+		this.gameController = gameController;
 		flap = new Flap(2, "THE CHASE");
 		flap.setPosition(t(3), t(10));
 		flap.show();
