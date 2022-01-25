@@ -59,10 +59,10 @@ public class Hiscore {
 			points = Integer.parseInt(content.getProperty("points"));
 			level = Integer.parseInt(content.getProperty("level"));
 			time = ZonedDateTime.parse(content.getProperty("date"));
-			log("Hiscore file: %s", file);
-			log("Hiscore loaded: %d points in level %d", points, level);
+			log("Highscore loaded (%d points in level %d) from file '%s'", points, level, file);
 		} catch (Exception x) {
-			log("Could not load hiscore file");
+			log("Highscore could not be loaded from file '%s'", file);
+			x.printStackTrace();
 		}
 		return this;
 	}
