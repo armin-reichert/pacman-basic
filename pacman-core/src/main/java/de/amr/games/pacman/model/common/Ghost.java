@@ -220,7 +220,7 @@ public class Ghost extends Creature {
 			setDir(opposite);
 			setWishDir(opposite);
 		}
-		tryMoving();
+		tryMovingTowards(wishDir);
 		return true;
 	}
 
