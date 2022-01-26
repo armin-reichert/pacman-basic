@@ -26,17 +26,13 @@ package de.amr.games.pacman.model.common;
 import static de.amr.games.pacman.model.world.World.t;
 import static java.lang.Math.abs;
 
-import java.util.List;
 import java.util.Objects;
-import java.util.Random;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.model.world.World;
 import de.amr.games.pacman.model.world.Portal;
+import de.amr.games.pacman.model.world.World;
 
 /**
  * Base class for creatures which can move through the world.
@@ -275,20 +271,6 @@ public class Creature extends GameEntity {
 		stuck = false;
 		placeAt(tileAfterMove, offsetAfterMove.x, offsetAfterMove.y);
 		newTileEntered = !tile().equals(tileBeforeMove);
-	}
-
-	/**
-	 * Selects a random accessible wish direction.
-	 */
-	public void setRandomDirection() {
-		if (newTileEntered || stuck) {
-			List<Direction> dirs = Stream.of(Direction.values())
-					.filter(dir -> dir != this.dir.opposite() && canAccessTile(tile().plus(dir.vec)))
-					.collect(Collectors.toList());
-			if (!dirs.isEmpty()) {
-				setWishDir(dirs.get(new Random().nextInt(dirs.size())));
-			}
-		}
 	}
 
 	/**

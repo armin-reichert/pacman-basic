@@ -115,11 +115,16 @@ public class Ghost extends Creature {
 	}
 
 	/**
-	 * Lets the ghost choose some random direction.
+	 * Lets the ghost choose some random direction whenever it enters a new tile.
+	 * 
+	 * TODO: this is not 100% what the Pac-Man dossier says.
 	 */
 	public void roam() {
 		targetTile = null;
-		setRandomDirection();
+		if (newTileEntered || stuck) {
+			Direction.shuffled().stream().filter(d -> d != dir.opposite() && canAccessTile(tile().plus(d.vec))).findAny()
+					.ifPresent(d -> wishDir = d);
+		}
 		tryMoving();
 	}
 
