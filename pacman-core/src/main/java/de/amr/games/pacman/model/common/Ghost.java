@@ -121,7 +121,7 @@ public class Ghost extends Creature {
 	 */
 	public void roam() {
 		targetTile = null;
-		if (newTileEntered || stuck) {
+		if (newTileEntered) {
 			Direction.shuffled().stream().filter(d -> d != dir.opposite() && canAccessTile(tile().plus(d.vec))).findAny()
 					.ifPresent(d -> wishDir = d);
 		}
