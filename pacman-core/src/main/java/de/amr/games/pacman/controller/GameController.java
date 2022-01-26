@@ -634,7 +634,6 @@ public class GameController extends FiniteStateMachine<GameState> {
 			} else {
 				ghost.chase();
 			}
-
 			break;
 
 		case DEAD:

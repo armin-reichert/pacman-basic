@@ -84,7 +84,6 @@ public class Ghost extends Creature {
 		if (world.ghostHouse().doorTiles().contains(tile)) {
 			return is(GhostState.ENTERING_HOUSE) || is(GhostState.LEAVING_HOUSE);
 		}
-		// TODO there is still a bug causing ghost get stuck
 		if (world.isOneWayDown(tile)) {
 			if (offset().y != 0) {
 				return true; // maybe already on the way up
@@ -121,8 +120,8 @@ public class Ghost extends Creature {
 	 */
 	public void roam() {
 		if (newTileEntered) {
-			Direction.shuffled().stream().filter(d -> d != dir.opposite() && canAccessTile(tile().plus(d.vec))).findAny()
-					.ifPresent(d -> wishDir = d);
+			wishDir = Direction.shuffled().stream().filter(d -> d != dir.opposite() && canAccessTile(tile().plus(d.vec)))
+					.findAny().orElse(wishDir);
 		}
 		tryMoving();
 	}
