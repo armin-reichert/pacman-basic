@@ -40,34 +40,34 @@ import de.amr.games.pacman.lib.V2i;
  */
 public class Ghost extends Creature {
 
-	/** The ID (color) of the ghost (0=red, 1=pink, 2=cyan, 3=orange). */
+	/** The ID (color) of the ghost, see {@link GameModel#RED_GHOST} etc. */
 	public final int id;
 
 	/** The current state of the ghost. */
 	public GhostState state;
 
-	/** The home location of the ghost. */
+	/** The home location of the ghost. For the red ghost, this is outside of the house. */
 	public V2i homeTile;
 
-	/** The revival location of the ghost. */
+	/** * The revival location of the ghost inside. For the red ghost, this is different from the home location. */
 	public V2i revivalTile;
 
-	/** The bounty earned for killing this ghost. */
+	/** The bounty for this ghost. */
 	public int bounty;
 
-	/** Function computing the target tile of this ghost. */
+	/** The function computing the target tile when this ghost is in chasing mode. */
 	public Supplier<V2i> fnChasingTargetTile;
 
-	/** The individual food counter, used to determine when the ghost can leave the house. */
+	/** Individual food counter, used to determine when the ghost can leave the house. */
 	public int dotCounter;
 
-	/** Global number of "dots" Pac-Man has to eat until ghost gets unlocked, */
+	/** Global number of "dots" Pac-Man has to eat until ghost gets unlocked. */
 	public int globalDotLimit;
 
-	/** Individual nNumber of "dots" Pac-Man has to eat until ghost gets unlocked, */
+	/** Individual number of "dots" Pac-Man has to eat until ghost gets unlocked. */
 	public int privateDotLimit;
 
-	/** "Cruise Elroy" mode of the red ghost. Value is 1, 2 or -1, -2 (disabled modes). */
+	/** "Cruise Elroy" mode. Values: 0 (off), 1, -1, 2, -2 (negative means disabled). */
 	public int elroy;
 
 	public Ghost(int id, String name) {
@@ -93,6 +93,9 @@ public class Ghost extends Creature {
 		return super.canAccessTile(tile);
 	}
 
+	/**
+	 * @return {@code true} if the ghost is outside the ghost house at the door.
+	 */
 	public boolean atGhostHouseDoor() {
 		return tile().equals(world.ghostHouse().entryTile()) && differsAtMost(offset().x, HTS, 2);
 	}
