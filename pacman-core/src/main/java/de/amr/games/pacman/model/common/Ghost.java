@@ -120,7 +120,6 @@ public class Ghost extends Creature {
 	 * TODO: this is not 100% what the Pac-Man dossier says.
 	 */
 	public void roam() {
-		targetTile = null;
 		if (newTileEntered) {
 			Direction.shuffled().stream().filter(d -> d != dir.opposite() && canAccessTile(tile().plus(d.vec))).findAny()
 					.ifPresent(d -> wishDir = d);

@@ -70,9 +70,9 @@ import de.amr.games.pacman.model.pacman.PacManGame;
 /**
  * Controller (in the sense of MVC) for both (Pac-Man, Ms. Pac-Man) game variants.
  * <p>
- * This is a finite-state machine with states defined in {@link GameState}. The game data are stored in the model
- * of the selected game, see {@link MsPacManGame} and {@link PacManGame}. Scene selection is not controlled by this
- * class but left to the specific user interface implementations.
+ * This is a finite-state machine with states defined in {@link GameState}. The game data are stored in the model of the
+ * selected game, see {@link MsPacManGame} and {@link PacManGame}. Scene selection is not controlled by this class but
+ * left to the specific user interface implementations.
  * <p>
  * Missing functionality:
  * <ul>
