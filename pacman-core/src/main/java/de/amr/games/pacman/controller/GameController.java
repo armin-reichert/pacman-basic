@@ -238,29 +238,28 @@ public class GameController extends FiniteStateMachine<GameState> {
 
 	/* This method contains the main logic of the game play. */
 	private void state_Hunting_update() {
+		if (stateTimer().hasExpired()) {
+			startHuntingPhase(++game.huntingPhase);
+		}
 		if (game.foodRemaining == 0) {
 			resetAndStartHuntingTimerForPhase(0); // TODO is this correct?
 			changeState(LEVEL_COMPLETE);
 			return;
 		}
-		if (stateTimer().hasExpired()) {
-			startHuntingPhase(++game.huntingPhase);
-			return;
-		}
-		if (killPlayer()) {
+		if (killedPlayer()) {
 			resetAndStartHuntingTimerForPhase(0); // TODO is this correct?
 			changeState(PACMAN_DYING);
 			return;
 		}
-		if (killGhosts()) {
+		if (killedGhosts()) {
 			changeState(GHOST_DYING);
 			return;
 		}
-		eatFoodOrStarve();
-		consumeBonus();
-		consumePower();
 		movePlayer();
 		moveGhosts();
+		lookForFood();
+		consumeBonus();
+		consumePower();
 	}
 
 	// PACMAN_DYING
@@ -421,13 +420,13 @@ public class GameController extends FiniteStateMachine<GameState> {
 		game.ghosts().forEach(this::updateGhost);
 	}
 
-	private boolean killGhosts() {
+	private boolean killedGhosts() {
 		Ghost[] prey = game.ghosts(FRIGHTENED).filter(game.player::meets).toArray(Ghost[]::new);
 		Stream.of(prey).forEach(this::killGhost);
 		return prey.length > 0;
 	}
 
-	private boolean killPlayer() {
+	private boolean killedPlayer() {
 		if (game.player.immune && !attractMode) {
 			return false;
 		}
@@ -449,7 +448,7 @@ public class GameController extends FiniteStateMachine<GameState> {
 		return killer.isPresent();
 	}
 
-	private void eatFoodOrStarve() {
+	private void lookForFood() {
 		V2i playerTile = game.player.tile();
 		if (game.containsFood(playerTile)) {
 			eatFood(playerTile);
