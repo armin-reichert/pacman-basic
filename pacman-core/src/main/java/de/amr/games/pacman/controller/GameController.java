@@ -170,6 +170,13 @@ public class GameController extends FiniteStateMachine<GameState> {
 		}
 	}
 
+	public void startIntermissionTest() {
+		if (currentStateID == INTRO) {
+			intermissionTestNumber = 1;
+			changeState(INTERMISSION_TEST);
+		}
+	}
+
 	public void cheatKillGhosts() {
 		game.ghostBounty = game.firstGhostBounty;
 		game.ghosts().filter(ghost -> ghost.is(HUNTING_PAC) || ghost.is(FRIGHTENED)).forEach(this::killGhost);
@@ -182,6 +189,8 @@ public class GameController extends FiniteStateMachine<GameState> {
 	}
 
 	// --- BEGIN STATE-MACHINE METHODS ---
+
+	// INTRO
 
 	private void state_Intro_enter() {
 		game.reset();
@@ -198,6 +207,8 @@ public class GameController extends FiniteStateMachine<GameState> {
 			changeState(READY);
 		}
 	}
+
+	// READY
 
 	private void state_Ready_enter() {
 		game.resetGuys();
@@ -217,25 +228,7 @@ public class GameController extends FiniteStateMachine<GameState> {
 		}
 	}
 
-	private void resetAndStartHuntingTimer(int phase) {
-		long ticks = game.huntingPhaseDurations[phase];
-		log("Set %s timer to %d ticks", currentStateID, ticks);
-		stateTimer().set(ticks).start();
-	}
-
-	private void startHuntingPhase(int phase) {
-		game.huntingPhase = phase;
-		resetAndStartHuntingTimer(phase);
-		if (phase > 0) {
-			game.ghosts().filter(ghost -> ghost.is(HUNTING_PAC) || ghost.is(FRIGHTENED)).forEach(Ghost::forceTurningBack);
-		}
-		String phaseName = game.inScatteringPhase() ? "Scattering" : "Chasing";
-		log("Hunting phase #%d (%s) started, %d of %d ticks remaining", phase, phaseName, stateTimer().ticksRemaining(),
-				stateTimer().duration());
-		if (game.inScatteringPhase()) {
-			publish(new ScatterPhaseStartedEvent(game, phase / 2));
-		}
-	}
+	// HUNTING
 
 	private void state_Hunting_enter() {
 		if (!stateTimer().isStopped()) {
@@ -243,9 +236,7 @@ public class GameController extends FiniteStateMachine<GameState> {
 		}
 	}
 
-	//
-	// This method contains the main logic of the game play.
-	//
+	/* This method contains the main logic of the game play. */
 	private void state_Hunting_update() {
 		if (game.foodRemaining == 0) {
 			resetAndStartHuntingTimer(0); // TODO is this correct?
@@ -270,6 +261,159 @@ public class GameController extends FiniteStateMachine<GameState> {
 		consumePower();
 		movePlayer();
 		moveGhosts();
+	}
+
+	// PACMAN_DYING
+
+	private void state_PacManDying_enter() {
+		game.player.setSpeed(0);
+		game.ghosts(FRIGHTENED).forEach(ghost -> ghost.state = HUNTING_PAC);
+		game.bonus.init();
+		stateTimer().setIndefinite().start();
+	}
+
+	private void state_PacManDying_update() {
+		if (stateTimer().hasExpired()) {
+			game.player.lives--;
+			changeState(attractMode ? INTRO : game.player.lives > 0 ? READY : GAME_OVER);
+			return;
+		}
+	}
+
+	// GHOST_DYING
+
+	private void state_GhostDying_enter() {
+		game.player.hide();
+		stateTimer().setSeconds(1).start();
+	}
+
+	private void state_GhostDying_update() {
+		if (stateTimer().hasExpired()) {
+			resumePreviousState();
+			return;
+		}
+		currentPlayerControl().steer(game.player);
+		game.ghosts().filter(ghost -> ghost.is(DEAD) && ghost.bounty == 0 || ghost.is(ENTERING_HOUSE))
+				.forEach(this::updateGhost);
+	}
+
+	private void state_GhostDying_exit() {
+		game.player.show();
+		// fire event(s) for dead ghosts not yet returning home (bounty != 0)
+		game.ghosts(DEAD).filter(ghost -> ghost.bounty != 0).forEach(ghost -> {
+			ghost.bounty = 0;
+			publish(new GameEvent(game, Info.GHOST_RETURNS_HOME, ghost, null));
+		});
+	}
+
+	// LEVEL_STARTING
+
+	private void state_LevelStarting_enter() {
+		log("Level %d complete, entering level %d", game.levelNumber, game.levelNumber + 1);
+		game.setLevel(game.levelNumber + 1);
+		game.resetGuys();
+		stateTimer().setIndefinite().start();
+	}
+
+	private void state_LevelStarting_update() {
+		if (stateTimer().hasExpired()) {
+			changeState(READY);
+		}
+	}
+
+	// LEVEL_COMPLETE
+
+	private void state_LevelComplete_enter() {
+		game.bonus.init();
+		game.player.setSpeed(0);
+		game.hideGhosts();
+		stateTimer().setIndefinite().start();
+	}
+
+	private void state_LevelComplete_update() {
+		if (stateTimer().hasExpired()) {
+			if (attractMode) {
+				changeState(INTRO);
+			} else if (game.intermissionNumber(game.levelNumber) != 0) {
+				changeState(INTERMISSION);
+			} else {
+				changeState(LEVEL_STARTING);
+			}
+		}
+	}
+
+	// GAME_OVER
+
+	private void state_GameOver_enter() {
+		gameRunning = false;
+		game.ghosts().forEach(ghost -> ghost.setSpeed(0));
+		game.player.setSpeed(0);
+		game.saveHiscore();
+		stateTimer().setSeconds(5).start();
+	}
+
+	private void state_GameOver_update() {
+		if (stateTimer().hasExpired()) {
+			changeState(INTRO);
+		}
+	}
+
+	// INTERMISSION
+
+	private void state_Intermission_enter() {
+		stateTimer().setIndefinite().start(); // UI triggers state timeout
+	}
+
+	private void state_Intermission_update() {
+		if (stateTimer().hasExpired()) {
+			changeState(attractMode || !gameRunning ? INTRO : LEVEL_STARTING);
+		}
+	}
+
+	// INTERMISSION_TEST
+
+	public int intermissionTestNumber;
+
+	private void state_IntermissionTest_enter() {
+		intermissionTestNumber = 1;
+		stateTimer().setIndefinite().start();
+		log("Test intermission scene #%d", intermissionTestNumber);
+	}
+
+	private void state_IntermissionTest_update() {
+		if (stateTimer().hasExpired()) {
+			if (intermissionTestNumber < 3) {
+				++intermissionTestNumber;
+				stateTimer().setIndefinite().start();
+				log("Test intermission scene #%d", intermissionTestNumber);
+				// This is a hack to trigger the UI to update its current scene
+				publish(new GameStateChangeEvent(game, currentStateID, currentStateID));
+			} else {
+				changeState(INTRO);
+			}
+		}
+	}
+
+	// --- END STATE-MACHINE METHODS ---
+
+	private void resetAndStartHuntingTimer(int phase) {
+		long ticks = game.huntingPhaseDurations[phase];
+		log("Set %s timer to %d ticks", currentStateID, ticks);
+		stateTimer().set(ticks).start();
+	}
+
+	private void startHuntingPhase(int phase) {
+		game.huntingPhase = phase;
+		resetAndStartHuntingTimer(phase);
+		if (phase > 0) {
+			game.ghosts().filter(ghost -> ghost.is(HUNTING_PAC) || ghost.is(FRIGHTENED)).forEach(Ghost::forceTurningBack);
+		}
+		String phaseName = game.inScatteringPhase() ? "Scattering" : "Chasing";
+		log("Hunting phase #%d (%s) started, %d of %d ticks remaining", phase, phaseName, stateTimer().ticksRemaining(),
+				stateTimer().duration());
+		if (game.inScatteringPhase()) {
+			publish(new ScatterPhaseStartedEvent(game, phase / 2));
+		}
 	}
 
 	private void moveGhosts() {
@@ -412,136 +556,6 @@ public class GameController extends FiniteStateMachine<GameState> {
 			break;
 		}
 	}
-
-	private void state_PacManDying_enter() {
-		game.player.setSpeed(0);
-		game.ghosts(FRIGHTENED).forEach(ghost -> ghost.state = HUNTING_PAC);
-		game.bonus.init();
-		stateTimer().setIndefinite().start();
-	}
-
-	private void state_PacManDying_update() {
-		if (stateTimer().hasExpired()) {
-			game.player.lives--;
-			changeState(attractMode ? INTRO : game.player.lives > 0 ? READY : GAME_OVER);
-			return;
-		}
-	}
-
-	private void state_GhostDying_enter() {
-		game.player.hide();
-		stateTimer().setSeconds(1).start();
-	}
-
-	private void state_GhostDying_update() {
-		if (stateTimer().hasExpired()) {
-			resumePreviousState();
-			return;
-		}
-		currentPlayerControl().steer(game.player);
-		game.ghosts().filter(ghost -> ghost.is(DEAD) && ghost.bounty == 0 || ghost.is(ENTERING_HOUSE))
-				.forEach(this::updateGhost);
-	}
-
-	private void state_GhostDying_exit() {
-		game.player.show();
-		// fire event(s) for dead ghosts not yet returning home (bounty != 0)
-		game.ghosts(DEAD).filter(ghost -> ghost.bounty != 0).forEach(ghost -> {
-			ghost.bounty = 0;
-			publish(new GameEvent(game, Info.GHOST_RETURNS_HOME, ghost, null));
-		});
-	}
-
-	private void state_LevelStarting_enter() {
-		log("Level %d complete, entering level %d", game.levelNumber, game.levelNumber + 1);
-		game.setLevel(game.levelNumber + 1);
-		game.resetGuys();
-		stateTimer().setIndefinite().start();
-	}
-
-	private void state_LevelStarting_update() {
-		if (stateTimer().hasExpired()) {
-			changeState(READY);
-		}
-	}
-
-	private void state_LevelComplete_enter() {
-		game.bonus.init();
-		game.player.setSpeed(0);
-		game.hideGhosts();
-		stateTimer().setIndefinite().start();
-	}
-
-	private void state_LevelComplete_update() {
-		if (stateTimer().hasExpired()) {
-			if (attractMode) {
-				changeState(INTRO);
-			} else if (game.intermissionNumber(game.levelNumber) != 0) {
-				changeState(INTERMISSION);
-			} else {
-				changeState(LEVEL_STARTING);
-			}
-		}
-	}
-
-	private void state_GameOver_enter() {
-		gameRunning = false;
-		game.ghosts().forEach(ghost -> ghost.setSpeed(0));
-		game.player.setSpeed(0);
-		game.saveHiscore();
-		stateTimer().setSeconds(5).start();
-	}
-
-	private void state_GameOver_update() {
-		if (stateTimer().hasExpired()) {
-			changeState(INTRO);
-		}
-	}
-
-	private void state_Intermission_enter() {
-		stateTimer().setIndefinite().start(); // UI triggers state timeout
-	}
-
-	private void state_Intermission_update() {
-		if (stateTimer().hasExpired()) {
-			changeState(attractMode || !gameRunning ? INTRO : LEVEL_STARTING);
-		}
-	}
-
-	//
-	// Intermission scenes test
-	//
-
-	public int intermissionTestNumber;
-
-	public void startIntermissionTest() {
-		if (currentStateID == INTRO) {
-			intermissionTestNumber = 1;
-			changeState(INTERMISSION_TEST);
-		}
-	}
-
-	private void state_IntermissionTest_enter() {
-		intermissionTestNumber = 1;
-		stateTimer().setIndefinite().start();
-		log("Test intermission scene #%d", intermissionTestNumber);
-	}
-
-	private void state_IntermissionTest_update() {
-		if (stateTimer().hasExpired()) {
-			if (intermissionTestNumber < 3) {
-				++intermissionTestNumber;
-				stateTimer().setIndefinite().start();
-				log("Test intermission scene #%d", intermissionTestNumber);
-				// This is a hack to trigger the UI to update its current scene
-				publish(new GameStateChangeEvent(game, currentStateID, currentStateID));
-			} else {
-				changeState(INTRO);
-			}
-		}
-	}
-
-	// --- END STATE-MACHINE METHODS ---
 
 	/**
 	 * Scores the given number of points. When 10.000 points are reached, an extra life is rewarded.
