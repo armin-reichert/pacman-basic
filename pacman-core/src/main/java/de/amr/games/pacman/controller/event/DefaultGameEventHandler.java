@@ -24,15 +24,15 @@ SOFTWARE.
 package de.amr.games.pacman.controller.event;
 
 /**
- * Provides an empty default handler for each game event such that a class implementing this interface just needs to
+ * Provides an empty public handler for each game event such that a class implementing this interface just needs to
  * override the needed method(s).
  * 
  * @author Armin Reichert
  */
-public interface DefaultGameEventHandler extends GameEventListener {
+public abstract class DefaultGameEventHandler implements GameEventListener {
 
 	@Override
-	default void onGameEvent(GameEvent event) {
+	public void onGameEvent(GameEvent event) {
 		switch (event.info) {
 		case BONUS_ACTIVATED:
 			onBonusActivated(event);
@@ -82,45 +82,45 @@ public interface DefaultGameEventHandler extends GameEventListener {
 		}
 	}
 
-	default void onGameStateChange(GameStateChangeEvent e) {
+	public void onGameStateChange(GameStateChangeEvent e) {
 	}
 
-	default void onBonusActivated(GameEvent e) {
+	public void onBonusActivated(GameEvent e) {
 	}
 
-	default void onBonusEaten(GameEvent e) {
+	public void onBonusEaten(GameEvent e) {
 	}
 
-	default void onBonusExpired(GameEvent e) {
+	public void onBonusExpired(GameEvent e) {
 	}
 
-	default void onExtraLife(GameEvent e) {
+	public void onExtraLife(GameEvent e) {
 	}
 
-	default void onGhostEntersHouse(GameEvent e) {
+	public void onGhostEntersHouse(GameEvent e) {
 	}
 
-	default void onGhostReturnsHome(GameEvent e) {
+	public void onGhostReturnsHome(GameEvent e) {
 	}
 
-	default void onGhostLeavingHouse(GameEvent e) {
+	public void onGhostLeavingHouse(GameEvent e) {
 	}
 
-	default void onGhostLeftHouse(GameEvent e) {
+	public void onGhostLeftHouse(GameEvent e) {
 	}
 
-	default void onPlayerFoundFood(GameEvent e) {
+	public void onPlayerFoundFood(GameEvent e) {
 	}
 
-	default void onPlayerLosingPower(GameEvent e) {
+	public void onPlayerLosingPower(GameEvent e) {
 	}
 
-	default void onPlayerLostPower(GameEvent e) {
+	public void onPlayerLostPower(GameEvent e) {
 	}
 
-	default void onPlayerGainsPower(GameEvent e) {
+	public void onPlayerGainsPower(GameEvent e) {
 	}
 
-	default void onScatterPhaseStarted(ScatterPhaseStartedEvent e) {
+	public void onScatterPhaseStarted(ScatterPhaseStartedEvent e) {
 	}
 }
