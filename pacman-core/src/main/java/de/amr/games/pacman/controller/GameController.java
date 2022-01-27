@@ -239,7 +239,7 @@ public class GameController extends FiniteStateMachine<GameState> {
 	/* This method contains the main logic of the game play. */
 	private void state_Hunting_update() {
 		if (game.foodRemaining == 0) {
-			resetAndStartHuntingTimer(0); // TODO is this correct?
+			resetAndStartHuntingTimerForPhase(0); // TODO is this correct?
 			changeState(LEVEL_COMPLETE);
 			return;
 		}
@@ -248,7 +248,7 @@ public class GameController extends FiniteStateMachine<GameState> {
 			return;
 		}
 		if (killPlayer()) {
-			resetAndStartHuntingTimer(0); // TODO is this correct?
+			resetAndStartHuntingTimerForPhase(0); // TODO is this correct?
 			changeState(PACMAN_DYING);
 			return;
 		}
@@ -396,7 +396,7 @@ public class GameController extends FiniteStateMachine<GameState> {
 
 	// --- END STATE-MACHINE METHODS ---
 
-	private void resetAndStartHuntingTimer(int phase) {
+	private void resetAndStartHuntingTimerForPhase(int phase) {
 		long ticks = game.huntingPhaseDurations[phase];
 		log("Set %s timer to %d ticks", currentStateID, ticks);
 		stateTimer().set(ticks).start();
@@ -404,7 +404,7 @@ public class GameController extends FiniteStateMachine<GameState> {
 
 	private void startHuntingPhase(int phase) {
 		game.huntingPhase = phase;
-		resetAndStartHuntingTimer(phase);
+		resetAndStartHuntingTimerForPhase(phase);
 		if (phase > 0) {
 			game.ghosts().filter(ghost -> ghost.is(HUNTING_PAC) || ghost.is(FRIGHTENED)).forEach(Ghost::forceTurningBack);
 		}
