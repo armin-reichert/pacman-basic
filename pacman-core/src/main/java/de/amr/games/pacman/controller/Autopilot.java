@@ -49,7 +49,7 @@ public class Autopilot implements PlayerControl {
 	static class AutopilotData {
 
 		static final int MAX_GHOST_AHEAD_DETECTION_DIST = 4; // tiles
-		static final int MAX_GHOST_BEHIND_DETECTION_DIST = 2; // tiles
+		static final int MAX_GHOST_BEHIND_DETECTION_DIST = 1; // tiles
 		static final int MAX_GHOST_CHASE_DIST = 10; // tiles
 		static final int MAX_BONUS_HARVEST_DIST = 20; // tiles
 
@@ -93,14 +93,14 @@ public class Autopilot implements PlayerControl {
 		}
 	}
 
-	private final Supplier<GameModel> game;
+	private final Supplier<GameModel> gameSupplier;
 
-	public Autopilot(Supplier<GameModel> game) {
-		this.game = game;
+	public Autopilot(Supplier<GameModel> gameSupplier) {
+		this.gameSupplier = gameSupplier;
 	}
 
 	private GameModel game() {
-		return game.get();
+		return gameSupplier.get();
 	}
 
 	@Override
@@ -247,7 +247,7 @@ public class Autopilot implements PlayerControl {
 				if (!game().world.isFoodTile(tile) || game().isFoodEaten(tile)) {
 					continue;
 				}
-				if (game().world.isEnergizerTile(tile) && game().player.powerTimer.ticksRemaining() > 1 * 60
+				if (game().world.isEnergizerTile(tile) && game().player.powerTimer.ticksRemaining() > 2 * 60
 						&& game().foodRemaining > 1) {
 					continue;
 				}
