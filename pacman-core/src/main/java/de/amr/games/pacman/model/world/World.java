@@ -63,16 +63,12 @@ public interface World {
 	/**
 	 * @return Number of tiles in horizontal direction.
 	 */
-	default int numCols() {
-		return 28;
-	}
+	int numCols();
 
 	/**
 	 * @return Number of tiles in vertical direction.
 	 */
-	default int numRows() {
-		return 36;
-	}
+	int numRows();
 
 	/**
 	 * 
