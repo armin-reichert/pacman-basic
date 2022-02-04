@@ -50,22 +50,15 @@ public class WorldMap {
 	public static final byte UNDEFINED = -1, SPACE = 0, WALL = 1, PILL = 2, ENERGIZER = 3, DOOR = 4, TUNNEL = 5;
 
 	private static byte decode(char c) {
-		switch (c) {
-		case ' ':
-			return SPACE;
-		case '#':
-			return WALL;
-		case 'T':
-			return TUNNEL;
-		case '-':
-			return DOOR;
-		case '.':
-			return PILL;
-		case '*':
-			return ENERGIZER;
-		default:
-			return UNDEFINED;
-		}
+		return switch (c) {
+		case ' ' -> SPACE;
+		case '#' -> WALL;
+		case 'T' -> TUNNEL;
+		case '-' -> DOOR;
+		case '.' -> PILL;
+		case '*' -> ENERGIZER;
+		default -> UNDEFINED;
+		};
 	}
 
 	public static WorldMap load(String path) {
