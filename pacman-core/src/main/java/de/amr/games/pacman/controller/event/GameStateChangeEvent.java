@@ -37,7 +37,7 @@ public class GameStateChangeEvent extends GameEvent {
 	public final GameState newGameState;
 
 	public GameStateChangeEvent(GameModel game, GameState oldGameState, GameState newGameState) {
-		super(game, Info.OTHER, null, null);
+		super(game, Info.GAME_STATE_CHANGED, null, null);
 		this.oldGameState = oldGameState;
 		this.newGameState = newGameState;
 	}

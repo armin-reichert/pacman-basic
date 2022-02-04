@@ -30,7 +30,7 @@ public class ScatterPhaseStartedEvent extends GameEvent {
 	public final int scatterPhase;
 
 	public ScatterPhaseStartedEvent(GameModel gameModel, int scatterPhase) {
-		super(gameModel, Info.OTHER, null, null);
+		super(gameModel, Info.SCATTER_PHASE_STARTED, null, null);
 		this.scatterPhase = scatterPhase;
 	}
 
