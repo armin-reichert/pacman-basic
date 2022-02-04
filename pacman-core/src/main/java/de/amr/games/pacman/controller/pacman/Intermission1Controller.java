@@ -54,7 +54,7 @@ public class Intermission1Controller extends FiniteStateMachine<IntermissionStat
 		super(IntermissionState.values());
 		configState(IntermissionState.BLINKY_CHASING_PACMAN, () -> stateTimer().setSeconds(5).start(),
 				this::state_BLINKY_CHASING_PACMAN_update, null);
-		configState(IntermissionState.BIGPACMAN_CHASING_BLINKY, () -> stateTimer().setSeconds(7).start(),
+		configState(IntermissionState.BIGPACMAN_CHASING_BLINKY, this::state_BIGPACMAN_CHASING_BLINKY_enter,
 				this::state_BIGPACMAN_CHASING_BLINKY_update, null);
 	}
 
@@ -80,26 +80,32 @@ public class Intermission1Controller extends FiniteStateMachine<IntermissionStat
 	}
 
 	private void state_BLINKY_CHASING_PACMAN_update() {
-		if (stateTimer().ticked() >= 60) {
-			pac.move();
-			blinky.move();
+		if (stateTimer().ticked() < 60) {
+			return;
 		}
 		if (stateTimer().hasExpired()) {
 			changeState(IntermissionState.BIGPACMAN_CHASING_BLINKY);
+		} else {
+			pac.move();
+			blinky.move();
 		}
 	}
 
+	private void state_BIGPACMAN_CHASING_BLINKY_enter() {
+		blinky.state = GhostState.FRIGHTENED;
+		blinky.setPosition(-t(1), t(20));
+		blinky.setWishDir(Direction.RIGHT);
+		blinky.setDir(Direction.RIGHT);
+		blinky.setSpeed(0.6);
+		pac.setDir(Direction.RIGHT);
+		pac.setSpeed(1.0);
+		pac.setPosition(-t(24), t(20));
+
+		stateTimer().setSeconds(7).start();
+	}
+
 	private void state_BIGPACMAN_CHASING_BLINKY_update() {
-		if (stateTimer().hasJustStarted()) {
-			blinky.setPosition(-t(1), t(20));
-			blinky.setWishDir(Direction.RIGHT);
-			blinky.setDir(Direction.RIGHT);
-			blinky.setSpeed(0.6);
-			blinky.state = GhostState.FRIGHTENED;
-			pac.setDir(Direction.RIGHT);
-			pac.setSpeed(1.0);
-			pac.position = blinky.position.minus(t(23), 0);
-		} else if (stateTimer().hasExpired()) {
+		if (stateTimer().hasExpired()) {
 			gameController.stateTimer().expire();
 		} else {
 			pac.move();
