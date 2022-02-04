@@ -30,6 +30,8 @@ package de.amr.games.pacman.lib;
  */
 public class TimedSequence<T> {
 
+	public static int INDEFINITE = -1;
+
 	static class SingleFrameAnimation<TT> extends TimedSequence<TT> {
 
 		@SuppressWarnings("unchecked")
@@ -116,7 +118,7 @@ public class TimedSequence<T> {
 	}
 
 	public TimedSequence<T> endless() {
-		repetitions = Integer.MAX_VALUE;
+		repetitions = INDEFINITE;
 		return this;
 	}
 
@@ -165,7 +167,7 @@ public class TimedSequence<T> {
 				loopIndex++;
 				frameIndex = 0;
 				frameRunningTicks = 0;
-			} else if (repetitions < Integer.MAX_VALUE) {
+			} else if (repetitions != INDEFINITE) {
 				// last loop complete
 				complete = true;
 				stop();
