@@ -46,8 +46,6 @@ public class Intermission2Controller extends FiniteStateMachine<IntermissionStat
 		WALKING, GETTING_STUCK, STUCK;
 	}
 
-	public final int groundY = t(20);
-
 	public GameController gameController;
 	public Runnable playIntermissionSound = NOP;
 
@@ -68,7 +66,7 @@ public class Intermission2Controller extends FiniteStateMachine<IntermissionStat
 		pac = new Pac("Pac-Man");
 		pac.setDir(Direction.LEFT);
 		pac.show();
-		pac.setPosition(t(30), groundY);
+		pac.setPosition(t(30), t(20));
 		pac.setSpeed(1.0);
 
 		blinky = new Ghost(GameModel.RED_GHOST, "Blinky");
@@ -81,7 +79,7 @@ public class Intermission2Controller extends FiniteStateMachine<IntermissionStat
 
 		nail = new GameEntity();
 		nail.show();
-		nail.setPosition(t(14), groundY - 1);
+		nail.setPosition(t(14), t(20) - 1);
 
 		playIntermissionSound.run();
 		changeState(IntermissionState.WALKING);
