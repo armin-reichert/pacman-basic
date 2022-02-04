@@ -532,7 +532,8 @@ public class GameController extends FiniteStateMachine<GameState> {
 
 	private void consumeBonus() {
 		switch (game.bonus.state) {
-		case EDIBLE:
+
+		case EDIBLE -> {
 			if (game.player.meets(game.bonus)) {
 				log("%s found bonus id=%d of value %d", game.player.name, game.bonus.symbol, game.bonus.points);
 				score(game.bonus.points);
@@ -544,15 +545,19 @@ public class GameController extends FiniteStateMachine<GameState> {
 					publish(Info.BONUS_EXPIRED, game.bonus.tile());
 				}
 			}
-			break;
-		case EATEN:
+		}
+
+		case EATEN -> {
 			boolean expired = game.bonus.updateState();
 			if (expired) {
 				publish(Info.BONUS_EXPIRED, game.bonus.tile());
 			}
-			break;
-		default: // INACTIVE
-			break;
+		}
+
+		default -> {
+			// INACTIVE
+		}
+
 		}
 	}
 
@@ -589,32 +594,32 @@ public class GameController extends FiniteStateMachine<GameState> {
 	private void updateGhost(Ghost ghost) {
 		switch (ghost.state) {
 
-		case LOCKED:
+		case LOCKED -> {
 			if (ghost.atGhostHouseDoor()) {
 				ghost.setSpeed(0);
 			} else {
 				ghost.setSpeed(game.ghostSpeed / 2);
 				ghost.bounce();
 			}
-			break;
+		}
 
-		case ENTERING_HOUSE:
+		case ENTERING_HOUSE -> {
 			ghost.setSpeed(game.ghostSpeed * 2);
 			boolean reachedRevivalTile = ghost.enterHouse();
 			if (reachedRevivalTile) {
 				publish(new GameEvent(game, Info.GHOST_LEAVING_HOUSE, ghost, ghost.tile()));
 			}
-			break;
+		}
 
-		case LEAVING_HOUSE:
+		case LEAVING_HOUSE -> {
 			ghost.setSpeed(game.ghostSpeed / 2);
 			boolean leftHouse = ghost.leaveHouse();
 			if (leftHouse) {
 				publish(new GameEvent(game, Info.GHOST_LEFT_HOUSE, ghost, ghost.tile()));
 			}
-			break;
+		}
 
-		case FRIGHTENED:
+		case FRIGHTENED -> {
 			if (game.world.isTunnel(ghost.tile())) {
 				ghost.setSpeed(game.ghostSpeedTunnel);
 				ghost.tryMoving();
@@ -622,9 +627,9 @@ public class GameController extends FiniteStateMachine<GameState> {
 				ghost.setSpeed(game.ghostSpeedFrightened);
 				ghost.roam();
 			}
-			break;
+		}
 
-		case HUNTING_PAC:
+		case HUNTING_PAC -> {
 			if (game.world.isTunnel(ghost.tile())) {
 				ghost.setSpeed(game.ghostSpeedTunnel);
 			} else if (ghost.elroy == 1) {
@@ -647,18 +652,18 @@ public class GameController extends FiniteStateMachine<GameState> {
 			} else {
 				ghost.chase();
 			}
-			break;
+		}
 
-		case DEAD:
+		case DEAD -> {
 			ghost.setSpeed(game.ghostSpeed * 2);
 			boolean reachedHouse = ghost.returnHome();
 			if (reachedHouse) {
 				publish(new GameEvent(game, Info.GHOST_ENTERS_HOUSE, ghost, ghost.tile()));
 			}
-			break;
+		}
 
-		default:
-			throw new IllegalArgumentException("Illegal ghost state: " + currentStateID);
+		default -> throw new IllegalArgumentException("Illegal ghost state: " + currentStateID);
+
 		}
 	}
 
