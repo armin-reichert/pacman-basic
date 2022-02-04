@@ -24,8 +24,8 @@ SOFTWARE.
 package de.amr.games.pacman.controller.event;
 
 /**
- * Provides an empty public handler for each game event such that a class implementing this interface just needs to
- * override the needed method(s).
+ * Default implementation of the {@link GameEventListener} interface providing an empty handler method for each game
+ * event such that a class implementing this interface just needs to override the needed method(s).
  * 
  * @author Armin Reichert
  */
@@ -33,53 +33,30 @@ public abstract class DefaultGameEventHandler implements GameEventListener {
 
 	@Override
 	public void onGameEvent(GameEvent event) {
-		switch (event.info) {
-		case BONUS_ACTIVATED:
-			onBonusActivated(event);
-			return;
-		case BONUS_EATEN:
-			onBonusEaten(event);
-			return;
-		case BONUS_EXPIRED:
-			onBonusExpired(event);
-			return;
-		case EXTRA_LIFE:
-			onExtraLife(event);
-			return;
-		case GHOST_ENTERS_HOUSE:
-			onGhostEntersHouse(event);
-			return;
-		case GHOST_LEAVING_HOUSE:
-			onGhostLeavingHouse(event);
-			return;
-		case GHOST_LEFT_HOUSE:
-			onGhostLeftHouse(event);
-			return;
-		case GHOST_RETURNS_HOME:
-			onGhostReturnsHome(event);
-			return;
-		case PLAYER_FOUND_FOOD:
-			onPlayerFoundFood(event);
-			return;
-		case PLAYER_GAINS_POWER:
-			onPlayerGainsPower(event);
-			return;
-		case PLAYER_LOSING_POWER:
-			onPlayerLosingPower(event);
-			return;
-		case PLAYER_LOST_POWER:
-			onPlayerLostPower(event);
-			return;
-		default:
-			if (event instanceof ScatterPhaseStartedEvent) {
-				onScatterPhaseStarted((ScatterPhaseStartedEvent) event);
-				return;
-			}
-			if (event instanceof GameStateChangeEvent) {
-				onGameStateChange((GameStateChangeEvent) event);
-				return;
+		if (event instanceof ScatterPhaseStartedEvent) {
+			onScatterPhaseStarted((ScatterPhaseStartedEvent) event);
+		} else if (event instanceof GameStateChangeEvent) {
+			onGameStateChange((GameStateChangeEvent) event);
+		} else {
+			switch (event.info) {
+			case BONUS_ACTIVATED -> onBonusActivated(event);
+			case BONUS_EATEN -> onBonusEaten(event);
+			case BONUS_EXPIRED -> onBonusExpired(event);
+			case EXTRA_LIFE -> onExtraLife(event);
+			case GHOST_ENTERS_HOUSE -> onGhostEntersHouse(event);
+			case GHOST_LEAVING_HOUSE -> onGhostLeavingHouse(event);
+			case GHOST_LEFT_HOUSE -> onGhostLeftHouse(event);
+			case GHOST_RETURNS_HOME -> onGhostReturnsHome(event);
+			case PLAYER_FOUND_FOOD -> onPlayerFoundFood(event);
+			case PLAYER_GAINS_POWER -> onPlayerGainsPower(event);
+			case PLAYER_LOSING_POWER -> onPlayerLosingPower(event);
+			case PLAYER_LOST_POWER -> onPlayerLostPower(event);
+			default -> throw new IllegalArgumentException("Unexpected value: " + event.info);
 			}
 		}
+	}
+
+	public void onScatterPhaseStarted(ScatterPhaseStartedEvent e) {
 	}
 
 	public void onGameStateChange(GameStateChangeEvent e) {
@@ -121,6 +98,4 @@ public abstract class DefaultGameEventHandler implements GameEventListener {
 	public void onPlayerGainsPower(GameEvent e) {
 	}
 
-	public void onScatterPhaseStarted(ScatterPhaseStartedEvent e) {
-	}
 }
