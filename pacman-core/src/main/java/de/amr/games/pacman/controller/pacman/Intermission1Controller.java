@@ -45,8 +45,6 @@ public class Intermission1Controller extends FiniteStateMachine<IntermissionStat
 		BLINKY_CHASING_PACMAN, BIGPACMAN_CHASING_BLINKY
 	}
 
-	public final int groundY = t(20);
-
 	public GameController gameController;
 	public Runnable playIntermissionSound = NOP;
 	public Ghost blinky;
@@ -66,15 +64,15 @@ public class Intermission1Controller extends FiniteStateMachine<IntermissionStat
 		pac = new Pac("Pac-Man");
 		pac.setDir(Direction.LEFT);
 		pac.show();
-		pac.setPosition(t(30), groundY);
+		pac.setPosition(t(30), t(20));
 		pac.setSpeed(1.0);
 
 		blinky = new Ghost(GameModel.RED_GHOST, "Blinky");
 		blinky.setDir(Direction.LEFT);
 		blinky.setWishDir(Direction.LEFT);
 		blinky.show();
-		blinky.position = pac.position.plus(t(3), 0);
-		blinky.setSpeed(1.04);
+		blinky.position = pac.position.plus(t(3) + 0.5, 0);
+		blinky.setSpeed(1.05);
 		blinky.state = GhostState.HUNTING_PAC;
 
 		playIntermissionSound.run();
@@ -82,8 +80,10 @@ public class Intermission1Controller extends FiniteStateMachine<IntermissionStat
 	}
 
 	private void state_BLINKY_CHASING_PACMAN_update() {
-		pac.move();
-		blinky.move();
+		if (stateTimer().ticked() >= 60) {
+			pac.move();
+			blinky.move();
+		}
 		if (stateTimer().hasExpired()) {
 			changeState(IntermissionState.BIGPACMAN_CHASING_BLINKY);
 		}
@@ -91,14 +91,14 @@ public class Intermission1Controller extends FiniteStateMachine<IntermissionStat
 
 	private void state_BIGPACMAN_CHASING_BLINKY_update() {
 		if (stateTimer().hasJustStarted()) {
-			blinky.setPosition(-t(2), groundY);
+			blinky.setPosition(-t(1), t(20));
 			blinky.setWishDir(Direction.RIGHT);
 			blinky.setDir(Direction.RIGHT);
-			blinky.setSpeed(1.0);
+			blinky.setSpeed(0.6);
 			blinky.state = GhostState.FRIGHTENED;
 			pac.setDir(Direction.RIGHT);
-			pac.setSpeed(1.3);
-			pac.position = blinky.position.plus(-t(13), 0);
+			pac.setSpeed(1.0);
+			pac.position = blinky.position.minus(t(23), 0);
 		} else if (stateTimer().hasExpired()) {
 			gameController.stateTimer().expire();
 		} else {
