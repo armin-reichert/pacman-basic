@@ -46,8 +46,6 @@ public class Intermission3Controller extends FiniteStateMachine<IntermissionStat
 		CHASING_PACMAN, RETURNING_HALF_NAKED;
 	}
 
-	public final int groundY = t(20);
-
 	public GameController gameController;
 	public Runnable playIntermissionSound = NOP;
 
@@ -67,7 +65,7 @@ public class Intermission3Controller extends FiniteStateMachine<IntermissionStat
 		pac = new Pac("Pac-Man");
 		pac.setDir(Direction.LEFT);
 		pac.show();
-		pac.setPosition(t(40), groundY);
+		pac.setPosition(t(40), t(20));
 		pac.setSpeed(1.2);
 
 		blinky = new Ghost(GameModel.RED_GHOST, "Blinky");
