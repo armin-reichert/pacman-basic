@@ -106,26 +106,17 @@ public class PacManGame extends GameModel {
 
 	@Override
 	public int bonusValue(int symbolID) {
-		switch (symbolID) {
-		case CHERRIES:
-			return 100;
-		case STRAWBERRY:
-			return 300;
-		case PEACH:
-			return 500;
-		case APPLE:
-			return 700;
-		case GRAPES:
-			return 1000;
-		case GALAXIAN:
-			return 2000;
-		case BELL:
-			return 3000;
-		case KEY:
-			return 5000;
-		default:
-			throw new IllegalArgumentException("Unknown symbol ID: " + symbolID);
-		}
+		return switch (symbolID) {
+		case CHERRIES -> 100;
+		case STRAWBERRY -> 300;
+		case PEACH -> 500;
+		case APPLE -> 700;
+		case GRAPES -> 1000;
+		case GALAXIAN -> 2000;
+		case BELL -> 3000;
+		case KEY -> 5000;
+		default -> throw new IllegalArgumentException("Unknown symbol ID: " + symbolID);
+		};
 	}
 
 	@Override
