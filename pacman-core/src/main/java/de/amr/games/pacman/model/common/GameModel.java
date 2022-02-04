@@ -195,18 +195,12 @@ public abstract class GameModel {
 	 *         intermission is played after given level.
 	 */
 	public int intermissionNumber(int levelNumber) {
-		switch (levelNumber) {
-		case 2:
-			return 1;
-		case 5:
-			return 2;
-		case 9:
-		case 13:
-		case 17:
-			return 3;
-		default:
-			return 0; // no intermission after this level
-		}
+		return switch (levelNumber) {
+		case 2 -> 1;
+		case 5 -> 2;
+		case 9, 13, 17 -> 3;
+		default -> 0;
+		};
 	}
 
 	/**
