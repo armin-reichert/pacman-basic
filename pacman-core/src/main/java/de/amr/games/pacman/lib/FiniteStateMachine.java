@@ -58,8 +58,8 @@ public class FiniteStateMachine<STATE_ID extends Enum<STATE_ID>> {
 
 	public static boolean logging = true;
 
-	public STATE_ID previousStateID;
-	public STATE_ID currentStateID;
+	public STATE_ID previousState;
+	public STATE_ID state;
 
 	private final Map<STATE_ID, State> statesByID;
 	private final List<BiConsumer<STATE_ID, STATE_ID>> stateChangeListeners = new ArrayList<>();
@@ -98,31 +98,31 @@ public class FiniteStateMachine<STATE_ID extends Enum<STATE_ID>> {
 
 	public STATE_ID changeState(STATE_ID newStateID) {
 		// before state machine is initialized, state object is null
-		if (currentStateID != null) {
-			if (state(currentStateID).onExit != null) {
-				state(currentStateID).onExit.run();
+		if (state != null) {
+			if (state(state).onExit != null) {
+				state(state).onExit.run();
 			}
 			if (logging) {
-				log("%s: After exit state %s, timer: %s", name(), currentStateID, state(currentStateID).timer);
+				log("%s: After exit state %s, timer: %s", name(), state, state(state).timer);
 			}
 		}
-		previousStateID = currentStateID;
-		currentStateID = newStateID;
+		previousState = state;
+		state = newStateID;
 		if (logging) {
-			log("%s: Before entering state %s, timer: %s", name(), currentStateID, state(currentStateID).timer);
+			log("%s: Before entering state %s, timer: %s", name(), state, state(state).timer);
 		}
-		if (state(currentStateID).onEnter != null) {
-			state(currentStateID).onEnter.run();
+		if (state(state).onEnter != null) {
+			state(state).onEnter.run();
 		}
 		if (logging) {
-			log("%s: After entering state %s, timer: %s", name(), currentStateID, state(currentStateID).timer);
+			log("%s: After entering state %s, timer: %s", name(), state, state(state).timer);
 		}
-		fireStateChange(previousStateID, currentStateID);
-		return currentStateID;
+		fireStateChange(previousState, state);
+		return state;
 	}
 
 	public TickTimer stateTimer() {
-		return state(currentStateID).timer;
+		return state(state).timer;
 	}
 
 	protected State state(STATE_ID id) {
@@ -135,23 +135,23 @@ public class FiniteStateMachine<STATE_ID extends Enum<STATE_ID>> {
 
 	public void updateState() {
 		try {
-			if (state(currentStateID).onUpdate != null) {
-				state(currentStateID).onUpdate.run();
+			if (state(state).onUpdate != null) {
+				state(state).onUpdate.run();
 			}
-			state(currentStateID).timer.tick();
+			state(state).timer.tick();
 		} catch (Exception x) {
-			Logging.log("%s: Error updating state %s, timer: %s", name(), currentStateID, state(currentStateID).timer);
+			Logging.log("%s: Error updating state %s, timer: %s", name(), state, state(state).timer);
 			x.printStackTrace();
 		}
 	}
 
 	public void resumePreviousState() {
-		if (previousStateID == null) {
+		if (previousState == null) {
 			throw new IllegalStateException("State machine cannot resume previous state because there is none");
 		}
 		if (logging) {
-			log("%s: Resume state %s, timer: %s", name(), previousStateID, state(previousStateID).timer);
+			log("%s: Resume state %s, timer: %s", name(), previousState, state(previousState).timer);
 		}
-		changeState(previousStateID);
+		changeState(previousState);
 	}
 }

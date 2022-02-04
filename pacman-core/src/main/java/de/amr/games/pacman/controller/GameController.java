@@ -164,14 +164,14 @@ public class GameController extends FiniteStateMachine<GameState> {
 	}
 
 	public void requestGame() {
-		if (currentStateID == INTRO) {
+		if (state == INTRO) {
 			gameRequested = true;
 			changeState(READY);
 		}
 	}
 
 	public void startIntermissionTest() {
-		if (currentStateID == INTRO) {
+		if (state == INTRO) {
 			intermissionTestNumber = 1;
 			changeState(INTERMISSION_TEST);
 		}
@@ -386,7 +386,7 @@ public class GameController extends FiniteStateMachine<GameState> {
 				stateTimer().setIndefinite().start();
 				log("Test intermission scene #%d", intermissionTestNumber);
 				// This is a hack to trigger the UI to update its current scene
-				publish(new GameStateChangeEvent(game, currentStateID, currentStateID));
+				publish(new GameStateChangeEvent(game, state, state));
 			} else {
 				changeState(INTRO);
 			}
@@ -397,7 +397,7 @@ public class GameController extends FiniteStateMachine<GameState> {
 
 	private void resetAndStartHuntingTimerForPhase(int phase) {
 		long ticks = game.huntingPhaseDurations[phase];
-		log("Set %s timer to %d ticks", currentStateID, ticks);
+		log("Set %s timer to %d ticks", state, ticks);
 		stateTimer().set(ticks).start();
 	}
 
@@ -473,7 +473,7 @@ public class GameController extends FiniteStateMachine<GameState> {
 				log("%s got power, timer=%s", game.player.name, game.player.powerTimer);
 				// HUNTING is stopped while player has power
 				stateTimer().stop();
-				log("%s timer stopped: %s", currentStateID, stateTimer());
+				log("%s timer stopped: %s", state, stateTimer());
 				publish(Info.PLAYER_GAINS_POWER, foodTile);
 			}
 		} else {
@@ -662,7 +662,7 @@ public class GameController extends FiniteStateMachine<GameState> {
 			}
 		}
 
-		default -> throw new IllegalArgumentException("Illegal ghost state: " + currentStateID);
+		default -> throw new IllegalArgumentException("Illegal ghost state: " + state);
 
 		}
 	}
