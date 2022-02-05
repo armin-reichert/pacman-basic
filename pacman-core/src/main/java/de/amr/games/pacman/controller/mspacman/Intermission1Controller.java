@@ -23,6 +23,10 @@ SOFTWARE.
  */
 package de.amr.games.pacman.controller.mspacman;
 
+import static de.amr.games.pacman.controller.mspacman.Intermission1Controller.IntermissonState.CHASED_BY_GHOSTS;
+import static de.amr.games.pacman.controller.mspacman.Intermission1Controller.IntermissonState.COMING_TOGETHER;
+import static de.amr.games.pacman.controller.mspacman.Intermission1Controller.IntermissonState.FLAP;
+import static de.amr.games.pacman.controller.mspacman.Intermission1Controller.IntermissonState.READY_TO_PLAY;
 import static de.amr.games.pacman.model.world.World.t;
 
 import de.amr.games.pacman.controller.GameController;
@@ -64,15 +68,19 @@ public class Intermission1Controller extends FiniteStateMachine<IntermissonState
 
 	public Intermission1Controller() {
 		super(IntermissonState.values());
-		configState(IntermissonState.FLAP, () -> stateTimer().setSeconds(2).start(), this::state_FLAP_update, null);
-		configState(IntermissonState.CHASED_BY_GHOSTS, null, this::state_CHASED_BY_GHOSTS_update, null);
-		configState(IntermissonState.COMING_TOGETHER, null, this::state_COMING_TOGETHER_update, null);
-		configState(IntermissonState.READY_TO_PLAY, () -> stateTimer().setSeconds(4).start(),
-				this::state_READY_TO_PLAY_update, null);
+		configState(FLAP, this::state_FLAP_enter, this::state_FLAP_update, null);
+		configState(CHASED_BY_GHOSTS, null, this::state_CHASED_BY_GHOSTS_update, null);
+		configState(COMING_TOGETHER, null, this::state_COMING_TOGETHER_update, null);
+		configState(READY_TO_PLAY, () -> stateTimer().setSeconds(4).start(), this::state_READY_TO_PLAY_update, null);
 	}
 
 	public void init(GameController gameController) {
 		this.gameController = gameController;
+		changeState(FLAP);
+	}
+
+	private void state_FLAP_enter() {
+		stateTimer().setSeconds(2).start();
 
 		flap = new Flap(1, "THEY MEET");
 		flap.setPosition(t(3), t(10));
@@ -102,8 +110,6 @@ public class Intermission1Controller extends FiniteStateMachine<IntermissonState
 
 		heart = new GameEntity();
 		ghostsMet = false;
-
-		changeState(IntermissonState.FLAP);
 	}
 
 	private void state_FLAP_update() {
@@ -112,20 +118,16 @@ public class Intermission1Controller extends FiniteStateMachine<IntermissonState
 		}
 		if (stateTimer().hasExpired()) {
 			flap.hide();
-			playIntermissionSound.run();
 			pacMan.setSpeed(1.0);
 			msPac.setSpeed(1.0);
 			inky.setSpeed(1.0);
 			pinky.setSpeed(1.0);
+			playIntermissionSound.run();
 			changeState(IntermissonState.CHASED_BY_GHOSTS);
 		}
 	}
 
 	private void state_CHASED_BY_GHOSTS_update() {
-		inky.move();
-		pacMan.move();
-		pinky.move();
-		msPac.move();
 		if (inky.position.x > t(30)) {
 			msPac.setPosition(t(-2), middleY);
 			msPac.setDir(Direction.RIGHT);
@@ -138,14 +140,15 @@ public class Intermission1Controller extends FiniteStateMachine<IntermissonState
 			pinky.setDir(Direction.RIGHT);
 			pinky.setWishDir(Direction.RIGHT);
 			changeState(IntermissonState.COMING_TOGETHER);
+			return;
 		}
+		inky.move();
+		pacMan.move();
+		pinky.move();
+		msPac.move();
 	}
 
 	private void state_COMING_TOGETHER_update() {
-		inky.move();
-		pinky.move();
-		pacMan.move();
-		msPac.move();
 		if (pacMan.dir() == Direction.LEFT && pacMan.position.x < t(15)) {
 			pacMan.setDir(Direction.UP);
 			msPac.setDir(Direction.UP);
@@ -170,6 +173,10 @@ public class Intermission1Controller extends FiniteStateMachine<IntermissonState
 			pinky.setWishDir(pinky.dir());
 			pinky.setSpeed(0.2);
 		}
+		inky.move();
+		pinky.move();
+		pacMan.move();
+		msPac.move();
 	}
 
 	private void state_READY_TO_PLAY_update() {
