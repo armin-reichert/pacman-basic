@@ -52,7 +52,7 @@ public class FiniteStateMachine<STATE_ID extends Enum<STATE_ID>> {
 		public Runnable onEnter, onUpdate, onExit;
 
 		public State(String name) {
-			timer = new TickTimer("Timer-of-state-" + name);
+			timer = new TickTimer("Timer:" + name);
 		}
 	}
 
@@ -103,19 +103,19 @@ public class FiniteStateMachine<STATE_ID extends Enum<STATE_ID>> {
 				state(state).onExit.run();
 			}
 			if (logging) {
-				log("%s: After exit state %s, timer: %s", name(), state, state(state).timer);
+				log("%s: Exited state %s %s", name(), state, state(state).timer);
 			}
 		}
 		previousState = state;
 		state = newStateID;
 		if (logging) {
-			log("%s: Before entering state %s, timer: %s", name(), state, state(state).timer);
+			log("%s: Entering state %s %s", name(), state, state(state).timer);
 		}
 		if (state(state).onEnter != null) {
 			state(state).onEnter.run();
 		}
 		if (logging) {
-			log("%s: After entering state %s, timer: %s", name(), state, state(state).timer);
+			log("%s: Entered state %s %s", name(), state, state(state).timer);
 		}
 		fireStateChange(previousState, state);
 		return state;
