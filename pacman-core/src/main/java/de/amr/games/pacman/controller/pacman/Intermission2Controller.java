@@ -23,6 +23,9 @@ SOFTWARE.
  */
 package de.amr.games.pacman.controller.pacman;
 
+import static de.amr.games.pacman.controller.pacman.Intermission2Controller.IntermissionState.CHASING;
+import static de.amr.games.pacman.controller.pacman.Intermission2Controller.IntermissionState.STRETCHED;
+import static de.amr.games.pacman.controller.pacman.Intermission2Controller.IntermissionState.STUCK;
 import static de.amr.games.pacman.model.world.World.t;
 
 import de.amr.games.pacman.controller.GameController;
@@ -43,7 +46,7 @@ import de.amr.games.pacman.model.common.Pac;
 public class Intermission2Controller extends FiniteStateMachine<IntermissionState> {
 
 	public enum IntermissionState {
-		WALKING, GETTING_STUCK, STUCK;
+		CHASING, STRETCHED, STUCK;
 	}
 
 	public GameController gameController;
@@ -55,34 +58,15 @@ public class Intermission2Controller extends FiniteStateMachine<IntermissionStat
 
 	public Intermission2Controller() {
 		super(IntermissionState.values());
-		configState(IntermissionState.WALKING, this::startStateTimer, this::state_WALKING_update, null);
-		configState(IntermissionState.GETTING_STUCK, this::startStateTimer, this::state_GETTING_STUCK_update, null);
-		configState(IntermissionState.STUCK, this::startStateTimer, this::state_STUCK_update, null);
+		configState(CHASING, this::state_CHASING_enter, this::state_CHASING_update, null);
+		configState(STRETCHED, this::startStateTimer, this::state_STRETCHED_update, null);
+		configState(STUCK, this::startStateTimer, this::state_STUCK_update, null);
 	}
 
 	public void init(GameController gameController) {
 		this.gameController = gameController;
-
-		pac = new Pac("Pac-Man");
-		pac.setDir(Direction.LEFT);
-		pac.show();
-		pac.setPosition(t(30), t(20));
-		pac.setSpeed(1.0);
-
-		blinky = new Ghost(GameModel.RED_GHOST, "Blinky");
-		blinky.setDir(Direction.LEFT);
-		blinky.setWishDir(Direction.LEFT);
-		blinky.show();
-		blinky.position = pac.position.plus(t(14), 0);
-		blinky.setSpeed(1.0);
-		blinky.state = GhostState.HUNTING_PAC;
-
-		nail = new GameEntity();
-		nail.show();
-		nail.setPosition(t(14), t(20) - 1);
-
 		playIntermissionSound.run();
-		changeState(IntermissionState.WALKING);
+		changeState(CHASING);
 	}
 
 	private void startStateTimer() {
@@ -93,33 +77,58 @@ public class Intermission2Controller extends FiniteStateMachine<IntermissionStat
 		return (int) (nail.position.x - blinky.position.x);
 	}
 
-	private void state_WALKING_update() {
-		blinky.move();
-		pac.move();
-		if (nailDistance() == 0) {
-			changeState(IntermissionState.GETTING_STUCK);
-		}
+	private void state_CHASING_enter() {
+		startStateTimer();
+
+		pac = new Pac("Pac-Man");
+		pac.setDir(Direction.LEFT);
+		pac.setPosition(t(30), t(20));
+		pac.setSpeed(1.0);
+		pac.show();
+
+		blinky = new Ghost(GameModel.RED_GHOST, "Blinky");
+		blinky.state = GhostState.HUNTING_PAC;
+		blinky.setDir(Direction.LEFT);
+		blinky.setWishDir(Direction.LEFT);
+		blinky.position = pac.position.plus(t(14), 0);
+		blinky.setSpeed(1.0);
+		blinky.show();
+
+		nail = new GameEntity();
+		nail.setPosition(t(14), t(20) - 1);
+		nail.show();
 	}
 
-	private void state_GETTING_STUCK_update() {
-		blinky.move();
+	private void state_CHASING_update() {
+		if (nailDistance() == 0) {
+			changeState(STRETCHED);
+			return;
+		}
 		pac.move();
+		blinky.move();
+	}
+
+	private void state_STRETCHED_update() {
 		int stretching = nailDistance() / 4;
-		blinky.setSpeed(0.3 - 0.1 * stretching);
 		if (stretching == 3) {
 			blinky.setSpeed(0);
 			blinky.setDir(Direction.UP);
 			changeState(IntermissionState.STUCK);
+			return;
 		}
+		blinky.setSpeed(0.3 - 0.1 * stretching);
+		blinky.move();
+		pac.move();
 	}
 
 	private void state_STUCK_update() {
-		blinky.move();
-		pac.move();
 		if (stateTimer().isRunningSeconds(2)) {
 			blinky.setDir(Direction.RIGHT);
 		} else if (stateTimer().isRunningSeconds(6)) {
 			gameController.stateTimer().expire();
+			return;
 		}
+		blinky.move();
+		pac.move();
 	}
 }

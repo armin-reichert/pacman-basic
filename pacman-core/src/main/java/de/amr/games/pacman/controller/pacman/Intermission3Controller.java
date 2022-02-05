@@ -23,6 +23,8 @@ SOFTWARE.
  */
 package de.amr.games.pacman.controller.pacman;
 
+import static de.amr.games.pacman.controller.pacman.Intermission3Controller.IntermissionState.CHASING;
+import static de.amr.games.pacman.controller.pacman.Intermission3Controller.IntermissionState.RETURNING;
 import static de.amr.games.pacman.model.world.World.t;
 
 import de.amr.games.pacman.controller.GameController;
@@ -43,7 +45,7 @@ import de.amr.games.pacman.model.common.Pac;
 public class Intermission3Controller extends FiniteStateMachine<IntermissionState> {
 
 	public enum IntermissionState {
-		CHASING_PACMAN, RETURNING_HALF_NAKED;
+		CHASING, RETURNING;
 	}
 
 	public GameController gameController;
@@ -54,52 +56,56 @@ public class Intermission3Controller extends FiniteStateMachine<IntermissionStat
 
 	public Intermission3Controller() {
 		super(IntermissionState.values());
-		configState(IntermissionState.CHASING_PACMAN, this::startStateTimer, this::state_CHASING_PACMAN_update, null);
-		configState(IntermissionState.RETURNING_HALF_NAKED, this::startStateTimer, this::state_RETURNING_HALF_NAKED_update,
-				null);
-	}
-
-	public void init(GameController gameController) {
-		this.gameController = gameController;
-
-		pac = new Pac("Pac-Man");
-		pac.setDir(Direction.LEFT);
-		pac.show();
-		pac.setPosition(t(40), t(20));
-		pac.setSpeed(1.2);
-
-		blinky = new Ghost(GameModel.RED_GHOST, "Blinky");
-		blinky.setDir(Direction.LEFT);
-		blinky.setWishDir(Direction.LEFT);
-		blinky.show();
-		blinky.position = pac.position.plus(t(8), 0);
-		blinky.setSpeed(1.2);
-		blinky.state = GhostState.HUNTING_PAC;
-
-		playIntermissionSound.run();
-		changeState(IntermissionState.CHASING_PACMAN);
+		configState(CHASING, this::state_CHASING_enter, this::state_CHASING_update, null);
+		configState(RETURNING, this::startStateTimer, this::state_RETURNING_update, null);
 	}
 
 	private void startStateTimer() {
 		stateTimer().setIndefinite().start();
 	}
 
-	private void state_CHASING_PACMAN_update() {
-		pac.move();
-		blinky.move();
+	public void init(GameController gameController) {
+		this.gameController = gameController;
+		playIntermissionSound.run();
+		changeState(CHASING);
+	}
+
+	private void state_CHASING_enter() {
+		startStateTimer();
+
+		pac = new Pac("Pac-Man");
+		pac.setDir(Direction.LEFT);
+		pac.setPosition(t(40), t(20));
+		pac.setSpeed(1.2);
+		pac.show();
+
+		blinky = new Ghost(GameModel.RED_GHOST, "Blinky");
+		blinky.state = GhostState.HUNTING_PAC;
+		blinky.setDir(Direction.LEFT);
+		blinky.setWishDir(Direction.LEFT);
+		blinky.position = pac.position.plus(t(8), 0);
+		blinky.setSpeed(1.2);
+		blinky.show();
+	}
+
+	private void state_CHASING_update() {
 		if (blinky.position.x <= -t(15)) {
 			pac.setSpeed(0);
 			blinky.setDir(Direction.RIGHT);
 			blinky.setWishDir(Direction.RIGHT);
-			changeState(IntermissionState.RETURNING_HALF_NAKED);
+			changeState(RETURNING);
+			return;
 		}
+		pac.move();
+		blinky.move();
 	}
 
-	private void state_RETURNING_HALF_NAKED_update() {
-		blinky.move();
-		pac.move();
+	private void state_RETURNING_update() {
 		if (blinky.position.x > t(53)) {
 			gameController.stateTimer().expire();
+			return;
 		}
+		pac.move();
+		blinky.move();
 	}
 }

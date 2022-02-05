@@ -23,6 +23,8 @@ SOFTWARE.
  */
 package de.amr.games.pacman.controller.pacman;
 
+import static de.amr.games.pacman.controller.pacman.Intermission1Controller.IntermissionState.CHASING_BLINKY;
+import static de.amr.games.pacman.controller.pacman.Intermission1Controller.IntermissionState.CHASING_PACMAN;
 import static de.amr.games.pacman.model.world.World.t;
 
 import de.amr.games.pacman.controller.GameController;
@@ -42,7 +44,7 @@ import de.amr.games.pacman.model.common.Pac;
 public class Intermission1Controller extends FiniteStateMachine<IntermissionState> {
 
 	public enum IntermissionState {
-		BLINKY_CHASING_PACMAN, BIGPACMAN_CHASING_BLINKY
+		CHASING_PACMAN, CHASING_BLINKY
 	}
 
 	public GameController gameController;
@@ -52,64 +54,68 @@ public class Intermission1Controller extends FiniteStateMachine<IntermissionStat
 
 	public Intermission1Controller() {
 		super(IntermissionState.values());
-		configState(IntermissionState.BLINKY_CHASING_PACMAN, () -> stateTimer().setSeconds(5).start(),
-				this::state_BLINKY_CHASING_PACMAN_update, null);
-		configState(IntermissionState.BIGPACMAN_CHASING_BLINKY, this::state_BIGPACMAN_CHASING_BLINKY_enter,
-				this::state_BIGPACMAN_CHASING_BLINKY_update, null);
+		configState(CHASING_PACMAN, //
+				this::state_CHASING_PACMAN_enter, this::state_CHASING_PACMAN_update, null);
+		configState(CHASING_BLINKY, //
+				this::state_CHASING_BLINKY_enter, this::state_CHASING_BLINKY_update, null);
 	}
 
 	public void init(GameController gameController) {
 		this.gameController = gameController;
+		playIntermissionSound.run();
+		changeState(CHASING_PACMAN);
+	}
+
+	private void state_CHASING_PACMAN_enter() {
+		stateTimer().setSeconds(5).start();
 
 		pac = new Pac("Pac-Man");
 		pac.setDir(Direction.LEFT);
-		pac.show();
 		pac.setPosition(t(30), t(20));
 		pac.setSpeed(1.0);
+		pac.show();
 
 		blinky = new Ghost(GameModel.RED_GHOST, "Blinky");
+		blinky.state = GhostState.HUNTING_PAC;
 		blinky.setDir(Direction.LEFT);
 		blinky.setWishDir(Direction.LEFT);
-		blinky.show();
 		blinky.position = pac.position.plus(t(3) + 0.5, 0);
 		blinky.setSpeed(1.05);
-		blinky.state = GhostState.HUNTING_PAC;
-
-		playIntermissionSound.run();
-		changeState(IntermissionState.BLINKY_CHASING_PACMAN);
+		blinky.show();
 	}
 
-	private void state_BLINKY_CHASING_PACMAN_update() {
+	private void state_CHASING_PACMAN_update() {
 		if (stateTimer().ticked() < 60) {
 			return;
 		}
 		if (stateTimer().hasExpired()) {
-			changeState(IntermissionState.BIGPACMAN_CHASING_BLINKY);
-		} else {
-			pac.move();
-			blinky.move();
+			changeState(CHASING_BLINKY);
+			return;
 		}
+		pac.move();
+		blinky.move();
 	}
 
-	private void state_BIGPACMAN_CHASING_BLINKY_enter() {
-		blinky.state = GhostState.FRIGHTENED;
-		blinky.setPosition(-t(1), t(20));
-		blinky.setWishDir(Direction.RIGHT);
-		blinky.setDir(Direction.RIGHT);
-		blinky.setSpeed(0.6);
-		pac.setDir(Direction.RIGHT);
-		pac.setSpeed(1.0);
-		pac.setPosition(-t(24), t(20));
-
+	private void state_CHASING_BLINKY_enter() {
 		stateTimer().setSeconds(7).start();
+
+		pac.setDir(Direction.RIGHT);
+		pac.setPosition(-t(24), t(20));
+		pac.setSpeed(1.0);
+
+		blinky.state = GhostState.FRIGHTENED;
+		blinky.setDir(Direction.RIGHT);
+		blinky.setWishDir(Direction.RIGHT);
+		blinky.setPosition(-t(1), t(20));
+		blinky.setSpeed(0.6);
 	}
 
-	private void state_BIGPACMAN_CHASING_BLINKY_update() {
+	private void state_CHASING_BLINKY_update() {
 		if (stateTimer().hasExpired()) {
 			gameController.stateTimer().expire();
-		} else {
-			pac.move();
-			blinky.move();
+			return;
 		}
+		pac.move();
+		blinky.move();
 	}
 }
