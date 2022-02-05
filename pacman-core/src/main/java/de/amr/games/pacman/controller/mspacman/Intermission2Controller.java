@@ -23,6 +23,8 @@ SOFTWARE.
  */
 package de.amr.games.pacman.controller.mspacman;
 
+import static de.amr.games.pacman.controller.mspacman.Intermission2Controller.IntermissionState.ACTION;
+import static de.amr.games.pacman.controller.mspacman.Intermission2Controller.IntermissionState.FLAP;
 import static de.amr.games.pacman.model.world.World.t;
 
 import de.amr.games.pacman.controller.GameController;
@@ -57,12 +59,22 @@ public class Intermission2Controller extends FiniteStateMachine<IntermissionStat
 
 	public Intermission2Controller() {
 		super(IntermissionState.values());
-		configState(IntermissionState.FLAP, this::startStateTimer, this::state_FLAP_update, null);
-		configState(IntermissionState.ACTION, this::startStateTimer, this::state_ACTION_update, null);
+		configState(FLAP, this::state_FLAP_enter, this::state_FLAP_update, null);
+		configState(ACTION, this::startStateTimer, this::state_ACTION_update, null);
 	}
 
 	public void init(GameController gameController) {
 		this.gameController = gameController;
+		changeState(FLAP);
+	}
+
+	private void startStateTimer() {
+		stateTimer().start();
+	}
+
+	private void state_FLAP_enter() {
+		stateTimer().start();
+
 		flap = new Flap(2, "THE CHASE");
 		flap.setPosition(t(3), t(10));
 		flap.show();
@@ -70,17 +82,6 @@ public class Intermission2Controller extends FiniteStateMachine<IntermissionStat
 		pacMan.setDir(Direction.RIGHT);
 		msPacMan = new Pac("Ms. Pac-Man");
 		msPacMan.setDir(Direction.RIGHT);
-		changeState(IntermissionState.FLAP);
-	}
-
-	public void update() {
-		pacMan.move();
-		msPacMan.move();
-		updateState();
-	}
-
-	private void startStateTimer() {
-		stateTimer().start();
 	}
 
 	private void state_FLAP_update() {
@@ -91,50 +92,53 @@ public class Intermission2Controller extends FiniteStateMachine<IntermissionStat
 			playIntermissionSound.run();
 		} else if (stateTimer().isRunningSeconds(4.5)) {
 			changeState(IntermissionState.ACTION);
+			return;
 		}
 	}
 
 	private void state_ACTION_update() {
 		if (stateTimer().isRunningSeconds(1.5)) {
-			pacMan.show();
 			pacMan.setPosition(-t(2), UPPER_Y);
 			pacMan.setDir(Direction.RIGHT);
 			pacMan.setSpeed(2.0);
-			msPacMan.show();
+			pacMan.show();
 			msPacMan.setPosition(-t(8), UPPER_Y);
 			msPacMan.setDir(Direction.RIGHT);
 			msPacMan.setSpeed(2.0);
-		} else if (stateTimer().isRunningSeconds(6)) {
-			msPacMan.setPosition(t(30), LOWER_Y);
 			msPacMan.show();
-			msPacMan.setDir(Direction.LEFT);
-			msPacMan.setSpeed(2.0);
+		} else if (stateTimer().isRunningSeconds(6)) {
 			pacMan.setPosition(t(36), LOWER_Y);
 			pacMan.setDir(Direction.LEFT);
 			pacMan.setSpeed(2.0);
+			msPacMan.setPosition(t(30), LOWER_Y);
+			msPacMan.setDir(Direction.LEFT);
+			msPacMan.setSpeed(2.0);
 		} else if (stateTimer().isRunningSeconds(10.5)) {
+			pacMan.setDir(Direction.RIGHT);
+			pacMan.setSpeed(2.0);
 			msPacMan.setPosition(t(-8), MIDDLE_Y);
 			msPacMan.setDir(Direction.RIGHT);
 			msPacMan.setSpeed(2.0);
 			pacMan.setPosition(t(-2), MIDDLE_Y);
-			pacMan.setDir(Direction.RIGHT);
-			pacMan.setSpeed(2.0);
 		} else if (stateTimer().isRunningSeconds(14.5)) {
-			msPacMan.setPosition(t(30), UPPER_Y);
-			msPacMan.setDir(Direction.LEFT);
-			msPacMan.setSpeed(4.0);
 			pacMan.setPosition(t(42), UPPER_Y);
 			pacMan.setDir(Direction.LEFT);
 			pacMan.setSpeed(4.0);
-		} else if (stateTimer().isRunningSeconds(15.5)) {
-			msPacMan.setPosition(t(-14), LOWER_Y);
-			msPacMan.setDir(Direction.RIGHT);
+			msPacMan.setPosition(t(30), UPPER_Y);
+			msPacMan.setDir(Direction.LEFT);
 			msPacMan.setSpeed(4.0);
+		} else if (stateTimer().isRunningSeconds(15.5)) {
 			pacMan.setPosition(t(-2), LOWER_Y);
 			pacMan.setDir(Direction.RIGHT);
 			pacMan.setSpeed(4.0);
+			msPacMan.setPosition(t(-14), LOWER_Y);
+			msPacMan.setDir(Direction.RIGHT);
+			msPacMan.setSpeed(4.0);
 		} else if (stateTimer().isRunningSeconds(20)) {
 			gameController.stateTimer().expire();
+			return;
 		}
+		pacMan.move();
+		msPacMan.move();
 	}
 }
