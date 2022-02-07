@@ -26,6 +26,7 @@ package de.amr.games.pacman.controller.mspacman;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.model.world.World.HTS;
+import static de.amr.games.pacman.model.world.World.TS;
 import static de.amr.games.pacman.model.world.World.t;
 
 import de.amr.games.pacman.controller.GameController;
@@ -49,7 +50,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 		BEGIN, PRESENTING_GHOSTS, PRESENTING_MSPACMAN, WAITING_FOR_GAME;
 	}
 
-	public final V2i tileBoardTopLeft = new V2i(7, 11);
+	public final V2i adBoardTopLeft = new V2i(7, 11).scaled(TS);
 	public final int yBelowBoard = t(20) + HTS;
 	public final int xLeftOfBoard = t(5);
 	public final TimedSequence<Boolean> blinking = TimedSequence.pulse().frameDuration(30);
@@ -110,7 +111,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 			ghost.setDir(UP);
 			ghost.setWishDir(UP);
 		}
-		return ghost.position.y <= t(tileBoardTopLeft.y) + ghost.id * 18;
+		return ghost.position.y <= adBoardTopLeft.y + ghost.id * 18;
 	}
 
 	private void state_PRESENTING_GHOSTS_update() {
