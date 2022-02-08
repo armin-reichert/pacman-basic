@@ -607,6 +607,7 @@ public class GameController extends FiniteStateMachine<GameState> {
 			ghost.setSpeed(game.ghostSpeed * 2);
 			boolean reachedRevivalTile = ghost.enterHouse();
 			if (reachedRevivalTile) {
+				publish(new GameEvent(game, Info.GHOST_REVIVED, ghost, ghost.tile()));
 				publish(new GameEvent(game, Info.GHOST_LEAVING_HOUSE, ghost, ghost.tile()));
 			}
 		}
