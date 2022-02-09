@@ -32,10 +32,10 @@ public class TimedSeq<T> {
 
 	public static int INDEFINITE = -1;
 
-	static class SingleFrameAnimation<TT> extends TimedSeq<TT> {
+	private static class OneFrame<TT> extends TimedSeq<TT> {
 
 		@SuppressWarnings("unchecked")
-		public SingleFrameAnimation(TT thing) {
+		public OneFrame(TT thing) {
 			things = (TT[]) new Object[1];
 			things[0] = thing;
 		}
@@ -47,7 +47,7 @@ public class TimedSeq<T> {
 			throw new IllegalArgumentException("Animation must have at least one frame");
 		}
 		if (things.length == 1) {
-			return new SingleFrameAnimation<TT>(things[0]);
+			return new OneFrame<TT>(things[0]);
 		}
 		TimedSeq<TT> a = new TimedSeq<>();
 		a.things = things;
