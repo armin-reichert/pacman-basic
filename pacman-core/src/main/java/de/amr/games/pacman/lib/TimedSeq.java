@@ -28,11 +28,11 @@ package de.amr.games.pacman.lib;
  * 
  * @author Armin Reichert
  */
-public class TimedSequence<T> {
+public class TimedSeq<T> {
 
 	public static int INDEFINITE = -1;
 
-	static class SingleFrameAnimation<TT> extends TimedSequence<TT> {
+	static class SingleFrameAnimation<TT> extends TimedSeq<TT> {
 
 		@SuppressWarnings("unchecked")
 		public SingleFrameAnimation(TT thing) {
@@ -42,20 +42,20 @@ public class TimedSequence<T> {
 	}
 
 	@SafeVarargs
-	public static <TT> TimedSequence<TT> of(TT... things) {
+	public static <TT> TimedSeq<TT> of(TT... things) {
 		if (things.length == 0) {
 			throw new IllegalArgumentException("Animation must have at least one frame");
 		}
 		if (things.length == 1) {
 			return new SingleFrameAnimation<TT>(things[0]);
 		}
-		TimedSequence<TT> a = new TimedSequence<>();
+		TimedSeq<TT> a = new TimedSeq<>();
 		a.things = things;
 		return a;
 	}
 
-	public static TimedSequence<Boolean> pulse() {
-		return TimedSequence.of(true, false).endless();
+	public static TimedSeq<Boolean> pulse() {
+		return TimedSeq.of(true, false).endless();
 	}
 
 	protected T[] things;
@@ -71,13 +71,13 @@ public class TimedSequence<T> {
 	protected boolean complete;
 	protected Runnable onStart;
 
-	protected TimedSequence() {
+	protected TimedSeq() {
 		repetitions = 1;
 		frameDurationTicks = 6; // 0.1 sec
 		reset();
 	}
 
-	public TimedSequence<T> reset() {
+	public TimedSeq<T> reset() {
 		delayRemainingTicks = delay;
 		totalRunningTicks = 0;
 		frameRunningTicks = 0;
@@ -88,12 +88,12 @@ public class TimedSequence<T> {
 		return this;
 	}
 
-	public TimedSequence<T> onStart(Runnable code) {
+	public TimedSeq<T> onStart(Runnable code) {
 		onStart = code;
 		return this;
 	}
 
-	public TimedSequence<T> frameDuration(long ticks) {
+	public TimedSeq<T> frameDuration(long ticks) {
 		frameDurationTicks = ticks;
 		return this;
 	}
@@ -102,7 +102,7 @@ public class TimedSequence<T> {
 		return delay;
 	}
 
-	public TimedSequence<T> delay(long ticks) {
+	public TimedSeq<T> delay(long ticks) {
 		delay = ticks;
 		delayRemainingTicks = ticks;
 		return this;
@@ -112,28 +112,28 @@ public class TimedSequence<T> {
 		return repetitions;
 	}
 
-	public TimedSequence<T> repetitions(int n) {
+	public TimedSeq<T> repetitions(int n) {
 		repetitions = n;
 		return this;
 	}
 
-	public TimedSequence<T> endless() {
+	public TimedSeq<T> endless() {
 		repetitions = INDEFINITE;
 		return this;
 	}
 
-	public TimedSequence<T> restart() {
+	public TimedSeq<T> restart() {
 		reset();
 		run();
 		return this;
 	}
 
-	public TimedSequence<T> run() {
+	public TimedSeq<T> run() {
 		running = true;
 		return this;
 	}
 
-	public TimedSequence<T> stop() {
+	public TimedSeq<T> stop() {
 		running = false;
 		return this;
 	}

@@ -34,7 +34,7 @@ import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.controller.pacman.IntroController.IntroState;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.FiniteStateMachine;
-import de.amr.games.pacman.lib.TimedSequence;
+import de.amr.games.pacman.lib.TimedSeq;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.GhostState;
@@ -70,8 +70,8 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 		}
 	}
 
-	public final TimedSequence<Boolean> blinking = TimedSequence.pulse().frameDuration(10);
-	public final TimedSequence<Boolean> slowBlinking = TimedSequence.pulse().frameDuration(30);
+	public final TimedSeq<Boolean> blinking = TimedSeq.pulse().frameDuration(10);
+	public final TimedSeq<Boolean> slowBlinking = TimedSeq.pulse().frameDuration(30);
 	public final int topY = t(6);
 
 	public GameController gameController;

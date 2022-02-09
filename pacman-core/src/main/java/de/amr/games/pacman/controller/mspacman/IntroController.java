@@ -32,7 +32,7 @@ import static de.amr.games.pacman.model.world.World.t;
 import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.controller.mspacman.IntroController.IntroState;
 import de.amr.games.pacman.lib.FiniteStateMachine;
-import de.amr.games.pacman.lib.TimedSequence;
+import de.amr.games.pacman.lib.TimedSeq;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Ghost;
@@ -53,7 +53,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 	public final V2i adBoardTopLeft = new V2i(7, 11).scaled(TS);
 	public final int yBelowBoard = t(20) + HTS;
 	public final int xLeftOfBoard = t(5);
-	public final TimedSequence<Boolean> blinking = TimedSequence.pulse().frameDuration(30);
+	public final TimedSeq<Boolean> blinking = TimedSeq.pulse().frameDuration(30);
 
 	public GameController gameController;
 	public Pac msPacMan;
