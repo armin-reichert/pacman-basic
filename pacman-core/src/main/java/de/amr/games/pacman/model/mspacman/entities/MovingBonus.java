@@ -79,10 +79,12 @@ public class MovingBonus extends Bonus {
 	@Override
 	public boolean updateState() {
 		switch (state) {
-		case INACTIVE:
-			return false;
 
-		case EDIBLE:
+		case INACTIVE -> {
+			return false;
+		}
+
+		case EDIBLE -> {
 			if (tile().equals(targetTile)) {
 				hide();
 				state = BonusState.INACTIVE;
@@ -91,8 +93,9 @@ public class MovingBonus extends Bonus {
 			headForTile(targetTile);
 			tryMoving();
 			return false;
+		}
 
-		case EATEN:
+		case EATEN -> {
 			if (timer == 0) {
 				hide();
 				state = BonusState.INACTIVE;
@@ -100,9 +103,9 @@ public class MovingBonus extends Bonus {
 			}
 			timer--;
 			return false;
+		}
 
-		default:
-			throw new IllegalStateException();
+		default -> throw new IllegalStateException();
 		}
 	}
 }
