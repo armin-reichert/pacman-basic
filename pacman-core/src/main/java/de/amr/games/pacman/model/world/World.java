@@ -177,7 +177,7 @@ public interface World {
 	/**
 	 * @return all energizer tiles in the world
 	 */
-	Stream<V2i> energizerTiles();
+	List<V2i> energizerTiles();
 
 	/**
 	 * @return bonus location in case this is fixed

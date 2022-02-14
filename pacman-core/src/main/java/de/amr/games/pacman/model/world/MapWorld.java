@@ -188,8 +188,8 @@ public class MapWorld implements World {
 	}
 
 	@Override
-	public Stream<V2i> energizerTiles() {
-		return energizerTiles.stream();
+	public List<V2i> energizerTiles() {
+		return Collections.unmodifiableList(energizerTiles);
 	}
 
 	@Override

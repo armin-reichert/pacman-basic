@@ -15,7 +15,7 @@ public class TestWorldFunctions {
 		MapWorld world = new MapWorld("/pacman/maps/map1.txt");
 		assertEquals(36, world.numRows());
 		assertEquals(28, world.numCols());
-		assertEquals(4, world.energizerTiles().count());
+		assertEquals(4, world.energizerTiles().size());
 		assertEquals(244, world.tiles().filter(world::isFoodTile).count());
 		assertEquals(240, world.tiles().filter(world::isFoodTile).filter(not(world::isEnergizerTile)).count());
 		assertEquals(70, world.pelletsToEatForBonus(0));
@@ -29,7 +29,7 @@ public class TestWorldFunctions {
 		MapWorld world = new MapWorld("/mspacman/maps/map1.txt");
 		assertEquals(36, world.numRows());
 		assertEquals(28, world.numCols());
-		assertEquals(4, world.energizerTiles().count());
+		assertEquals(4, world.energizerTiles().size());
 		assertEquals(220 + 4, world.tiles().filter(world::isFoodTile).count());
 		assertEquals(220, world.tiles().filter(world::isFoodTile).filter(not(world::isEnergizerTile)).count());
 		assertEquals(64, world.pelletsToEatForBonus(0));
@@ -48,7 +48,7 @@ public class TestWorldFunctions {
 		MapWorld world = new MapWorld("/mspacman/maps/map2.txt");
 		assertEquals(36, world.numRows());
 		assertEquals(28, world.numCols());
-		assertEquals(4, world.energizerTiles().count());
+		assertEquals(4, world.energizerTiles().size());
 		assertEquals(240 + 4, world.tiles().filter(world::isFoodTile).count());
 		assertEquals(240, world.tiles().filter(world::isFoodTile).filter(not(world::isEnergizerTile)).count());
 		assertEquals(64, world.pelletsToEatForBonus(0));
@@ -67,7 +67,7 @@ public class TestWorldFunctions {
 		MapWorld world = new MapWorld("/mspacman/maps/map3.txt");
 		assertEquals(36, world.numRows());
 		assertEquals(28, world.numCols());
-		assertEquals(4, world.energizerTiles().count());
+		assertEquals(4, world.energizerTiles().size());
 		assertEquals(238 + 4, world.tiles().filter(world::isFoodTile).count());
 		assertEquals(238, world.tiles().filter(world::isFoodTile).filter(not(world::isEnergizerTile)).count());
 		assertEquals(70, world.pelletsToEatForBonus(0));
@@ -86,7 +86,7 @@ public class TestWorldFunctions {
 		MapWorld world = new MapWorld("/mspacman/maps/map4.txt");
 		assertEquals(36, world.numRows());
 		assertEquals(28, world.numCols());
-		assertEquals(4, world.energizerTiles().count());
+		assertEquals(4, world.energizerTiles().size());
 		assertEquals(234 + 4, world.tiles().filter(world::isFoodTile).count());
 		assertEquals(234, world.tiles().filter(world::isFoodTile).filter(not(world::isEnergizerTile)).count());
 		assertEquals(70, world.pelletsToEatForBonus(0));
