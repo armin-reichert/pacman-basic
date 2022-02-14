@@ -83,10 +83,6 @@ public class GameEntity {
 		placeAt(tile(), offsetX, offsetY);
 	}
 
-	public void setOffset(V2d v) {
-		setOffset(v.x, v.y);
-	}
-
 	/**
 	 * @param other other creature
 	 * @return if both creatures occupy the same tile
