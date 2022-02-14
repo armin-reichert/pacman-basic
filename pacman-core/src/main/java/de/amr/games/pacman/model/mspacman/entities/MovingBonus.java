@@ -61,7 +61,7 @@ public class MovingBonus extends Bonus {
 		newTileEntered = true;
 		forcedOnTrack = true;
 		stuck = false;
-		setSpeed(0.25);
+		setSpeed(0.4); // TODO how fast should it walk?
 		hide();
 	}
 
@@ -114,7 +114,8 @@ public class MovingBonus extends Bonus {
 			}
 			if (phase == Phase.GO_TO_HOUSE_ENTRY && tile().equals(targetTile)) {
 				phase = Phase.GO_TO_OTHER_SIDE;
-				setTargetTile(world.ghostHouse().entryTile().plus(0, 6));
+				int dy = world.ghostHouse().numTilesY() + 2;
+				setTargetTile(world.ghostHouse().entryTile().plus(0, dy));
 			}
 			if (phase == Phase.GO_TO_OTHER_SIDE && tile().equals(targetTile)) {
 				phase = Phase.GO_TO_HOUSE_ENTRY_AGAIN;
