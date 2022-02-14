@@ -25,6 +25,8 @@ package de.amr.games.pacman.model.common;
 
 import static de.amr.games.pacman.model.world.World.t;
 
+import java.util.Objects;
+
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.world.World;
@@ -63,20 +65,19 @@ public class GameEntity {
 	}
 
 	/**
-	 * Places the creature at the given tile with the given position offsets. Sets the {@link #newTileEntered} flag to
-	 * trigger steering.
+	 * Places it at the given tile with the given offsets.
 	 * 
 	 * @param tile    the tile where this creature will be placed
 	 * @param offsetX the pixel offset in x-direction
 	 * @param offsetY the pixel offset in y-direction
 	 */
 	public void placeAt(V2i tile, double offsetX, double offsetY) {
+		Objects.requireNonNull(tile);
 		setPosition(t(tile.x) + offsetX, t(tile.y) + offsetY);
 	}
 
 	/**
-	 * Places the creature on its current tile with given offset. This is for example used to place a ghost exactly
-	 * between two tiles like in the initial ghosthouse position.
+	 * Places it on its current tile with given offsets.
 	 * 
 	 * @param offsetX offset in x-direction
 	 * @param offsetY offset in y-direction
@@ -86,10 +87,11 @@ public class GameEntity {
 	}
 
 	/**
-	 * @param other other creature
-	 * @return if both creatures occupy the same tile
+	 * @param other another game entity
+	 * @return if both entities occupy the same tile
 	 */
 	public boolean meets(GameEntity other) {
+		Objects.requireNonNull(other);
 		return tile().equals(other.tile());
 	}
 
