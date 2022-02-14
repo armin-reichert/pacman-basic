@@ -30,11 +30,13 @@ import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.world.World;
 
 /**
- * Entity base class.
+ * Base class for all entities inside the world.
  * 
  * @author Armin Reichert
  */
 public class GameEntity {
+
+	public World world;
 
 	public boolean visible = false;
 

@@ -46,12 +46,6 @@ public class Creature extends GameEntity {
 	/** Readable name, for display and logging purposes. */
 	public final String name;
 
-	/** The world where this creature lives. */
-	public World world;
-
-	/** Number of pixels/second the creature moves at 100% speed. */
-	public double baseSpeed = GameModel.BASE_SPEED;
-
 	/** The current move direction. */
 	protected Direction dir = Direction.RIGHT;
 
@@ -116,7 +110,7 @@ public class Creature extends GameEntity {
 	 * @param fraction fraction of base speed
 	 */
 	public void setSpeed(double fraction) {
-		velocity = fraction == 0 ? V2d.NULL : new V2d(dir.vec).scaled(fraction * baseSpeed);
+		velocity = fraction == 0 ? V2d.NULL : new V2d(dir.vec).scaled(fraction * GameModel.BASE_SPEED);
 	}
 
 	/**
