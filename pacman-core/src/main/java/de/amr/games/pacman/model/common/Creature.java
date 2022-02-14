@@ -167,22 +167,22 @@ public class Creature extends GameEntity {
 	/**
 	 * Tries to move to the given direction. If creature reaches an inaccessible tile, it gets stuck.
 	 * 
-	 * @param moveDir intended move direction
+	 * @param dir intended move direction
 	 */
-	public void tryMovingTowards(Direction moveDir) {
+	public void tryMovingTowards(Direction dir) {
 		final V2i tileBeforeMove = tile();
 		final V2d offsetBeforeMove = offset();
-		final V2i neighborTile = tileBeforeMove.plus(moveDir.vec);
+		final V2i neighborTile = tileBeforeMove.plus(dir.vec);
 
 		// check if creature can turn towards move direction at its current position
 		if (forcedOnTrack && canAccessTile(neighborTile)) {
-			if (moveDir == Direction.LEFT || moveDir == Direction.RIGHT) {
+			if (dir == Direction.LEFT || dir == Direction.RIGHT) {
 				if (abs(offsetBeforeMove.y) > velocity.length()) {
 					stuck = true;
 					return;
 				}
 				setOffset(offsetBeforeMove.x, 0);
-			} else if (moveDir == Direction.UP || moveDir == Direction.DOWN) {
+			} else if (dir == Direction.UP || dir == Direction.DOWN) {
 				if (abs(offsetBeforeMove.x) > velocity.length()) {
 					stuck = true;
 					return;
@@ -191,7 +191,7 @@ public class Creature extends GameEntity {
 			}
 		}
 
-		final V2d posAfterMove = position.plus(new V2d(moveDir.vec).scaled(velocity.length()));
+		final V2d posAfterMove = position.plus(new V2d(dir.vec).scaled(velocity.length()));
 		final V2i tileAfterMove = World.tile(posAfterMove);
 		final V2d offsetAfterMove = World.offset(posAfterMove);
 
@@ -203,12 +203,12 @@ public class Creature extends GameEntity {
 
 		// align with edge of inaccessible neighbor
 		if (!canAccessTile(neighborTile)) {
-			if (moveDir == Direction.RIGHT && offsetAfterMove.x > 0 || moveDir == Direction.LEFT && offsetAfterMove.x < 0) {
+			if (dir == Direction.RIGHT && offsetAfterMove.x > 0 || dir == Direction.LEFT && offsetAfterMove.x < 0) {
 				setOffset(0, offsetBeforeMove.y);
 				stuck = true;
 				return;
 			}
-			if (moveDir == Direction.DOWN && offsetAfterMove.y > 0 || moveDir == Direction.UP && offsetAfterMove.y < 0) {
+			if (dir == Direction.DOWN && offsetAfterMove.y > 0 || dir == Direction.UP && offsetAfterMove.y < 0) {
 				setOffset(offsetBeforeMove.x, 0);
 				stuck = true;
 				return;
@@ -226,28 +226,26 @@ public class Creature extends GameEntity {
 	 * selects the one with smallest Euclidean distance to the target tile. Reversing the move direction is not allowed.
 	 */
 	public void headForTile(V2i targetTile) {
-		this.targetTile = targetTile;
+		Objects.requireNonNull(targetTile);
 		if (!stuck && !newTileEntered) {
 			return;
 		}
-		if (world.isPortal(tile())) {
-			return;
-		}
-		if (targetTile == null) {
-			return;
-		}
 		final V2i currentTile = tile();
+		if (world.isPortal(currentTile)) {
+			return;
+		}
+		this.targetTile = targetTile;
 		double minDist = Double.MAX_VALUE;
-		for (Direction direction : turnPriority) {
-			if (direction == moveDir.opposite()) {
+		for (Direction dir : turnPriority) {
+			if (dir == moveDir.opposite()) {
 				continue;
 			}
-			final V2i neighborTile = currentTile.plus(direction.vec);
+			final V2i neighborTile = currentTile.plus(dir.vec);
 			if (canAccessTile(neighborTile)) {
 				final double distToTarget = neighborTile.euclideanDistance(targetTile);
 				if (distToTarget < minDist) {
 					minDist = distToTarget;
-					wishDir = direction;
+					wishDir = dir;
 				}
 			}
 		}
