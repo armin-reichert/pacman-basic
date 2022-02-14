@@ -427,7 +427,7 @@ public class GameController extends FiniteStateMachine<GameState> {
 	}
 
 	private boolean killedPlayer() {
-		if (game.player.immune && !attractMode) {
+		if (game.player.powerTimer.isRunning() || game.player.immune && !attractMode) {
 			return false;
 		}
 		Optional<Ghost> killer = game.ghosts(HUNTING_PAC).filter(game.player::meets).findAny();
