@@ -79,9 +79,9 @@ public class Intermission2Controller extends FiniteStateMachine<IntermissionStat
 		flap.setPosition(t(3), t(10));
 		flap.show();
 		pacMan = new Pac("Pac-Man");
-		pacMan.setDir(Direction.RIGHT);
+		pacMan.setMoveDir(Direction.RIGHT);
 		msPacMan = new Pac("Ms. Pac-Man");
-		msPacMan.setDir(Direction.RIGHT);
+		msPacMan.setMoveDir(Direction.RIGHT);
 	}
 
 	private void state_FLAP_update() {
@@ -99,40 +99,40 @@ public class Intermission2Controller extends FiniteStateMachine<IntermissionStat
 	private void state_ACTION_update() {
 		if (stateTimer().isRunningSeconds(1.5)) {
 			pacMan.setPosition(-t(2), UPPER_Y);
-			pacMan.setDir(Direction.RIGHT);
+			pacMan.setMoveDir(Direction.RIGHT);
 			pacMan.setSpeed(2.0);
 			pacMan.show();
 			msPacMan.setPosition(-t(8), UPPER_Y);
-			msPacMan.setDir(Direction.RIGHT);
+			msPacMan.setMoveDir(Direction.RIGHT);
 			msPacMan.setSpeed(2.0);
 			msPacMan.show();
 		} else if (stateTimer().isRunningSeconds(6)) {
 			pacMan.setPosition(t(36), LOWER_Y);
-			pacMan.setDir(Direction.LEFT);
+			pacMan.setMoveDir(Direction.LEFT);
 			pacMan.setSpeed(2.0);
 			msPacMan.setPosition(t(30), LOWER_Y);
-			msPacMan.setDir(Direction.LEFT);
+			msPacMan.setMoveDir(Direction.LEFT);
 			msPacMan.setSpeed(2.0);
 		} else if (stateTimer().isRunningSeconds(10.5)) {
-			pacMan.setDir(Direction.RIGHT);
+			pacMan.setMoveDir(Direction.RIGHT);
 			pacMan.setSpeed(2.0);
 			msPacMan.setPosition(t(-8), MIDDLE_Y);
-			msPacMan.setDir(Direction.RIGHT);
+			msPacMan.setMoveDir(Direction.RIGHT);
 			msPacMan.setSpeed(2.0);
 			pacMan.setPosition(t(-2), MIDDLE_Y);
 		} else if (stateTimer().isRunningSeconds(14.5)) {
 			pacMan.setPosition(t(42), UPPER_Y);
-			pacMan.setDir(Direction.LEFT);
+			pacMan.setMoveDir(Direction.LEFT);
 			pacMan.setSpeed(4.0);
 			msPacMan.setPosition(t(30), UPPER_Y);
-			msPacMan.setDir(Direction.LEFT);
+			msPacMan.setMoveDir(Direction.LEFT);
 			msPacMan.setSpeed(4.0);
 		} else if (stateTimer().isRunningSeconds(15.5)) {
 			pacMan.setPosition(t(-2), LOWER_Y);
-			pacMan.setDir(Direction.RIGHT);
+			pacMan.setMoveDir(Direction.RIGHT);
 			pacMan.setSpeed(4.0);
 			msPacMan.setPosition(t(-14), LOWER_Y);
-			msPacMan.setDir(Direction.RIGHT);
+			msPacMan.setMoveDir(Direction.RIGHT);
 			msPacMan.setSpeed(4.0);
 		} else if (stateTimer().isRunningSeconds(20)) {
 			gameController.stateTimer().expire();

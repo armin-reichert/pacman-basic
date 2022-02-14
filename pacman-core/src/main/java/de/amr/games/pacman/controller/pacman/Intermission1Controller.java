@@ -70,14 +70,14 @@ public class Intermission1Controller extends FiniteStateMachine<IntermissionStat
 		stateTimer().setSeconds(5).start();
 
 		pac = new Pac("Pac-Man");
-		pac.setDir(Direction.LEFT);
+		pac.setMoveDir(Direction.LEFT);
 		pac.setPosition(t(30), t(20));
 		pac.setSpeed(1.0);
 		pac.show();
 
 		blinky = new Ghost(GameModel.RED_GHOST, "Blinky");
 		blinky.state = GhostState.HUNTING_PAC;
-		blinky.setDir(Direction.LEFT);
+		blinky.setMoveDir(Direction.LEFT);
 		blinky.setWishDir(Direction.LEFT);
 		blinky.position = pac.position.plus(t(3) + 0.5, 0);
 		blinky.setSpeed(1.05);
@@ -99,12 +99,12 @@ public class Intermission1Controller extends FiniteStateMachine<IntermissionStat
 	private void state_CHASING_BLINKY_enter() {
 		stateTimer().setSeconds(7).start();
 
-		pac.setDir(Direction.RIGHT);
+		pac.setMoveDir(Direction.RIGHT);
 		pac.setPosition(-t(24), t(20));
 		pac.setSpeed(1.0);
 
 		blinky.state = GhostState.FRIGHTENED;
-		blinky.setDir(Direction.RIGHT);
+		blinky.setMoveDir(Direction.RIGHT);
 		blinky.setWishDir(Direction.RIGHT);
 		blinky.setPosition(-t(1), t(20));
 		blinky.setSpeed(0.6);

@@ -49,7 +49,7 @@ public class Creature extends GameEntity {
 	/** The current move direction. */
 	protected Direction moveDir = Direction.RIGHT;
 
-	/** The intended move direction. Will be taken as soon as possible. */
+	/** The wish direction. Will be taken as soon as possible. */
 	protected Direction wishDir = Direction.RIGHT;
 
 	/** The order in which the creature computes the next direcion to take. */
@@ -82,7 +82,7 @@ public class Creature extends GameEntity {
 	 * 
 	 * @param dir the new move direction
 	 */
-	public void setDir(Direction dir) {
+	public void setMoveDir(Direction dir) {
 		moveDir = Objects.requireNonNull(dir);
 		velocity = new V2d(dir.vec).scaled(velocity.length());
 	}

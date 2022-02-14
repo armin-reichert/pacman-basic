@@ -87,23 +87,23 @@ public class Intermission1Controller extends FiniteStateMachine<IntermissonState
 		flap.show();
 
 		pacMan = new Pac("Pac-Man");
-		pacMan.setDir(Direction.RIGHT);
+		pacMan.setMoveDir(Direction.RIGHT);
 		pacMan.setPosition(-t(2), upperY);
 		pacMan.show();
 
 		inky = new Ghost(GameModel.CYAN_GHOST, "Inky");
-		inky.setDir(Direction.RIGHT);
+		inky.setMoveDir(Direction.RIGHT);
 		inky.setWishDir(Direction.RIGHT);
 		inky.position = pacMan.position.plus(-t(3), 0);
 		inky.show();
 
 		msPac = new Pac("Ms. Pac-Man");
-		msPac.setDir(Direction.LEFT);
+		msPac.setMoveDir(Direction.LEFT);
 		msPac.setPosition(t(30), lowerY);
 		msPac.show();
 
 		pinky = new Ghost(GameModel.PINK_GHOST, "Pinky");
-		pinky.setDir(Direction.LEFT);
+		pinky.setMoveDir(Direction.LEFT);
 		pinky.setWishDir(Direction.LEFT);
 		pinky.position = msPac.position.plus(t(3), 0);
 		pinky.show();
@@ -130,14 +130,14 @@ public class Intermission1Controller extends FiniteStateMachine<IntermissonState
 	private void state_CHASED_BY_GHOSTS_update() {
 		if (inky.position.x > t(30)) {
 			msPac.setPosition(t(-2), middleY);
-			msPac.setDir(Direction.RIGHT);
+			msPac.setMoveDir(Direction.RIGHT);
 			pacMan.setPosition(t(30), middleY);
-			pacMan.setDir(Direction.LEFT);
+			pacMan.setMoveDir(Direction.LEFT);
 			inky.setPosition(t(33), middleY);
-			inky.setDir(Direction.LEFT);
+			inky.setMoveDir(Direction.LEFT);
 			inky.setWishDir(Direction.LEFT);
 			pinky.setPosition(t(-5), middleY);
-			pinky.setDir(Direction.RIGHT);
+			pinky.setMoveDir(Direction.RIGHT);
 			pinky.setWishDir(Direction.RIGHT);
 			changeState(IntermissonState.COMING_TOGETHER);
 			return;
@@ -150,14 +150,14 @@ public class Intermission1Controller extends FiniteStateMachine<IntermissonState
 
 	private void state_COMING_TOGETHER_update() {
 		if (pacMan.moveDir() == Direction.LEFT && pacMan.position.x < t(15)) {
-			pacMan.setDir(Direction.UP);
-			msPac.setDir(Direction.UP);
+			pacMan.setMoveDir(Direction.UP);
+			msPac.setMoveDir(Direction.UP);
 		}
 		if (pacMan.moveDir() == Direction.UP && pacMan.position.y < upperY) {
 			pacMan.setSpeed(0);
 			msPac.setSpeed(0);
-			pacMan.setDir(Direction.LEFT);
-			msPac.setDir(Direction.RIGHT);
+			pacMan.setMoveDir(Direction.LEFT);
+			msPac.setMoveDir(Direction.RIGHT);
 			heart.setPosition((pacMan.position.x + msPac.position.x) / 2, pacMan.position.y - t(2));
 			heart.show();
 			inky.setSpeed(0);
@@ -166,10 +166,10 @@ public class Intermission1Controller extends FiniteStateMachine<IntermissonState
 		}
 		if (!ghostsMet && inky.position.x - pinky.position.x < 16) {
 			ghostsMet = true;
-			inky.setDir(inky.moveDir().opposite());
+			inky.setMoveDir(inky.moveDir().opposite());
 			inky.setWishDir(inky.moveDir());
 			inky.setSpeed(0.2);
-			pinky.setDir(pinky.moveDir().opposite());
+			pinky.setMoveDir(pinky.moveDir().opposite());
 			pinky.setWishDir(pinky.moveDir());
 			pinky.setSpeed(0.2);
 		}

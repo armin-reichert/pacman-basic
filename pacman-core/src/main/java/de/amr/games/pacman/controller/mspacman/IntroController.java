@@ -79,7 +79,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 
 	private void state_BEGIN_enter() {
 		msPacMan = new Pac("Ms. Pac-Man");
-		msPacMan.setDir(LEFT);
+		msPacMan.setMoveDir(LEFT);
 		msPacMan.setPosition(t(36), yBelowBoard);
 		ghosts = new Ghost[] { //
 				new Ghost(GameModel.RED_GHOST, "Blinky"), //
@@ -88,7 +88,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 				new Ghost(GameModel.ORANGE_GHOST, "Sue") //
 		};
 		for (Ghost ghost : ghosts) {
-			ghost.setDir(LEFT);
+			ghost.setMoveDir(LEFT);
 			ghost.setWishDir(LEFT);
 			ghost.setPosition(t(36), yBelowBoard);
 			ghost.state = GhostState.HUNTING_PAC;
@@ -108,7 +108,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 	private boolean letGhostEnterStage(Ghost ghost) {
 		ghost.move();
 		if (ghost.position.x <= xLeftOfBoard) {
-			ghost.setDir(UP);
+			ghost.setMoveDir(UP);
 			ghost.setWishDir(UP);
 		}
 		return ghost.position.y <= adBoardTopLeft.y + ghost.id * 18;

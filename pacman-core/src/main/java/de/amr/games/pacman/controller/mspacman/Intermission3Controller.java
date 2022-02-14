@@ -80,11 +80,11 @@ public class Intermission3Controller extends FiniteStateMachine<IntermissionStat
 		flap.show();
 
 		pacMan = new Pac("Pac-Man");
-		pacMan.setDir(Direction.RIGHT);
+		pacMan.setMoveDir(Direction.RIGHT);
 		pacMan.setPosition(t(3), GROUND_Y - 4);
 
 		msPacMan = new Pac("Ms. Pac-Man");
-		msPacMan.setDir(Direction.RIGHT);
+		msPacMan.setMoveDir(Direction.RIGHT);
 		msPacMan.setPosition(t(5), GROUND_Y - 4);
 
 		stork = new GameEntity();

@@ -76,12 +76,12 @@ public class MovingBonus extends Bonus {
 		if (leftToRight) {
 			entryTile = randomPortal().left;
 			exitTile = randomPortal().right;
-			setDir(Direction.RIGHT);
+			setMoveDir(Direction.RIGHT);
 			setWishDir(Direction.RIGHT);
 		} else {
 			entryTile = randomPortal().right;
 			exitTile = randomPortal().left;
-			setDir(Direction.LEFT);
+			setMoveDir(Direction.LEFT);
 			setWishDir(Direction.LEFT);
 		}
 		placeAt(entryTile, 0, 0);

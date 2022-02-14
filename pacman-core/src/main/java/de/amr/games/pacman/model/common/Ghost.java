@@ -138,7 +138,7 @@ public class Ghost extends Creature {
 		if (atGhostHouseDoor() && moveDir != Direction.DOWN) {
 			// house reached, start entering
 			setOffset(HTS, 0);
-			setDir(Direction.DOWN);
+			setMoveDir(Direction.DOWN);
 			setWishDir(Direction.DOWN);
 			forcedOnTrack = false;
 			targetTile = revivalTile;
@@ -167,7 +167,7 @@ public class Ghost extends Creature {
 		// Center reached? If target tile is left or right seat, move towards target tile
 		if (tile.equals(world.ghostHouse().seat(1)) && offset.y >= 0) {
 			Direction newDir = targetTile.x < world.ghostHouse().seat(1).x ? Direction.LEFT : Direction.RIGHT;
-			setDir(newDir);
+			setMoveDir(newDir);
 			setWishDir(newDir);
 		}
 		tryMovingTowards(moveDir);
@@ -186,7 +186,7 @@ public class Ghost extends Creature {
 		// House left? Resume hunting.
 		if (tile.equals(world.ghostHouse().entryTile()) && differsAtMost(offset.y, 0, 1)) {
 			setOffset(HTS, 0);
-			setDir(Direction.LEFT);
+			setMoveDir(Direction.LEFT);
 			setWishDir(Direction.LEFT);
 			forcedOnTrack = true;
 			state = GhostState.HUNTING_PAC;
@@ -197,14 +197,14 @@ public class Ghost extends Creature {
 		int ground = t(middleSeat.y) + HTS;
 		if (differsAtMost(position.x, center, 1)) {
 			setOffset(HTS, offset.y);
-			setDir(Direction.UP);
+			setMoveDir(Direction.UP);
 			setWishDir(Direction.UP);
 		} else if (position.y < ground) {
-			setDir(Direction.DOWN);
+			setMoveDir(Direction.DOWN);
 			setWishDir(Direction.DOWN);
 		} else {
 			Direction newDir = position.x < center ? Direction.RIGHT : Direction.LEFT;
-			setDir(newDir);
+			setMoveDir(newDir);
 			setWishDir(newDir);
 		}
 		tryMovingTowards(wishDir);
@@ -220,7 +220,7 @@ public class Ghost extends Creature {
 		int centerY = t(world.ghostHouse().seat(1).y);
 		if (!differsAtMost(position.y, centerY, HTS)) {
 			Direction opposite = moveDir.opposite();
-			setDir(opposite);
+			setMoveDir(opposite);
 			setWishDir(opposite);
 		}
 		tryMovingTowards(wishDir);

@@ -228,7 +228,7 @@ public abstract class GameModel {
 
 	public void resetGuys() {
 		player.placeAt(world.playerHomeTile(), HTS, 0);
-		player.setDir(world.playerStartDirection());
+		player.setMoveDir(world.playerStartDirection());
 		player.setWishDir(world.playerStartDirection());
 		player.hide();
 		player.velocity = V2d.NULL;
@@ -242,7 +242,7 @@ public abstract class GameModel {
 
 		for (Ghost ghost : ghosts) {
 			ghost.placeAt(ghost.homeTile, HTS, 0);
-			ghost.setDir(world.ghostStartDirection(ghost.id));
+			ghost.setMoveDir(world.ghostStartDirection(ghost.id));
 			ghost.setWishDir(world.ghostStartDirection(ghost.id));
 			ghost.hide();
 			ghost.velocity = V2d.NULL;

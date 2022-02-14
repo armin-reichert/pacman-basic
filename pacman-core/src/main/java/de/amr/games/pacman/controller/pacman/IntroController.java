@@ -62,7 +62,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 
 		public GhostPortrait(int id, String name, String character, int tileY) {
 			ghost = new Ghost(id, name);
-			ghost.setDir(Direction.RIGHT);
+			ghost.setMoveDir(Direction.RIGHT);
 			ghost.setWishDir(Direction.RIGHT);
 			ghost.setPosition(t(4), t(tileY));
 			ghost.hide();
@@ -164,11 +164,11 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 		pacMan.show();
 		pacMan.setSpeed(1);
 		pacMan.setPosition(t(28), t(20));
-		pacMan.setDir(Direction.LEFT);
+		pacMan.setMoveDir(Direction.LEFT);
 		for (Ghost ghost : ghosts) {
 			ghost.position = pacMan.position.plus(24 + ghost.id * 16, 0);
 			ghost.setWishDir(Direction.LEFT);
-			ghost.setDir(Direction.LEFT);
+			ghost.setMoveDir(Direction.LEFT);
 			ghost.setSpeed(1.05);
 			ghost.show();
 			ghost.state = GhostState.HUNTING_PAC;
@@ -192,7 +192,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 		for (Ghost ghost : ghosts) {
 			ghost.state = GhostState.FRIGHTENED;
 			ghost.setWishDir(Direction.RIGHT);
-			ghost.setDir(Direction.RIGHT);
+			ghost.setMoveDir(Direction.RIGHT);
 			ghost.setSpeed(0.6);
 		}
 		ghostKilledTime = stateTimer().ticked();
@@ -206,7 +206,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 			return;
 		}
 		if (stateTimer().ticked() == 8) {
-			pacMan.setDir(Direction.RIGHT);
+			pacMan.setMoveDir(Direction.RIGHT);
 			pacMan.setSpeed(1);
 		}
 		if (pacMan.position.x > t(29)) {
