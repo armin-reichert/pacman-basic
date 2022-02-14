@@ -149,11 +149,11 @@ public class Intermission1Controller extends FiniteStateMachine<IntermissonState
 	}
 
 	private void state_COMING_TOGETHER_update() {
-		if (pacMan.dir() == Direction.LEFT && pacMan.position.x < t(15)) {
+		if (pacMan.moveDir() == Direction.LEFT && pacMan.position.x < t(15)) {
 			pacMan.setDir(Direction.UP);
 			msPac.setDir(Direction.UP);
 		}
-		if (pacMan.dir() == Direction.UP && pacMan.position.y < upperY) {
+		if (pacMan.moveDir() == Direction.UP && pacMan.position.y < upperY) {
 			pacMan.setSpeed(0);
 			msPac.setSpeed(0);
 			pacMan.setDir(Direction.LEFT);
@@ -166,11 +166,11 @@ public class Intermission1Controller extends FiniteStateMachine<IntermissonState
 		}
 		if (!ghostsMet && inky.position.x - pinky.position.x < 16) {
 			ghostsMet = true;
-			inky.setDir(inky.dir().opposite());
-			inky.setWishDir(inky.dir());
+			inky.setDir(inky.moveDir().opposite());
+			inky.setWishDir(inky.moveDir());
 			inky.setSpeed(0.2);
-			pinky.setDir(pinky.dir().opposite());
-			pinky.setWishDir(pinky.dir());
+			pinky.setDir(pinky.moveDir().opposite());
+			pinky.setWishDir(pinky.moveDir());
 			pinky.setSpeed(0.2);
 		}
 		inky.move();

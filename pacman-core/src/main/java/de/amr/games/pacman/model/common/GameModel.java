@@ -310,11 +310,11 @@ public abstract class GameModel {
 		redGhost.fnChasingTargetTile = player::tile;
 
 		// Pink ghost's target is two tiles ahead of Pac-Man (simulate overflow bug when player looks up)
-		pinkGhost.fnChasingTargetTile = () -> player.dir() == Direction.UP ? player.tilesAhead(4).plus(-4, 0)
+		pinkGhost.fnChasingTargetTile = () -> player.moveDir() == Direction.UP ? player.tilesAhead(4).plus(-4, 0)
 				: player.tilesAhead(4);
 
 		// For cyan ghost's target, see Pac-Man dossier (simulate overflow bug when player looks up)
-		cyanGhost.fnChasingTargetTile = () -> player.dir() == Direction.UP
+		cyanGhost.fnChasingTargetTile = () -> player.moveDir() == Direction.UP
 				? player.tilesAhead(2).plus(-2, 0).scaled(2).minus(redGhost.tile())
 				: player.tilesAhead(2).scaled(2).minus(redGhost.tile());
 

@@ -139,10 +139,10 @@ public class Autopilot implements PlayerControl {
 		if (data.hunterAhead != null) {
 			Direction escapeDir = null;
 			if (data.hunterBehind != null) {
-				escapeDir = findEscapeDirectionExcluding(EnumSet.of(game().player.dir(), game().player.dir().opposite()));
+				escapeDir = findEscapeDirectionExcluding(EnumSet.of(game().player.moveDir(), game().player.moveDir().opposite()));
 				log("Detected ghost %s behind, escape direction is %s", data.hunterAhead.name, escapeDir);
 			} else {
-				escapeDir = findEscapeDirectionExcluding(EnumSet.of(game().player.dir()));
+				escapeDir = findEscapeDirectionExcluding(EnumSet.of(game().player.moveDir()));
 				log("Detected ghost %s ahead, escape direction is %s", data.hunterAhead.name, escapeDir);
 			}
 			if (escapeDir != null) {
@@ -177,15 +177,15 @@ public class Autopilot implements PlayerControl {
 		V2i pacManTile = game().player.tile();
 		boolean energizerFound = false;
 		for (int i = 1; i <= AutopilotData.MAX_GHOST_AHEAD_DETECTION_DIST; ++i) {
-			V2i ahead = pacManTile.plus(game().player.dir().vec.scaled(i));
+			V2i ahead = pacManTile.plus(game().player.moveDir().vec.scaled(i));
 			if (!game().player.canAccessTile(ahead)) {
 				break;
 			}
 			if (game().world.isEnergizerTile(ahead) && !game().isFoodEaten(ahead)) {
 				energizerFound = true;
 			}
-			V2i aheadLeft = ahead.plus(game().player.dir().turnLeft().vec),
-					aheadRight = ahead.plus(game().player.dir().turnRight().vec);
+			V2i aheadLeft = ahead.plus(game().player.moveDir().turnLeft().vec),
+					aheadRight = ahead.plus(game().player.moveDir().turnRight().vec);
 			for (Ghost ghost : game().ghosts(GhostState.HUNTING_PAC).toArray(Ghost[]::new)) {
 				if (ghost.tile().equals(ahead) || ghost.tile().equals(aheadLeft) || ghost.tile().equals(aheadRight)) {
 					if (energizerFound) {
@@ -202,7 +202,7 @@ public class Autopilot implements PlayerControl {
 	private Ghost findHuntingGhostBehind() {
 		V2i pacManTile = game().player.tile();
 		for (int i = 1; i <= AutopilotData.MAX_GHOST_BEHIND_DETECTION_DIST; ++i) {
-			V2i behind = pacManTile.plus(game().player.dir().opposite().vec.scaled(i));
+			V2i behind = pacManTile.plus(game().player.moveDir().opposite().vec.scaled(i));
 			if (!game().player.canAccessTile(behind)) {
 				break;
 			}

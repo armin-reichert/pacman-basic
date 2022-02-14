@@ -47,7 +47,7 @@ public class Creature extends GameEntity {
 	public final String name;
 
 	/** The current move direction. */
-	protected Direction dir = Direction.RIGHT;
+	protected Direction moveDir = Direction.RIGHT;
 
 	/** The intended move direction. Will be taken as soon as possible. */
 	protected Direction wishDir = Direction.RIGHT;
@@ -83,13 +83,12 @@ public class Creature extends GameEntity {
 	 * @param dir the new move direction
 	 */
 	public void setDir(Direction dir) {
-		this.dir = Objects.requireNonNull(dir);
-		double speed = velocity.length();
-		velocity = new V2d(dir.vec).scaled(speed);
+		moveDir = Objects.requireNonNull(dir);
+		velocity = new V2d(dir.vec).scaled(velocity.length());
 	}
 
-	public Direction dir() {
-		return dir;
+	public Direction moveDir() {
+		return moveDir;
 	}
 
 	public void setWishDir(Direction dir) {
@@ -101,7 +100,7 @@ public class Creature extends GameEntity {
 	}
 
 	public V2i tilesAhead(int numTiles) {
-		return tile().plus(dir.vec.scaled(numTiles));
+		return tile().plus(moveDir.vec.scaled(numTiles));
 	}
 
 	/**
@@ -110,7 +109,7 @@ public class Creature extends GameEntity {
 	 * @param fraction fraction of base speed
 	 */
 	public void setSpeed(double fraction) {
-		velocity = fraction == 0 ? V2d.NULL : new V2d(dir.vec).scaled(fraction * GameModel.BASE_SPEED);
+		velocity = fraction == 0 ? V2d.NULL : new V2d(moveDir.vec).scaled(fraction * GameModel.BASE_SPEED);
 	}
 
 	/**
@@ -130,8 +129,8 @@ public class Creature extends GameEntity {
 	 * Force turning to the opposite direction. Used when hunting state changes.
 	 */
 	public void forceTurningBack() {
-		if (canAccessTile(tile().plus(dir.opposite().vec))) {
-			setWishDir(dir.opposite());
+		if (canAccessTile(tile().plus(moveDir.opposite().vec))) {
+			setWishDir(moveDir.opposite());
 		}
 	}
 
@@ -142,14 +141,14 @@ public class Creature extends GameEntity {
 	public void tryMoving() {
 		V2i currentTile = tile();
 		// teleport?
-		if (dir == Direction.RIGHT) {
+		if (moveDir == Direction.RIGHT) {
 			for (Portal portal : world.portals()) {
 				if (currentTile.equals(portal.right)) {
 					placeAt(portal.left, 0, 0);
 					return;
 				}
 			}
-		} else if (dir == Direction.LEFT) {
+		} else if (moveDir == Direction.LEFT) {
 			for (Portal portal : world.portals()) {
 				if (currentTile.equals(portal.left)) {
 					placeAt(portal.right, 0, 0);
@@ -159,9 +158,9 @@ public class Creature extends GameEntity {
 		}
 		tryMovingTowards(wishDir);
 		if (!stuck) {
-			dir = wishDir;
+			moveDir = wishDir;
 		} else {
-			tryMovingTowards(dir);
+			tryMovingTowards(moveDir);
 		}
 	}
 
@@ -240,7 +239,7 @@ public class Creature extends GameEntity {
 		final V2i currentTile = tile();
 		double minDist = Double.MAX_VALUE;
 		for (Direction direction : turnPriority) {
-			if (direction == dir.opposite()) {
+			if (direction == moveDir.opposite()) {
 				continue;
 			}
 			final V2i neighborTile = currentTile.plus(direction.vec);

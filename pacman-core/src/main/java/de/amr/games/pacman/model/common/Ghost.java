@@ -123,7 +123,7 @@ public class Ghost extends Creature {
 	 */
 	public void roam() {
 		if (newTileEntered) {
-			wishDir = Direction.shuffled().stream().filter(d -> d != dir.opposite() && canAccessTile(tile().plus(d.vec)))
+			wishDir = Direction.shuffled().stream().filter(d -> d != moveDir.opposite() && canAccessTile(tile().plus(d.vec)))
 					.findAny().orElse(wishDir);
 		}
 		tryMoving();
@@ -135,7 +135,7 @@ public class Ghost extends Creature {
 	 * @return {@code true} if the ghost has reached the house
 	 */
 	public boolean returnHome() {
-		if (atGhostHouseDoor() && dir != Direction.DOWN) {
+		if (atGhostHouseDoor() && moveDir != Direction.DOWN) {
 			// house reached, start entering
 			setOffset(HTS, 0);
 			setDir(Direction.DOWN);
@@ -160,7 +160,7 @@ public class Ghost extends Creature {
 		V2d offset = offset();
 		// Target position inside house reached? Turn around and start leaving house.
 		if (tile.equals(targetTile) && offset.y >= 0) {
-			setWishDir(dir.opposite());
+			setWishDir(moveDir.opposite());
 			state = GhostState.LEAVING_HOUSE;
 			return true;
 		}
@@ -170,7 +170,7 @@ public class Ghost extends Creature {
 			setDir(newDir);
 			setWishDir(newDir);
 		}
-		tryMovingTowards(dir);
+		tryMovingTowards(moveDir);
 		return false;
 	}
 
@@ -219,7 +219,7 @@ public class Ghost extends Creature {
 	public boolean bounce() {
 		int centerY = t(world.ghostHouse().seat(1).y);
 		if (!differsAtMost(position.y, centerY, HTS)) {
-			Direction opposite = dir.opposite();
+			Direction opposite = moveDir.opposite();
 			setDir(opposite);
 			setWishDir(opposite);
 		}
@@ -230,6 +230,6 @@ public class Ghost extends Creature {
 	@Override
 	public String toString() {
 		return String.format("[Ghost %s: state=%s, position=%s, tile=%s, offset=%s, velocity=%s, dir=%s, wishDir=%s]", name,
-				state, position, tile(), offset(), velocity, dir, wishDir);
+				state, position, tile(), offset(), velocity, moveDir, wishDir);
 	}
 }
