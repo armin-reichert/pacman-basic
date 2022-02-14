@@ -23,7 +23,6 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.common;
 
-import static de.amr.games.pacman.model.world.World.t;
 import static java.lang.Math.abs;
 
 import java.util.Objects;
@@ -78,46 +77,10 @@ public class Creature extends GameEntity {
 		this.name = name;
 	}
 
-	/**
-	 * @return the current tile position
-	 */
-	public V2i tile() {
-		return World.tile(position);
-	}
-
-	/**
-	 * @return the current pixel offset
-	 */
-	public V2d offset() {
-		return World.offset(position);
-	}
-
-	/**
-	 * Places the creature at the given tile with the given position offsets. Sets the {@link #newTileEntered} flag to
-	 * trigger steering.
-	 * 
-	 * @param tile    the tile where this creature will be placed
-	 * @param offsetX the pixel offset in x-direction
-	 * @param offsetY the pixel offset in y-direction
-	 */
+	@Override
 	public void placeAt(V2i tile, double offsetX, double offsetY) {
-		setPosition(t(tile.x) + offsetX, t(tile.y) + offsetY);
+		super.placeAt(tile, offsetX, offsetY);
 		newTileEntered = true;
-	}
-
-	/**
-	 * Places the creature on its current tile with given offset. This is for example used to place a ghost exactly
-	 * between two tiles like in the initial ghosthouse position.
-	 * 
-	 * @param offsetX offset in x-direction
-	 * @param offsetY offset in y-direction
-	 */
-	public void setOffset(double offsetX, double offsetY) {
-		placeAt(tile(), offsetX, offsetY);
-	}
-
-	public void setOffset(V2d v) {
-		setOffset(v.x, v.y);
 	}
 
 	/**
@@ -167,14 +130,6 @@ public class Creature extends GameEntity {
 			// avoid leaving track when teleporting
 			return world.isPortal(tile);
 		}
-	}
-
-	/**
-	 * @param other other creature
-	 * @return if both creatures occupy the same tile
-	 */
-	public boolean meets(Creature other) {
-		return tile().equals(other.tile());
 	}
 
 	/**
