@@ -69,31 +69,22 @@ public class Bonus extends Creature {
 	 */
 	public boolean updateState() {
 		switch (state) {
-		case INACTIVE:
+
+		case INACTIVE -> {
 			return false;
+		}
 
-		case EDIBLE:
+		case EDIBLE, EATEN -> {
 			if (timer == 0) {
 				hide();
 				state = BonusState.INACTIVE;
 				return true;
-			} else {
-				timer--;
-				return false;
 			}
+			timer--;
+			return false;
+		}
 
-		case EATEN:
-			if (timer == 0) {
-				hide();
-				state = BonusState.INACTIVE;
-				return true;
-			} else {
-				timer--;
-				return false;
-			}
-
-		default:
-			throw new IllegalStateException(String.format("Illegal bonus state '%s'", state));
+		default -> throw new IllegalStateException(String.format("Illegal bonus state '%s'", state));
 		}
 	}
 }
