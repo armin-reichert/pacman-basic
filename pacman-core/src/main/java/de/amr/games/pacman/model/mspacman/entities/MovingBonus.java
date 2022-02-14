@@ -68,22 +68,20 @@ public class MovingBonus extends Bonus {
 
 	@Override
 	public void activate(long ticks, int symbol, int points) {
-		state = BonusState.EDIBLE;
-		timer = ticks;
 		this.symbol = symbol;
 		this.points = points;
-		boolean leftToRight = new Random().nextBoolean();
-		if (leftToRight) {
+		state = BonusState.EDIBLE;
+		timer = ticks;
+		Direction moveDir = new Random().nextBoolean() ? Direction.LEFT : Direction.RIGHT;
+		if (moveDir == Direction.RIGHT) {
 			entryTile = randomPortal().left;
 			exitTile = randomPortal().right;
-			setMoveDir(Direction.RIGHT);
-			setWishDir(Direction.RIGHT);
 		} else {
 			entryTile = randomPortal().right;
 			exitTile = randomPortal().left;
-			setMoveDir(Direction.LEFT);
-			setWishDir(Direction.LEFT);
 		}
+		setMoveDir(moveDir);
+		setWishDir(moveDir);
 		placeAt(entryTile, 0, 0);
 		setTargetTile(world.ghostHouse().entryTile());
 		phase = Phase.GO_TO_HOUSE_ENTRY;
@@ -115,8 +113,7 @@ public class MovingBonus extends Bonus {
 			}
 			if (phase == Phase.GO_TO_HOUSE_ENTRY && tile().equals(targetTile)) {
 				phase = Phase.GO_TO_OTHER_SIDE;
-				int dy = world.ghostHouse().numTilesY() + 2;
-				setTargetTile(world.ghostHouse().entryTile().plus(0, dy));
+				setTargetTile(world.ghostHouse().entryTile().plus(0, world.ghostHouse().numTilesY() + 2));
 			}
 			if (phase == Phase.GO_TO_OTHER_SIDE && tile().equals(targetTile)) {
 				phase = Phase.GO_TO_HOUSE_ENTRY_AGAIN;
