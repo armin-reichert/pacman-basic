@@ -48,7 +48,6 @@ public class MovingBonus extends Bonus {
 		GO_TO_HOUSE_ENTRY, GO_TO_OTHER_SIDE, GO_TO_HOUSE_ENTRY_AGAIN, LEAVE;
 	}
 
-	private V2i entryTile;
 	private V2i exitTile;
 	private Phase phase;
 
@@ -56,7 +55,6 @@ public class MovingBonus extends Bonus {
 	public void init() {
 		timer = 0;
 		phase = null;
-		entryTile = null;
 		exitTile = null;
 		targetTile = null;
 		newTileEntered = true;
@@ -74,15 +72,14 @@ public class MovingBonus extends Bonus {
 		timer = ticks;
 		Direction moveDir = new Random().nextBoolean() ? Direction.LEFT : Direction.RIGHT;
 		if (moveDir == Direction.RIGHT) {
-			entryTile = randomPortal().left;
+			placeAt(randomPortal().left, 0, 0);
 			exitTile = randomPortal().right;
 		} else {
-			entryTile = randomPortal().right;
+			placeAt(randomPortal().right, 0, 0);
 			exitTile = randomPortal().left;
 		}
 		setMoveDir(moveDir);
 		setWishDir(moveDir);
-		placeAt(entryTile, 0, 0);
 		setTargetTile(world.ghostHouse().entryTile());
 		show();
 		state = BonusState.EDIBLE;
@@ -146,5 +143,4 @@ public class MovingBonus extends Bonus {
 		targetTile = tile;
 		log("Bonus target tile is now %s", targetTile);
 	}
-
 }
