@@ -23,10 +23,11 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.mspacman.entities;
 
+import static de.amr.games.pacman.lib.Logging.log;
+
 import java.util.Random;
 
 import de.amr.games.pacman.lib.Direction;
-import de.amr.games.pacman.lib.Logging;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.BonusState;
 import de.amr.games.pacman.model.pacman.entities.Bonus;
@@ -53,7 +54,6 @@ public class MovingBonus extends Bonus {
 
 	@Override
 	public void init() {
-		state = BonusState.INACTIVE;
 		timer = 0;
 		phase = null;
 		entryTile = null;
@@ -64,13 +64,13 @@ public class MovingBonus extends Bonus {
 		stuck = false;
 		setSpeed(0.4); // TODO how fast should it walk?
 		hide();
+		state = BonusState.INACTIVE;
 	}
 
 	@Override
 	public void activate(long ticks, int symbol, int points) {
 		this.symbol = symbol;
 		this.points = points;
-		state = BonusState.EDIBLE;
 		timer = ticks;
 		Direction moveDir = new Random().nextBoolean() ? Direction.LEFT : Direction.RIGHT;
 		if (moveDir == Direction.RIGHT) {
@@ -84,17 +84,9 @@ public class MovingBonus extends Bonus {
 		setWishDir(moveDir);
 		placeAt(entryTile, 0, 0);
 		setTargetTile(world.ghostHouse().entryTile());
-		phase = Phase.GO_TO_HOUSE_ENTRY;
 		show();
-	}
-
-	private Portal randomPortal() {
-		return world.portals().get(new Random().nextInt(world.portals().size()));
-	}
-
-	private void setTargetTile(V2i tile) {
-		targetTile = tile;
-		Logging.log("Bonus target tile is now %s", targetTile);
+		state = BonusState.EDIBLE;
+		phase = Phase.GO_TO_HOUSE_ENTRY;
 	}
 
 	@Override
@@ -107,22 +99,26 @@ public class MovingBonus extends Bonus {
 
 		case EDIBLE -> {
 			if (phase == Phase.LEAVE && tile().equals(targetTile)) {
-				state = BonusState.INACTIVE;
 				hide();
+				state = BonusState.INACTIVE;
 				return true;
 			}
-			if (phase == Phase.GO_TO_HOUSE_ENTRY && tile().equals(targetTile)) {
-				phase = Phase.GO_TO_OTHER_SIDE;
+
+			else if (phase == Phase.GO_TO_HOUSE_ENTRY && tile().equals(targetTile)) {
 				setTargetTile(world.ghostHouse().entryTile().plus(0, world.ghostHouse().numTilesY() + 2));
+				phase = Phase.GO_TO_OTHER_SIDE;
 			}
-			if (phase == Phase.GO_TO_OTHER_SIDE && tile().equals(targetTile)) {
-				phase = Phase.GO_TO_HOUSE_ENTRY_AGAIN;
+
+			else if (phase == Phase.GO_TO_OTHER_SIDE && tile().equals(targetTile)) {
 				setTargetTile(world.ghostHouse().entryTile());
+				phase = Phase.GO_TO_HOUSE_ENTRY_AGAIN;
 			}
-			if (phase == Phase.GO_TO_HOUSE_ENTRY_AGAIN && tile().equals(targetTile)) {
-				phase = Phase.LEAVE;
+
+			else if (phase == Phase.GO_TO_HOUSE_ENTRY_AGAIN && tile().equals(targetTile)) {
 				setTargetTile(exitTile);
+				phase = Phase.LEAVE;
 			}
+
 			headForTile(targetTile);
 			tryMoving();
 			return false;
@@ -130,8 +126,8 @@ public class MovingBonus extends Bonus {
 
 		case EATEN -> {
 			if (timer == 0) {
-				state = BonusState.INACTIVE;
 				hide();
+				state = BonusState.INACTIVE;
 				return true;
 			}
 			timer--;
@@ -141,4 +137,14 @@ public class MovingBonus extends Bonus {
 		default -> throw new IllegalStateException();
 		}
 	}
+
+	private Portal randomPortal() {
+		return world.portals().get(new Random().nextInt(world.portals().size()));
+	}
+
+	private void setTargetTile(V2i tile) {
+		targetTile = tile;
+		log("Bonus target tile is now %s", targetTile);
+	}
+
 }
