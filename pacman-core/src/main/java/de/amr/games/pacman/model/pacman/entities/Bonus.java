@@ -42,52 +42,49 @@ public class Bonus extends Creature {
 	public long timer;
 
 	public Bonus() {
-		super("Bonus");
 		init();
 	}
 
 	public void init() {
-		state = BonusState.INACTIVE;
 		timer = 0;
 		hide();
+		state = BonusState.INACTIVE;
 	}
 
 	public void activate(long ticks, int symbol, int points) {
-		state = BonusState.EDIBLE;
 		timer = ticks;
 		this.symbol = symbol;
 		this.points = points;
 		show();
+		state = BonusState.EDIBLE;
 	}
 
 	public void eatAndShowValue(long ticks) {
-		state = BonusState.EATEN;
 		timer = ticks;
+		state = BonusState.EATEN;
+	}
+
+	public boolean hasExpired() {
+		return switch (state) {
+		case INACTIVE -> false;
+		default -> timer == 0;
+		};
 	}
 
 	/**
 	 * Updates the bonus state and returns any usefule info about the new bonus state
 	 * 
-	 * @return {@code true} if the bonus expired
 	 */
-	public boolean updateState() {
+	public void update() {
 		switch (state) {
-
-		case INACTIVE -> {
-			return false;
-		}
-
 		case EDIBLE, EATEN -> {
-			if (timer == 0) {
+			if (--timer == 0) {
 				hide();
 				state = BonusState.INACTIVE;
-				return true;
 			}
-			timer--;
-			return false;
 		}
-
-		default -> throw new IllegalStateException(String.format("Illegal bonus state '%s'", state));
+		default -> {
+		}
 		}
 	}
 }

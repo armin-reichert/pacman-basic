@@ -543,16 +543,16 @@ public class GameController extends FiniteStateMachine<GameState> {
 				game.bonus.eatAndShowValue(sec_to_ticks(2));
 				publish(Info.BONUS_EATEN, game.bonus.tile());
 			} else {
-				boolean expired = game.bonus.updateState();
-				if (expired) {
+				game.bonus.update();
+				if (game.bonus.hasExpired()) {
 					publish(Info.BONUS_EXPIRED, game.bonus.tile());
 				}
 			}
 		}
 
 		case EATEN -> {
-			boolean expired = game.bonus.updateState();
-			if (expired) {
+			game.bonus.update();
+			if (game.bonus.hasExpired()) {
 				publish(Info.BONUS_EXPIRED, game.bonus.tile());
 			}
 		}

@@ -86,52 +86,48 @@ public class MovingBonus extends Bonus {
 	}
 
 	@Override
-	public boolean updateState() {
+	public void update() {
 		switch (state) {
-
-		case INACTIVE -> {
-			return false;
-		}
 
 		case EDIBLE -> {
 			if (phase == Phase.LEAVE && tile().equals(targetTile)) {
 				hide();
 				state = BonusState.INACTIVE;
-				return true;
+				return;
 			}
-
-			else if (phase == Phase.GO_TO_HOUSE_ENTRY && tile().equals(targetTile)) {
+			if (phase == Phase.GO_TO_HOUSE_ENTRY && tile().equals(targetTile)) {
 				setTargetTile(world.ghostHouse().entryTile().plus(0, world.ghostHouse().numTilesY() + 2));
 				phase = Phase.GO_TO_OTHER_SIDE;
-			}
-
-			else if (phase == Phase.GO_TO_OTHER_SIDE && tile().equals(targetTile)) {
+			} else if (phase == Phase.GO_TO_OTHER_SIDE && tile().equals(targetTile)) {
 				setTargetTile(world.ghostHouse().entryTile());
 				phase = Phase.GO_TO_HOUSE_ENTRY_AGAIN;
-			}
-
-			else if (phase == Phase.GO_TO_HOUSE_ENTRY_AGAIN && tile().equals(targetTile)) {
+			} else if (phase == Phase.GO_TO_HOUSE_ENTRY_AGAIN && tile().equals(targetTile)) {
 				setTargetTile(exitTile);
 				phase = Phase.LEAVE;
 			}
-
 			headForTile(targetTile);
 			tryMoving();
-			return false;
 		}
 
 		case EATEN -> {
-			if (timer == 0) {
+			if (--timer == 0) {
 				hide();
 				state = BonusState.INACTIVE;
-				return true;
 			}
-			timer--;
-			return false;
 		}
 
-		default -> throw new IllegalStateException();
+		default -> {
 		}
+
+		}
+	}
+
+	@Override
+	public boolean hasExpired() {
+		return switch (state) {
+		case EATEN -> timer == 0;
+		default -> false;
+		};
 	}
 
 	private Portal randomPortal() {

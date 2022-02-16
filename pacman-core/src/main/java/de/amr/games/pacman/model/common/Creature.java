@@ -44,7 +44,7 @@ public class Creature extends GameEntity {
 			Direction.UP, Direction.LEFT, Direction.DOWN, Direction.RIGHT };
 
 	/** Readable name, for display and logging purposes. */
-	public final String name;
+	public String name;
 
 	/** The current move direction. */
 	protected Direction moveDir = Direction.RIGHT;
@@ -69,6 +69,10 @@ public class Creature extends GameEntity {
 
 	public Creature(String name) {
 		this.name = name;
+	}
+
+	public Creature() {
+		name = toString();
 	}
 
 	@Override
