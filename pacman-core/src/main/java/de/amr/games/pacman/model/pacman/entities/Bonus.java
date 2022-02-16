@@ -23,7 +23,6 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.pacman.entities;
 
-import de.amr.games.pacman.model.common.BonusState;
 import de.amr.games.pacman.model.common.Creature;
 
 /**
@@ -32,6 +31,10 @@ import de.amr.games.pacman.model.common.Creature;
  * @author Armin Reichert
  */
 public class Bonus extends Creature {
+
+	public enum BonusState {
+		INACTIVE, EDIBLE, EATEN;
+	}
 
 	public BonusState state;
 	public int symbol;

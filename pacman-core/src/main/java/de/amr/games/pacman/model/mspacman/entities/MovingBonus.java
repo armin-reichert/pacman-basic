@@ -29,7 +29,6 @@ import java.util.Random;
 
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.model.common.BonusState;
 import de.amr.games.pacman.model.pacman.entities.Bonus;
 import de.amr.games.pacman.model.world.Portal;
 
