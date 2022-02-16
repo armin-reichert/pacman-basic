@@ -36,8 +36,7 @@ import de.amr.games.pacman.model.world.Portal;
  * A bonus that tumbles through the world, starting at some portal, making one round around the ghost house and leaving
  * the maze at some portal at the other border.
  * 
- * TODO: That's not quite the Ms. Pac-Man behaviour, in the original game there are predefined "fruit paths" and the
- * behavior is not random.
+ * TODO: That's not exactly the original Ms. Pac-Man behaviour with predefined "fruit paths".
  * 
  * @author Armin Reichert
  */
