@@ -25,7 +25,6 @@ package de.amr.games.pacman.model.pacman;
 
 import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.lib.TickTimer.sec_to_ticks;
-import static de.amr.games.pacman.model.world.World.HTS;
 
 import java.io.File;
 import java.util.Random;
@@ -76,37 +75,37 @@ public class PacManGame extends GameModel {
 		/*21*/ {KEY,         90, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
 		/*@formatter:on*/
 		};
-
-		// all levels use the same world
-		world = new MapWorld("/pacman/maps/map1.txt");
-
+		world = new MapWorld("/pacman/maps/map1.txt"); // all levels use the same world
 		player = new Pac("Pac-Man");
+		player.world = world;
 		ghosts = createGhosts("Blinky", "Pinky", "Inky", "Clyde");
+		resetGhosts(world);
 		bonus = new Bonus();
+		bonus.world = world;
 		hiscoreFile = new File(System.getProperty("user.home"), "highscore-pacman.xml");
 	}
 
 	@Override
 	public void setLevel(int levelNumber) {
+		if (levelNumber < 1) {
+			throw new IllegalArgumentException("Level number must be at least 1, but is: " + levelNumber);
+		}
 		this.levelNumber = levelNumber;
 		mazeNumber = 1;
 		mapNumber = 1;
 		setLevelData(levelNumber, world);
 		huntingPhaseDurations = huntingPhaseDurationsTable[levelNumber == 1 ? 0 : levelNumber <= 4 ? 1 : 2];
 		levelCounter.add(bonusSymbol);
-		player.world = world;
 		player.starvingTimeLimit = sec_to_ticks(levelNumber < 5 ? 4 : 3);
 		ghostBounty = firstGhostBounty;
 		resetGhosts(world);
-		bonus.world = world;
 		bonus.init();
-		bonus.placeAt(world.bonusTile(), HTS, 0);
 		log("Pac-Man game entered level #%d", levelNumber);
 	}
 
 	@Override
-	public int bonusValue(int symbolID) {
-		return switch (symbolID) {
+	public int bonusValue(int symbol) {
+		return switch (symbol) {
 		case CHERRIES -> 100;
 		case STRAWBERRY -> 300;
 		case PEACH -> 500;
@@ -115,7 +114,7 @@ public class PacManGame extends GameModel {
 		case GALAXIAN -> 2000;
 		case BELL -> 3000;
 		case KEY -> 5000;
-		default -> throw new IllegalArgumentException("Unknown symbol ID: " + symbolID);
+		default -> throw new IllegalArgumentException("Unknown symbol ID: " + symbol);
 		};
 	}
 

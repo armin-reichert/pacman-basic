@@ -23,6 +23,8 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.pacman.entities;
 
+import static de.amr.games.pacman.model.world.World.HTS;
+
 import de.amr.games.pacman.model.common.Creature;
 
 /**
@@ -55,6 +57,7 @@ public class Bonus extends Creature {
 		timer = ticks;
 		this.symbol = symbol;
 		this.points = points;
+		placeAt(world.bonusTile(), HTS, 0);
 		show();
 		state = BonusState.EDIBLE;
 	}
