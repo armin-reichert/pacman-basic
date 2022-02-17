@@ -180,7 +180,7 @@ public abstract class GameModel {
 	public int hiscorePoints;
 
 	/** High score file of current game variant. */
-	public File hiscorePath;
+	public File hiscoreFile;
 
 	/**
 	 * Initializes model for given game level.
@@ -220,7 +220,7 @@ public abstract class GameModel {
 		score = 0;
 		player.lives = initialLives;
 		levelCounter.clear();
-		Hiscore hiscore = new Hiscore(hiscorePath).load();
+		Hiscore hiscore = new Hiscore(hiscoreFile).load();
 		hiscoreLevel = hiscore.level;
 		hiscorePoints = hiscore.points;
 		setLevel(1);
@@ -399,7 +399,7 @@ public abstract class GameModel {
 	public abstract long bonusActivationTicks();
 
 	public void saveHiscore() {
-		Hiscore hiscore = new Hiscore(hiscorePath).load();
+		Hiscore hiscore = new Hiscore(hiscoreFile).load();
 		if (hiscorePoints > hiscore.points) {
 			hiscore.points = hiscorePoints;
 			hiscore.level = hiscoreLevel;

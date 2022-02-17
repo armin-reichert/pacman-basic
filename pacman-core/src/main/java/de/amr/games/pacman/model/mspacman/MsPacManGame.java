@@ -83,7 +83,7 @@ public class MsPacManGame extends GameModel {
 		player = new Pac("Ms. Pac-Man");
 		ghosts = createGhosts("Blinky", "Pinky", "Inky", "Sue");
 		bonus = new MovingBonus();
-		hiscorePath = new File(System.getProperty("user.home"), "highscore-ms_pacman.xml");
+		hiscoreFile = new File(System.getProperty("user.home"), "highscore-ms_pacman.xml");
 	}
 
 	@Override
