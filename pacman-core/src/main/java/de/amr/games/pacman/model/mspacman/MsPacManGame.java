@@ -88,9 +88,12 @@ public class MsPacManGame extends GameModel {
 
 	@Override
 	public void setLevel(int levelNumber) {
+		if (levelNumber < 1) {
+			throw new IllegalArgumentException("Level number must be at least 1, but is: " + levelNumber);
+		}
 		this.levelNumber = levelNumber;
 		mazeNumber = mazeNumber(levelNumber);
-		mapNumber = (mazeNumber == 5) ? 3 : (mazeNumber == 6) ? 4 : mazeNumber;
+		mapNumber = mapNumber(mazeNumber);
 		setLevelData(levelNumber, new MapWorld("/mspacman/maps/map" + mapNumber + ".txt"));
 		huntingPhaseDurations = huntingPhaseDurationsTable[levelNumber == 1 ? 0 : levelNumber <= 4 ? 1 : 2];
 		if (levelNumber >= 8) {
@@ -133,6 +136,14 @@ public class MsPacManGame extends GameModel {
 		     : (levelNumber <= 13) ? 4
 		     : (levelNumber - 14) % 8 < 4 ? 5 : 6;
 		//@formatter:on
+	}
+
+	private int mapNumber(int mazeNumber) {
+		return switch (mazeNumber) {
+		case 5 -> 3;
+		case 6 -> 4;
+		default -> mazeNumber;
+		};
 	}
 
 	@Override
