@@ -129,13 +129,13 @@ public class MsPacManGame extends GameModel {
 		if (levelNumber < 1) {
 			throw new IllegalArgumentException("Illegal level number: " + levelNumber);
 		}
-		//@formatter:off
-		return (levelNumber <=  2) ? 1
-		     : (levelNumber <=  5) ? 2
-		     : (levelNumber <=  9) ? 3 
-		     : (levelNumber <= 13) ? 4
-		     : (levelNumber - 14) % 8 < 4 ? 5 : 6;
-		//@formatter:on
+		return switch (levelNumber) {
+		case 1, 2 -> 1;
+		case 3, 4, 5 -> 2;
+		case 6, 7, 8, 9 -> 3;
+		case 10, 11, 12, 13 -> 4;
+		default -> (levelNumber - 14) % 8 < 4 ? 5 : 6;
+		};
 	}
 
 	private int mapNumber(int mazeNumber) {
