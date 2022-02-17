@@ -51,9 +51,6 @@ public abstract class GameModel {
 	/** Speed in pixels/tick at 100%. */
 	public static final double BASE_SPEED = 1.25;
 
-	/** The level data. */
-	protected Object[][] levels;
-
 	/** 1-based level number */
 	public int levelNumber;
 
@@ -257,28 +254,20 @@ public abstract class GameModel {
 		return ((Integer) percentValue) / 100f;
 	}
 
-	protected Object[] levelData(int levelNumber) {
-		return levelNumber - 1 < levels.length ? levels[levelNumber - 1] : levels[levels.length - 1];
-	}
-
-	protected void setLevelData(int levelNumber, World world) {
-		this.world = world;
-
-		Object[] row = levelData(levelNumber);
-		bonusSymbol = (int) row[0];
-		playerSpeed = fraction(row[1]);
-		ghostSpeed = fraction(row[2]);
-		ghostSpeedTunnel = fraction(row[3]);
-		elroy1DotsLeft = (int) row[4];
-		elroy1Speed = fraction(row[5]);
-		elroy2DotsLeft = (int) row[6];
-		elroy2Speed = fraction(row[7]);
-		playerSpeedPowered = fraction(row[8]);
-		ghostSpeedFrightened = fraction(row[9]);
-		ghostFrightenedSeconds = (int) row[10];
-		numFlashes = (int) row[11];
-
-		world.resetFood();
+	protected void setLevelData(int levelNumber, Object[] data) {
+		this.levelNumber = levelNumber;
+		bonusSymbol = (int) data[0];
+		playerSpeed = fraction(data[1]);
+		ghostSpeed = fraction(data[2]);
+		ghostSpeedTunnel = fraction(data[3]);
+		elroy1DotsLeft = (int) data[4];
+		elroy1Speed = fraction(data[5]);
+		elroy2DotsLeft = (int) data[6];
+		elroy2Speed = fraction(data[7]);
+		playerSpeedPowered = fraction(data[8]);
+		ghostSpeedFrightened = fraction(data[9]);
+		ghostFrightenedSeconds = (int) data[10];
+		numFlashes = (int) data[11];
 	}
 
 	protected Ghost[] createGhosts(String redGhostName, String pinkGhostName, String cyanGhostName,

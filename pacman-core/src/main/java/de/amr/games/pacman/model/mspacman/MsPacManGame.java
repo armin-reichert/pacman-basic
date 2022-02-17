@@ -48,38 +48,38 @@ public class MsPacManGame extends GameModel {
 
 	public static final int CHERRIES = 0, STRAWBERRY = 1, PEACH = 2, PRETZEL = 3, APPLE = 4, PEAR = 5, BANANA = 6;
 
-	public MsPacManGame() {
-		levels = new Object[][] {
-		/*@formatter:off*/
-		/* 1*/ {CHERRIES,    80, 75, 40,  20,  80, 10,  85,  90, 50, 6, 5},
-		/* 2*/ {STRAWBERRY,  90, 85, 45,  30,  90, 15,  95,  95, 55, 5, 5},
-		/* Intermission scene 1: "They Meet" */
-		/* 3*/ {PEACH,       90, 85, 45,  40,  90, 20,  95,  95, 55, 4, 5},
-		/* 4*/ {PRETZEL,     90, 85, 45,  40,  90, 20,  95,  95, 55, 3, 5},
-		/* 5*/ {APPLE,      100, 95, 50,  40, 100, 20, 105, 100, 60, 2, 5},
-		/* Intermission scene 2: "The Chase" */
-		/* 6*/ {PEAR,       100, 95, 50,  50, 100, 25, 105, 100, 60, 5, 5},
-		/* 7*/ {BANANA,     100, 95, 50,  50, 100, 25, 105, 100, 60, 2, 5},
-		/* 8*/ {BANANA,     100, 95, 50,  50, 100, 25, 105, 100, 60, 2, 5},
-		/* 9*/ {BANANA,     100, 95, 50,  60, 100, 30, 105, 100, 60, 1, 3},
-		/* Intermission scene 3: "Junior" */
-		/*10*/ {BANANA,     100, 95, 50,  60, 100, 30, 105, 100, 60, 4, 5},
-		/*11*/ {BANANA,     100, 95, 50,  60, 100, 30, 105, 100, 60, 2, 5},
-		/*12*/ {BANANA,     100, 95, 50,  80, 100, 40, 105, 100, 60, 1, 3},
-		/*13*/ {BANANA,     100, 95, 50,  80, 100, 40, 105, 100, 60, 1, 3},
-		/* Intermission scene 3: "Junior" */
-		/*14*/ {BANANA,     100, 95, 50,  80, 100, 40, 105, 100, 60, 3, 5},
-		/*15*/ {BANANA,     100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3},
-		/*16*/ {BANANA,     100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3},
-		/*17*/ {BANANA,     100, 95, 50, 100, 100, 50, 105,   0,  0, 0, 0},
-		/* Intermission scene 3: "Junior" */
-		/*18*/ {BANANA,     100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3},
-		/*19*/ {BANANA,     100, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
-		/*20*/ {BANANA,     100, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
-		/*21*/ {BANANA,      90, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
-		/*@formatter:on*/
-		};
+	private final Object[][] data = {
+	/*@formatter:off*/
+	/* 1*/ {CHERRIES,    80, 75, 40,  20,  80, 10,  85,  90, 50, 6, 5},
+	/* 2*/ {STRAWBERRY,  90, 85, 45,  30,  90, 15,  95,  95, 55, 5, 5},
+	/* Intermission scene 1: "They Meet" */
+	/* 3*/ {PEACH,       90, 85, 45,  40,  90, 20,  95,  95, 55, 4, 5},
+	/* 4*/ {PRETZEL,     90, 85, 45,  40,  90, 20,  95,  95, 55, 3, 5},
+	/* 5*/ {APPLE,      100, 95, 50,  40, 100, 20, 105, 100, 60, 2, 5},
+	/* Intermission scene 2: "The Chase" */
+	/* 6*/ {PEAR,       100, 95, 50,  50, 100, 25, 105, 100, 60, 5, 5},
+	/* 7*/ {BANANA,     100, 95, 50,  50, 100, 25, 105, 100, 60, 2, 5},
+	/* 8*/ {BANANA,     100, 95, 50,  50, 100, 25, 105, 100, 60, 2, 5},
+	/* 9*/ {BANANA,     100, 95, 50,  60, 100, 30, 105, 100, 60, 1, 3},
+	/* Intermission scene 3: "Junior" */
+	/*10*/ {BANANA,     100, 95, 50,  60, 100, 30, 105, 100, 60, 4, 5},
+	/*11*/ {BANANA,     100, 95, 50,  60, 100, 30, 105, 100, 60, 2, 5},
+	/*12*/ {BANANA,     100, 95, 50,  80, 100, 40, 105, 100, 60, 1, 3},
+	/*13*/ {BANANA,     100, 95, 50,  80, 100, 40, 105, 100, 60, 1, 3},
+	/* Intermission scene 3: "Junior" */
+	/*14*/ {BANANA,     100, 95, 50,  80, 100, 40, 105, 100, 60, 3, 5},
+	/*15*/ {BANANA,     100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3},
+	/*16*/ {BANANA,     100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3},
+	/*17*/ {BANANA,     100, 95, 50, 100, 100, 50, 105,   0,  0, 0, 0},
+	/* Intermission scene 3: "Junior" */
+	/*18*/ {BANANA,     100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3},
+	/*19*/ {BANANA,     100, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
+	/*20*/ {BANANA,     100, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
+	/*21*/ {BANANA,      90, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
+	/*@formatter:on*/
+	};
 
+	public MsPacManGame() {
 		player = new Pac("Ms. Pac-Man");
 		ghosts = createGhosts("Blinky", "Pinky", "Inky", "Sue");
 		bonus = new MovingBonus();
@@ -87,26 +87,27 @@ public class MsPacManGame extends GameModel {
 	}
 
 	@Override
-	public void setLevel(int levelNumber) {
-		if (levelNumber < 1) {
-			throw new IllegalArgumentException("Level number must be at least 1, but is: " + levelNumber);
+	public void setLevel(int n) {
+		if (n < 1) {
+			throw new IllegalArgumentException("Level number must be at least 1, but is: " + n);
 		}
-		this.levelNumber = levelNumber;
-		mazeNumber = mazeNumber(levelNumber);
+		setLevelData(n, n - 1 < data.length ? data[n - 1] : data[data.length - 1]);
+		mazeNumber = mazeNumber(n);
 		mapNumber = mapNumber(mazeNumber);
-		setLevelData(levelNumber, new MapWorld("/mspacman/maps/map" + mapNumber + ".txt"));
-		huntingPhaseDurations = huntingPhaseDurationsTable[levelNumber == 1 ? 0 : levelNumber <= 4 ? 1 : 2];
-		if (levelNumber >= 8) {
+		world = new MapWorld("/mspacman/maps/map" + mapNumber + ".txt");
+		world.resetFood();
+		huntingPhaseDurations = huntingPhaseDurationsTable[n == 1 ? 0 : n <= 4 ? 1 : 2];
+		if (n >= 8) {
 			bonusSymbol = new Random().nextInt(7);
 		}
 		levelCounter.add(bonusSymbol);
 		player.world = world;
-		player.starvingTimeLimit = sec_to_ticks(levelNumber < 5 ? 4 : 3);
+		player.starvingTimeLimit = sec_to_ticks(n < 5 ? 4 : 3);
 		ghostBounty = firstGhostBounty;
 		resetGhosts(world);
 		bonus.world = world;
 		bonus.init();
-		log("Ms. Pac-Man game entered level #%d, maze number=%d, map number=%d", levelNumber, mazeNumber, mapNumber);
+		log("Ms. Pac-Man game entered level #%d, maze number=%d, map number=%d", n, mazeNumber, mapNumber);
 	}
 
 	/**
