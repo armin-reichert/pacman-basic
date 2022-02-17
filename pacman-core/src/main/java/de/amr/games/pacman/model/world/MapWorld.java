@@ -23,6 +23,7 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.world;
 
+import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.lib.Misc.trim;
 import static java.util.function.Predicate.not;
 
@@ -46,6 +47,7 @@ public class MapWorld implements World {
 
 	private WorldMap map;
 	private V2i size;
+	private BitSet eaten;
 
 	private DefaultGhostHouse house;
 	private List<V2i> scatterTiles;
@@ -58,6 +60,8 @@ public class MapWorld implements World {
 	private List<Portal> portals;
 	private BitSet intersections;
 	private List<V2i> energizerTiles;
+	private int totalFoodCount;
+	private int foodRemaining;
 
 	public MapWorld(String mapPath) {
 		setMap(WorldMap.load(mapPath));
@@ -200,5 +204,43 @@ public class MapWorld implements World {
 	@Override
 	public int pelletsToEatForBonus(int bonusIndex) {
 		return bonusIndex == 0 ? bonus_pellets_to_eat.x : bonus_pellets_to_eat.y;
+	}
+
+	@Override
+	public boolean isFoodEaten(V2i tile) {
+		return eaten.get(index(tile));
+	}
+
+	@Override
+	public boolean containsFood(V2i tile) {
+		return isFoodTile(tile) && !isFoodEaten(tile);
+	}
+
+	@Override
+	public void removeFood(V2i tile) {
+		if (containsFood(tile)) {
+			eaten.set(index(tile));
+			--foodRemaining;
+		}
+	}
+
+	@Override
+	public int foodRemaining() {
+		return foodRemaining;
+	}
+
+	@Override
+	public int eatenFoodCount() {
+		return totalFoodCount - foodRemaining;
+	}
+
+	@Override
+	public void resetFood() {
+		totalFoodCount = (int) tiles().filter(this::isFoodTile).count();
+		foodRemaining = totalFoodCount;
+		eaten = new BitSet();
+		long energizerCount = tiles().filter(this::isEnergizerTile).count();
+
+		log("Total food: %d (%d pellets, %d energizers)", totalFoodCount, totalFoodCount - energizerCount, energizerCount);
 	}
 }

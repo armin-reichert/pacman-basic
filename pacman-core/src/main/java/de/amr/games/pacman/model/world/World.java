@@ -190,4 +190,38 @@ public interface World {
 	 * @return number of pellets to eat for earning bonus
 	 */
 	int pelletsToEatForBonus(int bonusIndex);
+
+	/**
+	 * Removed food at given tile.
+	 * 
+	 * @param tile some tile
+	 */
+	void removeFood(V2i tile);
+
+	/**
+	 * @param tile some tile
+	 * @return {@code true} if there is food at the given tile
+	 */
+	boolean containsFood(V2i tile);
+
+	/**
+	 * @param tile some tile
+	 * @return {@code true} if there is eaten food at the given tile
+	 */
+	boolean isFoodEaten(V2i tile);
+
+	/**
+	 * @return number of pellets remaining
+	 */
+	int foodRemaining();
+
+	/**
+	 * @return number of pellets eaten
+	 */
+	int eatenFoodCount();
+
+	/**
+	 * Resets the food in this world.
+	 */
+	void resetFood();
 }

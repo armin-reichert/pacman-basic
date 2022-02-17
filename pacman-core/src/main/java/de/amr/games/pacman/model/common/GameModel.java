@@ -28,7 +28,6 @@ import static de.amr.games.pacman.model.world.World.HTS;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.BitSet;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -36,7 +35,6 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.Hiscore;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.V2d;
-import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.pacman.entities.Bonus;
 import de.amr.games.pacman.model.world.World;
 
@@ -124,15 +122,6 @@ public abstract class GameModel {
 
 	/** Number of maze flashes at end of current level. */
 	public int numFlashes;
-
-	/** Set of tile indices with eaten food. */
-	private BitSet eaten;
-
-	/** Total number of pellets at current level. */
-	public int totalFoodCount;
-
-	/** Total number of pellets remaining at current level. */
-	public int foodRemaining;
 
 	/** The player, Pac-Man or Ms. Pac-Man. */
 	public Pac player;
@@ -289,13 +278,7 @@ public abstract class GameModel {
 		ghostFrightenedSeconds = (int) row[10];
 		numFlashes = (int) row[11];
 
-		totalFoodCount = (int) world.tiles().filter(world::isFoodTile).count();
-		foodRemaining = totalFoodCount;
-		eaten = new BitSet();
-		long energizerCount = world.tiles().filter(world::isEnergizerTile).count();
-
-		log("Level %d loaded. Total food: %d (%d pellets, %d energizers)", levelNumber, totalFoodCount,
-				totalFoodCount - energizerCount, energizerCount);
+		world.resetFood();
 	}
 
 	protected Ghost[] createGhosts(String redGhostName, String pinkGhostName, String cyanGhostName,
@@ -393,7 +376,8 @@ public abstract class GameModel {
 	}
 
 	public boolean isBonusReached() {
-		return eatenFoodCount() == world.pelletsToEatForBonus(0) || eatenFoodCount() == world.pelletsToEatForBonus(1);
+		return world.eatenFoodCount() == world.pelletsToEatForBonus(0)
+				|| world.eatenFoodCount() == world.pelletsToEatForBonus(1);
 	}
 
 	public abstract long bonusActivationTicks();
@@ -405,25 +389,6 @@ public abstract class GameModel {
 			hiscore.level = hiscoreLevel;
 			hiscore.save();
 			log("New hiscore: %d points in level %d.", hiscore.points, hiscore.level);
-		}
-	}
-
-	public int eatenFoodCount() {
-		return totalFoodCount - foodRemaining;
-	}
-
-	public boolean isFoodEaten(V2i tile) {
-		return eaten.get(world.index(tile));
-	}
-
-	public boolean containsFood(V2i tile) {
-		return world.isFoodTile(tile) && !isFoodEaten(tile);
-	}
-
-	public void removeFood(V2i tile) {
-		if (containsFood(tile)) {
-			eaten.set(world.index(tile));
-			--foodRemaining;
 		}
 	}
 }

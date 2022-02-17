@@ -182,7 +182,7 @@ public class Autopilot implements PlayerControl {
 			if (!game().player.canAccessTile(ahead)) {
 				break;
 			}
-			if (game().world.isEnergizerTile(ahead) && !game().isFoodEaten(ahead)) {
+			if (game().world.isEnergizerTile(ahead) && !game().world.isFoodEaten(ahead)) {
 				energizerFound = true;
 			}
 			V2i aheadLeft = ahead.plus(game().player.moveDir().turnLeft().vec),
@@ -245,11 +245,11 @@ public class Autopilot implements PlayerControl {
 		for (int x = 0; x < game().world.numCols(); ++x) {
 			for (int y = 0; y < game().world.numRows(); ++y) {
 				V2i tile = new V2i(x, y);
-				if (!game().world.isFoodTile(tile) || game().isFoodEaten(tile)) {
+				if (!game().world.isFoodTile(tile) || game().world.isFoodEaten(tile)) {
 					continue;
 				}
 				if (game().world.isEnergizerTile(tile) && game().player.powerTimer.ticksRemaining() > 2 * 60
-						&& game().foodRemaining > 1) {
+						&& game().world.foodRemaining() > 1) {
 					continue;
 				}
 				double dist = pacManTile.manhattanDistance(tile);

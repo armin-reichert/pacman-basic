@@ -12,7 +12,7 @@ public class TestWorldFunctions {
 
 	@Test
 	public void testPacManWorld() {
-		MapWorld world = new MapWorld("/pacman/maps/map1.txt");
+		World world = new MapWorld("/pacman/maps/map1.txt");
 		assertEquals(36, world.numRows());
 		assertEquals(28, world.numCols());
 		assertEquals(4, world.energizerTiles().size());
@@ -26,7 +26,7 @@ public class TestWorldFunctions {
 
 	@Test
 	public void testMsPacManWorld1() {
-		MapWorld world = new MapWorld("/mspacman/maps/map1.txt");
+		World world = new MapWorld("/mspacman/maps/map1.txt");
 		assertEquals(36, world.numRows());
 		assertEquals(28, world.numCols());
 		assertEquals(4, world.energizerTiles().size());
@@ -45,7 +45,7 @@ public class TestWorldFunctions {
 
 	@Test
 	public void testMsPacManWorld2() {
-		MapWorld world = new MapWorld("/mspacman/maps/map2.txt");
+		World world = new MapWorld("/mspacman/maps/map2.txt");
 		assertEquals(36, world.numRows());
 		assertEquals(28, world.numCols());
 		assertEquals(4, world.energizerTiles().size());
@@ -64,7 +64,7 @@ public class TestWorldFunctions {
 
 	@Test
 	public void testMsPacManWorld3() {
-		MapWorld world = new MapWorld("/mspacman/maps/map3.txt");
+		World world = new MapWorld("/mspacman/maps/map3.txt");
 		assertEquals(36, world.numRows());
 		assertEquals(28, world.numCols());
 		assertEquals(4, world.energizerTiles().size());
@@ -83,7 +83,7 @@ public class TestWorldFunctions {
 
 	@Test
 	public void testMsPacManWorld4() {
-		MapWorld world = new MapWorld("/mspacman/maps/map4.txt");
+		World world = new MapWorld("/mspacman/maps/map4.txt");
 		assertEquals(36, world.numRows());
 		assertEquals(28, world.numCols());
 		assertEquals(4, world.energizerTiles().size());

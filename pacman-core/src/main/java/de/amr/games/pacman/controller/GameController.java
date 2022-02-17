@@ -184,7 +184,7 @@ public class GameController extends FiniteStateMachine<GameState> {
 	}
 
 	public void cheatEatAllPellets() {
-		game.world.tiles().filter(not(game.world::isEnergizerTile)).forEach(game::removeFood);
+		game.world.tiles().filter(not(game.world::isEnergizerTile)).forEach(game.world::removeFood);
 		publish(Info.PLAYER_FOUND_FOOD, null);
 	}
 
@@ -241,7 +241,7 @@ public class GameController extends FiniteStateMachine<GameState> {
 		if (stateTimer().hasExpired()) {
 			startHuntingPhase(++game.huntingPhase);
 		}
-		if (game.foodRemaining == 0) {
+		if (game.world.foodRemaining() == 0) {
 			resetAndStartHuntingTimerForPhase(0); // TODO is this correct?
 			changeState(LEVEL_COMPLETE);
 			return;
@@ -453,7 +453,7 @@ public class GameController extends FiniteStateMachine<GameState> {
 
 	private void lookForFood() {
 		V2i playerTile = game.player.tile();
-		if (game.containsFood(playerTile)) {
+		if (game.world.containsFood(playerTile)) {
 			eatFood(playerTile);
 		} else {
 			game.player.starvingTicks++;
@@ -461,7 +461,7 @@ public class GameController extends FiniteStateMachine<GameState> {
 	}
 
 	private void eatFood(V2i foodTile) {
-		game.removeFood(foodTile);
+		game.world.removeFood(foodTile);
 		game.player.starvingTicks = 0;
 		if (game.world.isEnergizerTile(foodTile)) {
 			game.player.restingTicksLeft = 3;
@@ -485,10 +485,10 @@ public class GameController extends FiniteStateMachine<GameState> {
 		}
 
 		// Will Blinky become Cruise Elroy?
-		if (game.foodRemaining == game.elroy1DotsLeft) {
+		if (game.world.foodRemaining() == game.elroy1DotsLeft) {
 			game.ghost(RED_GHOST).elroy = 1;
 			log("Blinky becomes Cruise Elroy 1");
-		} else if (game.foodRemaining == game.elroy2DotsLeft) {
+		} else if (game.world.foodRemaining() == game.elroy2DotsLeft) {
 			game.ghost(RED_GHOST).elroy = 2;
 			log("Blinky becomes Cruise Elroy 2");
 		}
