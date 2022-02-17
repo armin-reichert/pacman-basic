@@ -87,21 +87,21 @@ public class PacManGame extends GameModel {
 	}
 
 	@Override
-	public void setLevel(int n) {
-		if (n < 1) {
-			throw new IllegalArgumentException("Level number must be at least 1, but is: " + n);
+	public void setLevel(int levelNumber) {
+		if (levelNumber < 1) {
+			throw new IllegalArgumentException("Level number must be at least 1, but is: " + levelNumber);
 		}
-		setLevelData(n, n - 1 < data.length ? data[n - 1] : data[data.length - 1]);
+		setLevelData(levelNumber, levelNumber - 1 < data.length ? data[levelNumber - 1] : data[data.length - 1]);
 		mazeNumber = 1;
 		mapNumber = 1;
 		world.resetFood();
-		huntingPhaseDurations = huntingPhaseDurationsTable[n == 1 ? 0 : n <= 4 ? 1 : 2];
+		huntingPhaseDurations = huntingPhaseDurationsTable[levelNumber == 1 ? 0 : levelNumber <= 4 ? 1 : 2];
 		levelCounter.add(bonusSymbol);
-		player.starvingTimeLimit = sec_to_ticks(n < 5 ? 4 : 3);
+		player.starvingTimeLimit = sec_to_ticks(levelNumber < 5 ? 4 : 3);
 		ghostBounty = firstGhostBounty;
 		resetGhosts(world);
 		bonus.init();
-		log("Pac-Man game entered level #%d", n);
+		log("Pac-Man game entered level #%d", levelNumber);
 	}
 
 	@Override

@@ -87,27 +87,27 @@ public class MsPacManGame extends GameModel {
 	}
 
 	@Override
-	public void setLevel(int n) {
-		if (n < 1) {
-			throw new IllegalArgumentException("Level number must be at least 1, but is: " + n);
+	public void setLevel(int levelNumber) {
+		if (levelNumber < 1) {
+			throw new IllegalArgumentException("Level number must be at least 1, but is: " + levelNumber);
 		}
-		setLevelData(n, n - 1 < data.length ? data[n - 1] : data[data.length - 1]);
-		mazeNumber = mazeNumber(n);
+		setLevelData(levelNumber, levelNumber - 1 < data.length ? data[levelNumber - 1] : data[data.length - 1]);
+		mazeNumber = mazeNumber(levelNumber);
 		mapNumber = mapNumber(mazeNumber);
 		world = new MapWorld("/mspacman/maps/map" + mapNumber + ".txt");
 		world.resetFood();
-		huntingPhaseDurations = huntingPhaseDurationsTable[n == 1 ? 0 : n <= 4 ? 1 : 2];
-		if (n >= 8) {
+		huntingPhaseDurations = huntingPhaseDurationsTable[levelNumber == 1 ? 0 : levelNumber <= 4 ? 1 : 2];
+		if (levelNumber >= 8) {
 			bonusSymbol = new Random().nextInt(7);
 		}
 		levelCounter.add(bonusSymbol);
 		player.world = world;
-		player.starvingTimeLimit = sec_to_ticks(n < 5 ? 4 : 3);
+		player.starvingTimeLimit = sec_to_ticks(levelNumber < 5 ? 4 : 3);
 		ghostBounty = firstGhostBounty;
 		resetGhosts(world);
 		bonus.world = world;
 		bonus.init();
-		log("Ms. Pac-Man game entered level #%d, maze number=%d, map number=%d", n, mazeNumber, mapNumber);
+		log("Ms. Pac-Man game entered level #%d, maze number=%d, map number=%d", levelNumber, mazeNumber, mapNumber);
 	}
 
 	/**
