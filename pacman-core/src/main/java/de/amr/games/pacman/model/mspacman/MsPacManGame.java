@@ -93,7 +93,7 @@ public class MsPacManGame extends GameModel {
 		}
 		setLevelData(levelNumber, levelNumber - 1 < data.length ? data[levelNumber - 1] : data[data.length - 1]);
 		mazeNumber = mazeNumber(levelNumber);
-		mapNumber = mapNumber(mazeNumber);
+		int mapNumber = mapNumber(mazeNumber);
 		world = new MapWorld("/mspacman/maps/map" + mapNumber + ".txt");
 		world.resetFood();
 		huntingPhaseDurations = huntingPhaseDurationsTable[levelNumber == 1 ? 0 : levelNumber <= 4 ? 1 : 2];

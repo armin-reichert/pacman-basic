@@ -78,7 +78,6 @@ public class PacManGame extends GameModel {
 	public PacManGame() {
 		world = new MapWorld("/pacman/maps/map1.txt"); // all levels use the same world
 		mazeNumber = 1;
-		mapNumber = 1;
 		player = new Pac("Pac-Man");
 		player.world = world;
 		ghosts = createGhosts("Blinky", "Pinky", "Inky", "Clyde");
