@@ -224,7 +224,6 @@ public class Ghost extends Creature {
 			setWishDir(opposite);
 		}
 		move();
-//		tryMovingTowards(wishDir);
 		return true;
 	}
 
