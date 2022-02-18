@@ -218,7 +218,7 @@ public abstract class GameModel {
 		player.targetTile = null; // used in autopilot mode
 		player.stuck = false;
 		player.forcedOnTrack = true;
-		player.dead = false;
+		player.killed = false;
 		player.restingTicksLeft = 0;
 		player.starvingTicks = 0;
 		player.powerTimer.setIndefinite();

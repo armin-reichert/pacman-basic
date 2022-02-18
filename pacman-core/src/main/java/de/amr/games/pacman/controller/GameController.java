@@ -435,7 +435,7 @@ public class GameController extends FiniteStateMachine<GameState> {
 		}
 		Optional<Ghost> killer = game.ghosts(HUNTING_PAC).filter(game.player::meets).findAny();
 		killer.ifPresent(ghost -> {
-			game.player.dead = true;
+			game.player.killed = true;
 			log("%s got killed by %s at tile %s", game.player.name, ghost.name, game.player.tile());
 			// Elroy mode of red ghost gets disabled when player is killed
 			Ghost redGhost = game.ghost(GameModel.RED_GHOST);
