@@ -213,7 +213,7 @@ public class Ghost extends Creature {
 			setMoveDir(newDir);
 			setWishDir(newDir);
 		}
-		tryMovingTowards(wishDir);
+		move();
 		return false;
 	}
 
