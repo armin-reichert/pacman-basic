@@ -77,6 +77,8 @@ public class PacManGame extends GameModel {
 
 	public PacManGame() {
 		world = new MapWorld("/pacman/maps/map1.txt"); // all levels use the same world
+		mazeNumber = 1;
+		mapNumber = 1;
 		player = new Pac("Pac-Man");
 		player.world = world;
 		ghosts = createGhosts("Blinky", "Pinky", "Inky", "Clyde");
@@ -92,8 +94,6 @@ public class PacManGame extends GameModel {
 			throw new IllegalArgumentException("Level number must be at least 1, but is: " + levelNumber);
 		}
 		setLevelData(levelNumber, levelNumber - 1 < data.length ? data[levelNumber - 1] : data[data.length - 1]);
-		mazeNumber = 1;
-		mapNumber = 1;
 		world.resetFood();
 		huntingPhaseDurations = huntingPhaseDurationsTable[levelNumber == 1 ? 0 : levelNumber <= 4 ? 1 : 2];
 		levelCounter.add(bonusSymbol);
