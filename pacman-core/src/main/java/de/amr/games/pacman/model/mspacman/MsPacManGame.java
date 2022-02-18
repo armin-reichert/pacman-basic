@@ -148,8 +148,8 @@ public class MsPacManGame extends GameModel {
 	}
 
 	@Override
-	public int bonusValue(int symbolID) {
-		return switch (symbolID) {
+	public int bonusValue(int symbol) {
+		return switch (symbol) {
 		case CHERRIES -> 100;
 		case STRAWBERRY -> 200;
 		case PEACH -> 500;
@@ -157,7 +157,7 @@ public class MsPacManGame extends GameModel {
 		case APPLE -> 1000;
 		case PEAR -> 2000;
 		case BANANA -> 5000;
-		default -> throw new IllegalArgumentException("Unknown symbol ID: " + symbolID);
+		default -> throw new IllegalArgumentException("Unknown symbol ID: " + symbol);
 		};
 	}
 
