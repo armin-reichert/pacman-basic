@@ -59,7 +59,7 @@ public class Pac extends Creature {
 
 	@Override
 	public String toString() {
-		return String.format("%s: pos: %s, speed=%.2f, dir=%s, wishDir=%s", name, position, velocity.length(), moveDir(),
-				wishDir());
+		return String.format("%s: pos=%s, velocity=%s, speed=%.2f, dir=%s, wishDir=%s", name, position, velocity,
+				velocity.length(), moveDir(), wishDir());
 	}
 }
