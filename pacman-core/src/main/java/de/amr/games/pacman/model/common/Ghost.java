@@ -49,10 +49,10 @@ public class Ghost extends Creature {
 	/** The home location of the ghost. For the red ghost, this is outside of the house. */
 	public V2i homeTile;
 
-	/** * The revival location of the ghost inside. For the red ghost, this is different from the home location. */
+	/** The revival location inside the house. For the red ghost, this is different from the home location. */
 	public V2i revivalTile;
 
-	/** The bounty for this ghost. */
+	/** The bounty paid for this ghost. */
 	public int bounty;
 
 	/** The function computing the target tile when this ghost is in chasing mode. */
@@ -86,7 +86,7 @@ public class Ghost extends Creature {
 		}
 		if (world.isOneWayDown(tile)) {
 			if (offset().y != 0) {
-				return true; // maybe already on the way up
+				return true; // allow if already on the way up
 			}
 			return !is(GhostState.HUNTING_PAC);
 		}
@@ -94,7 +94,7 @@ public class Ghost extends Creature {
 	}
 
 	/**
-	 * @return {@code true} if the ghost is outside the ghost house at the door.
+	 * @return {@code true} if the ghost is near the ghosthouse door.
 	 */
 	public boolean atGhostHouseDoor() {
 		return tile().equals(world.ghostHouse().entryTile()) && differsAtMost(offset().x, HTS, 2);
@@ -123,8 +123,8 @@ public class Ghost extends Creature {
 	 */
 	public void roam() {
 		if (newTileEntered) {
-			wishDir = Direction.shuffled().stream().filter(d -> d != moveDir.opposite() && canAccessTile(tile().plus(d.vec)))
-					.findAny().orElse(wishDir);
+			wishDir = Direction.shuffled().stream()
+					.filter(dir -> dir != moveDir.opposite() && canAccessTile(tile().plus(dir.vec))).findAny().orElse(wishDir);
 		}
 		tryMoving();
 	}
@@ -158,19 +158,25 @@ public class Ghost extends Creature {
 	public boolean enterHouse() {
 		V2i tile = tile();
 		V2d offset = offset();
-		// Target position inside house reached? Turn around and start leaving house.
 		if (tile.equals(targetTile) && offset.y >= 0) {
-			setWishDir(moveDir.opposite());
+			// Target position inside house reached. Turn around and start leaving house.
+			Direction backwards = moveDir.opposite();
+			setMoveDir(backwards);
+			setWishDir(backwards);
 			state = GhostState.LEAVING_HOUSE;
 			return true;
 		}
-		// Center reached? If target tile is left or right seat, move towards target tile
 		if (tile.equals(world.ghostHouse().seat(1)) && offset.y >= 0) {
-			Direction newDir = targetTile.x < world.ghostHouse().seat(1).x ? Direction.LEFT : Direction.RIGHT;
-			setMoveDir(newDir);
-			setWishDir(newDir);
+			// Center reached. If target tile is left or right seat, move towards seat, else keep direction.
+			if (targetTile.x < world.ghostHouse().seat(1).x) {
+				setMoveDir(Direction.LEFT);
+				setWishDir(Direction.LEFT);
+			} else if (targetTile.x > world.ghostHouse().seat(1).x) {
+				setMoveDir(Direction.RIGHT);
+				setWishDir(Direction.RIGHT);
+			}
 		}
-		tryMovingTowards(moveDir);
+		move();
 		return false;
 	}
 
