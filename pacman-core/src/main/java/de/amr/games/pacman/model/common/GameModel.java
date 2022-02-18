@@ -251,7 +251,7 @@ public abstract class GameModel {
 		return ((Integer) percentValue) / 100f;
 	}
 
-	protected void setLevelData(int levelNumber, Object[] data) {
+	protected void initLevel(int levelNumber, Object[] data) {
 		this.levelNumber = levelNumber;
 		bonusSymbol = (int) data[0];
 		playerSpeed = fraction(data[1]);
