@@ -45,13 +45,13 @@ public class Pac extends Creature {
 	public TickTimer powerTimer = new TickTimer("Pac-power-timer");
 
 	/** Number of clock ticks Pac is still resting and will not move. */
-	public long restingTicksLeft = 0;
+	public int restingTicksLeft = 0;
 
 	/** Number of clock ticks Pac has not eaten any pellet. */
-	public long starvingTicks = 0;
+	public int starvingTicks = 0;
 
 	/** Max number of clock ticks Pac can be starving until ghost gets unlocked. */
-	public long starvingTimeLimit;
+	public int starvingTimeLimit;
 
 	public Pac(String name) {
 		super(name);

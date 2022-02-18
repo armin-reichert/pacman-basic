@@ -96,7 +96,7 @@ public class PacManGame extends GameModel {
 		world.resetFood();
 		huntingPhaseDurations = huntingPhaseDurationsTable[levelNumber == 1 ? 0 : levelNumber <= 4 ? 1 : 2];
 		levelCounter.add(bonusSymbol);
-		player.starvingTimeLimit = sec_to_ticks(levelNumber < 5 ? 4 : 3);
+		player.starvingTimeLimit = (int) sec_to_ticks(levelNumber < 5 ? 4 : 3);
 		ghostBounty = firstGhostBounty;
 		resetGhosts(world);
 		bonus.init();

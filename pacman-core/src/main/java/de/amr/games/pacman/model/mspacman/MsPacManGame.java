@@ -102,7 +102,7 @@ public class MsPacManGame extends GameModel {
 		}
 		levelCounter.add(bonusSymbol);
 		player.world = world;
-		player.starvingTimeLimit = sec_to_ticks(levelNumber < 5 ? 4 : 3);
+		player.starvingTimeLimit = (int) sec_to_ticks(levelNumber < 5 ? 4 : 3);
 		ghostBounty = firstGhostBounty;
 		resetGhosts(world);
 		bonus.world = world;
