@@ -133,7 +133,11 @@ public class Creature extends GameEntity {
 	 * Force turning to the opposite direction. Used when hunting state changes.
 	 */
 	public void forceTurningBack() {
-		setWishDir(moveDir.opposite());
+		Direction oppositeDir = moveDir.opposite();
+		if (canAccessTile(tile().plus(oppositeDir.vec))) {
+			setWishDir(oppositeDir);
+			setMoveDir(oppositeDir);
+		}
 	}
 
 	/**
