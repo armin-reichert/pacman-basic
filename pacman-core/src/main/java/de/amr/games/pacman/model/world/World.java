@@ -23,6 +23,7 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.world;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
@@ -123,7 +124,7 @@ public interface World {
 	Direction ghostStartDirection(int ghostID);
 
 	/**
-	 * @return list of portals from north to south.
+	 * @return portals inside this world
 	 */
 	List<Portal> portals();
 
@@ -177,7 +178,7 @@ public interface World {
 	/**
 	 * @return all energizer tiles in the world
 	 */
-	List<V2i> energizerTiles();
+	Collection<V2i> energizerTiles();
 
 	/**
 	 * @return bonus location in case this is fixed

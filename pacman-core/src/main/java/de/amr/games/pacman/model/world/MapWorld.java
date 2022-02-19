@@ -28,9 +28,11 @@ import static de.amr.games.pacman.lib.Misc.trim;
 import static java.util.function.Predicate.not;
 
 import java.util.BitSet;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -59,7 +61,7 @@ public class MapWorld implements World {
 	private List<V2i> upwardsBlockedTiles;
 	private List<Portal> portals;
 	private BitSet intersections;
-	private List<V2i> energizerTiles;
+	private Set<V2i> energizerTiles;
 	private int totalFoodCount;
 	private int foodRemaining;
 
@@ -108,7 +110,7 @@ public class MapWorld implements World {
 				.map(this::index) //
 				.forEach(intersections::set);
 
-		energizerTiles = trim(tiles().filter(tile -> map.data(tile) == WorldMap.ENERGIZER).collect(Collectors.toList()));
+		energizerTiles = tiles().filter(tile -> map.data(tile) == WorldMap.ENERGIZER).collect(Collectors.toSet());
 	}
 
 	private boolean isGhostHouseDoor(V2i tile) {
@@ -200,8 +202,8 @@ public class MapWorld implements World {
 	}
 
 	@Override
-	public List<V2i> energizerTiles() {
-		return Collections.unmodifiableList(energizerTiles);
+	public Collection<V2i> energizerTiles() {
+		return Collections.unmodifiableSet(energizerTiles);
 	}
 
 	@Override
