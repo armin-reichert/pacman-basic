@@ -121,7 +121,7 @@ public class Intermission3Controller extends FiniteStateMachine<IntermissionStat
 			bag.setVelocity(-1.25f, 0);
 		}
 		// release bag from storks beak?
-		if (bag.gravity == V2d.NULL && (int) stork.position.x == t(24)) {
+		if ((int) stork.position.x == t(24)) {
 			bag.gravity = new V2d(0, 0.04);
 		}
 		// (closed) bag reaches ground for first time?
