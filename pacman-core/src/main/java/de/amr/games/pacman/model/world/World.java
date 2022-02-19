@@ -24,7 +24,6 @@ SOFTWARE.
 package de.amr.games.pacman.model.world;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -134,7 +133,12 @@ public interface World {
 	/**
 	 * @return portals inside this world
 	 */
-	List<Portal> portals();
+	Collection<Portal> portals();
+
+	/**
+	 * @return a random portal
+	 */
+	Portal randomPortal();
 
 	/**
 	 * @param tile a tile

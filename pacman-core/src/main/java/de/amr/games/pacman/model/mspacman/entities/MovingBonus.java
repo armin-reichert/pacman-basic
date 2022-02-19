@@ -30,7 +30,6 @@ import java.util.Random;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.pacman.entities.Bonus;
-import de.amr.games.pacman.model.world.Portal;
 
 /**
  * A bonus that tumbles through the world, starting at some portal, making one round around the ghost house and leaving
@@ -70,11 +69,11 @@ public class MovingBonus extends Bonus {
 		timer = ticks;
 		Direction moveDir = new Random().nextBoolean() ? Direction.LEFT : Direction.RIGHT;
 		if (moveDir == Direction.RIGHT) {
-			placeAt(randomPortal().left, 0, 0);
-			exitTile = randomPortal().right;
+			placeAt(world.randomPortal().left, 0, 0);
+			exitTile = world.randomPortal().right;
 		} else {
-			placeAt(randomPortal().right, 0, 0);
-			exitTile = randomPortal().left;
+			placeAt(world.randomPortal().right, 0, 0);
+			exitTile = world.randomPortal().left;
 		}
 		setMoveDir(moveDir);
 		setWishDir(moveDir);
@@ -127,10 +126,6 @@ public class MovingBonus extends Bonus {
 		case EATEN -> timer == 0;
 		default -> false;
 		};
-	}
-
-	private Portal randomPortal() {
-		return world.portals().get(new Random().nextInt(world.portals().size()));
 	}
 
 	private void setTargetTile(V2i tile) {

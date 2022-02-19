@@ -32,7 +32,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
+import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -49,7 +49,6 @@ public class MapWorld implements World {
 
 	private WorldMap map;
 	private V2i size;
-	private BitSet eaten;
 
 	private DefaultGhostHouse house;
 	private List<V2i> scatterTiles;
@@ -61,7 +60,8 @@ public class MapWorld implements World {
 	private List<V2i> upwardsBlockedTiles;
 	private List<Portal> portals;
 	private BitSet intersections;
-	private Set<V2i> energizerTiles;
+	private List<V2i> energizerTiles;
+	private BitSet eaten;
 	private int totalFoodCount;
 	private int foodRemaining;
 
@@ -110,7 +110,7 @@ public class MapWorld implements World {
 				.map(this::index) //
 				.forEach(intersections::set);
 
-		energizerTiles = tiles().filter(tile -> map.data(tile) == WorldMap.ENERGIZER).collect(Collectors.toSet());
+		energizerTiles = tiles().filter(tile -> map.data(tile) == WorldMap.ENERGIZER).collect(Collectors.toList());
 	}
 
 	private boolean isGhostHouseDoor(V2i tile) {
@@ -162,8 +162,13 @@ public class MapWorld implements World {
 	}
 
 	@Override
-	public List<Portal> portals() {
+	public Collection<Portal> portals() {
 		return Collections.unmodifiableList(portals);
+	}
+
+	@Override
+	public Portal randomPortal() {
+		return portals.get(new Random().nextInt(portals.size()));
 	}
 
 	@Override
@@ -203,7 +208,7 @@ public class MapWorld implements World {
 
 	@Override
 	public Collection<V2i> energizerTiles() {
-		return Collections.unmodifiableSet(energizerTiles);
+		return Collections.unmodifiableList(energizerTiles);
 	}
 
 	@Override
