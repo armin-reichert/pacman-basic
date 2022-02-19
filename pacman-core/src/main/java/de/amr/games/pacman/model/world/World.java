@@ -82,15 +82,23 @@ public interface World {
 	 */
 	default Stream<V2i> tiles() {
 		int w = numCols(), h = numRows();
-		return IntStream.range(0, w * h).mapToObj(i -> new V2i(i % w, i / w));
+		return IntStream.range(0, w * h).mapToObj(this::tile);
 	}
 
 	/**
 	 * @param tile a tile
-	 * @return Index of the tile in order top-to-bottom, left-to-right.
+	 * @return tile index in order top-to-bottom, left-to-right.
 	 */
 	default int index(V2i tile) {
 		return numCols() * tile.y + tile.x;
+	}
+
+	/**
+	 * @param index tile index in order top-to-bottom, left-to-right
+	 * @return tile as vector
+	 */
+	default V2i tile(int index) {
+		return new V2i(index % numCols(), index / numCols());
 	}
 
 	/**
