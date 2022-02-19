@@ -1,6 +1,6 @@
 !
 val int_val = 42
-val string_val = "abc"
+val string_val = "Brandon"
 val vector_val = (42,42)
 val vector_list.0 = (0,0)
 val vector_list.1 = (0,1)

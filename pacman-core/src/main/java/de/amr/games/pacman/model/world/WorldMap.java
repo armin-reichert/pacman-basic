@@ -81,7 +81,7 @@ public class WorldMap {
 				// value definition?
 				Map.Entry<String, ?> def = definitionParser.parse(line);
 				if (def != null) {
-					map.definitions.put(def.getKey(), def.getValue());
+					map.defs.put(def.getKey(), def.getValue());
 				} else {
 					dataLines.add(line);
 				}
@@ -113,7 +113,7 @@ public class WorldMap {
 		log("Error parsing map: %s", String.format(message, args));
 	}
 
-	private final Map<String, Object> definitions = new HashMap<>();
+	private final Map<String, Object> defs = new HashMap<>();
 	private byte[][] content;
 
 	public byte data(V2i tile) {
@@ -124,29 +124,28 @@ public class WorldMap {
 		return content[y][x]; // row-wise order!
 	}
 
-	public int integer(String valueName) {
-		return (int) definitions.get(valueName);
+	public Integer integer(String valueName) {
+		return (Integer) defs.get(valueName);
 	}
 
 	public String string(String valueName) {
-		return (String) definitions.get(valueName);
+		return (String) defs.get(valueName);
 	}
 
 	public V2i vector(String valueName) {
-		Object value = definitions.get(valueName);
+		Object value = defs.get(valueName);
 		if (value == null) {
-			parse_error("Value '%s' is not defined", valueName);
-			return V2i.NULL;
+			return null;
 		}
 		if (!(value instanceof V2i)) {
-			parse_error("Value '%s' does not contain a vector", valueName);
-			return V2i.NULL;
+			parse_error("Value '%s' is not a vector", valueName);
+			return null;
 		}
 		return (V2i) value;
 	}
 
 	public Optional<V2i> vectorOptional(String valueName) {
-		Object value = definitions.get(valueName);
+		Object value = defs.get(valueName);
 		if (value == null) {
 			return Optional.empty();
 		}
@@ -160,12 +159,15 @@ public class WorldMap {
 	/**
 	 * @param listName the list name (prefix before the dot in list variable assignments), e.g. <code>level</code> for
 	 *                 list entries like <code>level.42</code>
-	 * @return list of all values for given list name
+	 * @return list of all values for given list name or {@code null} if no such list value exists
 	 */
 	public List<V2i> vectorList(String listName) {
+		if (defs.keySet().stream().noneMatch(key -> key.startsWith(listName))) {
+			return null;
+		}
 		//@formatter:off
 		return Misc.trim(
-				definitions.keySet().stream()
+				defs.keySet().stream()
 					.filter(varName -> varName.startsWith(listName + "."))
 					.sorted()
 					.map(this::vector)
