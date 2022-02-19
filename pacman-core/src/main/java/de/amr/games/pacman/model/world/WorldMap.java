@@ -124,6 +124,10 @@ public class WorldMap {
 		return content[y][x]; // row-wise order!
 	}
 
+	public int integer(String valueName) {
+		return (int) definitions.get(valueName);
+	}
+
 	public String string(String valueName) {
 		return (String) definitions.get(valueName);
 	}

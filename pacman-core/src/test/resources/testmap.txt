@@ -1,0 +1,19 @@
+!
+val int_val = 42
+val string_val = "abc"
+val vector_val = (42,42)
+val vector_list.0 = (0,0)
+val vector_list.1 = (0,1)
+val vector_list.2 = (0,2)
+val vector_list.3 = (0,3)
+!
+! mandatory, must conform to the size of the data lines
+val size = (4,2)
+!
+! Here come the data lines:
+!
+####
+####
+!
+! end of map
+!
