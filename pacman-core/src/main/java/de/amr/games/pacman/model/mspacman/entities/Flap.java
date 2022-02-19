@@ -32,11 +32,11 @@ import de.amr.games.pacman.model.common.GameEntity;
  */
 public class Flap extends GameEntity {
 
-	public final int sceneNumber;
-	public final String sceneTitle;
+	public final int number;
+	public final String title;
 
 	public Flap(int number, String title) {
-		sceneNumber = number;
-		sceneTitle = title;
+		this.number = number;
+		this.title = title;
 	}
 }
