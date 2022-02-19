@@ -52,7 +52,7 @@ public class MapWorld implements World {
 	private DefaultGhostHouse house;
 	private List<V2i> scatterTiles;
 	private V2i pacman_home;
-	private V2i pacman_start_dir;
+	private Direction pacman_start_dir;
 	private List<Direction> ghost_start_dirs;
 	private V2i bonus_home;
 	private V2i bonus_pellets_to_eat;
@@ -80,7 +80,7 @@ public class MapWorld implements World {
 		house.doorTiles = trim(tiles().filter(this::isGhostHouseDoor).collect(Collectors.toList()));
 
 		pacman_home = map.vector("pacman_home");
-		pacman_start_dir = map.vector("pacman_start_dir");
+		pacman_start_dir = Direction.valueOf(map.string("pacman_start_dir"));
 		ghost_start_dirs = List.of( //
 				Direction.valueOf(map.string("ghost_start_dir.0")), //
 				Direction.valueOf(map.string("ghost_start_dir.1")), //
@@ -143,7 +143,7 @@ public class MapWorld implements World {
 
 	@Override
 	public Direction playerStartDirection() {
-		return Direction.of(pacman_start_dir);
+		return pacman_start_dir;
 	}
 
 	@Override
