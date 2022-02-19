@@ -91,6 +91,9 @@ public class MapWorld implements World {
 		bonus_pellets_to_eat = map.vector("bonus_pellets_to_eat");
 		scatterTiles = map.vectorList("scatter");
 		upwardsBlockedTiles = map.vectorList("upwards_blocked");
+		if (upwardsBlockedTiles == null) {
+			upwardsBlockedTiles = Collections.emptyList();
+		}
 
 		portals = trim(IntStream.range(0, size.y)
 				.filter(y -> map.data(0, y) == WorldMap.TUNNEL && map.data(size.x - 1, y) == WorldMap.TUNNEL).boxed()
