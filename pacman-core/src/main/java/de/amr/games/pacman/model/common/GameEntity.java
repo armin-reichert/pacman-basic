@@ -44,6 +44,8 @@ public class GameEntity {
 
 	public V2d velocity = V2d.NULL;
 
+	public V2d gravity = V2d.NULL;
+
 	/**
 	 * @return the current tile position
 	 */
@@ -98,6 +100,7 @@ public class GameEntity {
 	}
 
 	public void move() {
+		velocity = velocity.plus(gravity);
 		position = position.plus(velocity);
 	}
 
