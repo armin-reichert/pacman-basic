@@ -124,6 +124,10 @@ public class WorldMap {
 		return content[y][x]; // row-wise order!
 	}
 
+	public String string(String valueName) {
+		return (String) definitions.get(valueName);
+	}
+
 	public V2i vector(String valueName) {
 		Object value = definitions.get(valueName);
 		if (value == null) {

@@ -53,7 +53,7 @@ public class MapWorld implements World {
 	private List<V2i> scatterTiles;
 	private V2i pacman_home;
 	private V2i pacman_start_dir;
-	private List<V2i> ghost_start_dir;
+	private List<Direction> ghost_start_dirs;
 	private V2i bonus_home;
 	private V2i bonus_pellets_to_eat;
 	private List<V2i> upwardsBlockedTiles;
@@ -81,7 +81,12 @@ public class MapWorld implements World {
 
 		pacman_home = map.vector("pacman_home");
 		pacman_start_dir = map.vector("pacman_start_dir");
-		ghost_start_dir = map.vectorList("ghost_start_dir");
+		ghost_start_dirs = List.of( //
+				Direction.valueOf(map.string("ghost_start_dir.0")), //
+				Direction.valueOf(map.string("ghost_start_dir.1")), //
+				Direction.valueOf(map.string("ghost_start_dir.2")), //
+				Direction.valueOf(map.string("ghost_start_dir.3")));
+
 		bonus_home = map.vectorOptional("bonus_home").orElse(V2i.NULL);
 		bonus_pellets_to_eat = map.vector("bonus_pellets_to_eat");
 		scatterTiles = map.vectorList("scatter");
@@ -143,7 +148,7 @@ public class MapWorld implements World {
 
 	@Override
 	public Direction ghostStartDirection(int ghostID) {
-		return Direction.of(ghost_start_dir.get(ghostID));
+		return ghost_start_dirs.get(ghostID);
 	}
 
 	@Override

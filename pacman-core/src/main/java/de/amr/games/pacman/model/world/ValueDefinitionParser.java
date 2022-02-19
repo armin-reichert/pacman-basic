@@ -34,6 +34,7 @@ import de.amr.games.pacman.lib.V2i;
  * 
  * <pre>
  * val int_value = 42
+ * val string_value = "some_text"
  * val vector_value = (42,42)
  * val vector_array_value.0 = (0,1) 
  * val vector_array_value.1 = (0,2)
@@ -63,15 +64,17 @@ public class ValueDefinitionParser {
 	}
 
 	private Object parseRightHandSide(final String text) {
-		String s = text.trim();
-		if (s.startsWith("(")) {
-			return parseVector(s);
+		String trimmedText = text.trim();
+		if (trimmedText.startsWith("(")) {
+			return parseVector(trimmedText);
+		} else if (trimmedText.startsWith("\"")) {
+			return parseString(trimmedText);
 		} else {
-			return parseInt(s);
+			return parseInt(trimmedText);
 		}
 	}
 
-	private V2i parseVector(final String text) {
+	private V2i parseVector(String text) {
 		String s = text;
 		if (!s.endsWith(")")) {
 			error("Error parsing vector from '%s'", text);
@@ -88,7 +91,19 @@ public class ValueDefinitionParser {
 		return new V2i(x, y);
 	}
 
-	private int parseInt(final String text) {
+	private String parseString(String text) {
+		if (text.length() < 2) {
+			error("Error parsing string, not enclosed in quotes");
+			return null;
+		}
+		if (!text.endsWith("\"")) {
+			error("Error parsing string, no closing quote");
+			return null;
+		}
+		return text.substring(1, text.length() - 1);
+	}
+
+	private int parseInt(String text) {
 		try {
 			return Integer.parseInt(text);
 		} catch (Exception x) {
