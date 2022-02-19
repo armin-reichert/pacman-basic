@@ -67,6 +67,9 @@ public class Creature extends GameEntity {
 	/** If movement must be aligned with the "track" defined by the tiles. */
 	public boolean forcedOnTrack = false;
 
+	/** The world where this creature lives. */
+	public World world;
+
 	public Creature(String name) {
 		this.name = name;
 	}
