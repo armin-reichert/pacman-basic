@@ -91,7 +91,7 @@ public class Intermission3Controller extends FiniteStateMachine<IntermissionStat
 		stork.setPosition(t(30), t(12));
 
 		bag = new JuniorBag();
-		bag.gravity = V2d.NULL;
+		bag.acceleration = V2d.NULL;
 		bag.open = false;
 		bag.position = stork.position.plus(-14, 3);
 		numBagBounces = 0;
@@ -122,7 +122,7 @@ public class Intermission3Controller extends FiniteStateMachine<IntermissionStat
 		}
 		// release bag from storks beak?
 		if ((int) stork.position.x == t(24)) {
-			bag.gravity = new V2d(0, 0.04);
+			bag.acceleration = new V2d(0, 0.04);
 		}
 		// (closed) bag reaches ground for first time?
 		if (!bag.open && bag.position.y > GROUND_Y) {
