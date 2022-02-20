@@ -32,6 +32,6 @@ import de.amr.games.pacman.model.common.GameEntity;
  */
 public class JuniorBag extends GameEntity {
 
-	/** Bag is open an shows Pac-Man baby */
+	/** If open, Pac-Man junior appears */
 	public boolean open = false;
 }
