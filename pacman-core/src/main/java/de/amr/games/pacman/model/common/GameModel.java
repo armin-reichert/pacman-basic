@@ -278,14 +278,15 @@ public abstract class GameModel {
 		// Red ghost chases Pac-Man directly
 		redGhost.fnChasingTargetTile = player::tile;
 
-		// Pink ghost's target is two tiles ahead of Pac-Man (simulate overflow bug when player looks up)
-		pinkGhost.fnChasingTargetTile = () -> player.moveDir() == Direction.UP ? player.tilesAhead(4).plus(-4, 0)
-				: player.tilesAhead(4);
+		// Pink ghost's target is two tiles ahead of Pac-Man (simulate overflow bug when player moves up)
+		pinkGhost.fnChasingTargetTile = () -> player.moveDir() != Direction.UP //
+				? player.tilesAhead(4)
+				: player.tilesAhead(4).plus(-4, 0);
 
-		// For cyan ghost's target, see Pac-Man dossier (simulate overflow bug when player looks up)
-		cyanGhost.fnChasingTargetTile = () -> player.moveDir() == Direction.UP
-				? player.tilesAhead(2).plus(-2, 0).scaled(2).minus(redGhost.tile())
-				: player.tilesAhead(2).scaled(2).minus(redGhost.tile());
+		// For cyan ghost's target, see Pac-Man dossier (simulate overflow bug when player moves up)
+		cyanGhost.fnChasingTargetTile = () -> player.moveDir() != Direction.UP //
+				? player.tilesAhead(2).scaled(2).minus(redGhost.tile())
+				: player.tilesAhead(2).plus(-2, 0).scaled(2).minus(redGhost.tile());
 
 		// Orange ghost's target is either Pac-Man tile or scatter tile #3 at the lower left maze corner
 		orangeGhost.fnChasingTargetTile = () -> orangeGhost.tile().euclideanDistance(player.tile()) < 8
