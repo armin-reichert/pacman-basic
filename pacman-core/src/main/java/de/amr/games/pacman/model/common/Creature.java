@@ -64,7 +64,7 @@ public class Creature extends GameEntity {
 	/** If the creature got stuck in the world. */
 	public boolean stuck = false;
 
-	/** If movement must be aligned with the "track" defined by the tiles. */
+	/** If movement must be aligned with the "track" defined by connecting the tile centers. */
 	public boolean forcedOnTrack = false;
 
 	/** The world where this creature lives. */
@@ -154,14 +154,12 @@ public class Creature extends GameEntity {
 			for (Portal portal : world.portals()) {
 				if (currentTile.equals(portal.right)) {
 					placeAt(portal.left, 0, 0);
-					return;
 				}
 			}
 		} else if (moveDir == Direction.LEFT) {
 			for (Portal portal : world.portals()) {
 				if (currentTile.equals(portal.left)) {
 					placeAt(portal.right, 0, 0);
-					return;
 				}
 			}
 		}
