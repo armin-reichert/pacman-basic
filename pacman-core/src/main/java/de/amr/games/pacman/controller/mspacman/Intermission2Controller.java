@@ -75,7 +75,9 @@ public class Intermission2Controller extends FiniteStateMachine<IntermissionStat
 	private void state_FLAP_enter() {
 		stateTimer().start();
 
-		flap = new Flap(2, "THE CHASE");
+		flap = new Flap();
+		flap.number = 2;
+		flap.text = "THE CHASE";
 		flap.setPosition(t(3), t(10));
 		flap.show();
 		pacMan = new Pac("Pac-Man");

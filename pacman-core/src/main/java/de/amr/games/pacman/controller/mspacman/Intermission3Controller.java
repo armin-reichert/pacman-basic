@@ -75,7 +75,9 @@ public class Intermission3Controller extends FiniteStateMachine<IntermissionStat
 	public void init(GameController gameController) {
 		this.gameController = gameController;
 
-		flap = new Flap(3, "JUNIOR");
+		flap = new Flap();
+		flap.number = 3;
+		flap.text = "JUNIOR";
 		flap.setPosition(t(3), t(10));
 		flap.show();
 

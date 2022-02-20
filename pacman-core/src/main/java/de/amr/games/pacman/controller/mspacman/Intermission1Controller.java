@@ -82,7 +82,9 @@ public class Intermission1Controller extends FiniteStateMachine<IntermissonState
 	private void state_FLAP_enter() {
 		stateTimer().setSeconds(2).start();
 
-		flap = new Flap(1, "THEY MEET");
+		flap = new Flap();
+		flap.number = 1;
+		flap.text = "THEY MEET";
 		flap.setPosition(t(3), t(10));
 		flap.show();
 
