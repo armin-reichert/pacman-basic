@@ -43,8 +43,14 @@ public class GhostHouse {
 	/** Left entry tile. */
 	public V2i entry;
 
-	/** Tiles with ghost seats in order "above entry", "inside left", "inside middle", "inside right". */
-	public List<V2i> seats;
+	/** Left seat in house. */
+	public V2i seatLeft;
+
+	/** Center seat in house. */
+	public V2i seatCenter;
+
+	/** Right seat in house. */
+	public V2i seatRight;
 
 	/** Tiles with doors. */
 	public List<V2i> doors;

@@ -77,8 +77,9 @@ public class MapWorld implements World {
 		house = new GhostHouse(map.vector("house_top_left"),
 				map.vector("house_bottom_right").minus(map.vector("house_top_left")));
 		house.entry = map.vector("house_entry");
-		house.seats = List.of(map.vector("house_seat_left"), map.vector("house_seat_center"),
-				map.vector("house_seat_right"));
+		house.seatLeft = map.vector("house_seat_left");
+		house.seatCenter = map.vector("house_seat_center");
+		house.seatRight = map.vector("house_seat_right");
 		house.doors = trim(tiles().filter(this::isGhostHouseDoor).collect(Collectors.toList()));
 
 		pacman_home = map.vector("pacman_home");

@@ -169,12 +169,12 @@ public class Ghost extends Creature {
 			state = GhostState.LEAVING_HOUSE;
 			return true;
 		}
-		if (tile.equals(house.seats.get(1)) && offset.y >= 0) {
+		if (tile.equals(house.seatCenter) && offset.y >= 0) {
 			// Center reached. If target tile is left or right seat, move towards seat, else keep direction.
-			if (targetTile.x < house.seats.get(1).x) {
+			if (targetTile.x < house.seatCenter.x) {
 				setMoveDir(Direction.LEFT);
 				setWishDir(Direction.LEFT);
-			} else if (targetTile.x > house.seats.get(1).x) {
+			} else if (targetTile.x > house.seatCenter.x) {
 				setMoveDir(Direction.RIGHT);
 				setWishDir(Direction.RIGHT);
 			}
@@ -202,9 +202,8 @@ public class Ghost extends Creature {
 			state = GhostState.HUNTING_PAC;
 			return true;
 		}
-		V2i middleSeat = house.seats.get(1);
-		int center = t(middleSeat.x) + HTS;
-		int ground = t(middleSeat.y) + HTS;
+		int center = t(house.seatCenter.x) + HTS;
+		int ground = t(house.seatCenter.y) + HTS;
 		if (differsAtMost(position.x, center, 1)) {
 			setOffset(HTS, offset.y);
 			setMoveDir(Direction.UP);
@@ -227,7 +226,7 @@ public class Ghost extends Creature {
 	 * @return {@code true}
 	 */
 	public boolean bounce(GhostHouse house) {
-		int centerY = t(house.seats.get(1).y);
+		int centerY = t(house.seatCenter.y);
 		if (!differsAtMost(position.y, centerY, HTS)) {
 			Direction opposite = moveDir.opposite();
 			setMoveDir(opposite);
