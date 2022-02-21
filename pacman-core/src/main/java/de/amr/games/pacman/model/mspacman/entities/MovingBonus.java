@@ -77,7 +77,7 @@ public class MovingBonus extends Bonus {
 		}
 		setMoveDir(moveDir);
 		setWishDir(moveDir);
-		setTargetTile(world.ghostHouse().entryTile());
+		setTargetTile(world.ghostHouse().entry);
 		show();
 		state = BonusState.EDIBLE;
 		phase = Phase.GO_TO_HOUSE_ENTRY;
@@ -94,10 +94,10 @@ public class MovingBonus extends Bonus {
 				return;
 			}
 			if (phase == Phase.GO_TO_HOUSE_ENTRY && tile().equals(targetTile)) {
-				setTargetTile(world.ghostHouse().entryTile().plus(0, world.ghostHouse().numTilesY() + 2));
+				setTargetTile(world.ghostHouse().entry.plus(0, world.ghostHouse().size.y + 2));
 				phase = Phase.GO_TO_OTHER_SIDE;
 			} else if (phase == Phase.GO_TO_OTHER_SIDE && tile().equals(targetTile)) {
-				setTargetTile(world.ghostHouse().entryTile());
+				setTargetTile(world.ghostHouse().entry);
 				phase = Phase.GO_TO_HOUSE_ENTRY_AGAIN;
 			} else if (phase == Phase.GO_TO_HOUSE_ENTRY_AGAIN && tile().equals(targetTile)) {
 				setTargetTile(exitTile);

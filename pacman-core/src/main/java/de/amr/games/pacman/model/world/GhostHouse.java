@@ -28,27 +28,34 @@ import java.util.List;
 import de.amr.games.pacman.lib.V2i;
 
 /**
- * Ghost house interface.
+ * The ghost house.
  * 
  * @author Armin Reichert
  */
-public interface GhostHouse {
+public class GhostHouse {
 
-	V2i topLeftTile();
+	/** Size (width, height) in tiles. */
+	public V2i size;
 
-	default boolean contains(V2i tile) {
-		V2i bottomRightTile = topLeftTile().plus(numTilesX(), numTilesY());
-		return tile.x >= topLeftTile().x && tile.x <= bottomRightTile.x //
-				&& tile.y >= topLeftTile().y && tile.y <= bottomRightTile.y;
+	/** Top-left tile. */
+	public V2i topLeft;
+
+	/** Left entry tile. */
+	public V2i entry;
+
+	/** Tiles with ghost seats in order "above entry", "inside left", "inside middle", "inside right". */
+	public List<V2i> seats;
+
+	/** Tiles with doors. */
+	public List<V2i> doors;
+
+	public GhostHouse(V2i topLeft, V2i size) {
+		this.topLeft = topLeft;
+		this.size = size;
 	}
 
-	int numTilesX();
-
-	int numTilesY();
-
-	V2i seat(int index);
-
-	V2i entryTile();
-
-	List<V2i> doorTiles();
+	public boolean contains(V2i tile) {
+		V2i bottomRight = topLeft.plus(size.x, size.y);
+		return tile.x >= topLeft.x && tile.x <= bottomRight.x && tile.y >= topLeft.y && tile.y <= bottomRight.y;
+	}
 }

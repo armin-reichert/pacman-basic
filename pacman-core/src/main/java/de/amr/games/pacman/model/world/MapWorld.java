@@ -50,7 +50,7 @@ public class MapWorld implements World {
 	private WorldMap map;
 	private V2i size;
 
-	private DefaultGhostHouse house;
+	private GhostHouse house;
 	private List<V2i> scatterTiles;
 	private V2i pacman_home;
 	private Direction pacman_start_dir;
@@ -74,12 +74,12 @@ public class MapWorld implements World {
 
 		size = map.vector("size");
 
-		house = new DefaultGhostHouse(map.vector("house_top_left"),
+		house = new GhostHouse(map.vector("house_top_left"),
 				map.vector("house_bottom_right").minus(map.vector("house_top_left")));
-		house.entryTile = map.vector("house_entry");
-		house.seatTiles = List.of(map.vector("house_seat_left"), map.vector("house_seat_center"),
+		house.entry = map.vector("house_entry");
+		house.seats = List.of(map.vector("house_seat_left"), map.vector("house_seat_center"),
 				map.vector("house_seat_right"));
-		house.doorTiles = trim(tiles().filter(this::isGhostHouseDoor).collect(Collectors.toList()));
+		house.doors = trim(tiles().filter(this::isGhostHouseDoor).collect(Collectors.toList()));
 
 		pacman_home = map.vector("pacman_home");
 		pacman_start_dir = Direction.valueOf(map.string("pacman_start_dir"));
