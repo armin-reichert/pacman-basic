@@ -177,6 +177,12 @@ public interface World {
 
 	/**
 	 * @param tile a tile
+	 * @return tells if there is a ghost house door at this tile
+	 */
+	boolean isGhostHouseDoor(V2i tile);
+
+	/**
+	 * @param tile a tile
 	 * @return tells if the tile may contain food (not if it currently contains food!)
 	 */
 	boolean isFoodTile(V2i tile);

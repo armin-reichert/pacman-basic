@@ -598,17 +598,17 @@ public class GameController extends FiniteStateMachine<GameState> {
 		switch (ghost.state) {
 
 		case LOCKED -> {
-			if (ghost.atGhostHouseDoor()) {
+			if (ghost.atGhostHouseDoor(game.world.ghostHouse())) {
 				ghost.setSpeed(0);
 			} else {
 				ghost.setSpeed(game.ghostSpeed / 2);
-				ghost.bounce();
+				ghost.bounce(game.world.ghostHouse());
 			}
 		}
 
 		case ENTERING_HOUSE -> {
 			ghost.setSpeed(game.ghostSpeed * 2);
-			boolean reachedRevivalTile = ghost.enterHouse();
+			boolean reachedRevivalTile = ghost.enterHouse(game.world.ghostHouse());
 			if (reachedRevivalTile) {
 				publish(new GameEvent(game, Info.GHOST_REVIVED, ghost, ghost.tile()));
 				publish(new GameEvent(game, Info.GHOST_LEAVING_HOUSE, ghost, ghost.tile()));
@@ -617,7 +617,7 @@ public class GameController extends FiniteStateMachine<GameState> {
 
 		case LEAVING_HOUSE -> {
 			ghost.setSpeed(game.ghostSpeed / 2);
-			boolean leftHouse = ghost.leaveHouse();
+			boolean leftHouse = ghost.leaveHouse(game.world.ghostHouse());
 			if (leftHouse) {
 				publish(new GameEvent(game, Info.GHOST_LEFT_HOUSE, ghost, ghost.tile()));
 			}
@@ -660,7 +660,7 @@ public class GameController extends FiniteStateMachine<GameState> {
 
 		case DEAD -> {
 			ghost.setSpeed(game.ghostSpeed * 2);
-			boolean reachedHouse = ghost.returnHome();
+			boolean reachedHouse = ghost.returnHome(game.world.ghostHouse());
 			if (reachedHouse) {
 				publish(new GameEvent(game, Info.GHOST_ENTERS_HOUSE, ghost, ghost.tile()));
 			}

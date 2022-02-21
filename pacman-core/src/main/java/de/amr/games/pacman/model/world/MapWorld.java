@@ -113,7 +113,8 @@ public class MapWorld implements World {
 		energizerTiles = tiles().filter(tile -> map.data(tile) == WorldMap.ENERGIZER).collect(Collectors.toList());
 	}
 
-	private boolean isGhostHouseDoor(V2i tile) {
+	@Override
+	public boolean isGhostHouseDoor(V2i tile) {
 		return insideWorld(tile) && map.data(tile) == WorldMap.DOOR;
 	}
 
