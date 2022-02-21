@@ -133,6 +133,7 @@ public class Ghost extends Creature {
 	/**
 	 * Lets the ghost return back to the ghost house.
 	 * 
+	 * @param house the ghost house
 	 * @return {@code true} if the ghost has reached the house
 	 */
 	public boolean returnHome(GhostHouse house) {
@@ -154,6 +155,7 @@ public class Ghost extends Creature {
 	/**
 	 * Lets the ghost enter the house and moving to its revival position.
 	 * 
+	 * @param house the ghost house
 	 * @return {@code true} if the ghost has reached its revival position
 	 */
 	public boolean enterHouse(GhostHouse house) {
