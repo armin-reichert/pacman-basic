@@ -24,7 +24,6 @@ SOFTWARE.
 package de.amr.games.pacman.model.world;
 
 import java.util.Collection;
-import java.util.Optional;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -69,12 +68,6 @@ public interface World {
 	 * @return Number of tiles in vertical direction.
 	 */
 	int numRows();
-
-	/**
-	 * 
-	 * @return optional map of the world
-	 */
-	Optional<WorldMap> getMap();
 
 	/**
 	 * @return all tiles in the world in order top to bottom, left-to-right.

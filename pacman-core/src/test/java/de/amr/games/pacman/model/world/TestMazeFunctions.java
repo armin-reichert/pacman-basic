@@ -1,7 +1,6 @@
 package de.amr.games.pacman.model.world;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
@@ -28,8 +27,7 @@ public class TestMazeFunctions {
 		GameModel game = new PacManGame();
 		game.setLevel(1);
 
-		assertTrue(game.world.getMap().isPresent());
-		WorldMap map = game.world.getMap().get();
+		WorldMap map = ((MapWorld) game.world).getMap();
 		assertEquals(new V2i(28, 36), map.vector("size"));
 		assertEquals(new V2i(70, 170), map.vector("bonus_pellets_to_eat"));
 	}
@@ -50,26 +48,22 @@ public class TestMazeFunctions {
 		WorldMap map;
 
 		game.setLevel(1);
-		assertTrue(game.world.getMap().isPresent());
-		map = game.world.getMap().get();
+		map = ((MapWorld) game.world).getMap();
 		assertEquals(new V2i(28, 36), map.vector("size"));
 		assertEquals(new V2i(64, 172), map.vector("bonus_pellets_to_eat"));
 
 		game.setLevel(5);
-		assertTrue(game.world.getMap().isPresent());
-		map = game.world.getMap().get();
+		map = ((MapWorld) game.world).getMap();
 		assertEquals(new V2i(28, 36), map.vector("size"));
 		assertEquals(new V2i(64, 172), map.vector("bonus_pellets_to_eat"));
 
 		game.setLevel(9);
-		assertTrue(game.world.getMap().isPresent());
-		map = game.world.getMap().get();
+		map = ((MapWorld) game.world).getMap();
 		assertEquals(new V2i(28, 36), map.vector("size"));
 		assertEquals(new V2i(70, 170), map.vector("bonus_pellets_to_eat"));
 
 		game.setLevel(13);
-		assertTrue(game.world.getMap().isPresent());
-		map = game.world.getMap().get();
+		map = ((MapWorld) game.world).getMap();
 		assertEquals(new V2i(28, 36), map.vector("size"));
 		assertEquals(new V2i(70, 170), map.vector("bonus_pellets_to_eat"));
 	}

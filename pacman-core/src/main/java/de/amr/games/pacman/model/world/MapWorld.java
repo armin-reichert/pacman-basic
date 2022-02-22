@@ -31,7 +31,6 @@ import java.util.BitSet;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -67,6 +66,10 @@ public class MapWorld implements World {
 
 	public MapWorld(String mapPath) {
 		setMap(WorldMap.load(mapPath));
+	}
+
+	public WorldMap getMap() {
+		return map;
 	}
 
 	public void setMap(WorldMap map) {
@@ -127,11 +130,6 @@ public class MapWorld implements World {
 	@Override
 	public int numRows() {
 		return size.y;
-	}
-
-	@Override
-	public Optional<WorldMap> getMap() {
-		return Optional.of(map);
 	}
 
 	private Stream<V2i> neighbors(V2i tile) {
