@@ -62,24 +62,25 @@ public class WorldMap {
 	}
 
 	public static WorldMap load(String path) {
+		var map = new WorldMap();
 		try (BufferedReader r = new BufferedReader(
 				new InputStreamReader(WorldMap.class.getResourceAsStream(path), StandardCharsets.UTF_8))) {
-			return parse(r.lines());
+			parse(map, r.lines());
+			return map;
 		} catch (IOException x) {
 			throw new RuntimeException(x);
 		}
 	}
 
-	private static WorldMap parse(Stream<String> lines) {
-		var map = new WorldMap();
-		var definitionParser = new ValueDefinitionParser();
+	private static void parse(WorldMap map, Stream<String> lines) {
+		var parser = new ValueDefinitionParser();
 		var dataLines = new ArrayList<String>();
 		lines.forEach(line -> {
 			if (line.startsWith("!")) {
 				// comment, ignore
 			} else {
 				// value definition?
-				Map.Entry<String, ?> def = definitionParser.parse(line);
+				Map.Entry<String, ?> def = parser.parse(line);
 				if (def != null) {
 					map.defs.put(def.getKey(), def.getValue());
 				} else {
@@ -106,7 +107,6 @@ public class WorldMap {
 				}
 			}
 		}
-		return map;
 	}
 
 	private static void parse_error(String message, Object... args) {
@@ -162,7 +162,7 @@ public class WorldMap {
 	 * @return list of all values for given list name or {@code null} if no such list value exists
 	 */
 	public List<V2i> vectorList(String listName) {
-		if (defs.keySet().stream().noneMatch(key -> key.startsWith(listName))) {
+		if (defs.keySet().stream().noneMatch(key -> key.startsWith(listName + "."))) {
 			return null;
 		}
 		//@formatter:off
