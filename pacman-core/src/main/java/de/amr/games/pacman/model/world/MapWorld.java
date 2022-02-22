@@ -27,13 +27,13 @@ import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.lib.Misc.trim;
 import static java.util.function.Predicate.not;
 
+import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.Direction;
@@ -101,10 +101,12 @@ public class MapWorld implements World {
 			upwardsBlockedTiles = Collections.emptyList();
 		}
 
-		portals = trim(IntStream.range(0, size.y)
-				.filter(y -> map.data(0, y) == WorldMap.TUNNEL && map.data(size.x - 1, y) == WorldMap.TUNNEL).boxed()
-				.map(y -> new Portal(new V2i(-1, y), new V2i(size.x, y))) //
-				.collect(Collectors.toList()));
+		portals = new ArrayList<>(3);
+		for (int y = 0; y < size.y; ++y) {
+			if (map.data(0, y) == WorldMap.TUNNEL && map.data(size.x - 1, y) == WorldMap.TUNNEL) {
+				portals.add(new Portal(new V2i(-1, y), new V2i(size.x, y)));
+			}
+		}
 
 		intersections = new BitSet();
 		tiles() //
