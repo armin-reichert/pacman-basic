@@ -67,17 +67,6 @@ public class Bonus extends Creature {
 		state = BonusState.EATEN;
 	}
 
-	public boolean hasExpired() {
-		return switch (state) {
-		case INACTIVE -> false;
-		default -> timer == 0;
-		};
-	}
-
-	/**
-	 * Updates the bonus state and returns any usefule info about the new bonus state
-	 * 
-	 */
 	public void update() {
 		switch (state) {
 		case EDIBLE, EATEN -> {
@@ -89,5 +78,12 @@ public class Bonus extends Creature {
 		default -> {
 		}
 		}
+	}
+
+	public boolean hasExpired() {
+		return switch (state) {
+		case INACTIVE -> false;
+		default -> timer == 0;
+		};
 	}
 }
