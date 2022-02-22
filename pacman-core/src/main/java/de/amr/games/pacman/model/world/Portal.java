@@ -34,8 +34,8 @@ import de.amr.games.pacman.lib.V2i;
  */
 public class Portal {
 
-	public final V2i left; // x == -1
-	public final V2i right; // x == world.numCols()
+	public final V2i left; // (-1, y)
+	public final V2i right; // (world.numCols(), y)
 
 	public Portal(V2i left, V2i right) {
 		this.left = left;
