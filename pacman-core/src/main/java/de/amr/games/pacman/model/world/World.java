@@ -56,7 +56,7 @@ public interface World {
 
 	/** Tile offset of a given pixel position. */
 	public static V2d offset(V2d position) {
-		return position.minus(new V2d(tile(position)).scaled(TS));
+		return position.minus(new V2d(tile(position).scaled(TS)));
 	}
 
 	/**
