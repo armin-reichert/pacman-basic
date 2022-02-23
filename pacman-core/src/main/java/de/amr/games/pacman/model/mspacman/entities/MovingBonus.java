@@ -23,6 +23,9 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.mspacman.entities;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 import de.amr.games.pacman.lib.Direction;
@@ -39,19 +42,15 @@ import de.amr.games.pacman.model.pacman.entities.Bonus;
  */
 public class MovingBonus extends Bonus {
 
-	private enum Phase {
-		GO_TO_HOUSE_ENTRY, GO_TO_OTHER_SIDE, GO_TO_HOUSE_ENTRY_AGAIN, LEAVE;
-	}
-
 	private V2i exitTile;
-	private Phase phase;
+	private List<V2i> targetTiles;
 
 	@Override
 	public void init() {
 		timer = 0;
-		phase = null;
 		exitTile = null;
 		targetTile = null;
+		targetTiles = null;
 		newTileEntered = true;
 		forcedOnTrack = true;
 		stuck = false;
@@ -72,12 +71,16 @@ public class MovingBonus extends Bonus {
 			placeAt(world.randomPortal().right, 0, 0);
 			exitTile = world.randomPortal().left;
 		}
+		targetTiles = new ArrayList<>(Arrays.asList( //
+				world.ghostHouse().entry, //
+				world.ghostHouse().entry.plus(0, world.ghostHouse().size.y + 2), //
+				world.ghostHouse().entry, exitTile //
+		));
+		targetTile = targetTiles.get(0);
 		setMoveDir(moveDir);
 		setWishDir(moveDir);
-		targetTile = world.ghostHouse().entry;
 		show();
 		state = BonusState.EDIBLE;
-		phase = Phase.GO_TO_HOUSE_ENTRY;
 	}
 
 	@Override
@@ -85,19 +88,13 @@ public class MovingBonus extends Bonus {
 		switch (state) {
 
 		case EDIBLE -> {
-			if (phase == Phase.LEAVE && tile().equals(targetTile)) {
-				init();
-				return;
-			}
-			if (phase == Phase.GO_TO_HOUSE_ENTRY && tile().equals(targetTile)) {
-				targetTile = world.ghostHouse().entry.plus(0, world.ghostHouse().size.y + 2);
-				phase = Phase.GO_TO_OTHER_SIDE;
-			} else if (phase == Phase.GO_TO_OTHER_SIDE && tile().equals(targetTile)) {
-				targetTile = world.ghostHouse().entry;
-				phase = Phase.GO_TO_HOUSE_ENTRY_AGAIN;
-			} else if (phase == Phase.GO_TO_HOUSE_ENTRY_AGAIN && tile().equals(targetTile)) {
-				targetTile = exitTile;
-				phase = Phase.LEAVE;
+			if (tile().equals(targetTile)) {
+				targetTiles.remove(0);
+				if (targetTiles.isEmpty()) {
+					init();
+					return;
+				}
+				targetTile = targetTiles.get(0);
 			}
 			headForTile(targetTile);
 			tryMoving();
