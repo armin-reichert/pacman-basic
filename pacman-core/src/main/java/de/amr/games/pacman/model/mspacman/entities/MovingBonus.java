@@ -64,16 +64,17 @@ public class MovingBonus extends Bonus {
 		Direction moveDir = new Random().nextBoolean() ? Direction.LEFT : Direction.RIGHT;
 		Portal entryPortal = world.randomPortal();
 		Portal exitPortal = world.randomPortal();
+		placeAt(moveDir == Direction.RIGHT ? entryPortal.left : entryPortal.right, 0, 0);
+		setMoveDir(moveDir);
+		setWishDir(moveDir);
+		show();
 
 		route.clear();
 		route.add(world.ghostHouse().entry);
 		route.add(world.ghostHouse().entry.plus(0, world.ghostHouse().size.y + 2));
 		route.add(world.ghostHouse().entry);
 		route.add(moveDir == Direction.RIGHT ? exitPortal.right : exitPortal.left);
-		placeAt(moveDir == Direction.RIGHT ? entryPortal.left : entryPortal.right, 0, 0);
-		setMoveDir(moveDir);
-		setWishDir(moveDir);
-		show();
+
 		state = BonusState.EDIBLE;
 	}
 
