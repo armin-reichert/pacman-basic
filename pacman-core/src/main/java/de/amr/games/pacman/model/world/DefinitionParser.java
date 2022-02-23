@@ -70,13 +70,13 @@ public class DefinitionParser {
 	}
 
 	private Object parseRightHandSide(String text) {
-		String trimmedText = text.trim();
-		if (trimmedText.startsWith("(")) {
-			return parseVector(trimmedText);
-		} else if (trimmedText.startsWith("\"")) {
-			return parseString(trimmedText);
+		String s = text.trim();
+		if (s.startsWith("(")) {
+			return parseVector(s);
+		} else if (s.startsWith("\"")) {
+			return parseString(s);
 		} else {
-			return parseInt(trimmedText);
+			return parseInt(s);
 		}
 	}
 
