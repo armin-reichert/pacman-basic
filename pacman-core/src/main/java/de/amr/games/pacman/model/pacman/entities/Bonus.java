@@ -79,11 +79,4 @@ public class Bonus extends Creature {
 		}
 		}
 	}
-
-	public boolean hasExpired() {
-		return switch (state) {
-		case INACTIVE -> false;
-		default -> timer == 0;
-		};
-	}
 }

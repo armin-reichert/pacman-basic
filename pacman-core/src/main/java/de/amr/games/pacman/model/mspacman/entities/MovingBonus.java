@@ -23,8 +23,6 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.mspacman.entities;
 
-import static de.amr.games.pacman.lib.Logging.log;
-
 import java.util.Random;
 
 import de.amr.games.pacman.lib.Direction;
@@ -77,7 +75,7 @@ public class MovingBonus extends Bonus {
 		}
 		setMoveDir(moveDir);
 		setWishDir(moveDir);
-		setTargetTile(world.ghostHouse().entry);
+		targetTile = world.ghostHouse().entry;
 		show();
 		state = BonusState.EDIBLE;
 		phase = Phase.GO_TO_HOUSE_ENTRY;
@@ -94,13 +92,13 @@ public class MovingBonus extends Bonus {
 				return;
 			}
 			if (phase == Phase.GO_TO_HOUSE_ENTRY && tile().equals(targetTile)) {
-				setTargetTile(world.ghostHouse().entry.plus(0, world.ghostHouse().size.y + 2));
+				targetTile = world.ghostHouse().entry.plus(0, world.ghostHouse().size.y + 2);
 				phase = Phase.GO_TO_OTHER_SIDE;
 			} else if (phase == Phase.GO_TO_OTHER_SIDE && tile().equals(targetTile)) {
-				setTargetTile(world.ghostHouse().entry);
+				targetTile = world.ghostHouse().entry;
 				phase = Phase.GO_TO_HOUSE_ENTRY_AGAIN;
 			} else if (phase == Phase.GO_TO_HOUSE_ENTRY_AGAIN && tile().equals(targetTile)) {
-				setTargetTile(exitTile);
+				targetTile = exitTile;
 				phase = Phase.LEAVE;
 			}
 			headForTile(targetTile);
@@ -118,18 +116,5 @@ public class MovingBonus extends Bonus {
 		}
 
 		}
-	}
-
-	@Override
-	public boolean hasExpired() {
-		return switch (state) {
-		case EATEN -> timer == 0;
-		default -> false;
-		};
-	}
-
-	private void setTargetTile(V2i tile) {
-		targetTile = tile;
-		log("Bonus target tile is now %s", targetTile);
 	}
 }

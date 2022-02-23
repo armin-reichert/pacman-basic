@@ -544,7 +544,8 @@ public class GameController extends FiniteStateMachine<GameState> {
 				publish(Info.BONUS_EATEN, game.bonus.tile());
 			} else {
 				game.bonus.update();
-				if (game.bonus.hasExpired()) {
+				if (game.bonus.timer == 0) {
+					log("Bonus id=%d expired", game.bonus.symbol);
 					publish(Info.BONUS_EXPIRED, game.bonus.tile());
 				}
 			}
@@ -552,7 +553,7 @@ public class GameController extends FiniteStateMachine<GameState> {
 
 		case EATEN -> {
 			game.bonus.update();
-			if (game.bonus.hasExpired()) {
+			if (game.bonus.timer == 0) {
 				publish(Info.BONUS_EXPIRED, game.bonus.tile());
 			}
 		}
