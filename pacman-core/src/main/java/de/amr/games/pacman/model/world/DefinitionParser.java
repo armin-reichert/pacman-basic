@@ -41,9 +41,7 @@ import de.amr.games.pacman.lib.V2i;
 public class DefinitionParser {
 
 	public static class Definition {
-
 		public String name;
-
 		public Object value;
 	}
 
