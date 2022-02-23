@@ -24,7 +24,6 @@ SOFTWARE.
 package de.amr.games.pacman.model.mspacman.entities;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -42,15 +41,12 @@ import de.amr.games.pacman.model.pacman.entities.Bonus;
  */
 public class MovingBonus extends Bonus {
 
-	private V2i exitTile;
-	private List<V2i> targetTiles;
+	private List<V2i> route;
 
 	@Override
 	public void init() {
 		timer = 0;
-		exitTile = null;
-		targetTile = null;
-		targetTiles = null;
+		route = null;
 		newTileEntered = true;
 		forcedOnTrack = true;
 		stuck = false;
@@ -63,20 +59,18 @@ public class MovingBonus extends Bonus {
 	public void activate(int symbol, int points) {
 		this.symbol = symbol;
 		this.points = points;
+		route = new ArrayList<>();
+		route.add(world.ghostHouse().entry);
+		route.add(world.ghostHouse().entry.plus(0, world.ghostHouse().size.y + 2));
+		route.add(world.ghostHouse().entry);
 		Direction moveDir = new Random().nextBoolean() ? Direction.LEFT : Direction.RIGHT;
 		if (moveDir == Direction.RIGHT) {
 			placeAt(world.randomPortal().left, 0, 0);
-			exitTile = world.randomPortal().right;
+			route.add(world.randomPortal().right);
 		} else {
 			placeAt(world.randomPortal().right, 0, 0);
-			exitTile = world.randomPortal().left;
+			route.add(world.randomPortal().left);
 		}
-		targetTiles = new ArrayList<>(Arrays.asList( //
-				world.ghostHouse().entry, //
-				world.ghostHouse().entry.plus(0, world.ghostHouse().size.y + 2), //
-				world.ghostHouse().entry, exitTile //
-		));
-		targetTile = targetTiles.get(0);
 		setMoveDir(moveDir);
 		setWishDir(moveDir);
 		show();
@@ -89,14 +83,13 @@ public class MovingBonus extends Bonus {
 
 		case EDIBLE -> {
 			if (tile().equals(targetTile)) {
-				targetTiles.remove(0);
-				if (targetTiles.isEmpty()) {
+				route.remove(0);
+				if (route.isEmpty()) {
 					init();
 					return;
 				}
-				targetTile = targetTiles.get(0);
 			}
-			headForTile(targetTile);
+			headForTile(route.get(0));
 			tryMoving();
 		}
 
