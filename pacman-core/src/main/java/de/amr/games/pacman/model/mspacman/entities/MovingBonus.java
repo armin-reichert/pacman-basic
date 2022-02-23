@@ -30,6 +30,7 @@ import java.util.Random;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.pacman.entities.Bonus;
+import de.amr.games.pacman.model.world.Portal;
 
 /**
  * A bonus that tumbles through the world, starting at some portal, making one round around the ghost house and leaving
@@ -41,12 +42,12 @@ import de.amr.games.pacman.model.pacman.entities.Bonus;
  */
 public class MovingBonus extends Bonus {
 
-	private List<V2i> route;
+	private final List<V2i> route = new ArrayList<>();
 
 	@Override
 	public void init() {
 		timer = 0;
-		route = null;
+		route.clear();
 		newTileEntered = true;
 		forcedOnTrack = true;
 		stuck = false;
@@ -59,18 +60,17 @@ public class MovingBonus extends Bonus {
 	public void activate(int symbol, int points) {
 		this.symbol = symbol;
 		this.points = points;
-		route = new ArrayList<>();
+
+		Direction moveDir = new Random().nextBoolean() ? Direction.LEFT : Direction.RIGHT;
+		Portal entryPortal = world.randomPortal();
+		Portal exitPortal = world.randomPortal();
+
+		route.clear();
 		route.add(world.ghostHouse().entry);
 		route.add(world.ghostHouse().entry.plus(0, world.ghostHouse().size.y + 2));
 		route.add(world.ghostHouse().entry);
-		Direction moveDir = new Random().nextBoolean() ? Direction.LEFT : Direction.RIGHT;
-		if (moveDir == Direction.RIGHT) {
-			placeAt(world.randomPortal().left, 0, 0);
-			route.add(world.randomPortal().right);
-		} else {
-			placeAt(world.randomPortal().right, 0, 0);
-			route.add(world.randomPortal().left);
-		}
+		route.add(moveDir == Direction.RIGHT ? exitPortal.right : exitPortal.left);
+		placeAt(moveDir == Direction.RIGHT ? entryPortal.left : entryPortal.right, 0, 0);
 		setMoveDir(moveDir);
 		setWishDir(moveDir);
 		show();
