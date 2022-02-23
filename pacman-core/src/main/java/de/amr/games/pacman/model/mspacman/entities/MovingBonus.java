@@ -61,10 +61,9 @@ public class MovingBonus extends Bonus {
 	}
 
 	@Override
-	public void activate(long ticks, int symbol, int points) {
+	public void activate(int symbol, int points) {
 		this.symbol = symbol;
 		this.points = points;
-		timer = ticks;
 		Direction moveDir = new Random().nextBoolean() ? Direction.LEFT : Direction.RIGHT;
 		if (moveDir == Direction.RIGHT) {
 			placeAt(world.randomPortal().left, 0, 0);

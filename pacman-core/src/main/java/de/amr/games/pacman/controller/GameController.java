@@ -495,9 +495,9 @@ public class GameController extends FiniteStateMachine<GameState> {
 
 		// Is bonus awarded?
 		if (game.isBonusReached()) {
-			long ticks = game.bonusActivationTicks();
-			game.bonus.activate(ticks, game.bonusSymbol, game.bonusValue(game.bonus.symbol));
-			log("Bonus id=%d, value=%d activated for %d ticks", game.bonus.symbol, game.bonus.points, ticks);
+			game.bonus.activate(game.bonusSymbol, game.bonusValue(game.bonus.symbol));
+			game.bonus.timer = game.bonusActivationTicks();
+			log("Bonus id=%d, value=%d activated for %d ticks", game.bonus.symbol, game.bonus.points, game.bonus.timer);
 			publish(Info.BONUS_ACTIVATED, game.bonus.tile());
 		}
 
@@ -539,8 +539,9 @@ public class GameController extends FiniteStateMachine<GameState> {
 		case EDIBLE -> {
 			if (game.player.meets(game.bonus)) {
 				log("%s found bonus id=%d of value %d", game.player.name, game.bonus.symbol, game.bonus.points);
+				game.bonus.eat();
+				game.bonus.timer = sec_to_ticks(2);
 				score(game.bonus.points);
-				game.bonus.eat(sec_to_ticks(2));
 				publish(Info.BONUS_EATEN, game.bonus.tile());
 			} else {
 				game.bonus.update();
