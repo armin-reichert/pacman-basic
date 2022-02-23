@@ -43,10 +43,6 @@ public class Bonus extends Creature {
 	public int points;
 	public long timer;
 
-	public Bonus() {
-		init();
-	}
-
 	public void init() {
 		timer = 0;
 		hide();
@@ -62,7 +58,7 @@ public class Bonus extends Creature {
 		state = BonusState.EDIBLE;
 	}
 
-	public void eatAndShowValue(long ticks) {
+	public void eat(long ticks) {
 		timer = ticks;
 		state = BonusState.EATEN;
 	}

@@ -540,7 +540,7 @@ public class GameController extends FiniteStateMachine<GameState> {
 			if (game.player.meets(game.bonus)) {
 				log("%s found bonus id=%d of value %d", game.player.name, game.bonus.symbol, game.bonus.points);
 				score(game.bonus.points);
-				game.bonus.eatAndShowValue(sec_to_ticks(2));
+				game.bonus.eat(sec_to_ticks(2));
 				publish(Info.BONUS_EATEN, game.bonus.tile());
 			} else {
 				game.bonus.update();
