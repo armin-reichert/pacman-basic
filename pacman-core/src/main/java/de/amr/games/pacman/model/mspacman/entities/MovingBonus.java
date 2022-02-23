@@ -87,8 +87,7 @@ public class MovingBonus extends Bonus {
 
 		case EDIBLE -> {
 			if (phase == Phase.LEAVE && tile().equals(targetTile)) {
-				hide();
-				state = BonusState.INACTIVE;
+				init();
 				return;
 			}
 			if (phase == Phase.GO_TO_HOUSE_ENTRY && tile().equals(targetTile)) {
@@ -106,9 +105,10 @@ public class MovingBonus extends Bonus {
 		}
 
 		case EATEN -> {
-			if (--timer == 0) {
-				hide();
-				state = BonusState.INACTIVE;
+			if (timer == 0) {
+				init();
+			} else {
+				--timer;
 			}
 		}
 

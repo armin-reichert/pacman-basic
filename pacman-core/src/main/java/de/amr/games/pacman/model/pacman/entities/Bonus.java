@@ -66,9 +66,11 @@ public class Bonus extends Creature {
 	public void update() {
 		switch (state) {
 		case EDIBLE, EATEN -> {
-			if (--timer == 0) {
-				hide();
-				state = BonusState.INACTIVE;
+			if (timer > 0) {
+				--timer;
+			}
+			if (timer == 0) {
+				init();
 			}
 		}
 		default -> {
