@@ -25,12 +25,10 @@ package de.amr.games.pacman.model.world;
 
 import static de.amr.games.pacman.lib.Logging.log;
 
-import java.util.Map;
-
 import de.amr.games.pacman.lib.V2i;
 
 /**
- * Parses a value definition of one the following forms:
+ * Parses definitions of the following forms:
  * 
  * <pre>
  * val int_value = 42
@@ -42,28 +40,36 @@ import de.amr.games.pacman.lib.V2i;
  * 
  * @author Armin Reichert
  */
-public class ValueDefinitionParser {
+public class DefinitionParser {
 
-	private static void error(String message, Object... args) {
+	public static class Definition {
+
+		public String name;
+
+		public Object value;
+	}
+
+	private static void log_error(String message, Object... args) {
 		log("Error parsing value definition '%s'", String.format(message, args));
 	}
 
-	public Map.Entry<String, Object> parse(String line) {
+	public Definition parse(String line) {
 		if (line.startsWith("val ")) {
 			// val <variable> = <value>
 			line = line.substring(4).trim();
 			String[] sides = line.split("=");
 			if (sides.length != 2) {
-				error("Malformed val statement '%s'", line);
+				log_error("Malformed definition '%s'", line);
 			}
-			String lhs = sides[0].trim();
-			String rhs = sides[1].trim();
-			return Map.entry(lhs, parseRightHandSide(rhs));
+			Definition def = new Definition();
+			def.name = sides[0].trim();
+			def.value = parseRightHandSide(sides[1].trim());
+			return def;
 		}
 		return null;
 	}
 
-	private Object parseRightHandSide(final String text) {
+	private Object parseRightHandSide(String text) {
 		String trimmedText = text.trim();
 		if (trimmedText.startsWith("(")) {
 			return parseVector(trimmedText);
@@ -77,13 +83,13 @@ public class ValueDefinitionParser {
 	private V2i parseVector(String text) {
 		String s = text;
 		if (!s.endsWith(")")) {
-			error("Error parsing vector from '%s'", text);
+			log_error("Error parsing vector from '%s'", text);
 			return null;
 		}
 		s = s.substring(1, s.length() - 1); // remove enclosing parentheses
 		String[] components = s.split(",");
 		if (components.length != 2) {
-			error("Error parsing vector from '%s'", text);
+			log_error("Error parsing vector from '%s'", text);
 			return null;
 		}
 		int x = parseInt(components[0].trim());
@@ -93,11 +99,11 @@ public class ValueDefinitionParser {
 
 	private String parseString(String text) {
 		if (text.length() < 2) {
-			error("Error parsing string, not enclosed in quotes");
+			log_error("Error parsing string, not enclosed in quotes");
 			return null;
 		}
 		if (!text.endsWith("\"")) {
-			error("Error parsing string, no closing quote");
+			log_error("Error parsing string, no closing quote");
 			return null;
 		}
 		return text.substring(1, text.length() - 1);
@@ -107,7 +113,7 @@ public class ValueDefinitionParser {
 		try {
 			return Integer.parseInt(text);
 		} catch (Exception x) {
-			error("Error parsing int value from '%s'", text);
+			log_error("Error parsing int value from '%s'", text);
 			return 0;
 		}
 	}

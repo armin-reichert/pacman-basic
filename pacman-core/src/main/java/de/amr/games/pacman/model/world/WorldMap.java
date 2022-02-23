@@ -39,6 +39,7 @@ import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.Misc;
 import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.model.world.DefinitionParser.Definition;
 
 /**
  * Game world map, created from simple textual representation.
@@ -73,16 +74,16 @@ public class WorldMap {
 	}
 
 	private static void parse(WorldMap map, Stream<String> lines) {
-		var parser = new ValueDefinitionParser();
+		var parser = new DefinitionParser();
 		var dataLines = new ArrayList<String>();
 		lines.forEach(line -> {
 			if (line.startsWith("!")) {
 				// comment, ignore
 			} else {
 				// value definition?
-				Map.Entry<String, ?> def = parser.parse(line);
+				Definition def = parser.parse(line);
 				if (def != null) {
-					map.defs.put(def.getKey(), def.getValue());
+					map.defs.put(def.name, def.value);
 				} else {
 					dataLines.add(line);
 				}
