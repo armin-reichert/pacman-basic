@@ -15,16 +15,16 @@ public class TestMapParsing {
 		WorldMap map = WorldMap.load("/testmap.txt");
 		String undefinedKey = "_";
 
-		assertEquals((Integer) 42, map.integer("int_val"));
+		assertEquals((Integer) 42, map.integer("i"));
 		assertEquals(null, map.integer(undefinedKey));
 
-		assertEquals("Brandon", map.string("string_val"));
+		assertEquals("Brandon", map.string("s"));
 		assertEquals(null, map.string(undefinedKey));
 
-		assertEquals(new V2i(42, 42), map.vector("vector_val"));
+		assertEquals(new V2i(42, 42), map.vector("v"));
 		assertEquals(null, map.vector(undefinedKey));
 
-		List<V2i> vecList = map.vectorList("vector_list");
+		List<V2i> vecList = map.vectorList("L");
 		assertEquals(List.of(//
 				new V2i(0, 0), new V2i(0, 1), new V2i(0, 2), new V2i(0, 3)), vecList);
 		assertEquals(null, map.vectorList(undefinedKey));

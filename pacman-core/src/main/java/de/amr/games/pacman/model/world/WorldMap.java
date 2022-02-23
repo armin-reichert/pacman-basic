@@ -40,6 +40,7 @@ import java.util.stream.Stream;
 import de.amr.games.pacman.lib.Misc;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.world.DefinitionParser.Definition;
+import de.amr.games.pacman.model.world.DefinitionParser.ParseException;
 
 /**
  * Game world map, created from simple textual representation.
@@ -81,18 +82,22 @@ public class WorldMap {
 				// comment, ignore
 			} else {
 				// value definition?
-				Definition def = parser.parse(line);
-				if (def != null) {
-					map.defs.put(def.name, def.value);
-				} else {
-					dataLines.add(line);
+				try {
+					Definition def = parser.parse(line);
+					if (def != null) {
+						map.defs.put(def.name, def.value);
+					} else {
+						dataLines.add(line);
+					}
+				} catch (ParseException x) {
+					log("Error parsing line '%s': %s", line, x.getMessage());
 				}
 			}
 		});
 
 		V2i size = map.vector("size");
 		if (dataLines.size() != size.y) {
-			parse_error("Defined map height %d does not match number of data lines %d", size.y, dataLines.size());
+			log_error("Defined map height %d does not match number of data lines %d", size.y, dataLines.size());
 		}
 
 		map.content = new byte[size.y][size.x]; // stored row-wise!
@@ -101,7 +106,7 @@ public class WorldMap {
 				char c = dataLines.get(row).charAt(col);
 				byte value = decode(c);
 				if (value == UNDEFINED) {
-					parse_error("Found undefined map character at row %d, col %d: '%s'", row, col, c);
+					log_error("Found undefined map character at row %d, col %d: '%s'", row, col, c);
 					map.content[row][col] = SPACE;
 				} else {
 					map.content[row][col] = value;
@@ -110,7 +115,7 @@ public class WorldMap {
 		}
 	}
 
-	private static void parse_error(String message, Object... args) {
+	private static void log_error(String message, Object... args) {
 		log("Error parsing map: %s", String.format(message, args));
 	}
 
@@ -139,7 +144,7 @@ public class WorldMap {
 			return null;
 		}
 		if (!(value instanceof V2i)) {
-			parse_error("Value '%s' is not a vector", valueName);
+			log_error("Value '%s' is not a vector", valueName);
 			return null;
 		}
 		return (V2i) value;
@@ -151,7 +156,7 @@ public class WorldMap {
 			return Optional.empty();
 		}
 		if (!(value instanceof V2i)) {
-			parse_error("Value '%s' does not contain a vector", valueName);
+			log_error("Value '%s' does not contain a vector", valueName);
 			return Optional.empty();
 		}
 		return Optional.of((V2i) value);

@@ -23,8 +23,6 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.world;
 
-import static de.amr.games.pacman.lib.Logging.log;
-
 import de.amr.games.pacman.lib.V2i;
 
 /**
@@ -49,17 +47,28 @@ public class DefinitionParser {
 		public Object value;
 	}
 
-	private static void log_error(String message, Object... args) {
-		log("Error parsing value definition '%s'", String.format(message, args));
+	public class ParseException extends Exception {
+
+		public ParseException(String message) {
+			super(message);
+		}
 	}
 
-	public Definition parse(String line) {
+	private void parse_error(String message, Object... args) throws ParseException {
+		throw new ParseException(String.format(message, args));
+	}
+
+	/**
+	 * @param line line of text
+	 * @return definition specified by this line or {@code null} if line does not contain a definition
+	 * @throws ParseException
+	 */
+	public Definition parse(String line) throws ParseException {
 		if (line.startsWith("val ")) {
-			// val <variable> = <value>
 			line = line.substring(4).trim();
 			String[] sides = line.split("=");
 			if (sides.length != 2) {
-				log_error("Malformed definition '%s'", line);
+				parse_error("Malformed definition '%s'", line);
 			}
 			Definition def = new Definition();
 			def.name = sides[0].trim();
@@ -69,7 +78,7 @@ public class DefinitionParser {
 		return null;
 	}
 
-	private Object parseRightHandSide(String text) {
+	private Object parseRightHandSide(String text) throws ParseException {
 		String s = text.trim();
 		if (s.startsWith("(")) {
 			return parseVector(s);
@@ -80,41 +89,37 @@ public class DefinitionParser {
 		}
 	}
 
-	private V2i parseVector(String text) {
+	private V2i parseVector(String text) throws ParseException {
 		String s = text;
 		if (!s.endsWith(")")) {
-			log_error("Error parsing vector from '%s'", text);
-			return null;
+			parse_error("'%s' does not specify a vector", text);
 		}
 		s = s.substring(1, s.length() - 1); // remove enclosing parentheses
 		String[] components = s.split(",");
 		if (components.length != 2) {
-			log_error("Error parsing vector from '%s'", text);
-			return null;
+			parse_error("'%s' does not specify a vector", text);
 		}
 		int x = parseInt(components[0].trim());
 		int y = parseInt(components[1].trim());
 		return new V2i(x, y);
 	}
 
-	private String parseString(String text) {
+	private String parseString(String text) throws ParseException {
 		if (text.length() < 2) {
-			log_error("Error parsing string, not enclosed in quotes");
-			return null;
+			parse_error("'%s' is not enclosed in quotes", text);
 		}
 		if (!text.endsWith("\"")) {
-			log_error("Error parsing string, no closing quote");
-			return null;
+			parse_error("'%s' has no closing quote", text);
 		}
 		return text.substring(1, text.length() - 1);
 	}
 
-	private int parseInt(String text) {
+	private int parseInt(String text) throws ParseException {
 		try {
 			return Integer.parseInt(text);
 		} catch (Exception x) {
-			log_error("Error parsing int value from '%s'", text);
-			return 0;
+			parse_error("'%s' cannot be parsed as an integer", text);
 		}
+		return 0;
 	}
 }
