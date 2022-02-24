@@ -30,7 +30,6 @@ import java.util.Objects;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.model.world.Portal;
 import de.amr.games.pacman.model.world.World;
 
 /**
@@ -144,39 +143,43 @@ public class Creature extends GameEntity {
 	}
 
 	/**
-	 * Tries to move through the world. First checks if creature can teleport, then if the creature can move to its
-	 * current wish direction. Otherwise keeps going to its current move direction.
+	 * Tries to move through the world.
+	 * <p>
+	 * First checks if creature can teleport, then if the creature can move to its current wish direction. If this is
+	 * not possible it moves to its current move direction.
 	 */
 	public void tryMoving() {
-		V2i currentTile = tile();
-		// teleport?
-		if (moveDir == Direction.RIGHT) {
-			for (Portal portal : world.portals()) {
-				if (currentTile.equals(portal.right)) {
-					placeAt(portal.left, 0, 0);
-				}
-			}
-		} else if (moveDir == Direction.LEFT) {
-			for (Portal portal : world.portals()) {
-				if (currentTile.equals(portal.left)) {
-					placeAt(portal.right, 0, 0);
-				}
-			}
-		}
-		tryMovingTowards(wishDir);
-		if (!stuck) {
-			moveDir = wishDir;
+		tryTeleport();
+		tryMoving(wishDir);
+		if (stuck) {
+			tryMoving(moveDir);
 		} else {
-			tryMovingTowards(moveDir);
+			moveDir = wishDir;
+		}
+	}
+
+	private void tryTeleport() {
+		if (moveDir == Direction.RIGHT) {
+			world.portals().stream() //
+					.filter(portal -> tile().equals(portal.right)) //
+					.findFirst() //
+					.ifPresent(portal -> placeAt(portal.left, 0, 0));
+		} else if (moveDir == Direction.LEFT) {
+			world.portals().stream() //
+					.filter(portal -> tile().equals(portal.left)) //
+					.findFirst() //
+					.ifPresent(portal -> placeAt(portal.right, 0, 0));
 		}
 	}
 
 	/**
 	 * Tries to move to the given direction. If creature reaches an inaccessible tile, it gets stuck.
+	 * <p>
+	 * TODO: this should really be simpler
 	 * 
 	 * @param dir intended move direction
 	 */
-	public void tryMovingTowards(Direction dir) {
+	private void tryMoving(Direction dir) {
 		final V2i tileBeforeMove = tile();
 		final V2d offsetBeforeMove = offset();
 		final V2i neighborTile = tileBeforeMove.plus(dir.vec);
