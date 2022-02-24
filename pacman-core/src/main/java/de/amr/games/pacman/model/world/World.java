@@ -204,6 +204,13 @@ public interface World {
 	int pelletsToEatForBonus(int bonusIndex);
 
 	/**
+	 * @return {@code true} if the bonus food count is reached
+	 */
+	default boolean isBonusReached() {
+		return eatenFoodCount() == pelletsToEatForBonus(0) || eatenFoodCount() == pelletsToEatForBonus(1);
+	}
+
+	/**
 	 * Removed food at given tile.
 	 * 
 	 * @param tile some tile

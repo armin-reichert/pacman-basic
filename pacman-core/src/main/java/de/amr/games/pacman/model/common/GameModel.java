@@ -362,11 +362,6 @@ public abstract class GameModel {
 		player.hide();
 	}
 
-	public boolean isBonusReached() {
-		return world.eatenFoodCount() == world.pelletsToEatForBonus(0)
-				|| world.eatenFoodCount() == world.pelletsToEatForBonus(1);
-	}
-
 	public abstract long bonusActivationTicks();
 
 	public void saveHiscore() {
