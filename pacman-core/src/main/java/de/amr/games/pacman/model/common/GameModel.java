@@ -165,33 +165,6 @@ public abstract class GameModel {
 	/** High score file of current game variant. */
 	public File hiscoreFile;
 
-	/**
-	 * Initializes model for given game level.
-	 * 
-	 * @param levelNumber 1-based level number
-	 */
-	public abstract void setLevel(int levelNumber);
-
-	/**
-	 * @param levelNumber game level number
-	 * @return 1-based intermission (cut scene) number that is played after given level or <code>0</code> if no
-	 *         intermission is played after given level.
-	 */
-	public int intermissionNumber(int levelNumber) {
-		return switch (levelNumber) {
-		case 2 -> 1;
-		case 5 -> 2;
-		case 9, 13, 17 -> 3;
-		default -> 0;
-		};
-	}
-
-	/**
-	 * @param symbolID bonus symbol identifier
-	 * @return value of this bonus symbol
-	 */
-	public abstract int bonusValue(int symbolID);
-
 	protected GameModel() {
 		initialLives = 3;
 		pelletValue = 10;
@@ -243,28 +216,32 @@ public abstract class GameModel {
 		bonus.init();
 	}
 
-	/**
-	 * @param percentValue percentage value
-	 * @return corresponding fraction, e.g. {@code 0.8} for {@code 80%}
-	 */
-	private float fraction(Object percentValue) {
-		return ((Integer) percentValue) / 100f;
-	}
+	protected void resetGhosts(World world) {
+		for (Ghost ghost : ghosts) {
+			ghost.world = world;
+			ghost.dotCounter = 0;
+			ghost.elroy = 0;
+		}
 
-	protected void initLevel(int levelNumber, Object[] data) {
-		this.levelNumber = levelNumber;
-		bonusSymbol = (int) data[0];
-		playerSpeed = fraction(data[1]);
-		ghostSpeed = fraction(data[2]);
-		ghostSpeedTunnel = fraction(data[3]);
-		elroy1DotsLeft = (int) data[4];
-		elroy1Speed = fraction(data[5]);
-		elroy2DotsLeft = (int) data[6];
-		elroy2Speed = fraction(data[7]);
-		playerSpeedPowered = fraction(data[8]);
-		ghostSpeedFrightened = fraction(data[9]);
-		ghostFrightenedSeconds = (int) data[10];
-		numFlashes = (int) data[11];
+		ghosts[RED_GHOST].homeTile = world.ghostHouse().entry;
+		ghosts[RED_GHOST].revivalTile = world.ghostHouse().seatCenter;
+		ghosts[RED_GHOST].globalDotLimit = Integer.MAX_VALUE;
+		ghosts[RED_GHOST].privateDotLimit = 0;
+
+		ghosts[PINK_GHOST].homeTile = world.ghostHouse().seatCenter;
+		ghosts[PINK_GHOST].revivalTile = world.ghostHouse().seatCenter;
+		ghosts[PINK_GHOST].globalDotLimit = 7;
+		ghosts[PINK_GHOST].privateDotLimit = 0;
+
+		ghosts[CYAN_GHOST].homeTile = world.ghostHouse().seatLeft;
+		ghosts[CYAN_GHOST].revivalTile = world.ghostHouse().seatLeft;
+		ghosts[CYAN_GHOST].globalDotLimit = 17;
+		ghosts[CYAN_GHOST].privateDotLimit = levelNumber == 1 ? 30 : 0;
+
+		ghosts[ORANGE_GHOST].homeTile = world.ghostHouse().seatRight;
+		ghosts[ORANGE_GHOST].revivalTile = world.ghostHouse().seatRight;
+		ghosts[ORANGE_GHOST].globalDotLimit = Integer.MAX_VALUE;
+		ghosts[ORANGE_GHOST].privateDotLimit = levelNumber == 1 ? 60 : levelNumber == 2 ? 50 : 0;
 	}
 
 	protected Ghost[] createGhosts(String redGhostName, String pinkGhostName, String cyanGhostName,
@@ -296,33 +273,57 @@ public abstract class GameModel {
 		return Stream.of(redGhost, pinkGhost, cyanGhost, orangeGhost).toArray(Ghost[]::new);
 	}
 
-	protected void resetGhosts(World world) {
-		for (Ghost ghost : ghosts) {
-			ghost.world = world;
-			ghost.dotCounter = 0;
-			ghost.elroy = 0;
-		}
+	/**
+	 * Initializes model for given game level.
+	 * 
+	 * @param levelNumber 1-based level number
+	 */
+	public abstract void setLevel(int levelNumber);
 
-		ghosts[RED_GHOST].homeTile = world.ghostHouse().entry;
-		ghosts[RED_GHOST].revivalTile = world.ghostHouse().seatCenter;
-		ghosts[RED_GHOST].globalDotLimit = Integer.MAX_VALUE;
-		ghosts[RED_GHOST].privateDotLimit = 0;
-
-		ghosts[PINK_GHOST].homeTile = world.ghostHouse().seatCenter;
-		ghosts[PINK_GHOST].revivalTile = world.ghostHouse().seatCenter;
-		ghosts[PINK_GHOST].globalDotLimit = 7;
-		ghosts[PINK_GHOST].privateDotLimit = 0;
-
-		ghosts[CYAN_GHOST].homeTile = world.ghostHouse().seatLeft;
-		ghosts[CYAN_GHOST].revivalTile = world.ghostHouse().seatLeft;
-		ghosts[CYAN_GHOST].globalDotLimit = 17;
-		ghosts[CYAN_GHOST].privateDotLimit = levelNumber == 1 ? 30 : 0;
-
-		ghosts[ORANGE_GHOST].homeTile = world.ghostHouse().seatRight;
-		ghosts[ORANGE_GHOST].revivalTile = world.ghostHouse().seatRight;
-		ghosts[ORANGE_GHOST].globalDotLimit = Integer.MAX_VALUE;
-		ghosts[ORANGE_GHOST].privateDotLimit = levelNumber == 1 ? 60 : levelNumber == 2 ? 50 : 0;
+	protected void initLevel(int levelNumber, Object[] data) {
+		this.levelNumber = levelNumber;
+		bonusSymbol = (int) data[0];
+		playerSpeed = percentage(data[1]);
+		ghostSpeed = percentage(data[2]);
+		ghostSpeedTunnel = percentage(data[3]);
+		elroy1DotsLeft = (int) data[4];
+		elroy1Speed = percentage(data[5]);
+		elroy2DotsLeft = (int) data[6];
+		elroy2Speed = percentage(data[7]);
+		playerSpeedPowered = percentage(data[8]);
+		ghostSpeedFrightened = percentage(data[9]);
+		ghostFrightenedSeconds = (int) data[10];
+		numFlashes = (int) data[11];
 	}
+
+	private float percentage(Object value) {
+		return (int) value / 100f;
+	}
+
+	/**
+	 * @param levelNumber game level number
+	 * @return 1-based intermission (cut scene) number that is played after given level or <code>0</code> if no
+	 *         intermission is played after given level.
+	 */
+	public int intermissionNumber(int levelNumber) {
+		return switch (levelNumber) {
+		case 2 -> 1;
+		case 5 -> 2;
+		case 9, 13, 17 -> 3;
+		default -> 0;
+		};
+	}
+
+	/**
+	 * @param symbolID bonus symbol identifier
+	 * @return value of this bonus symbol
+	 */
+	public abstract int bonusValue(int symbolID);
+
+	/**
+	 * @return number of ticks the bonus is active
+	 */
+	public abstract long bonusActivationTicks();
 
 	public int levelSymbol(int levelNumber) {
 		return levelCounter.get(levelNumber - 1);
@@ -361,8 +362,6 @@ public abstract class GameModel {
 		hideGhosts();
 		player.hide();
 	}
-
-	public abstract long bonusActivationTicks();
 
 	public void saveHiscore() {
 		Hiscore hiscore = new Hiscore(hiscoreFile).load();
