@@ -1,4 +1,3 @@
-!
 val i = 42
 val s = "Brandon"
 val v = (42,42)
@@ -7,13 +6,13 @@ val L.1 = (0,1)
 val L.2 = (0,2)
 val L.3 = (0,3)
 !
-! mandatory, must conform to the size of the data lines
-val size = (4,2)
+! Mandatory definition, must be equal to the size of the data lines below
+val size = (4,5)
 !
-! Here come the data lines:
+! The data lines:
 !
 ####
+#  #
+#  #
+#  #
 ####
-!
-! end of map
-!

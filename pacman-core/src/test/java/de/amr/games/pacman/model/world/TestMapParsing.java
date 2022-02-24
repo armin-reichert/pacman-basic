@@ -28,5 +28,6 @@ public class TestMapParsing {
 		assertEquals(List.of(//
 				new V2i(0, 0), new V2i(0, 1), new V2i(0, 2), new V2i(0, 3)), vecList);
 		assertEquals(null, map.vectorList(undefinedKey));
+
 	}
 }
