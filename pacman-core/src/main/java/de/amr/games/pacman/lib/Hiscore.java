@@ -26,11 +26,12 @@ package de.amr.games.pacman.lib;
 import static de.amr.games.pacman.lib.Logging.log;
 import static java.time.format.DateTimeFormatter.ISO_DATE_TIME;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.time.ZonedDateTime;
 import java.util.Properties;
+
+import de.amr.games.pacman.model.common.GameModel;
 
 /**
  * Hiscore management.
@@ -39,46 +40,49 @@ import java.util.Properties;
  */
 public class Hiscore {
 
-	private final File file;
-
+	private final GameModel game;
 	public int points;
 	public int level;
 	public ZonedDateTime time;
 
-	public Hiscore(File file) {
-		this.file = file;
+	public Hiscore(GameModel game) {
+		this.game = game;
 		points = 0;
 		level = 1;
 		time = ZonedDateTime.now();
 	}
 
-	public Hiscore load() {
-		try (FileInputStream in = new FileInputStream(file)) {
+	public void save() {
+		load();
+		if (game.highscorePoints > points) {
+			points = game.highscorePoints;
+			level = game.highscoreLevel;
+			Properties content = new Properties();
+			content.setProperty("points", String.valueOf(points));
+			content.setProperty("level", String.valueOf(level));
+			content.setProperty("date", ZonedDateTime.now().format(ISO_DATE_TIME));
+			try (FileOutputStream out = new FileOutputStream(game.hiscoreFile)) {
+				content.storeToXML(out, "");
+				log("Hiscore file saved: %s", game.hiscoreFile);
+			} catch (Exception x) {
+				log("Could not save hiscore");
+				x.printStackTrace(System.err);
+			}
+			log("New hiscore: %d points in level %d.", points, level);
+		}
+	}
+
+	public void load() {
+		try (FileInputStream in = new FileInputStream(game.hiscoreFile)) {
 			Properties content = new Properties();
 			content.loadFromXML(in);
 			points = Integer.parseInt(content.getProperty("points"));
 			level = Integer.parseInt(content.getProperty("level"));
 			time = ZonedDateTime.parse(content.getProperty("date"));
-			log("Highscore loaded (%d points in level %d) from file '%s'", points, level, file);
+			log("Highscore loaded (%d points in level %d) from file '%s'", points, level, game.hiscoreFile);
 		} catch (Exception x) {
-			log("Highscore could not be loaded from file '%s'", file);
+			log("Highscore could not be loaded from file '%s'", game.hiscoreFile);
 			x.printStackTrace();
 		}
-		return this;
-	}
-
-	public Hiscore save() {
-		Properties content = new Properties();
-		content.setProperty("points", String.valueOf(points));
-		content.setProperty("level", String.valueOf(level));
-		content.setProperty("date", ZonedDateTime.now().format(ISO_DATE_TIME));
-		try (FileOutputStream out = new FileOutputStream(file)) {
-			content.storeToXML(out, "");
-			log("Hiscore file saved: %s", file);
-		} catch (Exception x) {
-			log("Could not save hiscore");
-			x.printStackTrace(System.err);
-		}
-		return this;
 	}
 }

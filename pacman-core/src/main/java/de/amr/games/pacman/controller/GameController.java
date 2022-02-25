@@ -60,6 +60,7 @@ import de.amr.games.pacman.controller.event.GameEventListener;
 import de.amr.games.pacman.controller.event.GameStateChangeEvent;
 import de.amr.games.pacman.controller.event.ScatterPhaseStartedEvent;
 import de.amr.games.pacman.lib.FiniteStateMachine;
+import de.amr.games.pacman.lib.Hiscore;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
@@ -349,7 +350,7 @@ public class GameController extends FiniteStateMachine<GameState> {
 		gameRunning = false;
 		game.ghosts().forEach(ghost -> ghost.setSpeed(0));
 		game.player.setSpeed(0);
-		game.saveHiscore();
+		new Hiscore(game).save();
 		stateTimer().setSeconds(5).start();
 	}
 
@@ -578,9 +579,9 @@ public class GameController extends FiniteStateMachine<GameState> {
 		}
 		int oldscore = game.score;
 		game.score += points;
-		if (game.score > game.hiscorePoints) {
-			game.hiscorePoints = game.score;
-			game.hiscoreLevel = game.levelNumber;
+		if (game.score > game.highscorePoints) {
+			game.highscorePoints = game.score;
+			game.highscoreLevel = game.levelNumber;
 		}
 		if (oldscore < 10000 && game.score >= 10000) {
 			game.player.lives++;

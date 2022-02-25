@@ -23,7 +23,6 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.common;
 
-import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.model.world.World.HTS;
 
 import java.io.File;
@@ -157,10 +156,10 @@ public abstract class GameModel {
 	public boolean globalDotCounterEnabled;
 
 	/** Level at which current high score has been reached. */
-	public int hiscoreLevel;
+	public int highscoreLevel;
 
 	/** Points scored at current high score. */
-	public int hiscorePoints;
+	public int highscorePoints;
 
 	/** High score file of current game variant. */
 	public File hiscoreFile;
@@ -176,9 +175,10 @@ public abstract class GameModel {
 		score = 0;
 		player.lives = initialLives;
 		levelCounter.clear();
-		Hiscore hiscore = new Hiscore(hiscoreFile).load();
-		hiscoreLevel = hiscore.level;
-		hiscorePoints = hiscore.points;
+		Hiscore highscore = new Hiscore(this);
+		highscore.load();
+		highscoreLevel = highscore.level;
+		highscorePoints = highscore.points;
 		setLevel(1);
 	}
 
@@ -338,13 +338,4 @@ public abstract class GameModel {
 	 */
 	public abstract long bonusActivationTicks();
 
-	public void saveHiscore() {
-		Hiscore hiscore = new Hiscore(hiscoreFile).load();
-		if (hiscorePoints > hiscore.points) {
-			hiscore.points = hiscorePoints;
-			hiscore.level = hiscoreLevel;
-			hiscore.save();
-			log("New hiscore: %d points in level %d.", hiscore.points, hiscore.level);
-		}
-	}
 }
