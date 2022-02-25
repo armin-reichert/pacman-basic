@@ -80,7 +80,7 @@ public class PacManGame extends GameModel {
 		mazeNumber = 1;
 		player = new Pac("Pac-Man");
 		player.world = world;
-		ghosts = createGhosts("Blinky", "Pinky", "Inky", "Clyde");
+		createGhosts("Blinky", "Pinky", "Inky", "Clyde");
 		resetGhosts(world);
 		bonus = new Bonus();
 		bonus.world = world;

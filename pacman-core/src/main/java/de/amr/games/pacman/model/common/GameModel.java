@@ -244,33 +244,26 @@ public abstract class GameModel {
 		ghosts[ORANGE_GHOST].privateDotLimit = levelNumber == 1 ? 60 : levelNumber == 2 ? 50 : 0;
 	}
 
-	protected Ghost[] createGhosts(String redGhostName, String pinkGhostName, String cyanGhostName,
-			String orangeGhostName) {
-
-		Ghost redGhost = new Ghost(RED_GHOST, redGhostName);
-		Ghost pinkGhost = new Ghost(PINK_GHOST, pinkGhostName);
-		Ghost cyanGhost = new Ghost(CYAN_GHOST, cyanGhostName);
-		Ghost orangeGhost = new Ghost(ORANGE_GHOST, orangeGhostName);
+	protected void createGhosts(String redName, String pinkName, String cyanName, String orangeName) {
+		ghosts = new Ghost[] { new Ghost(RED_GHOST, redName), new Ghost(PINK_GHOST, pinkName),
+				new Ghost(CYAN_GHOST, cyanName), new Ghost(ORANGE_GHOST, orangeName) };
 
 		// Red ghost chases Pac-Man directly
-		redGhost.fnChasingTargetTile = player::tile;
+		ghosts[RED_GHOST].fnChasingTargetTile = player::tile;
 
 		// Pink ghost's target is two tiles ahead of Pac-Man (simulate overflow bug when player moves up)
-		pinkGhost.fnChasingTargetTile = () -> player.moveDir() != Direction.UP //
+		ghosts[PINK_GHOST].fnChasingTargetTile = () -> player.moveDir() != Direction.UP //
 				? player.tilesAhead(4)
 				: player.tilesAhead(4).plus(-4, 0);
 
 		// For cyan ghost's target, see Pac-Man dossier (simulate overflow bug when player moves up)
-		cyanGhost.fnChasingTargetTile = () -> player.moveDir() != Direction.UP //
-				? player.tilesAhead(2).scaled(2).minus(redGhost.tile())
-				: player.tilesAhead(2).plus(-2, 0).scaled(2).minus(redGhost.tile());
+		ghosts[CYAN_GHOST].fnChasingTargetTile = () -> player.moveDir() != Direction.UP //
+				? player.tilesAhead(2).scaled(2).minus(ghosts[RED_GHOST].tile())
+				: player.tilesAhead(2).plus(-2, 0).scaled(2).minus(ghosts[RED_GHOST].tile());
 
 		// Orange ghost's target is either Pac-Man tile or scatter tile #3 at the lower left maze corner
-		orangeGhost.fnChasingTargetTile = () -> orangeGhost.tile().euclideanDistance(player.tile()) < 8
-				? world.ghostScatterTile(3)
-				: player.tile();
-
-		return Stream.of(redGhost, pinkGhost, cyanGhost, orangeGhost).toArray(Ghost[]::new);
+		ghosts[ORANGE_GHOST].fnChasingTargetTile = () -> ghosts[ORANGE_GHOST].tile()
+				.euclideanDistance(player.tile()) < 8 ? world.ghostScatterTile(3) : player.tile();
 	}
 
 	/**

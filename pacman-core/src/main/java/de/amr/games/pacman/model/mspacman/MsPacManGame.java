@@ -81,7 +81,7 @@ public class MsPacManGame extends GameModel {
 
 	public MsPacManGame() {
 		player = new Pac("Ms. Pac-Man");
-		ghosts = createGhosts("Blinky", "Pinky", "Inky", "Sue");
+		createGhosts("Blinky", "Pinky", "Inky", "Sue");
 		bonus = new MovingBonus();
 		hiscoreFile = new File(System.getProperty("user.home"), "highscore-ms_pacman.xml");
 	}
