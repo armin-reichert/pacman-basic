@@ -440,7 +440,7 @@ public class GameController extends FiniteStateMachine<GameState> {
 			game.player.killed = true;
 			log("%s got killed by %s at tile %s", game.player.name, ghost.name, game.player.tile());
 			// Elroy mode of red ghost gets disabled when player is killed
-			Ghost redGhost = game.ghost(GameModel.RED_GHOST);
+			Ghost redGhost = game.ghosts[GameModel.RED_GHOST];
 			if (redGhost.elroy > 0) {
 				redGhost.elroy = -redGhost.elroy; // negative value means "disabled"
 				log("Elroy mode %d for %s has been disabled", redGhost.elroy, redGhost.name);
@@ -488,10 +488,10 @@ public class GameController extends FiniteStateMachine<GameState> {
 
 		// Will Blinky become Cruise Elroy?
 		if (game.world.foodRemaining() == game.elroy1DotsLeft) {
-			game.ghost(RED_GHOST).elroy = 1;
+			game.ghosts[RED_GHOST].elroy = 1;
 			log("Blinky becomes Cruise Elroy 1");
 		} else if (game.world.foodRemaining() == game.elroy2DotsLeft) {
-			game.ghost(RED_GHOST).elroy = 2;
+			game.ghosts[RED_GHOST].elroy = 2;
 			log("Blinky becomes Cruise Elroy 2");
 		}
 
@@ -696,8 +696,8 @@ public class GameController extends FiniteStateMachine<GameState> {
 	// Ghost house rules, see Pac-Man dossier
 
 	private void releaseLockedGhosts() {
-		if (game.ghost(RED_GHOST).is(LOCKED)) {
-			game.ghost(RED_GHOST).state = HUNTING_PAC;
+		if (game.ghosts[RED_GHOST].is(LOCKED)) {
+			game.ghosts[RED_GHOST].state = HUNTING_PAC;
 		}
 		preferredLockedGhostInHouse().ifPresent(ghost -> {
 			if (game.globalDotCounterEnabled && game.globalDotCounter >= ghost.globalDotLimit) {
@@ -713,9 +713,9 @@ public class GameController extends FiniteStateMachine<GameState> {
 	}
 
 	private void releaseGhost(Ghost ghost, String reason, Object... args) {
-		if (ghost.id == ORANGE_GHOST && game.ghost(RED_GHOST).elroy < 0) {
-			game.ghost(RED_GHOST).elroy = -game.ghost(RED_GHOST).elroy; // resume Elroy mode
-			log("Blinky Elroy mode %d resumed", game.ghost(RED_GHOST).elroy);
+		if (ghost.id == ORANGE_GHOST && game.ghosts[RED_GHOST].elroy < 0) {
+			game.ghosts[RED_GHOST].elroy = -game.ghosts[RED_GHOST].elroy; // resume Elroy mode
+			log("%s Elroy mode %d resumed", game.ghosts[RED_GHOST].name, game.ghosts[RED_GHOST].elroy);
 		}
 		ghost.state = LEAVING_HOUSE;
 		log("Ghost %s released: %s", ghost.name, String.format(reason, args));
@@ -723,13 +723,13 @@ public class GameController extends FiniteStateMachine<GameState> {
 	}
 
 	private Optional<Ghost> preferredLockedGhostInHouse() {
-		return Stream.of(PINK_GHOST, CYAN_GHOST, ORANGE_GHOST).map(game::ghost).filter(ghost -> ghost.is(LOCKED))
-				.findFirst();
+		return Stream.of(PINK_GHOST, CYAN_GHOST, ORANGE_GHOST).map(id -> game.ghosts[id])
+				.filter(ghost -> ghost.is(LOCKED)).findFirst();
 	}
 
 	private void updateGhostDotCounters() {
 		if (game.globalDotCounterEnabled) {
-			if (game.ghost(ORANGE_GHOST).is(LOCKED) && game.globalDotCounter == 32) {
+			if (game.ghosts[ORANGE_GHOST].is(LOCKED) && game.globalDotCounter == 32) {
 				game.globalDotCounterEnabled = false;
 				game.globalDotCounter = 0;
 				log("Global dot counter disabled and reset, Clyde was in house when counter reached 32");

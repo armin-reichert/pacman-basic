@@ -333,10 +333,6 @@ public abstract class GameModel {
 		return ghosts().filter(ghost -> ghost.state == state);
 	}
 
-	public Ghost ghost(int id) {
-		return ghosts[id];
-	}
-
 	public void hideGhosts() {
 		for (Ghost ghost : ghosts) {
 			ghost.hide();
