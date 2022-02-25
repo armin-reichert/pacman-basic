@@ -345,16 +345,6 @@ public abstract class GameModel {
 		}
 	}
 
-	public void showGuys() {
-		showGhosts();
-		player.show();
-	}
-
-	public void hideGuys() {
-		hideGhosts();
-		player.hide();
-	}
-
 	public void saveHiscore() {
 		Hiscore hiscore = new Hiscore(hiscoreFile).load();
 		if (hiscorePoints > hiscore.points) {

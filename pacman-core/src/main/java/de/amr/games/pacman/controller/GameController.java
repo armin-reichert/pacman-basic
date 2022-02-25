@@ -218,7 +218,8 @@ public class GameController extends FiniteStateMachine<GameState> {
 
 	private void state_Ready_update() {
 		if (stateTimer().ticked() == sec_to_ticks(1.5)) {
-			game.showGuys();
+			game.showGhosts();
+			game.player.show();
 		} else if (stateTimer().hasExpired()) {
 			if (gameRequested) {
 				gameRunning = true;
