@@ -266,6 +266,26 @@ public abstract class GameModel {
 				.euclideanDistance(player.tile()) < 8 ? world.ghostScatterTile(3) : player.tile();
 	}
 
+	public Stream<Ghost> ghosts() {
+		return Stream.of(ghosts);
+	}
+
+	public Stream<Ghost> ghosts(GhostState state) {
+		return ghosts().filter(ghost -> ghost.state == state);
+	}
+
+	public void showGhosts() {
+		for (Ghost ghost : ghosts) {
+			ghost.show();
+		}
+	}
+
+	public void hideGhosts() {
+		for (Ghost ghost : ghosts) {
+			ghost.hide();
+		}
+	}
+
 	/**
 	 * Initializes model for given game level.
 	 * 
@@ -317,26 +337,6 @@ public abstract class GameModel {
 	 * @return number of ticks the bonus is active
 	 */
 	public abstract long bonusActivationTicks();
-
-	public Stream<Ghost> ghosts() {
-		return Stream.of(ghosts);
-	}
-
-	public Stream<Ghost> ghosts(GhostState state) {
-		return ghosts().filter(ghost -> ghost.state == state);
-	}
-
-	public void hideGhosts() {
-		for (Ghost ghost : ghosts) {
-			ghost.hide();
-		}
-	}
-
-	public void showGhosts() {
-		for (Ghost ghost : ghosts) {
-			ghost.show();
-		}
-	}
 
 	public void saveHiscore() {
 		Hiscore hiscore = new Hiscore(hiscoreFile).load();
