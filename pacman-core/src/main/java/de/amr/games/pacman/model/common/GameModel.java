@@ -325,10 +325,6 @@ public abstract class GameModel {
 	 */
 	public abstract long bonusActivationTicks();
 
-	public int levelSymbol(int levelNumber) {
-		return levelCounter.get(levelNumber - 1);
-	}
-
 	public Stream<Ghost> ghosts() {
 		return Stream.of(ghosts);
 	}
