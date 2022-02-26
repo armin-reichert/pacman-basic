@@ -33,6 +33,7 @@ import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.controller.mspacman.Intermission1Controller.IntermissonState;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.FiniteStateMachine;
+import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.model.common.GameEntity;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Ghost;
@@ -151,10 +152,8 @@ public class Intermission1Controller extends FiniteStateMachine<IntermissonState
 	}
 
 	private void state_COMING_TOGETHER_update() {
-		if (pacMan.moveDir() == Direction.LEFT && pacMan.position.x < t(15)) {
-			pacMan.setMoveDir(Direction.UP);
-			msPac.setMoveDir(Direction.UP);
-		}
+
+		// Pac-Man and Ms. Pac-Man reach end position
 		if (pacMan.moveDir() == Direction.UP && pacMan.position.y < upperY) {
 			pacMan.setSpeed(0);
 			msPac.setSpeed(0);
@@ -166,17 +165,41 @@ public class Intermission1Controller extends FiniteStateMachine<IntermissonState
 			pinky.setSpeed(0);
 			changeState(IntermissonState.READY_TO_PLAY);
 		}
+
+		// Pac-Man and Ms. Pac-Man meet
+		if (pacMan.moveDir() == Direction.LEFT && pacMan.position.x < t(15)) {
+			pacMan.setMoveDir(Direction.UP);
+			msPac.setMoveDir(Direction.UP);
+		}
+
+		// Inky and Pinky collide
 		if (!ghostsMet && inky.position.x - pinky.position.x < 16) {
 			ghostsMet = true;
-			inky.setMoveDir(inky.moveDir().opposite());
-			inky.setWishDir(inky.moveDir());
-			inky.setSpeed(0.2);
-			pinky.setMoveDir(pinky.moveDir().opposite());
-			pinky.setWishDir(pinky.moveDir());
-			pinky.setSpeed(0.2);
+
+			inky.setMoveDir(Direction.RIGHT);
+			inky.setWishDir(Direction.RIGHT);
+			inky.setSpeed(0.5);
+			inky.velocity = inky.velocity.plus(new V2d(0, -2.0));
+			inky.acceleration = new V2d(0, 0.4);
+
+			pinky.setMoveDir(Direction.LEFT);
+			pinky.setWishDir(Direction.LEFT);
+			pinky.setSpeed(0.5);
+			pinky.velocity = pinky.velocity.plus(new V2d(0, -2.0));
+			pinky.acceleration = new V2d(0, 0.4);
 		}
+
+		// Guys move, avoid falling under ground level
 		inky.move();
+		if (inky.position.y > middleY) {
+			inky.setPosition(inky.position.x, middleY);
+		}
+
 		pinky.move();
+		if (pinky.position.y > middleY) {
+			pinky.setPosition(pinky.position.x, middleY);
+		}
+
 		pacMan.move();
 		msPac.move();
 	}
