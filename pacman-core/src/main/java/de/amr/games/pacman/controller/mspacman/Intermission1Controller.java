@@ -213,6 +213,7 @@ public class Intermission1Controller extends FiniteStateMachine<IntermissonState
 		heart.show();
 		inky.setSpeed(0);
 		pinky.setSpeed(0);
+		stateTimer().setSeconds(4).start();
 	}
 
 	private void state_IN_HEAVEN_update() {
