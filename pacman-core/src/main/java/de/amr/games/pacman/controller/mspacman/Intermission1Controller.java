@@ -82,6 +82,7 @@ public class Intermission1Controller extends FiniteStateMachine<IntermissonState
 
 	private void state_FLAP_enter() {
 		stateTimer().setSeconds(2).start();
+		playIntermissionSound.run();
 
 		flap = new Flap();
 		flap.number = 1;
@@ -126,11 +127,10 @@ public class Intermission1Controller extends FiniteStateMachine<IntermissonState
 
 	private void state_CHASED_BY_GHOSTS_enter() {
 		flap.hide();
-		pacMan.setSpeed(1.0);
-		msPac.setSpeed(1.0);
-		inky.setSpeed(1.0);
-		pinky.setSpeed(1.0);
-		playIntermissionSound.run();
+		pacMan.setSpeed(0.9);
+		msPac.setSpeed(0.9);
+		inky.setSpeed(0.9);
+		pinky.setSpeed(0.9);
 	}
 
 	private void state_CHASED_BY_GHOSTS_update() {
@@ -206,21 +206,19 @@ public class Intermission1Controller extends FiniteStateMachine<IntermissonState
 
 	private void state_IN_HEAVEN_enter() {
 		pacMan.setSpeed(0);
-		msPac.setSpeed(0);
 		pacMan.setMoveDir(Direction.LEFT);
+		msPac.setSpeed(0);
 		msPac.setMoveDir(Direction.RIGHT);
 		heart.setPosition((pacMan.position.x + msPac.position.x) / 2, pacMan.position.y - t(2));
 		heart.show();
 		inky.setSpeed(0);
+		inky.hide();
 		pinky.setSpeed(0);
+		pinky.hide();
 		stateTimer().setSeconds(4).start();
 	}
 
 	private void state_IN_HEAVEN_update() {
-		if (stateTimer().isRunningSeconds(2)) {
-			inky.hide();
-			pinky.hide();
-		}
 		if (stateTimer().hasExpired()) {
 			gameController.stateTimer().expire();
 		}
