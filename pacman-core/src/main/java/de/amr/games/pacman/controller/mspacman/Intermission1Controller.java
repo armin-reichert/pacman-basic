@@ -170,7 +170,7 @@ public class Intermission1Controller extends FiniteStateMachine<IntermissonState
 		}
 
 		// Pac-Man and Ms. Pac-Man meet
-		if (pacMan.moveDir() == Direction.LEFT && pacMan.position.x < t(15)) {
+		if (pacMan.moveDir() == Direction.LEFT && pacMan.position.x - msPac.position.x < t(2)) {
 			pacMan.setMoveDir(Direction.UP);
 			pacMan.setSpeed(0.75);
 			msPac.setMoveDir(Direction.UP);
@@ -178,7 +178,7 @@ public class Intermission1Controller extends FiniteStateMachine<IntermissonState
 		}
 
 		// Inky and Pinky collide
-		if (!ghostsMet && inky.position.x - pinky.position.x < 16) {
+		if (!ghostsMet && inky.position.x - pinky.position.x < t(2)) {
 			ghostsMet = true;
 
 			inky.setMoveDir(Direction.RIGHT);
@@ -217,13 +217,15 @@ public class Intermission1Controller extends FiniteStateMachine<IntermissonState
 		heart.setPosition((pacMan.position.x + msPac.position.x) / 2, pacMan.position.y - t(2));
 		heart.show();
 		inky.setSpeed(0);
-		inky.hide();
 		pinky.setSpeed(0);
-		pinky.hide();
 		stateTimer().setSeconds(4).start();
 	}
 
 	private void state_IN_HEAVEN_update() {
+		if (stateTimer().isRunningSeconds(0.5)) {
+			inky.hide();
+			pinky.hide();
+		}
 		if (stateTimer().hasExpired()) {
 			gameController.stateTimer().expire();
 		}
