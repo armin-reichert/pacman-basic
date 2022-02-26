@@ -98,7 +98,7 @@ public class Intermission1Controller extends FiniteStateMachine<IntermissonState
 		inky = new Ghost(GameModel.CYAN_GHOST, "Inky");
 		inky.setMoveDir(Direction.RIGHT);
 		inky.setWishDir(Direction.RIGHT);
-		inky.position = pacMan.position.minus(t(3), 0);
+		inky.position = pacMan.position.minus(t(6), 0);
 		inky.show();
 
 		msPac = new Pac("Ms. Pac-Man");
@@ -109,7 +109,7 @@ public class Intermission1Controller extends FiniteStateMachine<IntermissonState
 		pinky = new Ghost(GameModel.PINK_GHOST, "Pinky");
 		pinky.setMoveDir(Direction.LEFT);
 		pinky.setWishDir(Direction.LEFT);
-		pinky.position = msPac.position.plus(t(3), 0);
+		pinky.position = msPac.position.plus(t(6), 0);
 		pinky.show();
 
 		heart = new GameEntity();
@@ -129,8 +129,8 @@ public class Intermission1Controller extends FiniteStateMachine<IntermissonState
 		flap.hide();
 		pacMan.setSpeed(0.9);
 		msPac.setSpeed(0.9);
-		inky.setSpeed(0.9);
-		pinky.setSpeed(0.9);
+		inky.setSpeed(1);
+		pinky.setSpeed(1);
 	}
 
 	private void state_CHASED_BY_GHOSTS_update() {
@@ -145,16 +145,19 @@ public class Intermission1Controller extends FiniteStateMachine<IntermissonState
 	}
 
 	private void state_COMING_TOGETHER_enter() {
-		msPac.setPosition(t(-2), middleY);
+		msPac.setPosition(t(-3), middleY);
 		msPac.setMoveDir(Direction.RIGHT);
-		pacMan.setPosition(t(30), middleY);
-		pacMan.setMoveDir(Direction.LEFT);
-		inky.setPosition(t(33), middleY);
-		inky.setMoveDir(Direction.LEFT);
-		inky.setWishDir(Direction.LEFT);
-		pinky.setPosition(t(-5), middleY);
+
+		pinky.position = msPac.position.minus(t(5), 0);
 		pinky.setMoveDir(Direction.RIGHT);
 		pinky.setWishDir(Direction.RIGHT);
+
+		pacMan.setPosition(t(31), middleY);
+		pacMan.setMoveDir(Direction.LEFT);
+
+		inky.position = pacMan.position.plus(t(5), 0);
+		inky.setMoveDir(Direction.LEFT);
+		inky.setWishDir(Direction.LEFT);
 		stateTimer().setSeconds(4).start();
 	}
 
@@ -169,7 +172,9 @@ public class Intermission1Controller extends FiniteStateMachine<IntermissonState
 		// Pac-Man and Ms. Pac-Man meet
 		if (pacMan.moveDir() == Direction.LEFT && pacMan.position.x < t(15)) {
 			pacMan.setMoveDir(Direction.UP);
+			pacMan.setSpeed(0.75);
 			msPac.setMoveDir(Direction.UP);
+			msPac.setSpeed(0.75);
 		}
 
 		// Inky and Pinky collide
