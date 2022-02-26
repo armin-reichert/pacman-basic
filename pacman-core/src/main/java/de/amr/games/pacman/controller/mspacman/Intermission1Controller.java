@@ -164,6 +164,7 @@ public class Intermission1Controller extends FiniteStateMachine<IntermissonState
 			inky.setSpeed(0);
 			pinky.setSpeed(0);
 			changeState(IntermissonState.READY_TO_PLAY);
+			return;
 		}
 
 		// Pac-Man and Ms. Pac-Man meet
