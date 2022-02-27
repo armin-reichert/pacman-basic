@@ -55,7 +55,7 @@ public class Intermission1Controller extends FiniteStateMachine<IntermissonState
 		FLAP, CHASED_BY_GHOSTS, COMING_TOGETHER, IN_HEAVEN;
 	}
 
-	public final int upperY = t(12), lowerY = t(24), middleY = t(18);
+	public final int upperY = t(12), middleY = t(18), lowerY = t(24);
 
 	public GameController gameController;
 	public Runnable playIntermissionSound = NOP;
@@ -158,7 +158,6 @@ public class Intermission1Controller extends FiniteStateMachine<IntermissonState
 		inky.position = pacMan.position.plus(t(5), 0);
 		inky.setMoveDir(Direction.LEFT);
 		inky.setWishDir(Direction.LEFT);
-		stateTimer().setSeconds(4).start();
 	}
 
 	private void state_COMING_TOGETHER_update() {
@@ -194,31 +193,32 @@ public class Intermission1Controller extends FiniteStateMachine<IntermissonState
 			pinky.acceleration = new V2d(0, 0.4);
 		}
 
-		// Guys move, avoid falling under ground level
+		pacMan.move();
+		msPac.move();
 		inky.move();
+		pinky.move();
+
+		// Avoid falling under ground level
 		if (inky.position.y > middleY) {
 			inky.setPosition(inky.position.x, middleY);
 		}
-
-		pinky.move();
 		if (pinky.position.y > middleY) {
 			pinky.setPosition(pinky.position.x, middleY);
 		}
-
-		pacMan.move();
-		msPac.move();
 	}
 
 	private void state_IN_HEAVEN_enter() {
+		stateTimer().setSeconds(3).start();
+
 		pacMan.setSpeed(0);
 		pacMan.setMoveDir(Direction.LEFT);
 		msPac.setSpeed(0);
 		msPac.setMoveDir(Direction.RIGHT);
-		heart.setPosition((pacMan.position.x + msPac.position.x) / 2, pacMan.position.y - t(2));
-		heart.show();
 		inky.setSpeed(0);
 		pinky.setSpeed(0);
-		stateTimer().setSeconds(4).start();
+
+		heart.setPosition((pacMan.position.x + msPac.position.x) / 2, pacMan.position.y - t(2));
+		heart.show();
 	}
 
 	private void state_IN_HEAVEN_update() {
