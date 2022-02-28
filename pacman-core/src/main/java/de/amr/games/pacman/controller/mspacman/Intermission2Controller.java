@@ -60,19 +60,17 @@ public class Intermission2Controller extends FiniteStateMachine<IntermissionStat
 	public Intermission2Controller() {
 		super(IntermissionState.values());
 		configState(FLAP, this::state_FLAP_enter, this::state_FLAP_update, null);
-		configState(ACTION, this::startStateTimer, this::state_ACTION_update, null);
+		configState(ACTION, this::state_ACTION_enter, this::state_ACTION_update, null);
 	}
 
 	public void init(GameController gameController) {
 		this.gameController = gameController;
+		state = null;
 		changeState(FLAP);
 	}
 
-	private void startStateTimer() {
-		stateTimer().start();
-	}
-
 	private void state_FLAP_enter() {
+		stateTimer().setIndefinite();
 		stateTimer().start();
 
 		flap = new Flap();
@@ -96,6 +94,11 @@ public class Intermission2Controller extends FiniteStateMachine<IntermissionStat
 			changeState(IntermissionState.ACTION);
 			return;
 		}
+	}
+
+	private void state_ACTION_enter() {
+		stateTimer().setIndefinite();
+		stateTimer().start();
 	}
 
 	private void state_ACTION_update() {
