@@ -66,14 +66,20 @@ public class Intermission3Controller extends FiniteStateMachine<IntermissionStat
 
 	public Intermission3Controller() {
 		super(IntermissionState.values());
-		configState(IntermissionState.FLAP, () -> stateTimer().setSeconds(1).start(), this::state_FLAP_update, null);
-		configState(IntermissionState.ACTION, () -> stateTimer().setIndefinite().start(), this::state_ACTION_update, null);
-		configState(IntermissionState.READY_TO_PLAY, () -> stateTimer().setSeconds(3).start(),
-				this::state_READY_TO_PLAY_update, null);
+		configState(IntermissionState.FLAP, this::state_FLAP_enter, this::state_FLAP_update, null);
+		configState(IntermissionState.ACTION, this::state_ACTION_enter, this::state_ACTION_update, null);
+		configState(IntermissionState.READY_TO_PLAY, this::state_READY_TO_PLAY_enter, this::state_READY_TO_PLAY_update,
+				null);
 	}
 
 	public void init(GameController gameController) {
 		this.gameController = gameController;
+		state = null;
+		changeState(IntermissionState.FLAP);
+	}
+
+	private void state_FLAP_enter() {
+		stateTimer().setSeconds(1).start();
 
 		flap = new Flap();
 		flap.number = 3;
@@ -97,18 +103,20 @@ public class Intermission3Controller extends FiniteStateMachine<IntermissionStat
 		bag.open = false;
 		bag.position = stork.position.plus(-14, 3);
 		numBagBounces = 0;
-
-		changeState(IntermissionState.FLAP);
 	}
 
 	private void state_FLAP_update() {
 		if (stateTimer().isRunningSeconds(1)) {
 			playFlapAnimation.run();
 		} else if (stateTimer().isRunningSeconds(2)) {
-			flap.hide();
-			playIntermissionSound.run();
 			changeState(IntermissionState.ACTION);
 		}
+	}
+
+	private void state_ACTION_enter() {
+		stateTimer().setIndefinite().start();
+		flap.hide();
+		playIntermissionSound.run();
 	}
 
 	private void state_ACTION_update() {
@@ -138,6 +146,10 @@ public class Intermission3Controller extends FiniteStateMachine<IntermissionStat
 				changeState(IntermissionState.READY_TO_PLAY);
 			}
 		}
+	}
+
+	private void state_READY_TO_PLAY_enter() {
+		stateTimer().setSeconds(3).start();
 	}
 
 	private void state_READY_TO_PLAY_update() {
