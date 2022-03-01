@@ -110,8 +110,7 @@ public class GameController extends FiniteStateMachine<GameState> {
 		configState(INTRO, this::state_Intro_enter, this::state_Intro_update, null);
 		configState(READY, this::state_Ready_enter, this::state_Ready_update, null);
 		configState(HUNTING, this::state_Hunting_enter, this::state_Hunting_update, null);
-		configState(GHOST_DYING, this::state_GhostDying_enter, this::state_GhostDying_update,
-				this::state_GhostDying_exit);
+		configState(GHOST_DYING, this::state_GhostDying_enter, this::state_GhostDying_update, this::state_GhostDying_exit);
 		configState(PACMAN_DYING, this::state_PacManDying_enter, this::state_PacManDying_update, null);
 		configState(LEVEL_STARTING, this::state_LevelStarting_enter, this::state_LevelStarting_update, null);
 		configState(LEVEL_COMPLETE, this::state_LevelComplete_enter, this::state_LevelComplete_update, null);
@@ -180,14 +179,18 @@ public class GameController extends FiniteStateMachine<GameState> {
 	}
 
 	public void cheatKillGhosts() {
-		game.ghostBounty = game.firstGhostBounty;
-		game.ghosts().filter(ghost -> ghost.is(HUNTING_PAC) || ghost.is(FRIGHTENED)).forEach(this::killGhost);
-		changeState(GHOST_DYING);
+		if (gameRunning) {
+			game.ghostBounty = game.firstGhostBounty;
+			game.ghosts().filter(ghost -> ghost.is(HUNTING_PAC) || ghost.is(FRIGHTENED)).forEach(this::killGhost);
+			changeState(GHOST_DYING);
+		}
 	}
 
 	public void cheatEatAllPellets() {
-		game.world.tiles().filter(not(game.world::isEnergizerTile)).forEach(game.world::removeFood);
-		publish(Info.PLAYER_FOUND_FOOD, null);
+		if (gameRunning) {
+			game.world.tiles().filter(not(game.world::isEnergizerTile)).forEach(game.world::removeFood);
+			publish(Info.PLAYER_FOUND_FOOD, null);
+		}
 	}
 
 	// --- BEGIN STATE-MACHINE METHODS ---
@@ -408,8 +411,7 @@ public class GameController extends FiniteStateMachine<GameState> {
 		game.huntingPhase = phase;
 		resetAndStartHuntingTimerForPhase(phase);
 		if (phase > 0) {
-			game.ghosts().filter(ghost -> ghost.is(HUNTING_PAC) || ghost.is(FRIGHTENED))
-					.forEach(Ghost::forceTurningBack);
+			game.ghosts().filter(ghost -> ghost.is(HUNTING_PAC) || ghost.is(FRIGHTENED)).forEach(Ghost::forceTurningBack);
 		}
 		String phaseName = game.inScatteringPhase() ? "Scattering" : "Chasing";
 		log("Hunting phase #%d (%s) started, %d of %d ticks remaining", phase, phaseName, stateTimer().ticksRemaining(),
@@ -652,11 +654,10 @@ public class GameController extends FiniteStateMachine<GameState> {
 
 			/*
 			 * In Ms. Pac-Man, Blinky and Pinky move randomly during the *first* scatter phase. Some say, the original
-			 * intention had been to randomize the scatter target of *all* ghosts in Ms. Pac-Man but because of a bug,
-			 * only the scatter target of Blinky and Pinky would have been affected. Who knows?
+			 * intention had been to randomize the scatter target of *all* ghosts in Ms. Pac-Man but because of a bug, only
+			 * the scatter target of Blinky and Pinky would have been affected. Who knows?
 			 */
-			if (gameVariant == MS_PACMAN && game.huntingPhase == 0
-					&& (ghost.id == RED_GHOST || ghost.id == PINK_GHOST)) {
+			if (gameVariant == MS_PACMAN && game.huntingPhase == 0 && (ghost.id == RED_GHOST || ghost.id == PINK_GHOST)) {
 				ghost.roam();
 			} else if (game.inScatteringPhase() && ghost.elroy == 0) {
 				ghost.scatter();
@@ -679,8 +680,8 @@ public class GameController extends FiniteStateMachine<GameState> {
 	}
 
 	/**
-	 * Killing ghosts wins 200, 400, 800, 1600 points in order when using the same energizer power. If all 16 ghosts on
-	 * a level are killed, additonal 12000 points are rewarded.
+	 * Killing ghosts wins 200, 400, 800, 1600 points in order when using the same energizer power. If all 16 ghosts on a
+	 * level are killed, additonal 12000 points are rewarded.
 	 */
 	private void killGhost(Ghost ghost) {
 		ghost.state = DEAD;
@@ -707,8 +708,7 @@ public class GameController extends FiniteStateMachine<GameState> {
 			} else if (!game.globalDotCounterEnabled && ghost.dotCounter >= ghost.privateDotLimit) {
 				releaseGhost(ghost, "Private dot counter reached limit (%d)", ghost.privateDotLimit);
 			} else if (game.player.starvingTicks >= game.player.starvingTimeLimit) {
-				releaseGhost(ghost, "%s reached starving limit (%d ticks)", game.player.name,
-						game.player.starvingTicks);
+				releaseGhost(ghost, "%s reached starving limit (%d ticks)", game.player.name, game.player.starvingTicks);
 				game.player.starvingTicks = 0;
 			}
 		});
@@ -725,8 +725,8 @@ public class GameController extends FiniteStateMachine<GameState> {
 	}
 
 	private Optional<Ghost> preferredLockedGhostInHouse() {
-		return Stream.of(PINK_GHOST, CYAN_GHOST, ORANGE_GHOST).map(id -> game.ghosts[id])
-				.filter(ghost -> ghost.is(LOCKED)).findFirst();
+		return Stream.of(PINK_GHOST, CYAN_GHOST, ORANGE_GHOST).map(id -> game.ghosts[id]).filter(ghost -> ghost.is(LOCKED))
+				.findFirst();
 	}
 
 	private void updateGhostDotCounters() {
