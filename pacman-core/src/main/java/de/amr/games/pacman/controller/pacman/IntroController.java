@@ -70,18 +70,17 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 		}
 	}
 
-	public final TimedSeq<Boolean> blinking = TimedSeq.pulse().frameDuration(10);
+	public final TimedSeq<Boolean> fastBlinking = TimedSeq.pulse().frameDuration(10);
 	public final TimedSeq<Boolean> slowBlinking = TimedSeq.pulse().frameDuration(30);
 	public final int topY = t(6);
-
-	public GameController gameController;
+	public final GameController gameController;
 	public GhostPortrait[] portraits;
 	public Pac pacMan;
 	public Ghost[] ghosts;
 	public int selectedGhostIndex;
 	public long ghostKilledTime;
 
-	public IntroController() {
+	public IntroController(GameController gameController) {
 		super(IntroState.values());
 		configState(IntroState.BEGIN, this::restartStateTimer, this::state_BEGIN_update, null);
 		configState(IntroState.PRESENTING_GHOSTS, this::restartStateTimer, this::state_PRESENTING_GHOSTS_update, null);
@@ -89,10 +88,10 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 		configState(IntroState.CHASING_PAC, this::state_CHASING_PAC_enter, this::state_CHASING_PAC_update, null);
 		configState(IntroState.CHASING_GHOSTS, this::state_CHASING_GHOSTS_enter, this::state_CHASING_GHOSTS_update, null);
 		configState(IntroState.READY_TO_PLAY, this::restartStateTimer, this::state_READY_TO_PLAY_update, null);
+		this.gameController = gameController;
 	}
 
-	public void init(GameController gameController) {
-		this.gameController = gameController;
+	public void init() {
 		portraits = new GhostPortrait[] { //
 				new GhostPortrait(GameModel.RED_GHOST, "Blinky", "SHADOW", 7), //
 				new GhostPortrait(GameModel.PINK_GHOST, "Pinky", "SPEEDY", 10), //
@@ -111,6 +110,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 			portrait.characterVisible = false;
 			portrait.nicknameVisible = false;
 		}
+		state = null;
 		changeState(IntroState.BEGIN);
 	}
 
@@ -147,8 +147,8 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 		}
 
 		else if (stateTimer().isRunningSeconds(2.75)) {
-			blinking.restart();
-			blinking.advance();
+			fastBlinking.restart();
+			fastBlinking.advance();
 			changeState(IntroState.SHOWING_POINTS);
 		}
 	}
@@ -184,7 +184,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 		for (Ghost ghost : ghosts) {
 			ghost.move();
 		}
-		blinking.animate();
+		fastBlinking.animate();
 	}
 
 	private void state_CHASING_GHOSTS_enter() {
@@ -247,7 +247,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 		for (Ghost ghost : ghosts) {
 			ghost.move();
 		}
-		blinking.animate();
+		fastBlinking.animate();
 	}
 
 	private void state_READY_TO_PLAY_update() {
@@ -255,6 +255,6 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 		if (stateTimer().isRunningSeconds(5)) {
 			gameController.stateTimer().expire();
 		}
-		blinking.animate();
+		fastBlinking.animate();
 	}
 }

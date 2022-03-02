@@ -48,24 +48,23 @@ public class Intermission3Controller extends FiniteStateMachine<IntermissionStat
 		CHASING, RETURNING;
 	}
 
-	public GameController gameController;
+	public final GameController gameController;
 	public Runnable playIntermissionSound = NOP;
-
 	public Ghost blinky;
 	public Pac pac;
 
-	public Intermission3Controller() {
+	public Intermission3Controller(GameController gameController) {
 		super(IntermissionState.values());
 		configState(CHASING, this::state_CHASING_enter, this::state_CHASING_update, null);
 		configState(RETURNING, this::startStateTimer, this::state_RETURNING_update, null);
+		this.gameController = gameController;
 	}
 
 	private void startStateTimer() {
 		stateTimer().setIndefinite().start();
 	}
 
-	public void init(GameController gameController) {
-		this.gameController = gameController;
+	public void init() {
 		playIntermissionSound.run();
 		changeState(CHASING);
 	}

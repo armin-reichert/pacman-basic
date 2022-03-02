@@ -47,21 +47,21 @@ public class Intermission1Controller extends FiniteStateMachine<IntermissionStat
 		CHASING_PACMAN, CHASING_BLINKY
 	}
 
-	public GameController gameController;
+	public final GameController gameController;
 	public Runnable playIntermissionSound = NOP;
 	public Ghost blinky;
 	public Pac pac;
 
-	public Intermission1Controller() {
+	public Intermission1Controller(GameController gameController) {
 		super(IntermissionState.values());
 		configState(CHASING_PACMAN, //
 				this::state_CHASING_PACMAN_enter, this::state_CHASING_PACMAN_update, null);
 		configState(CHASING_BLINKY, //
 				this::state_CHASING_BLINKY_enter, this::state_CHASING_BLINKY_update, null);
+		this.gameController = gameController;
 	}
 
-	public void init(GameController gameController) {
-		this.gameController = gameController;
+	public void init() {
 		playIntermissionSound.run();
 		changeState(CHASING_PACMAN);
 	}

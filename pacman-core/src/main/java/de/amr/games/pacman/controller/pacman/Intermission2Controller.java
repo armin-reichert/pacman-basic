@@ -49,22 +49,21 @@ public class Intermission2Controller extends FiniteStateMachine<IntermissionStat
 		CHASING, STRETCHED, STUCK;
 	}
 
-	public GameController gameController;
+	public final GameController gameController;
 	public Runnable playIntermissionSound = NOP;
-
 	public Ghost blinky;
 	public Pac pac;
 	public GameEntity nail;
 
-	public Intermission2Controller() {
+	public Intermission2Controller(GameController gameController) {
 		super(IntermissionState.values());
 		configState(CHASING, this::state_CHASING_enter, this::state_CHASING_update, null);
 		configState(STRETCHED, this::startStateTimer, this::state_STRETCHED_update, null);
 		configState(STUCK, this::startStateTimer, this::state_STUCK_update, null);
+		this.gameController = gameController;
 	}
 
-	public void init(GameController gameController) {
-		this.gameController = gameController;
+	public void init() {
 		playIntermissionSound.run();
 		changeState(CHASING);
 	}
