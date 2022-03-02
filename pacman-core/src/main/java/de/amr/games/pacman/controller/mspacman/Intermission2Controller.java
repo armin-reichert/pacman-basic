@@ -50,21 +50,20 @@ public class Intermission2Controller extends FiniteStateMachine<IntermissionStat
 
 	public static final int UPPER_Y = t(12), LOWER_Y = t(24), MIDDLE_Y = t(18);
 
-	public GameController gameController;
+	public final GameController gameController;
 	public Runnable playIntermissionSound = NOP;
 	public Runnable playFlapAnimation = NOP;
-
 	public Flap flap;
 	public Pac pacMan, msPacMan;
 
-	public Intermission2Controller() {
+	public Intermission2Controller(GameController gameController) {
 		super(IntermissionState.values());
 		configState(FLAP, this::state_FLAP_enter, this::state_FLAP_update, null);
 		configState(ACTION, this::state_ACTION_enter, this::state_ACTION_update, null);
+		this.gameController = gameController;
 	}
 
-	public void init(GameController gameController) {
-		this.gameController = gameController;
+	public void init() {
 		state = null;
 		changeState(FLAP);
 	}

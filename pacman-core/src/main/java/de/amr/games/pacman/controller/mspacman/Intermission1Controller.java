@@ -56,27 +56,25 @@ public class Intermission1Controller extends FiniteStateMachine<IntermissonState
 	}
 
 	public final int upperY = t(12), middleY = t(18), lowerY = t(24);
-
-	public GameController gameController;
+	public final GameController gameController;
 	public Runnable playIntermissionSound = NOP;
 	public Runnable playFlapAnimation = NOP;
-
 	public Flap flap;
 	public Pac pacMan, msPac;
 	public Ghost pinky, inky;
 	public GameEntity heart;
 	public boolean ghostsMet;
 
-	public Intermission1Controller() {
+	public Intermission1Controller(GameController gameController) {
 		super(IntermissonState.values());
 		configState(FLAP, this::state_FLAP_enter, this::state_FLAP_update, null);
 		configState(CHASED_BY_GHOSTS, this::state_CHASED_BY_GHOSTS_enter, this::state_CHASED_BY_GHOSTS_update, null);
 		configState(COMING_TOGETHER, this::state_COMING_TOGETHER_enter, this::state_COMING_TOGETHER_update, null);
 		configState(IN_HEAVEN, this::state_IN_HEAVEN_enter, this::state_IN_HEAVEN_update, null);
+		this.gameController = gameController;
 	}
 
-	public void init(GameController gameController) {
-		this.gameController = gameController;
+	public void init() {
 		changeState(FLAP);
 	}
 

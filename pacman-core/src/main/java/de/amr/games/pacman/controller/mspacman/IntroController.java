@@ -55,21 +55,21 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 	public final int xLeftOfBoard = t(5);
 	public final TimedSeq<Boolean> blinking = TimedSeq.pulse().frameDuration(30);
 
-	public GameController gameController;
+	public final GameController gameController;
 	public Pac msPacMan;
 	public Ghost[] ghosts;
 	public int currentGhostIndex;
 
-	public IntroController() {
+	public IntroController(GameController gameController) {
 		super(IntroState.values());
 		configState(IntroState.BEGIN, this::state_BEGIN_enter, this::state_BEGIN_update, null);
 		configState(IntroState.GHOSTS, this::startTimerIndefinite, this::state_GHOSTS_update, null);
 		configState(IntroState.MSPACMAN, this::startTimerIndefinite, this::state_MSPACMAN_update, null);
 		configState(IntroState.WAITING_FOR_GAME, this::startTimerIndefinite, this::state_WAITING_FOR_GAME_update, null);
+		this.gameController = gameController;
 	}
 
-	public void init(GameController gameController) {
-		this.gameController = gameController;
+	public void init() {
 		state = null;
 		changeState(IntroState.BEGIN);
 	}

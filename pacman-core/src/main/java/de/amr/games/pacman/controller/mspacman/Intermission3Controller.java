@@ -53,10 +53,9 @@ public class Intermission3Controller extends FiniteStateMachine<IntermissionStat
 
 	static final int GROUND_Y = t(24);
 
-	public GameController gameController;
+	public final GameController gameController;
 	public Runnable playIntermissionSound = NOP;
 	public Runnable playFlapAnimation = NOP;
-
 	public Flap flap;
 	public Pac pacMan;
 	public Pac msPacMan;
@@ -64,16 +63,16 @@ public class Intermission3Controller extends FiniteStateMachine<IntermissionStat
 	public JuniorBag bag;
 	public int numBagBounces;
 
-	public Intermission3Controller() {
+	public Intermission3Controller(GameController gameController) {
 		super(IntermissionState.values());
 		configState(IntermissionState.FLAP, this::state_FLAP_enter, this::state_FLAP_update, null);
 		configState(IntermissionState.ACTION, this::state_ACTION_enter, this::state_ACTION_update, null);
 		configState(IntermissionState.READY_TO_PLAY, this::state_READY_TO_PLAY_enter, this::state_READY_TO_PLAY_update,
 				null);
+		this.gameController = gameController;
 	}
 
-	public void init(GameController gameController) {
-		this.gameController = gameController;
+	public void init() {
 		state = null;
 		changeState(IntermissionState.FLAP);
 	}
