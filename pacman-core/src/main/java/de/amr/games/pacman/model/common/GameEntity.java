@@ -23,13 +23,13 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.common;
 
-import static de.amr.games.pacman.model.world.World.t;
+import static de.amr.games.pacman.model.common.world.World.t;
 
 import java.util.Objects;
 
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.model.world.World;
+import de.amr.games.pacman.model.common.world.World;
 
 /**
  * Base class for all entities.

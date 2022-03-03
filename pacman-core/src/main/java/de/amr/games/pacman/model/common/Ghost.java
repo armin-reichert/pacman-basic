@@ -24,15 +24,15 @@ SOFTWARE.
 package de.amr.games.pacman.model.common;
 
 import static de.amr.games.pacman.lib.Misc.differsAtMost;
-import static de.amr.games.pacman.model.world.World.HTS;
-import static de.amr.games.pacman.model.world.World.t;
+import static de.amr.games.pacman.model.common.world.World.HTS;
+import static de.amr.games.pacman.model.common.world.World.t;
 
 import java.util.function.Supplier;
 
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.model.world.GhostHouse;
+import de.amr.games.pacman.model.common.world.GhostHouse;
 
 /**
  * A ghost.

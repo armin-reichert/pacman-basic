@@ -25,14 +25,14 @@ package de.amr.games.pacman.controller.mspacman;
 
 import static de.amr.games.pacman.controller.mspacman.Intermission2Controller.IntermissionState.ACTION;
 import static de.amr.games.pacman.controller.mspacman.Intermission2Controller.IntermissionState.FLAP;
-import static de.amr.games.pacman.model.world.World.t;
+import static de.amr.games.pacman.model.common.world.World.t;
 
 import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.controller.mspacman.Intermission2Controller.IntermissionState;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.FiniteStateMachine;
 import de.amr.games.pacman.model.common.Pac;
-import de.amr.games.pacman.model.mspacman.entities.Flap;
+import de.amr.games.pacman.model.mspacman.Flap;
 
 /**
  * Intermission scene 2: "The chase".

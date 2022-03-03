@@ -23,7 +23,7 @@ SOFTWARE.
  */
 package de.amr.games.pacman.controller.mspacman;
 
-import static de.amr.games.pacman.model.world.World.t;
+import static de.amr.games.pacman.model.common.world.World.t;
 
 import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.controller.mspacman.Intermission3Controller.IntermissionState;
@@ -32,8 +32,8 @@ import de.amr.games.pacman.lib.FiniteStateMachine;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.model.common.GameEntity;
 import de.amr.games.pacman.model.common.Pac;
-import de.amr.games.pacman.model.mspacman.entities.Flap;
-import de.amr.games.pacman.model.mspacman.entities.JuniorBag;
+import de.amr.games.pacman.model.mspacman.Flap;
+import de.amr.games.pacman.model.mspacman.JuniorBag;
 
 /**
  * Intermission scene 3: "Junior".

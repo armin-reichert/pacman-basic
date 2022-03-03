@@ -21,58 +21,17 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-package de.amr.games.pacman.model.pacman.entities;
+package de.amr.games.pacman.model.mspacman;
 
-import static de.amr.games.pacman.model.world.World.HTS;
-
-import de.amr.games.pacman.model.common.Creature;
+import de.amr.games.pacman.model.common.GameEntity;
 
 /**
- * Bonus symbol. In Ms. Pac-Man, the bonus wanders the maze.
+ * Blue bag dropped by the stork in intermission scene 3, contains Pac-Man junior.
  * 
  * @author Armin Reichert
  */
-public class Bonus extends Creature {
+public class JuniorBag extends GameEntity {
 
-	public enum BonusState {
-		INACTIVE, EDIBLE, EATEN;
-	}
-
-	public BonusState state;
-	public int symbol;
-	public int points;
-	public long timer;
-
-	public void init() {
-		timer = 0;
-		hide();
-		state = BonusState.INACTIVE;
-	}
-
-	public void activate(int symbol, int points) {
-		this.symbol = symbol;
-		this.points = points;
-		placeAt(world.bonusTile(), HTS, 0);
-		show();
-		state = BonusState.EDIBLE;
-	}
-
-	public void eat() {
-		state = BonusState.EATEN;
-	}
-
-	public void update() {
-		switch (state) {
-		case EDIBLE, EATEN -> {
-			if (timer > 0) {
-				--timer;
-			}
-			if (timer == 0) {
-				init();
-			}
-		}
-		default -> {
-		}
-		}
-	}
+	/** If open, Pac-Man junior appears */
+	public boolean open = false;
 }

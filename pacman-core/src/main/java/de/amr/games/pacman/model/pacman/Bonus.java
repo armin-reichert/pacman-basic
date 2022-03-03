@@ -21,47 +21,58 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-package de.amr.games.pacman.model.world;
+package de.amr.games.pacman.model.pacman;
 
-import java.util.List;
+import static de.amr.games.pacman.model.common.world.World.HTS;
 
-import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.model.common.Creature;
 
 /**
- * The ghost house.
+ * Bonus symbol. In Ms. Pac-Man, the bonus wanders the maze.
  * 
  * @author Armin Reichert
  */
-public class GhostHouse {
+public class Bonus extends Creature {
 
-	/** Size (width, height) in tiles. */
-	public V2i size;
-
-	/** Top-left tile. */
-	public V2i topLeft;
-
-	/** Left entry tile. */
-	public V2i entry;
-
-	/** Left seat in house. */
-	public V2i seatLeft;
-
-	/** Center seat in house. */
-	public V2i seatCenter;
-
-	/** Right seat in house. */
-	public V2i seatRight;
-
-	/** Tiles with doors. */
-	public List<V2i> doors;
-
-	public GhostHouse(V2i topLeft, V2i size) {
-		this.topLeft = topLeft;
-		this.size = size;
+	public enum BonusState {
+		INACTIVE, EDIBLE, EATEN;
 	}
 
-	public boolean contains(V2i tile) {
-		V2i bottomRight = topLeft.plus(size.x, size.y);
-		return tile.x >= topLeft.x && tile.x <= bottomRight.x && tile.y >= topLeft.y && tile.y <= bottomRight.y;
+	public BonusState state;
+	public int symbol;
+	public int points;
+	public long timer;
+
+	public void init() {
+		timer = 0;
+		hide();
+		state = BonusState.INACTIVE;
+	}
+
+	public void activate(int symbol, int points) {
+		this.symbol = symbol;
+		this.points = points;
+		placeAt(world.bonusTile(), HTS, 0);
+		show();
+		state = BonusState.EDIBLE;
+	}
+
+	public void eat() {
+		state = BonusState.EATEN;
+	}
+
+	public void update() {
+		switch (state) {
+		case EDIBLE, EATEN -> {
+			if (timer > 0) {
+				--timer;
+			}
+			if (timer == 0) {
+				init();
+			}
+		}
+		default -> {
+		}
+		}
 	}
 }

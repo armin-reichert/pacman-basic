@@ -24,7 +24,7 @@ SOFTWARE.
 package de.amr.games.pacman.controller.pacman;
 
 import static de.amr.games.pacman.lib.TickTimer.sec_to_ticks;
-import static de.amr.games.pacman.model.world.World.t;
+import static de.amr.games.pacman.model.common.world.World.t;
 
 import java.util.List;
 import java.util.Optional;

@@ -21,17 +21,47 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-package de.amr.games.pacman.model.mspacman.entities;
+package de.amr.games.pacman.model.common.world;
 
-import de.amr.games.pacman.model.common.GameEntity;
+import java.util.List;
+
+import de.amr.games.pacman.lib.V2i;
 
 /**
- * The flap used in the intermission scenes.
+ * The ghost house.
  * 
  * @author Armin Reichert
  */
-public class Flap extends GameEntity {
+public class GhostHouse {
 
-	public int number;
-	public String text;
+	/** Size (width, height) in tiles. */
+	public V2i size;
+
+	/** Top-left tile. */
+	public V2i topLeft;
+
+	/** Left entry tile. */
+	public V2i entry;
+
+	/** Left seat in house. */
+	public V2i seatLeft;
+
+	/** Center seat in house. */
+	public V2i seatCenter;
+
+	/** Right seat in house. */
+	public V2i seatRight;
+
+	/** Tiles with doors. */
+	public List<V2i> doors;
+
+	public GhostHouse(V2i topLeft, V2i size) {
+		this.topLeft = topLeft;
+		this.size = size;
+	}
+
+	public boolean contains(V2i tile) {
+		V2i bottomRight = topLeft.plus(size.x, size.y);
+		return tile.x >= topLeft.x && tile.x <= bottomRight.x && tile.y >= topLeft.y && tile.y <= bottomRight.y;
+	}
 }

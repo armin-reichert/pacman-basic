@@ -6,6 +6,8 @@ import org.junit.Test;
 
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.GameModel;
+import de.amr.games.pacman.model.common.world.MapWorld;
+import de.amr.games.pacman.model.common.world.WorldMap;
 import de.amr.games.pacman.model.mspacman.MsPacManGame;
 import de.amr.games.pacman.model.pacman.PacManGame;
 

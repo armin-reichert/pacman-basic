@@ -25,7 +25,7 @@ package de.amr.games.pacman.controller.pacman;
 
 import static de.amr.games.pacman.controller.pacman.Intermission1Controller.IntermissionState.CHASING_BLINKY;
 import static de.amr.games.pacman.controller.pacman.Intermission1Controller.IntermissionState.CHASING_PACMAN;
-import static de.amr.games.pacman.model.world.World.t;
+import static de.amr.games.pacman.model.common.world.World.t;
 
 import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.controller.pacman.Intermission1Controller.IntermissionState;

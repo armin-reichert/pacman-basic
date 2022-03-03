@@ -27,7 +27,7 @@ import static de.amr.games.pacman.controller.mspacman.Intermission1Controller.In
 import static de.amr.games.pacman.controller.mspacman.Intermission1Controller.IntermissonState.COMING_TOGETHER;
 import static de.amr.games.pacman.controller.mspacman.Intermission1Controller.IntermissonState.FLAP;
 import static de.amr.games.pacman.controller.mspacman.Intermission1Controller.IntermissonState.IN_HEAVEN;
-import static de.amr.games.pacman.model.world.World.t;
+import static de.amr.games.pacman.model.common.world.World.t;
 
 import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.controller.mspacman.Intermission1Controller.IntermissonState;
@@ -38,7 +38,7 @@ import de.amr.games.pacman.model.common.GameEntity;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
-import de.amr.games.pacman.model.mspacman.entities.Flap;
+import de.amr.games.pacman.model.mspacman.Flap;
 
 /**
  * Intermission scene 1: "They meet".

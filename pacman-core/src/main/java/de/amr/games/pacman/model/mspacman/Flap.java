@@ -21,17 +21,17 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-package de.amr.games.pacman.model.mspacman.entities;
+package de.amr.games.pacman.model.mspacman;
 
 import de.amr.games.pacman.model.common.GameEntity;
 
 /**
- * Blue bag dropped by the stork in intermission scene 3, contains Pac-Man junior.
+ * The flap used in the intermission scenes.
  * 
  * @author Armin Reichert
  */
-public class JuniorBag extends GameEntity {
+public class Flap extends GameEntity {
 
-	/** If open, Pac-Man junior appears */
-	public boolean open = false;
+	public int number;
+	public String text;
 }

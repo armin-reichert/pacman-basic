@@ -30,7 +30,7 @@ import java.util.Objects;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.model.world.World;
+import de.amr.games.pacman.model.common.world.World;
 
 /**
  * Base class for creatures which can move through the world.

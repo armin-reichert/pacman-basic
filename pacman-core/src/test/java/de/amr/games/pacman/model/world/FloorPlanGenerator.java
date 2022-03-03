@@ -5,6 +5,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
+import de.amr.games.pacman.model.common.world.FloorPlan;
+import de.amr.games.pacman.model.common.world.MapWorld;
+import de.amr.games.pacman.model.common.world.World;
+
 /**
  * Test for floor plan generation.
  * 

@@ -21,7 +21,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-package de.amr.games.pacman.model.mspacman.entities;
+package de.amr.games.pacman.model.mspacman;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,8 +29,8 @@ import java.util.Random;
 
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.model.pacman.entities.Bonus;
-import de.amr.games.pacman.model.world.Portal;
+import de.amr.games.pacman.model.common.world.Portal;
+import de.amr.games.pacman.model.pacman.Bonus;
 
 /**
  * A bonus that tumbles through the world, starting at some portal, making one round around the ghost house and leaving

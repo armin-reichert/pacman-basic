@@ -32,8 +32,7 @@ import java.util.Random;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Pac;
-import de.amr.games.pacman.model.mspacman.entities.MovingBonus;
-import de.amr.games.pacman.model.world.MapWorld;
+import de.amr.games.pacman.model.common.world.MapWorld;
 
 /**
  * Model of the Ms. Pac-Man game.

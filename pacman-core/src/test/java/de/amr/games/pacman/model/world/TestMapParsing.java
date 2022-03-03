@@ -7,6 +7,7 @@ import java.util.List;
 import org.junit.Test;
 
 import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.model.common.world.WorldMap;
 
 public class TestMapParsing {
 

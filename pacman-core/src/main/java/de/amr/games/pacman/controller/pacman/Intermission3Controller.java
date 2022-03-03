@@ -25,7 +25,7 @@ package de.amr.games.pacman.controller.pacman;
 
 import static de.amr.games.pacman.controller.pacman.Intermission3Controller.IntermissionState.CHASING;
 import static de.amr.games.pacman.controller.pacman.Intermission3Controller.IntermissionState.RETURNING;
-import static de.amr.games.pacman.model.world.World.t;
+import static de.amr.games.pacman.model.common.world.World.t;
 
 import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.controller.pacman.Intermission3Controller.IntermissionState;

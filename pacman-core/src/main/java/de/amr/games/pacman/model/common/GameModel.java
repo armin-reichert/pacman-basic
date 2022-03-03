@@ -23,7 +23,7 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.common;
 
-import static de.amr.games.pacman.model.world.World.HTS;
+import static de.amr.games.pacman.model.common.world.World.HTS;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -34,8 +34,8 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.Hiscore;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.V2d;
-import de.amr.games.pacman.model.pacman.entities.Bonus;
-import de.amr.games.pacman.model.world.World;
+import de.amr.games.pacman.model.common.world.World;
+import de.amr.games.pacman.model.pacman.Bonus;
 
 /**
  * Common part of the Pac-Man and Ms. Pac-Man game models.

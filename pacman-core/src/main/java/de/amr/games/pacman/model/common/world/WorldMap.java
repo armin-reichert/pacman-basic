@@ -21,7 +21,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-package de.amr.games.pacman.model.world;
+package de.amr.games.pacman.model.common.world;
 
 import static de.amr.games.pacman.lib.Logging.log;
 
@@ -39,8 +39,8 @@ import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.Misc;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.model.world.DefinitionParser.Definition;
-import de.amr.games.pacman.model.world.DefinitionParser.ParseException;
+import de.amr.games.pacman.model.common.world.DefinitionParser.Definition;
+import de.amr.games.pacman.model.common.world.DefinitionParser.ParseException;
 
 /**
  * Game world map, created from simple textual representation.
