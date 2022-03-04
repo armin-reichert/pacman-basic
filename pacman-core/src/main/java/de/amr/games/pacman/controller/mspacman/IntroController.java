@@ -79,6 +79,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 	}
 
 	private void state_BEGIN_enter() {
+		startTimerIndefinite();
 		msPacMan = new Pac("Ms. Pac-Man");
 		msPacMan.setMoveDir(LEFT);
 		msPacMan.setPosition(t(36), yBelowBoard);
@@ -95,7 +96,6 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 			ghost.state = GhostState.HUNTING_PAC;
 		}
 		currentGhostIndex = 0;
-		startTimerIndefinite();
 	}
 
 	private void state_BEGIN_update() {

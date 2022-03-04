@@ -108,30 +108,29 @@ public class Intermission3Controller extends FiniteStateMachine<IntermissionStat
 		if (stateTimer().isRunningSeconds(1)) {
 			playFlapAnimation.run();
 		} else if (stateTimer().isRunningSeconds(2)) {
+			flap.hide();
 			changeState(IntermissionState.ACTION);
 		}
 	}
 
 	private void state_ACTION_enter() {
 		stateTimer().setIndefinite().start();
-		flap.hide();
 		playIntermissionSound.run();
+		pacMan.show();
+		msPacMan.show();
+		stork.show();
+		stork.setVelocity(-1.25, 0);
+		bag.show();
+		bag.setVelocity(-1.25f, 0);
 	}
 
 	private void state_ACTION_update() {
 		stork.move();
 		bag.move();
-		if (stateTimer().hasJustStarted()) {
-			pacMan.show();
-			msPacMan.show();
-			stork.show();
-			bag.show();
-			stork.setVelocity(-1.25, 0);
-			bag.setVelocity(-1.25f, 0);
-		}
 		// release bag from storks beak?
 		if ((int) stork.position.x == t(24)) {
 			bag.acceleration = new V2d(0, 0.04);
+			stork.setVelocity(-1.75, 0);
 		}
 		// (closed) bag reaches ground for first time?
 		if (!bag.open && bag.position.y > GROUND_Y) {
