@@ -75,6 +75,7 @@ public class Intermission1Controller extends FiniteStateMachine<IntermissonState
 	}
 
 	public void init() {
+		state = null;
 		changeState(FLAP);
 	}
 
