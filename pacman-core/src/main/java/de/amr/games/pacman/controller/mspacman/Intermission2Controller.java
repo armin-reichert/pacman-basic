@@ -23,7 +23,7 @@ SOFTWARE.
  */
 package de.amr.games.pacman.controller.mspacman;
 
-import static de.amr.games.pacman.controller.mspacman.Intermission2Controller.IntermissionState.ACTION;
+import static de.amr.games.pacman.controller.mspacman.Intermission2Controller.IntermissionState.CHASING;
 import static de.amr.games.pacman.controller.mspacman.Intermission2Controller.IntermissionState.FLAP;
 import static de.amr.games.pacman.model.common.world.World.t;
 
@@ -45,11 +45,10 @@ import de.amr.games.pacman.model.mspacman.Flap;
 public class Intermission2Controller extends FiniteStateMachine<IntermissionState> {
 
 	public enum IntermissionState {
-		FLAP, ACTION;
+		FLAP, CHASING;
 	}
 
-	public static final int UPPER_Y = t(12), LOWER_Y = t(24), MIDDLE_Y = t(18);
-
+	public final int upperY = t(12), middleY = t(18), lowerY = t(24);
 	public final GameController gameController;
 	public Runnable playIntermissionSound = NOP;
 	public Runnable playFlapAnimation = NOP;
@@ -59,7 +58,7 @@ public class Intermission2Controller extends FiniteStateMachine<IntermissionStat
 	public Intermission2Controller(GameController gameController) {
 		super(IntermissionState.values());
 		configState(FLAP, this::state_FLAP_enter, this::state_FLAP_update, null);
-		configState(ACTION, this::state_ACTION_enter, this::state_ACTION_update, null);
+		configState(CHASING, this::state_CHASING_enter, this::state_CHASING_update, null);
 		this.gameController = gameController;
 	}
 
@@ -69,16 +68,19 @@ public class Intermission2Controller extends FiniteStateMachine<IntermissionStat
 	}
 
 	private void state_FLAP_enter() {
-		stateTimer().setIndefinite();
-		stateTimer().start();
+		stateTimer().setIndefinite().start();
+
+		playIntermissionSound.run();
 
 		flap = new Flap();
 		flap.number = 2;
 		flap.text = "THE CHASE";
 		flap.setPosition(t(3), t(10));
 		flap.show();
+
 		pacMan = new Pac("Pac-Man");
 		pacMan.setMoveDir(Direction.RIGHT);
+
 		msPacMan = new Pac("Ms. Pac-Man");
 		msPacMan.setMoveDir(Direction.RIGHT);
 	}
@@ -88,54 +90,51 @@ public class Intermission2Controller extends FiniteStateMachine<IntermissionStat
 			playFlapAnimation.run();
 		} else if (stateTimer().isRunningSeconds(2)) {
 			flap.hide();
-			playIntermissionSound.run();
 		} else if (stateTimer().isRunningSeconds(4.5)) {
-			changeState(IntermissionState.ACTION);
-			return;
+			changeState(IntermissionState.CHASING);
 		}
 	}
 
-	private void state_ACTION_enter() {
-		stateTimer().setIndefinite();
-		stateTimer().start();
+	private void state_CHASING_enter() {
+		stateTimer().setIndefinite().start();
 	}
 
-	private void state_ACTION_update() {
+	private void state_CHASING_update() {
 		if (stateTimer().isRunningSeconds(1.5)) {
-			pacMan.setPosition(-t(2), UPPER_Y);
+			pacMan.setPosition(-t(2), upperY);
 			pacMan.setMoveDir(Direction.RIGHT);
 			pacMan.setSpeed(2.0);
 			pacMan.show();
-			msPacMan.setPosition(-t(8), UPPER_Y);
+			msPacMan.setPosition(-t(8), upperY);
 			msPacMan.setMoveDir(Direction.RIGHT);
 			msPacMan.setSpeed(2.0);
 			msPacMan.show();
 		} else if (stateTimer().isRunningSeconds(6)) {
-			pacMan.setPosition(t(36), LOWER_Y);
+			pacMan.setPosition(t(36), lowerY);
 			pacMan.setMoveDir(Direction.LEFT);
 			pacMan.setSpeed(2.0);
-			msPacMan.setPosition(t(30), LOWER_Y);
+			msPacMan.setPosition(t(30), lowerY);
 			msPacMan.setMoveDir(Direction.LEFT);
 			msPacMan.setSpeed(2.0);
 		} else if (stateTimer().isRunningSeconds(10.5)) {
 			pacMan.setMoveDir(Direction.RIGHT);
 			pacMan.setSpeed(2.0);
-			msPacMan.setPosition(t(-8), MIDDLE_Y);
+			msPacMan.setPosition(t(-8), middleY);
 			msPacMan.setMoveDir(Direction.RIGHT);
 			msPacMan.setSpeed(2.0);
-			pacMan.setPosition(t(-2), MIDDLE_Y);
+			pacMan.setPosition(t(-2), middleY);
 		} else if (stateTimer().isRunningSeconds(14.5)) {
-			pacMan.setPosition(t(42), UPPER_Y);
+			pacMan.setPosition(t(42), upperY);
 			pacMan.setMoveDir(Direction.LEFT);
 			pacMan.setSpeed(4.0);
-			msPacMan.setPosition(t(30), UPPER_Y);
+			msPacMan.setPosition(t(30), upperY);
 			msPacMan.setMoveDir(Direction.LEFT);
 			msPacMan.setSpeed(4.0);
 		} else if (stateTimer().isRunningSeconds(15.5)) {
-			pacMan.setPosition(t(-2), LOWER_Y);
+			pacMan.setPosition(t(-2), lowerY);
 			pacMan.setMoveDir(Direction.RIGHT);
 			pacMan.setSpeed(4.0);
-			msPacMan.setPosition(t(-14), LOWER_Y);
+			msPacMan.setPosition(t(-14), lowerY);
 			msPacMan.setMoveDir(Direction.RIGHT);
 			msPacMan.setSpeed(4.0);
 		} else if (stateTimer().isRunningSeconds(20)) {
