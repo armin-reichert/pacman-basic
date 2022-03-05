@@ -90,7 +90,7 @@ public class Intermission2Controller extends FiniteStateMachine<IntermissionStat
 			playFlapAnimation.run();
 		} else if (stateTimer().isRunningSeconds(2)) {
 			flap.hide();
-		} else if (stateTimer().isRunningSeconds(4.5)) {
+		} else if (stateTimer().isRunningSeconds(3)) {
 			changeState(IntermissionState.CHASING);
 		}
 	}

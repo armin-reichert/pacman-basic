@@ -71,38 +71,24 @@ public class Intermission3Controller extends FiniteStateMachine<IntermissionStat
 	}
 
 	public void init() {
+		flap = new Flap();
+		pacMan = new Pac("Pac-Man");
+		msPacMan = new Pac("Ms. Pac-Man");
+		stork = new GameEntity();
+		bag = new JuniorBag();
+
 		state = null;
 		changeState(IntermissionState.FLAP);
 	}
 
 	private void state_FLAP_enter() {
-		stateTimer().setSeconds(1).start();
-
+		stateTimer().setSeconds(2).start();
 		playIntermissionSound.run();
 
-		flap = new Flap();
 		flap.number = 3;
 		flap.text = "JUNIOR";
 		flap.setPosition(t(3), t(10));
 		flap.show();
-
-		pacMan = new Pac("Pac-Man");
-		pacMan.setMoveDir(Direction.RIGHT);
-		pacMan.setPosition(t(3), groundY - 4);
-
-		msPacMan = new Pac("Ms. Pac-Man");
-		msPacMan.setMoveDir(Direction.RIGHT);
-		msPacMan.setPosition(t(5), groundY - 4);
-
-		stork = new GameEntity();
-		stork.setPosition(t(30), t(12));
-		stork.setVelocity(-1.25, 0);
-
-		bag = new JuniorBag();
-		bag.position = stork.position.plus(-14, 3);
-		bag.velocity = stork.velocity;
-		bag.acceleration = V2d.NULL;
-		bag.open = false;
 	}
 
 	private void state_FLAP_update() {
@@ -117,9 +103,22 @@ public class Intermission3Controller extends FiniteStateMachine<IntermissionStat
 	private void state_ACTION_enter() {
 		stateTimer().setIndefinite().start();
 
+		pacMan.setMoveDir(Direction.RIGHT);
+		pacMan.setPosition(t(3), groundY - 4);
 		pacMan.show();
+
+		msPacMan.setMoveDir(Direction.RIGHT);
+		msPacMan.setPosition(t(5), groundY - 4);
 		msPacMan.show();
+
+		stork.setPosition(t(30), t(12));
+		stork.setVelocity(-0.8, 0);
 		stork.show();
+
+		bag.position = stork.position.plus(-14, 3);
+		bag.velocity = stork.velocity;
+		bag.acceleration = V2d.NULL;
+		bag.open = false;
 		bag.show();
 		numBagBounces = 0;
 	}
@@ -129,15 +128,15 @@ public class Intermission3Controller extends FiniteStateMachine<IntermissionStat
 		bag.move();
 
 		// release bag from storks beak?
-		if ((int) stork.position.x == t(24)) {
+		if ((int) stork.position.x == t(20)) {
 			bag.acceleration = new V2d(0, 0.04);
-			stork.setVelocity(-1.75, 0);
+			stork.setVelocity(-1, 0);
 		}
 
 		// (closed) bag reaches ground for first time?
 		if (!bag.open && bag.position.y > groundY) {
 			++numBagBounces;
-			if (numBagBounces < 5) {
+			if (numBagBounces < 3) {
 				bag.setVelocity(-0.2f, -1f / numBagBounces);
 				bag.setPosition(bag.position.x, groundY);
 			} else {

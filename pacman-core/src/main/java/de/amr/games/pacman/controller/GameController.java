@@ -380,7 +380,6 @@ public class GameController extends FiniteStateMachine<GameState> {
 	public int intermissionTestNumber;
 
 	private void state_IntermissionTest_enter() {
-		intermissionTestNumber = 1;
 		stateTimer().setIndefinite().start();
 		log("Test intermission scene #%d", intermissionTestNumber);
 	}

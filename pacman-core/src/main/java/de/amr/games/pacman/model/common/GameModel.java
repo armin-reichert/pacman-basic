@@ -262,8 +262,9 @@ public abstract class GameModel {
 				: player.tilesAhead(2).plus(-2, 0).scaled(2).minus(ghosts[RED_GHOST].tile());
 
 		// Orange ghost's target is either Pac-Man tile or scatter tile #3 at the lower left maze corner
-		ghosts[ORANGE_GHOST].fnChasingTargetTile = () -> ghosts[ORANGE_GHOST].tile()
-				.euclideanDistance(player.tile()) < 8 ? world.ghostScatterTile(3) : player.tile();
+		ghosts[ORANGE_GHOST].fnChasingTargetTile = () -> ghosts[ORANGE_GHOST].tile().euclideanDistance(player.tile()) < 8
+				? world.ghostScatterTile(3)
+				: player.tile();
 	}
 
 	public Stream<Ghost> ghosts() {
