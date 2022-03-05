@@ -48,11 +48,10 @@ import de.amr.games.pacman.model.mspacman.JuniorBag;
 public class Intermission3Controller extends FiniteStateMachine<IntermissionState> {
 
 	public enum IntermissionState {
-		FLAP, ACTION, READY_TO_PLAY;
+		FLAP, ACTION, DONE;
 	}
 
-	static final int GROUND_Y = t(24);
-
+	public final int groundY = t(24);
 	public final GameController gameController;
 	public Runnable playIntermissionSound = NOP;
 	public Runnable playFlapAnimation = NOP;
@@ -67,8 +66,7 @@ public class Intermission3Controller extends FiniteStateMachine<IntermissionStat
 		super(IntermissionState.values());
 		configState(IntermissionState.FLAP, this::state_FLAP_enter, this::state_FLAP_update, null);
 		configState(IntermissionState.ACTION, this::state_ACTION_enter, this::state_ACTION_update, null);
-		configState(IntermissionState.READY_TO_PLAY, this::state_READY_TO_PLAY_enter, this::state_READY_TO_PLAY_update,
-				null);
+		configState(IntermissionState.DONE, this::state_DONE_enter, this::state_DONE_update, null);
 		this.gameController = gameController;
 	}
 
@@ -80,6 +78,8 @@ public class Intermission3Controller extends FiniteStateMachine<IntermissionStat
 	private void state_FLAP_enter() {
 		stateTimer().setSeconds(1).start();
 
+		playIntermissionSound.run();
+
 		flap = new Flap();
 		flap.number = 3;
 		flap.text = "JUNIOR";
@@ -88,20 +88,21 @@ public class Intermission3Controller extends FiniteStateMachine<IntermissionStat
 
 		pacMan = new Pac("Pac-Man");
 		pacMan.setMoveDir(Direction.RIGHT);
-		pacMan.setPosition(t(3), GROUND_Y - 4);
+		pacMan.setPosition(t(3), groundY - 4);
 
 		msPacMan = new Pac("Ms. Pac-Man");
 		msPacMan.setMoveDir(Direction.RIGHT);
-		msPacMan.setPosition(t(5), GROUND_Y - 4);
+		msPacMan.setPosition(t(5), groundY - 4);
 
 		stork = new GameEntity();
 		stork.setPosition(t(30), t(12));
+		stork.setVelocity(-1.25, 0);
 
 		bag = new JuniorBag();
+		bag.position = stork.position.plus(-14, 3);
+		bag.velocity = stork.velocity;
 		bag.acceleration = V2d.NULL;
 		bag.open = false;
-		bag.position = stork.position.plus(-14, 3);
-		numBagBounces = 0;
 	}
 
 	private void state_FLAP_update() {
@@ -115,42 +116,43 @@ public class Intermission3Controller extends FiniteStateMachine<IntermissionStat
 
 	private void state_ACTION_enter() {
 		stateTimer().setIndefinite().start();
-		playIntermissionSound.run();
+
 		pacMan.show();
 		msPacMan.show();
 		stork.show();
-		stork.setVelocity(-1.25, 0);
 		bag.show();
-		bag.setVelocity(-1.25f, 0);
+		numBagBounces = 0;
 	}
 
 	private void state_ACTION_update() {
 		stork.move();
 		bag.move();
+
 		// release bag from storks beak?
 		if ((int) stork.position.x == t(24)) {
 			bag.acceleration = new V2d(0, 0.04);
 			stork.setVelocity(-1.75, 0);
 		}
+
 		// (closed) bag reaches ground for first time?
-		if (!bag.open && bag.position.y > GROUND_Y) {
+		if (!bag.open && bag.position.y > groundY) {
 			++numBagBounces;
 			if (numBagBounces < 5) {
 				bag.setVelocity(-0.2f, -1f / numBagBounces);
-				bag.setPosition(bag.position.x, GROUND_Y);
+				bag.setPosition(bag.position.x, groundY);
 			} else {
 				bag.open = true;
 				bag.velocity = V2d.NULL;
-				changeState(IntermissionState.READY_TO_PLAY);
+				changeState(IntermissionState.DONE);
 			}
 		}
 	}
 
-	private void state_READY_TO_PLAY_enter() {
+	private void state_DONE_enter() {
 		stateTimer().setSeconds(3).start();
 	}
 
-	private void state_READY_TO_PLAY_update() {
+	private void state_DONE_update() {
 		stork.move();
 		if (stateTimer().hasExpired()) {
 			gameController.stateTimer().expire();
