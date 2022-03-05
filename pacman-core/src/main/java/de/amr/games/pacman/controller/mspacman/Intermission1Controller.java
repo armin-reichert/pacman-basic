@@ -182,13 +182,13 @@ public class Intermission1Controller extends FiniteStateMachine<IntermissonState
 			inky.setMoveDir(Direction.RIGHT);
 			inky.setWishDir(Direction.RIGHT);
 			inky.setSpeed(0.5);
-			inky.velocity = inky.velocity.plus(new V2d(0, -2.0));
+			inky.velocity = inky.velocity.plus(0, -2.0);
 			inky.acceleration = new V2d(0, 0.4);
 
 			pinky.setMoveDir(Direction.LEFT);
 			pinky.setWishDir(Direction.LEFT);
 			pinky.setSpeed(0.5);
-			pinky.velocity = pinky.velocity.plus(new V2d(0, -2.0));
+			pinky.velocity = pinky.velocity.plus(0, -2.0);
 			pinky.acceleration = new V2d(0, 0.4);
 		}
 
