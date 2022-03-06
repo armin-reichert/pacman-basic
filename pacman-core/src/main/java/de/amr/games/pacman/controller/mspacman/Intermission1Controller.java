@@ -63,7 +63,6 @@ public class Intermission1Controller extends FiniteStateMachine<IntermissonState
 	public Pac pacMan, msPac;
 	public Ghost pinky, inky;
 	public GameEntity heart;
-	public boolean ghostsMet;
 
 	public Intermission1Controller(GameController gameController) {
 		super(IntermissonState.values());
@@ -112,7 +111,6 @@ public class Intermission1Controller extends FiniteStateMachine<IntermissonState
 		pinky.show();
 
 		heart = new GameEntity();
-		ghostsMet = false;
 	}
 
 	private void state_FLAP_update() {
@@ -161,13 +159,13 @@ public class Intermission1Controller extends FiniteStateMachine<IntermissonState
 
 	private void state_COMING_TOGETHER_update() {
 
-		// Pac-Man and Ms. Pac-Man reach end position
+		// Pac-Man and Ms. Pac-Man reach end position?
 		if (pacMan.moveDir() == Direction.UP && pacMan.position.y < upperY) {
 			changeState(IntermissonState.IN_HEAVEN);
 			return;
 		}
 
-		// Pac-Man and Ms. Pac-Man meet
+		// Pac-Man and Ms. Pac-Man meet?
 		if (pacMan.moveDir() == Direction.LEFT && pacMan.position.x - msPac.position.x < t(2)) {
 			pacMan.setMoveDir(Direction.UP);
 			pacMan.setSpeed(0.75);
@@ -175,19 +173,17 @@ public class Intermission1Controller extends FiniteStateMachine<IntermissonState
 			msPac.setSpeed(0.75);
 		}
 
-		// Inky and Pinky collide
-		if (!ghostsMet && inky.position.x - pinky.position.x < t(2)) {
-			ghostsMet = true;
-
+		// Inky and Pinky collide?
+		if (inky.moveDir() == Direction.LEFT && inky.position.x - pinky.position.x < t(2)) {
 			inky.setMoveDir(Direction.RIGHT);
 			inky.setWishDir(Direction.RIGHT);
-			inky.setSpeed(0.5);
+			inky.setSpeed(0.3);
 			inky.velocity = inky.velocity.plus(0, -2.0);
 			inky.acceleration = new V2d(0, 0.4);
 
 			pinky.setMoveDir(Direction.LEFT);
 			pinky.setWishDir(Direction.LEFT);
-			pinky.setSpeed(0.5);
+			pinky.setSpeed(0.3);
 			pinky.velocity = pinky.velocity.plus(0, -2.0);
 			pinky.acceleration = new V2d(0, 0.4);
 		}
@@ -197,12 +193,14 @@ public class Intermission1Controller extends FiniteStateMachine<IntermissonState
 		inky.move();
 		pinky.move();
 
-		// Avoid falling under ground level
+		// Avoid sinking into ground
 		if (inky.position.y > middleY) {
 			inky.setPosition(inky.position.x, middleY);
+			inky.acceleration = V2d.NULL;
 		}
 		if (pinky.position.y > middleY) {
 			pinky.setPosition(pinky.position.x, middleY);
+			pinky.acceleration = V2d.NULL;
 		}
 	}
 
@@ -211,20 +209,21 @@ public class Intermission1Controller extends FiniteStateMachine<IntermissonState
 
 		pacMan.setSpeed(0);
 		pacMan.setMoveDir(Direction.LEFT);
+
 		msPac.setSpeed(0);
 		msPac.setMoveDir(Direction.RIGHT);
+
 		inky.setSpeed(0);
+		inky.hide();
+
 		pinky.setSpeed(0);
+		pinky.hide();
 
 		heart.setPosition((pacMan.position.x + msPac.position.x) / 2, pacMan.position.y - t(2));
 		heart.show();
 	}
 
 	private void state_IN_HEAVEN_update() {
-		if (stateTimer().isRunningSeconds(0.5)) {
-			inky.hide();
-			pinky.hide();
-		}
 		if (stateTimer().hasExpired()) {
 			gameController.stateTimer().expire();
 		}
