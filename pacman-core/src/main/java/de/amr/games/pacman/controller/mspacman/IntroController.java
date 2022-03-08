@@ -57,8 +57,8 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 	public final int xLeftOfBoard = t(5);
 	public final TimedSeq<Boolean> blinking = TimedSeq.pulse().frameDuration(30).restart();
 	public final GameController gameController;
-	public Pac msPacMan;
-	public Ghost[] ghosts;
+	public final Pac msPacMan;
+	public final Ghost[] ghosts;
 	public int ghostIndex;
 
 	public IntroController(GameController gameController) {
@@ -68,6 +68,13 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 		configState(IntroState.MSPACMAN, null, this::state_MSPACMAN_update, null);
 		configState(IntroState.READY, this::startTimerIndefinite, this::state_READY_update, null);
 		this.gameController = gameController;
+		msPacMan = new Pac("Ms. Pac-Man");
+		ghosts = new Ghost[] { //
+				new Ghost(GameModel.RED_GHOST, "Blinky"), //
+				new Ghost(GameModel.PINK_GHOST, "Pinky"), //
+				new Ghost(GameModel.CYAN_GHOST, "Inky"), //
+				new Ghost(GameModel.ORANGE_GHOST, "Sue") //
+		};
 	}
 
 	public void init() {
@@ -81,17 +88,10 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 
 	private void state_BEGIN_enter() {
 		startTimerIndefinite();
-		msPacMan = new Pac("Ms. Pac-Man");
 		msPacMan.setMoveDir(LEFT);
 		msPacMan.setPosition(t(36), yBelowBoard);
 		msPacMan.setSpeed(0.95);
 		msPacMan.show();
-		ghosts = new Ghost[] { //
-				new Ghost(GameModel.RED_GHOST, "Blinky"), //
-				new Ghost(GameModel.PINK_GHOST, "Pinky"), //
-				new Ghost(GameModel.CYAN_GHOST, "Inky"), //
-				new Ghost(GameModel.ORANGE_GHOST, "Sue") //
-		};
 		for (Ghost ghost : ghosts) {
 			ghost.state = GhostState.HUNTING_PAC;
 			ghost.setMoveDir(LEFT);
