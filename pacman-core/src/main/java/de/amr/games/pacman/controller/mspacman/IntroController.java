@@ -40,32 +40,33 @@ import de.amr.games.pacman.model.common.GhostState;
 import de.amr.games.pacman.model.common.Pac;
 
 /**
- * Intro scene of the Ms. Pac-Man game. The ghosts and Ms. Pac-Man are introduced one after another.
+ * Intro scene of the Ms. Pac-Man game.
+ * <p>
+ * The ghosts and Ms. Pac-Man are introduced on a billboard and are marching in one after another.
  * 
  * @author Armin Reichert
  */
 public class IntroController extends FiniteStateMachine<IntroState> {
 
 	public enum IntroState {
-		BEGIN, GHOSTS, MSPACMAN, WAITING_FOR_GAME;
+		BEGIN, GHOSTS, MSPACMAN, READY;
 	}
 
-	public final V2i adBoardTopLeft = new V2i(7, 11).scaled(TS);
+	public final V2i boardTopLeft = new V2i(7, 11).scaled(TS);
 	public final int yBelowBoard = t(20) + HTS;
 	public final int xLeftOfBoard = t(5);
-	public final TimedSeq<Boolean> blinking = TimedSeq.pulse().frameDuration(30);
-
+	public final TimedSeq<Boolean> blinking = TimedSeq.pulse().frameDuration(30).restart();
 	public final GameController gameController;
 	public Pac msPacMan;
 	public Ghost[] ghosts;
-	public int currentGhostIndex;
+	public int ghostIndex;
 
 	public IntroController(GameController gameController) {
 		super(IntroState.values());
 		configState(IntroState.BEGIN, this::state_BEGIN_enter, this::state_BEGIN_update, null);
-		configState(IntroState.GHOSTS, this::startTimerIndefinite, this::state_GHOSTS_update, null);
-		configState(IntroState.MSPACMAN, this::startTimerIndefinite, this::state_MSPACMAN_update, null);
-		configState(IntroState.WAITING_FOR_GAME, this::startTimerIndefinite, this::state_WAITING_FOR_GAME_update, null);
+		configState(IntroState.GHOSTS, null, this::state_GHOSTS_update, null);
+		configState(IntroState.MSPACMAN, null, this::state_MSPACMAN_update, null);
+		configState(IntroState.READY, this::startTimerIndefinite, this::state_READY_update, null);
 		this.gameController = gameController;
 	}
 
@@ -83,6 +84,8 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 		msPacMan = new Pac("Ms. Pac-Man");
 		msPacMan.setMoveDir(LEFT);
 		msPacMan.setPosition(t(36), yBelowBoard);
+		msPacMan.setSpeed(0.95);
+		msPacMan.show();
 		ghosts = new Ghost[] { //
 				new Ghost(GameModel.RED_GHOST, "Blinky"), //
 				new Ghost(GameModel.PINK_GHOST, "Pinky"), //
@@ -90,44 +93,33 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 				new Ghost(GameModel.ORANGE_GHOST, "Sue") //
 		};
 		for (Ghost ghost : ghosts) {
+			ghost.state = GhostState.HUNTING_PAC;
 			ghost.setMoveDir(LEFT);
 			ghost.setWishDir(LEFT);
 			ghost.setPosition(t(36), yBelowBoard);
-			ghost.state = GhostState.HUNTING_PAC;
+			ghost.setSpeed(0.95);
+			ghost.show();
 		}
-		currentGhostIndex = 0;
+		ghostIndex = 0;
 	}
 
 	private void state_BEGIN_update() {
 		if (stateTimer().isRunningSeconds(1)) {
-			ghosts[currentGhostIndex].show();
-			ghosts[currentGhostIndex].setSpeed(0.95);
 			changeState(IntroState.GHOSTS);
 		}
 	}
 
-	private boolean letGhostEnterStage(Ghost ghost) {
+	private void state_GHOSTS_update() {
+		Ghost ghost = ghosts[ghostIndex];
 		ghost.move();
 		if (ghost.moveDir() != UP && ghost.position.x <= xLeftOfBoard) {
 			ghost.setMoveDir(UP);
 			ghost.setWishDir(UP);
 		}
-		return ghost.position.y <= adBoardTopLeft.y + ghost.id * 18;
-	}
-
-	private void state_GHOSTS_update() {
-		boolean reachedFinalPosition = letGhostEnterStage(ghosts[currentGhostIndex]);
-		if (reachedFinalPosition) {
-			ghosts[currentGhostIndex].setSpeed(0);
-			if (currentGhostIndex == 3) {
-				msPacMan.show();
-				msPacMan.setSpeed(0.95);
+		if (ghost.position.y <= boardTopLeft.y + ghost.id * 18) {
+			ghost.setSpeed(0);
+			if (++ghostIndex == ghosts.length) {
 				changeState(IntroState.MSPACMAN);
-			} else {
-				currentGhostIndex++;
-				ghosts[currentGhostIndex].show();
-				ghosts[currentGhostIndex].setSpeed(0.95);
-				startTimerIndefinite();
 			}
 		}
 	}
@@ -136,15 +128,14 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 		msPacMan.move();
 		if (msPacMan.position.x <= t(14)) {
 			msPacMan.setSpeed(0);
-			blinking.restart();
-			changeState(IntroState.WAITING_FOR_GAME);
+			changeState(IntroState.READY);
 		}
 	}
 
-	private void state_WAITING_FOR_GAME_update() {
+	private void state_READY_update() {
+		blinking.advance();
 		if (stateTimer().isRunningSeconds(5)) {
 			gameController.stateTimer().expire();
 		}
-		blinking.animate();
 	}
 }
