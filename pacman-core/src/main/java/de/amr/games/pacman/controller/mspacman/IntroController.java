@@ -53,8 +53,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 	}
 
 	public final V2i boardTopLeft = new V2i(7, 11).scaled(TS);
-	public final int yBelowBoard = t(20) + HTS;
-	public final int xLeftOfBoard = t(5);
+	public final V2i turningPoint = new V2i(5, 20).scaled(TS).plus(0, HTS);
 	public final TimedSeq<Boolean> blinking = TimedSeq.pulse().frameDuration(30).restart();
 	public final GameController gameController;
 	public final Pac msPacMan;
@@ -89,14 +88,14 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 	private void state_BEGIN_enter() {
 		startTimerIndefinite();
 		msPacMan.setMoveDir(LEFT);
-		msPacMan.setPosition(t(36), yBelowBoard);
+		msPacMan.setPosition(t(36), turningPoint.y);
 		msPacMan.setSpeed(0.95);
 		msPacMan.show();
 		for (Ghost ghost : ghosts) {
 			ghost.state = GhostState.HUNTING_PAC;
 			ghost.setMoveDir(LEFT);
 			ghost.setWishDir(LEFT);
-			ghost.setPosition(t(36), yBelowBoard);
+			ghost.setPosition(t(36), turningPoint.y);
 			ghost.setSpeed(0.95);
 			ghost.show();
 		}
@@ -112,7 +111,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 	private void state_GHOSTS_update() {
 		Ghost ghost = ghosts[ghostIndex];
 		ghost.move();
-		if (ghost.moveDir() != UP && ghost.position.x <= xLeftOfBoard) {
+		if (ghost.moveDir() != UP && ghost.position.x <= turningPoint.x) {
 			ghost.setMoveDir(UP);
 			ghost.setWishDir(UP);
 		}
