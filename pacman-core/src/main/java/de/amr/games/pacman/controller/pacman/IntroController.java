@@ -65,7 +65,6 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 			ghost.setMoveDir(Direction.RIGHT);
 			ghost.setWishDir(Direction.RIGHT);
 			ghost.setPosition(t(4), t(tileY));
-			ghost.hide();
 			this.character = character;
 		}
 	}
@@ -105,11 +104,6 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 				new Ghost(GameModel.CYAN_GHOST, "Inky"), //
 				new Ghost(GameModel.ORANGE_GHOST, "Clyde"), //
 		};
-		for (GhostPortrait portrait : portraits) {
-			portrait.ghost.hide();
-			portrait.characterVisible = false;
-			portrait.nicknameVisible = false;
-		}
 		state = null;
 		changeState(IntroState.BEGIN);
 	}
