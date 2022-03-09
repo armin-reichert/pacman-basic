@@ -32,6 +32,7 @@ import static de.amr.games.pacman.model.common.world.World.t;
 import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.controller.mspacman.IntroController.IntroState;
 import de.amr.games.pacman.lib.FiniteStateMachine;
+import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.TimedSeq;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.GameModel;
@@ -53,8 +54,10 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 	}
 
 	public final V2i boardTopLeft = new V2i(7, 11).scaled(TS);
+	public final V2i titlePosition = new V2i(9, 8).scaled(TS);
 	public final V2i turningPoint = new V2i(5, 20).scaled(TS).plus(0, HTS);
 	public final TimedSeq<Boolean> blinking = TimedSeq.pulse().frameDuration(30).restart();
+	public final TickTimer boardAnimationTimer = new TickTimer("boardAnimation-timer");
 	public final GameController gameController;
 	public final Pac msPacMan;
 	public final Ghost[] ghosts;
@@ -76,6 +79,12 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 		};
 	}
 
+	@Override
+	public void updateState() {
+		super.updateState();
+		boardAnimationTimer.tick();
+	}
+
 	public void init() {
 		state = null;
 		changeState(IntroState.BEGIN);
@@ -87,6 +96,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 
 	private void state_BEGIN_enter() {
 		startTimerIndefinite();
+		boardAnimationTimer.setIndefinite().start();
 		msPacMan.setMoveDir(LEFT);
 		msPacMan.setPosition(t(36), turningPoint.y);
 		msPacMan.setSpeed(0.95);
