@@ -76,7 +76,7 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 	public GhostPortrait[] portraits;
 	public Pac pacMan;
 	public Ghost[] ghosts;
-	public int selectedGhostIndex;
+	public int ghostIndex;
 	public long ghostKilledTime;
 
 	public IntroController(GameController gameController) {
@@ -113,8 +113,8 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 	}
 
 	private void selectGhost(int index) {
-		selectedGhostIndex = index;
-		portraits[selectedGhostIndex].ghost.show();
+		ghostIndex = index;
+		portraits[ghostIndex].ghost.show();
 	}
 
 	private void state_BEGIN_update() {
@@ -126,16 +126,16 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 
 	private void state_PRESENTING_GHOSTS_update() {
 		if (stateTimer().isRunningSeconds(1.0)) {
-			portraits[selectedGhostIndex].characterVisible = true;
+			portraits[ghostIndex].characterVisible = true;
 		}
 
 		else if (stateTimer().isRunningSeconds(1.5)) {
-			portraits[selectedGhostIndex].nicknameVisible = true;
+			portraits[ghostIndex].nicknameVisible = true;
 		}
 
 		else if (stateTimer().isRunningSeconds(2.0)) {
-			if (selectedGhostIndex < 3) {
-				selectGhost(selectedGhostIndex + 1);
+			if (ghostIndex < 3) {
+				selectGhost(ghostIndex + 1);
 				restartStateTimer();
 			}
 		}
@@ -249,6 +249,5 @@ public class IntroController extends FiniteStateMachine<IntroState> {
 		if (stateTimer().isRunningSeconds(5)) {
 			gameController.stateTimer().expire();
 		}
-		fastBlinking.animate();
 	}
 }
