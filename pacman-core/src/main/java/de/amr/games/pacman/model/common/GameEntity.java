@@ -46,11 +46,16 @@ public class GameEntity {
 
 	public V2d acceleration = V2d.NULL;
 
-	/**
-	 * @return the current tile position
-	 */
-	public V2i tile() {
-		return World.tile(position);
+	public void show() {
+		visible = true;
+	}
+
+	public void hide() {
+		visible = false;
+	}
+
+	public void setPosition(double x, double y) {
+		position = new V2d(x, y);
 	}
 
 	/**
@@ -60,8 +65,14 @@ public class GameEntity {
 		return World.offset(position);
 	}
 
-	public void setPosition(double x, double y) {
-		position = new V2d(x, y);
+	/**
+	 * Places it on its current tile with given offsets.
+	 * 
+	 * @param offsetX offset in x-direction
+	 * @param offsetY offset in y-direction
+	 */
+	public void setOffset(double offsetX, double offsetY) {
+		placeAt(tile(), offsetX, offsetY);
 	}
 
 	/**
@@ -77,13 +88,22 @@ public class GameEntity {
 	}
 
 	/**
-	 * Places it on its current tile with given offsets.
-	 * 
-	 * @param offsetX offset in x-direction
-	 * @param offsetY offset in y-direction
+	 * @return the current tile position
 	 */
-	public void setOffset(double offsetX, double offsetY) {
-		placeAt(tile(), offsetX, offsetY);
+	public V2i tile() {
+		return World.tile(position);
+	}
+
+	public void setVelocity(double vx, double vy) {
+		velocity = new V2d(vx, vy);
+	}
+
+	/**
+	 * Moves this entity by its current velocity and increases its velocity by its current acceleration.
+	 */
+	public void move() {
+		position = position.plus(velocity);
+		velocity = velocity.plus(acceleration);
 	}
 
 	/**
@@ -93,22 +113,5 @@ public class GameEntity {
 	public boolean meets(GameEntity other) {
 		Objects.requireNonNull(other);
 		return tile().equals(other.tile());
-	}
-
-	public void setVelocity(double vx, double vy) {
-		velocity = new V2d(vx, vy);
-	}
-
-	public void move() {
-		velocity = velocity.plus(acceleration);
-		position = position.plus(velocity);
-	}
-
-	public void show() {
-		visible = true;
-	}
-
-	public void hide() {
-		visible = false;
 	}
 }
