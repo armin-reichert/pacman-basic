@@ -51,19 +51,19 @@ public class Creature extends GameEntity {
 	/** The wish direction. Will be taken as soon as possible. */
 	protected Direction wishDir = Direction.RIGHT;
 
-	/** The order in which the creature computes the next direcion to take. */
+	/** The order in which the creature tries the next direction to take. */
 	public Direction[] turnPriority = DEFAULT_TURN_PRIORITY;
 
 	/** The target tile. Can be inaccessible or outside of the world. */
-	public V2i targetTile = V2i.NULL;
+	public V2i targetTile = null;
 
-	/** If the creature entered a new tile with its last movement or placement. */
+	/** Tells if the creature entered a new tile with its last move or placement. */
 	public boolean newTileEntered = true;
 
-	/** If the creature got stuck in the world. */
+	/** Tells if the creature got stuck. */
 	public boolean stuck = false;
 
-	/** If movement must be aligned with the "track" defined by connecting the tile centers. */
+	/** Tells if the creature must move on the "track" defined by the tile center connections. */
 	public boolean forcedOnTrack = false;
 
 	/** The world where this creature lives. */
@@ -90,7 +90,11 @@ public class Creature extends GameEntity {
 	 */
 	public void setMoveDir(Direction dir) {
 		moveDir = Objects.requireNonNull(dir);
-		velocity = new V2d(dir.vec).scaled(velocity.length());
+		double oldSpeed = velocity.length();
+		velocity = new V2d(dir.vec);
+		if (oldSpeed != 0) {
+			velocity = velocity.scaled(oldSpeed);
+		}
 	}
 
 	public Direction moveDir() {
@@ -98,7 +102,7 @@ public class Creature extends GameEntity {
 	}
 
 	public void setWishDir(Direction dir) {
-		wishDir = dir;
+		wishDir = Objects.requireNonNull(dir);
 	}
 
 	public Direction wishDir() {
@@ -115,6 +119,9 @@ public class Creature extends GameEntity {
 	 * @param fraction fraction of base speed
 	 */
 	public void setSpeed(double fraction) {
+		if (fraction < 0) {
+			throw new IllegalArgumentException("Negative speed fraction: " + fraction);
+		}
 		velocity = fraction == 0 ? V2d.NULL : new V2d(moveDir.vec).scaled(fraction * GameModel.BASE_SPEED);
 	}
 
@@ -132,7 +139,7 @@ public class Creature extends GameEntity {
 	}
 
 	/**
-	 * Force turning to the opposite direction. Used when hunting state changes.
+	 * Force turning to the opposite direction.
 	 */
 	public void forceTurningBack() {
 		Direction oppositeDir = moveDir.opposite();
@@ -143,9 +150,9 @@ public class Creature extends GameEntity {
 	}
 
 	/**
-	 * Tries to move through the world.
+	 * Move through the world.
 	 * <p>
-	 * First checks if creature can teleport, then if the creature can move to its current wish direction. If this is
+	 * First checks if the creature can teleport, then if the creature can move to its current wish direction. If this is
 	 * not possible it moves to its current move direction.
 	 */
 	public void tryMoving() {
@@ -236,23 +243,22 @@ public class Creature extends GameEntity {
 	 * selects the one with smallest Euclidean distance to the target tile. Reversing the move direction is not allowed.
 	 */
 	public void headForTile(V2i targetTile) {
-		Objects.requireNonNull(targetTile);
+		this.targetTile = Objects.requireNonNull(targetTile);
 		if (!stuck && !newTileEntered) {
 			return;
 		}
-		final V2i currentTile = tile();
+		V2i currentTile = tile();
 		if (world.isPortal(currentTile)) {
 			return;
 		}
-		this.targetTile = targetTile;
 		double minDist = Double.MAX_VALUE;
 		for (Direction dir : turnPriority) {
 			if (dir == moveDir.opposite()) {
 				continue;
 			}
-			final V2i neighborTile = currentTile.plus(dir.vec);
+			V2i neighborTile = currentTile.plus(dir.vec);
 			if (canAccessTile(neighborTile)) {
-				final double distToTarget = neighborTile.euclideanDistance(targetTile);
+				double distToTarget = neighborTile.euclideanDistance(targetTile);
 				if (distToTarget < minDist) {
 					minDist = distToTarget;
 					wishDir = dir;
