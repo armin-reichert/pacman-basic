@@ -91,10 +91,7 @@ public class Creature extends GameEntity {
 	public void setMoveDir(Direction dir) {
 		moveDir = Objects.requireNonNull(dir);
 		double oldSpeed = velocity.length();
-		velocity = new V2d(dir.vec);
-		if (oldSpeed != 0) {
-			velocity = velocity.scaled(oldSpeed);
-		}
+		velocity = new V2d(dir.vec).scaled(oldSpeed);
 	}
 
 	public Direction moveDir() {
