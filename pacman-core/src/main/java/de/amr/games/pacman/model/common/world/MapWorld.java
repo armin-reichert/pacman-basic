@@ -83,7 +83,7 @@ public class MapWorld implements World {
 		house.seatLeft = map.vector("house_seat_left");
 		house.seatCenter = map.vector("house_seat_center");
 		house.seatRight = map.vector("house_seat_right");
-		house.doors = trim(tiles().filter(this::isGhostHouseDoor).collect(Collectors.toList()));
+		house.doorTiles = trim(tiles().filter(this::isGhostHouseDoor).collect(Collectors.toList()));
 
 		pacman_home = map.vector("pacman_home");
 		pacman_start_dir = Direction.valueOf(map.string("pacman_start_dir"));

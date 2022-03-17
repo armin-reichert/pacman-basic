@@ -53,7 +53,7 @@ public class GhostHouse {
 	public V2i seatRight;
 
 	/** Tiles with doors. */
-	public List<V2i> doors;
+	public List<V2i> doorTiles;
 
 	public GhostHouse(V2i topLeft, V2i size) {
 		this.topLeft = topLeft;
