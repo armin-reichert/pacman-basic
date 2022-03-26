@@ -108,9 +108,6 @@ public class FiniteStateMachine<STATE_ID extends Enum<STATE_ID>> {
 		}
 		previousState = state;
 		state = newStateID;
-		if (logging) {
-			log("%s: Entering state %s %s", name(), state, state(state).timer);
-		}
 		if (state(state).onEnter != null) {
 			state(state).onEnter.run();
 		}
