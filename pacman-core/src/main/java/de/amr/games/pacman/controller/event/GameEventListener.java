@@ -30,5 +30,10 @@ package de.amr.games.pacman.controller.event;
  */
 public interface GameEventListener {
 
+	/**
+	 * Called when a game event is received.
+	 * 
+	 * @param event a game event
+	 */
 	void onGameEvent(GameEvent event);
 }
