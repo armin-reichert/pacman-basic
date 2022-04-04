@@ -101,6 +101,7 @@ public class GameController extends FiniteStateMachine<GameState> {
 	private final Autopilot autopilot = new Autopilot(() -> game);
 
 	public boolean autoControlled;
+	public boolean playerImmune;
 	public boolean gameRequested;
 	public boolean gameRunning;
 	public boolean attractMode;
@@ -202,7 +203,6 @@ public class GameController extends FiniteStateMachine<GameState> {
 		gameRequested = false;
 		gameRunning = false;
 		attractMode = false;
-		autoControlled = false;
 		stateTimer().setIndefinite().start();
 	}
 
@@ -435,7 +435,7 @@ public class GameController extends FiniteStateMachine<GameState> {
 		if (game.player.powerTimer.isRunning()) {
 			return false;
 		}
-		if (game.player.immune && !attractMode) {
+		if (playerImmune && !attractMode) {
 			return false;
 		}
 		Optional<Ghost> killer = game.ghosts(HUNTING_PAC).filter(game.player::meets).findAny();
