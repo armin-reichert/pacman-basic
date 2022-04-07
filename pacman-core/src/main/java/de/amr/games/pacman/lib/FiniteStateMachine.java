@@ -33,10 +33,10 @@ import java.util.function.BiConsumer;
 import java.util.stream.Stream;
 
 /**
- * A finite-state machine, a graph of vertices (states) connected by transitions. Transitions are defined dynamically by
- * the calls of the {@link #changeState(Enum)} method.
+ * A finite-state machine, a graph of vertices (states) connected by transitions.
  * <p>
- * Each state transition triggers a state change event.
+ * Transitions are defined dynamically by the {@link #changeState(Enum)} method calls. Each state transition triggers a
+ * state change event.
  * 
  * @author Armin Reichert
  * 
@@ -82,22 +82,47 @@ public class FiniteStateMachine<STATE_ID extends Enum<STATE_ID>> {
 		return getClass().getSimpleName();
 	}
 
+	/**
+	 * Configures the state with the given ID.
+	 * 
+	 * @param stateID  state ID
+	 * @param onEnter  hook method called when state is entered (can by {@code null})
+	 * @param onUpdate hook method called when state is updated (can by {@code null})
+	 * @param onExit   hook method called when state is exited (can by {@code null})
+	 */
 	public void configState(STATE_ID stateID, Runnable onEnter, Runnable onUpdate, Runnable onExit) {
 		state(stateID).onEnter = onEnter;
 		state(stateID).onUpdate = onUpdate;
 		state(stateID).onExit = onExit;
 	}
 
+	/**
+	 * Registers a state change listener.
+	 * 
+	 * @param listener state change listener
+	 */
 	public void addStateChangeListener(BiConsumer<STATE_ID, STATE_ID> listener) {
 		stateChangeListeners.add(listener);
 	}
 
+	/**
+	 * Unregisters a state change listener.
+	 * 
+	 * @param listener state change listener
+	 */
 	public void removeStateChangeListener(BiConsumer<STATE_ID, STATE_ID> listener) {
 		stateChangeListeners.remove(listener);
 	}
 
+	/**
+	 * Changes to the state with the given ID. Executes the hook methods {@link State#onExit} of the current state and
+	 * {@link State#onEnter} of the new state. Notifies the registered state change listeners.
+	 * 
+	 * @param newStateID ID of state to be entered
+	 * @return ID of new state
+	 */
 	public STATE_ID changeState(STATE_ID newStateID) {
-		// before state machine is initialized, state object is null
+		// if state machine has not been initialized, current state object is null
 		if (state != null) {
 			if (state(state).onExit != null) {
 				state(state).onExit.run();
@@ -114,10 +139,13 @@ public class FiniteStateMachine<STATE_ID extends Enum<STATE_ID>> {
 		if (logging) {
 			log("%s: Entered state %s %s", name(), state, state(state).timer);
 		}
-		fireStateChange(previousState, state);
+		stateChangeListeners.stream().forEach(listener -> listener.accept(previousState, state));
 		return state;
 	}
 
+	/**
+	 * @return timer of current state
+	 */
 	public TickTimer stateTimer() {
 		return state(state).timer;
 	}
@@ -126,10 +154,9 @@ public class FiniteStateMachine<STATE_ID extends Enum<STATE_ID>> {
 		return statesByID.get(id);
 	}
 
-	private void fireStateChange(STATE_ID oldState, STATE_ID newState) {
-		stateChangeListeners.stream().forEach(listener -> listener.accept(oldState, newState));
-	}
-
+	/**
+	 * Runs the {@link State#onUpdate} hook method (if defined) of the current state and ticks the state timer.
+	 */
 	public void updateState() {
 		try {
 			if (state(state).onUpdate != null) {
@@ -137,11 +164,14 @@ public class FiniteStateMachine<STATE_ID extends Enum<STATE_ID>> {
 			}
 			state(state).timer.tick();
 		} catch (Exception x) {
-			Logging.log("%s: Error updating state %s, timer: %s", name(), state, state(state).timer);
+			log("%s: Error updating state %s, timer: %s", name(), state, state(state).timer);
 			x.printStackTrace();
 		}
 	}
 
+	/**
+	 * Returns to the previous state.
+	 */
 	public void resumePreviousState() {
 		if (previousState == null) {
 			throw new IllegalStateException("State machine cannot resume previous state because there is none");
