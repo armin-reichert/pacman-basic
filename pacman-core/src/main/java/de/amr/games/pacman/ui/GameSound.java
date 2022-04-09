@@ -23,8 +23,6 @@ SOFTWARE.
  */
 package de.amr.games.pacman.ui;
 
-import java.util.List;
-
 /**
  * Constants for the sounds used in the Pac-Man and Ms. Pac-Man games.
  * 
@@ -34,6 +32,4 @@ public enum GameSound {
 
 	BONUS_EATEN, CREDIT, EXTRA_LIFE, GAME_READY, GHOST_EATEN, GHOST_RETURNING, INTERMISSION_1, INTERMISSION_2,
 	INTERMISSION_3, PACMAN_DEATH, PACMAN_MUNCH, PACMAN_POWER, SIREN_1, SIREN_2, SIREN_3, SIREN_4;
-
-	public static final List<GameSound> SIRENS = List.of(SIREN_1, SIREN_2, SIREN_3, SIREN_4);
 }
