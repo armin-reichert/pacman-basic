@@ -106,4 +106,8 @@ public class V2d {
 		double l = length();
 		return new V2d(x / l, y / l);
 	}
+
+	public double euclideanDistance(V2d v) {
+		return minus(v).length();
+	}
 }
