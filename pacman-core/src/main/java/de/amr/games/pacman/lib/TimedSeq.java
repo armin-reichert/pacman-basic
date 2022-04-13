@@ -24,7 +24,7 @@ SOFTWARE.
 package de.amr.games.pacman.lib;
 
 /**
- * Timed sequence of things, for example of images or spritesheet regions
+ * Timed sequence ("animatiion") of things, for example of images or spritesheet regions.
  * 
  * @author Armin Reichert
  */
@@ -41,6 +41,13 @@ public class TimedSeq<T> {
 		}
 	}
 
+	/**
+	 * Creates a timed sequence (animation) of the given things.
+	 * 
+	 * @param <TT>   type of things
+	 * @param things the things to be animated
+	 * @return the animation
+	 */
 	@SafeVarargs
 	public static <TT> TimedSeq<TT> of(TT... things) {
 		if (things.length == 0) {
@@ -54,6 +61,9 @@ public class TimedSeq<T> {
 		return a;
 	}
 
+	/**
+	 * @return an endless animation of alternating true/false values
+	 */
 	public static TimedSeq<Boolean> pulse() {
 		return TimedSeq.of(true, false).endless();
 	}
@@ -77,6 +87,11 @@ public class TimedSeq<T> {
 		reset();
 	}
 
+	/**
+	 * Resets the animation to its initial state.
+	 * 
+	 * @return the animation
+	 */
 	public TimedSeq<T> reset() {
 		delayRemainingTicks = delay;
 		totalRunningTicks = 0;
@@ -88,66 +103,124 @@ public class TimedSeq<T> {
 		return this;
 	}
 
+	/**
+	 * @param code code to be run when the animation starts
+	 * @return the animation
+	 */
 	public TimedSeq<T> onStart(Runnable code) {
 		onStart = code;
 		return this;
 	}
 
+	/**
+	 * Sets the frame duration
+	 * 
+	 * @param ticks frame ticks
+	 * @return the animation
+	 */
 	public TimedSeq<T> frameDuration(long ticks) {
 		frameDurationTicks = ticks;
 		return this;
 	}
 
+	/**
+	 * @return number of ticks before the animation starts
+	 */
 	public long delay() {
 		return delay;
 	}
 
+	/**
+	 * Sets the number of ticks before the animation starts.
+	 * 
+	 * @param ticks number of ticks before the animation starts
+	 * @return the animation
+	 */
 	public TimedSeq<T> delay(long ticks) {
-		delay = ticks;
-		delayRemainingTicks = ticks;
+		delay = delayRemainingTicks = ticks;
 		return this;
 	}
 
+	/**
+	 * @return number of times the animation is repeated
+	 */
 	public int repetitions() {
 		return repetitions;
 	}
 
+	/**
+	 * Sets the number of times the animation is repeated.
+	 * 
+	 * @param n number of times the animation is repeated
+	 * @return the animation
+	 */
 	public TimedSeq<T> repetitions(int n) {
 		repetitions = n;
 		return this;
 	}
 
+	/**
+	 * Lets the animation repeat endlessly.
+	 * 
+	 * @return the animation
+	 */
 	public TimedSeq<T> endless() {
 		repetitions = INDEFINITE;
 		return this;
 	}
 
+	/**
+	 * Resets and starts the animation.
+	 * 
+	 * @return the animation
+	 */
 	public TimedSeq<T> restart() {
 		reset();
 		run();
 		return this;
 	}
 
+	/**
+	 * Runs the animation.
+	 * 
+	 * @return the animation
+	 */
 	public TimedSeq<T> run() {
 		running = true;
 		return this;
 	}
 
+	/**
+	 * Stops the animation.
+	 * 
+	 * @return the animation
+	 */
 	public TimedSeq<T> stop() {
 		running = false;
 		return this;
 	}
 
+	/**
+	 * Advances the animation by one step.
+	 * 
+	 * @return the frame before the animation step
+	 */
 	public T animate() {
 		T currentThing = things[frameIndex];
 		advance();
 		return currentThing;
 	}
 
+	/**
+	 * @return the current frame/thing
+	 */
 	public T frame() {
 		return things[frameIndex];
 	}
 
+	/**
+	 * Advances the animation by a single step.
+	 */
 	public void advance() {
 		if (running) {
 			if (delayRemainingTicks > 0) {
@@ -179,34 +252,59 @@ public class TimedSeq<T> {
 		}
 	}
 
+	/**
+	 * @param i index
+	 * @return the thing at the given index
+	 */
 	public T frame(int i) {
 		return things[i];
 	}
 
+	/**
+	 * @return the current index of the animation
+	 */
 	public int frameIndex() {
 		return frameIndex;
 	}
 
+	/**
+	 * @return number of ticks each frame takes
+	 */
 	public long getFrameDuration() {
 		return frameDurationTicks;
 	}
 
+	/**
+	 * @return number of ticks the complete animation takes
+	 */
 	public long duration() {
 		return things.length * frameDurationTicks;
 	}
 
+	/**
+	 * @return number of frames of this animation
+	 */
 	public int numFrames() {
 		return things.length;
 	}
 
+	/**
+	 * @return if the animation is running
+	 */
 	public boolean isRunning() {
 		return running;
 	}
 
+	/**
+	 * @return if the animation has completed
+	 */
 	public boolean isComplete() {
 		return complete;
 	}
 
+	/**
+	 * @return if the animation has started
+	 */
 	public boolean hasStarted() {
 		return running || complete;
 	}
