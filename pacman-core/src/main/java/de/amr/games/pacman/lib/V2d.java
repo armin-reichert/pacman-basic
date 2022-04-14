@@ -78,16 +78,16 @@ public class V2d {
 		return new V2d(x + v.x, y + v.y);
 	}
 
-	public V2d plus(double xx, double yy) {
-		return new V2d(x + xx, y + yy);
+	public V2d plus(double vx, double vy) {
+		return new V2d(x + vx, y + vy);
 	}
 
 	public V2d minus(V2d v) {
 		return new V2d(x - v.x, y - v.y);
 	}
 
-	public V2d minus(double xx, double yy) {
-		return new V2d(x - xx, y - yy);
+	public V2d minus(double vx, double vy) {
+		return new V2d(x - vx, y - vy);
 	}
 
 	public V2d scaled(double s) {
@@ -103,8 +103,8 @@ public class V2d {
 	}
 
 	public V2d normalized() {
-		double l = length();
-		return new V2d(x / l, y / l);
+		double len = length();
+		return new V2d(x / len, y / len);
 	}
 
 	public double euclideanDistance(V2d v) {
