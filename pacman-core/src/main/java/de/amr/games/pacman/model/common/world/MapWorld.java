@@ -83,7 +83,7 @@ public class MapWorld implements World {
 		house.seatLeft = map.vector("house_seat_left");
 		house.seatCenter = map.vector("house_seat_center");
 		house.seatRight = map.vector("house_seat_right");
-		house.doorTiles = trim(tiles().filter(this::isGhostHouseDoor).collect(Collectors.toList()));
+		house.doorTiles = trim(tiles().filter(this::isDoor).collect(Collectors.toList()));
 
 		pacman_home = map.vector("pacman_home");
 		pacman_start_dir = Direction.valueOf(map.string("pacman_start_dir"));
@@ -111,7 +111,7 @@ public class MapWorld implements World {
 		intersections = new BitSet();
 		tiles() //
 				.filter(tile -> !house.contains(tile)) //
-				.filter(tile -> !isGhostHouseDoor(tile.plus(Direction.DOWN.vec))) //
+				.filter(tile -> !isDoor(tile.plus(Direction.DOWN.vec))) //
 				.filter(tile -> neighbors(tile).filter(not(this::isWall)).count() > 2) //
 				.map(this::index) //
 				.forEach(intersections::set);
@@ -119,9 +119,18 @@ public class MapWorld implements World {
 		energizerTiles = tiles().filter(tile -> map.data(tile) == WorldMap.ENERGIZER).collect(Collectors.toList());
 	}
 
+	private boolean isDoor(V2i tile) {
+		return isLeftDoorWing(tile) || isRightDoorWing(tile);
+	}
+
 	@Override
-	public boolean isGhostHouseDoor(V2i tile) {
-		return insideWorld(tile) && map.data(tile) == WorldMap.DOOR;
+	public boolean isLeftDoorWing(V2i tile) {
+		return insideWorld(tile) && map.data(tile) == WorldMap.LEFT_DOOR_WING;
+	}
+
+	@Override
+	public boolean isRightDoorWing(V2i tile) {
+		return insideWorld(tile) && map.data(tile) == WorldMap.RIGHT_DOOR_WING;
 	}
 
 	@Override

@@ -49,14 +49,16 @@ import de.amr.games.pacman.model.common.world.DefinitionParser.ParseException;
  */
 public class WorldMap {
 
-	public static final byte UNDEFINED = -1, SPACE = 0, WALL = 1, PILL = 2, ENERGIZER = 3, DOOR = 4, TUNNEL = 5;
+	public static final byte UNDEFINED = -1, SPACE = 0, WALL = 1, PILL = 2, ENERGIZER = 3, TUNNEL = 4, LEFT_DOOR_WING = 5,
+			RIGHT_DOOR_WING = 6;
 
 	private static byte decode(char c) {
 		return switch (c) {
 		case ' ' -> SPACE;
 		case '#' -> WALL;
 		case 'T' -> TUNNEL;
-		case '-' -> DOOR;
+		case 'L' -> LEFT_DOOR_WING;
+		case 'R' -> RIGHT_DOOR_WING;
 		case '.' -> PILL;
 		case '*' -> ENERGIZER;
 		default -> UNDEFINED;
