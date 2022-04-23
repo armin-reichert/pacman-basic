@@ -40,7 +40,6 @@ import java.util.stream.Stream;
 import de.amr.games.pacman.lib.Misc;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.world.DefinitionParser.Definition;
-import de.amr.games.pacman.model.common.world.DefinitionParser.ParseException;
 
 /**
  * Game world map, created from simple textual representation.
@@ -84,15 +83,11 @@ public class WorldMap {
 				// comment, ignore
 			} else {
 				// value definition?
-				try {
-					Definition def = parser.parse(line);
-					if (def != null) {
-						map.defs.put(def.name, def.value);
-					} else {
-						dataLines.add(line);
-					}
-				} catch (ParseException x) {
-					log("Error parsing line '%s': %s", line, x.getMessage());
+				Definition def = parser.parse(line);
+				if (def != null) {
+					map.defs.put(def.name, def.value);
+				} else {
+					dataLines.add(line);
 				}
 			}
 		});

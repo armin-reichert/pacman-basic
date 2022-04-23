@@ -23,6 +23,8 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.common.world;
 
+import java.text.ParseException;
+
 import de.amr.games.pacman.lib.V2i;
 
 /**
@@ -45,15 +47,8 @@ public class DefinitionParser {
 		public Object value;
 	}
 
-	public class ParseException extends Exception {
-
-		public ParseException(String message) {
-			super(message);
-		}
-	}
-
-	private void parse_error(String message, Object... args) throws ParseException {
-		throw new ParseException(String.format(message, args));
+	private void parse_error(String message, Object... args) {
+		throw new RuntimeException(String.format(message, args));
 	}
 
 	/**
@@ -61,7 +56,7 @@ public class DefinitionParser {
 	 * @return definition specified by this line or {@code null} if line does not contain a definition
 	 * @throws ParseException
 	 */
-	public Definition parse(String line) throws ParseException {
+	public Definition parse(String line) {
 		if (line.startsWith("val ")) {
 			line = line.substring(4).trim();
 			String[] sides = line.split("=");
@@ -76,7 +71,7 @@ public class DefinitionParser {
 		return null;
 	}
 
-	private Object parseRightHandSide(String text) throws ParseException {
+	private Object parseRightHandSide(String text) {
 		String s = text.trim();
 		if (s.startsWith("(")) {
 			return parseVector(s);
@@ -87,7 +82,7 @@ public class DefinitionParser {
 		}
 	}
 
-	private V2i parseVector(String text) throws ParseException {
+	private V2i parseVector(String text) {
 		String s = text;
 		if (!s.endsWith(")")) {
 			parse_error("'%s' does not specify a vector", text);
@@ -102,7 +97,7 @@ public class DefinitionParser {
 		return new V2i(x, y);
 	}
 
-	private String parseString(String text) throws ParseException {
+	private String parseString(String text) {
 		if (text.length() < 2) {
 			parse_error("'%s' is not enclosed in quotes", text);
 		}
@@ -112,7 +107,7 @@ public class DefinitionParser {
 		return text.substring(1, text.length() - 1);
 	}
 
-	private int parseInt(String text) throws ParseException {
+	private int parseInt(String text) {
 		try {
 			return Integer.parseInt(text);
 		} catch (Exception x) {
