@@ -65,15 +65,7 @@ public class MapWorld implements World {
 	private int foodRemaining;
 
 	public MapWorld(String mapPath) {
-		setMap(WorldMap.load(mapPath));
-	}
-
-	public WorldMap getMap() {
-		return map;
-	}
-
-	public void setMap(WorldMap map) {
-		this.map = map;
+		map = new WorldMap(mapPath);
 
 		size = map.vector("size");
 
@@ -117,6 +109,10 @@ public class MapWorld implements World {
 				.forEach(intersections::set);
 
 		energizerTiles = tiles().filter(tile -> map.data(tile) == WorldMap.ENERGIZER).collect(Collectors.toList());
+	}
+
+	public WorldMap getMap() {
+		return map;
 	}
 
 	private boolean isDoor(V2i tile) {

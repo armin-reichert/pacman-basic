@@ -13,7 +13,7 @@ public class TestMapParsing {
 
 	@Test
 	public void testMapParsing() {
-		WorldMap map = WorldMap.load("/testmap.txt");
+		WorldMap map = new WorldMap("/testmap.txt");
 		String undefinedKey = "_";
 
 		assertEquals((Integer) 42, map.integer("i"));

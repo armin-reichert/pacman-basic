@@ -27,6 +27,7 @@ import static de.amr.games.pacman.lib.Logging.log;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -64,60 +65,57 @@ public class WorldMap {
 		};
 	}
 
-	public static WorldMap load(String path) {
-		var map = new WorldMap();
-		try (BufferedReader r = new BufferedReader(
-				new InputStreamReader(WorldMap.class.getResourceAsStream(path), StandardCharsets.UTF_8))) {
-			parse(map, r.lines());
-			return map;
-		} catch (IOException x) {
-			throw new RuntimeException(x);
-		}
-	}
-
-	private static void parse(WorldMap map, Stream<String> lines) {
-		var parser = new DefinitionParser();
-		var dataLines = new ArrayList<String>();
-		lines.forEach(line -> {
-			if (line.startsWith("!")) {
-				// comment, ignore
-			} else {
-				// value definition?
-				Definition def = parser.parse(line);
-				if (def != null) {
-					map.defs.put(def.name, def.value);
-				} else {
-					dataLines.add(line);
-				}
-			}
-		});
-
-		V2i size = map.vector("size");
-		if (dataLines.size() != size.y) {
-			log_error("Defined map height %d does not match number of data lines %d", size.y, dataLines.size());
-		}
-
-		map.content = new byte[size.y][size.x]; // stored row-wise!
-		for (int row = 0; row < size.y; ++row) {
-			for (int col = 0; col < size.x; ++col) {
-				char c = dataLines.get(row).charAt(col);
-				byte value = decode(c);
-				if (value == UNDEFINED) {
-					log_error("Found undefined map character at row %d, col %d: '%s'", row, col, c);
-					map.content[row][col] = SPACE;
-				} else {
-					map.content[row][col] = value;
-				}
-			}
-		}
-	}
-
 	private static void log_error(String message, Object... args) {
 		log("Error parsing map: %s", String.format(message, args));
 	}
 
 	private final Map<String, Object> defs = new HashMap<>();
 	private byte[][] content;
+
+	public WorldMap(String path) {
+		InputStream is = WorldMap.class.getResourceAsStream(path);
+		try (BufferedReader r = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
+			parse(r.lines());
+		} catch (IOException x) {
+			throw new RuntimeException(x);
+		}
+	}
+
+	private void parse(Stream<String> lines) {
+		var parser = new DefinitionParser();
+		var dataLines = new ArrayList<String>();
+		lines.forEach(line -> {
+			if (line.startsWith("!")) {
+				// comment, ignore
+			} else {
+				Definition def = parser.parse(line);
+				if (def != null) {
+					defs.put(def.name, def.value);
+				} else {
+					dataLines.add(line);
+				}
+			}
+		});
+
+		V2i size = vector("size");
+		if (dataLines.size() != size.y) {
+			log_error("Defined map height %d does not match number of data lines %d", size.y, dataLines.size());
+		}
+
+		content = new byte[size.y][size.x]; // stored row-wise!
+		for (int row = 0; row < size.y; ++row) {
+			for (int col = 0; col < size.x; ++col) {
+				char c = dataLines.get(row).charAt(col);
+				byte value = decode(c);
+				if (value == UNDEFINED) {
+					log_error("Found undefined map character at row %d, col %d: '%s'", row, col, c);
+					content[row][col] = SPACE;
+				} else {
+					content[row][col] = value;
+				}
+			}
+		}
+	}
 
 	public byte data(V2i tile) {
 		return data(tile.x, tile.y);

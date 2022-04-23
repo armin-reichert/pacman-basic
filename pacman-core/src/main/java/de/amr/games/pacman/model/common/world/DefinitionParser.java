@@ -110,7 +110,7 @@ public class DefinitionParser {
 	private int parseInt(String text) {
 		try {
 			return Integer.parseInt(text);
-		} catch (Exception x) {
+		} catch (NumberFormatException x) {
 			parse_error("'%s' cannot be parsed as an integer", text);
 		}
 		return 0;
