@@ -7,7 +7,7 @@ import org.junit.Test;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.world.MapWorld;
-import de.amr.games.pacman.model.common.world.WorldMap;
+import de.amr.games.pacman.model.common.world.TextualWorldMap;
 import de.amr.games.pacman.model.mspacman.MsPacManGame;
 import de.amr.games.pacman.model.pacman.PacManGame;
 
@@ -29,7 +29,7 @@ public class TestMazeFunctions {
 		GameModel game = new PacManGame();
 		game.setLevel(1);
 
-		WorldMap map = ((MapWorld) game.world).getMap();
+		TextualWorldMap map = ((MapWorld) game.world).getMap();
 		assertEquals(new V2i(28, 36), map.vector("size"));
 		assertEquals(new V2i(70, 170), map.vector("bonus_pellets_to_eat"));
 	}
@@ -47,7 +47,7 @@ public class TestMazeFunctions {
 	@Test
 	public void testMsPacManMapForLevels() {
 		MsPacManGame game = new MsPacManGame();
-		WorldMap map;
+		TextualWorldMap map;
 
 		game.setLevel(1);
 		map = ((MapWorld) game.world).getMap();

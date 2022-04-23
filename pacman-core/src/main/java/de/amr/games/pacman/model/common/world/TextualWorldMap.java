@@ -43,25 +43,25 @@ import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.world.DefinitionParser.Definition;
 
 /**
- * Game world map, created from simple textual representation.
+ * World map defined by textual representation.
  * 
  * @author Armin Reichert
  */
-public class WorldMap {
+public class TextualWorldMap {
 
-	public static final byte UNDEFINED = -1, SPACE = 0, WALL = 1, PILL = 2, ENERGIZER = 3, TUNNEL = 4, LEFT_DOOR_WING = 5,
+	public static final byte UNDEF = -1, SPACE = 0, WALL = 1, PELLET = 2, ENERGIZER = 3, TUNNEL = 4, LEFT_DOOR_WING = 5,
 			RIGHT_DOOR_WING = 6;
 
-	private static byte decode(char c) {
+	private static byte token(char c) {
 		return switch (c) {
 		case ' ' -> SPACE;
 		case '#' -> WALL;
 		case 'T' -> TUNNEL;
 		case 'L' -> LEFT_DOOR_WING;
 		case 'R' -> RIGHT_DOOR_WING;
-		case '.' -> PILL;
+		case '.' -> PELLET;
 		case '*' -> ENERGIZER;
-		default -> UNDEFINED;
+		default -> UNDEF;
 		};
 	}
 
@@ -69,11 +69,14 @@ public class WorldMap {
 		log("Error parsing map: %s", String.format(message, args));
 	}
 
-	private final Map<String, Object> defs = new HashMap<>();
+	private final Map<String, Object> definitions = new HashMap<>();
 	private byte[][] content;
 
-	public WorldMap(String path) {
-		InputStream is = WorldMap.class.getResourceAsStream(path);
+	public TextualWorldMap(String path) {
+		InputStream is = TextualWorldMap.class.getResourceAsStream(path);
+		if (is == null) {
+			throw new RuntimeException("Could not access resource " + path);
+		}
 		try (BufferedReader r = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
 			parse(r.lines());
 		} catch (IOException x) {
@@ -90,7 +93,7 @@ public class WorldMap {
 			} else {
 				Definition def = parser.parse(line);
 				if (def != null) {
-					defs.put(def.name, def.value);
+					definitions.put(def.name, def.value);
 				} else {
 					dataLines.add(line);
 				}
@@ -106,12 +109,12 @@ public class WorldMap {
 		for (int row = 0; row < size.y; ++row) {
 			for (int col = 0; col < size.x; ++col) {
 				char c = dataLines.get(row).charAt(col);
-				byte value = decode(c);
-				if (value == UNDEFINED) {
+				byte token = token(c);
+				if (token == UNDEF) {
 					log_error("Found undefined map character at row %d, col %d: '%s'", row, col, c);
 					content[row][col] = SPACE;
 				} else {
-					content[row][col] = value;
+					content[row][col] = token;
 				}
 			}
 		}
@@ -125,50 +128,50 @@ public class WorldMap {
 		return content[y][x]; // row-wise order!
 	}
 
-	public Integer integer(String valueName) {
-		return (Integer) defs.get(valueName);
+	public Integer integer(String name) {
+		return (Integer) definitions.get(name);
 	}
 
-	public String string(String valueName) {
-		return (String) defs.get(valueName);
+	public String string(String name) {
+		return (String) definitions.get(name);
 	}
 
-	public V2i vector(String valueName) {
-		Object value = defs.get(valueName);
+	public V2i vector(String name) {
+		Object value = definitions.get(name);
 		if (value == null) {
 			return null;
 		}
 		if (!(value instanceof V2i)) {
-			log_error("Value '%s' is not a vector", valueName);
+			log_error("Value '%s' is not a vector", name);
 			return null;
 		}
 		return (V2i) value;
 	}
 
-	public Optional<V2i> vectorOptional(String valueName) {
-		Object value = defs.get(valueName);
+	public Optional<V2i> vectorOpt(String name) {
+		Object value = definitions.get(name);
 		if (value == null) {
 			return Optional.empty();
 		}
 		if (!(value instanceof V2i)) {
-			log_error("Value '%s' does not contain a vector", valueName);
+			log_error("Value '%s' does not contain a vector", name);
 			return Optional.empty();
 		}
 		return Optional.of((V2i) value);
 	}
 
 	/**
-	 * @param listName the list name (prefix before the dot in list variable assignments), e.g. <code>level</code> for
-	 *                 list entries like <code>level.42</code>
+	 * @param listName the list name (prefix before the dot in list variable assignments), e.g. <code>level</code> for list
+	 *             entries like <code>level.42</code>
 	 * @return list of all values for given list name or {@code null} if no such list value exists
 	 */
 	public List<V2i> vectorList(String listName) {
-		if (defs.keySet().stream().noneMatch(key -> key.startsWith(listName + "."))) {
+		if (definitions.keySet().stream().noneMatch(key -> key.startsWith(listName + "."))) {
 			return null;
 		}
 		//@formatter:off
 		return Misc.trim(
-				defs.keySet().stream()
+				definitions.keySet().stream()
 					.filter(varName -> varName.startsWith(listName + "."))
 					.sorted()
 					.map(this::vector)

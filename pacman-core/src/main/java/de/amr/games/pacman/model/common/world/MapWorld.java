@@ -46,7 +46,7 @@ import de.amr.games.pacman.lib.V2i;
  */
 public class MapWorld implements World {
 
-	private WorldMap map;
+	private TextualWorldMap map;
 	private V2i size;
 
 	private GhostHouse house;
@@ -65,7 +65,7 @@ public class MapWorld implements World {
 	private int foodRemaining;
 
 	public MapWorld(String mapPath) {
-		map = new WorldMap(mapPath);
+		map = new TextualWorldMap(mapPath);
 
 		size = map.vector("size");
 
@@ -85,7 +85,7 @@ public class MapWorld implements World {
 				Direction.valueOf(map.string("ghost_start_dir.2")), //
 				Direction.valueOf(map.string("ghost_start_dir.3")));
 
-		bonus_home = map.vectorOptional("bonus_home").orElse(V2i.NULL);
+		bonus_home = map.vectorOpt("bonus_home").orElse(V2i.NULL);
 		bonus_pellets_to_eat = map.vector("bonus_pellets_to_eat");
 		scatterTiles = map.vectorList("scatter");
 		upwardsBlockedTiles = map.vectorList("upwards_blocked");
@@ -95,7 +95,7 @@ public class MapWorld implements World {
 
 		portals = new ArrayList<>(3);
 		for (int y = 0; y < size.y; ++y) {
-			if (map.data(0, y) == WorldMap.TUNNEL && map.data(size.x - 1, y) == WorldMap.TUNNEL) {
+			if (map.data(0, y) == TextualWorldMap.TUNNEL && map.data(size.x - 1, y) == TextualWorldMap.TUNNEL) {
 				portals.add(new Portal(new V2i(-1, y), new V2i(size.x, y)));
 			}
 		}
@@ -108,10 +108,10 @@ public class MapWorld implements World {
 				.map(this::index) //
 				.forEach(intersections::set);
 
-		energizerTiles = tiles().filter(tile -> map.data(tile) == WorldMap.ENERGIZER).collect(Collectors.toList());
+		energizerTiles = tiles().filter(tile -> map.data(tile) == TextualWorldMap.ENERGIZER).collect(Collectors.toList());
 	}
 
-	public WorldMap getMap() {
+	public TextualWorldMap getMap() {
 		return map;
 	}
 
@@ -121,12 +121,12 @@ public class MapWorld implements World {
 
 	@Override
 	public boolean isLeftDoorWing(V2i tile) {
-		return insideWorld(tile) && map.data(tile) == WorldMap.LEFT_DOOR_WING;
+		return insideWorld(tile) && map.data(tile) == TextualWorldMap.LEFT_DOOR_WING;
 	}
 
 	@Override
 	public boolean isRightDoorWing(V2i tile) {
-		return insideWorld(tile) && map.data(tile) == WorldMap.RIGHT_DOOR_WING;
+		return insideWorld(tile) && map.data(tile) == TextualWorldMap.RIGHT_DOOR_WING;
 	}
 
 	@Override
@@ -185,12 +185,12 @@ public class MapWorld implements World {
 
 	@Override
 	public boolean isWall(V2i tile) {
-		return insideWorld(tile) && map.data(tile) == WorldMap.WALL;
+		return insideWorld(tile) && map.data(tile) == TextualWorldMap.WALL;
 	}
 
 	@Override
 	public boolean isTunnel(V2i tile) {
-		return insideWorld(tile) && map.data(tile) == WorldMap.TUNNEL;
+		return insideWorld(tile) && map.data(tile) == TextualWorldMap.TUNNEL;
 	}
 
 	@Override
@@ -205,7 +205,7 @@ public class MapWorld implements World {
 
 	@Override
 	public boolean isFoodTile(V2i tile) {
-		return insideWorld(tile) && (map.data(tile) == WorldMap.PILL || map.data(tile) == WorldMap.ENERGIZER);
+		return insideWorld(tile) && (map.data(tile) == TextualWorldMap.PELLET || map.data(tile) == TextualWorldMap.ENERGIZER);
 	}
 
 	@Override

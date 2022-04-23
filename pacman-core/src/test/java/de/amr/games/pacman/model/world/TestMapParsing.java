@@ -7,13 +7,13 @@ import java.util.List;
 import org.junit.Test;
 
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.model.common.world.WorldMap;
+import de.amr.games.pacman.model.common.world.TextualWorldMap;
 
 public class TestMapParsing {
 
 	@Test
 	public void testMapParsing() {
-		WorldMap map = new WorldMap("/testmap.txt");
+		TextualWorldMap map = new TextualWorldMap("/testmap.txt");
 		String undefinedKey = "_";
 
 		assertEquals((Integer) 42, map.integer("i"));
