@@ -87,7 +87,7 @@ public class TextualWorldMap {
 	private void parse(Stream<String> lines) {
 		var parser = new DefinitionParser();
 		var dataLines = new ArrayList<String>();
-		lines.map(String::trim).forEach(line -> {
+		lines.forEach(line -> {
 			if (line.startsWith("!")) {
 				// comment, ignore
 			} else {

@@ -54,6 +54,7 @@ public class DefinitionParser {
 	 * @return definition specified by this line or {@code null} if line does not contain a definition
 	 */
 	public Definition parse(String line) {
+		line = line.trim();
 		if (line.startsWith("val ")) {
 			line = line.substring(4).trim();
 			var sides = line.split("=");
