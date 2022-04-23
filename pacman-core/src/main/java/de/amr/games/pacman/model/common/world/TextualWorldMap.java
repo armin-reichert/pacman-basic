@@ -87,7 +87,7 @@ public class TextualWorldMap {
 	private void parse(Stream<String> lines) {
 		var parser = new DefinitionParser();
 		var dataLines = new ArrayList<String>();
-		lines.forEach(line -> {
+		lines.map(String::trim).forEach(line -> {
 			if (line.startsWith("!")) {
 				// comment, ignore
 			} else {
@@ -100,14 +100,23 @@ public class TextualWorldMap {
 			}
 		});
 
-		V2i size = vector("size");
-		if (dataLines.size() != size.y) {
-			log_error("Defined map height %d does not match number of data lines %d", size.y, dataLines.size());
+		V2i mapSize = vector("size");
+		if (dataLines.size() != mapSize.y) {
+			log_error("Defined map height %d does not match number of data lines %d", mapSize.y, dataLines.size());
 		}
 
-		content = new byte[size.y][size.x]; // stored row-wise!
-		for (int row = 0; row < size.y; ++row) {
-			for (int col = 0; col < size.x; ++col) {
+		for (int row = 0; row < mapSize.y; ++row) {
+			String line = dataLines.get(row);
+			if (line.length() != mapSize.x) {
+				log_error("Data line at row index %d ('%s') has wrong length %d, should be %d", row, line, line.length(),
+						mapSize.x);
+				break;
+			}
+		}
+
+		content = new byte[mapSize.y][mapSize.x]; // stored row-wise!
+		for (int row = 0; row < mapSize.y; ++row) {
+			for (int col = 0; col < mapSize.x; ++col) {
 				char c = dataLines.get(row).charAt(col);
 				byte token = token(c);
 				if (token == UNDEF) {
@@ -161,8 +170,8 @@ public class TextualWorldMap {
 	}
 
 	/**
-	 * @param listName the list name (prefix before the dot in list variable assignments), e.g. <code>level</code> for list
-	 *             entries like <code>level.42</code>
+	 * @param listName the list name (prefix before the dot in list variable assignments), e.g. <code>level</code> for
+	 *                 list entries like <code>level.42</code>
 	 * @return list of all values for given list name or {@code null} if no such list value exists
 	 */
 	public List<V2i> vectorList(String listName) {
