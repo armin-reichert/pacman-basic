@@ -23,8 +23,6 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.common.world;
 
-import java.text.ParseException;
-
 import de.amr.games.pacman.lib.V2i;
 
 /**
@@ -54,43 +52,44 @@ public class DefinitionParser {
 	/**
 	 * @param line line of text
 	 * @return definition specified by this line or {@code null} if line does not contain a definition
-	 * @throws ParseException
 	 */
 	public Definition parse(String line) {
 		if (line.startsWith("val ")) {
 			line = line.substring(4).trim();
-			String[] sides = line.split("=");
+			var sides = line.split("=");
 			if (sides.length != 2) {
 				parse_error("Malformed definition '%s'", line);
 			}
-			Definition def = new Definition();
-			def.name = sides[0].trim();
-			def.value = parseRightHandSide(sides[1].trim());
-			return def;
+			var definition = new Definition();
+			definition.name = sides[0].trim();
+			definition.value = parseValue(sides[1].trim());
+			return definition;
 		}
 		return null;
 	}
 
-	private Object parseRightHandSide(String text) {
-		String s = text.trim();
+	private Object parseValue(String s) {
+		s = s.trim();
 		if (s.startsWith("(")) {
 			return parseVector(s);
-		} else if (s.startsWith("\"")) {
-			return parseString(s);
-		} else {
-			return parseInt(s);
 		}
+		if (s.startsWith("\"")) {
+			return parseString(s);
+		}
+		return parseInt(s);
 	}
 
 	private V2i parseVector(String text) {
 		String s = text;
 		if (!s.endsWith(")")) {
 			parse_error("'%s' does not specify a vector", text);
+			return null;
 		}
 		s = s.substring(1, s.length() - 1); // remove enclosing parentheses
 		String[] components = s.split(",");
 		if (components.length != 2) {
 			parse_error("'%s' does not specify a vector", text);
+			return null;
 		}
 		int x = parseInt(components[0].trim());
 		int y = parseInt(components[1].trim());
@@ -100,9 +99,11 @@ public class DefinitionParser {
 	private String parseString(String text) {
 		if (text.length() < 2) {
 			parse_error("'%s' is not enclosed in quotes", text);
+			return null;
 		}
 		if (!text.endsWith("\"")) {
 			parse_error("'%s' has no closing quote", text);
+			return null;
 		}
 		return text.substring(1, text.length() - 1);
 	}
@@ -112,7 +113,7 @@ public class DefinitionParser {
 			return Integer.parseInt(text);
 		} catch (NumberFormatException x) {
 			parse_error("'%s' cannot be parsed as an integer", text);
+			return 0;
 		}
-		return 0;
 	}
 }
