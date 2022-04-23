@@ -25,7 +25,6 @@ module de.amr.games.pacman {
 	exports de.amr.games.pacman.model.common.world;
 	exports de.amr.games.pacman.model.mspacman;
 	exports de.amr.games.pacman.model.pacman;
-	exports de.amr.games.pacman.ui;
 	exports de.amr.games.pacman.controller.mspacman;
 	exports de.amr.games.pacman.controller.pacman;
 }
