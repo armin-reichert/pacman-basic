@@ -31,7 +31,7 @@ import java.util.Random;
 
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Pac;
-import de.amr.games.pacman.model.common.world.MapWorld;
+import de.amr.games.pacman.model.pacman.world.PacManWorld;
 
 /**
  * Model of the Pac-Man game.
@@ -75,7 +75,8 @@ public class PacManGame extends GameModel {
 	};
 
 	public PacManGame() {
-		world = new MapWorld("/pacman/maps/map1.txt"); // all levels use the same world
+//		world = new MapWorld("/pacman/maps/map1.txt"); // all levels use the same world
+		world = new PacManWorld();
 		mazeNumber = 1;
 		player = new Pac("Pac-Man");
 		player.world = world;
