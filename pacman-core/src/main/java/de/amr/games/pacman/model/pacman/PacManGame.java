@@ -31,7 +31,6 @@ import java.util.Random;
 
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Pac;
-import de.amr.games.pacman.model.pacman.world.PacManWorld;
 
 /**
  * Model of the Pac-Man game.

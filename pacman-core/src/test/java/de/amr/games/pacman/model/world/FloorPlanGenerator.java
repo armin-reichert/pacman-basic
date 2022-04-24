@@ -7,11 +7,11 @@ import java.nio.charset.StandardCharsets;
 
 import de.amr.games.pacman.model.common.world.FloorPlan;
 import de.amr.games.pacman.model.common.world.World;
-import de.amr.games.pacman.model.mspacman.world.MsPacManWorld1;
-import de.amr.games.pacman.model.mspacman.world.MsPacManWorld2;
-import de.amr.games.pacman.model.mspacman.world.MsPacManWorld3;
-import de.amr.games.pacman.model.mspacman.world.MsPacManWorld4;
-import de.amr.games.pacman.model.pacman.world.PacManWorld;
+import de.amr.games.pacman.model.mspacman.MsPacManWorld1;
+import de.amr.games.pacman.model.mspacman.MsPacManWorld2;
+import de.amr.games.pacman.model.mspacman.MsPacManWorld3;
+import de.amr.games.pacman.model.mspacman.MsPacManWorld4;
+import de.amr.games.pacman.model.pacman.PacManWorld;
 
 /**
  * Test for floor plan generation.
