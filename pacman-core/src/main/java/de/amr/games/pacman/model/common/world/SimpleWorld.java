@@ -44,12 +44,22 @@ import de.amr.games.pacman.model.common.GameModel;
  */
 public abstract class SimpleWorld implements World {
 
+	//@formatter:off
+	public static final char SPACE         = ' ';
+	public static final char WALL          = '#';
+	public static final char TUNNEL        = 'T';
+	public static final char DOOR_LEFT     = 'L';
+	public static final char DOOR_RIGHT    = 'R';
+	public static final char PELLET        = '.';
+	public static final char ENERGIZER     = '*';
+	//@formatter:on
+
 	protected static V2i v(int x, int y) {
 		return new V2i(x, y);
 	}
 
-	protected final String[] map;
-	protected final int[] pelletsToEatForBonus = new int[2];
+	protected String[] map;
+	protected int[] pelletsToEatForBonus = new int[2];
 	protected List<Portal> portals = List.of();
 	protected List<V2i> upwardsBlockedTiles = List.of();
 	protected BitSet intersections = new BitSet();
@@ -86,7 +96,7 @@ public abstract class SimpleWorld implements World {
 		if (insideWorld(tile)) {
 			return map[tile.y].charAt(tile.x);
 		}
-		return ' ';
+		return SPACE;
 	}
 
 	protected boolean isDoor(V2i tile) {
@@ -180,12 +190,12 @@ public abstract class SimpleWorld implements World {
 
 	@Override
 	public boolean isWall(V2i tile) {
-		return map(tile) == '#';
+		return map(tile) == WALL;
 	}
 
 	@Override
 	public boolean isTunnel(V2i tile) {
-		return map(tile) == 'T';
+		return map(tile) == TUNNEL;
 	}
 
 	@Override
@@ -195,22 +205,22 @@ public abstract class SimpleWorld implements World {
 
 	@Override
 	public boolean isLeftDoorWing(V2i tile) {
-		return map(tile) == 'L';
+		return map(tile) == DOOR_LEFT;
 	}
 
 	@Override
 	public boolean isRightDoorWing(V2i tile) {
-		return map(tile) == 'R';
+		return map(tile) == DOOR_RIGHT;
 	}
 
 	@Override
 	public boolean isFoodTile(V2i tile) {
-		return map(tile) == '.' || map(tile) == '*';
+		return map(tile) == PELLET || map(tile) == ENERGIZER;
 	}
 
 	@Override
 	public boolean isEnergizerTile(V2i tile) {
-		return map(tile) == '*';
+		return map(tile) == ENERGIZER;
 	}
 
 	@Override
