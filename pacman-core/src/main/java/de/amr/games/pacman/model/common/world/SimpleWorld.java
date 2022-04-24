@@ -76,9 +76,11 @@ public abstract class SimpleWorld implements World {
 		buildGhostHouse();
 		computeIntersections();
 		computePortals();
+		resetFood();
 	}
 
 	protected void computeIntersections() {
+		intersections = new BitSet();
 		tiles() //
 				.filter(tile -> !house.contains(tile)) //
 				.filter(tile -> !isDoor(tile.plus(Direction.DOWN.vec))) //
@@ -107,10 +109,7 @@ public abstract class SimpleWorld implements World {
 	}
 
 	protected char map(V2i tile) {
-		if (insideWorld(tile)) {
-			return map[tile.y].charAt(tile.x);
-		}
-		return SPACE;
+		return insideWorld(tile) ? map[tile.y].charAt(tile.x) : SPACE;
 	}
 
 	protected boolean isDoor(V2i tile) {
