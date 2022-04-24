@@ -7,14 +7,18 @@ import org.junit.Test;
 
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.model.common.world.MapWorld;
 import de.amr.games.pacman.model.common.world.World;
+import de.amr.games.pacman.model.mspacman.world.MsPacManWorld1;
+import de.amr.games.pacman.model.mspacman.world.MsPacManWorld2;
+import de.amr.games.pacman.model.mspacman.world.MsPacManWorld3;
+import de.amr.games.pacman.model.mspacman.world.MsPacManWorld4;
+import de.amr.games.pacman.model.pacman.world.PacManWorld;
 
 public class TestWorldFunctions {
 
 	@Test
 	public void testPacManWorld() {
-		World world = new MapWorld("/pacman/maps/map1.txt");
+		World world = new PacManWorld();
 		assertEquals(36, world.numRows());
 		assertEquals(28, world.numCols());
 		assertEquals(4, world.energizerTiles().size());
@@ -28,7 +32,7 @@ public class TestWorldFunctions {
 
 	@Test
 	public void testMsPacManWorld1() {
-		World world = new MapWorld("/mspacman/maps/map1.txt");
+		World world = new MsPacManWorld1();
 		assertEquals(36, world.numRows());
 		assertEquals(28, world.numCols());
 		assertEquals(4, world.energizerTiles().size());
@@ -47,7 +51,7 @@ public class TestWorldFunctions {
 
 	@Test
 	public void testMsPacManWorld2() {
-		World world = new MapWorld("/mspacman/maps/map2.txt");
+		World world = new MsPacManWorld2();
 		assertEquals(36, world.numRows());
 		assertEquals(28, world.numCols());
 		assertEquals(4, world.energizerTiles().size());
@@ -66,7 +70,7 @@ public class TestWorldFunctions {
 
 	@Test
 	public void testMsPacManWorld3() {
-		World world = new MapWorld("/mspacman/maps/map3.txt");
+		World world = new MsPacManWorld3();
 		assertEquals(36, world.numRows());
 		assertEquals(28, world.numCols());
 		assertEquals(4, world.energizerTiles().size());
@@ -85,7 +89,7 @@ public class TestWorldFunctions {
 
 	@Test
 	public void testMsPacManWorld4() {
-		World world = new MapWorld("/mspacman/maps/map4.txt");
+		World world = new MsPacManWorld4();
 		assertEquals(36, world.numRows());
 		assertEquals(28, world.numCols());
 		assertEquals(4, world.energizerTiles().size());
