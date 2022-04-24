@@ -25,7 +25,6 @@ package de.amr.games.pacman.model.pacman;
 
 import java.util.List;
 
-import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.world.ArcadeWorld;
 
 /**
@@ -79,12 +78,8 @@ public class PacManWorld extends ArcadeWorld {
 	public PacManWorld() {
 		super(MAP);
 		upwardsBlockedTiles = List.of(v(12, 13), v(15, 13), v(12, 25), v(15, 25));
+		bonusTile = v(13, 20);
 		pelletsToEatForBonus[0] = 70;
 		pelletsToEatForBonus[1] = 170;
-	}
-
-	@Override
-	public V2i bonusTile() {
-		return v(13, 20);
 	}
 }

@@ -63,6 +63,7 @@ public abstract class ArcadeWorld implements World {
 	}
 
 	protected String[] map;
+	protected V2i bonusTile = v(0, 0);
 	protected int[] pelletsToEatForBonus = new int[2];
 	protected List<Portal> portals = List.of();
 	protected List<V2i> upwardsBlockedTiles = List.of();
@@ -166,7 +167,7 @@ public abstract class ArcadeWorld implements World {
 
 	@Override
 	public V2i bonusTile() {
-		return V2i.NULL;
+		return bonusTile;
 	}
 
 	@Override
