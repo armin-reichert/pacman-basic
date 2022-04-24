@@ -99,7 +99,6 @@ public class MsPacManGame extends GameModel {
 		case 4 -> new MsPacManWorld4();
 		default -> throw new IllegalArgumentException();
 		};
-		world.resetFood();
 		huntingPhaseDurations = huntingPhaseDurationsTable[levelNumber == 1 ? 0 : levelNumber <= 4 ? 1 : 2];
 		if (levelNumber >= 8) {
 			bonusSymbol = new Random().nextInt(7);
