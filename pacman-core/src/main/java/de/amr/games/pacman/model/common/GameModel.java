@@ -44,8 +44,17 @@ import de.amr.games.pacman.model.pacman.Bonus;
  */
 public abstract class GameModel {
 
-	/** Ghost ID. */
-	public static final int RED_GHOST = 0, PINK_GHOST = 1, CYAN_GHOST = 2, ORANGE_GHOST = 3;
+	/** ID of red ghost. */
+	public static final int RED_GHOST = 0;
+
+	/** ID of pink ghost. */
+	public static final int PINK_GHOST = 1;
+
+	/** ID of cyan ghost. */
+	public static final int CYAN_GHOST = 2;
+
+	/** ID of orange ghost. */
+	public static final int ORANGE_GHOST = 3;
 
 	/** Speed in pixels/tick at 100%. */
 	public static final double BASE_SPEED = 1.25;

@@ -30,6 +30,7 @@ import java.util.stream.Stream;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.model.common.GameModel;
 
 /**
  * Interface for accessing the game world.
@@ -44,7 +45,10 @@ public interface World {
 	/** Half tile size in pixels. */
 	public static final int HTS = 4;
 
-	/** Pixels corresponding to the given number of tiles. */
+	/**
+	 * @param numTiles number of tiles
+	 * @return Pixels corresponding to the given number of tiles.
+	 */
 	public static int t(int numTiles) {
 		return numTiles * TS;
 	}
@@ -107,7 +111,7 @@ public interface World {
 	V2i playerHomeTile();
 
 	/**
-	 * @param ghostID ghost ID (0-3)
+	 * @param ghostID ghost ID, see {@link GameModel#RED_GHOST} etc.
 	 * @return ghost scattering target tile (an inaccessible tile)
 	 */
 	V2i ghostScatterTile(int ghostID);
@@ -118,7 +122,7 @@ public interface World {
 	Direction playerStartDirection();
 
 	/**
-	 * @param ghostID ghost ID (0-3)
+	 * @param ghostID ghost ID, see {@link GameModel#RED_GHOST} etc.
 	 * @return ghost start direction
 	 */
 	Direction ghostStartDirection(int ghostID);
@@ -135,31 +139,32 @@ public interface World {
 
 	/**
 	 * @param tile a tile
-	 * @return tells if the tile is a portal
+	 * @return Tells if the tile is part of a portal. The x-position of a portal tile is either {@code -1} (left portal)
+	 *         or {@code numCols()} (right portal).
 	 */
 	boolean isPortal(V2i tile);
 
 	/**
 	 * @param tile a tile
-	 * @return tells if the tile can only be traversed from top to bottom
+	 * @return Tells if the tile can only be traversed downwards.
 	 */
 	boolean isOneWayDown(V2i tile);
 
 	/**
 	 * @param tile a tile
-	 * @return tells if the tile is an intersection (waypoint)
+	 * @return Tells if the tile is an intersection (waypoint).
 	 */
 	boolean isIntersection(V2i tile);
 
 	/**
 	 * @param tile a tile
-	 * @return tells if the tile is a wall
+	 * @return Tells if the tile is a wall.
 	 */
 	boolean isWall(V2i tile);
 
 	/**
 	 * @param tile a tile
-	 * @return tells if the tile is part of a tunnel
+	 * @return Tells if the tile is part of a tunnel.
 	 */
 	boolean isTunnel(V2i tile);
 
@@ -170,54 +175,53 @@ public interface World {
 
 	/**
 	 * @param tile a tile
-	 * @return tells if there is a left door wing at this tile
+	 * @return Tells if the tile is a left door wing.
 	 */
 	boolean isLeftDoorWing(V2i tile);
 
 	/**
 	 * @param tile a tile
-	 * @return tells if there is a right door wing at this tile
+	 * @return tells if the tile is a right door wing.
 	 */
 	boolean isRightDoorWing(V2i tile);
 
 	/**
 	 * @param tile a tile
-	 * @return tells if the tile may contain food (not if it currently contains food!)
+	 * @return Tells if the tile contains food initially.
 	 */
 	boolean isFoodTile(V2i tile);
 
 	/**
 	 * @param tile a tile
-	 * @return tells if the tile may contain an energizer
+	 * @return Tells if the tile contains an energizer initially.
 	 */
 	boolean isEnergizerTile(V2i tile);
 
 	/**
-	 * @return all energizer tiles in the world
+	 * @return All tiles containing an energizer initially.
 	 */
 	Collection<V2i> energizerTiles();
 
 	/**
-	 * @return bonus location in case this is fixed
+	 * @return Bonus location (non-moving bonus only)
 	 */
 	V2i bonusTile();
 
 	/**
-	 * 
 	 * @param bonusIndex first or second bonus (index 0 or 1)
-	 * @return number of pellets to eat for earning bonus
+	 * @return Number of pellets to eat for earning bonus
 	 */
 	int pelletsToEatForBonus(int bonusIndex);
 
 	/**
-	 * @return {@code true} if the bonus food count is reached
+	 * @return Return {@code true} if the eaten food count for getting a bonus has been reached.
 	 */
 	default boolean isBonusReached() {
 		return eatenFoodCount() == pelletsToEatForBonus(0) || eatenFoodCount() == pelletsToEatForBonus(1);
 	}
 
 	/**
-	 * Removed food at given tile.
+	 * Removes food at given tile.
 	 * 
 	 * @param tile some tile
 	 */
@@ -225,35 +229,35 @@ public interface World {
 
 	/**
 	 * @param tile some tile
-	 * @return {@code true} if there is food at the given tile
+	 * @return Return {@code true} if there is food at the given tile.
 	 */
 	boolean containsFood(V2i tile);
 
 	/**
 	 * @param tile some tile
-	 * @return {@code true} if there is eaten food at the given tile
+	 * @return Returns {@code true} if there is eaten food at the given tile.
 	 */
 	boolean isFoodEaten(V2i tile);
 
 	/**
-	 * @return number of pellets remaining
+	 * @return Number of uneaten pellets remaining
 	 */
 	int foodRemaining();
 
 	/**
-	 * @return number of pellets eaten
+	 * @return Number of pellets eaten.
 	 */
 	int eatenFoodCount();
 
 	/**
-	 * @return initial number of energizers
+	 * @return The initial number of energizers.
 	 */
 	default int energizersTotal() {
 		return energizerTiles().size();
 	}
 
 	/**
-	 * @return initial number of pellets including energizers
+	 * @return The initial number of pellets (including energizers).
 	 */
 	default int pelletsTotal() {
 		return (int) tiles().filter(this::isFoodTile).count();
