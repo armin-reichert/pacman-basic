@@ -63,6 +63,7 @@ public abstract class ArcadeWorld implements World {
 	}
 
 	protected String[] map;
+	protected List<V2i> energizerTiles;
 	protected V2i bonusTile = v(0, 0);
 	protected int[] pelletsToEatForBonus = new int[2];
 	protected List<Portal> portals = List.of();
@@ -76,9 +77,10 @@ public abstract class ArcadeWorld implements World {
 	protected ArcadeWorld(String[] map) {
 		this.map = map;
 		buildGhostHouse();
+		buildPortals();
 		findIntersections();
-		findPortals();
 		resetFood();
+		energizerTiles = tiles().filter(this::isEnergizerTile).collect(Collectors.toUnmodifiableList());
 	}
 
 	protected void findIntersections() {
@@ -92,7 +94,7 @@ public abstract class ArcadeWorld implements World {
 				.forEach(intersections::set);
 	}
 
-	protected void findPortals() {
+	protected void buildPortals() {
 		portals = new ArrayList<>(3);
 		for (int y = 0; y < numRows(); ++y) {
 			V2i leftBorder = v(0, y), rightBorder = v(numCols() - 1, y);
@@ -100,6 +102,7 @@ public abstract class ArcadeWorld implements World {
 				portals.add(new Portal(new V2i(-1, y), new V2i(numCols(), y)));
 			}
 		}
+		portals = Collections.unmodifiableList(portals);
 	}
 
 	protected void buildGhostHouse() {
@@ -181,7 +184,7 @@ public abstract class ArcadeWorld implements World {
 
 	@Override
 	public Collection<Portal> portals() {
-		return Collections.unmodifiableList(portals);
+		return portals;
 	}
 
 	@Override
@@ -244,7 +247,7 @@ public abstract class ArcadeWorld implements World {
 
 	@Override
 	public Collection<V2i> energizerTiles() {
-		return tiles().filter(this::isEnergizerTile).collect(Collectors.toList());
+		return energizerTiles;
 	}
 
 	@Override
