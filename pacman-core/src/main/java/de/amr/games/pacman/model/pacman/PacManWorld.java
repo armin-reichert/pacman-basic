@@ -26,14 +26,14 @@ package de.amr.games.pacman.model.pacman;
 import java.util.List;
 
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.model.common.world.SimpleWorld;
+import de.amr.games.pacman.model.common.world.ArcadeWorld;
 
 /**
  * Pac-Man game world.
  * 
  * @author Armin Reichert
  */
-public class PacManWorld extends SimpleWorld {
+public class PacManWorld extends ArcadeWorld {
 
 	private static final String[] MAP = {
 		//@formatter:off

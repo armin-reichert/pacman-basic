@@ -32,7 +32,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -41,11 +40,13 @@ import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.GameModel;
 
 /**
- * World base class.
+ * Base class for Pac-Man and Ms. Pac-Man worlds as given in the original Arcade versions. Implements all common stuff
+ * like ghost house position, ghost and player start positions and direction etc. Concrete subclasses have (almost) only
+ * to provide their specific world map.
  * 
  * @author Armin Reichert
  */
-public abstract class SimpleWorld implements World {
+public abstract class ArcadeWorld implements World {
 
 	//@formatter:off
 	public static final char SPACE         = ' ';
@@ -71,25 +72,26 @@ public abstract class SimpleWorld implements World {
 	protected int totalFoodCount;
 	protected int foodRemaining;
 
-	protected SimpleWorld(String[] map) {
+	protected ArcadeWorld(String[] map) {
 		this.map = map;
 		buildGhostHouse();
-		computeIntersections();
-		computePortals();
+		findIntersections();
+		findPortals();
 		resetFood();
 	}
 
-	protected void computeIntersections() {
+	protected void findIntersections() {
 		intersections = new BitSet();
 		tiles() //
 				.filter(tile -> !house.contains(tile)) //
 				.filter(tile -> !isDoor(tile.plus(Direction.DOWN.vec))) //
-				.filter(tile -> neighbors(tile).filter(Predicate.not(this::isWall)).count() > 2) //
+				.filter(tile -> tile.x > 0 && tile.x < numCols() - 1) //
+				.filter(tile -> neighbors(tile).filter(this::isWall).count() <= 1) //
 				.map(this::index) //
 				.forEach(intersections::set);
 	}
 
-	protected void computePortals() {
+	protected void findPortals() {
 		portals = new ArrayList<>(3);
 		for (int y = 0; y < numRows(); ++y) {
 			V2i leftBorder = v(0, y), rightBorder = v(numCols() - 1, y);

@@ -23,14 +23,14 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.mspacman;
 
-import de.amr.games.pacman.model.common.world.SimpleWorld;
+import de.amr.games.pacman.model.common.world.ArcadeWorld;
 
 /**
  * Ms. Pac-Man world #3.
  * 
  * @author Armin Reichert
  */
-public class MsPacManWorld3 extends SimpleWorld {
+public class MsPacManWorld3 extends ArcadeWorld {
 
 	private static final String[] MAP = {
 		//@formatter:off
