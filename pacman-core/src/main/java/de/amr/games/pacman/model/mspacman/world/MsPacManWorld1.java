@@ -26,8 +26,9 @@ package de.amr.games.pacman.model.mspacman.world;
 import de.amr.games.pacman.model.common.world.SimpleWorld;
 
 /**
+ * Ms. Pac-Man world #1.
+ * 
  * @author Armin Reichert
- *
  */
 public class MsPacManWorld1 extends SimpleWorld {
 

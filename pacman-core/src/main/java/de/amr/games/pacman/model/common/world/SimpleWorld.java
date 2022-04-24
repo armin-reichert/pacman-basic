@@ -41,6 +41,8 @@ import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.GameModel;
 
 /**
+ * World base class.
+ * 
  * @author Armin Reichert
  */
 public abstract class SimpleWorld implements World {
