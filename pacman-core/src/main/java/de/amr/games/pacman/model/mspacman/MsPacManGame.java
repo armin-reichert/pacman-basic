@@ -33,6 +33,8 @@ import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.common.world.MapWorld;
+import de.amr.games.pacman.model.mspacman.world.MsPacManWorld1;
+import de.amr.games.pacman.model.mspacman.world.MsPacManWorld2;
 
 /**
  * Model of the Ms. Pac-Man game.
@@ -93,7 +95,11 @@ public class MsPacManGame extends GameModel {
 		initLevel(levelNumber, levelNumber - 1 < data.length ? data[levelNumber - 1] : data[data.length - 1]);
 		mazeNumber = mazeNumber(levelNumber);
 		int mapNumber = mapNumber(mazeNumber);
-		world = new MapWorld("/mspacman/maps/map" + mapNumber + ".txt");
+		world = switch (mapNumber) {
+		case 1 -> new MsPacManWorld1();
+		case 2 -> new MsPacManWorld2();
+		default -> new MapWorld("/mspacman/maps/map" + mapNumber + ".txt");
+		};
 		world.resetFood();
 		huntingPhaseDurations = huntingPhaseDurationsTable[levelNumber == 1 ? 0 : levelNumber <= 4 ? 1 : 2];
 		if (levelNumber >= 8) {

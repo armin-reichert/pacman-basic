@@ -21,20 +21,18 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-package de.amr.games.pacman.model.pacman.world;
+package de.amr.games.pacman.model.mspacman.world;
 
 import java.util.List;
 
-import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.world.Portal;
 import de.amr.games.pacman.model.common.world.SimpleWorld;
 
 /**
- * Pac-Man game world.
- * 
  * @author Armin Reichert
+ *
  */
-public class PacManWorld extends SimpleWorld {
+public class MsPacManWorld1 extends SimpleWorld {
 
 	private static final String[] MAP = {
 			//@formatter:off
@@ -42,57 +40,51 @@ public class PacManWorld extends SimpleWorld {
 			"############################",
 			"############################",
 			"############################",
-			"#............##............#",
-			"#.####.#####.##.#####.####.#",
-			"#*####.#####.##.#####.####*#",
-			"#.####.#####.##.#####.####.#",
-			"#..........................#",
+			"#......##..........##......#",
+			"#*####.##.########.##.####*#",
 			"#.####.##.########.##.####.#",
+			"#..........................#",
+			"###.##.#####.##.#####.##.###",
+			"  #.##.#####.##.#####.##.#  ",
+			"###.##.#####.##.#####.##.###",
+			"TTT.##.......##.......##.TTT",
+			"###.##### ######## #####.###",
+			"  #.##### ######## #####.#  ",
+			"  #.                    .#  ",
+			"  #.##### ###LR### #####.#  ",
+			"  #.##### #      # #####.#  ",
+			"  #.##    #      #    ##.#  ",
+			"  #.## ## #      # ## ##.#  ",
+			"###.## ## ######## ## ##.###",
+			"TTT.   ##          ##   .TTT",
+			"###.######## ## ########.###",
+			"  #.######## ## ########.#  ",
+			"  #.......   ##   .......#  ",
+			"  #.#####.########.#####.#  ",
+			"###.#####.########.#####.###",
+			"#............  ............#",
+			"#.####.#####.##.#####.####.#",
+			"#.####.#####.##.#####.####.#",
+			"#.####.##....##....##.####.#",
+			"#*####.##.########.##.####*#",
 			"#.####.##.########.##.####.#",
-			"#......##....##....##......#",
-			"######.##### ## #####.######",
-			"     #.##### ## #####.#     ",
-			"     #.##          ##.#     ",
-			"     #.## ###LR### ##.#     ",
-			"######.## #      # ##.######",
-			"TTTTTT.   #      #   .TTTTTT",
-			"######.## #      # ##.######",
-			"     #.## ######## ##.#     ",
-			"     #.##          ##.#     ",
-			"     #.## ######## ##.#     ",
-			"######.## ######## ##.######",
-			"#............##............#",
-			"#.####.#####.##.#####.####.#",
-			"#.####.#####.##.#####.####.#",
-			"#*..##.......  .......##..*#",
-			"###.##.##.########.##.##.###",
-			"###.##.##.########.##.##.###",
-			"#......##....##....##......#",
-			"#.##########.##.##########.#",
-			"#.##########.##.##########.#",
 			"#..........................#",
 			"############################",
 			"############################",
 			"############################",
-			//@formatter:on
+		//@formatter:on
 	};
 
-	public PacManWorld() {
+	public MsPacManWorld1() {
 		super(MAP);
-		upwardsBlockedTiles = List.of(v(12, 13), v(15, 13), v(12, 25), v(15, 25));
-		portals = List.of(new Portal(v(-1, 17), v(28, 17)));
-	}
-
-	@Override
-	public V2i bonusTile() {
-		return v(13, 20);
+		portals = List.of(new Portal(v(-1, 11), v(28, 11)), new Portal(v(-1, 20), v(28, 20)));
 	}
 
 	@Override
 	public int pelletsToEatForBonus(int bonusIndex) {
 		return switch (bonusIndex) {
-		case 0 -> 70;
-		case 1 -> 170;
+		case 0 -> 64;
+		case 1 -> 172;
 		default -> throw new IllegalArgumentException();
 		};
 	}
