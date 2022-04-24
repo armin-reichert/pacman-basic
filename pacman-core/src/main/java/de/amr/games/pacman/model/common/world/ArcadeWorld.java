@@ -201,7 +201,10 @@ public abstract class ArcadeWorld implements World {
 
 	@Override
 	public boolean isIntersection(V2i tile) {
-		return intersections.get(index(tile));
+		if (insideWorld(tile)) {
+			return intersections.get(index(tile));
+		}
+		return false;
 	}
 
 	@Override
@@ -254,12 +257,18 @@ public abstract class ArcadeWorld implements World {
 
 	@Override
 	public boolean containsFood(V2i tile) {
-		return isFoodTile(tile) && !isFoodEaten(tile);
+		if (insideWorld(tile)) {
+			return isFoodTile(tile) && !isFoodEaten(tile);
+		}
+		return false;
 	}
 
 	@Override
 	public boolean isFoodEaten(V2i tile) {
-		return eaten.get(index(tile));
+		if (insideWorld(tile)) {
+			return eaten.get(index(tile));
+		}
+		return false;
 	}
 
 	@Override
