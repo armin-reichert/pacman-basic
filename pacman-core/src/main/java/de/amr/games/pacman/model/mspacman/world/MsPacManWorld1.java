@@ -78,14 +78,7 @@ public class MsPacManWorld1 extends SimpleWorld {
 	public MsPacManWorld1() {
 		super(MAP);
 		portals = List.of(new Portal(v(-1, 11), v(28, 11)), new Portal(v(-1, 20), v(28, 20)));
-	}
-
-	@Override
-	public int pelletsToEatForBonus(int bonusIndex) {
-		return switch (bonusIndex) {
-		case 0 -> 64;
-		case 1 -> 172;
-		default -> throw new IllegalArgumentException();
-		};
+		pelletsToEatForBonus[0] = 64;
+		pelletsToEatForBonus[1] = 172;
 	}
 }

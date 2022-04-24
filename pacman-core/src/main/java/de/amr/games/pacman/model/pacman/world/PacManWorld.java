@@ -81,19 +81,12 @@ public class PacManWorld extends SimpleWorld {
 		super(MAP);
 		upwardsBlockedTiles = List.of(v(12, 13), v(15, 13), v(12, 25), v(15, 25));
 		portals = List.of(new Portal(v(-1, 17), v(28, 17)));
+		pelletsToEatForBonus[0] = 70;
+		pelletsToEatForBonus[1] = 170;
 	}
 
 	@Override
 	public V2i bonusTile() {
 		return v(13, 20);
-	}
-
-	@Override
-	public int pelletsToEatForBonus(int bonusIndex) {
-		return switch (bonusIndex) {
-		case 0 -> 70;
-		case 1 -> 170;
-		default -> throw new IllegalArgumentException();
-		};
 	}
 }

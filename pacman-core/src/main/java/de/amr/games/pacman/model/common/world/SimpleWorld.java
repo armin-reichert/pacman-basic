@@ -49,6 +49,7 @@ public abstract class SimpleWorld implements World {
 	}
 
 	protected final String[] map;
+	protected final int[] pelletsToEatForBonus = new int[2];
 	protected List<Portal> portals = List.of();
 	protected List<V2i> upwardsBlockedTiles = List.of();
 	protected BitSet intersections = new BitSet();
@@ -141,6 +142,15 @@ public abstract class SimpleWorld implements World {
 	@Override
 	public V2i bonusTile() {
 		return V2i.NULL;
+	}
+
+	@Override
+	public int pelletsToEatForBonus(int bonusIndex) {
+		return switch (bonusIndex) {
+		case 0 -> pelletsToEatForBonus[0];
+		case 1 -> pelletsToEatForBonus[1];
+		default -> throw new IllegalArgumentException();
+		};
 	}
 
 	@Override
