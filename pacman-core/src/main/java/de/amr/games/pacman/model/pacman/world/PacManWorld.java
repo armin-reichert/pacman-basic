@@ -26,7 +26,6 @@ package de.amr.games.pacman.model.pacman.world;
 import java.util.List;
 
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.model.common.world.Portal;
 import de.amr.games.pacman.model.common.world.SimpleWorld;
 
 /**
@@ -80,7 +79,6 @@ public class PacManWorld extends SimpleWorld {
 	public PacManWorld() {
 		super(MAP);
 		upwardsBlockedTiles = List.of(v(12, 13), v(15, 13), v(12, 25), v(15, 25));
-		portals = List.of(new Portal(v(-1, 17), v(28, 17)));
 		pelletsToEatForBonus[0] = 70;
 		pelletsToEatForBonus[1] = 170;
 	}

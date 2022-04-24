@@ -23,9 +23,6 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.mspacman.world;
 
-import java.util.List;
-
-import de.amr.games.pacman.model.common.world.Portal;
 import de.amr.games.pacman.model.common.world.SimpleWorld;
 
 /**
@@ -77,7 +74,6 @@ public class MsPacManWorld1 extends SimpleWorld {
 
 	public MsPacManWorld1() {
 		super(MAP);
-		portals = List.of(new Portal(v(-1, 11), v(28, 11)), new Portal(v(-1, 20), v(28, 20)));
 		pelletsToEatForBonus[0] = 64;
 		pelletsToEatForBonus[1] = 172;
 	}

@@ -26,6 +26,7 @@ package de.amr.games.pacman.model.common.world;
 import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.lib.Misc.trim;
 
+import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collection;
 import java.util.Collections;
@@ -72,6 +73,7 @@ public abstract class SimpleWorld implements World {
 		this.map = map;
 		buildGhostHouse();
 		computeIntersections();
+		computePortals();
 	}
 
 	protected void computeIntersections() {
@@ -81,6 +83,16 @@ public abstract class SimpleWorld implements World {
 				.filter(tile -> neighbors(tile).filter(Predicate.not(this::isWall)).count() > 2) //
 				.map(this::index) //
 				.forEach(intersections::set);
+	}
+
+	protected void computePortals() {
+		portals = new ArrayList<>(3);
+		for (int y = 0; y < numRows(); ++y) {
+			V2i leftBorder = v(0, y), rightBorder = v(numCols() - 1, y);
+			if (map(leftBorder) == TUNNEL && map(rightBorder) == TUNNEL) {
+				portals.add(new Portal(new V2i(-1, y), new V2i(numCols(), y)));
+			}
+		}
 	}
 
 	protected void buildGhostHouse() {
