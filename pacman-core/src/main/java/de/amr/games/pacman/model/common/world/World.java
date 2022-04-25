@@ -64,6 +64,14 @@ public interface World {
 	}
 
 	/**
+	 * @param tile some tile
+	 * @return the four neighbor tiles in order UP, RIGHT, DOWN, LEFT
+	 */
+	public static Stream<V2i> neighbors(V2i tile) {
+		return Stream.of(Direction.UP, Direction.RIGHT, Direction.DOWN, Direction.LEFT).map(dir -> tile.plus(dir.vec));
+	}
+
+	/**
 	 * @return Number of tiles in horizontal direction.
 	 */
 	int numCols();

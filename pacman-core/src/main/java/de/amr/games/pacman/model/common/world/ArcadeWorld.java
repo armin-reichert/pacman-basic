@@ -32,7 +32,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
@@ -87,7 +86,7 @@ public abstract class ArcadeWorld implements World {
 		tiles() //
 				.filter(tile -> !house.contains(tile)) //
 				.filter(tile -> tile.x > 0 && tile.x < numCols() - 1) //
-				.filter(tile -> neighbors(tile).filter(nb -> isWall(nb) || isDoor(nb)).count() <= 1) //
+				.filter(tile -> World.neighbors(tile).filter(nb -> isWall(nb) || isDoor(nb)).count() <= 1) //
 				.map(this::index) //
 				.forEach(intersections::set);
 	}
@@ -119,10 +118,6 @@ public abstract class ArcadeWorld implements World {
 
 	protected boolean isDoor(V2i tile) {
 		return isLeftDoor(tile) || isRightDoor(tile);
-	}
-
-	protected Stream<V2i> neighbors(V2i tile) {
-		return Stream.of(Direction.values()).map(dir -> tile.plus(dir.vec));
 	}
 
 	@Override
