@@ -98,7 +98,7 @@ public class Ghost extends Creature {
 	 * @return {@code true} if the ghost is near the ghosthouse door.
 	 */
 	public boolean atGhostHouseDoor(GhostHouse house) {
-		return tile().equals(house.entry) && differsAtMost(offset().x, HTS, 2);
+		return tile().equals(house.leftEntry()) && differsAtMost(offset().x, HTS, 2);
 	}
 
 	/**
@@ -194,7 +194,7 @@ public class Ghost extends Creature {
 		V2i tile = tile();
 		V2d offset = offset();
 		// House left? Resume hunting.
-		if (tile.equals(house.entry) && differsAtMost(offset.y, 0, 1)) {
+		if (tile.equals(house.leftEntry()) && differsAtMost(offset.y, 0, 1)) {
 			setOffset(HTS, 0);
 			setMoveDir(Direction.LEFT);
 			setWishDir(Direction.LEFT);

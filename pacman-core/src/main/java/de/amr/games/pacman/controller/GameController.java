@@ -684,7 +684,7 @@ public class GameController extends FiniteStateMachine<GameState> {
 	 */
 	private void killGhost(Ghost ghost) {
 		ghost.state = DEAD;
-		ghost.targetTile = game.world.ghostHouse().entry;
+		ghost.targetTile = game.world.ghostHouse().leftEntry();
 		ghost.bounty = game.ghostBounty;
 		game.ghostBounty *= 2;
 		game.numGhostsKilled++;

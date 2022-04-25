@@ -104,7 +104,6 @@ public abstract class ArcadeWorld implements World {
 
 	protected void buildGhostHouse() {
 		house = new GhostHouse(v(10, 15), v(7, 4));
-		house.entry = v(13, 14);
 		house.seatLeft = v(11, 17);
 		house.seatCenter = v(13, 17);
 		house.seatRight = v(15, 17);

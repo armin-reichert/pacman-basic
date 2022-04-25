@@ -38,11 +38,10 @@ public class GhostHouse {
 	/** Top-left tile. */
 	public final V2i topLeft;
 
-	/** Left entry tile. */
-	public V2i entry;
-
+	/** Left door. */
 	public V2i leftDoor;
 
+	/** Right door. */
 	public V2i rightDoor;
 
 	/** Left seat in house. */
@@ -57,6 +56,14 @@ public class GhostHouse {
 	public GhostHouse(V2i topLeft, V2i size) {
 		this.topLeft = topLeft;
 		this.size = size;
+	}
+
+	public V2i leftEntry() {
+		return leftDoor.minus(0, 1);
+	}
+
+	public V2i rightEntry() {
+		return rightDoor.minus(0, 1);
 	}
 
 	public boolean contains(V2i tile) {

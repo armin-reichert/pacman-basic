@@ -70,9 +70,9 @@ public class MovingBonus extends Bonus {
 		show();
 
 		route.clear();
-		route.add(world.ghostHouse().entry);
-		route.add(world.ghostHouse().entry.plus(0, world.ghostHouse().size.y + 2));
-		route.add(world.ghostHouse().entry);
+		route.add(world.ghostHouse().leftEntry());
+		route.add(world.ghostHouse().leftEntry().plus(0, world.ghostHouse().size.y + 2));
+		route.add(world.ghostHouse().leftEntry());
 		route.add(moveDir == Direction.RIGHT ? exitPortal.right : exitPortal.left);
 
 		state = BonusState.EDIBLE;

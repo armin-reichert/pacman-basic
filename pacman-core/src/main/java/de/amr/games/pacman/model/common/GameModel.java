@@ -232,7 +232,7 @@ public abstract class GameModel {
 			ghost.elroy = 0;
 		}
 
-		ghosts[RED_GHOST].homeTile = world.ghostHouse().entry;
+		ghosts[RED_GHOST].homeTile = world.ghostHouse().leftEntry();
 		ghosts[RED_GHOST].revivalTile = world.ghostHouse().seatCenter;
 		ghosts[RED_GHOST].globalDotLimit = Integer.MAX_VALUE;
 		ghosts[RED_GHOST].privateDotLimit = 0;
