@@ -44,7 +44,7 @@ import de.amr.games.pacman.model.common.GameModel;
  * 
  * @author Armin Reichert
  */
-public abstract class ArcadeWorld implements World {
+public class ArcadeWorld implements World {
 
 	public static final int SIZE_X = 28;
 	public static final int SIZE_Y = 36;
