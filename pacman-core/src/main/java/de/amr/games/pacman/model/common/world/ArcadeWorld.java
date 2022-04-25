@@ -182,6 +182,11 @@ public abstract class ArcadeWorld implements World {
 	}
 
 	@Override
+	public GhostHouse ghostHouse() {
+		return house;
+	}
+
+	@Override
 	public Collection<Portal> portals() {
 		return portals;
 	}
@@ -217,11 +222,6 @@ public abstract class ArcadeWorld implements World {
 	@Override
 	public boolean isTunnel(V2i tile) {
 		return map(tile) == TUNNEL;
-	}
-
-	@Override
-	public GhostHouse ghostHouse() {
-		return house;
 	}
 
 	@Override
