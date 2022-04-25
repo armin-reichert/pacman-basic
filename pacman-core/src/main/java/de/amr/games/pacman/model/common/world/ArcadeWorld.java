@@ -71,7 +71,6 @@ public abstract class ArcadeWorld implements World {
 	protected List<V2i> upwardsBlockedTiles = List.of();
 	protected BitSet intersections = new BitSet();
 	protected GhostHouse house;
-//	protected BitSet eaten = new BitSet();
 	protected int totalFoodCount;
 	protected int foodRemaining;
 
