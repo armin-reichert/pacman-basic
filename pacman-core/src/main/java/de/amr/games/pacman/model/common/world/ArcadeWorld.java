@@ -50,11 +50,13 @@ public abstract class ArcadeWorld implements World {
 	public static final int SIZE_Y = 36;
 
 	//@formatter:off
-	public static final byte SPACE         = 0; // ' '
-	public static final byte WALL          = 1; // '#'
-	public static final byte TUNNEL        = 2; // 'T'
-	public static final byte PELLET        = 3; // '.'
-	public static final byte ENERGIZER     = 4; // '*'
+	public static final byte SPACE          = 0; // ' '
+	public static final byte WALL           = 1; // '#'
+	public static final byte TUNNEL         = 2; // 'T'
+	public static final byte PELLET         = 3; // '.'
+	public static final byte ENERGIZER      = 4; // '*'
+	public static final byte PELLET_EATEN   = 5;
+	public static final byte ENERGIZER_EATEN = 6;
 	//@formatter:on
 
 	protected static V2i v(int x, int y) {
@@ -69,7 +71,7 @@ public abstract class ArcadeWorld implements World {
 	protected List<V2i> upwardsBlockedTiles = List.of();
 	protected BitSet intersections = new BitSet();
 	protected GhostHouse house;
-	protected BitSet eaten = new BitSet();
+//	protected BitSet eaten = new BitSet();
 	protected int totalFoodCount;
 	protected int foodRemaining;
 
@@ -229,12 +231,12 @@ public abstract class ArcadeWorld implements World {
 
 	@Override
 	public boolean isFoodTile(V2i tile) {
-		return map(tile) == PELLET || map(tile) == ENERGIZER;
+		return map(tile) == PELLET || map(tile) == PELLET_EATEN || map(tile) == ENERGIZER || map(tile) == ENERGIZER_EATEN;
 	}
 
 	@Override
 	public boolean isEnergizerTile(V2i tile) {
-		return map(tile) == ENERGIZER;
+		return map(tile) == ENERGIZER || map(tile) == ENERGIZER_EATEN;
 	}
 
 	@Override
@@ -244,8 +246,11 @@ public abstract class ArcadeWorld implements World {
 
 	@Override
 	public void removeFood(V2i tile) {
-		if (containsFood(tile)) {
-			eaten.set(index(tile));
+		if (map(tile) == ENERGIZER) {
+			map[tile.y][tile.x] = ENERGIZER_EATEN;
+			--foodRemaining;
+		} else if (map(tile) == PELLET) {
+			map[tile.y][tile.x] = PELLET_EATEN;
 			--foodRemaining;
 		}
 	}
@@ -257,7 +262,7 @@ public abstract class ArcadeWorld implements World {
 
 	@Override
 	public boolean isFoodEaten(V2i tile) {
-		return insideWorld(tile) && eaten.get(index(tile));
+		return insideWorld(tile) && map(tile) == PELLET_EATEN || map(tile) == ENERGIZER_EATEN;
 	}
 
 	@Override
@@ -272,7 +277,13 @@ public abstract class ArcadeWorld implements World {
 
 	@Override
 	public void resetFood() {
-		eaten = new BitSet();
+		tiles().forEach(tile -> {
+			if (map(tile) == PELLET_EATEN) {
+				map[tile.y][tile.x] = PELLET;
+			} else if (map(tile) == ENERGIZER_EATEN) {
+				map[tile.y][tile.x] = ENERGIZER;
+			}
+		});
 		totalFoodCount = (int) tiles().filter(this::isFoodTile).count();
 		foodRemaining = totalFoodCount;
 		long energizerCount = tiles().filter(this::isEnergizerTile).count();
