@@ -87,9 +87,8 @@ public abstract class ArcadeWorld implements World {
 		intersections = new BitSet();
 		tiles() //
 				.filter(tile -> !house.contains(tile)) //
-				.filter(tile -> !isDoor(tile.plus(Direction.DOWN.vec))) //
 				.filter(tile -> tile.x > 0 && tile.x < numCols() - 1) //
-				.filter(tile -> neighbors(tile).filter(this::isWall).count() <= 1) //
+				.filter(tile -> neighbors(tile).filter(nb -> isWall(nb) || isDoor(nb)).count() <= 1) //
 				.map(this::index) //
 				.forEach(intersections::set);
 	}
