@@ -50,8 +50,6 @@ public abstract class ArcadeWorld implements World {
 	public static final char SPACE         = ' ';
 	public static final char WALL          = '#';
 	public static final char TUNNEL        = 'T';
-	public static final char DOOR_LEFT     = 'L';
-	public static final char DOOR_RIGHT    = 'R';
 	public static final char PELLET        = '.';
 	public static final char ENERGIZER     = '*';
 	//@formatter:on
@@ -104,11 +102,11 @@ public abstract class ArcadeWorld implements World {
 
 	protected void buildGhostHouse() {
 		house = new GhostHouse(v(10, 15), v(7, 4));
+		house.leftDoor = v(13, 15);
+		house.rightDoor = v(14, 15);
 		house.seatLeft = v(11, 17);
 		house.seatCenter = v(13, 17);
 		house.seatRight = v(15, 17);
-		house.leftDoor = tiles().filter(this::isLeftDoor).findAny().get();
-		house.rightDoor = tiles().filter(this::isRightDoor).findAny().get();
 	}
 
 	protected char map(V2i tile) {
@@ -220,12 +218,12 @@ public abstract class ArcadeWorld implements World {
 
 	@Override
 	public boolean isLeftDoor(V2i tile) {
-		return map(tile) == DOOR_LEFT;
+		return tile.equals(house.leftDoor);
 	}
 
 	@Override
 	public boolean isRightDoor(V2i tile) {
-		return map(tile) == DOOR_RIGHT;
+		return tile.equals(house.rightDoor);
 	}
 
 	@Override
