@@ -24,7 +24,6 @@ SOFTWARE.
 package de.amr.games.pacman.model.common.world;
 
 import static de.amr.games.pacman.lib.Logging.log;
-import static de.amr.games.pacman.lib.Misc.trim;
 
 import java.util.ArrayList;
 import java.util.BitSet;
@@ -110,7 +109,8 @@ public abstract class ArcadeWorld implements World {
 		house.seatLeft = v(11, 17);
 		house.seatCenter = v(13, 17);
 		house.seatRight = v(15, 17);
-		house.doorTiles = trim(tiles().filter(this::isDoor).collect(Collectors.toList()));
+		house.leftDoor = tiles().filter(this::isLeftDoorWing).findAny().get();
+		house.rightDoor = tiles().filter(this::isRightDoorWing).findAny().get();
 	}
 
 	protected char map(V2i tile) {

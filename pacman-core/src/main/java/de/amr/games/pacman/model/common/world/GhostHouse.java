@@ -23,8 +23,6 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.common.world;
 
-import java.util.List;
-
 import de.amr.games.pacman.lib.V2i;
 
 /**
@@ -35,13 +33,17 @@ import de.amr.games.pacman.lib.V2i;
 public class GhostHouse {
 
 	/** Size (width, height) in tiles. */
-	public V2i size;
+	public final V2i size;
 
 	/** Top-left tile. */
-	public V2i topLeft;
+	public final V2i topLeft;
 
 	/** Left entry tile. */
 	public V2i entry;
+
+	public V2i leftDoor;
+
+	public V2i rightDoor;
 
 	/** Left seat in house. */
 	public V2i seatLeft;
@@ -52,16 +54,13 @@ public class GhostHouse {
 	/** Right seat in house. */
 	public V2i seatRight;
 
-	/** Tiles with doors. */
-	public List<V2i> doorTiles;
-
 	public GhostHouse(V2i topLeft, V2i size) {
 		this.topLeft = topLeft;
 		this.size = size;
 	}
 
 	public boolean contains(V2i tile) {
-		V2i bottomRight = topLeft.plus(size.x, size.y);
+		V2i bottomRight = topLeft.plus(size);
 		return tile.x >= topLeft.x && tile.x <= bottomRight.x && tile.y >= topLeft.y && tile.y <= bottomRight.y;
 	}
 }
