@@ -176,13 +176,13 @@ public interface World {
 	 * @param tile a tile
 	 * @return Tells if the tile is a left door wing.
 	 */
-	boolean isLeftDoorWing(V2i tile);
+	boolean isLeftDoor(V2i tile);
 
 	/**
 	 * @param tile a tile
 	 * @return tells if the tile is a right door wing.
 	 */
-	boolean isRightDoorWing(V2i tile);
+	boolean isRightDoor(V2i tile);
 
 	/**
 	 * @param tile a tile

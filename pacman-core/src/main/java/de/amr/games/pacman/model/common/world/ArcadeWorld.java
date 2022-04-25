@@ -109,8 +109,8 @@ public abstract class ArcadeWorld implements World {
 		house.seatLeft = v(11, 17);
 		house.seatCenter = v(13, 17);
 		house.seatRight = v(15, 17);
-		house.leftDoor = tiles().filter(this::isLeftDoorWing).findAny().get();
-		house.rightDoor = tiles().filter(this::isRightDoorWing).findAny().get();
+		house.leftDoor = tiles().filter(this::isLeftDoor).findAny().get();
+		house.rightDoor = tiles().filter(this::isRightDoor).findAny().get();
 	}
 
 	protected char map(V2i tile) {
@@ -118,7 +118,7 @@ public abstract class ArcadeWorld implements World {
 	}
 
 	protected boolean isDoor(V2i tile) {
-		return isLeftDoorWing(tile) || isRightDoorWing(tile);
+		return isLeftDoor(tile) || isRightDoor(tile);
 	}
 
 	protected Stream<V2i> neighbors(V2i tile) {
@@ -225,12 +225,12 @@ public abstract class ArcadeWorld implements World {
 	}
 
 	@Override
-	public boolean isLeftDoorWing(V2i tile) {
+	public boolean isLeftDoor(V2i tile) {
 		return map(tile) == DOOR_LEFT;
 	}
 
 	@Override
-	public boolean isRightDoorWing(V2i tile) {
+	public boolean isRightDoor(V2i tile) {
 		return map(tile) == DOOR_RIGHT;
 	}
 

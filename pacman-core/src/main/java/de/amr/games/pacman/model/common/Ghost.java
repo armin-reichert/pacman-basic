@@ -82,7 +82,7 @@ public class Ghost extends Creature {
 
 	@Override
 	public boolean canAccessTile(V2i tile) {
-		if (world.isLeftDoorWing(tile) || world.isRightDoorWing(tile)) {
+		if (world.isLeftDoor(tile) || world.isRightDoor(tile)) {
 			return is(GhostState.ENTERING_HOUSE) || is(GhostState.LEAVING_HOUSE);
 		}
 		if (world.isOneWayDown(tile)) {
