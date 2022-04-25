@@ -195,15 +195,12 @@ public abstract class ArcadeWorld implements World {
 
 	@Override
 	public boolean isOneWayDown(V2i tile) {
-		return upwardsBlockedTiles.contains(tile);
+		return insideWorld(tile) && upwardsBlockedTiles.contains(tile);
 	}
 
 	@Override
 	public boolean isIntersection(V2i tile) {
-		if (insideWorld(tile)) {
-			return intersections.get(index(tile));
-		}
-		return false;
+		return insideWorld(tile) && intersections.get(index(tile));
 	}
 
 	@Override
@@ -241,18 +238,12 @@ public abstract class ArcadeWorld implements World {
 
 	@Override
 	public boolean containsFood(V2i tile) {
-		if (insideWorld(tile)) {
-			return isFoodTile(tile) && !isFoodEaten(tile);
-		}
-		return false;
+		return insideWorld(tile) && isFoodTile(tile) && !isFoodEaten(tile);
 	}
 
 	@Override
 	public boolean isFoodEaten(V2i tile) {
-		if (insideWorld(tile)) {
-			return eaten.get(index(tile));
-		}
-		return false;
+		return insideWorld(tile) && eaten.get(index(tile));
 	}
 
 	@Override
@@ -267,10 +258,10 @@ public abstract class ArcadeWorld implements World {
 
 	@Override
 	public void resetFood() {
+		eaten = new BitSet();
 		totalFoodCount = (int) tiles().filter(this::isFoodTile).count();
 		foodRemaining = totalFoodCount;
-		eaten = new BitSet();
 		long energizerCount = tiles().filter(this::isEnergizerTile).count();
-		log("Total food: %d (%d pellets, %d energizers)", totalFoodCount, totalFoodCount - energizerCount, energizerCount);
+		log("Food restored (%d pellets, %d energizers)", totalFoodCount - energizerCount, energizerCount);
 	}
 }
