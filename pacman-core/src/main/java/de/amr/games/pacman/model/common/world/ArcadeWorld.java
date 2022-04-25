@@ -89,6 +89,10 @@ public abstract class ArcadeWorld implements World {
 				.forEach(intersections::set);
 	}
 
+	private boolean isDoor(V2i tile) {
+		return tile.equals(house.leftDoor) || tile.equals(house.rightDoor);
+	}
+
 	protected void buildPortals() {
 		portals = new ArrayList<>(3);
 		for (int y = 0; y < numRows(); ++y) {
@@ -111,10 +115,6 @@ public abstract class ArcadeWorld implements World {
 
 	protected char map(V2i tile) {
 		return insideWorld(tile) ? map[tile.y].charAt(tile.x) : SPACE;
-	}
-
-	protected boolean isDoor(V2i tile) {
-		return isLeftDoor(tile) || isRightDoor(tile);
 	}
 
 	@Override
@@ -214,16 +214,6 @@ public abstract class ArcadeWorld implements World {
 	@Override
 	public boolean isTunnel(V2i tile) {
 		return map(tile) == TUNNEL;
-	}
-
-	@Override
-	public boolean isLeftDoor(V2i tile) {
-		return tile.equals(house.leftDoor);
-	}
-
-	@Override
-	public boolean isRightDoor(V2i tile) {
-		return tile.equals(house.rightDoor);
 	}
 
 	@Override
