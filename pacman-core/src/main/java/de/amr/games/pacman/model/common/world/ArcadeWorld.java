@@ -50,12 +50,12 @@ public abstract class ArcadeWorld implements World {
 	public static final int SIZE_Y = 36;
 
 	//@formatter:off
-	public static final byte SPACE          = 0; // ' '
-	public static final byte WALL           = 1; // '#'
-	public static final byte TUNNEL         = 2; // 'T'
-	public static final byte PELLET         = 3; // '.'
-	public static final byte ENERGIZER      = 4; // '*'
-	public static final byte PELLET_EATEN   = 5;
+	public static final byte SPACE           = 0; // ' '
+	public static final byte WALL            = 1; // '#'
+	public static final byte TUNNEL          = 2; // 'T'
+	public static final byte PELLET          = 3; // '.'
+	public static final byte ENERGIZER       = 4; // '*'
+	public static final byte PELLET_EATEN    = 5;
 	public static final byte ENERGIZER_EATEN = 6;
 	//@formatter:on
 
