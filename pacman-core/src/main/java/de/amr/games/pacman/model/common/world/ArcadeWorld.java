@@ -46,19 +46,22 @@ import de.amr.games.pacman.model.common.GameModel;
  */
 public abstract class ArcadeWorld implements World {
 
+	public static final int SIZE_X = 28;
+	public static final int SIZE_Y = 36;
+
 	//@formatter:off
-	public static final char SPACE         = ' ';
-	public static final char WALL          = '#';
-	public static final char TUNNEL        = 'T';
-	public static final char PELLET        = '.';
-	public static final char ENERGIZER     = '*';
+	public static final byte SPACE         = 0; // ' '
+	public static final byte WALL          = 1; // '#'
+	public static final byte TUNNEL        = 2; // 'T'
+	public static final byte PELLET        = 3; // '.'
+	public static final byte ENERGIZER     = 4; // '*'
 	//@formatter:on
 
 	protected static V2i v(int x, int y) {
 		return new V2i(x, y);
 	}
 
-	protected String[] map;
+	protected byte[][] map = new byte[SIZE_Y][SIZE_X];
 	protected List<V2i> energizerTiles;
 	protected V2i bonusTile = v(0, 0);
 	protected int[] pelletsToEatForBonus = new int[2];
@@ -70,8 +73,19 @@ public abstract class ArcadeWorld implements World {
 	protected int totalFoodCount;
 	protected int foodRemaining;
 
-	protected ArcadeWorld(String[] map) {
-		this.map = map;
+	protected ArcadeWorld(String[] mapText) {
+		for (int row = 0; row < SIZE_Y; ++row) {
+			for (int col = 0; col < SIZE_X; ++col) {
+				map[row][col] = switch (mapText[row].charAt(col)) {
+				case ' ' -> SPACE;
+				case '#' -> WALL;
+				case 'T' -> TUNNEL;
+				case '.' -> PELLET;
+				case '*' -> ENERGIZER;
+				default -> throw new IllegalArgumentException();
+				};
+			}
+		}
 		buildGhostHouse();
 		buildPortals();
 		findIntersections();
@@ -113,18 +127,18 @@ public abstract class ArcadeWorld implements World {
 		house.seatRight = v(15, 17);
 	}
 
-	protected char map(V2i tile) {
-		return insideWorld(tile) ? map[tile.y].charAt(tile.x) : SPACE;
+	protected byte map(V2i tile) {
+		return insideWorld(tile) ? map[tile.y][tile.x] : SPACE;
 	}
 
 	@Override
 	public int numCols() {
-		return 28;
+		return SIZE_X;
 	}
 
 	@Override
 	public int numRows() {
-		return 36;
+		return SIZE_Y;
 	}
 
 	@Override
