@@ -228,7 +228,7 @@ public interface World {
 	 * @param tile some tile
 	 * @return Returns {@code true} if there is eaten food at the given tile.
 	 */
-	boolean isFoodEaten(V2i tile);
+	boolean containsEatenFood(V2i tile);
 
 	/**
 	 * @return Number of uneaten pellets remaining

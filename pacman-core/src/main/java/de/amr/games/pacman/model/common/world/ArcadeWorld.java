@@ -253,11 +253,12 @@ public class ArcadeWorld implements World {
 
 	@Override
 	public boolean containsFood(V2i tile) {
-		return insideWorld(tile) && isFoodTile(tile) && !isFoodEaten(tile);
+		byte data = map(tile);
+		return data == PELLET || data == ENERGIZER;
 	}
 
 	@Override
-	public boolean isFoodEaten(V2i tile) {
+	public boolean containsEatenFood(V2i tile) {
 		byte data = map(tile);
 		return data == PELLET_EATEN || data == ENERGIZER_EATEN;
 	}
