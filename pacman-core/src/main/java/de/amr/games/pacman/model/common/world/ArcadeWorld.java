@@ -45,9 +45,6 @@ import de.amr.games.pacman.model.common.GameModel;
  */
 public class ArcadeWorld implements World {
 
-	public static final int SIZE_X = 28;
-	public static final int SIZE_Y = 36;
-
 	//@formatter:off
 	public static final byte SPACE           = 0; // ' '
 	public static final byte WALL            = 1; // '#'
@@ -62,7 +59,8 @@ public class ArcadeWorld implements World {
 		return new V2i(x, y);
 	}
 
-	protected byte[][] map = new byte[SIZE_Y][SIZE_X];
+	protected final V2i size;
+	protected final byte[][] map;
 	protected List<V2i> energizerTiles;
 	protected V2i bonusTile = v(0, 0);
 	protected int[] pelletsToEatForBonus = new int[2];
@@ -74,8 +72,10 @@ public class ArcadeWorld implements World {
 	protected int foodRemaining;
 
 	protected ArcadeWorld(String[] mapText) {
-		for (int row = 0; row < SIZE_Y; ++row) {
-			for (int col = 0; col < SIZE_X; ++col) {
+		size = checkMapSize(mapText);
+		map = new byte[size.y][size.x];
+		for (int row = 0; row < size.y; ++row) {
+			for (int col = 0; col < size.x; ++col) {
 				map[row][col] = switch (mapText[row].charAt(col)) {
 				case ' ' -> SPACE;
 				case '#' -> WALL;
@@ -91,6 +91,21 @@ public class ArcadeWorld implements World {
 		findIntersections();
 		resetFood();
 		energizerTiles = tiles().filter(this::isEnergizerTile).collect(Collectors.toUnmodifiableList());
+	}
+
+	protected V2i checkMapSize(String[] mapText) {
+		int size_y = mapText.length;
+		if (size_y == 0) {
+			throw new IllegalArgumentException("Map is empty");
+		}
+		int size_x = mapText[0].length();
+		for (int row = 0; row < size_y; ++row) {
+			if (mapText[row].length() != size_x) {
+				throw new IllegalArgumentException(
+						String.format("Map row %d has wrong length %d, should be %d", row, mapText[row].length(), size_x));
+			}
+		}
+		return v(size_x, size_y);
 	}
 
 	protected void findIntersections() {
@@ -133,12 +148,12 @@ public class ArcadeWorld implements World {
 
 	@Override
 	public int numCols() {
-		return SIZE_X;
+		return size.x;
 	}
 
 	@Override
 	public int numRows() {
-		return SIZE_Y;
+		return size.y;
 	}
 
 	@Override
