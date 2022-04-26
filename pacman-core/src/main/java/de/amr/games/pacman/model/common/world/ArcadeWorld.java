@@ -99,7 +99,10 @@ public class ArcadeWorld implements World {
 			throw new IllegalArgumentException("Map is empty");
 		}
 		int size_x = mapText[0].length();
-		for (int row = 0; row < size_y; ++row) {
+		if (size_x == 0) {
+			throw new IllegalArgumentException("Map is empty");
+		}
+		for (int row = 1; row < size_y; ++row) {
 			if (mapText[row].length() != size_x) {
 				throw new IllegalArgumentException(
 						String.format("Map row %d has wrong length %d, should be %d", row, mapText[row].length(), size_x));
