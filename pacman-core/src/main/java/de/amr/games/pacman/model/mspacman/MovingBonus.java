@@ -62,8 +62,8 @@ public class MovingBonus extends Bonus {
 		this.points = points;
 
 		Direction moveDir = new Random().nextBoolean() ? Direction.LEFT : Direction.RIGHT;
-		Portal entryPortal = world.randomPortal();
-		Portal exitPortal = world.randomPortal();
+		Portal entryPortal = world.portals().get(new Random().nextInt(world.portals().size()));
+		Portal exitPortal = world.portals().get(new Random().nextInt(world.portals().size()));
 		placeAt(moveDir == Direction.RIGHT ? entryPortal.left : entryPortal.right, 0, 0);
 		setMoveDir(moveDir);
 		setWishDir(moveDir);

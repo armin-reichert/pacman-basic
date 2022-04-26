@@ -30,7 +30,6 @@ import java.util.BitSet;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 import de.amr.games.pacman.lib.Direction;
@@ -194,13 +193,8 @@ public class ArcadeWorld implements World {
 	}
 
 	@Override
-	public Collection<Portal> portals() {
+	public List<Portal> portals() {
 		return portals;
-	}
-
-	@Override
-	public Portal randomPortal() {
-		return portals.get(new Random().nextInt(portals.size()));
 	}
 
 	@Override
