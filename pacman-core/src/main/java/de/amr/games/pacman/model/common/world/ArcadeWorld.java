@@ -224,12 +224,14 @@ public class ArcadeWorld implements World {
 
 	@Override
 	public boolean isFoodTile(V2i tile) {
-		return map(tile) == PELLET || map(tile) == PELLET_EATEN || map(tile) == ENERGIZER || map(tile) == ENERGIZER_EATEN;
+		byte data = map(tile);
+		return data == PELLET || data == PELLET_EATEN || data == ENERGIZER || data == ENERGIZER_EATEN;
 	}
 
 	@Override
 	public boolean isEnergizerTile(V2i tile) {
-		return map(tile) == ENERGIZER || map(tile) == ENERGIZER_EATEN;
+		byte data = map(tile);
+		return data == ENERGIZER || data == ENERGIZER_EATEN;
 	}
 
 	@Override
@@ -239,10 +241,11 @@ public class ArcadeWorld implements World {
 
 	@Override
 	public void removeFood(V2i tile) {
-		if (map(tile) == ENERGIZER) {
+		byte data = map(tile);
+		if (data == ENERGIZER) {
 			map[tile.y][tile.x] = ENERGIZER_EATEN;
 			--foodRemaining;
-		} else if (map(tile) == PELLET) {
+		} else if (data == PELLET) {
 			map[tile.y][tile.x] = PELLET_EATEN;
 			--foodRemaining;
 		}
@@ -255,7 +258,8 @@ public class ArcadeWorld implements World {
 
 	@Override
 	public boolean isFoodEaten(V2i tile) {
-		return insideWorld(tile) && map(tile) == PELLET_EATEN || map(tile) == ENERGIZER_EATEN;
+		byte data = map(tile);
+		return data == PELLET_EATEN || data == ENERGIZER_EATEN;
 	}
 
 	@Override
