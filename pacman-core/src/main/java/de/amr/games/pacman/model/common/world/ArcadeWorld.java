@@ -72,7 +72,7 @@ public class ArcadeWorld implements World {
 	protected int foodRemaining;
 
 	protected ArcadeWorld(String[] mapText) {
-		size = checkMapSize(mapText);
+		size = computeMapSize(mapText);
 		map = new byte[size.y][size.x];
 		for (int row = 0; row < size.y; ++row) {
 			for (int col = 0; col < size.x; ++col) {
@@ -93,7 +93,7 @@ public class ArcadeWorld implements World {
 		energizerTiles = tiles().filter(this::isEnergizerTile).collect(Collectors.toUnmodifiableList());
 	}
 
-	protected V2i checkMapSize(String[] mapText) {
+	protected V2i computeMapSize(String[] mapText) {
 		int size_y = mapText.length;
 		if (size_y == 0) {
 			throw new IllegalArgumentException("Map is empty");
