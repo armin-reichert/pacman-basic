@@ -37,9 +37,9 @@ import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.GameModel;
 
 /**
- * Base class for Pac-Man and Ms. Pac-Man worlds as given in the original Arcade versions. Implements all common stuff
- * like ghost house position, ghost and player start positions and direction etc. Concrete subclasses have (almost) only
- * to provide their specific world map.
+ * Pac-Man and Ms. Pac-Man world as given in the original Arcade games. Implements all common stuff like ghost house
+ * position, ghost and player start positions and direction etc. Concrete subclasses have (almost) only to provide their
+ * specific world map.
  * 
  * @author Armin Reichert
  */
@@ -177,7 +177,7 @@ public class ArcadeWorld implements World {
 		case GameModel.PINK_GHOST -> Direction.DOWN;
 		case GameModel.CYAN_GHOST -> Direction.UP;
 		case GameModel.ORANGE_GHOST -> Direction.UP;
-		default -> throw new IllegalArgumentException();
+		default -> throw new IllegalArgumentException("IIlegal ghost ID: " + ghostID);
 		};
 	}
 
@@ -188,7 +188,7 @@ public class ArcadeWorld implements World {
 		case GameModel.PINK_GHOST -> v(2, 0);
 		case GameModel.CYAN_GHOST -> v(27, 34);
 		case GameModel.ORANGE_GHOST -> v(0, 34);
-		default -> throw new IllegalArgumentException();
+		default -> throw new IllegalArgumentException("IIlegal ghost ID: " + ghostID);
 		};
 	}
 
@@ -202,7 +202,7 @@ public class ArcadeWorld implements World {
 		return switch (bonusIndex) {
 		case 0 -> pelletsToEatForBonus[0];
 		case 1 -> pelletsToEatForBonus[1];
-		default -> throw new IllegalArgumentException();
+		default -> throw new IllegalArgumentException("IIlegal bonus index: " + bonusIndex);
 		};
 	}
 
