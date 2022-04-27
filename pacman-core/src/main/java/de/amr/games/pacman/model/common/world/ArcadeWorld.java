@@ -76,13 +76,14 @@ public class ArcadeWorld implements World {
 		map = new byte[size.y][size.x];
 		for (int row = 0; row < size.y; ++row) {
 			for (int col = 0; col < size.x; ++col) {
-				map[row][col] = switch (mapText[row].charAt(col)) {
+				char ch = mapText[row].charAt(col);
+				map[row][col] = switch (ch) {
 				case ' ' -> SPACE;
 				case '#' -> WALL;
 				case 'T' -> TUNNEL;
 				case '.' -> PELLET;
 				case '*' -> ENERGIZER;
-				default -> throw new IllegalArgumentException();
+				default -> throw new IllegalArgumentException(String.format("Illegal map character '%c' ", ch));
 				};
 			}
 		}
