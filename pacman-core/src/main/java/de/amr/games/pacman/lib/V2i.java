@@ -24,6 +24,7 @@ SOFTWARE.
 package de.amr.games.pacman.lib;
 
 import java.util.Objects;
+import java.util.stream.Stream;
 
 /**
  * Immutable int 2D vector.
@@ -68,6 +69,10 @@ public class V2i {
 
 	public double manhattanDistance(V2i v) {
 		return Math.abs(x - v.x) + Math.abs(y - v.y);
+	}
+
+	public Stream<V2i> neighbors() {
+		return Stream.of(Direction.UP, Direction.RIGHT, Direction.DOWN, Direction.LEFT).map(dir -> this.plus(dir.vec));
 	}
 
 	@Override

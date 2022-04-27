@@ -117,7 +117,7 @@ public class ArcadeWorld implements World {
 		tiles() //
 				.filter(tile -> !house.contains(tile)) //
 				.filter(tile -> tile.x > 0 && tile.x < numCols() - 1) //
-				.filter(tile -> World.neighbors(tile).filter(nb -> isWall(nb) || isDoor(nb)).count() <= 1) //
+				.filter(tile -> tile.neighbors().filter(nb -> isWall(nb) || isDoor(nb)).count() <= 1) //
 				.map(this::index) //
 				.forEach(intersections::set);
 	}
