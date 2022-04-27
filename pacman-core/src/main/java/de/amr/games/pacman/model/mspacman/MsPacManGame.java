@@ -91,13 +91,13 @@ public class MsPacManGame extends GameModel {
 		}
 		initLevel(levelNumber, levelNumber - 1 < data.length ? data[levelNumber - 1] : data[data.length - 1]);
 		mazeNumber = mazeNumber(levelNumber);
-		int mapNumber = mapNumber(mazeNumber);
+		mapNumber = mapNumber(mazeNumber);
 		world = switch (mapNumber) {
 		case 1 -> new MsPacManWorld1();
 		case 2 -> new MsPacManWorld2();
 		case 3 -> new MsPacManWorld3();
 		case 4 -> new MsPacManWorld4();
-		default -> throw new IllegalArgumentException();
+		default -> throw new IllegalArgumentException("Illegal map number: " + mapNumber);
 		};
 		huntingPhaseDurations = huntingPhaseDurationsTable[levelNumber == 1 ? 0 : levelNumber <= 4 ? 1 : 2];
 		if (levelNumber >= 8) {
