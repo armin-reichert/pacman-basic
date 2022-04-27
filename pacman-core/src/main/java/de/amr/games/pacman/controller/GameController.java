@@ -314,7 +314,6 @@ public class GameController extends FiniteStateMachine<GameState> {
 	// LEVEL_STARTING
 
 	private void state_LevelStarting_enter() {
-		log("Level %d complete, entering level %d", game.levelNumber, game.levelNumber + 1);
 		game.setLevel(game.levelNumber + 1);
 		game.resetGuys();
 		stateTimer().setIndefinite().start();

@@ -23,7 +23,6 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.pacman;
 
-import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.lib.TickTimer.sec_to_ticks;
 
 import java.io.File;
@@ -81,7 +80,7 @@ public class PacManGame extends GameModel {
 		player = new Pac("Pac-Man");
 		player.world = world;
 		createGhosts("Blinky", "Pinky", "Inky", "Clyde");
-		resetGhosts(world);
+		resetGhosts();
 		bonus = new Bonus();
 		bonus.world = world;
 		hiscoreFile = new File(System.getProperty("user.home"), "highscore-pacman.xml");
@@ -98,9 +97,8 @@ public class PacManGame extends GameModel {
 		levelCounter.add(bonusSymbol);
 		player.starvingTimeLimit = (int) sec_to_ticks(levelNumber < 5 ? 4 : 3);
 		ghostBounty = firstGhostBounty;
-		resetGhosts(world);
+		resetGhosts();
 		bonus.init();
-		log("Pac-Man game entered level #%d", levelNumber);
 	}
 
 	@Override

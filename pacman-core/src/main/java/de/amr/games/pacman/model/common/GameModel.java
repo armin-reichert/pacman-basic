@@ -228,7 +228,7 @@ public abstract class GameModel {
 		bonus.init();
 	}
 
-	protected void resetGhosts(World world) {
+	protected void resetGhosts() {
 		for (Ghost ghost : ghosts) {
 			ghost.world = world;
 			ghost.dotCounter = 0;
@@ -257,8 +257,12 @@ public abstract class GameModel {
 	}
 
 	protected void createGhosts(String redName, String pinkName, String cyanName, String orangeName) {
-		ghosts = new Ghost[] { new Ghost(RED_GHOST, redName), new Ghost(PINK_GHOST, pinkName),
-				new Ghost(CYAN_GHOST, cyanName), new Ghost(ORANGE_GHOST, orangeName) };
+		ghosts = new Ghost[] { //
+				new Ghost(RED_GHOST, redName), //
+				new Ghost(PINK_GHOST, pinkName), //
+				new Ghost(CYAN_GHOST, cyanName), //
+				new Ghost(ORANGE_GHOST, orangeName) //
+		};
 
 		// Red ghost chases Pac-Man directly
 		ghosts[RED_GHOST].fnChasingTargetTile = player::tile;
@@ -273,9 +277,9 @@ public abstract class GameModel {
 				? player.tilesAhead(2).scaled(2).minus(ghosts[RED_GHOST].tile())
 				: player.tilesAhead(2).plus(-2, 0).scaled(2).minus(ghosts[RED_GHOST].tile());
 
-		// Orange ghost's target is either Pac-Man tile or scatter tile #3 at the lower left maze corner
+		// Orange ghost's target is either Pac-Man tile or its scatter tile at the lower left maze corner
 		ghosts[ORANGE_GHOST].fnChasingTargetTile = () -> ghosts[ORANGE_GHOST].tile().euclideanDistance(player.tile()) < 8
-				? world.ghostScatterTile(3)
+				? world.ghostScatterTile(ORANGE_GHOST)
 				: player.tile();
 	}
 

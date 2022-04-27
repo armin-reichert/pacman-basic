@@ -23,7 +23,6 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.mspacman;
 
-import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.lib.TickTimer.sec_to_ticks;
 
 import java.io.File;
@@ -107,10 +106,9 @@ public class MsPacManGame extends GameModel {
 		player.world = world;
 		player.starvingTimeLimit = (int) sec_to_ticks(levelNumber < 5 ? 4 : 3);
 		ghostBounty = firstGhostBounty;
-		resetGhosts(world);
+		resetGhosts();
 		bonus.world = world;
 		bonus.init();
-		log("Ms. Pac-Man game entered level #%d, maze number=%d, map number=%d", levelNumber, mazeNumber, mapNumber);
 	}
 
 	/**
