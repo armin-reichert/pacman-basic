@@ -39,10 +39,10 @@ import de.amr.games.pacman.model.common.GameModel;
  */
 public interface World {
 
-	/** Tile size in pixels. */
+	/** Tile size in pixels (8). */
 	public static final int TS = 8;
 
-	/** Half tile size in pixels. */
+	/** Half tile size in pixels (4). */
 	public static final int HTS = 4;
 
 	/**
@@ -133,8 +133,8 @@ public interface World {
 
 	/**
 	 * @param tile a tile
-	 * @return Tells if the tile is part of a portal. The x-position of a portal tile is either {@code -1} (left portal)
-	 *         or {@code numCols()} (right portal).
+	 * @return Tells if the tile is part of a portal. The x-(tile-)position of a portal tile is either {@code -1} (left
+	 *         portal) or {@code numCols()} (right portal).
 	 */
 	boolean isPortal(V2i tile);
 
