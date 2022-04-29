@@ -170,7 +170,7 @@ public class Ghost extends Creature {
 			return true;
 		}
 		if (tile.equals(house.seatCenter) && offset.y >= 0) {
-			// Center reached. If target tile is left or right seat, move towards seat, else keep direction.
+			// Center seat reached, move towards left or right seat.
 			if (targetTile.x < house.seatCenter.x) {
 				setMoveDir(Direction.LEFT);
 				setWishDir(Direction.LEFT);
@@ -202,17 +202,17 @@ public class Ghost extends Creature {
 			state = GhostState.HUNTING_PAC;
 			return true;
 		}
-		int center = t(house.seatCenter.x) + HTS;
-		int ground = t(house.seatCenter.y) + HTS;
-		if (differsAtMost(position.x, center, 1)) {
+		int centerX = t(house.seatCenter.x) + HTS;
+		int groundY = t(house.seatCenter.y) + HTS;
+		if (differsAtMost(position.x, centerX, 1)) {
 			setOffset(HTS, offset.y);
 			setMoveDir(Direction.UP);
 			setWishDir(Direction.UP);
-		} else if (position.y < ground) {
+		} else if (position.y < groundY) {
 			setMoveDir(Direction.DOWN);
 			setWishDir(Direction.DOWN);
 		} else {
-			Direction newDir = position.x < center ? Direction.RIGHT : Direction.LEFT;
+			Direction newDir = position.x < centerX ? Direction.RIGHT : Direction.LEFT;
 			setMoveDir(newDir);
 			setWishDir(newDir);
 		}
