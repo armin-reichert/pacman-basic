@@ -233,20 +233,6 @@ public interface World {
 	int eatenFoodCount();
 
 	/**
-	 * @return The initial number of energizers.
-	 */
-	default int energizersTotal() {
-		return energizerTiles().size();
-	}
-
-	/**
-	 * @return The initial number of pellets (including energizers).
-	 */
-	default int pelletsTotal() {
-		return (int) tiles().filter(this::isFoodTile).count();
-	}
-
-	/**
 	 * Resets the food in this world.
 	 */
 	void resetFood();
