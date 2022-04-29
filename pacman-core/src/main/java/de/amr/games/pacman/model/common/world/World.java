@@ -23,7 +23,6 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.common.world;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -183,7 +182,7 @@ public interface World {
 	/**
 	 * @return All tiles containing an energizer initially.
 	 */
-	Collection<V2i> energizerTiles();
+	Stream<V2i> energizerTiles();
 
 	/**
 	 * @return Bonus location (non-moving bonus only)
