@@ -68,7 +68,7 @@ public class ArcadeWorld implements World {
 	protected final List<Portal> portals;
 	protected List<V2i> upwardsBlockedTiles = List.of();
 	protected V2i bonusTile = v(0, 0);
-	protected int totalFoodCount;
+	protected final int totalFoodCount;
 	protected int foodRemaining;
 
 	protected ArcadeWorld(String[] mapText) {
@@ -292,7 +292,6 @@ public class ArcadeWorld implements World {
 				}
 			}
 		}
-		totalFoodCount = (int) tiles().filter(this::isFoodTile).count();
 		foodRemaining = totalFoodCount;
 		long energizerCount = tiles().filter(this::isEnergizerTile).count();
 		log("Food restored (%d pellets, %d energizers)", totalFoodCount - energizerCount, energizerCount);
