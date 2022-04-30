@@ -89,8 +89,8 @@ public class ArcadeWorld implements World {
 		}
 
 		house = new GhostHouse(v(10, 15), v(7, 4));
-		house.leftDoor = v(13, 15);
-		house.rightDoor = v(14, 15);
+		house.doorLeft = v(13, 15);
+		house.doorRight = v(14, 15);
 		house.seatLeft = v(11, 17);
 		house.seatCenter = v(13, 17);
 		house.seatRight = v(15, 17);
@@ -118,6 +118,9 @@ public class ArcadeWorld implements World {
 	}
 
 	protected V2i computeMapSize(String[] mapText) {
+		if (mapText == null) {
+			throw new IllegalArgumentException("Map is missing");
+		}
 		int size_y = mapText.length;
 		if (size_y == 0) {
 			throw new IllegalArgumentException("Map is empty");

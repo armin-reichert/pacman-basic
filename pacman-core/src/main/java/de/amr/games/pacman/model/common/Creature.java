@@ -128,8 +128,8 @@ public class Creature extends GameEntity {
 	 */
 	public boolean canAccessTile(V2i tile) {
 		if (world.insideWorld(tile)) {
-			return !world.isWall(tile) && !world.ghostHouse().leftDoor.equals(tile)
-					&& !world.ghostHouse().rightDoor.equals(tile);
+			return !world.isWall(tile) && !world.ghostHouse().doorLeft.equals(tile)
+					&& !world.ghostHouse().doorRight.equals(tile);
 		} else {
 			// portals are the only tiles accessible outside of the world
 			return world.isPortal(tile);

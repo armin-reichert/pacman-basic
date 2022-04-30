@@ -39,10 +39,10 @@ public class GhostHouse {
 	public final V2i topLeft;
 
 	/** Left door. */
-	public V2i leftDoor;
+	public V2i doorLeft;
 
 	/** Right door. */
-	public V2i rightDoor;
+	public V2i doorRight;
 
 	/** Left seat in house. */
 	public V2i seatLeft;
@@ -59,11 +59,11 @@ public class GhostHouse {
 	}
 
 	public V2i leftEntry() {
-		return leftDoor.minus(0, 1);
+		return doorLeft.minus(0, 1);
 	}
 
 	public V2i rightEntry() {
-		return rightDoor.minus(0, 1);
+		return doorRight.minus(0, 1);
 	}
 
 	public boolean contains(V2i tile) {
@@ -72,6 +72,6 @@ public class GhostHouse {
 	}
 
 	public boolean isDoor(V2i tile) {
-		return tile.equals(leftDoor) || tile.equals(rightDoor);
+		return tile.equals(doorLeft) || tile.equals(doorRight);
 	}
 }
