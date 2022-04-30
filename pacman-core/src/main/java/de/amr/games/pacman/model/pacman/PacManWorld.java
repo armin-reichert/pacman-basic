@@ -81,5 +81,6 @@ public class PacManWorld extends ArcadeWorld {
 		bonusTile = v(13, 20);
 		pelletsToEatForBonus[0] = 70;
 		pelletsToEatForBonus[1] = 170;
+//		printMap();
 	}
 }

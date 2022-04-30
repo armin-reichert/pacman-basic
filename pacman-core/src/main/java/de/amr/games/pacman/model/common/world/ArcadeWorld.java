@@ -117,6 +117,21 @@ public class ArcadeWorld implements World {
 		foodRemaining = totalFoodCount;
 	}
 
+	protected void printMap() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("{\n");
+		for (int row = 0; row < size.y; ++row) {
+			sb.append("{");
+			for (int col = 0; col < size.x; ++col) {
+				byte b = map[row][col];
+				sb.append(b).append(",");
+			}
+			sb.append("},\n");
+		}
+		sb.append("}\n");
+		System.out.println(sb);
+	}
+
 	protected V2i computeMapSize(String[] mapText) {
 		if (mapText == null) {
 			throw new IllegalArgumentException("Map is missing");
