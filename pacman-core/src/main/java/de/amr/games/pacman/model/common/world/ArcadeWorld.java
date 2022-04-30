@@ -87,6 +87,7 @@ public class ArcadeWorld implements World {
 				};
 			}
 		}
+
 		house = new GhostHouse(v(10, 15), v(7, 4));
 		house.leftDoor = v(13, 15);
 		house.rightDoor = v(14, 15);
@@ -95,10 +96,9 @@ public class ArcadeWorld implements World {
 		house.seatRight = v(15, 17);
 
 		ArrayList<Portal> portalList = new ArrayList<>();
-		for (int y = 0; y < numRows(); ++y) {
-			V2i leftBorder = v(0, y), rightBorder = v(numCols() - 1, y);
-			if (map(leftBorder) == TUNNEL && map(rightBorder) == TUNNEL) {
-				portalList.add(new Portal(new V2i(-1, y), new V2i(numCols(), y)));
+		for (int row = 0; row < size.y; ++row) {
+			if (map[row][0] == TUNNEL && map[row][size.x - 1] == TUNNEL) {
+				portalList.add(new Portal(new V2i(-1, row), new V2i(size.x, row)));
 			}
 		}
 		portalList.trimToSize();
