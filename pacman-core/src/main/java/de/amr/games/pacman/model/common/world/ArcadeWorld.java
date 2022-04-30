@@ -90,8 +90,9 @@ public class ArcadeWorld implements World {
 		buildGhostHouse();
 		buildPortals();
 		findIntersections();
-		resetFood();
 		energizerTiles = tiles().filter(this::isEnergizerTile).collect(Collectors.toUnmodifiableList());
+		totalFoodCount = (int) tiles().filter(this::isFoodTile).count();
+		foodRemaining = totalFoodCount;
 	}
 
 	protected V2i computeMapSize(String[] mapText) {
@@ -294,13 +295,15 @@ public class ArcadeWorld implements World {
 
 	@Override
 	public void resetFood() {
-		tiles().forEach(tile -> {
-			if (map(tile) == PELLET_EATEN) {
-				map[tile.y][tile.x] = PELLET;
-			} else if (map(tile) == ENERGIZER_EATEN) {
-				map[tile.y][tile.x] = ENERGIZER;
+		for (int row = 0; row < size.y; ++row) {
+			for (int col = 0; col < size.x; ++col) {
+				if (map[row][col] == PELLET_EATEN) {
+					map[row][col] = PELLET;
+				} else if (map[row][col] == ENERGIZER_EATEN) {
+					map[row][col] = ENERGIZER;
+				}
 			}
-		});
+		}
 		totalFoodCount = (int) tiles().filter(this::isFoodTile).count();
 		foodRemaining = totalFoodCount;
 		long energizerCount = tiles().filter(this::isEnergizerTile).count();
