@@ -70,4 +70,8 @@ public class GhostHouse {
 		V2i bottomRight = topLeft.plus(size);
 		return tile.x >= topLeft.x && tile.x <= bottomRight.x && tile.y >= topLeft.y && tile.y <= bottomRight.y;
 	}
+
+	public boolean isDoor(V2i tile) {
+		return tile.equals(leftDoor) || tile.equals(rightDoor);
+	}
 }

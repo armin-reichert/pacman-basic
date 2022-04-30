@@ -61,13 +61,13 @@ public class ArcadeWorld implements World {
 
 	protected final V2i size;
 	protected final byte[][] map;
-	protected List<V2i> energizerTiles;
-	protected V2i bonusTile = v(0, 0);
-	protected int[] pelletsToEatForBonus = new int[2];
-	protected List<Portal> portals = List.of();
+	protected final GhostHouse house;
+	protected final BitSet intersections;
+	protected final List<V2i> energizerTiles;
+	protected final int[] pelletsToEatForBonus = new int[2];
+	protected final List<Portal> portals;
 	protected List<V2i> upwardsBlockedTiles = List.of();
-	protected BitSet intersections = new BitSet();
-	protected GhostHouse house;
+	protected V2i bonusTile = v(0, 0);
 	protected int totalFoodCount;
 	protected int foodRemaining;
 
@@ -87,9 +87,31 @@ public class ArcadeWorld implements World {
 				};
 			}
 		}
-		buildGhostHouse();
-		buildPortals();
-		findIntersections();
+		house = new GhostHouse(v(10, 15), v(7, 4));
+		house.leftDoor = v(13, 15);
+		house.rightDoor = v(14, 15);
+		house.seatLeft = v(11, 17);
+		house.seatCenter = v(13, 17);
+		house.seatRight = v(15, 17);
+
+		ArrayList<Portal> portalList = new ArrayList<>();
+		for (int y = 0; y < numRows(); ++y) {
+			V2i leftBorder = v(0, y), rightBorder = v(numCols() - 1, y);
+			if (map(leftBorder) == TUNNEL && map(rightBorder) == TUNNEL) {
+				portalList.add(new Portal(new V2i(-1, y), new V2i(numCols(), y)));
+			}
+		}
+		portalList.trimToSize();
+		portals = Collections.unmodifiableList(portalList);
+
+		intersections = new BitSet();
+		tiles() //
+				.filter(tile -> !house.contains(tile)) //
+				.filter(tile -> tile.x > 0 && tile.x < numCols() - 1) //
+				.filter(tile -> tile.neighbors().filter(nb -> isWall(nb) || house.isDoor(nb)).count() <= 1) //
+				.map(this::index) //
+				.forEach(intersections::set);
+
 		energizerTiles = tiles().filter(this::isEnergizerTile).collect(Collectors.toUnmodifiableList());
 		totalFoodCount = (int) tiles().filter(this::isFoodTile).count();
 		foodRemaining = totalFoodCount;
@@ -111,40 +133,6 @@ public class ArcadeWorld implements World {
 			}
 		}
 		return v(size_x, size_y);
-	}
-
-	protected void findIntersections() {
-		intersections = new BitSet();
-		tiles() //
-				.filter(tile -> !house.contains(tile)) //
-				.filter(tile -> tile.x > 0 && tile.x < numCols() - 1) //
-				.filter(tile -> tile.neighbors().filter(nb -> isWall(nb) || isDoor(nb)).count() <= 1) //
-				.map(this::index) //
-				.forEach(intersections::set);
-	}
-
-	private boolean isDoor(V2i tile) {
-		return tile.equals(house.leftDoor) || tile.equals(house.rightDoor);
-	}
-
-	protected void buildPortals() {
-		portals = new ArrayList<>(3);
-		for (int y = 0; y < numRows(); ++y) {
-			V2i leftBorder = v(0, y), rightBorder = v(numCols() - 1, y);
-			if (map(leftBorder) == TUNNEL && map(rightBorder) == TUNNEL) {
-				portals.add(new Portal(new V2i(-1, y), new V2i(numCols(), y)));
-			}
-		}
-		portals = Collections.unmodifiableList(portals);
-	}
-
-	protected void buildGhostHouse() {
-		house = new GhostHouse(v(10, 15), v(7, 4));
-		house.leftDoor = v(13, 15);
-		house.rightDoor = v(14, 15);
-		house.seatLeft = v(11, 17);
-		house.seatCenter = v(13, 17);
-		house.seatRight = v(15, 17);
 	}
 
 	protected byte map(V2i tile) {
