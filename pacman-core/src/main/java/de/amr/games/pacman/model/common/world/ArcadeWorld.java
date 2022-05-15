@@ -59,19 +59,30 @@ public class ArcadeWorld implements World {
 		return new V2i(x, y);
 	}
 
-	protected final V2i size;
-	protected final byte[][] map;
-	protected final GhostHouse house;
-	protected final BitSet intersections;
-	protected final List<V2i> energizerTiles;
-	protected final int[] pelletsToEatForBonus = new int[2];
-	protected final List<Portal> portals;
+	protected V2i size;
+	protected byte[][] map;
+	protected GhostHouse house;
+	protected BitSet intersections;
+	protected List<V2i> energizerTiles;
+	protected int[] pelletsToEatForBonus = new int[2];
+	protected List<Portal> portals;
 	protected List<V2i> upwardsBlockedTiles = List.of();
 	protected V2i bonusTile = v(0, 0);
-	protected final int totalFoodCount;
+	protected int totalFoodCount;
 	protected int foodRemaining;
 
+	protected ArcadeWorld(byte[][] map) {
+		this.map = map;
+		size = v(map[0].length, map.length);
+		buildWorld();
+	}
+
 	protected ArcadeWorld(String[] mapText) {
+		parseMap(mapText);
+		buildWorld();
+	}
+
+	private void parseMap(String[] mapText) {
 		size = computeMapSize(mapText);
 		map = new byte[size.y][size.x];
 		for (int row = 0; row < size.y; ++row) {
@@ -87,7 +98,10 @@ public class ArcadeWorld implements World {
 				};
 			}
 		}
+		printMap();
+	}
 
+	private void buildWorld() {
 		house = new GhostHouse(v(10, 15), v(7, 4));
 		house.doorLeft = v(13, 15);
 		house.doorRight = v(14, 15);
@@ -118,6 +132,7 @@ public class ArcadeWorld implements World {
 	}
 
 	protected void printMap() {
+		System.out.println(getClass());
 		StringBuilder sb = new StringBuilder();
 		sb.append("{\n");
 		for (int row = 0; row < size.y; ++row) {
