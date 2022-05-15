@@ -24,6 +24,10 @@ SOFTWARE.
 package de.amr.games.pacman.model.common.world;
 
 import static de.amr.games.pacman.lib.Logging.log;
+import static de.amr.games.pacman.model.common.GameModel.CYAN_GHOST;
+import static de.amr.games.pacman.model.common.GameModel.ORANGE_GHOST;
+import static de.amr.games.pacman.model.common.GameModel.PINK_GHOST;
+import static de.amr.games.pacman.model.common.GameModel.RED_GHOST;
 
 import java.util.ArrayList;
 import java.util.BitSet;
@@ -34,7 +38,6 @@ import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.model.common.GameModel;
 
 /**
  * Base class for the map-based worlds.
@@ -62,6 +65,11 @@ public class ArcadeWorld implements World {
 
 	protected V2i size;
 	protected final byte[][] map;
+	protected final V2i leftLowerTarget = v(0, 34);
+	protected final V2i rightLowerTarget = v(27, 34);
+	protected final V2i leftUpperTarget = v(2, 0);
+	protected final V2i rightUpperTarget = v(25, 0);
+	protected final V2i pacHome = v(13, 26);
 	protected final GhostHouse house;
 	protected final BitSet intersections;
 	protected final List<V2i> energizerTiles;
@@ -129,16 +137,16 @@ public class ArcadeWorld implements World {
 
 	@Override
 	public V2i playerHomeTile() {
-		return v(13, 26);
+		return pacHome;
 	}
 
 	@Override
 	public Direction ghostStartDirection(int ghostID) {
 		return switch (ghostID) {
-		case GameModel.RED_GHOST -> Direction.LEFT;
-		case GameModel.PINK_GHOST -> Direction.DOWN;
-		case GameModel.CYAN_GHOST -> Direction.UP;
-		case GameModel.ORANGE_GHOST -> Direction.UP;
+		case RED_GHOST -> Direction.LEFT;
+		case PINK_GHOST -> Direction.DOWN;
+		case CYAN_GHOST -> Direction.UP;
+		case ORANGE_GHOST -> Direction.UP;
 		default -> throw new IllegalArgumentException("IIlegal ghost ID: " + ghostID);
 		};
 	}
@@ -146,10 +154,10 @@ public class ArcadeWorld implements World {
 	@Override
 	public V2i ghostScatterTile(int ghostID) {
 		return switch (ghostID) {
-		case GameModel.RED_GHOST -> v(25, 0);
-		case GameModel.PINK_GHOST -> v(2, 0);
-		case GameModel.CYAN_GHOST -> v(27, 34);
-		case GameModel.ORANGE_GHOST -> v(0, 34);
+		case RED_GHOST -> rightUpperTarget;
+		case PINK_GHOST -> leftUpperTarget;
+		case CYAN_GHOST -> rightLowerTarget;
+		case ORANGE_GHOST -> leftLowerTarget;
 		default -> throw new IllegalArgumentException("IIlegal ghost ID: " + ghostID);
 		};
 	}
@@ -161,11 +169,7 @@ public class ArcadeWorld implements World {
 
 	@Override
 	public int pelletsToEatForBonus(int bonusIndex) {
-		return switch (bonusIndex) {
-		case 0 -> pelletsToEatForBonus[0];
-		case 1 -> pelletsToEatForBonus[1];
-		default -> throw new IllegalArgumentException("IIlegal bonus index: " + bonusIndex);
-		};
+		return pelletsToEatForBonus[bonusIndex];
 	}
 
 	@Override
