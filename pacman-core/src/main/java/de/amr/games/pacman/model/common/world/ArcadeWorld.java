@@ -37,20 +37,21 @@ import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.GameModel;
 
 /**
- * Pac-Man and Ms. Pac-Man world as given in the original Arcade games. Implements all common stuff like ghost house
- * position, ghost and player start positions and direction etc. Concrete subclasses have (almost) only to provide their
- * specific world map.
+ * Base class for the map-based worlds.
+ * <p>
+ * Implements all stuff that is common to the original Arcade worlds like ghost house position, ghost and player start
+ * positions and direction etc.
  * 
  * @author Armin Reichert
  */
 public class ArcadeWorld implements World {
 
 	//@formatter:off
-	public static final byte SPACE           = 0; // ' '
-	public static final byte WALL            = 1; // '#'
-	public static final byte TUNNEL          = 2; // 'T'
-	public static final byte PELLET          = 3; // '.'
-	public static final byte ENERGIZER       = 4; // '*'
+	public static final byte SPACE           = 0;
+	public static final byte WALL            = 1;
+	public static final byte TUNNEL          = 2;
+	public static final byte PELLET          = 3;
+	public static final byte ENERGIZER       = 4;
 	public static final byte PELLET_EATEN    = 5;
 	public static final byte ENERGIZER_EATEN = 6;
 	//@formatter:on
@@ -60,48 +61,24 @@ public class ArcadeWorld implements World {
 	}
 
 	protected V2i size;
-	protected byte[][] map;
-	protected GhostHouse house;
-	protected BitSet intersections;
-	protected List<V2i> energizerTiles;
-	protected int[] pelletsToEatForBonus = new int[2];
-	protected List<Portal> portals;
+	protected final byte[][] map;
+	protected final GhostHouse house;
+	protected final BitSet intersections;
+	protected final List<V2i> energizerTiles;
+	protected final int[] pelletsToEatForBonus = new int[2];
+	protected final List<Portal> portals;
+	protected final int totalFoodCount;
+
+	// subclasses may override these:
 	protected List<V2i> upwardsBlockedTiles = List.of();
 	protected V2i bonusTile = v(0, 0);
-	protected int totalFoodCount;
+
 	protected int foodRemaining;
 
 	protected ArcadeWorld(byte[][] map) {
 		this.map = map;
-		size = v(map[0].length, map.length);
-		buildWorld();
-	}
+		size = v(map[0].length, map.length); // cols x rows!
 
-	protected ArcadeWorld(String[] mapText) {
-		parseMap(mapText);
-		buildWorld();
-	}
-
-	private void parseMap(String[] mapText) {
-		size = computeMapSize(mapText);
-		map = new byte[size.y][size.x];
-		for (int row = 0; row < size.y; ++row) {
-			for (int col = 0; col < size.x; ++col) {
-				char ch = mapText[row].charAt(col);
-				map[row][col] = switch (ch) {
-				case ' ' -> SPACE;
-				case '#' -> WALL;
-				case 'T' -> TUNNEL;
-				case '.' -> PELLET;
-				case '*' -> ENERGIZER;
-				default -> throw new IllegalArgumentException(String.format("Illegal map character '%c' ", ch));
-				};
-			}
-		}
-		printMap();
-	}
-
-	private void buildWorld() {
 		house = new GhostHouse(v(10, 15), v(7, 4));
 		house.doorLeft = v(13, 15);
 		house.doorRight = v(14, 15);
@@ -129,43 +106,6 @@ public class ArcadeWorld implements World {
 		energizerTiles = tiles().filter(this::isEnergizerTile).collect(Collectors.toUnmodifiableList());
 		totalFoodCount = (int) tiles().filter(this::isFoodTile).count();
 		foodRemaining = totalFoodCount;
-	}
-
-	protected void printMap() {
-		System.out.println(getClass());
-		StringBuilder sb = new StringBuilder();
-		sb.append("{\n");
-		for (int row = 0; row < size.y; ++row) {
-			sb.append("{");
-			for (int col = 0; col < size.x; ++col) {
-				byte b = map[row][col];
-				sb.append(b).append(",");
-			}
-			sb.append("},\n");
-		}
-		sb.append("}\n");
-		System.out.println(sb);
-	}
-
-	protected V2i computeMapSize(String[] mapText) {
-		if (mapText == null) {
-			throw new IllegalArgumentException("Map is missing");
-		}
-		int size_y = mapText.length;
-		if (size_y == 0) {
-			throw new IllegalArgumentException("Map is empty");
-		}
-		int size_x = mapText[0].length();
-		if (size_x == 0) {
-			throw new IllegalArgumentException("Map is empty");
-		}
-		for (int row = 1; row < size_y; ++row) {
-			if (mapText[row].length() != size_x) {
-				throw new IllegalArgumentException(
-						String.format("Map row %d has wrong length %d, should be %d", row, mapText[row].length(), size_x));
-			}
-		}
-		return v(size_x, size_y);
 	}
 
 	protected byte map(V2i tile) {
