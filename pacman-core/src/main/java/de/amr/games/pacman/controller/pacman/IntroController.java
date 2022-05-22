@@ -23,12 +23,8 @@ SOFTWARE.
  */
 package de.amr.games.pacman.controller.pacman;
 
-import static de.amr.games.pacman.model.common.world.World.t;
-
 import de.amr.games.pacman.controller.GameController;
-import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.FiniteStateMachine;
-import de.amr.games.pacman.model.common.Ghost;
 
 /**
  * Intro scene of the PacMan game.
@@ -39,21 +35,6 @@ import de.amr.games.pacman.model.common.Ghost;
  * @author Armin Reichert
  */
 public class IntroController extends FiniteStateMachine<IntroState, IntroContext> {
-
-	public static class GhostPortrait {
-		public Ghost ghost;
-		public String character;
-		public boolean characterVisible = false;
-		public boolean nicknameVisible = false;
-
-		public GhostPortrait(int id, String name, String character, int tileY) {
-			ghost = new Ghost(id, name);
-			ghost.setMoveDir(Direction.RIGHT);
-			ghost.setWishDir(Direction.RIGHT);
-			ghost.setPosition(t(4), t(tileY));
-			this.character = character;
-		}
-	}
 
 	public final IntroContext context = new IntroContext();
 

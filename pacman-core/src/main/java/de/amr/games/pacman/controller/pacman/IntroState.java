@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.controller.pacman.IntroController.GhostPortrait;
+import de.amr.games.pacman.controller.pacman.IntroContext.GhostPortrait;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.FsmState;
 import de.amr.games.pacman.lib.TickTimer;

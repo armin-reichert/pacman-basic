@@ -27,7 +27,7 @@ package de.amr.games.pacman.controller.pacman;
 import static de.amr.games.pacman.model.common.world.World.t;
 
 import de.amr.games.pacman.controller.GameController;
-import de.amr.games.pacman.controller.pacman.IntroController.GhostPortrait;
+import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TimedSeq;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
@@ -37,6 +37,22 @@ import de.amr.games.pacman.model.common.Pac;
  *
  */
 public class IntroContext {
+
+	public static class GhostPortrait {
+		public Ghost ghost;
+		public String character;
+		public boolean characterVisible = false;
+		public boolean nicknameVisible = false;
+
+		public GhostPortrait(int id, String name, String character, int tileY) {
+			ghost = new Ghost(id, name);
+			ghost.setMoveDir(Direction.RIGHT);
+			ghost.setWishDir(Direction.RIGHT);
+			ghost.setPosition(t(4), t(tileY));
+			this.character = character;
+		}
+	}
+
 	public GameController gameController;
 	public TimedSeq<Boolean> fastBlinking = TimedSeq.pulse().frameDuration(10);
 	public TimedSeq<Boolean> slowBlinking = TimedSeq.pulse().frameDuration(30);
