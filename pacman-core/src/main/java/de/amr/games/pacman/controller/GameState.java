@@ -103,12 +103,12 @@ public enum GameState implements FsmState<GameModel> {
 				startHuntingPhase(game, game.huntingPhase);
 			}
 			if (game.world.foodRemaining() == 0) {
-				resetAndStartHuntingTimerForPhase(game, 0); // TODO is this correct?
+				restartHuntingTimer(game, 0); // TODO is this correct?
 				fsm.changeState(LEVEL_COMPLETE);
 				return;
 			}
 			if (game.checkKillPlayer(fsm.playerImmune)) {
-				resetAndStartHuntingTimerForPhase(game, 0); // TODO is this correct?
+				restartHuntingTimer(game, 0); // TODO is this correct?
 				fsm.changeState(PACMAN_DYING);
 				return;
 			}
@@ -139,15 +139,15 @@ public enum GameState implements FsmState<GameModel> {
 			}
 		}
 
-		private void resetAndStartHuntingTimerForPhase(GameModel game, int phase) {
-			long ticks = game.huntingPhaseDurations[phase];
-			log("Set %s timer to %d ticks", this, ticks);
-			timer.set(ticks).start();
+		private void restartHuntingTimer(GameModel game, int phase) {
+			long phaseDuration = game.huntingPhaseDurations[phase];
+			timer.set(phaseDuration).start();
+			log("%s timer set to %d ticks", this, phaseDuration);
 		}
 
 		private void startHuntingPhase(GameModel game, int phase) {
 			game.huntingPhase = phase;
-			resetAndStartHuntingTimerForPhase(game, phase);
+			restartHuntingTimer(game, phase);
 			if (phase > 0) {
 				game.ghosts().filter(ghost -> ghost.is(HUNTING_PAC) || ghost.is(FRIGHTENED)).forEach(Ghost::forceTurningBack);
 			}
