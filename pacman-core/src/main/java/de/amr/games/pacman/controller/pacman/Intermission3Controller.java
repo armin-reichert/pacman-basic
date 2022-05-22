@@ -49,12 +49,8 @@ public class Intermission3Controller extends FiniteStateMachine<Intermission3Sta
 		return context;
 	}
 
-	void startStateTimer() {
-		state.timer().setIndefinite().start();
-	}
-
 	public void init() {
-		context.playIntermissionSound.run();
+		state = null;
 		changeState(Intermission3State.CHASING);
 	}
 }
