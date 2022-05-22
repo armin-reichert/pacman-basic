@@ -447,6 +447,17 @@ public abstract class GameModel {
 		return killer.isPresent();
 	}
 
+	public void checkElroy() {
+		// Will Blinky become Cruise Elroy?
+		if (world.foodRemaining() == elroy1DotsLeft) {
+			ghosts[RED_GHOST].elroy = 1;
+			log("Blinky becomes Cruise Elroy 1");
+		} else if (world.foodRemaining() == elroy2DotsLeft) {
+			ghosts[RED_GHOST].elroy = 2;
+			log("Blinky becomes Cruise Elroy 2");
+		}
+	}
+
 	// Ghost house rules, see Pac-Man dossier
 
 	public Ghost releaseLockedGhosts() {

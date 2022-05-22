@@ -243,14 +243,7 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 			score(game.pelletValue);
 		}
 
-		// Will Blinky become Cruise Elroy?
-		if (game.world.foodRemaining() == game.elroy1DotsLeft) {
-			game.ghosts[RED_GHOST].elroy = 1;
-			log("Blinky becomes Cruise Elroy 1");
-		} else if (game.world.foodRemaining() == game.elroy2DotsLeft) {
-			game.ghosts[RED_GHOST].elroy = 2;
-			log("Blinky becomes Cruise Elroy 2");
-		}
+		game.checkElroy();
 
 		// Is bonus awarded?
 		if (game.world.isBonusReached()) {
