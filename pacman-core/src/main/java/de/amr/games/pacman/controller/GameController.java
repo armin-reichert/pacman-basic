@@ -173,22 +173,4 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 			game.publishEvent(new ScatterPhaseStartedEvent(game, phase / 2));
 		}
 	}
-
-	void updatePlayer() {
-		currentPlayerControl().steer(game.player);
-		boolean lostPower = game.updatePlayer();
-		if (lostPower) {
-			// restart (HUNTING) state timer
-			state.timer().start();
-			log("%s timer restarted: %s", state, state.timer());
-		}
-	}
-
-	void checkFood() {
-		boolean energizerEaten = game.checkFood(game.player.tile());
-		if (energizerEaten && game.player.powerTimer.isRunning()) {
-			state.timer().stop();
-			log("%s timer stopped: %s", state, state.timer());
-		}
-	}
 }

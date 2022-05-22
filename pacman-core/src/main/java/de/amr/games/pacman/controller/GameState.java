@@ -113,11 +113,29 @@ public enum GameState implements FsmState<GameModel> {
 				fsm.changeState(GHOST_DYING);
 				return;
 			}
-			fsm.updatePlayer();
+			updatePlayer(game);
 			game.updateGhosts(fsm.gameVariant());
-			fsm.checkFood();
 			game.updateBonus();
 		}
+
+		private void updatePlayer(GameModel game) {
+			fsm.currentPlayerControl().steer(game.player);
+			boolean lostPower = game.updatePlayer();
+			if (lostPower) {
+				timer.start();
+				log("%s timer restarted: %s", this, timer);
+			}
+			checkFood(game);
+		}
+
+		private void checkFood(GameModel game) {
+			boolean energizerEaten = game.checkFood(game.player.tile());
+			if (energizerEaten && game.player.powerTimer.isRunning()) {
+				timer.stop();
+				log("%s timer stopped: %s", this, timer);
+			}
+		}
+
 	},
 
 	LEVEL_COMPLETE {
