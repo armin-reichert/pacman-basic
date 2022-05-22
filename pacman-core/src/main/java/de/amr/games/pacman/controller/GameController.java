@@ -70,18 +70,18 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 			GameVariant.PACMAN, new PacManGame());
 
 	private GameVariant selectedGameVariant;
-	private GameModel game;
 
 	private PlayerControl playerControl;
-	private final Autopilot autopilot = new Autopilot(() -> game);
+	private final Autopilot autopilot = new Autopilot(this::game);
 
 	public GameController(GameVariant variant) {
 		for (var state : GameState.values()) {
 			state.fsm = this;
 		}
 		for (var gameVariant : GameVariant.values()) {
-			stateChangeListeners.add((oldState, newState) -> games.get(gameVariant)
-					.publishEvent(new GameStateChangeEvent(game, oldState, newState)));
+			GameModel game = games.get(gameVariant);
+			stateChangeListeners
+					.add((oldState, newState) -> game.publishEvent(new GameStateChangeEvent(game, oldState, newState)));
 		}
 		selectGameVariant(variant);
 	}
@@ -91,7 +91,7 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 	}
 
 	PlayerControl currentPlayerControl() {
-		return playerAutomove || game.attractMode ? autopilot : playerControl;
+		return playerAutomove || game().attractMode ? autopilot : playerControl;
 	}
 
 	public GameVariant gameVariant() {
@@ -103,32 +103,31 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 		for (var gameVariant : GameVariant.values()) {
 			games.get(gameVariant).setEventingEnabled(gameVariant == selectedGameVariant);
 		}
-		game = games.get(variant);
-		setContext(game); // TODO checkme
+		setContext(game()); // TODO checkme
 		changeState(INTRO);
 	}
 
 	public GameModel game() {
-		return game;
+		return games.get(selectedGameVariant);
 	}
 
 	public void requestGame() {
 		if (state == INTRO) {
-			game.requested = true;
+			game().requested = true;
 			changeState(READY);
 		}
 	}
 
 	public void startIntermissionTest() {
 		if (state == INTRO) {
-			game.intermissionTestNumber = 1;
+			game().intermissionTestNumber = 1;
 			changeState(INTERMISSION_TEST);
 		}
 	}
 
 	public void cheatKillGhosts() {
-		if (game.running) {
-			game.cheatKillGhosts();
+		if (game().running) {
+			game().cheatKillGhosts();
 			changeState(GameState.GHOST_DYING);
 		}
 	}
