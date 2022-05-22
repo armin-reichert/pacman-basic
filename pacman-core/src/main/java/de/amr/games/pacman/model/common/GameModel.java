@@ -579,13 +579,13 @@ public abstract class GameModel {
 	 * @return <code>true</code> if energizer was eaten on given tile
 	 */
 	public boolean checkFood(V2i tile) {
-		boolean energizerEaten = false;
 		if (!world.containsFood(tile)) {
 			player.starvingTicks++;
-			return energizerEaten;
+			return false;
 		}
 		publishEvent(Info.PLAYER_FOUND_FOOD, tile);
 		boolean extraLife = false;
+		boolean energizerEaten = false;
 		if (world.isEnergizerTile(tile)) {
 			extraLife = eatEnergizer(tile);
 			energizerEaten = true;
@@ -606,12 +606,10 @@ public abstract class GameModel {
 	}
 
 	private boolean eatEnergizer(V2i tile) {
-		boolean extraLife = false;
-		ghostBounty = firstGhostBounty;
 		world.removeFood(tile);
+		ghostBounty = firstGhostBounty;
 		player.starvingTicks = 0;
 		player.restingTicksLeft = 3;
-		extraLife = score(energizerValue);
 		if (ghostFrightenedSeconds > 0) {
 			ghosts(HUNTING_PAC).forEach(ghost -> {
 				ghost.state = FRIGHTENED;
@@ -622,18 +620,16 @@ public abstract class GameModel {
 		}
 		checkElroy();
 		updateGhostDotCounters();
-		return extraLife;
+		return score(energizerValue);
 	}
 
 	private boolean eatPellet(V2i tile) {
-		boolean extraLife = false;
 		world.removeFood(tile);
 		player.starvingTicks = 0;
 		player.restingTicksLeft = 1;
-		extraLife = score(pelletValue);
 		checkElroy();
 		updateGhostDotCounters();
-		return extraLife;
+		return score(pelletValue);
 	}
 
 	/**
