@@ -96,7 +96,6 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 	public boolean playerImmune;
 	public boolean gameRequested;
 	public boolean gameRunning;
-	public boolean attractMode;
 
 	public GameController(GameVariant variant) {
 		for (var state : GameState.values()) {
@@ -139,7 +138,7 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 	}
 
 	PlayerControl currentPlayerControl() {
-		return autoControlled || attractMode ? autopilot : playerControl;
+		return autoControlled || game.attractMode ? autopilot : playerControl;
 	}
 
 	public void selectGameVariant(GameVariant variant) {
@@ -215,7 +214,7 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 		if (game.player.powerTimer.isRunning()) {
 			return false;
 		}
-		if (playerImmune && !attractMode) {
+		if (playerImmune && !game.attractMode) {
 			return false;
 		}
 		Optional<Ghost> killer = game.ghosts(HUNTING_PAC).filter(game.player::meets).findAny();
@@ -290,16 +289,6 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 		publish(Info.PLAYER_FOUND_FOOD, foodTile);
 	}
 
-	void movePlayer() {
-		currentPlayerControl().steer(game.player);
-		if (game.player.restingTicksLeft > 0) {
-			game.player.restingTicksLeft--;
-		} else {
-			game.player.setSpeed(game.player.powerTimer.isRunning() ? game.playerSpeedPowered : game.playerSpeed);
-			game.player.tryMoving();
-		}
-	}
-
 	void consumePower() {
 		if (game.player.powerTimer.isRunning()) {
 			game.player.powerTimer.tick();
@@ -355,17 +344,7 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 	 * Scores the given number of points. When 10.000 points are reached, an extra life is rewarded.
 	 */
 	private void score(int points) {
-		if (attractMode) {
-			return;
-		}
-		int oldscore = game.score;
-		game.score += points;
-		if (game.score > game.highscorePoints) {
-			game.highscorePoints = game.score;
-			game.highscoreLevel = game.levelNumber;
-		}
-		if (oldscore < 10000 && game.score >= 10000) {
-			game.player.lives++;
+		if (game.score(points)) {
 			log("Extra life. Player has %d lives now", game.player.lives);
 			publish(Info.EXTRA_LIFE, null);
 		}

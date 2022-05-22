@@ -52,13 +52,12 @@ public enum GameState implements FsmState<GameModel> {
 			game.reset();
 			fsm.gameRequested = false;
 			fsm.gameRunning = false;
-			fsm.attractMode = false;
 		}
 
 		@Override
 		public void onUpdate(GameModel game) {
 			if (timer.hasExpired()) {
-				fsm.attractMode = true;
+				game.attractMode = true;
 				fsm.changeState(READY);
 			}
 		}
@@ -67,7 +66,7 @@ public enum GameState implements FsmState<GameModel> {
 	READY {
 		@Override
 		public void onEnter(GameModel game) {
-			timer.setSeconds(fsm.gameRunning || fsm.attractMode ? 2 : 5).start();
+			timer.setSeconds(fsm.gameRunning || game.attractMode ? 2 : 5).start();
 			game.resetGuys();
 		}
 
@@ -114,7 +113,8 @@ public enum GameState implements FsmState<GameModel> {
 				fsm.changeState(GHOST_DYING);
 				return;
 			}
-			fsm.movePlayer();
+			fsm.currentPlayerControl().steer(game.player);
+			game.movePlayer();
 			fsm.moveGhosts();
 			fsm.lookForFood();
 			fsm.consumeBonus();
@@ -135,7 +135,7 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void onUpdate(GameModel game) {
 			if (timer.hasExpired()) {
-				if (fsm.attractMode) {
+				if (game.attractMode) {
 					fsm.changeState(INTRO);
 				} else if (game.intermissionNumber(game.levelNumber) != 0) {
 					fsm.changeState(INTERMISSION);
@@ -176,7 +176,7 @@ public enum GameState implements FsmState<GameModel> {
 		public void onUpdate(GameModel game) {
 			if (timer.hasExpired()) {
 				game.player.lives--;
-				fsm.changeState(fsm.attractMode ? INTRO : game.player.lives > 0 ? READY : GAME_OVER);
+				fsm.changeState(game.attractMode ? INTRO : game.player.lives > 0 ? READY : GAME_OVER);
 				return;
 			}
 		}
@@ -239,7 +239,7 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void onUpdate(GameModel game) {
 			if (timer.hasExpired()) {
-				fsm.changeState(fsm.attractMode || !fsm.gameRunning ? INTRO : LEVEL_STARTING);
+				fsm.changeState(game.attractMode || !fsm.gameRunning ? INTRO : LEVEL_STARTING);
 			}
 		}
 	},

@@ -74,6 +74,8 @@ public abstract class GameModel {
 	/** The hunting phase. Values: 0, 2, 4, 6 = "scattering", 1, 3, 5, 7 = "chasing". */
 	public int huntingPhase;
 
+	public boolean attractMode;
+
 	/** Tells if the current hunting phase is "scattering". */
 	public boolean inScatteringPhase() {
 		return huntingPhase % 2 == 0;
@@ -184,6 +186,7 @@ public abstract class GameModel {
 	}
 
 	public void reset() {
+		attractMode = false;
 		score = 0;
 		player.lives = initialLives;
 		levelCounter.clear();
@@ -355,4 +358,33 @@ public abstract class GameModel {
 	 */
 	public abstract long bonusActivationTicks();
 
+	public void movePlayer() {
+		if (player.restingTicksLeft > 0) {
+			player.restingTicksLeft--;
+		} else {
+			player.setSpeed(player.powerTimer.isRunning() ? playerSpeedPowered : playerSpeed);
+			player.tryMoving();
+		}
+	}
+
+	/**
+	 * @param points points to score
+	 * @return <code>true</code> if extra life has been achieved
+	 */
+	public boolean score(int points) {
+		if (attractMode) {
+			return false;
+		}
+		int oldscore = score;
+		score += points;
+		if (score > highscorePoints) {
+			highscorePoints = score;
+			highscoreLevel = levelNumber;
+		}
+		if (oldscore < 10000 && score >= 10000) {
+			player.lives++;
+			return true;
+		}
+		return false;
+	}
 }
