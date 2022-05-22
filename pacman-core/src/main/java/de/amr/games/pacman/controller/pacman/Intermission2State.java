@@ -36,10 +36,13 @@ import de.amr.games.pacman.model.common.GhostState;
 import de.amr.games.pacman.model.common.Pac;
 
 public enum Intermission2State implements FsmState<Intermission2Context> {
+
 	CHASING {
 		@Override
 		public void onEnter(Intermission2Context context) {
 			timer.setIndefinite().start();
+
+			context.playIntermissionSound.run();
 
 			context.pac = new Pac("Pac-Man");
 			context.pac.setMoveDir(Direction.LEFT);

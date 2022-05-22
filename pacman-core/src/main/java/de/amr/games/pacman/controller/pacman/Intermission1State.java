@@ -40,6 +40,7 @@ public enum Intermission1State implements FsmState<Intermission1Context> {
 		@Override
 		public void onEnter(Intermission1Context context) {
 			timer.setSeconds(5).start();
+			context.playIntermissionSound.run();
 
 			context.pac = new Pac("Pac-Man");
 			context.pac.setMoveDir(Direction.LEFT);

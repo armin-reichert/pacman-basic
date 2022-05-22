@@ -49,7 +49,7 @@ public class Intermission1Controller extends FiniteStateMachine<Intermission1Sta
 	}
 
 	public void init() {
-		context.playIntermissionSound.run();
+		state = null;
 		changeState(Intermission1State.CHASING_PACMAN);
 	}
 }
