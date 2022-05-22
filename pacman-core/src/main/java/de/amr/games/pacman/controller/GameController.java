@@ -79,7 +79,7 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 			state.fsm = this;
 		}
 		for (var gameVariant : GameVariant.values()) {
-			GameModel game = games.get(gameVariant);
+			var game = games.get(gameVariant);
 			stateChangeListeners
 					.add((oldState, newState) -> game.publishEvent(new GameStateChangeEvent(game, oldState, newState)));
 		}
