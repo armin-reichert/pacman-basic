@@ -36,14 +36,11 @@ import static de.amr.games.pacman.model.common.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.common.GhostState.HUNTING_PAC;
 import static java.util.function.Predicate.not;
 
-import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 import de.amr.games.pacman.controller.event.GameEvent;
 import de.amr.games.pacman.controller.event.GameEvent.Info;
-import de.amr.games.pacman.controller.event.GameEventListener;
 import de.amr.games.pacman.controller.event.GameStateChangeEvent;
 import de.amr.games.pacman.controller.event.ScatterPhaseStartedEvent;
 import de.amr.games.pacman.lib.FiniteStateMachine;
@@ -83,7 +80,7 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 	public boolean autoControlled;
 	public int intermissionTestNumber;
 
-	private final Map<GameVariant, GameModel> games = Map.of( //
+	public final Map<GameVariant, GameModel> games = Map.of( //
 			GameVariant.MS_PACMAN, new MsPacManGame(), //
 			GameVariant.PACMAN, new PacManGame());
 
@@ -97,9 +94,11 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 		for (var state : GameState.values()) {
 			state.fsm = this;
 		}
-		// publish state change events as game events
-		stateChangeListeners
-				.add((oldState, newState) -> publishGameEvent(new GameStateChangeEvent(game, oldState, newState)));
+
+		for (var gameVariant : GameVariant.values()) {
+			stateChangeListeners.add((oldState, newState) -> games.get(gameVariant)
+					.publishEvent(new GameStateChangeEvent(game, oldState, newState)));
+		}
 
 		selectGameVariant(variant);
 	}
@@ -107,24 +106,6 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 	//
 	// Event stuff
 	//
-
-	private final Collection<GameEventListener> subscribers = new ConcurrentLinkedQueue<>();
-
-	void publishGameEvent(GameEvent gameEvent) {
-		subscribers.forEach(subscriber -> subscriber.onGameEvent(gameEvent));
-	}
-
-	void publishGameEvent(Info info, V2i tile) {
-		publishGameEvent(new GameEvent(game, info, null, tile));
-	}
-
-	public void addGameEventListener(GameEventListener subscriber) {
-		subscribers.add(subscriber);
-	}
-
-	public void removeGameEventListener(GameEventListener subscriber) {
-		subscribers.remove(subscriber);
-	}
 
 	// ---
 
@@ -142,6 +123,9 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 
 	public void selectGameVariant(GameVariant variant) {
 		selectedGameVariant = Objects.requireNonNull(variant);
+		for (var gameVariant : GameVariant.values()) {
+			games.get(gameVariant).setEventingEnabled(gameVariant == selectedGameVariant);
+		}
 		game = games.get(variant);
 		setContext(game); // TODO checkme
 		changeState(INTRO);
@@ -172,7 +156,7 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 	public void cheatEatAllPellets() {
 		if (game.running) {
 			game.world.tiles().filter(not(game.world::isEnergizerTile)).forEach(game.world::removeFood);
-			publishGameEvent(Info.PLAYER_FOUND_FOOD, null);
+			game.publishEvent(Info.PLAYER_FOUND_FOOD, null);
 		}
 	}
 
@@ -192,7 +176,7 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 		log("Hunting phase #%d (%s) started, %d of %d ticks remaining", phase, phaseName, state.timer.ticksRemaining(),
 				state.timer().duration());
 		if (game.inScatteringPhase()) {
-			publishGameEvent(new ScatterPhaseStartedEvent(game, phase / 2));
+			game.publishEvent(new ScatterPhaseStartedEvent(game, phase / 2));
 		}
 	}
 
@@ -204,7 +188,7 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 			game.player.powerTimer.tick();
 			if (game.player.powerTimer.ticksRemaining() == sec_to_ticks(1)) {
 				// TODO not sure exactly how long the player is losing power
-				publishGameEvent(Info.PLAYER_LOSING_POWER, game.player.tile());
+				game.publishEvent(Info.PLAYER_LOSING_POWER, game.player.tile());
 			}
 		}
 		case EXPIRED -> {
@@ -214,7 +198,7 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 			log("HUNTING timer restarted: %s", state.timer());
 			game.ghosts(FRIGHTENED).forEach(ghost -> ghost.state = HUNTING_PAC);
 			game.player.powerTimer.setIndefinite(); // TODO needed?
-			publishGameEvent(Info.PLAYER_LOST_POWER, game.player.tile());
+			game.publishEvent(Info.PLAYER_LOST_POWER, game.player.tile());
 		}
 		default -> {
 		}
@@ -225,7 +209,7 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 		game.ghosts().forEach(this::updateGhost);
 		Ghost released = game.releaseLockedGhosts();
 		if (released != null) {
-			publishGameEvent(new GameEvent(game, Info.GHOST_LEAVING_HOUSE, released, released.tile()));
+			game.publishEvent(new GameEvent(game, Info.GHOST_LEAVING_HOUSE, released, released.tile()));
 		}
 	}
 
@@ -233,7 +217,7 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 		V2i tile = game.player.tile();
 		if (game.world.containsFood(tile)) {
 			eatFood(tile);
-			publishGameEvent(Info.PLAYER_FOUND_FOOD, tile);
+			game.publishEvent(Info.PLAYER_FOUND_FOOD, tile);
 		} else {
 			game.player.starvingTicks++;
 		}
@@ -247,17 +231,17 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 				// HUNTING timer is stopped while player has power
 				state.timer().stop();
 				log("%s timer stopped: %s", state, state.timer());
-				publishGameEvent(Info.PLAYER_GAINS_POWER, foodTile);
+				game.publishEvent(Info.PLAYER_GAINS_POWER, foodTile);
 			}
 		} else {
 			extraLife = game.eatPellet(foodTile);
 		}
 		if (extraLife) {
 			log("Extra life. Player has %d lives now", game.player.lives);
-			publishGameEvent(Info.EXTRA_LIFE, null);
+			game.publishEvent(Info.EXTRA_LIFE, null);
 		}
 		if (game.checkBonusAwarded()) {
-			publishGameEvent(Info.BONUS_ACTIVATED, game.bonus.tile());
+			game.publishEvent(Info.BONUS_ACTIVATED, game.bonus.tile());
 		}
 	}
 
@@ -271,21 +255,21 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 				boolean extraLife = game.score(game.bonus.points);
 				if (extraLife) {
 					log("Extra life. Player has %d lives now", game.player.lives);
-					publishGameEvent(Info.EXTRA_LIFE, null);
+					game.publishEvent(Info.EXTRA_LIFE, null);
 				}
-				publishGameEvent(Info.BONUS_EATEN, game.bonus.tile());
+				game.publishEvent(Info.BONUS_EATEN, game.bonus.tile());
 			} else {
 				game.bonus.update();
 				if (game.bonus.timer == 0) {
 					log("Bonus id=%d expired", game.bonus.symbol);
-					publishGameEvent(Info.BONUS_EXPIRED, game.bonus.tile());
+					game.publishEvent(Info.BONUS_EXPIRED, game.bonus.tile());
 				}
 			}
 		}
 		case EATEN -> {
 			game.bonus.update();
 			if (game.bonus.timer == 0) {
-				publishGameEvent(Info.BONUS_EXPIRED, game.bonus.tile());
+				game.publishEvent(Info.BONUS_EXPIRED, game.bonus.tile());
 			}
 		}
 		default -> {
@@ -320,8 +304,8 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 			ghost.setSpeed(game.ghostSpeed * 2);
 			boolean reachedRevivalTile = ghost.enterHouse(game.world.ghostHouse());
 			if (reachedRevivalTile) {
-				publishGameEvent(new GameEvent(game, Info.GHOST_REVIVED, ghost, ghost.tile()));
-				publishGameEvent(new GameEvent(game, Info.GHOST_LEAVING_HOUSE, ghost, ghost.tile()));
+				game.publishEvent(new GameEvent(game, Info.GHOST_REVIVED, ghost, ghost.tile()));
+				game.publishEvent(new GameEvent(game, Info.GHOST_LEAVING_HOUSE, ghost, ghost.tile()));
 			}
 		}
 
@@ -329,7 +313,7 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 			ghost.setSpeed(game.ghostSpeed / 2);
 			boolean leftHouse = ghost.leaveHouse(game.world.ghostHouse());
 			if (leftHouse) {
-				publishGameEvent(new GameEvent(game, Info.GHOST_LEFT_HOUSE, ghost, ghost.tile()));
+				game.publishEvent(new GameEvent(game, Info.GHOST_LEFT_HOUSE, ghost, ghost.tile()));
 			}
 		}
 
@@ -373,7 +357,7 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 			ghost.setSpeed(game.ghostSpeed * 2);
 			boolean reachedHouse = ghost.returnHome(game.world.ghostHouse());
 			if (reachedHouse) {
-				publishGameEvent(new GameEvent(game, Info.GHOST_ENTERS_HOUSE, ghost, ghost.tile()));
+				game.publishEvent(new GameEvent(game, Info.GHOST_ENTERS_HOUSE, ghost, ghost.tile()));
 			}
 		}
 

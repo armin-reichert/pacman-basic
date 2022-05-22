@@ -204,7 +204,7 @@ public enum GameState implements FsmState<GameModel> {
 			// fire event(s) for dead ghosts not yet returning home (bounty != 0)
 			game.ghosts(DEAD).filter(ghost -> ghost.bounty != 0).forEach(ghost -> {
 				ghost.bounty = 0;
-				fsm.publishGameEvent(new GameEvent(game, Info.GHOST_RETURNS_HOME, ghost, null));
+				game.publishEvent(new GameEvent(game, Info.GHOST_RETURNS_HOME, ghost, null));
 			});
 		}
 	},
@@ -256,7 +256,7 @@ public enum GameState implements FsmState<GameModel> {
 					timer.setIndefinite().start();
 					log("Test intermission scene #%d", fsm.intermissionTestNumber);
 					// This is a hack to trigger the UI to update its current scene
-					fsm.publishGameEvent(new GameStateChangeEvent(game, this, this));
+					game.publishEvent(new GameStateChangeEvent(game, this, this));
 				} else {
 					fsm.changeState(INTRO);
 				}

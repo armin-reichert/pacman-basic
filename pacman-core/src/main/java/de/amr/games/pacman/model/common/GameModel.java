@@ -33,10 +33,15 @@ import static de.amr.games.pacman.model.common.world.World.HTS;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.stream.Stream;
 
+import de.amr.games.pacman.controller.event.GameEvent;
+import de.amr.games.pacman.controller.event.GameEvent.Info;
+import de.amr.games.pacman.controller.event.GameEventListener;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.Hiscore;
 import de.amr.games.pacman.lib.TickTimer;
@@ -189,6 +194,36 @@ public abstract class GameModel {
 
 	/** High score file of current game variant. */
 	public File hiscoreFile;
+
+	private final Collection<GameEventListener> subscribers = new ConcurrentLinkedQueue<>();
+
+	/*
+	 * Eventing.
+	 */
+
+	private boolean eventingEnabled;
+
+	public void setEventingEnabled(boolean eventingEnabled) {
+		this.eventingEnabled = eventingEnabled;
+	}
+
+	public void addEventListener(GameEventListener subscriber) {
+		subscribers.add(subscriber);
+	}
+
+	public void removeEventListener(GameEventListener subscriber) {
+		subscribers.remove(subscriber);
+	}
+
+	public void publishEvent(GameEvent gameEvent) {
+		if (eventingEnabled) {
+			subscribers.forEach(subscriber -> subscriber.onGameEvent(gameEvent));
+		}
+	}
+
+	public void publishEvent(Info info, V2i tile) {
+		publishEvent(new GameEvent(this, info, null, tile));
+	}
 
 	protected GameModel() {
 		initialLives = 3;
