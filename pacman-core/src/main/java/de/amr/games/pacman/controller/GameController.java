@@ -26,19 +26,14 @@ package de.amr.games.pacman.controller;
 import static de.amr.games.pacman.controller.GameState.INTERMISSION_TEST;
 import static de.amr.games.pacman.controller.GameState.INTRO;
 import static de.amr.games.pacman.controller.GameState.READY;
-import static de.amr.games.pacman.lib.Logging.log;
-import static de.amr.games.pacman.model.common.GhostState.FRIGHTENED;
-import static de.amr.games.pacman.model.common.GhostState.HUNTING_PAC;
 
 import java.util.Map;
 import java.util.Objects;
 
 import de.amr.games.pacman.controller.event.GameStateChangeEvent;
-import de.amr.games.pacman.controller.event.ScatterPhaseStartedEvent;
 import de.amr.games.pacman.lib.FiniteStateMachine;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
-import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.mspacman.MsPacManGame;
 import de.amr.games.pacman.model.pacman.PacManGame;
 
@@ -140,26 +135,6 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 		if (game.running) {
 			game.cheatKillGhosts();
 			changeState(GameState.GHOST_DYING);
-		}
-	}
-
-	void resetAndStartHuntingTimerForPhase(int phase) {
-		long ticks = game.huntingPhaseDurations[phase];
-		log("Set %s timer to %d ticks", state, ticks);
-		state.timer.set(ticks).start();
-	}
-
-	void startHuntingPhase(int phase) {
-		game.huntingPhase = phase;
-		resetAndStartHuntingTimerForPhase(phase);
-		if (phase > 0) {
-			game.ghosts().filter(ghost -> ghost.is(HUNTING_PAC) || ghost.is(FRIGHTENED)).forEach(Ghost::forceTurningBack);
-		}
-		String phaseName = game.inScatteringPhase() ? "Scattering" : "Chasing";
-		log("Hunting phase #%d (%s) started, %d of %d ticks remaining", phase, phaseName, state.timer.ticksRemaining(),
-				state.timer().duration());
-		if (game.inScatteringPhase()) {
-			game.publishEvent(new ScatterPhaseStartedEvent(game, phase / 2));
 		}
 	}
 }

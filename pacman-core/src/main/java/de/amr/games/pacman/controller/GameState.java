@@ -33,10 +33,12 @@ import static de.amr.games.pacman.model.common.GhostState.HUNTING_PAC;
 import de.amr.games.pacman.controller.event.GameEvent;
 import de.amr.games.pacman.controller.event.GameEvent.Info;
 import de.amr.games.pacman.controller.event.GameStateChangeEvent;
+import de.amr.games.pacman.controller.event.ScatterPhaseStartedEvent;
 import de.amr.games.pacman.lib.FsmState;
 import de.amr.games.pacman.lib.Hiscore;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.common.GameModel;
+import de.amr.games.pacman.model.common.Ghost;
 
 /**
  * The states of the game. Each state has a timer and a reference to its FSM.
@@ -90,22 +92,23 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void onEnter(GameModel game) {
 			if (!timer.isStopped()) {
-				fsm.startHuntingPhase(0);
+				startHuntingPhase(game, 0);
 			}
 		}
 
 		@Override
 		public void onUpdate(GameModel game) {
 			if (timer.hasExpired()) {
-				fsm.startHuntingPhase(++game.huntingPhase);
+				++game.huntingPhase;
+				startHuntingPhase(game, game.huntingPhase);
 			}
 			if (game.world.foodRemaining() == 0) {
-				fsm.resetAndStartHuntingTimerForPhase(0); // TODO is this correct?
+				resetAndStartHuntingTimerForPhase(game, 0); // TODO is this correct?
 				fsm.changeState(LEVEL_COMPLETE);
 				return;
 			}
 			if (game.checkKillPlayer(fsm.playerImmune)) {
-				fsm.resetAndStartHuntingTimerForPhase(0); // TODO is this correct?
+				resetAndStartHuntingTimerForPhase(game, 0); // TODO is this correct?
 				fsm.changeState(PACMAN_DYING);
 				return;
 			}
@@ -136,6 +139,25 @@ public enum GameState implements FsmState<GameModel> {
 			}
 		}
 
+		private void resetAndStartHuntingTimerForPhase(GameModel game, int phase) {
+			long ticks = game.huntingPhaseDurations[phase];
+			log("Set %s timer to %d ticks", this, ticks);
+			timer.set(ticks).start();
+		}
+
+		private void startHuntingPhase(GameModel game, int phase) {
+			game.huntingPhase = phase;
+			resetAndStartHuntingTimerForPhase(game, phase);
+			if (phase > 0) {
+				game.ghosts().filter(ghost -> ghost.is(HUNTING_PAC) || ghost.is(FRIGHTENED)).forEach(Ghost::forceTurningBack);
+			}
+			String phaseName = game.inScatteringPhase() ? "Scattering" : "Chasing";
+			log("Hunting phase #%d (%s) started, %d of %d ticks remaining", phase, phaseName, timer.ticksRemaining(),
+					timer.duration());
+			if (game.inScatteringPhase()) {
+				game.publishEvent(new ScatterPhaseStartedEvent(game, phase / 2));
+			}
+		}
 	},
 
 	LEVEL_COMPLETE {
@@ -192,10 +214,8 @@ public enum GameState implements FsmState<GameModel> {
 			if (timer.hasExpired()) {
 				game.player.lives--;
 				fsm.changeState(game.attractMode ? INTRO : game.player.lives > 0 ? READY : GAME_OVER);
-				return;
 			}
 		}
-
 	},
 
 	GHOST_DYING {
