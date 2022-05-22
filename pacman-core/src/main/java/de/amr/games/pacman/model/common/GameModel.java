@@ -76,6 +76,10 @@ public abstract class GameModel {
 
 	public boolean attractMode;
 
+	public boolean requested;
+
+	public boolean running;
+
 	/** Tells if the current hunting phase is "scattering". */
 	public boolean inScatteringPhase() {
 		return huntingPhase % 2 == 0;

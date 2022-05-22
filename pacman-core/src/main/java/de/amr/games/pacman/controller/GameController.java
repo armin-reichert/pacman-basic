@@ -94,8 +94,6 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 
 	public boolean autoControlled;
 	public boolean playerImmune;
-	public boolean gameRequested;
-	public boolean gameRunning;
 
 	public GameController(GameVariant variant) {
 		for (var state : GameState.values()) {
@@ -150,7 +148,7 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 
 	public void requestGame() {
 		if (state == INTRO) {
-			gameRequested = true;
+			game.requested = true;
 			changeState(READY);
 		}
 	}
@@ -163,7 +161,7 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 	}
 
 	public void cheatKillGhosts() {
-		if (gameRunning) {
+		if (game.running) {
 			game.ghostBounty = game.firstGhostBounty;
 			game.ghosts().filter(ghost -> ghost.is(HUNTING_PAC) || ghost.is(FRIGHTENED)).forEach(this::killGhost);
 			changeState(GHOST_DYING);
@@ -171,7 +169,7 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 	}
 
 	public void cheatEatAllPellets() {
-		if (gameRunning) {
+		if (game.running) {
 			game.world.tiles().filter(not(game.world::isEnergizerTile)).forEach(game.world::removeFood);
 			publish(Info.PLAYER_FOUND_FOOD, null);
 		}
