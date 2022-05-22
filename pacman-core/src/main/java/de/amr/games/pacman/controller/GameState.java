@@ -283,16 +283,16 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void onEnter(GameModel game) {
 			timer.setIndefinite().start();
-			log("Test intermission scene #%d", fsm.intermissionTestNumber);
+			log("Test intermission scene #%d", game.intermissionTestNumber);
 		}
 
 		@Override
 		public void onUpdate(GameModel game) {
 			if (timer.hasExpired()) {
-				if (fsm.intermissionTestNumber < 3) {
-					++fsm.intermissionTestNumber;
+				if (game.intermissionTestNumber < 3) {
+					++game.intermissionTestNumber;
 					timer.setIndefinite().start();
-					log("Test intermission scene #%d", fsm.intermissionTestNumber);
+					log("Test intermission scene #%d", game.intermissionTestNumber);
 					// This is a hack to trigger the UI to update its current scene
 					game.publishEvent(new GameStateChangeEvent(game, this, this));
 				} else {

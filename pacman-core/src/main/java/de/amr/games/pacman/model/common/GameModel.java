@@ -90,11 +90,17 @@ public abstract class GameModel {
 	/** The hunting phase. Values: 0, 2, 4, 6 = "scattering", 1, 3, 5, 7 = "chasing". */
 	public int huntingPhase;
 
+	/** If the attract mode is active */
 	public boolean attractMode;
 
+	/** If playing a game has been requested. */
 	public boolean requested;
 
+	/** If a game is running. */
 	public boolean running;
+
+	/** Number of running intermissions scene in test mode. */
+	public int intermissionTestNumber;
 
 	/** Tells if the current hunting phase is "scattering". */
 	public boolean inScatteringPhase() {

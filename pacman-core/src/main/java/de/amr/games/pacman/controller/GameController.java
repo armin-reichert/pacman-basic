@@ -63,8 +63,7 @@ import de.amr.games.pacman.model.pacman.PacManGame;
 public class GameController extends FiniteStateMachine<GameState, GameModel> {
 
 	public boolean playerImmune;
-	public boolean autoControlled;
-	public int intermissionTestNumber;
+	public boolean playerAutomove;
 
 	public final Map<GameVariant, GameModel> games = Map.of( //
 			GameVariant.MS_PACMAN, new MsPacManGame(), //
@@ -80,27 +79,19 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 		for (var state : GameState.values()) {
 			state.fsm = this;
 		}
-
 		for (var gameVariant : GameVariant.values()) {
 			stateChangeListeners.add((oldState, newState) -> games.get(gameVariant)
 					.publishEvent(new GameStateChangeEvent(game, oldState, newState)));
 		}
-
 		selectGameVariant(variant);
 	}
-
-	//
-	// Event stuff
-	//
-
-	// ---
 
 	public void setPlayerControl(PlayerControl playerControl) {
 		this.playerControl = playerControl;
 	}
 
 	PlayerControl currentPlayerControl() {
-		return autoControlled || game.attractMode ? autopilot : playerControl;
+		return playerAutomove || game.attractMode ? autopilot : playerControl;
 	}
 
 	public GameVariant gameVariant() {
@@ -126,7 +117,7 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 
 	public void startIntermissionTest() {
 		if (state == INTRO) {
-			intermissionTestNumber = 1;
+			game.intermissionTestNumber = 1;
 			changeState(INTERMISSION_TEST);
 		}
 	}
