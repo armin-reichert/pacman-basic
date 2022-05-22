@@ -23,19 +23,16 @@ SOFTWARE.
 */
 package de.amr.games.pacman.controller;
 
-import static de.amr.games.pacman.controller.GameState.GHOST_DYING;
 import static de.amr.games.pacman.controller.GameState.INTERMISSION_TEST;
 import static de.amr.games.pacman.controller.GameState.INTRO;
 import static de.amr.games.pacman.controller.GameState.READY;
 import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.model.common.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.common.GhostState.HUNTING_PAC;
-import static java.util.function.Predicate.not;
 
 import java.util.Map;
 import java.util.Objects;
 
-import de.amr.games.pacman.controller.event.GameEvent.Info;
 import de.amr.games.pacman.controller.event.GameStateChangeEvent;
 import de.amr.games.pacman.controller.event.ScatterPhaseStartedEvent;
 import de.amr.games.pacman.lib.FiniteStateMachine;
@@ -141,16 +138,8 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 
 	public void cheatKillGhosts() {
 		if (game.running) {
-			game.ghostBounty = game.firstGhostBounty;
-			game.ghosts().filter(ghost -> ghost.is(HUNTING_PAC) || ghost.is(FRIGHTENED)).forEach(game::killGhost);
-			changeState(GHOST_DYING);
-		}
-	}
-
-	public void cheatEatAllPellets() {
-		if (game.running) {
-			game.world.tiles().filter(not(game.world::isEnergizerTile)).forEach(game.world::removeFood);
-			game.publishEvent(Info.PLAYER_FOUND_FOOD, null);
+			game.cheatKillGhosts();
+			changeState(GameState.GHOST_DYING);
 		}
 	}
 

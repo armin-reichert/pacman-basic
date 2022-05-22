@@ -32,6 +32,7 @@ import static de.amr.games.pacman.model.common.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.model.common.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.model.common.GhostState.LOCKED;
 import static de.amr.games.pacman.model.common.world.World.HTS;
+import static java.util.function.Predicate.not;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -408,6 +409,18 @@ public abstract class GameModel {
 	public abstract long bonusActivationTicks();
 
 	// Game logic
+
+	public void cheatEatAllPellets() {
+		if (running) {
+			world.tiles().filter(not(world::isEnergizerTile)).forEach(world::removeFood);
+			publishEvent(Info.PLAYER_FOUND_FOOD, null);
+		}
+	}
+
+	public void cheatKillGhosts() {
+		ghostBounty = firstGhostBounty;
+		ghosts().filter(ghost -> ghost.is(HUNTING_PAC) || ghost.is(FRIGHTENED)).forEach(this::killGhost);
+	}
 
 	/**
 	 * @return <code>true</code> if player power just expired
