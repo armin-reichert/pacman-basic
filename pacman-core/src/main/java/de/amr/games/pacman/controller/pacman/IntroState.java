@@ -204,7 +204,7 @@ public enum IntroState implements FsmState<IntroContext> {
 		public void onUpdate(IntroContext context) {
 			context.slowBlinking.animate();
 			if (timer.isRunningSeconds(5)) {
-				context.gameController.state.timer().expire();
+				context.gameController.state().timer().expire();
 			}
 		}
 	};

@@ -93,7 +93,7 @@ public enum Intermission2State implements FsmState<Intermission2Context> {
 			if (timer.isRunningSeconds(2)) {
 				context.blinky.setMoveDir(Direction.RIGHT);
 			} else if (timer.isRunningSeconds(6)) {
-				fsm.gameController.state.timer().expire();
+				fsm.gameController.state().timer().expire();
 				return;
 			}
 			context.blinky.move();

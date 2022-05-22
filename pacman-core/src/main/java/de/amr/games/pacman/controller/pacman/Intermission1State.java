@@ -87,7 +87,7 @@ public enum Intermission1State implements FsmState<Intermission1Context> {
 		@Override
 		public void onUpdate(Intermission1Context context) {
 			if (timer.hasExpired()) {
-				fsm.gameController.state.timer().expire();
+				fsm.gameController.state().timer().expire();
 				return;
 			}
 			context.pac.move();

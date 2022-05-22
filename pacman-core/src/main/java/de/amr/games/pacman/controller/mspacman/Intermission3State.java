@@ -126,7 +126,7 @@ public enum Intermission3State implements FsmState<Intermission3Context> {
 		public void onUpdate(Intermission3Context context) {
 			context.stork.move();
 			if (timer.hasExpired()) {
-				fsm.gameController.state.timer().expire();
+				fsm.gameController.state().timer().expire();
 			}
 		}
 	};

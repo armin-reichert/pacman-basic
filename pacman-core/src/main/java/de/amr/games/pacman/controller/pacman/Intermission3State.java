@@ -73,7 +73,7 @@ public enum Intermission3State implements FsmState<Intermission3Context> {
 		@Override
 		public void onUpdate(Intermission3Context context) {
 			if (context.blinky.position.x > t(53)) {
-				fsm.gameController.state.timer().expire();
+				fsm.gameController.state().timer().expire();
 				return;
 			}
 			context.pac.move();

@@ -107,7 +107,7 @@ public enum Intermission2State implements FsmState<Intermission2Context> {
 				context.msPacMan.setMoveDir(Direction.RIGHT);
 				context.msPacMan.setSpeed(4.0);
 			} else if (timer.isRunningSeconds(20)) {
-				fsm.gameController.state.timer().expire();
+				fsm.gameController.state().timer().expire();
 				return;
 			}
 			context.pacMan.move();

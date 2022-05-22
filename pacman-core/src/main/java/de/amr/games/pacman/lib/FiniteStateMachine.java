@@ -44,7 +44,7 @@ public abstract class FiniteStateMachine<STATE extends FsmState<CONTEXT>, CONTEX
 	public static void nop() {
 	}
 
-	public STATE state;
+	protected STATE state;
 	protected STATE previousState;
 	protected String name;
 
@@ -55,6 +55,10 @@ public abstract class FiniteStateMachine<STATE extends FsmState<CONTEXT>, CONTEX
 	}
 
 	public abstract CONTEXT getContext();
+
+	public STATE state() {
+		return state;
+	}
 
 	public STATE changeState(STATE newState) {
 		if (newState == state) {
