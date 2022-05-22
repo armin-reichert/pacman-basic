@@ -180,7 +180,7 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 		if (lostPower) {
 			// restart (HUNTING) state timer
 			state.timer().start();
-			log("HUNTING timer restarted: %s", state.timer());
+			log("%s timer restarted: %s", state, state.timer());
 		}
 	}
 
@@ -191,5 +191,4 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 			log("%s timer stopped: %s", state, state.timer());
 		}
 	}
-
 }
