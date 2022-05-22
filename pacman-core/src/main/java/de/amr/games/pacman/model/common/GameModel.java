@@ -23,11 +23,18 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.common;
 
+import static de.amr.games.pacman.lib.Logging.log;
+import static de.amr.games.pacman.model.common.GhostState.DEAD;
+import static de.amr.games.pacman.model.common.GhostState.FRIGHTENED;
+import static de.amr.games.pacman.model.common.GhostState.HUNTING_PAC;
+import static de.amr.games.pacman.model.common.GhostState.LEAVING_HOUSE;
+import static de.amr.games.pacman.model.common.GhostState.LOCKED;
 import static de.amr.games.pacman.model.common.world.World.HTS;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.Direction;
@@ -362,7 +369,7 @@ public abstract class GameModel {
 	 */
 	public abstract long bonusActivationTicks();
 
-	public void movePlayer() {
+	public void updatePlayer() {
 		if (player.restingTicksLeft > 0) {
 			player.restingTicksLeft--;
 		} else {
@@ -391,4 +398,104 @@ public abstract class GameModel {
 		}
 		return false;
 	}
+
+	/**
+	 * Killing ghosts wins 200, 400, 800, 1600 points in order when using the same energizer power. If all 16 ghosts on a
+	 * level are killed, additonal 12000 points are rewarded.
+	 */
+	public void killGhost(Ghost ghost) {
+		ghost.state = DEAD;
+		ghost.targetTile = world.ghostHouse().leftEntry();
+		ghost.bounty = ghostBounty;
+		ghostBounty *= 2;
+		numGhostsKilled++;
+		score(ghost.bounty);
+		if (numGhostsKilled == 16) {
+			score(12000);
+		}
+		log("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name, ghost.tile(), ghost.bounty);
+	}
+
+	public boolean killGhosts() {
+		Ghost[] prey = ghosts(FRIGHTENED).filter(player::meets).toArray(Ghost[]::new);
+		Stream.of(prey).forEach(this::killGhost);
+		return prey.length > 0;
+	}
+
+	public boolean killedPlayer(boolean immune) {
+		if (player.powerTimer.isRunning()) {
+			return false;
+		}
+		if (immune && !attractMode) {
+			return false;
+		}
+		Optional<Ghost> killer = ghosts(HUNTING_PAC).filter(player::meets).findAny();
+		killer.ifPresent(ghost -> {
+			player.killed = true;
+			log("%s got killed by %s at tile %s", player.name, ghost.name, player.tile());
+			// Elroy mode of red ghost gets disabled when player is killed
+			Ghost redGhost = ghosts[GameModel.RED_GHOST];
+			if (redGhost.elroy > 0) {
+				redGhost.elroy = -redGhost.elroy; // negative value means "disabled"
+				log("Elroy mode %d for %s has been disabled", redGhost.elroy, redGhost.name);
+			}
+			// reset and disable global dot counter (used by ghost house logic)
+			globalDotCounter = 0;
+			globalDotCounterEnabled = true;
+			log("Global dot counter got reset and enabled");
+		});
+		return killer.isPresent();
+	}
+
+	// Ghost house rules, see Pac-Man dossier
+
+	public Ghost releaseLockedGhosts() {
+		if (ghosts[RED_GHOST].is(LOCKED)) {
+			ghosts[RED_GHOST].state = HUNTING_PAC;
+		}
+		Optional<Ghost> nextToRelease = preferredLockedGhostInHouse();
+		if (nextToRelease.isPresent()) {
+			Ghost ghost = nextToRelease.get();
+			if (globalDotCounterEnabled && globalDotCounter >= ghost.globalDotLimit) {
+				return releaseGhost(ghost, "Global dot counter reached limit (%d)", ghost.globalDotLimit);
+			} else if (!globalDotCounterEnabled && ghost.dotCounter >= ghost.privateDotLimit) {
+				return releaseGhost(ghost, "Private dot counter reached limit (%d)", ghost.privateDotLimit);
+			} else if (player.starvingTicks >= player.starvingTimeLimit) {
+				int starved = player.starvingTicks;
+				player.starvingTicks = 0;
+				return releaseGhost(ghost, "%s reached starving limit (%d ticks)", player.name, starved);
+			}
+		}
+		return null;
+	}
+
+	private Ghost releaseGhost(Ghost ghost, String reason, Object... args) {
+		if (ghost.id == ORANGE_GHOST && ghosts[RED_GHOST].elroy < 0) {
+			ghosts[RED_GHOST].elroy = -ghosts[RED_GHOST].elroy; // resume Elroy mode
+			log("%s Elroy mode %d resumed", ghosts[RED_GHOST].name, ghosts[RED_GHOST].elroy);
+		}
+		ghost.state = LEAVING_HOUSE;
+		log("Ghost %s released: %s", ghost.name, String.format(reason, args));
+		return ghost;
+	}
+
+	private Optional<Ghost> preferredLockedGhostInHouse() {
+		return Stream.of(PINK_GHOST, CYAN_GHOST, ORANGE_GHOST).map(id -> ghosts[id]).filter(ghost -> ghost.is(LOCKED))
+				.findFirst();
+	}
+
+	public void updateGhostDotCounters() {
+		if (globalDotCounterEnabled) {
+			if (ghosts[ORANGE_GHOST].is(LOCKED) && globalDotCounter == 32) {
+				globalDotCounterEnabled = false;
+				globalDotCounter = 0;
+				log("Global dot counter disabled and reset, Clyde was in house when counter reached 32");
+			} else {
+				globalDotCounter++;
+			}
+		} else {
+			preferredLockedGhostInHouse().ifPresent(ghost -> ++ghost.dotCounter);
+		}
+	}
+
 }

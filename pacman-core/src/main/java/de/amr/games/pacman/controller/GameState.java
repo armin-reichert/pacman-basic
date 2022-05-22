@@ -104,23 +104,21 @@ public enum GameState implements FsmState<GameModel> {
 				fsm.changeState(LEVEL_COMPLETE);
 				return;
 			}
-			if (fsm.killedPlayer()) {
+			if (game.killedPlayer(fsm.playerImmune)) {
 				fsm.resetAndStartHuntingTimerForPhase(0); // TODO is this correct?
 				fsm.changeState(PACMAN_DYING);
 				return;
 			}
-			if (fsm.killedGhosts()) {
+			if (game.killGhosts()) {
 				fsm.changeState(GHOST_DYING);
 				return;
 			}
-			fsm.currentPlayerControl().steer(game.player);
-			game.movePlayer();
-			fsm.moveGhosts();
+			fsm.updatePlayer();
+			fsm.updateGhosts();
 			fsm.lookForFood();
 			fsm.consumeBonus();
 			fsm.consumePower();
 		}
-
 	},
 
 	LEVEL_COMPLETE {

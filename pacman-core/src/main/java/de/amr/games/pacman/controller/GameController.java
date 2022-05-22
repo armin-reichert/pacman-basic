@@ -29,24 +29,17 @@ import static de.amr.games.pacman.controller.GameState.INTRO;
 import static de.amr.games.pacman.controller.GameState.READY;
 import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.lib.TickTimer.sec_to_ticks;
-import static de.amr.games.pacman.model.common.GameModel.CYAN_GHOST;
-import static de.amr.games.pacman.model.common.GameModel.ORANGE_GHOST;
 import static de.amr.games.pacman.model.common.GameModel.PINK_GHOST;
 import static de.amr.games.pacman.model.common.GameModel.RED_GHOST;
 import static de.amr.games.pacman.model.common.GameVariant.MS_PACMAN;
-import static de.amr.games.pacman.model.common.GhostState.DEAD;
 import static de.amr.games.pacman.model.common.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.common.GhostState.HUNTING_PAC;
-import static de.amr.games.pacman.model.common.GhostState.LEAVING_HOUSE;
-import static de.amr.games.pacman.model.common.GhostState.LOCKED;
 import static java.util.function.Predicate.not;
 
 import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.stream.Stream;
 
 import de.amr.games.pacman.controller.event.GameEvent;
 import de.amr.games.pacman.controller.event.GameEvent.Info;
@@ -170,7 +163,7 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 	public void cheatKillGhosts() {
 		if (game.running) {
 			game.ghostBounty = game.firstGhostBounty;
-			game.ghosts().filter(ghost -> ghost.is(HUNTING_PAC) || ghost.is(FRIGHTENED)).forEach(this::killGhost);
+			game.ghosts().filter(ghost -> ghost.is(HUNTING_PAC) || ghost.is(FRIGHTENED)).forEach(game::killGhost);
 			changeState(GHOST_DYING);
 		}
 	}
@@ -204,40 +197,17 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 		}
 	}
 
-	void moveGhosts() {
-		releaseLockedGhosts();
+	void updatePlayer() {
+		currentPlayerControl().steer(game.player);
+		game.updatePlayer();
+	}
+
+	void updateGhosts() {
 		game.ghosts().forEach(this::updateGhost);
-	}
-
-	boolean killedGhosts() {
-		Ghost[] prey = game.ghosts(FRIGHTENED).filter(game.player::meets).toArray(Ghost[]::new);
-		Stream.of(prey).forEach(this::killGhost);
-		return prey.length > 0;
-	}
-
-	public boolean killedPlayer() {
-		if (game.player.powerTimer.isRunning()) {
-			return false;
+		Ghost released = game.releaseLockedGhosts();
+		if (released != null) {
+			publishGameEvent(new GameEvent(game, Info.GHOST_LEAVING_HOUSE, released, released.tile()));
 		}
-		if (playerImmune && !game.attractMode) {
-			return false;
-		}
-		Optional<Ghost> killer = game.ghosts(HUNTING_PAC).filter(game.player::meets).findAny();
-		killer.ifPresent(ghost -> {
-			game.player.killed = true;
-			log("%s got killed by %s at tile %s", game.player.name, ghost.name, game.player.tile());
-			// Elroy mode of red ghost gets disabled when player is killed
-			Ghost redGhost = game.ghosts[GameModel.RED_GHOST];
-			if (redGhost.elroy > 0) {
-				redGhost.elroy = -redGhost.elroy; // negative value means "disabled"
-				log("Elroy mode %d for %s has been disabled", redGhost.elroy, redGhost.name);
-			}
-			// reset and disable global dot counter (used by ghost house logic)
-			game.globalDotCounter = 0;
-			game.globalDotCounterEnabled = true;
-			log("Global dot counter got reset and enabled");
-		});
-		return killer.isPresent();
 	}
 
 	void lookForFood() {
@@ -290,7 +260,7 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 			publishGameEvent(Info.BONUS_ACTIVATED, game.bonus.tile());
 		}
 
-		updateGhostDotCounters();
+		game.updateGhostDotCounters();
 		publishGameEvent(Info.PLAYER_FOUND_FOOD, foodTile);
 	}
 
@@ -439,71 +409,6 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 		}
 
 		default -> throw new IllegalArgumentException("Illegal ghost state: " + state);
-
-		}
-	}
-
-	/**
-	 * Killing ghosts wins 200, 400, 800, 1600 points in order when using the same energizer power. If all 16 ghosts on a
-	 * level are killed, additonal 12000 points are rewarded.
-	 */
-	private void killGhost(Ghost ghost) {
-		ghost.state = DEAD;
-		ghost.targetTile = game.world.ghostHouse().leftEntry();
-		ghost.bounty = game.ghostBounty;
-		game.ghostBounty *= 2;
-		game.numGhostsKilled++;
-		score(ghost.bounty);
-		if (game.numGhostsKilled == 16) {
-			score(12000);
-		}
-		log("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name, ghost.tile(), ghost.bounty);
-	}
-
-	// Ghost house rules, see Pac-Man dossier
-
-	private void releaseLockedGhosts() {
-		if (game.ghosts[RED_GHOST].is(LOCKED)) {
-			game.ghosts[RED_GHOST].state = HUNTING_PAC;
-		}
-		preferredLockedGhostInHouse().ifPresent(ghost -> {
-			if (game.globalDotCounterEnabled && game.globalDotCounter >= ghost.globalDotLimit) {
-				releaseGhost(ghost, "Global dot counter reached limit (%d)", ghost.globalDotLimit);
-			} else if (!game.globalDotCounterEnabled && ghost.dotCounter >= ghost.privateDotLimit) {
-				releaseGhost(ghost, "Private dot counter reached limit (%d)", ghost.privateDotLimit);
-			} else if (game.player.starvingTicks >= game.player.starvingTimeLimit) {
-				releaseGhost(ghost, "%s reached starving limit (%d ticks)", game.player.name, game.player.starvingTicks);
-				game.player.starvingTicks = 0;
-			}
-		});
-	}
-
-	private void releaseGhost(Ghost ghost, String reason, Object... args) {
-		if (ghost.id == ORANGE_GHOST && game.ghosts[RED_GHOST].elroy < 0) {
-			game.ghosts[RED_GHOST].elroy = -game.ghosts[RED_GHOST].elroy; // resume Elroy mode
-			log("%s Elroy mode %d resumed", game.ghosts[RED_GHOST].name, game.ghosts[RED_GHOST].elroy);
-		}
-		ghost.state = LEAVING_HOUSE;
-		log("Ghost %s released: %s", ghost.name, String.format(reason, args));
-		publishGameEvent(new GameEvent(game, Info.GHOST_LEAVING_HOUSE, ghost, ghost.tile()));
-	}
-
-	private Optional<Ghost> preferredLockedGhostInHouse() {
-		return Stream.of(PINK_GHOST, CYAN_GHOST, ORANGE_GHOST).map(id -> game.ghosts[id]).filter(ghost -> ghost.is(LOCKED))
-				.findFirst();
-	}
-
-	private void updateGhostDotCounters() {
-		if (game.globalDotCounterEnabled) {
-			if (game.ghosts[ORANGE_GHOST].is(LOCKED) && game.globalDotCounter == 32) {
-				game.globalDotCounterEnabled = false;
-				game.globalDotCounter = 0;
-				log("Global dot counter disabled and reset, Clyde was in house when counter reached 32");
-			} else {
-				game.globalDotCounter++;
-			}
-		} else {
-			preferredLockedGhostInHouse().ifPresent(ghost -> ++ghost.dotCounter);
 		}
 	}
 }
