@@ -24,6 +24,7 @@ SOFTWARE.
 package de.amr.games.pacman.model.common;
 
 import static de.amr.games.pacman.lib.Logging.log;
+import static de.amr.games.pacman.lib.TickTimer.sec_to_ticks;
 import static de.amr.games.pacman.model.common.GameVariant.MS_PACMAN;
 import static de.amr.games.pacman.model.common.GhostState.DEAD;
 import static de.amr.games.pacman.model.common.GhostState.FRIGHTENED;
@@ -408,13 +409,36 @@ public abstract class GameModel {
 
 	// Game logic
 
-	public void updatePlayer() {
+	/**
+	 * @return <code>true</code> if player power just expired
+	 */
+	public boolean updatePlayer() {
+		boolean lostPower = false;
 		if (player.restingTicksLeft > 0) {
 			player.restingTicksLeft--;
 		} else {
 			player.setSpeed(player.powerTimer.isRunning() ? playerSpeedPowered : playerSpeed);
 			player.tryMoving();
 		}
+		switch (player.powerTimer.getState()) {
+		case RUNNING -> {
+			player.powerTimer.tick();
+			if (player.powerTimer.ticksRemaining() == sec_to_ticks(1)) {
+				// TODO not sure exactly how long the player is losing power
+				publishEvent(Info.PLAYER_LOSING_POWER, player.tile());
+			}
+		}
+		case EXPIRED -> {
+			lostPower = true;
+			log("%s lost power, timer=%s", player.name, player.powerTimer);
+			ghosts(FRIGHTENED).forEach(ghost -> ghost.state = HUNTING_PAC);
+			player.powerTimer.setIndefinite(); // TODO needed?
+			publishEvent(Info.PLAYER_LOST_POWER, player.tile());
+		}
+		default -> {
+		}
+		}
+		return lostPower;
 	}
 
 	public void updateGhosts(GameVariant gameVariant) {
@@ -661,6 +685,39 @@ public abstract class GameModel {
 			return true;
 		}
 		return false;
+	}
+
+	public void updateBonus() {
+		switch (bonus.state) {
+		case EDIBLE -> {
+			if (player.meets(bonus)) {
+				log("%s found bonus id=%d of value %d", player.name, bonus.symbol, bonus.points);
+				bonus.eat();
+				bonus.timer = sec_to_ticks(2);
+				boolean extraLife = score(bonus.points);
+				if (extraLife) {
+					log("Extra life. Player has %d lives now", player.lives);
+					publishEvent(Info.EXTRA_LIFE, null);
+				}
+				publishEvent(Info.BONUS_EATEN, bonus.tile());
+			} else {
+				bonus.update();
+				if (bonus.timer == 0) {
+					log("Bonus id=%d expired", bonus.symbol);
+					publishEvent(Info.BONUS_EXPIRED, bonus.tile());
+				}
+			}
+		}
+		case EATEN -> {
+			bonus.update();
+			if (bonus.timer == 0) {
+				publishEvent(Info.BONUS_EXPIRED, bonus.tile());
+			}
+		}
+		default -> {
+			// INACTIVE
+		}
+		}
 	}
 
 	// Ghost house rules, see Pac-Man dossier
