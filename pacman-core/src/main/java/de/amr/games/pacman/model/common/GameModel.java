@@ -530,7 +530,38 @@ public abstract class GameModel {
 		return false;
 	}
 
-	public boolean eatEnergizer(V2i tile) {
+	/**
+	 * @param tile
+	 * @return <code>true</code> if energizer was eaten on given tile
+	 */
+	public boolean checkFood(V2i tile) {
+		boolean energizerEaten = false;
+		if (!world.containsFood(tile)) {
+			player.starvingTicks++;
+			return energizerEaten;
+		}
+		publishEvent(Info.PLAYER_FOUND_FOOD, tile);
+		boolean extraLife = false;
+		if (world.isEnergizerTile(tile)) {
+			extraLife = eatEnergizer(tile);
+			energizerEaten = true;
+			if (ghostFrightenedSeconds > 0) {
+				publishEvent(Info.PLAYER_GAINS_POWER, tile);
+			}
+		} else {
+			extraLife = eatPellet(tile);
+		}
+		if (extraLife) {
+			log("Extra life. Player has %d lives now", player.lives);
+			publishEvent(Info.EXTRA_LIFE, null);
+		}
+		if (checkBonusAwarded()) {
+			publishEvent(Info.BONUS_ACTIVATED, bonus.tile());
+		}
+		return energizerEaten;
+	}
+
+	private boolean eatEnergizer(V2i tile) {
 		boolean extraLife = false;
 		ghostBounty = firstGhostBounty;
 		world.removeFood(tile);
@@ -550,7 +581,7 @@ public abstract class GameModel {
 		return extraLife;
 	}
 
-	public boolean eatPellet(V2i tile) {
+	private boolean eatPellet(V2i tile) {
 		boolean extraLife = false;
 		world.removeFood(tile);
 		player.starvingTicks = 0;

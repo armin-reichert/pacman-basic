@@ -40,7 +40,6 @@ import de.amr.games.pacman.controller.event.GameEvent.Info;
 import de.amr.games.pacman.controller.event.GameStateChangeEvent;
 import de.amr.games.pacman.controller.event.ScatterPhaseStartedEvent;
 import de.amr.games.pacman.lib.FiniteStateMachine;
-import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.Ghost;
@@ -201,35 +200,11 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 		}
 	}
 
-	void lookForFood() {
-		V2i tile = game.player.tile();
-		if (game.world.containsFood(tile)) {
-			eatFood(tile);
-			game.publishEvent(Info.PLAYER_FOUND_FOOD, tile);
-		} else {
-			game.player.starvingTicks++;
-		}
-	}
-
-	void eatFood(V2i foodTile) {
-		boolean extraLife = false;
-		if (game.world.isEnergizerTile(foodTile)) {
-			extraLife = game.eatEnergizer(foodTile);
-			if (game.ghostFrightenedSeconds > 0) {
-				// HUNTING timer is stopped while player has power
-				state.timer().stop();
-				log("%s timer stopped: %s", state, state.timer());
-				game.publishEvent(Info.PLAYER_GAINS_POWER, foodTile);
-			}
-		} else {
-			extraLife = game.eatPellet(foodTile);
-		}
-		if (extraLife) {
-			log("Extra life. Player has %d lives now", game.player.lives);
-			game.publishEvent(Info.EXTRA_LIFE, null);
-		}
-		if (game.checkBonusAwarded()) {
-			game.publishEvent(Info.BONUS_ACTIVATED, game.bonus.tile());
+	void checkFood() {
+		boolean energizerEaten = game.checkFood(game.player.tile());
+		if (energizerEaten && game.player.powerTimer.isRunning()) {
+			state.timer().stop();
+			log("%s timer stopped: %s", state, state.timer());
 		}
 	}
 
