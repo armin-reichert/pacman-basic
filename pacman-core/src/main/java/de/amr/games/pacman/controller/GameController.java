@@ -23,15 +23,9 @@ SOFTWARE.
 */
 package de.amr.games.pacman.controller;
 
-import static de.amr.games.pacman.controller.GameState.GAME_OVER;
 import static de.amr.games.pacman.controller.GameState.GHOST_DYING;
-import static de.amr.games.pacman.controller.GameState.HUNTING;
-import static de.amr.games.pacman.controller.GameState.INTERMISSION;
 import static de.amr.games.pacman.controller.GameState.INTERMISSION_TEST;
 import static de.amr.games.pacman.controller.GameState.INTRO;
-import static de.amr.games.pacman.controller.GameState.LEVEL_COMPLETE;
-import static de.amr.games.pacman.controller.GameState.LEVEL_STARTING;
-import static de.amr.games.pacman.controller.GameState.PACMAN_DYING;
 import static de.amr.games.pacman.controller.GameState.READY;
 import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.lib.TickTimer.sec_to_ticks;
@@ -41,7 +35,6 @@ import static de.amr.games.pacman.model.common.GameModel.PINK_GHOST;
 import static de.amr.games.pacman.model.common.GameModel.RED_GHOST;
 import static de.amr.games.pacman.model.common.GameVariant.MS_PACMAN;
 import static de.amr.games.pacman.model.common.GhostState.DEAD;
-import static de.amr.games.pacman.model.common.GhostState.ENTERING_HOUSE;
 import static de.amr.games.pacman.model.common.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.common.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.model.common.GhostState.LEAVING_HOUSE;
@@ -60,7 +53,6 @@ import de.amr.games.pacman.controller.event.GameEventListener;
 import de.amr.games.pacman.controller.event.GameStateChangeEvent;
 import de.amr.games.pacman.controller.event.ScatterPhaseStartedEvent;
 import de.amr.games.pacman.lib.FiniteStateMachine;
-import de.amr.games.pacman.lib.Hiscore;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
@@ -91,7 +83,7 @@ import de.amr.games.pacman.model.pacman.PacManGame;
  *      behavior</a>
  * @see <a href="http://superpacman.com/mspacman/">Ms. Pac-Man</a>
  */
-public class GameController extends FiniteStateMachine<GameState> {
+public class GameController extends FiniteStateMachine<GameState, GameModel> {
 
 	public final EnumMap<GameVariant, GameModel> games = new EnumMap<>(GameVariant.class);
 	public GameModel game;
@@ -107,20 +99,11 @@ public class GameController extends FiniteStateMachine<GameState> {
 	public boolean attractMode;
 
 	public GameController(GameVariant variant) {
-		super(GameState.values());
-		configState(INTRO, this::state_Intro_enter, this::state_Intro_update, null);
-		configState(READY, this::state_Ready_enter, this::state_Ready_update, null);
-		configState(HUNTING, this::state_Hunting_enter, this::state_Hunting_update, null);
-		configState(GHOST_DYING, this::state_GhostDying_enter, this::state_GhostDying_update, this::state_GhostDying_exit);
-		configState(PACMAN_DYING, this::state_PacManDying_enter, this::state_PacManDying_update, null);
-		configState(LEVEL_STARTING, this::state_LevelStarting_enter, this::state_LevelStarting_update, null);
-		configState(LEVEL_COMPLETE, this::state_LevelComplete_enter, this::state_LevelComplete_update, null);
-		configState(GAME_OVER, this::state_GameOver_enter, this::state_GameOver_update, null);
-		configState(INTERMISSION, this::state_Intermission_enter, this::state_Intermission_update, null);
-		configState(INTERMISSION_TEST, this::state_IntermissionTest_enter, this::state_IntermissionTest_update, null);
-
+		for (var state : GameState.values()) {
+			state.fsm = this;
+		}
 		// map state change events to game events
-		addStateChangeListener((oldState, newState) -> publish(new GameStateChangeEvent(game, oldState, newState)));
+		stateChangeListeners.add((oldState, newState) -> publish(new GameStateChangeEvent(game, oldState, newState)));
 
 		games.put(GameVariant.MS_PACMAN, new MsPacManGame());
 		games.put(GameVariant.PACMAN, new PacManGame());
@@ -133,7 +116,7 @@ public class GameController extends FiniteStateMachine<GameState> {
 
 	private final Collection<GameEventListener> subscribers = new ConcurrentLinkedQueue<>();
 
-	private void publish(GameEvent gameEvent) {
+	void publish(GameEvent gameEvent) {
 		subscribers.forEach(subscriber -> subscriber.onGameEvent(gameEvent));
 	}
 
@@ -155,13 +138,14 @@ public class GameController extends FiniteStateMachine<GameState> {
 		this.playerControl = playerControl;
 	}
 
-	private PlayerControl currentPlayerControl() {
+	PlayerControl currentPlayerControl() {
 		return autoControlled || attractMode ? autopilot : playerControl;
 	}
 
 	public void selectGameVariant(GameVariant variant) {
 		gameVariant = variant;
 		game = games.get(variant);
+		setContext(game); // TODO checkme
 		changeState(INTRO);
 	}
 
@@ -194,243 +178,40 @@ public class GameController extends FiniteStateMachine<GameState> {
 		}
 	}
 
-	// --- BEGIN STATE-MACHINE METHODS ---
-
-	// INTRO
-
-	private void state_Intro_enter() {
-		game.reset();
-		gameRequested = false;
-		gameRunning = false;
-		attractMode = false;
-		stateTimer().setIndefinite().start();
-	}
-
-	private void state_Intro_update() {
-		if (stateTimer().hasExpired()) {
-			attractMode = true;
-			changeState(READY);
-		}
-	}
-
-	// READY
-
-	private void state_Ready_enter() {
-		game.resetGuys();
-		stateTimer().setSeconds(gameRunning || attractMode ? 2 : 5).start();
-	}
-
-	private void state_Ready_update() {
-		if (stateTimer().ticked() == sec_to_ticks(1.5)) {
-			game.showGhosts();
-			game.player.show();
-		} else if (stateTimer().hasExpired()) {
-			if (gameRequested) {
-				gameRunning = true;
-			}
-			// TODO reset hunting timer to INDEFINITE?
-			changeState(GameState.HUNTING);
-			return;
-		}
-	}
-
-	// HUNTING
-
-	private void state_Hunting_enter() {
-		if (!stateTimer().isStopped()) {
-			startHuntingPhase(0);
-		}
-	}
-
-	/* This method contains the main logic of the game play. */
-	private void state_Hunting_update() {
-		if (stateTimer().hasExpired()) {
-			startHuntingPhase(++game.huntingPhase);
-		}
-		if (game.world.foodRemaining() == 0) {
-			resetAndStartHuntingTimerForPhase(0); // TODO is this correct?
-			changeState(LEVEL_COMPLETE);
-			return;
-		}
-		if (killedPlayer()) {
-			resetAndStartHuntingTimerForPhase(0); // TODO is this correct?
-			changeState(PACMAN_DYING);
-			return;
-		}
-		if (killedGhosts()) {
-			changeState(GHOST_DYING);
-			return;
-		}
-		movePlayer();
-		moveGhosts();
-		lookForFood();
-		consumeBonus();
-		consumePower();
-	}
-
-	// PACMAN_DYING
-
-	private void state_PacManDying_enter() {
-		game.player.setSpeed(0);
-		game.ghosts(FRIGHTENED).forEach(ghost -> ghost.state = HUNTING_PAC);
-		game.bonus.init();
-		stateTimer().setIndefinite().start();
-	}
-
-	private void state_PacManDying_update() {
-		if (stateTimer().hasExpired()) {
-			game.player.lives--;
-			changeState(attractMode ? INTRO : game.player.lives > 0 ? READY : GAME_OVER);
-			return;
-		}
-	}
-
-	// GHOST_DYING
-
-	private void state_GhostDying_enter() {
-		game.player.hide();
-		stateTimer().setSeconds(1).start();
-	}
-
-	private void state_GhostDying_update() {
-		if (stateTimer().hasExpired()) {
-			resumePreviousState();
-			return;
-		}
-		currentPlayerControl().steer(game.player);
-		game.ghosts().filter(ghost -> ghost.is(DEAD) && ghost.bounty == 0 || ghost.is(ENTERING_HOUSE))
-				.forEach(this::updateGhost);
-	}
-
-	private void state_GhostDying_exit() {
-		game.player.show();
-		// fire event(s) for dead ghosts not yet returning home (bounty != 0)
-		game.ghosts(DEAD).filter(ghost -> ghost.bounty != 0).forEach(ghost -> {
-			ghost.bounty = 0;
-			publish(new GameEvent(game, Info.GHOST_RETURNS_HOME, ghost, null));
-		});
-	}
-
-	// LEVEL_STARTING
-
-	private void state_LevelStarting_enter() {
-		game.setLevel(game.levelNumber + 1);
-		game.resetGuys();
-		stateTimer().setIndefinite().start();
-	}
-
-	private void state_LevelStarting_update() {
-		if (stateTimer().hasExpired()) {
-			changeState(READY);
-		}
-	}
-
-	// LEVEL_COMPLETE
-
-	private void state_LevelComplete_enter() {
-		game.bonus.init();
-		game.player.setSpeed(0);
-		game.hideGhosts();
-		stateTimer().setIndefinite().start();
-	}
-
-	private void state_LevelComplete_update() {
-		if (stateTimer().hasExpired()) {
-			if (attractMode) {
-				changeState(INTRO);
-			} else if (game.intermissionNumber(game.levelNumber) != 0) {
-				changeState(INTERMISSION);
-			} else {
-				changeState(LEVEL_STARTING);
-			}
-		}
-	}
-
-	// GAME_OVER
-
-	private void state_GameOver_enter() {
-		gameRunning = false;
-		game.ghosts().forEach(ghost -> ghost.setSpeed(0));
-		game.player.setSpeed(0);
-		new Hiscore(game).save();
-		stateTimer().setSeconds(5).start();
-	}
-
-	private void state_GameOver_update() {
-		if (stateTimer().hasExpired()) {
-			changeState(INTRO);
-		}
-	}
-
-	// INTERMISSION
-
-	private void state_Intermission_enter() {
-		stateTimer().setIndefinite().start(); // UI triggers state timeout
-	}
-
-	private void state_Intermission_update() {
-		if (stateTimer().hasExpired()) {
-			changeState(attractMode || !gameRunning ? INTRO : LEVEL_STARTING);
-		}
-	}
-
-	// INTERMISSION_TEST
-
 	public int intermissionTestNumber;
 
-	private void state_IntermissionTest_enter() {
-		stateTimer().setIndefinite().start();
-		log("Test intermission scene #%d", intermissionTestNumber);
-	}
-
-	private void state_IntermissionTest_update() {
-		if (stateTimer().hasExpired()) {
-			if (intermissionTestNumber < 3) {
-				++intermissionTestNumber;
-				stateTimer().setIndefinite().start();
-				log("Test intermission scene #%d", intermissionTestNumber);
-				// This is a hack to trigger the UI to update its current scene
-				publish(new GameStateChangeEvent(game, state, state));
-			} else {
-				changeState(INTRO);
-			}
-		}
-	}
-
-	// --- END STATE-MACHINE METHODS ---
-
-	private void resetAndStartHuntingTimerForPhase(int phase) {
+	void resetAndStartHuntingTimerForPhase(int phase) {
 		long ticks = game.huntingPhaseDurations[phase];
 		log("Set %s timer to %d ticks", state, ticks);
-		stateTimer().set(ticks).start();
+		state.timer.set(ticks).start();
 	}
 
-	private void startHuntingPhase(int phase) {
+	void startHuntingPhase(int phase) {
 		game.huntingPhase = phase;
 		resetAndStartHuntingTimerForPhase(phase);
 		if (phase > 0) {
 			game.ghosts().filter(ghost -> ghost.is(HUNTING_PAC) || ghost.is(FRIGHTENED)).forEach(Ghost::forceTurningBack);
 		}
 		String phaseName = game.inScatteringPhase() ? "Scattering" : "Chasing";
-		log("Hunting phase #%d (%s) started, %d of %d ticks remaining", phase, phaseName, stateTimer().ticksRemaining(),
-				stateTimer().duration());
+		log("Hunting phase #%d (%s) started, %d of %d ticks remaining", phase, phaseName, state.timer.ticksRemaining(),
+				state.timer().duration());
 		if (game.inScatteringPhase()) {
 			publish(new ScatterPhaseStartedEvent(game, phase / 2));
 		}
 	}
 
-	private void moveGhosts() {
+	void moveGhosts() {
 		releaseLockedGhosts();
 		game.ghosts().forEach(this::updateGhost);
 	}
 
-	private boolean killedGhosts() {
+	boolean killedGhosts() {
 		Ghost[] prey = game.ghosts(FRIGHTENED).filter(game.player::meets).toArray(Ghost[]::new);
 		Stream.of(prey).forEach(this::killGhost);
 		return prey.length > 0;
 	}
 
-	private boolean killedPlayer() {
+	public boolean killedPlayer() {
 		if (game.player.powerTimer.isRunning()) {
 			return false;
 		}
@@ -455,7 +236,7 @@ public class GameController extends FiniteStateMachine<GameState> {
 		return killer.isPresent();
 	}
 
-	private void lookForFood() {
+	void lookForFood() {
 		V2i playerTile = game.player.tile();
 		if (game.world.containsFood(playerTile)) {
 			eatFood(playerTile);
@@ -479,8 +260,8 @@ public class GameController extends FiniteStateMachine<GameState> {
 				game.player.powerTimer.setSeconds(game.ghostFrightenedSeconds).start();
 				log("%s got power, timer=%s", game.player.name, game.player.powerTimer);
 				// HUNTING is stopped while player has power
-				stateTimer().stop();
-				log("%s timer stopped: %s", state, stateTimer());
+				state.timer().stop();
+				log("%s timer stopped: %s", state, state.timer());
 				publish(Info.PLAYER_GAINS_POWER, foodTile);
 			}
 		} else {
@@ -509,7 +290,7 @@ public class GameController extends FiniteStateMachine<GameState> {
 		publish(Info.PLAYER_FOUND_FOOD, foodTile);
 	}
 
-	private void movePlayer() {
+	void movePlayer() {
 		currentPlayerControl().steer(game.player);
 		if (game.player.restingTicksLeft > 0) {
 			game.player.restingTicksLeft--;
@@ -519,7 +300,7 @@ public class GameController extends FiniteStateMachine<GameState> {
 		}
 	}
 
-	private void consumePower() {
+	void consumePower() {
 		if (game.player.powerTimer.isRunning()) {
 			game.player.powerTimer.tick();
 			if (game.player.powerTimer.ticksRemaining() == sec_to_ticks(1)) {
@@ -531,13 +312,13 @@ public class GameController extends FiniteStateMachine<GameState> {
 			game.ghosts(FRIGHTENED).forEach(ghost -> ghost.state = HUNTING_PAC);
 			game.player.powerTimer.setIndefinite();
 			// restart HUNTING state timer
-			stateTimer().start();
-			log("HUNTING timer restarted: %s", stateTimer());
+			state.timer().start();
+			log("HUNTING timer restarted: %s", state.timer());
 			publish(Info.PLAYER_LOST_POWER, game.player.tile());
 		}
 	}
 
-	private void consumeBonus() {
+	void consumeBonus() {
 		switch (game.bonus.state) {
 
 		case EDIBLE -> {
@@ -600,7 +381,7 @@ public class GameController extends FiniteStateMachine<GameState> {
 	 * 
 	 * @param ghost ghost to update
 	 */
-	private void updateGhost(Ghost ghost) {
+	void updateGhost(Ghost ghost) {
 		switch (ghost.state) {
 
 		case LOCKED -> {

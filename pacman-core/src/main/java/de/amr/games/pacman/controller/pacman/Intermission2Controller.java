@@ -23,19 +23,10 @@ SOFTWARE.
  */
 package de.amr.games.pacman.controller.pacman;
 
-import static de.amr.games.pacman.controller.pacman.Intermission2Controller.IntermissionState.CHASING;
-import static de.amr.games.pacman.controller.pacman.Intermission2Controller.IntermissionState.STRETCHED;
-import static de.amr.games.pacman.controller.pacman.Intermission2Controller.IntermissionState.STUCK;
-import static de.amr.games.pacman.model.common.world.World.t;
-
 import de.amr.games.pacman.controller.GameController;
-import de.amr.games.pacman.controller.pacman.Intermission2Controller.IntermissionState;
-import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.FiniteStateMachine;
 import de.amr.games.pacman.model.common.GameEntity;
-import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Ghost;
-import de.amr.games.pacman.model.common.GhostState;
 import de.amr.games.pacman.model.common.Pac;
 
 /**
@@ -43,91 +34,31 @@ import de.amr.games.pacman.model.common.Pac;
  * 
  * @author Armin Reichert
  */
-public class Intermission2Controller extends FiniteStateMachine<IntermissionState> {
-
-	public enum IntermissionState {
-		CHASING, STRETCHED, STUCK;
-	}
+public class Intermission2Controller extends FiniteStateMachine<Intermission2State, Object> {
 
 	public final GameController gameController;
-	public Runnable playIntermissionSound = NOP;
+	public Runnable playIntermissionSound = FiniteStateMachine::nop;
 	public Ghost blinky;
 	public Pac pac;
 	public GameEntity nail;
 
 	public Intermission2Controller(GameController gameController) {
-		super(IntermissionState.values());
-		configState(CHASING, this::state_CHASING_enter, this::state_CHASING_update, null);
-		configState(STRETCHED, this::startStateTimer, this::state_STRETCHED_update, null);
-		configState(STUCK, this::startStateTimer, this::state_STUCK_update, null);
 		this.gameController = gameController;
+		for (var state : Intermission2State.values()) {
+			state.controller = this;
+		}
 	}
 
 	public void init() {
 		playIntermissionSound.run();
-		changeState(CHASING);
+		changeState(Intermission2State.CHASING);
 	}
 
-	private void startStateTimer() {
-		stateTimer().setIndefinite().start();
+	void startStateTimer() {
+		state.timer().setIndefinite().start();
 	}
 
 	public int nailDistance() {
 		return (int) (nail.position.x - blinky.position.x);
-	}
-
-	private void state_CHASING_enter() {
-		startStateTimer();
-
-		pac = new Pac("Pac-Man");
-		pac.setMoveDir(Direction.LEFT);
-		pac.setPosition(t(30), t(20));
-		pac.setSpeed(1.0);
-		pac.show();
-
-		blinky = new Ghost(GameModel.RED_GHOST, "Blinky");
-		blinky.state = GhostState.HUNTING_PAC;
-		blinky.setMoveDir(Direction.LEFT);
-		blinky.setWishDir(Direction.LEFT);
-		blinky.position = pac.position.plus(t(14), 0);
-		blinky.setSpeed(1.0);
-		blinky.show();
-
-		nail = new GameEntity();
-		nail.setPosition(t(14), t(20) - 1);
-		nail.show();
-	}
-
-	private void state_CHASING_update() {
-		if (nailDistance() == 0) {
-			changeState(STRETCHED);
-			return;
-		}
-		pac.move();
-		blinky.move();
-	}
-
-	private void state_STRETCHED_update() {
-		int stretching = nailDistance() / 4;
-		if (stretching == 3) {
-			blinky.setSpeed(0);
-			blinky.setMoveDir(Direction.UP);
-			changeState(IntermissionState.STUCK);
-			return;
-		}
-		blinky.setSpeed(0.3 - 0.1 * stretching);
-		blinky.move();
-		pac.move();
-	}
-
-	private void state_STUCK_update() {
-		if (stateTimer().isRunningSeconds(2)) {
-			blinky.setMoveDir(Direction.RIGHT);
-		} else if (stateTimer().isRunningSeconds(6)) {
-			gameController.stateTimer().expire();
-			return;
-		}
-		blinky.move();
-		pac.move();
 	}
 }

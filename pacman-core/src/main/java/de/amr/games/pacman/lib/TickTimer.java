@@ -104,6 +104,12 @@ public class TickTimer {
 		}
 	}
 
+	/**
+	 * Sets timer to given ticks and resets timer state to {@link TickTimerState#READY}.
+	 * 
+	 * @param ticks timer value
+	 * @return itself
+	 */
 	public TickTimer set(long ticks) {
 		state = READY;
 		t = 0;
