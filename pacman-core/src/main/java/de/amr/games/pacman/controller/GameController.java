@@ -42,7 +42,8 @@ import static de.amr.games.pacman.model.common.GhostState.LOCKED;
 import static java.util.function.Predicate.not;
 
 import java.util.Collection;
-import java.util.EnumMap;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.stream.Stream;
@@ -85,25 +86,27 @@ import de.amr.games.pacman.model.pacman.PacManGame;
  */
 public class GameController extends FiniteStateMachine<GameState, GameModel> {
 
-	public final EnumMap<GameVariant, GameModel> games = new EnumMap<>(GameVariant.class);
+	public boolean playerImmune;
+	public boolean autoControlled;
+
+	private final Map<GameVariant, GameModel> games = Map.of( //
+			GameVariant.MS_PACMAN, new MsPacManGame(), //
+			GameVariant.PACMAN, new PacManGame());
+
+	private GameVariant selectedGameVariant;
 	public GameModel game;
-	public GameVariant gameVariant;
 
 	private PlayerControl playerControl;
 	private final Autopilot autopilot = new Autopilot(() -> game);
-
-	public boolean autoControlled;
-	public boolean playerImmune;
 
 	public GameController(GameVariant variant) {
 		for (var state : GameState.values()) {
 			state.fsm = this;
 		}
-		// map state change events to game events
-		stateChangeListeners.add((oldState, newState) -> publish(new GameStateChangeEvent(game, oldState, newState)));
+		// publish state change events as game events
+		stateChangeListeners
+				.add((oldState, newState) -> publishGameEvent(new GameStateChangeEvent(game, oldState, newState)));
 
-		games.put(GameVariant.MS_PACMAN, new MsPacManGame());
-		games.put(GameVariant.PACMAN, new PacManGame());
 		selectGameVariant(variant);
 	}
 
@@ -113,12 +116,12 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 
 	private final Collection<GameEventListener> subscribers = new ConcurrentLinkedQueue<>();
 
-	void publish(GameEvent gameEvent) {
+	void publishGameEvent(GameEvent gameEvent) {
 		subscribers.forEach(subscriber -> subscriber.onGameEvent(gameEvent));
 	}
 
-	private void publish(Info info, V2i tile) {
-		publish(new GameEvent(game, info, null, tile));
+	void publishGameEvent(Info info, V2i tile) {
+		publishGameEvent(new GameEvent(game, info, null, tile));
 	}
 
 	public void addGameEventListener(GameEventListener subscriber) {
@@ -139,8 +142,12 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 		return autoControlled || game.attractMode ? autopilot : playerControl;
 	}
 
+	public GameVariant gameVariant() {
+		return selectedGameVariant;
+	}
+
 	public void selectGameVariant(GameVariant variant) {
-		gameVariant = variant;
+		selectedGameVariant = Objects.requireNonNull(variant);
 		game = games.get(variant);
 		setContext(game); // TODO checkme
 		changeState(INTRO);
@@ -171,7 +178,7 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 	public void cheatEatAllPellets() {
 		if (game.running) {
 			game.world.tiles().filter(not(game.world::isEnergizerTile)).forEach(game.world::removeFood);
-			publish(Info.PLAYER_FOUND_FOOD, null);
+			publishGameEvent(Info.PLAYER_FOUND_FOOD, null);
 		}
 	}
 
@@ -193,7 +200,7 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 		log("Hunting phase #%d (%s) started, %d of %d ticks remaining", phase, phaseName, state.timer.ticksRemaining(),
 				state.timer().duration());
 		if (game.inScatteringPhase()) {
-			publish(new ScatterPhaseStartedEvent(game, phase / 2));
+			publishGameEvent(new ScatterPhaseStartedEvent(game, phase / 2));
 		}
 	}
 
@@ -259,7 +266,7 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 				// HUNTING is stopped while player has power
 				state.timer().stop();
 				log("%s timer stopped: %s", state, state.timer());
-				publish(Info.PLAYER_GAINS_POWER, foodTile);
+				publishGameEvent(Info.PLAYER_GAINS_POWER, foodTile);
 			}
 		} else {
 			game.player.restingTicksLeft = 1;
@@ -280,11 +287,11 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 			game.bonus.activate(game.bonusSymbol, game.bonusValue(game.bonus.symbol));
 			game.bonus.timer = game.bonusActivationTicks();
 			log("Bonus id=%d, value=%d activated for %d ticks", game.bonus.symbol, game.bonus.points, game.bonus.timer);
-			publish(Info.BONUS_ACTIVATED, game.bonus.tile());
+			publishGameEvent(Info.BONUS_ACTIVATED, game.bonus.tile());
 		}
 
 		updateGhostDotCounters();
-		publish(Info.PLAYER_FOUND_FOOD, foodTile);
+		publishGameEvent(Info.PLAYER_FOUND_FOOD, foodTile);
 	}
 
 	void consumePower() {
@@ -292,7 +299,7 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 			game.player.powerTimer.tick();
 			if (game.player.powerTimer.ticksRemaining() == sec_to_ticks(1)) {
 				// TODO not sure exactly how long the player is losing power
-				publish(Info.PLAYER_LOSING_POWER, game.player.tile());
+				publishGameEvent(Info.PLAYER_LOSING_POWER, game.player.tile());
 			}
 		} else if (game.player.powerTimer.hasExpired()) {
 			log("%s lost power, timer=%s", game.player.name, game.player.powerTimer);
@@ -301,7 +308,7 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 			// restart HUNTING state timer
 			state.timer().start();
 			log("HUNTING timer restarted: %s", state.timer());
-			publish(Info.PLAYER_LOST_POWER, game.player.tile());
+			publishGameEvent(Info.PLAYER_LOST_POWER, game.player.tile());
 		}
 	}
 
@@ -314,12 +321,12 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 				game.bonus.eat();
 				game.bonus.timer = sec_to_ticks(2);
 				score(game.bonus.points);
-				publish(Info.BONUS_EATEN, game.bonus.tile());
+				publishGameEvent(Info.BONUS_EATEN, game.bonus.tile());
 			} else {
 				game.bonus.update();
 				if (game.bonus.timer == 0) {
 					log("Bonus id=%d expired", game.bonus.symbol);
-					publish(Info.BONUS_EXPIRED, game.bonus.tile());
+					publishGameEvent(Info.BONUS_EXPIRED, game.bonus.tile());
 				}
 			}
 		}
@@ -327,7 +334,7 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 		case EATEN -> {
 			game.bonus.update();
 			if (game.bonus.timer == 0) {
-				publish(Info.BONUS_EXPIRED, game.bonus.tile());
+				publishGameEvent(Info.BONUS_EXPIRED, game.bonus.tile());
 			}
 		}
 
@@ -344,7 +351,7 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 	private void score(int points) {
 		if (game.score(points)) {
 			log("Extra life. Player has %d lives now", game.player.lives);
-			publish(Info.EXTRA_LIFE, null);
+			publishGameEvent(Info.EXTRA_LIFE, null);
 		}
 	}
 
@@ -374,8 +381,8 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 			ghost.setSpeed(game.ghostSpeed * 2);
 			boolean reachedRevivalTile = ghost.enterHouse(game.world.ghostHouse());
 			if (reachedRevivalTile) {
-				publish(new GameEvent(game, Info.GHOST_REVIVED, ghost, ghost.tile()));
-				publish(new GameEvent(game, Info.GHOST_LEAVING_HOUSE, ghost, ghost.tile()));
+				publishGameEvent(new GameEvent(game, Info.GHOST_REVIVED, ghost, ghost.tile()));
+				publishGameEvent(new GameEvent(game, Info.GHOST_LEAVING_HOUSE, ghost, ghost.tile()));
 			}
 		}
 
@@ -383,7 +390,7 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 			ghost.setSpeed(game.ghostSpeed / 2);
 			boolean leftHouse = ghost.leaveHouse(game.world.ghostHouse());
 			if (leftHouse) {
-				publish(new GameEvent(game, Info.GHOST_LEFT_HOUSE, ghost, ghost.tile()));
+				publishGameEvent(new GameEvent(game, Info.GHOST_LEFT_HOUSE, ghost, ghost.tile()));
 			}
 		}
 
@@ -413,7 +420,8 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 			 * intention had been to randomize the scatter target of *all* ghosts in Ms. Pac-Man but because of a bug, only
 			 * the scatter target of Blinky and Pinky would have been affected. Who knows?
 			 */
-			if (gameVariant == MS_PACMAN && game.huntingPhase == 0 && (ghost.id == RED_GHOST || ghost.id == PINK_GHOST)) {
+			if (selectedGameVariant == MS_PACMAN && game.huntingPhase == 0
+					&& (ghost.id == RED_GHOST || ghost.id == PINK_GHOST)) {
 				ghost.roam();
 			} else if (game.inScatteringPhase() && ghost.elroy == 0) {
 				ghost.scatter();
@@ -426,7 +434,7 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 			ghost.setSpeed(game.ghostSpeed * 2);
 			boolean reachedHouse = ghost.returnHome(game.world.ghostHouse());
 			if (reachedHouse) {
-				publish(new GameEvent(game, Info.GHOST_ENTERS_HOUSE, ghost, ghost.tile()));
+				publishGameEvent(new GameEvent(game, Info.GHOST_ENTERS_HOUSE, ghost, ghost.tile()));
 			}
 		}
 
@@ -477,7 +485,7 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 		}
 		ghost.state = LEAVING_HOUSE;
 		log("Ghost %s released: %s", ghost.name, String.format(reason, args));
-		publish(new GameEvent(game, Info.GHOST_LEAVING_HOUSE, ghost, ghost.tile()));
+		publishGameEvent(new GameEvent(game, Info.GHOST_LEAVING_HOUSE, ghost, ghost.tile()));
 	}
 
 	private Optional<Ghost> preferredLockedGhostInHouse() {
