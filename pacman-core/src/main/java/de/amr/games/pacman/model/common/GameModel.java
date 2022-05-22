@@ -448,7 +448,6 @@ public abstract class GameModel {
 	}
 
 	public void checkElroy() {
-		// Will Blinky become Cruise Elroy?
 		if (world.foodRemaining() == elroy1DotsLeft) {
 			ghosts[RED_GHOST].elroy = 1;
 			log("Blinky becomes Cruise Elroy 1");
@@ -456,6 +455,16 @@ public abstract class GameModel {
 			ghosts[RED_GHOST].elroy = 2;
 			log("Blinky becomes Cruise Elroy 2");
 		}
+	}
+
+	public boolean checkBonusAwarded() {
+		if (world.isBonusReached()) {
+			bonus.activate(bonusSymbol, bonusValue(bonus.symbol));
+			bonus.timer = bonusActivationTicks();
+			log("Bonus id=%d, value=%d activated for %d ticks", bonus.symbol, bonus.points, bonus.timer);
+			return true;
+		}
+		return false;
 	}
 
 	// Ghost house rules, see Pac-Man dossier

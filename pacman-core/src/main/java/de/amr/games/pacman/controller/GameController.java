@@ -244,15 +244,9 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 		}
 
 		game.checkElroy();
-
-		// Is bonus awarded?
-		if (game.world.isBonusReached()) {
-			game.bonus.activate(game.bonusSymbol, game.bonusValue(game.bonus.symbol));
-			game.bonus.timer = game.bonusActivationTicks();
-			log("Bonus id=%d, value=%d activated for %d ticks", game.bonus.symbol, game.bonus.points, game.bonus.timer);
+		if (game.checkBonusAwarded()) {
 			publishGameEvent(Info.BONUS_ACTIVATED, game.bonus.tile());
 		}
-
 		game.updateGhostDotCounters();
 		publishGameEvent(Info.PLAYER_FOUND_FOOD, foodTile);
 	}
