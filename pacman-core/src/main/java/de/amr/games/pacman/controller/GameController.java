@@ -70,7 +70,7 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 			GameVariant.PACMAN, new PacManGame());
 
 	private GameVariant selectedGameVariant;
-	public GameModel game;
+	private GameModel game;
 
 	private PlayerControl playerControl;
 	private final Autopilot autopilot = new Autopilot(() -> game);
@@ -106,6 +106,10 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 		game = games.get(variant);
 		setContext(game); // TODO checkme
 		changeState(INTRO);
+	}
+
+	public GameModel game() {
+		return game;
 	}
 
 	public void requestGame() {
