@@ -34,68 +34,68 @@ import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.GhostState;
 import de.amr.games.pacman.model.common.Pac;
 
-public enum Intermission1State implements FsmState<Object> {
+public enum Intermission1State implements FsmState<Intermission1Context> {
 
 	CHASING_PACMAN {
 		@Override
-		public void onEnter(Object context) {
+		public void onEnter(Intermission1Context context) {
 			timer.setSeconds(5).start();
 
-			controller.pac = new Pac("Pac-Man");
-			controller.pac.setMoveDir(Direction.LEFT);
-			controller.pac.setPosition(t(30), t(20));
-			controller.pac.setSpeed(1.0);
-			controller.pac.show();
+			context.pac = new Pac("Pac-Man");
+			context.pac.setMoveDir(Direction.LEFT);
+			context.pac.setPosition(t(30), t(20));
+			context.pac.setSpeed(1.0);
+			context.pac.show();
 
-			controller.blinky = new Ghost(GameModel.RED_GHOST, "Blinky");
-			controller.blinky.state = GhostState.HUNTING_PAC;
-			controller.blinky.setMoveDir(Direction.LEFT);
-			controller.blinky.setWishDir(Direction.LEFT);
-			controller.blinky.position = controller.pac.position.plus(t(3) + 0.5, 0);
-			controller.blinky.setSpeed(1.05);
-			controller.blinky.show();
+			context.blinky = new Ghost(GameModel.RED_GHOST, "Blinky");
+			context.blinky.state = GhostState.HUNTING_PAC;
+			context.blinky.setMoveDir(Direction.LEFT);
+			context.blinky.setWishDir(Direction.LEFT);
+			context.blinky.position = context.pac.position.plus(t(3) + 0.5, 0);
+			context.blinky.setSpeed(1.05);
+			context.blinky.show();
 		}
 
 		@Override
-		public void onUpdate(Object context) {
+		public void onUpdate(Intermission1Context context) {
 			if (timer.ticked() < 60) {
 				return;
 			}
 			if (timer.hasExpired()) {
-				controller.changeState(CHASING_BLINKY);
+				fsm.changeState(CHASING_BLINKY);
 				return;
 			}
-			controller.pac.move();
-			controller.blinky.move();
+			context.pac.move();
+			context.blinky.move();
 		}
 	},
 
 	CHASING_BLINKY {
 		@Override
-		public void onEnter(Object context) {
+		public void onEnter(Intermission1Context context) {
 			timer.setSeconds(7).start();
-			controller.pac.setMoveDir(Direction.RIGHT);
-			controller.pac.setPosition(-t(24), t(20));
-			controller.pac.setSpeed(1.0);
-			controller.blinky.state = GhostState.FRIGHTENED;
-			controller.blinky.setMoveDir(Direction.RIGHT);
-			controller.blinky.setWishDir(Direction.RIGHT);
-			controller.blinky.setPosition(-t(1), t(20));
-			controller.blinky.setSpeed(0.6);
+			context.pac.setMoveDir(Direction.RIGHT);
+			context.pac.setPosition(-t(24), t(20));
+			context.pac.setSpeed(1.0);
+			context.blinky.state = GhostState.FRIGHTENED;
+			context.blinky.setMoveDir(Direction.RIGHT);
+			context.blinky.setWishDir(Direction.RIGHT);
+			context.blinky.setPosition(-t(1), t(20));
+			context.blinky.setSpeed(0.6);
 		}
 
 		@Override
-		public void onUpdate(Object context) {
+		public void onUpdate(Intermission1Context context) {
 			if (timer.hasExpired()) {
-				controller.gameController.state.timer().expire();
+				fsm.gameController.state.timer().expire();
 				return;
 			}
-			controller.pac.move();
-			controller.blinky.move();
+			context.pac.move();
+			context.blinky.move();
 		}
 	};
 
-	protected Intermission1Controller controller;
+	protected Intermission1Controller fsm;
 	protected final TickTimer timer = new TickTimer("Timer:" + name());
 
 	@Override

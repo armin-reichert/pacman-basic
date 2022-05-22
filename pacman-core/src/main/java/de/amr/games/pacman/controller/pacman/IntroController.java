@@ -26,13 +26,9 @@ package de.amr.games.pacman.controller.pacman;
 import static de.amr.games.pacman.model.common.world.World.t;
 
 import de.amr.games.pacman.controller.GameController;
-import de.amr.games.pacman.controller.pacman.IntroController.Context;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.FiniteStateMachine;
-import de.amr.games.pacman.lib.TimedSeq;
-import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Ghost;
-import de.amr.games.pacman.model.common.Pac;
 
 /**
  * Intro scene of the PacMan game.
@@ -42,7 +38,7 @@ import de.amr.games.pacman.model.common.Pac;
  * 
  * @author Armin Reichert
  */
-public class IntroController extends FiniteStateMachine<IntroState, Context> {
+public class IntroController extends FiniteStateMachine<IntroState, IntroContext> {
 
 	public static class GhostPortrait {
 		public Ghost ghost;
@@ -59,43 +55,21 @@ public class IntroController extends FiniteStateMachine<IntroState, Context> {
 		}
 	}
 
-	public static class Context {
-		public GameController gameController;
-		public TimedSeq<Boolean> fastBlinking = TimedSeq.pulse().frameDuration(10);
-		public TimedSeq<Boolean> slowBlinking = TimedSeq.pulse().frameDuration(30);
-		public int topY = t(6);
-		public GhostPortrait[] portraits;
-		public Pac pacMan;
-		public Ghost[] ghosts;
-		public int ghostIndex;
-		public long ghostKilledTime;
-	}
-
-	public final Context context = new Context();
+	public final IntroContext context = new IntroContext();
 
 	public IntroController(GameController gameController) {
 		context.gameController = gameController;
 		for (var state : IntroState.values()) {
 			state.controller = this;
 		}
-		setContext(context);
+	}
+
+	@Override
+	public IntroContext getContext() {
+		return context;
 	}
 
 	public void init() {
-		context.portraits = new GhostPortrait[] { //
-				new GhostPortrait(GameModel.RED_GHOST, "Blinky", "SHADOW", 7), //
-				new GhostPortrait(GameModel.PINK_GHOST, "Pinky", "SPEEDY", 10), //
-				new GhostPortrait(GameModel.CYAN_GHOST, "Inky", "BASHFUL", 13), //
-				new GhostPortrait(GameModel.ORANGE_GHOST, "Clyde", "POKEY", 16), //
-		};
-		context.pacMan = new Pac("Pac-Man");
-		context.ghosts = new Ghost[] { //
-				new Ghost(GameModel.RED_GHOST, "Blinky"), //
-				new Ghost(GameModel.PINK_GHOST, "Pinky"), //
-				new Ghost(GameModel.CYAN_GHOST, "Inky"), //
-				new Ghost(GameModel.ORANGE_GHOST, "Clyde"), //
-		};
-
 		// TODO fixme
 		for (var s : IntroState.values()) {
 			s.timer.set(0);

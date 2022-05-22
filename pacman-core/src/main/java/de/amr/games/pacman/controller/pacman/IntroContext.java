@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021 Armin Reichert
+Copyright (c) 2022 Armin Reichert
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -20,44 +20,30 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
- */
+*/
+
 package de.amr.games.pacman.controller.pacman;
 
+import static de.amr.games.pacman.model.common.world.World.t;
+
 import de.amr.games.pacman.controller.GameController;
-import de.amr.games.pacman.lib.FiniteStateMachine;
+import de.amr.games.pacman.controller.pacman.IntroController.GhostPortrait;
+import de.amr.games.pacman.lib.TimedSeq;
+import de.amr.games.pacman.model.common.Ghost;
+import de.amr.games.pacman.model.common.Pac;
 
 /**
- * Second intermission scene: Blinky pursues Pac but kicks a nail that tears his dress apart.
- * 
  * @author Armin Reichert
+ *
  */
-public class Intermission2Controller extends FiniteStateMachine<Intermission2State, Intermission2Context> {
-
-	public final GameController gameController;
-	private final Intermission2Context context = new Intermission2Context();
-
-	public Intermission2Controller(GameController gameController) {
-		this.gameController = gameController;
-		for (var state : Intermission2State.values()) {
-			state.fsm = this;
-		}
-	}
-
-	@Override
-	public Intermission2Context getContext() {
-		return context;
-	}
-
-	public void init() {
-		context.playIntermissionSound.run();
-		changeState(Intermission2State.CHASING);
-	}
-
-	void startStateTimer() {
-		state.timer().setIndefinite().start();
-	}
-
-	public int nailDistance() {
-		return (int) (context.nail.position.x - context.blinky.position.x);
-	}
+public class IntroContext {
+	public GameController gameController;
+	public TimedSeq<Boolean> fastBlinking = TimedSeq.pulse().frameDuration(10);
+	public TimedSeq<Boolean> slowBlinking = TimedSeq.pulse().frameDuration(30);
+	public int topY = t(6);
+	public GhostPortrait[] portraits;
+	public Pac pacMan;
+	public Ghost[] ghosts;
+	public int ghostIndex;
+	public long ghostKilledTime;
 }

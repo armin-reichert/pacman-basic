@@ -36,137 +36,137 @@ import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.mspacman.Flap;
 
-public enum Intermission1State implements FsmState<Object> {
+public enum Intermission1State implements FsmState<Intermission1Context> {
+
 	FLAP {
 		@Override
-		public void onEnter(Object context) {
+		public void onEnter(Intermission1Context context) {
 			timer.setSeconds(2).start();
-			controller.playIntermissionSound.run();
+			context.playIntermissionSound.run();
 
-			controller.flap = new Flap();
-			controller.flap.number = 1;
-			controller.flap.text = "THEY MEET";
-			controller.flap.setPosition(t(3), t(10));
-			controller.flap.show();
+			context.flap = new Flap();
+			context.flap.number = 1;
+			context.flap.text = "THEY MEET";
+			context.flap.setPosition(t(3), t(10));
+			context.flap.show();
 
-			controller.pacMan = new Pac("Pac-Man");
-			controller.pacMan.setMoveDir(Direction.RIGHT);
-			controller.pacMan.setPosition(-t(2), controller.upperY);
-			controller.pacMan.show();
+			context.pacMan = new Pac("Pac-Man");
+			context.pacMan.setMoveDir(Direction.RIGHT);
+			context.pacMan.setPosition(-t(2), context.upperY);
+			context.pacMan.show();
 
-			controller.inky = new Ghost(GameModel.CYAN_GHOST, "Inky");
-			controller.inky.setMoveDir(Direction.RIGHT);
-			controller.inky.setWishDir(Direction.RIGHT);
-			controller.inky.position = controller.pacMan.position.minus(t(6), 0);
-			controller.inky.show();
+			context.inky = new Ghost(GameModel.CYAN_GHOST, "Inky");
+			context.inky.setMoveDir(Direction.RIGHT);
+			context.inky.setWishDir(Direction.RIGHT);
+			context.inky.position = context.pacMan.position.minus(t(6), 0);
+			context.inky.show();
 
-			controller.msPac = new Pac("Ms. Pac-Man");
-			controller.msPac.setMoveDir(Direction.LEFT);
-			controller.msPac.setPosition(t(30), controller.lowerY);
-			controller.msPac.show();
+			context.msPac = new Pac("Ms. Pac-Man");
+			context.msPac.setMoveDir(Direction.LEFT);
+			context.msPac.setPosition(t(30), context.lowerY);
+			context.msPac.show();
 
-			controller.pinky = new Ghost(GameModel.PINK_GHOST, "Pinky");
-			controller.pinky.setMoveDir(Direction.LEFT);
-			controller.pinky.setWishDir(Direction.LEFT);
-			controller.pinky.position = controller.msPac.position.plus(t(6), 0);
-			controller.pinky.show();
+			context.pinky = new Ghost(GameModel.PINK_GHOST, "Pinky");
+			context.pinky.setMoveDir(Direction.LEFT);
+			context.pinky.setWishDir(Direction.LEFT);
+			context.pinky.position = context.msPac.position.plus(t(6), 0);
+			context.pinky.show();
 
-			controller.heart = new GameEntity();
+			context.heart = new GameEntity();
 		}
 
 		@Override
-		public void onUpdate(Object context) {
+		public void onUpdate(Intermission1Context context) {
 			if (timer.isRunningSeconds(1)) {
-				controller.playFlapAnimation.run();
+				context.playFlapAnimation.run();
 			}
 			if (timer.hasExpired()) {
-				controller.changeState(Intermission1State.CHASED_BY_GHOSTS);
+				fsm.changeState(Intermission1State.CHASED_BY_GHOSTS);
 			}
 		}
 	},
 
 	CHASED_BY_GHOSTS {
 		@Override
-		public void onEnter(Object context) {
-			controller.flap.hide();
-			controller.pacMan.setSpeed(0.9);
-			controller.msPac.setSpeed(0.9);
-			controller.inky.setSpeed(1);
-			controller.pinky.setSpeed(1);
+		public void onEnter(Intermission1Context context) {
+			context.flap.hide();
+			context.pacMan.setSpeed(0.9);
+			context.msPac.setSpeed(0.9);
+			context.inky.setSpeed(1);
+			context.pinky.setSpeed(1);
 		}
 
 		@Override
-		public void onUpdate(Object context) {
-			if (controller.inky.position.x > t(30)) {
-				controller.changeState(Intermission1State.COMING_TOGETHER);
+		public void onUpdate(Intermission1Context context) {
+			if (context.inky.position.x > t(30)) {
+				fsm.changeState(Intermission1State.COMING_TOGETHER);
 				return;
 			}
-			controller.inky.move();
-			controller.pacMan.move();
-			controller.pinky.move();
-			controller.msPac.move();
+			context.inky.move();
+			context.pacMan.move();
+			context.pinky.move();
+			context.msPac.move();
 		}
 	},
 
 	COMING_TOGETHER {
 		@Override
-		public void onEnter(Object context) {
-			controller.msPac.setPosition(t(-3), controller.middleY);
-			controller.msPac.setMoveDir(Direction.RIGHT);
+		public void onEnter(Intermission1Context context) {
+			context.msPac.setPosition(t(-3), context.middleY);
+			context.msPac.setMoveDir(Direction.RIGHT);
 
-			controller.pinky.position = controller.msPac.position.minus(t(5), 0);
-			controller.pinky.setMoveDir(Direction.RIGHT);
-			controller.pinky.setWishDir(Direction.RIGHT);
+			context.pinky.position = context.msPac.position.minus(t(5), 0);
+			context.pinky.setMoveDir(Direction.RIGHT);
+			context.pinky.setWishDir(Direction.RIGHT);
 
-			controller.pacMan.setPosition(t(31), controller.middleY);
-			controller.pacMan.setMoveDir(Direction.LEFT);
+			context.pacMan.setPosition(t(31), context.middleY);
+			context.pacMan.setMoveDir(Direction.LEFT);
 
-			controller.inky.position = controller.pacMan.position.plus(t(5), 0);
-			controller.inky.setMoveDir(Direction.LEFT);
-			controller.inky.setWishDir(Direction.LEFT);
+			context.inky.position = context.pacMan.position.plus(t(5), 0);
+			context.inky.setMoveDir(Direction.LEFT);
+			context.inky.setWishDir(Direction.LEFT);
 		}
 
 		@Override
-		public void onUpdate(Object context) {
+		public void onUpdate(Intermission1Context context) {
 			// Pac-Man and Ms. Pac-Man reach end position?
-			if (controller.pacMan.moveDir() == Direction.UP && controller.pacMan.position.y < controller.upperY) {
-				controller.changeState(Intermission1State.IN_HEAVEN);
+			if (context.pacMan.moveDir() == Direction.UP && context.pacMan.position.y < context.upperY) {
+				fsm.changeState(Intermission1State.IN_HEAVEN);
 				return;
 			}
 			// Pac-Man and Ms. Pac-Man meet?
-			else if (controller.pacMan.moveDir() == Direction.LEFT
-					&& controller.pacMan.position.x - controller.msPac.position.x < t(2)) {
-				controller.pacMan.setMoveDir(Direction.UP);
-				controller.pacMan.setSpeed(0.75);
-				controller.msPac.setMoveDir(Direction.UP);
-				controller.msPac.setSpeed(0.75);
+			else if (context.pacMan.moveDir() == Direction.LEFT
+					&& context.pacMan.position.x - context.msPac.position.x < t(2)) {
+				context.pacMan.setMoveDir(Direction.UP);
+				context.pacMan.setSpeed(0.75);
+				context.msPac.setMoveDir(Direction.UP);
+				context.msPac.setSpeed(0.75);
 			}
 			// Inky and Pinky collide?
-			else if (controller.inky.moveDir() == Direction.LEFT
-					&& controller.inky.position.x - controller.pinky.position.x < t(2)) {
-				controller.inky.setMoveDir(Direction.RIGHT);
-				controller.inky.setWishDir(Direction.RIGHT);
-				controller.inky.setSpeed(0.3);
-				controller.inky.velocity = controller.inky.velocity.minus(0, 2.0);
-				controller.inky.acceleration = new V2d(0, 0.4);
+			else if (context.inky.moveDir() == Direction.LEFT && context.inky.position.x - context.pinky.position.x < t(2)) {
+				context.inky.setMoveDir(Direction.RIGHT);
+				context.inky.setWishDir(Direction.RIGHT);
+				context.inky.setSpeed(0.3);
+				context.inky.velocity = context.inky.velocity.minus(0, 2.0);
+				context.inky.acceleration = new V2d(0, 0.4);
 
-				controller.pinky.setMoveDir(Direction.LEFT);
-				controller.pinky.setWishDir(Direction.LEFT);
-				controller.pinky.setSpeed(0.3);
-				controller.pinky.velocity = controller.pinky.velocity.minus(0, 2.0);
-				controller.pinky.acceleration = new V2d(0, 0.4);
+				context.pinky.setMoveDir(Direction.LEFT);
+				context.pinky.setWishDir(Direction.LEFT);
+				context.pinky.setSpeed(0.3);
+				context.pinky.velocity = context.pinky.velocity.minus(0, 2.0);
+				context.pinky.acceleration = new V2d(0, 0.4);
 			} else {
-				controller.pacMan.move();
-				controller.msPac.move();
-				controller.inky.move();
-				if (controller.inky.position.y > controller.middleY) {
-					controller.inky.setPosition(controller.inky.position.x, controller.middleY);
-					controller.inky.acceleration = V2d.NULL;
+				context.pacMan.move();
+				context.msPac.move();
+				context.inky.move();
+				if (context.inky.position.y > context.middleY) {
+					context.inky.setPosition(context.inky.position.x, context.middleY);
+					context.inky.acceleration = V2d.NULL;
 				}
-				controller.pinky.move();
-				if (controller.pinky.position.y > controller.middleY) {
-					controller.pinky.setPosition(controller.pinky.position.x, controller.middleY);
-					controller.pinky.acceleration = V2d.NULL;
+				context.pinky.move();
+				if (context.pinky.position.y > context.middleY) {
+					context.pinky.setPosition(context.pinky.position.x, context.middleY);
+					context.pinky.acceleration = V2d.NULL;
 				}
 			}
 		}
@@ -174,30 +174,30 @@ public enum Intermission1State implements FsmState<Object> {
 
 	IN_HEAVEN {
 		@Override
-		public void onEnter(Object context) {
+		public void onEnter(Intermission1Context context) {
 			timer.setSeconds(3).start();
-			controller.pacMan.setSpeed(0);
-			controller.pacMan.setMoveDir(Direction.LEFT);
-			controller.msPac.setSpeed(0);
-			controller.msPac.setMoveDir(Direction.RIGHT);
-			controller.inky.setSpeed(0);
-			controller.inky.hide();
-			controller.pinky.setSpeed(0);
-			controller.pinky.hide();
-			controller.heart.setPosition((controller.pacMan.position.x + controller.msPac.position.x) / 2,
-					controller.pacMan.position.y - t(2));
-			controller.heart.show();
+			context.pacMan.setSpeed(0);
+			context.pacMan.setMoveDir(Direction.LEFT);
+			context.msPac.setSpeed(0);
+			context.msPac.setMoveDir(Direction.RIGHT);
+			context.inky.setSpeed(0);
+			context.inky.hide();
+			context.pinky.setSpeed(0);
+			context.pinky.hide();
+			context.heart.setPosition((context.pacMan.position.x + context.msPac.position.x) / 2,
+					context.pacMan.position.y - t(2));
+			context.heart.show();
 		}
 
 		@Override
-		public void onUpdate(Object context) {
+		public void onUpdate(Intermission1Context context) {
 			if (timer.hasExpired()) {
-				controller.gameController.state.timer().expire();
+				fsm.gameController.state.timer().expire();
 			}
 		}
 	};
 
-	protected Intermission1Controller controller;
+	protected Intermission1Controller fsm;
 	protected final TickTimer timer = new TickTimer("Timer:" + name());
 
 	@Override

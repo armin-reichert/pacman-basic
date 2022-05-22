@@ -25,8 +25,6 @@ package de.amr.games.pacman.controller.pacman;
 
 import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.lib.FiniteStateMachine;
-import de.amr.games.pacman.model.common.Ghost;
-import de.amr.games.pacman.model.common.Pac;
 
 /**
  * Third intermission scene: Blinky in shred dress chases Pac-Man, comes back half-naked drawing its dress over the
@@ -34,18 +32,21 @@ import de.amr.games.pacman.model.common.Pac;
  * 
  * @author Armin Reichert
  */
-public class Intermission3Controller extends FiniteStateMachine<Intermission3State, Object> {
+public class Intermission3Controller extends FiniteStateMachine<Intermission3State, Intermission3Context> {
 
 	public final GameController gameController;
-	public Runnable playIntermissionSound = FiniteStateMachine::nop;
-	public Ghost blinky;
-	public Pac pac;
+	private final Intermission3Context context = new Intermission3Context();
 
 	public Intermission3Controller(GameController gameController) {
 		this.gameController = gameController;
 		for (var state : Intermission3State.values()) {
-			state.controller = this;
+			state.fsm = this;
 		}
+	}
+
+	@Override
+	public Intermission3Context getContext() {
+		return context;
 	}
 
 	void startStateTimer() {
@@ -53,7 +54,7 @@ public class Intermission3Controller extends FiniteStateMachine<Intermission3Sta
 	}
 
 	public void init() {
-		playIntermissionSound.run();
+		context.playIntermissionSound.run();
 		changeState(Intermission3State.CHASING);
 	}
 }

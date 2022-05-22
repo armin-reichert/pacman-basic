@@ -37,7 +37,7 @@ import java.util.function.BiConsumer;
  * 
  * @author Armin Reichert
  */
-public class FiniteStateMachine<STATE extends FsmState<CONTEXT>, CONTEXT> {
+public abstract class FiniteStateMachine<STATE extends FsmState<CONTEXT>, CONTEXT> {
 
 	public static boolean logging = true;
 
@@ -46,7 +46,6 @@ public class FiniteStateMachine<STATE extends FsmState<CONTEXT>, CONTEXT> {
 
 	public STATE state;
 	protected STATE previousState;
-	protected CONTEXT context;
 	protected String name;
 
 	protected final List<BiConsumer<STATE, STATE>> stateChangeListeners = new ArrayList<>();
@@ -55,23 +54,21 @@ public class FiniteStateMachine<STATE extends FsmState<CONTEXT>, CONTEXT> {
 		name = getClass().getSimpleName();
 	}
 
-	public void setContext(CONTEXT context) {
-		this.context = context;
-	}
+	public abstract CONTEXT getContext();
 
 	public STATE changeState(STATE newState) {
 		if (newState == state) {
 			log("Change state to itself; %s", state);
 		}
 		if (state != null) {
-			state.onExit(context);
+			state.onExit(getContext());
 			if (logging) {
 				log("%s: Exited state %s %s", name, state, state.timer());
 			}
 		}
 		previousState = state;
 		state = newState;
-		state.onEnter(context);
+		state.onEnter(getContext());
 		state.timer().start();
 		if (logging) {
 			log("%s: Entered state %s %s", name, state, state.timer());
@@ -85,7 +82,7 @@ public class FiniteStateMachine<STATE extends FsmState<CONTEXT>, CONTEXT> {
 	 */
 	public void updateState() {
 		try {
-			state.onUpdate(context);
+			state.onUpdate(getContext());
 			state.timer().tick();
 		} catch (Exception x) {
 			log("%s: Error updating state %s, timer: %s", name, state, state.timer());

@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021 Armin Reichert
+Copyright (c) 2022 Armin Reichert
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -20,39 +20,24 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
- */
+*/
+
 package de.amr.games.pacman.controller.mspacman;
 
-import de.amr.games.pacman.controller.GameController;
+import static de.amr.games.pacman.model.common.world.World.t;
+
 import de.amr.games.pacman.lib.FiniteStateMachine;
+import de.amr.games.pacman.model.common.GameEntity;
+import de.amr.games.pacman.model.common.Ghost;
+import de.amr.games.pacman.model.common.Pac;
+import de.amr.games.pacman.model.mspacman.Flap;
 
-/**
- * Intermission scene 2: "The chase".
- * <p>
- * Pac-Man and Ms. Pac-Man chase each other across the screen over and over. After three turns, they both rapidly run
- * from left to right and right to left. (Played after round 5)
- * 
- * @author Armin Reichert
- */
-public class Intermission2Controller extends FiniteStateMachine<Intermission2State, Intermission2Context> {
-
-	public final GameController gameController;
-	private final Intermission2Context context = new Intermission2Context();
-
-	public Intermission2Controller(GameController gameController) {
-		this.gameController = gameController;
-		for (var state : Intermission2State.values()) {
-			state.fsm = this;
-		}
-	}
-
-	@Override
-	public Intermission2Context getContext() {
-		return context;
-	}
-
-	public void init() {
-		state = null;
-		changeState(Intermission2State.FLAP);
-	}
+public class Intermission1Context {
+	public final int upperY = t(12), middleY = t(18), lowerY = t(24);
+	public Runnable playIntermissionSound = FiniteStateMachine::nop;
+	public Runnable playFlapAnimation = FiniteStateMachine::nop;
+	public Flap flap;
+	public Pac pacMan, msPac;
+	public Ghost pinky, inky;
+	public GameEntity heart;
 }

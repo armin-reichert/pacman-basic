@@ -23,14 +23,8 @@ SOFTWARE.
  */
 package de.amr.games.pacman.controller.mspacman;
 
-import static de.amr.games.pacman.model.common.world.World.t;
-
 import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.lib.FiniteStateMachine;
-import de.amr.games.pacman.model.common.GameEntity;
-import de.amr.games.pacman.model.common.Pac;
-import de.amr.games.pacman.model.mspacman.Flap;
-import de.amr.games.pacman.model.mspacman.JuniorBag;
 
 /**
  * Intermission scene 3: "Junior".
@@ -42,24 +36,21 @@ import de.amr.games.pacman.model.mspacman.JuniorBag;
  * 
  * @author Armin Reichert
  */
-public class Intermission3Controller extends FiniteStateMachine<Intermission3State, Object> {
+public class Intermission3Controller extends FiniteStateMachine<Intermission3State, Intermission3Context> {
 
-	public final int groundY = t(24);
 	public final GameController gameController;
-	public Runnable playIntermissionSound = FiniteStateMachine::nop;
-	public Runnable playFlapAnimation = FiniteStateMachine::nop;
-	public Flap flap;
-	public Pac pacMan;
-	public Pac msPacMan;
-	public GameEntity stork;
-	public JuniorBag bag;
-	public int numBagBounces;
+	private final Intermission3Context context = new Intermission3Context();
 
 	public Intermission3Controller(GameController gameController) {
 		this.gameController = gameController;
 		for (var state : Intermission3State.values()) {
-			state.controller = this;
+			state.fsm = this;
 		}
+	}
+
+	@Override
+	public Intermission3Context getContext() {
+		return context;
 	}
 
 	public void init() {

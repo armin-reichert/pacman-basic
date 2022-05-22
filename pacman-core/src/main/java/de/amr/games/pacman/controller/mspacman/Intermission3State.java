@@ -35,81 +35,82 @@ import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.mspacman.Flap;
 import de.amr.games.pacman.model.mspacman.JuniorBag;
 
-public enum Intermission3State implements FsmState<Object> {
+public enum Intermission3State implements FsmState<Intermission3Context> {
+
 	FLAP {
 		@Override
-		public void onEnter(Object context) {
-			controller.flap = new Flap();
-			controller.pacMan = new Pac("Pac-Man");
-			controller.msPacMan = new Pac("Ms. Pac-Man");
-			controller.stork = new GameEntity();
-			controller.bag = new JuniorBag();
+		public void onEnter(Intermission3Context context) {
+			context.flap = new Flap();
+			context.pacMan = new Pac("Pac-Man");
+			context.msPacMan = new Pac("Ms. Pac-Man");
+			context.stork = new GameEntity();
+			context.bag = new JuniorBag();
 
 			timer.setSeconds(2).start();
-			controller.playIntermissionSound.run();
+			context.playIntermissionSound.run();
 
-			controller.flap.number = 3;
-			controller.flap.text = "JUNIOR";
-			controller.flap.setPosition(t(3), t(10));
-			controller.flap.show();
+			context.flap.number = 3;
+			context.flap.text = "JUNIOR";
+			context.flap.setPosition(t(3), t(10));
+			context.flap.show();
 		}
 
 		@Override
-		public void onUpdate(Object context) {
+		public void onUpdate(Intermission3Context context) {
 			if (timer.isRunningSeconds(1)) {
-				controller.playFlapAnimation.run();
+				context.playFlapAnimation.run();
 			} else if (timer.isRunningSeconds(2)) {
-				controller.flap.hide();
-				controller.changeState(Intermission3State.ACTION);
+				context.flap.hide();
+				fsm.changeState(Intermission3State.ACTION);
 			}
 		}
 	},
 	ACTION {
 		@Override
-		public void onEnter(Object context) {
+		public void onEnter(Intermission3Context context) {
 			timer.setIndefinite().start();
 
-			controller.pacMan.setMoveDir(Direction.RIGHT);
-			controller.pacMan.setPosition(t(3), controller.groundY - 4);
-			controller.pacMan.show();
+			context.pacMan.setMoveDir(Direction.RIGHT);
+			context.pacMan.setPosition(t(3), context.groundY - 4);
+			context.pacMan.show();
 
-			controller.msPacMan.setMoveDir(Direction.RIGHT);
-			controller.msPacMan.setPosition(t(5), controller.groundY - 4);
-			controller.msPacMan.show();
+			context.msPacMan.setMoveDir(Direction.RIGHT);
+			context.msPacMan.setPosition(t(5), context.groundY - 4);
+			context.msPacMan.show();
 
-			controller.stork.setPosition(t(30), t(12));
-			controller.stork.setVelocity(-0.8, 0);
-			controller.stork.show();
+			context.stork.setPosition(t(30), t(12));
+			context.stork.setVelocity(-0.8, 0);
+			context.stork.show();
 
-			controller.bag.position = controller.stork.position.plus(-14, 3);
-			controller.bag.velocity = controller.stork.velocity;
-			controller.bag.acceleration = V2d.NULL;
-			controller.bag.open = false;
-			controller.bag.show();
-			controller.numBagBounces = 0;
+			context.bag.position = context.stork.position.plus(-14, 3);
+			context.bag.velocity = context.stork.velocity;
+			context.bag.acceleration = V2d.NULL;
+			context.bag.open = false;
+			context.bag.show();
+			context.numBagBounces = 0;
 		}
 
 		@Override
-		public void onUpdate(Object context) {
-			controller.stork.move();
-			controller.bag.move();
+		public void onUpdate(Intermission3Context context) {
+			context.stork.move();
+			context.bag.move();
 
 			// release bag from storks beak?
-			if ((int) controller.stork.position.x == t(20)) {
-				controller.bag.acceleration = new V2d(0, 0.04);
-				controller.stork.setVelocity(-1, 0);
+			if ((int) context.stork.position.x == t(20)) {
+				context.bag.acceleration = new V2d(0, 0.04);
+				context.stork.setVelocity(-1, 0);
 			}
 
 			// (closed) bag reaches ground for first time?
-			if (!controller.bag.open && controller.bag.position.y > controller.groundY) {
-				++controller.numBagBounces;
-				if (controller.numBagBounces < 3) {
-					controller.bag.setVelocity(-0.2f, -1f / controller.numBagBounces);
-					controller.bag.setPosition(controller.bag.position.x, controller.groundY);
+			if (!context.bag.open && context.bag.position.y > context.groundY) {
+				++context.numBagBounces;
+				if (context.numBagBounces < 3) {
+					context.bag.setVelocity(-0.2f, -1f / context.numBagBounces);
+					context.bag.setPosition(context.bag.position.x, context.groundY);
 				} else {
-					controller.bag.open = true;
-					controller.bag.velocity = V2d.NULL;
-					controller.changeState(Intermission3State.DONE);
+					context.bag.open = true;
+					context.bag.velocity = V2d.NULL;
+					fsm.changeState(Intermission3State.DONE);
 				}
 			}
 		}
@@ -117,20 +118,20 @@ public enum Intermission3State implements FsmState<Object> {
 
 	DONE {
 		@Override
-		public void onEnter(Object context) {
+		public void onEnter(Intermission3Context context) {
 			timer.setSeconds(3).start();
 		}
 
 		@Override
-		public void onUpdate(Object context) {
-			controller.stork.move();
+		public void onUpdate(Intermission3Context context) {
+			context.stork.move();
 			if (timer.hasExpired()) {
-				controller.gameController.state.timer().expire();
+				fsm.gameController.state.timer().expire();
 			}
 		}
 	};
 
-	protected Intermission3Controller controller;
+	protected Intermission3Controller fsm;
 	protected final TickTimer timer = new TickTimer("Timer:" + name());
 
 	@Override

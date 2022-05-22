@@ -31,18 +31,39 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.controller.pacman.IntroController.Context;
+import de.amr.games.pacman.controller.pacman.IntroController.GhostPortrait;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.FsmState;
 import de.amr.games.pacman.lib.TickTimer;
+import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.GhostState;
+import de.amr.games.pacman.model.common.Pac;
 
-public enum IntroState implements FsmState<Context> {
+public enum IntroState implements FsmState<IntroContext> {
 
 	BEGIN {
+
 		@Override
-		public void onUpdate(Context context) {
+		public void onEnter(IntroContext context) {
+			context.portraits = new GhostPortrait[] { //
+					new GhostPortrait(GameModel.RED_GHOST, "Blinky", "SHADOW", 7), //
+					new GhostPortrait(GameModel.PINK_GHOST, "Pinky", "SPEEDY", 10), //
+					new GhostPortrait(GameModel.CYAN_GHOST, "Inky", "BASHFUL", 13), //
+					new GhostPortrait(GameModel.ORANGE_GHOST, "Clyde", "POKEY", 16), //
+			};
+			context.pacMan = new Pac("Pac-Man");
+			context.ghosts = new Ghost[] { //
+					new Ghost(GameModel.RED_GHOST, "Blinky"), //
+					new Ghost(GameModel.PINK_GHOST, "Pinky"), //
+					new Ghost(GameModel.CYAN_GHOST, "Inky"), //
+					new Ghost(GameModel.ORANGE_GHOST, "Clyde"), //
+			};
+
+		};
+
+		@Override
+		public void onUpdate(IntroContext context) {
 			if (timer.isRunningSeconds(1)) {
 				controller.selectGhost(0);
 				controller.changeState(IntroState.PRESENTING_GHOSTS);
@@ -52,7 +73,7 @@ public enum IntroState implements FsmState<Context> {
 
 	PRESENTING_GHOSTS {
 		@Override
-		public void onUpdate(Context context) {
+		public void onUpdate(IntroContext context) {
 			if (timer.isRunningSeconds(1.0)) {
 				context.portraits[context.ghostIndex].characterVisible = true;
 			} else if (timer.isRunningSeconds(1.5)) {
@@ -72,7 +93,7 @@ public enum IntroState implements FsmState<Context> {
 
 	SHOWING_POINTS {
 		@Override
-		public void onUpdate(Context context) {
+		public void onUpdate(IntroContext context) {
 			if (timer.isRunningSeconds(2)) {
 				controller.changeState(IntroState.CHASING_PAC);
 			}
@@ -81,7 +102,7 @@ public enum IntroState implements FsmState<Context> {
 
 	CHASING_PAC {
 		@Override
-		public void onEnter(Context context) {
+		public void onEnter(IntroContext context) {
 			controller.restartStateTimer();
 			context.pacMan.show();
 			context.pacMan.setSpeed(1);
@@ -98,7 +119,7 @@ public enum IntroState implements FsmState<Context> {
 		}
 
 		@Override
-		public void onUpdate(Context context) {
+		public void onUpdate(IntroContext context) {
 			if (context.pacMan.position.x < t(2)) {
 				controller.changeState(IntroState.CHASING_GHOSTS);
 				return;
@@ -113,7 +134,7 @@ public enum IntroState implements FsmState<Context> {
 
 	CHASING_GHOSTS {
 		@Override
-		public void onEnter(Context context) {
+		public void onEnter(IntroContext context) {
 			controller.restartStateTimer();
 			for (Ghost ghost : context.ghosts) {
 				ghost.state = GhostState.FRIGHTENED;
@@ -125,7 +146,7 @@ public enum IntroState implements FsmState<Context> {
 		}
 
 		@Override
-		public void onUpdate(Context context) {
+		public void onUpdate(IntroContext context) {
 			if (timer.ticked() < 8) {
 				for (Ghost ghost : context.ghosts) {
 					ghost.move();
@@ -180,7 +201,7 @@ public enum IntroState implements FsmState<Context> {
 
 	READY_TO_PLAY {
 		@Override
-		public void onUpdate(Context context) {
+		public void onUpdate(IntroContext context) {
 			context.slowBlinking.animate();
 			if (timer.isRunningSeconds(5)) {
 				context.gameController.state.timer().expire();

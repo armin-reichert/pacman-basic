@@ -32,90 +32,90 @@ import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.mspacman.Flap;
 
-public enum Intermission2State implements FsmState<Object> {
+public enum Intermission2State implements FsmState<Intermission2Context> {
 	FLAP {
 		@Override
-		public void onEnter(Object context) {
+		public void onEnter(Intermission2Context context) {
 			timer.setIndefinite().start();
-			controller.playIntermissionSound.run();
-			controller.flap = new Flap();
-			controller.flap.number = 2;
-			controller.flap.text = "THE CHASE";
-			controller.flap.setPosition(t(3), t(10));
-			controller.flap.show();
-			controller.pacMan = new Pac("Pac-Man");
-			controller.pacMan.setMoveDir(Direction.RIGHT);
-			controller.msPacMan = new Pac("Ms. Pac-Man");
-			controller.msPacMan.setMoveDir(Direction.RIGHT);
+			context.playIntermissionSound.run();
+			context.flap = new Flap();
+			context.flap.number = 2;
+			context.flap.text = "THE CHASE";
+			context.flap.setPosition(t(3), t(10));
+			context.flap.show();
+			context.pacMan = new Pac("Pac-Man");
+			context.pacMan.setMoveDir(Direction.RIGHT);
+			context.msPacMan = new Pac("Ms. Pac-Man");
+			context.msPacMan.setMoveDir(Direction.RIGHT);
 		}
 
 		@Override
-		public void onUpdate(Object context) {
+		public void onUpdate(Intermission2Context context) {
 			if (timer.isRunningSeconds(1)) {
-				controller.playFlapAnimation.run();
+				context.playFlapAnimation.run();
 			} else if (timer.isRunningSeconds(2)) {
-				controller.flap.hide();
+				context.flap.hide();
 			} else if (timer.isRunningSeconds(3)) {
-				controller.changeState(Intermission2State.CHASING);
+				fsm.changeState(Intermission2State.CHASING);
 			}
 		}
 	},
 
 	CHASING {
 		@Override
-		public void onEnter(Object context) {
+		public void onEnter(Intermission2Context context) {
 			timer.setIndefinite().start();
 		}
 
 		@Override
-		public void onUpdate(Object context) {
+		public void onUpdate(Intermission2Context context) {
 			if (timer.isRunningSeconds(1.5)) {
-				controller.pacMan.setPosition(-t(2), controller.upperY);
-				controller.pacMan.setMoveDir(Direction.RIGHT);
-				controller.pacMan.setSpeed(2.0);
-				controller.pacMan.show();
-				controller.msPacMan.setPosition(-t(8), controller.upperY);
-				controller.msPacMan.setMoveDir(Direction.RIGHT);
-				controller.msPacMan.setSpeed(2.0);
-				controller.msPacMan.show();
+				context.pacMan.setPosition(-t(2), context.upperY);
+				context.pacMan.setMoveDir(Direction.RIGHT);
+				context.pacMan.setSpeed(2.0);
+				context.pacMan.show();
+				context.msPacMan.setPosition(-t(8), context.upperY);
+				context.msPacMan.setMoveDir(Direction.RIGHT);
+				context.msPacMan.setSpeed(2.0);
+				context.msPacMan.show();
 			} else if (timer.isRunningSeconds(6)) {
-				controller.pacMan.setPosition(t(36), controller.lowerY);
-				controller.pacMan.setMoveDir(Direction.LEFT);
-				controller.pacMan.setSpeed(2.0);
-				controller.msPacMan.setPosition(t(30), controller.lowerY);
-				controller.msPacMan.setMoveDir(Direction.LEFT);
-				controller.msPacMan.setSpeed(2.0);
+				context.pacMan.setPosition(t(36), context.lowerY);
+				context.pacMan.setMoveDir(Direction.LEFT);
+				context.pacMan.setSpeed(2.0);
+				context.msPacMan.setPosition(t(30), context.lowerY);
+				context.msPacMan.setMoveDir(Direction.LEFT);
+				context.msPacMan.setSpeed(2.0);
 			} else if (timer.isRunningSeconds(10.5)) {
-				controller.pacMan.setMoveDir(Direction.RIGHT);
-				controller.pacMan.setSpeed(2.0);
-				controller.msPacMan.setPosition(t(-8), controller.middleY);
-				controller.msPacMan.setMoveDir(Direction.RIGHT);
-				controller.msPacMan.setSpeed(2.0);
-				controller.pacMan.setPosition(t(-2), controller.middleY);
+				context.pacMan.setMoveDir(Direction.RIGHT);
+				context.pacMan.setSpeed(2.0);
+				context.msPacMan.setPosition(t(-8), context.middleY);
+				context.msPacMan.setMoveDir(Direction.RIGHT);
+				context.msPacMan.setSpeed(2.0);
+				context.pacMan.setPosition(t(-2), context.middleY);
 			} else if (timer.isRunningSeconds(14.5)) {
-				controller.pacMan.setPosition(t(42), controller.upperY);
-				controller.pacMan.setMoveDir(Direction.LEFT);
-				controller.pacMan.setSpeed(4.0);
-				controller.msPacMan.setPosition(t(30), controller.upperY);
-				controller.msPacMan.setMoveDir(Direction.LEFT);
-				controller.msPacMan.setSpeed(4.0);
+				context.pacMan.setPosition(t(42), context.upperY);
+				context.pacMan.setMoveDir(Direction.LEFT);
+				context.pacMan.setSpeed(4.0);
+				context.msPacMan.setPosition(t(30), context.upperY);
+				context.msPacMan.setMoveDir(Direction.LEFT);
+				context.msPacMan.setSpeed(4.0);
 			} else if (timer.isRunningSeconds(15.5)) {
-				controller.pacMan.setPosition(t(-2), controller.lowerY);
-				controller.pacMan.setMoveDir(Direction.RIGHT);
-				controller.pacMan.setSpeed(4.0);
-				controller.msPacMan.setPosition(t(-14), controller.lowerY);
-				controller.msPacMan.setMoveDir(Direction.RIGHT);
-				controller.msPacMan.setSpeed(4.0);
+				context.pacMan.setPosition(t(-2), context.lowerY);
+				context.pacMan.setMoveDir(Direction.RIGHT);
+				context.pacMan.setSpeed(4.0);
+				context.msPacMan.setPosition(t(-14), context.lowerY);
+				context.msPacMan.setMoveDir(Direction.RIGHT);
+				context.msPacMan.setSpeed(4.0);
 			} else if (timer.isRunningSeconds(20)) {
-				controller.gameController.state.timer().expire();
+				fsm.gameController.state.timer().expire();
 				return;
 			}
-			controller.pacMan.move();
-			controller.msPacMan.move();
+			context.pacMan.move();
+			context.msPacMan.move();
 		}
 	};
 
-	protected Intermission2Controller controller;
+	protected Intermission2Controller fsm;
 	protected final TickTimer timer = new TickTimer("Timer:" + name());
 
 	@Override

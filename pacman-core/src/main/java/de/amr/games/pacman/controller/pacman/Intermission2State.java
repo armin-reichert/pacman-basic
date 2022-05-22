@@ -35,73 +35,73 @@ import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.GhostState;
 import de.amr.games.pacman.model.common.Pac;
 
-public enum Intermission2State implements FsmState<Object> {
+public enum Intermission2State implements FsmState<Intermission2Context> {
 	CHASING {
 		@Override
-		public void onEnter(Object context) {
-			controller.startStateTimer();
+		public void onEnter(Intermission2Context context) {
+			fsm.startStateTimer();
 
-			controller.pac = new Pac("Pac-Man");
-			controller.pac.setMoveDir(Direction.LEFT);
-			controller.pac.setPosition(t(30), t(20));
-			controller.pac.setSpeed(1.0);
-			controller.pac.show();
+			context.pac = new Pac("Pac-Man");
+			context.pac.setMoveDir(Direction.LEFT);
+			context.pac.setPosition(t(30), t(20));
+			context.pac.setSpeed(1.0);
+			context.pac.show();
 
-			controller.blinky = new Ghost(GameModel.RED_GHOST, "Blinky");
-			controller.blinky.state = GhostState.HUNTING_PAC;
-			controller.blinky.setMoveDir(Direction.LEFT);
-			controller.blinky.setWishDir(Direction.LEFT);
-			controller.blinky.position = controller.pac.position.plus(t(14), 0);
-			controller.blinky.setSpeed(1.0);
-			controller.blinky.show();
+			context.blinky = new Ghost(GameModel.RED_GHOST, "Blinky");
+			context.blinky.state = GhostState.HUNTING_PAC;
+			context.blinky.setMoveDir(Direction.LEFT);
+			context.blinky.setWishDir(Direction.LEFT);
+			context.blinky.position = context.pac.position.plus(t(14), 0);
+			context.blinky.setSpeed(1.0);
+			context.blinky.show();
 
-			controller.nail = new GameEntity();
-			controller.nail.setPosition(t(14), t(20) - 1);
-			controller.nail.show();
+			context.nail = new GameEntity();
+			context.nail.setPosition(t(14), t(20) - 1);
+			context.nail.show();
 		}
 
 		@Override
-		public void onUpdate(Object context) {
-			if (controller.nailDistance() == 0) {
-				controller.changeState(STRETCHED);
+		public void onUpdate(Intermission2Context context) {
+			if (fsm.nailDistance() == 0) {
+				fsm.changeState(STRETCHED);
 				return;
 			}
-			controller.pac.move();
-			controller.blinky.move();
+			context.pac.move();
+			context.blinky.move();
 		}
 	},
 
 	STRETCHED {
 		@Override
-		public void onUpdate(Object context) {
-			int stretching = controller.nailDistance() / 4;
+		public void onUpdate(Intermission2Context context) {
+			int stretching = fsm.nailDistance() / 4;
 			if (stretching == 3) {
-				controller.blinky.setSpeed(0);
-				controller.blinky.setMoveDir(Direction.UP);
-				controller.changeState(Intermission2State.STUCK);
+				context.blinky.setSpeed(0);
+				context.blinky.setMoveDir(Direction.UP);
+				fsm.changeState(Intermission2State.STUCK);
 				return;
 			}
-			controller.blinky.setSpeed(0.3 - 0.1 * stretching);
-			controller.blinky.move();
-			controller.pac.move();
+			context.blinky.setSpeed(0.3 - 0.1 * stretching);
+			context.blinky.move();
+			context.pac.move();
 		}
 	},
 
 	STUCK {
 		@Override
-		public void onUpdate(Object context) {
+		public void onUpdate(Intermission2Context context) {
 			if (timer.isRunningSeconds(2)) {
-				controller.blinky.setMoveDir(Direction.RIGHT);
+				context.blinky.setMoveDir(Direction.RIGHT);
 			} else if (timer.isRunningSeconds(6)) {
-				controller.gameController.state.timer().expire();
+				fsm.gameController.state.timer().expire();
 				return;
 			}
-			controller.blinky.move();
-			controller.pac.move();
+			context.blinky.move();
+			context.pac.move();
 		}
 	};
 
-	protected Intermission2Controller controller;
+	protected Intermission2Controller fsm;
 	protected final TickTimer timer = new TickTimer("Timer:" + name());
 
 	@Override

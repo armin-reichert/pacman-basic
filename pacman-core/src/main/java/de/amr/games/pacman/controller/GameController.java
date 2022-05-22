@@ -104,9 +104,12 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 		for (var gv : GameVariant.values()) {
 			games.get(gv).setEventingEnabled(gv == selectedGameVariant);
 		}
-		// ensure state machine uses selected game model
-		setContext(game());
 		changeState(INTRO);
+	}
+
+	@Override
+	public GameModel getContext() {
+		return game();
 	}
 
 	public GameModel game() {

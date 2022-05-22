@@ -25,30 +25,31 @@ package de.amr.games.pacman.controller.pacman;
 
 import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.lib.FiniteStateMachine;
-import de.amr.games.pacman.model.common.Ghost;
-import de.amr.games.pacman.model.common.Pac;
 
 /**
  * First intermission scene: Blinky chases Pac-Man and is then chased by a huge Pac-Man.
  * 
  * @author Armin Reichert
  */
-public class Intermission1Controller extends FiniteStateMachine<Intermission1State, Object> {
+public class Intermission1Controller extends FiniteStateMachine<Intermission1State, Intermission1Context> {
 
 	public final GameController gameController;
-	public Runnable playIntermissionSound = FiniteStateMachine::nop;
-	public Ghost blinky;
-	public Pac pac;
+	private final Intermission1Context context = new Intermission1Context();
 
 	public Intermission1Controller(GameController gameController) {
 		this.gameController = gameController;
 		for (var state : Intermission1State.values()) {
-			state.controller = this;
+			state.fsm = this;
 		}
 	}
 
+	@Override
+	public Intermission1Context getContext() {
+		return context;
+	}
+
 	public void init() {
-		playIntermissionSound.run();
+		context.playIntermissionSound.run();
 		changeState(Intermission1State.CHASING_PACMAN);
 	}
 }

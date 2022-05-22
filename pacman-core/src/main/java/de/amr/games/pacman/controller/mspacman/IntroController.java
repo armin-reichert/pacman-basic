@@ -23,17 +23,8 @@ SOFTWARE.
  */
 package de.amr.games.pacman.controller.mspacman;
 
-import static de.amr.games.pacman.model.common.world.World.HTS;
-import static de.amr.games.pacman.model.common.world.World.TS;
-
 import de.amr.games.pacman.controller.GameController;
 import de.amr.games.pacman.lib.FiniteStateMachine;
-import de.amr.games.pacman.lib.TickTimer;
-import de.amr.games.pacman.lib.TimedSeq;
-import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.model.common.GameModel;
-import de.amr.games.pacman.model.common.Ghost;
-import de.amr.games.pacman.model.common.Pac;
 
 /**
  * Intro scene of the Ms. Pac-Man game.
@@ -42,31 +33,21 @@ import de.amr.games.pacman.model.common.Pac;
  * 
  * @author Armin Reichert
  */
-public class IntroController extends FiniteStateMachine<IntroState, Object> {
+public class IntroController extends FiniteStateMachine<IntroState, IntroContext> {
 
-	public final V2i boardTopLeft = new V2i(7, 11).scaled(TS);
-	public final V2i titlePosition = new V2i(9, 8).scaled(TS);
-	public final V2i turningPoint = new V2i(5, 20).scaled(TS).plus(0, HTS);
-	public final TimedSeq<Boolean> blinking = TimedSeq.pulse().frameDuration(30).restart();
-	public final TickTimer boardAnimationTimer = new TickTimer("boardAnimation-timer");
 	public final GameController gameController;
-	public final Pac msPacMan;
-	public final Ghost[] ghosts;
-	public int ghostIndex;
+	private final IntroContext context = new IntroContext();
 
 	public IntroController(GameController gameController) {
 		this.gameController = gameController;
 		for (var state : IntroState.values()) {
-			state.controller = this;
+			state.fsm = this;
 		}
+	}
 
-		msPacMan = new Pac("Ms. Pac-Man");
-		ghosts = new Ghost[] { //
-				new Ghost(GameModel.RED_GHOST, "Blinky"), //
-				new Ghost(GameModel.PINK_GHOST, "Pinky"), //
-				new Ghost(GameModel.CYAN_GHOST, "Inky"), //
-				new Ghost(GameModel.ORANGE_GHOST, "Sue") //
-		};
+	@Override
+	public IntroContext getContext() {
+		return context;
 	}
 
 	public void init() {
@@ -74,7 +55,6 @@ public class IntroController extends FiniteStateMachine<IntroState, Object> {
 		for (var state : IntroState.values()) {
 			state.timer.set(0);
 		}
-
 		state = null;
 		changeState(IntroState.BEGIN);
 	}
@@ -82,6 +62,6 @@ public class IntroController extends FiniteStateMachine<IntroState, Object> {
 	@Override
 	public void updateState() {
 		super.updateState();
-		boardAnimationTimer.tick();
+		context.boardAnimationTimer.tick();
 	}
 }

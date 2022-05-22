@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021 Armin Reichert
+Copyright (c) 2022 Armin Reichert
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -20,44 +20,29 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
- */
-package de.amr.games.pacman.controller.pacman;
+*/
 
-import de.amr.games.pacman.controller.GameController;
+package de.amr.games.pacman.controller.mspacman;
+
+import static de.amr.games.pacman.model.common.world.World.t;
+
 import de.amr.games.pacman.lib.FiniteStateMachine;
+import de.amr.games.pacman.model.common.GameEntity;
+import de.amr.games.pacman.model.common.Pac;
+import de.amr.games.pacman.model.mspacman.Flap;
+import de.amr.games.pacman.model.mspacman.JuniorBag;
 
 /**
- * Second intermission scene: Blinky pursues Pac but kicks a nail that tears his dress apart.
- * 
  * @author Armin Reichert
  */
-public class Intermission2Controller extends FiniteStateMachine<Intermission2State, Intermission2Context> {
-
-	public final GameController gameController;
-	private final Intermission2Context context = new Intermission2Context();
-
-	public Intermission2Controller(GameController gameController) {
-		this.gameController = gameController;
-		for (var state : Intermission2State.values()) {
-			state.fsm = this;
-		}
-	}
-
-	@Override
-	public Intermission2Context getContext() {
-		return context;
-	}
-
-	public void init() {
-		context.playIntermissionSound.run();
-		changeState(Intermission2State.CHASING);
-	}
-
-	void startStateTimer() {
-		state.timer().setIndefinite().start();
-	}
-
-	public int nailDistance() {
-		return (int) (context.nail.position.x - context.blinky.position.x);
-	}
+public class Intermission3Context {
+	public final int groundY = t(24);
+	public Runnable playIntermissionSound = FiniteStateMachine::nop;
+	public Runnable playFlapAnimation = FiniteStateMachine::nop;
+	public Flap flap;
+	public Pac pacMan;
+	public Pac msPacMan;
+	public GameEntity stork;
+	public JuniorBag bag;
+	public int numBagBounces;
 }

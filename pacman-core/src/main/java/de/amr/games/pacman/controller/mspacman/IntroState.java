@@ -33,48 +33,48 @@ import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.GhostState;
 
-public enum IntroState implements FsmState<Object> {
+public enum IntroState implements FsmState<IntroContext> {
 
 	BEGIN {
 		@Override
-		public void onEnter(Object context) {
-			controller.boardAnimationTimer.setIndefinite().start();
-			controller.msPacMan.setMoveDir(LEFT);
-			controller.msPacMan.setPosition(t(36), controller.turningPoint.y);
-			controller.msPacMan.setSpeed(0.95);
-			controller.msPacMan.show();
-			for (Ghost ghost : controller.ghosts) {
+		public void onEnter(IntroContext context) {
+			context.boardAnimationTimer.setIndefinite().start();
+			context.msPacMan.setMoveDir(LEFT);
+			context.msPacMan.setPosition(t(36), context.turningPoint.y);
+			context.msPacMan.setSpeed(0.95);
+			context.msPacMan.show();
+			for (Ghost ghost : context.ghosts) {
 				ghost.state = GhostState.HUNTING_PAC;
 				ghost.setMoveDir(LEFT);
 				ghost.setWishDir(LEFT);
-				ghost.setPosition(t(36), controller.turningPoint.y);
+				ghost.setPosition(t(36), context.turningPoint.y);
 				ghost.setSpeed(0.95);
 				ghost.show();
 			}
-			controller.ghostIndex = 0;
+			context.ghostIndex = 0;
 		}
 
 		@Override
-		public void onUpdate(Object context) {
+		public void onUpdate(IntroContext context) {
 			if (timer.isRunningSeconds(1)) {
-				controller.changeState(IntroState.GHOSTS);
+				fsm.changeState(IntroState.GHOSTS);
 			}
 		}
 	},
 
 	GHOSTS {
 		@Override
-		public void onUpdate(Object context) {
-			Ghost ghost = controller.ghosts[controller.ghostIndex];
+		public void onUpdate(IntroContext context) {
+			Ghost ghost = context.ghosts[context.ghostIndex];
 			ghost.move();
-			if (ghost.moveDir() != UP && ghost.position.x <= controller.turningPoint.x) {
+			if (ghost.moveDir() != UP && ghost.position.x <= context.turningPoint.x) {
 				ghost.setMoveDir(UP);
 				ghost.setWishDir(UP);
 			}
-			if (ghost.position.y <= controller.boardTopLeft.y + ghost.id * 18) {
+			if (ghost.position.y <= context.boardTopLeft.y + ghost.id * 18) {
 				ghost.setSpeed(0);
-				if (++controller.ghostIndex == controller.ghosts.length) {
-					controller.changeState(IntroState.MSPACMAN);
+				if (++context.ghostIndex == context.ghosts.length) {
+					fsm.changeState(IntroState.MSPACMAN);
 				}
 			}
 		}
@@ -82,26 +82,26 @@ public enum IntroState implements FsmState<Object> {
 
 	MSPACMAN {
 		@Override
-		public void onUpdate(Object context) {
-			controller.msPacMan.move();
-			if (controller.msPacMan.position.x <= t(14)) {
-				controller.msPacMan.setSpeed(0);
-				controller.changeState(IntroState.READY);
+		public void onUpdate(IntroContext context) {
+			context.msPacMan.move();
+			if (context.msPacMan.position.x <= t(14)) {
+				context.msPacMan.setSpeed(0);
+				fsm.changeState(IntroState.READY);
 			}
 		}
 	},
 
 	READY {
 		@Override
-		public void onUpdate(Object context) {
-			controller.blinking.advance();
+		public void onUpdate(IntroContext context) {
+			context.blinking.advance();
 			if (timer.isRunningSeconds(5)) {
-				controller.gameController.state.timer().expire();
+				fsm.gameController.state.timer().expire();
 			}
 		}
 	};
 
-	protected IntroController controller;
+	protected IntroController fsm;
 	protected final TickTimer timer = new TickTimer("Timer:" + name());
 
 	@Override

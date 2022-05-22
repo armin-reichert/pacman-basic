@@ -34,54 +34,54 @@ import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.GhostState;
 import de.amr.games.pacman.model.common.Pac;
 
-public enum Intermission3State implements FsmState<Object> {
+public enum Intermission3State implements FsmState<Intermission3Context> {
 	CHASING {
 		@Override
-		public void onEnter(Object context) {
-			controller.startStateTimer();
+		public void onEnter(Intermission3Context context) {
+			fsm.startStateTimer();
 
-			controller.pac = new Pac("Pac-Man");
-			controller.pac.setMoveDir(Direction.LEFT);
-			controller.pac.setPosition(t(40), t(20));
-			controller.pac.setSpeed(1.2);
-			controller.pac.show();
+			context.pac = new Pac("Pac-Man");
+			context.pac.setMoveDir(Direction.LEFT);
+			context.pac.setPosition(t(40), t(20));
+			context.pac.setSpeed(1.2);
+			context.pac.show();
 
-			controller.blinky = new Ghost(GameModel.RED_GHOST, "Blinky");
-			controller.blinky.state = GhostState.HUNTING_PAC;
-			controller.blinky.setMoveDir(Direction.LEFT);
-			controller.blinky.setWishDir(Direction.LEFT);
-			controller.blinky.position = controller.pac.position.plus(t(8), 0);
-			controller.blinky.setSpeed(1.2);
-			controller.blinky.show();
+			context.blinky = new Ghost(GameModel.RED_GHOST, "Blinky");
+			context.blinky.state = GhostState.HUNTING_PAC;
+			context.blinky.setMoveDir(Direction.LEFT);
+			context.blinky.setWishDir(Direction.LEFT);
+			context.blinky.position = context.pac.position.plus(t(8), 0);
+			context.blinky.setSpeed(1.2);
+			context.blinky.show();
 		}
 
 		@Override
-		public void onUpdate(Object context) {
-			if (controller.blinky.position.x <= -t(15)) {
-				controller.pac.setSpeed(0);
-				controller.blinky.setMoveDir(Direction.RIGHT);
-				controller.blinky.setWishDir(Direction.RIGHT);
-				controller.changeState(RETURNING);
+		public void onUpdate(Intermission3Context context) {
+			if (context.blinky.position.x <= -t(15)) {
+				context.pac.setSpeed(0);
+				context.blinky.setMoveDir(Direction.RIGHT);
+				context.blinky.setWishDir(Direction.RIGHT);
+				fsm.changeState(RETURNING);
 				return;
 			}
-			controller.pac.move();
-			controller.blinky.move();
+			context.pac.move();
+			context.blinky.move();
 		}
 	},
 
 	RETURNING {
 		@Override
-		public void onUpdate(Object context) {
-			if (controller.blinky.position.x > t(53)) {
-				controller.gameController.state.timer().expire();
+		public void onUpdate(Intermission3Context context) {
+			if (context.blinky.position.x > t(53)) {
+				fsm.gameController.state.timer().expire();
 				return;
 			}
-			controller.pac.move();
-			controller.blinky.move();
+			context.pac.move();
+			context.blinky.move();
 		}
 	};
 
-	protected Intermission3Controller controller;
+	protected Intermission3Controller fsm;
 	protected final TickTimer timer = new TickTimer("Timer:" + name());
 
 	@Override
