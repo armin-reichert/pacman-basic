@@ -114,7 +114,7 @@ public enum GameState implements FsmState<GameModel> {
 				return;
 			}
 			fsm.updatePlayer();
-			fsm.updateGhosts();
+			game.updateGhosts(fsm.gameVariant());
 			fsm.lookForFood();
 			fsm.updateBonus();
 		}
@@ -195,7 +195,7 @@ public enum GameState implements FsmState<GameModel> {
 			}
 			fsm.currentPlayerControl().steer(game.player);
 			game.ghosts().filter(ghost -> ghost.is(DEAD) && ghost.bounty == 0 || ghost.is(ENTERING_HOUSE))
-					.forEach(fsm::updateGhost);
+					.forEach(ghost -> game.updateGhost(ghost, fsm.gameVariant()));
 		}
 
 		@Override

@@ -29,9 +29,6 @@ import static de.amr.games.pacman.controller.GameState.INTRO;
 import static de.amr.games.pacman.controller.GameState.READY;
 import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.lib.TickTimer.sec_to_ticks;
-import static de.amr.games.pacman.model.common.GameModel.PINK_GHOST;
-import static de.amr.games.pacman.model.common.GameModel.RED_GHOST;
-import static de.amr.games.pacman.model.common.GameVariant.MS_PACMAN;
 import static de.amr.games.pacman.model.common.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.common.GhostState.HUNTING_PAC;
 import static java.util.function.Predicate.not;
@@ -39,7 +36,6 @@ import static java.util.function.Predicate.not;
 import java.util.Map;
 import java.util.Objects;
 
-import de.amr.games.pacman.controller.event.GameEvent;
 import de.amr.games.pacman.controller.event.GameEvent.Info;
 import de.amr.games.pacman.controller.event.GameStateChangeEvent;
 import de.amr.games.pacman.controller.event.ScatterPhaseStartedEvent;
@@ -205,14 +201,6 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 		}
 	}
 
-	void updateGhosts() {
-		game.ghosts().forEach(this::updateGhost);
-		Ghost released = game.releaseLockedGhosts();
-		if (released != null) {
-			game.publishEvent(new GameEvent(game, Info.GHOST_LEAVING_HOUSE, released, released.tile()));
-		}
-	}
-
 	void lookForFood() {
 		V2i tile = game.player.tile();
 		if (game.world.containsFood(tile)) {
@@ -275,93 +263,6 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 		default -> {
 			// INACTIVE
 		}
-		}
-	}
-
-	// Ghosts
-
-	/**
-	 * Updates ghost's speed and behavior depending on its current state.
-	 * 
-	 * TODO: I am not sure about the exact speed values as the Pac-Man dossier has no info on this. Any help is
-	 * appreciated!
-	 * 
-	 * @param ghost ghost to update
-	 */
-	void updateGhost(Ghost ghost) {
-		switch (ghost.state) {
-
-		case LOCKED -> {
-			if (ghost.atGhostHouseDoor(game.world.ghostHouse())) {
-				ghost.setSpeed(0);
-			} else {
-				ghost.setSpeed(game.ghostSpeed / 2);
-				ghost.bounce(game.world.ghostHouse());
-			}
-		}
-
-		case ENTERING_HOUSE -> {
-			ghost.setSpeed(game.ghostSpeed * 2);
-			boolean reachedRevivalTile = ghost.enterHouse(game.world.ghostHouse());
-			if (reachedRevivalTile) {
-				game.publishEvent(new GameEvent(game, Info.GHOST_REVIVED, ghost, ghost.tile()));
-				game.publishEvent(new GameEvent(game, Info.GHOST_LEAVING_HOUSE, ghost, ghost.tile()));
-			}
-		}
-
-		case LEAVING_HOUSE -> {
-			ghost.setSpeed(game.ghostSpeed / 2);
-			boolean leftHouse = ghost.leaveHouse(game.world.ghostHouse());
-			if (leftHouse) {
-				game.publishEvent(new GameEvent(game, Info.GHOST_LEFT_HOUSE, ghost, ghost.tile()));
-			}
-		}
-
-		case FRIGHTENED -> {
-			if (game.world.isTunnel(ghost.tile())) {
-				ghost.setSpeed(game.ghostSpeedTunnel);
-				ghost.tryMoving();
-			} else {
-				ghost.setSpeed(game.ghostSpeedFrightened);
-				ghost.roam();
-			}
-		}
-
-		case HUNTING_PAC -> {
-			if (game.world.isTunnel(ghost.tile())) {
-				ghost.setSpeed(game.ghostSpeedTunnel);
-			} else if (ghost.elroy == 1) {
-				ghost.setSpeed(game.elroy1Speed);
-			} else if (ghost.elroy == 2) {
-				ghost.setSpeed(game.elroy2Speed);
-			} else {
-				ghost.setSpeed(game.ghostSpeed);
-			}
-
-			/*
-			 * In Ms. Pac-Man, Blinky and Pinky move randomly during the *first* scatter phase. Some say, the original
-			 * intention had been to randomize the scatter target of *all* ghosts in Ms. Pac-Man but because of a bug, only
-			 * the scatter target of Blinky and Pinky would have been affected. Who knows?
-			 */
-			if (selectedGameVariant == MS_PACMAN && game.huntingPhase == 0
-					&& (ghost.id == RED_GHOST || ghost.id == PINK_GHOST)) {
-				ghost.roam();
-			} else if (game.inScatteringPhase() && ghost.elroy == 0) {
-				ghost.scatter();
-			} else {
-				ghost.chase();
-			}
-		}
-
-		case DEAD -> {
-			ghost.setSpeed(game.ghostSpeed * 2);
-			boolean reachedHouse = ghost.returnHome(game.world.ghostHouse());
-			if (reachedHouse) {
-				game.publishEvent(new GameEvent(game, Info.GHOST_ENTERS_HOUSE, ghost, ghost.tile()));
-			}
-		}
-
-		default -> throw new IllegalArgumentException("Illegal ghost state: " + state);
 		}
 	}
 }

@@ -24,6 +24,7 @@ SOFTWARE.
 package de.amr.games.pacman.model.common;
 
 import static de.amr.games.pacman.lib.Logging.log;
+import static de.amr.games.pacman.model.common.GameVariant.MS_PACMAN;
 import static de.amr.games.pacman.model.common.GhostState.DEAD;
 import static de.amr.games.pacman.model.common.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.common.GhostState.HUNTING_PAC;
@@ -413,6 +414,98 @@ public abstract class GameModel {
 		} else {
 			player.setSpeed(player.powerTimer.isRunning() ? playerSpeedPowered : playerSpeed);
 			player.tryMoving();
+		}
+	}
+
+	public void updateGhosts(GameVariant gameVariant) {
+		ghosts().forEach(ghost -> updateGhost(ghost, gameVariant));
+		Ghost released = releaseLockedGhosts();
+		if (released != null) {
+			publishEvent(new GameEvent(this, Info.GHOST_LEAVING_HOUSE, released, released.tile()));
+		}
+	}
+
+	/**
+	 * Updates ghost's speed and behavior depending on its current state.
+	 * 
+	 * TODO: I am not sure about the exact speed values as the Pac-Man dossier has no info on this. Any help is
+	 * appreciated!
+	 * 
+	 * @param ghost ghost to update
+	 */
+	public void updateGhost(Ghost ghost, GameVariant gameVariant) {
+		switch (ghost.state) {
+
+		case LOCKED -> {
+			if (ghost.atGhostHouseDoor(world.ghostHouse())) {
+				ghost.setSpeed(0);
+			} else {
+				ghost.setSpeed(ghostSpeed / 2);
+				ghost.bounce(world.ghostHouse());
+			}
+		}
+
+		case ENTERING_HOUSE -> {
+			ghost.setSpeed(ghostSpeed * 2);
+			boolean reachedRevivalTile = ghost.enterHouse(world.ghostHouse());
+			if (reachedRevivalTile) {
+				publishEvent(new GameEvent(this, Info.GHOST_REVIVED, ghost, ghost.tile()));
+				publishEvent(new GameEvent(this, Info.GHOST_LEAVING_HOUSE, ghost, ghost.tile()));
+			}
+		}
+
+		case LEAVING_HOUSE -> {
+			ghost.setSpeed(ghostSpeed / 2);
+			boolean leftHouse = ghost.leaveHouse(world.ghostHouse());
+			if (leftHouse) {
+				publishEvent(new GameEvent(this, Info.GHOST_LEFT_HOUSE, ghost, ghost.tile()));
+			}
+		}
+
+		case FRIGHTENED -> {
+			if (world.isTunnel(ghost.tile())) {
+				ghost.setSpeed(ghostSpeedTunnel);
+				ghost.tryMoving();
+			} else {
+				ghost.setSpeed(ghostSpeedFrightened);
+				ghost.roam();
+			}
+		}
+
+		case HUNTING_PAC -> {
+			if (world.isTunnel(ghost.tile())) {
+				ghost.setSpeed(ghostSpeedTunnel);
+			} else if (ghost.elroy == 1) {
+				ghost.setSpeed(elroy1Speed);
+			} else if (ghost.elroy == 2) {
+				ghost.setSpeed(elroy2Speed);
+			} else {
+				ghost.setSpeed(ghostSpeed);
+			}
+
+			/*
+			 * In Ms. Pac-Man, Blinky and Pinky move randomly during the *first* scatter phase. Some say, the original
+			 * intention had been to randomize the scatter target of *all* ghosts in Ms. Pac-Man but because of a bug, only
+			 * the scatter target of Blinky and Pinky would have been affected. Who knows?
+			 */
+			if (gameVariant == MS_PACMAN && huntingPhase == 0 && (ghost.id == RED_GHOST || ghost.id == PINK_GHOST)) {
+				ghost.roam();
+			} else if (inScatteringPhase() && ghost.elroy == 0) {
+				ghost.scatter();
+			} else {
+				ghost.chase();
+			}
+		}
+
+		case DEAD -> {
+			ghost.setSpeed(ghostSpeed * 2);
+			boolean reachedHouse = ghost.returnHome(world.ghostHouse());
+			if (reachedHouse) {
+				publishEvent(new GameEvent(this, Info.GHOST_ENTERS_HOUSE, ghost, ghost.tile()));
+			}
+		}
+
+		default -> throw new IllegalArgumentException("Illegal ghost state: " + ghost.state);
 		}
 	}
 
