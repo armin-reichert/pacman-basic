@@ -53,10 +53,6 @@ public class Intermission2Controller extends FiniteStateMachine<Intermission2Sta
 		changeState(Intermission2State.CHASING);
 	}
 
-	void startStateTimer() {
-		state.timer().setIndefinite().start();
-	}
-
 	public int nailDistance() {
 		return (int) (context.nail.position.x - context.blinky.position.x);
 	}

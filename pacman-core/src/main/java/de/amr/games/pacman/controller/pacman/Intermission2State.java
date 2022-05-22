@@ -39,7 +39,7 @@ public enum Intermission2State implements FsmState<Intermission2Context> {
 	CHASING {
 		@Override
 		public void onEnter(Intermission2Context context) {
-			fsm.startStateTimer();
+			timer.setIndefinite().start();
 
 			context.pac = new Pac("Pac-Man");
 			context.pac.setMoveDir(Direction.LEFT);
