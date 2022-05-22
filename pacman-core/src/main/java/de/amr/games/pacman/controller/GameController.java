@@ -220,8 +220,9 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 	}
 
 	void eatFood(V2i foodTile) {
+		boolean extraLife = false;
 		if (game.world.isEnergizerTile(foodTile)) {
-			game.eatEnergizer(foodTile);
+			extraLife = game.eatEnergizer(foodTile);
 			if (game.ghostFrightenedSeconds > 0) {
 				// HUNTING timer is stopped while player has power
 				state.timer().stop();
@@ -229,7 +230,11 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 				publishGameEvent(Info.PLAYER_GAINS_POWER, foodTile);
 			}
 		} else {
-			game.eatPellet(foodTile);
+			extraLife = game.eatPellet(foodTile);
+		}
+		if (extraLife) {
+			log("Extra life. Player has %d lives now", game.player.lives);
+			publishGameEvent(Info.EXTRA_LIFE, null);
 		}
 		if (game.checkBonusAwarded()) {
 			publishGameEvent(Info.BONUS_ACTIVATED, game.bonus.tile());
@@ -262,7 +267,11 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 				log("%s found bonus id=%d of value %d", game.player.name, game.bonus.symbol, game.bonus.points);
 				game.bonus.eat();
 				game.bonus.timer = sec_to_ticks(2);
-				score(game.bonus.points);
+				boolean extraLife = game.score(game.bonus.points);
+				if (extraLife) {
+					log("Extra life. Player has %d lives now", game.player.lives);
+					publishGameEvent(Info.EXTRA_LIFE, null);
+				}
 				publishGameEvent(Info.BONUS_EATEN, game.bonus.tile());
 			} else {
 				game.bonus.update();
@@ -287,15 +296,12 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 		}
 	}
 
-	/**
-	 * Scores the given number of points. When 10.000 points are reached, an extra life is rewarded.
-	 */
-	private void score(int points) {
-		if (game.score(points)) {
-			log("Extra life. Player has %d lives now", game.player.lives);
-			publishGameEvent(Info.EXTRA_LIFE, null);
-		}
-	}
+//	private void score(int points) {
+//		if (game.score(points)) {
+//			log("Extra life. Player has %d lives now", game.player.lives);
+//			publishGameEvent(Info.EXTRA_LIFE, null);
+//		}
+//	}
 
 	// Ghosts
 

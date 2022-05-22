@@ -402,12 +402,13 @@ public abstract class GameModel {
 		return false;
 	}
 
-	public void eatEnergizer(V2i tile) {
+	public boolean eatEnergizer(V2i tile) {
+		boolean extraLife = false;
 		ghostBounty = firstGhostBounty;
 		world.removeFood(tile);
 		player.starvingTicks = 0;
 		player.restingTicksLeft = 3;
-		score(energizerValue);
+		extraLife = score(energizerValue);
 		if (ghostFrightenedSeconds > 0) {
 			ghosts(HUNTING_PAC).forEach(ghost -> {
 				ghost.state = FRIGHTENED;
@@ -418,15 +419,18 @@ public abstract class GameModel {
 		}
 		checkElroy();
 		updateGhostDotCounters();
+		return extraLife;
 	}
 
-	public void eatPellet(V2i tile) {
+	public boolean eatPellet(V2i tile) {
+		boolean extraLife = false;
 		world.removeFood(tile);
 		player.starvingTicks = 0;
 		player.restingTicksLeft = 1;
-		score(pelletValue);
+		extraLife = score(pelletValue);
 		checkElroy();
 		updateGhostDotCounters();
+		return extraLife;
 	}
 
 	/**
@@ -550,5 +554,4 @@ public abstract class GameModel {
 			preferredLockedGhostInHouse().ifPresent(ghost -> ++ghost.dotCounter);
 		}
 	}
-
 }
