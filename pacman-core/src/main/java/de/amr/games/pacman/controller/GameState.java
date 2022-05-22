@@ -116,8 +116,7 @@ public enum GameState implements FsmState<GameModel> {
 			fsm.updatePlayer();
 			fsm.updateGhosts();
 			fsm.lookForFood();
-			fsm.consumeBonus();
-			fsm.consumePower();
+			fsm.updateBonus();
 		}
 	},
 

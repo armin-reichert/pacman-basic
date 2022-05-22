@@ -75,6 +75,10 @@ public class TickTimer {
 		setIndefinite();
 	}
 
+	public TickTimerState getState() {
+		return state;
+	}
+
 	public String getName() {
 		return name;
 	}

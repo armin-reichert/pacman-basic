@@ -199,6 +199,26 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 	void updatePlayer() {
 		currentPlayerControl().steer(game.player);
 		game.updatePlayer();
+		switch (game.player.powerTimer.getState()) {
+		case RUNNING -> {
+			game.player.powerTimer.tick();
+			if (game.player.powerTimer.ticksRemaining() == sec_to_ticks(1)) {
+				// TODO not sure exactly how long the player is losing power
+				publishGameEvent(Info.PLAYER_LOSING_POWER, game.player.tile());
+			}
+		}
+		case EXPIRED -> {
+			log("%s lost power, timer=%s", game.player.name, game.player.powerTimer);
+			// restart (HUNTING) state timer
+			state.timer().start();
+			log("HUNTING timer restarted: %s", state.timer());
+			game.ghosts(FRIGHTENED).forEach(ghost -> ghost.state = HUNTING_PAC);
+			game.player.powerTimer.setIndefinite(); // TODO needed?
+			publishGameEvent(Info.PLAYER_LOST_POWER, game.player.tile());
+		}
+		default -> {
+		}
+		}
 	}
 
 	void updateGhosts() {
@@ -241,27 +261,8 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 		}
 	}
 
-	void consumePower() {
-		if (game.player.powerTimer.isRunning()) {
-			game.player.powerTimer.tick();
-			if (game.player.powerTimer.ticksRemaining() == sec_to_ticks(1)) {
-				// TODO not sure exactly how long the player is losing power
-				publishGameEvent(Info.PLAYER_LOSING_POWER, game.player.tile());
-			}
-		} else if (game.player.powerTimer.hasExpired()) {
-			log("%s lost power, timer=%s", game.player.name, game.player.powerTimer);
-			game.ghosts(FRIGHTENED).forEach(ghost -> ghost.state = HUNTING_PAC);
-			game.player.powerTimer.setIndefinite();
-			// restart HUNTING state timer
-			state.timer().start();
-			log("HUNTING timer restarted: %s", state.timer());
-			publishGameEvent(Info.PLAYER_LOST_POWER, game.player.tile());
-		}
-	}
-
-	void consumeBonus() {
+	void updateBonus() {
 		switch (game.bonus.state) {
-
 		case EDIBLE -> {
 			if (game.player.meets(game.bonus)) {
 				log("%s found bonus id=%d of value %d", game.player.name, game.bonus.symbol, game.bonus.points);
@@ -281,27 +282,17 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 				}
 			}
 		}
-
 		case EATEN -> {
 			game.bonus.update();
 			if (game.bonus.timer == 0) {
 				publishGameEvent(Info.BONUS_EXPIRED, game.bonus.tile());
 			}
 		}
-
 		default -> {
 			// INACTIVE
 		}
-
 		}
 	}
-
-//	private void score(int points) {
-//		if (game.score(points)) {
-//			log("Extra life. Player has %d lives now", game.player.lives);
-//			publishGameEvent(Info.EXTRA_LIFE, null);
-//		}
-//	}
 
 	// Ghosts
 
