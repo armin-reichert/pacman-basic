@@ -226,6 +226,7 @@ public abstract class GameModel {
 
 	public void publishEvent(GameEvent gameEvent) {
 		if (eventingEnabled) {
+			log("Publish game event: %s", gameEvent);
 			subscribers.forEach(subscriber -> subscriber.onGameEvent(gameEvent));
 		}
 	}
