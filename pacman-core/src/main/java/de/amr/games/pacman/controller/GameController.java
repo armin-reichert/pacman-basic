@@ -100,10 +100,12 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 
 	public void selectGameVariant(GameVariant variant) {
 		selectedGameVariant = Objects.requireNonNull(variant);
-		for (var gameVariant : GameVariant.values()) {
-			games.get(gameVariant).setEventingEnabled(gameVariant == selectedGameVariant);
+		// ensure only selected game model fires events
+		for (var gv : GameVariant.values()) {
+			games.get(gv).setEventingEnabled(gv == selectedGameVariant);
 		}
-		setContext(game()); // TODO checkme
+		// ensure state machine uses selected game model
+		setContext(game());
 		changeState(INTRO);
 	}
 
