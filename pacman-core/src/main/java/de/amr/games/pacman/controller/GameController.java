@@ -81,6 +81,7 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 
 	public boolean playerImmune;
 	public boolean autoControlled;
+	public int intermissionTestNumber;
 
 	private final Map<GameVariant, GameModel> games = Map.of( //
 			GameVariant.MS_PACMAN, new MsPacManGame(), //
@@ -175,8 +176,6 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 		}
 	}
 
-	public int intermissionTestNumber;
-
 	void resetAndStartHuntingTimerForPhase(int phase) {
 		long ticks = game.huntingPhaseDurations[phase];
 		log("Set %s timer to %d ticks", state, ticks);
@@ -211,44 +210,30 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 	}
 
 	void lookForFood() {
-		V2i playerTile = game.player.tile();
-		if (game.world.containsFood(playerTile)) {
-			eatFood(playerTile);
+		V2i tile = game.player.tile();
+		if (game.world.containsFood(tile)) {
+			eatFood(tile);
+			publishGameEvent(Info.PLAYER_FOUND_FOOD, tile);
 		} else {
 			game.player.starvingTicks++;
 		}
 	}
 
-	private void eatFood(V2i foodTile) {
-		game.world.removeFood(foodTile);
-		game.player.starvingTicks = 0;
+	void eatFood(V2i foodTile) {
 		if (game.world.isEnergizerTile(foodTile)) {
-			game.player.restingTicksLeft = 3;
-			score(game.energizerValue);
-			game.ghostBounty = game.firstGhostBounty;
+			game.eatEnergizer(foodTile);
 			if (game.ghostFrightenedSeconds > 0) {
-				game.ghosts(HUNTING_PAC).forEach(ghost -> {
-					ghost.state = FRIGHTENED;
-					ghost.forceTurningBack();
-				});
-				game.player.powerTimer.setSeconds(game.ghostFrightenedSeconds).start();
-				log("%s got power, timer=%s", game.player.name, game.player.powerTimer);
-				// HUNTING is stopped while player has power
+				// HUNTING timer is stopped while player has power
 				state.timer().stop();
 				log("%s timer stopped: %s", state, state.timer());
 				publishGameEvent(Info.PLAYER_GAINS_POWER, foodTile);
 			}
 		} else {
-			game.player.restingTicksLeft = 1;
-			score(game.pelletValue);
+			game.eatPellet(foodTile);
 		}
-
-		game.checkElroy();
 		if (game.checkBonusAwarded()) {
 			publishGameEvent(Info.BONUS_ACTIVATED, game.bonus.tile());
 		}
-		game.updateGhostDotCounters();
-		publishGameEvent(Info.PLAYER_FOUND_FOOD, foodTile);
 	}
 
 	void consumePower() {

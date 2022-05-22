@@ -41,6 +41,7 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.Hiscore;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.V2d;
+import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.world.World;
 import de.amr.games.pacman.model.pacman.Bonus;
 
@@ -369,6 +370,8 @@ public abstract class GameModel {
 	 */
 	public abstract long bonusActivationTicks();
 
+	// Game logic
+
 	public void updatePlayer() {
 		if (player.restingTicksLeft > 0) {
 			player.restingTicksLeft--;
@@ -399,6 +402,33 @@ public abstract class GameModel {
 		return false;
 	}
 
+	public void eatEnergizer(V2i tile) {
+		ghostBounty = firstGhostBounty;
+		world.removeFood(tile);
+		player.starvingTicks = 0;
+		player.restingTicksLeft = 3;
+		score(energizerValue);
+		if (ghostFrightenedSeconds > 0) {
+			ghosts(HUNTING_PAC).forEach(ghost -> {
+				ghost.state = FRIGHTENED;
+				ghost.forceTurningBack();
+			});
+			player.powerTimer.setSeconds(ghostFrightenedSeconds).start();
+			log("%s got power, timer=%s", player.name, player.powerTimer);
+		}
+		checkElroy();
+		updateGhostDotCounters();
+	}
+
+	public void eatPellet(V2i tile) {
+		world.removeFood(tile);
+		player.starvingTicks = 0;
+		player.restingTicksLeft = 1;
+		score(pelletValue);
+		checkElroy();
+		updateGhostDotCounters();
+	}
+
 	/**
 	 * Killing ghosts wins 200, 400, 800, 1600 points in order when using the same energizer power. If all 16 ghosts on a
 	 * level are killed, additonal 12000 points are rewarded.
@@ -416,13 +446,13 @@ public abstract class GameModel {
 		log("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name, ghost.tile(), ghost.bounty);
 	}
 
-	public boolean killGhosts() {
+	public boolean checkKillGhosts() {
 		Ghost[] prey = ghosts(FRIGHTENED).filter(player::meets).toArray(Ghost[]::new);
 		Stream.of(prey).forEach(this::killGhost);
 		return prey.length > 0;
 	}
 
-	public boolean killedPlayer(boolean immune) {
+	public boolean checkKillPlayer(boolean immune) {
 		if (player.powerTimer.isRunning()) {
 			return false;
 		}
@@ -447,14 +477,17 @@ public abstract class GameModel {
 		return killer.isPresent();
 	}
 
-	public void checkElroy() {
+	private boolean checkElroy() {
 		if (world.foodRemaining() == elroy1DotsLeft) {
 			ghosts[RED_GHOST].elroy = 1;
 			log("Blinky becomes Cruise Elroy 1");
+			return true;
 		} else if (world.foodRemaining() == elroy2DotsLeft) {
 			ghosts[RED_GHOST].elroy = 2;
 			log("Blinky becomes Cruise Elroy 2");
+			return true;
 		}
+		return false;
 	}
 
 	public boolean checkBonusAwarded() {
@@ -504,7 +537,7 @@ public abstract class GameModel {
 				.findFirst();
 	}
 
-	public void updateGhostDotCounters() {
+	private void updateGhostDotCounters() {
 		if (globalDotCounterEnabled) {
 			if (ghosts[ORANGE_GHOST].is(LOCKED) && globalDotCounter == 32) {
 				globalDotCounterEnabled = false;
