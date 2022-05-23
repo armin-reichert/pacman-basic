@@ -24,37 +24,37 @@ SOFTWARE.
 
 package de.amr.games.pacman.controller.pacman;
 
-import static de.amr.games.pacman.model.common.world.World.t;
-
-import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TimedSeq;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
 
 /**
  * @author Armin Reichert
- *
  */
 public class IntroContext {
 
 	public static class GhostPortrait {
-		public Ghost ghost;
+		public int id;
+		public String nickname;
 		public String character;
+		public boolean pictureVisible = false;
 		public boolean characterVisible = false;
 		public boolean nicknameVisible = false;
+		public int tileX;
+		public int tileY;
 
-		public GhostPortrait(int id, String name, String character, int tileY) {
-			ghost = new Ghost(id, name);
-			ghost.setMoveDir(Direction.RIGHT);
-			ghost.setWishDir(Direction.RIGHT);
-			ghost.setPosition(t(4), t(tileY));
+		public GhostPortrait(int id, String nickname, String character, int tileY) {
+			this.id = id;
+			this.nickname = nickname;
 			this.character = character;
+			this.tileX = 4;
+			this.tileY = tileY;
 		}
 	}
 
 	public TimedSeq<Boolean> fastBlinking = TimedSeq.pulse().frameDuration(10);
 	public TimedSeq<Boolean> slowBlinking = TimedSeq.pulse().frameDuration(30);
-	public int topY = t(6);
+//	public int topY = t(6);
 	public GhostPortrait[] portraits;
 	public Pac pacMan;
 	public Ghost[] ghosts;
@@ -63,6 +63,6 @@ public class IntroContext {
 
 	public void selectGhost(int index) {
 		ghostIndex = index;
-		portraits[ghostIndex].ghost.show();
+		portraits[ghostIndex].pictureVisible = true;
 	}
 }
