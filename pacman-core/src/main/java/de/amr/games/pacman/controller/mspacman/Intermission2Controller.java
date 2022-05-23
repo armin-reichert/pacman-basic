@@ -37,7 +37,7 @@ import de.amr.games.pacman.lib.Fsm;
 public class Intermission2Controller extends Fsm<Intermission2State, Intermission2Context> {
 
 	public final GameController gameController;
-	private final Intermission2Context context = new Intermission2Context();
+	public final Intermission2Context context = new Intermission2Context();
 
 	public Intermission2Controller(GameController gameController) {
 		super(Intermission2State.values());

@@ -36,7 +36,7 @@ import de.amr.games.pacman.lib.Fsm;
 public class IntroController extends Fsm<IntroState, IntroContext> {
 
 	public final GameController gameController;
-	private final IntroContext context = new IntroContext();
+	public final IntroContext context = new IntroContext();
 
 	public IntroController(GameController gameController) {
 		super(IntroState.values());

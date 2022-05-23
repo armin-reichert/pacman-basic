@@ -51,10 +51,7 @@ public class IntroController extends Fsm<IntroState, IntroContext> {
 	}
 
 	public void init() {
-		// TODO fixme
-		for (var s : IntroState.values()) {
-			s.timer.setDurationTicks(0);
-		}
+		resetTimers();
 		enterAsInitialState(IntroState.BEGIN);
 	}
 

@@ -38,7 +38,7 @@ import de.amr.games.pacman.lib.Fsm;
 public class Intermission1Controller extends Fsm<Intermission1State, Intermission1Context> {
 
 	public final GameController gameController;
-	private final Intermission1Context context = new Intermission1Context();
+	public final Intermission1Context context = new Intermission1Context();
 
 	public Intermission1Controller(GameController gameController) {
 		super(Intermission1State.values());

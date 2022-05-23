@@ -45,16 +45,18 @@ public abstract class Fsm<STATE extends FsmState<CONTEXT>, CONTEXT> {
 	}
 
 	private String name;
+	private final STATE[] states;
 	private STATE state;
 	private STATE prevState;
 
 	protected final List<BiConsumer<STATE, STATE>> stateChangeListeners = new ArrayList<>();
 
 	public Fsm(STATE[] states) {
-		name = getClass().getSimpleName();
+		this.states = states;
 		for (var state : states) {
 			state.setFsm(this);
 		}
+		name = getClass().getSimpleName();
 	}
 
 	@Override
@@ -70,6 +72,12 @@ public abstract class Fsm<STATE extends FsmState<CONTEXT>, CONTEXT> {
 
 	public STATE prevState() {
 		return prevState;
+	}
+
+	public void resetTimers() {
+		for (var state : states) {
+			state.timer().setIndefinite();
+		}
 	}
 
 	public void enterAsInitialState(STATE newState) {
