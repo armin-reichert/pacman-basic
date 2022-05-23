@@ -120,7 +120,7 @@ public enum GameState implements FsmState<GameModel> {
 		}
 
 		private void updatePlayer(GameModel game) {
-			controller.currentPlayerControl().steer(game.player);
+			controller.currentPlayerControl().accept(game.player);
 			boolean lostPower = game.updatePlayer();
 			if (lostPower) {
 				timer.start();
@@ -229,7 +229,7 @@ public enum GameState implements FsmState<GameModel> {
 				controller.resumePreviousState();
 				return;
 			}
-			controller.currentPlayerControl().steer(game.player);
+			controller.currentPlayerControl().accept(game.player);
 			game.ghosts().filter(ghost -> ghost.is(DEAD) && ghost.bounty == 0 || ghost.is(ENTERING_HOUSE))
 					.forEach(ghost -> game.updateGhost(ghost, controller.gameVariant()));
 		}

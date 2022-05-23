@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -44,7 +45,7 @@ import de.amr.games.pacman.model.pacman.Bonus.BonusState;
  * 
  * @author Armin Reichert
  */
-public class Autopilot implements PlayerControl {
+public class Autopilot implements Consumer<Pac> {
 
 	static class AutopilotData {
 
@@ -104,7 +105,7 @@ public class Autopilot implements PlayerControl {
 	}
 
 	@Override
-	public void steer(Pac player) {
+	public void accept(Pac player) {
 		if (!player.stuck && !player.newTileEntered) {
 			return;
 		}

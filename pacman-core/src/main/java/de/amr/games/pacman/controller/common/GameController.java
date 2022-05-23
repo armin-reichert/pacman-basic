@@ -31,11 +31,13 @@ import static de.amr.games.pacman.model.common.GhostState.HUNTING_PAC;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 import de.amr.games.pacman.controller.common.event.GameStateChangeEvent;
 import de.amr.games.pacman.lib.Fsm;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
+import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.mspacman.MsPacManGame;
 import de.amr.games.pacman.model.pacman.PacManGame;
 
@@ -70,7 +72,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 
 	private GameVariant selectedGameVariant;
 
-	private PlayerControl playerControl;
+	private Consumer<Pac> playerControl;
 	private final Autopilot autopilot = new Autopilot(this::game);
 
 	public GameController(GameVariant variant) {
@@ -84,11 +86,11 @@ public class GameController extends Fsm<GameState, GameModel> {
 		logging = true;
 	}
 
-	public void setPlayerControl(PlayerControl playerControl) {
+	public void setPlayerControl(Consumer<Pac> playerControl) {
 		this.playerControl = playerControl;
 	}
 
-	PlayerControl currentPlayerControl() {
+	Consumer<Pac> currentPlayerControl() {
 		return game().player.autoMoving || game().attractMode ? autopilot : playerControl;
 	}
 
