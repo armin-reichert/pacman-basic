@@ -23,7 +23,7 @@ SOFTWARE.
  */
 package de.amr.games.pacman.controller.mspacman;
 
-import de.amr.games.pacman.controller.GameController;
+import de.amr.games.pacman.controller.common.GameController;
 import de.amr.games.pacman.lib.FiniteStateMachine;
 
 /**

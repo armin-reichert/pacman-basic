@@ -21,19 +21,21 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-package de.amr.games.pacman.controller;
+package de.amr.games.pacman.controller.common.event;
 
-import de.amr.games.pacman.model.common.Pac;
+import de.amr.games.pacman.model.common.GameModel;
 
-/**
- * Interface for steering the player through the maze.
- * <p>
- * 
- * @author Armin Reichert
- * 
- * @see {@link GameController#setPlayerControl(PlayerControl)}.
- */
-public interface PlayerControl {
+public class ScatterPhaseStartedEvent extends GameEvent {
 
-	void steer(Pac player);
+	public final int scatterPhase;
+
+	public ScatterPhaseStartedEvent(GameModel gameModel, int scatterPhase) {
+		super(gameModel, Info.SCATTER_PHASE_STARTED, null, null);
+		this.scatterPhase = scatterPhase;
+	}
+
+	@Override
+	public String toString() {
+		return String.format("ScatterPhaseStartedEvent: scatterPhase=%d", scatterPhase);
+	}
 }

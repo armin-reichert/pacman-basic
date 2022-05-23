@@ -42,9 +42,9 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.controller.event.GameEvent;
-import de.amr.games.pacman.controller.event.GameEvent.Info;
-import de.amr.games.pacman.controller.event.GameEventListener;
+import de.amr.games.pacman.controller.common.event.GameEvent;
+import de.amr.games.pacman.controller.common.event.GameEventListener;
+import de.amr.games.pacman.controller.common.event.GameEvent.Info;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.Hiscore;
 import de.amr.games.pacman.lib.TickTimer;

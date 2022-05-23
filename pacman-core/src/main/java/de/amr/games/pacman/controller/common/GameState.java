@@ -21,7 +21,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-package de.amr.games.pacman.controller;
+package de.amr.games.pacman.controller.common;
 
 import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.lib.TickTimer.sec_to_ticks;
@@ -30,10 +30,10 @@ import static de.amr.games.pacman.model.common.GhostState.ENTERING_HOUSE;
 import static de.amr.games.pacman.model.common.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.common.GhostState.HUNTING_PAC;
 
-import de.amr.games.pacman.controller.event.GameEvent;
-import de.amr.games.pacman.controller.event.GameEvent.Info;
-import de.amr.games.pacman.controller.event.GameStateChangeEvent;
-import de.amr.games.pacman.controller.event.ScatterPhaseStartedEvent;
+import de.amr.games.pacman.controller.common.event.GameEvent;
+import de.amr.games.pacman.controller.common.event.GameStateChangeEvent;
+import de.amr.games.pacman.controller.common.event.ScatterPhaseStartedEvent;
+import de.amr.games.pacman.controller.common.event.GameEvent.Info;
 import de.amr.games.pacman.lib.FsmState;
 import de.amr.games.pacman.lib.Hiscore;
 import de.amr.games.pacman.lib.TickTimer;

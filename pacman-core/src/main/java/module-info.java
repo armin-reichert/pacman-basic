@@ -18,8 +18,8 @@
  */
 module de.amr.games.pacman {
 
-	exports de.amr.games.pacman.controller;
-	exports de.amr.games.pacman.controller.event;
+	exports de.amr.games.pacman.controller.common;
+	exports de.amr.games.pacman.controller.common.event;
 	exports de.amr.games.pacman.lib;
 	exports de.amr.games.pacman.model.common;
 	exports de.amr.games.pacman.model.common.world;

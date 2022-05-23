@@ -21,16 +21,16 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-package de.amr.games.pacman.controller;
+package de.amr.games.pacman.controller.common;
 
-import static de.amr.games.pacman.controller.GameState.INTERMISSION_TEST;
-import static de.amr.games.pacman.controller.GameState.INTRO;
-import static de.amr.games.pacman.controller.GameState.READY;
+import static de.amr.games.pacman.controller.common.GameState.INTERMISSION_TEST;
+import static de.amr.games.pacman.controller.common.GameState.INTRO;
+import static de.amr.games.pacman.controller.common.GameState.READY;
 
 import java.util.Map;
 import java.util.Objects;
 
-import de.amr.games.pacman.controller.event.GameStateChangeEvent;
+import de.amr.games.pacman.controller.common.event.GameStateChangeEvent;
 import de.amr.games.pacman.lib.FiniteStateMachine;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;

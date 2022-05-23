@@ -21,19 +21,19 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-package de.amr.games.pacman.controller.event;
+package de.amr.games.pacman.controller.common;
+
+import de.amr.games.pacman.model.common.Pac;
 
 /**
- * Implemented by classes that listen to game events.
+ * Interface for steering the player through the maze.
+ * <p>
  * 
  * @author Armin Reichert
+ * 
+ * @see {@link GameController#setPlayerControl(PlayerControl)}.
  */
-public interface GameEventListener {
+public interface PlayerControl {
 
-	/**
-	 * Called when a game event is received.
-	 * 
-	 * @param event a game event
-	 */
-	void onGameEvent(GameEvent event);
+	void steer(Pac player);
 }
