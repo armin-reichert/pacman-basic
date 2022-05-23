@@ -35,7 +35,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.controller.pacman.IntroContext.GhostPortrait;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.Fsm;
 import de.amr.games.pacman.lib.FsmState;
@@ -49,12 +48,11 @@ public enum IntroState implements FsmState<IntroContext> {
 	BEGIN {
 		@Override
 		public void onEnter(IntroContext context) {
-			context.portraits = new GhostPortrait[] { //
-					new GhostPortrait(RED_GHOST, "Blinky", "SHADOW", 7), //
-					new GhostPortrait(PINK_GHOST, "Pinky", "SPEEDY", 10), //
-					new GhostPortrait(CYAN_GHOST, "Inky", "BASHFUL", 13), //
-					new GhostPortrait(ORANGE_GHOST, "Clyde", "POKEY", 16), //
-			};
+			for (int id = 0; id < 4; ++id) {
+				context.pictureVisible[id] = false;
+				context.nicknameVisible[id] = false;
+				context.characterVisible[id] = false;
+			}
 			context.pacMan = new Pac("Pac-Man");
 			context.ghosts = new Ghost[] { //
 					new Ghost(RED_GHOST, "Blinky"), //
@@ -77,9 +75,9 @@ public enum IntroState implements FsmState<IntroContext> {
 		@Override
 		public void onUpdate(IntroContext context) {
 			if (timer.atSecond(1.0)) {
-				context.portraits[context.ghostIndex].characterVisible = true;
+				context.characterVisible[context.ghostIndex] = true;
 			} else if (timer.atSecond(1.5)) {
-				context.portraits[context.ghostIndex].nicknameVisible = true;
+				context.nicknameVisible[context.ghostIndex] = true;
 			} else if (timer.atSecond(2.0)) {
 				if (context.ghostIndex < 3) {
 					context.selectGhost(context.ghostIndex + 1);
@@ -122,7 +120,7 @@ public enum IntroState implements FsmState<IntroContext> {
 
 		@Override
 		public void onUpdate(IntroContext context) {
-			if (context.pacMan.position.x < t(2)) {
+			if (context.pacMan.position.x <= t(3)) {
 				controller.changeState(IntroState.CHASING_GHOSTS);
 				return;
 			}

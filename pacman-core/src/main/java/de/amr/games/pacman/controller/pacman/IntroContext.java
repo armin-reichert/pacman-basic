@@ -33,29 +33,13 @@ import de.amr.games.pacman.model.common.Pac;
  */
 public class IntroContext {
 
-	public static class GhostPortrait {
-		public int id;
-		public String nickname;
-		public String character;
-		public boolean pictureVisible = false;
-		public boolean characterVisible = false;
-		public boolean nicknameVisible = false;
-		public int tileX;
-		public int tileY;
-
-		public GhostPortrait(int id, String nickname, String character, int tileY) {
-			this.id = id;
-			this.nickname = nickname;
-			this.character = character;
-			this.tileX = 4;
-			this.tileY = tileY;
-		}
-	}
-
-	public TimedSeq<Boolean> fastBlinking = TimedSeq.pulse().frameDuration(10);
-	public TimedSeq<Boolean> slowBlinking = TimedSeq.pulse().frameDuration(30);
-//	public int topY = t(6);
-	public GhostPortrait[] portraits;
+	public final TimedSeq<Boolean> fastBlinking = TimedSeq.pulse().frameDuration(10);
+	public final TimedSeq<Boolean> slowBlinking = TimedSeq.pulse().frameDuration(30);
+	public final String nicknames[] = { "Blinky", "Pinky", "Inky", "Clyde" };
+	public final String characters[] = { "SHADOW", "SPEEDY", "BASHFUL", "POKEY" };
+	public final boolean[] pictureVisible = { false, false, false, false };
+	public final boolean[] nicknameVisible = { false, false, false, false };
+	public final boolean[] characterVisible = { false, false, false, false };
 	public Pac pacMan;
 	public Ghost[] ghosts;
 	public int ghostIndex;
@@ -63,6 +47,6 @@ public class IntroContext {
 
 	public void selectGhost(int index) {
 		ghostIndex = index;
-		portraits[ghostIndex].pictureVisible = true;
+		pictureVisible[index] = true;
 	}
 }
