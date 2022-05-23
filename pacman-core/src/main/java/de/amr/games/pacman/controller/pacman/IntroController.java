@@ -54,9 +54,4 @@ public class IntroController extends Fsm<IntroState, IntroContext> {
 		resetTimers();
 		enterAsInitialState(IntroState.BEGIN);
 	}
-
-	public void selectGhost(int index) {
-		context.ghostIndex = index;
-		context.portraits[context.ghostIndex].ghost.show();
-	}
 }

@@ -66,7 +66,7 @@ public enum IntroState implements FsmState<IntroContext> {
 		@Override
 		public void onUpdate(IntroContext context) {
 			if (timer.atSecond(1)) {
-				controller.selectGhost(0);
+				context.selectGhost(0);
 				controller.changeState(IntroState.PRESENTING_GHOSTS);
 			}
 		}
@@ -81,7 +81,7 @@ public enum IntroState implements FsmState<IntroContext> {
 				context.portraits[context.ghostIndex].nicknameVisible = true;
 			} else if (timer.atSecond(2.0)) {
 				if (context.ghostIndex < 3) {
-					controller.selectGhost(context.ghostIndex + 1);
+					context.selectGhost(context.ghostIndex + 1);
 					timer.setIndefinite().start();
 				}
 			} else if (timer.atSecond(2.75)) {

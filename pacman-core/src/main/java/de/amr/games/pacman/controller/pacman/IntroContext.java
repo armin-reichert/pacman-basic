@@ -60,4 +60,9 @@ public class IntroContext {
 	public Ghost[] ghosts;
 	public int ghostIndex;
 	public long ghostKilledTime;
+
+	public void selectGhost(int index) {
+		ghostIndex = index;
+		portraits[ghostIndex].ghost.show();
+	}
 }
