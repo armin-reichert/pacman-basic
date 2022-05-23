@@ -73,7 +73,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 	private GameVariant selectedGameVariant;
 
 	private Consumer<Pac> playerControl;
-	private final Autopilot autopilot = new Autopilot(this::game);
+	private final Consumer<Pac> autopilot = new Autopilot(this::game);
 
 	public GameController(GameVariant variant) {
 		super(GameState.values());
