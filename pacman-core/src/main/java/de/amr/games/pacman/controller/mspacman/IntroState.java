@@ -28,6 +28,7 @@ import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.model.common.world.World.t;
 
+import de.amr.games.pacman.controller.mspacman.IntroController.Context;
 import de.amr.games.pacman.lib.Fsm;
 import de.amr.games.pacman.lib.FsmState;
 import de.amr.games.pacman.lib.TickTimer;
@@ -37,11 +38,11 @@ import de.amr.games.pacman.model.common.GhostState;
 /**
  * @author Armin Reichert
  */
-public enum IntroState implements FsmState<IntroContext> {
+public enum IntroState implements FsmState<Context> {
 
 	BEGIN {
 		@Override
-		public void onEnter(IntroContext $) {
+		public void onEnter(Context $) {
 			$.lightsTimer.setDurationIndefinite().start();
 			$.msPacMan.setMoveDir(LEFT);
 			$.msPacMan.setPosition(t(36), $.turningPoint.y);
@@ -59,7 +60,7 @@ public enum IntroState implements FsmState<IntroContext> {
 		}
 
 		@Override
-		public void onUpdate(IntroContext $) {
+		public void onUpdate(Context $) {
 			$.lightsTimer.run();
 			if (timer.atSecond(1)) {
 				controller.changeState(IntroState.GHOSTS);
@@ -69,7 +70,7 @@ public enum IntroState implements FsmState<IntroContext> {
 
 	GHOSTS {
 		@Override
-		public void onUpdate(IntroContext $) {
+		public void onUpdate(Context $) {
 			$.lightsTimer.run();
 			Ghost ghost = $.ghosts[$.ghostIndex];
 			ghost.move();
@@ -88,7 +89,7 @@ public enum IntroState implements FsmState<IntroContext> {
 
 	MSPACMAN {
 		@Override
-		public void onUpdate(IntroContext $) {
+		public void onUpdate(Context $) {
 			$.lightsTimer.run();
 			$.msPacMan.move();
 			if ($.msPacMan.position.x <= t(14)) {
@@ -100,7 +101,7 @@ public enum IntroState implements FsmState<IntroContext> {
 
 	READY_TO_PLAY {
 		@Override
-		public void onUpdate(IntroContext $) {
+		public void onUpdate(Context $) {
 			$.lightsTimer.run();
 			$.blinking.advance();
 			if (timer.atSecond(5)) {
@@ -113,7 +114,7 @@ public enum IntroState implements FsmState<IntroContext> {
 	protected final TickTimer timer = new TickTimer("Timer:" + name());
 
 	@Override
-	public void setFsm(Fsm<? extends FsmState<IntroContext>, IntroContext> fsm) {
+	public void setFsm(Fsm<? extends FsmState<Context>, Context> fsm) {
 		controller = (IntroController) fsm;
 	}
 

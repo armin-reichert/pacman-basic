@@ -26,6 +26,7 @@ package de.amr.games.pacman.controller.mspacman;
 
 import static de.amr.games.pacman.model.common.world.World.t;
 
+import de.amr.games.pacman.controller.mspacman.Intermission1Controller.Context;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.Fsm;
 import de.amr.games.pacman.lib.FsmState;
@@ -40,11 +41,11 @@ import de.amr.games.pacman.model.mspacman.Flap;
 /**
  * @author Armin Reichert
  */
-public enum Intermission1State implements FsmState<Intermission1Context> {
+public enum Intermission1State implements FsmState<Context> {
 
 	FLAP {
 		@Override
-		public void onEnter(Intermission1Context $) {
+		public void onEnter(Context $) {
 			timer.setDurationSeconds(2).start();
 			$.playIntermissionSound.run();
 
@@ -80,7 +81,7 @@ public enum Intermission1State implements FsmState<Intermission1Context> {
 		}
 
 		@Override
-		public void onUpdate(Intermission1Context $) {
+		public void onUpdate(Context $) {
 			if (timer.atSecond(1)) {
 				$.playFlapAnimation.run();
 			}
@@ -92,7 +93,7 @@ public enum Intermission1State implements FsmState<Intermission1Context> {
 
 	CHASED_BY_GHOSTS {
 		@Override
-		public void onEnter(Intermission1Context $) {
+		public void onEnter(Context $) {
 			$.flap.hide();
 			$.pacMan.setSpeed(0.9);
 			$.msPac.setSpeed(0.9);
@@ -101,7 +102,7 @@ public enum Intermission1State implements FsmState<Intermission1Context> {
 		}
 
 		@Override
-		public void onUpdate(Intermission1Context $) {
+		public void onUpdate(Context $) {
 			if ($.inky.position.x > t(30)) {
 				controller.changeState(Intermission1State.COMING_TOGETHER);
 				return;
@@ -115,7 +116,7 @@ public enum Intermission1State implements FsmState<Intermission1Context> {
 
 	COMING_TOGETHER {
 		@Override
-		public void onEnter(Intermission1Context $) {
+		public void onEnter(Context $) {
 			$.msPac.setPosition(t(-3), $.middleY);
 			$.msPac.setMoveDir(Direction.RIGHT);
 
@@ -132,15 +133,14 @@ public enum Intermission1State implements FsmState<Intermission1Context> {
 		}
 
 		@Override
-		public void onUpdate(Intermission1Context $) {
+		public void onUpdate(Context $) {
 			// Pac-Man and Ms. Pac-Man reach end position?
 			if ($.pacMan.moveDir() == Direction.UP && $.pacMan.position.y < $.upperY) {
 				controller.changeState(Intermission1State.IN_HEAVEN);
 				return;
 			}
 			// Pac-Man and Ms. Pac-Man meet?
-			else if ($.pacMan.moveDir() == Direction.LEFT
-					&& $.pacMan.position.x - $.msPac.position.x < t(2)) {
+			else if ($.pacMan.moveDir() == Direction.LEFT && $.pacMan.position.x - $.msPac.position.x < t(2)) {
 				$.pacMan.setMoveDir(Direction.UP);
 				$.pacMan.setSpeed(0.75);
 				$.msPac.setMoveDir(Direction.UP);
@@ -178,7 +178,7 @@ public enum Intermission1State implements FsmState<Intermission1Context> {
 
 	IN_HEAVEN {
 		@Override
-		public void onEnter(Intermission1Context $) {
+		public void onEnter(Context $) {
 			timer.setDurationSeconds(3).start();
 			$.pacMan.setSpeed(0);
 			$.pacMan.setMoveDir(Direction.LEFT);
@@ -188,13 +188,12 @@ public enum Intermission1State implements FsmState<Intermission1Context> {
 			$.inky.hide();
 			$.pinky.setSpeed(0);
 			$.pinky.hide();
-			$.heart.setPosition(($.pacMan.position.x + $.msPac.position.x) / 2,
-					$.pacMan.position.y - t(2));
+			$.heart.setPosition(($.pacMan.position.x + $.msPac.position.x) / 2, $.pacMan.position.y - t(2));
 			$.heart.show();
 		}
 
 		@Override
-		public void onUpdate(Intermission1Context $) {
+		public void onUpdate(Context $) {
 			if (timer.hasExpired()) {
 				controller.gameController.state().timer().expire();
 			}
@@ -205,7 +204,7 @@ public enum Intermission1State implements FsmState<Intermission1Context> {
 	protected final TickTimer timer = new TickTimer("Timer:" + name());
 
 	@Override
-	public void setFsm(Fsm<? extends FsmState<Intermission1Context>, Intermission1Context> fsm) {
+	public void setFsm(Fsm<? extends FsmState<Context>, Context> fsm) {
 		controller = (Intermission1Controller) fsm;
 	}
 

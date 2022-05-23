@@ -36,11 +36,11 @@ import de.amr.games.pacman.model.mspacman.Flap;
 /**
  * @author Armin Reichert
  */
-public enum Intermission2State implements FsmState<Intermission2Context> {
+public enum Intermission2State implements FsmState<Intermission2Controller.Context> {
 
 	FLAP {
 		@Override
-		public void onEnter(Intermission2Context $) {
+		public void onEnter(Intermission2Controller.Context $) {
 			timer.setDurationIndefinite().start();
 			$.playIntermissionSound.run();
 			$.flap = new Flap();
@@ -55,7 +55,7 @@ public enum Intermission2State implements FsmState<Intermission2Context> {
 		}
 
 		@Override
-		public void onUpdate(Intermission2Context $) {
+		public void onUpdate(Intermission2Controller.Context $) {
 			if (timer.atSecond(1)) {
 				$.playFlapAnimation.run();
 			} else if (timer.atSecond(2)) {
@@ -68,12 +68,12 @@ public enum Intermission2State implements FsmState<Intermission2Context> {
 
 	CHASING {
 		@Override
-		public void onEnter(Intermission2Context $) {
+		public void onEnter(Intermission2Controller.Context $) {
 			timer.setDurationIndefinite().start();
 		}
 
 		@Override
-		public void onUpdate(Intermission2Context $) {
+		public void onUpdate(Intermission2Controller.Context $) {
 			if (timer.atSecond(1.5)) {
 				$.pacMan.setPosition(-t(2), $.upperY);
 				$.pacMan.setMoveDir(Direction.RIGHT);
@@ -124,7 +124,7 @@ public enum Intermission2State implements FsmState<Intermission2Context> {
 	protected final TickTimer timer = new TickTimer("Timer:" + name());
 
 	@Override
-	public void setFsm(Fsm<? extends FsmState<Intermission2Context>, Intermission2Context> fsm) {
+	public void setFsm(Fsm<? extends FsmState<Intermission2Controller.Context>, Intermission2Controller.Context> fsm) {
 		controller = (Intermission2Controller) fsm;
 	}
 

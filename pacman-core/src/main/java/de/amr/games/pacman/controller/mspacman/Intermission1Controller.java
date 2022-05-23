@@ -23,8 +23,14 @@ SOFTWARE.
  */
 package de.amr.games.pacman.controller.mspacman;
 
+import static de.amr.games.pacman.model.common.world.World.t;
+
 import de.amr.games.pacman.controller.common.GameController;
 import de.amr.games.pacman.lib.Fsm;
+import de.amr.games.pacman.model.common.GameEntity;
+import de.amr.games.pacman.model.common.Ghost;
+import de.amr.games.pacman.model.common.Pac;
+import de.amr.games.pacman.model.mspacman.Flap;
 
 /**
  * Intermission scene 1: "They meet".
@@ -35,10 +41,20 @@ import de.amr.games.pacman.lib.Fsm;
  * 
  * @author Armin Reichert
  */
-public class Intermission1Controller extends Fsm<Intermission1State, Intermission1Context> {
+public class Intermission1Controller extends Fsm<Intermission1State, Intermission1Controller.Context> {
+
+	public static class Context {
+		public final int upperY = t(12), middleY = t(18), lowerY = t(24);
+		public Runnable playIntermissionSound = Fsm::nop;
+		public Runnable playFlapAnimation = Fsm::nop;
+		public Flap flap;
+		public Pac pacMan, msPac;
+		public Ghost pinky, inky;
+		public GameEntity heart;
+	}
 
 	public final GameController gameController;
-	public final Intermission1Context context = new Intermission1Context();
+	public final Context context = new Context();
 
 	public Intermission1Controller(GameController gameController) {
 		super(Intermission1State.values());
@@ -46,7 +62,7 @@ public class Intermission1Controller extends Fsm<Intermission1State, Intermissio
 	}
 
 	@Override
-	public Intermission1Context getContext() {
+	public Context getContext() {
 		return context;
 	}
 }

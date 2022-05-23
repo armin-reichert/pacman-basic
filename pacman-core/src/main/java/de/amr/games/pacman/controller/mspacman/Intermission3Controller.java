@@ -23,8 +23,15 @@ SOFTWARE.
  */
 package de.amr.games.pacman.controller.mspacman;
 
+import static de.amr.games.pacman.model.common.world.World.t;
+
 import de.amr.games.pacman.controller.common.GameController;
+import de.amr.games.pacman.controller.mspacman.Intermission3Controller.Context;
 import de.amr.games.pacman.lib.Fsm;
+import de.amr.games.pacman.model.common.GameEntity;
+import de.amr.games.pacman.model.common.Pac;
+import de.amr.games.pacman.model.mspacman.Flap;
+import de.amr.games.pacman.model.mspacman.JuniorBag;
 
 /**
  * Intermission scene 3: "Junior".
@@ -36,10 +43,22 @@ import de.amr.games.pacman.lib.Fsm;
  * 
  * @author Armin Reichert
  */
-public class Intermission3Controller extends Fsm<Intermission3State, Intermission3Context> {
+public class Intermission3Controller extends Fsm<Intermission3State, Context> {
+
+	public static class Context {
+		public final int groundY = t(24);
+		public Runnable playIntermissionSound = Fsm::nop;
+		public Runnable playFlapAnimation = Fsm::nop;
+		public Flap flap;
+		public Pac pacMan;
+		public Pac msPacMan;
+		public GameEntity stork;
+		public JuniorBag bag;
+		public int numBagBounces;
+	}
 
 	public final GameController gameController;
-	public final Intermission3Context context = new Intermission3Context();
+	public final Context context = new Context();
 
 	public Intermission3Controller(GameController gameController) {
 		super(Intermission3State.values());
@@ -47,7 +66,7 @@ public class Intermission3Controller extends Fsm<Intermission3State, Intermissio
 	}
 
 	@Override
-	public Intermission3Context getContext() {
+	public Context getContext() {
 		return context;
 	}
 }

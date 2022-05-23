@@ -26,6 +26,7 @@ package de.amr.games.pacman.controller.mspacman;
 
 import static de.amr.games.pacman.model.common.world.World.t;
 
+import de.amr.games.pacman.controller.mspacman.Intermission3Controller.Context;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.Fsm;
 import de.amr.games.pacman.lib.FsmState;
@@ -39,11 +40,11 @@ import de.amr.games.pacman.model.mspacman.JuniorBag;
 /**
  * @author Armin Reichert
  */
-public enum Intermission3State implements FsmState<Intermission3Context> {
+public enum Intermission3State implements FsmState<Context> {
 
 	FLAP {
 		@Override
-		public void onEnter(Intermission3Context $) {
+		public void onEnter(Context $) {
 			$.flap = new Flap();
 			$.pacMan = new Pac("Pac-Man");
 			$.msPacMan = new Pac("Ms. Pac-Man");
@@ -60,7 +61,7 @@ public enum Intermission3State implements FsmState<Intermission3Context> {
 		}
 
 		@Override
-		public void onUpdate(Intermission3Context $) {
+		public void onUpdate(Context $) {
 			if (timer.atSecond(1)) {
 				$.playFlapAnimation.run();
 			} else if (timer.atSecond(2)) {
@@ -71,7 +72,7 @@ public enum Intermission3State implements FsmState<Intermission3Context> {
 	},
 	ACTION {
 		@Override
-		public void onEnter(Intermission3Context $) {
+		public void onEnter(Context $) {
 			timer.setDurationIndefinite().start();
 
 			$.pacMan.setMoveDir(Direction.RIGHT);
@@ -95,7 +96,7 @@ public enum Intermission3State implements FsmState<Intermission3Context> {
 		}
 
 		@Override
-		public void onUpdate(Intermission3Context $) {
+		public void onUpdate(Context $) {
 			$.stork.move();
 			$.bag.move();
 
@@ -122,12 +123,12 @@ public enum Intermission3State implements FsmState<Intermission3Context> {
 
 	DONE {
 		@Override
-		public void onEnter(Intermission3Context $) {
+		public void onEnter(Context $) {
 			timer.setDurationSeconds(3).start();
 		}
 
 		@Override
-		public void onUpdate(Intermission3Context $) {
+		public void onUpdate(Context $) {
 			$.stork.move();
 			if (timer.hasExpired()) {
 				controller.gameController.state().timer().expire();
@@ -139,7 +140,7 @@ public enum Intermission3State implements FsmState<Intermission3Context> {
 	protected final TickTimer timer = new TickTimer("Timer:" + name());
 
 	@Override
-	public void setFsm(Fsm<? extends FsmState<Intermission3Context>, Intermission3Context> fsm) {
+	public void setFsm(Fsm<? extends FsmState<Context>, Context> fsm) {
 		controller = (Intermission3Controller) fsm;
 	}
 

@@ -23,8 +23,12 @@ SOFTWARE.
  */
 package de.amr.games.pacman.controller.mspacman;
 
+import static de.amr.games.pacman.model.common.world.World.t;
+
 import de.amr.games.pacman.controller.common.GameController;
 import de.amr.games.pacman.lib.Fsm;
+import de.amr.games.pacman.model.common.Pac;
+import de.amr.games.pacman.model.mspacman.Flap;
 
 /**
  * Intermission scene 2: "The chase".
@@ -34,10 +38,18 @@ import de.amr.games.pacman.lib.Fsm;
  * 
  * @author Armin Reichert
  */
-public class Intermission2Controller extends Fsm<Intermission2State, Intermission2Context> {
+public class Intermission2Controller extends Fsm<Intermission2State, Intermission2Controller.Context> {
+
+	public static class Context {
+		public final int upperY = t(12), middleY = t(18), lowerY = t(24);
+		public Runnable playIntermissionSound = Fsm::nop;
+		public Runnable playFlapAnimation = Fsm::nop;
+		public Flap flap;
+		public Pac pacMan, msPacMan;
+	}
 
 	public final GameController gameController;
-	public final Intermission2Context context = new Intermission2Context();
+	public final Context context = new Context();
 
 	public Intermission2Controller(GameController gameController) {
 		super(Intermission2State.values());
@@ -45,7 +57,7 @@ public class Intermission2Controller extends Fsm<Intermission2State, Intermissio
 	}
 
 	@Override
-	public Intermission2Context getContext() {
+	public Context getContext() {
 		return context;
 	}
 }
