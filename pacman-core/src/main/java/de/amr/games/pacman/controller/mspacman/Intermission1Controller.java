@@ -26,8 +26,15 @@ package de.amr.games.pacman.controller.mspacman;
 import static de.amr.games.pacman.model.common.world.World.t;
 
 import de.amr.games.pacman.controller.common.GameController;
+import de.amr.games.pacman.controller.mspacman.Intermission1Controller.Context;
+import de.amr.games.pacman.controller.mspacman.Intermission1Controller.State;
+import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.Fsm;
+import de.amr.games.pacman.lib.FsmState;
+import de.amr.games.pacman.lib.TickTimer;
+import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.model.common.GameEntity;
+import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.mspacman.Flap;
@@ -41,7 +48,7 @@ import de.amr.games.pacman.model.mspacman.Flap;
  * 
  * @author Armin Reichert
  */
-public class Intermission1Controller extends Fsm<Intermission1State, Intermission1Controller.Context> {
+public class Intermission1Controller extends Fsm<State, Context> {
 
 	public static class Context {
 		public final int upperY = t(12), middleY = t(18), lowerY = t(24);
@@ -53,11 +60,184 @@ public class Intermission1Controller extends Fsm<Intermission1State, Intermissio
 		public GameEntity heart;
 	}
 
+	public enum State implements FsmState<Context> {
+
+		FLAP {
+			@Override
+			public void onEnter(Context $) {
+				timer.setDurationSeconds(2).start();
+				$.playIntermissionSound.run();
+
+				$.flap = new Flap();
+				$.flap.number = 1;
+				$.flap.text = "THEY MEET";
+				$.flap.setPosition(t(3), t(10));
+				$.flap.show();
+
+				$.pacMan = new Pac("Pac-Man");
+				$.pacMan.setMoveDir(Direction.RIGHT);
+				$.pacMan.setPosition(-t(2), $.upperY);
+				$.pacMan.show();
+
+				$.inky = new Ghost(GameModel.CYAN_GHOST, "Inky");
+				$.inky.setMoveDir(Direction.RIGHT);
+				$.inky.setWishDir(Direction.RIGHT);
+				$.inky.position = $.pacMan.position.minus(t(6), 0);
+				$.inky.show();
+
+				$.msPac = new Pac("Ms. Pac-Man");
+				$.msPac.setMoveDir(Direction.LEFT);
+				$.msPac.setPosition(t(30), $.lowerY);
+				$.msPac.show();
+
+				$.pinky = new Ghost(GameModel.PINK_GHOST, "Pinky");
+				$.pinky.setMoveDir(Direction.LEFT);
+				$.pinky.setWishDir(Direction.LEFT);
+				$.pinky.position = $.msPac.position.plus(t(6), 0);
+				$.pinky.show();
+
+				$.heart = new GameEntity();
+			}
+
+			@Override
+			public void onUpdate(Context $) {
+				if (timer.atSecond(1)) {
+					$.playFlapAnimation.run();
+				}
+				if (timer.hasExpired()) {
+					controller.changeState(State.CHASED_BY_GHOSTS);
+				}
+			}
+		},
+
+		CHASED_BY_GHOSTS {
+			@Override
+			public void onEnter(Context $) {
+				$.flap.hide();
+				$.pacMan.setSpeed(0.9);
+				$.msPac.setSpeed(0.9);
+				$.inky.setSpeed(1);
+				$.pinky.setSpeed(1);
+			}
+
+			@Override
+			public void onUpdate(Context $) {
+				if ($.inky.position.x > t(30)) {
+					controller.changeState(State.COMING_TOGETHER);
+					return;
+				}
+				$.inky.move();
+				$.pacMan.move();
+				$.pinky.move();
+				$.msPac.move();
+			}
+		},
+
+		COMING_TOGETHER {
+			@Override
+			public void onEnter(Context $) {
+				$.msPac.setPosition(t(-3), $.middleY);
+				$.msPac.setMoveDir(Direction.RIGHT);
+
+				$.pinky.position = $.msPac.position.minus(t(5), 0);
+				$.pinky.setMoveDir(Direction.RIGHT);
+				$.pinky.setWishDir(Direction.RIGHT);
+
+				$.pacMan.setPosition(t(31), $.middleY);
+				$.pacMan.setMoveDir(Direction.LEFT);
+
+				$.inky.position = $.pacMan.position.plus(t(5), 0);
+				$.inky.setMoveDir(Direction.LEFT);
+				$.inky.setWishDir(Direction.LEFT);
+			}
+
+			@Override
+			public void onUpdate(Context $) {
+				// Pac-Man and Ms. Pac-Man reach end position?
+				if ($.pacMan.moveDir() == Direction.UP && $.pacMan.position.y < $.upperY) {
+					controller.changeState(State.IN_HEAVEN);
+					return;
+				}
+				// Pac-Man and Ms. Pac-Man meet?
+				else if ($.pacMan.moveDir() == Direction.LEFT && $.pacMan.position.x - $.msPac.position.x < t(2)) {
+					$.pacMan.setMoveDir(Direction.UP);
+					$.pacMan.setSpeed(0.75);
+					$.msPac.setMoveDir(Direction.UP);
+					$.msPac.setSpeed(0.75);
+				}
+				// Inky and Pinky collide?
+				else if ($.inky.moveDir() == Direction.LEFT && $.inky.position.x - $.pinky.position.x < t(2)) {
+					$.inky.setMoveDir(Direction.RIGHT);
+					$.inky.setWishDir(Direction.RIGHT);
+					$.inky.setSpeed(0.3);
+					$.inky.velocity = $.inky.velocity.minus(0, 2.0);
+					$.inky.acceleration = new V2d(0, 0.4);
+
+					$.pinky.setMoveDir(Direction.LEFT);
+					$.pinky.setWishDir(Direction.LEFT);
+					$.pinky.setSpeed(0.3);
+					$.pinky.velocity = $.pinky.velocity.minus(0, 2.0);
+					$.pinky.acceleration = new V2d(0, 0.4);
+				} else {
+					$.pacMan.move();
+					$.msPac.move();
+					$.inky.move();
+					if ($.inky.position.y > $.middleY) {
+						$.inky.setPosition($.inky.position.x, $.middleY);
+						$.inky.acceleration = V2d.NULL;
+					}
+					$.pinky.move();
+					if ($.pinky.position.y > $.middleY) {
+						$.pinky.setPosition($.pinky.position.x, $.middleY);
+						$.pinky.acceleration = V2d.NULL;
+					}
+				}
+			}
+		},
+
+		IN_HEAVEN {
+			@Override
+			public void onEnter(Context $) {
+				timer.setDurationSeconds(3).start();
+				$.pacMan.setSpeed(0);
+				$.pacMan.setMoveDir(Direction.LEFT);
+				$.msPac.setSpeed(0);
+				$.msPac.setMoveDir(Direction.RIGHT);
+				$.inky.setSpeed(0);
+				$.inky.hide();
+				$.pinky.setSpeed(0);
+				$.pinky.hide();
+				$.heart.setPosition(($.pacMan.position.x + $.msPac.position.x) / 2, $.pacMan.position.y - t(2));
+				$.heart.show();
+			}
+
+			@Override
+			public void onUpdate(Context $) {
+				if (timer.hasExpired()) {
+					controller.gameController.state().timer().expire();
+				}
+			}
+		};
+
+		protected Intermission1Controller controller;
+		protected final TickTimer timer = new TickTimer("Timer:" + name());
+
+		@Override
+		public void setFsm(Fsm<? extends FsmState<Context>, Context> fsm) {
+			controller = (Intermission1Controller) fsm;
+		}
+
+		@Override
+		public TickTimer timer() {
+			return timer;
+		}
+	}
+
 	public final GameController gameController;
 	public final Context context = new Context();
 
 	public Intermission1Controller(GameController gameController) {
-		super(Intermission1State.values());
+		super(State.values());
 		this.gameController = gameController;
 	}
 
