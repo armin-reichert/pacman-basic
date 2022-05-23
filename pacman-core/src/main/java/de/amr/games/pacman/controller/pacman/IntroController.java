@@ -75,11 +75,6 @@ public class IntroController extends Fsm<State, Context> {
 		reset(State.BEGIN);
 	}
 
-	public void selectGhost(int index) {
-		context.ghostIndex = index;
-		context.pictureVisible[index] = true;
-	}
-
 	public static class Context {
 
 		public final TimedSeq<Boolean> fastBlinking = TimedSeq.pulse().frameDuration(10);
@@ -117,7 +112,8 @@ public class IntroController extends Fsm<State, Context> {
 			@Override
 			public void onUpdate(Context $) {
 				if (timer.atSecond(1)) {
-					controller.selectGhost(0);
+					$.ghostIndex = 0;
+					$.pictureVisible[0] = true;
 					controller.changeState(State.PRESENTING_GHOSTS);
 				}
 			}
@@ -132,7 +128,8 @@ public class IntroController extends Fsm<State, Context> {
 					$.nicknameVisible[$.ghostIndex] = true;
 				} else if (timer.atSecond(2.0)) {
 					if ($.ghostIndex < 3) {
-						controller.selectGhost($.ghostIndex + 1);
+						$.ghostIndex++;
+						$.pictureVisible[$.ghostIndex] = true;
 						timer.setDurationIndefinite().start();
 					}
 				} else if (timer.atSecond(2.75)) {
