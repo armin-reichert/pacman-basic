@@ -46,7 +46,7 @@ public enum Intermission3State implements FsmState<Intermission3Context> {
 			context.stork = new GameEntity();
 			context.bag = new JuniorBag();
 
-			timer.setSecond(2).start();
+			timer.setDurationSeconds(2).start();
 			context.playIntermissionSound.run();
 
 			context.flap.number = 3;
@@ -119,7 +119,7 @@ public enum Intermission3State implements FsmState<Intermission3Context> {
 	DONE {
 		@Override
 		public void onEnter(Intermission3Context context) {
-			timer.setSecond(3).start();
+			timer.setDurationSeconds(3).start();
 		}
 
 		@Override

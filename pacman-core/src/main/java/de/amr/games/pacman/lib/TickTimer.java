@@ -65,6 +65,10 @@ public class TickTimer {
 		return Math.round(sec * TICKS_PER_SEC);
 	}
 
+	private static String ticksAsString(long ticks) {
+		return ticks == INDEFINITE ? "indefinite" : ticks + "";
+	}
+
 	private final String name;
 	private TickTimerState state;
 	private long duration;
@@ -81,10 +85,6 @@ public class TickTimer {
 		return "[%s: %s t:%d remaining:%s]".formatted(name, state, ticksAsString(tick), ticksAsString(remaining()));
 	}
 
-	private String ticksAsString(long ticks) {
-		return ticks == INDEFINITE ? "indefinite" : ticks + "";
-	}
-
 	public TickTimerState state() {
 		return state;
 	}
@@ -96,27 +96,27 @@ public class TickTimer {
 	/**
 	 * Sets timer to given duration and resets timer state to {@link TickTimerState#READY}.
 	 * 
-	 * @param duration timer duration in ticks
+	 * @param ticks timer duration in ticks
 	 * @return itself
 	 */
-	public TickTimer set(long duration) {
-		this.duration = duration;
+	public TickTimer setDurationTicks(long ticks) {
+		duration = ticks;
 		tick = 0;
 		state = READY;
 		trace("%s set", this);
-		fireEvent(new TickTimerEvent(Type.RESET, duration));
+		fireEvent(new TickTimerEvent(Type.RESET, ticks));
 		return this;
+	}
+
+	public TickTimer setDurationSeconds(double seconds) {
+		return setDurationTicks(sec_to_ticks(seconds));
 	}
 
 	/**
 	 * Reset the time to run {@link #INDEFINITE}.
 	 */
 	public TickTimer setIndefinite() {
-		return set(INDEFINITE);
-	}
-
-	public TickTimer setSecond(double second) {
-		return set(sec_to_ticks(second));
+		return setDurationTicks(INDEFINITE);
 	}
 
 	public void addEventListener(Consumer<TickTimerEvent> subscriber) {
@@ -212,11 +212,11 @@ public class TickTimer {
 		return tick;
 	}
 
-	public long remaining() {
-		return duration == INDEFINITE ? INDEFINITE : duration - tick;
+	public boolean atSecond(double seconds) {
+		return tick == sec_to_ticks(seconds);
 	}
 
-	public boolean atSecond(double seconds) {
-		return tick == (long) (seconds * 60);
+	public long remaining() {
+		return duration == INDEFINITE ? INDEFINITE : duration - tick;
 	}
 }

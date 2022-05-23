@@ -39,7 +39,7 @@ public enum Intermission1State implements FsmState<Intermission1Context> {
 	CHASING_PACMAN {
 		@Override
 		public void onEnter(Intermission1Context context) {
-			timer.setSecond(5).start();
+			timer.setDurationSeconds(5).start();
 			context.playIntermissionSound.run();
 
 			context.pac = new Pac("Pac-Man");
@@ -74,7 +74,7 @@ public enum Intermission1State implements FsmState<Intermission1Context> {
 	CHASING_BLINKY {
 		@Override
 		public void onEnter(Intermission1Context context) {
-			timer.setSecond(7).start();
+			timer.setDurationSeconds(7).start();
 			context.pac.setMoveDir(Direction.RIGHT);
 			context.pac.setPosition(-t(24), t(20));
 			context.pac.setSpeed(1.0);

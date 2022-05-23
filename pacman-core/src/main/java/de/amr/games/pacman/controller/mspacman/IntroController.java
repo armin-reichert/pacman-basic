@@ -54,7 +54,7 @@ public class IntroController extends FiniteStateMachine<IntroState, IntroContext
 	public void init() {
 		// TODO fixme
 		for (var state : IntroState.values()) {
-			state.timer.set(0);
+			state.timer.setDurationTicks(0);
 		}
 		enterAsInitialState(IntroState.BEGIN);
 	}

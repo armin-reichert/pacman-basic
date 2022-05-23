@@ -610,7 +610,7 @@ public abstract class GameModel {
 				ghost.state = FRIGHTENED;
 				ghost.forceTurningBack();
 			});
-			player.powerTimer.setSecond(ghostFrightenedSeconds).start();
+			player.powerTimer.setDurationSeconds(ghostFrightenedSeconds).start();
 			log("%s got power, timer=%s", player.name, player.powerTimer);
 		}
 		checkElroy();

@@ -68,7 +68,7 @@ public enum GameState implements FsmState<GameModel> {
 	READY {
 		@Override
 		public void onEnter(GameModel game) {
-			timer.setSecond(game.running || game.attractMode ? 2 : 5).start();
+			timer.setDurationSeconds(game.running || game.attractMode ? 2 : 5).start();
 			game.resetGuys();
 		}
 
@@ -141,7 +141,7 @@ public enum GameState implements FsmState<GameModel> {
 
 		private void restartHuntingTimer(GameModel game, int phase) {
 			long phaseDuration = game.huntingPhaseDurations[phase];
-			timer.set(phaseDuration).start();
+			timer.setDurationTicks(phaseDuration).start();
 			log("%s timer set to %d ticks", this, phaseDuration);
 		}
 
@@ -222,7 +222,7 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void onEnter(GameModel game) {
 			game.player.hide();
-			timer.setSecond(1).start();
+			timer.setDurationSeconds(1).start();
 		}
 
 		@Override
@@ -254,7 +254,7 @@ public enum GameState implements FsmState<GameModel> {
 			game.ghosts().forEach(ghost -> ghost.setSpeed(0));
 			game.player.setSpeed(0);
 			new Hiscore(game).save();
-			timer.setSecond(5).start();
+			timer.setDurationSeconds(5).start();
 		}
 
 		@Override
