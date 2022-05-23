@@ -50,16 +50,7 @@ public class IntroController extends Fsm<IntroState, IntroContext> {
 	}
 
 	public void init() {
-		// TODO fixme
-		for (var state : IntroState.values()) {
-			state.timer.setDurationTicks(0);
-		}
+		resetTimers();
 		enterAsInitialState(IntroState.BEGIN);
-	}
-
-	@Override
-	public void updateState() {
-		super.updateState();
-		context.boardAnimationTimer.run();
 	}
 }

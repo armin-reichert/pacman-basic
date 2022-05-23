@@ -24,13 +24,16 @@ SOFTWARE.
 
 package de.amr.games.pacman.controller.mspacman;
 
+import static de.amr.games.pacman.model.common.GameModel.CYAN_GHOST;
+import static de.amr.games.pacman.model.common.GameModel.ORANGE_GHOST;
+import static de.amr.games.pacman.model.common.GameModel.PINK_GHOST;
+import static de.amr.games.pacman.model.common.GameModel.RED_GHOST;
 import static de.amr.games.pacman.model.common.world.World.HTS;
 import static de.amr.games.pacman.model.common.world.World.TS;
 
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.TimedSeq;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
 
@@ -38,17 +41,17 @@ import de.amr.games.pacman.model.common.Pac;
  * @author Armin Reichert
  */
 public class IntroContext {
-	public final V2i boardTopLeft = new V2i(7, 11).scaled(TS);
+	public final V2i lightsTopLeft = new V2i(7, 11).scaled(TS);
 	public final V2i titlePosition = new V2i(9, 8).scaled(TS);
 	public final V2i turningPoint = new V2i(5, 20).scaled(TS).plus(0, HTS);
 	public final TimedSeq<Boolean> blinking = TimedSeq.pulse().frameDuration(30).restart();
-	public final TickTimer boardAnimationTimer = new TickTimer("boardAnimation-timer");
+	public final TickTimer lightsTimer = new TickTimer("lights-timer");
 	public final Pac msPacMan = new Pac("Ms. Pac-Man");
 	public final Ghost[] ghosts = new Ghost[] { //
-			new Ghost(GameModel.RED_GHOST, "Blinky"), //
-			new Ghost(GameModel.PINK_GHOST, "Pinky"), //
-			new Ghost(GameModel.CYAN_GHOST, "Inky"), //
-			new Ghost(GameModel.ORANGE_GHOST, "Sue") //
+			new Ghost(RED_GHOST, "Blinky"), //
+			new Ghost(PINK_GHOST, "Pinky"), //
+			new Ghost(CYAN_GHOST, "Inky"), //
+			new Ghost(ORANGE_GHOST, "Sue") //
 	};
 	public int ghostIndex;
 }

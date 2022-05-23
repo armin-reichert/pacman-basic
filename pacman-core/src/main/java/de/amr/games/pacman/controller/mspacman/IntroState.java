@@ -39,7 +39,7 @@ public enum IntroState implements FsmState<IntroContext> {
 	BEGIN {
 		@Override
 		public void onEnter(IntroContext context) {
-			context.boardAnimationTimer.setIndefinite().start();
+			context.lightsTimer.setIndefinite().start();
 			context.msPacMan.setMoveDir(LEFT);
 			context.msPacMan.setPosition(t(36), context.turningPoint.y);
 			context.msPacMan.setSpeed(0.95);
@@ -57,6 +57,7 @@ public enum IntroState implements FsmState<IntroContext> {
 
 		@Override
 		public void onUpdate(IntroContext context) {
+			context.lightsTimer.run();
 			if (timer.atSecond(1)) {
 				controller.changeState(IntroState.GHOSTS);
 			}
@@ -66,13 +67,14 @@ public enum IntroState implements FsmState<IntroContext> {
 	GHOSTS {
 		@Override
 		public void onUpdate(IntroContext context) {
+			context.lightsTimer.run();
 			Ghost ghost = context.ghosts[context.ghostIndex];
 			ghost.move();
 			if (ghost.moveDir() != UP && ghost.position.x <= context.turningPoint.x) {
 				ghost.setMoveDir(UP);
 				ghost.setWishDir(UP);
 			}
-			if (ghost.position.y <= context.boardTopLeft.y + ghost.id * 18) {
+			if (ghost.position.y <= context.lightsTopLeft.y + ghost.id * 18) {
 				ghost.setSpeed(0);
 				if (++context.ghostIndex == context.ghosts.length) {
 					controller.changeState(IntroState.MSPACMAN);
@@ -84,6 +86,7 @@ public enum IntroState implements FsmState<IntroContext> {
 	MSPACMAN {
 		@Override
 		public void onUpdate(IntroContext context) {
+			context.lightsTimer.run();
 			context.msPacMan.move();
 			if (context.msPacMan.position.x <= t(14)) {
 				context.msPacMan.setSpeed(0);
@@ -95,6 +98,7 @@ public enum IntroState implements FsmState<IntroContext> {
 	READY {
 		@Override
 		public void onUpdate(IntroContext context) {
+			context.lightsTimer.run();
 			context.blinking.advance();
 			if (timer.atSecond(5)) {
 				controller.gameController.state().timer().expire();
@@ -114,5 +118,4 @@ public enum IntroState implements FsmState<IntroContext> {
 	public TickTimer timer() {
 		return timer;
 	}
-
 }
