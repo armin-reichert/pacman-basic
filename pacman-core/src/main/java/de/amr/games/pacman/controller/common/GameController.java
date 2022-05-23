@@ -64,9 +64,6 @@ import de.amr.games.pacman.model.pacman.PacManGame;
  */
 public class GameController extends Fsm<GameState, GameModel> {
 
-	public boolean playerImmune;
-	public boolean playerAutomove;
-
 	public final Map<GameVariant, GameModel> games = Map.of( //
 			GameVariant.MS_PACMAN, new MsPacManGame(), //
 			GameVariant.PACMAN, new PacManGame());
@@ -92,7 +89,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 	}
 
 	PlayerControl currentPlayerControl() {
-		return playerAutomove || game().attractMode ? autopilot : playerControl;
+		return game().player.autoMoving || game().attractMode ? autopilot : playerControl;
 	}
 
 	public GameVariant gameVariant() {
