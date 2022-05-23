@@ -50,7 +50,7 @@ public enum GameState implements FsmState<GameModel> {
 	INTRO {
 		@Override
 		public void onEnter(GameModel game) {
-			timer.setIndefinite().start();
+			timer.setDurationIndefinite().start();
 			game.reset();
 			game.requested = false;
 			game.running = false;
@@ -166,7 +166,7 @@ public enum GameState implements FsmState<GameModel> {
 			game.bonus.init();
 			game.player.setSpeed(0);
 			game.hideGhosts();
-			timer.setIndefinite().start();
+			timer.setDurationIndefinite().start();
 		}
 
 		@Override
@@ -188,7 +188,7 @@ public enum GameState implements FsmState<GameModel> {
 		public void onEnter(GameModel game) {
 			game.setLevel(game.levelNumber + 1);
 			game.resetGuys();
-			timer.setIndefinite().start();
+			timer.setDurationIndefinite().start();
 		}
 
 		@Override
@@ -206,7 +206,7 @@ public enum GameState implements FsmState<GameModel> {
 			game.player.setSpeed(0);
 			game.ghosts(FRIGHTENED).forEach(ghost -> ghost.state = HUNTING_PAC);
 			game.bonus.init();
-			timer.setIndefinite().start();
+			timer.setDurationIndefinite().start();
 		}
 
 		@Override
@@ -268,7 +268,7 @@ public enum GameState implements FsmState<GameModel> {
 	INTERMISSION {
 		@Override
 		public void onEnter(GameModel game) {
-			timer.setIndefinite().start(); // UI triggers state timeout
+			timer.setDurationIndefinite().start(); // UI triggers state timeout
 		}
 
 		@Override
@@ -282,7 +282,7 @@ public enum GameState implements FsmState<GameModel> {
 	INTERMISSION_TEST {
 		@Override
 		public void onEnter(GameModel game) {
-			timer.setIndefinite().start();
+			timer.setDurationIndefinite().start();
 			log("Test intermission scene #%d", game.intermissionTestNumber);
 		}
 
@@ -291,7 +291,7 @@ public enum GameState implements FsmState<GameModel> {
 			if (timer.hasExpired()) {
 				if (game.intermissionTestNumber < 3) {
 					++game.intermissionTestNumber;
-					timer.setIndefinite().start();
+					timer.setDurationIndefinite().start();
 					log("Test intermission scene #%d", game.intermissionTestNumber);
 					// This is a hack to trigger the UI to update its current scene
 					game.publishEvent(new GameStateChangeEvent(game, this, this));

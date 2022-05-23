@@ -76,7 +76,7 @@ public abstract class Fsm<STATE extends FsmState<CONTEXT>, CONTEXT> {
 
 	public void resetTimers() {
 		for (var state : states) {
-			state.timer().setIndefinite();
+			state.timer().setDurationIndefinite();
 		}
 	}
 

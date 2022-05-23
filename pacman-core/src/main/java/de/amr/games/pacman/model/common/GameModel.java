@@ -266,7 +266,7 @@ public abstract class GameModel {
 		player.killed = false;
 		player.restingTicksLeft = 0;
 		player.starvingTicks = 0;
-		player.powerTimer.setIndefinite();
+		player.powerTimer.setDurationIndefinite();
 
 		for (Ghost ghost : ghosts) {
 			ghost.placeAt(ghost.homeTile, HTS, 0);
@@ -447,7 +447,7 @@ public abstract class GameModel {
 			lostPower = true;
 			log("%s lost power, timer=%s", player.name, player.powerTimer);
 			ghosts(FRIGHTENED).forEach(ghost -> ghost.state = HUNTING_PAC);
-			player.powerTimer.setIndefinite(); // TODO needed?
+			player.powerTimer.setDurationIndefinite(); // TODO needed?
 			publishEvent(Info.PLAYER_LOST_POWER, player.tile());
 		}
 		default -> {

@@ -25,6 +25,10 @@ SOFTWARE.
 package de.amr.games.pacman.controller.pacman;
 
 import static de.amr.games.pacman.lib.TickTimer.sec_to_ticks;
+import static de.amr.games.pacman.model.common.GameModel.CYAN_GHOST;
+import static de.amr.games.pacman.model.common.GameModel.ORANGE_GHOST;
+import static de.amr.games.pacman.model.common.GameModel.PINK_GHOST;
+import static de.amr.games.pacman.model.common.GameModel.RED_GHOST;
 import static de.amr.games.pacman.model.common.world.World.t;
 
 import java.util.List;
@@ -36,7 +40,6 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.Fsm;
 import de.amr.games.pacman.lib.FsmState;
 import de.amr.games.pacman.lib.TickTimer;
-import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.GhostState;
 import de.amr.games.pacman.model.common.Pac;
@@ -44,24 +47,22 @@ import de.amr.games.pacman.model.common.Pac;
 public enum IntroState implements FsmState<IntroContext> {
 
 	BEGIN {
-
 		@Override
 		public void onEnter(IntroContext context) {
 			context.portraits = new GhostPortrait[] { //
-					new GhostPortrait(GameModel.RED_GHOST, "Blinky", "SHADOW", 7), //
-					new GhostPortrait(GameModel.PINK_GHOST, "Pinky", "SPEEDY", 10), //
-					new GhostPortrait(GameModel.CYAN_GHOST, "Inky", "BASHFUL", 13), //
-					new GhostPortrait(GameModel.ORANGE_GHOST, "Clyde", "POKEY", 16), //
+					new GhostPortrait(RED_GHOST, "Blinky", "SHADOW", 7), //
+					new GhostPortrait(PINK_GHOST, "Pinky", "SPEEDY", 10), //
+					new GhostPortrait(CYAN_GHOST, "Inky", "BASHFUL", 13), //
+					new GhostPortrait(ORANGE_GHOST, "Clyde", "POKEY", 16), //
 			};
 			context.pacMan = new Pac("Pac-Man");
 			context.ghosts = new Ghost[] { //
-					new Ghost(GameModel.RED_GHOST, "Blinky"), //
-					new Ghost(GameModel.PINK_GHOST, "Pinky"), //
-					new Ghost(GameModel.CYAN_GHOST, "Inky"), //
-					new Ghost(GameModel.ORANGE_GHOST, "Clyde"), //
+					new Ghost(RED_GHOST, "Blinky"), //
+					new Ghost(PINK_GHOST, "Pinky"), //
+					new Ghost(CYAN_GHOST, "Inky"), //
+					new Ghost(ORANGE_GHOST, "Clyde"), //
 			};
-
-		};
+		}
 
 		@Override
 		public void onUpdate(IntroContext context) {
@@ -82,7 +83,7 @@ public enum IntroState implements FsmState<IntroContext> {
 			} else if (timer.atSecond(2.0)) {
 				if (context.ghostIndex < 3) {
 					context.selectGhost(context.ghostIndex + 1);
-					timer.setIndefinite().start();
+					timer.setDurationIndefinite().start();
 				}
 			} else if (timer.atSecond(2.75)) {
 				context.fastBlinking.restart();
@@ -104,7 +105,7 @@ public enum IntroState implements FsmState<IntroContext> {
 	CHASING_PAC {
 		@Override
 		public void onEnter(IntroContext context) {
-			timer.setIndefinite().start();
+			timer.setDurationIndefinite().start();
 			context.pacMan.show();
 			context.pacMan.setSpeed(1);
 			context.pacMan.setPosition(t(28), t(20));
@@ -136,7 +137,7 @@ public enum IntroState implements FsmState<IntroContext> {
 	CHASING_GHOSTS {
 		@Override
 		public void onEnter(IntroContext context) {
-			timer.setIndefinite().start();
+			timer.setDurationIndefinite().start();
 			for (Ghost ghost : context.ghosts) {
 				ghost.state = GhostState.FRIGHTENED;
 				ghost.setWishDir(Direction.RIGHT);

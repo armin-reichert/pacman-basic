@@ -39,7 +39,7 @@ public enum IntroState implements FsmState<IntroContext> {
 	BEGIN {
 		@Override
 		public void onEnter(IntroContext context) {
-			context.lightsTimer.setIndefinite().start();
+			context.lightsTimer.setDurationIndefinite().start();
 			context.msPacMan.setMoveDir(LEFT);
 			context.msPacMan.setPosition(t(36), context.turningPoint.y);
 			context.msPacMan.setSpeed(0.95);

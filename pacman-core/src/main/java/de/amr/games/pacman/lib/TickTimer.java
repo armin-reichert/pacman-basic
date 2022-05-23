@@ -77,7 +77,7 @@ public class TickTimer {
 
 	public TickTimer(String name) {
 		this.name = name;
-		setIndefinite();
+		setDurationIndefinite();
 	}
 
 	@Override
@@ -115,7 +115,7 @@ public class TickTimer {
 	/**
 	 * Reset the time to run {@link #INDEFINITE}.
 	 */
-	public TickTimer setIndefinite() {
+	public TickTimer setDurationIndefinite() {
 		return setDurationTicks(INDEFINITE);
 	}
 

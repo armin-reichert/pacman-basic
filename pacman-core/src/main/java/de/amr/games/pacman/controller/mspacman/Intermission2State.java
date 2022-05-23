@@ -38,7 +38,7 @@ public enum Intermission2State implements FsmState<Intermission2Context> {
 	FLAP {
 		@Override
 		public void onEnter(Intermission2Context context) {
-			timer.setIndefinite().start();
+			timer.setDurationIndefinite().start();
 			context.playIntermissionSound.run();
 			context.flap = new Flap();
 			context.flap.number = 2;
@@ -66,7 +66,7 @@ public enum Intermission2State implements FsmState<Intermission2Context> {
 	CHASING {
 		@Override
 		public void onEnter(Intermission2Context context) {
-			timer.setIndefinite().start();
+			timer.setDurationIndefinite().start();
 		}
 
 		@Override

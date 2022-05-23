@@ -40,7 +40,7 @@ public enum Intermission3State implements FsmState<Intermission3Context> {
 	CHASING {
 		@Override
 		public void onEnter(Intermission3Context context) {
-			timer.setIndefinite().start();
+			timer.setDurationIndefinite().start();
 			context.playIntermissionSound.run();
 
 			context.pac = new Pac("Pac-Man");

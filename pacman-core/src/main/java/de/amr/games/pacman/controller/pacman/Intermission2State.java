@@ -41,7 +41,7 @@ public enum Intermission2State implements FsmState<Intermission2Context> {
 	CHASING {
 		@Override
 		public void onEnter(Intermission2Context context) {
-			timer.setIndefinite().start();
+			timer.setDurationIndefinite().start();
 
 			context.playIntermissionSound.run();
 

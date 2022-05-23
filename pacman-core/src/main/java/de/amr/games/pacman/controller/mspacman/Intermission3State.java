@@ -69,7 +69,7 @@ public enum Intermission3State implements FsmState<Intermission3Context> {
 	ACTION {
 		@Override
 		public void onEnter(Intermission3Context context) {
-			timer.setIndefinite().start();
+			timer.setDurationIndefinite().start();
 
 			context.pacMan.setMoveDir(Direction.RIGHT);
 			context.pacMan.setPosition(t(3), context.groundY - 4);
