@@ -70,11 +70,6 @@ public class IntroController extends Fsm<State, Context> {
 		return context;
 	}
 
-	public void init() {
-		resetTimers();
-		reset(State.BEGIN);
-	}
-
 	public static class Context {
 
 		public final TimedSeq<Boolean> fastBlinking = TimedSeq.pulse().frameDuration(10);
