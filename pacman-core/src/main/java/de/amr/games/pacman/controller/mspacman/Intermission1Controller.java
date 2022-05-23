@@ -49,8 +49,4 @@ public class Intermission1Controller extends Fsm<Intermission1State, Intermissio
 	public Intermission1Context getContext() {
 		return context;
 	}
-
-	public void init() {
-		enterAsInitialState(Intermission1State.FLAP);
-	}
 }
