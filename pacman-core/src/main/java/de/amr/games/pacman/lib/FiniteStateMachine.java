@@ -44,14 +44,23 @@ public abstract class FiniteStateMachine<STATE extends FsmState<CONTEXT>, CONTEX
 	public static void nop() {
 	}
 
+	private String name;
 	private STATE state;
 	private STATE prevState;
-	protected String name;
 
 	protected final List<BiConsumer<STATE, STATE>> stateChangeListeners = new ArrayList<>();
 
+	public FiniteStateMachine(String name) {
+		this.name = name;
+	}
+
 	public FiniteStateMachine() {
 		name = getClass().getSimpleName();
+	}
+
+	@Override
+	public String toString() {
+		return "FiniteStateMachine[%s: state=%s prev=%s]".formatted(name, state, prevState);
 	}
 
 	public abstract CONTEXT getContext();
