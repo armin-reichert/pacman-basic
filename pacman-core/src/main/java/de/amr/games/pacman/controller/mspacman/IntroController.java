@@ -23,20 +23,26 @@ SOFTWARE.
  */
 package de.amr.games.pacman.controller.mspacman;
 
+import static de.amr.games.pacman.lib.Direction.LEFT;
+import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.model.common.GameModel.CYAN_GHOST;
 import static de.amr.games.pacman.model.common.GameModel.ORANGE_GHOST;
 import static de.amr.games.pacman.model.common.GameModel.PINK_GHOST;
 import static de.amr.games.pacman.model.common.GameModel.RED_GHOST;
 import static de.amr.games.pacman.model.common.world.World.HTS;
 import static de.amr.games.pacman.model.common.world.World.TS;
+import static de.amr.games.pacman.model.common.world.World.t;
 
 import de.amr.games.pacman.controller.common.GameController;
 import de.amr.games.pacman.controller.mspacman.IntroController.Context;
+import de.amr.games.pacman.controller.mspacman.IntroController.State;
 import de.amr.games.pacman.lib.Fsm;
+import de.amr.games.pacman.lib.FsmState;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.TimedSeq;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.Ghost;
+import de.amr.games.pacman.model.common.GhostState;
 import de.amr.games.pacman.model.common.Pac;
 
 /**
@@ -46,7 +52,7 @@ import de.amr.games.pacman.model.common.Pac;
  * 
  * @author Armin Reichert
  */
-public class IntroController extends Fsm<IntroState, Context> {
+public class IntroController extends Fsm<State, Context> {
 
 	public static class Context {
 		public final V2i lightsTopLeft = new V2i(7, 11).scaled(TS);
@@ -64,11 +70,97 @@ public class IntroController extends Fsm<IntroState, Context> {
 		public int ghostIndex;
 	}
 
+	public enum State implements FsmState<Context> {
+
+		BEGIN {
+			@Override
+			public void onEnter(Context $) {
+				$.lightsTimer.setDurationIndefinite().start();
+				$.msPacMan.setMoveDir(LEFT);
+				$.msPacMan.setPosition(t(36), $.turningPoint.y);
+				$.msPacMan.setSpeed(0.95);
+				$.msPacMan.show();
+				for (Ghost ghost : $.ghosts) {
+					ghost.state = GhostState.HUNTING_PAC;
+					ghost.setMoveDir(LEFT);
+					ghost.setWishDir(LEFT);
+					ghost.setPosition(t(36), $.turningPoint.y);
+					ghost.setSpeed(0.95);
+					ghost.show();
+				}
+				$.ghostIndex = 0;
+			}
+
+			@Override
+			public void onUpdate(Context $) {
+				$.lightsTimer.run();
+				if (timer.atSecond(1)) {
+					controller.changeState(State.GHOSTS);
+				}
+			}
+		},
+
+		GHOSTS {
+			@Override
+			public void onUpdate(Context $) {
+				$.lightsTimer.run();
+				Ghost ghost = $.ghosts[$.ghostIndex];
+				ghost.move();
+				if (ghost.moveDir() != UP && ghost.position.x <= $.turningPoint.x) {
+					ghost.setMoveDir(UP);
+					ghost.setWishDir(UP);
+				}
+				if (ghost.position.y <= $.lightsTopLeft.y + ghost.id * 18) {
+					ghost.setSpeed(0);
+					if (++$.ghostIndex == $.ghosts.length) {
+						controller.changeState(State.MSPACMAN);
+					}
+				}
+			}
+		},
+
+		MSPACMAN {
+			@Override
+			public void onUpdate(Context $) {
+				$.lightsTimer.run();
+				$.msPacMan.move();
+				if ($.msPacMan.position.x <= t(14)) {
+					$.msPacMan.setSpeed(0);
+					controller.changeState(State.READY_TO_PLAY);
+				}
+			}
+		},
+
+		READY_TO_PLAY {
+			@Override
+			public void onUpdate(Context $) {
+				$.lightsTimer.run();
+				$.blinking.advance();
+				if (timer.atSecond(5)) {
+					controller.gameController.state().timer().expire();
+				}
+			}
+		};
+
+		protected IntroController controller;
+		protected final TickTimer timer = new TickTimer("Timer:" + name());
+
+		@Override
+		public void setFsm(Fsm<? extends FsmState<Context>, Context> fsm) {
+			controller = (IntroController) fsm;
+		}
+
+		@Override
+		public TickTimer timer() {
+			return timer;
+		}
+	}
+
 	public final GameController gameController;
 	public final Context context = new Context();
 
 	public IntroController(GameController gameController) {
-		super(IntroState.values());
+		super(State.values());
 		this.gameController = gameController;
 		logging = true;
 	}
