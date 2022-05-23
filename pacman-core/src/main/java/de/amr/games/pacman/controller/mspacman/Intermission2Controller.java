@@ -26,7 +26,12 @@ package de.amr.games.pacman.controller.mspacman;
 import static de.amr.games.pacman.model.common.world.World.t;
 
 import de.amr.games.pacman.controller.common.GameController;
+import de.amr.games.pacman.controller.mspacman.Intermission2Controller.Context;
+import de.amr.games.pacman.controller.mspacman.Intermission2Controller.State;
+import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.Fsm;
+import de.amr.games.pacman.lib.FsmState;
+import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.mspacman.Flap;
 
@@ -38,7 +43,7 @@ import de.amr.games.pacman.model.mspacman.Flap;
  * 
  * @author Armin Reichert
  */
-public class Intermission2Controller extends Fsm<Intermission2State, Intermission2Controller.Context> {
+public class Intermission2Controller extends Fsm<State, Context> {
 
 	public static class Context {
 		public final int upperY = t(12), middleY = t(18), lowerY = t(24);
@@ -48,11 +53,109 @@ public class Intermission2Controller extends Fsm<Intermission2State, Intermissio
 		public Pac pacMan, msPacMan;
 	}
 
+	public enum State implements FsmState<Context> {
+
+		FLAP {
+			@Override
+			public void onEnter(Context $) {
+				timer.setDurationIndefinite().start();
+				$.playIntermissionSound.run();
+				$.flap = new Flap();
+				$.flap.number = 2;
+				$.flap.text = "THE CHASE";
+				$.flap.setPosition(t(3), t(10));
+				$.flap.show();
+				$.pacMan = new Pac("Pac-Man");
+				$.pacMan.setMoveDir(Direction.RIGHT);
+				$.msPacMan = new Pac("Ms. Pac-Man");
+				$.msPacMan.setMoveDir(Direction.RIGHT);
+			}
+
+			@Override
+			public void onUpdate(Context $) {
+				if (timer.atSecond(1)) {
+					$.playFlapAnimation.run();
+				} else if (timer.atSecond(2)) {
+					$.flap.hide();
+				} else if (timer.atSecond(3)) {
+					controller.changeState(State.CHASING);
+				}
+			}
+		},
+
+		CHASING {
+			@Override
+			public void onEnter(Context $) {
+				timer.setDurationIndefinite().start();
+			}
+
+			@Override
+			public void onUpdate(Context $) {
+				if (timer.atSecond(1.5)) {
+					$.pacMan.setPosition(-t(2), $.upperY);
+					$.pacMan.setMoveDir(Direction.RIGHT);
+					$.pacMan.setSpeed(2.0);
+					$.pacMan.show();
+					$.msPacMan.setPosition(-t(8), $.upperY);
+					$.msPacMan.setMoveDir(Direction.RIGHT);
+					$.msPacMan.setSpeed(2.0);
+					$.msPacMan.show();
+				} else if (timer.atSecond(6)) {
+					$.pacMan.setPosition(t(36), $.lowerY);
+					$.pacMan.setMoveDir(Direction.LEFT);
+					$.pacMan.setSpeed(2.0);
+					$.msPacMan.setPosition(t(30), $.lowerY);
+					$.msPacMan.setMoveDir(Direction.LEFT);
+					$.msPacMan.setSpeed(2.0);
+				} else if (timer.atSecond(10.5)) {
+					$.pacMan.setMoveDir(Direction.RIGHT);
+					$.pacMan.setSpeed(2.0);
+					$.msPacMan.setPosition(t(-8), $.middleY);
+					$.msPacMan.setMoveDir(Direction.RIGHT);
+					$.msPacMan.setSpeed(2.0);
+					$.pacMan.setPosition(t(-2), $.middleY);
+				} else if (timer.atSecond(14.5)) {
+					$.pacMan.setPosition(t(42), $.upperY);
+					$.pacMan.setMoveDir(Direction.LEFT);
+					$.pacMan.setSpeed(4.0);
+					$.msPacMan.setPosition(t(30), $.upperY);
+					$.msPacMan.setMoveDir(Direction.LEFT);
+					$.msPacMan.setSpeed(4.0);
+				} else if (timer.atSecond(15.5)) {
+					$.pacMan.setPosition(t(-2), $.lowerY);
+					$.pacMan.setMoveDir(Direction.RIGHT);
+					$.pacMan.setSpeed(4.0);
+					$.msPacMan.setPosition(t(-14), $.lowerY);
+					$.msPacMan.setMoveDir(Direction.RIGHT);
+					$.msPacMan.setSpeed(4.0);
+				} else if (timer.atSecond(20)) {
+					controller.gameController.state().timer().expire();
+					return;
+				}
+				$.pacMan.move();
+				$.msPacMan.move();
+			}
+		};
+
+		protected Intermission2Controller controller;
+		protected final TickTimer timer = new TickTimer("Timer:" + name());
+
+		@Override
+		public void setFsm(Fsm<? extends FsmState<Context>, Intermission2Controller.Context> fsm) {
+			controller = (Intermission2Controller) fsm;
+		}
+
+		@Override
+		public TickTimer timer() {
+			return timer;
+		}
+	}
+
 	public final GameController gameController;
 	public final Context context = new Context();
 
 	public Intermission2Controller(GameController gameController) {
-		super(Intermission2State.values());
+		super(State.values());
 		this.gameController = gameController;
 	}
 
