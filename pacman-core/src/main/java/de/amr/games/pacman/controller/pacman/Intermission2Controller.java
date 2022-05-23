@@ -47,7 +47,7 @@ public class Intermission2Controller extends Fsm<Intermission2State, Intermissio
 	}
 
 	public void init() {
-		enterAsInitialState(Intermission2State.CHASING);
+		reset(Intermission2State.CHASING);
 	}
 
 	public int nailDistance() {

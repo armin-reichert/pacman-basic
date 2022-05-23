@@ -48,9 +48,4 @@ public class IntroController extends Fsm<IntroState, IntroContext> {
 	public IntroContext getContext() {
 		return context;
 	}
-
-	public void init() {
-		resetTimers();
-		enterAsInitialState(IntroState.BEGIN);
-	}
 }

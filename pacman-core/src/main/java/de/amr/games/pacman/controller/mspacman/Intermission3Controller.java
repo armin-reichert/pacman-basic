@@ -50,8 +50,4 @@ public class Intermission3Controller extends Fsm<Intermission3State, Intermissio
 	public Intermission3Context getContext() {
 		return context;
 	}
-
-	public void init() {
-		enterAsInitialState(Intermission3State.FLAP);
-	}
 }

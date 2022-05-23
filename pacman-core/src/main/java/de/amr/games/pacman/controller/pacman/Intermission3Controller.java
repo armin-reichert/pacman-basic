@@ -48,6 +48,6 @@ public class Intermission3Controller extends Fsm<Intermission3State, Intermissio
 	}
 
 	public void init() {
-		enterAsInitialState(Intermission3State.CHASING);
+		reset(Intermission3State.CHASING);
 	}
 }

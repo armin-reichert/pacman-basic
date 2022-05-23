@@ -105,7 +105,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 		for (var gv : GameVariant.values()) {
 			games.get(gv).setEventingEnabled(gv == selectedGameVariant);
 		}
-		enterAsInitialState(INTRO);
+		reset(INTRO);
 	}
 
 	@Override

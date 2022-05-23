@@ -80,9 +80,10 @@ public abstract class Fsm<STATE extends FsmState<CONTEXT>, CONTEXT> {
 		}
 	}
 
-	public void enterAsInitialState(STATE newState) {
+	public void reset(STATE initialState) {
+		resetTimers();
 		state = null;
-		changeState(newState);
+		changeState(initialState);
 	}
 
 	public void changeState(STATE newState) {
@@ -108,7 +109,7 @@ public abstract class Fsm<STATE extends FsmState<CONTEXT>, CONTEXT> {
 	/**
 	 * Runs the {@link State#onUpdate} hook method (if defined) of the current state and ticks the state timer.
 	 */
-	public void updateState() {
+	public void update() {
 		try {
 			state.onUpdate(getContext());
 			state.timer().run();

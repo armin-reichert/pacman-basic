@@ -47,6 +47,6 @@ public class Intermission1Controller extends Fsm<Intermission1State, Intermissio
 	}
 
 	public void init() {
-		enterAsInitialState(Intermission1State.CHASING_PACMAN);
+		reset(Intermission1State.CHASING_PACMAN);
 	}
 }

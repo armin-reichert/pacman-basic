@@ -52,6 +52,6 @@ public class IntroController extends Fsm<IntroState, IntroContext> {
 
 	public void init() {
 		resetTimers();
-		enterAsInitialState(IntroState.BEGIN);
+		reset(IntroState.BEGIN);
 	}
 }

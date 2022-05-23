@@ -93,12 +93,12 @@ public enum IntroState implements FsmState<IntroContext> {
 			context.msPacMan.move();
 			if (context.msPacMan.position.x <= t(14)) {
 				context.msPacMan.setSpeed(0);
-				controller.changeState(IntroState.READY);
+				controller.changeState(IntroState.READY_TO_PLAY);
 			}
 		}
 	},
 
-	READY {
+	READY_TO_PLAY {
 		@Override
 		public void onUpdate(IntroContext context) {
 			context.lightsTimer.run();
