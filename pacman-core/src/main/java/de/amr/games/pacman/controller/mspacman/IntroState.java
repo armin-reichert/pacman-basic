@@ -56,7 +56,7 @@ public enum IntroState implements FsmState<IntroContext> {
 
 		@Override
 		public void onUpdate(IntroContext context) {
-			if (timer.isRunningSeconds(1)) {
+			if (timer.atSecond(1)) {
 				fsm.changeState(IntroState.GHOSTS);
 			}
 		}
@@ -95,7 +95,7 @@ public enum IntroState implements FsmState<IntroContext> {
 		@Override
 		public void onUpdate(IntroContext context) {
 			context.blinking.advance();
-			if (timer.isRunningSeconds(5)) {
+			if (timer.atSecond(5)) {
 				fsm.gameController.state().timer().expire();
 			}
 		}

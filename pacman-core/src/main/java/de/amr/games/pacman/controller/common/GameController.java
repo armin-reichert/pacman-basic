@@ -86,6 +86,7 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 					.add((oldState, newState) -> game.publishEvent(new GameStateChangeEvent(game, oldState, newState)));
 		}
 		selectGameVariant(variant);
+		logging = true;
 	}
 
 	public void setPlayerControl(PlayerControl playerControl) {

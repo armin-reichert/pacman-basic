@@ -93,9 +93,9 @@ public enum Intermission2State implements FsmState<Intermission2Context> {
 	STUCK {
 		@Override
 		public void onUpdate(Intermission2Context context) {
-			if (timer.isRunningSeconds(2)) {
+			if (timer.atSecond(2)) {
 				context.blinky.setMoveDir(Direction.RIGHT);
-			} else if (timer.isRunningSeconds(6)) {
+			} else if (timer.atSecond(6)) {
 				fsm.gameController.state().timer().expire();
 				return;
 			}

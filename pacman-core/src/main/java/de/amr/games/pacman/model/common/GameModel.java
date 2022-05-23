@@ -435,10 +435,10 @@ public abstract class GameModel {
 			player.setSpeed(player.powerTimer.isRunning() ? playerSpeedPowered : playerSpeed);
 			player.tryMoving();
 		}
-		switch (player.powerTimer.getState()) {
+		switch (player.powerTimer.state()) {
 		case RUNNING -> {
-			player.powerTimer.tick();
-			if (player.powerTimer.ticksRemaining() == sec_to_ticks(1)) {
+			player.powerTimer.run();
+			if (player.powerTimer.remaining() == sec_to_ticks(1)) {
 				// TODO not sure exactly how long the player is losing power
 				publishEvent(Info.PLAYER_LOSING_POWER, player.tile());
 			}
@@ -610,7 +610,7 @@ public abstract class GameModel {
 				ghost.state = FRIGHTENED;
 				ghost.forceTurningBack();
 			});
-			player.powerTimer.setSeconds(ghostFrightenedSeconds).start();
+			player.powerTimer.setSecond(ghostFrightenedSeconds).start();
 			log("%s got power, timer=%s", player.name, player.powerTimer);
 		}
 		checkElroy();

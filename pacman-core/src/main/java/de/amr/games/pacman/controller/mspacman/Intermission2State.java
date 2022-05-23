@@ -51,11 +51,11 @@ public enum Intermission2State implements FsmState<Intermission2Context> {
 
 		@Override
 		public void onUpdate(Intermission2Context context) {
-			if (timer.isRunningSeconds(1)) {
+			if (timer.atSecond(1)) {
 				context.playFlapAnimation.run();
-			} else if (timer.isRunningSeconds(2)) {
+			} else if (timer.atSecond(2)) {
 				context.flap.hide();
-			} else if (timer.isRunningSeconds(3)) {
+			} else if (timer.atSecond(3)) {
 				fsm.changeState(Intermission2State.CHASING);
 			}
 		}
@@ -69,7 +69,7 @@ public enum Intermission2State implements FsmState<Intermission2Context> {
 
 		@Override
 		public void onUpdate(Intermission2Context context) {
-			if (timer.isRunningSeconds(1.5)) {
+			if (timer.atSecond(1.5)) {
 				context.pacMan.setPosition(-t(2), context.upperY);
 				context.pacMan.setMoveDir(Direction.RIGHT);
 				context.pacMan.setSpeed(2.0);
@@ -78,35 +78,35 @@ public enum Intermission2State implements FsmState<Intermission2Context> {
 				context.msPacMan.setMoveDir(Direction.RIGHT);
 				context.msPacMan.setSpeed(2.0);
 				context.msPacMan.show();
-			} else if (timer.isRunningSeconds(6)) {
+			} else if (timer.atSecond(6)) {
 				context.pacMan.setPosition(t(36), context.lowerY);
 				context.pacMan.setMoveDir(Direction.LEFT);
 				context.pacMan.setSpeed(2.0);
 				context.msPacMan.setPosition(t(30), context.lowerY);
 				context.msPacMan.setMoveDir(Direction.LEFT);
 				context.msPacMan.setSpeed(2.0);
-			} else if (timer.isRunningSeconds(10.5)) {
+			} else if (timer.atSecond(10.5)) {
 				context.pacMan.setMoveDir(Direction.RIGHT);
 				context.pacMan.setSpeed(2.0);
 				context.msPacMan.setPosition(t(-8), context.middleY);
 				context.msPacMan.setMoveDir(Direction.RIGHT);
 				context.msPacMan.setSpeed(2.0);
 				context.pacMan.setPosition(t(-2), context.middleY);
-			} else if (timer.isRunningSeconds(14.5)) {
+			} else if (timer.atSecond(14.5)) {
 				context.pacMan.setPosition(t(42), context.upperY);
 				context.pacMan.setMoveDir(Direction.LEFT);
 				context.pacMan.setSpeed(4.0);
 				context.msPacMan.setPosition(t(30), context.upperY);
 				context.msPacMan.setMoveDir(Direction.LEFT);
 				context.msPacMan.setSpeed(4.0);
-			} else if (timer.isRunningSeconds(15.5)) {
+			} else if (timer.atSecond(15.5)) {
 				context.pacMan.setPosition(t(-2), context.lowerY);
 				context.pacMan.setMoveDir(Direction.RIGHT);
 				context.pacMan.setSpeed(4.0);
 				context.msPacMan.setPosition(t(-14), context.lowerY);
 				context.msPacMan.setMoveDir(Direction.RIGHT);
 				context.msPacMan.setSpeed(4.0);
-			} else if (timer.isRunningSeconds(20)) {
+			} else if (timer.atSecond(20)) {
 				fsm.gameController.state().timer().expire();
 				return;
 			}

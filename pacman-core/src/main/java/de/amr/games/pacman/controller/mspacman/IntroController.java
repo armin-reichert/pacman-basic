@@ -43,6 +43,7 @@ public class IntroController extends FiniteStateMachine<IntroState, IntroContext
 		for (var state : IntroState.values()) {
 			state.fsm = this;
 		}
+		logging = true;
 	}
 
 	@Override
@@ -61,6 +62,6 @@ public class IntroController extends FiniteStateMachine<IntroState, IntroContext
 	@Override
 	public void updateState() {
 		super.updateState();
-		context.boardAnimationTimer.tick();
+		context.boardAnimationTimer.run();
 	}
 }

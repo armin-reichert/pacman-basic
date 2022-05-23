@@ -47,6 +47,7 @@ public class TickTimer {
 
 	/** Timer value representing "forever". */
 	public static final long INDEFINITE = Long.MAX_VALUE;
+	private static final int TICKS_PER_SEC = 60;
 
 	public static boolean trace = false;
 
@@ -61,32 +62,61 @@ public class TickTimer {
 	 * @return number of ticks representing given seconds at 60Hz
 	 */
 	public static final long sec_to_ticks(double sec) {
-		return Math.round(sec * 60);
+		return Math.round(sec * TICKS_PER_SEC);
 	}
 
 	private final String name;
-	private List<Consumer<TickTimerEvent>> subscribers;
 	private TickTimerState state;
 	private long duration;
-	private long t; // 0..(duration - 1)
+	private long tick; // 0..(duration - 1)
+	private List<Consumer<TickTimerEvent>> subscribers;
 
 	public TickTimer(String name) {
 		this.name = name;
 		setIndefinite();
 	}
 
-	public TickTimerState getState() {
+	@Override
+	public String toString() {
+		return "[%s: %s t:%d remaining:%s]".formatted(name, state, ticksAsString(tick), ticksAsString(remaining()));
+	}
+
+	private String ticksAsString(long ticks) {
+		return ticks == INDEFINITE ? "indefinite" : ticks + "";
+	}
+
+	public TickTimerState state() {
 		return state;
 	}
 
-	public String getName() {
+	public String name() {
 		return name;
 	}
 
-	@Override
-	public String toString() {
-		return String.format("[%s: state=%s t=%d remaining=%s]", name, state, t,
-				(ticksRemaining() == INDEFINITE ? "indefinite" : String.valueOf(ticksRemaining())));
+	/**
+	 * Sets timer to given duration and resets timer state to {@link TickTimerState#READY}.
+	 * 
+	 * @param duration timer duration in ticks
+	 * @return itself
+	 */
+	public TickTimer set(long duration) {
+		this.duration = duration;
+		tick = 0;
+		state = READY;
+		trace("%s set", this);
+		fireEvent(new TickTimerEvent(Type.RESET, duration));
+		return this;
+	}
+
+	/**
+	 * Reset the time to run {@link #INDEFINITE}.
+	 */
+	public TickTimer setIndefinite() {
+		return set(INDEFINITE);
+	}
+
+	public TickTimer setSecond(double second) {
+		return set(sec_to_ticks(second));
 	}
 
 	public void addEventListener(Consumer<TickTimerEvent> subscriber) {
@@ -106,34 +136,6 @@ public class TickTimer {
 		if (subscribers != null) {
 			subscribers.forEach(subscriber -> subscriber.accept(e));
 		}
-	}
-
-	/**
-	 * Sets timer to given ticks and resets timer state to {@link TickTimerState#READY}.
-	 * 
-	 * @param ticks timer value
-	 * @return itself
-	 */
-	public TickTimer set(long ticks) {
-		state = READY;
-		t = 0;
-		duration = ticks;
-		trace("%s got reset", this);
-		fireEvent(new TickTimerEvent(Type.RESET, duration));
-		return this;
-	}
-
-	/**
-	 * Reset the time to run {@link #INDEFINITE}.
-	 */
-	public TickTimer setIndefinite() {
-		set(INDEFINITE);
-		return this;
-	}
-
-	public TickTimer setSeconds(double seconds) {
-		set(sec_to_ticks(seconds));
-		return this;
 	}
 
 	public TickTimer start() {
@@ -162,18 +164,18 @@ public class TickTimer {
 		return this;
 	}
 
-	public TickTimer tick() {
+	public TickTimer run() {
 		if (state == READY) {
 			return this; // TODO handle this properly
 		}
 		if (state == STOPPED) {
 			return this;
 		}
-		++t;
-		if (t == duration / 2) {
-			fireEvent(new TickTimerEvent(Type.HALF_EXPIRED, t));
+		++tick;
+		if (tick == duration / 2) {
+			fireEvent(new TickTimerEvent(Type.HALF_EXPIRED, tick));
 		}
-		if (t == duration) {
+		if (tick == duration) {
 			expire();
 		}
 		return this;
@@ -182,12 +184,16 @@ public class TickTimer {
 	public TickTimer expire() {
 		state = EXPIRED;
 		trace("%s expired", this);
-		fireEvent(new TickTimerEvent(Type.EXPIRED, t));
+		fireEvent(new TickTimerEvent(Type.EXPIRED, tick));
 		return this;
 	}
 
 	public boolean hasExpired() {
 		return state == EXPIRED;
+	}
+
+	public boolean isReady() {
+		return state == READY;
 	}
 
 	public boolean isRunning() {
@@ -202,19 +208,15 @@ public class TickTimer {
 		return duration;
 	}
 
-	public long ticked() {
-		return t;
+	public long tick() {
+		return tick;
 	}
 
-	public long ticksRemaining() {
-		return duration == INDEFINITE ? INDEFINITE : duration - t;
+	public long remaining() {
+		return duration == INDEFINITE ? INDEFINITE : duration - tick;
 	}
 
-	public boolean isRunningSeconds(double seconds) {
-		return t == (long) (seconds * 60);
-	}
-
-	public boolean hasJustStarted() {
-		return t == 1;
+	public boolean atSecond(double seconds) {
+		return tick == (long) (seconds * 60);
 	}
 }

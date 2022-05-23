@@ -68,13 +68,13 @@ public enum GameState implements FsmState<GameModel> {
 	READY {
 		@Override
 		public void onEnter(GameModel game) {
-			timer.setSeconds(game.running || game.attractMode ? 2 : 5).start();
+			timer.setSecond(game.running || game.attractMode ? 2 : 5).start();
 			game.resetGuys();
 		}
 
 		@Override
 		public void onUpdate(GameModel game) {
-			if (timer.ticked() == sec_to_ticks(1.5)) {
+			if (timer.tick() == sec_to_ticks(1.5)) {
 				game.showGhosts();
 				game.player.show();
 			} else if (timer.hasExpired()) {
@@ -152,7 +152,7 @@ public enum GameState implements FsmState<GameModel> {
 				game.ghosts().filter(ghost -> ghost.is(HUNTING_PAC) || ghost.is(FRIGHTENED)).forEach(Ghost::forceTurningBack);
 			}
 			String phaseName = game.inScatteringPhase() ? "Scattering" : "Chasing";
-			log("Hunting phase #%d (%s) started, %d of %d ticks remaining", phase, phaseName, timer.ticksRemaining(),
+			log("Hunting phase #%d (%s) started, %d of %d ticks remaining", phase, phaseName, timer.remaining(),
 					timer.duration());
 			if (game.inScatteringPhase()) {
 				game.publishEvent(new ScatterPhaseStartedEvent(game, phase / 2));
@@ -222,7 +222,7 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void onEnter(GameModel game) {
 			game.player.hide();
-			timer.setSeconds(1).start();
+			timer.setSecond(1).start();
 		}
 
 		@Override
@@ -254,7 +254,7 @@ public enum GameState implements FsmState<GameModel> {
 			game.ghosts().forEach(ghost -> ghost.setSpeed(0));
 			game.player.setSpeed(0);
 			new Hiscore(game).save();
-			timer.setSeconds(5).start();
+			timer.setSecond(5).start();
 		}
 
 		@Override

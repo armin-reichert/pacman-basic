@@ -41,7 +41,7 @@ public enum Intermission1State implements FsmState<Intermission1Context> {
 	FLAP {
 		@Override
 		public void onEnter(Intermission1Context context) {
-			timer.setSeconds(2).start();
+			timer.setSecond(2).start();
 			context.playIntermissionSound.run();
 
 			context.flap = new Flap();
@@ -77,7 +77,7 @@ public enum Intermission1State implements FsmState<Intermission1Context> {
 
 		@Override
 		public void onUpdate(Intermission1Context context) {
-			if (timer.isRunningSeconds(1)) {
+			if (timer.atSecond(1)) {
 				context.playFlapAnimation.run();
 			}
 			if (timer.hasExpired()) {
@@ -175,7 +175,7 @@ public enum Intermission1State implements FsmState<Intermission1Context> {
 	IN_HEAVEN {
 		@Override
 		public void onEnter(Intermission1Context context) {
-			timer.setSeconds(3).start();
+			timer.setSecond(3).start();
 			context.pacMan.setSpeed(0);
 			context.pacMan.setMoveDir(Direction.LEFT);
 			context.msPac.setSpeed(0);

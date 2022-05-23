@@ -156,7 +156,7 @@ public class Autopilot implements PlayerControl {
 		if (!game().player.stuck && !game().world.isIntersection(game().player.tile()))
 			return;
 
-		if (data.frightenedGhosts.size() != 0 && game().player.powerTimer.ticksRemaining() >= 1 * 60) {
+		if (data.frightenedGhosts.size() != 0 && game().player.powerTimer.remaining() >= 1 * 60) {
 			Ghost prey = data.frightenedGhosts.get(0);
 			log("Detected frightened ghost %s %.0g tiles away", prey.name,
 					prey.tile().manhattanDistance(game().player.tile()));
@@ -248,7 +248,7 @@ public class Autopilot implements PlayerControl {
 				if (!game().world.isFoodTile(tile) || game().world.containsEatenFood(tile)) {
 					continue;
 				}
-				if (game().world.isEnergizerTile(tile) && game().player.powerTimer.ticksRemaining() > 2 * 60
+				if (game().world.isEnergizerTile(tile) && game().player.powerTimer.remaining() > 2 * 60
 						&& game().world.foodRemaining() > 1) {
 					continue;
 				}

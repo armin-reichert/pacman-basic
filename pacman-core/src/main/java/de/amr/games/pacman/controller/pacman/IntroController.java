@@ -43,6 +43,7 @@ public class IntroController extends FiniteStateMachine<IntroState, IntroContext
 		for (var state : IntroState.values()) {
 			state.controller = this;
 		}
+		logging = true;
 	}
 
 	@Override

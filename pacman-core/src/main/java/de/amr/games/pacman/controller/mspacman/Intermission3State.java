@@ -46,7 +46,7 @@ public enum Intermission3State implements FsmState<Intermission3Context> {
 			context.stork = new GameEntity();
 			context.bag = new JuniorBag();
 
-			timer.setSeconds(2).start();
+			timer.setSecond(2).start();
 			context.playIntermissionSound.run();
 
 			context.flap.number = 3;
@@ -57,9 +57,9 @@ public enum Intermission3State implements FsmState<Intermission3Context> {
 
 		@Override
 		public void onUpdate(Intermission3Context context) {
-			if (timer.isRunningSeconds(1)) {
+			if (timer.atSecond(1)) {
 				context.playFlapAnimation.run();
-			} else if (timer.isRunningSeconds(2)) {
+			} else if (timer.atSecond(2)) {
 				context.flap.hide();
 				fsm.changeState(Intermission3State.ACTION);
 			}
@@ -119,7 +119,7 @@ public enum Intermission3State implements FsmState<Intermission3Context> {
 	DONE {
 		@Override
 		public void onEnter(Intermission3Context context) {
-			timer.setSeconds(3).start();
+			timer.setSecond(3).start();
 		}
 
 		@Override

@@ -39,7 +39,7 @@ import java.util.function.BiConsumer;
  */
 public abstract class FiniteStateMachine<STATE extends FsmState<CONTEXT>, CONTEXT> {
 
-	public static boolean logging = true;
+	public boolean logging;
 
 	public static void nop() {
 	}
@@ -104,7 +104,7 @@ public abstract class FiniteStateMachine<STATE extends FsmState<CONTEXT>, CONTEX
 	public void updateState() {
 		try {
 			state.onUpdate(getContext());
-			state.timer().tick();
+			state.timer().run();
 		} catch (Exception x) {
 			log("%s: Error updating state %s, timer: %s", name, state, state.timer());
 			x.printStackTrace();
