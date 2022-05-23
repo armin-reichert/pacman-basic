@@ -54,6 +54,20 @@ import de.amr.games.pacman.model.common.Pac;
  */
 public class IntroController extends Fsm<State, Context> {
 
+	public final GameController gameController;
+	public final Context context = new Context();
+
+	public IntroController(GameController gameController) {
+		super(State.values());
+		this.gameController = gameController;
+		logging = true;
+	}
+
+	@Override
+	public Context getContext() {
+		return context;
+	}
+
 	public static class Context {
 		public final V2i lightsTopLeft = new V2i(7, 11).scaled(TS);
 		public final V2i titlePosition = new V2i(9, 8).scaled(TS);
@@ -154,19 +168,5 @@ public class IntroController extends Fsm<State, Context> {
 		public TickTimer timer() {
 			return timer;
 		}
-	}
-
-	public final GameController gameController;
-	public final Context context = new Context();
-
-	public IntroController(GameController gameController) {
-		super(State.values());
-		this.gameController = gameController;
-		logging = true;
-	}
-
-	@Override
-	public Context getContext() {
-		return context;
 	}
 }

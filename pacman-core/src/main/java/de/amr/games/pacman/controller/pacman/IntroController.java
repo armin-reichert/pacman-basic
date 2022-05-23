@@ -56,6 +56,25 @@ import de.amr.games.pacman.model.common.Pac;
  */
 public class IntroController extends Fsm<State, Context> {
 
+	public final GameController gameController;
+	public final Context context = new Context();
+
+	public IntroController(GameController gameController) {
+		super(State.values());
+		this.gameController = gameController;
+		logging = true;
+	}
+
+	@Override
+	public Context getContext() {
+		return context;
+	}
+
+	public void init() {
+		resetTimers();
+		reset(State.BEGIN);
+	}
+
 	public static class Context {
 
 		public final TimedSeq<Boolean> fastBlinking = TimedSeq.pulse().frameDuration(10);
@@ -254,24 +273,5 @@ public class IntroController extends Fsm<State, Context> {
 		public TickTimer timer() {
 			return timer;
 		}
-	}
-
-	public final GameController gameController;
-	public final Context context = new Context();
-
-	public IntroController(GameController gameController) {
-		super(State.values());
-		this.gameController = gameController;
-		logging = true;
-	}
-
-	@Override
-	public Context getContext() {
-		return context;
-	}
-
-	public void init() {
-		resetTimers();
-		reset(State.BEGIN);
 	}
 }
