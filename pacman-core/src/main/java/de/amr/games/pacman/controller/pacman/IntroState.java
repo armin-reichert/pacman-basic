@@ -50,14 +50,14 @@ public enum IntroState implements FsmState<IntroContext> {
 
 	BEGIN {
 		@Override
-		public void onEnter(IntroContext context) {
+		public void onEnter(IntroContext $) {
 			for (int id = 0; id < 4; ++id) {
-				context.pictureVisible[id] = false;
-				context.nicknameVisible[id] = false;
-				context.characterVisible[id] = false;
+				$.pictureVisible[id] = false;
+				$.nicknameVisible[id] = false;
+				$.characterVisible[id] = false;
 			}
-			context.pacMan = new Pac("Pac-Man");
-			context.ghosts = new Ghost[] { //
+			$.pacMan = new Pac("Pac-Man");
+			$.ghosts = new Ghost[] { //
 					new Ghost(RED_GHOST, "Blinky"), //
 					new Ghost(PINK_GHOST, "Pinky"), //
 					new Ghost(CYAN_GHOST, "Inky"), //
@@ -66,9 +66,9 @@ public enum IntroState implements FsmState<IntroContext> {
 		}
 
 		@Override
-		public void onUpdate(IntroContext context) {
+		public void onUpdate(IntroContext $) {
 			if (timer.atSecond(1)) {
-				context.selectGhost(0);
+				$.selectGhost(0);
 				controller.changeState(IntroState.PRESENTING_GHOSTS);
 			}
 		}
@@ -76,19 +76,19 @@ public enum IntroState implements FsmState<IntroContext> {
 
 	PRESENTING_GHOSTS {
 		@Override
-		public void onUpdate(IntroContext context) {
+		public void onUpdate(IntroContext $) {
 			if (timer.atSecond(1.0)) {
-				context.characterVisible[context.ghostIndex] = true;
+				$.characterVisible[$.ghostIndex] = true;
 			} else if (timer.atSecond(1.5)) {
-				context.nicknameVisible[context.ghostIndex] = true;
+				$.nicknameVisible[$.ghostIndex] = true;
 			} else if (timer.atSecond(2.0)) {
-				if (context.ghostIndex < 3) {
-					context.selectGhost(context.ghostIndex + 1);
+				if ($.ghostIndex < 3) {
+					$.selectGhost($.ghostIndex + 1);
 					timer.setDurationIndefinite().start();
 				}
 			} else if (timer.atSecond(2.75)) {
-				context.fastBlinking.restart();
-				context.fastBlinking.advance();
+				$.fastBlinking.restart();
+				$.fastBlinking.advance();
 				controller.changeState(IntroState.SHOWING_POINTS);
 			}
 		}
@@ -96,7 +96,7 @@ public enum IntroState implements FsmState<IntroContext> {
 
 	SHOWING_POINTS {
 		@Override
-		public void onUpdate(IntroContext context) {
+		public void onUpdate(IntroContext $) {
 			if (timer.atSecond(2)) {
 				controller.changeState(IntroState.CHASING_PAC);
 			}
@@ -105,14 +105,14 @@ public enum IntroState implements FsmState<IntroContext> {
 
 	CHASING_PAC {
 		@Override
-		public void onEnter(IntroContext context) {
+		public void onEnter(IntroContext $) {
 			timer.setDurationIndefinite().start();
-			context.pacMan.show();
-			context.pacMan.setSpeed(1);
-			context.pacMan.setPosition(t(28), t(20));
-			context.pacMan.setMoveDir(Direction.LEFT);
-			for (Ghost ghost : context.ghosts) {
-				ghost.position = context.pacMan.position.plus(24 + ghost.id * 16, 0);
+			$.pacMan.show();
+			$.pacMan.setSpeed(1);
+			$.pacMan.setPosition(t(28), t(20));
+			$.pacMan.setMoveDir(Direction.LEFT);
+			for (Ghost ghost : $.ghosts) {
+				ghost.position = $.pacMan.position.plus(24 + ghost.id * 16, 0);
 				ghost.setWishDir(Direction.LEFT);
 				ghost.setMoveDir(Direction.LEFT);
 				ghost.setSpeed(1.05);
@@ -122,65 +122,65 @@ public enum IntroState implements FsmState<IntroContext> {
 		}
 
 		@Override
-		public void onUpdate(IntroContext context) {
-			if (context.pacMan.position.x <= t(3)) {
+		public void onUpdate(IntroContext $) {
+			if ($.pacMan.position.x <= t(3)) {
 				controller.changeState(IntroState.CHASING_GHOSTS);
 				return;
 			}
-			context.pacMan.move();
-			for (Ghost ghost : context.ghosts) {
+			$.pacMan.move();
+			for (Ghost ghost : $.ghosts) {
 				ghost.move();
 			}
-			context.fastBlinking.animate();
+			$.fastBlinking.animate();
 		}
 	},
 
 	CHASING_GHOSTS {
 		@Override
-		public void onEnter(IntroContext context) {
+		public void onEnter(IntroContext $) {
 			timer.setDurationIndefinite().start();
-			for (Ghost ghost : context.ghosts) {
+			for (Ghost ghost : $.ghosts) {
 				ghost.state = GhostState.FRIGHTENED;
 				ghost.setWishDir(Direction.RIGHT);
 				ghost.setMoveDir(Direction.RIGHT);
 				ghost.setSpeed(0.6);
 			}
-			context.ghostKilledTime = timer.tick();
+			$.ghostKilledTime = timer.tick();
 		}
 
 		@Override
-		public void onUpdate(IntroContext context) {
+		public void onUpdate(IntroContext $) {
 			if (timer.tick() < 8) {
-				for (Ghost ghost : context.ghosts) {
+				for (Ghost ghost : $.ghosts) {
 					ghost.move();
 				}
 				return;
 			}
 			if (timer.tick() == 8) {
-				context.pacMan.setMoveDir(Direction.RIGHT);
-				context.pacMan.setSpeed(1);
+				$.pacMan.setMoveDir(Direction.RIGHT);
+				$.pacMan.setSpeed(1);
 			}
-			if (context.pacMan.position.x > t(29)) {
-				context.slowBlinking.restart();
+			if ($.pacMan.position.x > t(29)) {
+				$.slowBlinking.restart();
 				controller.changeState(IntroState.READY_TO_PLAY);
 				return;
 			}
 			// check if Pac-Man kills a ghost
-			Optional<Ghost> killedGhost = Stream.of(context.ghosts).filter(ghost -> ghost.state != GhostState.DEAD)
-					.filter(context.pacMan::meets).findFirst();
+			Optional<Ghost> killedGhost = Stream.of($.ghosts).filter(ghost -> ghost.state != GhostState.DEAD)
+					.filter($.pacMan::meets).findFirst();
 			killedGhost.ifPresent(victim -> {
-				context.ghostKilledTime = timer.tick();
+				$.ghostKilledTime = timer.tick();
 				victim.state = GhostState.DEAD;
 				victim.bounty = List.of(200, 400, 800, 1600).get(victim.id);
-				context.pacMan.hide();
-				context.pacMan.setSpeed(0);
-				Stream.of(context.ghosts).forEach(ghost -> ghost.setSpeed(0));
+				$.pacMan.hide();
+				$.pacMan.setSpeed(0);
+				Stream.of($.ghosts).forEach(ghost -> ghost.setSpeed(0));
 			});
 			// After some time, Pac-Man and the surviving ghosts get visible and move again
-			if (timer.tick() - context.ghostKilledTime == sec_to_ticks(1)) {
-				context.pacMan.show();
-				context.pacMan.setSpeed(1.0);
-				for (Ghost ghost : context.ghosts) {
+			if (timer.tick() - $.ghostKilledTime == sec_to_ticks(1)) {
+				$.pacMan.show();
+				$.pacMan.setSpeed(1.0);
+				for (Ghost ghost : $.ghosts) {
 					if (ghost.state == GhostState.DEAD) {
 						ghost.hide();
 					} else {
@@ -188,24 +188,24 @@ public enum IntroState implements FsmState<IntroContext> {
 						ghost.setSpeed(0.6);
 					}
 				}
-				context.ghostKilledTime = timer.tick();
+				$.ghostKilledTime = timer.tick();
 			}
 			// When the last ghost has been killed, make Pac-Man invisible
-			if (Stream.of(context.ghosts).allMatch(ghost -> ghost.state == GhostState.DEAD)) {
-				context.pacMan.hide();
+			if (Stream.of($.ghosts).allMatch(ghost -> ghost.state == GhostState.DEAD)) {
+				$.pacMan.hide();
 			}
-			context.pacMan.move();
-			for (Ghost ghost : context.ghosts) {
+			$.pacMan.move();
+			for (Ghost ghost : $.ghosts) {
 				ghost.move();
 			}
-			context.fastBlinking.animate();
+			$.fastBlinking.animate();
 		}
 	},
 
 	READY_TO_PLAY {
 		@Override
-		public void onUpdate(IntroContext context) {
-			context.slowBlinking.animate();
+		public void onUpdate(IntroContext $) {
+			$.slowBlinking.animate();
 			if (timer.atSecond(5)) {
 				controller.gameController.state().timer().expire();
 			}

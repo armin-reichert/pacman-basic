@@ -42,48 +42,48 @@ public enum Intermission3State implements FsmState<Intermission3Context> {
 
 	CHASING {
 		@Override
-		public void onEnter(Intermission3Context context) {
+		public void onEnter(Intermission3Context $) {
 			timer.setDurationIndefinite().start();
-			context.playIntermissionSound.run();
+			$.playIntermissionSound.run();
 
-			context.pac = new Pac("Pac-Man");
-			context.pac.setMoveDir(Direction.LEFT);
-			context.pac.setPosition(t(40), t(20));
-			context.pac.setSpeed(1.2);
-			context.pac.show();
+			$.pac = new Pac("Pac-Man");
+			$.pac.setMoveDir(Direction.LEFT);
+			$.pac.setPosition(t(40), t(20));
+			$.pac.setSpeed(1.2);
+			$.pac.show();
 
-			context.blinky = new Ghost(GameModel.RED_GHOST, "Blinky");
-			context.blinky.state = GhostState.HUNTING_PAC;
-			context.blinky.setMoveDir(Direction.LEFT);
-			context.blinky.setWishDir(Direction.LEFT);
-			context.blinky.position = context.pac.position.plus(t(8), 0);
-			context.blinky.setSpeed(1.2);
-			context.blinky.show();
+			$.blinky = new Ghost(GameModel.RED_GHOST, "Blinky");
+			$.blinky.state = GhostState.HUNTING_PAC;
+			$.blinky.setMoveDir(Direction.LEFT);
+			$.blinky.setWishDir(Direction.LEFT);
+			$.blinky.position = $.pac.position.plus(t(8), 0);
+			$.blinky.setSpeed(1.2);
+			$.blinky.show();
 		}
 
 		@Override
-		public void onUpdate(Intermission3Context context) {
-			if (context.blinky.position.x <= -t(15)) {
-				context.pac.setSpeed(0);
-				context.blinky.setMoveDir(Direction.RIGHT);
-				context.blinky.setWishDir(Direction.RIGHT);
+		public void onUpdate(Intermission3Context $) {
+			if ($.blinky.position.x <= -t(15)) {
+				$.pac.setSpeed(0);
+				$.blinky.setMoveDir(Direction.RIGHT);
+				$.blinky.setWishDir(Direction.RIGHT);
 				controller.changeState(RETURNING);
 				return;
 			}
-			context.pac.move();
-			context.blinky.move();
+			$.pac.move();
+			$.blinky.move();
 		}
 	},
 
 	RETURNING {
 		@Override
-		public void onUpdate(Intermission3Context context) {
-			if (context.blinky.position.x > t(53)) {
+		public void onUpdate(Intermission3Context $) {
+			if ($.blinky.position.x > t(53)) {
 				controller.gameController.state().timer().expire();
 				return;
 			}
-			context.pac.move();
-			context.blinky.move();
+			$.pac.move();
+			$.blinky.move();
 		}
 	};
 

@@ -43,77 +43,77 @@ public enum Intermission3State implements FsmState<Intermission3Context> {
 
 	FLAP {
 		@Override
-		public void onEnter(Intermission3Context context) {
-			context.flap = new Flap();
-			context.pacMan = new Pac("Pac-Man");
-			context.msPacMan = new Pac("Ms. Pac-Man");
-			context.stork = new GameEntity();
-			context.bag = new JuniorBag();
+		public void onEnter(Intermission3Context $) {
+			$.flap = new Flap();
+			$.pacMan = new Pac("Pac-Man");
+			$.msPacMan = new Pac("Ms. Pac-Man");
+			$.stork = new GameEntity();
+			$.bag = new JuniorBag();
 
 			timer.setDurationSeconds(2).start();
-			context.playIntermissionSound.run();
+			$.playIntermissionSound.run();
 
-			context.flap.number = 3;
-			context.flap.text = "JUNIOR";
-			context.flap.setPosition(t(3), t(10));
-			context.flap.show();
+			$.flap.number = 3;
+			$.flap.text = "JUNIOR";
+			$.flap.setPosition(t(3), t(10));
+			$.flap.show();
 		}
 
 		@Override
-		public void onUpdate(Intermission3Context context) {
+		public void onUpdate(Intermission3Context $) {
 			if (timer.atSecond(1)) {
-				context.playFlapAnimation.run();
+				$.playFlapAnimation.run();
 			} else if (timer.atSecond(2)) {
-				context.flap.hide();
+				$.flap.hide();
 				controller.changeState(Intermission3State.ACTION);
 			}
 		}
 	},
 	ACTION {
 		@Override
-		public void onEnter(Intermission3Context context) {
+		public void onEnter(Intermission3Context $) {
 			timer.setDurationIndefinite().start();
 
-			context.pacMan.setMoveDir(Direction.RIGHT);
-			context.pacMan.setPosition(t(3), context.groundY - 4);
-			context.pacMan.show();
+			$.pacMan.setMoveDir(Direction.RIGHT);
+			$.pacMan.setPosition(t(3), $.groundY - 4);
+			$.pacMan.show();
 
-			context.msPacMan.setMoveDir(Direction.RIGHT);
-			context.msPacMan.setPosition(t(5), context.groundY - 4);
-			context.msPacMan.show();
+			$.msPacMan.setMoveDir(Direction.RIGHT);
+			$.msPacMan.setPosition(t(5), $.groundY - 4);
+			$.msPacMan.show();
 
-			context.stork.setPosition(t(30), t(12));
-			context.stork.setVelocity(-0.8, 0);
-			context.stork.show();
+			$.stork.setPosition(t(30), t(12));
+			$.stork.setVelocity(-0.8, 0);
+			$.stork.show();
 
-			context.bag.position = context.stork.position.plus(-14, 3);
-			context.bag.velocity = context.stork.velocity;
-			context.bag.acceleration = V2d.NULL;
-			context.bag.open = false;
-			context.bag.show();
-			context.numBagBounces = 0;
+			$.bag.position = $.stork.position.plus(-14, 3);
+			$.bag.velocity = $.stork.velocity;
+			$.bag.acceleration = V2d.NULL;
+			$.bag.open = false;
+			$.bag.show();
+			$.numBagBounces = 0;
 		}
 
 		@Override
-		public void onUpdate(Intermission3Context context) {
-			context.stork.move();
-			context.bag.move();
+		public void onUpdate(Intermission3Context $) {
+			$.stork.move();
+			$.bag.move();
 
 			// release bag from storks beak?
-			if ((int) context.stork.position.x == t(20)) {
-				context.bag.acceleration = new V2d(0, 0.04);
-				context.stork.setVelocity(-1, 0);
+			if ((int) $.stork.position.x == t(20)) {
+				$.bag.acceleration = new V2d(0, 0.04);
+				$.stork.setVelocity(-1, 0);
 			}
 
 			// (closed) bag reaches ground for first time?
-			if (!context.bag.open && context.bag.position.y > context.groundY) {
-				++context.numBagBounces;
-				if (context.numBagBounces < 3) {
-					context.bag.setVelocity(-0.2f, -1f / context.numBagBounces);
-					context.bag.setPosition(context.bag.position.x, context.groundY);
+			if (!$.bag.open && $.bag.position.y > $.groundY) {
+				++$.numBagBounces;
+				if ($.numBagBounces < 3) {
+					$.bag.setVelocity(-0.2f, -1f / $.numBagBounces);
+					$.bag.setPosition($.bag.position.x, $.groundY);
 				} else {
-					context.bag.open = true;
-					context.bag.velocity = V2d.NULL;
+					$.bag.open = true;
+					$.bag.velocity = V2d.NULL;
 					controller.changeState(Intermission3State.DONE);
 				}
 			}
@@ -122,13 +122,13 @@ public enum Intermission3State implements FsmState<Intermission3Context> {
 
 	DONE {
 		@Override
-		public void onEnter(Intermission3Context context) {
+		public void onEnter(Intermission3Context $) {
 			timer.setDurationSeconds(3).start();
 		}
 
 		@Override
-		public void onUpdate(Intermission3Context context) {
-			context.stork.move();
+		public void onUpdate(Intermission3Context $) {
+			$.stork.move();
 			if (timer.hasExpired()) {
 				controller.gameController.state().timer().expire();
 			}
@@ -147,5 +147,4 @@ public enum Intermission3State implements FsmState<Intermission3Context> {
 	public TickTimer timer() {
 		return timer;
 	}
-
 }

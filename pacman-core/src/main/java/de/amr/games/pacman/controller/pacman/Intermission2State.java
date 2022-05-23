@@ -43,68 +43,68 @@ public enum Intermission2State implements FsmState<Intermission2Context> {
 
 	CHASING {
 		@Override
-		public void onEnter(Intermission2Context context) {
+		public void onEnter(Intermission2Context $) {
 			timer.setDurationIndefinite().start();
 
-			context.playIntermissionSound.run();
+			$.playIntermissionSound.run();
 
-			context.pac = new Pac("Pac-Man");
-			context.pac.setMoveDir(Direction.LEFT);
-			context.pac.setPosition(t(30), t(20));
-			context.pac.setSpeed(1.0);
-			context.pac.show();
+			$.pac = new Pac("Pac-Man");
+			$.pac.setMoveDir(Direction.LEFT);
+			$.pac.setPosition(t(30), t(20));
+			$.pac.setSpeed(1.0);
+			$.pac.show();
 
-			context.blinky = new Ghost(GameModel.RED_GHOST, "Blinky");
-			context.blinky.state = GhostState.HUNTING_PAC;
-			context.blinky.setMoveDir(Direction.LEFT);
-			context.blinky.setWishDir(Direction.LEFT);
-			context.blinky.position = context.pac.position.plus(t(14), 0);
-			context.blinky.setSpeed(1.0);
-			context.blinky.show();
+			$.blinky = new Ghost(GameModel.RED_GHOST, "Blinky");
+			$.blinky.state = GhostState.HUNTING_PAC;
+			$.blinky.setMoveDir(Direction.LEFT);
+			$.blinky.setWishDir(Direction.LEFT);
+			$.blinky.position = $.pac.position.plus(t(14), 0);
+			$.blinky.setSpeed(1.0);
+			$.blinky.show();
 
-			context.nail = new GameEntity();
-			context.nail.setPosition(t(14), t(20) - 1);
-			context.nail.show();
+			$.nail = new GameEntity();
+			$.nail.setPosition(t(14), t(20) - 1);
+			$.nail.show();
 		}
 
 		@Override
-		public void onUpdate(Intermission2Context context) {
+		public void onUpdate(Intermission2Context $) {
 			if (controller.nailDistance() == 0) {
 				controller.changeState(STRETCHED);
 				return;
 			}
-			context.pac.move();
-			context.blinky.move();
+			$.pac.move();
+			$.blinky.move();
 		}
 	},
 
 	STRETCHED {
 		@Override
-		public void onUpdate(Intermission2Context context) {
+		public void onUpdate(Intermission2Context $) {
 			int stretching = controller.nailDistance() / 4;
 			if (stretching == 3) {
-				context.blinky.setSpeed(0);
-				context.blinky.setMoveDir(Direction.UP);
+				$.blinky.setSpeed(0);
+				$.blinky.setMoveDir(Direction.UP);
 				controller.changeState(Intermission2State.STUCK);
 				return;
 			}
-			context.blinky.setSpeed(0.3 - 0.1 * stretching);
-			context.blinky.move();
-			context.pac.move();
+			$.blinky.setSpeed(0.3 - 0.1 * stretching);
+			$.blinky.move();
+			$.pac.move();
 		}
 	},
 
 	STUCK {
 		@Override
-		public void onUpdate(Intermission2Context context) {
+		public void onUpdate(Intermission2Context $) {
 			if (timer.atSecond(2)) {
-				context.blinky.setMoveDir(Direction.RIGHT);
+				$.blinky.setMoveDir(Direction.RIGHT);
 			} else if (timer.atSecond(6)) {
 				controller.gameController.state().timer().expire();
 				return;
 			}
-			context.blinky.move();
-			context.pac.move();
+			$.blinky.move();
+			$.pac.move();
 		}
 	};
 

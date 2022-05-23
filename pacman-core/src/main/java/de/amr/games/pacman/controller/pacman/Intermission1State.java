@@ -42,27 +42,27 @@ public enum Intermission1State implements FsmState<Intermission1Context> {
 
 	CHASING_PACMAN {
 		@Override
-		public void onEnter(Intermission1Context context) {
+		public void onEnter(Intermission1Context $) {
 			timer.setDurationSeconds(5).start();
-			context.playIntermissionSound.run();
+			$.playIntermissionSound.run();
 
-			context.pac = new Pac("Pac-Man");
-			context.pac.setMoveDir(Direction.LEFT);
-			context.pac.setPosition(t(30), t(20));
-			context.pac.setSpeed(1.0);
-			context.pac.show();
+			$.pac = new Pac("Pac-Man");
+			$.pac.setMoveDir(Direction.LEFT);
+			$.pac.setPosition(t(30), t(20));
+			$.pac.setSpeed(1.0);
+			$.pac.show();
 
-			context.blinky = new Ghost(GameModel.RED_GHOST, "Blinky");
-			context.blinky.state = GhostState.HUNTING_PAC;
-			context.blinky.setMoveDir(Direction.LEFT);
-			context.blinky.setWishDir(Direction.LEFT);
-			context.blinky.position = context.pac.position.plus(t(3) + 0.5, 0);
-			context.blinky.setSpeed(1.05);
-			context.blinky.show();
+			$.blinky = new Ghost(GameModel.RED_GHOST, "Blinky");
+			$.blinky.state = GhostState.HUNTING_PAC;
+			$.blinky.setMoveDir(Direction.LEFT);
+			$.blinky.setWishDir(Direction.LEFT);
+			$.blinky.position = $.pac.position.plus(t(3) + 0.5, 0);
+			$.blinky.setSpeed(1.05);
+			$.blinky.show();
 		}
 
 		@Override
-		public void onUpdate(Intermission1Context context) {
+		public void onUpdate(Intermission1Context $) {
 			if (timer.tick() < 60) {
 				return;
 			}
@@ -70,33 +70,33 @@ public enum Intermission1State implements FsmState<Intermission1Context> {
 				controller.changeState(CHASING_BLINKY);
 				return;
 			}
-			context.pac.move();
-			context.blinky.move();
+			$.pac.move();
+			$.blinky.move();
 		}
 	},
 
 	CHASING_BLINKY {
 		@Override
-		public void onEnter(Intermission1Context context) {
+		public void onEnter(Intermission1Context $) {
 			timer.setDurationSeconds(7).start();
-			context.pac.setMoveDir(Direction.RIGHT);
-			context.pac.setPosition(-t(24), t(20));
-			context.pac.setSpeed(1.0);
-			context.blinky.state = GhostState.FRIGHTENED;
-			context.blinky.setMoveDir(Direction.RIGHT);
-			context.blinky.setWishDir(Direction.RIGHT);
-			context.blinky.setPosition(-t(1), t(20));
-			context.blinky.setSpeed(0.6);
+			$.pac.setMoveDir(Direction.RIGHT);
+			$.pac.setPosition(-t(24), t(20));
+			$.pac.setSpeed(1.0);
+			$.blinky.state = GhostState.FRIGHTENED;
+			$.blinky.setMoveDir(Direction.RIGHT);
+			$.blinky.setWishDir(Direction.RIGHT);
+			$.blinky.setPosition(-t(1), t(20));
+			$.blinky.setSpeed(0.6);
 		}
 
 		@Override
-		public void onUpdate(Intermission1Context context) {
+		public void onUpdate(Intermission1Context $) {
 			if (timer.hasExpired()) {
 				controller.gameController.state().timer().expire();
 				return;
 			}
-			context.pac.move();
-			context.blinky.move();
+			$.pac.move();
+			$.blinky.move();
 		}
 	};
 

@@ -40,26 +40,26 @@ public enum Intermission2State implements FsmState<Intermission2Context> {
 
 	FLAP {
 		@Override
-		public void onEnter(Intermission2Context context) {
+		public void onEnter(Intermission2Context $) {
 			timer.setDurationIndefinite().start();
-			context.playIntermissionSound.run();
-			context.flap = new Flap();
-			context.flap.number = 2;
-			context.flap.text = "THE CHASE";
-			context.flap.setPosition(t(3), t(10));
-			context.flap.show();
-			context.pacMan = new Pac("Pac-Man");
-			context.pacMan.setMoveDir(Direction.RIGHT);
-			context.msPacMan = new Pac("Ms. Pac-Man");
-			context.msPacMan.setMoveDir(Direction.RIGHT);
+			$.playIntermissionSound.run();
+			$.flap = new Flap();
+			$.flap.number = 2;
+			$.flap.text = "THE CHASE";
+			$.flap.setPosition(t(3), t(10));
+			$.flap.show();
+			$.pacMan = new Pac("Pac-Man");
+			$.pacMan.setMoveDir(Direction.RIGHT);
+			$.msPacMan = new Pac("Ms. Pac-Man");
+			$.msPacMan.setMoveDir(Direction.RIGHT);
 		}
 
 		@Override
-		public void onUpdate(Intermission2Context context) {
+		public void onUpdate(Intermission2Context $) {
 			if (timer.atSecond(1)) {
-				context.playFlapAnimation.run();
+				$.playFlapAnimation.run();
 			} else if (timer.atSecond(2)) {
-				context.flap.hide();
+				$.flap.hide();
 			} else if (timer.atSecond(3)) {
 				controller.changeState(Intermission2State.CHASING);
 			}
@@ -68,55 +68,55 @@ public enum Intermission2State implements FsmState<Intermission2Context> {
 
 	CHASING {
 		@Override
-		public void onEnter(Intermission2Context context) {
+		public void onEnter(Intermission2Context $) {
 			timer.setDurationIndefinite().start();
 		}
 
 		@Override
-		public void onUpdate(Intermission2Context context) {
+		public void onUpdate(Intermission2Context $) {
 			if (timer.atSecond(1.5)) {
-				context.pacMan.setPosition(-t(2), context.upperY);
-				context.pacMan.setMoveDir(Direction.RIGHT);
-				context.pacMan.setSpeed(2.0);
-				context.pacMan.show();
-				context.msPacMan.setPosition(-t(8), context.upperY);
-				context.msPacMan.setMoveDir(Direction.RIGHT);
-				context.msPacMan.setSpeed(2.0);
-				context.msPacMan.show();
+				$.pacMan.setPosition(-t(2), $.upperY);
+				$.pacMan.setMoveDir(Direction.RIGHT);
+				$.pacMan.setSpeed(2.0);
+				$.pacMan.show();
+				$.msPacMan.setPosition(-t(8), $.upperY);
+				$.msPacMan.setMoveDir(Direction.RIGHT);
+				$.msPacMan.setSpeed(2.0);
+				$.msPacMan.show();
 			} else if (timer.atSecond(6)) {
-				context.pacMan.setPosition(t(36), context.lowerY);
-				context.pacMan.setMoveDir(Direction.LEFT);
-				context.pacMan.setSpeed(2.0);
-				context.msPacMan.setPosition(t(30), context.lowerY);
-				context.msPacMan.setMoveDir(Direction.LEFT);
-				context.msPacMan.setSpeed(2.0);
+				$.pacMan.setPosition(t(36), $.lowerY);
+				$.pacMan.setMoveDir(Direction.LEFT);
+				$.pacMan.setSpeed(2.0);
+				$.msPacMan.setPosition(t(30), $.lowerY);
+				$.msPacMan.setMoveDir(Direction.LEFT);
+				$.msPacMan.setSpeed(2.0);
 			} else if (timer.atSecond(10.5)) {
-				context.pacMan.setMoveDir(Direction.RIGHT);
-				context.pacMan.setSpeed(2.0);
-				context.msPacMan.setPosition(t(-8), context.middleY);
-				context.msPacMan.setMoveDir(Direction.RIGHT);
-				context.msPacMan.setSpeed(2.0);
-				context.pacMan.setPosition(t(-2), context.middleY);
+				$.pacMan.setMoveDir(Direction.RIGHT);
+				$.pacMan.setSpeed(2.0);
+				$.msPacMan.setPosition(t(-8), $.middleY);
+				$.msPacMan.setMoveDir(Direction.RIGHT);
+				$.msPacMan.setSpeed(2.0);
+				$.pacMan.setPosition(t(-2), $.middleY);
 			} else if (timer.atSecond(14.5)) {
-				context.pacMan.setPosition(t(42), context.upperY);
-				context.pacMan.setMoveDir(Direction.LEFT);
-				context.pacMan.setSpeed(4.0);
-				context.msPacMan.setPosition(t(30), context.upperY);
-				context.msPacMan.setMoveDir(Direction.LEFT);
-				context.msPacMan.setSpeed(4.0);
+				$.pacMan.setPosition(t(42), $.upperY);
+				$.pacMan.setMoveDir(Direction.LEFT);
+				$.pacMan.setSpeed(4.0);
+				$.msPacMan.setPosition(t(30), $.upperY);
+				$.msPacMan.setMoveDir(Direction.LEFT);
+				$.msPacMan.setSpeed(4.0);
 			} else if (timer.atSecond(15.5)) {
-				context.pacMan.setPosition(t(-2), context.lowerY);
-				context.pacMan.setMoveDir(Direction.RIGHT);
-				context.pacMan.setSpeed(4.0);
-				context.msPacMan.setPosition(t(-14), context.lowerY);
-				context.msPacMan.setMoveDir(Direction.RIGHT);
-				context.msPacMan.setSpeed(4.0);
+				$.pacMan.setPosition(t(-2), $.lowerY);
+				$.pacMan.setMoveDir(Direction.RIGHT);
+				$.pacMan.setSpeed(4.0);
+				$.msPacMan.setPosition(t(-14), $.lowerY);
+				$.msPacMan.setMoveDir(Direction.RIGHT);
+				$.msPacMan.setSpeed(4.0);
 			} else if (timer.atSecond(20)) {
 				controller.gameController.state().timer().expire();
 				return;
 			}
-			context.pacMan.move();
-			context.msPacMan.move();
+			$.pacMan.move();
+			$.msPacMan.move();
 		}
 	};
 

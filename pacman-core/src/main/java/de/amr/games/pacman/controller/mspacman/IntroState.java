@@ -41,26 +41,26 @@ public enum IntroState implements FsmState<IntroContext> {
 
 	BEGIN {
 		@Override
-		public void onEnter(IntroContext context) {
-			context.lightsTimer.setDurationIndefinite().start();
-			context.msPacMan.setMoveDir(LEFT);
-			context.msPacMan.setPosition(t(36), context.turningPoint.y);
-			context.msPacMan.setSpeed(0.95);
-			context.msPacMan.show();
-			for (Ghost ghost : context.ghosts) {
+		public void onEnter(IntroContext $) {
+			$.lightsTimer.setDurationIndefinite().start();
+			$.msPacMan.setMoveDir(LEFT);
+			$.msPacMan.setPosition(t(36), $.turningPoint.y);
+			$.msPacMan.setSpeed(0.95);
+			$.msPacMan.show();
+			for (Ghost ghost : $.ghosts) {
 				ghost.state = GhostState.HUNTING_PAC;
 				ghost.setMoveDir(LEFT);
 				ghost.setWishDir(LEFT);
-				ghost.setPosition(t(36), context.turningPoint.y);
+				ghost.setPosition(t(36), $.turningPoint.y);
 				ghost.setSpeed(0.95);
 				ghost.show();
 			}
-			context.ghostIndex = 0;
+			$.ghostIndex = 0;
 		}
 
 		@Override
-		public void onUpdate(IntroContext context) {
-			context.lightsTimer.run();
+		public void onUpdate(IntroContext $) {
+			$.lightsTimer.run();
 			if (timer.atSecond(1)) {
 				controller.changeState(IntroState.GHOSTS);
 			}
@@ -69,17 +69,17 @@ public enum IntroState implements FsmState<IntroContext> {
 
 	GHOSTS {
 		@Override
-		public void onUpdate(IntroContext context) {
-			context.lightsTimer.run();
-			Ghost ghost = context.ghosts[context.ghostIndex];
+		public void onUpdate(IntroContext $) {
+			$.lightsTimer.run();
+			Ghost ghost = $.ghosts[$.ghostIndex];
 			ghost.move();
-			if (ghost.moveDir() != UP && ghost.position.x <= context.turningPoint.x) {
+			if (ghost.moveDir() != UP && ghost.position.x <= $.turningPoint.x) {
 				ghost.setMoveDir(UP);
 				ghost.setWishDir(UP);
 			}
-			if (ghost.position.y <= context.lightsTopLeft.y + ghost.id * 18) {
+			if (ghost.position.y <= $.lightsTopLeft.y + ghost.id * 18) {
 				ghost.setSpeed(0);
-				if (++context.ghostIndex == context.ghosts.length) {
+				if (++$.ghostIndex == $.ghosts.length) {
 					controller.changeState(IntroState.MSPACMAN);
 				}
 			}
@@ -88,11 +88,11 @@ public enum IntroState implements FsmState<IntroContext> {
 
 	MSPACMAN {
 		@Override
-		public void onUpdate(IntroContext context) {
-			context.lightsTimer.run();
-			context.msPacMan.move();
-			if (context.msPacMan.position.x <= t(14)) {
-				context.msPacMan.setSpeed(0);
+		public void onUpdate(IntroContext $) {
+			$.lightsTimer.run();
+			$.msPacMan.move();
+			if ($.msPacMan.position.x <= t(14)) {
+				$.msPacMan.setSpeed(0);
 				controller.changeState(IntroState.READY_TO_PLAY);
 			}
 		}
@@ -100,9 +100,9 @@ public enum IntroState implements FsmState<IntroContext> {
 
 	READY_TO_PLAY {
 		@Override
-		public void onUpdate(IntroContext context) {
-			context.lightsTimer.run();
-			context.blinking.advance();
+		public void onUpdate(IntroContext $) {
+			$.lightsTimer.run();
+			$.blinking.advance();
 			if (timer.atSecond(5)) {
 				controller.gameController.state().timer().expire();
 			}
