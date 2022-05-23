@@ -45,6 +45,27 @@ import de.amr.games.pacman.model.common.Pac;
  */
 public class Intermission2Controller extends Fsm<State, Context> {
 
+	public final GameController gameController;
+	public final Context context = new Context();
+
+	public Intermission2Controller(GameController gameController) {
+		super(State.values());
+		this.gameController = gameController;
+	}
+
+	@Override
+	public Context getContext() {
+		return context;
+	}
+
+	public void init() {
+		reset(State.CHASING);
+	}
+
+	public int nailDistance() {
+		return (int) (context.nail.position.x - context.blinky.position.x);
+	}
+
 	public static class Context {
 		public Runnable playIntermissionSound = Fsm::nop;
 		public Ghost blinky;
@@ -133,26 +154,5 @@ public class Intermission2Controller extends Fsm<State, Context> {
 		public TickTimer timer() {
 			return timer;
 		}
-	}
-
-	public final GameController gameController;
-	public final Context context = new Context();
-
-	public Intermission2Controller(GameController gameController) {
-		super(State.values());
-		this.gameController = gameController;
-	}
-
-	@Override
-	public Context getContext() {
-		return context;
-	}
-
-	public void init() {
-		reset(State.CHASING);
-	}
-
-	public int nailDistance() {
-		return (int) (context.nail.position.x - context.blinky.position.x);
 	}
 }

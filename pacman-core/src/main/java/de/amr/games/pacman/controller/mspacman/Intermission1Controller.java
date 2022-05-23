@@ -50,6 +50,19 @@ import de.amr.games.pacman.model.mspacman.Flap;
  */
 public class Intermission1Controller extends Fsm<State, Context> {
 
+	public final GameController gameController;
+	public final Context context = new Context();
+
+	public Intermission1Controller(GameController gameController) {
+		super(State.values());
+		this.gameController = gameController;
+	}
+
+	@Override
+	public Context getContext() {
+		return context;
+	}
+
 	public static class Context {
 		public final int upperY = t(12), middleY = t(18), lowerY = t(24);
 		public Runnable playIntermissionSound = Fsm::nop;
@@ -231,18 +244,5 @@ public class Intermission1Controller extends Fsm<State, Context> {
 		public TickTimer timer() {
 			return timer;
 		}
-	}
-
-	public final GameController gameController;
-	public final Context context = new Context();
-
-	public Intermission1Controller(GameController gameController) {
-		super(State.values());
-		this.gameController = gameController;
-	}
-
-	@Override
-	public Context getContext() {
-		return context;
 	}
 }
