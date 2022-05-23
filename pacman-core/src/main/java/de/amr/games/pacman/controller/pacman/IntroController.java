@@ -71,7 +71,6 @@ public class IntroController extends Fsm<State, Context> {
 	}
 
 	public static class Context {
-
 		public final TimedSeq<Boolean> fastBlinking = TimedSeq.pulse().frameDuration(10);
 		public final TimedSeq<Boolean> slowBlinking = TimedSeq.pulse().frameDuration(30);
 		public final String nicknames[] = { "Blinky", "Pinky", "Inky", "Clyde" };
