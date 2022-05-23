@@ -27,7 +27,12 @@ import static de.amr.games.pacman.model.common.world.World.t;
 
 import de.amr.games.pacman.controller.common.GameController;
 import de.amr.games.pacman.controller.mspacman.Intermission3Controller.Context;
+import de.amr.games.pacman.controller.mspacman.Intermission3Controller.State;
+import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.Fsm;
+import de.amr.games.pacman.lib.FsmState;
+import de.amr.games.pacman.lib.TickTimer;
+import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.model.common.GameEntity;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.mspacman.Flap;
@@ -43,7 +48,7 @@ import de.amr.games.pacman.model.mspacman.JuniorBag;
  * 
  * @author Armin Reichert
  */
-public class Intermission3Controller extends Fsm<Intermission3State, Context> {
+public class Intermission3Controller extends Fsm<State, Context> {
 
 	public static class Context {
 		public final int groundY = t(24);
@@ -57,11 +62,121 @@ public class Intermission3Controller extends Fsm<Intermission3State, Context> {
 		public int numBagBounces;
 	}
 
+	public enum State implements FsmState<Context> {
+
+		FLAP {
+			@Override
+			public void onEnter(Context $) {
+				$.flap = new Flap();
+				$.pacMan = new Pac("Pac-Man");
+				$.msPacMan = new Pac("Ms. Pac-Man");
+				$.stork = new GameEntity();
+				$.bag = new JuniorBag();
+
+				timer.setDurationSeconds(2).start();
+				$.playIntermissionSound.run();
+
+				$.flap.number = 3;
+				$.flap.text = "JUNIOR";
+				$.flap.setPosition(t(3), t(10));
+				$.flap.show();
+			}
+
+			@Override
+			public void onUpdate(Context $) {
+				if (timer.atSecond(1)) {
+					$.playFlapAnimation.run();
+				} else if (timer.atSecond(2)) {
+					$.flap.hide();
+					controller.changeState(State.ACTION);
+				}
+			}
+		},
+		ACTION {
+			@Override
+			public void onEnter(Context $) {
+				timer.setDurationIndefinite().start();
+
+				$.pacMan.setMoveDir(Direction.RIGHT);
+				$.pacMan.setPosition(t(3), $.groundY - 4);
+				$.pacMan.show();
+
+				$.msPacMan.setMoveDir(Direction.RIGHT);
+				$.msPacMan.setPosition(t(5), $.groundY - 4);
+				$.msPacMan.show();
+
+				$.stork.setPosition(t(30), t(12));
+				$.stork.setVelocity(-0.8, 0);
+				$.stork.show();
+
+				$.bag.position = $.stork.position.plus(-14, 3);
+				$.bag.velocity = $.stork.velocity;
+				$.bag.acceleration = V2d.NULL;
+				$.bag.open = false;
+				$.bag.show();
+				$.numBagBounces = 0;
+			}
+
+			@Override
+			public void onUpdate(Context $) {
+				$.stork.move();
+				$.bag.move();
+
+				// release bag from storks beak?
+				if ((int) $.stork.position.x == t(20)) {
+					$.bag.acceleration = new V2d(0, 0.04);
+					$.stork.setVelocity(-1, 0);
+				}
+
+				// (closed) bag reaches ground for first time?
+				if (!$.bag.open && $.bag.position.y > $.groundY) {
+					++$.numBagBounces;
+					if ($.numBagBounces < 3) {
+						$.bag.setVelocity(-0.2f, -1f / $.numBagBounces);
+						$.bag.setPosition($.bag.position.x, $.groundY);
+					} else {
+						$.bag.open = true;
+						$.bag.velocity = V2d.NULL;
+						controller.changeState(State.DONE);
+					}
+				}
+			}
+		},
+
+		DONE {
+			@Override
+			public void onEnter(Context $) {
+				timer.setDurationSeconds(3).start();
+			}
+
+			@Override
+			public void onUpdate(Context $) {
+				$.stork.move();
+				if (timer.hasExpired()) {
+					controller.gameController.state().timer().expire();
+				}
+			}
+		};
+
+		protected Intermission3Controller controller;
+		protected final TickTimer timer = new TickTimer("Timer:" + name());
+
+		@Override
+		public void setFsm(Fsm<? extends FsmState<Context>, Context> fsm) {
+			controller = (Intermission3Controller) fsm;
+		}
+
+		@Override
+		public TickTimer timer() {
+			return timer;
+		}
+	}
+
 	public final GameController gameController;
 	public final Context context = new Context();
 
 	public Intermission3Controller(GameController gameController) {
-		super(Intermission3State.values());
+		super(State.values());
 		this.gameController = gameController;
 	}
 
