@@ -55,8 +55,7 @@ public class IntroController extends FiniteStateMachine<IntroState, IntroContext
 		for (var state : IntroState.values()) {
 			state.timer.set(0);
 		}
-		state = null;
-		changeState(IntroState.BEGIN);
+		enterAsInitialState(IntroState.BEGIN);
 	}
 
 	@Override

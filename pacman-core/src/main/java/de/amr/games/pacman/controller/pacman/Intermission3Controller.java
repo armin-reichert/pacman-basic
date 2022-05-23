@@ -50,7 +50,6 @@ public class Intermission3Controller extends FiniteStateMachine<Intermission3Sta
 	}
 
 	public void init() {
-		state = null;
-		changeState(Intermission3State.CHASING);
+		enterAsInitialState(Intermission3State.CHASING);
 	}
 }

@@ -54,7 +54,6 @@ public class Intermission3Controller extends FiniteStateMachine<Intermission3Sta
 	}
 
 	public void init() {
-		state = null;
-		changeState(Intermission3State.FLAP);
+		enterAsInitialState(Intermission3State.FLAP);
 	}
 }

@@ -53,7 +53,6 @@ public class Intermission1Controller extends FiniteStateMachine<Intermission1Sta
 	}
 
 	public void init() {
-		state = null;
-		changeState(Intermission1State.FLAP);
+		enterAsInitialState(Intermission1State.FLAP);
 	}
 }

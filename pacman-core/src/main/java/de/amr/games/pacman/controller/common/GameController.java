@@ -26,6 +26,8 @@ package de.amr.games.pacman.controller.common;
 import static de.amr.games.pacman.controller.common.GameState.INTERMISSION_TEST;
 import static de.amr.games.pacman.controller.common.GameState.INTRO;
 import static de.amr.games.pacman.controller.common.GameState.READY;
+import static de.amr.games.pacman.model.common.GhostState.FRIGHTENED;
+import static de.amr.games.pacman.model.common.GhostState.HUNTING_PAC;
 
 import java.util.Map;
 import java.util.Objects;
@@ -104,7 +106,7 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 		for (var gv : GameVariant.values()) {
 			games.get(gv).setEventingEnabled(gv == selectedGameVariant);
 		}
-		changeState(INTRO);
+		enterAsInitialState(INTRO);
 	}
 
 	@Override
@@ -117,22 +119,23 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 	}
 
 	public void requestGame() {
-		if (state == INTRO) {
+		if (state() == INTRO) {
 			game().requested = true;
 			changeState(READY);
 		}
 	}
 
 	public void startIntermissionTest() {
-		if (state == INTRO) {
+		if (state() == INTRO) {
 			game().intermissionTestNumber = 1;
 			changeState(INTERMISSION_TEST);
 		}
 	}
 
-	public void cheatKillGhosts() {
-		if (game().running) {
-			game().cheatKillGhosts();
+	public void cheatKillAllPossibleGhosts() {
+		if (game().running && state() != GameState.GHOST_DYING) {
+			game().ghostBounty = game().firstGhostBounty;
+			game().ghosts().filter(ghost -> ghost.is(HUNTING_PAC) || ghost.is(FRIGHTENED)).forEach(game()::killGhost);
 			changeState(GameState.GHOST_DYING);
 		}
 	}

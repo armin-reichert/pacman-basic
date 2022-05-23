@@ -43,8 +43,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.controller.common.event.GameEvent;
-import de.amr.games.pacman.controller.common.event.GameEventListener;
 import de.amr.games.pacman.controller.common.event.GameEvent.Info;
+import de.amr.games.pacman.controller.common.event.GameEventListener;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.Hiscore;
 import de.amr.games.pacman.lib.TickTimer;
@@ -424,11 +424,6 @@ public abstract class GameModel {
 		}
 	}
 
-	public void cheatKillGhosts() {
-		ghostBounty = firstGhostBounty;
-		ghosts().filter(ghost -> ghost.is(HUNTING_PAC) || ghost.is(FRIGHTENED)).forEach(this::killGhost);
-	}
-
 	/**
 	 * @return <code>true</code> if player power just expired
 	 */
@@ -632,6 +627,12 @@ public abstract class GameModel {
 		return score(pelletValue);
 	}
 
+	public boolean checkKillGhosts() {
+		Ghost[] prey = ghosts(FRIGHTENED).filter(player::meets).toArray(Ghost[]::new);
+		Stream.of(prey).forEach(this::killGhost);
+		return prey.length > 0;
+	}
+
 	/**
 	 * Killing ghosts wins 200, 400, 800, 1600 points in order when using the same energizer power. If all 16 ghosts on a
 	 * level are killed, additonal 12000 points are rewarded.
@@ -647,12 +648,6 @@ public abstract class GameModel {
 			score(12000);
 		}
 		log("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name, ghost.tile(), ghost.bounty);
-	}
-
-	public boolean checkKillGhosts() {
-		Ghost[] prey = ghosts(FRIGHTENED).filter(player::meets).toArray(Ghost[]::new);
-		Stream.of(prey).forEach(this::killGhost);
-		return prey.length > 0;
 	}
 
 	public boolean checkKillPlayer(boolean immune) {

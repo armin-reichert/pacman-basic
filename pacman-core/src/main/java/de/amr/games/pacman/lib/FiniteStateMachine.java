@@ -44,8 +44,8 @@ public abstract class FiniteStateMachine<STATE extends FsmState<CONTEXT>, CONTEX
 	public static void nop() {
 	}
 
-	protected STATE state;
-	protected STATE previousState;
+	private STATE state;
+	private STATE prevState;
 	protected String name;
 
 	protected final List<BiConsumer<STATE, STATE>> stateChangeListeners = new ArrayList<>();
@@ -60,9 +60,18 @@ public abstract class FiniteStateMachine<STATE extends FsmState<CONTEXT>, CONTEX
 		return state;
 	}
 
-	public STATE changeState(STATE newState) {
+	public STATE prevState() {
+		return prevState;
+	}
+
+	public void enterAsInitialState(STATE newState) {
+		state = null;
+		changeState(newState);
+	}
+
+	public void changeState(STATE newState) {
 		if (newState == state) {
-			log("Change state to itself; %s", state);
+			throw new IllegalStateException("FiniteStateMachine: Self loop in state " + state);
 		}
 		if (state != null) {
 			state.onExit(getContext());
@@ -70,15 +79,14 @@ public abstract class FiniteStateMachine<STATE extends FsmState<CONTEXT>, CONTEX
 				log("%s: Exited state %s %s", name, state, state.timer());
 			}
 		}
-		previousState = state;
+		prevState = state;
 		state = newState;
 		state.onEnter(getContext());
 		state.timer().start();
 		if (logging) {
 			log("%s: Entered state %s %s", name, state, state.timer());
 		}
-		stateChangeListeners.stream().forEach(listener -> listener.accept(previousState, state));
-		return state;
+		stateChangeListeners.stream().forEach(listener -> listener.accept(prevState, state));
 	}
 
 	/**
@@ -98,12 +106,12 @@ public abstract class FiniteStateMachine<STATE extends FsmState<CONTEXT>, CONTEX
 	 * Returns to the previous state.
 	 */
 	public void resumePreviousState() {
-		if (previousState == null) {
+		if (prevState == null) {
 			throw new IllegalStateException("State machine cannot resume previous state because there is none");
 		}
 		if (logging) {
-			log("%s: Resume state %s, timer: %s", name, previousState, previousState.timer());
+			log("%s: Resume state %s, timer: %s", name, prevState, prevState.timer());
 		}
-		changeState(previousState);
+		changeState(prevState);
 	}
 }

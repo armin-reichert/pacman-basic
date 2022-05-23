@@ -81,7 +81,7 @@ public enum IntroState implements FsmState<IntroContext> {
 			} else if (timer.isRunningSeconds(2.0)) {
 				if (context.ghostIndex < 3) {
 					controller.selectGhost(context.ghostIndex + 1);
-					controller.restartStateTimer();
+					timer.setIndefinite().start();
 				}
 			} else if (timer.isRunningSeconds(2.75)) {
 				context.fastBlinking.restart();
@@ -103,7 +103,7 @@ public enum IntroState implements FsmState<IntroContext> {
 	CHASING_PAC {
 		@Override
 		public void onEnter(IntroContext context) {
-			controller.restartStateTimer();
+			timer.setIndefinite().start();
 			context.pacMan.show();
 			context.pacMan.setSpeed(1);
 			context.pacMan.setPosition(t(28), t(20));
@@ -135,7 +135,7 @@ public enum IntroState implements FsmState<IntroContext> {
 	CHASING_GHOSTS {
 		@Override
 		public void onEnter(IntroContext context) {
-			controller.restartStateTimer();
+			timer.setIndefinite().start();
 			for (Ghost ghost : context.ghosts) {
 				ghost.state = GhostState.FRIGHTENED;
 				ghost.setWishDir(Direction.RIGHT);
