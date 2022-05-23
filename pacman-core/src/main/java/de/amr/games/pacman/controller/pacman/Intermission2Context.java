@@ -24,7 +24,7 @@ SOFTWARE.
 
 package de.amr.games.pacman.controller.pacman;
 
-import de.amr.games.pacman.lib.FiniteStateMachine;
+import de.amr.games.pacman.lib.Fsm;
 import de.amr.games.pacman.model.common.GameEntity;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
@@ -34,7 +34,7 @@ import de.amr.games.pacman.model.common.Pac;
  *
  */
 public class Intermission2Context {
-	public Runnable playIntermissionSound = FiniteStateMachine::nop;
+	public Runnable playIntermissionSound = Fsm::nop;
 	public Ghost blinky;
 	public Pac pac;
 	public GameEntity nail;

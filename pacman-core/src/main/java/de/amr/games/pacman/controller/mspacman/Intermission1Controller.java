@@ -24,7 +24,7 @@ SOFTWARE.
 package de.amr.games.pacman.controller.mspacman;
 
 import de.amr.games.pacman.controller.common.GameController;
-import de.amr.games.pacman.lib.FiniteStateMachine;
+import de.amr.games.pacman.lib.Fsm;
 
 /**
  * Intermission scene 1: "They meet".
@@ -35,16 +35,14 @@ import de.amr.games.pacman.lib.FiniteStateMachine;
  * 
  * @author Armin Reichert
  */
-public class Intermission1Controller extends FiniteStateMachine<Intermission1State, Intermission1Context> {
+public class Intermission1Controller extends Fsm<Intermission1State, Intermission1Context> {
 
 	public final GameController gameController;
 	private final Intermission1Context context = new Intermission1Context();
 
 	public Intermission1Controller(GameController gameController) {
+		super(Intermission1State.values());
 		this.gameController = gameController;
-		for (var state : Intermission1State.values()) {
-			state.fsm = this;
-		}
 	}
 
 	@Override

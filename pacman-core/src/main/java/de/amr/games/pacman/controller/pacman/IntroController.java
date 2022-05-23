@@ -24,7 +24,7 @@ SOFTWARE.
 package de.amr.games.pacman.controller.pacman;
 
 import de.amr.games.pacman.controller.common.GameController;
-import de.amr.games.pacman.lib.FiniteStateMachine;
+import de.amr.games.pacman.lib.Fsm;
 
 /**
  * Intro scene of the PacMan game.
@@ -34,15 +34,14 @@ import de.amr.games.pacman.lib.FiniteStateMachine;
  * 
  * @author Armin Reichert
  */
-public class IntroController extends FiniteStateMachine<IntroState, IntroContext> {
+public class IntroController extends Fsm<IntroState, IntroContext> {
 
+	public final GameController gameController;
 	public final IntroContext context = new IntroContext();
 
 	public IntroController(GameController gameController) {
-		context.gameController = gameController;
-		for (var state : IntroState.values()) {
-			state.controller = this;
-		}
+		super(IntroState.values());
+		this.gameController = gameController;
 		logging = true;
 	}
 

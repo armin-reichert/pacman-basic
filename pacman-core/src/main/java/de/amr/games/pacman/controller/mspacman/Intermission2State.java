@@ -27,12 +27,14 @@ package de.amr.games.pacman.controller.mspacman;
 import static de.amr.games.pacman.model.common.world.World.t;
 
 import de.amr.games.pacman.lib.Direction;
+import de.amr.games.pacman.lib.Fsm;
 import de.amr.games.pacman.lib.FsmState;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.mspacman.Flap;
 
 public enum Intermission2State implements FsmState<Intermission2Context> {
+
 	FLAP {
 		@Override
 		public void onEnter(Intermission2Context context) {
@@ -56,7 +58,7 @@ public enum Intermission2State implements FsmState<Intermission2Context> {
 			} else if (timer.atSecond(2)) {
 				context.flap.hide();
 			} else if (timer.atSecond(3)) {
-				fsm.changeState(Intermission2State.CHASING);
+				controller.changeState(Intermission2State.CHASING);
 			}
 		}
 	},
@@ -107,7 +109,7 @@ public enum Intermission2State implements FsmState<Intermission2Context> {
 				context.msPacMan.setMoveDir(Direction.RIGHT);
 				context.msPacMan.setSpeed(4.0);
 			} else if (timer.atSecond(20)) {
-				fsm.gameController.state().timer().expire();
+				controller.gameController.state().timer().expire();
 				return;
 			}
 			context.pacMan.move();
@@ -115,8 +117,13 @@ public enum Intermission2State implements FsmState<Intermission2Context> {
 		}
 	};
 
-	protected Intermission2Controller fsm;
+	protected Intermission2Controller controller;
 	protected final TickTimer timer = new TickTimer("Timer:" + name());
+
+	@Override
+	public void setFsm(Fsm<? extends FsmState<Intermission2Context>, Intermission2Context> fsm) {
+		controller = (Intermission2Controller) fsm;
+	}
 
 	@Override
 	public TickTimer timer() {

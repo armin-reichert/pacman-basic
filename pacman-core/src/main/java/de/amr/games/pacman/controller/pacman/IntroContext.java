@@ -26,7 +26,6 @@ package de.amr.games.pacman.controller.pacman;
 
 import static de.amr.games.pacman.model.common.world.World.t;
 
-import de.amr.games.pacman.controller.common.GameController;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TimedSeq;
 import de.amr.games.pacman.model.common.Ghost;
@@ -53,7 +52,6 @@ public class IntroContext {
 		}
 	}
 
-	public GameController gameController;
 	public TimedSeq<Boolean> fastBlinking = TimedSeq.pulse().frameDuration(10);
 	public TimedSeq<Boolean> slowBlinking = TimedSeq.pulse().frameDuration(30);
 	public int topY = t(6);

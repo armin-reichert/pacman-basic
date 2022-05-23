@@ -27,6 +27,7 @@ package de.amr.games.pacman.controller.pacman;
 import static de.amr.games.pacman.model.common.world.World.t;
 
 import de.amr.games.pacman.lib.Direction;
+import de.amr.games.pacman.lib.Fsm;
 import de.amr.games.pacman.lib.FsmState;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.common.GameModel;
@@ -63,7 +64,7 @@ public enum Intermission1State implements FsmState<Intermission1Context> {
 				return;
 			}
 			if (timer.hasExpired()) {
-				fsm.changeState(CHASING_BLINKY);
+				controller.changeState(CHASING_BLINKY);
 				return;
 			}
 			context.pac.move();
@@ -88,7 +89,7 @@ public enum Intermission1State implements FsmState<Intermission1Context> {
 		@Override
 		public void onUpdate(Intermission1Context context) {
 			if (timer.hasExpired()) {
-				fsm.gameController.state().timer().expire();
+				controller.gameController.state().timer().expire();
 				return;
 			}
 			context.pac.move();
@@ -96,8 +97,13 @@ public enum Intermission1State implements FsmState<Intermission1Context> {
 		}
 	};
 
-	protected Intermission1Controller fsm;
+	protected Intermission1Controller controller;
 	protected final TickTimer timer = new TickTimer("Timer:" + name());
+
+	@Override
+	public void setFsm(Fsm<? extends FsmState<Intermission1Context>, Intermission1Context> fsm) {
+		controller = (Intermission1Controller) fsm;
+	}
 
 	@Override
 	public TickTimer timer() {

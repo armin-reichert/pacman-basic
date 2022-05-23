@@ -26,7 +26,7 @@ package de.amr.games.pacman.controller.mspacman;
 
 import static de.amr.games.pacman.model.common.world.World.t;
 
-import de.amr.games.pacman.lib.FiniteStateMachine;
+import de.amr.games.pacman.lib.Fsm;
 import de.amr.games.pacman.model.common.GameEntity;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
@@ -34,8 +34,8 @@ import de.amr.games.pacman.model.mspacman.Flap;
 
 public class Intermission1Context {
 	public final int upperY = t(12), middleY = t(18), lowerY = t(24);
-	public Runnable playIntermissionSound = FiniteStateMachine::nop;
-	public Runnable playFlapAnimation = FiniteStateMachine::nop;
+	public Runnable playIntermissionSound = Fsm::nop;
+	public Runnable playFlapAnimation = Fsm::nop;
 	public Flap flap;
 	public Pac pacMan, msPac;
 	public Ghost pinky, inky;

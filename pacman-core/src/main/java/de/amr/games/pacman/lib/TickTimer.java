@@ -82,7 +82,7 @@ public class TickTimer {
 
 	@Override
 	public String toString() {
-		return "[%s: %s t:%d remaining:%s]".formatted(name, state, ticksAsString(tick), ticksAsString(remaining()));
+		return "[%s: %s t:%s remaining:%s]".formatted(name, state, ticksAsString(tick), ticksAsString(remaining()));
 	}
 
 	public TickTimerState state() {

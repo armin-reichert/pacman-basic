@@ -33,6 +33,7 @@ import java.util.stream.Stream;
 
 import de.amr.games.pacman.controller.pacman.IntroContext.GhostPortrait;
 import de.amr.games.pacman.lib.Direction;
+import de.amr.games.pacman.lib.Fsm;
 import de.amr.games.pacman.lib.FsmState;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.common.GameModel;
@@ -204,13 +205,18 @@ public enum IntroState implements FsmState<IntroContext> {
 		public void onUpdate(IntroContext context) {
 			context.slowBlinking.animate();
 			if (timer.atSecond(5)) {
-				context.gameController.state().timer().expire();
+				controller.gameController.state().timer().expire();
 			}
 		}
 	};
 
 	protected IntroController controller;
 	protected final TickTimer timer = new TickTimer("Timer:" + name());
+
+	@Override
+	public void setFsm(Fsm<? extends FsmState<IntroContext>, IntroContext> fsm) {
+		controller = (IntroController) fsm;
+	}
 
 	@Override
 	public TickTimer timer() {

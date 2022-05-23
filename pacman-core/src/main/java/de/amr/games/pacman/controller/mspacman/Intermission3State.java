@@ -27,6 +27,7 @@ package de.amr.games.pacman.controller.mspacman;
 import static de.amr.games.pacman.model.common.world.World.t;
 
 import de.amr.games.pacman.lib.Direction;
+import de.amr.games.pacman.lib.Fsm;
 import de.amr.games.pacman.lib.FsmState;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.V2d;
@@ -61,7 +62,7 @@ public enum Intermission3State implements FsmState<Intermission3Context> {
 				context.playFlapAnimation.run();
 			} else if (timer.atSecond(2)) {
 				context.flap.hide();
-				fsm.changeState(Intermission3State.ACTION);
+				controller.changeState(Intermission3State.ACTION);
 			}
 		}
 	},
@@ -110,7 +111,7 @@ public enum Intermission3State implements FsmState<Intermission3Context> {
 				} else {
 					context.bag.open = true;
 					context.bag.velocity = V2d.NULL;
-					fsm.changeState(Intermission3State.DONE);
+					controller.changeState(Intermission3State.DONE);
 				}
 			}
 		}
@@ -126,13 +127,18 @@ public enum Intermission3State implements FsmState<Intermission3Context> {
 		public void onUpdate(Intermission3Context context) {
 			context.stork.move();
 			if (timer.hasExpired()) {
-				fsm.gameController.state().timer().expire();
+				controller.gameController.state().timer().expire();
 			}
 		}
 	};
 
-	protected Intermission3Controller fsm;
+	protected Intermission3Controller controller;
 	protected final TickTimer timer = new TickTimer("Timer:" + name());
+
+	@Override
+	public void setFsm(Fsm<? extends FsmState<Intermission3Context>, Intermission3Context> fsm) {
+		controller = (Intermission3Controller) fsm;
+	}
 
 	@Override
 	public TickTimer timer() {

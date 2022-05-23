@@ -28,6 +28,7 @@ import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.model.common.world.World.t;
 
+import de.amr.games.pacman.lib.Fsm;
 import de.amr.games.pacman.lib.FsmState;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.common.Ghost;
@@ -57,7 +58,7 @@ public enum IntroState implements FsmState<IntroContext> {
 		@Override
 		public void onUpdate(IntroContext context) {
 			if (timer.atSecond(1)) {
-				fsm.changeState(IntroState.GHOSTS);
+				controller.changeState(IntroState.GHOSTS);
 			}
 		}
 	},
@@ -74,7 +75,7 @@ public enum IntroState implements FsmState<IntroContext> {
 			if (ghost.position.y <= context.boardTopLeft.y + ghost.id * 18) {
 				ghost.setSpeed(0);
 				if (++context.ghostIndex == context.ghosts.length) {
-					fsm.changeState(IntroState.MSPACMAN);
+					controller.changeState(IntroState.MSPACMAN);
 				}
 			}
 		}
@@ -86,7 +87,7 @@ public enum IntroState implements FsmState<IntroContext> {
 			context.msPacMan.move();
 			if (context.msPacMan.position.x <= t(14)) {
 				context.msPacMan.setSpeed(0);
-				fsm.changeState(IntroState.READY);
+				controller.changeState(IntroState.READY);
 			}
 		}
 	},
@@ -96,13 +97,18 @@ public enum IntroState implements FsmState<IntroContext> {
 		public void onUpdate(IntroContext context) {
 			context.blinking.advance();
 			if (timer.atSecond(5)) {
-				fsm.gameController.state().timer().expire();
+				controller.gameController.state().timer().expire();
 			}
 		}
 	};
 
-	protected IntroController fsm;
+	protected IntroController controller;
 	protected final TickTimer timer = new TickTimer("Timer:" + name());
+
+	@Override
+	public void setFsm(Fsm<? extends FsmState<IntroContext>, IntroContext> fsm) {
+		controller = (IntroController) fsm;
+	}
 
 	@Override
 	public TickTimer timer() {

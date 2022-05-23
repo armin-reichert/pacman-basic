@@ -24,7 +24,7 @@ SOFTWARE.
 package de.amr.games.pacman.controller.mspacman;
 
 import de.amr.games.pacman.controller.common.GameController;
-import de.amr.games.pacman.lib.FiniteStateMachine;
+import de.amr.games.pacman.lib.Fsm;
 
 /**
  * Intermission scene 3: "Junior".
@@ -36,16 +36,14 @@ import de.amr.games.pacman.lib.FiniteStateMachine;
  * 
  * @author Armin Reichert
  */
-public class Intermission3Controller extends FiniteStateMachine<Intermission3State, Intermission3Context> {
+public class Intermission3Controller extends Fsm<Intermission3State, Intermission3Context> {
 
 	public final GameController gameController;
 	private final Intermission3Context context = new Intermission3Context();
 
 	public Intermission3Controller(GameController gameController) {
+		super(Intermission3State.values());
 		this.gameController = gameController;
-		for (var state : Intermission3State.values()) {
-			state.fsm = this;
-		}
 	}
 
 	@Override

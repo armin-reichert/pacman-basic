@@ -24,23 +24,21 @@ SOFTWARE.
 package de.amr.games.pacman.controller.pacman;
 
 import de.amr.games.pacman.controller.common.GameController;
-import de.amr.games.pacman.lib.FiniteStateMachine;
+import de.amr.games.pacman.lib.Fsm;
 
 /**
  * Second intermission scene: Blinky pursues Pac but kicks a nail that tears his dress apart.
  * 
  * @author Armin Reichert
  */
-public class Intermission2Controller extends FiniteStateMachine<Intermission2State, Intermission2Context> {
+public class Intermission2Controller extends Fsm<Intermission2State, Intermission2Context> {
 
 	public final GameController gameController;
 	private final Intermission2Context context = new Intermission2Context();
 
 	public Intermission2Controller(GameController gameController) {
+		super(Intermission2State.values());
 		this.gameController = gameController;
-		for (var state : Intermission2State.values()) {
-			state.fsm = this;
-		}
 	}
 
 	@Override

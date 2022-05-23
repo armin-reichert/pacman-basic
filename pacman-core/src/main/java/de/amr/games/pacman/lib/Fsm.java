@@ -37,7 +37,7 @@ import java.util.function.BiConsumer;
  * 
  * @author Armin Reichert
  */
-public abstract class FiniteStateMachine<STATE extends FsmState<CONTEXT>, CONTEXT> {
+public abstract class Fsm<STATE extends FsmState<CONTEXT>, CONTEXT> {
 
 	public boolean logging;
 
@@ -50,12 +50,11 @@ public abstract class FiniteStateMachine<STATE extends FsmState<CONTEXT>, CONTEX
 
 	protected final List<BiConsumer<STATE, STATE>> stateChangeListeners = new ArrayList<>();
 
-	public FiniteStateMachine(String name) {
-		this.name = name;
-	}
-
-	public FiniteStateMachine() {
+	public Fsm(STATE[] states) {
 		name = getClass().getSimpleName();
+		for (var state : states) {
+			state.setFsm(this);
+		}
 	}
 
 	@Override
@@ -85,7 +84,7 @@ public abstract class FiniteStateMachine<STATE extends FsmState<CONTEXT>, CONTEX
 		if (state != null) {
 			state.onExit(getContext());
 			if (logging) {
-				log("%s: Exited state %s %s", name, state, state.timer());
+				log("%s: Exit  state %s %s", name, state, state.timer());
 			}
 		}
 		prevState = state;
@@ -93,7 +92,7 @@ public abstract class FiniteStateMachine<STATE extends FsmState<CONTEXT>, CONTEX
 		state.onEnter(getContext());
 		state.timer().start();
 		if (logging) {
-			log("%s: Entered state %s %s", name, state, state.timer());
+			log("%s: Enter state %s %s", name, state, state.timer());
 		}
 		stateChangeListeners.stream().forEach(listener -> listener.accept(prevState, state));
 	}

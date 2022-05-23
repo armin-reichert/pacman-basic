@@ -27,6 +27,7 @@ package de.amr.games.pacman.controller.pacman;
 import static de.amr.games.pacman.model.common.world.World.t;
 
 import de.amr.games.pacman.lib.Direction;
+import de.amr.games.pacman.lib.Fsm;
 import de.amr.games.pacman.lib.FsmState;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.common.GameEntity;
@@ -65,8 +66,8 @@ public enum Intermission2State implements FsmState<Intermission2Context> {
 
 		@Override
 		public void onUpdate(Intermission2Context context) {
-			if (fsm.nailDistance() == 0) {
-				fsm.changeState(STRETCHED);
+			if (controller.nailDistance() == 0) {
+				controller.changeState(STRETCHED);
 				return;
 			}
 			context.pac.move();
@@ -77,11 +78,11 @@ public enum Intermission2State implements FsmState<Intermission2Context> {
 	STRETCHED {
 		@Override
 		public void onUpdate(Intermission2Context context) {
-			int stretching = fsm.nailDistance() / 4;
+			int stretching = controller.nailDistance() / 4;
 			if (stretching == 3) {
 				context.blinky.setSpeed(0);
 				context.blinky.setMoveDir(Direction.UP);
-				fsm.changeState(Intermission2State.STUCK);
+				controller.changeState(Intermission2State.STUCK);
 				return;
 			}
 			context.blinky.setSpeed(0.3 - 0.1 * stretching);
@@ -96,7 +97,7 @@ public enum Intermission2State implements FsmState<Intermission2Context> {
 			if (timer.atSecond(2)) {
 				context.blinky.setMoveDir(Direction.RIGHT);
 			} else if (timer.atSecond(6)) {
-				fsm.gameController.state().timer().expire();
+				controller.gameController.state().timer().expire();
 				return;
 			}
 			context.blinky.move();
@@ -104,8 +105,13 @@ public enum Intermission2State implements FsmState<Intermission2Context> {
 		}
 	};
 
-	protected Intermission2Controller fsm;
+	protected Intermission2Controller controller;
 	protected final TickTimer timer = new TickTimer("Timer:" + name());
+
+	@Override
+	public void setFsm(Fsm<? extends FsmState<Intermission2Context>, Intermission2Context> fsm) {
+		controller = (Intermission2Controller) fsm;
+	}
 
 	@Override
 	public TickTimer timer() {

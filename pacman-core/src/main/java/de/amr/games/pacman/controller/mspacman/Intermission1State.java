@@ -27,6 +27,7 @@ package de.amr.games.pacman.controller.mspacman;
 import static de.amr.games.pacman.model.common.world.World.t;
 
 import de.amr.games.pacman.lib.Direction;
+import de.amr.games.pacman.lib.Fsm;
 import de.amr.games.pacman.lib.FsmState;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.V2d;
@@ -81,7 +82,7 @@ public enum Intermission1State implements FsmState<Intermission1Context> {
 				context.playFlapAnimation.run();
 			}
 			if (timer.hasExpired()) {
-				fsm.changeState(Intermission1State.CHASED_BY_GHOSTS);
+				controller.changeState(Intermission1State.CHASED_BY_GHOSTS);
 			}
 		}
 	},
@@ -99,7 +100,7 @@ public enum Intermission1State implements FsmState<Intermission1Context> {
 		@Override
 		public void onUpdate(Intermission1Context context) {
 			if (context.inky.position.x > t(30)) {
-				fsm.changeState(Intermission1State.COMING_TOGETHER);
+				controller.changeState(Intermission1State.COMING_TOGETHER);
 				return;
 			}
 			context.inky.move();
@@ -131,7 +132,7 @@ public enum Intermission1State implements FsmState<Intermission1Context> {
 		public void onUpdate(Intermission1Context context) {
 			// Pac-Man and Ms. Pac-Man reach end position?
 			if (context.pacMan.moveDir() == Direction.UP && context.pacMan.position.y < context.upperY) {
-				fsm.changeState(Intermission1State.IN_HEAVEN);
+				controller.changeState(Intermission1State.IN_HEAVEN);
 				return;
 			}
 			// Pac-Man and Ms. Pac-Man meet?
@@ -192,13 +193,18 @@ public enum Intermission1State implements FsmState<Intermission1Context> {
 		@Override
 		public void onUpdate(Intermission1Context context) {
 			if (timer.hasExpired()) {
-				fsm.gameController.state().timer().expire();
+				controller.gameController.state().timer().expire();
 			}
 		}
 	};
 
-	protected Intermission1Controller fsm;
+	protected Intermission1Controller controller;
 	protected final TickTimer timer = new TickTimer("Timer:" + name());
+
+	@Override
+	public void setFsm(Fsm<? extends FsmState<Intermission1Context>, Intermission1Context> fsm) {
+		controller = (Intermission1Controller) fsm;
+	}
 
 	@Override
 	public TickTimer timer() {

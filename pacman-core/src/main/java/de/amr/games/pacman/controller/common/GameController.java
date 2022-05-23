@@ -33,7 +33,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import de.amr.games.pacman.controller.common.event.GameStateChangeEvent;
-import de.amr.games.pacman.lib.FiniteStateMachine;
+import de.amr.games.pacman.lib.Fsm;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.mspacman.MsPacManGame;
@@ -62,7 +62,7 @@ import de.amr.games.pacman.model.pacman.PacManGame;
  *      behavior</a>
  * @see <a href="http://superpacman.com/mspacman/">Ms. Pac-Man</a>
  */
-public class GameController extends FiniteStateMachine<GameState, GameModel> {
+public class GameController extends Fsm<GameState, GameModel> {
 
 	public boolean playerImmune;
 	public boolean playerAutomove;
@@ -77,9 +77,7 @@ public class GameController extends FiniteStateMachine<GameState, GameModel> {
 	private final Autopilot autopilot = new Autopilot(this::game);
 
 	public GameController(GameVariant variant) {
-		for (var state : GameState.values()) {
-			state.gameController = this;
-		}
+		super(GameState.values());
 		for (var gameVariant : GameVariant.values()) {
 			var game = games.get(gameVariant);
 			stateChangeListeners

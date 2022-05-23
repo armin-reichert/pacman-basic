@@ -24,7 +24,7 @@ SOFTWARE.
 package de.amr.games.pacman.controller.mspacman;
 
 import de.amr.games.pacman.controller.common.GameController;
-import de.amr.games.pacman.lib.FiniteStateMachine;
+import de.amr.games.pacman.lib.Fsm;
 
 /**
  * Intermission scene 2: "The chase".
@@ -34,16 +34,14 @@ import de.amr.games.pacman.lib.FiniteStateMachine;
  * 
  * @author Armin Reichert
  */
-public class Intermission2Controller extends FiniteStateMachine<Intermission2State, Intermission2Context> {
+public class Intermission2Controller extends Fsm<Intermission2State, Intermission2Context> {
 
 	public final GameController gameController;
 	private final Intermission2Context context = new Intermission2Context();
 
 	public Intermission2Controller(GameController gameController) {
+		super(Intermission2State.values());
 		this.gameController = gameController;
-		for (var state : Intermission2State.values()) {
-			state.fsm = this;
-		}
 	}
 
 	@Override

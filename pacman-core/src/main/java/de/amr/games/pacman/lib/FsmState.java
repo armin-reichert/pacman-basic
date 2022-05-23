@@ -29,6 +29,8 @@ package de.amr.games.pacman.lib;
  */
 public interface FsmState<CONTEXT> {
 
+	void setFsm(Fsm<? extends FsmState<CONTEXT>, CONTEXT> fsm);
+
 	default void onEnter(CONTEXT context) {
 	}
 

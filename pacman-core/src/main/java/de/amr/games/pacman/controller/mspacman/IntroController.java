@@ -24,7 +24,7 @@ SOFTWARE.
 package de.amr.games.pacman.controller.mspacman;
 
 import de.amr.games.pacman.controller.common.GameController;
-import de.amr.games.pacman.lib.FiniteStateMachine;
+import de.amr.games.pacman.lib.Fsm;
 
 /**
  * Intro scene of the Ms. Pac-Man game.
@@ -33,16 +33,14 @@ import de.amr.games.pacman.lib.FiniteStateMachine;
  * 
  * @author Armin Reichert
  */
-public class IntroController extends FiniteStateMachine<IntroState, IntroContext> {
+public class IntroController extends Fsm<IntroState, IntroContext> {
 
 	public final GameController gameController;
 	private final IntroContext context = new IntroContext();
 
 	public IntroController(GameController gameController) {
+		super(IntroState.values());
 		this.gameController = gameController;
-		for (var state : IntroState.values()) {
-			state.fsm = this;
-		}
 		logging = true;
 	}
 
