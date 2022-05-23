@@ -33,6 +33,9 @@ import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.mspacman.Flap;
 
+/**
+ * @author Armin Reichert
+ */
 public enum Intermission2State implements FsmState<Intermission2Context> {
 
 	FLAP {

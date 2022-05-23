@@ -41,8 +41,6 @@ import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Ghost;
 
 /**
- * The states of the game. Each state has a timer and a reference to its FSM.
- * 
  * @author Armin Reichert
  */
 public enum GameState implements FsmState<GameModel> {

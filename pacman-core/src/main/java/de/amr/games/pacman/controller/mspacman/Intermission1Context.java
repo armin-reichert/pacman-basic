@@ -32,6 +32,9 @@ import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.mspacman.Flap;
 
+/**
+ * @author Armin Reichert
+ */
 public class Intermission1Context {
 	public final int upperY = t(12), middleY = t(18), lowerY = t(24);
 	public Runnable playIntermissionSound = Fsm::nop;

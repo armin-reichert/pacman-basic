@@ -32,7 +32,6 @@ import de.amr.games.pacman.model.mspacman.Flap;
 
 /**
  * @author Armin Reichert
- *
  */
 public class Intermission2Context {
 	public final int upperY = t(12), middleY = t(18), lowerY = t(24);

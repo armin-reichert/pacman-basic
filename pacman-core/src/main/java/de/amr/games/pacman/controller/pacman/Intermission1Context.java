@@ -30,7 +30,6 @@ import de.amr.games.pacman.model.common.Pac;
 
 /**
  * @author Armin Reichert
- *
  */
 public class Intermission1Context {
 	public Runnable playIntermissionSound = Fsm::nop;

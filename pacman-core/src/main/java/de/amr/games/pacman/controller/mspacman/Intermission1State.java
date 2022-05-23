@@ -37,6 +37,9 @@ import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.mspacman.Flap;
 
+/**
+ * @author Armin Reichert
+ */
 public enum Intermission1State implements FsmState<Intermission1Context> {
 
 	FLAP {

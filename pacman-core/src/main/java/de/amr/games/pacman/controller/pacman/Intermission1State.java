@@ -35,6 +35,9 @@ import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.GhostState;
 import de.amr.games.pacman.model.common.Pac;
 
+/**
+ * @author Armin Reichert
+ */
 public enum Intermission1State implements FsmState<Intermission1Context> {
 
 	CHASING_PACMAN {

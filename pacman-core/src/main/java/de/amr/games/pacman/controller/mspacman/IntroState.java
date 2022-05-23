@@ -34,6 +34,9 @@ import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.GhostState;
 
+/**
+ * @author Armin Reichert
+ */
 public enum IntroState implements FsmState<IntroContext> {
 
 	BEGIN {

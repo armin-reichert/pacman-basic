@@ -36,6 +36,9 @@ import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.mspacman.Flap;
 import de.amr.games.pacman.model.mspacman.JuniorBag;
 
+/**
+ * @author Armin Reichert
+ */
 public enum Intermission3State implements FsmState<Intermission3Context> {
 
 	FLAP {

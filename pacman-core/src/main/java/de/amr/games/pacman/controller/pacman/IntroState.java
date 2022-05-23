@@ -43,6 +43,9 @@ import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.GhostState;
 import de.amr.games.pacman.model.common.Pac;
 
+/**
+ * @author Armin Reichert
+ */
 public enum IntroState implements FsmState<IntroContext> {
 
 	BEGIN {

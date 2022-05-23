@@ -25,6 +25,8 @@ SOFTWARE.
 package de.amr.games.pacman.lib;
 
 /**
+ * Interface implemented by all states (enums) of a FSM. Each state has a timer and a reference to its FSM.
+ *
  * @author Armin Reichert
  */
 public interface FsmState<CONTEXT> {
