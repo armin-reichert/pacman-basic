@@ -237,6 +237,7 @@ public abstract class GameModel {
 	}
 
 	public void reset() {
+		setLevel(1);
 		score = 0;
 		player.lives = initialLives;
 		levelCounter.clear();
@@ -244,7 +245,6 @@ public abstract class GameModel {
 		highscore.load();
 		highscoreLevel = highscore.level;
 		highscorePoints = highscore.points;
-		setLevel(1);
 	}
 
 	public void resetGuys() {

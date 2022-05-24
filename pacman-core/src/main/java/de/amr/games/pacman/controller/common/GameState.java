@@ -56,7 +56,6 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void onUpdate(GameModel game) {
 			if (timer.hasExpired()) {
-				game.reset();
 				controller.changeState(READY);
 			}
 		}
@@ -67,18 +66,16 @@ public enum GameState implements FsmState<GameModel> {
 		public void onEnter(GameModel game) {
 			timer.setDurationSeconds(game.running || controller.credit() == 0 ? 2 : 5).start();
 			game.resetGuys();
+			game.showGhosts();
+			game.player.show();
 		}
 
 		@Override
 		public void onUpdate(GameModel game) {
-			if (timer.atSecond(1.5)) {
-				game.showGhosts();
-				game.player.show();
-			} else if (timer.hasExpired()) {
+			if (timer.hasExpired()) {
 				if (controller.credit() > 0) {
 					game.running = true;
 				}
-				// TODO reset hunting timer to INDEFINITE?
 				controller.changeState(GameState.HUNTING);
 				return;
 			}
