@@ -38,7 +38,7 @@ public abstract class DefaultGameEventHandler implements GameEventListener {
 		} else if (event instanceof GameStateChangeEvent) {
 			onGameStateChange((GameStateChangeEvent) event);
 		} else {
-			switch (event.info) {
+			switch (event.type) {
 			case BONUS_ACTIVATED -> onBonusActivated(event);
 			case BONUS_EATEN -> onBonusEaten(event);
 			case BONUS_EXPIRED -> onBonusExpired(event);
@@ -52,7 +52,7 @@ public abstract class DefaultGameEventHandler implements GameEventListener {
 			case PLAYER_GAINS_POWER -> onPlayerGainsPower(event);
 			case PLAYER_LOSING_POWER -> onPlayerLosingPower(event);
 			case PLAYER_LOST_POWER -> onPlayerLostPower(event);
-			default -> throw new IllegalArgumentException("Unexpected value: " + event.info);
+			default -> throw new IllegalArgumentException("Unexpected value: " + event.type);
 			}
 		}
 	}

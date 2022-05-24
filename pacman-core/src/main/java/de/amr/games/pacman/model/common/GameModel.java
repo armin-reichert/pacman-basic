@@ -43,8 +43,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.controller.common.event.GameEvent;
-import de.amr.games.pacman.controller.common.event.GameEvent.Info;
 import de.amr.games.pacman.controller.common.event.GameEventListener;
+import de.amr.games.pacman.controller.common.event.GameEventType;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.Hiscore;
 import de.amr.games.pacman.lib.TickTimer;
@@ -231,7 +231,7 @@ public abstract class GameModel {
 		}
 	}
 
-	public void publishEvent(Info info, V2i tile) {
+	public void publishEvent(GameEventType info, V2i tile) {
 		publishEvent(new GameEvent(this, info, null, tile));
 	}
 
@@ -420,7 +420,7 @@ public abstract class GameModel {
 	public void cheatEatAllPellets() {
 		if (running) {
 			world.tiles().filter(not(world::isEnergizerTile)).forEach(world::removeFood);
-			publishEvent(Info.PLAYER_FOUND_FOOD, null);
+			publishEvent(GameEventType.PLAYER_FOUND_FOOD, null);
 		}
 	}
 
@@ -440,7 +440,7 @@ public abstract class GameModel {
 			player.powerTimer.advance();
 			if (player.powerTimer.remaining() == sec_to_ticks(1)) {
 				// TODO not sure exactly how long the player is losing power
-				publishEvent(Info.PLAYER_LOSING_POWER, player.tile());
+				publishEvent(GameEventType.PLAYER_LOSING_POWER, player.tile());
 			}
 		}
 		case EXPIRED -> {
@@ -448,7 +448,7 @@ public abstract class GameModel {
 			log("%s lost power, timer=%s", player.name, player.powerTimer);
 			ghosts(FRIGHTENED).forEach(ghost -> ghost.state = HUNTING_PAC);
 			player.powerTimer.setDurationIndefinite(); // TODO needed?
-			publishEvent(Info.PLAYER_LOST_POWER, player.tile());
+			publishEvent(GameEventType.PLAYER_LOST_POWER, player.tile());
 		}
 		default -> {
 		}
@@ -460,7 +460,7 @@ public abstract class GameModel {
 		ghosts().forEach(ghost -> updateGhost(ghost, gameVariant));
 		Ghost released = releaseLockedGhosts();
 		if (released != null) {
-			publishEvent(new GameEvent(this, Info.GHOST_LEAVING_HOUSE, released, released.tile()));
+			publishEvent(new GameEvent(this, GameEventType.GHOST_LEAVING_HOUSE, released, released.tile()));
 		}
 	}
 
@@ -488,8 +488,8 @@ public abstract class GameModel {
 			ghost.setSpeed(ghostSpeed * 2);
 			boolean reachedRevivalTile = ghost.enterHouse(world.ghostHouse());
 			if (reachedRevivalTile) {
-				publishEvent(new GameEvent(this, Info.GHOST_REVIVED, ghost, ghost.tile()));
-				publishEvent(new GameEvent(this, Info.GHOST_LEAVING_HOUSE, ghost, ghost.tile()));
+				publishEvent(new GameEvent(this, GameEventType.GHOST_REVIVED, ghost, ghost.tile()));
+				publishEvent(new GameEvent(this, GameEventType.GHOST_LEAVING_HOUSE, ghost, ghost.tile()));
 			}
 		}
 
@@ -497,7 +497,7 @@ public abstract class GameModel {
 			ghost.setSpeed(ghostSpeed / 2);
 			boolean leftHouse = ghost.leaveHouse(world.ghostHouse());
 			if (leftHouse) {
-				publishEvent(new GameEvent(this, Info.GHOST_LEFT_HOUSE, ghost, ghost.tile()));
+				publishEvent(new GameEvent(this, GameEventType.GHOST_LEFT_HOUSE, ghost, ghost.tile()));
 			}
 		}
 
@@ -540,7 +540,7 @@ public abstract class GameModel {
 			ghost.setSpeed(ghostSpeed * 2);
 			boolean reachedHouse = ghost.returnHome(world.ghostHouse());
 			if (reachedHouse) {
-				publishEvent(new GameEvent(this, Info.GHOST_ENTERS_HOUSE, ghost, ghost.tile()));
+				publishEvent(new GameEvent(this, GameEventType.GHOST_ENTERS_HOUSE, ghost, ghost.tile()));
 			}
 		}
 
@@ -578,24 +578,24 @@ public abstract class GameModel {
 			player.starvingTicks++;
 			return false;
 		}
-		publishEvent(Info.PLAYER_FOUND_FOOD, tile);
+		publishEvent(GameEventType.PLAYER_FOUND_FOOD, tile);
 		boolean extraLife = false;
 		boolean energizerEaten = false;
 		if (world.isEnergizerTile(tile)) {
 			extraLife = eatEnergizer(tile);
 			energizerEaten = true;
 			if (ghostFrightenedSeconds > 0) {
-				publishEvent(Info.PLAYER_GAINS_POWER, tile);
+				publishEvent(GameEventType.PLAYER_GAINS_POWER, tile);
 			}
 		} else {
 			extraLife = eatPellet(tile);
 		}
 		if (extraLife) {
 			log("Extra life. Player has %d lives now", player.lives);
-			publishEvent(Info.EXTRA_LIFE, null);
+			publishEvent(GameEventType.EXTRA_LIFE, null);
 		}
 		if (checkBonusAwarded()) {
-			publishEvent(Info.BONUS_ACTIVATED, bonus.tile());
+			publishEvent(GameEventType.BONUS_ACTIVATED, bonus.tile());
 		}
 		return energizerEaten;
 	}
@@ -708,21 +708,21 @@ public abstract class GameModel {
 				boolean extraLife = score(bonus.points);
 				if (extraLife) {
 					log("Extra life. Player has %d lives now", player.lives);
-					publishEvent(Info.EXTRA_LIFE, null);
+					publishEvent(GameEventType.EXTRA_LIFE, null);
 				}
-				publishEvent(Info.BONUS_EATEN, bonus.tile());
+				publishEvent(GameEventType.BONUS_EATEN, bonus.tile());
 			} else {
 				bonus.update();
 				if (bonus.timer == 0) {
 					log("Bonus id=%d expired", bonus.symbol);
-					publishEvent(Info.BONUS_EXPIRED, bonus.tile());
+					publishEvent(GameEventType.BONUS_EXPIRED, bonus.tile());
 				}
 			}
 		}
 		case EATEN -> {
 			bonus.update();
 			if (bonus.timer == 0) {
-				publishEvent(Info.BONUS_EXPIRED, bonus.tile());
+				publishEvent(GameEventType.BONUS_EXPIRED, bonus.tile());
 			}
 		}
 		default -> {

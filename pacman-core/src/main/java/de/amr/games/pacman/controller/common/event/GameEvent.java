@@ -38,20 +38,14 @@ import de.amr.games.pacman.model.common.Ghost;
  */
 public class GameEvent {
 
-	public enum Info {
-		BONUS_ACTIVATED, BONUS_EATEN, BONUS_EXPIRED, EXTRA_LIFE, PLAYER_FOUND_FOOD, PLAYER_GAINS_POWER, PLAYER_LOSING_POWER,
-		PLAYER_LOST_POWER, GHOST_ENTERS_HOUSE, GHOST_REVIVED, GHOST_LEAVING_HOUSE, GHOST_LEFT_HOUSE, GHOST_RETURNS_HOME,
-		SCATTER_PHASE_STARTED, GAME_STATE_CHANGED;
-	}
-
 	public final GameModel game;
-	public final Info info;
+	public final GameEventType type;
 	public final Optional<V2i> tile; // the optional tile where this event occurred
 	public final Optional<Ghost> ghost; // the optional ghost this event relates to
 
-	public GameEvent(GameModel game, Info info, Ghost ghost, V2i tile) {
+	public GameEvent(GameModel game, GameEventType type, Ghost ghost, V2i tile) {
 		this.game = Objects.requireNonNull(game);
-		this.info = Objects.requireNonNull(info);
+		this.type = Objects.requireNonNull(type);
 		this.tile = Optional.ofNullable(tile);
 		this.ghost = Optional.ofNullable(ghost);
 	}
@@ -59,7 +53,7 @@ public class GameEvent {
 	@Override
 	public String toString() {
 		return ghost.isEmpty() ? //
-				String.format("%s: tile %s", info, tile.orElse(null))
-				: String.format("%s: tile %s, ghost %s", info, tile.orElse(null), ghost.orElse(null));
+				String.format("%s: tile %s", type, tile.orElse(null))
+				: String.format("%s: tile %s, ghost %s", type, tile.orElse(null), ghost.orElse(null));
 	}
 }

@@ -30,7 +30,7 @@ import static de.amr.games.pacman.model.common.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.common.GhostState.HUNTING_PAC;
 
 import de.amr.games.pacman.controller.common.event.GameEvent;
-import de.amr.games.pacman.controller.common.event.GameEvent.Info;
+import de.amr.games.pacman.controller.common.event.GameEventType;
 import de.amr.games.pacman.controller.common.event.GameStateChangeEvent;
 import de.amr.games.pacman.controller.common.event.ScatterPhaseStartedEvent;
 import de.amr.games.pacman.lib.Fsm;
@@ -240,7 +240,7 @@ public enum GameState implements FsmState<GameModel> {
 			// fire event(s) for dead ghosts not yet returning home (bounty != 0)
 			game.ghosts(DEAD).filter(ghost -> ghost.bounty != 0).forEach(ghost -> {
 				ghost.bounty = 0;
-				game.publishEvent(new GameEvent(game, Info.GHOST_RETURNS_HOME, ghost, null));
+				game.publishEvent(new GameEvent(game, GameEventType.GHOST_RETURNS_HOME, ghost, null));
 			});
 		}
 	},
