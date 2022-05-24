@@ -114,42 +114,6 @@ public abstract class GameModel {
 	/** The currently active row in the {@link #huntingPhaseDurationsTable}. */
 	public long[] huntingPhaseDurations;
 
-	/** Bonus symbol of current level. */
-	public int bonusSymbol;
-
-	/** Relative player speed at current level. */
-	public float playerSpeed;
-
-	/** Relative ghost speed at current level. */
-	public float ghostSpeed;
-
-	/** Relative ghost speed when inside tunnel at current level. */
-	public float ghostSpeedTunnel;
-
-	/** Number of pellets left before player becomes "Cruise Elroy" at severity 1. */
-	public int elroy1DotsLeft;
-
-	/** Relative speed of player being "Cruise Elroy" at severity 1. */
-	public float elroy1Speed;
-
-	/** Number of pellets left before player becomes "Cruise Elroy" at severity 2. */
-	public int elroy2DotsLeft;
-
-	/** Relative speed of player being "Cruise Elroy" at severity 2. */
-	public float elroy2Speed;
-
-	/** Relative speed of player in power mode. */
-	public float playerSpeedPowered;
-
-	/** Relative speed of frightened ghost. */
-	public float ghostSpeedFrightened;
-
-	/** Number of seconds ghost are frightened at current level. */
-	public int ghostFrightenedSeconds;
-
-	/** Number of maze flashes at end of current level. */
-	public int numFlashes;
-
 	/** The player, Pac-Man or Ms. Pac-Man. */
 	public Pac player;
 
@@ -158,6 +122,8 @@ public abstract class GameModel {
 
 	/** The bonus entity. */
 	public Bonus bonus;
+
+	public final GameLevel level = new GameLevel();
 
 	/** Number of player lives when the game starts. */
 	public int initialLives;
@@ -363,26 +329,6 @@ public abstract class GameModel {
 	 */
 	public abstract void setLevel(int levelNumber);
 
-	protected void initLevel(int levelNumber, Object[] data) {
-		this.levelNumber = levelNumber;
-		bonusSymbol = (int) data[0];
-		playerSpeed = percentage(data[1]);
-		ghostSpeed = percentage(data[2]);
-		ghostSpeedTunnel = percentage(data[3]);
-		elroy1DotsLeft = (int) data[4];
-		elroy1Speed = percentage(data[5]);
-		elroy2DotsLeft = (int) data[6];
-		elroy2Speed = percentage(data[7]);
-		playerSpeedPowered = percentage(data[8]);
-		ghostSpeedFrightened = percentage(data[9]);
-		ghostFrightenedSeconds = (int) data[10];
-		numFlashes = (int) data[11];
-	}
-
-	private float percentage(Object value) {
-		return (int) value / 100f;
-	}
-
 	/**
 	 * @param levelNumber game level number
 	 * @return 1-based intermission (cut scene) number that is played after given level or <code>0</code> if no
@@ -425,7 +371,7 @@ public abstract class GameModel {
 		if (player.restingTicksLeft > 0) {
 			player.restingTicksLeft--;
 		} else {
-			player.setSpeed(player.powerTimer.isRunning() ? playerSpeedPowered : playerSpeed);
+			player.setSpeed(player.powerTimer.isRunning() ? level.playerSpeedPowered : level.playerSpeed);
 			player.tryMoving();
 		}
 		switch (player.powerTimer.state()) {
@@ -472,13 +418,13 @@ public abstract class GameModel {
 			if (ghost.atGhostHouseDoor(world.ghostHouse())) {
 				ghost.setSpeed(0);
 			} else {
-				ghost.setSpeed(ghostSpeed / 2);
+				ghost.setSpeed(level.ghostSpeed / 2);
 				ghost.bounce(world.ghostHouse());
 			}
 		}
 
 		case ENTERING_HOUSE -> {
-			ghost.setSpeed(ghostSpeed * 2);
+			ghost.setSpeed(level.ghostSpeed * 2);
 			boolean reachedRevivalTile = ghost.enterHouse(world.ghostHouse());
 			if (reachedRevivalTile) {
 				publishEvent(new GameEvent(this, GameEventType.GHOST_REVIVED, ghost, ghost.tile()));
@@ -487,7 +433,7 @@ public abstract class GameModel {
 		}
 
 		case LEAVING_HOUSE -> {
-			ghost.setSpeed(ghostSpeed / 2);
+			ghost.setSpeed(level.ghostSpeed / 2);
 			boolean leftHouse = ghost.leaveHouse(world.ghostHouse());
 			if (leftHouse) {
 				publishEvent(new GameEvent(this, GameEventType.GHOST_FINISHED_LEAVING_HOUSE, ghost, ghost.tile()));
@@ -496,23 +442,23 @@ public abstract class GameModel {
 
 		case FRIGHTENED -> {
 			if (world.isTunnel(ghost.tile())) {
-				ghost.setSpeed(ghostSpeedTunnel);
+				ghost.setSpeed(level.ghostSpeedTunnel);
 				ghost.tryMoving();
 			} else {
-				ghost.setSpeed(ghostSpeedFrightened);
+				ghost.setSpeed(level.ghostSpeedFrightened);
 				ghost.roam();
 			}
 		}
 
 		case HUNTING_PAC -> {
 			if (world.isTunnel(ghost.tile())) {
-				ghost.setSpeed(ghostSpeedTunnel);
+				ghost.setSpeed(level.ghostSpeedTunnel);
 			} else if (ghost.elroy == 1) {
-				ghost.setSpeed(elroy1Speed);
+				ghost.setSpeed(level.elroy1Speed);
 			} else if (ghost.elroy == 2) {
-				ghost.setSpeed(elroy2Speed);
+				ghost.setSpeed(level.elroy2Speed);
 			} else {
-				ghost.setSpeed(ghostSpeed);
+				ghost.setSpeed(level.ghostSpeed);
 			}
 
 			/*
@@ -530,7 +476,7 @@ public abstract class GameModel {
 		}
 
 		case DEAD -> {
-			ghost.setSpeed(ghostSpeed * 2);
+			ghost.setSpeed(level.ghostSpeed * 2);
 			boolean reachedHouse = ghost.returnHome(world.ghostHouse());
 			if (reachedHouse) {
 				publishEvent(new GameEvent(this, GameEventType.GHOST_ENTERED_HOUSE, ghost, ghost.tile()));
@@ -574,7 +520,7 @@ public abstract class GameModel {
 		if (world.isEnergizerTile(tile)) {
 			extraLife = eatEnergizer(tile);
 			energizerEaten = true;
-			if (ghostFrightenedSeconds > 0) {
+			if (level.ghostFrightenedSeconds > 0) {
 				publishEvent(GameEventType.PLAYER_GOT_POWER, tile);
 			}
 		} else {
@@ -595,12 +541,12 @@ public abstract class GameModel {
 		ghostBounty = firstGhostBounty;
 		player.starvingTicks = 0;
 		player.restingTicksLeft = 3;
-		if (ghostFrightenedSeconds > 0) {
+		if (level.ghostFrightenedSeconds > 0) {
 			ghosts(HUNTING_PAC).forEach(ghost -> {
 				ghost.state = FRIGHTENED;
 				ghost.forceTurningBack();
 			});
-			player.powerTimer.setDurationSeconds(ghostFrightenedSeconds).start();
+			player.powerTimer.setDurationSeconds(level.ghostFrightenedSeconds).start();
 			log("%s got power, timer=%s", player.name, player.powerTimer);
 		}
 		checkElroy();
@@ -666,11 +612,11 @@ public abstract class GameModel {
 	}
 
 	private boolean checkElroy() {
-		if (world.foodRemaining() == elroy1DotsLeft) {
+		if (world.foodRemaining() == level.elroy1DotsLeft) {
 			ghosts[RED_GHOST].elroy = 1;
 			log("Blinky becomes Cruise Elroy 1");
 			return true;
-		} else if (world.foodRemaining() == elroy2DotsLeft) {
+		} else if (world.foodRemaining() == level.elroy2DotsLeft) {
 			ghosts[RED_GHOST].elroy = 2;
 			log("Blinky becomes Cruise Elroy 2");
 			return true;
@@ -680,7 +626,7 @@ public abstract class GameModel {
 
 	public boolean checkBonusAwarded() {
 		if (world.isBonusReached()) {
-			bonus.activate(bonusSymbol, bonusValue(bonus.symbol));
+			bonus.activate(level.bonusSymbol, bonusValue(bonus.symbol));
 			bonus.timer = bonusActivationTicks();
 			log("Bonus id=%d, value=%d activated for %d ticks", bonus.symbol, bonus.points, bonus.timer);
 			return true;

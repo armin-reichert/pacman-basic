@@ -88,7 +88,8 @@ public class MsPacManGame extends GameModel {
 		if (levelNumber < 1) {
 			throw new IllegalArgumentException("Level number must be at least 1, but is: " + levelNumber);
 		}
-		initLevel(levelNumber, levelNumber - 1 < data.length ? data[levelNumber - 1] : data[data.length - 1]);
+		this.levelNumber = levelNumber;
+		level.fill(levelNumber - 1 < data.length ? data[levelNumber - 1] : data[data.length - 1]);
 		mazeNumber = mazeNumber(levelNumber);
 		mapNumber = mapNumber(mazeNumber);
 		world = switch (mapNumber) {
@@ -100,9 +101,9 @@ public class MsPacManGame extends GameModel {
 		};
 		huntingPhaseDurations = huntingPhaseDurationsTable[levelNumber == 1 ? 0 : levelNumber <= 4 ? 1 : 2];
 		if (levelNumber >= 8) {
-			bonusSymbol = new Random().nextInt(7);
+			level.bonusSymbol = new Random().nextInt(7);
 		}
-		levelCounter.add(bonusSymbol);
+		levelCounter.add(level.bonusSymbol);
 		player.world = world;
 		player.starvingTimeLimit = (int) sec_to_ticks(levelNumber < 5 ? 4 : 3);
 		ghostBounty = firstGhostBounty;

@@ -91,10 +91,11 @@ public class PacManGame extends GameModel {
 		if (levelNumber < 1) {
 			throw new IllegalArgumentException("Level number must be at least 1, but is: " + levelNumber);
 		}
-		initLevel(levelNumber, levelNumber - 1 < data.length ? data[levelNumber - 1] : data[data.length - 1]);
+		this.levelNumber = levelNumber;
+		level.fill(levelNumber - 1 < data.length ? data[levelNumber - 1] : data[data.length - 1]);
 		world.resetFood();
 		huntingPhaseDurations = huntingPhaseDurationsTable[levelNumber == 1 ? 0 : levelNumber <= 4 ? 1 : 2];
-		levelCounter.add(bonusSymbol);
+		levelCounter.add(level.bonusSymbol);
 		player.starvingTimeLimit = (int) sec_to_ticks(levelNumber < 5 ? 4 : 3);
 		ghostBounty = firstGhostBounty;
 		resetGhosts();
