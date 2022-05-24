@@ -38,9 +38,9 @@ import java.util.function.BiConsumer;
  * State transitions are defined dynamically via the {@link #changeState} method calls. Each state change triggers an
  * event.
  * 
- * @param <STATE>   enumeration type providing the states of this FSM
- * @param <CONTEXT> data provided to the state lifecycle methods {@link FsmState#onEnter}, {@link FsmState#onUpdate} and
- *                  {@link FsmState#onExit}
+ * @param <STATE>   Enumeration type providing the states of this FSM
+ * @param <CONTEXT> Type of the data provided to the state lifecycle methods {@link FsmState#onEnter},
+ *                  {@link FsmState#onUpdate} and {@link FsmState#onExit}
  * 
  * @author Armin Reichert
  */
