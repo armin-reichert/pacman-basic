@@ -31,15 +31,38 @@ package de.amr.games.pacman.lib;
  */
 public interface FsmState<CONTEXT> {
 
+	/**
+	 * Sets the reference to the FSM owning this state.
+	 * 
+	 * @param fsm the FSM owning this state
+	 */
 	void setFsm(Fsm<? extends FsmState<CONTEXT>, CONTEXT> fsm);
 
+	/**
+	 * The hook method that gets executed when the state is entered.
+	 * 
+	 * @param context the "context" (data type provided to the state)
+	 */
 	default void onEnter(CONTEXT context) {
 	}
 
+	/**
+	 * The hook method that gets executed when the state is updated.
+	 * 
+	 * @param context the "context" (data type provided to the state)
+	 */
 	void onUpdate(CONTEXT context);
 
+	/**
+	 * The hook method that gets executed when the state is exited.
+	 * 
+	 * @param context the "context" (data type provided to the state)
+	 */
 	default void onExit(CONTEXT context) {
 	}
 
+	/**
+	 * @return the timer of this state
+	 */
 	TickTimer timer();
 }
