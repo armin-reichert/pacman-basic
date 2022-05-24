@@ -36,7 +36,6 @@ import static de.amr.games.pacman.model.common.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.model.common.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.model.common.GhostState.LOCKED;
 import static de.amr.games.pacman.model.common.world.World.HTS;
-import static java.util.function.Predicate.not;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -91,9 +90,6 @@ public abstract class GameModel {
 
 	/** The hunting phase. Values: 0, 2, 4, 6 = "scattering", 1, 3, 5, 7 = "chasing". */
 	public int huntingPhase;
-
-	/** If a game is running. */
-	public boolean running;
 
 	/** Number of running intermissions scene in test mode. */
 	public int intermissionTestNumber;
@@ -323,13 +319,6 @@ public abstract class GameModel {
 	public abstract long bonusActivationTicks();
 
 	// Game logic
-
-	public void cheatEatAllPellets() {
-		if (running) {
-			world.tiles().filter(not(world::isEnergizerTile)).forEach(world::removeFood);
-			publishEvent(GameEventType.PLAYER_FOUND_FOOD, null);
-		}
-	}
 
 	/**
 	 * @return <code>true</code> if player power just expired

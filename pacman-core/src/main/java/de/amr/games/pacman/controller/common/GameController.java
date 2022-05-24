@@ -28,12 +28,14 @@ import static de.amr.games.pacman.controller.common.GameState.INTRO;
 import static de.amr.games.pacman.controller.common.GameState.READY;
 import static de.amr.games.pacman.model.common.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.common.GhostState.HUNTING_PAC;
+import static java.util.function.Predicate.not;
 
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
+import de.amr.games.pacman.controller.common.event.GameEventType;
 import de.amr.games.pacman.controller.common.event.GameStateChangeEvent;
 import de.amr.games.pacman.lib.Fsm;
 import de.amr.games.pacman.model.common.GameModel;
@@ -76,6 +78,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 	private final Consumer<Pac> autopilot = new Autopilot(this::game);
 
 	private int credit;
+	public boolean gameRunning;
 
 	public GameController(GameVariant variant) {
 		super(GameState.values());
@@ -153,8 +156,15 @@ public class GameController extends Fsm<GameState, GameModel> {
 		}
 	}
 
+	public void cheatEatAllPellets() {
+		if (gameRunning) {
+			game().world.tiles().filter(not(game().world::isEnergizerTile)).forEach(game().world::removeFood);
+			game().publishEvent(GameEventType.PLAYER_FOUND_FOOD, null);
+		}
+	}
+
 	public void cheatKillAllPossibleGhosts() {
-		if (game().running && state() != GameState.GHOST_DYING) {
+		if (gameRunning && state() != GameState.GHOST_DYING) {
 			game().ghostBounty = game().firstGhostBounty;
 			game().ghosts().filter(ghost -> ghost.is(HUNTING_PAC) || ghost.is(FRIGHTENED)).forEach(game()::killGhost);
 			changeState(GameState.GHOST_DYING);
@@ -162,7 +172,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 	}
 
 	public void cheatEnterNextLevel() {
-		if (game().running) {
+		if (gameRunning) {
 			game().world.tiles().forEach(game().world::removeFood);
 			changeState(GameState.LEVEL_COMPLETE);
 		}
