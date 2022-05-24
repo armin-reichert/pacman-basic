@@ -56,7 +56,7 @@ import de.amr.games.pacman.model.pacman.PacManGame;
  * <li><a href= "https://pacman.holenet.info/#CH2_Cornering"><em>Cornering</em></a>: I do not consider cornering as
  * important when the player is controlled by keyboard keys, for a joystick that probably would be more important.</li>
  * <li>Exact level data for Ms. Pac-Man still unclear. Any hints appreciated!
- * <li>Multiple players, credits.</li>
+ * <li>Multiple players.</li>
  * </ul>
  * 
  * @author Armin Reichert
