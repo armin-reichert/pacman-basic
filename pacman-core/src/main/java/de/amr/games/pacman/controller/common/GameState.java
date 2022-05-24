@@ -66,7 +66,7 @@ public enum GameState implements FsmState<GameModel> {
 		public void onEnter(GameModel game) {
 			timer.setDurationSeconds(game.running || controller.credit() == 0 ? 2 : 5).start();
 			game.resetGuys();
-			game.showGhosts();
+			game.ghosts().forEach(Ghost::show);
 			game.player.show();
 		}
 
@@ -159,7 +159,7 @@ public enum GameState implements FsmState<GameModel> {
 		public void onEnter(GameModel game) {
 			game.bonus.init();
 			game.player.setSpeed(0);
-			game.hideGhosts();
+			game.ghosts().forEach(Ghost::hide);
 			timer.setDurationIndefinite().start();
 		}
 

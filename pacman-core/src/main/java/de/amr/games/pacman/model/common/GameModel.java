@@ -290,18 +290,6 @@ public abstract class GameModel {
 		return ghosts().filter(ghost -> ghost.state == state);
 	}
 
-	public void showGhosts() {
-		for (Ghost ghost : ghosts) {
-			ghost.show();
-		}
-	}
-
-	public void hideGhosts() {
-		for (Ghost ghost : ghosts) {
-			ghost.hide();
-		}
-	}
-
 	/**
 	 * Initializes model for given game level.
 	 * 
