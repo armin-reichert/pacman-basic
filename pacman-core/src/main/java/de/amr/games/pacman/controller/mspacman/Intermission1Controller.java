@@ -23,6 +23,7 @@ SOFTWARE.
  */
 package de.amr.games.pacman.controller.mspacman;
 
+import static de.amr.games.pacman.model.common.Ghost.PINK_GHOST;
 import static de.amr.games.pacman.model.common.world.World.t;
 
 import de.amr.games.pacman.controller.common.GameController;
@@ -34,7 +35,6 @@ import de.amr.games.pacman.lib.FsmState;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.model.common.GameEntity;
-import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.mspacman.Flap;
@@ -94,7 +94,7 @@ public class Intermission1Controller extends Fsm<State, Context> {
 				$.pacMan.setPosition(-t(2), $.upperY);
 				$.pacMan.show();
 
-				$.inky = new Ghost(GameModel.CYAN_GHOST, "Inky");
+				$.inky = new Ghost(Ghost.CYAN_GHOST, "Inky");
 				$.inky.setMoveDir(Direction.RIGHT);
 				$.inky.setWishDir(Direction.RIGHT);
 				$.inky.position = $.pacMan.position.minus(t(6), 0);
@@ -105,7 +105,7 @@ public class Intermission1Controller extends Fsm<State, Context> {
 				$.msPac.setPosition(t(30), $.lowerY);
 				$.msPac.show();
 
-				$.pinky = new Ghost(GameModel.PINK_GHOST, "Pinky");
+				$.pinky = new Ghost(PINK_GHOST, "Pinky");
 				$.pinky.setMoveDir(Direction.LEFT);
 				$.pinky.setWishDir(Direction.LEFT);
 				$.pinky.position = $.msPac.position.plus(t(6), 0);

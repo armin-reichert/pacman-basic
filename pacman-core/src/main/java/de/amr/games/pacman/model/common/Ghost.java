@@ -35,11 +35,23 @@ import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.world.GhostHouse;
 
 /**
- * A ghost.
+ * There are 4 ghosts with different "personalities".
  * 
  * @author Armin Reichert
  */
 public class Ghost extends Creature {
+
+	/** ID of red ghost. */
+	public static final int RED_GHOST = 0;
+
+	/** ID of pink ghost. */
+	public static final int PINK_GHOST = 1;
+
+	/** ID of cyan ghost. */
+	public static final int CYAN_GHOST = 2;
+
+	/** ID of orange ghost. */
+	public static final int ORANGE_GHOST = 3;
 
 	/** The ID (color) of the ghost, see {@link GameModel#RED_GHOST} etc. */
 	public final int id;

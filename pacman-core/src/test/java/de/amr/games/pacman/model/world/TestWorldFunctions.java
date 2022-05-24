@@ -1,5 +1,9 @@
 package de.amr.games.pacman.model.world;
 
+import static de.amr.games.pacman.model.common.Ghost.CYAN_GHOST;
+import static de.amr.games.pacman.model.common.Ghost.ORANGE_GHOST;
+import static de.amr.games.pacman.model.common.Ghost.PINK_GHOST;
+import static de.amr.games.pacman.model.common.Ghost.RED_GHOST;
 import static java.util.function.Predicate.not;
 import static org.junit.Assert.assertEquals;
 
@@ -7,7 +11,6 @@ import org.junit.Test;
 
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.world.World;
 import de.amr.games.pacman.model.mspacman.MsPacManWorld1;
 import de.amr.games.pacman.model.mspacman.MsPacManWorld2;
@@ -29,10 +32,10 @@ public class TestWorldFunctions {
 		assertEquals(170, world.pelletsToEatForBonus(1));
 		assertEquals(1, world.portals().size());
 		assertEquals(Direction.LEFT, world.playerStartDirection());
-		assertEquals(Direction.LEFT, world.ghostStartDirection(GameModel.RED_GHOST));
-		assertEquals(Direction.DOWN, world.ghostStartDirection(GameModel.PINK_GHOST));
-		assertEquals(Direction.UP, world.ghostStartDirection(GameModel.CYAN_GHOST));
-		assertEquals(Direction.UP, world.ghostStartDirection(GameModel.ORANGE_GHOST));
+		assertEquals(Direction.LEFT, world.ghostStartDirection(RED_GHOST));
+		assertEquals(Direction.DOWN, world.ghostStartDirection(PINK_GHOST));
+		assertEquals(Direction.UP, world.ghostStartDirection(CYAN_GHOST));
+		assertEquals(Direction.UP, world.ghostStartDirection(ORANGE_GHOST));
 	}
 
 	@Test
@@ -48,10 +51,10 @@ public class TestWorldFunctions {
 		assertEquals(2, world.portals().size());
 		assertEquals(new V2i(13, 26), world.playerHomeTile());
 		assertEquals(Direction.LEFT, world.playerStartDirection());
-		assertEquals(Direction.LEFT, world.ghostStartDirection(GameModel.RED_GHOST));
-		assertEquals(Direction.DOWN, world.ghostStartDirection(GameModel.PINK_GHOST));
-		assertEquals(Direction.UP, world.ghostStartDirection(GameModel.CYAN_GHOST));
-		assertEquals(Direction.UP, world.ghostStartDirection(GameModel.ORANGE_GHOST));
+		assertEquals(Direction.LEFT, world.ghostStartDirection(RED_GHOST));
+		assertEquals(Direction.DOWN, world.ghostStartDirection(PINK_GHOST));
+		assertEquals(Direction.UP, world.ghostStartDirection(CYAN_GHOST));
+		assertEquals(Direction.UP, world.ghostStartDirection(ORANGE_GHOST));
 	}
 
 	@Test
@@ -67,10 +70,10 @@ public class TestWorldFunctions {
 		assertEquals(2, world.portals().size());
 		assertEquals(new V2i(13, 26), world.playerHomeTile());
 		assertEquals(Direction.LEFT, world.playerStartDirection());
-		assertEquals(Direction.LEFT, world.ghostStartDirection(GameModel.RED_GHOST));
-		assertEquals(Direction.DOWN, world.ghostStartDirection(GameModel.PINK_GHOST));
-		assertEquals(Direction.UP, world.ghostStartDirection(GameModel.CYAN_GHOST));
-		assertEquals(Direction.UP, world.ghostStartDirection(GameModel.ORANGE_GHOST));
+		assertEquals(Direction.LEFT, world.ghostStartDirection(RED_GHOST));
+		assertEquals(Direction.DOWN, world.ghostStartDirection(PINK_GHOST));
+		assertEquals(Direction.UP, world.ghostStartDirection(CYAN_GHOST));
+		assertEquals(Direction.UP, world.ghostStartDirection(ORANGE_GHOST));
 	}
 
 	@Test
@@ -86,10 +89,10 @@ public class TestWorldFunctions {
 		assertEquals(1, world.portals().size());
 		assertEquals(new V2i(13, 26), world.playerHomeTile());
 		assertEquals(Direction.LEFT, world.playerStartDirection());
-		assertEquals(Direction.LEFT, world.ghostStartDirection(GameModel.RED_GHOST));
-		assertEquals(Direction.DOWN, world.ghostStartDirection(GameModel.PINK_GHOST));
-		assertEquals(Direction.UP, world.ghostStartDirection(GameModel.CYAN_GHOST));
-		assertEquals(Direction.UP, world.ghostStartDirection(GameModel.ORANGE_GHOST));
+		assertEquals(Direction.LEFT, world.ghostStartDirection(RED_GHOST));
+		assertEquals(Direction.DOWN, world.ghostStartDirection(PINK_GHOST));
+		assertEquals(Direction.UP, world.ghostStartDirection(CYAN_GHOST));
+		assertEquals(Direction.UP, world.ghostStartDirection(ORANGE_GHOST));
 	}
 
 	@Test
@@ -105,9 +108,9 @@ public class TestWorldFunctions {
 		assertEquals(2, world.portals().size());
 		assertEquals(new V2i(13, 26), world.playerHomeTile());
 		assertEquals(Direction.LEFT, world.playerStartDirection());
-		assertEquals(Direction.LEFT, world.ghostStartDirection(GameModel.RED_GHOST));
-		assertEquals(Direction.DOWN, world.ghostStartDirection(GameModel.PINK_GHOST));
-		assertEquals(Direction.UP, world.ghostStartDirection(GameModel.CYAN_GHOST));
-		assertEquals(Direction.UP, world.ghostStartDirection(GameModel.ORANGE_GHOST));
+		assertEquals(Direction.LEFT, world.ghostStartDirection(RED_GHOST));
+		assertEquals(Direction.DOWN, world.ghostStartDirection(PINK_GHOST));
+		assertEquals(Direction.UP, world.ghostStartDirection(CYAN_GHOST));
+		assertEquals(Direction.UP, world.ghostStartDirection(ORANGE_GHOST));
 	}
 }

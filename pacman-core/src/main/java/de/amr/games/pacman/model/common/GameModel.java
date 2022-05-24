@@ -26,6 +26,10 @@ package de.amr.games.pacman.model.common;
 import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.lib.TickTimer.sec_to_ticks;
 import static de.amr.games.pacman.model.common.GameVariant.MS_PACMAN;
+import static de.amr.games.pacman.model.common.Ghost.CYAN_GHOST;
+import static de.amr.games.pacman.model.common.Ghost.ORANGE_GHOST;
+import static de.amr.games.pacman.model.common.Ghost.PINK_GHOST;
+import static de.amr.games.pacman.model.common.Ghost.RED_GHOST;
 import static de.amr.games.pacman.model.common.GhostState.DEAD;
 import static de.amr.games.pacman.model.common.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.common.GhostState.HUNTING_PAC;
@@ -59,18 +63,6 @@ import de.amr.games.pacman.model.pacman.Bonus;
  * @author Armin Reichert
  */
 public abstract class GameModel {
-
-	/** ID of red ghost. */
-	public static final int RED_GHOST = 0;
-
-	/** ID of pink ghost. */
-	public static final int PINK_GHOST = 1;
-
-	/** ID of cyan ghost. */
-	public static final int CYAN_GHOST = 2;
-
-	/** ID of orange ghost. */
-	public static final int ORANGE_GHOST = 3;
 
 	/** Speed in pixels/tick at 100%. */
 	public static final double BASE_SPEED = 1.25;
@@ -593,7 +585,7 @@ public abstract class GameModel {
 			player.killed = true;
 			log("%s got killed by %s at tile %s", player.name, ghost.name, player.tile());
 			// Elroy mode of red ghost gets disabled when player is killed
-			Ghost redGhost = ghosts[GameModel.RED_GHOST];
+			Ghost redGhost = ghosts[RED_GHOST];
 			if (redGhost.elroy > 0) {
 				redGhost.elroy = -redGhost.elroy; // negative value means "disabled"
 				log("Elroy mode %d for %s has been disabled", redGhost.elroy, redGhost.name);
@@ -695,7 +687,7 @@ public abstract class GameModel {
 	}
 
 	private Optional<Ghost> preferredLockedGhostInHouse() {
-		return Stream.of(PINK_GHOST, CYAN_GHOST, ORANGE_GHOST).map(id -> ghosts[id]).filter(ghost -> ghost.is(LOCKED))
+		return Stream.of(Ghost.PINK_GHOST, CYAN_GHOST, ORANGE_GHOST).map(id -> ghosts[id]).filter(ghost -> ghost.is(LOCKED))
 				.findFirst();
 	}
 

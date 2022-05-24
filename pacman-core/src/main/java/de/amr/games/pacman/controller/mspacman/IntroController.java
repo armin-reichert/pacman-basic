@@ -25,10 +25,10 @@ package de.amr.games.pacman.controller.mspacman;
 
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.UP;
-import static de.amr.games.pacman.model.common.GameModel.CYAN_GHOST;
-import static de.amr.games.pacman.model.common.GameModel.ORANGE_GHOST;
-import static de.amr.games.pacman.model.common.GameModel.PINK_GHOST;
-import static de.amr.games.pacman.model.common.GameModel.RED_GHOST;
+import static de.amr.games.pacman.model.common.Ghost.CYAN_GHOST;
+import static de.amr.games.pacman.model.common.Ghost.ORANGE_GHOST;
+import static de.amr.games.pacman.model.common.Ghost.PINK_GHOST;
+import static de.amr.games.pacman.model.common.Ghost.RED_GHOST;
 import static de.amr.games.pacman.model.common.world.World.HTS;
 import static de.amr.games.pacman.model.common.world.World.TS;
 import static de.amr.games.pacman.model.common.world.World.t;

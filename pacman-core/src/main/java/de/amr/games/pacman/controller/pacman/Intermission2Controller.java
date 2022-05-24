@@ -23,6 +23,7 @@ SOFTWARE.
  */
 package de.amr.games.pacman.controller.pacman;
 
+import static de.amr.games.pacman.model.common.Ghost.RED_GHOST;
 import static de.amr.games.pacman.model.common.world.World.t;
 
 import de.amr.games.pacman.controller.common.GameController;
@@ -33,7 +34,6 @@ import de.amr.games.pacman.lib.Fsm;
 import de.amr.games.pacman.lib.FsmState;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.common.GameEntity;
-import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.GhostState;
 import de.amr.games.pacman.model.common.Pac;
@@ -89,7 +89,7 @@ public class Intermission2Controller extends Fsm<State, Context> {
 				$.pac.setSpeed(1.0);
 				$.pac.show();
 
-				$.blinky = new Ghost(GameModel.RED_GHOST, "Blinky");
+				$.blinky = new Ghost(RED_GHOST, "Blinky");
 				$.blinky.state = GhostState.HUNTING_PAC;
 				$.blinky.setMoveDir(Direction.LEFT);
 				$.blinky.setWishDir(Direction.LEFT);

@@ -24,10 +24,10 @@ SOFTWARE.
 package de.amr.games.pacman.model.common.world;
 
 import static de.amr.games.pacman.lib.Logging.log;
-import static de.amr.games.pacman.model.common.GameModel.CYAN_GHOST;
-import static de.amr.games.pacman.model.common.GameModel.ORANGE_GHOST;
-import static de.amr.games.pacman.model.common.GameModel.PINK_GHOST;
-import static de.amr.games.pacman.model.common.GameModel.RED_GHOST;
+import static de.amr.games.pacman.model.common.Ghost.CYAN_GHOST;
+import static de.amr.games.pacman.model.common.Ghost.ORANGE_GHOST;
+import static de.amr.games.pacman.model.common.Ghost.PINK_GHOST;
+import static de.amr.games.pacman.model.common.Ghost.RED_GHOST;
 
 import java.util.ArrayList;
 import java.util.BitSet;
