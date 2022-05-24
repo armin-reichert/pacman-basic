@@ -160,4 +160,11 @@ public class GameController extends Fsm<GameState, GameModel> {
 			changeState(GameState.GHOST_DYING);
 		}
 	}
+
+	public void cheatEnterNextLevel() {
+		if (game().running) {
+			game().world.tiles().forEach(game().world::removeFood);
+			changeState(GameState.LEVEL_COMPLETE);
+		}
+	}
 }
