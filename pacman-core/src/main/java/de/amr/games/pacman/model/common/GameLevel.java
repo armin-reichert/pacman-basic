@@ -33,6 +33,9 @@ public class GameLevel {
 	/** The currently active row in the {@link #HUNTING_TIMES}. */
 	public long[] huntingPhaseDurations;
 
+	/** Number of ghosts killed at the current level. */
+	public int numGhostsKilled;
+
 	/** Bonus symbol of current level. */
 	public int bonusSymbol;
 

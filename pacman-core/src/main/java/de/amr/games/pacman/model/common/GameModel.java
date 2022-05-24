@@ -129,9 +129,6 @@ public abstract class GameModel {
 	/** Game score. */
 	public int score;
 
-	/** Number of ghosts killed at the current level. */
-	public int numGhostsKilled;
-
 	/** Value of a simple pellet. */
 	public int pelletValue;
 
@@ -576,9 +573,9 @@ public abstract class GameModel {
 		ghost.targetTile = world.ghostHouse().leftEntry();
 		ghost.bounty = ghostBounty;
 		ghostBounty *= 2;
-		numGhostsKilled++;
+		level.numGhostsKilled++;
 		score(ghost.bounty);
-		if (numGhostsKilled == 16) {
+		if (level.numGhostsKilled == 16) {
 			score(12000);
 		}
 		log("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name, ghost.tile(), ghost.bounty);
