@@ -42,17 +42,17 @@ public abstract class DefaultGameEventHandler implements GameEventListener {
 			case BONUS_ACTIVATED -> onBonusActivated(event);
 			case BONUS_EATEN -> onBonusEaten(event);
 			case BONUS_EXPIRED -> onBonusExpired(event);
-			case PLAYER_GOT_EXTRA_LIFE -> onExtraLife(event);
-			case GHOST_ENTERED_HOUSE -> onGhostEntersHouse(event);
+			case PLAYER_GOT_EXTRA_LIFE -> onPlayerGotExtraLife(event);
+			case GHOST_ENTERED_HOUSE -> onGhostEnteredHouse(event);
 			case GHOST_REVIVED -> onGhostRevived(event);
-			case GHOST_STARTED_LEAVING_HOUSE -> onGhostLeavingHouse(event);
-			case GHOST_FINISHED_LEAVING_HOUSE -> onGhostLeftHouse(event);
-			case GHOST_RETURNED_HOME -> onGhostReturnsHome(event);
+			case GHOST_STARTED_LEAVING_HOUSE -> onGhostStartedLeavingHouse(event);
+			case GHOST_FINISHED_LEAVING_HOUSE -> onGhostFinishedLeavingHouse(event);
+			case GHOST_RETURNED_HOME -> onGhostReturnedHome(event);
 			case PLAYER_FOUND_FOOD -> onPlayerFoundFood(event);
-			case PLAYER_GOT_POWER -> onPlayerGainsPower(event);
-			case PLAYER_STARTED_LOSING_POWER -> onPlayerLosingPower(event);
+			case PLAYER_GOT_POWER -> onPlayerGotPower(event);
+			case PLAYER_STARTED_LOSING_POWER -> onPlayerStartedLosingPower(event);
 			case PLAYER_LOST_POWER -> onPlayerLostPower(event);
-			default -> throw new IllegalArgumentException("Unexpected value: " + event.type);
+			default -> throw new IllegalArgumentException("Unknown event type: " + event.type);
 			}
 		}
 	}
@@ -72,34 +72,33 @@ public abstract class DefaultGameEventHandler implements GameEventListener {
 	public void onBonusExpired(GameEvent e) {
 	}
 
-	public void onExtraLife(GameEvent e) {
+	public void onPlayerGotExtraLife(GameEvent e) {
 	}
 
-	public void onGhostEntersHouse(GameEvent e) {
+	public void onGhostEnteredHouse(GameEvent e) {
 	}
 
-	public void onGhostReturnsHome(GameEvent e) {
+	public void onGhostReturnedHome(GameEvent e) {
 	}
 
 	public void onGhostRevived(GameEvent e) {
 	}
 
-	public void onGhostLeavingHouse(GameEvent e) {
+	public void onGhostStartedLeavingHouse(GameEvent e) {
 	}
 
-	public void onGhostLeftHouse(GameEvent e) {
+	public void onGhostFinishedLeavingHouse(GameEvent e) {
 	}
 
 	public void onPlayerFoundFood(GameEvent e) {
 	}
 
-	public void onPlayerLosingPower(GameEvent e) {
+	public void onPlayerStartedLosingPower(GameEvent e) {
 	}
 
 	public void onPlayerLostPower(GameEvent e) {
 	}
 
-	public void onPlayerGainsPower(GameEvent e) {
+	public void onPlayerGotPower(GameEvent e) {
 	}
-
 }
