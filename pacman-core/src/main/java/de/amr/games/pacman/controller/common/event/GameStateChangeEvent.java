@@ -44,6 +44,6 @@ public class GameStateChangeEvent extends GameEvent {
 
 	@Override
 	public String toString() {
-		return String.format("PacManGameStateChangeEvent(%s->%s)", oldGameState, newGameState);
+		return "%s(%s->%s)".formatted(getClass().getSimpleName(), oldGameState, newGameState);
 	}
 }

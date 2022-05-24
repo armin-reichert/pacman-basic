@@ -25,6 +25,9 @@ package de.amr.games.pacman.controller.common.event;
 
 import de.amr.games.pacman.model.common.GameModel;
 
+/**
+ * @author Armin Reichert
+ */
 public class ScatterPhaseStartedEvent extends GameEvent {
 
 	public final int scatterPhase;
@@ -36,6 +39,6 @@ public class ScatterPhaseStartedEvent extends GameEvent {
 
 	@Override
 	public String toString() {
-		return String.format("ScatterPhaseStartedEvent: scatterPhase=%d", scatterPhase);
+		return "%s: scatterPhase=%d".formatted(getClass().getSimpleName(), scatterPhase);
 	}
 }

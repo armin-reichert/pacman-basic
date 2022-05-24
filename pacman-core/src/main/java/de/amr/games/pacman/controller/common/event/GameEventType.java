@@ -24,6 +24,11 @@ SOFTWARE.
 
 package de.amr.games.pacman.controller.common.event;
 
+/**
+ * Game event types.
+ * 
+ * @author Armin Reichert
+ */
 public enum GameEventType {
 	BONUS_ACTIVATED, BONUS_EATEN, BONUS_EXPIRED, EXTRA_LIFE, PLAYER_FOUND_FOOD, PLAYER_GAINS_POWER, PLAYER_LOSING_POWER,
 	PLAYER_LOST_POWER, GHOST_ENTERS_HOUSE, GHOST_REVIVED, GHOST_LEAVING_HOUSE, GHOST_LEFT_HOUSE, GHOST_RETURNS_HOME,
