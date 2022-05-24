@@ -116,22 +116,22 @@ public abstract class GameModel {
 	public GameLevel level;
 
 	/** Number of player lives when the game starts. */
-	public int initialLives;
+	public int initialLives = 3;
 
 	/** Game score. */
 	public int score;
 
 	/** Value of a simple pellet. */
-	public int pelletValue;
+	public int pelletValue = 10;
 
 	/** Value of an energizer pellet. */
-	public int energizerValue;
+	public int energizerValue = 50;
 
 	/** Bounty for eating the next ghost. */
 	public int ghostBounty;
 
 	/** Bounty for eating the first ghost after Pac-Man entered power mode. */
-	public int firstGhostBounty;
+	public int firstGhostBounty = 200;
 
 	/** List of collected level symbols. */
 	public List<Integer> levelCounter = new ArrayList<>();
@@ -182,13 +182,6 @@ public abstract class GameModel {
 		publishEvent(new GameEvent(this, info, null, tile));
 	}
 
-	protected GameModel() {
-		initialLives = 3;
-		pelletValue = 10;
-		energizerValue = 50;
-		firstGhostBounty = 200;
-	}
-
 	public void reset() {
 		score = 0;
 		player.lives = initialLives;
@@ -234,7 +227,7 @@ public abstract class GameModel {
 		bonus.init();
 	}
 
-	protected void resetGhosts() {
+	protected void initGhosts(int levelNumber, World world, Ghost[] ghosts) {
 		for (Ghost ghost : ghosts) {
 			ghost.world = world;
 			ghost.dotCounter = 0;

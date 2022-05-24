@@ -107,10 +107,13 @@ public class MsPacManGame extends GameModel {
 		case 4 -> new MsPacManWorld4();
 		default -> throw new IllegalArgumentException("Illegal map number: " + mapNumber);
 		};
+
 		player.world = world;
 		player.starvingTimeLimit = (int) sec_to_ticks(levelNumber < 5 ? 4 : 3);
+
+		initGhosts(levelNumber, world, ghosts);
 		ghostBounty = firstGhostBounty;
-		resetGhosts();
+
 		bonus.world = world;
 		bonus.init();
 	}

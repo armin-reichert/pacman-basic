@@ -78,12 +78,16 @@ public class PacManGame extends GameModel {
 		world = new PacManWorld();
 		mazeNumber = 1;
 		mapNumber = 1;
+
 		player = new Pac("Pac-Man");
 		player.world = world;
+
 		createGhosts("Blinky", "Pinky", "Inky", "Clyde");
-		resetGhosts();
+		initGhosts(1, world, ghosts);
+
 		bonus = new Bonus();
 		bonus.world = world;
+
 		hiscoreFile = new File(System.getProperty("user.home"), "highscore-pacman.xml");
 	}
 
@@ -96,11 +100,15 @@ public class PacManGame extends GameModel {
 		level = new GameLevel(levelNumber - 1 < data.length ? data[levelNumber - 1] : data[data.length - 1]);
 		level.huntingPhaseDurations = HUNTING_TIMES[levelNumber == 1 ? 0 : levelNumber <= 4 ? 1 : 2];
 		levelCounter.add(level.bonusSymbol);
-		player.starvingTimeLimit = (int) sec_to_ticks(levelNumber < 5 ? 4 : 3);
-		ghostBounty = firstGhostBounty;
-		resetGhosts();
-		bonus.init();
+
 		world.resetFood();
+
+		player.starvingTimeLimit = (int) sec_to_ticks(levelNumber < 5 ? 4 : 3);
+
+		initGhosts(levelNumber, world, ghosts);
+		ghostBounty = firstGhostBounty;
+
+		bonus.init();
 	}
 
 	@Override
