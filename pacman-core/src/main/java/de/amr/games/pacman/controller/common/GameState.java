@@ -56,6 +56,7 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void onUpdate(GameModel game) {
 			if (timer.hasExpired()) {
+				game.reset();
 				controller.changeState(READY);
 			}
 		}
