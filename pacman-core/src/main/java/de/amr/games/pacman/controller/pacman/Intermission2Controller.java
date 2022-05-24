@@ -47,6 +47,7 @@ public class Intermission2Controller extends Fsm<State, Context> {
 
 	public final GameController gameController;
 	public final Context context = new Context();
+	public Runnable playIntermissionSound;
 
 	public Intermission2Controller(GameController gameController) {
 		super(State.values());
@@ -67,7 +68,6 @@ public class Intermission2Controller extends Fsm<State, Context> {
 	}
 
 	public static class Context {
-		public Runnable playIntermissionSound = Fsm::nop;
 		public Ghost blinky;
 		public Pac pac;
 		public GameEntity nail;
@@ -79,8 +79,9 @@ public class Intermission2Controller extends Fsm<State, Context> {
 			@Override
 			public void onEnter(Context $) {
 				timer.setDurationIndefinite().start();
-
-				$.playIntermissionSound.run();
+				if (controller.playIntermissionSound != null) {
+					controller.playIntermissionSound.run();
+				}
 
 				$.pac = new Pac("Pac-Man");
 				$.pac.setMoveDir(Direction.LEFT);

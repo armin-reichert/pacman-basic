@@ -52,6 +52,8 @@ public class Intermission3Controller extends Fsm<State, Context> {
 
 	public final GameController gameController;
 	public final Context context = new Context();
+	public Runnable playIntermissionSound;
+	public Runnable playFlapAnimation;
 
 	public Intermission3Controller(GameController gameController) {
 		super(State.values());
@@ -65,8 +67,6 @@ public class Intermission3Controller extends Fsm<State, Context> {
 
 	public static class Context {
 		public final int groundY = t(24);
-		public Runnable playIntermissionSound = Fsm::nop;
-		public Runnable playFlapAnimation = Fsm::nop;
 		public Flap flap;
 		public Pac pacMan;
 		public Pac msPacMan;
@@ -80,31 +80,35 @@ public class Intermission3Controller extends Fsm<State, Context> {
 		FLAP {
 			@Override
 			public void onEnter(Context $) {
+				timer.setDurationIndefinite().start();
+				if (controller.playIntermissionSound != null) {
+					controller.playIntermissionSound.run();
+				}
 				$.flap = new Flap();
-				$.pacMan = new Pac("Pac-Man");
-				$.msPacMan = new Pac("Ms. Pac-Man");
-				$.stork = new GameEntity();
-				$.bag = new JuniorBag();
-
-				timer.setDurationSeconds(2).start();
-				$.playIntermissionSound.run();
-
 				$.flap.number = 3;
 				$.flap.text = "JUNIOR";
 				$.flap.setPosition(t(3), t(10));
 				$.flap.show();
+				$.pacMan = new Pac("Pac-Man");
+				$.msPacMan = new Pac("Ms. Pac-Man");
+				$.stork = new GameEntity();
+				$.bag = new JuniorBag();
 			}
 
 			@Override
 			public void onUpdate(Context $) {
 				if (timer.atSecond(1)) {
-					$.playFlapAnimation.run();
+					if (controller.playFlapAnimation != null) {
+						controller.playFlapAnimation.run();
+					}
 				} else if (timer.atSecond(2)) {
 					$.flap.hide();
+				} else if (timer.atSecond(3)) {
 					controller.changeState(State.ACTION);
 				}
 			}
 		},
+
 		ACTION {
 			@Override
 			public void onEnter(Context $) {

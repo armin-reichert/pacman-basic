@@ -47,6 +47,8 @@ public class Intermission2Controller extends Fsm<State, Context> {
 
 	public final GameController gameController;
 	public final Context context = new Context();
+	public Runnable playIntermissionSound;
+	public Runnable playFlapAnimation;
 
 	public Intermission2Controller(GameController gameController) {
 		super(State.values());
@@ -60,8 +62,6 @@ public class Intermission2Controller extends Fsm<State, Context> {
 
 	public static class Context {
 		public final int upperY = t(12), middleY = t(18), lowerY = t(24);
-		public Runnable playIntermissionSound = Fsm::nop;
-		public Runnable playFlapAnimation = Fsm::nop;
 		public Flap flap;
 		public Pac pacMan, msPacMan;
 	}
@@ -72,7 +72,9 @@ public class Intermission2Controller extends Fsm<State, Context> {
 			@Override
 			public void onEnter(Context $) {
 				timer.setDurationIndefinite().start();
-				$.playIntermissionSound.run();
+				if (controller.playIntermissionSound != null) {
+					controller.playIntermissionSound.run();
+				}
 				$.flap = new Flap();
 				$.flap.number = 2;
 				$.flap.text = "THE CHASE";
@@ -87,7 +89,9 @@ public class Intermission2Controller extends Fsm<State, Context> {
 			@Override
 			public void onUpdate(Context $) {
 				if (timer.atSecond(1)) {
-					$.playFlapAnimation.run();
+					if (controller.playFlapAnimation != null) {
+						controller.playFlapAnimation.run();
+					}
 				} else if (timer.atSecond(2)) {
 					$.flap.hide();
 				} else if (timer.atSecond(3)) {

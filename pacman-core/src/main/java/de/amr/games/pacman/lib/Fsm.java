@@ -30,19 +30,23 @@ import java.util.List;
 import java.util.function.BiConsumer;
 
 /**
- * A finite-state machine, a graph of vertices (states) connected by transitions.
+ * A finite-state machine.
  * <p>
- * Transitions are defined dynamically by the {@link #changeState(Enum)} method calls. Each state transition triggers a
- * state change event.
+ * The states must be provided by an enumeration type that implements the {@link FsmState} interface. The data type
+ * passed to the state lifecycle methods is specified by the CONTEXT type parameter.
+ * <p>
+ * State transitions are defined dynamically via the {@link #changeState(Enum)} method calls. Each state change triggers
+ * an event.
+ * 
+ * @param <STATE>   enumeration type providing the states of this FSM
+ * @param <CONTEXT> data provided to the state lifecycle methods {@link FsmState#onEnter}, {@link FsmState#onUpdate} and
+ *                  {@link FsmState#onExit}
  * 
  * @author Armin Reichert
  */
 public abstract class Fsm<STATE extends FsmState<CONTEXT>, CONTEXT> {
 
 	public boolean logging;
-
-	public static void nop() {
-	}
 
 	private String name;
 	private final STATE[] states;
