@@ -47,7 +47,7 @@ public abstract class DefaultGameEventHandler implements GameEventListener {
 			case GHOST_REVIVED -> onGhostRevived(event);
 			case GHOST_STARTED_LEAVING_HOUSE -> onGhostStartedLeavingHouse(event);
 			case GHOST_FINISHED_LEAVING_HOUSE -> onGhostFinishedLeavingHouse(event);
-			case GHOST_RETURNED_HOME -> onGhostReturnedHome(event);
+			case GHOST_STARTED_RETURNING_HOME -> onGhostStartedReturningHome(event);
 			case PLAYER_FOUND_FOOD -> onPlayerFoundFood(event);
 			case PLAYER_GOT_POWER -> onPlayerGotPower(event);
 			case PLAYER_STARTED_LOSING_POWER -> onPlayerStartedLosingPower(event);
@@ -78,7 +78,7 @@ public abstract class DefaultGameEventHandler implements GameEventListener {
 	public void onGhostEnteredHouse(GameEvent e) {
 	}
 
-	public void onGhostReturnedHome(GameEvent e) {
+	public void onGhostStartedReturningHome(GameEvent e) {
 	}
 
 	public void onGhostRevived(GameEvent e) {

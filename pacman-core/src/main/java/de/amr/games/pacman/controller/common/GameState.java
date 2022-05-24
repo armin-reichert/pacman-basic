@@ -240,7 +240,7 @@ public enum GameState implements FsmState<GameModel> {
 			// fire event(s) for dead ghosts not yet returning home (bounty != 0)
 			game.ghosts(DEAD).filter(ghost -> ghost.bounty != 0).forEach(ghost -> {
 				ghost.bounty = 0;
-				game.publishEvent(new GameEvent(game, GameEventType.GHOST_RETURNED_HOME, ghost, null));
+				game.publishEvent(new GameEvent(game, GameEventType.GHOST_STARTED_RETURNING_HOME, ghost, null));
 			});
 		}
 	},
