@@ -107,7 +107,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 	}
 
 	Consumer<Pac> currentPlayerControl() {
-		return game().player.autoMoving || game().attractMode ? autopilot : playerControl;
+		return game().player.autoMoving || credit == 0 ? autopilot : playerControl;
 	}
 
 	public GameVariant gameVariant() {

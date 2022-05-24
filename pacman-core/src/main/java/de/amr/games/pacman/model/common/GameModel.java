@@ -90,9 +90,6 @@ public abstract class GameModel {
 	/** The hunting phase. Values: 0, 2, 4, 6 = "scattering", 1, 3, 5, 7 = "chasing". */
 	public int huntingPhase;
 
-	/** If the attract mode is active */
-	public boolean attractMode;
-
 	/** If a game is running. */
 	public boolean running;
 
@@ -240,7 +237,6 @@ public abstract class GameModel {
 	}
 
 	public void reset() {
-		attractMode = false;
 		score = 0;
 		player.lives = initialLives;
 		levelCounter.clear();
@@ -550,9 +546,6 @@ public abstract class GameModel {
 	 * @return <code>true</code> if extra life has been achieved
 	 */
 	public boolean score(int points) {
-		if (attractMode) {
-			return false;
-		}
 		int oldscore = score;
 		score += points;
 		if (score > highscorePoints) {
@@ -651,7 +644,7 @@ public abstract class GameModel {
 		if (player.powerTimer.isRunning()) {
 			return false;
 		}
-		if (immune && !attractMode) {
+		if (immune) {
 			return false;
 		}
 		Optional<Ghost> killer = ghosts(HUNTING_PAC).filter(player::meets).findAny();

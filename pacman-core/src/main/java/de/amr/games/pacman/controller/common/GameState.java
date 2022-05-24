@@ -56,7 +56,6 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void onUpdate(GameModel game) {
 			if (timer.hasExpired()) {
-				game.attractMode = true;
 				controller.changeState(READY);
 			}
 		}
@@ -65,11 +64,8 @@ public enum GameState implements FsmState<GameModel> {
 	READY {
 		@Override
 		public void onEnter(GameModel game) {
-			timer.setDurationSeconds(game.running || game.attractMode ? 2 : 5).start();
+			timer.setDurationSeconds(game.running ? 2 : 5).start();
 			game.resetGuys();
-			if (controller.credit() > 0) {
-				controller.consumeCredit();
-			}
 		}
 
 		@Override
@@ -172,7 +168,7 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void onUpdate(GameModel game) {
 			if (timer.hasExpired()) {
-				if (game.attractMode) {
+				if (controller.credit() == 0) {
 					controller.changeState(INTRO);
 				} else if (game.intermissionNumber(game.levelNumber) != 0) {
 					controller.changeState(INTERMISSION);
@@ -213,7 +209,7 @@ public enum GameState implements FsmState<GameModel> {
 		public void onUpdate(GameModel game) {
 			if (timer.hasExpired()) {
 				game.player.lives--;
-				controller.changeState(game.attractMode ? INTRO : game.player.lives > 0 ? READY : GAME_OVER);
+				controller.changeState(controller.credit() == 0 ? INTRO : game.player.lives > 0 ? READY : GAME_OVER);
 			}
 		}
 	},
@@ -260,6 +256,7 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void onUpdate(GameModel game) {
 			if (timer.hasExpired()) {
+				controller.consumeCredit();
 				controller.changeState(INTRO);
 			}
 		}
@@ -274,7 +271,7 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void onUpdate(GameModel game) {
 			if (timer.hasExpired()) {
-				controller.changeState(game.attractMode || !game.running ? INTRO : LEVEL_STARTING);
+				controller.changeState(controller.credit() == 0 || !game.running ? INTRO : LEVEL_STARTING);
 			}
 		}
 	},
