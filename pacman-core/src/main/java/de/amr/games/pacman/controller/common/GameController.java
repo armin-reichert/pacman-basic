@@ -32,6 +32,7 @@ import static de.amr.games.pacman.model.common.GhostState.HUNTING_PAC;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 import de.amr.games.pacman.controller.common.event.GameStateChangeEvent;
 import de.amr.games.pacman.lib.Fsm;
@@ -66,12 +67,11 @@ import de.amr.games.pacman.model.pacman.PacManGame;
  */
 public class GameController extends Fsm<GameState, GameModel> {
 
-	public final Map<GameVariant, GameModel> games = Map.of( //
+	private final Map<GameVariant, GameModel> games = Map.of( //
 			GameVariant.MS_PACMAN, new MsPacManGame(), //
 			GameVariant.PACMAN, new PacManGame());
 
 	private GameVariant selectedGameVariant;
-
 	private Consumer<Pac> playerControl;
 	private final Consumer<Pac> autopilot = new Autopilot(this::game);
 
@@ -110,6 +110,10 @@ public class GameController extends Fsm<GameState, GameModel> {
 	@Override
 	public GameModel getContext() {
 		return game();
+	}
+
+	public Stream<GameModel> games() {
+		return games.values().stream();
 	}
 
 	public GameModel game() {
