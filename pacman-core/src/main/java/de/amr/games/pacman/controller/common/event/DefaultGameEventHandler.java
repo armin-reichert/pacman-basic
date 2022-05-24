@@ -42,15 +42,15 @@ public abstract class DefaultGameEventHandler implements GameEventListener {
 			case BONUS_ACTIVATED -> onBonusActivated(event);
 			case BONUS_EATEN -> onBonusEaten(event);
 			case BONUS_EXPIRED -> onBonusExpired(event);
-			case EXTRA_LIFE -> onExtraLife(event);
-			case GHOST_ENTERS_HOUSE -> onGhostEntersHouse(event);
+			case PLAYER_GOT_EXTRA_LIFE -> onExtraLife(event);
+			case GHOST_ENTERED_HOUSE -> onGhostEntersHouse(event);
 			case GHOST_REVIVED -> onGhostRevived(event);
-			case GHOST_LEAVING_HOUSE -> onGhostLeavingHouse(event);
-			case GHOST_LEFT_HOUSE -> onGhostLeftHouse(event);
-			case GHOST_RETURNS_HOME -> onGhostReturnsHome(event);
+			case GHOST_STARTED_LEAVING_HOUSE -> onGhostLeavingHouse(event);
+			case GHOST_FINISHED_LEAVING_HOUSE -> onGhostLeftHouse(event);
+			case GHOST_RETURNED_HOME -> onGhostReturnsHome(event);
 			case PLAYER_FOUND_FOOD -> onPlayerFoundFood(event);
-			case PLAYER_GAINS_POWER -> onPlayerGainsPower(event);
-			case PLAYER_LOSING_POWER -> onPlayerLosingPower(event);
+			case PLAYER_GOT_POWER -> onPlayerGainsPower(event);
+			case PLAYER_STARTED_LOSING_POWER -> onPlayerLosingPower(event);
 			case PLAYER_LOST_POWER -> onPlayerLostPower(event);
 			default -> throw new IllegalArgumentException("Unexpected value: " + event.type);
 			}

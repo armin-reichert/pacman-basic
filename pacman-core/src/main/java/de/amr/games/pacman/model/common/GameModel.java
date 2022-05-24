@@ -440,7 +440,7 @@ public abstract class GameModel {
 			player.powerTimer.advance();
 			if (player.powerTimer.remaining() == sec_to_ticks(1)) {
 				// TODO not sure exactly how long the player is losing power
-				publishEvent(GameEventType.PLAYER_LOSING_POWER, player.tile());
+				publishEvent(GameEventType.PLAYER_STARTED_LOSING_POWER, player.tile());
 			}
 		}
 		case EXPIRED -> {
@@ -460,7 +460,7 @@ public abstract class GameModel {
 		ghosts().forEach(ghost -> updateGhost(ghost, gameVariant));
 		Ghost released = releaseLockedGhosts();
 		if (released != null) {
-			publishEvent(new GameEvent(this, GameEventType.GHOST_LEAVING_HOUSE, released, released.tile()));
+			publishEvent(new GameEvent(this, GameEventType.GHOST_STARTED_LEAVING_HOUSE, released, released.tile()));
 		}
 	}
 
@@ -489,7 +489,7 @@ public abstract class GameModel {
 			boolean reachedRevivalTile = ghost.enterHouse(world.ghostHouse());
 			if (reachedRevivalTile) {
 				publishEvent(new GameEvent(this, GameEventType.GHOST_REVIVED, ghost, ghost.tile()));
-				publishEvent(new GameEvent(this, GameEventType.GHOST_LEAVING_HOUSE, ghost, ghost.tile()));
+				publishEvent(new GameEvent(this, GameEventType.GHOST_STARTED_LEAVING_HOUSE, ghost, ghost.tile()));
 			}
 		}
 
@@ -497,7 +497,7 @@ public abstract class GameModel {
 			ghost.setSpeed(ghostSpeed / 2);
 			boolean leftHouse = ghost.leaveHouse(world.ghostHouse());
 			if (leftHouse) {
-				publishEvent(new GameEvent(this, GameEventType.GHOST_LEFT_HOUSE, ghost, ghost.tile()));
+				publishEvent(new GameEvent(this, GameEventType.GHOST_FINISHED_LEAVING_HOUSE, ghost, ghost.tile()));
 			}
 		}
 
@@ -540,7 +540,7 @@ public abstract class GameModel {
 			ghost.setSpeed(ghostSpeed * 2);
 			boolean reachedHouse = ghost.returnHome(world.ghostHouse());
 			if (reachedHouse) {
-				publishEvent(new GameEvent(this, GameEventType.GHOST_ENTERS_HOUSE, ghost, ghost.tile()));
+				publishEvent(new GameEvent(this, GameEventType.GHOST_ENTERED_HOUSE, ghost, ghost.tile()));
 			}
 		}
 
@@ -585,14 +585,14 @@ public abstract class GameModel {
 			extraLife = eatEnergizer(tile);
 			energizerEaten = true;
 			if (ghostFrightenedSeconds > 0) {
-				publishEvent(GameEventType.PLAYER_GAINS_POWER, tile);
+				publishEvent(GameEventType.PLAYER_GOT_POWER, tile);
 			}
 		} else {
 			extraLife = eatPellet(tile);
 		}
 		if (extraLife) {
 			log("Extra life. Player has %d lives now", player.lives);
-			publishEvent(GameEventType.EXTRA_LIFE, null);
+			publishEvent(GameEventType.PLAYER_GOT_EXTRA_LIFE, null);
 		}
 		if (checkBonusAwarded()) {
 			publishEvent(GameEventType.BONUS_ACTIVATED, bonus.tile());
@@ -708,7 +708,7 @@ public abstract class GameModel {
 				boolean extraLife = score(bonus.points);
 				if (extraLife) {
 					log("Extra life. Player has %d lives now", player.lives);
-					publishEvent(GameEventType.EXTRA_LIFE, null);
+					publishEvent(GameEventType.PLAYER_GOT_EXTRA_LIFE, null);
 				}
 				publishEvent(GameEventType.BONUS_EATEN, bonus.tile());
 			} else {
