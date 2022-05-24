@@ -437,7 +437,7 @@ public abstract class GameModel {
 		}
 		switch (player.powerTimer.state()) {
 		case RUNNING -> {
-			player.powerTimer.run();
+			player.powerTimer.advance();
 			if (player.powerTimer.remaining() == sec_to_ticks(1)) {
 				// TODO not sure exactly how long the player is losing power
 				publishEvent(Info.PLAYER_LOSING_POWER, player.tile());

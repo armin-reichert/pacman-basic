@@ -35,8 +35,8 @@ import java.util.function.BiConsumer;
  * The states must be provided by an enumeration type that implements the {@link FsmState} interface. The data type
  * passed to the state lifecycle methods is specified by the CONTEXT type parameter.
  * <p>
- * State transitions are defined dynamically via the {@link #changeState(Enum)} method calls. Each state change triggers
- * an event.
+ * State transitions are defined dynamically via the {@link #changeState} method calls. Each state change triggers an
+ * event.
  * 
  * @param <STATE>   enumeration type providing the states of this FSM
  * @param <CONTEXT> data provided to the state lifecycle methods {@link FsmState#onEnter}, {@link FsmState#onUpdate} and
@@ -50,10 +50,9 @@ public abstract class Fsm<STATE extends FsmState<CONTEXT>, CONTEXT> {
 
 	private String name;
 	private final STATE[] states;
-	private STATE state;
+	private STATE currentState;
 	private STATE prevState;
-
-	protected final List<BiConsumer<STATE, STATE>> stateChangeListeners = new ArrayList<>();
+	private final List<BiConsumer<STATE, STATE>> stateChangeListeners = new ArrayList<>();
 
 	public Fsm(STATE[] states) {
 		this.states = states;
@@ -65,61 +64,108 @@ public abstract class Fsm<STATE extends FsmState<CONTEXT>, CONTEXT> {
 
 	@Override
 	public String toString() {
-		return "FiniteStateMachine[%s: state=%s prev=%s]".formatted(name, state, prevState);
+		return "FiniteStateMachine[%s: state=%s prev=%s]".formatted(name, currentState, prevState);
 	}
 
+	/**
+	 * @return the context passed to the state lifecycle methods
+	 */
 	public abstract CONTEXT getContext();
 
+	/**
+	 * @return the current state
+	 */
 	public STATE state() {
-		return state;
+		return currentState;
 	}
 
+	/**
+	 * @return the previous state (may be null)
+	 */
 	public STATE prevState() {
 		return prevState;
 	}
 
+	/**
+	 * Adds a state change listener.
+	 * 
+	 * @param listener a state change listener
+	 */
+	public synchronized void addStateChangeListener(BiConsumer<STATE, STATE> listener) {
+		stateChangeListeners.add(listener);
+	}
+
+	/**
+	 * Removes a state change listener.
+	 * 
+	 * @param listener a state change listener
+	 */
+	public synchronized void removeStateChangeListener(BiConsumer<STATE, STATE> listener) {
+		stateChangeListeners.remove(listener);
+	}
+
+	/**
+	 * Resets the timer of each state to {@link TickTimer#INDEFINITE}.
+	 */
 	public void resetTimers() {
 		for (var state : states) {
 			state.timer().setDurationIndefinite();
 		}
 	}
 
+	/**
+	 * Initializes the state machine to the given state. All timers are reset. The initial state's entry hook method is
+	 * executed but the current state's exit method isn't.
+	 * 
+	 * @param initialState the initial state
+	 */
 	public void reset(STATE initialState) {
 		resetTimers();
-		state = null;
+		currentState = null;
 		changeState(initialState);
 	}
 
+	/**
+	 * Changes the machine's current state to the new state. Tne exit hook method of the current state is executed before
+	 * entering the new state. The new state's entry hook method is executed and its timer is reset to
+	 * {@link TickTimer#INDEFINITE} (TODO: implement this). After the state change, an event is published.
+	 * <p>
+	 * Trying to change to the current state (self loop) leads to a runtime exception. TODO: check this
+	 * 
+	 * @param newState the new state
+	 */
 	public void changeState(STATE newState) {
-		if (newState == state) {
-			throw new IllegalStateException("FiniteStateMachine: Self loop in state " + state);
+		if (newState == currentState) {
+			throw new IllegalStateException("FiniteStateMachine: Self loop in state " + currentState);
 		}
-		if (state != null) {
-			state.onExit(getContext());
+		if (currentState != null) {
+			currentState.onExit(getContext());
 			if (logging) {
-				log("%s: Exit  state %s %s", name, state, state.timer());
+				log("%s: Exit  state %s %s", name, currentState, currentState.timer());
 			}
 		}
-		prevState = state;
-		state = newState;
-		state.onEnter(getContext());
-		state.timer().start();
+		prevState = currentState;
+		currentState = newState;
+		// TODO: reset timer to 0
+		currentState.onEnter(getContext());
 		if (logging) {
-			log("%s: Enter state %s %s", name, state, state.timer());
+			log("%s: Enter state %s %s", name, currentState, currentState.timer());
 		}
-		stateChangeListeners.stream().forEach(listener -> listener.accept(prevState, state));
+		currentState.timer().start();
+		stateChangeListeners.forEach(listener -> listener.accept(prevState, currentState));
 	}
 
 	/**
-	 * Runs the {@link State#onUpdate} hook method (if defined) of the current state and ticks the state timer.
+	 * Updates this FSM's state. Runs the {@link State#onUpdate} hook method (if defined) of the current state and
+	 * advances the state timer.
 	 */
 	public void update() {
 		try {
-			state.onUpdate(getContext());
-			state.timer().run();
+			currentState.onUpdate(getContext());
+			currentState.timer().advance();
 		} catch (Exception x) {
-			log("%s: Error updating state %s, timer: %s", name, state, state.timer());
 			x.printStackTrace();
+			log("%s: Error updating state %s, %s", name, currentState, currentState.timer());
 		}
 	}
 
@@ -131,7 +177,7 @@ public abstract class Fsm<STATE extends FsmState<CONTEXT>, CONTEXT> {
 			throw new IllegalStateException("State machine cannot resume previous state because there is none");
 		}
 		if (logging) {
-			log("%s: Resume state %s, timer: %s", name, prevState, prevState.timer());
+			log("%s: Resume state %s, %s", name, prevState, prevState.timer());
 		}
 		changeState(prevState);
 	}

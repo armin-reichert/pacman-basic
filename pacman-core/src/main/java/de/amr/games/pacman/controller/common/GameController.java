@@ -79,8 +79,8 @@ public class GameController extends Fsm<GameState, GameModel> {
 		super(GameState.values());
 		for (var gameVariant : GameVariant.values()) {
 			var game = games.get(gameVariant);
-			stateChangeListeners
-					.add((oldState, newState) -> game.publishEvent(new GameStateChangeEvent(game, oldState, newState)));
+			addStateChangeListener(
+					(oldState, newState) -> game.publishEvent(new GameStateChangeEvent(game, oldState, newState)));
 		}
 		selectGameVariant(variant);
 		logging = true;

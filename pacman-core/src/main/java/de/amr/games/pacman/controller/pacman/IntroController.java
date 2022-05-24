@@ -253,7 +253,7 @@ public class IntroController extends Fsm<State, Context> {
 		};
 
 		protected IntroController controller;
-		protected final TickTimer timer = new TickTimer("Timer:" + name());
+		protected final TickTimer timer = new TickTimer("Timer-" + name());
 
 		@Override
 		public void setFsm(Fsm<? extends FsmState<Context>, Context> fsm) {

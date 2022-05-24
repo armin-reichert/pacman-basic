@@ -107,7 +107,7 @@ public class IntroController extends Fsm<State, Context> {
 
 			@Override
 			public void onUpdate(Context $) {
-				$.lightsTimer.run();
+				$.lightsTimer.advance();
 				if (timer.atSecond(1)) {
 					controller.changeState(State.GHOSTS);
 				}
@@ -117,7 +117,7 @@ public class IntroController extends Fsm<State, Context> {
 		GHOSTS {
 			@Override
 			public void onUpdate(Context $) {
-				$.lightsTimer.run();
+				$.lightsTimer.advance();
 				Ghost ghost = $.ghosts[$.ghostIndex];
 				ghost.move();
 				if (ghost.moveDir() != UP && ghost.position.x <= $.turningPoint.x) {
@@ -136,7 +136,7 @@ public class IntroController extends Fsm<State, Context> {
 		MSPACMAN {
 			@Override
 			public void onUpdate(Context $) {
-				$.lightsTimer.run();
+				$.lightsTimer.advance();
 				$.msPacMan.move();
 				if ($.msPacMan.position.x <= t(14)) {
 					$.msPacMan.setSpeed(0);
@@ -148,7 +148,7 @@ public class IntroController extends Fsm<State, Context> {
 		READY_TO_PLAY {
 			@Override
 			public void onUpdate(Context $) {
-				$.lightsTimer.run();
+				$.lightsTimer.advance();
 				$.blinking.advance();
 				if (timer.atSecond(5)) {
 					controller.gameController.state().timer().expire();
@@ -157,7 +157,7 @@ public class IntroController extends Fsm<State, Context> {
 		};
 
 		protected IntroController controller;
-		protected final TickTimer timer = new TickTimer("Timer:" + name());
+		protected final TickTimer timer = new TickTimer("Timer-" + name());
 
 		@Override
 		public void setFsm(Fsm<? extends FsmState<Context>, Context> fsm) {
