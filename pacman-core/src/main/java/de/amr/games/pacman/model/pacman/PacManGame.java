@@ -28,6 +28,7 @@ import static de.amr.games.pacman.lib.TickTimer.sec_to_ticks;
 import java.io.File;
 import java.util.Random;
 
+import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Pac;
 
@@ -92,14 +93,14 @@ public class PacManGame extends GameModel {
 			throw new IllegalArgumentException("Level number must be at least 1, but is: " + levelNumber);
 		}
 		this.levelNumber = levelNumber;
-		level.fill(levelNumber - 1 < data.length ? data[levelNumber - 1] : data[data.length - 1]);
-		world.resetFood();
-		huntingPhaseDurations = huntingPhaseDurationsTable[levelNumber == 1 ? 0 : levelNumber <= 4 ? 1 : 2];
+		level = new GameLevel(levelNumber - 1 < data.length ? data[levelNumber - 1] : data[data.length - 1]);
+		level.huntingPhaseDurations = HUNTING_TIMES[levelNumber == 1 ? 0 : levelNumber <= 4 ? 1 : 2];
 		levelCounter.add(level.bonusSymbol);
 		player.starvingTimeLimit = (int) sec_to_ticks(levelNumber < 5 ? 4 : 3);
 		ghostBounty = firstGhostBounty;
 		resetGhosts();
 		bonus.init();
+		world.resetFood();
 	}
 
 	@Override

@@ -134,7 +134,7 @@ public enum GameState implements FsmState<GameModel> {
 		}
 
 		private void restartHuntingTimer(GameModel game, int phase) {
-			long phaseDuration = game.huntingPhaseDurations[phase];
+			long phaseDuration = game.level.huntingPhaseDurations[phase];
 			timer.setDurationTicks(phaseDuration).start();
 			log("%s timer set to %d ticks", this, phaseDuration);
 		}

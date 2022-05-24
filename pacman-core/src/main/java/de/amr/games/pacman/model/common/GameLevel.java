@@ -30,43 +30,46 @@ package de.amr.games.pacman.model.common;
  */
 public class GameLevel {
 
+	/** The currently active row in the {@link #HUNTING_TIMES}. */
+	public long[] huntingPhaseDurations;
+
 	/** Bonus symbol of current level. */
 	public int bonusSymbol;
 
 	/** Relative player speed at current level. */
-	public float playerSpeed;
+	public final float playerSpeed;
 
 	/** Relative ghost speed at current level. */
-	public float ghostSpeed;
+	public final float ghostSpeed;
 
 	/** Relative ghost speed when inside tunnel at current level. */
-	public float ghostSpeedTunnel;
+	public final float ghostSpeedTunnel;
 
 	/** Number of pellets left before player becomes "Cruise Elroy" at severity 1. */
-	public int elroy1DotsLeft;
+	public final int elroy1DotsLeft;
 
 	/** Relative speed of player being "Cruise Elroy" at severity 1. */
-	public float elroy1Speed;
+	public final float elroy1Speed;
 
 	/** Number of pellets left before player becomes "Cruise Elroy" at severity 2. */
-	public int elroy2DotsLeft;
+	public final int elroy2DotsLeft;
 
 	/** Relative speed of player being "Cruise Elroy" at severity 2. */
-	public float elroy2Speed;
+	public final float elroy2Speed;
 
 	/** Relative speed of player in power mode. */
-	public float playerSpeedPowered;
+	public final float playerSpeedPowered;
 
 	/** Relative speed of frightened ghost. */
-	public float ghostSpeedFrightened;
+	public final float ghostSpeedFrightened;
 
 	/** Number of seconds ghost are frightened at current level. */
-	public int ghostFrightenedSeconds;
+	public final int ghostFrightenedSeconds;
 
 	/** Number of maze flashes at end of current level. */
-	public int numFlashes;
+	public final int numFlashes;
 
-	public void fill(Object[] data) {
+	public GameLevel(Object[] data) {
 		bonusSymbol = (int) data[0];
 		playerSpeed = percentage(data[1]);
 		ghostSpeed = percentage(data[2]);

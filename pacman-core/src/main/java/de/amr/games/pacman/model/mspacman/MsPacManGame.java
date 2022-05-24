@@ -29,6 +29,7 @@ import java.io.File;
 import java.util.Random;
 
 import de.amr.games.pacman.lib.TickTimer;
+import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Pac;
 
@@ -89,9 +90,16 @@ public class MsPacManGame extends GameModel {
 			throw new IllegalArgumentException("Level number must be at least 1, but is: " + levelNumber);
 		}
 		this.levelNumber = levelNumber;
-		level.fill(levelNumber - 1 < data.length ? data[levelNumber - 1] : data[data.length - 1]);
+		level = new GameLevel(levelNumber - 1 < data.length ? data[levelNumber - 1] : data[data.length - 1]);
+		if (levelNumber >= 8) {
+			level.bonusSymbol = new Random().nextInt(7);
+		}
+		level.huntingPhaseDurations = HUNTING_TIMES[levelNumber == 1 ? 0 : levelNumber <= 4 ? 1 : 2];
+		levelCounter.add(level.bonusSymbol);
+
 		mazeNumber = mazeNumber(levelNumber);
 		mapNumber = mapNumber(mazeNumber);
+
 		world = switch (mapNumber) {
 		case 1 -> new MsPacManWorld1();
 		case 2 -> new MsPacManWorld2();
@@ -99,11 +107,6 @@ public class MsPacManGame extends GameModel {
 		case 4 -> new MsPacManWorld4();
 		default -> throw new IllegalArgumentException("Illegal map number: " + mapNumber);
 		};
-		huntingPhaseDurations = huntingPhaseDurationsTable[levelNumber == 1 ? 0 : levelNumber <= 4 ? 1 : 2];
-		if (levelNumber >= 8) {
-			level.bonusSymbol = new Random().nextInt(7);
-		}
-		levelCounter.add(level.bonusSymbol);
 		player.world = world;
 		player.starvingTimeLimit = (int) sec_to_ticks(levelNumber < 5 ? 4 : 3);
 		ghostBounty = firstGhostBounty;

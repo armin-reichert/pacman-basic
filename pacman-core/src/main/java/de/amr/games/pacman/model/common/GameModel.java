@@ -75,6 +75,16 @@ public abstract class GameModel {
 	/** Speed in pixels/tick at 100%. */
 	public static final double BASE_SPEED = 1.25;
 
+	/** The durations of the hunting phases. */
+	//@formatter:off
+	public static final long[][] HUNTING_TIMES = new long[][] {
+	  // scatter  chase   scatter  chase  scatter  chase    scatter  chase
+	   { 7*60,    20*60,  7*60,    20*60, 5*60,      20*60, 5*60,    TickTimer.INDEFINITE },
+	   { 7*60,    20*60,  7*60,    20*60, 5*60,    1033*60,    1,    TickTimer.INDEFINITE },
+	   { 5*60,    20*60,  5*60,    20*60, 5*60,    1037*60,    1,    TickTimer.INDEFINITE },
+	};
+	//@formatter:on
+
 	/** 1-based level number */
 	public int levelNumber;
 
@@ -101,19 +111,6 @@ public abstract class GameModel {
 		return huntingPhase % 2 == 0;
 	}
 
-	/** The durations of the hunting phases. */
-	//@formatter:off
-	public long[][] huntingPhaseDurationsTable = new long[][] {
-	  // scatter  chase   scatter  chase  scatter  chase    scatter  chase
-	   { 7*60,    20*60,  7*60,    20*60, 5*60,      20*60, 5*60,    TickTimer.INDEFINITE },
-	   { 7*60,    20*60,  7*60,    20*60, 5*60,    1033*60,    1,    TickTimer.INDEFINITE },
-	   { 5*60,    20*60,  5*60,    20*60, 5*60,    1037*60,    1,    TickTimer.INDEFINITE },
-	};
-	//@formatter:on
-
-	/** The currently active row in the {@link #huntingPhaseDurationsTable}. */
-	public long[] huntingPhaseDurations;
-
 	/** The player, Pac-Man or Ms. Pac-Man. */
 	public Pac player;
 
@@ -123,7 +120,8 @@ public abstract class GameModel {
 	/** The bonus entity. */
 	public Bonus bonus;
 
-	public final GameLevel level = new GameLevel();
+	/** Current level-specific data. */
+	public GameLevel level;
 
 	/** Number of player lives when the game starts. */
 	public int initialLives;
