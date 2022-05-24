@@ -202,7 +202,11 @@ public class IntroController extends Fsm<State, Context> {
 				}
 				if ($.pacMan.position.x > t(29)) {
 					$.slowBlinking.restart();
-					controller.changeState(State.READY_TO_PLAY);
+					if (controller.gameController.credit() == 0) {
+						controller.gameController.state().timer().expire();
+					} else {
+						controller.changeState(State.READY_TO_PLAY);
+					}
 					return;
 				}
 				// check if Pac-Man kills a ghost

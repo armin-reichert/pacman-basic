@@ -99,7 +99,9 @@ public class GameController extends Fsm<GameState, GameModel> {
 	}
 
 	public void consumeCredit() {
-		--credit;
+		if (credit > 0) {
+			--credit;
+		}
 	}
 
 	public void setPlayerControl(Consumer<Pac> playerControl) {

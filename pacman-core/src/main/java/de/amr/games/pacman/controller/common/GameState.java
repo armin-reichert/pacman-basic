@@ -64,7 +64,7 @@ public enum GameState implements FsmState<GameModel> {
 	READY {
 		@Override
 		public void onEnter(GameModel game) {
-			timer.setDurationSeconds(game.running ? 2 : 5).start();
+			timer.setDurationSeconds(game.running || controller.credit() == 0 ? 2 : 5).start();
 			game.resetGuys();
 		}
 
