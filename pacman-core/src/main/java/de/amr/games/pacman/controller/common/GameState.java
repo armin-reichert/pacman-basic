@@ -67,6 +67,9 @@ public enum GameState implements FsmState<GameModel> {
 		public void onEnter(GameModel game) {
 			timer.setDurationSeconds(game.running || game.attractMode ? 2 : 5).start();
 			game.resetGuys();
+			if (controller.credit() > 0) {
+				controller.consumeCredit();
+			}
 		}
 
 		@Override
@@ -75,8 +78,7 @@ public enum GameState implements FsmState<GameModel> {
 				game.showGhosts();
 				game.player.show();
 			} else if (timer.hasExpired()) {
-				if (controller.credit > 0) {
-					--controller.credit;
+				if (controller.credit() > 0) {
 					game.running = true;
 				}
 				// TODO reset hunting timer to INDEFINITE?

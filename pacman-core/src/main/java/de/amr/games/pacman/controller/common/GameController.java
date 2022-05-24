@@ -75,7 +75,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 	private Consumer<Pac> playerControl;
 	private final Consumer<Pac> autopilot = new Autopilot(this::game);
 
-	public int credit;
+	private int credit;
 
 	public GameController(GameVariant variant) {
 		super(GameState.values());
@@ -86,6 +86,20 @@ public class GameController extends Fsm<GameState, GameModel> {
 		}
 		selectGameVariant(variant);
 		logging = true;
+	}
+
+	public int credit() {
+		return credit;
+	}
+
+	public void addCredit() {
+		if (state() == INTRO) {
+			++credit;
+		}
+	}
+
+	public void consumeCredit() {
+		--credit;
 	}
 
 	public void setPlayerControl(Consumer<Pac> playerControl) {
