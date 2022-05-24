@@ -93,9 +93,6 @@ public abstract class GameModel {
 	/** If the attract mode is active */
 	public boolean attractMode;
 
-	/** If playing a game has been requested. */
-	public boolean requested;
-
 	/** If a game is running. */
 	public boolean running;
 

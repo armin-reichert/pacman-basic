@@ -75,6 +75,8 @@ public class GameController extends Fsm<GameState, GameModel> {
 	private Consumer<Pac> playerControl;
 	private final Consumer<Pac> autopilot = new Autopilot(this::game);
 
+	public int credit;
+
 	public GameController(GameVariant variant) {
 		super(GameState.values());
 		for (var gameVariant : GameVariant.values()) {
@@ -120,9 +122,10 @@ public class GameController extends Fsm<GameState, GameModel> {
 		return games.get(selectedGameVariant);
 	}
 
+	// actions
+
 	public void requestGame() {
-		if (state() == INTRO) {
-			game().requested = true;
+		if (state() == INTRO && credit > 0) {
 			changeState(READY);
 		}
 	}

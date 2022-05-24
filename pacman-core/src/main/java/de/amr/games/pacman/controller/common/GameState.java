@@ -50,7 +50,6 @@ public enum GameState implements FsmState<GameModel> {
 		public void onEnter(GameModel game) {
 			timer.setDurationIndefinite().start();
 			game.reset();
-			game.requested = false;
 			game.running = false;
 		}
 
@@ -76,7 +75,8 @@ public enum GameState implements FsmState<GameModel> {
 				game.showGhosts();
 				game.player.show();
 			} else if (timer.hasExpired()) {
-				if (game.requested) {
+				if (controller.credit > 0) {
+					--controller.credit;
 					game.running = true;
 				}
 				// TODO reset hunting timer to INDEFINITE?
@@ -237,7 +237,7 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void onExit(GameModel game) {
 			game.player.show();
-			// fire event(s) for dead ghosts not yet returning home (bounty != 0)
+			// fire event(s) only for dead ghosts not yet returning home (bounty != 0)
 			game.ghosts(DEAD).filter(ghost -> ghost.bounty != 0).forEach(ghost -> {
 				ghost.bounty = 0;
 				game.publishEvent(new GameEvent(game, GameEventType.GHOST_STARTED_RETURNING_HOME, ghost, null));
