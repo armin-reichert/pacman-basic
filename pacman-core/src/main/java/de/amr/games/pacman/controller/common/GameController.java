@@ -73,12 +73,11 @@ public class GameController extends Fsm<GameState, GameModel> {
 			GameVariant.MS_PACMAN, new MsPacManGame(), //
 			GameVariant.PACMAN, new PacManGame());
 
-	private GameVariant selectedGameVariant;
-	private Consumer<Pac> playerControl;
 	private final Consumer<Pac> autopilot = new Autopilot(this::game);
-
+	private Consumer<Pac> playerControl;
+	private GameVariant selectedGameVariant;
 	private int credit;
-	public boolean gameRunning;
+	private boolean gameRunning;
 
 	public GameController(GameVariant variant) {
 		super(GameState.values());
@@ -91,6 +90,14 @@ public class GameController extends Fsm<GameState, GameModel> {
 		logging = true;
 	}
 
+	public boolean isGameRunning() {
+		return gameRunning;
+	}
+
+	void setGameRunning(boolean b) {
+		gameRunning = b;
+	}
+
 	public int credit() {
 		return credit;
 	}
@@ -101,7 +108,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 		}
 	}
 
-	public void consumeCredit() {
+	void consumeCredit() {
 		if (credit > 0) {
 			--credit;
 		}
@@ -147,6 +154,13 @@ public class GameController extends Fsm<GameState, GameModel> {
 		if (state() == INTRO && credit > 0) {
 			changeState(READY);
 		}
+	}
+
+	public void returnToIntro() {
+		if (gameRunning) {
+			consumeCredit();
+		}
+		reset(INTRO);
 	}
 
 	public void startIntermissionTest() {

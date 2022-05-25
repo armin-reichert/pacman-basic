@@ -126,6 +126,20 @@ public abstract class Fsm<STATE extends FsmState<CONTEXT>, CONTEXT> {
 	}
 
 	/**
+	 * Updates this FSM's state. Runs the {@link State#onUpdate} hook method (if defined) of the current state and
+	 * advances the state timer.
+	 */
+	public void update() {
+		try {
+			currentState.onUpdate(getContext());
+			currentState.timer().advance();
+		} catch (Exception x) {
+			x.printStackTrace();
+			log("%s: Error updating state %s, %s", name, currentState, currentState.timer());
+		}
+	}
+
+	/**
 	 * Changes the machine's current state to the new state. Tne exit hook method of the current state is executed before
 	 * entering the new state. The new state's entry hook method is executed and its timer is reset to
 	 * {@link TickTimer#INDEFINITE} (TODO: implement this). After the state change, an event is published.
@@ -153,20 +167,6 @@ public abstract class Fsm<STATE extends FsmState<CONTEXT>, CONTEXT> {
 		}
 		currentState.timer().start();
 		stateChangeListeners.forEach(listener -> listener.accept(prevState, currentState));
-	}
-
-	/**
-	 * Updates this FSM's state. Runs the {@link State#onUpdate} hook method (if defined) of the current state and
-	 * advances the state timer.
-	 */
-	public void update() {
-		try {
-			currentState.onUpdate(getContext());
-			currentState.timer().advance();
-		} catch (Exception x) {
-			x.printStackTrace();
-			log("%s: Error updating state %s, %s", name, currentState, currentState.timer());
-		}
 	}
 
 	/**
