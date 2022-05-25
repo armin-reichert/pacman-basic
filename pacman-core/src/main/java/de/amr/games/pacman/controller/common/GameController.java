@@ -82,7 +82,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 
 	public GameController(GameVariant variant) {
 		super(GameState.values());
-		logging = true;
+		logging = false;
 		games = Map.of(GameVariant.MS_PACMAN, new MsPacManGame(), GameVariant.PACMAN, new PacManGame());
 		// map game state change events from FSM to game events from game model:
 		games.values().forEach(game -> {

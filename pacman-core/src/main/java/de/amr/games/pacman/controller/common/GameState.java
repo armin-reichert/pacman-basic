@@ -66,33 +66,22 @@ public enum GameState implements FsmState<GameModel> {
 	READY {
 		@Override
 		public void onEnter(GameModel game) {
-			timer.setDurationSeconds(controller.isGameRunning() || controller.credit() == 0 ? 2 : 5).start();
+			long readySeconds = controller.isGameRunning() || controller.credit() == 0 ? 2 : 5;
+			timer.setDurationSeconds(readySeconds).start();
 			game.resetGuys();
-			game.ghosts().forEach(Ghost::show);
-			game.player.show();
+			controller.getHuntingTimer().startFirstPhase(game);
 		}
 
 		@Override
 		public void onUpdate(GameModel game) {
 			if (timer.hasExpired()) {
-				if (controller.credit() > 0) {
-					controller.setGameRunning(true);
-				}
-				controller.getHuntingTimer().startPhase(game, 0);
+				controller.setGameRunning(controller.credit() > 0);
 				controller.changeState(GameState.HUNTING);
-				return;
 			}
 		}
 	},
 
 	HUNTING {
-		@Override
-		public void onEnter(GameModel game) {
-			if (!controller.getHuntingTimer().isStopped()) {
-				controller.getHuntingTimer().startHuntingPhase(game, 0);
-			}
-		}
-
 		@Override
 		public void onUpdate(GameModel game) {
 			controller.getHuntingTimer().advance();
@@ -100,12 +89,12 @@ public enum GameState implements FsmState<GameModel> {
 				controller.getHuntingTimer().startNextHuntingPhase(game);
 			}
 			if (game.world.foodRemaining() == 0) {
-				controller.getHuntingTimer().startPhase(game, 0);
+				controller.getHuntingTimer().stop();
 				controller.changeState(LEVEL_COMPLETE);
 				return;
 			}
 			if (game.checkKillPlayer(controller.isPlayerImmune())) {
-				controller.getHuntingTimer().startPhase(game, 0);
+				controller.getHuntingTimer().startFirstPhase(game);
 				controller.changeState(PACMAN_DYING);
 				return;
 			}
@@ -118,20 +107,17 @@ public enum GameState implements FsmState<GameModel> {
 			game.updateBonus();
 		}
 
-		private void updatePlayer(GameModel game) {
+		private boolean updatePlayer(GameModel game) {
 			currentPlayerControl().accept(game.player);
 			boolean lostPower = game.updatePlayer();
 			if (lostPower) {
 				controller.getHuntingTimer().start();
 			}
-			checkFood(game);
-		}
-
-		private void checkFood(GameModel game) {
 			boolean energizerEaten = game.checkFood(game.player.tile());
-			if (energizerEaten && game.player.powerTimer.isRunning()) {
+			if (energizerEaten) {
 				controller.getHuntingTimer().stop();
 			}
+			return lostPower;
 		}
 	},
 
@@ -161,9 +147,9 @@ public enum GameState implements FsmState<GameModel> {
 	LEVEL_STARTING {
 		@Override
 		public void onEnter(GameModel game) {
+			timer.setDurationIndefinite().start();
 			game.setLevel(game.levelNumber + 1);
 			game.resetGuys();
-			timer.setDurationIndefinite().start();
 		}
 
 		@Override
@@ -293,7 +279,6 @@ public enum GameState implements FsmState<GameModel> {
 	}
 
 	protected Consumer<Pac> currentPlayerControl() {
-		return controller.isAutoMoving() || controller.credit() == 0 ? controller.autopilot()
-				: controller.playerControl();
+		return controller.isAutoMoving() || controller.credit() == 0 ? controller.autopilot() : controller.playerControl();
 	}
 }

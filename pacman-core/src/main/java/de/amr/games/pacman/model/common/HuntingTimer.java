@@ -28,6 +28,8 @@ import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.model.common.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.common.GhostState.HUNTING_PAC;
 
+import java.util.List;
+
 import de.amr.games.pacman.event.ScatterPhaseStartedEvent;
 import de.amr.games.pacman.lib.TickTimer;
 
@@ -46,7 +48,9 @@ public class HuntingTimer {
 
 	@Override
 	public String toString() {
-		return "%s Phase %d (%s)".formatted(timer, phase, getPhaseName());
+		int i = isScatteringPhase(phase) ? getScatteringPhase() : getChasingPhase();
+		String whichPhase = List.of("First", "Second", "Third", "Fourth").get(i);
+		return "%s: Phase %d (%s %s)".formatted(timer, phase, whichPhase, getPhaseName());
 	}
 
 	public int getPhase() {
@@ -95,23 +99,21 @@ public class HuntingTimer {
 		log("%s: started", this);
 	}
 
-	public void startPhase(GameModel game, int phase) {
-		timer.setDurationTicks(game.huntingPhaseTicks(phase)).start();
+	public void startFirstPhase(GameModel game) {
+		startPhase(game, 0);
 	}
 
 	public void startNextHuntingPhase(GameModel game) {
-		startHuntingPhase(game, ++phase);
+		startPhase(game, ++phase);
+		game.ghosts().filter(ghost -> ghost.is(HUNTING_PAC) || ghost.is(FRIGHTENED)).forEach(Ghost::forceTurningBack);
 	}
 
-	public void startHuntingPhase(GameModel game, int phase) {
+	private void startPhase(GameModel game, int phase) {
 		this.phase = phase;
-		startPhase(game, phase);
-		log("%s: Phase %d has been started", this, phase);
-		if (phase > 0) {
-			game.ghosts().filter(ghost -> ghost.is(HUNTING_PAC) || ghost.is(FRIGHTENED)).forEach(Ghost::forceTurningBack);
-		}
+		timer.setDurationTicks(game.huntingPhaseTicks(phase)).start();
+		log("%s: started", this);
 		if (isScatteringPhase(phase)) {
-			game.publishEvent(new ScatterPhaseStartedEvent(game, phase / 2));
+			game.publishEvent(new ScatterPhaseStartedEvent(game, getScatteringPhase()));
 		}
 	}
 }

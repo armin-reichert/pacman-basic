@@ -63,6 +63,8 @@ import de.amr.games.pacman.model.pacman.Bonus;
  */
 public abstract class GameModel {
 
+	public static boolean logPublishEvents = false;
+
 	/** Speed in pixels/tick at 100%. */
 	public static final double BASE_SPEED = 1.25;
 
@@ -156,7 +158,9 @@ public abstract class GameModel {
 
 	public void publishEvent(GameEvent gameEvent) {
 		if (eventingEnabled) {
-			log("%s: publish event: '%s'", getClass().getSimpleName(), gameEvent);
+			if (logPublishEvents) {
+				log("%s: publish event: '%s'", getClass().getSimpleName(), gameEvent);
+			}
 			subscribers.forEach(subscriber -> subscriber.onGameEvent(gameEvent));
 		}
 	}
@@ -180,7 +184,7 @@ public abstract class GameModel {
 		player.placeAt(world.playerHomeTile(), HTS, 0);
 		player.setMoveDir(world.playerStartDirection());
 		player.setWishDir(world.playerStartDirection());
-		player.hide();
+		player.show();
 		player.velocity = V2d.NULL;
 		player.targetTile = null; // used in autopilot mode
 		player.stuck = false;
@@ -194,7 +198,7 @@ public abstract class GameModel {
 			ghost.placeAt(ghost.homeTile, HTS, 0);
 			ghost.setMoveDir(world.ghostStartDirection(ghost.id));
 			ghost.setWishDir(world.ghostStartDirection(ghost.id));
-			ghost.hide();
+			ghost.show();
 			ghost.velocity = V2d.NULL;
 			ghost.targetTile = null;
 			ghost.stuck = false;
