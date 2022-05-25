@@ -78,15 +78,18 @@ public class GameController extends Fsm<GameState, GameModel> {
 	private GameVariant selectedGameVariant;
 	private int credit;
 	private boolean gameRunning;
+	private boolean autoMoving;
+	private boolean playerImmune;
 
 	public GameController(GameVariant variant) {
 		super(GameState.values());
+		setSelectedGameVariant(variant);
 		for (var gameVariant : GameVariant.values()) {
 			var game = games.get(gameVariant);
 			addStateChangeListener(
 					(oldState, newState) -> game.publishEvent(new GameStateChangeEvent(game, oldState, newState)));
 		}
-		selectGameVariant(variant);
+		changeState(INTRO);
 		logging = true;
 	}
 
@@ -96,6 +99,22 @@ public class GameController extends Fsm<GameState, GameModel> {
 
 	void setGameRunning(boolean b) {
 		gameRunning = b;
+	}
+
+	public boolean isAutoMoving() {
+		return autoMoving;
+	}
+
+	public boolean isPlayerImmune() {
+		return playerImmune;
+	}
+
+	public void togglePlayerImmune() {
+		playerImmune = !playerImmune;
+	}
+
+	public void toggleAutoMoving() {
+		autoMoving = !autoMoving;
 	}
 
 	public int credit() {
@@ -119,7 +138,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 	}
 
 	Consumer<Pac> currentPlayerControl() {
-		return game().player.autoMoving || credit == 0 ? autopilot : playerControl;
+		return autoMoving || credit == 0 ? autopilot : playerControl;
 	}
 
 	public GameVariant gameVariant() {

@@ -50,10 +50,6 @@ public class Pac extends Creature {
 	/** Max number of clock ticks Pac can be starving until ghost gets unlocked. */
 	public int starvingTimeLimit;
 
-	public boolean immune;
-
-	public boolean autoMoving;
-
 	public Pac(String name) {
 		super(name);
 	}
