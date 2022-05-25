@@ -40,6 +40,7 @@ import de.amr.games.pacman.event.GameStateChangeEvent;
 import de.amr.games.pacman.lib.Fsm;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
+import de.amr.games.pacman.model.common.HuntingTimer;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.mspacman.MsPacManGame;
 import de.amr.games.pacman.model.pacman.PacManGame;
@@ -77,6 +78,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 	private Consumer<Pac> playerControl;
 
 	private GameVariant selectedGameVariant;
+	private final HuntingTimer huntingTimer = new HuntingTimer();
 	private int credit;
 	private boolean gameRunning;
 	private boolean autoMoving;
@@ -92,6 +94,10 @@ public class GameController extends Fsm<GameState, GameModel> {
 		}
 		changeState(INTRO);
 		logging = true;
+	}
+
+	public HuntingTimer getHuntingTimer() {
+		return huntingTimer;
 	}
 
 	public boolean isGameRunning() {

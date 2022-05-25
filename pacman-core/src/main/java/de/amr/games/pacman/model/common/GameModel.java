@@ -83,16 +83,8 @@ public abstract class GameModel {
 	/** World of current level. */
 	public World world;
 
-	/** The hunting phase. Values: 0, 2, 4, 6 = "scattering", 1, 3, 5, 7 = "chasing". */
-	public int huntingPhase;
-
 	/** Number of running intermissions scene in test mode. */
 	public int intermissionTestNumber;
-
-	/** Tells if the current hunting phase is "scattering". */
-	public boolean inScatteringPhase() {
-		return huntingPhase % 2 == 0;
-	}
 
 	/** The player, Pac-Man or Ms. Pac-Man. */
 	public Pac player;
@@ -362,8 +354,8 @@ public abstract class GameModel {
 		return lostPower;
 	}
 
-	public void updateGhosts(GameVariant gameVariant) {
-		ghosts().forEach(ghost -> updateGhost(ghost, gameVariant));
+	public void updateGhosts(GameVariant gameVariant, int huntingPhase) {
+		ghosts().forEach(ghost -> updateGhost(ghost, gameVariant, huntingPhase));
 		Ghost released = releaseLockedGhosts();
 		if (released != null) {
 			publishEvent(new GameEvent(this, GameEventType.GHOST_STARTED_LEAVING_HOUSE, released, released.tile()));
@@ -378,7 +370,7 @@ public abstract class GameModel {
 	 * 
 	 * @param ghost ghost to update
 	 */
-	public void updateGhost(Ghost ghost, GameVariant gameVariant) {
+	public void updateGhost(Ghost ghost, GameVariant gameVariant, int huntingPhase) {
 		switch (ghost.state) {
 
 		case LOCKED -> {
@@ -435,7 +427,7 @@ public abstract class GameModel {
 			 */
 			if (gameVariant == MS_PACMAN && huntingPhase == 0 && (ghost.id == RED_GHOST || ghost.id == PINK_GHOST)) {
 				ghost.roam();
-			} else if (inScatteringPhase() && ghost.elroy == 0) {
+			} else if (HuntingTimer.isScatteringPhase(huntingPhase) && ghost.elroy == 0) {
 				ghost.scatter();
 			} else {
 				ghost.chase();

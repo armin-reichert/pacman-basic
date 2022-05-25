@@ -160,12 +160,11 @@ public abstract class Fsm<STATE extends FsmState<CONTEXT>, CONTEXT> {
 		}
 		prevState = currentState;
 		currentState = newState;
-		// TODO: reset timer to 0
+		currentState.timer().setDurationIndefinite().start();
 		currentState.onEnter(getContext());
 		if (logging) {
 			log("%s: Enter state %s %s", name, currentState, currentState.timer());
 		}
-		currentState.timer().start();
 		stateChangeListeners.forEach(listener -> listener.accept(prevState, currentState));
 	}
 
