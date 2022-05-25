@@ -40,14 +40,15 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
 
 /**
- * Base class for the map-based worlds.
- * <p>
  * Implements all stuff that is common to the original Arcade worlds like ghost house position, ghost and player start
  * positions and direction etc.
  * 
  * @author Armin Reichert
  */
 public class ArcadeWorld implements World {
+
+	public static int TILES_X = 28;
+	public static int TILES_Y = 36;
 
 	//@formatter:off
 	public static final byte SPACE           = 0;
