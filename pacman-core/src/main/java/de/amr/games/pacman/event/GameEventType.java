@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-22 Armin Reichert
+Copyright (c) 2022 Armin Reichert
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -20,20 +20,31 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
- */
-package de.amr.games.pacman.controller.common.event;
+*/
+
+package de.amr.games.pacman.event;
 
 /**
- * Implemented by classes that listen to game events.
+ * Game event types.
  * 
  * @author Armin Reichert
  */
-public interface GameEventListener {
-
-	/**
-	 * Called when a game event is received.
-	 * 
-	 * @param event a game event
-	 */
-	void onGameEvent(GameEvent event);
+public enum GameEventType {
+	//@formatter:off
+	BONUS_ACTIVATED, 
+	BONUS_EATEN, 
+	BONUS_EXPIRED, 
+	GAME_SCATTERING_STARTED, 
+	GAME_STATE_CHANGED,
+	GHOST_ENTERED_HOUSE, 
+	GHOST_REVIVED, 
+	GHOST_STARTED_LEAVING_HOUSE, 
+	GHOST_FINISHED_LEAVING_HOUSE, 
+	GHOST_STARTED_RETURNING_HOME,
+	PLAYER_FOUND_FOOD, 
+	PLAYER_GOT_EXTRA_LIFE, 
+	PLAYER_GOT_POWER, 
+	PLAYER_STARTED_LOSING_POWER,
+	PLAYER_LOST_POWER;
+	//@formatter:on
 }

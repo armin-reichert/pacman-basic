@@ -35,8 +35,8 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.controller.common.event.GameEventType;
-import de.amr.games.pacman.controller.common.event.GameStateChangeEvent;
+import de.amr.games.pacman.event.GameEventType;
+import de.amr.games.pacman.event.GameStateChangeEvent;
 import de.amr.games.pacman.lib.Fsm;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;

@@ -29,10 +29,10 @@ import static de.amr.games.pacman.model.common.GhostState.ENTERING_HOUSE;
 import static de.amr.games.pacman.model.common.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.common.GhostState.HUNTING_PAC;
 
-import de.amr.games.pacman.controller.common.event.GameEvent;
-import de.amr.games.pacman.controller.common.event.GameEventType;
-import de.amr.games.pacman.controller.common.event.GameStateChangeEvent;
-import de.amr.games.pacman.controller.common.event.ScatterPhaseStartedEvent;
+import de.amr.games.pacman.event.GameEvent;
+import de.amr.games.pacman.event.GameEventType;
+import de.amr.games.pacman.event.GameStateChangeEvent;
+import de.amr.games.pacman.event.ScatterPhaseStartedEvent;
 import de.amr.games.pacman.lib.Fsm;
 import de.amr.games.pacman.lib.FsmState;
 import de.amr.games.pacman.lib.Hiscore;
