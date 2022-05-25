@@ -75,7 +75,7 @@ public enum GameState implements FsmState<GameModel> {
 				if (controller.credit() > 0) {
 					controller.setGameRunning(true);
 				}
-				controller.getHuntingTimer().restart(game, 0);
+				controller.getHuntingTimer().startPhase(game, 0);
 				controller.changeState(GameState.HUNTING);
 				return;
 			}
@@ -94,15 +94,15 @@ public enum GameState implements FsmState<GameModel> {
 		public void onUpdate(GameModel game) {
 			controller.getHuntingTimer().advance();
 			if (controller.getHuntingTimer().hasExpired()) {
-				controller.getHuntingTimer().startNextPhase(game);
+				controller.getHuntingTimer().startNextHuntingPhase(game);
 			}
 			if (game.world.foodRemaining() == 0) {
-				controller.getHuntingTimer().restart(game, 0);
+				controller.getHuntingTimer().startPhase(game, 0);
 				controller.changeState(LEVEL_COMPLETE);
 				return;
 			}
 			if (game.checkKillPlayer(controller.isPlayerImmune())) {
-				controller.getHuntingTimer().restart(game, 0);
+				controller.getHuntingTimer().startPhase(game, 0);
 				controller.changeState(PACMAN_DYING);
 				return;
 			}

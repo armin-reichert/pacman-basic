@@ -46,7 +46,7 @@ public class HuntingTimer {
 
 	@Override
 	public String toString() {
-		return "[HuntingTimer phase %d (%s) %s]".formatted(phase, getPhaseName(), timer);
+		return "%s Phase %d (%s)".formatted(timer, phase, getPhaseName());
 	}
 
 	public int getPhase() {
@@ -87,31 +87,29 @@ public class HuntingTimer {
 
 	public void stop() {
 		timer.stop();
-		log("Hunting timer stopped: %s", this);
+		log("%s: stopped", this);
 	}
 
 	public void start() {
 		timer.start();
-		log("Hunting timer started: %s", this);
+		log("%s: started", this);
 	}
 
-	public void restart(GameModel game, int phase) {
+	public void startPhase(GameModel game, int phase) {
 		timer.setDurationTicks(game.huntingPhaseTicks(phase)).start();
-		log("Hunting timer restarted: %s", this);
 	}
 
-	public void startNextPhase(GameModel game) {
+	public void startNextHuntingPhase(GameModel game) {
 		startHuntingPhase(game, ++phase);
-		log("Hunting timer next phase started: %s", this);
 	}
 
 	public void startHuntingPhase(GameModel game, int phase) {
 		this.phase = phase;
-		restart(game, phase);
+		startPhase(game, phase);
+		log("%s: Phase %d has been started", this, phase);
 		if (phase > 0) {
 			game.ghosts().filter(ghost -> ghost.is(HUNTING_PAC) || ghost.is(FRIGHTENED)).forEach(Ghost::forceTurningBack);
 		}
-		log("Hunting phase started: %s", this);
 		if (isScatteringPhase(phase)) {
 			game.publishEvent(new ScatterPhaseStartedEvent(game, phase / 2));
 		}
