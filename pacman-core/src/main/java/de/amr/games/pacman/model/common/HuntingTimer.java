@@ -33,33 +33,34 @@ import de.amr.games.pacman.lib.TickTimer;
 /**
  * @author Armin Reichert
  */
-public class HuntingTimer {
+public class HuntingTimer extends TickTimer {
 
 	/** Tells if the current hunting phase is "scattering". */
 	public static boolean isScatteringPhase(int phase) {
 		return phase % 2 == 0;
 	}
 
-	private final TickTimer timer = new TickTimer("HuntingTimer");
 	private int phase;
+
+	public HuntingTimer() {
+		super("HuntingTimer");
+	}
 
 	@Override
 	public String toString() {
 		int i = isScatteringPhase(phase) ? getScatteringPhase() : getChasingPhase();
 		String whichPhase = List.of("First", "Second", "Third", "Fourth").get(i);
-		return "%s: Phase %d (%s %s)".formatted(timer, phase, whichPhase, getPhaseName());
+		return "%s: Phase %d (%s %s)".formatted(super.toString(), phase, whichPhase, getPhaseName());
+	}
+
+	public void startPhase(int phase, long duration) {
+		this.phase = phase;
+		setDurationTicks(duration).start();
+		log("%s: started", this);
 	}
 
 	public int getPhase() {
 		return phase;
-	}
-
-	public long getTick() {
-		return timer.tick();
-	}
-
-	public long getTicksRemaining() {
-		return timer.remaining();
 	}
 
 	public int getScatteringPhase() {
@@ -72,33 +73,5 @@ public class HuntingTimer {
 
 	public String getPhaseName() {
 		return phase % 2 == 0 ? "Scattering" : "Chasing";
-	}
-
-	public boolean isPhaseComplete() {
-		return timer.hasExpired();
-	}
-
-	public boolean isStopped() {
-		return timer.isStopped();
-	}
-
-	public void advance() {
-		timer.advance();
-	}
-
-	public void stop() {
-		timer.stop();
-		log("%s: stopped", this);
-	}
-
-	public void start() {
-		timer.start();
-		log("%s: started", this);
-	}
-
-	public void startPhase(int phase, long duration) {
-		this.phase = phase;
-		timer.setDurationTicks(duration).start();
-		log("%s: started", this);
 	}
 }
