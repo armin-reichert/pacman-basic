@@ -51,6 +51,7 @@ import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.Hiscore;
 import de.amr.games.pacman.lib.TickTimer;
+import de.amr.games.pacman.lib.TickTimer.TickTimerState;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.world.World;
@@ -326,36 +327,26 @@ public abstract class GameModel {
 
 	// Game logic
 
-	/**
-	 * @return <code>true</code> if player power just expired
-	 */
-	public boolean updatePlayer() {
-		boolean lostPower = false;
+	public void movePlayer() {
 		if (player.restingTicksLeft > 0) {
 			player.restingTicksLeft--;
 		} else {
 			player.setSpeed(player.powerTimer.isRunning() ? level.playerSpeedPowered : level.playerSpeed);
 			player.tryMoving();
 		}
-		switch (player.powerTimer.state()) {
-		case RUNNING -> {
+	}
+
+	/**
+	 * @return if the player lost power in this frame
+	 */
+	public boolean updatePlayerPower() {
+		if (player.powerTimer.state() == TickTimerState.RUNNING) {
 			player.powerTimer.advance();
-			if (player.powerTimer.remaining() == sec_to_ticks(1)) {
-				// TODO not sure exactly how long the player is losing power
-				publishEvent(GameEventType.PLAYER_STARTED_LOSING_POWER, player.tile());
-			}
+		} else if (player.powerTimer.state() == TickTimerState.EXPIRED) {
+			player.powerTimer.setDurationIndefinite(); // now in state READY
+			return true;
 		}
-		case EXPIRED -> {
-			lostPower = true;
-			log("%s lost power, timer=%s", player.name, player.powerTimer);
-			ghosts(FRIGHTENED).forEach(ghost -> ghost.state = HUNTING_PAC);
-			player.powerTimer.setDurationIndefinite(); // TODO needed?
-			publishEvent(GameEventType.PLAYER_LOST_POWER, player.tile());
-		}
-		default -> {
-		}
-		}
-		return lostPower;
+		return false;
 	}
 
 	public void updateGhosts(GameVariant gameVariant, int huntingPhase) {

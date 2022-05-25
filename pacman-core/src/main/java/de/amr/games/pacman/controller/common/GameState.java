@@ -24,6 +24,7 @@ SOFTWARE.
 package de.amr.games.pacman.controller.common;
 
 import static de.amr.games.pacman.lib.Logging.log;
+import static de.amr.games.pacman.lib.TickTimer.sec_to_ticks;
 import static de.amr.games.pacman.model.common.GhostState.DEAD;
 import static de.amr.games.pacman.model.common.GhostState.ENTERING_HOUSE;
 import static de.amr.games.pacman.model.common.GhostState.FRIGHTENED;
@@ -93,12 +94,10 @@ public enum GameState implements FsmState<GameModel> {
 				game.ghosts(FRIGHTENED).forEach(Ghost::forceTurningBack);
 			}
 			if (game.world.foodRemaining() == 0) {
-				controller.getHuntingTimer().stop();
 				controller.changeState(LEVEL_COMPLETE);
 				return;
 			}
 			if (game.checkKillPlayer(controller.isPlayerImmune())) {
-				startHuntingPhase(game, 0);
 				controller.changeState(PACMAN_DYING);
 				return;
 			}
@@ -106,28 +105,34 @@ public enum GameState implements FsmState<GameModel> {
 				controller.changeState(GHOST_DYING);
 				return;
 			}
-			updatePlayer(game);
-			game.updateGhosts(controller.gameVariant(), controller.getHuntingTimer().getPhase());
-			game.updateBonus();
-		}
-
-		private boolean updatePlayer(GameModel game) {
 			currentPlayerControl().accept(game.player);
-			boolean lostPower = game.updatePlayer();
+			game.movePlayer();
+
+			boolean lostPower = game.updatePlayerPower();
 			if (lostPower) {
+				log("%s lost power, timer=%s", game.player.name, game.player.powerTimer);
 				controller.getHuntingTimer().start();
+				game.ghosts(FRIGHTENED).forEach(ghost -> ghost.state = HUNTING_PAC);
+				game.publishEvent(GameEventType.PLAYER_LOST_POWER, game.player.tile());
+			} else if (game.player.powerTimer.remaining() == sec_to_ticks(1)) {
+				// TODO not sure exactly how long the player is losing power
+				game.publishEvent(GameEventType.PLAYER_STARTED_LOSING_POWER, game.player.tile());
 			}
-			boolean energizerEaten = game.checkFood(game.player.tile());
-			if (energizerEaten) {
+
+			boolean gotPower = game.checkFood(game.player.tile());
+			if (gotPower) {
 				controller.getHuntingTimer().stop();
 			}
-			return lostPower;
+
+			game.updateGhosts(controller.gameVariant(), controller.getHuntingTimer().getPhase());
+			game.updateBonus();
 		}
 	},
 
 	LEVEL_COMPLETE {
 		@Override
 		public void onEnter(GameModel game) {
+			controller.getHuntingTimer().stop();
 			game.bonus.init();
 			game.player.setSpeed(0);
 			game.ghosts().forEach(Ghost::hide);
@@ -179,6 +184,11 @@ public enum GameState implements FsmState<GameModel> {
 				game.player.lives--;
 				controller.changeState(controller.credit() == 0 ? INTRO : game.player.lives > 0 ? READY : GAME_OVER);
 			}
+		}
+
+		@Override
+		public void onExit(GameModel game) {
+			startHuntingPhase(game, 0);
 		}
 	},
 

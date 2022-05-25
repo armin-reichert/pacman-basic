@@ -168,7 +168,7 @@ public class TickTimer {
 		if (state == READY) {
 			return this; // TODO handle this properly
 		}
-		if (state == STOPPED) {
+		if (state == STOPPED || state == EXPIRED) {
 			return this;
 		}
 		++tick;
