@@ -70,30 +70,32 @@ import de.amr.games.pacman.model.pacman.PacManGame;
  */
 public class GameController extends Fsm<GameState, GameModel> {
 
-	private final Map<GameVariant, GameModel> games = Map.of( //
-			GameVariant.MS_PACMAN, new MsPacManGame(), //
-			GameVariant.PACMAN, new PacManGame());
-
+	private final Map<GameVariant, GameModel> games;
+	private final HuntingTimer huntingTimer = new HuntingTimer();
+	private GameVariant selectedGameVariant;
+	private int credit;
+	private boolean gameRunning;
+	private boolean playerImmune;
+	private boolean autoMoving;
 	private final Consumer<Pac> autopilot = new Autopilot(this::game);
 	private Consumer<Pac> playerControl;
 
-	private GameVariant selectedGameVariant;
-	private final HuntingTimer huntingTimer = new HuntingTimer();
-	private int credit;
-	private boolean gameRunning;
-	private boolean autoMoving;
-	private boolean playerImmune;
-
 	public GameController(GameVariant variant) {
 		super(GameState.values());
-		setSelectedGameVariant(variant);
-		for (var gameVariant : GameVariant.values()) {
-			var game = games.get(gameVariant);
+		logging = true;
+		games = Map.of(GameVariant.MS_PACMAN, new MsPacManGame(), GameVariant.PACMAN, new PacManGame());
+		// map game state change events from FSM to game events from game model:
+		games.values().forEach(game -> {
 			addStateChangeListener(
 					(oldState, newState) -> game.publishEvent(new GameStateChangeEvent(game, oldState, newState)));
-		}
+		});
+		setSelectedGameVariant(variant);
 		changeState(INTRO);
-		logging = true;
+	}
+
+	@Override
+	public GameModel getContext() {
+		return game();
 	}
 
 	public HuntingTimer getHuntingTimer() {
@@ -104,12 +106,16 @@ public class GameController extends Fsm<GameState, GameModel> {
 		return gameRunning;
 	}
 
-	void setGameRunning(boolean b) {
+	public void setGameRunning(boolean b) {
 		gameRunning = b;
 	}
 
 	public boolean isAutoMoving() {
 		return autoMoving;
+	}
+
+	public void toggleAutoMoving() {
+		autoMoving = !autoMoving;
 	}
 
 	public boolean isPlayerImmune() {
@@ -118,10 +124,6 @@ public class GameController extends Fsm<GameState, GameModel> {
 
 	public void togglePlayerImmune() {
 		playerImmune = !playerImmune;
-	}
-
-	public void toggleAutoMoving() {
-		autoMoving = !autoMoving;
 	}
 
 	public int credit() {
@@ -134,18 +136,22 @@ public class GameController extends Fsm<GameState, GameModel> {
 		}
 	}
 
-	void consumeCredit() {
+	public void consumeCredit() {
 		if (credit > 0) {
 			--credit;
 		}
+	}
+
+	public Consumer<Pac> autopilot() {
+		return autopilot;
 	}
 
 	public void setPlayerControl(Consumer<Pac> playerControl) {
 		this.playerControl = playerControl;
 	}
 
-	Consumer<Pac> currentPlayerControl() {
-		return autoMoving || credit == 0 ? autopilot : playerControl;
+	public Consumer<Pac> playerControl() {
+		return playerControl;
 	}
 
 	public GameVariant gameVariant() {
@@ -158,11 +164,6 @@ public class GameController extends Fsm<GameState, GameModel> {
 		for (var v : GameVariant.values()) {
 			games.get(v).setEventingEnabled(v == selectedGameVariant);
 		}
-	}
-
-	@Override
-	public GameModel getContext() {
-		return game();
 	}
 
 	public GameModel game() {
