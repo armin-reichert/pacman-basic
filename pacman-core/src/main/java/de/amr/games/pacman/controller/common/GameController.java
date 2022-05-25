@@ -33,8 +33,8 @@ import static java.util.function.Predicate.not;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
-import java.util.stream.Stream;
 
+import de.amr.games.pacman.event.GameEventListener;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameStateChangeEvent;
 import de.amr.games.pacman.lib.Fsm;
@@ -75,6 +75,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 
 	private final Consumer<Pac> autopilot = new Autopilot(this::game);
 	private Consumer<Pac> playerControl;
+
 	private GameVariant selectedGameVariant;
 	private int credit;
 	private boolean gameRunning;
@@ -158,10 +159,6 @@ public class GameController extends Fsm<GameState, GameModel> {
 		return game();
 	}
 
-	public Stream<GameModel> games() {
-		return games.values().stream();
-	}
-
 	public GameModel game() {
 		return games.get(selectedGameVariant);
 	}
@@ -173,6 +170,10 @@ public class GameController extends Fsm<GameState, GameModel> {
 			setSelectedGameVariant(variant);
 			reset(INTRO);
 		}
+	}
+
+	public void addListener(GameEventListener subscriber) {
+		games.values().forEach(game -> game.addEventListener(subscriber));
 	}
 
 	public void requestGame() {
