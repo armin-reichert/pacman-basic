@@ -66,15 +66,10 @@ public abstract class GameModel {
 	/** Speed in pixels/tick at 100%. */
 	public static final double BASE_SPEED = 1.25;
 
-	/** The durations of the hunting phases. */
-	//@formatter:off
-	public static final long[][] HUNTING_TIMES = new long[][] {
-	  // scatter  chase   scatter  chase  scatter  chase    scatter  chase
-	   { 7*60,    20*60,  7*60,    20*60, 5*60,      20*60, 5*60,    TickTimer.INDEFINITE },
-	   { 7*60,    20*60,  7*60,    20*60, 5*60,    1033*60,    1,    TickTimer.INDEFINITE },
-	   { 5*60,    20*60,  5*60,    20*60, 5*60,    1037*60,    1,    TickTimer.INDEFINITE },
-	};
-	//@formatter:on
+	private static final long[][] HUNTING_TIMES = { //
+			{ 7 * 60, 20 * 60, 7 * 60, 20 * 60, 5 * 60, 20 * 60, 5 * 60, TickTimer.INDEFINITE },
+			{ 7 * 60, 20 * 60, 7 * 60, 20 * 60, 5 * 60, 1033 * 60, 1, TickTimer.INDEFINITE },
+			{ 5 * 60, 20 * 60, 5 * 60, 20 * 60, 5 * 60, 1037 * 60, 1, TickTimer.INDEFINITE } };
 
 	/** 1-based level number */
 	public int levelNumber;
@@ -292,6 +287,21 @@ public abstract class GameModel {
 	 * @param levelNumber 1-based level number
 	 */
 	public abstract void setLevel(int levelNumber);
+
+	/**
+	 * @param phase hunting phase (0, ... 7)
+	 * @return hunting (scattering or chasing) ticks for current level and given phase
+	 */
+	public long huntingPhaseTicks(int phase) {
+		if (phase < 0 || phase > 7) {
+			throw new IllegalArgumentException("Hunting phase must be 0..7, but is " + phase);
+		}
+		return switch (levelNumber) {
+		case 1 -> HUNTING_TIMES[0][phase];
+		case 2, 3, 4 -> HUNTING_TIMES[1][phase];
+		default -> HUNTING_TIMES[2][phase];
+		};
+	}
 
 	/**
 	 * @param levelNumber game level number

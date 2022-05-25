@@ -98,7 +98,6 @@ public class PacManGame extends GameModel {
 		}
 		this.levelNumber = levelNumber;
 		level = new GameLevel(levelNumber - 1 < data.length ? data[levelNumber - 1] : data[data.length - 1]);
-		level.huntingPhaseDurations = HUNTING_TIMES[levelNumber == 1 ? 0 : levelNumber <= 4 ? 1 : 2];
 		levelCounter.add(level.bonusSymbol);
 
 		world.resetFood();

@@ -94,7 +94,6 @@ public class MsPacManGame extends GameModel {
 		if (levelNumber >= 8) {
 			level.bonusSymbol = new Random().nextInt(7);
 		}
-		level.huntingPhaseDurations = HUNTING_TIMES[levelNumber == 1 ? 0 : levelNumber <= 4 ? 1 : 2];
 		levelCounter.add(level.bonusSymbol);
 
 		mazeNumber = mazeNumber(levelNumber);
