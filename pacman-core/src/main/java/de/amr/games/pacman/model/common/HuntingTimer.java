@@ -28,7 +28,6 @@ import static de.amr.games.pacman.lib.Logging.log;
 
 import java.util.List;
 
-import de.amr.games.pacman.event.ScatterPhaseStartedEvent;
 import de.amr.games.pacman.lib.TickTimer;
 
 /**
@@ -97,20 +96,9 @@ public class HuntingTimer {
 		log("%s: started", this);
 	}
 
-	public void startFirstPhase(GameModel game) {
-		startPhase(game, 0);
-	}
-
-	public void startNextPhase(GameModel game) {
-		startPhase(game, ++phase);
-	}
-
-	private void startPhase(GameModel game, int phase) {
+	public void startPhase(int phase, long duration) {
 		this.phase = phase;
-		timer.setDurationTicks(game.huntingPhaseTicks(phase)).start();
+		timer.setDurationTicks(duration).start();
 		log("%s: started", this);
-		if (isScatteringPhase(phase)) {
-			game.publishEvent(new ScatterPhaseStartedEvent(game, getScatteringPhase()));
-		}
 	}
 }

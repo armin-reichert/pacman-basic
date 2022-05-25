@@ -28,12 +28,14 @@ import static de.amr.games.pacman.model.common.GhostState.DEAD;
 import static de.amr.games.pacman.model.common.GhostState.ENTERING_HOUSE;
 import static de.amr.games.pacman.model.common.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.common.GhostState.HUNTING_PAC;
+import static de.amr.games.pacman.model.common.HuntingTimer.isScatteringPhase;
 
 import java.util.function.Consumer;
 
 import de.amr.games.pacman.event.GameEvent;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameStateChangeEvent;
+import de.amr.games.pacman.event.ScatterPhaseStartedEvent;
 import de.amr.games.pacman.lib.Fsm;
 import de.amr.games.pacman.lib.FsmState;
 import de.amr.games.pacman.lib.Hiscore;
@@ -69,7 +71,7 @@ public enum GameState implements FsmState<GameModel> {
 			long readySeconds = controller.isGameRunning() || controller.credit() == 0 ? 2 : 5;
 			timer.setDurationSeconds(readySeconds).start();
 			game.resetGuys();
-			controller.getHuntingTimer().startFirstPhase(game);
+			startHuntingPhase(game, 0);
 		}
 
 		@Override
@@ -86,7 +88,7 @@ public enum GameState implements FsmState<GameModel> {
 		public void onUpdate(GameModel game) {
 			controller.getHuntingTimer().advance();
 			if (controller.getHuntingTimer().isPhaseComplete()) {
-				controller.getHuntingTimer().startNextPhase(game);
+				startNextHuntingPhase(game);
 				game.ghosts(HUNTING_PAC).forEach(Ghost::forceTurningBack);
 				game.ghosts(FRIGHTENED).forEach(Ghost::forceTurningBack);
 			}
@@ -96,7 +98,7 @@ public enum GameState implements FsmState<GameModel> {
 				return;
 			}
 			if (game.checkKillPlayer(controller.isPlayerImmune())) {
-				controller.getHuntingTimer().startFirstPhase(game);
+				startHuntingPhase(game, 0);
 				controller.changeState(PACMAN_DYING);
 				return;
 			}
@@ -282,5 +284,16 @@ public enum GameState implements FsmState<GameModel> {
 
 	protected Consumer<Pac> currentPlayerControl() {
 		return controller.isAutoMoving() || controller.credit() == 0 ? controller.autopilot() : controller.playerControl();
+	}
+
+	protected void startHuntingPhase(GameModel game, int phase) {
+		controller.getHuntingTimer().startPhase(phase, game.huntingPhaseTicks(phase));
+		if (isScatteringPhase(controller.getHuntingTimer().getPhase())) {
+			game.publishEvent(new ScatterPhaseStartedEvent(game, controller.getHuntingTimer().getScatteringPhase()));
+		}
+	}
+
+	protected void startNextHuntingPhase(GameModel game) {
+		startHuntingPhase(game, controller.getHuntingTimer().getPhase() + 1);
 	}
 }
