@@ -126,13 +126,12 @@ public class GameController extends Fsm<GameState, GameModel> {
 		return selectedGameVariant;
 	}
 
-	public void selectGameVariant(GameVariant variant) {
+	private void setSelectedGameVariant(GameVariant variant) {
 		selectedGameVariant = Objects.requireNonNull(variant);
 		// ensure only selected game model fires events
-		for (var gv : GameVariant.values()) {
-			games.get(gv).setEventingEnabled(gv == selectedGameVariant);
+		for (var v : GameVariant.values()) {
+			games.get(v).setEventingEnabled(v == selectedGameVariant);
 		}
-		reset(INTRO);
 	}
 
 	@Override
@@ -148,7 +147,14 @@ public class GameController extends Fsm<GameState, GameModel> {
 		return games.get(selectedGameVariant);
 	}
 
-	// actions
+	// public actions
+
+	public void selectGameVariant(GameVariant variant) {
+		if (state() == INTRO) {
+			setSelectedGameVariant(variant);
+			reset(INTRO);
+		}
+	}
 
 	public void requestGame() {
 		if (state() == INTRO && credit > 0) {
