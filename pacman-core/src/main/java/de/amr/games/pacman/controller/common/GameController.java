@@ -23,6 +23,7 @@ SOFTWARE.
 */
 package de.amr.games.pacman.controller.common;
 
+import static de.amr.games.pacman.controller.common.GameState.CREDIT;
 import static de.amr.games.pacman.controller.common.GameState.INTERMISSION_TEST;
 import static de.amr.games.pacman.controller.common.GameState.INTRO;
 import static de.amr.games.pacman.controller.common.GameState.READY;
@@ -82,7 +83,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 
 	public GameController(GameVariant variant) {
 		super(GameState.values());
-		logging = false;
+		logging = true;
 		games = Map.of(GameVariant.MS_PACMAN, new MsPacManGame(), GameVariant.PACMAN, new PacManGame());
 		// map game state change events from FSM to game events from game model:
 		games.values().forEach(game -> {
@@ -132,6 +133,9 @@ public class GameController extends Fsm<GameState, GameModel> {
 
 	public void addCredit() {
 		if (state() == INTRO) {
+			++credit;
+			changeState(CREDIT);
+		} else if (state() == CREDIT) {
 			++credit;
 		}
 	}
@@ -184,15 +188,13 @@ public class GameController extends Fsm<GameState, GameModel> {
 	}
 
 	public void requestGame() {
-		if (state() == INTRO && credit > 0) {
+		if (credit > 0) {
 			changeState(READY);
 		}
 	}
 
 	public void returnToIntro() {
-		if (gameRunning) {
-			consumeCredit();
-		}
+		consumeCredit(); // TODO check
 		reset(INTRO);
 	}
 

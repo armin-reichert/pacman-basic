@@ -66,6 +66,19 @@ public enum GameState implements FsmState<GameModel> {
 		}
 	},
 
+	CREDIT {
+		@Override
+		public void onEnter(GameModel game) {
+		}
+
+		@Override
+		public void onUpdate(GameModel game) {
+			if (timer.hasExpired()) {
+				controller.changeState(READY);
+			}
+		}
+	},
+
 	READY {
 		@Override
 		public void onEnter(GameModel game) {
@@ -225,15 +238,17 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void onEnter(GameModel game) {
 			timer.setDurationSeconds(5).start();
-			controller.setGameRunning(false);
 			game.ghosts().forEach(ghost -> ghost.setSpeed(0));
+			game.ghosts().forEach(Ghost::show);
 			game.player.setSpeed(0);
+			game.player.show();
 			new Hiscore(game).save();
 		}
 
 		@Override
 		public void onUpdate(GameModel game) {
 			if (timer.hasExpired()) {
+				controller.setGameRunning(false);
 				controller.consumeCredit();
 				controller.changeState(INTRO);
 			}
