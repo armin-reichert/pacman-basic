@@ -48,6 +48,12 @@ public abstract class Fsm<STATE extends FsmState<CONTEXT>, CONTEXT> {
 
 	public boolean logging;
 
+	private void fsm_log(String msg, Object... args) {
+		if (logging) {
+			log(msg, args);
+		}
+	}
+
 	private String name;
 	private final STATE[] states;
 	private STATE currentState;
@@ -135,14 +141,14 @@ public abstract class Fsm<STATE extends FsmState<CONTEXT>, CONTEXT> {
 			currentState.timer().advance();
 		} catch (Exception x) {
 			x.printStackTrace();
-			log("%s: Error updating state %s, %s", name, currentState, currentState.timer());
+			fsm_log("%s: Error updating state %s, %s", name, currentState, currentState.timer());
 		}
 	}
 
 	/**
 	 * Changes the machine's current state to the new state. Tne exit hook method of the current state is executed before
 	 * entering the new state. The new state's entry hook method is executed and its timer is reset to
-	 * {@link TickTimer#INDEFINITE} (TODO: implement this). After the state change, an event is published.
+	 * {@link TickTimer#INDEFINITE}. After the state change, an event is published.
 	 * <p>
 	 * Trying to change to the current state (self loop) leads to a runtime exception. TODO: check this
 	 * 
@@ -154,17 +160,13 @@ public abstract class Fsm<STATE extends FsmState<CONTEXT>, CONTEXT> {
 		}
 		if (currentState != null) {
 			currentState.onExit(getContext());
-			if (logging) {
-				log("%s: Exit  state %s %s", name, currentState, currentState.timer());
-			}
+			fsm_log("%s: Exit  state %s %s", name, currentState, currentState.timer());
 		}
 		prevState = currentState;
 		currentState = newState;
 		currentState.timer().setDurationIndefinite().start();
 		currentState.onEnter(getContext());
-		if (logging) {
-			log("%s: Enter state %s %s", name, currentState, currentState.timer());
-		}
+		fsm_log("%s: Enter state %s %s", name, currentState, currentState.timer());
 		stateChangeListeners.forEach(listener -> listener.accept(prevState, currentState));
 	}
 
@@ -175,9 +177,7 @@ public abstract class Fsm<STATE extends FsmState<CONTEXT>, CONTEXT> {
 		if (prevState == null) {
 			throw new IllegalStateException("State machine cannot resume previous state because there is none");
 		}
-		if (logging) {
-			log("%s: Resume state %s, %s", name, prevState, prevState.timer());
-		}
+		fsm_log("%s: Resume state %s, %s", name, prevState, prevState.timer());
 		changeState(prevState);
 	}
 }

@@ -34,6 +34,7 @@ import static de.amr.games.pacman.model.common.world.World.TS;
 import static de.amr.games.pacman.model.common.world.World.t;
 
 import de.amr.games.pacman.controller.common.GameController;
+import de.amr.games.pacman.controller.common.GameState;
 import de.amr.games.pacman.controller.mspacman.IntroController.Context;
 import de.amr.games.pacman.controller.mspacman.IntroController.State;
 import de.amr.games.pacman.lib.Fsm;
@@ -146,12 +147,17 @@ public class IntroController extends Fsm<State, Context> {
 		},
 
 		READY_TO_PLAY {
+
 			@Override
 			public void onUpdate(Context $) {
-				$.lightsTimer.advance();
-				$.blinking.advance();
-				if (timer.atSecond(5)) {
-					controller.gameController.state().timer().expire();
+				if (controller.gameController.credit() > 0) {
+					$.lightsTimer.advance();
+					$.blinking.advance();
+				}
+				if (timer.atSecond(2) && controller.gameController.credit() == 0) {
+					controller.gameController.changeState(GameState.READY);
+				} else if (timer.atSecond(5)) {
+					controller.gameController.returnToIntro(); // TODO make re-entry of intro screen work
 				}
 			}
 		};

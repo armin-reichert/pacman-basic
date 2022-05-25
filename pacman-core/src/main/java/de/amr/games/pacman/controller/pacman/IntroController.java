@@ -35,6 +35,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.controller.common.GameController;
+import de.amr.games.pacman.controller.common.GameState;
 import de.amr.games.pacman.controller.pacman.IntroController.Context;
 import de.amr.games.pacman.controller.pacman.IntroController.State;
 import de.amr.games.pacman.lib.Direction;
@@ -203,11 +204,7 @@ public class IntroController extends Fsm<State, Context> {
 				}
 				if ($.pacMan.position.x > t(29)) {
 					$.slowBlinking.restart();
-					if (controller.gameController.credit() == 0) {
-						controller.gameController.state().timer().expire();
-					} else {
-						controller.changeState(State.READY_TO_PLAY);
-					}
+					controller.changeState(State.READY_TO_PLAY);
 					return;
 				}
 				// check if Pac-Man kills a ghost
@@ -248,11 +245,16 @@ public class IntroController extends Fsm<State, Context> {
 		},
 
 		READY_TO_PLAY {
+
 			@Override
 			public void onUpdate(Context $) {
-				$.slowBlinking.animate();
-				if (timer.atSecond(5)) {
-					controller.gameController.state().timer().expire();
+				if (controller.gameController.credit() > 0) {
+					$.slowBlinking.animate();
+				}
+				if (timer.atSecond(2) && controller.gameController.credit() == 0) {
+					controller.gameController.changeState(GameState.READY);
+				} else if (timer.atSecond(5)) {
+					controller.gameController.returnToIntro(); // TODO make re-entry of intro screen work
 				}
 			}
 		};
