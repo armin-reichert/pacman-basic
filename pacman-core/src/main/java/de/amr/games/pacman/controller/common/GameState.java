@@ -85,8 +85,10 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void onUpdate(GameModel game) {
 			controller.getHuntingTimer().advance();
-			if (controller.getHuntingTimer().hasExpired()) {
-				controller.getHuntingTimer().startNextHuntingPhase(game);
+			if (controller.getHuntingTimer().isPhaseComplete()) {
+				controller.getHuntingTimer().startNextPhase(game);
+				game.ghosts(HUNTING_PAC).forEach(Ghost::forceTurningBack);
+				game.ghosts(FRIGHTENED).forEach(Ghost::forceTurningBack);
 			}
 			if (game.world.foodRemaining() == 0) {
 				controller.getHuntingTimer().stop();

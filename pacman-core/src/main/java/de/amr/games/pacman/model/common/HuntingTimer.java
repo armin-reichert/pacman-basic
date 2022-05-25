@@ -25,8 +25,6 @@ SOFTWARE.
 package de.amr.games.pacman.model.common;
 
 import static de.amr.games.pacman.lib.Logging.log;
-import static de.amr.games.pacman.model.common.GhostState.FRIGHTENED;
-import static de.amr.games.pacman.model.common.GhostState.HUNTING_PAC;
 
 import java.util.List;
 
@@ -77,7 +75,7 @@ public class HuntingTimer {
 		return phase % 2 == 0 ? "Scattering" : "Chasing";
 	}
 
-	public boolean hasExpired() {
+	public boolean isPhaseComplete() {
 		return timer.hasExpired();
 	}
 
@@ -103,9 +101,8 @@ public class HuntingTimer {
 		startPhase(game, 0);
 	}
 
-	public void startNextHuntingPhase(GameModel game) {
+	public void startNextPhase(GameModel game) {
 		startPhase(game, ++phase);
-		game.ghosts().filter(ghost -> ghost.is(HUNTING_PAC) || ghost.is(FRIGHTENED)).forEach(Ghost::forceTurningBack);
 	}
 
 	private void startPhase(GameModel game, int phase) {
