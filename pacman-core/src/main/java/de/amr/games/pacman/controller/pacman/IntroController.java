@@ -68,7 +68,7 @@ public class IntroController extends Fsm<State, Context> {
 	}
 
 	@Override
-	public Context getContext() {
+	public Context context() {
 		return context;
 	}
 

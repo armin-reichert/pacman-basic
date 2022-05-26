@@ -48,9 +48,9 @@ public class HuntingTimer extends TickTimer {
 
 	@Override
 	public String toString() {
-		int i = isScatteringPhase(phase) ? getScatteringPhase() : getChasingPhase();
+		int i = isScatteringPhase(phase) ? scatteringPhase() : chasingPhase();
 		String whichPhase = List.of("First", "Second", "Third", "Fourth").get(i);
-		return "%s: Phase %d (%s %s)".formatted(super.toString(), phase, whichPhase, getPhaseName());
+		return "%s: Phase %d (%s %s)".formatted(super.toString(), phase, whichPhase, phaseName());
 	}
 
 	public void startPhase(int phase, long duration) {
@@ -59,19 +59,19 @@ public class HuntingTimer extends TickTimer {
 		log("%s: started", this);
 	}
 
-	public int getPhase() {
+	public int phase() {
 		return phase;
 	}
 
-	public int getScatteringPhase() {
+	public int scatteringPhase() {
 		return phase % 2 == 0 ? phase / 2 : -1;
 	}
 
-	public int getChasingPhase() {
+	public int chasingPhase() {
 		return phase % 2 == 1 ? phase / 2 : -1;
 	}
 
-	public String getPhaseName() {
+	public String phaseName() {
 		return phase % 2 == 0 ? "Scattering" : "Chasing";
 	}
 }

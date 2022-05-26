@@ -56,7 +56,7 @@ public class Intermission2Controller extends Fsm<State, Context> {
 	}
 
 	@Override
-	public Context getContext() {
+	public Context context() {
 		return context;
 	}
 

@@ -96,11 +96,11 @@ public class GameController extends Fsm<GameState, GameModel> {
 	}
 
 	@Override
-	public GameModel getContext() {
+	public GameModel context() {
 		return game();
 	}
 
-	public HuntingTimer getHuntingTimer() {
+	public HuntingTimer huntingTimer() {
 		return huntingTimer;
 	}
 

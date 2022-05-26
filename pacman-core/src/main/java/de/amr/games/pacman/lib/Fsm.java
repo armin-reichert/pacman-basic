@@ -76,7 +76,7 @@ public abstract class Fsm<STATE extends FsmState<CONTEXT>, CONTEXT> {
 	/**
 	 * @return the context passed to the state lifecycle methods
 	 */
-	public abstract CONTEXT getContext();
+	public abstract CONTEXT context();
 
 	/**
 	 * @return the current state
@@ -137,7 +137,7 @@ public abstract class Fsm<STATE extends FsmState<CONTEXT>, CONTEXT> {
 	 */
 	public void update() {
 		try {
-			currentState.onUpdate(getContext());
+			currentState.onUpdate(context());
 			currentState.timer().advance();
 		} catch (Exception x) {
 			x.printStackTrace();
@@ -159,13 +159,13 @@ public abstract class Fsm<STATE extends FsmState<CONTEXT>, CONTEXT> {
 			throw new IllegalStateException("FiniteStateMachine: Self loop in state " + currentState);
 		}
 		if (currentState != null) {
-			currentState.onExit(getContext());
+			currentState.onExit(context());
 			fsm_log("%s: Exit  state %s %s", name, currentState, currentState.timer());
 		}
 		prevState = currentState;
 		currentState = newState;
 		currentState.timer().setDurationIndefinite().start();
-		currentState.onEnter(getContext());
+		currentState.onEnter(context());
 		fsm_log("%s: Enter state %s %s", name, currentState, currentState.timer());
 		stateChangeListeners.forEach(listener -> listener.accept(prevState, currentState));
 	}
