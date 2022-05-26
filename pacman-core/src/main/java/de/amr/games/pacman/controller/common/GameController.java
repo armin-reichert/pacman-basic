@@ -189,7 +189,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 	}
 
 	public void requestGame() {
-		if (credit > 0) {
+		if (credit > 0 && (state() == INTRO || state() == CREDIT)) {
 			changeState(READY);
 		}
 	}
