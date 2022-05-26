@@ -133,7 +133,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 	}
 
 	public void addCredit() {
-		if (state() == INTRO) {
+		if (state() == INTRO || state() != CREDIT && !gameRunning) {
 			++credit;
 			changeState(CREDIT);
 		} else if (state() == CREDIT) {
