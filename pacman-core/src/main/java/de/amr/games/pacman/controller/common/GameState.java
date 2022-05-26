@@ -195,7 +195,12 @@ public enum GameState implements FsmState<GameModel> {
 		public void onUpdate(GameModel game) {
 			if (timer.hasExpired()) {
 				game.player.lives--;
-				controller.changeState(controller.credit() == 0 ? INTRO : game.player.lives > 0 ? READY : GAME_OVER);
+				if (controller.credit() == 0) {
+					game.reset();
+					controller.changeState(INTRO);
+				} else {
+					controller.changeState(game.player.lives > 0 ? READY : GAME_OVER);
+				}
 			}
 		}
 

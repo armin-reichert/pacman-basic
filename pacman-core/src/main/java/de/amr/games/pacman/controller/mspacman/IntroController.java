@@ -147,14 +147,13 @@ public class IntroController extends Fsm<State, Context> {
 		},
 
 		READY_TO_PLAY {
-
 			@Override
 			public void onUpdate(Context $) {
 				if (controller.gameController.credit() > 0) {
 					$.lightsTimer.advance();
 					$.blinking.advance();
 				}
-				if (timer.atSecond(2) && controller.gameController.credit() == 0) {
+				if (timer.atSecond(1.5) && controller.gameController.credit() == 0) {
 					controller.gameController.changeState(GameState.READY);
 				} else if (timer.atSecond(5)) {
 					controller.gameController.returnToIntro(); // TODO make re-entry of intro screen work
