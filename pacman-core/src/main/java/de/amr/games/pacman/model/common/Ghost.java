@@ -210,6 +210,11 @@ public class Ghost extends Creature {
 			setOffset(HTS, 0);
 			setMoveDir(Direction.LEFT);
 			setWishDir(Direction.LEFT);
+			if (id == CYAN_GHOST) {
+				setMoveDir(Direction.RIGHT);
+				setWishDir(Direction.RIGHT);
+				forceTurningBack();
+			}
 			forcedOnTrack = true;
 			state = GhostState.HUNTING_PAC;
 			return true;
