@@ -85,11 +85,17 @@ public enum GameState implements FsmState<GameModel> {
 			long readySeconds = controller.isGameRunning() || controller.credit() == 0 ? 2 : 5;
 			timer.setDurationSeconds(readySeconds).start();
 			game.resetGuys();
+			game.ghosts().forEach(Ghost::hide);
+			game.player.hide();
 			startHuntingPhase(game, 0);
 		}
 
 		@Override
 		public void onUpdate(GameModel game) {
+			if (timer.atSecond(1.5)) {
+				game.ghosts().forEach(Ghost::show);
+				game.player.show();
+			}
 			if (timer.hasExpired()) {
 				controller.setGameRunning(controller.credit() > 0);
 				controller.changeState(GameState.HUNTING);
