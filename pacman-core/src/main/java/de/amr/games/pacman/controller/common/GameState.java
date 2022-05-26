@@ -255,7 +255,7 @@ public enum GameState implements FsmState<GameModel> {
 			if (timer.hasExpired()) {
 				controller.setGameRunning(false);
 				controller.consumeCredit();
-				controller.changeState(INTRO);
+				controller.changeState(controller.credit() > 0 ? CREDIT : INTRO);
 			}
 		}
 	},
