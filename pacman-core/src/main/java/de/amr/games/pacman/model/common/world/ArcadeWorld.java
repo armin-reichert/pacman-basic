@@ -30,6 +30,7 @@ import static de.amr.games.pacman.model.common.Ghost.PINK_GHOST;
 import static de.amr.games.pacman.model.common.Ghost.RED_GHOST;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Collections;
 import java.util.List;
@@ -64,6 +65,10 @@ public class ArcadeWorld implements World {
 		return new V2i(x, y);
 	}
 
+	private static byte[][] copyArray2D(byte[][] arr) {
+		return Arrays.stream(arr).map(byte[]::clone).toArray(byte[][]::new);
+	}
+
 	protected V2i size;
 	protected final byte[][] map;
 	protected final V2i leftLowerTarget = v(0, 34);
@@ -85,7 +90,7 @@ public class ArcadeWorld implements World {
 	protected int foodRemaining;
 
 	protected ArcadeWorld(byte[][] map) {
-		this.map = map;
+		this.map = copyArray2D(map);
 		size = v(map[0].length, map.length); // cols x rows!
 
 		house = new GhostHouse(v(10, 15), v(7, 4));
