@@ -52,6 +52,7 @@ public abstract class DefaultGameEventHandler implements GameEventListener {
 			case PLAYER_GOT_POWER -> onPlayerGotPower(event);
 			case PLAYER_STARTED_LOSING_POWER -> onPlayerStartedLosingPower(event);
 			case PLAYER_LOST_POWER -> onPlayerLostPower(event);
+			case UI_CHANGE -> onUIChange(event);
 			default -> throw new IllegalArgumentException("Unknown event type: " + event.type);
 			}
 		}
@@ -100,5 +101,8 @@ public abstract class DefaultGameEventHandler implements GameEventListener {
 	}
 
 	public void onPlayerGotPower(GameEvent e) {
+	}
+
+	public void onUIChange(GameEvent e) {
 	}
 }

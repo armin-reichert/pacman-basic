@@ -125,7 +125,7 @@ public abstract class Fsm<STATE extends FsmState<CONTEXT>, CONTEXT> {
 	 * 
 	 * @param initialState the initial state
 	 */
-	public void reset(STATE initialState) {
+	public void restartInInitialState(STATE initialState) {
 		resetTimers();
 		currentState = null;
 		changeState(initialState);

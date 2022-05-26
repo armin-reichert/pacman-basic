@@ -59,7 +59,7 @@ public class Intermission1Controller extends Fsm<State, Context> {
 	}
 
 	public void init() {
-		reset(State.CHASING_PACMAN);
+		restartInInitialState(State.CHASING_PACMAN);
 	}
 
 	public static class Context {

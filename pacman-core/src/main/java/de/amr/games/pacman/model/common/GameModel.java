@@ -64,7 +64,7 @@ import de.amr.games.pacman.model.pacman.Bonus;
  */
 public abstract class GameModel {
 
-	public static boolean logPublishEvents = false;
+	public static boolean logPublishEvents = true;
 
 	/** Speed in pixels/tick at 100%. */
 	public static final double BASE_SPEED = 1.25;

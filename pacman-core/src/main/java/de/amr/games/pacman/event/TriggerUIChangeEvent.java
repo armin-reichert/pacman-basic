@@ -24,28 +24,14 @@ SOFTWARE.
 
 package de.amr.games.pacman.event;
 
+import de.amr.games.pacman.model.common.GameModel;
+
 /**
- * Game event types.
- * 
  * @author Armin Reichert
  */
-public enum GameEventType {
-	//@formatter:off
-	BONUS_ACTIVATED, 
-	BONUS_EATEN, 
-	BONUS_EXPIRED, 
-	GAME_SCATTERING_STARTED, 
-	GAME_STATE_CHANGED,
-	GHOST_ENTERED_HOUSE, 
-	GHOST_REVIVED, 
-	GHOST_STARTED_LEAVING_HOUSE, 
-	GHOST_FINISHED_LEAVING_HOUSE, 
-	GHOST_STARTED_RETURNING_HOME,
-	PLAYER_FOUND_FOOD, 
-	PLAYER_GOT_EXTRA_LIFE, 
-	PLAYER_GOT_POWER, 
-	PLAYER_STARTED_LOSING_POWER,
-	PLAYER_LOST_POWER,
-	UI_CHANGE;
-	//@formatter:on
+public class TriggerUIChangeEvent extends GameEvent {
+
+	public TriggerUIChangeEvent(GameModel game) {
+		super(game, GameEventType.UI_CHANGE, null, null);
+	}
 }

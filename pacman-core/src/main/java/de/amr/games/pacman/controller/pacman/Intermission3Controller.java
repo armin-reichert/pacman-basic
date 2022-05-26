@@ -60,7 +60,7 @@ public class Intermission3Controller extends Fsm<State, Context> {
 	}
 
 	public void init() {
-		reset(State.CHASING);
+		restartInInitialState(State.CHASING);
 	}
 
 	public class Context {

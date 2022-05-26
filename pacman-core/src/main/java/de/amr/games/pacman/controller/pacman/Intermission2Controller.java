@@ -60,7 +60,7 @@ public class Intermission2Controller extends Fsm<State, Context> {
 	}
 
 	public void init() {
-		reset(State.CHASING);
+		restartInInitialState(State.CHASING);
 	}
 
 	public int nailDistance() {

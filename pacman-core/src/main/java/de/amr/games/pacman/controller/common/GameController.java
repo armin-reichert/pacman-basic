@@ -38,6 +38,7 @@ import java.util.function.Consumer;
 import de.amr.games.pacman.event.GameEventListener;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameStateChangeEvent;
+import de.amr.games.pacman.event.TriggerUIChangeEvent;
 import de.amr.games.pacman.lib.Fsm;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
@@ -179,7 +180,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 	public void selectGameVariant(GameVariant variant) {
 		if (state() == INTRO) {
 			setSelectedGameVariant(variant);
-			reset(INTRO);
+			restartInInitialState(INTRO);
 		}
 	}
 
@@ -194,8 +195,11 @@ public class GameController extends Fsm<GameState, GameModel> {
 	}
 
 	public void returnToIntro() {
-		consumeCredit(); // TODO check
-		reset(INTRO);
+		if (state() != CREDIT && state() != INTRO) {
+			consumeCredit();
+		}
+		restartInInitialState(INTRO);
+		game().publishEvent(new TriggerUIChangeEvent(game()));
 	}
 
 	public void startIntermissionTest() {
