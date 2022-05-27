@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-22 Armin Reichert
+Copyright (c) 2022 Armin Reichert
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -20,52 +20,38 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
- */
-package de.amr.games.pacman.model.common.world;
+*/
 
-import static de.amr.games.pacman.lib.V2i.v;
+package de.amr.games.pacman.model.common.world;
 
 import de.amr.games.pacman.lib.V2i;
 
 /**
- * The ghost house from the Arcade version of the games. Door on top, three seats inside.
- * 
  * @author Armin Reichert
  */
-public class ArcadeGhostHouse implements GhostHouse {
+public interface GhostHouse {
 
-	@Override
-	public V2i size() {
-		return v(7, 4);
+	V2i topLeftTile();
+
+	V2i size();
+
+	V2i doorTileLeft();
+
+	V2i doorTileRight();
+
+	default boolean isDoor(V2i tile) {
+		return tile.equals(doorTileLeft()) || tile.equals(doorTileRight());
 	}
 
-	@Override
-	public V2i topLeftTile() {
-		return v(10, 15);
+	V2i seatLeft();
+
+	V2i seatMiddle();
+
+	default boolean contains(V2i tile) {
+		V2i topLeft = topLeftTile(), bottomRight = topLeft.plus(size());
+		return tile.x >= topLeft.x && tile.x <= bottomRight.x && tile.y >= topLeft.y && tile.y <= bottomRight.y;
 	}
 
-	@Override
-	public V2i doorTileLeft() {
-		return v(13, 15);
-	}
+	V2i seatRight();
 
-	@Override
-	public V2i doorTileRight() {
-		return v(14, 15);
-	}
-
-	@Override
-	public V2i seatLeft() {
-		return v(11, 17);
-	}
-
-	@Override
-	public V2i seatMiddle() {
-		return v(13, 17);
-	}
-
-	@Override
-	public V2i seatRight() {
-		return v(15, 17);
-	}
 }

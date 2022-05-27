@@ -165,7 +165,7 @@ public interface World {
 	/**
 	 * @return the ghost house in this world
 	 */
-	ArcadeGhostHouse ghostHouse();
+	GhostHouse ghostHouse();
 
 	/**
 	 * @param tile a tile

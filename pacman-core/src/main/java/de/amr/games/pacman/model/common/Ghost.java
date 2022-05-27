@@ -32,7 +32,7 @@ import java.util.function.Supplier;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.model.common.world.ArcadeGhostHouse;
+import de.amr.games.pacman.model.common.world.GhostHouse;
 
 /**
  * There are 4 ghosts with different "personalities".
@@ -100,8 +100,8 @@ public class Ghost extends Creature {
 
 	@Override
 	public boolean canAccessTile(V2i tile) {
-		V2i leftDoor = world.ghostHouse().doorTileLeft;
-		V2i rightDoor = leftDoor.plus(1, 0);
+		V2i leftDoor = world.ghostHouse().doorTileLeft();
+		V2i rightDoor = world.ghostHouse().doorTileRight();
 		if (leftDoor.equals(tile) || rightDoor.equals(tile)) {
 			return is(GhostState.ENTERING_HOUSE) || is(GhostState.LEAVING_HOUSE);
 		}
@@ -117,8 +117,8 @@ public class Ghost extends Creature {
 	/**
 	 * @return {@code true} if the ghost is near the ghosthouse door.
 	 */
-	public boolean atGhostHouseDoor(ArcadeGhostHouse house) {
-		return tile().equals(house.doorTileLeft.minus(0, 1)) && insideRange(offset().x, HTS, 2);
+	public boolean atGhostHouseDoor(GhostHouse house) {
+		return tile().equals(house.doorTileLeft().minus(0, 1)) && insideRange(offset().x, HTS, 2);
 	}
 
 	/**
@@ -156,7 +156,7 @@ public class Ghost extends Creature {
 	 * @param house the ghost house
 	 * @return {@code true} if the ghost has reached the house
 	 */
-	public boolean returnHome(ArcadeGhostHouse house) {
+	public boolean returnHome(GhostHouse house) {
 		if (atGhostHouseDoor(house) && moveDir != Direction.DOWN) {
 			// house reached, start entering
 			setOffset(HTS, 0);
@@ -178,7 +178,7 @@ public class Ghost extends Creature {
 	 * @param house the ghost house
 	 * @return {@code true} if the ghost has reached its revival position
 	 */
-	public boolean enterHouse(ArcadeGhostHouse house) {
+	public boolean enterHouse(GhostHouse house) {
 		V2i tile = tile();
 		V2d offset = offset();
 		if (tile.equals(targetTile) && offset.y >= 0) {
@@ -189,12 +189,12 @@ public class Ghost extends Creature {
 			state = GhostState.LEAVING_HOUSE;
 			return true;
 		}
-		if (tile.equals(house.seatTileMiddle) && offset.y >= 0) {
+		if (tile.equals(house.seatMiddle()) && offset.y >= 0) {
 			// Center seat reached, move towards left or right seat.
-			if (targetTile.x < house.seatTileMiddle.x) {
+			if (targetTile.x < house.seatMiddle().x) {
 				setMoveDir(Direction.LEFT);
 				setWishDir(Direction.LEFT);
-			} else if (targetTile.x > house.seatTileMiddle.x) {
+			} else if (targetTile.x > house.seatMiddle().x) {
 				setMoveDir(Direction.RIGHT);
 				setWishDir(Direction.RIGHT);
 			}
@@ -210,11 +210,11 @@ public class Ghost extends Creature {
 	 * @param house the ghost house
 	 * @return {@code true} if the ghost has left the house
 	 */
-	public boolean leaveHouse(ArcadeGhostHouse house) {
+	public boolean leaveHouse(GhostHouse house) {
 		V2i tile = tile();
 		V2d offset = offset();
 		// House left? Resume hunting.
-		if (tile.equals(house.doorTileLeft.minus(0, 1)) && insideRange(offset.y, 0, 1)) {
+		if (tile.equals(house.doorTileLeft().minus(0, 1)) && insideRange(offset.y, 0, 1)) {
 			setOffset(HTS, 0);
 			// TODO not quite working:
 			if (id == CYAN_GHOST) {
@@ -226,8 +226,8 @@ public class Ghost extends Creature {
 			state = GhostState.HUNTING_PAC;
 			return true;
 		}
-		int centerX = t(house.seatTileMiddle.x) + HTS;
-		int groundY = t(house.seatTileMiddle.y) + HTS;
+		int centerX = t(house.seatMiddle().x) + HTS;
+		int groundY = t(house.seatMiddle().y) + HTS;
 		if (insideRange(position.x, centerX, 1)) {
 			setOffset(HTS, offset.y);
 			setBothDirs(Direction.UP);
@@ -245,8 +245,8 @@ public class Ghost extends Creature {
 	 * 
 	 * @return {@code true}
 	 */
-	public boolean bounce(ArcadeGhostHouse house) {
-		double zeroLevel = t(house.seatTileMiddle.y);
+	public boolean bounce(GhostHouse house) {
+		double zeroLevel = t(house.seatMiddle().y);
 		if (!insideRange(position.y, zeroLevel, HTS)) {
 			setBothDirs(moveDir.opposite());
 		}

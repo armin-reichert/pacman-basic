@@ -222,23 +222,23 @@ public abstract class GameModel {
 			ghost.elroy = 0;
 		}
 
-		ghosts[RED_GHOST].homeTile = world.ghostHouse().doorTileLeft.minus(0, 1);
-		ghosts[RED_GHOST].revivalTile = world.ghostHouse().seatTileMiddle;
+		ghosts[RED_GHOST].homeTile = world.ghostHouse().doorTileLeft().minus(0, 1);
+		ghosts[RED_GHOST].revivalTile = world.ghostHouse().seatMiddle();
 		ghosts[RED_GHOST].globalDotLimit = Integer.MAX_VALUE;
 		ghosts[RED_GHOST].privateDotLimit = 0;
 
-		ghosts[PINK_GHOST].homeTile = world.ghostHouse().seatTileMiddle;
-		ghosts[PINK_GHOST].revivalTile = world.ghostHouse().seatTileMiddle;
+		ghosts[PINK_GHOST].homeTile = world.ghostHouse().seatMiddle();
+		ghosts[PINK_GHOST].revivalTile = world.ghostHouse().seatMiddle();
 		ghosts[PINK_GHOST].globalDotLimit = 7;
 		ghosts[PINK_GHOST].privateDotLimit = 0;
 
-		ghosts[CYAN_GHOST].homeTile = world.ghostHouse().seatTileLeft;
-		ghosts[CYAN_GHOST].revivalTile = world.ghostHouse().seatTileLeft;
+		ghosts[CYAN_GHOST].homeTile = world.ghostHouse().seatLeft();
+		ghosts[CYAN_GHOST].revivalTile = world.ghostHouse().seatLeft();
 		ghosts[CYAN_GHOST].globalDotLimit = 17;
 		ghosts[CYAN_GHOST].privateDotLimit = levelNumber == 1 ? 30 : 0;
 
-		ghosts[ORANGE_GHOST].homeTile = world.ghostHouse().seatTileRight;
-		ghosts[ORANGE_GHOST].revivalTile = world.ghostHouse().seatTileRight;
+		ghosts[ORANGE_GHOST].homeTile = world.ghostHouse().seatRight();
+		ghosts[ORANGE_GHOST].revivalTile = world.ghostHouse().seatRight();
 		ghosts[ORANGE_GHOST].globalDotLimit = Integer.MAX_VALUE;
 		ghosts[ORANGE_GHOST].privateDotLimit = levelNumber == 1 ? 60 : levelNumber == 2 ? 50 : 0;
 	}
@@ -529,7 +529,7 @@ public abstract class GameModel {
 	 */
 	public void killGhost(Ghost ghost) {
 		ghost.state = DEAD;
-		ghost.targetTile = world.ghostHouse().doorTileLeft.minus(0, 1);
+		ghost.targetTile = world.ghostHouse().doorTileLeft().minus(0, 1);
 		ghost.bounty = ghostBounty;
 		ghostBounty *= 2;
 		level.numGhostsKilled++;

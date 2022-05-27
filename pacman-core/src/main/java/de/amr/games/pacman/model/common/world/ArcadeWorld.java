@@ -29,7 +29,6 @@ import static de.amr.games.pacman.model.common.Ghost.ORANGE_GHOST;
 import static de.amr.games.pacman.model.common.Ghost.PINK_GHOST;
 import static de.amr.games.pacman.model.common.Ghost.RED_GHOST;
 
-import java.util.BitSet;
 import java.util.List;
 
 import de.amr.games.pacman.lib.Direction;
@@ -60,18 +59,12 @@ public class ArcadeWorld extends MapBasedWorld {
 
 	protected ArcadeWorld(byte[][] mapData) {
 		super(mapData, TILES_X, TILES_Y);
-	}
-
-	@Override
-	protected BitSet findIntersections() {
-		BitSet intersections = new BitSet();
 		tiles() //
 				.filter(tile -> !house.contains(tile)) //
 				.filter(tile -> tile.x > 0 && tile.x < numCols() - 1) //
 				.filter(tile -> tile.neighbors().filter(nb -> isWall(nb) || house.isDoor(nb)).count() <= 1) //
 				.map(this::index) //
 				.forEach(intersections::set);
-		return intersections;
 	}
 
 	@Override

@@ -71,7 +71,7 @@ public abstract class MapBasedWorld implements World {
 		totalFoodCount = (int) tiles().filter(this::isFoodTile).count();
 		foodRemaining = totalFoodCount;
 		portals = findPortals();
-		intersections = findIntersections();
+		intersections = new BitSet();
 	}
 
 	protected List<Portal> findPortals() {
@@ -84,8 +84,6 @@ public abstract class MapBasedWorld implements World {
 		portals.trimToSize();
 		return Collections.unmodifiableList(portals);
 	}
-
-	protected abstract BitSet findIntersections();
 
 	protected byte map(V2i tile) {
 		return insideMap(tile) ? map[tile.y][tile.x] : SPACE;
