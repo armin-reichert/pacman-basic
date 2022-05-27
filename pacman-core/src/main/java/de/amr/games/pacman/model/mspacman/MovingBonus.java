@@ -68,17 +68,24 @@ public class MovingBonus extends Creature {
 
 	public void activate() {
 		init();
-		V2i houseEntry = world.ghostHouse().doorTileLeft().minus(0, 1);
-		Direction moveDir = new Random().nextBoolean() ? Direction.LEFT : Direction.RIGHT;
-		Portal entryPortal = world.portals().get(new Random().nextInt(world.portals().size()));
-		Portal exitPortal = world.portals().get(new Random().nextInt(world.portals().size()));
+		int numPortals = world.portals().size();
+		if (numPortals > 0) {
+			Portal entryPortal = world.portals().get(new Random().nextInt(numPortals));
+			Portal exitPortal = world.portals().get(new Random().nextInt(numPortals));
+			computeNewRoute(entryPortal, exitPortal);
+			show();
+		}
+	}
+
+	private void computeNewRoute(Portal entryPortal, Portal exitPortal) {
+		V2i houseEntry = world.ghostHouse().doorTileLeft().plus(Direction.UP.vec);
+		Direction travelDir = new Random().nextBoolean() ? Direction.LEFT : Direction.RIGHT;
 		route.add(houseEntry);
-		route.add(houseEntry.plus(0, world.ghostHouse().size().y + 2)); // middle tile below house
+		route.add(houseEntry.plus(Direction.DOWN.vec.scaled(world.ghostHouse().size().y + 2)));
 		route.add(houseEntry);
-		route.add(moveDir == Direction.RIGHT ? exitPortal.right : exitPortal.left);
-		placeAt(moveDir == Direction.RIGHT ? entryPortal.left : entryPortal.right, 0, 0);
-		setBothDirs(moveDir);
-		show();
+		route.add(travelDir == Direction.RIGHT ? exitPortal.right : exitPortal.left);
+		placeAt(travelDir == Direction.RIGHT ? entryPortal.left : entryPortal.right, 0, 0);
+		setBothDirs(travelDir);
 	}
 
 	public boolean followRoute() {
