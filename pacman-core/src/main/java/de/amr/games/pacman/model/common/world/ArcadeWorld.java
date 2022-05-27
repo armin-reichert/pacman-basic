@@ -110,7 +110,7 @@ public class ArcadeWorld extends MapBasedWorld {
 	}
 
 	@Override
-	public ArcadeGhostHouse ghostHouse() {
+	public GhostHouse ghostHouse() {
 		return house;
 	}
 
