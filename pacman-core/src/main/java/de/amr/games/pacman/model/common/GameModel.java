@@ -183,8 +183,8 @@ public abstract class GameModel {
 
 	public void resetGuys() {
 		player.placeAt(world.playerHomeTile(), HTS, 0);
-		player.setMoveDir(world.playerStartDirection());
-		player.setWishDir(world.playerStartDirection());
+		player.setMoveDir(world.playerStartDir());
+		player.setWishDir(world.playerStartDir());
 		player.show();
 		player.velocity = V2d.NULL;
 		player.targetTile = null; // used in autopilot mode
@@ -197,8 +197,8 @@ public abstract class GameModel {
 
 		for (Ghost ghost : ghosts) {
 			ghost.placeAt(ghost.homeTile, HTS, 0);
-			ghost.setMoveDir(world.ghostStartDirection(ghost.id));
-			ghost.setWishDir(world.ghostStartDirection(ghost.id));
+			ghost.setMoveDir(world.ghostStartDir(ghost.id));
+			ghost.setWishDir(world.ghostStartDir(ghost.id));
 			ghost.show();
 			ghost.velocity = V2d.NULL;
 			ghost.targetTile = null;
@@ -222,7 +222,7 @@ public abstract class GameModel {
 			ghost.elroy = 0;
 		}
 
-		ghosts[RED_GHOST].homeTile = world.ghostHouse().leftEntry();
+		ghosts[RED_GHOST].homeTile = world.ghostHouse().doorTileLeft.minus(0, 1);
 		ghosts[RED_GHOST].revivalTile = world.ghostHouse().seatTileMiddle;
 		ghosts[RED_GHOST].globalDotLimit = Integer.MAX_VALUE;
 		ghosts[RED_GHOST].privateDotLimit = 0;
@@ -529,7 +529,7 @@ public abstract class GameModel {
 	 */
 	public void killGhost(Ghost ghost) {
 		ghost.state = DEAD;
-		ghost.targetTile = world.ghostHouse().leftEntry();
+		ghost.targetTile = world.ghostHouse().doorTileLeft.minus(0, 1);
 		ghost.bounty = ghostBounty;
 		ghostBounty *= 2;
 		level.numGhostsKilled++;

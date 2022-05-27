@@ -32,7 +32,7 @@ import java.util.function.Supplier;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.model.common.world.GhostHouse;
+import de.amr.games.pacman.model.common.world.ArcadeGhostHouse;
 
 /**
  * There are 4 ghosts with different "personalities".
@@ -115,8 +115,8 @@ public class Ghost extends Creature {
 	/**
 	 * @return {@code true} if the ghost is near the ghosthouse door.
 	 */
-	public boolean atGhostHouseDoor(GhostHouse house) {
-		return tile().equals(house.leftEntry()) && insideRange(offset().x, HTS, 2);
+	public boolean atGhostHouseDoor(ArcadeGhostHouse house) {
+		return tile().equals(house.doorTileLeft.minus(0, 1)) && insideRange(offset().x, HTS, 2);
 	}
 
 	/**
@@ -154,7 +154,7 @@ public class Ghost extends Creature {
 	 * @param house the ghost house
 	 * @return {@code true} if the ghost has reached the house
 	 */
-	public boolean returnHome(GhostHouse house) {
+	public boolean returnHome(ArcadeGhostHouse house) {
 		if (atGhostHouseDoor(house) && moveDir != Direction.DOWN) {
 			// house reached, start entering
 			setOffset(HTS, 0);
@@ -176,7 +176,7 @@ public class Ghost extends Creature {
 	 * @param house the ghost house
 	 * @return {@code true} if the ghost has reached its revival position
 	 */
-	public boolean enterHouse(GhostHouse house) {
+	public boolean enterHouse(ArcadeGhostHouse house) {
 		V2i tile = tile();
 		V2d offset = offset();
 		if (tile.equals(targetTile) && offset.y >= 0) {
@@ -208,11 +208,11 @@ public class Ghost extends Creature {
 	 * @param house the ghost house
 	 * @return {@code true} if the ghost has left the house
 	 */
-	public boolean leaveHouse(GhostHouse house) {
+	public boolean leaveHouse(ArcadeGhostHouse house) {
 		V2i tile = tile();
 		V2d offset = offset();
 		// House left? Resume hunting.
-		if (tile.equals(house.leftEntry()) && insideRange(offset.y, 0, 1)) {
+		if (tile.equals(house.doorTileLeft.minus(0, 1)) && insideRange(offset.y, 0, 1)) {
 			setOffset(HTS, 0);
 			// TODO not quite working:
 			if (id == CYAN_GHOST) {
@@ -243,7 +243,7 @@ public class Ghost extends Creature {
 	 * 
 	 * @return {@code true}
 	 */
-	public boolean bounce(GhostHouse house) {
+	public boolean bounce(ArcadeGhostHouse house) {
 		double zeroLevel = t(house.seatTileMiddle.y);
 		if (!insideRange(position.y, zeroLevel, HTS)) {
 			setBothDirs(moveDir.opposite());

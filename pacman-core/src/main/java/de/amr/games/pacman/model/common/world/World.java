@@ -100,7 +100,7 @@ public interface World {
 	 * @param tile a tile
 	 * @return tells if this tile is located inside the world bounds
 	 */
-	default boolean insideWorld(V2i tile) {
+	default boolean insideMap(V2i tile) {
 		return 0 <= tile.x && tile.x < numCols() && 0 <= tile.y && tile.y < numRows();
 	}
 
@@ -118,13 +118,13 @@ public interface World {
 	/**
 	 * @return player start direction
 	 */
-	Direction playerStartDirection();
+	Direction playerStartDir();
 
 	/**
 	 * @param ghostID ghost ID, see {@link GameModel#RED_GHOST} etc.
 	 * @return ghost start direction
 	 */
-	Direction ghostStartDirection(int ghostID);
+	Direction ghostStartDir(int ghostID);
 
 	/**
 	 * @return portals inside this world
@@ -165,7 +165,7 @@ public interface World {
 	/**
 	 * @return the ghost house in this world
 	 */
-	GhostHouse ghostHouse();
+	ArcadeGhostHouse ghostHouse();
 
 	/**
 	 * @param tile a tile

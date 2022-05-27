@@ -23,14 +23,16 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.common.world;
 
+import static de.amr.games.pacman.lib.V2i.v;
+
 import de.amr.games.pacman.lib.V2i;
 
 /**
- * The ghost house.
+ * The ghost house from the Arcade version of the games. Door on top, three seats inside.
  * 
  * @author Armin Reichert
  */
-public class GhostHouse {
+public class ArcadeGhostHouse {
 
 	/** Size (width, height) in tiles. */
 	public final V2i size;
@@ -39,31 +41,28 @@ public class GhostHouse {
 	public final V2i topLeft;
 
 	/** Left door. */
-	public V2i doorTileLeft;
+	public final V2i doorTileLeft;
 
 	/** Right door. */
-	public V2i doorTileRight;
+	public final V2i doorTileRight;
 
 	/** Left seat in house. */
-	public V2i seatTileLeft;
+	public final V2i seatTileLeft;
 
 	/** Center seat in house. */
-	public V2i seatTileMiddle;
+	public final V2i seatTileMiddle;
 
 	/** Right seat in house. */
-	public V2i seatTileRight;
+	public final V2i seatTileRight;
 
-	public GhostHouse(V2i topLeft, V2i size) {
-		this.topLeft = topLeft;
-		this.size = size;
-	}
-
-	public V2i leftEntry() {
-		return doorTileLeft.minus(0, 1);
-	}
-
-	public V2i rightEntry() {
-		return doorTileRight.minus(0, 1);
+	public ArcadeGhostHouse() {
+		topLeft = v(10, 15);
+		size = v(7, 4);
+		doorTileLeft = v(13, 15);
+		doorTileRight = v(14, 15);
+		seatTileLeft = v(11, 17);
+		seatTileMiddle = v(13, 17);
+		seatTileRight = v(15, 17);
 	}
 
 	public boolean contains(V2i tile) {

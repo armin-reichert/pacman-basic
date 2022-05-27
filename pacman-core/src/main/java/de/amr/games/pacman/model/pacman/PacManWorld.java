@@ -23,6 +23,8 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.pacman;
 
+import static de.amr.games.pacman.lib.V2i.v;
+
 import java.util.List;
 
 import de.amr.games.pacman.model.common.world.ArcadeWorld;

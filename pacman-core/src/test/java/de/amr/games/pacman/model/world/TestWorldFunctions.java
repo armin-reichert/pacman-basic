@@ -32,11 +32,11 @@ public class TestWorldFunctions {
 		assertEquals(70, world.pelletsToEatForBonus(0));
 		assertEquals(170, world.pelletsToEatForBonus(1));
 		assertEquals(1, world.portals().size());
-		assertEquals(Direction.LEFT, world.playerStartDirection());
-		assertEquals(Direction.LEFT, world.ghostStartDirection(RED_GHOST));
-		assertEquals(Direction.DOWN, world.ghostStartDirection(PINK_GHOST));
-		assertEquals(Direction.UP, world.ghostStartDirection(CYAN_GHOST));
-		assertEquals(Direction.UP, world.ghostStartDirection(ORANGE_GHOST));
+		assertEquals(Direction.LEFT, world.playerStartDir());
+		assertEquals(Direction.LEFT, world.ghostStartDir(RED_GHOST));
+		assertEquals(Direction.DOWN, world.ghostStartDir(PINK_GHOST));
+		assertEquals(Direction.UP, world.ghostStartDir(CYAN_GHOST));
+		assertEquals(Direction.UP, world.ghostStartDir(ORANGE_GHOST));
 	}
 
 	@Test
@@ -51,11 +51,11 @@ public class TestWorldFunctions {
 		assertEquals(172, world.pelletsToEatForBonus(1));
 		assertEquals(2, world.portals().size());
 		assertEquals(new V2i(13, 26), world.playerHomeTile());
-		assertEquals(Direction.LEFT, world.playerStartDirection());
-		assertEquals(Direction.LEFT, world.ghostStartDirection(RED_GHOST));
-		assertEquals(Direction.DOWN, world.ghostStartDirection(PINK_GHOST));
-		assertEquals(Direction.UP, world.ghostStartDirection(CYAN_GHOST));
-		assertEquals(Direction.UP, world.ghostStartDirection(ORANGE_GHOST));
+		assertEquals(Direction.LEFT, world.playerStartDir());
+		assertEquals(Direction.LEFT, world.ghostStartDir(RED_GHOST));
+		assertEquals(Direction.DOWN, world.ghostStartDir(PINK_GHOST));
+		assertEquals(Direction.UP, world.ghostStartDir(CYAN_GHOST));
+		assertEquals(Direction.UP, world.ghostStartDir(ORANGE_GHOST));
 	}
 
 	@Test
@@ -70,11 +70,11 @@ public class TestWorldFunctions {
 		assertEquals(172, world.pelletsToEatForBonus(1));
 		assertEquals(2, world.portals().size());
 		assertEquals(new V2i(13, 26), world.playerHomeTile());
-		assertEquals(Direction.LEFT, world.playerStartDirection());
-		assertEquals(Direction.LEFT, world.ghostStartDirection(RED_GHOST));
-		assertEquals(Direction.DOWN, world.ghostStartDirection(PINK_GHOST));
-		assertEquals(Direction.UP, world.ghostStartDirection(CYAN_GHOST));
-		assertEquals(Direction.UP, world.ghostStartDirection(ORANGE_GHOST));
+		assertEquals(Direction.LEFT, world.playerStartDir());
+		assertEquals(Direction.LEFT, world.ghostStartDir(RED_GHOST));
+		assertEquals(Direction.DOWN, world.ghostStartDir(PINK_GHOST));
+		assertEquals(Direction.UP, world.ghostStartDir(CYAN_GHOST));
+		assertEquals(Direction.UP, world.ghostStartDir(ORANGE_GHOST));
 	}
 
 	@Test
@@ -89,11 +89,11 @@ public class TestWorldFunctions {
 		assertEquals(170, world.pelletsToEatForBonus(1));
 		assertEquals(1, world.portals().size());
 		assertEquals(new V2i(13, 26), world.playerHomeTile());
-		assertEquals(Direction.LEFT, world.playerStartDirection());
-		assertEquals(Direction.LEFT, world.ghostStartDirection(RED_GHOST));
-		assertEquals(Direction.DOWN, world.ghostStartDirection(PINK_GHOST));
-		assertEquals(Direction.UP, world.ghostStartDirection(CYAN_GHOST));
-		assertEquals(Direction.UP, world.ghostStartDirection(ORANGE_GHOST));
+		assertEquals(Direction.LEFT, world.playerStartDir());
+		assertEquals(Direction.LEFT, world.ghostStartDir(RED_GHOST));
+		assertEquals(Direction.DOWN, world.ghostStartDir(PINK_GHOST));
+		assertEquals(Direction.UP, world.ghostStartDir(CYAN_GHOST));
+		assertEquals(Direction.UP, world.ghostStartDir(ORANGE_GHOST));
 	}
 
 	@Test
@@ -108,10 +108,10 @@ public class TestWorldFunctions {
 		assertEquals(170, world.pelletsToEatForBonus(1));
 		assertEquals(2, world.portals().size());
 		assertEquals(new V2i(13, 26), world.playerHomeTile());
-		assertEquals(Direction.LEFT, world.playerStartDirection());
-		assertEquals(Direction.LEFT, world.ghostStartDirection(RED_GHOST));
-		assertEquals(Direction.DOWN, world.ghostStartDirection(PINK_GHOST));
-		assertEquals(Direction.UP, world.ghostStartDirection(CYAN_GHOST));
-		assertEquals(Direction.UP, world.ghostStartDirection(ORANGE_GHOST));
+		assertEquals(Direction.LEFT, world.playerStartDir());
+		assertEquals(Direction.LEFT, world.ghostStartDir(RED_GHOST));
+		assertEquals(Direction.DOWN, world.ghostStartDir(PINK_GHOST));
+		assertEquals(Direction.UP, world.ghostStartDir(CYAN_GHOST));
+		assertEquals(Direction.UP, world.ghostStartDir(ORANGE_GHOST));
 	}
 }

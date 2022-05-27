@@ -132,7 +132,7 @@ public class Creature extends GameEntity {
 	 * @return if this creature can access the given tile
 	 */
 	public boolean canAccessTile(V2i tile) {
-		if (world.insideWorld(tile)) {
+		if (world.insideMap(tile)) {
 			return !world.isWall(tile) && !world.ghostHouse().doorTileLeft.equals(tile)
 					&& !world.ghostHouse().doorTileRight.equals(tile);
 		} else {

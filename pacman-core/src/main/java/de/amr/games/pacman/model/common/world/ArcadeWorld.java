@@ -24,6 +24,7 @@ SOFTWARE.
 package de.amr.games.pacman.model.common.world;
 
 import static de.amr.games.pacman.lib.Logging.log;
+import static de.amr.games.pacman.lib.V2i.v;
 import static de.amr.games.pacman.model.common.Ghost.CYAN_GHOST;
 import static de.amr.games.pacman.model.common.Ghost.ORANGE_GHOST;
 import static de.amr.games.pacman.model.common.Ghost.PINK_GHOST;
@@ -61,22 +62,18 @@ public class ArcadeWorld implements World {
 	public static final byte ENERGIZER_EATEN = 6;
 	//@formatter:on
 
-	protected static V2i v(int x, int y) {
-		return new V2i(x, y);
-	}
-
 	private static byte[][] copyArray2D(byte[][] arr) {
 		return Arrays.stream(arr).map(byte[]::clone).toArray(byte[][]::new);
 	}
 
-	protected V2i size;
+	protected final V2i size;
 	protected final byte[][] map;
 	protected final V2i leftLowerTarget = v(0, 34);
 	protected final V2i rightLowerTarget = v(27, 34);
 	protected final V2i leftUpperTarget = v(2, 0);
 	protected final V2i rightUpperTarget = v(25, 0);
 	protected final V2i pacHome = v(13, 26);
-	protected final GhostHouse house;
+	protected final ArcadeGhostHouse house = new ArcadeGhostHouse();
 	protected final BitSet intersections;
 	protected final List<V2i> energizerTiles;
 	protected final int[] pelletsToEatForBonus = new int[2];
@@ -89,41 +86,40 @@ public class ArcadeWorld implements World {
 
 	protected int foodRemaining;
 
-	protected ArcadeWorld(byte[][] map) {
-		this.map = copyArray2D(map);
-		size = v(map[0].length, map.length); // cols x rows!
+	protected ArcadeWorld(byte[][] mapData) {
+		map = copyArray2D(mapData);
+		size = v(TILES_X, TILES_Y);
+		portals = findPortals();
+		intersections = findIntersections();
+		energizerTiles = tiles().filter(this::isEnergizerTile).collect(Collectors.toUnmodifiableList());
+		totalFoodCount = (int) tiles().filter(this::isFoodTile).count();
+		foodRemaining = totalFoodCount;
+	}
 
-		house = new GhostHouse(v(10, 15), v(7, 4));
-		house.doorTileLeft = v(13, 15);
-		house.doorTileRight = v(14, 15);
-		house.seatTileLeft = v(11, 17);
-		house.seatTileMiddle = v(13, 17);
-		house.seatTileRight = v(15, 17);
-
-		ArrayList<Portal> portalList = new ArrayList<>();
+	private List<Portal> findPortals() {
+		ArrayList<Portal> portals = new ArrayList<>();
 		for (int row = 0; row < size.y; ++row) {
 			if (map[row][0] == TUNNEL && map[row][size.x - 1] == TUNNEL) {
-				portalList.add(new Portal(new V2i(-1, row), new V2i(size.x, row)));
+				portals.add(new Portal(v(-1, row), v(size.x, row)));
 			}
 		}
-		portalList.trimToSize();
-		portals = Collections.unmodifiableList(portalList);
+		portals.trimToSize();
+		return Collections.unmodifiableList(portals);
+	}
 
-		intersections = new BitSet();
+	private BitSet findIntersections() {
+		BitSet intersections = new BitSet();
 		tiles() //
 				.filter(tile -> !house.contains(tile)) //
 				.filter(tile -> tile.x > 0 && tile.x < numCols() - 1) //
 				.filter(tile -> tile.neighbors().filter(nb -> isWall(nb) || house.isDoor(nb)).count() <= 1) //
 				.map(this::index) //
 				.forEach(intersections::set);
-
-		energizerTiles = tiles().filter(this::isEnergizerTile).collect(Collectors.toUnmodifiableList());
-		totalFoodCount = (int) tiles().filter(this::isFoodTile).count();
-		foodRemaining = totalFoodCount;
+		return intersections;
 	}
 
 	protected byte map(V2i tile) {
-		return insideWorld(tile) ? map[tile.y][tile.x] : SPACE;
+		return insideMap(tile) ? map[tile.y][tile.x] : SPACE;
 	}
 
 	@Override
@@ -137,7 +133,7 @@ public class ArcadeWorld implements World {
 	}
 
 	@Override
-	public Direction playerStartDirection() {
+	public Direction playerStartDir() {
 		return Direction.LEFT;
 	}
 
@@ -147,7 +143,7 @@ public class ArcadeWorld implements World {
 	}
 
 	@Override
-	public Direction ghostStartDirection(int ghostID) {
+	public Direction ghostStartDir(int ghostID) {
 		return switch (ghostID) {
 		case RED_GHOST -> Direction.LEFT;
 		case PINK_GHOST -> Direction.DOWN;
@@ -179,7 +175,7 @@ public class ArcadeWorld implements World {
 	}
 
 	@Override
-	public GhostHouse ghostHouse() {
+	public ArcadeGhostHouse ghostHouse() {
 		return house;
 	}
 
@@ -195,12 +191,12 @@ public class ArcadeWorld implements World {
 
 	@Override
 	public boolean isOneWayDown(V2i tile) {
-		return insideWorld(tile) && upwardsBlockedTiles.contains(tile);
+		return insideMap(tile) && upwardsBlockedTiles.contains(tile);
 	}
 
 	@Override
 	public boolean isIntersection(V2i tile) {
-		return insideWorld(tile) && intersections.get(index(tile));
+		return insideMap(tile) && intersections.get(index(tile));
 	}
 
 	@Override

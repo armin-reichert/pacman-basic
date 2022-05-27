@@ -35,6 +35,10 @@ public class V2i {
 
 	public static final V2i NULL = new V2i(0, 0);
 
+	public static V2i v(int x, int y) {
+		return new V2i(x, y);
+	}
+
 	public final int x;
 	public final int y;
 

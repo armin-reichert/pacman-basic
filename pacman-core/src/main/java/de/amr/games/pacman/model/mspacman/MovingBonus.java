@@ -69,10 +69,11 @@ public class MovingBonus extends Bonus {
 		setWishDir(moveDir);
 		show();
 
+		V2i houseEntry = world.ghostHouse().doorTileLeft.minus(0, 1);
 		route.clear();
-		route.add(world.ghostHouse().leftEntry());
-		route.add(world.ghostHouse().leftEntry().plus(0, world.ghostHouse().size.y + 2));
-		route.add(world.ghostHouse().leftEntry());
+		route.add(houseEntry);
+		route.add(houseEntry.plus(0, world.ghostHouse().size.y + 2)); // middle tile below house
+		route.add(houseEntry);
 		route.add(moveDir == Direction.RIGHT ? exitPortal.right : exitPortal.left);
 
 		state = BonusState.EDIBLE;
