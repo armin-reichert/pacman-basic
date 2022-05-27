@@ -23,33 +23,15 @@ SOFTWARE.
  */
 package de.amr.games.pacman.lib;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Misc {
 
 	/**
-	 * @param value     some double value
-	 * @param target    target value
-	 * @param tolerance maximum allowed deviation
+	 * @param value  some double value
+	 * @param center target value
+	 * @param radius maximum allowed deviation
 	 * @return {@code true} if the given value is inside the interval {@code [target - tolerance; target + tolerance]}
 	 */
-	public static boolean differsAtMost(double value, double target, double tolerance) {
-		return value >= target - tolerance && value <= target + tolerance;
+	public static boolean insideRange(double value, double center, double radius) {
+		return (center - radius) <= value && value <= (center + radius);
 	}
-
-	/**
-	 * Trims given (array) list to its actual size. Lets other lists alone.
-	 * 
-	 * @param <T>  list entry type
-	 * @param list some list
-	 * @return trimmed list
-	 */
-	public static <T> List<T> trim(List<T> list) {
-		if (list instanceof ArrayList) {
-			((ArrayList<T>) list).trimToSize();
-		}
-		return list;
-	}
-
 }

@@ -223,22 +223,22 @@ public abstract class GameModel {
 		}
 
 		ghosts[RED_GHOST].homeTile = world.ghostHouse().leftEntry();
-		ghosts[RED_GHOST].revivalTile = world.ghostHouse().seatCenter;
+		ghosts[RED_GHOST].revivalTile = world.ghostHouse().seatTileMiddle;
 		ghosts[RED_GHOST].globalDotLimit = Integer.MAX_VALUE;
 		ghosts[RED_GHOST].privateDotLimit = 0;
 
-		ghosts[PINK_GHOST].homeTile = world.ghostHouse().seatCenter;
-		ghosts[PINK_GHOST].revivalTile = world.ghostHouse().seatCenter;
+		ghosts[PINK_GHOST].homeTile = world.ghostHouse().seatTileMiddle;
+		ghosts[PINK_GHOST].revivalTile = world.ghostHouse().seatTileMiddle;
 		ghosts[PINK_GHOST].globalDotLimit = 7;
 		ghosts[PINK_GHOST].privateDotLimit = 0;
 
-		ghosts[CYAN_GHOST].homeTile = world.ghostHouse().seatLeft;
-		ghosts[CYAN_GHOST].revivalTile = world.ghostHouse().seatLeft;
+		ghosts[CYAN_GHOST].homeTile = world.ghostHouse().seatTileLeft;
+		ghosts[CYAN_GHOST].revivalTile = world.ghostHouse().seatTileLeft;
 		ghosts[CYAN_GHOST].globalDotLimit = 17;
 		ghosts[CYAN_GHOST].privateDotLimit = levelNumber == 1 ? 30 : 0;
 
-		ghosts[ORANGE_GHOST].homeTile = world.ghostHouse().seatRight;
-		ghosts[ORANGE_GHOST].revivalTile = world.ghostHouse().seatRight;
+		ghosts[ORANGE_GHOST].homeTile = world.ghostHouse().seatTileRight;
+		ghosts[ORANGE_GHOST].revivalTile = world.ghostHouse().seatTileRight;
 		ghosts[ORANGE_GHOST].globalDotLimit = Integer.MAX_VALUE;
 		ghosts[ORANGE_GHOST].privateDotLimit = levelNumber == 1 ? 60 : levelNumber == 2 ? 50 : 0;
 	}

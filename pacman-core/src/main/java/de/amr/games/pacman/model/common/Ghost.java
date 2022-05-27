@@ -23,7 +23,7 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.common;
 
-import static de.amr.games.pacman.lib.Misc.differsAtMost;
+import static de.amr.games.pacman.lib.Misc.insideRange;
 import static de.amr.games.pacman.model.common.world.World.HTS;
 import static de.amr.games.pacman.model.common.world.World.t;
 
@@ -94,7 +94,7 @@ public class Ghost extends Creature {
 
 	@Override
 	public boolean canAccessTile(V2i tile) {
-		if (world.ghostHouse().doorLeft.equals(tile) || world.ghostHouse().doorRight.equals(tile)) {
+		if (world.ghostHouse().doorTileLeft.equals(tile) || world.ghostHouse().doorTileRight.equals(tile)) {
 			return is(GhostState.ENTERING_HOUSE) || is(GhostState.LEAVING_HOUSE);
 		}
 		if (world.isOneWayDown(tile)) {
@@ -110,7 +110,7 @@ public class Ghost extends Creature {
 	 * @return {@code true} if the ghost is near the ghosthouse door.
 	 */
 	public boolean atGhostHouseDoor(GhostHouse house) {
-		return tile().equals(house.leftEntry()) && differsAtMost(offset().x, HTS, 2);
+		return tile().equals(house.leftEntry()) && insideRange(offset().x, HTS, 2);
 	}
 
 	/**
@@ -181,12 +181,12 @@ public class Ghost extends Creature {
 			state = GhostState.LEAVING_HOUSE;
 			return true;
 		}
-		if (tile.equals(house.seatCenter) && offset.y >= 0) {
+		if (tile.equals(house.seatTileMiddle) && offset.y >= 0) {
 			// Center seat reached, move towards left or right seat.
-			if (targetTile.x < house.seatCenter.x) {
+			if (targetTile.x < house.seatTileMiddle.x) {
 				setMoveDir(Direction.LEFT);
 				setWishDir(Direction.LEFT);
-			} else if (targetTile.x > house.seatCenter.x) {
+			} else if (targetTile.x > house.seatTileMiddle.x) {
 				setMoveDir(Direction.RIGHT);
 				setWishDir(Direction.RIGHT);
 			}
@@ -206,32 +206,27 @@ public class Ghost extends Creature {
 		V2i tile = tile();
 		V2d offset = offset();
 		// House left? Resume hunting.
-		if (tile.equals(house.leftEntry()) && differsAtMost(offset.y, 0, 1)) {
+		if (tile.equals(house.leftEntry()) && insideRange(offset.y, 0, 1)) {
 			setOffset(HTS, 0);
-			setMoveDir(Direction.LEFT);
-			setWishDir(Direction.LEFT);
+			// TODO not quite working:
 			if (id == CYAN_GHOST) {
-				setMoveDir(Direction.RIGHT);
-				setWishDir(Direction.RIGHT);
-				forceTurningBack();
+				setBothDirs(Direction.RIGHT);
+			} else {
+				setBothDirs(Direction.LEFT);
 			}
 			forcedOnTrack = true;
 			state = GhostState.HUNTING_PAC;
 			return true;
 		}
-		int centerX = t(house.seatCenter.x) + HTS;
-		int groundY = t(house.seatCenter.y) + HTS;
-		if (differsAtMost(position.x, centerX, 1)) {
+		int centerX = t(house.seatTileMiddle.x) + HTS;
+		int groundY = t(house.seatTileMiddle.y) + HTS;
+		if (insideRange(position.x, centerX, 1)) {
 			setOffset(HTS, offset.y);
-			setMoveDir(Direction.UP);
-			setWishDir(Direction.UP);
+			setBothDirs(Direction.UP);
 		} else if (position.y < groundY) {
-			setMoveDir(Direction.DOWN);
-			setWishDir(Direction.DOWN);
+			setBothDirs(Direction.DOWN);
 		} else {
-			Direction newDir = position.x < centerX ? Direction.RIGHT : Direction.LEFT;
-			setMoveDir(newDir);
-			setWishDir(newDir);
+			setBothDirs(position.x < centerX ? Direction.RIGHT : Direction.LEFT);
 		}
 		move();
 		return false;
@@ -243,11 +238,9 @@ public class Ghost extends Creature {
 	 * @return {@code true}
 	 */
 	public boolean bounce(GhostHouse house) {
-		int centerY = t(house.seatCenter.y);
-		if (!differsAtMost(position.y, centerY, HTS)) {
-			Direction opposite = moveDir.opposite();
-			setMoveDir(opposite);
-			setWishDir(opposite);
+		int centerY = t(house.seatTileMiddle.y);
+		if (!insideRange(position.y, centerY, HTS)) {
+			setBothDirs(moveDir.opposite());
 		}
 		move();
 		return true;

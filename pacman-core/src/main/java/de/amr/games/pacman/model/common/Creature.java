@@ -90,8 +90,8 @@ public class Creature extends GameEntity {
 	 */
 	public void setMoveDir(Direction dir) {
 		moveDir = Objects.requireNonNull(dir);
-		double oldSpeed = velocity.length();
-		velocity = new V2d(dir.vec).scaled(oldSpeed);
+		double speed = velocity.length();
+		velocity = new V2d(dir.vec).scaled(speed);
 	}
 
 	public Direction moveDir() {
@@ -104,6 +104,11 @@ public class Creature extends GameEntity {
 
 	public Direction wishDir() {
 		return wishDir;
+	}
+
+	public void setBothDirs(Direction dir) {
+		setMoveDir(dir);
+		setWishDir(dir);
 	}
 
 	public V2i tilesAhead(int numTiles) {
@@ -128,8 +133,8 @@ public class Creature extends GameEntity {
 	 */
 	public boolean canAccessTile(V2i tile) {
 		if (world.insideWorld(tile)) {
-			return !world.isWall(tile) && !world.ghostHouse().doorLeft.equals(tile)
-					&& !world.ghostHouse().doorRight.equals(tile);
+			return !world.isWall(tile) && !world.ghostHouse().doorTileLeft.equals(tile)
+					&& !world.ghostHouse().doorTileRight.equals(tile);
 		} else {
 			// portals are the only tiles accessible outside of the world
 			return world.isPortal(tile);

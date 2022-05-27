@@ -94,11 +94,11 @@ public class ArcadeWorld implements World {
 		size = v(map[0].length, map.length); // cols x rows!
 
 		house = new GhostHouse(v(10, 15), v(7, 4));
-		house.doorLeft = v(13, 15);
-		house.doorRight = v(14, 15);
-		house.seatLeft = v(11, 17);
-		house.seatCenter = v(13, 17);
-		house.seatRight = v(15, 17);
+		house.doorTileLeft = v(13, 15);
+		house.doorTileRight = v(14, 15);
+		house.seatTileLeft = v(11, 17);
+		house.seatTileMiddle = v(13, 17);
+		house.seatTileRight = v(15, 17);
 
 		ArrayList<Portal> portalList = new ArrayList<>();
 		for (int row = 0; row < size.y; ++row) {

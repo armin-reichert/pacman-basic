@@ -53,7 +53,7 @@ public class V2d {
 		if (getClass() != v_object.getClass())
 			return false;
 		V2d v = (V2d) v_object;
-		return Misc.differsAtMost(x, v.x, EPSILON) && Misc.differsAtMost(y, v.y, EPSILON);
+		return Misc.insideRange(x, v.x, EPSILON) && Misc.insideRange(y, v.y, EPSILON);
 	}
 
 	@Override
