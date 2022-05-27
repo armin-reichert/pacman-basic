@@ -31,8 +31,8 @@ import java.util.Optional;
 import java.util.Random;
 
 import de.amr.games.pacman.event.GameEventType;
+import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.common.Bonus;
-import de.amr.games.pacman.model.common.BonusState;
 import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Pac;
@@ -127,9 +127,16 @@ public class MsPacManGame extends GameModel {
 	}
 
 	@Override
+	public boolean checkBonusAwarded() {
+		if (world.isBonusReached()) {
+			movingBonus.activate(level.bonusSymbol, bonusValue(level.bonusSymbol), TickTimer.INDEFINITE);
+			return true;
+		}
+		return false;
+	}
+
+	@Override
 	public void updateBonus() {
-		int symbol = level.bonusSymbol;
-		int value = bonusValue(symbol);
 		switch (movingBonus.state()) {
 		case INACTIVE -> {
 		}
@@ -137,15 +144,14 @@ public class MsPacManGame extends GameModel {
 			boolean leftWorld = movingBonus.followRoute();
 			if (leftWorld) {
 				log("%s expired (left world)", movingBonus);
-				movingBonus.enterState(BonusState.INACTIVE);
+				movingBonus.init();
 				publishEvent(GameEventType.BONUS_EXPIRED, movingBonus.tile());
 				return;
 			}
 			if (player.tile().equals(movingBonus.tile())) {
-				movingBonus.enterState(BonusState.EATEN);
 				log("%s found bonus %s", player.name, movingBonus);
-				movingBonus.setTimerTicks(sec_to_ticks(2));
-				score(value);
+				score(movingBonus.value());
+				movingBonus.eat(sec_to_ticks(2));
 				publishEvent(GameEventType.BONUS_EATEN, movingBonus.tile());
 			}
 		}
@@ -153,7 +159,7 @@ public class MsPacManGame extends GameModel {
 			boolean expired = movingBonus.tick();
 			if (expired) {
 				log("%s expired", movingBonus);
-				movingBonus.enterState(BonusState.INACTIVE);
+				movingBonus.init();
 				publishEvent(GameEventType.BONUS_EXPIRED, movingBonus.tile());
 			}
 		}

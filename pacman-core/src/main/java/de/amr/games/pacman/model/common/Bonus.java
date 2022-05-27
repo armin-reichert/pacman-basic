@@ -30,7 +30,6 @@ import de.amr.games.pacman.model.common.world.World;
 
 /**
  * @author Armin Reichert
- *
  */
 public interface Bonus {
 
@@ -46,13 +45,11 @@ public interface Bonus {
 
 	BonusState state();
 
-	void enterState(BonusState state);
-
 	void init();
 
-	void activate(int symbol, int value);
+	void activate(int symbol, int value, long ticks);
 
-	void setTimerTicks(long ticks);
+	void eat(long ticks);
 
 	boolean tick();
 }

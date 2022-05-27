@@ -76,16 +76,6 @@ public class MovingBonus extends Creature implements Bonus {
 	}
 
 	@Override
-	public void enterState(BonusState state) {
-		this.state = state;
-	}
-
-	@Override
-	public void setTimerTicks(long ticks) {
-		timer = ticks;
-	}
-
-	@Override
 	public int symbol() {
 		return symbol;
 	}
@@ -110,8 +100,9 @@ public class MovingBonus extends Creature implements Bonus {
 	}
 
 	@Override
-	public void activate(int symbol, int value) {
+	public void activate(int symbol, int value, long ticks) {
 		init();
+		timer = ticks;
 		this.symbol = symbol;
 		this.value = value;
 		int numPortals = world.portals().size();
@@ -123,6 +114,12 @@ public class MovingBonus extends Creature implements Bonus {
 			state = BonusState.EDIBLE;
 			log("MovingBonus symbol=%d, value=%d position=%s activated", symbol, value, position);
 		}
+	}
+
+	@Override
+	public void eat(long ticks) {
+		state = BonusState.EATEN;
+		timer = ticks;
 	}
 
 	private void computeNewRoute(Portal entryPortal, Portal exitPortal) {

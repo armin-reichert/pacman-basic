@@ -564,15 +564,7 @@ public abstract class GameModel {
 
 	public abstract Optional<Bonus> bonus();
 
-	public boolean checkBonusAwarded() {
-		if (world.isBonusReached()) {
-			if (bonus().isPresent()) {
-				bonus().get().activate(level.bonusSymbol, bonusValue(level.bonusSymbol));
-				return true;
-			}
-		}
-		return false;
-	}
+	public abstract boolean checkBonusAwarded();
 
 	public abstract void updateBonus();
 

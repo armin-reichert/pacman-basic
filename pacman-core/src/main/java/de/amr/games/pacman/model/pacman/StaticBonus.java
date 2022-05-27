@@ -24,9 +24,6 @@ SOFTWARE.
 package de.amr.games.pacman.model.pacman;
 
 import static de.amr.games.pacman.lib.Logging.log;
-import static de.amr.games.pacman.lib.TickTimer.sec_to_ticks;
-
-import java.util.Random;
 
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.model.common.Bonus;
@@ -50,23 +47,19 @@ public class StaticBonus implements Bonus {
 	}
 
 	@Override
+	public String toString() {
+		return "[StaticBonus symbol=%d value=%d state=%s position=%s timer=%d]".formatted(symbol, value, state, position,
+				timer);
+	}
+
+	@Override
 	public BonusState state() {
 		return state;
 	}
 
 	@Override
-	public void enterState(BonusState state) {
-		this.state = state;
-	}
-
-	@Override
 	public V2d position() {
 		return position;
-	}
-
-	@Override
-	public void setTimerTicks(long ticks) {
-		timer = ticks;
 	}
 
 	@Override
@@ -85,12 +78,18 @@ public class StaticBonus implements Bonus {
 	}
 
 	@Override
-	public void activate(int symbol, int value) {
+	public void activate(int symbol, int value, long ticks) {
 		state = BonusState.EDIBLE;
 		this.symbol = symbol;
 		this.value = value;
-		setTimerTicks(sec_to_ticks(9.0 + new Random().nextDouble()));
-		log("StaticBonus symbol=%d, value=%d activated", symbol, value);
+		timer = ticks;
+		log("%s activated", this);
+	}
+
+	@Override
+	public void eat(long ticks) {
+		state = BonusState.EATEN;
+		timer = ticks;
 	}
 
 	@Override

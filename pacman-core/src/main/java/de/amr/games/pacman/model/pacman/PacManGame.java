@@ -30,11 +30,11 @@ import static de.amr.games.pacman.model.common.world.World.TS;
 
 import java.io.File;
 import java.util.Optional;
+import java.util.Random;
 
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.model.common.Bonus;
-import de.amr.games.pacman.model.common.BonusState;
 import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Pac;
@@ -104,24 +104,30 @@ public class PacManGame extends GameModel {
 	}
 
 	@Override
+	public boolean checkBonusAwarded() {
+		if (world.isBonusReached()) {
+			bonus.activate(level.bonusSymbol, bonusValue(level.bonusSymbol), sec_to_ticks(9.0 + new Random().nextDouble()));
+			return true;
+		}
+		return false;
+	}
+
+	@Override
 	public void updateBonus() {
 		switch (bonus.state()) {
 		case INACTIVE -> {
 		}
 		case EDIBLE -> {
-			int symbol = level.bonusSymbol;
-			int value = bonusValue(symbol);
 			if (player.tile().equals(bonus.tile())) {
-				bonus.enterState(BonusState.EATEN);
-				log("%s found bonus id=%d of value %d", player.name, symbol, value);
-				bonus.setTimerTicks(sec_to_ticks(2));
-				score(value);
+				log("%s found bonus: %s", player.name, bonus);
+				score(bonus.value());
+				bonus.eat(sec_to_ticks(2));
 				publishEvent(GameEventType.BONUS_EATEN, bonus.tile());
 			} else {
 				boolean expired = bonus.tick();
 				if (expired) {
-					log("Bonus id=%d expired", symbol);
-					bonus.enterState(BonusState.INACTIVE);
+					log("Bonus expired: %s", bonus);
+					bonus.init();
 					publishEvent(GameEventType.BONUS_EXPIRED, bonus.tile());
 				}
 			}
@@ -129,8 +135,8 @@ public class PacManGame extends GameModel {
 		case EATEN -> {
 			boolean expired = bonus.tick();
 			if (expired) {
-				log("Bonus id=%d expired", level.bonusSymbol);
-				bonus.enterState(BonusState.INACTIVE);
+				log("Bonus expired: %s", bonus);
+				bonus.init();
 				publishEvent(GameEventType.BONUS_EXPIRED, bonus.tile());
 			}
 		}
