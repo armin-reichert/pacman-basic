@@ -81,7 +81,5 @@ public class PacManWorld extends ArcadeWorld {
 		super(MAP);
 		upwardsBlockedTiles = List.of(v(12, 13), v(15, 13), v(12, 25), v(15, 25));
 		bonusTile = v(13, 20);
-		pelletsToEatForBonus[0] = 70;
-		pelletsToEatForBonus[1] = 170;
 	}
 }

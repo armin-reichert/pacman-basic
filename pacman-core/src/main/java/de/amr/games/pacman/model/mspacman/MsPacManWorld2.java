@@ -75,7 +75,5 @@ public class MsPacManWorld2 extends ArcadeWorld {
 
 	public MsPacManWorld2() {
 		super(MAP);
-		pelletsToEatForBonus[0] = 64;
-		pelletsToEatForBonus[1] = 172;
 	}
 }

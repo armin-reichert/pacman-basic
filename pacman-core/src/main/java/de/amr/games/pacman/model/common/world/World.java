@@ -190,19 +190,6 @@ public interface World {
 	V2i bonusTile();
 
 	/**
-	 * @param bonusIndex first or second bonus (index 0 or 1)
-	 * @return Number of pellets to eat for earning bonus
-	 */
-	int pelletsToEatForBonus(int bonusIndex);
-
-	/**
-	 * @return Return {@code true} if the eaten food count for getting a bonus has been reached.
-	 */
-	default boolean isBonusReached() {
-		return eatenFoodCount() == pelletsToEatForBonus(0) || eatenFoodCount() == pelletsToEatForBonus(1);
-	}
-
-	/**
 	 * Removes food at given tile.
 	 * 
 	 * @param tile some tile

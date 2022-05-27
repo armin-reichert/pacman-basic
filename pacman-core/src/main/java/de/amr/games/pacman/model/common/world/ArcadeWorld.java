@@ -51,7 +51,6 @@ public class ArcadeWorld extends MapBasedWorld {
 	protected final V2i rightUpperTarget = v(25, 0);
 	protected final V2i pacHome = v(13, 26);
 	protected final ArcadeGhostHouse house = new ArcadeGhostHouse();
-	protected final int[] pelletsToEatForBonus = new int[2];
 
 	// subclasses may override these:
 	protected List<V2i> upwardsBlockedTiles = List.of();
@@ -102,11 +101,6 @@ public class ArcadeWorld extends MapBasedWorld {
 	@Override
 	public V2i bonusTile() {
 		return bonusTile;
-	}
-
-	@Override
-	public int pelletsToEatForBonus(int bonusIndex) {
-		return pelletsToEatForBonus[bonusIndex];
 	}
 
 	@Override
