@@ -11,7 +11,7 @@ import de.amr.games.pacman.model.mspacman.MsPacManWorld1;
 import de.amr.games.pacman.model.mspacman.MsPacManWorld2;
 import de.amr.games.pacman.model.mspacman.MsPacManWorld3;
 import de.amr.games.pacman.model.mspacman.MsPacManWorld4;
-import de.amr.games.pacman.model.pacman.PacManWorld;
+import de.amr.games.pacman.model.pacman.PacManGame;
 
 /**
  * Test for floor plan generation.
@@ -23,7 +23,7 @@ public class FloorPlanGenerator {
 	public static void main(String[] args) {
 		int resolution = 8;
 		File dir = new File(System.getProperty("user.dir"));
-		createFloorPlan(new PacManWorld(), dir, "floorplan-pacman-map1-res-%d.txt", resolution);
+		createFloorPlan(PacManGame.createWorld(), dir, "floorplan-pacman-map1-res-%d.txt", resolution);
 		createFloorPlan(new MsPacManWorld1(), dir, "floorplan-mspacman-map1-res-%d.txt", resolution);
 		createFloorPlan(new MsPacManWorld2(), dir, "floorplan-mspacman-map2-res-%d.txt", resolution);
 		createFloorPlan(new MsPacManWorld3(), dir, "floorplan-mspacman-map3-res-%d.txt", resolution);

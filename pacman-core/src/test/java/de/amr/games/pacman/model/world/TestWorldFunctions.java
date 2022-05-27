@@ -17,13 +17,13 @@ import de.amr.games.pacman.model.mspacman.MsPacManWorld1;
 import de.amr.games.pacman.model.mspacman.MsPacManWorld2;
 import de.amr.games.pacman.model.mspacman.MsPacManWorld3;
 import de.amr.games.pacman.model.mspacman.MsPacManWorld4;
-import de.amr.games.pacman.model.pacman.PacManWorld;
+import de.amr.games.pacman.model.pacman.PacManGame;
 
 public class TestWorldFunctions {
 
 	@Test
 	public void testPacManWorld() {
-		World world = new PacManWorld();
+		World world = PacManGame.createWorld();
 		assertEquals(ArcadeWorld.TILES_Y, world.numRows());
 		assertEquals(ArcadeWorld.TILES_X, world.numCols());
 		assertEquals(4, world.energizerTiles().count());

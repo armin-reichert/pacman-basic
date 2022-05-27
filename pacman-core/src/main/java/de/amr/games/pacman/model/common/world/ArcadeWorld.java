@@ -53,10 +53,10 @@ public class ArcadeWorld extends MapBasedWorld {
 	protected final ArcadeGhostHouse house = new ArcadeGhostHouse();
 
 	// subclasses may override these:
-	protected List<V2i> upwardsBlockedTiles = List.of();
-	protected V2i bonusTile = v(0, 0);
+	public List<V2i> upwardsBlockedTiles = List.of();
+	public V2i bonusTile = v(0, 0);
 
-	protected ArcadeWorld(byte[][] mapData) {
+	public ArcadeWorld(byte[][] mapData) {
 		super(mapData, TILES_X, TILES_Y);
 		tiles() //
 				.filter(tile -> !house.contains(tile)) //
