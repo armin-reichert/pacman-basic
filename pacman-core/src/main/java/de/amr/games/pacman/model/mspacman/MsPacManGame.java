@@ -27,10 +27,11 @@ import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.lib.TickTimer.sec_to_ticks;
 
 import java.io.File;
+import java.util.Optional;
 import java.util.Random;
 
 import de.amr.games.pacman.event.GameEventType;
-import de.amr.games.pacman.lib.V2d;
+import de.amr.games.pacman.model.common.Bonus;
 import de.amr.games.pacman.model.common.BonusState;
 import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
@@ -80,12 +81,18 @@ public class MsPacManGame extends GameModel {
 	/*@formatter:on*/
 	};
 
-	private MovingBonus movingBonus;
+	private final MovingBonus movingBonus;
 
 	public MsPacManGame() {
 		player = new Pac("Ms. Pac-Man");
 		createGhosts("Blinky", "Pinky", "Inky", "Sue");
 		hiscoreFile = new File(System.getProperty("user.home"), "highscore-ms_pacman.xml");
+		movingBonus = new MovingBonus();
+	}
+
+	@Override
+	public Optional<Bonus> bonus() {
+		return Optional.of(movingBonus);
 	}
 
 	@Override
@@ -116,44 +123,26 @@ public class MsPacManGame extends GameModel {
 
 		initGhosts(levelNumber, world, ghosts);
 		ghostBounty = firstGhostBounty;
-
-		movingBonus = new MovingBonus(world);
-	}
-
-	@Override
-	public V2d bonusPosition() {
-		return movingBonus.position;
-	}
-
-	@Override
-	public void initBonus() {
-		bonusState = BonusState.INACTIVE;
-		movingBonus.init();
-	}
-
-	@Override
-	public void activateBonus() {
-		bonusState = BonusState.EDIBLE;
-		movingBonus.activate();
+		movingBonus.setWorld(world);
 	}
 
 	@Override
 	public void updateBonus() {
 		int symbol = level.bonusSymbol;
 		int value = bonusValue(symbol);
-		switch (bonusState) {
+		switch (movingBonus.state()) {
 		case INACTIVE -> {
 		}
 		case EDIBLE -> {
 			boolean leftWorld = movingBonus.followRoute();
 			if (leftWorld) {
 				log("Bonus id=%d expired (left world)", symbol);
-				bonusState = BonusState.INACTIVE;
+				movingBonus.enterState(BonusState.INACTIVE);
 				publishEvent(GameEventType.BONUS_EXPIRED, movingBonus.tile());
 				return;
 			}
-			if (player.meets(movingBonus)) {
-				bonusState = BonusState.EATEN;
+			if (player.tile().equals(movingBonus.tile())) {
+				movingBonus.enterState(BonusState.EATEN);
 				log("%s found bonus id=%d of value %d", player.name, symbol, value);
 				movingBonus.setTimerTicks(sec_to_ticks(2));
 				score(value);
@@ -164,7 +153,7 @@ public class MsPacManGame extends GameModel {
 			boolean expired = movingBonus.tick();
 			if (expired) {
 				log("Bonus id=%d expired", symbol);
-				bonusState = BonusState.INACTIVE;
+				movingBonus.enterState(BonusState.INACTIVE);
 				publishEvent(GameEventType.BONUS_EXPIRED, movingBonus.tile());
 			}
 		}

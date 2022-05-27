@@ -29,7 +29,10 @@ import java.util.Random;
 
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
+import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.model.common.Bonus;
+import de.amr.games.pacman.model.common.BonusState;
 import de.amr.games.pacman.model.common.Creature;
 import de.amr.games.pacman.model.common.world.Portal;
 import de.amr.games.pacman.model.common.world.World;
@@ -42,21 +45,39 @@ import de.amr.games.pacman.model.common.world.World;
  * 
  * @author Armin Reichert
  */
-public class MovingBonus extends Creature {
+public class MovingBonus extends Creature implements Bonus {
 
+	private BonusState state;
 	private long timer;
 	private final List<V2i> route = new ArrayList<>();
 
-	public MovingBonus(World world) {
+	public void setWorld(World world) {
 		this.world = world;
-		init();
 	}
 
+	@Override
+	public V2d position() {
+		return position;
+	}
+
+	@Override
+	public BonusState state() {
+		return state;
+	}
+
+	@Override
+	public void enterState(BonusState state) {
+		this.state = state;
+	}
+
+	@Override
 	public void setTimerTicks(long ticks) {
 		timer = ticks;
 	}
 
+	@Override
 	public void init() {
+		state = BonusState.INACTIVE;
 		timer = TickTimer.INDEFINITE;
 		route.clear();
 		newTileEntered = true;
@@ -66,6 +87,7 @@ public class MovingBonus extends Creature {
 		hide();
 	}
 
+	@Override
 	public void activate() {
 		init();
 		int numPortals = world.portals().size();
@@ -74,6 +96,7 @@ public class MovingBonus extends Creature {
 			Portal exitPortal = world.portals().get(new Random().nextInt(numPortals));
 			computeNewRoute(entryPortal, exitPortal);
 			show();
+			state = BonusState.EDIBLE;
 		}
 	}
 
@@ -100,6 +123,7 @@ public class MovingBonus extends Creature {
 		return false;
 	}
 
+	@Override
 	public boolean tick() {
 		if (timer > 0) {
 			--timer;

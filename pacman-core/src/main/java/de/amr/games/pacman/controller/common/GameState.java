@@ -41,6 +41,7 @@ import de.amr.games.pacman.lib.Fsm;
 import de.amr.games.pacman.lib.FsmState;
 import de.amr.games.pacman.lib.Hiscore;
 import de.amr.games.pacman.lib.TickTimer;
+import de.amr.games.pacman.model.common.Bonus;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
@@ -152,7 +153,7 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void onEnter(GameModel game) {
 			controller.huntingTimer().stop();
-			game.initBonus();
+			game.bonus().ifPresent(Bonus::init);
 			game.player.setSpeed(0);
 			game.ghosts().forEach(Ghost::hide);
 			timer.setDurationIndefinite().start();
@@ -194,7 +195,7 @@ public enum GameState implements FsmState<GameModel> {
 			timer.setDurationIndefinite().start();
 			game.player.setSpeed(0);
 			game.ghosts(FRIGHTENED).forEach(ghost -> ghost.state = HUNTING_PAC);
-			game.initBonus();
+			game.bonus().ifPresent(Bonus::init);
 		}
 
 		@Override

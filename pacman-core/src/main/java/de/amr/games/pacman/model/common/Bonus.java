@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-22 Armin Reichert
+Copyright (c) 2022 Armin Reichert
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -20,71 +20,35 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
- */
-package de.amr.games.pacman.model.pacman;
+*/
 
-import static de.amr.games.pacman.lib.TickTimer.sec_to_ticks;
-
-import java.util.Random;
+package de.amr.games.pacman.model.common;
 
 import de.amr.games.pacman.lib.V2d;
-import de.amr.games.pacman.model.common.Bonus;
-import de.amr.games.pacman.model.common.BonusState;
+import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.model.common.world.World;
 
 /**
- * Bonus that appears at a static position.
- * 
  * @author Armin Reichert
+ *
  */
-public class StaticBonus implements Bonus {
+public interface Bonus {
 
-	private BonusState state;
-	private V2d position;
-	private long timer;
+	V2d position();
 
-	public StaticBonus(V2d position) {
-		this.position = position;
+	default V2i tile() {
+		return World.tile(position());
 	}
 
-	@Override
-	public BonusState state() {
-		return state;
-	}
+	BonusState state();
 
-	@Override
-	public void enterState(BonusState state) {
-		this.state = state;
-	}
+	void enterState(BonusState state);
 
-	@Override
-	public V2d position() {
-		return position;
-	}
+	void init();
 
-	@Override
-	public void setTimerTicks(long ticks) {
-		timer = ticks;
-	}
+	void activate();
 
-	@Override
-	public void init() {
-		state = BonusState.INACTIVE;
-	}
+	void setTimerTicks(long ticks);
 
-	@Override
-	public void activate() {
-		state = BonusState.EDIBLE;
-		setTimerTicks(sec_to_ticks(9.0 + new Random().nextDouble()));
-	}
-
-	@Override
-	public boolean tick() {
-		if (timer > 0) {
-			--timer;
-			if (timer == 0) {
-				return true;
-			}
-		}
-		return false;
-	}
+	boolean tick();
 }

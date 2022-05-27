@@ -93,9 +93,6 @@ public abstract class GameModel {
 	/** The four ghosts in order RED, PINK, CYAN, ORANGE. */
 	public Ghost[] ghosts;
 
-	/** The bonus state. */
-	public BonusState bonusState;
-
 	/** Current level-specific data. */
 	public GameLevel level;
 
@@ -209,8 +206,7 @@ public abstract class GameModel {
 			// ghost.dotCounter = 0;
 			// ghost.elroyMode = 0;
 		}
-
-		bonusState = BonusState.INACTIVE;
+		bonus().ifPresent(Bonus::init);
 	}
 
 	protected void initGhosts(int levelNumber, World world, Ghost[] ghosts) {
@@ -564,24 +560,24 @@ public abstract class GameModel {
 		return false;
 	}
 
+	// Bonus stuff
+
+	public abstract Optional<Bonus> bonus();
+
 	public boolean checkBonusAwarded() {
 		if (world.isBonusReached()) {
-			activateBonus();
-			int symbol = level.bonusSymbol;
-			int value = bonusValue(symbol);
-			log("Bonus id=%d, value=%d activated", symbol, value);
-			return true;
+			if (bonus().isPresent()) {
+				bonus().get().activate();
+				int symbol = level.bonusSymbol;
+				int value = bonusValue(symbol);
+				log("Bonus id=%d, value=%d activated", symbol, value);
+				return true;
+			}
 		}
 		return false;
 	}
 
-	public abstract void initBonus();
-
-	public abstract void activateBonus();
-
 	public abstract void updateBonus();
-
-	public abstract V2d bonusPosition();
 
 	// Ghost house rules, see Pac-Man dossier
 
