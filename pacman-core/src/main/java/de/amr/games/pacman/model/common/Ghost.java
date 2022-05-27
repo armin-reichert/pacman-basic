@@ -88,6 +88,12 @@ public class Ghost extends Creature {
 		this.id = id;
 	}
 
+	@Override
+	public String toString() {
+		return String.format("[Ghost %s: state=%s, position=%s, tile=%s, offset=%s, velocity=%s, dir=%s, wishDir=%s]", name,
+				state, position, tile(), offset(), velocity, moveDir, wishDir);
+	}
+
 	public boolean is(GhostState ghostState) {
 		return state == ghostState;
 	}
@@ -238,17 +244,11 @@ public class Ghost extends Creature {
 	 * @return {@code true}
 	 */
 	public boolean bounce(GhostHouse house) {
-		int centerY = t(house.seatTileMiddle.y);
-		if (!insideRange(position.y, centerY, HTS)) {
+		double zeroLevel = t(house.seatTileMiddle.y);
+		if (!insideRange(position.y, zeroLevel, HTS)) {
 			setBothDirs(moveDir.opposite());
 		}
 		move();
 		return true;
-	}
-
-	@Override
-	public String toString() {
-		return String.format("[Ghost %s: state=%s, position=%s, tile=%s, offset=%s, velocity=%s, dir=%s, wishDir=%s]", name,
-				state, position, tile(), offset(), velocity, moveDir, wishDir);
 	}
 }
