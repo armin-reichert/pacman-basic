@@ -43,9 +43,6 @@ public class ArcadeGhostHouse {
 	/** Left door. */
 	public final V2i doorTileLeft;
 
-	/** Right door. */
-	public final V2i doorTileRight;
-
 	/** Left seat in house. */
 	public final V2i seatTileLeft;
 
@@ -59,7 +56,6 @@ public class ArcadeGhostHouse {
 		topLeft = v(10, 15);
 		size = v(7, 4);
 		doorTileLeft = v(13, 15);
-		doorTileRight = v(14, 15);
 		seatTileLeft = v(11, 17);
 		seatTileMiddle = v(13, 17);
 		seatTileRight = v(15, 17);
@@ -71,6 +67,6 @@ public class ArcadeGhostHouse {
 	}
 
 	public boolean isDoor(V2i tile) {
-		return tile.equals(doorTileLeft) || tile.equals(doorTileRight);
+		return (tile.x == doorTileLeft.x || tile.x == doorTileLeft.x + 1) && tile.y == doorTileLeft.y;
 	}
 }
