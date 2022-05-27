@@ -436,9 +436,8 @@ public abstract class GameModel {
 
 	/**
 	 * @param points points to score
-	 * @return <code>true</code> if extra life has been achieved
 	 */
-	public boolean score(int points) {
+	protected void score(int points) {
 		int oldscore = score;
 		score += points;
 		if (score > highscorePoints) {
@@ -447,9 +446,8 @@ public abstract class GameModel {
 		}
 		if (oldscore < 10000 && score >= 10000) {
 			player.lives++;
-			return true;
+			publishEvent(new GameEvent(this, GameEventType.PLAYER_GOT_EXTRA_LIFE, null, player.tile()));
 		}
-		return false;
 	}
 
 	/**
@@ -462,20 +460,15 @@ public abstract class GameModel {
 			return false;
 		}
 		publishEvent(GameEventType.PLAYER_FOUND_FOOD, tile);
-		boolean extraLife = false;
 		boolean energizerEaten = false;
 		if (world.isEnergizerTile(tile)) {
-			extraLife = eatEnergizer(tile);
+			eatEnergizer(tile);
 			energizerEaten = true;
 			if (level.ghostFrightenedSeconds > 0) {
 				publishEvent(GameEventType.PLAYER_GOT_POWER, tile);
 			}
 		} else {
-			extraLife = eatPellet(tile);
-		}
-		if (extraLife) {
-			log("Extra life. Player has %d lives now", player.lives);
-			publishEvent(GameEventType.PLAYER_GOT_EXTRA_LIFE, null);
+			eatPellet(tile);
 		}
 		if (checkBonusAwarded()) {
 			publishEvent(GameEventType.BONUS_ACTIVATED, world.bonusTile());
@@ -483,7 +476,7 @@ public abstract class GameModel {
 		return energizerEaten;
 	}
 
-	private boolean eatEnergizer(V2i tile) {
+	private void eatEnergizer(V2i tile) {
 		world.removeFood(tile);
 		ghostBounty = firstGhostBounty;
 		player.starvingTicks = 0;
@@ -498,16 +491,16 @@ public abstract class GameModel {
 		}
 		checkElroy();
 		updateGhostDotCounters();
-		return score(energizerValue);
+		score(energizerValue);
 	}
 
-	private boolean eatPellet(V2i tile) {
+	private void eatPellet(V2i tile) {
 		world.removeFood(tile);
 		player.starvingTicks = 0;
 		player.restingTicksLeft = 1;
 		checkElroy();
 		updateGhostDotCounters();
-		return score(pelletValue);
+		score(pelletValue);
 	}
 
 	public boolean checkKillGhosts() {

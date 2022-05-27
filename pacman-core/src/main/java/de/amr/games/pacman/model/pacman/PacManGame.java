@@ -125,11 +125,7 @@ public class PacManGame extends GameModel {
 				bonusState = BonusState.EATEN;
 				log("%s found bonus id=%d of value %d", player.name, symbol, value);
 				bonus.setTimerTicks(sec_to_ticks(2));
-				boolean extraLife = score(value);
-				if (extraLife) {
-					log("Extra life. Player has %d lives now", player.lives);
-					publishEvent(GameEventType.PLAYER_GOT_EXTRA_LIFE, null);
-				}
+				score(value);
 				publishEvent(GameEventType.BONUS_EATEN, bonus.tile());
 			} else {
 				boolean expired = bonus.tick();
