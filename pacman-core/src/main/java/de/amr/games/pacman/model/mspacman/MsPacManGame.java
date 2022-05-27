@@ -80,12 +80,11 @@ public class MsPacManGame extends GameModel {
 	/*@formatter:on*/
 	};
 
-	private final MovingBonus movingBonus;
+	private MovingBonus movingBonus;
 
 	public MsPacManGame() {
 		player = new Pac("Ms. Pac-Man");
 		createGhosts("Blinky", "Pinky", "Inky", "Sue");
-		movingBonus = new MovingBonus();
 		hiscoreFile = new File(System.getProperty("user.home"), "highscore-ms_pacman.xml");
 	}
 
@@ -118,8 +117,7 @@ public class MsPacManGame extends GameModel {
 		initGhosts(levelNumber, world, ghosts);
 		ghostBounty = firstGhostBounty;
 
-		movingBonus.world = world;
-		movingBonus.init();
+		movingBonus = new MovingBonus(world);
 	}
 
 	@Override
@@ -157,7 +155,7 @@ public class MsPacManGame extends GameModel {
 			if (player.meets(movingBonus)) {
 				bonusState = BonusState.EATEN;
 				log("%s found bonus id=%d of value %d", player.name, symbol, value);
-				movingBonus.timer = sec_to_ticks(2);
+				movingBonus.setTimerTicks(sec_to_ticks(2));
 				boolean extraLife = score(value);
 				if (extraLife) {
 					log("Extra life. Player has %d lives now", player.lives);

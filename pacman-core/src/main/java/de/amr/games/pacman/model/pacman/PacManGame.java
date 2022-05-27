@@ -79,7 +79,7 @@ public class PacManGame extends GameModel {
 	/*@formatter:on*/
 	};
 
-	private final Bonus bonus;
+	private final StaticBonus bonus;
 
 	public PacManGame() {
 		// all levels use the same world
@@ -92,21 +92,20 @@ public class PacManGame extends GameModel {
 
 		createGhosts("Blinky", "Pinky", "Inky", "Clyde");
 		initGhosts(1, world, ghosts);
-
-		bonus = new Bonus(new V2d(world.bonusTile().scaled(TS)).plus(HTS, 0));
+		bonus = new StaticBonus(new V2d(world.bonusTile().scaled(TS)).plus(HTS, 0));
 
 		hiscoreFile = new File(System.getProperty("user.home"), "highscore-pacman.xml");
 	}
 
 	@Override
 	public V2d bonusPosition() {
-		return bonus.position;
+		return bonus.position();
 	}
 
 	@Override
 	public void activateBonus() {
 		bonusState = BonusState.EDIBLE;
-		bonus.timer = sec_to_ticks(9.0 + new Random().nextDouble());
+		bonus.setTimerTicks(sec_to_ticks(9.0 + new Random().nextDouble()));
 	}
 
 	@Override
@@ -125,7 +124,7 @@ public class PacManGame extends GameModel {
 			if (player.tile().equals(bonus.tile())) {
 				bonusState = BonusState.EATEN;
 				log("%s found bonus id=%d of value %d", player.name, symbol, value);
-				bonus.timer = sec_to_ticks(2);
+				bonus.setTimerTicks(sec_to_ticks(2));
 				boolean extraLife = score(value);
 				if (extraLife) {
 					log("Extra life. Player has %d lives now", player.lives);

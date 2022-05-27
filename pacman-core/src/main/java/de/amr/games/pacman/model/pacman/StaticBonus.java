@@ -28,21 +28,29 @@ import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.world.World;
 
 /**
- * Bonus symbol.
+ * Bonus that appears at a static position.
  * 
  * @author Armin Reichert
  */
-public class Bonus {
+public class StaticBonus {
 
-	public V2d position;
-	public long timer;
+	private V2d position;
+	private long timer;
+
+	public StaticBonus(V2d position) {
+		this.position = position;
+	}
+
+	public V2d position() {
+		return position;
+	}
+
+	public void setTimerTicks(long ticks) {
+		timer = ticks;
+	}
 
 	public V2i tile() {
 		return World.tile(position);
-	}
-
-	public Bonus(V2d position) {
-		this.position = position;
 	}
 
 	public boolean tick() {

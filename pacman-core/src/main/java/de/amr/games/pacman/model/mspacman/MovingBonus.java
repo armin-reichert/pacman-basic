@@ -32,6 +32,7 @@ import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.Creature;
 import de.amr.games.pacman.model.common.world.Portal;
+import de.amr.games.pacman.model.common.world.World;
 
 /**
  * A bonus that tumbles through the world, starting at some portal, making one round around the ghost house and leaving
@@ -43,8 +44,17 @@ import de.amr.games.pacman.model.common.world.Portal;
  */
 public class MovingBonus extends Creature {
 
-	public long timer;
+	private long timer;
 	private final List<V2i> route = new ArrayList<>();
+
+	public MovingBonus(World world) {
+		this.world = world;
+		init();
+	}
+
+	public void setTimerTicks(long ticks) {
+		timer = ticks;
+	}
 
 	public void init() {
 		timer = TickTimer.INDEFINITE;
@@ -58,20 +68,17 @@ public class MovingBonus extends Creature {
 
 	public void activate() {
 		init();
+		V2i houseEntry = world.ghostHouse().doorTileLeft().minus(0, 1);
 		Direction moveDir = new Random().nextBoolean() ? Direction.LEFT : Direction.RIGHT;
 		Portal entryPortal = world.portals().get(new Random().nextInt(world.portals().size()));
 		Portal exitPortal = world.portals().get(new Random().nextInt(world.portals().size()));
-		placeAt(moveDir == Direction.RIGHT ? entryPortal.left : entryPortal.right, 0, 0);
-		setMoveDir(moveDir);
-		setWishDir(moveDir);
-		show();
-
-		V2i houseEntry = world.ghostHouse().doorTileLeft().minus(0, 1);
-		route.clear();
 		route.add(houseEntry);
 		route.add(houseEntry.plus(0, world.ghostHouse().size().y + 2)); // middle tile below house
 		route.add(houseEntry);
 		route.add(moveDir == Direction.RIGHT ? exitPortal.right : exitPortal.left);
+		placeAt(moveDir == Direction.RIGHT ? entryPortal.left : entryPortal.right, 0, 0);
+		setBothDirs(moveDir);
+		show();
 	}
 
 	public boolean followRoute() {
