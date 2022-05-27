@@ -55,6 +55,12 @@ public class MovingBonus extends Creature implements Bonus {
 	private long timer;
 	private final List<V2i> route = new ArrayList<>();
 
+	@Override
+	public String toString() {
+		return "[MovingBonus state=%s symbol=%d value=%d timer=%d creature=%s]".formatted(state, symbol, value, timer,
+				super.toString());
+	}
+
 	public void setWorld(World world) {
 		this.world = world;
 	}
