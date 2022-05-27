@@ -133,10 +133,10 @@ public enum GameState implements FsmState<GameModel> {
 				log("%s lost power, timer=%s", game.player.name, game.player.powerTimer);
 				controller.huntingTimer().start();
 				game.ghosts(FRIGHTENED).forEach(ghost -> ghost.state = HUNTING_PAC);
-				game.publishEvent(GameEventType.PLAYER_LOST_POWER, game.player.tile());
+				game.eventSupport.publish(GameEventType.PLAYER_LOST_POWER, game.player.tile());
 			} else if (game.player.powerTimer.remaining() == sec_to_ticks(1)) {
 				// TODO not sure exactly how long the player is losing power
-				game.publishEvent(GameEventType.PLAYER_STARTED_LOSING_POWER, game.player.tile());
+				game.eventSupport.publish(GameEventType.PLAYER_STARTED_LOSING_POWER, game.player.tile());
 			}
 
 			boolean gotPower = game.checkFood(game.player.tile());
@@ -241,7 +241,7 @@ public enum GameState implements FsmState<GameModel> {
 			// fire event(s) only for dead ghosts not yet returning home (bounty != 0)
 			game.ghosts(DEAD).filter(ghost -> ghost.bounty != 0).forEach(ghost -> {
 				ghost.bounty = 0;
-				game.publishEvent(new GameEvent(game, GameEventType.GHOST_STARTED_RETURNING_HOME, ghost, null));
+				game.eventSupport.publish(new GameEvent(game, GameEventType.GHOST_STARTED_RETURNING_HOME, ghost, null));
 			});
 		}
 	},
@@ -296,7 +296,7 @@ public enum GameState implements FsmState<GameModel> {
 					timer.setDurationIndefinite().start();
 					log("Test intermission scene #%d", game.intermissionTestNumber);
 					// This is a hack to trigger the UI to update its current scene
-					game.publishEvent(new GameStateChangeEvent(game, this, this));
+					game.eventSupport.publish(new GameStateChangeEvent(game, this, this));
 				} else {
 					controller.changeState(INTRO);
 				}
@@ -326,7 +326,7 @@ public enum GameState implements FsmState<GameModel> {
 	protected void startHuntingPhase(GameModel game, int phase) {
 		controller.huntingTimer().startPhase(phase, game.huntingPhaseTicks(phase));
 		if (isScatteringPhase(controller.huntingTimer().phase())) {
-			game.publishEvent(new ScatterPhaseStartedEvent(game, controller.huntingTimer().scatteringPhase()));
+			game.eventSupport.publish(new ScatterPhaseStartedEvent(game, controller.huntingTimer().scatteringPhase()));
 		}
 	}
 

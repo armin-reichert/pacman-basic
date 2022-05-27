@@ -38,14 +38,12 @@ import static de.amr.games.pacman.model.common.world.World.HTS;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.event.GameEvent;
-import de.amr.games.pacman.event.GameEventListener;
+import de.amr.games.pacman.event.GameEventSupport;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.Hiscore;
@@ -61,8 +59,6 @@ import de.amr.games.pacman.model.common.world.World;
  * @author Armin Reichert
  */
 public abstract class GameModel {
-
-	public static boolean logPublishEvents = true;
 
 	/** Speed in pixels/tick at 100%. */
 	public static final double BASE_SPEED = 1.25;
@@ -126,38 +122,7 @@ public abstract class GameModel {
 	/** High score file of current game variant. */
 	public File hiscoreFile;
 
-	private final Collection<GameEventListener> subscribers = new ConcurrentLinkedQueue<>();
-
-	/*
-	 * Eventing.
-	 */
-
-	private boolean eventingEnabled;
-
-	public void setEventingEnabled(boolean eventingEnabled) {
-		this.eventingEnabled = eventingEnabled;
-	}
-
-	public void addEventListener(GameEventListener subscriber) {
-		subscribers.add(subscriber);
-	}
-
-	public void removeEventListener(GameEventListener subscriber) {
-		subscribers.remove(subscriber);
-	}
-
-	public void publishEvent(GameEvent gameEvent) {
-		if (eventingEnabled) {
-			if (logPublishEvents && gameEvent.type != GameEventType.PLAYER_FOUND_FOOD) {
-				log("%s: publish event: '%s'", getClass().getSimpleName(), gameEvent);
-			}
-			subscribers.forEach(subscriber -> subscriber.onGameEvent(gameEvent));
-		}
-	}
-
-	public void publishEvent(GameEventType info, V2i tile) {
-		publishEvent(new GameEvent(this, info, null, tile));
-	}
+	public final GameEventSupport eventSupport = new GameEventSupport(this);
 
 	public void reset() {
 		score = 0;
@@ -336,7 +301,8 @@ public abstract class GameModel {
 		ghosts().forEach(ghost -> updateGhost(ghost, gameVariant, huntingPhase));
 		Ghost released = releaseLockedGhosts();
 		if (released != null) {
-			publishEvent(new GameEvent(this, GameEventType.GHOST_STARTED_LEAVING_HOUSE, released, released.tile()));
+			eventSupport
+					.publish(new GameEvent(this, GameEventType.GHOST_STARTED_LEAVING_HOUSE, released, released.tile()));
 		}
 	}
 
@@ -364,8 +330,8 @@ public abstract class GameModel {
 			ghost.setSpeed(level.ghostSpeed * 2);
 			boolean reachedRevivalTile = ghost.enterHouse(world.ghostHouse());
 			if (reachedRevivalTile) {
-				publishEvent(new GameEvent(this, GameEventType.GHOST_REVIVED, ghost, ghost.tile()));
-				publishEvent(new GameEvent(this, GameEventType.GHOST_STARTED_LEAVING_HOUSE, ghost, ghost.tile()));
+				eventSupport.publish(new GameEvent(this, GameEventType.GHOST_REVIVED, ghost, ghost.tile()));
+				eventSupport.publish(new GameEvent(this, GameEventType.GHOST_STARTED_LEAVING_HOUSE, ghost, ghost.tile()));
 			}
 		}
 
@@ -373,7 +339,7 @@ public abstract class GameModel {
 			ghost.setSpeed(level.ghostSpeed / 2);
 			boolean leftHouse = ghost.leaveHouse(world.ghostHouse());
 			if (leftHouse) {
-				publishEvent(new GameEvent(this, GameEventType.GHOST_FINISHED_LEAVING_HOUSE, ghost, ghost.tile()));
+				eventSupport.publish(new GameEvent(this, GameEventType.GHOST_FINISHED_LEAVING_HOUSE, ghost, ghost.tile()));
 			}
 		}
 
@@ -416,7 +382,7 @@ public abstract class GameModel {
 			ghost.setSpeed(level.ghostSpeed * 2);
 			boolean reachedHouse = ghost.returnHome(world.ghostHouse());
 			if (reachedHouse) {
-				publishEvent(new GameEvent(this, GameEventType.GHOST_ENTERED_HOUSE, ghost, ghost.tile()));
+				eventSupport.publish(new GameEvent(this, GameEventType.GHOST_ENTERED_HOUSE, ghost, ghost.tile()));
 			}
 		}
 
@@ -436,7 +402,7 @@ public abstract class GameModel {
 		}
 		if (oldscore < 10000 && score >= 10000) {
 			player.lives++;
-			publishEvent(new GameEvent(this, GameEventType.PLAYER_GOT_EXTRA_LIFE, null, player.tile()));
+			eventSupport.publish(new GameEvent(this, GameEventType.PLAYER_GOT_EXTRA_LIFE, null, player.tile()));
 		}
 	}
 
@@ -449,19 +415,19 @@ public abstract class GameModel {
 			player.starvingTicks++;
 			return false;
 		}
-		publishEvent(GameEventType.PLAYER_FOUND_FOOD, tile);
+		eventSupport.publish(GameEventType.PLAYER_FOUND_FOOD, tile);
 		boolean energizerEaten = false;
 		if (world.isEnergizerTile(tile)) {
 			eatEnergizer(tile);
 			energizerEaten = true;
 			if (level.ghostFrightenedSeconds > 0) {
-				publishEvent(GameEventType.PLAYER_GOT_POWER, tile);
+				eventSupport.publish(GameEventType.PLAYER_GOT_POWER, tile);
 			}
 		} else {
 			eatPellet(tile);
 		}
 		if (checkBonusAwarded()) {
-			publishEvent(GameEventType.BONUS_ACTIVATED, world.bonusTile());
+			eventSupport.publish(GameEventType.BONUS_ACTIVATED, world.bonusTile());
 		}
 		return energizerEaten;
 	}

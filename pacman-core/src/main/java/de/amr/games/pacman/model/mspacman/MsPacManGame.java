@@ -178,14 +178,14 @@ public class MsPacManGame extends GameModel {
 			if (leftWorld) {
 				log("%s expired (left world)", movingBonus);
 				movingBonus.init();
-				publishEvent(GameEventType.BONUS_EXPIRED, movingBonus.tile());
+				eventSupport.publish(GameEventType.BONUS_EXPIRED, movingBonus.tile());
 				return;
 			}
 			if (player.tile().equals(movingBonus.tile())) {
 				log("%s found bonus %s", player.name, movingBonus);
 				score(movingBonus.value());
 				movingBonus.eat(sec_to_ticks(2));
-				publishEvent(GameEventType.BONUS_EATEN, movingBonus.tile());
+				eventSupport.publish(GameEventType.BONUS_EATEN, movingBonus.tile());
 			}
 		}
 		case EATEN -> {
@@ -193,7 +193,7 @@ public class MsPacManGame extends GameModel {
 			if (expired) {
 				log("%s expired", movingBonus);
 				movingBonus.init();
-				publishEvent(GameEventType.BONUS_EXPIRED, movingBonus.tile());
+				eventSupport.publish(GameEventType.BONUS_EXPIRED, movingBonus.tile());
 			}
 		}
 		}

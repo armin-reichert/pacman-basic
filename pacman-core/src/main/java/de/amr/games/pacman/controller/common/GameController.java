@@ -89,7 +89,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 		// map game state change events from FSM to game events from game model:
 		games.values().forEach(game -> {
 			addStateChangeListener(
-					(oldState, newState) -> game.publishEvent(new GameStateChangeEvent(game, oldState, newState)));
+					(oldState, newState) -> game.eventSupport.publish(new GameStateChangeEvent(game, oldState, newState)));
 		});
 		setSelectedGameVariant(variant);
 		changeState(INTRO);
@@ -167,7 +167,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 		selectedGameVariant = Objects.requireNonNull(variant);
 		// ensure only selected game model fires events
 		for (var v : GameVariant.values()) {
-			games.get(v).setEventingEnabled(v == selectedGameVariant);
+			games.get(v).eventSupport.setEnabled(v == selectedGameVariant);
 		}
 	}
 
@@ -185,7 +185,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 	}
 
 	public void addListener(GameEventListener subscriber) {
-		games.values().forEach(game -> game.addEventListener(subscriber));
+		games.values().forEach(game -> game.eventSupport.addEventListener(subscriber));
 	}
 
 	public void requestGame() {
@@ -200,7 +200,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 			consumeCredit();
 		}
 		restartInInitialState(INTRO);
-		game().publishEvent(new TriggerUIChangeEvent(game()));
+		game().eventSupport.publish(new TriggerUIChangeEvent(game()));
 	}
 
 	public void startIntermissionTest() {
@@ -213,7 +213,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 	public void cheatEatAllPellets() {
 		if (gameRunning) {
 			game().world.tiles().filter(not(game().world::isEnergizerTile)).forEach(game().world::removeFood);
-			game().publishEvent(GameEventType.PLAYER_FOUND_FOOD, null);
+			game().eventSupport.publish(GameEventType.PLAYER_FOUND_FOOD, null);
 		}
 	}
 
