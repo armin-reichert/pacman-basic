@@ -7,10 +7,7 @@ import java.nio.charset.StandardCharsets;
 
 import de.amr.games.pacman.model.common.world.FloorPlan;
 import de.amr.games.pacman.model.common.world.World;
-import de.amr.games.pacman.model.mspacman.MsPacManWorld1;
-import de.amr.games.pacman.model.mspacman.MsPacManWorld2;
-import de.amr.games.pacman.model.mspacman.MsPacManWorld3;
-import de.amr.games.pacman.model.mspacman.MsPacManWorld4;
+import de.amr.games.pacman.model.mspacman.MsPacManGame;
 import de.amr.games.pacman.model.pacman.PacManGame;
 
 /**
@@ -24,10 +21,10 @@ public class FloorPlanGenerator {
 		int resolution = 8;
 		File dir = new File(System.getProperty("user.dir"));
 		createFloorPlan(PacManGame.createWorld(), dir, "floorplan-pacman-map1-res-%d.txt", resolution);
-		createFloorPlan(new MsPacManWorld1(), dir, "floorplan-mspacman-map1-res-%d.txt", resolution);
-		createFloorPlan(new MsPacManWorld2(), dir, "floorplan-mspacman-map2-res-%d.txt", resolution);
-		createFloorPlan(new MsPacManWorld3(), dir, "floorplan-mspacman-map3-res-%d.txt", resolution);
-		createFloorPlan(new MsPacManWorld4(), dir, "floorplan-mspacman-map4-res-%d.txt", resolution);
+		createFloorPlan(MsPacManGame.createWorld(1), dir, "floorplan-mspacman-map1-res-%d.txt", resolution);
+		createFloorPlan(MsPacManGame.createWorld(2), dir, "floorplan-mspacman-map2-res-%d.txt", resolution);
+		createFloorPlan(MsPacManGame.createWorld(3), dir, "floorplan-mspacman-map3-res-%d.txt", resolution);
+		createFloorPlan(MsPacManGame.createWorld(4), dir, "floorplan-mspacman-map4-res-%d.txt", resolution);
 	}
 
 	private static void createFloorPlan(World world, File dir, String outputFileNamePattern, int resolution) {
