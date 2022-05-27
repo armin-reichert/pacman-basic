@@ -25,6 +25,8 @@ package de.amr.games.pacman.model.pacman;
 
 import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.lib.TickTimer.sec_to_ticks;
+import static de.amr.games.pacman.model.common.world.World.HTS;
+import static de.amr.games.pacman.model.common.world.World.TS;
 
 import java.io.File;
 import java.util.Random;
@@ -35,7 +37,6 @@ import de.amr.games.pacman.model.common.BonusState;
 import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Pac;
-import de.amr.games.pacman.model.common.world.World;
 
 /**
  * Model of the Pac-Man game.
@@ -92,9 +93,7 @@ public class PacManGame extends GameModel {
 		createGhosts("Blinky", "Pinky", "Inky", "Clyde");
 		initGhosts(1, world, ghosts);
 
-		bonus = new Bonus();
-		bonus.world = world;
-		bonus.placeAt(world.bonusTile(), World.HTS, 0);
+		bonus = new Bonus(new V2d(world.bonusTile().scaled(TS)).plus(HTS, 0));
 
 		hiscoreFile = new File(System.getProperty("user.home"), "highscore-pacman.xml");
 	}
@@ -113,7 +112,6 @@ public class PacManGame extends GameModel {
 	@Override
 	public void initBonus() {
 		bonusState = BonusState.INACTIVE;
-		bonus.hide();
 	}
 
 	@Override
@@ -124,7 +122,7 @@ public class PacManGame extends GameModel {
 		case INACTIVE -> {
 		}
 		case EDIBLE -> {
-			if (player.meets(bonus)) {
+			if (player.tile().equals(bonus.tile())) {
 				bonusState = BonusState.EATEN;
 				log("%s found bonus id=%d of value %d", player.name, symbol, value);
 				bonus.timer = sec_to_ticks(2);

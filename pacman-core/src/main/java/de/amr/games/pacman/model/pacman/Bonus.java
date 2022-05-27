@@ -23,16 +23,27 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.pacman;
 
-import de.amr.games.pacman.model.common.Creature;
+import de.amr.games.pacman.lib.V2d;
+import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.model.common.world.World;
 
 /**
  * Bonus symbol.
  * 
  * @author Armin Reichert
  */
-public class Bonus extends Creature {
+public class Bonus {
 
+	public V2d position;
 	public long timer;
+
+	public V2i tile() {
+		return World.tile(position);
+	}
+
+	public Bonus(V2d position) {
+		this.position = position;
+	}
 
 	public boolean tick() {
 		if (timer > 0) {
