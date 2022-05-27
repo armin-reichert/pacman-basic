@@ -34,11 +34,12 @@ import java.util.stream.Collectors;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.Logging;
 import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.model.common.BonusState;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.GhostState;
 import de.amr.games.pacman.model.common.Pac;
-import de.amr.games.pacman.model.pacman.Bonus.BonusState;
+import de.amr.games.pacman.model.common.world.World;
 
 /**
  * Controls automatic movement of the player.
@@ -162,10 +163,10 @@ public class Autopilot implements Consumer<Pac> {
 			log("Detected frightened ghost %s %.0g tiles away", prey.name,
 					prey.tile().manhattanDistance(game().player.tile()));
 			game().player.targetTile = prey.tile();
-		} else if (game().bonus.state == BonusState.EDIBLE
-				&& game().bonus.tile().manhattanDistance(game().player.tile()) <= AutopilotData.MAX_BONUS_HARVEST_DIST) {
+		} else if (game().bonusState == BonusState.EDIBLE
+				&& bonusTile().manhattanDistance(game().player.tile()) <= AutopilotData.MAX_BONUS_HARVEST_DIST) {
 			log("Detected active bonus");
-			game().player.targetTile = game().bonus.tile();
+			game().player.targetTile = bonusTile();
 		} else {
 			V2i foodTile = findTileFarestFromGhosts(findNearestFoodTiles());
 			game().player.targetTile = foodTile;
@@ -173,6 +174,10 @@ public class Autopilot implements Consumer<Pac> {
 		if (game().player.targetTile != null) {
 			game().player.headForTile(game().player.targetTile);
 		}
+	}
+
+	private V2i bonusTile() {
+		return World.tile(game().bonusPosition());
 	}
 
 	private Ghost findHuntingGhostAhead() {

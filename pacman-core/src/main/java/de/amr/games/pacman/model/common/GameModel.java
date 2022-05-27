@@ -24,7 +24,6 @@ SOFTWARE.
 package de.amr.games.pacman.model.common;
 
 import static de.amr.games.pacman.lib.Logging.log;
-import static de.amr.games.pacman.lib.TickTimer.sec_to_ticks;
 import static de.amr.games.pacman.model.common.GameVariant.MS_PACMAN;
 import static de.amr.games.pacman.model.common.Ghost.CYAN_GHOST;
 import static de.amr.games.pacman.model.common.Ghost.ORANGE_GHOST;
@@ -55,7 +54,6 @@ import de.amr.games.pacman.lib.TickTimer.TickTimerState;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.world.World;
-import de.amr.games.pacman.model.pacman.Bonus;
 
 /**
  * Common part of the Pac-Man and Ms. Pac-Man game models.
@@ -95,8 +93,8 @@ public abstract class GameModel {
 	/** The four ghosts in order RED, PINK, CYAN, ORANGE. */
 	public Ghost[] ghosts;
 
-	/** The bonus entity. */
-	public Bonus bonus;
+	/** The bonus state. */
+	public BonusState bonusState;
 
 	/** Current level-specific data. */
 	public GameLevel level;
@@ -159,7 +157,7 @@ public abstract class GameModel {
 
 	public void publishEvent(GameEvent gameEvent) {
 		if (eventingEnabled) {
-			if (logPublishEvents) {
+			if (logPublishEvents && gameEvent.type != GameEventType.PLAYER_FOUND_FOOD) {
 				log("%s: publish event: '%s'", getClass().getSimpleName(), gameEvent);
 			}
 			subscribers.forEach(subscriber -> subscriber.onGameEvent(gameEvent));
@@ -212,7 +210,7 @@ public abstract class GameModel {
 			// ghost.elroyMode = 0;
 		}
 
-		bonus.init();
+		bonusState = BonusState.INACTIVE;
 	}
 
 	protected void initGhosts(int levelNumber, World world, Ghost[] ghosts) {
@@ -319,11 +317,6 @@ public abstract class GameModel {
 	 * @return value of this bonus symbol
 	 */
 	public abstract int bonusValue(int symbolID);
-
-	/**
-	 * @return number of ticks the bonus is active
-	 */
-	public abstract long bonusActivationTicks();
 
 	// Game logic
 
@@ -485,7 +478,7 @@ public abstract class GameModel {
 			publishEvent(GameEventType.PLAYER_GOT_EXTRA_LIFE, null);
 		}
 		if (checkBonusAwarded()) {
-			publishEvent(GameEventType.BONUS_ACTIVATED, bonus.tile());
+			publishEvent(GameEventType.BONUS_ACTIVATED, world.bonusTile());
 		}
 		return energizerEaten;
 	}
@@ -580,46 +573,22 @@ public abstract class GameModel {
 
 	public boolean checkBonusAwarded() {
 		if (world.isBonusReached()) {
-			bonus.activate(level.bonusSymbol, bonusValue(bonus.symbol));
-			bonus.timer = bonusActivationTicks();
-			log("Bonus id=%d, value=%d activated for %d ticks", bonus.symbol, bonus.points, bonus.timer);
+			activateBonus();
+			int symbol = level.bonusSymbol;
+			int value = bonusValue(symbol);
+			log("Bonus id=%d, value=%d activated", symbol, value);
 			return true;
 		}
 		return false;
 	}
 
-	public void updateBonus() {
-		switch (bonus.state) {
-		case EDIBLE -> {
-			if (player.meets(bonus)) {
-				log("%s found bonus id=%d of value %d", player.name, bonus.symbol, bonus.points);
-				bonus.eat();
-				bonus.timer = sec_to_ticks(2);
-				boolean extraLife = score(bonus.points);
-				if (extraLife) {
-					log("Extra life. Player has %d lives now", player.lives);
-					publishEvent(GameEventType.PLAYER_GOT_EXTRA_LIFE, null);
-				}
-				publishEvent(GameEventType.BONUS_EATEN, bonus.tile());
-			} else {
-				bonus.update();
-				if (bonus.timer == 0) {
-					log("Bonus id=%d expired", bonus.symbol);
-					publishEvent(GameEventType.BONUS_EXPIRED, bonus.tile());
-				}
-			}
-		}
-		case EATEN -> {
-			bonus.update();
-			if (bonus.timer == 0) {
-				publishEvent(GameEventType.BONUS_EXPIRED, bonus.tile());
-			}
-		}
-		default -> {
-			// INACTIVE
-		}
-		}
-	}
+	public abstract void initBonus();
+
+	public abstract void activateBonus();
+
+	public abstract void updateBonus();
+
+	public abstract V2d bonusPosition();
 
 	// Ghost house rules, see Pac-Man dossier
 

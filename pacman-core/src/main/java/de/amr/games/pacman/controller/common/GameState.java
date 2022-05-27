@@ -152,7 +152,7 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void onEnter(GameModel game) {
 			controller.huntingTimer().stop();
-			game.bonus.init();
+			game.initBonus();
 			game.player.setSpeed(0);
 			game.ghosts().forEach(Ghost::hide);
 			timer.setDurationIndefinite().start();
@@ -194,7 +194,7 @@ public enum GameState implements FsmState<GameModel> {
 			timer.setDurationIndefinite().start();
 			game.player.setSpeed(0);
 			game.ghosts(FRIGHTENED).forEach(ghost -> ghost.state = HUNTING_PAC);
-			game.bonus.init();
+			game.initBonus();
 		}
 
 		@Override

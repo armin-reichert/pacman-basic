@@ -28,9 +28,10 @@ import java.util.List;
 import java.util.Random;
 
 import de.amr.games.pacman.lib.Direction;
+import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.model.common.Creature;
 import de.amr.games.pacman.model.common.world.Portal;
-import de.amr.games.pacman.model.pacman.Bonus;
 
 /**
  * A bonus that tumbles through the world, starting at some portal, making one round around the ghost house and leaving
@@ -40,27 +41,23 @@ import de.amr.games.pacman.model.pacman.Bonus;
  * 
  * @author Armin Reichert
  */
-public class MovingBonus extends Bonus {
+public class MovingBonus extends Creature {
 
+	public long timer;
 	private final List<V2i> route = new ArrayList<>();
 
-	@Override
 	public void init() {
-		timer = 0;
+		timer = TickTimer.INDEFINITE;
 		route.clear();
 		newTileEntered = true;
 		forcedOnTrack = true;
 		stuck = false;
 		setSpeed(0.4); // TODO how fast should it walk?
 		hide();
-		state = BonusState.INACTIVE;
 	}
 
-	@Override
-	public void activate(int symbol, int points) {
-		this.symbol = symbol;
-		this.points = points;
-
+	public void activate() {
+		init();
 		Direction moveDir = new Random().nextBoolean() ? Direction.LEFT : Direction.RIGHT;
 		Portal entryPortal = world.portals().get(new Random().nextInt(world.portals().size()));
 		Portal exitPortal = world.portals().get(new Random().nextInt(world.portals().size()));
@@ -75,37 +72,27 @@ public class MovingBonus extends Bonus {
 		route.add(houseEntry.plus(0, world.ghostHouse().size().y + 2)); // middle tile below house
 		route.add(houseEntry);
 		route.add(moveDir == Direction.RIGHT ? exitPortal.right : exitPortal.left);
-
-		state = BonusState.EDIBLE;
 	}
 
-	@Override
-	public void update() {
-		switch (state) {
-
-		case EDIBLE -> {
-			if (tile().equals(targetTile)) {
-				route.remove(0);
-				if (route.isEmpty()) {
-					init();
-					return;
-				}
+	public boolean followRoute() {
+		if (tile().equals(targetTile)) {
+			route.remove(0);
+			if (route.isEmpty()) {
+				return true;
 			}
-			headForTile(route.get(0));
-			tryMoving();
 		}
+		headForTile(route.get(0));
+		tryMoving();
+		return false;
+	}
 
-		case EATEN -> {
+	public boolean tick() {
+		if (timer > 0) {
+			--timer;
 			if (timer == 0) {
-				init();
-			} else {
-				--timer;
+				return true;
 			}
 		}
-
-		default -> {
-		}
-
-		}
+		return false;
 	}
 }

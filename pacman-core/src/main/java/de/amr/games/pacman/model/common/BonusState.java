@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-22 Armin Reichert
+Copyright (c) 2022 Armin Reichert
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -20,27 +20,14 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
- */
-package de.amr.games.pacman.model.pacman;
+*/
 
-import de.amr.games.pacman.model.common.Creature;
+package de.amr.games.pacman.model.common;
 
 /**
- * Bonus symbol.
- * 
  * @author Armin Reichert
+ *
  */
-public class Bonus extends Creature {
-
-	public long timer;
-
-	public boolean tick() {
-		if (timer > 0) {
-			--timer;
-			if (timer == 0) {
-				return true;
-			}
-		}
-		return false;
-	}
+public enum BonusState {
+	INACTIVE, EDIBLE, EATEN;
 }

@@ -23,14 +23,19 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.pacman;
 
+import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.lib.TickTimer.sec_to_ticks;
 
 import java.io.File;
 import java.util.Random;
 
+import de.amr.games.pacman.event.GameEventType;
+import de.amr.games.pacman.lib.V2d;
+import de.amr.games.pacman.model.common.BonusState;
 import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Pac;
+import de.amr.games.pacman.model.common.world.World;
 
 /**
  * Model of the Pac-Man game.
@@ -73,6 +78,8 @@ public class PacManGame extends GameModel {
 	/*@formatter:on*/
 	};
 
+	private final Bonus bonus;
+
 	public PacManGame() {
 		// all levels use the same world
 		world = new PacManWorld();
@@ -87,8 +94,64 @@ public class PacManGame extends GameModel {
 
 		bonus = new Bonus();
 		bonus.world = world;
+		bonus.placeAt(world.bonusTile(), World.HTS, 0);
 
 		hiscoreFile = new File(System.getProperty("user.home"), "highscore-pacman.xml");
+	}
+
+	@Override
+	public V2d bonusPosition() {
+		return bonus.position;
+	}
+
+	@Override
+	public void activateBonus() {
+		bonusState = BonusState.EDIBLE;
+		bonus.timer = sec_to_ticks(9.0 + new Random().nextDouble());
+	}
+
+	@Override
+	public void initBonus() {
+		bonusState = BonusState.INACTIVE;
+		bonus.hide();
+	}
+
+	@Override
+	public void updateBonus() {
+		int symbol = level.bonusSymbol;
+		int value = bonusValue(symbol);
+		switch (bonusState) {
+		case INACTIVE -> {
+		}
+		case EDIBLE -> {
+			if (player.meets(bonus)) {
+				bonusState = BonusState.EATEN;
+				log("%s found bonus id=%d of value %d", player.name, symbol, value);
+				bonus.timer = sec_to_ticks(2);
+				boolean extraLife = score(value);
+				if (extraLife) {
+					log("Extra life. Player has %d lives now", player.lives);
+					publishEvent(GameEventType.PLAYER_GOT_EXTRA_LIFE, null);
+				}
+				publishEvent(GameEventType.BONUS_EATEN, bonus.tile());
+			} else {
+				boolean expired = bonus.tick();
+				if (expired) {
+					log("Bonus id=%d expired", symbol);
+					bonusState = BonusState.INACTIVE;
+					publishEvent(GameEventType.BONUS_EXPIRED, bonus.tile());
+				}
+			}
+		}
+		case EATEN -> {
+			boolean expired = bonus.tick();
+			if (expired) {
+				log("Bonus id=%d expired", symbol);
+				bonusState = BonusState.INACTIVE;
+				publishEvent(GameEventType.BONUS_EXPIRED, bonus.tile());
+			}
+		}
+		}
 	}
 
 	@Override
@@ -101,13 +164,10 @@ public class PacManGame extends GameModel {
 		levelCounter.add(level.bonusSymbol);
 
 		world.resetFood();
-
 		player.starvingTimeLimit = (int) sec_to_ticks(levelNumber < 5 ? 4 : 3);
-
 		initGhosts(levelNumber, world, ghosts);
 		ghostBounty = firstGhostBounty;
-
-		bonus.init();
+		initBonus();
 	}
 
 	@Override
@@ -123,10 +183,5 @@ public class PacManGame extends GameModel {
 		case KEY -> 5000;
 		default -> throw new IllegalArgumentException("Unknown symbol ID: " + symbol);
 		};
-	}
-
-	@Override
-	public long bonusActivationTicks() {
-		return sec_to_ticks(9.0 + new Random().nextDouble());
 	}
 }
