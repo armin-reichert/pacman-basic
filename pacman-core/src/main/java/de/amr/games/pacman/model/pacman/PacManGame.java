@@ -29,12 +29,10 @@ import static de.amr.games.pacman.model.common.world.World.HTS;
 import static de.amr.games.pacman.model.common.world.World.TS;
 
 import java.io.File;
-import java.util.Optional;
 import java.util.Random;
 
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.lib.V2d;
-import de.amr.games.pacman.model.common.Bonus;
 import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Pac;
@@ -112,8 +110,8 @@ public class PacManGame extends GameModel {
 	}
 
 	@Override
-	public Optional<Bonus> bonus() {
-		return Optional.of(bonus);
+	public StaticBonus bonus() {
+		return bonus;
 	}
 
 	@Override

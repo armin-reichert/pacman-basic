@@ -27,12 +27,10 @@ import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.lib.TickTimer.sec_to_ticks;
 
 import java.io.File;
-import java.util.Optional;
 import java.util.Random;
 
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.lib.TickTimer;
-import de.amr.games.pacman.model.common.Bonus;
 import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Pac;
@@ -114,8 +112,8 @@ public class MsPacManGame extends GameModel {
 	}
 
 	@Override
-	public Optional<Bonus> bonus() {
-		return Optional.of(movingBonus);
+	public MovingBonus bonus() {
+		return movingBonus;
 	}
 
 	@Override

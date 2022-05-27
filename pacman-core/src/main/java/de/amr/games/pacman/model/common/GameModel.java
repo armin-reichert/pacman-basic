@@ -165,7 +165,9 @@ public abstract class GameModel {
 			// ghost.dotCounter = 0;
 			// ghost.elroyMode = 0;
 		}
-		bonus().ifPresent(Bonus::init);
+		if (bonus() != null) {
+			bonus().init();
+		}
 	}
 
 	protected void initGhosts(int levelNumber, World world, Ghost[] ghosts) {
@@ -301,8 +303,7 @@ public abstract class GameModel {
 		ghosts().forEach(ghost -> updateGhost(ghost, gameVariant, huntingPhase));
 		Ghost released = releaseLockedGhosts();
 		if (released != null) {
-			eventSupport
-					.publish(new GameEvent(this, GameEventType.GHOST_STARTED_LEAVING_HOUSE, released, released.tile()));
+			eventSupport.publish(new GameEvent(this, GameEventType.GHOST_STARTED_LEAVING_HOUSE, released, released.tile()));
 		}
 	}
 
@@ -522,7 +523,7 @@ public abstract class GameModel {
 
 	// Bonus stuff
 
-	public abstract Optional<Bonus> bonus();
+	public abstract Bonus bonus();
 
 	public abstract boolean checkBonusAwarded();
 
@@ -561,8 +562,8 @@ public abstract class GameModel {
 	}
 
 	private Optional<Ghost> preferredLockedGhostInHouse() {
-		return Stream.of(Ghost.PINK_GHOST, CYAN_GHOST, ORANGE_GHOST).map(id -> ghosts[id]).filter(ghost -> ghost.is(LOCKED))
-				.findFirst();
+		return Stream.of(PINK_GHOST, CYAN_GHOST, ORANGE_GHOST) //
+				.map(id -> ghosts[id]).filter(ghost -> ghost.is(LOCKED)).findFirst();
 	}
 
 	private void updateGhostDotCounters() {
