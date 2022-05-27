@@ -85,17 +85,30 @@ public class PacManGame extends GameModel {
 	public PacManGame() {
 		// all levels use the same world
 		world = new PacManWorld();
-		mazeNumber = 1;
-		mapNumber = 1;
-
 		player = new Pac("Pac-Man");
 		player.world = world;
-
 		createGhosts("Blinky", "Pinky", "Inky", "Clyde");
 		initGhosts(1, world, ghosts);
-
 		bonus = new StaticBonus(new V2d(world.bonusTile().scaled(TS)).plus(HTS, 0));
 		hiscoreFile = new File(System.getProperty("user.home"), "highscore-pacman.xml");
+	}
+
+	@Override
+	public void setLevel(int levelNumber) {
+		if (levelNumber < 1) {
+			throw new IllegalArgumentException("Level number must be at least 1, but is: " + levelNumber);
+		}
+		this.levelNumber = levelNumber;
+		level = new GameLevel(levelNumber - 1 < data.length ? data[levelNumber - 1] : data[data.length - 1]);
+		level.mapNumber = level.mazeNumber = 1;
+
+		levelCounter.add(level.bonusSymbol);
+
+		world.resetFood();
+		player.starvingTimeLimit = (int) sec_to_ticks(levelNumber < 5 ? 4 : 3);
+		initGhosts(levelNumber, world, ghosts);
+		ghostBounty = firstGhostBounty;
+		bonus.init();
 	}
 
 	@Override
@@ -141,22 +154,6 @@ public class PacManGame extends GameModel {
 			}
 		}
 		}
-	}
-
-	@Override
-	public void setLevel(int levelNumber) {
-		if (levelNumber < 1) {
-			throw new IllegalArgumentException("Level number must be at least 1, but is: " + levelNumber);
-		}
-		this.levelNumber = levelNumber;
-		level = new GameLevel(levelNumber - 1 < data.length ? data[levelNumber - 1] : data[data.length - 1]);
-		levelCounter.add(level.bonusSymbol);
-
-		world.resetFood();
-		player.starvingTimeLimit = (int) sec_to_ticks(levelNumber < 5 ? 4 : 3);
-		initGhosts(levelNumber, world, ghosts);
-		ghostBounty = firstGhostBounty;
-		bonus.init();
 	}
 
 	@Override

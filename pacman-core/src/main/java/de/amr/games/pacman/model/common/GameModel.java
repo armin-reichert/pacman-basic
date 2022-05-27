@@ -75,12 +75,6 @@ public abstract class GameModel {
 	/** 1-based level number */
 	public int levelNumber;
 
-	/** 1-based maze number */
-	public int mazeNumber;
-
-	/** 1-based map number (some mazes share the same map) */
-	public int mapNumber;
-
 	/** World of current level. */
 	public World world;
 

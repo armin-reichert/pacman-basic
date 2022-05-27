@@ -30,6 +30,12 @@ package de.amr.games.pacman.model.common;
  */
 public class GameLevel {
 
+	/** 1-based maze number */
+	public int mazeNumber;
+
+	/** 1-based map number (some mazes share the same map) */
+	public int mapNumber;
+
 	/** Number of ghosts killed at the current level. */
 	public int numGhostsKilled;
 

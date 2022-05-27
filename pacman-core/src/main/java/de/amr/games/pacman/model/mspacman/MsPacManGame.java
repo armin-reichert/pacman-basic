@@ -83,11 +83,34 @@ public class MsPacManGame extends GameModel {
 
 	private final MovingBonus movingBonus;
 
+	/**
+	 * The Ms. Pac-Man game.
+	 * <p>
+	 * Clyde, the orange ghost has become a transvestite and calls himself "Sue" now. Pac-Man wears woman's clothes and
+	 * calls himself "Ms. Pac-Man" (pronoun she/her). The bonus probably couldn't stand all this madness anymore, became
+	 * an alcoholic and tumbles through the maze, starting on a random portal, walking around the ghost house and leaving
+	 * the maze at a portal on the opposite side.
+	 * <p>
+	 * What a freak show!
+	 * <p>
+	 * There are 4 different maps used by the 6 different mazes. Up to level 13, the used mazes are:
+	 * <ul>
+	 * <li>Maze #1: pink maze, white dots (level 1-2)
+	 * <li>Maze #2: light blue maze, yellow dots (level 3-5)
+	 * <li>Maze #3: orange maze, red dots (level 6-9)
+	 * <li>Maze #4: dark blue maze, white dots (level 10-13)
+	 * </ul>
+	 * From level 14 on, the maze alternates every 4th level between maze #5 and maze #6.
+	 * <ul>
+	 * <li>Maze #5: pink maze, cyan dots (same map as maze #3)
+	 * <li>Maze #6: orange maze, white dots (same map as maze #4)
+	 * </ul>
+	 */
 	public MsPacManGame() {
 		player = new Pac("Ms. Pac-Man");
 		createGhosts("Blinky", "Pinky", "Inky", "Sue");
-		hiscoreFile = new File(System.getProperty("user.home"), "highscore-ms_pacman.xml");
 		movingBonus = new MovingBonus();
+		hiscoreFile = new File(System.getProperty("user.home"), "highscore-ms_pacman.xml");
 	}
 
 	@Override
@@ -102,20 +125,30 @@ public class MsPacManGame extends GameModel {
 		}
 		this.levelNumber = levelNumber;
 		level = new GameLevel(levelNumber - 1 < data.length ? data[levelNumber - 1] : data[data.length - 1]);
+		level.mazeNumber = switch (levelNumber) {
+		case 1, 2 -> 1;
+		case 3, 4, 5 -> 2;
+		case 6, 7, 8, 9 -> 3;
+		case 10, 11, 12, 13 -> 4;
+		default -> (levelNumber - 14) % 8 < 4 ? 5 : 6;
+		};
+		level.mapNumber = switch (level.mazeNumber) {
+		case 5 -> 3;
+		case 6 -> 4;
+		default -> level.mazeNumber;
+		};
+
 		if (levelNumber >= 8) {
 			level.bonusSymbol = new Random().nextInt(7);
 		}
 		levelCounter.add(level.bonusSymbol);
 
-		mazeNumber = mazeNumber(levelNumber);
-		mapNumber = mapNumber(mazeNumber);
-
-		world = switch (mapNumber) {
+		world = switch (level.mapNumber) {
 		case 1 -> new MsPacManWorld1();
 		case 2 -> new MsPacManWorld2();
 		case 3 -> new MsPacManWorld3();
 		case 4 -> new MsPacManWorld4();
-		default -> throw new IllegalArgumentException("Illegal map number: " + mapNumber);
+		default -> throw new IllegalArgumentException("Illegal map number: " + level.mapNumber);
 		};
 
 		player.world = world;
@@ -164,43 +197,6 @@ public class MsPacManGame extends GameModel {
 			}
 		}
 		}
-	}
-
-	/**
-	 * Returns the maze number used in the given game level.
-	 * <p>
-	 * Up to level 13, the used mazes are:
-	 * <ul>
-	 * <li>Maze #1: pink maze, white dots (level 1-2)
-	 * <li>Maze #2: light blue maze, yellow dots (level 3-5)
-	 * <li>Maze #3: orange maze, red dots (level 6-9)
-	 * <li>Maze #4: dark blue maze, white dots (level 10-13)
-	 * </ul>
-	 * From level 14 on, the maze alternates every 4th level between maze #5 and maze #6.
-	 * <ul>
-	 * <li>Maze #5: pink maze, cyan dots (same map as maze #3)
-	 * <li>Maze #6: orange maze, white dots (same map as maze #4)
-	 * </ul>
-	 */
-	private int mazeNumber(int levelNumber) {
-		if (levelNumber < 1) {
-			throw new IllegalArgumentException("Illegal level number: " + levelNumber);
-		}
-		return switch (levelNumber) {
-		case 1, 2 -> 1;
-		case 3, 4, 5 -> 2;
-		case 6, 7, 8, 9 -> 3;
-		case 10, 11, 12, 13 -> 4;
-		default -> (levelNumber - 14) % 8 < 4 ? 5 : 6;
-		};
-	}
-
-	private int mapNumber(int mazeNumber) {
-		return switch (mazeNumber) {
-		case 5 -> 3;
-		case 6 -> 4;
-		default -> mazeNumber;
-		};
 	}
 
 	@Override
