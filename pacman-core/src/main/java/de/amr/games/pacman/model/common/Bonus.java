@@ -34,6 +34,10 @@ import de.amr.games.pacman.model.common.world.World;
  */
 public interface Bonus {
 
+	int symbol();
+
+	int value();
+
 	V2d position();
 
 	default V2i tile() {
@@ -46,7 +50,7 @@ public interface Bonus {
 
 	void init();
 
-	void activate();
+	void activate(int symbol, int value);
 
 	void setTimerTicks(long ticks);
 

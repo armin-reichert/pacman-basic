@@ -23,6 +23,8 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.mspacman;
 
+import static de.amr.games.pacman.lib.Logging.log;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -48,6 +50,8 @@ import de.amr.games.pacman.model.common.world.World;
 public class MovingBonus extends Creature implements Bonus {
 
 	private BonusState state;
+	private int symbol;
+	private int value;
 	private long timer;
 	private final List<V2i> route = new ArrayList<>();
 
@@ -76,7 +80,19 @@ public class MovingBonus extends Creature implements Bonus {
 	}
 
 	@Override
+	public int symbol() {
+		return symbol;
+	}
+
+	@Override
+	public int value() {
+		return value;
+	}
+
+	@Override
 	public void init() {
+		symbol = -1;
+		value = -1;
 		state = BonusState.INACTIVE;
 		timer = TickTimer.INDEFINITE;
 		route.clear();
@@ -88,8 +104,10 @@ public class MovingBonus extends Creature implements Bonus {
 	}
 
 	@Override
-	public void activate() {
+	public void activate(int symbol, int value) {
 		init();
+		this.symbol = symbol;
+		this.value = value;
 		int numPortals = world.portals().size();
 		if (numPortals > 0) {
 			Portal entryPortal = world.portals().get(new Random().nextInt(numPortals));
@@ -97,6 +115,7 @@ public class MovingBonus extends Creature implements Bonus {
 			computeNewRoute(entryPortal, exitPortal);
 			show();
 			state = BonusState.EDIBLE;
+			log("MovingBonus symbol=%d, value=%d position=%s activated", symbol, value, position);
 		}
 	}
 

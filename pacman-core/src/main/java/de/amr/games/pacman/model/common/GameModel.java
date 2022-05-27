@@ -567,10 +567,7 @@ public abstract class GameModel {
 	public boolean checkBonusAwarded() {
 		if (world.isBonusReached()) {
 			if (bonus().isPresent()) {
-				bonus().get().activate();
-				int symbol = level.bonusSymbol;
-				int value = bonusValue(symbol);
-				log("Bonus id=%d, value=%d activated", symbol, value);
+				bonus().get().activate(level.bonusSymbol, bonusValue(level.bonusSymbol));
 				return true;
 			}
 		}

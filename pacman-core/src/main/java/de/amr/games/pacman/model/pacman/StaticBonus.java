@@ -23,6 +23,7 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.pacman;
 
+import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.lib.TickTimer.sec_to_ticks;
 
 import java.util.Random;
@@ -39,6 +40,8 @@ import de.amr.games.pacman.model.common.BonusState;
 public class StaticBonus implements Bonus {
 
 	private BonusState state;
+	private int symbol;
+	private int value;
 	private V2d position;
 	private long timer;
 
@@ -67,14 +70,27 @@ public class StaticBonus implements Bonus {
 	}
 
 	@Override
+	public int symbol() {
+		return symbol;
+	}
+
+	@Override
+	public int value() {
+		return value;
+	}
+
+	@Override
 	public void init() {
 		state = BonusState.INACTIVE;
 	}
 
 	@Override
-	public void activate() {
+	public void activate(int symbol, int value) {
 		state = BonusState.EDIBLE;
+		this.symbol = symbol;
+		this.value = value;
 		setTimerTicks(sec_to_ticks(9.0 + new Random().nextDouble()));
+		log("StaticBonus symbol=%d, value=%d activated", symbol, value);
 	}
 
 	@Override
