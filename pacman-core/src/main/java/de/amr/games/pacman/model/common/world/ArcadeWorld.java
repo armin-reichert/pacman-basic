@@ -110,7 +110,8 @@ public class ArcadeWorld extends MapBasedWorld {
 	}
 
 	@Override
-	public GhostHouse ghostHouse() {
+	public ArcadeGhostHouse ghostHouse() {
+		// WTF! I learned today, 2022-05-27, that Java allows co-variant return types since JDK 5.0!
 		return house;
 	}
 
