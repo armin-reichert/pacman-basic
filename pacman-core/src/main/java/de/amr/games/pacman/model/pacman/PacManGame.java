@@ -36,6 +36,7 @@ import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Pac;
+import de.amr.games.pacman.model.common.world.World;
 
 /**
  * Model of the Pac-Man game.
@@ -78,16 +79,17 @@ public class PacManGame extends GameModel {
 	/*@formatter:on*/
 	};
 
+	private final World theWorld;
 	private final StaticBonus bonus;
 
 	public PacManGame() {
 		// all levels use the same world
-		world = new PacManWorld();
+		theWorld = new PacManWorld();
 		player = new Pac("Pac-Man");
-		player.world = world;
+		player.world = theWorld;
 		createGhosts("Blinky", "Pinky", "Inky", "Clyde");
-		initGhosts(1, world, ghosts);
-		bonus = new StaticBonus(new V2d(world.bonusTile().scaled(TS)).plus(HTS, 0));
+		initGhosts(1, theWorld, ghosts);
+		bonus = new StaticBonus(new V2d(theWorld.bonusTile().scaled(TS)).plus(HTS, 0));
 		hiscoreFile = new File(System.getProperty("user.home"), "highscore-pacman.xml");
 	}
 
@@ -98,13 +100,14 @@ public class PacManGame extends GameModel {
 		}
 		this.levelNumber = levelNumber;
 		level = new GameLevel(levelNumber - 1 < data.length ? data[levelNumber - 1] : data[data.length - 1]);
+		level.world = theWorld;
+		level.world.resetFood();
 		level.mapNumber = level.mazeNumber = 1;
 
 		levelCounter.add(level.bonusSymbol);
 
-		world.resetFood();
 		player.starvingTimeLimit = (int) sec_to_ticks(levelNumber < 5 ? 4 : 3);
-		initGhosts(levelNumber, world, ghosts);
+		initGhosts(levelNumber, level.world, ghosts);
 		ghostBounty = firstGhostBounty;
 		bonus.init();
 	}
@@ -116,7 +119,7 @@ public class PacManGame extends GameModel {
 
 	@Override
 	public boolean checkBonusAwarded() {
-		if (world.eatenFoodCount() == 70 || world.eatenFoodCount() == 170) {
+		if (level.world.eatenFoodCount() == 70 || level.world.eatenFoodCount() == 170) {
 			bonus.activate(level.bonusSymbol, bonusValue(level.bonusSymbol), sec_to_ticks(9.0 + new Random().nextDouble()));
 			return true;
 		}

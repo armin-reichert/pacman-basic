@@ -154,7 +154,7 @@ public class Autopilot implements Consumer<Pac> {
 		}
 
 		// when not escaping ghost, keep move direction at least until next intersection
-		if (!game().player.stuck && !game().world.isIntersection(game().player.tile()))
+		if (!game().player.stuck && !game().level.world.isIntersection(game().player.tile()))
 			return;
 
 		if (data.frightenedGhosts.size() != 0 && game().player.powerTimer.remaining() >= 1 * 60) {
@@ -183,7 +183,7 @@ public class Autopilot implements Consumer<Pac> {
 			if (!game().player.canAccessTile(ahead)) {
 				break;
 			}
-			if (game().world.isEnergizerTile(ahead) && !game().world.containsEatenFood(ahead)) {
+			if (game().level.world.isEnergizerTile(ahead) && !game().level.world.containsEatenFood(ahead)) {
 				energizerFound = true;
 			}
 			V2i aheadLeft = ahead.plus(game().player.moveDir().turnLeft().vec),
@@ -231,7 +231,7 @@ public class Autopilot implements Consumer<Pac> {
 		}
 		for (Direction escape : escapes) {
 			V2i escapeTile = pacManTile.plus(escape.vec);
-			if (game().world.isTunnel(escapeTile)) {
+			if (game().level.world.isTunnel(escapeTile)) {
 				return escape;
 			}
 		}
@@ -243,14 +243,14 @@ public class Autopilot implements Consumer<Pac> {
 		List<V2i> foodTiles = new ArrayList<>();
 		V2i pacManTile = game().player.tile();
 		double minDist = Double.MAX_VALUE;
-		for (int x = 0; x < game().world.numCols(); ++x) {
-			for (int y = 0; y < game().world.numRows(); ++y) {
+		for (int x = 0; x < game().level.world.numCols(); ++x) {
+			for (int y = 0; y < game().level.world.numRows(); ++y) {
 				V2i tile = new V2i(x, y);
-				if (!game().world.isFoodTile(tile) || game().world.containsEatenFood(tile)) {
+				if (!game().level.world.isFoodTile(tile) || game().level.world.containsEatenFood(tile)) {
 					continue;
 				}
-				if (game().world.isEnergizerTile(tile) && game().player.powerTimer.remaining() > 2 * 60
-						&& game().world.foodRemaining() > 1) {
+				if (game().level.world.isEnergizerTile(tile) && game().player.powerTimer.remaining() > 2 * 60
+						&& game().level.world.foodRemaining() > 1) {
 					continue;
 				}
 				double dist = pacManTile.manhattanDistance(tile);

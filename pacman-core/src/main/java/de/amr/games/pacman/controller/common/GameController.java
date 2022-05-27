@@ -212,7 +212,8 @@ public class GameController extends Fsm<GameState, GameModel> {
 
 	public void cheatEatAllPellets() {
 		if (gameRunning) {
-			game().world.tiles().filter(not(game().world::isEnergizerTile)).forEach(game().world::removeFood);
+			game().level.world.tiles().filter(not(game().level.world::isEnergizerTile))
+					.forEach(game().level.world::removeFood);
 			game().eventSupport.publish(GameEventType.PLAYER_FOUND_FOOD, null);
 		}
 	}
@@ -227,7 +228,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 
 	public void cheatEnterNextLevel() {
 		if (gameRunning) {
-			game().world.tiles().forEach(game().world::removeFood);
+			game().level.world.tiles().forEach(game().level.world::removeFood);
 			changeState(GameState.LEVEL_COMPLETE);
 		}
 	}

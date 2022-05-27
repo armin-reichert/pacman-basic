@@ -71,8 +71,8 @@ public abstract class GameModel {
 	/** 1-based level number */
 	public int levelNumber;
 
-	/** World of current level. */
-	public World world;
+	/** Current level-specific data. */
+	public GameLevel level;
 
 	/** Number of running intermissions scene in test mode. */
 	public int intermissionTestNumber;
@@ -82,9 +82,6 @@ public abstract class GameModel {
 
 	/** The four ghosts in order RED, PINK, CYAN, ORANGE. */
 	public Ghost[] ghosts;
-
-	/** Current level-specific data. */
-	public GameLevel level;
 
 	/** Number of player lives when the game starts. */
 	public int initialLives = 3;
@@ -136,9 +133,9 @@ public abstract class GameModel {
 	}
 
 	public void resetGuys() {
-		player.placeAt(world.playerHomeTile(), HTS, 0);
-		player.setMoveDir(world.playerStartDir());
-		player.setWishDir(world.playerStartDir());
+		player.placeAt(level.world.playerHomeTile(), HTS, 0);
+		player.setMoveDir(level.world.playerStartDir());
+		player.setWishDir(level.world.playerStartDir());
 		player.show();
 		player.velocity = V2d.NULL;
 		player.targetTile = null; // used in autopilot mode
@@ -151,14 +148,14 @@ public abstract class GameModel {
 
 		for (Ghost ghost : ghosts) {
 			ghost.placeAt(ghost.homeTile, HTS, 0);
-			ghost.setMoveDir(world.ghostStartDir(ghost.id));
-			ghost.setWishDir(world.ghostStartDir(ghost.id));
+			ghost.setMoveDir(level.world.ghostStartDir(ghost.id));
+			ghost.setWishDir(level.world.ghostStartDir(ghost.id));
 			ghost.show();
 			ghost.velocity = V2d.NULL;
 			ghost.targetTile = null;
 			ghost.stuck = false;
 			// if ghost home is outside of house (red ghost), ghost is forced on track initially
-			ghost.forcedOnTrack = !world.ghostHouse().contains(ghost.homeTile);
+			ghost.forcedOnTrack = !level.world.ghostHouse().contains(ghost.homeTile);
 			ghost.state = GhostState.LOCKED;
 			ghost.bounty = 0;
 			// these values are reset only when a level is started:
@@ -221,7 +218,7 @@ public abstract class GameModel {
 
 		// Orange ghost's target is either Pac-Man tile or its scatter tile at the lower left maze corner
 		ghosts[ORANGE_GHOST].fnChasingTargetTile = () -> ghosts[ORANGE_GHOST].tile().euclideanDistance(player.tile()) < 8
-				? world.ghostScatterTile(ORANGE_GHOST)
+				? level.world.ghostScatterTile(ORANGE_GHOST)
 				: player.tile();
 	}
 
@@ -319,17 +316,17 @@ public abstract class GameModel {
 		switch (ghost.state) {
 
 		case LOCKED -> {
-			if (ghost.atGhostHouseDoor(world.ghostHouse())) {
+			if (ghost.atGhostHouseDoor(level.world.ghostHouse())) {
 				ghost.setSpeed(0);
 			} else {
 				ghost.setSpeed(level.ghostSpeed / 2);
-				ghost.bounce(world.ghostHouse());
+				ghost.bounce(level.world.ghostHouse());
 			}
 		}
 
 		case ENTERING_HOUSE -> {
 			ghost.setSpeed(level.ghostSpeed * 2);
-			boolean reachedRevivalTile = ghost.enterHouse(world.ghostHouse());
+			boolean reachedRevivalTile = ghost.enterHouse(level.world.ghostHouse());
 			if (reachedRevivalTile) {
 				eventSupport.publish(new GameEvent(this, GameEventType.GHOST_REVIVED, ghost, ghost.tile()));
 				eventSupport.publish(new GameEvent(this, GameEventType.GHOST_STARTED_LEAVING_HOUSE, ghost, ghost.tile()));
@@ -338,14 +335,14 @@ public abstract class GameModel {
 
 		case LEAVING_HOUSE -> {
 			ghost.setSpeed(level.ghostSpeed / 2);
-			boolean leftHouse = ghost.leaveHouse(world.ghostHouse());
+			boolean leftHouse = ghost.leaveHouse(level.world.ghostHouse());
 			if (leftHouse) {
 				eventSupport.publish(new GameEvent(this, GameEventType.GHOST_FINISHED_LEAVING_HOUSE, ghost, ghost.tile()));
 			}
 		}
 
 		case FRIGHTENED -> {
-			if (world.isTunnel(ghost.tile())) {
+			if (level.world.isTunnel(ghost.tile())) {
 				ghost.setSpeed(level.ghostSpeedTunnel);
 				ghost.tryMoving();
 			} else {
@@ -355,7 +352,7 @@ public abstract class GameModel {
 		}
 
 		case HUNTING_PAC -> {
-			if (world.isTunnel(ghost.tile())) {
+			if (level.world.isTunnel(ghost.tile())) {
 				ghost.setSpeed(level.ghostSpeedTunnel);
 			} else if (ghost.elroy == 1) {
 				ghost.setSpeed(level.elroy1Speed);
@@ -381,7 +378,7 @@ public abstract class GameModel {
 
 		case DEAD -> {
 			ghost.setSpeed(level.ghostSpeed * 2);
-			boolean reachedHouse = ghost.returnHome(world.ghostHouse());
+			boolean reachedHouse = ghost.returnHome(level.world.ghostHouse());
 			if (reachedHouse) {
 				eventSupport.publish(new GameEvent(this, GameEventType.GHOST_ENTERED_HOUSE, ghost, ghost.tile()));
 			}
@@ -412,13 +409,13 @@ public abstract class GameModel {
 	 * @return <code>true</code> if energizer was eaten on given tile
 	 */
 	public boolean checkFood(V2i tile) {
-		if (!world.containsFood(tile)) {
+		if (!level.world.containsFood(tile)) {
 			player.starvingTicks++;
 			return false;
 		}
 		eventSupport.publish(GameEventType.PLAYER_FOUND_FOOD, tile);
 		boolean energizerEaten = false;
-		if (world.isEnergizerTile(tile)) {
+		if (level.world.isEnergizerTile(tile)) {
 			eatEnergizer(tile);
 			energizerEaten = true;
 			if (level.ghostFrightenedSeconds > 0) {
@@ -428,13 +425,13 @@ public abstract class GameModel {
 			eatPellet(tile);
 		}
 		if (checkBonusAwarded()) {
-			eventSupport.publish(GameEventType.BONUS_ACTIVATED, world.bonusTile());
+			eventSupport.publish(GameEventType.BONUS_ACTIVATED, level.world.bonusTile());
 		}
 		return energizerEaten;
 	}
 
 	private void eatEnergizer(V2i tile) {
-		world.removeFood(tile);
+		level.world.removeFood(tile);
 		ghostBounty = firstGhostBounty;
 		player.starvingTicks = 0;
 		player.restingTicksLeft = 3;
@@ -452,7 +449,7 @@ public abstract class GameModel {
 	}
 
 	private void eatPellet(V2i tile) {
-		world.removeFood(tile);
+		level.world.removeFood(tile);
 		player.starvingTicks = 0;
 		player.restingTicksLeft = 1;
 		checkElroy();
@@ -472,7 +469,7 @@ public abstract class GameModel {
 	 */
 	public void killGhost(Ghost ghost) {
 		ghost.state = DEAD;
-		ghost.targetTile = world.ghostHouse().doorTileLeft().minus(0, 1);
+		ghost.targetTile = level.world.ghostHouse().doorTileLeft().minus(0, 1);
 		ghost.bounty = ghostBounty;
 		ghostBounty *= 2;
 		level.numGhostsKilled++;
@@ -509,11 +506,11 @@ public abstract class GameModel {
 	}
 
 	private boolean checkElroy() {
-		if (world.foodRemaining() == level.elroy1DotsLeft) {
+		if (level.world.foodRemaining() == level.elroy1DotsLeft) {
 			ghosts[RED_GHOST].elroy = 1;
 			log("Blinky becomes Cruise Elroy 1");
 			return true;
-		} else if (world.foodRemaining() == level.elroy2DotsLeft) {
+		} else if (level.world.foodRemaining() == level.elroy2DotsLeft) {
 			ghosts[RED_GHOST].elroy = 2;
 			log("Blinky becomes Cruise Elroy 2");
 			return true;
