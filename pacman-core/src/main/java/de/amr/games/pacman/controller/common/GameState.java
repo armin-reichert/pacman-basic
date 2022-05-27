@@ -113,7 +113,7 @@ public enum GameState implements FsmState<GameModel> {
 				game.ghosts(HUNTING_PAC).forEach(Ghost::forceTurningBack);
 				game.ghosts(FRIGHTENED).forEach(Ghost::forceTurningBack);
 			}
-			if (game.world.foodRemaining() == 0) {
+			if (game.level.world.foodRemaining() == 0) {
 				controller.changeState(LEVEL_COMPLETE);
 				return;
 			}

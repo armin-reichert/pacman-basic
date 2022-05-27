@@ -143,7 +143,7 @@ public class MsPacManGame extends GameModel {
 		}
 		levelCounter.add(level.bonusSymbol);
 
-		world = switch (level.mapNumber) {
+		level.world = switch (level.mapNumber) {
 		case 1 -> new MsPacManWorld1();
 		case 2 -> new MsPacManWorld2();
 		case 3 -> new MsPacManWorld3();
@@ -151,17 +151,17 @@ public class MsPacManGame extends GameModel {
 		default -> throw new IllegalArgumentException("Illegal map number: " + level.mapNumber);
 		};
 
-		player.world = world;
+		player.world = level.world;
 		player.starvingTimeLimit = (int) sec_to_ticks(levelNumber < 5 ? 4 : 3);
 
-		initGhosts(levelNumber, world, ghosts);
+		initGhosts(levelNumber, level.world, ghosts);
 		ghostBounty = firstGhostBounty;
-		movingBonus.setWorld(world);
+		movingBonus.setWorld(level.world);
 	}
 
 	@Override
 	public boolean checkBonusAwarded() {
-		if (world.eatenFoodCount() == 70 || world.eatenFoodCount() == 170) {
+		if (level.world.eatenFoodCount() == 70 || level.world.eatenFoodCount() == 170) {
 			movingBonus.activate(level.bonusSymbol, bonusValue(level.bonusSymbol), TickTimer.INDEFINITE);
 			return true;
 		}
@@ -176,7 +176,7 @@ public class MsPacManGame extends GameModel {
 		case EDIBLE -> {
 			boolean leftWorld = movingBonus.followRoute();
 			if (leftWorld) {
-				log("%s expired (left world)", movingBonus);
+				log("%s expired (left level.world)", movingBonus);
 				movingBonus.init();
 				eventSupport.publish(GameEventType.BONUS_EXPIRED, movingBonus.tile());
 				return;

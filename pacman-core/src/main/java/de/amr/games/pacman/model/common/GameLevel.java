@@ -24,11 +24,16 @@ SOFTWARE.
 
 package de.amr.games.pacman.model.common;
 
+import de.amr.games.pacman.model.common.world.World;
+
 /**
  * @author Armin Reichert
  *
  */
 public class GameLevel {
+
+	/** World of this level. */
+	public World world;
 
 	/** 1-based maze number */
 	public int mazeNumber;
