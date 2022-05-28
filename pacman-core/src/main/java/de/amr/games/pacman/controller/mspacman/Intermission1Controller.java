@@ -34,7 +34,7 @@ import de.amr.games.pacman.lib.Fsm;
 import de.amr.games.pacman.lib.FsmState;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.V2d;
-import de.amr.games.pacman.model.common.GameEntity;
+import de.amr.games.pacman.model.common.Entity;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.mspacman.Flap;
@@ -70,7 +70,7 @@ public class Intermission1Controller extends Fsm<State, Context> {
 		public Flap flap;
 		public Pac pacMan, msPac;
 		public Ghost pinky, inky;
-		public GameEntity heart;
+		public Entity heart;
 	}
 
 	public enum State implements FsmState<Context> {
@@ -111,7 +111,7 @@ public class Intermission1Controller extends Fsm<State, Context> {
 				$.pinky.position = $.msPac.position.plus(t(6), 0);
 				$.pinky.show();
 
-				$.heart = new GameEntity();
+				$.heart = new Entity();
 			}
 
 			@Override

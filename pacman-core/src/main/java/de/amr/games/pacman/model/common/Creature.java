@@ -37,7 +37,7 @@ import de.amr.games.pacman.model.common.world.World;
  * 
  * @author Armin Reichert
  */
-public class Creature extends GameEntity {
+public class Creature extends Entity {
 
 	public static final Direction[] DEFAULT_TURN_PRIORITY = { //
 			Direction.UP, Direction.LEFT, Direction.DOWN, Direction.RIGHT };

@@ -458,7 +458,7 @@ public abstract class GameModel {
 	}
 
 	public boolean checkKillGhosts() {
-		Ghost[] prey = ghosts(FRIGHTENED).filter(player::meets).toArray(Ghost[]::new);
+		Ghost[] prey = ghosts(FRIGHTENED).filter(player::sameTile).toArray(Ghost[]::new);
 		Stream.of(prey).forEach(this::killGhost);
 		return prey.length > 0;
 	}
@@ -487,7 +487,7 @@ public abstract class GameModel {
 		if (immune) {
 			return false;
 		}
-		Optional<Ghost> killer = ghosts(HUNTING_PAC).filter(player::meets).findAny();
+		Optional<Ghost> killer = ghosts(HUNTING_PAC).filter(player::sameTile).findAny();
 		killer.ifPresent(ghost -> {
 			player.killed = true;
 			log("%s got killed by %s at tile %s", player.name, ghost.name, player.tile());

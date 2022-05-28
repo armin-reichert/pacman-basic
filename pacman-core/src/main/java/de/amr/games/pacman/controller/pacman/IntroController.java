@@ -209,7 +209,7 @@ public class IntroController extends Fsm<State, Context> {
 				}
 				// check if Pac-Man kills a ghost
 				Optional<Ghost> killedGhost = Stream.of($.ghosts).filter(ghost -> ghost.state != GhostState.DEAD)
-						.filter($.pacMan::meets).findFirst();
+						.filter($.pacMan::sameTile).findFirst();
 				killedGhost.ifPresent(victim -> {
 					$.ghostKilledTime = timer.tick();
 					victim.state = GhostState.DEAD;

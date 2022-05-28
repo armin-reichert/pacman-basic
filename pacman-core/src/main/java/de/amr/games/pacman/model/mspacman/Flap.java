@@ -23,14 +23,14 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.mspacman;
 
-import de.amr.games.pacman.model.common.GameEntity;
+import de.amr.games.pacman.model.common.Entity;
 
 /**
  * The flap used in the intermission scenes.
  * 
  * @author Armin Reichert
  */
-public class Flap extends GameEntity {
+public class Flap extends Entity {
 
 	public int number;
 	public String text;

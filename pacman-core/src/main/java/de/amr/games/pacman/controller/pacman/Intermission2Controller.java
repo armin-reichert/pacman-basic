@@ -33,7 +33,7 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.Fsm;
 import de.amr.games.pacman.lib.FsmState;
 import de.amr.games.pacman.lib.TickTimer;
-import de.amr.games.pacman.model.common.GameEntity;
+import de.amr.games.pacman.model.common.Entity;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.GhostState;
 import de.amr.games.pacman.model.common.Pac;
@@ -70,7 +70,7 @@ public class Intermission2Controller extends Fsm<State, Context> {
 	public static class Context {
 		public Ghost blinky;
 		public Pac pac;
-		public GameEntity nail;
+		public Entity nail;
 	}
 
 	public enum State implements FsmState<Intermission2Controller.Context> {
@@ -97,7 +97,7 @@ public class Intermission2Controller extends Fsm<State, Context> {
 				$.blinky.setSpeed(1.0);
 				$.blinky.show();
 
-				$.nail = new GameEntity();
+				$.nail = new Entity();
 				$.nail.setPosition(t(14), t(20) - 1);
 				$.nail.show();
 			}

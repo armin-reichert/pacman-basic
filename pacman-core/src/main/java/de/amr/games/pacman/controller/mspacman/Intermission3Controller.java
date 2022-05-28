@@ -33,7 +33,7 @@ import de.amr.games.pacman.lib.Fsm;
 import de.amr.games.pacman.lib.FsmState;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.V2d;
-import de.amr.games.pacman.model.common.GameEntity;
+import de.amr.games.pacman.model.common.Entity;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.mspacman.Flap;
 import de.amr.games.pacman.model.mspacman.JuniorBag;
@@ -70,7 +70,7 @@ public class Intermission3Controller extends Fsm<State, Context> {
 		public Flap flap;
 		public Pac pacMan;
 		public Pac msPacMan;
-		public GameEntity stork;
+		public Entity stork;
 		public JuniorBag bag;
 		public int numBagBounces;
 	}
@@ -91,7 +91,7 @@ public class Intermission3Controller extends Fsm<State, Context> {
 				$.flap.show();
 				$.pacMan = new Pac("Pac-Man");
 				$.msPacMan = new Pac("Ms. Pac-Man");
-				$.stork = new GameEntity();
+				$.stork = new Entity();
 				$.bag = new JuniorBag();
 			}
 

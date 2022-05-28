@@ -36,7 +36,7 @@ import de.amr.games.pacman.model.common.world.World;
  * 
  * @author Armin Reichert
  */
-public class GameEntity {
+public class Entity {
 
 	public boolean visible = false;
 
@@ -107,10 +107,10 @@ public class GameEntity {
 	}
 
 	/**
-	 * @param other another game entity
+	 * @param other another entity
 	 * @return if both entities occupy the same tile
 	 */
-	public boolean meets(GameEntity other) {
+	public boolean sameTile(Entity other) {
 		Objects.requireNonNull(other);
 		return tile().equals(other.tile());
 	}
