@@ -23,6 +23,10 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.common;
 
+import static de.amr.games.pacman.lib.Direction.DOWN;
+import static de.amr.games.pacman.lib.Direction.LEFT;
+import static de.amr.games.pacman.lib.Direction.RIGHT;
+import static de.amr.games.pacman.lib.Direction.UP;
 import static java.lang.Math.abs;
 
 import java.util.Objects;
@@ -39,20 +43,16 @@ import de.amr.games.pacman.model.common.world.World;
  */
 public class Creature extends Entity {
 
-	public static final Direction[] DEFAULT_TURN_PRIORITY = { //
-			Direction.UP, Direction.LEFT, Direction.DOWN, Direction.RIGHT };
+	public static final Direction[] TURN_PRIORITY = { UP, LEFT, DOWN, RIGHT };
 
 	/** Readable name, for display and logging purposes. */
 	public String name;
 
 	/** The current move direction. */
-	protected Direction moveDir = Direction.RIGHT;
+	protected Direction moveDir = RIGHT;
 
 	/** The wish direction. Will be taken as soon as possible. */
-	protected Direction wishDir = Direction.RIGHT;
-
-	/** The order in which the creature tries the next direction to take. */
-	public Direction[] turnPriority = DEFAULT_TURN_PRIORITY;
+	protected Direction wishDir = RIGHT;
 
 	/** The target tile. Can be inaccessible or outside of the world. */
 	public V2i targetTile = null;
@@ -258,7 +258,7 @@ public class Creature extends Entity {
 			return;
 		}
 		double minDist = Double.MAX_VALUE;
-		for (Direction dir : turnPriority) {
+		for (Direction dir : TURN_PRIORITY) {
 			if (dir == moveDir.opposite()) {
 				continue;
 			}

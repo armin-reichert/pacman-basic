@@ -155,7 +155,7 @@ public abstract class GameModel {
 			ghost.targetTile = null;
 			ghost.stuck = false;
 			// if ghost home is outside of house (red ghost), ghost is forced on track initially
-			ghost.forcedOnTrack = !level.world.ghostHouse().contains(ghost.homeTile);
+			ghost.forcedOnTrack = !level.world.ghostHouse().contains(ghost.tile());
 			ghost.state = GhostState.LOCKED;
 			ghost.bounty = 0;
 			// these values are reset only when a level is started:
