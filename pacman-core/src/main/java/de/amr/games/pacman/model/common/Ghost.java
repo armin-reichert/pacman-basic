@@ -83,12 +83,6 @@ public class Ghost extends Creature {
 	/** Individual food counter, used to determine when the ghost can leave the house. */
 	public int dotCounter;
 
-	/** Global number of "dots" Pac-Man has to eat until the ghost gets unlocked. */
-	public int globalDotLimit;
-
-	/** Individual number of "dots" Pac-Man has to eat until the ghost gets unlocked. */
-	public int privateDotLimit;
-
 	/** "Cruise Elroy" mode. Values: 0 (off), 1, -1, 2, -2 (negative means disabled). */
 	public int elroy;
 

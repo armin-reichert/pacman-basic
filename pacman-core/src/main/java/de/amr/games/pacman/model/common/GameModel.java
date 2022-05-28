@@ -171,23 +171,15 @@ public abstract class GameModel {
 
 		ghosts[RED_GHOST].homeTile = house.entry();
 		ghosts[RED_GHOST].revivalTile = house.seatMiddle();
-		ghosts[RED_GHOST].globalDotLimit = Integer.MAX_VALUE;
-		ghosts[RED_GHOST].privateDotLimit = 0;
 
 		ghosts[PINK_GHOST].homeTile = house.seatMiddle();
 		ghosts[PINK_GHOST].revivalTile = house.seatMiddle();
-		ghosts[PINK_GHOST].globalDotLimit = 7;
-		ghosts[PINK_GHOST].privateDotLimit = 0;
 
 		ghosts[CYAN_GHOST].homeTile = house.seatLeft();
 		ghosts[CYAN_GHOST].revivalTile = house.seatLeft();
-		ghosts[CYAN_GHOST].globalDotLimit = 17;
-		ghosts[CYAN_GHOST].privateDotLimit = levelNumber == 1 ? 30 : 0;
 
 		ghosts[ORANGE_GHOST].homeTile = house.seatRight();
 		ghosts[ORANGE_GHOST].revivalTile = house.seatRight();
-		ghosts[ORANGE_GHOST].globalDotLimit = Integer.MAX_VALUE;
-		ghosts[ORANGE_GHOST].privateDotLimit = levelNumber == 1 ? 60 : levelNumber == 2 ? 50 : 0;
 	}
 
 	protected void createGhosts(String redName, String pinkName, String cyanName, String orangeName) {
@@ -438,10 +430,10 @@ public abstract class GameModel {
 		Optional<Ghost> nextToRelease = preferredLockedGhostInHouse();
 		if (nextToRelease.isPresent()) {
 			Ghost ghost = nextToRelease.get();
-			if (globalDotCounterEnabled && globalDotCounter >= ghost.globalDotLimit) {
-				return releaseGhost(ghost, "Global dot counter reached limit (%d)", ghost.globalDotLimit);
-			} else if (!globalDotCounterEnabled && ghost.dotCounter >= ghost.privateDotLimit) {
-				return releaseGhost(ghost, "Private dot counter reached limit (%d)", ghost.privateDotLimit);
+			if (globalDotCounterEnabled && globalDotCounter >= level.globalDotLimits[ghost.id]) {
+				return releaseGhost(ghost, "Global dot counter reached limit (%d)", level.globalDotLimits[ghost.id]);
+			} else if (!globalDotCounterEnabled && ghost.dotCounter >= level.privateDotLimits[ghost.id]) {
+				return releaseGhost(ghost, "Private dot counter reached limit (%d)", level.privateDotLimits[ghost.id]);
 			} else if (player.starvingTicks >= player.starvingTimeLimit) {
 				int starved = player.starvingTicks;
 				player.starvingTicks = 0;

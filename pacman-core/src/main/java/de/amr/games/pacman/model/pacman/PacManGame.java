@@ -153,7 +153,14 @@ public class PacManGame extends GameModel {
 		level.world = theWorld;
 		level.world.resetFood();
 		level.mapNumber = level.mazeNumber = 1;
-
+		level.globalDotLimits = new int[] { Integer.MAX_VALUE, 7, 17, Integer.MAX_VALUE };
+		if (levelNumber == 1) {
+			level.privateDotLimits = new int[] { 0, 0, 30, 60 };
+		} else if (levelNumber == 2) {
+			level.privateDotLimits = new int[] { 0, 0, 0, 50 };
+		} else {
+			level.privateDotLimits = new int[] { 0, 0, 0, 0 };
+		}
 		levelCounter.add(level.bonusSymbol);
 
 		player.starvingTimeLimit = (int) sec_to_ticks(levelNumber < 5 ? 4 : 3);

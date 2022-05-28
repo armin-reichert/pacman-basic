@@ -299,7 +299,6 @@ public class MsPacManGame extends GameModel {
 		}
 		this.levelNumber = levelNumber;
 		level = new GameLevel(levelNumber - 1 < data.length ? data[levelNumber - 1] : data[data.length - 1]);
-
 		level.mazeNumber = switch (levelNumber) {
 		case 1, 2 -> 1;
 		case 3, 4, 5 -> 2;
@@ -307,20 +306,24 @@ public class MsPacManGame extends GameModel {
 		case 10, 11, 12, 13 -> 4;
 		default -> (levelNumber - 14) % 8 < 4 ? 5 : 6;
 		};
-
 		level.mapNumber = switch (level.mazeNumber) {
 		case 5 -> 3;
 		case 6 -> 4;
 		default -> level.mazeNumber;
 		};
-
 		level.world = createWorld(level.mapNumber);
-
 		if (levelNumber >= 8) {
 			level.bonusSymbol = new Random().nextInt(7);
 		}
+		level.globalDotLimits = new int[] { Integer.MAX_VALUE, 7, 17, Integer.MAX_VALUE };
+		if (levelNumber == 1) {
+			level.privateDotLimits = new int[] { 0, 0, 30, 60 };
+		} else if (levelNumber == 2) {
+			level.privateDotLimits = new int[] { 0, 0, 0, 50 };
+		} else {
+			level.privateDotLimits = new int[] { 0, 0, 0, 0 };
+		}
 		levelCounter.add(level.bonusSymbol);
-
 		player.starvingTimeLimit = (int) sec_to_ticks(levelNumber < 5 ? 4 : 3);
 		initGhosts(levelNumber, ghosts, level.world.ghostHouse());
 		ghostBounty = firstGhostBounty;

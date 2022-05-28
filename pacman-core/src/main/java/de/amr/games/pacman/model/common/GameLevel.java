@@ -80,6 +80,10 @@ public class GameLevel {
 	/** Number of maze flashes at end of current level. */
 	public final int numFlashes;
 
+	public int[] globalDotLimits;
+
+	public int[] privateDotLimits;
+
 	public GameLevel(Object[] data) {
 		bonusSymbol = (int) data[0];
 		playerSpeed = percentage(data[1]);
