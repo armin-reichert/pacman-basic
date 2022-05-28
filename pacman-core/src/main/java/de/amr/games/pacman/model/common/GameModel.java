@@ -48,7 +48,6 @@ import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.ScatterPhaseStartsEvent;
 import de.amr.games.pacman.lib.Hiscore;
 import de.amr.games.pacman.lib.TickTimer;
-import de.amr.games.pacman.lib.TickTimer.TickTimerState;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
 
@@ -225,28 +224,6 @@ public abstract class GameModel {
 	public abstract int bonusValue(int symbolID);
 
 	// Game logic
-
-	public void movePlayer() {
-		if (player.restingTicksLeft > 0) {
-			player.restingTicksLeft--;
-		} else {
-			player.setSpeed(player.powerTimer.isRunning() ? level.playerSpeedPowered : level.playerSpeed, BASE_SPEED);
-			player.tryMoving(level.world);
-		}
-	}
-
-	/**
-	 * @return if the player lost power in this frame
-	 */
-	public boolean updatePlayerPower() {
-		if (player.powerTimer.state() == TickTimerState.RUNNING) {
-			player.powerTimer.advance();
-		} else if (player.powerTimer.state() == TickTimerState.EXPIRED) {
-			player.powerTimer.setDurationIndefinite(); // now in state READY
-			return true;
-		}
-		return false;
-	}
 
 	/**
 	 * @param points points to score

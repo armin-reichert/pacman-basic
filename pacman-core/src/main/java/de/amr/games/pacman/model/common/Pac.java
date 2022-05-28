@@ -24,6 +24,7 @@ SOFTWARE.
 package de.amr.games.pacman.model.common;
 
 import de.amr.games.pacman.lib.TickTimer;
+import de.amr.games.pacman.lib.TickTimer.TickTimerState;
 
 /**
  * Pac-Man or Ms. Pac-Man.
@@ -58,5 +59,29 @@ public class Pac extends Creature {
 	public String toString() {
 		return String.format("%s: pos=%s, velocity=%s, speed=%.2f, dir=%s, wishDir=%s", name, position, velocity,
 				velocity.length(), moveDir(), wishDir());
+	}
+
+	public boolean moveThroughLevel(GameLevel level) {
+		if (restingTicksLeft > 0) {
+			restingTicksLeft--;
+		} else {
+			setSpeed(powerTimer.isRunning() ? level.playerSpeedPowered : level.playerSpeed, GameModel.BASE_SPEED);
+			tryMoving(level.world);
+		}
+		boolean lostPower = updatePower();
+		return lostPower;
+	}
+
+	/**
+	 * @return <code>true</code> if the player lost power in this frame
+	 */
+	private boolean updatePower() {
+		if (powerTimer.state() == TickTimerState.RUNNING) {
+			powerTimer.advance();
+		} else if (powerTimer.state() == TickTimerState.EXPIRED) {
+			powerTimer.setDurationIndefinite(); // now in state READY
+			return true;
+		}
+		return false;
 	}
 }

@@ -122,10 +122,10 @@ public enum GameState implements FsmState<GameModel> {
 				controller.changeState(GHOST_DYING);
 				return;
 			}
-			currentPlayerControl().accept(game.player);
-			game.movePlayer();
 
-			boolean lostPower = game.updatePlayerPower();
+			// Pac-Man acting
+			currentPlayerControl().accept(game.player);
+			boolean lostPower = game.player.moveThroughLevel(game.level);
 			if (lostPower) {
 				log("%s lost power, timer=%s", game.player.name, game.player.powerTimer);
 				game.huntingTimer.start();
@@ -135,7 +135,6 @@ public enum GameState implements FsmState<GameModel> {
 				// TODO not sure exactly how long the player is losing power
 				game.eventSupport.publish(GameEventType.PLAYER_STARTS_LOSING_POWER, game.player.tile());
 			}
-
 			boolean gotPower = game.checkFood(game.player.tile());
 			if (gotPower) {
 				game.huntingTimer.stop();
