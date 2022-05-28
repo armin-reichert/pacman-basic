@@ -67,9 +67,6 @@ public class Ghost extends Creature {
 	/** The ID of the ghost, see {@link GameModel#RED_GHOST} etc. */
 	public final int id;
 
-	/** The function computing the chasing tile. */
-	public final BiFunction<Pac, List<Ghost>, V2i> fnChasing;
-
 	/** Scatter target. */
 	public V2i scatterTarget;
 
@@ -91,16 +88,13 @@ public class Ghost extends Creature {
 	/** "Cruise Elroy" mode. Values: 0 (off), 1, -1, 2, -2 (negative means disabled). */
 	public int elroy;
 
+	/** The function computing the chasing tile. */
+	public BiFunction<Pac, List<Ghost>, V2i> fnChasing;
+
 	public Ghost(int id, String name) {
 		super(name);
 		this.id = id;
 		this.fnChasing = (player, ghosts) -> null;
-	}
-
-	public Ghost(int id, String name, BiFunction<Pac, List<Ghost>, V2i> fnChasing) {
-		super(name);
-		this.id = id;
-		this.fnChasing = fnChasing;
 	}
 
 	@Override
@@ -127,6 +121,54 @@ public class Ghost extends Creature {
 			return !is(GhostState.HUNTING_PAC);
 		}
 		return super.canAccessTile(world, tile);
+	}
+
+	/**
+	 * Chase like Blinky, the red ghost.
+	 * 
+	 * @param player the chased player
+	 * @param ghosts the ghosts in their natural order
+	 * @return the target tile
+	 */
+	public V2i chaseShadow(Pac player, List<Ghost> ghosts) {
+		return player.tile();
+	}
+
+	/**
+	 * Chase like Pinky, the pink ghost.
+	 * 
+	 * @param player the chased player
+	 * @param ghosts the ghosts in their natural order
+	 * @return the target tile
+	 */
+	public V2i chaseSpeedy(Pac player, List<Ghost> ghosts) {
+		return player.moveDir() != Direction.UP //
+				? player.tilesAhead(4)
+				: player.tilesAhead(4).plus(-4, 0);
+	}
+
+	/**
+	 * Chase like Inky, the cyan ghost.
+	 * 
+	 * @param player the chased player
+	 * @param ghosts the ghosts in their natural order
+	 * @return the target tile
+	 */
+	public V2i chaseBashful(Pac player, List<Ghost> ghosts) {
+		return player.moveDir() != Direction.UP //
+				? player.tilesAhead(2).scaled(2).minus(ghosts.get(RED_GHOST).tile())
+				: player.tilesAhead(2).plus(-2, 0).scaled(2).minus(ghosts.get(RED_GHOST).tile());
+	}
+
+	/**
+	 * Chase like Clyde, the pink ghost.
+	 * 
+	 * @param player the chased player
+	 * @param ghosts the ghosts in their natural order
+	 * @return the target tile
+	 */
+	public V2i chasePokey(Pac player, List<Ghost> ghosts) {
+		return tile().euclideanDistance(player.tile()) < 8 ? scatterTarget : player.tile();
 	}
 
 	// TODO Is still do not know the exact speed values

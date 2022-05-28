@@ -42,7 +42,6 @@ import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Ghost;
-import de.amr.games.pacman.model.common.GhostBehaviors;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.common.world.ArcadeWorld;
 import de.amr.games.pacman.model.common.world.GhostHouse;
@@ -144,11 +143,15 @@ public class PacManGame extends GameModel {
 		theWorld = createWorld();
 		player = new Pac("Pac-Man");
 		ghosts = new Ghost[] { //
-				new Ghost(RED_GHOST, "Blinky", GhostBehaviors::chaseShadow), //
-				new Ghost(PINK_GHOST, "Pinky", GhostBehaviors::chaseSpeedy), //
-				new Ghost(CYAN_GHOST, "Inky", GhostBehaviors::chaseBashful), //
-				new Ghost(ORANGE_GHOST, "Clyde", GhostBehaviors::chasePokey) //
+				new Ghost(RED_GHOST, "Blinky"), //
+				new Ghost(PINK_GHOST, "Pinky"), //
+				new Ghost(CYAN_GHOST, "Inky"), //
+				new Ghost(ORANGE_GHOST, "Clyde") //
 		};
+		ghosts[RED_GHOST].fnChasing = ghosts[RED_GHOST]::chaseShadow;
+		ghosts[PINK_GHOST].fnChasing = ghosts[PINK_GHOST]::chaseSpeedy;
+		ghosts[CYAN_GHOST].fnChasing = ghosts[CYAN_GHOST]::chaseBashful;
+		ghosts[ORANGE_GHOST].fnChasing = ghosts[ORANGE_GHOST]::chasePokey;
 		bonus = new StaticBonus(new V2d(theWorld.bonusTile().scaled(TS)).plus(HTS, 0));
 		hiscoreFile = new File(System.getProperty("user.home"), "highscore-pacman.xml");
 		setLevel(1);
