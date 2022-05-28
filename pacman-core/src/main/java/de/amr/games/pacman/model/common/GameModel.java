@@ -64,13 +64,22 @@ public abstract class GameModel {
 	/** Speed in pixels/tick at 100%. */
 	public static final double BASE_SPEED = 1.25;
 
-	private static final long[][] HUNTING_TIMES = {
+	public static final long[][] HUNTING_TIMES = {
 	//@formatter:off
 		{ 7*60, 20*60, 7*60, 20*60, 5*60,   20*60, 5*60, TickTimer.INDEFINITE },
 		{ 7*60, 20*60, 7*60, 20*60, 5*60, 1033*60,    1, TickTimer.INDEFINITE },
 		{ 5*60, 20*60, 5*60, 20*60, 5*60, 1037*60,    1, TickTimer.INDEFINITE }
 	//@formatter:on
 	};
+
+	public static final int PELLET_VALUE = 10;
+	public static final int PELLET_RESTING_TICKS = 1;
+	public static final int ENERGIZER_VALUE = 50;
+	public static final int ENERGIZER_RESTING_TICKS = 3;
+	public static final int FIRST_GHOST_VALUE = 200;
+	public static final int LIFES = 3;
+	public static final int EXTRA_LIFE_POINTS = 10_000;
+	public static final int ALL_GHOSTS_KILLED_POINTS = 12_000;
 
 	/** Current level-specific data. */
 	public GameLevel level;
@@ -88,22 +97,13 @@ public abstract class GameModel {
 	public final HuntingTimer huntingTimer = new HuntingTimer();
 
 	/** Number of player lives when the game starts. */
-	public int initialLives = 3;
+	public int initialLives = LIFES;
 
 	/** Game score. */
 	public int score;
 
-	/** Value of a simple pellet. */
-	public int pelletValue = 10;
-
-	/** Value of an energizer pellet. */
-	public int energizerValue = 50;
-
 	/** Bounty for eating the next ghost. */
 	public int ghostBounty;
-
-	/** Bounty for eating the first ghost after Pac-Man entered power mode. */
-	public int firstGhostBounty = 200;
 
 	/** List of collected level symbols. */
 	public List<Integer> levelCounter = new ArrayList<>();
@@ -166,48 +166,44 @@ public abstract class GameModel {
 	}
 
 	protected void initGhosts(int levelNumber, Ghost[] ghosts, GhostHouse house) {
-		for (Ghost ghost : ghosts) {
+		ghosts[RED_GHOST].homeTile = house.entry();
+		ghosts[RED_GHOST].revivalTile = house.seatMiddle();
+		ghosts[PINK_GHOST].homeTile = ghosts[PINK_GHOST].revivalTile = house.seatMiddle();
+		ghosts[CYAN_GHOST].homeTile = ghosts[CYAN_GHOST].revivalTile = house.seatLeft();
+		ghosts[ORANGE_GHOST].homeTile = ghosts[ORANGE_GHOST].revivalTile = house.seatRight();
+		for (var ghost : ghosts) {
 			ghost.dotCounter = 0;
 			ghost.elroy = 0;
 		}
-
-		ghosts[RED_GHOST].homeTile = house.entry();
-		ghosts[RED_GHOST].revivalTile = house.seatMiddle();
-
-		ghosts[PINK_GHOST].homeTile = house.seatMiddle();
-		ghosts[PINK_GHOST].revivalTile = house.seatMiddle();
-
-		ghosts[CYAN_GHOST].homeTile = house.seatLeft();
-		ghosts[CYAN_GHOST].revivalTile = house.seatLeft();
-
-		ghosts[ORANGE_GHOST].homeTile = house.seatRight();
-		ghosts[ORANGE_GHOST].revivalTile = house.seatRight();
 	}
 
 	protected void createGhosts(String redName, String pinkName, String cyanName, String orangeName) {
 		ghosts = new Ghost[] { //
-				new Ghost(RED_GHOST, redName), //
-				new Ghost(PINK_GHOST, pinkName), //
-				new Ghost(CYAN_GHOST, cyanName), //
-				new Ghost(ORANGE_GHOST, orangeName) //
+				new Ghost(RED_GHOST, redName, this::chaseLikeRedGhost), //
+				new Ghost(PINK_GHOST, pinkName, this::chaseLikePinkGhost), //
+				new Ghost(CYAN_GHOST, cyanName, this::chaseLikeCyanGhost), //
+				new Ghost(ORANGE_GHOST, orangeName, this::chaseLikeOrangeGhost) //
 		};
+	}
 
-		// Red ghost chases Pac-Man directly
-		ghosts[RED_GHOST].fnChasingTargetTile = player::tile;
+	protected V2i chaseLikeRedGhost() {
+		return player.tile();
+	}
 
-		// Pink ghost's target is two tiles ahead of Pac-Man (simulate overflow bug when player moves up)
-		ghosts[PINK_GHOST].fnChasingTargetTile = () -> player.moveDir() != Direction.UP //
-				? player.tilesAhead(4)
-				: player.tilesAhead(4).plus(-4, 0);
-
-		// For cyan ghost's target, see Pac-Man dossier (simulate overflow bug when player moves up)
-		ghosts[CYAN_GHOST].fnChasingTargetTile = () -> player.moveDir() != Direction.UP //
+	protected V2i chaseLikePinkGhost() {
+		return player.moveDir() != Direction.UP //
 				? player.tilesAhead(2).scaled(2).minus(ghosts[RED_GHOST].tile())
 				: player.tilesAhead(2).plus(-2, 0).scaled(2).minus(ghosts[RED_GHOST].tile());
+	}
 
-		// Orange ghost's target is either Pac-Man tile or its scatter tile at the lower left maze corner
-		ghosts[ORANGE_GHOST].fnChasingTargetTile = () -> ghosts[ORANGE_GHOST].tile().euclideanDistance(player.tile()) < 8
-				? level.world.ghostScatterTile(ORANGE_GHOST)
+	protected V2i chaseLikeCyanGhost() {
+		return player.moveDir() != Direction.UP //
+				? player.tilesAhead(2).scaled(2).minus(ghosts[RED_GHOST].tile())
+				: player.tilesAhead(2).plus(-2, 0).scaled(2).minus(ghosts[RED_GHOST].tile());
+	}
+
+	protected V2i chaseLikeOrangeGhost() {
+		return ghosts[ORANGE_GHOST].tile().euclideanDistance(player.tile()) < 8 ? level.world.ghostScatterTile(ORANGE_GHOST)
 				: player.tile();
 	}
 
@@ -306,7 +302,7 @@ public abstract class GameModel {
 			highscorePoints = score;
 			highscoreLevel = level.number;
 		}
-		if (oldscore < 10000 && score >= 10000) {
+		if (oldscore < EXTRA_LIFE_POINTS && score >= EXTRA_LIFE_POINTS) {
 			player.lives++;
 			eventSupport.publish(new GameEvent(this, GameEventType.PLAYER_GETS_EXTRA_LIFE, null, player.tile()));
 		}
@@ -340,9 +336,9 @@ public abstract class GameModel {
 
 	private void eatEnergizer(V2i tile) {
 		level.world.removeFood(tile);
-		ghostBounty = firstGhostBounty;
+		ghostBounty = FIRST_GHOST_VALUE;
 		player.starvingTicks = 0;
-		player.restingTicksLeft = 3;
+		player.restingTicksLeft = ENERGIZER_RESTING_TICKS;
 		if (level.ghostFrightenedSeconds > 0) {
 			ghosts(HUNTING_PAC).forEach(ghost -> {
 				ghost.state = FRIGHTENED;
@@ -353,16 +349,16 @@ public abstract class GameModel {
 		}
 		checkElroy();
 		updateGhostDotCounters();
-		score(energizerValue);
+		score(ENERGIZER_VALUE);
 	}
 
 	private void eatPellet(V2i tile) {
 		level.world.removeFood(tile);
 		player.starvingTicks = 0;
-		player.restingTicksLeft = 1;
+		player.restingTicksLeft = PELLET_RESTING_TICKS;
 		checkElroy();
 		updateGhostDotCounters();
-		score(pelletValue);
+		score(PELLET_VALUE);
 	}
 
 	public boolean checkKillGhosts() {
@@ -383,7 +379,7 @@ public abstract class GameModel {
 		level.numGhostsKilled++;
 		score(ghost.bounty);
 		if (level.numGhostsKilled == 16) {
-			score(12000);
+			score(ALL_GHOSTS_KILLED_POINTS);
 		}
 		log("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name, ghost.tile(), ghost.bounty);
 	}

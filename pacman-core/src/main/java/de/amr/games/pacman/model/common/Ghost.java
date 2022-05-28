@@ -65,6 +65,9 @@ public class Ghost extends Creature {
 	/** The ID of the ghost, see {@link GameModel#RED_GHOST} etc. */
 	public final int id;
 
+	/** The function computing the chasing tile. */
+	public final Supplier<V2i> fnChasing;
+
 	/** The current state of the ghost. */
 	public GhostState state;
 
@@ -77,9 +80,6 @@ public class Ghost extends Creature {
 	/** The bounty paid for this ghost. */
 	public int bounty;
 
-	/** The function computing the chasing tile. */
-	public Supplier<V2i> fnChasingTargetTile;
-
 	/** Individual food counter, used to determine when the ghost can leave the house. */
 	public int dotCounter;
 
@@ -89,6 +89,13 @@ public class Ghost extends Creature {
 	public Ghost(int id, String name) {
 		super(name);
 		this.id = id;
+		this.fnChasing = () -> null;
+	}
+
+	public Ghost(int id, String name, Supplier<V2i> fnChasing) {
+		super(name);
+		this.id = id;
+		this.fnChasing = fnChasing;
 	}
 
 	@Override
@@ -197,7 +204,7 @@ public class Ghost extends Creature {
 	 * Lets the ghost head for its current chasing target.
 	 */
 	private void chase(World world) {
-		headForTile(world, fnChasingTargetTile.get());
+		headForTile(world, fnChasing.get());
 		tryMoving(world);
 	}
 

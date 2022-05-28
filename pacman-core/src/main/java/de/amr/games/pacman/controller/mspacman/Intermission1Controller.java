@@ -109,7 +109,7 @@ public class Intermission1Controller extends Fsm<State, Context> {
 				$.msPac.setPosition(t(30), $.lowerY);
 				$.msPac.show();
 
-				$.pinky = new Ghost(PINK_GHOST, "Pinky");
+				$.pinky = new Ghost(PINK_GHOST, "Pinky", null);
 				$.pinky.setMoveDir(Direction.LEFT);
 				$.pinky.setWishDir(Direction.LEFT);
 				$.pinky.position = $.msPac.position.plus(t(6), 0);

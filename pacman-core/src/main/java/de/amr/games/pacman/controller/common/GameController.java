@@ -214,7 +214,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 
 	public void cheatKillAllPossibleGhosts() {
 		if (gameRunning && state() != GameState.GHOST_DYING) {
-			game().ghostBounty = game().firstGhostBounty;
+			game().ghostBounty = GameModel.FIRST_GHOST_VALUE;
 			game().ghosts().filter(ghost -> ghost.is(HUNTING_PAC) || ghost.is(FRIGHTENED)).forEach(game()::killGhost);
 			changeState(GameState.GHOST_DYING);
 		}

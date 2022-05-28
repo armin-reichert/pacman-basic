@@ -144,24 +144,23 @@ public class PacManGame extends GameModel {
 	}
 
 	@Override
-	public void setLevel(int levelNumber) {
-		level = new GameLevel(levelNumber, levelNumber - 1 < data.length ? data[levelNumber - 1] : data[data.length - 1]);
+	public void setLevel(int n) {
+		level = new GameLevel(n, n <= data.length ? data[n - 1] : data[data.length - 1]);
 		level.world = theWorld;
 		level.world.resetFood();
 		level.mapNumber = level.mazeNumber = 1;
 		level.globalDotLimits = new int[] { Integer.MAX_VALUE, 7, 17, Integer.MAX_VALUE };
-		if (levelNumber == 1) {
+		if (n == 1) {
 			level.privateDotLimits = new int[] { 0, 0, 30, 60 };
-		} else if (levelNumber == 2) {
+		} else if (n == 2) {
 			level.privateDotLimits = new int[] { 0, 0, 0, 50 };
 		} else {
 			level.privateDotLimits = new int[] { 0, 0, 0, 0 };
 		}
 		levelCounter.add(level.bonusSymbol);
-
-		player.starvingTimeLimit = (int) sec_to_ticks(levelNumber < 5 ? 4 : 3);
-		initGhosts(levelNumber, ghosts, level.world.ghostHouse());
-		ghostBounty = firstGhostBounty;
+		player.starvingTimeLimit = (int) sec_to_ticks(n < 5 ? 4 : 3);
+		initGhosts(n, ghosts, level.world.ghostHouse());
+		ghostBounty = GameModel.FIRST_GHOST_VALUE;
 		bonus.init();
 	}
 

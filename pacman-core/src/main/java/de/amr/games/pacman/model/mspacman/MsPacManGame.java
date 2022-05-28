@@ -293,17 +293,17 @@ public class MsPacManGame extends GameModel {
 	}
 
 	@Override
-	public void setLevel(int levelNumber) {
-		if (levelNumber < 1) {
-			throw new IllegalArgumentException("Level number must be at least 1, but is: " + levelNumber);
+	public void setLevel(int n) {
+		if (n < 1) {
+			throw new IllegalArgumentException("Level number must be at least 1, but is: " + n);
 		}
-		level = new GameLevel(levelNumber, levelNumber - 1 < data.length ? data[levelNumber - 1] : data[data.length - 1]);
-		level.mazeNumber = switch (levelNumber) {
+		level = new GameLevel(n, n <= data.length ? data[n - 1] : data[data.length - 1]);
+		level.mazeNumber = switch (n) {
 		case 1, 2 -> 1;
 		case 3, 4, 5 -> 2;
 		case 6, 7, 8, 9 -> 3;
 		case 10, 11, 12, 13 -> 4;
-		default -> (levelNumber - 14) % 8 < 4 ? 5 : 6;
+		default -> (n - 14) % 8 < 4 ? 5 : 6;
 		};
 		level.mapNumber = switch (level.mazeNumber) {
 		case 5 -> 3;
@@ -311,21 +311,21 @@ public class MsPacManGame extends GameModel {
 		default -> level.mazeNumber;
 		};
 		level.world = createWorld(level.mapNumber);
-		if (levelNumber >= 8) {
+		if (n >= 8) {
 			level.bonusSymbol = new Random().nextInt(7);
 		}
 		level.globalDotLimits = new int[] { Integer.MAX_VALUE, 7, 17, Integer.MAX_VALUE };
-		if (levelNumber == 1) {
+		if (n == 1) {
 			level.privateDotLimits = new int[] { 0, 0, 30, 60 };
-		} else if (levelNumber == 2) {
+		} else if (n == 2) {
 			level.privateDotLimits = new int[] { 0, 0, 0, 50 };
 		} else {
 			level.privateDotLimits = new int[] { 0, 0, 0, 0 };
 		}
 		levelCounter.add(level.bonusSymbol);
-		player.starvingTimeLimit = (int) sec_to_ticks(levelNumber < 5 ? 4 : 3);
-		initGhosts(levelNumber, ghosts, level.world.ghostHouse());
-		ghostBounty = firstGhostBounty;
+		player.starvingTimeLimit = (int) sec_to_ticks(n < 5 ? 4 : 3);
+		initGhosts(n, ghosts, level.world.ghostHouse());
+		ghostBounty = GameModel.FIRST_GHOST_VALUE;
 	}
 
 	@Override
