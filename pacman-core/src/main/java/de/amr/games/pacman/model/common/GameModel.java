@@ -118,10 +118,9 @@ public abstract class GameModel {
 	/** Points scored at current high score. */
 	public int highscorePoints;
 
-	/** High score file of current game variant. */
-	public File hiscoreFile;
-
 	public final GameEventSupport eventSupport = new GameEventSupport(this);
+
+	public abstract File highscoreFile();
 
 	public void reset() {
 		score = 0;

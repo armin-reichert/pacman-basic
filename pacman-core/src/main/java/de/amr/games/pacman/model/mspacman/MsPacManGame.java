@@ -294,8 +294,12 @@ public class MsPacManGame extends GameModel {
 				new Ghost(ORANGE_GHOST, "Sue") //
 		};
 		movingBonus = new MovingBonus();
-		hiscoreFile = new File(System.getProperty("user.home"), "highscore-ms_pacman.xml");
 		setLevel(1);
+	}
+
+	@Override
+	public File highscoreFile() {
+		return new File(System.getProperty("user.home"), "highscore-ms_pacman.xml");
 	}
 
 	@Override

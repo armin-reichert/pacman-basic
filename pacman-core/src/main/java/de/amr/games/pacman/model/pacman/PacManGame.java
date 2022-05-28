@@ -148,8 +148,12 @@ public class PacManGame extends GameModel {
 				new Ghost(ORANGE_GHOST, "Clyde") //
 		};
 		bonus = new StaticBonus(new V2d(theWorld.bonusTile().scaled(TS)).plus(HTS, 0));
-		hiscoreFile = new File(System.getProperty("user.home"), "highscore-pacman.xml");
 		setLevel(1);
+	}
+
+	@Override
+	public File highscoreFile() {
+		return new File(System.getProperty("user.home"), "highscore-pacman.xml");
 	}
 
 	@Override
