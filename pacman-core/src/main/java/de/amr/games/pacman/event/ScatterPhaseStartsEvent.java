@@ -28,11 +28,11 @@ import de.amr.games.pacman.model.common.GameModel;
 /**
  * @author Armin Reichert
  */
-public class ScatterPhaseStartedEvent extends GameEvent {
+public class ScatterPhaseStartsEvent extends GameEvent {
 
 	public final int scatterPhase;
 
-	public ScatterPhaseStartedEvent(GameModel gameModel, int scatterPhase) {
+	public ScatterPhaseStartsEvent(GameModel gameModel, int scatterPhase) {
 		super(gameModel, GameEventType.GAME_SCATTERING_STARTED, null, null);
 		this.scatterPhase = scatterPhase;
 	}

@@ -33,76 +33,72 @@ public abstract class DefaultGameEventHandler implements GameEventListener {
 
 	@Override
 	public void onGameEvent(GameEvent event) {
-		if (event instanceof ScatterPhaseStartedEvent) {
-			onScatterPhaseStarted((ScatterPhaseStartedEvent) event);
+		if (event instanceof ScatterPhaseStartsEvent) {
+			onScatterPhaseStarts((ScatterPhaseStartsEvent) event);
 		} else if (event instanceof GameStateChangeEvent) {
 			onGameStateChange((GameStateChangeEvent) event);
 		} else {
 			switch (event.type) {
-			case BONUS_ACTIVATED -> onBonusActivated(event);
-			case BONUS_EATEN -> onBonusEaten(event);
-			case BONUS_EXPIRED -> onBonusExpired(event);
-			case GHOST_ENTERED_HOUSE -> onGhostEnteredHouse(event);
-			case GHOST_REVIVED -> onGhostRevived(event);
-			case GHOST_STARTED_LEAVING_HOUSE -> onGhostStartedLeavingHouse(event);
-			case GHOST_FINISHED_LEAVING_HOUSE -> onGhostFinishedLeavingHouse(event);
-			case GHOST_STARTED_RETURNING_HOME -> onGhostStartedReturningHome(event);
-			case PLAYER_FOUND_FOOD -> onPlayerFoundFood(event);
-			case PLAYER_GOT_EXTRA_LIFE -> onPlayerGotExtraLife(event);
-			case PLAYER_GOT_POWER -> onPlayerGotPower(event);
-			case PLAYER_STARTED_LOSING_POWER -> onPlayerStartedLosingPower(event);
-			case PLAYER_LOST_POWER -> onPlayerLostPower(event);
-			case UI_CHANGE -> onUIChange(event);
+			case BONUS_GETS_ACTIVE -> onBonusGetsActivate(event);
+			case BONUS_GETS_EATEN -> onBonusGetsEaten(event);
+			case BONUS_EXPIRES -> onBonusExpires(event);
+			case GHOST_ENTERS_HOUSE -> onGhostEntersHouse(event);
+			case GHOST_STARTS_LEAVING_HOUSE -> onGhostStartsLeavingHouse(event);
+			case GHOST_COMPLETES_LEAVING_HOUSE -> onGhostCompletesLeavingHouse(event);
+			case GHOST_STARTS_RETURNING_HOME -> onGhostStartsReturningHome(event);
+			case PLAYER_FINDS_FOOD -> onPlayerFindsFood(event);
+			case PLAYER_GETS_EXTRA_LIFE -> onPlayerGetsExtraLife(event);
+			case PLAYER_GETS_POWER -> onPlayerGetsPower(event);
+			case PLAYER_STARTS_LOSING_POWER -> onPlayerStartsLosingPower(event);
+			case PLAYER_LOSES_POWER -> onPlayerLosesPower(event);
+			case UI_FORCE_UPDATE -> onUIForceUpdate(event);
 			default -> throw new IllegalArgumentException("Unknown event type: " + event.type);
 			}
 		}
 	}
 
-	public void onScatterPhaseStarted(ScatterPhaseStartedEvent e) {
+	public void onScatterPhaseStarts(ScatterPhaseStartsEvent e) {
 	}
 
 	public void onGameStateChange(GameStateChangeEvent e) {
 	}
 
-	public void onBonusActivated(GameEvent e) {
+	public void onBonusGetsActivate(GameEvent e) {
 	}
 
-	public void onBonusEaten(GameEvent e) {
+	public void onBonusGetsEaten(GameEvent e) {
 	}
 
-	public void onBonusExpired(GameEvent e) {
+	public void onBonusExpires(GameEvent e) {
 	}
 
-	public void onPlayerGotExtraLife(GameEvent e) {
+	public void onPlayerGetsExtraLife(GameEvent e) {
 	}
 
-	public void onGhostEnteredHouse(GameEvent e) {
+	public void onGhostEntersHouse(GameEvent e) {
 	}
 
-	public void onGhostStartedReturningHome(GameEvent e) {
+	public void onGhostStartsReturningHome(GameEvent e) {
 	}
 
-	public void onGhostRevived(GameEvent e) {
+	public void onGhostStartsLeavingHouse(GameEvent e) {
 	}
 
-	public void onGhostStartedLeavingHouse(GameEvent e) {
+	public void onGhostCompletesLeavingHouse(GameEvent e) {
 	}
 
-	public void onGhostFinishedLeavingHouse(GameEvent e) {
+	public void onPlayerFindsFood(GameEvent e) {
 	}
 
-	public void onPlayerFoundFood(GameEvent e) {
+	public void onPlayerStartsLosingPower(GameEvent e) {
 	}
 
-	public void onPlayerStartedLosingPower(GameEvent e) {
+	public void onPlayerLosesPower(GameEvent e) {
 	}
 
-	public void onPlayerLostPower(GameEvent e) {
+	public void onPlayerGetsPower(GameEvent e) {
 	}
 
-	public void onPlayerGotPower(GameEvent e) {
-	}
-
-	public void onUIChange(GameEvent e) {
+	public void onUIForceUpdate(GameEvent e) {
 	}
 }

@@ -187,13 +187,13 @@ public class PacManGame extends GameModel {
 				log("%s found bonus: %s", player.name, bonus);
 				score(bonus.value());
 				bonus.eat(sec_to_ticks(2));
-				eventSupport.publish(GameEventType.BONUS_EATEN, bonus.tile());
+				eventSupport.publish(GameEventType.BONUS_GETS_EATEN, bonus.tile());
 			} else {
 				boolean expired = bonus.tick();
 				if (expired) {
 					log("Bonus expired: %s", bonus);
 					bonus.init();
-					eventSupport.publish(GameEventType.BONUS_EXPIRED, bonus.tile());
+					eventSupport.publish(GameEventType.BONUS_EXPIRES, bonus.tile());
 				}
 			}
 		}
@@ -202,7 +202,7 @@ public class PacManGame extends GameModel {
 			if (expired) {
 				log("Bonus expired: %s", bonus);
 				bonus.init();
-				eventSupport.publish(GameEventType.BONUS_EXPIRED, bonus.tile());
+				eventSupport.publish(GameEventType.BONUS_EXPIRES, bonus.tile());
 			}
 		}
 		}

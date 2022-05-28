@@ -214,7 +214,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 		if (gameRunning) {
 			game().level.world.tiles().filter(not(game().level.world::isEnergizerTile))
 					.forEach(game().level.world::removeFood);
-			game().eventSupport.publish(GameEventType.PLAYER_FOUND_FOOD, null);
+			game().eventSupport.publish(GameEventType.PLAYER_FINDS_FOOD, null);
 		}
 	}
 

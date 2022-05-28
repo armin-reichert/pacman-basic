@@ -36,7 +36,7 @@ import java.util.function.Consumer;
 import de.amr.games.pacman.event.GameEvent;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameStateChangeEvent;
-import de.amr.games.pacman.event.ScatterPhaseStartedEvent;
+import de.amr.games.pacman.event.ScatterPhaseStartsEvent;
 import de.amr.games.pacman.lib.Fsm;
 import de.amr.games.pacman.lib.FsmState;
 import de.amr.games.pacman.lib.Hiscore;
@@ -132,10 +132,10 @@ public enum GameState implements FsmState<GameModel> {
 				log("%s lost power, timer=%s", game.player.name, game.player.powerTimer);
 				controller.huntingTimer().start();
 				game.ghosts(FRIGHTENED).forEach(ghost -> ghost.state = HUNTING_PAC);
-				game.eventSupport.publish(GameEventType.PLAYER_LOST_POWER, game.player.tile());
+				game.eventSupport.publish(GameEventType.PLAYER_LOSES_POWER, game.player.tile());
 			} else if (game.player.powerTimer.remaining() == sec_to_ticks(1)) {
 				// TODO not sure exactly how long the player is losing power
-				game.eventSupport.publish(GameEventType.PLAYER_STARTED_LOSING_POWER, game.player.tile());
+				game.eventSupport.publish(GameEventType.PLAYER_STARTS_LOSING_POWER, game.player.tile());
 			}
 
 			boolean gotPower = game.checkFood(game.player.tile());
@@ -146,7 +146,7 @@ public enum GameState implements FsmState<GameModel> {
 			Ghost releasedGhost = game.releaseLockedGhosts();
 			if (releasedGhost != null) {
 				game.eventSupport.publish(
-						new GameEvent(game, GameEventType.GHOST_STARTED_LEAVING_HOUSE, releasedGhost, releasedGhost.tile()));
+						new GameEvent(game, GameEventType.GHOST_STARTS_LEAVING_HOUSE, releasedGhost, releasedGhost.tile()));
 			}
 			game.ghosts().forEach(ghost -> ghost.update(game, controller.gameVariant(), controller.huntingTimer().phase()));
 
@@ -250,7 +250,7 @@ public enum GameState implements FsmState<GameModel> {
 			// fire event(s) only for dead ghosts not yet returning home (bounty != 0)
 			game.ghosts(DEAD).filter(ghost -> ghost.bounty != 0).forEach(ghost -> {
 				ghost.bounty = 0;
-				game.eventSupport.publish(new GameEvent(game, GameEventType.GHOST_STARTED_RETURNING_HOME, ghost, null));
+				game.eventSupport.publish(new GameEvent(game, GameEventType.GHOST_STARTS_RETURNING_HOME, ghost, null));
 			});
 		}
 	},
@@ -335,7 +335,7 @@ public enum GameState implements FsmState<GameModel> {
 	protected void startHuntingPhase(GameModel game, int phase) {
 		controller.huntingTimer().startPhase(phase, game.huntingPhaseTicks(phase));
 		if (isScatteringPhase(controller.huntingTimer().phase())) {
-			game.eventSupport.publish(new ScatterPhaseStartedEvent(game, controller.huntingTimer().scatteringPhase()));
+			game.eventSupport.publish(new ScatterPhaseStartsEvent(game, controller.huntingTimer().scatteringPhase()));
 		}
 	}
 

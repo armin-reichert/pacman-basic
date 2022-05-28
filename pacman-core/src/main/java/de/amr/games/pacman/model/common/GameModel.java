@@ -303,7 +303,7 @@ public abstract class GameModel {
 		}
 		if (oldscore < 10000 && score >= 10000) {
 			player.lives++;
-			eventSupport.publish(new GameEvent(this, GameEventType.PLAYER_GOT_EXTRA_LIFE, null, player.tile()));
+			eventSupport.publish(new GameEvent(this, GameEventType.PLAYER_GETS_EXTRA_LIFE, null, player.tile()));
 		}
 	}
 
@@ -316,19 +316,19 @@ public abstract class GameModel {
 			player.starvingTicks++;
 			return false;
 		}
-		eventSupport.publish(GameEventType.PLAYER_FOUND_FOOD, tile);
+		eventSupport.publish(GameEventType.PLAYER_FINDS_FOOD, tile);
 		boolean energizerEaten = false;
 		if (level.world.isEnergizerTile(tile)) {
 			eatEnergizer(tile);
 			energizerEaten = true;
 			if (level.ghostFrightenedSeconds > 0) {
-				eventSupport.publish(GameEventType.PLAYER_GOT_POWER, tile);
+				eventSupport.publish(GameEventType.PLAYER_GETS_POWER, tile);
 			}
 		} else {
 			eatPellet(tile);
 		}
 		if (checkBonusAwarded()) {
-			eventSupport.publish(GameEventType.BONUS_ACTIVATED, level.world.bonusTile());
+			eventSupport.publish(GameEventType.BONUS_GETS_ACTIVE, level.world.bonusTile());
 		}
 		return energizerEaten;
 	}
