@@ -38,6 +38,7 @@ import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Ghost;
+import de.amr.games.pacman.model.common.GhostBehaviors;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.common.world.ArcadeWorld;
 import de.amr.games.pacman.model.common.world.GhostHouse;
@@ -289,10 +290,10 @@ public class MsPacManGame extends GameModel {
 	public MsPacManGame() {
 		player = new Pac("Ms. Pac-Man");
 		ghosts = new Ghost[] { //
-				new Ghost(RED_GHOST, "Blinky", GameModel::chaseLikeShadow), //
-				new Ghost(PINK_GHOST, "Pinky", GameModel::chaseLikeSpeedy), //
-				new Ghost(CYAN_GHOST, "Inky", GameModel::chaseLikeBashful), //
-				new Ghost(ORANGE_GHOST, "Sue", GameModel::chaseLikePokey) //
+				new Ghost(RED_GHOST, "Blinky", GhostBehaviors::chaseShadow), //
+				new Ghost(PINK_GHOST, "Pinky", GhostBehaviors::chaseSpeedy), //
+				new Ghost(CYAN_GHOST, "Inky", GhostBehaviors::chaseBashful), //
+				new Ghost(ORANGE_GHOST, "Sue", GhostBehaviors::chasePokey) //
 		};
 		movingBonus = new MovingBonus();
 		hiscoreFile = new File(System.getProperty("user.home"), "highscore-ms_pacman.xml");

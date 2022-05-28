@@ -46,7 +46,6 @@ import de.amr.games.pacman.event.GameEvent;
 import de.amr.games.pacman.event.GameEventSupport;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.ScatterPhaseStartsEvent;
-import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.Hiscore;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.TickTimer.TickTimerState;
@@ -162,27 +161,6 @@ public abstract class GameModel {
 		if (bonus() != null) {
 			bonus().init();
 		}
-	}
-
-	public static V2i chaseLikeShadow(Pac player, List<Ghost> ghosts) {
-		return player.tile();
-	}
-
-	public static V2i chaseLikeSpeedy(Pac player, List<Ghost> ghosts) {
-		return player.moveDir() != Direction.UP //
-				? player.tilesAhead(4)
-				: player.tilesAhead(4).plus(-4, 0);
-	}
-
-	public static V2i chaseLikeBashful(Pac player, List<Ghost> ghosts) {
-		return player.moveDir() != Direction.UP //
-				? player.tilesAhead(2).scaled(2).minus(ghosts.get(RED_GHOST).tile())
-				: player.tilesAhead(2).plus(-2, 0).scaled(2).minus(ghosts.get(RED_GHOST).tile());
-	}
-
-	public static V2i chaseLikePokey(Pac player, List<Ghost> ghosts) {
-		return ghosts.get(ORANGE_GHOST).tile().euclideanDistance(player.tile()) < 8 ? ghosts.get(ORANGE_GHOST).scatterTarget
-				: player.tile();
 	}
 
 	public Stream<Ghost> ghosts() {
