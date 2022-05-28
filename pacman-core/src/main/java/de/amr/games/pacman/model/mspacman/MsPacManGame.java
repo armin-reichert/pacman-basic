@@ -35,6 +35,7 @@ import java.util.Random;
 
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.lib.TickTimer;
+import de.amr.games.pacman.model.common.ChasingBehavior;
 import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Ghost;
@@ -289,15 +290,11 @@ public class MsPacManGame extends GameModel {
 	public MsPacManGame() {
 		player = new Pac("Ms. Pac-Man");
 		ghosts = new Ghost[] { //
-				new Ghost(RED_GHOST, "Blinky"), //
-				new Ghost(PINK_GHOST, "Pinky"), //
-				new Ghost(CYAN_GHOST, "Inky"), //
-				new Ghost(ORANGE_GHOST, "Sue") //
+				new Ghost(RED_GHOST, "Blinky", ChasingBehavior.SHADOW), //
+				new Ghost(PINK_GHOST, "Pinky", ChasingBehavior.SPEEDY), //
+				new Ghost(CYAN_GHOST, "Inky", ChasingBehavior.BASHFUL), //
+				new Ghost(ORANGE_GHOST, "Sue", ChasingBehavior.POKEY) //
 		};
-		ghosts[RED_GHOST].fnChasing = ghosts[RED_GHOST]::chaseShadow;
-		ghosts[PINK_GHOST].fnChasing = ghosts[PINK_GHOST]::chaseSpeedy;
-		ghosts[CYAN_GHOST].fnChasing = ghosts[CYAN_GHOST]::chaseBashful;
-		ghosts[ORANGE_GHOST].fnChasing = ghosts[ORANGE_GHOST]::chasePokey;
 		movingBonus = new MovingBonus();
 		hiscoreFile = new File(System.getProperty("user.home"), "highscore-ms_pacman.xml");
 		setLevel(1);

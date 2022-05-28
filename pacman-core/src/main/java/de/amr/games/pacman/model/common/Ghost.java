@@ -89,7 +89,13 @@ public class Ghost extends Creature {
 	public int elroy;
 
 	/** The function computing the chasing tile. */
-	public BiFunction<Pac, List<Ghost>, V2i> fnChasing;
+	private BiFunction<Pac, List<Ghost>, V2i> fnChasing;
+
+	public Ghost(int id, String name, ChasingBehavior behavior) {
+		super(name);
+		this.id = id;
+		setChasingBehavior(behavior);
+	}
 
 	public Ghost(int id, String name) {
 		super(name);
@@ -123,6 +129,15 @@ public class Ghost extends Creature {
 		return super.canAccessTile(world, tile);
 	}
 
+	public void setChasingBehavior(ChasingBehavior behavior) {
+		fnChasing = switch (behavior) {
+		case BASHFUL -> this::chaseBashful;
+		case POKEY -> this::chasePokey;
+		case SHADOW -> this::chaseShadow;
+		case SPEEDY -> this::chaseSpeedy;
+		};
+	}
+
 	/**
 	 * Chase like Blinky, the red ghost.
 	 * 
@@ -130,7 +145,7 @@ public class Ghost extends Creature {
 	 * @param ghosts the ghosts in their natural order
 	 * @return the target tile
 	 */
-	public V2i chaseShadow(Pac player, List<Ghost> ghosts) {
+	private V2i chaseShadow(Pac player, List<Ghost> ghosts) {
 		return player.tile();
 	}
 
@@ -141,7 +156,7 @@ public class Ghost extends Creature {
 	 * @param ghosts the ghosts in their natural order
 	 * @return the target tile
 	 */
-	public V2i chaseSpeedy(Pac player, List<Ghost> ghosts) {
+	private V2i chaseSpeedy(Pac player, List<Ghost> ghosts) {
 		return player.moveDir() != Direction.UP //
 				? player.tilesAhead(4)
 				: player.tilesAhead(4).plus(-4, 0);
@@ -154,7 +169,7 @@ public class Ghost extends Creature {
 	 * @param ghosts the ghosts in their natural order
 	 * @return the target tile
 	 */
-	public V2i chaseBashful(Pac player, List<Ghost> ghosts) {
+	private V2i chaseBashful(Pac player, List<Ghost> ghosts) {
 		return player.moveDir() != Direction.UP //
 				? player.tilesAhead(2).scaled(2).minus(ghosts.get(RED_GHOST).tile())
 				: player.tilesAhead(2).plus(-2, 0).scaled(2).minus(ghosts.get(RED_GHOST).tile());
@@ -167,7 +182,7 @@ public class Ghost extends Creature {
 	 * @param ghosts the ghosts in their natural order
 	 * @return the target tile
 	 */
-	public V2i chasePokey(Pac player, List<Ghost> ghosts) {
+	private V2i chasePokey(Pac player, List<Ghost> ghosts) {
 		return tile().euclideanDistance(player.tile()) < 8 ? scatterTarget : player.tile();
 	}
 
