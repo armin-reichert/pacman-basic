@@ -63,9 +63,6 @@ public class Creature extends Entity {
 	/** Tells if the creature got stuck. */
 	public boolean stuck = false;
 
-	/** Tells if the creature must move on the "track" defined by the tile center connections. */
-//	public boolean forcedOnTrack = false;
-
 	/** The world where this creature lives. */
 	public World world;
 
