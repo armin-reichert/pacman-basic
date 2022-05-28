@@ -307,10 +307,7 @@ public abstract class GameModel {
 		log("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name, ghost.tile(), ghost.bounty);
 	}
 
-	public boolean checkKillPlayer(boolean immune) {
-		if (immune || player.powerTimer.isRunning()) {
-			return false;
-		}
+	public boolean checkKillPlayer() {
 		Optional<Ghost> killer = ghosts(HUNTING_PAC).filter(player::sameTile).findAny();
 		killer.ifPresent(ghost -> {
 			log("%s got killed by %s at tile %s", player.name, ghost.name, player.tile());
