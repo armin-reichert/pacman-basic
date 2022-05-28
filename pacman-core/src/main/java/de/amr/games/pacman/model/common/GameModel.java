@@ -33,6 +33,7 @@ import static de.amr.games.pacman.model.common.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.common.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.model.common.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.model.common.GhostState.LOCKED;
+import static de.amr.games.pacman.model.common.HuntingTimer.isScatteringPhase;
 import static de.amr.games.pacman.model.common.world.World.HTS;
 
 import java.io.File;
@@ -44,6 +45,7 @@ import java.util.stream.Stream;
 import de.amr.games.pacman.event.GameEvent;
 import de.amr.games.pacman.event.GameEventSupport;
 import de.amr.games.pacman.event.GameEventType;
+import de.amr.games.pacman.event.ScatterPhaseStartsEvent;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.Hiscore;
 import de.amr.games.pacman.lib.TickTimer;
@@ -223,6 +225,17 @@ public abstract class GameModel {
 	 * @param levelNumber 1-based level number
 	 */
 	public abstract void setLevel(int levelNumber);
+
+	public void startHuntingPhase(int phase) {
+		huntingTimer.startPhase(phase, huntingPhaseTicks(phase));
+		if (isScatteringPhase(huntingTimer.phase())) {
+			eventSupport.publish(new ScatterPhaseStartsEvent(this, huntingTimer.scatteringPhase()));
+		}
+	}
+
+	public void startNextHuntingPhase() {
+		startHuntingPhase(huntingTimer.phase() + 1);
+	}
 
 	/**
 	 * @param phase hunting phase (0, ... 7)

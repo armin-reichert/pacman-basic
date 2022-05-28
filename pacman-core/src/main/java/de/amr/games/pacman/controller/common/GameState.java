@@ -29,14 +29,12 @@ import static de.amr.games.pacman.model.common.GhostState.DEAD;
 import static de.amr.games.pacman.model.common.GhostState.ENTERING_HOUSE;
 import static de.amr.games.pacman.model.common.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.common.GhostState.HUNTING_PAC;
-import static de.amr.games.pacman.model.common.HuntingTimer.isScatteringPhase;
 
 import java.util.function.Consumer;
 
 import de.amr.games.pacman.event.GameEvent;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameStateChangeEvent;
-import de.amr.games.pacman.event.ScatterPhaseStartsEvent;
 import de.amr.games.pacman.lib.Fsm;
 import de.amr.games.pacman.lib.FsmState;
 import de.amr.games.pacman.lib.Hiscore;
@@ -96,7 +94,7 @@ public enum GameState implements FsmState<GameModel> {
 				game.player.show();
 			}
 			if (timer.hasExpired()) {
-				startHuntingPhase(game, 0);
+				game.startHuntingPhase(0);
 				controller.setGameRunning(controller.credit() > 0);
 				controller.changeState(GameState.HUNTING);
 			}
@@ -108,7 +106,7 @@ public enum GameState implements FsmState<GameModel> {
 		public void onUpdate(GameModel game) {
 			game.huntingTimer.advance();
 			if (game.huntingTimer.hasExpired()) {
-				startNextHuntingPhase(game);
+				game.startNextHuntingPhase();
 				game.ghosts(HUNTING_PAC).forEach(ghost -> ghost.forceTurningBack(game.level.world));
 				game.ghosts(FRIGHTENED).forEach(ghost -> ghost.forceTurningBack(game.level.world));
 			}
@@ -330,16 +328,5 @@ public enum GameState implements FsmState<GameModel> {
 
 	protected Consumer<Pac> currentPlayerControl() {
 		return controller.isAutoMoving() || controller.credit() == 0 ? controller.autopilot() : controller.playerControl();
-	}
-
-	protected void startHuntingPhase(GameModel game, int phase) {
-		game.huntingTimer.startPhase(phase, game.huntingPhaseTicks(phase));
-		if (isScatteringPhase(game.huntingTimer.phase())) {
-			game.eventSupport.publish(new ScatterPhaseStartsEvent(game, game.huntingTimer.scatteringPhase()));
-		}
-	}
-
-	protected void startNextHuntingPhase(GameModel game) {
-		startHuntingPhase(game, game.huntingTimer.phase() + 1);
 	}
 }
