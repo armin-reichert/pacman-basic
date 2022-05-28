@@ -297,8 +297,7 @@ public class MsPacManGame extends GameModel {
 		if (levelNumber < 1) {
 			throw new IllegalArgumentException("Level number must be at least 1, but is: " + levelNumber);
 		}
-		this.levelNumber = levelNumber;
-		level = new GameLevel(levelNumber - 1 < data.length ? data[levelNumber - 1] : data[data.length - 1]);
+		level = new GameLevel(levelNumber, levelNumber - 1 < data.length ? data[levelNumber - 1] : data[data.length - 1]);
 		level.mazeNumber = switch (levelNumber) {
 		case 1, 2 -> 1;
 		case 3, 4, 5 -> 2;

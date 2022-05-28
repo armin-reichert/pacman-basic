@@ -145,11 +145,7 @@ public class PacManGame extends GameModel {
 
 	@Override
 	public void setLevel(int levelNumber) {
-		if (levelNumber < 1) {
-			throw new IllegalArgumentException("Level number must be at least 1, but is: " + levelNumber);
-		}
-		this.levelNumber = levelNumber;
-		level = new GameLevel(levelNumber - 1 < data.length ? data[levelNumber - 1] : data[data.length - 1]);
+		level = new GameLevel(levelNumber, levelNumber - 1 < data.length ? data[levelNumber - 1] : data[data.length - 1]);
 		level.world = theWorld;
 		level.world.resetFood();
 		level.mapNumber = level.mazeNumber = 1;

@@ -171,7 +171,7 @@ public enum GameState implements FsmState<GameModel> {
 			if (timer.hasExpired()) {
 				if (controller.credit() == 0) {
 					controller.changeState(INTRO);
-				} else if (game.intermissionNumber(game.levelNumber) != 0) {
+				} else if (game.intermissionNumber(game.level.number) != 0) {
 					controller.changeState(INTERMISSION);
 				} else {
 					controller.changeState(LEVEL_STARTING);
@@ -184,7 +184,7 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void onEnter(GameModel game) {
 			timer.setDurationIndefinite().start();
-			game.setLevel(game.levelNumber + 1);
+			game.setLevel(game.level.number + 1);
 			game.resetGuys();
 		}
 

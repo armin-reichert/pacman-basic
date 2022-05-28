@@ -80,11 +80,18 @@ public class GameLevel {
 	/** Number of maze flashes at end of current level. */
 	public final int numFlashes;
 
+	/** Starts with 1. */
+	public final int number;
+
 	public int[] globalDotLimits;
 
 	public int[] privateDotLimits;
 
-	public GameLevel(Object[] data) {
+	public GameLevel(int number, Object[] data) {
+		if (number < 1) {
+			throw new IllegalArgumentException("Level number must be at least 1, but is: " + number);
+		}
+		this.number = number;
 		bonusSymbol = (int) data[0];
 		playerSpeed = percentage(data[1]);
 		ghostSpeed = percentage(data[2]);

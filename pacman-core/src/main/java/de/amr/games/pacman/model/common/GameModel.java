@@ -70,9 +70,6 @@ public abstract class GameModel {
 	//@formatter:on
 	};
 
-	/** 1-based level number */
-	public int levelNumber;
-
 	/** Current level-specific data. */
 	public GameLevel level;
 
@@ -232,7 +229,7 @@ public abstract class GameModel {
 		if (phase < 0 || phase > 7) {
 			throw new IllegalArgumentException("Hunting phase must be 0..7, but is " + phase);
 		}
-		return switch (levelNumber) {
+		return switch (level.number) {
 		case 1 -> HUNTING_TIMES[0][phase];
 		case 2, 3, 4 -> HUNTING_TIMES[1][phase];
 		default -> HUNTING_TIMES[2][phase];
@@ -291,7 +288,7 @@ public abstract class GameModel {
 		score += points;
 		if (score > highscorePoints) {
 			highscorePoints = score;
-			highscoreLevel = levelNumber;
+			highscoreLevel = level.number;
 		}
 		if (oldscore < 10000 && score >= 10000) {
 			player.lives++;
