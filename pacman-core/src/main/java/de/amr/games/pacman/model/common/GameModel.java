@@ -46,6 +46,7 @@ import de.amr.games.pacman.event.GameEvent;
 import de.amr.games.pacman.event.GameEventSupport;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.ScatterPhaseStartsEvent;
+import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.Hiscore;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.V2d;
@@ -224,6 +225,28 @@ public abstract class GameModel {
 	public abstract int bonusValue(int symbolID);
 
 	// Game logic
+
+	public V2i chaseShadow() {
+		return player.tile();
+	}
+
+	public V2i chaseSpeedy() {
+		return player.moveDir() != Direction.UP //
+				? player.tilesAhead(4)
+				: player.tilesAhead(4).plus(-4, 0);
+	}
+
+	public V2i chaseBashful() {
+		var redGhost = ghosts[RED_GHOST];
+		return player.moveDir() != Direction.UP //
+				? player.tilesAhead(2).scaled(2).minus(redGhost.tile())
+				: player.tilesAhead(2).plus(-2, 0).scaled(2).minus(redGhost.tile());
+	}
+
+	public V2i chasePokey() {
+		var orangeGhost = ghosts[ORANGE_GHOST];
+		return orangeGhost.tile().euclideanDistance(player.tile()) < 8 ? orangeGhost.scatterTarget : player.tile();
+	}
 
 	/**
 	 * @param points points to score

@@ -34,9 +34,7 @@ import static de.amr.games.pacman.model.common.HuntingTimer.isScatteringPhase;
 import static de.amr.games.pacman.model.common.world.World.HTS;
 import static de.amr.games.pacman.model.common.world.World.TS;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.function.BiFunction;
+import java.util.function.Supplier;
 
 import de.amr.games.pacman.event.GameEvent;
 import de.amr.games.pacman.event.GameEventType;
@@ -89,18 +87,11 @@ public class Ghost extends Creature {
 	public int elroy;
 
 	/** The function computing the chasing tile. */
-	private BiFunction<Pac, List<Ghost>, V2i> fnChasing;
-
-	public Ghost(int id, String name, ChasingBehavior behavior) {
-		super(name);
-		this.id = id;
-		setChasingBehavior(behavior);
-	}
+	public Supplier<V2i> fnChasing = () -> null;
 
 	public Ghost(int id, String name) {
 		super(name);
 		this.id = id;
-		this.fnChasing = (player, ghosts) -> null;
 	}
 
 	@Override
@@ -127,63 +118,6 @@ public class Ghost extends Creature {
 			return !is(GhostState.HUNTING_PAC);
 		}
 		return super.canAccessTile(world, tile);
-	}
-
-	public void setChasingBehavior(ChasingBehavior behavior) {
-		fnChasing = switch (behavior) {
-		case BASHFUL -> this::chaseBashful;
-		case POKEY -> this::chasePokey;
-		case SHADOW -> this::chaseShadow;
-		case SPEEDY -> this::chaseSpeedy;
-		};
-	}
-
-	/**
-	 * Chase like Blinky, the red ghost.
-	 * 
-	 * @param player the chased player
-	 * @param ghosts the ghosts in their natural order
-	 * @return the target tile
-	 */
-	private V2i chaseShadow(Pac player, List<Ghost> ghosts) {
-		return player.tile();
-	}
-
-	/**
-	 * Chase like Pinky, the pink ghost.
-	 * 
-	 * @param player the chased player
-	 * @param ghosts the ghosts in their natural order
-	 * @return the target tile
-	 */
-	private V2i chaseSpeedy(Pac player, List<Ghost> ghosts) {
-		return player.moveDir() != Direction.UP //
-				? player.tilesAhead(4)
-				: player.tilesAhead(4).plus(-4, 0);
-	}
-
-	/**
-	 * Chase like Inky, the cyan ghost.
-	 * 
-	 * @param player the chased player
-	 * @param ghosts the ghosts in their natural order
-	 * @return the target tile
-	 */
-	private V2i chaseBashful(Pac player, List<Ghost> ghosts) {
-		return player.moveDir() != Direction.UP //
-				? player.tilesAhead(2).scaled(2).minus(ghosts.get(RED_GHOST).tile())
-				: player.tilesAhead(2).plus(-2, 0).scaled(2).minus(ghosts.get(RED_GHOST).tile());
-	}
-
-	/**
-	 * Chase like Clyde, the pink ghost.
-	 * 
-	 * @param player the chased player
-	 * @param ghosts the ghosts in their natural order
-	 * @return the target tile
-	 */
-	private V2i chasePokey(Pac player, List<Ghost> ghosts) {
-		return tile().euclideanDistance(player.tile()) < 8 ? scatterTarget : player.tile();
 	}
 
 	// TODO Is still do not know the exact speed values
@@ -266,7 +200,7 @@ public class Ghost extends Creature {
 	 * Lets the ghost head for its current chasing target.
 	 */
 	private void chase(GameModel game) {
-		headForTile(game.level.world, fnChasing.apply(game.player, Arrays.asList(game.ghosts)));
+		headForTile(game.level.world, fnChasing.get());
 		tryMoving(game.level.world);
 	}
 
