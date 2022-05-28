@@ -45,7 +45,7 @@ public class Pac extends Creature {
 	public TickTimer powerTimer = new TickTimer("Pac-power-timer");
 
 	/** Number of clock ticks Pac is still resting and will not move. */
-	public int restingTicksLeft = 0;
+	public int restingCountdown = 0;
 
 	/** Number of clock ticks Pac has not eaten any pellet. */
 	public int starvingTicks = 0;
@@ -64,8 +64,8 @@ public class Pac extends Creature {
 	}
 
 	public boolean moveThroughLevel(GameLevel level) {
-		if (restingTicksLeft > 0) {
-			restingTicksLeft--;
+		if (restingCountdown > 0) {
+			restingCountdown--;
 		} else {
 			setSpeed(powerTimer.isRunning() ? level.playerSpeedPowered : level.playerSpeed, GameModel.BASE_SPEED);
 			tryMoving(level.world);

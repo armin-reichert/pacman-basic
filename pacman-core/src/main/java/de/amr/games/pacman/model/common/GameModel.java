@@ -77,7 +77,7 @@ public abstract class GameModel {
 	public static final int PELLET_RESTING_TICKS = 1;
 	public static final int ENERGIZER_VALUE = 50;
 	public static final int ENERGIZER_RESTING_TICKS = 3;
-	public static final int FIRST_GHOST_VALUE = 200;
+	public static final int FIRST_GHOST_BOUNTY = 200;
 	public static final int LIFES = 3;
 	public static final int EXTRA_LIFE_POINTS = 10_000;
 	public static final int ALL_GHOSTS_KILLED_POINTS = 12_000;
@@ -145,7 +145,7 @@ public abstract class GameModel {
 		player.targetTile = null; // used in autopilot mode
 		player.stuck = false;
 		player.killed = false;
-		player.restingTicksLeft = 0;
+		player.restingCountdown = 0;
 		player.starvingTicks = 0;
 		player.powerTimer.setDurationIndefinite();
 
@@ -254,48 +254,34 @@ public abstract class GameModel {
 			player.starvingTicks++;
 			return false;
 		}
-		eventSupport.publish(GameEventType.PLAYER_FINDS_FOOD, tile);
 		boolean energizerEaten = false;
+		level.world.removeFood(tile);
+		player.starvingTicks = 0;
+		eventSupport.publish(GameEventType.PLAYER_FINDS_FOOD, tile);
 		if (level.world.isEnergizerTile(tile)) {
-			eatEnergizer(tile);
 			energizerEaten = true;
+			score(ENERGIZER_VALUE);
+			ghostBounty = FIRST_GHOST_BOUNTY;
+			player.restingCountdown = ENERGIZER_RESTING_TICKS;
 			if (level.ghostFrightenedSeconds > 0) {
+				ghosts(HUNTING_PAC).forEach(ghost -> {
+					ghost.state = FRIGHTENED;
+					ghost.forceTurningBack(level.world);
+				});
+				player.powerTimer.setDurationSeconds(level.ghostFrightenedSeconds).start();
+				log("%s power timer started: %s", player.name, player.powerTimer);
 				eventSupport.publish(GameEventType.PLAYER_GETS_POWER, tile);
 			}
 		} else {
-			eatPellet(tile);
+			player.restingCountdown = PELLET_RESTING_TICKS;
+			score(PELLET_VALUE);
 		}
 		if (checkBonusAwarded()) {
 			eventSupport.publish(GameEventType.BONUS_GETS_ACTIVE, level.world.bonusTile());
 		}
+		checkElroy();
+		updateGhostDotCounters();
 		return energizerEaten;
-	}
-
-	private void eatEnergizer(V2i tile) {
-		level.world.removeFood(tile);
-		ghostBounty = FIRST_GHOST_VALUE;
-		player.starvingTicks = 0;
-		player.restingTicksLeft = ENERGIZER_RESTING_TICKS;
-		if (level.ghostFrightenedSeconds > 0) {
-			ghosts(HUNTING_PAC).forEach(ghost -> {
-				ghost.state = FRIGHTENED;
-				ghost.forceTurningBack(level.world);
-			});
-			player.powerTimer.setDurationSeconds(level.ghostFrightenedSeconds).start();
-			log("%s got power, timer=%s", player.name, player.powerTimer);
-		}
-		checkElroy();
-		updateGhostDotCounters();
-		score(ENERGIZER_VALUE);
-	}
-
-	private void eatPellet(V2i tile) {
-		level.world.removeFood(tile);
-		player.starvingTicks = 0;
-		player.restingTicksLeft = PELLET_RESTING_TICKS;
-		checkElroy();
-		updateGhostDotCounters();
-		score(PELLET_VALUE);
 	}
 
 	public boolean checkKillGhosts() {

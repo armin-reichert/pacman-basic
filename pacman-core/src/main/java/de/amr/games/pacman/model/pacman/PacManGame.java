@@ -162,7 +162,7 @@ public class PacManGame extends GameModel {
 		player.starvingTimeLimit = (int) sec_to_ticks(n < 5 ? 4 : 3);
 		initGhosts(level);
 		bonus.init();
-		ghostBounty = GameModel.FIRST_GHOST_VALUE;
+		ghostBounty = GameModel.FIRST_GHOST_BOUNTY;
 	}
 
 	private void initLevel(GameLevel level) {

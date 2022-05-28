@@ -135,8 +135,8 @@ public enum GameState implements FsmState<GameModel> {
 				// TODO not sure exactly how long the player is losing power
 				game.eventSupport.publish(GameEventType.PLAYER_STARTS_LOSING_POWER, game.player.tile());
 			}
-			boolean gotPower = game.checkFood(game.player.tile());
-			if (gotPower) {
+			boolean energizerEaten = game.checkFood(game.player.tile());
+			if (energizerEaten) {
 				game.huntingTimer.stop();
 			}
 
