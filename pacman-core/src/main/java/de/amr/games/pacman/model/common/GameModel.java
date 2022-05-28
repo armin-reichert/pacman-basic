@@ -62,10 +62,13 @@ public abstract class GameModel {
 	/** Speed in pixels/tick at 100%. */
 	public static final double BASE_SPEED = 1.25;
 
-	private static final long[][] HUNTING_TIMES = { //
-			{ 7 * 60, 20 * 60, 7 * 60, 20 * 60, 5 * 60, 20 * 60, 5 * 60, TickTimer.INDEFINITE },
-			{ 7 * 60, 20 * 60, 7 * 60, 20 * 60, 5 * 60, 1033 * 60, 1, TickTimer.INDEFINITE },
-			{ 5 * 60, 20 * 60, 5 * 60, 20 * 60, 5 * 60, 1037 * 60, 1, TickTimer.INDEFINITE } };
+	private static final long[][] HUNTING_TIMES = {
+	//@formatter:off
+		{ 7*60, 20*60, 7*60, 20*60, 5*60,   20*60, 5*60, TickTimer.INDEFINITE },
+		{ 7*60, 20*60, 7*60, 20*60, 5*60, 1033*60,    1, TickTimer.INDEFINITE },
+		{ 5*60, 20*60, 5*60, 20*60, 5*60, 1037*60,    1, TickTimer.INDEFINITE }
+	//@formatter:on
+	};
 
 	/** 1-based level number */
 	public int levelNumber;
