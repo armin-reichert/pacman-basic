@@ -46,7 +46,7 @@ public class Creature extends Entity {
 	public static final Direction[] TURN_PRIORITY = { UP, LEFT, DOWN, RIGHT };
 
 	/** Readable name, for display and logging purposes. */
-	public String name;
+	public final String name;
 
 	/** The current move direction. */
 	protected Direction moveDir = RIGHT;
@@ -65,10 +65,6 @@ public class Creature extends Entity {
 
 	public Creature(String name) {
 		this.name = name;
-	}
-
-	public Creature() {
-		name = super.toString();
 	}
 
 	@Override
