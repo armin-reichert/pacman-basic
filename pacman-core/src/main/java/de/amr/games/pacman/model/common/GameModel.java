@@ -97,9 +97,6 @@ public abstract class GameModel {
 	/** Timer used to control hunting phase. */
 	public final HuntingTimer huntingTimer = new HuntingTimer();
 
-	/** Number of player lives when the game starts. */
-	public int initialLives = LIFES;
-
 	/** Game score. */
 	public int score;
 
@@ -128,7 +125,7 @@ public abstract class GameModel {
 
 	public void reset() {
 		score = 0;
-		player.lives = initialLives;
+		player.lives = LIFES;
 		levelCounter.clear();
 		setLevel(1);
 		Hiscore highscore = new Hiscore(this);
