@@ -25,6 +25,10 @@ package de.amr.games.pacman.model.mspacman;
 
 import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.lib.TickTimer.sec_to_ticks;
+import static de.amr.games.pacman.model.common.Ghost.CYAN_GHOST;
+import static de.amr.games.pacman.model.common.Ghost.ORANGE_GHOST;
+import static de.amr.games.pacman.model.common.Ghost.PINK_GHOST;
+import static de.amr.games.pacman.model.common.Ghost.RED_GHOST;
 
 import java.io.File;
 import java.util.Random;
@@ -33,6 +37,7 @@ import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
+import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.common.world.ArcadeWorld;
 import de.amr.games.pacman.model.common.world.World;
@@ -282,7 +287,12 @@ public class MsPacManGame extends GameModel {
 	 */
 	public MsPacManGame() {
 		player = new Pac("Ms. Pac-Man");
-		createGhosts("Blinky", "Pinky", "Inky", "Sue");
+		ghosts = new Ghost[] { //
+				new Ghost(RED_GHOST, "Blinky", this::chaseLikeShadow), //
+				new Ghost(PINK_GHOST, "Pinky", this::chaseLikeSpeedy), //
+				new Ghost(CYAN_GHOST, "Inky", this::chaseLikeBashful), //
+				new Ghost(ORANGE_GHOST, "Sue", this::chaseLikePokey) //
+		};
 		movingBonus = new MovingBonus();
 		hiscoreFile = new File(System.getProperty("user.home"), "highscore-ms_pacman.xml");
 	}

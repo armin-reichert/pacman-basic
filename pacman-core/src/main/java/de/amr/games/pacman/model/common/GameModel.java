@@ -177,32 +177,23 @@ public abstract class GameModel {
 		}
 	}
 
-	protected void createGhosts(String redName, String pinkName, String cyanName, String orangeName) {
-		ghosts = new Ghost[] { //
-				new Ghost(RED_GHOST, redName, this::chaseLikeRedGhost), //
-				new Ghost(PINK_GHOST, pinkName, this::chaseLikePinkGhost), //
-				new Ghost(CYAN_GHOST, cyanName, this::chaseLikeCyanGhost), //
-				new Ghost(ORANGE_GHOST, orangeName, this::chaseLikeOrangeGhost) //
-		};
-	}
-
-	protected V2i chaseLikeRedGhost() {
+	protected V2i chaseLikeShadow() {
 		return player.tile();
 	}
 
-	protected V2i chaseLikePinkGhost() {
+	protected V2i chaseLikeSpeedy() {
+		return player.moveDir() != Direction.UP //
+				? player.tilesAhead(4)
+				: player.tilesAhead(4).plus(-4, 0);
+	}
+
+	protected V2i chaseLikeBashful() {
 		return player.moveDir() != Direction.UP //
 				? player.tilesAhead(2).scaled(2).minus(ghosts[RED_GHOST].tile())
 				: player.tilesAhead(2).plus(-2, 0).scaled(2).minus(ghosts[RED_GHOST].tile());
 	}
 
-	protected V2i chaseLikeCyanGhost() {
-		return player.moveDir() != Direction.UP //
-				? player.tilesAhead(2).scaled(2).minus(ghosts[RED_GHOST].tile())
-				: player.tilesAhead(2).plus(-2, 0).scaled(2).minus(ghosts[RED_GHOST].tile());
-	}
-
-	protected V2i chaseLikeOrangeGhost() {
+	protected V2i chaseLikePokey() {
 		return ghosts[ORANGE_GHOST].tile().euclideanDistance(player.tile()) < 8 ? level.world.ghostScatterTile(ORANGE_GHOST)
 				: player.tile();
 	}
