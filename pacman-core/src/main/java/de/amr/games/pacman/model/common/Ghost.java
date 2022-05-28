@@ -34,7 +34,9 @@ import static de.amr.games.pacman.model.common.HuntingTimer.isScatteringPhase;
 import static de.amr.games.pacman.model.common.world.World.HTS;
 import static de.amr.games.pacman.model.common.world.World.TS;
 
-import java.util.function.Supplier;
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.BiFunction;
 
 import de.amr.games.pacman.event.GameEvent;
 import de.amr.games.pacman.event.GameEventType;
@@ -66,7 +68,10 @@ public class Ghost extends Creature {
 	public final int id;
 
 	/** The function computing the chasing tile. */
-	public final Supplier<V2i> fnChasing;
+	public final BiFunction<Pac, List<Ghost>, V2i> fnChasing;
+
+	/** Scatter target. */
+	public V2i scatterTarget;
 
 	/** The current state of the ghost. */
 	public GhostState state;
@@ -89,10 +94,10 @@ public class Ghost extends Creature {
 	public Ghost(int id, String name) {
 		super(name);
 		this.id = id;
-		this.fnChasing = () -> null;
+		this.fnChasing = (player, ghosts) -> null;
 	}
 
-	public Ghost(int id, String name, Supplier<V2i> fnChasing) {
+	public Ghost(int id, String name, BiFunction<Pac, List<Ghost>, V2i> fnChasing) {
 		super(name);
 		this.id = id;
 		this.fnChasing = fnChasing;
@@ -175,7 +180,7 @@ public class Ghost extends Creature {
 			} else if (isScatteringPhase(huntingPhase) && elroy <= 0) {
 				scatter(world);
 			} else {
-				chase(world);
+				chase(game);
 			}
 		}
 		case DEAD -> {
@@ -203,16 +208,16 @@ public class Ghost extends Creature {
 	/**
 	 * Lets the ghost head for its current chasing target.
 	 */
-	private void chase(World world) {
-		headForTile(world, fnChasing.get());
-		tryMoving(world);
+	private void chase(GameModel game) {
+		headForTile(game.level.world, fnChasing.apply(game.player, Arrays.asList(game.ghosts)));
+		tryMoving(game.level.world);
 	}
 
 	/**
 	 * Lets the ghost head for its scatter tile.
 	 */
 	private void scatter(World world) {
-		headForTile(world, world.ghostScatterTile(id));
+		headForTile(world, scatterTarget);
 		tryMoving(world);
 	}
 

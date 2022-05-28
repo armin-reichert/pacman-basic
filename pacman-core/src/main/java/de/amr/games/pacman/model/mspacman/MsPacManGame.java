@@ -40,6 +40,7 @@ import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.common.world.ArcadeWorld;
+import de.amr.games.pacman.model.common.world.GhostHouse;
 import de.amr.games.pacman.model.common.world.World;
 
 /**
@@ -288,13 +289,14 @@ public class MsPacManGame extends GameModel {
 	public MsPacManGame() {
 		player = new Pac("Ms. Pac-Man");
 		ghosts = new Ghost[] { //
-				new Ghost(RED_GHOST, "Blinky", this::chaseLikeShadow), //
-				new Ghost(PINK_GHOST, "Pinky", this::chaseLikeSpeedy), //
-				new Ghost(CYAN_GHOST, "Inky", this::chaseLikeBashful), //
-				new Ghost(ORANGE_GHOST, "Sue", this::chaseLikePokey) //
+				new Ghost(RED_GHOST, "Blinky", GameModel::chaseLikeShadow), //
+				new Ghost(PINK_GHOST, "Pinky", GameModel::chaseLikeSpeedy), //
+				new Ghost(CYAN_GHOST, "Inky", GameModel::chaseLikeBashful), //
+				new Ghost(ORANGE_GHOST, "Sue", GameModel::chaseLikePokey) //
 		};
 		movingBonus = new MovingBonus();
 		hiscoreFile = new File(System.getProperty("user.home"), "highscore-ms_pacman.xml");
+		setLevel(1);
 	}
 
 	@Override
@@ -308,12 +310,20 @@ public class MsPacManGame extends GameModel {
 			throw new IllegalArgumentException("Level number must be at least 1, but is: " + n);
 		}
 		level = new GameLevel(n, n <= data.length ? data[n - 1] : data[data.length - 1]);
-		level.mazeNumber = switch (n) {
+		initLevel(level);
+		levelCounter.add(level.bonusSymbol);
+		player.starvingTimeLimit = (int) sec_to_ticks(n < 5 ? 4 : 3);
+		initGhosts(level);
+		ghostBounty = GameModel.FIRST_GHOST_VALUE;
+	}
+
+	private void initLevel(GameLevel level) {
+		level.mazeNumber = switch (level.number) {
 		case 1, 2 -> 1;
 		case 3, 4, 5 -> 2;
 		case 6, 7, 8, 9 -> 3;
 		case 10, 11, 12, 13 -> 4;
-		default -> (n - 14) % 8 < 4 ? 5 : 6;
+		default -> (level.number - 14) % 8 < 4 ? 5 : 6;
 		};
 		level.mapNumber = switch (level.mazeNumber) {
 		case 5 -> 3;
@@ -321,21 +331,38 @@ public class MsPacManGame extends GameModel {
 		default -> level.mazeNumber;
 		};
 		level.world = createWorld(level.mapNumber);
-		if (n >= 8) {
+		if (level.number >= 8) {
 			level.bonusSymbol = new Random().nextInt(7);
 		}
 		level.globalDotLimits = new int[] { Integer.MAX_VALUE, 7, 17, Integer.MAX_VALUE };
-		if (n == 1) {
-			level.privateDotLimits = new int[] { 0, 0, 30, 60 };
-		} else if (n == 2) {
-			level.privateDotLimits = new int[] { 0, 0, 0, 50 };
-		} else {
-			level.privateDotLimits = new int[] { 0, 0, 0, 0 };
+		level.privateDotLimits = switch (level.number) {
+		case 1 -> new int[] { 0, 0, 30, 60 };
+		case 2 -> new int[] { 0, 0, 0, 50 };
+		default -> new int[] { 0, 0, 0, 0 };
+		};
+	}
+
+	private void initGhosts(GameLevel level) {
+		ArcadeWorld world = (ArcadeWorld) level.world;
+		GhostHouse house = world.ghostHouse();
+
+		ghosts[RED_GHOST].homeTile = house.entry();
+		ghosts[RED_GHOST].revivalTile = house.seatMiddle();
+		ghosts[RED_GHOST].scatterTarget = world.rightUpperTarget;
+
+		ghosts[PINK_GHOST].homeTile = ghosts[PINK_GHOST].revivalTile = house.seatMiddle();
+		ghosts[PINK_GHOST].scatterTarget = world.leftUpperTarget;
+
+		ghosts[CYAN_GHOST].homeTile = ghosts[CYAN_GHOST].revivalTile = house.seatLeft();
+		ghosts[CYAN_GHOST].scatterTarget = world.rightLowerTarget;
+
+		ghosts[ORANGE_GHOST].homeTile = ghosts[ORANGE_GHOST].revivalTile = house.seatRight();
+		ghosts[ORANGE_GHOST].scatterTarget = world.leftLowerTarget;
+
+		for (var ghost : ghosts) {
+			ghost.dotCounter = 0;
+			ghost.elroy = 0;
 		}
-		levelCounter.add(level.bonusSymbol);
-		player.starvingTimeLimit = (int) sec_to_ticks(n < 5 ? 4 : 3);
-		initGhosts(n, ghosts, level.world.ghostHouse());
-		ghostBounty = GameModel.FIRST_GHOST_VALUE;
 	}
 
 	@Override

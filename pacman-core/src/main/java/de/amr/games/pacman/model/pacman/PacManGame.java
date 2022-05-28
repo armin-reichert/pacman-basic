@@ -44,7 +44,7 @@ import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.Pac;
 import de.amr.games.pacman.model.common.world.ArcadeWorld;
-import de.amr.games.pacman.model.common.world.World;
+import de.amr.games.pacman.model.common.world.GhostHouse;
 
 /**
  * Model of the Pac-Man game.
@@ -128,50 +128,73 @@ public class PacManGame extends GameModel {
 		//@formatter:on
 	};
 
-	public static World createWorld() {
+	private final ArcadeWorld theWorld;
+	private final StaticBonus bonus;
+
+	public static ArcadeWorld createWorld() {
 		ArcadeWorld world = new ArcadeWorld(MAP);
 		world.upwardsBlockedTiles = List.of(v(12, 13), v(15, 13), v(12, 25), v(15, 25));
 		world.bonusTile = v(13, 20);
 		return world;
 	}
 
-	private final World theWorld;
-	private final StaticBonus bonus;
-
 	public PacManGame() {
 		// all levels use the same world
 		theWorld = createWorld();
 		player = new Pac("Pac-Man");
 		ghosts = new Ghost[] { //
-				new Ghost(RED_GHOST, "Blinky", this::chaseLikeShadow), //
-				new Ghost(PINK_GHOST, "Pinky", this::chaseLikeSpeedy), //
-				new Ghost(CYAN_GHOST, "Inky", this::chaseLikeBashful), //
-				new Ghost(ORANGE_GHOST, "Clyde", this::chaseLikePokey) //
+				new Ghost(RED_GHOST, "Blinky", GameModel::chaseLikeShadow), //
+				new Ghost(PINK_GHOST, "Pinky", GameModel::chaseLikeSpeedy), //
+				new Ghost(CYAN_GHOST, "Inky", GameModel::chaseLikeBashful), //
+				new Ghost(ORANGE_GHOST, "Clyde", GameModel::chaseLikePokey) //
 		};
-		initGhosts(1, ghosts, theWorld.ghostHouse());
 		bonus = new StaticBonus(new V2d(theWorld.bonusTile().scaled(TS)).plus(HTS, 0));
 		hiscoreFile = new File(System.getProperty("user.home"), "highscore-pacman.xml");
+		setLevel(1);
 	}
 
 	@Override
 	public void setLevel(int n) {
 		level = new GameLevel(n, n <= data.length ? data[n - 1] : data[data.length - 1]);
+		initLevel(level);
+		levelCounter.add(level.bonusSymbol);
+		player.starvingTimeLimit = (int) sec_to_ticks(n < 5 ? 4 : 3);
+		initGhosts(level);
+		bonus.init();
+		ghostBounty = GameModel.FIRST_GHOST_VALUE;
+	}
+
+	private void initLevel(GameLevel level) {
 		level.world = theWorld;
 		level.world.resetFood();
 		level.mapNumber = level.mazeNumber = 1;
 		level.globalDotLimits = new int[] { Integer.MAX_VALUE, 7, 17, Integer.MAX_VALUE };
-		if (n == 1) {
-			level.privateDotLimits = new int[] { 0, 0, 30, 60 };
-		} else if (n == 2) {
-			level.privateDotLimits = new int[] { 0, 0, 0, 50 };
-		} else {
-			level.privateDotLimits = new int[] { 0, 0, 0, 0 };
+		level.privateDotLimits = switch (level.number) {
+		case 1 -> new int[] { 0, 0, 30, 60 };
+		case 2 -> new int[] { 0, 0, 0, 50 };
+		default -> new int[] { 0, 0, 0, 0 };
+		};
+	}
+
+	private void initGhosts(GameLevel level) {
+		GhostHouse house = theWorld.ghostHouse();
+		ghosts[RED_GHOST].homeTile = house.entry();
+		ghosts[RED_GHOST].revivalTile = house.seatMiddle();
+		ghosts[RED_GHOST].scatterTarget = theWorld.rightUpperTarget;
+
+		ghosts[PINK_GHOST].homeTile = ghosts[PINK_GHOST].revivalTile = house.seatMiddle();
+		ghosts[PINK_GHOST].scatterTarget = theWorld.leftUpperTarget;
+
+		ghosts[CYAN_GHOST].homeTile = ghosts[CYAN_GHOST].revivalTile = house.seatLeft();
+		ghosts[CYAN_GHOST].scatterTarget = theWorld.rightLowerTarget;
+
+		ghosts[ORANGE_GHOST].homeTile = ghosts[ORANGE_GHOST].revivalTile = house.seatRight();
+		ghosts[ORANGE_GHOST].scatterTarget = theWorld.leftLowerTarget;
+
+		for (var ghost : ghosts) {
+			ghost.dotCounter = 0;
+			ghost.elroy = 0;
 		}
-		levelCounter.add(level.bonusSymbol);
-		player.starvingTimeLimit = (int) sec_to_ticks(n < 5 ? 4 : 3);
-		initGhosts(n, ghosts, level.world.ghostHouse());
-		ghostBounty = GameModel.FIRST_GHOST_VALUE;
-		bonus.init();
 	}
 
 	@Override

@@ -52,7 +52,6 @@ import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.TickTimer.TickTimerState;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.model.common.world.GhostHouse;
 
 /**
  * Common part of the Pac-Man and Ms. Pac-Man game models.
@@ -165,36 +164,24 @@ public abstract class GameModel {
 		}
 	}
 
-	protected void initGhosts(int levelNumber, Ghost[] ghosts, GhostHouse house) {
-		ghosts[RED_GHOST].homeTile = house.entry();
-		ghosts[RED_GHOST].revivalTile = house.seatMiddle();
-		ghosts[PINK_GHOST].homeTile = ghosts[PINK_GHOST].revivalTile = house.seatMiddle();
-		ghosts[CYAN_GHOST].homeTile = ghosts[CYAN_GHOST].revivalTile = house.seatLeft();
-		ghosts[ORANGE_GHOST].homeTile = ghosts[ORANGE_GHOST].revivalTile = house.seatRight();
-		for (var ghost : ghosts) {
-			ghost.dotCounter = 0;
-			ghost.elroy = 0;
-		}
-	}
-
-	protected V2i chaseLikeShadow() {
+	public static V2i chaseLikeShadow(Pac player, List<Ghost> ghosts) {
 		return player.tile();
 	}
 
-	protected V2i chaseLikeSpeedy() {
+	public static V2i chaseLikeSpeedy(Pac player, List<Ghost> ghosts) {
 		return player.moveDir() != Direction.UP //
 				? player.tilesAhead(4)
 				: player.tilesAhead(4).plus(-4, 0);
 	}
 
-	protected V2i chaseLikeBashful() {
+	public static V2i chaseLikeBashful(Pac player, List<Ghost> ghosts) {
 		return player.moveDir() != Direction.UP //
-				? player.tilesAhead(2).scaled(2).minus(ghosts[RED_GHOST].tile())
-				: player.tilesAhead(2).plus(-2, 0).scaled(2).minus(ghosts[RED_GHOST].tile());
+				? player.tilesAhead(2).scaled(2).minus(ghosts.get(RED_GHOST).tile())
+				: player.tilesAhead(2).plus(-2, 0).scaled(2).minus(ghosts.get(RED_GHOST).tile());
 	}
 
-	protected V2i chaseLikePokey() {
-		return ghosts[ORANGE_GHOST].tile().euclideanDistance(player.tile()) < 8 ? level.world.ghostScatterTile(ORANGE_GHOST)
+	public static V2i chaseLikePokey(Pac player, List<Ghost> ghosts) {
+		return ghosts.get(ORANGE_GHOST).tile().euclideanDistance(player.tile()) < 8 ? ghosts.get(ORANGE_GHOST).scatterTarget
 				: player.tile();
 	}
 

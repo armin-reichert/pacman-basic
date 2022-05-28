@@ -45,12 +45,12 @@ public class ArcadeWorld extends MapBasedWorld {
 	public static int TILES_X = 28;
 	public static int TILES_Y = 36;
 
-	protected final V2i leftLowerTarget = v(0, 34);
-	protected final V2i rightLowerTarget = v(27, 34);
-	protected final V2i leftUpperTarget = v(2, 0);
-	protected final V2i rightUpperTarget = v(25, 0);
-	protected final V2i pacHome = v(13, 26);
-	protected final ArcadeGhostHouse house = new ArcadeGhostHouse();
+	public final V2i leftLowerTarget = v(0, 34);
+	public final V2i rightLowerTarget = v(27, 34);
+	public final V2i leftUpperTarget = v(2, 0);
+	public final V2i rightUpperTarget = v(25, 0);
+	public final V2i pacHome = v(13, 26);
+	public final ArcadeGhostHouse house = new ArcadeGhostHouse();
 
 	// subclasses may override these:
 	public List<V2i> upwardsBlockedTiles = List.of();
@@ -83,17 +83,6 @@ public class ArcadeWorld extends MapBasedWorld {
 		case PINK_GHOST -> Direction.DOWN;
 		case CYAN_GHOST -> Direction.UP;
 		case ORANGE_GHOST -> Direction.UP;
-		default -> throw new IllegalArgumentException("IIlegal ghost ID: " + ghostID);
-		};
-	}
-
-	@Override
-	public V2i ghostScatterTile(int ghostID) {
-		return switch (ghostID) {
-		case RED_GHOST -> rightUpperTarget;
-		case PINK_GHOST -> leftUpperTarget;
-		case CYAN_GHOST -> rightLowerTarget;
-		case ORANGE_GHOST -> leftLowerTarget;
 		default -> throw new IllegalArgumentException("IIlegal ghost ID: " + ghostID);
 		};
 	}

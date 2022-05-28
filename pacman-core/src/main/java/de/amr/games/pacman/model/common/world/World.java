@@ -110,12 +110,6 @@ public interface World {
 	V2i playerHomeTile();
 
 	/**
-	 * @param ghostID ghost ID, see {@link GameModel#RED_GHOST} etc.
-	 * @return ghost scattering target tile (an inaccessible tile)
-	 */
-	V2i ghostScatterTile(int ghostID);
-
-	/**
 	 * @return player start direction
 	 */
 	Direction playerStartDir();
