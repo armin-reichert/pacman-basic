@@ -1,9 +1,9 @@
 package de.amr.games.pacman.model.world;
 
-import static de.amr.games.pacman.model.common.Ghost.CYAN_GHOST;
-import static de.amr.games.pacman.model.common.Ghost.ORANGE_GHOST;
-import static de.amr.games.pacman.model.common.Ghost.PINK_GHOST;
-import static de.amr.games.pacman.model.common.Ghost.RED_GHOST;
+import static de.amr.games.pacman.model.common.actors.Ghost.CYAN_GHOST;
+import static de.amr.games.pacman.model.common.actors.Ghost.ORANGE_GHOST;
+import static de.amr.games.pacman.model.common.actors.Ghost.PINK_GHOST;
+import static de.amr.games.pacman.model.common.actors.Ghost.RED_GHOST;
 import static java.util.function.Predicate.not;
 import static org.junit.Assert.assertEquals;
 

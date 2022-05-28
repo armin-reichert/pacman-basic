@@ -26,9 +26,9 @@ package de.amr.games.pacman.model.pacman;
 import static de.amr.games.pacman.lib.Logging.log;
 
 import de.amr.games.pacman.lib.V2d;
-import de.amr.games.pacman.model.common.Bonus;
-import de.amr.games.pacman.model.common.BonusState;
-import de.amr.games.pacman.model.common.Entity;
+import de.amr.games.pacman.model.common.actors.Bonus;
+import de.amr.games.pacman.model.common.actors.BonusState;
+import de.amr.games.pacman.model.common.actors.Entity;
 import de.amr.games.pacman.model.common.world.World;
 
 /**

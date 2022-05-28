@@ -21,10 +21,12 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-package de.amr.games.pacman.model.common;
+package de.amr.games.pacman.model.common.actors;
 
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.TickTimer.TickTimerState;
+import de.amr.games.pacman.model.common.GameLevel;
+import de.amr.games.pacman.model.common.GameModel;
 
 /**
  * Pac-Man or Ms. Pac-Man.

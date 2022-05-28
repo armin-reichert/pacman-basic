@@ -33,8 +33,8 @@ import de.amr.games.pacman.lib.Fsm;
 import de.amr.games.pacman.lib.FsmState;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.V2d;
-import de.amr.games.pacman.model.common.Entity;
-import de.amr.games.pacman.model.common.Pac;
+import de.amr.games.pacman.model.common.actors.Entity;
+import de.amr.games.pacman.model.common.actors.Pac;
 import de.amr.games.pacman.model.mspacman.Flap;
 import de.amr.games.pacman.model.mspacman.JuniorBag;
 

@@ -28,7 +28,7 @@ import java.util.Optional;
 
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.GameModel;
-import de.amr.games.pacman.model.common.Ghost;
+import de.amr.games.pacman.model.common.actors.Ghost;
 
 /**
  * Base class for events fired during game play. This class is a kind of compromise between separate subclasses for each

@@ -24,10 +24,10 @@ SOFTWARE.
 package de.amr.games.pacman.controller.pacman;
 
 import static de.amr.games.pacman.lib.TickTimer.sec_to_ticks;
-import static de.amr.games.pacman.model.common.Ghost.CYAN_GHOST;
-import static de.amr.games.pacman.model.common.Ghost.ORANGE_GHOST;
-import static de.amr.games.pacman.model.common.Ghost.PINK_GHOST;
-import static de.amr.games.pacman.model.common.Ghost.RED_GHOST;
+import static de.amr.games.pacman.model.common.actors.Ghost.CYAN_GHOST;
+import static de.amr.games.pacman.model.common.actors.Ghost.ORANGE_GHOST;
+import static de.amr.games.pacman.model.common.actors.Ghost.PINK_GHOST;
+import static de.amr.games.pacman.model.common.actors.Ghost.RED_GHOST;
 import static de.amr.games.pacman.model.common.world.World.t;
 
 import java.util.List;
@@ -43,9 +43,9 @@ import de.amr.games.pacman.lib.Fsm;
 import de.amr.games.pacman.lib.FsmState;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.TimedSeq;
-import de.amr.games.pacman.model.common.Ghost;
-import de.amr.games.pacman.model.common.GhostState;
-import de.amr.games.pacman.model.common.Pac;
+import de.amr.games.pacman.model.common.actors.Ghost;
+import de.amr.games.pacman.model.common.actors.GhostState;
+import de.amr.games.pacman.model.common.actors.Pac;
 import de.amr.games.pacman.model.common.world.ArcadeWorld;
 
 /**

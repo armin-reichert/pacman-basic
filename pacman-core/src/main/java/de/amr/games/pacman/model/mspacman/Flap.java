@@ -23,7 +23,7 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.mspacman;
 
-import de.amr.games.pacman.model.common.Entity;
+import de.amr.games.pacman.model.common.actors.Entity;
 
 /**
  * The flap used in the intermission scenes.

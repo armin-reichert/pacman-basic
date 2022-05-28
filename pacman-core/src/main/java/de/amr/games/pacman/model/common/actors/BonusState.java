@@ -22,7 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package de.amr.games.pacman.model.common;
+package de.amr.games.pacman.model.common.actors;
 
 /**
  * @author Armin Reichert

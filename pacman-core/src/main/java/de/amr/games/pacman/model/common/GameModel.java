@@ -24,16 +24,16 @@ SOFTWARE.
 package de.amr.games.pacman.model.common;
 
 import static de.amr.games.pacman.lib.Logging.log;
-import static de.amr.games.pacman.model.common.Ghost.CYAN_GHOST;
-import static de.amr.games.pacman.model.common.Ghost.ORANGE_GHOST;
-import static de.amr.games.pacman.model.common.Ghost.PINK_GHOST;
-import static de.amr.games.pacman.model.common.Ghost.RED_GHOST;
-import static de.amr.games.pacman.model.common.GhostState.DEAD;
-import static de.amr.games.pacman.model.common.GhostState.FRIGHTENED;
-import static de.amr.games.pacman.model.common.GhostState.HUNTING_PAC;
-import static de.amr.games.pacman.model.common.GhostState.LEAVING_HOUSE;
-import static de.amr.games.pacman.model.common.GhostState.LOCKED;
 import static de.amr.games.pacman.model.common.HuntingTimer.isScatteringPhase;
+import static de.amr.games.pacman.model.common.actors.Ghost.CYAN_GHOST;
+import static de.amr.games.pacman.model.common.actors.Ghost.ORANGE_GHOST;
+import static de.amr.games.pacman.model.common.actors.Ghost.PINK_GHOST;
+import static de.amr.games.pacman.model.common.actors.Ghost.RED_GHOST;
+import static de.amr.games.pacman.model.common.actors.GhostState.DEAD;
+import static de.amr.games.pacman.model.common.actors.GhostState.FRIGHTENED;
+import static de.amr.games.pacman.model.common.actors.GhostState.HUNTING_PAC;
+import static de.amr.games.pacman.model.common.actors.GhostState.LEAVING_HOUSE;
+import static de.amr.games.pacman.model.common.actors.GhostState.LOCKED;
 import static de.amr.games.pacman.model.common.world.World.HTS;
 
 import java.io.File;
@@ -50,6 +50,10 @@ import de.amr.games.pacman.lib.Hiscore;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.model.common.actors.Bonus;
+import de.amr.games.pacman.model.common.actors.Ghost;
+import de.amr.games.pacman.model.common.actors.GhostState;
+import de.amr.games.pacman.model.common.actors.Pac;
 
 /**
  * Common part of the Pac-Man and Ms. Pac-Man game models.

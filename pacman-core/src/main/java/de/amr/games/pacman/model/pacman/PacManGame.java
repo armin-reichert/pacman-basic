@@ -26,10 +26,10 @@ package de.amr.games.pacman.model.pacman;
 import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.lib.TickTimer.sec_to_ticks;
 import static de.amr.games.pacman.lib.V2i.v;
-import static de.amr.games.pacman.model.common.Ghost.CYAN_GHOST;
-import static de.amr.games.pacman.model.common.Ghost.ORANGE_GHOST;
-import static de.amr.games.pacman.model.common.Ghost.PINK_GHOST;
-import static de.amr.games.pacman.model.common.Ghost.RED_GHOST;
+import static de.amr.games.pacman.model.common.actors.Ghost.CYAN_GHOST;
+import static de.amr.games.pacman.model.common.actors.Ghost.ORANGE_GHOST;
+import static de.amr.games.pacman.model.common.actors.Ghost.PINK_GHOST;
+import static de.amr.games.pacman.model.common.actors.Ghost.RED_GHOST;
 import static de.amr.games.pacman.model.common.world.World.HTS;
 import static de.amr.games.pacman.model.common.world.World.TS;
 
@@ -41,8 +41,8 @@ import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
-import de.amr.games.pacman.model.common.Ghost;
-import de.amr.games.pacman.model.common.Pac;
+import de.amr.games.pacman.model.common.actors.Ghost;
+import de.amr.games.pacman.model.common.actors.Pac;
 import de.amr.games.pacman.model.common.world.ArcadeWorld;
 import de.amr.games.pacman.model.common.world.GhostHouse;
 

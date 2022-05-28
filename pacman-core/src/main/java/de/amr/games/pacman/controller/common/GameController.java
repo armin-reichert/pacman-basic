@@ -27,8 +27,8 @@ import static de.amr.games.pacman.controller.common.GameState.CREDIT;
 import static de.amr.games.pacman.controller.common.GameState.INTERMISSION_TEST;
 import static de.amr.games.pacman.controller.common.GameState.INTRO;
 import static de.amr.games.pacman.controller.common.GameState.READY;
-import static de.amr.games.pacman.model.common.GhostState.FRIGHTENED;
-import static de.amr.games.pacman.model.common.GhostState.HUNTING_PAC;
+import static de.amr.games.pacman.model.common.actors.GhostState.FRIGHTENED;
+import static de.amr.games.pacman.model.common.actors.GhostState.HUNTING_PAC;
 import static java.util.function.Predicate.not;
 
 import java.util.Map;
@@ -42,7 +42,7 @@ import de.amr.games.pacman.event.TriggerUIChangeEvent;
 import de.amr.games.pacman.lib.Fsm;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
-import de.amr.games.pacman.model.common.Pac;
+import de.amr.games.pacman.model.common.actors.Pac;
 import de.amr.games.pacman.model.mspacman.MsPacManGame;
 import de.amr.games.pacman.model.pacman.PacManGame;
 

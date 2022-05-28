@@ -32,7 +32,7 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.Fsm;
 import de.amr.games.pacman.lib.FsmState;
 import de.amr.games.pacman.lib.TickTimer;
-import de.amr.games.pacman.model.common.Pac;
+import de.amr.games.pacman.model.common.actors.Pac;
 import de.amr.games.pacman.model.mspacman.Flap;
 
 /**

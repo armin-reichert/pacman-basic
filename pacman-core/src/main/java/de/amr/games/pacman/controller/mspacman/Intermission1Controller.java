@@ -23,7 +23,7 @@ SOFTWARE.
  */
 package de.amr.games.pacman.controller.mspacman;
 
-import static de.amr.games.pacman.model.common.Ghost.PINK_GHOST;
+import static de.amr.games.pacman.model.common.actors.Ghost.PINK_GHOST;
 import static de.amr.games.pacman.model.common.world.World.t;
 
 import de.amr.games.pacman.controller.common.GameController;
@@ -34,9 +34,9 @@ import de.amr.games.pacman.lib.Fsm;
 import de.amr.games.pacman.lib.FsmState;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.V2d;
-import de.amr.games.pacman.model.common.Entity;
-import de.amr.games.pacman.model.common.Ghost;
-import de.amr.games.pacman.model.common.Pac;
+import de.amr.games.pacman.model.common.actors.Entity;
+import de.amr.games.pacman.model.common.actors.Ghost;
+import de.amr.games.pacman.model.common.actors.Pac;
 import de.amr.games.pacman.model.mspacman.Flap;
 
 /**

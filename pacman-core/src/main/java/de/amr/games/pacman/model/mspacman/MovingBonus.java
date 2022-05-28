@@ -33,9 +33,9 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.model.common.Bonus;
-import de.amr.games.pacman.model.common.BonusState;
-import de.amr.games.pacman.model.common.Creature;
+import de.amr.games.pacman.model.common.actors.Bonus;
+import de.amr.games.pacman.model.common.actors.BonusState;
+import de.amr.games.pacman.model.common.actors.Creature;
 import de.amr.games.pacman.model.common.world.Portal;
 import de.amr.games.pacman.model.common.world.World;
 

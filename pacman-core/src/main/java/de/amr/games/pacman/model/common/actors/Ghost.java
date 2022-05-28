@@ -21,7 +21,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
-package de.amr.games.pacman.model.common;
+package de.amr.games.pacman.model.common.actors;
 
 import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
@@ -38,6 +38,8 @@ import de.amr.games.pacman.event.GameEvent;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.model.common.GameModel;
+import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.world.GhostHouse;
 import de.amr.games.pacman.model.common.world.World;
 

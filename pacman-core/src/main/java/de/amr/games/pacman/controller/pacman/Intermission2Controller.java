@@ -23,7 +23,7 @@ SOFTWARE.
  */
 package de.amr.games.pacman.controller.pacman;
 
-import static de.amr.games.pacman.model.common.Ghost.RED_GHOST;
+import static de.amr.games.pacman.model.common.actors.Ghost.RED_GHOST;
 import static de.amr.games.pacman.model.common.world.World.t;
 
 import de.amr.games.pacman.controller.common.GameController;
@@ -33,10 +33,10 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.Fsm;
 import de.amr.games.pacman.lib.FsmState;
 import de.amr.games.pacman.lib.TickTimer;
-import de.amr.games.pacman.model.common.Entity;
-import de.amr.games.pacman.model.common.Ghost;
-import de.amr.games.pacman.model.common.GhostState;
-import de.amr.games.pacman.model.common.Pac;
+import de.amr.games.pacman.model.common.actors.Entity;
+import de.amr.games.pacman.model.common.actors.Ghost;
+import de.amr.games.pacman.model.common.actors.GhostState;
+import de.amr.games.pacman.model.common.actors.Pac;
 
 /**
  * Second intermission scene: Blinky pursues Pac but kicks a nail that tears his dress apart.

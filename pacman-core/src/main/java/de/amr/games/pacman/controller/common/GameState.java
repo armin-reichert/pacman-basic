@@ -25,10 +25,10 @@ package de.amr.games.pacman.controller.common;
 
 import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.lib.TickTimer.sec_to_ticks;
-import static de.amr.games.pacman.model.common.GhostState.DEAD;
-import static de.amr.games.pacman.model.common.GhostState.ENTERING_HOUSE;
-import static de.amr.games.pacman.model.common.GhostState.FRIGHTENED;
-import static de.amr.games.pacman.model.common.GhostState.HUNTING_PAC;
+import static de.amr.games.pacman.model.common.actors.GhostState.DEAD;
+import static de.amr.games.pacman.model.common.actors.GhostState.ENTERING_HOUSE;
+import static de.amr.games.pacman.model.common.actors.GhostState.FRIGHTENED;
+import static de.amr.games.pacman.model.common.actors.GhostState.HUNTING_PAC;
 
 import java.util.function.Consumer;
 
@@ -40,8 +40,8 @@ import de.amr.games.pacman.lib.FsmState;
 import de.amr.games.pacman.lib.Hiscore;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.common.GameModel;
-import de.amr.games.pacman.model.common.Ghost;
-import de.amr.games.pacman.model.common.Pac;
+import de.amr.games.pacman.model.common.actors.Ghost;
+import de.amr.games.pacman.model.common.actors.Pac;
 
 /**
  * @author Armin Reichert
