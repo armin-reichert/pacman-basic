@@ -109,8 +109,8 @@ public enum GameState implements FsmState<GameModel> {
 			controller.huntingTimer().advance();
 			if (controller.huntingTimer().hasExpired()) {
 				startNextHuntingPhase(game);
-				game.ghosts(HUNTING_PAC).forEach(Ghost::forceTurningBack);
-				game.ghosts(FRIGHTENED).forEach(Ghost::forceTurningBack);
+				game.ghosts(HUNTING_PAC).forEach(ghost -> ghost.forceTurningBack(game.level.world));
+				game.ghosts(FRIGHTENED).forEach(ghost -> ghost.forceTurningBack(game.level.world));
 			}
 			if (game.level.world.foodRemaining() == 0) {
 				controller.changeState(LEVEL_COMPLETE);

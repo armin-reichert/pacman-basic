@@ -321,18 +321,15 @@ public class MsPacManGame extends GameModel {
 		}
 		levelCounter.add(level.bonusSymbol);
 
-		player.world = level.world;
 		player.starvingTimeLimit = (int) sec_to_ticks(levelNumber < 5 ? 4 : 3);
-
 		initGhosts(levelNumber, level.world, ghosts);
 		ghostBounty = firstGhostBounty;
-		movingBonus.setWorld(level.world);
 	}
 
 	@Override
 	public boolean checkBonusAwarded() {
 		if (level.world.eatenFoodCount() == 70 || level.world.eatenFoodCount() == 170) {
-			movingBonus.activate(level.bonusSymbol, bonusValue(level.bonusSymbol), TickTimer.INDEFINITE);
+			movingBonus.activate(level.world, level.bonusSymbol, bonusValue(level.bonusSymbol), TickTimer.INDEFINITE);
 			return true;
 		}
 		return false;
@@ -344,7 +341,7 @@ public class MsPacManGame extends GameModel {
 		case INACTIVE -> {
 		}
 		case EDIBLE -> {
-			boolean leftWorld = movingBonus.followRoute();
+			boolean leftWorld = movingBonus.followRoute(level.world);
 			if (leftWorld) {
 				log("%s expired (left level.world)", movingBonus);
 				movingBonus.init();

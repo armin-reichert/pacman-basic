@@ -39,6 +39,7 @@ import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.Ghost;
 import de.amr.games.pacman.model.common.GhostState;
 import de.amr.games.pacman.model.common.Pac;
+import de.amr.games.pacman.model.common.world.World;
 
 /**
  * Controls automatic movement of the player.
@@ -102,6 +103,10 @@ public class Autopilot implements Consumer<Pac> {
 
 	private GameModel game() {
 		return gameSupplier.get();
+	}
+
+	private World world() {
+		return game().level.world;
 	}
 
 	@Override
@@ -171,7 +176,7 @@ public class Autopilot implements Consumer<Pac> {
 			game().player.targetTile = foodTile;
 		}
 		if (game().player.targetTile != null) {
-			game().player.headForTile(game().player.targetTile);
+			game().player.headForTile(world(), game().player.targetTile);
 		}
 	}
 
@@ -180,7 +185,7 @@ public class Autopilot implements Consumer<Pac> {
 		boolean energizerFound = false;
 		for (int i = 1; i <= AutopilotData.MAX_GHOST_AHEAD_DETECTION_DIST; ++i) {
 			V2i ahead = pacManTile.plus(game().player.moveDir().vec.scaled(i));
-			if (!game().player.canAccessTile(ahead)) {
+			if (!game().player.canAccessTile(world(), ahead)) {
 				break;
 			}
 			if (game().level.world.isEnergizerTile(ahead) && !game().level.world.containsEatenFood(ahead)) {
@@ -205,7 +210,7 @@ public class Autopilot implements Consumer<Pac> {
 		V2i pacManTile = game().player.tile();
 		for (int i = 1; i <= AutopilotData.MAX_GHOST_BEHIND_DETECTION_DIST; ++i) {
 			V2i behind = pacManTile.plus(game().player.moveDir().opposite().vec.scaled(i));
-			if (!game().player.canAccessTile(behind)) {
+			if (!game().player.canAccessTile(world(), behind)) {
 				break;
 			}
 			for (Ghost ghost : game().ghosts().toArray(Ghost[]::new)) {
@@ -225,7 +230,7 @@ public class Autopilot implements Consumer<Pac> {
 				continue;
 			}
 			V2i neighbor = pacManTile.plus(dir.vec);
-			if (game().player.canAccessTile(neighbor)) {
+			if (game().player.canAccessTile(world(), neighbor)) {
 				escapes.add(dir);
 			}
 		}

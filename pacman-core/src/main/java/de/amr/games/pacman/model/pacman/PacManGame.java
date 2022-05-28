@@ -137,7 +137,6 @@ public class PacManGame extends GameModel {
 		// all levels use the same world
 		theWorld = createWorld();
 		player = new Pac("Pac-Man");
-		player.world = theWorld;
 		createGhosts("Blinky", "Pinky", "Inky", "Clyde");
 		initGhosts(1, theWorld, ghosts);
 		bonus = new StaticBonus(new V2d(theWorld.bonusTile().scaled(TS)).plus(HTS, 0));
@@ -171,7 +170,8 @@ public class PacManGame extends GameModel {
 	@Override
 	public boolean checkBonusAwarded() {
 		if (level.world.eatenFoodCount() == 70 || level.world.eatenFoodCount() == 170) {
-			bonus.activate(level.bonusSymbol, bonusValue(level.bonusSymbol), sec_to_ticks(9.0 + new Random().nextDouble()));
+			bonus.activate(level.world, level.bonusSymbol, bonusValue(level.bonusSymbol),
+					sec_to_ticks(9.0 + new Random().nextDouble()));
 			return true;
 		}
 		return false;

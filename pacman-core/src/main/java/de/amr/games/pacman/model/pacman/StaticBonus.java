@@ -28,6 +28,7 @@ import static de.amr.games.pacman.lib.Logging.log;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.model.common.Bonus;
 import de.amr.games.pacman.model.common.BonusState;
+import de.amr.games.pacman.model.common.world.World;
 
 /**
  * Bonus that appears at a static position.
@@ -78,7 +79,7 @@ public class StaticBonus implements Bonus {
 	}
 
 	@Override
-	public void activate(int symbol, int value, long ticks) {
+	public void activate(World world, int symbol, int value, long ticks) {
 		state = BonusState.EDIBLE;
 		this.symbol = symbol;
 		this.value = value;

@@ -33,6 +33,7 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.world.GhostHouse;
+import de.amr.games.pacman.model.common.world.World;
 
 /**
  * There are 4 ghosts with different "personalities".
@@ -99,7 +100,7 @@ public class Ghost extends Creature {
 	}
 
 	@Override
-	public boolean canAccessTile(V2i tile) {
+	public boolean canAccessTile(World world, V2i tile) {
 		V2i leftDoor = world.ghostHouse().doorTileLeft();
 		V2i rightDoor = world.ghostHouse().doorTileRight();
 		if (leftDoor.equals(tile) || rightDoor.equals(tile)) {
@@ -111,7 +112,7 @@ public class Ghost extends Creature {
 			}
 			return !is(GhostState.HUNTING_PAC);
 		}
-		return super.canAccessTile(tile);
+		return super.canAccessTile(world, tile);
 	}
 
 	/**
@@ -124,17 +125,17 @@ public class Ghost extends Creature {
 	/**
 	 * Lets the ghost head for its current chasing target.
 	 */
-	public void chase() {
-		headForTile(fnChasingTargetTile.get());
-		tryMoving();
+	public void chase(World world) {
+		headForTile(world, fnChasingTargetTile.get());
+		tryMoving(world);
 	}
 
 	/**
 	 * Lets the ghost head for its scatter tile.
 	 */
-	public void scatter() {
-		headForTile(world.ghostScatterTile(id));
-		tryMoving();
+	public void scatter(World world) {
+		headForTile(world, world.ghostScatterTile(id));
+		tryMoving(world);
 	}
 
 	/**
@@ -142,12 +143,13 @@ public class Ghost extends Creature {
 	 * 
 	 * TODO: this is not 100% what the Pac-Man dossier says.
 	 */
-	public void roam() {
+	public void roam(World world) {
 		if (newTileEntered) {
 			wishDir = Direction.shuffled().stream()
-					.filter(dir -> dir != moveDir.opposite() && canAccessTile(tile().plus(dir.vec))).findAny().orElse(wishDir);
+					.filter(dir -> dir != moveDir.opposite() && canAccessTile(world, tile().plus(dir.vec))).findAny()
+					.orElse(wishDir);
 		}
-		tryMoving();
+		tryMoving(world);
 	}
 
 	/**
@@ -156,7 +158,7 @@ public class Ghost extends Creature {
 	 * @param house the ghost house
 	 * @return {@code true} if the ghost has reached the house
 	 */
-	public boolean returnHome(GhostHouse house) {
+	public boolean returnHome(World world, GhostHouse house) {
 		if (atGhostHouseDoor(house) && moveDir != Direction.DOWN) {
 			// house reached, start entering
 			setOffset(HTS, 0);
@@ -166,8 +168,8 @@ public class Ghost extends Creature {
 			state = GhostState.ENTERING_HOUSE;
 			return true;
 		}
-		headForTile(targetTile);
-		tryMoving();
+		headForTile(world, targetTile);
+		tryMoving(world);
 		return false;
 	}
 

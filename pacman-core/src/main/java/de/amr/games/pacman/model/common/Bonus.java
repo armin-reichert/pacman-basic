@@ -47,7 +47,7 @@ public interface Bonus {
 
 	void init();
 
-	void activate(int symbol, int value, long ticks);
+	void activate(World world, int symbol, int value, long ticks);
 
 	void eat(long ticks);
 

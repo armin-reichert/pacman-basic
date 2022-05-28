@@ -166,7 +166,6 @@ public abstract class GameModel {
 
 	protected void initGhosts(int levelNumber, World world, Ghost[] ghosts) {
 		for (Ghost ghost : ghosts) {
-			ghost.world = world;
 			ghost.dotCounter = 0;
 			ghost.elroy = 0;
 		}
@@ -276,7 +275,7 @@ public abstract class GameModel {
 			player.restingTicksLeft--;
 		} else {
 			player.setSpeed(player.powerTimer.isRunning() ? level.playerSpeedPowered : level.playerSpeed);
-			player.tryMoving();
+			player.tryMoving(level.world);
 		}
 	}
 
@@ -341,10 +340,10 @@ public abstract class GameModel {
 		case FRIGHTENED -> {
 			if (level.world.isTunnel(ghost.tile())) {
 				ghost.setSpeed(level.ghostSpeedTunnel);
-				ghost.tryMoving();
+				ghost.tryMoving(level.world);
 			} else {
 				ghost.setSpeed(level.ghostSpeedFrightened);
-				ghost.roam();
+				ghost.roam(level.world);
 			}
 		}
 
@@ -365,17 +364,17 @@ public abstract class GameModel {
 			 * the scatter target of Blinky and Pinky would have been affected. Who knows?
 			 */
 			if (gameVariant == MS_PACMAN && huntingPhase == 0 && (ghost.id == RED_GHOST || ghost.id == PINK_GHOST)) {
-				ghost.roam();
+				ghost.roam(level.world);
 			} else if (HuntingTimer.isScatteringPhase(huntingPhase) && ghost.elroy == 0) {
-				ghost.scatter();
+				ghost.scatter(level.world);
 			} else {
-				ghost.chase();
+				ghost.chase(level.world);
 			}
 		}
 
 		case DEAD -> {
 			ghost.setSpeed(level.ghostSpeed * 2);
-			boolean reachedHouse = ghost.returnHome(level.world.ghostHouse());
+			boolean reachedHouse = ghost.returnHome(level.world, level.world.ghostHouse());
 			if (reachedHouse) {
 				eventSupport.publish(new GameEvent(this, GameEventType.GHOST_ENTERED_HOUSE, ghost, ghost.tile()));
 			}
@@ -435,7 +434,7 @@ public abstract class GameModel {
 		if (level.ghostFrightenedSeconds > 0) {
 			ghosts(HUNTING_PAC).forEach(ghost -> {
 				ghost.state = FRIGHTENED;
-				ghost.forceTurningBack();
+				ghost.forceTurningBack(level.world);
 			});
 			player.powerTimer.setDurationSeconds(level.ghostFrightenedSeconds).start();
 			log("%s got power, timer=%s", player.name, player.powerTimer);

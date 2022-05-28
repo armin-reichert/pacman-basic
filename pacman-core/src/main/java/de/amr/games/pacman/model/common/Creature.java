@@ -63,9 +63,6 @@ public class Creature extends Entity {
 	/** Tells if the creature got stuck. */
 	public boolean stuck = false;
 
-	/** The world where this creature lives. */
-	public World world;
-
 	public Creature(String name) {
 		this.name = name;
 	}
@@ -125,10 +122,11 @@ public class Creature extends Entity {
 	}
 
 	/**
-	 * @param tile some tile inside or outside of the world
+	 * @param world the world
+	 * @param tile  some tile inside or outside of the world
 	 * @return if this creature can access the given tile
 	 */
-	public boolean canAccessTile(V2i tile) {
+	public boolean canAccessTile(World world, V2i tile) {
 		if (!world.insideMap(tile)) {
 			// portal tiles are the only tiles accessible outside of the map
 			return world.isPortal(tile);
@@ -144,9 +142,9 @@ public class Creature extends Entity {
 	/**
 	 * Force turning to the opposite direction.
 	 */
-	public void forceTurningBack() {
+	public void forceTurningBack(World world) {
 		Direction oppositeDir = moveDir.opposite();
-		if (canAccessTile(tile().plus(oppositeDir.vec))) {
+		if (canAccessTile(world, tile().plus(oppositeDir.vec))) {
 			setWishDir(oppositeDir);
 			setMoveDir(oppositeDir);
 		}
@@ -158,17 +156,17 @@ public class Creature extends Entity {
 	 * First checks if the creature can teleport, then if the creature can move to its current wish direction. If this is
 	 * not possible it moves to its current move direction.
 	 */
-	public void tryMoving() {
-		tryTeleport();
-		tryMoving(wishDir);
+	public void tryMoving(World world) {
+		tryTeleport(world);
+		tryMoving(world, wishDir);
 		if (stuck) {
-			tryMoving(moveDir);
+			tryMoving(world, moveDir);
 		} else {
 			moveDir = wishDir;
 		}
 	}
 
-	private void tryTeleport() {
+	private void tryTeleport(World world) {
 		if (moveDir == Direction.RIGHT) {
 			world.portals().stream() //
 					.filter(portal -> tile().equals(portal.right)) //
@@ -189,13 +187,13 @@ public class Creature extends Entity {
 	 * 
 	 * @param dir intended move direction
 	 */
-	private void tryMoving(Direction dir) {
+	private void tryMoving(World world, Direction dir) {
 		final V2i tileBeforeMove = tile();
 		final V2d offsetBeforeMove = offset();
 		final V2i neighborTile = tileBeforeMove.plus(dir.vec);
 
 		// check if creature can turn towards move direction at its current position
-		if (canAccessTile(neighborTile)) {
+		if (canAccessTile(world, neighborTile)) {
 			if (dir == Direction.LEFT || dir == Direction.RIGHT) {
 				if (abs(offsetBeforeMove.y) > velocity.length()) {
 					stuck = true;
@@ -216,13 +214,13 @@ public class Creature extends Entity {
 		final V2d offsetAfterMove = World.offset(posAfterMove);
 
 		// avoid moving into inaccessible neighbor tile
-		if (!canAccessTile(tileAfterMove)) {
+		if (!canAccessTile(world, tileAfterMove)) {
 			stuck = true;
 			return;
 		}
 
 		// align with edge of inaccessible neighbor
-		if (!canAccessTile(neighborTile)) {
+		if (!canAccessTile(world, neighborTile)) {
 			if (dir == Direction.RIGHT && offsetAfterMove.x > 0 || dir == Direction.LEFT && offsetAfterMove.x < 0) {
 				setOffset(0, offsetBeforeMove.y);
 				stuck = true;
@@ -245,7 +243,7 @@ public class Creature extends Entity {
 	 * As described in the Pac-Man dossier: checks all accessible neighbor tiles in order UP, LEFT, DOWN, RIGHT and
 	 * selects the one with smallest Euclidean distance to the target tile. Reversing the move direction is not allowed.
 	 */
-	public void headForTile(V2i targetTile) {
+	public void headForTile(World world, V2i targetTile) {
 		this.targetTile = Objects.requireNonNull(targetTile);
 		if (!stuck && !newTileEntered) {
 			return;
@@ -260,7 +258,7 @@ public class Creature extends Entity {
 				continue;
 			}
 			V2i neighborTile = currentTile.plus(dir.vec);
-			if (canAccessTile(neighborTile)) {
+			if (canAccessTile(world, neighborTile)) {
 				double distToTarget = neighborTile.euclideanDistance(targetTile);
 				if (distToTarget < minDist) {
 					minDist = distToTarget;

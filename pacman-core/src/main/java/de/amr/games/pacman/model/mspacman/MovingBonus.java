@@ -61,10 +61,6 @@ public class MovingBonus extends Creature implements Bonus {
 				super.toString());
 	}
 
-	public void setWorld(World world) {
-		this.world = world;
-	}
-
 	@Override
 	public V2d position() {
 		return position;
@@ -99,7 +95,7 @@ public class MovingBonus extends Creature implements Bonus {
 	}
 
 	@Override
-	public void activate(int symbol, int value, long ticks) {
+	public void activate(World world, int symbol, int value, long ticks) {
 		init();
 		timer = ticks;
 		this.symbol = symbol;
@@ -108,7 +104,7 @@ public class MovingBonus extends Creature implements Bonus {
 		if (numPortals > 0) {
 			Portal entryPortal = world.portals().get(new Random().nextInt(numPortals));
 			Portal exitPortal = world.portals().get(new Random().nextInt(numPortals));
-			computeNewRoute(entryPortal, exitPortal);
+			computeNewRoute(world, entryPortal, exitPortal);
 			show();
 			state = BonusState.EDIBLE;
 			log("MovingBonus symbol=%d, value=%d position=%s activated", symbol, value, position);
@@ -121,7 +117,7 @@ public class MovingBonus extends Creature implements Bonus {
 		timer = ticks;
 	}
 
-	private void computeNewRoute(Portal entryPortal, Portal exitPortal) {
+	private void computeNewRoute(World world, Portal entryPortal, Portal exitPortal) {
 		V2i houseEntry = world.ghostHouse().doorTileLeft().plus(Direction.UP.vec);
 		Direction travelDir = new Random().nextBoolean() ? Direction.LEFT : Direction.RIGHT;
 		route.add(houseEntry);
@@ -132,15 +128,15 @@ public class MovingBonus extends Creature implements Bonus {
 		setBothDirs(travelDir);
 	}
 
-	public boolean followRoute() {
+	public boolean followRoute(World world) {
 		if (tile().equals(targetTile)) {
 			route.remove(0);
 			if (route.isEmpty()) {
 				return true;
 			}
 		}
-		headForTile(route.get(0));
-		tryMoving();
+		headForTile(world, route.get(0));
+		tryMoving(world);
 		return false;
 	}
 
