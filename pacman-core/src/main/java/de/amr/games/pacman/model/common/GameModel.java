@@ -279,7 +279,7 @@ public abstract class GameModel {
 		if (checkBonusAwarded()) {
 			eventSupport.publish(GameEventType.BONUS_GETS_ACTIVE, level.world.bonusTile());
 		}
-		ghosts[RED_GHOST].checkCruiseElroy(level);
+		ghosts[RED_GHOST].enableCruiseElroy(level);
 		updateGhostDotCounters();
 		return energizerEaten;
 	}
@@ -313,14 +313,9 @@ public abstract class GameModel {
 		}
 		Optional<Ghost> killer = ghosts(HUNTING_PAC).filter(player::sameTile).findAny();
 		killer.ifPresent(ghost -> {
-			player.killed = true;
 			log("%s got killed by %s at tile %s", player.name, ghost.name, player.tile());
-			// Elroy mode of red ghost gets disabled when player is killed
-			var redGhost = ghosts[RED_GHOST];
-			if (redGhost.elroy > 0) {
-				redGhost.elroy = -redGhost.elroy; // negative value means "disabled"
-				log("Elroy mode %d for %s has been disabled", redGhost.elroy, redGhost.name);
-			}
+			player.killed = true;
+			ghosts[RED_GHOST].disableCruiseElroy();
 			// reset and disable global dot counter (see Pac-Man dossier)
 			globalDotCounter = 0;
 			globalDotCounterEnabled = true;

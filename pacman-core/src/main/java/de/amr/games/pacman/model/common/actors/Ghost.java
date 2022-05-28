@@ -195,13 +195,20 @@ public class Ghost extends Creature {
 		}
 	}
 
-	public void checkCruiseElroy(GameLevel level) {
+	public void enableCruiseElroy(GameLevel level) {
 		if (level.world.foodRemaining() == level.elroy1DotsLeft) {
 			elroy = 1;
-			log("%s becomes Cruise Elroy 1", this.name);
+			log("%s becomes Cruise Elroy 1", name);
 		} else if (level.world.foodRemaining() == level.elroy2DotsLeft) {
 			elroy = 2;
-			log("%s becomes Cruise Elroy 2", this.name);
+			log("%s becomes Cruise Elroy 2", name);
+		}
+	}
+
+	public void disableCruiseElroy() {
+		if (elroy > 0) {
+			elroy = -elroy; // negative value means "disabled"
+			log("Elroy mode %d for %s has been disabled", elroy, name);
 		}
 	}
 
