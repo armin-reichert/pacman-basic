@@ -143,7 +143,13 @@ public enum GameState implements FsmState<GameModel> {
 				controller.huntingTimer().stop();
 			}
 
-			game.updateGhosts(controller.gameVariant(), controller.huntingTimer().phase());
+			Ghost releasedGhost = game.releaseLockedGhosts();
+			if (releasedGhost != null) {
+				game.eventSupport.publish(
+						new GameEvent(game, GameEventType.GHOST_STARTED_LEAVING_HOUSE, releasedGhost, releasedGhost.tile()));
+			}
+			game.ghosts().forEach(ghost -> ghost.update(game, controller.gameVariant(), controller.huntingTimer().phase()));
+
 			game.updateBonus();
 		}
 	},
@@ -235,7 +241,7 @@ public enum GameState implements FsmState<GameModel> {
 			}
 			currentPlayerControl().accept(game.player);
 			game.ghosts().filter(ghost -> ghost.is(DEAD) && ghost.bounty == 0 || ghost.is(ENTERING_HOUSE))
-					.forEach(ghost -> game.updateGhost(ghost, controller.gameVariant(), controller.huntingTimer().phase()));
+					.forEach(ghost -> ghost.update(game, controller.gameVariant(), controller.huntingTimer().phase()));
 		}
 
 		@Override

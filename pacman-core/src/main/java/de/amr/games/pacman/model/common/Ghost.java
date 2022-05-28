@@ -24,11 +24,15 @@ SOFTWARE.
 package de.amr.games.pacman.model.common;
 
 import static de.amr.games.pacman.lib.Misc.insideRange;
+import static de.amr.games.pacman.model.common.GameModel.BASE_SPEED;
+import static de.amr.games.pacman.model.common.GameVariant.MS_PACMAN;
 import static de.amr.games.pacman.model.common.world.World.HTS;
 import static de.amr.games.pacman.model.common.world.World.t;
 
 import java.util.function.Supplier;
 
+import de.amr.games.pacman.event.GameEvent;
+import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
@@ -42,31 +46,31 @@ import de.amr.games.pacman.model.common.world.World;
  */
 public class Ghost extends Creature {
 
-	/** ID of red ghost. */
+	/** ID of red */
 	public static final int RED_GHOST = 0;
 
-	/** ID of pink ghost. */
+	/** ID of pink */
 	public static final int PINK_GHOST = 1;
 
-	/** ID of cyan ghost. */
+	/** ID of cyan */
 	public static final int CYAN_GHOST = 2;
 
-	/** ID of orange ghost. */
+	/** ID of orange */
 	public static final int ORANGE_GHOST = 3;
 
 	/** The ID (color) of the ghost, see {@link GameModel#RED_GHOST} etc. */
 	public final int id;
 
-	/** The current state of the ghost. */
+	/** The current state of the */
 	public GhostState state;
 
-	/** The home location of the ghost. For the red ghost, this is outside of the house. */
+	/** The home location of the For the red ghost, this is outside of the house. */
 	public V2i homeTile;
 
 	/** The revival location inside the house. For the red ghost, this is different from the home location. */
 	public V2i revivalTile;
 
-	/** The bounty paid for this ghost. */
+	/** The bounty paid for this */
 	public int bounty;
 
 	/** The function computing the target tile when this ghost is in chasing mode. */
@@ -252,5 +256,79 @@ public class Ghost extends Creature {
 		}
 		move();
 		return true;
+	}
+
+	public void update(GameModel game, GameVariant gameVariant, int huntingPhase) {
+		switch (state) {
+
+		case LOCKED -> {
+			if (atGhostHouseDoor(game.level.world.ghostHouse())) {
+				setSpeed(0, BASE_SPEED);
+			} else {
+				setSpeed(game.level.ghostSpeed / 2, BASE_SPEED);
+				bounce(game.level.world.ghostHouse());
+			}
+		}
+
+		case ENTERING_HOUSE -> {
+			setSpeed(game.level.ghostSpeed * 2, BASE_SPEED);
+			boolean reachedRevivalTile = enterHouse(game.level.world.ghostHouse());
+			if (reachedRevivalTile) {
+				game.eventSupport.publish(new GameEvent(game, GameEventType.GHOST_REVIVED, this, tile()));
+				game.eventSupport.publish(new GameEvent(game, GameEventType.GHOST_STARTED_LEAVING_HOUSE, this, tile()));
+			}
+		}
+
+		case LEAVING_HOUSE -> {
+			setSpeed(game.level.ghostSpeed / 2, BASE_SPEED);
+			boolean leftHouse = leaveHouse(game.level.world.ghostHouse());
+			if (leftHouse) {
+				game.eventSupport.publish(new GameEvent(game, GameEventType.GHOST_FINISHED_LEAVING_HOUSE, this, tile()));
+			}
+		}
+
+		case FRIGHTENED -> {
+			if (game.level.world.isTunnel(tile())) {
+				setSpeed(game.level.ghostSpeedTunnel, BASE_SPEED);
+				tryMoving(game.level.world);
+			} else {
+				setSpeed(game.level.ghostSpeedFrightened, BASE_SPEED);
+				roam(game.level.world);
+			}
+		}
+
+		case HUNTING_PAC -> {
+			if (game.level.world.isTunnel(tile())) {
+				setSpeed(game.level.ghostSpeedTunnel, BASE_SPEED);
+			} else if (elroy == 1) {
+				setSpeed(game.level.elroy1Speed, BASE_SPEED);
+			} else if (elroy == 2) {
+				setSpeed(game.level.elroy2Speed, BASE_SPEED);
+			} else {
+				setSpeed(game.level.ghostSpeed, BASE_SPEED);
+			}
+
+			/*
+			 * In Ms. Pac-Man, Blinky and Pinky move randomly during the *first* scatter phase. Some say, the original
+			 * intention had been to randomize the scatter target of *all* ghosts in Ms. Pac-Man but because of a bug, only
+			 * the scatter target of Blinky and Pinky would have been affected. Who knows?
+			 */
+			if (gameVariant == MS_PACMAN && huntingPhase == 0 && (id == RED_GHOST || id == PINK_GHOST)) {
+				roam(game.level.world);
+			} else if (HuntingTimer.isScatteringPhase(huntingPhase) && elroy == 0) {
+				scatter(game.level.world);
+			} else {
+				chase(game.level.world);
+			}
+		}
+
+		case DEAD -> {
+			setSpeed(game.level.ghostSpeed * 2, BASE_SPEED);
+			boolean reachedHouse = returnHome(game.level.world, game.level.world.ghostHouse());
+			if (reachedHouse) {
+				game.eventSupport.publish(new GameEvent(game, GameEventType.GHOST_ENTERED_HOUSE, this, tile()));
+			}
+		}
+		}
 	}
 }
