@@ -50,7 +50,7 @@ import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.TickTimer.TickTimerState;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.model.common.world.World;
+import de.amr.games.pacman.model.common.world.GhostHouse;
 
 /**
  * Common part of the Pac-Man and Ms. Pac-Man game models.
@@ -136,8 +136,7 @@ public abstract class GameModel {
 
 	public void resetGuys() {
 		player.placeAt(level.world.playerHomeTile(), HTS, 0);
-		player.setMoveDir(level.world.playerStartDir());
-		player.setWishDir(level.world.playerStartDir());
+		player.setBothDirs(level.world.playerStartDir());
 		player.show();
 		player.velocity = V2d.NULL;
 		player.targetTile = null; // used in autopilot mode
@@ -149,15 +148,13 @@ public abstract class GameModel {
 
 		for (Ghost ghost : ghosts) {
 			ghost.placeAt(ghost.homeTile, HTS, 0);
-			ghost.setMoveDir(level.world.ghostStartDir(ghost.id));
-			ghost.setWishDir(level.world.ghostStartDir(ghost.id));
+			ghost.setBothDirs(level.world.ghostStartDir(ghost.id));
 			ghost.show();
 			ghost.velocity = V2d.NULL;
 			ghost.targetTile = null;
 			ghost.stuck = false;
 			ghost.state = GhostState.LOCKED;
 			ghost.bounty = 0;
-			// these values are reset only when a level is started:
 			// ghost.dotCounter = 0;
 			// ghost.elroyMode = 0;
 		}
@@ -166,29 +163,29 @@ public abstract class GameModel {
 		}
 	}
 
-	protected void initGhosts(int levelNumber, World world, Ghost[] ghosts) {
+	protected void initGhosts(int levelNumber, Ghost[] ghosts, GhostHouse house) {
 		for (Ghost ghost : ghosts) {
 			ghost.dotCounter = 0;
 			ghost.elroy = 0;
 		}
 
-		ghosts[RED_GHOST].homeTile = world.ghostHouse().doorTileLeft().minus(0, 1);
-		ghosts[RED_GHOST].revivalTile = world.ghostHouse().seatMiddle();
+		ghosts[RED_GHOST].homeTile = house.entry();
+		ghosts[RED_GHOST].revivalTile = house.seatMiddle();
 		ghosts[RED_GHOST].globalDotLimit = Integer.MAX_VALUE;
 		ghosts[RED_GHOST].privateDotLimit = 0;
 
-		ghosts[PINK_GHOST].homeTile = world.ghostHouse().seatMiddle();
-		ghosts[PINK_GHOST].revivalTile = world.ghostHouse().seatMiddle();
+		ghosts[PINK_GHOST].homeTile = house.seatMiddle();
+		ghosts[PINK_GHOST].revivalTile = house.seatMiddle();
 		ghosts[PINK_GHOST].globalDotLimit = 7;
 		ghosts[PINK_GHOST].privateDotLimit = 0;
 
-		ghosts[CYAN_GHOST].homeTile = world.ghostHouse().seatLeft();
-		ghosts[CYAN_GHOST].revivalTile = world.ghostHouse().seatLeft();
+		ghosts[CYAN_GHOST].homeTile = house.seatLeft();
+		ghosts[CYAN_GHOST].revivalTile = house.seatLeft();
 		ghosts[CYAN_GHOST].globalDotLimit = 17;
 		ghosts[CYAN_GHOST].privateDotLimit = levelNumber == 1 ? 30 : 0;
 
-		ghosts[ORANGE_GHOST].homeTile = world.ghostHouse().seatRight();
-		ghosts[ORANGE_GHOST].revivalTile = world.ghostHouse().seatRight();
+		ghosts[ORANGE_GHOST].homeTile = house.seatRight();
+		ghosts[ORANGE_GHOST].revivalTile = house.seatRight();
 		ghosts[ORANGE_GHOST].globalDotLimit = Integer.MAX_VALUE;
 		ghosts[ORANGE_GHOST].privateDotLimit = levelNumber == 1 ? 60 : levelNumber == 2 ? 50 : 0;
 	}
@@ -375,7 +372,7 @@ public abstract class GameModel {
 	 */
 	public void killGhost(Ghost ghost) {
 		ghost.state = DEAD;
-		ghost.targetTile = level.world.ghostHouse().doorTileLeft().minus(0, 1);
+		ghost.targetTile = level.world.ghostHouse().entry();
 		ghost.bounty = ghostBounty;
 		ghostBounty *= 2;
 		level.numGhostsKilled++;

@@ -138,7 +138,7 @@ public class PacManGame extends GameModel {
 		theWorld = createWorld();
 		player = new Pac("Pac-Man");
 		createGhosts("Blinky", "Pinky", "Inky", "Clyde");
-		initGhosts(1, theWorld, ghosts);
+		initGhosts(1, ghosts, theWorld.ghostHouse());
 		bonus = new StaticBonus(new V2d(theWorld.bonusTile().scaled(TS)).plus(HTS, 0));
 		hiscoreFile = new File(System.getProperty("user.home"), "highscore-pacman.xml");
 	}
@@ -157,7 +157,7 @@ public class PacManGame extends GameModel {
 		levelCounter.add(level.bonusSymbol);
 
 		player.starvingTimeLimit = (int) sec_to_ticks(levelNumber < 5 ? 4 : 3);
-		initGhosts(levelNumber, level.world, ghosts);
+		initGhosts(levelNumber, ghosts, level.world.ghostHouse());
 		ghostBounty = firstGhostBounty;
 		bonus.init();
 	}

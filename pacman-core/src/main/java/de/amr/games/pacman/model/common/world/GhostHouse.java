@@ -24,6 +24,7 @@ SOFTWARE.
 
 package de.amr.games.pacman.model.common.world;
 
+import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
 
 /**
@@ -38,6 +39,10 @@ public interface GhostHouse {
 	V2i doorTileLeft();
 
 	V2i doorTileRight();
+
+	default V2i entry() {
+		return doorTileLeft().plus(Direction.UP.vec);
+	}
 
 	default boolean isDoor(V2i tile) {
 		return tile.equals(doorTileLeft()) || tile.equals(doorTileRight());
