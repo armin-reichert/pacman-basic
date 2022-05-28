@@ -28,6 +28,7 @@ import static de.amr.games.pacman.lib.Logging.log;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.model.common.Bonus;
 import de.amr.games.pacman.model.common.BonusState;
+import de.amr.games.pacman.model.common.Entity;
 import de.amr.games.pacman.model.common.world.World;
 
 /**
@@ -35,12 +36,11 @@ import de.amr.games.pacman.model.common.world.World;
  * 
  * @author Armin Reichert
  */
-public class StaticBonus implements Bonus {
+public class StaticBonus extends Entity implements Bonus {
 
 	private BonusState state;
 	private int symbol;
 	private int value;
-	private V2d position;
 	private long timer;
 
 	public StaticBonus(V2d position) {
