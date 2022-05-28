@@ -26,6 +26,7 @@ package de.amr.games.pacman.model.common;
 import static de.amr.games.pacman.lib.Misc.insideRange;
 import static de.amr.games.pacman.model.common.GameModel.BASE_SPEED;
 import static de.amr.games.pacman.model.common.GameVariant.MS_PACMAN;
+import static de.amr.games.pacman.model.common.HuntingTimer.isScatteringPhase;
 import static de.amr.games.pacman.model.common.world.World.HTS;
 import static de.amr.games.pacman.model.common.world.World.t;
 
@@ -259,46 +260,43 @@ public class Ghost extends Creature {
 	}
 
 	public void update(GameModel game, GameVariant gameVariant, int huntingPhase) {
+		var world = game.level.world;
 		switch (state) {
-
 		case LOCKED -> {
-			if (atGhostHouseDoor(game.level.world.ghostHouse())) {
+			if (atGhostHouseDoor(world.ghostHouse())) {
 				setSpeed(0, BASE_SPEED);
 			} else {
-				setSpeed(game.level.ghostSpeed / 2, BASE_SPEED);
-				bounce(game.level.world.ghostHouse());
+				setSpeed(0.5 * game.level.ghostSpeed, BASE_SPEED);
+				bounce(world.ghostHouse());
 			}
 		}
-
 		case ENTERING_HOUSE -> {
-			setSpeed(game.level.ghostSpeed * 2, BASE_SPEED);
-			boolean reachedRevivalTile = enterHouse(game.level.world.ghostHouse());
-			if (reachedRevivalTile) {
+			setSpeed(2 * game.level.ghostSpeed, BASE_SPEED);
+			boolean revivalTileReached = enterHouse(world.ghostHouse());
+			if (revivalTileReached) {
+				// TODO one event is enough
 				game.eventSupport.publish(new GameEvent(game, GameEventType.GHOST_REVIVED, this, tile()));
 				game.eventSupport.publish(new GameEvent(game, GameEventType.GHOST_STARTED_LEAVING_HOUSE, this, tile()));
 			}
 		}
-
 		case LEAVING_HOUSE -> {
-			setSpeed(game.level.ghostSpeed / 2, BASE_SPEED);
-			boolean leftHouse = leaveHouse(game.level.world.ghostHouse());
-			if (leftHouse) {
+			setSpeed(0.5 * game.level.ghostSpeed, BASE_SPEED);
+			boolean houseLeft = leaveHouse(world.ghostHouse());
+			if (houseLeft) {
 				game.eventSupport.publish(new GameEvent(game, GameEventType.GHOST_FINISHED_LEAVING_HOUSE, this, tile()));
 			}
 		}
-
 		case FRIGHTENED -> {
-			if (game.level.world.isTunnel(tile())) {
+			if (world.isTunnel(tile())) {
 				setSpeed(game.level.ghostSpeedTunnel, BASE_SPEED);
-				tryMoving(game.level.world);
+				tryMoving(world);
 			} else {
 				setSpeed(game.level.ghostSpeedFrightened, BASE_SPEED);
-				roam(game.level.world);
+				roam(world);
 			}
 		}
-
 		case HUNTING_PAC -> {
-			if (game.level.world.isTunnel(tile())) {
+			if (world.isTunnel(tile())) {
 				setSpeed(game.level.ghostSpeedTunnel, BASE_SPEED);
 			} else if (elroy == 1) {
 				setSpeed(game.level.elroy1Speed, BASE_SPEED);
@@ -307,25 +305,23 @@ public class Ghost extends Creature {
 			} else {
 				setSpeed(game.level.ghostSpeed, BASE_SPEED);
 			}
-
 			/*
 			 * In Ms. Pac-Man, Blinky and Pinky move randomly during the *first* scatter phase. Some say, the original
 			 * intention had been to randomize the scatter target of *all* ghosts in Ms. Pac-Man but because of a bug, only
 			 * the scatter target of Blinky and Pinky would have been affected. Who knows?
 			 */
 			if (gameVariant == MS_PACMAN && huntingPhase == 0 && (id == RED_GHOST || id == PINK_GHOST)) {
-				roam(game.level.world);
-			} else if (HuntingTimer.isScatteringPhase(huntingPhase) && elroy == 0) {
-				scatter(game.level.world);
+				roam(world);
+			} else if (isScatteringPhase(huntingPhase) && elroy <= 0) {
+				scatter(world);
 			} else {
-				chase(game.level.world);
+				chase(world);
 			}
 		}
-
 		case DEAD -> {
-			setSpeed(game.level.ghostSpeed * 2, BASE_SPEED);
-			boolean reachedHouse = returnHome(game.level.world, game.level.world.ghostHouse());
-			if (reachedHouse) {
+			setSpeed(2 * game.level.ghostSpeed, BASE_SPEED);
+			boolean houseReached = returnHome(world, world.ghostHouse());
+			if (houseReached) {
 				game.eventSupport.publish(new GameEvent(game, GameEventType.GHOST_ENTERED_HOUSE, this, tile()));
 			}
 		}
