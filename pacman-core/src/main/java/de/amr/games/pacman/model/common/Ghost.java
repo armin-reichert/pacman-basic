@@ -23,19 +23,22 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.common;
 
+import static de.amr.games.pacman.lib.Direction.DOWN;
+import static de.amr.games.pacman.lib.Direction.LEFT;
+import static de.amr.games.pacman.lib.Direction.RIGHT;
+import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.lib.Misc.insideRange;
 import static de.amr.games.pacman.model.common.GameModel.BASE_SPEED;
 import static de.amr.games.pacman.model.common.GameVariant.MS_PACMAN;
 import static de.amr.games.pacman.model.common.HuntingTimer.isScatteringPhase;
 import static de.amr.games.pacman.model.common.world.World.HTS;
-import static de.amr.games.pacman.model.common.world.World.t;
+import static de.amr.games.pacman.model.common.world.World.TS;
 
 import java.util.function.Supplier;
 
 import de.amr.games.pacman.event.GameEvent;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.lib.Direction;
-import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.world.GhostHouse;
 import de.amr.games.pacman.model.common.world.World;
@@ -136,6 +139,8 @@ public class Ghost extends Creature {
 			setSpeed(2 * game.level.ghostSpeed, BASE_SPEED);
 			boolean revivalTileReached = enterHouse(world.ghostHouse());
 			if (revivalTileReached) {
+				state = GhostState.LEAVING_HOUSE;
+				setBothDirs(moveDir.opposite());
 				game.eventSupport.publish(new GameEvent(game, GameEventType.GHOST_STARTS_LEAVING_HOUSE, this, tile()));
 			}
 		}
@@ -143,6 +148,9 @@ public class Ghost extends Creature {
 			setSpeed(0.5 * game.level.ghostSpeed, BASE_SPEED);
 			boolean houseLeft = leaveHouse(world.ghostHouse());
 			if (houseLeft) {
+				state = GhostState.HUNTING_PAC;
+				setBothDirs(LEFT);
+				// TODO Inky behaves differently
 				game.eventSupport.publish(new GameEvent(game, GameEventType.GHOST_COMPLETES_LEAVING_HOUSE, this, tile()));
 			}
 		}
@@ -180,8 +188,11 @@ public class Ghost extends Creature {
 		}
 		case DEAD -> {
 			setSpeed(2 * game.level.ghostSpeed, BASE_SPEED);
-			boolean houseReached = returnHome(world, world.ghostHouse());
+			boolean houseReached = returnToHouse(world, world.ghostHouse());
 			if (houseReached) {
+				setBothDirs(DOWN);
+				targetTile = revivalTile;
+				state = GhostState.ENTERING_HOUSE;
 				game.eventSupport.publish(new GameEvent(game, GameEventType.GHOST_ENTERS_HOUSE, this, tile()));
 			}
 		}
@@ -189,17 +200,9 @@ public class Ghost extends Creature {
 	}
 
 	/**
-	 * @return {@code true} if the ghost is near the ghosthouse door.
-	 */
-	private boolean atGhostHouseDoor(GhostHouse house) {
-		V2i tileAboveDoor = house.doorTileLeft().plus(Direction.UP.vec);
-		return tile().equals(tileAboveDoor) && insideRange(offset().x, HTS, 1);
-	}
-
-	/**
 	 * Lets the ghost head for its current chasing target.
 	 */
-	public void chase(World world) {
+	private void chase(World world) {
 		headForTile(world, fnChasingTargetTile.get());
 		tryMoving(world);
 	}
@@ -207,7 +210,7 @@ public class Ghost extends Creature {
 	/**
 	 * Lets the ghost head for its scatter tile.
 	 */
-	public void scatter(World world) {
+	private void scatter(World world) {
 		headForTile(world, world.ghostScatterTile(id));
 		tryMoving(world);
 	}
@@ -217,7 +220,7 @@ public class Ghost extends Creature {
 	 * 
 	 * TODO: this is not 100% what the Pac-Man dossier says.
 	 */
-	public void roam(World world) {
+	private void roam(World world) {
 		if (newTileEntered) {
 			wishDir = Direction.shuffled().stream()
 					.filter(dir -> dir != moveDir.opposite() && canAccessTile(world, tile().plus(dir.vec))).findAny()
@@ -229,17 +232,13 @@ public class Ghost extends Creature {
 	/**
 	 * Lets the ghost return back to the ghost house.
 	 * 
+	 * @param world the world
 	 * @param house the ghost house
 	 * @return {@code true} if the ghost has reached the house
 	 */
-	public boolean returnHome(World world, GhostHouse house) {
-		if (atGhostHouseDoor(house) && moveDir != Direction.DOWN) {
-			// house reached, start entering
+	private boolean returnToHouse(World world, GhostHouse house) {
+		if (atGhostHouseDoor(house) && moveDir != DOWN) {
 			setOffset(HTS, 0);
-			setMoveDir(Direction.DOWN);
-			setWishDir(Direction.DOWN);
-			targetTile = revivalTile;
-			state = GhostState.ENTERING_HOUSE;
 			return true;
 		}
 		headForTile(world, targetTile);
@@ -248,30 +247,29 @@ public class Ghost extends Creature {
 	}
 
 	/**
-	 * Lets the ghost enter the house and moving to its revival position.
+	 * @return {@code true} if the ghost is near the ghosthouse door.
+	 */
+	private boolean atGhostHouseDoor(GhostHouse house) {
+		V2i tileAboveDoor = house.doorTileLeft().plus(UP.vec);
+		return tile().equals(tileAboveDoor) && insideRange(offset().x, HTS, 1);
+	}
+
+	/**
+	 * Lets the ghost enter the house and moving to its target position.
 	 * 
 	 * @param house the ghost house
-	 * @return {@code true} if the ghost has reached its revival position
+	 * @return {@code true} if the ghost has reached its target position
 	 */
-	public boolean enterHouse(GhostHouse house) {
-		V2i tile = tile();
-		V2d offset = offset();
-		if (tile.equals(targetTile) && offset.y >= 0) {
-			// Target position inside house reached. Turn around and start leaving house.
-			Direction backwards = moveDir.opposite();
-			setMoveDir(backwards);
-			setWishDir(backwards);
-			state = GhostState.LEAVING_HOUSE;
+	private boolean enterHouse(GhostHouse house) {
+		if (tile().equals(targetTile) && offset().y >= 0) {
 			return true;
 		}
-		if (tile.equals(house.seatMiddle()) && offset.y >= 0) {
+		if (tile().equals(house.seatMiddle()) && offset().y >= 0) {
 			// Center seat reached, move towards left or right seat.
 			if (targetTile.x < house.seatMiddle().x) {
-				setMoveDir(Direction.LEFT);
-				setWishDir(Direction.LEFT);
+				setBothDirs(LEFT);
 			} else if (targetTile.x > house.seatMiddle().x) {
-				setMoveDir(Direction.RIGHT);
-				setWishDir(Direction.RIGHT);
+				setBothDirs(RIGHT);
 			}
 		}
 		move();
@@ -283,48 +281,35 @@ public class Ghost extends Creature {
 	 * house door.
 	 * 
 	 * @param house the ghost house
-	 * @return {@code true} if the ghost has left the house
+	 * @return {@code true} if the ghost left the house
 	 */
-	public boolean leaveHouse(GhostHouse house) {
-		V2i tile = tile();
-		V2d offset = offset();
-		// House left? Resume hunting.
-		if (tile.equals(house.doorTileLeft().minus(0, 1)) && insideRange(offset.y, 0, 1)) {
+	private boolean leaveHouse(GhostHouse house) {
+		V2i houseEntry = house.doorTileLeft().plus(UP.vec);
+		if (tile().equals(houseEntry) && insideRange(offset().y, 0, 1)) {
 			setOffset(HTS, 0);
-			// TODO not quite working:
-			if (id == CYAN_GHOST) {
-				setBothDirs(Direction.RIGHT);
-			} else {
-				setBothDirs(Direction.LEFT);
-			}
-			state = GhostState.HUNTING_PAC;
 			return true;
 		}
-		int centerX = t(house.seatMiddle().x) + HTS;
-		int groundY = t(house.seatMiddle().y) + HTS;
+		int centerX = house.seatMiddle().x * TS + HTS, groundY = house.seatMiddle().y * TS + HTS;
 		if (insideRange(position.x, centerX, 1)) {
-			setOffset(HTS, offset.y);
-			setBothDirs(Direction.UP);
+			setOffset(HTS, offset().y);
+			setBothDirs(UP);
 		} else if (position.y < groundY) {
-			setBothDirs(Direction.DOWN);
+			setBothDirs(DOWN);
 		} else {
-			setBothDirs(position.x < centerX ? Direction.RIGHT : Direction.LEFT);
+			setBothDirs(position.x < centerX ? RIGHT : LEFT);
 		}
 		move();
 		return false;
 	}
 
 	/**
-	 * Lets the ghost bounce at its home position inside the house.
-	 * 
-	 * @return {@code true}
+	 * Lets the ghost bounce inside the house.
 	 */
-	public boolean bounce(GhostHouse house) {
-		double zeroLevel = t(house.seatMiddle().y);
+	private void bounce(GhostHouse house) {
+		double zeroLevel = house.seatMiddle().y * TS;
 		if (!insideRange(position.y, zeroLevel, HTS)) {
 			setBothDirs(moveDir.opposite());
 		}
 		move();
-		return true;
 	}
 }
