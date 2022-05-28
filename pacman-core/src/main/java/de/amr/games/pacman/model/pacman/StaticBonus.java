@@ -24,8 +24,11 @@ SOFTWARE.
 package de.amr.games.pacman.model.pacman;
 
 import static de.amr.games.pacman.lib.Logging.log;
+import static de.amr.games.pacman.lib.TickTimer.sec_to_ticks;
 
+import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.lib.V2d;
+import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.BonusState;
 import de.amr.games.pacman.model.common.actors.Entity;
@@ -94,7 +97,37 @@ public class StaticBonus extends Entity implements Bonus {
 	}
 
 	@Override
-	public boolean tick() {
+	public void update(GameModel game) {
+		switch (state) {
+		case INACTIVE -> {
+		}
+		case EDIBLE -> {
+			if (game.player.tile().equals(tile())) {
+				log("%s found bonus: %s", game.player.name, this);
+				game.score(value());
+				eat(sec_to_ticks(2));
+				game.eventSupport.publish(GameEventType.BONUS_GETS_EATEN, tile());
+			} else {
+				boolean expired = tick();
+				if (expired) {
+					log("Bonus expired: %s", this);
+					init();
+					game.eventSupport.publish(GameEventType.BONUS_EXPIRES, tile());
+				}
+			}
+		}
+		case EATEN -> {
+			boolean expired = tick();
+			if (expired) {
+				log("Bonus expired: %s", this);
+				init();
+				game.eventSupport.publish(GameEventType.BONUS_EXPIRES, tile());
+			}
+		}
+		}
+	}
+
+	private boolean tick() {
 		if (timer > 0) {
 			--timer;
 			if (timer == 0) {

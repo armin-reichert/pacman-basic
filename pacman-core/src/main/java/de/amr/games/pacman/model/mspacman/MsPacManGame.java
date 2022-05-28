@@ -23,7 +23,6 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.mspacman;
 
-import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.lib.TickTimer.sec_to_ticks;
 import static de.amr.games.pacman.model.common.actors.Ghost.CYAN_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ORANGE_GHOST;
@@ -33,7 +32,6 @@ import static de.amr.games.pacman.model.common.actors.Ghost.RED_GHOST;
 import java.io.File;
 import java.util.Random;
 
-import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
@@ -374,37 +372,6 @@ public class MsPacManGame extends GameModel {
 			return true;
 		}
 		return false;
-	}
-
-	@Override
-	public void updateBonus() {
-		switch (movingBonus.state()) {
-		case INACTIVE -> {
-		}
-		case EDIBLE -> {
-			boolean leftWorld = movingBonus.followRoute(level.world);
-			if (leftWorld) {
-				log("%s expired (left level.world)", movingBonus);
-				movingBonus.init();
-				eventSupport.publish(GameEventType.BONUS_EXPIRES, movingBonus.tile());
-				return;
-			}
-			if (player.tile().equals(movingBonus.tile())) {
-				log("%s found bonus %s", player.name, movingBonus);
-				score(movingBonus.value());
-				movingBonus.eat(sec_to_ticks(2));
-				eventSupport.publish(GameEventType.BONUS_GETS_EATEN, movingBonus.tile());
-			}
-		}
-		case EATEN -> {
-			boolean expired = movingBonus.tick();
-			if (expired) {
-				log("%s expired", movingBonus);
-				movingBonus.init();
-				eventSupport.publish(GameEventType.BONUS_EXPIRES, movingBonus.tile());
-			}
-		}
-		}
 	}
 
 	@Override

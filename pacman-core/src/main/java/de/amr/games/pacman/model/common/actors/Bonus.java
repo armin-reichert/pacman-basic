@@ -26,6 +26,7 @@ package de.amr.games.pacman.model.common.actors;
 
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.world.World;
 
 /**
@@ -49,7 +50,7 @@ public interface Bonus {
 
 	void activate(World world, int symbol, int value, long ticks);
 
-	void eat(long ticks);
+	void update(GameModel game);
 
-	boolean tick();
+	void eat(long ticks);
 }

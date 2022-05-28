@@ -232,7 +232,7 @@ public abstract class GameModel {
 	/**
 	 * @param points points to score
 	 */
-	protected void score(int points) {
+	public void score(int points) {
 		int oldscore = score;
 		score += points;
 		if (score > highscorePoints) {
@@ -326,8 +326,6 @@ public abstract class GameModel {
 	public abstract Bonus bonus();
 
 	public abstract boolean checkBonusAwarded();
-
-	public abstract void updateBonus();
 
 	// Ghost house rules, see Pac-Man dossier
 

@@ -24,15 +24,18 @@ SOFTWARE.
 package de.amr.games.pacman.model.mspacman;
 
 import static de.amr.games.pacman.lib.Logging.log;
+import static de.amr.games.pacman.lib.TickTimer.sec_to_ticks;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.BonusState;
 import de.amr.games.pacman.model.common.actors.Creature;
@@ -145,7 +148,37 @@ public class MovingBonus extends Creature implements Bonus {
 	}
 
 	@Override
-	public boolean tick() {
+	public void update(GameModel game) {
+		switch (state) {
+		case INACTIVE -> {
+		}
+		case EDIBLE -> {
+			boolean leftWorld = followRoute(game.level.world);
+			if (leftWorld) {
+				log("%s expired (left level.world)", this);
+				init();
+				game.eventSupport.publish(GameEventType.BONUS_EXPIRES, tile());
+				return;
+			}
+			if (game.player.tile().equals(tile())) {
+				log("%s found bonus %s", game.player.name, this);
+				game.score(value());
+				eat(sec_to_ticks(2));
+				game.eventSupport.publish(GameEventType.BONUS_GETS_EATEN, tile());
+			}
+		}
+		case EATEN -> {
+			boolean expired = tick();
+			if (expired) {
+				log("%s expired", this);
+				init();
+				game.eventSupport.publish(GameEventType.BONUS_EXPIRES, tile());
+			}
+		}
+		}
+	}
+
+	private boolean tick() {
 		if (timer > 0) {
 			--timer;
 			if (timer == 0) {

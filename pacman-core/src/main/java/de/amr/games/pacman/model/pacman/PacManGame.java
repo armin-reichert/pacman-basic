@@ -23,7 +23,6 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.pacman;
 
-import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.lib.TickTimer.sec_to_ticks;
 import static de.amr.games.pacman.lib.V2i.v;
 import static de.amr.games.pacman.model.common.actors.Ghost.CYAN_GHOST;
@@ -37,7 +36,6 @@ import java.io.File;
 import java.util.List;
 import java.util.Random;
 
-import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
@@ -212,37 +210,6 @@ public class PacManGame extends GameModel {
 			return true;
 		}
 		return false;
-	}
-
-	@Override
-	public void updateBonus() {
-		switch (bonus.state()) {
-		case INACTIVE -> {
-		}
-		case EDIBLE -> {
-			if (player.tile().equals(bonus.tile())) {
-				log("%s found bonus: %s", player.name, bonus);
-				score(bonus.value());
-				bonus.eat(sec_to_ticks(2));
-				eventSupport.publish(GameEventType.BONUS_GETS_EATEN, bonus.tile());
-			} else {
-				boolean expired = bonus.tick();
-				if (expired) {
-					log("Bonus expired: %s", bonus);
-					bonus.init();
-					eventSupport.publish(GameEventType.BONUS_EXPIRES, bonus.tile());
-				}
-			}
-		}
-		case EATEN -> {
-			boolean expired = bonus.tick();
-			if (expired) {
-				log("Bonus expired: %s", bonus);
-				bonus.init();
-				eventSupport.publish(GameEventType.BONUS_EXPIRES, bonus.tile());
-			}
-		}
-		}
 	}
 
 	@Override
