@@ -93,7 +93,6 @@ public class MovingBonus extends Creature implements Bonus {
 		timer = TickTimer.INDEFINITE;
 		route.clear();
 		newTileEntered = true;
-		forcedOnTrack = true;
 		stuck = false;
 		setSpeed(0.4); // TODO how fast should it walk?
 		hide();

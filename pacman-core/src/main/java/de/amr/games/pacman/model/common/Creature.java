@@ -64,7 +64,7 @@ public class Creature extends Entity {
 	public boolean stuck = false;
 
 	/** Tells if the creature must move on the "track" defined by the tile center connections. */
-	public boolean forcedOnTrack = false;
+//	public boolean forcedOnTrack = false;
 
 	/** The world where this creature lives. */
 	public World world;
@@ -198,7 +198,7 @@ public class Creature extends Entity {
 		final V2i neighborTile = tileBeforeMove.plus(dir.vec);
 
 		// check if creature can turn towards move direction at its current position
-		if (forcedOnTrack && canAccessTile(neighborTile)) {
+		if (canAccessTile(neighborTile)) {
 			if (dir == Direction.LEFT || dir == Direction.RIGHT) {
 				if (abs(offsetBeforeMove.y) > velocity.length()) {
 					stuck = true;

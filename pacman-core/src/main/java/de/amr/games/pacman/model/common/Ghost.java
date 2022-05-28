@@ -162,7 +162,6 @@ public class Ghost extends Creature {
 			setOffset(HTS, 0);
 			setMoveDir(Direction.DOWN);
 			setWishDir(Direction.DOWN);
-			forcedOnTrack = false;
 			targetTile = revivalTile;
 			state = GhostState.ENTERING_HOUSE;
 			return true;
@@ -222,7 +221,6 @@ public class Ghost extends Creature {
 			} else {
 				setBothDirs(Direction.LEFT);
 			}
-			forcedOnTrack = true;
 			state = GhostState.HUNTING_PAC;
 			return true;
 		}

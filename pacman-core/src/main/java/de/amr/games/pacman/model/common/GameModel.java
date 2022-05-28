@@ -140,7 +140,6 @@ public abstract class GameModel {
 		player.velocity = V2d.NULL;
 		player.targetTile = null; // used in autopilot mode
 		player.stuck = false;
-		player.forcedOnTrack = true;
 		player.killed = false;
 		player.restingTicksLeft = 0;
 		player.starvingTicks = 0;
@@ -154,8 +153,6 @@ public abstract class GameModel {
 			ghost.velocity = V2d.NULL;
 			ghost.targetTile = null;
 			ghost.stuck = false;
-			// if ghost home is outside of house (red ghost), ghost is forced on track initially
-			ghost.forcedOnTrack = !level.world.ghostHouse().contains(ghost.tile());
 			ghost.state = GhostState.LOCKED;
 			ghost.bounty = 0;
 			// these values are reset only when a level is started:
