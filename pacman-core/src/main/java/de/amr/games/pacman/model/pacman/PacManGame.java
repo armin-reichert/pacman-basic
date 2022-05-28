@@ -149,10 +149,6 @@ public class PacManGame extends GameModel {
 				new Ghost(CYAN_GHOST, "Inky"), //
 				new Ghost(ORANGE_GHOST, "Clyde") //
 		};
-		ghosts[RED_GHOST].fnChasing = this::chaseShadow;
-		ghosts[PINK_GHOST].fnChasing = this::chaseSpeedy;
-		ghosts[CYAN_GHOST].fnChasing = this::chaseBashful;
-		ghosts[ORANGE_GHOST].fnChasing = this::chasePokey;
 		bonus = new StaticBonus(new V2d(theWorld.bonusTile().scaled(TS)).plus(HTS, 0));
 		hiscoreFile = new File(System.getProperty("user.home"), "highscore-pacman.xml");
 		setLevel(1);

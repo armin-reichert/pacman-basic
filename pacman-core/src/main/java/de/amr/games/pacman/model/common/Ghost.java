@@ -34,8 +34,6 @@ import static de.amr.games.pacman.model.common.HuntingTimer.isScatteringPhase;
 import static de.amr.games.pacman.model.common.world.World.HTS;
 import static de.amr.games.pacman.model.common.world.World.TS;
 
-import java.util.function.Supplier;
-
 import de.amr.games.pacman.event.GameEvent;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.lib.Direction;
@@ -85,9 +83,6 @@ public class Ghost extends Creature {
 
 	/** "Cruise Elroy" mode. Values: 0 (off), 1, -1, 2, -2 (negative means disabled). */
 	public int elroy;
-
-	/** The function computing the chasing tile. */
-	public Supplier<V2i> fnChasing = () -> null;
 
 	public Ghost(int id, String name) {
 		super(name);
@@ -196,12 +191,20 @@ public class Ghost extends Creature {
 		}
 	}
 
-	/**
-	 * Lets the ghost head for its current chasing target.
-	 */
 	private void chase(GameModel game) {
-		headForTile(game.level.world, fnChasing.get());
+		V2i targetTile = switch (id) {
+		case RED_GHOST -> game.player.tile();
+		case PINK_GHOST -> tilesAheadWithBug(game.player, 4);
+		case CYAN_GHOST -> tilesAheadWithBug(game.player, 2).scaled(2).minus(game.ghosts[RED_GHOST].tile());
+		case ORANGE_GHOST -> tile().euclideanDistance(game.player.tile()) < 8 ? scatterTarget : game.player.tile();
+		default -> null;
+		};
+		headForTile(game.level.world, targetTile);
 		tryMoving(game.level.world);
+	}
+
+	private V2i tilesAheadWithBug(Pac player, int n) {
+		return player.moveDir == Direction.UP ? player.tilesAhead(n).minus(n, 0) : player.tilesAhead(n);
 	}
 
 	/**
