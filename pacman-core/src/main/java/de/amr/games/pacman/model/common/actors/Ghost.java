@@ -27,6 +27,7 @@ import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Direction.UP;
+import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.lib.Misc.insideRange;
 import static de.amr.games.pacman.model.common.GameModel.BASE_SPEED;
 import static de.amr.games.pacman.model.common.GameVariant.MS_PACMAN;
@@ -38,6 +39,7 @@ import de.amr.games.pacman.event.GameEvent;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.world.GhostHouse;
@@ -190,6 +192,16 @@ public class Ghost extends Creature {
 				game.eventSupport.publish(new GameEvent(game, GameEventType.GHOST_STARTS_LEAVING_HOUSE, this, tile()));
 			}
 		}
+		}
+	}
+
+	public void checkCruiseElroy(GameLevel level) {
+		if (level.world.foodRemaining() == level.elroy1DotsLeft) {
+			elroy = 1;
+			log("%s becomes Cruise Elroy 1", this.name);
+		} else if (level.world.foodRemaining() == level.elroy2DotsLeft) {
+			elroy = 2;
+			log("%s becomes Cruise Elroy 2", this.name);
 		}
 	}
 

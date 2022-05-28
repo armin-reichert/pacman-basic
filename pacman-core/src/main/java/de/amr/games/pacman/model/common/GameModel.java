@@ -279,7 +279,7 @@ public abstract class GameModel {
 		if (checkBonusAwarded()) {
 			eventSupport.publish(GameEventType.BONUS_GETS_ACTIVE, level.world.bonusTile());
 		}
-		checkElroy();
+		ghosts[RED_GHOST].checkCruiseElroy(level);
 		updateGhostDotCounters();
 		return energizerEaten;
 	}
@@ -308,10 +308,7 @@ public abstract class GameModel {
 	}
 
 	public boolean checkKillPlayer(boolean immune) {
-		if (player.powerTimer.isRunning()) {
-			return false;
-		}
-		if (immune) {
+		if (immune || player.powerTimer.isRunning()) {
 			return false;
 		}
 		Optional<Ghost> killer = ghosts(HUNTING_PAC).filter(player::sameTile).findAny();
@@ -319,30 +316,17 @@ public abstract class GameModel {
 			player.killed = true;
 			log("%s got killed by %s at tile %s", player.name, ghost.name, player.tile());
 			// Elroy mode of red ghost gets disabled when player is killed
-			Ghost redGhost = ghosts[RED_GHOST];
+			var redGhost = ghosts[RED_GHOST];
 			if (redGhost.elroy > 0) {
 				redGhost.elroy = -redGhost.elroy; // negative value means "disabled"
 				log("Elroy mode %d for %s has been disabled", redGhost.elroy, redGhost.name);
 			}
-			// reset and disable global dot counter (used by ghost house logic)
+			// reset and disable global dot counter (see Pac-Man dossier)
 			globalDotCounter = 0;
 			globalDotCounterEnabled = true;
 			log("Global dot counter got reset and enabled");
 		});
 		return killer.isPresent();
-	}
-
-	private boolean checkElroy() {
-		if (level.world.foodRemaining() == level.elroy1DotsLeft) {
-			ghosts[RED_GHOST].elroy = 1;
-			log("Blinky becomes Cruise Elroy 1");
-			return true;
-		} else if (level.world.foodRemaining() == level.elroy2DotsLeft) {
-			ghosts[RED_GHOST].elroy = 2;
-			log("Blinky becomes Cruise Elroy 2");
-			return true;
-		}
-		return false;
 	}
 
 	// Bonus stuff
