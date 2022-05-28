@@ -82,6 +82,9 @@ public abstract class GameModel {
 	/** The four ghosts in order RED, PINK, CYAN, ORANGE. */
 	public Ghost[] ghosts;
 
+	/** Timer used to control hunting phase. */
+	public final HuntingTimer huntingTimer = new HuntingTimer();
+
 	/** Number of player lives when the game starts. */
 	public int initialLives = 3;
 

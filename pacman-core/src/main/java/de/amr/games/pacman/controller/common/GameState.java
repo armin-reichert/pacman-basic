@@ -87,7 +87,6 @@ public enum GameState implements FsmState<GameModel> {
 			game.resetGuys();
 			game.ghosts().forEach(Ghost::hide);
 			game.player.hide();
-			startHuntingPhase(game, 0);
 		}
 
 		@Override
@@ -97,6 +96,7 @@ public enum GameState implements FsmState<GameModel> {
 				game.player.show();
 			}
 			if (timer.hasExpired()) {
+				startHuntingPhase(game, 0);
 				controller.setGameRunning(controller.credit() > 0);
 				controller.changeState(GameState.HUNTING);
 			}
@@ -106,8 +106,8 @@ public enum GameState implements FsmState<GameModel> {
 	HUNTING {
 		@Override
 		public void onUpdate(GameModel game) {
-			controller.huntingTimer().advance();
-			if (controller.huntingTimer().hasExpired()) {
+			game.huntingTimer.advance();
+			if (game.huntingTimer.hasExpired()) {
 				startNextHuntingPhase(game);
 				game.ghosts(HUNTING_PAC).forEach(ghost -> ghost.forceTurningBack(game.level.world));
 				game.ghosts(FRIGHTENED).forEach(ghost -> ghost.forceTurningBack(game.level.world));
@@ -130,7 +130,7 @@ public enum GameState implements FsmState<GameModel> {
 			boolean lostPower = game.updatePlayerPower();
 			if (lostPower) {
 				log("%s lost power, timer=%s", game.player.name, game.player.powerTimer);
-				controller.huntingTimer().start();
+				game.huntingTimer.start();
 				game.ghosts(FRIGHTENED).forEach(ghost -> ghost.state = HUNTING_PAC);
 				game.eventSupport.publish(GameEventType.PLAYER_LOSES_POWER, game.player.tile());
 			} else if (game.player.powerTimer.remaining() == sec_to_ticks(1)) {
@@ -140,7 +140,7 @@ public enum GameState implements FsmState<GameModel> {
 
 			boolean gotPower = game.checkFood(game.player.tile());
 			if (gotPower) {
-				controller.huntingTimer().stop();
+				game.huntingTimer.stop();
 			}
 
 			Ghost releasedGhost = game.releaseLockedGhosts();
@@ -148,7 +148,7 @@ public enum GameState implements FsmState<GameModel> {
 				game.eventSupport.publish(
 						new GameEvent(game, GameEventType.GHOST_STARTS_LEAVING_HOUSE, releasedGhost, releasedGhost.tile()));
 			}
-			game.ghosts().forEach(ghost -> ghost.update(game, controller.gameVariant(), controller.huntingTimer().phase()));
+			game.ghosts().forEach(ghost -> ghost.update(game, controller.gameVariant(), game.huntingTimer.phase()));
 
 			game.updateBonus();
 		}
@@ -157,7 +157,7 @@ public enum GameState implements FsmState<GameModel> {
 	LEVEL_COMPLETE {
 		@Override
 		public void onEnter(GameModel game) {
-			controller.huntingTimer().stop();
+			game.huntingTimer.stop();
 			if (game.bonus() != null) {
 				game.bonus().init();
 			}
@@ -222,7 +222,7 @@ public enum GameState implements FsmState<GameModel> {
 
 		@Override
 		public void onExit(GameModel game) {
-			startHuntingPhase(game, 0);
+//			startHuntingPhase(game, 0);
 		}
 	},
 
@@ -241,7 +241,7 @@ public enum GameState implements FsmState<GameModel> {
 			}
 			currentPlayerControl().accept(game.player);
 			game.ghosts().filter(ghost -> ghost.is(DEAD) && ghost.bounty == 0 || ghost.is(ENTERING_HOUSE))
-					.forEach(ghost -> ghost.update(game, controller.gameVariant(), controller.huntingTimer().phase()));
+					.forEach(ghost -> ghost.update(game, controller.gameVariant(), game.huntingTimer.phase()));
 		}
 
 		@Override
@@ -333,13 +333,13 @@ public enum GameState implements FsmState<GameModel> {
 	}
 
 	protected void startHuntingPhase(GameModel game, int phase) {
-		controller.huntingTimer().startPhase(phase, game.huntingPhaseTicks(phase));
-		if (isScatteringPhase(controller.huntingTimer().phase())) {
-			game.eventSupport.publish(new ScatterPhaseStartsEvent(game, controller.huntingTimer().scatteringPhase()));
+		game.huntingTimer.startPhase(phase, game.huntingPhaseTicks(phase));
+		if (isScatteringPhase(game.huntingTimer.phase())) {
+			game.eventSupport.publish(new ScatterPhaseStartsEvent(game, game.huntingTimer.scatteringPhase()));
 		}
 	}
 
 	protected void startNextHuntingPhase(GameModel game) {
-		startHuntingPhase(game, controller.huntingTimer().phase() + 1);
+		startHuntingPhase(game, game.huntingTimer.phase() + 1);
 	}
 }
