@@ -55,6 +55,7 @@ public class PacManGame extends GameModel {
 
 	public static final int CHERRIES = 0, STRAWBERRY = 1, PEACH = 2, APPLE = 3, GRAPES = 4, GALAXIAN = 5, BELL = 6,
 			KEY = 7;
+	public static final int[] BONUS_VALUE = { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
 
 	private final Object[][] data = {
 	/*@formatter:off*/
@@ -249,16 +250,6 @@ public class PacManGame extends GameModel {
 
 	@Override
 	public int bonusValue(int symbol) {
-		return switch (symbol) {
-		case CHERRIES -> 100;
-		case STRAWBERRY -> 300;
-		case PEACH -> 500;
-		case APPLE -> 700;
-		case GRAPES -> 1000;
-		case GALAXIAN -> 2000;
-		case BELL -> 3000;
-		case KEY -> 5000;
-		default -> throw new IllegalArgumentException("Unknown symbol ID: " + symbol);
-		};
+		return BONUS_VALUE[symbol];
 	}
 }

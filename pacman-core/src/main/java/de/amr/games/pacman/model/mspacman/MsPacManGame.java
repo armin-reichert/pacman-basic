@@ -55,6 +55,7 @@ import de.amr.games.pacman.model.common.world.World;
 public class MsPacManGame extends GameModel {
 
 	public static final int CHERRIES = 0, STRAWBERRY = 1, PEACH = 2, PRETZEL = 3, APPLE = 4, PEAR = 5, BANANA = 6;
+	public static final int[] BONUS_VALUE = { 100, 200, 500, 700, 1000, 2000, 5000 };
 
 	private final Object[][] data = {
 	/*@formatter:off*/
@@ -411,15 +412,6 @@ public class MsPacManGame extends GameModel {
 
 	@Override
 	public int bonusValue(int symbol) {
-		return switch (symbol) {
-		case CHERRIES -> 100;
-		case STRAWBERRY -> 200;
-		case PEACH -> 500;
-		case PRETZEL -> 700;
-		case APPLE -> 1000;
-		case PEAR -> 2000;
-		case BANANA -> 5000;
-		default -> throw new IllegalArgumentException("Unknown symbol ID: " + symbol);
-		};
+		return BONUS_VALUE[symbol];
 	}
 }
