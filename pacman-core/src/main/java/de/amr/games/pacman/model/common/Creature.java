@@ -108,13 +108,23 @@ public class Creature extends Entity {
 	/**
 	 * Sets the fraction of the base speed. See {@link GameModel#BASE_SPEED}.
 	 * 
-	 * @param fraction fraction of base speed
+	 * @param fraction  fraction of base speed
+	 * @param baseSpeed base speed (speed at fraction=1.0)
 	 */
-	public void setSpeed(double fraction) {
+	public void setSpeed(double fraction, double baseSpeed) {
 		if (fraction < 0) {
 			throw new IllegalArgumentException("Negative speed fraction: " + fraction);
 		}
-		velocity = fraction == 0 ? V2d.NULL : new V2d(moveDir.vec).scaled(fraction * GameModel.BASE_SPEED);
+		setSpeed(fraction * baseSpeed);
+	}
+
+	/**
+	 * Sets the speed and updates the velocity vector.
+	 * 
+	 * @param pixelsPerTick speed in pixels per tick
+	 */
+	public void setSpeed(double pixelsPerTick) {
+		velocity = pixelsPerTick == 0 ? V2d.NULL : new V2d(moveDir.vec).scaled(pixelsPerTick);
 	}
 
 	/**

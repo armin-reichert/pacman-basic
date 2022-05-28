@@ -67,6 +67,10 @@ public class Intermission1Controller extends Fsm<State, Context> {
 
 	public static class Context {
 		public final int upperY = t(12), middleY = t(18), lowerY = t(24);
+		public final float pacSpeedChased = 1.125f;
+		public final float pacSpeedRising = 0.75f;
+		public final float ghostSpeedAfterColliding = 0.3f;
+		public final float ghostSpeedChasing = 1.25f;
 		public Flap flap;
 		public Pac pacMan, msPac;
 		public Ghost pinky, inky;
@@ -131,10 +135,10 @@ public class Intermission1Controller extends Fsm<State, Context> {
 			@Override
 			public void onEnter(Context $) {
 				$.flap.hide();
-				$.pacMan.setSpeed(0.9);
-				$.msPac.setSpeed(0.9);
-				$.inky.setSpeed(1);
-				$.pinky.setSpeed(1);
+				$.pacMan.setSpeed($.pacSpeedChased);
+				$.msPac.setSpeed($.pacSpeedChased);
+				$.inky.setSpeed($.ghostSpeedChasing);
+				$.pinky.setSpeed($.ghostSpeedChasing);
 			}
 
 			@Override
@@ -178,21 +182,21 @@ public class Intermission1Controller extends Fsm<State, Context> {
 				// Pac-Man and Ms. Pac-Man meet?
 				else if ($.pacMan.moveDir() == Direction.LEFT && $.pacMan.position.x - $.msPac.position.x < t(2)) {
 					$.pacMan.setMoveDir(Direction.UP);
-					$.pacMan.setSpeed(0.75);
+					$.pacMan.setSpeed($.pacSpeedRising);
 					$.msPac.setMoveDir(Direction.UP);
-					$.msPac.setSpeed(0.75);
+					$.msPac.setSpeed($.pacSpeedRising);
 				}
 				// Inky and Pinky collide?
 				else if ($.inky.moveDir() == Direction.LEFT && $.inky.position.x - $.pinky.position.x < t(2)) {
 					$.inky.setMoveDir(Direction.RIGHT);
 					$.inky.setWishDir(Direction.RIGHT);
-					$.inky.setSpeed(0.3);
+					$.inky.setSpeed($.ghostSpeedAfterColliding);
 					$.inky.velocity = $.inky.velocity.minus(0, 2.0);
 					$.inky.acceleration = new V2d(0, 0.4);
 
 					$.pinky.setMoveDir(Direction.LEFT);
 					$.pinky.setWishDir(Direction.LEFT);
-					$.pinky.setSpeed(0.3);
+					$.pinky.setSpeed($.ghostSpeedAfterColliding);
 					$.pinky.velocity = $.pinky.velocity.minus(0, 2.0);
 					$.pinky.acceleration = new V2d(0, 0.4);
 				} else {

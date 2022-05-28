@@ -274,7 +274,7 @@ public abstract class GameModel {
 		if (player.restingTicksLeft > 0) {
 			player.restingTicksLeft--;
 		} else {
-			player.setSpeed(player.powerTimer.isRunning() ? level.playerSpeedPowered : level.playerSpeed);
+			player.setSpeed(player.powerTimer.isRunning() ? level.playerSpeedPowered : level.playerSpeed, BASE_SPEED);
 			player.tryMoving(level.world);
 		}
 	}
@@ -313,15 +313,15 @@ public abstract class GameModel {
 
 		case LOCKED -> {
 			if (ghost.atGhostHouseDoor(level.world.ghostHouse())) {
-				ghost.setSpeed(0);
+				ghost.setSpeed(0, BASE_SPEED);
 			} else {
-				ghost.setSpeed(level.ghostSpeed / 2);
+				ghost.setSpeed(level.ghostSpeed / 2, BASE_SPEED);
 				ghost.bounce(level.world.ghostHouse());
 			}
 		}
 
 		case ENTERING_HOUSE -> {
-			ghost.setSpeed(level.ghostSpeed * 2);
+			ghost.setSpeed(level.ghostSpeed * 2, BASE_SPEED);
 			boolean reachedRevivalTile = ghost.enterHouse(level.world.ghostHouse());
 			if (reachedRevivalTile) {
 				eventSupport.publish(new GameEvent(this, GameEventType.GHOST_REVIVED, ghost, ghost.tile()));
@@ -330,7 +330,7 @@ public abstract class GameModel {
 		}
 
 		case LEAVING_HOUSE -> {
-			ghost.setSpeed(level.ghostSpeed / 2);
+			ghost.setSpeed(level.ghostSpeed / 2, BASE_SPEED);
 			boolean leftHouse = ghost.leaveHouse(level.world.ghostHouse());
 			if (leftHouse) {
 				eventSupport.publish(new GameEvent(this, GameEventType.GHOST_FINISHED_LEAVING_HOUSE, ghost, ghost.tile()));
@@ -339,23 +339,23 @@ public abstract class GameModel {
 
 		case FRIGHTENED -> {
 			if (level.world.isTunnel(ghost.tile())) {
-				ghost.setSpeed(level.ghostSpeedTunnel);
+				ghost.setSpeed(level.ghostSpeedTunnel, BASE_SPEED);
 				ghost.tryMoving(level.world);
 			} else {
-				ghost.setSpeed(level.ghostSpeedFrightened);
+				ghost.setSpeed(level.ghostSpeedFrightened, BASE_SPEED);
 				ghost.roam(level.world);
 			}
 		}
 
 		case HUNTING_PAC -> {
 			if (level.world.isTunnel(ghost.tile())) {
-				ghost.setSpeed(level.ghostSpeedTunnel);
+				ghost.setSpeed(level.ghostSpeedTunnel, BASE_SPEED);
 			} else if (ghost.elroy == 1) {
-				ghost.setSpeed(level.elroy1Speed);
+				ghost.setSpeed(level.elroy1Speed, BASE_SPEED);
 			} else if (ghost.elroy == 2) {
-				ghost.setSpeed(level.elroy2Speed);
+				ghost.setSpeed(level.elroy2Speed, BASE_SPEED);
 			} else {
-				ghost.setSpeed(level.ghostSpeed);
+				ghost.setSpeed(level.ghostSpeed, BASE_SPEED);
 			}
 
 			/*
@@ -373,7 +373,7 @@ public abstract class GameModel {
 		}
 
 		case DEAD -> {
-			ghost.setSpeed(level.ghostSpeed * 2);
+			ghost.setSpeed(level.ghostSpeed * 2, BASE_SPEED);
 			boolean reachedHouse = ghost.returnHome(level.world, level.world.ghostHouse());
 			if (reachedHouse) {
 				eventSupport.publish(new GameEvent(this, GameEventType.GHOST_ENTERED_HOUSE, ghost, ghost.tile()));
