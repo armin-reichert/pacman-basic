@@ -50,43 +50,43 @@ import de.amr.games.pacman.model.common.world.World;
  */
 public class Ghost extends Creature {
 
-	/** ID of red */
+	/** ID of red ghost. */
 	public static final int RED_GHOST = 0;
 
-	/** ID of pink */
+	/** ID of pink ghost. */
 	public static final int PINK_GHOST = 1;
 
-	/** ID of cyan */
+	/** ID of cyan ghost. */
 	public static final int CYAN_GHOST = 2;
 
-	/** ID of orange */
+	/** ID of orange ghost. */
 	public static final int ORANGE_GHOST = 3;
 
-	/** The ID (color) of the ghost, see {@link GameModel#RED_GHOST} etc. */
+	/** The ID of the ghost, see {@link GameModel#RED_GHOST} etc. */
 	public final int id;
 
-	/** The current state of the */
+	/** The current state of the ghost. */
 	public GhostState state;
 
-	/** The home location of the For the red ghost, this is outside of the house. */
+	/** The home tile of the ghost. */
 	public V2i homeTile;
 
-	/** The revival location inside the house. For the red ghost, this is different from the home location. */
+	/** The revival tile inside the house. For the red ghost, this is different from the home location. */
 	public V2i revivalTile;
 
-	/** The bounty paid for this */
+	/** The bounty paid for this ghost. */
 	public int bounty;
 
-	/** The function computing the target tile when this ghost is in chasing mode. */
+	/** The function computing the chasing tile. */
 	public Supplier<V2i> fnChasingTargetTile;
 
 	/** Individual food counter, used to determine when the ghost can leave the house. */
 	public int dotCounter;
 
-	/** Global number of "dots" Pac-Man has to eat until ghost gets unlocked. */
+	/** Global number of "dots" Pac-Man has to eat until the ghost gets unlocked. */
 	public int globalDotLimit;
 
-	/** Individual number of "dots" Pac-Man has to eat until ghost gets unlocked. */
+	/** Individual number of "dots" Pac-Man has to eat until the ghost gets unlocked. */
 	public int privateDotLimit;
 
 	/** "Cruise Elroy" mode. Values: 0 (off), 1, -1, 2, -2 (negative means disabled). */
@@ -135,22 +135,13 @@ public class Ghost extends Creature {
 				bounce(world.ghostHouse());
 			}
 		}
-		case ENTERING_HOUSE -> {
-			setSpeed(2 * game.level.ghostSpeed, BASE_SPEED);
-			boolean revivalTileReached = enterHouse(world.ghostHouse());
-			if (revivalTileReached) {
-				state = GhostState.LEAVING_HOUSE;
-				setBothDirs(moveDir.opposite());
-				game.eventSupport.publish(new GameEvent(game, GameEventType.GHOST_STARTS_LEAVING_HOUSE, this, tile()));
-			}
-		}
 		case LEAVING_HOUSE -> {
 			setSpeed(0.5 * game.level.ghostSpeed, BASE_SPEED);
 			boolean houseLeft = leaveHouse(world.ghostHouse());
 			if (houseLeft) {
 				state = GhostState.HUNTING_PAC;
+				// TODO Inky behaves differently:
 				setBothDirs(LEFT);
-				// TODO Inky behaves differently
 				game.eventSupport.publish(new GameEvent(game, GameEventType.GHOST_COMPLETES_LEAVING_HOUSE, this, tile()));
 			}
 		}
@@ -194,6 +185,15 @@ public class Ghost extends Creature {
 				targetTile = revivalTile;
 				state = GhostState.ENTERING_HOUSE;
 				game.eventSupport.publish(new GameEvent(game, GameEventType.GHOST_ENTERS_HOUSE, this, tile()));
+			}
+		}
+		case ENTERING_HOUSE -> {
+			setSpeed(2 * game.level.ghostSpeed, BASE_SPEED);
+			boolean revivalTileReached = enterHouse(world.ghostHouse());
+			if (revivalTileReached) {
+				state = GhostState.LEAVING_HOUSE;
+				setBothDirs(moveDir.opposite());
+				game.eventSupport.publish(new GameEvent(game, GameEventType.GHOST_STARTS_LEAVING_HOUSE, this, tile()));
 			}
 		}
 		}
