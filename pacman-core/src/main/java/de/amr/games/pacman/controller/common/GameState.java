@@ -168,7 +168,7 @@ public enum GameState implements FsmState<GameModel> {
 			if (timer.hasExpired()) {
 				if (controller.credit() == 0) {
 					controller.changeState(INTRO);
-				} else if (game.intermissionNumber(game.level.number) != 0) {
+				} else if (game.level.intermissionNumber != 0) {
 					controller.changeState(INTERMISSION);
 				} else {
 					controller.changeState(LEVEL_STARTING);

@@ -169,6 +169,7 @@ public class PacManGame extends GameModel {
 		level.world = theWorld;
 		level.world.resetFood();
 		level.mapNumber = level.mazeNumber = 1;
+		level.intermissionNumber = intermissionNumber(level.number);
 		level.globalDotLimits = new int[] { Integer.MAX_VALUE, 7, 17, Integer.MAX_VALUE };
 		level.privateDotLimits = switch (level.number) {
 		case 1 -> new int[] { 0, 0, 30, 60 };

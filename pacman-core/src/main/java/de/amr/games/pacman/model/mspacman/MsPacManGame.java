@@ -335,6 +335,7 @@ public class MsPacManGame extends GameModel {
 		if (level.number >= 8) {
 			level.bonusSymbol = new Random().nextInt(7);
 		}
+		level.intermissionNumber = intermissionNumber(level.number);
 		level.globalDotLimits = new int[] { Integer.MAX_VALUE, 7, 17, Integer.MAX_VALUE };
 		level.privateDotLimits = switch (level.number) {
 		case 1 -> new int[] { 0, 0, 30, 60 };
