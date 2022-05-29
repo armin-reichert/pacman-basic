@@ -78,7 +78,7 @@ public abstract class GameModel {
 	public static final int ENERGIZER_VALUE = 50;
 	public static final int ENERGIZER_RESTING_TICKS = 3;
 	public static final int FIRST_GHOST_BOUNTY = 200;
-	public static final int LIFES = 3;
+	public static final int INITIAL_LIFES = 3;
 	public static final int EXTRA_LIFE_POINTS = 10_000;
 	public static final int ALL_GHOSTS_KILLED_POINTS = 12_000;
 
@@ -93,6 +93,9 @@ public abstract class GameModel {
 
 	/** Current level. */
 	public GameLevel level;
+
+	/** Number of lives remainingr. */
+	public int lives;
 
 	/** Game score. */
 	public int score;
@@ -132,7 +135,7 @@ public abstract class GameModel {
 
 	public void reset() {
 		score = 0;
-		player.lives = LIFES;
+		lives = INITIAL_LIFES;
 		levelCounter.clear();
 		setLevel(1);
 		Hiscore highscore = new Hiscore(this);
@@ -244,7 +247,7 @@ public abstract class GameModel {
 			highscoreLevel = level.number;
 		}
 		if (oldscore < EXTRA_LIFE_POINTS && score >= EXTRA_LIFE_POINTS) {
-			player.lives++;
+			lives++;
 			eventSupport.publish(new GameEvent(this, GameEventType.PLAYER_GETS_EXTRA_LIFE, null, player.tile()));
 		}
 	}

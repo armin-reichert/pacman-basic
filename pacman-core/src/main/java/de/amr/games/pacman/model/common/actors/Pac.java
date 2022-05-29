@@ -35,9 +35,6 @@ import de.amr.games.pacman.model.common.GameModel;
  */
 public class Pac extends Creature {
 
-	/** Number of lives remaining of this player. */
-	public int lives;
-
 	/** If Pac has been killed. */
 	public boolean killed = false;
 
