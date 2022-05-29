@@ -27,10 +27,8 @@ import java.util.List;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.model.common.GameModel;
 
 /**
  * Interface for accessing the game world.
@@ -108,17 +106,6 @@ public interface World {
 	 * @return the player's home tile
 	 */
 	V2i playerHomeTile();
-
-	/**
-	 * @return player start direction
-	 */
-	Direction playerStartDir();
-
-	/**
-	 * @param ghostID ghost ID, see {@link GameModel#RED_GHOST} etc.
-	 * @return ghost start direction
-	 */
-	Direction ghostStartDir(int ghostID);
 
 	/**
 	 * @return portals inside this world

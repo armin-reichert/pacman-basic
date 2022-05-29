@@ -24,14 +24,9 @@ SOFTWARE.
 package de.amr.games.pacman.model.common.world;
 
 import static de.amr.games.pacman.lib.V2i.v;
-import static de.amr.games.pacman.model.common.actors.Ghost.CYAN_GHOST;
-import static de.amr.games.pacman.model.common.actors.Ghost.ORANGE_GHOST;
-import static de.amr.games.pacman.model.common.actors.Ghost.PINK_GHOST;
-import static de.amr.games.pacman.model.common.actors.Ghost.RED_GHOST;
 
 import java.util.List;
 
-import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
 
 /**
@@ -66,24 +61,8 @@ public class ArcadeWorld extends MapBasedWorld {
 	}
 
 	@Override
-	public Direction playerStartDir() {
-		return Direction.LEFT;
-	}
-
-	@Override
 	public V2i playerHomeTile() {
 		return pacHome;
-	}
-
-	@Override
-	public Direction ghostStartDir(int ghostID) {
-		return switch (ghostID) {
-		case RED_GHOST -> Direction.LEFT;
-		case PINK_GHOST -> Direction.DOWN;
-		case CYAN_GHOST -> Direction.UP;
-		case ORANGE_GHOST -> Direction.UP;
-		default -> throw new IllegalArgumentException("IIlegal ghost ID: " + ghostID);
-		};
 	}
 
 	@Override

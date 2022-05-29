@@ -46,6 +46,7 @@ import de.amr.games.pacman.event.GameEvent;
 import de.amr.games.pacman.event.GameEventSupport;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.ScatterPhaseStartsEvent;
+import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.Hiscore;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.V2d;
@@ -150,7 +151,7 @@ public abstract class GameModel {
 
 	public void resetGuys() {
 		player.placeAt(level.world.playerHomeTile(), HTS, 0);
-		player.setBothDirs(level.world.playerStartDir());
+		player.setBothDirs(Direction.LEFT);
 		player.show();
 		player.velocity = V2d.NULL;
 		player.targetTile = null; // used in autopilot mode
@@ -162,7 +163,12 @@ public abstract class GameModel {
 
 		for (Ghost ghost : ghosts) {
 			ghost.placeAt(ghost.homeTile, HTS, 0);
-			ghost.setBothDirs(level.world.ghostStartDir(ghost.id));
+			ghost.setBothDirs(switch (ghost.id) {
+			case RED_GHOST -> Direction.LEFT;
+			case PINK_GHOST -> Direction.DOWN;
+			case CYAN_GHOST, ORANGE_GHOST -> Direction.UP;
+			default -> null;
+			});
 			ghost.show();
 			ghost.velocity = V2d.NULL;
 			ghost.targetTile = null;
