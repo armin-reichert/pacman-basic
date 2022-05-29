@@ -59,14 +59,23 @@ public class HuntingTimer extends TickTimer {
 		log("%s: started", this);
 	}
 
+	/**
+	 * @return number of current phase <code>(0-7)
+	 */
 	public int phase() {
 		return phase;
 	}
 
+	/**
+	 * @return number of current scattering phase <code>(0-4)</code> or <code>-1</code> if currently chasing
+	 */
 	public int scatteringPhase() {
 		return phase % 2 == 0 ? phase / 2 : -1;
 	}
 
+	/**
+	 * @return number of current chasing phase <code>(0-4)</code> or <code>-1</code> if currently scattering
+	 */
 	public int chasingPhase() {
 		return phase % 2 == 1 ? phase / 2 : -1;
 	}
