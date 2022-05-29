@@ -136,13 +136,14 @@ public class MovingBonus extends Creature implements Bonus {
 	}
 
 	public boolean followRoute(World world) {
+		targetTile = route.get(0);
 		if (tile().equals(targetTile)) {
 			route.remove(0);
 			if (route.isEmpty()) {
 				return true;
 			}
 		}
-		headForTile(world, route.get(0));
+		headForTarget(world);
 		tryMoving(world);
 		return false;
 	}

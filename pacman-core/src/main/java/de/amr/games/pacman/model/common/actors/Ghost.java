@@ -175,6 +175,7 @@ public class Ghost extends Creature {
 		}
 		case DEAD -> {
 			setSpeed(2 * game.level.ghostSpeed, BASE_SPEED);
+			targetTile = world.ghostHouse().entry();
 			boolean houseReached = returnToHouse(world, world.ghostHouse());
 			if (houseReached) {
 				setBothDirs(DOWN);
@@ -213,14 +214,14 @@ public class Ghost extends Creature {
 	}
 
 	private void chase(World world, Pac player, Ghost redGhost) {
-		V2i targetTile = switch (id) {
+		targetTile = switch (id) {
 		case RED_GHOST -> player.tile();
 		case PINK_GHOST -> player.tilesAheadWithBug(4);
 		case CYAN_GHOST -> player.tilesAheadWithBug(2).scaled(2).minus(redGhost.tile());
 		case ORANGE_GHOST -> tile().euclideanDistance(player.tile()) < 8 ? scatterTile : player.tile();
 		default -> null;
 		};
-		headForTile(world, targetTile);
+		headForTarget(world);
 		tryMoving(world);
 	}
 
@@ -228,7 +229,8 @@ public class Ghost extends Creature {
 	 * Lets the ghost head for its scatter tile.
 	 */
 	private void scatter(World world) {
-		headForTile(world, scatterTile);
+		targetTile = scatterTile;
+		headForTarget(world);
 		tryMoving(world);
 	}
 
@@ -258,7 +260,7 @@ public class Ghost extends Creature {
 			setOffset(HTS, 0);
 			return true;
 		}
-		headForTile(world, targetTile);
+		headForTarget(world);
 		tryMoving(world);
 		return false;
 	}

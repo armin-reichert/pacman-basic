@@ -175,9 +175,7 @@ public class Autopilot implements Consumer<Pac> {
 			V2i foodTile = findTileFarestFromGhosts(findNearestFoodTiles());
 			game().player.targetTile = foodTile;
 		}
-		if (game().player.targetTile != null) {
-			game().player.headForTile(world(), game().player.targetTile);
-		}
+		game().player.headForTarget(world());
 	}
 
 	private Ghost findHuntingGhostAhead() {

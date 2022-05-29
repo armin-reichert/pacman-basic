@@ -254,8 +254,10 @@ public class Creature extends Entity {
 	 * As described in the Pac-Man dossier: checks all accessible neighbor tiles in order UP, LEFT, DOWN, RIGHT and
 	 * selects the one with smallest Euclidean distance to the target tile. Reversing the move direction is not allowed.
 	 */
-	public void headForTile(World world, V2i targetTile) {
-		this.targetTile = Objects.requireNonNull(targetTile);
+	public void headForTarget(World world) {
+		if (targetTile == null) {
+			return;
+		}
 		if (!stuck && !newTileEntered) {
 			return;
 		}
