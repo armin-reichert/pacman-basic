@@ -292,7 +292,7 @@ public abstract class GameModel {
 	}
 
 	public boolean checkKillGhosts() {
-		Ghost[] prey = ghosts(FRIGHTENED).filter(player::sameTile).toArray(Ghost[]::new);
+		var prey = ghosts(FRIGHTENED).filter(player::sameTile).toArray(Ghost[]::new);
 		Stream.of(prey).forEach(this::killGhost);
 		return prey.length > 0;
 	}
