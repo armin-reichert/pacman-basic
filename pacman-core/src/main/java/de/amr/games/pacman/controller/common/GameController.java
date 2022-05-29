@@ -212,12 +212,12 @@ public class GameController extends Fsm<GameState, GameModel> {
 		}
 	}
 
-	public void cheatKillAllScaryGhosts() {
+	public void cheatKillAllEatableGhosts() {
 		if (gameRunning && state() != GameState.GHOST_DYING) {
-			Ghost[] scaryGhosts = game().ghosts()
+			Ghost[] prey = game().ghosts()
 					.filter(ghost -> ghost.is(GhostState.HUNTING_PAC) || ghost.is(GhostState.FRIGHTENED)).toArray(Ghost[]::new);
 			game().ghostBounty = GameModel.FIRST_GHOST_BOUNTY;
-			game().killGhosts(scaryGhosts);
+			game().killGhosts(prey);
 			changeState(GameState.GHOST_DYING);
 		}
 	}
