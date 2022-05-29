@@ -86,6 +86,9 @@ public class GameLevel {
 	/** Starts with 1. */
 	public final int number;
 
+	/** Max number of clock ticks Pac can be starving until ghost gets unlocked. */
+	public int pacStarvingTimeLimit;
+
 	public int[] globalDotLimits;
 
 	public int[] privateDotLimits;

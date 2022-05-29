@@ -344,7 +344,7 @@ public abstract class GameModel {
 				return releaseGhost(ghost, "Global dot counter reached limit (%d)", level.globalDotLimits[ghost.id]);
 			} else if (!globalDotCounterEnabled && ghost.dotCounter >= level.privateDotLimits[ghost.id]) {
 				return releaseGhost(ghost, "Private dot counter reached limit (%d)", level.privateDotLimits[ghost.id]);
-			} else if (player.starvingTicks >= player.starvingTimeLimit) {
+			} else if (player.starvingTicks >= level.pacStarvingTimeLimit) {
 				int starved = player.starvingTicks;
 				player.starvingTicks = 0;
 				return releaseGhost(ghost, "%s reached starving limit (%d ticks)", player.name, starved);

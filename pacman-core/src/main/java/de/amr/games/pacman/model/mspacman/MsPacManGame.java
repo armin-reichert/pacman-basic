@@ -310,7 +310,6 @@ public class MsPacManGame extends GameModel {
 		level = new GameLevel(n, n <= LEVEL_DATA.length ? LEVEL_DATA[n - 1] : LEVEL_DATA[LEVEL_DATA.length - 1]);
 		initLevel(level);
 		levelCounter.add(level.bonusSymbol);
-		player.starvingTimeLimit = (int) sec_to_ticks(n < 5 ? 4 : 3);
 		initGhosts(level);
 		ghostBounty = GameModel.FIRST_GHOST_BOUNTY;
 	}
@@ -333,6 +332,7 @@ public class MsPacManGame extends GameModel {
 			level.bonusSymbol = new Random().nextInt(7);
 		}
 		level.intermissionNumber = intermissionNumber(level.number);
+		level.pacStarvingTimeLimit = (int) sec_to_ticks(level.number < 5 ? 4 : 3);
 		level.globalDotLimits = new int[] { Integer.MAX_VALUE, 7, 17, Integer.MAX_VALUE };
 		level.privateDotLimits = switch (level.number) {
 		case 1 -> new int[] { 0, 0, 30, 60 };
