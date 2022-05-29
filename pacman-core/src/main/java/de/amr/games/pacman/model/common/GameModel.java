@@ -290,7 +290,7 @@ public abstract class GameModel {
 		if (checkBonusAwarded()) {
 			eventSupport.publish(GameEventType.BONUS_GETS_ACTIVE, bonus().tile());
 		}
-		ghosts[RED_GHOST].enableCruiseElroy(level);
+		ghosts[RED_GHOST].checkCruiseElroyStart(level);
 		updateGhostDotCounters();
 		return energizerEaten;
 	}
@@ -332,7 +332,7 @@ public abstract class GameModel {
 		killer.ifPresent(ghost -> {
 			log("%s got killed by %s at tile %s", player.name, ghost.name, player.tile());
 			player.killed = true;
-			ghosts[RED_GHOST].disableCruiseElroy();
+			ghosts[RED_GHOST].checkCruiseElroyStop();
 			// reset and disable global dot counter (see Pac-Man dossier)
 			globalDotCounter = 0;
 			globalDotCounterEnabled = true;

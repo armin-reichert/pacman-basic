@@ -194,6 +194,7 @@ public class Ghost extends Creature {
 			setSpeedFraction(2 * game.level.ghostSpeed);
 			boolean revivalTileReached = enterHouse(world.ghostHouse());
 			if (revivalTileReached) {
+				// TODO is there some revival time > 0?
 				state = GhostState.LEAVING_HOUSE;
 				setBothDirs(moveDir.opposite());
 				game.eventSupport.publish(new GameEvent(game, GameEventType.GHOST_STARTS_LEAVING_HOUSE, this, tile()));
@@ -202,7 +203,7 @@ public class Ghost extends Creature {
 		}
 	}
 
-	public void enableCruiseElroy(GameLevel level) {
+	public void checkCruiseElroyStart(GameLevel level) {
 		if (level.world.foodRemaining() == level.elroy1DotsLeft) {
 			elroy = 1;
 			log("%s becomes Cruise Elroy 1", name);
@@ -212,10 +213,10 @@ public class Ghost extends Creature {
 		}
 	}
 
-	public void disableCruiseElroy() {
+	public void checkCruiseElroyStop() {
 		if (elroy > 0) {
 			elroy = -elroy; // negative value means "disabled"
-			log("Elroy mode %d for %s has been disabled", elroy, name);
+			log("Cruise Elroy %d for %s stops", elroy, name);
 		}
 	}
 
@@ -255,7 +256,7 @@ public class Ghost extends Creature {
 	}
 
 	/**
-	 * Lets the ghost return back to the ghost house.
+	 * Lets the ghost return back to the ghost house entry.
 	 * 
 	 * @param world the world
 	 * @param house the ghost house
@@ -263,7 +264,6 @@ public class Ghost extends Creature {
 	 */
 	private boolean returnToHouse(World world, GhostHouse house) {
 		if (atGhostHouseDoor(house) && moveDir != DOWN) {
-			setOffset(HTS, 0);
 			return true;
 		}
 		computeDirectionTowardsTarget(world);
@@ -272,11 +272,10 @@ public class Ghost extends Creature {
 	}
 
 	/**
-	 * @return {@code true} if the ghost is near the ghosthouse door.
+	 * @return {@code true} if the ghost is at the ghosthouse door.
 	 */
 	private boolean atGhostHouseDoor(GhostHouse house) {
-		V2i tileAboveDoor = house.doorTileLeft().plus(UP.vec);
-		return tile().equals(tileAboveDoor) && insideRange(offset().x, HTS, 1);
+		return tile().equals(house.entry()) && insideRange(offset().x, HTS, 1);
 	}
 
 	/**

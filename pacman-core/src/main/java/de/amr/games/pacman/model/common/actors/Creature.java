@@ -123,6 +123,11 @@ public class Creature extends Entity {
 		setSpeed(fraction * baseSpeed);
 	}
 
+	/**
+	 * Sets the speed as a fraction of the game base speed which is 1.25 pixels/sec.
+	 * 
+	 * @param fraction fraction of base speed
+	 */
 	public void setSpeedFraction(double fraction) {
 		setSpeed(fraction, GameModel.BASE_SPEED);
 	}
