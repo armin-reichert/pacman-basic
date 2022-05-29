@@ -254,27 +254,20 @@ public class Creature extends Entity {
 	 * As described in the Pac-Man dossier: checks all accessible neighbor tiles in order UP, LEFT, DOWN, RIGHT and
 	 * selects the one with smallest Euclidean distance to the target tile. Reversing the move direction is not allowed.
 	 */
-	public void headForTarget(World world) {
-		if (targetTile == null) {
+	public void computeDirectionTowardsTarget(World world) {
+		if (targetTile == null || world.isPortal(tile())) {
 			return;
 		}
-		if (!stuck && !newTileEntered) {
-			return;
-		}
-		V2i currentTile = tile();
-		if (world.isPortal(currentTile)) {
+		if (!newTileEntered && !stuck) {
 			return;
 		}
 		double minDist = Double.MAX_VALUE;
-		for (Direction dir : TURN_PRIORITY) {
-			if (dir == moveDir.opposite()) {
-				continue;
-			}
-			V2i neighborTile = currentTile.plus(dir.vec);
-			if (canAccessTile(world, neighborTile)) {
-				double distToTarget = neighborTile.euclideanDistance(targetTile);
-				if (distToTarget < minDist) {
-					minDist = distToTarget;
+		for (var dir : TURN_PRIORITY) {
+			var neighborTile = tile().plus(dir.vec);
+			if (dir != moveDir.opposite() && canAccessTile(world, neighborTile)) {
+				double d = neighborTile.euclideanDistance(targetTile);
+				if (d < minDist) {
+					minDist = d;
 					wishDir = dir;
 				}
 			}

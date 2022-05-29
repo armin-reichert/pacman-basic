@@ -143,7 +143,7 @@ public class MovingBonus extends Creature implements Bonus {
 				return true;
 			}
 		}
-		headForTarget(world);
+		computeDirectionTowardsTarget(world);
 		tryMoving(world);
 		return false;
 	}

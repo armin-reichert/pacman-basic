@@ -221,7 +221,7 @@ public class Ghost extends Creature {
 		case ORANGE_GHOST -> tile().euclideanDistance(player.tile()) < 8 ? scatterTile : player.tile();
 		default -> null;
 		};
-		headForTarget(world);
+		computeDirectionTowardsTarget(world);
 		tryMoving(world);
 	}
 
@@ -230,7 +230,7 @@ public class Ghost extends Creature {
 	 */
 	private void scatter(World world) {
 		targetTile = scatterTile;
-		headForTarget(world);
+		computeDirectionTowardsTarget(world);
 		tryMoving(world);
 	}
 
@@ -260,7 +260,7 @@ public class Ghost extends Creature {
 			setOffset(HTS, 0);
 			return true;
 		}
-		headForTarget(world);
+		computeDirectionTowardsTarget(world);
 		tryMoving(world);
 		return false;
 	}
