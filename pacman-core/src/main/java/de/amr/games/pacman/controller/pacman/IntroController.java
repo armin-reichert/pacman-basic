@@ -150,14 +150,14 @@ public class IntroController extends Fsm<State, Context> {
 			public void onEnter(Context $) {
 				timer.setDurationIndefinite().start();
 				$.pacMan.show();
-				$.pacMan.setSpeed(1);
+				$.pacMan.setAbsSpeed(1);
 				$.pacMan.setPosition(t(ArcadeWorld.TILES_X), t(20));
 				$.pacMan.setMoveDir(Direction.LEFT);
 				for (Ghost ghost : $.ghosts) {
 					ghost.position = $.pacMan.position.plus(24 + ghost.id * 16, 0);
 					ghost.setWishDir(Direction.LEFT);
 					ghost.setMoveDir(Direction.LEFT);
-					ghost.setSpeed(1.05);
+					ghost.setAbsSpeed(1.05);
 					ghost.show();
 					ghost.state = GhostState.HUNTING_PAC;
 				}
@@ -185,7 +185,7 @@ public class IntroController extends Fsm<State, Context> {
 					ghost.state = GhostState.FRIGHTENED;
 					ghost.setWishDir(Direction.RIGHT);
 					ghost.setMoveDir(Direction.RIGHT);
-					ghost.setSpeed(0.6);
+					ghost.setAbsSpeed(0.6);
 				}
 				$.ghostKilledTime = timer.tick();
 			}
@@ -200,7 +200,7 @@ public class IntroController extends Fsm<State, Context> {
 				}
 				if (timer.tick() == 8) {
 					$.pacMan.setMoveDir(Direction.RIGHT);
-					$.pacMan.setSpeed(1);
+					$.pacMan.setAbsSpeed(1);
 				}
 				if ($.pacMan.position.x > t(29)) {
 					$.slowBlinking.restart();
@@ -215,19 +215,19 @@ public class IntroController extends Fsm<State, Context> {
 					victim.state = GhostState.DEAD;
 					victim.bounty = List.of(200, 400, 800, 1600).get(victim.id);
 					$.pacMan.hide();
-					$.pacMan.setSpeed(0);
-					Stream.of($.ghosts).forEach(ghost -> ghost.setSpeed(0));
+					$.pacMan.setAbsSpeed(0);
+					Stream.of($.ghosts).forEach(ghost -> ghost.setAbsSpeed(0));
 				});
 				// After some time, Pac-Man and the surviving ghosts get visible and move again
 				if (timer.tick() - $.ghostKilledTime == sec_to_ticks(1)) {
 					$.pacMan.show();
-					$.pacMan.setSpeed(1.0);
+					$.pacMan.setAbsSpeed(1.0);
 					for (Ghost ghost : $.ghosts) {
 						if (ghost.state == GhostState.DEAD) {
 							ghost.hide();
 						} else {
 							ghost.show();
-							ghost.setSpeed(0.6);
+							ghost.setAbsSpeed(0.6);
 						}
 					}
 					$.ghostKilledTime = timer.tick();

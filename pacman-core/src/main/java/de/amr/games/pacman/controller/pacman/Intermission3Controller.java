@@ -81,7 +81,7 @@ public class Intermission3Controller extends Fsm<State, Context> {
 				$.pac = new Pac("Pac-Man");
 				$.pac.setMoveDir(Direction.LEFT);
 				$.pac.setPosition(t(40), t(20));
-				$.pac.setSpeed(1.2);
+				$.pac.setAbsSpeed(1.2);
 				$.pac.show();
 
 				$.blinky = new Ghost(RED_GHOST, "Blinky");
@@ -89,14 +89,14 @@ public class Intermission3Controller extends Fsm<State, Context> {
 				$.blinky.setMoveDir(Direction.LEFT);
 				$.blinky.setWishDir(Direction.LEFT);
 				$.blinky.position = $.pac.position.plus(t(8), 0);
-				$.blinky.setSpeed(1.2);
+				$.blinky.setAbsSpeed(1.2);
 				$.blinky.show();
 			}
 
 			@Override
 			public void onUpdate(Context $) {
 				if ($.blinky.position.x <= -t(15)) {
-					$.pac.setSpeed(0);
+					$.pac.setAbsSpeed(0);
 					$.blinky.setMoveDir(Direction.RIGHT);
 					$.blinky.setWishDir(Direction.RIGHT);
 					controller.changeState(RETURNING);

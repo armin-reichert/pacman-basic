@@ -97,7 +97,7 @@ public class MovingBonus extends Creature implements Bonus {
 		route.clear();
 		newTileEntered = true;
 		stuck = false;
-		setSpeed(0.4); // TODO how fast should it walk?
+		setAbsSpeed(0.4); // TODO how fast should it walk?
 		hide();
 	}
 

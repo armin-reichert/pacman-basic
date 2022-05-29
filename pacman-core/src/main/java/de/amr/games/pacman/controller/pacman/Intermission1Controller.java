@@ -80,7 +80,7 @@ public class Intermission1Controller extends Fsm<State, Context> {
 				$.pac = new Pac("Pac-Man");
 				$.pac.setMoveDir(Direction.LEFT);
 				$.pac.setPosition(t(30), t(20));
-				$.pac.setSpeed(1.0);
+				$.pac.setAbsSpeed(1.0);
 				$.pac.show();
 
 				$.blinky = new Ghost(RED_GHOST, "Blinky");
@@ -88,7 +88,7 @@ public class Intermission1Controller extends Fsm<State, Context> {
 				$.blinky.setMoveDir(Direction.LEFT);
 				$.blinky.setWishDir(Direction.LEFT);
 				$.blinky.position = $.pac.position.plus(t(3) + 0.5, 0);
-				$.blinky.setSpeed(1.05);
+				$.blinky.setAbsSpeed(1.05);
 				$.blinky.show();
 			}
 
@@ -112,12 +112,12 @@ public class Intermission1Controller extends Fsm<State, Context> {
 				timer.setDurationSeconds(7).start();
 				$.pac.setMoveDir(Direction.RIGHT);
 				$.pac.setPosition(-t(24), t(20));
-				$.pac.setSpeed(1.0);
+				$.pac.setAbsSpeed(1.0);
 				$.blinky.state = GhostState.FRIGHTENED;
 				$.blinky.setMoveDir(Direction.RIGHT);
 				$.blinky.setWishDir(Direction.RIGHT);
 				$.blinky.setPosition(-t(1), t(20));
-				$.blinky.setSpeed(0.6);
+				$.blinky.setAbsSpeed(0.6);
 			}
 
 			@Override

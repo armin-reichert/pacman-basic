@@ -135,10 +135,10 @@ public class Intermission1Controller extends Fsm<State, Context> {
 			@Override
 			public void onEnter(Context $) {
 				$.flap.hide();
-				$.pacMan.setSpeed($.pacSpeedChased);
-				$.msPac.setSpeed($.pacSpeedChased);
-				$.inky.setSpeed($.ghostSpeedChasing);
-				$.pinky.setSpeed($.ghostSpeedChasing);
+				$.pacMan.setAbsSpeed($.pacSpeedChased);
+				$.msPac.setAbsSpeed($.pacSpeedChased);
+				$.inky.setAbsSpeed($.ghostSpeedChasing);
+				$.pinky.setAbsSpeed($.ghostSpeedChasing);
 			}
 
 			@Override
@@ -182,21 +182,21 @@ public class Intermission1Controller extends Fsm<State, Context> {
 				// Pac-Man and Ms. Pac-Man meet?
 				else if ($.pacMan.moveDir() == Direction.LEFT && $.pacMan.position.x - $.msPac.position.x < t(2)) {
 					$.pacMan.setMoveDir(Direction.UP);
-					$.pacMan.setSpeed($.pacSpeedRising);
+					$.pacMan.setAbsSpeed($.pacSpeedRising);
 					$.msPac.setMoveDir(Direction.UP);
-					$.msPac.setSpeed($.pacSpeedRising);
+					$.msPac.setAbsSpeed($.pacSpeedRising);
 				}
 				// Inky and Pinky collide?
 				else if ($.inky.moveDir() == Direction.LEFT && $.inky.position.x - $.pinky.position.x < t(2)) {
 					$.inky.setMoveDir(Direction.RIGHT);
 					$.inky.setWishDir(Direction.RIGHT);
-					$.inky.setSpeed($.ghostSpeedAfterColliding);
+					$.inky.setAbsSpeed($.ghostSpeedAfterColliding);
 					$.inky.velocity = $.inky.velocity.minus(0, 2.0);
 					$.inky.acceleration = new V2d(0, 0.4);
 
 					$.pinky.setMoveDir(Direction.LEFT);
 					$.pinky.setWishDir(Direction.LEFT);
-					$.pinky.setSpeed($.ghostSpeedAfterColliding);
+					$.pinky.setAbsSpeed($.ghostSpeedAfterColliding);
 					$.pinky.velocity = $.pinky.velocity.minus(0, 2.0);
 					$.pinky.acceleration = new V2d(0, 0.4);
 				} else {
@@ -220,13 +220,13 @@ public class Intermission1Controller extends Fsm<State, Context> {
 			@Override
 			public void onEnter(Context $) {
 				timer.setDurationSeconds(3).start();
-				$.pacMan.setSpeed(0);
+				$.pacMan.setAbsSpeed(0);
 				$.pacMan.setMoveDir(Direction.LEFT);
-				$.msPac.setSpeed(0);
+				$.msPac.setAbsSpeed(0);
 				$.msPac.setMoveDir(Direction.RIGHT);
-				$.inky.setSpeed(0);
+				$.inky.setAbsSpeed(0);
 				$.inky.hide();
-				$.pinky.setSpeed(0);
+				$.pinky.setAbsSpeed(0);
 				$.pinky.hide();
 				$.heart.setPosition(($.pacMan.position.x + $.msPac.position.x) / 2, $.pacMan.position.y - t(2));
 				$.heart.show();

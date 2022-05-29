@@ -122,14 +122,14 @@ public class Ghost extends Creature {
 		switch (state) {
 		case LOCKED -> {
 			if (atGhostHouseDoor(world.ghostHouse())) {
-				setSpeed(0);
+				setAbsSpeed(0);
 			} else {
-				setSpeedFraction(0.4 * game.level.ghostSpeed);
+				setRelSpeed(0.4 * game.level.ghostSpeed);
 				bounce(world.ghostHouse());
 			}
 		}
 		case LEAVING_HOUSE -> {
-			setSpeedFraction(0.5 * game.level.ghostSpeed);
+			setRelSpeed(0.5 * game.level.ghostSpeed);
 			boolean houseLeft = leaveHouse(world.ghostHouse());
 			if (houseLeft) {
 				state = GhostState.HUNTING_PAC;
@@ -140,22 +140,22 @@ public class Ghost extends Creature {
 		}
 		case FRIGHTENED -> {
 			if (world.isTunnel(tile())) {
-				setSpeedFraction(game.level.ghostSpeedTunnel);
+				setRelSpeed(game.level.ghostSpeedTunnel);
 				tryMoving(world);
 			} else {
-				setSpeedFraction(game.level.ghostSpeedFrightened);
+				setRelSpeed(game.level.ghostSpeedFrightened);
 				roam(world);
 			}
 		}
 		case HUNTING_PAC -> {
 			if (world.isTunnel(tile())) {
-				setSpeedFraction(game.level.ghostSpeedTunnel);
+				setRelSpeed(game.level.ghostSpeedTunnel);
 			} else if (elroy == 1) {
-				setSpeedFraction(game.level.elroy1Speed);
+				setRelSpeed(game.level.elroy1Speed);
 			} else if (elroy == 2) {
-				setSpeedFraction(game.level.elroy2Speed);
+				setRelSpeed(game.level.elroy2Speed);
 			} else {
-				setSpeedFraction(game.level.ghostSpeed);
+				setRelSpeed(game.level.ghostSpeed);
 			}
 			/*
 			 * In Ms. Pac-Man, Blinky and Pinky move randomly during the *first* scatter phase. Some say, the original
@@ -180,7 +180,7 @@ public class Ghost extends Creature {
 			}
 		}
 		case DEAD -> {
-			setSpeedFraction(2 * game.level.ghostSpeed);
+			setRelSpeed(2 * game.level.ghostSpeed);
 			targetTile = world.ghostHouse().entry();
 			boolean houseReached = returnToHouse(world, world.ghostHouse());
 			if (houseReached) {
@@ -191,7 +191,7 @@ public class Ghost extends Creature {
 			}
 		}
 		case ENTERING_HOUSE -> {
-			setSpeedFraction(2 * game.level.ghostSpeed);
+			setRelSpeed(2 * game.level.ghostSpeed);
 			boolean revivalTileReached = enterHouse(world.ghostHouse());
 			if (revivalTileReached) {
 				// TODO is there some revival time > 0?
@@ -316,7 +316,7 @@ public class Ghost extends Creature {
 			setOffset(HTS, offset().y); // center horizontally before rising
 			setBothDirs(UP);
 		} else if (position.y < center.y) {
-			setBothDirs(DOWN);
+			setBothDirs(DOWN); // sink below zero level before moving to the center
 		} else {
 			setBothDirs(position.x < center.x ? RIGHT : LEFT);
 		}

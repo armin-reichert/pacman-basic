@@ -93,14 +93,14 @@ public class IntroController extends Fsm<State, Context> {
 				$.lightsTimer.setDurationIndefinite().start();
 				$.msPacMan.setMoveDir(LEFT);
 				$.msPacMan.setPosition(t(36), $.turningPoint.y);
-				$.msPacMan.setSpeed(0.95);
+				$.msPacMan.setAbsSpeed(0.95);
 				$.msPacMan.show();
 				for (Ghost ghost : $.ghosts) {
 					ghost.state = GhostState.HUNTING_PAC;
 					ghost.setMoveDir(LEFT);
 					ghost.setWishDir(LEFT);
 					ghost.setPosition(t(36), $.turningPoint.y);
-					ghost.setSpeed(0.95);
+					ghost.setAbsSpeed(0.95);
 					ghost.show();
 				}
 				$.ghostIndex = 0;
@@ -126,7 +126,7 @@ public class IntroController extends Fsm<State, Context> {
 					ghost.setWishDir(UP);
 				}
 				if (ghost.position.y <= $.lightsTopLeft.y + ghost.id * 18) {
-					ghost.setSpeed(0);
+					ghost.setAbsSpeed(0);
 					if (++$.ghostIndex == $.ghosts.length) {
 						controller.changeState(State.MSPACMAN);
 					}
@@ -140,7 +140,7 @@ public class IntroController extends Fsm<State, Context> {
 				$.lightsTimer.advance();
 				$.msPacMan.move();
 				if ($.msPacMan.position.x <= t(14)) {
-					$.msPacMan.setSpeed(0);
+					$.msPacMan.setAbsSpeed(0);
 					controller.changeState(State.READY_TO_PLAY);
 				}
 			}

@@ -60,7 +60,7 @@ public class Pac extends Creature {
 		if (restingCountdown > 0) {
 			restingCountdown--;
 		} else {
-			setSpeedFraction(powerTimer.isRunning() ? level.playerSpeedPowered : level.playerSpeed);
+			setRelSpeed(powerTimer.isRunning() ? level.playerSpeedPowered : level.playerSpeed);
 			tryMoving(level.world);
 		}
 		boolean lostPower = updatePower();
