@@ -120,7 +120,9 @@ public enum GameState implements FsmState<GameModel> {
 					return;
 				}
 			}
-			if (game.checkKillGhosts()) {
+			var prey = game.ghosts(FRIGHTENED).filter(game.player::sameTile).toArray(Ghost[]::new);
+			if (prey.length > 0) {
+				game.killGhosts(prey);
 				controller.changeState(GHOST_DYING);
 				return;
 			}
