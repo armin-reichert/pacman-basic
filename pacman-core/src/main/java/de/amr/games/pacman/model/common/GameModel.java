@@ -82,20 +82,17 @@ public abstract class GameModel {
 	public static final int EXTRA_LIFE_POINTS = 10_000;
 	public static final int ALL_GHOSTS_KILLED_POINTS = 12_000;
 
-	/** Current level-specific data. */
-	public GameLevel level;
-
-	/** Number of running intermissions scene in test mode. */
-	public int intermissionTestNumber;
-
 	/** The player, Pac-Man or Ms. Pac-Man. */
-	public Pac player;
+	public final Pac player;
 
 	/** The four ghosts in order RED, PINK, CYAN, ORANGE. */
-	public Ghost[] ghosts;
+	public final Ghost[] ghosts;
 
 	/** Timer used to control hunting phase. */
 	public final HuntingTimer huntingTimer = new HuntingTimer();
+
+	/** Current level. */
+	public GameLevel level;
 
 	/** Game score. */
 	public int score;
@@ -118,9 +115,20 @@ public abstract class GameModel {
 	/** Points scored at current high score. */
 	public int highscorePoints;
 
+	/** Number of current intermission scene in test mode. */
+	public int intermissionTestNumber;
+
 	public final GameEventSupport eventSupport = new GameEventSupport(this);
 
 	public abstract File highscoreFile();
+
+	public GameModel(Pac player, Ghost... ghosts) {
+		if (ghosts.length != 4) {
+			throw new IllegalArgumentException("We need exactly 4 ghosts in order RED, PINK, CYAN, ORANGE");
+		}
+		this.player = player;
+		this.ghosts = ghosts;
+	}
 
 	public void reset() {
 		score = 0;

@@ -55,7 +55,7 @@ public class MsPacManGame extends GameModel {
 	public static final int CHERRIES = 0, STRAWBERRY = 1, PEACH = 2, PRETZEL = 3, APPLE = 4, PEAR = 5, BANANA = 6;
 	public static final int[] BONUS_VALUE = { 100, 200, 500, 700, 1000, 2000, 5000 };
 
-	private final Object[][] data = {
+	private static final Object[][] LEVEL_DATA = {
 	/*@formatter:off*/
 	/* 1*/ {CHERRIES,    80, 75, 40,  20,  80, 10,  85,  90, 50, 6, 5},
 	/* 2*/ {STRAWBERRY,  90, 85, 45,  30,  90, 15,  95,  95, 55, 5, 5},
@@ -286,13 +286,8 @@ public class MsPacManGame extends GameModel {
 	 * </ul>
 	 */
 	public MsPacManGame() {
-		player = new Pac("Ms. Pac-Man");
-		ghosts = new Ghost[] { //
-				new Ghost(RED_GHOST, "Blinky"), //
-				new Ghost(PINK_GHOST, "Pinky"), //
-				new Ghost(CYAN_GHOST, "Inky"), //
-				new Ghost(ORANGE_GHOST, "Sue") //
-		};
+		super(new Pac("Ms. Pac-Man"), new Ghost(RED_GHOST, "Blinky"), new Ghost(PINK_GHOST, "Pinky"),
+				new Ghost(CYAN_GHOST, "Inky"), new Ghost(ORANGE_GHOST, "Sue"));
 		movingBonus = new MovingBonus();
 		setLevel(1);
 	}
@@ -312,7 +307,7 @@ public class MsPacManGame extends GameModel {
 		if (n < 1) {
 			throw new IllegalArgumentException("Level number must be at least 1, but is: " + n);
 		}
-		level = new GameLevel(n, n <= data.length ? data[n - 1] : data[data.length - 1]);
+		level = new GameLevel(n, n <= LEVEL_DATA.length ? LEVEL_DATA[n - 1] : LEVEL_DATA[LEVEL_DATA.length - 1]);
 		initLevel(level);
 		levelCounter.add(level.bonusSymbol);
 		player.starvingTimeLimit = (int) sec_to_ticks(n < 5 ? 4 : 3);

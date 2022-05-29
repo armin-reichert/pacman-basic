@@ -55,7 +55,7 @@ public class PacManGame extends GameModel {
 			KEY = 7;
 	public static final int[] BONUS_VALUE = { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
 
-	private final Object[][] data = {
+	private static final Object[][] LEVEL_DATA = {
 	/*@formatter:off*/
 	/* 1*/ {CHERRIES,    80, 75, 40,  20,  80, 10,  85,  90, 50, 6, 5},
 	/* 2*/ {STRAWBERRY,  90, 85, 45,  30,  90, 15,  95,  95, 55, 5, 5},
@@ -127,9 +127,6 @@ public class PacManGame extends GameModel {
 		//@formatter:on
 	};
 
-	private final ArcadeWorld theWorld;
-	private final StaticBonus bonus;
-
 	public static ArcadeWorld createWorld() {
 		ArcadeWorld world = new ArcadeWorld(MAP);
 		world.upwardsBlockedTiles = List.of(v(12, 13), v(15, 13), v(12, 25), v(15, 25));
@@ -137,16 +134,14 @@ public class PacManGame extends GameModel {
 		return world;
 	}
 
+	// all levels use the same world
+	private final ArcadeWorld theWorld;
+	private final StaticBonus bonus;
+
 	public PacManGame() {
-		// all levels use the same world
+		super(new Pac("Pac-Man"), new Ghost(RED_GHOST, "Blinky"), new Ghost(PINK_GHOST, "Pinky"),
+				new Ghost(CYAN_GHOST, "Inky"), new Ghost(ORANGE_GHOST, "Clyde"));
 		theWorld = createWorld();
-		player = new Pac("Pac-Man");
-		ghosts = new Ghost[] { //
-				new Ghost(RED_GHOST, "Blinky"), //
-				new Ghost(PINK_GHOST, "Pinky"), //
-				new Ghost(CYAN_GHOST, "Inky"), //
-				new Ghost(ORANGE_GHOST, "Clyde") //
-		};
 		bonus = new StaticBonus(new V2d(theWorld.bonusTile().scaled(TS)).plus(HTS, 0));
 		setLevel(1);
 	}
@@ -158,7 +153,7 @@ public class PacManGame extends GameModel {
 
 	@Override
 	public void setLevel(int n) {
-		level = new GameLevel(n, n <= data.length ? data[n - 1] : data[data.length - 1]);
+		level = new GameLevel(n, n <= LEVEL_DATA.length ? LEVEL_DATA[n - 1] : LEVEL_DATA[LEVEL_DATA.length - 1]);
 		initLevel(level);
 		levelCounter.add(level.bonusSymbol);
 		player.starvingTimeLimit = (int) sec_to_ticks(n < 5 ? 4 : 3);
