@@ -161,7 +161,7 @@ public enum GameState implements FsmState<GameModel> {
 			if (game.bonus() != null) {
 				game.bonus().init();
 			}
-			game.player.setSpeed(0, GameModel.BASE_SPEED);
+			game.player.setSpeed(0);
 			game.ghosts().forEach(Ghost::hide);
 			timer.setDurationIndefinite().start();
 		}
@@ -200,7 +200,7 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void onEnter(GameModel game) {
 			timer.setDurationIndefinite().start();
-			game.player.setSpeed(0, GameModel.BASE_SPEED);
+			game.player.setSpeed(0);
 			game.ghosts(FRIGHTENED).forEach(ghost -> ghost.state = HUNTING_PAC);
 			if (game.bonus() != null) {
 				game.bonus().init();
@@ -259,9 +259,9 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void onEnter(GameModel game) {
 			timer.setDurationSeconds(5).start();
-			game.ghosts().forEach(ghost -> ghost.setSpeed(0, GameModel.BASE_SPEED));
+			game.ghosts().forEach(ghost -> ghost.setSpeed(0));
 			game.ghosts().forEach(Ghost::show);
-			game.player.setSpeed(0, GameModel.BASE_SPEED);
+			game.player.setSpeed(0);
 			game.player.show();
 			new Hiscore(game).save();
 		}

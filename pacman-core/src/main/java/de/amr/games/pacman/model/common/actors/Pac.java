@@ -26,7 +26,6 @@ package de.amr.games.pacman.model.common.actors;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.TickTimer.TickTimerState;
 import de.amr.games.pacman.model.common.GameLevel;
-import de.amr.games.pacman.model.common.GameModel;
 
 /**
  * Pac-Man or Ms. Pac-Man.
@@ -61,7 +60,7 @@ public class Pac extends Creature {
 		if (restingCountdown > 0) {
 			restingCountdown--;
 		} else {
-			setSpeed(powerTimer.isRunning() ? level.playerSpeedPowered : level.playerSpeed, GameModel.BASE_SPEED);
+			setSpeedFraction(powerTimer.isRunning() ? level.playerSpeedPowered : level.playerSpeed);
 			tryMoving(level.world);
 		}
 		boolean lostPower = updatePower();

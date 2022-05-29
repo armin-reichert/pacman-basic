@@ -29,7 +29,6 @@ import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.lib.Misc.insideRange;
-import static de.amr.games.pacman.model.common.GameModel.BASE_SPEED;
 import static de.amr.games.pacman.model.common.GameVariant.MS_PACMAN;
 import static de.amr.games.pacman.model.common.world.World.HTS;
 import static de.amr.games.pacman.model.common.world.World.TS;
@@ -123,14 +122,14 @@ public class Ghost extends Creature {
 		switch (state) {
 		case LOCKED -> {
 			if (atGhostHouseDoor(world.ghostHouse())) {
-				setSpeed(0, BASE_SPEED);
+				setSpeed(0);
 			} else {
-				setSpeed(0.4 * game.level.ghostSpeed, BASE_SPEED);
+				setSpeedFraction(0.4 * game.level.ghostSpeed);
 				bounce(world.ghostHouse());
 			}
 		}
 		case LEAVING_HOUSE -> {
-			setSpeed(0.5 * game.level.ghostSpeed, BASE_SPEED);
+			setSpeedFraction(0.5 * game.level.ghostSpeed);
 			boolean houseLeft = leaveHouse(world.ghostHouse());
 			if (houseLeft) {
 				state = GhostState.HUNTING_PAC;
@@ -141,22 +140,22 @@ public class Ghost extends Creature {
 		}
 		case FRIGHTENED -> {
 			if (world.isTunnel(tile())) {
-				setSpeed(game.level.ghostSpeedTunnel, BASE_SPEED);
+				setSpeedFraction(game.level.ghostSpeedTunnel);
 				tryMoving(world);
 			} else {
-				setSpeed(game.level.ghostSpeedFrightened, BASE_SPEED);
+				setSpeedFraction(game.level.ghostSpeedFrightened);
 				roam(world);
 			}
 		}
 		case HUNTING_PAC -> {
 			if (world.isTunnel(tile())) {
-				setSpeed(game.level.ghostSpeedTunnel, BASE_SPEED);
+				setSpeedFraction(game.level.ghostSpeedTunnel);
 			} else if (elroy == 1) {
-				setSpeed(game.level.elroy1Speed, BASE_SPEED);
+				setSpeedFraction(game.level.elroy1Speed);
 			} else if (elroy == 2) {
-				setSpeed(game.level.elroy2Speed, BASE_SPEED);
+				setSpeedFraction(game.level.elroy2Speed);
 			} else {
-				setSpeed(game.level.ghostSpeed, BASE_SPEED);
+				setSpeedFraction(game.level.ghostSpeed);
 			}
 			/*
 			 * In Ms. Pac-Man, Blinky and Pinky move randomly during the *first* scatter phase. Some say, the original
@@ -181,7 +180,7 @@ public class Ghost extends Creature {
 			}
 		}
 		case DEAD -> {
-			setSpeed(2 * game.level.ghostSpeed, BASE_SPEED);
+			setSpeedFraction(2 * game.level.ghostSpeed);
 			targetTile = world.ghostHouse().entry();
 			boolean houseReached = returnToHouse(world, world.ghostHouse());
 			if (houseReached) {
@@ -192,7 +191,7 @@ public class Ghost extends Creature {
 			}
 		}
 		case ENTERING_HOUSE -> {
-			setSpeed(2 * game.level.ghostSpeed, BASE_SPEED);
+			setSpeedFraction(2 * game.level.ghostSpeed);
 			boolean revivalTileReached = enterHouse(world.ghostHouse());
 			if (revivalTileReached) {
 				state = GhostState.LEAVING_HOUSE;
