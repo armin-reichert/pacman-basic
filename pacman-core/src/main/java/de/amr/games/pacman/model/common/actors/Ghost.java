@@ -31,7 +31,6 @@ import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.lib.Misc.insideRange;
 import static de.amr.games.pacman.model.common.GameModel.BASE_SPEED;
 import static de.amr.games.pacman.model.common.GameVariant.MS_PACMAN;
-import static de.amr.games.pacman.model.common.HuntingTimer.isScatteringPhase;
 import static de.amr.games.pacman.model.common.world.World.HTS;
 import static de.amr.games.pacman.model.common.world.World.TS;
 
@@ -41,7 +40,6 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
-import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.world.GhostHouse;
 import de.amr.games.pacman.model.common.world.World;
 
@@ -120,7 +118,7 @@ public class Ghost extends Creature {
 	}
 
 	// TODO Is still do not know the exact speed values
-	public void update(GameModel game, GameVariant gameVariant, int huntingPhase) {
+	public void update(GameModel game) {
 		var world = game.level.world;
 		switch (state) {
 		case LOCKED -> {
@@ -165,12 +163,21 @@ public class Ghost extends Creature {
 			 * intention had been to randomize the scatter target of *all* ghosts in Ms. Pac-Man but because of a bug, only
 			 * the scatter target of Blinky and Pinky would have been affected. Who knows?
 			 */
-			if (gameVariant == MS_PACMAN && huntingPhase == 0 && (id == RED_GHOST || id == PINK_GHOST)) {
+			if (game.variant == MS_PACMAN && game.huntingTimer.scatteringPhase() == 0
+					&& (id == RED_GHOST || id == PINK_GHOST)) {
 				roam(world);
-			} else if (isScatteringPhase(huntingPhase) && elroy <= 0) {
-				scatter(world);
-			} else {
+			}
+			/*
+			 * Chase if the hunting timer is in a chasing phase or if I am in Elroy mode.
+			 */
+			else if (elroy > 0 || game.huntingTimer.chasingPhase() != -1) {
 				chase(world, game.player, game.ghosts[RED_GHOST]);
+			}
+			/**
+			 * Scatter else.
+			 */
+			else {
+				scatter(world);
 			}
 		}
 		case DEAD -> {

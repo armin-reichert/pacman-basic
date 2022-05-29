@@ -82,6 +82,9 @@ public abstract class GameModel {
 	public static final int EXTRA_LIFE_POINTS = 10_000;
 	public static final int ALL_GHOSTS_KILLED_POINTS = 12_000;
 
+	/** The game variant respresented by this model. */
+	public final GameVariant variant;
+
 	/** The player, Pac-Man or Ms. Pac-Man. */
 	public final Pac player;
 
@@ -125,10 +128,11 @@ public abstract class GameModel {
 
 	public abstract File highscoreFile();
 
-	public GameModel(Pac player, Ghost... ghosts) {
+	public GameModel(GameVariant gameVariant, Pac player, Ghost... ghosts) {
 		if (ghosts.length != 4) {
 			throw new IllegalArgumentException("We need exactly 4 ghosts in order RED, PINK, CYAN, ORANGE");
 		}
+		this.variant = gameVariant;
 		this.player = player;
 		this.ghosts = ghosts;
 	}

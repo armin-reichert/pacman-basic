@@ -39,6 +39,7 @@ import java.util.Random;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
+import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.Pac;
 import de.amr.games.pacman.model.common.world.ArcadeWorld;
@@ -136,7 +137,7 @@ public class PacManGame extends GameModel {
 	private final StaticBonus bonus;
 
 	public PacManGame() {
-		super(new Pac("Pac-Man"), new Ghost(RED_GHOST, "Blinky"), new Ghost(PINK_GHOST, "Pinky"),
+		super(GameVariant.PACMAN, new Pac("Pac-Man"), new Ghost(RED_GHOST, "Blinky"), new Ghost(PINK_GHOST, "Pinky"),
 				new Ghost(CYAN_GHOST, "Inky"), new Ghost(ORANGE_GHOST, "Clyde"));
 		bonus = new StaticBonus(new V2d(v(13, 20).scaled(TS)).plus(HTS, 0));
 		setLevel(1);

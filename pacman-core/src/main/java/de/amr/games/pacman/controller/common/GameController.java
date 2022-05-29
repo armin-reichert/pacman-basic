@@ -30,7 +30,6 @@ import static de.amr.games.pacman.controller.common.GameState.READY;
 import static java.util.function.Predicate.not;
 
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.Consumer;
 
 import de.amr.games.pacman.event.GameEventListener;
@@ -72,7 +71,7 @@ import de.amr.games.pacman.model.pacman.PacManGame;
 public class GameController extends Fsm<GameState, GameModel> {
 
 	private final Map<GameVariant, GameModel> games;
-	private GameVariant selectedGameVariant;
+	private GameModel selectedGame;
 	private int credit;
 	private boolean gameRunning;
 	private boolean playerImmune;
@@ -89,7 +88,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 			addStateChangeListener(
 					(oldState, newState) -> game.eventSupport.publish(new GameStateChangeEvent(game, oldState, newState)));
 		});
-		setSelectedGameVariant(variant);
+		selectGame(variant);
 		changeState(INTRO);
 	}
 
@@ -153,27 +152,23 @@ public class GameController extends Fsm<GameState, GameModel> {
 		return playerControl;
 	}
 
-	public GameVariant gameVariant() {
-		return selectedGameVariant;
-	}
-
-	private void setSelectedGameVariant(GameVariant variant) {
-		selectedGameVariant = Objects.requireNonNull(variant);
+	private void selectGame(GameVariant variant) {
 		// ensure only selected game model fires events
-		for (var v : GameVariant.values()) {
-			games.get(v).eventSupport.setEnabled(v == selectedGameVariant);
+		for (var game : games.values()) {
+			game.eventSupport.setEnabled(game.variant == variant);
 		}
+		selectedGame = games.get(variant);
 	}
 
 	public GameModel game() {
-		return games.get(selectedGameVariant);
+		return selectedGame;
 	}
 
 	// public actions
 
 	public void selectGameVariant(GameVariant variant) {
 		if (state() == INTRO) {
-			setSelectedGameVariant(variant);
+			selectGame(variant);
 			restartInInitialState(INTRO);
 		}
 	}

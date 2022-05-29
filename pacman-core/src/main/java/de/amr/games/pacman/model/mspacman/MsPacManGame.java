@@ -35,6 +35,7 @@ import java.util.Random;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
+import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.Pac;
 import de.amr.games.pacman.model.common.world.ArcadeWorld;
@@ -286,7 +287,7 @@ public class MsPacManGame extends GameModel {
 	 * </ul>
 	 */
 	public MsPacManGame() {
-		super(new Pac("Ms. Pac-Man"), new Ghost(RED_GHOST, "Blinky"), new Ghost(PINK_GHOST, "Pinky"),
+		super(GameVariant.MS_PACMAN, new Pac("Ms. Pac-Man"), new Ghost(RED_GHOST, "Blinky"), new Ghost(PINK_GHOST, "Pinky"),
 				new Ghost(CYAN_GHOST, "Inky"), new Ghost(ORANGE_GHOST, "Sue"));
 		movingBonus = new MovingBonus();
 		setLevel(1);
