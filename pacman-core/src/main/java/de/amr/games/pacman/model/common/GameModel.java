@@ -291,6 +291,29 @@ public abstract class GameModel {
 		return energizerEaten;
 	}
 
+	/**
+	 * Killing ghosts wins 200, 400, 800, 1600 points in order when using the same energizer power. If all 16 ghosts on a
+	 * level are killed, additonal 12000 points are rewarded.
+	 */
+	public boolean checkKillGhosts() {
+		var prey = ghosts(FRIGHTENED).filter(player::sameTile).toArray(Ghost[]::new);
+		if (prey.length > 0) {
+			killGhosts(prey);
+			return true;
+		}
+		return false;
+	}
+
+	// This is public because cheat method in game controller calls it
+	public void killGhosts(Ghost[] prey) {
+		Stream.of(prey).forEach(this::killGhost);
+		level.numGhostsKilled += prey.length;
+		if (level.numGhostsKilled == 16) {
+			log("All ghosts killed at level %d, Pac-Man wins additional %d points", level.number, ALL_GHOSTS_KILLED_POINTS);
+			score(ALL_GHOSTS_KILLED_POINTS);
+		}
+	}
+
 	private void killGhost(Ghost ghost) {
 		ghost.state = DEAD;
 		ghost.targetTile = level.world.ghostHouse().entry();
@@ -298,19 +321,6 @@ public abstract class GameModel {
 		ghostBounty *= 2;
 		score(ghost.bounty);
 		log("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name, ghost.tile(), ghost.bounty);
-	}
-
-	/**
-	 * Killing ghosts wins 200, 400, 800, 1600 points in order when using the same energizer power. If all 16 ghosts on a
-	 * level are killed, additonal 12000 points are rewarded.
-	 */
-	public void killGhosts(Ghost[] prey) {
-		Stream.of(prey).forEach(this::killGhost);
-		if (++level.numGhostsKilled == 16) {
-			log("All ghosts killed at level %d, Pac-Man wins additional %d points", level.number, ALL_GHOSTS_KILLED_POINTS);
-			score(ALL_GHOSTS_KILLED_POINTS);
-		}
-
 	}
 
 	public boolean checkKillPlayer() {
