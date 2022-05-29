@@ -5,7 +5,7 @@ Pac-Man and Ms. Pac-Man game implementation written in Java with levels, timing,
 The code in this project is more "to the point" than the one in my other [state-machine focussed implementation](https://github.com/armin-reichert/pacman).
 
 The implementation follows the Model-View-Controller design pattern:
-- The game controller is a [finite-state machine](pacman-core/src/main/java/de/amr/games/pacman/lib/FSM.java) with states
+- The game controller is a [finite-state machine](pacman-core/src/main/java/de/amr/games/pacman/lib/Fsm.java) with states
   -  INTRO, READY, HUNTING, LEVEL_STARTING, LEVEL_COMPLETE, PACMAN_DYING, GHOST_DYING, GAME_OVER and INTERMISSION. (See [GameState](pacman-core/src/main/java/de/amr/games/pacman/controller/common/GameState.java))
 - Any user interface is decoupled from the controller by a [game event listener](pacman-core/src/main/java/de/amr/games/pacman/event/PacManGameEventListener.java) interface.
 
