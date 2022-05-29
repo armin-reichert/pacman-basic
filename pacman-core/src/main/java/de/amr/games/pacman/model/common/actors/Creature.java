@@ -102,8 +102,12 @@ public class Creature extends Entity {
 		setWishDir(dir);
 	}
 
-	public V2i tilesAhead(int numTiles) {
-		return tile().plus(moveDir.vec.scaled(numTiles));
+	public V2i tilesAhead(int n) {
+		return tile().plus(moveDir.vec.scaled(n));
+	}
+
+	public V2i tilesAheadWithBug(int n) {
+		return moveDir == UP ? tilesAhead(n).minus(n, 0) : tilesAhead(n);
 	}
 
 	/**

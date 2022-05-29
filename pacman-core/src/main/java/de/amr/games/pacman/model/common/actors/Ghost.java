@@ -170,7 +170,7 @@ public class Ghost extends Creature {
 			} else if (isScatteringPhase(huntingPhase) && elroy <= 0) {
 				scatter(world);
 			} else {
-				chase(game);
+				chase(world, game.player, game.ghosts[RED_GHOST]);
 			}
 		}
 		case DEAD -> {
@@ -212,20 +212,16 @@ public class Ghost extends Creature {
 		}
 	}
 
-	private void chase(GameModel game) {
+	private void chase(World world, Pac player, Ghost redGhost) {
 		V2i targetTile = switch (id) {
-		case RED_GHOST -> game.player.tile();
-		case PINK_GHOST -> tilesAheadWithBug(game.player, 4);
-		case CYAN_GHOST -> tilesAheadWithBug(game.player, 2).scaled(2).minus(game.ghosts[RED_GHOST].tile());
-		case ORANGE_GHOST -> tile().euclideanDistance(game.player.tile()) < 8 ? scatterTile : game.player.tile();
+		case RED_GHOST -> player.tile();
+		case PINK_GHOST -> player.tilesAheadWithBug(4);
+		case CYAN_GHOST -> player.tilesAheadWithBug(2).scaled(2).minus(redGhost.tile());
+		case ORANGE_GHOST -> tile().euclideanDistance(player.tile()) < 8 ? scatterTile : player.tile();
 		default -> null;
 		};
-		headForTile(game.level.world, targetTile);
-		tryMoving(game.level.world);
-	}
-
-	private V2i tilesAheadWithBug(Pac player, int n) {
-		return player.moveDir == Direction.UP ? player.tilesAhead(n).minus(n, 0) : player.tilesAhead(n);
+		headForTile(world, targetTile);
+		tryMoving(world);
 	}
 
 	/**
