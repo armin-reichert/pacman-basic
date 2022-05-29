@@ -308,19 +308,17 @@ public class Ghost extends Creature {
 	 * @return {@code true} if the ghost left the house
 	 */
 	private boolean leaveHouse(GhostHouse house) {
-		V2i houseEntry = house.doorTileLeft().plus(UP.vec);
-		if (tile().equals(houseEntry) && insideRange(offset().y, 0, 1)) {
-			setOffset(HTS, 0);
+		if (tile().equals(house.entry()) && insideRange(offset().y, 0, 1)) {
 			return true;
 		}
-		int centerX = house.seatMiddle().x * TS + HTS, groundY = house.seatMiddle().y * TS + HTS;
-		if (insideRange(position.x, centerX, 1)) {
-			setOffset(HTS, offset().y);
+		var center = house.center();
+		if (insideRange(position.x, center.x, 1)) {
+			setOffset(HTS, offset().y); // center horizontally before rising
 			setBothDirs(UP);
-		} else if (position.y < groundY) {
+		} else if (position.y < center.y) {
 			setBothDirs(DOWN);
 		} else {
-			setBothDirs(position.x < centerX ? RIGHT : LEFT);
+			setBothDirs(position.x < center.x ? RIGHT : LEFT);
 		}
 		move();
 		return false;

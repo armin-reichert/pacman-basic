@@ -24,7 +24,11 @@ SOFTWARE.
 
 package de.amr.games.pacman.model.common.world;
 
+import static de.amr.games.pacman.model.common.world.World.HTS;
+import static de.amr.games.pacman.model.common.world.World.TS;
+
 import de.amr.games.pacman.lib.Direction;
+import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
 
 /**
@@ -44,6 +48,10 @@ public interface GhostHouse {
 		return doorTileLeft().plus(Direction.UP.vec);
 	}
 
+	default V2d center() {
+		return new V2d(seatMiddle().x * TS + HTS, seatMiddle().y * TS + HTS);
+	}
+
 	default boolean isDoor(V2i tile) {
 		return tile.equals(doorTileLeft()) || tile.equals(doorTileRight());
 	}
@@ -58,5 +66,4 @@ public interface GhostHouse {
 	}
 
 	V2i seatRight();
-
 }
