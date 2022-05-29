@@ -248,9 +248,9 @@ public class Ghost extends Creature {
 	 */
 	private void roam(World world) {
 		if (newTileEntered) {
-			wishDir = Direction.shuffled().stream()
+			Direction.shuffled().stream()
 					.filter(dir -> dir != moveDir.opposite() && canAccessTile(world, tile().plus(dir.vec))).findAny()
-					.orElse(wishDir);
+					.ifPresent(dir -> wishDir = dir);
 		}
 		tryMoving(world);
 	}
@@ -260,7 +260,7 @@ public class Ghost extends Creature {
 	 * 
 	 * @param world the world
 	 * @param house the ghost house
-	 * @return {@code true} if the ghost has reached the house
+	 * @return {@code true} if the ghost has reached the house entry before he starts to enter
 	 */
 	private boolean returnToHouse(World world, GhostHouse house) {
 		if (atGhostHouseDoor(house) && moveDir != DOWN) {
