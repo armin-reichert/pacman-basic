@@ -24,12 +24,12 @@ SOFTWARE.
 package de.amr.games.pacman.event;
 
 /**
- * Default implementation of the {@link GameEventListener} interface providing an empty handler method for each game
- * event such that a class implementing this interface just needs to override the needed method(s).
+ * Implementation of the {@link GameEventListener} interface providing an empty handler method for each game event such
+ * that a class implementing this interface just needs to override the needed method(s).
  * 
  * @author Armin Reichert
  */
-public abstract class DefaultGameEventHandler implements GameEventListener {
+public abstract class GameEventAdapter implements GameEventListener {
 
 	@Override
 	public void onGameEvent(GameEvent event) {
