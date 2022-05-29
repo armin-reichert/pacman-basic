@@ -67,9 +67,6 @@ public class Ghost extends Creature {
 	/** The ID of the ghost, see {@link GameModel#RED_GHOST} etc. */
 	public final int id;
 
-	/** Scatter target. */
-	public V2i scatterTarget;
-
 	/** The current state of the ghost. */
 	public GhostState state;
 
@@ -78,6 +75,9 @@ public class Ghost extends Creature {
 
 	/** The revival tile inside the house. For the red ghost, this is different from the home location. */
 	public V2i revivalTile;
+
+	/** Scatter target. */
+	public V2i scatterTile;
 
 	/** The bounty paid for this ghost. */
 	public int bounty;
@@ -217,7 +217,7 @@ public class Ghost extends Creature {
 		case RED_GHOST -> game.player.tile();
 		case PINK_GHOST -> tilesAheadWithBug(game.player, 4);
 		case CYAN_GHOST -> tilesAheadWithBug(game.player, 2).scaled(2).minus(game.ghosts[RED_GHOST].tile());
-		case ORANGE_GHOST -> tile().euclideanDistance(game.player.tile()) < 8 ? scatterTarget : game.player.tile();
+		case ORANGE_GHOST -> tile().euclideanDistance(game.player.tile()) < 8 ? scatterTile : game.player.tile();
 		default -> null;
 		};
 		headForTile(game.level.world, targetTile);
@@ -232,7 +232,7 @@ public class Ghost extends Creature {
 	 * Lets the ghost head for its scatter tile.
 	 */
 	private void scatter(World world) {
-		headForTile(world, scatterTarget);
+		headForTile(world, scatterTile);
 		tryMoving(world);
 	}
 
