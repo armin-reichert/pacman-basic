@@ -5,7 +5,6 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.world.ArcadeWorld;
 import de.amr.games.pacman.model.common.world.World;
 import de.amr.games.pacman.model.mspacman.MsPacManGame;
@@ -33,7 +32,6 @@ public class TestWorldFunctions {
 		assertEquals(220 + 4, world.tiles().filter(world::isFoodTile).count());
 		assertEquals(220, world.tiles().filter(world::isFoodTile).filter(not(world::isEnergizerTile)).count());
 		assertEquals(2, world.portals().size());
-		assertEquals(new V2i(13, 26), world.playerHomeTile());
 	}
 
 	@Test
@@ -45,7 +43,6 @@ public class TestWorldFunctions {
 		assertEquals(240 + 4, world.tiles().filter(world::isFoodTile).count());
 		assertEquals(240, world.tiles().filter(world::isFoodTile).filter(not(world::isEnergizerTile)).count());
 		assertEquals(2, world.portals().size());
-		assertEquals(new V2i(13, 26), world.playerHomeTile());
 	}
 
 	@Test
@@ -57,7 +54,6 @@ public class TestWorldFunctions {
 		assertEquals(238 + 4, world.tiles().filter(world::isFoodTile).count());
 		assertEquals(238, world.tiles().filter(world::isFoodTile).filter(not(world::isEnergizerTile)).count());
 		assertEquals(1, world.portals().size());
-		assertEquals(new V2i(13, 26), world.playerHomeTile());
 	}
 
 	@Test
@@ -69,6 +65,5 @@ public class TestWorldFunctions {
 		assertEquals(234 + 4, world.tiles().filter(world::isFoodTile).count());
 		assertEquals(234, world.tiles().filter(world::isFoodTile).filter(not(world::isEnergizerTile)).count());
 		assertEquals(2, world.portals().size());
-		assertEquals(new V2i(13, 26), world.playerHomeTile());
 	}
 }

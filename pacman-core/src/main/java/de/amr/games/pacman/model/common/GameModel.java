@@ -24,6 +24,7 @@ SOFTWARE.
 package de.amr.games.pacman.model.common;
 
 import static de.amr.games.pacman.lib.Logging.log;
+import static de.amr.games.pacman.lib.V2i.v;
 import static de.amr.games.pacman.model.common.HuntingTimer.isScatteringPhase;
 import static de.amr.games.pacman.model.common.actors.Ghost.CYAN_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ORANGE_GHOST;
@@ -150,7 +151,7 @@ public abstract class GameModel {
 	}
 
 	public void resetGuys() {
-		player.placeAt(level.world.playerHomeTile(), HTS, 0);
+		player.placeAt(v(13, 26), HTS, 0);
 		player.setBothDirs(Direction.LEFT);
 		player.show();
 		player.velocity = V2d.NULL;

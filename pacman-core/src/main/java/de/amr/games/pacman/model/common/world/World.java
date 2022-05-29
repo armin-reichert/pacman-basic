@@ -103,11 +103,6 @@ public interface World {
 	}
 
 	/**
-	 * @return the player's home tile
-	 */
-	V2i playerHomeTile();
-
-	/**
 	 * @return portals inside this world
 	 */
 	List<Portal> portals();

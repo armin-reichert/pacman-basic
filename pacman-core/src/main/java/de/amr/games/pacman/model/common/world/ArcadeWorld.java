@@ -44,7 +44,6 @@ public class ArcadeWorld extends MapBasedWorld {
 	public final V2i rightLowerTarget = v(27, 34);
 	public final V2i leftUpperTarget = v(2, 0);
 	public final V2i rightUpperTarget = v(25, 0);
-	public final V2i pacHome = v(13, 26);
 	public final ArcadeGhostHouse house = new ArcadeGhostHouse();
 
 	// subclasses may override these:
@@ -58,11 +57,6 @@ public class ArcadeWorld extends MapBasedWorld {
 				.filter(tile -> tile.neighbors().filter(nb -> isWall(nb) || house.isDoor(nb)).count() <= 1) //
 				.map(this::index) //
 				.forEach(intersections::set);
-	}
-
-	@Override
-	public V2i playerHomeTile() {
-		return pacHome;
 	}
 
 	@Override
