@@ -133,14 +133,11 @@ public class PacManGame extends GameModel {
 		return world;
 	}
 
-	// all levels use the same world
-	private final ArcadeWorld theWorld;
 	private final StaticBonus bonus;
 
 	public PacManGame() {
 		super(new Pac("Pac-Man"), new Ghost(RED_GHOST, "Blinky"), new Ghost(PINK_GHOST, "Pinky"),
 				new Ghost(CYAN_GHOST, "Inky"), new Ghost(ORANGE_GHOST, "Clyde"));
-		theWorld = createWorld();
 		bonus = new StaticBonus(new V2d(v(13, 20).scaled(TS)).plus(HTS, 0));
 		setLevel(1);
 	}
@@ -161,8 +158,7 @@ public class PacManGame extends GameModel {
 	}
 
 	private void initLevel(GameLevel level) {
-		level.world = theWorld;
-		level.world.resetFood();
+		level.world = createWorld();
 		level.mapNumber = level.mazeNumber = 1;
 		level.intermissionNumber = intermissionNumber(level.number);
 		level.pacStarvingTimeLimit = (int) sec_to_ticks(level.number < 5 ? 4 : 3);
@@ -175,19 +171,21 @@ public class PacManGame extends GameModel {
 	}
 
 	private void initGhosts(GameLevel level) {
-		GhostHouse house = theWorld.ghostHouse();
+		ArcadeWorld world = (ArcadeWorld) level.world;
+		GhostHouse house = world.ghostHouse();
+
 		ghosts[RED_GHOST].homeTile = house.entry();
 		ghosts[RED_GHOST].revivalTile = house.seatMiddle();
-		ghosts[RED_GHOST].scatterTarget = theWorld.rightUpperTarget;
+		ghosts[RED_GHOST].scatterTarget = world.rightUpperTarget;
 
 		ghosts[PINK_GHOST].homeTile = ghosts[PINK_GHOST].revivalTile = house.seatMiddle();
-		ghosts[PINK_GHOST].scatterTarget = theWorld.leftUpperTarget;
+		ghosts[PINK_GHOST].scatterTarget = world.leftUpperTarget;
 
 		ghosts[CYAN_GHOST].homeTile = ghosts[CYAN_GHOST].revivalTile = house.seatLeft();
-		ghosts[CYAN_GHOST].scatterTarget = theWorld.rightLowerTarget;
+		ghosts[CYAN_GHOST].scatterTarget = world.rightLowerTarget;
 
 		ghosts[ORANGE_GHOST].homeTile = ghosts[ORANGE_GHOST].revivalTile = house.seatRight();
-		ghosts[ORANGE_GHOST].scatterTarget = theWorld.leftLowerTarget;
+		ghosts[ORANGE_GHOST].scatterTarget = world.leftLowerTarget;
 
 		for (var ghost : ghosts) {
 			ghost.dotCounter = 0;
