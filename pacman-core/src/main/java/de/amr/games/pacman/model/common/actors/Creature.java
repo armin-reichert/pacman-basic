@@ -263,13 +263,17 @@ public class Creature extends Entity {
 		}
 		double minDist = Double.MAX_VALUE;
 		for (var dir : TURN_PRIORITY) {
-			var neighborTile = tile().plus(dir.vec);
-			if (dir != moveDir.opposite() && canAccessTile(world, neighborTile)) {
-				double d = neighborTile.euclideanDistance(targetTile);
-				if (d < minDist) {
-					minDist = d;
-					wishDir = dir;
-				}
+			if (dir == moveDir.opposite()) {
+				continue;
+			}
+			var neighbor = tile().plus(dir.vec);
+			if (!canAccessTile(world, neighbor)) {
+				continue;
+			}
+			double d = neighbor.euclideanDistance(targetTile);
+			if (d < minDist) {
+				minDist = d;
+				wishDir = dir;
 			}
 		}
 	}
