@@ -376,8 +376,7 @@ public abstract class GameModel {
 	}
 
 	private Optional<Ghost> preferredLockedGhostInHouse() {
-		return Stream.of(PINK_GHOST, CYAN_GHOST, ORANGE_GHOST) //
-				.map(id -> ghosts[id]).filter(ghost -> ghost.is(LOCKED)).findFirst();
+		return Stream.of(PINK_GHOST, CYAN_GHOST, ORANGE_GHOST).map(id -> ghosts[id]).filter(g -> g.is(LOCKED)).findFirst();
 	}
 
 	private void updateGhostDotCounters() {
