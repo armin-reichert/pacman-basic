@@ -130,7 +130,6 @@ public class PacManGame extends GameModel {
 	public static ArcadeWorld createWorld() {
 		ArcadeWorld world = new ArcadeWorld(MAP);
 		world.upwardsBlockedTiles = List.of(v(12, 13), v(15, 13), v(12, 25), v(15, 25));
-		world.bonusTile = v(13, 20);
 		return world;
 	}
 
@@ -142,7 +141,7 @@ public class PacManGame extends GameModel {
 		super(new Pac("Pac-Man"), new Ghost(RED_GHOST, "Blinky"), new Ghost(PINK_GHOST, "Pinky"),
 				new Ghost(CYAN_GHOST, "Inky"), new Ghost(ORANGE_GHOST, "Clyde"));
 		theWorld = createWorld();
-		bonus = new StaticBonus(new V2d(theWorld.bonusTile().scaled(TS)).plus(HTS, 0));
+		bonus = new StaticBonus(new V2d(v(13, 20).scaled(TS)).plus(HTS, 0));
 		setLevel(1);
 	}
 

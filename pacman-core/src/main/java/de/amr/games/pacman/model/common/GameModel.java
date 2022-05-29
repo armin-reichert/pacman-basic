@@ -281,7 +281,7 @@ public abstract class GameModel {
 			score(PELLET_VALUE);
 		}
 		if (checkBonusAwarded()) {
-			eventSupport.publish(GameEventType.BONUS_GETS_ACTIVE, level.world.bonusTile());
+			eventSupport.publish(GameEventType.BONUS_GETS_ACTIVE, bonus().tile());
 		}
 		ghosts[RED_GHOST].enableCruiseElroy(level);
 		updateGhostDotCounters();

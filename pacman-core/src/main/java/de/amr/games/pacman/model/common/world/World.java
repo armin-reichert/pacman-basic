@@ -179,11 +179,6 @@ public interface World {
 	Stream<V2i> energizerTiles();
 
 	/**
-	 * @return Bonus location (non-moving bonus only)
-	 */
-	V2i bonusTile();
-
-	/**
 	 * Removes food at given tile.
 	 * 
 	 * @param tile some tile

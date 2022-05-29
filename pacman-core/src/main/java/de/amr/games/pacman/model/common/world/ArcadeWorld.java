@@ -54,7 +54,6 @@ public class ArcadeWorld extends MapBasedWorld {
 
 	// subclasses may override these:
 	public List<V2i> upwardsBlockedTiles = List.of();
-	public V2i bonusTile = v(0, 0);
 
 	public ArcadeWorld(byte[][] mapData) {
 		super(mapData, TILES_X, TILES_Y);
@@ -85,11 +84,6 @@ public class ArcadeWorld extends MapBasedWorld {
 		case ORANGE_GHOST -> Direction.UP;
 		default -> throw new IllegalArgumentException("IIlegal ghost ID: " + ghostID);
 		};
-	}
-
-	@Override
-	public V2i bonusTile() {
-		return bonusTile;
 	}
 
 	@Override
