@@ -272,7 +272,7 @@ public class Creature extends Entity {
 		}
 		double minDist = Double.MAX_VALUE;
 		for (var dir : TURN_PRIORITY) {
-			if (dir == moveDir.opposite()) {
+			if (isForbiddenDirection(dir)) {
 				continue;
 			}
 			var neighbor = tile().plus(dir.vec);
@@ -285,5 +285,9 @@ public class Creature extends Entity {
 				wishDir = dir;
 			}
 		}
+	}
+
+	protected boolean isForbiddenDirection(Direction dir) {
+		return dir == moveDir.opposite();
 	}
 }

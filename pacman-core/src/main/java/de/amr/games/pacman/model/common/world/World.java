@@ -116,12 +116,6 @@ public interface World {
 
 	/**
 	 * @param tile a tile
-	 * @return Tells if the tile can only be traversed downwards.
-	 */
-	boolean isOneWayDown(V2i tile);
-
-	/**
-	 * @param tile a tile
 	 * @return Tells if the tile is an intersection (waypoint).
 	 */
 	boolean isIntersection(V2i tile);

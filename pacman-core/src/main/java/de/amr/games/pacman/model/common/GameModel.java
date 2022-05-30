@@ -117,11 +117,7 @@ public abstract class GameModel {
 	/** Enabled state of the counter used by ghost house logic. */
 	public boolean globalDotCounterEnabled;
 
-	/** Level at which current high score has been reached. */
-	public int highscoreLevel;
-
-	/** Points scored at current high score. */
-	public int highscorePoints;
+	public Hiscore hiscore;
 
 	/** Number of current intermission scene in test mode. */
 	public int intermissionTestNumber;
@@ -144,10 +140,8 @@ public abstract class GameModel {
 		lives = INITIAL_LIFES;
 		levelCounter.clear();
 		setLevel(1);
-		Hiscore highscore = new Hiscore(this);
-		highscore.load();
-		highscoreLevel = highscore.level;
-		highscorePoints = highscore.points;
+		hiscore = new Hiscore(this);
+		hiscore.load();
 	}
 
 	public void resetGuys() {
@@ -253,9 +247,9 @@ public abstract class GameModel {
 	public void score(int points) {
 		int oldscore = score;
 		score += points;
-		if (score > highscorePoints) {
-			highscorePoints = score;
-			highscoreLevel = level.number;
+		if (score > hiscore.points) {
+			hiscore.points = score;
+			hiscore.level = level.number;
 		}
 		if (oldscore < EXTRA_LIFE_POINTS && score >= EXTRA_LIFE_POINTS) {
 			lives++;

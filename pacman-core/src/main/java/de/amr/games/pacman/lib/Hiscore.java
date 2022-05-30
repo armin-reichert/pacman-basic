@@ -55,9 +55,9 @@ public class Hiscore {
 
 	public void save() {
 		load();
-		if (game.highscorePoints > points) {
-			points = game.highscorePoints;
-			level = game.highscoreLevel;
+		if (game.hiscore.points > points) {
+			points = game.hiscore.points;
+			level = game.hiscore.level;
 			Properties content = new Properties();
 			content.setProperty("points", String.valueOf(points));
 			content.setProperty("level", String.valueOf(level));

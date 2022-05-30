@@ -33,6 +33,8 @@ import static de.amr.games.pacman.model.common.GameVariant.MS_PACMAN;
 import static de.amr.games.pacman.model.common.world.World.HTS;
 import static de.amr.games.pacman.model.common.world.World.TS;
 
+import java.util.List;
+
 import de.amr.games.pacman.event.GameEvent;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.lib.Direction;
@@ -85,6 +87,8 @@ public class Ghost extends Creature {
 	/** "Cruise Elroy" mode. Values: 0 (off), 1, -1, 2, -2 (negative means disabled). */
 	public int elroy;
 
+	public List<V2i> upwardsBlockedTilesWhenHunting = List.of();
+
 	public Ghost(int id, String name) {
 		super(name);
 		this.id = id;
@@ -101,17 +105,22 @@ public class Ghost extends Creature {
 	}
 
 	@Override
+	protected boolean isForbiddenDirection(Direction dir) {
+		if (dir == moveDir.opposite()) {
+			return true;
+		}
+		if (state == GhostState.HUNTING_PAC && dir == UP) {
+			return upwardsBlockedTilesWhenHunting.contains(tile());
+		}
+		return false;
+	}
+
+	@Override
 	public boolean canAccessTile(World world, V2i tile) {
 		V2i leftDoor = world.ghostHouse().doorTileLeft();
 		V2i rightDoor = world.ghostHouse().doorTileRight();
 		if (leftDoor.equals(tile) || rightDoor.equals(tile)) {
 			return is(GhostState.ENTERING_HOUSE) || is(GhostState.LEAVING_HOUSE);
-		}
-		if (world.isOneWayDown(tile)) {
-			if (offset().y != 0) {
-				return true; // allow if already on the way up
-			}
-			return !is(GhostState.HUNTING_PAC);
 		}
 		return super.canAccessTile(world, tile);
 	}

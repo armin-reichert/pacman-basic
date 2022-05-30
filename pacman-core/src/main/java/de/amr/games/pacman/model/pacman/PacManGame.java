@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Random;
 
 import de.amr.games.pacman.lib.V2d;
+import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
@@ -128,9 +129,10 @@ public class PacManGame extends GameModel {
 		//@formatter:on
 	};
 
+	public List<V2i> upwardsBlockedForHuntingGhosts = List.of(v(12, 14), v(15, 14), v(12, 26), v(15, 26));
+
 	public static ArcadeWorld createWorld() {
 		ArcadeWorld world = new ArcadeWorld(MAP);
-		world.upwardsBlockedTiles = List.of(v(12, 13), v(15, 13), v(12, 25), v(15, 25));
 		return world;
 	}
 
@@ -139,6 +141,9 @@ public class PacManGame extends GameModel {
 	public PacManGame() {
 		super(GameVariant.PACMAN, new Pac("Pac-Man"), new Ghost(RED_GHOST, "Blinky"), new Ghost(PINK_GHOST, "Pinky"),
 				new Ghost(CYAN_GHOST, "Inky"), new Ghost(ORANGE_GHOST, "Clyde"));
+		for (var ghost : ghosts) {
+			ghost.upwardsBlockedTilesWhenHunting = upwardsBlockedForHuntingGhosts;
+		}
 		bonus = new StaticBonus(new V2d(v(13, 20).scaled(TS)).plus(HTS, 0));
 		setLevel(1);
 	}

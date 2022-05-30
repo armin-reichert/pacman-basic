@@ -25,8 +25,6 @@ package de.amr.games.pacman.model.common.world;
 
 import static de.amr.games.pacman.lib.V2i.v;
 
-import java.util.List;
-
 import de.amr.games.pacman.lib.V2i;
 
 /**
@@ -46,9 +44,6 @@ public class ArcadeWorld extends MapBasedWorld {
 	public final V2i rightUpperTarget = v(25, 0);
 	public final ArcadeGhostHouse house = new ArcadeGhostHouse();
 
-	// subclasses may override these:
-	public List<V2i> upwardsBlockedTiles = List.of();
-
 	public ArcadeWorld(byte[][] mapData) {
 		super(mapData, TILES_X, TILES_Y);
 		tiles() //
@@ -63,10 +58,5 @@ public class ArcadeWorld extends MapBasedWorld {
 	public ArcadeGhostHouse ghostHouse() {
 		// WTF! I learned today, 2022-05-27, that Java allows co-variant return types since JDK 5.0!
 		return house;
-	}
-
-	@Override
-	public boolean isOneWayDown(V2i tile) {
-		return insideMap(tile) && upwardsBlockedTiles.contains(tile);
 	}
 }
