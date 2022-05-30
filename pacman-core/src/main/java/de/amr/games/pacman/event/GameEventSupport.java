@@ -61,7 +61,7 @@ public class GameEventSupport {
 	public void publish(GameEvent gameEvent) {
 		if (enabled) {
 			if (logPublishEvents && gameEvent.type != GameEventType.PLAYER_FINDS_FOOD) {
-				log("%s: publish event: '%s'", getClass().getSimpleName(), gameEvent);
+				log("%s", gameEvent);
 			}
 			subscribers.forEach(subscriber -> subscriber.onGameEvent(gameEvent));
 		}

@@ -115,7 +115,7 @@ public class ScoreManager {
 		}
 		if (scoreBeforeAddingPoints < game.extraLifeScore && score.points >= game.extraLifeScore) {
 			game.lives++;
-			game.eventSupport.publish(new GameEvent(game, GameEventType.PLAYER_GETS_EXTRA_LIFE, null, game.player.tile()));
+			game.publish(new GameEvent(game, GameEventType.PLAYER_GETS_EXTRA_LIFE, null, game.player.tile()));
 		}
 	}
 

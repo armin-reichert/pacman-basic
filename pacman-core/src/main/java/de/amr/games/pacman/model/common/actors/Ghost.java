@@ -148,7 +148,7 @@ public class Ghost extends Creature {
 				state = HUNTING_PAC;
 				// TODO Inky behaves differently:
 				setBothDirs(LEFT);
-				game.eventSupport.publish(new GameEvent(game, GameEventType.GHOST_COMPLETES_LEAVING_HOUSE, this, tile()));
+				game.publish(new GameEvent(game, GameEventType.GHOST_COMPLETES_LEAVING_HOUSE, this, tile()));
 			}
 		}
 		case FRIGHTENED -> {
@@ -200,7 +200,7 @@ public class Ghost extends Creature {
 				setBothDirs(DOWN);
 				targetTile = revivalTile;
 				state = ENTERING_HOUSE;
-				game.eventSupport.publish(new GameEvent(game, GameEventType.GHOST_ENTERS_HOUSE, this, tile()));
+				game.publish(new GameEvent(game, GameEventType.GHOST_ENTERS_HOUSE, this, tile()));
 			}
 		}
 		case ENTERING_HOUSE -> {
@@ -210,7 +210,7 @@ public class Ghost extends Creature {
 				// TODO is there some revival time > 0?
 				state = LEAVING_HOUSE;
 				setBothDirs(moveDir.opposite());
-				game.eventSupport.publish(new GameEvent(game, GameEventType.GHOST_STARTS_LEAVING_HOUSE, this, tile()));
+				game.publish(new GameEvent(game, GameEventType.GHOST_STARTS_LEAVING_HOUSE, this, tile()));
 			}
 		}
 		}
@@ -226,7 +226,7 @@ public class Ghost extends Creature {
 		}
 	}
 
-	public void checkCruiseElroyStop() {
+	public void stopCruiseElroyMode() {
 		if (elroy > 0) {
 			elroy = -elroy; // negative value means "disabled"
 			log("Cruise Elroy %d for %s stops", elroy, name);

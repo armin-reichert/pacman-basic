@@ -212,7 +212,7 @@ public class PacManGame extends GameModel {
 	}
 
 	@Override
-	public boolean checkBonusAwarded() {
+	public boolean checkBonusReached() {
 		if (level.world.eatenFoodCount() == 70 || level.world.eatenFoodCount() == 170) {
 			bonus.activate(level.world, level.bonusSymbol, BONUS_VALUE[level.bonusSymbol],
 					sec_to_ticks(9.0 + new Random().nextDouble()));

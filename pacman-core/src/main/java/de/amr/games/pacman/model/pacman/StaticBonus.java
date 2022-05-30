@@ -106,13 +106,13 @@ public class StaticBonus extends Entity implements Bonus {
 				log("%s found bonus: %s", game.player.name, this);
 				game.scoreManager().addPoints(value());
 				eat(sec_to_ticks(2));
-				game.eventSupport.publish(GameEventType.BONUS_GETS_EATEN, tile());
+				game.publish(GameEventType.BONUS_GETS_EATEN, tile());
 			} else {
 				boolean expired = tick();
 				if (expired) {
 					log("Bonus expired: %s", this);
 					init();
-					game.eventSupport.publish(GameEventType.BONUS_EXPIRES, tile());
+					game.publish(GameEventType.BONUS_EXPIRES, tile());
 				}
 			}
 		}
@@ -121,7 +121,7 @@ public class StaticBonus extends Entity implements Bonus {
 			if (expired) {
 				log("Bonus expired: %s", this);
 				init();
-				game.eventSupport.publish(GameEventType.BONUS_EXPIRES, tile());
+				game.publish(GameEventType.BONUS_EXPIRES, tile());
 			}
 		}
 		}

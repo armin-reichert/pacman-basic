@@ -158,14 +158,14 @@ public class MovingBonus extends Creature implements Bonus {
 			if (leftWorld) {
 				log("%s expired (left level.world)", this);
 				init();
-				game.eventSupport.publish(GameEventType.BONUS_EXPIRES, tile());
+				game.publish(GameEventType.BONUS_EXPIRES, tile());
 				return;
 			}
 			if (game.player.tile().equals(tile())) {
 				log("%s found bonus %s", game.player.name, this);
 				game.scoreManager().addPoints(value());
 				eat(sec_to_ticks(2));
-				game.eventSupport.publish(GameEventType.BONUS_GETS_EATEN, tile());
+				game.publish(GameEventType.BONUS_GETS_EATEN, tile());
 			}
 		}
 		case EATEN -> {
@@ -173,7 +173,7 @@ public class MovingBonus extends Creature implements Bonus {
 			if (expired) {
 				log("%s expired", this);
 				init();
-				game.eventSupport.publish(GameEventType.BONUS_EXPIRES, tile());
+				game.publish(GameEventType.BONUS_EXPIRES, tile());
 			}
 		}
 		}

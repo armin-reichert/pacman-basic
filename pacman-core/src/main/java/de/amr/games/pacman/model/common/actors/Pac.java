@@ -24,7 +24,6 @@ SOFTWARE.
 package de.amr.games.pacman.model.common.actors;
 
 import de.amr.games.pacman.lib.TickTimer;
-import de.amr.games.pacman.lib.TickTimer.TickTimerState;
 import de.amr.games.pacman.model.common.GameLevel;
 
 /**
@@ -57,26 +56,14 @@ public class Pac extends Creature {
 	}
 
 	public boolean moveThroughLevel(GameLevel level) {
+		powerTimer.advance();
 		if (restingCountdown > 0) {
 			restingCountdown--;
+			return false; // did not move
 		} else {
 			setRelSpeed(powerTimer.isRunning() ? level.playerSpeedPowered : level.playerSpeed);
 			tryMoving(level.world);
-		}
-		boolean lostPower = updatePower();
-		return lostPower;
-	}
-
-	/**
-	 * @return <code>true</code> if the player lost power in this frame
-	 */
-	private boolean updatePower() {
-		if (powerTimer.state() == TickTimerState.RUNNING) {
-			powerTimer.advance();
-		} else if (powerTimer.state() == TickTimerState.EXPIRED) {
-			powerTimer.setDurationIndefinite(); // now in state READY
 			return true;
 		}
-		return false;
 	}
 }

@@ -24,7 +24,6 @@ SOFTWARE.
 package de.amr.games.pacman.controller.common;
 
 import static de.amr.games.pacman.lib.Logging.log;
-import static de.amr.games.pacman.lib.TickTimer.sec_to_ticks;
 import static de.amr.games.pacman.model.common.actors.GhostState.DEAD;
 import static de.amr.games.pacman.model.common.actors.GhostState.ENTERING_HOUSE;
 import static de.amr.games.pacman.model.common.actors.GhostState.FRIGHTENED;
@@ -105,53 +104,68 @@ public enum GameState implements FsmState<GameModel> {
 	HUNTING {
 		@Override
 		public void onUpdate(GameModel game) {
-			game.huntingTimer.advance();
-			if (game.huntingTimer.hasExpired()) {
+
+			if (game.huntingTimer.advance().hasExpired()) {
 				game.startNextHuntingPhase();
 				game.ghosts(HUNTING_PAC).forEach(ghost -> ghost.forceTurningBack(game.level.world));
 				game.ghosts(FRIGHTENED).forEach(ghost -> ghost.forceTurningBack(game.level.world));
 			}
-			if (game.level.world.foodRemaining() == 0) {
+
+			var result = new GameModel.CheckResult();
+
+			game.checkLevelComplete(result);
+			if (result.levelComplete) {
 				controller.changeState(LEVEL_COMPLETE);
 				return;
 			}
-			if (!controller.isPlayerImmune() && !game.player.powerTimer.isRunning()) {
-				if (game.checkKillPlayer()) {
+
+			// TODO don't store this info in controller
+			if (!controller.isPlayerImmune()) {
+				game.checkPlayerKilled(result);
+				if (result.playerKilled) {
+					game.onPlayerKilled();
 					controller.changeState(PACMAN_DYING);
 					return;
 				}
 			}
-			if (game.checkKillGhosts()) {
+
+			game.checkGhostsCanBeEaten(result);
+			if (result.ghostsCanBeEaten) {
+				game.eatGhosts(result.edibleGhosts);
 				controller.changeState(GHOST_DYING);
 				return;
 			}
 
-			// Pac-Man acting
 			currentPlayerControl().accept(game.player);
-			boolean lostPower = game.player.moveThroughLevel(game.level);
-			if (lostPower) {
-				log("%s lost power, timer=%s", game.player.name, game.player.powerTimer);
-				game.huntingTimer.start();
-				game.ghosts(FRIGHTENED).forEach(ghost -> ghost.state = HUNTING_PAC);
-				game.eventSupport.publish(GameEventType.PLAYER_LOSES_POWER, game.player.tile());
-			} else if (game.player.powerTimer.remaining() == sec_to_ticks(1)) {
-				// TODO not sure exactly how long the player is losing power
-				game.eventSupport.publish(GameEventType.PLAYER_STARTS_LOSING_POWER, game.player.tile());
+			game.player.moveThroughLevel(game.level);
+
+			game.checkPlayerPower(result);
+			if (result.playerPowerFading) {
+				game.publish(GameEventType.PLAYER_STARTS_LOSING_POWER, game.player.tile());
 			}
-			boolean energizerEaten = game.checkFood(game.player.tile());
-			if (energizerEaten) {
-				game.huntingTimer.stop();
+			if (result.playerPowerLost) {
+				game.onPlayerLostPower();
+				game.publish(GameEventType.PLAYER_LOSES_POWER, game.player.tile());
 			}
 
-			Ghost releasedGhost = game.releaseLockedGhosts();
-			if (releasedGhost != null) {
-				game.eventSupport.publish(
-						new GameEvent(game, GameEventType.GHOST_STARTS_LEAVING_HOUSE, releasedGhost, releasedGhost.tile()));
+			game.checkPlayerFindsFood(result);
+			if (result.foodFound) {
+				game.publish(GameEventType.PLAYER_FINDS_FOOD, game.player.tile());
+			}
+			if (result.playerGotPower) {
+				game.publish(GameEventType.PLAYER_GETS_POWER, game.player.tile());
+			}
+			if (result.bonusReached) {
+				game.publish(GameEventType.BONUS_GETS_ACTIVE, game.bonus().tile());
+			}
+
+			game.checkUnlockGhost(result);
+			if (result.unlockGhost != null) {
+				game.unlockGhost(result.unlockGhost, result.unlockReason);
 			}
 			game.ghosts().forEach(ghost -> ghost.update(game));
-			if (game.bonus() != null) {
-				game.bonus().update(game);
-			}
+
+			game.updateBonus();
 		}
 	},
 
@@ -251,7 +265,7 @@ public enum GameState implements FsmState<GameModel> {
 			// fire event(s) only for dead ghosts not yet returning home (bounty != 0)
 			game.ghosts(DEAD).filter(ghost -> ghost.bounty != 0).forEach(ghost -> {
 				ghost.bounty = 0;
-				game.eventSupport.publish(new GameEvent(game, GameEventType.GHOST_STARTS_RETURNING_HOME, ghost, null));
+				game.publish(new GameEvent(game, GameEventType.GHOST_STARTS_RETURNING_HOME, ghost, null));
 			});
 		}
 	},
@@ -306,7 +320,7 @@ public enum GameState implements FsmState<GameModel> {
 					timer.setDurationIndefinite().start();
 					log("Test intermission scene #%d", game.intermissionTestNumber);
 					// This is a hack to trigger the UI to update its current scene
-					game.eventSupport.publish(new GameStateChangeEvent(game, this, this));
+					game.publish(new GameStateChangeEvent(game, this, this));
 				} else {
 					controller.changeState(INTRO);
 				}

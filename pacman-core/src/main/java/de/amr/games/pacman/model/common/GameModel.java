@@ -24,6 +24,7 @@ SOFTWARE.
 package de.amr.games.pacman.model.common;
 
 import static de.amr.games.pacman.lib.Logging.log;
+import static de.amr.games.pacman.lib.TickTimer.sec_to_ticks;
 import static de.amr.games.pacman.lib.V2i.v;
 import static de.amr.games.pacman.model.common.HuntingTimer.isScatteringPhase;
 import static de.amr.games.pacman.model.common.actors.Ghost.CYAN_GHOST;
@@ -42,6 +43,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import de.amr.games.pacman.controller.common.GameController;
+import de.amr.games.pacman.event.GameEvent;
+import de.amr.games.pacman.event.GameEventListener;
 import de.amr.games.pacman.event.GameEventSupport;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.ScatterPhaseStartsEvent;
@@ -117,7 +121,23 @@ public abstract class GameModel {
 	/** Number of current intermission scene in test mode. */
 	public int intermissionTestNumber;
 
-	public final GameEventSupport eventSupport = new GameEventSupport(this);
+	private final GameEventSupport eventSupport = new GameEventSupport(this);
+
+	public void addEventListener(GameEventListener subscriber) {
+		eventSupport.addEventListener(subscriber);
+	}
+
+	public void publish(GameEvent event) {
+		eventSupport.publish(event);
+	}
+
+	public void publish(GameEventType eventType, V2i tile) {
+		eventSupport.publish(eventType, tile);
+	}
+
+	public void setEventsPublished(boolean enabled) {
+		eventSupport.setEnabled(enabled);
+	}
 
 	public GameModel(GameVariant gameVariant, Pac player, Ghost... ghosts) {
 		if (ghosts.length != 4) {
@@ -235,60 +255,34 @@ public abstract class GameModel {
 
 	// Game logic
 
-	/**
-	 * @param tile
-	 * @return <code>true</code> if energizer was eaten on given tile
-	 */
-	public boolean checkFood(V2i tile) {
-		if (!level.world.containsFood(tile)) {
-			player.starvingTicks++;
-			return false;
-		}
-		boolean energizerEaten = false;
-		level.world.removeFood(tile);
-		player.starvingTicks = 0;
-		eventSupport.publish(GameEventType.PLAYER_FINDS_FOOD, tile);
-		if (level.world.isEnergizerTile(tile)) {
-			energizerEaten = true;
-			scoreManager().addPoints(ENERGIZER_VALUE);
-			ghostBounty = FIRST_GHOST_BOUNTY;
-			player.restingCountdown = ENERGIZER_RESTING_TICKS;
-			if (level.ghostFrightenedSeconds > 0) {
-				ghosts(HUNTING_PAC).forEach(ghost -> {
-					ghost.state = FRIGHTENED;
-					ghost.forceTurningBack(level.world);
-				});
-				player.powerTimer.setDurationSeconds(level.ghostFrightenedSeconds).start();
-				log("%s power timer started: %s", player.name, player.powerTimer);
-				eventSupport.publish(GameEventType.PLAYER_GETS_POWER, tile);
-			}
-		} else {
-			player.restingCountdown = PELLET_RESTING_TICKS;
-			scoreManager().addPoints(PELLET_VALUE);
-		}
-		if (checkBonusAwarded()) {
-			eventSupport.publish(GameEventType.BONUS_GETS_ACTIVE, bonus().tile());
-		}
-		ghosts[RED_GHOST].checkCruiseElroyStart(level);
-		updateGhostDotCounters();
-		return energizerEaten;
+	public static class CheckResult {
+		public boolean levelComplete = false;
+		public boolean foodFound = false;
+		public boolean energizerFound = false;
+		public boolean bonusReached = false;
+		public boolean playerGotPower = false;
+		public boolean playerPowerLost = false;
+		public boolean playerPowerFading = false;
+		public boolean playerKilled = false;
+		public boolean ghostsCanBeEaten = false;
+		public Ghost[] edibleGhosts;
+		public Ghost unlockGhost = null;
+		public String unlockReason = null;
 	}
 
-	/**
-	 * Killing ghosts wins 200, 400, 800, 1600 points in order when using the same energizer power. If all 16 ghosts on a
-	 * level are killed, additonal 12000 points are rewarded.
-	 */
-	public boolean checkKillGhosts() {
-		var prey = ghosts(FRIGHTENED).filter(player::sameTile).toArray(Ghost[]::new);
-		if (prey.length > 0) {
-			killGhosts(prey);
-			return true;
+	public void checkLevelComplete(CheckResult result) {
+		if (level.world.foodRemaining() == 0) {
+			result.levelComplete = true;
 		}
-		return false;
 	}
 
-	// This is public because cheat method in game controller calls it
-	public void killGhosts(Ghost[] prey) {
+	public void checkGhostsCanBeEaten(CheckResult result) {
+		result.edibleGhosts = ghosts(FRIGHTENED).filter(player::sameTile).toArray(Ghost[]::new);
+		result.ghostsCanBeEaten = result.edibleGhosts.length > 0;
+	}
+
+	/** This method is public because {@link GameController#cheatKillAllEatableGhosts()} calls it. */
+	public void eatGhosts(Ghost[] prey) {
 		Stream.of(prey).forEach(this::killGhost);
 		level.numGhostsKilled += prey.length;
 		if (level.numGhostsKilled == 16) {
@@ -306,56 +300,124 @@ public abstract class GameModel {
 		log("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name, ghost.tile(), ghost.bounty);
 	}
 
-	public boolean checkKillPlayer() {
-		Optional<Ghost> killer = ghosts(HUNTING_PAC).filter(player::sameTile).findAny();
-		killer.ifPresent(ghost -> {
-			log("%s got killed by %s at tile %s", player.name, ghost.name, player.tile());
-			player.killed = true;
-			ghosts[RED_GHOST].checkCruiseElroyStop();
-			// reset and disable global dot counter (see Pac-Man dossier)
-			globalDotCounter = 0;
-			globalDotCounterEnabled = true;
-			log("Global dot counter got reset and enabled");
-		});
-		return killer.isPresent();
+	public void checkPlayerKilled(CheckResult result) {
+		if (!player.powerTimer.isRunning()) {
+			Optional<Ghost> killer = ghosts(HUNTING_PAC).filter(player::sameTile).findAny();
+			result.playerKilled = killer.isPresent();
+			if (killer.isPresent()) {
+				log("%s got killed by %s at tile %s", player.name, killer.get().name, player.tile());
+			}
+		}
+	}
+
+	public void onPlayerKilled() {
+		player.killed = true;
+		ghosts[RED_GHOST].stopCruiseElroyMode();
+		// See Pac-Man dossier:
+		globalDotCounter = 0;
+		globalDotCounterEnabled = true;
+		log("Global dot counter got reset and enabled because player died");
+
+	}
+
+	public void checkPlayerPower(CheckResult result) {
+		// TODO not sure exactly how long the player is losing power
+		result.playerPowerFading = player.powerTimer.remaining() == sec_to_ticks(1);
+		result.playerPowerLost = player.powerTimer.hasExpired();
+	}
+
+	public void onPlayerLostPower() {
+		log("%s lost power, timer=%s", player.name, player.powerTimer);
+		// TODO this is a hack to leave expired state
+		player.powerTimer.setDurationIndefinite();
+		huntingTimer.start();
+		ghosts(FRIGHTENED).forEach(ghost -> ghost.state = HUNTING_PAC);
+	}
+
+	private void checkTileForFood(V2i tile, CheckResult result) {
+		if (level.world.containsFood(tile)) {
+			result.foodFound = true;
+			result.energizerFound = level.world.isEnergizerTile(tile);
+			result.bonusReached = checkBonusReached();
+		}
+	}
+
+	public CheckResult checkPlayerFindsFood(CheckResult result) {
+		checkTileForFood(player.tile(), result);
+		if (!result.foodFound) {
+			player.starvingTicks++;
+			return result;
+		}
+		level.world.removeFood(player.tile());
+		player.starvingTicks = 0;
+		if (result.energizerFound) {
+			scoreManager().addPoints(ENERGIZER_VALUE);
+			player.restingCountdown = ENERGIZER_RESTING_TICKS;
+			ghostBounty = FIRST_GHOST_BOUNTY;
+			if (level.ghostFrightenedSeconds > 0) {
+				huntingTimer.stop();
+				player.powerTimer.setDurationSeconds(level.ghostFrightenedSeconds).start();
+				log("%s power timer started: %s", player.name, player.powerTimer);
+				ghosts(HUNTING_PAC).forEach(ghost -> {
+					ghost.state = FRIGHTENED;
+					ghost.forceTurningBack(level.world);
+				});
+				result.playerGotPower = true;
+			}
+		} else {
+			scoreManager().addPoints(PELLET_VALUE);
+			player.restingCountdown = PELLET_RESTING_TICKS;
+		}
+		ghosts[RED_GHOST].checkCruiseElroyStart(level);
+		updateGhostDotCounters();
+		return result;
 	}
 
 	// Bonus stuff
 
 	public abstract Bonus bonus();
 
-	public abstract boolean checkBonusAwarded();
+	public abstract boolean checkBonusReached();
+
+	public void updateBonus() {
+		if (bonus() != null) {
+			bonus().update(this);
+		}
+	}
 
 	// Ghost house rules, see Pac-Man dossier
 
-	public Ghost releaseLockedGhosts() {
+	public void checkUnlockGhost(CheckResult result) {
 		if (ghosts[RED_GHOST].is(LOCKED)) {
-			ghosts[RED_GHOST].state = HUNTING_PAC;
+			result.unlockGhost = ghosts[RED_GHOST];
+			result.unlockReason = "Blinky is released immediately";
+			return;
 		}
 		Optional<Ghost> nextToRelease = preferredLockedGhostInHouse();
-		if (nextToRelease.isPresent()) {
-			Ghost ghost = nextToRelease.get();
+		nextToRelease.ifPresent(ghost -> {
 			if (globalDotCounterEnabled && globalDotCounter >= level.globalDotLimits[ghost.id]) {
-				return releaseGhost(ghost, "Global dot counter reached limit (%d)", level.globalDotLimits[ghost.id]);
+				result.unlockGhost = ghost;
+				result.unlockReason = "Global dot counter reached limit (%d)".formatted(level.globalDotLimits[ghost.id]);
 			} else if (!globalDotCounterEnabled && ghost.dotCounter >= level.privateDotLimits[ghost.id]) {
-				return releaseGhost(ghost, "Private dot counter reached limit (%d)", level.privateDotLimits[ghost.id]);
+				result.unlockGhost = ghost;
+				result.unlockReason = "Private dot counter reached limit (%d)".formatted(level.privateDotLimits[ghost.id]);
 			} else if (player.starvingTicks >= level.pacStarvingTimeLimit) {
+				result.unlockGhost = ghost;
 				int starved = player.starvingTicks;
 				player.starvingTicks = 0;
-				return releaseGhost(ghost, "%s reached starving limit (%d ticks)", player.name, starved);
+				result.unlockReason = "%s reached starving limit (%d ticks)".formatted(player.name, starved);
 			}
-		}
-		return null;
+		});
 	}
 
-	private Ghost releaseGhost(Ghost ghost, String reason, Object... args) {
+	public void unlockGhost(Ghost ghost, String reason) {
+		ghost.state = ghost.id == RED_GHOST ? HUNTING_PAC : LEAVING_HOUSE;
 		if (ghost.id == ORANGE_GHOST && ghosts[RED_GHOST].elroy < 0) {
 			ghosts[RED_GHOST].elroy = -ghosts[RED_GHOST].elroy; // resume Elroy mode
 			log("%s Elroy mode %d resumed", ghosts[RED_GHOST].name, ghosts[RED_GHOST].elroy);
 		}
-		ghost.state = LEAVING_HOUSE;
-		log("Ghost %s released: %s", ghost.name, String.format(reason, args));
-		return ghost;
+		log("Ghost %s released: %s", ghost.name, reason);
+		publish(new GameEvent(this, GameEventType.GHOST_STARTS_LEAVING_HOUSE, ghost, ghost.tile()));
 	}
 
 	private Optional<Ghost> preferredLockedGhostInHouse() {

@@ -85,8 +85,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 		games = Map.of(GameVariant.MS_PACMAN, new MsPacManGame(), GameVariant.PACMAN, new PacManGame());
 		// map game state change events from FSM to game events from game model:
 		games.values().forEach(game -> {
-			addStateChangeListener(
-					(oldState, newState) -> game.eventSupport.publish(new GameStateChangeEvent(game, oldState, newState)));
+			addStateChangeListener((oldState, newState) -> game.publish(new GameStateChangeEvent(game, oldState, newState)));
 		});
 		selectGame(variant);
 		changeState(INTRO);
@@ -155,7 +154,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 	private void selectGame(GameVariant variant) {
 		// ensure only selected game model fires events
 		for (var game : games.values()) {
-			game.eventSupport.setEnabled(game.variant == variant);
+			game.setEventsPublished(game.variant == variant);
 		}
 		selectedGame = games.get(variant);
 	}
@@ -174,7 +173,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 	}
 
 	public void addListener(GameEventListener subscriber) {
-		games.values().forEach(game -> game.eventSupport.addEventListener(subscriber));
+		games.values().forEach(game -> game.addEventListener(subscriber));
 	}
 
 	public void requestGame() {
@@ -189,7 +188,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 			consumeCredit();
 		}
 		restartInInitialState(INTRO);
-		game().eventSupport.publish(new TriggerUIChangeEvent(game()));
+		game().publish(new TriggerUIChangeEvent(game()));
 	}
 
 	public void startIntermissionTest() {
@@ -203,7 +202,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 		if (gameRunning) {
 			game().level.world.tiles().filter(not(game().level.world::isEnergizerTile))
 					.forEach(game().level.world::removeFood);
-			game().eventSupport.publish(GameEventType.PLAYER_FINDS_FOOD, null);
+			game().publish(GameEventType.PLAYER_FINDS_FOOD, null);
 		}
 	}
 
@@ -212,7 +211,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 			Ghost[] prey = game().ghosts()
 					.filter(ghost -> ghost.is(GhostState.HUNTING_PAC) || ghost.is(GhostState.FRIGHTENED)).toArray(Ghost[]::new);
 			game().ghostBounty = GameModel.FIRST_GHOST_BOUNTY;
-			game().killGhosts(prey);
+			game().eatGhosts(prey);
 			changeState(GameState.GHOST_DYING);
 		}
 	}
