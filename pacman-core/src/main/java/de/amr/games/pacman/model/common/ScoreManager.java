@@ -29,7 +29,7 @@ import static de.amr.games.pacman.lib.Logging.log;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Properties;
 
@@ -39,80 +39,97 @@ import de.amr.games.pacman.event.GameEventType;
 /**
  * @author Armin Reichert
  */
-public class GameScore {
+public class ScoreManager {
 
-	private final GameModel game;
-	public boolean enabled;
-	private int points;
+	public static class Score {
+		public int points;
+		public int levelNumber;
+		public LocalDate date;
+
+		public Score() {
+			reset();
+		}
+
+		public void reset() {
+			points = 0;
+			levelNumber = 1;
+			date = LocalDate.now();
+		}
+	}
 
 	private final File hiscoreFile;
-	private int hiscore;
-	private int hiscoreLevel = 1;
-	private LocalDateTime hiscoreTime;
-	private boolean newHiscore;
+	private final Score score;
+	private final Score hiscore;
+	public boolean enabled;
 
-	public GameScore(GameModel game, File hiscoreFile) {
-		this.game = game;
+	public ScoreManager(File hiscoreFile) {
 		this.hiscoreFile = hiscoreFile;
+		score = new Score();
+		hiscore = new Score();
+		loadHiscore(hiscore);
 	}
 
-	public int points() {
-		return points;
+	public Score score() {
+		return score;
 	}
 
-	public int hiscore() {
+	public Score hiscore() {
 		return hiscore;
 	}
 
-	public int hiscoreLevel() {
-		return hiscoreLevel;
+	public void reset() {
+		score.reset();
+		loadHiscore(hiscore);
 	}
 
-	public void clear() {
-		points = 0;
-	}
-
-	public void add(int number) {
+	public void add(GameModel game, int points) {
 		if (!enabled) {
 			return;
 		}
-		int oldscore = points;
-		points += number;
-		if (points > hiscore) {
-			newHiscore = true;
-			hiscore = points;
-			hiscoreLevel = game.level.number;
-			hiscoreTime = LocalDateTime.now();
+		int pointsBefore = score.points;
+		score.points += points;
+		if (score.points > hiscore.points) {
+			hiscore.points = score.points;
+			hiscore.levelNumber = game.level.number;
 		}
-		// TODO not sure if firing event belongs here
-		if (oldscore < GameModel.EXTRA_LIFE_POINTS && points >= GameModel.EXTRA_LIFE_POINTS) {
+		if (pointsBefore < GameModel.EXTRA_LIFE_POINTS && score.points >= GameModel.EXTRA_LIFE_POINTS) {
 			game.lives++;
+			// TODO not sure if firing event belongs here
 			game.eventSupport.publish(new GameEvent(game, GameEventType.PLAYER_GETS_EXTRA_LIFE, null, game.player.tile()));
 		}
 	}
 
-	public void loadHiscore() {
-		var data = new Properties();
+	private void loadHiscore(Score hiscore) {
 		try (var in = new FileInputStream(hiscoreFile)) {
-			data.loadFromXML(in);
-			hiscore = Integer.parseInt(data.getProperty("points"));
-			hiscoreLevel = Integer.parseInt(data.getProperty("level"));
-			hiscoreTime = LocalDateTime.parse(data.getProperty("date"), DateTimeFormatter.ISO_LOCAL_DATE);
-			log("Hiscore loaded. File: '%s' Points: %d Level: %d", hiscoreFile.getAbsolutePath(), hiscore, hiscoreLevel);
+			var props = new Properties();
+			props.loadFromXML(in);
+			// parse
+			var points = Integer.parseInt(props.getProperty("points"));
+			var levelNumber = Integer.parseInt(props.getProperty("level"));
+			var date = LocalDate.parse(props.getProperty("date"), DateTimeFormatter.ISO_LOCAL_DATE);
+			// parsing ok
+			hiscore.points = points;
+			hiscore.levelNumber = levelNumber;
+			hiscore.date = date;
+			log("Hiscore loaded. File: '%s' Points: %d Level: %d", hiscoreFile.getAbsolutePath(), hiscore.points,
+					hiscore.levelNumber);
 		} catch (Exception x) {
 			log("Highscore could not be loaded. File '%s' Reason: %s", hiscoreFile, x.getMessage());
 		}
 	}
 
 	public void saveHiscore() {
-		if (newHiscore) {
-			var data = new Properties();
-			data.setProperty("points", String.valueOf(hiscore));
-			data.setProperty("level", String.valueOf(hiscoreLevel));
-			data.setProperty("date", hiscoreTime.format(DateTimeFormatter.ISO_LOCAL_DATE));
+		Score latestHiscore = new Score();
+		loadHiscore(latestHiscore); // get most recent one from disk
+		if (score.points > latestHiscore.points) {
+			var props = new Properties();
+			props.setProperty("points", String.valueOf(score.points));
+			props.setProperty("level", String.valueOf(score.levelNumber));
+			props.setProperty("date", score.date.format(DateTimeFormatter.ISO_LOCAL_DATE));
 			try (var out = new FileOutputStream(hiscoreFile)) {
-				data.storeToXML(out, "");
-				log("New hiscore saved. File: '%s' Points: %d Level: %d", hiscoreFile.getAbsolutePath(), hiscore, hiscoreLevel);
+				props.storeToXML(out, "");
+				log("New hiscore saved. File: '%s' Points: %d Level: %d", hiscoreFile.getAbsolutePath(), hiscore.points,
+						hiscore.levelNumber);
 			} catch (Exception x) {
 				log("Highscore could not be . File '%s' Reason: %s", hiscoreFile, x.getMessage());
 			}

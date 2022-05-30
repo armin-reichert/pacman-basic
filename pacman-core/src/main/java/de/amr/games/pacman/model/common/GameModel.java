@@ -133,14 +133,13 @@ public abstract class GameModel {
 		return level.world;
 	}
 
-	public abstract GameScore score();
+	public abstract ScoreManager scoreManager();
 
 	public void reset() {
 		lives = INITIAL_LIFES;
 		levelCounter.clear();
 		setLevel(1);
-		score().clear();
-		score().loadHiscore();
+		scoreManager().reset();
 	}
 
 	public void resetGuys() {
@@ -249,7 +248,7 @@ public abstract class GameModel {
 		eventSupport.publish(GameEventType.PLAYER_FINDS_FOOD, tile);
 		if (level.world.isEnergizerTile(tile)) {
 			energizerEaten = true;
-			score().add(ENERGIZER_VALUE);
+			scoreManager().add(this, ENERGIZER_VALUE);
 			ghostBounty = FIRST_GHOST_BOUNTY;
 			player.restingCountdown = ENERGIZER_RESTING_TICKS;
 			if (level.ghostFrightenedSeconds > 0) {
@@ -263,7 +262,7 @@ public abstract class GameModel {
 			}
 		} else {
 			player.restingCountdown = PELLET_RESTING_TICKS;
-			score().add(PELLET_VALUE);
+			scoreManager().add(this, PELLET_VALUE);
 		}
 		if (checkBonusAwarded()) {
 			eventSupport.publish(GameEventType.BONUS_GETS_ACTIVE, bonus().tile());
@@ -292,7 +291,7 @@ public abstract class GameModel {
 		level.numGhostsKilled += prey.length;
 		if (level.numGhostsKilled == 16) {
 			log("All ghosts killed at level %d, Pac-Man wins additional %d points", level.number, ALL_GHOSTS_KILLED_POINTS);
-			score().add(ALL_GHOSTS_KILLED_POINTS);
+			scoreManager().add(this, ALL_GHOSTS_KILLED_POINTS);
 		}
 	}
 
@@ -301,7 +300,7 @@ public abstract class GameModel {
 		ghost.targetTile = level.world.ghostHouse().entry();
 		ghost.bounty = ghostBounty;
 		ghostBounty *= 2;
-		score().add(ghost.bounty);
+		scoreManager().add(this, ghost.bounty);
 		log("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name, ghost.tile(), ghost.bounty);
 	}
 
