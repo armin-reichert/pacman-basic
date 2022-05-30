@@ -180,21 +180,20 @@ public class PacManGame extends GameModel {
 	}
 
 	private void initGhosts(GameLevel level) {
-		ArcadeWorld world = (ArcadeWorld) level.world;
-		GhostHouse house = world.ghostHouse();
+		GhostHouse house = world().ghostHouse();
 
 		ghosts[RED_GHOST].homeTile = house.entry();
 		ghosts[RED_GHOST].revivalTile = house.seatMiddle();
-		ghosts[RED_GHOST].scatterTile = world.rightUpperTarget;
+		ghosts[RED_GHOST].scatterTile = world().rightUpperTarget;
 
 		ghosts[PINK_GHOST].homeTile = ghosts[PINK_GHOST].revivalTile = house.seatMiddle();
-		ghosts[PINK_GHOST].scatterTile = world.leftUpperTarget;
+		ghosts[PINK_GHOST].scatterTile = world().leftUpperTarget;
 
 		ghosts[CYAN_GHOST].homeTile = ghosts[CYAN_GHOST].revivalTile = house.seatLeft();
-		ghosts[CYAN_GHOST].scatterTile = world.rightLowerTarget;
+		ghosts[CYAN_GHOST].scatterTile = world().rightLowerTarget;
 
 		ghosts[ORANGE_GHOST].homeTile = ghosts[ORANGE_GHOST].revivalTile = house.seatRight();
-		ghosts[ORANGE_GHOST].scatterTile = world.leftLowerTarget;
+		ghosts[ORANGE_GHOST].scatterTile = world().leftLowerTarget;
 
 		for (var ghost : ghosts) {
 			ghost.dotCounter = 0;
