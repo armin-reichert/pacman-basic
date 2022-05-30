@@ -38,9 +38,6 @@ public class GameLevel {
 	/** 1-based maze number */
 	public int mazeNumber;
 
-	/** 1-based map number (some mazes share the same map) */
-	public int mapNumber;
-
 	/* 1-based intermission scene number that is played after this level completes. */
 	public int intermissionNumber;
 

@@ -327,12 +327,12 @@ public class MsPacManGame extends GameModel {
 		case 10, 11, 12, 13 -> 4;
 		default -> (level.number - 14) % 8 < 4 ? 5 : 6;
 		};
-		level.mapNumber = switch (level.mazeNumber) {
+		int mapNumber = switch (level.mazeNumber) {
 		case 5 -> 3;
 		case 6 -> 4;
 		default -> level.mazeNumber;
 		};
-		level.world = createWorld(level.mapNumber);
+		level.world = createWorld(mapNumber);
 		if (level.number >= 8) {
 			level.bonusSymbol = new Random().nextInt(7);
 		}
