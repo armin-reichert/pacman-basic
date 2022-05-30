@@ -79,7 +79,6 @@ public abstract class GameModel {
 	public static final int ENERGIZER_RESTING_TICKS = 3;
 	public static final int FIRST_GHOST_BOUNTY = 200;
 	public static final int INITIAL_LIFES = 3;
-	public static final int EXTRA_LIFE_POINTS = 10_000;
 	public static final int ALL_GHOSTS_KILLED_POINTS = 12_000;
 
 	/** The game variant respresented by this model. */
@@ -97,8 +96,11 @@ public abstract class GameModel {
 	/** Current level. */
 	public GameLevel level;
 
-	/** Number of lives remainingr. */
+	/** Number of lives remaining. */
 	public int lives;
+
+	/** At which score an extra life is granted. */
+	public int extraLifeScore = 10_000;
 
 	/** Bounty for eating the next ghost. */
 	public int ghostBounty;

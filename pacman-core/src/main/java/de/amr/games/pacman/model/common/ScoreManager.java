@@ -88,15 +88,14 @@ public class ScoreManager {
 		if (!enabled) {
 			return;
 		}
-		int pointsBefore = score.points;
+		int scoreBeforeAddingPoints = score.points;
 		score.points += points;
 		if (score.points > hiscore.points) {
 			hiscore.points = score.points;
 			hiscore.levelNumber = game.level.number;
 		}
-		if (pointsBefore < GameModel.EXTRA_LIFE_POINTS && score.points >= GameModel.EXTRA_LIFE_POINTS) {
+		if (scoreBeforeAddingPoints < game.extraLifeScore && score.points >= game.extraLifeScore) {
 			game.lives++;
-			// TODO not sure if firing event belongs here
 			game.eventSupport.publish(new GameEvent(game, GameEventType.PLAYER_GETS_EXTRA_LIFE, null, game.player.tile()));
 		}
 	}
