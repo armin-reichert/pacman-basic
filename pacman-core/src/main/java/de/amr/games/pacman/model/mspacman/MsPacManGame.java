@@ -35,6 +35,7 @@ import java.util.Random;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
+import de.amr.games.pacman.model.common.GameScore;
 import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.Pac;
@@ -284,6 +285,7 @@ public class MsPacManGame extends GameModel {
 		return level;
 	}
 
+	private final GameScore score;
 	private final MovingBonus movingBonus;
 
 	/**
@@ -313,6 +315,7 @@ public class MsPacManGame extends GameModel {
 		super(GameVariant.MS_PACMAN, new Pac("Ms. Pac-Man"), new Ghost(RED_GHOST, "Blinky"), new Ghost(PINK_GHOST, "Pinky"),
 				new Ghost(CYAN_GHOST, "Inky"), new Ghost(ORANGE_GHOST, "Sue"));
 		movingBonus = new MovingBonus();
+		score = new GameScore(this, new File(System.getProperty("user.home"), "highscore-ms_pacman.xml"));
 		setLevel(1);
 	}
 
@@ -322,8 +325,8 @@ public class MsPacManGame extends GameModel {
 	}
 
 	@Override
-	public File highscoreFile() {
-		return new File(System.getProperty("user.home"), "highscore-ms_pacman.xml");
+	public GameScore score() {
+		return score;
 	}
 
 	@Override

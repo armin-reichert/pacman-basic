@@ -163,7 +163,7 @@ public class MovingBonus extends Creature implements Bonus {
 			}
 			if (game.player.tile().equals(tile())) {
 				log("%s found bonus %s", game.player.name, this);
-				game.score(value());
+				game.score().add(value());
 				eat(sec_to_ticks(2));
 				game.eventSupport.publish(GameEventType.BONUS_GETS_EATEN, tile());
 			}

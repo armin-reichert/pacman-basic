@@ -37,18 +37,15 @@ import static de.amr.games.pacman.model.common.actors.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.model.common.actors.GhostState.LOCKED;
 import static de.amr.games.pacman.model.common.world.World.HTS;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import de.amr.games.pacman.event.GameEvent;
 import de.amr.games.pacman.event.GameEventSupport;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.ScatterPhaseStartsEvent;
 import de.amr.games.pacman.lib.Direction;
-import de.amr.games.pacman.lib.Hiscore;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
@@ -103,12 +100,6 @@ public abstract class GameModel {
 	/** Number of lives remainingr. */
 	public int lives;
 
-	/** Game score. */
-	public int score;
-
-	/** If scoring is enabled. */
-	public boolean scoreEnabled;
-
 	/** Bounty for eating the next ghost. */
 	public int ghostBounty;
 
@@ -121,14 +112,10 @@ public abstract class GameModel {
 	/** Enabled state of the counter used by ghost house logic. */
 	public boolean globalDotCounterEnabled;
 
-	public Hiscore hiscore;
-
 	/** Number of current intermission scene in test mode. */
 	public int intermissionTestNumber;
 
 	public final GameEventSupport eventSupport = new GameEventSupport(this);
-
-	public abstract File highscoreFile();
 
 	public GameModel(GameVariant gameVariant, Pac player, Ghost... ghosts) {
 		if (ghosts.length != 4) {
@@ -146,13 +133,14 @@ public abstract class GameModel {
 		return level.world;
 	}
 
+	public abstract GameScore score();
+
 	public void reset() {
-		score = 0;
 		lives = INITIAL_LIFES;
 		levelCounter.clear();
 		setLevel(1);
-		hiscore = new Hiscore(this);
-		hiscore.load();
+		score().clear();
+		score().loadHiscore();
 	}
 
 	public void resetGuys() {
@@ -247,25 +235,6 @@ public abstract class GameModel {
 	// Game logic
 
 	/**
-	 * @param points points to score
-	 */
-	public void score(int points) {
-		if (!scoreEnabled) {
-			return;
-		}
-		int oldscore = score;
-		score += points;
-		if (score > hiscore.points) {
-			hiscore.points = score;
-			hiscore.level = level.number;
-		}
-		if (oldscore < EXTRA_LIFE_POINTS && score >= EXTRA_LIFE_POINTS) {
-			lives++;
-			eventSupport.publish(new GameEvent(this, GameEventType.PLAYER_GETS_EXTRA_LIFE, null, player.tile()));
-		}
-	}
-
-	/**
 	 * @param tile
 	 * @return <code>true</code> if energizer was eaten on given tile
 	 */
@@ -280,7 +249,7 @@ public abstract class GameModel {
 		eventSupport.publish(GameEventType.PLAYER_FINDS_FOOD, tile);
 		if (level.world.isEnergizerTile(tile)) {
 			energizerEaten = true;
-			score(ENERGIZER_VALUE);
+			score().add(ENERGIZER_VALUE);
 			ghostBounty = FIRST_GHOST_BOUNTY;
 			player.restingCountdown = ENERGIZER_RESTING_TICKS;
 			if (level.ghostFrightenedSeconds > 0) {
@@ -294,7 +263,7 @@ public abstract class GameModel {
 			}
 		} else {
 			player.restingCountdown = PELLET_RESTING_TICKS;
-			score(PELLET_VALUE);
+			score().add(PELLET_VALUE);
 		}
 		if (checkBonusAwarded()) {
 			eventSupport.publish(GameEventType.BONUS_GETS_ACTIVE, bonus().tile());
@@ -323,7 +292,7 @@ public abstract class GameModel {
 		level.numGhostsKilled += prey.length;
 		if (level.numGhostsKilled == 16) {
 			log("All ghosts killed at level %d, Pac-Man wins additional %d points", level.number, ALL_GHOSTS_KILLED_POINTS);
-			score(ALL_GHOSTS_KILLED_POINTS);
+			score().add(ALL_GHOSTS_KILLED_POINTS);
 		}
 	}
 
@@ -332,7 +301,7 @@ public abstract class GameModel {
 		ghost.targetTile = level.world.ghostHouse().entry();
 		ghost.bounty = ghostBounty;
 		ghostBounty *= 2;
-		score(ghost.bounty);
+		score().add(ghost.bounty);
 		log("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name, ghost.tile(), ghost.bounty);
 	}
 

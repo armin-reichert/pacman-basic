@@ -37,7 +37,6 @@ import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameStateChangeEvent;
 import de.amr.games.pacman.lib.Fsm;
 import de.amr.games.pacman.lib.FsmState;
-import de.amr.games.pacman.lib.Hiscore;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.actors.Ghost;
@@ -92,10 +91,10 @@ public enum GameState implements FsmState<GameModel> {
 			if (timer.hasExpired()) {
 				game.startHuntingPhase(0);
 				if (controller.credit() > 0) {
-					game.scoreEnabled = true;
+					game.score().enabled = true;
 					controller.setGameRunning(true);
 				} else {
-					game.scoreEnabled = false;
+					game.score().enabled = false;
 					controller.setGameRunning(false);
 				}
 				controller.changeState(GameState.HUNTING);
@@ -265,7 +264,7 @@ public enum GameState implements FsmState<GameModel> {
 			game.ghosts().forEach(Ghost::show);
 			game.player.setAbsSpeed(0);
 			game.player.show();
-			new Hiscore(game).save();
+			game.score().saveHiscore();
 		}
 
 		@Override
