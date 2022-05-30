@@ -65,7 +65,7 @@ public class TickTimer {
 		return Math.round(sec * TICKS_PER_SEC);
 	}
 
-	public static String ticksAsString(long ticks) {
+	public static String ticksToString(long ticks) {
 		return ticks == INDEFINITE ? "indefinite" : "%d".formatted(ticks);
 	}
 
@@ -82,7 +82,7 @@ public class TickTimer {
 
 	@Override
 	public String toString() {
-		return "[%s %s tick:%s remaining:%s]".formatted(name, state, ticksAsString(tick), ticksAsString(remaining()));
+		return "[%s %s tick:%s remaining:%s]".formatted(name, state, ticksToString(tick), ticksToString(remaining()));
 	}
 
 	public TickTimerState state() {
