@@ -113,8 +113,8 @@ public class Ghost extends Creature {
 		if (dir == moveDir.opposite()) {
 			return true;
 		}
-		if (state == HUNTING_PAC && dir == UP) {
-			return upwardsBlockedTiles.contains(tile());
+		if (state == HUNTING_PAC && dir == UP && upwardsBlockedTiles.contains(tile())) {
+			return true;
 		}
 		return false;
 	}
