@@ -30,6 +30,9 @@ import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.lib.Misc.insideRange;
 import static de.amr.games.pacman.model.common.GameVariant.MS_PACMAN;
+import static de.amr.games.pacman.model.common.actors.GhostState.ENTERING_HOUSE;
+import static de.amr.games.pacman.model.common.actors.GhostState.HUNTING_PAC;
+import static de.amr.games.pacman.model.common.actors.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.model.common.world.World.HTS;
 import static de.amr.games.pacman.model.common.world.World.TS;
 
@@ -87,7 +90,8 @@ public class Ghost extends Creature {
 	/** "Cruise Elroy" mode. Values: 0 (off), 1, -1, 2, -2 (negative means disabled). */
 	public int elroy;
 
-	public List<V2i> upwardsBlockedTilesWhenHunting = List.of();
+	/** Tiles where the ghost cannot move upwards when in chasing or scattering mode. */
+	public List<V2i> upwardsBlockedTiles = List.of();
 
 	public Ghost(int id, String name) {
 		super(name);
@@ -109,8 +113,8 @@ public class Ghost extends Creature {
 		if (dir == moveDir.opposite()) {
 			return true;
 		}
-		if (state == GhostState.HUNTING_PAC && dir == UP) {
-			return upwardsBlockedTilesWhenHunting.contains(tile());
+		if (state == HUNTING_PAC && dir == UP) {
+			return upwardsBlockedTiles.contains(tile());
 		}
 		return false;
 	}
@@ -120,7 +124,7 @@ public class Ghost extends Creature {
 		V2i leftDoor = world.ghostHouse().doorTileLeft();
 		V2i rightDoor = world.ghostHouse().doorTileRight();
 		if (leftDoor.equals(tile) || rightDoor.equals(tile)) {
-			return is(GhostState.ENTERING_HOUSE) || is(GhostState.LEAVING_HOUSE);
+			return is(ENTERING_HOUSE) || is(LEAVING_HOUSE);
 		}
 		return super.canAccessTile(world, tile);
 	}
@@ -141,7 +145,7 @@ public class Ghost extends Creature {
 			setRelSpeed(0.5 * game.level.ghostSpeed);
 			boolean houseLeft = leaveHouse(world.ghostHouse());
 			if (houseLeft) {
-				state = GhostState.HUNTING_PAC;
+				state = HUNTING_PAC;
 				// TODO Inky behaves differently:
 				setBothDirs(LEFT);
 				game.eventSupport.publish(new GameEvent(game, GameEventType.GHOST_COMPLETES_LEAVING_HOUSE, this, tile()));
@@ -195,7 +199,7 @@ public class Ghost extends Creature {
 			if (houseReached) {
 				setBothDirs(DOWN);
 				targetTile = revivalTile;
-				state = GhostState.ENTERING_HOUSE;
+				state = ENTERING_HOUSE;
 				game.eventSupport.publish(new GameEvent(game, GameEventType.GHOST_ENTERS_HOUSE, this, tile()));
 			}
 		}
@@ -204,7 +208,7 @@ public class Ghost extends Creature {
 			boolean revivalTileReached = enterHouse(world.ghostHouse());
 			if (revivalTileReached) {
 				// TODO is there some revival time > 0?
-				state = GhostState.LEAVING_HOUSE;
+				state = LEAVING_HOUSE;
 				setBothDirs(moveDir.opposite());
 				game.eventSupport.publish(new GameEvent(game, GameEventType.GHOST_STARTS_LEAVING_HOUSE, this, tile()));
 			}

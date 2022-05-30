@@ -129,7 +129,8 @@ public class PacManGame extends GameModel {
 		//@formatter:on
 	};
 
-	public List<V2i> upwardsBlockedForHuntingGhosts = List.of(v(12, 14), v(15, 14), v(12, 26), v(15, 26));
+	// in the red zone, chasing or scattering ghosts can not move upwards
+	private static final List<V2i> RED_ZONE = List.of(v(12, 14), v(15, 14), v(12, 26), v(15, 26));
 
 	public static ArcadeWorld createWorld() {
 		ArcadeWorld world = new ArcadeWorld(MAP);
@@ -142,7 +143,7 @@ public class PacManGame extends GameModel {
 		super(GameVariant.PACMAN, new Pac("Pac-Man"), new Ghost(RED_GHOST, "Blinky"), new Ghost(PINK_GHOST, "Pinky"),
 				new Ghost(CYAN_GHOST, "Inky"), new Ghost(ORANGE_GHOST, "Clyde"));
 		for (var ghost : ghosts) {
-			ghost.upwardsBlockedTilesWhenHunting = upwardsBlockedForHuntingGhosts;
+			ghost.upwardsBlockedTiles = RED_ZONE;
 		}
 		bonus = new StaticBonus(new V2d(v(13, 20).scaled(TS)).plus(HTS, 0));
 		setLevel(1);
