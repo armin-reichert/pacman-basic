@@ -161,7 +161,7 @@ public class PacManGame extends GameModel {
 			ghost.upwardsBlockedTiles = RED_ZONE;
 		}
 		bonus = new StaticBonus(new V2d(v(13, 20).scaled(TS)).plus(HTS, 0));
-		score = new ScoreManager(new File(System.getProperty("user.home"), "highscore-pacman.xml"));
+		score = new ScoreManager(this, new File(System.getProperty("user.home"), "highscore-pacman.xml"));
 		setLevel(1);
 	}
 

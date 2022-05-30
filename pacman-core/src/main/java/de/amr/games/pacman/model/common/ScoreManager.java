@@ -57,12 +57,14 @@ public class ScoreManager {
 		}
 	}
 
+	private final GameModel game;
 	private final File hiscoreFile;
 	private final Score score;
 	private final Score hiscore;
 	public boolean enabled;
 
-	public ScoreManager(File hiscoreFile) {
+	public ScoreManager(GameModel game, File hiscoreFile) {
+		this.game = game;
 		this.hiscoreFile = hiscoreFile;
 		score = new Score();
 		hiscore = new Score();
@@ -82,7 +84,7 @@ public class ScoreManager {
 		loadHiscore(hiscore);
 	}
 
-	public void add(GameModel game, int points) {
+	public void addPoints(int points) {
 		if (!enabled) {
 			return;
 		}

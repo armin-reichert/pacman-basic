@@ -315,7 +315,7 @@ public class MsPacManGame extends GameModel {
 		super(GameVariant.MS_PACMAN, new Pac("Ms. Pac-Man"), new Ghost(RED_GHOST, "Blinky"), new Ghost(PINK_GHOST, "Pinky"),
 				new Ghost(CYAN_GHOST, "Inky"), new Ghost(ORANGE_GHOST, "Sue"));
 		movingBonus = new MovingBonus();
-		score = new ScoreManager(new File(System.getProperty("user.home"), "highscore-ms_pacman.xml"));
+		score = new ScoreManager(this, new File(System.getProperty("user.home"), "highscore-ms_pacman.xml"));
 		setLevel(1);
 	}
 
