@@ -57,6 +57,24 @@ public class ScoreManager {
 		}
 	}
 
+	private static void loadFromFile(Score score, File file) {
+		try (var in = new FileInputStream(file)) {
+			var props = new Properties();
+			props.loadFromXML(in);
+			// parse
+			var points = Integer.parseInt(props.getProperty("points"));
+			var levelNumber = Integer.parseInt(props.getProperty("level"));
+			var date = LocalDate.parse(props.getProperty("date"), DateTimeFormatter.ISO_LOCAL_DATE);
+			// parsing ok
+			score.points = points;
+			score.levelNumber = levelNumber;
+			score.date = date;
+			log("Score loaded. File: '%s' Points: %d Level: %d", file.getAbsolutePath(), score.points, score.levelNumber);
+		} catch (Exception x) {
+			log("Score could not be loaded. File '%s' Reason: %s", file, x.getMessage());
+		}
+	}
+
 	private final GameModel game;
 	private final File hiscoreFile;
 	private final Score score;
@@ -68,7 +86,7 @@ public class ScoreManager {
 		this.hiscoreFile = hiscoreFile;
 		score = new Score();
 		hiscore = new Score();
-		loadHiscore(hiscore);
+		loadFromFile(hiscore, hiscoreFile);
 	}
 
 	public Score score() {
@@ -81,7 +99,7 @@ public class ScoreManager {
 
 	public void reset() {
 		score.reset();
-		loadHiscore(hiscore);
+		loadFromFile(hiscore, hiscoreFile);
 	}
 
 	public void addPoints(int points) {
@@ -93,6 +111,7 @@ public class ScoreManager {
 		if (score.points > hiscore.points) {
 			hiscore.points = score.points;
 			hiscore.levelNumber = game.level.number;
+			hiscore.date = LocalDate.now();
 		}
 		if (scoreBeforeAddingPoints < game.extraLifeScore && score.points >= game.extraLifeScore) {
 			game.lives++;
@@ -100,40 +119,22 @@ public class ScoreManager {
 		}
 	}
 
-	private void loadHiscore(Score hiscore) {
-		try (var in = new FileInputStream(hiscoreFile)) {
-			var props = new Properties();
-			props.loadFromXML(in);
-			// parse
-			var points = Integer.parseInt(props.getProperty("points"));
-			var levelNumber = Integer.parseInt(props.getProperty("level"));
-			var date = LocalDate.parse(props.getProperty("date"), DateTimeFormatter.ISO_LOCAL_DATE);
-			// parsing ok
-			hiscore.points = points;
-			hiscore.levelNumber = levelNumber;
-			hiscore.date = date;
-			log("Hiscore loaded. File: '%s' Points: %d Level: %d", hiscoreFile.getAbsolutePath(), hiscore.points,
-					hiscore.levelNumber);
-		} catch (Exception x) {
-			log("Highscore could not be loaded. File '%s' Reason: %s", hiscoreFile, x.getMessage());
-		}
-	}
-
 	public void saveHiscore() {
 		Score latestHiscore = new Score();
-		loadHiscore(latestHiscore); // get most recent one from disk
-		if (score.points > latestHiscore.points) {
-			var props = new Properties();
-			props.setProperty("points", String.valueOf(score.points));
-			props.setProperty("level", String.valueOf(score.levelNumber));
-			props.setProperty("date", score.date.format(DateTimeFormatter.ISO_LOCAL_DATE));
-			try (var out = new FileOutputStream(hiscoreFile)) {
-				props.storeToXML(out, "");
-				log("New hiscore saved. File: '%s' Points: %d Level: %d", hiscoreFile.getAbsolutePath(), hiscore.points,
-						hiscore.levelNumber);
-			} catch (Exception x) {
-				log("Highscore could not be . File '%s' Reason: %s", hiscoreFile, x.getMessage());
-			}
+		loadFromFile(latestHiscore, hiscoreFile);
+		if (hiscore.points <= latestHiscore.points) {
+			return;
+		}
+		var props = new Properties();
+		props.setProperty("points", String.valueOf(hiscore.points));
+		props.setProperty("level", String.valueOf(hiscore.levelNumber));
+		props.setProperty("date", hiscore.date.format(DateTimeFormatter.ISO_LOCAL_DATE));
+		try (var out = new FileOutputStream(hiscoreFile)) {
+			props.storeToXML(out, "");
+			log("New hiscore saved. File: '%s' Points: %d Level: %d", hiscoreFile.getAbsolutePath(), hiscore.points,
+					hiscore.levelNumber);
+		} catch (Exception x) {
+			log("Highscore could not be saved. File '%s' Reason: %s", hiscoreFile, x.getMessage());
 		}
 	}
 }
