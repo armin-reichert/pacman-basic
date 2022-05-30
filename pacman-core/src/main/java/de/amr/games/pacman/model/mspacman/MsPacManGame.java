@@ -40,7 +40,6 @@ import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.Pac;
 import de.amr.games.pacman.model.common.world.ArcadeWorld;
 import de.amr.games.pacman.model.common.world.GhostHouse;
-import de.amr.games.pacman.model.common.world.World;
 
 /**
  * Model of the Ms. Pac-Man game.
@@ -251,7 +250,7 @@ public class MsPacManGame extends GameModel {
 			//@formatter:on
 	};
 
-	public static World createWorld(int number) {
+	public static ArcadeWorld createWorld(int number) {
 		return switch (number) {
 		case 1 -> new ArcadeWorld(MAP1);
 		case 2 -> new ArcadeWorld(MAP2);
@@ -291,6 +290,11 @@ public class MsPacManGame extends GameModel {
 				new Ghost(CYAN_GHOST, "Inky"), new Ghost(ORANGE_GHOST, "Sue"));
 		movingBonus = new MovingBonus();
 		setLevel(1);
+	}
+
+	@Override
+	public ArcadeWorld world() {
+		return (ArcadeWorld) level.world;
 	}
 
 	@Override

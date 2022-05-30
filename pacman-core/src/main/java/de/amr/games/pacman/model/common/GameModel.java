@@ -56,6 +56,7 @@ import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.GhostState;
 import de.amr.games.pacman.model.common.actors.Pac;
+import de.amr.games.pacman.model.common.world.World;
 
 /**
  * Common part of the Pac-Man and Ms. Pac-Man game models.
@@ -133,6 +134,13 @@ public abstract class GameModel {
 		this.variant = gameVariant;
 		this.player = player;
 		this.ghosts = ghosts;
+	}
+
+	/**
+	 * @return the world of the current level. May be overriden with covariant return type.
+	 */
+	public World world() {
+		return level.world;
 	}
 
 	public void reset() {

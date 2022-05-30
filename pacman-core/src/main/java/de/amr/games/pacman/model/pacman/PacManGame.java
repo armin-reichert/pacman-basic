@@ -129,13 +129,12 @@ public class PacManGame extends GameModel {
 		//@formatter:on
 	};
 
+	public static ArcadeWorld createWorld() {
+		return new ArcadeWorld(MAP);
+	}
+
 	// in the red zone, chasing or scattering ghosts can not move upwards
 	private static final List<V2i> RED_ZONE = List.of(v(12, 14), v(15, 14), v(12, 26), v(15, 26));
-
-	public static ArcadeWorld createWorld() {
-		ArcadeWorld world = new ArcadeWorld(MAP);
-		return world;
-	}
 
 	private final StaticBonus bonus;
 
@@ -147,6 +146,11 @@ public class PacManGame extends GameModel {
 		}
 		bonus = new StaticBonus(new V2d(v(13, 20).scaled(TS)).plus(HTS, 0));
 		setLevel(1);
+	}
+
+	@Override
+	public ArcadeWorld world() {
+		return (ArcadeWorld) level.world;
 	}
 
 	@Override
@@ -165,7 +169,7 @@ public class PacManGame extends GameModel {
 	}
 
 	private void initLevel(GameLevel level) {
-		level.world = createWorld();
+		level.world = new ArcadeWorld(MAP);
 		level.mapNumber = level.mazeNumber = 1;
 		level.intermissionNumber = intermissionNumber(level.number);
 		level.pacStarvingTimeLimit = (int) sec_to_ticks(level.number < 5 ? 4 : 3);
