@@ -233,12 +233,6 @@ public abstract class GameModel {
 		};
 	}
 
-	/**
-	 * @param symbolID bonus symbol identifier
-	 * @return value of this bonus symbol
-	 */
-	public abstract int bonusValue(int symbolID);
-
 	// Game logic
 
 	/**

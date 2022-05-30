@@ -368,14 +368,9 @@ public class MsPacManGame extends GameModel {
 	@Override
 	public boolean checkBonusAwarded() {
 		if (level.world.eatenFoodCount() == 70 || level.world.eatenFoodCount() == 170) {
-			movingBonus.activate(level.world, level.bonusSymbol, bonusValue(level.bonusSymbol), TickTimer.INDEFINITE);
+			movingBonus.activate(level.world, level.bonusSymbol, BONUS_VALUE[level.bonusSymbol], TickTimer.INDEFINITE);
 			return true;
 		}
 		return false;
-	}
-
-	@Override
-	public int bonusValue(int symbol) {
-		return BONUS_VALUE[symbol];
 	}
 }
