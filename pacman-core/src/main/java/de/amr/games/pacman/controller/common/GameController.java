@@ -101,8 +101,8 @@ public class GameController extends Fsm<GameState, GameModel> {
 		return gameRunning;
 	}
 
-	public void setGameRunning(boolean b) {
-		gameRunning = b;
+	public void setGameRunning(boolean running) {
+		gameRunning = running;
 	}
 
 	public boolean isAutoMoving() {

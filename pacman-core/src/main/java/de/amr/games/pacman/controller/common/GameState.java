@@ -66,10 +66,6 @@ public enum GameState implements FsmState<GameModel> {
 
 	CREDIT {
 		@Override
-		public void onEnter(GameModel game) {
-		}
-
-		@Override
 		public void onUpdate(GameModel game) {
 			if (timer.hasExpired()) {
 				controller.changeState(READY);
@@ -95,7 +91,13 @@ public enum GameState implements FsmState<GameModel> {
 			}
 			if (timer.hasExpired()) {
 				game.startHuntingPhase(0);
-				controller.setGameRunning(controller.credit() > 0);
+				if (controller.credit() > 0) {
+					game.scoreEnabled = true;
+					controller.setGameRunning(true);
+				} else {
+					game.scoreEnabled = false;
+					controller.setGameRunning(false);
+				}
 				controller.changeState(GameState.HUNTING);
 			}
 		}
@@ -171,7 +173,7 @@ public enum GameState implements FsmState<GameModel> {
 			if (timer.hasExpired()) {
 				if (controller.credit() == 0) {
 					controller.changeState(INTRO);
-				} else if (game.level.intermissionNumber != 0) {
+				} else if (game.intermissionNumber(game.level.number) != 0) {
 					controller.changeState(INTERMISSION);
 				} else {
 					controller.changeState(LEVEL_STARTING);

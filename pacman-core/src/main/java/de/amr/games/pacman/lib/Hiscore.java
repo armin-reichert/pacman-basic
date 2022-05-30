@@ -84,7 +84,6 @@ public class Hiscore {
 			log("Highscore loaded (%d points in level %d) from file '%s'", points, level, file);
 		} catch (Exception x) {
 			log("Highscore could not be loaded from file '%s'", file);
-			x.printStackTrace();
 		}
 	}
 }

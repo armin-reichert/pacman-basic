@@ -36,7 +36,7 @@ public class GameLevel {
 	public World world;
 
 	/* 1-based intermission scene number that is played after this level completes. */
-	public int intermissionNumber;
+//	public int intermissionNumber;
 
 	/** Number of ghosts killed at the current level. */
 	public int numGhostsKilled;

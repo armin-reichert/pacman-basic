@@ -106,6 +106,9 @@ public abstract class GameModel {
 	/** Game score. */
 	public int score;
 
+	/** If scoring is enabled. */
+	public boolean scoreEnabled;
+
 	/** Bounty for eating the next ghost. */
 	public int ghostBounty;
 
@@ -247,6 +250,9 @@ public abstract class GameModel {
 	 * @param points points to score
 	 */
 	public void score(int points) {
+		if (!scoreEnabled) {
+			return;
+		}
 		int oldscore = score;
 		score += points;
 		if (score > hiscore.points) {
