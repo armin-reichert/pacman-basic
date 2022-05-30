@@ -133,6 +133,20 @@ public class PacManGame extends GameModel {
 		return new ArcadeWorld(MAP);
 	}
 
+	private static GameLevel createLevel(int number) {
+		int numLevels = LEVEL_DATA.length;
+		var level = new GameLevel(number, number <= numLevels ? LEVEL_DATA[number - 1] : LEVEL_DATA[numLevels - 1]);
+		level.world = new ArcadeWorld(MAP);
+		level.pacStarvingTimeLimit = (int) sec_to_ticks(level.number < 5 ? 4 : 3);
+		level.globalDotLimits = new int[] { Integer.MAX_VALUE, 7, 17, Integer.MAX_VALUE };
+		level.privateDotLimits = switch (level.number) {
+		case 1 -> new int[] { 0, 0, 30, 60 };
+		case 2 -> new int[] { 0, 0, 0, 50 };
+		default -> new int[] { 0, 0, 0, 0 };
+		};
+		return level;
+	}
+
 	// in the red zone, chasing or scattering ghosts can not move upwards
 	private static final List<V2i> RED_ZONE = List.of(v(12, 14), v(15, 14), v(12, 26), v(15, 26));
 
@@ -160,23 +174,11 @@ public class PacManGame extends GameModel {
 
 	@Override
 	public void setLevel(int n) {
-		level = new GameLevel(n, n <= LEVEL_DATA.length ? LEVEL_DATA[n - 1] : LEVEL_DATA[LEVEL_DATA.length - 1]);
-		initLevel(level);
+		level = createLevel(n);
 		levelCounter.add(level.bonusSymbol);
 		initGhosts(level);
 		bonus.init();
 		ghostBounty = GameModel.FIRST_GHOST_BOUNTY;
-	}
-
-	private void initLevel(GameLevel level) {
-		level.world = new ArcadeWorld(MAP);
-		level.pacStarvingTimeLimit = (int) sec_to_ticks(level.number < 5 ? 4 : 3);
-		level.globalDotLimits = new int[] { Integer.MAX_VALUE, 7, 17, Integer.MAX_VALUE };
-		level.privateDotLimits = switch (level.number) {
-		case 1 -> new int[] { 0, 0, 30, 60 };
-		case 2 -> new int[] { 0, 0, 0, 50 };
-		default -> new int[] { 0, 0, 0, 0 };
-		};
 	}
 
 	private void initGhosts(GameLevel level) {

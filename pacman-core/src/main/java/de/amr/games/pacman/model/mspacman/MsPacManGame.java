@@ -260,6 +260,30 @@ public class MsPacManGame extends GameModel {
 		};
 	}
 
+	private static GameLevel createLevel(int number) {
+		int numLevels = LEVEL_DATA.length;
+		var level = new GameLevel(number, number <= numLevels ? LEVEL_DATA[number - 1] : LEVEL_DATA[numLevels - 1]);
+		int mapNumber = switch (level.number) {
+		case 1, 2 -> 1;
+		case 3, 4, 5 -> 2;
+		case 6, 7, 8, 9 -> 3;
+		case 10, 11, 12, 13 -> 4;
+		default -> (level.number - 14) % 8 < 4 ? 3 : 4;
+		};
+		level.world = createWorld(mapNumber);
+		if (level.number >= 8) {
+			level.bonusSymbol = new Random().nextInt(7);
+		}
+		level.pacStarvingTimeLimit = (int) sec_to_ticks(level.number < 5 ? 4 : 3);
+		level.globalDotLimits = new int[] { Integer.MAX_VALUE, 7, 17, Integer.MAX_VALUE };
+		level.privateDotLimits = switch (level.number) {
+		case 1 -> new int[] { 0, 0, 30, 60 };
+		case 2 -> new int[] { 0, 0, 0, 50 };
+		default -> new int[] { 0, 0, 0, 0 };
+		};
+		return level;
+	}
+
 	private final MovingBonus movingBonus;
 
 	/**
@@ -312,32 +336,10 @@ public class MsPacManGame extends GameModel {
 		if (n < 1) {
 			throw new IllegalArgumentException("Level number must be at least 1, but is: " + n);
 		}
-		level = new GameLevel(n, n <= LEVEL_DATA.length ? LEVEL_DATA[n - 1] : LEVEL_DATA[LEVEL_DATA.length - 1]);
-		initLevel(level);
+		level = createLevel(n);
 		levelCounter.add(level.bonusSymbol);
 		initGhosts(level);
 		ghostBounty = GameModel.FIRST_GHOST_BOUNTY;
-	}
-
-	private void initLevel(GameLevel level) {
-		int mapNumber = switch (level.number) {
-		case 1, 2 -> 1;
-		case 3, 4, 5 -> 2;
-		case 6, 7, 8, 9 -> 3;
-		case 10, 11, 12, 13 -> 4;
-		default -> (level.number - 14) % 8 < 4 ? 3 : 4;
-		};
-		level.world = createWorld(mapNumber);
-		if (level.number >= 8) {
-			level.bonusSymbol = new Random().nextInt(7);
-		}
-		level.pacStarvingTimeLimit = (int) sec_to_ticks(level.number < 5 ? 4 : 3);
-		level.globalDotLimits = new int[] { Integer.MAX_VALUE, 7, 17, Integer.MAX_VALUE };
-		level.privateDotLimits = switch (level.number) {
-		case 1 -> new int[] { 0, 0, 30, 60 };
-		case 2 -> new int[] { 0, 0, 0, 50 };
-		default -> new int[] { 0, 0, 0, 0 };
-		};
 	}
 
 	private void initGhosts(GameLevel level) {
