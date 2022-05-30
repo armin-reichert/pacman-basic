@@ -320,17 +320,12 @@ public class MsPacManGame extends GameModel {
 	}
 
 	private void initLevel(GameLevel level) {
-		level.mazeNumber = switch (level.number) {
+		int mapNumber = switch (level.number) {
 		case 1, 2 -> 1;
 		case 3, 4, 5 -> 2;
 		case 6, 7, 8, 9 -> 3;
 		case 10, 11, 12, 13 -> 4;
-		default -> (level.number - 14) % 8 < 4 ? 5 : 6;
-		};
-		int mapNumber = switch (level.mazeNumber) {
-		case 5 -> 3;
-		case 6 -> 4;
-		default -> level.mazeNumber;
+		default -> (level.number - 14) % 8 < 4 ? 3 : 4;
 		};
 		level.world = createWorld(mapNumber);
 		if (level.number >= 8) {

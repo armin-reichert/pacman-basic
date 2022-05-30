@@ -35,9 +35,6 @@ public class GameLevel {
 	/** World of this level. */
 	public World world;
 
-	/** 1-based maze number */
-	public int mazeNumber;
-
 	/* 1-based intermission scene number that is played after this level completes. */
 	public int intermissionNumber;
 
