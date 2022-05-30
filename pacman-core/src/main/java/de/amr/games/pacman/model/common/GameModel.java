@@ -155,13 +155,13 @@ public abstract class GameModel {
 		return level.world;
 	}
 
-	public abstract ScoreManager scoreManager();
+	public abstract ScoreSupport scoreSupport();
 
 	public void reset() {
 		lives = INITIAL_LIFES;
 		levelCounter.clear();
 		setLevel(1);
-		scoreManager().reset();
+		scoreSupport().reset();
 	}
 
 	public void resetGuys() {
@@ -287,7 +287,7 @@ public abstract class GameModel {
 		level.numGhostsKilled += prey.length;
 		if (level.numGhostsKilled == 16) {
 			log("All ghosts killed at level %d, Pac-Man wins additional %d points", level.number, ALL_GHOSTS_KILLED_POINTS);
-			scoreManager().addPoints(ALL_GHOSTS_KILLED_POINTS);
+			scoreSupport().addPoints(ALL_GHOSTS_KILLED_POINTS);
 		}
 	}
 
@@ -296,7 +296,7 @@ public abstract class GameModel {
 		ghost.targetTile = level.world.ghostHouse().entry();
 		ghost.bounty = ghostBounty;
 		ghostBounty *= 2;
-		scoreManager().addPoints(ghost.bounty);
+		scoreSupport().addPoints(ghost.bounty);
 		log("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name, ghost.tile(), ghost.bounty);
 	}
 
@@ -351,7 +351,7 @@ public abstract class GameModel {
 		level.world.removeFood(player.tile());
 		player.starvingTicks = 0;
 		if (result.energizerFound) {
-			scoreManager().addPoints(ENERGIZER_VALUE);
+			scoreSupport().addPoints(ENERGIZER_VALUE);
 			player.restingCountdown = ENERGIZER_RESTING_TICKS;
 			ghostBounty = FIRST_GHOST_BOUNTY;
 			if (level.ghostFrightenedSeconds > 0) {
@@ -365,7 +365,7 @@ public abstract class GameModel {
 				result.playerGotPower = true;
 			}
 		} else {
-			scoreManager().addPoints(PELLET_VALUE);
+			scoreSupport().addPoints(PELLET_VALUE);
 			player.restingCountdown = PELLET_RESTING_TICKS;
 		}
 		ghosts[RED_GHOST].checkCruiseElroyStart(level);
@@ -403,9 +403,8 @@ public abstract class GameModel {
 				result.unlockReason = "Private dot counter reached limit (%d)".formatted(level.privateDotLimits[ghost.id]);
 			} else if (player.starvingTicks >= level.pacStarvingTimeLimit) {
 				result.unlockGhost = ghost;
-				int starved = player.starvingTicks;
+				result.unlockReason = "%s reached starving limit (%d ticks)".formatted(player.name, player.starvingTicks);
 				player.starvingTicks = 0;
-				result.unlockReason = "%s reached starving limit (%d ticks)".formatted(player.name, starved);
 			}
 		});
 	}

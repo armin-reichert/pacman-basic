@@ -39,7 +39,7 @@ import de.amr.games.pacman.event.GameEventType;
 /**
  * @author Armin Reichert
  */
-public class ScoreManager {
+public class ScoreSupport {
 
 	public static class Score {
 		public int points;
@@ -81,7 +81,7 @@ public class ScoreManager {
 	private final Score hiscore;
 	public boolean enabled;
 
-	public ScoreManager(GameModel game, File hiscoreFile) {
+	public ScoreSupport(GameModel game, File hiscoreFile) {
 		this.game = game;
 		this.hiscoreFile = hiscoreFile;
 		score = new Score();
