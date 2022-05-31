@@ -37,7 +37,7 @@ public abstract class GameEventAdapter implements GameEventListener {
 			onGameStateChange((GameStateChangeEvent) event);
 		} else {
 			switch (event.type) {
-			case BONUS_GETS_ACTIVE -> onBonusGetsActivate(event);
+			case BONUS_GETS_ACTIVE -> onBonusGetsActive(event);
 			case BONUS_GETS_EATEN -> onBonusGetsEaten(event);
 			case BONUS_EXPIRES -> onBonusExpires(event);
 			case GHOST_ENTERS_HOUSE -> onGhostEntersHouse(event);
@@ -58,7 +58,7 @@ public abstract class GameEventAdapter implements GameEventListener {
 	public void onGameStateChange(GameStateChangeEvent e) {
 	}
 
-	public void onBonusGetsActivate(GameEvent e) {
+	public void onBonusGetsActive(GameEvent e) {
 	}
 
 	public void onBonusGetsEaten(GameEvent e) {
