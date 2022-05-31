@@ -37,6 +37,7 @@ import de.amr.games.pacman.lib.Fsm;
 import de.amr.games.pacman.lib.FsmState;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.common.GameModel;
+import de.amr.games.pacman.model.common.GameModel.CheckList;
 import de.amr.games.pacman.model.common.actors.Ghost;
 
 /**
@@ -104,22 +105,22 @@ public enum GameState implements FsmState<GameModel> {
 	HUNTING {
 		@Override
 		public void onUpdate(GameModel game) {
-			game.checkList.clear();
 			if (game.isLevelComplete()) {
 				controller.changeState(LEVEL_COMPLETE);
 				return;
 			}
+			var checkResult = new CheckList();
 			controller.steer(game.player);
-			game.updatePlayer();
-			if (game.checkList.playerKilled) {
+			game.updatePlayer(checkResult);
+			if (checkResult.playerKilled) {
 				controller.changeState(PACMAN_DYING);
 				return;
 			}
-			if (game.checkList.edibleGhostsFound) {
+			if (checkResult.ghostsKilled) {
 				controller.changeState(GHOST_DYING);
 				return;
 			}
-			game.updateGhosts();
+			game.updateGhosts(checkResult);
 			game.updateBonus();
 			game.advanceHunting();
 		}
