@@ -42,7 +42,7 @@ import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.Pac;
 
 /**
- * Rule of thumb: here, the "what" and "when" should be specified, not the "how" (should be implemented in the model).
+ * Rule of thumb: here, specify the "what" and "when", not the "how" (which should be implemented in the model).
  * 
  * @author Armin Reichert
  */
