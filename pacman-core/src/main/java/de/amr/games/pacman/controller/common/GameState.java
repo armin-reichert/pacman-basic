@@ -191,11 +191,6 @@ public enum GameState implements FsmState<GameModel> {
 				}
 			}
 		}
-
-		@Override
-		public void onExit(GameModel game) {
-//			startHuntingPhase(game, 0);
-		}
 	},
 
 	GHOST_DYING {
