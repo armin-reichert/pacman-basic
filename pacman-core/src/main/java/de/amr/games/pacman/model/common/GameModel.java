@@ -388,14 +388,11 @@ public abstract class GameModel {
 	// Ghost house rules, see Pac-Man dossier
 
 	public void checkUnlockGhost(CheckResult result) {
-		if (ghosts[RED_GHOST].is(LOCKED)) {
-			result.unlockGhost = ghosts[RED_GHOST];
-			result.unlockReason = "Blinky is released immediately";
-			return;
-		}
-		Optional<Ghost> nextToRelease = preferredLockedGhostInHouse();
-		nextToRelease.ifPresent(ghost -> {
-			if (globalDotCounterEnabled && globalDotCounter >= level.globalDotLimits[ghost.id]) {
+		ghosts(LOCKED).findFirst().ifPresent(ghost -> {
+			if (ghost.id == RED_GHOST) {
+				result.unlockGhost = ghosts[RED_GHOST];
+				result.unlockReason = "Blinky is released immediately";
+			} else if (globalDotCounterEnabled && globalDotCounter >= level.globalDotLimits[ghost.id]) {
 				result.unlockGhost = ghost;
 				result.unlockReason = "Global dot counter reached limit (%d)".formatted(level.globalDotLimits[ghost.id]);
 			} else if (!globalDotCounterEnabled && ghost.dotCounter >= level.privateDotLimits[ghost.id]) {
@@ -410,17 +407,17 @@ public abstract class GameModel {
 	}
 
 	public void unlockGhost(Ghost ghost, String reason) {
-		ghost.state = ghost.id == RED_GHOST ? HUNTING_PAC : LEAVING_HOUSE;
+		log("Unlock ghost %s (%s)", ghost.name, reason);
 		if (ghost.id == ORANGE_GHOST && ghosts[RED_GHOST].elroy < 0) {
 			ghosts[RED_GHOST].elroy = -ghosts[RED_GHOST].elroy; // resume Elroy mode
 			log("%s Elroy mode %d resumed", ghosts[RED_GHOST].name, ghosts[RED_GHOST].elroy);
 		}
-		log("Ghost %s released: %s", ghost.name, reason);
-		publish(new GameEvent(this, GameEventType.GHOST_STARTS_LEAVING_HOUSE, ghost, ghost.tile()));
-	}
-
-	private Optional<Ghost> preferredLockedGhostInHouse() {
-		return Stream.of(PINK_GHOST, CYAN_GHOST, ORANGE_GHOST).map(id -> ghosts[id]).filter(g -> g.is(LOCKED)).findFirst();
+		if (ghost.id == RED_GHOST) {
+			ghost.state = HUNTING_PAC;
+		} else {
+			ghost.state = LEAVING_HOUSE;
+			publish(new GameEvent(this, GameEventType.GHOST_STARTS_LEAVING_HOUSE, ghost, ghost.tile()));
+		}
 	}
 
 	private void updateGhostDotCounters() {
@@ -433,7 +430,7 @@ public abstract class GameModel {
 				globalDotCounter++;
 			}
 		} else {
-			preferredLockedGhostInHouse().ifPresent(ghost -> ++ghost.dotCounter);
+			ghosts(LOCKED).filter(ghost -> ghost.id != RED_GHOST).findFirst().ifPresent(ghost -> ++ghost.dotCounter);
 		}
 	}
 }
