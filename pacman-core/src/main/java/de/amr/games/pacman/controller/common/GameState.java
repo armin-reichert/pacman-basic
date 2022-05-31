@@ -32,8 +32,8 @@ import static de.amr.games.pacman.model.common.actors.GhostState.HUNTING_PAC;
 import java.util.function.Consumer;
 
 import de.amr.games.pacman.event.GameEvent;
-import de.amr.games.pacman.event.GameEventing;
 import de.amr.games.pacman.event.GameEventType;
+import de.amr.games.pacman.event.GameEventing;
 import de.amr.games.pacman.event.GameStateChangeEvent;
 import de.amr.games.pacman.lib.Fsm;
 import de.amr.games.pacman.lib.FsmState;
@@ -157,11 +157,10 @@ public enum GameState implements FsmState<GameModel> {
 			}
 
 			game.checkUnlockGhost();
-			if (game.checkList.unlockedGhost != null) {
-				game.unlockGhost(game.checkList.unlockedGhost, game.checkList.unlockReason);
-				GameEventing.publish(new GameEvent(game, GameEventType.GHOST_STARTS_LEAVING_HOUSE,
-						game.checkList.unlockedGhost, game.checkList.unlockedGhost.tile()));
-			}
+			game.checkList.unlockedGhost.ifPresent(ghost -> {
+				game.unlockGhost(ghost, game.checkList.unlockReason);
+				GameEventing.publish(new GameEvent(game, GameEventType.GHOST_STARTS_LEAVING_HOUSE, ghost, ghost.tile()));
+			});
 			game.ghosts().forEach(ghost -> ghost.update(game));
 
 			game.updateBonus();

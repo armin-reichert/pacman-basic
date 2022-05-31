@@ -40,6 +40,7 @@ import static de.amr.games.pacman.model.common.world.World.HTS;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.controller.common.GameController;
@@ -90,10 +91,9 @@ public abstract class GameModel {
 		public boolean playerPowerLost;
 		public boolean playerPowerFading;
 		public boolean playerMeetsHuntingGhost;
-		public Ghost huntingGhost;
 		public boolean ghostsCanBeEaten;
 		public Ghost[] edibleGhosts;
-		public Ghost unlockedGhost;
+		public Optional<Ghost> unlockedGhost;
 		public String unlockReason;
 
 		public CheckList() {
@@ -109,10 +109,9 @@ public abstract class GameModel {
 			playerPowerLost = false;
 			playerPowerFading = false;
 			playerMeetsHuntingGhost = false;
-			huntingGhost = null;
 			ghostsCanBeEaten = false;
 			edibleGhosts = null;
-			unlockedGhost = null;
+			unlockedGhost = Optional.empty();
 			unlockReason = null;
 		}
 	}
@@ -285,7 +284,6 @@ public abstract class GameModel {
 		if (!player.powerTimer.isRunning()) {
 			ghosts(HUNTING_PAC).filter(player::sameTile).findAny().ifPresent(ghost -> {
 				checkList.playerMeetsHuntingGhost = true;
-				checkList.huntingGhost = ghost;
 				log("%s collides with hunting %s at %s", player.name, ghost.name, player.tile());
 			});
 		}
@@ -393,16 +391,16 @@ public abstract class GameModel {
 	public void checkUnlockGhost() {
 		ghosts(LOCKED).findFirst().ifPresent(ghost -> {
 			if (ghost.id == RED_GHOST) {
-				checkList.unlockedGhost = ghosts[RED_GHOST];
+				checkList.unlockedGhost = Optional.of(ghosts[RED_GHOST]);
 				checkList.unlockReason = "Blinky is released immediately";
 			} else if (globalDotCounterEnabled && globalDotCounter >= level.globalDotLimits[ghost.id]) {
-				checkList.unlockedGhost = ghost;
+				checkList.unlockedGhost = Optional.of(ghost);
 				checkList.unlockReason = "Global dot counter reached limit (%d)".formatted(level.globalDotLimits[ghost.id]);
 			} else if (!globalDotCounterEnabled && ghost.dotCounter >= level.privateDotLimits[ghost.id]) {
-				checkList.unlockedGhost = ghost;
+				checkList.unlockedGhost = Optional.of(ghost);
 				checkList.unlockReason = "Private dot counter reached limit (%d)".formatted(level.privateDotLimits[ghost.id]);
 			} else if (player.starvingTicks >= level.pacStarvingTimeLimit) {
-				checkList.unlockedGhost = ghost;
+				checkList.unlockedGhost = Optional.of(ghost);
 				checkList.unlockReason = "%s reached starving limit (%d ticks)".formatted(player.name, player.starvingTicks);
 				player.starvingTicks = 0;
 			}
