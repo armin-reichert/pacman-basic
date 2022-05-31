@@ -276,12 +276,14 @@ public abstract class GameModel {
 	public void updatePlayer(CheckResult cl) {
 		player.moveThroughLevel(level);
 		if (playerMeetsHuntingGhost()) {
-			onPlayerMeetsHuntingGhost(cl);
+			killPlayer();
+			cl.playerKilled = true;
 			return; // game state change
 		}
 		checkPlayerFindsEdibleGhosts(cl);
 		if (cl.edibleGhosts.length > 0) {
-			onEdibleGhostsFound(cl);
+			killGhosts(cl.edibleGhosts);
+			cl.ghostsKilled = true;
 			return; // game state change
 		}
 		checkPlayerPower(cl);
@@ -315,8 +317,7 @@ public abstract class GameModel {
 		return opt.isPresent();
 	}
 
-	private void onPlayerMeetsHuntingGhost(CheckResult cl) {
-		cl.playerKilled = true;
+	private void killPlayer() {
 		player.killed = true;
 		ghosts[RED_GHOST].stopCruiseElroyMode();
 		// See Pac-Man dossier:
@@ -327,7 +328,6 @@ public abstract class GameModel {
 
 	private void checkPlayerFindsEdibleGhosts(CheckResult cl) {
 		cl.edibleGhosts = ghosts(FRIGHTENED).filter(player::sameTile).toArray(Ghost[]::new);
-		cl.ghostsKilled = cl.edibleGhosts.length > 0; // TODO
 	}
 
 	/** This method is public because {@link GameController#cheatKillAllEatableGhosts()} calls it. */
@@ -338,12 +338,6 @@ public abstract class GameModel {
 			log("All ghosts killed at level %d, Pac-Man wins additional %d points", level.number, ALL_GHOSTS_KILLED_POINTS);
 			scoring().addPoints(ALL_GHOSTS_KILLED_POINTS);
 		}
-	}
-
-	/** This method is public because {@link GameController#cheatKillAllEatableGhosts()} calls it. */
-	private void onEdibleGhostsFound(CheckResult cl) {
-		killGhosts(cl.edibleGhosts);
-		cl.ghostsKilled = true;
 	}
 
 	private void killGhost(Ghost ghost) {
