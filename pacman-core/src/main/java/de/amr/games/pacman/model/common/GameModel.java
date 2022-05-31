@@ -43,10 +43,11 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.controller.common.GameController;
+import de.amr.games.pacman.event.GameEventType;
+import de.amr.games.pacman.event.GameEventing;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.V2d;
-import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.GhostState;
@@ -88,7 +89,7 @@ public abstract class GameModel {
 		public boolean playerPowerLost;
 		public boolean playerPowerFading;
 		public boolean playerMeetsHuntingGhost;
-		public boolean ghostsCanBeEaten;
+		public boolean edibleGhostsFound;
 		public Ghost[] edibleGhosts;
 		public Optional<Ghost> unlockedGhost;
 		public String unlockReason;
@@ -106,7 +107,7 @@ public abstract class GameModel {
 			playerPowerLost = false;
 			playerPowerFading = false;
 			playerMeetsHuntingGhost = false;
-			ghostsCanBeEaten = false;
+			edibleGhostsFound = false;
 			edibleGhosts = null;
 			unlockedGhost = Optional.empty();
 			unlockReason = null;
@@ -295,13 +296,13 @@ public abstract class GameModel {
 		log("Global dot counter got reset and enabled because player died");
 	}
 
-	public void checkGhostsCanBeEaten() {
+	public void checkPlayerFindsEdibleGhosts() {
 		checkList.edibleGhosts = ghosts(FRIGHTENED).filter(player::sameTile).toArray(Ghost[]::new);
-		checkList.ghostsCanBeEaten = checkList.edibleGhosts.length > 0;
+		checkList.edibleGhostsFound = checkList.edibleGhosts.length > 0;
 	}
 
 	/** This method is public because {@link GameController#cheatKillAllEatableGhosts()} calls it. */
-	public void eatGhosts(Ghost[] prey) {
+	public void onEdibleGhostsFound(Ghost[] prey) {
 		Stream.of(prey).forEach(this::killGhost);
 		level.numGhostsKilled += prey.length;
 		if (level.numGhostsKilled == 16) {
@@ -325,50 +326,64 @@ public abstract class GameModel {
 		checkList.playerPowerLost = player.powerTimer.hasExpired();
 	}
 
+	public void onPlayerPowerFading() {
+		GameEventing.publish(GameEventType.PLAYER_STARTS_LOSING_POWER, player.tile());
+	}
+
 	public void onPlayerLostPower() {
 		log("%s lost power, timer=%s", player.name, player.powerTimer);
-		// TODO this is a hack to leave expired state
+		/* TODO hack: leave state EXPIRED to avoid repetitions. */
 		player.powerTimer.setDurationIndefinite();
 		huntingTimer.start();
 		ghosts(FRIGHTENED).forEach(ghost -> ghost.state = HUNTING_PAC);
+		GameEventing.publish(GameEventType.PLAYER_LOSES_POWER, player.tile());
 	}
 
-	private void checkTileForFood(V2i tile) {
-		if (level.world.containsFood(tile)) {
+	public void checkPlayerFindsFood() {
+		if (level.world.containsFood(player.tile())) {
 			checkList.foodFound = true;
-			checkList.energizerFound = level.world.isEnergizerTile(tile);
+			if (level.world.isEnergizerTile(player.tile())) {
+				checkList.energizerFound = true;
+				if (level.ghostFrightenedSeconds > 0) {
+					checkList.playerGotPower = true;
+				}
+			}
 			checkList.bonusReached = checkBonusReached();
 		}
 	}
 
-	public void checkPlayerFindsFood() {
-		checkTileForFood(player.tile());
-		if (!checkList.foodFound) {
-			player.starvingTicks++;
-			return;
-		}
-		level.world.removeFood(player.tile());
+	public void onPlayerFindsNoFood() {
+		player.starvingTicks++;
+	}
+
+	public void onPlayerFindsPellet() {
+		onPlayerFindsFood(PELLET_VALUE, PELLET_RESTING_TICKS);
+	}
+
+	public void onPlayerFindsEnergizer() {
+		onPlayerFindsFood(ENERGIZER_VALUE, ENERGIZER_RESTING_TICKS);
+		ghostBounty = FIRST_GHOST_BOUNTY;
+	}
+
+	private void onPlayerFindsFood(int value, int restingTicks) {
 		player.starvingTicks = 0;
-		if (checkList.energizerFound) {
-			scoring().addPoints(ENERGIZER_VALUE);
-			player.restingCountdown = ENERGIZER_RESTING_TICKS;
-			ghostBounty = FIRST_GHOST_BOUNTY;
-			if (level.ghostFrightenedSeconds > 0) {
-				huntingTimer.stop();
-				player.powerTimer.setDurationSeconds(level.ghostFrightenedSeconds).start();
-				log("%s power timer started: %s", player.name, player.powerTimer);
-				ghosts(HUNTING_PAC).forEach(ghost -> {
-					ghost.state = FRIGHTENED;
-					ghost.forceTurningBack(level.world);
-				});
-				checkList.playerGotPower = true;
-			}
-		} else {
-			scoring().addPoints(PELLET_VALUE);
-			player.restingCountdown = PELLET_RESTING_TICKS;
-		}
+		player.restingCountdown = restingTicks;
+		level.world.removeFood(player.tile());
 		ghosts[RED_GHOST].checkCruiseElroyStart(level);
 		updateGhostDotCounters();
+		scoring().addPoints(value);
+		GameEventing.publish(GameEventType.PLAYER_FINDS_FOOD, player.tile());
+	}
+
+	public void onPlayerGotPower() {
+		huntingTimer.stop();
+		player.powerTimer.setDurationSeconds(level.ghostFrightenedSeconds).start();
+		log("%s power timer started: %s", player.name, player.powerTimer);
+		ghosts(HUNTING_PAC).forEach(ghost -> {
+			ghost.state = FRIGHTENED;
+			ghost.forceTurningBack(level.world);
+		});
+		GameEventing.publish(GameEventType.PLAYER_GETS_POWER, player.tile());
 	}
 
 	// Bonus stuff
@@ -376,6 +391,10 @@ public abstract class GameModel {
 	public abstract Bonus bonus();
 
 	public abstract boolean checkBonusReached();
+
+	public void onBonusReached() {
+		GameEventing.publish(GameEventType.BONUS_GETS_ACTIVE, bonus().tile());
+	}
 
 	public void updateBonus() {
 		if (bonus() != null) {

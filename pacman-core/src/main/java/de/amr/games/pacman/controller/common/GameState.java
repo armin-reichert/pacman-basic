@@ -120,9 +120,9 @@ public enum GameState implements FsmState<GameModel> {
 				return;
 			}
 
-			game.checkGhostsCanBeEaten();
-			if (game.checkList.ghostsCanBeEaten) {
-				game.eatGhosts(game.checkList.edibleGhosts);
+			game.checkPlayerFindsEdibleGhosts();
+			if (game.checkList.edibleGhostsFound) {
+				game.onEdibleGhostsFound(game.checkList.edibleGhosts);
 				controller.changeState(GHOST_DYING);
 				return;
 			}
@@ -132,22 +132,25 @@ public enum GameState implements FsmState<GameModel> {
 
 			game.checkPlayerPower();
 			if (game.checkList.playerPowerFading) {
-				GameEventing.publish(GameEventType.PLAYER_STARTS_LOSING_POWER, game.player.tile());
+				game.onPlayerPowerFading();
 			}
 			if (game.checkList.playerPowerLost) {
 				game.onPlayerLostPower();
-				GameEventing.publish(GameEventType.PLAYER_LOSES_POWER, game.player.tile());
 			}
 
 			game.checkPlayerFindsFood();
-			if (game.checkList.foodFound) {
-				GameEventing.publish(GameEventType.PLAYER_FINDS_FOOD, game.player.tile());
+			if (!game.checkList.foodFound) {
+				game.onPlayerFindsNoFood();
+			} else if (game.checkList.energizerFound) {
+				game.onPlayerFindsEnergizer();
+			} else {
+				game.onPlayerFindsPellet();
 			}
 			if (game.checkList.playerGotPower) {
-				GameEventing.publish(GameEventType.PLAYER_GETS_POWER, game.player.tile());
+				game.onPlayerGotPower();
 			}
 			if (game.checkList.bonusReached) {
-				GameEventing.publish(GameEventType.BONUS_GETS_ACTIVE, game.bonus().tile());
+				game.onBonusReached();
 			}
 
 			game.checkUnlockGhost();
