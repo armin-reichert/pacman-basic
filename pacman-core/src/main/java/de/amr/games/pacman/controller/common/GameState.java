@@ -32,6 +32,7 @@ import static de.amr.games.pacman.model.common.actors.GhostState.HUNTING_PAC;
 import java.util.function.Consumer;
 
 import de.amr.games.pacman.event.GameEvent;
+import de.amr.games.pacman.event.GameEventSupport;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameStateChangeEvent;
 import de.amr.games.pacman.lib.Fsm;
@@ -137,27 +138,29 @@ public enum GameState implements FsmState<GameModel> {
 
 			game.checkPlayerPower();
 			if (game.checkList.playerPowerFading) {
-				game.publish(GameEventType.PLAYER_STARTS_LOSING_POWER, game.player.tile());
+				GameEventSupport.publish(GameEventType.PLAYER_STARTS_LOSING_POWER, game.player.tile());
 			}
 			if (game.checkList.playerPowerLost) {
 				game.onPlayerLostPower();
-				game.publish(GameEventType.PLAYER_LOSES_POWER, game.player.tile());
+				GameEventSupport.publish(GameEventType.PLAYER_LOSES_POWER, game.player.tile());
 			}
 
 			game.checkPlayerFindsFood();
 			if (game.checkList.foodFound) {
-				game.publish(GameEventType.PLAYER_FINDS_FOOD, game.player.tile());
+				GameEventSupport.publish(GameEventType.PLAYER_FINDS_FOOD, game.player.tile());
 			}
 			if (game.checkList.playerGotPower) {
-				game.publish(GameEventType.PLAYER_GETS_POWER, game.player.tile());
+				GameEventSupport.publish(GameEventType.PLAYER_GETS_POWER, game.player.tile());
 			}
 			if (game.checkList.bonusReached) {
-				game.publish(GameEventType.BONUS_GETS_ACTIVE, game.bonus().tile());
+				GameEventSupport.publish(GameEventType.BONUS_GETS_ACTIVE, game.bonus().tile());
 			}
 
 			game.checkUnlockGhost();
 			if (game.checkList.unlockedGhost != null) {
 				game.unlockGhost(game.checkList.unlockedGhost, game.checkList.unlockReason);
+				GameEventSupport.publish(new GameEvent(game, GameEventType.GHOST_STARTS_LEAVING_HOUSE,
+						game.checkList.unlockedGhost, game.checkList.unlockedGhost.tile()));
 			}
 			game.ghosts().forEach(ghost -> ghost.update(game));
 
@@ -261,7 +264,7 @@ public enum GameState implements FsmState<GameModel> {
 			// fire event(s) only for dead ghosts not yet returning home (bounty != 0)
 			game.ghosts(DEAD).filter(ghost -> ghost.bounty != 0).forEach(ghost -> {
 				ghost.bounty = 0;
-				game.publish(new GameEvent(game, GameEventType.GHOST_STARTS_RETURNING_HOME, ghost, null));
+				GameEventSupport.publish(new GameEvent(game, GameEventType.GHOST_STARTS_RETURNING_HOME, ghost, null));
 			});
 		}
 	},
@@ -316,7 +319,7 @@ public enum GameState implements FsmState<GameModel> {
 					timer.setDurationIndefinite().start();
 					log("Test intermission scene #%d", game.intermissionTestNumber);
 					// This is a hack to trigger the UI to update its current scene
-					game.publish(new GameStateChangeEvent(game, this, this));
+					GameEventSupport.publish(new GameStateChangeEvent(game, this, this));
 				} else {
 					controller.changeState(INTRO);
 				}
@@ -342,4 +345,5 @@ public enum GameState implements FsmState<GameModel> {
 	protected Consumer<Pac> currentPlayerControl() {
 		return controller.isAutoMoving() || controller.credit() == 0 ? controller.autopilot() : controller.playerControl();
 	}
+
 }

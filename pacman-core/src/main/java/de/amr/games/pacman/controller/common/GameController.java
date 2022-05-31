@@ -33,6 +33,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import de.amr.games.pacman.event.GameEventListener;
+import de.amr.games.pacman.event.GameEventSupport;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameStateChangeEvent;
 import de.amr.games.pacman.event.TriggerUIChangeEvent;
@@ -85,7 +86,8 @@ public class GameController extends Fsm<GameState, GameModel> {
 		games = Map.of(GameVariant.MS_PACMAN, new MsPacManGame(), GameVariant.PACMAN, new PacManGame());
 		// map game state change events from FSM to game events from game model:
 		games.values().forEach(game -> {
-			addStateChangeListener((oldState, newState) -> game.publish(new GameStateChangeEvent(game, oldState, newState)));
+			addStateChangeListener(
+					(oldState, newState) -> GameEventSupport.publish(new GameStateChangeEvent(game, oldState, newState)));
 		});
 		selectGame(variant);
 		changeState(INTRO);
@@ -152,11 +154,8 @@ public class GameController extends Fsm<GameState, GameModel> {
 	}
 
 	private void selectGame(GameVariant variant) {
-		// ensure only selected game model fires events
-		for (var game : games.values()) {
-			game.setEventsPublished(game.variant == variant);
-		}
 		selectedGame = games.get(variant);
+		GameEventSupport.setGame(selectedGame);
 	}
 
 	public GameModel game() {
@@ -173,7 +172,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 	}
 
 	public void addListener(GameEventListener subscriber) {
-		games.values().forEach(game -> game.addEventListener(subscriber));
+		GameEventSupport.addEventListener(subscriber);
 	}
 
 	public void requestGame() {
@@ -188,7 +187,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 			consumeCredit();
 		}
 		restartInInitialState(INTRO);
-		game().publish(new TriggerUIChangeEvent(game()));
+		GameEventSupport.publish(new TriggerUIChangeEvent(game()));
 	}
 
 	public void startIntermissionTest() {
@@ -202,7 +201,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 		if (gameRunning) {
 			game().level.world.tiles().filter(not(game().level.world::isEnergizerTile))
 					.forEach(game().level.world::removeFood);
-			game().publish(GameEventType.PLAYER_FINDS_FOOD, null);
+			GameEventSupport.publish(GameEventType.PLAYER_FINDS_FOOD, null);
 		}
 	}
 

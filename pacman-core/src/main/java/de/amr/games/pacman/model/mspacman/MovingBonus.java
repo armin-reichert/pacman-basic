@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import de.amr.games.pacman.event.GameEventSupport;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
@@ -158,14 +159,14 @@ public class MovingBonus extends Creature implements Bonus {
 			if (leftWorld) {
 				log("%s expired (left level.world)", this);
 				init();
-				game.publish(GameEventType.BONUS_EXPIRES, tile());
+				GameEventSupport.publish(GameEventType.BONUS_EXPIRES, tile());
 				return;
 			}
 			if (game.player.tile().equals(tile())) {
 				log("%s found bonus %s", game.player.name, this);
 				game.scoring().addPoints(value());
 				eat(sec_to_ticks(2));
-				game.publish(GameEventType.BONUS_GETS_EATEN, tile());
+				GameEventSupport.publish(GameEventType.BONUS_GETS_EATEN, tile());
 			}
 		}
 		case EATEN -> {
@@ -173,7 +174,7 @@ public class MovingBonus extends Creature implements Bonus {
 			if (expired) {
 				log("%s expired", this);
 				init();
-				game.publish(GameEventType.BONUS_EXPIRES, tile());
+				GameEventSupport.publish(GameEventType.BONUS_EXPIRES, tile());
 			}
 		}
 		}

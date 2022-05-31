@@ -43,10 +43,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.controller.common.GameController;
-import de.amr.games.pacman.event.GameEvent;
-import de.amr.games.pacman.event.GameEventListener;
 import de.amr.games.pacman.event.GameEventSupport;
-import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.ScatterPhaseStartsEvent;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
@@ -158,26 +155,6 @@ public abstract class GameModel {
 	/** Number of current intermission scene in test mode. */
 	public int intermissionTestNumber;
 
-	// Eventing
-
-	private final GameEventSupport eventSupport = new GameEventSupport(this);
-
-	public void addEventListener(GameEventListener subscriber) {
-		eventSupport.addEventListener(subscriber);
-	}
-
-	public void publish(GameEvent event) {
-		eventSupport.publish(event);
-	}
-
-	public void publish(GameEventType eventType, V2i tile) {
-		eventSupport.publish(eventType, tile);
-	}
-
-	public void setEventsPublished(boolean enabled) {
-		eventSupport.setEnabled(enabled);
-	}
-
 	public GameModel(GameVariant gameVariant, Pac player, Ghost... ghosts) {
 		if (ghosts.length != 4) {
 			throw new IllegalArgumentException("We need exactly 4 ghosts in order RED, PINK, CYAN, ORANGE");
@@ -255,7 +232,7 @@ public abstract class GameModel {
 	public void startHuntingPhase(int phase) {
 		huntingTimer.startPhase(phase, huntingPhaseTicks(phase));
 		if (isScatteringPhase(huntingTimer.phase())) {
-			eventSupport.publish(new ScatterPhaseStartsEvent(this, huntingTimer.scatteringPhase()));
+			GameEventSupport.publish(new ScatterPhaseStartsEvent(this, huntingTimer.scatteringPhase()));
 		}
 	}
 
@@ -442,7 +419,6 @@ public abstract class GameModel {
 			ghost.state = HUNTING_PAC;
 		} else {
 			ghost.state = LEAVING_HOUSE;
-			publish(new GameEvent(this, GameEventType.GHOST_STARTS_LEAVING_HOUSE, ghost, ghost.tile()));
 		}
 	}
 

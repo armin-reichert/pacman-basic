@@ -34,6 +34,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Properties;
 
 import de.amr.games.pacman.event.GameEvent;
+import de.amr.games.pacman.event.GameEventSupport;
 import de.amr.games.pacman.event.GameEventType;
 
 /**
@@ -119,7 +120,7 @@ public class ScoreSupport {
 		}
 		if (scoreBeforeAddingPoints < game.extraLifeScore && score.points >= game.extraLifeScore) {
 			game.lives++;
-			game.publish(new GameEvent(game, GameEventType.PLAYER_GETS_EXTRA_LIFE, null, game.player.tile()));
+			GameEventSupport.publish(new GameEvent(game, GameEventType.PLAYER_GETS_EXTRA_LIFE, null, game.player.tile()));
 		}
 	}
 

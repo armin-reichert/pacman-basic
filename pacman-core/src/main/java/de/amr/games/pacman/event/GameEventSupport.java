@@ -36,38 +36,36 @@ import de.amr.games.pacman.model.common.GameModel;
  */
 public class GameEventSupport {
 
+	private static final GameEventSupport theEventing = new GameEventSupport();
+
 	public static boolean logPublishEvents = true;
 
-	private final GameModel game;
+	private GameModel game;
 	private final Collection<GameEventListener> subscribers = new ConcurrentLinkedQueue<>();
-	private boolean enabled;
 
-	public GameEventSupport(GameModel game) {
-		this.game = game;
+	private GameEventSupport() {
 	}
 
-	public void setEnabled(boolean eventingEnabled) {
-		this.enabled = eventingEnabled;
+	public static void setGame(GameModel game) {
+		theEventing.game = game;
 	}
 
-	public void addEventListener(GameEventListener subscriber) {
-		subscribers.add(subscriber);
+	public static void addEventListener(GameEventListener subscriber) {
+		theEventing.subscribers.add(subscriber);
 	}
 
-	public void removeEventListener(GameEventListener subscriber) {
-		subscribers.remove(subscriber);
+	public static void removeEventListener(GameEventListener subscriber) {
+		theEventing.subscribers.remove(subscriber);
 	}
 
-	public void publish(GameEvent gameEvent) {
-		if (enabled) {
-			if (logPublishEvents && gameEvent.type != GameEventType.PLAYER_FINDS_FOOD) {
-				log("%s", gameEvent);
-			}
-			subscribers.forEach(subscriber -> subscriber.onGameEvent(gameEvent));
+	public static void publish(GameEvent gameEvent) {
+		if (logPublishEvents && gameEvent.type != GameEventType.PLAYER_FINDS_FOOD) {
+			log("%s", gameEvent);
 		}
+		theEventing.subscribers.forEach(subscriber -> subscriber.onGameEvent(gameEvent));
 	}
 
-	public void publish(GameEventType info, V2i tile) {
-		publish(new GameEvent(game, info, null, tile));
+	public static void publish(GameEventType info, V2i tile) {
+		publish(new GameEvent(theEventing.game, info, null, tile));
 	}
 }
