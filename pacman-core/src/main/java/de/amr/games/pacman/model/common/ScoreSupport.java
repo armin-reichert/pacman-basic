@@ -79,7 +79,7 @@ public class ScoreSupport {
 	private final File hiscoreFile;
 	private final Score score;
 	private final Score hiscore;
-	public boolean enabled;
+	private boolean enabled;
 
 	public ScoreSupport(GameModel game, File hiscoreFile) {
 		this.game = game;
@@ -95,6 +95,10 @@ public class ScoreSupport {
 
 	public Score hiscore() {
 		return hiscore;
+	}
+
+	public void enable(boolean enabled) {
+		this.enabled = enabled;
 	}
 
 	public void reset() {
