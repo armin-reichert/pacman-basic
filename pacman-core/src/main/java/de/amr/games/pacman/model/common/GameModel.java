@@ -188,18 +188,32 @@ public abstract class GameModel {
 	}
 
 	/**
-	 * Initializes model for given game level.
+	 * Initializes the model for given game level.
 	 * 
 	 * @param levelNumber 1-based level number
 	 */
 	public abstract void setLevel(int levelNumber);
 
+	// Hunting
+
+	/**
+	 * Hunting happens in different phases. Phases 0, 2, 4, 6 are scattering phases where the ghosts target for their
+	 * respective corners and circle around the walls in their corner, phases 1, 3, 5, 7 are chasing phases where the
+	 * ghosts attack the player.
+	 * 
+	 * @param phase hunting phase (0..7)
+	 */
 	public void startHuntingPhase(int phase) {
 		huntingTimer.startPhase(phase, huntingPhaseTicks(phase));
 	}
 
+	/**
+	 * Advances the current hunting phase and enters the next phase when the current phase ends. On every change between
+	 * phases, the living ghosts outside of the ghosthouse reverse their move direction.
+	 */
 	public void advanceHunting() {
-		if (huntingTimer.advance().hasExpired()) {
+		huntingTimer.advance();
+		if (huntingTimer.hasExpired()) {
 			startHuntingPhase(huntingTimer.phase() + 1);
 			ghosts(HUNTING_PAC).forEach(ghost -> ghost.forceTurningBack(level.world));
 			ghosts(FRIGHTENED).forEach(ghost -> ghost.forceTurningBack(level.world));
@@ -273,9 +287,14 @@ public abstract class GameModel {
 		return level.world.foodRemaining() == 0;
 	}
 
+	/**
+	 * Performs a complete simulation step for the player and stores the collected information in the check list.
+	 * 
+	 * @param cl checklist with collected information
+	 */
 	public void updatePlayer(CheckResult cl) {
-		player.moveThroughLevel(level);
-		if (playerMeetsHuntingGhost()) {
+		player.update(level);
+		if (!playerImmune && !player.hasPower() && ghosts(HUNTING_PAC).filter(player::sameTile).findAny().isPresent()) {
 			killPlayer();
 			cl.playerKilled = true;
 			return; // game state change
@@ -307,14 +326,6 @@ public abstract class GameModel {
 		if (cl.bonusReached) {
 			onBonusReached();
 		}
-	}
-
-	private boolean playerMeetsHuntingGhost() {
-		Optional<Ghost> opt = Optional.empty();
-		if (!playerImmune && !player.powerTimer.isRunning()) {
-			opt = ghosts(HUNTING_PAC).filter(player::sameTile).findAny();
-		}
-		return opt.isPresent();
 	}
 
 	private void killPlayer() {

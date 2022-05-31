@@ -37,7 +37,7 @@ public class Pac extends Creature {
 	public boolean killed = false;
 
 	/** Controls the time Pac has power. */
-	public TickTimer powerTimer = new TickTimer("Pac-power-timer");
+	public final TickTimer powerTimer = new TickTimer("Pac-power-timer");
 
 	/** Number of clock ticks Pac is still resting and will not move. */
 	public int restingCountdown = 0;
@@ -55,15 +55,17 @@ public class Pac extends Creature {
 				velocity.length(), moveDir(), wishDir());
 	}
 
-	public boolean moveThroughLevel(GameLevel level) {
-		powerTimer.advance();
+	public boolean hasPower() {
+		return powerTimer.isRunning();
+	}
+
+	public void update(GameLevel level) {
 		if (restingCountdown > 0) {
 			restingCountdown--;
-			return false; // did not move
 		} else {
-			setRelSpeed(powerTimer.isRunning() ? level.playerSpeedPowered : level.playerSpeed);
+			setRelSpeed(hasPower() ? level.playerSpeedPowered : level.playerSpeed);
 			tryMoving(level.world);
-			return true;
 		}
+		powerTimer.advance();
 	}
 }
