@@ -40,7 +40,6 @@ import static de.amr.games.pacman.model.common.world.World.HTS;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.controller.common.GameController;
@@ -93,7 +92,8 @@ public abstract class GameModel {
 		public boolean playerGotPower;
 		public boolean playerPowerLost;
 		public boolean playerPowerFading;
-		public boolean playerKilled;
+		public boolean playerMeetsHuntingGhost;
+		public Ghost huntingGhost;
 		public boolean ghostsCanBeEaten;
 		public Ghost[] edibleGhosts;
 		public Ghost unlockedGhost;
@@ -111,7 +111,8 @@ public abstract class GameModel {
 			playerGotPower = false;
 			playerPowerLost = false;
 			playerPowerFading = false;
-			playerKilled = false;
+			playerMeetsHuntingGhost = false;
+			huntingGhost = null;
 			ghostsCanBeEaten = false;
 			edibleGhosts = null;
 			unlockedGhost = null;
@@ -301,6 +302,25 @@ public abstract class GameModel {
 		}
 	}
 
+	public void checkPlayerMeetsHuntingGhost() {
+		if (!player.powerTimer.isRunning()) {
+			ghosts(HUNTING_PAC).filter(player::sameTile).findAny().ifPresent(ghost -> {
+				checkList.playerMeetsHuntingGhost = true;
+				checkList.huntingGhost = ghost;
+				log("%s collides with hunting %s at %s", player.name, ghost.name, player.tile());
+			});
+		}
+	}
+
+	public void onPlayerMeetsHuntingGhost() {
+		player.killed = true;
+		ghosts[RED_GHOST].stopCruiseElroyMode();
+		// See Pac-Man dossier:
+		globalDotCounter = 0;
+		globalDotCounterEnabled = true;
+		log("Global dot counter got reset and enabled because player died");
+	}
+
 	public void checkGhostsCanBeEaten() {
 		checkList.edibleGhosts = ghosts(FRIGHTENED).filter(player::sameTile).toArray(Ghost[]::new);
 		checkList.ghostsCanBeEaten = checkList.edibleGhosts.length > 0;
@@ -323,26 +343,6 @@ public abstract class GameModel {
 		ghostBounty *= 2;
 		scoreSupport().addPoints(ghost.bounty);
 		log("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name, ghost.tile(), ghost.bounty);
-	}
-
-	public void checkPlayerKilled() {
-		if (!player.powerTimer.isRunning()) {
-			Optional<Ghost> killer = ghosts(HUNTING_PAC).filter(player::sameTile).findAny();
-			checkList.playerKilled = killer.isPresent();
-			if (killer.isPresent()) {
-				log("%s got killed by %s at tile %s", player.name, killer.get().name, player.tile());
-			}
-		}
-	}
-
-	public void onPlayerKilled() {
-		player.killed = true;
-		ghosts[RED_GHOST].stopCruiseElroyMode();
-		// See Pac-Man dossier:
-		globalDotCounter = 0;
-		globalDotCounterEnabled = true;
-		log("Global dot counter got reset and enabled because player died");
-
 	}
 
 	public void checkPlayerPower() {

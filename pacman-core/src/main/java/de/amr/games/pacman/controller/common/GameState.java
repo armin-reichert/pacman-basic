@@ -117,9 +117,9 @@ public enum GameState implements FsmState<GameModel> {
 
 			// TODO don't store this info in controller
 			if (!controller.isPlayerImmune()) {
-				game.checkPlayerKilled();
-				if (game.checkList.playerKilled) {
-					game.onPlayerKilled();
+				game.checkPlayerMeetsHuntingGhost();
+				if (game.checkList.playerMeetsHuntingGhost) {
+					game.onPlayerMeetsHuntingGhost();
 					controller.changeState(PACMAN_DYING);
 					return;
 				}
