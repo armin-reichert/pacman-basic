@@ -26,7 +26,6 @@ package de.amr.games.pacman.model.common;
 import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.lib.TickTimer.sec_to_ticks;
 import static de.amr.games.pacman.lib.V2i.v;
-import static de.amr.games.pacman.model.common.HuntingTimer.isScatteringPhase;
 import static de.amr.games.pacman.model.common.actors.Ghost.CYAN_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ORANGE_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.PINK_GHOST;
@@ -44,8 +43,6 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.controller.common.GameController;
-import de.amr.games.pacman.event.GameEventing;
-import de.amr.games.pacman.event.ScatterPhaseStartsEvent;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.V2d;
@@ -230,9 +227,6 @@ public abstract class GameModel {
 
 	public void startHuntingPhase(int phase) {
 		huntingTimer.startPhase(phase, huntingPhaseTicks(phase));
-		if (isScatteringPhase(huntingTimer.phase())) {
-			GameEventing.publish(new ScatterPhaseStartsEvent(this, huntingTimer.scatteringPhase()));
-		}
 	}
 
 	public void advanceHunting() {

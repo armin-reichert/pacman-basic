@@ -33,9 +33,7 @@ public abstract class GameEventAdapter implements GameEventListener {
 
 	@Override
 	public void onGameEvent(GameEvent event) {
-		if (event instanceof ScatterPhaseStartsEvent) {
-			onScatterPhaseStarts((ScatterPhaseStartsEvent) event);
-		} else if (event instanceof GameStateChangeEvent) {
+		if (event instanceof GameStateChangeEvent) {
 			onGameStateChange((GameStateChangeEvent) event);
 		} else {
 			switch (event.type) {
@@ -55,9 +53,6 @@ public abstract class GameEventAdapter implements GameEventListener {
 			default -> throw new IllegalArgumentException("Unknown event type: " + event.type);
 			}
 		}
-	}
-
-	public void onScatterPhaseStarts(ScatterPhaseStartsEvent e) {
 	}
 
 	public void onGameStateChange(GameStateChangeEvent e) {
