@@ -33,25 +33,22 @@ public abstract class GameEventAdapter implements GameEventListener {
 
 	@Override
 	public void onGameEvent(GameEvent event) {
-		if (event instanceof GameStateChangeEvent) {
-			onGameStateChange((GameStateChangeEvent) event);
-		} else {
-			switch (event.type) {
-			case BONUS_GETS_ACTIVE -> onBonusGetsActive(event);
-			case BONUS_GETS_EATEN -> onBonusGetsEaten(event);
-			case BONUS_EXPIRES -> onBonusExpires(event);
-			case GHOST_ENTERS_HOUSE -> onGhostEntersHouse(event);
-			case GHOST_STARTS_LEAVING_HOUSE -> onGhostStartsLeavingHouse(event);
-			case GHOST_COMPLETES_LEAVING_HOUSE -> onGhostCompletesLeavingHouse(event);
-			case GHOST_STARTS_RETURNING_HOME -> onGhostStartsReturningHome(event);
-			case PLAYER_FINDS_FOOD -> onPlayerFindsFood(event);
-			case PLAYER_GETS_EXTRA_LIFE -> onPlayerGetsExtraLife(event);
-			case PLAYER_GETS_POWER -> onPlayerGetsPower(event);
-			case PLAYER_STARTS_LOSING_POWER -> onPlayerStartsLosingPower(event);
-			case PLAYER_LOSES_POWER -> onPlayerLosesPower(event);
-			case UI_FORCE_UPDATE -> onUIForceUpdate(event);
-			default -> throw new IllegalArgumentException("Unknown event type: " + event.type);
-			}
+		switch (event.type) {
+		case GAME_STATE_CHANGED -> onGameStateChange((GameStateChangeEvent) event);
+		case BONUS_GETS_ACTIVE -> onBonusGetsActive(event);
+		case BONUS_GETS_EATEN -> onBonusGetsEaten(event);
+		case BONUS_EXPIRES -> onBonusExpires(event);
+		case GHOST_ENTERS_HOUSE -> onGhostEntersHouse(event);
+		case GHOST_STARTS_LEAVING_HOUSE -> onGhostStartsLeavingHouse(event);
+		case GHOST_COMPLETES_LEAVING_HOUSE -> onGhostCompletesLeavingHouse(event);
+		case GHOST_STARTS_RETURNING_HOME -> onGhostStartsReturningHome(event);
+		case PLAYER_FINDS_FOOD -> onPlayerFindsFood(event);
+		case PLAYER_GETS_EXTRA_LIFE -> onPlayerGetsExtraLife(event);
+		case PLAYER_GETS_POWER -> onPlayerGetsPower(event);
+		case PLAYER_STARTS_LOSING_POWER -> onPlayerStartsLosingPower(event);
+		case PLAYER_LOSES_POWER -> onPlayerLosesPower(event);
+		case UI_FORCE_UPDATE -> onUIForceUpdate(event);
+		default -> throw new IllegalArgumentException("Unknown event type: " + event.type);
 		}
 	}
 
