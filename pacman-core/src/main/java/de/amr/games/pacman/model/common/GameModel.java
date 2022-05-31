@@ -43,7 +43,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.controller.common.GameController;
-import de.amr.games.pacman.event.GameEventSupport;
+import de.amr.games.pacman.event.GameEventing;
 import de.amr.games.pacman.event.ScatterPhaseStartsEvent;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
@@ -232,7 +232,7 @@ public abstract class GameModel {
 	public void startHuntingPhase(int phase) {
 		huntingTimer.startPhase(phase, huntingPhaseTicks(phase));
 		if (isScatteringPhase(huntingTimer.phase())) {
-			GameEventSupport.publish(new ScatterPhaseStartsEvent(this, huntingTimer.scatteringPhase()));
+			GameEventing.publish(new ScatterPhaseStartsEvent(this, huntingTimer.scatteringPhase()));
 		}
 	}
 

@@ -26,7 +26,7 @@ package de.amr.games.pacman.model.pacman;
 import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.lib.TickTimer.sec_to_ticks;
 
-import de.amr.games.pacman.event.GameEventSupport;
+import de.amr.games.pacman.event.GameEventing;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.model.common.GameModel;
@@ -107,13 +107,13 @@ public class StaticBonus extends Entity implements Bonus {
 				log("%s found bonus: %s", game.player.name, this);
 				game.scoring().addPoints(value());
 				eat(sec_to_ticks(2));
-				GameEventSupport.publish(GameEventType.BONUS_GETS_EATEN, tile());
+				GameEventing.publish(GameEventType.BONUS_GETS_EATEN, tile());
 			} else {
 				boolean expired = tick();
 				if (expired) {
 					log("Bonus expired: %s", this);
 					init();
-					GameEventSupport.publish(GameEventType.BONUS_EXPIRES, tile());
+					GameEventing.publish(GameEventType.BONUS_EXPIRES, tile());
 				}
 			}
 		}
@@ -122,7 +122,7 @@ public class StaticBonus extends Entity implements Bonus {
 			if (expired) {
 				log("Bonus expired: %s", this);
 				init();
-				GameEventSupport.publish(GameEventType.BONUS_EXPIRES, tile());
+				GameEventing.publish(GameEventType.BONUS_EXPIRES, tile());
 			}
 		}
 		}

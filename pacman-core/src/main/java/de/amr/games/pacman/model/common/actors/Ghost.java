@@ -39,7 +39,7 @@ import static de.amr.games.pacman.model.common.world.World.TS;
 import java.util.List;
 
 import de.amr.games.pacman.event.GameEvent;
-import de.amr.games.pacman.event.GameEventSupport;
+import de.amr.games.pacman.event.GameEventing;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
@@ -149,7 +149,7 @@ public class Ghost extends Creature {
 				state = HUNTING_PAC;
 				// TODO Inky behaves differently:
 				setBothDirs(LEFT);
-				GameEventSupport.publish(new GameEvent(game, GameEventType.GHOST_COMPLETES_LEAVING_HOUSE, this, tile()));
+				GameEventing.publish(new GameEvent(game, GameEventType.GHOST_COMPLETES_LEAVING_HOUSE, this, tile()));
 			}
 		}
 		case FRIGHTENED -> {
@@ -201,7 +201,7 @@ public class Ghost extends Creature {
 				setBothDirs(DOWN);
 				targetTile = revivalTile;
 				state = ENTERING_HOUSE;
-				GameEventSupport.publish(new GameEvent(game, GameEventType.GHOST_ENTERS_HOUSE, this, tile()));
+				GameEventing.publish(new GameEvent(game, GameEventType.GHOST_ENTERS_HOUSE, this, tile()));
 			}
 		}
 		case ENTERING_HOUSE -> {
@@ -211,7 +211,7 @@ public class Ghost extends Creature {
 				// TODO is there some revival time > 0?
 				state = LEAVING_HOUSE;
 				setBothDirs(moveDir.opposite());
-				GameEventSupport.publish(new GameEvent(game, GameEventType.GHOST_STARTS_LEAVING_HOUSE, this, tile()));
+				GameEventing.publish(new GameEvent(game, GameEventType.GHOST_STARTS_LEAVING_HOUSE, this, tile()));
 			}
 		}
 		}

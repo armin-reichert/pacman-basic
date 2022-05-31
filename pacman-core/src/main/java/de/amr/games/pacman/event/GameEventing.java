@@ -34,16 +34,16 @@ import de.amr.games.pacman.model.common.GameModel;
 /**
  * @author Armin Reichert
  */
-public class GameEventSupport {
+public class GameEventing {
 
-	private static final GameEventSupport theEventing = new GameEventSupport();
+	private static final GameEventing theEventing = new GameEventing();
 
 	public static boolean logPublishEvents = true;
 
 	private GameModel game;
 	private final Collection<GameEventListener> subscribers = new ConcurrentLinkedQueue<>();
 
-	private GameEventSupport() {
+	private GameEventing() {
 	}
 
 	public static void setGame(GameModel game) {

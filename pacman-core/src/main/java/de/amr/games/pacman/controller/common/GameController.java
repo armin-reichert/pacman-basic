@@ -33,7 +33,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import de.amr.games.pacman.event.GameEventListener;
-import de.amr.games.pacman.event.GameEventSupport;
+import de.amr.games.pacman.event.GameEventing;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameStateChangeEvent;
 import de.amr.games.pacman.event.TriggerUIChangeEvent;
@@ -87,7 +87,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 		// map game state change events from FSM to game events from game model:
 		games.values().forEach(game -> {
 			addStateChangeListener(
-					(oldState, newState) -> GameEventSupport.publish(new GameStateChangeEvent(game, oldState, newState)));
+					(oldState, newState) -> GameEventing.publish(new GameStateChangeEvent(game, oldState, newState)));
 		});
 		selectGame(variant);
 		changeState(INTRO);
@@ -155,7 +155,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 
 	private void selectGame(GameVariant variant) {
 		selectedGame = games.get(variant);
-		GameEventSupport.setGame(selectedGame);
+		GameEventing.setGame(selectedGame);
 	}
 
 	public GameModel game() {
@@ -172,7 +172,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 	}
 
 	public void addListener(GameEventListener subscriber) {
-		GameEventSupport.addEventListener(subscriber);
+		GameEventing.addEventListener(subscriber);
 	}
 
 	public void requestGame() {
@@ -187,7 +187,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 			consumeCredit();
 		}
 		restartInInitialState(INTRO);
-		GameEventSupport.publish(new TriggerUIChangeEvent(game()));
+		GameEventing.publish(new TriggerUIChangeEvent(game()));
 	}
 
 	public void startIntermissionTest() {
@@ -201,7 +201,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 		if (gameRunning) {
 			game().level.world.tiles().filter(not(game().level.world::isEnergizerTile))
 					.forEach(game().level.world::removeFood);
-			GameEventSupport.publish(GameEventType.PLAYER_FINDS_FOOD, null);
+			GameEventing.publish(GameEventType.PLAYER_FINDS_FOOD, null);
 		}
 	}
 
