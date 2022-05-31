@@ -121,6 +121,9 @@ public abstract class GameModel {
 	/** The player, Pac-Man or Ms. Pac-Man. */
 	public final Pac player;
 
+	/** Tells if the player can be killed by ghosts. */
+	public boolean playerImmune;
+
 	/** The four ghosts in order RED, PINK, CYAN, ORANGE. */
 	public final Ghost[] ghosts;
 
@@ -275,7 +278,7 @@ public abstract class GameModel {
 	}
 
 	public void checkPlayerMeetsHuntingGhost() {
-		if (!player.powerTimer.isRunning()) {
+		if (!playerImmune && !player.powerTimer.isRunning()) {
 			ghosts(HUNTING_PAC).filter(player::sameTile).findAny().ifPresent(ghost -> {
 				checkList.playerMeetsHuntingGhost = true;
 				log("%s collides with hunting %s at %s", player.name, ghost.name, player.tile());

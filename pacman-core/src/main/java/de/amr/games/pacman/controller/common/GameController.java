@@ -75,7 +75,6 @@ public class GameController extends Fsm<GameState, GameModel> {
 	private GameModel selectedGame;
 	private int credit;
 	private boolean gameRunning;
-	private boolean playerImmune;
 	private boolean autoMoving;
 	private final Consumer<Pac> autopilot = new Autopilot(this::game);
 	private Consumer<Pac> playerControl;
@@ -117,12 +116,8 @@ public class GameController extends Fsm<GameState, GameModel> {
 		steering.accept(player);
 	}
 
-	public boolean isPlayerImmune() {
-		return playerImmune;
-	}
-
 	public void togglePlayerImmune() {
-		playerImmune = !playerImmune;
+		games.values().forEach(game -> game.playerImmune = !game.playerImmune);
 	}
 
 	public int credit() {
