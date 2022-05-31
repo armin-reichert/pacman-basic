@@ -29,8 +29,6 @@ import static de.amr.games.pacman.model.common.actors.GhostState.ENTERING_HOUSE;
 import static de.amr.games.pacman.model.common.actors.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.common.actors.GhostState.HUNTING_PAC;
 
-import java.util.function.Consumer;
-
 import de.amr.games.pacman.event.GameEvent;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEventing;
@@ -40,7 +38,6 @@ import de.amr.games.pacman.lib.FsmState;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.actors.Ghost;
-import de.amr.games.pacman.model.common.actors.Pac;
 
 /**
  * Rule of thumb: here, specify the "what" and "when", not the "how" (which should be implemented in the model).
@@ -133,7 +130,7 @@ public enum GameState implements FsmState<GameModel> {
 				return;
 			}
 
-			currentPlayerControl().accept(game.player);
+			controller.steer(game.player);
 			game.player.moveThroughLevel(game.level);
 
 			game.checkPlayerPower();
@@ -252,7 +249,7 @@ public enum GameState implements FsmState<GameModel> {
 				controller.resumePreviousState();
 				return;
 			}
-			currentPlayerControl().accept(game.player);
+			controller.steer(game.player);
 			game.ghosts().filter(ghost -> ghost.is(DEAD) && ghost.bounty == 0 || ghost.is(ENTERING_HOUSE))
 					.forEach(ghost -> ghost.update(game));
 		}
@@ -340,9 +337,4 @@ public enum GameState implements FsmState<GameModel> {
 	public TickTimer timer() {
 		return timer;
 	}
-
-	protected Consumer<Pac> currentPlayerControl() {
-		return controller.isAutoMoving() || controller.credit() == 0 ? controller.autopilot() : controller.playerControl();
-	}
-
 }

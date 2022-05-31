@@ -112,6 +112,11 @@ public class GameController extends Fsm<GameState, GameModel> {
 		autoMoving = !autoMoving;
 	}
 
+	public void steer(Pac player) {
+		Consumer<Pac> steering = autoMoving || credit == 0 ? autopilot : playerControl;
+		steering.accept(player);
+	}
+
 	public boolean isPlayerImmune() {
 		return playerImmune;
 	}
