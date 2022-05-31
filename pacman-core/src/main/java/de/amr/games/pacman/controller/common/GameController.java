@@ -33,8 +33,8 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import de.amr.games.pacman.event.GameEventListener;
-import de.amr.games.pacman.event.GameEventing;
 import de.amr.games.pacman.event.GameEventType;
+import de.amr.games.pacman.event.GameEventing;
 import de.amr.games.pacman.event.GameStateChangeEvent;
 import de.amr.games.pacman.event.TriggerUIChangeEvent;
 import de.amr.games.pacman.lib.Fsm;
@@ -84,11 +84,9 @@ public class GameController extends Fsm<GameState, GameModel> {
 		super(GameState.values());
 		logging = true;
 		games = Map.of(GameVariant.MS_PACMAN, new MsPacManGame(), GameVariant.PACMAN, new PacManGame());
-		// map game state change events from FSM to game events from game model:
-		games.values().forEach(game -> {
-			addStateChangeListener(
-					(oldState, newState) -> GameEventing.publish(new GameStateChangeEvent(game, oldState, newState)));
-		});
+		// map state change events to game events from selected game model:
+		addStateChangeListener(
+				(oldState, newState) -> GameEventing.publish(new GameStateChangeEvent(game(), oldState, newState)));
 		selectGame(variant);
 		changeState(INTRO);
 	}
