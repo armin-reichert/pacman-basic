@@ -446,6 +446,15 @@ public abstract class GameModel {
 		ghosts().forEach(ghost -> ghost.update(this));
 	}
 
+	public void letDeadGhostsReturnHome() {
+		// fire event(s) only for dead ghosts not yet returning home (bounty != 0)
+		ghosts(DEAD).filter(ghost -> ghost.bounty != 0).forEach(ghost -> {
+			ghost.bounty = 0;
+			GameEventing.publish(new GameEvent(this, GameEventType.GHOST_STARTS_RETURNING_HOME, ghost, null));
+		});
+
+	}
+
 	/**
 	 * Updates the ghosts that are returning home while the game is stalled because of a dying ghost.
 	 */

@@ -24,12 +24,9 @@ SOFTWARE.
 package de.amr.games.pacman.controller.common;
 
 import static de.amr.games.pacman.lib.Logging.log;
-import static de.amr.games.pacman.model.common.actors.GhostState.DEAD;
 import static de.amr.games.pacman.model.common.actors.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.common.actors.GhostState.HUNTING_PAC;
 
-import de.amr.games.pacman.event.GameEvent;
-import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEventing;
 import de.amr.games.pacman.event.GameStateChangeEvent;
 import de.amr.games.pacman.lib.Fsm;
@@ -212,11 +209,7 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void onExit(GameModel game) {
 			game.player.show();
-			// fire event(s) only for dead ghosts not yet returning home (bounty != 0)
-			game.ghosts(DEAD).filter(ghost -> ghost.bounty != 0).forEach(ghost -> {
-				ghost.bounty = 0;
-				GameEventing.publish(new GameEvent(game, GameEventType.GHOST_STARTS_RETURNING_HOME, ghost, null));
-			});
+			game.letDeadGhostsReturnHome();
 		}
 	},
 
