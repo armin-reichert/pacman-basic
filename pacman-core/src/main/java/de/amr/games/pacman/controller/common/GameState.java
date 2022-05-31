@@ -25,7 +25,6 @@ package de.amr.games.pacman.controller.common;
 
 import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.model.common.actors.GhostState.DEAD;
-import static de.amr.games.pacman.model.common.actors.GhostState.ENTERING_HOUSE;
 import static de.amr.games.pacman.model.common.actors.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.common.actors.GhostState.HUNTING_PAC;
 
@@ -207,8 +206,7 @@ public enum GameState implements FsmState<GameModel> {
 				return;
 			}
 			controller.steer(game.player);
-			game.ghosts().filter(ghost -> ghost.is(DEAD) && ghost.bounty == 0 || ghost.is(ENTERING_HOUSE))
-					.forEach(ghost -> ghost.update(game));
+			game.updateGhostsReturningHome();
 		}
 
 		@Override

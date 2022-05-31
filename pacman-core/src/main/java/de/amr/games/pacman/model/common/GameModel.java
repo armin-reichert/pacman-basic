@@ -31,6 +31,7 @@ import static de.amr.games.pacman.model.common.actors.Ghost.ORANGE_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.PINK_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.RED_GHOST;
 import static de.amr.games.pacman.model.common.actors.GhostState.DEAD;
+import static de.amr.games.pacman.model.common.actors.GhostState.ENTERING_HOUSE;
 import static de.amr.games.pacman.model.common.actors.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.common.actors.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.model.common.actors.GhostState.LEAVING_HOUSE;
@@ -443,6 +444,14 @@ public abstract class GameModel {
 			GameEventing.publish(new GameEvent(this, GameEventType.GHOST_STARTS_LEAVING_HOUSE, ghost, ghost.tile()));
 		});
 		ghosts().forEach(ghost -> ghost.update(this));
+	}
+
+	/**
+	 * Updates the ghosts that are returning home while the game is stalled because of a dying ghost.
+	 */
+	public void updateGhostsReturningHome() {
+		ghosts().filter(ghost -> ghost.is(DEAD) && ghost.bounty == 0 || ghost.is(ENTERING_HOUSE))
+				.forEach(ghost -> ghost.update(this));
 	}
 
 	// Ghost house rules, see Pac-Man dossier
