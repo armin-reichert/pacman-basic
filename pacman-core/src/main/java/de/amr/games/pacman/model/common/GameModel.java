@@ -43,6 +43,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.controller.common.GameController;
+import de.amr.games.pacman.event.GameEvent;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEventing;
 import de.amr.games.pacman.lib.Direction;
@@ -271,6 +272,40 @@ public abstract class GameModel {
 	}
 
 	// Game logic
+
+	public void updatePlayer() {
+		player.moveThroughLevel(level);
+		checkPlayerPower();
+		if (checkList.playerPowerFading) {
+			onPlayerPowerFading();
+		}
+		if (checkList.playerPowerLost) {
+			onPlayerLostPower();
+		}
+		checkPlayerFindsFood();
+		if (!checkList.foodFound) {
+			onPlayerFindsNoFood();
+		} else if (checkList.energizerFound) {
+			onPlayerFindsEnergizer();
+		} else {
+			onPlayerFindsPellet();
+		}
+		if (checkList.playerGotPower) {
+			onPlayerGotPower();
+		}
+		if (checkList.bonusReached) {
+			onBonusReached();
+		}
+	}
+
+	public void updateGhosts() {
+		checkUnlockGhost();
+		checkList.unlockedGhost.ifPresent(ghost -> {
+			unlockGhost(ghost, checkList.unlockReason);
+			GameEventing.publish(new GameEvent(this, GameEventType.GHOST_STARTS_LEAVING_HOUSE, ghost, ghost.tile()));
+		});
+		ghosts().forEach(ghost -> ghost.update(this));
+	}
 
 	public void checkLevelComplete() {
 		if (level.world.foodRemaining() == 0) {

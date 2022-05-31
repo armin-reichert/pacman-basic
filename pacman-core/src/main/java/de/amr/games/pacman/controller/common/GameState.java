@@ -104,63 +104,29 @@ public enum GameState implements FsmState<GameModel> {
 	HUNTING {
 		@Override
 		public void onUpdate(GameModel game) {
-			game.advanceHunting();
 			game.checkList.clear();
-
 			game.checkLevelComplete();
 			if (game.checkList.levelComplete) {
 				controller.changeState(LEVEL_COMPLETE);
 				return;
 			}
-
 			game.checkPlayerMeetsHuntingGhost();
 			if (game.checkList.playerMeetsHuntingGhost) {
 				game.onPlayerMeetsHuntingGhost();
 				controller.changeState(PACMAN_DYING);
 				return;
 			}
-
 			game.checkPlayerFindsEdibleGhosts();
 			if (game.checkList.edibleGhostsFound) {
 				game.onEdibleGhostsFound(game.checkList.edibleGhosts);
 				controller.changeState(GHOST_DYING);
 				return;
 			}
-
 			controller.steer(game.player);
-			game.player.moveThroughLevel(game.level);
-
-			game.checkPlayerPower();
-			if (game.checkList.playerPowerFading) {
-				game.onPlayerPowerFading();
-			}
-			if (game.checkList.playerPowerLost) {
-				game.onPlayerLostPower();
-			}
-
-			game.checkPlayerFindsFood();
-			if (!game.checkList.foodFound) {
-				game.onPlayerFindsNoFood();
-			} else if (game.checkList.energizerFound) {
-				game.onPlayerFindsEnergizer();
-			} else {
-				game.onPlayerFindsPellet();
-			}
-			if (game.checkList.playerGotPower) {
-				game.onPlayerGotPower();
-			}
-			if (game.checkList.bonusReached) {
-				game.onBonusReached();
-			}
-
-			game.checkUnlockGhost();
-			game.checkList.unlockedGhost.ifPresent(ghost -> {
-				game.unlockGhost(ghost, game.checkList.unlockReason);
-				GameEventing.publish(new GameEvent(game, GameEventType.GHOST_STARTS_LEAVING_HOUSE, ghost, ghost.tile()));
-			});
-			game.ghosts().forEach(ghost -> ghost.update(game));
-
+			game.updatePlayer();
+			game.updateGhosts();
 			game.updateBonus();
+			game.advanceHunting();
 		}
 	},
 
