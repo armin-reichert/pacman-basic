@@ -105,25 +105,20 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void onUpdate(GameModel game) {
 			game.checkList.clear();
-			game.checkLevelComplete();
-			if (game.checkList.levelComplete) {
+			if (game.isLevelComplete()) {
 				controller.changeState(LEVEL_COMPLETE);
-				return;
-			}
-			game.checkPlayerMeetsHuntingGhost();
-			if (game.checkList.playerMeetsHuntingGhost) {
-				game.onPlayerMeetsHuntingGhost();
-				controller.changeState(PACMAN_DYING);
-				return;
-			}
-			game.checkPlayerFindsEdibleGhosts();
-			if (game.checkList.edibleGhostsFound) {
-				game.onEdibleGhostsFound(game.checkList.edibleGhosts);
-				controller.changeState(GHOST_DYING);
 				return;
 			}
 			controller.steer(game.player);
 			game.updatePlayer();
+			if (game.checkList.playerKilled) {
+				controller.changeState(PACMAN_DYING);
+				return;
+			}
+			if (game.checkList.edibleGhostsFound) {
+				controller.changeState(GHOST_DYING);
+				return;
+			}
 			game.updateGhosts();
 			game.updateBonus();
 			game.advanceHunting();

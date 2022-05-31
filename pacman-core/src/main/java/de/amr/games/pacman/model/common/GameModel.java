@@ -81,42 +81,6 @@ public abstract class GameModel {
 	public static final int INITIAL_LIFES = 3;
 	public static final int ALL_GHOSTS_KILLED_POINTS = 12_000;
 
-	public static class CheckList {
-		public boolean levelComplete;
-		public boolean foodFound;
-		public boolean energizerFound;
-		public boolean bonusReached;
-		public boolean playerGotPower;
-		public boolean playerPowerLost;
-		public boolean playerPowerFading;
-		public boolean playerMeetsHuntingGhost;
-		public boolean edibleGhostsFound;
-		public Ghost[] edibleGhosts;
-		public Optional<Ghost> unlockedGhost;
-		public String unlockReason;
-
-		public CheckList() {
-			clear();
-		}
-
-		public void clear() {
-			levelComplete = false;
-			foodFound = false;
-			energizerFound = false;
-			bonusReached = false;
-			playerGotPower = false;
-			playerPowerLost = false;
-			playerPowerFading = false;
-			playerMeetsHuntingGhost = false;
-			edibleGhostsFound = false;
-			edibleGhosts = null;
-			unlockedGhost = Optional.empty();
-			unlockReason = null;
-		}
-	}
-
-	public final CheckList checkList = new CheckList();
-
 	/** The game variant respresented by this model. */
 	public final GameVariant variant;
 
@@ -273,8 +237,51 @@ public abstract class GameModel {
 
 	// Game logic
 
+	public static class CheckList {
+		public boolean foodFound;
+		public boolean energizerFound;
+		public boolean bonusReached;
+		public boolean playerKilled;
+		public boolean playerGotPower;
+		public boolean playerPowerLost;
+		public boolean playerPowerFading;
+		public boolean edibleGhostsFound;
+		public Ghost[] edibleGhosts;
+		public Optional<Ghost> unlockedGhost;
+		public String unlockReason;
+
+		public CheckList() {
+			clear();
+		}
+
+		public void clear() {
+			foodFound = false;
+			energizerFound = false;
+			bonusReached = false;
+			playerKilled = false;
+			playerGotPower = false;
+			playerPowerLost = false;
+			playerPowerFading = false;
+			edibleGhostsFound = false;
+			edibleGhosts = null;
+			unlockedGhost = Optional.empty();
+			unlockReason = null;
+		}
+	}
+
+	public final CheckList checkList = new CheckList();
+
 	public void updatePlayer() {
 		player.moveThroughLevel(level);
+		if (playerMeetsHuntingGhost()) {
+			onPlayerMeetsHuntingGhost();
+			return;
+		}
+		checkPlayerFindsEdibleGhosts();
+		if (checkList.edibleGhostsFound) {
+			onEdibleGhostsFound(checkList.edibleGhosts);
+			return;
+		}
 		checkPlayerPower();
 		if (checkList.playerPowerFading) {
 			onPlayerPowerFading();
@@ -307,22 +314,20 @@ public abstract class GameModel {
 		ghosts().forEach(ghost -> ghost.update(this));
 	}
 
-	public void checkLevelComplete() {
-		if (level.world.foodRemaining() == 0) {
-			checkList.levelComplete = true;
-		}
+	public boolean isLevelComplete() {
+		return level.world.foodRemaining() == 0;
 	}
 
-	public void checkPlayerMeetsHuntingGhost() {
+	private boolean playerMeetsHuntingGhost() {
+		Optional<Ghost> opt = Optional.empty();
 		if (!playerImmune && !player.powerTimer.isRunning()) {
-			ghosts(HUNTING_PAC).filter(player::sameTile).findAny().ifPresent(ghost -> {
-				checkList.playerMeetsHuntingGhost = true;
-				log("%s collides with hunting %s at %s", player.name, ghost.name, player.tile());
-			});
+			opt = ghosts(HUNTING_PAC).filter(player::sameTile).findAny();
 		}
+		return opt.isPresent();
 	}
 
-	public void onPlayerMeetsHuntingGhost() {
+	private void onPlayerMeetsHuntingGhost() {
+		checkList.playerKilled = true;
 		player.killed = true;
 		ghosts[RED_GHOST].stopCruiseElroyMode();
 		// See Pac-Man dossier:
