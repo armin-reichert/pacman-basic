@@ -85,6 +85,42 @@ public abstract class GameModel {
 	public static final int INITIAL_LIFES = 3;
 	public static final int ALL_GHOSTS_KILLED_POINTS = 12_000;
 
+	public static class CheckList {
+		public boolean levelComplete;
+		public boolean foodFound;
+		public boolean energizerFound;
+		public boolean bonusReached;
+		public boolean playerGotPower;
+		public boolean playerPowerLost;
+		public boolean playerPowerFading;
+		public boolean playerKilled;
+		public boolean ghostsCanBeEaten;
+		public Ghost[] edibleGhosts;
+		public Ghost unlockedGhost;
+		public String unlockReason;
+
+		public CheckList() {
+			clear();
+		}
+
+		public void clear() {
+			levelComplete = false;
+			foodFound = false;
+			energizerFound = false;
+			bonusReached = false;
+			playerGotPower = false;
+			playerPowerLost = false;
+			playerPowerFading = false;
+			playerKilled = false;
+			ghostsCanBeEaten = false;
+			edibleGhosts = null;
+			unlockedGhost = null;
+			unlockReason = null;
+		}
+	}
+
+	public final CheckList checkList = new CheckList();
+
 	/** The game variant respresented by this model. */
 	public final GameVariant variant;
 
@@ -220,8 +256,12 @@ public abstract class GameModel {
 		}
 	}
 
-	public void startNextHuntingPhase() {
-		startHuntingPhase(huntingTimer.phase() + 1);
+	public void advanceHunting() {
+		if (huntingTimer.advance().hasExpired()) {
+			startHuntingPhase(huntingTimer.phase() + 1);
+			ghosts(HUNTING_PAC).forEach(ghost -> ghost.forceTurningBack(level.world));
+			ghosts(FRIGHTENED).forEach(ghost -> ghost.forceTurningBack(level.world));
+		}
 	}
 
 	/**
@@ -255,30 +295,15 @@ public abstract class GameModel {
 
 	// Game logic
 
-	public static class CheckResult {
-		public boolean levelComplete = false;
-		public boolean foodFound = false;
-		public boolean energizerFound = false;
-		public boolean bonusReached = false;
-		public boolean playerGotPower = false;
-		public boolean playerPowerLost = false;
-		public boolean playerPowerFading = false;
-		public boolean playerKilled = false;
-		public boolean ghostsCanBeEaten = false;
-		public Ghost[] edibleGhosts;
-		public Ghost unlockGhost = null;
-		public String unlockReason = null;
-	}
-
-	public void checkLevelComplete(CheckResult result) {
+	public void checkLevelComplete() {
 		if (level.world.foodRemaining() == 0) {
-			result.levelComplete = true;
+			checkList.levelComplete = true;
 		}
 	}
 
-	public void checkGhostsCanBeEaten(CheckResult result) {
-		result.edibleGhosts = ghosts(FRIGHTENED).filter(player::sameTile).toArray(Ghost[]::new);
-		result.ghostsCanBeEaten = result.edibleGhosts.length > 0;
+	public void checkGhostsCanBeEaten() {
+		checkList.edibleGhosts = ghosts(FRIGHTENED).filter(player::sameTile).toArray(Ghost[]::new);
+		checkList.ghostsCanBeEaten = checkList.edibleGhosts.length > 0;
 	}
 
 	/** This method is public because {@link GameController#cheatKillAllEatableGhosts()} calls it. */
@@ -300,10 +325,10 @@ public abstract class GameModel {
 		log("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name, ghost.tile(), ghost.bounty);
 	}
 
-	public void checkPlayerKilled(CheckResult result) {
+	public void checkPlayerKilled() {
 		if (!player.powerTimer.isRunning()) {
 			Optional<Ghost> killer = ghosts(HUNTING_PAC).filter(player::sameTile).findAny();
-			result.playerKilled = killer.isPresent();
+			checkList.playerKilled = killer.isPresent();
 			if (killer.isPresent()) {
 				log("%s got killed by %s at tile %s", player.name, killer.get().name, player.tile());
 			}
@@ -320,10 +345,10 @@ public abstract class GameModel {
 
 	}
 
-	public void checkPlayerPower(CheckResult result) {
+	public void checkPlayerPower() {
 		// TODO not sure exactly how long the player is losing power
-		result.playerPowerFading = player.powerTimer.remaining() == sec_to_ticks(1);
-		result.playerPowerLost = player.powerTimer.hasExpired();
+		checkList.playerPowerFading = player.powerTimer.remaining() == sec_to_ticks(1);
+		checkList.playerPowerLost = player.powerTimer.hasExpired();
 	}
 
 	public void onPlayerLostPower() {
@@ -334,23 +359,23 @@ public abstract class GameModel {
 		ghosts(FRIGHTENED).forEach(ghost -> ghost.state = HUNTING_PAC);
 	}
 
-	private void checkTileForFood(V2i tile, CheckResult result) {
+	private void checkTileForFood(V2i tile) {
 		if (level.world.containsFood(tile)) {
-			result.foodFound = true;
-			result.energizerFound = level.world.isEnergizerTile(tile);
-			result.bonusReached = checkBonusReached();
+			checkList.foodFound = true;
+			checkList.energizerFound = level.world.isEnergizerTile(tile);
+			checkList.bonusReached = checkBonusReached();
 		}
 	}
 
-	public CheckResult checkPlayerFindsFood(CheckResult result) {
-		checkTileForFood(player.tile(), result);
-		if (!result.foodFound) {
+	public void checkPlayerFindsFood() {
+		checkTileForFood(player.tile());
+		if (!checkList.foodFound) {
 			player.starvingTicks++;
-			return result;
+			return;
 		}
 		level.world.removeFood(player.tile());
 		player.starvingTicks = 0;
-		if (result.energizerFound) {
+		if (checkList.energizerFound) {
 			scoreSupport().addPoints(ENERGIZER_VALUE);
 			player.restingCountdown = ENERGIZER_RESTING_TICKS;
 			ghostBounty = FIRST_GHOST_BOUNTY;
@@ -362,7 +387,7 @@ public abstract class GameModel {
 					ghost.state = FRIGHTENED;
 					ghost.forceTurningBack(level.world);
 				});
-				result.playerGotPower = true;
+				checkList.playerGotPower = true;
 			}
 		} else {
 			scoreSupport().addPoints(PELLET_VALUE);
@@ -370,7 +395,6 @@ public abstract class GameModel {
 		}
 		ghosts[RED_GHOST].checkCruiseElroyStart(level);
 		updateGhostDotCounters();
-		return result;
 	}
 
 	// Bonus stuff
@@ -387,20 +411,20 @@ public abstract class GameModel {
 
 	// Ghost house rules, see Pac-Man dossier
 
-	public void checkUnlockGhost(CheckResult result) {
+	public void checkUnlockGhost() {
 		ghosts(LOCKED).findFirst().ifPresent(ghost -> {
 			if (ghost.id == RED_GHOST) {
-				result.unlockGhost = ghosts[RED_GHOST];
-				result.unlockReason = "Blinky is released immediately";
+				checkList.unlockedGhost = ghosts[RED_GHOST];
+				checkList.unlockReason = "Blinky is released immediately";
 			} else if (globalDotCounterEnabled && globalDotCounter >= level.globalDotLimits[ghost.id]) {
-				result.unlockGhost = ghost;
-				result.unlockReason = "Global dot counter reached limit (%d)".formatted(level.globalDotLimits[ghost.id]);
+				checkList.unlockedGhost = ghost;
+				checkList.unlockReason = "Global dot counter reached limit (%d)".formatted(level.globalDotLimits[ghost.id]);
 			} else if (!globalDotCounterEnabled && ghost.dotCounter >= level.privateDotLimits[ghost.id]) {
-				result.unlockGhost = ghost;
-				result.unlockReason = "Private dot counter reached limit (%d)".formatted(level.privateDotLimits[ghost.id]);
+				checkList.unlockedGhost = ghost;
+				checkList.unlockReason = "Private dot counter reached limit (%d)".formatted(level.privateDotLimits[ghost.id]);
 			} else if (player.starvingTicks >= level.pacStarvingTimeLimit) {
-				result.unlockGhost = ghost;
-				result.unlockReason = "%s reached starving limit (%d ticks)".formatted(player.name, player.starvingTicks);
+				checkList.unlockedGhost = ghost;
+				checkList.unlockReason = "%s reached starving limit (%d ticks)".formatted(player.name, player.starvingTicks);
 				player.starvingTicks = 0;
 			}
 		});

@@ -42,6 +42,8 @@ import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.Pac;
 
 /**
+ * Rule of thumb: here, the "what" and "when" should be specified, not the "how" (should be implemented in the model).
+ * 
  * @author Armin Reichert
  */
 public enum GameState implements FsmState<GameModel> {
@@ -104,34 +106,28 @@ public enum GameState implements FsmState<GameModel> {
 	HUNTING {
 		@Override
 		public void onUpdate(GameModel game) {
+			game.advanceHunting();
+			game.checkList.clear();
 
-			if (game.huntingTimer.advance().hasExpired()) {
-				game.startNextHuntingPhase();
-				game.ghosts(HUNTING_PAC).forEach(ghost -> ghost.forceTurningBack(game.level.world));
-				game.ghosts(FRIGHTENED).forEach(ghost -> ghost.forceTurningBack(game.level.world));
-			}
-
-			var result = new GameModel.CheckResult();
-
-			game.checkLevelComplete(result);
-			if (result.levelComplete) {
+			game.checkLevelComplete();
+			if (game.checkList.levelComplete) {
 				controller.changeState(LEVEL_COMPLETE);
 				return;
 			}
 
 			// TODO don't store this info in controller
 			if (!controller.isPlayerImmune()) {
-				game.checkPlayerKilled(result);
-				if (result.playerKilled) {
+				game.checkPlayerKilled();
+				if (game.checkList.playerKilled) {
 					game.onPlayerKilled();
 					controller.changeState(PACMAN_DYING);
 					return;
 				}
 			}
 
-			game.checkGhostsCanBeEaten(result);
-			if (result.ghostsCanBeEaten) {
-				game.eatGhosts(result.edibleGhosts);
+			game.checkGhostsCanBeEaten();
+			if (game.checkList.ghostsCanBeEaten) {
+				game.eatGhosts(game.checkList.edibleGhosts);
 				controller.changeState(GHOST_DYING);
 				return;
 			}
@@ -139,29 +135,29 @@ public enum GameState implements FsmState<GameModel> {
 			currentPlayerControl().accept(game.player);
 			game.player.moveThroughLevel(game.level);
 
-			game.checkPlayerPower(result);
-			if (result.playerPowerFading) {
+			game.checkPlayerPower();
+			if (game.checkList.playerPowerFading) {
 				game.publish(GameEventType.PLAYER_STARTS_LOSING_POWER, game.player.tile());
 			}
-			if (result.playerPowerLost) {
+			if (game.checkList.playerPowerLost) {
 				game.onPlayerLostPower();
 				game.publish(GameEventType.PLAYER_LOSES_POWER, game.player.tile());
 			}
 
-			game.checkPlayerFindsFood(result);
-			if (result.foodFound) {
+			game.checkPlayerFindsFood();
+			if (game.checkList.foodFound) {
 				game.publish(GameEventType.PLAYER_FINDS_FOOD, game.player.tile());
 			}
-			if (result.playerGotPower) {
+			if (game.checkList.playerGotPower) {
 				game.publish(GameEventType.PLAYER_GETS_POWER, game.player.tile());
 			}
-			if (result.bonusReached) {
+			if (game.checkList.bonusReached) {
 				game.publish(GameEventType.BONUS_GETS_ACTIVE, game.bonus().tile());
 			}
 
-			game.checkUnlockGhost(result);
-			if (result.unlockGhost != null) {
-				game.unlockGhost(result.unlockGhost, result.unlockReason);
+			game.checkUnlockGhost();
+			if (game.checkList.unlockedGhost != null) {
+				game.unlockGhost(game.checkList.unlockedGhost, game.checkList.unlockReason);
 			}
 			game.ghosts().forEach(ghost -> ghost.update(game));
 
