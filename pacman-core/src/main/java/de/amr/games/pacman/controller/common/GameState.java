@@ -92,10 +92,10 @@ public enum GameState implements FsmState<GameModel> {
 			if (timer.hasExpired()) {
 				game.startHuntingPhase(0);
 				if (controller.credit() > 0) {
-					game.scoreSupport().enable(true);
+					game.scoring().enable(true);
 					controller.setGameRunning(true);
 				} else {
-					game.scoreSupport().enable(false);
+					game.scoring().enable(false);
 					controller.setGameRunning(false);
 				}
 				controller.changeState(GameState.HUNTING);
@@ -274,7 +274,7 @@ public enum GameState implements FsmState<GameModel> {
 			game.ghosts().forEach(Ghost::show);
 			game.player.setAbsSpeed(0);
 			game.player.show();
-			game.scoreSupport().saveHiscore();
+			game.scoring().saveHiscore();
 		}
 
 		@Override

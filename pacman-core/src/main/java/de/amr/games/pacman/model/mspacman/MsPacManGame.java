@@ -325,7 +325,7 @@ public class MsPacManGame extends GameModel {
 	}
 
 	@Override
-	public ScoreSupport scoreSupport() {
+	public ScoreSupport scoring() {
 		return score;
 	}
 

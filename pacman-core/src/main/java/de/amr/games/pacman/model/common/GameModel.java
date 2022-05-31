@@ -158,6 +158,8 @@ public abstract class GameModel {
 	/** Number of current intermission scene in test mode. */
 	public int intermissionTestNumber;
 
+	// Eventing
+
 	private final GameEventSupport eventSupport = new GameEventSupport(this);
 
 	public void addEventListener(GameEventListener subscriber) {
@@ -192,13 +194,13 @@ public abstract class GameModel {
 		return level.world;
 	}
 
-	public abstract ScoreSupport scoreSupport();
+	public abstract ScoreSupport scoring();
 
 	public void reset() {
 		lives = INITIAL_LIFES;
 		levelCounter.clear();
 		setLevel(1);
-		scoreSupport().reset();
+		scoring().reset();
 	}
 
 	public void resetGuys() {
@@ -332,7 +334,7 @@ public abstract class GameModel {
 		level.numGhostsKilled += prey.length;
 		if (level.numGhostsKilled == 16) {
 			log("All ghosts killed at level %d, Pac-Man wins additional %d points", level.number, ALL_GHOSTS_KILLED_POINTS);
-			scoreSupport().addPoints(ALL_GHOSTS_KILLED_POINTS);
+			scoring().addPoints(ALL_GHOSTS_KILLED_POINTS);
 		}
 	}
 
@@ -341,7 +343,7 @@ public abstract class GameModel {
 		ghost.targetTile = level.world.ghostHouse().entry();
 		ghost.bounty = ghostBounty;
 		ghostBounty *= 2;
-		scoreSupport().addPoints(ghost.bounty);
+		scoring().addPoints(ghost.bounty);
 		log("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name, ghost.tile(), ghost.bounty);
 	}
 
@@ -376,7 +378,7 @@ public abstract class GameModel {
 		level.world.removeFood(player.tile());
 		player.starvingTicks = 0;
 		if (checkList.energizerFound) {
-			scoreSupport().addPoints(ENERGIZER_VALUE);
+			scoring().addPoints(ENERGIZER_VALUE);
 			player.restingCountdown = ENERGIZER_RESTING_TICKS;
 			ghostBounty = FIRST_GHOST_BOUNTY;
 			if (level.ghostFrightenedSeconds > 0) {
@@ -390,7 +392,7 @@ public abstract class GameModel {
 				checkList.playerGotPower = true;
 			}
 		} else {
-			scoreSupport().addPoints(PELLET_VALUE);
+			scoring().addPoints(PELLET_VALUE);
 			player.restingCountdown = PELLET_RESTING_TICKS;
 		}
 		ghosts[RED_GHOST].checkCruiseElroyStart(level);

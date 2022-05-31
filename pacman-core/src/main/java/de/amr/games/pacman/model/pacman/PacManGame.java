@@ -166,7 +166,7 @@ public class PacManGame extends GameModel {
 	}
 
 	@Override
-	public ScoreSupport scoreSupport() {
+	public ScoreSupport scoring() {
 		return score;
 	}
 
