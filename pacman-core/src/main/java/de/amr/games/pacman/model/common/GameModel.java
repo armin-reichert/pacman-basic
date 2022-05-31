@@ -271,16 +271,20 @@ public abstract class GameModel {
 
 	public final CheckList checkList = new CheckList();
 
+	public boolean isLevelComplete() {
+		return level.world.foodRemaining() == 0;
+	}
+
 	public void updatePlayer() {
 		player.moveThroughLevel(level);
 		if (playerMeetsHuntingGhost()) {
 			onPlayerMeetsHuntingGhost();
-			return;
+			return; // game state change
 		}
 		checkPlayerFindsEdibleGhosts();
 		if (checkList.edibleGhostsFound) {
 			onEdibleGhostsFound(checkList.edibleGhosts);
-			return;
+			return; // game state chane
 		}
 		checkPlayerPower();
 		if (checkList.playerPowerFading) {
@@ -305,19 +309,6 @@ public abstract class GameModel {
 		}
 	}
 
-	public void updateGhosts() {
-		checkUnlockGhost();
-		checkList.unlockedGhost.ifPresent(ghost -> {
-			unlockGhost(ghost, checkList.unlockReason);
-			GameEventing.publish(new GameEvent(this, GameEventType.GHOST_STARTS_LEAVING_HOUSE, ghost, ghost.tile()));
-		});
-		ghosts().forEach(ghost -> ghost.update(this));
-	}
-
-	public boolean isLevelComplete() {
-		return level.world.foodRemaining() == 0;
-	}
-
 	private boolean playerMeetsHuntingGhost() {
 		Optional<Ghost> opt = Optional.empty();
 		if (!playerImmune && !player.powerTimer.isRunning()) {
@@ -336,7 +327,7 @@ public abstract class GameModel {
 		log("Global dot counter got reset and enabled because player died");
 	}
 
-	public void checkPlayerFindsEdibleGhosts() {
+	private void checkPlayerFindsEdibleGhosts() {
 		checkList.edibleGhosts = ghosts(FRIGHTENED).filter(player::sameTile).toArray(Ghost[]::new);
 		checkList.edibleGhostsFound = checkList.edibleGhosts.length > 0;
 	}
@@ -360,17 +351,17 @@ public abstract class GameModel {
 		log("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name, ghost.tile(), ghost.bounty);
 	}
 
-	public void checkPlayerPower() {
+	private void checkPlayerPower() {
 		// TODO not sure exactly how long the player is losing power
 		checkList.playerPowerFading = player.powerTimer.remaining() == sec_to_ticks(1);
 		checkList.playerPowerLost = player.powerTimer.hasExpired();
 	}
 
-	public void onPlayerPowerFading() {
+	private void onPlayerPowerFading() {
 		GameEventing.publish(GameEventType.PLAYER_STARTS_LOSING_POWER, player.tile());
 	}
 
-	public void onPlayerLostPower() {
+	private void onPlayerLostPower() {
 		log("%s lost power, timer=%s", player.name, player.powerTimer);
 		/* TODO hack: leave state EXPIRED to avoid repetitions. */
 		player.powerTimer.setDurationIndefinite();
@@ -379,7 +370,7 @@ public abstract class GameModel {
 		GameEventing.publish(GameEventType.PLAYER_LOSES_POWER, player.tile());
 	}
 
-	public void checkPlayerFindsFood() {
+	private void checkPlayerFindsFood() {
 		if (level.world.containsFood(player.tile())) {
 			checkList.foodFound = true;
 			if (level.world.isEnergizerTile(player.tile())) {
@@ -388,19 +379,19 @@ public abstract class GameModel {
 					checkList.playerGotPower = true;
 				}
 			}
-			checkList.bonusReached = checkBonusReached();
+			checkList.bonusReached = isBonusReached();
 		}
 	}
 
-	public void onPlayerFindsNoFood() {
+	private void onPlayerFindsNoFood() {
 		player.starvingTicks++;
 	}
 
-	public void onPlayerFindsPellet() {
+	private void onPlayerFindsPellet() {
 		onPlayerFindsFood(PELLET_VALUE, PELLET_RESTING_TICKS);
 	}
 
-	public void onPlayerFindsEnergizer() {
+	private void onPlayerFindsEnergizer() {
 		onPlayerFindsFood(ENERGIZER_VALUE, ENERGIZER_RESTING_TICKS);
 		ghostBounty = FIRST_GHOST_BOUNTY;
 	}
@@ -415,7 +406,7 @@ public abstract class GameModel {
 		GameEventing.publish(GameEventType.PLAYER_FINDS_FOOD, player.tile());
 	}
 
-	public void onPlayerGotPower() {
+	private void onPlayerGotPower() {
 		huntingTimer.stop();
 		player.powerTimer.setDurationSeconds(level.ghostFrightenedSeconds).start();
 		log("%s power timer started: %s", player.name, player.powerTimer);
@@ -426,25 +417,20 @@ public abstract class GameModel {
 		GameEventing.publish(GameEventType.PLAYER_GETS_POWER, player.tile());
 	}
 
-	// Bonus stuff
+	// Ghosts
 
-	public abstract Bonus bonus();
-
-	public abstract boolean checkBonusReached();
-
-	public void onBonusReached() {
-		GameEventing.publish(GameEventType.BONUS_GETS_ACTIVE, bonus().tile());
-	}
-
-	public void updateBonus() {
-		if (bonus() != null) {
-			bonus().update(this);
-		}
+	public void updateGhosts() {
+		checkUnlockGhost();
+		checkList.unlockedGhost.ifPresent(ghost -> {
+			unlockGhost(ghost, checkList.unlockReason);
+			GameEventing.publish(new GameEvent(this, GameEventType.GHOST_STARTS_LEAVING_HOUSE, ghost, ghost.tile()));
+		});
+		ghosts().forEach(ghost -> ghost.update(this));
 	}
 
 	// Ghost house rules, see Pac-Man dossier
 
-	public void checkUnlockGhost() {
+	private void checkUnlockGhost() {
 		ghosts(LOCKED).findFirst().ifPresent(ghost -> {
 			if (ghost.id == RED_GHOST) {
 				checkList.unlockedGhost = Optional.of(ghosts[RED_GHOST]);
@@ -463,7 +449,7 @@ public abstract class GameModel {
 		});
 	}
 
-	public void unlockGhost(Ghost ghost, String reason) {
+	private void unlockGhost(Ghost ghost, String reason) {
 		log("Unlock ghost %s (%s)", ghost.name, reason);
 		if (ghost.id == ORANGE_GHOST && ghosts[RED_GHOST].elroy < 0) {
 			ghosts[RED_GHOST].elroy = -ghosts[RED_GHOST].elroy; // resume Elroy mode
@@ -487,6 +473,22 @@ public abstract class GameModel {
 			}
 		} else {
 			ghosts(LOCKED).filter(ghost -> ghost.id != RED_GHOST).findFirst().ifPresent(ghost -> ++ghost.dotCounter);
+		}
+	}
+
+	// Bonus stuff
+
+	public abstract Bonus bonus();
+
+	protected boolean isBonusReached() {
+		return level.world.eatenFoodCount() == 70 || level.world.eatenFoodCount() == 170;
+	}
+
+	protected abstract void onBonusReached();
+
+	public void updateBonus() {
+		if (bonus() != null) {
+			bonus().update(this);
 		}
 	}
 }

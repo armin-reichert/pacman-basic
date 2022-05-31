@@ -32,6 +32,8 @@ import static de.amr.games.pacman.model.common.actors.Ghost.RED_GHOST;
 import java.io.File;
 import java.util.Random;
 
+import de.amr.games.pacman.event.GameEventType;
+import de.amr.games.pacman.event.GameEventing;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
@@ -369,11 +371,8 @@ public class MsPacManGame extends GameModel {
 	}
 
 	@Override
-	public boolean checkBonusReached() {
-		if (level.world.eatenFoodCount() == 70 || level.world.eatenFoodCount() == 170) {
-			movingBonus.activate(level.world, level.bonusSymbol, BONUS_VALUE[level.bonusSymbol], TickTimer.INDEFINITE);
-			return true;
-		}
-		return false;
+	protected void onBonusReached() {
+		movingBonus.activate(level.world, level.bonusSymbol, BONUS_VALUE[level.bonusSymbol], TickTimer.INDEFINITE);
+		GameEventing.publish(GameEventType.BONUS_GETS_ACTIVE, movingBonus.tile());
 	}
 }

@@ -36,6 +36,8 @@ import java.io.File;
 import java.util.List;
 import java.util.Random;
 
+import de.amr.games.pacman.event.GameEventType;
+import de.amr.games.pacman.event.GameEventing;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.GameLevel;
@@ -212,12 +214,9 @@ public class PacManGame extends GameModel {
 	}
 
 	@Override
-	public boolean checkBonusReached() {
-		if (level.world.eatenFoodCount() == 70 || level.world.eatenFoodCount() == 170) {
-			bonus.activate(level.world, level.bonusSymbol, BONUS_VALUE[level.bonusSymbol],
-					sec_to_ticks(9.0 + new Random().nextDouble()));
-			return true;
-		}
-		return false;
+	protected void onBonusReached() {
+		bonus.activate(level.world, level.bonusSymbol, BONUS_VALUE[level.bonusSymbol],
+				sec_to_ticks(9.0 + new Random().nextDouble()));
+		GameEventing.publish(GameEventType.BONUS_GETS_ACTIVE, bonus.tile());
 	}
 }
