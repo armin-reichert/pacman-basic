@@ -252,6 +252,7 @@ public abstract class GameModel {
 	// Game logic
 
 	public static class CheckResult {
+		public boolean allFoodEaten;
 		public boolean foodFound;
 		public boolean energizerFound;
 		public boolean bonusReached;
@@ -269,6 +270,7 @@ public abstract class GameModel {
 		}
 
 		public void clear() {
+			allFoodEaten = false;
 			foodFound = false;
 			energizerFound = false;
 			bonusReached = false;
@@ -283,49 +285,54 @@ public abstract class GameModel {
 		}
 	}
 
-	public boolean isLevelComplete() {
-		return level.world.foodRemaining() == 0;
-	}
-
 	/**
 	 * Performs a complete simulation step for the player and stores the collected information in the check list.
 	 * 
-	 * @param cl checklist with collected information
+	 * @param result checklist with collected information
 	 */
-	public void updatePlayer(CheckResult cl) {
+	public void updatePlayer(CheckResult result) {
 		player.update(level);
-		if (!playerImmune && !player.hasPower() && ghosts(HUNTING_PAC).filter(player::sameTile).findAny().isPresent()) {
-			killPlayer();
-			cl.playerKilled = true;
-			return; // game state change
-		}
-		checkPlayerFindsEdibleGhosts(cl);
-		if (cl.edibleGhosts.length > 0) {
-			killGhosts(cl.edibleGhosts);
-			cl.ghostsKilled = true;
-			return; // game state change
-		}
-		checkPlayerPower(cl);
-		if (cl.playerPowerFading) {
-			onPlayerPowerFading();
-		}
-		if (cl.playerPowerLost) {
-			onPlayerLostPower();
-		}
-		checkPlayerFindsFood(cl);
-		if (!cl.foodFound) {
-			onPlayerFindsNoFood();
-		} else if (cl.energizerFound) {
-			onPlayerFindsEnergizer();
+		checkPlayerFindsFood(result);
+		if (result.foodFound) {
+			if (result.energizerFound) {
+				onPlayerFindsEnergizer();
+			} else {
+				onPlayerFindsPellet();
+			}
+			if (result.bonusReached) {
+				onBonusReached();
+			}
+			if (result.allFoodEaten) {
+				return; // level complete
+			}
 		} else {
-			onPlayerFindsPellet();
+			onPlayerFindsNoFood();
 		}
-		if (cl.playerGotPower) {
+		if (result.playerGotPower) {
 			onPlayerGotPower();
 		}
-		if (cl.bonusReached) {
-			onBonusReached();
+		if (!playerImmune && !player.hasPower() && playerMeetsHuntingGhost()) {
+			killPlayer();
+			result.playerKilled = true;
+			return; // player killed
 		}
+		checkEdibleGhosts(result);
+		if (result.edibleGhosts.length > 0) {
+			killGhosts(result.edibleGhosts);
+			result.ghostsKilled = true;
+			return; // ghost killed
+		}
+		checkPlayerPower(result);
+		if (result.playerPowerFading) {
+			onPlayerPowerFading();
+		}
+		if (result.playerPowerLost) {
+			onPlayerLostPower();
+		}
+	}
+
+	private boolean playerMeetsHuntingGhost() {
+		return ghosts(HUNTING_PAC).filter(player::sameTile).findAny().isPresent();
 	}
 
 	private void killPlayer() {
@@ -337,8 +344,8 @@ public abstract class GameModel {
 		log("Global dot counter got reset and enabled because player died");
 	}
 
-	private void checkPlayerFindsEdibleGhosts(CheckResult cl) {
-		cl.edibleGhosts = ghosts(FRIGHTENED).filter(player::sameTile).toArray(Ghost[]::new);
+	private void checkEdibleGhosts(CheckResult result) {
+		result.edibleGhosts = ghosts(FRIGHTENED).filter(player::sameTile).toArray(Ghost[]::new);
 	}
 
 	/** This method is public because {@link GameController#cheatKillAllEatableGhosts()} calls it. */
@@ -360,10 +367,10 @@ public abstract class GameModel {
 		log("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name, ghost.tile(), ghost.bounty);
 	}
 
-	private void checkPlayerPower(CheckResult cl) {
+	private void checkPlayerPower(CheckResult result) {
 		// TODO not sure exactly how long the player is losing power
-		cl.playerPowerFading = player.powerTimer.remaining() == sec_to_ticks(1);
-		cl.playerPowerLost = player.powerTimer.hasExpired();
+		result.playerPowerFading = player.powerTimer.remaining() == sec_to_ticks(1);
+		result.playerPowerLost = player.powerTimer.hasExpired();
 	}
 
 	private void onPlayerPowerFading() {
@@ -379,16 +386,17 @@ public abstract class GameModel {
 		GameEventing.publish(GameEventType.PLAYER_LOSES_POWER, player.tile());
 	}
 
-	private void checkPlayerFindsFood(CheckResult cl) {
+	private void checkPlayerFindsFood(CheckResult result) {
 		if (level.world.containsFood(player.tile())) {
-			cl.foodFound = true;
+			result.foodFound = true;
+			result.allFoodEaten = level.world.foodRemaining() == 1;
 			if (level.world.isEnergizerTile(player.tile())) {
-				cl.energizerFound = true;
+				result.energizerFound = true;
 				if (level.ghostFrightenedSeconds > 0) {
-					cl.playerGotPower = true;
+					result.playerGotPower = true;
 				}
 			}
-			cl.bonusReached = isBonusReached();
+			result.bonusReached = isBonusReached();
 		}
 	}
 
@@ -397,15 +405,15 @@ public abstract class GameModel {
 	}
 
 	private void onPlayerFindsPellet() {
-		onPlayerFindsFood(PELLET_VALUE, PELLET_RESTING_TICKS);
+		eatFood(PELLET_VALUE, PELLET_RESTING_TICKS);
 	}
 
 	private void onPlayerFindsEnergizer() {
-		onPlayerFindsFood(ENERGIZER_VALUE, ENERGIZER_RESTING_TICKS);
+		eatFood(ENERGIZER_VALUE, ENERGIZER_RESTING_TICKS);
 		ghostBounty = FIRST_GHOST_BOUNTY;
 	}
 
-	private void onPlayerFindsFood(int value, int restingTicks) {
+	private void eatFood(int value, int restingTicks) {
 		player.starvingTicks = 0;
 		player.restingCountdown = restingTicks;
 		level.world.removeFood(player.tile());
@@ -428,10 +436,10 @@ public abstract class GameModel {
 
 	// Ghosts
 
-	public void updateGhosts(CheckResult cl) {
-		checkUnlockGhost(cl);
-		cl.unlockedGhost.ifPresent(ghost -> {
-			unlockGhost(ghost, cl.unlockReason);
+	public void updateGhosts(CheckResult result) {
+		checkGhostCanBeUnlocked(result);
+		result.unlockedGhost.ifPresent(ghost -> {
+			unlockGhost(ghost, result.unlockReason);
 			GameEventing.publish(new GameEvent(this, GameEventType.GHOST_STARTS_LEAVING_HOUSE, ghost, ghost.tile()));
 		});
 		ghosts().forEach(ghost -> ghost.update(this));
@@ -439,20 +447,20 @@ public abstract class GameModel {
 
 	// Ghost house rules, see Pac-Man dossier
 
-	private void checkUnlockGhost(CheckResult cl) {
+	private void checkGhostCanBeUnlocked(CheckResult result) {
 		ghosts(LOCKED).findFirst().ifPresent(ghost -> {
 			if (ghost.id == RED_GHOST) {
-				cl.unlockedGhost = Optional.of(ghosts[RED_GHOST]);
-				cl.unlockReason = "Blinky is released immediately";
+				result.unlockedGhost = Optional.of(ghosts[RED_GHOST]);
+				result.unlockReason = "Blinky is always unlocked immediately";
 			} else if (globalDotCounterEnabled && globalDotCounter >= level.globalDotLimits[ghost.id]) {
-				cl.unlockedGhost = Optional.of(ghost);
-				cl.unlockReason = "Global dot counter reached limit (%d)".formatted(level.globalDotLimits[ghost.id]);
+				result.unlockedGhost = Optional.of(ghost);
+				result.unlockReason = "Global dot counter reached limit (%d)".formatted(level.globalDotLimits[ghost.id]);
 			} else if (!globalDotCounterEnabled && ghost.dotCounter >= level.privateDotLimits[ghost.id]) {
-				cl.unlockedGhost = Optional.of(ghost);
-				cl.unlockReason = "Private dot counter reached limit (%d)".formatted(level.privateDotLimits[ghost.id]);
+				result.unlockedGhost = Optional.of(ghost);
+				result.unlockReason = "Private dot counter reached limit (%d)".formatted(level.privateDotLimits[ghost.id]);
 			} else if (player.starvingTicks >= level.pacStarvingTimeLimit) {
-				cl.unlockedGhost = Optional.of(ghost);
-				cl.unlockReason = "%s reached starving limit (%d ticks)".formatted(player.name, player.starvingTicks);
+				result.unlockedGhost = Optional.of(ghost);
+				result.unlockReason = "%s reached starving limit (%d ticks)".formatted(player.name, player.starvingTicks);
 				player.starvingTicks = 0;
 			}
 		});

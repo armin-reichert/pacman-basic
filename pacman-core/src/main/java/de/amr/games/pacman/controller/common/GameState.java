@@ -105,13 +105,13 @@ public enum GameState implements FsmState<GameModel> {
 	HUNTING {
 		@Override
 		public void onUpdate(GameModel game) {
-			if (game.isLevelComplete()) {
-				controller.changeState(LEVEL_COMPLETE);
-				return;
-			}
 			var checkResult = new CheckResult();
 			controller.steer(game.player);
 			game.updatePlayer(checkResult);
+			if (checkResult.allFoodEaten) {
+				controller.changeState(LEVEL_COMPLETE);
+				return;
+			}
 			if (checkResult.playerKilled) {
 				controller.changeState(PACMAN_DYING);
 				return;
