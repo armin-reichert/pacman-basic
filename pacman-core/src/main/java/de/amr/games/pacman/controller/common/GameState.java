@@ -37,7 +37,7 @@ import de.amr.games.pacman.lib.Fsm;
 import de.amr.games.pacman.lib.FsmState;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.common.GameModel;
-import de.amr.games.pacman.model.common.GameModel.CheckList;
+import de.amr.games.pacman.model.common.GameModel.CheckResult;
 import de.amr.games.pacman.model.common.actors.Ghost;
 
 /**
@@ -109,7 +109,7 @@ public enum GameState implements FsmState<GameModel> {
 				controller.changeState(LEVEL_COMPLETE);
 				return;
 			}
-			var checkResult = new CheckList();
+			var checkResult = new CheckResult();
 			controller.steer(game.player);
 			game.updatePlayer(checkResult);
 			if (checkResult.playerKilled) {

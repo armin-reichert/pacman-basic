@@ -237,7 +237,7 @@ public abstract class GameModel {
 
 	// Game logic
 
-	public static class CheckList {
+	public static class CheckResult {
 		public boolean foodFound;
 		public boolean energizerFound;
 		public boolean bonusReached;
@@ -250,7 +250,7 @@ public abstract class GameModel {
 		public Optional<Ghost> unlockedGhost;
 		public String unlockReason;
 
-		public CheckList() {
+		public CheckResult() {
 			clear();
 		}
 
@@ -273,7 +273,7 @@ public abstract class GameModel {
 		return level.world.foodRemaining() == 0;
 	}
 
-	public void updatePlayer(CheckList cl) {
+	public void updatePlayer(CheckResult cl) {
 		player.moveThroughLevel(level);
 		if (playerMeetsHuntingGhost()) {
 			onPlayerMeetsHuntingGhost(cl);
@@ -315,7 +315,7 @@ public abstract class GameModel {
 		return opt.isPresent();
 	}
 
-	private void onPlayerMeetsHuntingGhost(CheckList cl) {
+	private void onPlayerMeetsHuntingGhost(CheckResult cl) {
 		cl.playerKilled = true;
 		player.killed = true;
 		ghosts[RED_GHOST].stopCruiseElroyMode();
@@ -325,7 +325,7 @@ public abstract class GameModel {
 		log("Global dot counter got reset and enabled because player died");
 	}
 
-	private void checkPlayerFindsEdibleGhosts(CheckList cl) {
+	private void checkPlayerFindsEdibleGhosts(CheckResult cl) {
 		cl.edibleGhosts = ghosts(FRIGHTENED).filter(player::sameTile).toArray(Ghost[]::new);
 		cl.ghostsKilled = cl.edibleGhosts.length > 0; // TODO
 	}
@@ -341,7 +341,7 @@ public abstract class GameModel {
 	}
 
 	/** This method is public because {@link GameController#cheatKillAllEatableGhosts()} calls it. */
-	private void onEdibleGhostsFound(CheckList cl) {
+	private void onEdibleGhostsFound(CheckResult cl) {
 		killGhosts(cl.edibleGhosts);
 		cl.ghostsKilled = true;
 	}
@@ -355,7 +355,7 @@ public abstract class GameModel {
 		log("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name, ghost.tile(), ghost.bounty);
 	}
 
-	private void checkPlayerPower(CheckList cl) {
+	private void checkPlayerPower(CheckResult cl) {
 		// TODO not sure exactly how long the player is losing power
 		cl.playerPowerFading = player.powerTimer.remaining() == sec_to_ticks(1);
 		cl.playerPowerLost = player.powerTimer.hasExpired();
@@ -374,7 +374,7 @@ public abstract class GameModel {
 		GameEventing.publish(GameEventType.PLAYER_LOSES_POWER, player.tile());
 	}
 
-	private void checkPlayerFindsFood(CheckList cl) {
+	private void checkPlayerFindsFood(CheckResult cl) {
 		if (level.world.containsFood(player.tile())) {
 			cl.foodFound = true;
 			if (level.world.isEnergizerTile(player.tile())) {
@@ -423,7 +423,7 @@ public abstract class GameModel {
 
 	// Ghosts
 
-	public void updateGhosts(CheckList cl) {
+	public void updateGhosts(CheckResult cl) {
 		checkUnlockGhost(cl);
 		cl.unlockedGhost.ifPresent(ghost -> {
 			unlockGhost(ghost, cl.unlockReason);
@@ -434,7 +434,7 @@ public abstract class GameModel {
 
 	// Ghost house rules, see Pac-Man dossier
 
-	private void checkUnlockGhost(CheckList cl) {
+	private void checkUnlockGhost(CheckResult cl) {
 		ghosts(LOCKED).findFirst().ifPresent(ghost -> {
 			if (ghost.id == RED_GHOST) {
 				cl.unlockedGhost = Optional.of(ghosts[RED_GHOST]);
