@@ -24,7 +24,7 @@ SOFTWARE.
 package de.amr.games.pacman.lib;
 
 /**
- * Timed sequence ("animatiion") of things, for example of images or spritesheet regions.
+ * Timed sequence ("animation") of things, for example of images or spritesheet regions.
  * 
  * @author Armin Reichert
  */
