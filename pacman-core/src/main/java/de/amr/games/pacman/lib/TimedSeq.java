@@ -267,6 +267,11 @@ public class TimedSeq<T> {
 		return frameIndex;
 	}
 
+	public void setFrameIndex(int i) {
+		frameIndex = i;
+		frameRunningTicks = 0;
+	}
+
 	/**
 	 * @return number of ticks each frame takes
 	 */
