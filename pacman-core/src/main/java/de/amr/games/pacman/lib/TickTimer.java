@@ -23,10 +23,10 @@ SOFTWARE.
  */
 package de.amr.games.pacman.lib;
 
-import static de.amr.games.pacman.lib.TickTimer.TickTimerState.EXPIRED;
-import static de.amr.games.pacman.lib.TickTimer.TickTimerState.READY;
-import static de.amr.games.pacman.lib.TickTimer.TickTimerState.RUNNING;
-import static de.amr.games.pacman.lib.TickTimer.TickTimerState.STOPPED;
+import static de.amr.games.pacman.lib.TickTimer.State.EXPIRED;
+import static de.amr.games.pacman.lib.TickTimer.State.READY;
+import static de.amr.games.pacman.lib.TickTimer.State.RUNNING;
+import static de.amr.games.pacman.lib.TickTimer.State.STOPPED;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +41,7 @@ import de.amr.games.pacman.lib.TickTimerEvent.Type;
  */
 public class TickTimer {
 
-	public enum TickTimerState {
+	public enum State {
 		READY, RUNNING, STOPPED, EXPIRED;
 	}
 
@@ -70,7 +70,7 @@ public class TickTimer {
 	}
 
 	private final String name;
-	private TickTimerState state;
+	private State state;
 	private long duration;
 	private long tick; // 0..(duration - 1)
 	private List<Consumer<TickTimerEvent>> subscribers;
@@ -85,7 +85,7 @@ public class TickTimer {
 		return "[%s %s tick:%s remaining:%s]".formatted(name, state, ticksToString(tick), ticksToString(remaining()));
 	}
 
-	public TickTimerState state() {
+	public State state() {
 		return state;
 	}
 
@@ -94,7 +94,7 @@ public class TickTimer {
 	}
 
 	/**
-	 * Sets timer to given duration and resets timer state to {@link TickTimerState#READY}.
+	 * Sets timer to given duration and resets timer state to {@link State#READY}.
 	 * 
 	 * @param ticks timer duration in ticks
 	 * @return itself
