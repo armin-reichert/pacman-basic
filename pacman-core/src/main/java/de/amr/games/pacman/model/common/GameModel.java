@@ -426,7 +426,8 @@ public abstract class GameModel {
 
 	private void onPlayerGotPower() {
 		huntingTimer.stop();
-		pac.powerTimer.setDurationSeconds(level.ghostFrightenedSeconds).start();
+		pac.powerTimer.setDurationSeconds(level.ghostFrightenedSeconds);
+		pac.powerTimer.start();
 		log("%s power timer started: %s", pac.name, pac.powerTimer);
 		ghosts(HUNTING_PAC).forEach(ghost -> {
 			ghost.state = FRIGHTENED;

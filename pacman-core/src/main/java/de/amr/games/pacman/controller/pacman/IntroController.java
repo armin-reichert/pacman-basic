@@ -126,7 +126,8 @@ public class IntroController extends Fsm<State, Context> {
 					if ($.ghostIndex < 3) {
 						$.ghostIndex++;
 						$.pictureVisible[$.ghostIndex] = true;
-						timer.setDurationIndefinite().start();
+						timer.setDurationIndefinite();
+						timer.start();
 					}
 				} else if (timer.atSecond(2.75)) {
 					$.fastBlinking.restart();
@@ -148,7 +149,8 @@ public class IntroController extends Fsm<State, Context> {
 		CHASING_PAC {
 			@Override
 			public void onEnter(Context $) {
-				timer.setDurationIndefinite().start();
+				timer.setDurationIndefinite();
+				timer.start();
 				$.pacMan.show();
 				$.pacMan.setAbsSpeed(1);
 				$.pacMan.setPosition(t(ArcadeWorld.TILES_X), t(20));
@@ -180,7 +182,8 @@ public class IntroController extends Fsm<State, Context> {
 		CHASING_GHOSTS {
 			@Override
 			public void onEnter(Context $) {
-				timer.setDurationIndefinite().start();
+				timer.setDurationIndefinite();
+				timer.start();
 				for (Ghost ghost : $.ghosts) {
 					ghost.state = GhostState.FRIGHTENED;
 					ghost.setWishDir(Direction.RIGHT);

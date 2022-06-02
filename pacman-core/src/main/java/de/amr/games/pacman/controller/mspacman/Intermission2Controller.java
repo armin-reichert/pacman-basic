@@ -71,7 +71,8 @@ public class Intermission2Controller extends Fsm<State, Context> {
 		FLAP {
 			@Override
 			public void onEnter(Context $) {
-				timer.setDurationIndefinite().start();
+				timer.setDurationIndefinite();
+				timer.start();
 				if (controller.playIntermissionSound != null) {
 					controller.playIntermissionSound.run();
 				}
@@ -103,7 +104,8 @@ public class Intermission2Controller extends Fsm<State, Context> {
 		CHASING {
 			@Override
 			public void onEnter(Context $) {
-				timer.setDurationIndefinite().start();
+				timer.setDurationIndefinite();
+				timer.start();
 			}
 
 			@Override

@@ -72,7 +72,8 @@ public class Intermission1Controller extends Fsm<State, Context> {
 		CHASING_PACMAN {
 			@Override
 			public void onEnter(Context $) {
-				timer.setDurationSeconds(5).start();
+				timer.setDurationSeconds(5);
+				timer.start();
 				if (controller.playIntermissionSound != null) {
 					controller.playIntermissionSound.run();
 				}
@@ -109,7 +110,8 @@ public class Intermission1Controller extends Fsm<State, Context> {
 		CHASING_BLINKY {
 			@Override
 			public void onEnter(Context $) {
-				timer.setDurationSeconds(7).start();
+				timer.setDurationSeconds(7);
+				timer.start();
 				$.pac.setMoveDir(Direction.RIGHT);
 				$.pac.setPosition(-t(24), t(20));
 				$.pac.setAbsSpeed(1.0);

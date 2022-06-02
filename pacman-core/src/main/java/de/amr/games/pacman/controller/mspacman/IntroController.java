@@ -90,7 +90,8 @@ public class IntroController extends Fsm<State, Context> {
 		BEGIN {
 			@Override
 			public void onEnter(Context $) {
-				$.lightsTimer.setDurationIndefinite().start();
+				$.lightsTimer.setDurationIndefinite();
+				$.lightsTimer.start();
 				$.msPacMan.setMoveDir(LEFT);
 				$.msPacMan.setPosition(t(36), $.turningPoint.y);
 				$.msPacMan.setAbsSpeed(0.95);

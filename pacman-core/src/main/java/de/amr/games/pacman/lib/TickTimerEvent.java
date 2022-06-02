@@ -26,7 +26,7 @@ package de.amr.games.pacman.lib;
 public class TickTimerEvent {
 
 	public enum Type {
-		RESET, STARTED, STOPPED, EXPIRED, HALF_EXPIRED
+		RESET, STARTED, STOPPED, EXPIRED;
 	};
 
 	public TickTimerEvent(Type type, long ticks) {

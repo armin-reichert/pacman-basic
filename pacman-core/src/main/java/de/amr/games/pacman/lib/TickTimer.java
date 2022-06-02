@@ -45,11 +45,9 @@ public class TickTimer {
 		READY, RUNNING, STOPPED, EXPIRED;
 	}
 
-	/** Timer value representing "forever". */
 	public static final long INDEFINITE = Long.MAX_VALUE;
 	private static final int TICKS_PER_SEC = 60;
-
-	public static boolean trace = false;
+	private static boolean trace = false;
 
 	private void trace(String msg, Object... args) {
 		if (trace) {
@@ -99,24 +97,23 @@ public class TickTimer {
 	 * @param ticks timer duration in ticks
 	 * @return itself
 	 */
-	public TickTimer setDurationTicks(long ticks) {
+	public void setDurationTicks(long ticks) {
 		duration = ticks;
 		tick = 0;
 		state = READY;
 		trace("%s set", this);
 		fireEvent(new TickTimerEvent(Type.RESET, ticks));
-		return this;
 	}
 
-	public TickTimer setDurationSeconds(double seconds) {
-		return setDurationTicks(sec_to_ticks(seconds));
+	public void setDurationSeconds(double seconds) {
+		setDurationTicks(sec_to_ticks(seconds));
 	}
 
 	/**
 	 * Reset the time to run {@link #INDEFINITE}.
 	 */
-	public TickTimer setDurationIndefinite() {
-		return setDurationTicks(INDEFINITE);
+	public void setDurationIndefinite() {
+		setDurationTicks(INDEFINITE);
 	}
 
 	public void addEventListener(Consumer<TickTimerEvent> subscriber) {
@@ -138,22 +135,21 @@ public class TickTimer {
 		}
 	}
 
-	public TickTimer start() {
+	public void start() {
 		if (state == RUNNING) {
 			trace("%s not started, already running", this);
-			return this;
+			return;
 		}
 		if (state == STOPPED || state == READY) {
 			state = RUNNING;
 			trace("%s started", this);
 			fireEvent(new TickTimerEvent(Type.STARTED));
-			return this;
-		} else {
-			throw new IllegalStateException(String.format("Timer %s cannot be started when in state %s", this, state));
+			return;
 		}
+		throw new IllegalStateException(String.format("Timer %s cannot be started when in state %s", this, state));
 	}
 
-	public TickTimer stop() {
+	public void stop() {
 		if (state == STOPPED) {
 			trace("%s not stopped, already stopped", this);
 		} else if (state == RUNNING) {
@@ -161,31 +157,25 @@ public class TickTimer {
 			trace("%s stopped", this);
 			fireEvent(new TickTimerEvent(Type.STOPPED));
 		}
-		return this;
 	}
 
-	public TickTimer advance() {
+	public void advance() {
 		if (state == READY) {
-			return this; // TODO handle this properly
+			return; // TODO handle this properly
 		}
 		if (state == STOPPED || state == EXPIRED) {
-			return this;
+			return;
 		}
 		++tick;
-		if (tick == duration / 2) {
-			fireEvent(new TickTimerEvent(Type.HALF_EXPIRED, tick));
-		}
 		if (tick == duration) {
 			expire();
 		}
-		return this;
 	}
 
-	public TickTimer expire() {
+	public void expire() {
 		state = EXPIRED;
 		trace("%s expired", this);
 		fireEvent(new TickTimerEvent(Type.EXPIRED, tick));
-		return this;
 	}
 
 	public boolean hasExpired() {
