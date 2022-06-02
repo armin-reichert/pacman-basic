@@ -184,7 +184,7 @@ public class Ghost extends Creature {
 			 * Chase if the hunting timer is in a chasing phase or if I am in Elroy mode.
 			 */
 			else if (elroy > 0 || game.huntingTimer.chasingPhase() != -1) {
-				chase(world, game.player, game.ghosts[RED_GHOST]);
+				chase(world, game.pac, game.ghosts[RED_GHOST]);
 			}
 			/**
 			 * Scatter else.
@@ -234,12 +234,12 @@ public class Ghost extends Creature {
 		}
 	}
 
-	private void chase(World world, Pac player, Ghost redGhost) {
+	private void chase(World world, Pac pac, Ghost redGhost) {
 		targetTile = switch (id) {
-		case RED_GHOST -> player.tile();
-		case PINK_GHOST -> player.tilesAheadWithBug(4);
-		case CYAN_GHOST -> player.tilesAheadWithBug(2).scaled(2).minus(redGhost.tile());
-		case ORANGE_GHOST -> tile().euclideanDistance(player.tile()) < 8 ? scatterTile : player.tile();
+		case RED_GHOST -> pac.tile();
+		case PINK_GHOST -> pac.tilesAheadWithBug(4);
+		case CYAN_GHOST -> pac.tilesAheadWithBug(2).scaled(2).minus(redGhost.tile());
+		case ORANGE_GHOST -> tile().euclideanDistance(pac.tile()) < 8 ? scatterTile : pac.tile();
 		default -> null;
 		};
 		computeDirectionTowardsTarget(world);

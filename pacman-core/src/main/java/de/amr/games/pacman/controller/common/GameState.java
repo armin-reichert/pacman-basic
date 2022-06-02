@@ -75,14 +75,14 @@ public enum GameState implements FsmState<GameModel> {
 			timer.setDurationSeconds(readySeconds).start();
 			game.resetGuys();
 			game.ghosts().forEach(Ghost::hide);
-			game.player.hide();
+			game.pac.hide();
 		}
 
 		@Override
 		public void onUpdate(GameModel game) {
 			if (timer.atSecond(1.5)) {
 				game.ghosts().forEach(Ghost::show);
-				game.player.show();
+				game.pac.show();
 			}
 			if (timer.hasExpired()) {
 				game.startHuntingPhase(0);
@@ -102,7 +102,7 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void onUpdate(GameModel game) {
 			var checkResult = new CheckResult();
-			controller.steer(game.player);
+			controller.steer(game.pac);
 			game.updatePlayer(checkResult);
 			if (checkResult.allFoodEaten) {
 				controller.changeState(LEVEL_COMPLETE);
@@ -129,7 +129,7 @@ public enum GameState implements FsmState<GameModel> {
 			if (game.bonus() != null) {
 				game.bonus().init();
 			}
-			game.player.setAbsSpeed(0);
+			game.pac.setAbsSpeed(0);
 			game.ghosts().forEach(Ghost::hide);
 			timer.setDurationIndefinite().start();
 		}
@@ -168,7 +168,7 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void onEnter(GameModel game) {
 			timer.setDurationIndefinite().start();
-			game.player.setAbsSpeed(0);
+			game.pac.setAbsSpeed(0);
 			game.ghosts(FRIGHTENED).forEach(ghost -> ghost.state = HUNTING_PAC);
 			if (game.bonus() != null) {
 				game.bonus().init();
@@ -193,7 +193,7 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void onEnter(GameModel game) {
 			timer.setDurationSeconds(1).start();
-			game.player.hide();
+			game.pac.hide();
 		}
 
 		@Override
@@ -202,13 +202,13 @@ public enum GameState implements FsmState<GameModel> {
 				controller.resumePreviousState();
 				return;
 			}
-			controller.steer(game.player);
+			controller.steer(game.pac);
 			game.updateGhostsReturningHome();
 		}
 
 		@Override
 		public void onExit(GameModel game) {
-			game.player.show();
+			game.pac.show();
 			game.letDeadGhostsReturnHome();
 		}
 	},
@@ -219,8 +219,8 @@ public enum GameState implements FsmState<GameModel> {
 			timer.setDurationSeconds(5).start();
 			game.ghosts().forEach(ghost -> ghost.setAbsSpeed(0));
 			game.ghosts().forEach(Ghost::show);
-			game.player.setAbsSpeed(0);
-			game.player.show();
+			game.pac.setAbsSpeed(0);
+			game.pac.show();
 			game.scoring().saveHiscore();
 		}
 

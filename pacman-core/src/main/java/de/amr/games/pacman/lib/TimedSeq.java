@@ -51,14 +51,12 @@ public class TimedSeq<T> {
 	@SafeVarargs
 	public static <TT> TimedSeq<TT> of(TT... things) {
 		if (things.length == 0) {
-			throw new IllegalArgumentException("Animation must have at least one frame");
+			throw new IllegalArgumentException("Sequence must have at least contain one thing");
 		}
 		if (things.length == 1) {
 			return new OneFrame<TT>(things[0]);
 		}
-		TimedSeq<TT> a = new TimedSeq<>();
-		a.things = things;
-		return a;
+		return new TimedSeq<>(things);
 	}
 
 	/**
@@ -81,7 +79,12 @@ public class TimedSeq<T> {
 	protected boolean complete;
 	protected Runnable onStart;
 
-	protected TimedSeq() {
+	@SafeVarargs
+	public TimedSeq(T... things) {
+		if (things.length == 0) {
+			throw new IllegalArgumentException("Sequence must have at least contain one thing");
+		}
+		this.things = things;
 		repetitions = 1;
 		frameDurationTicks = 6; // 0.1 sec
 		reset();
@@ -298,6 +301,12 @@ public class TimedSeq<T> {
 	 */
 	public boolean isRunning() {
 		return running;
+	}
+
+	public void ensureRunning() {
+		if (!running) {
+			running = true;
+		}
 	}
 
 	/**

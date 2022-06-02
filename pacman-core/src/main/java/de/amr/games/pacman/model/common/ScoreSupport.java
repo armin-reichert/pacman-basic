@@ -120,7 +120,7 @@ public class ScoreSupport {
 		}
 		if (scoreBeforeAddingPoints < game.extraLifeScore && score.points >= game.extraLifeScore) {
 			game.lives++;
-			GameEventing.publish(new GameEvent(game, GameEventType.PLAYER_GETS_EXTRA_LIFE, null, game.player.tile()));
+			GameEventing.publish(new GameEvent(game, GameEventType.PLAYER_GETS_EXTRA_LIFE, null, game.pac.tile()));
 		}
 	}
 
