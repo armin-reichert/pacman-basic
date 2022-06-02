@@ -110,8 +110,8 @@ public class Autopilot implements Consumer<Pac> {
 	}
 
 	@Override
-	public void accept(Pac player) {
-		if (!player.stuck && !player.newTileEntered) {
+	public void accept(Pac pac) {
+		if (!pac.stuck && !pac.newTileEntered) {
 			return;
 		}
 		AutopilotData data = collectData();
