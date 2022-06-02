@@ -32,15 +32,6 @@ public class TimedSeq<T> {
 
 	public static int INDEFINITE = -1;
 
-	private static class OneFrame<TT> extends TimedSeq<TT> {
-
-		@SuppressWarnings("unchecked")
-		public OneFrame(TT thing) {
-			things = (TT[]) new Object[1];
-			things[0] = thing;
-		}
-	}
-
 	/**
 	 * Creates a timed sequence (animation) of the given things.
 	 * 
@@ -52,9 +43,6 @@ public class TimedSeq<T> {
 	public static <TT> TimedSeq<TT> of(TT... things) {
 		if (things.length == 0) {
 			throw new IllegalArgumentException("Sequence must have at least contain one thing");
-		}
-		if (things.length == 1) {
-			return new OneFrame<TT>(things[0]);
 		}
 		return new TimedSeq<>(things);
 	}
