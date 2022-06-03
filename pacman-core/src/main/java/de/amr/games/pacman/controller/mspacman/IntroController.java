@@ -25,18 +25,16 @@ package de.amr.games.pacman.controller.mspacman;
 
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.UP;
+import static de.amr.games.pacman.lib.V2i.v;
 import static de.amr.games.pacman.model.common.actors.Ghost.CYAN_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ORANGE_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.PINK_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.RED_GHOST;
 import static de.amr.games.pacman.model.common.world.World.HTS;
-import static de.amr.games.pacman.model.common.world.World.TS;
 import static de.amr.games.pacman.model.common.world.World.t;
 
 import de.amr.games.pacman.controller.common.GameController;
 import de.amr.games.pacman.controller.common.GameState;
-import de.amr.games.pacman.controller.mspacman.IntroController.Context;
-import de.amr.games.pacman.controller.mspacman.IntroController.State;
 import de.amr.games.pacman.lib.Fsm;
 import de.amr.games.pacman.lib.FsmState;
 import de.amr.games.pacman.lib.TickTimer;
@@ -53,7 +51,7 @@ import de.amr.games.pacman.model.common.actors.Pac;
  * 
  * @author Armin Reichert
  */
-public class IntroController extends Fsm<State, Context> {
+public class IntroController extends Fsm<IntroController.State, IntroController.Context> {
 
 	public final GameController gameController;
 	public final Context context = new Context();
@@ -70,11 +68,11 @@ public class IntroController extends Fsm<State, Context> {
 	}
 
 	public static class Context {
-		public final V2i lightsTopLeft = new V2i(8, 11).scaled(TS);
-		public final V2i titlePosition = new V2i(10, 8).scaled(TS);
-		public final V2i turningPoint = new V2i(6, 20).scaled(TS).plus(0, HTS);
-		public final int msPacManStopX = t(15);
 		public double actorSpeed = 1.1f;
+		public final V2i lightsTopLeft = v(t(8), t(11));
+		public final V2i titlePosition = v(t(10), t(8));
+		public final V2i turningPoint = v(t(6), t(20)).plus(0, HTS);
+		public final int msPacManStopX = t(15);
 		public final TimedSeq<Boolean> blinking = TimedSeq.pulse().frameDuration(30).restart();
 		public final TickTimer lightsTimer = new TickTimer("lights-timer");
 		public final Pac msPacMan = new Pac("Ms. Pac-Man");
@@ -87,7 +85,7 @@ public class IntroController extends Fsm<State, Context> {
 		public int ghostIndex;
 	}
 
-	public enum State implements FsmState<Context> {
+	public enum State implements FsmState<IntroController.Context> {
 
 		BEGIN {
 			@Override
