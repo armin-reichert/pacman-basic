@@ -70,9 +70,11 @@ public class IntroController extends Fsm<State, Context> {
 	}
 
 	public static class Context {
-		public final V2i lightsTopLeft = new V2i(7, 11).scaled(TS);
-		public final V2i titlePosition = new V2i(9, 8).scaled(TS);
-		public final V2i turningPoint = new V2i(5, 20).scaled(TS).plus(0, HTS);
+		public final V2i lightsTopLeft = new V2i(8, 11).scaled(TS);
+		public final V2i titlePosition = new V2i(10, 8).scaled(TS);
+		public final V2i turningPoint = new V2i(6, 20).scaled(TS).plus(0, HTS);
+		public final int msPacManStopX = t(15);
+		public double actorSpeed = 1.1f;
 		public final TimedSeq<Boolean> blinking = TimedSeq.pulse().frameDuration(30).restart();
 		public final TickTimer lightsTimer = new TickTimer("lights-timer");
 		public final Pac msPacMan = new Pac("Ms. Pac-Man");
@@ -93,15 +95,15 @@ public class IntroController extends Fsm<State, Context> {
 				$.lightsTimer.setDurationIndefinite();
 				$.lightsTimer.start();
 				$.msPacMan.setMoveDir(LEFT);
-				$.msPacMan.setPosition(t(36), $.turningPoint.y);
-				$.msPacMan.setAbsSpeed(0.95);
+				$.msPacMan.setPosition(t(34), $.turningPoint.y);
+				$.msPacMan.setAbsSpeed($.actorSpeed);
 				$.msPacMan.show();
 				for (Ghost ghost : $.ghosts) {
 					ghost.state = GhostState.HUNTING_PAC;
 					ghost.setMoveDir(LEFT);
 					ghost.setWishDir(LEFT);
-					ghost.setPosition(t(36), $.turningPoint.y);
-					ghost.setAbsSpeed(0.95);
+					ghost.setPosition(t(34), $.turningPoint.y);
+					ghost.setAbsSpeed($.actorSpeed);
 					ghost.show();
 				}
 				$.ghostIndex = 0;
@@ -140,7 +142,7 @@ public class IntroController extends Fsm<State, Context> {
 			public void onUpdate(Context $) {
 				$.lightsTimer.advance();
 				$.msPacMan.move();
-				if ($.msPacMan.position.x <= t(14)) {
+				if ($.msPacMan.position.x <= $.msPacManStopX) {
 					$.msPacMan.setAbsSpeed(0);
 					controller.changeState(State.READY_TO_PLAY);
 				}
