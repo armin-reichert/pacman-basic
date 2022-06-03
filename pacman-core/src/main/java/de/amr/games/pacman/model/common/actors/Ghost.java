@@ -39,8 +39,8 @@ import static de.amr.games.pacman.model.common.world.World.TS;
 import java.util.List;
 
 import de.amr.games.pacman.event.GameEvent;
-import de.amr.games.pacman.event.GameEventing;
 import de.amr.games.pacman.event.GameEventType;
+import de.amr.games.pacman.event.GameEventing;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.GameLevel;
@@ -138,7 +138,7 @@ public class Ghost extends Creature {
 			if (atGhostHouseDoor(world.ghostHouse())) {
 				setAbsSpeed(0);
 			} else {
-				setRelSpeed(0.4 * game.level.ghostSpeed);
+				setRelSpeed(0.5 * game.level.ghostSpeed);
 				bounce(world.ghostHouse());
 			}
 		}
