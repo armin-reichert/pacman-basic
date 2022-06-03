@@ -32,7 +32,7 @@ import java.util.stream.Stream;
  * @param <K> Key type
  * @param <S> Sprite type (Rectangle, Image)
  */
-public abstract class SpriteAnimationContainer<K, S> {
+public abstract class SpriteAnimationSet<K, S> {
 
 	private K selectedKey;
 
