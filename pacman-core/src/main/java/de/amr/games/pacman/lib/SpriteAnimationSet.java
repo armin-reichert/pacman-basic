@@ -34,7 +34,7 @@ import java.util.stream.Stream;
  */
 public abstract class SpriteAnimationSet<K extends Enum<K>, S> {
 
-	private K selectedKey;
+	protected K selectedKey;
 
 	public abstract ISpriteAnimation animation(K key);
 
