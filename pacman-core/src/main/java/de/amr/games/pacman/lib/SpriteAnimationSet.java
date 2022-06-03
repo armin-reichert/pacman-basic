@@ -29,6 +29,7 @@ import java.util.stream.Stream;
 /**
  * @author Armin Reichert
  * 
+ * @param <ENTITY> entity type for example Ghost or Pac
  * @param <KEY>    Key enum type
  * @param <SPRITE> Sprite type (Rectangle, Image)
  */
