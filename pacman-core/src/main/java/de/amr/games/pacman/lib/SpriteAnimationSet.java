@@ -29,10 +29,10 @@ import java.util.stream.Stream;
 /**
  * @author Armin Reichert
  * 
- * @param <K> Key type
+ * @param <K> Key enum type
  * @param <S> Sprite type (Rectangle, Image)
  */
-public abstract class SpriteAnimationSet<K, S> {
+public abstract class SpriteAnimationSet<K extends Enum<K>, S> {
 
 	private K selectedKey;
 
