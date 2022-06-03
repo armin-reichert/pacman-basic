@@ -29,23 +29,25 @@ import java.util.stream.Stream;
 /**
  * @author Armin Reichert
  * 
- * @param <K> Key enum type
- * @param <S> Sprite type (Rectangle, Image)
+ * @param <KEY>    Key enum type
+ * @param <SPRITE> Sprite type (Rectangle, Image)
  */
-public abstract class SpriteAnimationSet<K extends Enum<K>, S> {
+public abstract class SpriteAnimationSet<ENTITY, KEY extends Enum<KEY>, SPRITE> {
 
-	protected K selectedKey;
+	protected KEY selectedKey;
 
-	public abstract ISpriteAnimation animation(K key);
+	public abstract ISpriteAnimation animation(KEY key);
 
 	public abstract Stream<ISpriteAnimation> animations();
 
-	public void selectAnimation(K key) {
+	public abstract SPRITE currentSprite(ENTITY entity);
+
+	public void selectAnimation(KEY key) {
 		animation(key).ensureRunning();
 		selectedKey = key;
 	}
 
-	public K selectedKey() {
+	public KEY selectedKey() {
 		return selectedKey;
 	}
 
@@ -53,15 +55,15 @@ public abstract class SpriteAnimationSet<K extends Enum<K>, S> {
 		return animation(selectedKey);
 	}
 
-	public void stop(K key) {
+	public void stop(KEY key) {
 		animation(key).stop();
 	}
 
-	public void run(K key) {
+	public void run(KEY key) {
 		animation(key).run();
 	}
 
-	public void restart(K key) {
+	public void restart(KEY key) {
 		animation(key).restart();
 	}
 
