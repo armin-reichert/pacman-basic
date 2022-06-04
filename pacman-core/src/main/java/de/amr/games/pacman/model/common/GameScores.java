@@ -35,6 +35,7 @@ import java.util.Properties;
 
 import de.amr.games.pacman.event.GameEvent;
 import de.amr.games.pacman.event.GameEventing;
+import de.amr.games.pacman.lib.Score;
 import de.amr.games.pacman.event.GameEventType;
 
 /**
