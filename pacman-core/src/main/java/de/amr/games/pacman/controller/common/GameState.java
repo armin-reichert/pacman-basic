@@ -158,6 +158,8 @@ public enum GameState implements FsmState<GameModel> {
 			timer.start();
 			game.setLevel(game.level.number + 1);
 			game.resetGuys();
+			game.ghosts().forEach(Ghost::hide);
+			game.pac.hide();
 		}
 
 		@Override

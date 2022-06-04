@@ -234,7 +234,7 @@ public class TimedSeq<T> {
 			} else if (repetitions != INDEFINITE) {
 				// last loop complete
 				complete = true;
-				stop();
+				running = false;
 			} else {
 				loopIndex = 0;
 				frameIndex = 0;
@@ -293,6 +293,7 @@ public class TimedSeq<T> {
 
 	public void ensureRunning() {
 		if (!running) {
+			complete = false;
 			running = true;
 		}
 	}
