@@ -38,8 +38,6 @@ import static de.amr.games.pacman.model.common.actors.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.model.common.actors.GhostState.LOCKED;
 import static de.amr.games.pacman.model.common.world.World.HTS;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -110,7 +108,7 @@ public abstract class GameModel {
 	public int ghostBounty;
 
 	/** List of collected level symbols. */
-	public List<Integer> levelCounter = new ArrayList<>();
+	public LevelCounter levelCounter = new LevelCounter(7);
 
 	/** Counter used by ghost house logic. */
 	public int globalDotCounter;

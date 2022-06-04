@@ -342,10 +342,7 @@ public class MsPacManGame extends GameModel {
 			throw new IllegalArgumentException("Level number must be at least 1, but is: " + levelNumber);
 		}
 		level = createLevel(levelNumber);
-		levelCounter.add(level.bonusSymbol);
-		if (levelCounter.size() == 8) {
-			levelCounter.remove(0);
-		}
+		levelCounter.addSymbol(level.bonusSymbol);
 		initGhosts(level);
 		ghostBounty = GameModel.FIRST_GHOST_BOUNTY;
 		score.gameScore().levelNumber = levelNumber;

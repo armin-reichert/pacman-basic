@@ -180,10 +180,7 @@ public class PacManGame extends GameModel {
 	@Override
 	public void setLevel(int levelNumber) {
 		level = createLevel(levelNumber);
-		levelCounter.add(level.bonusSymbol);
-		if (levelCounter.size() == 8) {
-			levelCounter.remove(0);
-		}
+		levelCounter.addSymbol(level.bonusSymbol);
 		initGhosts(level);
 		bonus.init();
 		ghostBounty = GameModel.FIRST_GHOST_BOUNTY;
