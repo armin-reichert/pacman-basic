@@ -28,11 +28,11 @@ package de.amr.games.pacman.lib;
  */
 public class SpriteAnimation<S> implements ISpriteAnimation {
 
-	private final TimedSeq<S> ts;
+	private final GenericAnimation<S> ts;
 
 	@SuppressWarnings("unchecked")
 	public SpriteAnimation(S... sprites) {
-		ts = new TimedSeq<>(sprites);
+		ts = new GenericAnimation<>(sprites);
 	}
 
 	@Override

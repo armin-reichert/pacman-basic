@@ -28,7 +28,7 @@ package de.amr.games.pacman.lib;
  * 
  * @author Armin Reichert
  */
-public class TimedSeq<T> {
+public class GenericAnimation<T> {
 
 	public static int INDEFINITE = -1;
 
@@ -40,18 +40,18 @@ public class TimedSeq<T> {
 	 * @return the animation
 	 */
 	@SafeVarargs
-	public static <TT> TimedSeq<TT> of(TT... things) {
+	public static <TT> GenericAnimation<TT> of(TT... things) {
 		if (things.length == 0) {
 			throw new IllegalArgumentException("Sequence must have at least contain one thing");
 		}
-		return new TimedSeq<>(things);
+		return new GenericAnimation<>(things);
 	}
 
 	/**
 	 * @return an endless animation of alternating true/false values
 	 */
-	public static TimedSeq<Boolean> pulse() {
-		return TimedSeq.of(true, false).endless();
+	public static GenericAnimation<Boolean> pulse() {
+		return GenericAnimation.of(true, false).endless();
 	}
 
 	protected T[] things;
@@ -68,7 +68,7 @@ public class TimedSeq<T> {
 	protected Runnable onStart;
 
 	@SafeVarargs
-	public TimedSeq(T... things) {
+	public GenericAnimation(T... things) {
 		if (things.length == 0) {
 			throw new IllegalArgumentException("Sequence must have at least contain one thing");
 		}
@@ -83,7 +83,7 @@ public class TimedSeq<T> {
 	 * 
 	 * @return the animation
 	 */
-	public TimedSeq<T> reset() {
+	public GenericAnimation<T> reset() {
 		delayRemainingTicks = delay;
 		totalRunningTicks = 0;
 		frameRunningTicks = 0;
@@ -98,7 +98,7 @@ public class TimedSeq<T> {
 	 * @param code code to be run when the animation starts
 	 * @return the animation
 	 */
-	public TimedSeq<T> onStart(Runnable code) {
+	public GenericAnimation<T> onStart(Runnable code) {
 		onStart = code;
 		return this;
 	}
@@ -109,7 +109,7 @@ public class TimedSeq<T> {
 	 * @param ticks frame ticks
 	 * @return the animation
 	 */
-	public TimedSeq<T> frameDuration(long ticks) {
+	public GenericAnimation<T> frameDuration(long ticks) {
 		frameDurationTicks = ticks;
 		return this;
 	}
@@ -127,7 +127,7 @@ public class TimedSeq<T> {
 	 * @param ticks number of ticks before the animation starts
 	 * @return the animation
 	 */
-	public TimedSeq<T> delay(long ticks) {
+	public GenericAnimation<T> delay(long ticks) {
 		delay = delayRemainingTicks = ticks;
 		return this;
 	}
@@ -145,7 +145,7 @@ public class TimedSeq<T> {
 	 * @param n number of times the animation is repeated
 	 * @return the animation
 	 */
-	public TimedSeq<T> repetitions(int n) {
+	public GenericAnimation<T> repetitions(int n) {
 		repetitions = n;
 		return this;
 	}
@@ -155,7 +155,7 @@ public class TimedSeq<T> {
 	 * 
 	 * @return the animation
 	 */
-	public TimedSeq<T> endless() {
+	public GenericAnimation<T> endless() {
 		repetitions = INDEFINITE;
 		return this;
 	}
@@ -165,7 +165,7 @@ public class TimedSeq<T> {
 	 * 
 	 * @return the animation
 	 */
-	public TimedSeq<T> restart() {
+	public GenericAnimation<T> restart() {
 		reset();
 		run();
 		return this;
@@ -176,7 +176,7 @@ public class TimedSeq<T> {
 	 * 
 	 * @return the animation
 	 */
-	public TimedSeq<T> run() {
+	public GenericAnimation<T> run() {
 		running = true;
 		return this;
 	}
@@ -186,7 +186,7 @@ public class TimedSeq<T> {
 	 * 
 	 * @return the animation
 	 */
-	public TimedSeq<T> stop() {
+	public GenericAnimation<T> stop() {
 		running = false;
 		return this;
 	}

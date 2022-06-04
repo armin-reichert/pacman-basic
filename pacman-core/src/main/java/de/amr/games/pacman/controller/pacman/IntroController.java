@@ -42,7 +42,7 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.Fsm;
 import de.amr.games.pacman.lib.FsmState;
 import de.amr.games.pacman.lib.TickTimer;
-import de.amr.games.pacman.lib.TimedSeq;
+import de.amr.games.pacman.lib.GenericAnimation;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.GhostState;
 import de.amr.games.pacman.model.common.actors.Pac;
@@ -73,8 +73,8 @@ public class IntroController extends Fsm<State, Context> {
 	}
 
 	public static class Context {
-		public final TimedSeq<Boolean> fastBlinking = TimedSeq.pulse().frameDuration(10);
-		public final TimedSeq<Boolean> slowBlinking = TimedSeq.pulse().frameDuration(30);
+		public final GenericAnimation<Boolean> fastBlinking = GenericAnimation.pulse().frameDuration(10);
+		public final GenericAnimation<Boolean> slowBlinking = GenericAnimation.pulse().frameDuration(30);
 		public final String nicknames[] = { "Blinky", "Pinky", "Inky", "Clyde" };
 		public final String characters[] = { "SHADOW", "SPEEDY", "BASHFUL", "POKEY" };
 		public final boolean[] pictureVisible = { false, false, false, false };
