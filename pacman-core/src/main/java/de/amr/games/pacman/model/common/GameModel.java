@@ -137,7 +137,7 @@ public abstract class GameModel {
 		return level.world;
 	}
 
-	public abstract Scores scores();
+	public abstract GameScores scores();
 
 	public void reset() {
 		lives = INITIAL_LIFES;

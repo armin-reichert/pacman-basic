@@ -40,23 +40,7 @@ import de.amr.games.pacman.event.GameEventType;
 /**
  * @author Armin Reichert
  */
-public class Scores {
-
-	public static class Score {
-		public int points;
-		public int levelNumber;
-		public LocalDate date;
-
-		public Score() {
-			reset();
-		}
-
-		public void reset() {
-			points = 0;
-			levelNumber = 1;
-			date = LocalDate.now();
-		}
-	}
+public class GameScores {
 
 	private static void loadFromFile(Score score, File file) {
 		try (var in = new FileInputStream(file)) {
@@ -82,7 +66,7 @@ public class Scores {
 	private final Score hiscore;
 	private boolean enabled;
 
-	public Scores(GameModel game, File hiscoreFile) {
+	public GameScores(GameModel game, File hiscoreFile) {
 		this.game = game;
 		this.hiscoreFile = hiscoreFile;
 		score = new Score();
