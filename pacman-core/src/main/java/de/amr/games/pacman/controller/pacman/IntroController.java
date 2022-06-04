@@ -41,8 +41,8 @@ import de.amr.games.pacman.controller.pacman.IntroController.State;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.Fsm;
 import de.amr.games.pacman.lib.FsmState;
-import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.GenericAnimation;
+import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.GhostState;
 import de.amr.games.pacman.model.common.actors.Pac;
@@ -73,6 +73,7 @@ public class IntroController extends Fsm<State, Context> {
 	}
 
 	public static class Context {
+		public final double speed = 1.25;
 		public final GenericAnimation<Boolean> fastBlinking = GenericAnimation.pulse().frameDuration(10);
 		public final GenericAnimation<Boolean> slowBlinking = GenericAnimation.pulse().frameDuration(30);
 		public final String nicknames[] = { "Blinky", "Pinky", "Inky", "Clyde" };
@@ -129,7 +130,7 @@ public class IntroController extends Fsm<State, Context> {
 						timer.setDurationIndefinite();
 						timer.start();
 					}
-				} else if (timer.atSecond(2.75)) {
+				} else if (timer.atSecond(2.5)) {
 					$.fastBlinking.restart();
 					$.fastBlinking.advance();
 					controller.changeState(State.SHOWING_POINTS);
@@ -152,14 +153,14 @@ public class IntroController extends Fsm<State, Context> {
 				timer.setDurationIndefinite();
 				timer.start();
 				$.pacMan.show();
-				$.pacMan.setAbsSpeed(1);
+				$.pacMan.setAbsSpeed($.speed);
 				$.pacMan.setPosition(t(ArcadeWorld.TILES_X), t(20));
 				$.pacMan.setMoveDir(Direction.LEFT);
 				for (Ghost ghost : $.ghosts) {
 					ghost.position = $.pacMan.position.plus(24 + ghost.id * 16, 0);
 					ghost.setWishDir(Direction.LEFT);
 					ghost.setMoveDir(Direction.LEFT);
-					ghost.setAbsSpeed(1.05);
+					ghost.setAbsSpeed($.speed * 1.05);
 					ghost.show();
 					ghost.state = GhostState.HUNTING_PAC;
 				}
@@ -203,7 +204,7 @@ public class IntroController extends Fsm<State, Context> {
 				}
 				if (timer.tick() == 8) {
 					$.pacMan.setMoveDir(Direction.RIGHT);
-					$.pacMan.setAbsSpeed(1);
+					$.pacMan.setAbsSpeed($.speed);
 				}
 				if ($.pacMan.position.x > t(29)) {
 					$.slowBlinking.restart();
@@ -224,7 +225,7 @@ public class IntroController extends Fsm<State, Context> {
 				// After some time, Pac-Man and the surviving ghosts get visible and move again
 				if (timer.tick() - $.ghostKilledTime == sec_to_ticks(1)) {
 					$.pacMan.show();
-					$.pacMan.setAbsSpeed(1.0);
+					$.pacMan.setAbsSpeed($.speed);
 					for (Ghost ghost : $.ghosts) {
 						if (ghost.state == GhostState.DEAD) {
 							ghost.hide();
