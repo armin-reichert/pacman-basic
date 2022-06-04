@@ -75,7 +75,7 @@ public class GameScores {
 		loadFromFile(hiscore, hiscoreFile);
 	}
 
-	public Score score() {
+	public Score gameScore() {
 		return score;
 	}
 

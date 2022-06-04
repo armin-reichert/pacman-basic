@@ -42,8 +42,8 @@ import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
-import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.GameScores;
+import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.Pac;
 import de.amr.games.pacman.model.common.world.ArcadeWorld;
@@ -181,10 +181,13 @@ public class PacManGame extends GameModel {
 	public void setLevel(int levelNumber) {
 		level = createLevel(levelNumber);
 		levelCounter.add(level.bonusSymbol);
+		if (levelCounter.size() == 8) {
+			levelCounter.remove(0);
+		}
 		initGhosts(level);
 		bonus.init();
 		ghostBounty = GameModel.FIRST_GHOST_BOUNTY;
-		score.score().levelNumber = levelNumber;
+		score.gameScore().levelNumber = levelNumber;
 	}
 
 	private void initGhosts(GameLevel level) {
