@@ -38,7 +38,7 @@ import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
-import de.amr.games.pacman.model.common.ScoreSupport;
+import de.amr.games.pacman.model.common.Scores;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.Pac;
 import de.amr.games.pacman.model.common.world.ArcadeWorld;
@@ -287,7 +287,7 @@ public class MsPacManGame extends GameModel {
 		return level;
 	}
 
-	private final ScoreSupport score;
+	private final Scores score;
 	private final MovingBonus movingBonus;
 
 	/**
@@ -317,7 +317,7 @@ public class MsPacManGame extends GameModel {
 		super(GameVariant.MS_PACMAN, new Pac("Ms. Pac-Man"), new Ghost(RED_GHOST, "Blinky"), new Ghost(PINK_GHOST, "Pinky"),
 				new Ghost(CYAN_GHOST, "Inky"), new Ghost(ORANGE_GHOST, "Sue"));
 		movingBonus = new MovingBonus();
-		score = new ScoreSupport(this, new File(System.getProperty("user.home"), "highscore-ms_pacman.xml"));
+		score = new Scores(this, new File(System.getProperty("user.home"), "highscore-ms_pacman.xml"));
 		setLevel(1);
 	}
 
@@ -327,7 +327,7 @@ public class MsPacManGame extends GameModel {
 	}
 
 	@Override
-	public ScoreSupport scoring() {
+	public Scores scores() {
 		return score;
 	}
 
@@ -337,14 +337,15 @@ public class MsPacManGame extends GameModel {
 	}
 
 	@Override
-	public void setLevel(int n) {
-		if (n < 1) {
-			throw new IllegalArgumentException("Level number must be at least 1, but is: " + n);
+	public void setLevel(int levelNumber) {
+		if (levelNumber < 1) {
+			throw new IllegalArgumentException("Level number must be at least 1, but is: " + levelNumber);
 		}
-		level = createLevel(n);
+		level = createLevel(levelNumber);
 		levelCounter.add(level.bonusSymbol);
 		initGhosts(level);
 		ghostBounty = GameModel.FIRST_GHOST_BOUNTY;
+		score.score().levelNumber = levelNumber;
 	}
 
 	private void initGhosts(GameLevel level) {

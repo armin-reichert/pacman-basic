@@ -105,7 +105,7 @@ public class StaticBonus extends Entity implements Bonus {
 		case EDIBLE -> {
 			if (game.pac.tile().equals(tile())) {
 				log("%s found bonus: %s", game.pac.name, this);
-				game.scoring().addPoints(value());
+				game.scores().addPoints(value());
 				eat(sec_to_ticks(2));
 				GameEventing.publish(GameEventType.BONUS_GETS_EATEN, tile());
 			} else {

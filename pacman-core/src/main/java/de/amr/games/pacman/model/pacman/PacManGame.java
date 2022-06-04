@@ -43,7 +43,7 @@ import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
-import de.amr.games.pacman.model.common.ScoreSupport;
+import de.amr.games.pacman.model.common.Scores;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.Pac;
 import de.amr.games.pacman.model.common.world.ArcadeWorld;
@@ -153,7 +153,7 @@ public class PacManGame extends GameModel {
 	// in the red zone, chasing or scattering ghosts can not move upwards
 	private static final List<V2i> RED_ZONE = List.of(v(12, 14), v(15, 14), v(12, 26), v(15, 26));
 
-	private final ScoreSupport score;
+	private final Scores score;
 	private final StaticBonus bonus;
 
 	public PacManGame() {
@@ -163,12 +163,12 @@ public class PacManGame extends GameModel {
 			ghost.upwardsBlockedTiles = RED_ZONE;
 		}
 		bonus = new StaticBonus(new V2d(v(13, 20).scaled(TS)).plus(HTS, 0));
-		score = new ScoreSupport(this, new File(System.getProperty("user.home"), "highscore-pacman.xml"));
+		score = new Scores(this, new File(System.getProperty("user.home"), "highscore-pacman.xml"));
 		setLevel(1);
 	}
 
 	@Override
-	public ScoreSupport scoring() {
+	public Scores scores() {
 		return score;
 	}
 
@@ -178,12 +178,13 @@ public class PacManGame extends GameModel {
 	}
 
 	@Override
-	public void setLevel(int n) {
-		level = createLevel(n);
+	public void setLevel(int levelNumber) {
+		level = createLevel(levelNumber);
 		levelCounter.add(level.bonusSymbol);
 		initGhosts(level);
 		bonus.init();
 		ghostBounty = GameModel.FIRST_GHOST_BOUNTY;
+		score.score().levelNumber = levelNumber;
 	}
 
 	private void initGhosts(GameLevel level) {
