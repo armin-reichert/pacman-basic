@@ -74,8 +74,7 @@ public class IntroController extends Fsm<State, Context> {
 	public static class Context {
 		public final int left = 4;
 		public final double speed = 1.15;
-		public final GenericAnimation<Boolean> fastBlinking = GenericAnimation.pulse().frameDuration(10);
-		public final GenericAnimation<Boolean> slowBlinking = GenericAnimation.pulse().frameDuration(30);
+		public final GenericAnimation<Boolean> blinking = GenericAnimation.pulse().frameDuration(10);
 		public final String nicknames[] = { "Blinky", "Pinky", "Inky", "Clyde" };
 		public final String characters[] = { "SHADOW", "SPEEDY", "BASHFUL", "POKEY" };
 		public final boolean[] pictureVisible = { false, false, false, false };
@@ -131,8 +130,8 @@ public class IntroController extends Fsm<State, Context> {
 						timer.start();
 					}
 				} else if (timer.atSecond(2.5)) {
-					$.fastBlinking.restart();
-					$.fastBlinking.advance();
+					$.blinking.restart();
+					$.blinking.advance();
 					controller.changeState(State.SHOWING_POINTS);
 				}
 			}
@@ -176,7 +175,7 @@ public class IntroController extends Fsm<State, Context> {
 				for (Ghost ghost : $.ghosts) {
 					ghost.move();
 				}
-				$.fastBlinking.advance();
+				$.blinking.advance();
 			}
 		},
 
@@ -233,38 +232,37 @@ public class IntroController extends Fsm<State, Context> {
 					$.pacMan.show();
 					$.pacMan.setAbsSpeed($.speed);
 					for (Ghost ghost : $.ghosts) {
-						if (ghost.state == GhostState.DEAD) {
-							if (ghost.id < 3) {
-								ghost.hide();
-							}
-						} else {
+						if (ghost.state != GhostState.DEAD) {
 							ghost.show();
 							ghost.setAbsSpeed(0.5 * $.speed);
+						} else {
+							ghost.hide();
 						}
 					}
-					$.ghostKilledTime = timer.tick();
 				}
 
 				$.pacMan.move();
 				for (Ghost ghost : $.ghosts) {
 					ghost.move();
 				}
-				$.fastBlinking.advance();
+				$.blinking.advance();
 			}
 		},
 
 		READY_TO_PLAY {
 			@Override
 			public void onUpdate(Context $) {
-				if (timer.atSecond(1) && controller.gameController.credit() == 0) {
-					controller.gameController.changeState(GameState.READY);
-					return;
+				if (timer.atSecond(1)) {
+					$.ghosts[3].hide();
+					if (controller.gameController.credit() == 0) {
+						controller.gameController.changeState(GameState.READY);
+						return;
+					}
 				}
 				if (timer.atSecond(5)) {
 					controller.gameController.returnToIntro();
 					return;
 				}
-				$.slowBlinking.advance();
 			}
 		};
 
