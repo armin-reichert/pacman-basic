@@ -80,7 +80,7 @@ public class Intermission3Controller extends Fsm<State, Context> {
 		FLAP {
 			@Override
 			public void onEnter(Context $) {
-				timer.setDurationIndefinite();
+				timer.setIndefinite();
 				timer.start();
 				if (controller.playIntermissionSound != null) {
 					controller.playIntermissionSound.run();
@@ -113,7 +113,7 @@ public class Intermission3Controller extends Fsm<State, Context> {
 		ACTION {
 			@Override
 			public void onEnter(Context $) {
-				timer.setDurationIndefinite();
+				timer.setIndefinite();
 				timer.start();
 
 				$.pacMan.setMoveDir(Direction.RIGHT);
@@ -165,7 +165,7 @@ public class Intermission3Controller extends Fsm<State, Context> {
 		DONE {
 			@Override
 			public void onEnter(Context $) {
-				timer.setDurationSeconds(3);
+				timer.setSeconds(3);
 				timer.start();
 			}
 

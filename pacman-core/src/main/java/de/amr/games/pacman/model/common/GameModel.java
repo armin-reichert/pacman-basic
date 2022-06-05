@@ -154,7 +154,7 @@ public abstract class GameModel {
 		pac.killed = false;
 		pac.restingCountdown = 0;
 		pac.starvingTicks = 0;
-		pac.powerTimer.setDurationIndefinite();
+		pac.powerTimer.setIndefinite();
 
 		for (Ghost ghost : ghosts) {
 			ghost.placeAt(ghost.homeTile, HTS, 0);
@@ -379,7 +379,7 @@ public abstract class GameModel {
 	private void onPlayerLostPower() {
 		log("%s lost power, timer=%s", pac.name, pac.powerTimer);
 		/* TODO hack: leave state EXPIRED to avoid repetitions. */
-		pac.powerTimer.setDurationIndefinite();
+		pac.powerTimer.setIndefinite();
 		huntingTimer.start();
 		ghosts(FRIGHTENED).forEach(ghost -> ghost.state = HUNTING_PAC);
 		GameEventing.publish(GameEventType.PLAYER_LOSES_POWER, pac.tile());
@@ -424,7 +424,7 @@ public abstract class GameModel {
 
 	private void onPlayerGotPower() {
 		huntingTimer.stop();
-		pac.powerTimer.setDurationSeconds(level.ghostFrightenedSeconds);
+		pac.powerTimer.setSeconds(level.ghostFrightenedSeconds);
 		pac.powerTimer.start();
 		log("%s power timer started: %s", pac.name, pac.powerTimer);
 		ghosts(HUNTING_PAC).forEach(ghost -> {

@@ -75,7 +75,7 @@ public class TickTimer {
 
 	public TickTimer(String name) {
 		this.name = name;
-		setDurationIndefinite();
+		setIndefinite();
 	}
 
 	@Override
@@ -95,9 +95,8 @@ public class TickTimer {
 	 * Sets timer to given duration and resets timer state to {@link State#READY}.
 	 * 
 	 * @param ticks timer duration in ticks
-	 * @return itself
 	 */
-	public void setDurationTicks(long ticks) {
+	public void setTicks(long ticks) {
 		duration = ticks;
 		tick = 0;
 		state = READY;
@@ -105,15 +104,20 @@ public class TickTimer {
 		fireEvent(new TickTimerEvent(Type.RESET, ticks));
 	}
 
-	public void setDurationSeconds(double seconds) {
-		setDurationTicks(sec_to_ticks(seconds));
+	/**
+	 * Sets the timer duration in seconds.
+	 * 
+	 * @param seconds number of seconds
+	 */
+	public void setSeconds(double seconds) {
+		setTicks(sec_to_ticks(seconds));
 	}
 
 	/**
-	 * Reset the time to run {@link #INDEFINITE}.
+	 * Sets the timer to run forever.
 	 */
-	public void setDurationIndefinite() {
-		setDurationTicks(INDEFINITE);
+	public void setIndefinite() {
+		setTicks(INDEFINITE);
 	}
 
 	public void addEventListener(Consumer<TickTimerEvent> subscriber) {
@@ -135,27 +139,41 @@ public class TickTimer {
 		}
 	}
 
+	/**
+	 * Starts the timer if it is not already running.
+	 */
 	public void start() {
-		if (state == RUNNING) {
-			trace("%s not started, already running", this);
-			return;
-		}
-		if (state == STOPPED || state == READY) {
+		switch (state) {
+		case STOPPED, READY -> {
 			state = RUNNING;
 			trace("%s started", this);
 			fireEvent(new TickTimerEvent(Type.STARTED));
-			return;
 		}
-		throw new IllegalStateException(String.format("Timer %s cannot be started when in state %s", this, state));
+		case RUNNING -> {
+			trace("%s not started, already running", this);
+		}
+		case EXPIRED -> {
+			trace("%s not started, timer has expired", this);
+		}
+		}
 	}
 
 	public void stop() {
-		if (state == STOPPED) {
-			trace("%s not stopped, already stopped", this);
-		} else if (state == RUNNING) {
+		switch (state) {
+		case STOPPED -> {
+			trace("%s already topped", this);
+		}
+		case RUNNING -> {
 			state = STOPPED;
 			trace("%s stopped", this);
 			fireEvent(new TickTimerEvent(Type.STOPPED));
+		}
+		case READY -> {
+			trace("%s not stopped, was not running", this);
+		}
+		case EXPIRED -> {
+			trace("%s not stopped, has expired", this);
+		}
 		}
 	}
 

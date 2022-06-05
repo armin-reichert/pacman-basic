@@ -46,7 +46,7 @@ public enum GameState implements FsmState<GameModel> {
 	INTRO {
 		@Override
 		public void onEnter(GameModel game) {
-			timer.setDurationIndefinite();
+			timer.setIndefinite();
 			timer.start();
 			game.reset();
 			controller.setGameRunning(false);
@@ -73,7 +73,7 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void onEnter(GameModel game) {
 			double readySeconds = controller.isGameRunning() || controller.credit() == 0 ? 2 : 5;
-			timer.setDurationSeconds(readySeconds);
+			timer.setSeconds(readySeconds);
 			timer.start();
 			game.resetGuys();
 		}
@@ -127,7 +127,7 @@ public enum GameState implements FsmState<GameModel> {
 			}
 			game.pac.setAbsSpeed(0);
 			game.ghosts().forEach(Ghost::hide);
-			timer.setDurationIndefinite();
+			timer.setIndefinite();
 			timer.start();
 		}
 
@@ -148,7 +148,7 @@ public enum GameState implements FsmState<GameModel> {
 	LEVEL_STARTING {
 		@Override
 		public void onEnter(GameModel game) {
-			timer.setDurationIndefinite();
+			timer.setIndefinite();
 			timer.start();
 			game.setLevel(game.level.number + 1);
 			game.resetGuys();
@@ -167,7 +167,7 @@ public enum GameState implements FsmState<GameModel> {
 	PACMAN_DYING {
 		@Override
 		public void onEnter(GameModel game) {
-			timer.setDurationIndefinite();
+			timer.setIndefinite();
 			timer.start();
 			game.pac.setAbsSpeed(0);
 			game.ghosts(FRIGHTENED).forEach(ghost -> ghost.state = HUNTING_PAC);
@@ -193,7 +193,7 @@ public enum GameState implements FsmState<GameModel> {
 	GHOST_DYING {
 		@Override
 		public void onEnter(GameModel game) {
-			timer.setDurationSeconds(1);
+			timer.setSeconds(1);
 			timer.start();
 			game.pac.hide();
 		}
@@ -218,7 +218,7 @@ public enum GameState implements FsmState<GameModel> {
 	GAME_OVER {
 		@Override
 		public void onEnter(GameModel game) {
-			timer.setDurationSeconds(5);
+			timer.setSeconds(5);
 			timer.start();
 			game.ghosts().forEach(ghost -> ghost.setAbsSpeed(0));
 			game.ghosts().forEach(Ghost::show);
@@ -240,7 +240,7 @@ public enum GameState implements FsmState<GameModel> {
 	INTERMISSION {
 		@Override
 		public void onEnter(GameModel game) {
-			timer.setDurationIndefinite();
+			timer.setIndefinite();
 			timer.start(); // UI triggers state timeout
 		}
 
@@ -255,7 +255,7 @@ public enum GameState implements FsmState<GameModel> {
 	INTERMISSION_TEST {
 		@Override
 		public void onEnter(GameModel game) {
-			timer.setDurationIndefinite();
+			timer.setIndefinite();
 			timer.start();
 			log("Test intermission scene #%d", game.intermissionTestNumber);
 		}
@@ -265,7 +265,7 @@ public enum GameState implements FsmState<GameModel> {
 			if (timer.hasExpired()) {
 				if (game.intermissionTestNumber < 3) {
 					++game.intermissionTestNumber;
-					timer.setDurationIndefinite();
+					timer.setIndefinite();
 					timer.start();
 					log("Test intermission scene #%d", game.intermissionTestNumber);
 					// This is a hack to trigger the UI to update its current scene
