@@ -124,15 +124,12 @@ public class IntroController extends Fsm<State, Context> {
 				} else if (timer.atSecond(1.5)) {
 					$.nicknameVisible[$.ghostIndex] = true;
 				} else if (timer.atSecond(2.0)) {
-					if ($.ghostIndex < 3) {
-						$.ghostIndex++;
-						$.pictureVisible[$.ghostIndex] = true;
-						timer.setDurationIndefinite();
-						timer.start();
+					if (++$.ghostIndex < 4) {
+						timer.setDurationIndefinite(); // start over
 					}
 				} else if (timer.atSecond(2.5)) {
 					$.blinking.restart();
-					$.blinking.advance();
+					$.blinking.advance(); // make energizer visible
 					controller.changeState(State.SHOWING_POINTS);
 				}
 			}
