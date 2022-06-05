@@ -160,22 +160,20 @@ public class TickTimer {
 	}
 
 	public void advance() {
-		if (state == READY) {
-			return; // TODO handle this properly
-		}
-		if (state == STOPPED || state == EXPIRED) {
-			return;
-		}
-		++tick;
-		if (tick == duration) {
-			expire();
+		if (state == RUNNING) {
+			++tick;
+			if (tick == duration) {
+				expire();
+			}
 		}
 	}
 
 	public void expire() {
-		state = EXPIRED;
-		trace("%s expired", this);
-		fireEvent(new TickTimerEvent(Type.EXPIRED, tick));
+		if (state != EXPIRED) {
+			state = EXPIRED;
+			trace("%s expired", this);
+			fireEvent(new TickTimerEvent(Type.EXPIRED, tick));
+		}
 	}
 
 	public boolean hasExpired() {

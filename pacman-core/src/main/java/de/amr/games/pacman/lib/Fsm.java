@@ -29,6 +29,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
 
+import de.amr.games.pacman.lib.TickTimer.State;
+
 /**
  * A finite-state machine.
  * <p>
@@ -46,11 +48,12 @@ import java.util.function.BiConsumer;
  */
 public abstract class Fsm<STATE extends FsmState<CONTEXT>, CONTEXT> {
 
-	public boolean logging;
+	public boolean logging = false;
 
 	private void fsm_log(String msg, Object... args) {
 		if (logging) {
-			log(msg, args);
+			String formatted = msg.formatted(args);
+			log("%s: %s", name, formatted);
 		}
 	}
 
@@ -70,7 +73,7 @@ public abstract class Fsm<STATE extends FsmState<CONTEXT>, CONTEXT> {
 
 	@Override
 	public String toString() {
-		return "FiniteStateMachine[%s: state=%s prev=%s]".formatted(name, currentState, prevState);
+		return "FSM[name=%s, state=%s, prev=%s]".formatted(name, currentState, prevState);
 	}
 
 	/**
@@ -132,20 +135,6 @@ public abstract class Fsm<STATE extends FsmState<CONTEXT>, CONTEXT> {
 	}
 
 	/**
-	 * Updates this FSM's state. Runs the {@link State#onUpdate} hook method (if defined) of the current state and
-	 * advances the state timer.
-	 */
-	public void update() {
-		try {
-			currentState.onUpdate(context());
-			currentState.timer().advance();
-		} catch (Exception x) {
-			x.printStackTrace();
-			fsm_log("%s: Error updating state %s, %s", name, currentState, currentState.timer());
-		}
-	}
-
-	/**
 	 * Changes the machine's current state to the new state. Tne exit hook method of the current state is executed before
 	 * entering the new state. The new state's entry hook method is executed and its timer is reset to
 	 * {@link TickTimer#INDEFINITE}. After the state change, an event is published.
@@ -158,16 +147,17 @@ public abstract class Fsm<STATE extends FsmState<CONTEXT>, CONTEXT> {
 		if (newState == currentState) {
 			throw new IllegalStateException("FiniteStateMachine: Self loop in state " + currentState);
 		}
+		var context = context();
 		if (currentState != null) {
-			currentState.onExit(context());
-			fsm_log("%s: Exit  state %s %s", name, currentState, currentState.timer());
+			currentState.onExit(context);
+			fsm_log("Exit  state %s timer=%s", currentState, currentState.timer());
 		}
 		prevState = currentState;
 		currentState = newState;
 		currentState.timer().setDurationIndefinite();
-		currentState.timer().start();
-		currentState.onEnter(context());
-		fsm_log("%s: Enter state %s %s", name, currentState, currentState.timer());
+		fsm_log("Enter state %s timer=%s", currentState, currentState.timer());
+		currentState.onEnter(context);
+		fsm_log("After Enter state %s timer=%s", currentState, currentState.timer());
 		stateChangeListeners.forEach(listener -> listener.accept(prevState, currentState));
 	}
 
@@ -178,7 +168,29 @@ public abstract class Fsm<STATE extends FsmState<CONTEXT>, CONTEXT> {
 		if (prevState == null) {
 			throw new IllegalStateException("State machine cannot resume previous state because there is none");
 		}
-		fsm_log("%s: Resume state %s, %s", name, prevState, prevState.timer());
+		fsm_log("Resume state %s, timer= %s", prevState, prevState.timer());
 		changeState(prevState);
+	}
+
+	/**
+	 * Updates this FSM's current state.
+	 * <p>
+	 * Runs the {@link State#onUpdate} hook method (if defined) of the current state and advances the state timer.
+	 */
+	public void update() {
+		try {
+			currentState.onUpdate(context());
+		} catch (Exception x) {
+			fsm_log("Error updating state=%s, timer=%s", currentState, currentState.timer());
+			x.printStackTrace();
+		}
+		switch (currentState.timer().state()) {
+		case READY -> {
+			currentState.timer().start(); // TODO check this
+		}
+		default -> {
+			currentState.timer().advance();
+		}
+		}
 	}
 }

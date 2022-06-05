@@ -29,6 +29,7 @@ import static de.amr.games.pacman.model.common.actors.Ghost.PINK_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.RED_GHOST;
 import static de.amr.games.pacman.model.common.world.World.t;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -88,14 +89,13 @@ public class IntroController extends Fsm<State, Context> {
 
 	public enum State implements FsmState<Context> {
 
-		BEGIN {
+		START {
 			@Override
 			public void onEnter(Context $) {
-				for (int id = 0; id < 4; ++id) {
-					$.pictureVisible[id] = false;
-					$.nicknameVisible[id] = false;
-					$.characterVisible[id] = false;
-				}
+				$.ghostIndex = 0;
+				Arrays.fill($.pictureVisible, false);
+				Arrays.fill($.nicknameVisible, false);
+				Arrays.fill($.characterVisible, false);
 				$.pacMan = new Pac("Pac-Man");
 				$.ghosts = new Ghost[] { //
 						new Ghost(RED_GHOST, "Blinky"), //
@@ -108,17 +108,18 @@ public class IntroController extends Fsm<State, Context> {
 			@Override
 			public void onUpdate(Context $) {
 				if (timer.atSecond(1)) {
-					$.ghostIndex = 0;
-					$.pictureVisible[0] = true;
 					controller.changeState(State.PRESENTING_GHOSTS);
 				}
 			}
 		},
 
 		PRESENTING_GHOSTS {
+
 			@Override
 			public void onUpdate(Context $) {
-				if (timer.atSecond(1.0)) {
+				if (timer.atSecond(0)) {
+					$.pictureVisible[$.ghostIndex] = true;
+				} else if (timer.atSecond(1.0)) {
 					$.characterVisible[$.ghostIndex] = true;
 				} else if (timer.atSecond(1.5)) {
 					$.nicknameVisible[$.ghostIndex] = true;
