@@ -23,7 +23,6 @@ SOFTWARE.
  */
 package de.amr.games.pacman.controller.pacman;
 
-import static de.amr.games.pacman.lib.TickTimer.sec_to_ticks;
 import static de.amr.games.pacman.model.common.actors.Ghost.CYAN_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ORANGE_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.PINK_GHOST;
@@ -73,7 +72,8 @@ public class IntroController extends Fsm<State, Context> {
 	}
 
 	public static class Context {
-		public final double speed = 1.25;
+		public final int left = 4;
+		public final double speed = 1.15;
 		public final GenericAnimation<Boolean> fastBlinking = GenericAnimation.pulse().frameDuration(10);
 		public final GenericAnimation<Boolean> slowBlinking = GenericAnimation.pulse().frameDuration(30);
 		public final String nicknames[] = { "Blinky", "Pinky", "Inky", "Clyde" };
@@ -168,7 +168,7 @@ public class IntroController extends Fsm<State, Context> {
 
 			@Override
 			public void onUpdate(Context $) {
-				if ($.pacMan.position.x <= t(3)) {
+				if ($.pacMan.position.x <= t($.left)) {
 					controller.changeState(State.CHASING_GHOSTS);
 					return;
 				}
@@ -189,28 +189,33 @@ public class IntroController extends Fsm<State, Context> {
 					ghost.state = GhostState.FRIGHTENED;
 					ghost.setWishDir(Direction.RIGHT);
 					ghost.setMoveDir(Direction.RIGHT);
-					ghost.setAbsSpeed(0.6);
+					ghost.setAbsSpeed(0.5 * $.speed);
 				}
 				$.ghostKilledTime = timer.tick();
 			}
 
 			@Override
 			public void onUpdate(Context $) {
-				if (timer.tick() < 8) {
+
+				// When the last ghost has been killed, leave state
+				if (Stream.of($.ghosts).allMatch(ghost -> ghost.is(GhostState.DEAD))) {
+					$.pacMan.hide();
+					controller.changeState(READY_TO_PLAY);
+					return;
+				}
+
+				// TOO check this
+				int delay = 1;
+				if (timer.tick() < delay) {
 					for (Ghost ghost : $.ghosts) {
 						ghost.move();
 					}
 					return;
-				}
-				if (timer.tick() == 8) {
+				} else if (timer.tick() == delay) {
 					$.pacMan.setMoveDir(Direction.RIGHT);
 					$.pacMan.setAbsSpeed($.speed);
 				}
-				if ($.pacMan.position.x > t(29)) {
-					$.slowBlinking.restart();
-					controller.changeState(State.READY_TO_PLAY);
-					return;
-				}
+
 				// check if Pac-Man kills a ghost
 				Optional<Ghost> killedGhost = Stream.of($.ghosts).filter(ghost -> ghost.state != GhostState.DEAD)
 						.filter($.pacMan::sameTile).findFirst();
@@ -222,24 +227,24 @@ public class IntroController extends Fsm<State, Context> {
 					$.pacMan.setAbsSpeed(0);
 					Stream.of($.ghosts).forEach(ghost -> ghost.setAbsSpeed(0));
 				});
-				// After some time, Pac-Man and the surviving ghosts get visible and move again
-				if (timer.tick() - $.ghostKilledTime == sec_to_ticks(1)) {
+
+				// After 1 sec, Pac-Man and the surviving ghosts get visible again and move on
+				if (timer.tick() - $.ghostKilledTime == TickTimer.sec_to_ticks(1)) {
 					$.pacMan.show();
 					$.pacMan.setAbsSpeed($.speed);
 					for (Ghost ghost : $.ghosts) {
 						if (ghost.state == GhostState.DEAD) {
-							ghost.hide();
+							if (ghost.id < 3) {
+								ghost.hide();
+							}
 						} else {
 							ghost.show();
-							ghost.setAbsSpeed(0.6);
+							ghost.setAbsSpeed(0.5 * $.speed);
 						}
 					}
 					$.ghostKilledTime = timer.tick();
 				}
-				// When the last ghost has been killed, make Pac-Man invisible
-				if (Stream.of($.ghosts).allMatch(ghost -> ghost.state == GhostState.DEAD)) {
-					$.pacMan.hide();
-				}
+
 				$.pacMan.move();
 				for (Ghost ghost : $.ghosts) {
 					ghost.move();
@@ -251,7 +256,7 @@ public class IntroController extends Fsm<State, Context> {
 		READY_TO_PLAY {
 			@Override
 			public void onUpdate(Context $) {
-				if (controller.gameController.credit() == 0) {
+				if (timer.atSecond(1) && controller.gameController.credit() == 0) {
 					controller.gameController.changeState(GameState.READY);
 					return;
 				}
