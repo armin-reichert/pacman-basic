@@ -46,7 +46,6 @@ import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.GhostState;
 import de.amr.games.pacman.model.common.actors.Pac;
-import de.amr.games.pacman.model.common.world.ArcadeWorld;
 
 /**
  * Intro scene of the PacMan game.
@@ -151,7 +150,7 @@ public class IntroController extends Fsm<State, Context> {
 				timer.start();
 				$.pacMan.show();
 				$.pacMan.setAbsSpeed($.speed);
-				$.pacMan.setPosition(t(ArcadeWorld.TILES_X), t(20));
+				$.pacMan.setPosition(t(36), t(20));
 				$.pacMan.setMoveDir(Direction.LEFT);
 				for (Ghost ghost : $.ghosts) {
 					ghost.position = $.pacMan.position.plus(24 + ghost.id * 16, 0);
