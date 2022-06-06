@@ -47,7 +47,6 @@ import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEventing;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
-import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.GhostState;
@@ -148,7 +147,7 @@ public abstract class GameModel {
 		pac.visible = true;
 		pac.placeAt(v(13, 26), HTS, 0);
 		pac.setBothDirs(Direction.LEFT);
-		pac.velocity = V2d.NULL;
+		pac.setAbsSpeed(0);
 		pac.targetTile = null; // used in autopilot mode
 		pac.stuck = false;
 		pac.killed = false;
@@ -159,13 +158,13 @@ public abstract class GameModel {
 		for (Ghost ghost : ghosts) {
 			ghost.visible = true;
 			ghost.placeAt(ghost.homeTile, HTS, 0);
+			ghost.setAbsSpeed(0);
 			ghost.setBothDirs(switch (ghost.id) {
 			case RED_GHOST -> Direction.LEFT;
 			case PINK_GHOST -> Direction.DOWN;
 			case CYAN_GHOST, ORANGE_GHOST -> Direction.UP;
 			default -> null;
 			});
-			ghost.velocity = V2d.NULL;
 			ghost.targetTile = null;
 			ghost.stuck = false;
 			ghost.state = GhostState.LOCKED;
