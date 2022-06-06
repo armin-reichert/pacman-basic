@@ -145,9 +145,9 @@ public abstract class GameModel {
 	}
 
 	public void resetGuys() {
+		pac.visible = true;
 		pac.placeAt(v(13, 26), HTS, 0);
 		pac.setBothDirs(Direction.LEFT);
-		pac.show();
 		pac.velocity = V2d.NULL;
 		pac.targetTile = null; // used in autopilot mode
 		pac.stuck = false;
@@ -157,6 +157,7 @@ public abstract class GameModel {
 		pac.powerTimer.setIndefinite();
 
 		for (Ghost ghost : ghosts) {
+			ghost.visible = true;
 			ghost.placeAt(ghost.homeTile, HTS, 0);
 			ghost.setBothDirs(switch (ghost.id) {
 			case RED_GHOST -> Direction.LEFT;
@@ -164,7 +165,6 @@ public abstract class GameModel {
 			case CYAN_GHOST, ORANGE_GHOST -> Direction.UP;
 			default -> null;
 			});
-			ghost.show();
 			ghost.velocity = V2d.NULL;
 			ghost.targetTile = null;
 			ghost.stuck = false;
