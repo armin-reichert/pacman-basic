@@ -77,7 +77,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 	private boolean gameRunning;
 	private boolean autoMoving;
 	private final Consumer<Pac> autopilot = new Autopilot(this::game);
-	private Consumer<Pac> playerControl;
+	private Consumer<Pac> pacController;
 
 	public GameController(GameVariant variant) {
 		super(GameState.values());
@@ -114,7 +114,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 	}
 
 	public void steer(Pac player) {
-		Consumer<Pac> steering = autoMoving || credit == 0 ? autopilot : playerControl;
+		Consumer<Pac> steering = autoMoving || credit == 0 ? autopilot : pacController;
 		steering.accept(player);
 	}
 
@@ -145,12 +145,12 @@ public class GameController extends Fsm<GameState, GameModel> {
 		return autopilot;
 	}
 
-	public void setPlayerControl(Consumer<Pac> playerControl) {
-		this.playerControl = playerControl;
+	public void setPacController(Consumer<Pac> pacController) {
+		this.pacController = pacController;
 	}
 
-	public Consumer<Pac> playerControl() {
-		return playerControl;
+	public Consumer<Pac> pacController() {
+		return pacController;
 	}
 
 	private void selectGame(GameVariant variant) {
