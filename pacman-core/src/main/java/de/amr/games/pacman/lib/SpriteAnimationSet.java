@@ -43,12 +43,12 @@ public abstract class SpriteAnimationSet<ENTITY, KEY extends Enum<KEY>, SPRITE> 
 
 	public abstract SPRITE currentSprite(ENTITY entity);
 
-	public void selectAnimation(KEY key) {
-		animation(key).ensureRunning();
+	public void select(KEY key) {
 		selectedKey = key;
+		animation(key).ensureRunning();
 	}
 
-	public KEY selectedKey() {
+	public KEY selected() {
 		return selectedKey;
 	}
 

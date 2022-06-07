@@ -25,5 +25,5 @@ SOFTWARE.
 package de.amr.games.pacman.model.common.actors;
 
 public enum GhostAnimation {
-	COLOR, EYES, NUMBER, BLUE, FLASHING;
+	COLOR, EYES, VALUE, BLUE, FLASHING;
 }
