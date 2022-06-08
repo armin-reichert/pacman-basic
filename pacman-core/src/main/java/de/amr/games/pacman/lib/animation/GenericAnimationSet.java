@@ -33,13 +33,13 @@ import java.util.stream.Stream;
  * @param <KEY>    Key enum type
  * @param <SPRITE> Sprite type (Rectangle, Image)
  */
-public abstract class SpriteAnimationSet<ENTITY, KEY extends Enum<KEY>, SPRITE> {
+public abstract class GenericAnimationSet<ENTITY, KEY extends Enum<KEY>, SPRITE> {
 
 	protected KEY selectedKey;
 
-	public abstract ISpriteAnimation animation(KEY key);
+	public abstract AnimationMethods animation(KEY key);
 
-	public abstract Stream<ISpriteAnimation> animations();
+	public abstract Stream<AnimationMethods> animations();
 
 	public abstract SPRITE currentSprite(ENTITY entity);
 
@@ -52,7 +52,7 @@ public abstract class SpriteAnimationSet<ENTITY, KEY extends Enum<KEY>, SPRITE> 
 		return selectedKey;
 	}
 
-	public ISpriteAnimation selectedAnimation() {
+	public AnimationMethods selectedAnimation() {
 		return animation(selectedKey);
 	}
 
@@ -69,18 +69,18 @@ public abstract class SpriteAnimationSet<ENTITY, KEY extends Enum<KEY>, SPRITE> 
 	}
 
 	public void reset() {
-		animations().forEach(ISpriteAnimation::reset);
+		animations().forEach(AnimationMethods::reset);
 	}
 
 	public void stop() {
-		animations().forEach(ISpriteAnimation::stop);
+		animations().forEach(AnimationMethods::stop);
 	}
 
 	public void run() {
-		animations().forEach(ISpriteAnimation::run);
+		animations().forEach(AnimationMethods::run);
 	}
 
 	public void restart() {
-		animations().forEach(ISpriteAnimation::restart);
+		animations().forEach(AnimationMethods::restart);
 	}
 }

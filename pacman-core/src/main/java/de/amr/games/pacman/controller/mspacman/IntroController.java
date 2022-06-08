@@ -75,7 +75,7 @@ public class IntroController extends Fsm<IntroController.State, IntroController.
 		public final V2i titlePosition = v(t(10), t(8));
 		public final V2i turningPoint = v(t(6), t(20)).plus(0, HTS);
 		public final int msPacManStopX = t(15);
-		public final GenericAnimation<Boolean> blinking = GenericAnimation.pulse().frameDuration(30).restart();
+		public final GenericAnimation<Boolean> blinking = GenericAnimation.pulse(30);
 		public final TickTimer lightsTimer = new TickTimer("lights-timer");
 		public final Pac msPacMan = new Pac("Ms. Pac-Man");
 		public final Ghost[] ghosts = new Ghost[] { //

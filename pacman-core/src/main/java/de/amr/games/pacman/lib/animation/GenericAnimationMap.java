@@ -33,49 +33,49 @@ import java.util.Map;
  * @param <K> key type of map (enum)
  * @param <S> sprite type (Image, Rectangle)
  */
-public class SpriteAnimationMap<K extends Enum<K>, S> implements ISpriteAnimation {
+public class GenericAnimationMap<K extends Enum<K>, S> implements AnimationMethods {
 
-	private final Map<K, SpriteAnimation<S>> animationMap;
+	private final Map<K, GenericAnimation<S>> animationMap;
 
-	public SpriteAnimationMap(Class<K> keyClass) {
+	public GenericAnimationMap(Class<K> keyClass) {
 		animationMap = new EnumMap<>(keyClass);
 	}
 
-	public void put(K key, SpriteAnimation<S> animation) {
+	public void put(K key, GenericAnimation<S> animation) {
 		animationMap.put(key, animation);
 	}
 
-	public SpriteAnimation<S> get(K key) {
+	public GenericAnimation<S> get(K key) {
 		return animationMap.get(key);
 	}
 
-	public Collection<SpriteAnimation<S>> allAnimations() {
+	public Collection<GenericAnimation<S>> allAnimations() {
 		return animationMap.values();
 	}
 
 	@Override
 	public void reset() {
-		allAnimations().forEach(SpriteAnimation::reset);
+		allAnimations().forEach(GenericAnimation::reset);
 	}
 
 	@Override
 	public void restart() {
-		allAnimations().forEach(SpriteAnimation::restart);
+		allAnimations().forEach(GenericAnimation::restart);
 	}
 
 	@Override
 	public void stop() {
-		allAnimations().forEach(SpriteAnimation::stop);
+		allAnimations().forEach(GenericAnimation::stop);
 	}
 
 	@Override
 	public void run() {
-		allAnimations().forEach(SpriteAnimation::run);
+		allAnimations().forEach(GenericAnimation::run);
 	}
 
 	@Override
 	public void ensureRunning() {
-		allAnimations().forEach(SpriteAnimation::ensureRunning);
+		allAnimations().forEach(GenericAnimation::ensureRunning);
 	}
 
 	@Override

@@ -26,7 +26,7 @@ package de.amr.games.pacman.lib.animation;
 /**
  * @author Armin Reichert
  */
-public interface ISpriteAnimation {
+public interface AnimationMethods {
 
 	void run();
 

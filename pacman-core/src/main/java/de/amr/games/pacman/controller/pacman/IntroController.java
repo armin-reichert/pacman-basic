@@ -75,7 +75,7 @@ public class IntroController extends Fsm<State, Context> {
 	public static class Context {
 		public final int left = 4;
 		public final double speed = 1.15;
-		public final GenericAnimation<Boolean> blinking = GenericAnimation.pulse().frameDuration(10);
+		public final GenericAnimation<Boolean> blinking = GenericAnimation.pulse(10);
 		public final String nicknames[] = { "Blinky", "Pinky", "Inky", "Clyde" };
 		public final String characters[] = { "SHADOW", "SPEEDY", "BASHFUL", "POKEY" };
 		public boolean creditVisible = false;

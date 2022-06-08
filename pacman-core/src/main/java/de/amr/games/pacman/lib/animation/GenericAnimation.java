@@ -28,7 +28,7 @@ package de.amr.games.pacman.lib.animation;
  * 
  * @author Armin Reichert
  */
-public class GenericAnimation<T> {
+public class GenericAnimation<T> implements AnimationMethods {
 
 	public static int INDEFINITE = -1;
 
@@ -48,10 +48,14 @@ public class GenericAnimation<T> {
 	}
 
 	/**
+	 * @param ticks of single pulse
 	 * @return an endless animation of alternating true/false values
 	 */
-	public static GenericAnimation<Boolean> pulse() {
-		return GenericAnimation.of(true, false).endless();
+	public static GenericAnimation<Boolean> pulse(int frameDuration) {
+		var pulse = GenericAnimation.of(true, false);
+		pulse.frameDuration(frameDuration);
+		pulse.endless();
+		return pulse;
 	}
 
 	protected T[] things;
@@ -83,7 +87,8 @@ public class GenericAnimation<T> {
 	 * 
 	 * @return the animation
 	 */
-	public GenericAnimation<T> reset() {
+	@Override
+	public void reset() {
 		delayRemainingTicks = delay;
 		totalRunningTicks = 0;
 		frameRunningTicks = 0;
@@ -91,27 +96,23 @@ public class GenericAnimation<T> {
 		loopIndex = 0;
 		running = false;
 		complete = false;
-		return this;
 	}
 
 	/**
 	 * @param code code to be run when the animation starts
-	 * @return the animation
 	 */
-	public GenericAnimation<T> onStart(Runnable code) {
+	public void onStart(Runnable code) {
 		onStart = code;
-		return this;
+
 	}
 
 	/**
 	 * Sets the frame duration
 	 * 
 	 * @param ticks frame ticks
-	 * @return the animation
 	 */
-	public GenericAnimation<T> frameDuration(long ticks) {
+	public void frameDuration(long ticks) {
 		frameDurationTicks = ticks;
-		return this;
 	}
 
 	/**
@@ -125,11 +126,9 @@ public class GenericAnimation<T> {
 	 * Sets the number of ticks before the animation starts.
 	 * 
 	 * @param ticks number of ticks before the animation starts
-	 * @return the animation
 	 */
-	public GenericAnimation<T> delay(long ticks) {
+	public void delay(long ticks) {
 		delay = delayRemainingTicks = ticks;
-		return this;
 	}
 
 	/**
@@ -143,11 +142,9 @@ public class GenericAnimation<T> {
 	 * Sets the number of times the animation is repeated.
 	 * 
 	 * @param n number of times the animation is repeated
-	 * @return the animation
 	 */
-	public GenericAnimation<T> repetitions(int n) {
+	public void repetitions(int n) {
 		repetitions = n;
-		return this;
 	}
 
 	/**
@@ -155,9 +152,8 @@ public class GenericAnimation<T> {
 	 * 
 	 * @return the animation
 	 */
-	public GenericAnimation<T> endless() {
+	public void endless() {
 		repetitions = INDEFINITE;
-		return this;
 	}
 
 	/**
@@ -165,10 +161,10 @@ public class GenericAnimation<T> {
 	 * 
 	 * @return the animation
 	 */
-	public GenericAnimation<T> restart() {
+	@Override
+	public void restart() {
 		reset();
 		run();
-		return this;
 	}
 
 	/**
@@ -176,9 +172,9 @@ public class GenericAnimation<T> {
 	 * 
 	 * @return the animation
 	 */
-	public GenericAnimation<T> run() {
+	@Override
+	public void run() {
 		running = true;
-		return this;
 	}
 
 	/**
@@ -186,9 +182,10 @@ public class GenericAnimation<T> {
 	 * 
 	 * @return the animation
 	 */
-	public GenericAnimation<T> stop() {
+	@Override
+	public void stop() {
 		running = false;
-		return this;
+
 	}
 
 	/**
@@ -258,6 +255,7 @@ public class GenericAnimation<T> {
 		return frameIndex;
 	}
 
+	@Override
 	public void setFrameIndex(int i) {
 		frameIndex = i;
 		frameRunningTicks = 0;
@@ -291,6 +289,7 @@ public class GenericAnimation<T> {
 		return running;
 	}
 
+	@Override
 	public void ensureRunning() {
 		if (!running) {
 			complete = false;
