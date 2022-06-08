@@ -323,7 +323,7 @@ public class Ghost extends Creature {
 	 */
 	private boolean leaveHouse(GhostHouse house) {
 		if (tile().equals(house.entry()) && offset().y <= 1) {
-			placeAt(tile(), HTS, 0);
+			setOffset(offset().x, 0); // place exactly at house entry to avoid getting stuck
 			return true;
 		}
 		var center = house.center();
