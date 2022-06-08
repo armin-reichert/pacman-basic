@@ -33,13 +33,13 @@ public class GenericAnimation<T> implements AnimationMethods {
 	public static int INDEFINITE = -1;
 
 	/**
-	 * @param ticks of single pulse
+	 * @param frameDuration ticks of single pulse
 	 * @return an endless animation of alternating true/false values
 	 */
 	public static GenericAnimation<Boolean> pulse(int frameDuration) {
 		var pulse = new GenericAnimation<>(true, false);
 		pulse.frameDuration(frameDuration);
-		pulse.endless();
+		pulse.repeatForever();
 		return pulse;
 	}
 
@@ -88,7 +88,6 @@ public class GenericAnimation<T> implements AnimationMethods {
 	 */
 	public void onStart(Runnable code) {
 		onStart = code;
-
 	}
 
 	/**
@@ -124,27 +123,21 @@ public class GenericAnimation<T> implements AnimationMethods {
 	}
 
 	/**
-	 * Sets the number of times the animation is repeated.
-	 * 
-	 * @param n number of times the animation is repeated
+	 * @param times number of times the animation is repeated
 	 */
-	public void repetitions(int n) {
-		repetitions = n;
+	public void repeat(int times) {
+		repetitions = times;
 	}
 
 	/**
-	 * Lets the animation repeat endlessly.
-	 * 
-	 * @return the animation
+	 * Lets the animation repeat forever.
 	 */
-	public void endless() {
+	public void repeatForever() {
 		repetitions = INDEFINITE;
 	}
 
 	/**
 	 * Resets and starts the animation.
-	 * 
-	 * @return the animation
 	 */
 	@Override
 	public void restart() {
@@ -153,9 +146,7 @@ public class GenericAnimation<T> implements AnimationMethods {
 	}
 
 	/**
-	 * Runs the animation.
-	 * 
-	 * @return the animation
+	 * Starts the animation.
 	 */
 	@Override
 	public void run() {
@@ -164,19 +155,16 @@ public class GenericAnimation<T> implements AnimationMethods {
 
 	/**
 	 * Stops the animation.
-	 * 
-	 * @return the animation
 	 */
 	@Override
 	public void stop() {
 		running = false;
-
 	}
 
 	/**
 	 * Advances the animation by one step.
 	 * 
-	 * @return the frame before the animation step
+	 * @return the frame before the animation step is executed
 	 */
 	public T animate() {
 		T currentThing = things[frameIndex];
