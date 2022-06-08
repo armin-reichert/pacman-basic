@@ -138,7 +138,7 @@ public class Ghost extends Creature {
 			if (atGhostHouseDoor(world.ghostHouse())) {
 				setAbsSpeed(0);
 			} else {
-				setRelSpeed(0.5 * game.level.ghostSpeed);
+				setAbsSpeed(0.5);
 				bounce(world.ghostHouse());
 			}
 		}
@@ -342,8 +342,9 @@ public class Ghost extends Creature {
 	 * Lets the ghost bounce inside the house.
 	 */
 	private void bounce(GhostHouse house) {
-		double zeroLevel = house.seatMiddle().y * TS;
-		if (!insideRange(position.y, zeroLevel, HTS)) {
+		double top = house.seatMiddle().y * TS - HTS;
+		double bottom = house.seatMiddle().y * TS + HTS;
+		if (position.y <= top || position.y >= bottom) {
 			setBothDirs(moveDir.opposite());
 		}
 		move();
