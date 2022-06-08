@@ -22,7 +22,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package de.amr.games.pacman.lib;
+package de.amr.games.pacman.lib.fsm;
+
+import de.amr.games.pacman.lib.TickTimer;
 
 /**
  * Interface implemented by all states (enums) of a FSM. Each state has a timer and a reference to its FSM.

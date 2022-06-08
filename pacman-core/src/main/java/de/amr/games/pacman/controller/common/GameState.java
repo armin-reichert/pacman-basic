@@ -29,9 +29,9 @@ import static de.amr.games.pacman.model.common.actors.GhostState.HUNTING_PAC;
 
 import de.amr.games.pacman.event.GameEventing;
 import de.amr.games.pacman.event.GameStateChangeEvent;
-import de.amr.games.pacman.lib.Fsm;
-import de.amr.games.pacman.lib.FsmState;
 import de.amr.games.pacman.lib.TickTimer;
+import de.amr.games.pacman.lib.fsm.Fsm;
+import de.amr.games.pacman.lib.fsm.FsmState;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameModel.CheckResult;
 import de.amr.games.pacman.model.common.actors.Ghost;

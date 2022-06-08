@@ -35,11 +35,11 @@ import static de.amr.games.pacman.model.common.world.World.t;
 
 import de.amr.games.pacman.controller.common.GameController;
 import de.amr.games.pacman.controller.common.GameState;
-import de.amr.games.pacman.lib.Fsm;
-import de.amr.games.pacman.lib.FsmState;
-import de.amr.games.pacman.lib.GenericAnimation;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.lib.animation.GenericAnimation;
+import de.amr.games.pacman.lib.fsm.Fsm;
+import de.amr.games.pacman.lib.fsm.FsmState;
 import de.amr.games.pacman.model.common.GameScores;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.GhostState;

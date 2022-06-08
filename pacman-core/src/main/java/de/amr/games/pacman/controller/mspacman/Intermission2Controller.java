@@ -29,9 +29,9 @@ import de.amr.games.pacman.controller.common.GameController;
 import de.amr.games.pacman.controller.mspacman.Intermission2Controller.Context;
 import de.amr.games.pacman.controller.mspacman.Intermission2Controller.State;
 import de.amr.games.pacman.lib.Direction;
-import de.amr.games.pacman.lib.Fsm;
-import de.amr.games.pacman.lib.FsmState;
 import de.amr.games.pacman.lib.TickTimer;
+import de.amr.games.pacman.lib.fsm.Fsm;
+import de.amr.games.pacman.lib.fsm.FsmState;
 import de.amr.games.pacman.model.common.actors.Pac;
 import de.amr.games.pacman.model.mspacman.Flap;
 
