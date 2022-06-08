@@ -77,6 +77,7 @@ public class IntroController extends Fsm<State, Context> {
 		public final GenericAnimation<Boolean> blinking = GenericAnimation.pulse().frameDuration(10);
 		public final String nicknames[] = { "Blinky", "Pinky", "Inky", "Clyde" };
 		public final String characters[] = { "SHADOW", "SPEEDY", "BASHFUL", "POKEY" };
+		public boolean titleVisible = false;
 		public final boolean[] pictureVisible = { false, false, false, false };
 		public final boolean[] nicknameVisible = { false, false, false, false };
 		public final boolean[] characterVisible = { false, false, false, false };
@@ -106,7 +107,9 @@ public class IntroController extends Fsm<State, Context> {
 
 			@Override
 			public void onUpdate(Context $) {
-				if (timer.atSecond(1)) {
+				if (timer.tick() == 3) {
+					$.titleVisible = true;
+				} else if (timer.atSecond(1)) {
 					controller.changeState(State.PRESENTING_GHOSTS);
 				}
 			}
