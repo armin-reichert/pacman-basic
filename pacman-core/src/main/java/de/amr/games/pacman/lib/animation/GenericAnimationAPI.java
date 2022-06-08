@@ -26,7 +26,7 @@ package de.amr.games.pacman.lib.animation;
 /**
  * @author Armin Reichert
  */
-public interface AnimationMethods {
+public interface GenericAnimationAPI {
 
 	void run();
 

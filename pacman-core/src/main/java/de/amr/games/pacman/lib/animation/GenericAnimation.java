@@ -28,7 +28,7 @@ package de.amr.games.pacman.lib.animation;
  * 
  * @author Armin Reichert
  */
-public class GenericAnimation<T> implements AnimationMethods {
+public class GenericAnimation<T> implements GenericAnimationAPI {
 
 	public static int INDEFINITE = -1;
 

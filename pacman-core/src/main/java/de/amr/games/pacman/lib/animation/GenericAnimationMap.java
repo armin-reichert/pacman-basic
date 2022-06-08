@@ -33,7 +33,7 @@ import java.util.Map;
  * @param <K> key type of map (enum)
  * @param <S> sprite type (Image, Rectangle)
  */
-public class GenericAnimationMap<K extends Enum<K>, S> implements AnimationMethods {
+public class GenericAnimationMap<K extends Enum<K>, S> implements GenericAnimationAPI {
 
 	private final Map<K, GenericAnimation<S>> animationMap;
 

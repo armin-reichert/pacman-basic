@@ -33,11 +33,11 @@ import java.util.stream.Stream;
  * @param <KEY>    Key key type
  * @param <SPRITE> Sprite type (Rectangle, Image)
  */
-public interface CompositeGenericAnimation<ENTITY, KEY, SPRITE> extends AnimationMethods {
+public interface CompositeGenericAnimation<ENTITY, KEY, SPRITE> extends GenericAnimationAPI {
 
-	public AnimationMethods animation(KEY key);
+	public GenericAnimationAPI animation(KEY key);
 
-	public Stream<AnimationMethods> animations();
+	public Stream<GenericAnimationAPI> animations();
 
 	public SPRITE currentSprite(ENTITY entity);
 
@@ -45,7 +45,7 @@ public interface CompositeGenericAnimation<ENTITY, KEY, SPRITE> extends Animatio
 
 	public KEY selectedKey();
 
-	default AnimationMethods selectedAnimation() {
+	default GenericAnimationAPI selectedAnimation() {
 		return animation(selectedKey());
 	}
 
@@ -63,21 +63,21 @@ public interface CompositeGenericAnimation<ENTITY, KEY, SPRITE> extends Animatio
 
 	@Override
 	default void reset() {
-		animations().forEach(AnimationMethods::reset);
+		animations().forEach(GenericAnimationAPI::reset);
 	}
 
 	@Override
 	default void stop() {
-		animations().forEach(AnimationMethods::stop);
+		animations().forEach(GenericAnimationAPI::stop);
 	}
 
 	@Override
 	default void run() {
-		animations().forEach(AnimationMethods::run);
+		animations().forEach(GenericAnimationAPI::run);
 	}
 
 	@Override
 	default void restart() {
-		animations().forEach(AnimationMethods::restart);
+		animations().forEach(GenericAnimationAPI::restart);
 	}
 }
