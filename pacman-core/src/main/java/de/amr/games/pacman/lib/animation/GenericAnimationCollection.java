@@ -29,11 +29,11 @@ import java.util.stream.Stream;
 /**
  * @author Armin Reichert
  * 
- * @param <ENTITY> entity type for example Ghost or Pac
- * @param <KEY>    Key enum type
+ * @param <ENTITY> entity type, for example Ghost, Pac etc.
+ * @param <KEY>    Key key type
  * @param <SPRITE> Sprite type (Rectangle, Image)
  */
-public interface GenericAnimationSet<ENTITY, KEY, SPRITE> extends AnimationMethods {
+public interface GenericAnimationCollection<ENTITY, KEY, SPRITE> extends AnimationMethods {
 
 	public AnimationMethods animation(KEY key);
 
