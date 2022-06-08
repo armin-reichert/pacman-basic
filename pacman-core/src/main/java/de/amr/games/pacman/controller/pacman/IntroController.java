@@ -140,7 +140,7 @@ public class IntroController extends Fsm<State, Context> {
 		SHOWING_POINTS {
 			@Override
 			public void onUpdate(Context $) {
-				if (timer.atSecond(2)) {
+				if (timer.atSecond(1)) {
 					controller.changeState(State.CHASING_PAC);
 				}
 			}
@@ -156,10 +156,10 @@ public class IntroController extends Fsm<State, Context> {
 				$.pacMan.setPosition(t(36), t(20));
 				$.pacMan.setMoveDir(Direction.LEFT);
 				for (Ghost ghost : $.ghosts) {
-					ghost.position = $.pacMan.position.plus(24 + ghost.id * 16, 0);
+					ghost.position = $.pacMan.position.plus(16 + ghost.id * 16, 0);
 					ghost.setWishDir(Direction.LEFT);
 					ghost.setMoveDir(Direction.LEFT);
-					ghost.setAbsSpeed($.speed * 1.05);
+					ghost.setAbsSpeed($.speed);
 					ghost.show();
 					ghost.state = GhostState.HUNTING_PAC;
 				}
@@ -167,9 +167,17 @@ public class IntroController extends Fsm<State, Context> {
 
 			@Override
 			public void onUpdate(Context $) {
-				if ($.pacMan.position.x <= t($.left)) {
+				if ($.pacMan.position.x < t($.left)) {
 					controller.changeState(State.CHASING_GHOSTS);
 					return;
+				}
+				if ($.pacMan.position.x < t($.left) + 8) {
+					for (Ghost ghost : $.ghosts) {
+						ghost.state = GhostState.FRIGHTENED;
+						ghost.setWishDir(Direction.RIGHT);
+						ghost.setMoveDir(Direction.RIGHT);
+						ghost.setAbsSpeed(0.45 * $.speed);
+					}
 				}
 				$.pacMan.move();
 				for (Ghost ghost : $.ghosts) {
@@ -184,12 +192,6 @@ public class IntroController extends Fsm<State, Context> {
 			public void onEnter(Context $) {
 				timer.setIndefinite();
 				timer.start();
-				for (Ghost ghost : $.ghosts) {
-					ghost.state = GhostState.FRIGHTENED;
-					ghost.setWishDir(Direction.RIGHT);
-					ghost.setMoveDir(Direction.RIGHT);
-					ghost.setAbsSpeed(0.5 * $.speed);
-				}
 				$.ghostKilledTime = timer.tick();
 			}
 
