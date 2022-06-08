@@ -33,26 +33,11 @@ public class GenericAnimation<T> implements AnimationMethods {
 	public static int INDEFINITE = -1;
 
 	/**
-	 * Creates a timed sequence (animation) of the given things.
-	 * 
-	 * @param <TT>   type of things
-	 * @param things the things to be animated
-	 * @return the animation
-	 */
-	@SafeVarargs
-	public static <TT> GenericAnimation<TT> of(TT... things) {
-		if (things.length == 0) {
-			throw new IllegalArgumentException("Sequence must have at least contain one thing");
-		}
-		return new GenericAnimation<>(things);
-	}
-
-	/**
 	 * @param ticks of single pulse
 	 * @return an endless animation of alternating true/false values
 	 */
 	public static GenericAnimation<Boolean> pulse(int frameDuration) {
-		var pulse = GenericAnimation.of(true, false);
+		var pulse = new GenericAnimation<>(true, false);
 		pulse.frameDuration(frameDuration);
 		pulse.endless();
 		return pulse;
