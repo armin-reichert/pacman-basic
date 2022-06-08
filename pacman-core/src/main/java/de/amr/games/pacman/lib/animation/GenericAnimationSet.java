@@ -33,54 +33,51 @@ import java.util.stream.Stream;
  * @param <KEY>    Key enum type
  * @param <SPRITE> Sprite type (Rectangle, Image)
  */
-public abstract class GenericAnimationSet<ENTITY, KEY extends Enum<KEY>, SPRITE> {
+public interface GenericAnimationSet<ENTITY, KEY, SPRITE> extends AnimationMethods {
 
-	protected KEY selectedKey;
+	public AnimationMethods animation(KEY key);
 
-	public abstract AnimationMethods animation(KEY key);
+	public Stream<AnimationMethods> animations();
 
-	public abstract Stream<AnimationMethods> animations();
+	public SPRITE currentSprite(ENTITY entity);
 
-	public abstract SPRITE currentSprite(ENTITY entity);
+	public void select(KEY key);
 
-	public void select(KEY key) {
-		selectedKey = key;
-		animation(key).ensureRunning();
+	public KEY selectedKey();
+
+	default AnimationMethods selectedAnimation() {
+		return animation(selectedKey());
 	}
 
-	public KEY selected() {
-		return selectedKey;
-	}
-
-	public AnimationMethods selectedAnimation() {
-		return animation(selectedKey);
-	}
-
-	public void stop(KEY key) {
+	default void stop(KEY key) {
 		animation(key).stop();
 	}
 
-	public void run(KEY key) {
+	default void run(KEY key) {
 		animation(key).run();
 	}
 
-	public void restart(KEY key) {
+	default void restart(KEY key) {
 		animation(key).restart();
 	}
 
-	public void reset() {
+	@Override
+	default void reset() {
 		animations().forEach(AnimationMethods::reset);
 	}
 
-	public void stop() {
+	@Override
+	default void stop() {
 		animations().forEach(AnimationMethods::stop);
 	}
 
-	public void run() {
+	@Override
+	default void run() {
 		animations().forEach(AnimationMethods::run);
 	}
 
-	public void restart() {
+	@Override
+	default void restart() {
 		animations().forEach(AnimationMethods::restart);
 	}
 }
