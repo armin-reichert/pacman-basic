@@ -143,7 +143,7 @@ public class Ghost extends Creature {
 			}
 		}
 		case LEAVING_HOUSE -> {
-			setRelSpeed(0.5 * game.level.ghostSpeed);
+			setAbsSpeed(0.5);
 			boolean houseLeft = leaveHouse(world.ghostHouse());
 			if (houseLeft) {
 				state = HUNTING_PAC;
@@ -322,7 +322,8 @@ public class Ghost extends Creature {
 	 * @return {@code true} if the ghost left the house
 	 */
 	private boolean leaveHouse(GhostHouse house) {
-		if (tile().equals(house.entry()) && insideRange(offset().y, 0, 1)) {
+		if (tile().equals(house.entry()) && offset().y <= 1) {
+			placeAt(tile(), HTS, 0);
 			return true;
 		}
 		var center = house.center();
