@@ -83,7 +83,7 @@ public class GameScores {
 		return score;
 	}
 
-	public Score hiscore() {
+	public Score highScore() {
 		return hiscore;
 	}
 

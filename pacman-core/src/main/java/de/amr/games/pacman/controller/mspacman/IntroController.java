@@ -37,9 +37,10 @@ import de.amr.games.pacman.controller.common.GameController;
 import de.amr.games.pacman.controller.common.GameState;
 import de.amr.games.pacman.lib.Fsm;
 import de.amr.games.pacman.lib.FsmState;
-import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.GenericAnimation;
+import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.model.common.GameScores;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.GhostState;
 import de.amr.games.pacman.model.common.actors.Pac;
@@ -68,6 +69,7 @@ public class IntroController extends Fsm<IntroController.State, IntroController.
 	}
 
 	public static class Context {
+		public boolean creditVisible = false;
 		public double actorSpeed = 1.1f;
 		public final V2i lightsTopLeft = v(t(8), t(11));
 		public final V2i titlePosition = v(t(10), t(8));
@@ -87,9 +89,11 @@ public class IntroController extends Fsm<IntroController.State, IntroController.
 
 	public enum State implements FsmState<IntroController.Context> {
 
-		BEGIN {
+		START {
 			@Override
 			public void onEnter(Context $) {
+				scores().gameScore().visible = false;
+				scores().highScore().visible = false;
 				$.lightsTimer.setIndefinite();
 				$.lightsTimer.start();
 				$.msPacMan.setMoveDir(LEFT);
@@ -109,10 +113,15 @@ public class IntroController extends Fsm<IntroController.State, IntroController.
 
 			@Override
 			public void onUpdate(Context $) {
-				$.lightsTimer.advance();
-				if (timer.atSecond(1)) {
+				if (timer.tick() == 1) {
+					scores().gameScore().visible = true;
+					scores().highScore().visible = true;
+				} else if (timer.tick() == 2) {
+					$.creditVisible = true;
+				} else if (timer.atSecond(1)) {
 					controller.changeState(State.GHOSTS);
 				}
+				$.lightsTimer.advance();
 			}
 		},
 
@@ -174,5 +183,10 @@ public class IntroController extends Fsm<IntroController.State, IntroController.
 		public TickTimer timer() {
 			return timer;
 		}
+
+		protected GameScores scores() {
+			return controller.gameController.game().scores();
+		}
+
 	}
 }

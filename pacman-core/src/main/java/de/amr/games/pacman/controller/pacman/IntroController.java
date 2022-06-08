@@ -43,6 +43,7 @@ import de.amr.games.pacman.lib.Fsm;
 import de.amr.games.pacman.lib.FsmState;
 import de.amr.games.pacman.lib.GenericAnimation;
 import de.amr.games.pacman.lib.TickTimer;
+import de.amr.games.pacman.model.common.GameScores;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.GhostState;
 import de.amr.games.pacman.model.common.actors.Pac;
@@ -77,6 +78,7 @@ public class IntroController extends Fsm<State, Context> {
 		public final GenericAnimation<Boolean> blinking = GenericAnimation.pulse().frameDuration(10);
 		public final String nicknames[] = { "Blinky", "Pinky", "Inky", "Clyde" };
 		public final String characters[] = { "SHADOW", "SPEEDY", "BASHFUL", "POKEY" };
+		public boolean creditVisible = false;
 		public boolean titleVisible = false;
 		public final boolean[] pictureVisible = { false, false, false, false };
 		public final boolean[] nicknameVisible = { false, false, false, false };
@@ -92,6 +94,8 @@ public class IntroController extends Fsm<State, Context> {
 		START {
 			@Override
 			public void onEnter(Context $) {
+				scores().gameScore().visible = false;
+				scores().highScore().visible = false;
 				$.ghostIndex = 0;
 				Arrays.fill($.pictureVisible, false);
 				Arrays.fill($.nicknameVisible, false);
@@ -107,7 +111,12 @@ public class IntroController extends Fsm<State, Context> {
 
 			@Override
 			public void onUpdate(Context $) {
-				if (timer.tick() == 3) {
+				if (timer.tick() == 1) {
+					scores().gameScore().visible = true;
+					scores().highScore().visible = true;
+				} else if (timer.tick() == 2) {
+					$.creditVisible = true;
+				} else if (timer.tick() == 3) {
 					$.titleVisible = true;
 				} else if (timer.atSecond(1)) {
 					controller.changeState(State.PRESENTING_GHOSTS);
@@ -279,6 +288,10 @@ public class IntroController extends Fsm<State, Context> {
 		@Override
 		public TickTimer timer() {
 			return timer;
+		}
+
+		protected GameScores scores() {
+			return controller.gameController.game().scores();
 		}
 	}
 }
