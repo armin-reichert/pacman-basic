@@ -34,7 +34,7 @@ import static de.amr.games.pacman.model.common.actors.GhostState.ENTERING_HOUSE;
 import static de.amr.games.pacman.model.common.actors.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.model.common.actors.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.model.common.world.World.HTS;
-import static de.amr.games.pacman.model.common.world.World.TS;
+import static de.amr.games.pacman.model.common.world.World.t;
 
 import java.util.List;
 
@@ -139,7 +139,7 @@ public class Ghost extends Creature {
 				setAbsSpeed(0);
 			} else {
 				setAbsSpeed(0.5);
-				bounce(world.ghostHouse());
+				bounce(t(world.ghostHouse().seatMiddle().y), HTS);
 			}
 		}
 		case LEAVING_HOUSE -> {
@@ -341,10 +341,8 @@ public class Ghost extends Creature {
 	/**
 	 * Lets the ghost bounce inside the house.
 	 */
-	private void bounce(GhostHouse house) {
-		double top = house.seatMiddle().y * TS - HTS;
-		double bottom = house.seatMiddle().y * TS + HTS;
-		if (position.y <= top || position.y >= bottom) {
+	private void bounce(double zeroLevel, double delta) {
+		if (position.y <= zeroLevel - delta || position.y >= zeroLevel + delta) {
 			setBothDirs(moveDir.opposite());
 		}
 		move();
