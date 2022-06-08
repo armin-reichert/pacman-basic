@@ -25,6 +25,7 @@ SOFTWARE.
 package de.amr.games.pacman.model.common;
 
 import static de.amr.games.pacman.lib.Logging.log;
+import static de.amr.games.pacman.model.common.world.World.TS;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -34,9 +35,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.Properties;
 
 import de.amr.games.pacman.event.GameEvent;
-import de.amr.games.pacman.event.GameEventing;
-import de.amr.games.pacman.lib.Score;
 import de.amr.games.pacman.event.GameEventType;
+import de.amr.games.pacman.event.GameEventing;
+import de.amr.games.pacman.lib.V2d;
+import de.amr.games.pacman.model.common.actors.Score;
 
 /**
  * @author Armin Reichert
@@ -71,7 +73,9 @@ public class GameScores {
 		this.game = game;
 		this.hiscoreFile = hiscoreFile;
 		score = new Score();
+		score.position = new V2d(TS, TS);
 		hiscore = new Score();
+		hiscore.position = new V2d(16 * TS, TS);
 		loadFromFile(hiscore, hiscoreFile);
 	}
 

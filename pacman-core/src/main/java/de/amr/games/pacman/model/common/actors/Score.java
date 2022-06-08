@@ -22,14 +22,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package de.amr.games.pacman.lib;
+package de.amr.games.pacman.model.common.actors;
 
 import java.time.LocalDate;
 
 /**
  * @author Armin Reichert
  */
-public class Score {
+public class Score extends Entity {
 	public int points;
 	public int levelNumber;
 	public LocalDate date;
