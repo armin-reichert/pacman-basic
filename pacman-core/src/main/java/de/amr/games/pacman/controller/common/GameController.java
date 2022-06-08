@@ -209,7 +209,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 		if (gameRunning && state() != GameState.GHOST_DYING) {
 			Ghost[] prey = game().ghosts()
 					.filter(ghost -> ghost.is(GhostState.HUNTING_PAC) || ghost.is(GhostState.FRIGHTENED)).toArray(Ghost[]::new);
-			game().ghostBounty = GameModel.FIRST_GHOST_BOUNTY;
+			game().ghostKillIndex = -1;
 			game().killGhosts(prey);
 			changeState(GameState.GHOST_DYING);
 		}

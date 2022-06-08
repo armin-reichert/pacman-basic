@@ -75,7 +75,7 @@ public abstract class GameModel {
 	public static final int PELLET_RESTING_TICKS = 1;
 	public static final int ENERGIZER_VALUE = 50;
 	public static final int ENERGIZER_RESTING_TICKS = 3;
-	public static final int FIRST_GHOST_BOUNTY = 200;
+	public static final int[] GHOST_VALUES = { 200, 400, 800, 1600 };
 	public static final int INITIAL_LIFES = 3;
 	public static final int ALL_GHOSTS_KILLED_POINTS = 12_000;
 
@@ -104,7 +104,7 @@ public abstract class GameModel {
 	public int extraLifeScore = 10_000;
 
 	/** Bounty for eating the next ghost. */
-	public int ghostBounty;
+	public int ghostKillIndex;
 
 	/** List of collected level symbols. */
 	public LevelCounter levelCounter = new LevelCounter(7);
@@ -168,7 +168,7 @@ public abstract class GameModel {
 			ghost.targetTile = null;
 			ghost.stuck = false;
 			ghost.state = GhostState.LOCKED;
-			ghost.bounty = 0;
+			ghost.killIndex = -1;
 			// ghost.dotCounter = 0;
 			// ghost.elroyMode = 0;
 		}
@@ -183,6 +183,10 @@ public abstract class GameModel {
 
 	public Stream<Ghost> ghosts(GhostState state) {
 		return ghosts().filter(ghost -> ghost.state == state);
+	}
+
+	protected int ghostValue(int ghostKillIndex) {
+		return GHOST_VALUES[ghostKillIndex];
 	}
 
 	/**
@@ -359,10 +363,10 @@ public abstract class GameModel {
 	private void killGhost(Ghost ghost) {
 		ghost.state = DEAD;
 		ghost.targetTile = level.world.ghostHouse().entry();
-		ghost.bounty = ghostBounty;
-		ghostBounty *= 2;
-		scores().addPoints(ghost.bounty);
-		log("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name, ghost.tile(), ghost.bounty);
+		ghost.killIndex = ++ghostKillIndex;
+		int points = ghostValue(ghost.killIndex);
+		scores().addPoints(points);
+		log("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name, ghost.tile(), points);
 	}
 
 	private void checkPlayerPower(CheckResult result) {
@@ -408,7 +412,7 @@ public abstract class GameModel {
 
 	private void onPlayerFindsEnergizer() {
 		eatFood(ENERGIZER_VALUE, ENERGIZER_RESTING_TICKS);
-		ghostBounty = FIRST_GHOST_BOUNTY;
+		ghostKillIndex = -1;
 	}
 
 	private void eatFood(int value, int restingTicks) {
@@ -446,8 +450,8 @@ public abstract class GameModel {
 
 	public void letDeadGhostsReturnHome() {
 		// fire event(s) only for dead ghosts not yet returning home (bounty != 0)
-		ghosts(DEAD).filter(ghost -> ghost.bounty != 0).forEach(ghost -> {
-			ghost.bounty = 0;
+		ghosts(DEAD).filter(ghost -> ghost.killIndex != -1).forEach(ghost -> {
+			ghost.killIndex = -1;
 			GameEventing.publish(new GameEvent(this, GameEventType.GHOST_STARTS_RETURNING_HOME, ghost, null));
 		});
 
@@ -457,7 +461,7 @@ public abstract class GameModel {
 	 * Updates the ghosts that are returning home while the game is stalled because of a dying ghost.
 	 */
 	public void updateGhostsReturningHome() {
-		ghosts().filter(ghost -> ghost.is(DEAD) && ghost.bounty == 0 || ghost.is(ENTERING_HOUSE))
+		ghosts().filter(ghost -> ghost.is(DEAD) && ghost.killIndex == -1 || ghost.is(ENTERING_HOUSE))
 				.forEach(ghost -> ghost.update(this));
 	}
 

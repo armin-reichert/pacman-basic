@@ -82,8 +82,8 @@ public class Ghost extends Creature {
 	/** Scatter target. */
 	public V2i scatterTile;
 
-	/** The bounty paid for this ghost. */
-	public int bounty;
+	/** The kill index. First ghost killed by an energizer has index 0 etc. */
+	public int killIndex;
 
 	/** Individual food counter, used to determine when the ghost can leave the house. */
 	public int dotCounter;

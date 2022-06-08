@@ -344,7 +344,7 @@ public class MsPacManGame extends GameModel {
 		level = createLevel(levelNumber);
 		levelCounter.addSymbol(level.bonusSymbol);
 		initGhosts(level);
-		ghostBounty = GameModel.FIRST_GHOST_BOUNTY;
+		ghostKillIndex = -1;
 		score.gameScore().levelNumber = levelNumber;
 	}
 

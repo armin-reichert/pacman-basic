@@ -183,7 +183,7 @@ public class PacManGame extends GameModel {
 		levelCounter.addSymbol(level.bonusSymbol);
 		initGhosts(level);
 		bonus.init();
-		ghostBounty = GameModel.FIRST_GHOST_BOUNTY;
+		ghostKillIndex = -1;
 		score.gameScore().levelNumber = levelNumber;
 	}
 

@@ -30,7 +30,6 @@ import static de.amr.games.pacman.model.common.actors.Ghost.RED_GHOST;
 import static de.amr.games.pacman.model.common.world.World.t;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -232,7 +231,7 @@ public class IntroController extends Fsm<State, Context> {
 				killedGhost.ifPresent(victim -> {
 					$.ghostKilledTime = timer.tick();
 					victim.state = GhostState.DEAD;
-					victim.bounty = List.of(200, 400, 800, 1600).get(victim.id);
+					victim.killIndex = victim.id;
 					$.pacMan.hide();
 					$.pacMan.setAbsSpeed(0);
 					Stream.of($.ghosts).forEach(ghost -> ghost.setAbsSpeed(0));
