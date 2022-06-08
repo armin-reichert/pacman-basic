@@ -33,7 +33,7 @@ import java.util.stream.Stream;
  * @param <KEY>    Key key type
  * @param <SPRITE> Sprite type (Rectangle, Image)
  */
-public interface GenericAnimationCollection<ENTITY, KEY, SPRITE> extends AnimationMethods {
+public interface CompositeGenericAnimation<ENTITY, KEY, SPRITE> extends AnimationMethods {
 
 	public AnimationMethods animation(KEY key);
 
