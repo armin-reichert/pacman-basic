@@ -63,8 +63,8 @@ public class MovingBonus extends Creature implements Bonus {
 	private int value;
 	private long timer;
 	private GenericAnimationCollection<Bonus, BonusAnimationKey, ?> animations;
-	private final List<V2i> route = new ArrayList<>();
 	private final SingleGenericAnimation<Integer> jumpAnimation;
+	private final List<V2i> route = new ArrayList<>();
 
 	public MovingBonus() {
 		super("MovingBonus");
@@ -113,39 +113,39 @@ public class MovingBonus extends Creature implements Bonus {
 	@Override
 	public void setInactive() {
 		state = BonusState.INACTIVE;
-		animations.select(BonusAnimationKey.ANIM_NONE);
 		timer = TickTimer.INDEFINITE;
 		symbol = 0;
 		value = 0;
 		route.clear();
+		animations.select(BonusAnimationKey.ANIM_NONE);
 		jumpAnimation.stop();
 	}
 
 	@Override
 	public void setEdible(World world, int symbol, int value, long ticks) {
+		state = BonusState.EDIBLE;
+		timer = ticks;
 		this.symbol = symbol;
 		this.value = value;
 		route.clear();
 		newTileEntered = true;
 		stuck = false;
+		animations.select(BonusAnimationKey.ANIM_SYMBOL);
+		setAbsSpeed(0.4); // TODO how fast should it walk?
+		jumpAnimation.restart();
 		int numPortals = world.portals().size();
 		if (numPortals > 0) {
 			Portal entryPortal = world.portals().get(new Random().nextInt(numPortals));
 			Portal exitPortal = world.portals().get(new Random().nextInt(numPortals));
 			computeNewRoute(world, entryPortal, exitPortal);
-			state = BonusState.EDIBLE;
-			animations.select(BonusAnimationKey.ANIM_SYMBOL);
-			timer = ticks;
-			setAbsSpeed(0.4); // TODO how fast should it walk?
-			jumpAnimation.restart();
-			log("MovingBonus symbol=%d, value=%d position=%s activated", symbol, value, position);
 		}
+		log("MovingBonus symbol=%d, value=%d position=%s activated", symbol, value, position);
 	}
 
 	private void setEaten(long ticks) {
 		state = BonusState.EATEN;
-		animations.select(BonusAnimationKey.ANIM_VALUE);
 		timer = ticks;
+		animations.select(BonusAnimationKey.ANIM_VALUE);
 		jumpAnimation.stop();
 	}
 
@@ -155,30 +155,6 @@ public class MovingBonus extends Creature implements Bonus {
 
 	public int dy() {
 		return jumpAnimation.isRunning() ? jumpAnimation.frame() : 0;
-	}
-
-	private void computeNewRoute(World world, Portal entryPortal, Portal exitPortal) {
-		V2i houseEntry = world.ghostHouse().doorTileLeft().plus(Direction.UP.vec);
-		Direction travelDir = new Random().nextBoolean() ? Direction.LEFT : Direction.RIGHT;
-		route.add(houseEntry);
-		route.add(houseEntry.plus(Direction.DOWN.vec.scaled(world.ghostHouse().size().y + 2)));
-		route.add(houseEntry);
-		route.add(travelDir == Direction.RIGHT ? exitPortal.right : exitPortal.left);
-		placeAt(travelDir == Direction.RIGHT ? entryPortal.left : entryPortal.right, 0, 0);
-		setBothDirs(travelDir);
-	}
-
-	public boolean followRoute(World world) {
-		targetTile = route.get(0);
-		if (tile().equals(targetTile)) {
-			route.remove(0);
-			if (route.isEmpty()) {
-				return true;
-			}
-		}
-		computeDirectionTowardsTarget(world);
-		tryMoving(world);
-		return false;
 	}
 
 	@Override
@@ -212,6 +188,30 @@ public class MovingBonus extends Creature implements Bonus {
 			}
 		}
 		}
+	}
+
+	private void computeNewRoute(World world, Portal entryPortal, Portal exitPortal) {
+		V2i houseEntry = world.ghostHouse().doorTileLeft().plus(Direction.UP.vec);
+		var travelDir = new Random().nextBoolean() ? Direction.LEFT : Direction.RIGHT;
+		route.add(houseEntry);
+		route.add(houseEntry.plus(Direction.DOWN.vec.scaled(world.ghostHouse().size().y + 2)));
+		route.add(houseEntry);
+		route.add(travelDir == Direction.RIGHT ? exitPortal.right : exitPortal.left);
+		placeAt(travelDir == Direction.RIGHT ? entryPortal.left : entryPortal.right, 0, 0);
+		setBothDirs(travelDir);
+	}
+
+	public boolean followRoute(World world) {
+		targetTile = route.get(0);
+		if (tile().equals(targetTile)) {
+			route.remove(0);
+			if (route.isEmpty()) {
+				return true;
+			}
+		}
+		computeDirectionTowardsTarget(world);
+		tryMoving(world);
+		return false;
 	}
 
 	private boolean tick() {
