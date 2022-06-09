@@ -58,7 +58,9 @@ public class PacManGame extends GameModel {
 
 	public static final int CHERRIES = 0, STRAWBERRY = 1, PEACH = 2, APPLE = 3, GRAPES = 4, GALAXIAN = 5, BELL = 6,
 			KEY = 7;
-	public static final int[] BONUS_VALUE = { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
+	public static final String[] BONUS_NAMES = { "CHERRIES", "STRAWBERRY", "PEACH", "APPLE", "GRAPES", "GALAXIAN", "BELL",
+			"KEY" };
+	public static final int[] BONUS_VALUES = { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
 
 	private static final Object[][] LEVEL_DATA = {
 	/*@formatter:off*/
@@ -153,7 +155,7 @@ public class PacManGame extends GameModel {
 	// in the red zone, chasing or scattering ghosts can not move upwards
 	private static final List<V2i> RED_ZONE = List.of(v(12, 14), v(15, 14), v(12, 26), v(15, 26));
 
-	private final GameScores score;
+	private final GameScores scores;
 	private final StaticBonus bonus;
 
 	public PacManGame() {
@@ -163,13 +165,13 @@ public class PacManGame extends GameModel {
 			ghost.upwardsBlockedTiles = RED_ZONE;
 		}
 		bonus = new StaticBonus(new V2d(v(13, 20).scaled(TS)).plus(HTS, 0));
-		score = new GameScores(this, new File(System.getProperty("user.home"), "highscore-pacman.xml"));
+		scores = new GameScores(this, new File(System.getProperty("user.home"), "highscore-pacman.xml"));
 		setLevel(1);
 	}
 
 	@Override
 	public GameScores scores() {
-		return score;
+		return scores;
 	}
 
 	@Override
@@ -184,7 +186,7 @@ public class PacManGame extends GameModel {
 		initGhosts(level);
 		bonus.init();
 		ghostKillIndex = -1;
-		score.gameScore().levelNumber = levelNumber;
+		scores.gameScore().levelNumber = levelNumber;
 	}
 
 	private void initGhosts(GameLevel level) {
@@ -216,7 +218,7 @@ public class PacManGame extends GameModel {
 
 	@Override
 	protected void onBonusReached() {
-		bonus.activate(level.world, level.bonusSymbol, BONUS_VALUE[level.bonusSymbol],
+		bonus.activate(level.world, level.bonusSymbol, BONUS_VALUES[level.bonusSymbol],
 				sec_to_ticks(9.0 + new Random().nextDouble()));
 		GameEventing.publish(GameEventType.BONUS_GETS_ACTIVE, bonus.tile());
 	}

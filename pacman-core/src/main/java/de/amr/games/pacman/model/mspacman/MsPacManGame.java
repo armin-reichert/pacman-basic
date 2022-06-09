@@ -56,7 +56,9 @@ import de.amr.games.pacman.model.common.world.GhostHouse;
 public class MsPacManGame extends GameModel {
 
 	public static final int CHERRIES = 0, STRAWBERRY = 1, PEACH = 2, PRETZEL = 3, APPLE = 4, PEAR = 5, BANANA = 6;
-	public static final int[] BONUS_VALUE = { 100, 200, 500, 700, 1000, 2000, 5000 };
+	public static final String[] BONUS_NAMES = { "CHERRIES", "STRAWBERRY", "PEACH", "PRETZEL", "APPLE", "PEAR",
+			"BANANA" };
+	public static final int[] BONUS_VALUES = { 100, 200, 500, 700, 1000, 2000, 5000 };
 
 	private static final Object[][] LEVEL_DATA = {
 	/*@formatter:off*/
@@ -287,7 +289,7 @@ public class MsPacManGame extends GameModel {
 		return level;
 	}
 
-	private final GameScores score;
+	private final GameScores scores;
 	private final MovingBonus movingBonus;
 
 	/**
@@ -317,7 +319,7 @@ public class MsPacManGame extends GameModel {
 		super(GameVariant.MS_PACMAN, new Pac("Ms. Pac-Man"), new Ghost(RED_GHOST, "Blinky"), new Ghost(PINK_GHOST, "Pinky"),
 				new Ghost(CYAN_GHOST, "Inky"), new Ghost(ORANGE_GHOST, "Sue"));
 		movingBonus = new MovingBonus();
-		score = new GameScores(this, new File(System.getProperty("user.home"), "highscore-ms_pacman.xml"));
+		scores = new GameScores(this, new File(System.getProperty("user.home"), "highscore-ms_pacman.xml"));
 		setLevel(1);
 	}
 
@@ -328,7 +330,7 @@ public class MsPacManGame extends GameModel {
 
 	@Override
 	public GameScores scores() {
-		return score;
+		return scores;
 	}
 
 	@Override
@@ -345,7 +347,7 @@ public class MsPacManGame extends GameModel {
 		levelCounter.addSymbol(level.bonusSymbol);
 		initGhosts(level);
 		ghostKillIndex = -1;
-		score.gameScore().levelNumber = levelNumber;
+		scores.gameScore().levelNumber = levelNumber;
 	}
 
 	private void initGhosts(GameLevel level) {
@@ -373,7 +375,7 @@ public class MsPacManGame extends GameModel {
 
 	@Override
 	protected void onBonusReached() {
-		movingBonus.activate(level.world, level.bonusSymbol, BONUS_VALUE[level.bonusSymbol], TickTimer.INDEFINITE);
+		movingBonus.activate(level.world, level.bonusSymbol, BONUS_VALUES[level.bonusSymbol], TickTimer.INDEFINITE);
 		GameEventing.publish(GameEventType.BONUS_GETS_ACTIVE, movingBonus.tile());
 	}
 }
