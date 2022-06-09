@@ -26,6 +26,7 @@ package de.amr.games.pacman.lib.animation;
 /**
  * Timed sequence ("animation") of things, for example of images or spritesheet regions.
  * 
+ * @param <T> type of things e.g. sprites
  * @author Armin Reichert
  */
 public class SingleGenericAnimation<T> implements GenericAnimation {

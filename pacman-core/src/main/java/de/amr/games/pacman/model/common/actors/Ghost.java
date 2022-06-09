@@ -43,6 +43,7 @@ import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEventing;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.lib.animation.GenericAnimationCollection;
 import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.world.GhostHouse;
@@ -93,6 +94,8 @@ public class Ghost extends Creature {
 
 	/** Tiles where the ghost cannot move upwards when in chasing or scattering mode. */
 	public List<V2i> upwardsBlockedTiles = List.of();
+
+	public GenericAnimationCollection<Ghost, GhostAnimationKey, ?> animations;
 
 	public Ghost(int id, String name) {
 		super(name);
