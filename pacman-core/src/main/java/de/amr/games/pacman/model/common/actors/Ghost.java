@@ -31,6 +31,7 @@ import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.lib.Misc.insideRange;
 import static de.amr.games.pacman.model.common.GameVariant.MS_PACMAN;
 import static de.amr.games.pacman.model.common.actors.GhostState.ENTERING_HOUSE;
+import static de.amr.games.pacman.model.common.actors.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.common.actors.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.model.common.actors.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.model.common.world.World.HTS;
@@ -367,6 +368,14 @@ public class Ghost extends Creature {
 
 	public Optional<GenericAnimationCollection<Ghost, GhostAnimationKey, ?>> animations() {
 		return Optional.ofNullable(animations);
+	}
+
+	public void enterFrightenedMode() {
+		state = FRIGHTENED;
+		animations().ifPresent(anim -> {
+			anim.select(GhostAnimationKey.ANIM_BLUE);
+			anim.selectedAnimation().ensureRunning();
+		});
 	}
 
 	public void startFlashing(int numFlashes, long duration) {

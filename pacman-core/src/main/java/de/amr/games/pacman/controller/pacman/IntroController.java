@@ -163,12 +163,14 @@ public class IntroController extends Fsm<State, Context> {
 				$.pacMan.setMoveDir(Direction.LEFT);
 				$.pacMan.setAbsSpeed($.speed);
 				$.pacMan.show();
+				$.pacMan.animations().get().ensureRunning();
 				for (Ghost ghost : $.ghosts) {
 					ghost.state = GhostState.HUNTING_PAC;
 					ghost.position = $.pacMan.position.plus(16 * (ghost.id + 1), 0);
 					ghost.setBothDirs(Direction.LEFT);
 					ghost.setAbsSpeed($.speed);
 					ghost.show();
+					ghost.animations().get().ensureRunning();
 				}
 			}
 
@@ -180,7 +182,7 @@ public class IntroController extends Fsm<State, Context> {
 				}
 				if ($.pacMan.position.x <= t($.left) + 4) {
 					for (Ghost ghost : $.ghosts) {
-						ghost.state = GhostState.FRIGHTENED;
+						ghost.enterFrightenedMode();
 						ghost.setWishDir(Direction.RIGHT);
 						ghost.setMoveDir(Direction.RIGHT);
 						ghost.setAbsSpeed(0.45 * $.speed);
@@ -244,6 +246,7 @@ public class IntroController extends Fsm<State, Context> {
 						if (ghost.state != GhostState.DEAD) {
 							ghost.show();
 							ghost.setAbsSpeed(0.5 * $.speed);
+							ghost.animations().get().ensureRunning();
 						} else {
 							ghost.hide();
 						}

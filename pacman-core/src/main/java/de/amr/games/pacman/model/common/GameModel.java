@@ -49,8 +49,10 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.Ghost;
+import de.amr.games.pacman.model.common.actors.GhostAnimationKey;
 import de.amr.games.pacman.model.common.actors.GhostState;
 import de.amr.games.pacman.model.common.actors.Pac;
+import de.amr.games.pacman.model.common.actors.PacAnimationKey;
 import de.amr.games.pacman.model.common.world.World;
 
 /**
@@ -154,6 +156,7 @@ public abstract class GameModel {
 		pac.restingCountdown = 0;
 		pac.starvingTicks = 0;
 		pac.powerTimer.setIndefinite();
+		pac.animations().ifPresent(anim -> anim.select(PacAnimationKey.ANIM_MUNCHING));
 
 		for (Ghost ghost : ghosts) {
 			ghost.visible = true;
@@ -171,6 +174,10 @@ public abstract class GameModel {
 			ghost.killIndex = -1;
 			// ghost.dotCounter = 0;
 			// ghost.elroyMode = 0;
+			ghost.animations().ifPresent(anim -> {
+				anim.select(GhostAnimationKey.ANIM_COLOR);
+				anim.stop();
+			});
 		}
 		if (bonus() != null) {
 			bonus().init();
@@ -431,7 +438,7 @@ public abstract class GameModel {
 		pac.powerTimer.start();
 		log("%s power timer started: %s", pac.name, pac.powerTimer);
 		ghosts(HUNTING_PAC).forEach(ghost -> {
-			ghost.state = FRIGHTENED;
+			ghost.enterFrightenedMode();
 			ghost.forceTurningBack(level.world);
 		});
 		GameEventing.publish(GameEventType.PLAYER_GETS_POWER, pac.tile());

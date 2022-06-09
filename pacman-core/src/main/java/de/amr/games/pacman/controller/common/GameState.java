@@ -37,7 +37,6 @@ import de.amr.games.pacman.model.common.GameModel.CheckResult;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.GhostAnimationKey;
 import de.amr.games.pacman.model.common.actors.GhostState;
-import de.amr.games.pacman.model.common.actors.PacAnimationKey;
 
 /**
  * Rule of thumb: here, specify the "what" and "when", not the "how" (which should be implemented in the model).
@@ -79,13 +78,6 @@ public enum GameState implements FsmState<GameModel> {
 			timer.setSeconds(readySeconds);
 			timer.start();
 			game.resetGuys();
-			game.pac.animations().ifPresent(anim -> anim.select(PacAnimationKey.ANIM_MUNCHING));
-			game.ghosts().forEach(ghost -> {
-				ghost.animations().ifPresent(anim -> {
-					anim.select(GhostAnimationKey.ANIM_COLOR);
-					anim.stop();
-				});
-			});
 		}
 
 		@Override
@@ -105,6 +97,14 @@ public enum GameState implements FsmState<GameModel> {
 	},
 
 	HUNTING {
+
+		@Override
+		public void onEnter(GameModel game) {
+			game.pac.animations().ifPresent(anim -> {
+				anim.selectedAnimation().ensureRunning();
+			});
+		}
+
 		@Override
 		public void onUpdate(GameModel game) {
 			var checkResult = new CheckResult();
