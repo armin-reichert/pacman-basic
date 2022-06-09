@@ -175,6 +175,10 @@ public class GameController extends Fsm<GameState, GameModel> {
 		GameEventing.addEventListener(subscriber);
 	}
 
+	public void removeListener(GameEventListener subscriber) {
+		GameEventing.removeEventListener(subscriber);
+	}
+
 	public void requestGame() {
 		if (credit > 0 && (state() == INTRO || state() == CREDIT)) {
 			game().reset();

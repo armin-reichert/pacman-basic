@@ -393,7 +393,7 @@ public class Ghost extends Creature {
 			}
 		}
 		case LEAVING_HOUSE -> {
-			animations.select(GhostAnimationKey.ANIM_COLOR);
+			animations().ifPresent(anim -> anim.select(GhostAnimationKey.ANIM_COLOR));
 		}
 		default -> {
 		}
@@ -401,7 +401,7 @@ public class Ghost extends Creature {
 	}
 
 	private void startFlashing(int numFlashes, long duration) {
-		animations.select(GhostAnimationKey.ANIM_FLASHING);
+		animations().ifPresent(anim -> anim.select(GhostAnimationKey.ANIM_FLASHING));
 		var flashing = (SingleGenericAnimation<?>) animations.selectedAnimation();
 		long frameDuration = duration / (numFlashes * flashing.numFrames());
 		flashing.frameDuration(frameDuration);
@@ -410,8 +410,10 @@ public class Ghost extends Creature {
 	}
 
 	private void ensureFlashingStopped() {
-		if (animations.selectedKey() == GhostAnimationKey.ANIM_FLASHING) {
-			animations.select(GhostAnimationKey.ANIM_COLOR);
-		}
+		animations().ifPresent(anim -> {
+			if (anim.selectedKey() == GhostAnimationKey.ANIM_FLASHING) {
+				anim.select(GhostAnimationKey.ANIM_COLOR);
+			}
+		});
 	}
 }

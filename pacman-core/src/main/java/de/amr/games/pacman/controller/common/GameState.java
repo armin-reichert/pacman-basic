@@ -250,9 +250,13 @@ public enum GameState implements FsmState<GameModel> {
 		public void onEnter(GameModel game) {
 			timer.setSeconds(5);
 			timer.start();
-			game.ghosts().forEach(ghost -> ghost.setAbsSpeed(0));
-			game.ghosts().forEach(Ghost::show);
-			game.pac.setAbsSpeed(0);
+			game.ghosts().forEach(ghost -> {
+				ghost.animations().ifPresent(anim -> {
+					anim.stop();
+				});
+				ghost.show();
+			});
+			game.pac.animations().ifPresent(anim -> anim.stop());
 			game.pac.show();
 			game.scores().saveHiscore();
 		}
