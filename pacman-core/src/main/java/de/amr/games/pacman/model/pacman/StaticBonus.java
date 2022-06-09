@@ -26,11 +26,15 @@ package de.amr.games.pacman.model.pacman;
 import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.lib.TickTimer.sec_to_ticks;
 
-import de.amr.games.pacman.event.GameEventing;
+import java.util.Optional;
+
 import de.amr.games.pacman.event.GameEventType;
+import de.amr.games.pacman.event.GameEventing;
 import de.amr.games.pacman.lib.V2d;
+import de.amr.games.pacman.lib.animation.GenericAnimationCollection;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.actors.Bonus;
+import de.amr.games.pacman.model.common.actors.BonusAnimationKey;
 import de.amr.games.pacman.model.common.actors.BonusState;
 import de.amr.games.pacman.model.common.actors.Entity;
 import de.amr.games.pacman.model.common.world.World;
@@ -46,9 +50,21 @@ public class StaticBonus extends Entity implements Bonus {
 	private int symbol;
 	private int value;
 	private long timer;
+	private GenericAnimationCollection<Bonus, BonusAnimationKey, ?> animations;
 
 	public StaticBonus(V2d position) {
 		this.position = position;
+		visible = true;
+	}
+
+	@Override
+	public void setAnimations(GenericAnimationCollection<Bonus, BonusAnimationKey, ?> animations) {
+		this.animations = animations;
+	}
+
+	@Override
+	public Optional<GenericAnimationCollection<Bonus, BonusAnimationKey, ?>> animations() {
+		return Optional.of(animations);
 	}
 
 	@Override
@@ -88,6 +104,7 @@ public class StaticBonus extends Entity implements Bonus {
 		this.symbol = symbol;
 		this.value = value;
 		timer = ticks;
+		animations.select(BonusAnimationKey.ANIM_SYMBOL);
 		log("%s activated", this);
 	}
 
@@ -95,12 +112,14 @@ public class StaticBonus extends Entity implements Bonus {
 	public void eat(long ticks) {
 		state = BonusState.EATEN;
 		timer = ticks;
+		animations.select(BonusAnimationKey.ANIM_VALUE);
 	}
 
 	@Override
 	public void update(GameModel game) {
 		switch (state) {
 		case INACTIVE -> {
+			animations.select(BonusAnimationKey.ANIM_NONE);
 		}
 		case EDIBLE -> {
 			if (game.pac.tile().equals(tile())) {

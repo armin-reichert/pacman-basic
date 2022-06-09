@@ -24,8 +24,11 @@ SOFTWARE.
 
 package de.amr.games.pacman.model.common.actors;
 
+import java.util.Optional;
+
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.lib.animation.GenericAnimationCollection;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.world.World;
 
@@ -53,4 +56,8 @@ public interface Bonus {
 	void update(GameModel game);
 
 	void eat(long ticks);
+
+	void setAnimations(GenericAnimationCollection<Bonus, BonusAnimationKey, ?> animations);
+
+	Optional<GenericAnimationCollection<Bonus, BonusAnimationKey, ?>> animations();
 }

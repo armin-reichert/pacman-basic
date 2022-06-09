@@ -28,6 +28,7 @@ import static de.amr.games.pacman.lib.TickTimer.sec_to_ticks;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 import de.amr.games.pacman.event.GameEventType;
@@ -36,8 +37,11 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.lib.animation.GenericAnimationCollection;
+import de.amr.games.pacman.lib.animation.SingleGenericAnimation;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.actors.Bonus;
+import de.amr.games.pacman.model.common.actors.BonusAnimationKey;
 import de.amr.games.pacman.model.common.actors.BonusState;
 import de.amr.games.pacman.model.common.actors.Creature;
 import de.amr.games.pacman.model.common.world.Portal;
@@ -57,10 +61,26 @@ public class MovingBonus extends Creature implements Bonus {
 	private int symbol;
 	private int value;
 	private long timer;
+	private GenericAnimationCollection<Bonus, BonusAnimationKey, ?> animations;
 	private final List<V2i> route = new ArrayList<>();
+	private final SingleGenericAnimation<Integer> jumpAnimation;
 
 	public MovingBonus() {
 		super("MovingBonus");
+		jumpAnimation = new SingleGenericAnimation<>(2, -2);
+		jumpAnimation.frameDuration(10);
+		jumpAnimation.repeatForever();
+		visible = true;
+	}
+
+	@Override
+	public void setAnimations(GenericAnimationCollection<Bonus, BonusAnimationKey, ?> animations) {
+		this.animations = animations;
+	}
+
+	@Override
+	public Optional<GenericAnimationCollection<Bonus, BonusAnimationKey, ?>> animations() {
+		return Optional.of(animations);
 	}
 
 	@Override
@@ -115,6 +135,8 @@ public class MovingBonus extends Creature implements Bonus {
 			computeNewRoute(world, entryPortal, exitPortal);
 			show();
 			state = BonusState.EDIBLE;
+			animations.select(BonusAnimationKey.ANIM_SYMBOL);
+			jumpAnimation.restart();
 			log("MovingBonus symbol=%d, value=%d position=%s activated", symbol, value, position);
 		}
 	}
@@ -122,7 +144,17 @@ public class MovingBonus extends Creature implements Bonus {
 	@Override
 	public void eat(long ticks) {
 		state = BonusState.EATEN;
+		animations.select(BonusAnimationKey.ANIM_VALUE);
+		jumpAnimation.stop();
 		timer = ticks;
+	}
+
+	public void stopJumping() {
+		jumpAnimation.stop();
+	}
+
+	public int dy() {
+		return jumpAnimation.isRunning() ? jumpAnimation.frame() : 0;
 	}
 
 	private void computeNewRoute(World world, Portal entryPortal, Portal exitPortal) {
@@ -153,6 +185,7 @@ public class MovingBonus extends Creature implements Bonus {
 	public void update(GameModel game) {
 		switch (state) {
 		case INACTIVE -> {
+			animations.select(BonusAnimationKey.ANIM_NONE);
 		}
 		case EDIBLE -> {
 			boolean leftWorld = followRoute(game.level.world);
@@ -169,6 +202,7 @@ public class MovingBonus extends Creature implements Bonus {
 				eat(sec_to_ticks(2));
 				GameEventing.publish(GameEventType.BONUS_GETS_EATEN, tile());
 			}
+			jumpAnimation.advance();
 		}
 		case EATEN -> {
 			boolean expired = tick();

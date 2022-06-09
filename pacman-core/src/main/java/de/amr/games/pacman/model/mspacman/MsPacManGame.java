@@ -39,6 +39,7 @@ import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameScores;
 import de.amr.games.pacman.model.common.GameVariant;
+import de.amr.games.pacman.model.common.actors.BonusAnimationKey;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.Pac;
 import de.amr.games.pacman.model.common.world.ArcadeWorld;
@@ -376,6 +377,9 @@ public class MsPacManGame extends GameModel {
 	@Override
 	protected void onBonusReached() {
 		movingBonus.activate(level.world, level.bonusSymbol, BONUS_VALUES[level.bonusSymbol], TickTimer.INDEFINITE);
+		movingBonus.animations().ifPresent(anim -> {
+			anim.select(BonusAnimationKey.ANIM_SYMBOL);
+		});
 		GameEventing.publish(GameEventType.BONUS_GETS_ACTIVE, movingBonus.tile());
 	}
 }
