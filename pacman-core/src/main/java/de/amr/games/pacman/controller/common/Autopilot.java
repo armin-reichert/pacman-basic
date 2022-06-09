@@ -145,8 +145,7 @@ public class Autopilot implements Consumer<Pac> {
 		if (data.hunterAhead != null) {
 			Direction escapeDir = null;
 			if (data.hunterBehind != null) {
-				escapeDir = findEscapeDirectionExcluding(
-						EnumSet.of(game().pac.moveDir(), game().pac.moveDir().opposite()));
+				escapeDir = findEscapeDirectionExcluding(EnumSet.of(game().pac.moveDir(), game().pac.moveDir().opposite()));
 				log("Detected ghost %s behind, escape direction is %s", data.hunterAhead.name, escapeDir);
 			} else {
 				escapeDir = findEscapeDirectionExcluding(EnumSet.of(game().pac.moveDir()));
@@ -164,8 +163,7 @@ public class Autopilot implements Consumer<Pac> {
 
 		if (data.frightenedGhosts.size() != 0 && game().pac.powerTimer.remaining() >= 1 * 60) {
 			Ghost prey = data.frightenedGhosts.get(0);
-			log("Detected frightened ghost %s %.0g tiles away", prey.name,
-					prey.tile().manhattanDistance(game().pac.tile()));
+			log("Detected frightened ghost %s %.0g tiles away", prey.name, prey.tile().manhattanDistance(game().pac.tile()));
 			game().pac.targetTile = prey.tile();
 		} else if (game().bonus() != null && game().bonus().state() == BonusState.EDIBLE
 				&& game().bonus().tile().manhattanDistance(game().pac.tile()) <= AutopilotData.MAX_BONUS_HARVEST_DIST) {

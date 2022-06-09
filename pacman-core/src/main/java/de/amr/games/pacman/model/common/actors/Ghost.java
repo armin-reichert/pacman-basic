@@ -37,11 +37,13 @@ import static de.amr.games.pacman.model.common.world.World.HTS;
 import static de.amr.games.pacman.model.common.world.World.t;
 
 import java.util.List;
+import java.util.Optional;
 
 import de.amr.games.pacman.event.GameEvent;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEventing;
 import de.amr.games.pacman.lib.Direction;
+import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.lib.animation.GenericAnimationCollection;
 import de.amr.games.pacman.lib.animation.SingleGenericAnimation;
@@ -198,6 +200,7 @@ public class Ghost extends Creature {
 		case DEAD -> {
 			setRelSpeed(2 * game.level.ghostSpeed);
 			targetTile = world.ghostHouse().entry();
+			animations().ifPresent(anims -> anims.select(GhostAnimationKey.ANIM_EYES));
 			boolean houseReached = returnToHouse(world, world.ghostHouse());
 			if (houseReached) {
 				setBothDirs(DOWN);
@@ -217,6 +220,7 @@ public class Ghost extends Creature {
 			}
 		}
 		}
+		updateAnimations(game);
 	}
 
 	public void checkCruiseElroyStart(GameLevel level) {
@@ -353,7 +357,17 @@ public class Ghost extends Creature {
 
 	// Animations
 
-	public GenericAnimationCollection<Ghost, GhostAnimationKey, ?> animations;
+	public static final long FLASHING_TIME = TickTimer.sec_to_ticks(2); // TODO not sure
+
+	private GenericAnimationCollection<Ghost, GhostAnimationKey, ?> animations;
+
+	public void setAnimations(GenericAnimationCollection<Ghost, GhostAnimationKey, ?> animations) {
+		this.animations = animations;
+	}
+
+	public Optional<GenericAnimationCollection<Ghost, GhostAnimationKey, ?>> animations() {
+		return Optional.ofNullable(animations);
+	}
 
 	public void startFlashing(int numFlashes, long duration) {
 		animations.select(GhostAnimationKey.ANIM_FLASHING);
@@ -362,5 +376,33 @@ public class Ghost extends Creature {
 		flashing.frameDuration(frameDuration);
 		flashing.repeat(numFlashes);
 		flashing.restart();
+	}
+
+	public void updateAnimations(GameModel game) {
+		long powerTicksRemaining = game.pac.powerTimer.remaining();
+		boolean startFlashing = powerTicksRemaining == Ghost.FLASHING_TIME;
+		boolean stopFlashing = powerTicksRemaining == 1; // TODO check why == 0 does not work
+		switch (state) {
+		case DEAD -> {
+		}
+		case FRIGHTENED, LOCKED -> {
+			if (startFlashing) {
+				startFlashing(game.level.numFlashes, FLASHING_TIME);
+			} else if (stopFlashing) {
+				ensureFlashingStopped();
+			}
+		}
+		case LEAVING_HOUSE -> {
+			animations.select(GhostAnimationKey.ANIM_COLOR);
+		}
+		default -> {
+		}
+		}
+	}
+
+	private void ensureFlashingStopped() {
+		if (animations.selectedKey() == GhostAnimationKey.ANIM_FLASHING) {
+			animations.select(GhostAnimationKey.ANIM_COLOR);
+		}
 	}
 }

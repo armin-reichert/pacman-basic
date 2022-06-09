@@ -35,7 +35,7 @@ import java.util.stream.Stream;
  */
 public interface GenericAnimationCollection<ENTITY, KEY, SPRITE> extends GenericAnimation {
 
-	public GenericAnimation animation(KEY key);
+	public GenericAnimation getByKey(KEY key);
 
 	public Stream<GenericAnimation> animations();
 
@@ -46,19 +46,19 @@ public interface GenericAnimationCollection<ENTITY, KEY, SPRITE> extends Generic
 	public KEY selectedKey();
 
 	default GenericAnimation selectedAnimation() {
-		return animation(selectedKey());
+		return getByKey(selectedKey());
 	}
 
 	default void stop(KEY key) {
-		animation(key).stop();
+		getByKey(key).stop();
 	}
 
 	default void run(KEY key) {
-		animation(key).run();
+		getByKey(key).run();
 	}
 
 	default void restart(KEY key) {
-		animation(key).restart();
+		getByKey(key).restart();
 	}
 
 	@Override

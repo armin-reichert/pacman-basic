@@ -30,11 +30,14 @@ import static de.amr.games.pacman.model.common.actors.GhostState.HUNTING_PAC;
 import de.amr.games.pacman.event.GameEventing;
 import de.amr.games.pacman.event.GameStateChangeEvent;
 import de.amr.games.pacman.lib.TickTimer;
+import de.amr.games.pacman.lib.animation.GenericAnimation;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.lib.fsm.FsmState;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameModel.CheckResult;
 import de.amr.games.pacman.model.common.actors.Ghost;
+import de.amr.games.pacman.model.common.actors.GhostAnimationKey;
+import de.amr.games.pacman.model.common.actors.GhostState;
 
 /**
  * Rule of thumb: here, specify the "what" and "when", not the "how" (which should be implemented in the model).
@@ -76,6 +79,7 @@ public enum GameState implements FsmState<GameModel> {
 			timer.setSeconds(readySeconds);
 			timer.start();
 			game.resetGuys();
+			game.ghosts().forEach(ghost -> ghost.animations().ifPresent(GenericAnimation::stop));
 		}
 
 		@Override
@@ -196,6 +200,10 @@ public enum GameState implements FsmState<GameModel> {
 			timer.setSeconds(1);
 			timer.start();
 			game.pac.hide();
+			game.ghosts(GhostState.DEAD).filter(ghost -> ghost.killIndex >= 0)
+					.forEach(ghost -> ghost.animations().ifPresent(anims -> {
+						anims.select(GhostAnimationKey.ANIM_VALUE);
+					}));
 		}
 
 		@Override
@@ -211,6 +219,9 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void onExit(GameModel game) {
 			game.pac.show();
+			for (var ghost : game.ghosts) {
+				ghost.animations().ifPresent(anims -> anims.getByKey(GhostAnimationKey.ANIM_FLASHING).run());
+			}
 			game.letDeadGhostsReturnHome();
 		}
 	},
