@@ -37,7 +37,7 @@ public interface GenericAnimationCollection<ENTITY, KEY, SPRITE> extends Generic
 
 	public GenericAnimation getByKey(KEY key);
 
-	public Stream<GenericAnimation> animations();
+	public Stream<GenericAnimation> all();
 
 	public SPRITE currentSprite(ENTITY entity);
 
@@ -63,21 +63,21 @@ public interface GenericAnimationCollection<ENTITY, KEY, SPRITE> extends Generic
 
 	@Override
 	default void reset() {
-		animations().forEach(GenericAnimation::reset);
+		all().forEach(GenericAnimation::reset);
 	}
 
 	@Override
 	default void stop() {
-		animations().forEach(GenericAnimation::stop);
+		all().forEach(GenericAnimation::stop);
 	}
 
 	@Override
 	default void run() {
-		animations().forEach(GenericAnimation::run);
+		all().forEach(GenericAnimation::run);
 	}
 
 	@Override
 	default void restart() {
-		animations().forEach(GenericAnimation::restart);
+		all().forEach(GenericAnimation::restart);
 	}
 }
