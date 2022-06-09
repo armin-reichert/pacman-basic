@@ -441,6 +441,12 @@ public abstract class GameModel {
 			ghost.enterFrightenedMode();
 			ghost.forceTurningBack(level.world);
 		});
+		ghosts(LOCKED).forEach(ghost -> {
+			ghost.animations().ifPresent(anim -> {
+				anim.select(GhostAnimationKey.ANIM_BLUE);
+				anim.ensureRunning();
+			});
+		});
 		GameEventing.publish(GameEventType.PLAYER_GETS_POWER, pac.tile());
 	}
 

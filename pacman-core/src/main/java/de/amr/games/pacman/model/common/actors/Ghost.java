@@ -378,15 +378,6 @@ public class Ghost extends Creature {
 		});
 	}
 
-	public void startFlashing(int numFlashes, long duration) {
-		animations.select(GhostAnimationKey.ANIM_FLASHING);
-		var flashing = (SingleGenericAnimation<?>) animations.selectedAnimation();
-		long frameDuration = duration / (numFlashes * flashing.numFrames());
-		flashing.frameDuration(frameDuration);
-		flashing.repeat(numFlashes);
-		flashing.restart();
-	}
-
 	public void updateAnimations(GameModel game) {
 		long powerTicksRemaining = game.pac.powerTimer.remaining();
 		boolean startFlashing = powerTicksRemaining == Ghost.FLASHING_TIME;
@@ -407,6 +398,15 @@ public class Ghost extends Creature {
 		default -> {
 		}
 		}
+	}
+
+	private void startFlashing(int numFlashes, long duration) {
+		animations.select(GhostAnimationKey.ANIM_FLASHING);
+		var flashing = (SingleGenericAnimation<?>) animations.selectedAnimation();
+		long frameDuration = duration / (numFlashes * flashing.numFrames());
+		flashing.frameDuration(frameDuration);
+		flashing.repeat(numFlashes);
+		flashing.restart();
 	}
 
 	private void ensureFlashingStopped() {
