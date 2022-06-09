@@ -58,6 +58,11 @@ public class StaticBonus extends Entity implements Bonus {
 	}
 
 	@Override
+	public Entity entity() {
+		return this;
+	}
+
+	@Override
 	public void setAnimations(GenericAnimationCollection<Bonus, BonusAnimationKey, ?> animations) {
 		this.animations = animations;
 	}
@@ -79,11 +84,6 @@ public class StaticBonus extends Entity implements Bonus {
 	}
 
 	@Override
-	public V2d position() {
-		return position;
-	}
-
-	@Override
 	public int symbol() {
 		return symbol;
 	}
@@ -94,12 +94,12 @@ public class StaticBonus extends Entity implements Bonus {
 	}
 
 	@Override
-	public void init() {
+	public void setInactive() {
 		state = BonusState.INACTIVE;
 	}
 
 	@Override
-	public void activate(World world, int symbol, int value, long ticks) {
+	public void setEdible(World world, int symbol, int value, long ticks) {
 		state = BonusState.EDIBLE;
 		this.symbol = symbol;
 		this.value = value;
@@ -109,7 +109,7 @@ public class StaticBonus extends Entity implements Bonus {
 	}
 
 	@Override
-	public void eat(long ticks) {
+	public void setEaten(long ticks) {
 		state = BonusState.EATEN;
 		timer = ticks;
 		animations.select(BonusAnimationKey.ANIM_VALUE);
@@ -125,13 +125,13 @@ public class StaticBonus extends Entity implements Bonus {
 			if (game.pac.tile().equals(tile())) {
 				log("%s found bonus: %s", game.pac.name, this);
 				game.scores().addPoints(value());
-				eat(sec_to_ticks(2));
+				setEaten(sec_to_ticks(2));
 				GameEventing.publish(GameEventType.BONUS_GETS_EATEN, tile());
 			} else {
 				boolean expired = tick();
 				if (expired) {
 					log("Bonus expired: %s", this);
-					init();
+					setInactive();
 					GameEventing.publish(GameEventType.BONUS_EXPIRES, tile());
 				}
 			}
@@ -140,7 +140,7 @@ public class StaticBonus extends Entity implements Bonus {
 			boolean expired = tick();
 			if (expired) {
 				log("Bonus expired: %s", this);
-				init();
+				setInactive();
 				GameEventing.publish(GameEventType.BONUS_EXPIRES, tile());
 			}
 		}

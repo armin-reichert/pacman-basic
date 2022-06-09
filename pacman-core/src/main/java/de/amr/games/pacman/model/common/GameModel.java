@@ -179,9 +179,6 @@ public abstract class GameModel {
 				anim.stop();
 			});
 		}
-		if (bonus() != null) {
-			bonus().init();
-		}
 	}
 
 	public Stream<Ghost> ghosts() {

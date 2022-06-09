@@ -44,6 +44,7 @@ import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.BonusAnimationKey;
 import de.amr.games.pacman.model.common.actors.BonusState;
 import de.amr.games.pacman.model.common.actors.Creature;
+import de.amr.games.pacman.model.common.actors.Entity;
 import de.amr.games.pacman.model.common.world.Portal;
 import de.amr.games.pacman.model.common.world.World;
 
@@ -74,6 +75,11 @@ public class MovingBonus extends Creature implements Bonus {
 	}
 
 	@Override
+	public Entity entity() {
+		return this;
+	}
+
+	@Override
 	public void setAnimations(GenericAnimationCollection<Bonus, BonusAnimationKey, ?> animations) {
 		this.animations = animations;
 	}
@@ -87,11 +93,6 @@ public class MovingBonus extends Creature implements Bonus {
 	public String toString() {
 		return "[MovingBonus state=%s symbol=%d value=%d timer=%d creature=%s]".formatted(state, symbol, value, timer,
 				super.toString());
-	}
-
-	@Override
-	public V2d position() {
-		return position;
 	}
 
 	@Override
@@ -110,43 +111,43 @@ public class MovingBonus extends Creature implements Bonus {
 	}
 
 	@Override
-	public void init() {
+	public void setInactive() {
+		state = BonusState.INACTIVE;
+		animations.select(BonusAnimationKey.ANIM_NONE);
+		timer = TickTimer.INDEFINITE;
 		symbol = 0;
 		value = 0;
-		state = BonusState.INACTIVE;
-		timer = TickTimer.INDEFINITE;
 		route.clear();
-		newTileEntered = true;
-		stuck = false;
-		setAbsSpeed(0.4); // TODO how fast should it walk?
-		hide();
+		jumpAnimation.stop();
 	}
 
 	@Override
-	public void activate(World world, int symbol, int value, long ticks) {
-		init();
-		timer = ticks;
+	public void setEdible(World world, int symbol, int value, long ticks) {
 		this.symbol = symbol;
 		this.value = value;
+		route.clear();
+		newTileEntered = true;
+		stuck = false;
 		int numPortals = world.portals().size();
 		if (numPortals > 0) {
 			Portal entryPortal = world.portals().get(new Random().nextInt(numPortals));
 			Portal exitPortal = world.portals().get(new Random().nextInt(numPortals));
 			computeNewRoute(world, entryPortal, exitPortal);
-			show();
 			state = BonusState.EDIBLE;
 			animations.select(BonusAnimationKey.ANIM_SYMBOL);
+			timer = ticks;
+			setAbsSpeed(0.4); // TODO how fast should it walk?
 			jumpAnimation.restart();
 			log("MovingBonus symbol=%d, value=%d position=%s activated", symbol, value, position);
 		}
 	}
 
 	@Override
-	public void eat(long ticks) {
+	public void setEaten(long ticks) {
 		state = BonusState.EATEN;
 		animations.select(BonusAnimationKey.ANIM_VALUE);
-		jumpAnimation.stop();
 		timer = ticks;
+		jumpAnimation.stop();
 	}
 
 	public void stopJumping() {
@@ -185,7 +186,6 @@ public class MovingBonus extends Creature implements Bonus {
 	public void update(GameModel game) {
 		switch (state) {
 		case INACTIVE -> {
-			animations.select(BonusAnimationKey.ANIM_NONE);
 		}
 		case EDIBLE -> {
 			boolean leftWorld = followRoute(game.level.world);
@@ -199,7 +199,7 @@ public class MovingBonus extends Creature implements Bonus {
 			if (game.pac.tile().equals(tile())) {
 				log("%s found bonus %s", game.pac.name, this);
 				game.scores().addPoints(value());
-				eat(sec_to_ticks(2));
+				setEaten(sec_to_ticks(2));
 				GameEventing.publish(GameEventType.BONUS_GETS_EATEN, tile());
 			}
 			jumpAnimation.advance();
@@ -208,7 +208,7 @@ public class MovingBonus extends Creature implements Bonus {
 			boolean expired = tick();
 			if (expired) {
 				log("%s expired", this);
-				init();
+				setInactive();
 				GameEventing.publish(GameEventType.BONUS_EXPIRES, tile());
 			}
 		}

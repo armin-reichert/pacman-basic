@@ -376,7 +376,7 @@ public class MsPacManGame extends GameModel {
 
 	@Override
 	protected void onBonusReached() {
-		movingBonus.activate(level.world, level.bonusSymbol, BONUS_VALUES[level.bonusSymbol], TickTimer.INDEFINITE);
+		movingBonus.setEdible(level.world, level.bonusSymbol, BONUS_VALUES[level.bonusSymbol], TickTimer.INDEFINITE);
 		movingBonus.animations().ifPresent(anim -> {
 			anim.select(BonusAnimationKey.ANIM_SYMBOL);
 		});

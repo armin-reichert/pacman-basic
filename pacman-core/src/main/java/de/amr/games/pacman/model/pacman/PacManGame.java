@@ -185,7 +185,7 @@ public class PacManGame extends GameModel {
 		level = createLevel(levelNumber);
 		levelCounter.addSymbol(level.bonusSymbol);
 		initGhosts(level);
-		bonus.init();
+		bonus.setInactive();
 		ghostKillIndex = -1;
 		scores.gameScore().levelNumber = levelNumber;
 	}
@@ -219,7 +219,7 @@ public class PacManGame extends GameModel {
 
 	@Override
 	protected void onBonusReached() {
-		bonus.activate(level.world, level.bonusSymbol, BONUS_VALUES[level.bonusSymbol],
+		bonus.setEdible(level.world, level.bonusSymbol, BONUS_VALUES[level.bonusSymbol],
 				sec_to_ticks(9.0 + new Random().nextDouble()));
 		bonus.animations().ifPresent(anim -> {
 			anim.select(BonusAnimationKey.ANIM_SYMBOL);

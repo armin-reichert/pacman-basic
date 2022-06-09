@@ -26,8 +26,6 @@ package de.amr.games.pacman.model.common.actors;
 
 import java.util.Optional;
 
-import de.amr.games.pacman.lib.V2d;
-import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.lib.animation.GenericAnimationCollection;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.world.World;
@@ -41,21 +39,17 @@ public interface Bonus {
 
 	int value();
 
-	V2d position();
-
-	default V2i tile() {
-		return World.tile(position());
-	}
+	Entity entity();
 
 	BonusState state();
 
-	void init();
-
-	void activate(World world, int symbol, int value, long ticks);
-
 	void update(GameModel game);
 
-	void eat(long ticks);
+	void setInactive();
+
+	void setEdible(World world, int symbol, int value, long ticks);
+
+	void setEaten(long ticks);
 
 	void setAnimations(GenericAnimationCollection<Bonus, BonusAnimationKey, ?> animations);
 

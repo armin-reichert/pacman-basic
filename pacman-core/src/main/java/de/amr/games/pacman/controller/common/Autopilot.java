@@ -165,10 +165,10 @@ public class Autopilot implements Consumer<Pac> {
 			Ghost prey = data.frightenedGhosts.get(0);
 			log("Detected frightened ghost %s %.0g tiles away", prey.name, prey.tile().manhattanDistance(game().pac.tile()));
 			game().pac.targetTile = prey.tile();
-		} else if (game().bonus() != null && game().bonus().state() == BonusState.EDIBLE
-				&& game().bonus().tile().manhattanDistance(game().pac.tile()) <= AutopilotData.MAX_BONUS_HARVEST_DIST) {
+		} else if (game().bonus() != null && game().bonus().state() == BonusState.EDIBLE && game().bonus().entity().tile()
+				.manhattanDistance(game().pac.tile()) <= AutopilotData.MAX_BONUS_HARVEST_DIST) {
 			log("Detected active bonus");
-			game().pac.targetTile = game().bonus().tile();
+			game().pac.targetTile = game().bonus().entity().tile();
 		} else {
 			V2i foodTile = findTileFarestFromGhosts(findNearestFoodTiles());
 			game().pac.targetTile = foodTile;
