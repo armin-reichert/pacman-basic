@@ -135,7 +135,8 @@ public class IntroController extends Fsm<State, Context> {
 					$.nicknameVisible[$.ghostIndex] = true;
 				} else if (timer.atSecond(2.0)) {
 					if (++$.ghostIndex < 4) {
-						timer.setIndefinite(); // start over
+						timer.setIndefinite(); // start
+																		// over
 					}
 				} else if (timer.atSecond(2.5)) {
 					$.blinking.restart();
@@ -163,14 +164,14 @@ public class IntroController extends Fsm<State, Context> {
 				$.pacMan.setMoveDir(Direction.LEFT);
 				$.pacMan.setAbsSpeed($.speed);
 				$.pacMan.show();
-				$.pacMan.animations().get().ensureRunning();
+				$.pacMan.animations().ifPresent(anim -> anim.ensureRunning());
 				for (Ghost ghost : $.ghosts) {
 					ghost.state = GhostState.HUNTING_PAC;
 					ghost.position = $.pacMan.position.plus(16 * (ghost.id + 1), 0);
 					ghost.setBothDirs(Direction.LEFT);
 					ghost.setAbsSpeed($.speed);
 					ghost.show();
-					ghost.animations().get().ensureRunning();
+					ghost.animations().ifPresent(anim -> anim.ensureRunning());
 				}
 			}
 
@@ -246,7 +247,7 @@ public class IntroController extends Fsm<State, Context> {
 						if (ghost.state != GhostState.DEAD) {
 							ghost.show();
 							ghost.setAbsSpeed(0.5 * $.speed);
-							ghost.animations().get().ensureRunning();
+							ghost.animations().ifPresent(anim -> anim.ensureRunning());
 						} else {
 							ghost.hide();
 						}
