@@ -24,21 +24,21 @@ SOFTWARE.
 package de.amr.games.pacman.lib.animation;
 
 import java.util.Collection;
-import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
  * @author Armin Reichert
  *
- * @param <K> key type of map (enum)
+ * @param <K> key type of map
  * @param <S> sprite type (Image, Rectangle)
  */
-public class GenericAnimationMap<K extends Enum<K>, S> implements GenericAnimation {
+public class GenericAnimationMap<K, S> implements GenericAnimation {
 
 	private final Map<K, SingleGenericAnimation<S>> animationMap;
 
-	public GenericAnimationMap(Class<K> keyClass) {
-		animationMap = new EnumMap<>(keyClass);
+	public GenericAnimationMap(int capacity) {
+		animationMap = new HashMap<>(capacity);
 	}
 
 	public void put(K key, SingleGenericAnimation<S> animation) {
