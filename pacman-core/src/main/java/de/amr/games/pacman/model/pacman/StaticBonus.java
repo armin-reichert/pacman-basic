@@ -24,7 +24,6 @@ SOFTWARE.
 package de.amr.games.pacman.model.pacman;
 
 import static de.amr.games.pacman.lib.Logging.log;
-import static de.amr.games.pacman.lib.TickTimer.sec_to_ticks;
 
 import java.util.Optional;
 
@@ -69,13 +68,14 @@ public class StaticBonus extends Entity implements Bonus {
 
 	@Override
 	public Optional<GenericAnimationCollection<Bonus, BonusAnimationKey, ?>> animations() {
-		return Optional.of(animations);
+		return Optional.ofNullable(animations);
 	}
 
 	@Override
 	public String toString() {
-		return "[StaticBonus symbol=%d value=%d state=%s position=%s timer=%d]".formatted(symbol, value, state, position,
-				timer);
+		var animationKey = animations != null ? animations.selectedKey() : "";
+		return "[StaticBonus symbol=%d value=%d state=%s position=%s timer=%d animation=%s]".formatted(symbol, value, state,
+				position, timer, animationKey);
 	}
 
 	@Override
@@ -96,36 +96,31 @@ public class StaticBonus extends Entity implements Bonus {
 	@Override
 	public void setInactive() {
 		state = BonusState.INACTIVE;
+		animations().ifPresent(anim -> anim.select(BonusAnimationKey.ANIM_NONE));
 	}
 
 	@Override
 	public void setEdible(World world, int symbol, int value, long ticks) {
 		state = BonusState.EDIBLE;
+		animations().ifPresent(anim -> anim.select(BonusAnimationKey.ANIM_SYMBOL));
 		this.symbol = symbol;
 		this.value = value;
 		timer = ticks;
-		animations.select(BonusAnimationKey.ANIM_SYMBOL);
 		log("%s activated", this);
-	}
-
-	@Override
-	public void setEaten(long ticks) {
-		state = BonusState.EATEN;
-		timer = ticks;
-		animations.select(BonusAnimationKey.ANIM_VALUE);
 	}
 
 	@Override
 	public void update(GameModel game) {
 		switch (state) {
 		case INACTIVE -> {
-			animations().ifPresent(anim -> anim.select(BonusAnimationKey.ANIM_NONE));
 		}
 		case EDIBLE -> {
 			if (game.pac.tile().equals(tile())) {
 				log("%s found bonus: %s", game.pac.name, this);
 				game.scores().addPoints(value());
-				setEaten(sec_to_ticks(2));
+				state = BonusState.EATEN;
+				timer = Bonus.EATEN_DURATION;
+				animations().ifPresent(anim -> anim.select(BonusAnimationKey.ANIM_VALUE));
 				GameEventing.publish(GameEventType.BONUS_GETS_EATEN, tile());
 			} else {
 				boolean expired = tick();

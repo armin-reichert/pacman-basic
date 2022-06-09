@@ -26,6 +26,7 @@ package de.amr.games.pacman.model.common.actors;
 
 import java.util.Optional;
 
+import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.animation.GenericAnimationCollection;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.world.World;
@@ -34,6 +35,8 @@ import de.amr.games.pacman.model.common.world.World;
  * @author Armin Reichert
  */
 public interface Bonus {
+
+	public static final long EATEN_DURATION = TickTimer.sec_to_ticks(2);
 
 	int symbol();
 
@@ -48,8 +51,6 @@ public interface Bonus {
 	void setInactive();
 
 	void setEdible(World world, int symbol, int value, long ticks);
-
-	void setEaten(long ticks);
 
 	void setAnimations(GenericAnimationCollection<Bonus, BonusAnimationKey, ?> animations);
 

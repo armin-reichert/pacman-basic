@@ -142,8 +142,7 @@ public class MovingBonus extends Creature implements Bonus {
 		}
 	}
 
-	@Override
-	public void setEaten(long ticks) {
+	private void setEaten(long ticks) {
 		state = BonusState.EATEN;
 		animations.select(BonusAnimationKey.ANIM_VALUE);
 		timer = ticks;
