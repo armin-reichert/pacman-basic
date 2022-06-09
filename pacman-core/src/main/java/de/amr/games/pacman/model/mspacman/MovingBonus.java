@@ -30,8 +30,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import de.amr.games.pacman.event.GameEventing;
 import de.amr.games.pacman.event.GameEventType;
+import de.amr.games.pacman.event.GameEventing;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.V2d;
@@ -91,8 +91,8 @@ public class MovingBonus extends Creature implements Bonus {
 
 	@Override
 	public void init() {
-		symbol = -1;
-		value = -1;
+		symbol = 0;
+		value = 0;
 		state = BonusState.INACTIVE;
 		timer = TickTimer.INDEFINITE;
 		route.clear();
@@ -158,7 +158,8 @@ public class MovingBonus extends Creature implements Bonus {
 			boolean leftWorld = followRoute(game.level.world);
 			if (leftWorld) {
 				log("%s expired (left level.world)", this);
-				init();
+				position = V2d.NULL;
+				state = BonusState.INACTIVE;
 				GameEventing.publish(GameEventType.BONUS_EXPIRES, tile());
 				return;
 			}

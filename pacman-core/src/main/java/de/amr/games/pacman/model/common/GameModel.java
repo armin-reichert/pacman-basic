@@ -524,8 +524,6 @@ public abstract class GameModel {
 	protected abstract void onBonusReached();
 
 	public void updateBonus() {
-		if (bonus() != null) {
-			bonus().update(this);
-		}
+		bonus().update(this);
 	}
 }
