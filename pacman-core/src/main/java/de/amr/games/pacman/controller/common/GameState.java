@@ -97,11 +97,15 @@ public enum GameState implements FsmState<GameModel> {
 	},
 
 	HUNTING {
-
 		@Override
 		public void onEnter(GameModel game) {
 			game.pac.animations().ifPresent(anim -> {
 				anim.selectedAnimation().ensureRunning();
+			});
+			game.ghosts().forEach(ghost -> {
+				ghost.animations().ifPresent(anim -> {
+					anim.ensureRunning();
+				});
 			});
 		}
 
