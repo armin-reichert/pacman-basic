@@ -137,6 +137,7 @@ public class IntroController extends Fsm<IntroController.State, IntroController.
 				}
 				if (ghost.position.y <= $.lightsTopLeft.y + ghost.id * 18) {
 					ghost.setAbsSpeed(0);
+					ghost.animations().ifPresent(anim -> anim.stop());
 					if (++$.ghostIndex == $.ghosts.length) {
 						controller.changeState(State.MSPACMAN);
 					}
