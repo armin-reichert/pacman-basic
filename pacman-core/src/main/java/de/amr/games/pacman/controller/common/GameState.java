@@ -37,6 +37,7 @@ import de.amr.games.pacman.model.common.GameModel.CheckResult;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.GhostAnimationKey;
 import de.amr.games.pacman.model.common.actors.GhostState;
+import de.amr.games.pacman.model.common.actors.PacAnimationKey;
 
 /**
  * Rule of thumb: here, specify the "what" and "when", not the "how" (which should be implemented in the model).
@@ -182,6 +183,11 @@ public enum GameState implements FsmState<GameModel> {
 			timer.setIndefinite();
 			timer.start();
 			game.pac.setAbsSpeed(0);
+			game.pac.animations().ifPresent(anim -> {
+				anim.select(PacAnimationKey.ANIM_DYING);
+				anim.reset();
+				anim.stop();
+			});
 			game.ghosts(FRIGHTENED).forEach(ghost -> ghost.state = HUNTING_PAC);
 			game.bonus().setInactive();
 		}
