@@ -159,27 +159,26 @@ public class IntroController extends Fsm<State, Context> {
 			public void onEnter(Context $) {
 				timer.setIndefinite();
 				timer.start();
-				$.pacMan.show();
-				$.pacMan.setAbsSpeed($.speed);
 				$.pacMan.setPosition(t(36), t(20));
 				$.pacMan.setMoveDir(Direction.LEFT);
+				$.pacMan.setAbsSpeed($.speed);
+				$.pacMan.show();
 				for (Ghost ghost : $.ghosts) {
-					ghost.position = $.pacMan.position.plus(16 + ghost.id * 16, 0);
-					ghost.setWishDir(Direction.LEFT);
-					ghost.setMoveDir(Direction.LEFT);
+					ghost.state = GhostState.HUNTING_PAC;
+					ghost.position = $.pacMan.position.plus(16 * (ghost.id + 1), 0);
+					ghost.setBothDirs(Direction.LEFT);
 					ghost.setAbsSpeed($.speed);
 					ghost.show();
-					ghost.state = GhostState.HUNTING_PAC;
 				}
 			}
 
 			@Override
 			public void onUpdate(Context $) {
-				if ($.pacMan.position.x < t($.left)) {
+				if ($.pacMan.position.x <= t($.left)) {
 					controller.changeState(State.CHASING_GHOSTS);
 					return;
 				}
-				if ($.pacMan.position.x < t($.left) + 8) {
+				if ($.pacMan.position.x <= t($.left) + 4) {
 					for (Ghost ghost : $.ghosts) {
 						ghost.state = GhostState.FRIGHTENED;
 						ghost.setWishDir(Direction.RIGHT);
