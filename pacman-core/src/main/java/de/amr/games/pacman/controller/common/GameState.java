@@ -30,7 +30,6 @@ import static de.amr.games.pacman.model.common.actors.GhostState.HUNTING_PAC;
 import de.amr.games.pacman.event.GameEventing;
 import de.amr.games.pacman.event.GameStateChangeEvent;
 import de.amr.games.pacman.lib.TickTimer;
-import de.amr.games.pacman.lib.animation.GenericAnimation;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.lib.fsm.FsmState;
 import de.amr.games.pacman.model.common.GameModel;
@@ -38,6 +37,7 @@ import de.amr.games.pacman.model.common.GameModel.CheckResult;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.GhostAnimationKey;
 import de.amr.games.pacman.model.common.actors.GhostState;
+import de.amr.games.pacman.model.common.actors.PacAnimationKey;
 
 /**
  * Rule of thumb: here, specify the "what" and "when", not the "how" (which should be implemented in the model).
@@ -79,7 +79,13 @@ public enum GameState implements FsmState<GameModel> {
 			timer.setSeconds(readySeconds);
 			timer.start();
 			game.resetGuys();
-			game.ghosts().forEach(ghost -> ghost.animations().ifPresent(GenericAnimation::stop));
+			game.pac.animations().ifPresent(anim -> anim.select(PacAnimationKey.ANIM_MUNCHING));
+			game.ghosts().forEach(ghost -> {
+				ghost.animations().ifPresent(anim -> {
+					anim.select(GhostAnimationKey.ANIM_COLOR);
+					anim.stop();
+				});
+			});
 		}
 
 		@Override

@@ -23,6 +23,8 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.common.actors;
 
+import java.util.Optional;
+
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.animation.GenericAnimationCollection;
 import de.amr.games.pacman.model.common.GameLevel;
@@ -46,8 +48,6 @@ public class Pac extends Creature {
 	/** Number of clock ticks Pac has not eaten any pellet. */
 	public int starvingTicks = 0;
 
-	public GenericAnimationCollection<Pac, PacAnimationKey, ?> animations;
-
 	public Pac(String name) {
 		super(name);
 	}
@@ -70,5 +70,17 @@ public class Pac extends Creature {
 			tryMoving(level.world);
 		}
 		powerTimer.advance();
+	}
+
+	// Animations
+
+	private GenericAnimationCollection<Pac, PacAnimationKey, ?> animations;
+
+	public Optional<GenericAnimationCollection<Pac, PacAnimationKey, ?>> animations() {
+		return Optional.ofNullable(animations);
+	}
+
+	public void setAnimations(GenericAnimationCollection<Pac, PacAnimationKey, ?> animations) {
+		this.animations = animations;
 	}
 }
