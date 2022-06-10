@@ -49,37 +49,32 @@ public class GenericAnimationMap<K, S> implements GenericAnimation {
 		return animationMap.get(key);
 	}
 
-	public Collection<SingleGenericAnimation<S>> allAnimations() {
+	public Collection<SingleGenericAnimation<S>> all() {
 		return animationMap.values();
 	}
 
 	@Override
 	public void reset() {
-		allAnimations().forEach(SingleGenericAnimation::reset);
+		all().forEach(SingleGenericAnimation::reset);
 	}
 
 	@Override
 	public void restart() {
-		allAnimations().forEach(SingleGenericAnimation::restart);
+		all().forEach(SingleGenericAnimation::restart);
 	}
 
 	@Override
 	public void stop() {
-		allAnimations().forEach(SingleGenericAnimation::stop);
+		all().forEach(SingleGenericAnimation::stop);
 	}
 
 	@Override
 	public void run() {
-		allAnimations().forEach(SingleGenericAnimation::run);
+		all().forEach(SingleGenericAnimation::run);
 	}
 
 	@Override
 	public void ensureRunning() {
-		allAnimations().forEach(SingleGenericAnimation::ensureRunning);
-	}
-
-	@Override
-	public void setFrameIndex(int index) {
-		throw new UnsupportedOperationException();
+		all().forEach(SingleGenericAnimation::ensureRunning);
 	}
 }

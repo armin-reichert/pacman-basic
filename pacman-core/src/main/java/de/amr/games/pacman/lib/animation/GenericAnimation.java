@@ -37,6 +37,4 @@ public interface GenericAnimation {
 	void restart();
 
 	void ensureRunning();
-
-	void setFrameIndex(int index);
 }

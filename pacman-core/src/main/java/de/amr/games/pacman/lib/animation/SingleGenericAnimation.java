@@ -229,7 +229,6 @@ public class SingleGenericAnimation<T> implements GenericAnimation {
 		return frameIndex;
 	}
 
-	@Override
 	public void setFrameIndex(int i) {
 		frameIndex = i;
 		frameRunningTicks = 0;
