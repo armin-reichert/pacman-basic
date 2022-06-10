@@ -48,7 +48,6 @@ public class Intermission2Controller extends Fsm<State, Context> {
 	public final GameController gameController;
 	public final Context context = new Context();
 	public Runnable playIntermissionSound;
-	public Runnable playFlapAnimation;
 
 	public Intermission2Controller(GameController gameController) {
 		super(State.values());
@@ -90,8 +89,8 @@ public class Intermission2Controller extends Fsm<State, Context> {
 			@Override
 			public void onUpdate(Context $) {
 				if (timer.atSecond(1)) {
-					if (controller.playFlapAnimation != null) {
-						controller.playFlapAnimation.run();
+					if ($.flap.animation != null) {
+						$.flap.animation.restart();
 					}
 				} else if (timer.atSecond(2)) {
 					$.flap.hide();
