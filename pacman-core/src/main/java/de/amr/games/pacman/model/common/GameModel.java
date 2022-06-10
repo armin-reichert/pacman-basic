@@ -115,6 +115,9 @@ public abstract class GameModel {
 	/** Energizer animation. */
 	public SingleGenericAnimation<Boolean> energizerPulse = SingleGenericAnimation.pulse(10);
 
+	/** Maze flashing. */
+	public SingleGenericAnimation<?> mazeFlashingAnimation;
+
 	/** Game score and high score. */
 	public final GameScores scores = new GameScores(this);
 

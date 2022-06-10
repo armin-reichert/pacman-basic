@@ -147,17 +147,22 @@ public enum GameState implements FsmState<GameModel> {
 	LEVEL_COMPLETE {
 		@Override
 		public void onEnter(GameModel game) {
-			timer.setIndefinite();
+			timer.setSeconds(4);
 			timer.start();
 			game.huntingTimer.stop();
 			game.bonus().setInactive();
 			game.pac.setAbsSpeed(0);
+			game.pac.animations().ifPresent(anim -> anim.reset());
 			game.ghosts().forEach(Ghost::hide);
 			game.energizerPulse.reset();
 		}
 
 		@Override
 		public void onUpdate(GameModel game) {
+			if (timer.atSecond(1)) {
+				game.mazeFlashingAnimation.repeat(game.level.numFlashes);
+				game.mazeFlashingAnimation.restart();
+			}
 			if (timer.hasExpired()) {
 				if (controller.credit() == 0) {
 					controller.changeState(INTRO);
