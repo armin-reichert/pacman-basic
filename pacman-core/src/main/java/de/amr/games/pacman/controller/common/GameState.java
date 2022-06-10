@@ -88,6 +88,7 @@ public enum GameState implements FsmState<GameModel> {
 			game.resetGuys();
 			game.scores.gameScore.showContent = hasCredit;
 			game.scores.highScore.showContent = true;
+			game.energizerPulse.reset();
 		}
 
 		@Override
@@ -117,6 +118,7 @@ public enum GameState implements FsmState<GameModel> {
 					anim.ensureRunning();
 				});
 			});
+			game.energizerPulse.restart();
 		}
 
 		@Override
@@ -145,12 +147,13 @@ public enum GameState implements FsmState<GameModel> {
 	LEVEL_COMPLETE {
 		@Override
 		public void onEnter(GameModel game) {
+			timer.setIndefinite();
+			timer.start();
 			game.huntingTimer.stop();
 			game.bonus().setInactive();
 			game.pac.setAbsSpeed(0);
 			game.ghosts().forEach(Ghost::hide);
-			timer.setIndefinite();
-			timer.start();
+			game.energizerPulse.reset();
 		}
 
 		@Override
@@ -259,6 +262,7 @@ public enum GameState implements FsmState<GameModel> {
 		public void onEnter(GameModel game) {
 			timer.setSeconds(5);
 			timer.start();
+			game.scores.saveHiscore();
 			game.ghosts().forEach(ghost -> {
 				ghost.animations().ifPresent(anim -> {
 					anim.stop();
@@ -267,7 +271,7 @@ public enum GameState implements FsmState<GameModel> {
 			});
 			game.pac.animations().ifPresent(anim -> anim.stop());
 			game.pac.show();
-			game.scores.saveHiscore();
+			game.energizerPulse.reset(); // TODO check this
 		}
 
 		@Override
