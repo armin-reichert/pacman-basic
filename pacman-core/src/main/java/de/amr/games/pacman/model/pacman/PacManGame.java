@@ -180,7 +180,7 @@ public class PacManGame extends GameModel {
 		initGhosts(level);
 		bonus.setInactive();
 		ghostKillIndex = -1;
-		scores.gameScore().levelNumber = levelNumber;
+		scores.gameScore.levelNumber = levelNumber;
 	}
 
 	private void initGhosts(GameLevel level) {

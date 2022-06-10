@@ -63,9 +63,9 @@ public class GameScores {
 		}
 	}
 
-	private final GameModel game;
-	private final Score gameScore;
-	private final Score highScore;
+	public final GameModel game;
+	public final Score gameScore;
+	public final Score highScore;
 	private File hiscoreFile;
 	private boolean enabled;
 
@@ -80,14 +80,6 @@ public class GameScores {
 	public void setHiscoreFile(File hiscoreFile) {
 		this.hiscoreFile = hiscoreFile;
 		loadFromFile(highScore, hiscoreFile);
-	}
-
-	public Score gameScore() {
-		return gameScore;
-	}
-
-	public Score highScore() {
-		return highScore;
 	}
 
 	public void enable(boolean enabled) {

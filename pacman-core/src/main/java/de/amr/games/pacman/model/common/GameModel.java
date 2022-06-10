@@ -144,7 +144,7 @@ public abstract class GameModel {
 		levelCounter.clear();
 		setLevel(1);
 		scores.reload();
-		scores.gameScore().reset();
+		scores.gameScore.reset();
 	}
 
 	public void resetGuys() {

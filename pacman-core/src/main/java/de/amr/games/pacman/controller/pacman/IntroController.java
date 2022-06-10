@@ -93,8 +93,8 @@ public class IntroController extends Fsm<State, Context> {
 		START {
 			@Override
 			public void onEnter(Context $) {
-				scores().gameScore().showContent = false;
-				scores().highScore().showContent = true;
+				scores().gameScore.showContent = false;
+				scores().highScore.showContent = true;
 				$.ghostIndex = 0;
 				Arrays.fill($.pictureVisible, false);
 				Arrays.fill($.nicknameVisible, false);
@@ -111,8 +111,8 @@ public class IntroController extends Fsm<State, Context> {
 			@Override
 			public void onUpdate(Context $) {
 				if (timer.tick() == 1) {
-					scores().gameScore().visible = true;
-					scores().highScore().visible = true;
+					scores().gameScore.visible = true;
+					scores().highScore.visible = true;
 				} else if (timer.tick() == 2) {
 					$.creditVisible = true;
 				} else if (timer.tick() == 3) {

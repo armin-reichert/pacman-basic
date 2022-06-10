@@ -66,8 +66,8 @@ public enum GameState implements FsmState<GameModel> {
 	CREDIT {
 		@Override
 		public void onEnter(GameModel game) {
-			game.scores.gameScore().showContent = false;
-			game.scores.highScore().showContent = true;
+			game.scores.gameScore.showContent = false;
+			game.scores.highScore.showContent = true;
 		}
 
 		@Override
@@ -86,8 +86,8 @@ public enum GameState implements FsmState<GameModel> {
 			timer.setSeconds(readySeconds);
 			timer.start();
 			game.resetGuys();
-			game.scores.gameScore().showContent = hasCredit;
-			game.scores.highScore().showContent = true;
+			game.scores.gameScore.showContent = hasCredit;
+			game.scores.highScore.showContent = true;
 		}
 
 		@Override
