@@ -24,20 +24,27 @@ SOFTWARE.
 
 package de.amr.games.pacman.model.common;
 
+import static de.amr.games.pacman.model.common.world.World.t;
+
 import java.util.ArrayList;
 import java.util.stream.Stream;
+
+import de.amr.games.pacman.lib.V2d;
+import de.amr.games.pacman.model.common.actors.Entity;
 
 /**
  * @author Armin Reichert
  */
-public class LevelCounter {
+public class LevelCounter extends Entity {
 
 	private final int maxSize;
-	private final ArrayList<Integer> symbols;
+	public final ArrayList<Integer> symbols;
 
 	public LevelCounter(int maxSize) {
 		this.maxSize = maxSize;
 		symbols = new ArrayList<>(maxSize);
+		// position x = right edge!
+		position = new V2d(t(24), t(34));
 	}
 
 	public void clear() {
