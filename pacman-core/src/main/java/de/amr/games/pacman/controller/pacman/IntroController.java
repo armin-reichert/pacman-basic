@@ -63,7 +63,7 @@ public class IntroController extends Fsm<State, Context> {
 	public IntroController(GameController gameController) {
 		super(State.values());
 		this.gameController = gameController;
-		logging = true;
+		logging = false;
 	}
 
 	@Override
@@ -79,9 +79,9 @@ public class IntroController extends Fsm<State, Context> {
 		public final String characters[] = { "SHADOW", "SPEEDY", "BASHFUL", "POKEY" };
 		public boolean creditVisible = false;
 		public boolean titleVisible = false;
-		public final boolean[] pictureVisible = { false, false, false, false };
-		public final boolean[] nicknameVisible = { false, false, false, false };
-		public final boolean[] characterVisible = { false, false, false, false };
+		public boolean[] pictureVisible = { false, false, false, false };
+		public boolean[] nicknameVisible = { false, false, false, false };
+		public boolean[] characterVisible = { false, false, false, false };
 		public Pac pacMan;
 		public Ghost[] ghosts;
 		public int ghostIndex;
@@ -124,7 +124,6 @@ public class IntroController extends Fsm<State, Context> {
 		},
 
 		PRESENTING_GHOSTS {
-
 			@Override
 			public void onUpdate(Context $) {
 				if (timer.atSecond(0)) {
@@ -135,18 +134,20 @@ public class IntroController extends Fsm<State, Context> {
 					$.nicknameVisible[$.ghostIndex] = true;
 				} else if (timer.atSecond(2.0)) {
 					if (++$.ghostIndex < 4) {
-						timer.setIndefinite(); // start
-																		// over
+						timer.setIndefinite(); // resets timer to 0 too!
 					}
 				} else if (timer.atSecond(2.5)) {
-					$.blinking.restart();
-					$.blinking.advance(); // make energizer visible
 					controller.changeState(State.SHOWING_POINTS);
 				}
 			}
 		},
 
 		SHOWING_POINTS {
+			@Override
+			public void onEnter(Context $) {
+				$.blinking.stop();
+			}
+
 			@Override
 			public void onUpdate(Context $) {
 				if (timer.atSecond(1)) {
@@ -177,6 +178,9 @@ public class IntroController extends Fsm<State, Context> {
 
 			@Override
 			public void onUpdate(Context $) {
+				if (timer.atSecond(1)) {
+					$.blinking.restart();
+				}
 				if ($.pacMan.position.x <= t($.left)) {
 					controller.changeState(State.CHASING_GHOSTS);
 					return;
