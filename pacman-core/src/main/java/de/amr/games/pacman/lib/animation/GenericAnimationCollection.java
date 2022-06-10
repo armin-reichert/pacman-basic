@@ -33,51 +33,67 @@ import java.util.stream.Stream;
  * @param <K> Key key type
  * @param <S> Sprite type (Rectangle, Image)
  */
-public interface GenericAnimationCollection<E, K, S> extends GenericAnimation<S> {
+public abstract class GenericAnimationCollection<E, K, S> implements GenericAnimation<S> {
 
-	public GenericAnimation<S> getByKey(K key);
+	protected K selectedKey;
 
-	public Stream<GenericAnimation<S>> all();
+	public abstract GenericAnimation<S> getByKey(K key);
 
-	public S currentSprite(E entity);
+	public abstract Stream<GenericAnimation<S>> all();
 
-	public void select(K key);
+	public abstract S currentSprite(E entity);
 
-	public K selectedKey();
+	@Override
+	public S frame(int i) {
+		return null;
+	}
 
-	default GenericAnimation<S> selectedAnimation() {
+	public K selectedKey() {
+		return selectedKey;
+	}
+
+	public void select(K key) {
+		selectedKey = key;
+	}
+
+	public GenericAnimation<S> selectedAnimation() {
 		return getByKey(selectedKey());
 	}
 
-	default void stop(K key) {
+	public void stop(K key) {
 		getByKey(key).stop();
 	}
 
-	default void run(K key) {
+	public void run(K key) {
 		getByKey(key).run();
 	}
 
-	default void restart(K key) {
+	public void restart(K key) {
 		getByKey(key).restart();
 	}
 
 	@Override
-	default void reset() {
+	public void reset() {
 		all().forEach(GenericAnimation::reset);
 	}
 
 	@Override
-	default void stop() {
+	public void stop() {
 		all().forEach(GenericAnimation::stop);
 	}
 
 	@Override
-	default void run() {
+	public void run() {
 		all().forEach(GenericAnimation::run);
 	}
 
 	@Override
-	default void restart() {
+	public void ensureRunning() {
+		all().forEach(GenericAnimation::ensureRunning);
+	}
+
+	@Override
+	public void restart() {
 		all().forEach(GenericAnimation::restart);
 	}
 }
