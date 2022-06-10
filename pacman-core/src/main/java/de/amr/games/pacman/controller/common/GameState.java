@@ -197,7 +197,7 @@ public enum GameState implements FsmState<GameModel> {
 	PACMAN_DYING {
 		@Override
 		public void onEnter(GameModel game) {
-			timer.setIndefinite();
+			timer.setSeconds(5);
 			timer.start();
 			game.pac.setAbsSpeed(0);
 			game.pac.animations().ifPresent(anim -> {
@@ -211,6 +211,13 @@ public enum GameState implements FsmState<GameModel> {
 
 		@Override
 		public void onUpdate(GameModel game) {
+			if (timer.atSecond(1)) {
+				game.ghosts().forEach(Ghost::hide);
+			} else if (timer.atSecond(2)) {
+				game.pac.animations().ifPresent(anim -> {
+					anim.getByKey(PacAnimationKey.ANIM_DYING).restart();
+				});
+			}
 			if (timer.hasExpired()) {
 				game.lives--;
 				if (controller.credit() == 0) {
