@@ -30,15 +30,20 @@ import java.time.LocalDate;
  * @author Armin Reichert
  */
 public class Score extends Entity {
+	public final String title;
+	public boolean showContent;
 	public int points;
 	public int levelNumber;
 	public LocalDate date;
 
-	public Score() {
+	public Score(String title) {
+		this.title = title;
 		reset();
 	}
 
 	public void reset() {
+		showContent = true;
+		visible = true;
 		points = 0;
 		levelNumber = 1;
 		date = LocalDate.now();

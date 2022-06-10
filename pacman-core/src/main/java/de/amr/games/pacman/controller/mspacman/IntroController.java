@@ -93,8 +93,8 @@ public class IntroController extends Fsm<IntroController.State, IntroController.
 		START {
 			@Override
 			public void onEnter(Context $) {
-				scores().gameScore().visible = false;
-				scores().highScore().visible = false;
+				scores().gameScore().showContent = false;
+				scores().highScore().showContent = true;
 				$.lightsTimer.setIndefinite();
 				$.lightsTimer.start();
 				$.msPacMan.setMoveDir(LEFT);
@@ -188,7 +188,7 @@ public class IntroController extends Fsm<IntroController.State, IntroController.
 		}
 
 		protected GameScores scores() {
-			return controller.gameController.game().scores();
+			return controller.gameController.game().scores;
 		}
 
 	}

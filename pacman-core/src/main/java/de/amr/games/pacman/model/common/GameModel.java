@@ -111,6 +111,9 @@ public abstract class GameModel {
 	/** List of collected level symbols. */
 	public LevelCounter levelCounter = new LevelCounter(7);
 
+	/** Game score and high score. */
+	public final GameScores scores = new GameScores(this);
+
 	/** Counter used by ghost house logic. */
 	public int globalDotCounter;
 
@@ -136,13 +139,12 @@ public abstract class GameModel {
 		return level.world;
 	}
 
-	public abstract GameScores scores();
-
 	public void reset() {
 		lives = INITIAL_LIFES;
 		levelCounter.clear();
 		setLevel(1);
-		scores().reset();
+		scores.reload();
+		scores.gameScore().reset();
 	}
 
 	public void resetGuys() {
@@ -360,7 +362,7 @@ public abstract class GameModel {
 		level.numGhostsKilled += prey.length;
 		if (level.numGhostsKilled == 16) {
 			log("All ghosts killed at level %d, Pac-Man wins additional %d points", level.number, ALL_GHOSTS_KILLED_POINTS);
-			scores().addPoints(ALL_GHOSTS_KILLED_POINTS);
+			scores.addPoints(ALL_GHOSTS_KILLED_POINTS);
 		}
 	}
 
@@ -369,7 +371,7 @@ public abstract class GameModel {
 		ghost.targetTile = level.world.ghostHouse().entry();
 		ghost.killIndex = ++ghostKillIndex;
 		int points = ghostValue(ghost.killIndex);
-		scores().addPoints(points);
+		scores.addPoints(points);
 		log("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name, ghost.tile(), points);
 	}
 
@@ -425,7 +427,7 @@ public abstract class GameModel {
 		level.world.removeFood(pac.tile());
 		ghosts[RED_GHOST].checkCruiseElroyStart(level);
 		updateGhostDotCounters();
-		scores().addPoints(value);
+		scores.addPoints(value);
 		GameEventing.publish(GameEventType.PLAYER_FINDS_FOOD, pac.tile());
 	}
 

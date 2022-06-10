@@ -42,7 +42,6 @@ import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
-import de.amr.games.pacman.model.common.GameScores;
 import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.actors.BonusAnimationKey;
 import de.amr.games.pacman.model.common.actors.Ghost;
@@ -156,7 +155,6 @@ public class PacManGame extends GameModel {
 	// in the red zone, chasing or scattering ghosts can not move upwards
 	private static final List<V2i> RED_ZONE = List.of(v(12, 14), v(15, 14), v(12, 26), v(15, 26));
 
-	private final GameScores scores;
 	private final StaticBonus bonus;
 
 	public PacManGame() {
@@ -166,13 +164,8 @@ public class PacManGame extends GameModel {
 			ghost.upwardsBlockedTiles = RED_ZONE;
 		}
 		bonus = new StaticBonus(new V2d(v(13, 20).scaled(TS)).plus(HTS, 0));
-		scores = new GameScores(this, new File(System.getProperty("user.home"), "highscore-pacman.xml"));
+		scores.setHiscoreFile(new File(System.getProperty("user.home"), "highscore-pacman.xml"));
 		setLevel(1);
-	}
-
-	@Override
-	public GameScores scores() {
-		return scores;
 	}
 
 	@Override

@@ -65,6 +65,12 @@ public enum GameState implements FsmState<GameModel> {
 
 	CREDIT {
 		@Override
+		public void onEnter(GameModel game) {
+			game.scores.gameScore().showContent = false;
+			game.scores.highScore().showContent = true;
+		}
+
+		@Override
 		public void onUpdate(GameModel game) {
 			if (timer.hasExpired()) {
 				controller.changeState(READY);
@@ -75,10 +81,13 @@ public enum GameState implements FsmState<GameModel> {
 	READY {
 		@Override
 		public void onEnter(GameModel game) {
-			double readySeconds = controller.isGameRunning() || controller.credit() == 0 ? 2 : 5;
+			boolean hasCredit = controller.credit() > 0;
+			double readySeconds = controller.isGameRunning() || !hasCredit ? 2 : 5;
 			timer.setSeconds(readySeconds);
 			timer.start();
 			game.resetGuys();
+			game.scores.gameScore().showContent = hasCredit;
+			game.scores.highScore().showContent = true;
 		}
 
 		@Override
@@ -86,10 +95,10 @@ public enum GameState implements FsmState<GameModel> {
 			if (timer.hasExpired()) {
 				game.startHuntingPhase(0);
 				if (controller.credit() > 0) {
-					game.scores().enable(true);
+					game.scores.enable(true);
 					controller.setGameRunning(true);
 				} else {
-					game.scores().enable(false);
+					game.scores.enable(false);
 					controller.setGameRunning(false);
 				}
 				controller.changeState(GameState.HUNTING);
@@ -258,7 +267,7 @@ public enum GameState implements FsmState<GameModel> {
 			});
 			game.pac.animations().ifPresent(anim -> anim.stop());
 			game.pac.show();
-			game.scores().saveHiscore();
+			game.scores.saveHiscore();
 		}
 
 		@Override

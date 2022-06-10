@@ -93,8 +93,8 @@ public class IntroController extends Fsm<State, Context> {
 		START {
 			@Override
 			public void onEnter(Context $) {
-				scores().gameScore().visible = false;
-				scores().highScore().visible = false;
+				scores().gameScore().showContent = false;
+				scores().highScore().showContent = true;
 				$.ghostIndex = 0;
 				Arrays.fill($.pictureVisible, false);
 				Arrays.fill($.nicknameVisible, false);
@@ -297,7 +297,7 @@ public class IntroController extends Fsm<State, Context> {
 		}
 
 		protected GameScores scores() {
-			return controller.gameController.game().scores();
+			return controller.gameController.game().scores;
 		}
 	}
 }

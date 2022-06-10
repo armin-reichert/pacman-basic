@@ -64,69 +64,71 @@ public class GameScores {
 	}
 
 	private final GameModel game;
-	private final File hiscoreFile;
-	private final Score score;
-	private final Score hiscore;
+	private final Score gameScore;
+	private final Score highScore;
+	private File hiscoreFile;
 	private boolean enabled;
 
-	public GameScores(GameModel game, File hiscoreFile) {
+	public GameScores(GameModel game) {
 		this.game = game;
+		gameScore = new Score("SCORE");
+		gameScore.position = new V2d(TS, TS);
+		highScore = new Score("HIGH SCORE");
+		highScore.position = new V2d(16 * TS, TS);
+	}
+
+	public void setHiscoreFile(File hiscoreFile) {
 		this.hiscoreFile = hiscoreFile;
-		score = new Score();
-		score.position = new V2d(TS, TS);
-		hiscore = new Score();
-		hiscore.position = new V2d(16 * TS, TS);
-		loadFromFile(hiscore, hiscoreFile);
+		loadFromFile(highScore, hiscoreFile);
 	}
 
 	public Score gameScore() {
-		return score;
+		return gameScore;
 	}
 
 	public Score highScore() {
-		return hiscore;
+		return highScore;
 	}
 
 	public void enable(boolean enabled) {
 		this.enabled = enabled;
 	}
 
-	public void reset() {
-		score.reset();
-		loadFromFile(hiscore, hiscoreFile);
+	public void reload() {
+		loadFromFile(highScore, hiscoreFile);
 	}
 
 	public void addPoints(int points) {
 		if (!enabled) {
 			return;
 		}
-		int scoreBeforeAddingPoints = score.points;
-		score.points += points;
-		if (score.points > hiscore.points) {
-			hiscore.points = score.points;
-			hiscore.levelNumber = game.level.number;
-			hiscore.date = LocalDate.now();
+		int scoreBeforeAddingPoints = gameScore.points;
+		gameScore.points += points;
+		if (gameScore.points > highScore.points) {
+			highScore.points = gameScore.points;
+			highScore.levelNumber = game.level.number;
+			highScore.date = LocalDate.now();
 		}
-		if (scoreBeforeAddingPoints < game.extraLifeScore && score.points >= game.extraLifeScore) {
+		if (scoreBeforeAddingPoints < game.extraLifeScore && gameScore.points >= game.extraLifeScore) {
 			game.lives++;
 			GameEventing.publish(new GameEvent(game, GameEventType.PLAYER_GETS_EXTRA_LIFE, null, game.pac.tile()));
 		}
 	}
 
 	public void saveHiscore() {
-		Score latestHiscore = new Score();
+		Score latestHiscore = new Score("");
 		loadFromFile(latestHiscore, hiscoreFile);
-		if (hiscore.points <= latestHiscore.points) {
+		if (highScore.points <= latestHiscore.points) {
 			return;
 		}
 		var props = new Properties();
-		props.setProperty("points", String.valueOf(hiscore.points));
-		props.setProperty("level", String.valueOf(hiscore.levelNumber));
-		props.setProperty("date", hiscore.date.format(DateTimeFormatter.ISO_LOCAL_DATE));
+		props.setProperty("points", String.valueOf(highScore.points));
+		props.setProperty("level", String.valueOf(highScore.levelNumber));
+		props.setProperty("date", highScore.date.format(DateTimeFormatter.ISO_LOCAL_DATE));
 		try (var out = new FileOutputStream(hiscoreFile)) {
 			props.storeToXML(out, "");
-			log("New hiscore saved. File: '%s' Points: %d Level: %d", hiscoreFile.getAbsolutePath(), hiscore.points,
-					hiscore.levelNumber);
+			log("New hiscore saved. File: '%s' Points: %d Level: %d", hiscoreFile.getAbsolutePath(), highScore.points,
+					highScore.levelNumber);
 		} catch (Exception x) {
 			log("Highscore could not be saved. File '%s' Reason: %s", hiscoreFile, x.getMessage());
 		}

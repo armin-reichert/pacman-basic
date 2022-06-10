@@ -37,7 +37,6 @@ import de.amr.games.pacman.event.GameEventing;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
-import de.amr.games.pacman.model.common.GameScores;
 import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.actors.BonusAnimationKey;
 import de.amr.games.pacman.model.common.actors.Ghost;
@@ -290,7 +289,6 @@ public class MsPacManGame extends GameModel {
 		return level;
 	}
 
-	private final GameScores scores;
 	private final MovingBonus movingBonus;
 
 	/**
@@ -320,18 +318,13 @@ public class MsPacManGame extends GameModel {
 		super(GameVariant.MS_PACMAN, new Pac("Ms. Pac-Man"), new Ghost(RED_GHOST, "Blinky"), new Ghost(PINK_GHOST, "Pinky"),
 				new Ghost(CYAN_GHOST, "Inky"), new Ghost(ORANGE_GHOST, "Sue"));
 		movingBonus = new MovingBonus();
-		scores = new GameScores(this, new File(System.getProperty("user.home"), "highscore-ms_pacman.xml"));
+		scores.setHiscoreFile(new File(System.getProperty("user.home"), "highscore-ms_pacman.xml"));
 		setLevel(1);
 	}
 
 	@Override
 	public ArcadeWorld world() {
 		return (ArcadeWorld) level.world;
-	}
-
-	@Override
-	public GameScores scores() {
-		return scores;
 	}
 
 	@Override
