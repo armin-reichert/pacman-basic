@@ -26,10 +26,10 @@ package de.amr.games.pacman.lib.animation;
 /**
  * Timed sequence ("animation") of things, for example of images or spritesheet regions.
  * 
- * @param <T> type of things e.g. sprites
+ * @param <S> type of things e.g. sprites
  * @author Armin Reichert
  */
-public class SingleGenericAnimation<T> implements GenericAnimation {
+public class SingleGenericAnimation<S> implements GenericAnimation<S> {
 
 	public static int INDEFINITE = -1;
 
@@ -44,7 +44,7 @@ public class SingleGenericAnimation<T> implements GenericAnimation {
 		return pulse;
 	}
 
-	protected T[] things;
+	protected S[] things;
 	protected int repetitions;
 	protected long delay;
 	protected long delayRemainingTicks;
@@ -58,7 +58,7 @@ public class SingleGenericAnimation<T> implements GenericAnimation {
 	protected Runnable onStart;
 
 	@SafeVarargs
-	public SingleGenericAnimation(T... things) {
+	public SingleGenericAnimation(S... things) {
 		if (things.length == 0) {
 			throw new IllegalArgumentException("Sequence must have at least contain one thing");
 		}
@@ -167,8 +167,8 @@ public class SingleGenericAnimation<T> implements GenericAnimation {
 	 * 
 	 * @return the frame before the animation step is executed
 	 */
-	public T animate() {
-		T currentThing = things[frameIndex];
+	public S animate() {
+		S currentThing = things[frameIndex];
 		advance();
 		return currentThing;
 	}
@@ -176,7 +176,7 @@ public class SingleGenericAnimation<T> implements GenericAnimation {
 	/**
 	 * @return the current frame/thing
 	 */
-	public T frame() {
+	public S frame() {
 		return things[frameIndex];
 	}
 
@@ -218,7 +218,8 @@ public class SingleGenericAnimation<T> implements GenericAnimation {
 	 * @param i index
 	 * @return the thing at the given index
 	 */
-	public T frame(int i) {
+	@Override
+	public S frame(int i) {
 		return things[i];
 	}
 

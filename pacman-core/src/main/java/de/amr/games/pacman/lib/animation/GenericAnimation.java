@@ -26,7 +26,7 @@ package de.amr.games.pacman.lib.animation;
 /**
  * @author Armin Reichert
  */
-public interface GenericAnimation {
+public interface GenericAnimation<T> {
 
 	void run();
 
@@ -37,4 +37,6 @@ public interface GenericAnimation {
 	void restart();
 
 	void ensureRunning();
+
+	T frame(int i);
 }

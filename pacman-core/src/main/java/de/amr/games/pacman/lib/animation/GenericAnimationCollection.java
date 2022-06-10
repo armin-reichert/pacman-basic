@@ -29,35 +29,35 @@ import java.util.stream.Stream;
 /**
  * @author Armin Reichert
  * 
- * @param <ENTITY> entity type, for example Ghost, Pac etc.
- * @param <KEY>    Key key type
- * @param <SPRITE> Sprite type (Rectangle, Image)
+ * @param <E> entity type, for example Ghost, Pac etc.
+ * @param <K> Key key type
+ * @param <S> Sprite type (Rectangle, Image)
  */
-public interface GenericAnimationCollection<ENTITY, KEY, SPRITE> extends GenericAnimation {
+public interface GenericAnimationCollection<E, K, S> extends GenericAnimation<S> {
 
-	public GenericAnimation getByKey(KEY key);
+	public GenericAnimation<S> getByKey(K key);
 
-	public Stream<GenericAnimation> all();
+	public Stream<GenericAnimation<S>> all();
 
-	public SPRITE currentSprite(ENTITY entity);
+	public S currentSprite(E entity);
 
-	public void select(KEY key);
+	public void select(K key);
 
-	public KEY selectedKey();
+	public K selectedKey();
 
-	default GenericAnimation selectedAnimation() {
+	default GenericAnimation<S> selectedAnimation() {
 		return getByKey(selectedKey());
 	}
 
-	default void stop(KEY key) {
+	default void stop(K key) {
 		getByKey(key).stop();
 	}
 
-	default void run(KEY key) {
+	default void run(K key) {
 		getByKey(key).run();
 	}
 
-	default void restart(KEY key) {
+	default void restart(K key) {
 		getByKey(key).restart();
 	}
 

@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021-22 Armin Reichert
+Copyright (c) 2022 Armin Reichert
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -20,66 +20,50 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
- */
+*/
+
 package de.amr.games.pacman.lib.animation;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Arrays;
 
 /**
  * @author Armin Reichert
- *
- * @param <K> key type of map
- * @param <S> sprite type (Image, Rectangle)
  */
-public class GenericAnimationMap<K, S> implements GenericAnimation<S> {
+public class StaticGenericAnimation<T> implements GenericAnimation<T> {
 
-	private final Map<K, SingleGenericAnimation<S>> animationMap;
+	private final T[] things;
 
-	public GenericAnimationMap(int capacity) {
-		animationMap = new HashMap<>(capacity);
+	@SafeVarargs
+	public StaticGenericAnimation(T... things) {
+		this.things = Arrays.copyOf(things, things.length);
 	}
 
-	public void put(K key, SingleGenericAnimation<S> animation) {
-		animationMap.put(key, animation);
-	}
-
-	public SingleGenericAnimation<S> get(K key) {
-		return animationMap.get(key);
-	}
-
-	public Collection<SingleGenericAnimation<S>> all() {
-		return animationMap.values();
+	public int numFrames() {
+		return things.length;
 	}
 
 	@Override
-	public S frame(int i) {
-		return null; // TODO what?
-	}
-
-	@Override
-	public void reset() {
-		all().forEach(SingleGenericAnimation::reset);
-	}
-
-	@Override
-	public void restart() {
-		all().forEach(SingleGenericAnimation::restart);
-	}
-
-	@Override
-	public void stop() {
-		all().forEach(SingleGenericAnimation::stop);
+	public T frame(int i) {
+		return things[i];
 	}
 
 	@Override
 	public void run() {
-		all().forEach(SingleGenericAnimation::run);
+	}
+
+	@Override
+	public void stop() {
+	}
+
+	@Override
+	public void reset() {
+	}
+
+	@Override
+	public void restart() {
 	}
 
 	@Override
 	public void ensureRunning() {
-		all().forEach(SingleGenericAnimation::ensureRunning);
 	}
 }
