@@ -215,7 +215,7 @@ public enum GameState implements FsmState<GameModel> {
 				game.ghosts().forEach(Ghost::hide);
 			} else if (timer.atSecond(2)) {
 				game.pac.animations().ifPresent(anim -> {
-					anim.getByKey(PacAnimationKey.ANIM_DYING).restart();
+					anim.byKey(PacAnimationKey.ANIM_DYING).restart();
 				});
 			}
 			if (timer.hasExpired()) {
@@ -263,7 +263,7 @@ public enum GameState implements FsmState<GameModel> {
 		public void onExit(GameModel game) {
 			game.pac.show();
 			game.ghosts().forEach(ghost -> {
-				ghost.animations().ifPresent(anims -> anims.getByKey(GhostAnimationKey.ANIM_FLASHING).run());
+				ghost.animations().ifPresent(anims -> anims.byKey(GhostAnimationKey.ANIM_FLASHING).run());
 			});
 			game.letDeadGhostsReturnHome();
 		}

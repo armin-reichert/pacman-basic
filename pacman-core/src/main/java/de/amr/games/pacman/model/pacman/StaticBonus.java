@@ -30,7 +30,7 @@ import java.util.Optional;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEventing;
 import de.amr.games.pacman.lib.V2d;
-import de.amr.games.pacman.lib.animation.GenericAnimationCollection;
+import de.amr.games.pacman.lib.animation.ThingAnimationCollection;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.BonusAnimationKey;
@@ -49,7 +49,7 @@ public class StaticBonus extends Entity implements Bonus {
 	private int symbol;
 	private int value;
 	private long timer;
-	private GenericAnimationCollection<Bonus, BonusAnimationKey, ?> animations;
+	private ThingAnimationCollection<Bonus, BonusAnimationKey, ?> animations;
 
 	public StaticBonus(V2d position) {
 		this.position = position;
@@ -62,12 +62,12 @@ public class StaticBonus extends Entity implements Bonus {
 	}
 
 	@Override
-	public void setAnimations(GenericAnimationCollection<Bonus, BonusAnimationKey, ?> animations) {
+	public void setAnimations(ThingAnimationCollection<Bonus, BonusAnimationKey, ?> animations) {
 		this.animations = animations;
 	}
 
 	@Override
-	public Optional<GenericAnimationCollection<Bonus, BonusAnimationKey, ?>> animations() {
+	public Optional<ThingAnimationCollection<Bonus, BonusAnimationKey, ?>> animations() {
 		return Optional.ofNullable(animations);
 	}
 

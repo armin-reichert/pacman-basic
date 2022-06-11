@@ -24,12 +24,12 @@ SOFTWARE.
 package de.amr.games.pacman.lib.animation;
 
 /**
- * Timed sequence ("animation") of things, for example of images or spritesheet regions.
+ * Animation (sequence with timing) of things, for example of boolean, numbers, images or spritesheet regions.
  * 
- * @param <S> type of things e.g. sprites
+ * @param <T> type of things to be animated
  * @author Armin Reichert
  */
-public class SingleGenericAnimation<S> implements GenericAnimation<S> {
+public class ThingList<T> implements ThingAnimation<T> {
 
 	public static int INDEFINITE = -1;
 
@@ -37,14 +37,14 @@ public class SingleGenericAnimation<S> implements GenericAnimation<S> {
 	 * @param frameDuration ticks of single pulse
 	 * @return an endless animation of alternating true/false values
 	 */
-	public static SingleGenericAnimation<Boolean> pulse(int frameDuration) {
-		var pulse = new SingleGenericAnimation<>(true, false);
+	public static ThingList<Boolean> pulse(int frameDuration) {
+		var pulse = new ThingList<>(true, false);
 		pulse.frameDuration(frameDuration);
 		pulse.repeatForever();
 		return pulse;
 	}
 
-	protected S[] things;
+	protected T[] things;
 	protected int repetitions;
 	protected long delay;
 	protected long delayRemainingTicks;
@@ -58,7 +58,7 @@ public class SingleGenericAnimation<S> implements GenericAnimation<S> {
 	protected Runnable onStart;
 
 	@SafeVarargs
-	public SingleGenericAnimation(S... things) {
+	public ThingList(T... things) {
 		if (things.length == 0) {
 			throw new IllegalArgumentException("Sequence must have at least contain one thing");
 		}
@@ -138,15 +138,6 @@ public class SingleGenericAnimation<S> implements GenericAnimation<S> {
 	}
 
 	/**
-	 * Resets and starts the animation.
-	 */
-	@Override
-	public void restart() {
-		reset();
-		run();
-	}
-
-	/**
 	 * Starts the animation.
 	 */
 	@Override
@@ -167,8 +158,8 @@ public class SingleGenericAnimation<S> implements GenericAnimation<S> {
 	 * 
 	 * @return the frame before the animation step is executed
 	 */
-	public S animate() {
-		S currentThing = things[frameIndex];
+	public T animate() {
+		T currentThing = things[frameIndex];
 		advance();
 		return currentThing;
 	}
@@ -176,7 +167,7 @@ public class SingleGenericAnimation<S> implements GenericAnimation<S> {
 	/**
 	 * @return the current frame/thing
 	 */
-	public S frame() {
+	public T frame() {
 		return things[frameIndex];
 	}
 
@@ -219,7 +210,7 @@ public class SingleGenericAnimation<S> implements GenericAnimation<S> {
 	 * @return the thing at the given index
 	 */
 	@Override
-	public S frame(int i) {
+	public T frame(int i) {
 		return things[i];
 	}
 

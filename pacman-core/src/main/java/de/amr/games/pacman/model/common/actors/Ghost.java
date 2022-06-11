@@ -46,8 +46,8 @@ import de.amr.games.pacman.event.GameEventing;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.lib.animation.GenericAnimationCollection;
-import de.amr.games.pacman.lib.animation.SingleGenericAnimation;
+import de.amr.games.pacman.lib.animation.ThingAnimationCollection;
+import de.amr.games.pacman.lib.animation.ThingList;
 import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.world.GhostHouse;
@@ -360,13 +360,13 @@ public class Ghost extends Creature {
 
 	public static final long FLASHING_TIME = TickTimer.sec_to_ticks(2); // TODO not sure
 
-	private GenericAnimationCollection<Ghost, GhostAnimationKey, ?> animations;
+	private ThingAnimationCollection<Ghost, GhostAnimationKey, ?> animations;
 
-	public void setAnimations(GenericAnimationCollection<Ghost, GhostAnimationKey, ?> animations) {
+	public void setAnimations(ThingAnimationCollection<Ghost, GhostAnimationKey, ?> animations) {
 		this.animations = animations;
 	}
 
-	public Optional<GenericAnimationCollection<Ghost, GhostAnimationKey, ?>> animations() {
+	public Optional<ThingAnimationCollection<Ghost, GhostAnimationKey, ?>> animations() {
 		return Optional.ofNullable(animations);
 	}
 
@@ -402,7 +402,7 @@ public class Ghost extends Creature {
 
 	private void startFlashing(int numFlashes, long duration) {
 		animations().ifPresent(anim -> anim.select(GhostAnimationKey.ANIM_FLASHING));
-		var flashing = (SingleGenericAnimation<?>) animations.selectedAnimation();
+		var flashing = (ThingList<?>) animations.selectedAnimation();
 		long frameDuration = duration / (numFlashes * flashing.numFrames());
 		flashing.frameDuration(frameDuration);
 		flashing.repeat(numFlashes);

@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2022 Armin Reichert
+Copyright (c) 2021-22 Armin Reichert
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -20,80 +20,66 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-*/
-
+ */
 package de.amr.games.pacman.lib.animation;
 
-import java.util.stream.Stream;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Armin Reichert
- * 
- * @param <E> entity type, for example Ghost, Pac etc.
- * @param <K> Key key type
- * @param <S> Sprite type (Rectangle, Image)
+ *
+ * @param <K> key type of map e.g. direction of actor
+ * @param <T> thing type (Image, Rectangle, ...)
  */
-public abstract class GenericAnimationCollection<E, K, S> implements GenericAnimation<S> {
+public class ThingAnimationMap<K, T> implements ThingAnimation<T> {
 
-	protected K selectedKey;
+	private final Map<K, ThingList<T>> animationMap;
 
-	public abstract GenericAnimation<S> getByKey(K key);
+	public ThingAnimationMap(int capacity) {
+		animationMap = new HashMap<>(capacity);
+	}
 
-	public abstract Stream<GenericAnimation<S>> all();
+	public void put(K key, ThingList<T> animation) {
+		animationMap.put(key, animation);
+	}
 
-	public abstract S currentSprite(E entity);
+	public ThingList<T> get(K key) {
+		return animationMap.get(key);
+	}
+
+	public Collection<ThingList<T>> all() {
+		return animationMap.values();
+	}
 
 	@Override
-	public S frame(int i) {
-		return null;
-	}
-
-	public K selectedKey() {
-		return selectedKey;
-	}
-
-	public void select(K key) {
-		selectedKey = key;
-	}
-
-	public GenericAnimation<S> selectedAnimation() {
-		return getByKey(selectedKey());
-	}
-
-	public void stop(K key) {
-		getByKey(key).stop();
-	}
-
-	public void run(K key) {
-		getByKey(key).run();
-	}
-
-	public void restart(K key) {
-		getByKey(key).restart();
+	public T frame(int i) {
+		return null; // makes no sense here
 	}
 
 	@Override
 	public void reset() {
-		all().forEach(GenericAnimation::reset);
-	}
-
-	@Override
-	public void stop() {
-		all().forEach(GenericAnimation::stop);
-	}
-
-	@Override
-	public void run() {
-		all().forEach(GenericAnimation::run);
-	}
-
-	@Override
-	public void ensureRunning() {
-		all().forEach(GenericAnimation::ensureRunning);
+		all().forEach(ThingList::reset);
 	}
 
 	@Override
 	public void restart() {
-		all().forEach(GenericAnimation::restart);
+		all().forEach(ThingList::restart);
+	}
+
+	@Override
+	public void stop() {
+		all().forEach(ThingList::stop);
+	}
+
+	@Override
+	public void run() {
+		all().forEach(ThingList::run);
+	}
+
+	@Override
+	public void ensureRunning() {
+		all().forEach(ThingList::ensureRunning);
 	}
 }

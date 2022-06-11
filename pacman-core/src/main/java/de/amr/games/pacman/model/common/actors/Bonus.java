@@ -27,7 +27,7 @@ package de.amr.games.pacman.model.common.actors;
 import java.util.Optional;
 
 import de.amr.games.pacman.lib.TickTimer;
-import de.amr.games.pacman.lib.animation.GenericAnimationCollection;
+import de.amr.games.pacman.lib.animation.ThingAnimationCollection;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.world.World;
 
@@ -52,7 +52,7 @@ public interface Bonus {
 
 	void setEdible(World world, int symbol, int value, long ticks);
 
-	void setAnimations(GenericAnimationCollection<Bonus, BonusAnimationKey, ?> animations);
+	void setAnimations(ThingAnimationCollection<Bonus, BonusAnimationKey, ?> animations);
 
-	Optional<GenericAnimationCollection<Bonus, BonusAnimationKey, ?>> animations();
+	Optional<ThingAnimationCollection<Bonus, BonusAnimationKey, ?>> animations();
 }

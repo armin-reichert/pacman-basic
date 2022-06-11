@@ -21,49 +21,25 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-
 package de.amr.games.pacman.lib.animation;
-
-import java.util.Arrays;
 
 /**
  * @author Armin Reichert
  */
-public class StaticGenericAnimation<T> implements GenericAnimation<T> {
+public interface ThingAnimation<T> {
 
-	private final T[] things;
+	void run();
 
-	@SafeVarargs
-	public StaticGenericAnimation(T... things) {
-		this.things = Arrays.copyOf(things, things.length);
+	void stop();
+
+	void reset();
+
+	default void restart() {
+		reset();
+		run();
 	}
 
-	public int numFrames() {
-		return things.length;
-	}
+	void ensureRunning();
 
-	@Override
-	public T frame(int i) {
-		return things[i];
-	}
-
-	@Override
-	public void run() {
-	}
-
-	@Override
-	public void stop() {
-	}
-
-	@Override
-	public void reset() {
-	}
-
-	@Override
-	public void restart() {
-	}
-
-	@Override
-	public void ensureRunning() {
-	}
+	T frame(int i);
 }
