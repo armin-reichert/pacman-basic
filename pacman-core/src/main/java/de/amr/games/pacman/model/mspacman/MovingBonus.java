@@ -37,8 +37,8 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.lib.animation.ThingAnimationCollection;
 import de.amr.games.pacman.lib.animation.SimpleThingAnimation;
+import de.amr.games.pacman.lib.animation.ThingAnimationCollection;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.BonusAnimationKey;
@@ -72,6 +72,7 @@ public class MovingBonus extends Creature implements Bonus {
 		jumpAnimation.frameDuration(10);
 		jumpAnimation.repeatForever();
 		visible = true;
+		state = BonusState.INACTIVE;
 	}
 
 	@Override
