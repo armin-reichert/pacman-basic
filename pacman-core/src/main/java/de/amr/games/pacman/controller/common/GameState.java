@@ -24,19 +24,21 @@ SOFTWARE.
 package de.amr.games.pacman.controller.common;
 
 import static de.amr.games.pacman.lib.Logging.log;
+import static de.amr.games.pacman.model.common.actors.GhostAnimationKey.ANIM_FLASHING;
+import static de.amr.games.pacman.model.common.actors.GhostAnimationKey.ANIM_VALUE;
 import static de.amr.games.pacman.model.common.actors.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.common.actors.GhostState.HUNTING_PAC;
+import static de.amr.games.pacman.model.common.actors.PacAnimationKey.ANIM_MUNCHING;
 
 import de.amr.games.pacman.event.GameEventing;
 import de.amr.games.pacman.event.GameStateChangeEvent;
 import de.amr.games.pacman.lib.TickTimer;
+import de.amr.games.pacman.lib.animation.ThingAnimation;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.lib.fsm.FsmState;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameModel.CheckResult;
 import de.amr.games.pacman.model.common.actors.Ghost;
-import de.amr.games.pacman.model.common.actors.GhostAnimationKey;
-import de.amr.games.pacman.model.common.actors.GhostState;
 import de.amr.games.pacman.model.common.actors.PacAnimationKey;
 
 /**
@@ -110,14 +112,8 @@ public enum GameState implements FsmState<GameModel> {
 	HUNTING {
 		@Override
 		public void onEnter(GameModel game) {
-			game.pac.animations().ifPresent(anim -> {
-				anim.selectedAnimation().ensureRunning();
-			});
-			game.ghosts().forEach(ghost -> {
-				ghost.animations().ifPresent(anim -> {
-					anim.ensureRunning();
-				});
-			});
+			game.pac.animation(ANIM_MUNCHING).ifPresent(ThingAnimation::ensureRunning);
+			game.ghosts().forEach(ghost -> ghost.animations().ifPresent(ThingAnimation::ensureRunning));
 			game.energizerPulse.restart();
 		}
 
@@ -236,17 +232,9 @@ public enum GameState implements FsmState<GameModel> {
 			timer.setSeconds(1);
 			timer.start();
 			game.pac.hide();
-			game.ghosts().forEach(ghost -> {
-				ghost.animations().ifPresent(anim -> {
-					if (anim.selectedKey() == GhostAnimationKey.ANIM_FLASHING) {
-						anim.selectedAnimation().stop();
-					}
-				});
-			});
-			game.ghosts(GhostState.DEAD).filter(ghost -> ghost.killIndex >= 0)
-					.forEach(ghost -> ghost.animations().ifPresent(anims -> {
-						anims.select(GhostAnimationKey.ANIM_VALUE);
-					}));
+			game.ghosts().forEach(ghost -> ghost.animation(ANIM_FLASHING).ifPresent(ThingAnimation::stop));
+			game.ghosts().filter(ghost -> ghost.killIndex >= 0)
+					.forEach(ghost -> ghost.animations().ifPresent(anim -> anim.select(ANIM_VALUE)));
 		}
 
 		@Override
@@ -262,9 +250,7 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void onExit(GameModel game) {
 			game.pac.show();
-			game.ghosts().forEach(ghost -> {
-				ghost.animations().ifPresent(anims -> anims.byKey(GhostAnimationKey.ANIM_FLASHING).run());
-			});
+			game.ghosts().forEach(ghost -> ghost.animation(ANIM_FLASHING).ifPresent(ThingAnimation::run));
 			game.letDeadGhostsReturnHome();
 		}
 	},
@@ -276,12 +262,10 @@ public enum GameState implements FsmState<GameModel> {
 			timer.start();
 			game.scores.saveHiscore();
 			game.ghosts().forEach(ghost -> {
-				ghost.animations().ifPresent(anim -> {
-					anim.stop();
-				});
+				ghost.animations().ifPresent(ThingAnimation::stop);
 				ghost.show();
 			});
-			game.pac.animations().ifPresent(anim -> anim.stop());
+			game.pac.animations().ifPresent(ThingAnimation::stop);
 			game.pac.show();
 			game.energizerPulse.reset(); // TODO check this
 		}

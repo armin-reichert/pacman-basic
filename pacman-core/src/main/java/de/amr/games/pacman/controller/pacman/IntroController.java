@@ -39,6 +39,7 @@ import de.amr.games.pacman.controller.pacman.IntroController.Context;
 import de.amr.games.pacman.controller.pacman.IntroController.State;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
+import de.amr.games.pacman.lib.animation.ThingAnimation;
 import de.amr.games.pacman.lib.animation.ThingList;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.lib.fsm.FsmState;
@@ -172,7 +173,7 @@ public class IntroController extends Fsm<State, Context> {
 					ghost.setBothDirs(Direction.LEFT);
 					ghost.setAbsSpeed($.speed);
 					ghost.show();
-					ghost.animations().ifPresent(anim -> anim.ensureRunning());
+					ghost.animations().ifPresent(ThingAnimation::ensureRunning);
 				}
 			}
 
@@ -247,7 +248,7 @@ public class IntroController extends Fsm<State, Context> {
 						if (ghost.state != GhostState.DEAD) {
 							ghost.show();
 							ghost.setAbsSpeed(0.5 * $.speed);
-							ghost.animations().ifPresent(anim -> anim.ensureRunning());
+							ghost.animations().ifPresent(ThingAnimation::ensureRunning);
 						} else {
 							ghost.hide();
 						}

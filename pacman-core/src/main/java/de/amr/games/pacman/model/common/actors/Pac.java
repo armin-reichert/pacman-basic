@@ -26,6 +26,7 @@ package de.amr.games.pacman.model.common.actors;
 import java.util.Optional;
 
 import de.amr.games.pacman.lib.TickTimer;
+import de.amr.games.pacman.lib.animation.ThingAnimation;
 import de.amr.games.pacman.lib.animation.ThingAnimationCollection;
 import de.amr.games.pacman.model.common.GameLevel;
 
@@ -43,7 +44,7 @@ public class Pac extends Creature {
 	public final TickTimer powerTimer = new TickTimer("Pac-power-timer");
 
 	/** Number of clock ticks Pac is still resting and will not move. */
-	public int restingCountdown = 0;
+	public int resting = 0;
 
 	/** Number of clock ticks Pac has not eaten any pellet. */
 	public int starvingTicks = 0;
@@ -63,11 +64,12 @@ public class Pac extends Creature {
 	}
 
 	public void update(GameLevel level) {
-		if (restingCountdown > 0) {
-			restingCountdown--;
-		} else {
+		if (resting == 0) {
 			setRelSpeed(hasPower() ? level.playerSpeedPowered : level.playerSpeed);
 			tryMoving(level.world);
+			updateMunchAnimation();
+		} else {
+			--resting;
 		}
 		powerTimer.advance();
 	}
@@ -80,7 +82,21 @@ public class Pac extends Creature {
 		return Optional.ofNullable(animations);
 	}
 
+	public Optional<ThingAnimation<?>> animation(PacAnimationKey key) {
+		return animations().map(anim -> anim.byKey(key));
+	}
+
 	public void setAnimations(ThingAnimationCollection<Pac, PacAnimationKey, ?> animations) {
 		this.animations = animations;
+	}
+
+	private void updateMunchAnimation() {
+		animation(PacAnimationKey.ANIM_MUNCHING).ifPresent(munching -> {
+			if (stuck) {
+				munching.stop();
+			} else {
+				munching.run();
+			}
+		});
 	}
 }

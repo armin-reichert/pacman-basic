@@ -162,7 +162,7 @@ public abstract class GameModel {
 		pac.targetTile = null; // used in autopilot mode
 		pac.stuck = false;
 		pac.killed = false;
-		pac.restingCountdown = 0;
+		pac.resting = 0;
 		pac.starvingTicks = 0;
 		pac.powerTimer.setIndefinite();
 		pac.animations().ifPresent(anim -> anim.select(PacAnimationKey.ANIM_MUNCHING));
@@ -430,7 +430,7 @@ public abstract class GameModel {
 
 	private void eatFood(int value, int restingTicks) {
 		pac.starvingTicks = 0;
-		pac.restingCountdown = restingTicks;
+		pac.resting = restingTicks;
 		level.world.removeFood(pac.tile());
 		ghosts[RED_GHOST].checkCruiseElroyStart(level);
 		updateGhostDotCounters();
@@ -450,7 +450,7 @@ public abstract class GameModel {
 		ghosts(LOCKED).forEach(ghost -> {
 			ghost.animations().ifPresent(anim -> {
 				anim.select(GhostAnimationKey.ANIM_BLUE);
-				anim.ensureRunning();
+				anim.selectedAnimation().ensureRunning();
 			});
 		});
 		GameEventing.publish(GameEventType.PLAYER_GETS_POWER, pac.tile());

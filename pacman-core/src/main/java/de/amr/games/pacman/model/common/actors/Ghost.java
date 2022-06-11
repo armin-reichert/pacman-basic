@@ -30,6 +30,10 @@ import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.lib.Misc.insideRange;
 import static de.amr.games.pacman.model.common.GameVariant.MS_PACMAN;
+import static de.amr.games.pacman.model.common.actors.GhostAnimationKey.ANIM_BLUE;
+import static de.amr.games.pacman.model.common.actors.GhostAnimationKey.ANIM_COLOR;
+import static de.amr.games.pacman.model.common.actors.GhostAnimationKey.ANIM_EYES;
+import static de.amr.games.pacman.model.common.actors.GhostAnimationKey.ANIM_FLASHING;
 import static de.amr.games.pacman.model.common.actors.GhostState.ENTERING_HOUSE;
 import static de.amr.games.pacman.model.common.actors.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.common.actors.GhostState.HUNTING_PAC;
@@ -46,6 +50,7 @@ import de.amr.games.pacman.event.GameEventing;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.lib.animation.ThingAnimation;
 import de.amr.games.pacman.lib.animation.ThingAnimationCollection;
 import de.amr.games.pacman.lib.animation.ThingList;
 import de.amr.games.pacman.model.common.GameLevel;
@@ -201,7 +206,7 @@ public class Ghost extends Creature {
 		case DEAD -> {
 			setRelSpeed(2 * game.level.ghostSpeed);
 			targetTile = world.ghostHouse().entry();
-			animations().ifPresent(anims -> anims.select(GhostAnimationKey.ANIM_EYES));
+			animations().ifPresent(anims -> anims.select(ANIM_EYES));
 			boolean houseReached = returnToHouse(world, world.ghostHouse());
 			if (houseReached) {
 				setBothDirs(DOWN);
@@ -370,10 +375,14 @@ public class Ghost extends Creature {
 		return Optional.ofNullable(animations);
 	}
 
+	public Optional<ThingAnimation<?>> animation(GhostAnimationKey key) {
+		return animations().map(anim -> anim.byKey(key));
+	}
+
 	public void enterFrightenedMode() {
 		state = FRIGHTENED;
 		animations().ifPresent(anim -> {
-			anim.select(GhostAnimationKey.ANIM_BLUE);
+			anim.select(ANIM_BLUE);
 			anim.selectedAnimation().ensureRunning();
 		});
 	}
@@ -393,7 +402,7 @@ public class Ghost extends Creature {
 			}
 		}
 		case LEAVING_HOUSE -> {
-			animations().ifPresent(anim -> anim.select(GhostAnimationKey.ANIM_COLOR));
+			animations().ifPresent(anim -> anim.select(ANIM_COLOR));
 		}
 		default -> {
 		}
@@ -401,7 +410,7 @@ public class Ghost extends Creature {
 	}
 
 	private void startFlashing(int numFlashes, long duration) {
-		animations().ifPresent(anim -> anim.select(GhostAnimationKey.ANIM_FLASHING));
+		animations().ifPresent(anim -> anim.select(ANIM_FLASHING));
 		var flashing = (ThingList<?>) animations.selectedAnimation();
 		long frameDuration = duration / (numFlashes * flashing.numFrames());
 		flashing.frameDuration(frameDuration);
@@ -411,8 +420,9 @@ public class Ghost extends Creature {
 
 	private void ensureFlashingStopped() {
 		animations().ifPresent(anim -> {
-			if (anim.selectedKey() == GhostAnimationKey.ANIM_FLASHING) {
-				anim.select(GhostAnimationKey.ANIM_COLOR);
+			if (anim.selectedKey() == ANIM_FLASHING) {
+				anim.selectedAnimation().stop();
+				anim.select(ANIM_COLOR);
 			}
 		});
 	}

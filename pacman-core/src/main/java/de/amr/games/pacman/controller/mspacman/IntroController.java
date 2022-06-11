@@ -37,6 +37,7 @@ import de.amr.games.pacman.controller.common.GameController;
 import de.amr.games.pacman.controller.common.GameState;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.lib.animation.ThingAnimation;
 import de.amr.games.pacman.lib.animation.ThingList;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.lib.fsm.FsmState;
@@ -138,7 +139,7 @@ public class IntroController extends Fsm<IntroController.State, IntroController.
 				}
 				if (ghost.position.y <= $.lightsTopLeft.y + ghost.id * 18) {
 					ghost.setAbsSpeed(0);
-					ghost.animations().ifPresent(anim -> anim.stop());
+					ghost.animations().ifPresent(ThingAnimation::stop);
 					if (++$.ghostIndex == $.ghosts.length) {
 						controller.changeState(State.MSPACMAN);
 					}
