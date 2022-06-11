@@ -29,10 +29,10 @@ package de.amr.games.pacman.event;
  * 
  * @author Armin Reichert
  */
-public abstract class GameEventAdapter implements GameEventListener {
+public interface GameEventAdapter extends GameEventListener {
 
 	@Override
-	public void onGameEvent(GameEvent event) {
+	default void onGameEvent(GameEvent event) {
 		switch (event.type) {
 		case GAME_STATE_CHANGED -> onGameStateChange((GameStateChangeEvent) event);
 		case BONUS_GETS_ACTIVE -> onBonusGetsActive(event);
@@ -52,45 +52,45 @@ public abstract class GameEventAdapter implements GameEventListener {
 		}
 	}
 
-	public void onGameStateChange(GameStateChangeEvent e) {
+	default void onGameStateChange(GameStateChangeEvent e) {
 	}
 
-	public void onBonusGetsActive(GameEvent e) {
+	default void onBonusGetsActive(GameEvent e) {
 	}
 
-	public void onBonusGetsEaten(GameEvent e) {
+	default void onBonusGetsEaten(GameEvent e) {
 	}
 
-	public void onBonusExpires(GameEvent e) {
+	default void onBonusExpires(GameEvent e) {
 	}
 
-	public void onPlayerGetsExtraLife(GameEvent e) {
+	default void onPlayerGetsExtraLife(GameEvent e) {
 	}
 
-	public void onGhostEntersHouse(GameEvent e) {
+	default void onGhostEntersHouse(GameEvent e) {
 	}
 
-	public void onGhostStartsReturningHome(GameEvent e) {
+	default void onGhostStartsReturningHome(GameEvent e) {
 	}
 
-	public void onGhostStartsLeavingHouse(GameEvent e) {
+	default void onGhostStartsLeavingHouse(GameEvent e) {
 	}
 
-	public void onGhostCompletesLeavingHouse(GameEvent e) {
+	default void onGhostCompletesLeavingHouse(GameEvent e) {
 	}
 
-	public void onPlayerFindsFood(GameEvent e) {
+	default void onPlayerFindsFood(GameEvent e) {
 	}
 
-	public void onPlayerStartsLosingPower(GameEvent e) {
+	default void onPlayerStartsLosingPower(GameEvent e) {
 	}
 
-	public void onPlayerLosesPower(GameEvent e) {
+	default void onPlayerLosesPower(GameEvent e) {
 	}
 
-	public void onPlayerGetsPower(GameEvent e) {
+	default void onPlayerGetsPower(GameEvent e) {
 	}
 
-	public void onUIForceUpdate(GameEvent e) {
+	default void onUIForceUpdate(GameEvent e) {
 	}
 }
