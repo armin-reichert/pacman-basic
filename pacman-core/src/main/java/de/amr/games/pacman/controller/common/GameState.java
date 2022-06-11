@@ -155,7 +155,7 @@ public enum GameState implements FsmState<GameModel> {
 
 		@Override
 		public void onUpdate(GameModel game) {
-			if (timer.atSecond(1)) {
+			if (timer.atSecond(1) && game.mazeFlashingAnimation != null) {
 				game.mazeFlashingAnimation.repeat(game.level.numFlashes);
 				game.mazeFlashingAnimation.restart();
 			}
