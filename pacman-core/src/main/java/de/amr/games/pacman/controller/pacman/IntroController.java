@@ -178,26 +178,32 @@ public class IntroController extends Fsm<State, Context> {
 
 			@Override
 			public void onUpdate(Context $) {
-				if (timer.atSecond(1)) {
-					$.blinking.restart();
-				}
+				// Pac-Man reaches the energizer
 				if ($.pacMan.position.x <= t($.left)) {
 					controller.changeState(State.CHASING_GHOSTS);
-					return;
 				}
-				if ($.pacMan.position.x <= t($.left) + 4) {
+				// ghosts already reverse direction before Pac-man eats the energizer and turns right!
+				else if ($.pacMan.position.x <= t($.left) + 4) {
 					for (Ghost ghost : $.ghosts) {
 						ghost.enterFrightenedMode();
-						ghost.setWishDir(Direction.RIGHT);
-						ghost.setMoveDir(Direction.RIGHT);
-						ghost.setAbsSpeed(0.45 * $.speed);
+						ghost.setBothDirs(Direction.RIGHT);
+						ghost.setAbsSpeed(0.5 * $.speed);
+						ghost.move();
+					}
+					$.pacMan.move();
+				}
+				// keep moving
+				else {
+					// wait 1 sec before blinking
+					if (timer.atSecond(1)) {
+						$.blinking.run();
+					}
+					$.blinking.advance();
+					$.pacMan.move();
+					for (Ghost ghost : $.ghosts) {
+						ghost.move();
 					}
 				}
-				$.pacMan.move();
-				for (Ghost ghost : $.ghosts) {
-					ghost.move();
-				}
-				$.blinking.advance();
 			}
 		},
 
@@ -207,6 +213,8 @@ public class IntroController extends Fsm<State, Context> {
 				timer.setIndefinite();
 				timer.start();
 				$.ghostKilledTime = timer.tick();
+				$.pacMan.setMoveDir(Direction.RIGHT);
+				$.pacMan.setAbsSpeed($.speed);
 			}
 
 			@Override
@@ -217,18 +225,6 @@ public class IntroController extends Fsm<State, Context> {
 					$.pacMan.hide();
 					controller.changeState(READY_TO_PLAY);
 					return;
-				}
-
-				// TOO check this
-				int delay = 1;
-				if (timer.tick() < delay) {
-					for (Ghost ghost : $.ghosts) {
-						ghost.move();
-					}
-					return;
-				} else if (timer.tick() == delay) {
-					$.pacMan.setMoveDir(Direction.RIGHT);
-					$.pacMan.setAbsSpeed($.speed);
 				}
 
 				// check if Pac-Man kills a ghost
