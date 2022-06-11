@@ -137,6 +137,7 @@ public enum GameState implements FsmState<GameModel> {
 			game.updateGhosts(checkResult);
 			game.updateBonus();
 			game.advanceHunting();
+			game.energizerPulse.advance();
 		}
 	},
 
@@ -222,7 +223,9 @@ public enum GameState implements FsmState<GameModel> {
 				} else {
 					controller.changeState(game.lives > 0 ? READY : GAME_OVER);
 				}
+				return;
 			}
+			game.energizerPulse.advance();
 		}
 	},
 
@@ -245,6 +248,7 @@ public enum GameState implements FsmState<GameModel> {
 			}
 			controller.steer(game.pac);
 			game.updateGhostsReturningHome();
+			game.energizerPulse.advance();
 		}
 
 		@Override
@@ -267,7 +271,9 @@ public enum GameState implements FsmState<GameModel> {
 			});
 			game.pac.animations().ifPresent(ThingAnimation::stop);
 			game.pac.show();
-			game.energizerPulse.reset(); // TODO check this
+			// TODO check this with MAME
+			game.energizerPulse.reset();
+			game.energizerPulse.setFrameIndex(1);
 		}
 
 		@Override
