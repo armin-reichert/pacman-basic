@@ -35,21 +35,21 @@ import java.util.Map;
  */
 public class ThingAnimationMap<K, T> implements ThingAnimation<T> {
 
-	private final Map<K, ThingList<T>> animationMap;
+	private final Map<K, SimpleThingAnimation<T>> animationMap;
 
 	public ThingAnimationMap(int capacity) {
 		animationMap = new HashMap<>(capacity);
 	}
 
-	public void put(K key, ThingList<T> animation) {
+	public void put(K key, SimpleThingAnimation<T> animation) {
 		animationMap.put(key, animation);
 	}
 
-	public ThingList<T> get(K key) {
+	public SimpleThingAnimation<T> get(K key) {
 		return animationMap.get(key);
 	}
 
-	public Collection<ThingList<T>> all() {
+	public Collection<SimpleThingAnimation<T>> all() {
 		return animationMap.values();
 	}
 
@@ -60,26 +60,26 @@ public class ThingAnimationMap<K, T> implements ThingAnimation<T> {
 
 	@Override
 	public void reset() {
-		all().forEach(ThingList::reset);
+		all().forEach(SimpleThingAnimation::reset);
 	}
 
 	@Override
 	public void restart() {
-		all().forEach(ThingList::restart);
+		all().forEach(SimpleThingAnimation::restart);
 	}
 
 	@Override
 	public void stop() {
-		all().forEach(ThingList::stop);
+		all().forEach(SimpleThingAnimation::stop);
 	}
 
 	@Override
 	public void run() {
-		all().forEach(ThingList::run);
+		all().forEach(SimpleThingAnimation::run);
 	}
 
 	@Override
 	public void ensureRunning() {
-		all().forEach(ThingList::ensureRunning);
+		all().forEach(SimpleThingAnimation::ensureRunning);
 	}
 }

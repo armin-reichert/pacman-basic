@@ -38,7 +38,7 @@ import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.lib.animation.ThingAnimationCollection;
-import de.amr.games.pacman.lib.animation.ThingList;
+import de.amr.games.pacman.lib.animation.SimpleThingAnimation;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.BonusAnimationKey;
@@ -63,12 +63,12 @@ public class MovingBonus extends Creature implements Bonus {
 	private int value;
 	private long timer;
 	private ThingAnimationCollection<Bonus, BonusAnimationKey, ?> animations;
-	private final ThingList<Integer> jumpAnimation;
+	private final SimpleThingAnimation<Integer> jumpAnimation;
 	private final List<V2i> route = new ArrayList<>();
 
 	public MovingBonus() {
 		super("MovingBonus");
-		jumpAnimation = new ThingList<>(2, -2);
+		jumpAnimation = new SimpleThingAnimation<>(2, -2);
 		jumpAnimation.frameDuration(10);
 		jumpAnimation.repeatForever();
 		visible = true;

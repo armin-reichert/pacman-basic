@@ -52,7 +52,7 @@ import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.lib.animation.ThingAnimation;
 import de.amr.games.pacman.lib.animation.ThingAnimationCollection;
-import de.amr.games.pacman.lib.animation.ThingList;
+import de.amr.games.pacman.lib.animation.SimpleThingAnimation;
 import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.world.GhostHouse;
@@ -411,7 +411,7 @@ public class Ghost extends Creature {
 
 	private void startFlashing(int numFlashes, long duration) {
 		animations().ifPresent(anim -> anim.select(ANIM_FLASHING));
-		var flashing = (ThingList<?>) animations.selectedAnimation();
+		var flashing = (SimpleThingAnimation<?>) animations.selectedAnimation();
 		long frameDuration = duration / (numFlashes * flashing.numFrames());
 		flashing.frameDuration(frameDuration);
 		flashing.repeat(numFlashes);

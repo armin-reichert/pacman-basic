@@ -40,7 +40,7 @@ import de.amr.games.pacman.controller.pacman.IntroController.State;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.animation.ThingAnimation;
-import de.amr.games.pacman.lib.animation.ThingList;
+import de.amr.games.pacman.lib.animation.SimpleThingAnimation;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.lib.fsm.FsmState;
 import de.amr.games.pacman.model.common.GameScores;
@@ -75,7 +75,7 @@ public class IntroController extends Fsm<State, Context> {
 	public static class Context {
 		public final int left = 4;
 		public final double speed = 1.15;
-		public final ThingList<Boolean> blinking = ThingList.pulse(10);
+		public final SimpleThingAnimation<Boolean> blinking = SimpleThingAnimation.pulse(10);
 		public final String nicknames[] = { "Blinky", "Pinky", "Inky", "Clyde" };
 		public final String characters[] = { "SHADOW", "SPEEDY", "BASHFUL", "POKEY" };
 		public boolean creditVisible = false;
