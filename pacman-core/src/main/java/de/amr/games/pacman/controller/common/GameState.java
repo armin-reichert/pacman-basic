@@ -161,6 +161,7 @@ public enum GameState implements FsmState<GameModel> {
 				game.mazeFlashingAnimation.restart();
 			}
 			if (timer.hasExpired()) {
+				game.mazeFlashingAnimation.stop(); // TODO needed?
 				if (controller.credit() == 0) {
 					controller.changeState(INTRO);
 				} else if (game.intermissionNumber(game.level.number) != 0) {
@@ -168,7 +169,9 @@ public enum GameState implements FsmState<GameModel> {
 				} else {
 					controller.changeState(LEVEL_STARTING);
 				}
+				return;
 			}
+			game.mazeFlashingAnimation.advance();
 		}
 	},
 
