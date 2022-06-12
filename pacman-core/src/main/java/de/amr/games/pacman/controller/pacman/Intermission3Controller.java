@@ -96,7 +96,7 @@ public class Intermission3Controller extends Fsm<State, Context> {
 
 			@Override
 			public void onUpdate(Context $) {
-				if ($.blinky.position.x <= -t(15)) {
+				if ($.blinky.position.x <= -t(5)) {
 					$.pac.setAbsSpeed(0);
 					$.blinky.setMoveDir(Direction.RIGHT);
 					$.blinky.setWishDir(Direction.RIGHT);

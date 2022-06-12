@@ -32,11 +32,14 @@ import de.amr.games.pacman.controller.mspacman.Intermission1Controller.State;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.V2d;
+import de.amr.games.pacman.lib.animation.ThingAnimation;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.lib.fsm.FsmState;
+import de.amr.games.pacman.model.common.GameSound;
 import de.amr.games.pacman.model.common.actors.Entity;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.Pac;
+import de.amr.games.pacman.model.common.actors.PacAnimationKey;
 import de.amr.games.pacman.model.mspacman.Flap;
 
 /**
@@ -52,7 +55,6 @@ public class Intermission1Controller extends Fsm<State, Context> {
 
 	public final GameController gameController;
 	public final Context context = new Context();
-	public Runnable playIntermissionSound;
 
 	public Intermission1Controller(GameController gameController) {
 		super(State.values());
@@ -83,10 +85,7 @@ public class Intermission1Controller extends Fsm<State, Context> {
 			public void onEnter(Context $) {
 				timer.setSeconds(2);
 				timer.start();
-				if (controller.playIntermissionSound != null) {
-					controller.playIntermissionSound.run();
-				}
-
+				controller.gameController.game().sounds().get().play(GameSound.INTERMISSION_1);
 				$.flap = new Flap();
 				$.flap.number = 1;
 				$.flap.text = "THEY MEET";
@@ -223,8 +222,10 @@ public class Intermission1Controller extends Fsm<State, Context> {
 				timer.start();
 				$.pacMan.setAbsSpeed(0);
 				$.pacMan.setMoveDir(Direction.LEFT);
+				$.pacMan.animation(PacAnimationKey.ANIM_MUNCHING).ifPresent(ThingAnimation::stop);
 				$.msPac.setAbsSpeed(0);
 				$.msPac.setMoveDir(Direction.RIGHT);
+				$.msPac.animation(PacAnimationKey.ANIM_MUNCHING).ifPresent(ThingAnimation::stop);
 				$.inky.setAbsSpeed(0);
 				$.inky.hide();
 				$.pinky.setAbsSpeed(0);

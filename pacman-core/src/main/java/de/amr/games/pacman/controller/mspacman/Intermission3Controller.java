@@ -33,6 +33,7 @@ import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.lib.fsm.FsmState;
+import de.amr.games.pacman.model.common.GameSound;
 import de.amr.games.pacman.model.common.actors.Entity;
 import de.amr.games.pacman.model.common.actors.Pac;
 import de.amr.games.pacman.model.mspacman.Flap;
@@ -52,7 +53,6 @@ public class Intermission3Controller extends Fsm<State, Context> {
 
 	public final GameController gameController;
 	public final Context context = new Context();
-	public Runnable playIntermissionSound;
 
 	public Intermission3Controller(GameController gameController) {
 		super(State.values());
@@ -81,9 +81,7 @@ public class Intermission3Controller extends Fsm<State, Context> {
 			public void onEnter(Context $) {
 				timer.setIndefinite();
 				timer.start();
-				if (controller.playIntermissionSound != null) {
-					controller.playIntermissionSound.run();
-				}
+				controller.gameController.game().sounds().get().play(GameSound.INTERMISSION_3);
 				$.flap = new Flap();
 				$.flap.number = 3;
 				$.flap.text = "JUNIOR";
