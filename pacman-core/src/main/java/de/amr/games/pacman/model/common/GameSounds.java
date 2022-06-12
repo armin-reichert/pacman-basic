@@ -37,6 +37,9 @@ public interface GameSounds {
 	default void ensurePlaying(GameSound snd) {
 	}
 
+	default void loop(GameSound snd, int repetitions) {
+	}
+
 	default void stopAll() {
 	}
 
