@@ -24,10 +24,9 @@ SOFTWARE.
 
 package de.amr.games.pacman.model.common.actors;
 
-import java.util.Optional;
+import java.util.List;
 
 import de.amr.games.pacman.lib.TickTimer;
-import de.amr.games.pacman.lib.animation.ThingAnimationCollection;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.world.World;
 
@@ -44,6 +43,12 @@ public interface Bonus {
 
 	Entity entity();
 
+	void setSymbolList(List<?> symbolList);
+
+	void setValueList(List<?> valueList);
+
+	Object getSprite();
+
 	BonusState state();
 
 	void update(GameModel game);
@@ -51,8 +56,4 @@ public interface Bonus {
 	void setInactive();
 
 	void setEdible(World world, int symbol, int value, long ticks);
-
-	void setAnimations(ThingAnimationCollection<Bonus, BonusAnimationKey, ?> animations);
-
-	Optional<ThingAnimationCollection<Bonus, BonusAnimationKey, ?>> animations();
 }

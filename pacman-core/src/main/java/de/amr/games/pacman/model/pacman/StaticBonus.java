@@ -25,16 +25,14 @@ package de.amr.games.pacman.model.pacman;
 
 import static de.amr.games.pacman.lib.Logging.log;
 
-import java.util.Optional;
+import java.util.List;
 
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEventing;
 import de.amr.games.pacman.lib.V2d;
-import de.amr.games.pacman.lib.animation.ThingAnimationCollection;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameSound;
 import de.amr.games.pacman.model.common.actors.Bonus;
-import de.amr.games.pacman.model.common.actors.BonusAnimationKey;
 import de.amr.games.pacman.model.common.actors.BonusState;
 import de.amr.games.pacman.model.common.actors.Entity;
 import de.amr.games.pacman.model.common.world.World;
@@ -50,7 +48,8 @@ public class StaticBonus extends Entity implements Bonus {
 	private int symbol;
 	private int value;
 	private long timer;
-	private ThingAnimationCollection<Bonus, BonusAnimationKey, ?> animations;
+	private List<?> symbolList;
+	private List<?> valueList;
 
 	public StaticBonus(V2d position) {
 		this.position = position;
@@ -63,20 +62,19 @@ public class StaticBonus extends Entity implements Bonus {
 	}
 
 	@Override
-	public void setAnimations(ThingAnimationCollection<Bonus, BonusAnimationKey, ?> animations) {
-		this.animations = animations;
+	public void setSymbolList(List<?> symbolList) {
+		this.symbolList = symbolList;
 	}
 
 	@Override
-	public Optional<ThingAnimationCollection<Bonus, BonusAnimationKey, ?>> animations() {
-		return Optional.ofNullable(animations);
+	public void setValueList(List<?> valueList) {
+		this.valueList = valueList;
 	}
 
 	@Override
 	public String toString() {
-		var animationKey = animations != null ? animations.selectedKey() : "";
-		return "[StaticBonus symbol=%d value=%d state=%s position=%s timer=%d animation=%s]".formatted(symbol, value, state,
-				position, timer, animationKey);
+		return "[StaticBonus symbol=%d value=%d state=%s position=%s timer=%d]".formatted(symbol, value, state, position,
+				timer);
 	}
 
 	@Override
@@ -97,13 +95,11 @@ public class StaticBonus extends Entity implements Bonus {
 	@Override
 	public void setInactive() {
 		state = BonusState.INACTIVE;
-		animations().ifPresent(anim -> anim.select(BonusAnimationKey.ANIM_NONE));
 	}
 
 	@Override
 	public void setEdible(World world, int symbol, int value, long ticks) {
 		state = BonusState.EDIBLE;
-		animations().ifPresent(anim -> anim.select(BonusAnimationKey.ANIM_SYMBOL));
 		this.symbol = symbol;
 		this.value = value;
 		timer = ticks;
@@ -121,12 +117,10 @@ public class StaticBonus extends Entity implements Bonus {
 				game.scores.addPoints(value());
 				state = BonusState.EATEN;
 				timer = Bonus.EATEN_DURATION;
-				animations().ifPresent(anim -> anim.select(BonusAnimationKey.ANIM_VALUE));
 				game.sounds().ifPresent(snd -> snd.play(GameSound.BONUS_EATEN));
 				GameEventing.publish(GameEventType.BONUS_GETS_EATEN, tile());
 			} else {
-				boolean expired = tick();
-				if (expired) {
+				if (--timer == 0) {
 					log("Bonus expired: %s", this);
 					setInactive();
 					GameEventing.publish(GameEventType.BONUS_EXPIRES, tile());
@@ -134,8 +128,7 @@ public class StaticBonus extends Entity implements Bonus {
 			}
 		}
 		case EATEN -> {
-			boolean expired = tick();
-			if (expired) {
+			if (--timer == 0) {
 				log("Bonus expired: %s", this);
 				setInactive();
 				GameEventing.publish(GameEventType.BONUS_EXPIRES, tile());
@@ -144,13 +137,12 @@ public class StaticBonus extends Entity implements Bonus {
 		}
 	}
 
-	private boolean tick() {
-		if (timer > 0) {
-			--timer;
-			if (timer == 0) {
-				return true;
-			}
-		}
-		return false;
+	@Override
+	public Object getSprite() {
+		return switch (state) {
+		case INACTIVE -> null;
+		case EATEN -> valueList.get(symbol);
+		case EDIBLE -> symbolList.get(symbol);
+		};
 	}
 }

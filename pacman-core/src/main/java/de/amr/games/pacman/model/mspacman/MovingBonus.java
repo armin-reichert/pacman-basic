@@ -28,7 +28,6 @@ import static de.amr.games.pacman.lib.TickTimer.sec_to_ticks;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 
 import de.amr.games.pacman.event.GameEventType;
@@ -38,11 +37,9 @@ import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.lib.animation.SimpleThingAnimation;
-import de.amr.games.pacman.lib.animation.ThingAnimationCollection;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameSound;
 import de.amr.games.pacman.model.common.actors.Bonus;
-import de.amr.games.pacman.model.common.actors.BonusAnimationKey;
 import de.amr.games.pacman.model.common.actors.BonusState;
 import de.amr.games.pacman.model.common.actors.Creature;
 import de.amr.games.pacman.model.common.actors.Entity;
@@ -63,7 +60,8 @@ public class MovingBonus extends Creature implements Bonus {
 	private int symbol;
 	private int value;
 	private long timer;
-	private ThingAnimationCollection<Bonus, BonusAnimationKey, ?> animations;
+	private List<?> symbolList;
+	private List<?> valueList;
 	private final SimpleThingAnimation<Integer> jumpAnimation;
 	private final List<V2i> route = new ArrayList<>();
 
@@ -82,13 +80,13 @@ public class MovingBonus extends Creature implements Bonus {
 	}
 
 	@Override
-	public void setAnimations(ThingAnimationCollection<Bonus, BonusAnimationKey, ?> animations) {
-		this.animations = animations;
+	public void setSymbolList(List<?> symbolList) {
+		this.symbolList = symbolList;
 	}
 
 	@Override
-	public Optional<ThingAnimationCollection<Bonus, BonusAnimationKey, ?>> animations() {
-		return Optional.of(animations);
+	public void setValueList(List<?> valueList) {
+		this.valueList = valueList;
 	}
 
 	@Override
@@ -113,13 +111,21 @@ public class MovingBonus extends Creature implements Bonus {
 	}
 
 	@Override
+	public Object getSprite() {
+		return switch (state) {
+		case INACTIVE -> null;
+		case EATEN -> valueList.get(symbol);
+		case EDIBLE -> symbolList.get(symbol);
+		};
+	}
+
+	@Override
 	public void setInactive() {
 		state = BonusState.INACTIVE;
 		timer = TickTimer.INDEFINITE;
 		symbol = 0;
 		value = 0;
 		route.clear();
-		animations.select(BonusAnimationKey.ANIM_NONE);
 		jumpAnimation.stop();
 	}
 
@@ -132,7 +138,6 @@ public class MovingBonus extends Creature implements Bonus {
 		route.clear();
 		newTileEntered = true;
 		stuck = false;
-		animations.select(BonusAnimationKey.ANIM_SYMBOL);
 		setAbsSpeed(0.4); // TODO how fast should it walk?
 		jumpAnimation.restart();
 		int numPortals = world.portals().size();
@@ -147,7 +152,6 @@ public class MovingBonus extends Creature implements Bonus {
 	private void setEaten(long ticks) {
 		state = BonusState.EATEN;
 		timer = ticks;
-		animations.select(BonusAnimationKey.ANIM_VALUE);
 		jumpAnimation.stop();
 	}
 
@@ -183,8 +187,7 @@ public class MovingBonus extends Creature implements Bonus {
 			jumpAnimation.advance();
 		}
 		case EATEN -> {
-			boolean expired = tick();
-			if (expired) {
+			if (--timer == 0) {
 				log("%s expired", this);
 				setInactive();
 				GameEventing.publish(GameEventType.BONUS_EXPIRES, tile());
@@ -214,16 +217,6 @@ public class MovingBonus extends Creature implements Bonus {
 		}
 		computeDirectionTowardsTarget(world);
 		tryMoving(world);
-		return false;
-	}
-
-	private boolean tick() {
-		if (timer > 0) {
-			--timer;
-			if (timer == 0) {
-				return true;
-			}
-		}
 		return false;
 	}
 }

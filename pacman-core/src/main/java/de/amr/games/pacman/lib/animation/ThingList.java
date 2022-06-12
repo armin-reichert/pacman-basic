@@ -24,7 +24,7 @@ SOFTWARE.
 
 package de.amr.games.pacman.lib.animation;
 
-import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author Armin Reichert
@@ -35,7 +35,15 @@ public class ThingList<T> implements ThingAnimation<T> {
 
 	@SafeVarargs
 	public ThingList(T... things) {
-		this.things = Arrays.copyOf(things, things.length);
+		this.things = things;
+	}
+
+	@SuppressWarnings("unchecked")
+	public ThingList(List<T> list) {
+		this.things = (T[]) new Object[list.size()];
+		for (int i = 0; i < list.size(); ++i) {
+			things[i] = list.get(i);
+		}
 	}
 
 	public int numFrames() {
