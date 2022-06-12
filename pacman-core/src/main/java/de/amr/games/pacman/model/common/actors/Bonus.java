@@ -24,9 +24,10 @@ SOFTWARE.
 
 package de.amr.games.pacman.model.common.actors;
 
+import static de.amr.games.pacman.lib.TickTimer.sec_to_ticks;
+
 import java.util.List;
 
-import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.world.World;
 
@@ -35,7 +36,7 @@ import de.amr.games.pacman.model.common.world.World;
  */
 public interface Bonus {
 
-	public static final long EATEN_DURATION = TickTimer.sec_to_ticks(2);
+	static final long EATEN_DURATION = sec_to_ticks(2);
 
 	int symbol();
 
