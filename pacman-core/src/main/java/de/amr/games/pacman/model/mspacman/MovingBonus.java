@@ -40,6 +40,7 @@ import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.lib.animation.SimpleThingAnimation;
 import de.amr.games.pacman.lib.animation.ThingAnimationCollection;
 import de.amr.games.pacman.model.common.GameModel;
+import de.amr.games.pacman.model.common.GameSound;
 import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.BonusAnimationKey;
 import de.amr.games.pacman.model.common.actors.BonusState;
@@ -185,6 +186,7 @@ public class MovingBonus extends Creature implements Bonus {
 			if (expired) {
 				log("%s expired", this);
 				setInactive();
+				game.sounds().ifPresent(snd -> snd.play(GameSound.BONUS_EATEN));
 				GameEventing.publish(GameEventType.BONUS_EXPIRES, tile());
 			}
 		}

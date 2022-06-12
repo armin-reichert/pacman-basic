@@ -29,6 +29,8 @@ import static de.amr.games.pacman.model.common.actors.GhostAnimationKey.ANIM_VAL
 import static de.amr.games.pacman.model.common.actors.PacAnimationKey.ANIM_DYING;
 import static de.amr.games.pacman.model.common.actors.PacAnimationKey.ANIM_MUNCHING;
 
+import java.util.Optional;
+
 import de.amr.games.pacman.event.GameEventing;
 import de.amr.games.pacman.event.GameStateChangeEvent;
 import de.amr.games.pacman.lib.TickTimer;
@@ -38,7 +40,10 @@ import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.lib.fsm.FsmState;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameModel.CheckResult;
+import de.amr.games.pacman.model.common.GameSound;
+import de.amr.games.pacman.model.common.GameSounds;
 import de.amr.games.pacman.model.common.actors.Ghost;
+import de.amr.games.pacman.model.common.actors.GhostState;
 
 /**
  * Rule of thumb: here, specify the "what" and "when", not the "how" (which should be implemented in the model).
@@ -83,8 +88,17 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void onEnter(GameModel game) {
 			boolean hasCredit = controller.credit() > 0;
-			double readySeconds = controller.isGameRunning() || !hasCredit ? 2 : 5;
-			timer.setSeconds(readySeconds);
+			if (hasCredit && !controller.isGameRunning()) {
+				// game start
+				timer.setSeconds(5);
+				sounds().ifPresent(snd -> {
+					snd.stopAll();
+					snd.play(GameSound.GAME_READY);
+				});
+			} else {
+				// game already running or attract mode
+				timer.setSeconds(2);
+			}
 			timer.start();
 			game.resetGuys();
 			game.scores.gameScore.showContent = hasCredit;
@@ -137,6 +151,18 @@ public enum GameState implements FsmState<GameModel> {
 			game.updateBonus();
 			game.advanceHunting();
 			game.energizerPulse.advance();
+
+			sounds().ifPresent(snd -> {
+				if (game.huntingTimer.tick() == 0) {
+					snd.ensureSirenStarted(game.huntingTimer.phase() / 2);
+				}
+				if (game.pac.starvingTicks >= 10) {
+					snd.stop(GameSound.PACMAN_MUNCH);
+				}
+				if (game.ghosts(GhostState.DEAD).count() == 0) {
+					snd.stop(GameSound.GHOST_RETURNING);
+				}
+			});
 		}
 	},
 
@@ -151,6 +177,7 @@ public enum GameState implements FsmState<GameModel> {
 			game.pac.animations().ifPresent(anim -> anim.reset());
 			game.ghosts().forEach(Ghost::hide);
 			game.energizerPulse.reset();
+			sounds().ifPresent(snd -> snd.stopAll());
 		}
 
 		@Override
@@ -203,6 +230,7 @@ public enum GameState implements FsmState<GameModel> {
 			game.ghosts().forEach(ghost -> ghost.animation(ANIM_FLASHING).ifPresent(ThingAnimation::stop));
 			game.ghosts().filter(ghost -> ghost.killIndex >= 0)
 					.forEach(ghost -> ghost.animations().ifPresent(anim -> anim.select(ANIM_VALUE)));
+			sounds().ifPresent(snd -> snd.play(GameSound.GHOST_EATEN));
 		}
 
 		@Override
@@ -235,6 +263,7 @@ public enum GameState implements FsmState<GameModel> {
 				anim.selectedAnimation().reset();
 			});
 			game.bonus().setInactive();
+			sounds().ifPresent(snd -> snd.stopAll());
 		}
 
 		@Override
@@ -244,6 +273,7 @@ public enum GameState implements FsmState<GameModel> {
 				game.ghosts().forEach(Ghost::hide);
 			} else if (timer.atSecond(2)) {
 				game.pac.animation(ANIM_DYING).ifPresent(ThingAnimation::restart);
+				sounds().ifPresent(snd -> snd.play(GameSound.PACMAN_DEATH));
 			} else if (timer.atSecond(3.5)) {
 				if (--game.lives == 0) {
 					game.energizerPulse.stop();
@@ -263,6 +293,7 @@ public enum GameState implements FsmState<GameModel> {
 			game.scores.saveHiscore();
 			timer.setSeconds(3);
 			timer.start();
+			sounds().ifPresent(snd -> snd.stopAll());
 		}
 
 		@Override
@@ -328,5 +359,9 @@ public enum GameState implements FsmState<GameModel> {
 	@Override
 	public TickTimer timer() {
 		return timer;
+	}
+
+	protected Optional<GameSounds> sounds() {
+		return controller.game().sounds();
 	}
 }

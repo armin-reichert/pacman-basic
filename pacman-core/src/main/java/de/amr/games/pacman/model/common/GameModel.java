@@ -131,6 +131,8 @@ public abstract class GameModel {
 	/** Number of current intermission scene in test mode. */
 	public int intermissionTestNumber;
 
+	public GameSounds sounds;
+
 	public GameModel(GameVariant gameVariant, Pac pac, Ghost... ghosts) {
 		if (ghosts.length != 4) {
 			throw new IllegalArgumentException("We need exactly 4 ghosts in order RED, PINK, CYAN, ORANGE");
@@ -153,6 +155,14 @@ public abstract class GameModel {
 
 	public void setMazeFlashingAnimation(SimpleThingAnimation<?> mazeFlashingAnimation) {
 		this.mazeFlashingAnimation = mazeFlashingAnimation;
+	}
+
+	public void setSounds(GameSounds sounds) {
+		this.sounds = sounds;
+	}
+
+	public Optional<GameSounds> sounds() {
+		return Optional.ofNullable(sounds);
 	}
 
 	public void reset() {
@@ -336,7 +346,7 @@ public abstract class GameModel {
 			onPlayerFindsNoFood();
 		}
 		if (result.playerGotPower) {
-			onPlayerGotPower();
+			onPlayerGetsPower();
 		}
 		if (!playerImmune && !pac.hasPower() && playerMeetsHuntingGhost()) {
 			killPlayer();
@@ -354,7 +364,7 @@ public abstract class GameModel {
 			onPlayerPowerFading();
 		}
 		if (result.playerPowerLost) {
-			onPlayerLostPower();
+			onPlayerLosesPower();
 		}
 	}
 
@@ -404,12 +414,16 @@ public abstract class GameModel {
 		GameEventing.publish(GameEventType.PLAYER_STARTS_LOSING_POWER, pac.tile());
 	}
 
-	private void onPlayerLostPower() {
+	private void onPlayerLosesPower() {
 		log("%s lost power, timer=%s", pac.name, pac.powerTimer);
 		/* TODO hack: leave state EXPIRED to avoid repetitions. */
 		pac.powerTimer.setIndefinite();
 		huntingTimer.start();
 		ghosts(FRIGHTENED).forEach(ghost -> ghost.state = HUNTING_PAC);
+		sounds().ifPresent(snd -> {
+			snd.stop(GameSound.PACMAN_POWER);
+			snd.ensureSirenStarted(huntingTimer.phase() / 2);
+		});
 		GameEventing.publish(GameEventType.PLAYER_LOSES_POWER, pac.tile());
 	}
 
@@ -447,10 +461,11 @@ public abstract class GameModel {
 		ghosts[RED_GHOST].checkCruiseElroyStart(level);
 		updateGhostDotCounters();
 		scores.addPoints(value);
+		sounds().ifPresent(snd -> snd.ensureLoop(GameSound.PACMAN_MUNCH, GameSounds.FOREVER));
 		GameEventing.publish(GameEventType.PLAYER_FINDS_FOOD, pac.tile());
 	}
 
-	private void onPlayerGotPower() {
+	private void onPlayerGetsPower() {
 		huntingTimer.stop();
 		pac.powerTimer.setSeconds(level.ghostFrightenedSeconds);
 		pac.powerTimer.start();
@@ -464,6 +479,10 @@ public abstract class GameModel {
 				anim.select(GhostAnimationKey.ANIM_BLUE);
 				anim.selectedAnimation().ensureRunning();
 			});
+		});
+		sounds().ifPresent(snd -> {
+			snd.stopSirens();
+			snd.ensureLoop(GameSound.PACMAN_POWER, GameSounds.FOREVER);
 		});
 		GameEventing.publish(GameEventType.PLAYER_GETS_POWER, pac.tile());
 	}
@@ -483,6 +502,7 @@ public abstract class GameModel {
 		// fire event(s) only for dead ghosts not yet returning home (bounty != 0)
 		ghosts(DEAD).filter(ghost -> ghost.killIndex != -1).forEach(ghost -> {
 			ghost.killIndex = -1;
+			sounds().ifPresent(snd -> snd.ensurePlaying(GameSound.GHOST_RETURNING));
 			GameEventing.publish(new GameEvent(this, GameEventType.GHOST_STARTS_RETURNING_HOME, ghost, null));
 		});
 

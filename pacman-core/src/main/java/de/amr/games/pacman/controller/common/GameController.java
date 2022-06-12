@@ -81,7 +81,6 @@ public class GameController extends Fsm<GameState, GameModel> {
 
 	public GameController(GameVariant variant) {
 		super(GameState.values());
-
 //		logging = true;
 
 		games = Map.of(GameVariant.MS_PACMAN, new MsPacManGame(), GameVariant.PACMAN, new PacManGame());
@@ -160,6 +159,10 @@ public class GameController extends Fsm<GameState, GameModel> {
 
 	public GameModel game() {
 		return selectedGame;
+	}
+
+	public GameModel game(GameVariant variant) {
+		return games.get(variant);
 	}
 
 	// public actions

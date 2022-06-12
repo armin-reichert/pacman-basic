@@ -103,6 +103,7 @@ public class GameScores {
 		}
 		if (scoreBeforeAddingPoints < game.extraLifeScore && gameScore.points >= game.extraLifeScore) {
 			game.lives++;
+			game.sounds().ifPresent(snd -> snd.play(GameSound.EXTRA_LIFE));
 			GameEventing.publish(new GameEvent(game, GameEventType.PLAYER_GETS_EXTRA_LIFE, null, game.pac.tile()));
 		}
 	}
