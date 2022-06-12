@@ -200,7 +200,10 @@ public enum GameState implements FsmState<GameModel> {
 			timer.setSeconds(5);
 			timer.start();
 			game.pac.setAbsSpeed(0);
-			game.pac.animations().ifPresent(anim -> anim.select(ANIM_DYING));
+			game.pac.animations().ifPresent(anim -> {
+				anim.select(ANIM_DYING);
+				anim.selectedAnimation().reset();
+			});
 			game.ghosts(FRIGHTENED).forEach(ghost -> ghost.state = HUNTING_PAC);
 			game.bonus().setInactive();
 		}

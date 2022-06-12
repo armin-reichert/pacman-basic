@@ -36,6 +36,7 @@ import static de.amr.games.pacman.model.common.actors.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.common.actors.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.model.common.actors.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.model.common.actors.GhostState.LOCKED;
+import static de.amr.games.pacman.model.common.actors.PacAnimationKey.ANIM_MUNCHING;
 import static de.amr.games.pacman.model.common.world.World.HTS;
 
 import java.util.Optional;
@@ -48,12 +49,12 @@ import de.amr.games.pacman.event.GameEventing;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.animation.SimpleThingAnimation;
+import de.amr.games.pacman.lib.animation.ThingAnimation;
 import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.GhostAnimationKey;
 import de.amr.games.pacman.model.common.actors.GhostState;
 import de.amr.games.pacman.model.common.actors.Pac;
-import de.amr.games.pacman.model.common.actors.PacAnimationKey;
 import de.amr.games.pacman.model.common.world.World;
 
 /**
@@ -165,7 +166,8 @@ public abstract class GameModel {
 		pac.resting = 0;
 		pac.starvingTicks = 0;
 		pac.powerTimer.setIndefinite();
-		pac.animations().ifPresent(anim -> anim.select(PacAnimationKey.ANIM_MUNCHING));
+		pac.animations().ifPresent(anim -> anim.select(ANIM_MUNCHING));
+		pac.animation(ANIM_MUNCHING).ifPresent(ThingAnimation::stop);
 
 		for (Ghost ghost : ghosts) {
 			ghost.visible = true;
@@ -185,7 +187,7 @@ public abstract class GameModel {
 			// ghost.elroyMode = 0;
 			ghost.animations().ifPresent(anim -> {
 				anim.select(GhostAnimationKey.ANIM_COLOR);
-				anim.stop();
+				anim.selectedAnimation().stop();
 			});
 		}
 	}
