@@ -28,6 +28,7 @@ import static de.amr.games.pacman.model.common.actors.GhostAnimationKey.ANIM_FLA
 import static de.amr.games.pacman.model.common.actors.GhostAnimationKey.ANIM_VALUE;
 import static de.amr.games.pacman.model.common.actors.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.common.actors.GhostState.HUNTING_PAC;
+import static de.amr.games.pacman.model.common.actors.PacAnimationKey.ANIM_DYING;
 import static de.amr.games.pacman.model.common.actors.PacAnimationKey.ANIM_MUNCHING;
 
 import de.amr.games.pacman.event.GameEventing;
@@ -39,7 +40,6 @@ import de.amr.games.pacman.lib.fsm.FsmState;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameModel.CheckResult;
 import de.amr.games.pacman.model.common.actors.Ghost;
-import de.amr.games.pacman.model.common.actors.PacAnimationKey;
 
 /**
  * Rule of thumb: here, specify the "what" and "when", not the "how" (which should be implemented in the model).
@@ -200,11 +200,7 @@ public enum GameState implements FsmState<GameModel> {
 			timer.setSeconds(5);
 			timer.start();
 			game.pac.setAbsSpeed(0);
-			game.pac.animations().ifPresent(anim -> {
-				anim.select(PacAnimationKey.ANIM_DYING);
-				anim.reset();
-				anim.stop();
-			});
+			game.pac.animations().ifPresent(anim -> anim.select(ANIM_DYING));
 			game.ghosts(FRIGHTENED).forEach(ghost -> ghost.state = HUNTING_PAC);
 			game.bonus().setInactive();
 		}
@@ -214,19 +210,18 @@ public enum GameState implements FsmState<GameModel> {
 			if (timer.atSecond(1)) {
 				game.ghosts().forEach(Ghost::hide);
 			} else if (timer.atSecond(2)) {
-				game.pac.animations().ifPresent(anim -> {
-					anim.byKey(PacAnimationKey.ANIM_DYING).restart();
-				});
-			}
-			if (timer.hasExpired()) {
-				game.lives--;
+				game.pac.animation(ANIM_DYING).ifPresent(ThingAnimation::restart);
+			} else if (timer.atSecond(3.5)) {
+				game.pac.hide();
+			} else if (timer.hasExpired()) {
 				if (controller.credit() == 0) {
-					game.reset();
 					controller.changeState(INTRO);
+					return;
 				} else {
-					controller.changeState(game.lives > 0 ? READY : GAME_OVER);
+					game.lives--;
+					controller.changeState(game.lives == 0 ? GAME_OVER : READY);
+					return;
 				}
-				return;
 			}
 			game.energizerPulse.advance();
 		}
