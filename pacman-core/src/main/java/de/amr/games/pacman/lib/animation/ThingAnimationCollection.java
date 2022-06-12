@@ -33,7 +33,7 @@ import java.util.stream.Stream;
  * @param <K> key type
  * @param <T> thing type (Rectangle, Image)
  */
-public abstract class ThingAnimationCollection<E, K, T> implements ThingAnimation<T> {
+public abstract class ThingAnimationCollection<E, K, T> {
 
 	protected K selectedKey;
 
@@ -42,29 +42,6 @@ public abstract class ThingAnimationCollection<E, K, T> implements ThingAnimatio
 	public abstract Stream<ThingAnimation<T>> all();
 
 	public abstract T current(E entity);
-
-	@Override
-	public T frame(int i) {
-		return null; // makes no sense for collection
-	}
-
-	@Override
-	public T frame() {
-		return null; // makes no sense for collection
-	}
-
-	@Override
-	public boolean isRunning() {
-		return false;
-	}
-
-	@Override
-	public void advance() {
-	}
-
-	@Override
-	public void repeat(int n) {
-	}
 
 	public K selectedKey() {
 		return selectedKey;
@@ -78,39 +55,22 @@ public abstract class ThingAnimationCollection<E, K, T> implements ThingAnimatio
 		selectedKey = key;
 	}
 
-	public void stop(K key) {
-		byKey(key).stop();
-	}
-
-	public void run(K key) {
-		byKey(key).run();
-	}
-
-	public void restart(K key) {
-		byKey(key).restart();
-	}
-
-	@Override
 	public void reset() {
 		all().forEach(ThingAnimation::reset);
 	}
 
-	@Override
 	public void stop() {
 		all().forEach(ThingAnimation::stop);
 	}
 
-	@Override
 	public void run() {
 		all().forEach(ThingAnimation::run);
 	}
 
-	@Override
 	public void ensureRunning() {
 		all().forEach(ThingAnimation::ensureRunning);
 	}
 
-	@Override
 	public void restart() {
 		all().forEach(ThingAnimation::restart);
 	}
