@@ -48,7 +48,7 @@ public abstract class ThingAnimationCollection<E, K, T> {
 	}
 
 	public ThingAnimation<T> selectedAnimation() {
-		return byKey(selectedKey());
+		return byKey(selectedKey);
 	}
 
 	public void select(K key) {
