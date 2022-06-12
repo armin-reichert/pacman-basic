@@ -49,7 +49,6 @@ import de.amr.games.pacman.event.GameEventing;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.animation.SimpleThingAnimation;
-import de.amr.games.pacman.lib.animation.ThingAnimation;
 import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.GhostAnimationKey;
@@ -166,8 +165,10 @@ public abstract class GameModel {
 		pac.resting = 0;
 		pac.starvingTicks = 0;
 		pac.powerTimer.setIndefinite();
-		pac.animations().ifPresent(anim -> anim.select(ANIM_MUNCHING));
-		pac.animation(ANIM_MUNCHING).ifPresent(ThingAnimation::stop);
+		pac.animations().ifPresent(anim -> {
+			anim.select(ANIM_MUNCHING);
+			anim.selectedAnimation().reset();
+		});
 
 		for (Ghost ghost : ghosts) {
 			ghost.visible = true;

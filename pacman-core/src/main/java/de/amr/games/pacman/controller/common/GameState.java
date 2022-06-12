@@ -26,8 +26,6 @@ package de.amr.games.pacman.controller.common;
 import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.model.common.actors.GhostAnimationKey.ANIM_FLASHING;
 import static de.amr.games.pacman.model.common.actors.GhostAnimationKey.ANIM_VALUE;
-import static de.amr.games.pacman.model.common.actors.GhostState.FRIGHTENED;
-import static de.amr.games.pacman.model.common.actors.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.model.common.actors.PacAnimationKey.ANIM_DYING;
 import static de.amr.games.pacman.model.common.actors.PacAnimationKey.ANIM_MUNCHING;
 
@@ -194,42 +192,6 @@ public enum GameState implements FsmState<GameModel> {
 		}
 	},
 
-	PACMAN_DYING {
-		@Override
-		public void onEnter(GameModel game) {
-			timer.setSeconds(5);
-			timer.start();
-			game.pac.setAbsSpeed(0);
-			game.pac.animations().ifPresent(anim -> {
-				anim.select(ANIM_DYING);
-				anim.selectedAnimation().reset();
-			});
-			game.ghosts(FRIGHTENED).forEach(ghost -> ghost.state = HUNTING_PAC);
-			game.bonus().setInactive();
-		}
-
-		@Override
-		public void onUpdate(GameModel game) {
-			if (timer.atSecond(1)) {
-				game.ghosts().forEach(Ghost::hide);
-			} else if (timer.atSecond(2)) {
-				game.pac.animation(ANIM_DYING).ifPresent(ThingAnimation::restart);
-			} else if (timer.atSecond(3.5)) {
-				game.pac.hide();
-			} else if (timer.hasExpired()) {
-				if (controller.credit() == 0) {
-					controller.changeState(INTRO);
-					return;
-				} else {
-					game.lives--;
-					controller.changeState(game.lives == 0 ? GAME_OVER : READY);
-					return;
-				}
-			}
-			game.energizerPulse.advance();
-		}
-	},
-
 	GHOST_DYING {
 		@Override
 		public void onEnter(GameModel game) {
@@ -260,21 +222,45 @@ public enum GameState implements FsmState<GameModel> {
 		}
 	},
 
-	GAME_OVER {
+	PACMAN_DYING {
 		@Override
 		public void onEnter(GameModel game) {
 			timer.setSeconds(5);
 			timer.start();
-			game.scores.saveHiscore();
-			game.ghosts().forEach(ghost -> {
-				ghost.animations().ifPresent(ThingAnimation::stop);
-				ghost.show();
+			game.pac.setAbsSpeed(0);
+			game.pac.animations().ifPresent(anim -> {
+				anim.select(ANIM_DYING);
+				anim.selectedAnimation().reset();
 			});
-			game.pac.animations().ifPresent(ThingAnimation::stop);
-			game.pac.show();
-			// TODO check this with MAME
-			game.energizerPulse.reset();
-			game.energizerPulse.setFrameIndex(1);
+			game.bonus().setInactive();
+		}
+
+		@Override
+		public void onUpdate(GameModel game) {
+			game.energizerPulse.advance();
+			if (timer.atSecond(1)) {
+				game.ghosts().forEach(Ghost::hide);
+			} else if (timer.atSecond(2)) {
+				game.pac.animation(ANIM_DYING).ifPresent(ThingAnimation::restart);
+			} else if (timer.atSecond(3.5)) {
+				if (--game.lives == 0) {
+					game.energizerPulse.stop();
+				}
+				game.pac.hide();
+			} else if (timer.hasExpired()) {
+				var nextState = controller.credit() == 0 ? INTRO : game.lives == 0 ? GAME_OVER : READY;
+				controller.changeState(nextState);
+				return;
+			}
+		}
+	},
+
+	GAME_OVER {
+		@Override
+		public void onEnter(GameModel game) {
+			game.scores.saveHiscore();
+			timer.setSeconds(3);
+			timer.start();
 		}
 
 		@Override
