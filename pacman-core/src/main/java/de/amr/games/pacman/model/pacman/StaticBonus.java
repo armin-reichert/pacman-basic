@@ -101,9 +101,9 @@ public class StaticBonus extends Entity implements Bonus {
 	@Override
 	public void setEdible(World world, int symbol, int value, long ticks) {
 		state = BonusState.EDIBLE;
+		timer = ticks;
 		this.symbol = symbol;
 		this.value = value;
-		timer = ticks;
 		log("%s activated", this);
 	}
 
@@ -120,12 +120,12 @@ public class StaticBonus extends Entity implements Bonus {
 				timer = Bonus.EATEN_DURATION;
 				game.sounds().ifPresent(snd -> snd.play(GameSound.BONUS_EATEN));
 				GameEventing.publish(GameEventType.BONUS_GETS_EATEN, tile());
-			} else {
-				if (--timer == 0) {
-					log("Bonus expired: %s", this);
-					setInactive();
-					GameEventing.publish(GameEventType.BONUS_EXPIRES, tile());
-				}
+				return;
+			}
+			if (--timer == 0) {
+				log("Bonus expired: %s", this);
+				state = BonusState.INACTIVE;
+				GameEventing.publish(GameEventType.BONUS_EXPIRES, tile());
 			}
 		}
 		case EATEN -> {

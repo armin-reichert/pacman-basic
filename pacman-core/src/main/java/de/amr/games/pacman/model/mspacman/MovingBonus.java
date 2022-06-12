@@ -24,7 +24,6 @@ SOFTWARE.
 package de.amr.games.pacman.model.mspacman;
 
 import static de.amr.games.pacman.lib.Logging.log;
-import static de.amr.games.pacman.lib.TickTimer.sec_to_ticks;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +32,6 @@ import java.util.Random;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEventing;
 import de.amr.games.pacman.lib.Direction;
-import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.lib.animation.SimpleThingAnimation;
@@ -70,6 +68,7 @@ public class MovingBonus extends Creature implements Bonus {
 		jumpAnimation = new SimpleThingAnimation<>(2, -2);
 		jumpAnimation.frameDuration(10);
 		jumpAnimation.repeatForever();
+		setAbsSpeed(0.4); // TODO how fast in the original game?
 		visible = true;
 		state = BonusState.INACTIVE;
 	}
@@ -111,21 +110,8 @@ public class MovingBonus extends Creature implements Bonus {
 	}
 
 	@Override
-	public Object getSprite() {
-		return switch (state) {
-		case INACTIVE -> null;
-		case EATEN -> valueList.get(symbol);
-		case EDIBLE -> symbolList.get(symbol);
-		};
-	}
-
-	@Override
 	public void setInactive() {
 		state = BonusState.INACTIVE;
-		timer = TickTimer.INDEFINITE;
-		symbol = 0;
-		value = 0;
-		route.clear();
 		jumpAnimation.stop();
 	}
 
@@ -135,28 +121,19 @@ public class MovingBonus extends Creature implements Bonus {
 		timer = ticks;
 		this.symbol = symbol;
 		this.value = value;
-		route.clear();
+
 		newTileEntered = true;
 		stuck = false;
-		setAbsSpeed(0.4); // TODO how fast should it walk?
-		jumpAnimation.restart();
 		int numPortals = world.portals().size();
 		if (numPortals > 0) {
 			Portal entryPortal = world.portals().get(new Random().nextInt(numPortals));
 			Portal exitPortal = world.portals().get(new Random().nextInt(numPortals));
 			computeNewRoute(world, entryPortal, exitPortal);
+		} else {
+			route.clear();
 		}
+		jumpAnimation.restart();
 		log("MovingBonus symbol=%d, value=%d position=%s activated", symbol, value, position);
-	}
-
-	private void setEaten(long ticks) {
-		state = BonusState.EATEN;
-		timer = ticks;
-		jumpAnimation.stop();
-	}
-
-	public void stopJumping() {
-		jumpAnimation.stop();
 	}
 
 	public int dy() {
@@ -169,20 +146,22 @@ public class MovingBonus extends Creature implements Bonus {
 		case INACTIVE -> {
 		}
 		case EDIBLE -> {
-			boolean leftWorld = followRoute(game.level.world);
-			if (leftWorld) {
-				log("%s expired (left level.world)", this);
-				position = V2d.NULL;
-				state = BonusState.INACTIVE;
-				GameEventing.publish(GameEventType.BONUS_EXPIRES, tile());
-				return;
-			}
 			if (game.pac.tile().equals(tile())) {
 				log("%s found bonus %s", game.pac.name, this);
 				game.scores.addPoints(value());
-				setEaten(sec_to_ticks(2));
+				state = BonusState.EATEN;
+				timer = Bonus.EATEN_DURATION;
+				jumpAnimation.stop();
 				game.sounds().ifPresent(snd -> snd.play(GameSound.BONUS_EATEN));
 				GameEventing.publish(GameEventType.BONUS_GETS_EATEN, tile());
+				return;
+			}
+			if (followRoute(game.level.world)) {
+				log("%s expired (left level.world)", this);
+				position = V2d.NULL;
+				setInactive();
+				GameEventing.publish(GameEventType.BONUS_EXPIRES, tile());
+				return;
 			}
 			jumpAnimation.advance();
 		}
@@ -197,6 +176,7 @@ public class MovingBonus extends Creature implements Bonus {
 	}
 
 	private void computeNewRoute(World world, Portal entryPortal, Portal exitPortal) {
+		route.clear();
 		V2i houseEntry = world.ghostHouse().doorTileLeft().plus(Direction.UP.vec);
 		var travelDir = new Random().nextBoolean() ? Direction.LEFT : Direction.RIGHT;
 		route.add(houseEntry);
@@ -218,5 +198,14 @@ public class MovingBonus extends Creature implements Bonus {
 		computeDirectionTowardsTarget(world);
 		tryMoving(world);
 		return false;
+	}
+
+	@Override
+	public Object getSprite() {
+		return switch (state) {
+		case INACTIVE -> null;
+		case EATEN -> valueList.get(symbol);
+		case EDIBLE -> symbolList.get(symbol);
+		};
 	}
 }
