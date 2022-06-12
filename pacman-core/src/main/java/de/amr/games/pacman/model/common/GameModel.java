@@ -188,7 +188,7 @@ public abstract class GameModel {
 			// ghost.elroyMode = 0;
 			ghost.animations().ifPresent(anim -> {
 				anim.select(GhostAnimationKey.ANIM_COLOR);
-				anim.selectedAnimation().stop();
+				anim.selectedAnimation().reset();
 			});
 		}
 	}
