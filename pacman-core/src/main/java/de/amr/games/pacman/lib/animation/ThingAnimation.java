@@ -28,6 +28,12 @@ package de.amr.games.pacman.lib.animation;
  */
 public interface ThingAnimation<T> {
 
+	boolean isRunning();
+
+	void repeat(int n);
+
+	void advance();
+
 	void run();
 
 	void stop();
@@ -42,4 +48,6 @@ public interface ThingAnimation<T> {
 	void ensureRunning();
 
 	T frame(int i);
+
+	T frame();
 }

@@ -48,6 +48,24 @@ public class ThingList<T> implements ThingAnimation<T> {
 	}
 
 	@Override
+	public T frame() {
+		return null;
+	}
+
+	@Override
+	public boolean isRunning() {
+		return true;
+	}
+
+	@Override
+	public void advance() {
+	}
+
+	@Override
+	public void repeat(int n) {
+	}
+
+	@Override
 	public void run() {
 	}
 

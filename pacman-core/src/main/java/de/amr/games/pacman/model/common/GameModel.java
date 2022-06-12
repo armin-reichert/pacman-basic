@@ -49,6 +49,7 @@ import de.amr.games.pacman.event.GameEventing;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.animation.SimpleThingAnimation;
+import de.amr.games.pacman.lib.animation.ThingAnimation;
 import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.GhostAnimationKey;
@@ -116,7 +117,7 @@ public abstract class GameModel {
 	public SimpleThingAnimation<Boolean> energizerPulse = SimpleThingAnimation.pulse(10);
 
 	/** Maze flashing. */
-	public SimpleThingAnimation<?> mazeFlashingAnimation;
+	private SimpleThingAnimation<?> mazeFlashingAnimation;
 
 	/** Game score and high score. */
 	public final GameScores scores = new GameScores(this);
@@ -144,6 +145,14 @@ public abstract class GameModel {
 	 */
 	public World world() {
 		return level.world;
+	}
+
+	public Optional<ThingAnimation<?>> mazeFlashingAnimation() {
+		return Optional.ofNullable(mazeFlashingAnimation);
+	}
+
+	public void setMazeFlashingAnimation(SimpleThingAnimation<?> mazeFlashingAnimation) {
+		this.mazeFlashingAnimation = mazeFlashingAnimation;
 	}
 
 	public void reset() {

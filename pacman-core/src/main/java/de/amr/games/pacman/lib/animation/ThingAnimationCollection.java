@@ -48,6 +48,24 @@ public abstract class ThingAnimationCollection<E, K, T> implements ThingAnimatio
 		return null; // makes no sense for collection
 	}
 
+	@Override
+	public T frame() {
+		return null; // makes no sense for collection
+	}
+
+	@Override
+	public boolean isRunning() {
+		return false;
+	}
+
+	@Override
+	public void advance() {
+	}
+
+	@Override
+	public void repeat(int n) {
+	}
+
 	public K selectedKey() {
 		return selectedKey;
 	}

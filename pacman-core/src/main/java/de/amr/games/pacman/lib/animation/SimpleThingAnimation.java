@@ -126,6 +126,7 @@ public class SimpleThingAnimation<T> implements ThingAnimation<T> {
 	/**
 	 * @param times number of times the animation is repeated
 	 */
+	@Override
 	public void repeat(int times) {
 		repetitions = times;
 	}
@@ -167,6 +168,7 @@ public class SimpleThingAnimation<T> implements ThingAnimation<T> {
 	/**
 	 * @return the current frame/thing
 	 */
+	@Override
 	public T frame() {
 		return things[frameIndex];
 	}
@@ -174,6 +176,7 @@ public class SimpleThingAnimation<T> implements ThingAnimation<T> {
 	/**
 	 * Advances the animation by a single step.
 	 */
+	@Override
 	public void advance() {
 		if (running) {
 			if (delayRemainingTicks > 0) {
@@ -250,6 +253,7 @@ public class SimpleThingAnimation<T> implements ThingAnimation<T> {
 	/**
 	 * @return if the animation is running
 	 */
+	@Override
 	public boolean isRunning() {
 		return running;
 	}
