@@ -177,6 +177,7 @@ public class MovingBonus extends Creature implements Bonus {
 				log("%s found bonus %s", game.pac.name, this);
 				game.scores.addPoints(value());
 				setEaten(sec_to_ticks(2));
+				game.sounds().ifPresent(snd -> snd.play(GameSound.BONUS_EATEN));
 				GameEventing.publish(GameEventType.BONUS_GETS_EATEN, tile());
 			}
 			jumpAnimation.advance();
@@ -186,7 +187,6 @@ public class MovingBonus extends Creature implements Bonus {
 			if (expired) {
 				log("%s expired", this);
 				setInactive();
-				game.sounds().ifPresent(snd -> snd.play(GameSound.BONUS_EATEN));
 				GameEventing.publish(GameEventType.BONUS_EXPIRES, tile());
 			}
 		}
