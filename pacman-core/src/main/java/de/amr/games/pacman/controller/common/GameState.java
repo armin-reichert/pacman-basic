@@ -274,7 +274,7 @@ public enum GameState implements FsmState<GameModel> {
 			} else if (timer.atSecond(2)) {
 				game.pac.animation(ANIM_DYING).ifPresent(ThingAnimation::restart);
 				sounds().ifPresent(snd -> snd.play(GameSound.PACMAN_DEATH));
-			} else if (timer.atSecond(3.5)) {
+			} else if (timer.atSecond(4)) {
 				if (--game.lives == 0) {
 					game.energizerPulse.stop();
 				}
