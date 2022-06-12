@@ -54,6 +54,7 @@ public class StaticBonus extends Entity implements Bonus {
 	public StaticBonus(V2d position) {
 		this.position = position;
 		visible = true;
+		state = BonusState.INACTIVE;
 	}
 
 	@Override
