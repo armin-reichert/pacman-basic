@@ -66,7 +66,10 @@ import de.amr.games.pacman.model.pacman.PacManGame;
  */
 public class GameController extends Fsm<GameState, GameModel> {
 
-	private final Map<GameVariant, GameModel> games;
+	private final Map<GameVariant, GameModel> games = Map.of(//
+			GameVariant.MS_PACMAN, new MsPacManGame(), //
+			GameVariant.PACMAN, new PacManGame());
+
 	private GameVariant currentGameVariant;
 	private int credit;
 	private boolean autoMoving;
@@ -75,11 +78,8 @@ public class GameController extends Fsm<GameState, GameModel> {
 
 	public GameController(GameVariant variant) {
 		super(GameState.values());
-//		logging = true;
-		games = Map.of(GameVariant.MS_PACMAN, new MsPacManGame(), GameVariant.PACMAN, new PacManGame());
-		// always send events for the current game:
 		GameEventing.setGameSupplier(this::game);
-		// map state change events to game events from selected game model:
+		// map state change events of the FSM to game events from selected game model:
 		addStateChangeListener(
 				(oldState, newState) -> GameEventing.publish(new GameStateChangeEvent(game(), oldState, newState)));
 		selectGame(variant);
@@ -156,5 +156,4 @@ public class GameController extends Fsm<GameState, GameModel> {
 	public void toggleIsPacImmune() {
 		games.values().forEach(game -> game.isPacImmune = !game.isPacImmune);
 	}
-
 }
