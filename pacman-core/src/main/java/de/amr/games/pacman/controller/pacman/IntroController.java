@@ -274,7 +274,8 @@ public class IntroController extends Fsm<State, Context> {
 					}
 				}
 				if (timer.atSecond(5)) {
-					controller.gameController.returnToIntro();
+					// TODO simplify
+					controller.gameController.restartIntro();
 					return;
 				}
 			}

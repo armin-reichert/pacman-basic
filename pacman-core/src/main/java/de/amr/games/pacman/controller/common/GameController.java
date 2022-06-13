@@ -129,6 +129,14 @@ public class GameController extends Fsm<GameState, GameModel> {
 
 	// public actions
 
+	public void restartIntro() {
+		if (state() != INTRO && state() != CREDIT) {
+			consumeCredit();
+		}
+		super.restartInInitialState(INTRO);
+		GameEventing.publish(new TriggerUIChangeEvent(game()));
+	}
+
 	public void selectGame(GameVariant variant) {
 		currentGameVariant = variant;
 		GameEventing.setGame(game());
@@ -140,14 +148,6 @@ public class GameController extends Fsm<GameState, GameModel> {
 			game().reset();
 			changeState(READY);
 		}
-	}
-
-	public void returnToIntro() {
-		if (state() != CREDIT && state() != INTRO) {
-			consumeCredit();
-		}
-		restartInInitialState(INTRO);
-		GameEventing.publish(new TriggerUIChangeEvent(game()));
 	}
 
 	public void toggleIsPacImmune() {

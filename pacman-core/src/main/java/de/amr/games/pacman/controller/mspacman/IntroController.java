@@ -168,7 +168,7 @@ public class IntroController extends Fsm<IntroController.State, IntroController.
 					return;
 				}
 				if (timer.atSecond(5)) {
-					controller.gameController.returnToIntro();
+					controller.gameController.restartIntro();
 				}
 				$.lightsTimer.advance();
 				$.blinking.advance();
