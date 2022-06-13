@@ -86,6 +86,9 @@ public abstract class GameModel {
 	/** The game variant respresented by this model. */
 	public final GameVariant variant;
 
+	/** Tells if the game play is active. */
+	public boolean playing;
+
 	/** The player, Pac-Man or Ms. Pac-Man. */
 	public final Pac pac;
 
@@ -166,6 +169,7 @@ public abstract class GameModel {
 	}
 
 	public void reset() {
+		playing = false;
 		lives = INITIAL_LIFES;
 		levelCounter.clear();
 		setLevel(1);

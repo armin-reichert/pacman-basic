@@ -73,7 +73,6 @@ public class GameController extends Fsm<GameState, GameModel> {
 	private final Map<GameVariant, GameModel> games;
 	private GameModel selectedGame;
 	private int credit;
-	private boolean gameRunning;
 	private boolean autoMoving;
 	private final Consumer<Pac> autopilot = new Autopilot(this::game);
 	private Consumer<Pac> pacController;
@@ -93,14 +92,6 @@ public class GameController extends Fsm<GameState, GameModel> {
 	@Override
 	public GameModel context() {
 		return game();
-	}
-
-	public boolean isGameRunning() {
-		return gameRunning;
-	}
-
-	public void setGameRunning(boolean running) {
-		gameRunning = running;
 	}
 
 	public boolean isAutoMoving() {
@@ -192,7 +183,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 	}
 
 	public void cheatEatAllPellets() {
-		if (gameRunning) {
+		if (game().playing) {
 			game().level.world.tiles().filter(not(game().level.world::isEnergizerTile))
 					.forEach(game().level.world::removeFood);
 			GameEventing.publish(GameEventType.PLAYER_FINDS_FOOD, null);
@@ -200,7 +191,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 	}
 
 	public void cheatKillAllEatableGhosts() {
-		if (gameRunning && state() != GameState.GHOST_DYING) {
+		if (game().playing && state() != GameState.GHOST_DYING) {
 			Ghost[] prey = game().ghosts()
 					.filter(ghost -> ghost.is(GhostState.HUNTING_PAC) || ghost.is(GhostState.FRIGHTENED)).toArray(Ghost[]::new);
 			game().ghostKillIndex = -1;
@@ -210,7 +201,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 	}
 
 	public void cheatEnterNextLevel() {
-		if (gameRunning) {
+		if (game().playing) {
 			game().level.world.tiles().forEach(game().level.world::removeFood);
 			changeState(GameState.LEVEL_COMPLETE);
 		}

@@ -58,7 +58,6 @@ public enum GameState implements FsmState<GameModel> {
 			timer.setIndefinite();
 			timer.start();
 			game.reset();
-			controller.setGameRunning(false);
 		}
 
 		@Override
@@ -107,7 +106,7 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void onEnter(GameModel game) {
 			boolean hasCredit = controller.credit() > 0;
-			if (hasCredit && !controller.isGameRunning()) {
+			if (hasCredit && !game.playing) {
 				// game start
 				timer.setSeconds(5);
 				sounds().ifPresent(snd -> {
@@ -131,10 +130,10 @@ public enum GameState implements FsmState<GameModel> {
 				game.startHuntingPhase(0);
 				if (controller.credit() > 0) {
 					game.scores.enable(true);
-					controller.setGameRunning(true);
+					game.playing = true;
 				} else {
 					game.scores.enable(false);
-					controller.setGameRunning(false);
+					game.playing = false;
 				}
 				controller.changeState(GameState.HUNTING);
 			}
@@ -318,7 +317,7 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void onUpdate(GameModel game) {
 			if (timer.hasExpired()) {
-				controller.setGameRunning(false);
+				game.playing = false;
 				controller.consumeCredit();
 				controller.changeState(controller.credit() > 0 ? CREDIT : INTRO);
 			}
@@ -335,7 +334,7 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void onUpdate(GameModel game) {
 			if (timer.hasExpired()) {
-				controller.changeState(controller.credit() == 0 || !controller.isGameRunning() ? INTRO : LEVEL_STARTING);
+				controller.changeState(controller.credit() == 0 || !game.playing ? INTRO : LEVEL_STARTING);
 			}
 		}
 	},
