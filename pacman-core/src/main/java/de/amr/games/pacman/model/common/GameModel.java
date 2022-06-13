@@ -93,7 +93,7 @@ public abstract class GameModel {
 	public final Pac pac;
 
 	/** Tells if the player can be killed by ghosts. */
-	public boolean playerImmune;
+	public boolean isPacImmune;
 
 	/** The four ghosts in order RED, PINK, CYAN, ORANGE. */
 	public final Ghost[] ghosts;
@@ -352,7 +352,7 @@ public abstract class GameModel {
 		if (result.playerGotPower) {
 			onPlayerGetsPower();
 		}
-		if (!playerImmune && !pac.hasPower() && playerMeetsHuntingGhost()) {
+		if (!isPacImmune && !pac.hasPower() && playerMeetsHuntingGhost()) {
 			killPlayer();
 			result.playerKilled = true;
 			return; // player killed

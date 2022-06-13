@@ -113,10 +113,6 @@ public class GameController extends Fsm<GameState, GameModel> {
 		steering.accept(player);
 	}
 
-	public void togglePlayerImmune() {
-		games.values().forEach(game -> game.playerImmune = !game.playerImmune);
-	}
-
 	public int credit() {
 		return credit;
 	}
@@ -156,6 +152,10 @@ public class GameController extends Fsm<GameState, GameModel> {
 		}
 		restartInInitialState(INTRO);
 		GameEventing.publish(new TriggerUIChangeEvent(game()));
+	}
+
+	public void toggleIsPacImmune() {
+		games.values().forEach(game -> game.isPacImmune = !game.isPacImmune);
 	}
 
 	public void cheatEatAllPellets() {
