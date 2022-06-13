@@ -98,6 +98,22 @@ public class GameController {
 		autopilot = new Autopilot(this::game);
 	}
 
+	public Stream<GameModel> games() {
+		return games.values().stream();
+	}
+
+	public GameModel game(GameVariant variant) {
+		return games.get(variant);
+	}
+
+	public GameModel game() {
+		return game(currentGameVariant);
+	}
+
+	public void setPacController(Consumer<Pac> pacController) {
+		this.pacController = Objects.requireNonNull(pacController);
+	}
+
 	Consumer<Pac> currentSteering() {
 		return game().autoControlled || game().credit == 0 ? autopilot : pacController;
 	}
@@ -127,22 +143,6 @@ public class GameController {
 		fsm.restartInInitialState(INTRO);
 	}
 
-	public GameModel game() {
-		return game(currentGameVariant);
-	}
-
-	public GameModel game(GameVariant variant) {
-		return games.get(variant);
-	}
-
-	public Stream<GameModel> games() {
-		return games.values().stream();
-	}
-
-	public void setPacController(Consumer<Pac> pacController) {
-		this.pacController = Objects.requireNonNull(pacController);
-	}
-
 	public void restartIntro() {
 		if (fsm.state() != CREDIT && fsm.state() != INTRO) {
 			game().consumeCredit();
@@ -150,5 +150,4 @@ public class GameController {
 		fsm.restartInInitialState(INTRO);
 		GameEvents.publish(new TriggerUIChangeEvent(game()));
 	}
-
 }
