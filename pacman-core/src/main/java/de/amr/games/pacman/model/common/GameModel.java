@@ -86,6 +86,7 @@ public abstract class GameModel {
 	/** The game variant respresented by this model. */
 	public final GameVariant variant;
 
+	/** Credit for playing. */
 	public int credit;
 
 	/** Tells if the game play is active. */
@@ -96,6 +97,9 @@ public abstract class GameModel {
 
 	/** Tells if the player can be killed by ghosts. */
 	public boolean isPacImmune;
+
+	/** If player is controlled by autopilot. */
+	public boolean autoControlled;
 
 	/** The four ghosts in order RED, PINK, CYAN, ORANGE. */
 	public final Ghost[] ghosts;

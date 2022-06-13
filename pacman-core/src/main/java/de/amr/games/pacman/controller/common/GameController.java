@@ -72,7 +72,6 @@ public class GameController {
 			GameVariant.PACMAN, new PacManGame());
 
 	private GameVariant currentGameVariant;
-	private boolean autoMoving;
 	private final Consumer<Pac> autopilot = new Autopilot(this::game);
 	private Consumer<Pac> pacController;
 
@@ -125,20 +124,12 @@ public class GameController {
 		return games.get(variant);
 	}
 
-	public boolean isAutoMoving() {
-		return autoMoving;
-	}
-
-	public void toggleAutoMoving() {
-		autoMoving = !autoMoving;
-	}
-
 	public void setPacController(Consumer<Pac> pacController) {
 		this.pacController = Objects.requireNonNull(pacController);
 	}
 
 	public void steer(Pac player) {
-		Consumer<Pac> steering = autoMoving || game().credit == 0 ? autopilot : pacController;
+		Consumer<Pac> steering = game().autoControlled || game().credit == 0 ? autopilot : pacController;
 		steering.accept(player);
 	}
 
