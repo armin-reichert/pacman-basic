@@ -38,7 +38,7 @@ public interface FsmState<CONTEXT> {
 	 * 
 	 * @param fsm the FSM owning this state
 	 */
-	void setFsm(Fsm<? extends FsmState<CONTEXT>, CONTEXT> fsm);
+	void setOwner(Fsm<? extends FsmState<CONTEXT>, CONTEXT> fsm);
 
 	/**
 	 * The hook method that gets executed when the state is entered.

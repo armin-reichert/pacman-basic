@@ -179,7 +179,7 @@ public class IntroController extends Fsm<IntroController.State, IntroController.
 		protected final TickTimer timer = new TickTimer("Timer-" + name());
 
 		@Override
-		public void setFsm(Fsm<? extends FsmState<Context>, Context> fsm) {
+		public void setOwner(Fsm<? extends FsmState<Context>, Context> fsm) {
 			controller = (IntroController) fsm;
 		}
 

@@ -67,7 +67,7 @@ public abstract class Fsm<STATE extends FsmState<CONTEXT>, CONTEXT> {
 	public Fsm(STATE[] states) {
 		this.states = states;
 		for (var state : states) {
-			state.setFsm(this);
+			state.setOwner(this);
 		}
 		name = getClass().getSimpleName();
 	}

@@ -376,7 +376,7 @@ public enum GameState implements FsmState<GameModel> {
 	protected final TickTimer timer = new TickTimer("Timer-" + name());
 
 	@Override
-	public void setFsm(Fsm<? extends FsmState<GameModel>, GameModel> fsm) {
+	public void setOwner(Fsm<? extends FsmState<GameModel>, GameModel> fsm) {
 		controller = (GameController) fsm;
 	}
 
