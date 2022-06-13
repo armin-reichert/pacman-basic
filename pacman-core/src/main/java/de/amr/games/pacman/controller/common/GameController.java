@@ -71,7 +71,7 @@ import de.amr.games.pacman.model.pacman.PacManGame;
 public class GameController extends Fsm<GameState, GameModel> {
 
 	private final Map<GameVariant, GameModel> games;
-	private GameModel selectedGame;
+	private GameVariant currentGameVariant;
 	private int credit;
 	private boolean autoMoving;
 	private final Consumer<Pac> autopilot = new Autopilot(this::game);
@@ -80,7 +80,6 @@ public class GameController extends Fsm<GameState, GameModel> {
 	public GameController(GameVariant variant) {
 		super(GameState.values());
 //		logging = true;
-
 		games = Map.of(GameVariant.MS_PACMAN, new MsPacManGame(), GameVariant.PACMAN, new PacManGame());
 		// map state change events to game events from selected game model:
 		addStateChangeListener(
@@ -136,18 +135,18 @@ public class GameController extends Fsm<GameState, GameModel> {
 		return pacController;
 	}
 
-	void selectGame(GameVariant variant) {
-		selectedGame = games.get(variant);
-		GameEventing.setGame(selectedGame);
-		restartInInitialState(INTRO);
-	}
-
 	public GameModel game() {
-		return selectedGame;
+		return game(currentGameVariant);
 	}
 
 	public GameModel game(GameVariant variant) {
 		return games.get(variant);
+	}
+
+	void selectGame(GameVariant variant) {
+		currentGameVariant = variant;
+		GameEventing.setGame(game());
+		restartInInitialState(INTRO);
 	}
 
 	// public actions
