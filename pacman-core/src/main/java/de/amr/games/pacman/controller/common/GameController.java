@@ -86,7 +86,6 @@ public class GameController extends Fsm<GameState, GameModel> {
 		addStateChangeListener(
 				(oldState, newState) -> GameEventing.publish(new GameStateChangeEvent(game(), oldState, newState)));
 		selectGame(variant);
-		changeState(INTRO);
 	}
 
 	@Override
@@ -137,9 +136,10 @@ public class GameController extends Fsm<GameState, GameModel> {
 		return pacController;
 	}
 
-	private void selectGame(GameVariant variant) {
+	void selectGame(GameVariant variant) {
 		selectedGame = games.get(variant);
 		GameEventing.setGame(selectedGame);
+		restartInInitialState(INTRO);
 	}
 
 	public GameModel game() {
@@ -151,13 +151,6 @@ public class GameController extends Fsm<GameState, GameModel> {
 	}
 
 	// public actions
-
-	public void selectGameVariant(GameVariant variant) {
-		if (state() == INTRO) {
-			selectGame(variant);
-			restartInInitialState(INTRO);
-		}
-	}
 
 	public void addListener(GameEventListener subscriber) {
 		GameEventing.addEventListener(subscriber);

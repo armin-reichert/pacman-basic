@@ -42,6 +42,7 @@ import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameModel.CheckResult;
 import de.amr.games.pacman.model.common.GameSound;
 import de.amr.games.pacman.model.common.GameSounds;
+import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.GhostState;
 
@@ -65,6 +66,11 @@ public enum GameState implements FsmState<GameModel> {
 			if (timer.hasExpired()) {
 				controller.changeState(READY);
 			}
+		}
+
+		@Override
+		public void selectGameVariant(GameVariant variant) {
+			controller.selectGame(variant);
 		}
 
 		@Override
@@ -384,6 +390,9 @@ public enum GameState implements FsmState<GameModel> {
 	}
 
 	// --- Events
+
+	public void selectGameVariant(GameVariant variant) {
+	}
 
 	public void addCredit(GameModel game) {
 	}
