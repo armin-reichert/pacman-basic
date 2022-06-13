@@ -104,6 +104,10 @@ public class GameController extends Fsm<GameState, GameModel> {
 		autoMoving = !autoMoving;
 	}
 
+	public void setPacController(Consumer<Pac> pacController) {
+		this.pacController = Objects.requireNonNull(pacController);
+	}
+
 	public void steer(Pac player) {
 		Consumer<Pac> steering = autoMoving || credit == 0 ? autopilot : pacController;
 		steering.accept(player);
@@ -121,10 +125,6 @@ public class GameController extends Fsm<GameState, GameModel> {
 
 	public void increaseCredit() {
 		++credit;
-	}
-
-	public void setPacController(Consumer<Pac> pacController) {
-		this.pacController = Objects.requireNonNull(pacController);
 	}
 
 	// public actions
