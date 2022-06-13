@@ -125,19 +125,14 @@ public class GameController extends Fsm<GameState, GameModel> {
 		return credit;
 	}
 
-	public void addCredit() {
-		if (state() == INTRO || state() != CREDIT && !gameRunning) {
-			++credit;
-			changeState(CREDIT);
-		} else if (state() == CREDIT) {
-			++credit;
-		}
-	}
-
 	public void consumeCredit() {
 		if (credit > 0) {
 			--credit;
 		}
+	}
+
+	public void increaseCredit() {
+		++credit;
 	}
 
 	public Consumer<Pac> autopilot() {

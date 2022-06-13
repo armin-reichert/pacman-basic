@@ -67,6 +67,13 @@ public enum GameState implements FsmState<GameModel> {
 				controller.changeState(READY);
 			}
 		}
+
+		@Override
+		public void addCredit(GameModel game) {
+			game.sounds().ifPresent(snd -> snd.play(GameSound.CREDIT));
+			controller.increaseCredit();
+			controller.changeState(CREDIT);
+		}
 	},
 
 	CREDIT {
@@ -81,6 +88,12 @@ public enum GameState implements FsmState<GameModel> {
 			if (timer.hasExpired()) {
 				controller.changeState(READY);
 			}
+		}
+
+		@Override
+		public void addCredit(GameModel game) {
+			game.sounds().ifPresent(snd -> snd.play(GameSound.CREDIT));
+			controller.increaseCredit();
 		}
 	},
 
@@ -363,5 +376,10 @@ public enum GameState implements FsmState<GameModel> {
 
 	protected Optional<GameSounds> sounds() {
 		return controller.game().sounds();
+	}
+
+	// --- Events
+
+	public void addCredit(GameModel game) {
 	}
 }
