@@ -40,6 +40,9 @@ public interface GameSounds {
 	default void loop(GameSound snd, int repetitions) {
 	}
 
+	default void setSilent(boolean silent) {
+	}
+
 	default void stopAll() {
 	}
 

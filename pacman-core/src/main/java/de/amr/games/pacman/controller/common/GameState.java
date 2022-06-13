@@ -131,12 +131,14 @@ public enum GameState implements FsmState<GameModel> {
 				// game start
 				timer.setSeconds(5);
 				game.sounds().ifPresent(snd -> {
+					snd.setSilent(false);
 					snd.stopAll();
 					snd.play(GameSound.GAME_READY);
 				});
 			} else {
 				// game already running or attract mode
 				timer.setSeconds(2);
+				game.sounds().ifPresent(snd -> snd.setSilent(!game.playing));
 			}
 			timer.start();
 			game.resetGuys();

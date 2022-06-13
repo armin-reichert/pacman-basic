@@ -140,7 +140,7 @@ public abstract class GameModel {
 	/** Number of current intermission scene in test mode. */
 	public int intermissionTestNumber;
 
-	public GameSounds sounds;
+	private GameSounds sounds;
 
 	public GameModel(GameVariant gameVariant, Pac pac, Ghost... ghosts) {
 		if (ghosts.length != 4) {
