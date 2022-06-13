@@ -35,7 +35,6 @@ import de.amr.games.pacman.model.common.GameSound;
 import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.BonusState;
 import de.amr.games.pacman.model.common.actors.Entity;
-import de.amr.games.pacman.model.common.world.World;
 
 /**
  * Bonus that appears at a static position.
@@ -99,7 +98,7 @@ public class StaticBonus extends Entity implements Bonus {
 	}
 
 	@Override
-	public void setEdible(World world, int symbol, int value, long ticks) {
+	public void setEdible(int symbol, int value, long ticks) {
 		state = BonusState.EDIBLE;
 		timer = ticks;
 		this.symbol = symbol;

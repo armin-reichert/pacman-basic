@@ -36,17 +36,17 @@ import de.amr.games.pacman.model.common.world.World;
  */
 public class FixedRouteSteering implements Consumer<Creature> {
 
-	private final World world;
+	private World world;
 	private List<V2i> route = new ArrayList<>();
 	private boolean complete;
 
-	public FixedRouteSteering(World world, List<V2i> route) {
-		this.world = world;
-		this.route = route;
-	}
-
 	public boolean isComplete() {
 		return complete;
+	}
+
+	public void setRoute(World world, List<V2i> route) {
+		this.world = world;
+		this.route = route;
 	}
 
 	@Override

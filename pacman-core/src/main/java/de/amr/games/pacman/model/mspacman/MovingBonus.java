@@ -25,13 +25,10 @@ package de.amr.games.pacman.model.mspacman;
 
 import static de.amr.games.pacman.lib.Logging.log;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
-import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.FixedRouteSteering;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
@@ -42,7 +39,6 @@ import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.BonusState;
 import de.amr.games.pacman.model.common.actors.Creature;
 import de.amr.games.pacman.model.common.actors.Entity;
-import de.amr.games.pacman.model.common.world.Portal;
 import de.amr.games.pacman.model.common.world.World;
 
 /**
@@ -74,26 +70,9 @@ public class MovingBonus extends Creature implements Bonus {
 		state = BonusState.INACTIVE;
 	}
 
-	public void setWorld(World world) {
-		steering = new FixedRouteSteering(world, computeRoute(world));
-	}
-
-	private List<V2i> computeRoute(World world) {
-		List<V2i> route = new ArrayList<>();
-		int numPortals = world.portals().size();
-		if (numPortals > 0) {
-			Portal entryPortal = world.portals().get(new Random().nextInt(numPortals));
-			Portal exitPortal = world.portals().get(new Random().nextInt(numPortals));
-			V2i houseEntry = world.ghostHouse().doorTileLeft().plus(Direction.UP.vec);
-			var travelDir = new Random().nextBoolean() ? Direction.LEFT : Direction.RIGHT;
-			route.add(houseEntry);
-			route.add(houseEntry.plus(Direction.DOWN.vec.scaled(world.ghostHouse().size().y + 2)));
-			route.add(houseEntry);
-			route.add(travelDir == Direction.RIGHT ? exitPortal.right : exitPortal.left);
-			placeAt(travelDir == Direction.RIGHT ? entryPortal.left : entryPortal.right, 0, 0);
-			setBothDirs(travelDir);
-		}
-		return route;
+	public void setRoute(World world, List<V2i> route) {
+		steering = new FixedRouteSteering();
+		steering.setRoute(world, route);
 	}
 
 	@Override
@@ -139,7 +118,7 @@ public class MovingBonus extends Creature implements Bonus {
 	}
 
 	@Override
-	public void setEdible(World world, int symbol, int value, long ticks) {
+	public void setEdible(int symbol, int value, long ticks) {
 		state = BonusState.EDIBLE;
 		timer = ticks;
 		this.symbol = symbol;

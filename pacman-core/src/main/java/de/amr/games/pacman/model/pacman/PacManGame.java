@@ -211,8 +211,7 @@ public class PacManGame extends GameModel {
 
 	@Override
 	protected void onBonusReached() {
-		bonus.setEdible(level.world, level.bonusSymbol, BONUS_VALUES[level.bonusSymbol],
-				sec_to_ticks(9.0 + new Random().nextDouble()));
+		bonus.setEdible(level.bonusSymbol, BONUS_VALUES[level.bonusSymbol], sec_to_ticks(9.0 + new Random().nextDouble()));
 		GameEvents.publish(GameEventType.BONUS_GETS_ACTIVE, bonus.tile());
 	}
 }
