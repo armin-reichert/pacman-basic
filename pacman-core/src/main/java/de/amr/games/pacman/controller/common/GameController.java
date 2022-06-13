@@ -37,7 +37,7 @@ import de.amr.games.pacman.event.TriggerUIChangeEvent;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
-import de.amr.games.pacman.model.common.actors.Pac;
+import de.amr.games.pacman.model.common.actors.Creature;
 import de.amr.games.pacman.model.mspacman.MsPacManGame;
 import de.amr.games.pacman.model.pacman.PacManGame;
 
@@ -89,8 +89,8 @@ public class GameController {
 			GameVariant.PACMAN, new PacManGame());
 
 	private final StateMachine fsm = new StateMachine();
-	private final Consumer<Pac> autopilot;
-	private Consumer<Pac> pacController;
+	private final Consumer<Creature> autopilot;
+	private Consumer<Creature> pacController;
 	private GameVariant currentGameVariant;
 
 	public GameController() {
@@ -110,11 +110,11 @@ public class GameController {
 		return game(currentGameVariant);
 	}
 
-	public void setPacController(Consumer<Pac> pacController) {
+	public void setPacController(Consumer<Creature> pacController) {
 		this.pacController = Objects.requireNonNull(pacController);
 	}
 
-	Consumer<Pac> currentSteering() {
+	Consumer<Creature> currentSteering() {
 		return game().autoControlled || game().credit == 0 ? autopilot : pacController;
 	}
 

@@ -36,9 +36,9 @@ import de.amr.games.pacman.lib.Logging;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.actors.BonusState;
+import de.amr.games.pacman.model.common.actors.Creature;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.GhostState;
-import de.amr.games.pacman.model.common.actors.Pac;
 import de.amr.games.pacman.model.common.world.World;
 
 /**
@@ -46,7 +46,7 @@ import de.amr.games.pacman.model.common.world.World;
  * 
  * @author Armin Reichert
  */
-public class Autopilot implements Consumer<Pac> {
+public class Autopilot implements Consumer<Creature> {
 
 	static class AutopilotData {
 
@@ -110,8 +110,8 @@ public class Autopilot implements Consumer<Pac> {
 	}
 
 	@Override
-	public void accept(Pac pac) {
-		if (!pac.stuck && !pac.newTileEntered) {
+	public void accept(Creature guy) {
+		if (!guy.stuck && !guy.newTileEntered) {
 			return;
 		}
 		AutopilotData data = collectData();
