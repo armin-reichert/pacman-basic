@@ -169,6 +169,7 @@ public enum GameState implements FsmState<GameModel> {
 			game.pac.animation(ANIM_MUNCHING).ifPresent(ThingAnimation::ensureRunning);
 			game.ghosts().forEach(ghost -> ghost.animations().ifPresent(ThingAnimationCollection::ensureRunning));
 			game.energizerPulse.restart();
+			game.sounds().ifPresent(snd -> snd.ensureSirenStarted(game.huntingTimer.phase() / 2));
 		}
 
 		@Override
