@@ -417,10 +417,9 @@ public enum GameState implements FsmState<GameModel> {
 
 	// -----------------------------------------------------------
 
-	protected Fsm<GameState, GameModel> fsm;
+	Fsm<GameState, GameModel> fsm;
 	GameController gameController;
-
-	protected final TickTimer timer = new TickTimer("Timer-" + name());
+	TickTimer timer = new TickTimer("Timer-" + name());
 
 	@SuppressWarnings("unchecked")
 	@Override

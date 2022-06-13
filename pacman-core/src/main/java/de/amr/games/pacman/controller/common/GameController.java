@@ -144,13 +144,12 @@ public class GameController {
 		steering.accept(player);
 	}
 
-	// public actions
-
 	public void restartIntro() {
-		if (state() != INTRO && state() != CREDIT) {
+		if (fsm.state() != CREDIT && fsm.state() != INTRO) {
 			game().consumeCredit();
 		}
 		fsm.restartInInitialState(INTRO);
 		GameEvents.publish(new TriggerUIChangeEvent(game()));
 	}
+
 }
