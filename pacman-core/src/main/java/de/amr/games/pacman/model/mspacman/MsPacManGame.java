@@ -341,6 +341,7 @@ public class MsPacManGame extends GameModel {
 		initGhosts(level);
 		ghostKillIndex = -1;
 		scores.gameScore.levelNumber = levelNumber;
+		movingBonus.setWorld(level.world);
 	}
 
 	private void initGhosts(GameLevel level) {

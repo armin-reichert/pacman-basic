@@ -32,6 +32,7 @@ import java.util.Random;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.Direction;
+import de.amr.games.pacman.lib.FixedRouteSteering;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.lib.animation.SimpleThingAnimation;
@@ -61,7 +62,7 @@ public class MovingBonus extends Creature implements Bonus {
 	private List<?> symbolList;
 	private List<?> valueList;
 	private final SimpleThingAnimation<Integer> jumpAnimation;
-	private final List<V2i> route = new ArrayList<>();
+	private FixedRouteSteering steering;
 
 	public MovingBonus() {
 		super("MovingBonus");
@@ -69,8 +70,30 @@ public class MovingBonus extends Creature implements Bonus {
 		jumpAnimation.frameDuration(10);
 		jumpAnimation.repeatForever();
 		setAbsSpeed(0.4); // TODO how fast in the original game?
-		visible = true;
+		visible = false;
 		state = BonusState.INACTIVE;
+	}
+
+	public void setWorld(World world) {
+		steering = new FixedRouteSteering(world, computeRoute(world));
+	}
+
+	private List<V2i> computeRoute(World world) {
+		List<V2i> route = new ArrayList<>();
+		int numPortals = world.portals().size();
+		if (numPortals > 0) {
+			Portal entryPortal = world.portals().get(new Random().nextInt(numPortals));
+			Portal exitPortal = world.portals().get(new Random().nextInt(numPortals));
+			V2i houseEntry = world.ghostHouse().doorTileLeft().plus(Direction.UP.vec);
+			var travelDir = new Random().nextBoolean() ? Direction.LEFT : Direction.RIGHT;
+			route.add(houseEntry);
+			route.add(houseEntry.plus(Direction.DOWN.vec.scaled(world.ghostHouse().size().y + 2)));
+			route.add(houseEntry);
+			route.add(travelDir == Direction.RIGHT ? exitPortal.right : exitPortal.left);
+			placeAt(travelDir == Direction.RIGHT ? entryPortal.left : entryPortal.right, 0, 0);
+			setBothDirs(travelDir);
+		}
+		return route;
 	}
 
 	@Override
@@ -121,17 +144,7 @@ public class MovingBonus extends Creature implements Bonus {
 		timer = ticks;
 		this.symbol = symbol;
 		this.value = value;
-
-		newTileEntered = true;
-		stuck = false;
-		int numPortals = world.portals().size();
-		if (numPortals > 0) {
-			Portal entryPortal = world.portals().get(new Random().nextInt(numPortals));
-			Portal exitPortal = world.portals().get(new Random().nextInt(numPortals));
-			computeNewRoute(world, entryPortal, exitPortal);
-		} else {
-			route.clear();
-		}
+		visible = true;
 		jumpAnimation.restart();
 		log("MovingBonus symbol=%d, value=%d position=%s activated", symbol, value, position);
 	}
@@ -156,8 +169,9 @@ public class MovingBonus extends Creature implements Bonus {
 				GameEvents.publish(GameEventType.BONUS_GETS_EATEN, tile());
 				return;
 			}
-			if (followRoute(game.level.world)) {
-				log("%s expired (left level.world)", this);
+			steering.accept(this);
+			if (steering.isComplete()) {
+				log("%s expired (left world)", this);
 				position = V2d.NULL;
 				setInactive();
 				GameEvents.publish(GameEventType.BONUS_EXPIRES, tile());
@@ -173,31 +187,6 @@ public class MovingBonus extends Creature implements Bonus {
 			}
 		}
 		}
-	}
-
-	private void computeNewRoute(World world, Portal entryPortal, Portal exitPortal) {
-		route.clear();
-		V2i houseEntry = world.ghostHouse().doorTileLeft().plus(Direction.UP.vec);
-		var travelDir = new Random().nextBoolean() ? Direction.LEFT : Direction.RIGHT;
-		route.add(houseEntry);
-		route.add(houseEntry.plus(Direction.DOWN.vec.scaled(world.ghostHouse().size().y + 2)));
-		route.add(houseEntry);
-		route.add(travelDir == Direction.RIGHT ? exitPortal.right : exitPortal.left);
-		placeAt(travelDir == Direction.RIGHT ? entryPortal.left : entryPortal.right, 0, 0);
-		setBothDirs(travelDir);
-	}
-
-	public boolean followRoute(World world) {
-		targetTile = route.get(0);
-		if (tile().equals(targetTile)) {
-			route.remove(0);
-			if (route.isEmpty()) {
-				return true;
-			}
-		}
-		computeDirectionTowardsTarget(world);
-		tryMoving(world);
-		return false;
 	}
 
 	@Override
