@@ -45,7 +45,7 @@ import java.util.stream.Stream;
 import de.amr.games.pacman.controller.common.GameController;
 import de.amr.games.pacman.event.GameEvent;
 import de.amr.games.pacman.event.GameEventType;
-import de.amr.games.pacman.event.GameEventing;
+import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.animation.SimpleThingAnimation;
@@ -435,7 +435,7 @@ public abstract class GameModel {
 	}
 
 	private void onPlayerPowerFading() {
-		GameEventing.publish(GameEventType.PLAYER_STARTS_LOSING_POWER, pac.tile());
+		GameEvents.publish(GameEventType.PLAYER_STARTS_LOSING_POWER, pac.tile());
 	}
 
 	private void onPlayerLosesPower() {
@@ -448,7 +448,7 @@ public abstract class GameModel {
 			snd.stop(GameSound.PACMAN_POWER);
 			snd.ensureSirenStarted(huntingTimer.phase() / 2);
 		});
-		GameEventing.publish(GameEventType.PLAYER_LOSES_POWER, pac.tile());
+		GameEvents.publish(GameEventType.PLAYER_LOSES_POWER, pac.tile());
 	}
 
 	private void checkPlayerFindsFood(CheckResult result) {
@@ -486,7 +486,7 @@ public abstract class GameModel {
 		updateGhostDotCounters();
 		scores.addPoints(value);
 		sounds().ifPresent(snd -> snd.ensureLoop(GameSound.PACMAN_MUNCH, GameSounds.FOREVER));
-		GameEventing.publish(GameEventType.PLAYER_FINDS_FOOD, pac.tile());
+		GameEvents.publish(GameEventType.PLAYER_FINDS_FOOD, pac.tile());
 	}
 
 	private void onPlayerGetsPower() {
@@ -508,7 +508,7 @@ public abstract class GameModel {
 			snd.stopSirens();
 			snd.ensureLoop(GameSound.PACMAN_POWER, GameSounds.FOREVER);
 		});
-		GameEventing.publish(GameEventType.PLAYER_GETS_POWER, pac.tile());
+		GameEvents.publish(GameEventType.PLAYER_GETS_POWER, pac.tile());
 	}
 
 	// Ghosts
@@ -517,7 +517,7 @@ public abstract class GameModel {
 		checkGhostCanBeUnlocked(result);
 		result.unlockedGhost.ifPresent(ghost -> {
 			unlockGhost(ghost, result.unlockReason);
-			GameEventing.publish(new GameEvent(this, GameEventType.GHOST_STARTS_LEAVING_HOUSE, ghost, ghost.tile()));
+			GameEvents.publish(new GameEvent(this, GameEventType.GHOST_STARTS_LEAVING_HOUSE, ghost, ghost.tile()));
 		});
 		ghosts().forEach(ghost -> ghost.update(this));
 	}
@@ -527,7 +527,7 @@ public abstract class GameModel {
 		ghosts(DEAD).filter(ghost -> ghost.killIndex != -1).forEach(ghost -> {
 			ghost.killIndex = -1;
 			sounds().ifPresent(snd -> snd.ensurePlaying(GameSound.GHOST_RETURNING));
-			GameEventing.publish(new GameEvent(this, GameEventType.GHOST_STARTS_RETURNING_HOME, ghost, null));
+			GameEvents.publish(new GameEvent(this, GameEventType.GHOST_STARTS_RETURNING_HOME, ghost, null));
 		});
 
 	}

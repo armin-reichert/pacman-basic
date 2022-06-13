@@ -29,8 +29,9 @@ import static de.amr.games.pacman.controller.common.GameState.INTRO;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
-import de.amr.games.pacman.event.GameEventing;
+import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.event.GameStateChangeEvent;
 import de.amr.games.pacman.event.TriggerUIChangeEvent;
 import de.amr.games.pacman.lib.fsm.Fsm;
@@ -43,7 +44,7 @@ import de.amr.games.pacman.model.pacman.PacManGame;
 /**
  * Controller (in the sense of MVC) for both (Pac-Man, Ms. Pac-Man) game variants.
  * <p>
- * This is a finite-state machine with states defined in {@link GameState}. The game data are stored in the model of the
+ * A finite-state machine with states defined in {@link GameState}. The game data are stored in the model of the
  * selected game, see {@link MsPacManGame} and {@link PacManGame}. Scene selection is not controlled by this class but
  * left to the specific user interface implementations.
  * <p>
@@ -65,30 +66,36 @@ import de.amr.games.pacman.model.pacman.PacManGame;
  */
 public class GameController {
 
-	private final Fsm<GameState, GameModel> fsm;
+	private class StateMachine extends Fsm<GameState, GameModel> {
+
+		public StateMachine() {
+			super(GameState.values());
+			for (var gameState : GameState.values()) {
+				gameState.gameController = GameController.this;
+			}
+			// map state change events of the FSM to game events from selected game model:
+			addStateChangeListener(
+					(oldState, newState) -> GameEvents.publish(new GameStateChangeEvent(game(), oldState, newState)));
+		}
+
+		@Override
+		public GameModel context() {
+			return game();
+		}
+	}
 
 	private final Map<GameVariant, GameModel> games = Map.of(//
 			GameVariant.MS_PACMAN, new MsPacManGame(), //
 			GameVariant.PACMAN, new PacManGame());
 
-	private GameVariant currentGameVariant;
-	private final Consumer<Pac> autopilot = new Autopilot(this::game);
+	private final StateMachine fsm = new StateMachine();
+	private final Consumer<Pac> autopilot;
 	private Consumer<Pac> pacController;
+	private GameVariant currentGameVariant;
 
 	public GameController() {
-		fsm = new Fsm<>(GameState.values()) {
-			@Override
-			public GameModel context() {
-				return game();
-			}
-		};
-		for (var gameState : GameState.values()) {
-			gameState.gameController = this;
-		}
-		// map state change events of the FSM to game events from selected game model:
-		fsm.addStateChangeListener(
-				(oldState, newState) -> GameEventing.publish(new GameStateChangeEvent(game(), oldState, newState)));
-		GameEventing.setGameSupplier(this::game);
+		GameEvents.publishEventsFor(this::game);
+		autopilot = new Autopilot(this::game);
 	}
 
 	public GameState state() {
@@ -124,6 +131,10 @@ public class GameController {
 		return games.get(variant);
 	}
 
+	public Stream<GameModel> games() {
+		return games.values().stream();
+	}
+
 	public void setPacController(Consumer<Pac> pacController) {
 		this.pacController = Objects.requireNonNull(pacController);
 	}
@@ -140,10 +151,6 @@ public class GameController {
 			game().consumeCredit();
 		}
 		fsm.restartInInitialState(INTRO);
-		GameEventing.publish(new TriggerUIChangeEvent(game()));
-	}
-
-	public void toggleIsPacImmune() {
-		games.values().forEach(game -> game.isPacImmune = !game.isPacImmune);
+		GameEvents.publish(new TriggerUIChangeEvent(game()));
 	}
 }

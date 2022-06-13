@@ -28,7 +28,7 @@ import static de.amr.games.pacman.lib.Logging.log;
 import java.util.List;
 
 import de.amr.games.pacman.event.GameEventType;
-import de.amr.games.pacman.event.GameEventing;
+import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameSound;
@@ -119,20 +119,20 @@ public class StaticBonus extends Entity implements Bonus {
 				state = BonusState.EATEN;
 				timer = Bonus.EATEN_DURATION;
 				game.sounds().ifPresent(snd -> snd.play(GameSound.BONUS_EATEN));
-				GameEventing.publish(GameEventType.BONUS_GETS_EATEN, tile());
+				GameEvents.publish(GameEventType.BONUS_GETS_EATEN, tile());
 				return;
 			}
 			if (--timer == 0) {
 				log("Bonus expired: %s", this);
 				state = BonusState.INACTIVE;
-				GameEventing.publish(GameEventType.BONUS_EXPIRES, tile());
+				GameEvents.publish(GameEventType.BONUS_EXPIRES, tile());
 			}
 		}
 		case EATEN -> {
 			if (--timer == 0) {
 				log("Bonus expired: %s", this);
 				setInactive();
-				GameEventing.publish(GameEventType.BONUS_EXPIRES, tile());
+				GameEvents.publish(GameEventType.BONUS_EXPIRES, tile());
 			}
 		}
 		}

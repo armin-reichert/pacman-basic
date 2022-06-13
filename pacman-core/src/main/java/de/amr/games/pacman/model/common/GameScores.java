@@ -36,7 +36,7 @@ import java.util.Properties;
 
 import de.amr.games.pacman.event.GameEvent;
 import de.amr.games.pacman.event.GameEventType;
-import de.amr.games.pacman.event.GameEventing;
+import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.model.common.actors.Score;
 
@@ -104,7 +104,7 @@ public class GameScores {
 		if (scoreBeforeAddingPoints < game.extraLifeScore && gameScore.points >= game.extraLifeScore) {
 			game.lives++;
 			game.sounds().ifPresent(snd -> snd.play(GameSound.EXTRA_LIFE));
-			GameEventing.publish(new GameEvent(game, GameEventType.PLAYER_GETS_EXTRA_LIFE, null, game.pac.tile()));
+			GameEvents.publish(new GameEvent(game, GameEventType.PLAYER_GETS_EXTRA_LIFE, null, game.pac.tile()));
 		}
 	}
 

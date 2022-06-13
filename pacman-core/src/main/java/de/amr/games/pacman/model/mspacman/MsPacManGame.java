@@ -33,7 +33,7 @@ import java.io.File;
 import java.util.Random;
 
 import de.amr.games.pacman.event.GameEventType;
-import de.amr.games.pacman.event.GameEventing;
+import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
@@ -369,6 +369,6 @@ public class MsPacManGame extends GameModel {
 	@Override
 	protected void onBonusReached() {
 		movingBonus.setEdible(level.world, level.bonusSymbol, BONUS_VALUES[level.bonusSymbol], TickTimer.INDEFINITE);
-		GameEventing.publish(GameEventType.BONUS_GETS_ACTIVE, movingBonus.tile());
+		GameEvents.publish(GameEventType.BONUS_GETS_ACTIVE, movingBonus.tile());
 	}
 }

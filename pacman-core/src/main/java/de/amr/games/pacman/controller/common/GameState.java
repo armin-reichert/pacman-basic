@@ -31,7 +31,7 @@ import static de.amr.games.pacman.model.common.actors.PacAnimationKey.ANIM_MUNCH
 import static java.util.function.Predicate.not;
 
 import de.amr.games.pacman.event.GameEventType;
-import de.amr.games.pacman.event.GameEventing;
+import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.event.GameStateChangeEvent;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.animation.ThingAnimation;
@@ -210,7 +210,7 @@ public enum GameState implements FsmState<GameModel> {
 		public void cheatEatAllPellets(GameModel game) {
 			if (game.playing) {
 				game.level.world.tiles().filter(not(game.level.world::isEnergizerTile)).forEach(game.level.world::removeFood);
-				GameEventing.publish(GameEventType.PLAYER_FINDS_FOOD, null);
+				GameEvents.publish(GameEventType.PLAYER_FINDS_FOOD, null);
 			}
 		}
 
@@ -407,7 +407,7 @@ public enum GameState implements FsmState<GameModel> {
 					timer.start();
 					log("Test intermission scene #%d", game.intermissionTestNumber);
 					// This is a hack to trigger the UI to update its current scene
-					GameEventing.publish(new GameStateChangeEvent(game, this, this));
+					GameEvents.publish(new GameStateChangeEvent(game, this, this));
 				} else {
 					fsm.changeState(INTRO);
 				}

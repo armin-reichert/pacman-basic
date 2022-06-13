@@ -37,7 +37,7 @@ import java.util.List;
 import java.util.Random;
 
 import de.amr.games.pacman.event.GameEventType;
-import de.amr.games.pacman.event.GameEventing;
+import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.GameLevel;
@@ -213,6 +213,6 @@ public class PacManGame extends GameModel {
 	protected void onBonusReached() {
 		bonus.setEdible(level.world, level.bonusSymbol, BONUS_VALUES[level.bonusSymbol],
 				sec_to_ticks(9.0 + new Random().nextDouble()));
-		GameEventing.publish(GameEventType.BONUS_GETS_ACTIVE, bonus.tile());
+		GameEvents.publish(GameEventType.BONUS_GETS_ACTIVE, bonus.tile());
 	}
 }

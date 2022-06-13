@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Random;
 
 import de.amr.games.pacman.event.GameEventType;
-import de.amr.games.pacman.event.GameEventing;
+import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
@@ -153,14 +153,14 @@ public class MovingBonus extends Creature implements Bonus {
 				timer = Bonus.EATEN_DURATION;
 				jumpAnimation.stop();
 				game.sounds().ifPresent(snd -> snd.play(GameSound.BONUS_EATEN));
-				GameEventing.publish(GameEventType.BONUS_GETS_EATEN, tile());
+				GameEvents.publish(GameEventType.BONUS_GETS_EATEN, tile());
 				return;
 			}
 			if (followRoute(game.level.world)) {
 				log("%s expired (left level.world)", this);
 				position = V2d.NULL;
 				setInactive();
-				GameEventing.publish(GameEventType.BONUS_EXPIRES, tile());
+				GameEvents.publish(GameEventType.BONUS_EXPIRES, tile());
 				return;
 			}
 			jumpAnimation.advance();
@@ -169,7 +169,7 @@ public class MovingBonus extends Creature implements Bonus {
 			if (--timer == 0) {
 				log("%s expired", this);
 				setInactive();
-				GameEventing.publish(GameEventType.BONUS_EXPIRES, tile());
+				GameEvents.publish(GameEventType.BONUS_EXPIRES, tile());
 			}
 		}
 		}

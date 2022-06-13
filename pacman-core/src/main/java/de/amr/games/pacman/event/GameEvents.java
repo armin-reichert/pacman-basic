@@ -35,38 +35,38 @@ import de.amr.games.pacman.model.common.GameModel;
 /**
  * @author Armin Reichert
  */
-public class GameEventing {
+public class GameEvents {
 
-	private static final GameEventing theEventing = new GameEventing();
+	private static final GameEvents theOne = new GameEvents();
 
 	public static boolean logPublishEvents = true;
 
 	private Supplier<GameModel> fnGame;
 	private final Collection<GameEventListener> subscribers = new ConcurrentLinkedQueue<>();
 
-	private GameEventing() {
+	private GameEvents() {
 	}
 
-	public static void setGameSupplier(Supplier<GameModel> fnGame) {
-		theEventing.fnGame = fnGame;
+	public static void publishEventsFor(Supplier<GameModel> fnGame) {
+		theOne.fnGame = fnGame;
 	}
 
 	public static void addEventListener(GameEventListener subscriber) {
-		theEventing.subscribers.add(subscriber);
+		theOne.subscribers.add(subscriber);
 	}
 
 	public static void removeEventListener(GameEventListener subscriber) {
-		theEventing.subscribers.remove(subscriber);
+		theOne.subscribers.remove(subscriber);
 	}
 
 	public static void publish(GameEvent gameEvent) {
 		if (logPublishEvents && gameEvent.type != GameEventType.PLAYER_FINDS_FOOD) {
 			log("%s", gameEvent);
 		}
-		theEventing.subscribers.forEach(subscriber -> subscriber.onGameEvent(gameEvent));
+		theOne.subscribers.forEach(subscriber -> subscriber.onGameEvent(gameEvent));
 	}
 
 	public static void publish(GameEventType info, V2i tile) {
-		publish(new GameEvent(theEventing.fnGame.get(), info, null, tile));
+		publish(new GameEvent(theOne.fnGame.get(), info, null, tile));
 	}
 }
