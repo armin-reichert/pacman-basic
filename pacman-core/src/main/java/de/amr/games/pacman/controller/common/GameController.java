@@ -77,6 +77,8 @@ public class GameController extends Fsm<GameState, GameModel> {
 		super(GameState.values());
 //		logging = true;
 		games = Map.of(GameVariant.MS_PACMAN, new MsPacManGame(), GameVariant.PACMAN, new PacManGame());
+		// always send events for the current game:
+		GameEventing.setGameSupplier(this::game);
 		// map state change events to game events from selected game model:
 		addStateChangeListener(
 				(oldState, newState) -> GameEventing.publish(new GameStateChangeEvent(game(), oldState, newState)));
@@ -140,7 +142,6 @@ public class GameController extends Fsm<GameState, GameModel> {
 	public void selectGame(GameVariant variant) {
 		if (currentGameVariant != variant) {
 			currentGameVariant = variant;
-			GameEventing.setGame(game());
 			restartInInitialState(INTRO);
 		}
 	}

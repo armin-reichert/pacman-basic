@@ -27,6 +27,7 @@ import static de.amr.games.pacman.lib.Logging.log;
 
 import java.util.Collection;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.function.Supplier;
 
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.GameModel;
@@ -40,14 +41,14 @@ public class GameEventing {
 
 	public static boolean logPublishEvents = true;
 
-	private GameModel game;
+	private Supplier<GameModel> fnGame;
 	private final Collection<GameEventListener> subscribers = new ConcurrentLinkedQueue<>();
 
 	private GameEventing() {
 	}
 
-	public static void setGame(GameModel game) {
-		theEventing.game = game;
+	public static void setGameSupplier(Supplier<GameModel> fnGame) {
+		theEventing.fnGame = fnGame;
 	}
 
 	public static void addEventListener(GameEventListener subscriber) {
@@ -66,6 +67,6 @@ public class GameEventing {
 	}
 
 	public static void publish(GameEventType info, V2i tile) {
-		publish(new GameEvent(theEventing.game, info, null, tile));
+		publish(new GameEvent(theEventing.fnGame.get(), info, null, tile));
 	}
 }
