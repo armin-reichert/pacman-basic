@@ -29,9 +29,9 @@ import static de.amr.games.pacman.controller.common.GameState.READY;
 import static java.util.function.Predicate.not;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Consumer;
 
-import de.amr.games.pacman.event.GameEventListener;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEventing;
 import de.amr.games.pacman.event.GameStateChangeEvent;
@@ -92,6 +92,14 @@ public class GameController extends Fsm<GameState, GameModel> {
 		return game();
 	}
 
+	public GameModel game() {
+		return game(currentGameVariant);
+	}
+
+	public GameModel game(GameVariant variant) {
+		return games.get(variant);
+	}
+
 	public boolean isAutoMoving() {
 		return autoMoving;
 	}
@@ -123,40 +131,16 @@ public class GameController extends Fsm<GameState, GameModel> {
 		++credit;
 	}
 
-	public Consumer<Pac> autopilot() {
-		return autopilot;
-	}
-
 	public void setPacController(Consumer<Pac> pacController) {
-		this.pacController = pacController;
-	}
-
-	public Consumer<Pac> pacController() {
-		return pacController;
-	}
-
-	public GameModel game() {
-		return game(currentGameVariant);
-	}
-
-	public GameModel game(GameVariant variant) {
-		return games.get(variant);
-	}
-
-	void selectGame(GameVariant variant) {
-		currentGameVariant = variant;
-		GameEventing.setGame(game());
-		restartInInitialState(INTRO);
+		this.pacController = Objects.requireNonNull(pacController);
 	}
 
 	// public actions
 
-	public void addListener(GameEventListener subscriber) {
-		GameEventing.addEventListener(subscriber);
-	}
-
-	public void removeListener(GameEventListener subscriber) {
-		GameEventing.removeEventListener(subscriber);
+	public void selectGame(GameVariant variant) {
+		currentGameVariant = variant;
+		GameEventing.setGame(game());
+		restartInInitialState(INTRO);
 	}
 
 	public void requestGame() {
