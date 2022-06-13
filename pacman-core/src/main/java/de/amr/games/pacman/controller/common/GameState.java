@@ -80,6 +80,14 @@ public enum GameState implements FsmState<GameModel> {
 		}
 
 		@Override
+		public void requestGame(GameModel game) {
+			if (game.credit > 0) {
+				game.reset();
+				fsm.changeState(READY);
+			}
+		}
+
+		@Override
 		public void startIntermissionTest(GameModel game) {
 			game.intermissionTestNumber = 1;
 			fsm.changeState(INTERMISSION_TEST);
@@ -104,6 +112,14 @@ public enum GameState implements FsmState<GameModel> {
 		public void addCredit(GameModel game) {
 			game.sounds().ifPresent(snd -> snd.play(GameSound.CREDIT));
 			game.increaseCredit();
+		}
+
+		@Override
+		public void requestGame(GameModel game) {
+			if (game.credit > 0) {
+				game.reset();
+				fsm.changeState(READY);
+			}
 		}
 	},
 
@@ -418,6 +434,9 @@ public enum GameState implements FsmState<GameModel> {
 	// --- Events
 
 	public void selectGameVariant(GameVariant variant) {
+	}
+
+	public void requestGame(GameModel game) {
 	}
 
 	public void addCredit(GameModel game) {

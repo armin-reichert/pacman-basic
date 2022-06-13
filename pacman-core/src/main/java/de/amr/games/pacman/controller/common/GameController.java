@@ -25,7 +25,6 @@ package de.amr.games.pacman.controller.common;
 
 import static de.amr.games.pacman.controller.common.GameState.CREDIT;
 import static de.amr.games.pacman.controller.common.GameState.INTRO;
-import static de.amr.games.pacman.controller.common.GameState.READY;
 
 import java.util.Map;
 import java.util.Objects;
@@ -151,13 +150,6 @@ public class GameController {
 		}
 		fsm.restartInInitialState(INTRO);
 		GameEventing.publish(new TriggerUIChangeEvent(game()));
-	}
-
-	public void requestGame() {
-		if (game().credit > 0 && (state() == INTRO || state() == CREDIT)) {
-			game().reset();
-			changeState(READY);
-		}
 	}
 
 	public void toggleIsPacImmune() {
