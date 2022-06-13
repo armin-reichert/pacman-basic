@@ -37,8 +37,6 @@ import de.amr.games.pacman.event.TriggerUIChangeEvent;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
-import de.amr.games.pacman.model.common.actors.Ghost;
-import de.amr.games.pacman.model.common.actors.GhostState;
 import de.amr.games.pacman.model.common.actors.Pac;
 import de.amr.games.pacman.model.mspacman.MsPacManGame;
 import de.amr.games.pacman.model.pacman.PacManGame;
@@ -156,20 +154,4 @@ public class GameController extends Fsm<GameState, GameModel> {
 		games.values().forEach(game -> game.isPacImmune = !game.isPacImmune);
 	}
 
-	public void cheatKillAllEatableGhosts() {
-		if (game().playing && state() != GameState.GHOST_DYING) {
-			Ghost[] prey = game().ghosts()
-					.filter(ghost -> ghost.is(GhostState.HUNTING_PAC) || ghost.is(GhostState.FRIGHTENED)).toArray(Ghost[]::new);
-			game().ghostKillIndex = -1;
-			game().killGhosts(prey);
-			changeState(GameState.GHOST_DYING);
-		}
-	}
-
-	public void cheatEnterNextLevel() {
-		if (game().playing) {
-			game().level.world.tiles().forEach(game().level.world::removeFood);
-			changeState(GameState.LEVEL_COMPLETE);
-		}
-	}
 }

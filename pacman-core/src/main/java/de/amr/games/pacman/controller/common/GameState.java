@@ -199,6 +199,25 @@ public enum GameState implements FsmState<GameModel> {
 			}
 		}
 
+		@Override
+		public void cheatKillAllEatableGhosts(GameModel game) {
+			if (game.playing) {
+				Ghost[] prey = game.ghosts()
+						.filter(ghost -> ghost.is(GhostState.HUNTING_PAC) || ghost.is(GhostState.FRIGHTENED)).toArray(Ghost[]::new);
+				game.ghostKillIndex = -1;
+				game.killGhosts(prey);
+				controller.changeState(GameState.GHOST_DYING);
+			}
+		}
+
+		@Override
+		public void cheatEnterNextLevel(GameModel game) {
+			if (game.playing) {
+				game.level.world.tiles().forEach(game.level.world::removeFood);
+				controller.changeState(GameState.LEVEL_COMPLETE);
+			}
+		}
+
 	},
 
 	LEVEL_COMPLETE {
@@ -412,6 +431,12 @@ public enum GameState implements FsmState<GameModel> {
 	}
 
 	public void cheatEatAllPellets(GameModel game) {
+	}
+
+	public void cheatKillAllEatableGhosts(GameModel game) {
+	}
+
+	public void cheatEnterNextLevel(GameModel game) {
 	}
 
 }
