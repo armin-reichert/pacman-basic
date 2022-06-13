@@ -30,8 +30,6 @@ import static de.amr.games.pacman.model.common.actors.PacAnimationKey.ANIM_DYING
 import static de.amr.games.pacman.model.common.actors.PacAnimationKey.ANIM_MUNCHING;
 import static java.util.function.Predicate.not;
 
-import java.util.Optional;
-
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEventing;
 import de.amr.games.pacman.event.GameStateChangeEvent;
@@ -43,7 +41,6 @@ import de.amr.games.pacman.lib.fsm.FsmState;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameModel.CheckResult;
 import de.amr.games.pacman.model.common.GameSound;
-import de.amr.games.pacman.model.common.GameSounds;
 import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.GhostState;
@@ -66,26 +63,26 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void onUpdate(GameModel game) {
 			if (timer.hasExpired()) {
-				controller.changeState(READY);
+				fsm.changeState(READY);
 			}
 		}
 
 		@Override
 		public void selectGameVariant(GameVariant variant) {
-			controller.selectGame(variant);
+			gameController.selectGame(variant);
 		}
 
 		@Override
 		public void addCredit(GameModel game) {
 			game.sounds().ifPresent(snd -> snd.play(GameSound.CREDIT));
-			controller.increaseCredit();
-			controller.changeState(CREDIT);
+			game.increaseCredit();
+			fsm.changeState(CREDIT);
 		}
 
 		@Override
 		public void startIntermissionTest(GameModel game) {
 			game.intermissionTestNumber = 1;
-			controller.changeState(INTERMISSION_TEST);
+			fsm.changeState(INTERMISSION_TEST);
 		}
 	},
 
@@ -99,25 +96,25 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void onUpdate(GameModel game) {
 			if (timer.hasExpired()) {
-				controller.changeState(READY);
+				fsm.changeState(READY);
 			}
 		}
 
 		@Override
 		public void addCredit(GameModel game) {
 			game.sounds().ifPresent(snd -> snd.play(GameSound.CREDIT));
-			controller.increaseCredit();
+			game.increaseCredit();
 		}
 	},
 
 	READY {
 		@Override
 		public void onEnter(GameModel game) {
-			boolean hasCredit = controller.credit() > 0;
+			boolean hasCredit = game.credit() > 0;
 			if (hasCredit && !game.playing) {
 				// game start
 				timer.setSeconds(5);
-				sounds().ifPresent(snd -> {
+				game.sounds().ifPresent(snd -> {
 					snd.stopAll();
 					snd.play(GameSound.GAME_READY);
 				});
@@ -136,14 +133,14 @@ public enum GameState implements FsmState<GameModel> {
 		public void onUpdate(GameModel game) {
 			if (timer.hasExpired()) {
 				game.startHuntingPhase(0);
-				if (controller.credit() > 0) {
+				if (game.credit() > 0) {
 					game.scores.enable(true);
 					game.playing = true;
 				} else {
 					game.scores.enable(false);
 					game.playing = false;
 				}
-				controller.changeState(GameState.HUNTING);
+				fsm.changeState(GameState.HUNTING);
 			}
 		}
 	},
@@ -159,18 +156,18 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void onUpdate(GameModel game) {
 			var checkResult = new CheckResult();
-			controller.steer(game.pac);
+			gameController.steer(game.pac);
 			game.updatePlayer(checkResult);
 			if (checkResult.allFoodEaten) {
-				controller.changeState(LEVEL_COMPLETE);
+				fsm.changeState(LEVEL_COMPLETE);
 				return;
 			}
 			if (checkResult.playerKilled) {
-				controller.changeState(PACMAN_DYING);
+				fsm.changeState(PACMAN_DYING);
 				return;
 			}
 			if (checkResult.ghostsKilled) {
-				controller.changeState(GHOST_DYING);
+				fsm.changeState(GHOST_DYING);
 				return;
 			}
 			game.updateGhosts(checkResult);
@@ -178,7 +175,7 @@ public enum GameState implements FsmState<GameModel> {
 			game.advanceHunting();
 			game.energizerPulse.advance();
 
-			sounds().ifPresent(snd -> {
+			game.sounds().ifPresent(snd -> {
 				if (game.huntingTimer.tick() == 0) {
 					snd.ensureSirenStarted(game.huntingTimer.phase() / 2);
 				}
@@ -206,7 +203,7 @@ public enum GameState implements FsmState<GameModel> {
 						.filter(ghost -> ghost.is(GhostState.HUNTING_PAC) || ghost.is(GhostState.FRIGHTENED)).toArray(Ghost[]::new);
 				game.ghostKillIndex = -1;
 				game.killGhosts(prey);
-				controller.changeState(GameState.GHOST_DYING);
+				fsm.changeState(GameState.GHOST_DYING);
 			}
 		}
 
@@ -214,7 +211,7 @@ public enum GameState implements FsmState<GameModel> {
 		public void cheatEnterNextLevel(GameModel game) {
 			if (game.playing) {
 				game.level.world.tiles().forEach(game.level.world::removeFood);
-				controller.changeState(GameState.LEVEL_COMPLETE);
+				fsm.changeState(GameState.LEVEL_COMPLETE);
 			}
 		}
 
@@ -231,7 +228,7 @@ public enum GameState implements FsmState<GameModel> {
 			game.pac.animations().ifPresent(anim -> anim.reset());
 			game.ghosts().forEach(Ghost::hide);
 			game.energizerPulse.reset();
-			sounds().ifPresent(snd -> snd.stopAll());
+			game.sounds().ifPresent(snd -> snd.stopAll());
 		}
 
 		@Override
@@ -243,12 +240,12 @@ public enum GameState implements FsmState<GameModel> {
 				});
 			}
 			if (timer.hasExpired()) {
-				if (controller.credit() == 0) {
-					controller.changeState(INTRO);
+				if (game.credit() == 0) {
+					fsm.changeState(INTRO);
 				} else if (game.intermissionNumber(game.level.number) != 0) {
-					controller.changeState(INTERMISSION);
+					fsm.changeState(INTERMISSION);
 				} else {
-					controller.changeState(LEVEL_STARTING);
+					fsm.changeState(LEVEL_STARTING);
 				}
 				return;
 			}
@@ -270,7 +267,7 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void onUpdate(GameModel game) {
 			if (timer.hasExpired()) {
-				controller.changeState(READY);
+				fsm.changeState(READY);
 			}
 		}
 	},
@@ -284,16 +281,16 @@ public enum GameState implements FsmState<GameModel> {
 			game.ghosts().forEach(ghost -> ghost.animation(ANIM_FLASHING).ifPresent(ThingAnimation::stop));
 			game.ghosts().filter(ghost -> ghost.killIndex >= 0)
 					.forEach(ghost -> ghost.animations().ifPresent(anim -> anim.select(ANIM_VALUE)));
-			sounds().ifPresent(snd -> snd.play(GameSound.GHOST_EATEN));
+			game.sounds().ifPresent(snd -> snd.play(GameSound.GHOST_EATEN));
 		}
 
 		@Override
 		public void onUpdate(GameModel game) {
 			if (timer.hasExpired()) {
-				controller.resumePreviousState();
+				fsm.resumePreviousState();
 				return;
 			}
-			controller.steer(game.pac);
+			gameController.steer(game.pac);
 			game.updateGhostsReturningHome();
 			game.energizerPulse.advance();
 		}
@@ -317,7 +314,7 @@ public enum GameState implements FsmState<GameModel> {
 				anim.selectedAnimation().reset();
 			});
 			game.bonus().setInactive();
-			sounds().ifPresent(snd -> snd.stopAll());
+			game.sounds().ifPresent(snd -> snd.stopAll());
 		}
 
 		@Override
@@ -327,15 +324,15 @@ public enum GameState implements FsmState<GameModel> {
 				game.ghosts().forEach(Ghost::hide);
 			} else if (timer.atSecond(2)) {
 				game.pac.animation(ANIM_DYING).ifPresent(ThingAnimation::restart);
-				sounds().ifPresent(snd -> snd.play(GameSound.PACMAN_DEATH));
+				game.sounds().ifPresent(snd -> snd.play(GameSound.PACMAN_DEATH));
 			} else if (timer.atSecond(4)) {
 				if (--game.lives == 0) {
 					game.energizerPulse.stop();
 				}
 				game.pac.hide();
 			} else if (timer.hasExpired()) {
-				var nextState = controller.credit() == 0 ? INTRO : game.lives == 0 ? GAME_OVER : READY;
-				controller.changeState(nextState);
+				var nextState = game.credit() == 0 ? INTRO : game.lives == 0 ? GAME_OVER : READY;
+				fsm.changeState(nextState);
 				return;
 			}
 		}
@@ -347,15 +344,15 @@ public enum GameState implements FsmState<GameModel> {
 			game.scores.saveHiscore();
 			timer.setSeconds(3);
 			timer.start();
-			sounds().ifPresent(snd -> snd.stopAll());
+			game.sounds().ifPresent(snd -> snd.stopAll());
 		}
 
 		@Override
 		public void onUpdate(GameModel game) {
 			if (timer.hasExpired()) {
 				game.playing = false;
-				controller.consumeCredit();
-				controller.changeState(controller.credit() > 0 ? CREDIT : INTRO);
+				game.consumeCredit();
+				fsm.changeState(game.credit() > 0 ? CREDIT : INTRO);
 			}
 		}
 	},
@@ -370,7 +367,7 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void onUpdate(GameModel game) {
 			if (timer.hasExpired()) {
-				controller.changeState(controller.credit() == 0 || !game.playing ? INTRO : LEVEL_STARTING);
+				fsm.changeState(game.credit() == 0 || !game.playing ? INTRO : LEVEL_STARTING);
 			}
 		}
 	},
@@ -394,7 +391,7 @@ public enum GameState implements FsmState<GameModel> {
 					// This is a hack to trigger the UI to update its current scene
 					GameEventing.publish(new GameStateChangeEvent(game, this, this));
 				} else {
-					controller.changeState(INTRO);
+					fsm.changeState(INTRO);
 				}
 			}
 		}
@@ -402,21 +399,20 @@ public enum GameState implements FsmState<GameModel> {
 
 	// -----------------------------------------------------------
 
-	protected GameController controller;
+	protected Fsm<GameState, GameModel> fsm;
+	GameController gameController;
+
 	protected final TickTimer timer = new TickTimer("Timer-" + name());
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void setOwner(Fsm<? extends FsmState<GameModel>, GameModel> fsm) {
-		controller = (GameController) fsm;
+		this.fsm = (Fsm<GameState, GameModel>) fsm;
 	}
 
 	@Override
 	public TickTimer timer() {
 		return timer;
-	}
-
-	protected Optional<GameSounds> sounds() {
-		return controller.game().sounds();
 	}
 
 	// --- Events

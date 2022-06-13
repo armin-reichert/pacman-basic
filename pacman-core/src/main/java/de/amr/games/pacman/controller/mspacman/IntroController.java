@@ -163,7 +163,7 @@ public class IntroController extends Fsm<IntroController.State, IntroController.
 		READY_TO_PLAY {
 			@Override
 			public void onUpdate(Context $) {
-				if (timer.atSecond(1.5) && controller.gameController.credit() == 0) {
+				if (timer.atSecond(1.5) && controller.gameController.game().credit() == 0) {
 					controller.gameController.changeState(GameState.READY);
 					return;
 				}

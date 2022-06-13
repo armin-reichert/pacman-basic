@@ -64,30 +64,58 @@ import de.amr.games.pacman.model.pacman.PacManGame;
  *      behavior</a>
  * @see <a href="http://superpacman.com/mspacman/">Ms. Pac-Man</a>
  */
-public class GameController extends Fsm<GameState, GameModel> {
+public class GameController {
+
+	private final Fsm<GameState, GameModel> fsm;
 
 	private final Map<GameVariant, GameModel> games = Map.of(//
 			GameVariant.MS_PACMAN, new MsPacManGame(), //
 			GameVariant.PACMAN, new PacManGame());
 
 	private GameVariant currentGameVariant;
-	private int credit;
 	private boolean autoMoving;
 	private final Consumer<Pac> autopilot = new Autopilot(this::game);
 	private Consumer<Pac> pacController;
 
-	public GameController(GameVariant variant) {
-		super(GameState.values());
-		GameEventing.setGameSupplier(this::game);
+	public GameController() {
+		fsm = new Fsm<>(GameState.values()) {
+			@Override
+			public GameModel context() {
+				return game();
+			}
+		};
+		for (var gameState : GameState.values()) {
+			gameState.gameController = this;
+		}
 		// map state change events of the FSM to game events from selected game model:
-		addStateChangeListener(
+		fsm.addStateChangeListener(
 				(oldState, newState) -> GameEventing.publish(new GameStateChangeEvent(game(), oldState, newState)));
-		selectGame(variant);
+		GameEventing.setGameSupplier(this::game);
 	}
 
-	@Override
-	public GameModel context() {
-		return game();
+	public GameState state() {
+		return fsm.state();
+	}
+
+	public void changeState(GameState state) {
+		fsm.changeState(state);
+	}
+
+	public void update() {
+		fsm.update();
+	}
+
+	public void selectGame(GameVariant newVariant) {
+		Objects.requireNonNull(newVariant);
+		if (currentGameVariant == newVariant) {
+			return;
+		}
+		if (currentGameVariant != null) {
+			game(newVariant).credit = game(currentGameVariant).credit;
+			game(currentGameVariant).credit = 0;
+		}
+		currentGameVariant = newVariant;
+		fsm.restartInInitialState(INTRO);
 	}
 
 	public GameModel game() {
@@ -111,43 +139,22 @@ public class GameController extends Fsm<GameState, GameModel> {
 	}
 
 	public void steer(Pac player) {
-		Consumer<Pac> steering = autoMoving || credit == 0 ? autopilot : pacController;
+		Consumer<Pac> steering = autoMoving || game().credit == 0 ? autopilot : pacController;
 		steering.accept(player);
-	}
-
-	public int credit() {
-		return credit;
-	}
-
-	public void consumeCredit() {
-		if (credit > 0) {
-			--credit;
-		}
-	}
-
-	public void increaseCredit() {
-		++credit;
 	}
 
 	// public actions
 
 	public void restartIntro() {
 		if (state() != INTRO && state() != CREDIT) {
-			consumeCredit();
+			game().consumeCredit();
 		}
-		restartInInitialState(INTRO);
+		fsm.restartInInitialState(INTRO);
 		GameEventing.publish(new TriggerUIChangeEvent(game()));
 	}
 
-	public void selectGame(GameVariant variant) {
-		if (currentGameVariant != variant) {
-			currentGameVariant = variant;
-			restartInInitialState(INTRO);
-		}
-	}
-
 	public void requestGame() {
-		if (credit > 0 && (state() == INTRO || state() == CREDIT)) {
+		if (game().credit > 0 && (state() == INTRO || state() == CREDIT)) {
 			game().reset();
 			changeState(READY);
 		}

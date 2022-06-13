@@ -86,6 +86,8 @@ public abstract class GameModel {
 	/** The game variant respresented by this model. */
 	public final GameVariant variant;
 
+	public int credit;
+
 	/** Tells if the game play is active. */
 	public boolean playing;
 
@@ -143,6 +145,20 @@ public abstract class GameModel {
 		this.variant = gameVariant;
 		this.pac = pac;
 		this.ghosts = ghosts;
+	}
+
+	public int credit() {
+		return credit;
+	}
+
+	public void consumeCredit() {
+		if (credit > 0) {
+			--credit;
+		}
+	}
+
+	public void increaseCredit() {
+		++credit;
 	}
 
 	/**
