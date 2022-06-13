@@ -26,13 +26,11 @@ package de.amr.games.pacman.controller.common;
 import static de.amr.games.pacman.controller.common.GameState.CREDIT;
 import static de.amr.games.pacman.controller.common.GameState.INTRO;
 import static de.amr.games.pacman.controller.common.GameState.READY;
-import static java.util.function.Predicate.not;
 
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
 
-import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEventing;
 import de.amr.games.pacman.event.GameStateChangeEvent;
 import de.amr.games.pacman.event.TriggerUIChangeEvent;
@@ -156,14 +154,6 @@ public class GameController extends Fsm<GameState, GameModel> {
 
 	public void toggleIsPacImmune() {
 		games.values().forEach(game -> game.isPacImmune = !game.isPacImmune);
-	}
-
-	public void cheatEatAllPellets() {
-		if (game().playing) {
-			game().level.world.tiles().filter(not(game().level.world::isEnergizerTile))
-					.forEach(game().level.world::removeFood);
-			GameEventing.publish(GameEventType.PLAYER_FINDS_FOOD, null);
-		}
 	}
 
 	public void cheatKillAllEatableGhosts() {

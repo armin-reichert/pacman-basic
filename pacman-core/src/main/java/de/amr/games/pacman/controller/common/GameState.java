@@ -28,9 +28,11 @@ import static de.amr.games.pacman.model.common.actors.GhostAnimationKey.ANIM_FLA
 import static de.amr.games.pacman.model.common.actors.GhostAnimationKey.ANIM_VALUE;
 import static de.amr.games.pacman.model.common.actors.PacAnimationKey.ANIM_DYING;
 import static de.amr.games.pacman.model.common.actors.PacAnimationKey.ANIM_MUNCHING;
+import static java.util.function.Predicate.not;
 
 import java.util.Optional;
 
+import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEventing;
 import de.amr.games.pacman.event.GameStateChangeEvent;
 import de.amr.games.pacman.lib.TickTimer;
@@ -188,6 +190,15 @@ public enum GameState implements FsmState<GameModel> {
 				}
 			});
 		}
+
+		@Override
+		public void cheatEatAllPellets(GameModel game) {
+			if (game.playing) {
+				game.level.world.tiles().filter(not(game.level.world::isEnergizerTile)).forEach(game.level.world::removeFood);
+				GameEventing.publish(GameEventType.PLAYER_FINDS_FOOD, null);
+			}
+		}
+
 	},
 
 	LEVEL_COMPLETE {
@@ -399,4 +410,8 @@ public enum GameState implements FsmState<GameModel> {
 
 	public void startIntermissionTest(GameModel game) {
 	}
+
+	public void cheatEatAllPellets(GameModel game) {
+	}
+
 }
