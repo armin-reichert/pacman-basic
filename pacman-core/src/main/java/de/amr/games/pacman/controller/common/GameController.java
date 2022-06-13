@@ -133,14 +133,16 @@ public class GameController extends Fsm<GameState, GameModel> {
 		if (state() != INTRO && state() != CREDIT) {
 			consumeCredit();
 		}
-		super.restartInInitialState(INTRO);
+		restartInInitialState(INTRO);
 		GameEventing.publish(new TriggerUIChangeEvent(game()));
 	}
 
 	public void selectGame(GameVariant variant) {
-		currentGameVariant = variant;
-		GameEventing.setGame(game());
-		restartInInitialState(INTRO);
+		if (currentGameVariant != variant) {
+			currentGameVariant = variant;
+			GameEventing.setGame(game());
+			restartInInitialState(INTRO);
+		}
 	}
 
 	public void requestGame() {
