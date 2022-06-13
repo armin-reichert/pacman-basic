@@ -98,6 +98,10 @@ public class GameController {
 		autopilot = new Autopilot(this::game);
 	}
 
+	Consumer<Pac> currentSteering() {
+		return game().autoControlled || game().credit == 0 ? autopilot : pacController;
+	}
+
 	public GameState state() {
 		return fsm.state();
 	}
@@ -137,11 +141,6 @@ public class GameController {
 
 	public void setPacController(Consumer<Pac> pacController) {
 		this.pacController = Objects.requireNonNull(pacController);
-	}
-
-	public void steer(Pac player) {
-		Consumer<Pac> steering = game().autoControlled || game().credit == 0 ? autopilot : pacController;
-		steering.accept(player);
 	}
 
 	public void restartIntro() {

@@ -174,7 +174,7 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void onUpdate(GameModel game) {
 			var checkResult = new CheckResult();
-			gameController.steer(game.pac);
+			gameController.currentSteering().accept(game.pac);
 			game.updatePlayer(checkResult);
 			if (checkResult.allFoodEaten) {
 				fsm.changeState(LEVEL_COMPLETE);
@@ -308,7 +308,7 @@ public enum GameState implements FsmState<GameModel> {
 				fsm.resumePreviousState();
 				return;
 			}
-			gameController.steer(game.pac);
+			gameController.currentSteering().accept(game.pac);
 			game.updateGhostsReturningHome();
 			game.energizerPulse.advance();
 		}
