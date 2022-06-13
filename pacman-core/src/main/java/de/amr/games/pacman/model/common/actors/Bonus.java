@@ -41,14 +41,6 @@ public interface Bonus {
 
 	int value();
 
-	Entity entity();
-
-	void setSymbolList(List<?> symbolList);
-
-	void setValueList(List<?> valueList);
-
-	Object getSprite();
-
 	BonusState state();
 
 	void update(GameModel game);
@@ -56,4 +48,12 @@ public interface Bonus {
 	void setInactive();
 
 	void setEdible(int symbol, int value, long ticks);
+
+	void setSymbolList(List<?> symbolList);
+
+	void setValueList(List<?> valueList);
+
+	Entity entity();
+
+	Object getSprite();
 }
