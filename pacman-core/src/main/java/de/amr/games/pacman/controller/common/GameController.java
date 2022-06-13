@@ -24,7 +24,6 @@ SOFTWARE.
 package de.amr.games.pacman.controller.common;
 
 import static de.amr.games.pacman.controller.common.GameState.CREDIT;
-import static de.amr.games.pacman.controller.common.GameState.INTERMISSION_TEST;
 import static de.amr.games.pacman.controller.common.GameState.INTRO;
 import static de.amr.games.pacman.controller.common.GameState.READY;
 import static java.util.function.Predicate.not;
@@ -190,13 +189,6 @@ public class GameController extends Fsm<GameState, GameModel> {
 		}
 		restartInInitialState(INTRO);
 		GameEventing.publish(new TriggerUIChangeEvent(game()));
-	}
-
-	public void startIntermissionTest() {
-		if (state() == INTRO) {
-			game().intermissionTestNumber = 1;
-			changeState(INTERMISSION_TEST);
-		}
 	}
 
 	public void cheatEatAllPellets() {

@@ -74,6 +74,12 @@ public enum GameState implements FsmState<GameModel> {
 			controller.increaseCredit();
 			controller.changeState(CREDIT);
 		}
+
+		@Override
+		public void startIntermissionTest(GameModel game) {
+			game.intermissionTestNumber = 1;
+			controller.changeState(INTERMISSION_TEST);
+		}
 	},
 
 	CREDIT {
@@ -381,5 +387,8 @@ public enum GameState implements FsmState<GameModel> {
 	// --- Events
 
 	public void addCredit(GameModel game) {
+	}
+
+	public void startIntermissionTest(GameModel game) {
 	}
 }
