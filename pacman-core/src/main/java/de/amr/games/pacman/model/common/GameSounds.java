@@ -43,6 +43,13 @@ public interface GameSounds {
 	default void setSilent(boolean silent) {
 	}
 
+	default boolean isMuted() {
+		return false;
+	}
+
+	default void setMuted(boolean muted) {
+	}
+
 	default void stopAll() {
 	}
 
