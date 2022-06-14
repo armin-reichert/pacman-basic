@@ -375,9 +375,12 @@ public class MsPacManGame extends GameModel {
 	@Override
 	protected void onBonusReached() {
 		var route = computeBonusRoute(level.world);
-		movingBonus.setRoute(level.world, route);
-		movingBonus.setEdible(level.bonusSymbol, BONUS_VALUES[level.bonusSymbol], TickTimer.INDEFINITE);
-		GameEvents.publish(GameEventType.BONUS_GETS_ACTIVE, movingBonus.tile());
+		if (route.size() > 0) {
+			var startDir = route.get(0).x == -1 ? Direction.RIGHT : Direction.LEFT;
+			movingBonus.setRoute(level.world, route, startDir);
+			movingBonus.setEdible(level.bonusSymbol, BONUS_VALUES[level.bonusSymbol], TickTimer.INDEFINITE);
+			GameEvents.publish(GameEventType.BONUS_GETS_ACTIVE, movingBonus.tile());
+		}
 	}
 
 	private List<V2i> computeBonusRoute(World world) {

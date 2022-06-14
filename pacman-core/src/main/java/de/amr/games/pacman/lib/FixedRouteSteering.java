@@ -24,7 +24,6 @@ SOFTWARE.
 
 package de.amr.games.pacman.lib;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -36,15 +35,15 @@ import de.amr.games.pacman.model.common.world.World;
  */
 public class FixedRouteSteering implements Consumer<Creature> {
 
-	private World world;
-	private List<V2i> route = new ArrayList<>();
+	private final World world;
+	private final List<V2i> route;
 	private boolean complete;
 
 	public boolean isComplete() {
 		return complete;
 	}
 
-	public void setRoute(World world, List<V2i> route) {
+	public FixedRouteSteering(World world, List<V2i> route) {
 		this.world = world;
 		this.route = route;
 		complete = false;

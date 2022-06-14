@@ -31,7 +31,6 @@ import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.FixedRouteSteering;
-import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.lib.animation.SimpleThingAnimation;
 import de.amr.games.pacman.model.common.GameModel;
@@ -59,26 +58,25 @@ public class MovingBonus extends Creature implements Bonus {
 	private List<?> symbolList;
 	private List<?> valueList;
 	private final SimpleThingAnimation<Integer> jumpAnimation;
-	private FixedRouteSteering steering = new FixedRouteSteering();
+	private FixedRouteSteering steering;
 
 	public MovingBonus() {
 		super("MovingBonus");
 		jumpAnimation = new SimpleThingAnimation<>(2, -2);
 		jumpAnimation.frameDuration(10);
 		jumpAnimation.repeatForever();
-		setAbsSpeed(0.4); // TODO how fast in the original game?
-		visible = false;
-		state = BonusState.INACTIVE;
+		setInactive();
 	}
 
-	public void setRoute(World world, List<V2i> route) {
-		if (route.size() > 0) {
-			steering.setRoute(world, route);
-			var startTile = route.get(0);
-			placeAt(startTile, 0, 0);
-			setBothDirs(startTile.x == -1 ? Direction.RIGHT : Direction.LEFT);
-			targetTile = route.get(0);
+	public void setRoute(World world, List<V2i> route, Direction startDir) {
+		if (route == null || route.size() == 0) {
+			throw new IllegalArgumentException("Route must contain at least one tile");
 		}
+		var startTile = route.get(0);
+		targetTile = startTile;
+		placeAt(startTile, 0, 0);
+		setBothDirs(startDir);
+		steering = new FixedRouteSteering(world, route);
 	}
 
 	@Override
@@ -119,19 +117,22 @@ public class MovingBonus extends Creature implements Bonus {
 
 	@Override
 	public void setInactive() {
+		visible = false;
 		state = BonusState.INACTIVE;
 		jumpAnimation.stop();
+		setAbsSpeed(0);
 	}
 
 	@Override
 	public void setEdible(int symbol, int value, long ticks) {
-		state = BonusState.EDIBLE;
-		timer = ticks;
 		this.symbol = symbol;
 		this.value = value;
+		state = BonusState.EDIBLE;
+		timer = ticks;
 		visible = true;
 		jumpAnimation.restart();
-		log("MovingBonus symbol=%d, value=%d position=%s activated", symbol, value, position);
+		setAbsSpeed(0.4); // TODO how fast in the original game?
+		log("%s gets edible", this);
 	}
 
 	public int dy() {
@@ -145,21 +146,20 @@ public class MovingBonus extends Creature implements Bonus {
 		}
 		case EDIBLE -> {
 			if (game.pac.tile().equals(tile())) {
-				log("%s found bonus %s", game.pac.name, this);
-				game.scores.addPoints(value());
 				state = BonusState.EATEN;
 				timer = Bonus.EATEN_DURATION;
 				jumpAnimation.stop();
+				game.scores.addPoints(value);
 				game.sounds().ifPresent(snd -> snd.play(GameSound.BONUS_EATEN));
+				log("Bonus eaten: %s", this);
 				GameEvents.publish(GameEventType.BONUS_GETS_EATEN, tile());
 				return;
 			}
 			steering.accept(this);
 			if (steering.isComplete()) {
-				log("%s expired (left world)", this);
-				position = V2d.NULL;
-				setInactive();
+				log("%s reached target", this);
 				GameEvents.publish(GameEventType.BONUS_EXPIRES, tile());
+				setInactive();
 				return;
 			}
 			jumpAnimation.advance();
