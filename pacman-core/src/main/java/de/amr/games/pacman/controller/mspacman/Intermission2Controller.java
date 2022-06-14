@@ -79,7 +79,6 @@ public class Intermission2Controller extends Fsm<State, Context> {
 			public void onEnter(Context $) {
 				timer.setIndefinite();
 				timer.start();
-				$.game.sounds().ifPresent(snd -> snd.play(GameSound.INTERMISSION_2));
 				$.flap = new Flap();
 				$.flap.number = 2;
 				$.flap.text = "THE CHASE";
@@ -94,6 +93,7 @@ public class Intermission2Controller extends Fsm<State, Context> {
 			@Override
 			public void onUpdate(Context $) {
 				if (timer.atSecond(1)) {
+					$.game.sounds().ifPresent(snd -> snd.play(GameSound.INTERMISSION_2));
 					if ($.flap.animation != null) {
 						$.flap.animation.restart();
 					}

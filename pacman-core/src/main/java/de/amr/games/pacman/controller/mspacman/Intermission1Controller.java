@@ -92,7 +92,6 @@ public class Intermission1Controller extends Fsm<State, Context> {
 			public void onEnter(Context $) {
 				timer.setSeconds(2);
 				timer.start();
-				$.game.sounds().ifPresent(snd -> snd.play(GameSound.INTERMISSION_1));
 				$.flap = new Flap();
 				$.flap.number = 1;
 				$.flap.text = "THEY MEET";
@@ -127,6 +126,7 @@ public class Intermission1Controller extends Fsm<State, Context> {
 			@Override
 			public void onUpdate(Context $) {
 				if (timer.atSecond(1)) {
+					$.game.sounds().ifPresent(snd -> snd.play(GameSound.INTERMISSION_1));
 					if ($.flap.animation != null) {
 						$.flap.animation.restart();
 					}
