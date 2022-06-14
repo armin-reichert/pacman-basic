@@ -34,6 +34,8 @@ import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.animation.ThingAnimation;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.lib.fsm.FsmState;
+import de.amr.games.pacman.model.common.GameModel;
+import de.amr.games.pacman.model.common.GameSound;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.GhostAnimationKey;
 import de.amr.games.pacman.model.common.actors.GhostState;
@@ -48,11 +50,11 @@ public class Intermission1Controller extends Fsm<State, Context> {
 
 	public final GameController gameController;
 	public final Context context = new Context();
-	public Runnable playIntermissionSound;
 
 	public Intermission1Controller(GameController gameController) {
 		super(State.values());
 		this.gameController = gameController;
+		context.game = gameController.game();
 	}
 
 	@Override
@@ -65,6 +67,7 @@ public class Intermission1Controller extends Fsm<State, Context> {
 	}
 
 	public static class Context {
+		public GameModel game;
 		public Ghost blinky;
 		public Pac pac;
 	}
@@ -76,9 +79,6 @@ public class Intermission1Controller extends Fsm<State, Context> {
 			public void onEnter(Context $) {
 				timer.setSeconds(5);
 				timer.start();
-				if (controller.playIntermissionSound != null) {
-					controller.playIntermissionSound.run();
-				}
 
 				$.pac = new Pac("Pac-Man");
 				$.pac.setMoveDir(Direction.LEFT);
@@ -94,6 +94,8 @@ public class Intermission1Controller extends Fsm<State, Context> {
 				$.blinky.setAbsSpeed(1.05);
 				$.blinky.show();
 				$.blinky.animation(GhostAnimationKey.ANIM_COLOR).ifPresent(ThingAnimation::restart);
+
+				$.game.sounds().ifPresent(snd -> snd.loop(GameSound.INTERMISSION_1, 2));
 			}
 
 			@Override

@@ -33,6 +33,8 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.lib.fsm.FsmState;
+import de.amr.games.pacman.model.common.GameModel;
+import de.amr.games.pacman.model.common.GameSound;
 import de.amr.games.pacman.model.common.actors.Entity;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.GhostState;
@@ -47,11 +49,11 @@ public class Intermission2Controller extends Fsm<State, Context> {
 
 	public final GameController gameController;
 	public final Context context = new Context();
-	public Runnable playIntermissionSound;
 
 	public Intermission2Controller(GameController gameController) {
 		super(State.values());
 		this.gameController = gameController;
+		context.game = gameController.game();
 	}
 
 	@Override
@@ -68,6 +70,7 @@ public class Intermission2Controller extends Fsm<State, Context> {
 	}
 
 	public static class Context {
+		public GameModel game;
 		public Ghost blinky;
 		public Pac pac;
 		public Entity nail;
@@ -80,9 +83,6 @@ public class Intermission2Controller extends Fsm<State, Context> {
 			public void onEnter(Context $) {
 				timer.setIndefinite();
 				timer.start();
-				if (controller.playIntermissionSound != null) {
-					controller.playIntermissionSound.run();
-				}
 
 				$.pac = new Pac("Pac-Man");
 				$.pac.setMoveDir(Direction.LEFT);
@@ -101,6 +101,8 @@ public class Intermission2Controller extends Fsm<State, Context> {
 				$.nail = new Entity();
 				$.nail.setPosition(t(14), t(20) - 1);
 				$.nail.show();
+
+				$.game.sounds().ifPresent(snd -> snd.play(GameSound.INTERMISSION_2));
 			}
 
 			@Override
