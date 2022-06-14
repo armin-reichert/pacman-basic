@@ -101,10 +101,8 @@ public enum GameState implements FsmState<GameModel> {
 		}
 
 		@Override
-		public void onUpdate(GameModel game) {
-			if (timer.hasExpired()) {
-				fsm.changeState(READY);
-			}
+		public void onUpdate(GameModel context) {
+			// nothing to do here
 		}
 
 		@Override
@@ -115,10 +113,7 @@ public enum GameState implements FsmState<GameModel> {
 
 		@Override
 		public void requestGame(GameModel game) {
-			if (game.credit > 0) {
-				game.reset();
-				fsm.changeState(READY);
-			}
+			fsm.changeState(READY);
 		}
 	},
 
