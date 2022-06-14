@@ -33,11 +33,11 @@ import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.lib.fsm.FsmState;
+import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameSound;
 import de.amr.games.pacman.model.common.actors.Entity;
 import de.amr.games.pacman.model.common.actors.Pac;
 import de.amr.games.pacman.model.mspacman.Flap;
-import de.amr.games.pacman.model.mspacman.JuniorBag;
 
 /**
  * Intermission scene 3: "Junior".
@@ -52,11 +52,12 @@ import de.amr.games.pacman.model.mspacman.JuniorBag;
 public class Intermission3Controller extends Fsm<State, Context> {
 
 	public final GameController gameController;
-	public final Context context = new Context();
+	public final Context context;
 
 	public Intermission3Controller(GameController gameController) {
 		super(State.values());
 		this.gameController = gameController;
+		this.context = new Context(gameController.game());
 	}
 
 	@Override
@@ -65,13 +66,19 @@ public class Intermission3Controller extends Fsm<State, Context> {
 	}
 
 	public static class Context {
+		public final GameModel game;
 		public final int groundY = t(24);
 		public Flap flap;
 		public Pac pacMan;
 		public Pac msPacMan;
 		public Entity stork;
-		public JuniorBag bag;
+		public Entity bag;
+		public boolean bagOpen;
 		public int numBagBounces;
+
+		public Context(GameModel game) {
+			this.game = game;
+		}
 	}
 
 	public enum State implements FsmState<Context> {
@@ -81,7 +88,7 @@ public class Intermission3Controller extends Fsm<State, Context> {
 			public void onEnter(Context $) {
 				timer.setIndefinite();
 				timer.start();
-				controller.gameController.game().sounds().get().play(GameSound.INTERMISSION_3);
+				$.game.sounds().ifPresent(snd -> snd.play(GameSound.INTERMISSION_3));
 				$.flap = new Flap();
 				$.flap.number = 3;
 				$.flap.text = "JUNIOR";
@@ -90,7 +97,8 @@ public class Intermission3Controller extends Fsm<State, Context> {
 				$.pacMan = new Pac("Pac-Man");
 				$.msPacMan = new Pac("Ms. Pac-Man");
 				$.stork = new Entity();
-				$.bag = new JuniorBag();
+				$.bag = new Entity();
+				$.bagOpen = false;
 			}
 
 			@Override
@@ -128,8 +136,8 @@ public class Intermission3Controller extends Fsm<State, Context> {
 				$.bag.position = $.stork.position.plus(-14, 3);
 				$.bag.velocity = $.stork.velocity;
 				$.bag.acceleration = V2d.NULL;
-				$.bag.open = false;
 				$.bag.show();
+				$.bagOpen = false;
 				$.numBagBounces = 0;
 			}
 
@@ -145,13 +153,13 @@ public class Intermission3Controller extends Fsm<State, Context> {
 				}
 
 				// (closed) bag reaches ground for first time?
-				if (!$.bag.open && $.bag.position.y > $.groundY) {
+				if (!$.bagOpen && $.bag.position.y > $.groundY) {
 					++$.numBagBounces;
 					if ($.numBagBounces < 3) {
 						$.bag.setVelocity(-0.2f, -1f / $.numBagBounces);
 						$.bag.setPosition($.bag.position.x, $.groundY);
 					} else {
-						$.bag.open = true;
+						$.bagOpen = true;
 						$.bag.velocity = V2d.NULL;
 						controller.changeState(State.DONE);
 					}

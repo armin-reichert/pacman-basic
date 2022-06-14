@@ -35,6 +35,7 @@ import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.animation.ThingAnimation;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.lib.fsm.FsmState;
+import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameSound;
 import de.amr.games.pacman.model.common.actors.Entity;
 import de.amr.games.pacman.model.common.actors.Ghost;
@@ -54,11 +55,12 @@ import de.amr.games.pacman.model.mspacman.Flap;
 public class Intermission1Controller extends Fsm<State, Context> {
 
 	public final GameController gameController;
-	public final Context context = new Context();
+	public final Context context;
 
 	public Intermission1Controller(GameController gameController) {
 		super(State.values());
 		this.gameController = gameController;
+		this.context = new Context(gameController.game());
 	}
 
 	@Override
@@ -67,6 +69,7 @@ public class Intermission1Controller extends Fsm<State, Context> {
 	}
 
 	public static class Context {
+		public final GameModel game;
 		public final int upperY = t(12), middleY = t(18), lowerY = t(24);
 		public final float pacSpeedChased = 1.125f;
 		public final float pacSpeedRising = 0.75f;
@@ -76,6 +79,10 @@ public class Intermission1Controller extends Fsm<State, Context> {
 		public Pac pacMan, msPac;
 		public Ghost pinky, inky;
 		public Entity heart;
+
+		public Context(GameModel game) {
+			this.game = game;
+		}
 	}
 
 	public enum State implements FsmState<Context> {
@@ -85,7 +92,7 @@ public class Intermission1Controller extends Fsm<State, Context> {
 			public void onEnter(Context $) {
 				timer.setSeconds(2);
 				timer.start();
-				controller.gameController.game().sounds().get().play(GameSound.INTERMISSION_1);
+				$.game.sounds().ifPresent(snd -> snd.play(GameSound.INTERMISSION_1));
 				$.flap = new Flap();
 				$.flap.number = 1;
 				$.flap.text = "THEY MEET";

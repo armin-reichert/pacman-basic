@@ -32,6 +32,7 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.lib.fsm.FsmState;
+import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameSound;
 import de.amr.games.pacman.model.common.actors.Pac;
 import de.amr.games.pacman.model.mspacman.Flap;
@@ -47,11 +48,12 @@ import de.amr.games.pacman.model.mspacman.Flap;
 public class Intermission2Controller extends Fsm<State, Context> {
 
 	public final GameController gameController;
-	public final Context context = new Context();
+	public final Context context;
 
 	public Intermission2Controller(GameController gameController) {
 		super(State.values());
 		this.gameController = gameController;
+		this.context = new Context(gameController.game());
 	}
 
 	@Override
@@ -60,9 +62,14 @@ public class Intermission2Controller extends Fsm<State, Context> {
 	}
 
 	public static class Context {
+		public final GameModel game;
 		public final int upperY = t(12), middleY = t(18), lowerY = t(24);
 		public Flap flap;
 		public Pac pacMan, msPacMan;
+
+		public Context(GameModel game) {
+			this.game = game;
+		}
 	}
 
 	public enum State implements FsmState<Context> {
@@ -72,7 +79,7 @@ public class Intermission2Controller extends Fsm<State, Context> {
 			public void onEnter(Context $) {
 				timer.setIndefinite();
 				timer.start();
-				controller.gameController.game().sounds().get().play(GameSound.INTERMISSION_2);
+				$.game.sounds().ifPresent(snd -> snd.play(GameSound.INTERMISSION_2));
 				$.flap = new Flap();
 				$.flap.number = 2;
 				$.flap.text = "THE CHASE";
