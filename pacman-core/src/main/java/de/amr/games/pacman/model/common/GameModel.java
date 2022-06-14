@@ -197,7 +197,9 @@ public abstract class GameModel {
 		scores.gameScore.reset();
 	}
 
-	public void resetGuys() {
+	public void getReadyToPlay() {
+		energizerPulse.reset();
+
 		pac.visible = true;
 		pac.placeAt(v(13, 26), HTS, 0);
 		pac.setBothDirs(Direction.LEFT);

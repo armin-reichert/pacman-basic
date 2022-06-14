@@ -122,36 +122,37 @@ public enum GameState implements FsmState<GameModel> {
 		public void onEnter(GameModel game) {
 			boolean hasCredit = game.credit() > 0;
 			if (hasCredit && !game.playing) {
-				// game start
+				// start new game, play intro music
 				timer.resetSeconds(5);
+				timer.start();
 				game.sounds().ifPresent(snd -> {
-					snd.setSilent(false);
 					snd.stopAll();
+					snd.setSilent(false);
 					snd.play(GameSound.GAME_READY);
 				});
 			} else {
 				// game already running or attract mode
 				timer.resetSeconds(2);
+				timer.start();
 				game.sounds().ifPresent(snd -> snd.setSilent(!game.playing));
 			}
-			timer.start();
-			game.resetGuys();
 			game.scores.gameScore.showContent = hasCredit;
 			game.scores.highScore.showContent = true;
-			game.energizerPulse.reset();
+			game.getReadyToPlay();
 		}
 
 		@Override
 		public void onUpdate(GameModel game) {
 			if (timer.hasExpired()) {
-				game.startHuntingPhase(0);
 				if (game.credit() > 0) {
 					game.scores.enable(true);
 					game.playing = true;
 				} else {
+					// start attract mode
 					game.scores.enable(false);
 					game.playing = false;
 				}
+				game.startHuntingPhase(0);
 				fsm.changeState(GameState.HUNTING);
 			}
 		}
@@ -192,7 +193,7 @@ public enum GameState implements FsmState<GameModel> {
 				if (game.huntingTimer.tick() == 0) {
 					snd.ensureSirenStarted(game.huntingTimer.phase() / 2);
 				}
-				if (game.pac.starvingTicks >= 10) {
+				if (game.pac.starvingTicks >= 12) {
 					snd.stop(GameSound.PACMAN_MUNCH);
 				}
 				if (game.ghosts(GhostState.DEAD).count() == 0) {
@@ -272,7 +273,7 @@ public enum GameState implements FsmState<GameModel> {
 			timer.resetSeconds(1);
 			timer.start();
 			game.setLevel(game.level.number + 1);
-			game.resetGuys();
+			game.getReadyToPlay();
 			game.ghosts().forEach(Ghost::hide);
 			game.pac.hide();
 		}
