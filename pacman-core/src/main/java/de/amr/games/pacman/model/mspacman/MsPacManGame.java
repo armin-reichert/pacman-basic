@@ -23,6 +23,7 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.mspacman;
 
+import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.lib.TickTimer.sec_to_ticks;
 import static de.amr.games.pacman.model.common.actors.Ghost.CYAN_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ORANGE_GHOST;
@@ -46,7 +47,6 @@ import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.Pac;
 import de.amr.games.pacman.model.common.world.ArcadeWorld;
 import de.amr.games.pacman.model.common.world.GhostHouse;
-import de.amr.games.pacman.model.common.world.Portal;
 import de.amr.games.pacman.model.common.world.World;
 
 /**
@@ -349,31 +349,6 @@ public class MsPacManGame extends GameModel {
 		scores.gameScore.levelNumber = levelNumber;
 	}
 
-	private void newMovingBonusRoute(World world) {
-		var route = computeBonusRoute(level.world);
-		movingBonus.setRoute(level.world, route);
-		movingBonus.placeAt(route.get(0), 0, 0);
-		var travelDir = route.get(0).y == -1 ? Direction.RIGHT : Direction.LEFT;
-		movingBonus.setBothDirs(travelDir);
-	}
-
-	private List<V2i> computeBonusRoute(World world) {
-		List<V2i> route = new ArrayList<>();
-		int numPortals = world.portals().size();
-		if (numPortals > 0) {
-			Portal entryPortal = world.portals().get(new Random().nextInt(numPortals));
-			Portal exitPortal = world.portals().get(new Random().nextInt(numPortals));
-			V2i houseEntry = world.ghostHouse().doorTileLeft().plus(Direction.UP.vec);
-			var travelDir = new Random().nextBoolean() ? Direction.LEFT : Direction.RIGHT;
-			route.add(travelDir == Direction.RIGHT ? entryPortal.left : entryPortal.right);
-			route.add(houseEntry);
-			route.add(houseEntry.plus(Direction.DOWN.vec.scaled(world.ghostHouse().size().y + 2)));
-			route.add(houseEntry);
-			route.add(travelDir == Direction.RIGHT ? exitPortal.right : exitPortal.left);
-		}
-		return route;
-	}
-
 	private void initGhosts(GameLevel level) {
 		ArcadeWorld world = (ArcadeWorld) level.world;
 		GhostHouse house = world.ghostHouse();
@@ -399,8 +374,28 @@ public class MsPacManGame extends GameModel {
 
 	@Override
 	protected void onBonusReached() {
-		newMovingBonusRoute(level.world);
+		var route = computeBonusRoute(level.world);
+		movingBonus.setRoute(level.world, route);
 		movingBonus.setEdible(level.bonusSymbol, BONUS_VALUES[level.bonusSymbol], TickTimer.INDEFINITE);
 		GameEvents.publish(GameEventType.BONUS_GETS_ACTIVE, movingBonus.tile());
+	}
+
+	private List<V2i> computeBonusRoute(World world) {
+		List<V2i> route = new ArrayList<>();
+		int numPortals = world.portals().size();
+		if (numPortals > 0) {
+			var entryPortal = world.portals().get(new Random().nextInt(numPortals));
+			var exitPortal = world.portals().get(new Random().nextInt(numPortals));
+			var travelDir = new Random().nextBoolean() ? Direction.LEFT : Direction.RIGHT;
+			var houseEntry = world.ghostHouse().entry();
+			int houseHeight = world.ghostHouse().size().y;
+			route.add(travelDir == Direction.RIGHT ? entryPortal.left : entryPortal.right);
+			route.add(houseEntry);
+			route.add(houseEntry.plus(0, houseHeight + 2));
+			route.add(houseEntry);
+			route.add(travelDir == Direction.RIGHT ? exitPortal.right : exitPortal.left);
+		}
+		log("Route: %d tiles: %s", route.size(), route);
+		return route;
 	}
 }

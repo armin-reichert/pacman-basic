@@ -47,17 +47,23 @@ public class FixedRouteSteering implements Consumer<Creature> {
 	public void setRoute(World world, List<V2i> route) {
 		this.world = world;
 		this.route = route;
+		complete = false;
+	}
+
+	public List<V2i> getRoute() {
+		return route;
 	}
 
 	@Override
 	public void accept(Creature guy) {
-		guy.targetTile = route.get(0);
-		if (guy.tile().equals(guy.targetTile)) {
+		if (guy.tile().equals(route.get(0))) {
 			route.remove(0);
 			if (route.isEmpty()) {
 				complete = true;
 				return;
 			}
+			guy.targetTile = route.get(0);
+			Logging.log("Next target: %s", route.get(0));
 		}
 		guy.computeDirectionTowardsTarget(world);
 		guy.tryMoving(world);

@@ -29,6 +29,7 @@ import java.util.List;
 
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
+import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.FixedRouteSteering;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
@@ -58,7 +59,7 @@ public class MovingBonus extends Creature implements Bonus {
 	private List<?> symbolList;
 	private List<?> valueList;
 	private final SimpleThingAnimation<Integer> jumpAnimation;
-	private FixedRouteSteering steering;
+	private FixedRouteSteering steering = new FixedRouteSteering();
 
 	public MovingBonus() {
 		super("MovingBonus");
@@ -71,8 +72,13 @@ public class MovingBonus extends Creature implements Bonus {
 	}
 
 	public void setRoute(World world, List<V2i> route) {
-		steering = new FixedRouteSteering();
-		steering.setRoute(world, route);
+		if (route.size() > 0) {
+			steering.setRoute(world, route);
+			var startTile = route.get(0);
+			placeAt(startTile, 0, 0);
+			setBothDirs(startTile.x == -1 ? Direction.RIGHT : Direction.LEFT);
+			targetTile = route.get(0);
+		}
 	}
 
 	@Override
