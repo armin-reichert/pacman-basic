@@ -96,7 +96,7 @@ public class IntroController extends Fsm<IntroController.State, IntroController.
 			public void onEnter(Context $) {
 				scores().gameScore.showContent = false;
 				scores().highScore.showContent = true;
-				$.lightsTimer.setIndefinite();
+				$.lightsTimer.resetIndefinitely();
 				$.lightsTimer.start();
 				$.msPacMan.setMoveDir(LEFT);
 				$.msPacMan.setPosition(t(34), $.turningPoint.y);

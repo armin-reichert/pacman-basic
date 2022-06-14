@@ -41,13 +41,14 @@ import de.amr.games.pacman.lib.TickTimerEvent.Type;
  */
 public class TickTimer {
 
+	public static boolean trace = false;
+
 	public enum State {
 		READY, RUNNING, STOPPED, EXPIRED;
 	}
 
 	public static final long INDEFINITE = Long.MAX_VALUE;
 	private static final int TICKS_PER_SEC = 60;
-	private static boolean trace = false;
 
 	private void trace(String msg, Object... args) {
 		if (trace) {
@@ -75,49 +76,7 @@ public class TickTimer {
 
 	public TickTimer(String name) {
 		this.name = name;
-		setIndefinite();
-	}
-
-	@Override
-	public String toString() {
-		return "[%s %s tick:%s remaining:%s]".formatted(name, state, ticksToString(tick), ticksToString(remaining()));
-	}
-
-	public State state() {
-		return state;
-	}
-
-	public String name() {
-		return name;
-	}
-
-	/**
-	 * Sets timer to given duration and resets timer state to {@link State#READY}.
-	 * 
-	 * @param ticks timer duration in ticks
-	 */
-	public void setTicks(long ticks) {
-		duration = ticks;
-		tick = 0;
-		state = READY;
-		trace("%s set", this);
-		fireEvent(new TickTimerEvent(Type.RESET, ticks));
-	}
-
-	/**
-	 * Sets the timer duration in seconds.
-	 * 
-	 * @param seconds number of seconds
-	 */
-	public void setSeconds(double seconds) {
-		setTicks(sec_to_ticks(seconds));
-	}
-
-	/**
-	 * Sets the timer to run forever.
-	 */
-	public void setIndefinite() {
-		setTicks(INDEFINITE);
+		resetIndefinitely();
 	}
 
 	public void addEventListener(Consumer<TickTimerEvent> subscriber) {
@@ -139,8 +98,50 @@ public class TickTimer {
 		}
 	}
 
+	@Override
+	public String toString() {
+		return "[%s %s tick:%s remaining:%s]".formatted(name, state, ticksToString(tick), ticksToString(remaining()));
+	}
+
+	public State state() {
+		return state;
+	}
+
+	public String name() {
+		return name;
+	}
+
 	/**
-	 * Starts the timer if it is not already running.
+	 * Sets the timer to given duration and its state to {@link State#READY}. The timer is not running after this call!
+	 * 
+	 * @param ticks timer duration in ticks
+	 */
+	public void reset(long ticks) {
+		duration = ticks;
+		tick = 0;
+		state = READY;
+		trace("%s reset", this);
+		fireEvent(new TickTimerEvent(Type.RESET, ticks));
+	}
+
+	/**
+	 * Sets the timer duration in seconds.
+	 * 
+	 * @param seconds number of seconds
+	 */
+	public void resetSeconds(double seconds) {
+		reset(sec_to_ticks(seconds));
+	}
+
+	/**
+	 * Sets the timer to run forever.
+	 */
+	public void resetIndefinitely() {
+		reset(INDEFINITE);
+	}
+
+	/**
+	 * Starts the timer. If the timer is already running, does nothing.
 	 */
 	public void start() {
 		switch (state) {
@@ -153,20 +154,24 @@ public class TickTimer {
 			trace("%s not started, already running", this);
 		}
 		case EXPIRED -> {
+			// TODO throw exception?
 			trace("%s not started, timer has expired", this);
 		}
 		}
 	}
 
+	/**
+	 * Stops the timer. If the timer is not running, does nothing.
+	 */
 	public void stop() {
 		switch (state) {
-		case STOPPED -> {
-			trace("%s already topped", this);
-		}
 		case RUNNING -> {
 			state = STOPPED;
 			trace("%s stopped", this);
 			fireEvent(new TickTimerEvent(Type.STOPPED));
+		}
+		case STOPPED -> {
+			trace("%s already stopped", this);
 		}
 		case READY -> {
 			trace("%s not stopped, was not running", this);
@@ -177,15 +182,22 @@ public class TickTimer {
 		}
 	}
 
+	/**
+	 * Advances the timer by one step, if it is running. Does nothing, else.
+	 */
 	public void advance() {
 		if (state == RUNNING) {
-			++tick;
 			if (tick == duration) {
 				expire();
+			} else {
+				++tick;
 			}
 		}
 	}
 
+	/**
+	 * Forces the timer to expire.
+	 */
 	public void expire() {
 		if (state != EXPIRED) {
 			state = EXPIRED;

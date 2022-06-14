@@ -119,7 +119,7 @@ public abstract class Fsm<STATE extends FsmState<CONTEXT>, CONTEXT> {
 	 */
 	public void resetTimers() {
 		for (var state : states) {
-			state.timer().setIndefinite();
+			state.timer().resetIndefinitely();
 		}
 	}
 
@@ -155,7 +155,7 @@ public abstract class Fsm<STATE extends FsmState<CONTEXT>, CONTEXT> {
 		}
 		prevState = currentState;
 		currentState = newState;
-		currentState.timer().setIndefinite();
+		currentState.timer().resetIndefinitely();
 		fsm_log("Enter state %s timer=%s", currentState, currentState.timer());
 		currentState.onEnter(context);
 		fsm_log("After Enter state %s timer=%s", currentState, currentState.timer());

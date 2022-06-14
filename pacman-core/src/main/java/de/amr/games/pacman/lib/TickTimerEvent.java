@@ -23,6 +23,9 @@ SOFTWARE.
  */
 package de.amr.games.pacman.lib;
 
+/**
+ * @author Armin Reichert
+ */
 public class TickTimerEvent {
 
 	public enum Type {

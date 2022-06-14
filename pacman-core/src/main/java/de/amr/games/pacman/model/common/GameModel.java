@@ -207,7 +207,7 @@ public abstract class GameModel {
 		pac.killed = false;
 		pac.resting = 0;
 		pac.starvingTicks = 0;
-		pac.powerTimer.setIndefinite();
+		pac.powerTimer.resetIndefinitely();
 		pac.animations().ifPresent(anim -> {
 			anim.select(ANIM_MUNCHING);
 			anim.selectedAnimation().reset();
@@ -441,7 +441,7 @@ public abstract class GameModel {
 	private void onPlayerLosesPower() {
 		log("%s lost power, timer=%s", pac.name, pac.powerTimer);
 		/* TODO hack: leave state EXPIRED to avoid repetitions. */
-		pac.powerTimer.setIndefinite();
+		pac.powerTimer.resetIndefinitely();
 		huntingTimer.start();
 		ghosts(FRIGHTENED).forEach(ghost -> ghost.state = HUNTING_PAC);
 		sounds().ifPresent(snd -> {
@@ -491,7 +491,7 @@ public abstract class GameModel {
 
 	private void onPlayerGetsPower() {
 		huntingTimer.stop();
-		pac.powerTimer.setSeconds(level.ghostFrightenedSeconds);
+		pac.powerTimer.resetSeconds(level.ghostFrightenedSeconds);
 		pac.powerTimer.start();
 		log("%s power timer started: %s", pac.name, pac.powerTimer);
 		ghosts(HUNTING_PAC).forEach(ghost -> {

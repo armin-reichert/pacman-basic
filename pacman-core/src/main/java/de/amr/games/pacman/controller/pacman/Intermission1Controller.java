@@ -77,7 +77,7 @@ public class Intermission1Controller extends Fsm<State, Context> {
 		CHASING_PACMAN {
 			@Override
 			public void onEnter(Context $) {
-				timer.setSeconds(5);
+				timer.resetSeconds(5);
 				timer.start();
 
 				$.pac = new Pac("Pac-Man");
@@ -115,7 +115,7 @@ public class Intermission1Controller extends Fsm<State, Context> {
 		CHASING_BLINKY {
 			@Override
 			public void onEnter(Context $) {
-				timer.setSeconds(7);
+				timer.resetSeconds(7);
 				timer.start();
 				$.pac.setMoveDir(Direction.RIGHT);
 				$.pac.setPosition(-t(24), t(20));

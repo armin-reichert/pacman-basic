@@ -55,7 +55,7 @@ public class HuntingTimer extends TickTimer {
 
 	public void startPhase(int phase, long duration) {
 		this.phase = phase;
-		setTicks(duration);
+		reset(duration);
 		start();
 		log("%s: started", this);
 	}

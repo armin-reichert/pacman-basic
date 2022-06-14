@@ -81,7 +81,7 @@ public class Intermission2Controller extends Fsm<State, Context> {
 		CHASING {
 			@Override
 			public void onEnter(Context $) {
-				timer.setIndefinite();
+				timer.resetIndefinitely();
 				timer.start();
 
 				$.pac = new Pac("Pac-Man");

@@ -135,7 +135,7 @@ public class IntroController extends Fsm<State, Context> {
 					$.nicknameVisible[$.ghostIndex] = true;
 				} else if (timer.atSecond(2.0)) {
 					if (++$.ghostIndex < 4) {
-						timer.setIndefinite(); // resets timer to 0 too!
+						timer.resetIndefinitely(); // resets timer to 0 too!
 					}
 				} else if (timer.atSecond(2.5)) {
 					controller.changeState(State.SHOWING_POINTS);
@@ -160,7 +160,7 @@ public class IntroController extends Fsm<State, Context> {
 		CHASING_PAC {
 			@Override
 			public void onEnter(Context $) {
-				timer.setIndefinite();
+				timer.resetIndefinitely();
 				timer.start();
 				$.pacMan.setPosition(t(36), t(20));
 				$.pacMan.setMoveDir(Direction.LEFT);
@@ -211,7 +211,7 @@ public class IntroController extends Fsm<State, Context> {
 		CHASING_GHOSTS {
 			@Override
 			public void onEnter(Context $) {
-				timer.setIndefinite();
+				timer.resetIndefinitely();
 				timer.start();
 				$.ghostKilledTime = timer.tick();
 				$.pacMan.setMoveDir(Direction.RIGHT);

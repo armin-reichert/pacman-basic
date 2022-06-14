@@ -90,7 +90,7 @@ public class Intermission1Controller extends Fsm<State, Context> {
 		FLAP {
 			@Override
 			public void onEnter(Context $) {
-				timer.setSeconds(2);
+				timer.resetSeconds(2);
 				timer.start();
 				$.flap = new Flap();
 				$.flap.number = 1;
@@ -225,7 +225,7 @@ public class Intermission1Controller extends Fsm<State, Context> {
 		IN_HEAVEN {
 			@Override
 			public void onEnter(Context $) {
-				timer.setSeconds(3);
+				timer.resetSeconds(3);
 				timer.start();
 				$.pacMan.setAbsSpeed(0);
 				$.pacMan.setMoveDir(Direction.LEFT);

@@ -77,7 +77,7 @@ public class Intermission2Controller extends Fsm<State, Context> {
 		FLAP {
 			@Override
 			public void onEnter(Context $) {
-				timer.setIndefinite();
+				timer.resetIndefinitely();
 				timer.start();
 				$.flap = new Flap();
 				$.flap.number = 2;
@@ -108,7 +108,7 @@ public class Intermission2Controller extends Fsm<State, Context> {
 		CHASING {
 			@Override
 			public void onEnter(Context $) {
-				timer.setIndefinite();
+				timer.resetIndefinitely();
 				timer.start();
 			}
 
