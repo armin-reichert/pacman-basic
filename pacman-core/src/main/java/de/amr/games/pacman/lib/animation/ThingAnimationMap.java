@@ -35,7 +35,11 @@ import java.util.Map;
  */
 public class ThingAnimationMap<K, T> implements ThingAnimation<T> {
 
-	private final Map<K, SimpleThingAnimation<T>> animationMap;
+	private Map<K, SimpleThingAnimation<T>> animationMap;
+
+	public ThingAnimationMap(Map<K, SimpleThingAnimation<T>> animationMap) {
+		this.animationMap = animationMap;
+	}
 
 	public ThingAnimationMap(int capacity) {
 		animationMap = new HashMap<>(capacity);
