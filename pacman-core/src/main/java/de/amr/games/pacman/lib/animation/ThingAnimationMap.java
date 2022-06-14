@@ -58,29 +58,6 @@ public class ThingAnimationMap<K, T> implements ThingAnimation<T> {
 	}
 
 	@Override
-	public boolean isRunning() {
-		return false;
-	}
-
-	@Override
-	public void advance() {
-	}
-
-	@Override
-	public void repeat(int n) {
-	}
-
-	@Override
-	public T frame(int i) {
-		return null; // makes no sense here
-	}
-
-	@Override
-	public T frame() {
-		return null; // makes no sense here
-	}
-
-	@Override
 	public void reset() {
 		all().forEach(SimpleThingAnimation::reset);
 	}

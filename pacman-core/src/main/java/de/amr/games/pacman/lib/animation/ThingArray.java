@@ -29,17 +29,17 @@ import java.util.List;
 /**
  * @author Armin Reichert
  */
-public class ThingList<T> implements ThingAnimation<T> {
+public class ThingArray<T> implements ThingAnimation<T> {
 
 	private final T[] things;
 
 	@SafeVarargs
-	public ThingList(T... things) {
+	public ThingArray(T... things) {
 		this.things = things;
 	}
 
 	@SuppressWarnings("unchecked")
-	public ThingList(List<T> list) {
+	public ThingArray(List<T> list) {
 		this.things = (T[]) new Object[list.size()];
 		for (int i = 0; i < list.size(); ++i) {
 			things[i] = list.get(i);
@@ -53,43 +53,5 @@ public class ThingList<T> implements ThingAnimation<T> {
 	@Override
 	public T frame(int i) {
 		return things[i];
-	}
-
-	@Override
-	public T frame() {
-		return null;
-	}
-
-	@Override
-	public boolean isRunning() {
-		return true;
-	}
-
-	@Override
-	public void advance() {
-	}
-
-	@Override
-	public void repeat(int n) {
-	}
-
-	@Override
-	public void run() {
-	}
-
-	@Override
-	public void stop() {
-	}
-
-	@Override
-	public void reset() {
-	}
-
-	@Override
-	public void restart() {
-	}
-
-	@Override
-	public void ensureRunning() {
 	}
 }

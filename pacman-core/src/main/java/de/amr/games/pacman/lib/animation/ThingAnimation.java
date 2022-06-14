@@ -28,26 +28,42 @@ package de.amr.games.pacman.lib.animation;
  */
 public interface ThingAnimation<T> {
 
-	boolean isRunning();
+	default void run() {
+	}
 
-	void repeat(int n);
+	default boolean isRunning() {
+		return true;
+	}
 
-	void advance();
+	default void ensureRunning() {
+	}
 
-	void run();
+	default void advance() {
+	}
 
-	void stop();
+	default T animate() {
+		return null;
+	}
 
-	void reset();
+	default void stop() {
+	}
+
+	default void reset() {
+	}
 
 	default void restart() {
 		reset();
 		run();
 	}
 
-	void ensureRunning();
+	default void repeat(int n) {
+	}
 
-	T frame(int i);
+	default T frame(int i) {
+		return null; // makes no sense here
+	}
 
-	T frame();
+	default T frame() {
+		return null; // makes no sense here
+	}
 }

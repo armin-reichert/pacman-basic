@@ -159,6 +159,7 @@ public class SimpleThingAnimation<T> implements ThingAnimation<T> {
 	 * 
 	 * @return the frame before the animation step is executed
 	 */
+	@Override
 	public T animate() {
 		T currentThing = things[frameIndex];
 		advance();
