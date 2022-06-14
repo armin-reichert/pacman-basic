@@ -114,7 +114,7 @@ public class Intermission2Controller extends Fsm<State, Context> {
 
 			@Override
 			public void onUpdate(Context $) {
-				if (timer.atSecond(1.5)) {
+				if (timer.atSecond(2.5)) {
 					$.pacMan.setPosition(-t(2), $.upperY);
 					$.pacMan.setMoveDir(Direction.RIGHT);
 					$.pacMan.setAbsSpeed(2.0);
@@ -123,35 +123,35 @@ public class Intermission2Controller extends Fsm<State, Context> {
 					$.msPacMan.setMoveDir(Direction.RIGHT);
 					$.msPacMan.setAbsSpeed(2.0);
 					$.msPacMan.show();
-				} else if (timer.atSecond(6)) {
+				} else if (timer.atSecond(7)) {
 					$.pacMan.setPosition(t(36), $.lowerY);
 					$.pacMan.setMoveDir(Direction.LEFT);
 					$.pacMan.setAbsSpeed(2.0);
 					$.msPacMan.setPosition(t(30), $.lowerY);
 					$.msPacMan.setMoveDir(Direction.LEFT);
 					$.msPacMan.setAbsSpeed(2.0);
-				} else if (timer.atSecond(10.5)) {
+				} else if (timer.atSecond(11.5)) {
 					$.pacMan.setMoveDir(Direction.RIGHT);
 					$.pacMan.setAbsSpeed(2.0);
 					$.msPacMan.setPosition(t(-8), $.middleY);
 					$.msPacMan.setMoveDir(Direction.RIGHT);
 					$.msPacMan.setAbsSpeed(2.0);
 					$.pacMan.setPosition(t(-2), $.middleY);
-				} else if (timer.atSecond(14.5)) {
+				} else if (timer.atSecond(15.5)) {
 					$.pacMan.setPosition(t(42), $.upperY);
 					$.pacMan.setMoveDir(Direction.LEFT);
 					$.pacMan.setAbsSpeed(4.0);
 					$.msPacMan.setPosition(t(30), $.upperY);
 					$.msPacMan.setMoveDir(Direction.LEFT);
 					$.msPacMan.setAbsSpeed(4.0);
-				} else if (timer.atSecond(15.5)) {
+				} else if (timer.atSecond(16.5)) {
 					$.pacMan.setPosition(t(-2), $.lowerY);
 					$.pacMan.setMoveDir(Direction.RIGHT);
 					$.pacMan.setAbsSpeed(4.0);
 					$.msPacMan.setPosition(t(-14), $.lowerY);
 					$.msPacMan.setMoveDir(Direction.RIGHT);
 					$.msPacMan.setAbsSpeed(4.0);
-				} else if (timer.atSecond(20)) {
+				} else if (timer.atSecond(21)) {
 					controller.gameController.state().timer().expire();
 					return;
 				}
