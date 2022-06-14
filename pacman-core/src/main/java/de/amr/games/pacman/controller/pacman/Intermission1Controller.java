@@ -82,7 +82,7 @@ public class Intermission1Controller extends Fsm<State, Context> {
 
 				$.pac = new Pac("Pac-Man");
 				$.pac.setMoveDir(Direction.LEFT);
-				$.pac.setPosition(t(30), t(20));
+				$.pac.setPosition(t(29), t(20));
 				$.pac.setAbsSpeed(1.0);
 				$.pac.show();
 
@@ -90,8 +90,8 @@ public class Intermission1Controller extends Fsm<State, Context> {
 				$.blinky.state = GhostState.HUNTING_PAC;
 				$.blinky.setMoveDir(Direction.LEFT);
 				$.blinky.setWishDir(Direction.LEFT);
-				$.blinky.position = $.pac.position.plus(t(3) + 0.5, 0);
-				$.blinky.setAbsSpeed(1.05);
+				$.blinky.position = $.pac.position.plus(t(3), 0);
+				$.blinky.setAbsSpeed(1.04);
 				$.blinky.show();
 				$.blinky.animation(GhostAnimationKey.ANIM_COLOR).ifPresent(ThingAnimation::restart);
 
@@ -100,7 +100,7 @@ public class Intermission1Controller extends Fsm<State, Context> {
 
 			@Override
 			public void onUpdate(Context $) {
-				if (timer.tick() < 60) {
+				if (timer.tick() < 8) {
 					return;
 				}
 				if (timer.hasExpired()) {
@@ -118,13 +118,13 @@ public class Intermission1Controller extends Fsm<State, Context> {
 				timer.resetSeconds(7);
 				timer.start();
 				$.pac.setMoveDir(Direction.RIGHT);
-				$.pac.setPosition(-t(24), t(20));
-				$.pac.setAbsSpeed(1.0);
+				$.pac.setPosition(t(-14), t(20));
+				$.pac.setAbsSpeed(1);
 				$.blinky.state = GhostState.FRIGHTENED;
 				$.blinky.setMoveDir(Direction.RIGHT);
 				$.blinky.setWishDir(Direction.RIGHT);
-				$.blinky.setPosition(-t(1), t(20));
-				$.blinky.setAbsSpeed(0.6);
+				$.blinky.position = $.pac.position.plus(t(13), 0);
+				$.blinky.setAbsSpeed(0.75);
 			}
 
 			@Override
