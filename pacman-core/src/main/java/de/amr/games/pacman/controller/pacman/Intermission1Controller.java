@@ -31,13 +31,11 @@ import de.amr.games.pacman.controller.pacman.Intermission1Controller.Context;
 import de.amr.games.pacman.controller.pacman.Intermission1Controller.State;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
-import de.amr.games.pacman.lib.animation.ThingAnimation;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.lib.fsm.FsmState;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameSound;
 import de.amr.games.pacman.model.common.actors.Ghost;
-import de.amr.games.pacman.model.common.actors.GhostAnimationKey;
 import de.amr.games.pacman.model.common.actors.GhostState;
 import de.amr.games.pacman.model.common.actors.Pac;
 
@@ -77,7 +75,7 @@ public class Intermission1Controller extends Fsm<State, Context> {
 		CHASING_PACMAN {
 			@Override
 			public void onEnter(Context $) {
-				timer.resetSeconds(5);
+				timer.resetIndefinitely();
 				timer.start();
 
 				$.pac = new Pac("Pac-Man");
@@ -88,12 +86,10 @@ public class Intermission1Controller extends Fsm<State, Context> {
 
 				$.blinky = new Ghost(RED_GHOST, "Blinky");
 				$.blinky.state = GhostState.HUNTING_PAC;
-				$.blinky.setMoveDir(Direction.LEFT);
-				$.blinky.setWishDir(Direction.LEFT);
-				$.blinky.position = $.pac.position.plus(t(3), 0);
+				$.blinky.setBothDirs(Direction.LEFT);
+				$.blinky.setPosition($.pac.position.plus(t(3), 0));
 				$.blinky.setAbsSpeed(1.04);
 				$.blinky.show();
-				$.blinky.animation(GhostAnimationKey.ANIM_COLOR).ifPresent(ThingAnimation::restart);
 
 				$.game.sounds().ifPresent(snd -> snd.loop(GameSound.INTERMISSION_1, 2));
 			}
@@ -103,7 +99,7 @@ public class Intermission1Controller extends Fsm<State, Context> {
 				if (timer.tick() < 8) {
 					return;
 				}
-				if (timer.hasExpired()) {
+				if (timer.atSecond(5)) {
 					controller.changeState(CHASING_BLINKY);
 					return;
 				}
@@ -138,12 +134,12 @@ public class Intermission1Controller extends Fsm<State, Context> {
 			}
 		};
 
-		protected Intermission1Controller controller;
-		protected final TickTimer timer = new TickTimer("Timer-" + name());
+		Intermission1Controller controller;
+		TickTimer timer = new TickTimer("Timer-" + name());
 
 		@Override
-		public void setOwner(Fsm<? extends FsmState<Context>, Context> fsm) {
-			controller = (Intermission1Controller) fsm;
+		public void setOwner(Fsm<? extends FsmState<Context>, Context> owner) {
+			controller = (Intermission1Controller) owner;
 		}
 
 		@Override

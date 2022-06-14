@@ -58,6 +58,10 @@ public class Entity {
 		position = new V2d(x, y);
 	}
 
+	public void setPosition(V2d position) {
+		this.position = position;
+	}
+
 	/**
 	 * @return the current pixel offset
 	 */
