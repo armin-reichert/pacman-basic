@@ -134,7 +134,8 @@ public class TickTimer {
 	}
 
 	/**
-	 * Sets the timer to run forever.
+	 * Sets the timer to run for an indefinite amount of time. The timer can be forced to expire by calling
+	 * {@link #expire()}.
 	 */
 	public void resetIndefinitely() {
 		reset(INDEFINITE);

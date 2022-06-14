@@ -82,7 +82,6 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void requestGame(GameModel game) {
 			if (game.credit > 0) {
-				game.reset();
 				fsm.changeState(READY);
 			}
 		}
