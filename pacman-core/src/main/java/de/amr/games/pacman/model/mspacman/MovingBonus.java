@@ -55,8 +55,6 @@ public class MovingBonus extends Creature implements Bonus {
 	private int symbol;
 	private int value;
 	private long timer;
-	private List<?> symbolList;
-	private List<?> valueList;
 	private final SimpleThingAnimation<Integer> jumpAnimation;
 	private FixedRouteSteering steering;
 
@@ -82,16 +80,6 @@ public class MovingBonus extends Creature implements Bonus {
 	@Override
 	public Entity entity() {
 		return this;
-	}
-
-	@Override
-	public void setSymbolList(List<?> symbolList) {
-		this.symbolList = symbolList;
-	}
-
-	@Override
-	public void setValueList(List<?> valueList) {
-		this.valueList = valueList;
 	}
 
 	@Override
@@ -172,14 +160,5 @@ public class MovingBonus extends Creature implements Bonus {
 			}
 		}
 		}
-	}
-
-	@Override
-	public Object getSprite() {
-		return switch (state) {
-		case INACTIVE -> null;
-		case EATEN -> valueList.get(symbol);
-		case EDIBLE -> symbolList.get(symbol);
-		};
 	}
 }

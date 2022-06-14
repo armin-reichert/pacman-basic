@@ -26,8 +26,6 @@ package de.amr.games.pacman.model.common.actors;
 
 import static de.amr.games.pacman.lib.TickTimer.sec_to_ticks;
 
-import java.util.List;
-
 import de.amr.games.pacman.model.common.GameModel;
 
 /**
@@ -49,11 +47,5 @@ public interface Bonus {
 
 	void setEdible(int symbol, int value, long ticks);
 
-	void setSymbolList(List<?> symbolList);
-
-	void setValueList(List<?> valueList);
-
 	Entity entity();
-
-	Object getSprite();
 }

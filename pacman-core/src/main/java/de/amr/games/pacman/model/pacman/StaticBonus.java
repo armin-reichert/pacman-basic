@@ -25,8 +25,6 @@ package de.amr.games.pacman.model.pacman;
 
 import static de.amr.games.pacman.lib.Logging.log;
 
-import java.util.List;
-
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.V2d;
@@ -47,8 +45,6 @@ public class StaticBonus extends Entity implements Bonus {
 	private int symbol;
 	private int value;
 	private long timer;
-	private List<?> symbolList;
-	private List<?> valueList;
 
 	public StaticBonus(V2d position) {
 		this.position = position;
@@ -59,16 +55,6 @@ public class StaticBonus extends Entity implements Bonus {
 	@Override
 	public Entity entity() {
 		return this;
-	}
-
-	@Override
-	public void setSymbolList(List<?> symbolList) {
-		this.symbolList = symbolList;
-	}
-
-	@Override
-	public void setValueList(List<?> valueList) {
-		this.valueList = valueList;
 	}
 
 	@Override
@@ -135,14 +121,5 @@ public class StaticBonus extends Entity implements Bonus {
 			}
 		}
 		}
-	}
-
-	@Override
-	public Object getSprite() {
-		return switch (state) {
-		case INACTIVE -> null;
-		case EATEN -> valueList.get(symbol);
-		case EDIBLE -> symbolList.get(symbol);
-		};
 	}
 }
