@@ -74,7 +74,10 @@ public enum GameState implements FsmState<GameModel> {
 
 		@Override
 		public void addCredit(GameModel game) {
-			game.sounds().ifPresent(snd -> snd.play(GameSound.CREDIT));
+			game.sounds().ifPresent(snd -> {
+				snd.setSilent(false);
+				snd.play(GameSound.CREDIT);
+			});
 			game.increaseCredit();
 			changeState(CREDIT);
 		}
@@ -200,6 +203,18 @@ public enum GameState implements FsmState<GameModel> {
 					snd.stop(GameSound.GHOST_RETURNING);
 				}
 			});
+		}
+
+		@Override
+		public void addCredit(GameModel game) {
+			if (!game.playing) {
+				game.sounds().ifPresent(snd -> {
+					snd.setSilent(false);
+					snd.play(GameSound.CREDIT);
+				});
+				game.increaseCredit();
+				changeState(CREDIT);
+			}
 		}
 
 		@Override
