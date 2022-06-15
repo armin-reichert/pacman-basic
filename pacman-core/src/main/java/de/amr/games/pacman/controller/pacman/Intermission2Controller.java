@@ -47,13 +47,11 @@ import de.amr.games.pacman.model.common.actors.Pac;
  */
 public class Intermission2Controller extends Fsm<State, Context> {
 
-	public final GameController gameController;
-	public final Context context = new Context();
+	public final Context context;
 
 	public Intermission2Controller(GameController gameController) {
 		super(State.values());
-		this.gameController = gameController;
-		context.game = gameController.game();
+		context = new Context(gameController);
 	}
 
 	@Override
@@ -65,15 +63,22 @@ public class Intermission2Controller extends Fsm<State, Context> {
 		restartInInitialState(State.CHASING);
 	}
 
-	public int nailDistance() {
-		return (int) (context.nail.position.x - context.blinky.position.x);
-	}
-
 	public static class Context {
 		public GameModel game;
 		public Ghost blinky;
 		public Pac pac;
 		public Entity nail;
+
+		public int nailDistance() {
+			return (int) (nail.position.x - blinky.position.x);
+		}
+
+		public final GameController gameController;
+
+		public Context(GameController gameController) {
+			this.gameController = gameController;
+			this.game = gameController.game();
+		}
 	}
 
 	public enum State implements FsmState<Intermission2Controller.Context> {
@@ -107,8 +112,8 @@ public class Intermission2Controller extends Fsm<State, Context> {
 
 			@Override
 			public void onUpdate(Context $) {
-				if (controller.nailDistance() == 0) {
-					controller.changeState(STRETCHED);
+				if ($.nailDistance() == 0) {
+					changeState(STRETCHED);
 					return;
 				}
 				$.pac.move();
@@ -119,11 +124,11 @@ public class Intermission2Controller extends Fsm<State, Context> {
 		STRETCHED {
 			@Override
 			public void onUpdate(Context $) {
-				int stretching = controller.nailDistance() / 4;
+				int stretching = $.nailDistance() / 4;
 				if (stretching == 3) {
 					$.blinky.setAbsSpeed(0);
 					$.blinky.setMoveDir(Direction.UP);
-					controller.changeState(State.STUCK);
+					changeState(State.STUCK);
 					return;
 				}
 				$.blinky.setAbsSpeed(0.3 - 0.1 * stretching);
@@ -138,7 +143,7 @@ public class Intermission2Controller extends Fsm<State, Context> {
 				if (timer.atSecond(2)) {
 					$.blinky.setMoveDir(Direction.RIGHT);
 				} else if (timer.atSecond(6)) {
-					controller.gameController.state().timer().expire();
+					$.gameController.state().timer().expire();
 					return;
 				}
 				$.blinky.move();
@@ -146,12 +151,17 @@ public class Intermission2Controller extends Fsm<State, Context> {
 			}
 		};
 
-		protected Intermission2Controller controller;
+		protected Fsm<FsmState<Context>, Context> controller;
 		protected final TickTimer timer = new TickTimer("Timer-" + name());
 
 		@Override
-		public void setOwner(Fsm<? extends FsmState<Context>, Context> fsm) {
-			controller = (Intermission2Controller) fsm;
+		public void setOwner(Fsm<FsmState<Context>, Context> fsm) {
+			controller = fsm;
+		}
+
+		@Override
+		public Fsm<FsmState<Context>, Context> getOwner() {
+			return controller;
 		}
 
 		@Override

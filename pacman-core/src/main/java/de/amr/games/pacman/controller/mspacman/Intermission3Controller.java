@@ -53,13 +53,11 @@ import de.amr.games.pacman.model.mspacman.Flap;
  */
 public class Intermission3Controller extends Fsm<State, Context> {
 
-	public final GameController gameController;
 	public final Context context;
 
 	public Intermission3Controller(GameController gameController) {
 		super(State.values());
-		this.gameController = gameController;
-		this.context = new Context(gameController.game());
+		this.context = new Context(gameController);
 	}
 
 	@Override
@@ -68,6 +66,7 @@ public class Intermission3Controller extends Fsm<State, Context> {
 	}
 
 	public static class Context {
+		public final GameController gameController;
 		public final GameModel game;
 		public final int groundY = t(24);
 		public Flap flap;
@@ -78,8 +77,9 @@ public class Intermission3Controller extends Fsm<State, Context> {
 		public boolean bagOpen;
 		public int numBagBounces;
 
-		public Context(GameModel game) {
-			this.game = game;
+		public Context(GameController gameController) {
+			this.gameController = gameController;
+			this.game = gameController.game();
 		}
 	}
 
@@ -112,7 +112,7 @@ public class Intermission3Controller extends Fsm<State, Context> {
 				} else if (timer.atSecond(2)) {
 					$.flap.hide();
 				} else if (timer.atSecond(3)) {
-					controller.changeState(State.ACTION);
+					changeState(State.ACTION);
 				}
 			}
 		},
@@ -165,7 +165,7 @@ public class Intermission3Controller extends Fsm<State, Context> {
 					} else {
 						$.bagOpen = true;
 						$.bag.velocity = V2d.NULL;
-						controller.changeState(State.DONE);
+						changeState(State.DONE);
 					}
 				}
 			}
@@ -182,17 +182,22 @@ public class Intermission3Controller extends Fsm<State, Context> {
 			public void onUpdate(Context $) {
 				$.stork.move();
 				if (timer.hasExpired()) {
-					controller.gameController.state().timer().expire();
+					$.gameController.state().timer().expire();
 				}
 			}
 		};
 
-		protected Intermission3Controller controller;
+		protected Fsm<FsmState<Context>, Context> controller;
 		protected final TickTimer timer = new TickTimer("Timer-" + name());
 
 		@Override
-		public void setOwner(Fsm<? extends FsmState<Context>, Context> fsm) {
-			controller = (Intermission3Controller) fsm;
+		public void setOwner(Fsm<FsmState<Context>, Context> fsm) {
+			controller = fsm;
+		}
+
+		@Override
+		public Fsm<FsmState<Context>, Context> getOwner() {
+			return controller;
 		}
 
 		@Override

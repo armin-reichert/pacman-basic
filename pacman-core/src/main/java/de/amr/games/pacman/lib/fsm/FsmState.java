@@ -38,7 +38,12 @@ public interface FsmState<CONTEXT> {
 	 * 
 	 * @param fsm the FSM owning this state
 	 */
-	void setOwner(Fsm<? extends FsmState<CONTEXT>, CONTEXT> fsm);
+	void setOwner(Fsm<FsmState<CONTEXT>, CONTEXT> fsm);
+
+	/**
+	 * @return the machine owning this state.
+	 */
+	Fsm<FsmState<CONTEXT>, CONTEXT> getOwner();
 
 	/**
 	 * The hook method that gets executed when the state is entered.
@@ -67,4 +72,8 @@ public interface FsmState<CONTEXT> {
 	 * @return the timer of this state
 	 */
 	TickTimer timer();
+
+	default void changeState(FsmState<CONTEXT> nextState) {
+		getOwner().changeState(nextState);
+	}
 }

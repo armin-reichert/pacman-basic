@@ -47,13 +47,11 @@ import de.amr.games.pacman.model.common.actors.Pac;
  */
 public class Intermission3Controller extends Fsm<State, Context> {
 
-	public final GameController gameController;
-	public final Context context = new Context();
+	public final Context context;
 
 	public Intermission3Controller(GameController gameController) {
 		super(State.values());
-		this.gameController = gameController;
-		context.game = gameController.game();
+		context = new Context(gameController);
 	}
 
 	@Override
@@ -69,6 +67,13 @@ public class Intermission3Controller extends Fsm<State, Context> {
 		public GameModel game;
 		public Ghost blinky;
 		public Pac pac;
+
+		public final GameController gameController;
+
+		public Context(GameController gameController) {
+			this.gameController = gameController;
+			this.game = gameController.game();
+		}
 	}
 
 	public enum State implements FsmState<Context> {
@@ -102,7 +107,7 @@ public class Intermission3Controller extends Fsm<State, Context> {
 					$.pac.setAbsSpeed(0);
 					$.blinky.setMoveDir(Direction.RIGHT);
 					$.blinky.setWishDir(Direction.RIGHT);
-					controller.changeState(RETURNING);
+					changeState(RETURNING);
 					return;
 				}
 				$.pac.move();
@@ -114,7 +119,7 @@ public class Intermission3Controller extends Fsm<State, Context> {
 			@Override
 			public void onUpdate(Context $) {
 				if ($.blinky.position.x > t(53)) {
-					controller.gameController.state().timer().expire();
+					$.gameController.state().timer().expire();
 					return;
 				}
 				$.pac.move();
@@ -122,12 +127,17 @@ public class Intermission3Controller extends Fsm<State, Context> {
 			}
 		};
 
-		protected Intermission3Controller controller;
+		protected Fsm<FsmState<Context>, Context> controller;
 		protected final TickTimer timer = new TickTimer("Timer-" + name());
 
 		@Override
-		public void setOwner(Fsm<? extends FsmState<Context>, Context> fsm) {
-			controller = (Intermission3Controller) fsm;
+		public void setOwner(Fsm<FsmState<Context>, Context> fsm) {
+			controller = fsm;
+		}
+
+		@Override
+		public Fsm<FsmState<Context>, Context> getOwner() {
+			return controller;
 		}
 
 		@Override

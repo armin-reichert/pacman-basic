@@ -47,13 +47,11 @@ import de.amr.games.pacman.model.mspacman.Flap;
  */
 public class Intermission2Controller extends Fsm<State, Context> {
 
-	public final GameController gameController;
 	public final Context context;
 
 	public Intermission2Controller(GameController gameController) {
 		super(State.values());
-		this.gameController = gameController;
-		this.context = new Context(gameController.game());
+		this.context = new Context(gameController);
 	}
 
 	@Override
@@ -62,13 +60,15 @@ public class Intermission2Controller extends Fsm<State, Context> {
 	}
 
 	public static class Context {
+		public final GameController gameController;
 		public final GameModel game;
 		public final int upperY = t(12), middleY = t(18), lowerY = t(24);
 		public Flap flap;
 		public Pac pacMan, msPacMan;
 
-		public Context(GameModel game) {
-			this.game = game;
+		public Context(GameController gameController) {
+			this.gameController = gameController;
+			this.game = gameController.game();
 		}
 	}
 
@@ -100,7 +100,7 @@ public class Intermission2Controller extends Fsm<State, Context> {
 				} else if (timer.atSecond(2)) {
 					$.flap.hide();
 				} else if (timer.atSecond(3)) {
-					controller.changeState(State.CHASING);
+					changeState(State.CHASING);
 				}
 			}
 		},
@@ -152,7 +152,7 @@ public class Intermission2Controller extends Fsm<State, Context> {
 					$.msPacMan.setMoveDir(Direction.RIGHT);
 					$.msPacMan.setAbsSpeed(4.0);
 				} else if (timer.atSecond(21)) {
-					controller.gameController.state().timer().expire();
+					$.gameController.state().timer().expire();
 					return;
 				}
 				$.pacMan.move();
@@ -160,12 +160,17 @@ public class Intermission2Controller extends Fsm<State, Context> {
 			}
 		};
 
-		protected Intermission2Controller controller;
+		protected Fsm<FsmState<Context>, Context> controller;
 		protected final TickTimer timer = new TickTimer("Timer-" + name());
 
 		@Override
-		public void setOwner(Fsm<? extends FsmState<Context>, Intermission2Controller.Context> fsm) {
-			controller = (Intermission2Controller) fsm;
+		public void setOwner(Fsm<FsmState<Context>, Context> fsm) {
+			controller = fsm;
+		}
+
+		@Override
+		public Fsm<FsmState<Context>, Context> getOwner() {
+			return controller;
 		}
 
 		@Override

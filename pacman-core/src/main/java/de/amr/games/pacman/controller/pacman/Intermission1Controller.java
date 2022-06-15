@@ -34,7 +34,6 @@ import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.animation.ThingAnimation;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.lib.fsm.FsmState;
-import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameSound;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.GhostAnimationKey;
@@ -48,13 +47,11 @@ import de.amr.games.pacman.model.common.actors.Pac;
  */
 public class Intermission1Controller extends Fsm<State, Context> {
 
-	public final GameController gameController;
-	public final Context context = new Context();
+	public final Context context;
 
 	public Intermission1Controller(GameController gameController) {
 		super(State.values());
-		this.gameController = gameController;
-		context.game = gameController.game();
+		context = new Context(gameController);
 	}
 
 	@Override
@@ -67,9 +64,14 @@ public class Intermission1Controller extends Fsm<State, Context> {
 	}
 
 	public static class Context {
-		public GameModel game;
 		public Ghost blinky;
 		public Pac pac;
+
+		public final GameController gameController;
+
+		public Context(GameController gameController) {
+			this.gameController = gameController;
+		}
 	}
 
 	public enum State implements FsmState<Context> {
@@ -93,7 +95,7 @@ public class Intermission1Controller extends Fsm<State, Context> {
 				$.blinky.setAbsSpeed(1.04);
 				$.blinky.show();
 
-				$.game.sounds().ifPresent(snd -> snd.loop(GameSound.INTERMISSION_1, 2));
+				$.gameController.game().sounds().ifPresent(snd -> snd.loop(GameSound.INTERMISSION_1, 2));
 			}
 
 			@Override
@@ -102,7 +104,7 @@ public class Intermission1Controller extends Fsm<State, Context> {
 					return;
 				}
 				if (timer.atSecond(5)) {
-					controller.changeState(CHASING_BLINKY);
+					changeState(CHASING_BLINKY);
 					return;
 				}
 				$.pac.move();
@@ -130,7 +132,7 @@ public class Intermission1Controller extends Fsm<State, Context> {
 			@Override
 			public void onUpdate(Context $) {
 				if (timer.hasExpired()) {
-					controller.gameController.state().timer().expire();
+					$.gameController.state().timer().expire();
 					return;
 				}
 				$.pac.move();
@@ -138,12 +140,17 @@ public class Intermission1Controller extends Fsm<State, Context> {
 			}
 		};
 
-		Intermission1Controller controller;
+		Fsm<FsmState<Context>, Context> controller;
 		TickTimer timer = new TickTimer("Timer-" + name());
 
 		@Override
-		public void setOwner(Fsm<? extends FsmState<Context>, Context> owner) {
-			controller = (Intermission1Controller) owner;
+		public void setOwner(Fsm<FsmState<Context>, Context> owner) {
+			controller = owner;
+		}
+
+		@Override
+		public Fsm<FsmState<Context>, Context> getOwner() {
+			return controller;
 		}
 
 		@Override

@@ -43,7 +43,6 @@ import de.amr.games.pacman.lib.animation.SimpleThingAnimation;
 import de.amr.games.pacman.lib.animation.ThingAnimationCollection;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.lib.fsm.FsmState;
-import de.amr.games.pacman.model.common.GameScores;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.GhostState;
 import de.amr.games.pacman.model.common.actors.Pac;
@@ -58,12 +57,11 @@ import de.amr.games.pacman.model.common.actors.Pac;
  */
 public class IntroController extends Fsm<State, Context> {
 
-	public final GameController gameController;
-	public final Context context = new Context();
+	public final Context context;
 
 	public IntroController(GameController gameController) {
 		super(State.values());
-		this.gameController = gameController;
+		context = new Context(gameController);
 		logging = false;
 	}
 
@@ -87,6 +85,12 @@ public class IntroController extends Fsm<State, Context> {
 		public Ghost[] ghosts;
 		public int ghostIndex;
 		public long ghostKilledTime;
+
+		public final GameController gameController;
+
+		public Context(GameController gameController) {
+			this.gameController = gameController;
+		}
 	}
 
 	public enum State implements FsmState<Context> {
@@ -94,8 +98,8 @@ public class IntroController extends Fsm<State, Context> {
 		START {
 			@Override
 			public void onEnter(Context $) {
-				scores().gameScore.showContent = false;
-				scores().highScore.showContent = true;
+				$.gameController.game().scores.gameScore.showContent = false;
+				$.gameController.game().scores.highScore.showContent = true;
 				$.ghostIndex = 0;
 				Arrays.fill($.pictureVisible, false);
 				Arrays.fill($.nicknameVisible, false);
@@ -112,14 +116,14 @@ public class IntroController extends Fsm<State, Context> {
 			@Override
 			public void onUpdate(Context $) {
 				if (timer.tick() == 1) {
-					scores().gameScore.visible = true;
-					scores().highScore.visible = true;
+					$.gameController.game().scores.gameScore.visible = true;
+					$.gameController.game().scores.highScore.visible = true;
 				} else if (timer.tick() == 2) {
 					$.creditVisible = true;
 				} else if (timer.tick() == 3) {
 					$.titleVisible = true;
 				} else if (timer.atSecond(1)) {
-					controller.changeState(State.PRESENTING_GHOSTS);
+					changeState(State.PRESENTING_GHOSTS);
 				}
 			}
 		},
@@ -138,7 +142,7 @@ public class IntroController extends Fsm<State, Context> {
 						timer.resetIndefinitely(); // resets timer to 0 too!
 					}
 				} else if (timer.atSecond(2.5)) {
-					controller.changeState(State.SHOWING_POINTS);
+					changeState(State.SHOWING_POINTS);
 				}
 			}
 		},
@@ -152,7 +156,7 @@ public class IntroController extends Fsm<State, Context> {
 			@Override
 			public void onUpdate(Context $) {
 				if (timer.atSecond(1)) {
-					controller.changeState(State.CHASING_PAC);
+					changeState(State.CHASING_PAC);
 				}
 			}
 		},
@@ -181,7 +185,7 @@ public class IntroController extends Fsm<State, Context> {
 			public void onUpdate(Context $) {
 				// Pac-Man reaches the energizer
 				if ($.pacMan.position.x <= t($.left)) {
-					controller.changeState(State.CHASING_GHOSTS);
+					changeState(State.CHASING_GHOSTS);
 				}
 				// ghosts already reverse direction before Pac-man eats the energizer and turns right!
 				else if ($.pacMan.position.x <= t($.left) + 4) {
@@ -224,7 +228,7 @@ public class IntroController extends Fsm<State, Context> {
 				// When the last ghost has been killed, leave state
 				if (Stream.of($.ghosts).allMatch(ghost -> ghost.is(GhostState.DEAD))) {
 					$.pacMan.hide();
-					controller.changeState(READY_TO_PLAY);
+					changeState(READY_TO_PLAY);
 					return;
 				}
 
@@ -268,33 +272,34 @@ public class IntroController extends Fsm<State, Context> {
 			public void onUpdate(Context $) {
 				if (timer.atSecond(1)) {
 					$.ghosts[3].hide();
-					if (controller.gameController.game().credit() == 0) {
-						controller.gameController.changeState(GameState.READY);
+					if ($.gameController.game().credit() == 0) {
+						$.gameController.changeState(GameState.READY);
 						return;
 					}
 				}
 				if (timer.atSecond(5)) {
-					controller.gameController.restartIntro();
+					$.gameController.restartIntro();
 					return;
 				}
 			}
 		};
 
-		protected IntroController controller;
+		protected Fsm<FsmState<Context>, Context> controller;
 		protected final TickTimer timer = new TickTimer("Timer-" + name());
 
 		@Override
-		public void setOwner(Fsm<? extends FsmState<Context>, Context> fsm) {
-			controller = (IntroController) fsm;
+		public void setOwner(Fsm<FsmState<Context>, Context> fsm) {
+			controller = fsm;
+		}
+
+		@Override
+		public Fsm<FsmState<Context>, Context> getOwner() {
+			return controller;
 		}
 
 		@Override
 		public TickTimer timer() {
 			return timer;
-		}
-
-		protected GameScores scores() {
-			return controller.gameController.game().scores;
 		}
 	}
 }

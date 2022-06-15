@@ -60,7 +60,7 @@ public class Intermission1Controller extends Fsm<State, Context> {
 	public Intermission1Controller(GameController gameController) {
 		super(State.values());
 		this.gameController = gameController;
-		this.context = new Context(gameController.game());
+		this.context = new Context(gameController);
 	}
 
 	@Override
@@ -80,8 +80,11 @@ public class Intermission1Controller extends Fsm<State, Context> {
 		public Ghost pinky, inky;
 		public Entity heart;
 
-		public Context(GameModel game) {
-			this.game = game;
+		public final GameController gameController;
+
+		public Context(GameController gameController) {
+			this.gameController = gameController;
+			this.game = gameController.game();
 		}
 	}
 
@@ -132,7 +135,7 @@ public class Intermission1Controller extends Fsm<State, Context> {
 					}
 				}
 				if (timer.hasExpired()) {
-					controller.changeState(State.CHASED_BY_GHOSTS);
+					changeState(State.CHASED_BY_GHOSTS);
 				}
 			}
 		},
@@ -150,7 +153,7 @@ public class Intermission1Controller extends Fsm<State, Context> {
 			@Override
 			public void onUpdate(Context $) {
 				if ($.inky.position.x > t(30)) {
-					controller.changeState(State.COMING_TOGETHER);
+					changeState(State.COMING_TOGETHER);
 					return;
 				}
 				$.inky.move();
@@ -182,7 +185,7 @@ public class Intermission1Controller extends Fsm<State, Context> {
 			public void onUpdate(Context $) {
 				// Pac-Man and Ms. Pac-Man reach end position?
 				if ($.pacMan.moveDir() == Direction.UP && $.pacMan.position.y < $.upperY) {
-					controller.changeState(State.IN_HEAVEN);
+					changeState(State.IN_HEAVEN);
 					return;
 				}
 				// Pac-Man and Ms. Pac-Man meet?
@@ -244,17 +247,22 @@ public class Intermission1Controller extends Fsm<State, Context> {
 			@Override
 			public void onUpdate(Context $) {
 				if (timer.hasExpired()) {
-					controller.gameController.state().timer().expire();
+					$.gameController.state().timer().expire();
 				}
 			}
 		};
 
-		protected Intermission1Controller controller;
+		protected Fsm<FsmState<Context>, Context> controller;
 		protected final TickTimer timer = new TickTimer("Timer-" + name());
 
 		@Override
-		public void setOwner(Fsm<? extends FsmState<Context>, Context> fsm) {
-			controller = (Intermission1Controller) fsm;
+		public void setOwner(Fsm<FsmState<Context>, Context> fsm) {
+			controller = fsm;
+		}
+
+		@Override
+		public Fsm<FsmState<Context>, Context> getOwner() {
+			return controller;
 		}
 
 		@Override

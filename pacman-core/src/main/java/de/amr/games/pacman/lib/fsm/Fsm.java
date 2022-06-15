@@ -64,10 +64,11 @@ public abstract class Fsm<STATE extends FsmState<CONTEXT>, CONTEXT> {
 	private STATE prevState;
 	private final List<BiConsumer<STATE, STATE>> stateChangeListeners = new ArrayList<>();
 
+	@SuppressWarnings("unchecked")
 	public Fsm(STATE[] states) {
 		this.states = states;
 		for (var state : states) {
-			state.setOwner(this);
+			state.setOwner((Fsm<FsmState<CONTEXT>, CONTEXT>) this);
 		}
 		name = getClass().getSimpleName();
 	}
