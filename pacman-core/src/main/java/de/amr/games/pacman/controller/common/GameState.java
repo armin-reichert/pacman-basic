@@ -91,7 +91,6 @@ public enum GameState implements FsmState<GameModel> {
 
 		@Override
 		public void startIntermissionTest(GameModel game) {
-			game.intermissionTestNumber = 1;
 			changeState(INTERMISSION_TEST);
 		}
 	},
