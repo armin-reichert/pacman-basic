@@ -50,9 +50,9 @@ import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.lib.animation.SimpleThingAnimation;
 import de.amr.games.pacman.lib.animation.ThingAnimation;
 import de.amr.games.pacman.lib.animation.ThingAnimationCollection;
-import de.amr.games.pacman.lib.animation.SimpleThingAnimation;
 import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.world.GhostHouse;
@@ -157,7 +157,8 @@ public class Ghost extends Creature {
 			boolean houseLeft = leaveHouse(world.ghostHouse());
 			if (houseLeft) {
 				state = HUNTING_PAC;
-				// TODO Inky behaves differently:
+				animations().ifPresent(anim -> anim.select(ANIM_COLOR));
+				// TODO Inky behaves differently. Why?
 				setBothDirs(LEFT);
 				GameEvents.publish(new GameEvent(game, GameEventType.GHOST_COMPLETES_LEAVING_HOUSE, this, tile()));
 			}
@@ -221,6 +222,13 @@ public class Ghost extends Creature {
 			if (revivalTileReached) {
 				// TODO is there some revival time > 0?
 				state = LEAVING_HOUSE;
+				animations().ifPresent(anim -> {
+					if (game.pac.hasPower()) {
+						anim.select(ANIM_BLUE);
+					} else {
+						anim.select(ANIM_COLOR);
+					}
+				});
 				setBothDirs(moveDir.opposite());
 				GameEvents.publish(new GameEvent(game, GameEventType.GHOST_STARTS_LEAVING_HOUSE, this, tile()));
 			}
@@ -388,39 +396,18 @@ public class Ghost extends Creature {
 	}
 
 	public void updateAnimations(GameModel game) {
-		long powerTicksRemaining = game.pac.powerTimer.remaining();
-		boolean startFlashing = powerTicksRemaining == Ghost.FLASHING_TIME;
-		boolean stopFlashing = powerTicksRemaining == 1; // TODO check why == 0 does not work
-		switch (state) {
-		case DEAD -> {
-		}
-		case FRIGHTENED, LOCKED -> {
-			if (startFlashing) {
-				startFlashing(game.level.numFlashes, FLASHING_TIME);
-			} else if (stopFlashing) {
-				ensureFlashingStopped();
-			}
-		}
-		case LEAVING_HOUSE -> {
-			animations().ifPresent(anim -> anim.select(ANIM_COLOR));
-		}
-		default -> {
-		}
-		}
-	}
-
-	private void startFlashing(int numFlashes, long duration) {
-		animations().ifPresent(anim -> anim.select(ANIM_FLASHING));
-		var flashing = (SimpleThingAnimation<?>) animations.selectedAnimation();
-		long frameDuration = duration / (numFlashes * flashing.numFrames());
-		flashing.frameDuration(frameDuration);
-		flashing.repeat(numFlashes);
-		flashing.restart();
-	}
-
-	private void ensureFlashingStopped() {
 		animations().ifPresent(anim -> {
-			if (anim.selectedKey() == ANIM_FLASHING) {
+			long powerTicksLeft = game.pac.powerTimer.remaining();
+			boolean startFlashing = powerTicksLeft == Ghost.FLASHING_TIME;
+			boolean stopFlashing = powerTicksLeft == 1; // TODO check why == 0 does not work
+			if (startFlashing && anim.selectedKey() == ANIM_BLUE) {
+				anim.select(ANIM_FLASHING);
+				SimpleThingAnimation<?> flashing = (SimpleThingAnimation<?>) anim.selectedAnimation();
+				long frameDuration = FLASHING_TIME / (game.level.numFlashes * flashing.numFrames());
+				flashing.frameDuration(frameDuration);
+				flashing.repeat(game.level.numFlashes);
+				flashing.restart();
+			} else if (stopFlashing && anim.selectedKey() == ANIM_FLASHING) {
 				anim.selectedAnimation().stop();
 				anim.select(ANIM_COLOR);
 			}

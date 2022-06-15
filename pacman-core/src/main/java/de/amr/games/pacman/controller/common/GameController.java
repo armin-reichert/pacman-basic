@@ -110,7 +110,7 @@ public class GameController {
 		return game(currentGameVariant);
 	}
 
-	public void setPacController(Consumer<Creature> pacController) {
+	public void setPacSteering(Consumer<Creature> pacController) {
 		this.pacController = Objects.requireNonNull(pacController);
 	}
 
