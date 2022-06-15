@@ -55,17 +55,17 @@ import de.amr.games.pacman.model.mspacman.Flap;
 public class Intermission1Controller extends Fsm<State, Context> {
 
 	public final GameController gameController;
-	public final Context context;
+	public final Context $;
 
 	public Intermission1Controller(GameController gameController) {
 		super(State.values());
 		this.gameController = gameController;
-		this.context = new Context(gameController);
+		this.$ = new Context(gameController);
 	}
 
 	@Override
 	public Context context() {
-		return context;
+		return $;
 	}
 
 	public static class Context {

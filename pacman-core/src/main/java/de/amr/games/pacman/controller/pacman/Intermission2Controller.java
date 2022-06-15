@@ -47,16 +47,16 @@ import de.amr.games.pacman.model.common.actors.Pac;
  */
 public class Intermission2Controller extends Fsm<State, Context> {
 
-	public final Context context;
+	public final Context $;
 
 	public Intermission2Controller(GameController gameController) {
 		super(State.values());
-		context = new Context(gameController);
+		$ = new Context(gameController);
 	}
 
 	@Override
 	public Context context() {
-		return context;
+		return $;
 	}
 
 	public void init() {

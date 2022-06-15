@@ -57,17 +57,17 @@ import de.amr.games.pacman.model.common.actors.Pac;
  */
 public class IntroController extends Fsm<State, Context> {
 
-	public final Context context;
+	public final Context $;
 
 	public IntroController(GameController gameController) {
 		super(State.values());
-		context = new Context(gameController);
+		$ = new Context(gameController);
 		logging = false;
 	}
 
 	@Override
 	public Context context() {
-		return context;
+		return $;
 	}
 
 	public static class Context {
