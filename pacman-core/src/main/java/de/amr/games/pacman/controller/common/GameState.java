@@ -159,7 +159,7 @@ public enum GameState implements FsmState<GameModel> {
 	HUNTING {
 		@Override
 		public void onEnter(GameModel game) {
-			game.pac.animation("ANIM_MUNCHING").ifPresent(ThingAnimation::ensureRunning);
+			game.pac.animation("pac-anim-munching").ifPresent(ThingAnimation::ensureRunning);
 			game.ghosts().forEach(ghost -> ghost.animations().ifPresent(ThingAnimationCollection::ensureRunning));
 			game.energizerPulse.restart();
 			game.sounds().ifPresent(snd -> snd.ensureSirenStarted(game.huntingTimer.phase() / 2));
@@ -334,7 +334,7 @@ public enum GameState implements FsmState<GameModel> {
 			timer.start();
 			game.pac.setAbsSpeed(0);
 			game.pac.animations().ifPresent(anim -> {
-				anim.select("ANIM_DYING");
+				anim.select("pac-anim-dying");
 				anim.selectedAnimation().reset();
 			});
 			game.bonus().setInactive();
@@ -347,7 +347,7 @@ public enum GameState implements FsmState<GameModel> {
 			if (timer.atSecond(1)) {
 				game.ghosts().forEach(Ghost::hide);
 			} else if (timer.atSecond(2)) {
-				game.pac.animation("ANIM_DYING").ifPresent(ThingAnimation::restart);
+				game.pac.animation("pac-anim-dying").ifPresent(ThingAnimation::restart);
 				game.sounds().ifPresent(snd -> snd.play(GameSound.PACMAN_DEATH));
 			} else if (timer.atSecond(4)) {
 				if (--game.lives == 0) {

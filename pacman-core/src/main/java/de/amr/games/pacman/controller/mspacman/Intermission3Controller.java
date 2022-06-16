@@ -125,12 +125,12 @@ public class Intermission3Controller extends Fsm<State, Context> {
 				$.pacMan.setMoveDir(Direction.RIGHT);
 				$.pacMan.setPosition(t(3), $.groundY - 4);
 				$.pacMan.show();
-				$.pacMan.animation("ANIM_MUNCHING").ifPresent(ThingAnimation::reset);
+				$.pacMan.animation("pac-anim-munching").ifPresent(ThingAnimation::reset);
 
 				$.msPacMan.setMoveDir(Direction.RIGHT);
 				$.msPacMan.setPosition(t(5), $.groundY - 4);
 				$.msPacMan.show();
-				$.msPacMan.animation("ANIM_MUNCHING").ifPresent(ThingAnimation::reset);
+				$.msPacMan.animation("pac-anim-munching").ifPresent(ThingAnimation::reset);
 
 				$.stork.setPosition(t(30), t(12));
 				$.stork.setVelocity(-0.8, 0);

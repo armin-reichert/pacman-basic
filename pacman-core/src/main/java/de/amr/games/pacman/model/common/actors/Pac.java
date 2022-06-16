@@ -91,7 +91,7 @@ public class Pac extends Creature {
 	}
 
 	private void updateMunchAnimation() {
-		animation("ANIM_MUNCHING").ifPresent(munching -> {
+		animation("pac-anim-munching").ifPresent(munching -> {
 			if (stuck) {
 				munching.stop();
 			} else {
