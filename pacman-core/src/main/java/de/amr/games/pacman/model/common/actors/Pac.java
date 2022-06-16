@@ -26,8 +26,8 @@ package de.amr.games.pacman.model.common.actors;
 import java.util.Optional;
 
 import de.amr.games.pacman.lib.TickTimer;
-import de.amr.games.pacman.lib.animation.ThingAnimation;
 import de.amr.games.pacman.lib.animation.Animations;
+import de.amr.games.pacman.lib.animation.ThingAnimation;
 import de.amr.games.pacman.model.common.GameLevel;
 
 /**
@@ -76,9 +76,9 @@ public class Pac extends Creature {
 
 	// Animations
 
-	private Animations<Pac, String> animations;
+	private Animations<Pac> animations;
 
-	public Optional<Animations<Pac, String>> animations() {
+	public Optional<Animations<Pac>> animations() {
 		return Optional.ofNullable(animations);
 	}
 
@@ -86,7 +86,7 @@ public class Pac extends Creature {
 		return animations().map(anim -> anim.byName(key));
 	}
 
-	public void setAnimations(Animations<Pac, String> animations) {
+	public void setAnimations(Animations<Pac> animations) {
 		this.animations = animations;
 	}
 

@@ -31,14 +31,13 @@ import java.util.stream.Stream;
  * @author Armin Reichert
  * 
  * @param <E> entity type for which these animations are defined
- * @param <K> key type
  */
-public abstract class Animations<E, K> {
+public abstract class Animations<E> {
 
-	protected Map<K, ThingAnimation<?>> animationsByName;
-	protected K selected;
+	protected Map<String, ThingAnimation<?>> animationsByName;
+	protected String selected;
 
-	public final ThingAnimation<?> byName(K name) {
+	public final ThingAnimation<?> byName(String name) {
 		return animationsByName.get(name);
 	}
 
@@ -46,17 +45,17 @@ public abstract class Animations<E, K> {
 		return animationsByName.values().stream();
 	}
 
-	public void put(K name, ThingAnimation<?> animation) {
+	public void put(String name, ThingAnimation<?> animation) {
 		animationsByName.put(name, animation);
 	}
 
 	public abstract Object current(E entity);
 
-	public void select(K name) {
+	public void select(String name) {
 		selected = name;
 	}
 
-	public K selected() {
+	public String selected() {
 		return selected;
 	}
 

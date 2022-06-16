@@ -46,9 +46,9 @@ import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.lib.animation.Animations;
 import de.amr.games.pacman.lib.animation.SimpleThingAnimation;
 import de.amr.games.pacman.lib.animation.ThingAnimation;
-import de.amr.games.pacman.lib.animation.Animations;
 import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.world.GhostHouse;
@@ -369,13 +369,13 @@ public class Ghost extends Creature {
 
 	public static final long FLASHING_TIME = TickTimer.sec_to_ticks(2); // TODO not sure
 
-	private Animations<Ghost, String> animations;
+	private Animations<Ghost> animations;
 
-	public void setAnimations(Animations<Ghost, String> animations) {
+	public void setAnimations(Animations<Ghost> animations) {
 		this.animations = animations;
 	}
 
-	public Optional<Animations<Ghost, String>> animations() {
+	public Optional<Animations<Ghost>> animations() {
 		return Optional.ofNullable(animations);
 	}
 
