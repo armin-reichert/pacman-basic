@@ -229,10 +229,10 @@ public class Intermission1Controller extends Fsm<State, Context> {
 				timer.start();
 				$.pacMan.setAbsSpeed(0);
 				$.pacMan.setMoveDir(Direction.LEFT);
-				$.pacMan.animation("pac-anim-munching").ifPresent(ThingAnimation::reset);
+				$.pacMan.animation("munching").ifPresent(ThingAnimation::reset);
 				$.msPac.setAbsSpeed(0);
 				$.msPac.setMoveDir(Direction.RIGHT);
-				$.msPac.animation("pac-anim-munching").ifPresent(ThingAnimation::reset);
+				$.msPac.animation("munching").ifPresent(ThingAnimation::reset);
 				$.inky.setAbsSpeed(0);
 				$.inky.hide();
 				$.pinky.setAbsSpeed(0);

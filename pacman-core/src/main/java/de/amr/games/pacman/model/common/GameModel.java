@@ -210,7 +210,7 @@ public abstract class GameModel {
 		pac.starvingTicks = 0;
 		pac.powerTimer.resetIndefinitely();
 		pac.animations().ifPresent(anim -> {
-			anim.select("pac-anim-munching");
+			anim.select("munching");
 			anim.selectedAnimation().reset();
 		});
 
