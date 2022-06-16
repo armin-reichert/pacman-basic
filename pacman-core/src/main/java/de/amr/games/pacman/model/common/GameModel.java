@@ -231,7 +231,7 @@ public abstract class GameModel {
 			// ghost.dotCounter = 0;
 			// ghost.elroyMode = 0;
 			ghost.animations().ifPresent(anim -> {
-				anim.select("ghost-anim-color");
+				anim.select("color");
 				anim.selectedAnimation().reset();
 			});
 		}
@@ -501,7 +501,7 @@ public abstract class GameModel {
 		});
 		ghosts(LOCKED).forEach(ghost -> {
 			ghost.animations().ifPresent(anim -> {
-				anim.select("ghost-anim-blue");
+				anim.select("blue");
 				anim.selectedAnimation().ensureRunning();
 			});
 		});

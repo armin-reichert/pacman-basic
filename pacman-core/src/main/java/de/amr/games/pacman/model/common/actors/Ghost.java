@@ -153,7 +153,7 @@ public class Ghost extends Creature {
 			boolean houseLeft = leaveHouse(world.ghostHouse());
 			if (houseLeft) {
 				state = HUNTING_PAC;
-				animations().ifPresent(anim -> anim.select("ghost-anim-color"));
+				animations().ifPresent(anim -> anim.select("color"));
 				// TODO Inky behaves differently. Why?
 				setBothDirs(LEFT);
 				GameEvents.publish(new GameEvent(game, GameEventType.GHOST_COMPLETES_LEAVING_HOUSE, this, tile()));
@@ -203,7 +203,7 @@ public class Ghost extends Creature {
 		case DEAD -> {
 			setRelSpeed(2 * game.level.ghostSpeed);
 			targetTile = world.ghostHouse().entry();
-			animations().ifPresent(anims -> anims.select("ghost-anim-eyes"));
+			animations().ifPresent(anims -> anims.select("eyes"));
 			boolean houseReached = returnToHouse(world, world.ghostHouse());
 			if (houseReached) {
 				setBothDirs(DOWN);
@@ -220,9 +220,9 @@ public class Ghost extends Creature {
 				state = LEAVING_HOUSE;
 				animations().ifPresent(anim -> {
 					if (game.pac.hasPower()) {
-						anim.select("ghost-anim-blue");
+						anim.select("blue");
 					} else {
-						anim.select("ghost-anim-color");
+						anim.select("color");
 					}
 				});
 				setBothDirs(moveDir.opposite());
@@ -386,7 +386,7 @@ public class Ghost extends Creature {
 	public void enterFrightenedMode() {
 		state = FRIGHTENED;
 		animations().ifPresent(anim -> {
-			anim.select("ghost-anim-blue");
+			anim.select("blue");
 			anim.selectedAnimation().ensureRunning();
 		});
 	}
@@ -396,16 +396,16 @@ public class Ghost extends Creature {
 			long powerTicksLeft = game.pac.powerTimer.remaining();
 			boolean startFlashing = powerTicksLeft == Ghost.FLASHING_TIME;
 			boolean stopFlashing = powerTicksLeft == 1; // TODO check why == 0 does not work
-			if (startFlashing && anim.selected().equals("ghost-anim-blue")) {
-				anim.select("ghost-anim-flashing");
+			if (startFlashing && anim.selected().equals("blue")) {
+				anim.select("flashing");
 				SingleSpriteAnimation<?> flashing = (SingleSpriteAnimation<?>) anim.selectedAnimation();
 				long frameDuration = FLASHING_TIME / (game.level.numFlashes * flashing.numFrames());
 				flashing.frameDuration(frameDuration);
 				flashing.repeat(game.level.numFlashes);
 				flashing.restart();
-			} else if (stopFlashing && anim.selected().equals("ghost-anim-flashing")) {
+			} else if (stopFlashing && anim.selected().equals("flashing")) {
 				anim.selectedAnimation().stop();
-				anim.select("ghost-anim-color");
+				anim.select("color");
 			}
 		});
 	}

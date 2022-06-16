@@ -124,8 +124,8 @@ public class Intermission1Controller extends Fsm<State, Context> {
 				$.blinky.setWishDir(Direction.RIGHT);
 				$.blinky.position = $.pac.position.plus(t(13), 0);
 				$.blinky.setAbsSpeed(0.75);
-				$.blinky.animation("ghost-anim-blue").ifPresent(SpriteAnimation::restart);
-				$.blinky.animations().ifPresent(anim -> anim.select("ghost-anim-blue"));
+				$.blinky.animation("blue").ifPresent(SpriteAnimation::restart);
+				$.blinky.animations().ifPresent(anim -> anim.select("blue"));
 			}
 
 			@Override
