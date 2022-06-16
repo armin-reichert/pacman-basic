@@ -29,19 +29,19 @@ import java.util.List;
 /**
  * @author Armin Reichert
  */
-public class SpriteArray<T> implements SpriteAnimation<T> {
+public class SpriteArray<THING> implements SpriteAnimation<THING> {
 
 	private int frameIndex;
-	private final T[] things;
+	private final THING[] things;
 
 	@SafeVarargs
-	public SpriteArray(T... things) {
+	public SpriteArray(THING... things) {
 		this.things = things;
 	}
 
 	@SuppressWarnings("unchecked")
-	public SpriteArray(List<T> list) {
-		this.things = (T[]) new Object[list.size()];
+	public SpriteArray(List<THING> list) {
+		this.things = (THING[]) new Object[list.size()];
 		for (int i = 0; i < list.size(); ++i) {
 			things[i] = list.get(i);
 		}
@@ -52,12 +52,12 @@ public class SpriteArray<T> implements SpriteAnimation<T> {
 	}
 
 	@Override
-	public T frame(int i) {
+	public THING frame(int i) {
 		return things[i];
 	}
 
 	@Override
-	public T frame() {
+	public THING frame() {
 		return frame(frameIndex);
 	}
 
@@ -67,7 +67,7 @@ public class SpriteArray<T> implements SpriteAnimation<T> {
 	}
 
 	@Override
-	public T animate() {
+	public THING animate() {
 		return frame();
 	}
 }

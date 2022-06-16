@@ -26,10 +26,10 @@ package de.amr.games.pacman.lib.animation;
 /**
  * Animation (sequence with timing) of things, for example of boolean, numbers, images or spritesheet regions.
  * 
- * @param <T> type of things to be animated
+ * @param <THING> type of things to be animated
  * @author Armin Reichert
  */
-public class SingleSpriteAnimation<T> implements SpriteAnimation<T> {
+public class SingleSpriteAnimation<THING> implements SpriteAnimation<THING> {
 
 	public static int INDEFINITE = -1;
 
@@ -44,7 +44,7 @@ public class SingleSpriteAnimation<T> implements SpriteAnimation<T> {
 		return pulse;
 	}
 
-	protected T[] things;
+	protected THING[] things;
 	protected int repetitions;
 	protected long delay;
 	protected long delayRemainingTicks;
@@ -58,7 +58,7 @@ public class SingleSpriteAnimation<T> implements SpriteAnimation<T> {
 	protected Runnable onStart;
 
 	@SafeVarargs
-	public SingleSpriteAnimation(T... things) {
+	public SingleSpriteAnimation(THING... things) {
 		if (things.length == 0) {
 			throw new IllegalArgumentException("Sequence must have at least contain one thing");
 		}
@@ -160,8 +160,8 @@ public class SingleSpriteAnimation<T> implements SpriteAnimation<T> {
 	 * @return the frame before the animation step is executed
 	 */
 	@Override
-	public T animate() {
-		T currentThing = things[frameIndex];
+	public THING animate() {
+		THING currentThing = things[frameIndex];
 		advance();
 		return currentThing;
 	}
@@ -170,7 +170,7 @@ public class SingleSpriteAnimation<T> implements SpriteAnimation<T> {
 	 * @return the current frame/thing
 	 */
 	@Override
-	public T frame() {
+	public THING frame() {
 		return things[frameIndex];
 	}
 
@@ -214,7 +214,7 @@ public class SingleSpriteAnimation<T> implements SpriteAnimation<T> {
 	 * @return the thing at the given index
 	 */
 	@Override
-	public T frame(int i) {
+	public THING frame(int i) {
 		return things[i];
 	}
 

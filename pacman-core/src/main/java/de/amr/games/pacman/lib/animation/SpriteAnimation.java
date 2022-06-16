@@ -26,7 +26,7 @@ package de.amr.games.pacman.lib.animation;
 /**
  * @author Armin Reichert
  */
-public interface SpriteAnimation<T> {
+public interface SpriteAnimation<THING> {
 
 	default void run() {
 	}
@@ -41,7 +41,7 @@ public interface SpriteAnimation<T> {
 	default void advance() {
 	}
 
-	default T animate() {
+	default THING animate() {
 		return null;
 	}
 
@@ -59,11 +59,11 @@ public interface SpriteAnimation<T> {
 	default void repeat(int n) {
 	}
 
-	default T frame(int i) {
+	default THING frame(int i) {
 		return null; // makes no sense here
 	}
 
-	default T frame() {
+	default THING frame() {
 		return null; // makes no sense here
 	}
 
