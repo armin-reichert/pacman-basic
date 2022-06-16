@@ -65,4 +65,9 @@ public class ThingArray<T> implements ThingAnimation<T> {
 	public void setFrameIndex(int i) {
 		frameIndex = i;
 	}
+
+	@Override
+	public T animate() {
+		return frame();
+	}
 }
