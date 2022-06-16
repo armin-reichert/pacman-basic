@@ -32,26 +32,25 @@ import java.util.stream.Stream;
  * 
  * @param <E> entity type for which these animations are defined
  * @param <K> key type
- * @param <T> thing type (Rectangle, Image)
  */
-public abstract class ThingAnimationCollection<E, K, T> {
+public abstract class ThingAnimationCollection<E, K> {
 
-	protected Map<K, ThingAnimation<T>> animationsByName;
+	protected Map<K, ThingAnimation<?>> animationsByName;
 	protected K selected;
 
-	public final ThingAnimation<T> byName(K name) {
+	public final ThingAnimation<?> byName(K name) {
 		return animationsByName.get(name);
 	}
 
-	public final Stream<ThingAnimation<T>> all() {
+	public final Stream<ThingAnimation<?>> all() {
 		return animationsByName.values().stream();
 	}
 
-	public void put(K name, ThingAnimation<T> animation) {
+	public void put(K name, ThingAnimation<?> animation) {
 		animationsByName.put(name, animation);
 	}
 
-	public abstract T current(E entity);
+	public abstract Object current(E entity);
 
 	public void select(K name) {
 		selected = name;
@@ -61,7 +60,7 @@ public abstract class ThingAnimationCollection<E, K, T> {
 		return selected;
 	}
 
-	public ThingAnimation<T> selectedAnimation() {
+	public ThingAnimation<?> selectedAnimation() {
 		return byName(selected);
 	}
 

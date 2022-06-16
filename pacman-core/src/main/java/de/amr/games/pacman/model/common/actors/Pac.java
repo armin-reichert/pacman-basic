@@ -76,9 +76,9 @@ public class Pac extends Creature {
 
 	// Animations
 
-	private ThingAnimationCollection<Pac, String, ?> animations;
+	private ThingAnimationCollection<Pac, String> animations;
 
-	public Optional<ThingAnimationCollection<Pac, String, ?>> animations() {
+	public Optional<ThingAnimationCollection<Pac, String>> animations() {
 		return Optional.ofNullable(animations);
 	}
 
@@ -86,7 +86,7 @@ public class Pac extends Creature {
 		return animations().map(anim -> anim.byName(key));
 	}
 
-	public void setAnimations(ThingAnimationCollection<Pac, String, ?> animations) {
+	public void setAnimations(ThingAnimationCollection<Pac, String> animations) {
 		this.animations = animations;
 	}
 

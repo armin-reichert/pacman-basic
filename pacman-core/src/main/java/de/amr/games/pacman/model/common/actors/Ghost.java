@@ -369,13 +369,13 @@ public class Ghost extends Creature {
 
 	public static final long FLASHING_TIME = TickTimer.sec_to_ticks(2); // TODO not sure
 
-	private ThingAnimationCollection<Ghost, String, ?> animations;
+	private ThingAnimationCollection<Ghost, String> animations;
 
-	public void setAnimations(ThingAnimationCollection<Ghost, String, ?> animations) {
+	public void setAnimations(ThingAnimationCollection<Ghost, String> animations) {
 		this.animations = animations;
 	}
 
-	public Optional<ThingAnimationCollection<Ghost, String, ?>> animations() {
+	public Optional<ThingAnimationCollection<Ghost, String>> animations() {
 		return Optional.ofNullable(animations);
 	}
 
