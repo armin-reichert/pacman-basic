@@ -51,7 +51,6 @@ import de.amr.games.pacman.lib.animation.SimpleThingAnimation;
 import de.amr.games.pacman.lib.animation.ThingAnimation;
 import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.Ghost;
-import de.amr.games.pacman.model.common.actors.GhostAnimationKey;
 import de.amr.games.pacman.model.common.actors.GhostState;
 import de.amr.games.pacman.model.common.actors.Pac;
 import de.amr.games.pacman.model.common.world.World;
@@ -231,7 +230,7 @@ public abstract class GameModel {
 			// ghost.dotCounter = 0;
 			// ghost.elroyMode = 0;
 			ghost.animations().ifPresent(anim -> {
-				anim.select(GhostAnimationKey.ANIM_COLOR);
+				anim.select("ANIM_COLOR");
 				anim.selectedAnimation().reset();
 			});
 		}
@@ -501,7 +500,7 @@ public abstract class GameModel {
 		});
 		ghosts(LOCKED).forEach(ghost -> {
 			ghost.animations().ifPresent(anim -> {
-				anim.select(GhostAnimationKey.ANIM_BLUE);
+				anim.select("ANIM_BLUE");
 				anim.selectedAnimation().ensureRunning();
 			});
 		});

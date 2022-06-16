@@ -30,10 +30,6 @@ import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.lib.Misc.insideRange;
 import static de.amr.games.pacman.model.common.GameVariant.MS_PACMAN;
-import static de.amr.games.pacman.model.common.actors.GhostAnimationKey.ANIM_BLUE;
-import static de.amr.games.pacman.model.common.actors.GhostAnimationKey.ANIM_COLOR;
-import static de.amr.games.pacman.model.common.actors.GhostAnimationKey.ANIM_EYES;
-import static de.amr.games.pacman.model.common.actors.GhostAnimationKey.ANIM_FLASHING;
 import static de.amr.games.pacman.model.common.actors.GhostState.ENTERING_HOUSE;
 import static de.amr.games.pacman.model.common.actors.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.common.actors.GhostState.HUNTING_PAC;
@@ -157,7 +153,7 @@ public class Ghost extends Creature {
 			boolean houseLeft = leaveHouse(world.ghostHouse());
 			if (houseLeft) {
 				state = HUNTING_PAC;
-				animations().ifPresent(anim -> anim.select(ANIM_COLOR));
+				animations().ifPresent(anim -> anim.select("ANIM_COLOR"));
 				// TODO Inky behaves differently. Why?
 				setBothDirs(LEFT);
 				GameEvents.publish(new GameEvent(game, GameEventType.GHOST_COMPLETES_LEAVING_HOUSE, this, tile()));
@@ -207,7 +203,7 @@ public class Ghost extends Creature {
 		case DEAD -> {
 			setRelSpeed(2 * game.level.ghostSpeed);
 			targetTile = world.ghostHouse().entry();
-			animations().ifPresent(anims -> anims.select(ANIM_EYES));
+			animations().ifPresent(anims -> anims.select("ANIM_EYES"));
 			boolean houseReached = returnToHouse(world, world.ghostHouse());
 			if (houseReached) {
 				setBothDirs(DOWN);
@@ -224,9 +220,9 @@ public class Ghost extends Creature {
 				state = LEAVING_HOUSE;
 				animations().ifPresent(anim -> {
 					if (game.pac.hasPower()) {
-						anim.select(ANIM_BLUE);
+						anim.select("ANIM_BLUE");
 					} else {
-						anim.select(ANIM_COLOR);
+						anim.select("ANIM_COLOR");
 					}
 				});
 				setBothDirs(moveDir.opposite());
@@ -373,24 +369,24 @@ public class Ghost extends Creature {
 
 	public static final long FLASHING_TIME = TickTimer.sec_to_ticks(2); // TODO not sure
 
-	private ThingAnimationCollection<Ghost, GhostAnimationKey, ?> animations;
+	private ThingAnimationCollection<Ghost, String, ?> animations;
 
-	public void setAnimations(ThingAnimationCollection<Ghost, GhostAnimationKey, ?> animations) {
+	public void setAnimations(ThingAnimationCollection<Ghost, String, ?> animations) {
 		this.animations = animations;
 	}
 
-	public Optional<ThingAnimationCollection<Ghost, GhostAnimationKey, ?>> animations() {
+	public Optional<ThingAnimationCollection<Ghost, String, ?>> animations() {
 		return Optional.ofNullable(animations);
 	}
 
-	public Optional<ThingAnimation<?>> animation(GhostAnimationKey key) {
+	public Optional<ThingAnimation<?>> animation(String key) {
 		return animations().map(anim -> anim.byKey(key));
 	}
 
 	public void enterFrightenedMode() {
 		state = FRIGHTENED;
 		animations().ifPresent(anim -> {
-			anim.select(ANIM_BLUE);
+			anim.select("ANIM_BLUE");
 			anim.selectedAnimation().ensureRunning();
 		});
 	}
@@ -400,16 +396,16 @@ public class Ghost extends Creature {
 			long powerTicksLeft = game.pac.powerTimer.remaining();
 			boolean startFlashing = powerTicksLeft == Ghost.FLASHING_TIME;
 			boolean stopFlashing = powerTicksLeft == 1; // TODO check why == 0 does not work
-			if (startFlashing && anim.selectedKey() == ANIM_BLUE) {
-				anim.select(ANIM_FLASHING);
+			if (startFlashing && anim.selectedKey().equals("ANIM_BLUE")) {
+				anim.select("ANIM_FLASHING");
 				SimpleThingAnimation<?> flashing = (SimpleThingAnimation<?>) anim.selectedAnimation();
 				long frameDuration = FLASHING_TIME / (game.level.numFlashes * flashing.numFrames());
 				flashing.frameDuration(frameDuration);
 				flashing.repeat(game.level.numFlashes);
 				flashing.restart();
-			} else if (stopFlashing && anim.selectedKey() == ANIM_FLASHING) {
+			} else if (stopFlashing && anim.selectedKey().equals("ANIM_FLASHING")) {
 				anim.selectedAnimation().stop();
-				anim.select(ANIM_COLOR);
+				anim.select("ANIM_COLOR");
 			}
 		});
 	}
