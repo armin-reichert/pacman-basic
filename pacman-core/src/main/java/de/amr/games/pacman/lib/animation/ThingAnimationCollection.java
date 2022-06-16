@@ -24,6 +24,7 @@ SOFTWARE.
 
 package de.amr.games.pacman.lib.animation;
 
+import java.util.Map;
 import java.util.stream.Stream;
 
 /**
@@ -35,11 +36,20 @@ import java.util.stream.Stream;
  */
 public abstract class ThingAnimationCollection<E, K, T> {
 
+	protected Map<K, ThingAnimation<T>> thingsByKey;
 	protected K selectedKey;
 
-	public abstract ThingAnimation<T> byKey(K key);
+	public final ThingAnimation<T> byKey(K key) {
+		return thingsByKey.get(key);
+	}
 
-	public abstract Stream<ThingAnimation<T>> all();
+	public final Stream<ThingAnimation<T>> all() {
+		return thingsByKey.values().stream();
+	}
+
+	public void put(K key, ThingAnimation<T> animation) {
+		thingsByKey.put(key, animation);
+	}
 
 	public abstract T current(E entity);
 
