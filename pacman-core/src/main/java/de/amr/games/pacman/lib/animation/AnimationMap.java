@@ -33,15 +33,15 @@ import java.util.Map;
  * @param <K> key type of map e.g. direction of actor
  * @param <T> thing type (Image, Rectangle, ...)
  */
-public class ThingAnimationMap<K, T> implements ThingAnimation<T> {
+public class AnimationMap<K, T> implements ThingAnimation<T> {
 
 	private Map<K, SimpleThingAnimation<T>> animationMap;
 
-	public ThingAnimationMap(Map<K, SimpleThingAnimation<T>> animationMap) {
+	public AnimationMap(Map<K, SimpleThingAnimation<T>> animationMap) {
 		this.animationMap = animationMap;
 	}
 
-	public ThingAnimationMap(int capacity) {
+	public AnimationMap(int capacity) {
 		animationMap = new HashMap<>(capacity);
 	}
 
