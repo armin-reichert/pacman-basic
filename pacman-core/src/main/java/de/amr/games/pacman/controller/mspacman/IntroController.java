@@ -44,7 +44,6 @@ import de.amr.games.pacman.lib.fsm.FsmState;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.GhostState;
 import de.amr.games.pacman.model.common.actors.Pac;
-import de.amr.games.pacman.model.common.actors.PacAnimationKey;
 
 /**
  * Intro scene of the Ms. Pac-Man game.
@@ -158,7 +157,7 @@ public class IntroController extends Fsm<IntroController.State, IntroController.
 				$.msPacMan.move();
 				if ($.msPacMan.position.x <= $.msPacManStopX) {
 					$.msPacMan.setAbsSpeed(0);
-					$.msPacMan.animations().get().byKey(PacAnimationKey.ANIM_MUNCHING).reset();
+					$.msPacMan.animations().get().byKey("ANIM_MUNCHING").reset();
 					changeState(State.READY_TO_PLAY);
 				}
 			}

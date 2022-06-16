@@ -26,8 +26,6 @@ package de.amr.games.pacman.controller.common;
 import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.model.common.actors.GhostAnimationKey.ANIM_FLASHING;
 import static de.amr.games.pacman.model.common.actors.GhostAnimationKey.ANIM_VALUE;
-import static de.amr.games.pacman.model.common.actors.PacAnimationKey.ANIM_DYING;
-import static de.amr.games.pacman.model.common.actors.PacAnimationKey.ANIM_MUNCHING;
 import static java.util.function.Predicate.not;
 
 import de.amr.games.pacman.event.GameEventType;
@@ -163,7 +161,7 @@ public enum GameState implements FsmState<GameModel> {
 	HUNTING {
 		@Override
 		public void onEnter(GameModel game) {
-			game.pac.animation(ANIM_MUNCHING).ifPresent(ThingAnimation::ensureRunning);
+			game.pac.animation("ANIM_MUNCHING").ifPresent(ThingAnimation::ensureRunning);
 			game.ghosts().forEach(ghost -> ghost.animations().ifPresent(ThingAnimationCollection::ensureRunning));
 			game.energizerPulse.restart();
 			game.sounds().ifPresent(snd -> snd.ensureSirenStarted(game.huntingTimer.phase() / 2));
@@ -338,7 +336,7 @@ public enum GameState implements FsmState<GameModel> {
 			timer.start();
 			game.pac.setAbsSpeed(0);
 			game.pac.animations().ifPresent(anim -> {
-				anim.select(ANIM_DYING);
+				anim.select("ANIM_DYING");
 				anim.selectedAnimation().reset();
 			});
 			game.bonus().setInactive();
@@ -351,7 +349,7 @@ public enum GameState implements FsmState<GameModel> {
 			if (timer.atSecond(1)) {
 				game.ghosts().forEach(Ghost::hide);
 			} else if (timer.atSecond(2)) {
-				game.pac.animation(ANIM_DYING).ifPresent(ThingAnimation::restart);
+				game.pac.animation("ANIM_DYING").ifPresent(ThingAnimation::restart);
 				game.sounds().ifPresent(snd -> snd.play(GameSound.PACMAN_DEATH));
 			} else if (timer.atSecond(4)) {
 				if (--game.lives == 0) {

@@ -76,22 +76,22 @@ public class Pac extends Creature {
 
 	// Animations
 
-	private ThingAnimationCollection<Pac, PacAnimationKey, ?> animations;
+	private ThingAnimationCollection<Pac, String, ?> animations;
 
-	public Optional<ThingAnimationCollection<Pac, PacAnimationKey, ?>> animations() {
+	public Optional<ThingAnimationCollection<Pac, String, ?>> animations() {
 		return Optional.ofNullable(animations);
 	}
 
-	public Optional<ThingAnimation<?>> animation(PacAnimationKey key) {
+	public Optional<ThingAnimation<?>> animation(String key) {
 		return animations().map(anim -> anim.byKey(key));
 	}
 
-	public void setAnimations(ThingAnimationCollection<Pac, PacAnimationKey, ?> animations) {
+	public void setAnimations(ThingAnimationCollection<Pac, String, ?> animations) {
 		this.animations = animations;
 	}
 
 	private void updateMunchAnimation() {
-		animation(PacAnimationKey.ANIM_MUNCHING).ifPresent(munching -> {
+		animation("ANIM_MUNCHING").ifPresent(munching -> {
 			if (stuck) {
 				munching.stop();
 			} else {

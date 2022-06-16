@@ -36,7 +36,6 @@ import static de.amr.games.pacman.model.common.actors.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.common.actors.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.model.common.actors.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.model.common.actors.GhostState.LOCKED;
-import static de.amr.games.pacman.model.common.actors.PacAnimationKey.ANIM_MUNCHING;
 import static de.amr.games.pacman.model.common.world.World.HTS;
 
 import java.util.Optional;
@@ -211,7 +210,7 @@ public abstract class GameModel {
 		pac.starvingTicks = 0;
 		pac.powerTimer.resetIndefinitely();
 		pac.animations().ifPresent(anim -> {
-			anim.select(ANIM_MUNCHING);
+			anim.select("ANIM_MUNCHING");
 			anim.selectedAnimation().reset();
 		});
 

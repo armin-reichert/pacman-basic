@@ -38,7 +38,6 @@ import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameSound;
 import de.amr.games.pacman.model.common.actors.Entity;
 import de.amr.games.pacman.model.common.actors.Pac;
-import de.amr.games.pacman.model.common.actors.PacAnimationKey;
 import de.amr.games.pacman.model.mspacman.Flap;
 
 /**
@@ -126,12 +125,12 @@ public class Intermission3Controller extends Fsm<State, Context> {
 				$.pacMan.setMoveDir(Direction.RIGHT);
 				$.pacMan.setPosition(t(3), $.groundY - 4);
 				$.pacMan.show();
-				$.pacMan.animation(PacAnimationKey.ANIM_MUNCHING).ifPresent(ThingAnimation::reset);
+				$.pacMan.animation("ANIM_MUNCHING").ifPresent(ThingAnimation::reset);
 
 				$.msPacMan.setMoveDir(Direction.RIGHT);
 				$.msPacMan.setPosition(t(5), $.groundY - 4);
 				$.msPacMan.show();
-				$.msPacMan.animation(PacAnimationKey.ANIM_MUNCHING).ifPresent(ThingAnimation::reset);
+				$.msPacMan.animation("ANIM_MUNCHING").ifPresent(ThingAnimation::reset);
 
 				$.stork.setPosition(t(30), t(12));
 				$.stork.setVelocity(-0.8, 0);
