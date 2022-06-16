@@ -74,7 +74,7 @@ public enum GameState implements FsmState<GameModel> {
 				snd.setSilent(false);
 				snd.play(GameSound.CREDIT);
 			});
-			game.increaseCredit();
+			game.credit++;
 			changeState(CREDIT);
 		}
 
@@ -106,7 +106,7 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void addCredit(GameModel game) {
 			game.sounds().ifPresent(snd -> snd.play(GameSound.CREDIT));
-			game.increaseCredit();
+			game.credit++;
 		}
 
 		@Override
@@ -118,7 +118,7 @@ public enum GameState implements FsmState<GameModel> {
 	READY {
 		@Override
 		public void onEnter(GameModel game) {
-			boolean hasCredit = game.credit() > 0;
+			boolean hasCredit = game.credit > 0;
 			if (hasCredit && !game.playing) {
 				// start new game, play intro music
 				timer.resetSeconds(5);
@@ -142,7 +142,7 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void onUpdate(GameModel game) {
 			if (timer.hasExpired()) {
-				if (game.credit() > 0) {
+				if (game.credit > 0) {
 					game.scores.enable(true);
 					game.playing = true;
 				} else {
@@ -207,7 +207,7 @@ public enum GameState implements FsmState<GameModel> {
 					snd.setSilent(false);
 					snd.play(GameSound.CREDIT);
 				});
-				game.increaseCredit();
+				game.credit++;
 				changeState(CREDIT);
 			}
 		}
@@ -264,7 +264,7 @@ public enum GameState implements FsmState<GameModel> {
 				});
 			}
 			if (timer.hasExpired()) {
-				if (game.credit() == 0) {
+				if (game.credit == 0) {
 					changeState(INTRO);
 				} else if (game.intermissionNumber(game.level.number) != 0) {
 					changeState(INTERMISSION);
@@ -359,7 +359,7 @@ public enum GameState implements FsmState<GameModel> {
 				}
 				game.pac.hide();
 			} else if (timer.hasExpired()) {
-				var nextState = game.credit() == 0 ? INTRO : game.lives == 0 ? GAME_OVER : READY;
+				var nextState = game.credit == 0 ? INTRO : game.lives == 0 ? GAME_OVER : READY;
 				changeState(nextState);
 				return;
 			}
@@ -380,7 +380,7 @@ public enum GameState implements FsmState<GameModel> {
 			if (timer.hasExpired()) {
 				game.playing = false;
 				game.consumeCredit();
-				changeState(game.credit() > 0 ? CREDIT : INTRO);
+				changeState(game.credit > 0 ? CREDIT : INTRO);
 			}
 		}
 	},
@@ -395,7 +395,7 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void onUpdate(GameModel game) {
 			if (timer.hasExpired()) {
-				changeState(game.credit() == 0 || !game.playing ? INTRO : LEVEL_STARTING);
+				changeState(game.credit == 0 || !game.playing ? INTRO : LEVEL_STARTING);
 			}
 		}
 	},

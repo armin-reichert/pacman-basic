@@ -149,18 +149,10 @@ public abstract class GameModel {
 		this.ghosts = ghosts;
 	}
 
-	public int credit() {
-		return credit;
-	}
-
 	public void consumeCredit() {
 		if (credit > 0) {
 			--credit;
 		}
-	}
-
-	public void increaseCredit() {
-		++credit;
 	}
 
 	/**

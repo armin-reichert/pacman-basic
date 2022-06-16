@@ -271,7 +271,7 @@ public class IntroController extends Fsm<State, Context> {
 			public void onUpdate(Context $) {
 				if (timer.atSecond(1)) {
 					$.ghosts[3].hide();
-					if ($.gameController.game().credit() == 0) {
+					if ($.gameController.game().credit == 0) {
 						$.gameController.changeState(GameState.READY);
 						return;
 					}
