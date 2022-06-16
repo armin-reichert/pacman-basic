@@ -34,18 +34,18 @@ import java.util.stream.Stream;
  */
 public abstract class Animations<E> {
 
-	protected Map<String, ThingAnimation<?>> animationsByName;
+	protected Map<String, Animation<?>> animationsByName;
 	protected String selected;
 
-	public final ThingAnimation<?> byName(String name) {
+	public final Animation<?> byName(String name) {
 		return animationsByName.get(name);
 	}
 
-	public final Stream<ThingAnimation<?>> all() {
+	public final Stream<Animation<?>> all() {
 		return animationsByName.values().stream();
 	}
 
-	public void put(String name, ThingAnimation<?> animation) {
+	public void put(String name, Animation<?> animation) {
 		animationsByName.put(name, animation);
 	}
 
@@ -59,27 +59,27 @@ public abstract class Animations<E> {
 		return selected;
 	}
 
-	public ThingAnimation<?> selectedAnimation() {
+	public Animation<?> selectedAnimation() {
 		return byName(selected);
 	}
 
 	public void reset() {
-		all().forEach(ThingAnimation::reset);
+		all().forEach(Animation::reset);
 	}
 
 	public void stop() {
-		all().forEach(ThingAnimation::stop);
+		all().forEach(Animation::stop);
 	}
 
 	public void run() {
-		all().forEach(ThingAnimation::run);
+		all().forEach(Animation::run);
 	}
 
 	public void ensureRunning() {
-		all().forEach(ThingAnimation::ensureRunning);
+		all().forEach(Animation::ensureRunning);
 	}
 
 	public void restart() {
-		all().forEach(ThingAnimation::restart);
+		all().forEach(Animation::restart);
 	}
 }

@@ -21,52 +21,53 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
+
 package de.amr.games.pacman.lib.animation;
+
+import java.util.List;
 
 /**
  * @author Armin Reichert
  */
-public interface ThingAnimation<T> {
+public class SpriteArray<T> implements Animation<T> {
 
-	default void run() {
+	private int frameIndex;
+	private final T[] things;
+
+	@SafeVarargs
+	public SpriteArray(T... things) {
+		this.things = things;
 	}
 
-	default boolean isRunning() {
-		return true;
+	@SuppressWarnings("unchecked")
+	public SpriteArray(List<T> list) {
+		this.things = (T[]) new Object[list.size()];
+		for (int i = 0; i < list.size(); ++i) {
+			things[i] = list.get(i);
+		}
 	}
 
-	default void ensureRunning() {
+	public int numFrames() {
+		return things.length;
 	}
 
-	default void advance() {
+	@Override
+	public T frame(int i) {
+		return things[i];
 	}
 
-	default T animate() {
-		return null;
+	@Override
+	public T frame() {
+		return frame(frameIndex);
 	}
 
-	default void stop() {
+	@Override
+	public void setFrameIndex(int i) {
+		frameIndex = i;
 	}
 
-	default void reset() {
-	}
-
-	default void restart() {
-		reset();
-		run();
-	}
-
-	default void repeat(int n) {
-	}
-
-	default T frame(int i) {
-		return null; // makes no sense here
-	}
-
-	default T frame() {
-		return null; // makes no sense here
-	}
-
-	default void setFrameIndex(int i) {
+	@Override
+	public T animate() {
+		return frame();
 	}
 }

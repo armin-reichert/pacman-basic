@@ -31,7 +31,7 @@ import de.amr.games.pacman.controller.pacman.Intermission1Controller.Context;
 import de.amr.games.pacman.controller.pacman.Intermission1Controller.State;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
-import de.amr.games.pacman.lib.animation.ThingAnimation;
+import de.amr.games.pacman.lib.animation.Animation;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.lib.fsm.FsmState;
 import de.amr.games.pacman.model.common.GameSound;
@@ -124,7 +124,7 @@ public class Intermission1Controller extends Fsm<State, Context> {
 				$.blinky.setWishDir(Direction.RIGHT);
 				$.blinky.position = $.pac.position.plus(t(13), 0);
 				$.blinky.setAbsSpeed(0.75);
-				$.blinky.animation("ghost-anim-blue").ifPresent(ThingAnimation::restart);
+				$.blinky.animation("ghost-anim-blue").ifPresent(Animation::restart);
 				$.blinky.animations().ifPresent(anim -> anim.select("ghost-anim-blue"));
 			}
 

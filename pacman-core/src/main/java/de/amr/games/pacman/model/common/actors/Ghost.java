@@ -47,8 +47,8 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.lib.animation.Animations;
-import de.amr.games.pacman.lib.animation.SimpleThingAnimation;
-import de.amr.games.pacman.lib.animation.ThingAnimation;
+import de.amr.games.pacman.lib.animation.SimpleAnimation;
+import de.amr.games.pacman.lib.animation.Animation;
 import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.world.GhostHouse;
@@ -379,7 +379,7 @@ public class Ghost extends Creature {
 		return Optional.ofNullable(animations);
 	}
 
-	public Optional<ThingAnimation<?>> animation(String key) {
+	public Optional<Animation<?>> animation(String key) {
 		return animations().map(anim -> anim.byName(key));
 	}
 
@@ -398,7 +398,7 @@ public class Ghost extends Creature {
 			boolean stopFlashing = powerTicksLeft == 1; // TODO check why == 0 does not work
 			if (startFlashing && anim.selected().equals("ghost-anim-blue")) {
 				anim.select("ghost-anim-flashing");
-				SimpleThingAnimation<?> flashing = (SimpleThingAnimation<?>) anim.selectedAnimation();
+				SimpleAnimation<?> flashing = (SimpleAnimation<?>) anim.selectedAnimation();
 				long frameDuration = FLASHING_TIME / (game.level.numFlashes * flashing.numFrames());
 				flashing.frameDuration(frameDuration);
 				flashing.repeat(game.level.numFlashes);

@@ -30,7 +30,7 @@ import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.event.GameStateChangeEvent;
 import de.amr.games.pacman.lib.TickTimer;
-import de.amr.games.pacman.lib.animation.ThingAnimation;
+import de.amr.games.pacman.lib.animation.Animation;
 import de.amr.games.pacman.lib.animation.Animations;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.lib.fsm.FsmState;
@@ -159,7 +159,7 @@ public enum GameState implements FsmState<GameModel> {
 	HUNTING {
 		@Override
 		public void onEnter(GameModel game) {
-			game.pac.animation("munching").ifPresent(ThingAnimation::ensureRunning);
+			game.pac.animation("munching").ifPresent(Animation::ensureRunning);
 			game.ghosts().forEach(ghost -> ghost.animations().ifPresent(Animations::ensureRunning));
 			game.energizerPulse.restart();
 			game.sounds().ifPresent(snd -> snd.ensureSirenStarted(game.huntingTimer.phase() / 2));
@@ -273,7 +273,7 @@ public enum GameState implements FsmState<GameModel> {
 				}
 				return;
 			}
-			game.mazeFlashingAnimation().ifPresent(ThingAnimation::advance);
+			game.mazeFlashingAnimation().ifPresent(Animation::advance);
 		}
 	},
 
@@ -303,7 +303,7 @@ public enum GameState implements FsmState<GameModel> {
 			timer.start();
 			game.pac.hide();
 			game.ghosts().forEach(ghost -> {
-				ghost.animation("ghost-anim-flashing").ifPresent(ThingAnimation::stop); // TODO needed?
+				ghost.animation("ghost-anim-flashing").ifPresent(Animation::stop); // TODO needed?
 				if (ghost.killIndex != -1) {
 					ghost.animations().get().select("ghost-anim-value");
 					ghost.animation("ghost-anim-value").ifPresent(anim -> anim.setFrameIndex(ghost.killIndex));
@@ -326,7 +326,7 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void onExit(GameModel game) {
 			game.pac.show();
-			game.ghosts().forEach(ghost -> ghost.animation("ghost-anim-flashing").ifPresent(ThingAnimation::run));
+			game.ghosts().forEach(ghost -> ghost.animation("ghost-anim-flashing").ifPresent(Animation::run));
 			game.letDeadGhostsReturnHome();
 		}
 	},
@@ -351,7 +351,7 @@ public enum GameState implements FsmState<GameModel> {
 			if (timer.atSecond(1)) {
 				game.ghosts().forEach(Ghost::hide);
 			} else if (timer.atSecond(2)) {
-				game.pac.animation("dying").ifPresent(ThingAnimation::restart);
+				game.pac.animation("dying").ifPresent(Animation::restart);
 				game.sounds().ifPresent(snd -> snd.play(GameSound.PACMAN_DEATH));
 			} else if (timer.atSecond(4)) {
 				if (--game.lives == 0) {
