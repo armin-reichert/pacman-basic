@@ -33,7 +33,7 @@ import java.util.stream.Stream;
  * @param <E> entity type for which these animations are defined
  * @param <K> key type
  */
-public abstract class ThingAnimationCollection<E, K> {
+public abstract class Animations<E, K> {
 
 	protected Map<K, ThingAnimation<?>> animationsByName;
 	protected K selected;

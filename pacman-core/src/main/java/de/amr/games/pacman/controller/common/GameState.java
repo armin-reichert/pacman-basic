@@ -31,7 +31,7 @@ import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.event.GameStateChangeEvent;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.animation.ThingAnimation;
-import de.amr.games.pacman.lib.animation.ThingAnimationCollection;
+import de.amr.games.pacman.lib.animation.Animations;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.lib.fsm.FsmState;
 import de.amr.games.pacman.model.common.GameModel;
@@ -160,7 +160,7 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void onEnter(GameModel game) {
 			game.pac.animation("munching").ifPresent(ThingAnimation::ensureRunning);
-			game.ghosts().forEach(ghost -> ghost.animations().ifPresent(ThingAnimationCollection::ensureRunning));
+			game.ghosts().forEach(ghost -> ghost.animations().ifPresent(Animations::ensureRunning));
 			game.energizerPulse.restart();
 			game.sounds().ifPresent(snd -> snd.ensureSirenStarted(game.huntingTimer.phase() / 2));
 		}
