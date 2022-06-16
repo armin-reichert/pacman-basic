@@ -29,7 +29,7 @@ package de.amr.games.pacman.lib.animation;
  * @param <T> type of things to be animated
  * @author Armin Reichert
  */
-public class SimpleAnimation<T> implements Animation<T> {
+public class SingleSpriteAnimation<T> implements SpriteAnimation<T> {
 
 	public static int INDEFINITE = -1;
 
@@ -37,8 +37,8 @@ public class SimpleAnimation<T> implements Animation<T> {
 	 * @param frameDuration ticks of single pulse
 	 * @return an endless animation of alternating true/false values
 	 */
-	public static SimpleAnimation<Boolean> pulse(int frameDuration) {
-		var pulse = new SimpleAnimation<>(true, false);
+	public static SingleSpriteAnimation<Boolean> pulse(int frameDuration) {
+		var pulse = new SingleSpriteAnimation<>(true, false);
 		pulse.frameDuration(frameDuration);
 		pulse.repeatForever();
 		return pulse;
@@ -58,7 +58,7 @@ public class SimpleAnimation<T> implements Animation<T> {
 	protected Runnable onStart;
 
 	@SafeVarargs
-	public SimpleAnimation(T... things) {
+	public SingleSpriteAnimation(T... things) {
 		if (things.length == 0) {
 			throw new IllegalArgumentException("Sequence must have at least contain one thing");
 		}

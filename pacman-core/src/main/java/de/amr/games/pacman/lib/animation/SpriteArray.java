@@ -29,7 +29,7 @@ import java.util.List;
 /**
  * @author Armin Reichert
  */
-public class SpriteArray<T> implements Animation<T> {
+public class SpriteArray<T> implements SpriteAnimation<T> {
 
 	private int frameIndex;
 	private final T[] things;

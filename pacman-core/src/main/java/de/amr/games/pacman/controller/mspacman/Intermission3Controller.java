@@ -31,7 +31,7 @@ import de.amr.games.pacman.controller.mspacman.Intermission3Controller.State;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.V2d;
-import de.amr.games.pacman.lib.animation.Animation;
+import de.amr.games.pacman.lib.animation.SpriteAnimation;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.lib.fsm.FsmState;
 import de.amr.games.pacman.model.common.GameModel;
@@ -125,12 +125,12 @@ public class Intermission3Controller extends Fsm<State, Context> {
 				$.pacMan.setMoveDir(Direction.RIGHT);
 				$.pacMan.setPosition(t(3), $.groundY - 4);
 				$.pacMan.show();
-				$.pacMan.animation("munching").ifPresent(Animation::reset);
+				$.pacMan.animation("munching").ifPresent(SpriteAnimation::reset);
 
 				$.msPacMan.setMoveDir(Direction.RIGHT);
 				$.msPacMan.setPosition(t(5), $.groundY - 4);
 				$.msPacMan.show();
-				$.msPacMan.animation("munching").ifPresent(Animation::reset);
+				$.msPacMan.animation("munching").ifPresent(SpriteAnimation::reset);
 
 				$.stork.setPosition(t(30), t(12));
 				$.stork.setVelocity(-0.8, 0);

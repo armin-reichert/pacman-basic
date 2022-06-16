@@ -33,52 +33,52 @@ import java.util.Map;
  * @param <K> key type of map e.g. direction of actor
  * @param <T> thing type (Image, Rectangle, ...)
  */
-public class AnimationMap<K, T> implements Animation<T> {
+public class SpriteAnimationMap<K, T> implements SpriteAnimation<T> {
 
-	private Map<K, SimpleAnimation<T>> animationMap;
+	private Map<K, SingleSpriteAnimation<T>> animationMap;
 
-	public AnimationMap(Map<K, SimpleAnimation<T>> animationMap) {
+	public SpriteAnimationMap(Map<K, SingleSpriteAnimation<T>> animationMap) {
 		this.animationMap = animationMap;
 	}
 
-	public AnimationMap(int capacity) {
+	public SpriteAnimationMap(int capacity) {
 		animationMap = new HashMap<>(capacity);
 	}
 
-	public void put(K key, SimpleAnimation<T> animation) {
+	public void put(K key, SingleSpriteAnimation<T> animation) {
 		animationMap.put(key, animation);
 	}
 
-	public SimpleAnimation<T> get(K key) {
+	public SingleSpriteAnimation<T> get(K key) {
 		return animationMap.get(key);
 	}
 
-	public Collection<SimpleAnimation<T>> all() {
+	public Collection<SingleSpriteAnimation<T>> all() {
 		return animationMap.values();
 	}
 
 	@Override
 	public void reset() {
-		all().forEach(SimpleAnimation::reset);
+		all().forEach(SingleSpriteAnimation::reset);
 	}
 
 	@Override
 	public void restart() {
-		all().forEach(SimpleAnimation::restart);
+		all().forEach(SingleSpriteAnimation::restart);
 	}
 
 	@Override
 	public void stop() {
-		all().forEach(SimpleAnimation::stop);
+		all().forEach(SingleSpriteAnimation::stop);
 	}
 
 	@Override
 	public void run() {
-		all().forEach(SimpleAnimation::run);
+		all().forEach(SingleSpriteAnimation::run);
 	}
 
 	@Override
 	public void ensureRunning() {
-		all().forEach(SimpleAnimation::ensureRunning);
+		all().forEach(SingleSpriteAnimation::ensureRunning);
 	}
 }

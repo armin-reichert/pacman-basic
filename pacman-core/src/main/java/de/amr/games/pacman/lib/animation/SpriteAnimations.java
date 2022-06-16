@@ -21,52 +21,65 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
+
 package de.amr.games.pacman.lib.animation;
+
+import java.util.Map;
+import java.util.stream.Stream;
 
 /**
  * @author Armin Reichert
+ * 
+ * @param <E> entity type for which these animations are defined
  */
-public interface Animation<T> {
+public abstract class SpriteAnimations<E> {
 
-	default void run() {
+	protected Map<String, SpriteAnimation<?>> animationsByName;
+	protected String selected;
+
+	public final SpriteAnimation<?> byName(String name) {
+		return animationsByName.get(name);
 	}
 
-	default boolean isRunning() {
-		return true;
+	public final Stream<SpriteAnimation<?>> all() {
+		return animationsByName.values().stream();
 	}
 
-	default void ensureRunning() {
+	public void put(String name, SpriteAnimation<?> animation) {
+		animationsByName.put(name, animation);
 	}
 
-	default void advance() {
+	public abstract Object current(E entity);
+
+	public void select(String name) {
+		selected = name;
 	}
 
-	default T animate() {
-		return null;
+	public String selected() {
+		return selected;
 	}
 
-	default void stop() {
+	public SpriteAnimation<?> selectedAnimation() {
+		return byName(selected);
 	}
 
-	default void reset() {
+	public void reset() {
+		all().forEach(SpriteAnimation::reset);
 	}
 
-	default void restart() {
-		reset();
-		run();
+	public void stop() {
+		all().forEach(SpriteAnimation::stop);
 	}
 
-	default void repeat(int n) {
+	public void run() {
+		all().forEach(SpriteAnimation::run);
 	}
 
-	default T frame(int i) {
-		return null; // makes no sense here
+	public void ensureRunning() {
+		all().forEach(SpriteAnimation::ensureRunning);
 	}
 
-	default T frame() {
-		return null; // makes no sense here
-	}
-
-	default void setFrameIndex(int i) {
+	public void restart() {
+		all().forEach(SpriteAnimation::restart);
 	}
 }

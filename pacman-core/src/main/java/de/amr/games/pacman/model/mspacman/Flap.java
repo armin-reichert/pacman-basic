@@ -23,7 +23,7 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.mspacman;
 
-import de.amr.games.pacman.lib.animation.SimpleAnimation;
+import de.amr.games.pacman.lib.animation.SingleSpriteAnimation;
 import de.amr.games.pacman.model.common.actors.Entity;
 
 /**
@@ -35,5 +35,5 @@ public class Flap extends Entity {
 
 	public int number;
 	public String text;
-	public SimpleAnimation<?> animation;
+	public SingleSpriteAnimation<?> animation;
 }
