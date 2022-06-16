@@ -189,6 +189,7 @@ public abstract class GameModel {
 	public void reset() {
 		playing = false;
 		lives = INITIAL_LIFES;
+		intermissionTestNumber = 1;
 		levelCounter.clear();
 		setLevel(1);
 		scores.reload();
