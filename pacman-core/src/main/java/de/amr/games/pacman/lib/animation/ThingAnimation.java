@@ -66,4 +66,7 @@ public interface ThingAnimation<T> {
 	default T frame() {
 		return null; // makes no sense here
 	}
+
+	default void setFrameIndex(int i) {
+	}
 }

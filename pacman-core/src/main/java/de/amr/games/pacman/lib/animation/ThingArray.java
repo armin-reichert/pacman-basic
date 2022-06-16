@@ -31,6 +31,7 @@ import java.util.List;
  */
 public class ThingArray<T> implements ThingAnimation<T> {
 
+	private int frameIndex;
 	private final T[] things;
 
 	@SafeVarargs
@@ -53,5 +54,15 @@ public class ThingArray<T> implements ThingAnimation<T> {
 	@Override
 	public T frame(int i) {
 		return things[i];
+	}
+
+	@Override
+	public T frame() {
+		return frame(frameIndex);
+	}
+
+	@Override
+	public void setFrameIndex(int i) {
+		frameIndex = i;
 	}
 }

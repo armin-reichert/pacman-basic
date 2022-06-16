@@ -225,6 +225,7 @@ public class SimpleThingAnimation<T> implements ThingAnimation<T> {
 		return frameIndex;
 	}
 
+	@Override
 	public void setFrameIndex(int i) {
 		frameIndex = i;
 		frameRunningTicks = 0;
