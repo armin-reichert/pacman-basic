@@ -153,7 +153,7 @@ public class Ghost extends Creature {
 			boolean houseLeft = leaveHouse(world.ghostHouse());
 			if (houseLeft) {
 				state = HUNTING_PAC;
-				animations().ifPresent(anim -> anim.select("ANIM_COLOR"));
+				animations().ifPresent(anim -> anim.select("ghost-anim-color"));
 				// TODO Inky behaves differently. Why?
 				setBothDirs(LEFT);
 				GameEvents.publish(new GameEvent(game, GameEventType.GHOST_COMPLETES_LEAVING_HOUSE, this, tile()));
@@ -203,7 +203,7 @@ public class Ghost extends Creature {
 		case DEAD -> {
 			setRelSpeed(2 * game.level.ghostSpeed);
 			targetTile = world.ghostHouse().entry();
-			animations().ifPresent(anims -> anims.select("ANIM_EYES"));
+			animations().ifPresent(anims -> anims.select("ghost-anim-eyes"));
 			boolean houseReached = returnToHouse(world, world.ghostHouse());
 			if (houseReached) {
 				setBothDirs(DOWN);
@@ -220,9 +220,9 @@ public class Ghost extends Creature {
 				state = LEAVING_HOUSE;
 				animations().ifPresent(anim -> {
 					if (game.pac.hasPower()) {
-						anim.select("ANIM_BLUE");
+						anim.select("ghost-anim-blue");
 					} else {
-						anim.select("ANIM_COLOR");
+						anim.select("ghost-anim-color");
 					}
 				});
 				setBothDirs(moveDir.opposite());
@@ -380,13 +380,13 @@ public class Ghost extends Creature {
 	}
 
 	public Optional<ThingAnimation<?>> animation(String key) {
-		return animations().map(anim -> anim.byKey(key));
+		return animations().map(anim -> anim.byName(key));
 	}
 
 	public void enterFrightenedMode() {
 		state = FRIGHTENED;
 		animations().ifPresent(anim -> {
-			anim.select("ANIM_BLUE");
+			anim.select("ghost-anim-blue");
 			anim.selectedAnimation().ensureRunning();
 		});
 	}
@@ -396,16 +396,16 @@ public class Ghost extends Creature {
 			long powerTicksLeft = game.pac.powerTimer.remaining();
 			boolean startFlashing = powerTicksLeft == Ghost.FLASHING_TIME;
 			boolean stopFlashing = powerTicksLeft == 1; // TODO check why == 0 does not work
-			if (startFlashing && anim.selectedKey().equals("ANIM_BLUE")) {
-				anim.select("ANIM_FLASHING");
+			if (startFlashing && anim.selected().equals("ghost-anim-blue")) {
+				anim.select("ghost-anim-flashing");
 				SimpleThingAnimation<?> flashing = (SimpleThingAnimation<?>) anim.selectedAnimation();
 				long frameDuration = FLASHING_TIME / (game.level.numFlashes * flashing.numFrames());
 				flashing.frameDuration(frameDuration);
 				flashing.repeat(game.level.numFlashes);
 				flashing.restart();
-			} else if (stopFlashing && anim.selectedKey().equals("ANIM_FLASHING")) {
+			} else if (stopFlashing && anim.selected().equals("ghost-anim-flashing")) {
 				anim.selectedAnimation().stop();
-				anim.select("ANIM_COLOR");
+				anim.select("ghost-anim-color");
 			}
 		});
 	}

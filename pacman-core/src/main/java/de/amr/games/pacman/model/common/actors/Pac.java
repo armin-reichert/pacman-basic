@@ -83,7 +83,7 @@ public class Pac extends Creature {
 	}
 
 	public Optional<ThingAnimation<?>> animation(String key) {
-		return animations().map(anim -> anim.byKey(key));
+		return animations().map(anim -> anim.byName(key));
 	}
 
 	public void setAnimations(ThingAnimationCollection<Pac, String, ?> animations) {

@@ -302,9 +302,9 @@ public enum GameState implements FsmState<GameModel> {
 			timer.resetSeconds(1);
 			timer.start();
 			game.pac.hide();
-			game.ghosts().forEach(ghost -> ghost.animation("ANIM_FLASHING").ifPresent(ThingAnimation::stop));
+			game.ghosts().forEach(ghost -> ghost.animation("ghost-anim-flashing").ifPresent(ThingAnimation::stop));
 			game.ghosts().filter(ghost -> ghost.killIndex >= 0)
-					.forEach(ghost -> ghost.animations().ifPresent(anim -> anim.select("ANIM_VALUE")));
+					.forEach(ghost -> ghost.animations().ifPresent(anim -> anim.select("ghost-anim-value")));
 			game.sounds().ifPresent(snd -> snd.play(GameSound.GHOST_EATEN));
 		}
 
@@ -322,7 +322,7 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void onExit(GameModel game) {
 			game.pac.show();
-			game.ghosts().forEach(ghost -> ghost.animation("ANIM_FLASHING").ifPresent(ThingAnimation::run));
+			game.ghosts().forEach(ghost -> ghost.animation("ghost-anim-flashing").ifPresent(ThingAnimation::run));
 			game.letDeadGhostsReturnHome();
 		}
 	},

@@ -157,7 +157,7 @@ public class IntroController extends Fsm<IntroController.State, IntroController.
 				$.msPacMan.move();
 				if ($.msPacMan.position.x <= $.msPacManStopX) {
 					$.msPacMan.setAbsSpeed(0);
-					$.msPacMan.animations().get().byKey("ANIM_MUNCHING").reset();
+					$.msPacMan.animations().get().byName("ANIM_MUNCHING").reset();
 					changeState(State.READY_TO_PLAY);
 				}
 			}

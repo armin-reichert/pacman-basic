@@ -36,33 +36,33 @@ import java.util.stream.Stream;
  */
 public abstract class ThingAnimationCollection<E, K, T> {
 
-	protected Map<K, ThingAnimation<T>> thingsByKey;
-	protected K selectedKey;
+	protected Map<K, ThingAnimation<T>> animationsByName;
+	protected K selected;
 
-	public final ThingAnimation<T> byKey(K key) {
-		return thingsByKey.get(key);
+	public final ThingAnimation<T> byName(K name) {
+		return animationsByName.get(name);
 	}
 
 	public final Stream<ThingAnimation<T>> all() {
-		return thingsByKey.values().stream();
+		return animationsByName.values().stream();
 	}
 
-	public void put(K key, ThingAnimation<T> animation) {
-		thingsByKey.put(key, animation);
+	public void put(K name, ThingAnimation<T> animation) {
+		animationsByName.put(name, animation);
 	}
 
 	public abstract T current(E entity);
 
-	public K selectedKey() {
-		return selectedKey;
+	public void select(K name) {
+		selected = name;
+	}
+
+	public K selected() {
+		return selected;
 	}
 
 	public ThingAnimation<T> selectedAnimation() {
-		return byKey(selectedKey);
-	}
-
-	public void select(K key) {
-		selectedKey = key;
+		return byName(selected);
 	}
 
 	public void reset() {
