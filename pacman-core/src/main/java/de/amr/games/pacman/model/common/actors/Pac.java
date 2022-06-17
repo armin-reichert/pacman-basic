@@ -93,4 +93,17 @@ public class Pac extends Creature {
 	public void setAnimations(SpriteAnimations<Pac> animations) {
 		this.animations = animations;
 	}
+
+	public void selectAnimation(String name) {
+		selectAnimation(name, true);
+	}
+
+	public void selectAnimation(String name, boolean ensureRunning) {
+		animations().ifPresent(anim -> {
+			anim.select(name);
+			if (ensureRunning) {
+				anim.selectedAnimation().ensureRunning();
+			}
+		});
+	}
 }

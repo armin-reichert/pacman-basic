@@ -27,6 +27,7 @@ import static de.amr.games.pacman.model.common.actors.Ghost.CYAN_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ORANGE_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.PINK_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.RED_GHOST;
+import static de.amr.games.pacman.model.common.actors.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.common.world.World.t;
 
 import java.util.Arrays;
@@ -189,7 +190,8 @@ public class IntroController extends Fsm<State, Context> {
 				// ghosts already reverse direction before Pac-man eats the energizer and turns right!
 				else if ($.pacMan.position.x <= t($.left) + 4) {
 					for (Ghost ghost : $.ghosts) {
-						ghost.enterFrightenedMode();
+						ghost.state = FRIGHTENED;
+						ghost.selectAnimation("blue");
 						ghost.setBothDirs(Direction.RIGHT);
 						ghost.setAbsSpeed(0.5 * $.speed);
 						ghost.move();

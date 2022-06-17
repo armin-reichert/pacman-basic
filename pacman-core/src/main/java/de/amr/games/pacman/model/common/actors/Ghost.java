@@ -31,7 +31,6 @@ import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.lib.Misc.insideRange;
 import static de.amr.games.pacman.model.common.GameVariant.MS_PACMAN;
 import static de.amr.games.pacman.model.common.actors.GhostState.ENTERING_HOUSE;
-import static de.amr.games.pacman.model.common.actors.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.common.actors.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.model.common.actors.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.model.common.world.World.HTS;
@@ -394,20 +393,15 @@ public class Ghost extends Creature {
 		});
 	}
 
-	public void enterFrightenedMode() {
-		state = FRIGHTENED;
-		selectAnimation("blue");
-	}
-
 	public void updateFlashingAnimation(GameModel game) {
 		animations().ifPresent(anim -> {
 			if (anim.selected().equals("blue") && game.pac.powerTimer.remaining() == FLASHING_TICKS) {
-				anim.select("flashing");
-				var flashing = (SingleSpriteAnimation<?>) anim.selectedAnimation();
+				var flashing = (SingleSpriteAnimation<?>) anim.byName("flashing");
 				long frameTicks = FLASHING_TICKS / (game.level.numFlashes * flashing.numFrames());
 				flashing.frameDuration(frameTicks);
 				flashing.repeat(game.level.numFlashes);
 				flashing.restart();
+				anim.select("flashing");
 			} else if (anim.selected().equals("flashing") && game.pac.powerTimer.remaining() == 1) {
 				selectAnimation("color");
 			}
