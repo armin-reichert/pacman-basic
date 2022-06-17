@@ -25,6 +25,7 @@ SOFTWARE.
 package de.amr.games.pacman.lib.animation;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * @author Armin Reichert
@@ -45,6 +46,10 @@ public class SpriteArray<THING> implements SpriteAnimation<THING> {
 		for (int i = 0; i < list.size(); ++i) {
 			things[i] = list.get(i);
 		}
+	}
+
+	public Stream<THING> frames() {
+		return Stream.of(things);
 	}
 
 	public int numFrames() {
