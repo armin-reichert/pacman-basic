@@ -41,6 +41,7 @@ import de.amr.games.pacman.controller.pacman.IntroController.State;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.animation.SingleSpriteAnimation;
+import de.amr.games.pacman.lib.animation.SpriteAnimation;
 import de.amr.games.pacman.lib.animation.SpriteAnimations;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.lib.fsm.FsmState;
@@ -72,7 +73,6 @@ public class IntroController extends Fsm<State, Context> {
 
 	public static class Context {
 		public final int left = 4;
-		public final double speed = 1.15;
 		public final SingleSpriteAnimation<Boolean> blinking = SingleSpriteAnimation.pulse(10);
 		public final String nicknames[] = { "Blinky", "Pinky", "Inky", "Clyde" };
 		public final String characters[] = { "SHADOW", "SPEEDY", "BASHFUL", "POKEY" };
@@ -139,7 +139,7 @@ public class IntroController extends Fsm<State, Context> {
 					$.nicknameVisible[$.ghostIndex] = true;
 				} else if (timer.atSecond(2.0)) {
 					if (++$.ghostIndex < 4) {
-						timer.resetIndefinitely(); // resets timer to 0 too!
+						timer.resetIndefinitely();
 					}
 				} else if (timer.atSecond(2.5)) {
 					changeState(State.SHOWING_POINTS);
@@ -168,14 +168,14 @@ public class IntroController extends Fsm<State, Context> {
 				timer.start();
 				$.pacMan.setPosition(t(36), t(20));
 				$.pacMan.setMoveDir(Direction.LEFT);
-				$.pacMan.setAbsSpeed($.speed);
+				$.pacMan.setAbsSpeed(1.2);
 				$.pacMan.show();
 				$.pacMan.animations().ifPresent(anim -> anim.ensureRunning());
 				for (Ghost ghost : $.ghosts) {
 					ghost.state = GhostState.HUNTING_PAC;
 					ghost.position = $.pacMan.position.plus(16 * (ghost.id + 1), 0);
 					ghost.setBothDirs(Direction.LEFT);
-					ghost.setAbsSpeed($.speed);
+					ghost.setAbsSpeed(1.2);
 					ghost.show();
 					ghost.animations().ifPresent(SpriteAnimations::ensureRunning);
 				}
@@ -193,7 +193,7 @@ public class IntroController extends Fsm<State, Context> {
 						ghost.state = FRIGHTENED;
 						ghost.selectAnimation("blue");
 						ghost.setBothDirs(Direction.RIGHT);
-						ghost.setAbsSpeed(0.5 * $.speed);
+						ghost.setAbsSpeed(0.6);
 						ghost.move();
 					}
 					$.pacMan.move();
@@ -220,7 +220,7 @@ public class IntroController extends Fsm<State, Context> {
 				timer.start();
 				$.ghostKilledTime = timer.tick();
 				$.pacMan.setMoveDir(Direction.RIGHT);
-				$.pacMan.setAbsSpeed($.speed);
+				$.pacMan.setAbsSpeed(1.2);
 			}
 
 			@Override
@@ -246,18 +246,21 @@ public class IntroController extends Fsm<State, Context> {
 					});
 					$.pacMan.hide();
 					$.pacMan.setAbsSpeed(0);
-					Stream.of($.ghosts).forEach(ghost -> ghost.setAbsSpeed(0));
+					Stream.of($.ghosts).forEach(ghost -> {
+						ghost.setAbsSpeed(0);
+						ghost.animation("blue").ifPresent(SpriteAnimation::stop);
+					});
 				});
 
 				// After 1 sec, Pac-Man and the surviving ghosts get visible again and move on
 				if (timer.tick() - $.ghostKilledTime == TickTimer.sec_to_ticks(1)) {
 					$.pacMan.show();
-					$.pacMan.setAbsSpeed($.speed);
+					$.pacMan.setAbsSpeed(1.2);
 					for (Ghost ghost : $.ghosts) {
 						if (ghost.state != GhostState.DEAD) {
 							ghost.show();
-							ghost.setAbsSpeed(0.5 * $.speed);
-							ghost.animations().ifPresent(SpriteAnimations::ensureRunning);
+							ghost.setAbsSpeed(0.6);
+							ghost.animation("blue").ifPresent(SpriteAnimation::run);
 						} else {
 							ghost.hide();
 						}
