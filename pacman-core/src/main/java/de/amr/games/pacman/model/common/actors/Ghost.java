@@ -73,7 +73,7 @@ public class Ghost extends Creature {
 	/** ID of orange ghost. */
 	public static final int ORANGE_GHOST = 3;
 
-	public static final long FLASHING_TIME = TickTimer.sec_to_ticks(2); // TODO not sure
+	public static final long FLASHING_TICKS = TickTimer.sec_to_ticks(2); // TODO not sure
 
 	/** The ID of the ghost, see {@link GameModel#RED_GHOST} etc. */
 	public final int id;
@@ -234,7 +234,7 @@ public class Ghost extends Creature {
 			}
 		}
 		}
-		updateAnimations(game);
+		updateFlashingAnimation(game);
 	}
 
 	public void checkCruiseElroyStart(GameLevel level) {
@@ -391,19 +391,17 @@ public class Ghost extends Creature {
 		});
 	}
 
-	public void updateAnimations(GameModel game) {
+	public void updateFlashingAnimation(GameModel game) {
 		animations().ifPresent(anim -> {
-			long powerTicksLeft = game.pac.powerTimer.remaining();
-			boolean startFlashing = powerTicksLeft == Ghost.FLASHING_TIME;
-			boolean stopFlashing = powerTicksLeft == 1; // TODO check why == 0 does not work
-			if (startFlashing && anim.selected().equals("blue")) {
+			if (anim.selected().equals("blue") && game.pac.powerTimer.remaining() == FLASHING_TICKS) {
 				anim.select("flashing");
-				SingleSpriteAnimation<?> flashing = (SingleSpriteAnimation<?>) anim.selectedAnimation();
-				long frameDuration = FLASHING_TIME / (game.level.numFlashes * flashing.numFrames());
-				flashing.frameDuration(frameDuration);
+				var flashing = (SingleSpriteAnimation<?>) anim.selectedAnimation();
+				long frameTicks = FLASHING_TICKS / (game.level.numFlashes * flashing.numFrames());
+				flashing.frameDuration(frameTicks);
 				flashing.repeat(game.level.numFlashes);
 				flashing.restart();
-			} else if (stopFlashing && anim.selected().equals("flashing")) {
+			} else if (anim.selected().equals("flashing") && game.pac.powerTimer.remaining() == 1) {
+				// TODO check why == 0 does not work
 				anim.selectedAnimation().stop();
 				anim.select("color");
 			}
