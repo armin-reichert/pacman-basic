@@ -488,14 +488,12 @@ public abstract class GameModel {
 		pac.powerTimer.start();
 		log("%s power timer started: %s", pac.name, pac.powerTimer);
 		ghosts(HUNTING_PAC).forEach(ghost -> {
-			ghost.enterFrightenedMode();
+			ghost.state = FRIGHTENED;
 			ghost.forceTurningBack(level.world);
+			ghost.selectAnimation("blue");
 		});
 		ghosts(LOCKED).forEach(ghost -> {
-			ghost.animations().ifPresent(anim -> {
-				anim.select("blue");
-				anim.selectedAnimation().ensureRunning();
-			});
+			ghost.selectAnimation("blue");
 		});
 		sounds().ifPresent(snd -> {
 			snd.stopSirens();

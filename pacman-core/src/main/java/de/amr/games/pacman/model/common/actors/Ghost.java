@@ -157,7 +157,7 @@ public class Ghost extends Creature {
 			boolean houseLeft = leaveHouse(world.ghostHouse());
 			if (houseLeft) {
 				state = HUNTING_PAC;
-				animations().ifPresent(anim -> anim.select("color"));
+				selectAnimation("color");
 				// TODO Inky behaves differently. Why?
 				setBothDirs(LEFT);
 				GameEvents.publish(new GameEvent(game, GameEventType.GHOST_COMPLETES_LEAVING_HOUSE, this, tile()));
@@ -207,7 +207,7 @@ public class Ghost extends Creature {
 		case DEAD -> {
 			setRelSpeed(2 * game.level.ghostSpeed);
 			targetTile = world.ghostHouse().entry();
-			animations().ifPresent(anims -> anims.select("eyes"));
+			selectAnimation("eyes");
 			boolean houseReached = returnToHouse(world, world.ghostHouse());
 			if (houseReached) {
 				setBothDirs(DOWN);
@@ -220,15 +220,13 @@ public class Ghost extends Creature {
 			setRelSpeed(2 * game.level.ghostSpeed);
 			boolean revivalTileReached = enterHouse(world.ghostHouse());
 			if (revivalTileReached) {
-				// TODO is there some revival time > 0?
+				// TODO is there some revival time?
 				state = LEAVING_HOUSE;
-				animations().ifPresent(anim -> {
-					if (game.pac.hasPower()) {
-						anim.select("blue");
-					} else {
-						anim.select("color");
-					}
-				});
+				if (game.pac.hasPower()) {
+					selectAnimation("blue");
+				} else {
+					selectAnimation("color");
+				}
 				setBothDirs(moveDir.opposite());
 				GameEvents.publish(new GameEvent(game, GameEventType.GHOST_STARTS_LEAVING_HOUSE, this, tile()));
 			}
@@ -379,16 +377,26 @@ public class Ghost extends Creature {
 		return Optional.ofNullable(animations);
 	}
 
-	public Optional<SpriteAnimation<?>> animation(String key) {
-		return animations().map(anim -> anim.byName(key));
+	public Optional<SpriteAnimation<?>> animation(String name) {
+		return animations().map(anim -> anim.byName(name));
+	}
+
+	public void selectAnimation(String name) {
+		selectAnimation(name, true);
+	}
+
+	public void selectAnimation(String name, boolean ensureRunning) {
+		animations().ifPresent(anim -> {
+			anim.select(name);
+			if (ensureRunning) {
+				anim.selectedAnimation().ensureRunning();
+			}
+		});
 	}
 
 	public void enterFrightenedMode() {
 		state = FRIGHTENED;
-		animations().ifPresent(anim -> {
-			anim.select("blue");
-			anim.selectedAnimation().ensureRunning();
-		});
+		selectAnimation("blue");
 	}
 
 	public void updateFlashingAnimation(GameModel game) {
@@ -401,9 +409,7 @@ public class Ghost extends Creature {
 				flashing.repeat(game.level.numFlashes);
 				flashing.restart();
 			} else if (anim.selected().equals("flashing") && game.pac.powerTimer.remaining() == 1) {
-				// TODO check why == 0 does not work
-				anim.selectedAnimation().stop();
-				anim.select("color");
+				selectAnimation("color");
 			}
 		});
 	}
