@@ -46,9 +46,9 @@ import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.lib.animation.SpriteAnimations;
 import de.amr.games.pacman.lib.animation.SingleSpriteAnimation;
 import de.amr.games.pacman.lib.animation.SpriteAnimation;
+import de.amr.games.pacman.lib.animation.SpriteAnimations;
 import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.world.GhostHouse;
@@ -72,6 +72,8 @@ public class Ghost extends Creature {
 
 	/** ID of orange ghost. */
 	public static final int ORANGE_GHOST = 3;
+
+	public static final long FLASHING_TIME = TickTimer.sec_to_ticks(2); // TODO not sure
 
 	/** The ID of the ghost, see {@link GameModel#RED_GHOST} etc. */
 	public final int id;
@@ -99,6 +101,8 @@ public class Ghost extends Creature {
 
 	/** Tiles where the ghost cannot move upwards when in chasing or scattering mode. */
 	public List<V2i> upwardsBlockedTiles = List.of();
+
+	private SpriteAnimations<Ghost> animations;
 
 	public Ghost(int id, String name) {
 		super(name);
@@ -366,10 +370,6 @@ public class Ghost extends Creature {
 	}
 
 	// Animations
-
-	public static final long FLASHING_TIME = TickTimer.sec_to_ticks(2); // TODO not sure
-
-	private SpriteAnimations<Ghost> animations;
 
 	public void setAnimations(SpriteAnimations<Ghost> animations) {
 		this.animations = animations;

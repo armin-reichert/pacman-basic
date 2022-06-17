@@ -26,8 +26,8 @@ package de.amr.games.pacman.model.common.actors;
 import java.util.Optional;
 
 import de.amr.games.pacman.lib.TickTimer;
-import de.amr.games.pacman.lib.animation.SpriteAnimations;
 import de.amr.games.pacman.lib.animation.SpriteAnimation;
+import de.amr.games.pacman.lib.animation.SpriteAnimations;
 import de.amr.games.pacman.model.common.GameLevel;
 
 /**
@@ -49,6 +49,8 @@ public class Pac extends Creature {
 	/** Number of clock ticks Pac has not eaten any pellet. */
 	public int starvingTicks = 0;
 
+	private SpriteAnimations<Pac> animations;
+
 	public Pac(String name) {
 		super(name);
 	}
@@ -67,7 +69,11 @@ public class Pac extends Creature {
 		if (resting == 0) {
 			setRelSpeed(hasPower() ? level.playerSpeedPowered : level.playerSpeed);
 			tryMoving(level.world);
-			updateMunchAnimation();
+			if (stuck) {
+				animation("munching").ifPresent(SpriteAnimation::stop);
+			} else {
+				animation("munching").ifPresent(SpriteAnimation::run);
+			}
 		} else {
 			--resting;
 		}
@@ -75,8 +81,6 @@ public class Pac extends Creature {
 	}
 
 	// Animations
-
-	private SpriteAnimations<Pac> animations;
 
 	public Optional<SpriteAnimations<Pac>> animations() {
 		return Optional.ofNullable(animations);
@@ -88,15 +92,5 @@ public class Pac extends Creature {
 
 	public void setAnimations(SpriteAnimations<Pac> animations) {
 		this.animations = animations;
-	}
-
-	private void updateMunchAnimation() {
-		animation("munching").ifPresent(munching -> {
-			if (stuck) {
-				munching.stop();
-			} else {
-				munching.run();
-			}
-		});
 	}
 }
