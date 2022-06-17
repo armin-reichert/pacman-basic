@@ -123,6 +123,7 @@ public enum GameState implements FsmState<GameModel> {
 				// start new game, play intro music
 				timer.resetSeconds(5);
 				timer.start();
+				game.reset();
 				game.sounds().ifPresent(snd -> {
 					snd.stopAll();
 					snd.setSilent(false);
