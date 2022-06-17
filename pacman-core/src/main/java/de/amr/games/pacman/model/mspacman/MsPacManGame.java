@@ -270,6 +270,16 @@ public class MsPacManGame extends GameModel {
 		};
 	}
 
+	public static int mazeNumber(int levelNumber) {
+		return switch (levelNumber) {
+		case 1, 2 -> 1;
+		case 3, 4, 5 -> 2;
+		case 6, 7, 8, 9 -> 3;
+		case 10, 11, 12, 13 -> 4;
+		default -> (levelNumber - 14) % 8 < 4 ? 5 : 6;
+		};
+	}
+
 	private static GameLevel createLevel(int number) {
 		int numLevels = LEVEL_DATA.length;
 		var level = new GameLevel(number, number <= numLevels ? LEVEL_DATA[number - 1] : LEVEL_DATA[numLevels - 1]);
@@ -284,6 +294,7 @@ public class MsPacManGame extends GameModel {
 		if (level.number >= 8) {
 			level.bonusSymbol = new Random().nextInt(7);
 		}
+		level.mazeNumber = mazeNumber(number);
 		level.pacStarvingTimeLimit = (int) sec_to_ticks(level.number < 5 ? 4 : 3);
 		level.globalDotLimits = new int[] { Integer.MAX_VALUE, 7, 17, Integer.MAX_VALUE };
 		level.privateDotLimits = switch (level.number) {
