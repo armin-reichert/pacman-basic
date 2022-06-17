@@ -240,6 +240,10 @@ public class IntroController extends Fsm<State, Context> {
 					$.ghostKilledTime = timer.tick();
 					victim.state = GhostState.DEAD;
 					victim.killIndex = victim.id;
+					victim.animations().ifPresent(animations -> {
+						animations.select("value");
+						animations.selectedAnimation().setFrameIndex(victim.killIndex);
+					});
 					$.pacMan.hide();
 					$.pacMan.setAbsSpeed(0);
 					Stream.of($.ghosts).forEach(ghost -> ghost.setAbsSpeed(0));
