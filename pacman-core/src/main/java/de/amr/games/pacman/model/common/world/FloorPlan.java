@@ -125,8 +125,10 @@ public class FloorPlan {
 			for (int x = 0; x < numBlocksX; ++x) {
 				int tileX = x / resolution;
 				int i = (y % resolution) * resolution + (x % resolution);
-				V2i n = northOf(tileX, tileY, i), e = eastOf(tileX, tileY, i), s = southOf(tileX, tileY, i),
-						w = westOf(tileX, tileY, i);
+				V2i n = northOf(tileX, tileY, i);
+				V2i e = eastOf(tileX, tileY, i);
+				V2i s = southOf(tileX, tileY, i);
+				V2i w = westOf(tileX, tileY, i);
 				if (world.isWall(n) && world.isWall(e) && world.isWall(s) && world.isWall(w)) {
 					V2i se = southOf(e.x, e.y, i);
 					V2i sw = southOf(w.x, w.y, i);
