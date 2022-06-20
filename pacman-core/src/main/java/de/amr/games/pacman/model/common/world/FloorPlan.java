@@ -52,12 +52,12 @@ public class FloorPlan {
 		};
 	}
 
-	private final byte[][] info;
+	private byte[][] info;
 	private final int resolution;
 
 	public FloorPlan(int resolution, World world) {
 		this.resolution = resolution;
-		info = createFloorPlanInfo(world);
+		createFloorPlanInfo(world);
 	}
 
 	public byte get(int x, int y) {
@@ -70,6 +70,10 @@ public class FloorPlan {
 
 	public int sizeY() {
 		return info.length;
+	}
+
+	public int getResolution() {
+		return resolution;
 	}
 
 	public void print(Writer w, boolean useSymbols) {
@@ -102,10 +106,10 @@ public class FloorPlan {
 		return new V2i(tileX + dx, tileY);
 	}
 
-	public byte[][] createFloorPlanInfo(World world) {
+	public void createFloorPlanInfo(World world) {
 		int numBlocksX = resolution * world.numCols();
 		int numBlocksY = resolution * world.numRows();
-		byte[][] info = new byte[numBlocksY][numBlocksX];
+		info = new byte[numBlocksY][numBlocksX];
 
 		// scan for walls
 		for (int y = 0; y < numBlocksY; ++y) {
@@ -190,6 +194,5 @@ public class FloorPlan {
 				}
 			}
 		}
-		return info;
 	}
 }
