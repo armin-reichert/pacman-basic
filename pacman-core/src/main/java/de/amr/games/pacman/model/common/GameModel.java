@@ -385,7 +385,7 @@ public abstract class GameModel {
 	}
 
 	private boolean playerMeetsHuntingGhost() {
-		return ghosts(HUNTING_PAC).filter(pac::sameTile).findAny().isPresent();
+		return ghosts(HUNTING_PAC).anyMatch(pac::sameTile);
 	}
 
 	private void killPlayer() {
