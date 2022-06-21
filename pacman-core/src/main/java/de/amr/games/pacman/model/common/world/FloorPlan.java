@@ -53,11 +53,13 @@ public class FloorPlan {
 	}
 
 	private byte[][] info;
+	private final World world;
 	private final int resolution;
 
 	public FloorPlan(int resolution, World world) {
 		this.resolution = resolution;
-		createFloorPlanInfo(world);
+		this.world = world;
+		createFloorPlanInfo();
 	}
 
 	public byte get(int x, int y) {
@@ -106,7 +108,7 @@ public class FloorPlan {
 		return new V2i(tileX + dx, tileY);
 	}
 
-	public void createFloorPlanInfo(World world) {
+	private void createFloorPlanInfo() {
 		int numBlocksX = resolution * world.numCols();
 		int numBlocksY = resolution * world.numRows();
 		info = new byte[numBlocksY][numBlocksX];
