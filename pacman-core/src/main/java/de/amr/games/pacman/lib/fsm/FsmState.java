@@ -29,28 +29,30 @@ import de.amr.games.pacman.lib.TickTimer;
 /**
  * Interface implemented by all states (enums) of a FSM. Each state has a timer and a reference to its FSM.
  *
+ * @param <C> the (context) type that the hook methods {@link #onEnter(C)}, {@link #onUpdate(C)}, {@link #onExit(C)} get
+ *            passed as parameter
  * @author Armin Reichert
  */
-public interface FsmState<CONTEXT> {
+public interface FsmState<C> {
 
 	/**
 	 * Sets the reference to the FSM owning this state.
 	 * 
 	 * @param fsm the FSM owning this state
 	 */
-	void setOwner(Fsm<FsmState<CONTEXT>, CONTEXT> fsm);
+	void setOwner(Fsm<FsmState<C>, C> fsm);
 
 	/**
 	 * @return the machine owning this state.
 	 */
-	Fsm<FsmState<CONTEXT>, CONTEXT> getOwner();
+	Fsm<FsmState<C>, C> getOwner();
 
 	/**
 	 * The hook method that gets executed when the state is entered.
 	 * 
 	 * @param context the "context" (data type provided to the state)
 	 */
-	default void onEnter(CONTEXT context) {
+	default void onEnter(C context) {
 	}
 
 	/**
@@ -58,14 +60,14 @@ public interface FsmState<CONTEXT> {
 	 * 
 	 * @param context the "context" (data type provided to the state)
 	 */
-	void onUpdate(CONTEXT context);
+	void onUpdate(C context);
 
 	/**
 	 * The hook method that gets executed when the state is exited.
 	 * 
 	 * @param context the "context" (data type provided to the state)
 	 */
-	default void onExit(CONTEXT context) {
+	default void onExit(C context) {
 	}
 
 	/**
@@ -73,7 +75,7 @@ public interface FsmState<CONTEXT> {
 	 */
 	TickTimer timer();
 
-	default void changeState(FsmState<CONTEXT> nextState) {
+	default void changeState(FsmState<C> nextState) {
 		getOwner().changeState(nextState);
 	}
 }
