@@ -34,7 +34,17 @@ public class V2d {
 
 	public static final V2d NULL = new V2d(0, 0);
 
-	private static double EPSILON = 1e-6;
+	private static final double EPSILON = 1e-6;
+
+	/**
+	 * @param value  some double value
+	 * @param center target value
+	 * @param radius maximum allowed deviation
+	 * @return {@code true} if the given value is inside the interval {@code [target - tolerance; target + tolerance]}
+	 */
+	public static boolean insideRange(double value, double center, double radius) {
+		return (center - radius) <= value && value <= (center + radius);
+	}
 
 	public final double x;
 	public final double y;
@@ -53,7 +63,7 @@ public class V2d {
 		if (getClass() != v_object.getClass())
 			return false;
 		V2d v = (V2d) v_object;
-		return Misc.insideRange(x, v.x, EPSILON) && Misc.insideRange(y, v.y, EPSILON);
+		return insideRange(x, v.x, EPSILON) && insideRange(y, v.y, EPSILON);
 	}
 
 	@Override
