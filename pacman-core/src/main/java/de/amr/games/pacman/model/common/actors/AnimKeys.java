@@ -31,6 +31,9 @@ public class AnimKeys {
 	private AnimKeys() {
 	}
 
+	public static final String PAC_DYING = "dying";
+	public static final String PAC_MUNCHING = "munching";
+
 	public static final String GHOST_BLUE = "blue";
 	public static final String GHOST_COLOR = "color";
 	public static final String GHOST_EYES = "eyes";

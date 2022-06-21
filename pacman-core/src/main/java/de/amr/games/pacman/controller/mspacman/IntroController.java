@@ -41,6 +41,7 @@ import de.amr.games.pacman.lib.animation.SingleSpriteAnimation;
 import de.amr.games.pacman.lib.animation.SpriteAnimations;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.lib.fsm.FsmState;
+import de.amr.games.pacman.model.common.actors.AnimKeys;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.GhostState;
 import de.amr.games.pacman.model.common.actors.Pac;
@@ -160,7 +161,7 @@ public class IntroController extends Fsm<IntroController.State, IntroController.
 				$.msPacMan.move();
 				if ($.msPacMan.position.x <= $.msPacManStopX) {
 					$.msPacMan.setAbsSpeed(0);
-					$.msPacMan.animations().get().byName("munching").reset();
+					$.msPacMan.animations().get().byName(AnimKeys.PAC_MUNCHING).reset();
 					controller.changeState(State.READY_TO_PLAY);
 				}
 			}

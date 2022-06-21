@@ -70,9 +70,9 @@ public class Pac extends Creature {
 			setRelSpeed(hasPower() ? level.playerSpeedPowered : level.playerSpeed);
 			tryMoving(level.world);
 			if (stuck) {
-				animation("munching").ifPresent(SpriteAnimation::stop);
+				animation(AnimKeys.PAC_MUNCHING).ifPresent(SpriteAnimation::stop);
 			} else {
-				animation("munching").ifPresent(SpriteAnimation::run);
+				animation(AnimKeys.PAC_MUNCHING).ifPresent(SpriteAnimation::run);
 			}
 		} else {
 			--resting;
