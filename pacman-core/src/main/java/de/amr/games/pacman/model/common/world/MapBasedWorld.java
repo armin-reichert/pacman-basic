@@ -64,7 +64,7 @@ public abstract class MapBasedWorld implements World {
 	protected final int totalFoodCount;
 	protected int foodRemaining;
 
-	public MapBasedWorld(byte[][] mapData, int sizeX, int sizeY) {
+	protected MapBasedWorld(byte[][] mapData, int sizeX, int sizeY) {
 		map = copyArray2D(mapData);
 		size = v(sizeX, sizeY);
 		energizerTiles = tiles().filter(this::isEnergizerTile).collect(Collectors.toUnmodifiableList());

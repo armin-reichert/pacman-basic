@@ -55,11 +55,19 @@ import de.amr.games.pacman.model.common.world.GhostHouse;
  */
 public class PacManGame extends GameModel {
 
-	public static final int CHERRIES = 0, STRAWBERRY = 1, PEACH = 2, APPLE = 3, GRAPES = 4, GALAXIAN = 5, BELL = 6,
-			KEY = 7;
+	public static final int CHERRIES = 0;
+	public static final int STRAWBERRY = 1;
+	public static final int PEACH = 2;
+	public static final int APPLE = 3;
+	public static final int GRAPES = 4;
+	public static final int GALAXIAN = 5;
+	public static final int BELL = 6;
+	public static final int KEY = 7;
+
 	public static final String[] BONUS_NAMES = { "CHERRIES", "STRAWBERRY", "PEACH", "APPLE", "GRAPES", "GALAXIAN", "BELL",
 			"KEY" };
-	public static final int[] BONUS_VALUES = { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
+
+	private static final int[] BONUS_VALUES = { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
 
 	private static final Object[][] LEVEL_DATA = {
 	/*@formatter:off*/

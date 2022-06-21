@@ -67,7 +67,7 @@ public class MovingBonus extends Creature implements Bonus {
 	}
 
 	public void setRoute(World world, List<V2i> route, Direction startDir) {
-		if (route == null || route.size() == 0) {
+		if (route == null || route.isEmpty()) {
 			throw new IllegalArgumentException("Route must contain at least one tile");
 		}
 		var startTile = route.get(0);
@@ -130,7 +130,7 @@ public class MovingBonus extends Creature implements Bonus {
 	@Override
 	public void update(GameModel game) {
 		switch (state) {
-		case INACTIVE -> {
+		case INACTIVE -> { // nothing to do
 		}
 		case EDIBLE -> {
 			if (game.pac.tile().equals(tile())) {
