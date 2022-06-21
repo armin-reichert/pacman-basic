@@ -491,9 +491,7 @@ public abstract class GameModel {
 			ghost.forceTurningBack(level.world);
 			ghost.selectAnimation(AnimKeys.GHOST_BLUE);
 		});
-		ghosts(LOCKED).forEach(ghost -> {
-			ghost.selectAnimation(AnimKeys.GHOST_BLUE);
-		});
+		ghosts(LOCKED).forEach(ghost -> ghost.selectAnimation(AnimKeys.GHOST_BLUE));
 		sounds().ifPresent(snd -> {
 			snd.stopSirens();
 			snd.ensureLoop(GameSound.PACMAN_POWER, GameSounds.FOREVER);
@@ -526,9 +524,8 @@ public abstract class GameModel {
 	 * Updates the ghosts that are returning home while the game is stalled because of a dying ghost.
 	 */
 	public void updateGhostsReturningHome() {
-		ghosts().filter(ghost -> ghost.is(DEAD) && ghost.killIndex == -1 || ghost.is(ENTERING_HOUSE)).forEach(ghost -> {
-			ghost.update(this);
-		});
+		ghosts().filter(ghost -> ghost.is(DEAD) && ghost.killIndex == -1 || ghost.is(ENTERING_HOUSE))
+				.forEach(ghost -> ghost.update(this));
 	}
 
 	// Ghost house rules, see Pac-Man dossier

@@ -76,15 +76,15 @@ public class IntroController extends Fsm<State, Context> {
 	}
 
 	public static class Context {
-		public final int left = 4;
-		public final SingleSpriteAnimation<Boolean> blinking = SingleSpriteAnimation.pulse(10);
-		public final String nicknames[] = { "Blinky", "Pinky", "Inky", "Clyde" };
-		public final String characters[] = { "SHADOW", "SPEEDY", "BASHFUL", "POKEY" };
-		public boolean creditVisible = false;
-		public boolean titleVisible = false;
+		public int left = 4;
+		public SingleSpriteAnimation<Boolean> blinking = SingleSpriteAnimation.pulse(10);
+		public String[] nicknames = { "Blinky", "Pinky", "Inky", "Clyde" };
+		public String[] characters = { "SHADOW", "SPEEDY", "BASHFUL", "POKEY" };
 		public boolean[] pictureVisible = { false, false, false, false };
 		public boolean[] nicknameVisible = { false, false, false, false };
 		public boolean[] characterVisible = { false, false, false, false };
+		public boolean creditVisible = false;
+		public boolean titleVisible = false;
 		public Pac pacMan;
 		public Ghost[] ghosts;
 		public int ghostIndex;
@@ -174,7 +174,7 @@ public class IntroController extends Fsm<State, Context> {
 				$.pacMan.setMoveDir(Direction.LEFT);
 				$.pacMan.setAbsSpeed(1.2);
 				$.pacMan.show();
-				$.pacMan.animations().ifPresent(anim -> anim.ensureRunning());
+				$.pacMan.animations().ifPresent(SpriteAnimations::ensureRunning);
 				for (Ghost ghost : $.ghosts) {
 					ghost.state = GhostState.HUNTING_PAC;
 					ghost.position = $.pacMan.position.plus(16 * (ghost.id + 1), 0);
