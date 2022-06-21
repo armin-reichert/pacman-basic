@@ -44,7 +44,7 @@ import de.amr.games.pacman.model.common.world.World;
  */
 public class Creature extends Entity {
 
-	public static final Direction[] TURN_PRIORITY = { UP, LEFT, DOWN, RIGHT };
+	protected static final Direction[] TURN_PRIORITY = { UP, LEFT, DOWN, RIGHT };
 
 	/** Readable name, for display and logging purposes. */
 	public final String name;

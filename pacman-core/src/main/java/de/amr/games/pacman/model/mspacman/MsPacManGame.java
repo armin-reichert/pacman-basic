@@ -378,20 +378,20 @@ public class MsPacManGame extends GameModel {
 		ArcadeWorld world = (ArcadeWorld) level.world;
 		GhostHouse house = world.ghostHouse();
 
-		ghosts[RED_GHOST].homeTile = house.entry();
-		ghosts[RED_GHOST].revivalTile = house.seatMiddle();
-		ghosts[RED_GHOST].scatterTile = world.rightUpperTarget;
+		theGhosts[RED_GHOST].homeTile = house.entry();
+		theGhosts[RED_GHOST].revivalTile = house.seatMiddle();
+		theGhosts[RED_GHOST].scatterTile = world.rightUpperTarget;
 
-		ghosts[PINK_GHOST].homeTile = ghosts[PINK_GHOST].revivalTile = house.seatMiddle();
-		ghosts[PINK_GHOST].scatterTile = world.leftUpperTarget;
+		theGhosts[PINK_GHOST].homeTile = theGhosts[PINK_GHOST].revivalTile = house.seatMiddle();
+		theGhosts[PINK_GHOST].scatterTile = world.leftUpperTarget;
 
-		ghosts[CYAN_GHOST].homeTile = ghosts[CYAN_GHOST].revivalTile = house.seatLeft();
-		ghosts[CYAN_GHOST].scatterTile = world.rightLowerTarget;
+		theGhosts[CYAN_GHOST].homeTile = theGhosts[CYAN_GHOST].revivalTile = house.seatLeft();
+		theGhosts[CYAN_GHOST].scatterTile = world.rightLowerTarget;
 
-		ghosts[ORANGE_GHOST].homeTile = ghosts[ORANGE_GHOST].revivalTile = house.seatRight();
-		ghosts[ORANGE_GHOST].scatterTile = world.leftLowerTarget;
+		theGhosts[ORANGE_GHOST].homeTile = theGhosts[ORANGE_GHOST].revivalTile = house.seatRight();
+		theGhosts[ORANGE_GHOST].scatterTile = world.leftLowerTarget;
 
-		for (var ghost : ghosts) {
+		for (var ghost : theGhosts) {
 			ghost.dotCounter = 0;
 			ghost.elroy = 0;
 		}

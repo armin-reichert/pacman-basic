@@ -156,7 +156,7 @@ public class Ghost extends Creature {
 			boolean houseLeft = leaveHouse(world.ghostHouse());
 			if (houseLeft) {
 				state = HUNTING_PAC;
-				selectAnimation("color");
+				selectAnimation(AnimKeys.GHOST_COLOR);
 				// TODO Inky behaves differently. Why?
 				setBothDirs(LEFT);
 				GameEvents.publish(new GameEvent(game, GameEventType.GHOST_COMPLETES_LEAVING_HOUSE, this, tile()));
@@ -194,7 +194,7 @@ public class Ghost extends Creature {
 			 * Chase if the hunting timer is in a chasing phase or if I am in Elroy mode.
 			 */
 			else if (elroy > 0 || game.huntingTimer.chasingPhase() != -1) {
-				chase(world, game.pac, game.ghosts[RED_GHOST]);
+				chase(world, game.pac, game.theGhosts[RED_GHOST]);
 			}
 			/**
 			 * Scatter else.
@@ -206,7 +206,7 @@ public class Ghost extends Creature {
 		case DEAD -> {
 			setRelSpeed(2 * game.level.ghostSpeed);
 			targetTile = world.ghostHouse().entry();
-			selectAnimation("eyes");
+			selectAnimation(AnimKeys.GHOST_EYES);
 			boolean houseReached = returnToHouse(world, world.ghostHouse());
 			if (houseReached) {
 				setBothDirs(DOWN);
@@ -222,9 +222,9 @@ public class Ghost extends Creature {
 				// TODO is there some revival time?
 				state = LEAVING_HOUSE;
 				if (game.pac.hasPower()) {
-					selectAnimation("blue");
+					selectAnimation(AnimKeys.GHOST_BLUE);
 				} else {
-					selectAnimation("color");
+					selectAnimation(AnimKeys.GHOST_COLOR);
 				}
 				setBothDirs(moveDir.opposite());
 				GameEvents.publish(new GameEvent(game, GameEventType.GHOST_STARTS_LEAVING_HOUSE, this, tile()));
@@ -395,15 +395,15 @@ public class Ghost extends Creature {
 
 	public void updateFlashingAnimation(GameModel game) {
 		animations().ifPresent(anim -> {
-			if (anim.selected().equals("blue") && game.pac.powerTimer.remaining() == FLASHING_TICKS) {
-				var flashing = (SingleSpriteAnimation<?>) anim.byName("flashing");
+			if (anim.selected().equals(AnimKeys.GHOST_BLUE) && game.pac.powerTimer.remaining() == FLASHING_TICKS) {
+				var flashing = (SingleSpriteAnimation<?>) anim.byName(AnimKeys.GHOST_FLASHING);
 				long frameTicks = FLASHING_TICKS / (game.level.numFlashes * flashing.numFrames());
 				flashing.frameDuration(frameTicks);
 				flashing.repeat(game.level.numFlashes);
 				flashing.restart();
-				anim.select("flashing");
-			} else if (anim.selected().equals("flashing") && game.pac.powerTimer.remaining() == 1) {
-				selectAnimation("color");
+				anim.select(AnimKeys.GHOST_FLASHING);
+			} else if (anim.selected().equals(AnimKeys.GHOST_FLASHING) && game.pac.powerTimer.remaining() == 1) {
+				selectAnimation(AnimKeys.GHOST_COLOR);
 			}
 		});
 	}

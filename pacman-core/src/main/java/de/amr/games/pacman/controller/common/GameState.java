@@ -39,6 +39,7 @@ import de.amr.games.pacman.model.common.GameModel.CheckResult;
 import de.amr.games.pacman.model.common.GameSound;
 import de.amr.games.pacman.model.common.GameSounds;
 import de.amr.games.pacman.model.common.GameVariant;
+import de.amr.games.pacman.model.common.actors.AnimKeys;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.GhostState;
 
@@ -306,8 +307,8 @@ public enum GameState implements FsmState<GameModel> {
 			game.pac.hide();
 			game.ghosts().forEach(ghost -> {
 				if (ghost.killIndex != -1) {
-					ghost.animation("value").ifPresent(anim -> anim.setFrameIndex(ghost.killIndex));
-					ghost.selectAnimation("value");
+					ghost.animation(AnimKeys.GHOST_VALUE).ifPresent(anim -> anim.setFrameIndex(ghost.killIndex));
+					ghost.selectAnimation(AnimKeys.GHOST_VALUE);
 				}
 			});
 			game.sounds().ifPresent(snd -> snd.play(GameSound.GHOST_EATEN));
@@ -327,7 +328,7 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void onExit(GameModel game) {
 			game.pac.show();
-			game.ghosts().forEach(ghost -> ghost.animation("flashing").ifPresent(SpriteAnimation::run));
+			game.ghosts().forEach(ghost -> ghost.animation(AnimKeys.GHOST_FLASHING).ifPresent(SpriteAnimation::run));
 			game.letDeadGhostsReturnHome();
 		}
 	},

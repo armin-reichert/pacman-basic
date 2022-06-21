@@ -45,6 +45,7 @@ import de.amr.games.pacman.lib.animation.SpriteAnimation;
 import de.amr.games.pacman.lib.animation.SpriteAnimations;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.lib.fsm.FsmState;
+import de.amr.games.pacman.model.common.actors.AnimKeys;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.GhostState;
 import de.amr.games.pacman.model.common.actors.Pac;
@@ -194,7 +195,7 @@ public class IntroController extends Fsm<State, Context> {
 				else if ($.pacMan.position.x <= t($.left) + 4) {
 					for (Ghost ghost : $.ghosts) {
 						ghost.state = FRIGHTENED;
-						ghost.selectAnimation("blue");
+						ghost.selectAnimation(AnimKeys.GHOST_BLUE);
 						ghost.setBothDirs(Direction.RIGHT);
 						ghost.setAbsSpeed(0.6);
 						ghost.move();
@@ -244,14 +245,14 @@ public class IntroController extends Fsm<State, Context> {
 					victim.state = GhostState.DEAD;
 					victim.killIndex = victim.id;
 					victim.animations().ifPresent(animations -> {
-						animations.select("value");
+						animations.select(AnimKeys.GHOST_VALUE);
 						animations.selectedAnimation().setFrameIndex(victim.killIndex);
 					});
 					$.pacMan.hide();
 					$.pacMan.setAbsSpeed(0);
 					Stream.of($.ghosts).forEach(ghost -> {
 						ghost.setAbsSpeed(0);
-						ghost.animation("blue").ifPresent(SpriteAnimation::stop);
+						ghost.animation(AnimKeys.GHOST_BLUE).ifPresent(SpriteAnimation::stop);
 					});
 				});
 
@@ -263,7 +264,7 @@ public class IntroController extends Fsm<State, Context> {
 						if (ghost.state != GhostState.DEAD) {
 							ghost.show();
 							ghost.setAbsSpeed(0.6);
-							ghost.animation("blue").ifPresent(SpriteAnimation::run);
+							ghost.animation(AnimKeys.GHOST_BLUE).ifPresent(SpriteAnimation::run);
 						} else {
 							ghost.hide();
 						}

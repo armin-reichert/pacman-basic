@@ -49,6 +49,7 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.animation.SingleSpriteAnimation;
 import de.amr.games.pacman.lib.animation.SpriteAnimation;
+import de.amr.games.pacman.model.common.actors.AnimKeys;
 import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.GhostState;
@@ -65,7 +66,7 @@ public abstract class GameModel {
 	/** Speed in pixels/tick at 100%. */
 	public static final double BASE_SPEED = 1.25;
 
-	public static final long[][] HUNTING_TIMES = {
+	protected static final long[][] HUNTING_TIMES = {
 	//@formatter:off
 		{ 7*60, 20*60, 7*60, 20*60, 5*60,   20*60, 5*60, TickTimer.INDEFINITE },
 		{ 7*60, 20*60, 7*60, 20*60, 5*60, 1033*60,    1, TickTimer.INDEFINITE },
@@ -77,7 +78,7 @@ public abstract class GameModel {
 	public static final int PELLET_RESTING_TICKS = 1;
 	public static final int ENERGIZER_VALUE = 50;
 	public static final int ENERGIZER_RESTING_TICKS = 3;
-	public static final int[] GHOST_VALUES = { 200, 400, 800, 1600 };
+	protected static final int[] GHOST_VALUES = { 200, 400, 800, 1600 };
 	public static final int INITIAL_LIFES = 3;
 	public static final int ALL_GHOSTS_KILLED_POINTS = 12_000;
 
@@ -100,7 +101,7 @@ public abstract class GameModel {
 	public boolean autoControlled;
 
 	/** The four ghosts in order RED, PINK, CYAN, ORANGE. */
-	public final Ghost[] ghosts;
+	public final Ghost[] theGhosts;
 
 	/** Timer used to control hunting phase. */
 	public final HuntingTimer huntingTimer = new HuntingTimer();
@@ -140,13 +141,13 @@ public abstract class GameModel {
 
 	private GameSounds sounds;
 
-	public GameModel(GameVariant gameVariant, Pac pac, Ghost... ghosts) {
+	protected GameModel(GameVariant gameVariant, Pac pac, Ghost... ghosts) {
 		if (ghosts.length != 4) {
 			throw new IllegalArgumentException("We need exactly 4 ghosts in order RED, PINK, CYAN, ORANGE");
 		}
 		this.variant = gameVariant;
 		this.pac = pac;
-		this.ghosts = ghosts;
+		this.theGhosts = ghosts;
 	}
 
 	public void consumeCredit() {
@@ -206,7 +207,7 @@ public abstract class GameModel {
 			anim.selectedAnimation().reset();
 		});
 
-		for (Ghost ghost : ghosts) {
+		for (Ghost ghost : theGhosts) {
 			ghost.visible = true;
 			ghost.placeAt(ghost.homeTile, HTS, 0);
 			ghost.setAbsSpeed(0);
@@ -220,17 +221,15 @@ public abstract class GameModel {
 			ghost.stuck = false;
 			ghost.state = GhostState.LOCKED;
 			ghost.killIndex = -1;
-			// ghost.dotCounter = 0;
-			// ghost.elroyMode = 0;
 			ghost.animations().ifPresent(anim -> {
-				anim.select("color");
+				anim.select(AnimKeys.GHOST_COLOR);
 				anim.selectedAnimation().reset();
 			});
 		}
 	}
 
 	public Stream<Ghost> ghosts() {
-		return Stream.of(ghosts);
+		return Stream.of(theGhosts);
 	}
 
 	public Stream<Ghost> ghosts(GhostState state) {
@@ -391,7 +390,7 @@ public abstract class GameModel {
 
 	private void killPlayer() {
 		pac.killed = true;
-		ghosts[RED_GHOST].stopCruiseElroyMode();
+		theGhosts[RED_GHOST].stopCruiseElroyMode();
 		// See Pac-Man dossier:
 		globalDotCounter = 0;
 		globalDotCounterEnabled = true;
@@ -475,7 +474,7 @@ public abstract class GameModel {
 		pac.starvingTicks = 0;
 		pac.resting = restingTicks;
 		level.world.removeFood(pac.tile());
-		ghosts[RED_GHOST].checkCruiseElroyStart(level);
+		theGhosts[RED_GHOST].checkCruiseElroyStart(level);
 		updateGhostDotCounters();
 		scores.addPoints(value);
 		sounds().ifPresent(snd -> snd.ensureLoop(GameSound.PACMAN_MUNCH, GameSounds.FOREVER));
@@ -490,10 +489,10 @@ public abstract class GameModel {
 		ghosts(HUNTING_PAC).forEach(ghost -> {
 			ghost.state = FRIGHTENED;
 			ghost.forceTurningBack(level.world);
-			ghost.selectAnimation("blue");
+			ghost.selectAnimation(AnimKeys.GHOST_BLUE);
 		});
 		ghosts(LOCKED).forEach(ghost -> {
-			ghost.selectAnimation("blue");
+			ghost.selectAnimation(AnimKeys.GHOST_BLUE);
 		});
 		sounds().ifPresent(snd -> {
 			snd.stopSirens();
@@ -537,7 +536,7 @@ public abstract class GameModel {
 	private void checkGhostCanBeUnlocked(CheckResult result) {
 		ghosts(LOCKED).findFirst().ifPresent(ghost -> {
 			if (ghost.id == RED_GHOST) {
-				result.unlockedGhost = Optional.of(ghosts[RED_GHOST]);
+				result.unlockedGhost = Optional.of(theGhosts[RED_GHOST]);
 				result.unlockReason = "Blinky is always unlocked immediately";
 			} else if (globalDotCounterEnabled && globalDotCounter >= level.globalDotLimits[ghost.id]) {
 				result.unlockedGhost = Optional.of(ghost);
@@ -555,9 +554,9 @@ public abstract class GameModel {
 
 	private void unlockGhost(Ghost ghost, String reason) {
 		log("Unlock ghost %s (%s)", ghost.name, reason);
-		if (ghost.id == ORANGE_GHOST && ghosts[RED_GHOST].elroy < 0) {
-			ghosts[RED_GHOST].elroy = -ghosts[RED_GHOST].elroy; // resume Elroy mode
-			log("%s Elroy mode %d resumed", ghosts[RED_GHOST].name, ghosts[RED_GHOST].elroy);
+		if (ghost.id == ORANGE_GHOST && theGhosts[RED_GHOST].elroy < 0) {
+			theGhosts[RED_GHOST].elroy = -theGhosts[RED_GHOST].elroy; // resume Elroy mode
+			log("%s Elroy mode %d resumed", theGhosts[RED_GHOST].name, theGhosts[RED_GHOST].elroy);
 		}
 		if (ghost.id == RED_GHOST) {
 			ghost.state = HUNTING_PAC;
@@ -568,7 +567,7 @@ public abstract class GameModel {
 
 	private void updateGhostDotCounters() {
 		if (globalDotCounterEnabled) {
-			if (ghosts[ORANGE_GHOST].is(LOCKED) && globalDotCounter == 32) {
+			if (theGhosts[ORANGE_GHOST].is(LOCKED) && globalDotCounter == 32) {
 				globalDotCounterEnabled = false;
 				globalDotCounter = 0;
 				log("Global dot counter disabled and reset, Clyde was in house when counter reached 32");

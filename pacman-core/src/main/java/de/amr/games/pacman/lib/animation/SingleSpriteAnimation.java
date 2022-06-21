@@ -26,12 +26,12 @@ package de.amr.games.pacman.lib.animation;
 /**
  * Animation (sequence with timing) of things, for example of boolean, numbers, images or spritesheet regions.
  * 
- * @param <THING> type of things to be animated
+ * @param <T> type of things to be animated
  * @author Armin Reichert
  */
-public class SingleSpriteAnimation<THING> implements SpriteAnimation<THING> {
+public class SingleSpriteAnimation<T> implements SpriteAnimation<T> {
 
-	public static int INDEFINITE = -1;
+	public static final int INDEFINITE = -1;
 
 	/**
 	 * @param frameDuration ticks of single pulse
@@ -44,7 +44,7 @@ public class SingleSpriteAnimation<THING> implements SpriteAnimation<THING> {
 		return pulse;
 	}
 
-	protected THING[] things;
+	protected T[] things;
 	protected int repetitions;
 	protected long delay;
 	protected long delayRemainingTicks;
@@ -58,7 +58,7 @@ public class SingleSpriteAnimation<THING> implements SpriteAnimation<THING> {
 	protected Runnable onStart;
 
 	@SafeVarargs
-	public SingleSpriteAnimation(THING... things) {
+	public SingleSpriteAnimation(T... things) {
 		if (things.length == 0) {
 			throw new IllegalArgumentException("Sequence must have at least contain one thing");
 		}
@@ -160,8 +160,8 @@ public class SingleSpriteAnimation<THING> implements SpriteAnimation<THING> {
 	 * @return the frame before the animation step is executed
 	 */
 	@Override
-	public THING animate() {
-		THING currentThing = things[frameIndex];
+	public T animate() {
+		T currentThing = things[frameIndex];
 		advance();
 		return currentThing;
 	}
@@ -170,7 +170,7 @@ public class SingleSpriteAnimation<THING> implements SpriteAnimation<THING> {
 	 * @return the current frame/thing
 	 */
 	@Override
-	public THING frame() {
+	public T frame() {
 		return things[frameIndex];
 	}
 
@@ -214,7 +214,7 @@ public class SingleSpriteAnimation<THING> implements SpriteAnimation<THING> {
 	 * @return the thing at the given index
 	 */
 	@Override
-	public THING frame(int i) {
+	public T frame(int i) {
 		return things[i];
 	}
 
