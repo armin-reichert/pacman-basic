@@ -60,10 +60,18 @@ import de.amr.games.pacman.model.common.world.World;
  */
 public class MsPacManGame extends GameModel {
 
-	public static final int CHERRIES = 0, STRAWBERRY = 1, PEACH = 2, PRETZEL = 3, APPLE = 4, PEAR = 5, BANANA = 6;
-	public static final String[] BONUS_NAMES = { "CHERRIES", "STRAWBERRY", "PEACH", "PRETZEL", "APPLE", "PEAR",
+	public static final int CHERRIES = 0;
+	public static final int STRAWBERRY = 1;
+	public static final int PEACH = 2;
+	public static final int PRETZEL = 3;
+	public static final int APPLE = 4;
+	public static final int PEAR = 5;
+	public static final int BANANA = 6;
+
+	protected static final String[] BONUS_NAMES = { "CHERRIES", "STRAWBERRY", "PEACH", "PRETZEL", "APPLE", "PEAR",
 			"BANANA" };
-	public static final int[] BONUS_VALUES = { 100, 200, 500, 700, 1000, 2000, 5000 };
+
+	protected static final int[] BONUS_VALUES = { 100, 200, 500, 700, 1000, 2000, 5000 };
 
 	private static final Object[][] LEVEL_DATA = {
 	/*@formatter:off*/
@@ -292,7 +300,7 @@ public class MsPacManGame extends GameModel {
 		};
 		level.world = createWorld(mapNumber);
 		if (level.number >= 8) {
-			level.bonusSymbol = new Random().nextInt(7);
+			level.bonusSymbol = rnd.nextInt(7);
 		}
 		level.mazeNumber = mazeNumber(number);
 		level.pacStarvingTimeLimit = (int) sec_to_ticks(level.number < 5 ? 4 : 3);
@@ -304,6 +312,8 @@ public class MsPacManGame extends GameModel {
 		};
 		return level;
 	}
+
+	private static final Random rnd = new Random();
 
 	private final MovingBonus movingBonus;
 
@@ -386,7 +396,7 @@ public class MsPacManGame extends GameModel {
 	@Override
 	protected void onBonusReached() {
 		var route = computeBonusRoute(level.world);
-		if (route.size() > 0) {
+		if (!route.isEmpty()) {
 			var startDir = route.get(0).x == -1 ? Direction.RIGHT : Direction.LEFT;
 			movingBonus.setRoute(level.world, route, startDir);
 			movingBonus.setEdible(level.bonusSymbol, BONUS_VALUES[level.bonusSymbol], TickTimer.INDEFINITE);
@@ -398,9 +408,9 @@ public class MsPacManGame extends GameModel {
 		List<V2i> route = new ArrayList<>();
 		int numPortals = world.portals().size();
 		if (numPortals > 0) {
-			var entryPortal = world.portals().get(new Random().nextInt(numPortals));
-			var exitPortal = world.portals().get(new Random().nextInt(numPortals));
-			var travelDir = new Random().nextBoolean() ? Direction.LEFT : Direction.RIGHT;
+			var entryPortal = world.portals().get(rnd.nextInt(numPortals));
+			var exitPortal = world.portals().get(rnd.nextInt(numPortals));
+			var travelDir = rnd.nextBoolean() ? Direction.LEFT : Direction.RIGHT;
 			var houseEntry = world.ghostHouse().entry();
 			int houseHeight = world.ghostHouse().size().y;
 			route.add(travelDir == Direction.RIGHT ? entryPortal.left : entryPortal.right);
