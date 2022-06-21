@@ -65,7 +65,8 @@ public interface GhostHouse {
 	V2i seatMiddle();
 
 	default boolean contains(V2i tile) {
-		V2i topLeft = topLeftTile(), bottomRight = topLeft.plus(size());
+		V2i topLeft = topLeftTile();
+		V2i bottomRight = topLeft.plus(size());
 		return tile.x >= topLeft.x && tile.x <= bottomRight.x && tile.y >= topLeft.y && tile.y <= bottomRight.y;
 	}
 
