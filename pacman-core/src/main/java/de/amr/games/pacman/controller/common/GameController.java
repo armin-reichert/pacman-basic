@@ -72,6 +72,7 @@ public class GameController {
 			super(GameState.values());
 			for (var gameState : GameState.values()) {
 				gameState.gameController = GameController.this;
+				gameState.fsm = this;
 			}
 			setName("GameController.FSM");
 			// map state change events of the FSM to game events from selected game model:

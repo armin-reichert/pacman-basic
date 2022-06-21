@@ -37,6 +37,7 @@ import de.amr.games.pacman.lib.fsm.FsmState;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameModel.CheckResult;
 import de.amr.games.pacman.model.common.GameSound;
+import de.amr.games.pacman.model.common.GameSounds;
 import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.GhostState;
@@ -48,7 +49,7 @@ import de.amr.games.pacman.model.common.actors.GhostState;
  */
 public enum GameState implements FsmState<GameModel> {
 
-	INTRO {
+	INTRO() {
 		@Override
 		public void onEnter(GameModel game) {
 			timer.resetIndefinitely();
@@ -59,7 +60,7 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void onUpdate(GameModel game) {
 			if (timer.hasExpired()) {
-				changeState(READY);
+				fsm.changeState(READY);
 			}
 		}
 
@@ -75,19 +76,19 @@ public enum GameState implements FsmState<GameModel> {
 				snd.play(GameSound.CREDIT);
 			});
 			game.credit++;
-			changeState(CREDIT);
+			fsm.changeState(CREDIT);
 		}
 
 		@Override
 		public void requestGame(GameModel game) {
 			if (game.credit > 0) {
-				changeState(READY);
+				fsm.changeState(READY);
 			}
 		}
 
 		@Override
 		public void startIntermissionTest(GameModel game) {
-			changeState(INTERMISSION_TEST);
+			fsm.changeState(INTERMISSION_TEST);
 		}
 	},
 
@@ -111,7 +112,7 @@ public enum GameState implements FsmState<GameModel> {
 
 		@Override
 		public void requestGame(GameModel game) {
-			changeState(READY);
+			fsm.changeState(READY);
 		}
 	},
 
@@ -152,7 +153,7 @@ public enum GameState implements FsmState<GameModel> {
 					game.playing = false;
 				}
 				game.startHuntingPhase(0);
-				changeState(GameState.HUNTING);
+				fsm.changeState(GameState.HUNTING);
 			}
 		}
 	},
@@ -172,15 +173,15 @@ public enum GameState implements FsmState<GameModel> {
 			gameController.currentSteering().accept(game.pac);
 			game.updatePlayer(checkResult);
 			if (checkResult.allFoodEaten) {
-				changeState(LEVEL_COMPLETE);
+				fsm.changeState(LEVEL_COMPLETE);
 				return;
 			}
 			if (checkResult.playerKilled) {
-				changeState(PACMAN_DYING);
+				fsm.changeState(PACMAN_DYING);
 				return;
 			}
 			if (checkResult.ghostsKilled) {
-				changeState(GHOST_DYING);
+				fsm.changeState(GHOST_DYING);
 				return;
 			}
 			game.updateGhosts(checkResult);
@@ -209,7 +210,7 @@ public enum GameState implements FsmState<GameModel> {
 					snd.play(GameSound.CREDIT);
 				});
 				game.credit++;
-				changeState(CREDIT);
+				fsm.changeState(CREDIT);
 			}
 		}
 
@@ -228,7 +229,7 @@ public enum GameState implements FsmState<GameModel> {
 						.filter(ghost -> ghost.is(GhostState.HUNTING_PAC) || ghost.is(GhostState.FRIGHTENED)).toArray(Ghost[]::new);
 				game.ghostKillIndex = -1;
 				game.killGhosts(prey);
-				changeState(GameState.GHOST_DYING);
+				fsm.changeState(GameState.GHOST_DYING);
 			}
 		}
 
@@ -236,7 +237,7 @@ public enum GameState implements FsmState<GameModel> {
 		public void cheatEnterNextLevel(GameModel game) {
 			if (game.playing) {
 				game.level.world.tiles().forEach(game.level.world::removeFood);
-				changeState(GameState.LEVEL_COMPLETE);
+				fsm.changeState(GameState.LEVEL_COMPLETE);
 			}
 		}
 
@@ -250,10 +251,10 @@ public enum GameState implements FsmState<GameModel> {
 			game.huntingTimer.stop();
 			game.bonus().setInactive();
 			game.pac.setAbsSpeed(0);
-			game.pac.animations().ifPresent(anim -> anim.reset());
+			game.pac.animations().ifPresent(SpriteAnimations::reset);
 			game.ghosts().forEach(Ghost::hide);
 			game.energizerPulse.reset();
-			game.sounds().ifPresent(snd -> snd.stopAll());
+			game.sounds().ifPresent(GameSounds::stopAll);
 		}
 
 		@Override
@@ -266,11 +267,11 @@ public enum GameState implements FsmState<GameModel> {
 			}
 			if (timer.hasExpired()) {
 				if (game.credit == 0) {
-					changeState(INTRO);
+					fsm.changeState(INTRO);
 				} else if (game.intermissionNumber(game.level.number) != 0) {
-					changeState(INTERMISSION);
+					fsm.changeState(INTERMISSION);
 				} else {
-					changeState(LEVEL_STARTING);
+					fsm.changeState(LEVEL_STARTING);
 				}
 				return;
 			}
@@ -292,7 +293,7 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void onUpdate(GameModel game) {
 			if (timer.hasExpired()) {
-				changeState(READY);
+				fsm.changeState(READY);
 			}
 		}
 	},
@@ -342,7 +343,7 @@ public enum GameState implements FsmState<GameModel> {
 				anim.selectedAnimation().reset();
 			});
 			game.bonus().setInactive();
-			game.sounds().ifPresent(snd -> snd.stopAll());
+			game.sounds().ifPresent(GameSounds::stopAll);
 		}
 
 		@Override
@@ -359,9 +360,11 @@ public enum GameState implements FsmState<GameModel> {
 				}
 				game.pac.hide();
 			} else if (timer.hasExpired()) {
-				var nextState = game.credit == 0 ? INTRO : game.lives == 0 ? GAME_OVER : READY;
-				changeState(nextState);
-				return;
+				if (game.credit == 0) {
+					fsm.changeState(INTRO);
+				} else {
+					fsm.changeState(game.lives == 0 ? GAME_OVER : READY);
+				}
 			}
 		}
 	},
@@ -372,7 +375,7 @@ public enum GameState implements FsmState<GameModel> {
 			game.scores.saveHiscore();
 			timer.resetSeconds(3);
 			timer.start();
-			game.sounds().ifPresent(snd -> snd.stopAll());
+			game.sounds().ifPresent(GameSounds::stopAll);
 		}
 
 		@Override
@@ -380,7 +383,7 @@ public enum GameState implements FsmState<GameModel> {
 			if (timer.hasExpired()) {
 				game.playing = false;
 				game.consumeCredit();
-				changeState(game.credit > 0 ? CREDIT : INTRO);
+				fsm.changeState(game.credit > 0 ? CREDIT : INTRO);
 			}
 		}
 	},
@@ -395,7 +398,7 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void onUpdate(GameModel game) {
 			if (timer.hasExpired()) {
-				changeState(game.credit == 0 || !game.playing ? INTRO : LEVEL_STARTING);
+				fsm.changeState(game.credit == 0 || !game.playing ? INTRO : LEVEL_STARTING);
 			}
 		}
 	},
@@ -419,7 +422,7 @@ public enum GameState implements FsmState<GameModel> {
 					// This is a hack to trigger the UI to update its current scene
 					GameEvents.publish(new GameStateChangeEvent(game, this, this));
 				} else {
-					changeState(INTRO);
+					fsm.changeState(INTRO);
 				}
 			}
 		}
@@ -427,19 +430,9 @@ public enum GameState implements FsmState<GameModel> {
 
 	// -----------------------------------------------------------
 
-	Fsm<FsmState<GameModel>, GameModel> fsm;
+	Fsm<GameState, GameModel> fsm;
 	GameController gameController;
 	TickTimer timer = new TickTimer("Timer-" + name());
-
-	@Override
-	public Fsm<FsmState<GameModel>, GameModel> getOwner() {
-		return fsm;
-	}
-
-	@Override
-	public void setOwner(Fsm<FsmState<GameModel>, GameModel> fsm) {
-		this.fsm = fsm;
-	}
 
 	@Override
 	public TickTimer timer() {
@@ -449,24 +442,31 @@ public enum GameState implements FsmState<GameModel> {
 	// --- Events
 
 	public void selectGameVariant(GameVariant variant) {
+		// override if supported for state
 	}
 
 	public void requestGame(GameModel game) {
+		// override if supported for state
 	}
 
 	public void addCredit(GameModel game) {
+		// override if supported for state
 	}
 
 	public void startIntermissionTest(GameModel game) {
+		// override if supported for state
 	}
 
 	public void cheatEatAllPellets(GameModel game) {
+		// override if supported for state
 	}
 
 	public void cheatKillAllEatableGhosts(GameModel game) {
+		// override if supported for state
 	}
 
 	public void cheatEnterNextLevel(GameModel game) {
+		// override if supported for state
 	}
 
 }

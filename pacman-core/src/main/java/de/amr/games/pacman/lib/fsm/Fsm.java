@@ -59,17 +59,13 @@ public abstract class Fsm<S extends FsmState<C>, C> {
 	}
 
 	private final List<BiConsumer<S, S>> subscribers = new ArrayList<>();
-	private final S[] states;
-	private S currentState;
-	private S prevState;
-	private String name = getClass().getSimpleName();
+	protected final S[] states;
+	protected S currentState;
+	protected S prevState;
+	protected String name = getClass().getSimpleName();
 
-	@SuppressWarnings("unchecked")
 	protected Fsm(S[] states) {
 		this.states = states;
-		for (S state : states) {
-			state.setOwner((Fsm<FsmState<C>, C>) this);
-		}
 	}
 
 	public void setName(String name) {

@@ -56,6 +56,9 @@ public class Intermission3Controller extends Fsm<State, Context> {
 
 	public Intermission3Controller(GameController gameController) {
 		super(State.values());
+		for (var state : states) {
+			state.controller = this;
+		}
 		this.$ = new Context(gameController);
 	}
 
@@ -111,7 +114,7 @@ public class Intermission3Controller extends Fsm<State, Context> {
 				} else if (timer.atSecond(2)) {
 					$.flap.hide();
 				} else if (timer.atSecond(3)) {
-					changeState(State.ACTION);
+					controller.changeState(State.ACTION);
 				}
 			}
 		},
@@ -164,7 +167,7 @@ public class Intermission3Controller extends Fsm<State, Context> {
 					} else {
 						$.bagOpen = true;
 						$.bag.velocity = V2d.NULL;
-						changeState(State.DONE);
+						controller.changeState(State.DONE);
 					}
 				}
 			}
@@ -186,18 +189,8 @@ public class Intermission3Controller extends Fsm<State, Context> {
 			}
 		};
 
-		protected Fsm<FsmState<Context>, Context> controller;
+		protected Intermission3Controller controller;
 		protected final TickTimer timer = new TickTimer("Timer-" + name());
-
-		@Override
-		public void setOwner(Fsm<FsmState<Context>, Context> fsm) {
-			controller = fsm;
-		}
-
-		@Override
-		public Fsm<FsmState<Context>, Context> getOwner() {
-			return controller;
-		}
 
 		@Override
 		public TickTimer timer() {

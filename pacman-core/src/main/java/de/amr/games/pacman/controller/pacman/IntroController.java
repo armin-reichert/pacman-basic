@@ -63,6 +63,9 @@ public class IntroController extends Fsm<State, Context> {
 
 	public IntroController(GameController gameController) {
 		super(State.values());
+		for (var state : states) {
+			state.controller = this;
+		}
 		$ = new Context(gameController);
 	}
 
@@ -123,7 +126,7 @@ public class IntroController extends Fsm<State, Context> {
 				} else if (timer.tick() == 3) {
 					$.titleVisible = true;
 				} else if (timer.atSecond(1)) {
-					changeState(State.PRESENTING_GHOSTS);
+					controller.changeState(State.PRESENTING_GHOSTS);
 				}
 			}
 		},
@@ -142,7 +145,7 @@ public class IntroController extends Fsm<State, Context> {
 						timer.resetIndefinitely();
 					}
 				} else if (timer.atSecond(2.5)) {
-					changeState(State.SHOWING_POINTS);
+					controller.changeState(State.SHOWING_POINTS);
 				}
 			}
 		},
@@ -156,7 +159,7 @@ public class IntroController extends Fsm<State, Context> {
 			@Override
 			public void onUpdate(Context $) {
 				if (timer.atSecond(1)) {
-					changeState(State.CHASING_PAC);
+					controller.changeState(State.CHASING_PAC);
 				}
 			}
 		},
@@ -185,7 +188,7 @@ public class IntroController extends Fsm<State, Context> {
 			public void onUpdate(Context $) {
 				// Pac-Man reaches the energizer
 				if ($.pacMan.position.x <= t($.left)) {
-					changeState(State.CHASING_GHOSTS);
+					controller.changeState(State.CHASING_GHOSTS);
 				}
 				// ghosts already reverse direction before Pac-man eats the energizer and turns right!
 				else if ($.pacMan.position.x <= t($.left) + 4) {
@@ -229,7 +232,7 @@ public class IntroController extends Fsm<State, Context> {
 				// When the last ghost has been killed, leave state
 				if (Stream.of($.ghosts).allMatch(ghost -> ghost.is(GhostState.DEAD))) {
 					$.pacMan.hide();
-					changeState(READY_TO_PLAY);
+					controller.changeState(READY_TO_PLAY);
 					return;
 				}
 
@@ -287,23 +290,12 @@ public class IntroController extends Fsm<State, Context> {
 				}
 				if (timer.atSecond(5)) {
 					$.gameController.restartIntro();
-					return;
 				}
 			}
 		};
 
-		protected Fsm<FsmState<Context>, Context> controller;
+		protected IntroController controller;
 		protected final TickTimer timer = new TickTimer("Timer-" + name());
-
-		@Override
-		public void setOwner(Fsm<FsmState<Context>, Context> fsm) {
-			controller = fsm;
-		}
-
-		@Override
-		public Fsm<FsmState<Context>, Context> getOwner() {
-			return controller;
-		}
 
 		@Override
 		public TickTimer timer() {

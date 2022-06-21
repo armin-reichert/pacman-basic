@@ -56,6 +56,9 @@ public class Intermission1Controller extends Fsm<State, Context> {
 
 	public Intermission1Controller(GameController gameController) {
 		super(State.values());
+		for (var state : states) {
+			state.controller = this;
+		}
 		$ = new Context(gameController);
 	}
 
@@ -133,7 +136,7 @@ public class Intermission1Controller extends Fsm<State, Context> {
 					}
 				}
 				if (timer.hasExpired()) {
-					changeState(State.CHASED_BY_GHOSTS);
+					controller.changeState(State.CHASED_BY_GHOSTS);
 				}
 			}
 		},
@@ -151,7 +154,7 @@ public class Intermission1Controller extends Fsm<State, Context> {
 			@Override
 			public void onUpdate(Context $) {
 				if ($.inky.position.x > t(30)) {
-					changeState(State.COMING_TOGETHER);
+					controller.changeState(State.COMING_TOGETHER);
 					return;
 				}
 				$.inky.move();
@@ -183,7 +186,7 @@ public class Intermission1Controller extends Fsm<State, Context> {
 			public void onUpdate(Context $) {
 				// Pac-Man and Ms. Pac-Man reach end position?
 				if ($.pacMan.moveDir() == Direction.UP && $.pacMan.position.y < $.upperY) {
-					changeState(State.IN_HEAVEN);
+					controller.changeState(State.IN_HEAVEN);
 				}
 				// Pac-Man and Ms. Pac-Man meet?
 				else if ($.pacMan.moveDir() == Direction.LEFT && $.pacMan.position.x - $.msPac.position.x < t(2)) {
@@ -249,18 +252,8 @@ public class Intermission1Controller extends Fsm<State, Context> {
 			}
 		};
 
-		protected Fsm<FsmState<Context>, Context> controller;
+		protected Intermission1Controller controller;
 		protected final TickTimer timer = new TickTimer("Timer-" + name());
-
-		@Override
-		public void setOwner(Fsm<FsmState<Context>, Context> fsm) {
-			controller = fsm;
-		}
-
-		@Override
-		public Fsm<FsmState<Context>, Context> getOwner() {
-			return controller;
-		}
 
 		@Override
 		public TickTimer timer() {

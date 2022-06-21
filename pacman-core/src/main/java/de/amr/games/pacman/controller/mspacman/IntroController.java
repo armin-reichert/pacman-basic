@@ -58,6 +58,9 @@ public class IntroController extends Fsm<IntroController.State, IntroController.
 
 	public IntroController(GameController gameController) {
 		super(State.values());
+		for (var state : states) {
+			state.controller = this;
+		}
 		$ = new Context(gameController);
 		logEnabled = true;
 	}
@@ -124,7 +127,7 @@ public class IntroController extends Fsm<IntroController.State, IntroController.
 				} else if (timer.tick() == 2) {
 					$.creditVisible = true;
 				} else if (timer.atSecond(1)) {
-					changeState(State.GHOSTS);
+					controller.changeState(State.GHOSTS);
 				}
 				$.lightsTimer.advance();
 			}
@@ -144,7 +147,7 @@ public class IntroController extends Fsm<IntroController.State, IntroController.
 					ghost.setAbsSpeed(0);
 					ghost.animations().ifPresent(SpriteAnimations::stop);
 					if (++$.ghostIndex == $.ghosts.length) {
-						changeState(State.MSPACMAN);
+						controller.changeState(State.MSPACMAN);
 					}
 				}
 			}
@@ -158,7 +161,7 @@ public class IntroController extends Fsm<IntroController.State, IntroController.
 				if ($.msPacMan.position.x <= $.msPacManStopX) {
 					$.msPacMan.setAbsSpeed(0);
 					$.msPacMan.animations().get().byName("munching").reset();
-					changeState(State.READY_TO_PLAY);
+					controller.changeState(State.READY_TO_PLAY);
 				}
 			}
 		},
@@ -179,18 +182,8 @@ public class IntroController extends Fsm<IntroController.State, IntroController.
 			}
 		};
 
-		protected Fsm<FsmState<Context>, Context> controller;
+		protected IntroController controller;
 		protected final TickTimer timer = new TickTimer("Timer-" + name());
-
-		@Override
-		public void setOwner(Fsm<FsmState<Context>, Context> fsm) {
-			controller = fsm;
-		}
-
-		@Override
-		public Fsm<FsmState<Context>, Context> getOwner() {
-			return controller;
-		}
 
 		@Override
 		public TickTimer timer() {

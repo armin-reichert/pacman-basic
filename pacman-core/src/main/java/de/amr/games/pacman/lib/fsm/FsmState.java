@@ -36,18 +36,6 @@ import de.amr.games.pacman.lib.TickTimer;
 public interface FsmState<C> {
 
 	/**
-	 * Sets the reference to the FSM owning this state.
-	 * 
-	 * @param fsm the FSM owning this state
-	 */
-	void setOwner(Fsm<FsmState<C>, C> fsm);
-
-	/**
-	 * @return the machine owning this state.
-	 */
-	Fsm<FsmState<C>, C> getOwner();
-
-	/**
 	 * The hook method that gets executed when the state is entered.
 	 * 
 	 * @param context the "context" (data type provided to the state)
@@ -74,8 +62,4 @@ public interface FsmState<C> {
 	 * @return the timer of this state
 	 */
 	TickTimer timer();
-
-	default void changeState(FsmState<C> nextState) {
-		getOwner().changeState(nextState);
-	}
 }

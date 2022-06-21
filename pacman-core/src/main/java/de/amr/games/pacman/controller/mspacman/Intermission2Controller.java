@@ -51,6 +51,9 @@ public class Intermission2Controller extends Fsm<State, Context> {
 
 	public Intermission2Controller(GameController gameController) {
 		super(State.values());
+		for (var state : State.values()) {
+			state.controller = this;
+		}
 		this.$ = new Context(gameController);
 	}
 
@@ -62,9 +65,12 @@ public class Intermission2Controller extends Fsm<State, Context> {
 	public static class Context {
 		public final GameController gameController;
 		public final GameModel game;
-		public final int upperY = t(12), middleY = t(18), lowerY = t(24);
+		public final int upperY = t(12);
+		public final int middleY = t(18);
+		public final int lowerY = t(24);
 		public Flap flap;
-		public Pac pacMan, msPacMan;
+		public Pac pacMan;
+		public Pac msPacMan;
 
 		public Context(GameController gameController) {
 			this.gameController = gameController;
@@ -100,7 +106,7 @@ public class Intermission2Controller extends Fsm<State, Context> {
 				} else if (timer.atSecond(2)) {
 					$.flap.hide();
 				} else if (timer.atSecond(3)) {
-					changeState(State.CHASING);
+					controller.changeState(State.CHASING);
 				}
 			}
 		},
@@ -160,18 +166,8 @@ public class Intermission2Controller extends Fsm<State, Context> {
 			}
 		};
 
-		protected Fsm<FsmState<Context>, Context> controller;
+		protected Intermission2Controller controller;
 		protected final TickTimer timer = new TickTimer("Timer-" + name());
-
-		@Override
-		public void setOwner(Fsm<FsmState<Context>, Context> fsm) {
-			controller = fsm;
-		}
-
-		@Override
-		public Fsm<FsmState<Context>, Context> getOwner() {
-			return controller;
-		}
 
 		@Override
 		public TickTimer timer() {
