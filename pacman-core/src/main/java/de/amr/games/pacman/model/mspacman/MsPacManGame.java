@@ -68,8 +68,12 @@ public class MsPacManGame extends GameModel {
 	public static final int PEAR = 5;
 	public static final int BANANA = 6;
 
-	public static final String[] BONUS_NAMES = { "CHERRIES", "STRAWBERRY", "PEACH", "PRETZEL", "APPLE", "PEAR",
+	private static final String[] BONUS_NAMES = { "CHERRIES", "STRAWBERRY", "PEACH", "PRETZEL", "APPLE", "PEAR",
 			"BANANA" };
+
+	public static String bonusName(int symbol) {
+		return BONUS_NAMES[symbol];
+	}
 
 	protected static final int[] BONUS_VALUES = { 100, 200, 500, 700, 1000, 2000, 5000 };
 

@@ -71,14 +71,18 @@ public class Intermission1Controller extends Fsm<State, Context> {
 		}
 
 		public final GameController gameController;
-		public final int upperY = t(12), middleY = t(18), lowerY = t(24);
+		public final int upperY = t(12);
+		public final int middleY = t(18);
+		public final int lowerY = t(24);
 		public final float pacSpeedChased = 1.125f;
 		public final float pacSpeedRising = 0.75f;
 		public final float ghostSpeedAfterColliding = 0.3f;
 		public final float ghostSpeedChasing = 1.25f;
 		public Flap flap;
-		public Pac pacMan, msPac;
-		public Ghost pinky, inky;
+		public Pac pacMan;
+		public Pac msPac;
+		public Ghost pinky;
+		public Ghost inky;
 		public Entity heart;
 	}
 
@@ -180,7 +184,6 @@ public class Intermission1Controller extends Fsm<State, Context> {
 				// Pac-Man and Ms. Pac-Man reach end position?
 				if ($.pacMan.moveDir() == Direction.UP && $.pacMan.position.y < $.upperY) {
 					changeState(State.IN_HEAVEN);
-					return;
 				}
 				// Pac-Man and Ms. Pac-Man meet?
 				else if ($.pacMan.moveDir() == Direction.LEFT && $.pacMan.position.x - $.msPac.position.x < t(2)) {

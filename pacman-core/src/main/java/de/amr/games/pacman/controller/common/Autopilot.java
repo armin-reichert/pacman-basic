@@ -48,7 +48,7 @@ import de.amr.games.pacman.model.common.world.World;
  */
 public class Autopilot implements Consumer<Creature> {
 
-	static class AutopilotData {
+	private static class AutopilotData {
 
 		static final int MAX_GHOST_AHEAD_DETECTION_DIST = 4; // tiles
 		static final int MAX_GHOST_BEHIND_DETECTION_DIST = 1; // tiles
@@ -64,26 +64,26 @@ public class Autopilot implements Consumer<Creature> {
 
 		@Override
 		public String toString() {
-			String s = "-- Begin autopilot info\n";
+			StringBuilder s = new StringBuilder("-- Begin autopilot info%n");
 			if (hunterAhead != null) {
-				s += String.format("Hunter ahead:  %s, distance: %.2g\n", hunterAhead.name, hunterAheadDistance);
+				s.append("Hunter ahead:  %s, distance: %.2g%n".formatted(hunterAhead.name, hunterAheadDistance));
 			} else {
-				s += "No hunter ahead\n";
+				s.append("No hunter ahead%n");
 			}
 			if (hunterBehind != null) {
-				s += String.format("Hunter behind: %s, distance: %.2g\n", hunterBehind.name, hunterBehindDistance);
+				s.append("Hunter behind: %s, distance: %.2g%n".formatted(hunterBehind.name, hunterBehindDistance));
 			} else {
-				s += "No hunter behind\n";
+				s.append("No hunter behind%n");
 			}
 			for (int i = 0; i < frightenedGhosts.size(); ++i) {
 				Ghost ghost = frightenedGhosts.get(i);
-				s += String.format("Prey: %s, distance: %.2g\n", ghost.name, frightenedGhostsDistance.get(i));
+				s.append("Prey: %s, distance: %.2g%n".formatted(ghost.name, frightenedGhostsDistance.get(i)));
 			}
 			if (frightenedGhosts.isEmpty()) {
-				s += "No prey\n";
+				s.append("No prey%n");
 			}
-			s += "-- End autopilot info";
-			return s;
+			s.append("-- End autopilot info");
+			return s.toString();
 		}
 	}
 
@@ -116,7 +116,7 @@ public class Autopilot implements Consumer<Creature> {
 		}
 		AutopilotData data = collectData();
 		if (data.hunterAhead != null || data.hunterBehind != null || !data.frightenedGhosts.isEmpty()) {
-			log("\n%s", data);
+			log("%n%s", data);
 		}
 		takeAction(data);
 	}
@@ -161,7 +161,7 @@ public class Autopilot implements Consumer<Creature> {
 		if (!game().pac.stuck && !game().level.world.isIntersection(game().pac.tile()))
 			return;
 
-		if (data.frightenedGhosts.size() != 0 && game().pac.powerTimer.remaining() >= 1 * 60) {
+		if (!data.frightenedGhosts.isEmpty() && game().pac.powerTimer.remaining() >= 1 * 60) {
 			Ghost prey = data.frightenedGhosts.get(0);
 			log("Detected frightened ghost %s %.0g tiles away", prey.name, prey.tile().manhattanDistance(game().pac.tile()));
 			game().pac.targetTile = prey.tile();
@@ -187,8 +187,8 @@ public class Autopilot implements Consumer<Creature> {
 			if (game().level.world.isEnergizerTile(ahead) && !game().level.world.containsEatenFood(ahead)) {
 				energizerFound = true;
 			}
-			V2i aheadLeft = ahead.plus(game().pac.moveDir().turnLeft().vec),
-					aheadRight = ahead.plus(game().pac.moveDir().turnRight().vec);
+			V2i aheadLeft = ahead.plus(game().pac.moveDir().turnLeft().vec);
+			V2i aheadRight = ahead.plus(game().pac.moveDir().turnRight().vec);
 			for (Ghost ghost : game().ghosts(GhostState.HUNTING_PAC).toArray(Ghost[]::new)) {
 				if (ghost.tile().equals(ahead) || ghost.tile().equals(aheadLeft) || ghost.tile().equals(aheadRight)) {
 					if (energizerFound) {
