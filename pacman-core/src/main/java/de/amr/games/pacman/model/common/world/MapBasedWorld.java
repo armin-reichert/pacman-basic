@@ -30,7 +30,6 @@ import static de.amr.games.pacman.lib.V2i.v;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -74,18 +73,18 @@ public abstract class MapBasedWorld implements World {
 		intersections = new BitSet();
 	}
 
-	protected List<Portal> findPortals() {
-		ArrayList<Portal> portals = new ArrayList<>();
+	protected ArrayList<Portal> findPortals() {
+		var list = new ArrayList<Portal>();
 		for (int row = 0; row < size.y; ++row) {
 			if (map[row][0] == TUNNEL && map[row][size.x - 1] == TUNNEL) {
-				portals.add(new Portal(v(-1, row), v(size.x, row)));
+				list.add(new Portal(v(-1, row), v(size.x, row)));
 			}
 		}
-		portals.trimToSize();
-		return Collections.unmodifiableList(portals);
+		list.trimToSize();
+		return list;
 	}
 
-	protected byte map(V2i tile) {
+	protected byte content(V2i tile) {
 		return insideMap(tile) ? map[tile.y][tile.x] : SPACE;
 	}
 
@@ -116,23 +115,23 @@ public abstract class MapBasedWorld implements World {
 
 	@Override
 	public boolean isWall(V2i tile) {
-		return map(tile) == WALL;
+		return content(tile) == WALL;
 	}
 
 	@Override
 	public boolean isTunnel(V2i tile) {
-		return map(tile) == TUNNEL;
+		return content(tile) == TUNNEL;
 	}
 
 	@Override
 	public boolean isFoodTile(V2i tile) {
-		byte data = map(tile);
+		byte data = content(tile);
 		return data == PELLET || data == PELLET_EATEN || data == ENERGIZER || data == ENERGIZER_EATEN;
 	}
 
 	@Override
 	public boolean isEnergizerTile(V2i tile) {
-		byte data = map(tile);
+		byte data = content(tile);
 		return data == ENERGIZER || data == ENERGIZER_EATEN;
 	}
 
@@ -143,7 +142,7 @@ public abstract class MapBasedWorld implements World {
 
 	@Override
 	public void removeFood(V2i tile) {
-		byte data = map(tile);
+		byte data = content(tile);
 		if (data == ENERGIZER) {
 			map[tile.y][tile.x] = ENERGIZER_EATEN;
 			--foodRemaining;
@@ -155,13 +154,13 @@ public abstract class MapBasedWorld implements World {
 
 	@Override
 	public boolean containsFood(V2i tile) {
-		byte data = map(tile);
+		byte data = content(tile);
 		return data == PELLET || data == ENERGIZER;
 	}
 
 	@Override
 	public boolean containsEatenFood(V2i tile) {
-		byte data = map(tile);
+		byte data = content(tile);
 		return data == PELLET_EATEN || data == ENERGIZER_EATEN;
 	}
 
