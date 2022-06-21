@@ -188,13 +188,13 @@ public class PacManGame extends GameModel {
 	public void setLevel(int levelNumber) {
 		level = createLevel(levelNumber);
 		levelCounter.addSymbol(level.bonusSymbol);
-		initGhosts(level);
+		initGhosts();
 		bonus.setInactive();
 		ghostKillIndex = -1;
 		scores.gameScore.levelNumber = levelNumber;
 	}
 
-	private void initGhosts(GameLevel level) {
+	private void initGhosts() {
 		GhostHouse house = world().ghostHouse();
 
 		ghosts[RED_GHOST].homeTile = house.entry();
