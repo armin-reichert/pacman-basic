@@ -343,7 +343,7 @@ public class Ghost extends Creature {
 			setOffset(offset().x, 0); // place exactly at house entry to avoid getting stuck
 			return true;
 		}
-		var center = house.center();
+		var center = house.middleSeatCenter();
 		if (insideRange(position.x, center.x, 1)) {
 			setOffset(HTS, offset().y); // center horizontally before rising
 			setBothDirs(UP);

@@ -48,8 +48,12 @@ public interface GhostHouse {
 		return doorTileLeft().plus(Direction.UP.vec);
 	}
 
-	default V2d center() {
-		return new V2d(seatMiddle().x * TS + HTS, seatMiddle().y * TS + HTS);
+	default V2d doorsCenter() {
+		return new V2d(doorTileLeft().scaled(TS)).plus(TS, HTS);
+	}
+
+	default V2d middleSeatCenter() {
+		return new V2d(seatMiddle().scaled(TS)).plus(HTS, HTS);
 	}
 
 	default boolean isDoor(V2i tile) {
