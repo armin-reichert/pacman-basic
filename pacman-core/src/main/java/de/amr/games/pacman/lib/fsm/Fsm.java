@@ -41,36 +41,39 @@ import de.amr.games.pacman.lib.TickTimer.State;
  * State transitions are defined dynamically via the {@link #changeState} method calls. Each state change triggers an
  * event.
  * 
- * @param <STATE>   Enumeration type providing the states of this FSM
- * @param <CONTEXT> Type of the data provided to the state lifecycle methods {@link FsmState#onEnter},
- *                  {@link FsmState#onUpdate} and {@link FsmState#onExit}
+ * @param <S> Enumeration type providing the states of this FSM
+ * @param <C> Type of the data provided to the state lifecycle methods {@link FsmState#onEnter},
+ *            {@link FsmState#onUpdate} and {@link FsmState#onExit}
  * 
  * @author Armin Reichert
  */
-public abstract class Fsm<STATE extends FsmState<CONTEXT>, CONTEXT> {
+public abstract class Fsm<S extends FsmState<C>, C> {
 
-	public boolean logging = false;
+	public boolean logEnabled = true;
 
-	private void fsm_log(String msg, Object... args) {
-		if (logging) {
+	private void fsmLog(String msg, Object... args) {
+		if (logEnabled) {
 			String formatted = msg.formatted(args);
 			log("%s: %s", name, formatted);
 		}
 	}
 
-	private String name;
-	private final STATE[] states;
-	private STATE currentState;
-	private STATE prevState;
-	private final List<BiConsumer<STATE, STATE>> stateChangeListeners = new ArrayList<>();
+	private final List<BiConsumer<S, S>> subscribers = new ArrayList<>();
+	private final S[] states;
+	private S currentState;
+	private S prevState;
+	private String name = getClass().getSimpleName();
 
 	@SuppressWarnings("unchecked")
-	public Fsm(STATE[] states) {
+	protected Fsm(S[] states) {
 		this.states = states;
-		for (var state : states) {
-			state.setOwner((Fsm<FsmState<CONTEXT>, CONTEXT>) this);
+		for (S state : states) {
+			state.setOwner((Fsm<FsmState<C>, C>) this);
 		}
-		name = getClass().getSimpleName();
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	@Override
@@ -81,19 +84,19 @@ public abstract class Fsm<STATE extends FsmState<CONTEXT>, CONTEXT> {
 	/**
 	 * @return the context passed to the state lifecycle methods
 	 */
-	public abstract CONTEXT context();
+	public abstract C context();
 
 	/**
 	 * @return the current state
 	 */
-	public STATE state() {
+	public S state() {
 		return currentState;
 	}
 
 	/**
 	 * @return the previous state (may be null)
 	 */
-	public STATE prevState() {
+	public S prevState() {
 		return prevState;
 	}
 
@@ -102,8 +105,8 @@ public abstract class Fsm<STATE extends FsmState<CONTEXT>, CONTEXT> {
 	 * 
 	 * @param listener a state change listener
 	 */
-	public synchronized void addStateChangeListener(BiConsumer<STATE, STATE> listener) {
-		stateChangeListeners.add(listener);
+	public synchronized void addStateChangeListener(BiConsumer<S, S> listener) {
+		subscribers.add(listener);
 	}
 
 	/**
@@ -111,15 +114,15 @@ public abstract class Fsm<STATE extends FsmState<CONTEXT>, CONTEXT> {
 	 * 
 	 * @param listener a state change listener
 	 */
-	public synchronized void removeStateChangeListener(BiConsumer<STATE, STATE> listener) {
-		stateChangeListeners.remove(listener);
+	public synchronized void removeStateChangeListener(BiConsumer<S, S> listener) {
+		subscribers.remove(listener);
 	}
 
 	/**
 	 * Resets the timer of each state to {@link TickTimer#INDEFINITE}.
 	 */
 	public void resetTimers() {
-		for (var state : states) {
+		for (S state : states) {
 			state.timer().resetIndefinitely();
 		}
 	}
@@ -130,7 +133,7 @@ public abstract class Fsm<STATE extends FsmState<CONTEXT>, CONTEXT> {
 	 * 
 	 * @param initialState the initial state
 	 */
-	public void restartInInitialState(STATE initialState) {
+	public void restartInInitialState(S initialState) {
 		resetTimers();
 		currentState = null;
 		changeState(initialState);
@@ -141,26 +144,26 @@ public abstract class Fsm<STATE extends FsmState<CONTEXT>, CONTEXT> {
 	 * entering the new state. The new state's entry hook method is executed and its timer is reset to
 	 * {@link TickTimer#INDEFINITE}. After the state change, an event is published.
 	 * <p>
-	 * Trying to change to the current state (self loop) leads to a runtime exception. TODO: check this
+	 * Trying to change to the current state (self loop) leads to a runtime exception.
 	 * 
 	 * @param newState the new state
 	 */
-	public void changeState(STATE newState) {
+	public void changeState(S newState) {
 		if (newState == currentState) {
 			throw new IllegalStateException("FiniteStateMachine: Self loop in state " + currentState);
 		}
-		var context = context();
+		C context = context();
 		if (currentState != null) {
 			currentState.onExit(context);
-			fsm_log("Exit  state %s timer=%s", currentState, currentState.timer());
+			fsmLog("Exit  state %s timer=%s", currentState, currentState.timer());
 		}
 		prevState = currentState;
 		currentState = newState;
 		currentState.timer().resetIndefinitely();
-		fsm_log("Enter state %s timer=%s", currentState, currentState.timer());
+		fsmLog("Enter state %s timer=%s", currentState, currentState.timer());
 		currentState.onEnter(context);
-		fsm_log("After Enter state %s timer=%s", currentState, currentState.timer());
-		stateChangeListeners.forEach(listener -> listener.accept(prevState, currentState));
+		fsmLog("After Enter state %s timer=%s", currentState, currentState.timer());
+		subscribers.forEach(listener -> listener.accept(prevState, currentState));
 	}
 
 	/**
@@ -170,7 +173,7 @@ public abstract class Fsm<STATE extends FsmState<CONTEXT>, CONTEXT> {
 		if (prevState == null) {
 			throw new IllegalStateException("State machine cannot resume previous state because there is none");
 		}
-		fsm_log("Resume state %s, timer= %s", prevState, prevState.timer());
+		fsmLog("Resume state %s, timer= %s", prevState, prevState.timer());
 		changeState(prevState);
 	}
 
@@ -183,16 +186,14 @@ public abstract class Fsm<STATE extends FsmState<CONTEXT>, CONTEXT> {
 		try {
 			currentState.onUpdate(context());
 		} catch (Exception x) {
-			fsm_log("Error updating state=%s, timer=%s", currentState, currentState.timer());
+			fsmLog("Error updating state %s, timer=%s", currentState, currentState.timer());
 			x.printStackTrace();
 		}
-		switch (currentState.timer().state()) {
-		case READY -> {
-			currentState.timer().start(); // TODO check this
-		}
-		default -> {
+		if (currentState.timer().state() == State.READY) {
+			// TODO check this
+			currentState.timer().start();
+		} else {
 			currentState.timer().advance();
-		}
 		}
 	}
 }
