@@ -118,7 +118,17 @@ public interface World {
 	 * @param tile a tile
 	 * @return Tells if the tile is an intersection (waypoint).
 	 */
-	boolean isIntersection(V2i tile);
+	default boolean isIntersection(V2i tile) {
+		if (tile.x <= 0 || tile.x >= numCols() - 1) {
+			return false; // exclude portal entries and tiles outside of the map
+		}
+		if (ghostHouse().contains(tile)) {
+			return false;
+		}
+		long numWallNeighbors = tile.neighbors().filter(this::isWall).count();
+		long numDoorNeighbors = tile.neighbors().filter(ghostHouse()::isDoor).count();
+		return numWallNeighbors + numDoorNeighbors < 2;
+	}
 
 	/**
 	 * @param tile a tile

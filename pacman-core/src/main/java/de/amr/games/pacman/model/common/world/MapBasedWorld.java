@@ -28,7 +28,6 @@ import static de.amr.games.pacman.lib.V2i.v;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.BitSet;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -56,7 +55,6 @@ public abstract class MapBasedWorld implements World {
 
 	protected final V2i size;
 	protected final byte[][] map;
-	protected final BitSet intersections;
 	protected final List<Portal> portals;
 	protected final List<V2i> energizerTiles;
 	protected final int totalFoodCount;
@@ -69,7 +67,6 @@ public abstract class MapBasedWorld implements World {
 		totalFoodCount = (int) tiles().filter(this::isFoodTile).count();
 		foodRemaining = totalFoodCount;
 		portals = findPortals();
-		intersections = new BitSet();
 	}
 
 	protected ArrayList<Portal> findPortals() {
@@ -105,11 +102,6 @@ public abstract class MapBasedWorld implements World {
 	@Override
 	public boolean isPortal(V2i tile) {
 		return portals.stream().anyMatch(portal -> portal.left.equals(tile) || portal.right.equals(tile));
-	}
-
-	@Override
-	public boolean isIntersection(V2i tile) {
-		return insideMap(tile) && intersections.get(index(tile));
 	}
 
 	@Override
