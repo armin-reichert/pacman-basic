@@ -49,6 +49,7 @@ import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
+import de.amr.games.pacman.lib.U;
 import de.amr.games.pacman.lib.animation.SingleSpriteAnimation;
 import de.amr.games.pacman.lib.animation.SpriteAnimation;
 import de.amr.games.pacman.model.common.actors.AnimKeys;
@@ -272,8 +273,8 @@ public abstract class GameModel {
 		huntingTimer.advance();
 		if (huntingTimer.hasExpired()) {
 			startHuntingPhase(huntingTimer.phase() + 1);
-			ghosts(HUNTING_PAC).forEach(ghost -> ghost.forceTurningBack(level.world));
-			ghosts(FRIGHTENED).forEach(ghost -> ghost.forceTurningBack(level.world));
+			ghosts().filter(ghost -> U.oneOf(ghost.state, HUNTING_PAC, FRIGHTENED))
+					.forEach(ghost -> ghost.forceTurningBack(level.world));
 		}
 	}
 
