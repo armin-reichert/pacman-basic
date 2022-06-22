@@ -52,14 +52,14 @@ public abstract class OptionParser {
 		};
 	}
 
-	private int i;
+	protected int i;
 
 	protected OptionParser() {
 	}
 
 	protected abstract List<String> options();
 
-	protected <T> Optional<T> option1(List<String> args, String name, Function<String, T> fnConvert) {
+	protected <T> Optional<T> optNameValue(List<String> args, String name, Function<String, T> fnConvert) {
 		if (name.equals(args.get(i))) {
 			if (i + 1 == args.size() || options().contains(args.get(i + 1))) {
 				logger.error("!!! Error: missing value for parameter '%s'.", name);
@@ -77,7 +77,7 @@ public abstract class OptionParser {
 		return Optional.empty();
 	}
 
-	protected <T> Optional<T> option0(List<String> args, String name, Function<String, T> fnConvert) {
+	protected <T> Optional<T> optName(List<String> args, String name, Function<String, T> fnConvert) {
 		if (name.equals(args.get(i))) {
 			logger.info("Found parameter %s", name);
 			try {
@@ -90,7 +90,7 @@ public abstract class OptionParser {
 		return Optional.empty();
 	}
 
-	protected Optional<Boolean> option0(List<String> args, String name) {
+	protected Optional<Boolean> optBoolean(List<String> args, String name) {
 		if (name.equals(args.get(i))) {
 			logger.info("Found parameter %s", name);
 			return Optional.of(true);
