@@ -27,6 +27,7 @@ package de.amr.games.pacman.model.common;
 import static de.amr.games.pacman.model.common.world.World.t;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.V2d;
@@ -38,7 +39,7 @@ import de.amr.games.pacman.model.common.actors.Entity;
 public class LevelCounter extends Entity {
 
 	private final int maxSize;
-	public final ArrayList<Integer> symbols;
+	public final List<Integer> symbols;
 
 	public LevelCounter(int maxSize) {
 		this.maxSize = maxSize;

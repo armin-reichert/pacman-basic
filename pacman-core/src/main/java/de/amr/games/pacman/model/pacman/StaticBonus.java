@@ -96,6 +96,7 @@ public class StaticBonus extends Entity implements Bonus {
 	public void update(GameModel game) {
 		switch (state) {
 		case INACTIVE -> {
+			// nothing to do
 		}
 		case EDIBLE -> {
 			if (game.pac.tile().equals(tile())) {

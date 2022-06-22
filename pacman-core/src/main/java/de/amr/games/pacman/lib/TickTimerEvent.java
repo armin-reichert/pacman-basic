@@ -30,7 +30,7 @@ public class TickTimerEvent {
 
 	public enum Type {
 		RESET, STARTED, STOPPED, EXPIRED;
-	};
+	}
 
 	public TickTimerEvent(Type type, long ticks) {
 		this.type = type;
