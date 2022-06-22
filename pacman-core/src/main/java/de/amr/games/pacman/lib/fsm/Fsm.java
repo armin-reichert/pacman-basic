@@ -23,11 +23,12 @@ SOFTWARE.
  */
 package de.amr.games.pacman.lib.fsm;
 
-import static de.amr.games.pacman.lib.Logging.log;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.TickTimer.State;
@@ -49,14 +50,7 @@ import de.amr.games.pacman.lib.TickTimer.State;
  */
 public abstract class Fsm<S extends FsmState<C>, C> {
 
-	public boolean logEnabled = true;
-
-	private void fsmLog(String msg, Object... args) {
-		if (logEnabled) {
-			String formatted = msg.formatted(args);
-			log("%s: %s", name, formatted);
-		}
-	}
+	private static final Logger logger = LogManager.getFormatterLogger();
 
 	private final List<BiConsumer<S, S>> subscribers = new ArrayList<>();
 	protected final S[] states;
@@ -151,14 +145,14 @@ public abstract class Fsm<S extends FsmState<C>, C> {
 		C context = context();
 		if (currentState != null) {
 			currentState.onExit(context);
-			fsmLog("Exit  state %s timer=%s", currentState, currentState.timer());
+			logger.trace("Exit  state %s timer=%s", currentState, currentState.timer());
 		}
 		prevState = currentState;
 		currentState = newState;
 		currentState.timer().resetIndefinitely();
-		fsmLog("Enter state %s timer=%s", currentState, currentState.timer());
+		logger.trace("Enter state %s timer=%s", currentState, currentState.timer());
 		currentState.onEnter(context);
-		fsmLog("After Enter state %s timer=%s", currentState, currentState.timer());
+		logger.trace("After Enter state %s timer=%s", currentState, currentState.timer());
 		subscribers.forEach(listener -> listener.accept(prevState, currentState));
 	}
 
@@ -169,7 +163,7 @@ public abstract class Fsm<S extends FsmState<C>, C> {
 		if (prevState == null) {
 			throw new IllegalStateException("State machine cannot resume previous state because there is none");
 		}
-		fsmLog("Resume state %s, timer= %s", prevState, prevState.timer());
+		logger.trace("Resume state %s, timer= %s", prevState, prevState.timer());
 		changeState(prevState);
 	}
 
@@ -182,11 +176,10 @@ public abstract class Fsm<S extends FsmState<C>, C> {
 		try {
 			currentState.onUpdate(context());
 		} catch (Exception x) {
-			fsmLog("Error updating state %s, timer=%s", currentState, currentState.timer());
+			logger.trace("Error updating state %s, timer=%s", currentState, currentState.timer());
 			x.printStackTrace();
 		}
 		if (currentState.timer().state() == State.READY) {
-			// TODO check this
 			currentState.timer().start();
 		} else {
 			currentState.timer().advance();

@@ -30,4 +30,5 @@ module de.amr.games.pacman {
 	exports de.amr.games.pacman.model.common.world;
 	exports de.amr.games.pacman.model.mspacman;
 	exports de.amr.games.pacman.model.pacman;
+	requires org.apache.logging.log4j;
 }

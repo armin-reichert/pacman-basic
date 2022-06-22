@@ -63,7 +63,6 @@ public class IntroController extends Fsm<IntroController.State, IntroController.
 			state.controller = this;
 		}
 		$ = new Context(gameController);
-		logEnabled = true;
 	}
 
 	@Override
