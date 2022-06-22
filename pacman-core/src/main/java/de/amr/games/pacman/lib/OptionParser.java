@@ -30,6 +30,8 @@ import java.util.function.Function;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import de.amr.games.pacman.model.common.GameVariant;
+
 /**
  * @author Armin Reichert
  */
@@ -37,12 +39,25 @@ public abstract class OptionParser {
 
 	private static final Logger logger = LogManager.getFormatterLogger();
 
-	protected abstract List<String> options();
+	//@formatter:off
+	public static final String OPT_VARIANT_MSPACMAN = "-mspacman";
+	public static final String OPT_VARIANT_PACMAN   = "-pacman";
+	//@formatter:on
+
+	public static GameVariant convertGameVariant(String s) {
+		return switch (s) {
+		case OPT_VARIANT_MSPACMAN -> GameVariant.MS_PACMAN;
+		case OPT_VARIANT_PACMAN -> GameVariant.PACMAN;
+		default -> null;
+		};
+	}
 
 	private int i;
 
 	protected OptionParser() {
 	}
+
+	protected abstract List<String> options();
 
 	protected <T> Optional<T> option1(List<String> args, String name, Function<String, T> fnConvert) {
 		if (name.equals(args.get(i))) {
