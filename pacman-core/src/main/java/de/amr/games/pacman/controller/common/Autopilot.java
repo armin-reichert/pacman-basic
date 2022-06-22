@@ -112,7 +112,7 @@ public class Autopilot implements Consumer<Creature> {
 		}
 		AutopilotData data = collectData();
 		if (data.hunterAhead != null || data.hunterBehind != null || !data.frightenedGhosts.isEmpty()) {
-			logger.info("%n%s", data);
+			logger.trace("%n%s", data);
 		}
 		takeAction(data);
 	}
@@ -142,10 +142,10 @@ public class Autopilot implements Consumer<Creature> {
 			Direction escapeDir = null;
 			if (data.hunterBehind != null) {
 				escapeDir = findEscapeDirectionExcluding(EnumSet.of(game().pac.moveDir(), game().pac.moveDir().opposite()));
-				logger.info("Detected ghost %s behind, escape direction is %s", data.hunterAhead.name, escapeDir);
+				logger.trace("Detected ghost %s behind, escape direction is %s", data.hunterAhead.name, escapeDir);
 			} else {
 				escapeDir = findEscapeDirectionExcluding(EnumSet.of(game().pac.moveDir()));
-				logger.info("Detected ghost %s ahead, escape direction is %s", data.hunterAhead.name, escapeDir);
+				logger.trace("Detected ghost %s ahead, escape direction is %s", data.hunterAhead.name, escapeDir);
 			}
 			if (escapeDir != null) {
 				game().pac.setWishDir(escapeDir);
@@ -159,12 +159,12 @@ public class Autopilot implements Consumer<Creature> {
 
 		if (!data.frightenedGhosts.isEmpty() && game().pac.powerTimer.remaining() >= 1 * 60) {
 			Ghost prey = data.frightenedGhosts.get(0);
-			logger.info("Detected frightened ghost %s %.0g tiles away", prey.name,
+			logger.trace("Detected frightened ghost %s %.0g tiles away", prey.name,
 					prey.tile().manhattanDistance(game().pac.tile()));
 			game().pac.targetTile = prey.tile();
 		} else if (game().bonus() != null && game().bonus().state() == BonusState.EDIBLE && game().bonus().entity().tile()
 				.manhattanDistance(game().pac.tile()) <= AutopilotData.MAX_BONUS_HARVEST_DIST) {
-			logger.info("Detected active bonus");
+			logger.trace("Detected active bonus");
 			game().pac.targetTile = game().bonus().entity().tile();
 		} else {
 			V2i foodTile = findTileFarestFromGhosts(findNearestFoodTiles());
@@ -189,7 +189,7 @@ public class Autopilot implements Consumer<Creature> {
 			for (Ghost ghost : game().ghosts(GhostState.HUNTING_PAC).toArray(Ghost[]::new)) {
 				if (ghost.tile().equals(ahead) || ghost.tile().equals(aheadLeft) || ghost.tile().equals(aheadRight)) {
 					if (energizerFound) {
-						logger.info("Ignore hunting ghost ahead, energizer comes first!");
+						logger.trace("Ignore hunting ghost ahead, energizer comes first!");
 						return null;
 					}
 					return ghost;
@@ -262,9 +262,9 @@ public class Autopilot implements Consumer<Creature> {
 			}
 		}
 		time = System.nanoTime() - time;
-		logger.info("Nearest food tiles from Pac-Man location %s: (time %.2f millis)", pacManTile, time / 1_000_000f);
+		logger.trace("Nearest food tiles from Pac-Man location %s: (time %.2f millis)", pacManTile, time / 1_000_000f);
 		for (V2i t : foodTiles) {
-			logger.info("\t%s (%.2g tiles away from Pac-Man, %.2g tiles away from ghosts)", t,
+			logger.trace("\t%s (%.2g tiles away from Pac-Man, %.2g tiles away from ghosts)", t,
 					t.manhattanDistance(pacManTile), minDistanceFromGhosts());
 		}
 		return foodTiles;
