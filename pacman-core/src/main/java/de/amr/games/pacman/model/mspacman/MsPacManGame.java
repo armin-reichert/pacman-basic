@@ -23,7 +23,6 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.mspacman;
 
-import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.lib.TickTimer.secToTicks;
 import static de.amr.games.pacman.model.common.actors.Ghost.CYAN_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ORANGE_GHOST;
@@ -423,7 +422,6 @@ public class MsPacManGame extends GameModel {
 			route.add(houseEntry);
 			route.add(travelDir == Direction.RIGHT ? exitPortal.right : exitPortal.left);
 		}
-		log("Route: %d tiles: %s", route.size(), route);
 		return route;
 	}
 }

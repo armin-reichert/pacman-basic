@@ -27,7 +27,6 @@ import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Direction.UP;
-import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.model.common.GameVariant.MS_PACMAN;
 import static de.amr.games.pacman.model.common.actors.GhostState.ENTERING_HOUSE;
 import static de.amr.games.pacman.model.common.actors.GhostState.HUNTING_PAC;
@@ -37,6 +36,9 @@ import static de.amr.games.pacman.model.common.world.World.t;
 
 import java.util.List;
 import java.util.Optional;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import de.amr.games.pacman.event.GameEvent;
 import de.amr.games.pacman.event.GameEventType;
@@ -59,6 +61,8 @@ import de.amr.games.pacman.model.common.world.World;
  * @author Armin Reichert
  */
 public class Ghost extends Creature {
+
+	private static final Logger logger = LogManager.getFormatterLogger();
 
 	/** ID of red ghost. */
 	public static final int RED_GHOST = 0;
@@ -234,17 +238,17 @@ public class Ghost extends Creature {
 	public void checkCruiseElroyStart(GameLevel level) {
 		if (level.world.foodRemaining() == level.elroy1DotsLeft) {
 			elroy = 1;
-			log("%s becomes Cruise Elroy 1", name);
+			logger.info("%s becomes Cruise Elroy 1", name);
 		} else if (level.world.foodRemaining() == level.elroy2DotsLeft) {
 			elroy = 2;
-			log("%s becomes Cruise Elroy 2", name);
+			logger.info("%s becomes Cruise Elroy 2", name);
 		}
 	}
 
 	public void stopCruiseElroyMode() {
 		if (elroy > 0) {
 			elroy = -elroy; // negative value means "disabled"
-			log("Cruise Elroy %d for %s stops", elroy, name);
+			logger.info("Cruise Elroy %d for %s stops", elroy, name);
 		}
 	}
 

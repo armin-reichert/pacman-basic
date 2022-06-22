@@ -23,9 +23,10 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.mspacman;
 
-import static de.amr.games.pacman.lib.Logging.log;
-
 import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
@@ -50,6 +51,8 @@ import de.amr.games.pacman.model.common.world.World;
  * @author Armin Reichert
  */
 public class MovingBonus extends Creature implements Bonus {
+
+	private static final Logger logger = LogManager.getFormatterLogger();
 
 	private BonusState state;
 	private int symbol;
@@ -120,7 +123,7 @@ public class MovingBonus extends Creature implements Bonus {
 		visible = true;
 		jumpAnimation.restart();
 		setAbsSpeed(0.4); // TODO how fast in the original game?
-		log("%s gets edible", this);
+		logger.info("%s gets edible", this);
 	}
 
 	public int dy() {
@@ -139,13 +142,13 @@ public class MovingBonus extends Creature implements Bonus {
 				jumpAnimation.stop();
 				game.scores.addPoints(value);
 				game.sounds().ifPresent(snd -> snd.play(GameSound.BONUS_EATEN));
-				log("Bonus eaten: %s", this);
+				logger.info("Bonus eaten: %s", this);
 				GameEvents.publish(GameEventType.BONUS_GETS_EATEN, tile());
 				return;
 			}
 			steering.accept(this);
 			if (steering.isComplete()) {
-				log("%s reached target", this);
+				logger.info("%s reached target", this);
 				GameEvents.publish(GameEventType.BONUS_EXPIRES, tile());
 				setInactive();
 				return;
@@ -154,7 +157,7 @@ public class MovingBonus extends Creature implements Bonus {
 		}
 		case EATEN -> {
 			if (--timer == 0) {
-				log("%s expired", this);
+				logger.info("%s expired", this);
 				setInactive();
 				GameEvents.publish(GameEventType.BONUS_EXPIRES, tile());
 			}

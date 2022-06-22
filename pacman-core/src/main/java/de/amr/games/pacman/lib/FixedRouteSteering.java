@@ -62,7 +62,6 @@ public class FixedRouteSteering implements Consumer<Creature> {
 				return;
 			}
 			guy.targetTile = route.get(0);
-			Logging.log("Next target: %s", route.get(0));
 		}
 		guy.computeDirectionTowardsTarget(world);
 		guy.tryMoving(world);

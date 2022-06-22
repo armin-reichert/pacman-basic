@@ -24,9 +24,10 @@ SOFTWARE.
 
 package de.amr.games.pacman.model.common;
 
-import static de.amr.games.pacman.lib.Logging.log;
-
 import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import de.amr.games.pacman.lib.TickTimer;
 
@@ -34,6 +35,8 @@ import de.amr.games.pacman.lib.TickTimer;
  * @author Armin Reichert
  */
 public class HuntingTimer extends TickTimer {
+
+	private static final Logger logger = LogManager.getFormatterLogger();
 
 	/** Tells if the current hunting phase is "scattering". */
 	public static boolean isScatteringPhase(int phase) {
@@ -57,7 +60,7 @@ public class HuntingTimer extends TickTimer {
 		this.phase = phase;
 		reset(duration);
 		start();
-		log("%s: started", this);
+		logger.info("%s: started", this);
 	}
 
 	/**

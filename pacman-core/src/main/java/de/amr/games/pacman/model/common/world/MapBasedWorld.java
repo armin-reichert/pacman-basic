@@ -24,7 +24,6 @@ SOFTWARE.
 
 package de.amr.games.pacman.model.common.world;
 
-import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.lib.V2i.v;
 
 import java.util.ArrayList;
@@ -186,7 +185,5 @@ public abstract class MapBasedWorld implements World {
 			}
 		}
 		foodRemaining = totalFoodCount;
-		long energizerCount = tiles().filter(this::isEnergizerTile).count();
-		log("Food restored (%d pellets, %d energizers)", totalFoodCount - energizerCount, energizerCount);
 	}
 }

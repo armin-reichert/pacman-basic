@@ -24,7 +24,6 @@ SOFTWARE.
 
 package de.amr.games.pacman.model.common;
 
-import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.model.common.world.World.TS;
 
 import java.io.File;
@@ -33,6 +32,9 @@ import java.io.FileOutputStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Properties;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import de.amr.games.pacman.event.GameEvent;
 import de.amr.games.pacman.event.GameEventType;
@@ -44,6 +46,8 @@ import de.amr.games.pacman.model.common.actors.Score;
  * @author Armin Reichert
  */
 public class GameScores {
+
+	private static final Logger logger = LogManager.getFormatterLogger();
 
 	private static void loadFromFile(Score score, File file) {
 		try (var in = new FileInputStream(file)) {
@@ -57,9 +61,10 @@ public class GameScores {
 			score.points = points;
 			score.levelNumber = levelNumber;
 			score.date = date;
-			log("Score loaded. File: '%s' Points: %d Level: %d", file.getAbsolutePath(), score.points, score.levelNumber);
+			logger.info("Score loaded. File: '%s' Points: %d Level: %d", file.getAbsolutePath(), score.points,
+					score.levelNumber);
 		} catch (Exception x) {
-			log("Score could not be loaded. File '%s' Reason: %s", file, x.getMessage());
+			logger.info("Score could not be loaded. File '%s' Reason: %s", file, x.getMessage());
 		}
 	}
 
@@ -120,10 +125,10 @@ public class GameScores {
 		props.setProperty("date", highScore.date.format(DateTimeFormatter.ISO_LOCAL_DATE));
 		try (var out = new FileOutputStream(hiscoreFile)) {
 			props.storeToXML(out, "");
-			log("New hiscore saved. File: '%s' Points: %d Level: %d", hiscoreFile.getAbsolutePath(), highScore.points,
+			logger.info("New hiscore saved. File: '%s' Points: %d Level: %d", hiscoreFile.getAbsolutePath(), highScore.points,
 					highScore.levelNumber);
 		} catch (Exception x) {
-			log("Highscore could not be saved. File '%s' Reason: %s", hiscoreFile, x.getMessage());
+			logger.info("Highscore could not be saved. File '%s' Reason: %s", hiscoreFile, x.getMessage());
 		}
 	}
 }

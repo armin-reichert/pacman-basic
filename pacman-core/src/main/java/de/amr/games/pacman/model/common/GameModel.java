@@ -23,7 +23,6 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.common;
 
-import static de.amr.games.pacman.lib.Logging.log;
 import static de.amr.games.pacman.lib.TickTimer.secToTicks;
 import static de.amr.games.pacman.lib.V2i.v;
 import static de.amr.games.pacman.model.common.actors.Ghost.CYAN_GHOST;
@@ -40,6 +39,9 @@ import static de.amr.games.pacman.model.common.world.World.HTS;
 
 import java.util.Optional;
 import java.util.stream.Stream;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import de.amr.games.pacman.controller.common.GameController;
 import de.amr.games.pacman.event.GameEvent;
@@ -62,6 +64,8 @@ import de.amr.games.pacman.model.common.world.World;
  * @author Armin Reichert
  */
 public abstract class GameModel {
+
+	private static final Logger logger = LogManager.getFormatterLogger();
 
 	/** Speed in pixels/tick at 100%. */
 	public static final double BASE_SPEED = 1.25;
@@ -394,7 +398,7 @@ public abstract class GameModel {
 		// See Pac-Man dossier:
 		globalDotCounter = 0;
 		globalDotCounterEnabled = true;
-		log("Global dot counter got reset and enabled because player died");
+		logger.info("Global dot counter got reset and enabled because player died");
 	}
 
 	private void checkEdibleGhosts(CheckResult result) {
@@ -406,7 +410,8 @@ public abstract class GameModel {
 		Stream.of(prey).forEach(this::killGhost);
 		level.numGhostsKilled += prey.length;
 		if (level.numGhostsKilled == 16) {
-			log("All ghosts killed at level %d, Pac-Man wins additional %d points", level.number, ALL_GHOSTS_KILLED_POINTS);
+			logger.info("All ghosts killed at level %d, Pac-Man wins additional %d points", level.number,
+					ALL_GHOSTS_KILLED_POINTS);
 			scores.addPoints(ALL_GHOSTS_KILLED_POINTS);
 		}
 	}
@@ -417,7 +422,7 @@ public abstract class GameModel {
 		ghost.killIndex = ++ghostKillIndex;
 		int points = ghostValue(ghost.killIndex);
 		scores.addPoints(points);
-		log("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name, ghost.tile(), points);
+		logger.info("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name, ghost.tile(), points);
 	}
 
 	private void checkPlayerPower(CheckResult result) {
@@ -431,7 +436,7 @@ public abstract class GameModel {
 	}
 
 	private void onPlayerLosesPower() {
-		log("%s lost power, timer=%s", pac.name, pac.powerTimer);
+		logger.info("%s lost power, timer=%s", pac.name, pac.powerTimer);
 		/* TODO hack: leave state EXPIRED to avoid repetitions. */
 		pac.powerTimer.resetIndefinitely();
 		huntingTimer.start();
@@ -485,7 +490,7 @@ public abstract class GameModel {
 		huntingTimer.stop();
 		pac.powerTimer.resetSeconds(level.ghostFrightenedSeconds);
 		pac.powerTimer.start();
-		log("%s power timer started: %s", pac.name, pac.powerTimer);
+		logger.info("%s power timer started: %s", pac.name, pac.powerTimer);
 		ghosts(HUNTING_PAC).forEach(ghost -> {
 			ghost.state = FRIGHTENED;
 			ghost.forceTurningBack(level.world);
@@ -550,10 +555,10 @@ public abstract class GameModel {
 	}
 
 	private void unlockGhost(Ghost ghost, String reason) {
-		log("Unlock ghost %s (%s)", ghost.name, reason);
+		logger.info("Unlock ghost %s (%s)", ghost.name, reason);
 		if (ghost.id == ORANGE_GHOST && theGhosts[RED_GHOST].elroy < 0) {
 			theGhosts[RED_GHOST].elroy = -theGhosts[RED_GHOST].elroy; // resume Elroy mode
-			log("%s Elroy mode %d resumed", theGhosts[RED_GHOST].name, theGhosts[RED_GHOST].elroy);
+			logger.info("%s Elroy mode %d resumed", theGhosts[RED_GHOST].name, theGhosts[RED_GHOST].elroy);
 		}
 		if (ghost.id == RED_GHOST) {
 			ghost.state = HUNTING_PAC;
@@ -567,7 +572,7 @@ public abstract class GameModel {
 			if (theGhosts[ORANGE_GHOST].is(LOCKED) && globalDotCounter == 32) {
 				globalDotCounterEnabled = false;
 				globalDotCounter = 0;
-				log("Global dot counter disabled and reset, Clyde was in house when counter reached 32");
+				logger.info("Global dot counter disabled and reset, Clyde was in house when counter reached 32");
 			} else {
 				globalDotCounter++;
 			}

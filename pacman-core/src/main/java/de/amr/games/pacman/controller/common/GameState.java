@@ -23,7 +23,6 @@ SOFTWARE.
  */
 package de.amr.games.pacman.controller.common;
 
-import static de.amr.games.pacman.lib.Logging.log;
 import static java.util.function.Predicate.not;
 
 import de.amr.games.pacman.event.GameEventType;
@@ -409,7 +408,6 @@ public enum GameState implements FsmState<GameModel> {
 		public void onEnter(GameModel game) {
 			timer.resetIndefinitely();
 			timer.start();
-			log("Test intermission scene #%d", game.intermissionTestNumber);
 		}
 
 		@Override
@@ -419,7 +417,6 @@ public enum GameState implements FsmState<GameModel> {
 					++game.intermissionTestNumber;
 					timer.resetIndefinitely();
 					timer.start();
-					log("Test intermission scene #%d", game.intermissionTestNumber);
 					// This is a hack to trigger the UI to update its current scene
 					GameEvents.publish(new GameStateChangeEvent(game, this, this));
 				} else {
