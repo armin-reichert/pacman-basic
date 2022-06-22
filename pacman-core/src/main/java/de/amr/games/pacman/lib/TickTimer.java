@@ -155,7 +155,6 @@ public class TickTimer {
 			trace("%s not started, already running", this);
 		}
 		case EXPIRED -> {
-			// TODO throw exception?
 			trace("%s not started, timer has expired", this);
 		}
 		}

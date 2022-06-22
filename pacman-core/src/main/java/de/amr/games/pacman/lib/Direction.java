@@ -59,11 +59,21 @@ public enum Direction {
 		return OPPOSITE[ordinal()];
 	}
 
-	public Direction turnLeft() {
-		return this == UP ? LEFT : this == LEFT ? DOWN : this == DOWN ? RIGHT : UP;
+	public Direction succAntiClockwise() {
+		return switch (this) {
+		case UP -> LEFT;
+		case LEFT -> DOWN;
+		case DOWN -> RIGHT;
+		case RIGHT -> UP;
+		};
 	}
 
-	public Direction turnRight() {
-		return this == UP ? RIGHT : this == RIGHT ? DOWN : this == DOWN ? LEFT : UP;
+	public Direction succClockwise() {
+		return switch (this) {
+		case UP -> RIGHT;
+		case RIGHT -> DOWN;
+		case DOWN -> LEFT;
+		case LEFT -> UP;
+		};
 	}
 }

@@ -187,8 +187,8 @@ public class Autopilot implements Consumer<Creature> {
 			if (game().level.world.isEnergizerTile(ahead) && !game().level.world.containsEatenFood(ahead)) {
 				energizerFound = true;
 			}
-			V2i aheadLeft = ahead.plus(game().pac.moveDir().turnLeft().vec);
-			V2i aheadRight = ahead.plus(game().pac.moveDir().turnRight().vec);
+			V2i aheadLeft = ahead.plus(game().pac.moveDir().succAntiClockwise().vec);
+			V2i aheadRight = ahead.plus(game().pac.moveDir().succClockwise().vec);
 			for (Ghost ghost : game().ghosts(GhostState.HUNTING_PAC).toArray(Ghost[]::new)) {
 				if (ghost.tile().equals(ahead) || ghost.tile().equals(aheadLeft) || ghost.tile().equals(aheadRight)) {
 					if (energizerFound) {

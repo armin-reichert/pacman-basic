@@ -30,9 +30,9 @@ import java.util.stream.Stream;
 /**
  * @author Armin Reichert
  * 
- * @param <ENTITY> entity type for which these animations are defined
+ * @param <E> entity type for which these animations are defined
  */
-public abstract class SpriteAnimations<ENTITY> {
+public abstract class SpriteAnimations<E> {
 
 	protected Map<String, SpriteAnimation<?>> animationsByName;
 	protected String selected;
@@ -49,7 +49,7 @@ public abstract class SpriteAnimations<ENTITY> {
 		animationsByName.put(name, animation);
 	}
 
-	public abstract Object current(ENTITY entity);
+	public abstract Object current(E entity);
 
 	public void select(String name) {
 		selected = name;
