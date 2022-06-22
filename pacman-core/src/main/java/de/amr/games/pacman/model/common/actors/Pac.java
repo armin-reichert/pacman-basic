@@ -43,8 +43,8 @@ public class Pac extends Creature {
 	/** Controls the time Pac has power. */
 	public final TickTimer powerTimer = new TickTimer("Pac-power-timer");
 
-	/** Number of clock ticks Pac is still resting and will not move. */
-	public int resting = 0;
+	/** Number of clock ticks Pac has to rest and can not move. */
+	public int restingTicks = 0;
 
 	/** Number of clock ticks Pac has not eaten any pellet. */
 	public int starvingTicks = 0;
@@ -66,7 +66,7 @@ public class Pac extends Creature {
 	}
 
 	public void update(GameLevel level) {
-		if (resting == 0) {
+		if (restingTicks == 0) {
 			setRelSpeed(hasPower() ? level.playerSpeedPowered : level.playerSpeed);
 			tryMoving(level.world);
 			if (stuck) {
@@ -75,7 +75,7 @@ public class Pac extends Creature {
 				animation(AnimKeys.PAC_MUNCHING).ifPresent(SpriteAnimation::run);
 			}
 		} else {
-			--resting;
+			--restingTicks;
 		}
 		powerTimer.advance();
 	}

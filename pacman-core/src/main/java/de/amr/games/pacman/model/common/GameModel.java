@@ -123,10 +123,10 @@ public abstract class GameModel {
 	public int ghostKillIndex;
 
 	/** List of collected level symbols. */
-	public LevelCounter levelCounter = new LevelCounter(7);
+	public final LevelCounter levelCounter = new LevelCounter(7);
 
 	/** Energizer animation. */
-	public SingleSpriteAnimation<Boolean> energizerPulse = SingleSpriteAnimation.pulse(10);
+	public final SingleSpriteAnimation<Boolean> energizerPulse = SingleSpriteAnimation.pulse(10);
 
 	/** Maze flashing. */
 	private SingleSpriteAnimation<?> mazeFlashingAnimation;
@@ -203,7 +203,7 @@ public abstract class GameModel {
 		pac.targetTile = null; // used in autopilot mode
 		pac.stuck = false;
 		pac.killed = false;
-		pac.resting = 0;
+		pac.restingTicks = 0;
 		pac.starvingTicks = 0;
 		pac.powerTimer.resetIndefinitely();
 		pac.animations().ifPresent(anim -> {
@@ -477,7 +477,7 @@ public abstract class GameModel {
 
 	private void eatFood(int value, int restingTicks) {
 		pac.starvingTicks = 0;
-		pac.resting = restingTicks;
+		pac.restingTicks = restingTicks;
 		level.world.removeFood(pac.tile());
 		theGhosts[RED_GHOST].checkCruiseElroyStart(level);
 		updateGhostDotCounters();
