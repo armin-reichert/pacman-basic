@@ -373,7 +373,7 @@ public class Ghost extends Creature {
 		return Optional.ofNullable(animations);
 	}
 
-	public Optional<SpriteAnimation<?>> animation(String name) {
+	public Optional<SpriteAnimation> animation(String name) {
 		return animations().map(anim -> anim.byName(name));
 	}
 

@@ -34,18 +34,18 @@ import java.util.stream.Stream;
  */
 public abstract class SpriteAnimations<E> {
 
-	protected Map<String, SpriteAnimation<?>> animationsByName;
+	protected Map<String, SpriteAnimation> animationsByName;
 	protected String selected;
 
-	public final SpriteAnimation<?> byName(String name) {
+	public final SpriteAnimation byName(String name) {
 		return animationsByName.get(name);
 	}
 
-	public final Stream<SpriteAnimation<?>> all() {
+	public final Stream<SpriteAnimation> all() {
 		return animationsByName.values().stream();
 	}
 
-	public void put(String name, SpriteAnimation<?> animation) {
+	public void put(String name, SpriteAnimation animation) {
 		animationsByName.put(name, animation);
 	}
 
@@ -59,7 +59,7 @@ public abstract class SpriteAnimations<E> {
 		return selected;
 	}
 
-	public SpriteAnimation<?> selectedAnimation() {
+	public SpriteAnimation selectedAnimation() {
 		return byName(selected);
 	}
 

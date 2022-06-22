@@ -29,7 +29,7 @@ package de.amr.games.pacman.lib.animation;
  * @param <T> type of things to be animated
  * @author Armin Reichert
  */
-public class SingleSpriteAnimation<T> implements SpriteAnimation<T> {
+public class SingleSpriteAnimation<T> implements SpriteAnimation {
 
 	public static final int INDEFINITE = -1;
 

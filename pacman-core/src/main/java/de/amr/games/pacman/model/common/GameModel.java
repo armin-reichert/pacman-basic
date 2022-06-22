@@ -163,7 +163,7 @@ public abstract class GameModel {
 		return level.world;
 	}
 
-	public Optional<SpriteAnimation<?>> mazeFlashingAnimation() {
+	public Optional<SpriteAnimation> mazeFlashingAnimation() {
 		return Optional.ofNullable(mazeFlashingAnimation);
 	}
 

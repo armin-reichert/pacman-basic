@@ -30,25 +30,25 @@ import java.util.stream.Stream;
 /**
  * @author Armin Reichert
  */
-public class SpriteArray<THING> implements SpriteAnimation<THING> {
+public class SpriteArray<T> implements SpriteAnimation {
 
 	private int frameIndex;
-	private final THING[] things;
+	private final T[] things;
 
 	@SafeVarargs
-	public SpriteArray(THING... things) {
+	public SpriteArray(T... things) {
 		this.things = things;
 	}
 
 	@SuppressWarnings("unchecked")
-	public SpriteArray(List<THING> list) {
-		this.things = (THING[]) new Object[list.size()];
+	public SpriteArray(List<T> list) {
+		this.things = (T[]) new Object[list.size()];
 		for (int i = 0; i < list.size(); ++i) {
 			things[i] = list.get(i);
 		}
 	}
 
-	public Stream<THING> frames() {
+	public Stream<T> frames() {
 		return Stream.of(things);
 	}
 
@@ -57,12 +57,12 @@ public class SpriteArray<THING> implements SpriteAnimation<THING> {
 	}
 
 	@Override
-	public THING frame(int i) {
+	public T frame(int i) {
 		return things[i];
 	}
 
 	@Override
-	public THING frame() {
+	public T frame() {
 		return frame(frameIndex);
 	}
 
@@ -72,7 +72,7 @@ public class SpriteArray<THING> implements SpriteAnimation<THING> {
 	}
 
 	@Override
-	public THING animate() {
+	public T animate() {
 		return frame();
 	}
 }

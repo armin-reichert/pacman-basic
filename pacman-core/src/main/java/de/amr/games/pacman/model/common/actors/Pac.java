@@ -86,7 +86,7 @@ public class Pac extends Creature {
 		return Optional.ofNullable(animations);
 	}
 
-	public Optional<SpriteAnimation<?>> animation(String key) {
+	public Optional<SpriteAnimation> animation(String key) {
 		return animations().map(anim -> anim.byName(key));
 	}
 
