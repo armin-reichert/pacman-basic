@@ -28,7 +28,7 @@ import static de.amr.games.pacman.model.common.world.World.t;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
+import java.util.stream.IntStream;
 
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.model.common.actors.Entity;
@@ -67,7 +67,7 @@ public class LevelCounter extends Entity {
 		return symbols.size();
 	}
 
-	public Stream<Integer> symbols() {
-		return symbols.stream();
+	public IntStream symbolStream() {
+		return symbols.stream().mapToInt(Integer::intValue);
 	}
 }
