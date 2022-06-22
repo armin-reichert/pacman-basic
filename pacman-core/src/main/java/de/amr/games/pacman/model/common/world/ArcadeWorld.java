@@ -47,12 +47,6 @@ public class ArcadeWorld extends MapBasedWorld {
 
 	public ArcadeWorld(byte[][] mapData) {
 		super(mapData, TILES_X, TILES_Y);
-		tiles() //
-				.filter(tile -> !house.contains(tile)) //
-				.filter(tile -> tile.x > 0 && tile.x < numCols() - 1) //
-				.filter(tile -> tile.neighbors().filter(nb -> isWall(nb) || house.isDoor(nb)).count() <= 1) //
-				.map(this::index) //
-				.forEach(intersections::set);
 	}
 
 	@Override
