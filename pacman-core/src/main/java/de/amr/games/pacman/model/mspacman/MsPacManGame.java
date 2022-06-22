@@ -24,7 +24,7 @@ SOFTWARE.
 package de.amr.games.pacman.model.mspacman;
 
 import static de.amr.games.pacman.lib.Logging.log;
-import static de.amr.games.pacman.lib.TickTimer.sec_to_ticks;
+import static de.amr.games.pacman.lib.TickTimer.secToTicks;
 import static de.amr.games.pacman.model.common.actors.Ghost.CYAN_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ORANGE_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.PINK_GHOST;
@@ -307,7 +307,7 @@ public class MsPacManGame extends GameModel {
 			level.bonusSymbol = rnd.nextInt(7);
 		}
 		level.mazeNumber = mazeNumber(number);
-		level.pacStarvingTimeLimit = (int) sec_to_ticks(level.number < 5 ? 4 : 3);
+		level.pacStarvingTimeLimit = (int) secToTicks(level.number < 5 ? 4 : 3);
 		level.globalDotLimits = new int[] { Integer.MAX_VALUE, 7, 17, Integer.MAX_VALUE };
 		level.privateDotLimits = switch (level.number) {
 		case 1 -> new int[] { 0, 0, 30, 60 };

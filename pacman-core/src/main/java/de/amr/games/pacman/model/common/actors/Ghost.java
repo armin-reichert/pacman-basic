@@ -72,7 +72,7 @@ public class Ghost extends Creature {
 	/** ID of orange ghost. */
 	public static final int ORANGE_GHOST = 3;
 
-	public static final long FLASHING_TICKS = TickTimer.sec_to_ticks(2); // TODO not sure
+	public static final long FLASHING_TICKS = TickTimer.secToTicks(2); // TODO not sure
 
 	/** The ID of the ghost, see {@link GameModel#RED_GHOST} etc. */
 	public final int id;

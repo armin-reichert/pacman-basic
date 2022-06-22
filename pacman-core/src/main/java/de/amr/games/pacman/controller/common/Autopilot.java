@@ -31,8 +31,10 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import de.amr.games.pacman.lib.Direction;
-import de.amr.games.pacman.lib.Logging;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.actors.BonusState;
@@ -47,6 +49,8 @@ import de.amr.games.pacman.model.common.world.World;
  * @author Armin Reichert
  */
 public class Autopilot implements Consumer<Creature> {
+
+	private static final Logger logger = LogManager.getFormatterLogger();
 
 	private static class AutopilotData {
 
@@ -87,14 +91,6 @@ public class Autopilot implements Consumer<Creature> {
 		}
 	}
 
-	public static boolean logEnabled;
-
-	private static void log(String msg, Object... args) {
-		if (logEnabled) {
-			Logging.log(msg, args);
-		}
-	}
-
 	private final Supplier<GameModel> gameSupplier;
 
 	public Autopilot(Supplier<GameModel> gameSupplier) {
@@ -116,7 +112,7 @@ public class Autopilot implements Consumer<Creature> {
 		}
 		AutopilotData data = collectData();
 		if (data.hunterAhead != null || data.hunterBehind != null || !data.frightenedGhosts.isEmpty()) {
-			log("%n%s", data);
+			logger.info("%n%s", data);
 		}
 		takeAction(data);
 	}
@@ -146,10 +142,10 @@ public class Autopilot implements Consumer<Creature> {
 			Direction escapeDir = null;
 			if (data.hunterBehind != null) {
 				escapeDir = findEscapeDirectionExcluding(EnumSet.of(game().pac.moveDir(), game().pac.moveDir().opposite()));
-				log("Detected ghost %s behind, escape direction is %s", data.hunterAhead.name, escapeDir);
+				logger.info("Detected ghost %s behind, escape direction is %s", data.hunterAhead.name, escapeDir);
 			} else {
 				escapeDir = findEscapeDirectionExcluding(EnumSet.of(game().pac.moveDir()));
-				log("Detected ghost %s ahead, escape direction is %s", data.hunterAhead.name, escapeDir);
+				logger.info("Detected ghost %s ahead, escape direction is %s", data.hunterAhead.name, escapeDir);
 			}
 			if (escapeDir != null) {
 				game().pac.setWishDir(escapeDir);
@@ -163,11 +159,12 @@ public class Autopilot implements Consumer<Creature> {
 
 		if (!data.frightenedGhosts.isEmpty() && game().pac.powerTimer.remaining() >= 1 * 60) {
 			Ghost prey = data.frightenedGhosts.get(0);
-			log("Detected frightened ghost %s %.0g tiles away", prey.name, prey.tile().manhattanDistance(game().pac.tile()));
+			logger.info("Detected frightened ghost %s %.0g tiles away", prey.name,
+					prey.tile().manhattanDistance(game().pac.tile()));
 			game().pac.targetTile = prey.tile();
 		} else if (game().bonus() != null && game().bonus().state() == BonusState.EDIBLE && game().bonus().entity().tile()
 				.manhattanDistance(game().pac.tile()) <= AutopilotData.MAX_BONUS_HARVEST_DIST) {
-			log("Detected active bonus");
+			logger.info("Detected active bonus");
 			game().pac.targetTile = game().bonus().entity().tile();
 		} else {
 			V2i foodTile = findTileFarestFromGhosts(findNearestFoodTiles());
@@ -192,7 +189,7 @@ public class Autopilot implements Consumer<Creature> {
 			for (Ghost ghost : game().ghosts(GhostState.HUNTING_PAC).toArray(Ghost[]::new)) {
 				if (ghost.tile().equals(ahead) || ghost.tile().equals(aheadLeft) || ghost.tile().equals(aheadRight)) {
 					if (energizerFound) {
-						log("Ignore hunting ghost ahead, energizer comes first!");
+						logger.info("Ignore hunting ghost ahead, energizer comes first!");
 						return null;
 					}
 					return ghost;
@@ -265,10 +262,10 @@ public class Autopilot implements Consumer<Creature> {
 			}
 		}
 		time = System.nanoTime() - time;
-		log("Nearest food tiles from Pac-Man location %s: (time %.2f millis)", pacManTile, time / 1_000_000f);
+		logger.info("Nearest food tiles from Pac-Man location %s: (time %.2f millis)", pacManTile, time / 1_000_000f);
 		for (V2i t : foodTiles) {
-			log("\t%s (%.2g tiles away from Pac-Man, %.2g tiles away from ghosts)", t, t.manhattanDistance(pacManTile),
-					minDistanceFromGhosts());
+			logger.info("\t%s (%.2g tiles away from Pac-Man, %.2g tiles away from ghosts)", t,
+					t.manhattanDistance(pacManTile), minDistanceFromGhosts());
 		}
 		return foodTiles;
 	}

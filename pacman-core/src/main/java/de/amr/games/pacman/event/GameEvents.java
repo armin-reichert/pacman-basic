@@ -23,11 +23,12 @@ SOFTWARE.
  */
 package de.amr.games.pacman.event;
 
-import static de.amr.games.pacman.lib.Logging.log;
-
 import java.util.Collection;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.function.Supplier;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.GameModel;
@@ -39,7 +40,7 @@ public class GameEvents {
 
 	private static final GameEvents theOne = new GameEvents();
 
-	public static boolean logPublishEvents = true;
+	private static final Logger logger = LogManager.getFormatterLogger();
 
 	private Supplier<GameModel> fnGame;
 	private final Collection<GameEventListener> subscribers = new ConcurrentLinkedQueue<>();
@@ -60,8 +61,8 @@ public class GameEvents {
 	}
 
 	public static void publish(GameEvent gameEvent) {
-		if (logPublishEvents && gameEvent.type != GameEventType.PLAYER_FINDS_FOOD) {
-			log("%s", gameEvent);
+		if (gameEvent.type != GameEventType.PLAYER_FINDS_FOOD) {
+			logger.info("%s", gameEvent);
 		}
 		theOne.subscribers.forEach(subscriber -> subscriber.onGameEvent(gameEvent));
 	}

@@ -257,7 +257,7 @@ public class IntroController extends Fsm<State, Context> {
 				});
 
 				// After 1 sec, Pac-Man and the surviving ghosts get visible again and move on
-				if (timer.tick() - $.ghostKilledTime == TickTimer.sec_to_ticks(1)) {
+				if (timer.tick() - $.ghostKilledTime == TickTimer.secToTicks(1)) {
 					$.pacMan.show();
 					$.pacMan.setAbsSpeed(1.2);
 					for (Ghost ghost : $.ghosts) {

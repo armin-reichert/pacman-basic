@@ -32,6 +32,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import de.amr.games.pacman.lib.TickTimerEvent.Type;
 
 /**
@@ -41,7 +44,7 @@ import de.amr.games.pacman.lib.TickTimerEvent.Type;
  */
 public class TickTimer {
 
-	public static boolean trace = false;
+	private static final Logger logger = LogManager.getFormatterLogger();
 
 	public enum State {
 		READY, RUNNING, STOPPED, EXPIRED;
@@ -50,17 +53,11 @@ public class TickTimer {
 	public static final long INDEFINITE = Long.MAX_VALUE;
 	private static final int TICKS_PER_SEC = 60;
 
-	private void trace(String msg, Object... args) {
-		if (trace) {
-			Logging.log(msg, args);
-		}
-	}
-
 	/**
 	 * @param sec seconds
 	 * @return number of ticks representing given seconds at 60Hz
 	 */
-	public static final long sec_to_ticks(double sec) {
+	public static final long secToTicks(double sec) {
 		return Math.round(sec * TICKS_PER_SEC);
 	}
 
@@ -120,7 +117,7 @@ public class TickTimer {
 		duration = ticks;
 		tick = 0;
 		state = READY;
-		trace("%s reset", this);
+		logger.trace("%s reset", this);
 		fireEvent(new TickTimerEvent(Type.RESET, ticks));
 	}
 
@@ -130,7 +127,7 @@ public class TickTimer {
 	 * @param seconds number of seconds
 	 */
 	public void resetSeconds(double seconds) {
-		reset(sec_to_ticks(seconds));
+		reset(secToTicks(seconds));
 	}
 
 	/**
@@ -148,14 +145,14 @@ public class TickTimer {
 		switch (state) {
 		case STOPPED, READY -> {
 			state = RUNNING;
-			trace("%s started", this);
+			logger.trace("%s started", this);
 			fireEvent(new TickTimerEvent(Type.STARTED));
 		}
 		case RUNNING -> {
-			trace("%s not started, already running", this);
+			logger.trace("%s not started, already running", this);
 		}
 		case EXPIRED -> {
-			trace("%s not started, timer has expired", this);
+			logger.trace("%s not started, timer has expired", this);
 		}
 		}
 	}
@@ -167,17 +164,17 @@ public class TickTimer {
 		switch (state) {
 		case RUNNING -> {
 			state = STOPPED;
-			trace("%s stopped", this);
+			logger.trace("%s stopped", this);
 			fireEvent(new TickTimerEvent(Type.STOPPED));
 		}
 		case STOPPED -> {
-			trace("%s already stopped", this);
+			logger.trace("%s already stopped", this);
 		}
 		case READY -> {
-			trace("%s not stopped, was not running", this);
+			logger.trace("%s not stopped, was not running", this);
 		}
 		case EXPIRED -> {
-			trace("%s not stopped, has expired", this);
+			logger.trace("%s not stopped, has expired", this);
 		}
 		}
 	}
@@ -201,7 +198,7 @@ public class TickTimer {
 	public void expire() {
 		if (state != EXPIRED) {
 			state = EXPIRED;
-			trace("%s expired", this);
+			logger.trace("%s expired", this);
 			fireEvent(new TickTimerEvent(Type.EXPIRED, tick));
 		}
 	}
@@ -231,7 +228,7 @@ public class TickTimer {
 	}
 
 	public boolean atSecond(double seconds) {
-		return tick == sec_to_ticks(seconds);
+		return tick == secToTicks(seconds);
 	}
 
 	public long remaining() {

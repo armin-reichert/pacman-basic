@@ -24,7 +24,7 @@ SOFTWARE.
 package de.amr.games.pacman.model.common;
 
 import static de.amr.games.pacman.lib.Logging.log;
-import static de.amr.games.pacman.lib.TickTimer.sec_to_ticks;
+import static de.amr.games.pacman.lib.TickTimer.secToTicks;
 import static de.amr.games.pacman.lib.V2i.v;
 import static de.amr.games.pacman.model.common.actors.Ghost.CYAN_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ORANGE_GHOST;
@@ -422,7 +422,7 @@ public abstract class GameModel {
 
 	private void checkPlayerPower(CheckResult result) {
 		// TODO not sure exactly how long the player is losing power
-		result.playerPowerFading = pac.powerTimer.remaining() == sec_to_ticks(1);
+		result.playerPowerFading = pac.powerTimer.remaining() == secToTicks(1);
 		result.playerPowerLost = pac.powerTimer.hasExpired();
 	}
 

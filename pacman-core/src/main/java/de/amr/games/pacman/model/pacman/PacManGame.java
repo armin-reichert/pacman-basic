@@ -23,7 +23,7 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.pacman;
 
-import static de.amr.games.pacman.lib.TickTimer.sec_to_ticks;
+import static de.amr.games.pacman.lib.TickTimer.secToTicks;
 import static de.amr.games.pacman.lib.V2i.v;
 import static de.amr.games.pacman.model.common.actors.Ghost.CYAN_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ORANGE_GHOST;
@@ -155,7 +155,7 @@ public class PacManGame extends GameModel {
 		int numLevels = LEVEL_DATA.length;
 		var level = new GameLevel(number, number <= numLevels ? LEVEL_DATA[number - 1] : LEVEL_DATA[numLevels - 1]);
 		level.world = new ArcadeWorld(MAP);
-		level.pacStarvingTimeLimit = (int) sec_to_ticks(level.number < 5 ? 4 : 3);
+		level.pacStarvingTimeLimit = (int) secToTicks(level.number < 5 ? 4 : 3);
 		level.globalDotLimits = new int[] { Integer.MAX_VALUE, 7, 17, Integer.MAX_VALUE };
 		level.privateDotLimits = switch (level.number) {
 		case 1 -> new int[] { 0, 0, 30, 60 };
@@ -225,7 +225,7 @@ public class PacManGame extends GameModel {
 
 	@Override
 	protected void onBonusReached() {
-		bonus.setEdible(level.bonusSymbol, BONUS_VALUES[level.bonusSymbol], sec_to_ticks(9.0 + rnd.nextDouble()));
+		bonus.setEdible(level.bonusSymbol, BONUS_VALUES[level.bonusSymbol], secToTicks(9.0 + rnd.nextDouble()));
 		GameEvents.publish(GameEventType.BONUS_GETS_ACTIVE, bonus.tile());
 	}
 }
