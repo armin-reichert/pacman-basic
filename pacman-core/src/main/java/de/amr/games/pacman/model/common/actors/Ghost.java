@@ -400,7 +400,7 @@ public class Ghost extends Creature {
 				var flashing = (SingleSpriteAnimation<?>) anim.byName(AnimKeys.GHOST_FLASHING);
 				long frameTicks = FLASHING_TICKS / (game.level.numFlashes * flashing.numFrames());
 				flashing.frameDuration(frameTicks);
-				flashing.repeat(game.level.numFlashes);
+				flashing.repetions(game.level.numFlashes);
 				flashing.restart();
 				anim.select(AnimKeys.GHOST_FLASHING);
 			} else if (anim.selected().equals(AnimKeys.GHOST_FLASHING) && game.pac.powerTimer.remaining() == 1) {

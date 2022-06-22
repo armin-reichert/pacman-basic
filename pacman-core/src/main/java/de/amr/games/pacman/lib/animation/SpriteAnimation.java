@@ -56,7 +56,7 @@ public interface SpriteAnimation {
 		run();
 	}
 
-	default void repeat(int n) {
+	default void repetions(int n) {
 	}
 
 	default Object frame(int i) {

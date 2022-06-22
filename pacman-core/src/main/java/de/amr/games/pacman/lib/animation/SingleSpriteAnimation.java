@@ -127,7 +127,7 @@ public class SingleSpriteAnimation<T> implements SpriteAnimation {
 	 * @param times number of times the animation is repeated
 	 */
 	@Override
-	public void repeat(int times) {
+	public void repetions(int times) {
 		repetitions = times;
 	}
 

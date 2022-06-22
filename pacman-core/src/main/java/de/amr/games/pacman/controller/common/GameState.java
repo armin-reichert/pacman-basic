@@ -261,11 +261,10 @@ public enum GameState implements FsmState<GameModel> {
 		public void onUpdate(GameModel game) {
 			if (timer.atSecond(1)) {
 				game.mazeFlashingAnimation().ifPresent(mazeFlashing -> {
-					mazeFlashing.repeat(game.level.numFlashes);
+					mazeFlashing.repetions(game.level.numFlashes);
 					mazeFlashing.restart();
 				});
-			}
-			if (timer.hasExpired()) {
+			} else if (timer.hasExpired()) {
 				if (game.credit == 0) {
 					fsm.changeState(INTRO);
 				} else if (game.intermissionNumber(game.level.number) != 0) {
@@ -273,9 +272,9 @@ public enum GameState implements FsmState<GameModel> {
 				} else {
 					fsm.changeState(LEVEL_STARTING);
 				}
-				return;
+			} else {
+				game.mazeFlashingAnimation().ifPresent(SpriteAnimation::advance);
 			}
-			game.mazeFlashingAnimation().ifPresent(SpriteAnimation::advance);
 		}
 	},
 
