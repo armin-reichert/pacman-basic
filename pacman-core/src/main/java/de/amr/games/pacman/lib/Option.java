@@ -34,6 +34,24 @@ import org.apache.logging.log4j.Logger;
  */
 public class Option<T> {
 
+	public static class BooleanOption extends Option<Boolean> {
+		public BooleanOption(String name, Boolean defaultValue) {
+			super(name, defaultValue, Boolean::valueOf);
+		}
+	}
+
+	public static class IntegerOption extends Option<Integer> {
+		public IntegerOption(String name, Integer defaultValue) {
+			super(name, defaultValue, Integer::valueOf);
+		}
+	}
+
+	public static class DoubleOption extends Option<Double> {
+		public DoubleOption(String name, Double defaultValue) {
+			super(name, defaultValue, Double::valueOf);
+		}
+	}
+
 	private static final Logger logger = LogManager.getFormatterLogger();
 
 	private final String name;
