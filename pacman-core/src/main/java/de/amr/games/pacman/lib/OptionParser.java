@@ -23,6 +23,7 @@ SOFTWARE.
  */
 package de.amr.games.pacman.lib;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,13 +39,20 @@ public class OptionParser {
 	private static final Logger logger = LogManager.getFormatterLogger();
 
 	private final Map<String, Option<?>> optionMap;
-	private final List<String> args;
+	private List<String> args = List.of();
 	private int i;
 
-	public OptionParser(List<Option<?>> options, List<String> args) {
+	public OptionParser(Option<?>... options) {
 		optionMap = new HashMap<>();
-		options.forEach(option -> optionMap.put(option.getName(), option));
-		this.args = args;
+		Arrays.asList(options).forEach(option -> optionMap.put(option.getName(), option));
+	}
+
+	public void parse(String... arglist) {
+		this.args = Arrays.asList(arglist);
+		i = 0;
+		while (i < args.size()) {
+			optionMap.values().forEach(this::parseValue);
+		}
 	}
 
 	public boolean hasMoreArgs() {
