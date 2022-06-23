@@ -39,7 +39,6 @@ public class OptionParser {
 	private static final Logger logger = LogManager.getFormatterLogger();
 
 	private final Map<String, Option<?>> optionMap;
-	private List<String> args = List.of();
 	private int i;
 
 	public OptionParser(Option<?>... options) {
@@ -47,21 +46,20 @@ public class OptionParser {
 		Arrays.asList(options).forEach(option -> optionMap.put(option.getName(), option));
 	}
 
-	public void parse(String... arglist) {
-		this.args = Arrays.asList(arglist);
+	public void parse(List<String> arglist) {
 		i = 0;
-		while (i < args.size()) {
-			optionMap.values().forEach(this::parseValue);
+		while (i < arglist.size()) {
+			optionMap.values().forEach(option -> parseValue(option, arglist));
 		}
 	}
 
-	public boolean hasMoreArgs() {
-		return i < args.size();
+	public void parse(String... args) {
+		parse(Arrays.asList(args));
 	}
 
-	public <T> void parseValue(Option<T> option) {
-		if (i < args.size()) {
-			var arg1 = args.get(i);
+	private <T> void parseValue(Option<T> option, List<String> arglist) {
+		if (i < arglist.size()) {
+			var arg1 = arglist.get(i);
 			if (!optionMap.keySet().contains(arg1)) {
 				logger.error("Skip garbage '%s'", arg1);
 				++i;
@@ -69,8 +67,8 @@ public class OptionParser {
 			}
 			if (option.getName().equals(arg1)) {
 				++i;
-				if (i < args.size()) {
-					var arg2 = args.get(i);
+				if (i < arglist.size()) {
+					var arg2 = arglist.get(i);
 					if (optionMap.keySet().contains(arg2)) {
 						logger.error("Missing value for parameter '%s'.", option.getName());
 					} else {
