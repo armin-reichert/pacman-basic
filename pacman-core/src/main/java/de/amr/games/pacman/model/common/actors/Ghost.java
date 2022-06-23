@@ -76,8 +76,6 @@ public class Ghost extends Creature {
 	/** ID of orange ghost. */
 	public static final int ORANGE_GHOST = 3;
 
-	public static final long FLASHING_TICKS = secToTicks(2); // TODO not sure
-
 	/** The ID of the ghost, see {@link GameModel#RED_GHOST} etc. */
 	public final int id;
 
@@ -105,17 +103,124 @@ public class Ghost extends Creature {
 	/** Tiles where the ghost cannot move upwards when in chasing or scattering mode. */
 	public List<V2i> upwardsBlockedTiles = List.of();
 
-	private SpriteAnimations<Ghost> animations;
-
 	public Ghost(int id, String name) {
 		super(name);
 		this.id = id;
 	}
 
-	@Override
-	public String toString() {
-		return String.format("[Ghost %s: state=%s, position=%s, tile=%s, offset=%s, velocity=%s, dir=%s, wishDir=%s]", name,
-				state, position, tile(), offset(), velocity, moveDir, wishDir);
+	public void update(GameModel game) {
+		switch (state) {
+		case LOCKED -> updateLockedState(game);
+		case LEAVING_HOUSE -> updateLeavingHouseState(game);
+		case HUNTING_PAC -> updateHuntingState(game);
+		case FRIGHTENED -> updateFrightenedState(game);
+		case DEAD -> updateDeadState(game);
+		case ENTERING_HOUSE -> updateEnteringHouseState(game);
+		}
+	}
+
+	public void updateLockedState(GameModel game) {
+		var world = game.level.world;
+		setAbsSpeed(0.5);
+		bounce(t(world.ghostHouse().seatMiddle().y), HTS);
+		if (game.pac.powerTimer.remaining() == 1) {
+			ensureFlashingStopped();
+		} else if (game.pac.powerTimer.remaining() <= FLASHING_TICKS) {
+			ensureFlashingStarted(game.level.numFlashes);
+		}
+	}
+
+	public void updateLeavingHouseState(GameModel game) {
+		var world = game.level.world;
+		setAbsSpeed(0.5);
+		boolean houseLeft = leaveHouse(world.ghostHouse());
+		if (houseLeft) {
+			state = HUNTING_PAC;
+			selectAnimation(AnimKeys.GHOST_COLOR);
+			// TODO Inky behaves differently. Why?
+			setBothDirs(LEFT);
+			GameEvents.publish(new GameEvent(game, GameEventType.GHOST_COMPLETES_LEAVING_HOUSE, this, tile()));
+		}
+	}
+
+	public void updateHuntingState(GameModel game) {
+		var world = game.level.world;
+		if (world.isTunnel(tile())) {
+			setRelSpeed(game.level.ghostSpeedTunnel);
+		} else if (elroy == 1) {
+			setRelSpeed(game.level.elroy1Speed);
+		} else if (elroy == 2) {
+			setRelSpeed(game.level.elroy2Speed);
+		} else {
+			setRelSpeed(game.level.ghostSpeed);
+		}
+		/*
+		 * In Ms. Pac-Man, Blinky and Pinky move randomly during the *first* scatter phase. Some say, the original intention
+		 * had been to randomize the scatter target of *all* ghosts in Ms. Pac-Man but because of a bug, only the scatter
+		 * target of Blinky and Pinky would have been affected. Who knows?
+		 */
+		if (game.variant == MS_PACMAN && game.huntingTimer.scatteringPhase() == 0
+				&& (id == RED_GHOST || id == PINK_GHOST)) {
+			roam(world);
+		}
+		/*
+		 * Chase if the hunting timer is in a chasing phase or if I am in Elroy mode.
+		 */
+		else if (elroy > 0 || game.huntingTimer.chasingPhase() != -1) {
+			chase(world, game.pac, game.theGhosts[RED_GHOST]);
+		}
+		/**
+		 * Scatter else.
+		 */
+		else {
+			scatter(world);
+		}
+	}
+
+	public void updateFrightenedState(GameModel game) {
+		var world = game.level.world;
+		if (world.isTunnel(tile())) {
+			setRelSpeed(game.level.ghostSpeedTunnel);
+			tryMoving(world);
+		} else {
+			setRelSpeed(game.level.ghostSpeedFrightened);
+			roam(world);
+		}
+		if (game.pac.powerTimer.remaining() == 1) {
+			ensureFlashingStopped();
+		} else if (game.pac.powerTimer.remaining() <= FLASHING_TICKS) {
+			ensureFlashingStarted(game.level.numFlashes);
+		}
+	}
+
+	public void updateDeadState(GameModel game) {
+		var world = game.level.world;
+		setRelSpeed(2 * game.level.ghostSpeed);
+		targetTile = world.ghostHouse().entry();
+		selectAnimation(AnimKeys.GHOST_EYES);
+		boolean houseReached = returnToHouse(world, world.ghostHouse());
+		if (houseReached) {
+			setBothDirs(DOWN);
+			targetTile = revivalTile;
+			state = ENTERING_HOUSE;
+			GameEvents.publish(new GameEvent(game, GameEventType.GHOST_ENTERS_HOUSE, this, tile()));
+		}
+	}
+
+	public void updateEnteringHouseState(GameModel game) {
+		var world = game.level.world;
+		setRelSpeed(2 * game.level.ghostSpeed);
+		boolean revivalTileReached = enterHouse(world.ghostHouse());
+		if (revivalTileReached) {
+			state = LEAVING_HOUSE;
+			if (game.pac.hasPower()) {
+				selectAnimation(AnimKeys.GHOST_BLUE);
+			} else {
+				selectAnimation(AnimKeys.GHOST_COLOR);
+			}
+			setBothDirs(moveDir.opposite());
+			GameEvents.publish(new GameEvent(game, GameEventType.GHOST_STARTS_LEAVING_HOUSE, this, tile()));
+		}
 	}
 
 	public boolean is(GhostState ghostState) {
@@ -123,11 +228,9 @@ public class Ghost extends Creature {
 	}
 
 	@Override
-	protected boolean isForbiddenDirection(Direction dir) {
-		if (dir == moveDir.opposite()) {
-			return true;
-		}
-		return state == HUNTING_PAC && dir == UP && upwardsBlockedTiles.contains(tile());
+	public String toString() {
+		return String.format("[Ghost %s: state=%s, position=%s, tile=%s, offset=%s, velocity=%s, dir=%s, wishDir=%s]", name,
+				state, position, tile(), offset(), velocity, moveDir, wishDir);
 	}
 
 	@Override
@@ -138,110 +241,6 @@ public class Ghost extends Creature {
 			return is(ENTERING_HOUSE) || is(LEAVING_HOUSE);
 		}
 		return super.canAccessTile(world, tile);
-	}
-
-	// TODO Is still do not know the exact speed values
-	public void update(GameModel game) {
-		var world = game.level.world;
-		switch (state) {
-		case LOCKED -> {
-			if (atGhostHouseDoor(world.ghostHouse())) {
-				setAbsSpeed(0);
-			} else {
-				setAbsSpeed(0.5);
-				bounce(t(world.ghostHouse().seatMiddle().y), HTS);
-			}
-			if (game.pac.powerTimer.remaining() == 1) {
-				ensureFlashingStopped();
-			} else if (game.pac.powerTimer.remaining() <= FLASHING_TICKS) {
-				ensureFlashingStarted(game.level.numFlashes);
-			}
-		}
-		case LEAVING_HOUSE -> {
-			setAbsSpeed(0.5);
-			boolean houseLeft = leaveHouse(world.ghostHouse());
-			if (houseLeft) {
-				state = HUNTING_PAC;
-				selectAnimation(AnimKeys.GHOST_COLOR);
-				// TODO Inky behaves differently. Why?
-				setBothDirs(LEFT);
-				GameEvents.publish(new GameEvent(game, GameEventType.GHOST_COMPLETES_LEAVING_HOUSE, this, tile()));
-			}
-		}
-		case FRIGHTENED -> {
-			if (world.isTunnel(tile())) {
-				setRelSpeed(game.level.ghostSpeedTunnel);
-				tryMoving(world);
-			} else {
-				setRelSpeed(game.level.ghostSpeedFrightened);
-				roam(world);
-			}
-			if (game.pac.powerTimer.remaining() == 1) {
-				ensureFlashingStopped();
-			} else if (game.pac.powerTimer.remaining() <= FLASHING_TICKS) {
-				ensureFlashingStarted(game.level.numFlashes);
-			}
-		}
-		case HUNTING_PAC -> {
-			if (world.isTunnel(tile())) {
-				setRelSpeed(game.level.ghostSpeedTunnel);
-			} else if (elroy == 1) {
-				setRelSpeed(game.level.elroy1Speed);
-			} else if (elroy == 2) {
-				setRelSpeed(game.level.elroy2Speed);
-			} else {
-				setRelSpeed(game.level.ghostSpeed);
-			}
-			/*
-			 * In Ms. Pac-Man, Blinky and Pinky move randomly during the *first* scatter phase. Some say, the original
-			 * intention had been to randomize the scatter target of *all* ghosts in Ms. Pac-Man but because of a bug, only
-			 * the scatter target of Blinky and Pinky would have been affected. Who knows?
-			 */
-			if (game.variant == MS_PACMAN && game.huntingTimer.scatteringPhase() == 0
-					&& (id == RED_GHOST || id == PINK_GHOST)) {
-				roam(world);
-			}
-			/*
-			 * Chase if the hunting timer is in a chasing phase or if I am in Elroy mode.
-			 */
-			else if (elroy > 0 || game.huntingTimer.chasingPhase() != -1) {
-				chase(world, game.pac, game.theGhosts[RED_GHOST]);
-			}
-			/**
-			 * Scatter else.
-			 */
-			else {
-				scatter(world);
-			}
-		}
-		case DEAD -> {
-			setRelSpeed(2 * game.level.ghostSpeed);
-			targetTile = world.ghostHouse().entry();
-			selectAnimation(AnimKeys.GHOST_EYES);
-			boolean houseReached = returnToHouse(world, world.ghostHouse());
-			if (houseReached) {
-				setBothDirs(DOWN);
-				targetTile = revivalTile;
-				state = ENTERING_HOUSE;
-				GameEvents.publish(new GameEvent(game, GameEventType.GHOST_ENTERS_HOUSE, this, tile()));
-			}
-		}
-		case ENTERING_HOUSE -> {
-			setRelSpeed(2 * game.level.ghostSpeed);
-			boolean revivalTileReached = enterHouse(world.ghostHouse());
-			if (revivalTileReached) {
-				// TODO is there some revival time?
-				state = LEAVING_HOUSE;
-				if (game.pac.hasPower()) {
-					selectAnimation(AnimKeys.GHOST_BLUE);
-				} else {
-					selectAnimation(AnimKeys.GHOST_COLOR);
-				}
-				setBothDirs(moveDir.opposite());
-				GameEvents.publish(new GameEvent(game, GameEventType.GHOST_STARTS_LEAVING_HOUSE, this, tile()));
-			}
-		}
-		}
 	}
 
 	public void checkCruiseElroyStart(GameLevel level) {
@@ -259,6 +258,14 @@ public class Ghost extends Creature {
 			elroy = -elroy; // negative value means "disabled"
 			logger.info("Cruise Elroy %d for %s stops", elroy, name);
 		}
+	}
+
+	@Override
+	protected boolean isForbiddenDirection(Direction dir) {
+		if (dir == moveDir.opposite()) {
+			return true;
+		}
+		return state == HUNTING_PAC && dir == UP && upwardsBlockedTiles.contains(tile());
 	}
 
 	private void chase(World world, Pac pac, Ghost redGhost) {
@@ -377,6 +384,10 @@ public class Ghost extends Creature {
 	}
 
 	// Animations
+
+	public static final long FLASHING_TICKS = secToTicks(2); // TODO check with MAME
+
+	private SpriteAnimations<Ghost> animations;
 
 	public void setAnimations(SpriteAnimations<Ghost> animations) {
 		this.animations = animations;
