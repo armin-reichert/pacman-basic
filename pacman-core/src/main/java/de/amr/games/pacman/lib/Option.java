@@ -26,10 +26,15 @@ package de.amr.games.pacman.lib;
 
 import java.util.function.Function;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * @author Armin Reichert
  */
 public class Option<T> {
+
+	private static final Logger logger = LogManager.getFormatterLogger();
 
 	private final String name;
 	private final Function<String, T> fnValueOf;
@@ -43,7 +48,6 @@ public class Option<T> {
 
 	public String getName() {
 		return name;
-
 	}
 
 	public T getValue() {
@@ -54,4 +58,12 @@ public class Option<T> {
 		return fnValueOf.apply(s);
 	}
 
+	public void parse(String s) {
+		try {
+			value = fnValueOf.apply(s);
+			logger.info("Found option %s = %s", name, value);
+		} catch (Exception e) {
+			logger.error("Could not parse option '%s' from text '%s'", name, s);
+		}
+	}
 }

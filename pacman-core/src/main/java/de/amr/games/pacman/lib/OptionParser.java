@@ -23,9 +23,9 @@ SOFTWARE.
  */
 package de.amr.games.pacman.lib;
 
+import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
-import java.util.function.Function;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -33,75 +33,44 @@ import org.apache.logging.log4j.Logger;
 /**
  * @author Armin Reichert
  */
-public abstract class OptionParser {
+public class OptionParser {
 
 	private static final Logger logger = LogManager.getFormatterLogger();
 
-	private final List<String> names;
+	private final Map<String, Option<?>> optionMap;
 	private final List<String> args;
 	private int i;
 
-	protected OptionParser(List<String> names, List<String> args) {
-		this.names = names;
+	public OptionParser(List<Option<?>> options, List<String> args) {
+		optionMap = new HashMap<>();
+		options.forEach(option -> optionMap.put(option.getName(), option));
 		this.args = args;
 	}
 
-	protected boolean hasMoreArgs() {
+	public boolean hasMoreArgs() {
 		return i < args.size();
 	}
 
-	protected void printOptions() {
-	}
-
-	protected <T> Optional<T> parseNameValue(String name, Function<String, T> fnConvert) {
-		if (i + 1 < args.size()) {
+	public <T> void parseValue(Option<T> option) {
+		if (i < args.size()) {
 			var arg1 = args.get(i);
-			var arg2 = args.get(i + 1);
-			if (name.equals(arg1)) {
+			if (!optionMap.keySet().contains(arg1)) {
+				logger.error("Skip garbage '%s'", arg1);
 				++i;
-				if (names.contains(arg2)) {
-					logger.error("Missing value for parameter '%s'.", name);
-				} else {
-					++i;
-					try {
-						T value = fnConvert.apply(arg2);
-						logger.info("Found parameter %s = %s", name, value);
-						return Optional.ofNullable(value);
-					} catch (Exception x) {
-						logger.error("'%s' is no legal value for parameter '%s'.", arg2, name);
+				return;
+			}
+			if (option.getName().equals(arg1)) {
+				++i;
+				if (i < args.size()) {
+					var arg2 = args.get(i);
+					if (optionMap.keySet().contains(arg2)) {
+						logger.error("Missing value for parameter '%s'.", option.getName());
+					} else {
+						++i;
+						option.parse(arg2);
 					}
 				}
 			}
 		}
-		return Optional.empty();
-	}
-
-	protected <T> Optional<T> parseName(String name, Function<String, T> fnConvert) {
-		if (i < args.size()) {
-			var arg = args.get(i);
-			if (name.equals(arg)) {
-				logger.info("Found parameter %s", name);
-				++i;
-				try {
-					T value = fnConvert.apply(name);
-					return Optional.ofNullable(value);
-				} catch (Exception x) {
-					logger.error("'%s' is no legal parameter.", name);
-				}
-			}
-		}
-		return Optional.empty();
-	}
-
-	protected Optional<Boolean> parseBoolean(String name) {
-		if (i < args.size()) {
-			var arg = args.get(i);
-			if (name.equals(arg)) {
-				++i;
-				logger.info("Found parameter %s", name);
-				return Optional.of(true);
-			}
-		}
-		return Optional.empty();
 	}
 }
