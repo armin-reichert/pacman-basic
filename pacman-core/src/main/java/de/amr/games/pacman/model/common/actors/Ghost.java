@@ -416,7 +416,7 @@ public class Ghost extends Creature {
 
 	public void ensureFlashingStarted(int numFlashes) {
 		animations().ifPresent(anim -> {
-			if (anim.selected().equals(AnimKeys.GHOST_BLUE)) {
+			if (!anim.selected().equals(AnimKeys.GHOST_FLASHING)) {
 				var flashing = (SingleSpriteAnimation<?>) anim.byName(AnimKeys.GHOST_FLASHING);
 				long frameTicks = FLASHING_TICKS / (numFlashes * flashing.numFrames());
 				flashing.frameDuration(frameTicks);
