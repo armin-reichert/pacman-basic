@@ -34,22 +34,20 @@ import org.apache.logging.log4j.Logger;
  */
 public class Option<T> {
 
-	public static class BooleanOption extends Option<Boolean> {
-		public BooleanOption(String name, Boolean defaultValue) {
-			super(name, defaultValue, Boolean::valueOf);
-		}
+	public static Option<Boolean> booleanOption(String name, boolean defaultValue) {
+		return new Option<>(name, defaultValue, Boolean::valueOf);
 	}
 
-	public static class IntegerOption extends Option<Integer> {
-		public IntegerOption(String name, Integer defaultValue) {
-			super(name, defaultValue, Integer::valueOf);
-		}
+	public static Option<Integer> integerOption(String name, int defaultValue) {
+		return new Option<>(name, defaultValue, Integer::valueOf);
 	}
 
-	public static class DoubleOption extends Option<Double> {
-		public DoubleOption(String name, Double defaultValue) {
-			super(name, defaultValue, Double::valueOf);
-		}
+	public static Option<Double> doubleOption(String name, double defaultValue) {
+		return new Option<>(name, defaultValue, Double::valueOf);
+	}
+
+	public static <ANY> Option<ANY> option(String name, ANY defaultValue, Function<String, ANY> fnValueOf) {
+		return new Option<>(name, defaultValue, fnValueOf);
 	}
 
 	private static final Logger logger = LogManager.getFormatterLogger();
@@ -58,7 +56,7 @@ public class Option<T> {
 	private final Function<String, T> fnValueOf;
 	private T value;
 
-	public Option(String name, T defaultValue, Function<String, T> fnValueOf) {
+	private Option(String name, T defaultValue, Function<String, T> fnValueOf) {
 		this.name = name;
 		this.value = defaultValue;
 		this.fnValueOf = fnValueOf;
