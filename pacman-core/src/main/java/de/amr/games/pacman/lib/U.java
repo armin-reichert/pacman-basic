@@ -81,4 +81,14 @@ public class U {
 		}
 		return value;
 	}
+
+	/**
+	 * @param value  some double value
+	 * @param center target value
+	 * @param radius maximum allowed deviation
+	 * @return {@code true} if the given value is inside the interval {@code [target - tolerance; target + tolerance]}
+	 */
+	public static boolean insideRange(double value, double center, double radius) {
+		return (center - radius) <= value && value <= (center + radius);
+	}
 }

@@ -45,7 +45,7 @@ import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
-import de.amr.games.pacman.lib.V2d;
+import de.amr.games.pacman.lib.U;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.lib.animation.SingleSpriteAnimation;
 import de.amr.games.pacman.lib.animation.SpriteAnimation;
@@ -307,7 +307,7 @@ public class Ghost extends Creature {
 	 * @return {@code true} if the ghost is at the ghosthouse door.
 	 */
 	private boolean atGhostHouseDoor(GhostHouse house) {
-		return tile().equals(house.entry()) && V2d.insideRange(offset().x, HTS, 1);
+		return tile().equals(house.entry()) && U.insideRange(offset().x, HTS, 1);
 	}
 
 	/**
@@ -345,7 +345,7 @@ public class Ghost extends Creature {
 			return true;
 		}
 		var center = house.middleSeatCenter();
-		if (V2d.insideRange(position.x, center.x, 1)) {
+		if (U.insideRange(position.x, center.x, 1)) {
 			setOffset(HTS, offset().y); // center horizontally before rising
 			setBothDirs(UP);
 		} else if (position.y < center.y) {
