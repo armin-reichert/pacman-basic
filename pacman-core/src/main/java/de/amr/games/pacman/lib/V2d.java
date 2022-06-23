@@ -45,15 +45,15 @@ public class V2d {
 	}
 
 	@Override
-	public boolean equals(Object v_object) {
-		if (this == v_object)
+	public boolean equals(Object other) {
+		if (this == other)
 			return true;
-		if (v_object == null)
+		if (other == null)
 			return false;
-		if (getClass() != v_object.getClass())
+		if (getClass() != other.getClass())
 			return false;
-		V2d v = (V2d) v_object;
-		return U.insideRange(x, v.x, EPSILON) && U.insideRange(y, v.y, EPSILON);
+		V2d v = (V2d) other;
+		return Math.abs(v.x - x) <= EPSILON && Math.abs(v.y - y) <= EPSILON;
 	}
 
 	@Override
@@ -68,10 +68,6 @@ public class V2d {
 
 	public V2d(V2i v) {
 		this(v.x, v.y);
-	}
-
-	public V2i toV2i() {
-		return new V2i((int) x, (int) y);
 	}
 
 	public V2d plus(V2d v) {
