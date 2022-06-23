@@ -52,48 +52,70 @@ public abstract class OptionParser {
 		};
 	}
 
-	protected int i;
+	private final List<String> names;
+	private final List<String> args;
+	private int i;
 
-	protected OptionParser() {
+	protected OptionParser(List<String> names, List<String> args) {
+		this.names = names;
+		this.args = args;
 	}
 
-	protected abstract List<String> options();
+	protected boolean hasMoreArgs() {
+		return i < args.size();
+	}
 
-	protected <T> Optional<T> optNameValue(List<String> args, String name, Function<String, T> fnConvert) {
-		if (name.equals(args.get(i))) {
-			if (i + 1 == args.size() || options().contains(args.get(i + 1))) {
-				logger.error("!!! Error: missing value for parameter '%s'.", name);
-			} else {
+	protected void printOptions() {
+	}
+
+	protected <T> Optional<T> parseNameValue(String name, Function<String, T> fnConvert) {
+		if (i + 1 < args.size()) {
+			var arg1 = args.get(i);
+			var arg2 = args.get(i + 1);
+			if (name.equals(arg1)) {
 				++i;
-				try {
-					T value = fnConvert.apply(args.get(i));
-					logger.info("Found parameter %s = %s", name, value);
-					return Optional.ofNullable(value);
-				} catch (Exception x) {
-					logger.error("!!! Error: '%s' is no legal value for parameter '%s'.", args.get(i), name);
+				if (names.contains(arg2)) {
+					logger.error("Missing value for parameter '%s'.", name);
+				} else {
+					++i;
+					try {
+						T value = fnConvert.apply(arg2);
+						logger.info("Found parameter %s = %s", name, value);
+						return Optional.ofNullable(value);
+					} catch (Exception x) {
+						logger.error("'%s' is no legal value for parameter '%s'.", arg2, name);
+					}
 				}
 			}
 		}
 		return Optional.empty();
 	}
 
-	protected <T> Optional<T> optName(List<String> args, String name, Function<String, T> fnConvert) {
-		if (name.equals(args.get(i))) {
-			logger.info("Found parameter %s", name);
-			try {
-				T value = fnConvert.apply(name);
-				return Optional.ofNullable(value);
-			} catch (Exception x) {
-				logger.error("!!! Error: '%s' is no legal parameter.", name);
+	protected <T> Optional<T> parseName(String name, Function<String, T> fnConvert) {
+		if (i < args.size()) {
+			var arg = args.get(i);
+			if (name.equals(arg)) {
+				logger.info("Found parameter %s", name);
+				++i;
+				try {
+					T value = fnConvert.apply(name);
+					return Optional.ofNullable(value);
+				} catch (Exception x) {
+					logger.error("'%s' is no legal parameter.", name);
+				}
 			}
 		}
 		return Optional.empty();
 	}
 
-	protected Optional<Boolean> optBoolean(List<String> args, String name) {
-		if (name.equals(args.get(i))) {
-			logger.info("Found parameter %s", name);
-			return Optional.of(true);
+	protected Optional<Boolean> parseBoolean(String name) {
+		if (i < args.size()) {
+			var arg = args.get(i);
+			if (name.equals(arg)) {
+				++i;
+				logger.info("Found parameter %s", name);
+				return Optional.of(true);
+			}
 		}
 		return Optional.empty();
 	}
