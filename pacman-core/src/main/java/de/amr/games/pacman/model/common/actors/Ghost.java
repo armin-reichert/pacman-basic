@@ -27,6 +27,7 @@ import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Direction.UP;
+import static de.amr.games.pacman.lib.TickTimer.secToTicks;
 import static de.amr.games.pacman.model.common.GameVariant.MS_PACMAN;
 import static de.amr.games.pacman.model.common.actors.GhostState.ENTERING_HOUSE;
 import static de.amr.games.pacman.model.common.actors.GhostState.HUNTING_PAC;
@@ -44,7 +45,6 @@ import de.amr.games.pacman.event.GameEvent;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.Direction;
-import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.U;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.lib.animation.SingleSpriteAnimation;
@@ -76,7 +76,7 @@ public class Ghost extends Creature {
 	/** ID of orange ghost. */
 	public static final int ORANGE_GHOST = 3;
 
-	public static final long FLASHING_TICKS = TickTimer.secToTicks(2); // TODO not sure
+	public static final long FLASHING_TICKS = secToTicks(2); // TODO not sure
 
 	/** The ID of the ghost, see {@link GameModel#RED_GHOST} etc. */
 	public final int id;
@@ -151,6 +151,11 @@ public class Ghost extends Creature {
 				setAbsSpeed(0.5);
 				bounce(t(world.ghostHouse().seatMiddle().y), HTS);
 			}
+			if (game.pac.powerTimer.remaining() == 1) {
+				ensureFlashingStopped();
+			} else if (game.pac.powerTimer.remaining() <= FLASHING_TICKS) {
+				ensureFlashingStarted(game.level.numFlashes);
+			}
 		}
 		case LEAVING_HOUSE -> {
 			setAbsSpeed(0.5);
@@ -170,6 +175,11 @@ public class Ghost extends Creature {
 			} else {
 				setRelSpeed(game.level.ghostSpeedFrightened);
 				roam(world);
+			}
+			if (game.pac.powerTimer.remaining() == 1) {
+				ensureFlashingStopped();
+			} else if (game.pac.powerTimer.remaining() <= FLASHING_TICKS) {
+				ensureFlashingStarted(game.level.numFlashes);
 			}
 		}
 		case HUNTING_PAC -> {
@@ -232,7 +242,6 @@ public class Ghost extends Creature {
 			}
 		}
 		}
-		updateFlashingAnimation(game);
 	}
 
 	public void checkCruiseElroyStart(GameLevel level) {
@@ -394,16 +403,23 @@ public class Ghost extends Creature {
 		});
 	}
 
-	public void updateFlashingAnimation(GameModel game) {
+	public void ensureFlashingStarted(int numFlashes) {
 		animations().ifPresent(anim -> {
-			if (anim.selected().equals(AnimKeys.GHOST_BLUE) && game.pac.powerTimer.remaining() == FLASHING_TICKS) {
+			if (anim.selected().equals(AnimKeys.GHOST_BLUE)) {
 				var flashing = (SingleSpriteAnimation<?>) anim.byName(AnimKeys.GHOST_FLASHING);
-				long frameTicks = FLASHING_TICKS / (game.level.numFlashes * flashing.numFrames());
+				long frameTicks = FLASHING_TICKS / (numFlashes * flashing.numFrames());
 				flashing.frameDuration(frameTicks);
-				flashing.repetions(game.level.numFlashes);
+				flashing.repetions(numFlashes);
 				flashing.restart();
 				anim.select(AnimKeys.GHOST_FLASHING);
-			} else if (anim.selected().equals(AnimKeys.GHOST_FLASHING) && game.pac.powerTimer.remaining() == 1) {
+			}
+		});
+	}
+
+	public void ensureFlashingStopped() {
+		animations().ifPresent(anim -> {
+			if (anim.selected().equals(AnimKeys.GHOST_FLASHING)) {
+				anim.selectedAnimation().stop();
 				selectAnimation(AnimKeys.GHOST_COLOR);
 			}
 		});
