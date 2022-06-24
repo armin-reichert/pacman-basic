@@ -214,15 +214,16 @@ public class Creature extends Entity {
 		var offset = offset();
 		var neighborTile = tile.plus(dir.vec);
 		var speed = velocity.length();
+		var canAccessNeighborTile = canAccessTile(world, neighborTile);
+
+		stuck = true;
 
 		// check if creature can turn towards move direction from its current position
-		if (canAccessTile(world, neighborTile)) {
+		if (canAccessNeighborTile) {
 			if (dir.isHorizontal() && abs(offset.y) > speed) {
-				stuck = true;
 				return;
 			}
 			if (dir.isVertical() && abs(offset.x) > speed) {
-				stuck = true;
 				return;
 			}
 			if (dir.isHorizontal()) {
@@ -239,20 +240,17 @@ public class Creature extends Entity {
 
 		// avoid moving into inaccessible neighbor tile
 		if (!canAccessTile(world, newTile)) {
-			stuck = true;
 			return;
 		}
 
 		// align with inaccessible neighbor tile
-		if (!canAccessTile(world, neighborTile)) {
+		if (!canAccessNeighborTile) {
 			if (dir == Direction.RIGHT && newOffset.x > 0 || dir == Direction.LEFT && newOffset.x < 0) {
 				setOffset(0, offset.y);
-				stuck = true;
 				return;
 			}
 			if (dir == Direction.DOWN && newOffset.y > 0 || dir == Direction.UP && newOffset.y < 0) {
 				setOffset(offset.x, 0);
-				stuck = true;
 				return;
 			}
 		}
@@ -276,17 +274,13 @@ public class Creature extends Entity {
 		}
 		double minDist = Double.MAX_VALUE;
 		for (var dir : TURN_PRIORITY) {
-			if (isForbiddenDirection(dir)) {
-				continue;
-			}
 			var neighbor = tile().plus(dir.vec);
-			if (!canAccessTile(world, neighbor)) {
-				continue;
-			}
-			double d = neighbor.euclideanDistance(targetTile);
-			if (d < minDist) {
-				minDist = d;
-				wishDir = dir;
+			if (!isForbiddenDirection(dir) && canAccessTile(world, neighbor)) {
+				double d = neighbor.euclideanDistance(targetTile);
+				if (d < minDist) {
+					minDist = d;
+					wishDir = dir;
+				}
 			}
 		}
 	}
