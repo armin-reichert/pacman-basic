@@ -227,16 +227,16 @@ public class IntroController extends Fsm<State, Context> {
 
 			@Override
 			public void onUpdate(Context $) {
-				// When the last ghost has been killed, leave state
 				if (Stream.of($.ghosts).allMatch(ghost -> ghost.is(GhostState.DEAD))) {
 					$.pacMan.hide();
 					controller.changeState(READY_TO_PLAY);
 					return;
 				}
-				// check if Pac-Man kills a ghost
-				var killedGhost = Stream.of($.ghosts).filter(ghost -> !ghost.is(GhostState.DEAD)).filter($.pacMan::sameTile)
+				var nextVictim = Stream.of($.ghosts)//
+						.filter($.pacMan::sameTile)//
+						.filter(ghost -> ghost.is(GhostState.FRIGHTENED))//
 						.findFirst();
-				killedGhost.ifPresent(victim -> {
+				nextVictim.ifPresent(victim -> {
 					$.ghostKilledTime = timer.tick();
 					victim.killIndex = victim.id;
 					victim.enterDeadState();

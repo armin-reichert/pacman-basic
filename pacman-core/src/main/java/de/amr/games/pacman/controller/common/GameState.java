@@ -303,12 +303,6 @@ public enum GameState implements FsmState<GameModel> {
 			timer.resetSeconds(1);
 			timer.start();
 			game.pac.hide();
-			game.ghosts().forEach(ghost -> {
-				if (ghost.killIndex != -1) {
-					ghost.animation(AnimKeys.GHOST_VALUE).ifPresent(anim -> anim.setFrameIndex(ghost.killIndex));
-					ghost.selectAnimation(AnimKeys.GHOST_VALUE);
-				}
-			});
 			game.sounds().ifPresent(snd -> snd.play(GameSound.GHOST_EATEN));
 		}
 
