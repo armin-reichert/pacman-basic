@@ -426,15 +426,25 @@ public class Ghost extends Creature {
 		});
 	}
 
+	private void updateFlashingAnimation(GameModel game) {
+		if (game.pac.powerTimer.remaining() == 1) {
+			ensureFlashingStopped();
+		} else if (game.pac.powerTimer.remaining() == FLASHING_DURATION) {
+			ensureFlashingStarted(game.level.numFlashes);
+		}
+	}
+
 	private void ensureFlashingStarted(int numFlashes) {
 		animations().ifPresent(anim -> {
-			if (!anim.selected().equals(AnimKeys.GHOST_FLASHING)) {
-				var flashing = (SingleSpriteAnimation<?>) anim.byName(AnimKeys.GHOST_FLASHING);
+			if (anim.selected().equals(AnimKeys.GHOST_FLASHING)) {
+				anim.selectedAnimation().ensureRunning();
+			} else {
+				anim.select(AnimKeys.GHOST_FLASHING);
+				var flashing = (SingleSpriteAnimation<?>) anim.selectedAnimation();
 				long frameTicks = FLASHING_DURATION / (numFlashes * flashing.numFrames());
 				flashing.frameDuration(frameTicks);
 				flashing.repetions(numFlashes);
 				flashing.restart();
-				anim.select(AnimKeys.GHOST_FLASHING);
 			}
 		});
 	}
@@ -447,13 +457,4 @@ public class Ghost extends Creature {
 			}
 		});
 	}
-
-	private void updateFlashingAnimation(GameModel game) {
-		if (game.pac.powerTimer.remaining() == 1) {
-			ensureFlashingStopped();
-		} else if (game.pac.powerTimer.remaining() == FLASHING_DURATION) {
-			ensureFlashingStarted(game.level.numFlashes);
-		}
-	}
-
 }
