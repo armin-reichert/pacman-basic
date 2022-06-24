@@ -112,41 +112,43 @@ public class FloorPlan {
 		int numBlocksX = resolution * world.numCols();
 		int numBlocksY = resolution * world.numRows();
 		info = new byte[numBlocksY][numBlocksX];
+		scanForWalls(numBlocksX, numBlocksY);
+		clearPlacesSurroundedByWalls(numBlocksX, numBlocksY);
+		separateWallsAndCorners(numBlocksX, numBlocksY);
+	}
 
-		// scan for walls
-		for (int y = 0; y < numBlocksY; ++y) {
-			for (int x = 0; x < numBlocksX; ++x) {
-				V2i tile = new V2i(x / resolution, y / resolution);
-				info[y][x] = world.isWall(tile) ? FloorPlan.CORNER : FloorPlan.EMPTY;
-			}
-		}
+	private void separateWallsAndCorners(int numBlocksX, int numBlocksY) {
+		separateHorizontalWallsAndCorners(numBlocksX, numBlocksY);
+		separateVerticalWallsAndCorners(numBlocksX, numBlocksY);
+	}
 
-		// clear blocks inside wall regions
-		for (int y = 0; y < numBlocksY; ++y) {
-			int tileY = y / resolution;
-			for (int x = 0; x < numBlocksX; ++x) {
-				int tileX = x / resolution;
-				int i = (y % resolution) * resolution + (x % resolution);
-				V2i n = northOf(tileX, tileY, i);
-				V2i e = eastOf(tileX, tileY, i);
-				V2i s = southOf(tileX, tileY, i);
-				V2i w = westOf(tileX, tileY, i);
-				if (world.isWall(n) && world.isWall(e) && world.isWall(s) && world.isWall(w)) {
-					V2i se = southOf(e.x, e.y, i);
-					V2i sw = southOf(w.x, w.y, i);
-					V2i ne = northOf(e.x, e.y, i);
-					V2i nw = northOf(w.x, w.y, i);
-					if (world.isWall(se) && !world.isWall(nw) || !world.isWall(se) && world.isWall(nw)
-							|| world.isWall(sw) && !world.isWall(ne) || !world.isWall(sw) && world.isWall(ne)) {
-						// keep corner of wall region
+	private void separateVerticalWallsAndCorners(int numBlocksX, int numBlocksY) {
+		for (int x = 0; x < numBlocksX; ++x) {
+			int blockStartY = -1;
+			int blockLen = 0;
+			for (int y = 0; y < numBlocksY; ++y) {
+				if (info[y][x] == FloorPlan.CORNER) {
+					if (blockStartY == -1) {
+						blockStartY = y;
+						blockLen = 1;
 					} else {
-						info[y][x] = FloorPlan.EMPTY;
+						info[y][x] = (y == numBlocksY - 1) ? FloorPlan.CORNER : FloorPlan.VWALL;
+						++blockLen;
 					}
+				} else {
+					if (blockLen == 1) {
+						info[blockStartY][x] = FloorPlan.CORNER;
+					} else if (blockLen > 1) {
+						info[blockStartY + blockLen - 1][x] = FloorPlan.CORNER;
+					}
+					blockStartY = -1;
+					blockLen = 0;
 				}
 			}
 		}
+	}
 
-		// separate horizontal walls, vertical walls and corners
+	private void separateHorizontalWallsAndCorners(int numBlocksX, int numBlocksY) {
 		for (int y = 0; y < numBlocksY; ++y) {
 			int blockStartX = -1;
 			int blockLen = 0;
@@ -174,27 +176,38 @@ public class FloorPlan {
 				}
 			}
 		}
+	}
 
-		for (int x = 0; x < numBlocksX; ++x) {
-			int blockStartY = -1;
-			int blockLen = 0;
-			for (int y = 0; y < numBlocksY; ++y) {
-				if (info[y][x] == FloorPlan.CORNER) {
-					if (blockStartY == -1) {
-						blockStartY = y;
-						blockLen = 1;
+	private void scanForWalls(int numBlocksX, int numBlocksY) {
+		for (int y = 0; y < numBlocksY; ++y) {
+			for (int x = 0; x < numBlocksX; ++x) {
+				V2i tile = new V2i(x / resolution, y / resolution);
+				info[y][x] = world.isWall(tile) ? FloorPlan.CORNER : FloorPlan.EMPTY;
+			}
+		}
+	}
+
+	private void clearPlacesSurroundedByWalls(int numBlocksX, int numBlocksY) {
+		for (int y = 0; y < numBlocksY; ++y) {
+			int tileY = y / resolution;
+			for (int x = 0; x < numBlocksX; ++x) {
+				int tileX = x / resolution;
+				int i = (y % resolution) * resolution + (x % resolution);
+				V2i n = northOf(tileX, tileY, i);
+				V2i e = eastOf(tileX, tileY, i);
+				V2i s = southOf(tileX, tileY, i);
+				V2i w = westOf(tileX, tileY, i);
+				if (world.isWall(n) && world.isWall(e) && world.isWall(s) && world.isWall(w)) {
+					V2i se = southOf(e.x, e.y, i);
+					V2i sw = southOf(w.x, w.y, i);
+					V2i ne = northOf(e.x, e.y, i);
+					V2i nw = northOf(w.x, w.y, i);
+					if (world.isWall(se) && !world.isWall(nw) || !world.isWall(se) && world.isWall(nw)
+							|| world.isWall(sw) && !world.isWall(ne) || !world.isWall(sw) && world.isWall(ne)) {
+						// keep corner of wall region
 					} else {
-						info[y][x] = (y == numBlocksY - 1) ? FloorPlan.CORNER : FloorPlan.VWALL;
-						++blockLen;
+						info[y][x] = FloorPlan.EMPTY;
 					}
-				} else {
-					if (blockLen == 1) {
-						info[blockStartY][x] = FloorPlan.CORNER;
-					} else if (blockLen > 1) {
-						info[blockStartY + blockLen - 1][x] = FloorPlan.CORNER;
-					}
-					blockStartY = -1;
-					blockLen = 0;
 				}
 			}
 		}
