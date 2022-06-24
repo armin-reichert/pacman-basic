@@ -33,7 +33,6 @@ import static de.amr.games.pacman.model.common.actors.GhostState.DEAD;
 import static de.amr.games.pacman.model.common.actors.GhostState.ENTERING_HOUSE;
 import static de.amr.games.pacman.model.common.actors.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.common.actors.GhostState.HUNTING_PAC;
-import static de.amr.games.pacman.model.common.actors.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.model.common.actors.GhostState.LOCKED;
 import static de.amr.games.pacman.model.common.world.World.HTS;
 
@@ -223,12 +222,8 @@ public abstract class GameModel {
 			});
 			ghost.targetTile = null;
 			ghost.stuck = false;
-			ghost.setState(GhostState.LOCKED);
 			ghost.killIndex = -1;
-			ghost.animations().ifPresent(anim -> {
-				anim.select(AnimKeys.GHOST_COLOR);
-				anim.selectedAnimation().reset();
-			});
+			ghost.enterLockedState();
 		}
 	}
 
@@ -416,11 +411,10 @@ public abstract class GameModel {
 	}
 
 	private void killGhost(Ghost ghost) {
-		ghost.setState(DEAD);
-		ghost.targetTile = level.world.ghostHouse().entry();
 		ghost.killIndex = ++ghostKillIndex;
 		int points = ghostValue(ghost.killIndex);
 		scores.addPoints(points);
+		ghost.enterDeadState(level.world.ghostHouse().entry());
 		logger.info("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name, ghost.tile(), points);
 	}
 
@@ -439,11 +433,11 @@ public abstract class GameModel {
 		/* TODO hack: leave state EXPIRED to avoid repetitions. */
 		pac.powerTimer.resetIndefinitely();
 		huntingTimer.start();
-		ghosts(FRIGHTENED).forEach(ghost -> ghost.setState(HUNTING_PAC));
 		sounds().ifPresent(snd -> {
 			snd.stop(GameSound.PACMAN_POWER);
 			snd.ensureSirenStarted(huntingTimer.phase() / 2);
 		});
+		ghosts(FRIGHTENED).forEach(Ghost::enterHuntingState);
 		GameEvents.publish(GameEventType.PLAYER_LOSES_POWER, pac.tile());
 	}
 
@@ -491,9 +485,8 @@ public abstract class GameModel {
 		pac.powerTimer.start();
 		logger.info("%s power timer started: %s", pac.name, pac.powerTimer);
 		ghosts(HUNTING_PAC).forEach(ghost -> {
-			ghost.setState(FRIGHTENED);
+			ghost.enterFrightenedState();
 			ghost.forceTurningBack(level.world);
-			ghost.selectAnimation(AnimKeys.GHOST_BLUE);
 		});
 		ghosts(LOCKED).forEach(ghost -> ghost.selectAnimation(AnimKeys.GHOST_BLUE));
 		sounds().ifPresent(snd -> {
@@ -560,9 +553,9 @@ public abstract class GameModel {
 			logger.info("%s Elroy mode %d resumed", theGhosts[RED_GHOST].name, theGhosts[RED_GHOST].elroy);
 		}
 		if (ghost.id == RED_GHOST) {
-			ghost.setState(HUNTING_PAC);
+			ghost.enterHuntingState();
 		} else {
-			ghost.setState(LEAVING_HOUSE);
+			ghost.enterLeavingHouseState(this);
 		}
 	}
 

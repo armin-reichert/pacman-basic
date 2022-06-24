@@ -43,7 +43,6 @@ import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.lib.fsm.FsmState;
 import de.amr.games.pacman.model.common.actors.AnimKeys;
 import de.amr.games.pacman.model.common.actors.Ghost;
-import de.amr.games.pacman.model.common.actors.GhostState;
 import de.amr.games.pacman.model.common.actors.Pac;
 
 /**
@@ -109,7 +108,7 @@ public class IntroController extends Fsm<IntroController.State, IntroController.
 				$.msPacMan.setAbsSpeed($.actorSpeed);
 				$.msPacMan.show();
 				for (Ghost ghost : $.ghosts) {
-					ghost.setState(GhostState.HUNTING_PAC);
+					ghost.enterHuntingState();
 					ghost.setMoveDir(LEFT);
 					ghost.setWishDir(LEFT);
 					ghost.setPosition(t(34), $.turningPoint.y);

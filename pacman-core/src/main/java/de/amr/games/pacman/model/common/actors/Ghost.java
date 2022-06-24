@@ -30,6 +30,7 @@ import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.lib.TickTimer.secToTicks;
 import static de.amr.games.pacman.model.common.GameVariant.MS_PACMAN;
 import static de.amr.games.pacman.model.common.actors.GhostState.ENTERING_HOUSE;
+import static de.amr.games.pacman.model.common.actors.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.common.actors.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.model.common.actors.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.model.common.world.World.HTS;
@@ -322,8 +323,40 @@ public class Ghost extends Creature {
 		return state;
 	}
 
-	public void setState(GhostState state) {
-		this.state = state;
+//	public void setState(GhostState state) {
+//		this.state = state;
+//	}
+
+	public void enterLockedState() {
+		state = GhostState.LOCKED;
+		animations().ifPresent(anim -> {
+			anim.select(AnimKeys.GHOST_COLOR);
+			anim.selectedAnimation().reset();
+		});
+	}
+
+	public void enterHuntingState() {
+		state = HUNTING_PAC;
+		animations().ifPresent(anim -> anim.select(AnimKeys.GHOST_COLOR));
+	}
+
+	public void enterFrightenedState() {
+		state = FRIGHTENED;
+		selectAnimation(AnimKeys.GHOST_BLUE);
+	}
+
+	public void enterDeadState(V2i targetTile) {
+		state = GhostState.DEAD;
+		this.targetTile = targetTile;
+		animations().ifPresent(anims -> {
+			anims.select(AnimKeys.GHOST_VALUE);
+			anims.selectedAnimation().setFrameIndex(killIndex);
+		});
+	}
+
+	public void enterLeavingHouseState(GameModel game) {
+		state = LEAVING_HOUSE;
+		updateFlashingAnimation(game);
 	}
 
 	@Override

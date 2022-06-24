@@ -27,7 +27,6 @@ import static de.amr.games.pacman.model.common.actors.Ghost.CYAN_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ORANGE_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.PINK_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.RED_GHOST;
-import static de.amr.games.pacman.model.common.actors.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.common.world.World.t;
 
 import java.util.Arrays;
@@ -176,12 +175,12 @@ public class IntroController extends Fsm<State, Context> {
 				$.pacMan.show();
 				$.pacMan.animations().ifPresent(SpriteAnimations::ensureRunning);
 				for (Ghost ghost : $.ghosts) {
-					ghost.setState(GhostState.HUNTING_PAC);
+					ghost.enterHuntingState();
+					ghost.animations().ifPresent(SpriteAnimations::ensureRunning);
 					ghost.position = $.pacMan.position.plus(16 * (ghost.id + 1), 0);
 					ghost.setBothDirs(Direction.LEFT);
 					ghost.setAbsSpeed(1.2);
 					ghost.show();
-					ghost.animations().ifPresent(SpriteAnimations::ensureRunning);
 				}
 			}
 
@@ -194,8 +193,7 @@ public class IntroController extends Fsm<State, Context> {
 				// ghosts already reverse direction before Pac-man eats the energizer and turns right!
 				else if ($.pacMan.position.x <= t($.left) + 4) {
 					for (Ghost ghost : $.ghosts) {
-						ghost.setState(FRIGHTENED);
-						ghost.selectAnimation(AnimKeys.GHOST_BLUE);
+						ghost.enterFrightenedState();
 						ghost.setBothDirs(Direction.RIGHT);
 						ghost.setAbsSpeed(0.6);
 						ghost.move();
@@ -242,12 +240,8 @@ public class IntroController extends Fsm<State, Context> {
 						.filter($.pacMan::sameTile).findFirst();
 				killedGhost.ifPresent(victim -> {
 					$.ghostKilledTime = timer.tick();
-					victim.setState(GhostState.DEAD);
 					victim.killIndex = victim.id;
-					victim.animations().ifPresent(animations -> {
-						animations.select(AnimKeys.GHOST_VALUE);
-						animations.selectedAnimation().setFrameIndex(victim.killIndex);
-					});
+					victim.enterDeadState(null);
 					$.pacMan.hide();
 					$.pacMan.setAbsSpeed(0);
 					Stream.of($.ghosts).forEach(ghost -> {
