@@ -215,7 +215,7 @@ public abstract class GameModel {
 		for (Ghost ghost : theGhosts) {
 			ghost.visible = true;
 			ghost.placeAt(ghost.homeTile, HTS, 0);
-			ghost.setAbsSpeed(0);
+			ghost.setAbsSpeed(ghost.id == RED_GHOST ? 0 : 0.5);
 			ghost.setBothDirs(switch (ghost.id) {
 			case RED_GHOST -> Direction.LEFT;
 			case PINK_GHOST -> Direction.DOWN;

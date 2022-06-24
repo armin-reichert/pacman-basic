@@ -129,7 +129,6 @@ public class Ghost extends Creature {
 	}
 
 	private void bounce() {
-		setAbsSpeed(0.5);
 		var zeroLevel = t(homeTile.y);
 		if (position.y <= zeroLevel - HTS || position.y >= zeroLevel + HTS) {
 			setBothDirs(moveDir.opposite());
