@@ -41,6 +41,7 @@ import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.actors.AnimKeys;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.GhostState;
+import de.amr.games.pacman.model.common.world.ArcadeWorld;
 
 /**
  * Rule of thumb: here, specify the "what" and "when", not the "how" (which should be implemented in the model).
@@ -259,8 +260,9 @@ public enum GameState implements FsmState<GameModel> {
 
 		@Override
 		public void onUpdate(GameModel game) {
+			var world = (ArcadeWorld) game.world();
 			if (timer.atSecond(1)) {
-				game.mazeFlashingAnimation().ifPresent(mazeFlashing -> {
+				world.flashingAnimation().ifPresent(mazeFlashing -> {
 					mazeFlashing.repetions(game.level.numFlashes);
 					mazeFlashing.restart();
 				});
@@ -273,7 +275,7 @@ public enum GameState implements FsmState<GameModel> {
 					fsm.changeState(LEVEL_STARTING);
 				}
 			} else {
-				game.mazeFlashingAnimation().ifPresent(SpriteAnimation::advance);
+				world.flashingAnimation().ifPresent(SpriteAnimation::advance);
 			}
 		}
 	},

@@ -44,7 +44,6 @@ import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.animation.SingleSpriteAnimation;
-import de.amr.games.pacman.lib.animation.SpriteAnimation;
 import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.GhostState;
@@ -123,9 +122,6 @@ public abstract class GameModel {
 	/** Energizer animation. */
 	public final SingleSpriteAnimation<Boolean> energizerPulse = SingleSpriteAnimation.pulse(10);
 
-	/** Maze flashing. */
-	private SingleSpriteAnimation<?> mazeFlashingAnimation;
-
 	/** Game score and high score. */
 	public final GameScores scores = new GameScores(this);
 
@@ -160,14 +156,6 @@ public abstract class GameModel {
 	 */
 	public World world() {
 		return level.world;
-	}
-
-	public Optional<SpriteAnimation> mazeFlashingAnimation() {
-		return Optional.ofNullable(mazeFlashingAnimation);
-	}
-
-	public void setMazeFlashingAnimation(SingleSpriteAnimation<?> mazeFlashingAnimation) {
-		this.mazeFlashingAnimation = mazeFlashingAnimation;
 	}
 
 	public void setSounds(GameSounds sounds) {

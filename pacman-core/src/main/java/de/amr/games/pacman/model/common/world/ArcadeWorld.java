@@ -25,7 +25,11 @@ package de.amr.games.pacman.model.common.world;
 
 import static de.amr.games.pacman.lib.V2i.v;
 
+import java.util.Optional;
+
 import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.lib.animation.SingleSpriteAnimation;
+import de.amr.games.pacman.lib.animation.SpriteAnimation;
 
 /**
  * Implements all stuff that is common to the original Arcade worlds like ghost house position, ghost and player start
@@ -45,6 +49,8 @@ public class ArcadeWorld extends MapBasedWorld {
 	public final V2i rightUpperTarget = v(25, 0);
 	public final ArcadeGhostHouse house = new ArcadeGhostHouse();
 
+	private SingleSpriteAnimation<?> flashingAnimation;
+
 	public ArcadeWorld(byte[][] mapData) {
 		super(mapData, TILES_X, TILES_Y);
 	}
@@ -53,5 +59,13 @@ public class ArcadeWorld extends MapBasedWorld {
 	public ArcadeGhostHouse ghostHouse() {
 		// WTF! I learned today, 2022-05-27, that Java allows co-variant return types since JDK 5.0!
 		return house;
+	}
+
+	public Optional<SpriteAnimation> flashingAnimation() {
+		return Optional.ofNullable(flashingAnimation);
+	}
+
+	public void setFlashingAnimation(SingleSpriteAnimation<?> mazeFlashingAnimation) {
+		this.flashingAnimation = mazeFlashingAnimation;
 	}
 }
