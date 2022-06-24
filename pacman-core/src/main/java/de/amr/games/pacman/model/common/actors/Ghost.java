@@ -120,13 +120,21 @@ public class Ghost extends Creature {
 	}
 
 	private void updateLockedState(GameModel game) {
-		setAbsSpeed(0.5);
 		bounce();
-		if (!game.pac.hasPower()) {
-			selectAnimation(AnimKeys.GHOST_COLOR);
-		} else {
+		if (game.pac.hasPower()) {
 			updateFlashingAnimation(game);
+		} else {
+			selectAnimation(AnimKeys.GHOST_COLOR);
 		}
+	}
+
+	private void bounce() {
+		setAbsSpeed(0.5);
+		var zeroLevel = t(homeTile.y);
+		if (position.y <= zeroLevel - HTS || position.y >= zeroLevel + HTS) {
+			setBothDirs(moveDir.opposite());
+		}
+		move();
 	}
 
 	private void updateLeavingHouseState(GameModel game) {
@@ -140,6 +148,31 @@ public class Ghost extends Creature {
 			setBothDirs(LEFT);
 			GameEvents.publish(new GameEvent(game, GameEventType.GHOST_COMPLETES_LEAVING_HOUSE, this, tile()));
 		}
+	}
+
+	/**
+	 * Lets the ghost leave the house from its home position towards the middle of the house and then upwards towards the
+	 * house door.
+	 * 
+	 * @param house the ghost house
+	 * @return {@code true} if the ghost left the house
+	 */
+	private boolean leaveHouse(GhostHouse house) {
+		if (tile().equals(house.entry()) && offset().y <= 1) {
+			setOffset(offset().x, 0); // place exactly at house entry to avoid getting stuck
+			return true;
+		}
+		var center = house.middleSeatCenter();
+		if (U.insideRange(position.x, center.x, 1)) {
+			setOffset(HTS, offset().y); // center horizontally before rising
+			setBothDirs(UP);
+		} else if (position.y < center.y) {
+			setBothDirs(DOWN); // sink below zero level before moving to the center
+		} else {
+			setBothDirs(position.x < center.x ? RIGHT : LEFT);
+		}
+		move();
+		return false;
 	}
 
 	private void updateHuntingState(GameModel game) {
@@ -177,6 +210,41 @@ public class Ghost extends Creature {
 		animations().ifPresent(anims -> anims.select(AnimKeys.GHOST_COLOR));
 	}
 
+	private void chase(World world, Pac pac, Ghost redGhost) {
+		targetTile = switch (id) {
+		case RED_GHOST -> pac.tile();
+		case PINK_GHOST -> pac.tilesAheadWithBug(4);
+		case CYAN_GHOST -> pac.tilesAheadWithBug(2).scaled(2).minus(redGhost.tile());
+		case ORANGE_GHOST -> tile().euclideanDistance(pac.tile()) < 8 ? scatterTile : pac.tile();
+		default -> null;
+		};
+		computeDirectionTowardsTarget(world);
+		tryMoving(world);
+	}
+
+	/**
+	 * Lets the ghost head for its scatter tile.
+	 */
+	private void scatter(World world) {
+		targetTile = scatterTile;
+		computeDirectionTowardsTarget(world);
+		tryMoving(world);
+	}
+
+	/**
+	 * Lets the ghost choose some random direction whenever it enters a new tile.
+	 * 
+	 * TODO: this is not 100% what the Pac-Man dossier says.
+	 */
+	private void roam(World world) {
+		if (newTileEntered) {
+			Direction.shuffled().stream()
+					.filter(dir -> dir != moveDir.opposite() && canAccessTile(world, tile().plus(dir.vec))).findAny()
+					.ifPresent(dir -> wishDir = dir);
+		}
+		tryMoving(world);
+	}
+
 	private void updateFrightenedState(GameModel game) {
 		var world = game.level.world;
 		if (world.isTunnel(tile())) {
@@ -204,6 +272,22 @@ public class Ghost extends Creature {
 		}
 	}
 
+	/**
+	 * Lets the ghost return back to the ghost house entry.
+	 * 
+	 * @param world the world
+	 * @param house the ghost house
+	 * @return {@code true} if the ghost has reached the house entry before he starts to enter
+	 */
+	private boolean returnToHouse(World world, GhostHouse house) {
+		if (atGhostHouseDoor(house) && moveDir != DOWN) {
+			return true;
+		}
+		computeDirectionTowardsTarget(world);
+		tryMoving(world);
+		return false;
+	}
+
 	private void updateEnteringHouseState(GameModel game) {
 		var world = game.level.world;
 		boolean revivalTileReached = enterHouse(world.ghostHouse());
@@ -217,6 +301,36 @@ public class Ghost extends Creature {
 			setBothDirs(moveDir.opposite());
 			GameEvents.publish(new GameEvent(game, GameEventType.GHOST_STARTS_LEAVING_HOUSE, this, tile()));
 		}
+	}
+
+	/**
+	 * @return {@code true} if the ghost is at the ghosthouse door.
+	 */
+	private boolean atGhostHouseDoor(GhostHouse house) {
+		return tile().equals(house.entry()) && U.insideRange(offset().x, HTS, 1);
+	}
+
+	/**
+	 * Lets the ghost enter the house and moving to its target position.
+	 * 
+	 * @param house the ghost house
+	 * @return {@code true} if the ghost has reached its target position
+	 */
+	private boolean enterHouse(GhostHouse house) {
+		var tile = tile();
+		if (tile.equals(targetTile) && offset().y >= 0) {
+			return true;
+		}
+		var middle = house.seatMiddle();
+		if (tile.equals(middle) && offset().y >= 0) {
+			if (targetTile.x < middle.x) {
+				setBothDirs(LEFT);
+			} else if (targetTile.x > middle.x) {
+				setBothDirs(RIGHT);
+			}
+		}
+		move();
+		return false;
 	}
 
 	public boolean is(GhostState ghostState) {
@@ -262,123 +376,6 @@ public class Ghost extends Creature {
 			return true;
 		}
 		return state == HUNTING_PAC && dir == UP && upwardsBlockedTiles.contains(tile());
-	}
-
-	private void chase(World world, Pac pac, Ghost redGhost) {
-		targetTile = switch (id) {
-		case RED_GHOST -> pac.tile();
-		case PINK_GHOST -> pac.tilesAheadWithBug(4);
-		case CYAN_GHOST -> pac.tilesAheadWithBug(2).scaled(2).minus(redGhost.tile());
-		case ORANGE_GHOST -> tile().euclideanDistance(pac.tile()) < 8 ? scatterTile : pac.tile();
-		default -> null;
-		};
-		computeDirectionTowardsTarget(world);
-		tryMoving(world);
-	}
-
-	/**
-	 * Lets the ghost head for its scatter tile.
-	 */
-	private void scatter(World world) {
-		targetTile = scatterTile;
-		computeDirectionTowardsTarget(world);
-		tryMoving(world);
-	}
-
-	/**
-	 * Lets the ghost choose some random direction whenever it enters a new tile.
-	 * 
-	 * TODO: this is not 100% what the Pac-Man dossier says.
-	 */
-	private void roam(World world) {
-		if (newTileEntered) {
-			Direction.shuffled().stream()
-					.filter(dir -> dir != moveDir.opposite() && canAccessTile(world, tile().plus(dir.vec))).findAny()
-					.ifPresent(dir -> wishDir = dir);
-		}
-		tryMoving(world);
-	}
-
-	/**
-	 * Lets the ghost return back to the ghost house entry.
-	 * 
-	 * @param world the world
-	 * @param house the ghost house
-	 * @return {@code true} if the ghost has reached the house entry before he starts to enter
-	 */
-	private boolean returnToHouse(World world, GhostHouse house) {
-		if (atGhostHouseDoor(house) && moveDir != DOWN) {
-			return true;
-		}
-		computeDirectionTowardsTarget(world);
-		tryMoving(world);
-		return false;
-	}
-
-	/**
-	 * @return {@code true} if the ghost is at the ghosthouse door.
-	 */
-	private boolean atGhostHouseDoor(GhostHouse house) {
-		return tile().equals(house.entry()) && U.insideRange(offset().x, HTS, 1);
-	}
-
-	/**
-	 * Lets the ghost enter the house and moving to its target position.
-	 * 
-	 * @param house the ghost house
-	 * @return {@code true} if the ghost has reached its target position
-	 */
-	private boolean enterHouse(GhostHouse house) {
-		var tile = tile();
-		if (tile.equals(targetTile) && offset().y >= 0) {
-			return true;
-		}
-		var middle = house.seatMiddle();
-		if (tile.equals(middle) && offset().y >= 0) {
-			if (targetTile.x < middle.x) {
-				setBothDirs(LEFT);
-			} else if (targetTile.x > middle.x) {
-				setBothDirs(RIGHT);
-			}
-		}
-		move();
-		return false;
-	}
-
-	/**
-	 * Lets the ghost leave the house from its home position towards the middle of the house and then upwards towards the
-	 * house door.
-	 * 
-	 * @param house the ghost house
-	 * @return {@code true} if the ghost left the house
-	 */
-	private boolean leaveHouse(GhostHouse house) {
-		if (tile().equals(house.entry()) && offset().y <= 1) {
-			setOffset(offset().x, 0); // place exactly at house entry to avoid getting stuck
-			return true;
-		}
-		var center = house.middleSeatCenter();
-		if (U.insideRange(position.x, center.x, 1)) {
-			setOffset(HTS, offset().y); // center horizontally before rising
-			setBothDirs(UP);
-		} else if (position.y < center.y) {
-			setBothDirs(DOWN); // sink below zero level before moving to the center
-		} else {
-			setBothDirs(position.x < center.x ? RIGHT : LEFT);
-		}
-		move();
-		return false;
-	}
-
-	/**
-	 * Lets the ghost bounce inside the house.
-	 */
-	private void bounce() {
-		var zeroLevel = t(homeTile.y);
-		if (position.y <= zeroLevel - HTS || position.y >= zeroLevel + HTS) {
-			setBothDirs(moveDir.opposite());
-		}
-		move();
 	}
 
 	// Animations
