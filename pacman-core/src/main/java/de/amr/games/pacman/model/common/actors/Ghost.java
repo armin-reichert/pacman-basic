@@ -120,9 +120,8 @@ public class Ghost extends Creature {
 	}
 
 	private void updateLockedState(GameModel game) {
-		var world = game.level.world;
 		setAbsSpeed(0.5);
-		bounce(t(world.ghostHouse().seatMiddle().y), HTS);
+		bounce();
 		if (!game.pac.hasPower()) {
 			selectAnimation(AnimKeys.GHOST_COLOR);
 		} else {
@@ -373,8 +372,9 @@ public class Ghost extends Creature {
 	/**
 	 * Lets the ghost bounce inside the house.
 	 */
-	private void bounce(double zeroLevel, double delta) {
-		if (position.y <= zeroLevel - delta || position.y >= zeroLevel + delta) {
+	private void bounce() {
+		var zeroLevel = t(homeTile.y);
+		if (position.y <= zeroLevel - HTS || position.y >= zeroLevel + HTS) {
 			setBothDirs(moveDir.opposite());
 		}
 		move();
@@ -382,7 +382,7 @@ public class Ghost extends Creature {
 
 	// Animations
 
-	public static final long FLASHING_TICKS = secToTicks(2); // TODO check with MAME
+	private static final long FLASHING_DURATION = secToTicks(2); // TODO check with MAME
 
 	private SpriteAnimations<Ghost> animations;
 
@@ -415,7 +415,7 @@ public class Ghost extends Creature {
 		animations().ifPresent(anim -> {
 			if (!anim.selected().equals(AnimKeys.GHOST_FLASHING)) {
 				var flashing = (SingleSpriteAnimation<?>) anim.byName(AnimKeys.GHOST_FLASHING);
-				long frameTicks = FLASHING_TICKS / (numFlashes * flashing.numFrames());
+				long frameTicks = FLASHING_DURATION / (numFlashes * flashing.numFrames());
 				flashing.frameDuration(frameTicks);
 				flashing.repetions(numFlashes);
 				flashing.restart();
@@ -436,7 +436,7 @@ public class Ghost extends Creature {
 	private void updateFlashingAnimation(GameModel game) {
 		if (game.pac.powerTimer.remaining() == 1) {
 			ensureFlashingStopped();
-		} else if (game.pac.powerTimer.remaining() == FLASHING_TICKS) {
+		} else if (game.pac.powerTimer.remaining() == FLASHING_DURATION) {
 			ensureFlashingStarted(game.level.numFlashes);
 		}
 	}
