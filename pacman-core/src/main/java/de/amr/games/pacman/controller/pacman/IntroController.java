@@ -23,6 +23,7 @@ SOFTWARE.
  */
 package de.amr.games.pacman.controller.pacman;
 
+import static de.amr.games.pacman.lib.TickTimer.secToTicks;
 import static de.amr.games.pacman.model.common.actors.Ghost.CYAN_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ORANGE_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.PINK_GHOST;
@@ -30,7 +31,6 @@ import static de.amr.games.pacman.model.common.actors.Ghost.RED_GHOST;
 import static de.amr.games.pacman.model.common.world.World.t;
 
 import java.util.Arrays;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.controller.common.GameController;
@@ -227,17 +227,15 @@ public class IntroController extends Fsm<State, Context> {
 
 			@Override
 			public void onUpdate(Context $) {
-
 				// When the last ghost has been killed, leave state
 				if (Stream.of($.ghosts).allMatch(ghost -> ghost.is(GhostState.DEAD))) {
 					$.pacMan.hide();
 					controller.changeState(READY_TO_PLAY);
 					return;
 				}
-
 				// check if Pac-Man kills a ghost
-				Optional<Ghost> killedGhost = Stream.of($.ghosts).filter(ghost -> !ghost.is(GhostState.DEAD))
-						.filter($.pacMan::sameTile).findFirst();
+				var killedGhost = Stream.of($.ghosts).filter(ghost -> !ghost.is(GhostState.DEAD)).filter($.pacMan::sameTile)
+						.findFirst();
 				killedGhost.ifPresent(victim -> {
 					$.ghostKilledTime = timer.tick();
 					victim.killIndex = victim.id;
@@ -251,7 +249,7 @@ public class IntroController extends Fsm<State, Context> {
 				});
 
 				// After 1 sec, Pac-Man and the surviving ghosts get visible again and move on
-				if (timer.tick() - $.ghostKilledTime == TickTimer.secToTicks(1)) {
+				if (timer.tick() - $.ghostKilledTime == secToTicks(1)) {
 					$.pacMan.show();
 					$.pacMan.setAbsSpeed(1.2);
 					for (Ghost ghost : $.ghosts) {
@@ -264,7 +262,6 @@ public class IntroController extends Fsm<State, Context> {
 						}
 					}
 				}
-
 				$.pacMan.move();
 				for (Ghost ghost : $.ghosts) {
 					ghost.move();
