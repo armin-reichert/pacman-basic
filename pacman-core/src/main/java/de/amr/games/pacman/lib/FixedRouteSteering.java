@@ -39,10 +39,6 @@ public class FixedRouteSteering implements Consumer<Creature> {
 	private final List<V2i> route;
 	private boolean complete;
 
-	public boolean isComplete() {
-		return complete;
-	}
-
 	public FixedRouteSteering(World world, List<V2i> route) {
 		this.world = world;
 		this.route = route;
@@ -51,6 +47,10 @@ public class FixedRouteSteering implements Consumer<Creature> {
 
 	public List<V2i> getRoute() {
 		return route;
+	}
+
+	public boolean isComplete() {
+		return complete;
 	}
 
 	@Override

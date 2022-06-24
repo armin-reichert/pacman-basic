@@ -34,6 +34,8 @@ import org.apache.logging.log4j.Logger;
  */
 public class Option<T> {
 
+	private static final Logger logger = LogManager.getFormatterLogger();
+
 	public static Option<Boolean> booleanOption(String name, boolean defaultValue) {
 		return new Option<>(name, defaultValue, Boolean::valueOf);
 	}
@@ -46,11 +48,9 @@ public class Option<T> {
 		return new Option<>(name, defaultValue, Double::valueOf);
 	}
 
-	public static <ANY> Option<ANY> option(String name, ANY defaultValue, Function<String, ANY> fnValueOf) {
+	public static <X> Option<X> option(String name, X defaultValue, Function<String, X> fnValueOf) {
 		return new Option<>(name, defaultValue, fnValueOf);
 	}
-
-	private static final Logger logger = LogManager.getFormatterLogger();
 
 	private final String name;
 	private final Function<String, T> fnValueOf;
@@ -70,14 +70,10 @@ public class Option<T> {
 		return value;
 	}
 
-	public T valueOf(String s) {
-		return fnValueOf.apply(s);
-	}
-
 	public void parse(String s) {
 		try {
 			value = fnValueOf.apply(s);
-			logger.info("Found option %s = %s", name, value);
+			logger.info("Found option: %s = %s", name, value);
 		} catch (Exception e) {
 			logger.error("Could not parse option '%s' from text '%s'", name, s);
 		}
