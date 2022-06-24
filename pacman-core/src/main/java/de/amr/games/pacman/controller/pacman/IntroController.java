@@ -239,7 +239,7 @@ public class IntroController extends Fsm<State, Context> {
 				killedGhost.ifPresent(victim -> {
 					$.ghostKilledTime = timer.tick();
 					victim.killIndex = victim.id;
-					victim.enterDeadState(null);
+					victim.enterDeadState();
 					$.pacMan.hide();
 					$.pacMan.setAbsSpeed(0);
 					Stream.of($.ghosts).forEach(ghost -> {

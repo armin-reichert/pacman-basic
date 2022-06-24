@@ -323,21 +323,17 @@ public class Ghost extends Creature {
 		return state;
 	}
 
-//	public void setState(GhostState state) {
-//		this.state = state;
-//	}
-
 	public void enterLockedState() {
 		state = GhostState.LOCKED;
 		animations().ifPresent(anim -> {
-			anim.select(AnimKeys.GHOST_COLOR);
-			anim.selectedAnimation().reset();
+			selectAnimation(AnimKeys.GHOST_COLOR);
+			anim.selectedAnimation().reset(); // at first frame and stopped
 		});
 	}
 
 	public void enterHuntingState() {
 		state = HUNTING_PAC;
-		animations().ifPresent(anim -> anim.select(AnimKeys.GHOST_COLOR));
+		selectAnimation(AnimKeys.GHOST_COLOR);
 	}
 
 	public void enterFrightenedState() {
@@ -345,9 +341,8 @@ public class Ghost extends Creature {
 		selectAnimation(AnimKeys.GHOST_BLUE);
 	}
 
-	public void enterDeadState(V2i targetTile) {
+	public void enterDeadState() {
 		state = GhostState.DEAD;
-		this.targetTile = targetTile;
 		animations().ifPresent(anims -> {
 			anims.select(AnimKeys.GHOST_VALUE);
 			anims.selectedAnimation().setFrameIndex(killIndex);
