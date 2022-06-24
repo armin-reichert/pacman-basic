@@ -138,7 +138,6 @@ public class Ghost extends Creature {
 
 	private void updateLeavingHouseState(GameModel game) {
 		var world = game.level.world;
-		setAbsSpeed(0.5);
 		boolean houseLeft = leaveHouse(world.ghostHouse());
 		if (houseLeft) {
 			state = HUNTING_PAC;
@@ -292,12 +291,13 @@ public class Ghost extends Creature {
 		boolean revivalTileReached = enterHouse(world.ghostHouse());
 		if (revivalTileReached) {
 			state = LEAVING_HOUSE;
+			setBothDirs(moveDir.opposite());
+			setAbsSpeed(0.5);
 			if (game.pac.hasPower()) {
 				selectAnimation(AnimKeys.GHOST_BLUE);
 			} else {
 				selectAnimation(AnimKeys.GHOST_COLOR);
 			}
-			setBothDirs(moveDir.opposite());
 			GameEvents.publish(new GameEvent(game, GameEventType.GHOST_STARTS_LEAVING_HOUSE, this, tile()));
 		}
 	}
