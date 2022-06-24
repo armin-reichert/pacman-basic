@@ -182,11 +182,10 @@ public abstract class GameModel {
 		ghosts().forEach(Ghost::reset);
 	}
 
-	public Stream<Ghost> ghosts() {
-		return Stream.of(theGhosts);
-	}
-
 	public Stream<Ghost> ghosts(GhostState... states) {
+		if (states.length == 0) {
+			return Stream.of(theGhosts); // because is() would return an empty stream
+		}
 		return ghosts().filter(ghost -> ghost.is(states));
 	}
 
