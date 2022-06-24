@@ -119,23 +119,20 @@ public class Ghost extends Creature {
 		}
 	}
 
-	public void updateLockedState(GameModel game) {
+	private void updateLockedState(GameModel game) {
 		var world = game.level.world;
 		setAbsSpeed(0.5);
 		bounce(t(world.ghostHouse().seatMiddle().y), HTS);
 		if (!game.pac.hasPower()) {
 			selectAnimation(AnimKeys.GHOST_COLOR);
-		} else if (game.pac.powerTimer.remaining() == FLASHING_TICKS) {
-			ensureFlashingStarted(game.level.numFlashes);
-		} else if (game.pac.powerTimer.remaining() == 1) {
-			ensureFlashingStopped();
-			selectAnimation(AnimKeys.GHOST_COLOR);
+		} else {
+			updateFlashingAnimation(game);
 		}
 	}
 
-	public void updateLeavingHouseState(GameModel game) {
+	private void updateLeavingHouseState(GameModel game) {
 		var world = game.level.world;
-//		setAbsSpeed(0.5);
+		setAbsSpeed(0.5);
 		boolean houseLeft = leaveHouse(world.ghostHouse());
 		if (houseLeft) {
 			state = HUNTING_PAC;
@@ -146,7 +143,7 @@ public class Ghost extends Creature {
 		}
 	}
 
-	public void updateHuntingState(GameModel game) {
+	private void updateHuntingState(GameModel game) {
 		var world = game.level.world;
 		if (world.isTunnel(tile())) {
 			setRelSpeed(game.level.ghostSpeedTunnel);
@@ -178,14 +175,10 @@ public class Ghost extends Creature {
 		else {
 			scatter(world);
 		}
-		animations().ifPresent(anims -> {
-			if (!anims.selected().equals(AnimKeys.GHOST_COLOR)) {
-				anims.select(AnimKeys.GHOST_COLOR);
-			}
-		});
+		animations().ifPresent(anims -> anims.select(AnimKeys.GHOST_COLOR));
 	}
 
-	public void updateFrightenedState(GameModel game) {
+	private void updateFrightenedState(GameModel game) {
 		var world = game.level.world;
 		if (world.isTunnel(tile())) {
 			setRelSpeed(game.level.ghostSpeedTunnel);
@@ -194,30 +187,26 @@ public class Ghost extends Creature {
 			setRelSpeed(game.level.ghostSpeedFrightened);
 			roam(world);
 		}
-		if (game.pac.powerTimer.remaining() == 1) {
-			ensureFlashingStopped();
-		} else if (game.pac.powerTimer.remaining() == FLASHING_TICKS) {
-			ensureFlashingStarted(game.level.numFlashes);
-		}
+		updateFlashingAnimation(game);
 	}
 
-	public void updateDeadState(GameModel game) {
+	private void updateDeadState(GameModel game) {
 		var world = game.level.world;
-		setRelSpeed(2 * game.level.ghostSpeed);
-		targetTile = world.ghostHouse().entry();
-		selectAnimation(AnimKeys.GHOST_EYES);
 		boolean houseReached = returnToHouse(world, world.ghostHouse());
 		if (houseReached) {
 			setBothDirs(DOWN);
 			targetTile = revivalTile;
 			state = ENTERING_HOUSE;
 			GameEvents.publish(new GameEvent(game, GameEventType.GHOST_ENTERS_HOUSE, this, tile()));
+		} else {
+			setRelSpeed(2 * game.level.ghostSpeed);
+			targetTile = world.ghostHouse().entry();
+			selectAnimation(AnimKeys.GHOST_EYES);
 		}
 	}
 
-	public void updateEnteringHouseState(GameModel game) {
+	private void updateEnteringHouseState(GameModel game) {
 		var world = game.level.world;
-		setRelSpeed(2 * game.level.ghostSpeed);
 		boolean revivalTileReached = enterHouse(world.ghostHouse());
 		if (revivalTileReached) {
 			state = LEAVING_HOUSE;
@@ -422,7 +411,7 @@ public class Ghost extends Creature {
 		});
 	}
 
-	public void ensureFlashingStarted(int numFlashes) {
+	private void ensureFlashingStarted(int numFlashes) {
 		animations().ifPresent(anim -> {
 			if (!anim.selected().equals(AnimKeys.GHOST_FLASHING)) {
 				var flashing = (SingleSpriteAnimation<?>) anim.byName(AnimKeys.GHOST_FLASHING);
@@ -435,11 +424,21 @@ public class Ghost extends Creature {
 		});
 	}
 
-	public void ensureFlashingStopped() {
+	private void ensureFlashingStopped() {
 		animations().ifPresent(anim -> {
 			if (anim.selected().equals(AnimKeys.GHOST_FLASHING)) {
 				anim.selectedAnimation().stop();
+				anim.select(AnimKeys.GHOST_COLOR);
 			}
 		});
 	}
+
+	private void updateFlashingAnimation(GameModel game) {
+		if (game.pac.powerTimer.remaining() == 1) {
+			ensureFlashingStopped();
+		} else if (game.pac.powerTimer.remaining() == FLASHING_TICKS) {
+			ensureFlashingStarted(game.level.numFlashes);
+		}
+	}
+
 }
