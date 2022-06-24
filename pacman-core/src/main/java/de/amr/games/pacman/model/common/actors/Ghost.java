@@ -219,9 +219,11 @@ public class Ghost extends Creature {
 
 	private void roam(GameModel game) {
 		if (newTileEntered) {
-			Direction.shuffled().stream()
-					.filter(dir -> dir != moveDir.opposite() && canAccessTile(game.level.world, tile().plus(dir.vec))).findAny()
-					.ifPresent(dir -> wishDir = dir);
+			Direction.shuffled().stream()//
+					.filter(dir -> dir != moveDir.opposite())//
+					.filter(dir -> canAccessTile(game.level.world, tile().plus(dir.vec)))//
+					.findAny()//
+					.ifPresent(this::setWishDir);
 		}
 		tryMoving(game.level.world);
 	}
@@ -268,8 +270,7 @@ public class Ghost extends Creature {
 	}
 
 	private void updateEnteringHouseState(GameModel game) {
-		var world = game.level.world;
-		boolean revivalTileReached = enterHouse(world.ghostHouse());
+		boolean revivalTileReached = enterHouse(game.level.world.ghostHouse());
 		if (revivalTileReached) {
 			state = LEAVING_HOUSE;
 			setBothDirs(moveDir.opposite());
