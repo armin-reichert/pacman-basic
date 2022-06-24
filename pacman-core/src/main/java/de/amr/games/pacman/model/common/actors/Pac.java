@@ -23,8 +23,12 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.common.actors;
 
+import static de.amr.games.pacman.lib.V2i.v;
+import static de.amr.games.pacman.model.common.world.World.HTS;
+
 import java.util.Optional;
 
+import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.animation.SpriteAnimation;
 import de.amr.games.pacman.lib.animation.SpriteAnimations;
@@ -63,6 +67,23 @@ public class Pac extends Creature {
 
 	public boolean hasPower() {
 		return powerTimer.isRunning();
+	}
+
+	public void reset() {
+		show();
+		placeAt(v(13, 26), HTS, 0);
+		setBothDirs(Direction.LEFT);
+		setAbsSpeed(0);
+		targetTile = null; // used in autopilot mode
+		stuck = false;
+		killed = false;
+		restingTicks = 0;
+		starvingTicks = 0;
+		powerTimer.resetIndefinitely();
+		animations().ifPresent(anim -> {
+			anim.select(AnimKeys.PAC_MUNCHING);
+			anim.selectedAnimation().reset();
+		});
 	}
 
 	public void update(GameLevel level) {

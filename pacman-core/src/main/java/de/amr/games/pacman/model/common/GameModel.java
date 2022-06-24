@@ -24,17 +24,13 @@ SOFTWARE.
 package de.amr.games.pacman.model.common;
 
 import static de.amr.games.pacman.lib.TickTimer.secToTicks;
-import static de.amr.games.pacman.lib.V2i.v;
-import static de.amr.games.pacman.model.common.actors.Ghost.CYAN_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ORANGE_GHOST;
-import static de.amr.games.pacman.model.common.actors.Ghost.PINK_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.RED_GHOST;
 import static de.amr.games.pacman.model.common.actors.GhostState.DEAD;
 import static de.amr.games.pacman.model.common.actors.GhostState.ENTERING_HOUSE;
 import static de.amr.games.pacman.model.common.actors.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.common.actors.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.model.common.actors.GhostState.LOCKED;
-import static de.amr.games.pacman.model.common.world.World.HTS;
 
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -46,11 +42,9 @@ import de.amr.games.pacman.controller.common.GameController;
 import de.amr.games.pacman.event.GameEvent;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
-import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.animation.SingleSpriteAnimation;
 import de.amr.games.pacman.lib.animation.SpriteAnimation;
-import de.amr.games.pacman.model.common.actors.AnimKeys;
 import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.GhostState;
@@ -196,45 +190,16 @@ public abstract class GameModel {
 
 	public void getReadyToPlay() {
 		energizerPulse.reset();
-
-		pac.visible = true;
-		pac.placeAt(v(13, 26), HTS, 0);
-		pac.setBothDirs(Direction.LEFT);
-		pac.setAbsSpeed(0);
-		pac.targetTile = null; // used in autopilot mode
-		pac.stuck = false;
-		pac.killed = false;
-		pac.restingTicks = 0;
-		pac.starvingTicks = 0;
-		pac.powerTimer.resetIndefinitely();
-		pac.animations().ifPresent(anim -> {
-			anim.select(AnimKeys.PAC_MUNCHING);
-			anim.selectedAnimation().reset();
-		});
-
-		for (Ghost ghost : theGhosts) {
-			ghost.visible = true;
-			ghost.placeAt(ghost.homeTile, HTS, 0);
-			ghost.setAbsSpeed(ghost.id == RED_GHOST ? 0 : 0.5);
-			ghost.setBothDirs(switch (ghost.id) {
-			case RED_GHOST -> Direction.LEFT;
-			case PINK_GHOST -> Direction.DOWN;
-			case CYAN_GHOST, ORANGE_GHOST -> Direction.UP;
-			default -> null;
-			});
-			ghost.targetTile = null;
-			ghost.stuck = false;
-			ghost.killIndex = -1;
-			ghost.enterLockedState();
-		}
+		pac.reset();
+		ghosts().forEach(Ghost::reset);
 	}
 
 	public Stream<Ghost> ghosts() {
 		return Stream.of(theGhosts);
 	}
 
-	public Stream<Ghost> ghosts(GhostState state) {
-		return ghosts().filter(ghost -> ghost.is(state));
+	public Stream<Ghost> ghosts(GhostState... states) {
+		return ghosts().filter(ghost -> ghost.is(states));
 	}
 
 	protected int ghostValue(int ghostKillIndex) {

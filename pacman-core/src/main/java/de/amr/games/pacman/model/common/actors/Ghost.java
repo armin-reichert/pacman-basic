@@ -64,25 +64,25 @@ public class Ghost extends Creature {
 
 	private static final Logger logger = LogManager.getFormatterLogger();
 
-	/** ID of red ghost. */
+	/** ID of red */
 	public static final int RED_GHOST = 0;
 
-	/** ID of pink ghost. */
+	/** ID of pink */
 	public static final int PINK_GHOST = 1;
 
-	/** ID of cyan ghost. */
+	/** ID of cyan */
 	public static final int CYAN_GHOST = 2;
 
-	/** ID of orange ghost. */
+	/** ID of orange */
 	public static final int ORANGE_GHOST = 3;
 
 	/** The ID of the ghost, see {@link GameModel#RED_GHOST} etc. */
 	public final int id;
 
-	/** The current state of the ghost. */
+	/** The current state of the */
 	private GhostState state;
 
-	/** The home tile of the ghost. */
+	/** The home tile of the */
 	public V2i homeTile;
 
 	/** The revival tile inside the house. For the red ghost, this is different from the home location. */
@@ -106,6 +106,22 @@ public class Ghost extends Creature {
 	public Ghost(int id, String name) {
 		super(name);
 		this.id = id;
+	}
+
+	public void reset() {
+		show();
+		placeAt(homeTile, HTS, 0);
+		setAbsSpeed(id == RED_GHOST ? 0 : 0.5);
+		setBothDirs(switch (id) {
+		case RED_GHOST -> Direction.LEFT;
+		case PINK_GHOST -> Direction.DOWN;
+		case CYAN_GHOST, ORANGE_GHOST -> Direction.UP;
+		default -> null;
+		});
+		targetTile = null;
+		stuck = false;
+		killIndex = -1;
+		enterLockedState();
 	}
 
 	public void update(GameModel game) {
