@@ -49,7 +49,6 @@ import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
-import de.amr.games.pacman.lib.U;
 import de.amr.games.pacman.lib.animation.SingleSpriteAnimation;
 import de.amr.games.pacman.lib.animation.SpriteAnimation;
 import de.amr.games.pacman.model.common.actors.AnimKeys;
@@ -224,7 +223,7 @@ public abstract class GameModel {
 			});
 			ghost.targetTile = null;
 			ghost.stuck = false;
-			ghost.state = GhostState.LOCKED;
+			ghost.setState(GhostState.LOCKED);
 			ghost.killIndex = -1;
 			ghost.animations().ifPresent(anim -> {
 				anim.select(AnimKeys.GHOST_COLOR);
@@ -238,7 +237,7 @@ public abstract class GameModel {
 	}
 
 	public Stream<Ghost> ghosts(GhostState state) {
-		return ghosts().filter(ghost -> ghost.state == state);
+		return ghosts().filter(ghost -> ghost.is(state));
 	}
 
 	protected int ghostValue(int ghostKillIndex) {
@@ -273,8 +272,7 @@ public abstract class GameModel {
 		huntingTimer.advance();
 		if (huntingTimer.hasExpired()) {
 			startHuntingPhase(huntingTimer.phase() + 1);
-			ghosts().filter(ghost -> U.oneOf(ghost.state, HUNTING_PAC, FRIGHTENED))
-					.forEach(ghost -> ghost.forceTurningBack(level.world));
+			ghosts().filter(ghost -> ghost.is(HUNTING_PAC, FRIGHTENED)).forEach(ghost -> ghost.forceTurningBack(level.world));
 		}
 	}
 
@@ -418,7 +416,7 @@ public abstract class GameModel {
 	}
 
 	private void killGhost(Ghost ghost) {
-		ghost.state = DEAD;
+		ghost.setState(DEAD);
 		ghost.targetTile = level.world.ghostHouse().entry();
 		ghost.killIndex = ++ghostKillIndex;
 		int points = ghostValue(ghost.killIndex);
@@ -441,7 +439,7 @@ public abstract class GameModel {
 		/* TODO hack: leave state EXPIRED to avoid repetitions. */
 		pac.powerTimer.resetIndefinitely();
 		huntingTimer.start();
-		ghosts(FRIGHTENED).forEach(ghost -> ghost.state = HUNTING_PAC);
+		ghosts(FRIGHTENED).forEach(ghost -> ghost.setState(HUNTING_PAC));
 		sounds().ifPresent(snd -> {
 			snd.stop(GameSound.PACMAN_POWER);
 			snd.ensureSirenStarted(huntingTimer.phase() / 2);
@@ -493,7 +491,7 @@ public abstract class GameModel {
 		pac.powerTimer.start();
 		logger.info("%s power timer started: %s", pac.name, pac.powerTimer);
 		ghosts(HUNTING_PAC).forEach(ghost -> {
-			ghost.state = FRIGHTENED;
+			ghost.setState(FRIGHTENED);
 			ghost.forceTurningBack(level.world);
 			ghost.selectAnimation(AnimKeys.GHOST_BLUE);
 		});
@@ -562,9 +560,9 @@ public abstract class GameModel {
 			logger.info("%s Elroy mode %d resumed", theGhosts[RED_GHOST].name, theGhosts[RED_GHOST].elroy);
 		}
 		if (ghost.id == RED_GHOST) {
-			ghost.state = HUNTING_PAC;
+			ghost.setState(HUNTING_PAC);
 		} else {
-			ghost.state = LEAVING_HOUSE;
+			ghost.setState(LEAVING_HOUSE);
 		}
 	}
 

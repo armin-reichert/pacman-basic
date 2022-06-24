@@ -176,7 +176,7 @@ public class IntroController extends Fsm<State, Context> {
 				$.pacMan.show();
 				$.pacMan.animations().ifPresent(SpriteAnimations::ensureRunning);
 				for (Ghost ghost : $.ghosts) {
-					ghost.state = GhostState.HUNTING_PAC;
+					ghost.setState(GhostState.HUNTING_PAC);
 					ghost.position = $.pacMan.position.plus(16 * (ghost.id + 1), 0);
 					ghost.setBothDirs(Direction.LEFT);
 					ghost.setAbsSpeed(1.2);
@@ -194,7 +194,7 @@ public class IntroController extends Fsm<State, Context> {
 				// ghosts already reverse direction before Pac-man eats the energizer and turns right!
 				else if ($.pacMan.position.x <= t($.left) + 4) {
 					for (Ghost ghost : $.ghosts) {
-						ghost.state = FRIGHTENED;
+						ghost.setState(FRIGHTENED);
 						ghost.selectAnimation(AnimKeys.GHOST_BLUE);
 						ghost.setBothDirs(Direction.RIGHT);
 						ghost.setAbsSpeed(0.6);
@@ -238,11 +238,11 @@ public class IntroController extends Fsm<State, Context> {
 				}
 
 				// check if Pac-Man kills a ghost
-				Optional<Ghost> killedGhost = Stream.of($.ghosts).filter(ghost -> ghost.state != GhostState.DEAD)
+				Optional<Ghost> killedGhost = Stream.of($.ghosts).filter(ghost -> !ghost.is(GhostState.DEAD))
 						.filter($.pacMan::sameTile).findFirst();
 				killedGhost.ifPresent(victim -> {
 					$.ghostKilledTime = timer.tick();
-					victim.state = GhostState.DEAD;
+					victim.setState(GhostState.DEAD);
 					victim.killIndex = victim.id;
 					victim.animations().ifPresent(animations -> {
 						animations.select(AnimKeys.GHOST_VALUE);
@@ -261,7 +261,7 @@ public class IntroController extends Fsm<State, Context> {
 					$.pacMan.show();
 					$.pacMan.setAbsSpeed(1.2);
 					for (Ghost ghost : $.ghosts) {
-						if (ghost.state != GhostState.DEAD) {
+						if (!ghost.is(GhostState.DEAD)) {
 							ghost.show();
 							ghost.setAbsSpeed(0.6);
 							ghost.animation(AnimKeys.GHOST_BLUE).ifPresent(SpriteAnimation::run);

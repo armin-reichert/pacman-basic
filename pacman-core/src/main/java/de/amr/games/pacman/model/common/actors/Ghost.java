@@ -80,7 +80,7 @@ public class Ghost extends Creature {
 	public final int id;
 
 	/** The current state of the ghost. */
-	public GhostState state;
+	private GhostState state;
 
 	/** The home tile of the ghost. */
 	public V2i homeTile;
@@ -332,8 +332,16 @@ public class Ghost extends Creature {
 		return false;
 	}
 
-	public boolean is(GhostState ghostState) {
-		return state == ghostState;
+	public boolean is(GhostState... alternatives) {
+		return U.oneOf(state, alternatives);
+	}
+
+	public GhostState getState() {
+		return state;
+	}
+
+	public void setState(GhostState state) {
+		this.state = state;
 	}
 
 	@Override

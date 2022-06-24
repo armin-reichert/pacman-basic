@@ -34,8 +34,13 @@ public class U {
 	private U() {
 	}
 
-	public static boolean oneOf(Object value, Object... alternatives) {
-		return Stream.of(alternatives).anyMatch(value::equals);
+	@SafeVarargs
+	public static <T> boolean oneOf(T value, T... alternatives) {
+		return switch (alternatives.length) {
+		case 0 -> false;
+		case 1 -> value.equals(alternatives[0]);
+		default -> Stream.of(alternatives).anyMatch(value::equals);
+		};
 	}
 
 	/**

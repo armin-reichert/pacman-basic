@@ -207,7 +207,7 @@ public class Autopilot implements Consumer<Creature> {
 				break;
 			}
 			for (Ghost ghost : game().ghosts().toArray(Ghost[]::new)) {
-				if (ghost.state == GhostState.HUNTING_PAC && ghost.tile().equals(behind)) {
+				if (ghost.is(GhostState.HUNTING_PAC) && ghost.tile().equals(behind)) {
 					return ghost;
 				}
 			}

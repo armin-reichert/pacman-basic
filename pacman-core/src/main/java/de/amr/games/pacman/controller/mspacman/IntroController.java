@@ -109,7 +109,7 @@ public class IntroController extends Fsm<IntroController.State, IntroController.
 				$.msPacMan.setAbsSpeed($.actorSpeed);
 				$.msPacMan.show();
 				for (Ghost ghost : $.ghosts) {
-					ghost.state = GhostState.HUNTING_PAC;
+					ghost.setState(GhostState.HUNTING_PAC);
 					ghost.setMoveDir(LEFT);
 					ghost.setWishDir(LEFT);
 					ghost.setPosition(t(34), $.turningPoint.y);
