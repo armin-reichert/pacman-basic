@@ -329,14 +329,15 @@ public class Ghost extends Creature {
 	 * @return {@code true} if the ghost has reached its target position
 	 */
 	private boolean enterHouse(GhostHouse house) {
-		if (tile().equals(targetTile) && offset().y >= 0) {
+		var tile = tile();
+		if (tile.equals(targetTile) && offset().y >= 0) {
 			return true;
 		}
-		if (tile().equals(house.seatMiddle()) && offset().y >= 0) {
-			// Center seat reached, move towards left or right seat.
-			if (targetTile.x < house.seatMiddle().x) {
+		var middle = house.seatMiddle();
+		if (tile.equals(middle) && offset().y >= 0) {
+			if (targetTile.x < middle.x) {
 				setBothDirs(LEFT);
-			} else if (targetTile.x > house.seatMiddle().x) {
+			} else if (targetTile.x > middle.x) {
 				setBothDirs(RIGHT);
 			}
 		}
