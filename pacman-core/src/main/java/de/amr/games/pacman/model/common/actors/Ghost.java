@@ -137,7 +137,7 @@ public class Ghost extends Creature {
 
 	private void updateLockedState(GameModel game) {
 		bounce();
-		if (game.pac.hasPower()) {
+		if (game.powerTimer.isRunning()) {
 			animations().ifPresent(anims -> {
 				if (anims.selected().equals(AnimKeys.GHOST_COLOR)) {
 					anims.select(AnimKeys.GHOST_BLUE);
@@ -296,7 +296,7 @@ public class Ghost extends Creature {
 			state = LEAVING_HOUSE;
 			setBothDirs(moveDir.opposite());
 			setAbsSpeed(0.5);
-			if (game.pac.hasPower()) {
+			if (game.powerTimer.isRunning()) {
 				selectAnimation(AnimKeys.GHOST_BLUE);
 			} else {
 				selectAnimation(AnimKeys.GHOST_COLOR);
@@ -448,11 +448,11 @@ public class Ghost extends Creature {
 	}
 
 	private void updateFlashingAnimation(GameModel game) {
-		if (game.pac.powerTimer.tick() == 0) {
+		if (game.powerTimer.tick() == 0) {
 			ensureFlashingStoppedAndShownAs(AnimKeys.GHOST_BLUE);
-		} else if (game.pac.powerTimer.remaining() == GameModel.PAC_POWER_FADING) {
+		} else if (game.powerTimer.remaining() == GameModel.PAC_POWER_FADING) {
 			ensureFlashingStarted(game.level.numFlashes);
-		} else if (game.pac.powerTimer.remaining() == 1) {
+		} else if (game.powerTimer.remaining() == 1) {
 			ensureFlashingStoppedAndShownAs(AnimKeys.GHOST_COLOR);
 		}
 	}

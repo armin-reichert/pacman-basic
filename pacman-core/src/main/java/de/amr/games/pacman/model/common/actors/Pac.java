@@ -29,10 +29,9 @@ import static de.amr.games.pacman.model.common.world.World.HTS;
 import java.util.Optional;
 
 import de.amr.games.pacman.lib.Direction;
-import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.animation.SpriteAnimation;
 import de.amr.games.pacman.lib.animation.SpriteAnimations;
-import de.amr.games.pacman.model.common.GameLevel;
+import de.amr.games.pacman.model.common.GameModel;
 
 /**
  * Pac-Man or Ms. Pac-Man.
@@ -43,9 +42,6 @@ public class Pac extends Creature {
 
 	/** If Pac has been killed. */
 	public boolean killed = false;
-
-	/** Controls the time Pac has power. */
-	public final TickTimer powerTimer = new TickTimer("Pac-power-timer");
 
 	/** Number of clock ticks Pac has to rest and can not move. */
 	public int restingTicks = 0;
@@ -65,10 +61,6 @@ public class Pac extends Creature {
 				velocity.length(), moveDir(), wishDir());
 	}
 
-	public boolean hasPower() {
-		return powerTimer.isRunning();
-	}
-
 	public void reset() {
 		show();
 		placeAt(v(13, 26), HTS, 0);
@@ -79,17 +71,16 @@ public class Pac extends Creature {
 		killed = false;
 		restingTicks = 0;
 		starvingTicks = 0;
-		powerTimer.resetIndefinitely();
 		animations().ifPresent(anim -> {
 			anim.select(AnimKeys.PAC_MUNCHING);
 			anim.selectedAnimation().reset();
 		});
 	}
 
-	public void update(GameLevel level) {
+	public void update(GameModel game) {
 		if (restingTicks == 0) {
-			setRelSpeed(hasPower() ? level.playerSpeedPowered : level.playerSpeed);
-			tryMoving(level.world);
+			setRelSpeed(game.powerTimer.isRunning() ? game.level.playerSpeedPowered : game.level.playerSpeed);
+			tryMoving(game.level.world);
 			if (stuck) {
 				animation(AnimKeys.PAC_MUNCHING).ifPresent(SpriteAnimation::stop);
 			} else {
@@ -98,7 +89,6 @@ public class Pac extends Creature {
 		} else {
 			--restingTicks;
 		}
-		powerTimer.advance();
 	}
 
 	// Animations

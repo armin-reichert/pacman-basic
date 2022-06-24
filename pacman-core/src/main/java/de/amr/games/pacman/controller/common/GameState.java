@@ -189,6 +189,7 @@ public enum GameState implements FsmState<GameModel> {
 			game.updateBonus();
 			game.advanceHunting();
 			game.energizerPulse.advance();
+			game.powerTimer.advance();
 
 			game.sounds().ifPresent(snd -> {
 				if (game.huntingTimer.tick() == 0) {

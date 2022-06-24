@@ -95,6 +95,9 @@ public abstract class GameModel {
 	/** Pac-Man or Ms. Pac-Man. */
 	public final Pac pac;
 
+	/** Controls the time Pac has power. */
+	public final TickTimer powerTimer = new TickTimer("Pac-power-timer");
+
 	/** Tells if Pac-Man can be killed by ghosts. */
 	public boolean isPacImmune;
 
@@ -296,7 +299,7 @@ public abstract class GameModel {
 	 * @param result checklist with collected information
 	 */
 	public void updatePac(CheckResult result) {
-		pac.update(level);
+		pac.update(this);
 		checkPacFindsFood(result);
 		if (result.foodFound) {
 			if (result.energizerFound) {
@@ -317,7 +320,7 @@ public abstract class GameModel {
 		if (result.pacGotPower) {
 			onPacGetsPower();
 		}
-		if (!isPacImmune && !pac.hasPower() && ghosts(HUNTING_PAC).anyMatch(pac::sameTile)) {
+		if (!isPacImmune && !powerTimer.isRunning() && ghosts(HUNTING_PAC).anyMatch(pac::sameTile)) {
 			pacKilled();
 			result.pacKilled = true;
 			return; // Pac-Man killed
@@ -371,15 +374,21 @@ public abstract class GameModel {
 		logger.info("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name, ghost.tile(), points);
 	}
 
+	private void startPowerTimerSeconds(double seconds) {
+		powerTimer.resetSeconds(seconds);
+		powerTimer.start();
+		logger.info("Pac power timer started: %s", powerTimer);
+	}
+
 	private void checkPacPower(CheckResult result) {
-		result.pacPowerFading = pac.powerTimer.remaining() == PAC_POWER_FADING;
-		result.pacPowerLost = pac.powerTimer.hasExpired();
+		result.pacPowerFading = powerTimer.remaining() == PAC_POWER_FADING;
+		result.pacPowerLost = powerTimer.hasExpired();
 	}
 
 	private void onPacLosesPower() {
-		logger.info("%s lost power, timer=%s", pac.name, pac.powerTimer);
+		logger.info("%s lost power, timer=%s", pac.name, powerTimer);
 		/* TODO hack: leave state EXPIRED to avoid repetitions. */
-		pac.powerTimer.resetIndefinitely();
+		powerTimer.resetIndefinitely();
 		huntingTimer.start();
 		sounds().ifPresent(snd -> {
 			snd.stop(GameSound.PACMAN_POWER);
@@ -416,9 +425,7 @@ public abstract class GameModel {
 
 	private void onPacGetsPower() {
 		huntingTimer.stop();
-		pac.powerTimer.resetSeconds(level.ghostFrightenedSeconds);
-		pac.powerTimer.start();
-		logger.info("%s power timer started: %s", pac.name, pac.powerTimer);
+		startPowerTimerSeconds(level.ghostFrightenedSeconds);
 		ghosts(HUNTING_PAC).forEach(ghost -> {
 			ghost.enterFrightenedState();
 			ghost.forceTurningBack(level.world);
