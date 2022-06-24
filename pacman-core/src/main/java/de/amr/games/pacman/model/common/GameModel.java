@@ -81,9 +81,13 @@ public abstract class GameModel {
 	public static final int PELLET_RESTING_TICKS = 1;
 	public static final int ENERGIZER_VALUE = 50;
 	public static final int ENERGIZER_RESTING_TICKS = 3;
-	protected static final int[] GHOST_VALUES = { 200, 400, 800, 1600 };
 	public static final int INITIAL_LIFES = 3;
 	public static final int ALL_GHOSTS_KILLED_POINTS = 12_000;
+
+	// TODO not sure exactly how long Pac-Man is losing power
+	public static final long PAC_POWER_FADING = secToTicks(2);
+
+	protected static final int[] GHOST_VALUES = { 200, 400, 800, 1600 };
 
 	/** The game variant respresented by this model. */
 	public final GameVariant variant;
@@ -417,8 +421,7 @@ public abstract class GameModel {
 	}
 
 	private void checkPacPower(CheckResult result) {
-		// TODO not sure exactly how long Pac-Man is losing power
-		result.pacPowerFading = pac.powerTimer.remaining() == secToTicks(1);
+		result.pacPowerFading = pac.powerTimer.remaining() == PAC_POWER_FADING;
 		result.pacPowerLost = pac.powerTimer.hasExpired();
 	}
 

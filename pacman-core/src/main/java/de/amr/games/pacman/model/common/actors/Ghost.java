@@ -27,7 +27,6 @@ import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Direction.UP;
-import static de.amr.games.pacman.lib.TickTimer.secToTicks;
 import static de.amr.games.pacman.model.common.GameVariant.MS_PACMAN;
 import static de.amr.games.pacman.model.common.actors.GhostState.ENTERING_HOUSE;
 import static de.amr.games.pacman.model.common.actors.GhostState.FRIGHTENED;
@@ -402,8 +401,6 @@ public class Ghost extends Creature {
 
 	// Animations
 
-	private static final long FLASHING_DURATION = secToTicks(2); // TODO check with MAME
-
 	private SpriteAnimations<Ghost> animations;
 
 	public void setAnimations(SpriteAnimations<Ghost> animations) {
@@ -434,7 +431,7 @@ public class Ghost extends Creature {
 	private void updateFlashingAnimation(GameModel game) {
 		if (game.pac.powerTimer.remaining() == 1) {
 			ensureFlashingStopped();
-		} else if (game.pac.powerTimer.remaining() == FLASHING_DURATION) {
+		} else if (game.pac.powerTimer.remaining() == GameModel.PAC_POWER_FADING) {
 			ensureFlashingStarted(game.level.numFlashes);
 		}
 	}
@@ -446,7 +443,7 @@ public class Ghost extends Creature {
 			} else {
 				anim.select(AnimKeys.GHOST_FLASHING);
 				var flashing = (SingleSpriteAnimation<?>) anim.selectedAnimation();
-				long frameTicks = FLASHING_DURATION / (numFlashes * flashing.numFrames());
+				long frameTicks = GameModel.PAC_POWER_FADING / (numFlashes * flashing.numFrames());
 				flashing.frameDuration(frameTicks);
 				flashing.repetions(numFlashes);
 				flashing.restart();
