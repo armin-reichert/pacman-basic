@@ -358,7 +358,10 @@ public class Ghost extends Creature {
 
 	public void enterFrightenedState() {
 		state = FRIGHTENED;
-		selectAnimation(AnimKeys.GHOST_BLUE);
+		animations().ifPresent(anims -> {
+			anims.byName(AnimKeys.GHOST_FLASHING).stop();
+			selectAnimation(AnimKeys.GHOST_BLUE);
+		});
 	}
 
 	public void enterDeadState() {

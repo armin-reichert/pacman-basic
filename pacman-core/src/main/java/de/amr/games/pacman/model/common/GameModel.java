@@ -44,6 +44,7 @@ import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.animation.SingleSpriteAnimation;
+import de.amr.games.pacman.model.common.actors.AnimKeys;
 import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.GhostState;
@@ -422,6 +423,15 @@ public abstract class GameModel {
 		ghosts(HUNTING_PAC).forEach(ghost -> {
 			ghost.enterFrightenedState();
 			ghost.forceTurningBack(level.world);
+		});
+		// maybe stop flashing:
+		ghosts(FRIGHTENED, LOCKED).forEach(ghost -> {
+			ghost.animations().ifPresent(anims -> {
+				if (anims.selected().equals(AnimKeys.GHOST_FLASHING)) {
+					anims.selectedAnimation().stop();
+					anims.select(AnimKeys.GHOST_BLUE);
+				}
+			});
 		});
 		sounds().ifPresent(snd -> {
 			snd.stopSirens();

@@ -25,6 +25,7 @@ SOFTWARE.
 package de.amr.games.pacman.lib.animation;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 /**
@@ -52,7 +53,7 @@ public abstract class SpriteAnimations<E> {
 	public abstract Object current(E entity);
 
 	public void select(String name) {
-		selected = name;
+		selected = Objects.requireNonNull(name);
 	}
 
 	public String selected() {

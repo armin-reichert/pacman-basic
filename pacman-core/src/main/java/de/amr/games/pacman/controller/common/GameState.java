@@ -322,7 +322,6 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void onExit(GameModel game) {
 			game.pac.show();
-			game.ghosts().forEach(ghost -> ghost.animation(AnimKeys.GHOST_FLASHING).ifPresent(SpriteAnimation::run));
 			game.letDeadGhostsReturnHome();
 		}
 	},
