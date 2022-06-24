@@ -123,6 +123,11 @@ public class Ghost extends Creature {
 	private void updateLockedState(GameModel game) {
 		bounce();
 		if (game.pac.hasPower()) {
+			animations().ifPresent(anims -> {
+				if (anims.selected().equals(AnimKeys.GHOST_COLOR)) {
+					anims.select(AnimKeys.GHOST_BLUE);
+				}
+			});
 			updateFlashingAnimation(game);
 		} else {
 			selectAnimation(AnimKeys.GHOST_COLOR);

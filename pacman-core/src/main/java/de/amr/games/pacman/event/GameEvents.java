@@ -61,7 +61,7 @@ public class GameEvents {
 	}
 
 	public static void publish(GameEvent gameEvent) {
-		if (gameEvent.type != GameEventType.PLAYER_FINDS_FOOD) {
+		if (gameEvent.type != GameEventType.PAC_FINDS_FOOD) {
 			logger.info("%s", gameEvent);
 		}
 		theOne.subscribers.forEach(subscriber -> subscriber.onGameEvent(gameEvent));

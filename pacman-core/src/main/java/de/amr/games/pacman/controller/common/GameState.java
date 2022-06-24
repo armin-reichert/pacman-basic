@@ -171,12 +171,12 @@ public enum GameState implements FsmState<GameModel> {
 		public void onUpdate(GameModel game) {
 			var checkResult = new CheckResult();
 			gameController.currentSteering().accept(game.pac);
-			game.updatePlayer(checkResult);
+			game.updatePac(checkResult);
 			if (checkResult.allFoodEaten) {
 				fsm.changeState(LEVEL_COMPLETE);
 				return;
 			}
-			if (checkResult.playerKilled) {
+			if (checkResult.pacKilled) {
 				fsm.changeState(PACMAN_DYING);
 				return;
 			}
@@ -218,7 +218,7 @@ public enum GameState implements FsmState<GameModel> {
 		public void cheatEatAllPellets(GameModel game) {
 			if (game.playing) {
 				game.level.world.tiles().filter(not(game.level.world::isEnergizerTile)).forEach(game.level.world::removeFood);
-				GameEvents.publish(GameEventType.PLAYER_FINDS_FOOD, null);
+				GameEvents.publish(GameEventType.PAC_FINDS_FOOD, null);
 			}
 		}
 

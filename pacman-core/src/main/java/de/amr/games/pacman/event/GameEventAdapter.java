@@ -42,11 +42,11 @@ public interface GameEventAdapter extends GameEventListener {
 		case GHOST_STARTS_LEAVING_HOUSE -> onGhostStartsLeavingHouse(event);
 		case GHOST_COMPLETES_LEAVING_HOUSE -> onGhostCompletesLeavingHouse(event);
 		case GHOST_STARTS_RETURNING_HOME -> onGhostStartsReturningHome(event);
-		case PLAYER_FINDS_FOOD -> onPlayerFindsFood(event);
+		case PAC_FINDS_FOOD -> onPlayerFindsFood(event);
 		case PLAYER_GETS_EXTRA_LIFE -> onPlayerGetsExtraLife(event);
-		case PLAYER_GETS_POWER -> onPlayerGetsPower(event);
-		case PLAYER_STARTS_LOSING_POWER -> onPlayerStartsLosingPower(event);
-		case PLAYER_LOSES_POWER -> onPlayerLosesPower(event);
+		case PAC_GETS_POWER -> onPlayerGetsPower(event);
+		case PAC_STARTS_LOSING_POWER -> onPlayerStartsLosingPower(event);
+		case PAC_LOSES_POWER -> onPlayerLosesPower(event);
 		case UI_FORCE_UPDATE -> onUIForceUpdate(event);
 		default -> throw new IllegalArgumentException("Unknown event type: " + event.type);
 		}
