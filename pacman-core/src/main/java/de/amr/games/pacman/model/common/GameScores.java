@@ -106,7 +106,7 @@ public class GameScores {
 			highScore.levelNumber = game.level.number;
 			highScore.date = LocalDate.now();
 		}
-		if (scoreBeforeAddingPoints < game.extraLifeScore && gameScore.points >= game.extraLifeScore) {
+		if (scoreBeforeAddingPoints < GameModel.EXTRA_LIFE && gameScore.points >= GameModel.EXTRA_LIFE) {
 			game.lives++;
 			game.sounds().ifPresent(snd -> snd.play(GameSound.EXTRA_LIFE));
 			GameEvents.publish(new GameEvent(game, GameEventType.PLAYER_GETS_EXTRA_LIFE, null, game.pac.tile()));

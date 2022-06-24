@@ -83,6 +83,7 @@ public abstract class GameModel {
 	public static final int ENERGIZER_RESTING_TICKS = 3;
 	public static final int INITIAL_LIFES = 3;
 	public static final int ALL_GHOSTS_KILLED_POINTS = 12_000;
+	public static final int EXTRA_LIFE = 10_000;
 
 	// TODO not sure exactly how long Pac-Man is losing power
 	public static final long PAC_POWER_FADING = secToTicks(2);
@@ -118,9 +119,6 @@ public abstract class GameModel {
 
 	/** Number of lives remaining. */
 	public int lives;
-
-	/** At which score an extra life is granted. */
-	public int extraLifeScore = 10_000;
 
 	/** Bounty for eating the next ghost. */
 	public int ghostKillIndex;
@@ -380,7 +378,7 @@ public abstract class GameModel {
 		}
 		checkPacPower(result);
 		if (result.pacPowerFading) {
-			onPacPowerFading();
+			GameEvents.publish(GameEventType.PAC_STARTS_LOSING_POWER, pac.tile());
 		}
 		if (result.pacPowerLost) {
 			onPacLosesPower();
@@ -423,10 +421,6 @@ public abstract class GameModel {
 	private void checkPacPower(CheckResult result) {
 		result.pacPowerFading = pac.powerTimer.remaining() == PAC_POWER_FADING;
 		result.pacPowerLost = pac.powerTimer.hasExpired();
-	}
-
-	private void onPacPowerFading() {
-		GameEvents.publish(GameEventType.PAC_STARTS_LOSING_POWER, pac.tile());
 	}
 
 	private void onPacLosesPower() {
