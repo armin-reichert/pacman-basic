@@ -123,16 +123,19 @@ public class Ghost extends Creature {
 		var world = game.level.world;
 		setAbsSpeed(0.5);
 		bounce(t(world.ghostHouse().seatMiddle().y), HTS);
-		if (game.pac.powerTimer.remaining() == 1) {
-			ensureFlashingStopped();
-		} else if (game.pac.powerTimer.remaining() <= FLASHING_TICKS) {
+		if (!game.pac.hasPower()) {
+			selectAnimation(AnimKeys.GHOST_COLOR);
+		} else if (game.pac.powerTimer.remaining() == FLASHING_TICKS) {
 			ensureFlashingStarted(game.level.numFlashes);
+		} else if (game.pac.powerTimer.remaining() == 1) {
+			ensureFlashingStopped();
+			selectAnimation(AnimKeys.GHOST_COLOR);
 		}
 	}
 
 	public void updateLeavingHouseState(GameModel game) {
 		var world = game.level.world;
-		setAbsSpeed(0.5);
+//		setAbsSpeed(0.5);
 		boolean houseLeft = leaveHouse(world.ghostHouse());
 		if (houseLeft) {
 			state = HUNTING_PAC;
@@ -175,6 +178,11 @@ public class Ghost extends Creature {
 		else {
 			scatter(world);
 		}
+		animations().ifPresent(anims -> {
+			if (!anims.selected().equals(AnimKeys.GHOST_COLOR)) {
+				anims.select(AnimKeys.GHOST_COLOR);
+			}
+		});
 	}
 
 	public void updateFrightenedState(GameModel game) {
@@ -188,7 +196,7 @@ public class Ghost extends Creature {
 		}
 		if (game.pac.powerTimer.remaining() == 1) {
 			ensureFlashingStopped();
-		} else if (game.pac.powerTimer.remaining() <= FLASHING_TICKS) {
+		} else if (game.pac.powerTimer.remaining() == FLASHING_TICKS) {
 			ensureFlashingStarted(game.level.numFlashes);
 		}
 	}
@@ -431,7 +439,6 @@ public class Ghost extends Creature {
 		animations().ifPresent(anim -> {
 			if (anim.selected().equals(AnimKeys.GHOST_FLASHING)) {
 				anim.selectedAnimation().stop();
-				selectAnimation(AnimKeys.GHOST_COLOR);
 			}
 		});
 	}
