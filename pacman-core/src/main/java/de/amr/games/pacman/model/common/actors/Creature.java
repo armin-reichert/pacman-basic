@@ -27,6 +27,7 @@ import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Direction.UP;
+import static de.amr.games.pacman.model.common.world.World.t;
 import static java.lang.Math.abs;
 
 import java.util.Objects;
@@ -205,49 +206,50 @@ public class Creature extends Entity {
 	 * <p>
 	 * TODO: this should really be simpler
 	 * 
-	 * @param dir intended move direction
+	 * @param world the world where this creatures is located
+	 * @param dir   intended move direction
 	 */
 	private void tryMoving(World world, Direction dir) {
-		final V2i tileBeforeMove = tile();
-		final V2d offsetBeforeMove = offset();
-		final V2i neighborTile = tileBeforeMove.plus(dir.vec);
+		var tile = tile();
+		var offset = offset();
+		var neighborTile = tile.plus(dir.vec);
 
-		// check if creature can turn towards move direction at its current position
+		// check if creature can turn towards move direction from its current position
 		if (canAccessTile(world, neighborTile)) {
-			if (dir == Direction.LEFT || dir == Direction.RIGHT) {
-				if (abs(offsetBeforeMove.y) > velocity.length()) {
+			if (dir.isHorizontal()) {
+				if (abs(offset.y) > velocity.length()) {
 					stuck = true;
 					return;
 				}
-				setOffset(offsetBeforeMove.x, 0);
-			} else if (dir == Direction.UP || dir == Direction.DOWN) {
-				if (abs(offsetBeforeMove.x) > velocity.length()) {
+				setOffset(offset.x, 0);
+			} else if (dir.isVertical()) {
+				if (abs(offset.x) > velocity.length()) {
 					stuck = true;
 					return;
 				}
-				setOffset(0, offsetBeforeMove.y);
+				setOffset(0, offset.y);
 			}
 		}
 
-		final V2d posAfterMove = position.plus(new V2d(dir.vec).scaled(velocity.length()));
-		final V2i tileAfterMove = World.tile(posAfterMove);
-		final V2d offsetAfterMove = World.offset(posAfterMove);
+		var newPosition = position.plus(new V2d(dir.vec).scaled(velocity.length()));
+		var newOffset = World.offset(newPosition);
+		var newTile = World.tile(newPosition);
 
 		// avoid moving into inaccessible neighbor tile
-		if (!canAccessTile(world, tileAfterMove)) {
+		if (!canAccessTile(world, newTile)) {
 			stuck = true;
 			return;
 		}
 
-		// align with edge of inaccessible neighbor
+		// align with inaccessible neighbor tile
 		if (!canAccessTile(world, neighborTile)) {
-			if (dir == Direction.RIGHT && offsetAfterMove.x > 0 || dir == Direction.LEFT && offsetAfterMove.x < 0) {
-				setOffset(0, offsetBeforeMove.y);
+			if (dir == Direction.RIGHT && newOffset.x > 0 || dir == Direction.LEFT && newOffset.x < 0) {
+				setOffset(0, offset.y);
 				stuck = true;
 				return;
 			}
-			if (dir == Direction.DOWN && offsetAfterMove.y > 0 || dir == Direction.UP && offsetAfterMove.y < 0) {
-				setOffset(offsetBeforeMove.x, 0);
+			if (dir == Direction.DOWN && newOffset.y > 0 || dir == Direction.UP && newOffset.y < 0) {
+				setOffset(offset.x, 0);
 				stuck = true;
 				return;
 			}
@@ -255,8 +257,8 @@ public class Creature extends Entity {
 
 		// yes, we can (move)
 		stuck = false;
-		placeAt(tileAfterMove, offsetAfterMove.x, offsetAfterMove.y);
-		newTileEntered = !tile().equals(tileBeforeMove);
+		setPosition(t(newTile.x) + newOffset.x, t(newTile.y) + newOffset.y);
+		newTileEntered = !tile().equals(tile);
 	}
 
 	/**
