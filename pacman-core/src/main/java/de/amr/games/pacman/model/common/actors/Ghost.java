@@ -448,10 +448,12 @@ public class Ghost extends Creature {
 	}
 
 	private void updateFlashingAnimation(GameModel game) {
-		if (game.pac.powerTimer.remaining() == 1) {
-			ensureFlashingStopped();
+		if (game.pac.powerTimer.tick() == 0) {
+			ensureFlashingStoppedAndShownAs(AnimKeys.GHOST_BLUE);
 		} else if (game.pac.powerTimer.remaining() == GameModel.PAC_POWER_FADING) {
 			ensureFlashingStarted(game.level.numFlashes);
+		} else if (game.pac.powerTimer.remaining() == 1) {
+			ensureFlashingStoppedAndShownAs(AnimKeys.GHOST_COLOR);
 		}
 	}
 
@@ -470,11 +472,11 @@ public class Ghost extends Creature {
 		});
 	}
 
-	private void ensureFlashingStopped() {
-		animations().ifPresent(anim -> {
-			if (anim.selected().equals(AnimKeys.GHOST_FLASHING)) {
-				anim.selectedAnimation().stop();
-				anim.select(AnimKeys.GHOST_COLOR);
+	public void ensureFlashingStoppedAndShownAs(String animKey) {
+		animations().ifPresent(anims -> {
+			if (anims.selected().equals(AnimKeys.GHOST_FLASHING)) {
+				anims.selectedAnimation().stop();
+				anims.select(animKey);
 			}
 		});
 	}

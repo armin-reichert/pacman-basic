@@ -46,7 +46,6 @@ import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.Pac;
 import de.amr.games.pacman.model.common.world.ArcadeWorld;
-import de.amr.games.pacman.model.common.world.GhostHouse;
 
 /**
  * Model of the Pac-Man game.
@@ -197,7 +196,7 @@ public class PacManGame extends GameModel {
 	}
 
 	private void initGhosts() {
-		GhostHouse house = world().ghostHouse();
+		var house = world().ghostHouse();
 
 		theGhosts[RED_GHOST].homeTile = house.entry();
 		theGhosts[RED_GHOST].revivalTile = house.seatMiddle();
