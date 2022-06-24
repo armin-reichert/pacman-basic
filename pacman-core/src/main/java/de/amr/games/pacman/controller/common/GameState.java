@@ -227,7 +227,7 @@ public enum GameState implements FsmState<GameModel> {
 			if (game.playing) {
 				Ghost[] prey = game.ghosts()
 						.filter(ghost -> ghost.is(GhostState.HUNTING_PAC) || ghost.is(GhostState.FRIGHTENED)).toArray(Ghost[]::new);
-				game.ghostKillIndex = -1;
+				game.ghostsKilledByEnergizer = 0;
 				game.killGhosts(prey);
 				fsm.changeState(GameState.GHOST_DYING);
 			}

@@ -192,7 +192,7 @@ public class PacManGame extends GameModel {
 		levelCounter.addSymbol(level.bonusSymbol);
 		initGhosts();
 		bonus.setInactive();
-		ghostKillIndex = -1;
+		ghostsKilledByEnergizer = 0;
 		scores.gameScore.levelNumber = levelNumber;
 	}
 

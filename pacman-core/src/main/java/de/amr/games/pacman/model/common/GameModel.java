@@ -120,8 +120,8 @@ public abstract class GameModel {
 	/** Number of lives remaining. */
 	public int lives;
 
-	/** Bounty for eating the next ghost. */
-	public int ghostKillIndex;
+	/** Number of ghosts killed by current energizer. */
+	public int ghostsKilledByEnergizer;
 
 	/** List of collected level symbols. */
 	public final LevelCounter levelCounter = new LevelCounter(7);
@@ -348,7 +348,7 @@ public abstract class GameModel {
 		checkPacFindsFood(result);
 		if (result.foodFound) {
 			if (result.energizerFound) {
-				ghostKillIndex = -1;
+				ghostsKilledByEnergizer = 0;
 				eatFood(ENERGIZER_VALUE, ENERGIZER_RESTING_TICKS);
 			} else {
 				eatFood(PELLET_VALUE, PELLET_RESTING_TICKS);
@@ -410,7 +410,8 @@ public abstract class GameModel {
 	}
 
 	private void killGhost(Ghost ghost) {
-		ghost.killIndex = ++ghostKillIndex;
+		ghost.killIndex = ghostsKilledByEnergizer;
+		ghostsKilledByEnergizer++;
 		int points = ghostValue(ghost.killIndex);
 		scores.addPoints(points);
 		ghost.enterDeadState();
