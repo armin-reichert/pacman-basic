@@ -173,6 +173,11 @@ public class Ghost extends Creature {
 		return false;
 	}
 
+	/*
+	 * In Ms. Pac-Man, Blinky and Pinky move randomly during the *first* scatter phase. Some say, the original intention
+	 * had been to randomize the scatter target of *all* ghosts in Ms. Pac-Man but because of a bug, only the scatter
+	 * target of Blinky and Pinky would have been affected. Who knows?
+	 */
 	private void updateHuntingState(GameModel game) {
 		var world = game.level.world;
 		if (world.isTunnel(tile())) {
@@ -184,74 +189,50 @@ public class Ghost extends Creature {
 		} else {
 			setRelSpeed(game.level.ghostSpeed);
 		}
-		/*
-		 * In Ms. Pac-Man, Blinky and Pinky move randomly during the *first* scatter phase. Some say, the original intention
-		 * had been to randomize the scatter target of *all* ghosts in Ms. Pac-Man but because of a bug, only the scatter
-		 * target of Blinky and Pinky would have been affected. Who knows?
-		 */
-		if (game.variant == MS_PACMAN && game.huntingTimer.scatteringPhase() == 0
-				&& (id == RED_GHOST || id == PINK_GHOST)) {
-			roam(world);
-		}
-		/*
-		 * Chase if the hunting timer is in a chasing phase or if I am in Elroy mode.
-		 */
-		else if (elroy > 0 || game.huntingTimer.chasingPhase() != -1) {
-			chase(world, game.pac, game.theGhosts[RED_GHOST]);
-		}
-		/**
-		 * Scatter else.
-		 */
-		else {
-			scatter(world);
+		if (game.variant == MS_PACMAN && game.huntingTimer.scatterPhase() == 0 && (id == RED_GHOST || id == PINK_GHOST)) {
+			roam(game);
+		} else if (game.huntingTimer.inChasingPhase() || elroy > 0) {
+			chase(game);
+		} else {
+			scatter(game);
 		}
 		animations().ifPresent(anims -> anims.select(AnimKeys.GHOST_COLOR));
 	}
 
-	private void chase(World world, Pac pac, Ghost redGhost) {
+	private void scatter(GameModel game) {
+		targetTile = scatterTile;
+		computeDirectionTowardsTarget(game.level.world);
+		tryMoving(game.level.world);
+	}
+
+	private void chase(GameModel game) {
 		targetTile = switch (id) {
-		case RED_GHOST -> pac.tile();
-		case PINK_GHOST -> pac.tilesAheadWithBug(4);
-		case CYAN_GHOST -> pac.tilesAheadWithBug(2).scaled(2).minus(redGhost.tile());
-		case ORANGE_GHOST -> tile().euclideanDistance(pac.tile()) < 8 ? scatterTile : pac.tile();
+		case RED_GHOST -> game.pac.tile();
+		case PINK_GHOST -> game.pac.tilesAheadWithBug(4);
+		case CYAN_GHOST -> game.pac.tilesAheadWithBug(2).scaled(2).minus(game.theGhosts[RED_GHOST].tile());
+		case ORANGE_GHOST -> tile().euclideanDistance(game.pac.tile()) < 8 ? scatterTile : game.pac.tile();
 		default -> null;
 		};
-		computeDirectionTowardsTarget(world);
-		tryMoving(world);
+		computeDirectionTowardsTarget(game.level.world);
+		tryMoving(game.level.world);
 	}
 
-	/**
-	 * Lets the ghost head for its scatter tile.
-	 */
-	private void scatter(World world) {
-		targetTile = scatterTile;
-		computeDirectionTowardsTarget(world);
-		tryMoving(world);
-	}
-
-	/**
-	 * Lets the ghost choose some random direction whenever it enters a new tile.
-	 * 
-	 * TODO: this is not 100% what the Pac-Man dossier says.
-	 */
-	private void roam(World world) {
+	private void roam(GameModel game) {
 		if (newTileEntered) {
 			Direction.shuffled().stream()
-					.filter(dir -> dir != moveDir.opposite() && canAccessTile(world, tile().plus(dir.vec))).findAny()
+					.filter(dir -> dir != moveDir.opposite() && canAccessTile(game.level.world, tile().plus(dir.vec))).findAny()
 					.ifPresent(dir -> wishDir = dir);
 		}
-		tryMoving(world);
+		tryMoving(game.level.world);
 	}
 
 	private void updateFrightenedState(GameModel game) {
-		var world = game.level.world;
-		if (world.isTunnel(tile())) {
+		if (game.level.world.isTunnel(tile())) {
 			setRelSpeed(game.level.ghostSpeedTunnel);
-			tryMoving(world);
 		} else {
 			setRelSpeed(game.level.ghostSpeedFrightened);
-			roam(world);
 		}
+		roam(game);
 		updateFlashingAnimation(game);
 	}
 
