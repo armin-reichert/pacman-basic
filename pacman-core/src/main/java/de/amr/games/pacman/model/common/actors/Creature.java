@@ -213,25 +213,27 @@ public class Creature extends Entity {
 		var tile = tile();
 		var offset = offset();
 		var neighborTile = tile.plus(dir.vec);
+		var speed = velocity.length();
 
 		// check if creature can turn towards move direction from its current position
 		if (canAccessTile(world, neighborTile)) {
+			if (dir.isHorizontal() && abs(offset.y) > speed) {
+				stuck = true;
+				return;
+			}
+			if (dir.isVertical() && abs(offset.x) > speed) {
+				stuck = true;
+				return;
+			}
 			if (dir.isHorizontal()) {
-				if (abs(offset.y) > velocity.length()) {
-					stuck = true;
-					return;
-				}
 				setOffset(offset.x, 0);
-			} else if (dir.isVertical()) {
-				if (abs(offset.x) > velocity.length()) {
-					stuck = true;
-					return;
-				}
+			} else {
 				setOffset(0, offset.y);
 			}
 		}
 
-		var newPosition = position.plus(new V2d(dir.vec).scaled(velocity.length()));
+		var velocity = new V2d(dir.vec).scaled(speed);
+		var newPosition = position.plus(velocity);
 		var newOffset = World.offset(newPosition);
 		var newTile = World.tile(newPosition);
 
