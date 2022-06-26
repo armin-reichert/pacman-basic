@@ -450,7 +450,7 @@ public class Ghost extends Creature {
 	private void updateFlashingAnimation(GameModel game) {
 		if (game.powerTimer.tick() == 0) {
 			ensureFlashingStoppedAndShownAs(AnimKeys.GHOST_BLUE);
-		} else if (game.powerTimer.remaining() == GameModel.PAC_POWER_FADING) {
+		} else if (game.powerTimer.remaining() == GameModel.PAC_POWER_FADING_TICKS) {
 			ensureFlashingStarted(game.level.numFlashes);
 		} else if (game.powerTimer.remaining() == 1) {
 			ensureFlashingStoppedAndShownAs(AnimKeys.GHOST_COLOR);
@@ -464,7 +464,7 @@ public class Ghost extends Creature {
 			} else {
 				anim.select(AnimKeys.GHOST_FLASHING);
 				var flashing = (SingleSpriteAnimation<?>) anim.selectedAnimation();
-				long frameTicks = GameModel.PAC_POWER_FADING / (numFlashes * flashing.numFrames());
+				long frameTicks = GameModel.PAC_POWER_FADING_TICKS / (numFlashes * flashing.numFrames());
 				flashing.frameDuration(frameTicks);
 				flashing.repetions(numFlashes);
 				flashing.restart();

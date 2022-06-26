@@ -79,7 +79,7 @@ public abstract class GameModel {
 	public static final int EXTRA_LIFE = 10_000;
 
 	// TODO not sure exactly how long Pac-Man is losing power
-	public static final long PAC_POWER_FADING = secToTicks(2);
+	public static final long PAC_POWER_FADING_TICKS = secToTicks(2);
 
 	protected static final int[] GHOST_VALUES = { 200, 400, 800, 1600 };
 
@@ -183,6 +183,7 @@ public abstract class GameModel {
 		energizerPulse.reset();
 		pac.reset();
 		ghosts().forEach(Ghost::reset);
+		powerTimer.reset(0);
 	}
 
 	public Stream<Ghost> ghosts(GhostState... states) {
@@ -340,6 +341,10 @@ public abstract class GameModel {
 		}
 	}
 
+	public boolean isPacPowerFading() {
+		return powerTimer.isRunning() && powerTimer.remaining() < PAC_POWER_FADING_TICKS;
+	}
+
 	private void pacKilled() {
 		pac.killed = true;
 		theGhosts[RED_GHOST].stopCruiseElroyMode();
@@ -381,7 +386,7 @@ public abstract class GameModel {
 	}
 
 	private void checkPacPower(CheckResult result) {
-		result.pacPowerFading = powerTimer.remaining() == PAC_POWER_FADING;
+		result.pacPowerFading = powerTimer.remaining() == PAC_POWER_FADING_TICKS;
 		result.pacPowerLost = powerTimer.hasExpired();
 	}
 
