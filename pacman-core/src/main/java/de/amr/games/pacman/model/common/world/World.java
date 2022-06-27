@@ -103,6 +103,13 @@ public interface World {
 	}
 
 	/**
+	 * @return tells if this position is located inside the world bounds
+	 */
+	default boolean insideMap(double x, double y) {
+		return 0 <= x && x < numCols() * TS && 0 <= y && y < numRows() * TS;
+	}
+
+	/**
 	 * @return portals inside this world
 	 */
 	List<Portal> portals();
