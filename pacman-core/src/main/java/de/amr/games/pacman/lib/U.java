@@ -24,6 +24,7 @@ SOFTWARE.
 
 package de.amr.games.pacman.lib;
 
+import java.util.Random;
 import java.util.stream.Stream;
 
 /**
@@ -32,6 +33,24 @@ import java.util.stream.Stream;
 public class U {
 
 	private U() {
+	}
+
+	public static final Random rnd = new Random();
+
+	public static int randomInt(int left, int right) {
+		return left + rnd.nextInt(right - left);
+	}
+
+	public static double randomDouble(double left, double right) {
+		return left + rnd.nextDouble() * (right - left);
+	}
+
+	public static String yesNo(boolean b) {
+		return b ? "YES" : "NO";
+	}
+
+	public static String onOff(boolean b) {
+		return b ? "ON" : "OFF";
 	}
 
 	@SafeVarargs
