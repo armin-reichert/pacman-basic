@@ -43,11 +43,11 @@ public class FloorPlan {
 
 	private static char symbol(byte b) {
 		return switch (b) {
-		case FloorPlan.CORNER -> '+';
-		case FloorPlan.EMPTY -> ' ';
-		case FloorPlan.HWALL -> '\u2014';
-		case FloorPlan.VWALL -> '|';
-		case FloorPlan.DOOR -> 'd';
+		case CORNER -> '+';
+		case EMPTY -> ' ';
+		case HWALL -> '\u2014';
+		case VWALL -> '|';
+		case DOOR -> 'd';
 		default -> '?';
 		};
 	}
@@ -124,25 +124,25 @@ public class FloorPlan {
 
 	private void separateVerticalWallsAndCorners(int numBlocksX, int numBlocksY) {
 		for (int x = 0; x < numBlocksX; ++x) {
-			int blockStartY = -1;
-			int blockLen = 0;
+			int startY = -1;
+			int size = 0;
 			for (int y = 0; y < numBlocksY; ++y) {
-				if (info[y][x] == FloorPlan.CORNER) {
-					if (blockStartY == -1) {
-						blockStartY = y;
-						blockLen = 1;
+				if (info[y][x] == CORNER) {
+					if (startY == -1) {
+						startY = y;
+						size = 1;
 					} else {
-						info[y][x] = (y == numBlocksY - 1) ? FloorPlan.CORNER : FloorPlan.VWALL;
-						++blockLen;
+						info[y][x] = (y == numBlocksY - 1) ? CORNER : VWALL;
+						++size;
 					}
 				} else {
-					if (blockLen == 1) {
-						info[blockStartY][x] = FloorPlan.CORNER;
-					} else if (blockLen > 1) {
-						info[blockStartY + blockLen - 1][x] = FloorPlan.CORNER;
+					if (size == 1) {
+						info[startY][x] = CORNER;
+					} else if (size > 1) {
+						info[startY + size - 1][x] = CORNER;
 					}
-					blockStartY = -1;
-					blockLen = 0;
+					startY = -1;
+					size = 0;
 				}
 			}
 		}
@@ -150,29 +150,25 @@ public class FloorPlan {
 
 	private void separateHorizontalWallsAndCorners(int numBlocksX, int numBlocksY) {
 		for (int y = 0; y < numBlocksY; ++y) {
-			int blockStartX = -1;
-			int blockLen = 0;
+			int startX = -1;
+			int size = 0;
 			for (int x = 0; x < numBlocksX; ++x) {
-				if (info[y][x] == FloorPlan.CORNER) {
-					if (blockStartX == -1) {
-						blockStartX = x;
-						blockLen = 1;
+				if (info[y][x] == CORNER) {
+					if (startX == -1) {
+						startX = x;
+						size = 1;
 					} else {
-						if (x == numBlocksX - 1) {
-							info[y][x] = FloorPlan.CORNER;
-						} else {
-							info[y][x] = FloorPlan.HWALL;
-						}
-						++blockLen;
+						info[y][x] = x == numBlocksX - 1 ? CORNER : HWALL;
+						++size;
 					}
 				} else {
-					if (blockLen == 1) {
-						info[y][blockStartX] = FloorPlan.CORNER;
-					} else if (blockLen > 1) {
-						info[y][blockStartX + blockLen - 1] = FloorPlan.CORNER;
+					if (size == 1) {
+						info[y][startX] = CORNER;
+					} else if (size > 1) {
+						info[y][startX + size - 1] = CORNER;
 					}
-					blockStartX = -1;
-					blockLen = 0;
+					startX = -1;
+					size = 0;
 				}
 			}
 		}
@@ -182,7 +178,7 @@ public class FloorPlan {
 		for (int y = 0; y < numBlocksY; ++y) {
 			for (int x = 0; x < numBlocksX; ++x) {
 				V2i tile = new V2i(x / resolution, y / resolution);
-				info[y][x] = world.isWall(tile) ? FloorPlan.CORNER : FloorPlan.EMPTY;
+				info[y][x] = world.isWall(tile) ? CORNER : EMPTY;
 			}
 		}
 	}
@@ -206,7 +202,7 @@ public class FloorPlan {
 							|| world.isWall(sw) && !world.isWall(ne) || !world.isWall(sw) && world.isWall(ne)) {
 						// keep corner of wall region
 					} else {
-						info[y][x] = FloorPlan.EMPTY;
+						info[y][x] = EMPTY;
 					}
 				}
 			}
