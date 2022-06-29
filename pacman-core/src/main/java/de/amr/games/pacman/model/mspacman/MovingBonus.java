@@ -141,8 +141,6 @@ public class MovingBonus extends Creature implements Bonus {
 				jumpAnimation.stop();
 				game.scores.addPoints(value);
 				logger.info("Bonus eaten: %s", this);
-				// TODO
-//				game.sounds().ifPresent(snd -> snd.play(GameSound.BONUS_EATEN));
 				GameEvents.publish(GameEventType.BONUS_GETS_EATEN, tile());
 				return;
 			}
