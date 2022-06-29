@@ -29,7 +29,7 @@ import de.amr.games.pacman.model.common.GameSound;
 /**
  * @author Armin Reichert
  */
-public interface GameSounds {
+public interface GameSoundController {
 
 	public static final int FOREVER = -1;
 

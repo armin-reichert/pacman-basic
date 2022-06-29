@@ -201,14 +201,14 @@ public enum GameState implements FsmState<GameModel> {
 				}
 				if (game.was.pacGotPower) {
 					snd.stopSirens();
-					snd.ensureLoop(GameSound.PACMAN_POWER, GameSounds.FOREVER);
+					snd.ensureLoop(GameSound.PACMAN_POWER, GameSoundController.FOREVER);
 				}
 				if (game.was.pacPowerLost) {
 					snd.stop(GameSound.PACMAN_POWER);
 					snd.ensureSirenStarted(game.huntingTimer.phase() / 2);
 				}
 				if (game.was.foodFound) {
-					snd.ensureLoop(GameSound.PACMAN_MUNCH, GameSounds.FOREVER);
+					snd.ensureLoop(GameSound.PACMAN_MUNCH, GameSoundController.FOREVER);
 				}
 				if (game.pac.starvingTicks >= 12) {
 					snd.stop(GameSound.PACMAN_MUNCH);
@@ -271,7 +271,7 @@ public enum GameState implements FsmState<GameModel> {
 			game.pac.animations().ifPresent(SpriteAnimations::reset);
 			game.ghosts().forEach(Ghost::hide);
 			game.energizerPulse.reset();
-			gameController.sounds().ifPresent(GameSounds::stopAll);
+			gameController.sounds().ifPresent(GameSoundController::stopAll);
 		}
 
 		@Override
@@ -361,7 +361,7 @@ public enum GameState implements FsmState<GameModel> {
 				anim.selectedAnimation().reset();
 			});
 			game.bonus().setInactive();
-			gameController.sounds().ifPresent(GameSounds::stopAll);
+			gameController.sounds().ifPresent(GameSoundController::stopAll);
 		}
 
 		@Override
@@ -393,7 +393,7 @@ public enum GameState implements FsmState<GameModel> {
 			game.scores.saveHiscore();
 			timer.resetSeconds(3);
 			timer.start();
-			gameController.sounds().ifPresent(GameSounds::stopAll);
+			gameController.sounds().ifPresent(GameSoundController::stopAll);
 		}
 
 		@Override

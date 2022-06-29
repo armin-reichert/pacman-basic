@@ -95,7 +95,7 @@ public class GameController {
 	private final Consumer<Creature> autopilot;
 	private Consumer<Creature> pacController;
 	private GameVariant currentGameVariant;
-	private GameSounds sounds;
+	private GameSoundController sounds;
 
 	public GameController() {
 		GameEvents.publishEventsFor(this::game);
@@ -118,11 +118,11 @@ public class GameController {
 		this.pacController = Objects.requireNonNull(pacController);
 	}
 
-	public void setSounds(GameSounds sounds) {
+	public void setSounds(GameSoundController sounds) {
 		this.sounds = sounds;
 	}
 
-	public Optional<GameSounds> sounds() {
+	public Optional<GameSoundController> sounds() {
 		return Optional.ofNullable(sounds);
 	}
 
