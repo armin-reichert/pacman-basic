@@ -34,7 +34,7 @@ import de.amr.games.pacman.lib.animation.SpriteAnimations;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.lib.fsm.FsmState;
 import de.amr.games.pacman.model.common.GameModel;
-import de.amr.games.pacman.model.common.GameModel.CheckResult;
+import de.amr.games.pacman.model.common.GameModel.WhatHappened;
 import de.amr.games.pacman.model.common.GameSound;
 import de.amr.games.pacman.model.common.GameSounds;
 import de.amr.games.pacman.model.common.GameVariant;
@@ -170,27 +170,35 @@ public enum GameState implements FsmState<GameModel> {
 
 		@Override
 		public void onUpdate(GameModel game) {
-			var checkResult = new CheckResult();
 			gameController.currentSteering().accept(game.pac);
-			game.updatePac(checkResult);
-			if (checkResult.allFoodEaten) {
+			game.pac.update(game);
+
+			var thereWas = new WhatHappened();
+			game.whatsGoingOn(thereWas);
+
+			if (thereWas.allFoodEaten) {
 				fsm.changeState(LEVEL_COMPLETE);
 				return;
 			}
-			if (checkResult.pacKilled) {
+			if (thereWas.pacKilled) {
 				fsm.changeState(PACMAN_DYING);
 				return;
 			}
-			if (checkResult.ghostsKilled) {
+			if (thereWas.ghostsKilled) {
 				fsm.changeState(GHOST_DYING);
 				return;
 			}
-			game.updateGhosts(checkResult);
+
+			game.updateGhosts(thereWas);
 			game.updateBonus();
 			game.advanceHunting();
 			game.energizerPulse.advance();
 			game.powerTimer.advance();
 
+			renderSound(game);
+		}
+
+		private void renderSound(GameModel game) {
 			game.sounds().ifPresent(snd -> {
 				if (game.huntingTimer.tick() == 0) {
 					snd.ensureSirenStarted(game.huntingTimer.phase() / 2);

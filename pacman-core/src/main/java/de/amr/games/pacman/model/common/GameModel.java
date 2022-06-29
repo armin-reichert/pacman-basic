@@ -260,7 +260,7 @@ public abstract class GameModel {
 
 	// Game logic
 
-	public static class CheckResult {
+	public static class WhatHappened {
 		public boolean allFoodEaten;
 		public boolean foodFound;
 		public boolean energizerFound;
@@ -274,7 +274,7 @@ public abstract class GameModel {
 		public Optional<Ghost> unlockedGhost;
 		public String unlockReason;
 
-		public CheckResult() {
+		public WhatHappened() {
 			clear();
 		}
 
@@ -295,67 +295,62 @@ public abstract class GameModel {
 	}
 
 	/**
-	 * Performs a complete simulation step for Pac-Man and stores the collected information in the check list.
+	 * Single simulation step for Pac-Man. Collected information is stored in check result.
 	 * 
-	 * @param result checklist with collected information
+	 * @param thereWas collected information
 	 */
-	public void updatePac(CheckResult result) {
-		pac.update(this);
-		checkPacFindsFood(result);
-		if (result.foodFound) {
-			if (result.energizerFound) {
-				ghostsKilledByEnergizer = 0;
-				eatFood(ENERGIZER_VALUE, ENERGIZER_RESTING_TICKS);
-			} else {
-				eatFood(PELLET_VALUE, PELLET_RESTING_TICKS);
-			}
-			if (result.bonusReached) {
+	public void whatsGoingOn(WhatHappened thereWas) {
+		checkFoodFound(thereWas);
+		if (thereWas.foodFound) {
+			onFoodFound(thereWas);
+			if (thereWas.bonusReached) {
 				onBonusReached();
 			}
-			if (result.allFoodEaten) {
-				return; // level complete
+			if (thereWas.allFoodEaten) {
+				return; // enter new game state
 			}
 		} else {
 			pac.starvingTicks++;
 		}
-		if (result.pacGotPower) {
+		if (thereWas.pacGotPower) {
 			onPacGetsPower();
 		}
-		if (!isPacImmune && !powerTimer.isRunning() && ghosts(HUNTING_PAC).anyMatch(pac::sameTile)) {
-			pacKilled();
-			result.pacKilled = true;
-			return; // Pac-Man killed
+		checkPacKilled(thereWas);
+		if (thereWas.pacKilled) {
+			onPacKilled();
+			return; // enter new game state
 		}
-		checkEdibleGhosts(result);
-		if (result.edibleGhosts.length > 0) {
-			killGhosts(result.edibleGhosts);
-			result.ghostsKilled = true;
-			return; // ghost killed
+		checkEdibleGhosts(thereWas);
+		if (thereWas.edibleGhosts.length > 0) {
+			killGhosts(thereWas.edibleGhosts);
+			thereWas.ghostsKilled = true;
+			return; // enter new game state
 		}
-		checkPacPower(result);
-		if (result.pacPowerFading) {
+		checkPacPower(thereWas);
+		if (thereWas.pacPowerFading) {
 			GameEvents.publish(GameEventType.PAC_STARTS_LOSING_POWER, pac.tile());
 		}
-		if (result.pacPowerLost) {
-			onPacLosesPower();
+		if (thereWas.pacPowerLost) {
+			onPacPowerLost();
 		}
 	}
 
-	public boolean isPacPowerFading() {
-		return powerTimer.isRunning() && powerTimer.remaining() < PAC_POWER_FADING_TICKS;
+	private void checkPacKilled(WhatHappened thereWas) {
+		if (!isPacImmune && !powerTimer.isRunning() && ghosts(HUNTING_PAC).anyMatch(pac::sameTile)) {
+			thereWas.pacKilled = true;
+		}
 	}
 
-	private void pacKilled() {
+	private void onPacKilled() {
 		pac.killed = true;
 		theGhosts[RED_GHOST].stopCruiseElroyMode();
-		// See Pac-Man dossier:
 		globalDotCounter = 0;
 		globalDotCounterEnabled = true;
 		logger.info("Global dot counter got reset and enabled because %s died", pac.name);
 	}
 
-	private void checkEdibleGhosts(CheckResult result) {
-		result.edibleGhosts = ghosts(FRIGHTENED).filter(pac::sameTile).toArray(Ghost[]::new);
+	private void checkEdibleGhosts(WhatHappened thereWas) {
+		thereWas.edibleGhosts = ghosts(FRIGHTENED).filter(pac::sameTile).toArray(Ghost[]::new);
 	}
 
 	/** This method is public because {@link GameController#cheatKillAllEatableGhosts()} calls it. */
@@ -385,12 +380,16 @@ public abstract class GameModel {
 		logger.info("Pac power timer started: %s", powerTimer);
 	}
 
-	private void checkPacPower(CheckResult result) {
-		result.pacPowerFading = powerTimer.remaining() == PAC_POWER_FADING_TICKS;
-		result.pacPowerLost = powerTimer.hasExpired();
+	private void checkPacPower(WhatHappened thereWas) {
+		thereWas.pacPowerFading = powerTimer.remaining() == PAC_POWER_FADING_TICKS;
+		thereWas.pacPowerLost = powerTimer.hasExpired();
 	}
 
-	private void onPacLosesPower() {
+	public boolean isPacPowerFading() {
+		return powerTimer.isRunning() && powerTimer.remaining() <= PAC_POWER_FADING_TICKS;
+	}
+
+	private void onPacPowerLost() {
 		logger.info("%s lost power, timer=%s", pac.name, powerTimer);
 		/* TODO hack: leave state EXPIRED to avoid repetitions. */
 		powerTimer.resetIndefinitely();
@@ -403,17 +402,26 @@ public abstract class GameModel {
 		GameEvents.publish(GameEventType.PAC_LOSES_POWER, pac.tile());
 	}
 
-	private void checkPacFindsFood(CheckResult result) {
+	private void checkFoodFound(WhatHappened thereWas) {
 		if (level.world.containsFood(pac.tile())) {
-			result.foodFound = true;
-			result.allFoodEaten = level.world.foodRemaining() == 1;
+			thereWas.foodFound = true;
+			thereWas.allFoodEaten = level.world.foodRemaining() == 1;
 			if (level.world.isEnergizerTile(pac.tile())) {
-				result.energizerFound = true;
+				thereWas.energizerFound = true;
 				if (level.ghostFrightenedSeconds > 0) {
-					result.pacGotPower = true;
+					thereWas.pacGotPower = true;
 				}
 			}
-			result.bonusReached = isBonusReached();
+			thereWas.bonusReached = isBonusReached();
+		}
+	}
+
+	private void onFoodFound(WhatHappened thereWas) {
+		if (thereWas.energizerFound) {
+			ghostsKilledByEnergizer = 0;
+			eatFood(ENERGIZER_VALUE, ENERGIZER_RESTING_TICKS);
+		} else {
+			eatFood(PELLET_VALUE, PELLET_RESTING_TICKS);
 		}
 	}
 
@@ -444,7 +452,7 @@ public abstract class GameModel {
 
 	// Ghosts
 
-	public void updateGhosts(CheckResult result) {
+	public void updateGhosts(WhatHappened result) {
 		checkGhostCanBeUnlocked(result);
 		result.unlockedGhost.ifPresent(ghost -> {
 			unlockGhost(ghost, result.unlockReason);
@@ -472,7 +480,7 @@ public abstract class GameModel {
 
 	// Ghost house rules, see Pac-Man dossier
 
-	private void checkGhostCanBeUnlocked(CheckResult result) {
+	private void checkGhostCanBeUnlocked(WhatHappened result) {
 		ghosts(LOCKED).findFirst().ifPresent(ghost -> {
 			if (ghost.id == RED_GHOST) {
 				result.unlockedGhost = Optional.of(theGhosts[RED_GHOST]);
