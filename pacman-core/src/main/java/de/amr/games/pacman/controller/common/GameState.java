@@ -200,6 +200,17 @@ public enum GameState implements FsmState<GameModel> {
 				if (game.huntingTimer.tick() == 0) {
 					snd.ensureSirenStarted(game.huntingTimer.phase() / 2);
 				}
+				if (game.was.pacGotPower) {
+					snd.stopSirens();
+					snd.ensureLoop(GameSound.PACMAN_POWER, GameSounds.FOREVER);
+				}
+				if (game.was.pacPowerLost) {
+					snd.stop(GameSound.PACMAN_POWER);
+					snd.ensureSirenStarted(game.huntingTimer.phase() / 2);
+				}
+				if (game.was.foodFound) {
+					snd.ensureLoop(GameSound.PACMAN_MUNCH, GameSounds.FOREVER);
+				}
 				if (game.pac.starvingTicks >= 12) {
 					snd.stop(GameSound.PACMAN_MUNCH);
 				}
@@ -323,6 +334,14 @@ public enum GameState implements FsmState<GameModel> {
 			gameController.currentSteering().accept(game.pac);
 			game.updateGhostsReturningHome();
 			game.energizerPulse.advance();
+			game.sounds().ifPresent(snd -> {
+				var ghostReturning = game.ghosts(GhostState.DEAD).filter(ghost -> ghost.killIndex == -1).findAny();
+				if (ghostReturning.isPresent()) {
+					snd.ensurePlaying(GameSound.GHOST_RETURNING);
+				} else {
+					snd.stop(GameSound.GHOST_RETURNING);
+				}
+			});
 		}
 
 		@Override

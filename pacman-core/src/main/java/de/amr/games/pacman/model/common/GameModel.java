@@ -391,10 +391,6 @@ public abstract class GameModel {
 		/* TODO hack: leave state EXPIRED to avoid repetitions. */
 		powerTimer.resetIndefinitely();
 		huntingTimer.start();
-		sounds().ifPresent(snd -> {
-			snd.stop(GameSound.PACMAN_POWER);
-			snd.ensureSirenStarted(huntingTimer.phase() / 2);
-		});
 		ghosts(FRIGHTENED).forEach(Ghost::enterHuntingState);
 		GameEvents.publish(GameEventType.PAC_LOSES_POWER, pac.tile());
 	}
@@ -429,7 +425,6 @@ public abstract class GameModel {
 		theGhosts[RED_GHOST].checkCruiseElroyStart(level);
 		updateGhostDotCounters();
 		scores.addPoints(value);
-		sounds().ifPresent(snd -> snd.ensureLoop(GameSound.PACMAN_MUNCH, GameSounds.FOREVER));
 		GameEvents.publish(GameEventType.PAC_FINDS_FOOD, pac.tile());
 	}
 
@@ -439,10 +434,6 @@ public abstract class GameModel {
 		ghosts(HUNTING_PAC).forEach(ghost -> {
 			ghost.enterFrightenedState();
 			ghost.forceTurningBack(level.world);
-		});
-		sounds().ifPresent(snd -> {
-			snd.stopSirens();
-			snd.ensureLoop(GameSound.PACMAN_POWER, GameSounds.FOREVER);
 		});
 		GameEvents.publish(GameEventType.PAC_GETS_POWER, pac.tile());
 	}
@@ -462,7 +453,6 @@ public abstract class GameModel {
 		// fire event(s) only for dead ghosts not yet returning home (killIndex >= 0)
 		ghosts(DEAD).filter(ghost -> ghost.killIndex >= 0).forEach(ghost -> {
 			ghost.killIndex = -1;
-			sounds().ifPresent(snd -> snd.ensurePlaying(GameSound.GHOST_RETURNING));
 			GameEvents.publish(new GameEvent(this, GameEventType.GHOST_STARTS_RETURNING_HOME, ghost, null));
 		});
 	}
