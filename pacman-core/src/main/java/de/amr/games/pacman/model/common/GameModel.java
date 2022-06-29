@@ -452,10 +452,11 @@ public abstract class GameModel {
 
 	// Ghosts
 
-	public void updateGhosts(WhatHappened result) {
-		checkGhostCanBeUnlocked(result);
-		result.unlockedGhost.ifPresent(ghost -> {
-			unlockGhost(ghost, result.unlockReason);
+	public void updateGhosts() {
+		WhatHappened was = new WhatHappened();
+		checkGhostCanBeUnlocked(was);
+		was.unlockedGhost.ifPresent(ghost -> {
+			unlockGhost(ghost, was.unlockReason);
 			GameEvents.publish(new GameEvent(this, GameEventType.GHOST_STARTS_LEAVING_HOUSE, ghost, ghost.tile()));
 		});
 		ghosts().forEach(ghost -> ghost.update(this));

@@ -173,29 +173,23 @@ public enum GameState implements FsmState<GameModel> {
 			gameController.currentSteering().accept(game.pac);
 			game.pac.update(game);
 
-			var thereWas = new WhatHappened();
-			game.whatsGoingOn(thereWas);
-
-			if (thereWas.allFoodEaten) {
-				fsm.changeState(LEVEL_COMPLETE);
-				return;
-			}
-			if (thereWas.pacKilled) {
-				fsm.changeState(PACMAN_DYING);
-				return;
-			}
-			if (thereWas.ghostsKilled) {
-				fsm.changeState(GHOST_DYING);
-				return;
-			}
-
-			game.updateGhosts(thereWas);
-			game.updateBonus();
-			game.advanceHunting();
-			game.energizerPulse.advance();
-			game.powerTimer.advance();
-
+			var was = new WhatHappened();
+			game.whatsGoingOn(was);
 			renderSound(game);
+
+			if (was.allFoodEaten) {
+				fsm.changeState(LEVEL_COMPLETE);
+			} else if (was.pacKilled) {
+				fsm.changeState(PACMAN_DYING);
+			} else if (was.ghostsKilled) {
+				fsm.changeState(GHOST_DYING);
+			} else {
+				game.updateGhosts();
+				game.updateBonus();
+				game.advanceHunting();
+				game.energizerPulse.advance();
+				game.powerTimer.advance();
+			}
 		}
 
 		private void renderSound(GameModel game) {
