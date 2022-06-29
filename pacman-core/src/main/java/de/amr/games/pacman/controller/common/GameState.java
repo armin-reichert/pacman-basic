@@ -35,7 +35,6 @@ import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.lib.fsm.FsmState;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameSound;
-import de.amr.games.pacman.model.common.GameSounds;
 import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.actors.AnimKeys;
 import de.amr.games.pacman.model.common.actors.Ghost;

@@ -37,7 +37,6 @@ import de.amr.games.pacman.event.GameStateChangeEvent;
 import de.amr.games.pacman.event.TriggerUIChangeEvent;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.model.common.GameModel;
-import de.amr.games.pacman.model.common.GameSounds;
 import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.actors.Creature;
 import de.amr.games.pacman.model.mspacman.MsPacManGame;
