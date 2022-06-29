@@ -137,6 +137,8 @@ public abstract class GameModel {
 	/** Number of current intermission scene in test mode. */
 	public int intermissionTestNumber;
 
+	public final WhatHappened was = new WhatHappened();
+
 	private GameSounds sounds;
 
 	protected GameModel(GameVariant gameVariant, Pac pac, Ghost... ghosts) {
@@ -275,10 +277,10 @@ public abstract class GameModel {
 		public String unlockReason;
 
 		public WhatHappened() {
-			clear();
+			nothingToRemember();
 		}
 
-		public void clear() {
+		public void nothingToRemember() {
 			allFoodEaten = false;
 			foodFound = false;
 			energizerFound = false;
@@ -294,50 +296,45 @@ public abstract class GameModel {
 		}
 	}
 
-	/**
-	 * Single simulation step for Pac-Man. Collected information is stored in check result.
-	 * 
-	 * @param thereWas collected information
-	 */
-	public void whatsGoingOn(WhatHappened thereWas) {
-		checkFoodFound(thereWas);
-		if (thereWas.foodFound) {
-			onFoodFound(thereWas);
-			if (thereWas.bonusReached) {
+	public void whatAboutFood() {
+		checkFoodFound();
+		if (was.foodFound) {
+			onFoodFound();
+			if (was.bonusReached) {
 				onBonusReached();
-			}
-			if (thereWas.allFoodEaten) {
-				return; // enter new game state
 			}
 		} else {
 			pac.starvingTicks++;
 		}
-		if (thereWas.pacGotPower) {
+	}
+
+	public void whatAboutTheGuys() {
+		if (was.pacGotPower) {
 			onPacGetsPower();
 		}
-		checkPacKilled(thereWas);
-		if (thereWas.pacKilled) {
+		checkPacKilled();
+		if (was.pacKilled) {
 			onPacKilled();
 			return; // enter new game state
 		}
-		checkEdibleGhosts(thereWas);
-		if (thereWas.edibleGhosts.length > 0) {
-			killGhosts(thereWas.edibleGhosts);
-			thereWas.ghostsKilled = true;
+		checkEdibleGhosts();
+		if (was.edibleGhosts.length > 0) {
+			killGhosts(was.edibleGhosts);
+			was.ghostsKilled = true;
 			return; // enter new game state
 		}
-		checkPacPower(thereWas);
-		if (thereWas.pacPowerFading) {
+		checkPacPower();
+		if (was.pacPowerFading) {
 			GameEvents.publish(GameEventType.PAC_STARTS_LOSING_POWER, pac.tile());
 		}
-		if (thereWas.pacPowerLost) {
+		if (was.pacPowerLost) {
 			onPacPowerLost();
 		}
 	}
 
-	private void checkPacKilled(WhatHappened thereWas) {
+	private void checkPacKilled() {
 		if (!isPacImmune && !powerTimer.isRunning() && ghosts(HUNTING_PAC).anyMatch(pac::sameTile)) {
-			thereWas.pacKilled = true;
+			was.pacKilled = true;
 		}
 	}
 
@@ -349,8 +346,8 @@ public abstract class GameModel {
 		logger.info("Global dot counter got reset and enabled because %s died", pac.name);
 	}
 
-	private void checkEdibleGhosts(WhatHappened thereWas) {
-		thereWas.edibleGhosts = ghosts(FRIGHTENED).filter(pac::sameTile).toArray(Ghost[]::new);
+	private void checkEdibleGhosts() {
+		was.edibleGhosts = ghosts(FRIGHTENED).filter(pac::sameTile).toArray(Ghost[]::new);
 	}
 
 	/** This method is public because {@link GameController#cheatKillAllEatableGhosts()} calls it. */
@@ -374,15 +371,15 @@ public abstract class GameModel {
 		logger.info("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name, ghost.tile(), points);
 	}
 
-	private void startPowerTimerSeconds(double seconds) {
+	private void startPowerTimer(double seconds) {
 		powerTimer.resetSeconds(seconds);
 		powerTimer.start();
-		logger.info("Pac power timer started: %s", powerTimer);
+		logger.info("Power timer started: %s", powerTimer);
 	}
 
-	private void checkPacPower(WhatHappened thereWas) {
-		thereWas.pacPowerFading = powerTimer.remaining() == PAC_POWER_FADING_TICKS;
-		thereWas.pacPowerLost = powerTimer.hasExpired();
+	private void checkPacPower() {
+		was.pacPowerFading = powerTimer.remaining() == PAC_POWER_FADING_TICKS;
+		was.pacPowerLost = powerTimer.hasExpired();
 	}
 
 	public boolean isPacPowerFading() {
@@ -402,22 +399,22 @@ public abstract class GameModel {
 		GameEvents.publish(GameEventType.PAC_LOSES_POWER, pac.tile());
 	}
 
-	private void checkFoodFound(WhatHappened thereWas) {
+	private void checkFoodFound() {
 		if (level.world.containsFood(pac.tile())) {
-			thereWas.foodFound = true;
-			thereWas.allFoodEaten = level.world.foodRemaining() == 1;
+			was.foodFound = true;
+			was.allFoodEaten = level.world.foodRemaining() == 1;
 			if (level.world.isEnergizerTile(pac.tile())) {
-				thereWas.energizerFound = true;
+				was.energizerFound = true;
 				if (level.ghostFrightenedSeconds > 0) {
-					thereWas.pacGotPower = true;
+					was.pacGotPower = true;
 				}
 			}
-			thereWas.bonusReached = isBonusReached();
+			was.bonusReached = isBonusReached();
 		}
 	}
 
-	private void onFoodFound(WhatHappened thereWas) {
-		if (thereWas.energizerFound) {
+	private void onFoodFound() {
+		if (was.energizerFound) {
 			ghostsKilledByEnergizer = 0;
 			eatFood(ENERGIZER_VALUE, ENERGIZER_RESTING_TICKS);
 		} else {
@@ -438,7 +435,7 @@ public abstract class GameModel {
 
 	private void onPacGetsPower() {
 		huntingTimer.stop();
-		startPowerTimerSeconds(level.ghostFrightenedSeconds);
+		startPowerTimer(level.ghostFrightenedSeconds);
 		ghosts(HUNTING_PAC).forEach(ghost -> {
 			ghost.enterFrightenedState();
 			ghost.forceTurningBack(level.world);
@@ -453,7 +450,6 @@ public abstract class GameModel {
 	// Ghosts
 
 	public void updateGhosts() {
-		WhatHappened was = new WhatHappened();
 		checkGhostCanBeUnlocked(was);
 		was.unlockedGhost.ifPresent(ghost -> {
 			unlockGhost(ghost, was.unlockReason);

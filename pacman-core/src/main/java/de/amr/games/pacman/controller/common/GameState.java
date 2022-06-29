@@ -34,7 +34,6 @@ import de.amr.games.pacman.lib.animation.SpriteAnimations;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.lib.fsm.FsmState;
 import de.amr.games.pacman.model.common.GameModel;
-import de.amr.games.pacman.model.common.GameModel.WhatHappened;
 import de.amr.games.pacman.model.common.GameSound;
 import de.amr.games.pacman.model.common.GameSounds;
 import de.amr.games.pacman.model.common.GameVariant;
@@ -170,25 +169,29 @@ public enum GameState implements FsmState<GameModel> {
 
 		@Override
 		public void onUpdate(GameModel game) {
-			gameController.currentSteering().accept(game.pac);
-			game.pac.update(game);
-
-			var was = new WhatHappened();
-			game.whatsGoingOn(was);
-			renderSound(game);
-
-			if (was.allFoodEaten) {
+			game.was.nothingToRemember();
+			game.whatAboutFood();
+			if (game.was.allFoodEaten) {
+				renderSound(game);
 				fsm.changeState(LEVEL_COMPLETE);
-			} else if (was.pacKilled) {
-				fsm.changeState(PACMAN_DYING);
-			} else if (was.ghostsKilled) {
-				fsm.changeState(GHOST_DYING);
 			} else {
-				game.updateGhosts();
-				game.updateBonus();
-				game.advanceHunting();
-				game.energizerPulse.advance();
-				game.powerTimer.advance();
+				game.whatAboutTheGuys();
+				if (game.was.pacKilled) {
+					renderSound(game);
+					fsm.changeState(PACMAN_DYING);
+				} else if (game.was.ghostsKilled) {
+					renderSound(game);
+					fsm.changeState(GHOST_DYING);
+				} else {
+					gameController.currentSteering().accept(game.pac);
+					game.pac.update(game);
+					game.updateGhosts();
+					game.updateBonus();
+					game.advanceHunting();
+					game.energizerPulse.advance();
+					game.powerTimer.advance();
+					renderSound(game);
+				}
 			}
 		}
 
