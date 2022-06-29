@@ -28,6 +28,7 @@ import static de.amr.games.pacman.controller.common.GameState.INTRO;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
@@ -36,6 +37,7 @@ import de.amr.games.pacman.event.GameStateChangeEvent;
 import de.amr.games.pacman.event.TriggerUIChangeEvent;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.model.common.GameModel;
+import de.amr.games.pacman.model.common.GameSounds;
 import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.actors.Creature;
 import de.amr.games.pacman.model.mspacman.MsPacManGame;
@@ -94,6 +96,7 @@ public class GameController {
 	private final Consumer<Creature> autopilot;
 	private Consumer<Creature> pacController;
 	private GameVariant currentGameVariant;
+	private GameSounds sounds;
 
 	public GameController() {
 		GameEvents.publishEventsFor(this::game);
@@ -114,6 +117,14 @@ public class GameController {
 
 	public void setPacSteering(Consumer<Creature> pacController) {
 		this.pacController = Objects.requireNonNull(pacController);
+	}
+
+	public void setSounds(GameSounds sounds) {
+		this.sounds = sounds;
+	}
+
+	public Optional<GameSounds> sounds() {
+		return Optional.ofNullable(sounds);
 	}
 
 	Consumer<Creature> currentSteering() {

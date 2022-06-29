@@ -53,19 +53,19 @@ import de.amr.games.pacman.model.mspacman.Flap;
  */
 public class Intermission3Controller extends Fsm<State, Context> {
 
-	public final Context $;
+	public final Context ctx;
 
 	public Intermission3Controller(GameController gameController) {
 		super(State.values());
 		for (var state : states) {
 			state.controller = this;
 		}
-		this.$ = new Context(gameController);
+		this.ctx = new Context(gameController);
 	}
 
 	@Override
 	public Context context() {
-		return $;
+		return ctx;
 	}
 
 	public static class Context {
@@ -90,30 +90,30 @@ public class Intermission3Controller extends Fsm<State, Context> {
 
 		FLAP {
 			@Override
-			public void onEnter(Context $) {
+			public void onEnter(Context ctx) {
 				timer.resetIndefinitely();
 				timer.start();
-				$.flap = new Flap();
-				$.flap.number = 3;
-				$.flap.text = "JUNIOR";
-				$.flap.setPosition(t(3), t(10));
-				$.flap.show();
-				$.pacMan = new Pac("Pac-Man");
-				$.msPacMan = new Pac("Ms. Pac-Man");
-				$.stork = new Entity();
-				$.bag = new Entity();
-				$.bagOpen = false;
+				ctx.flap = new Flap();
+				ctx.flap.number = 3;
+				ctx.flap.text = "JUNIOR";
+				ctx.flap.setPosition(t(3), t(10));
+				ctx.flap.show();
+				ctx.pacMan = new Pac("Pac-Man");
+				ctx.msPacMan = new Pac("Ms. Pac-Man");
+				ctx.stork = new Entity();
+				ctx.bag = new Entity();
+				ctx.bagOpen = false;
 			}
 
 			@Override
-			public void onUpdate(Context $) {
+			public void onUpdate(Context ctx) {
 				if (timer.atSecond(1)) {
-					$.game.sounds().ifPresent(snd -> snd.play(GameSound.INTERMISSION_3));
-					if ($.flap.animation != null) {
-						$.flap.animation.restart();
+					ctx.gameController.sounds().ifPresent(snd -> snd.play(GameSound.INTERMISSION_3));
+					if (ctx.flap.animation != null) {
+						ctx.flap.animation.restart();
 					}
 				} else if (timer.atSecond(2)) {
-					$.flap.hide();
+					ctx.flap.hide();
 				} else if (timer.atSecond(3)) {
 					controller.changeState(State.ACTION);
 				}
@@ -122,52 +122,52 @@ public class Intermission3Controller extends Fsm<State, Context> {
 
 		ACTION {
 			@Override
-			public void onEnter(Context $) {
+			public void onEnter(Context ctx) {
 				timer.resetIndefinitely();
 				timer.start();
 
-				$.pacMan.setMoveDir(Direction.RIGHT);
-				$.pacMan.setPosition(t(3), $.groundY - 4);
-				$.pacMan.show();
-				$.pacMan.animation(AnimKeys.PAC_MUNCHING).ifPresent(SpriteAnimation::reset);
+				ctx.pacMan.setMoveDir(Direction.RIGHT);
+				ctx.pacMan.setPosition(t(3), ctx.groundY - 4);
+				ctx.pacMan.show();
+				ctx.pacMan.animation(AnimKeys.PAC_MUNCHING).ifPresent(SpriteAnimation::reset);
 
-				$.msPacMan.setMoveDir(Direction.RIGHT);
-				$.msPacMan.setPosition(t(5), $.groundY - 4);
-				$.msPacMan.show();
-				$.msPacMan.animation(AnimKeys.PAC_MUNCHING).ifPresent(SpriteAnimation::reset);
+				ctx.msPacMan.setMoveDir(Direction.RIGHT);
+				ctx.msPacMan.setPosition(t(5), ctx.groundY - 4);
+				ctx.msPacMan.show();
+				ctx.msPacMan.animation(AnimKeys.PAC_MUNCHING).ifPresent(SpriteAnimation::reset);
 
-				$.stork.setPosition(t(30), t(12));
-				$.stork.setVelocity(-0.8, 0);
-				$.stork.show();
+				ctx.stork.setPosition(t(30), t(12));
+				ctx.stork.setVelocity(-0.8, 0);
+				ctx.stork.show();
 
-				$.bag.position = $.stork.position.plus(-14, 3);
-				$.bag.velocity = $.stork.velocity;
-				$.bag.acceleration = V2d.NULL;
-				$.bag.show();
-				$.bagOpen = false;
-				$.numBagBounces = 0;
+				ctx.bag.position = ctx.stork.position.plus(-14, 3);
+				ctx.bag.velocity = ctx.stork.velocity;
+				ctx.bag.acceleration = V2d.NULL;
+				ctx.bag.show();
+				ctx.bagOpen = false;
+				ctx.numBagBounces = 0;
 			}
 
 			@Override
-			public void onUpdate(Context $) {
-				$.stork.move();
-				$.bag.move();
+			public void onUpdate(Context ctx) {
+				ctx.stork.move();
+				ctx.bag.move();
 
 				// release bag from storks beak?
-				if ((int) $.stork.position.x == t(20)) {
-					$.bag.acceleration = new V2d(0, 0.04);
-					$.stork.setVelocity(-1, 0);
+				if ((int) ctx.stork.position.x == t(20)) {
+					ctx.bag.acceleration = new V2d(0, 0.04);
+					ctx.stork.setVelocity(-1, 0);
 				}
 
 				// (closed) bag reaches ground for first time?
-				if (!$.bagOpen && $.bag.position.y > $.groundY) {
-					++$.numBagBounces;
-					if ($.numBagBounces < 3) {
-						$.bag.setVelocity(-0.2f, -1f / $.numBagBounces);
-						$.bag.setPosition($.bag.position.x, $.groundY);
+				if (!ctx.bagOpen && ctx.bag.position.y > ctx.groundY) {
+					++ctx.numBagBounces;
+					if (ctx.numBagBounces < 3) {
+						ctx.bag.setVelocity(-0.2f, -1f / ctx.numBagBounces);
+						ctx.bag.setPosition(ctx.bag.position.x, ctx.groundY);
 					} else {
-						$.bagOpen = true;
-						$.bag.velocity = V2d.NULL;
+						ctx.bagOpen = true;
+						ctx.bag.velocity = V2d.NULL;
 						controller.changeState(State.DONE);
 					}
 				}
@@ -176,16 +176,16 @@ public class Intermission3Controller extends Fsm<State, Context> {
 
 		DONE {
 			@Override
-			public void onEnter(Context $) {
+			public void onEnter(Context ctx) {
 				timer.resetSeconds(3);
 				timer.start();
 			}
 
 			@Override
-			public void onUpdate(Context $) {
-				$.stork.move();
+			public void onUpdate(Context ctx) {
+				ctx.stork.move();
 				if (timer.hasExpired()) {
-					$.gameController.state().timer().expire();
+					ctx.gameController.state().timer().expire();
 				}
 			}
 		};

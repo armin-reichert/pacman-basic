@@ -53,19 +53,19 @@ import de.amr.games.pacman.model.mspacman.Flap;
  */
 public class Intermission1Controller extends Fsm<State, Context> {
 
-	public final Context $;
+	public final Context ctx;
 
 	public Intermission1Controller(GameController gameController) {
 		super(State.values());
 		for (var state : states) {
 			state.controller = this;
 		}
-		$ = new Context(gameController);
+		ctx = new Context(gameController);
 	}
 
 	@Override
 	public Context context() {
-		return $;
+		return ctx;
 	}
 
 	public static class Context {
@@ -94,46 +94,46 @@ public class Intermission1Controller extends Fsm<State, Context> {
 
 		FLAP {
 			@Override
-			public void onEnter(Context $) {
+			public void onEnter(Context ctx) {
 				timer.resetSeconds(2);
 				timer.start();
-				$.flap = new Flap();
-				$.flap.number = 1;
-				$.flap.text = "THEY MEET";
-				$.flap.setPosition(t(3), t(10));
-				$.flap.show();
+				ctx.flap = new Flap();
+				ctx.flap.number = 1;
+				ctx.flap.text = "THEY MEET";
+				ctx.flap.setPosition(t(3), t(10));
+				ctx.flap.show();
 
-				$.pacMan = new Pac("Pac-Man");
-				$.pacMan.setMoveDir(Direction.RIGHT);
-				$.pacMan.setPosition(-t(2), $.upperY);
-				$.pacMan.show();
+				ctx.pacMan = new Pac("Pac-Man");
+				ctx.pacMan.setMoveDir(Direction.RIGHT);
+				ctx.pacMan.setPosition(-t(2), ctx.upperY);
+				ctx.pacMan.show();
 
-				$.inky = new Ghost(Ghost.CYAN_GHOST, "Inky");
-				$.inky.setMoveDir(Direction.RIGHT);
-				$.inky.setWishDir(Direction.RIGHT);
-				$.inky.position = $.pacMan.position.minus(t(6), 0);
-				$.inky.show();
+				ctx.inky = new Ghost(Ghost.CYAN_GHOST, "Inky");
+				ctx.inky.setMoveDir(Direction.RIGHT);
+				ctx.inky.setWishDir(Direction.RIGHT);
+				ctx.inky.position = ctx.pacMan.position.minus(t(6), 0);
+				ctx.inky.show();
 
-				$.msPac = new Pac("Ms. Pac-Man");
-				$.msPac.setMoveDir(Direction.LEFT);
-				$.msPac.setPosition(t(30), $.lowerY);
-				$.msPac.show();
+				ctx.msPac = new Pac("Ms. Pac-Man");
+				ctx.msPac.setMoveDir(Direction.LEFT);
+				ctx.msPac.setPosition(t(30), ctx.lowerY);
+				ctx.msPac.show();
 
-				$.pinky = new Ghost(PINK_GHOST, "Pinky");
-				$.pinky.setMoveDir(Direction.LEFT);
-				$.pinky.setWishDir(Direction.LEFT);
-				$.pinky.position = $.msPac.position.plus(t(6), 0);
-				$.pinky.show();
+				ctx.pinky = new Ghost(PINK_GHOST, "Pinky");
+				ctx.pinky.setMoveDir(Direction.LEFT);
+				ctx.pinky.setWishDir(Direction.LEFT);
+				ctx.pinky.position = ctx.msPac.position.plus(t(6), 0);
+				ctx.pinky.show();
 
-				$.heart = new Entity();
+				ctx.heart = new Entity();
 			}
 
 			@Override
-			public void onUpdate(Context $) {
+			public void onUpdate(Context ctx) {
 				if (timer.atSecond(1)) {
-					$.gameController.game().sounds().ifPresent(snd -> snd.play(GameSound.INTERMISSION_1));
-					if ($.flap.animation != null) {
-						$.flap.animation.restart();
+					ctx.gameController.sounds().ifPresent(snd -> snd.play(GameSound.INTERMISSION_1));
+					if (ctx.flap.animation != null) {
+						ctx.flap.animation.restart();
 					}
 				}
 				if (timer.hasExpired()) {
@@ -144,83 +144,83 @@ public class Intermission1Controller extends Fsm<State, Context> {
 
 		CHASED_BY_GHOSTS {
 			@Override
-			public void onEnter(Context $) {
-				$.flap.hide();
-				$.pacMan.setAbsSpeed($.pacSpeedChased);
-				$.msPac.setAbsSpeed($.pacSpeedChased);
-				$.inky.setAbsSpeed($.ghostSpeedChasing);
-				$.pinky.setAbsSpeed($.ghostSpeedChasing);
+			public void onEnter(Context ctx) {
+				ctx.flap.hide();
+				ctx.pacMan.setAbsSpeed(ctx.pacSpeedChased);
+				ctx.msPac.setAbsSpeed(ctx.pacSpeedChased);
+				ctx.inky.setAbsSpeed(ctx.ghostSpeedChasing);
+				ctx.pinky.setAbsSpeed(ctx.ghostSpeedChasing);
 			}
 
 			@Override
-			public void onUpdate(Context $) {
-				if ($.inky.position.x > t(30)) {
+			public void onUpdate(Context ctx) {
+				if (ctx.inky.position.x > t(30)) {
 					controller.changeState(State.COMING_TOGETHER);
 					return;
 				}
-				$.inky.move();
-				$.pacMan.move();
-				$.pinky.move();
-				$.msPac.move();
+				ctx.inky.move();
+				ctx.pacMan.move();
+				ctx.pinky.move();
+				ctx.msPac.move();
 			}
 		},
 
 		COMING_TOGETHER {
 			@Override
-			public void onEnter(Context $) {
-				$.msPac.setPosition(t(-3), $.middleY);
-				$.msPac.setMoveDir(Direction.RIGHT);
+			public void onEnter(Context ctx) {
+				ctx.msPac.setPosition(t(-3), ctx.middleY);
+				ctx.msPac.setMoveDir(Direction.RIGHT);
 
-				$.pinky.position = $.msPac.position.minus(t(5), 0);
-				$.pinky.setMoveDir(Direction.RIGHT);
-				$.pinky.setWishDir(Direction.RIGHT);
+				ctx.pinky.position = ctx.msPac.position.minus(t(5), 0);
+				ctx.pinky.setMoveDir(Direction.RIGHT);
+				ctx.pinky.setWishDir(Direction.RIGHT);
 
-				$.pacMan.setPosition(t(31), $.middleY);
-				$.pacMan.setMoveDir(Direction.LEFT);
+				ctx.pacMan.setPosition(t(31), ctx.middleY);
+				ctx.pacMan.setMoveDir(Direction.LEFT);
 
-				$.inky.position = $.pacMan.position.plus(t(5), 0);
-				$.inky.setMoveDir(Direction.LEFT);
-				$.inky.setWishDir(Direction.LEFT);
+				ctx.inky.position = ctx.pacMan.position.plus(t(5), 0);
+				ctx.inky.setMoveDir(Direction.LEFT);
+				ctx.inky.setWishDir(Direction.LEFT);
 			}
 
 			@Override
-			public void onUpdate(Context $) {
+			public void onUpdate(Context ctx) {
 				// Pac-Man and Ms. Pac-Man reach end position?
-				if ($.pacMan.moveDir() == Direction.UP && $.pacMan.position.y < $.upperY) {
+				if (ctx.pacMan.moveDir() == Direction.UP && ctx.pacMan.position.y < ctx.upperY) {
 					controller.changeState(State.IN_HEAVEN);
 				}
 				// Pac-Man and Ms. Pac-Man meet?
-				else if ($.pacMan.moveDir() == Direction.LEFT && $.pacMan.position.x - $.msPac.position.x < t(2)) {
-					$.pacMan.setMoveDir(Direction.UP);
-					$.pacMan.setAbsSpeed($.pacSpeedRising);
-					$.msPac.setMoveDir(Direction.UP);
-					$.msPac.setAbsSpeed($.pacSpeedRising);
+				else if (ctx.pacMan.moveDir() == Direction.LEFT && ctx.pacMan.position.x - ctx.msPac.position.x < t(2)) {
+					ctx.pacMan.setMoveDir(Direction.UP);
+					ctx.pacMan.setAbsSpeed(ctx.pacSpeedRising);
+					ctx.msPac.setMoveDir(Direction.UP);
+					ctx.msPac.setAbsSpeed(ctx.pacSpeedRising);
 				}
 				// Inky and Pinky collide?
-				else if ($.inky.moveDir() == Direction.LEFT && $.inky.position.x - $.pinky.position.x < t(2)) {
-					$.inky.setMoveDir(Direction.RIGHT);
-					$.inky.setWishDir(Direction.RIGHT);
-					$.inky.setAbsSpeed($.ghostSpeedAfterColliding);
-					$.inky.velocity = $.inky.velocity.minus(0, 2.0);
-					$.inky.acceleration = new V2d(0, 0.4);
+				else if (ctx.inky.moveDir() == Direction.LEFT && ctx.inky.position.x - ctx.pinky.position.x < t(2)) {
+					ctx.inky.setMoveDir(Direction.RIGHT);
+					ctx.inky.setWishDir(Direction.RIGHT);
+					ctx.inky.setAbsSpeed(ctx.ghostSpeedAfterColliding);
+					ctx.inky.velocity = ctx.inky.velocity.minus(0, 2.0);
+					ctx.inky.acceleration = new V2d(0, 0.4);
 
-					$.pinky.setMoveDir(Direction.LEFT);
-					$.pinky.setWishDir(Direction.LEFT);
-					$.pinky.setAbsSpeed($.ghostSpeedAfterColliding);
-					$.pinky.velocity = $.pinky.velocity.minus(0, 2.0);
-					$.pinky.acceleration = new V2d(0, 0.4);
+					ctx.pinky.setMoveDir(Direction.LEFT);
+					ctx.pinky.setWishDir(Direction.LEFT);
+					ctx.pinky.setAbsSpeed(ctx.ghostSpeedAfterColliding);
+					ctx.pinky.velocity = ctx.pinky.velocity.minus(0, 2.0);
+					ctx.pinky.acceleration = new V2d(0, 0.4);
 				} else {
-					$.pacMan.move();
-					$.msPac.move();
-					$.inky.move();
-					if ($.inky.position.y > $.middleY) {
-						$.inky.setPosition($.inky.position.x, $.middleY);
-						$.inky.acceleration = V2d.NULL;
+					ctx.pacMan.move();
+					ctx.msPac.move();
+					ctx.inky.move();
+					if (ctx.inky.position.y > ctx.middleY) {
+						ctx.inky.setPosition(ctx.inky.position.x, ctx.middleY);
+						ctx.inky.acceleration = V2d.NULL;
 					}
-					$.pinky.move();
-					if ($.pinky.position.y > $.middleY) {
-						$.pinky.setPosition($.pinky.position.x, $.middleY);
-						$.pinky.acceleration = V2d.NULL;
+					ctx.pinky.move();
+					if (ctx.pinky.position.y > ctx.middleY) {
+						ctx.pinky.setPosition(ctx.pinky.position.x, ctx.middleY);
+						ctx.pinky.acceleration = V2d.NULL;
 					}
 				}
 			}
@@ -228,27 +228,27 @@ public class Intermission1Controller extends Fsm<State, Context> {
 
 		IN_HEAVEN {
 			@Override
-			public void onEnter(Context $) {
+			public void onEnter(Context ctx) {
 				timer.resetSeconds(3);
 				timer.start();
-				$.pacMan.setAbsSpeed(0);
-				$.pacMan.setMoveDir(Direction.LEFT);
-				$.pacMan.animation(AnimKeys.PAC_MUNCHING).ifPresent(SpriteAnimation::reset);
-				$.msPac.setAbsSpeed(0);
-				$.msPac.setMoveDir(Direction.RIGHT);
-				$.msPac.animation(AnimKeys.PAC_MUNCHING).ifPresent(SpriteAnimation::reset);
-				$.inky.setAbsSpeed(0);
-				$.inky.hide();
-				$.pinky.setAbsSpeed(0);
-				$.pinky.hide();
-				$.heart.setPosition(($.pacMan.position.x + $.msPac.position.x) / 2, $.pacMan.position.y - t(2));
-				$.heart.show();
+				ctx.pacMan.setAbsSpeed(0);
+				ctx.pacMan.setMoveDir(Direction.LEFT);
+				ctx.pacMan.animation(AnimKeys.PAC_MUNCHING).ifPresent(SpriteAnimation::reset);
+				ctx.msPac.setAbsSpeed(0);
+				ctx.msPac.setMoveDir(Direction.RIGHT);
+				ctx.msPac.animation(AnimKeys.PAC_MUNCHING).ifPresent(SpriteAnimation::reset);
+				ctx.inky.setAbsSpeed(0);
+				ctx.inky.hide();
+				ctx.pinky.setAbsSpeed(0);
+				ctx.pinky.hide();
+				ctx.heart.setPosition((ctx.pacMan.position.x + ctx.msPac.position.x) / 2, ctx.pacMan.position.y - t(2));
+				ctx.heart.show();
 			}
 
 			@Override
-			public void onUpdate(Context $) {
+			public void onUpdate(Context ctx) {
 				if (timer.hasExpired()) {
-					$.gameController.state().timer().expire();
+					ctx.gameController.state().timer().expire();
 				}
 			}
 		};

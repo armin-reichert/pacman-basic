@@ -35,7 +35,6 @@ import de.amr.games.pacman.lib.FixedRouteSteering;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.lib.animation.SingleSpriteAnimation;
 import de.amr.games.pacman.model.common.GameModel;
-import de.amr.games.pacman.model.common.GameSound;
 import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.BonusState;
 import de.amr.games.pacman.model.common.actors.Creature;
@@ -141,8 +140,9 @@ public class MovingBonus extends Creature implements Bonus {
 				timer = Bonus.EATEN_DURATION;
 				jumpAnimation.stop();
 				game.scores.addPoints(value);
-				game.sounds().ifPresent(snd -> snd.play(GameSound.BONUS_EATEN));
 				logger.info("Bonus eaten: %s", this);
+				// TODO
+//				game.sounds().ifPresent(snd -> snd.play(GameSound.BONUS_EATEN));
 				GameEvents.publish(GameEventType.BONUS_GETS_EATEN, tile());
 				return;
 			}

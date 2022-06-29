@@ -139,8 +139,6 @@ public abstract class GameModel {
 
 	public final WhatHappened was = new WhatHappened();
 
-	private GameSounds sounds;
-
 	protected GameModel(GameVariant gameVariant, Pac pac, Ghost... ghosts) {
 		if (ghosts.length != 4) {
 			throw new IllegalArgumentException("We need exactly 4 ghosts in order RED, PINK, CYAN, ORANGE");
@@ -161,14 +159,6 @@ public abstract class GameModel {
 	 */
 	public World world() {
 		return level.world;
-	}
-
-	public void setSounds(GameSounds sounds) {
-		this.sounds = sounds;
-	}
-
-	public Optional<GameSounds> sounds() {
-		return Optional.ofNullable(sounds);
 	}
 
 	public void reset() {

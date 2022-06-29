@@ -30,7 +30,6 @@ import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.model.common.GameModel;
-import de.amr.games.pacman.model.common.GameSound;
 import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.BonusState;
 import de.amr.games.pacman.model.common.actors.Entity;
@@ -107,7 +106,8 @@ public class StaticBonus extends Entity implements Bonus {
 				game.scores.addPoints(value());
 				state = BonusState.EATEN;
 				timer = Bonus.EATEN_DURATION;
-				game.sounds().ifPresent(snd -> snd.play(GameSound.BONUS_EATEN));
+				// TODO
+//				game.sounds().ifPresent(snd -> snd.play(GameSound.BONUS_EATEN));
 				GameEvents.publish(GameEventType.BONUS_GETS_EATEN, tile());
 				return;
 			}
