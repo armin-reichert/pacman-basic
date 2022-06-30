@@ -38,13 +38,21 @@ import de.amr.games.pacman.model.common.world.World;
  */
 public class Entity {
 
-	public boolean visible = false;
+	protected boolean visible = false;
 
-	public V2d position = V2d.NULL;
+	protected V2d position = V2d.NULL;
 
-	public V2d velocity = V2d.NULL;
+	protected V2d velocity = V2d.NULL;
 
-	public V2d acceleration = V2d.NULL;
+	protected V2d acceleration = V2d.NULL;
+
+	public boolean isVisible() {
+		return visible;
+	}
+
+	public void setVisible(boolean visible) {
+		this.visible = visible;
+	}
 
 	public void show() {
 		visible = true;
@@ -54,12 +62,36 @@ public class Entity {
 		visible = false;
 	}
 
+	public V2d getPosition() {
+		return position;
+	}
+
 	public void setPosition(double x, double y) {
 		position = new V2d(x, y);
 	}
 
 	public void setPosition(V2d position) {
 		this.position = position;
+	}
+
+	public V2d getVelocity() {
+		return velocity;
+	}
+
+	public void setVelocity(V2d velocity) {
+		this.velocity = velocity;
+	}
+
+	public void setVelocity(double vx, double vy) {
+		velocity = new V2d(vx, vy);
+	}
+
+	public void setAcceleration(V2d acceleration) {
+		this.acceleration = acceleration;
+	}
+
+	public void setAcceleration(double ax, double ay) {
+		acceleration = new V2d(ax, ay);
 	}
 
 	/**
@@ -96,10 +128,6 @@ public class Entity {
 	 */
 	public V2i tile() {
 		return World.tile(position);
-	}
-
-	public void setVelocity(double vx, double vy) {
-		velocity = new V2d(vx, vy);
 	}
 
 	/**

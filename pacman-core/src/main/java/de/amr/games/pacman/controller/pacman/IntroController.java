@@ -119,8 +119,8 @@ public class IntroController extends Fsm<State, Context> {
 			@Override
 			public void onUpdate(Context ctx) {
 				if (timer.tick() == 1) {
-					ctx.gameController.game().scores.gameScore.visible = true;
-					ctx.gameController.game().scores.highScore.visible = true;
+					ctx.gameController.game().scores.gameScore.show();
+					ctx.gameController.game().scores.highScore.show();
 				} else if (timer.tick() == 2) {
 					ctx.creditVisible = true;
 				} else if (timer.tick() == 3) {
@@ -177,7 +177,7 @@ public class IntroController extends Fsm<State, Context> {
 				for (Ghost ghost : ctx.ghosts) {
 					ghost.enterHuntingState();
 					ghost.animations().ifPresent(SpriteAnimations::ensureRunning);
-					ghost.position = ctx.pacMan.position.plus(16 * (ghost.id + 1), 0);
+					ghost.setPosition(ctx.pacMan.getPosition().plus(16 * (ghost.id + 1), 0));
 					ghost.setBothDirs(Direction.LEFT);
 					ghost.setAbsSpeed(1.2);
 					ghost.show();
@@ -187,11 +187,11 @@ public class IntroController extends Fsm<State, Context> {
 			@Override
 			public void onUpdate(Context ctx) {
 				// Pac-Man reaches the energizer
-				if (ctx.pacMan.position.x <= t(ctx.left)) {
+				if (ctx.pacMan.getPosition().x <= t(ctx.left)) {
 					controller.changeState(State.CHASING_GHOSTS);
 				}
 				// ghosts already reverse direction before Pac-man eats the energizer and turns right!
-				else if (ctx.pacMan.position.x <= t(ctx.left) + 4) {
+				else if (ctx.pacMan.getPosition().x <= t(ctx.left) + 4) {
 					for (Ghost ghost : ctx.ghosts) {
 						ghost.enterFrightenedState();
 						ghost.setBothDirs(Direction.RIGHT);

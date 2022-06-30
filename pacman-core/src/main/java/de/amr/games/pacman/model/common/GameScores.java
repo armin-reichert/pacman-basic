@@ -39,7 +39,6 @@ import org.apache.logging.log4j.Logger;
 import de.amr.games.pacman.event.GameEvent;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
-import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.model.common.actors.Score;
 
 /**
@@ -77,9 +76,9 @@ public class GameScores {
 	public GameScores(GameModel game) {
 		this.game = game;
 		gameScore = new Score("SCORE");
-		gameScore.position = new V2d(TS, TS);
+		gameScore.setPosition(TS, TS);
 		highScore = new Score("HIGH SCORE");
-		highScore.position = new V2d(16 * TS, TS);
+		highScore.setPosition(16 * TS, TS);
 	}
 
 	public void setHiscoreFile(File hiscoreFile) {

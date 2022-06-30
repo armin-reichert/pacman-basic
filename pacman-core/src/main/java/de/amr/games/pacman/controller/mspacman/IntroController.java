@@ -121,8 +121,8 @@ public class IntroController extends Fsm<IntroController.State, IntroController.
 			@Override
 			public void onUpdate(Context ctx) {
 				if (timer.tick() == 1) {
-					ctx.gameController.game().scores.gameScore.visible = true;
-					ctx.gameController.game().scores.highScore.visible = true;
+					ctx.gameController.game().scores.gameScore.show();
+					ctx.gameController.game().scores.highScore.show();
 				} else if (timer.tick() == 2) {
 					ctx.creditVisible = true;
 				} else if (timer.atSecond(1)) {
@@ -138,11 +138,11 @@ public class IntroController extends Fsm<IntroController.State, IntroController.
 				ctx.lightsTimer.advance();
 				Ghost ghost = ctx.ghosts[ctx.ghostIndex];
 				ghost.move();
-				if (ghost.moveDir() != UP && ghost.position.x <= ctx.turningPoint.x) {
+				if (ghost.moveDir() != UP && ghost.getPosition().x <= ctx.turningPoint.x) {
 					ghost.setMoveDir(UP);
 					ghost.setWishDir(UP);
 				}
-				if (ghost.position.y <= ctx.lightsTopLeft.y + ghost.id * 18) {
+				if (ghost.getPosition().y <= ctx.lightsTopLeft.y + ghost.id * 18) {
 					ghost.setAbsSpeed(0);
 					ghost.animations().ifPresent(SpriteAnimations::stop);
 					if (++ctx.ghostIndex == ctx.ghosts.length) {
@@ -157,7 +157,7 @@ public class IntroController extends Fsm<IntroController.State, IntroController.
 			public void onUpdate(Context ctx) {
 				ctx.lightsTimer.advance();
 				ctx.msPacMan.move();
-				if (ctx.msPacMan.position.x <= ctx.msPacManStopX) {
+				if (ctx.msPacMan.getPosition().x <= ctx.msPacManStopX) {
 					ctx.msPacMan.setAbsSpeed(0);
 					ctx.msPacMan.animations().ifPresent(anims -> anims.byName(AnimKeys.PAC_MUNCHING).reset());
 					controller.changeState(State.READY_TO_PLAY);
