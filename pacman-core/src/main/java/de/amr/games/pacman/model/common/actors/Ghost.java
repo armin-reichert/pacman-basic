@@ -136,16 +136,16 @@ public class Ghost extends Creature {
 
 	private void updateLockedState(GameModel game) {
 		bounce();
-		if (game.powerTimer.isRunning()) {
-			animations().ifPresent(anims -> {
+		animations().ifPresent(anims -> {
+			if (game.powerTimer.isRunning()) {
 				if (anims.selected().equals(AnimKeys.GHOST_COLOR)) {
-					anims.select(AnimKeys.GHOST_BLUE);
+					selectAnimation(AnimKeys.GHOST_BLUE);
 				}
-			});
-			updateFlashingAnimation(game);
-		} else {
-			selectAnimation(AnimKeys.GHOST_COLOR);
-		}
+				updateFlashingAnimation(game);
+			} else {
+				selectAnimation(AnimKeys.GHOST_COLOR);
+			}
+		});
 	}
 
 	private void bounce() {
@@ -157,12 +157,11 @@ public class Ghost extends Creature {
 	}
 
 	private void updateLeavingHouseState(GameModel game) {
-		var world = game.level.world;
 		boolean houseLeft = leaveHouse(world.ghostHouse());
 		if (houseLeft) {
 			state = HUNTING_PAC;
 			selectAnimation(AnimKeys.GHOST_COLOR);
-			// TODO Inky behaves differently. Why?
+			// Inky seems to behave differently. Why?
 			setBothDirs(LEFT);
 			GameEvents.publish(new GameEvent(game, GameEventType.GHOST_COMPLETES_LEAVING_HOUSE, this, tile()));
 		}
@@ -199,7 +198,6 @@ public class Ghost extends Creature {
 	 * target of Blinky and Pinky would have been affected. Who knows?
 	 */
 	private void updateHuntingState(GameModel game) {
-		var world = game.level.world;
 		if (world.isTunnel(tile())) {
 			setRelSpeed(game.level.ghostSpeedTunnel);
 		} else if (elroy == 1) {
@@ -394,10 +392,10 @@ public class Ghost extends Creature {
 	}
 
 	public void checkCruiseElroyStart(GameLevel level) {
-		if (level.world.foodRemaining() == level.elroy1DotsLeft) {
+		if (world.foodRemaining() == level.elroy1DotsLeft) {
 			elroy = 1;
 			logger.info("%s becomes Cruise Elroy 1", name);
-		} else if (level.world.foodRemaining() == level.elroy2DotsLeft) {
+		} else if (world.foodRemaining() == level.elroy2DotsLeft) {
 			elroy = 2;
 			logger.info("%s becomes Cruise Elroy 2", name);
 		}
