@@ -159,12 +159,11 @@ public class Ghost extends Creature {
 	}
 
 	private void updateLeavingHouseState(GameModel game) {
-		boolean houseLeft = leaveHouse(world.ghostHouse());
-		if (houseLeft) {
+		boolean hasLeftHouse = leaveHouse(world.ghostHouse());
+		if (hasLeftHouse) {
 			state = HUNTING_PAC;
 			selectAnimation(AnimKeys.GHOST_COLOR);
-			// Inky seems to behave differently. Why?
-			setBothDirs(LEFT);
+			setBothDirs(LEFT); // TODO not sure about this
 			GameEvents.publish(new GameEvent(game, GameEventType.GHOST_COMPLETES_LEAVING_HOUSE, this, tile()));
 		}
 	}
@@ -249,7 +248,7 @@ public class Ghost extends Creature {
 	}
 
 	private void updateFrightenedState(GameModel game) {
-		if (game.level.world.isTunnel(tile())) {
+		if (world.isTunnel(tile())) {
 			setRelSpeed(game.level.ghostSpeedTunnel);
 		} else {
 			setRelSpeed(game.level.ghostSpeedFrightened);
@@ -288,7 +287,7 @@ public class Ghost extends Creature {
 	}
 
 	private void updateEnteringHouseState(GameModel game) {
-		boolean revivalTileReached = enterHouse(game.level.world.ghostHouse());
+		boolean revivalTileReached = enterHouse(world.ghostHouse());
 		if (revivalTileReached) {
 			state = LEAVING_HOUSE;
 			setBothDirs(moveDir.opposite());
