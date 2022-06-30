@@ -59,19 +59,19 @@ import de.amr.games.pacman.model.common.actors.Pac;
  */
 public class IntroController extends Fsm<State, Context> {
 
-	public final Context $;
+	public final Context ctx;
 
 	public IntroController(GameController gameController) {
 		super(State.values());
 		for (var state : states) {
 			state.controller = this;
 		}
-		$ = new Context(gameController);
+		ctx = new Context(gameController);
 	}
 
 	@Override
 	public Context context() {
-		return $;
+		return ctx;
 	}
 
 	public static class Context {
@@ -100,15 +100,15 @@ public class IntroController extends Fsm<State, Context> {
 
 		START {
 			@Override
-			public void onEnter(Context $) {
-				$.gameController.game().scores.gameScore.showContent = false;
-				$.gameController.game().scores.highScore.showContent = true;
-				$.ghostIndex = 0;
-				Arrays.fill($.pictureVisible, false);
-				Arrays.fill($.nicknameVisible, false);
-				Arrays.fill($.characterVisible, false);
-				$.pacMan = new Pac("Pac-Man");
-				$.ghosts = new Ghost[] { //
+			public void onEnter(Context ctx) {
+				ctx.gameController.game().scores.gameScore.showContent = false;
+				ctx.gameController.game().scores.highScore.showContent = true;
+				ctx.ghostIndex = 0;
+				Arrays.fill(ctx.pictureVisible, false);
+				Arrays.fill(ctx.nicknameVisible, false);
+				Arrays.fill(ctx.characterVisible, false);
+				ctx.pacMan = new Pac("Pac-Man");
+				ctx.ghosts = new Ghost[] { //
 						new Ghost(RED_GHOST, "Blinky"), //
 						new Ghost(PINK_GHOST, "Pinky"), //
 						new Ghost(CYAN_GHOST, "Inky"), //
@@ -117,14 +117,14 @@ public class IntroController extends Fsm<State, Context> {
 			}
 
 			@Override
-			public void onUpdate(Context $) {
+			public void onUpdate(Context ctx) {
 				if (timer.tick() == 1) {
-					$.gameController.game().scores.gameScore.visible = true;
-					$.gameController.game().scores.highScore.visible = true;
+					ctx.gameController.game().scores.gameScore.visible = true;
+					ctx.gameController.game().scores.highScore.visible = true;
 				} else if (timer.tick() == 2) {
-					$.creditVisible = true;
+					ctx.creditVisible = true;
 				} else if (timer.tick() == 3) {
-					$.titleVisible = true;
+					ctx.titleVisible = true;
 				} else if (timer.atSecond(1)) {
 					controller.changeState(State.PRESENTING_GHOSTS);
 				}
@@ -133,15 +133,15 @@ public class IntroController extends Fsm<State, Context> {
 
 		PRESENTING_GHOSTS {
 			@Override
-			public void onUpdate(Context $) {
+			public void onUpdate(Context ctx) {
 				if (timer.atSecond(0)) {
-					$.pictureVisible[$.ghostIndex] = true;
+					ctx.pictureVisible[ctx.ghostIndex] = true;
 				} else if (timer.atSecond(1.0)) {
-					$.characterVisible[$.ghostIndex] = true;
+					ctx.characterVisible[ctx.ghostIndex] = true;
 				} else if (timer.atSecond(1.5)) {
-					$.nicknameVisible[$.ghostIndex] = true;
+					ctx.nicknameVisible[ctx.ghostIndex] = true;
 				} else if (timer.atSecond(2.0)) {
-					if (++$.ghostIndex < 4) {
+					if (++ctx.ghostIndex < 4) {
 						timer.resetIndefinitely();
 					}
 				} else if (timer.atSecond(2.5)) {
@@ -152,12 +152,12 @@ public class IntroController extends Fsm<State, Context> {
 
 		SHOWING_POINTS {
 			@Override
-			public void onEnter(Context $) {
-				$.blinking.stop();
+			public void onEnter(Context ctx) {
+				ctx.blinking.stop();
 			}
 
 			@Override
-			public void onUpdate(Context $) {
+			public void onUpdate(Context ctx) {
 				if (timer.atSecond(1)) {
 					controller.changeState(State.CHASING_PAC);
 				}
@@ -166,18 +166,18 @@ public class IntroController extends Fsm<State, Context> {
 
 		CHASING_PAC {
 			@Override
-			public void onEnter(Context $) {
+			public void onEnter(Context ctx) {
 				timer.resetIndefinitely();
 				timer.start();
-				$.pacMan.setPosition(t(36), t(20));
-				$.pacMan.setMoveDir(Direction.LEFT);
-				$.pacMan.setAbsSpeed(1.2);
-				$.pacMan.show();
-				$.pacMan.animations().ifPresent(SpriteAnimations::ensureRunning);
-				for (Ghost ghost : $.ghosts) {
+				ctx.pacMan.setPosition(t(36), t(20));
+				ctx.pacMan.setMoveDir(Direction.LEFT);
+				ctx.pacMan.setAbsSpeed(1.2);
+				ctx.pacMan.show();
+				ctx.pacMan.animations().ifPresent(SpriteAnimations::ensureRunning);
+				for (Ghost ghost : ctx.ghosts) {
 					ghost.enterHuntingState();
 					ghost.animations().ifPresent(SpriteAnimations::ensureRunning);
-					ghost.position = $.pacMan.position.plus(16 * (ghost.id + 1), 0);
+					ghost.position = ctx.pacMan.position.plus(16 * (ghost.id + 1), 0);
 					ghost.setBothDirs(Direction.LEFT);
 					ghost.setAbsSpeed(1.2);
 					ghost.show();
@@ -185,30 +185,30 @@ public class IntroController extends Fsm<State, Context> {
 			}
 
 			@Override
-			public void onUpdate(Context $) {
+			public void onUpdate(Context ctx) {
 				// Pac-Man reaches the energizer
-				if ($.pacMan.position.x <= t($.left)) {
+				if (ctx.pacMan.position.x <= t(ctx.left)) {
 					controller.changeState(State.CHASING_GHOSTS);
 				}
 				// ghosts already reverse direction before Pac-man eats the energizer and turns right!
-				else if ($.pacMan.position.x <= t($.left) + 4) {
-					for (Ghost ghost : $.ghosts) {
+				else if (ctx.pacMan.position.x <= t(ctx.left) + 4) {
+					for (Ghost ghost : ctx.ghosts) {
 						ghost.enterFrightenedState();
 						ghost.setBothDirs(Direction.RIGHT);
 						ghost.setAbsSpeed(0.6);
 						ghost.move();
 					}
-					$.pacMan.move();
+					ctx.pacMan.move();
 				}
 				// keep moving
 				else {
 					// wait 1 sec before blinking
 					if (timer.atSecond(1)) {
-						$.blinking.run();
+						ctx.blinking.run();
 					}
-					$.blinking.advance();
-					$.pacMan.move();
-					for (Ghost ghost : $.ghosts) {
+					ctx.blinking.advance();
+					ctx.pacMan.move();
+					for (Ghost ghost : ctx.ghosts) {
 						ghost.move();
 					}
 				}
@@ -217,42 +217,42 @@ public class IntroController extends Fsm<State, Context> {
 
 		CHASING_GHOSTS {
 			@Override
-			public void onEnter(Context $) {
+			public void onEnter(Context ctx) {
 				timer.resetIndefinitely();
 				timer.start();
-				$.ghostKilledTime = timer.tick();
-				$.pacMan.setMoveDir(Direction.RIGHT);
-				$.pacMan.setAbsSpeed(1.2);
+				ctx.ghostKilledTime = timer.tick();
+				ctx.pacMan.setMoveDir(Direction.RIGHT);
+				ctx.pacMan.setAbsSpeed(1.2);
 			}
 
 			@Override
-			public void onUpdate(Context $) {
-				if (Stream.of($.ghosts).allMatch(ghost -> ghost.is(GhostState.DEAD))) {
-					$.pacMan.hide();
+			public void onUpdate(Context ctx) {
+				if (Stream.of(ctx.ghosts).allMatch(ghost -> ghost.is(GhostState.DEAD))) {
+					ctx.pacMan.hide();
 					controller.changeState(READY_TO_PLAY);
 					return;
 				}
-				var nextVictim = Stream.of($.ghosts)//
-						.filter($.pacMan::sameTile)//
+				var nextVictim = Stream.of(ctx.ghosts)//
+						.filter(ctx.pacMan::sameTile)//
 						.filter(ghost -> ghost.is(GhostState.FRIGHTENED))//
 						.findFirst();
 				nextVictim.ifPresent(victim -> {
-					$.ghostKilledTime = timer.tick();
+					ctx.ghostKilledTime = timer.tick();
 					victim.killIndex = victim.id;
 					victim.enterDeadState();
-					$.pacMan.hide();
-					$.pacMan.setAbsSpeed(0);
-					Stream.of($.ghosts).forEach(ghost -> {
+					ctx.pacMan.hide();
+					ctx.pacMan.setAbsSpeed(0);
+					Stream.of(ctx.ghosts).forEach(ghost -> {
 						ghost.setAbsSpeed(0);
 						ghost.animation(AnimKeys.GHOST_BLUE).ifPresent(SpriteAnimation::stop);
 					});
 				});
 
 				// After 1 sec, Pac-Man and the surviving ghosts get visible again and move on
-				if (timer.tick() - $.ghostKilledTime == secToTicks(1)) {
-					$.pacMan.show();
-					$.pacMan.setAbsSpeed(1.2);
-					for (Ghost ghost : $.ghosts) {
+				if (timer.tick() - ctx.ghostKilledTime == secToTicks(1)) {
+					ctx.pacMan.show();
+					ctx.pacMan.setAbsSpeed(1.2);
+					for (Ghost ghost : ctx.ghosts) {
 						if (!ghost.is(GhostState.DEAD)) {
 							ghost.show();
 							ghost.setAbsSpeed(0.6);
@@ -262,26 +262,26 @@ public class IntroController extends Fsm<State, Context> {
 						}
 					}
 				}
-				$.pacMan.move();
-				for (Ghost ghost : $.ghosts) {
+				ctx.pacMan.move();
+				for (Ghost ghost : ctx.ghosts) {
 					ghost.move();
 				}
-				$.blinking.advance();
+				ctx.blinking.advance();
 			}
 		},
 
 		READY_TO_PLAY {
 			@Override
-			public void onUpdate(Context $) {
+			public void onUpdate(Context ctx) {
 				if (timer.atSecond(1)) {
-					$.ghosts[3].hide();
-					if ($.gameController.game().credit == 0) {
-						$.gameController.changeState(GameState.READY);
+					ctx.ghosts[3].hide();
+					if (ctx.gameController.game().credit == 0) {
+						ctx.gameController.changeState(GameState.READY);
 						return;
 					}
 				}
 				if (timer.atSecond(5)) {
-					$.gameController.restartIntro();
+					ctx.gameController.restartIntro();
 				}
 			}
 		};

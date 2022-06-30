@@ -407,7 +407,7 @@ public class MsPacManGame extends GameModel {
 		var route = computeBonusRoute(level.world);
 		if (!route.isEmpty()) {
 			var startDir = route.get(0).x == -1 ? Direction.RIGHT : Direction.LEFT;
-			movingBonus.setRoute(level.world, route, startDir);
+			movingBonus.setRoute(route, startDir);
 			movingBonus.setEdible(level.bonusSymbol, BONUS_VALUES[level.bonusSymbol], TickTimer.INDEFINITE);
 			GameEvents.publish(GameEventType.BONUS_GETS_ACTIVE, movingBonus.tile());
 		}

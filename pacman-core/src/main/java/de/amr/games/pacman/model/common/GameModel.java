@@ -217,7 +217,7 @@ public abstract class GameModel {
 		huntingTimer.advance();
 		if (huntingTimer.hasExpired()) {
 			startHuntingPhase(huntingTimer.phase() + 1);
-			ghosts().filter(ghost -> ghost.is(HUNTING_PAC, FRIGHTENED)).forEach(ghost -> ghost.forceTurningBack());
+			ghosts().filter(ghost -> ghost.is(HUNTING_PAC, FRIGHTENED)).forEach(Ghost::forceTurningBack);
 		}
 	}
 

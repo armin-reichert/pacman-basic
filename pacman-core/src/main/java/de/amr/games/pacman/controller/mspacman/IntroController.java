@@ -54,19 +54,19 @@ import de.amr.games.pacman.model.common.actors.Pac;
  */
 public class IntroController extends Fsm<IntroController.State, IntroController.Context> {
 
-	public final Context $;
+	public final Context ctx;
 
 	public IntroController(GameController gameController) {
 		super(State.values());
 		for (var state : states) {
 			state.controller = this;
 		}
-		$ = new Context(gameController);
+		ctx = new Context(gameController);
 	}
 
 	@Override
 	public Context context() {
-		return $;
+		return ctx;
 	}
 
 	public static class Context {
@@ -98,54 +98,54 @@ public class IntroController extends Fsm<IntroController.State, IntroController.
 
 		START {
 			@Override
-			public void onEnter(Context $) {
-				$.gameController.game().scores.gameScore.showContent = false;
-				$.gameController.game().scores.highScore.showContent = true;
-				$.lightsTimer.resetIndefinitely();
-				$.lightsTimer.start();
-				$.msPacMan.setMoveDir(LEFT);
-				$.msPacMan.setPosition(t(34), $.turningPoint.y);
-				$.msPacMan.setAbsSpeed($.actorSpeed);
-				$.msPacMan.show();
-				for (Ghost ghost : $.ghosts) {
+			public void onEnter(Context ctx) {
+				ctx.gameController.game().scores.gameScore.showContent = false;
+				ctx.gameController.game().scores.highScore.showContent = true;
+				ctx.lightsTimer.resetIndefinitely();
+				ctx.lightsTimer.start();
+				ctx.msPacMan.setMoveDir(LEFT);
+				ctx.msPacMan.setPosition(t(34), ctx.turningPoint.y);
+				ctx.msPacMan.setAbsSpeed(ctx.actorSpeed);
+				ctx.msPacMan.show();
+				for (Ghost ghost : ctx.ghosts) {
 					ghost.enterHuntingState();
 					ghost.setMoveDir(LEFT);
 					ghost.setWishDir(LEFT);
-					ghost.setPosition(t(34), $.turningPoint.y);
-					ghost.setAbsSpeed($.actorSpeed);
+					ghost.setPosition(t(34), ctx.turningPoint.y);
+					ghost.setAbsSpeed(ctx.actorSpeed);
 					ghost.show();
 				}
-				$.ghostIndex = 0;
+				ctx.ghostIndex = 0;
 			}
 
 			@Override
-			public void onUpdate(Context $) {
+			public void onUpdate(Context ctx) {
 				if (timer.tick() == 1) {
-					$.gameController.game().scores.gameScore.visible = true;
-					$.gameController.game().scores.highScore.visible = true;
+					ctx.gameController.game().scores.gameScore.visible = true;
+					ctx.gameController.game().scores.highScore.visible = true;
 				} else if (timer.tick() == 2) {
-					$.creditVisible = true;
+					ctx.creditVisible = true;
 				} else if (timer.atSecond(1)) {
 					controller.changeState(State.GHOSTS);
 				}
-				$.lightsTimer.advance();
+				ctx.lightsTimer.advance();
 			}
 		},
 
 		GHOSTS {
 			@Override
-			public void onUpdate(Context $) {
-				$.lightsTimer.advance();
-				Ghost ghost = $.ghosts[$.ghostIndex];
+			public void onUpdate(Context ctx) {
+				ctx.lightsTimer.advance();
+				Ghost ghost = ctx.ghosts[ctx.ghostIndex];
 				ghost.move();
-				if (ghost.moveDir() != UP && ghost.position.x <= $.turningPoint.x) {
+				if (ghost.moveDir() != UP && ghost.position.x <= ctx.turningPoint.x) {
 					ghost.setMoveDir(UP);
 					ghost.setWishDir(UP);
 				}
-				if (ghost.position.y <= $.lightsTopLeft.y + ghost.id * 18) {
+				if (ghost.position.y <= ctx.lightsTopLeft.y + ghost.id * 18) {
 					ghost.setAbsSpeed(0);
 					ghost.animations().ifPresent(SpriteAnimations::stop);
-					if (++$.ghostIndex == $.ghosts.length) {
+					if (++ctx.ghostIndex == ctx.ghosts.length) {
 						controller.changeState(State.MSPACMAN);
 					}
 				}
@@ -154,12 +154,12 @@ public class IntroController extends Fsm<IntroController.State, IntroController.
 
 		MSPACMAN {
 			@Override
-			public void onUpdate(Context $) {
-				$.lightsTimer.advance();
-				$.msPacMan.move();
-				if ($.msPacMan.position.x <= $.msPacManStopX) {
-					$.msPacMan.setAbsSpeed(0);
-					$.msPacMan.animations().ifPresent(anims -> anims.byName(AnimKeys.PAC_MUNCHING).reset());
+			public void onUpdate(Context ctx) {
+				ctx.lightsTimer.advance();
+				ctx.msPacMan.move();
+				if (ctx.msPacMan.position.x <= ctx.msPacManStopX) {
+					ctx.msPacMan.setAbsSpeed(0);
+					ctx.msPacMan.animations().ifPresent(anims -> anims.byName(AnimKeys.PAC_MUNCHING).reset());
 					controller.changeState(State.READY_TO_PLAY);
 				}
 			}
@@ -167,17 +167,17 @@ public class IntroController extends Fsm<IntroController.State, IntroController.
 
 		READY_TO_PLAY {
 			@Override
-			public void onUpdate(Context $) {
-				if (timer.atSecond(1.5) && $.gameController.game().credit == 0) {
-					$.gameController.changeState(GameState.READY);
+			public void onUpdate(Context ctx) {
+				if (timer.atSecond(1.5) && ctx.gameController.game().credit == 0) {
+					ctx.gameController.changeState(GameState.READY);
 					return;
 				}
 				if (timer.atSecond(5)) {
-					$.gameController.restartIntro();
+					ctx.gameController.restartIntro();
 					return;
 				}
-				$.lightsTimer.advance();
-				$.blinking.advance();
+				ctx.lightsTimer.advance();
+				ctx.blinking.advance();
 			}
 		};
 

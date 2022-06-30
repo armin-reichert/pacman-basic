@@ -39,7 +39,6 @@ import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.BonusState;
 import de.amr.games.pacman.model.common.actors.Creature;
 import de.amr.games.pacman.model.common.actors.Entity;
-import de.amr.games.pacman.model.common.world.World;
 
 /**
  * A bonus that tumbles through the world, starting at some portal, making one round around the ghost house and leaving
@@ -68,7 +67,7 @@ public class MovingBonus extends Creature implements Bonus {
 		setInactive();
 	}
 
-	public void setRoute(World world, List<V2i> route, Direction startDir) {
+	public void setRoute(List<V2i> route, Direction startDir) {
 		if (route == null || route.isEmpty()) {
 			throw new IllegalArgumentException("Route must contain at least one tile");
 		}

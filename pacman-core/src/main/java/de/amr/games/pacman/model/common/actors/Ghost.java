@@ -53,7 +53,6 @@ import de.amr.games.pacman.lib.animation.SpriteAnimations;
 import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.world.GhostHouse;
-import de.amr.games.pacman.model.common.world.World;
 
 /**
  * There are 4 ghosts with different "personalities".
@@ -211,16 +210,16 @@ public class Ghost extends Creature {
 			setRelSpeed(game.level.ghostSpeed);
 		}
 		if (game.variant == MS_PACMAN && game.huntingTimer.scatterPhase() == 0 && (id == RED_GHOST || id == PINK_GHOST)) {
-			roam(game);
+			roam();
 		} else if (game.huntingTimer.inChasingPhase() || elroy > 0) {
 			chase(game);
 		} else {
-			scatter(game);
+			scatter();
 		}
 		animations().ifPresent(anims -> anims.select(AnimKeys.GHOST_COLOR));
 	}
 
-	private void scatter(GameModel game) {
+	private void scatter() {
 		targetTile = scatterTile;
 		computeDirectionTowardsTarget();
 		tryMoving();
@@ -238,7 +237,7 @@ public class Ghost extends Creature {
 		tryMoving();
 	}
 
-	private void roam(GameModel game) {
+	private void roam() {
 		if (newTileEntered) {
 			Direction.shuffled().stream()//
 					.filter(dir -> dir != moveDir.opposite())//
@@ -255,13 +254,12 @@ public class Ghost extends Creature {
 		} else {
 			setRelSpeed(game.level.ghostSpeedFrightened);
 		}
-		roam(game);
+		roam();
 		updateFlashingAnimation(game);
 	}
 
 	private void updateDeadState(GameModel game) {
-		var world = game.level.world;
-		boolean houseReached = returnToHouse(world, world.ghostHouse());
+		boolean houseReached = returnToHouse(world.ghostHouse());
 		if (houseReached) {
 			setBothDirs(DOWN);
 			targetTile = revivalTile;
@@ -277,11 +275,10 @@ public class Ghost extends Creature {
 	/**
 	 * Lets the ghost return back to the ghost house entry.
 	 * 
-	 * @param world the world
 	 * @param house the ghost house
 	 * @return {@code true} if the ghost has reached the house entry before he starts to enter
 	 */
-	private boolean returnToHouse(World world, GhostHouse house) {
+	private boolean returnToHouse(GhostHouse house) {
 		if (atGhostHouseDoor(house) && moveDir != DOWN) {
 			return true;
 		}
