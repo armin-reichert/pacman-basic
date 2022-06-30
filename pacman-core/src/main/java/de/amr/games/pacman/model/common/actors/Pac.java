@@ -80,7 +80,7 @@ public class Pac extends Creature {
 	public void update(GameModel game) {
 		if (restingTicks == 0) {
 			setRelSpeed(game.powerTimer.isRunning() ? game.level.playerSpeedPowered : game.level.playerSpeed);
-			tryMoving(game.level.world);
+			tryMoving();
 			if (stuck) {
 				animation(AnimKeys.PAC_MUNCHING).ifPresent(SpriteAnimation::stop);
 			} else {

@@ -369,6 +369,8 @@ public class MsPacManGame extends GameModel {
 		level = createLevel(levelNumber);
 		levelCounter.addSymbol(level.bonusSymbol);
 		initGhosts(level);
+		pac.setWorld(level.world);
+		movingBonus.setWorld(level.world);
 		ghostsKilledByEnergizer = 0;
 		scores.gameScore.levelNumber = levelNumber;
 	}
@@ -376,6 +378,10 @@ public class MsPacManGame extends GameModel {
 	private void initGhosts(GameLevel level) {
 		ArcadeWorld world = (ArcadeWorld) level.world;
 		GhostHouse house = world.ghostHouse();
+
+		for (var ghost : theGhosts) {
+			ghost.setWorld(level.world);
+		}
 
 		theGhosts[RED_GHOST].homeTile = house.entry();
 		theGhosts[RED_GHOST].revivalTile = house.seatMiddle();

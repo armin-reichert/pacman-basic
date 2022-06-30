@@ -28,19 +28,16 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import de.amr.games.pacman.model.common.actors.Creature;
-import de.amr.games.pacman.model.common.world.World;
 
 /**
  * @author Armin Reichert
  */
 public class FixedRouteSteering implements Consumer<Creature> {
 
-	private final World world;
 	private final List<V2i> route;
 	private boolean complete;
 
-	public FixedRouteSteering(World world, List<V2i> route) {
-		this.world = world;
+	public FixedRouteSteering(List<V2i> route) {
 		this.route = route;
 		complete = false;
 	}
@@ -63,7 +60,7 @@ public class FixedRouteSteering implements Consumer<Creature> {
 			}
 			guy.targetTile = route.get(0);
 		}
-		guy.computeDirectionTowardsTarget(world);
-		guy.tryMoving(world);
+		guy.computeDirectionTowardsTarget();
+		guy.tryMoving();
 	}
 }

@@ -190,6 +190,7 @@ public class PacManGame extends GameModel {
 		level = createLevel(levelNumber);
 		levelCounter.addSymbol(level.bonusSymbol);
 		initGhosts();
+		pac.setWorld(level.world);
 		bonus.setInactive();
 		ghostsKilledByEnergizer = 0;
 		scores.gameScore.levelNumber = levelNumber;
@@ -197,6 +198,10 @@ public class PacManGame extends GameModel {
 
 	private void initGhosts() {
 		var house = world().ghostHouse();
+
+		for (var ghost : theGhosts) {
+			ghost.setWorld(level.world);
+		}
 
 		theGhosts[RED_GHOST].homeTile = house.entry();
 		theGhosts[RED_GHOST].revivalTile = house.seatMiddle();

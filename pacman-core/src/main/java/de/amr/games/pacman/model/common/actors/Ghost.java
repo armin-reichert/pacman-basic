@@ -222,8 +222,8 @@ public class Ghost extends Creature {
 
 	private void scatter(GameModel game) {
 		targetTile = scatterTile;
-		computeDirectionTowardsTarget(game.level.world);
-		tryMoving(game.level.world);
+		computeDirectionTowardsTarget();
+		tryMoving();
 	}
 
 	private void chase(GameModel game) {
@@ -234,19 +234,19 @@ public class Ghost extends Creature {
 		case ORANGE_GHOST -> tile().euclideanDistance(game.pac.tile()) < 8 ? scatterTile : game.pac.tile();
 		default -> null;
 		};
-		computeDirectionTowardsTarget(game.level.world);
-		tryMoving(game.level.world);
+		computeDirectionTowardsTarget();
+		tryMoving();
 	}
 
 	private void roam(GameModel game) {
 		if (newTileEntered) {
 			Direction.shuffled().stream()//
 					.filter(dir -> dir != moveDir.opposite())//
-					.filter(dir -> canAccessTile(game.level.world, tile().plus(dir.vec)))//
+					.filter(dir -> canAccessTile(tile().plus(dir.vec)))//
 					.findAny()//
 					.ifPresent(this::setWishDir);
 		}
-		tryMoving(game.level.world);
+		tryMoving();
 	}
 
 	private void updateFrightenedState(GameModel game) {
@@ -285,8 +285,8 @@ public class Ghost extends Creature {
 		if (atGhostHouseDoor(house) && moveDir != DOWN) {
 			return true;
 		}
-		computeDirectionTowardsTarget(world);
-		tryMoving(world);
+		computeDirectionTowardsTarget();
+		tryMoving();
 		return false;
 	}
 
@@ -384,13 +384,16 @@ public class Ghost extends Creature {
 	}
 
 	@Override
-	public boolean canAccessTile(World world, V2i tile) {
+	public boolean canAccessTile(V2i tile) {
+		if (world == null) {
+			return false;
+		}
 		V2i leftDoor = world.ghostHouse().doorTileLeft();
 		V2i rightDoor = world.ghostHouse().doorTileRight();
 		if (leftDoor.equals(tile) || rightDoor.equals(tile)) {
 			return is(ENTERING_HOUSE) || is(LEAVING_HOUSE);
 		}
-		return super.canAccessTile(world, tile);
+		return super.canAccessTile(tile);
 	}
 
 	public void checkCruiseElroyStart(GameLevel level) {

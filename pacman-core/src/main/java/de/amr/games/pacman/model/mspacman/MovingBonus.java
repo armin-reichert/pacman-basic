@@ -76,7 +76,7 @@ public class MovingBonus extends Creature implements Bonus {
 		targetTile = startTile;
 		placeAt(startTile, 0, 0);
 		setBothDirs(startDir);
-		steering = new FixedRouteSteering(world, route);
+		steering = new FixedRouteSteering(route);
 	}
 
 	@Override

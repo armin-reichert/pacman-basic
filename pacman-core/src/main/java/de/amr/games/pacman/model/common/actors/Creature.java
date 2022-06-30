@@ -31,6 +31,7 @@ import static de.amr.games.pacman.model.common.world.World.t;
 import static java.lang.Math.abs;
 
 import java.util.Objects;
+import java.util.Optional;
 
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2d;
@@ -49,6 +50,9 @@ public class Creature extends Entity {
 
 	/** Readable name, for display and logging purposes. */
 	public final String name;
+
+	/** The world where this creature moves through. */
+	protected World world;
 
 	/** The current move direction. */
 	protected Direction moveDir = RIGHT;
@@ -84,6 +88,14 @@ public class Creature extends Entity {
 		moveDir = Objects.requireNonNull(dir);
 		double speed = velocity.length();
 		velocity = new V2d(dir.vec).scaled(speed);
+	}
+
+	public Optional<World> getWorld() {
+		return Optional.ofNullable(world);
+	}
+
+	public void setWorld(World world) {
+		this.world = world;
 	}
 
 	public Direction moveDir() {
@@ -143,11 +155,13 @@ public class Creature extends Entity {
 	}
 
 	/**
-	 * @param world the world
-	 * @param tile  some tile inside or outside of the world
+	 * @param tile some tile inside or outside of the world
 	 * @return if this creature can access the given tile
 	 */
-	public boolean canAccessTile(World world, V2i tile) {
+	public boolean canAccessTile(V2i tile) {
+		if (world == null) {
+			return false;
+		}
 		if (!world.insideMap(tile)) {
 			// portal tiles are the only tiles accessible outside of the map
 			return world.isPortal(tile);
@@ -163,9 +177,9 @@ public class Creature extends Entity {
 	/**
 	 * Force turning to the opposite direction.
 	 */
-	public void forceTurningBack(World world) {
+	public void forceTurningBack() {
 		Direction oppositeDir = moveDir.opposite();
-		if (canAccessTile(world, tile().plus(oppositeDir.vec))) {
+		if (canAccessTile(tile().plus(oppositeDir.vec))) {
 			setWishDir(oppositeDir);
 			setMoveDir(oppositeDir);
 		}
@@ -177,17 +191,20 @@ public class Creature extends Entity {
 	 * First checks if the creature can teleport, then if the creature can move to its current wish direction. If this is
 	 * not possible it moves to its current move direction.
 	 */
-	public void tryMoving(World world) {
-		tryTeleport(world);
-		tryMoving(world, wishDir);
+	public void tryMoving() {
+		if (world == null) {
+			return;
+		}
+		tryTeleport();
+		tryMoving(wishDir);
 		if (stuck) {
-			tryMoving(world, moveDir);
+			tryMoving(moveDir);
 		} else {
 			moveDir = wishDir;
 		}
 	}
 
-	private void tryTeleport(World world) {
+	private void tryTeleport() {
 		if (moveDir == Direction.RIGHT) {
 			world.portals().stream() //
 					.filter(portal -> tile().equals(portal.right)) //
@@ -209,12 +226,12 @@ public class Creature extends Entity {
 	 * @param world the world where this creatures is located
 	 * @param dir   intended move direction
 	 */
-	private void tryMoving(World world, Direction dir) {
+	private void tryMoving(Direction dir) {
 		var tile = tile();
 		var offset = offset();
 		var neighborTile = tile.plus(dir.vec);
 		var speed = velocity.length();
-		var canAccessNeighborTile = canAccessTile(world, neighborTile);
+		var canAccessNeighborTile = canAccessTile(neighborTile);
 
 		stuck = true;
 
@@ -239,7 +256,7 @@ public class Creature extends Entity {
 		var newTile = World.tile(newPosition);
 
 		// avoid moving into inaccessible neighbor tile
-		if (!canAccessTile(world, newTile)) {
+		if (!canAccessTile(newTile)) {
 			return;
 		}
 
@@ -265,7 +282,10 @@ public class Creature extends Entity {
 	 * As described in the Pac-Man dossier: checks all accessible neighbor tiles in order UP, LEFT, DOWN, RIGHT and
 	 * selects the one with smallest Euclidean distance to the target tile. Reversing the move direction is not allowed.
 	 */
-	public void computeDirectionTowardsTarget(World world) {
+	public void computeDirectionTowardsTarget() {
+		if (world == null) {
+			return;
+		}
 		if (targetTile == null || world.isPortal(tile())) {
 			return;
 		}
@@ -275,7 +295,7 @@ public class Creature extends Entity {
 		double minDist = Double.MAX_VALUE;
 		for (var dir : TURN_PRIORITY) {
 			var neighbor = tile().plus(dir.vec);
-			if (!isForbiddenDirection(dir) && canAccessTile(world, neighbor)) {
+			if (!isForbiddenDirection(dir) && canAccessTile(neighbor)) {
 				double d = neighbor.euclideanDistance(targetTile);
 				if (d < minDist) {
 					minDist = d;

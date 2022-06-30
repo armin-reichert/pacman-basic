@@ -41,7 +41,6 @@ import de.amr.games.pacman.model.common.actors.BonusState;
 import de.amr.games.pacman.model.common.actors.Creature;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.GhostState;
-import de.amr.games.pacman.model.common.world.World;
 
 /**
  * Controls automatic movement of the player.
@@ -99,10 +98,6 @@ public class Autopilot implements Consumer<Creature> {
 
 	private GameModel game() {
 		return gameSupplier.get();
-	}
-
-	private World world() {
-		return game().level.world;
 	}
 
 	@Override
@@ -170,7 +165,7 @@ public class Autopilot implements Consumer<Creature> {
 			V2i foodTile = findTileFarestFromGhosts(findNearestFoodTiles());
 			game().pac.targetTile = foodTile;
 		}
-		game().pac.computeDirectionTowardsTarget(world());
+		game().pac.computeDirectionTowardsTarget();
 	}
 
 	private Ghost findHuntingGhostAhead() {
@@ -178,7 +173,7 @@ public class Autopilot implements Consumer<Creature> {
 		boolean energizerFound = false;
 		for (int i = 1; i <= AutopilotData.MAX_GHOST_AHEAD_DETECTION_DIST; ++i) {
 			V2i ahead = pacManTile.plus(game().pac.moveDir().vec.scaled(i));
-			if (!game().pac.canAccessTile(world(), ahead)) {
+			if (!game().pac.canAccessTile(ahead)) {
 				break;
 			}
 			if (game().level.world.isEnergizerTile(ahead) && !game().level.world.containsEatenFood(ahead)) {
@@ -203,7 +198,7 @@ public class Autopilot implements Consumer<Creature> {
 		V2i pacManTile = game().pac.tile();
 		for (int i = 1; i <= AutopilotData.MAX_GHOST_BEHIND_DETECTION_DIST; ++i) {
 			V2i behind = pacManTile.plus(game().pac.moveDir().opposite().vec.scaled(i));
-			if (!game().pac.canAccessTile(world(), behind)) {
+			if (!game().pac.canAccessTile(behind)) {
 				break;
 			}
 			for (Ghost ghost : game().ghosts().toArray(Ghost[]::new)) {
@@ -223,7 +218,7 @@ public class Autopilot implements Consumer<Creature> {
 				continue;
 			}
 			V2i neighbor = pacManTile.plus(dir.vec);
-			if (game().pac.canAccessTile(world(), neighbor)) {
+			if (game().pac.canAccessTile(neighbor)) {
 				escapes.add(dir);
 			}
 		}
