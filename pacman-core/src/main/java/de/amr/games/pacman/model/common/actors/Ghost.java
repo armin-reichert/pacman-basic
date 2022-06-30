@@ -33,7 +33,6 @@ import static de.amr.games.pacman.model.common.actors.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.common.actors.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.model.common.actors.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.model.common.world.World.HTS;
-import static de.amr.games.pacman.model.common.world.World.t;
 
 import java.util.List;
 import java.util.Optional;
@@ -46,6 +45,7 @@ import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.U;
+import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.lib.animation.SingleSpriteAnimation;
 import de.amr.games.pacman.lib.animation.SpriteAnimation;
@@ -81,8 +81,8 @@ public class Ghost extends Creature {
 	/** The current state of the */
 	private GhostState state;
 
-	/** The home tile of the */
-	public V2i homeTile;
+	/** The home position of the ghost. */
+	public V2d homePosition;
 
 	/** The revival tile inside the house. For the red ghost, this is different from the home location. */
 	public V2i revivalTile;
@@ -109,7 +109,6 @@ public class Ghost extends Creature {
 
 	public void reset() {
 		show();
-		placeAt(homeTile, HTS, 0);
 		setAbsSpeed(id == RED_GHOST ? 0 : 0.5);
 		setBothDirs(switch (id) {
 		case RED_GHOST -> Direction.LEFT;
@@ -117,8 +116,10 @@ public class Ghost extends Creature {
 		case CYAN_GHOST, ORANGE_GHOST -> Direction.UP;
 		default -> null;
 		});
+		position = homePosition;
 		targetTile = null;
 		stuck = false;
+		newTileEntered = true;
 		killIndex = -1;
 		enterLockedState();
 	}
@@ -149,8 +150,7 @@ public class Ghost extends Creature {
 	}
 
 	private void bounce() {
-		var zeroLevel = t(homeTile.y);
-		if (position.y <= zeroLevel - HTS || position.y >= zeroLevel + HTS) {
+		if (position.y <= homePosition.y - HTS || position.y >= homePosition.y + HTS) {
 			setBothDirs(moveDir.opposite());
 		}
 		move();
