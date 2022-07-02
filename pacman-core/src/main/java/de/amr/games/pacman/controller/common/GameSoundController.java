@@ -24,6 +24,8 @@ SOFTWARE.
 
 package de.amr.games.pacman.controller.common;
 
+import java.util.stream.Stream;
+
 import de.amr.games.pacman.model.common.GameSound;
 
 /**
@@ -37,6 +39,10 @@ public interface GameSoundController {
 	}
 
 	default void ensurePlaying(GameSound snd) {
+	}
+
+	default boolean isPlaying(GameSound sound) {
+		return false;
 	}
 
 	default void loop(GameSound snd, int repetitions) {
@@ -59,6 +65,13 @@ public interface GameSoundController {
 	}
 
 	default void ensureLoop(GameSound snd, int repetitions) {
+	}
+
+	default Stream<GameSound> sirens() {
+		return Stream.empty();
+	}
+
+	default void startSiren(int sirenIndex) {
 	}
 
 	default void stopSirens() {
