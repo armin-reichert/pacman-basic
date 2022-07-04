@@ -355,7 +355,6 @@ public enum GameState implements FsmState<GameModel> {
 		public void onEnter(GameModel game) {
 			timer.resetSeconds(5);
 			timer.start();
-			game.pac.setAbsSpeed(0);
 			game.pac.animations().ifPresent(anim -> {
 				anim.select(AnimKeys.PAC_DYING);
 				anim.selectedAnimation().reset();
@@ -367,6 +366,7 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void onUpdate(GameModel game) {
 			game.energizerPulse.advance();
+			game.pac.update(game);
 			if (timer.atSecond(1)) {
 				game.ghosts().forEach(Ghost::hide);
 			} else if (timer.atSecond(2)) {

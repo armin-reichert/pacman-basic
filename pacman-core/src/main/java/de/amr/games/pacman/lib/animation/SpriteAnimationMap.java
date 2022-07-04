@@ -30,31 +30,31 @@ import java.util.Map;
 /**
  * @author Armin Reichert
  *
- * @param <K>     key type of map e.g. the direction of an actor
+ * @param <K> key type of map e.g. the direction of an actor
  * @param <T> thing type (Image, Rectangle, ...)
  */
 public class SpriteAnimationMap<K, T> implements SpriteAnimation {
 
-	private Map<K, SingleSpriteAnimation<T>> animationMap;
+	protected Map<K, SingleSpriteAnimation<T>> map;
 
-	public SpriteAnimationMap(Map<K, SingleSpriteAnimation<T>> animationMap) {
-		this.animationMap = animationMap;
+	public SpriteAnimationMap(Map<K, SingleSpriteAnimation<T>> map) {
+		this.map = map;
 	}
 
 	public SpriteAnimationMap(int capacity) {
-		animationMap = new HashMap<>(capacity);
+		map = new HashMap<>(capacity);
 	}
 
 	public void put(K key, SingleSpriteAnimation<T> animation) {
-		animationMap.put(key, animation);
+		map.put(key, animation);
 	}
 
 	public SingleSpriteAnimation<T> get(K key) {
-		return animationMap.get(key);
+		return map.get(key);
 	}
 
 	public Collection<SingleSpriteAnimation<T>> all() {
-		return animationMap.values();
+		return map.values();
 	}
 
 	@Override

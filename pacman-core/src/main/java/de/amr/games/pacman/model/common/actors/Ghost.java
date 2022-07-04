@@ -133,6 +133,7 @@ public class Ghost extends Creature {
 		case DEAD -> updateDeadState(game);
 		case ENTERING_HOUSE -> updateEnteringHouseState(game);
 		}
+		animations().map(SpriteAnimations::selectedAnimation).ifPresent(SpriteAnimation::advance);
 	}
 
 	private void updateLockedState(GameModel game) {

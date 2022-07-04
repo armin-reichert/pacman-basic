@@ -78,7 +78,9 @@ public class Pac extends Creature {
 	}
 
 	public void update(GameModel game) {
-		if (restingTicks == 0) {
+		if (killed) {
+			setRelSpeed(0);
+		} else if (restingTicks == 0) {
 			setRelSpeed(game.powerTimer.isRunning() ? game.level.playerSpeedPowered : game.level.playerSpeed);
 			tryMoving();
 			if (stuck) {
@@ -89,6 +91,7 @@ public class Pac extends Creature {
 		} else {
 			--restingTicks;
 		}
+		animations().map(SpriteAnimations::selectedAnimation).ifPresent(SpriteAnimation::advance);
 	}
 
 	// Animations
