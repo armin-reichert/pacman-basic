@@ -28,7 +28,6 @@ import static de.amr.games.pacman.model.common.world.World.HTS;
 
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.animation.SpriteAnimation;
-import de.amr.games.pacman.lib.animation.SpriteAnimations;
 import de.amr.games.pacman.model.common.GameModel;
 
 /**
@@ -87,7 +86,7 @@ public class Pac extends Creature {
 		} else {
 			--restingTicks;
 		}
-		animations().map(SpriteAnimations::selectedAnimation).ifPresent(SpriteAnimation::advance);
+		animate();
 	}
 
 }

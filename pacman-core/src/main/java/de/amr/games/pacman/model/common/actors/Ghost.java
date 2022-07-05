@@ -47,8 +47,6 @@ import de.amr.games.pacman.lib.U;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.lib.animation.SingleSpriteAnimation;
-import de.amr.games.pacman.lib.animation.SpriteAnimation;
-import de.amr.games.pacman.lib.animation.SpriteAnimations;
 import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.world.GhostHouse;
@@ -132,7 +130,7 @@ public class Ghost extends Creature {
 		case DEAD -> updateDeadState(game);
 		case ENTERING_HOUSE -> updateEnteringHouseState(game);
 		}
-		animations().map(SpriteAnimations::selectedAnimation).ifPresent(SpriteAnimation::advance);
+		animate();
 	}
 
 	private void updateLockedState(GameModel game) {
