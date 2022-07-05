@@ -59,7 +59,7 @@ public class Pac extends Creature {
 
 	public void reset() {
 		show();
-		placeAt(v(13, 26), HTS, 0);
+		placeAtTile(v(13, 26), HTS, 0);
 		setBothDirs(Direction.LEFT);
 		setAbsSpeed(0);
 		targetTile = null; // used in autopilot mode

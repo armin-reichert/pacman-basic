@@ -73,9 +73,8 @@ public class Creature extends Entity {
 		this.name = name;
 	}
 
-	@Override
-	public void placeAt(V2i tile, double offsetX, double offsetY) {
-		super.placeAt(tile, offsetX, offsetY);
+	public void placeAtTile(V2i tile, double offsetX, double offsetY) {
+		setPosition(t(tile.x) + offsetX, t(tile.y) + offsetY);
 		newTileEntered = true;
 	}
 
@@ -209,12 +208,12 @@ public class Creature extends Entity {
 			world.portals().stream() //
 					.filter(portal -> tile().equals(portal.right)) //
 					.findFirst() //
-					.ifPresent(portal -> placeAt(portal.left, 0, 0));
+					.ifPresent(portal -> placeAtTile(portal.left, 0, 0));
 		} else if (moveDir == Direction.LEFT) {
 			world.portals().stream() //
 					.filter(portal -> tile().equals(portal.left)) //
 					.findFirst() //
-					.ifPresent(portal -> placeAt(portal.right, 0, 0));
+					.ifPresent(portal -> placeAtTile(portal.right, 0, 0));
 		}
 	}
 
