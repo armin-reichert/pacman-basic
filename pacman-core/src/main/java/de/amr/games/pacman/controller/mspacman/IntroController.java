@@ -106,6 +106,7 @@ public class IntroController extends Fsm<IntroController.State, IntroController.
 				ctx.msPacMan.setMoveDir(LEFT);
 				ctx.msPacMan.setPosition(t(34), ctx.turningPoint.y);
 				ctx.msPacMan.setAbsSpeed(ctx.actorSpeed);
+				ctx.msPacMan.selectAnimation(AnimKeys.PAC_MUNCHING);
 				ctx.msPacMan.show();
 				for (Ghost ghost : ctx.ghosts) {
 					ghost.enterHuntingState();
@@ -138,6 +139,7 @@ public class IntroController extends Fsm<IntroController.State, IntroController.
 				ctx.lightsTimer.advance();
 				Ghost ghost = ctx.ghosts[ctx.ghostIndex];
 				ghost.move();
+				ghost.animate();
 				if (ghost.moveDir() != UP && ghost.getPosition().x <= ctx.turningPoint.x) {
 					ghost.setMoveDir(UP);
 					ghost.setWishDir(UP);
@@ -157,6 +159,7 @@ public class IntroController extends Fsm<IntroController.State, IntroController.
 			public void onUpdate(Context ctx) {
 				ctx.lightsTimer.advance();
 				ctx.msPacMan.move();
+				ctx.msPacMan.animate();
 				if (ctx.msPacMan.getPosition().x <= ctx.msPacManStopX) {
 					ctx.msPacMan.setAbsSpeed(0);
 					ctx.msPacMan.animations().ifPresent(anims -> anims.byName(AnimKeys.PAC_MUNCHING).reset());

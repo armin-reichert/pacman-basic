@@ -65,7 +65,7 @@ public class DirectionAnimationMap implements SpriteAnimation {
 
 	@Override
 	public void ensureRunning() {
-		currentAnimation().ensureRunning();
+		map.values().forEach(SpriteAnimation::ensureRunning);
 	}
 
 	@Override
@@ -85,12 +85,12 @@ public class DirectionAnimationMap implements SpriteAnimation {
 
 	@Override
 	public void reset() {
-		currentAnimation().reset();
+		map.values().forEach(SpriteAnimation::reset);
 	}
 
 	@Override
 	public void restart() {
-		currentAnimation().restart();
+		map.values().forEach(SpriteAnimation::restart);
 	}
 
 	@Override
@@ -100,7 +100,7 @@ public class DirectionAnimationMap implements SpriteAnimation {
 
 	@Override
 	public void run() {
-		currentAnimation().run();
+		map.values().forEach(SpriteAnimation::run);
 	}
 
 	@Override
@@ -110,6 +110,6 @@ public class DirectionAnimationMap implements SpriteAnimation {
 
 	@Override
 	public void stop() {
-		currentAnimation().stop();
+		map.values().forEach(SpriteAnimation::stop);
 	}
 }
