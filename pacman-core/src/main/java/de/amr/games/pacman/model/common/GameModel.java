@@ -43,7 +43,7 @@ import de.amr.games.pacman.event.GameEvent;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.TickTimer;
-import de.amr.games.pacman.lib.animation.SingleSpriteAnimation;
+import de.amr.games.pacman.lib.animation.SingleEntityAnimation;
 import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.GhostState;
@@ -123,7 +123,7 @@ public abstract class GameModel {
 	public final LevelCounter levelCounter = new LevelCounter(7);
 
 	/** Energizer animation. */
-	public final SingleSpriteAnimation<Boolean> energizerPulse = SingleSpriteAnimation.pulse(10);
+	public final SingleEntityAnimation<Boolean> energizerPulse = SingleEntityAnimation.pulse(10);
 
 	/** Game score and high score. */
 	public final GameScores scores = new GameScores(this);

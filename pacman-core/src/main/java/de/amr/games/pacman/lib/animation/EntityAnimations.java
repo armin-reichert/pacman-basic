@@ -30,23 +30,21 @@ import java.util.stream.Stream;
 
 /**
  * @author Armin Reichert
- * 
- * @param <E> entity type for which these animations are defined
  */
-public abstract class SpriteAnimations {
+public abstract class EntityAnimations {
 
-	protected Map<String, SpriteAnimation> animationsByName;
+	protected Map<String, EntityAnimation> animationsByName;
 	protected String selected;
 
-	public final SpriteAnimation byName(String name) {
+	public final EntityAnimation byName(String name) {
 		return animationsByName.get(name);
 	}
 
-	public final Stream<SpriteAnimation> all() {
+	public final Stream<EntityAnimation> all() {
 		return animationsByName.values().stream();
 	}
 
-	public void put(String name, SpriteAnimation animation) {
+	public void put(String name, EntityAnimation animation) {
 		animationsByName.put(name, animation);
 	}
 
@@ -58,27 +56,27 @@ public abstract class SpriteAnimations {
 		return selected;
 	}
 
-	public SpriteAnimation selectedAnimation() {
+	public EntityAnimation selectedAnimation() {
 		return byName(selected);
 	}
 
 	public void reset() {
-		all().forEach(SpriteAnimation::reset);
+		all().forEach(EntityAnimation::reset);
 	}
 
 	public void stop() {
-		all().forEach(SpriteAnimation::stop);
+		all().forEach(EntityAnimation::stop);
 	}
 
 	public void run() {
-		all().forEach(SpriteAnimation::run);
+		all().forEach(EntityAnimation::run);
 	}
 
 	public void ensureRunning() {
-		all().forEach(SpriteAnimation::ensureRunning);
+		all().forEach(EntityAnimation::ensureRunning);
 	}
 
 	public void restart() {
-		all().forEach(SpriteAnimation::restart);
+		all().forEach(EntityAnimation::restart);
 	}
 }

@@ -30,8 +30,8 @@ import java.util.Optional;
 
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.lib.animation.SpriteAnimation;
-import de.amr.games.pacman.lib.animation.SpriteAnimations;
+import de.amr.games.pacman.lib.animation.EntityAnimation;
+import de.amr.games.pacman.lib.animation.EntityAnimations;
 import de.amr.games.pacman.model.common.world.World;
 
 /**
@@ -129,17 +129,17 @@ public class Entity {
 
 	// Animations
 
-	private SpriteAnimations animations;
+	private EntityAnimations animations;
 
-	public void setAnimations(SpriteAnimations animations) {
+	public void setAnimations(EntityAnimations animations) {
 		this.animations = animations;
 	}
 
-	public Optional<SpriteAnimations> animations() {
+	public Optional<EntityAnimations> animations() {
 		return Optional.ofNullable(animations);
 	}
 
-	public Optional<SpriteAnimation> animation(String key) {
+	public Optional<EntityAnimation> animation(String key) {
 		return animations().map(anim -> anim.byName(key));
 	}
 
@@ -157,6 +157,6 @@ public class Entity {
 	}
 
 	public void animate() {
-		animations().map(SpriteAnimations::selectedAnimation).ifPresent(SpriteAnimation::advance);
+		animations().map(EntityAnimations::selectedAnimation).ifPresent(EntityAnimation::advance);
 	}
 }

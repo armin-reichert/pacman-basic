@@ -37,8 +37,8 @@ import de.amr.games.pacman.controller.common.GameController;
 import de.amr.games.pacman.controller.common.GameState;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.lib.animation.SingleSpriteAnimation;
-import de.amr.games.pacman.lib.animation.SpriteAnimations;
+import de.amr.games.pacman.lib.animation.SingleEntityAnimation;
+import de.amr.games.pacman.lib.animation.EntityAnimations;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.lib.fsm.FsmState;
 import de.amr.games.pacman.model.common.actors.AnimKeys;
@@ -76,7 +76,7 @@ public class IntroController extends Fsm<IntroController.State, IntroController.
 		public final V2i titlePosition = v(t(10), t(8));
 		public final V2i turningPoint = v(t(6), t(20)).plus(0, HTS);
 		public final int msPacManStopX = t(15);
-		public final SingleSpriteAnimation<Boolean> blinking = SingleSpriteAnimation.pulse(30);
+		public final SingleEntityAnimation<Boolean> blinking = SingleEntityAnimation.pulse(30);
 		public final TickTimer lightsTimer = new TickTimer("lights-timer");
 		public final Pac msPacMan = new Pac("Ms. Pac-Man");
 		public final Ghost[] ghosts = new Ghost[] { //
@@ -146,7 +146,7 @@ public class IntroController extends Fsm<IntroController.State, IntroController.
 				}
 				if (ghost.getPosition().y <= ctx.lightsTopLeft.y + ghost.id * 18) {
 					ghost.setAbsSpeed(0);
-					ghost.animations().ifPresent(SpriteAnimations::stop);
+					ghost.animations().ifPresent(EntityAnimations::stop);
 					if (++ctx.ghostIndex == ctx.ghosts.length) {
 						controller.changeState(State.MSPACMAN);
 					}

@@ -28,8 +28,8 @@ import static de.amr.games.pacman.lib.V2i.v;
 import java.util.Optional;
 
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.lib.animation.SingleSpriteAnimation;
-import de.amr.games.pacman.lib.animation.SpriteAnimation;
+import de.amr.games.pacman.lib.animation.SingleEntityAnimation;
+import de.amr.games.pacman.lib.animation.EntityAnimation;
 
 /**
  * Implements all stuff that is common to the original Arcade worlds like ghost house position, ghost and player start
@@ -49,7 +49,7 @@ public class ArcadeWorld extends MapBasedWorld {
 	public final V2i rightUpperTarget = v(25, 0);
 	public final ArcadeGhostHouse house = new ArcadeGhostHouse();
 
-	private SingleSpriteAnimation<?> flashingAnimation;
+	private SingleEntityAnimation<?> flashingAnimation;
 
 	public ArcadeWorld(byte[][] mapData) {
 		super(mapData, TILES_X, TILES_Y);
@@ -61,11 +61,11 @@ public class ArcadeWorld extends MapBasedWorld {
 		return house;
 	}
 
-	public Optional<SpriteAnimation> flashingAnimation() {
+	public Optional<EntityAnimation> flashingAnimation() {
 		return Optional.ofNullable(flashingAnimation);
 	}
 
-	public void setFlashingAnimation(SingleSpriteAnimation<?> mazeFlashingAnimation) {
+	public void setFlashingAnimation(SingleEntityAnimation<?> mazeFlashingAnimation) {
 		this.flashingAnimation = mazeFlashingAnimation;
 	}
 }

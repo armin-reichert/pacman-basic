@@ -29,8 +29,8 @@ import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.event.GameStateChangeEvent;
 import de.amr.games.pacman.lib.TickTimer;
-import de.amr.games.pacman.lib.animation.SpriteAnimation;
-import de.amr.games.pacman.lib.animation.SpriteAnimations;
+import de.amr.games.pacman.lib.animation.EntityAnimation;
+import de.amr.games.pacman.lib.animation.EntityAnimations;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.lib.fsm.FsmState;
 import de.amr.games.pacman.model.common.GameModel;
@@ -160,8 +160,8 @@ public enum GameState implements FsmState<GameModel> {
 	HUNTING {
 		@Override
 		public void onEnter(GameModel game) {
-			game.pac.animation(AnimKeys.PAC_MUNCHING).ifPresent(SpriteAnimation::ensureRunning);
-			game.ghosts().forEach(ghost -> ghost.animations().ifPresent(SpriteAnimations::ensureRunning));
+			game.pac.animation(AnimKeys.PAC_MUNCHING).ifPresent(EntityAnimation::ensureRunning);
+			game.ghosts().forEach(ghost -> ghost.animations().ifPresent(EntityAnimations::ensureRunning));
 			game.energizerPulse.restart();
 			gameController.sounds().ifPresent(snd -> snd.ensureSirenStarted(game.huntingTimer.phase() / 2));
 		}
@@ -268,7 +268,7 @@ public enum GameState implements FsmState<GameModel> {
 			game.huntingTimer.stop();
 			game.bonus().setInactive();
 			game.pac.setAbsSpeed(0);
-			game.pac.animations().ifPresent(SpriteAnimations::reset);
+			game.pac.animations().ifPresent(EntityAnimations::reset);
 			game.ghosts().forEach(Ghost::hide);
 			game.energizerPulse.reset();
 			gameController.sounds().ifPresent(GameSoundController::stopAll);
@@ -291,7 +291,7 @@ public enum GameState implements FsmState<GameModel> {
 					fsm.changeState(LEVEL_STARTING);
 				}
 			} else {
-				world.flashingAnimation().ifPresent(SpriteAnimation::advance);
+				world.flashingAnimation().ifPresent(EntityAnimation::advance);
 			}
 		}
 	},
@@ -370,7 +370,7 @@ public enum GameState implements FsmState<GameModel> {
 			if (timer.atSecond(1)) {
 				game.ghosts().forEach(Ghost::hide);
 			} else if (timer.atSecond(2)) {
-				game.pac.animation(AnimKeys.PAC_DYING).ifPresent(SpriteAnimation::restart);
+				game.pac.animation(AnimKeys.PAC_DYING).ifPresent(EntityAnimation::restart);
 				gameController.sounds().ifPresent(snd -> snd.play(GameSound.PACMAN_DEATH));
 			} else if (timer.atSecond(4)) {
 				if (--game.lives == 0) {

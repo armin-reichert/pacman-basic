@@ -39,8 +39,8 @@ import de.amr.games.pacman.controller.pacman.IntroController.Context;
 import de.amr.games.pacman.controller.pacman.IntroController.State;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
-import de.amr.games.pacman.lib.animation.SingleSpriteAnimation;
-import de.amr.games.pacman.lib.animation.SpriteAnimation;
+import de.amr.games.pacman.lib.animation.SingleEntityAnimation;
+import de.amr.games.pacman.lib.animation.EntityAnimation;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.lib.fsm.FsmState;
 import de.amr.games.pacman.model.common.actors.AnimKeys;
@@ -75,7 +75,7 @@ public class IntroController extends Fsm<State, Context> {
 
 	public static class Context {
 		public int left = 4;
-		public SingleSpriteAnimation<Boolean> blinking = SingleSpriteAnimation.pulse(10);
+		public SingleEntityAnimation<Boolean> blinking = SingleEntityAnimation.pulse(10);
 		public String[] nicknames = { "Blinky", "Pinky", "Inky", "Clyde" };
 		public String[] characters = { "SHADOW", "SPEEDY", "BASHFUL", "POKEY" };
 		public boolean[] pictureVisible = { false, false, false, false };
@@ -247,7 +247,7 @@ public class IntroController extends Fsm<State, Context> {
 					ctx.pacMan.setAbsSpeed(0);
 					Stream.of(ctx.ghosts).forEach(ghost -> {
 						ghost.setAbsSpeed(0);
-						ghost.animation(AnimKeys.GHOST_BLUE).ifPresent(SpriteAnimation::stop);
+						ghost.animation(AnimKeys.GHOST_BLUE).ifPresent(EntityAnimation::stop);
 					});
 				});
 
@@ -259,7 +259,7 @@ public class IntroController extends Fsm<State, Context> {
 						if (!ghost.is(GhostState.DEAD)) {
 							ghost.show();
 							ghost.setAbsSpeed(0.6);
-							ghost.animation(AnimKeys.GHOST_BLUE).ifPresent(SpriteAnimation::run);
+							ghost.animation(AnimKeys.GHOST_BLUE).ifPresent(EntityAnimation::run);
 						} else {
 							ghost.hide();
 						}

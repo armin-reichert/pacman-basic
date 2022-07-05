@@ -46,7 +46,7 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.U;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.lib.animation.SingleSpriteAnimation;
+import de.amr.games.pacman.lib.animation.SingleEntityAnimation;
 import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.world.GhostHouse;
@@ -431,7 +431,7 @@ public class Ghost extends Creature {
 				anim.selectedAnimation().ensureRunning();
 			} else {
 				anim.select(AnimKeys.GHOST_FLASHING);
-				var flashing = (SingleSpriteAnimation<?>) anim.selectedAnimation();
+				var flashing = (SingleEntityAnimation<?>) anim.selectedAnimation();
 				long frameTicks = GameModel.PAC_POWER_FADING_TICKS / (numFlashes * flashing.numFrames());
 				flashing.frameDuration(frameTicks);
 				flashing.repetions(numFlashes);
