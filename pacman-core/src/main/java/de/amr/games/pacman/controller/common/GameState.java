@@ -160,8 +160,8 @@ public enum GameState implements FsmState<GameModel> {
 	HUNTING {
 		@Override
 		public void onEnter(GameModel game) {
-			game.pac.animation(AnimKeys.PAC_MUNCHING).ifPresent(EntityAnimation::ensureRunning);
-			game.ghosts().forEach(ghost -> ghost.animations().ifPresent(EntityAnimations::ensureRunning));
+			game.pac.selectAnimation(AnimKeys.PAC_MUNCHING);
+			game.ghosts().forEach(ghost -> ghost.selectAnimation(AnimKeys.GHOST_COLOR));
 			game.energizerPulse.restart();
 			gameController.sounds().ifPresent(snd -> snd.ensureSirenStarted(game.huntingTimer.phase() / 2));
 		}
