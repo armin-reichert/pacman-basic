@@ -87,5 +87,4 @@ public class Pac extends Creature {
 		}
 		animate();
 	}
-
 }
