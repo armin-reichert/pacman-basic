@@ -34,6 +34,7 @@ import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.lib.fsm.FsmState;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameSound;
+import de.amr.games.pacman.model.common.actors.AnimKeys;
 import de.amr.games.pacman.model.common.actors.Pac;
 import de.amr.games.pacman.model.mspacman.Flap;
 
@@ -92,8 +93,10 @@ public class Intermission2Controller extends Fsm<State, Context> {
 				ctx.flap.show();
 				ctx.pacMan = new Pac("Pac-Man");
 				ctx.pacMan.setMoveDir(Direction.RIGHT);
+				ctx.pacMan.selectAnimation(AnimKeys.PAC_MUNCHING);
 				ctx.msPacMan = new Pac("Ms. Pac-Man");
 				ctx.msPacMan.setMoveDir(Direction.RIGHT);
+				ctx.msPacMan.selectAnimation(AnimKeys.GHOST_COLOR);
 			}
 
 			@Override
@@ -162,7 +165,9 @@ public class Intermission2Controller extends Fsm<State, Context> {
 					return;
 				}
 				ctx.pacMan.move();
+				ctx.pacMan.animate();
 				ctx.msPacMan.move();
+				ctx.msPacMan.animate();
 			}
 		};
 

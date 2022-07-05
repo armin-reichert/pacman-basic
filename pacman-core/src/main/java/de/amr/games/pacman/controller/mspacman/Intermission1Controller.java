@@ -106,23 +106,27 @@ public class Intermission1Controller extends Fsm<State, Context> {
 				ctx.pacMan = new Pac("Pac-Man");
 				ctx.pacMan.setMoveDir(Direction.RIGHT);
 				ctx.pacMan.setPosition(-t(2), ctx.upperY);
+				ctx.pacMan.selectAnimation(AnimKeys.PAC_MUNCHING);
 				ctx.pacMan.show();
 
 				ctx.inky = new Ghost(Ghost.CYAN_GHOST, "Inky");
 				ctx.inky.setMoveDir(Direction.RIGHT);
 				ctx.inky.setWishDir(Direction.RIGHT);
 				ctx.inky.setPosition(ctx.pacMan.getPosition().minus(t(6), 0));
+				ctx.inky.selectAnimation(AnimKeys.GHOST_COLOR);
 				ctx.inky.show();
 
 				ctx.msPac = new Pac("Ms. Pac-Man");
 				ctx.msPac.setMoveDir(Direction.LEFT);
 				ctx.msPac.setPosition(t(30), ctx.lowerY);
+				ctx.msPac.selectAnimation(AnimKeys.PAC_MUNCHING);
 				ctx.msPac.show();
 
 				ctx.pinky = new Ghost(PINK_GHOST, "Pinky");
 				ctx.pinky.setMoveDir(Direction.LEFT);
 				ctx.pinky.setWishDir(Direction.LEFT);
 				ctx.pinky.setPosition(ctx.msPac.getPosition().plus(t(6), 0));
+				ctx.pinky.selectAnimation(AnimKeys.GHOST_COLOR);
 				ctx.pinky.show();
 
 				ctx.heart = new Entity();
@@ -159,9 +163,13 @@ public class Intermission1Controller extends Fsm<State, Context> {
 					return;
 				}
 				ctx.inky.move();
+				ctx.inky.animate();
 				ctx.pacMan.move();
+				ctx.pacMan.animate();
 				ctx.pinky.move();
+				ctx.pinky.animate();
 				ctx.msPac.move();
+				ctx.msPac.animate();
 			}
 		},
 
@@ -212,13 +220,17 @@ public class Intermission1Controller extends Fsm<State, Context> {
 					ctx.pinky.setAcceleration(0, 0.4);
 				} else {
 					ctx.pacMan.move();
+					ctx.pacMan.animate();
 					ctx.msPac.move();
+					ctx.msPac.animate();
 					ctx.inky.move();
+					ctx.inky.animate();
 					if (ctx.inky.getPosition().y > ctx.middleY) {
 						ctx.inky.setPosition(ctx.inky.getPosition().x, ctx.middleY);
 						ctx.inky.setAcceleration(V2d.NULL);
 					}
 					ctx.pinky.move();
+					ctx.pinky.animate();
 					if (ctx.pinky.getPosition().y > ctx.middleY) {
 						ctx.pinky.setPosition(ctx.pinky.getPosition().x, ctx.middleY);
 						ctx.pinky.setAcceleration(V2d.NULL);
