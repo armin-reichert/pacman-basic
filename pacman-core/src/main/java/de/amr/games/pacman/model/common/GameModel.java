@@ -412,10 +412,22 @@ public abstract class GameModel {
 		pac.setStarvingTicks(0);
 		pac.rest(restingTicks);
 		level.world.removeFood(pac.tile());
-		theGhosts[RED_GHOST].checkCruiseElroyStart(level);
+		checkIfRedGhostBecomesCruiseElroy();
 		updateGhostDotCounters();
 		scores.addPoints(value);
 		GameEvents.publish(GameEventType.PAC_FINDS_FOOD, pac.tile());
+	}
+
+	private void checkIfRedGhostBecomesCruiseElroy() {
+		var redGhost = theGhosts[RED_GHOST];
+		var foodRemaining = world().foodRemaining();
+		if (foodRemaining == level.elroy1DotsLeft) {
+			redGhost.elroy = 1;
+			logger.info("%s becomes Cruise Elroy 1", redGhost.name);
+		} else if (foodRemaining == level.elroy2DotsLeft) {
+			redGhost.elroy = 2;
+			logger.info("%s becomes Cruise Elroy 2", redGhost.name);
+		}
 	}
 
 	private void onPacGetsPower() {

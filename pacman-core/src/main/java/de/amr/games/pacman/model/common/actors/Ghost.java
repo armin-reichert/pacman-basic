@@ -48,7 +48,6 @@ import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.lib.animation.EntityAnimation;
 import de.amr.games.pacman.lib.animation.SingleEntityAnimation;
-import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.world.GhostHouse;
 
@@ -105,6 +104,20 @@ public class Ghost extends Creature {
 		this.id = id;
 	}
 
+	@Override
+	public String toString() {
+		return String.format("[Ghost %s: state=%s, position=%s, tile=%s, offset=%s, velocity=%s, dir=%s, wishDir=%s]", name,
+				state, position, tile(), offset(), velocity, moveDir, wishDir);
+	}
+
+	public GhostState getState() {
+		return state;
+	}
+
+	public boolean is(GhostState... alternatives) {
+		return U.oneOf(state, alternatives);
+	}
+
 	public void reset() {
 		show();
 		setAbsSpeed(id == RED_GHOST ? 0 : 0.5);
@@ -132,6 +145,12 @@ public class Ghost extends Creature {
 		case ENTERING_HOUSE -> updateEnteringHouseState(game);
 		}
 		animate();
+	}
+
+	private void enterLockedState() {
+		state = GhostState.LOCKED;
+		selectAnimation(AnimKeys.GHOST_COLOR);
+		selectedAnimation().ifPresent(EntityAnimation::reset);
 	}
 
 	private void updateLockedState(GameModel game) {
@@ -192,6 +211,11 @@ public class Ghost extends Creature {
 		return false;
 	}
 
+	public void enterHuntingState() {
+		state = HUNTING_PAC;
+		selectAnimation(AnimKeys.GHOST_COLOR);
+	}
+
 	/*
 	 * In Ms. Pac-Man, Blinky and Pinky move randomly during the *first* scatter phase. Some say, the original intention
 	 * had been to randomize the scatter target of *all* ghosts in Ms. Pac-Man but because of a bug, only the scatter
@@ -246,6 +270,11 @@ public class Ghost extends Creature {
 		tryMoving();
 	}
 
+	public void enterFrightenedState() {
+		state = FRIGHTENED;
+		selectAnimation(AnimKeys.GHOST_BLUE);
+	}
+
 	private void updateFrightenedState(GameModel game) {
 		if (world.isTunnel(tile())) {
 			setRelSpeed(game.level.ghostSpeedTunnel);
@@ -254,6 +283,12 @@ public class Ghost extends Creature {
 		}
 		roam();
 		updateFlashingAnimation(game);
+	}
+
+	public void enterDeadState() {
+		state = GhostState.DEAD;
+		selectAnimation(AnimKeys.GHOST_VALUE);
+		selectedAnimation().ifPresent(anim -> anim.setFrameIndex(killIndex));
 	}
 
 	private void updateDeadState(GameModel game) {
@@ -288,15 +323,9 @@ public class Ghost extends Creature {
 	private void updateEnteringHouseState(GameModel game) {
 		boolean revivalTileReached = enterHouse(world.ghostHouse());
 		if (revivalTileReached) {
-			state = LEAVING_HOUSE;
 			setBothDirs(moveDir.opposite());
 			setAbsSpeed(0.5);
-			if (game.powerTimer.isRunning()) {
-				selectAnimation(AnimKeys.GHOST_BLUE);
-			} else {
-				selectAnimation(AnimKeys.GHOST_COLOR);
-			}
-			GameEvents.publish(new GameEvent(game, GameEventType.GHOST_STARTS_LEAVING_HOUSE, this, tile()));
+			enterLeavingHouseState(game);
 		}
 	}
 
@@ -330,50 +359,11 @@ public class Ghost extends Creature {
 		return false;
 	}
 
-	public boolean is(GhostState... alternatives) {
-		return U.oneOf(state, alternatives);
-	}
-
-	public GhostState getState() {
-		return state;
-	}
-
-	public void enterLockedState() {
-		state = GhostState.LOCKED;
-		selectAnimation(AnimKeys.GHOST_COLOR);
-		selectedAnimation().ifPresent(EntityAnimation::reset);
-	}
-
-	public void enterHuntingState() {
-		state = HUNTING_PAC;
-		selectAnimation(AnimKeys.GHOST_COLOR);
-	}
-
-	public void enterFrightenedState() {
-		state = FRIGHTENED;
-		animations().ifPresent(anims -> {
-			if (AnimKeys.GHOST_FLASHING.equals(anims.selected())) {
-				anims.selectedAnimation().stop();
-			}
-			selectAnimation(AnimKeys.GHOST_BLUE);
-		});
-	}
-
-	public void enterDeadState() {
-		state = GhostState.DEAD;
-		selectAnimation(AnimKeys.GHOST_VALUE);
-		selectedAnimation().ifPresent(anim -> anim.setFrameIndex(killIndex));
-	}
-
 	public void enterLeavingHouseState(GameModel game) {
 		state = LEAVING_HOUSE;
+		selectAnimation(game.powerTimer.isRunning() ? AnimKeys.GHOST_BLUE : AnimKeys.GHOST_COLOR);
 		updateFlashingAnimation(game);
-	}
-
-	@Override
-	public String toString() {
-		return String.format("[Ghost %s: state=%s, position=%s, tile=%s, offset=%s, velocity=%s, dir=%s, wishDir=%s]", name,
-				state, position, tile(), offset(), velocity, moveDir, wishDir);
+		GameEvents.publish(new GameEvent(game, GameEventType.GHOST_STARTS_LEAVING_HOUSE, this, tile()));
 	}
 
 	@Override
@@ -387,16 +377,6 @@ public class Ghost extends Creature {
 			return is(ENTERING_HOUSE) || is(LEAVING_HOUSE);
 		}
 		return super.canAccessTile(tile);
-	}
-
-	public void checkCruiseElroyStart(GameLevel level) {
-		if (world.foodRemaining() == level.elroy1DotsLeft) {
-			elroy = 1;
-			logger.info("%s becomes Cruise Elroy 1", name);
-		} else if (world.foodRemaining() == level.elroy2DotsLeft) {
-			elroy = 2;
-			logger.info("%s becomes Cruise Elroy 2", name);
-		}
 	}
 
 	public void stopCruiseElroyMode() {
