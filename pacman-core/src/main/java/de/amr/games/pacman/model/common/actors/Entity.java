@@ -26,13 +26,16 @@ package de.amr.games.pacman.model.common.actors;
 import static de.amr.games.pacman.model.common.world.World.t;
 
 import java.util.Objects;
+import java.util.Optional;
 
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.lib.animation.SpriteAnimation;
+import de.amr.games.pacman.lib.animation.SpriteAnimations;
 import de.amr.games.pacman.model.common.world.World;
 
 /**
- * Base class for all entities.
+ * Base class for all entities. Entities can have sprite animations.
  * 
  * @author Armin Reichert
  */
@@ -145,5 +148,38 @@ public class Entity {
 	public boolean sameTile(Entity other) {
 		Objects.requireNonNull(other);
 		return tile().equals(other.tile());
+	}
+
+	// Animations
+
+	private SpriteAnimations animations;
+
+	public void setAnimations(SpriteAnimations animations) {
+		this.animations = animations;
+	}
+
+	public Optional<SpriteAnimations> animations() {
+		return Optional.ofNullable(animations);
+	}
+
+	public Optional<SpriteAnimation> animation(String key) {
+		return animations().map(anim -> anim.byName(key));
+	}
+
+	public void selectAnimation(String name) {
+		selectAnimation(name, true);
+	}
+
+	public void selectAnimation(String name, boolean ensureRunning) {
+		if (animations != null) {
+			animations.select(name);
+			if (ensureRunning) {
+				animations.selectedAnimation().ensureRunning();
+			}
+		}
+	}
+
+	public void animate() {
+		animations().map(SpriteAnimations::selectedAnimation).ifPresent(SpriteAnimation::advance);
 	}
 }
