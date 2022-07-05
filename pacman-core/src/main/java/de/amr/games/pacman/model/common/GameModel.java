@@ -225,7 +225,7 @@ public abstract class GameModel {
 	 * @param phase hunting phase (0, ... 7)
 	 * @return hunting (scattering or chasing) ticks for current level and given phase
 	 */
-	public long huntingPhaseTicks(int phase) {
+	private long huntingPhaseTicks(int phase) {
 		if (phase < 0 || phase > 7) {
 			throw new IllegalArgumentException("Hunting phase must be 0..7, but is " + phase);
 		}
@@ -338,9 +338,6 @@ public abstract class GameModel {
 		globalDotCounter = 0;
 		globalDotCounterEnabled = true;
 		logger.info("Global dot counter got reset and enabled because %s died", pac.name);
-	}
-
-	public void stopCruiseElroyMode() {
 	}
 
 	private void checkEdibleGhosts() {
