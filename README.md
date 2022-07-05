@@ -1,4 +1,4 @@
-## Pac-Man and Ms. Pac-Man (game model & logic,  no UI)
+## Pac-Man and Ms. Pac-Man (game model, logic, sound and animation control, no UI)
 
 Pac-Man and Ms. Pac-Man game implementation written in Java with levels, timing, ghost "AI" etc. following the details given in the (highly appreciated) [Pac-Man Dossier](https://pacman.holenet.info) by Jamey Pittman. The Ms. Pac-Man levels probably are not 100% accurate because I could not find a similarly detailed description as the Pac-Man dossier. Any hints? 
 
@@ -20,7 +20,6 @@ As proof of concept I implemented the following two UI variants:
 YouTube:
 
 [![YouTube video](pacman-core/doc/thumbnail.jpg)](https://www.youtube.com/watch?v=t529vDUtCT0&t=125s)
-
 
 ### Build
 
