@@ -352,17 +352,17 @@ public class Ghost extends Creature {
 	public void enterFrightenedState() {
 		state = FRIGHTENED;
 		animations().ifPresent(anims -> {
-			anims.byName(AnimKeys.GHOST_FLASHING).stop();
+			if (AnimKeys.GHOST_FLASHING.equals(anims.selected())) {
+				anims.selectedAnimation().stop();
+			}
 			selectAnimation(AnimKeys.GHOST_BLUE);
 		});
 	}
 
 	public void enterDeadState() {
 		state = GhostState.DEAD;
-		animations().ifPresent(anims -> {
-			anims.select(AnimKeys.GHOST_VALUE);
-			anims.selectedAnimation().setFrameIndex(killIndex);
-		});
+		selectAnimation(AnimKeys.GHOST_VALUE);
+		selectedAnimation().ifPresent(anim -> anim.setFrameIndex(killIndex));
 	}
 
 	public void enterLeavingHouseState(GameModel game) {
