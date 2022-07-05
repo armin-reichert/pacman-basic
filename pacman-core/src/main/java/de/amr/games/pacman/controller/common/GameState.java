@@ -355,10 +355,8 @@ public enum GameState implements FsmState<GameModel> {
 		public void onEnter(GameModel game) {
 			timer.resetSeconds(5);
 			timer.start();
-			game.pac.animations().ifPresent(anim -> {
-				anim.select(AnimKeys.PAC_DYING);
-				anim.selectedAnimation().reset();
-			});
+			game.pac.selectAnimation(AnimKeys.PAC_DYING);
+			game.pac.selectedAnimation().ifPresent(EntityAnimation::reset);
 			game.bonus().setInactive();
 			gameController.sounds().ifPresent(GameSoundController::stopAll);
 		}
@@ -370,7 +368,7 @@ public enum GameState implements FsmState<GameModel> {
 			if (timer.atSecond(1)) {
 				game.ghosts().forEach(Ghost::hide);
 			} else if (timer.atSecond(2)) {
-				game.pac.animation(AnimKeys.PAC_DYING).ifPresent(EntityAnimation::restart);
+				game.pac.selectedAnimation().ifPresent(EntityAnimation::restart);
 				gameController.sounds().ifPresent(snd -> snd.play(GameSound.PACMAN_DEATH));
 			} else if (timer.atSecond(4)) {
 				if (--game.lives == 0) {
@@ -390,10 +388,10 @@ public enum GameState implements FsmState<GameModel> {
 	GAME_OVER {
 		@Override
 		public void onEnter(GameModel game) {
-			game.scores.saveHiscore();
 			timer.resetSeconds(3);
 			timer.start();
 			gameController.sounds().ifPresent(GameSoundController::stopAll);
+			game.scores.saveHiscore();
 		}
 
 		@Override
@@ -455,7 +453,7 @@ public enum GameState implements FsmState<GameModel> {
 		return timer;
 	}
 
-	// --- Events
+	// --- Commands. State overrides empty method if he understands the command.
 
 	public void selectGameVariant(GameVariant variant) {
 		// override if supported for state

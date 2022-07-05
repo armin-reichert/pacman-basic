@@ -156,6 +156,10 @@ public class Entity {
 		}
 	}
 
+	public Optional<EntityAnimation> selectedAnimation() {
+		return animations().map(EntityAnimations::selectedAnimation);
+	}
+
 	public void animate() {
 		animations().map(EntityAnimations::selectedAnimation).ifPresent(EntityAnimation::advance);
 	}
