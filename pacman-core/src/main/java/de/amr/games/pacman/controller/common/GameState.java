@@ -241,10 +241,7 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void cheatKillAllEatableGhosts(GameModel game) {
 			if (game.playing) {
-				Ghost[] prey = game.ghosts()
-						.filter(ghost -> ghost.is(GhostState.HUNTING_PAC) || ghost.is(GhostState.FRIGHTENED)).toArray(Ghost[]::new);
-				game.ghostsKilledByEnergizer = 0;
-				game.killGhosts(prey);
+				game.killAllPossibleGhosts();
 				fsm.changeState(GameState.GHOST_DYING);
 			}
 		}
@@ -256,7 +253,6 @@ public enum GameState implements FsmState<GameModel> {
 				fsm.changeState(GameState.LEVEL_COMPLETE);
 			}
 		}
-
 	},
 
 	LEVEL_COMPLETE {

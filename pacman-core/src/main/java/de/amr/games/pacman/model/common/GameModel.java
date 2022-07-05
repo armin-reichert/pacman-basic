@@ -38,7 +38,6 @@ import java.util.stream.Stream;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import de.amr.games.pacman.controller.common.GameController;
 import de.amr.games.pacman.event.GameEvent;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
@@ -344,8 +343,16 @@ public abstract class GameModel {
 		was.edibleGhosts = ghosts(FRIGHTENED).filter(pac::sameTile).toArray(Ghost[]::new);
 	}
 
-	/** This method is public because {@link GameController#cheatKillAllEatableGhosts()} calls it. */
-	public void killGhosts(Ghost[] prey) {
+	/**
+	 * Cheat.
+	 */
+	public void killAllPossibleGhosts() {
+		var prey = ghosts(GhostState.HUNTING_PAC, GhostState.FRIGHTENED).toArray(Ghost[]::new);
+		ghostsKilledByEnergizer = 0;
+		killGhosts(prey);
+	}
+
+	private void killGhosts(Ghost[] prey) {
 		Stream.of(prey).forEach(this::killGhost);
 		level.numGhostsKilled += prey.length;
 		if (level.numGhostsKilled == 16) {
