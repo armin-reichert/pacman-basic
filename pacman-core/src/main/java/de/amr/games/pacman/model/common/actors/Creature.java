@@ -79,8 +79,7 @@ public class Creature extends Entity {
 	}
 
 	public void placeAtTile(V2i tile, double offsetX, double offsetY) {
-		setPosition(tile.x * World.TS + offsetX, tile.y * World.TS + offsetY);
-		newTileEntered = true;
+		placeAtTile(tile.x, tile.y, offsetX, offsetY);
 	}
 
 	/**
