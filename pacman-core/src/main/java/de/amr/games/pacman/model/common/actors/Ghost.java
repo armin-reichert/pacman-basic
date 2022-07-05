@@ -447,6 +447,10 @@ public class Ghost extends Creature {
 		});
 	}
 
+	public void animate() {
+		animations().map(SpriteAnimations::selectedAnimation).ifPresent(SpriteAnimation::advance);
+	}
+
 	private void updateFlashingAnimation(GameModel game) {
 		if (game.powerTimer.tick() == 0) {
 			ensureFlashingStoppedAndShownAs(AnimKeys.GHOST_BLUE);

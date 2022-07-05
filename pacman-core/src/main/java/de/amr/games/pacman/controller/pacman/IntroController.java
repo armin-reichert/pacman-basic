@@ -41,7 +41,6 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.animation.SingleSpriteAnimation;
 import de.amr.games.pacman.lib.animation.SpriteAnimation;
-import de.amr.games.pacman.lib.animation.SpriteAnimations;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.lib.fsm.FsmState;
 import de.amr.games.pacman.model.common.actors.AnimKeys;
@@ -173,14 +172,14 @@ public class IntroController extends Fsm<State, Context> {
 				ctx.pacMan.setMoveDir(Direction.LEFT);
 				ctx.pacMan.setAbsSpeed(1.2);
 				ctx.pacMan.show();
-				ctx.pacMan.animations().ifPresent(SpriteAnimations::ensureRunning);
+				ctx.pacMan.selectAnimation(AnimKeys.PAC_MUNCHING);
 				for (Ghost ghost : ctx.ghosts) {
 					ghost.enterHuntingState();
-					ghost.animations().ifPresent(SpriteAnimations::ensureRunning);
 					ghost.setPosition(ctx.pacMan.getPosition().plus(16 * (ghost.id + 1), 0));
 					ghost.setBothDirs(Direction.LEFT);
 					ghost.setAbsSpeed(1.2);
 					ghost.show();
+					ghost.selectAnimation(AnimKeys.GHOST_COLOR);
 				}
 			}
 
@@ -197,8 +196,10 @@ public class IntroController extends Fsm<State, Context> {
 						ghost.setBothDirs(Direction.RIGHT);
 						ghost.setAbsSpeed(0.6);
 						ghost.move();
+						ghost.animate();
 					}
 					ctx.pacMan.move();
+					ctx.pacMan.animate();
 				}
 				// keep moving
 				else {
@@ -208,8 +209,10 @@ public class IntroController extends Fsm<State, Context> {
 					}
 					ctx.blinking.advance();
 					ctx.pacMan.move();
+					ctx.pacMan.animate();
 					for (Ghost ghost : ctx.ghosts) {
 						ghost.move();
+						ghost.animate();
 					}
 				}
 			}
@@ -263,8 +266,10 @@ public class IntroController extends Fsm<State, Context> {
 					}
 				}
 				ctx.pacMan.move();
+				ctx.pacMan.animate();
 				for (Ghost ghost : ctx.ghosts) {
 					ghost.move();
+					ghost.animate();
 				}
 				ctx.blinking.advance();
 			}

@@ -120,4 +120,8 @@ public class Pac extends Creature {
 			}
 		});
 	}
+
+	public void animate() {
+		animations().map(SpriteAnimations::selectedAnimation).ifPresent(SpriteAnimation::advance);
+	}
 }
