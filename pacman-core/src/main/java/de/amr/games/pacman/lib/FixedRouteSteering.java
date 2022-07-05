@@ -25,6 +25,7 @@ SOFTWARE.
 package de.amr.games.pacman.lib;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 import de.amr.games.pacman.model.common.actors.Creature;
@@ -35,10 +36,12 @@ import de.amr.games.pacman.model.common.actors.Creature;
 public class FixedRouteSteering implements Consumer<Creature> {
 
 	private final List<V2i> route;
+	private int currentTargetIndex;
 	private boolean complete;
 
 	public FixedRouteSteering(List<V2i> route) {
-		this.route = route;
+		this.route = Objects.requireNonNull(route);
+		currentTargetIndex = 0;
 		complete = false;
 	}
 
@@ -52,14 +55,17 @@ public class FixedRouteSteering implements Consumer<Creature> {
 
 	@Override
 	public void accept(Creature guy) {
-		if (guy.tile().equals(route.get(0))) {
-			route.remove(0);
-			if (route.isEmpty()) {
+		if (complete || route.isEmpty()) {
+			return;
+		}
+		if (guy.tile().equals(route.get(currentTargetIndex))) {
+			++currentTargetIndex;
+			if (currentTargetIndex == route.size()) {
 				complete = true;
 				return;
 			}
-			guy.targetTile = route.get(0);
 		}
+		guy.targetTile = route.get(currentTargetIndex);
 		guy.computeDirectionTowardsTarget();
 		guy.tryMoving();
 	}
