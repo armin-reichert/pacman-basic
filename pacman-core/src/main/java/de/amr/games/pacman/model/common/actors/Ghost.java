@@ -35,7 +35,6 @@ import static de.amr.games.pacman.model.common.actors.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.model.common.world.World.HTS;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -416,39 +415,6 @@ public class Ghost extends Creature {
 			return true;
 		}
 		return state == HUNTING_PAC && dir == UP && upwardsBlockedTiles.contains(tile());
-	}
-
-	// Animations
-
-	private SpriteAnimations animations;
-
-	public void setAnimations(SpriteAnimations animations) {
-		this.animations = animations;
-	}
-
-	public Optional<SpriteAnimations> animations() {
-		return Optional.ofNullable(animations);
-	}
-
-	public Optional<SpriteAnimation> animation(String name) {
-		return animations().map(anim -> anim.byName(name));
-	}
-
-	public void selectAnimation(String name) {
-		selectAnimation(name, true);
-	}
-
-	public void selectAnimation(String name, boolean ensureRunning) {
-		animations().ifPresent(anim -> {
-			anim.select(name);
-			if (ensureRunning) {
-				anim.selectedAnimation().ensureRunning();
-			}
-		});
-	}
-
-	public void animate() {
-		animations().map(SpriteAnimations::selectedAnimation).ifPresent(SpriteAnimation::advance);
 	}
 
 	private void updateFlashingAnimation(GameModel game) {
