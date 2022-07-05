@@ -50,8 +50,6 @@ public abstract class SpriteAnimations<E> {
 		animationsByName.put(name, animation);
 	}
 
-	public abstract Object current(E entity);
-
 	public void select(String name) {
 		selected = Objects.requireNonNull(name);
 	}
