@@ -420,13 +420,13 @@ public class Ghost extends Creature {
 
 	// Animations
 
-	private SpriteAnimations<Ghost> animations;
+	private SpriteAnimations animations;
 
-	public void setAnimations(SpriteAnimations<Ghost> animations) {
+	public void setAnimations(SpriteAnimations animations) {
 		this.animations = animations;
 	}
 
-	public Optional<SpriteAnimations<Ghost>> animations() {
+	public Optional<SpriteAnimations> animations() {
 		return Optional.ofNullable(animations);
 	}
 

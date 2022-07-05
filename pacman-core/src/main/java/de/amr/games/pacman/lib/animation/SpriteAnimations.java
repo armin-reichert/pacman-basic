@@ -33,7 +33,7 @@ import java.util.stream.Stream;
  * 
  * @param <E> entity type for which these animations are defined
  */
-public abstract class SpriteAnimations<E> {
+public abstract class SpriteAnimations {
 
 	protected Map<String, SpriteAnimation> animationsByName;
 	protected String selected;

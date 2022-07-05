@@ -49,8 +49,6 @@ public class Pac extends Creature {
 	/** Number of clock ticks Pac has not eaten any pellet. */
 	public int starvingTicks = 0;
 
-	private SpriteAnimations<Pac> animations;
-
 	public Pac(String name) {
 		super(name);
 	}
@@ -94,9 +92,9 @@ public class Pac extends Creature {
 		animations().map(SpriteAnimations::selectedAnimation).ifPresent(SpriteAnimation::advance);
 	}
 
-	// Animations
+	private SpriteAnimations animations;
 
-	public Optional<SpriteAnimations<Pac>> animations() {
+	public Optional<SpriteAnimations> animations() {
 		return Optional.ofNullable(animations);
 	}
 
@@ -104,7 +102,7 @@ public class Pac extends Creature {
 		return animations().map(anim -> anim.byName(key));
 	}
 
-	public void setAnimations(SpriteAnimations<Pac> animations) {
+	public void setAnimations(SpriteAnimations animations) {
 		this.animations = animations;
 	}
 
