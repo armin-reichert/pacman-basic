@@ -64,11 +64,6 @@ public abstract class SpriteAnimations<E> {
 		return byName(selected);
 	}
 
-	@SuppressWarnings("unchecked")
-	protected <K, S> SpriteAnimationMap<K, S> castToMap(String name) {
-		return (SpriteAnimationMap<K, S>) byName(name);
-	}
-
 	public void reset() {
 		all().forEach(SpriteAnimation::reset);
 	}
