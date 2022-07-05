@@ -38,15 +38,10 @@ public class OptionParser {
 
 	private static final Logger logger = LogManager.getFormatterLogger();
 
-	public static OptionParser of(Option<?>... options) {
-		return new OptionParser(options);
-	}
-
-	private final Map<String, Option<?>> optionMap;
+	private final Map<String, Option<?>> optionMap = new HashMap<>();
 	private int i;
 
-	private OptionParser(Option<?>... options) {
-		optionMap = new HashMap<>();
+	public OptionParser(Option<?>... options) {
 		Arrays.asList(options).forEach(option -> optionMap.put(option.getName(), option));
 	}
 
