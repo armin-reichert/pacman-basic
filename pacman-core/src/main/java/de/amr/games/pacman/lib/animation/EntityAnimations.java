@@ -24,6 +24,7 @@ SOFTWARE.
 
 package de.amr.games.pacman.lib.animation;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -33,8 +34,12 @@ import java.util.stream.Stream;
  */
 public abstract class EntityAnimations {
 
-	protected Map<String, EntityAnimation> animationsByName;
+	protected final Map<String, EntityAnimation> animationsByName;
 	protected String selected;
+
+	public EntityAnimations(int initialSize) {
+		animationsByName = new HashMap<>(initialSize);
+	}
 
 	public final EntityAnimation byName(String name) {
 		return animationsByName.get(name);
