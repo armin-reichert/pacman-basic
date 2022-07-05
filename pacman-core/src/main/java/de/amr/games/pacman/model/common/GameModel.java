@@ -330,10 +330,17 @@ public abstract class GameModel {
 
 	private void onPacMetKiller() {
 		pac.die();
-		theGhosts[RED_GHOST].stopCruiseElroyMode();
+		var redGhost = theGhosts[RED_GHOST];
+		if (redGhost.elroy > 0) {
+			logger.info("Cruise Elroy mode %d for %s disabled", redGhost.elroy, redGhost.name);
+			redGhost.elroy = -redGhost.elroy; // negative value means "disabled"
+		}
 		globalDotCounter = 0;
 		globalDotCounterEnabled = true;
 		logger.info("Global dot counter got reset and enabled because %s died", pac.name);
+	}
+
+	public void stopCruiseElroyMode() {
 	}
 
 	private void checkEdibleGhosts() {

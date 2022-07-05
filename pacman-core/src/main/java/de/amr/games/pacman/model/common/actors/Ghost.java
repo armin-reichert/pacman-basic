@@ -36,9 +36,6 @@ import static de.amr.games.pacman.model.common.world.World.HTS;
 
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import de.amr.games.pacman.event.GameEvent;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
@@ -57,8 +54,6 @@ import de.amr.games.pacman.model.common.world.GhostHouse;
  * @author Armin Reichert
  */
 public class Ghost extends Creature {
-
-	private static final Logger logger = LogManager.getFormatterLogger();
 
 	/** ID of red */
 	public static final int RED_GHOST = 0;
@@ -377,13 +372,6 @@ public class Ghost extends Creature {
 			return is(ENTERING_HOUSE) || is(LEAVING_HOUSE);
 		}
 		return super.canAccessTile(tile);
-	}
-
-	public void stopCruiseElroyMode() {
-		if (elroy > 0) {
-			elroy = -elroy; // negative value means "disabled"
-			logger.info("Cruise Elroy %d for %s stops", elroy, name);
-		}
 	}
 
 	@Override
