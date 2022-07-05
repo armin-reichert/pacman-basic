@@ -405,7 +405,7 @@ public class Ghost extends Creature {
 		});
 	}
 
-	public void ensureFlashingStoppedAndShownAs(String animKey) {
+	private void ensureFlashingStoppedAndShownAs(String animKey) {
 		animations().ifPresent(anims -> {
 			if (anims.selected().equals(AnimKeys.GHOST_FLASHING)) {
 				anims.selectedAnimation().stop();
