@@ -71,7 +71,7 @@ public class Entity {
 	}
 
 	public void setPosition(V2d position) {
-		this.position = position;
+		this.position = Objects.requireNonNull(position);
 	}
 
 	public V2d getVelocity() {
@@ -79,7 +79,7 @@ public class Entity {
 	}
 
 	public void setVelocity(V2d velocity) {
-		this.velocity = velocity;
+		this.velocity = Objects.requireNonNull(velocity);
 	}
 
 	public void setVelocity(double vx, double vy) {
@@ -87,7 +87,7 @@ public class Entity {
 	}
 
 	public void setAcceleration(V2d acceleration) {
-		this.acceleration = acceleration;
+		this.acceleration = Objects.requireNonNull(acceleration);
 	}
 
 	public void setAcceleration(double ax, double ay) {
