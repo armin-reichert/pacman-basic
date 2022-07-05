@@ -24,12 +24,12 @@ SOFTWARE.
 package de.amr.games.pacman.lib.animation;
 
 /**
- * Animation (sequence with timing) of things, for example of boolean, numbers, images or spritesheet regions.
+ * Single animation of things, for example of boolean, numbers, images or spritesheet regions.
  * 
  * @param <T> type of things to be animated
  * @author Armin Reichert
  */
-public class SingleSpriteAnimation<T> implements SpriteAnimation {
+public class SingleEntityAnimation<T> implements EntityAnimation {
 
 	public static final int INDEFINITE = -1;
 
@@ -37,8 +37,8 @@ public class SingleSpriteAnimation<T> implements SpriteAnimation {
 	 * @param frameDuration ticks of single pulse
 	 * @return an endless animation of alternating true/false values
 	 */
-	public static SingleSpriteAnimation<Boolean> pulse(int frameDuration) {
-		var pulse = new SingleSpriteAnimation<>(true, false);
+	public static SingleEntityAnimation<Boolean> pulse(int frameDuration) {
+		var pulse = new SingleEntityAnimation<>(true, false);
 		pulse.frameDuration(frameDuration);
 		pulse.repeatForever();
 		return pulse;
@@ -58,7 +58,7 @@ public class SingleSpriteAnimation<T> implements SpriteAnimation {
 	protected Runnable onStart;
 
 	@SafeVarargs
-	public SingleSpriteAnimation(T... things) {
+	public SingleEntityAnimation(T... things) {
 		if (things.length == 0) {
 			throw new IllegalArgumentException("Sequence must have at least contain one thing");
 		}

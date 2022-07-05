@@ -33,7 +33,7 @@ import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.FixedRouteSteering;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.lib.animation.SingleSpriteAnimation;
+import de.amr.games.pacman.lib.animation.SingleEntityAnimation;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.BonusState;
@@ -56,12 +56,12 @@ public class MovingBonus extends Creature implements Bonus {
 	private int symbol;
 	private int value;
 	private long timer;
-	private final SingleSpriteAnimation<Integer> jumpAnimation;
+	private final SingleEntityAnimation<Integer> jumpAnimation;
 	private FixedRouteSteering steering;
 
 	public MovingBonus() {
 		super("MovingBonus");
-		jumpAnimation = new SingleSpriteAnimation<>(2, -2);
+		jumpAnimation = new SingleEntityAnimation<>(2, -2);
 		jumpAnimation.frameDuration(10);
 		jumpAnimation.repeatForever();
 		setInactive();
@@ -73,7 +73,7 @@ public class MovingBonus extends Creature implements Bonus {
 		}
 		var startTile = route.get(0);
 		targetTile = startTile;
-		placeAt(startTile, 0, 0);
+		placeAtTile(startTile, 0, 0);
 		setBothDirs(startDir);
 		steering = new FixedRouteSteering(route);
 	}

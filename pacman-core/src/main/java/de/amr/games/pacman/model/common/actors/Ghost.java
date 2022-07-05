@@ -35,7 +35,6 @@ import static de.amr.games.pacman.model.common.actors.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.model.common.world.World.HTS;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -47,9 +46,7 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.U;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.lib.animation.SingleSpriteAnimation;
-import de.amr.games.pacman.lib.animation.SpriteAnimation;
-import de.amr.games.pacman.lib.animation.SpriteAnimations;
+import de.amr.games.pacman.lib.animation.SingleEntityAnimation;
 import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.world.GhostHouse;
@@ -133,7 +130,7 @@ public class Ghost extends Creature {
 		case DEAD -> updateDeadState(game);
 		case ENTERING_HOUSE -> updateEnteringHouseState(game);
 		}
-		animations().map(SpriteAnimations::selectedAnimation).ifPresent(SpriteAnimation::advance);
+		animate();
 	}
 
 	private void updateLockedState(GameModel game) {
@@ -418,39 +415,6 @@ public class Ghost extends Creature {
 		return state == HUNTING_PAC && dir == UP && upwardsBlockedTiles.contains(tile());
 	}
 
-	// Animations
-
-	private SpriteAnimations<Ghost> animations;
-
-	public void setAnimations(SpriteAnimations<Ghost> animations) {
-		this.animations = animations;
-	}
-
-	public Optional<SpriteAnimations<Ghost>> animations() {
-		return Optional.ofNullable(animations);
-	}
-
-	public Optional<SpriteAnimation> animation(String name) {
-		return animations().map(anim -> anim.byName(name));
-	}
-
-	public void selectAnimation(String name) {
-		selectAnimation(name, true);
-	}
-
-	public void selectAnimation(String name, boolean ensureRunning) {
-		animations().ifPresent(anim -> {
-			anim.select(name);
-			if (ensureRunning) {
-				anim.selectedAnimation().ensureRunning();
-			}
-		});
-	}
-
-	public void animate() {
-		animations().map(SpriteAnimations::selectedAnimation).ifPresent(SpriteAnimation::advance);
-	}
-
 	private void updateFlashingAnimation(GameModel game) {
 		if (game.powerTimer.tick() == 0) {
 			ensureFlashingStoppedAndShownAs(AnimKeys.GHOST_BLUE);
@@ -467,7 +431,7 @@ public class Ghost extends Creature {
 				anim.selectedAnimation().ensureRunning();
 			} else {
 				anim.select(AnimKeys.GHOST_FLASHING);
-				var flashing = (SingleSpriteAnimation<?>) anim.selectedAnimation();
+				var flashing = (SingleEntityAnimation<?>) anim.selectedAnimation();
 				long frameTicks = GameModel.PAC_POWER_FADING_TICKS / (numFlashes * flashing.numFrames());
 				flashing.frameDuration(frameTicks);
 				flashing.repetions(numFlashes);

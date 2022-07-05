@@ -26,13 +26,16 @@ package de.amr.games.pacman.model.common.actors;
 import static de.amr.games.pacman.model.common.world.World.t;
 
 import java.util.Objects;
+import java.util.Optional;
 
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.lib.animation.EntityAnimation;
+import de.amr.games.pacman.lib.animation.EntityAnimations;
 import de.amr.games.pacman.model.common.world.World;
 
 /**
- * Base class for all entities.
+ * Base class for all entities. Entities can have sprite animations.
  * 
  * @author Armin Reichert
  */
@@ -94,38 +97,15 @@ public class Entity {
 		acceleration = new V2d(ax, ay);
 	}
 
-	/**
-	 * @return the current pixel offset
-	 */
 	public V2d offset() {
 		return World.offset(position);
 	}
 
-	/**
-	 * Places it on its current tile with given offsets.
-	 * 
-	 * @param offsetX offset in x-direction
-	 * @param offsetY offset in y-direction
-	 */
 	public void setOffset(double offsetX, double offsetY) {
-		placeAt(tile(), offsetX, offsetY);
+		var tile = tile();
+		position = new V2d(t(tile.x) + offsetX, t(tile.y) + offsetY);
 	}
 
-	/**
-	 * Places it at the given tile with the given offsets.
-	 * 
-	 * @param tile    the tile where this creature will be placed
-	 * @param offsetX the pixel offset in x-direction
-	 * @param offsetY the pixel offset in y-direction
-	 */
-	public void placeAt(V2i tile, double offsetX, double offsetY) {
-		Objects.requireNonNull(tile);
-		setPosition(t(tile.x) + offsetX, t(tile.y) + offsetY);
-	}
-
-	/**
-	 * @return the current tile position
-	 */
 	public V2i tile() {
 		return World.tile(position);
 	}
@@ -145,5 +125,38 @@ public class Entity {
 	public boolean sameTile(Entity other) {
 		Objects.requireNonNull(other);
 		return tile().equals(other.tile());
+	}
+
+	// Animations
+
+	private EntityAnimations animations;
+
+	public void setAnimations(EntityAnimations animations) {
+		this.animations = animations;
+	}
+
+	public Optional<EntityAnimations> animations() {
+		return Optional.ofNullable(animations);
+	}
+
+	public Optional<EntityAnimation> animation(String key) {
+		return animations().map(anim -> anim.byName(key));
+	}
+
+	public void selectAnimation(String name) {
+		selectAnimation(name, true);
+	}
+
+	public void selectAnimation(String name, boolean ensureRunning) {
+		if (animations != null) {
+			animations.select(name);
+			if (ensureRunning) {
+				animations.selectedAnimation().ensureRunning();
+			}
+		}
+	}
+
+	public void animate() {
+		animations().map(EntityAnimations::selectedAnimation).ifPresent(EntityAnimation::advance);
 	}
 }

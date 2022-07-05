@@ -31,7 +31,7 @@ import de.amr.games.pacman.controller.mspacman.Intermission3Controller.State;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.V2d;
-import de.amr.games.pacman.lib.animation.SpriteAnimation;
+import de.amr.games.pacman.lib.animation.EntityAnimation;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.lib.fsm.FsmState;
 import de.amr.games.pacman.model.common.GameModel;
@@ -130,13 +130,13 @@ public class Intermission3Controller extends Fsm<State, Context> {
 				ctx.pacMan.setPosition(t(3), ctx.groundY - 4);
 				ctx.pacMan.selectAnimation(AnimKeys.PAC_MUNCHING);
 				ctx.pacMan.show();
-				ctx.pacMan.animation(AnimKeys.PAC_MUNCHING).ifPresent(SpriteAnimation::reset);
+				ctx.pacMan.animation(AnimKeys.PAC_MUNCHING).ifPresent(EntityAnimation::reset);
 
 				ctx.msPacMan.setMoveDir(Direction.RIGHT);
 				ctx.msPacMan.setPosition(t(5), ctx.groundY - 4);
 				ctx.msPacMan.selectAnimation(AnimKeys.PAC_MUNCHING);
 				ctx.msPacMan.show();
-				ctx.msPacMan.animation(AnimKeys.PAC_MUNCHING).ifPresent(SpriteAnimation::reset);
+				ctx.msPacMan.animation(AnimKeys.PAC_MUNCHING).ifPresent(EntityAnimation::reset);
 
 				ctx.stork.setPosition(t(30), t(12));
 				ctx.stork.setVelocity(-0.8, 0);

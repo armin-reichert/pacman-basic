@@ -26,11 +26,9 @@ package de.amr.games.pacman.model.common.actors;
 import static de.amr.games.pacman.lib.V2i.v;
 import static de.amr.games.pacman.model.common.world.World.HTS;
 
-import java.util.Optional;
-
 import de.amr.games.pacman.lib.Direction;
-import de.amr.games.pacman.lib.animation.SpriteAnimation;
-import de.amr.games.pacman.lib.animation.SpriteAnimations;
+import de.amr.games.pacman.lib.animation.EntityAnimation;
+import de.amr.games.pacman.lib.animation.EntityAnimations;
 import de.amr.games.pacman.model.common.GameModel;
 
 /**
@@ -49,8 +47,6 @@ public class Pac extends Creature {
 	/** Number of clock ticks Pac has not eaten any pellet. */
 	public int starvingTicks = 0;
 
-	private SpriteAnimations<Pac> animations;
-
 	public Pac(String name) {
 		super(name);
 	}
@@ -62,19 +58,17 @@ public class Pac extends Creature {
 	}
 
 	public void reset() {
-		show();
-		placeAt(v(13, 26), HTS, 0);
-		setBothDirs(Direction.LEFT);
-		setAbsSpeed(0);
 		targetTile = null; // used in autopilot mode
 		stuck = false;
 		killed = false;
 		restingTicks = 0;
 		starvingTicks = 0;
-		animations().ifPresent(anim -> {
-			anim.select(AnimKeys.PAC_MUNCHING);
-			anim.selectedAnimation().reset();
-		});
+		setAbsSpeed(0);
+		placeAtTile(v(13, 26), HTS, 0);
+		setBothDirs(Direction.LEFT);
+		selectAnimation(AnimKeys.PAC_MUNCHING);
+		animations().map(EntityAnimations::selectedAnimation).ifPresent(EntityAnimation::reset);
+		show();
 	}
 
 	public void update(GameModel game) {
@@ -84,44 +78,13 @@ public class Pac extends Creature {
 			setRelSpeed(game.powerTimer.isRunning() ? game.level.playerSpeedPowered : game.level.playerSpeed);
 			tryMoving();
 			if (stuck) {
-				animation(AnimKeys.PAC_MUNCHING).ifPresent(SpriteAnimation::stop);
+				animation(AnimKeys.PAC_MUNCHING).ifPresent(EntityAnimation::stop);
 			} else {
-				animation(AnimKeys.PAC_MUNCHING).ifPresent(SpriteAnimation::run);
+				animation(AnimKeys.PAC_MUNCHING).ifPresent(EntityAnimation::run);
 			}
 		} else {
 			--restingTicks;
 		}
-		animations().map(SpriteAnimations::selectedAnimation).ifPresent(SpriteAnimation::advance);
-	}
-
-	// Animations
-
-	public Optional<SpriteAnimations<Pac>> animations() {
-		return Optional.ofNullable(animations);
-	}
-
-	public Optional<SpriteAnimation> animation(String key) {
-		return animations().map(anim -> anim.byName(key));
-	}
-
-	public void setAnimations(SpriteAnimations<Pac> animations) {
-		this.animations = animations;
-	}
-
-	public void selectAnimation(String name) {
-		selectAnimation(name, true);
-	}
-
-	public void selectAnimation(String name, boolean ensureRunning) {
-		animations().ifPresent(anim -> {
-			anim.select(name);
-			if (ensureRunning) {
-				anim.selectedAnimation().ensureRunning();
-			}
-		});
-	}
-
-	public void animate() {
-		animations().map(SpriteAnimations::selectedAnimation).ifPresent(SpriteAnimation::advance);
+		animate();
 	}
 }

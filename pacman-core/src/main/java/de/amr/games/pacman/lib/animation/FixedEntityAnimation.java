@@ -21,52 +21,58 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
+
 package de.amr.games.pacman.lib.animation;
+
+import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * @author Armin Reichert
  */
-public interface SpriteAnimation {
+public class FixedEntityAnimation<T> implements EntityAnimation {
 
-	default void run() {
+	private int frameIndex;
+	private final T[] things;
+
+	@SafeVarargs
+	public FixedEntityAnimation(T... things) {
+		this.things = things;
 	}
 
-	default boolean isRunning() {
-		return true;
+	@SuppressWarnings("unchecked")
+	public FixedEntityAnimation(List<T> list) {
+		this.things = (T[]) new Object[list.size()];
+		for (int i = 0; i < list.size(); ++i) {
+			things[i] = list.get(i);
+		}
 	}
 
-	default void ensureRunning() {
+	public Stream<T> frames() {
+		return Stream.of(things);
 	}
 
-	default void advance() {
+	public int numFrames() {
+		return things.length;
 	}
 
-	default Object animate() {
-		return null;
+	@Override
+	public T frame(int i) {
+		return things[i];
 	}
 
-	default void stop() {
+	@Override
+	public T frame() {
+		return frame(frameIndex);
 	}
 
-	default void reset() {
+	@Override
+	public void setFrameIndex(int i) {
+		frameIndex = i;
 	}
 
-	default void restart() {
-		reset();
-		run();
-	}
-
-	default void repetions(int n) {
-	}
-
-	default Object frame(int i) {
-		return null; // makes no sense here
-	}
-
-	default Object frame() {
-		return null; // makes no sense here
-	}
-
-	default void setFrameIndex(int i) {
+	@Override
+	public T animate() {
+		return frame();
 	}
 }

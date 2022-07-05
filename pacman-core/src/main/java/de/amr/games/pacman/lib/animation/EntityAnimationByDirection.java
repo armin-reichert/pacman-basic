@@ -32,24 +32,24 @@ import de.amr.games.pacman.lib.Direction;
 /**
  * @author Armin Reichert
  */
-public class DirectionAnimationMap implements SpriteAnimation {
+public class EntityAnimationByDirection implements EntityAnimation {
 
-	private final Map<Direction, SpriteAnimation> map = new EnumMap<>(Direction.class);
+	private final Map<Direction, EntityAnimation> map = new EnumMap<>(Direction.class);
 	private final Supplier<Direction> fnDirection;
 
-	public DirectionAnimationMap(Supplier<Direction> fnDirection) {
+	public EntityAnimationByDirection(Supplier<Direction> fnDirection) {
 		this.fnDirection = fnDirection;
 	}
 
-	public void put(Direction dir, SpriteAnimation animation) {
+	public void put(Direction dir, EntityAnimation animation) {
 		map.put(dir, animation);
 	}
 
-	public SpriteAnimation get(Direction dir) {
+	public EntityAnimation get(Direction dir) {
 		return map.get(dir);
 	}
 
-	private SpriteAnimation currentAnimation() {
+	private EntityAnimation currentAnimation() {
 		return map.get(fnDirection.get());
 	}
 
@@ -65,7 +65,7 @@ public class DirectionAnimationMap implements SpriteAnimation {
 
 	@Override
 	public void ensureRunning() {
-		map.values().forEach(SpriteAnimation::ensureRunning);
+		map.values().forEach(EntityAnimation::ensureRunning);
 	}
 
 	@Override
@@ -85,12 +85,12 @@ public class DirectionAnimationMap implements SpriteAnimation {
 
 	@Override
 	public void reset() {
-		map.values().forEach(SpriteAnimation::reset);
+		map.values().forEach(EntityAnimation::reset);
 	}
 
 	@Override
 	public void restart() {
-		map.values().forEach(SpriteAnimation::restart);
+		map.values().forEach(EntityAnimation::restart);
 	}
 
 	@Override
@@ -100,7 +100,7 @@ public class DirectionAnimationMap implements SpriteAnimation {
 
 	@Override
 	public void run() {
-		map.values().forEach(SpriteAnimation::run);
+		map.values().forEach(EntityAnimation::run);
 	}
 
 	@Override
@@ -110,6 +110,6 @@ public class DirectionAnimationMap implements SpriteAnimation {
 
 	@Override
 	public void stop() {
-		map.values().forEach(SpriteAnimation::stop);
+		map.values().forEach(EntityAnimation::stop);
 	}
 }
