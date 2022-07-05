@@ -73,6 +73,12 @@ public class Creature extends Entity {
 		this.name = name;
 	}
 
+	@Override
+	public String toString() {
+		return String.format("%s: pos=%s, velocity=%s, speed=%.2f, dir=%s, wishDir=%s", name, position, velocity,
+				velocity.length(), moveDir(), wishDir());
+	}
+
 	public void placeAtTile(int tileX, int tileY, double offsetX, double offsetY) {
 		setPosition(tileX * World.TS + offsetX, tileY * World.TS + offsetY);
 		newTileEntered = true;

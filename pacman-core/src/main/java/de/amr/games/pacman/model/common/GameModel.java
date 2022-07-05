@@ -257,7 +257,7 @@ public abstract class GameModel {
 		public boolean foodFound;
 		public boolean energizerFound;
 		public boolean bonusReached;
-		public boolean pacKilled;
+		public boolean pacMetKiller;
 		public boolean pacGotPower;
 		public boolean pacPowerLost;
 		public boolean pacPowerFading;
@@ -275,7 +275,7 @@ public abstract class GameModel {
 			foodFound = false;
 			energizerFound = false;
 			bonusReached = false;
-			pacKilled = false;
+			pacMetKiller = false;
 			pacGotPower = false;
 			pacPowerLost = false;
 			pacPowerFading = false;
@@ -294,7 +294,7 @@ public abstract class GameModel {
 				onBonusReached();
 			}
 		} else {
-			pac.starvingTicks++;
+			pac.setStarvingTicks(1 + pac.getStarvingTicks());
 		}
 	}
 
@@ -302,9 +302,9 @@ public abstract class GameModel {
 		if (was.pacGotPower) {
 			onPacGetsPower();
 		}
-		checkPacKilled();
-		if (was.pacKilled) {
-			onPacKilled();
+		checkPacMeetsKiller();
+		if (was.pacMetKiller) {
+			onPacMetKiller();
 			return; // enter new game state
 		}
 		checkEdibleGhosts();
@@ -322,14 +322,14 @@ public abstract class GameModel {
 		}
 	}
 
-	private void checkPacKilled() {
+	private void checkPacMeetsKiller() {
 		if (!isPacImmune && !powerTimer.isRunning() && ghosts(HUNTING_PAC).anyMatch(pac::sameTile)) {
-			was.pacKilled = true;
+			was.pacMetKiller = true;
 		}
 	}
 
-	private void onPacKilled() {
-		pac.killed = true;
+	private void onPacMetKiller() {
+		pac.die();
 		theGhosts[RED_GHOST].stopCruiseElroyMode();
 		globalDotCounter = 0;
 		globalDotCounterEnabled = true;
@@ -409,8 +409,8 @@ public abstract class GameModel {
 	}
 
 	private void eatFood(int value, int restingTicks) {
-		pac.starvingTicks = 0;
-		pac.restingTicks = restingTicks;
+		pac.setStarvingTicks(0);
+		pac.rest(restingTicks);
 		level.world.removeFood(pac.tile());
 		theGhosts[RED_GHOST].checkCruiseElroyStart(level);
 		updateGhostDotCounters();
@@ -468,10 +468,10 @@ public abstract class GameModel {
 			} else if (!globalDotCounterEnabled && ghost.dotCounter >= level.privateDotLimits[ghost.id]) {
 				result.unlockedGhost = Optional.of(ghost);
 				result.unlockReason = "Private dot counter reached limit (%d)".formatted(level.privateDotLimits[ghost.id]);
-			} else if (pac.starvingTicks >= level.pacStarvingTimeLimit) {
+			} else if (pac.getStarvingTicks() >= level.pacStarvingTimeLimit) {
 				result.unlockedGhost = Optional.of(ghost);
-				result.unlockReason = "%s reached starving limit (%d ticks)".formatted(pac.name, pac.starvingTicks);
-				pac.starvingTicks = 0;
+				result.unlockReason = "%s reached starving limit (%d ticks)".formatted(pac.name, pac.getStarvingTicks());
+				pac.setStarvingTicks(0);
 			}
 		});
 	}

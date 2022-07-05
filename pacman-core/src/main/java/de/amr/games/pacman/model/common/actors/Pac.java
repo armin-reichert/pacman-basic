@@ -28,7 +28,6 @@ import static de.amr.games.pacman.model.common.world.World.HTS;
 
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.animation.EntityAnimation;
-import de.amr.games.pacman.lib.animation.EntityAnimations;
 import de.amr.games.pacman.model.common.GameModel;
 
 /**
@@ -39,52 +38,59 @@ import de.amr.games.pacman.model.common.GameModel;
 public class Pac extends Creature {
 
 	/** If Pac has been killed. */
-	public boolean killed = false;
+	private boolean dead = false;
 
 	/** Number of clock ticks Pac has to rest and can not move. */
-	public int restingTicks = 0;
+	private int restingTicks = 0;
 
 	/** Number of clock ticks Pac has not eaten any pellet. */
-	public int starvingTicks = 0;
+	private int starvingTicks = 0;
 
 	public Pac(String name) {
 		super(name);
 	}
 
-	@Override
-	public String toString() {
-		return String.format("%s: pos=%s, velocity=%s, speed=%.2f, dir=%s, wishDir=%s", name, position, velocity,
-				velocity.length(), moveDir(), wishDir());
-	}
-
 	public void reset() {
 		targetTile = null; // used in autopilot mode
 		stuck = false;
-		killed = false;
+		dead = false;
 		restingTicks = 0;
 		starvingTicks = 0;
 		setAbsSpeed(0);
 		placeAtTile(v(13, 26), HTS, 0);
 		setBothDirs(Direction.LEFT);
 		selectAnimation(AnimKeys.PAC_MUNCHING);
-		animations().map(EntityAnimations::selectedAnimation).ifPresent(EntityAnimation::reset);
+		selectedAnimation().ifPresent(EntityAnimation::reset);
 		show();
 	}
 
+	public void rest(int ticks) {
+		restingTicks = ticks;
+	}
+
+	public void setStarvingTicks(int starvingTicks) {
+		this.starvingTicks = starvingTicks;
+	}
+
+	public int getStarvingTicks() {
+		return starvingTicks;
+	}
+
+	public void die() {
+		dead = true;
+		setRelSpeed(0);
+	}
+
 	public void update(GameModel game) {
-		if (killed) {
-			setRelSpeed(0);
-		} else if (restingTicks == 0) {
+		if (dead) {
+			animate();
+		} else if (restingTicks > 0) {
+			--restingTicks;
+		} else {
 			setRelSpeed(game.powerTimer.isRunning() ? game.level.playerSpeedPowered : game.level.playerSpeed);
 			tryMoving();
-			if (stuck) {
-				animation(AnimKeys.PAC_MUNCHING).ifPresent(EntityAnimation::stop);
-			} else {
-				animation(AnimKeys.PAC_MUNCHING).ifPresent(EntityAnimation::run);
-			}
-		} else {
-			--restingTicks;
+			selectedAnimation().ifPresent(stuck ? EntityAnimation::stop : EntityAnimation::run);
+			animate();
 		}
-		animate();
 	}
 }

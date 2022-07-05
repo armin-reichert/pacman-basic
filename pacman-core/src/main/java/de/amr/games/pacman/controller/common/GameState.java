@@ -175,7 +175,7 @@ public enum GameState implements FsmState<GameModel> {
 				fsm.changeState(LEVEL_COMPLETE);
 			} else {
 				game.whatAboutTheGuys();
-				if (game.was.pacKilled) {
+				if (game.was.pacMetKiller) {
 					renderSound(game);
 					fsm.changeState(PACMAN_DYING);
 				} else if (game.was.ghostsKilled) {
@@ -210,7 +210,7 @@ public enum GameState implements FsmState<GameModel> {
 				if (game.was.foodFound) {
 					snd.ensureLoop(GameSound.PACMAN_MUNCH, GameSoundController.FOREVER);
 				}
-				if (game.pac.starvingTicks >= 12) {
+				if (game.pac.getStarvingTicks() >= 12) { // ???
 					snd.stop(GameSound.PACMAN_MUNCH);
 				}
 				if (game.ghosts(GhostState.DEAD).count() == 0) {

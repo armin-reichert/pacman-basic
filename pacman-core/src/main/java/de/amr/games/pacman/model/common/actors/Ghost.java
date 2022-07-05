@@ -420,8 +420,6 @@ public class Ghost extends Creature {
 			ensureFlashingStoppedAndShownAs(AnimKeys.GHOST_BLUE);
 		} else if (game.powerTimer.remaining() == GameModel.PAC_POWER_FADING_TICKS) {
 			ensureFlashingStarted(game.level.numFlashes);
-		} else if (game.powerTimer.remaining() == 1) {
-			ensureFlashingStoppedAndShownAs(AnimKeys.GHOST_COLOR);
 		}
 	}
 
