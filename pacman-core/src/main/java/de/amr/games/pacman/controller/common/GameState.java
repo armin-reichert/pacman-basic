@@ -161,7 +161,6 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void onEnter(GameModel game) {
 			game.pac.selectAnimation(AnimKeys.PAC_MUNCHING);
-			game.ghosts().forEach(ghost -> ghost.selectAnimation(AnimKeys.GHOST_COLOR));
 			game.energizerPulse.restart();
 			gameController.sounds().ifPresent(snd -> snd.ensureSirenStarted(game.huntingTimer.phase() / 2));
 		}

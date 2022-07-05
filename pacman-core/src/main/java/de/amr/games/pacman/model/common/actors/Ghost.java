@@ -46,6 +46,7 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.U;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.lib.animation.EntityAnimation;
 import de.amr.games.pacman.lib.animation.SingleEntityAnimation;
 import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
@@ -339,10 +340,8 @@ public class Ghost extends Creature {
 
 	public void enterLockedState() {
 		state = GhostState.LOCKED;
-		animations().ifPresent(anim -> {
-			selectAnimation(AnimKeys.GHOST_COLOR);
-			anim.selectedAnimation().reset(); // at first frame and stopped
-		});
+		selectAnimation(AnimKeys.GHOST_COLOR);
+		selectedAnimation().ifPresent(EntityAnimation::reset);
 	}
 
 	public void enterHuntingState() {
