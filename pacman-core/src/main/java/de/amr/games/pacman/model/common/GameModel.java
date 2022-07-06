@@ -41,6 +41,7 @@ import org.apache.logging.log4j.Logger;
 import de.amr.games.pacman.event.GameEvent;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
+import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.animation.SingleEntityAnimation;
 import de.amr.games.pacman.model.common.actors.Bonus;
@@ -170,11 +171,40 @@ public abstract class GameModel {
 		scores.gameScore.reset();
 	}
 
-	public void getReadyToPlay() {
+	public void resetGuys() {
+		powerTimer.reset(0);
 		energizerPulse.reset();
 		pac.reset();
-		ghosts().forEach(Ghost::reset);
-		powerTimer.reset(0);
+		resetGhosts();
+	}
+
+	private void resetGhosts() {
+		ghosts().forEach(ghost -> {
+			switch (ghost.id) {
+			case Ghost.RED_GHOST -> {
+				ghost.setAbsSpeed(0);
+				ghost.setBothDirs(Direction.LEFT);
+			}
+			case Ghost.PINK_GHOST -> {
+				ghost.setAbsSpeed(0.5);
+				ghost.setBothDirs(Direction.DOWN);
+			}
+			case Ghost.CYAN_GHOST, Ghost.ORANGE_GHOST -> {
+				ghost.setAbsSpeed(0.5);
+				ghost.setBothDirs(Direction.UP);
+			}
+			default -> {
+				// ignore
+			}
+			}
+			ghost.setPosition(ghost.homePosition);
+			ghost.targetTile = null;
+			ghost.stuck = false;
+			ghost.newTileEntered = true;
+			ghost.killIndex = -1;
+			ghost.show();
+			ghost.enterStateLocked();
+		});
 	}
 
 	public Stream<Ghost> ghosts(GhostState... states) {

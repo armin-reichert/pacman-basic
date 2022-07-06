@@ -112,23 +112,6 @@ public class Ghost extends Creature {
 		return U.oneOf(state, alternatives);
 	}
 
-	public void reset() {
-		show();
-		setAbsSpeed(id == RED_GHOST ? 0 : 0.5);
-		setBothDirs(switch (id) {
-		case RED_GHOST -> Direction.LEFT;
-		case PINK_GHOST -> Direction.DOWN;
-		case CYAN_GHOST, ORANGE_GHOST -> Direction.UP;
-		default -> null;
-		});
-		position = homePosition;
-		targetTile = null;
-		stuck = false;
-		newTileEntered = true;
-		killIndex = -1;
-		enterStateLocked();
-	}
-
 	public void update(GameModel game) {
 		switch (state) {
 		case LOCKED -> updateStateLocked(game);
@@ -141,7 +124,7 @@ public class Ghost extends Creature {
 		animate();
 	}
 
-	private void enterStateLocked() {
+	public void enterStateLocked() {
 		state = GhostState.LOCKED;
 		selectAnimation(AnimKeys.GHOST_COLOR);
 		selectedAnimation().ifPresent(EntityAnimation::reset);

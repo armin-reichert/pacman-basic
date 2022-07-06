@@ -137,7 +137,7 @@ public enum GameState implements FsmState<GameModel> {
 			}
 			game.scores.gameScore.showContent = hasCredit;
 			game.scores.highScore.showContent = true;
-			game.getReadyToPlay();
+			game.resetGuys();
 		}
 
 		@Override
@@ -297,7 +297,7 @@ public enum GameState implements FsmState<GameModel> {
 			timer.resetSeconds(1);
 			timer.start();
 			game.setLevel(game.level.number + 1);
-			game.getReadyToPlay();
+			game.resetGuys();
 			game.ghosts().forEach(Ghost::hide);
 			game.pac.hide();
 		}
