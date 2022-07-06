@@ -50,7 +50,6 @@ import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.GhostState;
 import de.amr.games.pacman.model.common.actors.Pac;
-import de.amr.games.pacman.model.common.world.ArcadeGhostHouse;
 import de.amr.games.pacman.model.common.world.ArcadeWorld;
 import de.amr.games.pacman.model.common.world.World;
 
@@ -179,7 +178,7 @@ public abstract class GameModel {
 
 	protected void initGhosts() {
 		var world = (ArcadeWorld) level.world;
-		var house = (ArcadeGhostHouse) world.ghostHouse();
+		var house = world.ghostHouse();
 
 		for (var ghost : theGhosts) {
 			ghost.setWorld(world);
