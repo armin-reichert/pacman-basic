@@ -317,4 +317,10 @@ public class Creature extends Entity {
 	protected boolean isForbiddenDirection(Direction dir) {
 		return dir == moveDir.opposite();
 	}
+
+	public void tryReachingTile(V2i tile) {
+		targetTile = Objects.requireNonNull(tile);
+		computeDirectionTowardsTarget();
+		tryMoving();
+	}
 }

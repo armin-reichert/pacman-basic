@@ -221,29 +221,21 @@ public class Ghost extends Creature {
 		if (game.variant == MS_PACMAN && game.huntingTimer.scatterPhase() == 0 && (id == RED_GHOST || id == PINK_GHOST)) {
 			roam();
 		} else if (game.huntingTimer.inChasingPhase() || elroy > 0) {
-			chase(game);
+			tryReachingTile(chasingTile(game));
 		} else {
-			scatter();
+			tryReachingTile(scatterTile);
 		}
-		animations().ifPresent(anims -> anims.select(AnimKeys.GHOST_COLOR));
+		selectAnimation(AnimKeys.GHOST_COLOR);
 	}
 
-	private void scatter() {
-		targetTile = scatterTile;
-		computeDirectionTowardsTarget();
-		tryMoving();
-	}
-
-	private void chase(GameModel game) {
-		targetTile = switch (id) {
+	private V2i chasingTile(GameModel game) {
+		return switch (id) {
 		case RED_GHOST -> game.pac.tile();
 		case PINK_GHOST -> game.pac.tilesAheadWithBug(4);
 		case CYAN_GHOST -> game.pac.tilesAheadWithBug(2).scaled(2).minus(game.theGhosts[RED_GHOST].tile());
 		case ORANGE_GHOST -> tile().euclideanDistance(game.pac.tile()) < 8 ? scatterTile : game.pac.tile();
 		default -> null;
 		};
-		computeDirectionTowardsTarget();
-		tryMoving();
 	}
 
 	private void roam() {
@@ -275,18 +267,16 @@ public class Ghost extends Creature {
 	public void enterStateDead() {
 		state = GhostState.DEAD;
 		selectAnimation(AnimKeys.GHOST_VALUE);
+		// display ghost value sprite (200, 400, 800, 1600)
 		selectedAnimation().ifPresent(anim -> anim.setFrameIndex(killIndex));
 	}
 
 	private void updateStateDead(GameModel game) {
-		boolean houseReached = returnToHouse(world.ghostHouse());
-		if (houseReached) {
-			setBothDirs(DOWN);
-			targetTile = revivalTile;
-			state = ENTERING_HOUSE;
-			GameEvents.publish(new GameEvent(game, GameEventType.GHOST_ENTERS_HOUSE, this, tile()));
+		boolean arrived = returnToHouse(world.ghostHouse());
+		if (arrived) {
+			enterStateEnteringHouse(game);
 		} else {
-			setRelSpeed(2 * game.level.ghostSpeed);
+			setRelSpeed(2 * game.level.ghostSpeed); // not sure
 			targetTile = world.ghostHouse().entry();
 			selectAnimation(AnimKeys.GHOST_EYES);
 		}
@@ -307,9 +297,16 @@ public class Ghost extends Creature {
 		return false;
 	}
 
+	private void enterStateEnteringHouse(GameModel game) {
+		state = ENTERING_HOUSE;
+		setBothDirs(DOWN);
+		targetTile = revivalTile;
+		GameEvents.publish(new GameEvent(game, GameEventType.GHOST_ENTERS_HOUSE, this, tile()));
+	}
+
 	private void updateStateEnteringHouse(GameModel game) {
-		boolean revivalTileReached = enterHouse(world.ghostHouse());
-		if (revivalTileReached) {
+		boolean arrived = enterHouse(world.ghostHouse());
+		if (arrived) {
 			setAbsSpeed(0.5);
 			enterStateLeavingHouse(game);
 		}
