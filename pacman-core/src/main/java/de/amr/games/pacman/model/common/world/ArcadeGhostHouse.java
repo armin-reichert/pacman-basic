@@ -92,6 +92,10 @@ public class ArcadeGhostHouse implements GhostHouse {
 		return seatRightTile;
 	}
 
+	public V2d seatPosition(V2i seatTile) {
+		return new V2d(seatTile).scaled(TS).plus(HTS, 0);
+	}
+
 	@Override
 	public boolean leadGuestToHouseEntry(Creature guest) {
 		var entryPos = new V2d(entryTile.scaled(TS).plus(HTS, 0));
