@@ -370,14 +370,14 @@ public class MsPacManGame extends GameModel {
 		}
 		level = createLevel(levelNumber);
 		levelCounter.addSymbol(level.bonusSymbol);
-		initGhosts(level);
+		initGhosts();
 		pac.setWorld(level.world);
 		movingBonus.setWorld(level.world);
 		ghostsKilledByEnergizer = 0;
 		scores.gameScore.levelNumber = levelNumber;
 	}
 
-	private void initGhosts(GameLevel level) {
+	private void initGhosts() {
 		var house = world().ghostHouse();
 
 		for (var ghost : theGhosts) {
