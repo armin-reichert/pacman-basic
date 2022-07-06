@@ -165,10 +165,6 @@ public class Ghost extends Creature {
 		if (hasLeftHouse) {
 			enterStateHunting();
 			setBothDirs(LEFT);
-			if (id == CYAN_GHOST) {
-				setBothDirs(RIGHT);
-				forceTurningBack();
-			}
 			GameEvents.publish(new GameEvent(game, GameEventType.GHOST_COMPLETES_LEAVING_HOUSE, this, tile()));
 		}
 	}
@@ -189,9 +185,7 @@ public class Ghost extends Creature {
 		if (U.insideRange(position.x, center.x, 1)) {
 			setOffset(HTS, offset().y); // center horizontally before rising
 			setBothDirs(UP);
-		} else if (position.y < center.y) {
-			setBothDirs(DOWN); // sink below zero level before moving to the center
-		} else {
+		} else if (U.insideRange(position.y, homePosition.y, 1)) {
 			setBothDirs(position.x < center.x ? RIGHT : LEFT);
 		}
 		move();

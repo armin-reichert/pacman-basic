@@ -33,6 +33,9 @@ import static java.lang.Math.abs;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
@@ -45,6 +48,8 @@ import de.amr.games.pacman.model.common.world.World;
  * @author Armin Reichert
  */
 public class Creature extends Entity {
+
+	private static final Logger logger = LogManager.getFormatterLogger();
 
 	protected static final Direction[] TURN_PRIORITY = { UP, LEFT, DOWN, RIGHT };
 
@@ -187,9 +192,10 @@ public class Creature extends Entity {
 	 * Force turning to the opposite direction.
 	 */
 	public void forceTurningBack() {
+		logger.info("%s got signal to reverse direction", name);
 		Direction oppositeDir = moveDir.opposite();
-		if (canAccessTile(tile().plus(oppositeDir.vec))) {
-			setWishDir(oppositeDir);
+		setWishDir(oppositeDir);
+		if (canAccessTile(tile().plus(wishDir.vec))) {
 			setMoveDir(oppositeDir);
 		}
 	}
