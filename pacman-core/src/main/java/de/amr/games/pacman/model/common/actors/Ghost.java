@@ -178,9 +178,9 @@ public class Ghost extends Creature {
 	private void updateStateLeavingHouse(GameModel game) {
 		boolean outside = world.ghostHouse().leadGuestOutOfHouse(this);
 		if (outside) {
-			enterStateHunting();
 			setBothDirs(LEFT);
-			newTileEntered = false;
+			newTileEntered = false; // move left into next tile before changing direction
+			enterStateHunting();
 			GameEvents.publish(new GameEvent(game, GameEventType.GHOST_COMPLETES_LEAVING_HOUSE, this, tile()));
 		}
 	}
@@ -208,9 +208,11 @@ public class Ghost extends Creature {
 		if (game.variant == MS_PACMAN && game.huntingTimer.scatterPhase() == 0 && (id == RED_GHOST || id == PINK_GHOST)) {
 			roam();
 		} else if (game.huntingTimer.inChasingPhase() || elroy > 0) {
-			tryReachingTile(chasingTile(game));
+			targetTile = chasingTile(game);
+			tryReachingTargetTile();
 		} else {
-			tryReachingTile(scatterTile);
+			targetTile = scatterTile;
+			tryReachingTargetTile();
 		}
 		setAnimation(AnimKeys.GHOST_COLOR);
 	}
@@ -253,6 +255,7 @@ public class Ghost extends Creature {
 
 	public void enterStateDead() {
 		state = GhostState.DEAD;
+		targetTile = world.ghostHouse().entryTile();
 		setAnimation(AnimKeys.GHOST_VALUE);
 		// display ghost value sprite (200, 400, 800, 1600)
 		animation().ifPresent(anim -> anim.setFrameIndex(killIndex));
@@ -263,7 +266,7 @@ public class Ghost extends Creature {
 			enterStateEnteringHouse(game);
 		} else {
 			setRelSpeed(2 * game.level.ghostSpeed); // not sure
-			tryReachingTile(world.ghostHouse().entryTile());
+			tryReachingTargetTile();
 			setAnimation(AnimKeys.GHOST_EYES);
 		}
 	}

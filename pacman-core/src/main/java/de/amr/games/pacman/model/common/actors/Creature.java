@@ -318,8 +318,7 @@ public class Creature extends Entity {
 		return dir == moveDir.opposite();
 	}
 
-	public void tryReachingTile(V2i tile) {
-		targetTile = Objects.requireNonNull(tile);
+	public void tryReachingTargetTile() {
 		computeDirectionTowardsTarget();
 		tryMoving();
 	}
