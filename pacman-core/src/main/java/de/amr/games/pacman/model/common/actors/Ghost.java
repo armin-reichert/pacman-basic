@@ -286,10 +286,8 @@ public class Ghost extends Creature {
 	}
 
 	public void forceTurningBack() {
-		if (state == FRIGHTENED || state == HUNTING_PAC) {
-			logger.info("%s got signal to reverse direction", name);
-			reverse = true;
-		}
+		logger.info("%s got signal to reverse direction", name);
+		reverse = true;
 	}
 
 	@Override
