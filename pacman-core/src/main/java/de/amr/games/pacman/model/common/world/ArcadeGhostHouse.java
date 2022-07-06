@@ -23,9 +23,17 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.common.world;
 
+import static de.amr.games.pacman.lib.Direction.LEFT;
+import static de.amr.games.pacman.lib.Direction.RIGHT;
+import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.lib.V2i.v;
+import static de.amr.games.pacman.model.common.world.World.HTS;
+import static de.amr.games.pacman.model.common.world.World.TS;
 
+import de.amr.games.pacman.lib.U;
+import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.model.common.actors.Creature;
 
 /**
  * The ghost house from the Arcade version of the games. Door on top, three seats inside.
@@ -67,5 +75,24 @@ public class ArcadeGhostHouse implements GhostHouse {
 	@Override
 	public V2i seatRight() {
 		return v(15, 17);
+	}
+
+	@Override
+	public boolean leadToHouseEntry(Creature guest) {
+		var entryPos = new V2d(entry()).scaled(TS).plus(HTS, 0);
+		var guestPos = guest.getPosition();
+		if (guestPos.x == entryPos.x && guestPos.y <= entryPos.y) {
+			guest.setPosition(entryPos);
+			return true;
+		}
+		var center = middleSeatCenter();
+		if (U.insideRange(guestPos.x, center.x, 1)) {
+			guest.setOffset(HTS, guest.offset().y); // center horizontally before rising
+			guest.setBothDirs(UP);
+		} else {
+			guest.setBothDirs(guestPos.x < center.x ? RIGHT : LEFT);
+		}
+		guest.move();
+		return false;
 	}
 }

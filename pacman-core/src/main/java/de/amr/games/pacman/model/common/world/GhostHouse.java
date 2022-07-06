@@ -30,6 +30,7 @@ import static de.amr.games.pacman.model.common.world.World.TS;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.model.common.actors.Creature;
 
 /**
  * @author Armin Reichert
@@ -71,4 +72,6 @@ public interface GhostHouse {
 	}
 
 	V2i seatRight();
+
+	boolean leadToHouseEntry(Creature guest);
 }

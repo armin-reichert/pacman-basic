@@ -33,7 +33,6 @@ import static de.amr.games.pacman.model.common.actors.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.common.actors.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.model.common.actors.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.model.common.world.World.HTS;
-import static de.amr.games.pacman.model.common.world.World.TS;
 
 import java.util.List;
 
@@ -178,37 +177,13 @@ public class Ghost extends Creature {
 	}
 
 	private void updateStateLeavingHouse(GameModel game) {
-		boolean outside = leaveHouse(world.ghostHouse());
+		boolean outside = world.ghostHouse().leadToHouseEntry(this);
 		if (outside) {
 			enterStateHunting();
 			setBothDirs(LEFT);
 			newTileEntered = false;
 			GameEvents.publish(new GameEvent(game, GameEventType.GHOST_COMPLETES_LEAVING_HOUSE, this, tile()));
 		}
-	}
-
-	/**
-	 * Lets the ghost leave the house from its home position towards the middle of the house and then upwards towards the
-	 * house door.
-	 * 
-	 * @param house the ghost house
-	 * @return {@code true} if the ghost left the house
-	 */
-	private boolean leaveHouse(GhostHouse house) {
-		var outsidePosition = new V2d(house.entry()).scaled(TS).plus(HTS, 0);
-		if (position.x == outsidePosition.x && position.y <= outsidePosition.y) {
-			setPosition(outsidePosition);
-			return true;
-		}
-		var center = house.middleSeatCenter();
-		if (U.insideRange(position.x, center.x, 1)) {
-			setOffset(HTS, offset().y); // center horizontally before rising
-			setBothDirs(UP);
-		} else {
-			setBothDirs(position.x < center.x ? RIGHT : LEFT);
-		}
-		move();
-		return false;
 	}
 
 	public void enterStateHunting() {
