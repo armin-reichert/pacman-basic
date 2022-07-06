@@ -137,7 +137,7 @@ public class Ghost extends Creature {
 				if (anims.selected().equals(AnimKeys.GHOST_COLOR)) {
 					selectAnimation(AnimKeys.GHOST_BLUE);
 				}
-				playFlashing(game);
+				checkFlashing(game);
 			} else {
 				selectAnimation(AnimKeys.GHOST_COLOR);
 			}
@@ -153,12 +153,22 @@ public class Ghost extends Creature {
 		move();
 	}
 
+	public void enterStateLeavingHouse(GameModel game) {
+		state = LEAVING_HOUSE;
+		selectAnimation(AnimKeys.GHOST_COLOR);
+		checkFlashing(game);
+		GameEvents.publish(new GameEvent(game, GameEventType.GHOST_STARTS_LEAVING_HOUSE, this, tile()));
+	}
+
 	private void updateStateLeavingHouse(GameModel game) {
 		boolean hasLeftHouse = leaveHouse(world.ghostHouse());
 		if (hasLeftHouse) {
-			state = HUNTING_PAC;
-			selectAnimation(AnimKeys.GHOST_COLOR);
-			setBothDirs(LEFT); // TODO not sure about this
+			enterStateHunting();
+			setBothDirs(LEFT);
+			if (id == CYAN_GHOST) {
+				setBothDirs(RIGHT);
+				forceTurningBack();
+			}
 			GameEvents.publish(new GameEvent(game, GameEventType.GHOST_COMPLETES_LEAVING_HOUSE, this, tile()));
 		}
 	}
@@ -259,7 +269,7 @@ public class Ghost extends Creature {
 			setRelSpeed(game.level.ghostSpeedFrightened);
 		}
 		roam();
-		playFlashing(game);
+		checkFlashing(game);
 	}
 
 	public void enterStateDead() {
@@ -336,13 +346,6 @@ public class Ghost extends Creature {
 		return false;
 	}
 
-	public void enterStateLeavingHouse(GameModel game) {
-		state = LEAVING_HOUSE;
-		selectAnimation(game.powerTimer.isRunning() ? AnimKeys.GHOST_BLUE : AnimKeys.GHOST_COLOR);
-		playFlashing(game);
-		GameEvents.publish(new GameEvent(game, GameEventType.GHOST_STARTS_LEAVING_HOUSE, this, tile()));
-	}
-
 	@Override
 	public boolean canAccessTile(V2i tile) {
 		if (world == null) {
@@ -364,11 +367,10 @@ public class Ghost extends Creature {
 		return state == HUNTING_PAC && dir == UP && upwardsBlockedTiles.contains(tile());
 	}
 
-	private void playFlashing(GameModel game) {
+	private void checkFlashing(GameModel game) {
 		animations().ifPresent(anims -> {
 			if (game.powerTimer.tick() == 0) {
 				anims.selectedAnimation().stop();
-				anims.select(AnimKeys.GHOST_BLUE);
 			} else if (game.powerTimer.remaining() == GameModel.PAC_POWER_FADING_TICKS) {
 				startFlashing(game.level.numFlashes);
 			}
