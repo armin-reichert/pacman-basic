@@ -196,36 +196,6 @@ public class PacManGame extends GameModel {
 		scores.gameScore.levelNumber = levelNumber;
 	}
 
-	private void initGhosts() {
-		ArcadeWorld world = (ArcadeWorld) level.world;
-		var house = world().ghostHouse();
-
-		for (var ghost : theGhosts) {
-			ghost.setWorld(world);
-		}
-
-		theGhosts[RED_GHOST].homePosition = house.seatPosition(house.entryTile());
-		theGhosts[RED_GHOST].revivalTile = house.seatMiddleTile();
-		theGhosts[RED_GHOST].scatterTile = world.rightUpperTarget;
-
-		theGhosts[PINK_GHOST].homePosition = house.seatPosition(house.seatMiddleTile());
-		theGhosts[PINK_GHOST].revivalTile = house.seatMiddleTile();
-		theGhosts[PINK_GHOST].scatterTile = world.leftUpperTarget;
-
-		theGhosts[CYAN_GHOST].homePosition = house.seatPosition(house.seatLeftTile());
-		theGhosts[CYAN_GHOST].revivalTile = house.seatLeftTile();
-		theGhosts[CYAN_GHOST].scatterTile = world.rightLowerTarget;
-
-		theGhosts[ORANGE_GHOST].homePosition = house.seatPosition(house.seatRightTile());
-		theGhosts[ORANGE_GHOST].revivalTile = house.seatRightTile();
-		theGhosts[ORANGE_GHOST].scatterTile = world.leftLowerTarget;
-
-		for (var ghost : theGhosts) {
-			ghost.dotCounter = 0;
-			ghost.elroy = 0;
-		}
-	}
-
 	@Override
 	public StaticBonus bonus() {
 		return bonus;

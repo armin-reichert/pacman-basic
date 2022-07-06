@@ -24,7 +24,9 @@ SOFTWARE.
 package de.amr.games.pacman.model.common;
 
 import static de.amr.games.pacman.lib.TickTimer.secToTicks;
+import static de.amr.games.pacman.model.common.actors.Ghost.CYAN_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ORANGE_GHOST;
+import static de.amr.games.pacman.model.common.actors.Ghost.PINK_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.RED_GHOST;
 import static de.amr.games.pacman.model.common.actors.GhostState.DEAD;
 import static de.amr.games.pacman.model.common.actors.GhostState.ENTERING_HOUSE;
@@ -48,6 +50,8 @@ import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.GhostState;
 import de.amr.games.pacman.model.common.actors.Pac;
+import de.amr.games.pacman.model.common.world.ArcadeGhostHouse;
+import de.amr.games.pacman.model.common.world.ArcadeWorld;
 import de.amr.games.pacman.model.common.world.World;
 
 /**
@@ -173,14 +177,40 @@ public abstract class GameModel {
 		scores.gameScore.reset();
 	}
 
+	protected void initGhosts() {
+		var world = (ArcadeWorld) level.world;
+		var house = (ArcadeGhostHouse) world.ghostHouse();
+
+		for (var ghost : theGhosts) {
+			ghost.setWorld(world);
+		}
+
+		theGhosts[RED_GHOST].homePosition = house.seatPosition(house.entryTile());
+		theGhosts[RED_GHOST].revivalTile = house.seatMiddleTile();
+		theGhosts[RED_GHOST].scatterTile = world.rightUpperTarget;
+
+		theGhosts[PINK_GHOST].homePosition = house.seatPosition(house.seatMiddleTile());
+		theGhosts[PINK_GHOST].revivalTile = house.seatMiddleTile();
+		theGhosts[PINK_GHOST].scatterTile = world.leftUpperTarget;
+
+		theGhosts[CYAN_GHOST].homePosition = house.seatPosition(house.seatLeftTile());
+		theGhosts[CYAN_GHOST].revivalTile = house.seatLeftTile();
+		theGhosts[CYAN_GHOST].scatterTile = world.rightLowerTarget;
+
+		theGhosts[ORANGE_GHOST].homePosition = house.seatPosition(house.seatRightTile());
+		theGhosts[ORANGE_GHOST].revivalTile = house.seatRightTile();
+		theGhosts[ORANGE_GHOST].scatterTile = world.leftLowerTarget;
+
+		for (var ghost : theGhosts) {
+			ghost.dotCounter = 0;
+			ghost.elroy = 0;
+		}
+	}
+
 	public void resetGuys() {
 		powerTimer.reset(0);
 		energizerPulse.reset();
 		pac.reset();
-		resetGhosts();
-	}
-
-	private void resetGhosts() {
 		ghosts().forEach(ghost -> {
 			switch (ghost.id) {
 			case Ghost.RED_GHOST -> {

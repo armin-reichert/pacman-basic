@@ -28,8 +28,6 @@ import static de.amr.games.pacman.model.common.actors.Ghost.CYAN_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ORANGE_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.PINK_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.RED_GHOST;
-import static de.amr.games.pacman.model.common.world.World.HTS;
-import static de.amr.games.pacman.model.common.world.World.TS;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -40,7 +38,6 @@ import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
-import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
@@ -375,35 +372,6 @@ public class MsPacManGame extends GameModel {
 		movingBonus.setWorld(level.world);
 		ghostsKilledByEnergizer = 0;
 		scores.gameScore.levelNumber = levelNumber;
-	}
-
-	private void initGhosts() {
-		var house = world().ghostHouse();
-
-		for (var ghost : theGhosts) {
-			ghost.setWorld(world());
-		}
-
-		theGhosts[RED_GHOST].homePosition = new V2d(house.entryTile()).scaled(TS).plus(HTS, 0);
-		theGhosts[RED_GHOST].revivalTile = house.seatMiddleTile();
-		theGhosts[RED_GHOST].scatterTile = world().rightUpperTarget;
-
-		theGhosts[PINK_GHOST].homePosition = new V2d(house.seatMiddleTile()).scaled(TS).plus(HTS, 0);
-		theGhosts[PINK_GHOST].revivalTile = house.seatMiddleTile();
-		theGhosts[PINK_GHOST].scatterTile = world().leftUpperTarget;
-
-		theGhosts[CYAN_GHOST].homePosition = new V2d(house.seatLeftTile()).scaled(TS).plus(HTS, 0);
-		theGhosts[CYAN_GHOST].revivalTile = house.seatLeftTile();
-		theGhosts[CYAN_GHOST].scatterTile = world().rightLowerTarget;
-
-		theGhosts[ORANGE_GHOST].homePosition = new V2d(house.seatRightTile()).scaled(TS).plus(HTS, 0);
-		theGhosts[ORANGE_GHOST].revivalTile = house.seatRightTile();
-		theGhosts[ORANGE_GHOST].scatterTile = world().leftLowerTarget;
-
-		for (var ghost : theGhosts) {
-			ghost.dotCounter = 0;
-			ghost.elroy = 0;
-		}
 	}
 
 	@Override

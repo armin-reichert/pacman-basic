@@ -23,11 +23,6 @@ SOFTWARE.
  */
 package de.amr.games.pacman.controller.pacman;
 
-import static de.amr.games.pacman.lib.TickTimer.secToTicks;
-import static de.amr.games.pacman.model.common.actors.Ghost.CYAN_GHOST;
-import static de.amr.games.pacman.model.common.actors.Ghost.ORANGE_GHOST;
-import static de.amr.games.pacman.model.common.actors.Ghost.PINK_GHOST;
-import static de.amr.games.pacman.model.common.actors.Ghost.RED_GHOST;
 import static de.amr.games.pacman.model.common.world.World.t;
 
 import java.util.Arrays;
@@ -39,8 +34,8 @@ import de.amr.games.pacman.controller.pacman.IntroController.Context;
 import de.amr.games.pacman.controller.pacman.IntroController.State;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
-import de.amr.games.pacman.lib.animation.SingleEntityAnimation;
 import de.amr.games.pacman.lib.animation.EntityAnimation;
+import de.amr.games.pacman.lib.animation.SingleEntityAnimation;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.lib.fsm.FsmState;
 import de.amr.games.pacman.model.common.actors.AnimKeys;
@@ -108,11 +103,14 @@ public class IntroController extends Fsm<State, Context> {
 				Arrays.fill(ctx.characterVisible, false);
 				ctx.pacMan = new Pac("Pac-Man");
 				ctx.ghosts = new Ghost[] { //
-						new Ghost(RED_GHOST, "Blinky"), //
-						new Ghost(PINK_GHOST, "Pinky"), //
-						new Ghost(CYAN_GHOST, "Inky"), //
-						new Ghost(ORANGE_GHOST, "Clyde"), //
+						new Ghost(Ghost.RED_GHOST, "Blinky"), //
+						new Ghost(Ghost.PINK_GHOST, "Pinky"), //
+						new Ghost(Ghost.CYAN_GHOST, "Inky"), //
+						new Ghost(Ghost.ORANGE_GHOST, "Clyde"), //
 				};
+				for (Ghost ghost : ctx.ghosts) {
+					ghost.setWorld(ctx.gameController.game().world());
+				}
 			}
 
 			@Override
@@ -252,7 +250,7 @@ public class IntroController extends Fsm<State, Context> {
 				});
 
 				// After 1 sec, Pac-Man and the surviving ghosts get visible again and move on
-				if (timer.tick() - ctx.ghostKilledTime == secToTicks(1)) {
+				if (timer.tick() - ctx.ghostKilledTime == TickTimer.secToTicks(1)) {
 					ctx.pacMan.show();
 					ctx.pacMan.setAbsSpeed(1.2);
 					for (Ghost ghost : ctx.ghosts) {
