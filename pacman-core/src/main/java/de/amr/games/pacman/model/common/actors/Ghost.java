@@ -33,6 +33,7 @@ import static de.amr.games.pacman.model.common.actors.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.common.actors.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.model.common.actors.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.model.common.world.World.HTS;
+import static de.amr.games.pacman.model.common.world.World.TS;
 
 import java.util.List;
 
@@ -117,6 +118,18 @@ public class Ghost extends Creature {
 		return U.oneOf(state, alternatives);
 	}
 
+	public void lock() {
+		enterStateLocked();
+	}
+
+	public void unlock(GameModel game) {
+		if (id == RED_GHOST) {
+			enterStateHunting();
+		} else {
+			enterStateLeavingHouse(game);
+		}
+	}
+
 	public void update(GameModel game) {
 		switch (state) {
 		case LOCKED -> updateStateLocked(game);
@@ -129,17 +142,9 @@ public class Ghost extends Creature {
 		advance();
 	}
 
-	public void enterStateLocked() {
+	private void enterStateLocked() {
 		state = GhostState.LOCKED;
 		setAnimation(AnimKeys.GHOST_COLOR).ifPresent(EntityAnimation::reset);
-	}
-
-	public void unlock(GameModel game) {
-		if (id == RED_GHOST) {
-			enterStateHunting();
-		} else {
-			enterStateLeavingHouse(game);
-		}
 	}
 
 	private void updateStateLocked(GameModel game) {
@@ -173,8 +178,8 @@ public class Ghost extends Creature {
 	}
 
 	private void updateStateLeavingHouse(GameModel game) {
-		boolean hasLeftHouse = leaveHouse(world.ghostHouse());
-		if (hasLeftHouse) {
+		boolean outside = leaveHouse(world.ghostHouse());
+		if (outside) {
 			enterStateHunting();
 			setBothDirs(LEFT);
 			newTileEntered = false;
@@ -190,8 +195,9 @@ public class Ghost extends Creature {
 	 * @return {@code true} if the ghost left the house
 	 */
 	private boolean leaveHouse(GhostHouse house) {
-		if (tile().equals(house.entry()) && offset().y <= 1) {
-			setOffset(offset().x, 0); // place exactly at house entry to avoid getting stuck
+		var outsidePosition = new V2d(house.entry()).scaled(TS).plus(HTS, 0);
+		if (position.x == outsidePosition.x && position.y <= outsidePosition.y) {
+			setPosition(outsidePosition);
 			return true;
 		}
 		var center = house.middleSeatCenter();
@@ -362,9 +368,9 @@ public class Ghost extends Creature {
 	}
 
 	private void checkFlashing(GameModel game) {
-		animationSet().ifPresent(anims -> {
+		animationSet().ifPresent(animSet -> {
 			if (game.powerTimer.tick() == 0) {
-				anims.byName(AnimKeys.GHOST_FLASHING).stop();
+				animSet.byName(AnimKeys.GHOST_FLASHING).stop();
 			} else if (game.powerTimer.remaining() == GameModel.PAC_POWER_FADING_TICKS) {
 				startFlashing(game.level.numFlashes);
 			}
@@ -372,12 +378,12 @@ public class Ghost extends Creature {
 	}
 
 	private void startFlashing(int numFlashes) {
-		animationSet().ifPresent(anims -> {
-			if (anims.selected().equals(AnimKeys.GHOST_FLASHING)) {
-				anims.selectedAnimation().ensureRunning();
+		animationSet().ifPresent(animSet -> {
+			if (animSet.selected().equals(AnimKeys.GHOST_FLASHING)) {
+				animSet.selectedAnimation().ensureRunning();
 			} else {
-				anims.select(AnimKeys.GHOST_FLASHING);
-				var flashing = anims.selectedAnimation();
+				animSet.select(AnimKeys.GHOST_FLASHING);
+				var flashing = animSet.selectedAnimation();
 				long frameTicks = GameModel.PAC_POWER_FADING_TICKS / (numFlashes * flashing.numFrames());
 				flashing.frameDuration(frameTicks);
 				flashing.repetions(numFlashes);

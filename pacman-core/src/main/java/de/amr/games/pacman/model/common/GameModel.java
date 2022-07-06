@@ -206,7 +206,7 @@ public abstract class GameModel {
 			ghost.reverse = false;
 			ghost.killIndex = -1;
 			ghost.show();
-			ghost.enterStateLocked();
+			ghost.lock();
 		});
 	}
 
