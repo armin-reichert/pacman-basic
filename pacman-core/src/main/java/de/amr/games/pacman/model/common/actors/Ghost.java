@@ -272,27 +272,13 @@ public class Ghost extends Creature {
 	}
 
 	private void updateStateDead(GameModel game) {
-		boolean arrived = returnToHouse(world.ghostHouse());
-		if (arrived) {
+		if (atGhostHouseDoor(world.ghostHouse())) {
 			enterStateEnteringHouse(game);
 		} else {
 			setRelSpeed(2 * game.level.ghostSpeed); // not sure
+			tryReachingTile(world.ghostHouse().entry());
 			selectAnimation(AnimKeys.GHOST_EYES);
 		}
-	}
-
-	/**
-	 * Lets the ghost return back to the ghost house entry.
-	 * 
-	 * @param house the ghost house
-	 * @return {@code true} if the ghost has reached the house entry before he starts to enter
-	 */
-	private boolean returnToHouse(GhostHouse house) {
-		if (atGhostHouseDoor(house) && moveDir != DOWN) {
-			return true;
-		}
-		tryReachingTile(world.ghostHouse().entry());
-		return false;
 	}
 
 	private void enterStateEnteringHouse(GameModel game) {
