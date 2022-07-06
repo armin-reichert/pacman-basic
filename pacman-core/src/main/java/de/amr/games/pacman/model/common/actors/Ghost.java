@@ -47,7 +47,6 @@ import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.lib.animation.EntityAnimation;
 import de.amr.games.pacman.model.common.GameModel;
-import de.amr.games.pacman.model.common.world.GhostHouse;
 
 /**
  * There are 4 ghosts with different "personalities".
@@ -170,6 +169,7 @@ public class Ghost extends Creature {
 
 	private void enterStateLeavingHouse(GameModel game) {
 		state = LEAVING_HOUSE;
+		setAbsSpeed(0.5);
 		setAnimation(AnimKeys.GHOST_COLOR);
 		checkFlashing(game);
 		GameEvents.publish(new GameEvent(game, GameEventType.GHOST_STARTS_LEAVING_HOUSE, this, tile()));
@@ -259,7 +259,7 @@ public class Ghost extends Creature {
 	}
 
 	private void updateStateDead(GameModel game) {
-		if (atGhostHouseDoor(world.ghostHouse())) {
+		if (world.ghostHouse().atHouseEntry(this)) {
 			enterStateEnteringHouse(game);
 		} else {
 			setRelSpeed(2 * game.level.ghostSpeed); // not sure
@@ -278,16 +278,8 @@ public class Ghost extends Creature {
 	private void updateStateEnteringHouse(GameModel game) {
 		boolean arrived = world.ghostHouse().leadGuestToTile(this, targetTile);
 		if (arrived) {
-			setAbsSpeed(0.5);
 			enterStateLeavingHouse(game);
 		}
-	}
-
-	/**
-	 * @return {@code true} if the ghost is at the ghosthouse door.
-	 */
-	private boolean atGhostHouseDoor(GhostHouse house) {
-		return tile().equals(house.entryTile()) && U.insideRange(offset().x, HTS, 1);
 	}
 
 	public void forceTurningBack() {

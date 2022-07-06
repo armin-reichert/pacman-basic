@@ -60,6 +60,8 @@ public interface GhostHouse {
 		return tile.x >= topLeft.x && tile.x <= bottomRight.x && tile.y >= topLeft.y && tile.y <= bottomRight.y;
 	}
 
+	boolean atHouseEntry(Creature creature);
+
 	boolean leadGuestToHouseEntry(Creature guest);
 
 	boolean leadGuestToTile(Creature guest, V2i targetTile);

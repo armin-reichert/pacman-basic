@@ -97,6 +97,11 @@ public class ArcadeGhostHouse implements GhostHouse {
 	}
 
 	@Override
+	public boolean atHouseEntry(Creature creature) {
+		return creature.tile().equals(entryTile) && U.insideRange(creature.offset().x, HTS, 1);
+	}
+
+	@Override
 	public boolean leadGuestToHouseEntry(Creature guest) {
 		var entryPos = new V2d(entryTile.scaled(TS).plus(HTS, 0));
 		if (guest.getPosition().x == entryPos.x && guest.getPosition().y <= entryPos.y) {
