@@ -115,7 +115,7 @@ public class ArcadeGhostHouse implements GhostHouse {
 	}
 
 	@Override
-	public boolean leadGuestToPosition(Creature guest, V2i targetTile) {
+	public boolean leadGuestToTile(Creature guest, V2i targetTile) {
 		var tile = guest.tile();
 		if (tile.equals(targetTile) && guest.offset().y >= 0) {
 			return true;

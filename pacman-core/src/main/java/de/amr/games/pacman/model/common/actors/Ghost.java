@@ -276,7 +276,7 @@ public class Ghost extends Creature {
 	}
 
 	private void updateStateEnteringHouse(GameModel game) {
-		boolean arrived = world.ghostHouse().leadGuestToPosition(this, targetTile);
+		boolean arrived = world.ghostHouse().leadGuestToTile(this, targetTile);
 		if (arrived) {
 			setAbsSpeed(0.5);
 			enterStateLeavingHouse(game);
