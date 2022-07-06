@@ -204,20 +204,20 @@ public class PacManGame extends GameModel {
 			ghost.setWorld(world);
 		}
 
-		theGhosts[RED_GHOST].homePosition = new V2d(house.entry()).scaled(TS).plus(HTS, 0);
-		theGhosts[RED_GHOST].revivalTile = house.seatMiddle();
+		theGhosts[RED_GHOST].homePosition = new V2d(house.entryTile()).scaled(TS).plus(HTS, 0);
+		theGhosts[RED_GHOST].revivalTile = house.seatMiddleTile();
 		theGhosts[RED_GHOST].scatterTile = world.rightUpperTarget;
 
-		theGhosts[PINK_GHOST].homePosition = new V2d(house.seatMiddle()).scaled(TS).plus(HTS, 0);
-		theGhosts[PINK_GHOST].revivalTile = house.seatMiddle();
+		theGhosts[PINK_GHOST].homePosition = new V2d(house.seatMiddleTile()).scaled(TS).plus(HTS, 0);
+		theGhosts[PINK_GHOST].revivalTile = house.seatMiddleTile();
 		theGhosts[PINK_GHOST].scatterTile = world.leftUpperTarget;
 
-		theGhosts[CYAN_GHOST].homePosition = new V2d(house.seatLeft()).scaled(TS).plus(HTS, 0);
-		theGhosts[CYAN_GHOST].revivalTile = house.seatLeft();
+		theGhosts[CYAN_GHOST].homePosition = new V2d(house.seatLeftTile()).scaled(TS).plus(HTS, 0);
+		theGhosts[CYAN_GHOST].revivalTile = house.seatLeftTile();
 		theGhosts[CYAN_GHOST].scatterTile = world.rightLowerTarget;
 
-		theGhosts[ORANGE_GHOST].homePosition = new V2d(house.seatRight()).scaled(TS).plus(HTS, 0);
-		theGhosts[ORANGE_GHOST].revivalTile = house.seatRight();
+		theGhosts[ORANGE_GHOST].homePosition = new V2d(house.seatRightTile()).scaled(TS).plus(HTS, 0);
+		theGhosts[ORANGE_GHOST].revivalTile = house.seatRightTile();
 		theGhosts[ORANGE_GHOST].scatterTile = world.leftLowerTarget;
 
 		for (var ghost : theGhosts) {

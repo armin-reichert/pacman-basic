@@ -27,7 +27,6 @@ package de.amr.games.pacman.model.common.world;
 import static de.amr.games.pacman.model.common.world.World.HTS;
 import static de.amr.games.pacman.model.common.world.World.TS;
 
-import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.actors.Creature;
@@ -41,29 +40,19 @@ public interface GhostHouse {
 
 	V2i size();
 
-	V2i doorTileLeft();
+	V2i entryTile();
 
-	V2i doorTileRight();
+	V2i doorLeftTile();
 
-	default V2i entry() {
-		return doorTileLeft().plus(Direction.UP.vec);
+	V2i doorRightTile();
+
+	default V2d doorsCenterPosition() {
+		return new V2d(doorLeftTile().scaled(TS)).plus(TS, HTS);
 	}
 
-	default V2d doorsCenter() {
-		return new V2d(doorTileLeft().scaled(TS)).plus(TS, HTS);
+	default boolean isDoorTile(V2i tile) {
+		return tile.equals(doorLeftTile()) || tile.equals(doorRightTile());
 	}
-
-	default V2d middleSeatCenter() {
-		return new V2d(seatMiddle().scaled(TS)).plus(HTS, HTS);
-	}
-
-	default boolean isDoor(V2i tile) {
-		return tile.equals(doorTileLeft()) || tile.equals(doorTileRight());
-	}
-
-	V2i seatLeft();
-
-	V2i seatMiddle();
 
 	default boolean contains(V2i tile) {
 		V2i topLeft = topLeftTile();
@@ -71,7 +60,7 @@ public interface GhostHouse {
 		return tile.x >= topLeft.x && tile.x <= bottomRight.x && tile.y >= topLeft.y && tile.y <= bottomRight.y;
 	}
 
-	V2i seatRight();
+	boolean leadGuestToHouseEntry(Creature guest);
 
-	boolean leadToHouseEntry(Creature guest);
+	boolean leadGuestToPosition(Creature guest, V2i targetTile);
 }

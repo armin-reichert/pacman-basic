@@ -401,7 +401,7 @@ public abstract class GameModel {
 		int points = ghostValue(ghost.killIndex);
 		scores.addPoints(points);
 		ghost.enterStateDead();
-		ghost.targetTile = level.world.ghostHouse().entry();
+		ghost.targetTile = level.world.ghostHouse().entryTile();
 		logger.info("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name, ghost.tile(), points);
 	}
 

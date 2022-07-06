@@ -42,55 +42,87 @@ import de.amr.games.pacman.model.common.actors.Creature;
  */
 public class ArcadeGhostHouse implements GhostHouse {
 
+	private final V2i size = v(7, 4);
+	private final V2i topLeftTile = v(10, 15);
+	private final V2i doorLeftTile = v(13, 15);
+	private final V2i doorRightTile = v(14, 15);
+	private final V2i entryTile = v(13, 14);
+	private final V2i seatLeftTile = v(11, 17);
+	private final V2i seatMiddleTile = v(13, 17);
+	private final V2i seatRightTile = v(15, 17);
+
 	@Override
 	public V2i size() {
-		return v(7, 4);
+		return size;
 	}
 
 	@Override
 	public V2i topLeftTile() {
-		return v(10, 15);
+		return topLeftTile;
 	}
 
 	@Override
-	public V2i doorTileLeft() {
-		return v(13, 15);
+	public V2i doorLeftTile() {
+		return doorLeftTile;
 	}
 
 	@Override
-	public V2i doorTileRight() {
-		return v(14, 15);
+	public V2i doorRightTile() {
+		return doorRightTile;
 	}
 
 	@Override
-	public V2i seatLeft() {
-		return v(11, 17);
+	public V2i entryTile() {
+		return entryTile;
+	}
+
+	public V2i seatLeftTile() {
+		return seatLeftTile;
+	}
+
+	public V2i seatMiddleTile() {
+		return seatMiddleTile;
+	}
+
+	public V2d middleSeatCenterPosition() {
+		return new V2d(seatMiddleTile().scaled(TS)).plus(HTS, HTS);
+	}
+
+	public V2i seatRightTile() {
+		return seatRightTile;
 	}
 
 	@Override
-	public V2i seatMiddle() {
-		return v(13, 17);
-	}
-
-	@Override
-	public V2i seatRight() {
-		return v(15, 17);
-	}
-
-	@Override
-	public boolean leadToHouseEntry(Creature guest) {
-		var entryPos = new V2d(entry()).scaled(TS).plus(HTS, 0);
-		var guestPos = guest.getPosition();
-		if (guestPos.x == entryPos.x && guestPos.y <= entryPos.y) {
+	public boolean leadGuestToHouseEntry(Creature guest) {
+		var entryPos = new V2d(entryTile.scaled(TS).plus(HTS, 0));
+		if (guest.getPosition().x == entryPos.x && guest.getPosition().y <= entryPos.y) {
 			guest.setPosition(entryPos);
 			return true;
 		}
-		var center = middleSeatCenter();
-		if (U.insideRange(guestPos.x, center.x, 1)) {
+		var center = middleSeatCenterPosition();
+		if (U.insideRange(guest.getPosition().x, center.x, 1)) {
 			guest.setOffset(HTS, guest.offset().y); // center horizontally before rising
 			guest.setBothDirs(UP);
 		} else {
-			guest.setBothDirs(guestPos.x < center.x ? RIGHT : LEFT);
+			guest.setBothDirs(guest.getPosition().x < center.x ? RIGHT : LEFT);
+		}
+		guest.move();
+		return false;
+	}
+
+	@Override
+	public boolean leadGuestToPosition(Creature guest, V2i targetTile) {
+		var tile = guest.tile();
+		if (tile.equals(targetTile) && guest.offset().y >= 0) {
+			return true;
+		}
+		var middle = seatMiddleTile();
+		if (tile.equals(middle) && guest.offset().y >= 0) {
+			if (targetTile.x < middle.x) {
+				guest.setBothDirs(LEFT);
+			} else if (targetTile.x > middle.x) {
+				guest.setBothDirs(RIGHT);
+			}
 		}
 		guest.move();
 		return false;

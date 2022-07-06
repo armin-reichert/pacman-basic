@@ -133,7 +133,7 @@ public interface World {
 			return false;
 		}
 		long numWallNeighbors = tile.neighbors().filter(this::isWall).count();
-		long numDoorNeighbors = tile.neighbors().filter(ghostHouse()::isDoor).count();
+		long numDoorNeighbors = tile.neighbors().filter(ghostHouse()::isDoorTile).count();
 		return numWallNeighbors + numDoorNeighbors < 2;
 	}
 

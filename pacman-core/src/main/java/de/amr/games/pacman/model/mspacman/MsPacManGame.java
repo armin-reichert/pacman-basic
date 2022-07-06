@@ -48,7 +48,6 @@ import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.Pac;
 import de.amr.games.pacman.model.common.world.ArcadeWorld;
-import de.amr.games.pacman.model.common.world.GhostHouse;
 import de.amr.games.pacman.model.common.world.World;
 
 /**
@@ -379,28 +378,27 @@ public class MsPacManGame extends GameModel {
 	}
 
 	private void initGhosts(GameLevel level) {
-		ArcadeWorld world = (ArcadeWorld) level.world;
-		GhostHouse house = world.ghostHouse();
+		var house = world().ghostHouse();
 
 		for (var ghost : theGhosts) {
-			ghost.setWorld(world);
+			ghost.setWorld(world());
 		}
 
-		theGhosts[RED_GHOST].homePosition = new V2d(house.entry()).scaled(TS).plus(HTS, 0);
-		theGhosts[RED_GHOST].revivalTile = house.seatMiddle();
-		theGhosts[RED_GHOST].scatterTile = world.rightUpperTarget;
+		theGhosts[RED_GHOST].homePosition = new V2d(house.entryTile()).scaled(TS).plus(HTS, 0);
+		theGhosts[RED_GHOST].revivalTile = house.seatMiddleTile();
+		theGhosts[RED_GHOST].scatterTile = world().rightUpperTarget;
 
-		theGhosts[PINK_GHOST].homePosition = new V2d(house.seatMiddle()).scaled(TS).plus(HTS, 0);
-		theGhosts[PINK_GHOST].revivalTile = house.seatMiddle();
-		theGhosts[PINK_GHOST].scatterTile = world.leftUpperTarget;
+		theGhosts[PINK_GHOST].homePosition = new V2d(house.seatMiddleTile()).scaled(TS).plus(HTS, 0);
+		theGhosts[PINK_GHOST].revivalTile = house.seatMiddleTile();
+		theGhosts[PINK_GHOST].scatterTile = world().leftUpperTarget;
 
-		theGhosts[CYAN_GHOST].homePosition = new V2d(house.seatLeft()).scaled(TS).plus(HTS, 0);
-		theGhosts[CYAN_GHOST].revivalTile = house.seatLeft();
-		theGhosts[CYAN_GHOST].scatterTile = world.rightLowerTarget;
+		theGhosts[CYAN_GHOST].homePosition = new V2d(house.seatLeftTile()).scaled(TS).plus(HTS, 0);
+		theGhosts[CYAN_GHOST].revivalTile = house.seatLeftTile();
+		theGhosts[CYAN_GHOST].scatterTile = world().rightLowerTarget;
 
-		theGhosts[ORANGE_GHOST].homePosition = new V2d(house.seatRight()).scaled(TS).plus(HTS, 0);
-		theGhosts[ORANGE_GHOST].revivalTile = house.seatRight();
-		theGhosts[ORANGE_GHOST].scatterTile = world.leftLowerTarget;
+		theGhosts[ORANGE_GHOST].homePosition = new V2d(house.seatRightTile()).scaled(TS).plus(HTS, 0);
+		theGhosts[ORANGE_GHOST].revivalTile = house.seatRightTile();
+		theGhosts[ORANGE_GHOST].scatterTile = world().leftLowerTarget;
 
 		for (var ghost : theGhosts) {
 			ghost.dotCounter = 0;
@@ -426,7 +424,7 @@ public class MsPacManGame extends GameModel {
 			var entryPortal = world.portals().get(rnd.nextInt(numPortals));
 			var exitPortal = world.portals().get(rnd.nextInt(numPortals));
 			var travelDir = rnd.nextBoolean() ? Direction.LEFT : Direction.RIGHT;
-			var houseEntry = world.ghostHouse().entry();
+			var houseEntry = world.ghostHouse().entryTile();
 			int houseHeight = world.ghostHouse().size().y;
 			route.add(travelDir == Direction.RIGHT ? entryPortal.left : entryPortal.right);
 			route.add(houseEntry);

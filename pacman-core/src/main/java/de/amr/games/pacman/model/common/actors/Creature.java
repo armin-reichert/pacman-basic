@@ -185,7 +185,7 @@ public class Creature extends Entity {
 		if (world.isWall(tile)) {
 			return false;
 		}
-		V2i leftDoor = world.ghostHouse().doorTileLeft();
+		V2i leftDoor = world.ghostHouse().doorLeftTile();
 		V2i rightDoor = leftDoor.plus(1, 0);
 		return !leftDoor.equals(tile) && !rightDoor.equals(tile);
 	}

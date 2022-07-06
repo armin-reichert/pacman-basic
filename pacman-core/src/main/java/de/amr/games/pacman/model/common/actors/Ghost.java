@@ -25,7 +25,6 @@ package de.amr.games.pacman.model.common.actors;
 
 import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
-import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.model.common.GameVariant.MS_PACMAN;
 import static de.amr.games.pacman.model.common.actors.GhostState.ENTERING_HOUSE;
@@ -177,7 +176,7 @@ public class Ghost extends Creature {
 	}
 
 	private void updateStateLeavingHouse(GameModel game) {
-		boolean outside = world.ghostHouse().leadToHouseEntry(this);
+		boolean outside = world.ghostHouse().leadGuestToHouseEntry(this);
 		if (outside) {
 			enterStateHunting();
 			setBothDirs(LEFT);
@@ -264,7 +263,7 @@ public class Ghost extends Creature {
 			enterStateEnteringHouse(game);
 		} else {
 			setRelSpeed(2 * game.level.ghostSpeed); // not sure
-			tryReachingTile(world.ghostHouse().entry());
+			tryReachingTile(world.ghostHouse().entryTile());
 			setAnimation(AnimKeys.GHOST_EYES);
 		}
 	}
@@ -277,7 +276,7 @@ public class Ghost extends Creature {
 	}
 
 	private void updateStateEnteringHouse(GameModel game) {
-		boolean arrived = enterHouse(world.ghostHouse());
+		boolean arrived = world.ghostHouse().leadGuestToPosition(this, targetTile);
 		if (arrived) {
 			setAbsSpeed(0.5);
 			enterStateLeavingHouse(game);
@@ -288,30 +287,7 @@ public class Ghost extends Creature {
 	 * @return {@code true} if the ghost is at the ghosthouse door.
 	 */
 	private boolean atGhostHouseDoor(GhostHouse house) {
-		return tile().equals(house.entry()) && U.insideRange(offset().x, HTS, 1);
-	}
-
-	/**
-	 * Lets the ghost enter the house and moving to its target position.
-	 * 
-	 * @param house the ghost house
-	 * @return {@code true} if the ghost has reached its target position
-	 */
-	private boolean enterHouse(GhostHouse house) {
-		var tile = tile();
-		if (tile.equals(targetTile) && offset().y >= 0) {
-			return true;
-		}
-		var middle = house.seatMiddle();
-		if (tile.equals(middle) && offset().y >= 0) {
-			if (targetTile.x < middle.x) {
-				setBothDirs(LEFT);
-			} else if (targetTile.x > middle.x) {
-				setBothDirs(RIGHT);
-			}
-		}
-		move();
-		return false;
+		return tile().equals(house.entryTile()) && U.insideRange(offset().x, HTS, 1);
 	}
 
 	public void forceTurningBack() {
@@ -326,8 +302,8 @@ public class Ghost extends Creature {
 		if (world == null) {
 			return false;
 		}
-		V2i leftDoor = world.ghostHouse().doorTileLeft();
-		V2i rightDoor = world.ghostHouse().doorTileRight();
+		V2i leftDoor = world.ghostHouse().doorLeftTile();
+		V2i rightDoor = world.ghostHouse().doorRightTile();
 		if (leftDoor.equals(tile) || rightDoor.equals(tile)) {
 			return is(ENTERING_HOUSE) || is(LEAVING_HOUSE);
 		}
