@@ -298,7 +298,7 @@ public class Ghost extends Creature {
 		V2i leftDoor = world.ghostHouse().doorLeftTile();
 		V2i rightDoor = world.ghostHouse().doorRightTile();
 		if (leftDoor.equals(tile) || rightDoor.equals(tile)) {
-			return is(ENTERING_HOUSE) || is(LEAVING_HOUSE);
+			return is(ENTERING_HOUSE, LEAVING_HOUSE);
 		}
 		return super.canAccessTile(tile);
 	}
