@@ -162,6 +162,8 @@ public abstract class GameModel {
 	}
 
 	public void reset() {
+		globalDotCounter = 0;
+		globalDotCounterEnabled = false;
 		playing = false;
 		lives = INITIAL_LIFES;
 		intermissionTestNumber = 1;
@@ -515,12 +517,18 @@ public abstract class GameModel {
 			if (ghost.id == RED_GHOST) {
 				result.unlockedGhost = Optional.of(theGhosts[RED_GHOST]);
 				result.unlockReason = "Blinky is always unlocked immediately";
-			} else if (globalDotCounterEnabled && globalDotCounter >= level.globalDotLimits[ghost.id]) {
-				result.unlockedGhost = Optional.of(ghost);
-				result.unlockReason = "Global dot counter reached limit (%d)".formatted(level.globalDotLimits[ghost.id]);
-			} else if (!globalDotCounterEnabled && ghost.dotCounter >= level.privateDotLimits[ghost.id]) {
+				return;
+			}
+			// first check private dot counter
+			if (!globalDotCounterEnabled && ghost.dotCounter >= level.privateDotLimits[ghost.id]) {
 				result.unlockedGhost = Optional.of(ghost);
 				result.unlockReason = "Private dot counter reached limit (%d)".formatted(level.privateDotLimits[ghost.id]);
+				return;
+			}
+			// check global dot counter
+			if (globalDotCounter >= level.globalDotLimits[ghost.id]) {
+				result.unlockedGhost = Optional.of(ghost);
+				result.unlockReason = "Global dot counter reached limit (%d)".formatted(level.globalDotLimits[ghost.id]);
 			} else if (pac.getStarvingTicks() >= level.pacStarvingTimeLimit) {
 				result.unlockedGhost = Optional.of(ghost);
 				result.unlockReason = "%s reached starving limit (%d ticks)".formatted(pac.name, pac.getStarvingTicks());
