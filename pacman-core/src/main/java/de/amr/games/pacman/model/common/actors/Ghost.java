@@ -277,7 +277,6 @@ public class Ghost extends Creature {
 			enterStateEnteringHouse(game);
 		} else {
 			setRelSpeed(2 * game.level.ghostSpeed); // not sure
-			targetTile = world.ghostHouse().entry();
 			selectAnimation(AnimKeys.GHOST_EYES);
 		}
 	}
@@ -292,8 +291,7 @@ public class Ghost extends Creature {
 		if (atGhostHouseDoor(house) && moveDir != DOWN) {
 			return true;
 		}
-		computeDirectionTowardsTarget();
-		tryMoving();
+		tryReachingTile(world.ghostHouse().entry());
 		return false;
 	}
 
