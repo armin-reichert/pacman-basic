@@ -96,6 +96,7 @@ public class SingleEntityAnimation<T> implements EntityAnimation {
 	 * 
 	 * @param ticks frame ticks
 	 */
+	@Override
 	public void frameDuration(long ticks) {
 		frameDurationTicks = ticks;
 	}
@@ -248,6 +249,7 @@ public class SingleEntityAnimation<T> implements EntityAnimation {
 	/**
 	 * @return number of frames of this animation
 	 */
+	@Override
 	public int numFrames() {
 		return things.length;
 	}

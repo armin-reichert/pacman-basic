@@ -74,6 +74,16 @@ public class EntityAnimationByDirection implements EntityAnimation {
 	}
 
 	@Override
+	public void frameDuration(long frameTicks) {
+		currentAnimation().frameDuration(frameTicks);
+	}
+
+	@Override
+	public int numFrames() {
+		return currentAnimation().numFrames();
+	}
+
+	@Override
 	public Object frame(int i) {
 		return currentAnimation().frame(i);
 	}

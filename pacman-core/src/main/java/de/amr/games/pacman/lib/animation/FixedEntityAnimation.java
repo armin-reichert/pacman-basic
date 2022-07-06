@@ -48,10 +48,15 @@ public class FixedEntityAnimation<T> implements EntityAnimation {
 		}
 	}
 
+	@Override
+	public void frameDuration(long frameTicks) {
+	}
+
 	public Stream<T> frames() {
 		return Stream.of(things);
 	}
 
+	@Override
 	public int numFrames() {
 		return things.length;
 	}

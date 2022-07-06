@@ -44,7 +44,6 @@ import de.amr.games.pacman.lib.U;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.lib.animation.EntityAnimation;
-import de.amr.games.pacman.lib.animation.SingleEntityAnimation;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.world.GhostHouse;
 
@@ -127,35 +126,35 @@ public class Ghost extends Creature {
 		stuck = false;
 		newTileEntered = true;
 		killIndex = -1;
-		enterLockedState();
+		enterStateLocked();
 	}
 
 	public void update(GameModel game) {
 		switch (state) {
-		case LOCKED -> updateLockedState(game);
-		case LEAVING_HOUSE -> updateLeavingHouseState(game);
-		case HUNTING_PAC -> updateHuntingState(game);
-		case FRIGHTENED -> updateFrightenedState(game);
-		case DEAD -> updateDeadState(game);
-		case ENTERING_HOUSE -> updateEnteringHouseState(game);
+		case LOCKED -> updateStateLocked(game);
+		case LEAVING_HOUSE -> updateStateLeavingHouse(game);
+		case HUNTING_PAC -> updateStateHunting(game);
+		case FRIGHTENED -> updateStateFrightened(game);
+		case DEAD -> updateStateDead(game);
+		case ENTERING_HOUSE -> updateStateEnteringHouse(game);
 		}
 		animate();
 	}
 
-	private void enterLockedState() {
+	private void enterStateLocked() {
 		state = GhostState.LOCKED;
 		selectAnimation(AnimKeys.GHOST_COLOR);
 		selectedAnimation().ifPresent(EntityAnimation::reset);
 	}
 
-	private void updateLockedState(GameModel game) {
+	private void updateStateLocked(GameModel game) {
 		bounce();
 		animations().ifPresent(anims -> {
 			if (game.powerTimer.isRunning()) {
 				if (anims.selected().equals(AnimKeys.GHOST_COLOR)) {
 					selectAnimation(AnimKeys.GHOST_BLUE);
 				}
-				updateFlashingAnimation(game);
+				playFlashing(game);
 			} else {
 				selectAnimation(AnimKeys.GHOST_COLOR);
 			}
@@ -171,7 +170,7 @@ public class Ghost extends Creature {
 		move();
 	}
 
-	private void updateLeavingHouseState(GameModel game) {
+	private void updateStateLeavingHouse(GameModel game) {
 		boolean hasLeftHouse = leaveHouse(world.ghostHouse());
 		if (hasLeftHouse) {
 			state = HUNTING_PAC;
@@ -206,7 +205,7 @@ public class Ghost extends Creature {
 		return false;
 	}
 
-	public void enterHuntingState() {
+	public void enterStateHunting() {
 		state = HUNTING_PAC;
 		selectAnimation(AnimKeys.GHOST_COLOR);
 	}
@@ -216,7 +215,7 @@ public class Ghost extends Creature {
 	 * had been to randomize the scatter target of *all* ghosts in Ms. Pac-Man but because of a bug, only the scatter
 	 * target of Blinky and Pinky would have been affected. Who knows?
 	 */
-	private void updateHuntingState(GameModel game) {
+	private void updateStateHunting(GameModel game) {
 		if (world.isTunnel(tile())) {
 			setRelSpeed(game.level.ghostSpeedTunnel);
 		} else if (elroy == 1) {
@@ -265,28 +264,28 @@ public class Ghost extends Creature {
 		tryMoving();
 	}
 
-	public void enterFrightenedState() {
+	public void enterStateFrightened() {
 		state = FRIGHTENED;
 		selectAnimation(AnimKeys.GHOST_BLUE);
 	}
 
-	private void updateFrightenedState(GameModel game) {
+	private void updateStateFrightened(GameModel game) {
 		if (world.isTunnel(tile())) {
 			setRelSpeed(game.level.ghostSpeedTunnel);
 		} else {
 			setRelSpeed(game.level.ghostSpeedFrightened);
 		}
 		roam();
-		updateFlashingAnimation(game);
+		playFlashing(game);
 	}
 
-	public void enterDeadState() {
+	public void enterStateDead() {
 		state = GhostState.DEAD;
 		selectAnimation(AnimKeys.GHOST_VALUE);
 		selectedAnimation().ifPresent(anim -> anim.setFrameIndex(killIndex));
 	}
 
-	private void updateDeadState(GameModel game) {
+	private void updateStateDead(GameModel game) {
 		boolean houseReached = returnToHouse(world.ghostHouse());
 		if (houseReached) {
 			setBothDirs(DOWN);
@@ -315,12 +314,12 @@ public class Ghost extends Creature {
 		return false;
 	}
 
-	private void updateEnteringHouseState(GameModel game) {
+	private void updateStateEnteringHouse(GameModel game) {
 		boolean revivalTileReached = enterHouse(world.ghostHouse());
 		if (revivalTileReached) {
 			setBothDirs(moveDir.opposite());
 			setAbsSpeed(0.5);
-			enterLeavingHouseState(game);
+			enterStateLeavingHouse(game);
 		}
 	}
 
@@ -354,10 +353,10 @@ public class Ghost extends Creature {
 		return false;
 	}
 
-	public void enterLeavingHouseState(GameModel game) {
+	public void enterStateLeavingHouse(GameModel game) {
 		state = LEAVING_HOUSE;
 		selectAnimation(game.powerTimer.isRunning() ? AnimKeys.GHOST_BLUE : AnimKeys.GHOST_COLOR);
-		updateFlashingAnimation(game);
+		playFlashing(game);
 		GameEvents.publish(new GameEvent(game, GameEventType.GHOST_STARTS_LEAVING_HOUSE, this, tile()));
 	}
 
@@ -382,34 +381,28 @@ public class Ghost extends Creature {
 		return state == HUNTING_PAC && dir == UP && upwardsBlockedTiles.contains(tile());
 	}
 
-	private void updateFlashingAnimation(GameModel game) {
-		if (game.powerTimer.tick() == 0) {
-			ensureFlashingStoppedAndShownAs(AnimKeys.GHOST_BLUE);
-		} else if (game.powerTimer.remaining() == GameModel.PAC_POWER_FADING_TICKS) {
-			ensureFlashingStarted(game.level.numFlashes);
-		}
-	}
-
-	private void ensureFlashingStarted(int numFlashes) {
-		animations().ifPresent(anim -> {
-			if (anim.selected().equals(AnimKeys.GHOST_FLASHING)) {
-				anim.selectedAnimation().ensureRunning();
-			} else {
-				anim.select(AnimKeys.GHOST_FLASHING);
-				var flashing = (SingleEntityAnimation<?>) anim.selectedAnimation();
-				long frameTicks = GameModel.PAC_POWER_FADING_TICKS / (numFlashes * flashing.numFrames());
-				flashing.frameDuration(frameTicks);
-				flashing.repetions(numFlashes);
-				flashing.restart();
+	private void playFlashing(GameModel game) {
+		animations().ifPresent(anims -> {
+			if (game.powerTimer.tick() == 0) {
+				anims.selectedAnimation().stop();
+				anims.select(AnimKeys.GHOST_BLUE);
+			} else if (game.powerTimer.remaining() == GameModel.PAC_POWER_FADING_TICKS) {
+				startFlashing(game.level.numFlashes);
 			}
 		});
 	}
 
-	private void ensureFlashingStoppedAndShownAs(String animKey) {
+	private void startFlashing(int numFlashes) {
 		animations().ifPresent(anims -> {
 			if (anims.selected().equals(AnimKeys.GHOST_FLASHING)) {
-				anims.selectedAnimation().stop();
-				anims.select(animKey);
+				anims.selectedAnimation().ensureRunning();
+			} else {
+				anims.select(AnimKeys.GHOST_FLASHING);
+				var flashing = anims.selectedAnimation();
+				long frameTicks = GameModel.PAC_POWER_FADING_TICKS / (numFlashes * flashing.numFrames());
+				flashing.frameDuration(frameTicks);
+				flashing.repetions(numFlashes);
+				flashing.restart();
 			}
 		});
 	}

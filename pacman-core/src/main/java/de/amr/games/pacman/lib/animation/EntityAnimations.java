@@ -37,7 +37,7 @@ public abstract class EntityAnimations {
 	protected final Map<String, EntityAnimation> animationsByName;
 	protected String selected;
 
-	public EntityAnimations(int initialSize) {
+	protected EntityAnimations(int initialSize) {
 		animationsByName = new HashMap<>(initialSize);
 	}
 

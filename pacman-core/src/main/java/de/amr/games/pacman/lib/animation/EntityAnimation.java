@@ -69,4 +69,8 @@ public interface EntityAnimation {
 
 	default void setFrameIndex(int i) {
 	}
+
+	int numFrames();
+
+	void frameDuration(long frameTicks);
 }
