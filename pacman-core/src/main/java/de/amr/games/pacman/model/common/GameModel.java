@@ -546,11 +546,7 @@ public abstract class GameModel {
 			redGhost.elroy = -redGhost.elroy; // resume Elroy mode
 			logger.info("%s Elroy mode %d resumed", redGhost.name, redGhost.elroy);
 		}
-		if (ghost == redGhost) {
-			ghost.enterStateHunting();
-		} else {
-			ghost.enterStateLeavingHouse(this);
-		}
+		ghost.unlock(this);
 	}
 
 	private void updateGhostDotCounters() {

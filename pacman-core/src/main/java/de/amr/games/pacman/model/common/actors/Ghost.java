@@ -134,11 +134,19 @@ public class Ghost extends Creature {
 		setAnimation(AnimKeys.GHOST_COLOR).ifPresent(EntityAnimation::reset);
 	}
 
+	public void unlock(GameModel game) {
+		if (id == RED_GHOST) {
+			enterStateHunting();
+		} else {
+			enterStateLeavingHouse(game);
+		}
+	}
+
 	private void updateStateLocked(GameModel game) {
 		bounce();
-		animationSet().ifPresent(anims -> {
+		animationSet().ifPresent(animSet -> {
 			if (game.powerTimer.isRunning()) {
-				if (anims.selected().equals(AnimKeys.GHOST_COLOR)) {
+				if (animSet.selected().equals(AnimKeys.GHOST_COLOR)) {
 					setAnimation(AnimKeys.GHOST_BLUE);
 				}
 				checkFlashing(game);
@@ -157,7 +165,7 @@ public class Ghost extends Creature {
 		move();
 	}
 
-	public void enterStateLeavingHouse(GameModel game) {
+	private void enterStateLeavingHouse(GameModel game) {
 		state = LEAVING_HOUSE;
 		setAnimation(AnimKeys.GHOST_COLOR);
 		checkFlashing(game);
