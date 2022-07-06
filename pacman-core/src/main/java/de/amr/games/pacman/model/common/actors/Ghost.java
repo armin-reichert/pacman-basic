@@ -169,14 +169,14 @@ public class Ghost extends Creature {
 
 	private void enterStateLeavingHouse(GameModel game) {
 		state = LEAVING_HOUSE;
-		setAbsSpeed(0.5);
+		setAbsSpeed(0.5); // not sure
 		setAnimation(AnimKeys.GHOST_COLOR);
 		checkFlashing(game);
 		GameEvents.publish(new GameEvent(game, GameEventType.GHOST_STARTS_LEAVING_HOUSE, this, tile()));
 	}
 
 	private void updateStateLeavingHouse(GameModel game) {
-		boolean outside = world.ghostHouse().leadGuestToHouseEntry(this);
+		boolean outside = world.ghostHouse().leadGuestOutOfHouse(this);
 		if (outside) {
 			enterStateHunting();
 			setBothDirs(LEFT);
