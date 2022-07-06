@@ -93,10 +93,10 @@ public class Intermission2Controller extends Fsm<State, Context> {
 				ctx.flap.show();
 				ctx.pacMan = new Pac("Pac-Man");
 				ctx.pacMan.setMoveDir(Direction.RIGHT);
-				ctx.pacMan.selectAnimation(AnimKeys.PAC_MUNCHING);
+				ctx.pacMan.setAnimation(AnimKeys.PAC_MUNCHING);
 				ctx.msPacMan = new Pac("Ms. Pac-Man");
 				ctx.msPacMan.setMoveDir(Direction.RIGHT);
-				ctx.msPacMan.selectAnimation(AnimKeys.GHOST_COLOR);
+				ctx.msPacMan.setAnimation(AnimKeys.GHOST_COLOR);
 			}
 
 			@Override
@@ -165,9 +165,9 @@ public class Intermission2Controller extends Fsm<State, Context> {
 					return;
 				}
 				ctx.pacMan.move();
-				ctx.pacMan.animate();
+				ctx.pacMan.advance();
 				ctx.msPacMan.move();
-				ctx.msPacMan.animate();
+				ctx.msPacMan.advance();
 			}
 		};
 

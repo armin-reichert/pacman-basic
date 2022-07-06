@@ -31,7 +31,7 @@ import java.util.Optional;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.lib.animation.EntityAnimation;
-import de.amr.games.pacman.lib.animation.EntityAnimations;
+import de.amr.games.pacman.lib.animation.EntityAnimationSet;
 import de.amr.games.pacman.model.common.world.World;
 
 /**
@@ -129,38 +129,39 @@ public class Entity {
 
 	// Animations
 
-	private EntityAnimations animations;
+	private EntityAnimationSet animationSet;
 
-	public void setAnimations(EntityAnimations animations) {
-		this.animations = animations;
+	public void setAnimationSet(EntityAnimationSet animationSet) {
+		this.animationSet = animationSet;
 	}
 
-	public Optional<EntityAnimations> animations() {
-		return Optional.ofNullable(animations);
+	public Optional<EntityAnimationSet> animationSet() {
+		return Optional.ofNullable(animationSet);
 	}
 
 	public Optional<EntityAnimation> animation(String key) {
-		return animations().map(anim -> anim.byName(key));
+		return animationSet().map(anim -> anim.byName(key));
 	}
 
-	public void selectAnimation(String name) {
-		selectAnimation(name, true);
+	public Optional<EntityAnimation> animation() {
+		return animationSet().map(EntityAnimationSet::selectedAnimation);
 	}
 
-	public void selectAnimation(String name, boolean ensureRunning) {
-		if (animations != null) {
-			animations.select(name);
+	public Optional<EntityAnimation> setAnimation(String name) {
+		setAnimation(name, true);
+		return animation();
+	}
+
+	public void setAnimation(String name, boolean ensureRunning) {
+		if (animationSet != null) {
+			animationSet.select(name);
 			if (ensureRunning) {
-				animations.selectedAnimation().ensureRunning();
+				animationSet.selectedAnimation().ensureRunning();
 			}
 		}
 	}
 
-	public Optional<EntityAnimation> selectedAnimation() {
-		return animations().map(EntityAnimations::selectedAnimation);
-	}
-
-	public void animate() {
-		animations().map(EntityAnimations::selectedAnimation).ifPresent(EntityAnimation::advance);
+	public void advance() {
+		animationSet().map(EntityAnimationSet::selectedAnimation).ifPresent(EntityAnimation::advance);
 	}
 }

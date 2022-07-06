@@ -38,7 +38,7 @@ import de.amr.games.pacman.controller.common.GameState;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.lib.animation.SingleEntityAnimation;
-import de.amr.games.pacman.lib.animation.EntityAnimations;
+import de.amr.games.pacman.lib.animation.EntityAnimationSet;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.lib.fsm.FsmState;
 import de.amr.games.pacman.model.common.actors.AnimKeys;
@@ -106,7 +106,7 @@ public class IntroController extends Fsm<IntroController.State, IntroController.
 				ctx.msPacMan.setMoveDir(LEFT);
 				ctx.msPacMan.setPosition(t(34), ctx.turningPoint.y);
 				ctx.msPacMan.setAbsSpeed(ctx.actorSpeed);
-				ctx.msPacMan.selectAnimation(AnimKeys.PAC_MUNCHING);
+				ctx.msPacMan.setAnimation(AnimKeys.PAC_MUNCHING);
 				ctx.msPacMan.show();
 				for (Ghost ghost : ctx.ghosts) {
 					ghost.enterStateHunting();
@@ -139,14 +139,14 @@ public class IntroController extends Fsm<IntroController.State, IntroController.
 				ctx.lightsTimer.advance();
 				Ghost ghost = ctx.ghosts[ctx.ghostIndex];
 				ghost.move();
-				ghost.animate();
+				ghost.advance();
 				if (ghost.moveDir() != UP && ghost.getPosition().x <= ctx.turningPoint.x) {
 					ghost.setMoveDir(UP);
 					ghost.setWishDir(UP);
 				}
 				if (ghost.getPosition().y <= ctx.lightsTopLeft.y + ghost.id * 18) {
 					ghost.setAbsSpeed(0);
-					ghost.animations().ifPresent(EntityAnimations::stop);
+					ghost.animationSet().ifPresent(EntityAnimationSet::stop);
 					if (++ctx.ghostIndex == ctx.ghosts.length) {
 						controller.changeState(State.MSPACMAN);
 					}
@@ -159,10 +159,10 @@ public class IntroController extends Fsm<IntroController.State, IntroController.
 			public void onUpdate(Context ctx) {
 				ctx.lightsTimer.advance();
 				ctx.msPacMan.move();
-				ctx.msPacMan.animate();
+				ctx.msPacMan.advance();
 				if (ctx.msPacMan.getPosition().x <= ctx.msPacManStopX) {
 					ctx.msPacMan.setAbsSpeed(0);
-					ctx.msPacMan.animations().ifPresent(anims -> anims.byName(AnimKeys.PAC_MUNCHING).reset());
+					ctx.msPacMan.animationSet().ifPresent(anims -> anims.byName(AnimKeys.PAC_MUNCHING).reset());
 					controller.changeState(State.READY_TO_PLAY);
 				}
 			}

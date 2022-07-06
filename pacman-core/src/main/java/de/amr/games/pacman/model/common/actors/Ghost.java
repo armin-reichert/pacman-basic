@@ -126,25 +126,24 @@ public class Ghost extends Creature {
 		case DEAD -> updateStateDead(game);
 		case ENTERING_HOUSE -> updateStateEnteringHouse(game);
 		}
-		animate();
+		advance();
 	}
 
 	public void enterStateLocked() {
 		state = GhostState.LOCKED;
-		selectAnimation(AnimKeys.GHOST_COLOR);
-		selectedAnimation().ifPresent(EntityAnimation::reset);
+		setAnimation(AnimKeys.GHOST_COLOR).ifPresent(EntityAnimation::reset);
 	}
 
 	private void updateStateLocked(GameModel game) {
 		bounce();
-		animations().ifPresent(anims -> {
+		animationSet().ifPresent(anims -> {
 			if (game.powerTimer.isRunning()) {
 				if (anims.selected().equals(AnimKeys.GHOST_COLOR)) {
-					selectAnimation(AnimKeys.GHOST_BLUE);
+					setAnimation(AnimKeys.GHOST_BLUE);
 				}
 				checkFlashing(game);
 			} else {
-				selectAnimation(AnimKeys.GHOST_COLOR);
+				setAnimation(AnimKeys.GHOST_COLOR);
 			}
 		});
 	}
@@ -160,7 +159,7 @@ public class Ghost extends Creature {
 
 	public void enterStateLeavingHouse(GameModel game) {
 		state = LEAVING_HOUSE;
-		selectAnimation(AnimKeys.GHOST_COLOR);
+		setAnimation(AnimKeys.GHOST_COLOR);
 		checkFlashing(game);
 		GameEvents.publish(new GameEvent(game, GameEventType.GHOST_STARTS_LEAVING_HOUSE, this, tile()));
 	}
@@ -200,7 +199,7 @@ public class Ghost extends Creature {
 
 	public void enterStateHunting() {
 		state = HUNTING_PAC;
-		selectAnimation(AnimKeys.GHOST_COLOR);
+		setAnimation(AnimKeys.GHOST_COLOR);
 	}
 
 	/*
@@ -225,7 +224,7 @@ public class Ghost extends Creature {
 		} else {
 			tryReachingTile(scatterTile);
 		}
-		selectAnimation(AnimKeys.GHOST_COLOR);
+		setAnimation(AnimKeys.GHOST_COLOR);
 	}
 
 	private V2i chasingTile(GameModel game) {
@@ -251,7 +250,7 @@ public class Ghost extends Creature {
 
 	public void enterStateFrightened() {
 		state = FRIGHTENED;
-		selectAnimation(AnimKeys.GHOST_BLUE);
+		setAnimation(AnimKeys.GHOST_BLUE);
 	}
 
 	private void updateStateFrightened(GameModel game) {
@@ -266,9 +265,9 @@ public class Ghost extends Creature {
 
 	public void enterStateDead() {
 		state = GhostState.DEAD;
-		selectAnimation(AnimKeys.GHOST_VALUE);
+		setAnimation(AnimKeys.GHOST_VALUE);
 		// display ghost value sprite (200, 400, 800, 1600)
-		selectedAnimation().ifPresent(anim -> anim.setFrameIndex(killIndex));
+		animation().ifPresent(anim -> anim.setFrameIndex(killIndex));
 	}
 
 	private void updateStateDead(GameModel game) {
@@ -277,7 +276,7 @@ public class Ghost extends Creature {
 		} else {
 			setRelSpeed(2 * game.level.ghostSpeed); // not sure
 			tryReachingTile(world.ghostHouse().entry());
-			selectAnimation(AnimKeys.GHOST_EYES);
+			setAnimation(AnimKeys.GHOST_EYES);
 		}
 	}
 
@@ -355,7 +354,7 @@ public class Ghost extends Creature {
 	}
 
 	private void checkFlashing(GameModel game) {
-		animations().ifPresent(anims -> {
+		animationSet().ifPresent(anims -> {
 			if (game.powerTimer.tick() == 0) {
 				anims.byName(AnimKeys.GHOST_FLASHING).stop();
 			} else if (game.powerTimer.remaining() == GameModel.PAC_POWER_FADING_TICKS) {
@@ -365,7 +364,7 @@ public class Ghost extends Creature {
 	}
 
 	private void startFlashing(int numFlashes) {
-		animations().ifPresent(anims -> {
+		animationSet().ifPresent(anims -> {
 			if (anims.selected().equals(AnimKeys.GHOST_FLASHING)) {
 				anims.selectedAnimation().ensureRunning();
 			} else {

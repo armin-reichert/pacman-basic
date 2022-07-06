@@ -30,7 +30,7 @@ import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.event.GameStateChangeEvent;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.animation.EntityAnimation;
-import de.amr.games.pacman.lib.animation.EntityAnimations;
+import de.amr.games.pacman.lib.animation.EntityAnimationSet;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.lib.fsm.FsmState;
 import de.amr.games.pacman.model.common.GameModel;
@@ -160,7 +160,7 @@ public enum GameState implements FsmState<GameModel> {
 	HUNTING {
 		@Override
 		public void onEnter(GameModel game) {
-			game.pac.selectAnimation(AnimKeys.PAC_MUNCHING);
+			game.pac.setAnimation(AnimKeys.PAC_MUNCHING);
 			game.energizerPulse.restart();
 			gameController.sounds().ifPresent(snd -> snd.ensureSirenStarted(game.huntingTimer.phase() / 2));
 		}
@@ -263,7 +263,7 @@ public enum GameState implements FsmState<GameModel> {
 			game.huntingTimer.stop();
 			game.bonus().setInactive();
 			game.pac.setAbsSpeed(0);
-			game.pac.animations().ifPresent(EntityAnimations::reset);
+			game.pac.animationSet().ifPresent(EntityAnimationSet::reset);
 			game.ghosts().forEach(Ghost::hide);
 			game.energizerPulse.reset();
 			gameController.sounds().ifPresent(GameSoundController::stopAll);
@@ -350,8 +350,8 @@ public enum GameState implements FsmState<GameModel> {
 		public void onEnter(GameModel game) {
 			timer.resetSeconds(5);
 			timer.start();
-			game.pac.selectAnimation(AnimKeys.PAC_DYING);
-			game.pac.selectedAnimation().ifPresent(EntityAnimation::reset);
+			game.pac.setAnimation(AnimKeys.PAC_DYING);
+			game.pac.animation().ifPresent(EntityAnimation::reset);
 			game.bonus().setInactive();
 			gameController.sounds().ifPresent(GameSoundController::stopAll);
 		}
@@ -363,7 +363,7 @@ public enum GameState implements FsmState<GameModel> {
 			if (timer.atSecond(1)) {
 				game.ghosts().forEach(Ghost::hide);
 			} else if (timer.atSecond(2)) {
-				game.pac.selectedAnimation().ifPresent(EntityAnimation::restart);
+				game.pac.animation().ifPresent(EntityAnimation::restart);
 				gameController.sounds().ifPresent(snd -> snd.play(GameSound.PACMAN_DEATH));
 			} else if (timer.atSecond(4)) {
 				if (--game.lives == 0) {

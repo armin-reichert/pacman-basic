@@ -59,8 +59,8 @@ public class Pac extends Creature {
 		setAbsSpeed(0);
 		placeAtTile(v(13, 26), HTS, 0);
 		setBothDirs(Direction.LEFT);
-		selectAnimation(AnimKeys.PAC_MUNCHING);
-		selectedAnimation().ifPresent(EntityAnimation::reset);
+		setAnimation(AnimKeys.PAC_MUNCHING);
+		animation().ifPresent(EntityAnimation::reset);
 		show();
 	}
 
@@ -83,14 +83,14 @@ public class Pac extends Creature {
 
 	public void update(GameModel game) {
 		if (dead) {
-			animate();
+			advance();
 		} else if (restingTicks > 0) {
 			--restingTicks;
 		} else {
 			setRelSpeed(game.powerTimer.isRunning() ? game.level.playerSpeedPowered : game.level.playerSpeed);
 			tryMoving();
-			selectedAnimation().ifPresent(stuck ? EntityAnimation::stop : EntityAnimation::run);
-			animate();
+			animation().ifPresent(stuck ? EntityAnimation::stop : EntityAnimation::run);
+			advance();
 		}
 	}
 }
