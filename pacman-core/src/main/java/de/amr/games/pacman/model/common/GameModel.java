@@ -203,6 +203,7 @@ public abstract class GameModel {
 			ghost.targetTile = null;
 			ghost.stuck = false;
 			ghost.newTileEntered = true;
+			ghost.reverse = false;
 			ghost.killIndex = -1;
 			ghost.show();
 			ghost.enterStateLocked();

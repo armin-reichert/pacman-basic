@@ -36,6 +36,9 @@ import static de.amr.games.pacman.model.common.world.World.HTS;
 
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import de.amr.games.pacman.event.GameEvent;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
@@ -53,6 +56,8 @@ import de.amr.games.pacman.model.common.world.GhostHouse;
  * @author Armin Reichert
  */
 public class Ghost extends Creature {
+
+	private static final Logger logger = LogManager.getFormatterLogger();
 
 	/** ID of red */
 	public static final int RED_GHOST = 0;
@@ -165,6 +170,7 @@ public class Ghost extends Creature {
 		if (hasLeftHouse) {
 			enterStateHunting();
 			setBothDirs(LEFT);
+			newTileEntered = false;
 			GameEvents.publish(new GameEvent(game, GameEventType.GHOST_COMPLETES_LEAVING_HOUSE, this, tile()));
 		}
 	}
@@ -185,7 +191,7 @@ public class Ghost extends Creature {
 		if (U.insideRange(position.x, center.x, 1)) {
 			setOffset(HTS, offset().y); // center horizontally before rising
 			setBothDirs(UP);
-		} else if (U.insideRange(position.y, homePosition.y, 1)) {
+		} else {
 			setBothDirs(position.x < center.x ? RIGHT : LEFT);
 		}
 		move();
@@ -304,7 +310,6 @@ public class Ghost extends Creature {
 	private void updateStateEnteringHouse(GameModel game) {
 		boolean revivalTileReached = enterHouse(world.ghostHouse());
 		if (revivalTileReached) {
-			setBothDirs(moveDir.opposite());
 			setAbsSpeed(0.5);
 			enterStateLeavingHouse(game);
 		}
@@ -340,6 +345,13 @@ public class Ghost extends Creature {
 		return false;
 	}
 
+	public void forceTurningBack() {
+		if (state == FRIGHTENED || state == HUNTING_PAC) {
+			logger.info("%s got signal to reverse direction", name);
+			reverse = true;
+		}
+	}
+
 	@Override
 	public boolean canAccessTile(V2i tile) {
 		if (world == null) {
@@ -364,7 +376,7 @@ public class Ghost extends Creature {
 	private void checkFlashing(GameModel game) {
 		animations().ifPresent(anims -> {
 			if (game.powerTimer.tick() == 0) {
-				anims.selectedAnimation().stop();
+				anims.byName(AnimKeys.GHOST_FLASHING).stop();
 			} else if (game.powerTimer.remaining() == GameModel.PAC_POWER_FADING_TICKS) {
 				startFlashing(game.level.numFlashes);
 			}

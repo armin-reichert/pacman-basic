@@ -71,6 +71,8 @@ public class Creature extends Entity {
 	/** Tells if the creature entered a new tile with its last move or placement. */
 	public boolean newTileEntered = true;
 
+	public boolean reverse = false;
+
 	/** Tells if the creature got stuck. */
 	public boolean stuck = false;
 
@@ -189,18 +191,6 @@ public class Creature extends Entity {
 	}
 
 	/**
-	 * Force turning to the opposite direction.
-	 */
-	public void forceTurningBack() {
-		logger.info("%s got signal to reverse direction", name);
-		Direction oppositeDir = moveDir.opposite();
-		setWishDir(oppositeDir);
-		if (canAccessTile(tile().plus(wishDir.vec))) {
-			setMoveDir(oppositeDir);
-		}
-	}
-
-	/**
 	 * Move through the world.
 	 * <p>
 	 * First checks if the creature can teleport, then if the creature can move to its current wish direction. If this is
@@ -211,6 +201,10 @@ public class Creature extends Entity {
 			return;
 		}
 		tryTeleport();
+		if (reverse && newTileEntered) {
+			wishDir = moveDir.opposite();
+			reverse = false;
+		}
 		tryMoving(wishDir);
 		if (stuck) {
 			tryMoving(moveDir);
