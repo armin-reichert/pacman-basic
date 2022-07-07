@@ -56,7 +56,7 @@ public class Creature extends Entity {
 	/** Readable name, for display and logging purposes. */
 	public final String name;
 
-	/** The world where this creature moves through. */
+	/** The world where this creature moves through. May be null. */
 	protected World world;
 
 	/** The current move direction. */
@@ -71,6 +71,7 @@ public class Creature extends Entity {
 	/** Tells if the creature entered a new tile with its last move or placement. */
 	public boolean newTileEntered = true;
 
+	/** Triggers reversing the move direction at next possible point in time. */
 	public boolean reverse = false;
 
 	/** Tells if the creature got stuck. */
@@ -96,14 +97,24 @@ public class Creature extends Entity {
 	}
 
 	/**
-	 * Sets the move direction and updates the velocity vector.
-	 * 
-	 * @param dir the new move direction
+	 * @param tile some tile inside or outside of the world
+	 * @return if this creature can access the given tile
 	 */
-	public void setMoveDir(Direction dir) {
-		moveDir = Objects.requireNonNull(dir);
-		double speed = velocity.length();
-		velocity = new V2d(dir.vec).scaled(speed);
+	public boolean canAccessTile(V2i tile) {
+		if (world == null) {
+			return false;
+		}
+		if (!world.insideMap(tile)) {
+			// portal tiles are the only tiles accessible outside of the map
+			return world.isPortal(tile);
+		}
+		if (world.isWall(tile)) {
+			return false;
+		}
+		if (world.ghostHouse().doorLeftTile().equals(tile) || world.ghostHouse().doorRightTile().equals(tile)) {
+			return false;
+		}
+		return true;
 	}
 
 	public Optional<World> getWorld() {
@@ -112,6 +123,17 @@ public class Creature extends Entity {
 
 	public void setWorld(World world) {
 		this.world = world;
+	}
+
+	/**
+	 * Sets the move direction and updates the velocity vector.
+	 * 
+	 * @param dir the new move direction
+	 */
+	public void setMoveDir(Direction dir) {
+		moveDir = Objects.requireNonNull(dir);
+		double speed = velocity.length();
+		velocity = new V2d(dir.vec).scaled(speed);
 	}
 
 	public Direction moveDir() {
@@ -132,16 +154,8 @@ public class Creature extends Entity {
 	}
 
 	public void forceTurningBack() {
-		logger.info("%s got signal to reverse direction", name);
 		reverse = true;
-	}
-
-	public V2i tilesAhead(int n) {
-		return tile().plus(moveDir.vec.scaled(n));
-	}
-
-	public V2i tilesAheadWithBug(int n) {
-		return moveDir == UP ? tilesAhead(n).minus(n, 0) : tilesAhead(n);
+		logger.info("%s got signal to reverse direction", name);
 	}
 
 	/**
@@ -175,24 +189,41 @@ public class Creature extends Entity {
 		velocity = pixelsPerTick == 0 ? V2d.NULL : new V2d(moveDir.vec).scaled(pixelsPerTick);
 	}
 
+	public V2i tilesAhead(int n) {
+		return tile().plus(moveDir.vec.scaled(n));
+	}
+
+	public V2i tilesAheadWithBug(int n) {
+		return moveDir == UP ? tilesAhead(n).minus(n, 0) : tilesAhead(n);
+	}
+
+	public void tryReachingTargetTile() {
+		computeDirectionTowardsTarget();
+		tryMoving();
+	}
+
 	/**
-	 * @param tile some tile inside or outside of the world
-	 * @return if this creature can access the given tile
+	 * As described in the Pac-Man dossier: checks all accessible neighbor tiles in order UP, LEFT, DOWN, RIGHT and
+	 * selects the one with smallest Euclidean distance to the target tile. Reversing the move direction is not allowed.
 	 */
-	public boolean canAccessTile(V2i tile) {
-		if (world == null) {
-			return false;
+	public void computeDirectionTowardsTarget() {
+		if (world == null || targetTile == null || world.isPortal(tile())) {
+			return;
 		}
-		if (!world.insideMap(tile)) {
-			// portal tiles are the only tiles accessible outside of the map
-			return world.isPortal(tile);
+		if (!newTileEntered && !stuck) {
+			return;
 		}
-		if (world.isWall(tile)) {
-			return false;
+		double minDist = Double.MAX_VALUE;
+		for (var dir : TURN_PRIORITY) {
+			var neighborTile = tile().plus(dir.vec);
+			if (!isForbiddenDirection(dir) && canAccessTile(neighborTile)) {
+				double d = neighborTile.euclideanDistance(targetTile);
+				if (d < minDist) {
+					minDist = d;
+					wishDir = dir;
+				}
+			}
 		}
-		V2i leftDoor = world.ghostHouse().doorLeftTile();
-		V2i rightDoor = leftDoor.plus(1, 0);
-		return !leftDoor.equals(tile) && !rightDoor.equals(tile);
 	}
 
 	/**
@@ -280,39 +311,7 @@ public class Creature extends Entity {
 		newTileEntered = !tile().equals(tile);
 	}
 
-	/**
-	 * As described in the Pac-Man dossier: checks all accessible neighbor tiles in order UP, LEFT, DOWN, RIGHT and
-	 * selects the one with smallest Euclidean distance to the target tile. Reversing the move direction is not allowed.
-	 */
-	public void computeDirectionTowardsTarget() {
-		if (world == null) {
-			return;
-		}
-		if (targetTile == null || world.isPortal(tile())) {
-			return;
-		}
-		if (!newTileEntered && !stuck) {
-			return;
-		}
-		double minDist = Double.MAX_VALUE;
-		for (var dir : TURN_PRIORITY) {
-			var neighbor = tile().plus(dir.vec);
-			if (!isForbiddenDirection(dir) && canAccessTile(neighbor)) {
-				double d = neighbor.euclideanDistance(targetTile);
-				if (d < minDist) {
-					minDist = d;
-					wishDir = dir;
-				}
-			}
-		}
-	}
-
 	protected boolean isForbiddenDirection(Direction dir) {
 		return dir == moveDir.opposite();
-	}
-
-	public void tryReachingTargetTile() {
-		computeDirectionTowardsTarget();
-		tryMoving();
 	}
 }
