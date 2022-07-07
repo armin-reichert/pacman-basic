@@ -285,11 +285,6 @@ public class Ghost extends Creature {
 		}
 	}
 
-	public void forceTurningBack() {
-		logger.info("%s got signal to reverse direction", name);
-		reverse = true;
-	}
-
 	@Override
 	public boolean canAccessTile(V2i tile) {
 		if (world == null) {

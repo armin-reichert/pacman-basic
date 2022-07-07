@@ -131,6 +131,11 @@ public class Creature extends Entity {
 		setWishDir(dir);
 	}
 
+	public void forceTurningBack() {
+		logger.info("%s got signal to reverse direction", name);
+		reverse = true;
+	}
+
 	public V2i tilesAhead(int n) {
 		return tile().plus(moveDir.vec.scaled(n));
 	}
@@ -214,17 +219,8 @@ public class Creature extends Entity {
 	}
 
 	private void tryTeleport() {
-		if (moveDir == Direction.RIGHT) {
-			world.portals().stream() //
-					.filter(portal -> tile().equals(portal.right)) //
-					.findFirst() //
-					.ifPresent(portal -> placeAtTile(portal.left, 0, 0));
-		} else if (moveDir == Direction.LEFT) {
-			world.portals().stream() //
-					.filter(portal -> tile().equals(portal.left)) //
-					.findFirst() //
-					.ifPresent(portal -> placeAtTile(portal.right, 0, 0));
-		}
+		world.portals().stream().filter(portal -> portal.attractsGuy(this)).findFirst()
+				.ifPresent(portal -> portal.teleport(this));
 	}
 
 	/**

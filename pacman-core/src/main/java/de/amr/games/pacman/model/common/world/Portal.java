@@ -25,7 +25,9 @@ package de.amr.games.pacman.model.common.world;
 
 import java.util.Objects;
 
+import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.model.common.actors.Creature;
 
 /**
  * A portal is a tunnel end that is connected to the tunnel end on the opposite side of the world.
@@ -40,6 +42,18 @@ public class Portal {
 	public Portal(V2i left, V2i right) {
 		this.left = left;
 		this.right = right;
+	}
+
+	public boolean attractsGuy(Creature guy) {
+		var guyTile = guy.tile();
+		return guyTile.equals(left) && guy.moveDir() == Direction.LEFT
+				|| guyTile.equals(right) && guy.moveDir() == Direction.RIGHT;
+	}
+
+	public void teleport(Creature guy) {
+		if (attractsGuy(guy)) {
+			guy.placeAtTile(guy.moveDir() == Direction.LEFT ? right : left, 0, 0);
+		}
 	}
 
 	@Override
