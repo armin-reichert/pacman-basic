@@ -27,7 +27,7 @@ import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Direction.UP;
-import static de.amr.games.pacman.model.common.world.World.t;
+import static de.amr.games.pacman.model.common.world.World.TS;
 import static java.lang.Math.abs;
 
 import java.util.Objects;
@@ -234,18 +234,15 @@ public class Creature extends Entity {
 	private void tryMoving(Direction dir) {
 		var tile = tile();
 		var offset = offset();
-		var neighborTile = tile.plus(dir.vec);
 		var speed = velocity.length();
-		var canAccessNeighborTile = canAccessTile(neighborTile);
+		var neighborTile = tile.plus(dir.vec);
+		var neighborTileAccessible = canAccessTile(neighborTile);
 
 		stuck = true;
 
 		// check if creature can turn towards move direction from its current position
-		if (canAccessNeighborTile) {
-			if (dir.isHorizontal() && abs(offset.y) > speed) {
-				return;
-			}
-			if (dir.isVertical() && abs(offset.x) > speed) {
+		if (neighborTileAccessible) {
+			if (dir.isHorizontal() && abs(offset.y) > speed || dir.isVertical() && abs(offset.x) > speed) {
 				return;
 			}
 			if (dir.isHorizontal()) {
@@ -255,8 +252,8 @@ public class Creature extends Entity {
 			}
 		}
 
-		var velocity = new V2d(dir.vec).scaled(speed);
-		var newPosition = position.plus(velocity);
+		var newVelocity = new V2d(dir.vec).scaled(speed);
+		var newPosition = position.plus(newVelocity);
 		var newOffset = World.offset(newPosition);
 		var newTile = World.tile(newPosition);
 
@@ -266,7 +263,7 @@ public class Creature extends Entity {
 		}
 
 		// align with inaccessible neighbor tile
-		if (!canAccessNeighborTile) {
+		if (!neighborTileAccessible) {
 			if (dir == Direction.RIGHT && newOffset.x > 0 || dir == Direction.LEFT && newOffset.x < 0) {
 				setOffset(0, offset.y);
 				return;
@@ -279,7 +276,7 @@ public class Creature extends Entity {
 
 		// yes, we can (move)
 		stuck = false;
-		setPosition(t(newTile.x) + newOffset.x, t(newTile.y) + newOffset.y);
+		setPosition(newTile.x * TS + newOffset.x, newTile.y * TS + newOffset.y);
 		newTileEntered = !tile().equals(tile);
 	}
 
