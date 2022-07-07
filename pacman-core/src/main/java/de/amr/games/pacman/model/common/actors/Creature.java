@@ -108,13 +108,7 @@ public class Creature extends Entity {
 			// portal tiles are the only tiles accessible outside of the map
 			return world.isPortal(tile);
 		}
-		if (world.isWall(tile)) {
-			return false;
-		}
-		if (world.ghostHouse().doorLeftTile().equals(tile) || world.ghostHouse().doorRightTile().equals(tile)) {
-			return false;
-		}
-		return true;
+		return !world.isWall(tile) && !world.ghostHouse().isDoorTile(tile);
 	}
 
 	public Optional<World> getWorld() {

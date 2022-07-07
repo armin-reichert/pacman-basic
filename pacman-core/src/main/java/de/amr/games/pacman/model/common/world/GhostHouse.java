@@ -24,10 +24,8 @@ SOFTWARE.
 
 package de.amr.games.pacman.model.common.world;
 
-import static de.amr.games.pacman.model.common.world.World.HTS;
-import static de.amr.games.pacman.model.common.world.World.TS;
+import java.util.stream.Stream;
 
-import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.actors.Creature;
 
@@ -42,17 +40,9 @@ public interface GhostHouse {
 
 	V2i entryTile();
 
-	V2i doorLeftTile();
+	Stream<V2i> doorTiles();
 
-	V2i doorRightTile();
-
-	default V2d doorsCenterPosition() {
-		return new V2d(doorLeftTile().scaled(TS)).plus(TS, HTS);
-	}
-
-	default boolean isDoorTile(V2i tile) {
-		return tile.equals(doorLeftTile()) || tile.equals(doorRightTile());
-	}
+	boolean isDoorTile(V2i tile);
 
 	default boolean contains(V2i tile) {
 		V2i topLeft = topLeftTile();

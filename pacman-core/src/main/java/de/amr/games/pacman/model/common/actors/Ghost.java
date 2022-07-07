@@ -55,6 +55,7 @@ import de.amr.games.pacman.model.common.GameModel;
  */
 public class Ghost extends Creature {
 
+	@SuppressWarnings("unused")
 	private static final Logger logger = LogManager.getFormatterLogger();
 
 	/** ID of red */
@@ -290,9 +291,7 @@ public class Ghost extends Creature {
 		if (world == null) {
 			return false;
 		}
-		V2i leftDoor = world.ghostHouse().doorLeftTile();
-		V2i rightDoor = world.ghostHouse().doorRightTile();
-		if (leftDoor.equals(tile) || rightDoor.equals(tile)) {
+		if (world.ghostHouse().isDoorTile(tile)) {
 			return is(ENTERING_HOUSE, LEAVING_HOUSE);
 		}
 		return super.canAccessTile(tile);

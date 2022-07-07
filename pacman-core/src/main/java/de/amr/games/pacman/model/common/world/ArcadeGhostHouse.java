@@ -30,6 +30,8 @@ import static de.amr.games.pacman.lib.V2i.v;
 import static de.amr.games.pacman.model.common.world.World.HTS;
 import static de.amr.games.pacman.model.common.world.World.TS;
 
+import java.util.stream.Stream;
+
 import de.amr.games.pacman.lib.U;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
@@ -51,6 +53,18 @@ public class ArcadeGhostHouse implements GhostHouse {
 	private final V2i seatMiddleTile = v(13, 17);
 	private final V2i seatRightTile = v(15, 17);
 
+	public V2i doorLeftTile() {
+		return doorLeftTile;
+	}
+
+	public V2i doorRightTile() {
+		return doorRightTile;
+	}
+
+	public V2d doorsCenterPosition() {
+		return new V2d(doorLeftTile().scaled(TS)).plus(TS, HTS);
+	}
+
 	@Override
 	public V2i size() {
 		return size;
@@ -62,13 +76,13 @@ public class ArcadeGhostHouse implements GhostHouse {
 	}
 
 	@Override
-	public V2i doorLeftTile() {
-		return doorLeftTile;
+	public Stream<V2i> doorTiles() {
+		return Stream.of(doorLeftTile, doorRightTile);
 	}
 
 	@Override
-	public V2i doorRightTile() {
-		return doorRightTile;
+	public boolean isDoorTile(V2i tile) {
+		return tile.equals(doorLeftTile()) || tile.equals(doorRightTile());
 	}
 
 	@Override
