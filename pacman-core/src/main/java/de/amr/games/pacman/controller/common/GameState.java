@@ -119,40 +119,40 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void onEnter(GameModel game) {
 			boolean hasCredit = game.credit > 0;
-			if (hasCredit && !game.playing) {
-				// start new game, play intro music
-				timer.resetSeconds(5);
-				timer.start();
-				game.reset();
-				gameController.sounds().ifPresent(snd -> {
-					snd.stopAll();
-					snd.setSilent(false);
-					snd.play(GameSound.GAME_READY);
-				});
-			} else {
-				// game already running or attract mode
-				timer.resetSeconds(2);
-				timer.start();
-				gameController.sounds().ifPresent(snd -> snd.setSilent(!game.playing));
-			}
 			game.scores.gameScore.showContent = hasCredit;
 			game.scores.highScore.showContent = true;
 			game.resetGuys();
+			gameController.sounds().ifPresent(snd -> {
+				snd.stopAll();
+				snd.setSilent(!hasCredit);
+			});
 		}
 
 		@Override
 		public void onUpdate(GameModel game) {
-			if (timer.hasExpired()) {
-				if (game.credit > 0) {
-					game.scores.enable(true);
+			if (game.credit > 0 && !game.playing) {
+				// game starting
+				if (timer.atSecond(0)) {
+					gameController.sounds().ifPresent(snd -> snd.play(GameSound.GAME_READY));
+					game.pac.hide();
+					game.ghosts().forEach(Ghost::hide);
+				} else if (timer.atSecond(2)) {
+					game.pac.show();
+					game.ghosts().forEach(Ghost::show);
+				} else if (timer.atSecond(4)) {
 					game.playing = true;
-				} else {
-					// start attract mode
-					game.scores.enable(false);
-					game.playing = false;
+					game.startHuntingPhase(0);
+					fsm.changeState(GameState.HUNTING);
 				}
-				game.startHuntingPhase(0);
-				fsm.changeState(GameState.HUNTING);
+			} else {
+				// game continuing or attract mode
+				if (timer.atSecond(0)) {
+					game.pac.show();
+					game.ghosts().forEach(Ghost::show);
+				} else if (timer.atSecond(2)) {
+					game.startHuntingPhase(0);
+					fsm.changeState(GameState.HUNTING);
+				}
 			}
 		}
 	},
