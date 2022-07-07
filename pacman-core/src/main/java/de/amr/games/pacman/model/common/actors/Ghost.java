@@ -137,7 +137,7 @@ public class Ghost extends Creature {
 		case DEAD -> updateStateDead(game);
 		case ENTERING_HOUSE -> updateStateEnteringHouse(game);
 		}
-		advance();
+		advanceAnimation();
 	}
 
 	private void enterStateLocked() {

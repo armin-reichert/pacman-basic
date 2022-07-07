@@ -83,14 +83,14 @@ public class Pac extends Creature {
 
 	public void update(GameModel game) {
 		if (dead) {
-			advance();
+			advanceAnimation();
 		} else if (restingTicks > 0) {
 			--restingTicks;
 		} else {
 			setRelSpeed(game.powerTimer.isRunning() ? game.level.playerSpeedPowered : game.level.playerSpeed);
 			tryMoving();
 			animation().ifPresent(stuck ? EntityAnimation::stop : EntityAnimation::run);
-			advance();
+			advanceAnimation();
 		}
 	}
 }

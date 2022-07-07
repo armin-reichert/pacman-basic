@@ -136,9 +136,7 @@ public class Intermission1Controller extends Fsm<State, Context> {
 			public void onUpdate(Context ctx) {
 				if (timer.atSecond(1)) {
 					ctx.gameController.sounds().ifPresent(snd -> snd.play(GameSound.INTERMISSION_1));
-					if (ctx.flap.animation != null) {
-						ctx.flap.animation.restart();
-					}
+					ctx.flap.animation().ifPresent(EntityAnimation::restart);
 				}
 				if (timer.hasExpired()) {
 					controller.changeState(State.CHASED_BY_GHOSTS);
@@ -163,13 +161,13 @@ public class Intermission1Controller extends Fsm<State, Context> {
 					return;
 				}
 				ctx.inky.move();
-				ctx.inky.advance();
+				ctx.inky.advanceAnimation();
 				ctx.pacMan.move();
-				ctx.pacMan.advance();
+				ctx.pacMan.advanceAnimation();
 				ctx.pinky.move();
-				ctx.pinky.advance();
+				ctx.pinky.advanceAnimation();
 				ctx.msPac.move();
-				ctx.msPac.advance();
+				ctx.msPac.advanceAnimation();
 			}
 		},
 
@@ -220,17 +218,17 @@ public class Intermission1Controller extends Fsm<State, Context> {
 					ctx.pinky.setAcceleration(0, 0.4);
 				} else {
 					ctx.pacMan.move();
-					ctx.pacMan.advance();
+					ctx.pacMan.advanceAnimation();
 					ctx.msPac.move();
-					ctx.msPac.advance();
+					ctx.msPac.advanceAnimation();
 					ctx.inky.move();
-					ctx.inky.advance();
+					ctx.inky.advanceAnimation();
 					if (ctx.inky.getPosition().y > ctx.middleY) {
 						ctx.inky.setPosition(ctx.inky.getPosition().x, ctx.middleY);
 						ctx.inky.setAcceleration(V2d.NULL);
 					}
 					ctx.pinky.move();
-					ctx.pinky.advance();
+					ctx.pinky.advanceAnimation();
 					if (ctx.pinky.getPosition().y > ctx.middleY) {
 						ctx.pinky.setPosition(ctx.pinky.getPosition().x, ctx.middleY);
 						ctx.pinky.setAcceleration(V2d.NULL);

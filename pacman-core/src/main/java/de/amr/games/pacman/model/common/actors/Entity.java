@@ -161,7 +161,7 @@ public class Entity {
 		}
 	}
 
-	public void advance() {
-		animationSet().map(EntityAnimationSet::selectedAnimation).ifPresent(EntityAnimation::advance);
+	public void advanceAnimation() {
+		animation().ifPresent(EntityAnimation::advance);
 	}
 }

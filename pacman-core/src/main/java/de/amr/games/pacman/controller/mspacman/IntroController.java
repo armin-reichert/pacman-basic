@@ -139,7 +139,7 @@ public class IntroController extends Fsm<IntroController.State, IntroController.
 				ctx.lightsTimer.advance();
 				Ghost ghost = ctx.ghosts[ctx.ghostIndex];
 				ghost.move();
-				ghost.advance();
+				ghost.advanceAnimation();
 				if (ghost.moveDir() != UP && ghost.getPosition().x <= ctx.turningPoint.x) {
 					ghost.setMoveDir(UP);
 					ghost.setWishDir(UP);
@@ -159,7 +159,7 @@ public class IntroController extends Fsm<IntroController.State, IntroController.
 			public void onUpdate(Context ctx) {
 				ctx.lightsTimer.advance();
 				ctx.msPacMan.move();
-				ctx.msPacMan.advance();
+				ctx.msPacMan.advanceAnimation();
 				if (ctx.msPacMan.getPosition().x <= ctx.msPacManStopX) {
 					ctx.msPacMan.setAbsSpeed(0);
 					ctx.msPacMan.animationSet().ifPresent(anims -> anims.byName(AnimKeys.PAC_MUNCHING).reset());

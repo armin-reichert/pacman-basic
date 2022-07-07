@@ -30,6 +30,7 @@ import de.amr.games.pacman.controller.mspacman.Intermission2Controller.Context;
 import de.amr.games.pacman.controller.mspacman.Intermission2Controller.State;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
+import de.amr.games.pacman.lib.animation.EntityAnimation;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.lib.fsm.FsmState;
 import de.amr.games.pacman.model.common.GameModel;
@@ -103,9 +104,7 @@ public class Intermission2Controller extends Fsm<State, Context> {
 			public void onUpdate(Context ctx) {
 				if (timer.atSecond(1)) {
 					ctx.gameController.sounds().ifPresent(snd -> snd.play(GameSound.INTERMISSION_2));
-					if (ctx.flap.animation != null) {
-						ctx.flap.animation.restart();
-					}
+					ctx.flap.animation().ifPresent(EntityAnimation::restart);
 				} else if (timer.atSecond(2)) {
 					ctx.flap.hide();
 				} else if (timer.atSecond(3)) {
@@ -165,9 +164,9 @@ public class Intermission2Controller extends Fsm<State, Context> {
 					return;
 				}
 				ctx.pacMan.move();
-				ctx.pacMan.advance();
+				ctx.pacMan.advanceAnimation();
 				ctx.msPacMan.move();
-				ctx.msPacMan.advance();
+				ctx.msPacMan.advanceAnimation();
 			}
 		};
 

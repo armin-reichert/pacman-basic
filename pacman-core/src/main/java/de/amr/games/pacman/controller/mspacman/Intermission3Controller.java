@@ -109,9 +109,7 @@ public class Intermission3Controller extends Fsm<State, Context> {
 			public void onUpdate(Context ctx) {
 				if (timer.atSecond(1)) {
 					ctx.gameController.sounds().ifPresent(snd -> snd.play(GameSound.INTERMISSION_3));
-					if (ctx.flap.animation != null) {
-						ctx.flap.animation.restart();
-					}
+					ctx.flap.animation().ifPresent(EntityAnimation::restart);
 				} else if (timer.atSecond(2)) {
 					ctx.flap.hide();
 				} else if (timer.atSecond(3)) {

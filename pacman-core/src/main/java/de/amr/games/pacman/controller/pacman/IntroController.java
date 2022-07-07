@@ -194,10 +194,10 @@ public class IntroController extends Fsm<State, Context> {
 						ghost.setBothDirs(Direction.RIGHT);
 						ghost.setAbsSpeed(0.6);
 						ghost.move();
-						ghost.advance();
+						ghost.advanceAnimation();
 					}
 					ctx.pacMan.move();
-					ctx.pacMan.advance();
+					ctx.pacMan.advanceAnimation();
 				}
 				// keep moving
 				else {
@@ -207,10 +207,10 @@ public class IntroController extends Fsm<State, Context> {
 					}
 					ctx.blinking.advance();
 					ctx.pacMan.move();
-					ctx.pacMan.advance();
+					ctx.pacMan.advanceAnimation();
 					for (Ghost ghost : ctx.ghosts) {
 						ghost.move();
-						ghost.advance();
+						ghost.advanceAnimation();
 					}
 				}
 			}
@@ -264,10 +264,10 @@ public class IntroController extends Fsm<State, Context> {
 					}
 				}
 				ctx.pacMan.move();
-				ctx.pacMan.advance();
+				ctx.pacMan.advanceAnimation();
 				for (Ghost ghost : ctx.ghosts) {
 					ghost.move();
-					ghost.advance();
+					ghost.advanceAnimation();
 				}
 				ctx.blinking.advance();
 			}
