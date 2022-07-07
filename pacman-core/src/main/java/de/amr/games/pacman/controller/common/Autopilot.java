@@ -29,7 +29,6 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -126,9 +125,9 @@ public class Autopilot implements Consumer<Creature> {
 		}
 		data.frightenedGhosts = game().ghosts(GhostState.FRIGHTENED)
 				.filter(ghost -> ghost.tile().manhattanDistance(game().pac.tile()) <= AutopilotData.MAX_GHOST_CHASE_DIST)
-				.collect(Collectors.toList());
+				.toList();
 		data.frightenedGhostsDistance = data.frightenedGhosts.stream()
-				.map(ghost -> ghost.tile().manhattanDistance(game().pac.tile())).collect(Collectors.toList());
+				.map(ghost -> ghost.tile().manhattanDistance(game().pac.tile())).toList();
 		return data;
 	}
 

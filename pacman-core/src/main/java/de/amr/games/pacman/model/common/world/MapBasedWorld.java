@@ -29,7 +29,6 @@ import static de.amr.games.pacman.lib.V2i.v;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.V2i;
@@ -63,7 +62,7 @@ public abstract class MapBasedWorld implements World {
 	protected MapBasedWorld(byte[][] mapData, int sizeX, int sizeY) {
 		map = copyArray2D(mapData);
 		size = v(sizeX, sizeY);
-		energizerTiles = tiles().filter(this::isEnergizerTile).collect(Collectors.toUnmodifiableList());
+		energizerTiles = tiles().filter(this::isEnergizerTile).toList();
 		totalFoodCount = (int) tiles().filter(this::isFoodTile).count();
 		foodRemaining = totalFoodCount;
 		portals = findPortals();
