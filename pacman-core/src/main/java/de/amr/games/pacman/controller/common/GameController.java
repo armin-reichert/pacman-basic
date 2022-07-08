@@ -23,6 +23,7 @@ SOFTWARE.
 */
 package de.amr.games.pacman.controller.common;
 
+import static de.amr.games.pacman.controller.common.GameState.BOOT;
 import static de.amr.games.pacman.controller.common.GameState.CREDIT;
 import static de.amr.games.pacman.controller.common.GameState.INTRO;
 
@@ -152,7 +153,7 @@ public class GameController {
 			game(currentGameVariant).credit = 0;
 		}
 		currentGameVariant = newVariant;
-		fsm.restartInInitialState(INTRO);
+		fsm.restartInInitialState(BOOT);
 	}
 
 	public void restartIntro() {

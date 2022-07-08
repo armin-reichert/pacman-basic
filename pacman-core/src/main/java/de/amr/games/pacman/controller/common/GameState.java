@@ -49,6 +49,22 @@ import de.amr.games.pacman.model.common.world.ArcadeWorld;
  */
 public enum GameState implements FsmState<GameModel> {
 
+	BOOT() {
+
+		@Override
+		public void onEnter(GameModel context) {
+			timer.resetSeconds(4);
+			timer.start();
+		}
+
+		@Override
+		public void onUpdate(GameModel context) {
+			if (timer.hasExpired()) {
+				fsm.changeState(INTRO);
+			}
+		}
+	},
+
 	INTRO() {
 		@Override
 		public void onEnter(GameModel game) {

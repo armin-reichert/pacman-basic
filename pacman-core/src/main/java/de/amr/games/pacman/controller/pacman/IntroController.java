@@ -92,11 +92,11 @@ public class IntroController extends Fsm<State, Context> {
 
 	public enum State implements FsmState<Context> {
 
-		WARMUP {
+		START {
 			@Override
 			public void onEnter(Context ctx) {
 				ctx.gameController.game().scores.gameScore.showContent = false;
-				ctx.gameController.game().scores.highScore.showContent = false;
+				ctx.gameController.game().scores.highScore.showContent = true;
 				ctx.ghostIndex = 0;
 				Arrays.fill(ctx.pictureVisible, false);
 				Arrays.fill(ctx.nicknameVisible, false);
@@ -111,21 +111,6 @@ public class IntroController extends Fsm<State, Context> {
 				for (Ghost ghost : ctx.ghosts) {
 					ghost.setWorld(ctx.gameController.game().world());
 				}
-			}
-
-			@Override
-			public void onUpdate(Context context) {
-				if (timer.atSecond(4)) {
-					controller.changeState(START);
-				}
-			}
-		},
-
-		START {
-			@Override
-			public void onEnter(Context ctx) {
-				ctx.gameController.game().scores.gameScore.showContent = false;
-				ctx.gameController.game().scores.highScore.showContent = true;
 			}
 
 			@Override
