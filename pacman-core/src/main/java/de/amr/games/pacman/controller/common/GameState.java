@@ -139,7 +139,7 @@ public enum GameState implements FsmState<GameModel> {
 				} else if (timer.atSecond(2)) {
 					game.pac.show();
 					game.ghosts().forEach(Ghost::show);
-				} else if (timer.atSecond(4)) {
+				} else if (timer.atSecond(5)) {
 					game.playing = true;
 					game.startHuntingPhase(0);
 					fsm.changeState(GameState.HUNTING);
