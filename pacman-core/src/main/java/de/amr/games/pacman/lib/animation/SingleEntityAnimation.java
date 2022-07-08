@@ -46,8 +46,6 @@ public class SingleEntityAnimation<T> implements EntityAnimation {
 
 	protected T[] things;
 	protected int repetitions;
-	protected long delay;
-	protected long delayRemainingTicks;
 	protected long totalRunningTicks;
 	protected long frameDurationTicks;
 	protected long frameRunningTicks;
@@ -70,12 +68,9 @@ public class SingleEntityAnimation<T> implements EntityAnimation {
 
 	/**
 	 * Resets the animation to its initial state.
-	 * 
-	 * @return the animation
 	 */
 	@Override
 	public void reset() {
-		delayRemainingTicks = delay;
 		totalRunningTicks = 0;
 		frameRunningTicks = 0;
 		frameIndex = 0;
@@ -99,22 +94,6 @@ public class SingleEntityAnimation<T> implements EntityAnimation {
 	@Override
 	public void frameDuration(long ticks) {
 		frameDurationTicks = ticks;
-	}
-
-	/**
-	 * @return number of ticks before the animation starts
-	 */
-	public long delay() {
-		return delay;
-	}
-
-	/**
-	 * Sets the number of ticks before the animation starts.
-	 * 
-	 * @param ticks number of ticks before the animation starts
-	 */
-	public void delay(long ticks) {
-		delay = delayRemainingTicks = ticks;
 	}
 
 	/**
@@ -181,9 +160,7 @@ public class SingleEntityAnimation<T> implements EntityAnimation {
 	@Override
 	public void advance() {
 		if (running) {
-			if (delayRemainingTicks > 0) {
-				delayRemainingTicks--;
-			} else if (totalRunningTicks++ == 0) {
+			if (totalRunningTicks++ == 0) {
 				if (onStart != null) {
 					onStart.run();
 				}
