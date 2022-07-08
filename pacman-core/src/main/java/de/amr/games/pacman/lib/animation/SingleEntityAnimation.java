@@ -24,9 +24,10 @@ SOFTWARE.
 package de.amr.games.pacman.lib.animation;
 
 /**
- * Single animation of things, for example of boolean, numbers, images or spritesheet regions.
+ * Time-controlled sequence of things, for example of boolean values, numbers, images, spritesheet regions etc.
  * 
  * @param <T> type of things to be animated
+ * 
  * @author Armin Reichert
  */
 public class SingleEntityAnimation<T> implements EntityAnimation {
@@ -34,12 +35,12 @@ public class SingleEntityAnimation<T> implements EntityAnimation {
 	public static final int INDEFINITE = -1;
 
 	/**
-	 * @param frameDuration ticks of single pulse
-	 * @return an endless animation of alternating true/false values
+	 * @param ticks duration (in ticks) of a single pulse
+	 * @return an endless sequence of {@code (true, false)}, each value taking {@code ticks} ticks
 	 */
-	public static SingleEntityAnimation<Boolean> pulse(int frameDuration) {
+	public static SingleEntityAnimation<Boolean> pulse(int ticks) {
 		var pulse = new SingleEntityAnimation<>(true, false);
-		pulse.frameDuration(frameDuration);
+		pulse.frameDuration(ticks);
 		pulse.repeatForever();
 		return pulse;
 	}
@@ -53,7 +54,6 @@ public class SingleEntityAnimation<T> implements EntityAnimation {
 	protected long loopIndex;
 	protected boolean running;
 	protected boolean complete;
-	protected Runnable onStart;
 
 	@SafeVarargs
 	public SingleEntityAnimation(T... things) {
@@ -77,13 +77,6 @@ public class SingleEntityAnimation<T> implements EntityAnimation {
 		loopIndex = 0;
 		running = false;
 		complete = false;
-	}
-
-	/**
-	 * @param code code to be run when the animation starts
-	 */
-	public void onStart(Runnable code) {
-		onStart = code;
 	}
 
 	/**
@@ -160,11 +153,7 @@ public class SingleEntityAnimation<T> implements EntityAnimation {
 	@Override
 	public void advance() {
 		if (running) {
-			if (totalRunningTicks++ == 0) {
-				if (onStart != null) {
-					onStart.run();
-				}
-			} else if (frameRunningTicks + 1 < frameDurationTicks) {
+			if (frameRunningTicks + 1 < frameDurationTicks) {
 				frameRunningTicks++;
 			} else if (frameIndex + 1 < things.length) {
 				// start next frame
