@@ -133,6 +133,7 @@ public enum GameState implements FsmState<GameModel> {
 			if (game.credit > 0 && !game.playing) {
 				// game starting
 				if (timer.atSecond(0)) {
+					game.reset();
 					gameController.sounds().ifPresent(snd -> snd.play(GameSound.GAME_READY));
 					game.pac.hide();
 					game.ghosts().forEach(Ghost::hide);
