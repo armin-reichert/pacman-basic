@@ -32,6 +32,7 @@ import static de.amr.games.pacman.model.common.actors.GhostState.DEAD;
 import static de.amr.games.pacman.model.common.actors.GhostState.ENTERING_HOUSE;
 import static de.amr.games.pacman.model.common.actors.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.common.actors.GhostState.HUNTING_PAC;
+import static de.amr.games.pacman.model.common.actors.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.model.common.actors.GhostState.LOCKED;
 
 import java.util.Optional;
@@ -283,7 +284,7 @@ public abstract class GameModel {
 		huntingTimer.advance();
 		if (huntingTimer.hasExpired()) {
 			startHuntingPhase(huntingTimer.phase() + 1);
-			ghosts(HUNTING_PAC, FRIGHTENED).forEach(Ghost::forceTurningBack);
+			ghosts(HUNTING_PAC, FRIGHTENED, LOCKED, LEAVING_HOUSE).forEach(Ghost::forceTurningBack);
 		}
 	}
 
