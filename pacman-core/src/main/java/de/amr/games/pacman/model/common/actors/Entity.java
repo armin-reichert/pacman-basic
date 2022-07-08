@@ -148,17 +148,19 @@ public class Entity {
 	}
 
 	public Optional<EntityAnimation> setAnimation(String name) {
-		setAnimation(name, true);
-		return animation();
+		return setAnimation(name, true);
 	}
 
-	public void setAnimation(String name, boolean ensureRunning) {
+	public Optional<EntityAnimation> setAnimation(String name, boolean ensureRunning) {
 		if (animationSet != null) {
 			animationSet.select(name);
 			if (ensureRunning) {
 				animationSet.selectedAnimation().ensureRunning();
+			} else {
+				animationSet.selectedAnimation().reset();
 			}
 		}
+		return animation();
 	}
 
 	public void advanceAnimation() {
