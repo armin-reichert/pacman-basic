@@ -41,7 +41,7 @@ public class ArcadeWorld extends MapBasedWorld {
 
 	public static final int TILES_X = 28;
 	public static final int TILES_Y = 36;
-	public static final V2i SIZE = v(TILES_X * TS, TILES_Y * TS);
+	public static final V2i WORLD_SIZE = v(TILES_X * TS, TILES_Y * TS);
 
 	public final V2i leftLowerTarget = v(0, 34);
 	public final V2i rightLowerTarget = v(27, 34);
