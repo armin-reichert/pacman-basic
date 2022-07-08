@@ -54,7 +54,38 @@ public class FixedEntityAnimation<T> implements EntityAnimation {
 	}
 
 	@Override
-	public void frameDuration(long frameTicks) {
+	public boolean isRunning() {
+		return false;
+	}
+
+	@Override
+	public void ensureRunning() {
+		// nothing to run
+	}
+
+	@Override
+	public void advance() {
+		// nothing to advance
+	}
+
+	@Override
+	public void stop() {
+		// nothing to stop
+	}
+
+	@Override
+	public void reset() {
+		// Fuck the World Economic Forum
+	}
+
+	@Override
+	public void setRepetions(int n) {
+		// nothing to repeat
+	}
+
+	@Override
+	public void setFrameDuration(long frameTicks) {
+		// nothing to do
 	}
 
 	public Stream<T> frames() {

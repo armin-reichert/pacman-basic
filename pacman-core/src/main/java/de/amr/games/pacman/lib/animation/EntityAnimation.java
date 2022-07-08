@@ -24,53 +24,43 @@ SOFTWARE.
 package de.amr.games.pacman.lib.animation;
 
 /**
+ * @param <T> the thing type
+ * 
  * @author Armin Reichert
  */
 public interface EntityAnimation {
 
-	void run();
-
-	default boolean isRunning() {
-		return true;
-	}
-
-	default void ensureRunning() {
-	}
-
-	default void advance() {
-	}
-
-	default Object animate() {
-		return null;
-	}
-
-	default void stop() {
-	}
-
-	default void reset() {
-	}
-
+	/**
+	 * Resets and starts the animation.
+	 */
 	default void restart() {
 		reset();
 		run();
 	}
 
-	default void setRepetions(int n) {
-	}
+	void run();
 
-	default Object frame(int i) {
-		return null; // makes no sense here
-	}
+	boolean isRunning();
 
-	default Object frame() {
-		return null; // makes no sense here
-	}
+	void ensureRunning();
 
-	default void setFrameIndex(int i) {
-	}
+	void advance();
+
+	Object animate();
+
+	void stop();
+
+	void reset();
+
+	void setRepetions(int n);
+
+	Object frame(int i);
+
+	Object frame();
+
+	void setFrameIndex(int i);
 
 	int numFrames();
 
-	default void frameDuration(long frameTicks) {
-	}
+	void setFrameDuration(long frameTicks);
 }

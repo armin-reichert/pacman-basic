@@ -40,7 +40,7 @@ public class SingleEntityAnimation<T> implements EntityAnimation {
 	 */
 	public static SingleEntityAnimation<Boolean> pulse(int ticks) {
 		var pulse = new SingleEntityAnimation<>(true, false);
-		pulse.frameDuration(ticks);
+		pulse.setFrameDuration(ticks);
 		pulse.repeatForever();
 		return pulse;
 	}
@@ -77,7 +77,7 @@ public class SingleEntityAnimation<T> implements EntityAnimation {
 	}
 
 	@Override
-	public void frameDuration(long ticks) {
+	public void setFrameDuration(long ticks) {
 		frameDurationTicks = ticks;
 	}
 

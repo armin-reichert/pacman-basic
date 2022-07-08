@@ -62,7 +62,7 @@ public class MovingBonus extends Creature implements Bonus {
 	public MovingBonus() {
 		super("MovingBonus");
 		jumpAnimation = new SingleEntityAnimation<>(2, -2);
-		jumpAnimation.frameDuration(10);
+		jumpAnimation.setFrameDuration(10);
 		jumpAnimation.repeatForever();
 		setInactive();
 	}

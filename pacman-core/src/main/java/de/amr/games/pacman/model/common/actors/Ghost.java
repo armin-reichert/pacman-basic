@@ -323,7 +323,7 @@ public class Ghost extends Creature {
 				animSet.select(AnimKeys.GHOST_FLASHING);
 				var flashing = animSet.selectedAnimation();
 				long frameTicks = GameModel.PAC_POWER_FADING_TICKS / (numFlashes * flashing.numFrames());
-				flashing.frameDuration(frameTicks);
+				flashing.setFrameDuration(frameTicks);
 				flashing.setRepetions(numFlashes);
 				flashing.restart();
 			}
