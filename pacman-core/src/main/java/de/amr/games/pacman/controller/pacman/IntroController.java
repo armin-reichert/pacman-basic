@@ -115,14 +115,13 @@ public class IntroController extends Fsm<State, Context> {
 
 			@Override
 			public void onUpdate(Context context) {
-				if (timer.atSecond(5)) {
+				if (timer.atSecond(4)) {
 					controller.changeState(START);
 				}
 			}
 		},
 
 		START {
-
 			@Override
 			public void onEnter(Context ctx) {
 				ctx.gameController.game().scores.gameScore.showContent = false;
