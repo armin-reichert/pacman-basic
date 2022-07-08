@@ -47,6 +47,7 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.animation.SingleEntityAnimation;
 import de.amr.games.pacman.model.common.actors.Bonus;
+import de.amr.games.pacman.model.common.actors.Creature;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.GhostState;
 import de.amr.games.pacman.model.common.actors.Pac;
@@ -237,6 +238,10 @@ public abstract class GameModel {
 			ghost.show();
 			ghost.lock();
 		});
+	}
+
+	public Stream<Creature> guys() {
+		return Stream.of(pac, theGhosts[RED_GHOST], theGhosts[PINK_GHOST], theGhosts[CYAN_GHOST], theGhosts[ORANGE_GHOST]);
 	}
 
 	public Stream<Ghost> ghosts(GhostState... states) {

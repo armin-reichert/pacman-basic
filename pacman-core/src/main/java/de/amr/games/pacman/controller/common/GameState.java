@@ -37,6 +37,7 @@ import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameSound;
 import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.actors.AnimKeys;
+import de.amr.games.pacman.model.common.actors.Entity;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.GhostState;
 import de.amr.games.pacman.model.common.world.ArcadeWorld;
@@ -134,12 +135,10 @@ public enum GameState implements FsmState<GameModel> {
 				// game starting
 				if (timer.atSecond(0)) {
 					game.reset();
+					game.guys().forEach(Entity::hide);
 					gameController.sounds().ifPresent(snd -> snd.play(GameSound.GAME_READY));
-					game.pac.hide();
-					game.ghosts().forEach(Ghost::hide);
 				} else if (timer.atSecond(2)) {
-					game.pac.show();
-					game.ghosts().forEach(Ghost::show);
+					game.guys().forEach(Entity::show);
 				} else if (timer.atSecond(5)) {
 					game.playing = true;
 					game.startHuntingPhase(0);
@@ -148,8 +147,7 @@ public enum GameState implements FsmState<GameModel> {
 			} else {
 				// game continuing or attract mode
 				if (timer.atSecond(0)) {
-					game.pac.show();
-					game.ghosts().forEach(Ghost::show);
+					game.guys().forEach(Entity::show);
 				} else if (timer.atSecond(2)) {
 					game.startHuntingPhase(0);
 					fsm.changeState(GameState.HUNTING);
@@ -303,8 +301,7 @@ public enum GameState implements FsmState<GameModel> {
 			timer.start();
 			game.setLevel(game.level.number + 1);
 			game.resetGuys();
-			game.ghosts().forEach(Ghost::hide);
-			game.pac.hide();
+			game.guys().forEach(Entity::hide);
 		}
 
 		@Override
