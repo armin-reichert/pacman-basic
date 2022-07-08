@@ -24,8 +24,6 @@ SOFTWARE.
 package de.amr.games.pacman.lib.animation;
 
 /**
- * @param <T> the thing type
- * 
  * @author Armin Reichert
  */
 public interface EntityAnimation {
