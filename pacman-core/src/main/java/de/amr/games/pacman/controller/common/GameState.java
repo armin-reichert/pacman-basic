@@ -120,8 +120,8 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void onEnter(GameModel game) {
 			boolean hasCredit = game.credit > 0;
-			game.scores.gameScore.showContent = hasCredit;
 			game.scores.highScore.showContent = true;
+			game.scores.enable(hasCredit);
 			game.resetGuys();
 			gameController.sounds().ifPresent(snd -> {
 				snd.stopAll();
@@ -131,10 +131,12 @@ public enum GameState implements FsmState<GameModel> {
 
 		@Override
 		public void onUpdate(GameModel game) {
-			if (game.credit > 0 && !game.playing) {
+			boolean hasCredit = game.credit > 0;
+			if (hasCredit && !game.playing) {
 				// game starting
 				if (timer.atSecond(0)) {
 					game.reset();
+					game.scores.gameScore.showContent = true;
 					game.guys().forEach(Entity::hide);
 					gameController.sounds().ifPresent(snd -> snd.play(GameSound.GAME_READY));
 				} else if (timer.atSecond(2)) {
@@ -147,6 +149,7 @@ public enum GameState implements FsmState<GameModel> {
 			} else {
 				// game continuing or attract mode
 				if (timer.atSecond(0)) {
+					game.scores.gameScore.showContent = hasCredit;
 					game.guys().forEach(Entity::show);
 				} else if (timer.atSecond(2)) {
 					game.startHuntingPhase(0);
