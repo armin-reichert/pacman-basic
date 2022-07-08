@@ -347,8 +347,6 @@ public enum GameState implements FsmState<GameModel> {
 		public void onEnter(GameModel game) {
 			timer.resetSeconds(5);
 			timer.start();
-			game.pac.setAnimation(AnimKeys.PAC_DYING);
-			game.pac.animation().ifPresent(EntityAnimation::reset);
 			game.bonus().setInactive();
 			gameController.sounds().ifPresent(GameSoundController::stopAll);
 		}
@@ -359,6 +357,8 @@ public enum GameState implements FsmState<GameModel> {
 			game.pac.update(game);
 			if (timer.atSecond(1)) {
 				game.ghosts().forEach(Ghost::hide);
+				game.pac.setAnimation(AnimKeys.PAC_DYING);
+				game.pac.animation(AnimKeys.PAC_DYING).ifPresent(EntityAnimation::reset);
 			} else if (timer.atSecond(2)) {
 				game.pac.animation().ifPresent(EntityAnimation::restart);
 				gameController.sounds().ifPresent(snd -> snd.play(GameSound.PACMAN_DEATH));
