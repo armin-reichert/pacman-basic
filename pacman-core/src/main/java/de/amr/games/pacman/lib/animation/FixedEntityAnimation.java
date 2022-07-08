@@ -49,6 +49,11 @@ public class FixedEntityAnimation<T> implements EntityAnimation {
 	}
 
 	@Override
+	public void run() {
+		// nothing to run
+	}
+
+	@Override
 	public void frameDuration(long frameTicks) {
 	}
 

@@ -66,9 +66,6 @@ public class SingleEntityAnimation<T> implements EntityAnimation {
 		reset();
 	}
 
-	/**
-	 * Resets the animation to its initial state.
-	 */
 	@Override
 	public void reset() {
 		totalRunningTicks = 0;
@@ -79,59 +76,34 @@ public class SingleEntityAnimation<T> implements EntityAnimation {
 		complete = false;
 	}
 
-	/**
-	 * Sets the frame duration
-	 * 
-	 * @param ticks frame ticks
-	 */
 	@Override
 	public void frameDuration(long ticks) {
 		frameDurationTicks = ticks;
 	}
 
-	/**
-	 * @return number of times the animation is repeated
-	 */
 	public int repetitions() {
 		return repetitions;
 	}
 
-	/**
-	 * @param times number of times the animation is repeated
-	 */
 	@Override
-	public void repetions(int times) {
-		repetitions = times;
+	public void setRepetions(int n) {
+		repetitions = n;
 	}
 
-	/**
-	 * Lets the animation repeat forever.
-	 */
 	public void repeatForever() {
 		repetitions = INDEFINITE;
 	}
 
-	/**
-	 * Starts the animation.
-	 */
 	@Override
 	public void run() {
 		running = true;
 	}
 
-	/**
-	 * Stops the animation.
-	 */
 	@Override
 	public void stop() {
 		running = false;
 	}
 
-	/**
-	 * Advances the animation by one step.
-	 * 
-	 * @return the frame before the animation step is executed
-	 */
 	@Override
 	public T animate() {
 		T currentThing = things[frameIndex];
@@ -139,17 +111,11 @@ public class SingleEntityAnimation<T> implements EntityAnimation {
 		return currentThing;
 	}
 
-	/**
-	 * @return the current frame/thing
-	 */
 	@Override
 	public T frame() {
 		return things[frameIndex];
 	}
 
-	/**
-	 * Advances the animation by a single step.
-	 */
 	@Override
 	public void advance() {
 		if (running) {
@@ -176,18 +142,11 @@ public class SingleEntityAnimation<T> implements EntityAnimation {
 		}
 	}
 
-	/**
-	 * @param i index
-	 * @return the thing at the given index
-	 */
 	@Override
 	public T frame(int i) {
 		return things[i];
 	}
 
-	/**
-	 * @return the current index of the animation
-	 */
 	public int frameIndex() {
 		return frameIndex;
 	}
@@ -198,31 +157,19 @@ public class SingleEntityAnimation<T> implements EntityAnimation {
 		frameRunningTicks = 0;
 	}
 
-	/**
-	 * @return number of ticks each frame takes
-	 */
 	public long getFrameDuration() {
 		return frameDurationTicks;
 	}
 
-	/**
-	 * @return number of ticks the complete animation takes
-	 */
 	public long duration() {
 		return things.length * frameDurationTicks;
 	}
 
-	/**
-	 * @return number of frames of this animation
-	 */
 	@Override
 	public int numFrames() {
 		return things.length;
 	}
 
-	/**
-	 * @return if the animation is running
-	 */
 	@Override
 	public boolean isRunning() {
 		return running;
@@ -236,16 +183,10 @@ public class SingleEntityAnimation<T> implements EntityAnimation {
 		}
 	}
 
-	/**
-	 * @return if the animation has completed
-	 */
 	public boolean isComplete() {
 		return complete;
 	}
 
-	/**
-	 * @return if the animation has started
-	 */
 	public boolean hasStarted() {
 		return running || complete;
 	}

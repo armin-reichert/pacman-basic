@@ -28,8 +28,7 @@ package de.amr.games.pacman.lib.animation;
  */
 public interface EntityAnimation {
 
-	default void run() {
-	}
+	void run();
 
 	default boolean isRunning() {
 		return true;
@@ -56,7 +55,7 @@ public interface EntityAnimation {
 		run();
 	}
 
-	default void repetions(int n) {
+	default void setRepetions(int n) {
 	}
 
 	default Object frame(int i) {
@@ -72,5 +71,6 @@ public interface EntityAnimation {
 
 	int numFrames();
 
-	void frameDuration(long frameTicks);
+	default void frameDuration(long frameTicks) {
+	}
 }

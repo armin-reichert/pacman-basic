@@ -324,7 +324,7 @@ public class Ghost extends Creature {
 				var flashing = animSet.selectedAnimation();
 				long frameTicks = GameModel.PAC_POWER_FADING_TICKS / (numFlashes * flashing.numFrames());
 				flashing.frameDuration(frameTicks);
-				flashing.repetions(numFlashes);
+				flashing.setRepetions(numFlashes);
 				flashing.restart();
 			}
 		});

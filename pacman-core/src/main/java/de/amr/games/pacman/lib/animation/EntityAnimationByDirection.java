@@ -104,8 +104,8 @@ public class EntityAnimationByDirection implements EntityAnimation {
 	}
 
 	@Override
-	public void repetions(int n) {
-		currentAnimation().repetions(n);
+	public void setRepetions(int n) {
+		currentAnimation().setRepetions(n);
 	}
 
 	@Override
