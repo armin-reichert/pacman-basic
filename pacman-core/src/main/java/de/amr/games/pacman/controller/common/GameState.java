@@ -156,7 +156,7 @@ public enum GameState implements FsmState<GameModel> {
 					gameController.sounds().ifPresent(snd -> snd.play(GameSound.GAME_READY));
 				} else if (timer.atSecond(2)) {
 					game.guys().forEach(Entity::show);
-					game.livesDisplayed--;
+					game.livesOneLessShown = true;
 				} else if (timer.atSecond(5)) {
 					game.playing = true;
 					game.startHuntingPhase(0);
@@ -380,8 +380,7 @@ public enum GameState implements FsmState<GameModel> {
 				game.lives--;
 				if (game.lives == 0) {
 					game.energizerPulse.stop();
-				} else {
-					game.livesDisplayed--;
+					game.livesOneLessShown = false;
 				}
 				game.pac.hide();
 			} else if (timer.hasExpired()) {

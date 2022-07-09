@@ -107,7 +107,6 @@ public class GameScores {
 		}
 		if (scoreBeforeAddingPoints < GameModel.EXTRA_LIFE && gameScore.points >= GameModel.EXTRA_LIFE) {
 			game.lives++;
-			game.livesDisplayed++;
 			GameEvents.publish(new GameEvent(game, GameEventType.PLAYER_GETS_EXTRA_LIFE, null, game.pac.tile()));
 		}
 	}
