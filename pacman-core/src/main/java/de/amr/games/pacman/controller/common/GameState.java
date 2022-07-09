@@ -91,13 +91,13 @@ public enum GameState implements FsmState<GameModel> {
 				snd.setSilent(false);
 				snd.play(GameSound.CREDIT);
 			});
-			game.credit++;
+			game.addCredit();
 			fsm.changeState(CREDIT);
 		}
 
 		@Override
 		public void requestGame(GameModel game) {
-			if (game.credit > 0) {
+			if (game.hasCredit()) {
 				fsm.changeState(READY);
 			}
 		}
@@ -123,7 +123,7 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void addCredit(GameModel game) {
 			gameController.sounds().ifPresent(snd -> snd.play(GameSound.CREDIT));
-			game.credit++;
+			game.addCredit();
 		}
 
 		@Override
@@ -135,20 +135,18 @@ public enum GameState implements FsmState<GameModel> {
 	READY {
 		@Override
 		public void onEnter(GameModel game) {
-			boolean hasCredit = game.credit > 0;
 			game.scores.highScore.showContent = true;
-			game.scores.enable(hasCredit);
+			game.scores.enable(game.hasCredit());
 			game.resetGuys();
 			gameController.sounds().ifPresent(snd -> {
 				snd.stopAll();
-				snd.setSilent(!hasCredit);
+				snd.setSilent(!game.hasCredit());
 			});
 		}
 
 		@Override
 		public void onUpdate(GameModel game) {
-			boolean hasCredit = game.credit > 0;
-			if (hasCredit && !game.playing) {
+			if (game.hasCredit() && !game.playing) {
 				// game starting
 				if (timer.atSecond(0)) {
 					game.reset();
@@ -165,7 +163,7 @@ public enum GameState implements FsmState<GameModel> {
 			} else {
 				// game continuing or attract mode
 				if (timer.atSecond(0)) {
-					game.scores.gameScore.showContent = hasCredit;
+					game.scores.gameScore.showContent = game.hasCredit();
 					game.guys().forEach(Entity::show);
 				} else if (timer.atSecond(2)) {
 					game.startHuntingPhase(0);
@@ -247,7 +245,7 @@ public enum GameState implements FsmState<GameModel> {
 					snd.setSilent(false);
 					snd.play(GameSound.CREDIT);
 				});
-				game.credit++;
+				game.addCredit();
 				fsm.changeState(CREDIT);
 			}
 		}
@@ -300,7 +298,7 @@ public enum GameState implements FsmState<GameModel> {
 					mazeFlashing.restart();
 				});
 			} else if (timer.hasExpired()) {
-				if (game.credit == 0) {
+				if (!game.hasCredit()) {
 					fsm.changeState(INTRO);
 				} else if (game.intermissionNumber(game.level.number) != 0) {
 					fsm.changeState(INTERMISSION);
@@ -383,7 +381,7 @@ public enum GameState implements FsmState<GameModel> {
 				}
 				game.pac.hide();
 			} else if (timer.hasExpired()) {
-				if (game.credit == 0) {
+				if (!game.hasCredit()) {
 					fsm.changeState(INTRO);
 				} else {
 					fsm.changeState(game.lives == 0 ? GAME_OVER : READY);
@@ -406,7 +404,7 @@ public enum GameState implements FsmState<GameModel> {
 			if (timer.hasExpired()) {
 				game.playing = false;
 				game.consumeCredit();
-				fsm.changeState(game.credit > 0 ? CREDIT : INTRO);
+				fsm.changeState(game.hasCredit() ? CREDIT : INTRO);
 			}
 		}
 	},
@@ -421,7 +419,7 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void onUpdate(GameModel game) {
 			if (timer.hasExpired()) {
-				fsm.changeState(game.credit == 0 || !game.playing ? INTRO : LEVEL_STARTING);
+				fsm.changeState(!game.hasCredit() || !game.playing ? INTRO : LEVEL_STARTING);
 			}
 		}
 	},

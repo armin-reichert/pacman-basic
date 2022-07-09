@@ -278,7 +278,7 @@ public class IntroController extends Fsm<State, Context> {
 			public void onUpdate(Context ctx) {
 				if (timer.atSecond(1)) {
 					ctx.ghosts[3].hide();
-					if (ctx.gameController.game().credit == 0) {
+					if (!ctx.gameController.game().hasCredit()) {
 						ctx.gameController.changeState(GameState.READY);
 						return;
 					}

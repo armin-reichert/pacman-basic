@@ -37,8 +37,8 @@ import de.amr.games.pacman.controller.common.GameController;
 import de.amr.games.pacman.controller.common.GameState;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.lib.animation.SingleEntityAnimation;
 import de.amr.games.pacman.lib.animation.EntityAnimationSet;
+import de.amr.games.pacman.lib.animation.SingleEntityAnimation;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.lib.fsm.FsmState;
 import de.amr.games.pacman.model.common.actors.AnimKeys;
@@ -171,7 +171,7 @@ public class IntroController extends Fsm<IntroController.State, IntroController.
 		READY_TO_PLAY {
 			@Override
 			public void onUpdate(Context ctx) {
-				if (timer.atSecond(1.5) && ctx.gameController.game().credit == 0) {
+				if (timer.atSecond(1.5) && !ctx.gameController.game().hasCredit()) {
 					ctx.gameController.changeState(GameState.READY);
 					return;
 				}

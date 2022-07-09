@@ -128,7 +128,7 @@ public class GameController {
 	}
 
 	Consumer<Creature> currentSteering() {
-		return game().autoControlled || game().credit == 0 ? autopilot : pacController;
+		return game().autoControlled || !game().hasCredit() ? autopilot : pacController;
 	}
 
 	public GameState state() {
@@ -149,8 +149,8 @@ public class GameController {
 			return;
 		}
 		if (currentGameVariant != null) {
-			game(newVariant).credit = game(currentGameVariant).credit;
-			game(currentGameVariant).credit = 0;
+			game(newVariant).setCredit(game(currentGameVariant).getCredit());
+			game(currentGameVariant).setCredit(0);
 		}
 		currentGameVariant = newVariant;
 		fsm.restartInInitialState(BOOT);

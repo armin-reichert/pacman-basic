@@ -75,6 +75,7 @@ public abstract class GameModel {
 	//@formatter:on
 	};
 
+	public static final int MAX_CREDIT = 50;
 	public static final int PELLET_VALUE = 10;
 	public static final int PELLET_RESTING_TICKS = 1;
 	public static final int ENERGIZER_VALUE = 50;
@@ -92,7 +93,7 @@ public abstract class GameModel {
 	public final GameVariant variant;
 
 	/** Credit for playing. */
-	public int credit;
+	protected int credit;
 
 	/** Tells if the game play is active. */
 	public boolean playing;
@@ -153,10 +154,30 @@ public abstract class GameModel {
 		this.theGhosts = ghosts;
 	}
 
+	public int getCredit() {
+		return credit;
+	}
+
+	public void setCredit(int credit) {
+		if (credit <= MAX_CREDIT) {
+			this.credit = credit;
+		}
+	}
+
+	public void addCredit() {
+		if (credit < MAX_CREDIT) {
+			++credit;
+		}
+	}
+
 	public void consumeCredit() {
 		if (credit > 0) {
 			--credit;
 		}
+	}
+
+	public boolean hasCredit() {
+		return credit > 0;
 	}
 
 	/**
