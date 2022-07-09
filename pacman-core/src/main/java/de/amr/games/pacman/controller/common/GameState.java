@@ -293,7 +293,7 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void onUpdate(GameModel game) {
 			var world = (ArcadeWorld) game.world();
-			if (timer.atSecond(1)) {
+			if (timer.tick() == 60) {
 				world.flashingAnimation().ifPresent(mazeFlashing -> {
 					mazeFlashing.setRepetions(game.level.numFlashes);
 					mazeFlashing.restart();
@@ -417,6 +417,7 @@ public enum GameState implements FsmState<GameModel> {
 		public void onEnter(GameModel game) {
 			timer.resetIndefinitely();
 			timer.start(); // UI triggers state timeout
+			gameController.sounds().ifPresent(snd -> snd.setSilent(false));
 		}
 
 		@Override
@@ -432,6 +433,7 @@ public enum GameState implements FsmState<GameModel> {
 		public void onEnter(GameModel game) {
 			timer.resetIndefinitely();
 			timer.start();
+			gameController.sounds().ifPresent(snd -> snd.setSilent(false));
 		}
 
 		@Override
