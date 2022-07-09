@@ -50,7 +50,6 @@ import de.amr.games.pacman.model.common.world.ArcadeWorld;
 public enum GameState implements FsmState<GameModel> {
 
 	BOOT() {
-
 		@Override
 		public void onEnter(GameModel context) {
 			timer.resetSeconds(4);

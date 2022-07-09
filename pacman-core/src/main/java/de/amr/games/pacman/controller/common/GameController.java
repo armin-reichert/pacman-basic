@@ -66,41 +66,34 @@ import de.amr.games.pacman.model.pacman.PacManGame;
  *      behavior</a>
  * @see <a href="http://superpacman.com/mspacman/">Ms. Pac-Man</a>
  */
-public class GameController {
-
-	private class StateMachine extends Fsm<GameState, GameModel> {
-
-		public StateMachine() {
-			super(GameState.values());
-			for (var gameState : GameState.values()) {
-				gameState.gameController = GameController.this;
-				gameState.fsm = this;
-			}
-			setName("GameController.FSM");
-			// map state change events of the FSM to game events from selected game model:
-			addStateChangeListener(
-					(oldState, newState) -> GameEvents.publish(new GameStateChangeEvent(game(), oldState, newState)));
-		}
-
-		@Override
-		public GameModel context() {
-			return game();
-		}
-	}
+public class GameController extends Fsm<GameState, GameModel> {
 
 	private final Map<GameVariant, GameModel> games = Map.of(//
 			GameVariant.MS_PACMAN, new MsPacManGame(), //
 			GameVariant.PACMAN, new PacManGame());
 
-	private final StateMachine fsm = new StateMachine();
 	private final Consumer<Creature> autopilot;
 	private Consumer<Creature> pacController;
 	private GameVariant currentGameVariant;
 	private GameSoundController sounds;
 
 	public GameController() {
+		super(GameState.values());
+		for (var gameState : GameState.values()) {
+			gameState.gameController = this;
+			gameState.fsm = this;
+		}
+		setName("GameController.FSM");
+		// map state change events of the FSM to game events from selected game model:
+		addStateChangeListener(
+				(oldState, newState) -> GameEvents.publish(new GameStateChangeEvent(game(), oldState, newState)));
 		GameEvents.publishEventsFor(this::game);
 		autopilot = new Autopilot(this::game);
+	}
+
+	@Override
+	public GameModel context() {
+		return game();
 	}
 
 	public Stream<GameModel> games() {
@@ -131,18 +124,6 @@ public class GameController {
 		return game().autoControlled || !game().hasCredit() ? autopilot : pacController;
 	}
 
-	public GameState state() {
-		return fsm.state();
-	}
-
-	public void changeState(GameState state) {
-		fsm.changeState(state);
-	}
-
-	public void update() {
-		fsm.update();
-	}
-
 	public void selectGame(GameVariant newVariant) {
 		Objects.requireNonNull(newVariant);
 		if (currentGameVariant == newVariant) {
@@ -153,14 +134,14 @@ public class GameController {
 			game(currentGameVariant).setCredit(0);
 		}
 		currentGameVariant = newVariant;
-		fsm.restartInInitialState(BOOT);
+		restartInInitialState(BOOT);
 	}
 
 	public void restartIntro() {
-		if (fsm.state() != CREDIT && fsm.state() != INTRO) {
+		if (state() != CREDIT && state() != INTRO) {
 			game().consumeCredit();
 		}
-		fsm.restartInInitialState(INTRO);
+		restartInInitialState(INTRO);
 		GameEvents.publish(new TriggerUIChangeEvent(game()));
 	}
 }
