@@ -122,6 +122,9 @@ public abstract class GameModel {
 	/** Number of lives remaining. */
 	public int lives;
 
+	/** Number of lives displayed in lives counter. */
+	public int livesDisplayed;
+
 	/** Number of ghosts killed by current energizer. */
 	public int ghostsKilledByEnergizer;
 
@@ -194,6 +197,7 @@ public abstract class GameModel {
 		globalDotCounterEnabled = false;
 		playing = false;
 		lives = INITIAL_LIFES;
+		livesDisplayed = lives;
 		intermissionTestNumber = 1;
 		levelCounter.clear();
 		setLevel(1);
