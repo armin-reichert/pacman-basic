@@ -164,10 +164,12 @@ public abstract class GameModel {
 		}
 	}
 
-	public void addCredit() {
+	public boolean addCredit() {
 		if (credit < MAX_CREDIT) {
 			++credit;
+			return true;
 		}
+		return false;
 	}
 
 	public void consumeCredit() {
