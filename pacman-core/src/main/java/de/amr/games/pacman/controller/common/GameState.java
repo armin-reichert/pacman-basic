@@ -414,6 +414,12 @@ public enum GameState implements FsmState<GameModel> {
 				fsm.changeState(game.hasCredit() ? CREDIT : INTRO);
 			}
 		}
+
+		@Override
+		public void onExit(GameModel game) {
+			game.reset();
+			game.setLevel(1);
+		}
 	},
 
 	INTERMISSION {
