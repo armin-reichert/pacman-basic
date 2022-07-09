@@ -306,13 +306,9 @@ public class Ghost extends Creature {
 	}
 
 	private void checkFlashing(GameModel game) {
-		animationSet().ifPresent(animSet -> {
-			if (game.powerTimer.tick() == 0) {
-				animSet.byName(AnimKeys.GHOST_FLASHING).stop();
-			} else if (game.powerTimer.remaining() == GameModel.PAC_POWER_FADING_TICKS) {
-				startFlashing(game.level.numFlashes);
-			}
-		});
+		if (game.powerTimer.remaining() == GameModel.PAC_POWER_FADING_TICKS) {
+			startFlashing(game.level.numFlashes);
+		}
 	}
 
 	private void startFlashing(int numFlashes) {
