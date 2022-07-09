@@ -80,8 +80,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 	public GameController() {
 		super(GameState.values());
 		for (var gameState : GameState.values()) {
-			gameState.gameController = this;
-			gameState.fsm = this;
+			gameState.gc = this;
 		}
 		setName("GameController.FSM");
 		// map state change events of the FSM to game events from selected game model:
