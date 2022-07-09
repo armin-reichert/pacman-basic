@@ -71,6 +71,7 @@ public enum GameState implements FsmState<GameModel> {
 			timer.resetIndefinitely();
 			timer.start();
 			game.reset();
+			game.setLevel(1);
 		}
 
 		@Override
@@ -288,17 +289,13 @@ public enum GameState implements FsmState<GameModel> {
 			game.ghosts().forEach(Ghost::hide);
 			game.energizerPulse.reset();
 			gameController.sounds().ifPresent(GameSoundController::stopAll);
+			// force UI update to ensure maze flashing animation is up to date
+			GameEvents.publish(GameEventType.UI_FORCE_UPDATE, null);
 		}
 
 		@Override
 		public void onUpdate(GameModel game) {
-			var world = (ArcadeWorld) game.world();
-			if (timer.tick() == 60) {
-				world.flashingAnimation().ifPresent(mazeFlashing -> {
-					mazeFlashing.setRepetions(game.level.numFlashes);
-					mazeFlashing.restart();
-				});
-			} else if (timer.hasExpired()) {
+			if (timer.hasExpired()) {
 				if (!game.hasCredit()) {
 					fsm.changeState(INTRO);
 				} else if (game.intermissionNumber(game.level.number) != 0) {
@@ -306,7 +303,16 @@ public enum GameState implements FsmState<GameModel> {
 				} else {
 					fsm.changeState(LEVEL_STARTING);
 				}
-			} else {
+				return;
+			}
+			var world = (ArcadeWorld) game.world();
+			if (timer.tick() == 60) {
+				world.flashingAnimation().ifPresent(mazeFlashing -> {
+					mazeFlashing.setRepetions(game.level.numFlashes);
+					mazeFlashing.restart();
+				});
+			}
+			if (timer.tick() >= 60) {
 				world.flashingAnimation().ifPresent(EntityAnimation::advance);
 			}
 		}

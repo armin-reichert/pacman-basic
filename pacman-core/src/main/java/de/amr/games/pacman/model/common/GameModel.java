@@ -200,7 +200,6 @@ public abstract class GameModel {
 		livesOneLessShown = false;
 		intermissionTestNumber = 1;
 		levelCounter.clear();
-		setLevel(1);
 		scores.reload();
 		scores.gameScore.reset();
 	}
