@@ -30,7 +30,6 @@ import static de.amr.games.pacman.controller.common.GameState.INTRO;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.event.GameEvents;
@@ -39,7 +38,6 @@ import de.amr.games.pacman.event.TriggerUIChangeEvent;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
-import de.amr.games.pacman.model.common.actors.Creature;
 import de.amr.games.pacman.model.mspacman.MsPacManGame;
 import de.amr.games.pacman.model.pacman.PacManGame;
 
@@ -72,8 +70,8 @@ public class GameController extends Fsm<GameState, GameModel> {
 			GameVariant.MS_PACMAN, new MsPacManGame(), //
 			GameVariant.PACMAN, new PacManGame());
 
-	private final Consumer<Creature> autopilot;
-	private Consumer<Creature> pacController;
+	private final Autopilot autopilot;
+	private Steering pacSteering;
 	private GameVariant currentGameVariant;
 	private GameSoundController sounds;
 
@@ -107,8 +105,8 @@ public class GameController extends Fsm<GameState, GameModel> {
 		return game(currentGameVariant);
 	}
 
-	public void setPacSteering(Consumer<Creature> pacController) {
-		this.pacController = Objects.requireNonNull(pacController);
+	public void setPacSteering(Steering steering) {
+		this.pacSteering = Objects.requireNonNull(steering);
 	}
 
 	public void setSounds(GameSoundController sounds) {
@@ -119,8 +117,8 @@ public class GameController extends Fsm<GameState, GameModel> {
 		return Optional.ofNullable(sounds);
 	}
 
-	Consumer<Creature> currentSteering() {
-		return game().autoControlled || !game().hasCredit() ? autopilot : pacController;
+	Steering currentSteering() {
+		return game().autoControlled || !game().hasCredit() ? autopilot : pacSteering;
 	}
 
 	public void selectGame(GameVariant newVariant) {

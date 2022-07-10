@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import org.apache.logging.log4j.LogManager;
@@ -46,7 +45,7 @@ import de.amr.games.pacman.model.common.actors.GhostState;
  * 
  * @author Armin Reichert
  */
-public class Autopilot implements Consumer<Creature> {
+public class Autopilot implements Steering {
 
 	private static final Logger logger = LogManager.getFormatterLogger();
 
@@ -100,7 +99,7 @@ public class Autopilot implements Consumer<Creature> {
 	}
 
 	@Override
-	public void accept(Creature guy) {
+	public void steer(Creature guy) {
 		if (!guy.stuck && !guy.newTileEntered) {
 			return;
 		}
