@@ -30,36 +30,77 @@ import de.amr.games.pacman.model.common.GameSound;
 
 /**
  * @author Armin Reichert
+ *
  */
-public interface GameSoundController {
+public class SilentSoundController implements GameSoundController {
 
-	public static final int LOOP_FOREVER = -1;
+	@Override
+	public void play(GameSound snd) {
+		// do nothing
+	}
 
-	void play(GameSound snd);
+	@Override
+	public void ensurePlaying(GameSound snd) {
+		// do nothing
+	}
 
-	void ensurePlaying(GameSound snd);
+	@Override
+	public boolean isPlaying(GameSound sound) {
+		return false;
+	}
 
-	boolean isPlaying(GameSound sound);
+	@Override
+	public void loop(GameSound snd, int repetitions) {
+		// do nothing
+	}
 
-	void loop(GameSound snd, int repetitions);
+	@Override
+	public void setSilent(boolean silent) {
+		// do nothing
+	}
 
-	void setSilent(boolean silent);
+	@Override
+	public boolean isMuted() {
+		return false;
+	}
 
-	boolean isMuted();
+	@Override
+	public void setMuted(boolean muted) {
+		// do nothing
+	}
 
-	void setMuted(boolean muted);
+	@Override
+	public void stopAll() {
+		// do nothing
+	}
 
-	void stopAll();
+	@Override
+	public void stop(GameSound snd) {
+		// do nothing
+	}
 
-	void stop(GameSound snd);
+	@Override
+	public void ensureLoop(GameSound snd, int repetitions) {
+		// do nothing
+	}
 
-	void ensureLoop(GameSound snd, int repetitions);
+	@Override
+	public Stream<GameSound> sirens() {
+		return Stream.empty();
+	}
 
-	Stream<GameSound> sirens();
+	@Override
+	public void startSiren(int sirenIndex) {
+		// do nothing
+	}
 
-	void startSiren(int sirenIndex);
+	@Override
+	public void stopSirens() {
+		// do nothing
+	}
 
-	void stopSirens();
-
-	void ensureSirenStarted(int siren);
+	@Override
+	public void ensureSirenStarted(int siren) {
+		// do nothing
+	}
 }

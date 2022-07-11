@@ -29,7 +29,6 @@ import static de.amr.games.pacman.controller.common.GameState.INTRO;
 
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 import de.amr.games.pacman.event.GameEvents;
@@ -73,7 +72,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 	private final Autopilot autopilot;
 	private Steering pacSteering;
 	private GameVariant currentGameVariant;
-	private GameSoundController sounds;
+	private GameSoundController sounds = new SilentSoundController();
 
 	public GameController() {
 		super(GameState.values());
@@ -110,11 +109,11 @@ public class GameController extends Fsm<GameState, GameModel> {
 	}
 
 	public void setSounds(GameSoundController sounds) {
-		this.sounds = sounds;
+		this.sounds = Objects.requireNonNull(sounds);
 	}
 
-	public Optional<GameSoundController> sounds() {
-		return Optional.ofNullable(sounds);
+	public GameSoundController sounds() {
+		return sounds;
 	}
 
 	Steering currentSteering() {

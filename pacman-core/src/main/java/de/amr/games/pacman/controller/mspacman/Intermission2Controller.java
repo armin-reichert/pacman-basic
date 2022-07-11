@@ -103,7 +103,7 @@ public class Intermission2Controller extends Fsm<State, Context> {
 			@Override
 			public void onUpdate(Context ctx) {
 				if (timer.atSecond(1)) {
-					ctx.gameController.sounds().ifPresent(snd -> snd.play(GameSound.INTERMISSION_2));
+					ctx.gameController.sounds().play(GameSound.INTERMISSION_2);
 					ctx.flap.animation().ifPresent(EntityAnimation::restart);
 				} else if (timer.atSecond(2)) {
 					ctx.flap.hide();

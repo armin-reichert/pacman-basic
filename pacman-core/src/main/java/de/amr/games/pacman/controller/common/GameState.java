@@ -88,7 +88,7 @@ public enum GameState implements FsmState<GameModel> {
 		public void addCredit(GameModel game) {
 			boolean added = game.addCredit();
 			if (added) {
-				playSound(GameSound.CREDIT);
+				gc.sounds().play(GameSound.CREDIT);
 			}
 			gc.changeState(CREDIT);
 		}
@@ -122,7 +122,7 @@ public enum GameState implements FsmState<GameModel> {
 		public void addCredit(GameModel game) {
 			boolean added = game.addCredit();
 			if (added) {
-				playSound(GameSound.CREDIT);
+				gc.sounds().play(GameSound.CREDIT);
 			}
 		}
 
@@ -138,10 +138,8 @@ public enum GameState implements FsmState<GameModel> {
 			game.scores.highScore.showContent = true;
 			game.scores.enable(game.hasCredit());
 			game.resetGuys();
-			gc.sounds().ifPresent(snd -> {
-				snd.stopAll();
-				snd.setSilent(!game.hasCredit());
-			});
+			gc.sounds().stopAll();
+			gc.sounds().setSilent(!game.hasCredit());
 		}
 
 		@Override
@@ -152,7 +150,7 @@ public enum GameState implements FsmState<GameModel> {
 					game.reset();
 					game.scores.gameScore.showContent = true;
 					game.guys().forEach(Entity::hide);
-					playSound(GameSound.GAME_READY);
+					gc.sounds().play(GameSound.GAME_READY);
 				} else if (timer.atSecond(2)) {
 					game.guys().forEach(Entity::show);
 					game.livesOneLessShown = true;
@@ -179,7 +177,7 @@ public enum GameState implements FsmState<GameModel> {
 		public void onEnter(GameModel game) {
 			game.pac.setAnimation(AnimKeys.PAC_MUNCHING);
 			game.energizerPulse.restart();
-			gc.sounds().ifPresent(snd -> snd.ensureSirenStarted(game.huntingTimer.phase() / 2));
+			gc.sounds().ensureSirenStarted(game.huntingTimer.phase() / 2);
 		}
 
 		@Override
@@ -211,32 +209,31 @@ public enum GameState implements FsmState<GameModel> {
 		}
 
 		private void renderSound(GameModel game) {
-			gc.sounds().ifPresent(snd -> {
-				if (game.huntingTimer.tick() == 0) {
-					snd.ensureSirenStarted(game.huntingTimer.phase() / 2);
+			var snd = gc.sounds();
+			if (game.huntingTimer.tick() == 0) {
+				snd.ensureSirenStarted(game.huntingTimer.phase() / 2);
+			}
+			if (game.was.pacGotPower) {
+				snd.stopSirens();
+				snd.ensureLoop(GameSound.PACMAN_POWER, GameSoundController.LOOP_FOREVER);
+			}
+			if (game.was.pacPowerLost) {
+				snd.stop(GameSound.PACMAN_POWER);
+				snd.ensureSirenStarted(game.huntingTimer.phase() / 2);
+			}
+			if (game.was.foodFound) {
+				snd.ensureLoop(GameSound.PACMAN_MUNCH, GameSoundController.LOOP_FOREVER);
+			}
+			if (game.pac.getStarvingTicks() >= 12) { // ???
+				snd.stop(GameSound.PACMAN_MUNCH);
+			}
+			if (game.ghosts(GhostState.DEAD).filter(ghost -> ghost.killIndex == -1).count() > 0) {
+				if (!snd.isPlaying(GameSound.GHOST_RETURNING)) {
+					snd.loop(GameSound.GHOST_RETURNING, GameSoundController.LOOP_FOREVER);
 				}
-				if (game.was.pacGotPower) {
-					snd.stopSirens();
-					snd.ensureLoop(GameSound.PACMAN_POWER, GameSoundController.FOREVER);
-				}
-				if (game.was.pacPowerLost) {
-					snd.stop(GameSound.PACMAN_POWER);
-					snd.ensureSirenStarted(game.huntingTimer.phase() / 2);
-				}
-				if (game.was.foodFound) {
-					snd.ensureLoop(GameSound.PACMAN_MUNCH, GameSoundController.FOREVER);
-				}
-				if (game.pac.getStarvingTicks() >= 12) { // ???
-					snd.stop(GameSound.PACMAN_MUNCH);
-				}
-				if (game.ghosts(GhostState.DEAD).filter(ghost -> ghost.killIndex == -1).count() > 0) {
-					if (!snd.isPlaying(GameSound.GHOST_RETURNING)) {
-						snd.loop(GameSound.GHOST_RETURNING, GameSoundController.FOREVER);
-					}
-				} else {
-					snd.stop(GameSound.GHOST_RETURNING);
-				}
-			});
+			} else {
+				snd.stop(GameSound.GHOST_RETURNING);
+			}
 		}
 
 		@Override
@@ -244,7 +241,7 @@ public enum GameState implements FsmState<GameModel> {
 			if (!game.playing) {
 				boolean added = game.addCredit();
 				if (added) {
-					playSound(GameSound.CREDIT);
+					gc.sounds().play(GameSound.CREDIT);
 				}
 				gc.changeState(CREDIT);
 			}
@@ -286,7 +283,7 @@ public enum GameState implements FsmState<GameModel> {
 			game.pac.animationSet().ifPresent(EntityAnimationSet::reset);
 			game.ghosts().forEach(Ghost::hide);
 			game.energizerPulse.reset();
-			gc.sounds().ifPresent(GameSoundController::stopAll);
+			gc.sounds().stopAll();
 			// force UI update to ensure maze flashing animation is up to date
 			GameEvents.publish(GameEventType.UI_FORCE_UPDATE, null);
 		}
@@ -339,7 +336,7 @@ public enum GameState implements FsmState<GameModel> {
 			timer.start();
 			game.pac.hide();
 			game.ghosts().forEach(ghost -> ghost.setFlashingStopped(true));
-			playSound(GameSound.GHOST_EATEN);
+			gc.sounds().play(GameSound.GHOST_EATEN);
 		}
 
 		@Override
@@ -367,7 +364,7 @@ public enum GameState implements FsmState<GameModel> {
 			timer.resetSeconds(5);
 			timer.start();
 			game.bonus().setInactive();
-			gc.sounds().ifPresent(GameSoundController::stopAll);
+			gc.sounds().stopAll();
 		}
 
 		@Override
@@ -379,7 +376,7 @@ public enum GameState implements FsmState<GameModel> {
 				game.pac.setAnimation(AnimKeys.PAC_DYING, false);
 			} else if (timer.atSecond(2)) {
 				game.pac.animation().ifPresent(EntityAnimation::restart);
-				playSound(GameSound.PACMAN_DEATH);
+				gc.sounds().play(GameSound.PACMAN_DEATH);
 			} else if (timer.atSecond(4)) {
 				game.lives--;
 				if (game.lives == 0) {
@@ -402,7 +399,7 @@ public enum GameState implements FsmState<GameModel> {
 		public void onEnter(GameModel game) {
 			timer.resetSeconds(3);
 			timer.start();
-			gc.sounds().ifPresent(GameSoundController::stopAll);
+			gc.sounds().stopAll();
 			game.scores.saveHiscore();
 		}
 
@@ -427,7 +424,7 @@ public enum GameState implements FsmState<GameModel> {
 		public void onEnter(GameModel game) {
 			timer.resetIndefinitely();
 			timer.start(); // UI triggers state timeout
-			gc.sounds().ifPresent(snd -> snd.setSilent(false));
+			gc.sounds().setSilent(false);
 		}
 
 		@Override
@@ -443,7 +440,7 @@ public enum GameState implements FsmState<GameModel> {
 		public void onEnter(GameModel game) {
 			timer.resetIndefinitely();
 			timer.start();
-			gc.sounds().ifPresent(snd -> snd.setSilent(false));
+			gc.sounds().setSilent(false);
 		}
 
 		@Override
@@ -470,10 +467,6 @@ public enum GameState implements FsmState<GameModel> {
 	@Override
 	public TickTimer timer() {
 		return timer;
-	}
-
-	void playSound(GameSound sound) {
-		gc.sounds().ifPresent(snd -> snd.play(sound));
 	}
 
 	public void selectGameVariant(GameVariant variant) {
