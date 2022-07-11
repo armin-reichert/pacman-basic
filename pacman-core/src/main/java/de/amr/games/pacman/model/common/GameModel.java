@@ -62,7 +62,7 @@ import de.amr.games.pacman.model.common.world.World;
  */
 public abstract class GameModel {
 
-	private static final Logger logger = LogManager.getFormatterLogger();
+	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
 	/** Speed in pixels/tick at 100%. */
 	public static final double BASE_SPEED = 1.25;
@@ -425,12 +425,12 @@ public abstract class GameModel {
 		pac.die();
 		var redGhost = theGhosts[RED_GHOST];
 		if (redGhost.elroy > 0) {
-			logger.info("Cruise Elroy mode %d for %s disabled", redGhost.elroy, redGhost.name);
+			LOGGER.info("Cruise Elroy mode %d for %s disabled", redGhost.elroy, redGhost.name);
 			redGhost.elroy = -redGhost.elroy; // negative value means "disabled"
 		}
 		globalDotCounter = 0;
 		globalDotCounterEnabled = true;
-		logger.info("Global dot counter got reset and enabled because %s died", pac.name);
+		LOGGER.info("Global dot counter got reset and enabled because %s died", pac.name);
 	}
 
 	private void checkEdibleGhosts() {
@@ -450,7 +450,7 @@ public abstract class GameModel {
 		Stream.of(prey).forEach(this::killGhost);
 		level.numGhostsKilled += prey.length;
 		if (level.numGhostsKilled == 16) {
-			logger.info("All ghosts killed at level %d, Pac-Man wins additional %d points", level.number,
+			LOGGER.info("All ghosts killed at level %d, Pac-Man wins additional %d points", level.number,
 					ALL_GHOSTS_KILLED_POINTS);
 			scores.addPoints(ALL_GHOSTS_KILLED_POINTS);
 		}
@@ -463,13 +463,13 @@ public abstract class GameModel {
 		scores.addPoints(points);
 		ghost.enterStateDead();
 		ghost.targetTile = level.world.ghostHouse().entryTile();
-		logger.info("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name, ghost.tile(), points);
+		LOGGER.info("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name, ghost.tile(), points);
 	}
 
 	private void startPowerTimer(double seconds) {
 		powerTimer.resetSeconds(seconds);
 		powerTimer.start();
-		logger.info("Power timer started: %s", powerTimer);
+		LOGGER.info("Power timer started: %s", powerTimer);
 	}
 
 	private void checkPacPower() {
@@ -482,7 +482,7 @@ public abstract class GameModel {
 	}
 
 	private void onPacPowerLost() {
-		logger.info("%s lost power, timer=%s", pac.name, powerTimer);
+		LOGGER.info("%s lost power, timer=%s", pac.name, powerTimer);
 		/* TODO hack: leave state EXPIRED to avoid repetitions. */
 		powerTimer.resetIndefinitely();
 		huntingTimer.start();
@@ -528,10 +528,10 @@ public abstract class GameModel {
 		var foodRemaining = world().foodRemaining();
 		if (foodRemaining == level.elroy1DotsLeft) {
 			redGhost.elroy = 1;
-			logger.info("%s becomes Cruise Elroy 1", redGhost.name);
+			LOGGER.info("%s becomes Cruise Elroy 1", redGhost.name);
 		} else if (foodRemaining == level.elroy2DotsLeft) {
 			redGhost.elroy = 2;
-			logger.info("%s becomes Cruise Elroy 2", redGhost.name);
+			LOGGER.info("%s becomes Cruise Elroy 2", redGhost.name);
 		}
 	}
 
@@ -600,12 +600,12 @@ public abstract class GameModel {
 	}
 
 	private void unlockGhost(Ghost ghost, String reason) {
-		logger.info("Unlock ghost %s (%s)", ghost.name, reason);
+		LOGGER.info("Unlock ghost %s (%s)", ghost.name, reason);
 		var redGhost = theGhosts[RED_GHOST];
 		var orangeGhost = theGhosts[ORANGE_GHOST];
 		if (ghost == orangeGhost && redGhost.elroy < 0) {
 			redGhost.elroy = -redGhost.elroy; // resume Elroy mode
-			logger.info("%s Elroy mode %d resumed", redGhost.name, redGhost.elroy);
+			LOGGER.info("%s Elroy mode %d resumed", redGhost.name, redGhost.elroy);
 		}
 		ghost.unlock(this);
 	}
@@ -615,7 +615,7 @@ public abstract class GameModel {
 			if (theGhosts[ORANGE_GHOST].is(LOCKED) && globalDotCounter == 32) {
 				globalDotCounterEnabled = false;
 				globalDotCounter = 0;
-				logger.info("Global dot counter disabled and reset, Clyde was in house when counter reached 32");
+				LOGGER.info("Global dot counter disabled and reset, Clyde was in house when counter reached 32");
 			} else {
 				globalDotCounter++;
 			}

@@ -21,7 +21,7 @@ import de.amr.games.pacman.model.pacman.PacManGame;
  */
 public class FloorPlanGenerator {
 
-	private static final Logger logger = LogManager.getFormatterLogger();
+	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
 	private static File dir = new File(System.getProperty("user.dir"));
 
@@ -40,7 +40,7 @@ public class FloorPlanGenerator {
 		var out = new File(dir, String.format(outputFileNamePattern, resolution));
 		try (var w = new FileWriter(out, StandardCharsets.UTF_8)) {
 			floorPlan.print(w, true);
-			logger.info("Floor plan %s created", out.getAbsolutePath());
+			LOGGER.info("Floor plan %s created", out.getAbsolutePath());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

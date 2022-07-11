@@ -41,7 +41,7 @@ import de.amr.games.pacman.model.common.actors.Entity;
  */
 public class StaticBonus extends Entity implements Bonus {
 
-	private static final Logger logger = LogManager.getFormatterLogger();
+	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
 	private BonusState state;
 	private int symbol;
@@ -91,7 +91,7 @@ public class StaticBonus extends Entity implements Bonus {
 		timer = ticks;
 		this.symbol = symbol;
 		this.value = value;
-		logger.info("%s activated", this);
+		LOGGER.info("%s activated", this);
 	}
 
 	@Override
@@ -102,7 +102,7 @@ public class StaticBonus extends Entity implements Bonus {
 		}
 		case EDIBLE -> {
 			if (game.pac.tile().equals(tile())) {
-				logger.info("%s found bonus: %s", game.pac.name, this);
+				LOGGER.info("%s found bonus: %s", game.pac.name, this);
 				game.scores.addPoints(value());
 				state = BonusState.EATEN;
 				timer = Bonus.EATEN_DURATION;
@@ -110,14 +110,14 @@ public class StaticBonus extends Entity implements Bonus {
 				return;
 			}
 			if (--timer == 0) {
-				logger.info("Bonus expired: %s", this);
+				LOGGER.info("Bonus expired: %s", this);
 				state = BonusState.INACTIVE;
 				GameEvents.publish(GameEventType.BONUS_EXPIRES, tile());
 			}
 		}
 		case EATEN -> {
 			if (--timer == 0) {
-				logger.info("Bonus expired: %s", this);
+				LOGGER.info("Bonus expired: %s", this);
 				setInactive();
 				GameEvents.publish(GameEventType.BONUS_EXPIRES, tile());
 			}

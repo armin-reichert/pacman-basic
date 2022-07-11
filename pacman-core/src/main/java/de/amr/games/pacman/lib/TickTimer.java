@@ -44,7 +44,7 @@ import de.amr.games.pacman.lib.TickTimerEvent.Type;
  */
 public class TickTimer {
 
-	private static final Logger logger = LogManager.getFormatterLogger();
+	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
 	public enum State {
 		READY, RUNNING, STOPPED, EXPIRED;
@@ -117,7 +117,7 @@ public class TickTimer {
 		duration = ticks;
 		tick = 0;
 		state = READY;
-		logger.trace("%s reset", this);
+		LOGGER.trace("%s reset", this);
 		fireEvent(new TickTimerEvent(Type.RESET, ticks));
 	}
 
@@ -145,14 +145,14 @@ public class TickTimer {
 		switch (state) {
 		case STOPPED, READY -> {
 			state = RUNNING;
-			logger.trace("%s started", this);
+			LOGGER.trace("%s started", this);
 			fireEvent(new TickTimerEvent(Type.STARTED));
 		}
 		case RUNNING -> {
-			logger.trace("%s not started, already running", this);
+			LOGGER.trace("%s not started, already running", this);
 		}
 		case EXPIRED -> {
-			logger.trace("%s not started, timer has expired", this);
+			LOGGER.trace("%s not started, timer has expired", this);
 		}
 		}
 	}
@@ -164,17 +164,17 @@ public class TickTimer {
 		switch (state) {
 		case RUNNING -> {
 			state = STOPPED;
-			logger.trace("%s stopped", this);
+			LOGGER.trace("%s stopped", this);
 			fireEvent(new TickTimerEvent(Type.STOPPED));
 		}
 		case STOPPED -> {
-			logger.trace("%s already stopped", this);
+			LOGGER.trace("%s already stopped", this);
 		}
 		case READY -> {
-			logger.trace("%s not stopped, was not running", this);
+			LOGGER.trace("%s not stopped, was not running", this);
 		}
 		case EXPIRED -> {
-			logger.trace("%s not stopped, has expired", this);
+			LOGGER.trace("%s not stopped, has expired", this);
 		}
 		}
 	}
@@ -198,7 +198,7 @@ public class TickTimer {
 	public void expire() {
 		if (state != EXPIRED) {
 			state = EXPIRED;
-			logger.trace("%s expired", this);
+			LOGGER.trace("%s expired", this);
 			fireEvent(new TickTimerEvent(Type.EXPIRED, tick));
 		}
 	}

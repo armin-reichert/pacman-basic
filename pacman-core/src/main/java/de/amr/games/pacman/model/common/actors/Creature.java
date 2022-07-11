@@ -49,7 +49,7 @@ import de.amr.games.pacman.model.common.world.World;
  */
 public class Creature extends Entity {
 
-	private static final Logger logger = LogManager.getFormatterLogger();
+	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
 	protected static final Direction[] TURN_PRIORITY = { UP, LEFT, DOWN, RIGHT };
 
@@ -149,7 +149,7 @@ public class Creature extends Entity {
 
 	public void forceTurningBack() {
 		reverse = true;
-		logger.info("%s got signal to reverse direction", name);
+		LOGGER.info("%s got signal to reverse direction", name);
 	}
 
 	/**

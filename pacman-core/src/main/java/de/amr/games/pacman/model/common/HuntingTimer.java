@@ -36,7 +36,7 @@ import de.amr.games.pacman.lib.TickTimer;
  */
 public class HuntingTimer extends TickTimer {
 
-	private static final Logger logger = LogManager.getFormatterLogger();
+	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
 	/** Tells if the current hunting phase is "scattering". */
 	public static boolean isScatteringPhase(int phase) {
@@ -60,7 +60,7 @@ public class HuntingTimer extends TickTimer {
 		this.phase = phase;
 		reset(duration);
 		start();
-		logger.info("%s: started", this);
+		LOGGER.info("%s: started", this);
 	}
 
 	/**

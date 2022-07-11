@@ -47,7 +47,7 @@ import de.amr.games.pacman.model.common.actors.GhostState;
  */
 public class Autopilot implements Steering {
 
-	private static final Logger logger = LogManager.getFormatterLogger();
+	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
 	private static class AutopilotData {
 
@@ -105,7 +105,7 @@ public class Autopilot implements Steering {
 		}
 		AutopilotData data = collectData();
 		if (data.hunterAhead != null || data.hunterBehind != null || !data.frightenedGhosts.isEmpty()) {
-			logger.trace("%n%s", data);
+			LOGGER.trace("%n%s", data);
 		}
 		takeAction(data);
 	}
@@ -135,10 +135,10 @@ public class Autopilot implements Steering {
 			Direction escapeDir = null;
 			if (data.hunterBehind != null) {
 				escapeDir = findEscapeDirectionExcluding(EnumSet.of(game().pac.moveDir(), game().pac.moveDir().opposite()));
-				logger.trace("Detected ghost %s behind, escape direction is %s", data.hunterAhead.name, escapeDir);
+				LOGGER.trace("Detected ghost %s behind, escape direction is %s", data.hunterAhead.name, escapeDir);
 			} else {
 				escapeDir = findEscapeDirectionExcluding(EnumSet.of(game().pac.moveDir()));
-				logger.trace("Detected ghost %s ahead, escape direction is %s", data.hunterAhead.name, escapeDir);
+				LOGGER.trace("Detected ghost %s ahead, escape direction is %s", data.hunterAhead.name, escapeDir);
 			}
 			if (escapeDir != null) {
 				game().pac.setWishDir(escapeDir);
@@ -152,12 +152,12 @@ public class Autopilot implements Steering {
 
 		if (!data.frightenedGhosts.isEmpty() && game().powerTimer.remaining() >= 1 * 60) {
 			Ghost prey = data.frightenedGhosts.get(0);
-			logger.trace("Detected frightened ghost %s %.0g tiles away", prey.name,
+			LOGGER.trace("Detected frightened ghost %s %.0g tiles away", prey.name,
 					prey.tile().manhattanDistance(game().pac.tile()));
 			game().pac.targetTile = prey.tile();
 		} else if (game().bonus() != null && game().bonus().state() == BonusState.EDIBLE && game().bonus().entity().tile()
 				.manhattanDistance(game().pac.tile()) <= AutopilotData.MAX_BONUS_HARVEST_DIST) {
-			logger.trace("Detected active bonus");
+			LOGGER.trace("Detected active bonus");
 			game().pac.targetTile = game().bonus().entity().tile();
 		} else {
 			V2i foodTile = findTileFarestFromGhosts(findNearestFoodTiles());
@@ -182,7 +182,7 @@ public class Autopilot implements Steering {
 			for (Ghost ghost : game().ghosts(GhostState.HUNTING_PAC).toArray(Ghost[]::new)) {
 				if (ghost.tile().equals(ahead) || ghost.tile().equals(aheadLeft) || ghost.tile().equals(aheadRight)) {
 					if (energizerFound) {
-						logger.trace("Ignore hunting ghost ahead, energizer comes first!");
+						LOGGER.trace("Ignore hunting ghost ahead, energizer comes first!");
 						return null;
 					}
 					return ghost;
@@ -255,9 +255,9 @@ public class Autopilot implements Steering {
 			}
 		}
 		time = System.nanoTime() - time;
-		logger.trace("Nearest food tiles from Pac-Man location %s: (time %.2f millis)", pacManTile, time / 1_000_000f);
+		LOGGER.trace("Nearest food tiles from Pac-Man location %s: (time %.2f millis)", pacManTile, time / 1_000_000f);
 		for (V2i t : foodTiles) {
-			logger.trace("\t%s (%.2g tiles away from Pac-Man, %.2g tiles away from ghosts)", t,
+			LOGGER.trace("\t%s (%.2g tiles away from Pac-Man, %.2g tiles away from ghosts)", t,
 					t.manhattanDistance(pacManTile), minDistanceFromGhosts());
 		}
 		return foodTiles;

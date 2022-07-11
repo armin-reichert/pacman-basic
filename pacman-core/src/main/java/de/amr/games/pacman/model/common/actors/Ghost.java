@@ -56,7 +56,7 @@ import de.amr.games.pacman.model.common.GameModel;
 public class Ghost extends Creature {
 
 	@SuppressWarnings("unused")
-	private static final Logger logger = LogManager.getFormatterLogger();
+	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
 	/** ID of red */
 	public static final int RED_GHOST = 0;

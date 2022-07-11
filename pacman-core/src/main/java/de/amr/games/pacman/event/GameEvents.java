@@ -40,7 +40,7 @@ public class GameEvents {
 
 	private static final GameEvents theOne = new GameEvents();
 
-	private static final Logger logger = LogManager.getFormatterLogger();
+	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
 	private Supplier<GameModel> fnGame;
 	private final Collection<GameEventListener> subscribers = new ConcurrentLinkedQueue<>();
@@ -62,7 +62,7 @@ public class GameEvents {
 
 	public static void publish(GameEvent gameEvent) {
 		if (gameEvent.type != GameEventType.PAC_FINDS_FOOD) {
-			logger.trace("%s", gameEvent);
+			LOGGER.trace("%s", gameEvent);
 		}
 		theOne.subscribers.forEach(subscriber -> subscriber.onGameEvent(gameEvent));
 	}

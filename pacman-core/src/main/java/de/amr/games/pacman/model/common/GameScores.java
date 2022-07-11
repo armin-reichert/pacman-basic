@@ -46,7 +46,7 @@ import de.amr.games.pacman.model.common.actors.Score;
  */
 public class GameScores {
 
-	private static final Logger logger = LogManager.getFormatterLogger();
+	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
 	private static void loadFromFile(Score score, File file) {
 		try (var in = new FileInputStream(file)) {
@@ -60,10 +60,10 @@ public class GameScores {
 			score.points = points;
 			score.levelNumber = levelNumber;
 			score.date = date;
-			logger.info("Score loaded. File: '%s' Points: %d Level: %d", file.getAbsolutePath(), score.points,
+			LOGGER.info("Score loaded. File: '%s' Points: %d Level: %d", file.getAbsolutePath(), score.points,
 					score.levelNumber);
 		} catch (Exception x) {
-			logger.info("Score could not be loaded. File '%s' Reason: %s", file, x.getMessage());
+			LOGGER.info("Score could not be loaded. File '%s' Reason: %s", file, x.getMessage());
 		}
 	}
 
@@ -123,10 +123,10 @@ public class GameScores {
 		props.setProperty("date", highScore.date.format(DateTimeFormatter.ISO_LOCAL_DATE));
 		try (var out = new FileOutputStream(hiscoreFile)) {
 			props.storeToXML(out, "");
-			logger.info("New hiscore saved. File: '%s' Points: %d Level: %d", hiscoreFile.getAbsolutePath(), highScore.points,
+			LOGGER.info("New hiscore saved. File: '%s' Points: %d Level: %d", hiscoreFile.getAbsolutePath(), highScore.points,
 					highScore.levelNumber);
 		} catch (Exception x) {
-			logger.info("Highscore could not be saved. File '%s' Reason: %s", hiscoreFile, x.getMessage());
+			LOGGER.info("Highscore could not be saved. File '%s' Reason: %s", hiscoreFile, x.getMessage());
 		}
 	}
 }

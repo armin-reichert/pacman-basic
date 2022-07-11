@@ -36,7 +36,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class OptionParser {
 
-	private static final Logger logger = LogManager.getFormatterLogger();
+	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
 	private final Map<String, Option<?>> optionMap = new HashMap<>();
 	private int i;
@@ -60,7 +60,7 @@ public class OptionParser {
 		if (i < arglist.size()) {
 			var arg1 = arglist.get(i);
 			if (!optionMap.keySet().contains(arg1)) {
-				logger.error("Skip garbage '%s'", arg1);
+				LOGGER.error("Skip garbage '%s'", arg1);
 				++i;
 				return;
 			}
@@ -69,7 +69,7 @@ public class OptionParser {
 				if (i < arglist.size()) {
 					var arg2 = arglist.get(i);
 					if (optionMap.keySet().contains(arg2)) {
-						logger.error("Missing value for parameter '%s'.", option.getName());
+						LOGGER.error("Missing value for parameter '%s'.", option.getName());
 					} else {
 						++i;
 						option.parse(arg2);
