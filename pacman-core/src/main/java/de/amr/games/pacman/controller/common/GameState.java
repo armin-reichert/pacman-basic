@@ -88,7 +88,7 @@ public enum GameState implements FsmState<GameModel> {
 		public void addCredit(GameModel game) {
 			boolean added = game.addCredit();
 			if (added) {
-				gc.sounds().ifPresent(snd -> snd.play(GameSound.CREDIT));
+				playSound(GameSound.CREDIT);
 			}
 			gc.changeState(CREDIT);
 		}
@@ -122,7 +122,7 @@ public enum GameState implements FsmState<GameModel> {
 		public void addCredit(GameModel game) {
 			boolean added = game.addCredit();
 			if (added) {
-				gc.sounds().ifPresent(snd -> snd.play(GameSound.CREDIT));
+				playSound(GameSound.CREDIT);
 			}
 		}
 
@@ -152,7 +152,7 @@ public enum GameState implements FsmState<GameModel> {
 					game.reset();
 					game.scores.gameScore.showContent = true;
 					game.guys().forEach(Entity::hide);
-					gc.sounds().ifPresent(snd -> snd.play(GameSound.GAME_READY));
+					playSound(GameSound.GAME_READY);
 				} else if (timer.atSecond(2)) {
 					game.guys().forEach(Entity::show);
 					game.livesOneLessShown = true;
@@ -244,7 +244,7 @@ public enum GameState implements FsmState<GameModel> {
 			if (!game.playing) {
 				boolean added = game.addCredit();
 				if (added) {
-					gc.sounds().ifPresent(snd -> snd.play(GameSound.CREDIT));
+					playSound(GameSound.CREDIT);
 				}
 				gc.changeState(CREDIT);
 			}
@@ -339,7 +339,7 @@ public enum GameState implements FsmState<GameModel> {
 			timer.start();
 			game.pac.hide();
 			game.ghosts().forEach(ghost -> ghost.setFlashingStopped(true));
-			gc.sounds().ifPresent(snd -> snd.play(GameSound.GHOST_EATEN));
+			playSound(GameSound.GHOST_EATEN);
 		}
 
 		@Override
@@ -379,7 +379,7 @@ public enum GameState implements FsmState<GameModel> {
 				game.pac.setAnimation(AnimKeys.PAC_DYING, false);
 			} else if (timer.atSecond(2)) {
 				game.pac.animation().ifPresent(EntityAnimation::restart);
-				gc.sounds().ifPresent(snd -> snd.play(GameSound.PACMAN_DEATH));
+				playSound(GameSound.PACMAN_DEATH);
 			} else if (timer.atSecond(4)) {
 				game.lives--;
 				if (game.lives == 0) {
@@ -470,6 +470,10 @@ public enum GameState implements FsmState<GameModel> {
 	@Override
 	public TickTimer timer() {
 		return timer;
+	}
+
+	void playSound(GameSound sound) {
+		gc.sounds().ifPresent(snd -> snd.play(sound));
 	}
 
 	public void selectGameVariant(GameVariant variant) {
