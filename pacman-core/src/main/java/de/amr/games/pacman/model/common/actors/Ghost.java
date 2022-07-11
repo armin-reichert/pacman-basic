@@ -311,6 +311,18 @@ public class Ghost extends Creature {
 		}
 	}
 
+	public void setFlashingStopped(boolean stopped) {
+		animation(AnimKeys.GHOST_FLASHING).ifPresent(flashing -> {
+			if (stopped) {
+				flashing.stop();
+				// this is dependent on the animation implementation: display white with red eyes
+				flashing.setFrameIndex(2);
+			} else {
+				flashing.run();
+			}
+		});
+	}
+
 	private void startFlashing(int numFlashes) {
 		animationSet().ifPresent(animSet -> {
 			if (animSet.selected().equals(AnimKeys.GHOST_FLASHING)) {

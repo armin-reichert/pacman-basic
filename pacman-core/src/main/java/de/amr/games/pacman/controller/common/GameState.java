@@ -335,9 +335,10 @@ public enum GameState implements FsmState<GameModel> {
 	GHOST_DYING {
 		@Override
 		public void onEnter(GameModel game) {
-			timer.resetSeconds(1);
+			timer.resetSeconds(1.5);
 			timer.start();
 			game.pac.hide();
+			game.ghosts().forEach(ghost -> ghost.setFlashingStopped(true));
 			gc.sounds().ifPresent(snd -> snd.play(GameSound.GHOST_EATEN));
 		}
 
@@ -345,17 +346,18 @@ public enum GameState implements FsmState<GameModel> {
 		public void onUpdate(GameModel game) {
 			if (timer.hasExpired()) {
 				gc.resumePreviousState();
-				return;
+			} else {
+				gc.currentSteering().steer(game.pac);
+				game.updateGhostsReturningHome();
+				game.energizerPulse.advance();
 			}
-			gc.currentSteering().steer(game.pac);
-			game.updateGhostsReturningHome();
-			game.energizerPulse.advance();
 		}
 
 		@Override
 		public void onExit(GameModel game) {
 			game.pac.show();
 			game.letDeadGhostsReturnHome();
+			game.ghosts().forEach(ghost -> ghost.setFlashingStopped(false));
 		}
 	},
 
