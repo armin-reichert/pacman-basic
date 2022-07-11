@@ -44,13 +44,13 @@ public class Portal {
 		this.right = right;
 	}
 
-	public boolean attractsGuy(Creature guy) {
+	private boolean attractsGuy(Creature guy) {
 		var guyTile = guy.tile();
-		return guyTile.equals(left) && guy.moveDir() == Direction.LEFT
-				|| guyTile.equals(right) && guy.moveDir() == Direction.RIGHT;
+		return guyTile.equals(left.minus(1, 0)) && guy.moveDir() == Direction.LEFT
+				|| guyTile.equals(right.plus(1, 0)) && guy.moveDir() == Direction.RIGHT;
 	}
 
-	public void teleport(Creature guy) {
+	public void tryTeleport(Creature guy) {
 		if (attractsGuy(guy)) {
 			guy.placeAtTile(guy.moveDir() == Direction.LEFT ? right : left, 0, 0);
 		}

@@ -72,7 +72,7 @@ public abstract class MapBasedWorld implements World {
 		var list = new ArrayList<Portal>();
 		for (int row = 0; row < size.y; ++row) {
 			if (map[row][0] == TUNNEL && map[row][size.x - 1] == TUNNEL) {
-				list.add(new Portal(v(-1, row), v(size.x, row)));
+				list.add(new Portal(v(-2, row), v(size.x + 1, row)));
 			}
 		}
 		list.trimToSize();

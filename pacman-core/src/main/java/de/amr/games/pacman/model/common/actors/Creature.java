@@ -104,11 +104,12 @@ public class Creature extends Entity {
 		if (world == null) {
 			return false;
 		}
-		if (!world.insideMap(tile)) {
+		if (world.insideMap(tile)) {
+			return !world.isWall(tile) && !world.ghostHouse().isDoorTile(tile);
+		} else {
 			// portal tiles are the only tiles accessible outside of the map
-			return world.isPortal(tile);
+			return world.isPortal(tile.plus(1, 0)) || world.isPortal(tile.minus(1, 0)) || world.isPortal(tile);
 		}
-		return !world.isWall(tile) && !world.ghostHouse().isDoorTile(tile);
 	}
 
 	public Optional<World> getWorld() {
@@ -230,7 +231,7 @@ public class Creature extends Entity {
 		if (world == null) {
 			return;
 		}
-		tryTeleport();
+		world.portals().forEach(portal -> portal.tryTeleport(this));
 		if (reverse && newTileEntered) {
 			wishDir = moveDir.opposite();
 			reverse = false;
@@ -241,11 +242,6 @@ public class Creature extends Entity {
 		} else {
 			moveDir = wishDir;
 		}
-	}
-
-	private void tryTeleport() {
-		world.portals().stream().filter(portal -> portal.attractsGuy(this)).findFirst()
-				.ifPresent(portal -> portal.teleport(this));
 	}
 
 	/**
