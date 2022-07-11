@@ -32,12 +32,12 @@ import java.util.stream.Stream;
 /**
  * @author Armin Reichert
  */
-public abstract class EntityAnimationSet {
+public class EntityAnimationSet {
 
 	protected final Map<String, EntityAnimation> animationsByName;
 	protected String selected;
 
-	protected EntityAnimationSet(int initialSize) {
+	public EntityAnimationSet(int initialSize) {
 		animationsByName = new HashMap<>(initialSize);
 	}
 
