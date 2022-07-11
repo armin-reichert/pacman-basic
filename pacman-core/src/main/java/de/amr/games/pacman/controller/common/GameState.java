@@ -96,6 +96,8 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void requestGame(GameModel game) {
 			if (game.hasCredit()) {
+				game.reset();
+				game.setLevel(1);
 				gc.changeState(READY);
 			}
 		}
@@ -128,6 +130,8 @@ public enum GameState implements FsmState<GameModel> {
 
 		@Override
 		public void requestGame(GameModel game) {
+			game.reset();
+			game.setLevel(1);
 			gc.changeState(READY);
 		}
 	},
