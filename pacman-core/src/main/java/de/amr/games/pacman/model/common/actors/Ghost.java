@@ -159,12 +159,13 @@ public class Ghost extends Creature {
 			GameEvents.publish(new GameEvent(game, GameEventType.GHOST_STARTS_LEAVING_HOUSE, this, tile()));
 			return;
 		}
-		boolean outside = world.ghostHouse().leadGuestOutOfHouse(this);
-		if (outside) {
+		var outsideHouse = world.ghostHouse().leadGuyOutOfHouse(this);
+		if (outsideHouse) {
 			setBothDirs(LEFT);
 			newTileEntered = false; // move left into next tile before changing direction
 			doHuntingPac(game);
 			GameEvents.publish(new GameEvent(game, GameEventType.GHOST_COMPLETES_LEAVING_HOUSE, this, tile()));
+			return;
 		}
 		ensureFlashingWhenPowerCeases(game);
 	}
@@ -198,7 +199,7 @@ public class Ghost extends Creature {
 			targetTile = scatterTile;
 			tryReachingTargetTile();
 		}
-		selectAndRunAnimation(AnimKeys.GHOST_COLOR);
+//		selectAndRunAnimation(AnimKeys.GHOST_COLOR);
 	}
 
 	private V2i chasingTile(GameModel game) {
@@ -265,7 +266,7 @@ public class Ghost extends Creature {
 			GameEvents.publish(new GameEvent(game, GameEventType.GHOST_ENTERS_HOUSE, this, tile()));
 			return;
 		}
-		boolean arrived = world.ghostHouse().leadGuestToTile(this, targetTile);
+		boolean arrived = world.ghostHouse().leadGuyToTile(this, targetTile);
 		if (arrived) {
 			doLeavingHouse(game);
 		}
@@ -292,7 +293,19 @@ public class Ghost extends Creature {
 
 	private void ensureFlashingWhenPowerCeases(GameModel game) {
 		if (endangered(game) && game.powerTimer.remaining() <= GameModel.PAC_POWER_FADING_TICKS) {
-			ensureFlashing(game.level.numFlashes);
+			var numFlashes = game.level.numFlashes;
+			animationSet().ifPresent(animSet -> {
+				if (animSet.selected().equals(AnimKeys.GHOST_FLASHING)) {
+					animSet.selectedAnimation().ensureRunning();
+				} else {
+					animSet.select(AnimKeys.GHOST_FLASHING);
+					var flashing = animSet.selectedAnimation();
+					long frameTicks = GameModel.PAC_POWER_FADING_TICKS / (numFlashes * flashing.numFrames());
+					flashing.setFrameDuration(frameTicks);
+					flashing.setRepetions(numFlashes);
+					flashing.restart();
+				}
+			});
 		}
 	}
 
@@ -304,21 +317,6 @@ public class Ghost extends Creature {
 				flashing.setFrameIndex(2);
 			} else {
 				flashing.run();
-			}
-		});
-	}
-
-	private void ensureFlashing(int numFlashes) {
-		animationSet().ifPresent(animSet -> {
-			if (animSet.selected().equals(AnimKeys.GHOST_FLASHING)) {
-				animSet.selectedAnimation().ensureRunning();
-			} else {
-				animSet.select(AnimKeys.GHOST_FLASHING);
-				var flashing = animSet.selectedAnimation();
-				long frameTicks = GameModel.PAC_POWER_FADING_TICKS / (numFlashes * flashing.numFrames());
-				flashing.setFrameDuration(frameTicks);
-				flashing.setRepetions(numFlashes);
-				flashing.restart();
 			}
 		});
 	}

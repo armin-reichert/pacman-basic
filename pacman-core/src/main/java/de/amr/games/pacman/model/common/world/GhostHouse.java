@@ -53,7 +53,7 @@ public interface GhostHouse {
 
 	boolean atHouseEntry(Creature creature);
 
-	boolean leadGuestOutOfHouse(Creature guest);
+	boolean leadGuyOutOfHouse(Creature guest);
 
-	boolean leadGuestToTile(Creature guest, V2i targetTile);
+	boolean leadGuyToTile(Creature guest, V2i targetTile);
 }
