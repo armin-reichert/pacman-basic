@@ -237,9 +237,8 @@ public class Ghost extends Creature {
 		if (state != EATEN) {
 			state = EATEN;
 			targetTile = game.world().ghostHouse().entryTile();
-			selectAndRunAnimation(AnimKeys.GHOST_VALUE);
 			// display ghost value (200, 400, 800, 1600)
-			animation().ifPresent(anim -> anim.setFrameIndex(killedIndex));
+			selectAndRunAnimation(AnimKeys.GHOST_VALUE).ifPresent(anim -> anim.setFrameIndex(killedIndex));
 		}
 	}
 
