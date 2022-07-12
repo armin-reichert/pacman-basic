@@ -36,8 +36,8 @@ import de.amr.games.pacman.model.common.actors.Creature;
  */
 public class Portal {
 
-	public final V2i left; // (-1, y)
-	public final V2i right; // (world.numCols(), y)
+	public final V2i left; // (-2, y)
+	public final V2i right; // (world.numCols()+1, y)
 
 	public Portal(V2i left, V2i right) {
 		this.left = left;
@@ -45,14 +45,13 @@ public class Portal {
 	}
 
 	private boolean attractsGuy(Creature guy) {
-		var guyTile = guy.tile();
-		return guyTile.equals(left.minus(1, 0)) && guy.moveDir() == Direction.LEFT
-				|| guyTile.equals(right.plus(1, 0)) && guy.moveDir() == Direction.RIGHT;
+		return guy.tile().equals(left) && guy.moveDir() == Direction.LEFT
+				|| guy.tile().equals(right) && guy.moveDir() == Direction.RIGHT;
 	}
 
 	public void tryTeleport(Creature guy) {
 		if (attractsGuy(guy)) {
-			guy.placeAtTile(guy.moveDir() == Direction.LEFT ? right : left, 0, 0);
+			guy.placeAtTile(guy.tile().equals(left) ? right : left, 0, 0);
 		}
 	}
 
