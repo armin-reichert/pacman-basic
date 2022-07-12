@@ -37,4 +37,6 @@ public interface Portal {
 	boolean contains(V2i tile);
 
 	void teleport(Creature guy);
+
+	double closeness(Creature guy);
 }

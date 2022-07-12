@@ -23,6 +23,10 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.common.world;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.actors.Creature;
 
@@ -33,6 +37,13 @@ import de.amr.games.pacman.model.common.actors.Creature;
  * @author Armin Reichert
  */
 public record HorizontalPortal(V2i leftTunnelEnd, V2i rightTunnelEnd) implements Portal {
+
+	private static final Logger LOGGER = LogManager.getFormatterLogger();
+
+	@Override
+	public String toString() {
+		return "[Portal left=%s right=%s]".formatted(leftTunnelEnd, rightTunnelEnd());
+	}
 
 	@Override
 	public void teleport(Creature guy) {
@@ -46,5 +57,18 @@ public record HorizontalPortal(V2i leftTunnelEnd, V2i rightTunnelEnd) implements
 	@Override
 	public boolean contains(V2i tile) {
 		return tile.y() == leftTunnelEnd.y() && (tile.x() < leftTunnelEnd.x() || tile.x() > rightTunnelEnd.x());
+	}
+
+	@Override
+	public double closeness(Creature guy) {
+		var leftEnd = new V2d(leftTunnelEnd.minus(2, 0)).scaled(World.TS);
+		var rightEnd = new V2d(rightTunnelEnd.plus(2, 0)).scaled(World.TS);
+		var guyPos = guy.getPosition();
+		var dist = Math.abs(Math.min(guyPos.euclideanDistance(leftEnd), guyPos.euclideanDistance(rightEnd)));
+		LOGGER.info("%s, distance of %s is %.2f", this, guy.name, dist);
+		if (dist > 8.0) {
+			return 1.0;
+		}
+		return dist / 8.0;
 	}
 }
