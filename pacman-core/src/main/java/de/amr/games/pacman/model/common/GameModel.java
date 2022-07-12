@@ -479,7 +479,7 @@ public abstract class GameModel {
 		// leave state EXPIRED to avoid repetitions:
 		powerTimer.resetIndefinitely();
 		huntingTimer.start();
-		ghosts(FRIGHTENED).forEach(ghost -> ghost.doHunting(this));
+		ghosts(FRIGHTENED).forEach(ghost -> ghost.doHuntingPac(this));
 		GameEvents.publish(GameEventType.PAC_LOSES_POWER, pac.tile());
 	}
 
@@ -585,7 +585,7 @@ public abstract class GameModel {
 			LOGGER.info("%s Elroy mode %d resumed", redGhost.name, redGhost.elroy);
 		}
 		if (ghost.id == RED_GHOST) {
-			ghost.doHunting(this);
+			ghost.doHuntingPac(this);
 		} else {
 			ghost.doLeavingHouse(this);
 		}

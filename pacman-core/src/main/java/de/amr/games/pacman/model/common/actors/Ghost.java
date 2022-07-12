@@ -123,7 +123,7 @@ public class Ghost extends Creature {
 		switch (state) {
 		case LOCKED -> doLocked(game);
 		case LEAVING_HOUSE -> doLeavingHouse(game);
-		case HUNTING_PAC -> doHunting(game);
+		case HUNTING_PAC -> doHuntingPac(game);
 		case FRIGHTENED -> doFrightened(game);
 		case EATEN -> doEaten(game);
 		case RETURNING_TO_HOUSE -> doReturningToHouse(game);
@@ -172,7 +172,7 @@ public class Ghost extends Creature {
 		if (outside) {
 			setBothDirs(LEFT);
 			newTileEntered = false; // move left into next tile before changing direction
-			doHunting(game);
+			doHuntingPac(game);
 			GameEvents.publish(new GameEvent(game, GameEventType.GHOST_COMPLETES_LEAVING_HOUSE, this, tile()));
 		}
 		ensureFlashingWhenPowerCeases(game);
@@ -183,7 +183,7 @@ public class Ghost extends Creature {
 	 * had been to randomize the scatter target of *all* ghosts in Ms. Pac-Man but because of a bug, only the scatter
 	 * target of Blinky and Pinky would have been affected. Who knows?
 	 */
-	public void doHunting(GameModel game) {
+	public void doHuntingPac(GameModel game) {
 		if (state != HUNTING_PAC) {
 			state = HUNTING_PAC;
 			setAnimation(AnimKeys.GHOST_COLOR);

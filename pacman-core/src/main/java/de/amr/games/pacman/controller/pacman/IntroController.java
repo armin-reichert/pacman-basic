@@ -172,7 +172,7 @@ public class IntroController extends Fsm<State, Context> {
 				ctx.pacMan.show();
 				ctx.pacMan.setAnimation(AnimKeys.PAC_MUNCHING);
 				for (Ghost ghost : ctx.ghosts) {
-					ghost.doHunting(ctx.gameController.game());
+					ghost.doHuntingPac(ctx.gameController.game());
 					ghost.setPosition(ctx.pacMan.getPosition().plus(16 * (ghost.id + 1), 0));
 					ghost.setBothDirs(Direction.LEFT);
 					ghost.setAbsSpeed(1.2);
