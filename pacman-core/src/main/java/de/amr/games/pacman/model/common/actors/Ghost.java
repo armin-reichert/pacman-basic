@@ -54,16 +54,9 @@ import de.amr.games.pacman.model.common.GameModel;
  */
 public class Ghost extends Creature {
 
-	/** ID of red */
 	public static final int RED_GHOST = 0;
-
-	/** ID of pink */
 	public static final int PINK_GHOST = 1;
-
-	/** ID of cyan */
 	public static final int CYAN_GHOST = 2;
-
-	/** ID of orange */
 	public static final int ORANGE_GHOST = 3;
 
 	/** The ID of the ghost, see {@link GameModel#RED_GHOST} etc. */
@@ -132,14 +125,12 @@ public class Ghost extends Creature {
 			return;
 		}
 		bounce();
-		animationSet().ifPresent(animSet -> {
-			if (endangered(game)) {
-				selectAndRunAnimation(AnimKeys.GHOST_BLUE);
-				ensureFlashingWhenPowerCeases(game);
-			} else {
-				selectAndRunAnimation(AnimKeys.GHOST_COLOR);
-			}
-		});
+		if (endangered(game)) {
+			selectAndRunAnimation(AnimKeys.GHOST_BLUE);
+			ensureFlashingWhenPowerCeases(game);
+		} else {
+			selectAndRunAnimation(AnimKeys.GHOST_COLOR);
+		}
 	}
 
 	private void bounce() {
@@ -159,8 +150,7 @@ public class Ghost extends Creature {
 			GameEvents.publish(new GameEvent(game, GameEventType.GHOST_STARTS_LEAVING_HOUSE, this, tile()));
 			return;
 		}
-		var outsideHouse = world.ghostHouse().leadGuyOutOfHouse(this);
-		if (outsideHouse) {
+		if (world.ghostHouse().leadGuyOutOfHouse(this)) {
 			setBothDirs(LEFT);
 			newTileEntered = false; // move left into next tile before changing direction
 			doHuntingPac(game);
@@ -199,7 +189,6 @@ public class Ghost extends Creature {
 			targetTile = scatterTile;
 			tryReachingTargetTile();
 		}
-//		selectAndRunAnimation(AnimKeys.GHOST_COLOR);
 	}
 
 	private V2i chasingTile(GameModel game) {
