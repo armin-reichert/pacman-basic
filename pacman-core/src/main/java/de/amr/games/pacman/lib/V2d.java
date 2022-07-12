@@ -23,26 +23,16 @@ SOFTWARE.
  */
 package de.amr.games.pacman.lib;
 
-import java.util.Objects;
-
 /**
  * Immutable 2D vector with double precision. Component values are treated as equal if they differ less than 1e-6.
  * 
  * @author Armin Reichert
  */
-public class V2d {
+public record V2d(double x, double y) {
 
 	public static final V2d NULL = new V2d(0, 0);
 
 	private static final double EPSILON = 1e-6;
-
-	public final double x;
-	public final double y;
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(x, y);
-	}
 
 	@Override
 	public boolean equals(Object other) {
@@ -59,11 +49,6 @@ public class V2d {
 	@Override
 	public String toString() {
 		return String.format("(%.2f, %.2f)", x, y);
-	}
-
-	public V2d(double x, double y) {
-		this.x = x;
-		this.y = y;
 	}
 
 	public V2d(V2i v) {
@@ -104,6 +89,6 @@ public class V2d {
 	}
 
 	public double euclideanDistance(V2d v) {
-		return minus(v).length();
+		return this.minus(v).length();
 	}
 }

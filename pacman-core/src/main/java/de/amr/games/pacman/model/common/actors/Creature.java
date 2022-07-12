@@ -261,13 +261,13 @@ public class Creature extends Entity {
 
 		// check if creature can turn towards move direction from its current position
 		if (neighborTileAccessible) {
-			if (dir.isHorizontal() && abs(offset.y) > speed || dir.isVertical() && abs(offset.x) > speed) {
+			if (dir.isHorizontal() && abs(offset.y()) > speed || dir.isVertical() && abs(offset.x()) > speed) {
 				return;
 			}
 			if (dir.isHorizontal()) {
-				setOffset(offset.x, 0);
+				setOffset(offset.x(), 0);
 			} else {
-				setOffset(0, offset.y);
+				setOffset(0, offset.y());
 			}
 		}
 
@@ -283,19 +283,19 @@ public class Creature extends Entity {
 
 		// align with inaccessible neighbor tile
 		if (!neighborTileAccessible) {
-			if (dir == Direction.RIGHT && newOffset.x > 0 || dir == Direction.LEFT && newOffset.x < 0) {
-				setOffset(0, offset.y);
+			if (dir == Direction.RIGHT && newOffset.x() > 0 || dir == Direction.LEFT && newOffset.x() < 0) {
+				setOffset(0, offset.y());
 				return;
 			}
-			if (dir == Direction.DOWN && newOffset.y > 0 || dir == Direction.UP && newOffset.y < 0) {
-				setOffset(offset.x, 0);
+			if (dir == Direction.DOWN && newOffset.y() > 0 || dir == Direction.UP && newOffset.y() < 0) {
+				setOffset(offset.x(), 0);
 				return;
 			}
 		}
 
 		// yes, we can (move)
 		stuck = false;
-		setPosition(newTile.x() * TS + newOffset.x, newTile.y() * TS + newOffset.y);
+		setPosition(newTile.x() * TS + newOffset.x(), newTile.y() * TS + newOffset.y());
 		newTileEntered = !tile().equals(tile);
 	}
 

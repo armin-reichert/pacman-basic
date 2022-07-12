@@ -160,9 +160,9 @@ public class Ghost extends Creature {
 	}
 
 	private void bounce() {
-		if (position.y <= homePosition.y - HTS) {
+		if (position.y() <= homePosition.y() - HTS) {
 			setBothDirs(DOWN);
-		} else if (position.y >= homePosition.y + HTS) {
+		} else if (position.y() >= homePosition.y() + HTS) {
 			setBothDirs(UP);
 		}
 		move();

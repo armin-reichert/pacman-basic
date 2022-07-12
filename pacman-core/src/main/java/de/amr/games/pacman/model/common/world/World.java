@@ -53,7 +53,7 @@ public interface World {
 
 	/** Tile position of a given pixel position. */
 	public static V2i tile(V2d position) {
-		return new V2i((int) position.x / TS, (int) position.y / TS);
+		return new V2i((int) position.x() / TS, (int) position.y() / TS);
 	}
 
 	/** Tile offset of a given pixel position. */

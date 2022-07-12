@@ -184,11 +184,11 @@ public class IntroController extends Fsm<State, Context> {
 			@Override
 			public void onUpdate(Context ctx) {
 				// Pac-Man reaches the energizer
-				if (ctx.pacMan.getPosition().x <= t(ctx.left)) {
+				if (ctx.pacMan.getPosition().x() <= t(ctx.left)) {
 					controller.changeState(State.CHASING_GHOSTS);
 				}
 				// ghosts already reverse direction before Pac-man eats the energizer and turns right!
-				else if (ctx.pacMan.getPosition().x <= t(ctx.left) + 4) {
+				else if (ctx.pacMan.getPosition().x() <= t(ctx.left) + 4) {
 					for (Ghost ghost : ctx.ghosts) {
 						ghost.enterStateFrightened();
 						ghost.setBothDirs(Direction.RIGHT);

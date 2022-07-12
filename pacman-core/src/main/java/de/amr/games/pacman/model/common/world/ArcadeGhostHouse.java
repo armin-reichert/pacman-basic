@@ -112,22 +112,22 @@ public class ArcadeGhostHouse implements GhostHouse {
 
 	@Override
 	public boolean atHouseEntry(Creature creature) {
-		return creature.tile().equals(entryTile) && U.insideRange(creature.offset().x, HTS, 1);
+		return creature.tile().equals(entryTile) && U.insideRange(creature.offset().x(), HTS, 1);
 	}
 
 	@Override
 	public boolean leadGuestOutOfHouse(Creature guest) {
 		var entryPos = new V2d(entryTile.scaled(TS).plus(HTS, 0));
-		if (guest.getPosition().x == entryPos.x && guest.getPosition().y <= entryPos.y) {
+		if (guest.getPosition().x() == entryPos.x() && guest.getPosition().y() <= entryPos.y()) {
 			guest.setPosition(entryPos);
 			return true;
 		}
 		var center = middleSeatCenterPosition();
-		if (U.insideRange(guest.getPosition().x, center.x, 1)) {
-			guest.setOffset(HTS, guest.offset().y); // center horizontally before rising
+		if (U.insideRange(guest.getPosition().x(), center.x(), 1)) {
+			guest.setOffset(HTS, guest.offset().y()); // center horizontally before rising
 			guest.setBothDirs(UP);
 		} else {
-			guest.setBothDirs(guest.getPosition().x < center.x ? RIGHT : LEFT);
+			guest.setBothDirs(guest.getPosition().x() < center.x() ? RIGHT : LEFT);
 		}
 		guest.move();
 		return false;
@@ -136,11 +136,11 @@ public class ArcadeGhostHouse implements GhostHouse {
 	@Override
 	public boolean leadGuestToTile(Creature guest, V2i targetTile) {
 		var tile = guest.tile();
-		if (tile.equals(targetTile) && guest.offset().y >= 0) {
+		if (tile.equals(targetTile) && guest.offset().y() >= 0) {
 			return true;
 		}
 		var middle = seatMiddleTile();
-		if (tile.equals(middle) && guest.offset().y >= 0) {
+		if (tile.equals(middle) && guest.offset().y() >= 0) {
 			if (targetTile.x() < middle.x()) {
 				guest.setBothDirs(LEFT);
 			} else if (targetTile.x() > middle.x()) {

@@ -154,17 +154,17 @@ public class Intermission3Controller extends Fsm<State, Context> {
 				ctx.bag.move();
 
 				// release bag from storks beak?
-				if ((int) ctx.stork.getPosition().x == t(20)) {
+				if ((int) ctx.stork.getPosition().x() == t(20)) {
 					ctx.bag.setAcceleration(0, 0.04);
 					ctx.stork.setVelocity(-1, 0);
 				}
 
 				// (closed) bag reaches ground for first time?
-				if (!ctx.bagOpen && ctx.bag.getPosition().y > ctx.groundY) {
+				if (!ctx.bagOpen && ctx.bag.getPosition().y() > ctx.groundY) {
 					++ctx.numBagBounces;
 					if (ctx.numBagBounces < 3) {
 						ctx.bag.setVelocity(-0.2f, -1f / ctx.numBagBounces);
-						ctx.bag.setPosition(ctx.bag.getPosition().x, ctx.groundY);
+						ctx.bag.setPosition(ctx.bag.getPosition().x(), ctx.groundY);
 					} else {
 						ctx.bagOpen = true;
 						ctx.bag.setVelocity(V2d.NULL);
