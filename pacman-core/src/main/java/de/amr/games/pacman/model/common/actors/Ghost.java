@@ -134,9 +134,7 @@ public class Ghost extends Creature {
 		bounce();
 		animationSet().ifPresent(animSet -> {
 			if (endangered(game)) {
-				if (animSet.isSelected(AnimKeys.GHOST_COLOR)) {
-					selectAndRunAnimation(AnimKeys.GHOST_BLUE);
-				}
+				selectAndRunAnimation(AnimKeys.GHOST_BLUE);
 				ensureFlashingWhenPowerCeases(game);
 			} else {
 				selectAndRunAnimation(AnimKeys.GHOST_COLOR);
@@ -294,8 +292,8 @@ public class Ghost extends Creature {
 	}
 
 	private void ensureFlashingWhenPowerCeases(GameModel game) {
-		if (game.powerTimer.remaining() == GameModel.PAC_POWER_FADING_TICKS) {
-			startFlashing(game.level.numFlashes);
+		if (endangered(game) && game.powerTimer.remaining() <= GameModel.PAC_POWER_FADING_TICKS) {
+			ensureFlashing(game.level.numFlashes);
 		}
 	}
 
@@ -311,7 +309,7 @@ public class Ghost extends Creature {
 		});
 	}
 
-	private void startFlashing(int numFlashes) {
+	private void ensureFlashing(int numFlashes) {
 		animationSet().ifPresent(animSet -> {
 			if (animSet.selected().equals(AnimKeys.GHOST_FLASHING)) {
 				animSet.selectedAnimation().ensureRunning();
