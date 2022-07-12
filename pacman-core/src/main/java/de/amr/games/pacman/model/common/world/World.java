@@ -112,7 +112,7 @@ public interface World {
 	/**
 	 * @return portals inside this world
 	 */
-	List<HorizontalPortal> portals();
+	List<Portal> portals();
 
 	/**
 	 * @param tile a tile

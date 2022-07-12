@@ -35,26 +35,36 @@ import de.amr.games.pacman.model.common.actors.Creature;
  * 
  * @author Armin Reichert
  */
-public class HorizontalPortal {
+public class HorizontalPortal implements Portal {
 
-	public final V2i leftTunnelEnd; // (0, y)
-	public final V2i rightTunnelEnd; // (world.numCols() - 1, y)
+	private final V2i leftTunnelEnd; // (0, y)
+	private final V2i rightTunnelEnd; // (world.numCols() - 1, y)
 
 	public HorizontalPortal(V2i leftTunnelEnd, V2i rightTunnelEnd) {
 		this.leftTunnelEnd = leftTunnelEnd;
 		this.rightTunnelEnd = rightTunnelEnd;
 	}
 
+	public V2i getLeftTunnelEnd() {
+		return leftTunnelEnd;
+	}
+
+	public V2i getRightTunnelEnd() {
+		return rightTunnelEnd;
+	}
+
+	@Override
 	public boolean contains(V2i tile) {
 		return tile.y == leftTunnelEnd.y && (tile.x < leftTunnelEnd.x || tile.x > rightTunnelEnd.x);
 	}
 
 	private boolean attractsGuy(Creature guy) {
-		return guy.tile().equals(leftTunnelEnd.minus(1, 0)) && guy.moveDir() == Direction.LEFT
-				|| guy.tile().equals(rightTunnelEnd.plus(1, 0)) && guy.moveDir() == Direction.RIGHT;
+		return guy.tile().equals(leftTunnelEnd.minus(2, 0)) && guy.moveDir() == Direction.LEFT
+				|| guy.tile().equals(rightTunnelEnd.plus(2, 0)) && guy.moveDir() == Direction.RIGHT;
 	}
 
-	public void tryTeleport(Creature guy) {
+	@Override
+	public void teleport(Creature guy) {
 		if (attractsGuy(guy)) {
 			guy.placeAtTile(guy.moveDir() == Direction.RIGHT ? leftTunnelEnd.minus(2, 0) : rightTunnelEnd.plus(2, 0), 0, 0);
 		}

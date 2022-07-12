@@ -45,6 +45,7 @@ import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.Pac;
 import de.amr.games.pacman.model.common.world.ArcadeWorld;
+import de.amr.games.pacman.model.common.world.HorizontalPortal;
 import de.amr.games.pacman.model.common.world.World;
 
 /**
@@ -389,16 +390,16 @@ public class MsPacManGame extends GameModel {
 		List<V2i> route = new ArrayList<>();
 		int numPortals = world.portals().size();
 		if (numPortals > 0) {
-			var entryPortal = world.portals().get(rnd.nextInt(numPortals));
-			var exitPortal = world.portals().get(rnd.nextInt(numPortals));
+			var entryPortal = (HorizontalPortal) world.portals().get(rnd.nextInt(numPortals));
+			var exitPortal = (HorizontalPortal) world.portals().get(rnd.nextInt(numPortals));
 			var travelDir = rnd.nextBoolean() ? Direction.LEFT : Direction.RIGHT;
 			var houseEntry = world.ghostHouse().entryTile();
 			int houseHeight = world.ghostHouse().size().y;
-			route.add(travelDir == Direction.RIGHT ? entryPortal.leftTunnelEnd : entryPortal.rightTunnelEnd);
+			route.add(travelDir == Direction.RIGHT ? entryPortal.getLeftTunnelEnd() : entryPortal.getRightTunnelEnd());
 			route.add(houseEntry);
 			route.add(houseEntry.plus(0, houseHeight + 2));
 			route.add(houseEntry);
-			route.add(travelDir == Direction.RIGHT ? exitPortal.rightTunnelEnd : exitPortal.leftTunnelEnd);
+			route.add(travelDir == Direction.RIGHT ? exitPortal.getRightTunnelEnd() : exitPortal.getLeftTunnelEnd());
 		}
 		return route;
 	}

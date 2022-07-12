@@ -229,7 +229,7 @@ public class Creature extends Entity {
 		if (world == null) {
 			return;
 		}
-		world.portals().forEach(portal -> portal.tryTeleport(this));
+		world.portals().forEach(portal -> portal.teleport(this));
 		if (reverse && newTileEntered) {
 			wishDir = moveDir.opposite();
 			reverse = false;
