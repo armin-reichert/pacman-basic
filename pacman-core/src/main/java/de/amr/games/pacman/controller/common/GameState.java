@@ -231,7 +231,7 @@ public enum GameState implements FsmState<GameModel> {
 			if (game.pac.getStarvingTicks() >= 12) { // ???
 				snd.stop(GameSound.PACMAN_MUNCH);
 			}
-			if (game.ghosts(GhostState.DEAD).filter(ghost -> ghost.killIndex == -1).count() > 0) {
+			if (game.ghosts(GhostState.RETURNING_TO_HOUSE).count() > 0) {
 				if (!snd.isPlaying(GameSound.GHOST_RETURNING)) {
 					snd.loop(GameSound.GHOST_RETURNING, GameSoundController.LOOP_FOREVER);
 				}
@@ -349,7 +349,7 @@ public enum GameState implements FsmState<GameModel> {
 				gc.resumePreviousState();
 			} else {
 				gc.currentSteering().steer(game.pac);
-				game.updateGhostsReturningHome();
+				game.ghosts(GhostState.RETURNING_TO_HOUSE).forEach(ghost -> ghost.update(game));
 				game.energizerPulse.advance();
 			}
 		}
@@ -357,7 +357,7 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void onExit(GameModel game) {
 			game.pac.show();
-			game.letDeadGhostsReturnHome();
+			game.ghosts(GhostState.EATEN).forEach(Ghost::enterStateReturningToHouse);
 			game.ghosts().forEach(ghost -> ghost.setFlashingStopped(false));
 		}
 	},

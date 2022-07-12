@@ -28,8 +28,6 @@ import static de.amr.games.pacman.model.common.actors.Ghost.CYAN_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ORANGE_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.PINK_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.RED_GHOST;
-import static de.amr.games.pacman.model.common.actors.GhostState.DEAD;
-import static de.amr.games.pacman.model.common.actors.GhostState.ENTERING_HOUSE;
 import static de.amr.games.pacman.model.common.actors.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.common.actors.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.model.common.actors.GhostState.LEAVING_HOUSE;
@@ -257,7 +255,7 @@ public abstract class GameModel {
 			ghost.stuck = false;
 			ghost.newTileEntered = true;
 			ghost.reverse = false;
-			ghost.killIndex = -1;
+			ghost.killedIndex = -1;
 			ghost.show();
 			ghost.lock();
 		});
@@ -453,13 +451,12 @@ public abstract class GameModel {
 	}
 
 	private void killGhost(Ghost ghost) {
-		ghost.killIndex = ghostsKilledByEnergizer;
+		ghost.killedIndex = ghostsKilledByEnergizer;
 		ghostsKilledByEnergizer++;
-		int points = ghostValue(ghost.killIndex);
-		scores.addPoints(points);
-		ghost.enterStateDead();
-		ghost.targetTile = level.world.ghostHouse().entryTile();
-		LOGGER.info("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name, ghost.tile(), points);
+		ghost.enterStateEaten();
+		int value = ghostValue(ghost.killedIndex);
+		scores.addPoints(value);
+		LOGGER.info("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name, ghost.tile(), value);
 	}
 
 	private void startPowerTimer(double seconds) {
@@ -550,22 +547,6 @@ public abstract class GameModel {
 			GameEvents.publish(new GameEvent(this, GameEventType.GHOST_STARTS_LEAVING_HOUSE, ghost, ghost.tile()));
 		});
 		ghosts().forEach(ghost -> ghost.update(this));
-	}
-
-	public void letDeadGhostsReturnHome() {
-		// fire event(s) only for dead ghosts not yet returning home (killIndex >= 0)
-		ghosts(DEAD).filter(ghost -> ghost.killIndex >= 0).forEach(ghost -> {
-			ghost.killIndex = -1;
-			GameEvents.publish(new GameEvent(this, GameEventType.GHOST_STARTS_RETURNING_HOME, ghost, null));
-		});
-	}
-
-	/**
-	 * Updates the ghosts that are returning home while the game is stalled because of a dying ghost.
-	 */
-	public void updateGhostsReturningHome() {
-		ghosts().filter(ghost -> ghost.is(DEAD) && ghost.killIndex == -1 || ghost.is(ENTERING_HOUSE))
-				.forEach(ghost -> ghost.update(this));
 	}
 
 	// Ghost house rules, see Pac-Man dossier

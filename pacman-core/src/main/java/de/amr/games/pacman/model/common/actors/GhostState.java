@@ -29,5 +29,5 @@ package de.amr.games.pacman.model.common.actors;
  * @author Armin Reichert
  */
 public enum GhostState {
-	LOCKED, DEAD, ENTERING_HOUSE, LEAVING_HOUSE, FRIGHTENED, HUNTING_PAC;
+	LOCKED, ENTERING_HOUSE, LEAVING_HOUSE, FRIGHTENED, HUNTING_PAC, EATEN, RETURNING_TO_HOUSE;
 }

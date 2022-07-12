@@ -228,7 +228,7 @@ public class IntroController extends Fsm<State, Context> {
 
 			@Override
 			public void onUpdate(Context ctx) {
-				if (Stream.of(ctx.ghosts).allMatch(ghost -> ghost.is(GhostState.DEAD))) {
+				if (Stream.of(ctx.ghosts).allMatch(ghost -> ghost.is(GhostState.EATEN))) {
 					ctx.pacMan.hide();
 					controller.changeState(READY_TO_PLAY);
 					return;
@@ -239,8 +239,8 @@ public class IntroController extends Fsm<State, Context> {
 						.findFirst();
 				nextVictim.ifPresent(victim -> {
 					ctx.ghostKilledTime = timer.tick();
-					victim.killIndex = victim.id;
-					victim.enterStateDead();
+					victim.killedIndex = victim.id;
+					victim.enterStateEaten();
 					ctx.pacMan.hide();
 					ctx.pacMan.setAbsSpeed(0);
 					Stream.of(ctx.ghosts).forEach(ghost -> {
@@ -254,7 +254,7 @@ public class IntroController extends Fsm<State, Context> {
 					ctx.pacMan.show();
 					ctx.pacMan.setAbsSpeed(1.2);
 					for (Ghost ghost : ctx.ghosts) {
-						if (!ghost.is(GhostState.DEAD)) {
+						if (!ghost.is(GhostState.EATEN)) {
 							ghost.show();
 							ghost.setAbsSpeed(0.6);
 							ghost.animation(AnimKeys.GHOST_BLUE).ifPresent(EntityAnimation::run);

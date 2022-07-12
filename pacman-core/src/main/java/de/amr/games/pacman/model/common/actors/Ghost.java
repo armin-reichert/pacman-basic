@@ -85,8 +85,8 @@ public class Ghost extends Creature {
 	/** Scatter target. */
 	public V2i scatterTile;
 
-	/** The kill index. First ghost killed by an energizer has index 0 etc. */
-	public int killIndex;
+	/** Value from <code>0..4</code>. Ghosts killed by same energizer are indexed in order. */
+	public int killedIndex;
 
 	/** Individual food counter, used to determine when the ghost can leave the house. */
 	public int dotCounter;
@@ -134,7 +134,8 @@ public class Ghost extends Creature {
 		case LEAVING_HOUSE -> updateStateLeavingHouse(game);
 		case HUNTING_PAC -> updateStateHunting(game);
 		case FRIGHTENED -> updateStateFrightened(game);
-		case DEAD -> updateStateDead(game);
+		case EATEN -> updateStateEaten(game);
+		case RETURNING_TO_HOUSE -> updateStateReturningToHouse(game);
 		case ENTERING_HOUSE -> updateStateEnteringHouse(game);
 		}
 		advanceAnimation();
@@ -254,21 +255,30 @@ public class Ghost extends Creature {
 		checkFlashing(game);
 	}
 
-	public void enterStateDead() {
-		state = GhostState.DEAD;
+	public void enterStateEaten() {
+		state = GhostState.EATEN;
 		targetTile = world.ghostHouse().entryTile();
 		setAnimation(AnimKeys.GHOST_VALUE);
-		// display ghost value sprite (200, 400, 800, 1600)
-		animation().ifPresent(anim -> anim.setFrameIndex(killIndex));
+		// display ghost value (200, 400, 800, 1600)
+		animation().ifPresent(anim -> anim.setFrameIndex(killedIndex));
 	}
 
-	private void updateStateDead(GameModel game) {
+	private void updateStateEaten(GameModel game) {
+		// anything to do?
+	}
+
+	public void enterStateReturningToHouse() {
+		state = GhostState.RETURNING_TO_HOUSE;
+		targetTile = world.ghostHouse().entryTile();
+		setAnimation(AnimKeys.GHOST_EYES);
+	}
+
+	private void updateStateReturningToHouse(GameModel game) {
 		if (world.ghostHouse().atHouseEntry(this)) {
 			enterStateEnteringHouse(game);
 		} else {
 			setRelSpeed(2 * game.level.ghostSpeed); // not sure
 			tryReachingTargetTile();
-			setAnimation(AnimKeys.GHOST_EYES);
 		}
 	}
 
