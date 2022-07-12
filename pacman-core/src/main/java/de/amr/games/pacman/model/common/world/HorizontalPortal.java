@@ -28,12 +28,16 @@ import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.actors.Creature;
 
 /**
- * A portal connects two tunnel ends leading out of the map. This kind of portal connects a left tunnel end horizontally
- * with the right tunnel end at the other side of the map.
+ * A portal connects two tunnel ends leading out of the map.
+ * <p>
+ * This kind of portal prolongates the right tunnel end by <code>DEPTH</code> tiles before wrapping with the left part
+ * (also <code>DEPTH</code> tiles) of the portal.
  * 
  * @author Armin Reichert
  */
 public record HorizontalPortal(V2i leftTunnelEnd, V2i rightTunnelEnd) implements Portal {
+
+	private static final int DEPTH = 2;
 
 	@Override
 	public String toString() {
@@ -42,23 +46,31 @@ public record HorizontalPortal(V2i leftTunnelEnd, V2i rightTunnelEnd) implements
 
 	@Override
 	public void teleport(Creature guy) {
-		if (guy.tile().equals(leftTunnelEnd.minus(2, 0))) {
-			guy.placeAtTile(rightTunnelEnd.plus(2, 0), 0, 0);
-		} else if (guy.tile().equals(rightTunnelEnd.plus(2, 0))) {
-			guy.placeAtTile(leftTunnelEnd.minus(2, 0), 0, 0);
+		if (guy.tile().equals(leftTunnelEnd.minus(DEPTH, 0))) {
+			guy.placeAtTile(rightTunnelEnd.plus(DEPTH, 0), 0, 0);
+		} else if (guy.tile().equals(rightTunnelEnd.plus(DEPTH, 0))) {
+			guy.placeAtTile(leftTunnelEnd.minus(DEPTH, 0), 0, 0);
 		}
 	}
 
 	@Override
 	public boolean contains(V2i tile) {
-		return tile.y() == leftTunnelEnd.y() && (tile.x() < leftTunnelEnd.x() || tile.x() > rightTunnelEnd.x());
+		for (int i = 1; i <= DEPTH; ++i) {
+			if (tile.equals(leftTunnelEnd.minus(i, 0))) {
+				return true;
+			}
+			if (tile.equals(rightTunnelEnd.plus(i, 0))) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@Override
 	public double distance(Creature guy) {
-		var leftEnd = new V2d(leftTunnelEnd.minus(2, 0)).scaled(World.TS);
-		var rightEnd = new V2d(rightTunnelEnd.plus(2, 0)).scaled(World.TS);
+		var leftEndPosition = new V2d(leftTunnelEnd.minus(DEPTH, 0)).scaled(World.TS);
+		var rightEndPosition = new V2d(rightTunnelEnd.plus(DEPTH, 0)).scaled(World.TS);
 		var guyPos = guy.getPosition();
-		return Math.abs(Math.min(guyPos.euclideanDistance(leftEnd), guyPos.euclideanDistance(rightEnd)));
+		return Math.abs(Math.min(guyPos.euclideanDistance(leftEndPosition), guyPos.euclideanDistance(rightEndPosition)));
 	}
 }
