@@ -109,7 +109,7 @@ public class IntroController extends Fsm<IntroController.State, IntroController.
 				ctx.msPacMan.setAnimation(AnimKeys.PAC_MUNCHING);
 				ctx.msPacMan.show();
 				for (Ghost ghost : ctx.ghosts) {
-					ghost.enterStateHunting();
+					ghost.doHunting(ctx.gameController.game());
 					ghost.setMoveDir(LEFT);
 					ghost.setWishDir(LEFT);
 					ghost.setPosition(t(34), ctx.turningPoint.y());

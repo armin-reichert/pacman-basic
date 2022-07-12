@@ -172,7 +172,7 @@ public class IntroController extends Fsm<State, Context> {
 				ctx.pacMan.show();
 				ctx.pacMan.setAnimation(AnimKeys.PAC_MUNCHING);
 				for (Ghost ghost : ctx.ghosts) {
-					ghost.enterStateHunting();
+					ghost.doHunting(ctx.gameController.game());
 					ghost.setPosition(ctx.pacMan.getPosition().plus(16 * (ghost.id + 1), 0));
 					ghost.setBothDirs(Direction.LEFT);
 					ghost.setAbsSpeed(1.2);
@@ -190,7 +190,7 @@ public class IntroController extends Fsm<State, Context> {
 				// ghosts already reverse direction before Pac-man eats the energizer and turns right!
 				else if (ctx.pacMan.getPosition().x() <= t(ctx.left) + 4) {
 					for (Ghost ghost : ctx.ghosts) {
-						ghost.enterStateFrightened();
+						ghost.doFrightened(ctx.gameController.game());
 						ghost.setBothDirs(Direction.RIGHT);
 						ghost.setAbsSpeed(0.6);
 						ghost.move();
@@ -240,7 +240,7 @@ public class IntroController extends Fsm<State, Context> {
 				nextVictim.ifPresent(victim -> {
 					ctx.ghostKilledTime = timer.tick();
 					victim.killedIndex = victim.id;
-					victim.enterStateEaten();
+					victim.doEaten(ctx.gameController.game());
 					ctx.pacMan.hide();
 					ctx.pacMan.setAbsSpeed(0);
 					Stream.of(ctx.ghosts).forEach(ghost -> {

@@ -116,44 +116,32 @@ public class Ghost extends Creature {
 		return U.oneOf(state, alternatives);
 	}
 
-	public void lock() {
-		enterStateLocked();
-	}
-
-	public void unlock(GameModel game) {
-		if (id == RED_GHOST) {
-			enterStateHunting();
-		} else {
-			enterStateLeavingHouse(game);
-		}
-	}
-
 	public void update(GameModel game) {
 		switch (state) {
-		case LOCKED -> updateStateLocked(game);
-		case LEAVING_HOUSE -> updateStateLeavingHouse(game);
-		case HUNTING_PAC -> updateStateHunting(game);
-		case FRIGHTENED -> updateStateFrightened(game);
-		case EATEN -> updateStateEaten(game);
-		case RETURNING_TO_HOUSE -> updateStateReturningToHouse(game);
-		case ENTERING_HOUSE -> updateStateEnteringHouse(game);
+		case LOCKED -> doLocked(game);
+		case LEAVING_HOUSE -> doLeavingHouse(game);
+		case HUNTING_PAC -> doHunting(game);
+		case FRIGHTENED -> doFrightened(game);
+		case EATEN -> doEaten(game);
+		case RETURNING_TO_HOUSE -> doReturningToHouse(game);
+		case ENTERING_HOUSE -> doEnteringHouse(game);
 		}
 		advanceAnimation();
 	}
 
-	private void enterStateLocked() {
-		state = GhostState.LOCKED;
-		setAnimation(AnimKeys.GHOST_COLOR).ifPresent(EntityAnimation::reset);
-	}
-
-	private void updateStateLocked(GameModel game) {
+	public void doLocked(GameModel game) {
+		if (state != GhostState.LOCKED) {
+			state = GhostState.LOCKED;
+			setAnimation(AnimKeys.GHOST_COLOR).ifPresent(EntityAnimation::reset);
+			return;
+		}
 		bounce();
 		animationSet().ifPresent(animSet -> {
 			if (game.powerTimer.isRunning()) {
 				if (animSet.selected().equals(AnimKeys.GHOST_COLOR)) {
 					setAnimation(AnimKeys.GHOST_BLUE);
 				}
-				checkFlashing(game);
+				ensureFlashingWhenPowerCeases(game);
 			} else {
 				setAnimation(AnimKeys.GHOST_COLOR);
 			}
@@ -169,27 +157,22 @@ public class Ghost extends Creature {
 		move();
 	}
 
-	private void enterStateLeavingHouse(GameModel game) {
-		state = LEAVING_HOUSE;
-		setAbsSpeed(0.5); // not sure
-		setAnimation(AnimKeys.GHOST_COLOR);
-		checkFlashing(game);
-		GameEvents.publish(new GameEvent(game, GameEventType.GHOST_STARTS_LEAVING_HOUSE, this, tile()));
-	}
-
-	private void updateStateLeavingHouse(GameModel game) {
+	public void doLeavingHouse(GameModel game) {
+		if (state != LEAVING_HOUSE) {
+			state = LEAVING_HOUSE;
+			setAbsSpeed(0.5); // not sure
+			setAnimation(AnimKeys.GHOST_COLOR);
+			GameEvents.publish(new GameEvent(game, GameEventType.GHOST_STARTS_LEAVING_HOUSE, this, tile()));
+			return;
+		}
 		boolean outside = world.ghostHouse().leadGuestOutOfHouse(this);
 		if (outside) {
 			setBothDirs(LEFT);
 			newTileEntered = false; // move left into next tile before changing direction
-			enterStateHunting();
+			doHunting(game);
 			GameEvents.publish(new GameEvent(game, GameEventType.GHOST_COMPLETES_LEAVING_HOUSE, this, tile()));
 		}
-	}
-
-	public void enterStateHunting() {
-		state = HUNTING_PAC;
-		setAnimation(AnimKeys.GHOST_COLOR);
+		ensureFlashingWhenPowerCeases(game);
 	}
 
 	/*
@@ -197,7 +180,12 @@ public class Ghost extends Creature {
 	 * had been to randomize the scatter target of *all* ghosts in Ms. Pac-Man but because of a bug, only the scatter
 	 * target of Blinky and Pinky would have been affected. Who knows?
 	 */
-	private void updateStateHunting(GameModel game) {
+	public void doHunting(GameModel game) {
+		if (state != HUNTING_PAC) {
+			state = HUNTING_PAC;
+			setAnimation(AnimKeys.GHOST_COLOR);
+			return;
+		}
 		if (world.isTunnel(tile())) {
 			setRelSpeed(game.level.ghostSpeedTunnel);
 		} else if (elroy == 1) {
@@ -240,59 +228,57 @@ public class Ghost extends Creature {
 		tryMoving();
 	}
 
-	public void enterStateFrightened() {
-		state = FRIGHTENED;
-		setAnimation(AnimKeys.GHOST_BLUE);
-	}
-
-	private void updateStateFrightened(GameModel game) {
+	public void doFrightened(GameModel game) {
+		if (state != FRIGHTENED) {
+			state = FRIGHTENED;
+			setAnimation(AnimKeys.GHOST_BLUE);
+			return;
+		}
 		if (world.isTunnel(tile())) {
 			setRelSpeed(game.level.ghostSpeedTunnel);
 		} else {
 			setRelSpeed(game.level.ghostSpeedFrightened);
 		}
 		roam();
-		checkFlashing(game);
+		ensureFlashingWhenPowerCeases(game);
 	}
 
-	public void enterStateEaten() {
-		state = GhostState.EATEN;
-		targetTile = world.ghostHouse().entryTile();
-		setAnimation(AnimKeys.GHOST_VALUE);
-		// display ghost value (200, 400, 800, 1600)
-		animation().ifPresent(anim -> anim.setFrameIndex(killedIndex));
+	public void doEaten(GameModel game) {
+		if (state != GhostState.EATEN) {
+			state = GhostState.EATEN;
+			targetTile = game.world().ghostHouse().entryTile();
+			setAnimation(AnimKeys.GHOST_VALUE);
+			// display ghost value (200, 400, 800, 1600)
+			animation().ifPresent(anim -> anim.setFrameIndex(killedIndex));
+		}
 	}
 
-	private void updateStateEaten(GameModel game) {
-		// anything to do?
-	}
-
-	public void enterStateReturningToHouse() {
-		state = GhostState.RETURNING_TO_HOUSE;
-		targetTile = world.ghostHouse().entryTile();
-		setAnimation(AnimKeys.GHOST_EYES);
-	}
-
-	private void updateStateReturningToHouse(GameModel game) {
+	public void doReturningToHouse(GameModel game) {
+		if (state != GhostState.RETURNING_TO_HOUSE) {
+			state = GhostState.RETURNING_TO_HOUSE;
+			targetTile = world.ghostHouse().entryTile();
+			setAnimation(AnimKeys.GHOST_EYES);
+			return;
+		}
 		if (world.ghostHouse().atHouseEntry(this)) {
-			enterStateEnteringHouse(game);
+			doEnteringHouse(game);
 		} else {
 			setRelSpeed(2 * game.level.ghostSpeed); // not sure
 			tryReachingTargetTile();
 		}
 	}
 
-	private void enterStateEnteringHouse(GameModel game) {
-		state = ENTERING_HOUSE;
-		setBothDirs(DOWN);
-		targetTile = revivalTile;
-		GameEvents.publish(new GameEvent(game, GameEventType.GHOST_ENTERS_HOUSE, this, tile()));
-	}
-
-	private void updateStateEnteringHouse(GameModel game) {
+	public void doEnteringHouse(GameModel game) {
+		if (state != ENTERING_HOUSE) {
+			state = ENTERING_HOUSE;
+			setBothDirs(DOWN);
+			targetTile = revivalTile;
+			GameEvents.publish(new GameEvent(game, GameEventType.GHOST_ENTERS_HOUSE, this, tile()));
+			return;
+		}
 		boolean arrived = world.ghostHouse().leadGuestToTile(this, targetTile);
 		if (arrived) {
-			enterStateLeavingHouse(game);
+			doLeavingHouse(game);
 		}
 	}
 
@@ -315,7 +301,7 @@ public class Ghost extends Creature {
 		return state == HUNTING_PAC && dir == UP && upwardsBlockedTiles.contains(tile());
 	}
 
-	private void checkFlashing(GameModel game) {
+	private void ensureFlashingWhenPowerCeases(GameModel game) {
 		if (game.powerTimer.remaining() == GameModel.PAC_POWER_FADING_TICKS) {
 			startFlashing(game.level.numFlashes);
 		}
