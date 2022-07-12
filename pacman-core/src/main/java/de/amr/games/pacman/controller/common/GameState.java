@@ -51,7 +51,7 @@ public enum GameState implements FsmState<GameModel> {
 	BOOT() {
 		@Override
 		public void onEnter(GameModel context) {
-			timer.resetSeconds(4);
+			timer.resetSeconds(5);
 			timer.start();
 		}
 
@@ -336,7 +336,7 @@ public enum GameState implements FsmState<GameModel> {
 	GHOST_DYING {
 		@Override
 		public void onEnter(GameModel game) {
-			timer.resetSeconds(1.5);
+			timer.resetSeconds(1);
 			timer.start();
 			game.pac.hide();
 			game.ghosts().forEach(ghost -> ghost.setFlashingStopped(true));

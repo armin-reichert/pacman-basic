@@ -104,7 +104,7 @@ public class IntroController extends Fsm<IntroController.State, IntroController.
 				ctx.lightsTimer.resetIndefinitely();
 				ctx.lightsTimer.start();
 				ctx.msPacMan.setMoveDir(LEFT);
-				ctx.msPacMan.setPosition(t(34), ctx.turningPoint.y);
+				ctx.msPacMan.setPosition(t(34), ctx.turningPoint.y());
 				ctx.msPacMan.setAbsSpeed(ctx.actorSpeed);
 				ctx.msPacMan.setAnimation(AnimKeys.PAC_MUNCHING);
 				ctx.msPacMan.show();
@@ -112,7 +112,7 @@ public class IntroController extends Fsm<IntroController.State, IntroController.
 					ghost.enterStateHunting();
 					ghost.setMoveDir(LEFT);
 					ghost.setWishDir(LEFT);
-					ghost.setPosition(t(34), ctx.turningPoint.y);
+					ghost.setPosition(t(34), ctx.turningPoint.y());
 					ghost.setAbsSpeed(ctx.actorSpeed);
 					ghost.show();
 				}
@@ -140,11 +140,11 @@ public class IntroController extends Fsm<IntroController.State, IntroController.
 				Ghost ghost = ctx.ghosts[ctx.ghostIndex];
 				ghost.move();
 				ghost.advanceAnimation();
-				if (ghost.moveDir() != UP && ghost.getPosition().x <= ctx.turningPoint.x) {
+				if (ghost.moveDir() != UP && ghost.getPosition().x <= ctx.turningPoint.x()) {
 					ghost.setMoveDir(UP);
 					ghost.setWishDir(UP);
 				}
-				if (ghost.getPosition().y <= ctx.lightsTopLeft.y + ghost.id * 18) {
+				if (ghost.getPosition().y <= ctx.lightsTopLeft.y() + ghost.id * 18) {
 					ghost.setAbsSpeed(0);
 					ghost.animationSet().ifPresent(EntityAnimationSet::stop);
 					if (++ctx.ghostIndex == ctx.ghosts.length) {

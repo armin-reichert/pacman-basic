@@ -67,7 +67,7 @@ public class V2d {
 	}
 
 	public V2d(V2i v) {
-		this(v.x, v.y);
+		this(v.x(), v.y());
 	}
 
 	public V2d plus(V2d v) {

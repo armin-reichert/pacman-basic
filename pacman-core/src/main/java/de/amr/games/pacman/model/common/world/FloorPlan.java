@@ -194,10 +194,10 @@ public class FloorPlan {
 				V2i s = southOf(tileX, tileY, i);
 				V2i w = westOf(tileX, tileY, i);
 				if (world.isWall(n) && world.isWall(e) && world.isWall(s) && world.isWall(w)) {
-					V2i se = southOf(e.x, e.y, i);
-					V2i sw = southOf(w.x, w.y, i);
-					V2i ne = northOf(e.x, e.y, i);
-					V2i nw = northOf(w.x, w.y, i);
+					V2i se = southOf(e.x(), e.y(), i);
+					V2i sw = southOf(w.x(), w.y(), i);
+					V2i ne = northOf(e.x(), e.y(), i);
+					V2i nw = northOf(w.x(), w.y(), i);
 					if (world.isWall(se) && !world.isWall(nw) || !world.isWall(se) && world.isWall(nw)
 							|| world.isWall(sw) && !world.isWall(ne) || !world.isWall(sw) && world.isWall(ne)) {
 						// keep corner of wall region

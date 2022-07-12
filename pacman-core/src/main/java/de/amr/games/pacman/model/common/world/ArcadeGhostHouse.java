@@ -141,9 +141,9 @@ public class ArcadeGhostHouse implements GhostHouse {
 		}
 		var middle = seatMiddleTile();
 		if (tile.equals(middle) && guest.offset().y >= 0) {
-			if (targetTile.x < middle.x) {
+			if (targetTile.x() < middle.x()) {
 				guest.setBothDirs(LEFT);
-			} else if (targetTile.x > middle.x) {
+			} else if (targetTile.x() > middle.x()) {
 				guest.setBothDirs(RIGHT);
 			}
 		}

@@ -83,7 +83,7 @@ public interface World {
 	 * @return Tile index in order top-to-bottom, left-to-right.
 	 */
 	default int index(V2i tile) {
-		return numCols() * tile.y + tile.x;
+		return numCols() * tile.y() + tile.x();
 	}
 
 	/**
@@ -99,7 +99,7 @@ public interface World {
 	 * @return tells if this tile is located inside the world bounds
 	 */
 	default boolean insideMap(V2i tile) {
-		return 0 <= tile.x && tile.x < numCols() && 0 <= tile.y && tile.y < numRows();
+		return 0 <= tile.x() && tile.x() < numCols() && 0 <= tile.y() && tile.y() < numRows();
 	}
 
 	/**
@@ -125,7 +125,7 @@ public interface World {
 	 * @return Tells if the tile is an intersection (waypoint).
 	 */
 	default boolean isIntersection(V2i tile) {
-		if (tile.x <= 0 || tile.x >= numCols() - 1) {
+		if (tile.x() <= 0 || tile.x() >= numCols() - 1) {
 			return false; // exclude portal entries and tiles outside of the map
 		}
 		if (ghostHouse().contains(tile)) {

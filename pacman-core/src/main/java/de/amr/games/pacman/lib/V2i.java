@@ -23,7 +23,6 @@ SOFTWARE.
  */
 package de.amr.games.pacman.lib;
 
-import java.util.Objects;
 import java.util.stream.Stream;
 
 /**
@@ -31,20 +30,12 @@ import java.util.stream.Stream;
  * 
  * @author Armin Reichert
  */
-public class V2i {
+public record V2i(int x, int y) {
 
 	public static final V2i NULL = new V2i(0, 0);
 
 	public static V2i v(int x, int y) {
 		return new V2i(x, y);
-	}
-
-	public final int x;
-	public final int y;
-
-	public V2i(int x, int y) {
-		this.x = x;
-		this.y = y;
 	}
 
 	public V2i scaled(int s) {
@@ -80,24 +71,7 @@ public class V2i {
 	}
 
 	@Override
-	public int hashCode() {
-		return Objects.hash(x, y);
-	}
-
-	@Override
 	public String toString() {
 		return String.format("(%d,%d)", x, y);
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		V2i other = (V2i) obj;
-		return x == other.x && y == other.y;
 	}
 }

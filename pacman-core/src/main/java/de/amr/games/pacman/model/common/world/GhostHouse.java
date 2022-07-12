@@ -47,7 +47,8 @@ public interface GhostHouse {
 	default boolean contains(V2i tile) {
 		V2i topLeft = topLeftTile();
 		V2i bottomRight = topLeft.plus(size());
-		return tile.x >= topLeft.x && tile.x <= bottomRight.x && tile.y >= topLeft.y && tile.y <= bottomRight.y;
+		return tile.x() >= topLeft.x() && tile.x() <= bottomRight.x() && tile.y() >= topLeft.y()
+				&& tile.y() <= bottomRight.y();
 	}
 
 	boolean atHouseEntry(Creature creature);

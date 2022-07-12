@@ -379,7 +379,7 @@ public class MsPacManGame extends GameModel {
 	protected void onBonusReached() {
 		var route = computeBonusRoute(level.world);
 		if (!route.isEmpty()) {
-			var startDir = route.get(0).x == -1 ? Direction.RIGHT : Direction.LEFT;
+			var startDir = route.get(0).x() == -1 ? Direction.RIGHT : Direction.LEFT;
 			movingBonus.setRoute(route, startDir);
 			movingBonus.setEdible(level.bonusSymbol, BONUS_VALUES[level.bonusSymbol], TickTimer.INDEFINITE);
 			GameEvents.publish(GameEventType.BONUS_GETS_ACTIVE, movingBonus.tile());
@@ -394,7 +394,7 @@ public class MsPacManGame extends GameModel {
 			var exitPortal = (HorizontalPortal) world.portals().get(rnd.nextInt(numPortals));
 			var routeDir = rnd.nextBoolean() ? Direction.LEFT : Direction.RIGHT;
 			var houseEntry = world.ghostHouse().entryTile();
-			int houseHeight = world.ghostHouse().size().y;
+			int houseHeight = world.ghostHouse().size().y();
 			route.add(routeDir == Direction.RIGHT ? entryPortal.leftTunnelEnd() : entryPortal.rightTunnelEnd());
 			route.add(houseEntry);
 			route.add(houseEntry.plus(0, houseHeight + 2));

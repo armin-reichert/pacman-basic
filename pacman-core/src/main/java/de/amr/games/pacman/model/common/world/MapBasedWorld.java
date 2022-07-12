@@ -70,9 +70,9 @@ public abstract class MapBasedWorld implements World {
 
 	protected ArrayList<Portal> findPortals() {
 		var portalList = new ArrayList<Portal>();
-		for (int row = 0; row < size.y; ++row) {
-			if (map[row][0] == TUNNEL && map[row][size.x - 1] == TUNNEL) {
-				portalList.add(new HorizontalPortal(v(0, row), v(size.x - 1, row)));
+		for (int row = 0; row < size.y(); ++row) {
+			if (map[row][0] == TUNNEL && map[row][size.x() - 1] == TUNNEL) {
+				portalList.add(new HorizontalPortal(v(0, row), v(size.x() - 1, row)));
 			}
 		}
 		portalList.trimToSize();
@@ -80,17 +80,17 @@ public abstract class MapBasedWorld implements World {
 	}
 
 	protected byte content(V2i tile) {
-		return insideMap(tile) ? map[tile.y][tile.x] : SPACE;
+		return insideMap(tile) ? map[tile.y()][tile.x()] : SPACE;
 	}
 
 	@Override
 	public int numCols() {
-		return size.x;
+		return size.x();
 	}
 
 	@Override
 	public int numRows() {
-		return size.y;
+		return size.y();
 	}
 
 	@Override
@@ -134,10 +134,10 @@ public abstract class MapBasedWorld implements World {
 	public void removeFood(V2i tile) {
 		byte data = content(tile);
 		if (data == ENERGIZER) {
-			map[tile.y][tile.x] = ENERGIZER_EATEN;
+			map[tile.y()][tile.x()] = ENERGIZER_EATEN;
 			--foodRemaining;
 		} else if (data == PELLET) {
-			map[tile.y][tile.x] = PELLET_EATEN;
+			map[tile.y()][tile.x()] = PELLET_EATEN;
 			--foodRemaining;
 		}
 	}
@@ -166,8 +166,8 @@ public abstract class MapBasedWorld implements World {
 
 	@Override
 	public void resetFood() {
-		for (int row = 0; row < size.y; ++row) {
-			for (int col = 0; col < size.x; ++col) {
+		for (int row = 0; row < size.y(); ++row) {
+			for (int col = 0; col < size.x(); ++col) {
 				if (map[row][col] == PELLET_EATEN) {
 					map[row][col] = PELLET;
 				} else if (map[row][col] == ENERGIZER_EATEN) {

@@ -103,7 +103,7 @@ public class Entity {
 
 	public void setOffset(double offsetX, double offsetY) {
 		var tile = tile();
-		position = new V2d(t(tile.x) + offsetX, t(tile.y) + offsetY);
+		position = new V2d(t(tile.x()) + offsetX, t(tile.y()) + offsetY);
 	}
 
 	public V2i tile() {

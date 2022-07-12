@@ -93,7 +93,7 @@ public class Creature extends Entity {
 	}
 
 	public void placeAtTile(V2i tile, double offsetX, double offsetY) {
-		placeAtTile(tile.x, tile.y, offsetX, offsetY);
+		placeAtTile(tile.x(), tile.y(), offsetX, offsetY);
 	}
 
 	/**
@@ -295,7 +295,7 @@ public class Creature extends Entity {
 
 		// yes, we can (move)
 		stuck = false;
-		setPosition(newTile.x * TS + newOffset.x, newTile.y * TS + newOffset.y);
+		setPosition(newTile.x() * TS + newOffset.x, newTile.y() * TS + newOffset.y);
 		newTileEntered = !tile().equals(tile);
 	}
 

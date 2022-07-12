@@ -45,6 +45,6 @@ public record HorizontalPortal(V2i leftTunnelEnd, V2i rightTunnelEnd) implements
 
 	@Override
 	public boolean contains(V2i tile) {
-		return tile.y == leftTunnelEnd.y && (tile.x < leftTunnelEnd.x || tile.x > rightTunnelEnd.x);
+		return tile.y() == leftTunnelEnd.y() && (tile.x() < leftTunnelEnd.x() || tile.x() > rightTunnelEnd.x());
 	}
 }
