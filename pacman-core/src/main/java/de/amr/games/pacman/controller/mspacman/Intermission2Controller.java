@@ -94,10 +94,10 @@ public class Intermission2Controller extends Fsm<State, Context> {
 				ctx.flap.show();
 				ctx.pacMan = new Pac("Pac-Man");
 				ctx.pacMan.setMoveDir(Direction.RIGHT);
-				ctx.pacMan.setAnimation(AnimKeys.PAC_MUNCHING);
+				ctx.pacMan.selectAndRunAnimation(AnimKeys.PAC_MUNCHING);
 				ctx.msPacMan = new Pac("Ms. Pac-Man");
 				ctx.msPacMan.setMoveDir(Direction.RIGHT);
-				ctx.msPacMan.setAnimation(AnimKeys.GHOST_COLOR);
+				ctx.msPacMan.selectAndRunAnimation(AnimKeys.GHOST_COLOR);
 			}
 
 			@Override

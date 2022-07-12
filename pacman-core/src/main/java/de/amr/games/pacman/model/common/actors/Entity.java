@@ -147,18 +147,18 @@ public class Entity {
 		return animationSet().map(EntityAnimationSet::selectedAnimation);
 	}
 
-	public Optional<EntityAnimation> setAnimation(String name) {
-		return setAnimation(name, true);
-	}
-
-	public Optional<EntityAnimation> setAnimation(String name, boolean ensureRunning) {
+	public Optional<EntityAnimation> selectAndRunAnimation(String name) {
 		if (animationSet != null) {
 			animationSet.select(name);
-			if (ensureRunning) {
-				animationSet.selectedAnimation().ensureRunning();
-			} else {
-				animationSet.selectedAnimation().reset();
-			}
+			animationSet.selectedAnimation().ensureRunning();
+		}
+		return animation();
+	}
+
+	public Optional<EntityAnimation> selectAndResetAnimation(String name) {
+		if (animationSet != null) {
+			animationSet.select(name);
+			animationSet.selectedAnimation().reset();
 		}
 		return animation();
 	}

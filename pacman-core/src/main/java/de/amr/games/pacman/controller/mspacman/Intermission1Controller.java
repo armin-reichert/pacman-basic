@@ -106,27 +106,27 @@ public class Intermission1Controller extends Fsm<State, Context> {
 				ctx.pacMan = new Pac("Pac-Man");
 				ctx.pacMan.setMoveDir(Direction.RIGHT);
 				ctx.pacMan.setPosition(-t(2), ctx.upperY);
-				ctx.pacMan.setAnimation(AnimKeys.PAC_MUNCHING);
+				ctx.pacMan.selectAndRunAnimation(AnimKeys.PAC_MUNCHING);
 				ctx.pacMan.show();
 
 				ctx.inky = new Ghost(Ghost.CYAN_GHOST, "Inky");
 				ctx.inky.setMoveDir(Direction.RIGHT);
 				ctx.inky.setWishDir(Direction.RIGHT);
 				ctx.inky.setPosition(ctx.pacMan.getPosition().minus(t(6), 0));
-				ctx.inky.setAnimation(AnimKeys.GHOST_COLOR);
+				ctx.inky.selectAndRunAnimation(AnimKeys.GHOST_COLOR);
 				ctx.inky.show();
 
 				ctx.msPac = new Pac("Ms. Pac-Man");
 				ctx.msPac.setMoveDir(Direction.LEFT);
 				ctx.msPac.setPosition(t(30), ctx.lowerY);
-				ctx.msPac.setAnimation(AnimKeys.PAC_MUNCHING);
+				ctx.msPac.selectAndRunAnimation(AnimKeys.PAC_MUNCHING);
 				ctx.msPac.show();
 
 				ctx.pinky = new Ghost(PINK_GHOST, "Pinky");
 				ctx.pinky.setMoveDir(Direction.LEFT);
 				ctx.pinky.setWishDir(Direction.LEFT);
 				ctx.pinky.setPosition(ctx.msPac.getPosition().plus(t(6), 0));
-				ctx.pinky.setAnimation(AnimKeys.GHOST_COLOR);
+				ctx.pinky.selectAndRunAnimation(AnimKeys.GHOST_COLOR);
 				ctx.pinky.show();
 
 				ctx.heart = new Entity();

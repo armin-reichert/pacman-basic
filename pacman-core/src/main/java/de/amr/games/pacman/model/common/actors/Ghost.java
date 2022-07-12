@@ -38,9 +38,6 @@ import static de.amr.games.pacman.model.common.world.World.HTS;
 
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import de.amr.games.pacman.event.GameEvent;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
@@ -48,7 +45,6 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.U;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.lib.animation.EntityAnimation;
 import de.amr.games.pacman.model.common.GameModel;
 
 /**
@@ -57,9 +53,6 @@ import de.amr.games.pacman.model.common.GameModel;
  * @author Armin Reichert
  */
 public class Ghost extends Creature {
-
-	@SuppressWarnings("unused")
-	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
 	/** ID of red */
 	public static final int RED_GHOST = 0;
@@ -105,20 +98,6 @@ public class Ghost extends Creature {
 		this.id = id;
 	}
 
-	@Override
-	public String toString() {
-		return String.format("[Ghost %s: state=%s, position=%s, tile=%s, offset=%s, velocity=%s, dir=%s, wishDir=%s]", name,
-				state, position, tile(), offset(), velocity, moveDir, wishDir);
-	}
-
-	public GhostState getState() {
-		return state;
-	}
-
-	public boolean is(GhostState... alternatives) {
-		return U.oneOf(state, alternatives);
-	}
-
 	public void update(GameModel game) {
 		switch (state) {
 		case LOCKED -> doLocked(game);
@@ -132,21 +111,35 @@ public class Ghost extends Creature {
 		advanceAnimation();
 	}
 
+	@Override
+	public String toString() {
+		return "[Ghost %s: state=%s, position=%s, tile=%s, offset=%s, velocity=%s, dir=%s, wishDir=%s]".formatted(name,
+				state, position, tile(), offset(), velocity, moveDir, wishDir);
+	}
+
+	public GhostState getState() {
+		return state;
+	}
+
+	public boolean is(GhostState... alternatives) {
+		return U.oneOf(state, alternatives);
+	}
+
 	public void doLocked(GameModel game) {
 		if (state != LOCKED) {
 			state = LOCKED;
-			setAnimation(AnimKeys.GHOST_COLOR).ifPresent(EntityAnimation::reset);
+			selectAndResetAnimation(AnimKeys.GHOST_COLOR);
 			return;
 		}
 		bounce();
 		animationSet().ifPresent(animSet -> {
-			if (game.powerTimer.isRunning()) {
-				if (animSet.selected().equals(AnimKeys.GHOST_COLOR)) {
-					setAnimation(AnimKeys.GHOST_BLUE);
+			if (endangered(game)) {
+				if (animSet.isSelected(AnimKeys.GHOST_COLOR)) {
+					selectAndRunAnimation(AnimKeys.GHOST_BLUE);
 				}
 				ensureFlashingWhenPowerCeases(game);
 			} else {
-				setAnimation(AnimKeys.GHOST_COLOR);
+				selectAndRunAnimation(AnimKeys.GHOST_COLOR);
 			}
 		});
 	}
@@ -164,7 +157,7 @@ public class Ghost extends Creature {
 		if (state != LEAVING_HOUSE) {
 			state = LEAVING_HOUSE;
 			setAbsSpeed(0.5); // not sure
-			setAnimation(AnimKeys.GHOST_COLOR);
+			selectAndRunAnimation(endangered(game) ? AnimKeys.GHOST_BLUE : AnimKeys.GHOST_COLOR);
 			GameEvents.publish(new GameEvent(game, GameEventType.GHOST_STARTS_LEAVING_HOUSE, this, tile()));
 			return;
 		}
@@ -186,10 +179,10 @@ public class Ghost extends Creature {
 	public void doHuntingPac(GameModel game) {
 		if (state != HUNTING_PAC) {
 			state = HUNTING_PAC;
-			setAnimation(AnimKeys.GHOST_COLOR);
+			selectAndRunAnimation(AnimKeys.GHOST_COLOR);
 			return;
 		}
-		if (world.isTunnel(tile())) {
+		if (insideTunnel()) {
 			setRelSpeed(game.level.ghostSpeedTunnel);
 		} else if (elroy == 1) {
 			setRelSpeed(game.level.elroy1Speed);
@@ -207,7 +200,7 @@ public class Ghost extends Creature {
 			targetTile = scatterTile;
 			tryReachingTargetTile();
 		}
-		setAnimation(AnimKeys.GHOST_COLOR);
+		selectAndRunAnimation(AnimKeys.GHOST_COLOR);
 	}
 
 	private V2i chasingTile(GameModel game) {
@@ -234,14 +227,10 @@ public class Ghost extends Creature {
 	public void doFrightened(GameModel game) {
 		if (state != FRIGHTENED) {
 			state = FRIGHTENED;
-			setAnimation(AnimKeys.GHOST_BLUE);
+			selectAndRunAnimation(AnimKeys.GHOST_BLUE);
 			return;
 		}
-		if (world.isTunnel(tile())) {
-			setRelSpeed(game.level.ghostSpeedTunnel);
-		} else {
-			setRelSpeed(game.level.ghostSpeedFrightened);
-		}
+		setRelSpeed(insideTunnel() ? game.level.ghostSpeedTunnel : game.level.ghostSpeedFrightened);
 		roam();
 		ensureFlashingWhenPowerCeases(game);
 	}
@@ -250,7 +239,7 @@ public class Ghost extends Creature {
 		if (state != EATEN) {
 			state = EATEN;
 			targetTile = game.world().ghostHouse().entryTile();
-			setAnimation(AnimKeys.GHOST_VALUE);
+			selectAndRunAnimation(AnimKeys.GHOST_VALUE);
 			// display ghost value (200, 400, 800, 1600)
 			animation().ifPresent(anim -> anim.setFrameIndex(killedIndex));
 		}
@@ -260,7 +249,7 @@ public class Ghost extends Creature {
 		if (state != RETURNING_TO_HOUSE) {
 			state = RETURNING_TO_HOUSE;
 			targetTile = world.ghostHouse().entryTile();
-			setAnimation(AnimKeys.GHOST_EYES);
+			selectAndRunAnimation(AnimKeys.GHOST_EYES);
 			return;
 		}
 		if (world.ghostHouse().atHouseEntry(this)) {
@@ -335,5 +324,13 @@ public class Ghost extends Creature {
 				flashing.restart();
 			}
 		});
+	}
+
+	private boolean endangered(GameModel game) {
+		return game.powerTimer.isRunning();
+	}
+
+	private boolean insideTunnel() {
+		return world.isTunnel(tile());
 	}
 }

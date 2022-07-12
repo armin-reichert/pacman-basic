@@ -59,7 +59,7 @@ public class Pac extends Creature {
 		setAbsSpeed(0);
 		placeAtTile(v(13, 26), HTS, 0);
 		setBothDirs(Direction.LEFT);
-		setAnimation(AnimKeys.PAC_MUNCHING);
+		selectAndRunAnimation(AnimKeys.PAC_MUNCHING);
 		animation().ifPresent(EntityAnimation::reset);
 		show();
 	}

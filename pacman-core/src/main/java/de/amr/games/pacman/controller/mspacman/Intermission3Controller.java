@@ -126,13 +126,13 @@ public class Intermission3Controller extends Fsm<State, Context> {
 
 				ctx.pacMan.setMoveDir(Direction.RIGHT);
 				ctx.pacMan.setPosition(t(3), ctx.groundY - 4);
-				ctx.pacMan.setAnimation(AnimKeys.PAC_MUNCHING);
+				ctx.pacMan.selectAndRunAnimation(AnimKeys.PAC_MUNCHING);
 				ctx.pacMan.show();
 				ctx.pacMan.animation(AnimKeys.PAC_MUNCHING).ifPresent(EntityAnimation::reset);
 
 				ctx.msPacMan.setMoveDir(Direction.RIGHT);
 				ctx.msPacMan.setPosition(t(5), ctx.groundY - 4);
-				ctx.msPacMan.setAnimation(AnimKeys.PAC_MUNCHING);
+				ctx.msPacMan.selectAndRunAnimation(AnimKeys.PAC_MUNCHING);
 				ctx.msPacMan.show();
 				ctx.msPacMan.animation(AnimKeys.PAC_MUNCHING).ifPresent(EntityAnimation::reset);
 

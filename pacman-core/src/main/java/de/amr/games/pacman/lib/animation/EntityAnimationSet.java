@@ -57,6 +57,10 @@ public class EntityAnimationSet {
 		selected = Objects.requireNonNull(name);
 	}
 
+	public boolean isSelected(String name) {
+		return selected.equals(name);
+	}
+
 	public String selected() {
 		return selected;
 	}
