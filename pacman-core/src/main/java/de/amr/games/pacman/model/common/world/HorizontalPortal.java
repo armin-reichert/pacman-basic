@@ -23,9 +23,6 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.common.world;
 
-import java.util.Objects;
-
-import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.actors.Creature;
 
@@ -35,55 +32,19 @@ import de.amr.games.pacman.model.common.actors.Creature;
  * 
  * @author Armin Reichert
  */
-public class HorizontalPortal implements Portal {
+public record HorizontalPortal(V2i leftTunnelEnd, V2i rightTunnelEnd) implements Portal {
 
-	private final V2i leftTunnelEnd; // (0, y)
-	private final V2i rightTunnelEnd; // (world.numCols() - 1, y)
-
-	public HorizontalPortal(V2i leftTunnelEnd, V2i rightTunnelEnd) {
-		this.leftTunnelEnd = leftTunnelEnd;
-		this.rightTunnelEnd = rightTunnelEnd;
-	}
-
-	public V2i getLeftTunnelEnd() {
-		return leftTunnelEnd;
-	}
-
-	public V2i getRightTunnelEnd() {
-		return rightTunnelEnd;
+	@Override
+	public void teleport(Creature guy) {
+		if (guy.tile().equals(leftTunnelEnd.minus(2, 0))) {
+			guy.placeAtTile(rightTunnelEnd.plus(2, 0), 0, 0);
+		} else if (guy.tile().equals(rightTunnelEnd.plus(2, 0))) {
+			guy.placeAtTile(leftTunnelEnd.minus(2, 0), 0, 0);
+		}
 	}
 
 	@Override
 	public boolean contains(V2i tile) {
 		return tile.y == leftTunnelEnd.y && (tile.x < leftTunnelEnd.x || tile.x > rightTunnelEnd.x);
-	}
-
-	private boolean attractsGuy(Creature guy) {
-		return guy.tile().equals(leftTunnelEnd.minus(2, 0)) && guy.moveDir() == Direction.LEFT
-				|| guy.tile().equals(rightTunnelEnd.plus(2, 0)) && guy.moveDir() == Direction.RIGHT;
-	}
-
-	@Override
-	public void teleport(Creature guy) {
-		if (attractsGuy(guy)) {
-			guy.placeAtTile(guy.moveDir() == Direction.RIGHT ? leftTunnelEnd.minus(2, 0) : rightTunnelEnd.plus(2, 0), 0, 0);
-		}
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(leftTunnelEnd, rightTunnelEnd);
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		HorizontalPortal other = (HorizontalPortal) obj;
-		return Objects.equals(leftTunnelEnd, other.leftTunnelEnd) && Objects.equals(rightTunnelEnd, other.rightTunnelEnd);
 	}
 }

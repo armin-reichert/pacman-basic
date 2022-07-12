@@ -205,28 +205,24 @@ public abstract class GameModel {
 	}
 
 	protected void initGhosts() {
-		var world = (ArcadeWorld) level.world;
-		var house = world.ghostHouse();
-
-		for (var ghost : theGhosts) {
-			ghost.setWorld(world);
-		}
+		var arcadeWorld = (ArcadeWorld) level.world;
+		var house = arcadeWorld.ghostHouse();
 
 		theGhosts[RED_GHOST].homePosition = house.seatPosition(house.entryTile());
 		theGhosts[RED_GHOST].revivalTile = house.seatMiddleTile();
-		theGhosts[RED_GHOST].scatterTile = world.rightUpperTarget;
+		theGhosts[RED_GHOST].scatterTile = arcadeWorld.rightUpperTarget;
 
 		theGhosts[PINK_GHOST].homePosition = house.seatPosition(house.seatMiddleTile());
 		theGhosts[PINK_GHOST].revivalTile = house.seatMiddleTile();
-		theGhosts[PINK_GHOST].scatterTile = world.leftUpperTarget;
+		theGhosts[PINK_GHOST].scatterTile = arcadeWorld.leftUpperTarget;
 
 		theGhosts[CYAN_GHOST].homePosition = house.seatPosition(house.seatLeftTile());
 		theGhosts[CYAN_GHOST].revivalTile = house.seatLeftTile();
-		theGhosts[CYAN_GHOST].scatterTile = world.rightLowerTarget;
+		theGhosts[CYAN_GHOST].scatterTile = arcadeWorld.rightLowerTarget;
 
 		theGhosts[ORANGE_GHOST].homePosition = house.seatPosition(house.seatRightTile());
 		theGhosts[ORANGE_GHOST].revivalTile = house.seatRightTile();
-		theGhosts[ORANGE_GHOST].scatterTile = world.leftLowerTarget;
+		theGhosts[ORANGE_GHOST].scatterTile = arcadeWorld.leftLowerTarget;
 
 		for (var ghost : theGhosts) {
 			ghost.dotCounter = 0;

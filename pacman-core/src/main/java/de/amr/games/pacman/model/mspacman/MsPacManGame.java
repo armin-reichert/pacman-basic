@@ -368,8 +368,8 @@ public class MsPacManGame extends GameModel {
 		}
 		level = createLevel(levelNumber);
 		levelCounter.addSymbol(level.bonusSymbol);
+		guys().forEach(guy -> guy.setWorld(level.world));
 		initGhosts();
-		pac.setWorld(level.world);
 		movingBonus.setWorld(level.world);
 		ghostsKilledByEnergizer = 0;
 		scores.gameScore.levelNumber = levelNumber;
@@ -395,11 +395,11 @@ public class MsPacManGame extends GameModel {
 			var travelDir = rnd.nextBoolean() ? Direction.LEFT : Direction.RIGHT;
 			var houseEntry = world.ghostHouse().entryTile();
 			int houseHeight = world.ghostHouse().size().y;
-			route.add(travelDir == Direction.RIGHT ? entryPortal.getLeftTunnelEnd() : entryPortal.getRightTunnelEnd());
+			route.add(travelDir == Direction.RIGHT ? entryPortal.leftTunnelEnd() : entryPortal.leftTunnelEnd());
 			route.add(houseEntry);
 			route.add(houseEntry.plus(0, houseHeight + 2));
 			route.add(houseEntry);
-			route.add(travelDir == Direction.RIGHT ? exitPortal.getRightTunnelEnd() : exitPortal.getLeftTunnelEnd());
+			route.add(travelDir == Direction.RIGHT ? exitPortal.leftTunnelEnd() : exitPortal.leftTunnelEnd());
 		}
 		return route;
 	}

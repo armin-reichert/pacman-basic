@@ -115,7 +115,7 @@ public class Creature extends Entity {
 	}
 
 	public void setWorld(World world) {
-		this.world = world;
+		this.world = Objects.requireNonNull(world);
 	}
 
 	/**
