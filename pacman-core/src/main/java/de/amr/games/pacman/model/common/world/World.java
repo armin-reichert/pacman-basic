@@ -112,14 +112,13 @@ public interface World {
 	/**
 	 * @return portals inside this world
 	 */
-	List<Portal> portals();
+	List<HorizontalPortal> portals();
 
 	/**
 	 * @param tile a tile
-	 * @return Tells if the tile is part of a portal. The x-(tile-)position of a portal tile is either {@code -1} (left
-	 *         portal) or {@code numCols()} (right portal).
+	 * @return Tells if the tile is part of a portal.
 	 */
-	boolean isPortal(V2i tile);
+	boolean belongsToPortal(V2i tile);
 
 	/**
 	 * @param tile a tile

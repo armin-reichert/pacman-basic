@@ -30,34 +30,39 @@ import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.actors.Creature;
 
 /**
- * A portal is a tunnel end that is connected to the tunnel end on the opposite side of the world.
+ * A portal connects two tunnel ends leading out of the map. This kind of portal connects a left tunnel end horizontally
+ * with the right tunnel end at the other side of the map.
  * 
  * @author Armin Reichert
  */
-public class Portal {
+public class HorizontalPortal {
 
-	public final V2i left; // (-2, y)
-	public final V2i right; // (world.numCols()+1, y)
+	public final V2i leftTunnelEnd; // (0, y)
+	public final V2i rightTunnelEnd; // (world.numCols() - 1, y)
 
-	public Portal(V2i left, V2i right) {
-		this.left = left;
-		this.right = right;
+	public HorizontalPortal(V2i leftTunnelEnd, V2i rightTunnelEnd) {
+		this.leftTunnelEnd = leftTunnelEnd;
+		this.rightTunnelEnd = rightTunnelEnd;
+	}
+
+	public boolean contains(V2i tile) {
+		return tile.y == leftTunnelEnd.y && (tile.x < leftTunnelEnd.x || tile.x > rightTunnelEnd.x);
 	}
 
 	private boolean attractsGuy(Creature guy) {
-		return guy.tile().equals(left) && guy.moveDir() == Direction.LEFT
-				|| guy.tile().equals(right) && guy.moveDir() == Direction.RIGHT;
+		return guy.tile().equals(leftTunnelEnd.minus(1, 0)) && guy.moveDir() == Direction.LEFT
+				|| guy.tile().equals(rightTunnelEnd.plus(1, 0)) && guy.moveDir() == Direction.RIGHT;
 	}
 
 	public void tryTeleport(Creature guy) {
 		if (attractsGuy(guy)) {
-			guy.placeAtTile(guy.tile().equals(left) ? right : left, 0, 0);
+			guy.placeAtTile(guy.moveDir() == Direction.RIGHT ? leftTunnelEnd.minus(2, 0) : rightTunnelEnd.plus(2, 0), 0, 0);
 		}
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(left, right);
+		return Objects.hash(leftTunnelEnd, rightTunnelEnd);
 	}
 
 	@Override
@@ -68,7 +73,7 @@ public class Portal {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Portal other = (Portal) obj;
-		return Objects.equals(left, other.left) && Objects.equals(right, other.right);
+		HorizontalPortal other = (HorizontalPortal) obj;
+		return Objects.equals(leftTunnelEnd, other.leftTunnelEnd) && Objects.equals(rightTunnelEnd, other.rightTunnelEnd);
 	}
 }

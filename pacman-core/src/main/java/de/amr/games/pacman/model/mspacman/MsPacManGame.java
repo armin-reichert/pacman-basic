@@ -394,11 +394,11 @@ public class MsPacManGame extends GameModel {
 			var travelDir = rnd.nextBoolean() ? Direction.LEFT : Direction.RIGHT;
 			var houseEntry = world.ghostHouse().entryTile();
 			int houseHeight = world.ghostHouse().size().y;
-			route.add(travelDir == Direction.RIGHT ? entryPortal.left : entryPortal.right);
+			route.add(travelDir == Direction.RIGHT ? entryPortal.leftTunnelEnd : entryPortal.rightTunnelEnd);
 			route.add(houseEntry);
 			route.add(houseEntry.plus(0, houseHeight + 2));
 			route.add(houseEntry);
-			route.add(travelDir == Direction.RIGHT ? exitPortal.right : exitPortal.left);
+			route.add(travelDir == Direction.RIGHT ? exitPortal.rightTunnelEnd : exitPortal.leftTunnelEnd);
 		}
 		return route;
 	}

@@ -54,7 +54,7 @@ public abstract class MapBasedWorld implements World {
 
 	protected final V2i size;
 	protected final byte[][] map;
-	protected final List<Portal> portals;
+	protected final List<HorizontalPortal> portals;
 	protected final List<V2i> energizerTiles;
 	protected final int totalFoodCount;
 	protected int foodRemaining;
@@ -68,15 +68,15 @@ public abstract class MapBasedWorld implements World {
 		portals = findPortals();
 	}
 
-	protected ArrayList<Portal> findPortals() {
-		var list = new ArrayList<Portal>();
+	protected ArrayList<HorizontalPortal> findPortals() {
+		var portalList = new ArrayList<HorizontalPortal>();
 		for (int row = 0; row < size.y; ++row) {
 			if (map[row][0] == TUNNEL && map[row][size.x - 1] == TUNNEL) {
-				list.add(new Portal(v(-2, row), v(size.x + 1, row)));
+				portalList.add(new HorizontalPortal(v(0, row), v(size.x - 1, row)));
 			}
 		}
-		list.trimToSize();
-		return list;
+		portalList.trimToSize();
+		return portalList;
 	}
 
 	protected byte content(V2i tile) {
@@ -94,13 +94,13 @@ public abstract class MapBasedWorld implements World {
 	}
 
 	@Override
-	public List<Portal> portals() {
+	public List<HorizontalPortal> portals() {
 		return portals;
 	}
 
 	@Override
-	public boolean isPortal(V2i tile) {
-		return portals.stream().anyMatch(portal -> portal.left.equals(tile) || portal.right.equals(tile));
+	public boolean belongsToPortal(V2i tile) {
+		return portals.stream().anyMatch(portal -> portal.contains(tile));
 	}
 
 	@Override

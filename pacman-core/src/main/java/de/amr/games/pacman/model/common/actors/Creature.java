@@ -106,10 +106,8 @@ public class Creature extends Entity {
 		}
 		if (world.insideMap(tile)) {
 			return !world.isWall(tile) && !world.ghostHouse().isDoorTile(tile);
-		} else {
-			// portal tiles are the only tiles accessible outside of the map
-			return world.isPortal(tile.plus(1, 0)) || world.isPortal(tile.minus(1, 0)) || world.isPortal(tile);
 		}
+		return world.belongsToPortal(tile);
 	}
 
 	public Optional<World> getWorld() {
@@ -202,7 +200,7 @@ public class Creature extends Entity {
 	 * selects the one with smallest Euclidean distance to the target tile. Reversing the move direction is not allowed.
 	 */
 	public void computeDirectionTowardsTarget() {
-		if (world == null || targetTile == null || world.isPortal(tile())) {
+		if (world == null || targetTile == null || world.belongsToPortal(tile())) {
 			return;
 		}
 		if (!newTileEntered && !stuck) {
