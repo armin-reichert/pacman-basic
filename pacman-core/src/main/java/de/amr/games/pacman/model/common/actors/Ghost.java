@@ -194,8 +194,8 @@ public class Ghost extends Creature {
 	private V2i chasingTile(GameModel game) {
 		return switch (id) {
 		case RED_GHOST -> game.pac.tile();
-		case PINK_GHOST -> game.pac.tilesAheadWithBug(4);
-		case CYAN_GHOST -> game.pac.tilesAheadWithBug(2).scaled(2).minus(game.theGhosts[RED_GHOST].tile());
+		case PINK_GHOST -> game.pac.tilesAheadWithOverflowBug(4);
+		case CYAN_GHOST -> game.pac.tilesAheadWithOverflowBug(2).scaled(2).minus(game.theGhosts[RED_GHOST].tile());
 		case ORANGE_GHOST -> tile().euclideanDistance(game.pac.tile()) < 8 ? scatterTile : game.pac.tile();
 		default -> null;
 		};

@@ -186,7 +186,7 @@ public class Creature extends Entity {
 		return tile().plus(moveDir.vec.scaled(n));
 	}
 
-	public V2i tilesAheadWithBug(int n) {
+	public V2i tilesAheadWithOverflowBug(int n) {
 		return moveDir == UP ? tilesAhead(n).minus(n, 0) : tilesAhead(n);
 	}
 
