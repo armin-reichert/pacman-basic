@@ -38,5 +38,5 @@ public interface Portal {
 
 	void teleport(Creature guy);
 
-	double closeness(Creature guy);
+	double distance(Creature guy);
 }
