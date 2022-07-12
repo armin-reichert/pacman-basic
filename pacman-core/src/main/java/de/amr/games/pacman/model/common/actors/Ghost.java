@@ -27,10 +27,13 @@ import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.model.common.GameVariant.MS_PACMAN;
+import static de.amr.games.pacman.model.common.actors.GhostState.EATEN;
 import static de.amr.games.pacman.model.common.actors.GhostState.ENTERING_HOUSE;
 import static de.amr.games.pacman.model.common.actors.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.common.actors.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.model.common.actors.GhostState.LEAVING_HOUSE;
+import static de.amr.games.pacman.model.common.actors.GhostState.LOCKED;
+import static de.amr.games.pacman.model.common.actors.GhostState.RETURNING_TO_HOUSE;
 import static de.amr.games.pacman.model.common.world.World.HTS;
 
 import java.util.List;
@@ -130,8 +133,8 @@ public class Ghost extends Creature {
 	}
 
 	public void doLocked(GameModel game) {
-		if (state != GhostState.LOCKED) {
-			state = GhostState.LOCKED;
+		if (state != LOCKED) {
+			state = LOCKED;
 			setAnimation(AnimKeys.GHOST_COLOR).ifPresent(EntityAnimation::reset);
 			return;
 		}
@@ -244,8 +247,8 @@ public class Ghost extends Creature {
 	}
 
 	public void doEaten(GameModel game) {
-		if (state != GhostState.EATEN) {
-			state = GhostState.EATEN;
+		if (state != EATEN) {
+			state = EATEN;
 			targetTile = game.world().ghostHouse().entryTile();
 			setAnimation(AnimKeys.GHOST_VALUE);
 			// display ghost value (200, 400, 800, 1600)
@@ -254,8 +257,8 @@ public class Ghost extends Creature {
 	}
 
 	public void doReturningToHouse(GameModel game) {
-		if (state != GhostState.RETURNING_TO_HOUSE) {
-			state = GhostState.RETURNING_TO_HOUSE;
+		if (state != RETURNING_TO_HOUSE) {
+			state = RETURNING_TO_HOUSE;
 			targetTile = world.ghostHouse().entryTile();
 			setAnimation(AnimKeys.GHOST_EYES);
 			return;
