@@ -163,6 +163,10 @@ public class Entity {
 		return animation();
 	}
 
+	public boolean isAnimationSelected(String key) {
+		return animation().isPresent() && animation().equals(animation(key));
+	}
+
 	public void advanceAnimation() {
 		animation().ifPresent(EntityAnimation::advance);
 	}

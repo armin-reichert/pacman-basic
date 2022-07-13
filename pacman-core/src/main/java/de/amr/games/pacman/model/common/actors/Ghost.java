@@ -63,37 +63,46 @@ public class Ghost extends Creature {
 	/** The ID of the ghost, see {@link GameModel#RED_GHOST} etc. */
 	public final int id;
 
-	/** The current state of the */
+	/** The current state of this ghost. */
 	private GhostState state;
 
-	/** The home position of the ghost. */
+	/** The position of this ghost when the game starts. */
 	public V2d homePosition;
 
-	/** The revival tile inside the house. For the red ghost, this is different from the home location. */
+	/** The tile inside the house where this ghosts get revived. Amen. */
 	public V2i revivalTile;
 
-	/** Scatter target. */
+	/** The (unreachable) tile in some corner of the world which is targetted during the scatter phase. */
 	public V2i scatterTile;
 
-	/** Value from <code>0..4</code>. Ghosts killed by same energizer are indexed in order. */
+	/** Ghosts killed using the same energizer are indexed in order <code>0..4</code>. */
 	public int killedIndex;
 
-	/** Individual food counter, used to determine when the ghost can leave the house. */
+	/** Ghost-specific food counter, used to determine when the ghost can leave the house. */
 	public int dotCounter;
 
-	/** "Cruise Elroy" mode. Values: 0 (off), 1, -1, 2, -2 (negative means disabled). */
+	/** "Cruise Elroy" mode. Values: <code>0 (off), 1, -1 (disabled), 2, -2 (disabled)</code>. */
 	public int elroy;
 
 	/** Tiles where the ghost cannot move upwards when in chasing or scattering mode. */
 	public List<V2i> upwardsBlockedTiles = List.of();
 
+	/** Function computing the chasing target of this ghost. */
 	public Supplier<V2i> fnChasingTarget = () -> null;
 
 	public Ghost(int id, String name) {
 		super(name);
+		if (id < 0 || id > 3) {
+			throw new IllegalArgumentException("Ghost ID must be in range 0..3");
+		}
 		this.id = id;
 	}
 
+	/**
+	 * Executes a single simulation step for this ghost in the specified game.
+	 * 
+	 * @param game the game
+	 */
 	public void update(GameModel game) {
 		switch (state) {
 		case LOCKED -> doLocked(game);
@@ -121,6 +130,12 @@ public class Ghost extends Creature {
 		return U.oneOf(state, alternatives);
 	}
 
+	/**
+	 * In locked state, ghosts inside the house are bouncing up and down. They become blue and blink if Pac-Man gets/loses
+	 * power. After that, they return to their normal color.
+	 * 
+	 * @param game the game
+	 */
 	public void doLocked(GameModel game) {
 		if (state != LOCKED) {
 			state = LOCKED;
@@ -128,8 +143,14 @@ public class Ghost extends Creature {
 			return;
 		}
 		bounce();
+		updateGhostInHouseAnimation(game);
+	}
+
+	private void updateGhostInHouseAnimation(GameModel game) {
 		if (endangered(game)) {
-			selectAndRunAnimation(AnimKeys.GHOST_BLUE);
+			if (!isAnimationSelected(AnimKeys.GHOST_FLASHING)) {
+				selectAndRunAnimation(AnimKeys.GHOST_BLUE);
+			}
 			ensureFlashingWhenPowerCeases(game);
 		} else {
 			selectAndRunAnimation(AnimKeys.GHOST_COLOR);
@@ -145,6 +166,16 @@ public class Ghost extends Creature {
 		move();
 	}
 
+	/**
+	 * When a ghost leaves the house, he follows a specific route from his home/revival position to the house exit. This
+	 * logic is house-specific so it is placed in the house implementation. In the Arcade versions of Pac-Man and Ms.
+	 * Pac-Man, the ghost first moves towards the vertical center of the house and then raises up until he has passed the
+	 * door on top of the house.
+	 * <p>
+	 * The ghost speed is slower than outside but I do not know yet the exact value.
+	 * 
+	 * @param game the game
+	 */
 	public void doLeavingHouse(GameModel game) {
 		if (state != LEAVING_HOUSE) {
 			state = LEAVING_HOUSE;
@@ -160,10 +191,16 @@ public class Ghost extends Creature {
 			GameEvents.publish(new GameEvent(game, GameEventType.GHOST_COMPLETES_LEAVING_HOUSE, this, tile()));
 			return;
 		}
-		ensureFlashingWhenPowerCeases(game);
+		updateGhostInHouseAnimation(game);
 	}
 
-	/*
+	/**
+	 * There are 4 hunting phases of different duration at each level. A hunting phase always starts with a "scatter"
+	 * phase where the ghosts retreat to their maze corners. After some time they start chasing Pac-Man according to their
+	 * character ("Shadow", "Speedy", "Bashful", "Pokey"). The 4th hunting phase at each level has an "infinite" chasing
+	 * phase.
+	 * <p>
+	 * 
 	 * In Ms. Pac-Man, Blinky and Pinky move randomly during the *first* scatter phase. Some say, the original intention
 	 * had been to randomize the scatter target of *all* ghosts in Ms. Pac-Man but because of a bug, only the scatter
 	 * target of Blinky and Pinky would have been affected. Who knows?
@@ -205,6 +242,17 @@ public class Ghost extends Creature {
 		tryMoving();
 	}
 
+	/**
+	 * When frightened, a ghost moves randomly through the world, at each new tile he randomly decides where to move next.
+	 * Reversing the move direction is not allowed in this state either.
+	 * <p>
+	 * A frightened ghost has a blue color and starts flashing blue/white shortly (how long exactly?) before Pac-Man loses
+	 * his power.
+	 * <p>
+	 * Speed is about half of the normal speed.
+	 * 
+	 * @param game the game
+	 */
 	public void doFrightened(GameModel game) {
 		if (state != FRIGHTENED) {
 			state = FRIGHTENED;
@@ -216,15 +264,26 @@ public class Ghost extends Creature {
 		ensureFlashingWhenPowerCeases(game);
 	}
 
+	/**
+	 * After a ghost is eaten by Pac-Man he is displayed for a short time as the number of points earned for eating him.
+	 * The value doubles for each ghost eaten using the power of the same energizer.
+	 * 
+	 * @param game the game
+	 */
 	public void doEaten(GameModel game) {
 		if (state != EATEN) {
 			state = EATEN;
-			targetTile = game.world().ghostHouse().entryTile();
 			// display ghost value (200, 400, 800, 1600)
 			selectAndRunAnimation(AnimKeys.GHOST_VALUE).ifPresent(anim -> anim.setFrameIndex(killedIndex));
 		}
 	}
 
+	/**
+	 * After the short time being displayed by his value, the eaten ghost is displayed by his eyes only and returns to the
+	 * ghost house to be revived. Hallelujah!
+	 * 
+	 * @param game the game
+	 */
 	public void doReturningToHouse(GameModel game) {
 		if (state != RETURNING_TO_HOUSE) {
 			state = RETURNING_TO_HOUSE;
@@ -240,16 +299,22 @@ public class Ghost extends Creature {
 		}
 	}
 
+	/**
+	 * When the eaten ghost has reached the ghost house, he starts entering it to reach his revival position. Because the
+	 * exact route from the ghost house entry to the revival tile is house-specific, this logic is put into the ghost
+	 * house implementation.
+	 * 
+	 * @param game the game
+	 */
 	public void doEnteringHouse(GameModel game) {
 		if (state != ENTERING_HOUSE) {
 			state = ENTERING_HOUSE;
-			setBothDirs(DOWN);
 			targetTile = revivalTile;
 			GameEvents.publish(new GameEvent(game, GameEventType.GHOST_ENTERS_HOUSE, this, tile()));
 			return;
 		}
-		boolean arrived = world.ghostHouse().leadGuyToTile(this, targetTile);
-		if (arrived) {
+		boolean arrivedAtRevivalTile = world.ghostHouse().leadGuyToTile(this, revivalTile);
+		if (arrivedAtRevivalTile) {
 			doLeavingHouse(game);
 		}
 	}
@@ -275,13 +340,13 @@ public class Ghost extends Creature {
 
 	private void ensureFlashingWhenPowerCeases(GameModel game) {
 		if (endangered(game) && game.powerTimer.remaining() <= GameModel.PAC_POWER_FADING_TICKS) {
-			var numFlashes = game.level.numFlashes;
-			animationSet().ifPresent(animSet -> {
-				if (animSet.selected().equals(AnimKeys.GHOST_FLASHING)) {
-					animSet.selectedAnimation().ensureRunning();
+			animationSet().ifPresent(anims -> {
+				if (isAnimationSelected(AnimKeys.GHOST_FLASHING)) {
+					anims.selectedAnimation().ensureRunning();
 				} else {
-					animSet.select(AnimKeys.GHOST_FLASHING);
-					var flashing = animSet.selectedAnimation();
+					anims.select(AnimKeys.GHOST_FLASHING);
+					var flashing = anims.selectedAnimation();
+					var numFlashes = game.level.numFlashes;
 					long frameTicks = GameModel.PAC_POWER_FADING_TICKS / (numFlashes * flashing.numFrames());
 					flashing.setFrameDuration(frameTicks);
 					flashing.setRepetions(numFlashes);

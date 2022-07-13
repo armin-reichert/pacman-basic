@@ -32,6 +32,7 @@ import static de.amr.games.pacman.model.common.world.World.TS;
 
 import java.util.stream.Stream;
 
+import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.U;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
@@ -134,20 +135,23 @@ public class ArcadeGhostHouse implements GhostHouse {
 	}
 
 	@Override
-	public boolean leadGuyToTile(Creature guest, V2i targetTile) {
-		var tile = guest.tile();
-		if (tile.equals(targetTile) && guest.offset().y() >= 0) {
+	public boolean leadGuyToTile(Creature guy, V2i targetTile) {
+		var tile = guy.tile();
+		if (atHouseEntry(guy)) {
+			guy.setBothDirs(Direction.DOWN);
+		}
+		if (tile.equals(targetTile) && guy.offset().y() >= 0) {
 			return true;
 		}
 		var middle = seatMiddleTile();
-		if (tile.equals(middle) && guest.offset().y() >= 0) {
+		if (tile.equals(middle) && guy.offset().y() >= 0) {
 			if (targetTile.x() < middle.x()) {
-				guest.setBothDirs(LEFT);
+				guy.setBothDirs(LEFT);
 			} else if (targetTile.x() > middle.x()) {
-				guest.setBothDirs(RIGHT);
+				guy.setBothDirs(RIGHT);
 			}
 		}
-		guest.move();
+		guy.move();
 		return false;
 	}
 }
