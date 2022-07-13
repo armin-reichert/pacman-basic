@@ -60,7 +60,7 @@ public class Ghost extends Creature {
 	public static final int CYAN_GHOST = 2;
 	public static final int ORANGE_GHOST = 3;
 
-	/** The ID of the ghost, see {@link GameModel#RED_GHOST} etc. */
+	/** The ID of the ghost, see {@link #RED_GHOST} etc. */
 	public final int id;
 
 	/** The current state of this ghost. */
