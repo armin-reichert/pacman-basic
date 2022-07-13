@@ -37,6 +37,7 @@ import static de.amr.games.pacman.model.common.actors.GhostState.RETURNING_TO_HO
 import static de.amr.games.pacman.model.common.world.World.HTS;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 import de.amr.games.pacman.event.GameEvent;
 import de.amr.games.pacman.event.GameEventType;
@@ -85,6 +86,8 @@ public class Ghost extends Creature {
 
 	/** Tiles where the ghost cannot move upwards when in chasing or scattering mode. */
 	public List<V2i> upwardsBlockedTiles = List.of();
+
+	public Supplier<V2i> fnChasingTarget = () -> null;
 
 	public Ghost(int id, String name) {
 		super(name);
@@ -183,22 +186,12 @@ public class Ghost extends Creature {
 		if (game.variant == MS_PACMAN && game.huntingTimer.scatterPhase() == 0 && (id == RED_GHOST || id == PINK_GHOST)) {
 			roam();
 		} else if (game.huntingTimer.inChasingPhase() || elroy > 0) {
-			targetTile = chasingTile(game);
+			targetTile = fnChasingTarget.get();
 			tryReachingTargetTile();
 		} else {
 			targetTile = scatterTile;
 			tryReachingTargetTile();
 		}
-	}
-
-	private V2i chasingTile(GameModel game) {
-		return switch (id) {
-		case RED_GHOST -> game.pac.tile();
-		case PINK_GHOST -> game.pac.tilesAheadWithOverflowBug(4);
-		case CYAN_GHOST -> game.pac.tilesAheadWithOverflowBug(2).scaled(2).minus(game.theGhosts[RED_GHOST].tile());
-		case ORANGE_GHOST -> tile().euclideanDistance(game.pac.tile()) < 8 ? scatterTile : game.pac.tile();
-		default -> null;
-		};
 	}
 
 	private void roam() {

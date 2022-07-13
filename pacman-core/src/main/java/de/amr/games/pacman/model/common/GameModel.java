@@ -206,21 +206,30 @@ public abstract class GameModel {
 		var arcadeWorld = (ArcadeWorld) level.world;
 		var house = arcadeWorld.ghostHouse();
 
-		theGhosts[RED_GHOST].homePosition = house.seatPosition(house.entryTile());
-		theGhosts[RED_GHOST].revivalTile = house.seatMiddleTile();
-		theGhosts[RED_GHOST].scatterTile = arcadeWorld.rightUpperTarget;
+		var blinky = theGhosts[RED_GHOST];
+		var pinky = theGhosts[PINK_GHOST];
+		var inky = theGhosts[CYAN_GHOST];
+		var clyde = theGhosts[ORANGE_GHOST];
 
-		theGhosts[PINK_GHOST].homePosition = house.seatPosition(house.seatMiddleTile());
-		theGhosts[PINK_GHOST].revivalTile = house.seatMiddleTile();
-		theGhosts[PINK_GHOST].scatterTile = arcadeWorld.leftUpperTarget;
+		blinky.homePosition = house.seatPosition(house.entryTile());
+		blinky.revivalTile = house.seatMiddleTile();
+		blinky.scatterTile = arcadeWorld.rightUpperTarget;
+		blinky.fnChasingTarget = pac::tile;
 
-		theGhosts[CYAN_GHOST].homePosition = house.seatPosition(house.seatLeftTile());
-		theGhosts[CYAN_GHOST].revivalTile = house.seatLeftTile();
-		theGhosts[CYAN_GHOST].scatterTile = arcadeWorld.rightLowerTarget;
+		pinky.homePosition = house.seatPosition(house.seatMiddleTile());
+		pinky.revivalTile = house.seatMiddleTile();
+		pinky.scatterTile = arcadeWorld.leftUpperTarget;
+		pinky.fnChasingTarget = () -> pac.tilesAheadWithOverflowBug(4);
 
-		theGhosts[ORANGE_GHOST].homePosition = house.seatPosition(house.seatRightTile());
-		theGhosts[ORANGE_GHOST].revivalTile = house.seatRightTile();
-		theGhosts[ORANGE_GHOST].scatterTile = arcadeWorld.leftLowerTarget;
+		inky.homePosition = house.seatPosition(house.seatLeftTile());
+		inky.revivalTile = house.seatLeftTile();
+		inky.scatterTile = arcadeWorld.rightLowerTarget;
+		inky.fnChasingTarget = () -> pac.tilesAheadWithOverflowBug(2).scaled(2).minus(blinky.tile());
+
+		clyde.homePosition = house.seatPosition(house.seatRightTile());
+		clyde.revivalTile = house.seatRightTile();
+		clyde.scatterTile = arcadeWorld.leftLowerTarget;
+		clyde.fnChasingTarget = () -> clyde.tile().euclideanDistance(pac.tile()) < 8 ? clyde.scatterTile : pac.tile();
 
 		for (var ghost : theGhosts) {
 			ghost.dotCounter = 0;
