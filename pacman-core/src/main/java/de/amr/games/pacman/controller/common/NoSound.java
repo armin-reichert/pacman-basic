@@ -30,9 +30,8 @@ import de.amr.games.pacman.model.common.GameSound;
 
 /**
  * @author Armin Reichert
- *
  */
-public class SilentSoundController implements GameSoundController {
+public class NoSound implements GameSoundController {
 
 	@Override
 	public void play(GameSound snd) {

@@ -23,6 +23,7 @@ SOFTWARE.
 */
 package de.amr.games.pacman.controller.common;
 
+import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.actors.Creature;
 
 /**
@@ -30,6 +31,5 @@ import de.amr.games.pacman.model.common.actors.Creature;
  */
 public interface Steering {
 
-	void steer(Creature guy);
-
+	void steer(GameModel game, Creature guy);
 }

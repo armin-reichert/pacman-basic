@@ -200,7 +200,7 @@ public enum GameState implements FsmState<GameModel> {
 					renderSound(game);
 					gc.changeState(GHOST_DYING);
 				} else {
-					gc.currentSteering().steer(game.pac);
+					gc.getSteering().steer(game, game.pac);
 					game.pac.update(game);
 					game.updateGhosts();
 					game.updateBonus();
@@ -348,7 +348,7 @@ public enum GameState implements FsmState<GameModel> {
 			if (timer.hasExpired()) {
 				gc.resumePreviousState();
 			} else {
-				gc.currentSteering().steer(game.pac);
+				gc.getSteering().steer(game, game.pac);
 				game.ghosts(GhostState.RETURNING_TO_HOUSE).forEach(ghost -> ghost.update(game));
 				game.energizerPulse.advance();
 			}
