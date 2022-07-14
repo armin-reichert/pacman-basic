@@ -123,7 +123,11 @@ public class GameController extends Fsm<GameState, GameModel> {
 	}
 
 	public GameSoundController sounds() {
-		return sounds;
+		// TODO also be quiet when game loop is stopped
+		if (state() == GameState.INTERMISSION_TEST) {
+			return sounds;
+		}
+		return game().hasCredit() ? sounds : GameSoundController.NO_SOUND;
 	}
 
 	public void selectGame(GameVariant newVariant) {

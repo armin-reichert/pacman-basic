@@ -143,7 +143,6 @@ public enum GameState implements FsmState<GameModel> {
 			game.scores.enable(game.hasCredit());
 			game.resetGuys();
 			gc.sounds().stopAll();
-			gc.sounds().setSilent(!game.hasCredit());
 		}
 
 		@Override
@@ -428,7 +427,6 @@ public enum GameState implements FsmState<GameModel> {
 		public void onEnter(GameModel game) {
 			timer.resetIndefinitely();
 			timer.start(); // UI triggers state timeout
-			gc.sounds().setSilent(false);
 		}
 
 		@Override
@@ -444,7 +442,6 @@ public enum GameState implements FsmState<GameModel> {
 		public void onEnter(GameModel game) {
 			timer.resetIndefinitely();
 			timer.start();
-			gc.sounds().setSilent(false);
 		}
 
 		@Override

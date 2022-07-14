@@ -54,11 +54,6 @@ public class NoSound implements GameSoundController {
 	}
 
 	@Override
-	public void setSilent(boolean silent) {
-		// do nothing
-	}
-
-	@Override
 	public boolean isMuted() {
 		return false;
 	}

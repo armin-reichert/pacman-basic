@@ -45,8 +45,6 @@ public interface GameSoundController {
 
 	void loop(GameSound snd, int repetitions);
 
-	void setSilent(boolean silent);
-
 	boolean isMuted();
 
 	void setMuted(boolean muted);
