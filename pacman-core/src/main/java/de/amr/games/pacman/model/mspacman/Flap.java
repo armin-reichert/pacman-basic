@@ -23,6 +23,10 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.mspacman;
 
+import java.util.Optional;
+
+import de.amr.games.pacman.lib.animation.AnimatedEntity;
+import de.amr.games.pacman.lib.animation.EntityAnimationSet;
 import de.amr.games.pacman.model.common.actors.Entity;
 
 /**
@@ -30,7 +34,18 @@ import de.amr.games.pacman.model.common.actors.Entity;
  * 
  * @author Armin Reichert
  */
-public class Flap extends Entity {
+public class Flap extends Entity implements AnimatedEntity {
+
+	private EntityAnimationSet animationSet;
+
+	public void setAnimationSet(EntityAnimationSet animationSet) {
+		this.animationSet = animationSet;
+	}
+
+	@Override
+	public Optional<EntityAnimationSet> animationSet() {
+		return Optional.ofNullable(animationSet);
+	}
 
 	public int number;
 	public String text;

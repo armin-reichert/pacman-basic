@@ -37,6 +37,7 @@ import static de.amr.games.pacman.model.common.actors.GhostState.RETURNING_TO_HO
 import static de.amr.games.pacman.model.common.world.World.HTS;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import de.amr.games.pacman.event.GameEvent;
@@ -46,6 +47,8 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.U;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.lib.animation.AnimatedEntity;
+import de.amr.games.pacman.lib.animation.EntityAnimationSet;
 import de.amr.games.pacman.model.common.GameModel;
 
 /**
@@ -53,7 +56,7 @@ import de.amr.games.pacman.model.common.GameModel;
  * 
  * @author Armin Reichert
  */
-public class Ghost extends Creature {
+public class Ghost extends Creature implements AnimatedEntity {
 
 	public static final int RED_GHOST = 0;
 	public static final int PINK_GHOST = 1;
@@ -89,6 +92,17 @@ public class Ghost extends Creature {
 
 	/** Function computing the chasing target of this ghost. */
 	public Supplier<V2i> fnChasingTarget = () -> null;
+
+	private EntityAnimationSet animationSet;
+
+	public void setAnimationSet(EntityAnimationSet animationSet) {
+		this.animationSet = animationSet;
+	}
+
+	@Override
+	public Optional<EntityAnimationSet> animationSet() {
+		return Optional.ofNullable(animationSet);
+	}
 
 	public Ghost(int id, String name) {
 		super(name);

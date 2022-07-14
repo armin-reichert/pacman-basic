@@ -26,12 +26,9 @@ package de.amr.games.pacman.model.common.actors;
 import static de.amr.games.pacman.model.common.world.World.t;
 
 import java.util.Objects;
-import java.util.Optional;
 
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.lib.animation.EntityAnimation;
-import de.amr.games.pacman.lib.animation.EntityAnimationSet;
 import de.amr.games.pacman.model.common.world.World;
 
 /**
@@ -125,49 +122,5 @@ public class Entity {
 	public boolean sameTile(Entity other) {
 		Objects.requireNonNull(other);
 		return tile().equals(other.tile());
-	}
-
-	// Animations
-
-	private EntityAnimationSet animationSet;
-
-	public void setAnimationSet(EntityAnimationSet animationSet) {
-		this.animationSet = animationSet;
-	}
-
-	public Optional<EntityAnimationSet> animationSet() {
-		return Optional.ofNullable(animationSet);
-	}
-
-	public Optional<EntityAnimation> animation(String key) {
-		return animationSet().map(anim -> anim.byName(key));
-	}
-
-	public Optional<EntityAnimation> animation() {
-		return animationSet().map(EntityAnimationSet::selectedAnimation);
-	}
-
-	public Optional<EntityAnimation> selectAndRunAnimation(String name) {
-		if (animationSet != null) {
-			animationSet.select(name);
-			animationSet.selectedAnimation().ensureRunning();
-		}
-		return animation();
-	}
-
-	public Optional<EntityAnimation> selectAndResetAnimation(String name) {
-		if (animationSet != null) {
-			animationSet.select(name);
-			animationSet.selectedAnimation().reset();
-		}
-		return animation();
-	}
-
-	public boolean isAnimationSelected(String key) {
-		return animation().isPresent() && animation().equals(animation(key));
-	}
-
-	public void advanceAnimation() {
-		animation().ifPresent(EntityAnimation::advance);
 	}
 }

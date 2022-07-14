@@ -26,8 +26,12 @@ package de.amr.games.pacman.model.common.actors;
 import static de.amr.games.pacman.lib.V2i.v;
 import static de.amr.games.pacman.model.common.world.World.HTS;
 
+import java.util.Optional;
+
 import de.amr.games.pacman.lib.Direction;
+import de.amr.games.pacman.lib.animation.AnimatedEntity;
 import de.amr.games.pacman.lib.animation.EntityAnimation;
+import de.amr.games.pacman.lib.animation.EntityAnimationSet;
 import de.amr.games.pacman.model.common.GameModel;
 
 /**
@@ -35,7 +39,7 @@ import de.amr.games.pacman.model.common.GameModel;
  * 
  * @author Armin Reichert
  */
-public class Pac extends Creature {
+public class Pac extends Creature implements AnimatedEntity {
 
 	/** If Pac has been killed. */
 	private boolean dead = false;
@@ -45,6 +49,17 @@ public class Pac extends Creature {
 
 	/** Number of clock ticks Pac has not eaten any pellet. */
 	private int starvingTicks = 0;
+
+	private EntityAnimationSet animationSet;
+
+	public void setAnimationSet(EntityAnimationSet animationSet) {
+		this.animationSet = animationSet;
+	}
+
+	@Override
+	public Optional<EntityAnimationSet> animationSet() {
+		return Optional.ofNullable(animationSet);
+	}
 
 	public Pac(String name) {
 		super(name);
