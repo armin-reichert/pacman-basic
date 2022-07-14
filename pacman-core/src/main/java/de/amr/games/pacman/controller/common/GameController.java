@@ -69,10 +69,11 @@ public class GameController extends Fsm<GameState, GameModel> {
 			GameVariant.MS_PACMAN, new MsPacManGame(), //
 			GameVariant.PACMAN, new PacManGame());
 
-	private Steering steering;
 	private final Steering autopilot = new Autopilot();
-	private GameVariant currentGameVariant;
-	private GameSoundController sounds = new NoSound();
+
+	private Steering steering;
+	private GameVariant gameVariant;
+	private GameSoundController sounds = GameSoundController.NO_SOUND;
 
 	public GameController() {
 		super(GameState.values());
@@ -84,6 +85,9 @@ public class GameController extends Fsm<GameState, GameModel> {
 		addStateChangeListener(
 				(oldState, newState) -> GameEvents.publish(new GameStateChangeEvent(game(), oldState, newState)));
 		GameEvents.publishEventsFor(this::game);
+
+		gameVariant = GameVariant.PACMAN;
+		restartInInitialState(BOOT);
 	}
 
 	@Override
@@ -100,7 +104,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 	}
 
 	public GameModel game() {
-		return game(currentGameVariant);
+		return game(gameVariant);
 	}
 
 	public Steering getSteering() {
@@ -122,21 +126,15 @@ public class GameController extends Fsm<GameState, GameModel> {
 		return sounds;
 	}
 
-//	Steering currentSteering() {
-//		return game().autoControlled || !game().hasCredit() ? autopilot : pacSteering;
-//	}
-
 	public void selectGame(GameVariant newVariant) {
 		Objects.requireNonNull(newVariant);
-		if (currentGameVariant == newVariant) {
-			return;
+		if (gameVariant != newVariant) {
+			// transfer credit
+			game(newVariant).setCredit(game(gameVariant).getCredit());
+			game(gameVariant).setCredit(0);
+			gameVariant = newVariant;
+			restartInInitialState(BOOT);
 		}
-		if (currentGameVariant != null) {
-			game(newVariant).setCredit(game(currentGameVariant).getCredit());
-			game(currentGameVariant).setCredit(0);
-		}
-		currentGameVariant = newVariant;
-		restartInInitialState(BOOT);
 	}
 
 	public void restartIntro() {

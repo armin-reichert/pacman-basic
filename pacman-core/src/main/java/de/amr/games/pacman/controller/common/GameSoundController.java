@@ -33,6 +33,8 @@ import de.amr.games.pacman.model.common.GameSound;
  */
 public interface GameSoundController {
 
+	public static final GameSoundController NO_SOUND = new NoSound();
+
 	public static final int LOOP_FOREVER = -1;
 
 	void play(GameSound snd);
