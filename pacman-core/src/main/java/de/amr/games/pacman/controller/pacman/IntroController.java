@@ -190,7 +190,8 @@ public class IntroController extends Fsm<State, Context> {
 				// ghosts already reverse direction before Pac-man eats the energizer and turns right!
 				else if (ctx.pacMan.getPosition().x() <= t(ctx.left) + 4) {
 					for (Ghost ghost : ctx.ghosts) {
-						ghost.doFrightened(ctx.gameController.game());
+						ghost.setState(GhostState.FRIGHTENED);
+						ghost.selectAndRunAnimation(AnimKeys.GHOST_BLUE);
 						ghost.setBothDirs(Direction.RIGHT);
 						ghost.setAbsSpeed(0.6);
 						ghost.move();

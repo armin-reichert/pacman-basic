@@ -116,6 +116,10 @@ public class Ghost extends Creature {
 		advanceAnimation();
 	}
 
+	public void setState(GhostState state) {
+		this.state = state;
+	}
+
 	@Override
 	public String toString() {
 		return "[Ghost %s: state=%s, position=%s, tile=%s, offset=%s, velocity=%s, dir=%s, wishDir=%s]".formatted(name,
