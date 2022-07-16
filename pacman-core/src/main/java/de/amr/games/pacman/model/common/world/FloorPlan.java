@@ -56,10 +56,15 @@ public class FloorPlan {
 	private final World world;
 	private final int resolution;
 
-	public FloorPlan(int resolution, World world) {
-		this.resolution = resolution;
+	public FloorPlan(World world, int resolution) {
 		this.world = world;
-		createFloorPlanInfo();
+		this.resolution = resolution;
+		int numBlocksX = resolution * world.numCols();
+		int numBlocksY = resolution * world.numRows();
+		info = new byte[numBlocksY][numBlocksX];
+		scanForWalls(numBlocksX, numBlocksY);
+		clearPlacesSurroundedByWalls(numBlocksX, numBlocksY);
+		separateWallsAndCorners(numBlocksX, numBlocksY);
 	}
 
 	public byte get(int x, int y) {
@@ -106,15 +111,6 @@ public class FloorPlan {
 	private V2i eastOf(int tileX, int tileY, int i) {
 		int dx = i % resolution == resolution - 1 ? 1 : 0;
 		return new V2i(tileX + dx, tileY);
-	}
-
-	private void createFloorPlanInfo() {
-		int numBlocksX = resolution * world.numCols();
-		int numBlocksY = resolution * world.numRows();
-		info = new byte[numBlocksY][numBlocksX];
-		scanForWalls(numBlocksX, numBlocksY);
-		clearPlacesSurroundedByWalls(numBlocksX, numBlocksY);
-		separateWallsAndCorners(numBlocksX, numBlocksY);
 	}
 
 	private void separateWallsAndCorners(int numBlocksX, int numBlocksY) {

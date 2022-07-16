@@ -36,7 +36,7 @@ public class FloorPlanGenerator {
 	}
 
 	private static void createFloorPlan(World world, String outputFileNamePattern, int resolution) {
-		var floorPlan = new FloorPlan(resolution, world);
+		var floorPlan = new FloorPlan(world, resolution);
 		var out = new File(dir, String.format(outputFileNamePattern, resolution));
 		try (var w = new FileWriter(out, StandardCharsets.UTF_8)) {
 			floorPlan.print(w, true);
