@@ -50,13 +50,14 @@ public enum GameState implements FsmState<GameModel> {
 
 	BOOT() {
 		@Override
-		public void onEnter(GameModel context) {
+		public void onEnter(GameModel game) {
 			timer.resetSeconds(5);
 			timer.start();
+			game.levelCounter.clear();
 		}
 
 		@Override
-		public void onUpdate(GameModel context) {
+		public void onUpdate(GameModel game) {
 			if (timer.hasExpired()) {
 				gc.changeState(INTRO);
 			}
@@ -151,6 +152,8 @@ public enum GameState implements FsmState<GameModel> {
 				// game starting
 				if (timer.atSecond(0)) {
 					game.reset();
+					game.levelCounter.clear();
+					game.levelCounter.addSymbol(game.level.bonusSymbol);
 					game.scores.gameScore.showContent = true;
 					game.guys().forEach(Entity::hide);
 					gc.sounds().play(GameSound.GAME_READY);
@@ -320,6 +323,7 @@ public enum GameState implements FsmState<GameModel> {
 			timer.resetSeconds(1);
 			timer.start();
 			game.setLevel(game.level.number + 1);
+			game.levelCounter.addSymbol(game.level.bonusSymbol);
 			game.resetGuys();
 			game.guys().forEach(Entity::hide);
 		}
@@ -366,6 +370,7 @@ public enum GameState implements FsmState<GameModel> {
 		public void onEnter(GameModel game) {
 			timer.resetSeconds(5);
 			timer.start();
+			game.pac.animation().ifPresent(EntityAnimation::stop);
 			game.bonus().setInactive();
 			gc.sounds().stopAll();
 		}

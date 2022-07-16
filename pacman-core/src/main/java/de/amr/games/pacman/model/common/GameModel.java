@@ -197,7 +197,6 @@ public abstract class GameModel {
 		lives = INITIAL_LIFES;
 		livesOneLessShown = false;
 		intermissionTestNumber = 1;
-		levelCounter.clear();
 		scores.reload();
 		scores.gameScore.reset();
 	}

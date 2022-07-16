@@ -46,6 +46,7 @@ public class LevelCounter extends Entity {
 		symbols = new ArrayList<>(maxSize);
 		// position x = right edge!
 		position = new V2d(t(24), t(34));
+		visible = true;
 	}
 
 	public void clear() {
