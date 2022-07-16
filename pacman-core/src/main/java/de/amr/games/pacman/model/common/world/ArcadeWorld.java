@@ -24,11 +24,16 @@ SOFTWARE.
 package de.amr.games.pacman.model.common.world;
 
 import static de.amr.games.pacman.lib.V2i.v;
+import static de.amr.games.pacman.model.common.actors.Ghost.CYAN_GHOST;
+import static de.amr.games.pacman.model.common.actors.Ghost.ORANGE_GHOST;
+import static de.amr.games.pacman.model.common.actors.Ghost.PINK_GHOST;
+import static de.amr.games.pacman.model.common.actors.Ghost.RED_GHOST;
 
 import java.util.Optional;
 
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.lib.animation.EntityAnimation;
+import de.amr.games.pacman.model.common.actors.Ghost;
 
 /**
  * Implements all stuff that is common to the original Arcade worlds like ghost house position, ghost and player start
@@ -59,6 +64,29 @@ public class ArcadeWorld extends MapBasedWorld {
 	public ArcadeGhostHouse ghostHouse() {
 		// WTF! I learned today, 2022-05-27, that Java allows co-variant return types since JDK 5.0!
 		return house;
+	}
+
+	@Override
+	public void initGhosts(Ghost[] ghosts) {
+		var blinky = ghosts[RED_GHOST];
+		blinky.homePosition = house.seatPosition(house.entryTile());
+		blinky.revivalTile = house.seatMiddleTile();
+		blinky.scatterTile = ArcadeWorld.RIGHT_UPPER_CORNER;
+
+		var pinky = ghosts[PINK_GHOST];
+		pinky.homePosition = house.seatPosition(house.seatMiddleTile());
+		pinky.revivalTile = house.seatMiddleTile();
+		pinky.scatterTile = ArcadeWorld.LEFT_UPPER_CORNER;
+
+		var inky = ghosts[CYAN_GHOST];
+		inky.homePosition = house.seatPosition(house.seatLeftTile());
+		inky.revivalTile = house.seatLeftTile();
+		inky.scatterTile = ArcadeWorld.RIGHT_LOWER_CORNER;
+
+		var clyde = ghosts[ORANGE_GHOST];
+		clyde.homePosition = house.seatPosition(house.seatRightTile());
+		clyde.revivalTile = house.seatRightTile();
+		clyde.scatterTile = ArcadeWorld.LEFT_LOWER_CORNER;
 	}
 
 	public Optional<EntityAnimation> flashingAnimation() {

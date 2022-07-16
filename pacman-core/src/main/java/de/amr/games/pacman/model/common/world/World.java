@@ -29,6 +29,7 @@ import java.util.stream.Stream;
 
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.model.common.actors.Ghost;
 
 /**
  * Interface for accessing the game world.
@@ -152,6 +153,13 @@ public interface World {
 	 * @return the ghost house in this world
 	 */
 	GhostHouse ghostHouse();
+
+	/**
+	 * Initializes the ghosts in this world (home location, revival tile etc.).
+	 * 
+	 * @param ghosts the four ghosts
+	 */
+	void initGhosts(Ghost[] ghosts);
 
 	/**
 	 * @param tile a tile

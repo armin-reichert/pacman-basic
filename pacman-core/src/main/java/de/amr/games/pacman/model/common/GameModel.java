@@ -50,7 +50,6 @@ import de.amr.games.pacman.model.common.actors.Creature;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.GhostState;
 import de.amr.games.pacman.model.common.actors.Pac;
-import de.amr.games.pacman.model.common.world.ArcadeWorld;
 import de.amr.games.pacman.model.common.world.World;
 
 /**
@@ -146,13 +145,15 @@ public abstract class GameModel {
 
 	public final WhatHappened was = new WhatHappened();
 
-	protected GameModel(GameVariant gameVariant, Pac pac, Ghost... ghosts) {
-		if (ghosts.length != 4) {
-			throw new IllegalArgumentException("We need exactly 4 ghosts in order RED, PINK, CYAN, ORANGE");
-		}
-		this.variant = gameVariant;
+	protected GameModel(GameVariant variant, Pac pac, Ghost red, Ghost pink, Ghost cyan, Ghost orange) {
+		this.variant = variant;
 		this.pac = pac;
-		this.theGhosts = ghosts;
+
+		theGhosts = new Ghost[] { red, pink, cyan, orange };
+		red.fnChasingTarget = pac::tile;
+		pink.fnChasingTarget = () -> pac.tilesAheadWithOverflowBug(4);
+		cyan.fnChasingTarget = () -> pac.tilesAheadWithOverflowBug(2).scaled(2).minus(red.tile());
+		orange.fnChasingTarget = () -> orange.tile().euclideanDistance(pac.tile()) < 8 ? orange.scatterTile : pac.tile();
 	}
 
 	public int getCredit() {
@@ -183,9 +184,6 @@ public abstract class GameModel {
 		return credit > 0;
 	}
 
-	/**
-	 * @return the world of the current level. May be overriden with covariant return type.
-	 */
 	public World world() {
 		return level.world;
 	}
@@ -202,34 +200,7 @@ public abstract class GameModel {
 	}
 
 	protected void initGhosts() {
-		var arcadeWorld = (ArcadeWorld) level.world;
-		var house = arcadeWorld.ghostHouse();
-
-		var blinky = theGhosts[RED_GHOST];
-		var pinky = theGhosts[PINK_GHOST];
-		var inky = theGhosts[CYAN_GHOST];
-		var clyde = theGhosts[ORANGE_GHOST];
-
-		blinky.homePosition = house.seatPosition(house.entryTile());
-		blinky.revivalTile = house.seatMiddleTile();
-		blinky.scatterTile = ArcadeWorld.RIGHT_UPPER_CORNER;
-		blinky.fnChasingTarget = pac::tile;
-
-		pinky.homePosition = house.seatPosition(house.seatMiddleTile());
-		pinky.revivalTile = house.seatMiddleTile();
-		pinky.scatterTile = ArcadeWorld.LEFT_UPPER_CORNER;
-		pinky.fnChasingTarget = () -> pac.tilesAheadWithOverflowBug(4);
-
-		inky.homePosition = house.seatPosition(house.seatLeftTile());
-		inky.revivalTile = house.seatLeftTile();
-		inky.scatterTile = ArcadeWorld.RIGHT_LOWER_CORNER;
-		inky.fnChasingTarget = () -> pac.tilesAheadWithOverflowBug(2).scaled(2).minus(blinky.tile());
-
-		clyde.homePosition = house.seatPosition(house.seatRightTile());
-		clyde.revivalTile = house.seatRightTile();
-		clyde.scatterTile = ArcadeWorld.LEFT_LOWER_CORNER;
-		clyde.fnChasingTarget = () -> clyde.tile().euclideanDistance(pac.tile()) < 8 ? clyde.scatterTile : pac.tile();
-
+		level.world.initGhosts(theGhosts);
 		for (var ghost : theGhosts) {
 			ghost.dotCounter = 0;
 			ghost.elroy = 0;
