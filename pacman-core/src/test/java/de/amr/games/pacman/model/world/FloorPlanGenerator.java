@@ -36,7 +36,10 @@ public class FloorPlanGenerator {
 	}
 
 	private static void createFloorPlan(World world, String outputFileNamePattern, int resolution) {
+		long time = System.nanoTime();
 		var floorPlan = new FloorPlan(world, resolution);
+		time = System.nanoTime() - time;
+		LOGGER.info("Floorplan creation (resolution=%d) took %.2f milliseconds", resolution, time / 1e6);
 		var out = new File(dir, String.format(outputFileNamePattern, resolution));
 		try (var w = new FileWriter(out, StandardCharsets.UTF_8)) {
 			floorPlan.print(w, true);
