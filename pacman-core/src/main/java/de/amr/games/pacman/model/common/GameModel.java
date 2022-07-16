@@ -212,22 +212,22 @@ public abstract class GameModel {
 
 		blinky.homePosition = house.seatPosition(house.entryTile());
 		blinky.revivalTile = house.seatMiddleTile();
-		blinky.scatterTile = arcadeWorld.rightUpperTarget;
+		blinky.scatterTile = ArcadeWorld.RIGHT_UPPER_CORNER;
 		blinky.fnChasingTarget = pac::tile;
 
 		pinky.homePosition = house.seatPosition(house.seatMiddleTile());
 		pinky.revivalTile = house.seatMiddleTile();
-		pinky.scatterTile = arcadeWorld.leftUpperTarget;
+		pinky.scatterTile = ArcadeWorld.LEFT_UPPER_CORNER;
 		pinky.fnChasingTarget = () -> pac.tilesAheadWithOverflowBug(4);
 
 		inky.homePosition = house.seatPosition(house.seatLeftTile());
 		inky.revivalTile = house.seatLeftTile();
-		inky.scatterTile = arcadeWorld.rightLowerTarget;
+		inky.scatterTile = ArcadeWorld.RIGHT_LOWER_CORNER;
 		inky.fnChasingTarget = () -> pac.tilesAheadWithOverflowBug(2).scaled(2).minus(blinky.tile());
 
 		clyde.homePosition = house.seatPosition(house.seatRightTile());
 		clyde.revivalTile = house.seatRightTile();
-		clyde.scatterTile = arcadeWorld.leftLowerTarget;
+		clyde.scatterTile = ArcadeWorld.LEFT_LOWER_CORNER;
 		clyde.fnChasingTarget = () -> clyde.tile().euclideanDistance(pac.tile()) < 8 ? clyde.scatterTile : pac.tile();
 
 		for (var ghost : theGhosts) {

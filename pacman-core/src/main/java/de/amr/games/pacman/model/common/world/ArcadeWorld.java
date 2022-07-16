@@ -42,11 +42,12 @@ public class ArcadeWorld extends MapBasedWorld {
 	public static final int TILES_Y = 36;
 	public static final V2i WORLD_SIZE = v(TILES_X * TS, TILES_Y * TS);
 
-	public final V2i leftLowerTarget = v(0, 34);
-	public final V2i rightLowerTarget = v(27, 34);
-	public final V2i leftUpperTarget = v(2, 0);
-	public final V2i rightUpperTarget = v(25, 0);
-	public final ArcadeGhostHouse house = new ArcadeGhostHouse();
+	public static final V2i LEFT_LOWER_CORNER = v(0, 34);
+	public static final V2i RIGHT_LOWER_CORNER = v(27, 34);
+	public static final V2i LEFT_UPPER_CORNER = v(2, 0);
+	public static final V2i RIGHT_UPPER_CORNER = v(25, 0);
+
+	private final ArcadeGhostHouse house = new ArcadeGhostHouse();
 
 	private EntityAnimation flashingAnimation;
 
