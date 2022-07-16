@@ -28,7 +28,6 @@ import static de.amr.games.pacman.lib.V2i.v;
 import java.util.Optional;
 
 import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.lib.animation.SingleEntityAnimation;
 import de.amr.games.pacman.lib.animation.EntityAnimation;
 
 /**
@@ -49,7 +48,7 @@ public class ArcadeWorld extends MapBasedWorld {
 	public final V2i rightUpperTarget = v(25, 0);
 	public final ArcadeGhostHouse house = new ArcadeGhostHouse();
 
-	private SingleEntityAnimation<?> flashingAnimation;
+	private EntityAnimation flashingAnimation;
 
 	public ArcadeWorld(byte[][] mapData) {
 		super(mapData, TILES_X, TILES_Y);
@@ -65,7 +64,7 @@ public class ArcadeWorld extends MapBasedWorld {
 		return Optional.ofNullable(flashingAnimation);
 	}
 
-	public void setFlashingAnimation(SingleEntityAnimation<?> mazeFlashingAnimation) {
+	public void setFlashingAnimation(EntityAnimation mazeFlashingAnimation) {
 		this.flashingAnimation = mazeFlashingAnimation;
 	}
 }
