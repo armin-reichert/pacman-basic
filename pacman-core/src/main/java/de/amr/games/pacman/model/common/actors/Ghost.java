@@ -165,7 +165,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 	}
 
 	private void updateGhostInHouseAnimation(GameModel game) {
-		if (endangered(game)) {
+		if (inDanger(game) && killedIndex == -1) {
 			if (!isAnimationSelected(AnimKeys.GHOST_FLASHING)) {
 				selectAndRunAnimation(AnimKeys.GHOST_BLUE);
 			}
@@ -198,18 +198,23 @@ public class Ghost extends Creature implements AnimatedEntity {
 		if (state != LEAVING_HOUSE) {
 			state = LEAVING_HOUSE;
 			setAbsSpeed(0.5); // not sure
-			selectAndRunAnimation(endangered(game) ? AnimKeys.GHOST_BLUE : AnimKeys.GHOST_COLOR);
+			selectAndRunAnimation(inDanger(game) && killedIndex == -1 ? AnimKeys.GHOST_BLUE : AnimKeys.GHOST_COLOR);
 			GameEvents.publish(new GameEvent(game, GameEventType.GHOST_STARTS_LEAVING_HOUSE, this, tile()));
 			return;
 		}
 		if (world.ghostHouse().leadGuyOutOfHouse(this)) {
-			setBothDirs(LEFT);
 			newTileEntered = false; // move left into next tile before changing direction
-			doHuntingPac(game);
+			setBothDirs(LEFT);
+			if (inDanger(game) && killedIndex == -1) {
+				doFrightened(game);
+			} else {
+				doHuntingPac(game);
+			}
+			killedIndex = -1;
 			GameEvents.publish(new GameEvent(game, GameEventType.GHOST_COMPLETES_LEAVING_HOUSE, this, tile()));
-			return;
+		} else {
+			updateGhostInHouseAnimation(game);
 		}
-		updateGhostInHouseAnimation(game);
 	}
 
 	/**
@@ -357,7 +362,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 	}
 
 	private void ensureFlashingWhenPowerCeases(GameModel game) {
-		if (endangered(game) && game.powerTimer.remaining() <= GameModel.PAC_POWER_FADING_TICKS) {
+		if (inDanger(game) && game.powerTimer.remaining() <= GameModel.PAC_POWER_FADING_TICKS) {
 			animationSet().ifPresent(anims -> {
 				if (isAnimationSelected(AnimKeys.GHOST_FLASHING)) {
 					anims.selectedAnimation().ensureRunning();
@@ -386,7 +391,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 		});
 	}
 
-	private boolean endangered(GameModel game) {
+	private boolean inDanger(GameModel game) {
 		return game.powerTimer.isRunning();
 	}
 
