@@ -391,11 +391,11 @@ public class Ghost extends Creature implements AnimatedEntity {
 		});
 	}
 
-	private boolean inDanger(GameModel game) {
+	public boolean inDanger(GameModel game) {
 		return game.powerTimer.isRunning();
 	}
 
-	private boolean insideTunnel() {
+	public boolean insideTunnel() {
 		return world.isTunnel(tile());
 	}
 }
