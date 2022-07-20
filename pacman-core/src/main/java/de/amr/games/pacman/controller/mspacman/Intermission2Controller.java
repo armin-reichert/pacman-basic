@@ -160,7 +160,7 @@ public class Intermission2Controller extends Fsm<State, Context> {
 					ctx.msPacMan.setMoveDir(Direction.RIGHT);
 					ctx.msPacMan.setAbsSpeed(4.0);
 				} else if (timer.atSecond(21)) {
-					ctx.gameController.state().timer().expire();
+					ctx.gameController.terminateCurrentState();
 					return;
 				}
 				ctx.pacMan.move();

@@ -118,15 +118,15 @@ public abstract class Fsm<S extends FsmState<C>, C> {
 	}
 
 	/**
-	 * Initializes the state machine to the given state. All timers are reset. The initial state's entry hook method is
-	 * executed but the current state's exit method isn't.
+	 * Sets the state machine to the given state. All timers are reset. The state's entry hook method is executed but the
+	 * current state's exit method isn't.
 	 * 
-	 * @param initialState the initial state
+	 * @param state the state to enter
 	 */
-	public void restartInInitialState(S initialState) {
+	public void restartInState(S state) {
 		resetTimers();
-		currentState = null;
-		changeState(initialState);
+		currentState = null; // no exit hook
+		changeState(state);
 	}
 
 	/**

@@ -185,7 +185,7 @@ public class Intermission3Controller extends Fsm<State, Context> {
 			public void onUpdate(Context ctx) {
 				ctx.stork.move();
 				if (timer.hasExpired()) {
-					ctx.gameController.state().timer().expire();
+					ctx.gameController.terminateCurrentState();
 				}
 			}
 		};
