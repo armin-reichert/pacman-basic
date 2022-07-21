@@ -104,7 +104,7 @@ public enum GameState implements FsmState<GameModel> {
 		}
 
 		@Override
-		public void startIntermissionTest(GameModel game) {
+		public void startCutscenesTest(GameModel game) {
 			gc.changeState(INTERMISSION_TEST);
 		}
 	},
@@ -487,7 +487,7 @@ public enum GameState implements FsmState<GameModel> {
 		// override if supported for state
 	}
 
-	public void startIntermissionTest(GameModel game) {
+	public void startCutscenesTest(GameModel game) {
 		// override if supported for state
 	}
 
