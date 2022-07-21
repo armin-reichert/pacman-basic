@@ -22,15 +22,17 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-package de.amr.games.pacman.model.common.actors;
+package de.amr.games.pacman.model.common;
 
 import java.time.LocalDate;
 
 /**
  * @author Armin Reichert
  */
-public class Score extends Entity {
+public class Score {
+
 	public final String title;
+	public boolean visible;
 	public boolean showContent;
 	public int points;
 	public int levelNumber;
@@ -43,7 +45,6 @@ public class Score extends Entity {
 
 	public void reset() {
 		showContent = true;
-		visible = true;
 		points = 0;
 		levelNumber = 1;
 		date = LocalDate.now();

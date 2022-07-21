@@ -116,8 +116,8 @@ public class IntroController extends Fsm<State, Context> {
 			@Override
 			public void onUpdate(Context ctx) {
 				if (timer.tick() == 1) {
-					ctx.gameController.game().scores.gameScore.show();
-					ctx.gameController.game().scores.highScore.show();
+					ctx.gameController.game().scores.gameScore.visible = true;
+					ctx.gameController.game().scores.highScore.visible = true;
 				} else if (timer.tick() == 2) {
 					ctx.creditVisible = true;
 				} else if (timer.tick() == 3) {
