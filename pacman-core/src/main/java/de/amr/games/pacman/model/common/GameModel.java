@@ -72,7 +72,7 @@ public abstract class GameModel {
 	//@formatter:on
 	};
 
-	public static final int MAX_CREDIT = 50;
+	public static final int MAX_CREDIT = 99;
 	public static final int PELLET_VALUE = 10;
 	public static final int PELLET_RESTING_TICKS = 1;
 	public static final int ENERGIZER_VALUE = 50;
