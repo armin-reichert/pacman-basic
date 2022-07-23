@@ -131,8 +131,6 @@ public enum GameState implements FsmState<GameModel> {
 
 		@Override
 		public void requestGame(GameModel game) {
-			game.reset();
-			game.setLevel(1);
 			gc.changeState(READY);
 		}
 	},
@@ -140,24 +138,29 @@ public enum GameState implements FsmState<GameModel> {
 	READY {
 		@Override
 		public void onEnter(GameModel game) {
-			game.scores.highScore.showContent = true;
-			game.scores.enable(game.hasCredit());
-			game.resetGuys();
 			gc.sounds().stopAll();
+			if (game.hasCredit() && !game.playing) {
+				// new game
+				gc.sounds().play(GameSound.GAME_READY);
+				game.reset();
+				game.setLevel(1);
+				game.levelCounter.clear();
+				game.levelCounter.addSymbol(game.level.bonusSymbol);
+				game.scores.gameScore.showContent = true;
+				game.resetGuys();
+				game.guys().forEach(Entity::hide);
+			} else {
+				// in game
+				game.resetGuys();
+				game.scores.enable(game.hasCredit());
+			}
+			game.scores.highScore.showContent = true;
 		}
 
 		@Override
 		public void onUpdate(GameModel game) {
 			if (game.hasCredit() && !game.playing) {
-				// game starting
-				if (timer.atSecond(0)) {
-					game.reset();
-					game.levelCounter.clear();
-					game.levelCounter.addSymbol(game.level.bonusSymbol);
-					game.scores.gameScore.showContent = true;
-					game.guys().forEach(Entity::hide);
-					gc.sounds().play(GameSound.GAME_READY);
-				} else if (timer.atSecond(1.0)) {
+				if (timer.atSecond(1.0)) {
 					game.guys().forEach(Entity::show);
 					game.livesOneLessShown = true;
 				} else if (timer.atSecond(4.5)) {
