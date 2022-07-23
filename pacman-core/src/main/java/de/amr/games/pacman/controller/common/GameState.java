@@ -408,6 +408,7 @@ public enum GameState implements FsmState<GameModel> {
 			timer.resetSeconds(2);
 			timer.start();
 			gc.sounds().stopAll();
+			game.consumeCredit();
 			game.scores.saveHiscore();
 		}
 
@@ -415,7 +416,6 @@ public enum GameState implements FsmState<GameModel> {
 		public void onUpdate(GameModel game) {
 			if (timer.hasExpired()) {
 				game.playing = false;
-				game.consumeCredit();
 				gc.changeState(game.hasCredit() ? CREDIT : INTRO);
 			}
 		}
