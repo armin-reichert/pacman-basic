@@ -157,10 +157,10 @@ public enum GameState implements FsmState<GameModel> {
 					game.scores.gameScore.showContent = true;
 					game.guys().forEach(Entity::hide);
 					gc.sounds().play(GameSound.GAME_READY);
-				} else if (timer.atSecond(2)) {
+				} else if (timer.atSecond(1.0)) {
 					game.guys().forEach(Entity::show);
 					game.livesOneLessShown = true;
-				} else if (timer.atSecond(5)) {
+				} else if (timer.atSecond(4.5)) {
 					game.playing = true;
 					game.startHuntingPhase(0);
 					gc.changeState(GameState.HUNTING);
@@ -170,7 +170,7 @@ public enum GameState implements FsmState<GameModel> {
 				if (timer.atSecond(0)) {
 					game.scores.gameScore.showContent = game.hasCredit();
 					game.guys().forEach(Entity::show);
-				} else if (timer.atSecond(2)) {
+				} else if (timer.atSecond(1.25)) {
 					game.startHuntingPhase(0);
 					gc.changeState(GameState.HUNTING);
 				}
@@ -368,7 +368,7 @@ public enum GameState implements FsmState<GameModel> {
 	PACMAN_DYING {
 		@Override
 		public void onEnter(GameModel game) {
-			timer.resetSeconds(5);
+			timer.resetSeconds(4);
 			timer.start();
 			game.pac.animation().ifPresent(EntityAnimation::stop);
 			game.bonus().setInactive();
@@ -379,13 +379,13 @@ public enum GameState implements FsmState<GameModel> {
 		public void onUpdate(GameModel game) {
 			game.energizerPulse.advance();
 			game.pac.update(game);
-			if (timer.atSecond(1)) {
+			if (timer.atSecond(0.5)) {
 				game.ghosts().forEach(Ghost::hide);
 				game.pac.selectAndResetAnimation(AnimKeys.PAC_DYING);
-			} else if (timer.atSecond(2)) {
+			} else if (timer.atSecond(1.5)) {
 				game.pac.animation().ifPresent(EntityAnimation::restart);
 				gc.sounds().play(GameSound.PACMAN_DEATH);
-			} else if (timer.atSecond(4)) {
+			} else if (timer.atSecond(3.0)) {
 				game.lives--;
 				if (game.lives == 0) {
 					game.energizerPulse.stop();
@@ -405,7 +405,7 @@ public enum GameState implements FsmState<GameModel> {
 	GAME_OVER {
 		@Override
 		public void onEnter(GameModel game) {
-			timer.resetSeconds(3);
+			timer.resetSeconds(2);
 			timer.start();
 			gc.sounds().stopAll();
 			game.scores.saveHiscore();
