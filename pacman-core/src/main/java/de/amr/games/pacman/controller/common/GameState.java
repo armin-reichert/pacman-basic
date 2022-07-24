@@ -172,7 +172,7 @@ public enum GameState implements FsmState<GameModel> {
 				}
 			} else {
 				// game continuing or attract mode
-				if (timer.atSecond(1.4)) {
+				if (timer.atSecond(2.0)) {
 					game.startHuntingPhase(0);
 					gc.changeState(GameState.HUNTING);
 				}
@@ -407,7 +407,7 @@ public enum GameState implements FsmState<GameModel> {
 	GAME_OVER {
 		@Override
 		public void onEnter(GameModel game) {
-			timer.resetSeconds(1.0);
+			timer.resetSeconds(1.5);
 			timer.start();
 			gc.sounds().stopAll();
 			game.consumeCredit();

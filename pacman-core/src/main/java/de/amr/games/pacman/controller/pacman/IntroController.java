@@ -53,6 +53,8 @@ import de.amr.games.pacman.model.common.actors.Pac;
  */
 public class IntroController extends Fsm<State, Context> {
 
+	private static final double CHASING_SPEED = 1.1;
+
 	public final Context ctx;
 
 	public IntroController(GameController gameController) {
@@ -168,14 +170,14 @@ public class IntroController extends Fsm<State, Context> {
 				timer.start();
 				ctx.pacMan.setPosition(t(36), t(20));
 				ctx.pacMan.setMoveDir(Direction.LEFT);
-				ctx.pacMan.setAbsSpeed(1.2);
+				ctx.pacMan.setAbsSpeed(CHASING_SPEED);
 				ctx.pacMan.show();
 				ctx.pacMan.selectAndRunAnimation(AnimKeys.PAC_MUNCHING);
 				for (Ghost ghost : ctx.ghosts) {
 					ghost.doHuntingPac(ctx.gameController.game());
 					ghost.setPosition(ctx.pacMan.getPosition().plus(16 * (ghost.id + 1), 0));
 					ghost.setBothDirs(Direction.LEFT);
-					ghost.setAbsSpeed(1.2);
+					ghost.setAbsSpeed(CHASING_SPEED);
 					ghost.show();
 					ghost.selectAndRunAnimation(AnimKeys.GHOST_COLOR);
 				}
@@ -224,7 +226,7 @@ public class IntroController extends Fsm<State, Context> {
 				timer.start();
 				ctx.ghostKilledTime = timer.tick();
 				ctx.pacMan.setMoveDir(Direction.RIGHT);
-				ctx.pacMan.setAbsSpeed(1.2);
+				ctx.pacMan.setAbsSpeed(CHASING_SPEED);
 			}
 
 			@Override
@@ -250,10 +252,10 @@ public class IntroController extends Fsm<State, Context> {
 					});
 				});
 
-				// After 1 sec, Pac-Man and the surviving ghosts get visible again and move on
-				if (timer.tick() - ctx.ghostKilledTime == TickTimer.secToTicks(1)) {
+				// After ??? sec, Pac-Man and the surviving ghosts get visible again and move on
+				if (timer.tick() - ctx.ghostKilledTime == TickTimer.secToTicks(0.9)) {
 					ctx.pacMan.show();
-					ctx.pacMan.setAbsSpeed(1.2);
+					ctx.pacMan.setAbsSpeed(CHASING_SPEED);
 					for (Ghost ghost : ctx.ghosts) {
 						if (!ghost.is(GhostState.EATEN)) {
 							ghost.show();
