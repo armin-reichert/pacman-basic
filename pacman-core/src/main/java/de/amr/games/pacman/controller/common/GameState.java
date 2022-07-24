@@ -153,6 +153,8 @@ public enum GameState implements FsmState<GameModel> {
 				// in game
 				game.resetGuys();
 				game.scores.enable(game.hasCredit());
+				game.scores.gameScore.showContent = game.hasCredit();
+				game.guys().forEach(Entity::show);
 			}
 			game.scores.highScore.showContent = true;
 		}
@@ -160,7 +162,7 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void onUpdate(GameModel game) {
 			if (game.hasCredit() && !game.playing) {
-				if (timer.atSecond(1.0)) {
+				if (timer.atSecond(0.75)) {
 					game.guys().forEach(Entity::show);
 					game.livesOneLessShown = true;
 				} else if (timer.atSecond(4.5)) {
@@ -170,10 +172,7 @@ public enum GameState implements FsmState<GameModel> {
 				}
 			} else {
 				// game continuing or attract mode
-				if (timer.atSecond(0)) {
-					game.scores.gameScore.showContent = game.hasCredit();
-					game.guys().forEach(Entity::show);
-				} else if (timer.atSecond(1.25)) {
+				if (timer.atSecond(1.4)) {
 					game.startHuntingPhase(0);
 					gc.changeState(GameState.HUNTING);
 				}
@@ -382,10 +381,10 @@ public enum GameState implements FsmState<GameModel> {
 		public void onUpdate(GameModel game) {
 			game.energizerPulse.advance();
 			game.pac.update(game);
-			if (timer.atSecond(0.5)) {
+			if (timer.atSecond(0.25)) {
 				game.ghosts().forEach(Ghost::hide);
 				game.pac.selectAndResetAnimation(AnimKeys.PAC_DYING);
-			} else if (timer.atSecond(1.5)) {
+			} else if (timer.atSecond(1.4)) {
 				game.pac.animation().ifPresent(EntityAnimation::restart);
 				gc.sounds().play(GameSound.PACMAN_DEATH);
 			} else if (timer.atSecond(3.0)) {
@@ -408,7 +407,7 @@ public enum GameState implements FsmState<GameModel> {
 	GAME_OVER {
 		@Override
 		public void onEnter(GameModel game) {
-			timer.resetSeconds(2);
+			timer.resetSeconds(1.6);
 			timer.start();
 			gc.sounds().stopAll();
 			game.consumeCredit();
