@@ -407,7 +407,7 @@ public enum GameState implements FsmState<GameModel> {
 	GAME_OVER {
 		@Override
 		public void onEnter(GameModel game) {
-			timer.resetSeconds(1.6);
+			timer.resetSeconds(1.0);
 			timer.start();
 			gc.sounds().stopAll();
 			game.consumeCredit();
