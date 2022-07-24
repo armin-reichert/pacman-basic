@@ -162,7 +162,7 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void onUpdate(GameModel game) {
 			if (game.hasCredit() && !game.playing) {
-				if (timer.atSecond(0.75)) {
+				if (timer.atSecond(0.5)) {
 					game.guys().forEach(Entity::show);
 					game.livesOneLessShown = true;
 				} else if (timer.atSecond(4.5)) {
@@ -172,7 +172,7 @@ public enum GameState implements FsmState<GameModel> {
 				}
 			} else {
 				// game continuing or attract mode
-				if (timer.atSecond(2.0)) {
+				if (timer.atSecond(1.5)) {
 					game.startHuntingPhase(0);
 					gc.changeState(GameState.HUNTING);
 				}
