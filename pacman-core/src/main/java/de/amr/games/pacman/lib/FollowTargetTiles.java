@@ -26,23 +26,23 @@ package de.amr.games.pacman.lib;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Consumer;
 
+import de.amr.games.pacman.controller.common.Steering;
+import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.actors.Creature;
 
 /**
  * @author Armin Reichert
  */
-public class FixedRouteByTiles implements Consumer<Creature> {
+public class FollowTargetTiles implements Steering {
 
 	private final List<V2i> route;
 	private int currentTargetIndex;
 	private boolean complete;
 
-	public FixedRouteByTiles(List<V2i> route) {
+	public FollowTargetTiles(List<V2i> route) {
 		this.route = Objects.requireNonNull(route);
-		currentTargetIndex = 0;
-		complete = false;
+		init();
 	}
 
 	public List<V2i> getRoute() {
@@ -54,7 +54,13 @@ public class FixedRouteByTiles implements Consumer<Creature> {
 	}
 
 	@Override
-	public void accept(Creature guy) {
+	public void init() {
+		currentTargetIndex = 0;
+		complete = false;
+	}
+
+	@Override
+	public void steer(GameModel game, Creature guy) {
 		if (complete || route.isEmpty()) {
 			return;
 		}

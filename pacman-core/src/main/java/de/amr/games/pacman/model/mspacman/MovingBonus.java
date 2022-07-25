@@ -31,7 +31,7 @@ import org.apache.logging.log4j.Logger;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.Direction;
-import de.amr.games.pacman.lib.FixedRouteByTiles;
+import de.amr.games.pacman.lib.FollowTargetTiles;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.lib.animation.SingleEntityAnimation;
 import de.amr.games.pacman.model.common.GameModel;
@@ -57,7 +57,7 @@ public class MovingBonus extends Creature implements Bonus {
 	private int value;
 	private long timer;
 	private final SingleEntityAnimation<Integer> jumpAnimation;
-	private FixedRouteByTiles steering;
+	private FollowTargetTiles steering;
 
 	public MovingBonus() {
 		super("MovingBonus");
@@ -75,7 +75,7 @@ public class MovingBonus extends Creature implements Bonus {
 		targetTile = startTile;
 		placeAtTile(startTile, 0, 0);
 		setBothDirs(startDir);
-		steering = new FixedRouteByTiles(route);
+		steering = new FollowTargetTiles(route);
 	}
 
 	@Override
@@ -143,7 +143,7 @@ public class MovingBonus extends Creature implements Bonus {
 				GameEvents.publish(GameEventType.BONUS_GETS_EATEN, tile());
 				return;
 			}
-			steering.accept(this);
+			steering.steer(game, this);
 			if (steering.isComplete()) {
 				LOGGER.info("%s reached target", this);
 				GameEvents.publish(GameEventType.BONUS_EXPIRES, tile());

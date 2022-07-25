@@ -24,8 +24,6 @@ SOFTWARE.
 
 package de.amr.games.pacman.lib;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 import org.apache.logging.log4j.LogManager;
@@ -38,31 +36,27 @@ import de.amr.games.pacman.model.common.actors.Creature;
 /**
  * @author Armin Reichert
  */
-public class FixedRouteByDirections implements Steering {
+public class FollowDirections implements Steering {
 
 	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
-	private final List<Direction> route;
-	private int currentIndex;
-	private boolean gotNewDirection;
-	private boolean complete;
-
-	public FixedRouteByDirections(List<Direction> route) {
-		this.route = Objects.requireNonNull(route);
-		init();
+	private static Direction dir(char ch) {
+		return switch (ch) {
+		case 'U', 'u' -> Direction.UP;
+		case 'D', 'd' -> Direction.DOWN;
+		case 'L', 'l' -> Direction.LEFT;
+		case 'R', 'r' -> Direction.RIGHT;
+		default -> throw new IllegalArgumentException("Illegal direction specifier: " + ch);
+		};
 	}
 
-	public FixedRouteByDirections(String routeSpec) {
-		route = new ArrayList<>(routeSpec.length());
-		for (var ch : routeSpec.toCharArray()) {
-			switch (ch) {
-			case 'U', 'u' -> route.add(Direction.UP);
-			case 'D', 'd' -> route.add(Direction.DOWN);
-			case 'L', 'l' -> route.add(Direction.LEFT);
-			case 'R', 'r' -> route.add(Direction.RIGHT);
-			default -> LOGGER.error("Illegal direction specifier: %", ch);
-			}
-		}
+	private final String directions;
+	private int currentIndex;
+	private boolean gotDirection;
+	private boolean complete;
+
+	public FollowDirections(String directions) {
+		this.directions = Objects.requireNonNull(directions);
 		init();
 	}
 
@@ -70,7 +64,7 @@ public class FixedRouteByDirections implements Steering {
 	public void init() {
 		currentIndex = 0;
 		complete = false;
-		gotNewDirection = false;
+		gotDirection = false;
 	}
 
 	public boolean isComplete() {
@@ -79,30 +73,27 @@ public class FixedRouteByDirections implements Steering {
 
 	@Override
 	public void steer(GameModel game, Creature guy) {
-		if (complete || route.isEmpty()) {
+		if (complete || directions.isEmpty()) {
 			return;
 		}
 		boolean intersection = game.world().isIntersection(guy.tile());
-		if (intersection && !gotNewDirection) {
-			guy.setWishDir(route.get(currentIndex));
+		if (intersection && !gotDirection) {
+			guy.setWishDir(dir(directions.charAt(currentIndex)));
 			LOGGER.info("At intersection %s go %s", guy.tile(), guy.wishDir());
-			gotNewDirection = true;
+			gotDirection = true;
 			++currentIndex;
-			if (currentIndex == route.size()) {
+			if (currentIndex == directions.length()) {
 				complete = true;
 				LOGGER.info("Route complete");
 				return;
 			}
 		}
 		if (!intersection) {
-			gotNewDirection = false;
+			gotDirection = false;
 		}
 		if (guy.stuck) {
 			for (var dir : Direction.values()) {
-				if (dir == guy.moveDir().opposite()) {
-					continue;
-				}
-				if (guy.canAccessTile(guy.tile().plus(dir.vec))) {
+				if (dir != guy.moveDir().opposite() && guy.canAccessTile(guy.tile().plus(dir.vec))) {
 					guy.setWishDir(dir);
 					LOGGER.info("At corner go %s", guy.wishDir());
 					break;
