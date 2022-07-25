@@ -157,7 +157,7 @@ public class Creature extends Entity {
 	 * @param fraction  fraction of base speed
 	 * @param baseSpeed base speed (speed at fraction=1.0)
 	 */
-	private void setRelSpeed(double fraction, double baseSpeed) {
+	protected void setRelSpeed(double fraction, double baseSpeed) {
 		if (fraction < 0) {
 			throw new IllegalArgumentException("Negative speed fraction: " + fraction);
 		}

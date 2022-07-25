@@ -263,9 +263,9 @@ public class Ghost extends Creature implements AnimatedEntity {
 	private void roam() {
 		if (newTileEntered) {
 			if (pseudoRandomMode && world.isIntersection(tile())) {
-				setWishDir(pseudoRandomDirs[id][pseudoRandomIndex++]);
+				setWishDir(pseudoRandomDirs[id][pseudoRandomIndex]);
 				LOGGER.info("%s has new wishdir %s at tile %s, index=%d", name, wishDir, tile(), pseudoRandomIndex);
-				if (pseudoRandomIndex == pseudoRandomDirs[id].length) {
+				if (++pseudoRandomIndex == pseudoRandomDirs[id].length) {
 					pseudoRandomIndex = 0;
 				}
 			} else {
@@ -278,15 +278,6 @@ public class Ghost extends Creature implements AnimatedEntity {
 		}
 		tryMoving();
 	}
-
-	private boolean pseudoRandomMode;
-	private int pseudoRandomIndex;
-	private Direction[][] pseudoRandomDirs = { //
-			{ DOWN, DOWN, RIGHT, LEFT, DOWN, RIGHT, DOWN, DOWN, RIGHT, UP }, //
-			{ UP, DOWN, LEFT, UP, DOWN, DOWN, LEFT, UP, UP, LEFT, UP, LEFT, DOWN }, //
-			{ RIGHT, UP, LEFT, LEFT, LEFT, LEFT, LEFT, DOWN, /* 2nd */ RIGHT, UP, /* eaten...leave house */ RIGHT }, //
-			{ RIGHT, RIGHT, LEFT, UP }, //
-	};
 
 	public void setPseudoRandomMode(boolean pseudoRandomMode) {
 		this.pseudoRandomMode = pseudoRandomMode;
@@ -426,4 +417,17 @@ public class Ghost extends Creature implements AnimatedEntity {
 	public boolean insideTunnel() {
 		return world.isTunnel(tile());
 	}
+
+	// HACK zone
+
+	private boolean pseudoRandomMode;
+
+	private int pseudoRandomIndex;
+
+	private Direction[][] pseudoRandomDirs = { //
+			{ DOWN, DOWN, RIGHT, LEFT, DOWN, RIGHT, DOWN, DOWN, RIGHT, UP }, //
+			{ DOWN, DOWN, LEFT, UP, RIGHT, LEFT, UP, UP, LEFT, UP, LEFT, DOWN }, //
+			{ RIGHT, UP, LEFT, LEFT, LEFT, LEFT, LEFT, DOWN, /* 2nd */ RIGHT, UP, /* eaten...leave house */ RIGHT }, //
+			{ RIGHT, RIGHT, LEFT, UP }, //
+	};
 }
