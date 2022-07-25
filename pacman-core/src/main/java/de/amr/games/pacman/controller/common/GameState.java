@@ -158,6 +158,13 @@ public enum GameState implements FsmState<GameModel> {
 				if (!game.hasCredit()) {
 					gc.attractModeSteeringMsPacMan.init();
 					gc.attractModeSteeringPacMan.init();
+					for (var ghost : game.theGhosts) {
+						ghost.setPseudoRandomMode(true);
+					}
+				} else {
+					for (var ghost : game.theGhosts) {
+						ghost.setPseudoRandomMode(false);
+					}
 				}
 			}
 			game.scores.highScore.showContent = true;

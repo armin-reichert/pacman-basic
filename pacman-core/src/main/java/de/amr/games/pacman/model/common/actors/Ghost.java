@@ -25,6 +25,7 @@ package de.amr.games.pacman.model.common.actors;
 
 import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
+import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.model.common.GameVariant.MS_PACMAN;
 import static de.amr.games.pacman.model.common.actors.GhostState.EATEN;
@@ -39,6 +40,9 @@ import static de.amr.games.pacman.model.common.world.World.HTS;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import de.amr.games.pacman.event.GameEvent;
 import de.amr.games.pacman.event.GameEventType;
@@ -57,6 +61,8 @@ import de.amr.games.pacman.model.common.GameModel;
  * @author Armin Reichert
  */
 public class Ghost extends Creature implements AnimatedEntity {
+
+	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
 	public static final int RED_GHOST = 0;
 	public static final int PINK_GHOST = 1;
@@ -256,13 +262,35 @@ public class Ghost extends Creature implements AnimatedEntity {
 
 	private void roam() {
 		if (newTileEntered) {
-			Direction.shuffled().stream()//
-					.filter(dir -> dir != moveDir.opposite())//
-					.filter(dir -> canAccessTile(tile().plus(dir.vec)))//
-					.findAny()//
-					.ifPresent(this::setWishDir);
+			if (pseudoRandomMode && world.isIntersection(tile())) {
+				setWishDir(pseudoRandomDirs[id][pseudoRandomIndex++]);
+				LOGGER.info("%s has new wishdir %s at tile %s, index=%d", name, wishDir, tile(), pseudoRandomIndex);
+				if (pseudoRandomIndex == pseudoRandomDirs[id].length) {
+					pseudoRandomIndex = 0;
+				}
+			} else {
+				Direction.shuffled().stream()//
+						.filter(dir -> dir != moveDir.opposite())//
+						.filter(dir -> canAccessTile(tile().plus(dir.vec)))//
+						.findAny()//
+						.ifPresent(this::setWishDir);
+			}
 		}
 		tryMoving();
+	}
+
+	private boolean pseudoRandomMode;
+	private int pseudoRandomIndex;
+	private Direction[][] pseudoRandomDirs = { //
+			{ DOWN, DOWN, RIGHT, LEFT, DOWN, RIGHT, DOWN, DOWN, RIGHT, UP }, //
+			{ UP, DOWN, LEFT, UP, DOWN, DOWN, LEFT, UP, UP, LEFT, UP, LEFT, DOWN }, //
+			{ RIGHT, UP, LEFT, LEFT, LEFT, LEFT, LEFT, DOWN, /* 2nd */ RIGHT, UP, /* eaten...leave house */ RIGHT }, //
+			{ RIGHT, RIGHT, LEFT, UP }, //
+	};
+
+	public void setPseudoRandomMode(boolean pseudoRandomMode) {
+		this.pseudoRandomMode = pseudoRandomMode;
+		pseudoRandomIndex = 0;
 	}
 
 	/**
