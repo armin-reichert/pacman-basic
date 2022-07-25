@@ -211,6 +211,24 @@ public enum GameState implements FsmState<GameModel> {
 
 			}
 
+			// TODO remove when attract mode is implemented correctly
+			if (!game.hasCredit()) {
+				switch (game.variant) {
+				case PACMAN -> {
+					if (gc.attractModeSteeringPacMan.isComplete()) {
+						gc.changeState(INTRO);
+						return;
+					}
+				}
+				case MS_PACMAN -> {
+					if (gc.attractModeSteeringMsPacMan.isComplete()) {
+						gc.changeState(INTRO);
+						return;
+					}
+				}
+				}
+			}
+
 			if (game.happened.ghostsKilled) {
 				renderSound(game);
 				gc.changeState(GHOST_DYING);

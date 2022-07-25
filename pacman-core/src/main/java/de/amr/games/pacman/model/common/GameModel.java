@@ -368,11 +368,15 @@ public abstract class GameModel {
 		if (happened.pacGotPower) {
 			onPacGetsPower();
 		}
-		checkPacMeetsKiller();
-		if (happened.pacMetKiller) {
-			onPacMetKiller();
-			return; // enter new game state
+
+		if (hasCredit()) { // TODO remove!
+			checkPacMeetsKiller();
+			if (happened.pacMetKiller) {
+				onPacMetKiller();
+				return; // enter new game state
+			}
 		}
+
 		checkEdibleGhosts();
 		if (happened.edibleGhosts.length > 0) {
 			killGhosts(happened.edibleGhosts);
