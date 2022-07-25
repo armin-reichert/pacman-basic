@@ -34,9 +34,11 @@ import java.util.stream.Stream;
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.event.GameStateChangeEvent;
 import de.amr.games.pacman.event.TriggerUIChangeEvent;
+import de.amr.games.pacman.lib.FixedRouteByDirections;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
+import de.amr.games.pacman.model.common.world.ArcadeWorld;
 import de.amr.games.pacman.model.mspacman.MsPacManGame;
 import de.amr.games.pacman.model.pacman.PacManGame;
 
@@ -95,7 +97,11 @@ public class GameController {
 
 	private final Steering autopilot = new Autopilot();
 
-	private Steering steering;
+	final Steering attractModeSteeringPacMan = new FixedRouteByDirections(ArcadeWorld.ATTRACT_MODE_ROUTE_PACMAN);
+	final Steering attractModeSteeringMsPacMan = new FixedRouteByDirections(ArcadeWorld.ATTRACT_MODE_ROUTE_MS_PACMAN);
+
+	private Steering normalSteering;
+
 	private GameVariant gameVariant = GameVariant.PACMAN;
 	private GameSoundController sounds = GameSoundController.NO_SOUND;
 
@@ -133,14 +139,20 @@ public class GameController {
 	}
 
 	public Steering getSteering() {
-		if (game().autoControlled || !game().hasCredit()) {
+		if (!game().hasCredit()) {
+			return switch (game().variant) {
+			case MS_PACMAN -> autopilot; // TODO: attractModeSteeringMsPacMan;
+			case PACMAN -> attractModeSteeringPacMan;
+			};
+		}
+		if (game().autoControlled) {
 			return autopilot;
 		}
-		return steering;
+		return normalSteering;
 	}
 
-	public void setSteering(Steering steering) {
-		this.steering = Objects.requireNonNull(steering);
+	public void setNormalSteering(Steering steering) {
+		this.normalSteering = Objects.requireNonNull(steering);
 	}
 
 	public void setSounds(GameSoundController sounds) {

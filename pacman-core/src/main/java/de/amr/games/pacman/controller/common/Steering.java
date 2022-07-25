@@ -32,4 +32,6 @@ import de.amr.games.pacman.model.common.actors.Creature;
 public interface Steering {
 
 	void steer(GameModel game, Creature guy);
+
+	void init();
 }

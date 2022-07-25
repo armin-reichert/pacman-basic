@@ -150,11 +150,15 @@ public enum GameState implements FsmState<GameModel> {
 				game.resetGuys();
 				game.guys().forEach(Entity::hide);
 			} else {
-				// in game
+				// in game or attract mode
 				game.resetGuys();
 				game.scores.enable(game.hasCredit());
 				game.scores.gameScore.showContent = game.hasCredit();
 				game.guys().forEach(Entity::show);
+				if (!game.hasCredit()) {
+					gc.attractModeSteeringMsPacMan.init();
+					gc.attractModeSteeringPacMan.init();
+				}
 			}
 			game.scores.highScore.showContent = true;
 		}

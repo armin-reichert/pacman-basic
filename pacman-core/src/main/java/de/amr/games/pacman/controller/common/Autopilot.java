@@ -88,6 +88,10 @@ public class Autopilot implements Steering {
 	}
 
 	@Override
+	public void init() {
+	}
+
+	@Override
 	public void steer(GameModel game, Creature guy) {
 		if (!guy.stuck && !guy.newTileEntered) {
 			return;

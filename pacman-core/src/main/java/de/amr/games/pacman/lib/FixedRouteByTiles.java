@@ -33,13 +33,13 @@ import de.amr.games.pacman.model.common.actors.Creature;
 /**
  * @author Armin Reichert
  */
-public class FixedRouteSteering implements Consumer<Creature> {
+public class FixedRouteByTiles implements Consumer<Creature> {
 
 	private final List<V2i> route;
 	private int currentTargetIndex;
 	private boolean complete;
 
-	public FixedRouteSteering(List<V2i> route) {
+	public FixedRouteByTiles(List<V2i> route) {
 		this.route = Objects.requireNonNull(route);
 		currentTargetIndex = 0;
 		complete = false;
