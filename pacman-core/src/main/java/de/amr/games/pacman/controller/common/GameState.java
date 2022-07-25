@@ -194,30 +194,37 @@ public enum GameState implements FsmState<GameModel> {
 
 		@Override
 		public void onUpdate(GameModel game) {
-			game.happened.nothingToRemember();
+			game.happened.flashyThing(); // ich scholze jetzt
+
 			game.whatHappenedWithFood();
 			if (game.happened.allFoodEaten) {
 				renderSound(game);
 				gc.changeState(LEVEL_COMPLETE);
-			} else {
-				game.whatHappenedWithTheGuys();
-				if (game.happened.pacMetKiller) {
-					renderSound(game);
-					gc.changeState(PACMAN_DYING);
-				} else if (game.happened.ghostsKilled) {
-					renderSound(game);
-					gc.changeState(GHOST_DYING);
-				} else {
-					gc.getSteering().steer(game, game.pac);
-					game.pac.update(game);
-					game.updateGhosts();
-					game.updateBonus();
-					game.advanceHunting();
-					game.energizerPulse.advance();
-					game.powerTimer.advance();
-					renderSound(game);
-				}
+				return;
 			}
+
+			game.whatHappenedWithTheGuys();
+			if (game.happened.pacMetKiller) {
+				renderSound(game);
+				gc.changeState(PACMAN_DYING);
+				return;
+
+			}
+
+			if (game.happened.ghostsKilled) {
+				renderSound(game);
+				gc.changeState(GHOST_DYING);
+				return;
+			}
+
+			gc.getSteering().steer(game, game.pac);
+			game.pac.update(game);
+			game.updateGhosts();
+			game.updateBonus();
+			game.advanceHunting();
+			game.energizerPulse.advance();
+			game.powerTimer.advance();
+			renderSound(game);
 		}
 
 		private void renderSound(GameModel game) {

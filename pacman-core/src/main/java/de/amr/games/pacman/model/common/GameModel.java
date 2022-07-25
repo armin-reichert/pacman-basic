@@ -333,10 +333,10 @@ public abstract class GameModel {
 		public String unlockReason;
 
 		public WhatHappened() {
-			nothingToRemember();
+			flashyThing();
 		}
 
-		public void nothingToRemember() {
+		public void flashyThing() {
 			allFoodEaten = false;
 			foodFound = false;
 			energizerFound = false;
