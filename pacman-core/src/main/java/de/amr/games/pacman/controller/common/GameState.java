@@ -194,17 +194,17 @@ public enum GameState implements FsmState<GameModel> {
 
 		@Override
 		public void onUpdate(GameModel game) {
-			game.was.nothingToRemember();
-			game.whatAboutFood();
-			if (game.was.allFoodEaten) {
+			game.happened.nothingToRemember();
+			game.whatHappenedWithFood();
+			if (game.happened.allFoodEaten) {
 				renderSound(game);
 				gc.changeState(LEVEL_COMPLETE);
 			} else {
-				game.whatAboutTheGuys();
-				if (game.was.pacMetKiller) {
+				game.whatHappenedWithTheGuys();
+				if (game.happened.pacMetKiller) {
 					renderSound(game);
 					gc.changeState(PACMAN_DYING);
-				} else if (game.was.ghostsKilled) {
+				} else if (game.happened.ghostsKilled) {
 					renderSound(game);
 					gc.changeState(GHOST_DYING);
 				} else {
@@ -225,18 +225,18 @@ public enum GameState implements FsmState<GameModel> {
 			if (game.huntingTimer.tick() == 0) {
 				snd.ensureSirenStarted(game.huntingTimer.phase() / 2);
 			}
-			if (game.was.pacGotPower) {
+			if (game.happened.pacGotPower) {
 				snd.stopSirens();
 				snd.ensureLoop(GameSound.PACMAN_POWER, GameSoundController.LOOP_FOREVER);
 			}
-			if (game.was.pacPowerLost) {
+			if (game.happened.pacPowerLost) {
 				snd.stop(GameSound.PACMAN_POWER);
 				snd.ensureSirenStarted(game.huntingTimer.phase() / 2);
 			}
-			if (game.was.foodFound) {
+			if (game.happened.foodFound) {
 				snd.ensureLoop(GameSound.PACMAN_MUNCH, GameSoundController.LOOP_FOREVER);
 			}
-			if (game.pac.getStarvingTicks() >= 12) { // ???
+			if (game.pac.starvingTime() >= 12) { // ???
 				snd.stop(GameSound.PACMAN_MUNCH);
 			}
 			if (game.ghosts(GhostState.RETURNING_TO_HOUSE).count() > 0) {

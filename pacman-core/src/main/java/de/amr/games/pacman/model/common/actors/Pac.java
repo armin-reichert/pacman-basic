@@ -83,11 +83,15 @@ public class Pac extends Creature implements AnimatedEntity {
 		restingTicks = ticks;
 	}
 
-	public void setStarvingTicks(int starvingTicks) {
-		this.starvingTicks = starvingTicks;
+	public void starve() {
+		++starvingTicks;
 	}
 
-	public int getStarvingTicks() {
+	public void endStarving() {
+		starvingTicks = 0;
+	}
+
+	public int starvingTime() {
 		return starvingTicks;
 	}
 
