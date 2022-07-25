@@ -51,7 +51,7 @@ public enum GameState implements FsmState<GameModel> {
 	BOOT() {
 		@Override
 		public void onEnter(GameModel game) {
-			timer.resetSeconds(5);
+			timer.resetIndefinitely();
 			timer.start();
 			game.levelCounter.clear();
 		}
