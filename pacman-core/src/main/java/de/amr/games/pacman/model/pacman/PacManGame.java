@@ -46,6 +46,7 @@ import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.Pac;
 import de.amr.games.pacman.model.common.world.ArcadeWorld;
+import de.amr.games.pacman.model.common.world.World;
 
 /**
  * Model of the Pac-Man game.
@@ -203,6 +204,6 @@ public class PacManGame extends GameModel {
 	@Override
 	protected void onBonusReached() {
 		bonus.setEdible(level.bonusSymbol, BONUS_VALUES[level.bonusSymbol], secToTicks(9.0 + rnd.nextDouble()));
-		GameEvents.publish(GameEventType.BONUS_GETS_ACTIVE, bonus.tile());
+		GameEvents.publish(GameEventType.BONUS_GETS_ACTIVE, World.tile(bonus.getPosition()));
 	}
 }

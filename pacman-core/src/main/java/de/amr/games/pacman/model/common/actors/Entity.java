@@ -23,13 +23,9 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.common.actors;
 
-import static de.amr.games.pacman.model.common.world.World.t;
-
 import java.util.Objects;
 
 import de.amr.games.pacman.lib.V2d;
-import de.amr.games.pacman.lib.V2i;
-import de.amr.games.pacman.model.common.world.World;
 
 /**
  * Base class for all entities. Entities can have sprite animations.
@@ -94,19 +90,6 @@ public class Entity {
 		acceleration = new V2d(ax, ay);
 	}
 
-	public V2d offset() {
-		return World.offset(position);
-	}
-
-	public void setOffset(double offsetX, double offsetY) {
-		var tile = tile();
-		position = new V2d(t(tile.x()) + offsetX, t(tile.y()) + offsetY);
-	}
-
-	public V2i tile() {
-		return World.tile(position);
-	}
-
 	/**
 	 * Moves this entity by its current velocity and increases its velocity by its current acceleration.
 	 */
@@ -115,12 +98,4 @@ public class Entity {
 		velocity = velocity.plus(acceleration);
 	}
 
-	/**
-	 * @param other another entity
-	 * @return if both entities occupy the same tile
-	 */
-	public boolean sameTile(Entity other) {
-		Objects.requireNonNull(other);
-		return tile().equals(other.tile());
-	}
 }

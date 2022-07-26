@@ -28,6 +28,7 @@ import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.model.common.world.World.TS;
+import static de.amr.games.pacman.model.common.world.World.t;
 import static java.lang.Math.abs;
 
 import java.util.Objects;
@@ -85,6 +86,28 @@ public class Creature extends Entity {
 	public String toString() {
 		return String.format("%s: pos=%s, velocity=%s, speed=%.2f, dir=%s, wishDir=%s", name, position, velocity,
 				velocity.length(), moveDir(), wishDir());
+	}
+
+	public V2d offset() {
+		return World.offset(position);
+	}
+
+	public void setOffset(double offsetX, double offsetY) {
+		var tile = tile();
+		position = new V2d(t(tile.x()) + offsetX, t(tile.y()) + offsetY);
+	}
+
+	public V2i tile() {
+		return World.tile(position);
+	}
+
+	/**
+	 * @param other another entity
+	 * @return if both entities occupy the same tile
+	 */
+	public boolean sameTile(Creature other) {
+		Objects.requireNonNull(other);
+		return tile().equals(other.tile());
 	}
 
 	public void placeAtTile(int tileX, int tileY, double offsetX, double offsetY) {

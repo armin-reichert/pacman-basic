@@ -38,6 +38,7 @@ import de.amr.games.pacman.model.common.actors.BonusState;
 import de.amr.games.pacman.model.common.actors.Creature;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.GhostState;
+import de.amr.games.pacman.model.common.world.World;
 
 /**
  * Controls automatic movement of the player.
@@ -149,9 +150,10 @@ public class Autopilot implements Steering {
 					prey.tile().manhattanDistance(game.pac.tile()));
 			game.pac.targetTile = prey.tile();
 		} else if (game.bonus() != null && game.bonus().state() == BonusState.EDIBLE
-				&& game.bonus().entity().tile().manhattanDistance(game.pac.tile()) <= AutopilotData.MAX_BONUS_HARVEST_DIST) {
+				&& World.tile(game.bonus().entity().getPosition())
+						.manhattanDistance(game.pac.tile()) <= AutopilotData.MAX_BONUS_HARVEST_DIST) {
 			LOGGER.trace("Detected active bonus");
-			game.pac.targetTile = game.bonus().entity().tile();
+			game.pac.targetTile = World.tile(game.bonus().entity().getPosition());
 		} else {
 			V2i foodTile = findTileFarestFromGhosts(game, findNearestFoodTiles(game));
 			game.pac.targetTile = foodTile;

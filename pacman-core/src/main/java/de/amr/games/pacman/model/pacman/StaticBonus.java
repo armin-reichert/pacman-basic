@@ -33,6 +33,7 @@ import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.BonusState;
 import de.amr.games.pacman.model.common.actors.Entity;
+import de.amr.games.pacman.model.common.world.World;
 
 /**
  * Bonus that appears at a static position.
@@ -96,30 +97,31 @@ public class StaticBonus extends Entity implements Bonus {
 
 	@Override
 	public void update(GameModel game) {
+		var tile = World.tile(position);
 		switch (state) {
 		case INACTIVE -> {
 			// nothing to do
 		}
 		case EDIBLE -> {
-			if (game.pac.tile().equals(tile())) {
+			if (game.pac.tile().equals(tile)) {
 				LOGGER.info("%s found bonus: %s", game.pac.name, this);
 				game.scores.addPoints(value());
 				state = BonusState.EATEN;
 				timer = Bonus.EATEN_DURATION;
-				GameEvents.publish(GameEventType.BONUS_GETS_EATEN, tile());
+				GameEvents.publish(GameEventType.BONUS_GETS_EATEN, tile);
 				return;
 			}
 			if (--timer == 0) {
 				LOGGER.info("Bonus expired: %s", this);
 				state = BonusState.INACTIVE;
-				GameEvents.publish(GameEventType.BONUS_EXPIRES, tile());
+				GameEvents.publish(GameEventType.BONUS_EXPIRES, tile);
 			}
 		}
 		case EATEN -> {
 			if (--timer == 0) {
 				LOGGER.info("Bonus expired: %s", this);
 				setInactive();
-				GameEvents.publish(GameEventType.BONUS_EXPIRES, tile());
+				GameEvents.publish(GameEventType.BONUS_EXPIRES, tile);
 			}
 		}
 		}
