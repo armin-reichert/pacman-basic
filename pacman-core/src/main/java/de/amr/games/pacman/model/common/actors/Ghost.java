@@ -203,7 +203,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 	public void doLeavingHouse(GameModel game) {
 		if (state != LEAVING_HOUSE) {
 			state = LEAVING_HOUSE;
-			setAbsSpeed(0.5); // not sure
+			setAbsSpeed(0.55);
 			selectAndRunAnimation(inDanger(game) && killedIndex == -1 ? AnimKeys.GHOST_BLUE : AnimKeys.GHOST_COLOR);
 			GameEvents.publish(new GameEvent(game, GameEventType.GHOST_STARTS_LEAVING_HOUSE, this, tile()));
 			return;
@@ -261,14 +261,11 @@ public class Ghost extends Creature implements AnimatedEntity {
 	}
 
 	private void roam() {
-		if (newTileEntered) {
-			if (pseudoRandomMode && world.isIntersection(tile())) {
-				setWishDir(pseudoRandomDirs[id][pseudoRandomIndex]);
-				LOGGER.info("%s has new wishdir %s at tile %s, index=%d", name, wishDir, tile(), pseudoRandomIndex);
-				if (++pseudoRandomIndex == pseudoRandomDirs[id].length) {
-					pseudoRandomIndex = 0;
-				}
-			} else {
+		tryMoving();
+		if (pseudoRandomMode) {
+			setPseudoRandomWishDir();
+		} else {
+			if (newTileEntered || stuck) {
 				Direction.shuffled().stream()//
 						.filter(dir -> dir != moveDir.opposite())//
 						.filter(dir -> canAccessTile(tile().plus(dir.vec)))//
@@ -276,12 +273,6 @@ public class Ghost extends Creature implements AnimatedEntity {
 						.ifPresent(this::setWishDir);
 			}
 		}
-		tryMoving();
-	}
-
-	public void setPseudoRandomMode(boolean pseudoRandomMode) {
-		this.pseudoRandomMode = pseudoRandomMode;
-		pseudoRandomIndex = 0;
 	}
 
 	/**
@@ -426,8 +417,24 @@ public class Ghost extends Creature implements AnimatedEntity {
 
 	private Direction[][] pseudoRandomDirs = { //
 			{ DOWN, DOWN, RIGHT, LEFT, DOWN, RIGHT, DOWN, DOWN, RIGHT, UP }, //
-			{ DOWN, DOWN, LEFT, UP, RIGHT, LEFT, UP, UP, LEFT, UP, LEFT, DOWN }, //
+			{ UP, DOWN, LEFT, UP, RIGHT, LEFT, UP, UP, LEFT, UP, LEFT, DOWN }, //
 			{ RIGHT, UP, LEFT, LEFT, LEFT, LEFT, LEFT, DOWN, /* 2nd */ RIGHT, UP, /* eaten...leave house */ RIGHT }, //
 			{ RIGHT, RIGHT, LEFT, UP }, //
 	};
+
+	private void setPseudoRandomWishDir() {
+		if (newTileEntered && world.isIntersection(tile())) {
+			setWishDir(pseudoRandomDirs[id][pseudoRandomIndex]);
+			LOGGER.info("%s has new wishdir %s at tile %s, index=%d", name, wishDir, tile(), pseudoRandomIndex);
+			if (++pseudoRandomIndex == pseudoRandomDirs[id].length) {
+				pseudoRandomIndex = 0;
+			}
+		}
+	}
+
+	public void setPseudoRandomMode(boolean pseudoRandomMode) {
+		this.pseudoRandomMode = pseudoRandomMode;
+		pseudoRandomIndex = 0;
+	}
+
 }

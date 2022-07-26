@@ -79,12 +79,12 @@ public class FollowDirections implements Steering {
 		boolean intersection = game.world().isIntersection(guy.tile());
 		if (intersection && !gotDirection) {
 			guy.setWishDir(dir(directions.charAt(currentIndex)));
-			LOGGER.info("At intersection %s go %s", guy.tile(), guy.wishDir());
+			LOGGER.trace("At intersection %s go %s", guy.tile(), guy.wishDir());
 			gotDirection = true;
 			++currentIndex;
 			if (currentIndex == directions.length()) {
 				complete = true;
-				LOGGER.info("Route complete");
+				LOGGER.trace("Route complete");
 				return;
 			}
 		}
@@ -95,7 +95,7 @@ public class FollowDirections implements Steering {
 			for (var dir : Direction.values()) {
 				if (dir != guy.moveDir().opposite() && guy.canAccessTile(guy.tile().plus(dir.vec))) {
 					guy.setWishDir(dir);
-					LOGGER.info("At corner go %s", guy.wishDir());
+					LOGGER.trace("At corner go %s", guy.wishDir());
 					break;
 				}
 			}

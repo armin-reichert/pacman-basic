@@ -544,16 +544,16 @@ public abstract class GameModel {
 			// first check private dot counter
 			if (!globalDotCounterEnabled && ghost.dotCounter >= level.privateDotLimits[ghost.id]) {
 				result.unlockedGhost = Optional.of(ghost);
-				result.unlockReason = "Private dot counter reached limit (%d)".formatted(level.privateDotLimits[ghost.id]);
+				result.unlockReason = "Private dot counter at limit (%d)".formatted(level.privateDotLimits[ghost.id]);
 				return;
 			}
 			// check global dot counter
 			if (globalDotCounter >= level.globalDotLimits[ghost.id]) {
 				result.unlockedGhost = Optional.of(ghost);
-				result.unlockReason = "Global dot counter reached limit (%d)".formatted(level.globalDotLimits[ghost.id]);
+				result.unlockReason = "Global dot counter at limit (%d)".formatted(level.globalDotLimits[ghost.id]);
 			} else if (pac.starvingTime() >= level.pacStarvingTimeLimit) {
 				result.unlockedGhost = Optional.of(ghost);
-				result.unlockReason = "%s reached starving limit (%d ticks)".formatted(pac.name, pac.starvingTime());
+				result.unlockReason = "%s at starving limit (%d ticks)".formatted(pac.name, level.pacStarvingTimeLimit);
 				pac.endStarving();
 			}
 		});
