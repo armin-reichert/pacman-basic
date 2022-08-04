@@ -283,11 +283,20 @@ public class Creature extends Entity {
 		};
 	}
 
-	private boolean right() {
-		var newVelocity = new V2d(Direction.RIGHT.vec).scaled(velocity.length());
-		var sensorPosition = position.plus(TS, HTS).plus(newVelocity);
+	private boolean sameOrientation(Direction d1, Direction d2) {
+		return d1.isHorizontal() && d2.isHorizontal() || d1.isVertical() && d2.isVertical();
+	}
+
+	private boolean offsetAllowsTurningTo(Direction dir) {
+		var offset = dir.isHorizontal() ? offset().y() : offset().x();
+		return Math.abs(offset) <= 0.5;
+	}
+
+	private boolean toDir(Direction dir, double sx, double sy) {
+		var newVelocity = new V2d(dir.vec).scaled(velocity.length());
+		var sensorPosition = position.plus(sx, sy).plus(newVelocity);
 		var sensorTile = tileAtPosition(sensorPosition);
-		if (moveDir.isHorizontal()) {
+		if (sameOrientation(moveDir, dir)) {
 			if (!canAccessTile(sensorTile)) {
 				placeAtTile(tile());
 			} else {
@@ -295,79 +304,29 @@ public class Creature extends Entity {
 				move();
 				return true;
 			}
-		} else { // turn right
-			if (canAccessTile(sensorTile) && Math.abs(offset().y()) <= 0.5) {
+		} else { // turn to dir
+			if (canAccessTile(sensorTile) && offsetAllowsTurningTo(dir)) {
 				velocity = newVelocity;
 				move();
 				return true;
 			}
 		}
 		return false;
+	}
+
+	private boolean right() {
+		return toDir(Direction.RIGHT, TS, HTS);
 	}
 
 	private boolean down() {
-		var newVelocity = new V2d(Direction.DOWN.vec).scaled(velocity.length());
-		var sensorPosition = position.plus(HTS, TS).plus(newVelocity);
-		var sensorTile = tileAtPosition(sensorPosition);
-		if (moveDir.isVertical()) {
-			if (!canAccessTile(sensorTile)) {
-				placeAtTile(tile());
-			} else {
-				velocity = newVelocity;
-				move();
-				return true;
-			}
-		} else { // turn down
-			if (canAccessTile(sensorTile) && Math.abs(offset().x()) <= 0.5) {
-				velocity = newVelocity;
-				move();
-				return true;
-			}
-		}
-		return false;
+		return toDir(Direction.DOWN, HTS, TS);
 	}
 
 	private boolean left() {
-		var newVelocity = new V2d(Direction.LEFT.vec).scaled(velocity.length());
-		var sensorPosition = position.plus(0, HTS).plus(newVelocity);
-		var sensorTile = tileAtPosition(sensorPosition);
-		if (moveDir.isHorizontal()) {
-			if (!canAccessTile(sensorTile)) {
-				placeAtTile(tile());
-			} else {
-				velocity = newVelocity;
-				move();
-				return true;
-			}
-		} else { // turn left
-			if (canAccessTile(sensorTile) && Math.abs(offset().y()) <= 0.5) {
-				velocity = newVelocity;
-				move();
-				return true;
-			}
-		}
-		return false;
+		return toDir(Direction.LEFT, 0, HTS);
 	}
 
 	private boolean up() {
-		var newVelocity = new V2d(Direction.UP.vec).scaled(velocity.length());
-		var sensorPosition = position.plus(HTS, 0).plus(newVelocity);
-		var sensorTile = tileAtPosition(sensorPosition);
-		if (moveDir.isVertical()) {
-			if (!canAccessTile(sensorTile)) {
-				placeAtTile(tile());
-			} else {
-				velocity = newVelocity;
-				move();
-				return true;
-			}
-		} else { // turn up
-			if (canAccessTile(sensorTile) && Math.abs(offset().x()) <= 0.5) {
-				velocity = newVelocity;
-				move();
-				return true;
-			}
-		}
-		return false;
+		return toDir(Direction.UP, HTS, 0);
 	}
 }
