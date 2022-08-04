@@ -273,29 +273,36 @@ public class Creature extends Entity {
 	}
 
 	/**
-	 * @param dir move direction
+	 * @param newDir some direction
 	 * @return if creature could move
 	 */
-	protected boolean tryMoving(Direction dir) {
-		var dirVec = new V2d(dir.vec);
-		var newVelocity = dirVec.scaled(velocity.length());
-		var sensorPosition = center().plus(dirVec.scaled(HTS)).plus(newVelocity);
+	protected boolean tryMoving(Direction newDir) {
+		var newDirVec = new V2d(newDir.vec);
+		var newVelocity = newDirVec.scaled(velocity.length());
+		var sensorPosition = center().plus(newDirVec.scaled(HTS)).plus(newVelocity);
 		var canAccessTile = canAccessTile(tileAtPosition(sensorPosition));
-		if (sameOrientation(moveDir, dir)) {
-			if (!canAccessTile) {
-				placeAtTile(tile());
-			} else {
-				velocity = newVelocity;
-				move();
-				return true;
-			}
-		} else { // turn to dir
-			if (canAccessTile && isTurnPossibleToDir(dir)) {
-				velocity = newVelocity;
-				move();
-				return true;
-			}
+		var sameOrientation = sameOrientation(moveDir, newDir);
+
+		// 1. same orientation but would move into blocked tile: align over current tile
+		if (sameOrientation && !canAccessTile) {
+			placeAtTile(tile());
+			return false;
 		}
+
+		// 2. same orientation and tile not blocked: move
+		if (sameOrientation) {
+			velocity = newVelocity;
+			move();
+			return true;
+		}
+
+		// 3. turn into non-blocked tile
+		if (canAccessTile && isTurnPossibleToDir(newDir)) {
+			velocity = newVelocity;
+			move();
+			return true;
+		}
+
 		return false;
 	}
 
