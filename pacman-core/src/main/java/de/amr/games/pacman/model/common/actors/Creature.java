@@ -276,10 +276,10 @@ public class Creature extends Entity {
 
 	protected boolean tryMoving(Direction dir) {
 		return switch (dir) {
-		case LEFT -> left();
-		case RIGHT -> right();
-		case UP -> up();
-		case DOWN -> down();
+		case LEFT -> toDir(Direction.LEFT, 0, HTS);
+		case RIGHT -> toDir(Direction.RIGHT, TS, HTS);
+		case UP -> toDir(Direction.UP, HTS, 0);
+		case DOWN -> toDir(Direction.DOWN, HTS, TS);
 		};
 	}
 
@@ -312,21 +312,5 @@ public class Creature extends Entity {
 			}
 		}
 		return false;
-	}
-
-	private boolean right() {
-		return toDir(Direction.RIGHT, TS, HTS);
-	}
-
-	private boolean down() {
-		return toDir(Direction.DOWN, HTS, TS);
-	}
-
-	private boolean left() {
-		return toDir(Direction.LEFT, 0, HTS);
-	}
-
-	private boolean up() {
-		return toDir(Direction.UP, HTS, 0);
 	}
 }
