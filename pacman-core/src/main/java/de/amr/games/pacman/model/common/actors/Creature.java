@@ -264,16 +264,19 @@ public class Creature extends Entity {
 			wishDir = moveDir.opposite();
 			reverse = false;
 		}
-		stuck = false;
-		var moved = tryMoving(wishDir);
-		if (!moved) {
-			moved = tryMoving(moveDir);
-			stuck = !moved;
-		} else {
+		var couldMove = tryMoving(wishDir);
+		if (couldMove) {
 			moveDir = wishDir;
+		} else {
+			couldMove = tryMoving(moveDir);
 		}
+		stuck = !couldMove;
 	}
 
+	/**
+	 * @param dir move direction
+	 * @return if creature could move
+	 */
 	protected boolean tryMoving(Direction dir) {
 		var newVelocity = new V2d(dir.vec).scaled(velocity.length());
 		var sensorPosition = position.plus(sensorOffset(dir)).plus(newVelocity);
