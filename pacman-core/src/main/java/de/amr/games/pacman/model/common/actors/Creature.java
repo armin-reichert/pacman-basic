@@ -276,11 +276,21 @@ public class Creature extends Entity {
 
 	protected boolean tryMoving(Direction dir) {
 		return switch (dir) {
-		case LEFT -> toDir(Direction.LEFT, 0, HTS);
-		case RIGHT -> toDir(Direction.RIGHT, TS, HTS);
-		case UP -> toDir(Direction.UP, HTS, 0);
-		case DOWN -> toDir(Direction.DOWN, HTS, TS);
+		case LEFT -> toDir(Direction.LEFT);
+		case RIGHT -> toDir(Direction.RIGHT);
+		case UP -> toDir(Direction.UP);
+		case DOWN -> toDir(Direction.DOWN);
 		};
+	}
+
+	private V2d sensorOffset(Direction dir) {
+		return switch (dir) {
+		case LEFT -> new V2d(0, HTS);
+		case RIGHT -> new V2d(TS, HTS);
+		case UP -> new V2d(HTS, 0);
+		case DOWN -> new V2d(HTS, TS);
+		};
+
 	}
 
 	private boolean sameOrientation(Direction d1, Direction d2) {
@@ -292,9 +302,9 @@ public class Creature extends Entity {
 		return Math.abs(offset) <= 0.5;
 	}
 
-	private boolean toDir(Direction dir, double sx, double sy) {
+	private boolean toDir(Direction dir) {
 		var newVelocity = new V2d(dir.vec).scaled(velocity.length());
-		var sensorPosition = position.plus(sx, sy).plus(newVelocity);
+		var sensorPosition = position.plus(sensorOffset(dir)).plus(newVelocity);
 		var sensorTile = tileAtPosition(sensorPosition);
 		if (sameOrientation(moveDir, dir)) {
 			if (!canAccessTile(sensorTile)) {
