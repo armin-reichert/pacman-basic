@@ -283,21 +283,15 @@ public class Creature extends Entity {
 		var canAccessTile = canAccessTile(tileAtPosition(sensorPosition));
 		var sameOrientation = sameOrientation(moveDir, newDir);
 
-		// 1. same orientation but would move into blocked tile: align over current tile
+		// 1. same orientation but would touch blocked tile: stay exactly over current tile
 		if (sameOrientation && !canAccessTile) {
 			placeAtTile(tile());
 			return false;
 		}
 
-		// 2. same orientation and tile not blocked: move
-		if (sameOrientation) {
-			velocity = newVelocity;
-			move();
-			return true;
-		}
-
-		// 3. turn into non-blocked tile
-		if (canAccessTile && isTurnPossibleToDir(newDir)) {
+		// 2. same orientation (and tile not blocked) or
+		// 3. turn towards non-blocked tile: move
+		if (sameOrientation || canAccessTile && isTurnPossibleToDir(newDir)) {
 			velocity = newVelocity;
 			move();
 			return true;
