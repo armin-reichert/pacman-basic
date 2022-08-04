@@ -275,34 +275,6 @@ public class Creature extends Entity {
 	}
 
 	protected boolean tryMoving(Direction dir) {
-		return switch (dir) {
-		case LEFT -> toDir(Direction.LEFT);
-		case RIGHT -> toDir(Direction.RIGHT);
-		case UP -> toDir(Direction.UP);
-		case DOWN -> toDir(Direction.DOWN);
-		};
-	}
-
-	private V2d sensorOffset(Direction dir) {
-		return switch (dir) {
-		case LEFT -> new V2d(0, HTS);
-		case RIGHT -> new V2d(TS, HTS);
-		case UP -> new V2d(HTS, 0);
-		case DOWN -> new V2d(HTS, TS);
-		};
-
-	}
-
-	private boolean sameOrientation(Direction d1, Direction d2) {
-		return d1.isHorizontal() && d2.isHorizontal() || d1.isVertical() && d2.isVertical();
-	}
-
-	private boolean offsetAllowsTurningTo(Direction dir) {
-		var offset = dir.isHorizontal() ? offset().y() : offset().x();
-		return Math.abs(offset) <= 0.5;
-	}
-
-	private boolean toDir(Direction dir) {
 		var newVelocity = new V2d(dir.vec).scaled(velocity.length());
 		var sensorPosition = position.plus(sensorOffset(dir)).plus(newVelocity);
 		var sensorTile = tileAtPosition(sensorPosition);
@@ -323,4 +295,23 @@ public class Creature extends Entity {
 		}
 		return false;
 	}
+
+	private V2d sensorOffset(Direction dir) {
+		return switch (dir) {
+		case LEFT -> new V2d(0, HTS);
+		case RIGHT -> new V2d(TS, HTS);
+		case UP -> new V2d(HTS, 0);
+		case DOWN -> new V2d(HTS, TS);
+		};
+	}
+
+	private boolean sameOrientation(Direction d1, Direction d2) {
+		return d1.isHorizontal() && d2.isHorizontal() || d1.isVertical() && d2.isVertical();
+	}
+
+	private boolean offsetAllowsTurningTo(Direction dir) {
+		var offset = dir.isHorizontal() ? offset().y() : offset().x();
+		return Math.abs(offset) <= 0.5;
+	}
+
 }
