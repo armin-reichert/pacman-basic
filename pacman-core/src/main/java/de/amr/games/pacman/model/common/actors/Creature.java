@@ -277,9 +277,9 @@ public class Creature extends Entity {
 	protected boolean tryMoving(Direction dir) {
 		var newVelocity = new V2d(dir.vec).scaled(velocity.length());
 		var sensorPosition = position.plus(sensorOffset(dir)).plus(newVelocity);
-		var sensorTile = tileAtPosition(sensorPosition);
+		var canAccessTile = canAccessTile(tileAtPosition(sensorPosition));
 		if (sameOrientation(moveDir, dir)) {
-			if (!canAccessTile(sensorTile)) {
+			if (!canAccessTile) {
 				placeAtTile(tile());
 			} else {
 				velocity = newVelocity;
@@ -287,7 +287,7 @@ public class Creature extends Entity {
 				return true;
 			}
 		} else { // turn to dir
-			if (canAccessTile(sensorTile) && offsetAllowsTurningTo(dir)) {
+			if (canAccessTile && offsetAllowsTurningTo(dir)) {
 				velocity = newVelocity;
 				move();
 				return true;
@@ -313,5 +313,4 @@ public class Creature extends Entity {
 		var offset = dir.isHorizontal() ? offset().y() : offset().x();
 		return Math.abs(offset) <= 0.5;
 	}
-
 }
