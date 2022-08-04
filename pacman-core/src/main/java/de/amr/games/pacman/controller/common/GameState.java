@@ -139,6 +139,7 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void onEnter(GameModel game) {
 			gc.sounds().stopAll();
+			game.scores.enable(game.hasCredit());
 			if (game.hasCredit() && !game.playing) {
 				// new game
 				gc.sounds().play(GameSound.GAME_READY);
@@ -152,7 +153,6 @@ public enum GameState implements FsmState<GameModel> {
 			} else {
 				// in game or attract mode
 				game.resetGuys();
-				game.scores.enable(game.hasCredit());
 				game.scores.gameScore.showContent = game.hasCredit();
 				game.guys().forEach(Entity::show);
 				if (!game.hasCredit()) {
