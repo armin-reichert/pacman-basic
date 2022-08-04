@@ -315,6 +315,6 @@ public class Creature extends Entity {
 
 	private boolean isTurnPossibleToDir(Direction dir) {
 		var offset = dir.isHorizontal() ? offset().y() : offset().x();
-		return Math.abs(offset) < 0.75;
+		return Math.abs(offset) <= 0.5;
 	}
 }
