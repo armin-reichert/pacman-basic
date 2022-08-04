@@ -28,7 +28,6 @@ import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.model.common.world.World.HTS;
-import static de.amr.games.pacman.model.common.world.World.TS;
 import static de.amr.games.pacman.model.common.world.World.tileAtPosition;
 
 import java.util.Objects;
@@ -278,8 +277,9 @@ public class Creature extends Entity {
 	 * @return if creature could move
 	 */
 	protected boolean tryMoving(Direction dir) {
-		var newVelocity = new V2d(dir.vec).scaled(velocity.length());
-		var sensorPosition = position.plus(sensorOffset(dir)).plus(newVelocity);
+		var dirVec = new V2d(dir.vec);
+		var newVelocity = dirVec.scaled(velocity.length());
+		var sensorPosition = center().plus(dirVec.scaled(HTS)).plus(newVelocity);
 		var canAccessTile = canAccessTile(tileAtPosition(sensorPosition));
 		if (sameOrientation(moveDir, dir)) {
 			if (!canAccessTile) {
@@ -297,16 +297,6 @@ public class Creature extends Entity {
 			}
 		}
 		return false;
-	}
-
-	// Offset from left-upper corner of bounding box to the position used for accessibility check
-	private V2d sensorOffset(Direction dir) {
-		return switch (dir) {
-		case LEFT -> new V2d(0, HTS);
-		case RIGHT -> new V2d(TS, HTS);
-		case UP -> new V2d(HTS, 0);
-		case DOWN -> new V2d(HTS, TS);
-		};
 	}
 
 	private boolean sameOrientation(Direction d1, Direction d2) {
