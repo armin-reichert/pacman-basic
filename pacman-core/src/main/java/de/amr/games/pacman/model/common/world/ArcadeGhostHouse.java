@@ -113,45 +113,43 @@ public class ArcadeGhostHouse implements GhostHouse {
 
 	@Override
 	public boolean atHouseEntry(Creature creature) {
-		return creature.tile().equals(entryTile) && U.insideRange(creature.offset().x(), HTS, 1);
+		var entryX = entryTile.x() * TS + HTS;
+		return creature.tile().y() == entryTile.y() && U.insideRange(creature.getPosition().x(), entryX, 1);
 	}
 
 	@Override
-	public boolean leadGuyOutOfHouse(Creature guest) {
+	public boolean leadGuyOutOfHouse(Creature guy) {
 		var entryPos = new V2d(entryTile.scaled(TS).plus(HTS, 0));
-		if (guest.getPosition().x() == entryPos.x() && guest.getPosition().y() <= entryPos.y()) {
-			guest.setPosition(entryPos);
+		if (guy.getPosition().x() == entryPos.x() && guy.getPosition().y() <= entryPos.y()) {
+			guy.setPosition(entryPos);
 			return true;
 		}
 		var center = middleSeatCenterPosition();
-		if (U.insideRange(guest.getPosition().x(), center.x(), 1)) {
-			guest.setOffset(HTS, guest.offset().y()); // center horizontally before rising
-			guest.setBothDirs(UP);
+		if (U.insideRange(guy.getPosition().x(), center.x(), 1)) {
+			// center horizontally before rising
+			guy.setPosition(center.x(), guy.getPosition().y());
+			guy.setBothDirs(UP);
 		} else {
-			guest.setBothDirs(guest.getPosition().x() < center.x() ? RIGHT : LEFT);
+			guy.setBothDirs(guy.getPosition().x() < center.x() ? RIGHT : LEFT);
 		}
-		guest.move();
+		guy.move();
 		return false;
 	}
 
 	@Override
-	public boolean leadGuyToTile(Creature guy, V2i targetTile) {
-		var tile = guy.tile();
+	public boolean leadGuyInsideHouse(Creature guy, V2d targetPosition) {
 		if (atHouseEntry(guy)) {
 			guy.setBothDirs(Direction.DOWN);
 		}
-		if (tile.equals(targetTile) && guy.offset().y() >= 0) {
-			return true;
-		}
-		var middle = seatMiddleTile();
-		if (tile.equals(middle) && guy.offset().y() >= 0) {
-			if (targetTile.x() < middle.x()) {
+		var middlePosition = new V2d(seatMiddleTile).scaled(TS).plus(HTS, 0);
+		if (guy.getPosition().y() >= middlePosition.y()) {
+			if (targetPosition.x() < middlePosition.x()) {
 				guy.setBothDirs(LEFT);
-			} else if (targetTile.x() > middle.x()) {
+			} else if (targetPosition.x() > middlePosition.x()) {
 				guy.setBothDirs(RIGHT);
 			}
 		}
 		guy.move();
-		return false;
+		return U.insideRange(guy.getPosition().x(), targetPosition.x(), 1) && guy.getPosition().y() >= targetPosition.y();
 	}
 }

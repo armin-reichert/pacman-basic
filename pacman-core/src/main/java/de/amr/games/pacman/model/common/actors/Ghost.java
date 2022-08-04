@@ -36,6 +36,7 @@ import static de.amr.games.pacman.model.common.actors.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.model.common.actors.GhostState.LOCKED;
 import static de.amr.games.pacman.model.common.actors.GhostState.RETURNING_TO_HOUSE;
 import static de.amr.games.pacman.model.common.world.World.HTS;
+import static de.amr.games.pacman.model.common.world.World.TS;
 
 import java.util.List;
 import java.util.Optional;
@@ -346,7 +347,8 @@ public class Ghost extends Creature implements AnimatedEntity {
 			GameEvents.publish(new GameEvent(game, GameEventType.GHOST_ENTERS_HOUSE, this, tile()));
 			return;
 		}
-		boolean arrivedAtRevivalTile = world.ghostHouse().leadGuyToTile(this, revivalTile);
+		var revivalPos = new V2d(revivalTile).scaled(TS).plus(HTS, 0);
+		boolean arrivedAtRevivalTile = world.ghostHouse().leadGuyInsideHouse(this, revivalPos);
 		if (arrivedAtRevivalTile) {
 			doLeavingHouse(game);
 		}

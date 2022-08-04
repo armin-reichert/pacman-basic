@@ -97,7 +97,7 @@ public class StaticBonus extends Entity implements Bonus {
 
 	@Override
 	public void update(GameModel game) {
-		var tile = World.tile(position);
+		var tile = World.tileAtPosition(position);
 		switch (state) {
 		case INACTIVE -> {
 			// nothing to do

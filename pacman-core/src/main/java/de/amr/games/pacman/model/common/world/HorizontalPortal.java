@@ -23,6 +23,8 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.common.world;
 
+import static de.amr.games.pacman.model.common.world.World.TS;
+
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.actors.Creature;
@@ -46,8 +48,8 @@ public record HorizontalPortal(V2i leftTunnelEnd, V2i rightTunnelEnd) implements
 
 	@Override
 	public void teleport(Creature guy) {
-		if (guy.tile().equals(leftTunnelEnd.minus(DEPTH, 0))) {
-			guy.placeAtTile(rightTunnelEnd.plus(DEPTH, 0), 0, 0);
+		if (guy.getPosition().x() < (leftTunnelEnd.x() - DEPTH) * TS) {
+			guy.placeAtTile(rightTunnelEnd); // TODO fixme
 		} else if (guy.tile().equals(rightTunnelEnd.plus(DEPTH, 0))) {
 			guy.placeAtTile(leftTunnelEnd.minus(DEPTH, 0), 0, 0);
 		}

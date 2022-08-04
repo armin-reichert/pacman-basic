@@ -27,9 +27,9 @@ import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Direction.UP;
+import static de.amr.games.pacman.model.common.world.World.HTS;
 import static de.amr.games.pacman.model.common.world.World.TS;
-import static de.amr.games.pacman.model.common.world.World.t;
-import static java.lang.Math.abs;
+import static de.amr.games.pacman.model.common.world.World.tileAtPosition;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -84,27 +84,29 @@ public class Creature extends Entity {
 
 	@Override
 	public String toString() {
-		return String.format("%s: pos=%s, velocity=%s, speed=%.2f, dir=%s, wishDir=%s", name, position, velocity,
-				velocity.length(), moveDir(), wishDir());
+		return String.format("%s: pos=%s, tile=%s, velocity=%s, speed=%.2f, dir=%s, wishDir=%s", name, position, tile(),
+				velocity, velocity.length(), moveDir(), wishDir());
 	}
 
-	public V2d offset() {
-		return World.offset(position);
+	// bounding box is square of one tile
+	public V2d center() {
+		return position.plus(HTS, HTS);
 	}
 
-	public void setOffset(double offsetX, double offsetY) {
-		var tile = tile();
-		position = new V2d(t(tile.x()) + offsetX, t(tile.y()) + offsetY);
-	}
-
+	// tile position is the tile containing the center of the bounding box
 	public V2i tile() {
-		return World.tile(position);
+		return World.tileAtPosition(center());
 	}
 
-	/**
-	 * @param other another entity
-	 * @return if both entities occupy the same tile
-	 */
+	public static V2d offset(V2d pos, V2i tile) {
+		return pos.minus(World.positionAtTileLeftUpperCorner(tile));
+	}
+
+	// offset: (0, 0) if centered, range: [-4, +4)
+	public V2d offset() {
+		return offset(position, tile());
+	}
+
 	public boolean sameTile(Creature other) {
 		Objects.requireNonNull(other);
 		return tile().equals(other.tile());
@@ -119,6 +121,10 @@ public class Creature extends Entity {
 		placeAtTile(tile.x(), tile.y(), offsetX, offsetY);
 	}
 
+	public void placeAtTile(V2i tile) {
+		placeAtTile(tile.x(), tile.y(), 0, 0);
+	}
+
 	/**
 	 * @param tile some tile inside or outside of the world
 	 * @return if this creature can access the given tile
@@ -131,6 +137,10 @@ public class Creature extends Entity {
 			return !world.isWall(tile) && !world.ghostHouse().isDoorTile(tile);
 		}
 		return world.belongsToPortal(tile);
+	}
+
+	protected boolean isForbiddenDirection(Direction dir) {
+		return dir == moveDir.opposite();
 	}
 
 	public Optional<World> getWorld() {
@@ -245,84 +255,119 @@ public class Creature extends Entity {
 	/**
 	 * Move through the world.
 	 * <p>
-	 * First checks if the creature can teleport, then if the creature can move to its current wish direction. If this is
-	 * not possible it moves to its current move direction.
+	 * First checks if the creature can teleport, then if the creature can move to its wish direction. If this is not
+	 * possible, it keeps moving to its current move direction.
 	 */
 	public void tryMoving() {
-		if (world == null) {
-			return;
-		}
 		world.portals().forEach(portal -> portal.teleport(this));
 		if (reverse && newTileEntered) {
 			wishDir = moveDir.opposite();
 			reverse = false;
 		}
-		tryMoving(wishDir);
-		if (stuck) {
-			tryMoving(moveDir);
+		stuck = false;
+		var moved = tryMoving(wishDir);
+		if (!moved) {
+			moved = tryMoving(moveDir);
+			stuck = !moved;
 		} else {
 			moveDir = wishDir;
 		}
 	}
 
-	/**
-	 * Tries to move to the given direction. If creature reaches an inaccessible tile, it gets stuck.
-	 * <p>
-	 * TODO: this should really be simpler
-	 * 
-	 * @param world the world where this creatures is located
-	 * @param dir   intended move direction
-	 */
-	private void tryMoving(Direction dir) {
-		var tile = tile();
-		var offset = offset();
-		var speed = velocity.length();
-		var neighborTile = tile.plus(dir.vec);
-		var neighborTileAccessible = canAccessTile(neighborTile);
-
-		stuck = true;
-
-		// check if creature can turn towards move direction from its current position
-		if (neighborTileAccessible) {
-			if (dir.isHorizontal() && abs(offset.y()) > speed || dir.isVertical() && abs(offset.x()) > speed) {
-				return;
-			}
-			if (dir.isHorizontal()) {
-				setOffset(offset.x(), 0);
-			} else {
-				setOffset(0, offset.y());
-			}
-		}
-
-		var newVelocity = new V2d(dir.vec).scaled(speed);
-		var newPosition = position.plus(newVelocity);
-		var newOffset = World.offset(newPosition);
-		var newTile = World.tile(newPosition);
-
-		// avoid moving into inaccessible neighbor tile
-		if (!canAccessTile(newTile)) {
-			return;
-		}
-
-		// align with inaccessible neighbor tile
-		if (!neighborTileAccessible) {
-			if (dir == Direction.RIGHT && newOffset.x() > 0 || dir == Direction.LEFT && newOffset.x() < 0) {
-				setOffset(0, offset.y());
-				return;
-			}
-			if (dir == Direction.DOWN && newOffset.y() > 0 || dir == Direction.UP && newOffset.y() < 0) {
-				setOffset(offset.x(), 0);
-				return;
-			}
-		}
-
-		// yes, we can (move)
-		stuck = false;
-		setPosition(newTile.x() * TS + newOffset.x(), newTile.y() * TS + newOffset.y());
-		newTileEntered = !tile().equals(tile);
+	protected boolean tryMoving(Direction dir) {
+		return switch (dir) {
+		case LEFT -> left();
+		case RIGHT -> right();
+		case UP -> up();
+		case DOWN -> down();
+		};
 	}
 
-	protected boolean isForbiddenDirection(Direction dir) {
-		return dir == moveDir.opposite();
+	private boolean right() {
+		var newVelocity = new V2d(Direction.RIGHT.vec).scaled(velocity.length());
+		var sensorPosition = position.plus(TS, HTS).plus(newVelocity);
+		var sensorTile = tileAtPosition(sensorPosition);
+		if (moveDir.isHorizontal()) {
+			if (!canAccessTile(sensorTile)) {
+				placeAtTile(tile());
+			} else {
+				velocity = newVelocity;
+				move();
+				return true;
+			}
+		} else { // turn right
+			if (canAccessTile(sensorTile) && Math.abs(offset().y()) <= 0.5) {
+				velocity = newVelocity;
+				move();
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean down() {
+		var newVelocity = new V2d(Direction.DOWN.vec).scaled(velocity.length());
+		var sensorPosition = position.plus(HTS, TS).plus(newVelocity);
+		var sensorTile = tileAtPosition(sensorPosition);
+		if (moveDir.isVertical()) {
+			if (!canAccessTile(sensorTile)) {
+				placeAtTile(tile());
+			} else {
+				velocity = newVelocity;
+				move();
+				return true;
+			}
+		} else { // turn down
+			if (canAccessTile(sensorTile) && Math.abs(offset().x()) <= 0.5) {
+				velocity = newVelocity;
+				move();
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean left() {
+		var newVelocity = new V2d(Direction.LEFT.vec).scaled(velocity.length());
+		var sensorPosition = position.plus(0, HTS).plus(newVelocity);
+		var sensorTile = tileAtPosition(sensorPosition);
+		if (moveDir.isHorizontal()) {
+			if (!canAccessTile(sensorTile)) {
+				placeAtTile(tile());
+			} else {
+				velocity = newVelocity;
+				move();
+				return true;
+			}
+		} else { // turn left
+			if (canAccessTile(sensorTile) && Math.abs(offset().y()) <= 0.5) {
+				velocity = newVelocity;
+				move();
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean up() {
+		var newVelocity = new V2d(Direction.UP.vec).scaled(velocity.length());
+		var sensorPosition = position.plus(HTS, 0).plus(newVelocity);
+		var sensorTile = tileAtPosition(sensorPosition);
+		if (moveDir.isVertical()) {
+			if (!canAccessTile(sensorTile)) {
+				placeAtTile(tile());
+			} else {
+				velocity = newVelocity;
+				move();
+				return true;
+			}
+		} else { // turn up
+			if (canAccessTile(sensorTile) && Math.abs(offset().x()) <= 0.5) {
+				velocity = newVelocity;
+				move();
+				return true;
+			}
+		}
+		return false;
 	}
 }

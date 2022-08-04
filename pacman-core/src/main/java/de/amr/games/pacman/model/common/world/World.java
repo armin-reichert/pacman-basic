@@ -52,14 +52,14 @@ public interface World {
 		return numTiles * TS;
 	}
 
-	/** Tile position of a given pixel position. */
-	public static V2i tile(V2d position) {
+	/** Tile containing given position. */
+	public static V2i tileAtPosition(V2d position) {
 		return new V2i((int) position.x() / TS, (int) position.y() / TS);
 	}
 
-	/** Tile offset of a given pixel position. */
-	public static V2d offset(V2d position) {
-		return position.minus(new V2d(tile(position).scaled(TS)));
+	/** Position of the left-upper corner of given tile. */
+	public static V2d positionAtTileLeftUpperCorner(V2i tile) {
+		return new V2d(tile.scaled(TS));
 	}
 
 	/**
