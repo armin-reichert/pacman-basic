@@ -290,7 +290,7 @@ public class Creature extends Entity {
 				return true;
 			}
 		} else { // turn to dir
-			if (canAccessTile && offsetAllowsTurningTo(dir)) {
+			if (canAccessTile && isTurnPossibleToDir(dir)) {
 				velocity = newVelocity;
 				move();
 				return true;
@@ -299,6 +299,7 @@ public class Creature extends Entity {
 		return false;
 	}
 
+	// Offset from left-upper corner of bounding box to the position used for accessibility check
 	private V2d sensorOffset(Direction dir) {
 		return switch (dir) {
 		case LEFT -> new V2d(0, HTS);
@@ -312,8 +313,8 @@ public class Creature extends Entity {
 		return d1.isHorizontal() && d2.isHorizontal() || d1.isVertical() && d2.isVertical();
 	}
 
-	private boolean offsetAllowsTurningTo(Direction dir) {
+	private boolean isTurnPossibleToDir(Direction dir) {
 		var offset = dir.isHorizontal() ? offset().y() : offset().x();
-		return Math.abs(offset) <= 0.5;
+		return Math.abs(offset) < 0.75;
 	}
 }
