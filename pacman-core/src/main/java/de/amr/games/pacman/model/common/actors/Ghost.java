@@ -144,7 +144,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 	@Override
 	public String toString() {
 		return "[Ghost %s: state=%s, position=%s, tile=%s, offset=%s, velocity=%s, dir=%s, wishDir=%s]".formatted(name,
-				state, position, tile(), offset(), velocity, moveDir, wishDir);
+				state, position, tile(), offset(), velocity, moveDir(), wishDir());
 	}
 
 	public GhostState getState() {
@@ -210,7 +210,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 			return;
 		}
 		if (world.ghostHouse().leadGuyOutOfHouse(this)) {
-			newTileEntered = false; // move left into next tile before changing direction
+			newTileEntered = false;
 			setMoveAndWishDir(LEFT);
 			if (inDanger(game) && killedIndex == -1) {
 				doFrightened(game);
@@ -262,17 +262,18 @@ public class Ghost extends Creature implements AnimatedEntity {
 	}
 
 	private void roam() {
-		tryMoving();
-		if (pseudoRandomMode) {
+		if (pseudoRandomMode) { // on attract screen
 			setPseudoRandomWishDir();
-		} else {
-			if (newTileEntered || stuck) {
-				Direction.shuffled().stream()//
-						.filter(dir -> dir != moveDir.opposite())//
-						.filter(dir -> canAccessTile(tile().plus(dir.vec)))//
-						.findAny()//
-						.ifPresent(this::setWishDir);
-			}
+			tryMoving();
+			return;
+		}
+		if (newTileEntered || stuck) {
+			Direction.shuffled().stream()//
+					.filter(dir -> dir != moveDir().opposite())//
+					.filter(dir -> canAccessTile(tile().plus(dir.vec)))//
+					.findAny()//
+					.ifPresent(this::setWishDir);
+			tryMoving();
 		}
 	}
 
@@ -367,7 +368,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 
 	@Override
 	protected boolean isForbiddenDirection(Direction dir) {
-		if (dir == moveDir.opposite()) {
+		if (dir == moveDir().opposite()) {
 			return true;
 		}
 		return state == HUNTING_PAC && dir == UP && upwardsBlockedTiles.contains(tile());
@@ -427,7 +428,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 	private void setPseudoRandomWishDir() {
 		if (newTileEntered && world.isIntersection(tile())) {
 			setWishDir(pseudoRandomDirs[id][pseudoRandomIndex]);
-			LOGGER.info("%s has new wishdir %s at tile %s, index=%d", name, wishDir, tile(), pseudoRandomIndex);
+			LOGGER.info("%s has new wishdir %s at tile %s, index=%d", name, wishDir(), tile(), pseudoRandomIndex);
 			if (++pseudoRandomIndex == pseudoRandomDirs[id].length) {
 				pseudoRandomIndex = 0;
 			}

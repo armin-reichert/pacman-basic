@@ -62,10 +62,10 @@ public class Creature extends Entity {
 	protected World world;
 
 	/** The current move direction. */
-	protected Direction moveDir = RIGHT;
+	private Direction moveDir = RIGHT;
 
 	/** The wish direction. Will be taken as soon as possible. */
-	protected Direction wishDir = RIGHT;
+	private Direction wishDir = RIGHT;
 
 	/** The target tile. Can be inaccessible or outside of the world. */
 	public V2i targetTile = null;
@@ -153,8 +153,11 @@ public class Creature extends Entity {
 	 * @param dir the new move direction
 	 */
 	public void setMoveDir(Direction dir) {
-		moveDir = Objects.requireNonNull(dir);
-		velocity = new V2d(moveDir.vec).scaled(velocity.length());
+		if (moveDir != dir) {
+			moveDir = dir;
+			velocity = new V2d(moveDir.vec).scaled(velocity.length());
+			LOGGER.trace("%s: New moveDir: %s (tile: %s%s)", name, moveDir, tile(), reverse ? ", reverse" : "");
+		}
 	}
 
 	public Direction moveDir() {
@@ -162,7 +165,10 @@ public class Creature extends Entity {
 	}
 
 	public void setWishDir(Direction dir) {
-		wishDir = Objects.requireNonNull(dir);
+		if (wishDir != dir) {
+			wishDir = dir;
+			LOGGER.trace("%s: New wishDir: %s (tile %s%s)", name, wishDir, tile(), reverse ? ", reverse" : "");
+		}
 	}
 
 	public Direction wishDir() {
@@ -176,7 +182,7 @@ public class Creature extends Entity {
 
 	public void forceTurningBack() {
 		reverse = true;
-		LOGGER.info("%s got signal to reverse direction", name);
+		LOGGER.info("%s (moveDir=%s, wishDir=%s) got signal to reverse direction", name, moveDir, wishDir);
 	}
 
 	/**
@@ -234,6 +240,7 @@ public class Creature extends Entity {
 		if (!newTileEntered && !stuck) {
 			return;
 		}
+		Direction selectedDir = wishDir;
 		double minDist = Double.MAX_VALUE;
 		for (var dir : TURN_PRIORITY) {
 			var neighborTile = tile().plus(dir.vec);
@@ -241,10 +248,11 @@ public class Creature extends Entity {
 				double d = neighborTile.euclideanDistance(targetTile);
 				if (d < minDist) {
 					minDist = d;
-					wishDir = dir;
+					selectedDir = dir;
 				}
 			}
 		}
+		setWishDir(selectedDir);
 	}
 
 	/**
@@ -254,18 +262,20 @@ public class Creature extends Entity {
 	 * possible, it keeps moving to its current move direction.
 	 */
 	public void tryMoving() {
+		var tileBefore = tile();
 		world.portals().forEach(portal -> portal.teleport(this));
-		if (reverse && newTileEntered) {
-			wishDir = moveDir.opposite();
+		if (reverse) {
+			setWishDir(moveDir.opposite());
 			reverse = false;
 		}
 		var couldMove = tryMoving(wishDir);
 		if (couldMove) {
-			moveDir = wishDir;
+			setMoveDir(wishDir);
 		} else {
 			couldMove = tryMoving(moveDir);
 		}
 		stuck = !couldMove;
+		newTileEntered = !tileBefore.equals(tile());
 	}
 
 	/**
