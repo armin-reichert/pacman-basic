@@ -182,7 +182,7 @@ public class Creature extends Entity {
 
 	public void forceTurningBack() {
 		reverse = true;
-		LOGGER.info("%s (moveDir=%s, wishDir=%s) got signal to reverse direction", name, moveDir, wishDir);
+		LOGGER.trace("%s (moveDir=%s, wishDir=%s) got signal to reverse direction", name, moveDir, wishDir);
 	}
 
 	/**

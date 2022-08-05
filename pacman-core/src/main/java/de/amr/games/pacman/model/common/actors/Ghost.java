@@ -428,7 +428,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 	private void setPseudoRandomWishDir() {
 		if (newTileEntered && world.isIntersection(tile())) {
 			setWishDir(pseudoRandomDirs[id][pseudoRandomIndex]);
-			LOGGER.info("%s has new wishdir %s at tile %s, index=%d", name, wishDir(), tile(), pseudoRandomIndex);
+			LOGGER.trace("%s has new wishdir %s at tile %s, index=%d", name, wishDir(), tile(), pseudoRandomIndex);
 			if (++pseudoRandomIndex == pseudoRandomDirs[id].length) {
 				pseudoRandomIndex = 0;
 			}

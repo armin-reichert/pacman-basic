@@ -52,8 +52,8 @@ public class ArcadeWorld extends MapBasedWorld {
 	public static final V2i LEFT_UPPER_CORNER = v(2, 0);
 	public static final V2i RIGHT_UPPER_CORNER = v(25, 0);
 
-	public static final String ATTRACT_MODE_ROUTE_PACMAN = "ldrruluuullluuulrrruddlrrdllldddrllurrrurrrlluu";
-	public static final String ATTRACT_MODE_ROUTE_MS_PACMAN = ""; // TODO
+	public static final String ATTRACT_ROUTE_PACMAN = "LDRRULUUULLLUUULRRRUDDLRRDLLLDDDRLLURRRURRRLLUU";
+	public static final String ATTRACT_ROUTE_MS_PACMAN = ""; // TODO
 
 	private final ArcadeGhostHouse house = new ArcadeGhostHouse();
 

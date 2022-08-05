@@ -97,8 +97,8 @@ public class GameController {
 
 	private final Steering autopilot = new Autopilot();
 
-	final FollowDirections attractModeSteeringPacMan = new FollowDirections(ArcadeWorld.ATTRACT_MODE_ROUTE_PACMAN);
-	final FollowDirections attractModeSteeringMsPacMan = new FollowDirections(ArcadeWorld.ATTRACT_MODE_ROUTE_MS_PACMAN);
+	final FollowDirections attractModeSteeringPacMan = new FollowDirections(ArcadeWorld.ATTRACT_ROUTE_PACMAN);
+	final FollowDirections attractModeSteeringMsPacMan = new FollowDirections(ArcadeWorld.ATTRACT_ROUTE_MS_PACMAN);
 
 	private Steering normalSteering;
 
