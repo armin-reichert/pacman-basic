@@ -36,6 +36,7 @@ import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameSound;
 import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.actors.AnimKeys;
+import de.amr.games.pacman.model.common.actors.Creature;
 import de.amr.games.pacman.model.common.actors.Entity;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.GhostState;
@@ -139,35 +140,47 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void onEnter(GameModel game) {
 			gc.sounds().stopAll();
-			game.scores.enable(game.hasCredit());
-			if (game.hasCredit() && !game.playing) {
-				// new game
-				gc.sounds().play(GameSound.GAME_READY);
-				game.reset();
-				game.setLevel(1);
-				game.levelCounter.clear();
-				game.levelCounter.addSymbol(game.level.bonusSymbol);
-				game.scores.gameScore.showContent = true;
-				game.resetGuys();
-				game.guys().forEach(Entity::hide);
-			} else {
-				// in game or attract mode
-				game.resetGuys();
-				game.scores.gameScore.showContent = game.hasCredit();
-				game.guys().forEach(Entity::show);
-				if (!game.hasCredit()) {
-					gc.attractModeSteeringMsPacMan.init();
-					gc.attractModeSteeringPacMan.init();
-					for (var ghost : game.theGhosts) {
-						ghost.setPseudoRandomMode(true);
-					}
+			if (game.hasCredit()) {
+				if (!game.playing) {
+					game.scores.enable(true);
+					startNewGame(game);
 				} else {
-					for (var ghost : game.theGhosts) {
-						ghost.setPseudoRandomMode(false);
-					}
+					resumeGame(game);
 				}
+			} else {
+				startAttractMode(game);
 			}
-			game.scores.highScore.showContent = true;
+		}
+
+		private void startNewGame(GameModel game) {
+			gc.sounds().play(GameSound.GAME_READY);
+			game.reset();
+			game.setLevel(1);
+			game.levelCounter.clear();
+			game.levelCounter.addSymbol(game.level.bonusSymbol);
+			game.scores.gameScore.showContent = true;
+			game.resetGuys();
+			game.guys().forEach(Entity::hide);
+		}
+
+		private void resumeGame(GameModel game) {
+			game.resetGuys();
+			game.guys().forEach(Entity::show);
+		}
+
+		private void startAttractMode(GameModel game) {
+			game.resetGuys();
+			game.guys().forEach(Creature::show);
+			game.scores.enable(false);
+			game.scores.gameScore.showContent = false;
+			if (game.variant == GameVariant.MS_PACMAN) {
+				gc.attractModeSteeringMsPacMan.init();
+			} else {
+				gc.attractModeSteeringPacMan.init();
+			}
+			for (var ghost : game.theGhosts) {
+				ghost.setPseudoRandomMode(true);
+			}
 		}
 
 		@Override
