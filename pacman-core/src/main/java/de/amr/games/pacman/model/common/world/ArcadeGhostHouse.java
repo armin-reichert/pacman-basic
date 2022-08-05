@@ -128,9 +128,9 @@ public class ArcadeGhostHouse implements GhostHouse {
 		if (U.insideRange(guy.getPosition().x(), center.x(), 1)) {
 			// center horizontally before rising
 			guy.setPosition(center.x(), guy.getPosition().y());
-			guy.setBothDirs(UP);
+			guy.setMoveAndWishDir(UP);
 		} else {
-			guy.setBothDirs(guy.getPosition().x() < center.x() ? RIGHT : LEFT);
+			guy.setMoveAndWishDir(guy.getPosition().x() < center.x() ? RIGHT : LEFT);
 		}
 		guy.move();
 		return false;
@@ -139,14 +139,14 @@ public class ArcadeGhostHouse implements GhostHouse {
 	@Override
 	public boolean leadGuyInsideHouse(Creature guy, V2d targetPosition) {
 		if (atHouseEntry(guy)) {
-			guy.setBothDirs(Direction.DOWN);
+			guy.setMoveAndWishDir(Direction.DOWN);
 		}
 		var middlePosition = new V2d(seatMiddleTile).scaled(TS).plus(HTS, 0);
 		if (guy.getPosition().y() >= middlePosition.y()) {
 			if (targetPosition.x() < middlePosition.x()) {
-				guy.setBothDirs(LEFT);
+				guy.setMoveAndWishDir(LEFT);
 			} else if (targetPosition.x() > middlePosition.x()) {
-				guy.setBothDirs(RIGHT);
+				guy.setMoveAndWishDir(RIGHT);
 			}
 		}
 		guy.move();

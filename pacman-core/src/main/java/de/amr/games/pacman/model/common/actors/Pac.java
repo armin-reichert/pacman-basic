@@ -73,7 +73,7 @@ public class Pac extends Creature implements AnimatedEntity {
 		starvingTicks = 0;
 		setAbsSpeed(0);
 		placeAtTile(v(13, 26), HTS, 0);
-		setBothDirs(Direction.LEFT);
+		setMoveAndWishDir(Direction.LEFT);
 		selectAndRunAnimation(AnimKeys.PAC_MUNCHING);
 		animation().ifPresent(EntityAnimation::reset);
 		show();

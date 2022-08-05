@@ -179,7 +179,7 @@ public class IntroController extends Fsm<State, Context> {
 				for (Ghost ghost : ctx.ghosts) {
 					ghost.doHuntingPac(ctx.gameController.game());
 					ghost.setPosition(ctx.pacMan.getPosition().plus(16 * (ghost.id + 1), 0));
-					ghost.setBothDirs(Direction.LEFT);
+					ghost.setMoveAndWishDir(Direction.LEFT);
 					ghost.setAbsSpeed(CHASING_SPEED);
 					ghost.show();
 					ghost.selectAndRunAnimation(AnimKeys.GHOST_COLOR);
@@ -197,7 +197,7 @@ public class IntroController extends Fsm<State, Context> {
 					for (Ghost ghost : ctx.ghosts) {
 						ghost.setState(GhostState.FRIGHTENED);
 						ghost.selectAndRunAnimation(AnimKeys.GHOST_BLUE);
-						ghost.setBothDirs(Direction.RIGHT);
+						ghost.setMoveAndWishDir(Direction.RIGHT);
 						ghost.setAbsSpeed(0.6);
 						ghost.move();
 						ghost.advanceAnimation();

@@ -184,9 +184,9 @@ public class Ghost extends Creature implements AnimatedEntity {
 
 	private void bounce() {
 		if (position.y() <= homePosition.y() - HTS) {
-			setBothDirs(DOWN);
+			setMoveAndWishDir(DOWN);
 		} else if (position.y() >= homePosition.y() + HTS) {
-			setBothDirs(UP);
+			setMoveAndWishDir(UP);
 		}
 		move();
 	}
@@ -211,7 +211,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 		}
 		if (world.ghostHouse().leadGuyOutOfHouse(this)) {
 			newTileEntered = false; // move left into next tile before changing direction
-			setBothDirs(LEFT);
+			setMoveAndWishDir(LEFT);
 			if (inDanger(game) && killedIndex == -1) {
 				doFrightened(game);
 			} else {

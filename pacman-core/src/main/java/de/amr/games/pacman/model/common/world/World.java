@@ -58,7 +58,7 @@ public interface World {
 	}
 
 	/** Position of the left-upper corner of given tile. */
-	public static V2d positionAtTileLeftUpperCorner(V2i tile) {
+	public static V2d positionOfTile(V2i tile) {
 		return new V2d(tile.scaled(TS));
 	}
 

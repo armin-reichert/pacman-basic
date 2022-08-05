@@ -215,15 +215,15 @@ public abstract class GameModel {
 			switch (ghost.id) {
 			case Ghost.RED_GHOST -> {
 				ghost.setAbsSpeed(0);
-				ghost.setBothDirs(Direction.LEFT);
+				ghost.setMoveAndWishDir(Direction.LEFT);
 			}
 			case Ghost.PINK_GHOST -> {
 				ghost.setAbsSpeed(0.5);
-				ghost.setBothDirs(Direction.DOWN);
+				ghost.setMoveAndWishDir(Direction.DOWN);
 			}
 			case Ghost.CYAN_GHOST, Ghost.ORANGE_GHOST -> {
 				ghost.setAbsSpeed(0.5);
-				ghost.setBothDirs(Direction.UP);
+				ghost.setMoveAndWishDir(Direction.UP);
 			}
 			default -> {
 				// ignore

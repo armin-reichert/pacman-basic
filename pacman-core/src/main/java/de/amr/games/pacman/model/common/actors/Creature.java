@@ -28,6 +28,8 @@ import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.model.common.world.World.HTS;
+import static de.amr.games.pacman.model.common.world.World.TS;
+import static de.amr.games.pacman.model.common.world.World.positionOfTile;
 import static de.amr.games.pacman.model.common.world.World.tileAtPosition;
 
 import java.util.Objects;
@@ -77,7 +79,7 @@ public class Creature extends Entity {
 	/** Tells if the creature got stuck. */
 	public boolean stuck = false;
 
-	public Creature(String name) {
+	protected Creature(String name) {
 		this.name = name;
 	}
 
@@ -97,27 +99,22 @@ public class Creature extends Entity {
 		return World.tileAtPosition(center());
 	}
 
-	public static V2d offset(V2d pos, V2i tile) {
-		return pos.minus(World.positionAtTileLeftUpperCorner(tile));
-	}
-
 	// offset: (0, 0) if centered, range: [-4, +4)
 	public V2d offset() {
-		return offset(position, tile());
+		return position.minus(positionOfTile(tile()));
 	}
 
 	public boolean sameTile(Creature other) {
-		Objects.requireNonNull(other);
 		return tile().equals(other.tile());
 	}
 
-	public void placeAtTile(int tileX, int tileY, double offsetX, double offsetY) {
-		setPosition(tileX * World.TS + offsetX, tileY * World.TS + offsetY);
+	public void placeAtTile(int tx, int ty, double ox, double oy) {
+		setPosition(tx * TS + ox, ty * TS + oy);
 		newTileEntered = true;
 	}
 
-	public void placeAtTile(V2i tile, double offsetX, double offsetY) {
-		placeAtTile(tile.x(), tile.y(), offsetX, offsetY);
+	public void placeAtTile(V2i tile, double ox, double oy) {
+		placeAtTile(tile.x(), tile.y(), ox, oy);
 	}
 
 	public void placeAtTile(V2i tile) {
@@ -157,8 +154,7 @@ public class Creature extends Entity {
 	 */
 	public void setMoveDir(Direction dir) {
 		moveDir = Objects.requireNonNull(dir);
-		double speed = velocity.length();
-		velocity = new V2d(dir.vec).scaled(speed);
+		velocity = new V2d(moveDir.vec).scaled(velocity.length());
 	}
 
 	public Direction moveDir() {
@@ -173,7 +169,7 @@ public class Creature extends Entity {
 		return wishDir;
 	}
 
-	public void setBothDirs(Direction dir) {
+	public void setMoveAndWishDir(Direction dir) {
 		setMoveDir(dir);
 		setWishDir(dir);
 	}
@@ -283,14 +279,13 @@ public class Creature extends Entity {
 		var canAccessTile = canAccessTile(tileAtPosition(sensorPosition));
 		var sameOrientation = sameOrientation(moveDir, newDir);
 
-		// 1. same orientation but would touch blocked tile: stay exactly over current tile
+		// 1. Move into blocked tile: stay aligned over current tile
 		if (sameOrientation && !canAccessTile) {
 			placeAtTile(tile());
 			return false;
 		}
 
-		// 2. same orientation (and tile not blocked) or
-		// 3. turn towards non-blocked tile: move
+		// 2. Move into accessible tile, or 3. Turn towards accessibe tile: do move
 		if (sameOrientation || canAccessTile && isTurnPossibleToDir(newDir)) {
 			velocity = newVelocity;
 			move();

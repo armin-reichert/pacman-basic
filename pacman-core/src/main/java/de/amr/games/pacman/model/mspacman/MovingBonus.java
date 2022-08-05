@@ -74,7 +74,7 @@ public class MovingBonus extends Creature implements Bonus {
 		var startTile = route.get(0);
 		targetTile = startTile;
 		placeAtTile(startTile, 0, 0);
-		setBothDirs(startDir);
+		setMoveAndWishDir(startDir);
 		steering = new FollowTargetTiles(route);
 	}
 
