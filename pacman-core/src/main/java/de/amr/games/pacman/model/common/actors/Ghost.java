@@ -76,15 +76,6 @@ public class Ghost extends Creature implements AnimatedEntity {
 	/** The current state of this ghost. */
 	private GhostState state;
 
-	/** The position of this ghost when the game starts. */
-	public V2d homePosition;
-
-	/** The tile inside the house where this ghosts get revived. Amen. */
-	public V2i revivalTile;
-
-	/** The (unreachable) tile in some corner of the world which is targetted during the scatter phase. */
-	public V2i scatterTile;
-
 	/** "Cruise Elroy" mode. Values: <code>0 (off), 1, -1 (disabled), 2, -2 (disabled)</code>. */
 	public int elroy;
 
@@ -162,12 +153,12 @@ public class Ghost extends Creature implements AnimatedEntity {
 			selectAndResetAnimation(AnimKeys.GHOST_COLOR);
 			return;
 		}
-		bounce();
+		bounce(game.homePosition[id].y());
 		updateGhostInHouseAnimation(game);
 	}
 
 	private void updateGhostInHouseAnimation(GameModel game) {
-		if (inDanger(game) && game.killedIndex[id] == -1) {
+		if (isThreatened(game) && game.killedIndex[id] == -1) {
 			if (!isAnimationSelected(AnimKeys.GHOST_FLASHING)) {
 				selectAndRunAnimation(AnimKeys.GHOST_BLUE);
 			}
@@ -177,10 +168,10 @@ public class Ghost extends Creature implements AnimatedEntity {
 		}
 	}
 
-	private void bounce() {
-		if (position.y() <= homePosition.y() - HTS) {
+	private void bounce(double zeroY) {
+		if (position.y() <= zeroY - HTS) {
 			setMoveAndWishDir(DOWN);
-		} else if (position.y() >= homePosition.y() + HTS) {
+		} else if (position.y() >= zeroY + HTS) {
 			setMoveAndWishDir(UP);
 		}
 		move();
@@ -200,14 +191,15 @@ public class Ghost extends Creature implements AnimatedEntity {
 		if (state != LEAVING_HOUSE) {
 			state = LEAVING_HOUSE;
 			setAbsSpeed(0.55);
-			selectAndRunAnimation(inDanger(game) && game.killedIndex[id] == -1 ? AnimKeys.GHOST_BLUE : AnimKeys.GHOST_COLOR);
+			selectAndRunAnimation(
+					isThreatened(game) && game.killedIndex[id] == -1 ? AnimKeys.GHOST_BLUE : AnimKeys.GHOST_COLOR);
 			GameEvents.publish(new GameEvent(game, GameEventType.GHOST_STARTS_LEAVING_HOUSE, this, tile()));
 			return;
 		}
 		if (world.ghostHouse().leadGuyOutOfHouse(this)) {
 			newTileEntered = false;
 			setMoveAndWishDir(LEFT);
-			if (inDanger(game) && game.killedIndex[id] == -1) {
+			if (isThreatened(game) && game.killedIndex[id] == -1) {
 				doFrightened(game);
 			} else {
 				doHuntingPac(game);
@@ -251,7 +243,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 			targetTile = fnChasingTarget.get();
 			tryReachingTargetTile();
 		} else {
-			targetTile = scatterTile;
+			targetTile = game.scatterTile[id];
 			tryReachingTargetTile();
 		}
 	}
@@ -262,14 +254,14 @@ public class Ghost extends Creature implements AnimatedEntity {
 			tryMoving();
 			return;
 		}
-		if (newTileEntered || stuck) {
+		if (newTileEntered) {
 			Direction.shuffled().stream()//
 					.filter(dir -> dir != moveDir().opposite())//
 					.filter(dir -> canAccessTile(tile().plus(dir.vec)))//
 					.findAny()//
 					.ifPresent(this::setWishDir);
-			tryMoving();
 		}
+		tryMoving();
 	}
 
 	/**
@@ -339,11 +331,11 @@ public class Ghost extends Creature implements AnimatedEntity {
 	public void doEnteringHouse(GameModel game) {
 		if (state != ENTERING_HOUSE) {
 			state = ENTERING_HOUSE;
-			targetTile = revivalTile;
+			targetTile = game.revivalTile[id];
 			GameEvents.publish(new GameEvent(game, GameEventType.GHOST_ENTERS_HOUSE, this, tile()));
 			return;
 		}
-		var revivalPos = new V2d(revivalTile).scaled(TS).plus(HTS, 0);
+		var revivalPos = new V2d(game.revivalTile[id]).scaled(TS).plus(HTS, 0);
 		boolean arrivedAtRevivalTile = world.ghostHouse().leadGuyInsideHouse(this, revivalPos);
 		if (arrivedAtRevivalTile) {
 			doLeavingHouse(game);
@@ -370,7 +362,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 	}
 
 	private void ensureFlashingWhenPowerCeases(GameModel game) {
-		if (inDanger(game) && game.powerTimer.remaining() <= GameModel.PAC_POWER_FADING_TICKS) {
+		if (isThreatened(game) && game.powerTimer.remaining() <= GameModel.PAC_POWER_FADING_TICKS) {
 			animationSet().ifPresent(anims -> {
 				if (isAnimationSelected(AnimKeys.GHOST_FLASHING)) {
 					anims.selectedAnimation().ensureRunning();
@@ -399,7 +391,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 		});
 	}
 
-	public boolean inDanger(GameModel game) {
+	public boolean isThreatened(GameModel game) {
 		return game.powerTimer.isRunning();
 	}
 
@@ -434,5 +426,4 @@ public class Ghost extends Creature implements AnimatedEntity {
 		this.pseudoRandomMode = pseudoRandomMode;
 		pseudoRandomIndex = 0;
 	}
-
 }

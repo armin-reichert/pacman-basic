@@ -45,12 +45,16 @@ import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
+import de.amr.games.pacman.lib.V2d;
+import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.lib.animation.SingleEntityAnimation;
 import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.Creature;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.GhostState;
 import de.amr.games.pacman.model.common.actors.Pac;
+import de.amr.games.pacman.model.common.world.ArcadeGhostHouse;
+import de.amr.games.pacman.model.common.world.ArcadeWorld;
 import de.amr.games.pacman.model.common.world.World;
 
 /**
@@ -111,6 +115,15 @@ public abstract class GameModel {
 	/** The four ghosts in order RED, PINK, CYAN, ORANGE. */
 	public final Ghost[] theGhosts;
 
+	/** The position of this ghost when the game starts. */
+	public final V2d[] homePosition = new V2d[4];
+
+	/** The tile inside the house where this ghosts get revived. Amen. */
+	public final V2i[] revivalTile = new V2i[4];
+
+	/** The (unreachable) tile in some corner of the world which is targetted during the scatter phase. */
+	public final V2i[] scatterTile = new V2i[4];
+
 	/** Timer used to control hunting phase. */
 	public final HuntingTimer huntingTimer = new HuntingTimer();
 
@@ -160,7 +173,8 @@ public abstract class GameModel {
 		red.fnChasingTarget = pac::tile;
 		pink.fnChasingTarget = () -> pac.tilesAheadWithOverflowBug(4);
 		cyan.fnChasingTarget = () -> pac.tilesAheadWithOverflowBug(2).scaled(2).minus(red.tile());
-		orange.fnChasingTarget = () -> orange.tile().euclideanDistance(pac.tile()) < 8 ? orange.scatterTile : pac.tile();
+		orange.fnChasingTarget = () -> orange.tile().euclideanDistance(pac.tile()) < 8 ? scatterTile[orange.id]
+				: pac.tile();
 	}
 
 	public int getCredit() {
@@ -207,10 +221,26 @@ public abstract class GameModel {
 	}
 
 	protected void initGhosts() {
-		level.world.initGhosts(theGhosts);
 		for (var ghost : theGhosts) {
 			ghostDotCounter[ghost.id] = 0;
 			ghost.elroy = 0;
+		}
+		if (world().ghostHouse() instanceof ArcadeGhostHouse house) {
+			homePosition[RED_GHOST] = house.seatPosition(house.entryTile());
+			revivalTile[RED_GHOST] = house.seatMiddleTile();
+			scatterTile[RED_GHOST] = ArcadeWorld.RIGHT_UPPER_CORNER;
+
+			homePosition[PINK_GHOST] = house.seatPosition(house.seatMiddleTile());
+			revivalTile[PINK_GHOST] = house.seatMiddleTile();
+			scatterTile[PINK_GHOST] = ArcadeWorld.LEFT_UPPER_CORNER;
+
+			homePosition[CYAN_GHOST] = house.seatPosition(house.seatLeftTile());
+			revivalTile[CYAN_GHOST] = house.seatLeftTile();
+			scatterTile[CYAN_GHOST] = ArcadeWorld.RIGHT_LOWER_CORNER;
+
+			homePosition[ORANGE_GHOST] = house.seatPosition(house.seatRightTile());
+			revivalTile[ORANGE_GHOST] = house.seatRightTile();
+			scatterTile[ORANGE_GHOST] = ArcadeWorld.LEFT_LOWER_CORNER;
 		}
 	}
 
@@ -238,7 +268,7 @@ public abstract class GameModel {
 				// ignore
 			}
 			}
-			ghost.setPosition(ghost.homePosition);
+			ghost.setPosition(homePosition[ghost.id]);
 			ghost.show();
 			ghost.doLocked(this);
 		});
