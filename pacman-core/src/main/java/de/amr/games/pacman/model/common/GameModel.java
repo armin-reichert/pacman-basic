@@ -119,7 +119,7 @@ public abstract class GameModel {
 	public final V2d[] homePosition = new V2d[4];
 
 	/** The tile inside the house where this ghosts get revived. Amen. */
-	public final V2i[] revivalTile = new V2i[4];
+	public final V2d[] revivalPosition = new V2d[4];
 
 	/** The (unreachable) tile in some corner of the world which is targetted during the scatter phase. */
 	public final V2i[] scatterTile = new V2i[4];
@@ -227,19 +227,19 @@ public abstract class GameModel {
 		}
 		if (world().ghostHouse() instanceof ArcadeGhostHouse house) {
 			homePosition[RED_GHOST] = house.seatPosition(house.entryTile());
-			revivalTile[RED_GHOST] = house.seatMiddleTile();
+			revivalPosition[RED_GHOST] = house.seatPosition(house.seatMiddleTile());
 			scatterTile[RED_GHOST] = ArcadeWorld.RIGHT_UPPER_CORNER;
 
 			homePosition[PINK_GHOST] = house.seatPosition(house.seatMiddleTile());
-			revivalTile[PINK_GHOST] = house.seatMiddleTile();
+			revivalPosition[PINK_GHOST] = house.seatPosition(house.seatMiddleTile());
 			scatterTile[PINK_GHOST] = ArcadeWorld.LEFT_UPPER_CORNER;
 
 			homePosition[CYAN_GHOST] = house.seatPosition(house.seatLeftTile());
-			revivalTile[CYAN_GHOST] = house.seatLeftTile();
+			revivalPosition[CYAN_GHOST] = house.seatPosition(house.seatLeftTile());
 			scatterTile[CYAN_GHOST] = ArcadeWorld.RIGHT_LOWER_CORNER;
 
 			homePosition[ORANGE_GHOST] = house.seatPosition(house.seatRightTile());
-			revivalTile[ORANGE_GHOST] = house.seatRightTile();
+			revivalPosition[ORANGE_GHOST] = house.seatPosition(house.seatRightTile());
 			scatterTile[ORANGE_GHOST] = ArcadeWorld.LEFT_LOWER_CORNER;
 		}
 	}

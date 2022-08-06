@@ -36,7 +36,6 @@ import static de.amr.games.pacman.model.common.actors.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.model.common.actors.GhostState.LOCKED;
 import static de.amr.games.pacman.model.common.actors.GhostState.RETURNING_TO_HOUSE;
 import static de.amr.games.pacman.model.common.world.World.HTS;
-import static de.amr.games.pacman.model.common.world.World.TS;
 
 import java.util.List;
 import java.util.Optional;
@@ -50,11 +49,11 @@ import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.U;
-import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.lib.animation.AnimatedEntity;
 import de.amr.games.pacman.lib.animation.EntityAnimationSet;
 import de.amr.games.pacman.model.common.GameModel;
+import de.amr.games.pacman.model.common.world.World;
 
 /**
  * There are 4 ghosts with different "personalities".
@@ -254,7 +253,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 			tryMoving();
 			return;
 		}
-		if (newTileEntered) {
+		if (newTileEntered || stuck) {
 			Direction.shuffled().stream()//
 					.filter(dir -> dir != moveDir().opposite())//
 					.filter(dir -> canAccessTile(tile().plus(dir.vec)))//
@@ -331,12 +330,11 @@ public class Ghost extends Creature implements AnimatedEntity {
 	public void doEnteringHouse(GameModel game) {
 		if (state != ENTERING_HOUSE) {
 			state = ENTERING_HOUSE;
-			targetTile = game.revivalTile[id];
+			targetTile = World.tileAtPosition(game.revivalPosition[id]);
 			GameEvents.publish(new GameEvent(game, GameEventType.GHOST_ENTERS_HOUSE, this, tile()));
 			return;
 		}
-		var revivalPos = new V2d(game.revivalTile[id]).scaled(TS).plus(HTS, 0);
-		boolean arrivedAtRevivalTile = world.ghostHouse().leadGuyInsideHouse(this, revivalPos);
+		boolean arrivedAtRevivalTile = world.ghostHouse().leadGuyInsideHouse(this, game.revivalPosition[id]);
 		if (arrivedAtRevivalTile) {
 			doLeavingHouse(game);
 		}
