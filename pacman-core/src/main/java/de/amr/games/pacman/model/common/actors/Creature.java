@@ -62,25 +62,37 @@ public class Creature extends Entity {
 	protected World world;
 
 	/** The current move direction. */
-	private Direction moveDir = RIGHT;
+	private Direction moveDir;
 
 	/** The wish direction. Will be taken as soon as possible. */
-	private Direction wishDir = RIGHT;
+	private Direction wishDir;
 
 	/** The target tile. Can be inaccessible or outside of the world. */
-	public V2i targetTile = null;
+	public V2i targetTile;
 
 	/** Tells if the creature entered a new tile with its last move or placement. */
-	public boolean newTileEntered = true;
+	public boolean newTileEntered;
 
 	/** Triggers reversing the move direction at next possible point in time. */
-	public boolean reverse = false;
+	public boolean reverse;
 
 	/** Tells if the creature got stuck. */
-	public boolean stuck = false;
+	public boolean stuck;
 
 	protected Creature(String name) {
 		this.name = name;
+		reset();
+	}
+
+	@Override
+	public void reset() {
+		super.reset();
+		moveDir = RIGHT;
+		wishDir = RIGHT;
+		targetTile = null;
+		newTileEntered = true;
+		reverse = false;
+		stuck = false;
 	}
 
 	@Override

@@ -160,12 +160,12 @@ public enum GameState implements FsmState<GameModel> {
 			game.levelCounter.addSymbol(game.level.bonusSymbol);
 			game.scores.gameScore.showContent = true;
 			game.resetGuys();
-			game.guys().forEach(Entity::hide);
+			game.guys().forEach(Creature::hide);
 		}
 
 		private void resumeGame(GameModel game) {
 			game.resetGuys();
-			game.guys().forEach(Entity::show);
+			game.guys().forEach(Creature::show);
 		}
 
 		private void startAttractMode(GameModel game) {

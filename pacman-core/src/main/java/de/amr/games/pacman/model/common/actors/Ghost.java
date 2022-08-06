@@ -117,6 +117,13 @@ public class Ghost extends Creature implements AnimatedEntity {
 			throw new IllegalArgumentException("Ghost ID must be in range 0..3");
 		}
 		this.id = id;
+		reset();
+	}
+
+	@Override
+	public void reset() {
+		super.reset();
+		killedIndex = -1;
 	}
 
 	/**

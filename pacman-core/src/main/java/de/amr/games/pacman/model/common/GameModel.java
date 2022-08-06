@@ -212,6 +212,7 @@ public abstract class GameModel {
 		energizerPulse.reset();
 		pac.reset();
 		ghosts().forEach(ghost -> {
+			ghost.reset();
 			switch (ghost.id) {
 			case Ghost.RED_GHOST -> {
 				ghost.setAbsSpeed(0);
@@ -230,11 +231,6 @@ public abstract class GameModel {
 			}
 			}
 			ghost.setPosition(ghost.homePosition);
-			ghost.targetTile = null;
-			ghost.stuck = false;
-			ghost.newTileEntered = true;
-			ghost.reverse = false;
-			ghost.killedIndex = -1;
 			ghost.show();
 			ghost.doLocked(this);
 		});

@@ -65,9 +65,9 @@ public class Pac extends Creature implements AnimatedEntity {
 		super(name);
 	}
 
+	@Override
 	public void reset() {
-		targetTile = null; // used in autopilot mode
-		stuck = false;
+		super.reset();
 		dead = false;
 		restingTicks = 0;
 		starvingTicks = 0;

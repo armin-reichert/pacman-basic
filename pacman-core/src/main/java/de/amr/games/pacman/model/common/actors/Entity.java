@@ -34,13 +34,21 @@ import de.amr.games.pacman.lib.V2d;
  */
 public class Entity {
 
-	protected boolean visible = false;
+	protected boolean visible;
+	protected V2d position;
+	protected V2d velocity;
+	protected V2d acceleration;
 
-	protected V2d position = V2d.NULL;
+	public Entity() {
+		reset();
+	}
 
-	protected V2d velocity = V2d.NULL;
-
-	protected V2d acceleration = V2d.NULL;
+	public void reset() {
+		visible = false;
+		position = V2d.NULL;
+		velocity = V2d.NULL;
+		acceleration = V2d.NULL;
+	}
 
 	public boolean isVisible() {
 		return visible;
@@ -97,5 +105,4 @@ public class Entity {
 		position = position.plus(velocity);
 		velocity = velocity.plus(acceleration);
 	}
-
 }
