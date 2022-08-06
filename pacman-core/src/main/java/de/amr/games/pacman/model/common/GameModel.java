@@ -81,7 +81,7 @@ public abstract class GameModel {
 	public static final int ALL_GHOSTS_KILLED_POINTS = 12_000;
 	public static final int EXTRA_LIFE = 10_000;
 
-	// TODO not sure exactly how long Pac-Man is losing power
+	// not sure exactly how long Pac-Man is losing power
 	public static final long PAC_POWER_FADING_TICKS = secToTicks(2);
 
 	protected static final int[] GHOST_VALUES = { 200, 400, 800, 1600 };
@@ -134,11 +134,14 @@ public abstract class GameModel {
 	/** Game score and high score. */
 	public final GameScores scores = new GameScores(this);
 
+	/** Counters used by ghost house logic. */
+	protected final int[] ghostDotCounter = new int[4];
+
 	/** Counter used by ghost house logic. */
-	public int globalDotCounter;
+	protected int globalDotCounter;
 
 	/** Enabled state of the counter used by ghost house logic. */
-	public boolean globalDotCounterEnabled;
+	protected boolean globalDotCounterEnabled;
 
 	/** Number of current intermission scene in test mode. */
 	public int intermissionTestNumber;
@@ -202,7 +205,7 @@ public abstract class GameModel {
 	protected void initGhosts() {
 		level.world.initGhosts(theGhosts);
 		for (var ghost : theGhosts) {
-			ghost.dotCounter = 0;
+			ghostDotCounter[ghost.id] = 0;
 			ghost.elroy = 0;
 		}
 	}
@@ -538,7 +541,7 @@ public abstract class GameModel {
 				return;
 			}
 			// first check private dot counter
-			if (!globalDotCounterEnabled && ghost.dotCounter >= level.privateDotLimits[ghost.id]) {
+			if (!globalDotCounterEnabled && ghostDotCounter[ghost.id] >= level.privateDotLimits[ghost.id]) {
 				result.unlockedGhost = Optional.of(ghost);
 				result.unlockReason = "Private dot counter at limit (%d)".formatted(level.privateDotLimits[ghost.id]);
 				return;
@@ -580,7 +583,7 @@ public abstract class GameModel {
 				globalDotCounter++;
 			}
 		} else {
-			ghosts(LOCKED).filter(ghost -> ghost.id != RED_GHOST).findFirst().ifPresent(ghost -> ++ghost.dotCounter);
+			ghosts(LOCKED).filter(ghost -> ghost.id != RED_GHOST).findFirst().ifPresent(ghost -> ++ghostDotCounter[ghost.id]);
 		}
 	}
 

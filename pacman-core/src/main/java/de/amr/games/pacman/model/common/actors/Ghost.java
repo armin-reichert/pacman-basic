@@ -88,9 +88,6 @@ public class Ghost extends Creature implements AnimatedEntity {
 	/** Ghosts killed using the same energizer are indexed in order <code>0..4</code>. */
 	public int killedIndex;
 
-	/** Ghost-specific food counter, used to determine when the ghost can leave the house. */
-	public int dotCounter;
-
 	/** "Cruise Elroy" mode. Values: <code>0 (off), 1, -1 (disabled), 2, -2 (disabled)</code>. */
 	public int elroy;
 
