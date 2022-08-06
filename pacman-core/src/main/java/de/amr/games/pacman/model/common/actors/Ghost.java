@@ -85,9 +85,6 @@ public class Ghost extends Creature implements AnimatedEntity {
 	/** The (unreachable) tile in some corner of the world which is targetted during the scatter phase. */
 	public V2i scatterTile;
 
-	/** Ghosts killed using the same energizer are indexed in order <code>0..4</code>. */
-	public int killedIndex;
-
 	/** "Cruise Elroy" mode. Values: <code>0 (off), 1, -1 (disabled), 2, -2 (disabled)</code>. */
 	public int elroy;
 
@@ -115,12 +112,6 @@ public class Ghost extends Creature implements AnimatedEntity {
 		}
 		this.id = id;
 		reset();
-	}
-
-	@Override
-	public void reset() {
-		super.reset();
-		killedIndex = -1;
 	}
 
 	/**
@@ -176,7 +167,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 	}
 
 	private void updateGhostInHouseAnimation(GameModel game) {
-		if (inDanger(game) && killedIndex == -1) {
+		if (inDanger(game) && game.killedIndex[id] == -1) {
 			if (!isAnimationSelected(AnimKeys.GHOST_FLASHING)) {
 				selectAndRunAnimation(AnimKeys.GHOST_BLUE);
 			}
@@ -209,19 +200,19 @@ public class Ghost extends Creature implements AnimatedEntity {
 		if (state != LEAVING_HOUSE) {
 			state = LEAVING_HOUSE;
 			setAbsSpeed(0.55);
-			selectAndRunAnimation(inDanger(game) && killedIndex == -1 ? AnimKeys.GHOST_BLUE : AnimKeys.GHOST_COLOR);
+			selectAndRunAnimation(inDanger(game) && game.killedIndex[id] == -1 ? AnimKeys.GHOST_BLUE : AnimKeys.GHOST_COLOR);
 			GameEvents.publish(new GameEvent(game, GameEventType.GHOST_STARTS_LEAVING_HOUSE, this, tile()));
 			return;
 		}
 		if (world.ghostHouse().leadGuyOutOfHouse(this)) {
 			newTileEntered = false;
 			setMoveAndWishDir(LEFT);
-			if (inDanger(game) && killedIndex == -1) {
+			if (inDanger(game) && game.killedIndex[id] == -1) {
 				doFrightened(game);
 			} else {
 				doHuntingPac(game);
 			}
-			killedIndex = -1;
+			game.killedIndex[id] = -1; // TODO check this
 			GameEvents.publish(new GameEvent(game, GameEventType.GHOST_COMPLETES_LEAVING_HOUSE, this, tile()));
 		} else {
 			updateGhostInHouseAnimation(game);
@@ -313,7 +304,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 		if (state != EATEN) {
 			state = EATEN;
 			// display ghost value (200, 400, 800, 1600)
-			selectAndRunAnimation(AnimKeys.GHOST_VALUE).ifPresent(anim -> anim.setFrameIndex(killedIndex));
+			selectAndRunAnimation(AnimKeys.GHOST_VALUE).ifPresent(anim -> anim.setFrameIndex(game.killedIndex[id]));
 		}
 	}
 

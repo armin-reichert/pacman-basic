@@ -33,6 +33,7 @@ import static de.amr.games.pacman.model.common.actors.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.model.common.actors.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.model.common.actors.GhostState.LOCKED;
 
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -121,6 +122,9 @@ public abstract class GameModel {
 
 	/** If lives or one less is displayed in lives counter. */
 	public boolean livesOneLessShown;
+
+	/** Ghosts killed using the same energizer are indexed in order <code>0..4</code>. */
+	public final int[] killedIndex = new int[4];
 
 	/** Number of ghosts killed by current energizer. */
 	public int ghostsKilledByEnergizer;
@@ -214,6 +218,7 @@ public abstract class GameModel {
 		powerTimer.reset(0);
 		energizerPulse.reset();
 		pac.reset();
+		Arrays.fill(killedIndex, -1);
 		ghosts().forEach(ghost -> {
 			ghost.reset();
 			switch (ghost.id) {
@@ -433,10 +438,10 @@ public abstract class GameModel {
 	}
 
 	private void killGhost(Ghost ghost) {
-		ghost.killedIndex = ghostsKilledByEnergizer;
+		killedIndex[ghost.id] = ghostsKilledByEnergizer;
 		ghostsKilledByEnergizer++;
 		ghost.doEaten(this);
-		int value = ghostValue(ghost.killedIndex);
+		int value = ghostValue(killedIndex[ghost.id]);
 		scores.addPoints(value);
 		LOGGER.info("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name, ghost.tile(), value);
 	}

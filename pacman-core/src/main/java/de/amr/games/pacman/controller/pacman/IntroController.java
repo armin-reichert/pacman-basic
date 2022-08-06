@@ -245,7 +245,7 @@ public class IntroController extends Fsm<State, Context> {
 						.findFirst();
 				nextVictim.ifPresent(victim -> {
 					ctx.ghostKilledTime = timer.tick();
-					victim.killedIndex = victim.id;
+					ctx.gameController.game().killedIndex[victim.id] = victim.id;
 					victim.doEaten(ctx.gameController.game());
 					ctx.pacMan.hide();
 					ctx.pacMan.setAbsSpeed(0);
