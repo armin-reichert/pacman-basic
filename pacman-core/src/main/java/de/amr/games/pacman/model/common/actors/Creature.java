@@ -278,18 +278,18 @@ public class Creature extends Entity {
 	protected boolean tryMoving(Direction newDir, GameModel game) {
 		var newDirVec = new V2d(newDir.vec);
 		var newVelocity = newDirVec.scaled(velocity.length());
-		var sensorPosition = center().plus(newDirVec.scaled(HTS)).plus(newVelocity);
-		var canAccessTile = canAccessTile(tileAt(sensorPosition), game);
-		var sameOrientation = sameOrientation(moveDir, newDir);
+		var touchPosition = center().plus(newDirVec.scaled(HTS)).plus(newVelocity);
+		var canAccessTouchedTile = canAccessTile(tileAt(touchPosition), game);
+		var isTurn = !newDir.sameOrientation(moveDir);
 
-		// 1. Move into blocked tile: stay aligned over current tile
-		if (sameOrientation && !canAccessTile) {
+		// 1. Touching blocked tile: stay aligned over current tile
+		if (!isTurn && !canAccessTouchedTile) {
 			placeAtTile(tile());
 			return false;
 		}
 
-		// 2. Move into accessible tile, or 3. Turn towards accessibe tile: do move
-		if (sameOrientation || canAccessTile && isTurnPossibleToDir(newDir)) {
+		// 2. Straight move to non-blocked tile, or 3. Turn towards tile possible: move
+		if (!isTurn || isAtTurnPositionTo(newDir) && canAccessTouchedTile) {
 			velocity = newVelocity;
 			move();
 			return true;
@@ -298,11 +298,7 @@ public class Creature extends Entity {
 		return false;
 	}
 
-	private boolean sameOrientation(Direction d1, Direction d2) {
-		return d1.isHorizontal() && d2.isHorizontal() || d1.isVertical() && d2.isVertical();
-	}
-
-	private boolean isTurnPossibleToDir(Direction dir) {
+	private boolean isAtTurnPositionTo(Direction dir) {
 		var offset = dir.isHorizontal() ? offset().y() : offset().x();
 		return Math.abs(offset) <= 0.5;
 	}
