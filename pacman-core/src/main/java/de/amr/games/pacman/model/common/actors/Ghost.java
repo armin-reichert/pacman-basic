@@ -36,6 +36,7 @@ import static de.amr.games.pacman.model.common.actors.GhostState.LOCKED;
 import static de.amr.games.pacman.model.common.actors.GhostState.RETURNING_TO_HOUSE;
 import static de.amr.games.pacman.model.common.world.World.HTS;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -77,18 +78,9 @@ public class Ghost extends Creature implements AnimatedEntity {
 	public int elroy;
 
 	/** Function computing the chasing target of this ghost. */
-	public Supplier<V2i> fnChasingTarget = () -> null;
+	private Supplier<V2i> fnChasingTarget = () -> null;
 
 	private EntityAnimationSet animationSet;
-
-	public void setAnimationSet(EntityAnimationSet animationSet) {
-		this.animationSet = animationSet;
-	}
-
-	@Override
-	public Optional<EntityAnimationSet> animationSet() {
-		return Optional.ofNullable(animationSet);
-	}
 
 	public Ghost(int id, String name) {
 		super(name);
@@ -97,6 +89,10 @@ public class Ghost extends Creature implements AnimatedEntity {
 		}
 		this.id = id;
 		reset();
+	}
+
+	public void setChasingTarget(Supplier<V2i> targetTileSupplier) {
+		this.fnChasingTarget = Objects.requireNonNull(targetTileSupplier);
 	}
 
 	/**
@@ -141,6 +137,15 @@ public class Ghost extends Creature implements AnimatedEntity {
 			return is(ENTERING_HOUSE, LEAVING_HOUSE);
 		}
 		return super.canAccessTile(tile, game);
+	}
+
+	public void setAnimationSet(EntityAnimationSet animationSet) {
+		this.animationSet = animationSet;
+	}
+
+	@Override
+	public Optional<EntityAnimationSet> animationSet() {
+		return Optional.ofNullable(animationSet);
 	}
 
 	public void enterStateLocked() {

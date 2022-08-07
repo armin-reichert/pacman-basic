@@ -167,16 +167,27 @@ public abstract class GameModel {
 
 	public final WhatHappened happened = new WhatHappened();
 
-	protected GameModel(GameVariant variant, Pac pac, Ghost red, Ghost pink, Ghost cyan, Ghost orange) {
-		this.variant = variant;
-		this.pac = pac;
+	protected GameModel(GameVariant variant, String pacName, String redGhostName, String pinkGhostName,
+			String cyanGhostName, String orangeGhostName) {
 
-		theGhosts = new Ghost[] { red, pink, cyan, orange };
-		red.fnChasingTarget = pac::tile;
-		pink.fnChasingTarget = () -> tilesAhead(pac, 4);
-		cyan.fnChasingTarget = () -> tilesAhead(pac, 2).scaled(2).minus(red.tile());
-		orange.fnChasingTarget = () -> orange.tile().euclideanDistance(pac.tile()) < 8 ? scatterTile[orange.id]
-				: pac.tile();
+		this.variant = variant;
+
+		pac = new Pac(pacName);
+
+		var redGhost = new Ghost(RED_GHOST, redGhostName);
+		redGhost.setChasingTarget(pac::tile);
+
+		var pinkGhost = new Ghost(PINK_GHOST, pinkGhostName);
+		pinkGhost.setChasingTarget(() -> tilesAhead(pac, 4));
+
+		var cyanGhost = new Ghost(CYAN_GHOST, cyanGhostName);
+		cyanGhost.setChasingTarget(() -> tilesAhead(pac, 2).scaled(2).minus(redGhost.tile()));
+
+		var orangeGhost = new Ghost(ORANGE_GHOST, orangeGhostName);
+		orangeGhost.setChasingTarget(
+				() -> orangeGhost.tile().euclideanDistance(pac.tile()) < 8 ? scatterTile[ORANGE_GHOST] : pac.tile());
+
+		theGhosts = new Ghost[] { redGhost, pinkGhost, cyanGhost, orangeGhost };
 	}
 
 	// simulates the overflow bug from the original Arcade version

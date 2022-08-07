@@ -24,10 +24,6 @@ SOFTWARE.
 package de.amr.games.pacman.model.mspacman;
 
 import static de.amr.games.pacman.lib.TickTimer.secToTicks;
-import static de.amr.games.pacman.model.common.actors.Ghost.CYAN_GHOST;
-import static de.amr.games.pacman.model.common.actors.Ghost.ORANGE_GHOST;
-import static de.amr.games.pacman.model.common.actors.Ghost.PINK_GHOST;
-import static de.amr.games.pacman.model.common.actors.Ghost.RED_GHOST;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -42,8 +38,6 @@ import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
-import de.amr.games.pacman.model.common.actors.Ghost;
-import de.amr.games.pacman.model.common.actors.Pac;
 import de.amr.games.pacman.model.common.world.ArcadeWorld;
 import de.amr.games.pacman.model.common.world.HorizontalPortal;
 import de.amr.games.pacman.model.common.world.World;
@@ -344,8 +338,7 @@ public class MsPacManGame extends GameModel {
 	 * </ul>
 	 */
 	public MsPacManGame() {
-		super(GameVariant.MS_PACMAN, new Pac("Ms. Pac-Man"), new Ghost(RED_GHOST, "Blinky"), new Ghost(PINK_GHOST, "Pinky"),
-				new Ghost(CYAN_GHOST, "Inky"), new Ghost(ORANGE_GHOST, "Sue"));
+		super(GameVariant.MS_PACMAN, "Ms. Pac-Man", "Blinky", "Pinky", "Inky", "Sue");
 		movingBonus = new MovingBonus();
 		scores.setHiscoreFile(new File(System.getProperty("user.home"), "highscore-ms_pacman.xml"));
 		setLevel(1);
