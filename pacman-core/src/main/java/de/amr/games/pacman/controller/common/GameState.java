@@ -361,7 +361,7 @@ public enum GameState implements FsmState<GameModel> {
 			timer.resetSeconds(1);
 			timer.start();
 			game.pac.hide();
-			game.ghosts().forEach(ghost -> ghost.setFlashingStopped(true));
+			game.ghosts().forEach(ghost -> ghost.pauseFlashing(true));
 			gc.sounds().play(GameSound.GHOST_EATEN);
 		}
 
@@ -380,7 +380,7 @@ public enum GameState implements FsmState<GameModel> {
 		public void onExit(GameModel game) {
 			game.pac.show();
 			game.ghosts(GhostState.EATEN).forEach(ghost -> ghost.enterStateReturningToHouse(game));
-			game.ghosts().forEach(ghost -> ghost.setFlashingStopped(false));
+			game.ghosts().forEach(ghost -> ghost.pauseFlashing(false));
 		}
 	},
 
