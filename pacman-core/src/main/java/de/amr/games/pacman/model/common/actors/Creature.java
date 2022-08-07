@@ -254,9 +254,8 @@ public class Creature extends Entity {
 	 * possible, it keeps moving to its current move direction.
 	 */
 	public void tryMoving(GameModel game) {
-		var world = game.world();
 		var tileBefore = tile();
-		world.portals().forEach(portal -> portal.teleport(this));
+		game.world().portals().forEach(portal -> portal.teleport(this));
 		if (reverse) {
 			setWishDir(moveDir.opposite());
 			reverse = false;
@@ -275,30 +274,27 @@ public class Creature extends Entity {
 	 * @param newDir some direction
 	 * @return if creature could move
 	 */
-	protected boolean tryMoving(Direction newDir, GameModel game) {
+	private boolean tryMoving(Direction newDir, GameModel game) {
 		var newDirVec = new V2d(newDir.vec);
 		var newVelocity = newDirVec.scaled(velocity.length());
 		var touchPosition = center().plus(newDirVec.scaled(HTS)).plus(newVelocity);
 		var canAccessTouchedTile = canAccessTile(tileAt(touchPosition), game);
 		var isTurn = !newDir.sameOrientation(moveDir);
 
-		// 1. Touching blocked tile: stay aligned over current tile
-		if (!isTurn && !canAccessTouchedTile) {
-			placeAtTile(tile());
-			return false;
-		}
-
-		// 2. Straight move to non-blocked tile, or 3. Turn towards tile possible: move
-		if (!isTurn || isAtTurnPositionTo(newDir) && canAccessTouchedTile) {
+		if (canAccessTouchedTile && (!isTurn || atTurnPositionTo(newDir))) {
 			velocity = newVelocity;
 			move();
 			return true;
 		}
 
+		if (!isTurn && !canAccessTouchedTile) {
+			placeAtTile(tile());
+		}
+
 		return false;
 	}
 
-	private boolean isAtTurnPositionTo(Direction dir) {
+	private boolean atTurnPositionTo(Direction dir) {
 		var offset = dir.isHorizontal() ? offset().y() : offset().x();
 		return Math.abs(offset) <= 0.5;
 	}
