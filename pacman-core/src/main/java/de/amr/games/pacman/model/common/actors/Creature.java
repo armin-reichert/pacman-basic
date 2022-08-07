@@ -67,13 +67,13 @@ public class Creature extends Entity {
 	private V2i targetTile;
 
 	/** Tells if the creature entered a new tile with its last move or placement. */
-	public boolean newTileEntered;
+	protected boolean newTileEntered;
 
 	/** Triggers reversing the move direction at next possible point in time. */
-	public boolean reverse;
+	protected boolean reverse;
 
 	/** Tells if the creature got stuck. */
-	public boolean stuck;
+	protected boolean stuck;
 
 	protected Creature(String name) {
 		this.name = name;
@@ -110,6 +110,14 @@ public class Creature extends Entity {
 	// offset: (0, 0) if centered, range: [-4, +4)
 	public V2d offset() {
 		return position.minus(originOfTile(tile()));
+	}
+
+	public boolean isNewTileEntered() {
+		return newTileEntered;
+	}
+
+	public boolean isStuck() {
+		return stuck;
 	}
 
 	public void setTargetTile(V2i tile) {

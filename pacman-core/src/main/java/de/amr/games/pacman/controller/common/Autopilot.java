@@ -95,7 +95,7 @@ public class Autopilot implements Steering {
 
 	@Override
 	public void steer(GameModel game, Creature guy) {
-		if (!guy.stuck && !guy.newTileEntered) {
+		if (!guy.isStuck() && !guy.isNewTileEntered()) {
 			return;
 		}
 		AutopilotData data = collectData(game);
@@ -142,7 +142,7 @@ public class Autopilot implements Steering {
 		}
 
 		// when not escaping ghost, keep move direction at least until next intersection
-		if (!game.pac.stuck && !game.level.world.isIntersection(game.pac.tile()))
+		if (!game.pac.isStuck() && !game.level.world.isIntersection(game.pac.tile()))
 			return;
 
 		if (!data.frightenedGhosts.isEmpty() && game.powerTimer.remaining() >= 1 * 60) {
