@@ -135,6 +135,10 @@ public class Creature extends Entity {
 		return game.world().isTunnel(tile());
 	}
 
+	public boolean insidePortal(GameModel game) {
+		return game.world().belongsToPortal(tile());
+	}
+
 	public void placeAtTile(int tx, int ty, double ox, double oy) {
 		setPosition(tx * TS + ox, ty * TS + oy);
 		newTileEntered = true;
@@ -229,14 +233,16 @@ public class Creature extends Entity {
 		velocity = pixelsPerTick == 0 ? V2d.NULL : new V2d(moveDir.vec).scaled(pixelsPerTick);
 	}
 
-	public void takeDirectionTowardsTarget(GameModel game) {
-		if (targetTile == null || game.world().belongsToPortal(tile())) {
-			return;
+	/**
+	 * Sets a new direction for reaching the current target. Navigation is only triggered when a new tile is entered, the
+	 * creature got stuck and a target tile is set. Inside portal tiles no navigation happens.
+	 * 
+	 * @param game the game model
+	 */
+	public void navigate(GameModel game) {
+		if ((newTileEntered || stuck) && targetTile != null && !insidePortal(game)) {
+			bestDirection(game).ifPresent(this::setWishDir);
 		}
-		if (!newTileEntered && !stuck) {
-			return;
-		}
-		bestDirection(targetTile, game).ifPresent(this::setWishDir);
 	}
 
 	/**
@@ -246,7 +252,7 @@ public class Creature extends Entity {
 	 *         and selects the one with smallest Euclidean distance to the target tile. Reversing the move direction is
 	 *         not allowed.
 	 */
-	private Optional<Direction> bestDirection(V2i target, GameModel game) {
+	private Optional<Direction> bestDirection(GameModel game) {
 		Direction bestDir = null;
 		double minDist = Double.MAX_VALUE;
 		for (var dir : TURN_PRIORITY) {

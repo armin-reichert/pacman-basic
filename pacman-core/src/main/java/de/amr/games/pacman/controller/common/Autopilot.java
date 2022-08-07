@@ -159,7 +159,7 @@ public class Autopilot implements Steering {
 			V2i foodTile = findTileFarestFromGhosts(game, findNearestFoodTiles(game));
 			game.pac.setTargetTile(foodTile);
 		}
-		game.pac.takeDirectionTowardsTarget(game);
+		game.pac.navigate(game);
 	}
 
 	private Ghost findHuntingGhostAhead(GameModel game) {
