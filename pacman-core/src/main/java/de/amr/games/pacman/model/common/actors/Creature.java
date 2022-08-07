@@ -246,8 +246,7 @@ public class Creature extends Entity {
 	}
 
 	/**
-	 * @param target target tile
-	 * @param game   game model
+	 * @param game game model
 	 * @return As described in the Pac-Man dossier: checks all accessible neighbor tiles in order UP, LEFT, DOWN, RIGHT
 	 *         and selects the one with smallest Euclidean distance to the target tile. Reversing the move direction is
 	 *         not allowed.
