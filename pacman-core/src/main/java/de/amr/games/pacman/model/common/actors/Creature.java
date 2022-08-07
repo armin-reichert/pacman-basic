@@ -114,6 +114,10 @@ public class Creature extends Entity {
 		return tile().equals(other.tile());
 	}
 
+	public boolean insideTunnel(GameModel game) {
+		return game.world().isTunnel(tile());
+	}
+
 	public void placeAtTile(int tx, int ty, double ox, double oy) {
 		setPosition(tx * TS + ox, ty * TS + oy);
 		newTileEntered = true;

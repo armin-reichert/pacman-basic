@@ -386,8 +386,4 @@ public class Ghost extends Creature implements AnimatedEntity {
 			}
 		});
 	}
-
-	public boolean insideTunnel(GameModel game) {
-		return game.world().isTunnel(tile());
-	}
 }
