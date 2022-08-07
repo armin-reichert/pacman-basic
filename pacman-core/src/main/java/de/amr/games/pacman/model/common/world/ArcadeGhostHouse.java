@@ -137,7 +137,7 @@ public class ArcadeGhostHouse implements GhostHouse {
 	}
 
 	@Override
-	public boolean leadGuyInsideHouse(Creature guy, V2d targetPosition) {
+	public boolean leadGuyInside(Creature guy, V2d targetPosition) {
 		if (atHouseEntry(guy)) {
 			guy.setMoveAndWishDir(Direction.DOWN);
 		}

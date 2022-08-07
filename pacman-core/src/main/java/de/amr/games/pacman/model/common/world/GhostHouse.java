@@ -56,5 +56,5 @@ public interface GhostHouse {
 
 	boolean leadGuyOutOfHouse(Creature guest);
 
-	boolean leadGuyInsideHouse(Creature guest, V2d targetPosition);
+	boolean leadGuyInside(Creature guest, V2d targetPosition);
 }
