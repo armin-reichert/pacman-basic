@@ -108,19 +108,18 @@ public class Pac extends Creature implements AnimatedEntity {
 		} else {
 			setRelSpeed(game.powerTimer.isRunning() ? game.level.playerSpeedPowered : game.level.playerSpeed);
 			tryMoving(game);
-			updateAnimation();
+			updateMouthAnimation();
 		}
 	}
 
-	@Override
-	public void updateAnimation() {
+	public void updateMouthAnimation() {
 		animation().ifPresent(animation -> {
 			if (stuck) {
 				animation.stop();
 			} else {
-				animation.advance();
 				animation.run();
 			}
+			animation.advance();
 		});
 	}
 }
