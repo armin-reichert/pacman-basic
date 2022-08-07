@@ -51,13 +51,19 @@ public interface World {
 		return numTiles * TS;
 	}
 
-	/** Tile containing given position. */
-	public static V2i tileAtPosition(V2d position) {
+	/**
+	 * @param position a position
+	 * @return Tile containing given position.
+	 */
+	public static V2i tileAt(V2d position) {
 		return new V2i((int) position.x() / TS, (int) position.y() / TS);
 	}
 
-	/** Position of the left-upper corner of given tile. */
-	public static V2d positionOfTile(V2i tile) {
+	/**
+	 * @param tile a tile
+	 * @return Position of the left-upper corner of given tile.
+	 */
+	public static V2d originOfTile(V2i tile) {
 		return new V2d(tile.scaled(TS));
 	}
 

@@ -151,10 +151,10 @@ public class Autopilot implements Steering {
 					prey.tile().manhattanDistance(game.pac.tile()));
 			game.pac.targetTile = prey.tile();
 		} else if (game.bonus() != null && game.bonus().state() == BonusState.EDIBLE
-				&& World.tileAtPosition(game.bonus().entity().getPosition())
+				&& World.tileAt(game.bonus().entity().getPosition())
 						.manhattanDistance(game.pac.tile()) <= AutopilotData.MAX_BONUS_HARVEST_DIST) {
 			LOGGER.trace("Detected active bonus");
-			game.pac.targetTile = World.tileAtPosition(game.bonus().entity().getPosition());
+			game.pac.targetTile = World.tileAt(game.bonus().entity().getPosition());
 		} else {
 			V2i foodTile = findTileFarestFromGhosts(game, findNearestFoodTiles(game));
 			game.pac.targetTile = foodTile;

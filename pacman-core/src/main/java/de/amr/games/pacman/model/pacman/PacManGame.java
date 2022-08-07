@@ -210,6 +210,6 @@ public class PacManGame extends GameModel {
 	@Override
 	protected void onBonusReached() {
 		bonus.setEdible(level.bonusSymbol, BONUS_VALUES[level.bonusSymbol], secToTicks(9.0 + rnd.nextDouble()));
-		GameEvents.publish(GameEventType.BONUS_GETS_ACTIVE, World.tileAtPosition(bonus.getPosition()));
+		GameEvents.publish(GameEventType.BONUS_GETS_ACTIVE, World.tileAt(bonus.getPosition()));
 	}
 }

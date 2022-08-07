@@ -29,8 +29,8 @@ import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.model.common.world.World.HTS;
 import static de.amr.games.pacman.model.common.world.World.TS;
-import static de.amr.games.pacman.model.common.world.World.positionOfTile;
-import static de.amr.games.pacman.model.common.world.World.tileAtPosition;
+import static de.amr.games.pacman.model.common.world.World.originOfTile;
+import static de.amr.games.pacman.model.common.world.World.tileAt;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -95,19 +95,19 @@ public class Creature extends Entity {
 				velocity, velocity.length(), moveDir(), wishDir());
 	}
 
-	// bounding box is square of one tile
+	// bounding box is square of one tile, position stores left upper corner
 	public V2d center() {
 		return position.plus(HTS, HTS);
 	}
 
 	// tile position is the tile containing the center of the bounding box
 	public V2i tile() {
-		return World.tileAtPosition(center());
+		return World.tileAt(center());
 	}
 
 	// offset: (0, 0) if centered, range: [-4, +4)
 	public V2d offset() {
-		return position.minus(positionOfTile(tile()));
+		return position.minus(originOfTile(tile()));
 	}
 
 	public boolean sameTile(Creature other) {
@@ -284,7 +284,7 @@ public class Creature extends Entity {
 		var newDirVec = new V2d(newDir.vec);
 		var newVelocity = newDirVec.scaled(velocity.length());
 		var sensorPosition = center().plus(newDirVec.scaled(HTS)).plus(newVelocity);
-		var canAccessTile = canAccessTile(tileAtPosition(sensorPosition), game);
+		var canAccessTile = canAccessTile(tileAt(sensorPosition), game);
 		var sameOrientation = sameOrientation(moveDir, newDir);
 
 		// 1. Move into blocked tile: stay aligned over current tile

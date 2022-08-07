@@ -341,7 +341,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 	public void enterStateEnteringHouse(GameModel game) {
 		if (state != ENTERING_HOUSE) {
 			state = ENTERING_HOUSE;
-			targetTile = World.tileAtPosition(game.revivalPosition[id]);
+			targetTile = World.tileAt(game.revivalPosition[id]);
 			GameEvents.publish(new GameEvent(game, GameEventType.GHOST_ENTERS_HOUSE, this, tile()));
 		}
 	}
