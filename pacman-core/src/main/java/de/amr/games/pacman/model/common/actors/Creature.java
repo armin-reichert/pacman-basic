@@ -133,9 +133,6 @@ public class Creature extends Entity {
 	 */
 	public boolean canAccessTile(V2i tile, GameModel game) {
 		var world = game.world();
-		if (world == null) {
-			return false;
-		}
 		if (world.insideMap(tile)) {
 			return !world.isWall(tile) && !world.ghostHouse().isDoorTile(tile);
 		}
@@ -216,8 +213,7 @@ public class Creature extends Entity {
 	 * selects the one with smallest Euclidean distance to the target tile. Reversing the move direction is not allowed.
 	 */
 	public void computeDirectionTowardsTarget(GameModel game) {
-		var world = game.world();
-		if (world == null || targetTile == null || world.belongsToPortal(tile())) {
+		if (targetTile == null || game.world().belongsToPortal(tile())) {
 			return;
 		}
 		if (!newTileEntered && !stuck) {
