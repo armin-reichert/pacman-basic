@@ -211,14 +211,6 @@ public class Creature extends Entity {
 		velocity = pixelsPerTick == 0 ? V2d.NULL : new V2d(moveDir.vec).scaled(pixelsPerTick);
 	}
 
-	public V2i tilesAhead(int n) {
-		return tile().plus(moveDir.vec.scaled(n));
-	}
-
-	public V2i tilesAheadWithOverflowBug(int n) {
-		return moveDir == UP ? tilesAhead(n).minus(n, 0) : tilesAhead(n);
-	}
-
 	/**
 	 * As described in the Pac-Man dossier: checks all accessible neighbor tiles in order UP, LEFT, DOWN, RIGHT and
 	 * selects the one with smallest Euclidean distance to the target tile. Reversing the move direction is not allowed.

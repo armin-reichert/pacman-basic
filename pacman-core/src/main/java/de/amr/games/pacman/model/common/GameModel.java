@@ -24,6 +24,7 @@ SOFTWARE.
 package de.amr.games.pacman.model.common;
 
 import static de.amr.games.pacman.lib.Direction.LEFT;
+import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.lib.TickTimer.secToTicks;
 import static de.amr.games.pacman.model.common.actors.Ghost.CYAN_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ORANGE_GHOST;
@@ -172,10 +173,16 @@ public abstract class GameModel {
 
 		theGhosts = new Ghost[] { red, pink, cyan, orange };
 		red.fnChasingTarget = pac::tile;
-		pink.fnChasingTarget = () -> pac.tilesAheadWithOverflowBug(4);
-		cyan.fnChasingTarget = () -> pac.tilesAheadWithOverflowBug(2).scaled(2).minus(red.tile());
+		pink.fnChasingTarget = () -> tilesAhead(pac, 4);
+		cyan.fnChasingTarget = () -> tilesAhead(pac, 2).scaled(2).minus(red.tile());
 		orange.fnChasingTarget = () -> orange.tile().euclideanDistance(pac.tile()) < 8 ? scatterTile[orange.id]
 				: pac.tile();
+	}
+
+	// simulates the overflow bug from the original Arcade version
+	private static V2i tilesAhead(Creature guy, int n) {
+		var ahead = guy.tile().plus(guy.moveDir().vec.scaled(n));
+		return guy.moveDir() == UP ? ahead.minus(n, 0) : ahead;
 	}
 
 	public int getCredit() {
