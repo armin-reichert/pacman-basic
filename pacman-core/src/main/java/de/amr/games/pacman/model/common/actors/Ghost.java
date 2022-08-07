@@ -162,7 +162,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 	}
 
 	private void updateGhostInHouseAnimation(GameModel game) {
-		if (isThreatened(game) && game.killedIndex[id] == -1) {
+		if (game.powerTimer.isRunning() && game.killedIndex[id] == -1) {
 			if (!isAnimationSelected(AnimKeys.GHOST_FLASHING)) {
 				selectAndRunAnimation(AnimKeys.GHOST_BLUE);
 			}
@@ -186,7 +186,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 			state = LEAVING_HOUSE;
 			setAbsSpeed(0.55);
 			selectAndRunAnimation(
-					isThreatened(game) && game.killedIndex[id] == -1 ? AnimKeys.GHOST_BLUE : AnimKeys.GHOST_COLOR);
+					game.powerTimer.isRunning() && game.killedIndex[id] == -1 ? AnimKeys.GHOST_BLUE : AnimKeys.GHOST_COLOR);
 			GameEvents.publish(new GameEvent(game, GameEventType.GHOST_STARTS_LEAVING_HOUSE, this, tile()));
 		}
 	}
@@ -205,7 +205,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 		if (game.world().ghostHouse().leadGuyOutOfHouse(this)) {
 			newTileEntered = false;
 			setMoveAndWishDir(LEFT);
-			if (isThreatened(game) && game.killedIndex[id] == -1) {
+			if (game.powerTimer.isRunning() && game.killedIndex[id] == -1) {
 				enterStateFrightened(game);
 			} else {
 				enterStateHuntingPac(game);
@@ -358,7 +358,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 	}
 
 	private void ensureFlashingWhenPowerCeases(GameModel game) {
-		if (isThreatened(game) && game.powerTimer.remaining() <= GameModel.PAC_POWER_FADING_TICKS) {
+		if (game.powerTimer.isRunning() && game.powerTimer.remaining() <= GameModel.PAC_POWER_FADING_TICKS) {
 			animationSet().ifPresent(anims -> {
 				if (isAnimationSelected(AnimKeys.GHOST_FLASHING)) {
 					anims.selectedAnimation().ensureRunning();
@@ -385,10 +385,6 @@ public class Ghost extends Creature implements AnimatedEntity {
 				flashing.run();
 			}
 		});
-	}
-
-	public boolean isThreatened(GameModel game) {
-		return game.powerTimer.isRunning();
 	}
 
 	public boolean insideTunnel(GameModel game) {
