@@ -38,12 +38,14 @@ import java.util.Random;
 
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
+import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.actors.Ghost;
+import de.amr.games.pacman.model.common.actors.GhostState;
 import de.amr.games.pacman.model.common.actors.Pac;
 import de.amr.games.pacman.model.common.world.ArcadeWorld;
 import de.amr.games.pacman.model.common.world.World;
@@ -165,17 +167,14 @@ public class PacManGame extends GameModel {
 		return level;
 	}
 
-	// in the red zone, chasing or scattering ghosts can not move upwards
-	private static final List<V2i> RED_ZONE = List.of(v(12, 14), v(15, 14), v(12, 26), v(15, 26));
+	// Tiles where chasing ghosts cannot move upwards
+	public static final List<V2i> RED_ZONE = List.of(v(12, 14), v(15, 14), v(12, 26), v(15, 26));
 
 	private final StaticBonus bonus;
 
 	public PacManGame() {
 		super(GameVariant.PACMAN, new Pac("Pac-Man"), new Ghost(RED_GHOST, "Blinky"), new Ghost(PINK_GHOST, "Pinky"),
 				new Ghost(CYAN_GHOST, "Inky"), new Ghost(ORANGE_GHOST, "Clyde"));
-		for (var ghost : theGhosts) {
-			ghost.upwardsBlockedTiles = RED_ZONE;
-		}
 		bonus = new StaticBonus(new V2d(v(13, 20).scaled(TS)).plus(HTS, 0));
 		scores.setHiscoreFile(new File(System.getProperty("user.home"), "highscore-pacman.xml"));
 		setLevel(1);
@@ -184,6 +183,14 @@ public class PacManGame extends GameModel {
 	@Override
 	public ArcadeWorld world() {
 		return (ArcadeWorld) level.world;
+	}
+
+	@Override
+	public boolean isGhostAllowedMoving(Ghost ghost, Direction dir) {
+		if (dir == Direction.UP && ghost.is(GhostState.HUNTING_PAC) && RED_ZONE.contains(ghost.tile())) {
+			return false;
+		}
+		return super.isGhostAllowedMoving(ghost, dir);
 	}
 
 	@Override

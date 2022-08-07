@@ -36,7 +36,6 @@ import static de.amr.games.pacman.model.common.actors.GhostState.LOCKED;
 import static de.amr.games.pacman.model.common.actors.GhostState.RETURNING_TO_HOUSE;
 import static de.amr.games.pacman.model.common.world.World.HTS;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -76,9 +75,6 @@ public class Ghost extends Creature implements AnimatedEntity {
 
 	/** "Cruise Elroy" mode. Values: <code>0 (off), 1, -1 (disabled), 2, -2 (disabled)</code>. */
 	public int elroy;
-
-	/** Tiles where the ghost cannot move upwards when in chasing or scattering mode. */
-	public List<V2i> upwardsBlockedTiles = List.of();
 
 	/** Function computing the chasing target of this ghost. */
 	public Supplier<V2i> fnChasingTarget = () -> null;
@@ -133,6 +129,18 @@ public class Ghost extends Creature implements AnimatedEntity {
 
 	public boolean is(GhostState... alternatives) {
 		return U.oneOf(state, alternatives);
+	}
+
+	@Override
+	public boolean canAccessTile(V2i tile, GameModel game) {
+		if (tile.equals(tile().plus(UP.vec)) && !game.isGhostAllowedMoving(this, UP)) {
+			LOGGER.trace("%s cannot access tile %s", this, tile);
+			return false;
+		}
+		if (world.ghostHouse().isDoorTile(tile)) {
+			return is(ENTERING_HOUSE, LEAVING_HOUSE);
+		}
+		return super.canAccessTile(tile, game);
 	}
 
 	public void enterStateLocked() {
@@ -350,25 +358,6 @@ public class Ghost extends Creature implements AnimatedEntity {
 		if (arrivedAtRevivalTile) {
 			enterStateLeavingHouse(game);
 		}
-	}
-
-	@Override
-	public boolean canAccessTile(V2i tile, GameModel game) {
-		if (world == null) {
-			return false;
-		}
-		if (world.ghostHouse().isDoorTile(tile)) {
-			return is(ENTERING_HOUSE, LEAVING_HOUSE);
-		}
-		return super.canAccessTile(tile, game);
-	}
-
-	@Override
-	protected boolean isForbiddenDirection(Direction dir) {
-		if (dir == moveDir().opposite()) {
-			return true;
-		}
-		return state == HUNTING_PAC && dir == UP && upwardsBlockedTiles.contains(tile());
 	}
 
 	private void ensureFlashingWhenPowerCeases(GameModel game) {

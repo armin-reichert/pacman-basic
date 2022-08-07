@@ -23,6 +23,7 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.common;
 
+import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.TickTimer.secToTicks;
 import static de.amr.games.pacman.model.common.actors.Ghost.CYAN_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ORANGE_GHOST;
@@ -283,6 +284,10 @@ public abstract class GameModel {
 			return Stream.of(theGhosts); // because is() would return an empty stream
 		}
 		return ghosts().filter(ghost -> ghost.is(states));
+	}
+
+	public boolean isGhostAllowedMoving(Ghost ghost, Direction dir) {
+		return true;
 	}
 
 	protected int ghostValue(int ghostKillIndex) {
@@ -607,6 +612,7 @@ public abstract class GameModel {
 			LOGGER.info("%s Elroy mode %d resumed", redGhost.name, redGhost.elroy);
 		}
 		if (ghost.id == RED_GHOST) {
+			ghost.setMoveAndWishDir(LEFT);
 			ghost.enterStateHuntingPac(this);
 		} else {
 			ghost.enterStateLeavingHouse(this);

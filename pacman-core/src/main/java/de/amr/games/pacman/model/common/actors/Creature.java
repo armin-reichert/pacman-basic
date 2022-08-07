@@ -147,10 +147,6 @@ public class Creature extends Entity {
 		return world.belongsToPortal(tile);
 	}
 
-	protected boolean isForbiddenDirection(Direction dir) {
-		return dir == moveDir.opposite();
-	}
-
 	public Optional<World> getWorld() {
 		return Optional.ofNullable(world);
 	}
@@ -256,7 +252,7 @@ public class Creature extends Entity {
 		double minDist = Double.MAX_VALUE;
 		for (var dir : TURN_PRIORITY) {
 			var neighborTile = tile().plus(dir.vec);
-			if (!isForbiddenDirection(dir) && canAccessTile(neighborTile, game)) {
+			if (dir != moveDir.opposite() && canAccessTile(neighborTile, game)) {
 				double d = neighborTile.euclideanDistance(targetTile);
 				if (d < minDist) {
 					minDist = d;
@@ -265,6 +261,7 @@ public class Creature extends Entity {
 			}
 		}
 		setWishDir(selectedDir);
+		LOGGER.trace("New wish dir %s for %s", selectedDir, this);
 	}
 
 	/**
