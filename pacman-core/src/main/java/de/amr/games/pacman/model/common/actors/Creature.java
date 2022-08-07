@@ -229,10 +229,6 @@ public class Creature extends Entity {
 		velocity = pixelsPerTick == 0 ? V2d.NULL : new V2d(moveDir.vec).scaled(pixelsPerTick);
 	}
 
-	/**
-	 * As described in the Pac-Man dossier: checks all accessible neighbor tiles in order UP, LEFT, DOWN, RIGHT and
-	 * selects the one with smallest Euclidean distance to the target tile. Reversing the move direction is not allowed.
-	 */
 	public void takeDirectionTowardsTarget(GameModel game) {
 		if (targetTile == null || game.world().belongsToPortal(tile())) {
 			return;
@@ -240,7 +236,18 @@ public class Creature extends Entity {
 		if (!newTileEntered && !stuck) {
 			return;
 		}
-		Direction selectedDir = wishDir;
+		bestDirection(targetTile, game).ifPresent(this::setWishDir);
+	}
+
+	/**
+	 * @param target target tile
+	 * @param game   game model
+	 * @return As described in the Pac-Man dossier: checks all accessible neighbor tiles in order UP, LEFT, DOWN, RIGHT
+	 *         and selects the one with smallest Euclidean distance to the target tile. Reversing the move direction is
+	 *         not allowed.
+	 */
+	private Optional<Direction> bestDirection(V2i target, GameModel game) {
+		Direction bestDir = null;
 		double minDist = Double.MAX_VALUE;
 		for (var dir : TURN_PRIORITY) {
 			var neighborTile = tile().plus(dir.vec);
@@ -248,11 +255,11 @@ public class Creature extends Entity {
 				double d = neighborTile.euclideanDistance(targetTile);
 				if (d < minDist) {
 					minDist = d;
-					selectedDir = dir;
+					bestDir = dir;
 				}
 			}
 		}
-		setWishDir(selectedDir);
+		return Optional.ofNullable(bestDir);
 	}
 
 	/**
