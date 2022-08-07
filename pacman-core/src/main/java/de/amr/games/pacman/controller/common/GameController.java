@@ -34,11 +34,9 @@ import java.util.stream.Stream;
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.event.GameStateChangeEvent;
 import de.amr.games.pacman.event.TriggerUIChangeEvent;
-import de.amr.games.pacman.lib.FollowDirections;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
-import de.amr.games.pacman.model.common.world.ArcadeWorld;
 import de.amr.games.pacman.model.mspacman.MsPacManGame;
 import de.amr.games.pacman.model.pacman.PacManGame;
 
@@ -97,9 +95,6 @@ public class GameController {
 
 	private final Steering autopilot = new Autopilot();
 
-	final FollowDirections attractModeSteeringPacMan = new FollowDirections(ArcadeWorld.ATTRACT_ROUTE_PACMAN);
-	final FollowDirections attractModeSteeringMsPacMan = new FollowDirections(ArcadeWorld.ATTRACT_ROUTE_MS_PACMAN);
-
 	private Steering normalSteering;
 
 	private GameVariant gameVariant = GameVariant.PACMAN;
@@ -140,10 +135,7 @@ public class GameController {
 
 	public Steering getSteering() {
 		if (!game().hasCredit()) {
-			return switch (game().variant) {
-			case MS_PACMAN -> autopilot; // TODO: attractModeSteeringMsPacMan;
-			case PACMAN -> attractModeSteeringPacMan;
-			};
+			return autopilot;
 		}
 		if (game().autoControlled) {
 			return autopilot;

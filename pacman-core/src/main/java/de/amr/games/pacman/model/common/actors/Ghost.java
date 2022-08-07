@@ -25,7 +25,6 @@ package de.amr.games.pacman.model.common.actors;
 
 import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
-import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.model.common.GameVariant.MS_PACMAN;
 import static de.amr.games.pacman.model.common.actors.GhostState.EATEN;
@@ -203,7 +202,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 			} else {
 				doHuntingPac(game);
 			}
-			game.killedIndex[id] = -1; // TODO check this
+			game.killedIndex[id] = -1; // TODO rethink this
 			GameEvents.publish(new GameEvent(game, GameEventType.GHOST_COMPLETES_LEAVING_HOUSE, this, tile()));
 		} else {
 			updateGhostInHouseAnimation(game);
@@ -248,11 +247,6 @@ public class Ghost extends Creature implements AnimatedEntity {
 	}
 
 	private void roam() {
-		if (pseudoRandomMode) { // on attract screen
-			setPseudoRandomWishDir();
-			tryMoving();
-			return;
-		}
 		if (newTileEntered || stuck) {
 			Direction.shuffled().stream()//
 					.filter(dir -> dir != moveDir().opposite())//
@@ -395,33 +389,5 @@ public class Ghost extends Creature implements AnimatedEntity {
 
 	public boolean insideTunnel() {
 		return world.isTunnel(tile());
-	}
-
-	// HACK zone
-
-	private boolean pseudoRandomMode;
-
-	private int pseudoRandomIndex;
-
-	private Direction[][] pseudoRandomDirs = { //
-			{ DOWN, DOWN, RIGHT, LEFT, DOWN, RIGHT, DOWN, DOWN, RIGHT, UP }, //
-			{ UP, DOWN, LEFT, UP, RIGHT, LEFT, UP, UP, LEFT, UP, LEFT, DOWN }, //
-			{ RIGHT, UP, LEFT, LEFT, LEFT, LEFT, LEFT, DOWN, /* 2nd */ RIGHT, UP, /* eaten...leave house */ RIGHT }, //
-			{ RIGHT, RIGHT, LEFT, UP }, //
-	};
-
-	private void setPseudoRandomWishDir() {
-		if (newTileEntered && world.isIntersection(tile())) {
-			setWishDir(pseudoRandomDirs[id][pseudoRandomIndex]);
-			LOGGER.trace("%s has new wishdir %s at tile %s, index=%d", name, wishDir(), tile(), pseudoRandomIndex);
-			if (++pseudoRandomIndex == pseudoRandomDirs[id].length) {
-				pseudoRandomIndex = 0;
-			}
-		}
-	}
-
-	public void setPseudoRandomMode(boolean pseudoRandomMode) {
-		this.pseudoRandomMode = pseudoRandomMode;
-		pseudoRandomIndex = 0;
 	}
 }

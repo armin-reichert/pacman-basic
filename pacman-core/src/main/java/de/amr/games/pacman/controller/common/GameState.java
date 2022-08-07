@@ -173,14 +173,6 @@ public enum GameState implements FsmState<GameModel> {
 			game.guys().forEach(Creature::show);
 			game.scores.enable(false);
 			game.scores.gameScore.showContent = false;
-			if (game.variant == GameVariant.MS_PACMAN) {
-				gc.attractModeSteeringMsPacMan.init();
-			} else {
-				gc.attractModeSteeringPacMan.init();
-			}
-			for (var ghost : game.theGhosts) {
-				ghost.setPseudoRandomMode(true);
-			}
 		}
 
 		@Override
@@ -228,25 +220,6 @@ public enum GameState implements FsmState<GameModel> {
 				renderSound(game);
 				gc.changeState(PACMAN_DYING);
 				return;
-
-			}
-
-			// TODO remove when attract mode is implemented correctly
-			if (!game.hasCredit()) {
-				switch (game.variant) {
-				case PACMAN -> {
-					if (gc.attractModeSteeringPacMan.isComplete()) {
-						gc.changeState(INTRO);
-						return;
-					}
-				}
-				case MS_PACMAN -> {
-					if (gc.attractModeSteeringMsPacMan.isComplete()) {
-						gc.changeState(INTRO);
-						return;
-					}
-				}
-				}
 			}
 
 			if (game.happened.ghostsKilled) {
