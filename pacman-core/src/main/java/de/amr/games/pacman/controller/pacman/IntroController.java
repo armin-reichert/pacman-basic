@@ -177,7 +177,7 @@ public class IntroController extends Fsm<State, Context> {
 				ctx.pacMan.show();
 				ctx.pacMan.selectAndRunAnimation(AnimKeys.PAC_MUNCHING);
 				for (Ghost ghost : ctx.ghosts) {
-					ghost.doHuntingPac(ctx.gameController.game());
+					ghost.updateHuntingPac(ctx.gameController.game());
 					ghost.setPosition(ctx.pacMan.getPosition().plus(16 * (ghost.id + 1), 0));
 					ghost.setMoveAndWishDir(Direction.LEFT);
 					ghost.setAbsSpeed(CHASING_SPEED);
@@ -200,10 +200,10 @@ public class IntroController extends Fsm<State, Context> {
 						ghost.setMoveAndWishDir(Direction.RIGHT);
 						ghost.setAbsSpeed(0.6);
 						ghost.move();
-						ghost.advanceAnimation();
+						ghost.updateAnimation();
 					}
 					ctx.pacMan.move();
-					ctx.pacMan.advanceAnimation();
+					ctx.pacMan.updateAnimation();
 				}
 				// keep moving
 				else {
@@ -213,10 +213,10 @@ public class IntroController extends Fsm<State, Context> {
 					}
 					ctx.blinking.advance();
 					ctx.pacMan.move();
-					ctx.pacMan.advanceAnimation();
+					ctx.pacMan.updateAnimation();
 					for (Ghost ghost : ctx.ghosts) {
 						ghost.move();
-						ghost.advanceAnimation();
+						ghost.updateAnimation();
 					}
 				}
 			}
@@ -246,7 +246,7 @@ public class IntroController extends Fsm<State, Context> {
 				nextVictim.ifPresent(victim -> {
 					ctx.ghostKilledTime = timer.tick();
 					ctx.gameController.game().killedIndex[victim.id] = victim.id;
-					victim.doEaten(ctx.gameController.game());
+					victim.updateEaten(ctx.gameController.game());
 					ctx.pacMan.hide();
 					ctx.pacMan.setAbsSpeed(0);
 					Stream.of(ctx.ghosts).forEach(ghost -> {
@@ -270,10 +270,10 @@ public class IntroController extends Fsm<State, Context> {
 					}
 				}
 				ctx.pacMan.move();
-				ctx.pacMan.advanceAnimation();
+				ctx.pacMan.updateAnimation();
 				for (Ghost ghost : ctx.ghosts) {
 					ghost.move();
-					ghost.advanceAnimation();
+					ghost.updateAnimation();
 				}
 				ctx.blinking.advance();
 			}

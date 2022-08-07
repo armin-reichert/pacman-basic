@@ -164,9 +164,9 @@ public class Intermission2Controller extends Fsm<State, Context> {
 					return;
 				}
 				ctx.pacMan.move();
-				ctx.pacMan.advanceAnimation();
+				ctx.pacMan.updateAnimation();
 				ctx.msPacMan.move();
-				ctx.msPacMan.advanceAnimation();
+				ctx.msPacMan.updateAnimation();
 			}
 		};
 

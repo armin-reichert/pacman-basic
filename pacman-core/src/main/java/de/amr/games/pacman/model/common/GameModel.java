@@ -110,21 +110,21 @@ public abstract class GameModel {
 	public boolean isPacImmune;
 
 	/** If Pac-Man is controlled by autopilot. */
-	public boolean autoControlled;
+	public boolean isPacAutoControlled;
 
-	/** The four ghosts in order RED, PINK, CYAN, ORANGE. */
+	/** The ghosts in order RED, PINK, CYAN, ORANGE. */
 	public final Ghost[] theGhosts;
 
-	/** The position of this ghost when the game starts. */
+	/** The position of the ghosts when the game starts. */
 	public final V2d[] homePosition = new V2d[4];
 
-	/** The tile inside the house where this ghosts get revived. Amen. */
+	/** The tiles inside the house where the ghosts get revived. Amen. */
 	public final V2d[] revivalPosition = new V2d[4];
 
-	/** The (unreachable) tile in some corner of the world which is targetted during the scatter phase. */
+	/** The (unreachable) tiles in the corners targeted during the scatter phase. */
 	public final V2i[] scatterTile = new V2i[4];
 
-	/** Timer used to control hunting phase. */
+	/** Timer used to control hunting phases. */
 	public final HuntingTimer huntingTimer = new HuntingTimer();
 
 	/** Current level. */
@@ -270,7 +270,7 @@ public abstract class GameModel {
 			}
 			ghost.setPosition(homePosition[ghost.id]);
 			ghost.show();
-			ghost.doLocked(this);
+			ghost.enterLockedState();
 		});
 	}
 
@@ -313,7 +313,7 @@ public abstract class GameModel {
 	 * Advances the current hunting phase and enters the next phase when the current phase ends. On every change between
 	 * phases, the living ghosts outside of the ghosthouse reverse their move direction.
 	 */
-	public void advanceHunting() {
+	private void advanceHunting() {
 		huntingTimer.advance();
 		if (huntingTimer.hasExpired()) {
 			startHuntingPhase(huntingTimer.phase() + 1);
@@ -352,6 +352,15 @@ public abstract class GameModel {
 
 	// Game logic
 
+	public void update() {
+		pac.update(this);
+		updateGhosts();
+		bonus().update(this);
+		advanceHunting();
+		energizerPulse.advance();
+		powerTimer.advance();
+	}
+
 	public static class WhatHappened {
 		public boolean allFoodEaten;
 		public boolean foodFound;
@@ -367,7 +376,7 @@ public abstract class GameModel {
 		public String unlockReason;
 
 		public WhatHappened() {
-			flashyThing();
+			flashyThing(); // MIB
 		}
 
 		public void flashyThing() {
@@ -403,8 +412,9 @@ public abstract class GameModel {
 			onPacGetsPower();
 		}
 
-		if (hasCredit()) { // TODO remove!
-			checkPacMeetsKiller();
+		// TODO attract mode not yet implemented correctly
+		if (hasCredit()) {
+			happened.pacMetKiller = isPacMeetingKiller();
 			if (happened.pacMetKiller) {
 				onPacMetKiller();
 				return; // enter new game state
@@ -426,10 +436,8 @@ public abstract class GameModel {
 		}
 	}
 
-	private void checkPacMeetsKiller() {
-		if (!isPacImmune && !powerTimer.isRunning() && ghosts(HUNTING_PAC).anyMatch(pac::sameTile)) {
-			happened.pacMetKiller = true;
-		}
+	private boolean isPacMeetingKiller() {
+		return !isPacImmune && !powerTimer.isRunning() && ghosts(HUNTING_PAC).anyMatch(pac::sameTile);
 	}
 
 	private void onPacMetKiller() {
@@ -470,7 +478,7 @@ public abstract class GameModel {
 	private void killGhost(Ghost ghost) {
 		killedIndex[ghost.id] = ghostsKilledByEnergizer;
 		ghostsKilledByEnergizer++;
-		ghost.doEaten(this);
+		ghost.updateEaten(this);
 		int value = ghostValue(killedIndex[ghost.id]);
 		scores.addPoints(value);
 		LOGGER.info("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name, ghost.tile(), value);
@@ -496,7 +504,7 @@ public abstract class GameModel {
 		// leave state EXPIRED to avoid repetitions:
 		powerTimer.resetIndefinitely();
 		huntingTimer.start();
-		ghosts(FRIGHTENED).forEach(ghost -> ghost.doHuntingPac(this));
+		ghosts(FRIGHTENED).forEach(ghost -> ghost.updateHuntingPac(this));
 		GameEvents.publish(GameEventType.PAC_LOSES_POWER, pac.tile());
 	}
 
@@ -549,7 +557,7 @@ public abstract class GameModel {
 		huntingTimer.stop();
 		startPowerTimer(level.ghostFrightenedSeconds);
 		ghosts(HUNTING_PAC).forEach(ghost -> {
-			ghost.doFrightened(this);
+			ghost.updateFrightened(this);
 			ghost.forceTurningBack();
 		});
 		GameEvents.publish(GameEventType.PAC_GETS_POWER, pac.tile());
@@ -557,7 +565,7 @@ public abstract class GameModel {
 
 	// Ghosts
 
-	public void updateGhosts() {
+	private void updateGhosts() {
 		checkGhostCanBeUnlocked(happened);
 		happened.unlockedGhost.ifPresent(ghost -> {
 			unlockGhost(ghost, happened.unlockReason);
@@ -602,9 +610,9 @@ public abstract class GameModel {
 			LOGGER.info("%s Elroy mode %d resumed", redGhost.name, redGhost.elroy);
 		}
 		if (ghost.id == RED_GHOST) {
-			ghost.doHuntingPac(this);
+			ghost.updateHuntingPac(this);
 		} else {
-			ghost.doLeavingHouse(this);
+			ghost.updateLeavingHouse(this);
 		}
 	}
 
@@ -631,8 +639,4 @@ public abstract class GameModel {
 	}
 
 	protected abstract void onBonusReached();
-
-	public void updateBonus() {
-		bonus().update(this);
-	}
 }

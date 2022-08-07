@@ -102,7 +102,7 @@ public class Pac extends Creature implements AnimatedEntity {
 
 	public void update(GameModel game) {
 		if (dead) {
-			advanceAnimation();
+			updateAnimation();
 		} else if (restingTicks > 0) {
 			--restingTicks;
 		} else {
@@ -110,7 +110,7 @@ public class Pac extends Creature implements AnimatedEntity {
 			computeDirectionTowardsTarget();
 			tryMoving();
 			animation().ifPresent(stuck ? EntityAnimation::stop : EntityAnimation::run);
-			advanceAnimation();
+			updateAnimation();
 		}
 	}
 }

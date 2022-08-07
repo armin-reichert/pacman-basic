@@ -137,7 +137,7 @@ public class GameController {
 		if (!game().hasCredit()) {
 			return autopilot;
 		}
-		if (game().autoControlled) {
+		if (game().isPacAutoControlled) {
 			return autopilot;
 		}
 		return normalSteering;

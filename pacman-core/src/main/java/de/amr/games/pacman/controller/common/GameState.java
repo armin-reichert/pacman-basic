@@ -229,12 +229,7 @@ public enum GameState implements FsmState<GameModel> {
 			}
 
 			gc.getSteering().steer(game, game.pac);
-			game.pac.update(game);
-			game.updateGhosts();
-			game.updateBonus();
-			game.advanceHunting();
-			game.energizerPulse.advance();
-			game.powerTimer.advance();
+			game.update();
 			renderSound(game);
 		}
 
@@ -384,7 +379,7 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void onExit(GameModel game) {
 			game.pac.show();
-			game.ghosts(GhostState.EATEN).forEach(ghost -> ghost.doReturningToHouse(game));
+			game.ghosts(GhostState.EATEN).forEach(ghost -> ghost.updateReturningToHouse(game));
 			game.ghosts().forEach(ghost -> ghost.setFlashingStopped(false));
 		}
 	},
