@@ -219,10 +219,10 @@ public class Creature extends Entity {
 		return moveDir == UP ? tilesAhead(n).minus(n, 0) : tilesAhead(n);
 	}
 
-	public void tryReachingTargetTile(GameModel game) {
-		computeDirectionTowardsTarget(game);
-		tryMoving(game);
-	}
+//	public void tryReachingTargetTile(GameModel game) {
+//		computeDirectionTowardsTarget(game);
+//		tryMoving(game);
+//	}
 
 	/**
 	 * As described in the Pac-Man dossier: checks all accessible neighbor tiles in order UP, LEFT, DOWN, RIGHT and
