@@ -286,6 +286,11 @@ public abstract class GameModel {
 		return ghosts().filter(ghost -> ghost.is(states));
 	}
 
+	/**
+	 * @param ghost a ghost
+	 * @param dir   a direction
+	 * @return tells if the ghost can currently move towards the given direction
+	 */
 	public boolean isGhostAllowedMoving(Ghost ghost, Direction dir) {
 		return true;
 	}
