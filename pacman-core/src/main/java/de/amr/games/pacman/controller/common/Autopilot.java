@@ -90,6 +90,7 @@ public class Autopilot implements Steering {
 
 	@Override
 	public void init() {
+		// nothing to do
 	}
 
 	@Override
@@ -158,7 +159,7 @@ public class Autopilot implements Steering {
 			V2i foodTile = findTileFarestFromGhosts(game, findNearestFoodTiles(game));
 			game.pac.targetTile = foodTile;
 		}
-		game.pac.computeDirectionTowardsTarget();
+		game.pac.computeDirectionTowardsTarget(game);
 	}
 
 	private Ghost findHuntingGhostAhead(GameModel game) {
@@ -166,7 +167,7 @@ public class Autopilot implements Steering {
 		boolean energizerFound = false;
 		for (int i = 1; i <= AutopilotData.MAX_GHOST_AHEAD_DETECTION_DIST; ++i) {
 			V2i ahead = pacManTile.plus(game.pac.moveDir().vec.scaled(i));
-			if (!game.pac.canAccessTile(ahead)) {
+			if (!game.pac.canAccessTile(ahead, game)) {
 				break;
 			}
 			if (game.level.world.isEnergizerTile(ahead) && !game.level.world.containsEatenFood(ahead)) {
@@ -191,7 +192,7 @@ public class Autopilot implements Steering {
 		V2i pacManTile = game.pac.tile();
 		for (int i = 1; i <= AutopilotData.MAX_GHOST_BEHIND_DETECTION_DIST; ++i) {
 			V2i behind = pacManTile.plus(game.pac.moveDir().opposite().vec.scaled(i));
-			if (!game.pac.canAccessTile(behind)) {
+			if (!game.pac.canAccessTile(behind, game)) {
 				break;
 			}
 			for (Ghost ghost : game.ghosts().toArray(Ghost[]::new)) {
@@ -211,7 +212,7 @@ public class Autopilot implements Steering {
 				continue;
 			}
 			V2i neighbor = pacManTile.plus(dir.vec);
-			if (game.pac.canAccessTile(neighbor)) {
+			if (game.pac.canAccessTile(neighbor, game)) {
 				escapes.add(dir);
 			}
 		}

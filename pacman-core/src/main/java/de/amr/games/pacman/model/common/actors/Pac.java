@@ -107,8 +107,8 @@ public class Pac extends Creature implements AnimatedEntity {
 			--restingTicks;
 		} else {
 			setRelSpeed(game.powerTimer.isRunning() ? game.level.playerSpeedPowered : game.level.playerSpeed);
-			computeDirectionTowardsTarget();
-			tryMoving();
+			computeDirectionTowardsTarget(game);
+			tryMoving(game);
 			animation().ifPresent(stuck ? EntityAnimation::stop : EntityAnimation::run);
 			updateAnimation();
 		}

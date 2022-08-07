@@ -137,7 +137,7 @@ public class Creature extends Entity {
 	 * @param tile some tile inside or outside of the world
 	 * @return if this creature can access the given tile
 	 */
-	public boolean canAccessTile(V2i tile) {
+	public boolean canAccessTile(V2i tile, GameModel game) {
 		if (world == null) {
 			return false;
 		}
@@ -236,16 +236,16 @@ public class Creature extends Entity {
 		return moveDir == UP ? tilesAhead(n).minus(n, 0) : tilesAhead(n);
 	}
 
-	public void tryReachingTargetTile() {
-		computeDirectionTowardsTarget();
-		tryMoving();
+	public void tryReachingTargetTile(GameModel game) {
+		computeDirectionTowardsTarget(game);
+		tryMoving(game);
 	}
 
 	/**
 	 * As described in the Pac-Man dossier: checks all accessible neighbor tiles in order UP, LEFT, DOWN, RIGHT and
 	 * selects the one with smallest Euclidean distance to the target tile. Reversing the move direction is not allowed.
 	 */
-	public void computeDirectionTowardsTarget() {
+	public void computeDirectionTowardsTarget(GameModel game) {
 		if (world == null || targetTile == null || world.belongsToPortal(tile())) {
 			return;
 		}
@@ -256,7 +256,7 @@ public class Creature extends Entity {
 		double minDist = Double.MAX_VALUE;
 		for (var dir : TURN_PRIORITY) {
 			var neighborTile = tile().plus(dir.vec);
-			if (!isForbiddenDirection(dir) && canAccessTile(neighborTile)) {
+			if (!isForbiddenDirection(dir) && canAccessTile(neighborTile, game)) {
 				double d = neighborTile.euclideanDistance(targetTile);
 				if (d < minDist) {
 					minDist = d;
@@ -273,18 +273,18 @@ public class Creature extends Entity {
 	 * First checks if the creature can teleport, then if the creature can move to its wish direction. If this is not
 	 * possible, it keeps moving to its current move direction.
 	 */
-	public void tryMoving() {
+	public void tryMoving(GameModel game) {
 		var tileBefore = tile();
 		world.portals().forEach(portal -> portal.teleport(this));
 		if (reverse) {
 			setWishDir(moveDir.opposite());
 			reverse = false;
 		}
-		var couldMove = tryMoving(wishDir);
+		var couldMove = tryMoving(wishDir, game);
 		if (couldMove) {
 			setMoveDir(wishDir);
 		} else {
-			couldMove = tryMoving(moveDir);
+			couldMove = tryMoving(moveDir, game);
 		}
 		stuck = !couldMove;
 		newTileEntered = !tileBefore.equals(tile());
@@ -294,11 +294,11 @@ public class Creature extends Entity {
 	 * @param newDir some direction
 	 * @return if creature could move
 	 */
-	protected boolean tryMoving(Direction newDir) {
+	protected boolean tryMoving(Direction newDir, GameModel game) {
 		var newDirVec = new V2d(newDir.vec);
 		var newVelocity = newDirVec.scaled(velocity.length());
 		var sensorPosition = center().plus(newDirVec.scaled(HTS)).plus(newVelocity);
-		var canAccessTile = canAccessTile(tileAtPosition(sensorPosition));
+		var canAccessTile = canAccessTile(tileAtPosition(sensorPosition), game);
 		var sameOrientation = sameOrientation(moveDir, newDir);
 
 		// 1. Move into blocked tile: stay aligned over current tile

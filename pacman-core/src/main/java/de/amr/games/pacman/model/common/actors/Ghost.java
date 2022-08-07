@@ -238,25 +238,25 @@ public class Ghost extends Creature implements AnimatedEntity {
 			setRelSpeed(game.level.ghostSpeed);
 		}
 		if (game.variant == MS_PACMAN && game.huntingTimer.scatterPhase() == 0 && (id == RED_GHOST || id == PINK_GHOST)) {
-			roam();
+			roam(game);
 		} else if (game.huntingTimer.inChasingPhase() || elroy > 0) {
 			targetTile = fnChasingTarget.get();
-			tryReachingTargetTile();
+			tryReachingTargetTile(game);
 		} else {
 			targetTile = game.scatterTile[id];
-			tryReachingTargetTile();
+			tryReachingTargetTile(game);
 		}
 	}
 
-	private void roam() {
+	private void roam(GameModel game) {
 		if (newTileEntered || stuck) {
 			Direction.shuffled().stream()//
 					.filter(dir -> dir != moveDir().opposite())//
-					.filter(dir -> canAccessTile(tile().plus(dir.vec)))//
+					.filter(dir -> canAccessTile(tile().plus(dir.vec), game))//
 					.findAny()//
 					.ifPresent(this::setWishDir);
 		}
-		tryMoving();
+		tryMoving(game);
 	}
 
 	public void enterStateFrightened(GameModel game) {
@@ -279,7 +279,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 	 */
 	private void updateFrightened(GameModel game) {
 		setRelSpeed(insideTunnel() ? game.level.ghostSpeedTunnel : game.level.ghostSpeedFrightened);
-		roam();
+		roam(game);
 		ensureFlashingWhenPowerCeases(game);
 	}
 
@@ -326,7 +326,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 			enterStateEnteringHouse(game);
 		} else {
 			setRelSpeed(2 * game.level.ghostSpeed); // not sure
-			tryReachingTargetTile();
+			tryReachingTargetTile(game);
 		}
 	}
 
@@ -353,14 +353,14 @@ public class Ghost extends Creature implements AnimatedEntity {
 	}
 
 	@Override
-	public boolean canAccessTile(V2i tile) {
+	public boolean canAccessTile(V2i tile, GameModel game) {
 		if (world == null) {
 			return false;
 		}
 		if (world.ghostHouse().isDoorTile(tile)) {
 			return is(ENTERING_HOUSE, LEAVING_HOUSE);
 		}
-		return super.canAccessTile(tile);
+		return super.canAccessTile(tile, game);
 	}
 
 	@Override

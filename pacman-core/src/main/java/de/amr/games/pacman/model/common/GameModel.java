@@ -412,13 +412,10 @@ public abstract class GameModel {
 			onPacGetsPower();
 		}
 
-		// TODO attract mode not yet implemented correctly
-		if (hasCredit()) {
-			happened.pacMetKiller = isPacMeetingKiller();
-			if (happened.pacMetKiller) {
-				onPacMetKiller();
-				return; // enter new game state
-			}
+		happened.pacMetKiller = isPacMeetingKiller();
+		if (happened.pacMetKiller) {
+			onPacMetKiller();
+			return; // enter new game state
 		}
 
 		checkEdibleGhosts();
