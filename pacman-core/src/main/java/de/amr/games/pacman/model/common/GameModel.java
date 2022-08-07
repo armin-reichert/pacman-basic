@@ -478,7 +478,7 @@ public abstract class GameModel {
 	private void killGhost(Ghost ghost) {
 		killedIndex[ghost.id] = ghostsKilledByEnergizer;
 		ghostsKilledByEnergizer++;
-		ghost.updateEaten(this);
+		ghost.enterEaten(this);
 		int value = ghostValue(killedIndex[ghost.id]);
 		scores.addPoints(value);
 		LOGGER.info("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name, ghost.tile(), value);
@@ -504,7 +504,7 @@ public abstract class GameModel {
 		// leave state EXPIRED to avoid repetitions:
 		powerTimer.resetIndefinitely();
 		huntingTimer.start();
-		ghosts(FRIGHTENED).forEach(ghost -> ghost.updateHuntingPac(this));
+		ghosts(FRIGHTENED).forEach(ghost -> ghost.enterHuntingPac(this));
 		GameEvents.publish(GameEventType.PAC_LOSES_POWER, pac.tile());
 	}
 
@@ -557,7 +557,7 @@ public abstract class GameModel {
 		huntingTimer.stop();
 		startPowerTimer(level.ghostFrightenedSeconds);
 		ghosts(HUNTING_PAC).forEach(ghost -> {
-			ghost.updateFrightened(this);
+			ghost.enterFrightened(this);
 			ghost.forceTurningBack();
 		});
 		GameEvents.publish(GameEventType.PAC_GETS_POWER, pac.tile());
@@ -610,9 +610,9 @@ public abstract class GameModel {
 			LOGGER.info("%s Elroy mode %d resumed", redGhost.name, redGhost.elroy);
 		}
 		if (ghost.id == RED_GHOST) {
-			ghost.updateHuntingPac(this);
+			ghost.enterHuntingPac(this);
 		} else {
-			ghost.updateLeavingHouse(this);
+			ghost.enterLeavingHouse(this);
 		}
 	}
 

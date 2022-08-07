@@ -177,6 +177,16 @@ public class Ghost extends Creature implements AnimatedEntity {
 		move();
 	}
 
+	public void enterLeavingHouse(GameModel game) {
+		if (state != LEAVING_HOUSE) {
+			state = LEAVING_HOUSE;
+			setAbsSpeed(0.55);
+			selectAndRunAnimation(
+					isThreatened(game) && game.killedIndex[id] == -1 ? AnimKeys.GHOST_BLUE : AnimKeys.GHOST_COLOR);
+			GameEvents.publish(new GameEvent(game, GameEventType.GHOST_STARTS_LEAVING_HOUSE, this, tile()));
+		}
+	}
+
 	/**
 	 * When a ghost leaves the house, he follows a specific route from his home/revival position to the house exit. This
 	 * logic is house-specific so it is placed in the house implementation. In the Arcade versions of Pac-Man and Ms.
@@ -187,27 +197,26 @@ public class Ghost extends Creature implements AnimatedEntity {
 	 * 
 	 * @param game the game
 	 */
-	public void updateLeavingHouse(GameModel game) {
-		if (state != LEAVING_HOUSE) {
-			state = LEAVING_HOUSE;
-			setAbsSpeed(0.55);
-			selectAndRunAnimation(
-					isThreatened(game) && game.killedIndex[id] == -1 ? AnimKeys.GHOST_BLUE : AnimKeys.GHOST_COLOR);
-			GameEvents.publish(new GameEvent(game, GameEventType.GHOST_STARTS_LEAVING_HOUSE, this, tile()));
-			return;
-		}
+	private void updateLeavingHouse(GameModel game) {
 		if (world.ghostHouse().leadGuyOutOfHouse(this)) {
 			newTileEntered = false;
 			setMoveAndWishDir(LEFT);
 			if (isThreatened(game) && game.killedIndex[id] == -1) {
-				updateFrightened(game);
+				enterFrightened(game);
 			} else {
-				updateHuntingPac(game);
+				enterHuntingPac(game);
 			}
 			game.killedIndex[id] = -1; // TODO rethink this
 			GameEvents.publish(new GameEvent(game, GameEventType.GHOST_COMPLETES_LEAVING_HOUSE, this, tile()));
 		} else {
 			updateGhostInHouseAnimation(game);
+		}
+	}
+
+	public void enterHuntingPac(GameModel game) {
+		if (state != HUNTING_PAC) {
+			state = HUNTING_PAC;
+			selectAndRunAnimation(AnimKeys.GHOST_COLOR);
 		}
 	}
 
@@ -222,12 +231,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 	 * had been to randomize the scatter target of *all* ghosts in Ms. Pac-Man but because of a bug, only the scatter
 	 * target of Blinky and Pinky would have been affected. Who knows?
 	 */
-	public void updateHuntingPac(GameModel game) {
-		if (state != HUNTING_PAC) {
-			state = HUNTING_PAC;
-			selectAndRunAnimation(AnimKeys.GHOST_COLOR);
-			return;
-		}
+	private void updateHuntingPac(GameModel game) {
 		if (insideTunnel()) {
 			setRelSpeed(game.level.ghostSpeedTunnel);
 		} else if (elroy == 1) {
@@ -259,6 +263,13 @@ public class Ghost extends Creature implements AnimatedEntity {
 		tryMoving();
 	}
 
+	public void enterFrightened(GameModel game) {
+		if (state != FRIGHTENED) {
+			state = FRIGHTENED;
+			selectAndRunAnimation(AnimKeys.GHOST_BLUE);
+		}
+	}
+
 	/**
 	 * When frightened, a ghost moves randomly through the world, at each new tile he randomly decides where to move next.
 	 * Reversing the move direction is not allowed in this state either.
@@ -270,12 +281,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 	 * 
 	 * @param game the game
 	 */
-	public void updateFrightened(GameModel game) {
-		if (state != FRIGHTENED) {
-			state = FRIGHTENED;
-			selectAndRunAnimation(AnimKeys.GHOST_BLUE);
-			return;
-		}
+	private void updateFrightened(GameModel game) {
 		setRelSpeed(insideTunnel() ? game.level.ghostSpeedTunnel : game.level.ghostSpeedFrightened);
 		roam();
 		ensureFlashingWhenPowerCeases(game);
@@ -287,11 +293,23 @@ public class Ghost extends Creature implements AnimatedEntity {
 	 * 
 	 * @param game the game
 	 */
-	public void updateEaten(GameModel game) {
+	public void enterEaten(GameModel game) {
 		if (state != EATEN) {
 			state = EATEN;
 			// display ghost value (200, 400, 800, 1600)
 			selectAndRunAnimation(AnimKeys.GHOST_VALUE).ifPresent(anim -> anim.setFrameIndex(game.killedIndex[id]));
+		}
+	}
+
+	private void updateEaten(GameModel game) {
+		// nothing to do
+	}
+
+	public void enterReturningToHouse(GameModel game) {
+		if (state != RETURNING_TO_HOUSE) {
+			state = RETURNING_TO_HOUSE;
+			targetTile = world.ghostHouse().entryTile();
+			selectAndRunAnimation(AnimKeys.GHOST_EYES);
 		}
 	}
 
@@ -301,7 +319,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 	 * 
 	 * @param game the game
 	 */
-	public void updateReturningToHouse(GameModel game) {
+	private void updateReturningToHouse(GameModel game) {
 		if (state != RETURNING_TO_HOUSE) {
 			state = RETURNING_TO_HOUSE;
 			targetTile = world.ghostHouse().entryTile();
@@ -309,10 +327,19 @@ public class Ghost extends Creature implements AnimatedEntity {
 			return;
 		}
 		if (world.ghostHouse().atHouseEntry(this)) {
-			updateEnteringHouse(game);
+			enterEnteringHouse(game);
 		} else {
 			setRelSpeed(2 * game.level.ghostSpeed); // not sure
 			tryReachingTargetTile();
+		}
+	}
+
+	public void enterEnteringHouse(GameModel game) {
+		if (state != ENTERING_HOUSE) {
+			state = ENTERING_HOUSE;
+			targetTile = World.tileAtPosition(game.revivalPosition[id]);
+			GameEvents.publish(new GameEvent(game, GameEventType.GHOST_ENTERS_HOUSE, this, tile()));
+			return;
 		}
 	}
 
@@ -323,16 +350,10 @@ public class Ghost extends Creature implements AnimatedEntity {
 	 * 
 	 * @param game the game
 	 */
-	public void updateEnteringHouse(GameModel game) {
-		if (state != ENTERING_HOUSE) {
-			state = ENTERING_HOUSE;
-			targetTile = World.tileAtPosition(game.revivalPosition[id]);
-			GameEvents.publish(new GameEvent(game, GameEventType.GHOST_ENTERS_HOUSE, this, tile()));
-			return;
-		}
+	private void updateEnteringHouse(GameModel game) {
 		boolean arrivedAtRevivalTile = world.ghostHouse().leadGuyInsideHouse(this, game.revivalPosition[id]);
 		if (arrivedAtRevivalTile) {
-			updateLeavingHouse(game);
+			enterLeavingHouse(game);
 		}
 	}
 

@@ -177,7 +177,7 @@ public class IntroController extends Fsm<State, Context> {
 				ctx.pacMan.show();
 				ctx.pacMan.selectAndRunAnimation(AnimKeys.PAC_MUNCHING);
 				for (Ghost ghost : ctx.ghosts) {
-					ghost.updateHuntingPac(ctx.gameController.game());
+					ghost.enterHuntingPac(ctx.gameController.game());
 					ghost.setPosition(ctx.pacMan.getPosition().plus(16 * (ghost.id + 1), 0));
 					ghost.setMoveAndWishDir(Direction.LEFT);
 					ghost.setAbsSpeed(CHASING_SPEED);
@@ -246,7 +246,7 @@ public class IntroController extends Fsm<State, Context> {
 				nextVictim.ifPresent(victim -> {
 					ctx.ghostKilledTime = timer.tick();
 					ctx.gameController.game().killedIndex[victim.id] = victim.id;
-					victim.updateEaten(ctx.gameController.game());
+					victim.enterEaten(ctx.gameController.game());
 					ctx.pacMan.hide();
 					ctx.pacMan.setAbsSpeed(0);
 					Stream.of(ctx.ghosts).forEach(ghost -> {
