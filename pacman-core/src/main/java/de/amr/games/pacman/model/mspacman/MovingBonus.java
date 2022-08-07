@@ -72,7 +72,7 @@ public class MovingBonus extends Creature implements Bonus {
 			throw new IllegalArgumentException("Route must contain at least one tile");
 		}
 		var startTile = route.get(0);
-		targetTile = startTile;
+		setTargetTile(startTile);
 		placeAtTile(startTile, 0, 0);
 		setMoveAndWishDir(startDir);
 		steering = new FollowTargetTiles(route);

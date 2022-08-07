@@ -248,11 +248,11 @@ public class Ghost extends Creature implements AnimatedEntity {
 		if (game.variant == MS_PACMAN && game.huntingTimer.scatterPhase() == 0 && (id == RED_GHOST || id == PINK_GHOST)) {
 			roam(game);
 		} else if (game.huntingTimer.inChasingPhase() || elroy > 0) {
-			targetTile = fnChasingTarget.get();
+			setTargetTile(fnChasingTarget.get());
 			computeDirectionTowardsTarget(game);
 			tryMoving(game);
 		} else {
-			targetTile = game.scatterTile[id];
+			setTargetTile(game.scatterTile[id]);
 			computeDirectionTowardsTarget(game);
 			tryMoving(game);
 		}
@@ -314,7 +314,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 	public void enterStateReturningToHouse(GameModel game) {
 		if (state != RETURNING_TO_HOUSE) {
 			state = RETURNING_TO_HOUSE;
-			targetTile = game.world().ghostHouse().entryTile();
+			setTargetTile(game.world().ghostHouse().entryTile());
 			selectAndRunAnimation(AnimKeys.GHOST_EYES);
 		}
 	}
@@ -338,7 +338,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 	public void enterStateEnteringHouse(GameModel game) {
 		if (state != ENTERING_HOUSE) {
 			state = ENTERING_HOUSE;
-			targetTile = World.tileAt(game.revivalPosition[id]);
+			setTargetTile(World.tileAt(game.revivalPosition[id]));
 			GameEvents.publish(new GameEvent(game, GameEventType.GHOST_ENTERS_HOUSE, this, tile()));
 		}
 	}

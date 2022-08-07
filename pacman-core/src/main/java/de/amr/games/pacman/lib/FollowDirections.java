@@ -79,7 +79,7 @@ public class FollowDirections implements Steering {
 		boolean intersection = game.world().isIntersection(guy.tile());
 		if (intersection && !gotDirection) {
 			guy.setWishDir(dir(directions.charAt(currentIndex)));
-			guy.targetTile = guy.tile().plus(guy.wishDir().vec);
+			guy.setTargetTile(guy.tile().plus(guy.wishDir().vec));
 			LOGGER.trace("At intersection %s go %s", guy.tile(), guy.wishDir());
 			gotDirection = true;
 			++currentIndex;

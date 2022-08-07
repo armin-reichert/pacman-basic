@@ -32,6 +32,8 @@ import static de.amr.games.pacman.model.common.world.World.TS;
 import static de.amr.games.pacman.model.common.world.World.originOfTile;
 import static de.amr.games.pacman.model.common.world.World.tileAt;
 
+import java.util.Optional;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -62,7 +64,7 @@ public class Creature extends Entity {
 	private Direction wishDir;
 
 	/** The target tile. Can be inaccessible or outside of the world. */
-	public V2i targetTile;
+	private V2i targetTile;
 
 	/** Tells if the creature entered a new tile with its last move or placement. */
 	public boolean newTileEntered;
@@ -108,6 +110,14 @@ public class Creature extends Entity {
 	// offset: (0, 0) if centered, range: [-4, +4)
 	public V2d offset() {
 		return position.minus(originOfTile(tile()));
+	}
+
+	public void setTargetTile(V2i tile) {
+		targetTile = tile;
+	}
+
+	public Optional<V2i> targetTile() {
+		return Optional.ofNullable(targetTile);
 	}
 
 	public boolean sameTile(Creature other) {
@@ -236,7 +246,6 @@ public class Creature extends Entity {
 			}
 		}
 		setWishDir(selectedDir);
-		LOGGER.trace("New wish dir %s for %s", selectedDir, this);
 	}
 
 	/**
