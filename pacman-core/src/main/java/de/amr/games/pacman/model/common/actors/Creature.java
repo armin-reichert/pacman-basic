@@ -41,7 +41,6 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.GameModel;
-import de.amr.games.pacman.model.common.world.World;
 
 /**
  * Base class for creatures which can move through the world.
@@ -104,7 +103,7 @@ public class Creature extends Entity {
 
 	// tile position is the tile containing the center of the bounding box
 	public V2i tile() {
-		return World.tileAt(center());
+		return tileAt(center());
 	}
 
 	// offset: (0, 0) if centered, range: [-4, +4)
@@ -234,7 +233,7 @@ public class Creature extends Entity {
 	 * As described in the Pac-Man dossier: checks all accessible neighbor tiles in order UP, LEFT, DOWN, RIGHT and
 	 * selects the one with smallest Euclidean distance to the target tile. Reversing the move direction is not allowed.
 	 */
-	public void computeDirectionTowardsTarget(GameModel game) {
+	public void takeDirectionTowardsTarget(GameModel game) {
 		if (targetTile == null || game.world().belongsToPortal(tile())) {
 			return;
 		}

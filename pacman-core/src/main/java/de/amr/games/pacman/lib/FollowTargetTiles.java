@@ -72,7 +72,7 @@ public class FollowTargetTiles implements Steering {
 			}
 		}
 		guy.setTargetTile(route.get(currentTargetIndex));
-		guy.computeDirectionTowardsTarget(game);
+		guy.takeDirectionTowardsTarget(game);
 		guy.tryMoving(game);
 	}
 }
