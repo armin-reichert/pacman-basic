@@ -351,8 +351,8 @@ public class Ghost extends Creature implements AnimatedEntity {
 	 * @param game the game
 	 */
 	private void updateEnteringHouse(GameModel game) {
-		boolean arrivedAtRevivalTile = game.world().ghostHouse().leadGuyInside(this, game.revivalPosition[id]);
-		if (arrivedAtRevivalTile) {
+		boolean atRevivalTile = game.world().ghostHouse().leadGuyInside(this, game.revivalPosition[id]);
+		if (atRevivalTile) {
 			enterStateLeavingHouse(game);
 		}
 	}
