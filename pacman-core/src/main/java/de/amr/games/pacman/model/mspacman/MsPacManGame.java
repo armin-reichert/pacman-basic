@@ -367,9 +367,7 @@ public class MsPacManGame extends GameModel {
 			throw new IllegalArgumentException("Level number must be at least 1, but is: " + levelNumber);
 		}
 		level = createLevel(levelNumber);
-		guys().forEach(guy -> guy.setWorld(level.world));
 		initGhosts();
-		movingBonus.setWorld(level.world);
 		ghostsKilledByEnergizer = 0;
 		scores.gameScore.levelNumber = levelNumber;
 	}

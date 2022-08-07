@@ -196,7 +196,6 @@ public class PacManGame extends GameModel {
 	@Override
 	public void setLevel(int levelNumber) {
 		level = createLevel(levelNumber);
-		guys().forEach(guy -> guy.setWorld(level.world));
 		initGhosts();
 		bonus.setInactive();
 		ghostsKilledByEnergizer = 0;

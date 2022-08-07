@@ -32,9 +32,6 @@ import static de.amr.games.pacman.model.common.world.World.TS;
 import static de.amr.games.pacman.model.common.world.World.positionOfTile;
 import static de.amr.games.pacman.model.common.world.World.tileAtPosition;
 
-import java.util.Objects;
-import java.util.Optional;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -57,9 +54,6 @@ public class Creature extends Entity {
 
 	/** Readable name, for display and logging purposes. */
 	public final String name;
-
-	/** The world where this creature moves through. May be null. */
-	protected World world;
 
 	/** The current move direction. */
 	private Direction moveDir;
@@ -138,6 +132,7 @@ public class Creature extends Entity {
 	 * @return if this creature can access the given tile
 	 */
 	public boolean canAccessTile(V2i tile, GameModel game) {
+		var world = game.world();
 		if (world == null) {
 			return false;
 		}
@@ -145,14 +140,6 @@ public class Creature extends Entity {
 			return !world.isWall(tile) && !world.ghostHouse().isDoorTile(tile);
 		}
 		return world.belongsToPortal(tile);
-	}
-
-	public Optional<World> getWorld() {
-		return Optional.ofNullable(world);
-	}
-
-	public void setWorld(World world) {
-		this.world = Objects.requireNonNull(world);
 	}
 
 	/**
@@ -242,6 +229,7 @@ public class Creature extends Entity {
 	 * selects the one with smallest Euclidean distance to the target tile. Reversing the move direction is not allowed.
 	 */
 	public void computeDirectionTowardsTarget(GameModel game) {
+		var world = game.world();
 		if (world == null || targetTile == null || world.belongsToPortal(tile())) {
 			return;
 		}
@@ -271,6 +259,7 @@ public class Creature extends Entity {
 	 * possible, it keeps moving to its current move direction.
 	 */
 	public void tryMoving(GameModel game) {
+		var world = game.world();
 		var tileBefore = tile();
 		world.portals().forEach(portal -> portal.teleport(this));
 		if (reverse) {

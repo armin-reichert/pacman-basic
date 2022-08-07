@@ -110,16 +110,10 @@ public class IntroController extends Fsm<State, Context> {
 						new Ghost(Ghost.CYAN_GHOST, "Inky"), //
 						new Ghost(Ghost.ORANGE_GHOST, "Clyde"), //
 				};
-				for (Ghost ghost : ctx.ghosts) {
-					ghost.setWorld(ctx.gameController.game().world());
-				}
 			}
 
 			@Override
 			public void onUpdate(Context ctx) {
-//				controller.changeState(READY_TO_PLAY);
-//				return;
-
 				if (timer.tick() == 1) {
 					ctx.gameController.game().scores.gameScore.visible = true;
 					ctx.gameController.game().scores.highScore.visible = true;
