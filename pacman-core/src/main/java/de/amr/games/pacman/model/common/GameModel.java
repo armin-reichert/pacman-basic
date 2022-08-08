@@ -273,20 +273,12 @@ public abstract class GameModel {
 		Arrays.fill(killedIndex, -1);
 		ghosts().forEach(ghost -> {
 			ghost.reset();
-			switch (ghost.id) {
-			case Ghost.RED_GHOST -> {
-				ghost.setMoveAndWishDir(Direction.LEFT);
-			}
-			case Ghost.PINK_GHOST -> {
-				ghost.setMoveAndWishDir(Direction.DOWN);
-			}
-			case Ghost.CYAN_GHOST, Ghost.ORANGE_GHOST -> {
-				ghost.setMoveAndWishDir(Direction.UP);
-			}
-			default -> {
-				// ignore
-			}
-			}
+			ghost.setMoveAndWishDir(switch (ghost.id) {
+			case Ghost.RED_GHOST -> Direction.LEFT;
+			case Ghost.PINK_GHOST -> Direction.DOWN;
+			case Ghost.CYAN_GHOST, Ghost.ORANGE_GHOST -> Direction.UP;
+			default -> throw new IllegalArgumentException("Ghost ID: " + ghost.id);
+			});
 			ghost.setPosition(homePosition[ghost.id]);
 			ghost.show();
 			ghost.enterStateLocked();
