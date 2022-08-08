@@ -306,11 +306,9 @@ public class Ghost extends Creature implements AnimatedEntity {
 	}
 
 	public void enterStateReturningToHouse(GameModel game) {
-		if (state != RETURNING_TO_HOUSE) {
-			state = RETURNING_TO_HOUSE;
-			setTargetTile(game.world().ghostHouse().entryTile());
-			selectAndRunAnimation(AnimKeys.GHOST_EYES);
-		}
+		state = RETURNING_TO_HOUSE;
+		setTargetTile(game.world().ghostHouse().entryTile());
+		selectAndRunAnimation(AnimKeys.GHOST_EYES);
 	}
 
 	/**
