@@ -404,10 +404,10 @@ public abstract class GameModel {
 		public String unlockReason;
 
 		public WhatHappened() {
-			flashyThing(); // MIB
+			forgetEverything();
 		}
 
-		public void flashyThing() {
+		public void forgetEverything() {
 			allFoodEaten = false;
 			foodFound = false;
 			energizerFound = false;

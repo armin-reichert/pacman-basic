@@ -206,7 +206,7 @@ public enum GameState implements FsmState<GameModel> {
 
 		@Override
 		public void onUpdate(GameModel game) {
-			game.reports.flashyThing(); // ich scholze jetzt
+			game.reports.forgetEverything(); // ich scholze jetzt
 
 			game.whatHappenedWithFood();
 			if (game.reports.allFoodEaten) {
