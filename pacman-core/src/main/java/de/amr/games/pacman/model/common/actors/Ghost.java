@@ -75,7 +75,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 	private GhostState state;
 
 	/** "Cruise Elroy" mode. Values: <code>0 (off), 1, -1 (disabled), 2, -2 (disabled)</code>. */
-	public int elroy;
+	public byte elroy;
 
 	/** Function computing the chasing target of this ghost. */
 	private Supplier<V2i> fnChasingTarget = () -> null;

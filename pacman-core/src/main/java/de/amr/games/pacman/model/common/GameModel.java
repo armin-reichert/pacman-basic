@@ -470,7 +470,7 @@ public abstract class GameModel {
 		var redGhost = theGhosts[RED_GHOST];
 		if (redGhost.elroy > 0) {
 			LOGGER.info("Cruise Elroy mode %d for %s disabled", redGhost.elroy, redGhost.name);
-			redGhost.elroy = -redGhost.elroy; // negative value means "disabled"
+			redGhost.elroy = (byte) -redGhost.elroy; // negative value means "disabled"
 		}
 		globalDotCounter = 0;
 		globalDotCounterEnabled = true;
@@ -631,7 +631,7 @@ public abstract class GameModel {
 		var redGhost = theGhosts[RED_GHOST];
 		var orangeGhost = theGhosts[ORANGE_GHOST];
 		if (ghost == orangeGhost && redGhost.elroy < 0) {
-			redGhost.elroy = -redGhost.elroy; // resume Elroy mode
+			redGhost.elroy = (byte) -redGhost.elroy; // resume Elroy mode
 			LOGGER.info("%s Elroy mode %d resumed", redGhost.name, redGhost.elroy);
 		}
 		if (ghost.id == RED_GHOST) {
