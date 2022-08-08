@@ -117,6 +117,9 @@ public abstract class GameModel {
 	/** The ghosts in order RED, PINK, CYAN, ORANGE. */
 	public final Ghost[] theGhosts;
 
+	/** "Cruise Elroy" mode. Values: <code>0 (off), 1, -1 (disabled), 2, -2 (disabled)</code>. */
+	public byte elroy;
+
 	/** The position of the ghosts when the game starts. */
 	public final V2d[] homePosition = new V2d[4];
 
@@ -242,8 +245,8 @@ public abstract class GameModel {
 	protected void initGhosts() {
 		for (var ghost : theGhosts) {
 			ghostDotCounter[ghost.id] = 0;
-			ghost.elroy = 0;
 		}
+		elroy = 0;
 		if (world().ghostHouse() instanceof ArcadeGhostHouse house) {
 			homePosition[RED_GHOST] = house.seatPosition(house.entryTile());
 			revivalPosition[RED_GHOST] = house.seatPosition(house.seatMiddleTile());
@@ -272,15 +275,12 @@ public abstract class GameModel {
 			ghost.reset();
 			switch (ghost.id) {
 			case Ghost.RED_GHOST -> {
-				ghost.setAbsSpeed(0);
 				ghost.setMoveAndWishDir(Direction.LEFT);
 			}
 			case Ghost.PINK_GHOST -> {
-				ghost.setAbsSpeed(0.5);
 				ghost.setMoveAndWishDir(Direction.DOWN);
 			}
 			case Ghost.CYAN_GHOST, Ghost.ORANGE_GHOST -> {
-				ghost.setAbsSpeed(0.5);
 				ghost.setMoveAndWishDir(Direction.UP);
 			}
 			default -> {
@@ -468,9 +468,9 @@ public abstract class GameModel {
 	private void onPacMetKiller() {
 		pac.die();
 		var redGhost = theGhosts[RED_GHOST];
-		if (redGhost.elroy > 0) {
-			LOGGER.info("Cruise Elroy mode %d for %s disabled", redGhost.elroy, redGhost.name);
-			redGhost.elroy = (byte) -redGhost.elroy; // negative value means "disabled"
+		if (elroy > 0) {
+			LOGGER.info("Cruise Elroy mode %d for %s disabled", elroy, redGhost.name);
+			elroy = (byte) -elroy; // negative value means "disabled"
 		}
 		globalDotCounter = 0;
 		globalDotCounterEnabled = true;
@@ -570,10 +570,10 @@ public abstract class GameModel {
 		var redGhost = theGhosts[RED_GHOST];
 		var foodRemaining = world().foodRemaining();
 		if (foodRemaining == level.elroy1DotsLeft) {
-			redGhost.elroy = 1;
+			elroy = 1;
 			LOGGER.info("%s becomes Cruise Elroy 1", redGhost.name);
 		} else if (foodRemaining == level.elroy2DotsLeft) {
-			redGhost.elroy = 2;
+			elroy = 2;
 			LOGGER.info("%s becomes Cruise Elroy 2", redGhost.name);
 		}
 	}
@@ -626,19 +626,18 @@ public abstract class GameModel {
 		});
 	}
 
-	private void unlockGhost(Ghost ghost, String reason) {
-		LOGGER.info("Unlock ghost %s (%s)", ghost.name, reason);
+	private void unlockGhost(Ghost unlockedGhost, String reason) {
+		LOGGER.info("Unlock ghost %s (%s)", unlockedGhost.name, reason);
 		var redGhost = theGhosts[RED_GHOST];
-		var orangeGhost = theGhosts[ORANGE_GHOST];
-		if (ghost == orangeGhost && redGhost.elroy < 0) {
-			redGhost.elroy = (byte) -redGhost.elroy; // resume Elroy mode
-			LOGGER.info("%s Elroy mode %d resumed", redGhost.name, redGhost.elroy);
+		if (unlockedGhost.id == ORANGE_GHOST && elroy < 0) {
+			elroy = (byte) -elroy; // resume Elroy mode
+			LOGGER.info("%s Elroy mode %d resumed", redGhost.name, elroy);
 		}
-		if (ghost.id == RED_GHOST) {
-			ghost.setMoveAndWishDir(LEFT);
-			ghost.enterStateHuntingPac(this);
+		if (unlockedGhost == redGhost) {
+			unlockedGhost.setMoveAndWishDir(LEFT);
+			unlockedGhost.enterStateHuntingPac(this);
 		} else {
-			ghost.enterStateLeavingHouse(this);
+			unlockedGhost.enterStateLeavingHouse(this);
 		}
 	}
 

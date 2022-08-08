@@ -74,9 +74,6 @@ public class Ghost extends Creature implements AnimatedEntity {
 	/** The current state of this ghost. */
 	private GhostState state;
 
-	/** "Cruise Elroy" mode. Values: <code>0 (off), 1, -1 (disabled), 2, -2 (disabled)</code>. */
-	public byte elroy;
-
 	/** Function computing the chasing target of this ghost. */
 	private Supplier<V2i> fnChasingTarget = () -> null;
 
@@ -151,6 +148,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 	public void enterStateLocked() {
 		if (state != LOCKED) {
 			state = LOCKED;
+			setAbsSpeed(id == RED_GHOST ? 0 : 0.5);
 			selectAndResetAnimation(AnimKeys.GHOST_COLOR);
 		}
 	}
@@ -189,7 +187,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 	public void enterStateLeavingHouse(GameModel game) {
 		if (state != LEAVING_HOUSE) {
 			state = LEAVING_HOUSE;
-			setAbsSpeed(0.55);
+			setAbsSpeed(0.5);
 			selectAndRunAnimation(
 					game.powerTimer.isRunning() && game.killedIndex[id] == -1 ? AnimKeys.GHOST_BLUE : AnimKeys.GHOST_COLOR);
 			GameEvents.publish(new GameEvent(game, GameEventType.GHOST_STARTS_LEAVING_HOUSE, this, tile()));
@@ -207,7 +205,8 @@ public class Ghost extends Creature implements AnimatedEntity {
 	 * @param game the game
 	 */
 	private void updateLeavingHouse(GameModel game) {
-		if (game.world().ghostHouse().leadGuyOutOfHouse(this)) {
+		var outOfHouse = game.world().ghostHouse().leadGuyOutOfHouse(this);
+		if (outOfHouse) {
 			newTileEntered = false;
 			setMoveAndWishDir(LEFT);
 			if (game.powerTimer.isRunning() && game.killedIndex[id] == -1) {
@@ -243,16 +242,16 @@ public class Ghost extends Creature implements AnimatedEntity {
 	private void updateHuntingPac(GameModel game) {
 		if (insideTunnel(game)) {
 			setRelSpeed(game.level.ghostSpeedTunnel);
-		} else if (elroy == 1) {
+		} else if (id == RED_GHOST && game.elroy == 1) {
 			setRelSpeed(game.level.elroy1Speed);
-		} else if (elroy == 2) {
+		} else if (id == RED_GHOST && game.elroy == 2) {
 			setRelSpeed(game.level.elroy2Speed);
 		} else {
 			setRelSpeed(game.level.ghostSpeed);
 		}
 		if (game.variant == MS_PACMAN && game.huntingTimer.scatterPhase() == 0 && (id == RED_GHOST || id == PINK_GHOST)) {
 			roam(game);
-		} else if (game.huntingTimer.inChasingPhase() || elroy > 0) {
+		} else if (game.huntingTimer.inChasingPhase() || game.elroy > 0) {
 			setTargetTile(fnChasingTarget.get());
 			navigate(game);
 			tryMoving(game);
