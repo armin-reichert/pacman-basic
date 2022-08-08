@@ -35,6 +35,7 @@ import static de.amr.games.pacman.model.common.actors.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.model.common.actors.GhostState.LOCKED;
 import static de.amr.games.pacman.model.common.actors.GhostState.RETURNING_TO_HOUSE;
 import static de.amr.games.pacman.model.common.world.World.HTS;
+import static de.amr.games.pacman.model.common.world.World.tileAt;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -52,7 +53,6 @@ import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.lib.animation.AnimatedEntity;
 import de.amr.games.pacman.lib.animation.EntityAnimationSet;
 import de.amr.games.pacman.model.common.GameModel;
-import de.amr.games.pacman.model.common.world.World;
 
 /**
  * There are 4 ghosts with different "personalities".
@@ -251,7 +251,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 		}
 		if (game.variant == MS_PACMAN && game.huntingTimer.scatterPhase() == 0 && (id == RED_GHOST || id == PINK_GHOST)) {
 			roam(game);
-		} else if (game.huntingTimer.inChasingPhase() || game.cruiseElroyState > 0) {
+		} else if (game.huntingTimer.inChasingPhase() || id == RED_GHOST && game.cruiseElroyState > 0) {
 			setTargetTile(fnChasingTarget.get());
 			navigate(game);
 			tryMoving(game);
@@ -342,7 +342,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 	public void enterStateEnteringHouse(GameModel game) {
 		if (state != ENTERING_HOUSE) {
 			state = ENTERING_HOUSE;
-			setTargetTile(World.tileAt(game.revivalPosition[id]));
+			setTargetTile(tileAt(game.revivalPosition[id]));
 			GameEvents.publish(new GameEvent(game, GameEventType.GHOST_ENTERS_HOUSE, this, tile()));
 		}
 	}
