@@ -183,13 +183,11 @@ public class Ghost extends Creature implements AnimatedEntity {
 	}
 
 	public void enterStateLeavingHouse(GameModel game) {
-		if (state != LEAVING_HOUSE) {
-			state = LEAVING_HOUSE;
-			setAbsSpeed(0.5);
-			selectAndRunAnimation(
-					game.powerTimer.isRunning() && game.killedIndex[id] == -1 ? AnimKeys.GHOST_BLUE : AnimKeys.GHOST_COLOR);
-			GameEvents.publish(new GameEvent(game, GameEventType.GHOST_STARTS_LEAVING_HOUSE, this, tile()));
-		}
+		state = LEAVING_HOUSE;
+		setAbsSpeed(0.5);
+		selectAndRunAnimation(
+				game.powerTimer.isRunning() && game.killedIndex[id] == -1 ? AnimKeys.GHOST_BLUE : AnimKeys.GHOST_COLOR);
+		GameEvents.publish(new GameEvent(game, GameEventType.GHOST_STARTS_LEAVING_HOUSE, this, tile()));
 	}
 
 	/**
@@ -220,10 +218,8 @@ public class Ghost extends Creature implements AnimatedEntity {
 	}
 
 	public void enterStateHuntingPac(GameModel game) {
-		if (state != HUNTING_PAC) {
-			state = HUNTING_PAC;
-			selectAndRunAnimation(AnimKeys.GHOST_COLOR);
-		}
+		state = HUNTING_PAC;
+		selectAndRunAnimation(AnimKeys.GHOST_COLOR);
 	}
 
 	/**
@@ -272,10 +268,8 @@ public class Ghost extends Creature implements AnimatedEntity {
 	}
 
 	public void enterStateFrightened(GameModel game) {
-		if (state != FRIGHTENED) {
-			state = FRIGHTENED;
-			selectAndRunAnimation(AnimKeys.GHOST_BLUE);
-		}
+		state = FRIGHTENED;
+		selectAndRunAnimation(AnimKeys.GHOST_BLUE);
 	}
 
 	/**
@@ -302,11 +296,9 @@ public class Ghost extends Creature implements AnimatedEntity {
 	 * @param game the game
 	 */
 	public void enterStateEaten(GameModel game) {
-		if (state != EATEN) {
-			state = EATEN;
-			// display ghost value (200, 400, 800, 1600)
-			selectAndRunAnimation(AnimKeys.GHOST_VALUE).ifPresent(anim -> anim.setFrameIndex(game.killedIndex[id]));
-		}
+		state = EATEN;
+		// display ghost value (200, 400, 800, 1600)
+		selectAndRunAnimation(AnimKeys.GHOST_VALUE).ifPresent(anim -> anim.setFrameIndex(game.killedIndex[id]));
 	}
 
 	private void updateEaten(GameModel game) {
@@ -338,11 +330,9 @@ public class Ghost extends Creature implements AnimatedEntity {
 	}
 
 	public void enterStateEnteringHouse(GameModel game) {
-		if (state != ENTERING_HOUSE) {
-			state = ENTERING_HOUSE;
-			setTargetTile(tileAt(game.revivalPosition[id]));
-			GameEvents.publish(new GameEvent(game, GameEventType.GHOST_ENTERS_HOUSE, this, tile()));
-		}
+		state = ENTERING_HOUSE;
+		setTargetTile(tileAt(game.revivalPosition[id]));
+		GameEvents.publish(new GameEvent(game, GameEventType.GHOST_ENTERS_HOUSE, this, tile()));
 	}
 
 	/**
