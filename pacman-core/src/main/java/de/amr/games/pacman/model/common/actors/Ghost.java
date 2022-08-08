@@ -242,16 +242,16 @@ public class Ghost extends Creature implements AnimatedEntity {
 	private void updateHuntingPac(GameModel game) {
 		if (insideTunnel(game)) {
 			setRelSpeed(game.level.ghostSpeedTunnel);
-		} else if (id == RED_GHOST && game.elroy == 1) {
+		} else if (id == RED_GHOST && game.cruiseElroyState == 1) {
 			setRelSpeed(game.level.elroy1Speed);
-		} else if (id == RED_GHOST && game.elroy == 2) {
+		} else if (id == RED_GHOST && game.cruiseElroyState == 2) {
 			setRelSpeed(game.level.elroy2Speed);
 		} else {
 			setRelSpeed(game.level.ghostSpeed);
 		}
 		if (game.variant == MS_PACMAN && game.huntingTimer.scatterPhase() == 0 && (id == RED_GHOST || id == PINK_GHOST)) {
 			roam(game);
-		} else if (game.huntingTimer.inChasingPhase() || game.elroy > 0) {
+		} else if (game.huntingTimer.inChasingPhase() || game.cruiseElroyState > 0) {
 			setTargetTile(fnChasingTarget.get());
 			navigate(game);
 			tryMoving(game);

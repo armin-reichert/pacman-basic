@@ -117,8 +117,8 @@ public abstract class GameModel {
 	/** The ghosts in order RED, PINK, CYAN, ORANGE. */
 	public final Ghost[] theGhosts;
 
-	/** "Cruise Elroy" mode. Values: <code>0 (off), 1, -1 (disabled), 2, -2 (disabled)</code>. */
-	public byte elroy;
+	/** "Cruise Elroy" state. Values: <code>0, 1, 2, -1, -2 (0= "off", negative value = "disabled")</code>. */
+	public byte cruiseElroyState;
 
 	/** The position of the ghosts when the game starts. */
 	public final V2d[] homePosition = new V2d[4];
@@ -246,7 +246,7 @@ public abstract class GameModel {
 		for (var ghost : theGhosts) {
 			ghostDotCounter[ghost.id] = 0;
 		}
-		elroy = 0;
+		cruiseElroyState = 0;
 		if (world().ghostHouse() instanceof ArcadeGhostHouse house) {
 			homePosition[RED_GHOST] = house.seatPosition(house.entryTile());
 			revivalPosition[RED_GHOST] = house.seatPosition(house.seatMiddleTile());
@@ -468,9 +468,9 @@ public abstract class GameModel {
 	private void onPacMetKiller() {
 		pac.die();
 		var redGhost = theGhosts[RED_GHOST];
-		if (elroy > 0) {
-			LOGGER.info("Cruise Elroy mode %d for %s disabled", elroy, redGhost.name);
-			elroy = (byte) -elroy; // negative value means "disabled"
+		if (cruiseElroyState > 0) {
+			LOGGER.info("Cruise Elroy mode %d for %s disabled", cruiseElroyState, redGhost.name);
+			cruiseElroyState = (byte) -cruiseElroyState; // negative value means "disabled"
 		}
 		globalDotCounter = 0;
 		globalDotCounterEnabled = true;
@@ -570,10 +570,10 @@ public abstract class GameModel {
 		var redGhost = theGhosts[RED_GHOST];
 		var foodRemaining = world().foodRemaining();
 		if (foodRemaining == level.elroy1DotsLeft) {
-			elroy = 1;
+			cruiseElroyState = 1;
 			LOGGER.info("%s becomes Cruise Elroy 1", redGhost.name);
 		} else if (foodRemaining == level.elroy2DotsLeft) {
-			elroy = 2;
+			cruiseElroyState = 2;
 			LOGGER.info("%s becomes Cruise Elroy 2", redGhost.name);
 		}
 	}
@@ -629,9 +629,9 @@ public abstract class GameModel {
 	private void unlockGhost(Ghost unlockedGhost, String reason) {
 		LOGGER.info("Unlock ghost %s (%s)", unlockedGhost.name, reason);
 		var redGhost = theGhosts[RED_GHOST];
-		if (unlockedGhost.id == ORANGE_GHOST && elroy < 0) {
-			elroy = (byte) -elroy; // resume Elroy mode
-			LOGGER.info("%s Elroy mode %d resumed", redGhost.name, elroy);
+		if (unlockedGhost.id == ORANGE_GHOST && cruiseElroyState < 0) {
+			cruiseElroyState = (byte) -cruiseElroyState; // resume Elroy mode
+			LOGGER.info("%s Elroy mode %d resumed", redGhost.name, cruiseElroyState);
 		}
 		if (unlockedGhost == redGhost) {
 			unlockedGhost.setMoveAndWishDir(LEFT);
