@@ -146,11 +146,9 @@ public class Ghost extends Creature implements AnimatedEntity {
 	}
 
 	public void enterStateLocked() {
-		if (state != LOCKED) {
-			state = LOCKED;
-			setAbsSpeed(id == RED_GHOST ? 0 : 0.5);
-			selectAndResetAnimation(AnimKeys.GHOST_COLOR);
-		}
+		state = LOCKED;
+		setAbsSpeed(id == RED_GHOST ? 0 : 0.5);
+		selectAndResetAnimation(AnimKeys.GHOST_COLOR);
 	}
 
 	/**
@@ -164,17 +162,6 @@ public class Ghost extends Creature implements AnimatedEntity {
 		updateGhostInHouseAnimation(game);
 	}
 
-	private void updateGhostInHouseAnimation(GameModel game) {
-		if (game.powerTimer.isRunning() && game.killedIndex[id] == -1) {
-			if (!isAnimationSelected(AnimKeys.GHOST_FLASHING)) {
-				selectAndRunAnimation(AnimKeys.GHOST_BLUE);
-			}
-			ensureFlashingWhenPowerCeases(game);
-		} else {
-			selectAndRunAnimation(AnimKeys.GHOST_COLOR);
-		}
-	}
-
 	private void bounce(double zeroY) {
 		if (position.y() <= zeroY - HTS) {
 			setMoveAndWishDir(DOWN);
@@ -182,6 +169,17 @@ public class Ghost extends Creature implements AnimatedEntity {
 			setMoveAndWishDir(UP);
 		}
 		move();
+	}
+
+	private void updateGhostInHouseAnimation(GameModel game) {
+		if (game.powerTimer.isRunning()) {
+			if (!isAnimationSelected(AnimKeys.GHOST_FLASHING)) {
+				selectAndRunAnimation(AnimKeys.GHOST_BLUE);
+			}
+			ensureFlashingWhenPowerCeases(game);
+		} else {
+			selectAndRunAnimation(AnimKeys.GHOST_COLOR);
+		}
 	}
 
 	public void enterStateLeavingHouse(GameModel game) {
