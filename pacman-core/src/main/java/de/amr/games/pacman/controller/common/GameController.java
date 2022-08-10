@@ -66,8 +66,7 @@ import de.amr.games.pacman.model.pacman.PacManGame;
 public class GameController extends Fsm<GameState, GameModel> {
 
 	private final Map<GameVariant, GameModel> games = Map.of(//
-			GameVariant.MS_PACMAN, new MsPacManGame(), //
-			GameVariant.PACMAN, new PacManGame());
+			GameVariant.MS_PACMAN, new MsPacManGame(), GameVariant.PACMAN, new PacManGame());
 	private final Steering autopilot = new Autopilot();
 	private Steering normalSteering;
 	private GameVariant gameVariant = GameVariant.PACMAN;
