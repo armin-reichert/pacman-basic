@@ -86,7 +86,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 
 	@Override
 	public GameModel context() {
-		return GameController.this.game();
+		return game();
 	}
 
 	public void terminateCurrentState() {
