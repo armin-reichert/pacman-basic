@@ -63,58 +63,31 @@ import de.amr.games.pacman.model.pacman.PacManGame;
  *      behavior</a>
  * @see <a href="http://superpacman.com/mspacman/">Ms. Pac-Man</a>
  */
-public class GameController {
-
-	class GameControllerFSM extends Fsm<GameState, GameModel> {
-
-		private GameControllerFSM() {
-			states = GameState.values();
-			for (var state : states) {
-				state.gc = GameController.this;
-			}
-			// map FSM state change events to game state change events including the "context"
-			addStateChangeListener(
-					(oldState, newState) -> GameEvents.publish(new GameStateChangeEvent(context(), oldState, newState)));
-		}
-
-		@Override
-		public GameModel context() {
-			return GameController.this.game();
-		}
-	}
-
-	private final GameControllerFSM fsm = new GameControllerFSM();
+public class GameController extends Fsm<GameState, GameModel> {
 
 	private final Map<GameVariant, GameModel> games = Map.of(//
 			GameVariant.MS_PACMAN, new MsPacManGame(), //
 			GameVariant.PACMAN, new PacManGame());
-
 	private final Steering autopilot = new Autopilot();
-
 	private Steering normalSteering;
-
 	private GameVariant gameVariant = GameVariant.PACMAN;
 	private GameSoundController sounds = GameSoundController.NO_SOUND;
 
 	public GameController() {
+		states = GameState.values();
+		for (var state : states) {
+			state.gc = GameController.this;
+		}
+		// map FSM state change events to game state change events including the "context"
+		addStateChangeListener(
+				(oldState, newState) -> GameEvents.publish(new GameStateChangeEvent(context(), oldState, newState)));
 		GameEvents.publishEventsFor(this::game);
-		fsm.restartInState(BOOT);
+		restartInState(BOOT);
 	}
 
-	public void update() {
-		fsm.update();
-	}
-
-	public void resumePreviousState() {
-		fsm.resumePreviousState();
-	}
-
-	public GameState state() {
-		return fsm.state();
-	}
-
-	public void changeState(GameState state) {
-		fsm.changeState(state);
+	@Override
+	public GameModel context() {
+		return GameController.this.game();
 	}
 
 	public void terminateCurrentState() {
@@ -152,7 +125,7 @@ public class GameController {
 	}
 
 	public GameSoundController sounds() {
-		if (fsm.state() == GameState.INTERMISSION_TEST) {
+		if (state() == GameState.INTERMISSION_TEST) {
 			return sounds;
 		}
 		return game().hasCredit() ? sounds : GameSoundController.NO_SOUND;
@@ -165,15 +138,15 @@ public class GameController {
 			game(newVariant).setCredit(game(gameVariant).getCredit());
 			game(gameVariant).setCredit(0);
 			gameVariant = newVariant;
-			fsm.restartInState(BOOT);
+			restartInState(BOOT);
 		}
 	}
 
 	public void restartIntro() {
-		if (fsm.state() != CREDIT && fsm.state() != INTRO) {
+		if (state() != CREDIT && state() != INTRO) {
 			game().consumeCredit();
 		}
-		fsm.restartInState(INTRO);
+		restartInState(INTRO);
 		GameEvents.publish(new TriggerUIChangeEvent(game()));
 	}
 }
