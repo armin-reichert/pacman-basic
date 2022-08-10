@@ -103,7 +103,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 		case LEAVING_HOUSE -> updateLeavingHouse(game);
 		case HUNTING_PAC -> updateHuntingPac(game);
 		case FRIGHTENED -> updateFrightened(game);
-		case EATEN -> updateEaten(game);
+		case EATEN -> updateEaten();
 		case RETURNING_TO_HOUSE -> updateReturningToHouse(game);
 		case ENTERING_HOUSE -> updateEnteringHouse(game);
 		}
@@ -217,6 +217,9 @@ public class Ghost extends Creature implements AnimatedEntity {
 		}
 	}
 
+	/**
+	 * @param game the game model
+	 */
 	public void enterStateHuntingPac(GameModel game) {
 		state = HUNTING_PAC;
 		selectAndRunAnimation(AnimKeys.GHOST_COLOR);
@@ -267,6 +270,9 @@ public class Ghost extends Creature implements AnimatedEntity {
 		tryMoving(game);
 	}
 
+	/**
+	 * @param game the game model
+	 */
 	public void enterStateFrightened(GameModel game) {
 		state = FRIGHTENED;
 		selectAndRunAnimation(AnimKeys.GHOST_BLUE);
@@ -301,7 +307,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 		selectAndRunAnimation(AnimKeys.GHOST_VALUE).ifPresent(anim -> anim.setFrameIndex(game.killedIndex[id]));
 	}
 
-	private void updateEaten(GameModel game) {
+	private void updateEaten() {
 		// nothing to do
 	}
 
