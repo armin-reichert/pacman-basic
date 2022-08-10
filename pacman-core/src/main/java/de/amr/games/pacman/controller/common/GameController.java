@@ -148,4 +148,9 @@ public class GameController extends Fsm<GameState, GameModel> {
 		restartInState(INTRO);
 		GameEvents.publish(new TriggerUIChangeEvent(game()));
 	}
+
+	public void reboot() {
+		restartInState(BOOT);
+		GameEvents.publish(new TriggerUIChangeEvent(game()));
+	}
 }
