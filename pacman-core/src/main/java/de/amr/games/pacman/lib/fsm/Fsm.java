@@ -53,14 +53,10 @@ public abstract class Fsm<S extends FsmState<C>, C> {
 	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
 	private final List<BiConsumer<S, S>> subscribers = new ArrayList<>();
-	protected final S[] states;
+	protected S[] states;
 	protected S currentState;
 	protected S prevState;
 	protected String name = getClass().getSimpleName();
-
-	protected Fsm(S[] states) {
-		this.states = states;
-	}
 
 	public void setName(String name) {
 		this.name = name;

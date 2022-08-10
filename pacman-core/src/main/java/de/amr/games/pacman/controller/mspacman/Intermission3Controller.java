@@ -56,7 +56,7 @@ public class Intermission3Controller extends Fsm<State, Context> {
 	public final Context ctx;
 
 	public Intermission3Controller(GameController gameController) {
-		super(State.values());
+		states = State.values();
 		for (var state : states) {
 			state.controller = this;
 		}

@@ -65,29 +65,25 @@ import de.amr.games.pacman.model.pacman.PacManGame;
  */
 public class GameController {
 
-	public static class StateMachine extends Fsm<GameState, GameModel> {
+	class GameControllerFSM extends Fsm<GameState, GameModel> {
 
-		private final GameController gameController;
-
-		public StateMachine(GameController gameController) {
-			super(GameState.values());
-			this.gameController = gameController;
-			for (var gameState : GameState.values()) {
-				gameState.gc = gameController;
+		private GameControllerFSM() {
+			states = GameState.values();
+			for (var state : states) {
+				state.gc = GameController.this;
 			}
-			setName("GameController.StateMachine");
-			// map state change events of the FSM to game events from selected game model:
+			// map FSM state change events to game state change events including the "context"
 			addStateChangeListener(
 					(oldState, newState) -> GameEvents.publish(new GameStateChangeEvent(context(), oldState, newState)));
 		}
 
 		@Override
 		public GameModel context() {
-			return gameController.game();
+			return GameController.this.game();
 		}
 	}
 
-	final StateMachine fsm = new StateMachine(this);
+	private final GameControllerFSM fsm = new GameControllerFSM();
 
 	private final Map<GameVariant, GameModel> games = Map.of(//
 			GameVariant.MS_PACMAN, new MsPacManGame(), //
@@ -107,6 +103,10 @@ public class GameController {
 
 	public void update() {
 		fsm.update();
+	}
+
+	public void resumePreviousState() {
+		fsm.resumePreviousState();
 	}
 
 	public GameState state() {

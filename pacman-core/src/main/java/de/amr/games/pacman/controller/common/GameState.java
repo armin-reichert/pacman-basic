@@ -47,7 +47,7 @@ import de.amr.games.pacman.model.common.world.ArcadeWorld;
  * 
  * @author Armin Reichert
  */
-public enum GameState implements FsmState<GameModel> {
+public enum GameState implements FsmState<GameModel>, GameCommands {
 
 	BOOT() {
 		@Override
@@ -368,7 +368,7 @@ public enum GameState implements FsmState<GameModel> {
 		@Override
 		public void onUpdate(GameModel game) {
 			if (timer.hasExpired()) {
-				gc.fsm.resumePreviousState();
+				gc.resumePreviousState();
 			} else {
 				gc.getSteering().steer(game, game.pac);
 				game.ghosts(GhostState.RETURNING_TO_HOUSE).forEach(ghost -> ghost.update(game));
@@ -485,41 +485,11 @@ public enum GameState implements FsmState<GameModel> {
 		}
 	};
 
-	// common state attributes and methods:
-
 	GameController gc;
-	TickTimer timer = new TickTimer("Timer-" + name());
+	final TickTimer timer = new TickTimer("Timer-" + name());
 
 	@Override
 	public TickTimer timer() {
 		return timer;
-	}
-
-	public void selectGameVariant(GameVariant variant) {
-		// override if supported for state
-	}
-
-	public void requestGame(GameModel game) {
-		// override if supported for state
-	}
-
-	public void addCredit(GameModel game) {
-		// override if supported for state
-	}
-
-	public void startCutscenesTest(GameModel game) {
-		// override if supported for state
-	}
-
-	public void cheatEatAllPellets(GameModel game) {
-		// override if supported for state
-	}
-
-	public void cheatKillAllEatableGhosts(GameModel game) {
-		// override if supported for state
-	}
-
-	public void cheatEnterNextLevel(GameModel game) {
-		// override if supported for state
 	}
 }

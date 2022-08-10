@@ -58,7 +58,7 @@ public class IntroController extends Fsm<State, Context> {
 	public final Context ctx;
 
 	public IntroController(GameController gameController) {
-		super(State.values());
+		states = State.values();
 		for (var state : states) {
 			state.controller = this;
 		}
