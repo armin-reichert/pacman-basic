@@ -34,7 +34,7 @@ import java.util.stream.Stream;
  */
 public class EntityAnimationSet {
 
-	protected final Map<String, EntityAnimation> animationsByName;
+	private final Map<String, EntityAnimation> animationsByName;
 	protected String selected;
 
 	public EntityAnimationSet(int initialSize) {
