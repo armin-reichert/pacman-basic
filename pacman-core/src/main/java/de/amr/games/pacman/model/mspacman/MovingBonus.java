@@ -23,22 +23,19 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.mspacman;
 
-import java.util.List;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
-import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.FollowTargetTiles;
-import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.lib.animation.SingleEntityAnimation;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.BonusState;
 import de.amr.games.pacman.model.common.actors.Creature;
 import de.amr.games.pacman.model.common.actors.Entity;
+import de.amr.games.pacman.model.common.world.Route;
 
 /**
  * A bonus that tumbles through the world, starting at some portal, making one round around the ghost house and leaving
@@ -57,7 +54,7 @@ public class MovingBonus extends Creature implements Bonus {
 	private int value;
 	private long timer;
 	private final SingleEntityAnimation<Integer> jumpAnimation;
-	private FollowTargetTiles steering;
+	private final FollowTargetTiles steering = new FollowTargetTiles();
 
 	public MovingBonus() {
 		super("MovingBonus");
@@ -67,15 +64,15 @@ public class MovingBonus extends Creature implements Bonus {
 		setInactive();
 	}
 
-	public void setRoute(List<V2i> route, Direction startDir) {
-		if (route == null || route.isEmpty()) {
+	public void setRoute(Route route) {
+		if (route == null || route.tiles().isEmpty()) {
 			throw new IllegalArgumentException("Route must contain at least one tile");
 		}
-		var startTile = route.get(0);
+		steering.setRoute(route.tiles());
+		var startTile = route.tiles().get(0);
 		setTargetTile(startTile);
 		placeAtTile(startTile, 0, 0);
-		setMoveAndWishDir(startDir);
-		steering = new FollowTargetTiles(route);
+		setMoveAndWishDir(route.dir());
 	}
 
 	@Override
@@ -118,6 +115,7 @@ public class MovingBonus extends Creature implements Bonus {
 		this.value = value;
 		state = BonusState.EDIBLE;
 		timer = ticks;
+		canTeleport = false;
 		visible = true;
 		jumpAnimation.restart();
 		setAbsSpeed(0.4); // TODO how fast in the original game?
@@ -150,6 +148,8 @@ public class MovingBonus extends Creature implements Bonus {
 				setInactive();
 				return;
 			}
+			navigate(game);
+			tryMoving(game);
 			jumpAnimation.advance();
 		}
 		case EATEN -> {

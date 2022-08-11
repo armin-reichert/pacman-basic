@@ -25,7 +25,9 @@ SOFTWARE.
 package de.amr.games.pacman.lib;
 
 import java.util.List;
-import java.util.Objects;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import de.amr.games.pacman.controller.common.Steering;
 import de.amr.games.pacman.model.common.GameModel;
@@ -36,12 +38,14 @@ import de.amr.games.pacman.model.common.actors.Creature;
  */
 public class FollowTargetTiles implements Steering {
 
-	private final List<V2i> route;
+	private static final Logger LOGGER = LogManager.getFormatterLogger();
+
+	private List<V2i> route = List.of();
 	private int currentTargetIndex;
 	private boolean complete;
 
-	public FollowTargetTiles(List<V2i> route) {
-		this.route = Objects.requireNonNull(route);
+	public void setRoute(List<V2i> route) {
+		this.route = route;
 		init();
 	}
 
@@ -61,18 +65,16 @@ public class FollowTargetTiles implements Steering {
 
 	@Override
 	public void steer(GameModel game, Creature guy) {
-		if (complete || route.isEmpty()) {
+		if (currentTargetIndex == route.size()) {
+			complete = true;
 			return;
 		}
 		if (guy.tile().equals(route.get(currentTargetIndex))) {
 			++currentTargetIndex;
-			if (currentTargetIndex == route.size()) {
-				complete = true;
-				return;
+			if (currentTargetIndex < route.size()) {
+				guy.setTargetTile(route.get(currentTargetIndex));
+				LOGGER.info("New target tile for %s is %s", guy.name, guy.targetTile());
 			}
 		}
-		guy.setTargetTile(route.get(currentTargetIndex));
-		guy.navigate(game);
-		guy.tryMoving(game);
 	}
 }

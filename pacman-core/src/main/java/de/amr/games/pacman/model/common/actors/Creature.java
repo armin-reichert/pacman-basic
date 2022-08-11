@@ -74,6 +74,8 @@ public class Creature extends Entity {
 	/** Tells if the creature got stuck. */
 	protected boolean stuck;
 
+	protected boolean canTeleport;
+
 	protected Creature(String name) {
 		this.name = name;
 		reset();
@@ -88,6 +90,7 @@ public class Creature extends Entity {
 		newTileEntered = true;
 		reverse = false;
 		stuck = false;
+		canTeleport = true;
 	}
 
 	@Override
@@ -275,7 +278,9 @@ public class Creature extends Entity {
 	 */
 	public void tryMoving(GameModel game) {
 		var tileBefore = tile();
-		game.world().portals().forEach(portal -> portal.teleport(this));
+		if (canTeleport) {
+			game.world().portals().forEach(portal -> portal.teleport(this));
+		}
 		if (reverse) {
 			setWishDir(moveDir.opposite());
 			reverse = false;

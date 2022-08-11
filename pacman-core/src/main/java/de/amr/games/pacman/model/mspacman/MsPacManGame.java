@@ -30,6 +30,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.Direction;
@@ -40,6 +43,7 @@ import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.world.ArcadeWorld;
 import de.amr.games.pacman.model.common.world.HorizontalPortal;
+import de.amr.games.pacman.model.common.world.Route;
 import de.amr.games.pacman.model.common.world.World;
 
 /**
@@ -52,6 +56,8 @@ import de.amr.games.pacman.model.common.world.World;
  * @author Armin Reichert
  */
 public class MsPacManGame extends GameModel {
+
+	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
 	public static final int CHERRIES = 0;
 	public static final int STRAWBERRY = 1;
@@ -368,29 +374,29 @@ public class MsPacManGame extends GameModel {
 	@Override
 	protected void onBonusReached() {
 		var route = computeBonusRoute(level.world);
-		if (!route.isEmpty()) {
-			var startDir = route.get(0).x() == -1 ? Direction.RIGHT : Direction.LEFT;
-			movingBonus.setRoute(route, startDir);
+		LOGGER.info("Bonus route: %s", route);
+		if (!route.tiles().isEmpty()) {
+			movingBonus.setRoute(route);
 			movingBonus.setEdible(level.bonusSymbol, BONUS_VALUES[level.bonusSymbol], TickTimer.INDEFINITE);
 			GameEvents.publish(GameEventType.BONUS_GETS_ACTIVE, movingBonus.tile());
 		}
 	}
 
-	private List<V2i> computeBonusRoute(World world) {
-		List<V2i> route = new ArrayList<>();
+	private Route computeBonusRoute(World world) {
+		List<V2i> tiles = new ArrayList<>();
+		Direction routeDir = rnd.nextBoolean() ? Direction.LEFT : Direction.RIGHT;
 		int numPortals = world.portals().size();
 		if (numPortals > 0) {
 			var entryPortal = (HorizontalPortal) world.portals().get(rnd.nextInt(numPortals));
 			var exitPortal = (HorizontalPortal) world.portals().get(rnd.nextInt(numPortals));
-			var routeDir = rnd.nextBoolean() ? Direction.LEFT : Direction.RIGHT;
 			var houseEntry = world.ghostHouse().entryTile();
 			int houseHeight = world.ghostHouse().size().y();
-			route.add(routeDir == Direction.RIGHT ? entryPortal.leftTunnelEnd() : entryPortal.rightTunnelEnd());
-			route.add(houseEntry);
-			route.add(houseEntry.plus(0, houseHeight + 2));
-			route.add(houseEntry);
-			route.add(routeDir == Direction.RIGHT ? exitPortal.rightTunnelEnd() : exitPortal.leftTunnelEnd());
+			tiles.add(routeDir == Direction.RIGHT ? entryPortal.leftTunnelEnd() : entryPortal.rightTunnelEnd());
+			tiles.add(houseEntry);
+			tiles.add(houseEntry.plus(0, houseHeight + 2));
+			tiles.add(houseEntry);
+			tiles.add(routeDir == Direction.RIGHT ? exitPortal.rightTunnelEnd() : exitPortal.leftTunnelEnd());
 		}
-		return route;
+		return new Route(tiles, routeDir);
 	}
 }

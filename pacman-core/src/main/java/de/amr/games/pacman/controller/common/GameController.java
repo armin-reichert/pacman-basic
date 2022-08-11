@@ -34,9 +34,11 @@ import java.util.stream.Stream;
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.event.GameStateChangeEvent;
 import de.amr.games.pacman.event.TriggerUIChangeEvent;
+import de.amr.games.pacman.lib.FollowTargetTiles;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
+import de.amr.games.pacman.model.common.world.ArcadeWorld;
 import de.amr.games.pacman.model.mspacman.MsPacManGame;
 import de.amr.games.pacman.model.pacman.PacManGame;
 
@@ -65,11 +67,13 @@ import de.amr.games.pacman.model.pacman.PacManGame;
  */
 public class GameController extends Fsm<GameState, GameModel> {
 
-	private final Map<GameVariant, GameModel> games = Map.of(//
+	private static final Map<GameVariant, GameModel> games = Map.of(//
 			GameVariant.MS_PACMAN, new MsPacManGame(), GameVariant.PACMAN, new PacManGame());
+
 	private final Steering autopilot = new Autopilot();
 	private Steering normalSteering;
-	private GameVariant gameVariant = GameVariant.PACMAN;
+	private FollowTargetTiles attractModeSteering = new FollowTargetTiles();
+	private GameVariant gameVariant;
 	private GameSoundController sounds = GameSoundController.NO_SOUND;
 
 	public GameController() {
@@ -81,6 +85,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 		addStateChangeListener(
 				(oldState, newState) -> GameEvents.publish(new GameStateChangeEvent(context(), oldState, newState)));
 		GameEvents.publishEventsFor(this::game);
+		selectGame(GameVariant.PACMAN);
 		restartInState(BOOT);
 	}
 
@@ -98,7 +103,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 	}
 
 	public GameModel game(GameVariant variant) {
-		return games.get(variant);
+		return games.get(Objects.requireNonNull(variant));
 	}
 
 	public GameModel game() {
@@ -107,6 +112,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 
 	public Steering getSteering() {
 		if (!game().hasCredit()) {
+//			return attractModeSteering;
 			return autopilot;
 		}
 		if (game().isPacAutoControlled) {
@@ -130,10 +136,14 @@ public class GameController extends Fsm<GameState, GameModel> {
 	public void selectGame(GameVariant newVariant) {
 		Objects.requireNonNull(newVariant);
 		if (gameVariant != newVariant) {
+			gameVariant = newVariant;
 			// transfer credit
 			game(newVariant).setCredit(game(gameVariant).getCredit());
 			game(gameVariant).setCredit(0);
-			gameVariant = newVariant;
+			attractModeSteering.setRoute(switch (gameVariant) {
+			case MS_PACMAN -> ArcadeWorld.ATTRACT_ROUTE_MS_PACMAN;
+			case PACMAN -> ArcadeWorld.ATTRACT_ROUTE_PACMAN;
+			});
 			restartInState(BOOT);
 		}
 	}
