@@ -75,9 +75,9 @@ public class GameController extends Fsm<GameState, GameModel> {
 	public GameController() {
 		states = GameState.values();
 		for (var state : states) {
-			state.gc = GameController.this;
+			state.gc = this;
 		}
-		// map FSM state change events to game state change events including the "context"
+		// map state change events to game state change events including the "context" (game model)
 		addStateChangeListener(
 				(oldState, newState) -> GameEvents.publish(new GameStateChangeEvent(context(), oldState, newState)));
 		GameEvents.publishEventsFor(this::game);
@@ -124,10 +124,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 	}
 
 	public GameSoundController sounds() {
-		if (state() == GameState.INTERMISSION_TEST) {
-			return sounds;
-		}
-		return game().hasCredit() ? sounds : GameSoundController.NO_SOUND;
+		return game().hasCredit() || state() == GameState.INTERMISSION_TEST ? sounds : GameSoundController.NO_SOUND;
 	}
 
 	public void selectGame(GameVariant newVariant) {
