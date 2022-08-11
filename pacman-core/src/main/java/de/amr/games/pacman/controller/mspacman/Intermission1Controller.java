@@ -53,27 +53,7 @@ import de.amr.games.pacman.model.mspacman.Flap;
  */
 public class Intermission1Controller extends Fsm<State, Context> {
 
-	public final Context ctx;
-
-	public Intermission1Controller(GameController gameController) {
-		states = State.values();
-		for (var state : states) {
-			state.controller = this;
-		}
-		ctx = new Context(gameController);
-	}
-
-	@Override
-	public Context context() {
-		return ctx;
-	}
-
 	public static class Context {
-
-		public Context(GameController gameController) {
-			this.gameController = gameController;
-		}
-
 		public final GameController gameController;
 		public final int upperY = t(12);
 		public final int middleY = t(18);
@@ -88,6 +68,10 @@ public class Intermission1Controller extends Fsm<State, Context> {
 		public Ghost pinky;
 		public Ghost inky;
 		public Entity heart;
+
+		public Context(GameController gameController) {
+			this.gameController = gameController;
+		}
 	}
 
 	public enum State implements FsmState<Context> {
@@ -273,5 +257,20 @@ public class Intermission1Controller extends Fsm<State, Context> {
 		public TickTimer timer() {
 			return timer;
 		}
+	}
+
+	public final Context ctx;
+
+	public Intermission1Controller(GameController gameController) {
+		states = State.values();
+		for (var state : states) {
+			state.controller = this;
+		}
+		ctx = new Context(gameController);
+	}
+
+	@Override
+	public Context context() {
+		return ctx;
 	}
 }
