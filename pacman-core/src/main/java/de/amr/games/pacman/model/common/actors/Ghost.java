@@ -250,11 +250,11 @@ public class Ghost extends Creature implements AnimatedEntity {
 			roam(game);
 		} else if (game.huntingTimer.inChasingPhase() || id == RED_GHOST && game.cruiseElroyState > 0) {
 			setTargetTile(fnChasingTarget.get());
-			navigate(game);
+			navigateTowardsTarget(game);
 			tryMoving(game);
 		} else {
 			setTargetTile(game.scatterTile[id]);
-			navigate(game);
+			navigateTowardsTarget(game);
 			tryMoving(game);
 		}
 	}
@@ -328,7 +328,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 			enterStateEnteringHouse(game);
 		} else {
 			setRelSpeed(2 * game.level.ghostSpeed); // not sure
-			navigate(game);
+			navigateTowardsTarget(game);
 			tryMoving(game);
 		}
 	}
