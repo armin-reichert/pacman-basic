@@ -242,7 +242,7 @@ public class Creature extends Entity {
 	 * 
 	 * @param game the game model
 	 */
-	public void navigate(GameModel game) {
+	public void navigateTowardsTarget(GameModel game) {
 		if ((newTileEntered || stuck) && targetTile != null && !insidePortal(game)) {
 			bestDirection(game).ifPresent(this::setWishDir);
 		}
