@@ -65,19 +65,17 @@ public class FollowRoute implements Steering {
 			complete = true;
 		} else if (guy.targetTile().isEmpty()) {
 			guy.setTargetTile(currentTarget().tile());
-		} else if (guy.isNewTileEntered() && guy.tile().equals(currentTarget().tile())) {
+		} else if (guy.tile().equals(currentTarget().tile())) {
 			nextTarget(guy);
 		}
+		guy.navigateTowardsTarget(game);
+		LOGGER.info("New target tile for %s=%s, wish dir=%s", guy.name, guy.targetTile().get(), guy.wishDir());
 	}
 
 	private void nextTarget(Creature guy) {
 		++targetIndex;
 		if (targetIndex < route.size()) {
 			guy.setTargetTile(currentTarget().tile());
-			if (currentTarget().dir() != null) {
-				guy.setWishDir(currentTarget().dir());
-			}
-			LOGGER.info("New target tile for %s=%s, wish dir=%s", guy.name, guy.targetTile().get(), guy.wishDir());
 		}
 	}
 
