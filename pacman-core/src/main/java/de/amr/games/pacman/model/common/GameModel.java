@@ -378,6 +378,12 @@ public abstract class GameModel {
 		};
 	}
 
+	// Bonus stuff
+
+	public abstract Bonus bonus();
+
+	protected abstract void onBonusReached();
+
 	// Game logic
 
 	public void update() {
@@ -543,7 +549,7 @@ public abstract class GameModel {
 					reports.pacGotPower = true;
 				}
 			}
-			reports.bonusReached = isBonusReached();
+			reports.bonusReached = level.world.eatenFoodCount() == 70 || level.world.eatenFoodCount() == 170;
 		}
 	}
 
@@ -654,14 +660,4 @@ public abstract class GameModel {
 			ghosts(LOCKED).filter(ghost -> ghost.id != RED_GHOST).findFirst().ifPresent(ghost -> ++ghostDotCounter[ghost.id]);
 		}
 	}
-
-	// Bonus stuff
-
-	public abstract Bonus bonus();
-
-	protected boolean isBonusReached() {
-		return level.world.eatenFoodCount() == 70 || level.world.eatenFoodCount() == 170;
-	}
-
-	protected abstract void onBonusReached();
 }
