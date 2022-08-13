@@ -173,7 +173,7 @@ public abstract class GameModel {
 	/** Number of current intermission scene in test mode. */
 	public int intermissionTestNumber;
 
-	public final WhatHappened memo = new WhatHappened();
+	public final Memo memo = new Memo();
 
 	protected GameModel(GameVariant variant, String pacName, String redGhostName, String pinkGhostName,
 			String cyanGhostName, String orangeGhostName) {
@@ -400,7 +400,7 @@ public abstract class GameModel {
 		powerTimer.advance();
 	}
 
-	public static class WhatHappened {
+	public static class Memo {
 		public boolean allFoodEaten;
 		public boolean foodFound;
 		public boolean energizerFound;
@@ -414,7 +414,7 @@ public abstract class GameModel {
 		public Optional<Ghost> unlockedGhost;
 		public String unlockReason;
 
-		public WhatHappened() {
+		public Memo() {
 			forgetEverything();
 		}
 
@@ -612,7 +612,7 @@ public abstract class GameModel {
 
 	// Ghost house rules, see Pac-Man dossier
 
-	private void checkGhostCanBeUnlocked(WhatHappened result) {
+	private void checkGhostCanBeUnlocked(Memo result) {
 		ghosts(LOCKED).findFirst().ifPresent(ghost -> {
 			if (ghost.id == RED_GHOST) {
 				result.unlockedGhost = Optional.of(theGhosts[RED_GHOST]);
