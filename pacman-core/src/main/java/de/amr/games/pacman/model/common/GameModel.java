@@ -26,6 +26,7 @@ package de.amr.games.pacman.model.common;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.lib.TickTimer.secToTicks;
+import static de.amr.games.pacman.lib.V2i.v;
 import static de.amr.games.pacman.model.common.actors.Ghost.CYAN_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ORANGE_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.PINK_GHOST;
@@ -34,6 +35,7 @@ import static de.amr.games.pacman.model.common.actors.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.common.actors.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.model.common.actors.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.model.common.actors.GhostState.LOCKED;
+import static de.amr.games.pacman.model.common.world.World.HTS;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -49,7 +51,9 @@ import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.lib.animation.EntityAnimation;
 import de.amr.games.pacman.lib.animation.SingleEntityAnimation;
+import de.amr.games.pacman.model.common.actors.AnimKeys;
 import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.Creature;
 import de.amr.games.pacman.model.common.actors.Ghost;
@@ -267,10 +271,14 @@ public abstract class GameModel {
 	}
 
 	public void resetGuys() {
+		Arrays.fill(killedIndex, -1);
 		powerTimer.reset(0);
 		energizerPulse.reset();
 		pac.reset();
-		Arrays.fill(killedIndex, -1);
+		pac.placeAtTile(v(13, 26), HTS, 0);
+		pac.setMoveAndWishDir(Direction.LEFT);
+		pac.show();
+		pac.selectAndRunAnimation(AnimKeys.PAC_MUNCHING).ifPresent(EntityAnimation::reset);
 		ghosts().forEach(ghost -> {
 			ghost.reset();
 			ghost.setMoveAndWishDir(switch (ghost.id) {

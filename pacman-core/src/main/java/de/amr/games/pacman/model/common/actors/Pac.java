@@ -23,14 +23,9 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.common.actors;
 
-import static de.amr.games.pacman.lib.V2i.v;
-import static de.amr.games.pacman.model.common.world.World.HTS;
-
 import java.util.Optional;
 
-import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.animation.AnimatedEntity;
-import de.amr.games.pacman.lib.animation.EntityAnimation;
 import de.amr.games.pacman.lib.animation.EntityAnimationSet;
 import de.amr.games.pacman.model.common.GameModel;
 
@@ -71,12 +66,6 @@ public class Pac extends Creature implements AnimatedEntity {
 		dead = false;
 		restingTicks = 0;
 		starvingTicks = 0;
-		setAbsSpeed(0);
-		placeAtTile(v(13, 26), HTS, 0);
-		setMoveAndWishDir(Direction.LEFT);
-		selectAndRunAnimation(AnimKeys.PAC_MUNCHING);
-		animation().ifPresent(EntityAnimation::reset);
-		show();
 	}
 
 	public void rest(int ticks) {
