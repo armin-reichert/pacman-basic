@@ -77,7 +77,7 @@ public class FollowRoute implements Steering {
 			if (currentTarget().dir() != null) {
 				guy.setWishDir(currentTarget().dir());
 			}
-			LOGGER.info("New target tile for %s=%s, wish dir=%s", guy.name, guy.targetTile(), guy.wishDir());
+			LOGGER.info("New target tile for %s=%s, wish dir=%s", guy.name, guy.targetTile().get(), guy.wishDir());
 		}
 	}
 

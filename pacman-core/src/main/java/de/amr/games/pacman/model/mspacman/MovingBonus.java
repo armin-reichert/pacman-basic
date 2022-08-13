@@ -100,6 +100,7 @@ public class MovingBonus extends Creature implements Bonus {
 	@Override
 	public void setInactive() {
 		visible = false;
+		canTeleport = false;
 		state = BonusState.INACTIVE;
 		jumpAnimation.stop();
 		setAbsSpeed(0);
@@ -114,7 +115,8 @@ public class MovingBonus extends Creature implements Bonus {
 		canTeleport = false;
 		visible = true;
 		jumpAnimation.restart();
-		setAbsSpeed(0.4); // TODO how fast in the original game?
+		setAbsSpeed(0.5); // how fast in the original game?
+		setTargetTile(null);
 		LOGGER.info("%s gets edible", this);
 	}
 
