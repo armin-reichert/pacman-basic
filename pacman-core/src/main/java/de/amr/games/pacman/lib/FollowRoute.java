@@ -36,21 +36,17 @@ import de.amr.games.pacman.model.common.actors.Creature;
 /**
  * @author Armin Reichert
  */
-public class FollowTargetTiles implements Steering {
+public class FollowRoute implements Steering {
 
 	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
-	private List<V2i> route = List.of();
-	private int currentTargetIndex;
+	private List<NavigationPoint> route = List.of();
+	private int targetIndex;
 	private boolean complete;
 
-	public void setRoute(List<V2i> route) {
+	public void setRoute(List<NavigationPoint> route) {
 		this.route = route;
 		init();
-	}
-
-	public List<V2i> getRoute() {
-		return route;
 	}
 
 	public boolean isComplete() {
@@ -59,22 +55,33 @@ public class FollowTargetTiles implements Steering {
 
 	@Override
 	public void init() {
-		currentTargetIndex = 0;
+		targetIndex = 0;
 		complete = false;
 	}
 
 	@Override
 	public void steer(GameModel game, Creature guy) {
-		if (currentTargetIndex == route.size()) {
+		if (targetIndex == route.size()) {
 			complete = true;
-			return;
+		} else if (guy.targetTile().isEmpty()) {
+			guy.setTargetTile(currentTarget().tile());
+		} else if (guy.isNewTileEntered() && guy.tile().equals(currentTarget().tile())) {
+			nextTarget(guy);
 		}
-		if (guy.tile().equals(route.get(currentTargetIndex))) {
-			++currentTargetIndex;
-			if (currentTargetIndex < route.size()) {
-				guy.setTargetTile(route.get(currentTargetIndex));
-				LOGGER.info("New target tile for %s is %s", guy.name, guy.targetTile());
+	}
+
+	private void nextTarget(Creature guy) {
+		++targetIndex;
+		if (targetIndex < route.size()) {
+			guy.setTargetTile(currentTarget().tile());
+			if (currentTarget().dir() != null) {
+				guy.setWishDir(currentTarget().dir());
 			}
+			LOGGER.info("New target tile for %s=%s, wish dir=%s", guy.name, guy.targetTile(), guy.wishDir());
 		}
+	}
+
+	private NavigationPoint currentTarget() {
+		return route.get(targetIndex);
 	}
 }

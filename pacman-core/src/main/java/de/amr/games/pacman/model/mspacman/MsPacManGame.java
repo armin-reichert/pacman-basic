@@ -374,22 +374,21 @@ public class MsPacManGame extends GameModel {
 	protected void onBonusReached() {
 		var houseEntry = world().ghostHouse().entryTile();
 		int houseHeight = world().ghostHouse().size().y();
-		var routeOrientation = rnd.nextBoolean() ? Direction.LEFT : Direction.RIGHT;
 		int numPortals = world().portals().size();
 		if (numPortals > 0) {
 			var entryPortal = (HorizontalPortal) world().portals().get(rnd.nextInt(numPortals));
 			var exitPortal = (HorizontalPortal) world().portals().get(rnd.nextInt(numPortals));
-			var start = routeOrientation == Direction.RIGHT ? np(entryPortal.leftTunnelEnd())
-					: np(entryPortal.rightTunnelEnd());
+			var orientation = rnd.nextBoolean() ? Direction.LEFT : Direction.RIGHT;
+			var start = orientation == Direction.RIGHT ? np(entryPortal.leftTunnelEnd()) : np(entryPortal.rightTunnelEnd());
 			List<NavigationPoint> route = new ArrayList<>();
 			route.add(np(houseEntry));
 			route.add(np(houseEntry.plus(0, houseHeight + 2)));
 			route.add(np(houseEntry));
-			route.add(routeOrientation == Direction.RIGHT ? np(exitPortal.rightTunnelEnd()) : np(exitPortal.leftTunnelEnd()));
+			route.add(orientation == Direction.RIGHT ? np(exitPortal.rightTunnelEnd()) : np(exitPortal.leftTunnelEnd()));
+			LOGGER.info("Bonus route: %s, orientation: %s", route, orientation);
 			movingBonus.setRoute(route);
-			LOGGER.info("Bonus route: %s, orientation: %s", route, routeOrientation);
 			movingBonus.placeAtTile(start.tile(), 0, 0);
-			movingBonus.setMoveAndWishDir(routeOrientation);
+			movingBonus.setMoveAndWishDir(orientation);
 			movingBonus.setEdible(level.bonusSymbol, BONUS_VALUES[level.bonusSymbol], TickTimer.INDEFINITE);
 			GameEvents.publish(GameEventType.BONUS_GETS_ACTIVE, movingBonus.tile());
 		}

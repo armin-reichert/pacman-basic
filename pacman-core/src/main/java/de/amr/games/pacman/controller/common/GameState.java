@@ -173,6 +173,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			game.guys().forEach(Creature::show);
 			game.scores.enable(false);
 			game.scores.gameScore.showContent = false;
+			gc.attractModeSteering.init();
 		}
 
 		@Override
