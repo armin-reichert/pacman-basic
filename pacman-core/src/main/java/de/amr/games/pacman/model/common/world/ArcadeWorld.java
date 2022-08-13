@@ -50,15 +50,22 @@ public class ArcadeWorld extends MapBasedWorld {
 	public static final V2i LEFT_UPPER_CORNER = v(2, 0);
 	public static final V2i RIGHT_UPPER_CORNER = v(25, 0);
 
-	public static final List<NavigationPoint> ATTRACT_ROUTE_PACMAN = List.of( //
-			np(12, 26), np(9, 26), np(12, 32), np(15, 32), np(24, 29), np(21, 23), np(18, 23), np(18, 20), //
-			np(18, 17), np(15, 14), np(12, 14), np(9, 17), np(6, 17), np(6, 11), np(6, 8), np(6, 4), //
-			np(1, 8), np(6, 8), np(9, 8), np(12, 8), np(6, 4), np(6, 8), np(6, 11), np(1, 8), //
-			np(6, 8), np(9, 8), np(12, 14), np(9, 17), np(6, 17), np(0, 17), np(21, 17), np(21, 23), //
-			np(21, 26), np(24, 29), np(26, 29), np(15, 32), np(12, 32), np(3, 29), np(6, 23), np(9, 23), //
-			np(12, 26), np(15, 26), np(18, 23), np(21, 23), np(24, 29), np(26, 29), np(15, 32), //
-			np(12, 32), np(3, 29), np(6, 23) //
+	//@formatter:off
+	public static final List<NavigationPoint> ATTRACT_ROUTE_PACMAN = List.of(
+		np(12, 26), np( 9, 26),  np(12, 32), np(15, 32), np(24, 29),
+		np(21, 23), np(18, 23),  np(18, 20), np(18, 17), np(15, 14),
+		np(12, 14), np( 9, 17),  np( 6, 17), np( 6, 11), np( 6, 8), 
+		np( 6, 4),  np( 1,  8),  np( 6,  8), np( 9,  8), np(12, 8),
+		np( 6, 4),  np( 6,  8),  np( 6, 11), np( 1,  8), np( 6, 8),
+		np( 9, 8),  np(12, 14),  np( 9, 17), np( 6, 17), np(0, 17),
+		np(21, 17), np(21, 23),  np(21, 26), np(24, 29),
+		/* avoid moving up: */ np(26, 29), 
+		np(15, 32), np(12, 32),  np(3, 29),  np( 6, 23), np(9, 23),
+		np(12, 26), np(15, 26), np(18, 23), np(21, 23), np(24, 29),
+		/* avoid moving up: */ np(26, 29), 
+		np(15, 32), np(12, 32), np(3, 29), np(6, 23)
 	);
+	//@formatter:on
 
 	public static final List<V2i> ATTRACT_ROUTE_MS_PACMAN = List.of();
 
