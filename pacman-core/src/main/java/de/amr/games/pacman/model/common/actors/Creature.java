@@ -246,7 +246,7 @@ public class Creature extends Entity {
 		if ((newTileEntered || stuck) && targetTile != null && !insidePortal(game)) {
 			bestDirection(game).ifPresent(dir -> {
 				setWishDir(dir);
-				LOGGER.info("%s new wish dir=%s", name, wishDir);
+				LOGGER.trace("%s new wish dir=%s", name, wishDir);
 			});
 		}
 	}
