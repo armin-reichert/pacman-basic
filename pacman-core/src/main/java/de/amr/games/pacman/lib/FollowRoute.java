@@ -71,7 +71,7 @@ public class FollowRoute implements Steering {
 			LOGGER.trace("New target tile for %s=%s", guy.name, guy.targetTile().get());
 		}
 		guy.navigateTowardsTarget(game);
-		LOGGER.trace("Current wish dir for %s=%s, tile=%s", guy.name, guy.wishDir(), guy.tile());
+		LOGGER.trace("Current wish dir for %s: %s (tile: %s)", guy.name, guy.wishDir(), guy.tile());
 	}
 
 	private void nextTarget(Creature guy) {

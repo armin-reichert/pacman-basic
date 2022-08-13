@@ -284,7 +284,7 @@ public class Creature extends Entity {
 		if (canTeleport) {
 			game.world().portals().forEach(portal -> portal.teleport(this));
 		}
-		if (reverse) {
+		if (reverse && newTileEntered) {
 			setWishDir(moveDir.opposite());
 			reverse = false;
 		}
@@ -322,7 +322,7 @@ public class Creature extends Entity {
 		return false;
 	}
 
-	private boolean atTurnPositionTo(Direction dir) {
+	protected boolean atTurnPositionTo(Direction dir) {
 		var offset = dir.isHorizontal() ? offset().y() : offset().x();
 		return Math.abs(offset) <= 0.5;
 	}

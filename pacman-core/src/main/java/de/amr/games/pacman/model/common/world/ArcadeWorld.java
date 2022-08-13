@@ -73,7 +73,6 @@ public class ArcadeWorld extends MapBasedWorld {
 			np(21, 11, Direction.RIGHT),
 			np(26,  8, Direction.LEFT),
 			np(21, 8,  Direction.DOWN),
-			np(21, 11, Direction.RIGHT),
 			np(26,  8, Direction.UP),
 			np(26,  8, Direction.DOWN),
 			np(21, 11, Direction.DOWN),

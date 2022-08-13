@@ -273,12 +273,16 @@ public class Ghost extends Creature implements AnimatedEntity {
 			};
 			if (navigationActions.isEmpty()) {
 				moveRandomly(game);
-			} else if (/* isNewTileEntered() && */ tile().equals(navigationActions.get(attractModeNavIndex).tile())) {
+			} else if (tile().equals(navigationActions.get(attractModeNavIndex).tile())) {
 				var navPoint = navigationActions.get(attractModeNavIndex);
-				setWishDir(navPoint.dir());
+				if (atTurnPositionTo(navPoint.dir())) {
+					setWishDir(navPoint.dir());
+					LOGGER.info("New wish dir %s at nav point %s for %s", navPoint.dir(), navPoint.tile(), this);
+					++attractModeNavIndex;
+				}
 				tryMoving(game);
-				++attractModeNavIndex;
 			} else {
+				navigateTowardsTarget(game);
 				tryMoving(game);
 			}
 		}
