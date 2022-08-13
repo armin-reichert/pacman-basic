@@ -130,7 +130,7 @@ public class MovingBonus extends Creature implements Bonus {
 		case INACTIVE -> { // nothing to do
 		}
 		case EDIBLE -> {
-			if (game.pac.tile().equals(tile())) {
+			if (sameTile(game.pac)) {
 				state = BonusState.EATEN;
 				timer = Bonus.EATEN_DURATION;
 				jumpAnimation.stop();
@@ -152,8 +152,8 @@ public class MovingBonus extends Creature implements Bonus {
 		}
 		case EATEN -> {
 			if (--timer == 0) {
-				LOGGER.info("%s expired", this);
 				setInactive();
+				LOGGER.info("%s expired", this);
 				GameEvents.publish(GameEventType.BONUS_EXPIRES, tile());
 			}
 		}
