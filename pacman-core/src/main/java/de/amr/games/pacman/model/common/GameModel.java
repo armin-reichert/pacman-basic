@@ -173,7 +173,7 @@ public abstract class GameModel {
 	/** Number of current intermission scene in test mode. */
 	public int intermissionTestNumber;
 
-	public final WhatHappened reports = new WhatHappened();
+	public final WhatHappened memo = new WhatHappened();
 
 	protected GameModel(GameVariant variant, String pacName, String redGhostName, String pinkGhostName,
 			String cyanGhostName, String orangeGhostName) {
@@ -436,9 +436,9 @@ public abstract class GameModel {
 
 	public void whatHappenedWithFood() {
 		checkFoodFound();
-		if (reports.foodFound) {
+		if (memo.foodFound) {
 			onFoodFound();
-			if (reports.bonusReached) {
+			if (memo.bonusReached) {
 				onBonusReached();
 			}
 		} else {
@@ -447,27 +447,27 @@ public abstract class GameModel {
 	}
 
 	public void whatHappenedWithTheGuys() {
-		if (reports.pacGotPower) {
+		if (memo.pacGotPower) {
 			onPacGetsPower();
 		}
 
-		reports.pacMetKiller = isPacMeetingKiller();
-		if (reports.pacMetKiller) {
+		memo.pacMetKiller = isPacMeetingKiller();
+		if (memo.pacMetKiller) {
 			onPacMetKiller();
 			return; // enter new game state
 		}
 
 		checkEdibleGhosts();
-		if (reports.edibleGhosts.length > 0) {
-			killGhosts(reports.edibleGhosts);
-			reports.ghostsKilled = true;
+		if (memo.edibleGhosts.length > 0) {
+			killGhosts(memo.edibleGhosts);
+			memo.ghostsKilled = true;
 			return; // enter new game state
 		}
 		checkPacPower();
-		if (reports.pacPowerFading) {
+		if (memo.pacPowerFading) {
 			GameEvents.publish(GameEventType.PAC_STARTS_LOSING_POWER, pac.tile());
 		}
-		if (reports.pacPowerLost) {
+		if (memo.pacPowerLost) {
 			onPacPowerLost();
 		}
 	}
@@ -489,7 +489,7 @@ public abstract class GameModel {
 	}
 
 	private void checkEdibleGhosts() {
-		reports.edibleGhosts = ghosts(FRIGHTENED).filter(pac::sameTile).toArray(Ghost[]::new);
+		memo.edibleGhosts = ghosts(FRIGHTENED).filter(pac::sameTile).toArray(Ghost[]::new);
 	}
 
 	/**
@@ -527,8 +527,8 @@ public abstract class GameModel {
 	}
 
 	private void checkPacPower() {
-		reports.pacPowerFading = powerTimer.remaining() == PAC_POWER_FADING_TICKS;
-		reports.pacPowerLost = powerTimer.hasExpired();
+		memo.pacPowerFading = powerTimer.remaining() == PAC_POWER_FADING_TICKS;
+		memo.pacPowerLost = powerTimer.hasExpired();
 	}
 
 	public boolean isPacPowerFading() {
@@ -546,20 +546,20 @@ public abstract class GameModel {
 
 	private void checkFoodFound() {
 		if (level.world.containsFood(pac.tile())) {
-			reports.foodFound = true;
-			reports.allFoodEaten = level.world.foodRemaining() == 1;
+			memo.foodFound = true;
+			memo.allFoodEaten = level.world.foodRemaining() == 1;
 			if (level.world.isEnergizerTile(pac.tile())) {
-				reports.energizerFound = true;
+				memo.energizerFound = true;
 				if (level.ghostFrightenedSeconds > 0) {
-					reports.pacGotPower = true;
+					memo.pacGotPower = true;
 				}
 			}
-			reports.bonusReached = level.world.eatenFoodCount() == 70 || level.world.eatenFoodCount() == 170;
+			memo.bonusReached = level.world.eatenFoodCount() == 70 || level.world.eatenFoodCount() == 170;
 		}
 	}
 
 	private void onFoodFound() {
-		if (reports.energizerFound) {
+		if (memo.energizerFound) {
 			ghostsKilledByEnergizer = 0;
 			eatFood(ENERGIZER_VALUE, ENERGIZER_RESTING_TICKS);
 		} else {
@@ -602,9 +602,9 @@ public abstract class GameModel {
 	// Ghosts
 
 	private void updateGhosts() {
-		checkGhostCanBeUnlocked(reports);
-		reports.unlockedGhost.ifPresent(ghost -> {
-			unlockGhost(ghost, reports.unlockReason);
+		checkGhostCanBeUnlocked(memo);
+		memo.unlockedGhost.ifPresent(ghost -> {
+			unlockGhost(ghost, memo.unlockReason);
 			GameEvents.publish(new GameEvent(this, GameEventType.GHOST_STARTS_LEAVING_HOUSE, ghost, ghost.tile()));
 		});
 		ghosts().forEach(ghost -> ghost.update(this));
