@@ -252,8 +252,8 @@ public abstract class GameModel {
 			ghostDotCounter[ghost.id] = 0;
 		}
 		cruiseElroyState = 0;
-		if (world().ghostHouse() instanceof ArcadeGhostHouse house) {
-			homePosition[RED_GHOST] = seatPosition(house.entryTile());
+		if (world() instanceof ArcadeWorld) {
+			homePosition[RED_GHOST] = seatPosition(ArcadeGhostHouse.ENTRY_TILE);
 			revivalPosition[RED_GHOST] = seatPosition(ArcadeGhostHouse.SEAT_TILE_CENTER);
 			scatterTile[RED_GHOST] = ArcadeWorld.RIGHT_UPPER_CORNER;
 
