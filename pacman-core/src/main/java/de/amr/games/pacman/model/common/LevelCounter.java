@@ -31,21 +31,21 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 import de.amr.games.pacman.lib.V2d;
-import de.amr.games.pacman.model.common.actors.Entity;
 
 /**
  * @author Armin Reichert
  */
-public class LevelCounter extends Entity {
+public class LevelCounter {
 
+	public boolean visible;
+	public V2d rightBorderPosition;
 	private final int maxSize;
 	public final List<Integer> symbols;
 
 	public LevelCounter(int maxSize) {
 		this.maxSize = maxSize;
 		symbols = new ArrayList<>(maxSize);
-		// position x = right edge!
-		position = new V2d(t(24), t(34));
+		rightBorderPosition = new V2d(t(24), t(34));
 		visible = true;
 	}
 
