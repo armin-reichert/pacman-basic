@@ -29,6 +29,7 @@ import static de.amr.games.pacman.lib.V2i.v;
 import java.util.List;
 import java.util.Optional;
 
+import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.NavigationPoint;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.lib.animation.EntityAnimation;
@@ -65,6 +66,26 @@ public class ArcadeWorld extends MapBasedWorld {
 		/* avoid moving up: */ np(26, 29), 
 		np(15, 32), np(12, 32), np(3, 29), np(6, 23)
 	);
+	
+	public static final List<NavigationPoint> ATTRACT_FRIGHTENED_RED = List.of(
+			np(21, 4,  Direction.DOWN),
+			np(21, 8,  Direction.DOWN),
+			np(21, 11, Direction.RIGHT),
+			np(26,  8, Direction.LEFT),
+			np(21, 8,  Direction.DOWN),
+			np(21, 11, Direction.RIGHT),
+			np(26,  8, Direction.UP),
+			np(26,  8, Direction.DOWN),
+			np(21, 11, Direction.DOWN),
+			np(21, 17, Direction.RIGHT), // enters right tunnel
+			
+			np(99,99,Direction.DOWN)
+	);
+	
+	public static final List<NavigationPoint> ATTRACT_FRIGHTENED_PINK = List.of();
+	public static final List<NavigationPoint> ATTRACT_FRIGHTENED_CYAN = List.of();
+	public static final List<NavigationPoint> ATTRACT_FRIGHTENED_ORANGE = List.of();
+	
 	//@formatter:on
 
 	public static final List<V2i> ATTRACT_ROUTE_MS_PACMAN = List.of();

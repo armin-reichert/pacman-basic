@@ -53,6 +53,7 @@ import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.lib.animation.AnimatedEntity;
 import de.amr.games.pacman.lib.animation.EntityAnimationSet;
 import de.amr.games.pacman.model.common.GameModel;
+import de.amr.games.pacman.model.common.world.ArcadeWorld;
 
 /**
  * There are 4 ghosts with different "personalities".
@@ -260,6 +261,30 @@ public class Ghost extends Creature implements AnimatedEntity {
 	}
 
 	private void roam(GameModel game) {
+		if (game.hasCredit()) {
+			moveRandomly(game);
+		} else {
+			var navigationActions = switch (id) {
+			case RED_GHOST -> ArcadeWorld.ATTRACT_FRIGHTENED_RED;
+			case PINK_GHOST -> ArcadeWorld.ATTRACT_FRIGHTENED_PINK;
+			case CYAN_GHOST -> ArcadeWorld.ATTRACT_FRIGHTENED_CYAN;
+			case ORANGE_GHOST -> ArcadeWorld.ATTRACT_FRIGHTENED_ORANGE;
+			default -> throw new IllegalArgumentException();
+			};
+			if (navigationActions.isEmpty()) {
+				moveRandomly(game);
+			} else if (/* isNewTileEntered() && */ tile().equals(navigationActions.get(attractModeNavIndex).tile())) {
+				var navPoint = navigationActions.get(attractModeNavIndex);
+				setWishDir(navPoint.dir());
+				tryMoving(game);
+				++attractModeNavIndex;
+			} else {
+				tryMoving(game);
+			}
+		}
+	}
+
+	private void moveRandomly(GameModel game) {
 		if (newTileEntered || stuck) {
 			Direction.shuffled().stream()//
 					.filter(dir -> dir != moveDir().opposite())//
@@ -276,7 +301,10 @@ public class Ghost extends Creature implements AnimatedEntity {
 	public void enterStateFrightened(GameModel game) {
 		state = FRIGHTENED;
 		selectAndRunAnimation(AnimKeys.GHOST_BLUE);
+		attractModeNavIndex = 0;
 	}
+
+	private int attractModeNavIndex;
 
 	/**
 	 * When frightened, a ghost moves randomly through the world, at each new tile he randomly decides where to move next.
