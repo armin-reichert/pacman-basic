@@ -45,81 +45,54 @@ import de.amr.games.pacman.model.common.actors.Creature;
  */
 public class ArcadeGhostHouse implements GhostHouse {
 
-	private final V2i size = v(7, 4);
-	private final V2i topLeftTile = v(10, 15);
-	private final V2i doorLeftTile = v(13, 15);
-	private final V2i doorRightTile = v(14, 15);
-	private final V2i entryTile = v(13, 14);
-	private final V2i seatLeftTile = v(11, 17);
-	private final V2i seatMiddleTile = v(13, 17);
-	private final V2i seatRightTile = v(15, 17);
-
-	public V2i doorLeftTile() {
-		return doorLeftTile;
-	}
-
-	public V2i doorRightTile() {
-		return doorRightTile;
-	}
-
-	public V2d doorsCenterPosition() {
-		return new V2d(doorLeftTile().scaled(TS)).plus(TS, HTS);
-	}
+	public static final V2i SIZE_TILES = v(7, 4);
+	public static final V2i TOP_LEFT_TILE = v(10, 15);
+	public static final V2i DOOR_TILE_LEFT = v(13, 15);
+	public static final V2i DOOR_TILE_RIGHT = v(14, 15);
+	public static final V2d DOOR_CENTER = new V2d(DOOR_TILE_LEFT.scaled(TS)).plus(TS, HTS);
+	public static final V2i ENTRY_TILE = v(13, 14);
+	public static final V2i SEAT_TILE_LEFT = v(11, 17);
+	public static final V2i SEAT_TILE_CENTER = v(13, 17);
+	public static final V2i SEAT_TILE_RIGHT = v(15, 17);
 
 	@Override
 	public V2i size() {
-		return size;
+		return SIZE_TILES;
 	}
 
 	@Override
 	public V2i topLeftTile() {
-		return topLeftTile;
+		return TOP_LEFT_TILE;
 	}
 
 	@Override
 	public Stream<V2i> doorTiles() {
-		return Stream.of(doorLeftTile, doorRightTile);
+		return Stream.of(DOOR_TILE_LEFT, DOOR_TILE_RIGHT);
 	}
 
 	@Override
 	public boolean isDoorTile(V2i tile) {
-		return tile.equals(doorLeftTile()) || tile.equals(doorRightTile());
+		return tile.equals(DOOR_TILE_LEFT) || tile.equals(DOOR_TILE_RIGHT);
 	}
 
 	@Override
 	public V2i entryTile() {
-		return entryTile;
-	}
-
-	public V2i seatLeftTile() {
-		return seatLeftTile;
-	}
-
-	public V2i seatMiddleTile() {
-		return seatMiddleTile;
+		return ENTRY_TILE;
 	}
 
 	public V2d middleSeatCenterPosition() {
-		return new V2d(seatMiddleTile().scaled(TS)).plus(HTS, HTS);
-	}
-
-	public V2i seatRightTile() {
-		return seatRightTile;
-	}
-
-	public V2d seatPosition(V2i seatTile) {
-		return new V2d(seatTile).scaled(TS).plus(HTS, 0);
+		return new V2d(SEAT_TILE_CENTER.scaled(TS)).plus(HTS, HTS);
 	}
 
 	@Override
 	public boolean atHouseEntry(Creature creature) {
-		var entryX = entryTile.x() * TS + HTS;
-		return creature.tile().y() == entryTile.y() && U.insideRange(creature.getPosition().x(), entryX, 1);
+		var entryX = ENTRY_TILE.x() * TS + HTS;
+		return creature.tile().y() == ENTRY_TILE.y() && U.insideRange(creature.getPosition().x(), entryX, 1);
 	}
 
 	@Override
 	public boolean leadGuyOutOfHouse(Creature guy) {
-		var entryPos = new V2d(entryTile.scaled(TS).plus(HTS, 0));
+		var entryPos = new V2d(ENTRY_TILE.scaled(TS).plus(HTS, 0));
 		if (guy.getPosition().x() == entryPos.x() && guy.getPosition().y() <= entryPos.y()) {
 			guy.setPosition(entryPos);
 			return true;
@@ -141,7 +114,7 @@ public class ArcadeGhostHouse implements GhostHouse {
 		if (atHouseEntry(guy)) {
 			guy.setMoveAndWishDir(Direction.DOWN);
 		}
-		var middlePosition = new V2d(seatMiddleTile).scaled(TS).plus(HTS, 0);
+		var middlePosition = new V2d(SEAT_TILE_CENTER).scaled(TS).plus(HTS, 0);
 		if (guy.getPosition().y() >= middlePosition.y()) {
 			if (targetPosition.x() < middlePosition.x()) {
 				guy.setMoveAndWishDir(LEFT);

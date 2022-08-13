@@ -36,6 +36,7 @@ import static de.amr.games.pacman.model.common.actors.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.model.common.actors.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.model.common.actors.GhostState.LOCKED;
 import static de.amr.games.pacman.model.common.world.World.HTS;
+import static de.amr.games.pacman.model.common.world.World.TS;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -252,22 +253,26 @@ public abstract class GameModel {
 		}
 		cruiseElroyState = 0;
 		if (world().ghostHouse() instanceof ArcadeGhostHouse house) {
-			homePosition[RED_GHOST] = house.seatPosition(house.entryTile());
-			revivalPosition[RED_GHOST] = house.seatPosition(house.seatMiddleTile());
+			homePosition[RED_GHOST] = seatPosition(house.entryTile());
+			revivalPosition[RED_GHOST] = seatPosition(ArcadeGhostHouse.SEAT_TILE_CENTER);
 			scatterTile[RED_GHOST] = ArcadeWorld.RIGHT_UPPER_CORNER;
 
-			homePosition[PINK_GHOST] = house.seatPosition(house.seatMiddleTile());
-			revivalPosition[PINK_GHOST] = house.seatPosition(house.seatMiddleTile());
+			homePosition[PINK_GHOST] = seatPosition(ArcadeGhostHouse.SEAT_TILE_CENTER);
+			revivalPosition[PINK_GHOST] = seatPosition(ArcadeGhostHouse.SEAT_TILE_CENTER);
 			scatterTile[PINK_GHOST] = ArcadeWorld.LEFT_UPPER_CORNER;
 
-			homePosition[CYAN_GHOST] = house.seatPosition(house.seatLeftTile());
-			revivalPosition[CYAN_GHOST] = house.seatPosition(house.seatLeftTile());
+			homePosition[CYAN_GHOST] = seatPosition(ArcadeGhostHouse.SEAT_TILE_LEFT);
+			revivalPosition[CYAN_GHOST] = seatPosition(ArcadeGhostHouse.SEAT_TILE_LEFT);
 			scatterTile[CYAN_GHOST] = ArcadeWorld.RIGHT_LOWER_CORNER;
 
-			homePosition[ORANGE_GHOST] = house.seatPosition(house.seatRightTile());
-			revivalPosition[ORANGE_GHOST] = house.seatPosition(house.seatRightTile());
+			homePosition[ORANGE_GHOST] = seatPosition(ArcadeGhostHouse.SEAT_TILE_RIGHT);
+			revivalPosition[ORANGE_GHOST] = seatPosition(ArcadeGhostHouse.SEAT_TILE_RIGHT);
 			scatterTile[ORANGE_GHOST] = ArcadeWorld.LEFT_LOWER_CORNER;
 		}
+	}
+
+	private V2d seatPosition(V2i seatTile) {
+		return new V2d(seatTile).scaled(TS).plus(HTS, 0);
 	}
 
 	public void resetGuys() {
