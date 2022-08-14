@@ -246,7 +246,7 @@ public class Creature extends Entity {
 		if ((newTileEntered || stuck) && targetTile != null && !insidePortal(game)) {
 			bestDirection(game).ifPresent(dir -> {
 				setWishDir(dir);
-				LOGGER.trace("%s new wish dir=%s", name, wishDir);
+				LOGGER.info("New wish dir: %s for %s to target %s", wishDir, this, targetTile);
 			});
 		}
 	}
@@ -258,6 +258,9 @@ public class Creature extends Entity {
 	 *         not allowed.
 	 */
 	private Optional<Direction> bestDirection(GameModel game) {
+		if (tile().equals(targetTile)) {
+			return Optional.of(wishDir);
+		}
 		Direction bestDir = null;
 		double minDist = Double.MAX_VALUE;
 		for (var dir : TURN_PRIORITY) {

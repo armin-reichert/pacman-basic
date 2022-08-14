@@ -174,6 +174,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			game.scores.enable(false);
 			game.scores.gameScore.showContent = false;
 			gc.attractModeSteering.init();
+//			game.isPacImmune = true;
 		}
 
 		@Override
