@@ -48,7 +48,7 @@ public record V2d(double x, double y) {
 
 	@Override
 	public String toString() {
-		return String.format("(%.2f, %.2f)", x, y);
+		return String.format("(%6.2f, %6.2f)", x, y);
 	}
 
 	public V2d(V2i v) {

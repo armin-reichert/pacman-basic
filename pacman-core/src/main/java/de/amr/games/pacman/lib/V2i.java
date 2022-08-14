@@ -72,6 +72,6 @@ public record V2i(int x, int y) {
 
 	@Override
 	public String toString() {
-		return String.format("(%d,%d)", x, y);
+		return String.format("(%2d,%2d)", x, y);
 	}
 }
