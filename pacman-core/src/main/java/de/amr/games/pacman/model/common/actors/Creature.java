@@ -237,6 +237,21 @@ public class Creature extends Entity {
 	}
 
 	/**
+	 * Bounces up and down at the given y-position.
+	 * 
+	 * @param zeroY  zero level y position
+	 * @param extent max deviation from zero level
+	 */
+	protected void bounce(double zeroY, double extent) {
+		if (position.y() <= zeroY - extent) {
+			setMoveAndWishDir(DOWN);
+		} else if (position.y() >= zeroY + extent) {
+			setMoveAndWishDir(UP);
+		}
+		move();
+	}
+
+	/**
 	 * Sets a new direction for reaching the current target. Navigation is only triggered when a new tile is entered, the
 	 * creature got stuck and a target tile is set. Inside portal tiles no navigation happens.
 	 * 
@@ -246,7 +261,7 @@ public class Creature extends Entity {
 		if ((newTileEntered || stuck) && targetTile != null && !insidePortal(game)) {
 			bestDirection(game).ifPresent(dir -> {
 				setWishDir(dir);
-				LOGGER.info("New wish dir: %s for %s to target %s", wishDir, this, targetTile);
+				LOGGER.info("New wish dir: %6s for %s to target %s", wishDir, this, targetTile);
 			});
 		}
 	}
@@ -258,9 +273,9 @@ public class Creature extends Entity {
 	 *         not allowed.
 	 */
 	private Optional<Direction> bestDirection(GameModel game) {
-		if (tile().equals(targetTile)) {
-			return Optional.of(wishDir);
-		}
+//		if (tile().equals(targetTile)) {
+//			return Optional.of(wishDir);
+//		}
 		Direction bestDir = null;
 		double minDist = Double.MAX_VALUE;
 		for (var dir : TURN_PRIORITY) {
