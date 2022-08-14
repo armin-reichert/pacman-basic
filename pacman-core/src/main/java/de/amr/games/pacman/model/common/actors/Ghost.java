@@ -80,6 +80,8 @@ public class Ghost extends Creature implements AnimatedEntity {
 
 	private EntityAnimationSet animationSet;
 
+	private int attractModeNavIndex;
+
 	public Ghost(int id, String name) {
 		super(name);
 		if (id < 0 || id > 3) {
@@ -87,42 +89,6 @@ public class Ghost extends Creature implements AnimatedEntity {
 		}
 		this.id = id;
 		reset();
-	}
-
-	public void setChasingTarget(Supplier<V2i> targetTileSupplier) {
-		this.fnChasingTarget = Objects.requireNonNull(targetTileSupplier);
-	}
-
-	/**
-	 * Executes a single simulation step for this ghost in the specified game.
-	 * 
-	 * @param game the game
-	 */
-	public void update(GameModel game) {
-		switch (state) {
-		case LOCKED -> updateLocked(game);
-		case LEAVING_HOUSE -> updateLeavingHouse(game);
-		case HUNTING_PAC -> updateHuntingPac(game);
-		case FRIGHTENED -> updateFrightened(game);
-		case EATEN -> updateEaten();
-		case RETURNING_TO_HOUSE -> updateReturningToHouse(game);
-		case ENTERING_HOUSE -> updateEnteringHouse(game);
-		}
-		updateAnimation();
-	}
-
-	@Override
-	public String toString() {
-		return "[Ghost %s: state=%s, position=%s, tile=%s, offset=%s, velocity=%s, dir=%s, wishDir=%s]".formatted(name,
-				state, position, tile(), offset(), velocity, moveDir(), wishDir());
-	}
-
-	public GhostState getState() {
-		return state;
-	}
-
-	public boolean is(GhostState... alternatives) {
-		return U.oneOf(state, alternatives);
 	}
 
 	@Override
@@ -137,14 +103,45 @@ public class Ghost extends Creature implements AnimatedEntity {
 		return super.canAccessTile(tile, game);
 	}
 
-	public void setAnimationSet(EntityAnimationSet animationSet) {
-		this.animationSet = animationSet;
+	public void setChasingTarget(Supplier<V2i> targetTileSupplier) {
+		this.fnChasingTarget = Objects.requireNonNull(targetTileSupplier);
 	}
 
 	@Override
-	public Optional<EntityAnimationSet> animationSet() {
-		return Optional.ofNullable(animationSet);
+	public String toString() {
+		return "[Ghost %s: state=%s, position=%s, tile=%s, offset=%s, velocity=%s, dir=%s, wishDir=%s]".formatted(name,
+				state, position, tile(), offset(), velocity, moveDir(), wishDir());
 	}
+
+	// State machine
+
+	public GhostState getState() {
+		return state;
+	}
+
+	public boolean is(GhostState... alternatives) {
+		return U.oneOf(state, alternatives);
+	}
+
+	/**
+	 * Executes a single simulation step for this ghost in the specified game.
+	 * 
+	 * @param game the game
+	 */
+	public void update(GameModel game) {
+		switch (state) {
+		case LOCKED -> updateStateLocked(game);
+		case LEAVING_HOUSE -> updateStateLeavingHouse(game);
+		case HUNTING_PAC -> updateStateHuntingPac(game);
+		case FRIGHTENED -> updateStateFrightened(game);
+		case EATEN -> updateStateEaten();
+		case RETURNING_TO_HOUSE -> updateStateReturningToHouse(game);
+		case ENTERING_HOUSE -> updateStateEnteringHouse(game);
+		}
+		updateAnimation();
+	}
+
+	// LOCKED state
 
 	public void enterStateLocked() {
 		state = LOCKED;
@@ -158,7 +155,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 	 * 
 	 * @param game the game
 	 */
-	private void updateLocked(GameModel game) {
+	private void updateStateLocked(GameModel game) {
 		bounce(game.homePosition[id].y());
 		updateGhostInHouseAnimation(game);
 	}
@@ -183,6 +180,8 @@ public class Ghost extends Creature implements AnimatedEntity {
 		}
 	}
 
+	// LEAVING_HOUSE state
+
 	public void enterStateLeavingHouse(GameModel game) {
 		state = LEAVING_HOUSE;
 		setAbsSpeed(0.5);
@@ -201,7 +200,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 	 * 
 	 * @param game the game
 	 */
-	private void updateLeavingHouse(GameModel game) {
+	private void updateStateLeavingHouse(GameModel game) {
 		var outOfHouse = game.world().ghostHouse().leadGuyOutOfHouse(this);
 		if (outOfHouse) {
 			newTileEntered = false;
@@ -217,6 +216,8 @@ public class Ghost extends Creature implements AnimatedEntity {
 			updateGhostInHouseAnimation(game);
 		}
 	}
+
+	// HUNTING_PAC state
 
 	/**
 	 * @param game the game model
@@ -237,7 +238,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 	 * had been to randomize the scatter target of *all* ghosts in Ms. Pac-Man but because of a bug, only the scatter
 	 * target of Blinky and Pinky would have been affected. Who knows?
 	 */
-	private void updateHuntingPac(GameModel game) {
+	private void updateStateHuntingPac(GameModel game) {
 		if (insideTunnel(game)) {
 			setRelSpeed(game.level.ghostSpeedTunnel);
 		} else if (id == RED_GHOST && game.cruiseElroyState == 1) {
@@ -258,6 +259,34 @@ public class Ghost extends Creature implements AnimatedEntity {
 			navigateTowardsTarget(game);
 			tryMoving(game);
 		}
+	}
+
+	// FRIGHTENED state
+
+	/**
+	 * @param game the game model
+	 */
+	public void enterStateFrightened(GameModel game) {
+		state = FRIGHTENED;
+		selectAndRunAnimation(AnimKeys.GHOST_BLUE);
+		attractModeNavIndex = 0;
+	}
+
+	/**
+	 * When frightened, a ghost moves randomly through the world, at each new tile he randomly decides where to move next.
+	 * Reversing the move direction is not allowed in this state either.
+	 * <p>
+	 * A frightened ghost has a blue color and starts flashing blue/white shortly (how long exactly?) before Pac-Man loses
+	 * his power.
+	 * <p>
+	 * Speed is about half of the normal speed.
+	 * 
+	 * @param game the game
+	 */
+	private void updateStateFrightened(GameModel game) {
+		setRelSpeed(insideTunnel(game) ? game.level.ghostSpeedTunnel : game.level.ghostSpeedFrightened);
+		roam(game);
+		ensureFlashingWhenPowerCeases(game);
 	}
 
 	private void roam(GameModel game) {
@@ -303,33 +332,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 		tryMoving(game);
 	}
 
-	/**
-	 * @param game the game model
-	 */
-	public void enterStateFrightened(GameModel game) {
-		state = FRIGHTENED;
-		selectAndRunAnimation(AnimKeys.GHOST_BLUE);
-		attractModeNavIndex = 0;
-	}
-
-	private int attractModeNavIndex;
-
-	/**
-	 * When frightened, a ghost moves randomly through the world, at each new tile he randomly decides where to move next.
-	 * Reversing the move direction is not allowed in this state either.
-	 * <p>
-	 * A frightened ghost has a blue color and starts flashing blue/white shortly (how long exactly?) before Pac-Man loses
-	 * his power.
-	 * <p>
-	 * Speed is about half of the normal speed.
-	 * 
-	 * @param game the game
-	 */
-	private void updateFrightened(GameModel game) {
-		setRelSpeed(insideTunnel(game) ? game.level.ghostSpeedTunnel : game.level.ghostSpeedFrightened);
-		roam(game);
-		ensureFlashingWhenPowerCeases(game);
-	}
+	// EATEN state
 
 	/**
 	 * After a ghost is eaten by Pac-Man he is displayed for a short time as the number of points earned for eating him.
@@ -343,9 +346,11 @@ public class Ghost extends Creature implements AnimatedEntity {
 		selectAndRunAnimation(AnimKeys.GHOST_VALUE).ifPresent(anim -> anim.setFrameIndex(game.killedIndex[id]));
 	}
 
-	private void updateEaten() {
+	private void updateStateEaten() {
 		// nothing to do
 	}
+
+	// RETURNING_HOUSE state
 
 	public void enterStateReturningToHouse(GameModel game) {
 		state = RETURNING_TO_HOUSE;
@@ -359,7 +364,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 	 * 
 	 * @param game the game
 	 */
-	private void updateReturningToHouse(GameModel game) {
+	private void updateStateReturningToHouse(GameModel game) {
 		if (game.world().ghostHouse().atHouseEntry(this)) {
 			enterStateEnteringHouse(game);
 		} else {
@@ -368,6 +373,8 @@ public class Ghost extends Creature implements AnimatedEntity {
 			tryMoving(game);
 		}
 	}
+
+	// ENTERING_HOUSE state
 
 	public void enterStateEnteringHouse(GameModel game) {
 		state = ENTERING_HOUSE;
@@ -382,11 +389,22 @@ public class Ghost extends Creature implements AnimatedEntity {
 	 * 
 	 * @param game the game
 	 */
-	private void updateEnteringHouse(GameModel game) {
+	private void updateStateEnteringHouse(GameModel game) {
 		boolean atRevivalTile = game.world().ghostHouse().leadGuyInside(this, game.revivalPosition[id]);
 		if (atRevivalTile) {
 			enterStateLeavingHouse(game);
 		}
+	}
+
+	// Animations
+
+	public void setAnimationSet(EntityAnimationSet animationSet) {
+		this.animationSet = animationSet;
+	}
+
+	@Override
+	public Optional<EntityAnimationSet> animationSet() {
+		return Optional.ofNullable(animationSet);
 	}
 
 	private void ensureFlashingWhenPowerCeases(GameModel game) {
