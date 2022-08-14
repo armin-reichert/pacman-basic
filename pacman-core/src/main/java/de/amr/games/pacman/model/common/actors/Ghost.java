@@ -264,27 +264,31 @@ public class Ghost extends Creature implements AnimatedEntity {
 		if (game.hasCredit()) {
 			moveRandomly(game);
 		} else {
-			var navigationActions = switch (id) {
-			case RED_GHOST -> ArcadeWorld.ATTRACT_FRIGHTENED_RED;
-			case PINK_GHOST -> ArcadeWorld.ATTRACT_FRIGHTENED_PINK;
-			case CYAN_GHOST -> ArcadeWorld.ATTRACT_FRIGHTENED_CYAN;
-			case ORANGE_GHOST -> ArcadeWorld.ATTRACT_FRIGHTENED_ORANGE;
-			default -> throw new IllegalArgumentException();
-			};
-			if (navigationActions.isEmpty()) {
-				moveRandomly(game);
-			} else if (tile().equals(navigationActions.get(attractModeNavIndex).tile())) {
-				var navPoint = navigationActions.get(attractModeNavIndex);
-				if (atTurnPositionTo(navPoint.dir())) {
-					setWishDir(navPoint.dir());
-					LOGGER.info("New wish dir %s at nav point %s for %s", navPoint.dir(), navPoint.tile(), this);
-					++attractModeNavIndex;
-				}
-				tryMoving(game);
-			} else {
-				navigateTowardsTarget(game);
-				tryMoving(game);
+			movePseudoRandomly(game);
+		}
+	}
+
+	private void movePseudoRandomly(GameModel game) {
+		var navigationActions = switch (id) {
+		case RED_GHOST -> ArcadeWorld.ATTRACT_FRIGHTENED_RED;
+		case PINK_GHOST -> ArcadeWorld.ATTRACT_FRIGHTENED_PINK;
+		case CYAN_GHOST -> ArcadeWorld.ATTRACT_FRIGHTENED_CYAN;
+		case ORANGE_GHOST -> ArcadeWorld.ATTRACT_FRIGHTENED_ORANGE;
+		default -> throw new IllegalArgumentException();
+		};
+		if (navigationActions.isEmpty()) {
+			moveRandomly(game);
+		} else if (tile().equals(navigationActions.get(attractModeNavIndex).tile())) {
+			var navPoint = navigationActions.get(attractModeNavIndex);
+			if (atTurnPositionTo(navPoint.dir())) {
+				setWishDir(navPoint.dir());
+				LOGGER.info("New wish dir %s at nav point %s for %s", navPoint.dir(), navPoint.tile(), this);
+				++attractModeNavIndex;
 			}
+			tryMoving(game);
+		} else {
+			navigateTowardsTarget(game);
+			tryMoving(game);
 		}
 	}
 
