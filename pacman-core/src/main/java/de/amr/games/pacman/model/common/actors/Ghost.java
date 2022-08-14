@@ -23,7 +23,6 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.common.actors;
 
-import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.model.common.GameVariant.MS_PACMAN;
@@ -34,7 +33,6 @@ import static de.amr.games.pacman.model.common.actors.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.model.common.actors.GhostState.LEAVING_HOUSE;
 import static de.amr.games.pacman.model.common.actors.GhostState.LOCKED;
 import static de.amr.games.pacman.model.common.actors.GhostState.RETURNING_TO_HOUSE;
-import static de.amr.games.pacman.model.common.world.World.HTS;
 import static de.amr.games.pacman.model.common.world.World.tileAt;
 
 import java.util.Objects;
@@ -54,6 +52,7 @@ import de.amr.games.pacman.lib.animation.AnimatedEntity;
 import de.amr.games.pacman.lib.animation.EntityAnimationSet;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.world.ArcadeWorld;
+import de.amr.games.pacman.model.common.world.World;
 
 /**
  * There are 4 ghosts with different "personalities".
@@ -109,7 +108,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 
 	@Override
 	public String toString() {
-		return "[Ghost %s: state=%s, position=%s, tile=%s, offset=%s, velocity=%s, dir=%s, wishDir=%s]".formatted(name,
+		return "[Ghost %6s: state=%s, position=%s, tile=%s, offset=%s, velocity=%s, dir=%s, wishDir=%s]".formatted(name,
 				state, position, tile(), offset(), velocity, moveDir(), wishDir());
 	}
 
@@ -156,17 +155,8 @@ public class Ghost extends Creature implements AnimatedEntity {
 	 * @param game the game
 	 */
 	private void updateStateLocked(GameModel game) {
-		bounce(game.homePosition[id].y());
+		bounce(game.homePosition[id].y(), World.HTS);
 		updateGhostInHouseAnimation(game);
-	}
-
-	private void bounce(double zeroY) {
-		if (position.y() <= zeroY - HTS) {
-			setMoveAndWishDir(DOWN);
-		} else if (position.y() >= zeroY + HTS) {
-			setMoveAndWishDir(UP);
-		}
-		move();
 	}
 
 	private void updateGhostInHouseAnimation(GameModel game) {
