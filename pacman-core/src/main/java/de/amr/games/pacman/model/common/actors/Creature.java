@@ -310,7 +310,11 @@ public class Creature extends Entity {
 		if (result.moved()) {
 			setMoveDir(wishDir);
 		} else {
+			LOGGER.info(result);
 			result = tryMoving(moveDir, game);
+			if (!result.moved()) {
+				LOGGER.info(result);
+			}
 		}
 		stuck = !result.moved();
 		newTileEntered = !tileBefore.equals(tile());
@@ -327,17 +331,20 @@ public class Creature extends Entity {
 		var canAccessTouchedTile = canAccessTile(tileAt(touchPosition), game);
 		var isTurn = !newDir.sameOrientation(moveDir);
 
-		if (canAccessTouchedTile && (!isTurn || atTurnPositionTo(newDir))) {
+		MoveResult result = null;
+		if (!canAccessTouchedTile) {
+			if (!isTurn) {
+				placeAtTile(tile());
+			}
+			result = new MoveResult(false, "Cannot access tile %s", tileAt(touchPosition));
+		} else if (isTurn && !atTurnPositionTo(newDir)) {
+			result = new MoveResult(false, "Wants to turn to %s but not at turn position", newDir);
+		} else {
+			result = new MoveResult(true, "");
 			velocity = newVelocity;
 			move();
-			return new MoveResult(true, "");
 		}
-
-		if (!isTurn && !canAccessTouchedTile) {
-			placeAtTile(tile());
-		}
-
-		return new MoveResult(false, "");
+		return result;
 	}
 
 	protected boolean atTurnPositionTo(Direction dir) {
