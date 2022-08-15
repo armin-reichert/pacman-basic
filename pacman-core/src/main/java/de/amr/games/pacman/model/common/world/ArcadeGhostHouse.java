@@ -85,9 +85,9 @@ public class ArcadeGhostHouse implements GhostHouse {
 	}
 
 	@Override
-	public boolean atHouseEntry(Creature creature) {
+	public boolean atHouseEntry(Creature guy) {
 		var entryX = ENTRY_TILE.x() * TS + HTS;
-		return creature.tile().y() == ENTRY_TILE.y() && U.insideRange(creature.getPosition().x(), entryX, 1);
+		return guy.tile().y() == ENTRY_TILE.y() && U.insideRange(guy.getPosition().x(), entryX, 1);
 	}
 
 	@Override
