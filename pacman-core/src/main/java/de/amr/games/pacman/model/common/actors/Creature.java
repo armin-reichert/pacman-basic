@@ -307,14 +307,12 @@ public class Creature extends Entity {
 			reverse = false;
 		}
 		var result = tryMoving(wishDir, game);
+		LOGGER.info("%s: %s", name, result);
 		if (result.moved()) {
 			setMoveDir(wishDir);
 		} else {
-			LOGGER.info(result);
 			result = tryMoving(moveDir, game);
-			if (!result.moved()) {
-				LOGGER.info(result);
-			}
+			LOGGER.info("%s: %s", name, result);
 		}
 		stuck = !result.moved();
 		newTileEntered = !tileBefore.equals(tile());
@@ -338,9 +336,9 @@ public class Creature extends Entity {
 			}
 			result = new MoveResult(false, "Cannot access tile %s", tileAt(touchPosition));
 		} else if (isTurn && !atTurnPositionTo(newDir)) {
-			result = new MoveResult(false, "Wants to turn to %s but not at turn position", newDir);
+			result = new MoveResult(false, "Wants %s but not at turn position", newDir);
 		} else {
-			result = new MoveResult(true, "");
+			result = new MoveResult(true, "%s moves %s", name, newDir);
 			velocity = newVelocity;
 			move();
 		}
