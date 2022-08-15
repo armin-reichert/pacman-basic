@@ -306,13 +306,13 @@ public class Creature extends Entity {
 			setWishDir(moveDir.opposite());
 			reverse = false;
 		}
-		var couldMove = tryMoving(wishDir, game);
-		if (couldMove) {
+		var result = tryMoving(wishDir, game);
+		if (result.moved()) {
 			setMoveDir(wishDir);
 		} else {
-			couldMove = tryMoving(moveDir, game);
+			result = tryMoving(moveDir, game);
 		}
-		stuck = !couldMove;
+		stuck = !result.moved();
 		newTileEntered = !tileBefore.equals(tile());
 	}
 
@@ -320,7 +320,7 @@ public class Creature extends Entity {
 	 * @param newDir some direction
 	 * @return if creature could move
 	 */
-	private boolean tryMoving(Direction newDir, GameModel game) {
+	private MoveResult tryMoving(Direction newDir, GameModel game) {
 		var newDirVec = new V2d(newDir.vec);
 		var newVelocity = newDirVec.scaled(velocity.length());
 		var touchPosition = center().plus(newDirVec.scaled(HTS)).plus(newVelocity);
@@ -330,14 +330,14 @@ public class Creature extends Entity {
 		if (canAccessTouchedTile && (!isTurn || atTurnPositionTo(newDir))) {
 			velocity = newVelocity;
 			move();
-			return true;
+			return new MoveResult(true, "");
 		}
 
 		if (!isTurn && !canAccessTouchedTile) {
 			placeAtTile(tile());
 		}
 
-		return false;
+		return new MoveResult(false, "");
 	}
 
 	protected boolean atTurnPositionTo(Direction dir) {
