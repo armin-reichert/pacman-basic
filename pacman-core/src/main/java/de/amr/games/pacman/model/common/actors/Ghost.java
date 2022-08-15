@@ -63,6 +63,11 @@ public class Ghost extends Creature implements AnimatedEntity {
 
 	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
+	@Override
+	protected Logger logger() {
+		return LOGGER;
+	}
+
 	public static final int RED_GHOST = 0;
 	public static final int PINK_GHOST = 1;
 	public static final int CYAN_GHOST = 2;

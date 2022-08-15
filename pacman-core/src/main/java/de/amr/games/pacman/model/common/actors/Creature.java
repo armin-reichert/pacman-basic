@@ -51,6 +51,10 @@ public class Creature extends Entity {
 
 	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
+	protected Logger logger() {
+		return LOGGER;
+	}
+
 	protected static final Direction[] TURN_PRIORITY = { UP, LEFT, DOWN, RIGHT };
 
 	/** Readable name, for display and logging purposes. */
@@ -176,7 +180,7 @@ public class Creature extends Entity {
 		if (moveDir != dir) {
 			moveDir = dir;
 			velocity = new V2d(moveDir.vec).scaled(velocity.length());
-			LOGGER.trace("%s: New moveDir: %s (tile: %s%s)", name, moveDir, tile(), reverse ? ", reverse" : "");
+			logger().trace("%s: New moveDir: %s (tile: %s%s)", name, moveDir, tile(), reverse ? ", reverse" : "");
 		}
 	}
 
@@ -187,7 +191,7 @@ public class Creature extends Entity {
 	public void setWishDir(Direction dir) {
 		if (wishDir != dir) {
 			wishDir = dir;
-			LOGGER.trace("%s: New wishDir: %s (tile %s%s)", name, wishDir, tile(), reverse ? ", reverse" : "");
+			logger().trace("%s: New wishDir: %s (tile %s%s)", name, wishDir, tile(), reverse ? ", reverse" : "");
 		}
 	}
 
@@ -202,7 +206,7 @@ public class Creature extends Entity {
 
 	public void forceTurningBack() {
 		reverse = true;
-		LOGGER.trace("%s (moveDir=%s, wishDir=%s) got signal to reverse direction", name, moveDir, wishDir);
+		logger().trace("%s (moveDir=%s, wishDir=%s) got signal to reverse direction", name, moveDir, wishDir);
 	}
 
 	/**
@@ -261,7 +265,7 @@ public class Creature extends Entity {
 		if ((newTileEntered || stuck) && targetTile != null && !insidePortal(game)) {
 			bestDirection(game).ifPresent(dir -> {
 				setWishDir(dir);
-				LOGGER.info("New wish dir: %6s for %s to target %s", wishDir, this, targetTile);
+				logger().trace("New wish dir: %6s for %s to target %s", wishDir, this, targetTile);
 			});
 		}
 	}
@@ -307,12 +311,12 @@ public class Creature extends Entity {
 			reverse = false;
 		}
 		var result = tryMoving(wishDir, game);
-		LOGGER.info("%s: %s", name, result);
+		logger().trace("%s: %s", name, result);
 		if (result.moved()) {
 			setMoveDir(wishDir);
 		} else {
 			result = tryMoving(moveDir, game);
-			LOGGER.info("%s: %s", name, result);
+			logger().trace("%s: %s", name, result);
 		}
 		stuck = !result.moved();
 		newTileEntered = !tileBefore.equals(tile());
