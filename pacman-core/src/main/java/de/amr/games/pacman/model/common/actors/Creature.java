@@ -101,7 +101,7 @@ public class Creature extends Entity {
 
 	// bounding box is square of one tile, position stores left upper corner
 	public V2d center() {
-		return position.plus(HTS, HTS);
+		return position.plus(HTS - 0.1, HTS - 0.1);
 	}
 
 	// tile position is the tile containing the center of the bounding box
