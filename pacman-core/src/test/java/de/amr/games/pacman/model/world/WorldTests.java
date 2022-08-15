@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
+import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.world.ArcadeWorld;
 import de.amr.games.pacman.model.common.world.World;
 import de.amr.games.pacman.model.mspacman.MsPacManGame;
@@ -26,6 +27,16 @@ public class WorldTests {
 		assertEquals(new V2i(1, 0), World.tileAt(pos));
 		pos = new V2d(0.0, 8.0);
 		assertEquals(new V2i(0, 1), World.tileAt(pos));
+
+		var guy = new Ghost(Ghost.RED_GHOST, "Guy");
+
+		guy.setPosition(3.99, 0);
+		assertEquals(new V2i(0, 0), guy.tile());
+		assertEquals(new V2d(3.99, 0.0), guy.offset());
+
+		guy.setPosition(4.0, 0);
+		assertEquals(new V2i(1, 0), guy.tile());
+		assertEquals(new V2d(-4.0, 0.0), guy.offset());
 	}
 
 	@Test
