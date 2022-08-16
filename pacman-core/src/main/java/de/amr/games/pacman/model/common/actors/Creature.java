@@ -147,8 +147,9 @@ public class Creature extends Entity {
 	}
 
 	public void placeAtTile(int tx, int ty, double ox, double oy) {
+		var prevTile = tile();
 		setPosition(tx * TS + ox, ty * TS + oy);
-		newTileEntered = true;
+		newTileEntered = !tile().equals(prevTile);
 	}
 
 	public void placeAtTile(V2i tile, double ox, double oy) {
@@ -277,9 +278,6 @@ public class Creature extends Entity {
 	 *         not allowed.
 	 */
 	private Optional<Direction> bestDirection(GameModel game) {
-//		if (tile().equals(targetTile)) {
-//			return Optional.of(wishDir);
-//		}
 		Direction bestDir = null;
 		double minDist = Double.MAX_VALUE;
 		for (var dir : TURN_PRIORITY) {
