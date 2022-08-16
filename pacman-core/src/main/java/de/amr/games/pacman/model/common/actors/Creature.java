@@ -180,7 +180,7 @@ public class Creature extends Entity {
 		if (moveDir != dir) {
 			moveDir = dir;
 			velocity = new V2d(moveDir.vec).scaled(velocity.length());
-			logger().trace("%s: New moveDir: %s (tile: %s%s)", name, moveDir, tile(), reverse ? ", reverse" : "");
+			logger().trace("%-6s: New moveDir: %s tile: %s %s", name, moveDir, tile(), this);
 		}
 	}
 
@@ -265,7 +265,7 @@ public class Creature extends Entity {
 		if ((newTileEntered || stuck) && targetTile != null && !insidePortal(game)) {
 			bestDirection(game).ifPresent(dir -> {
 				setWishDir(dir);
-				logger().trace("New wish dir: %6s for %s to target %s", wishDir, this, targetTile);
+				logger().trace("%-6s: New wish dir=%s, target=%s", name, dir, targetTile);
 			});
 		}
 	}
@@ -311,12 +311,12 @@ public class Creature extends Entity {
 			reverse = false;
 		}
 		var result = tryMoving(wishDir, game);
-		logger().trace("%s: %s", name, result);
+		logger().trace("%-6s: moved=%s. %s. %s", name, result.moved(), result.message(), this);
 		if (result.moved()) {
 			setMoveDir(wishDir);
 		} else {
 			result = tryMoving(moveDir, game);
-			logger().trace("%s: %s", name, result);
+			logger().trace("%-6s: moved=%s. %s. %s", name, result.moved(), result.message(), this);
 		}
 		stuck = !result.moved();
 		newTileEntered = !tileBefore.equals(tile());
@@ -342,7 +342,7 @@ public class Creature extends Entity {
 		} else if (isTurn && !atTurnPositionTo(newDir)) {
 			result = new MoveResult(false, "Wants %s but not at turn position", newDir);
 		} else {
-			result = new MoveResult(true, "%s moves %s", name, newDir);
+			result = new MoveResult(true, "Moves %s", newDir);
 			velocity = newVelocity;
 			move();
 		}

@@ -113,8 +113,8 @@ public class Ghost extends Creature implements AnimatedEntity {
 
 	@Override
 	public String toString() {
-		return "[Ghost %6s: state=%s, position=%s, tile=%s, offset=%s, velocity=%s, dir=%s, wishDir=%s]".formatted(name,
-				state, position, tile(), offset(), velocity, moveDir(), wishDir());
+		return "Ghost[%-6s %s pos=%s tile=%s offset=%s velocity=%s dir=%s wishDir=%s stuck=%s reverse=%s]".formatted(name,
+				state, position, tile(), offset(), velocity, moveDir(), wishDir(), stuck, reverse);
 	}
 
 	// State machine
@@ -306,7 +306,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 			var navPoint = navigationActions.get(attractModeNavIndex);
 			if (atTurnPositionTo(navPoint.dir())) {
 				setWishDir(navPoint.dir());
-				LOGGER.info("New wish dir %s at nav point %s for %s", navPoint.dir(), navPoint.tile(), this);
+				LOGGER.trace("New wish dir %s at nav point %s for %s", navPoint.dir(), navPoint.tile(), this);
 				++attractModeNavIndex;
 			}
 			tryMoving(game);
