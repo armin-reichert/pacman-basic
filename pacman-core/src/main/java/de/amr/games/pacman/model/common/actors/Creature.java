@@ -180,8 +180,8 @@ public class Creature extends Entity {
 	public void setMoveDir(Direction dir) {
 		if (moveDir != dir) {
 			moveDir = dir;
+			logger().trace("%-6s: New moveDir: %s. %s", name, moveDir, this);
 			velocity = new V2d(moveDir.vec).scaled(velocity.length());
-			logger().trace("%-6s: New moveDir: %s tile: %s %s", name, moveDir, tile(), this);
 		}
 	}
 
@@ -192,7 +192,7 @@ public class Creature extends Entity {
 	public void setWishDir(Direction dir) {
 		if (wishDir != dir) {
 			wishDir = dir;
-			logger().trace("%s: New wishDir: %s (tile %s%s)", name, wishDir, tile(), reverse ? ", reverse" : "");
+			logger().trace("%-6s: New wishDir: %s. %s", name, wishDir, this);
 		}
 	}
 
@@ -264,10 +264,7 @@ public class Creature extends Entity {
 	 */
 	public void navigateTowardsTarget(GameModel game) {
 		if ((newTileEntered || stuck) && targetTile != null && !insidePortal(game)) {
-			bestDirection(game).ifPresent(dir -> {
-				setWishDir(dir);
-				logger().trace("%-6s: New wish dir=%s, target=%s", name, dir, targetTile);
-			});
+			bestDirection(game).ifPresent(this::setWishDir);
 		}
 	}
 

@@ -113,8 +113,8 @@ public class Ghost extends Creature implements AnimatedEntity {
 
 	@Override
 	public String toString() {
-		return "Ghost[%-6s %s pos=%s tile=%s offset=%s velocity=%s dir=%s wishDir=%s stuck=%s reverse=%s]".formatted(name,
-				state, position, tile(), offset(), velocity, moveDir(), wishDir(), stuck, reverse);
+		return "Ghost[%-6s %s tile=%s pos=%s offset=%s velocity=%s dir=%s wishDir=%s stuck=%s reverse=%s]".formatted(name,
+				state, tile(), position, offset(), velocity, moveDir(), wishDir(), stuck, reverse);
 	}
 
 	// State machine
