@@ -120,7 +120,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 				state, tile(), position, offset(), velocity, moveDir(), wishDir(), stuck, reverse);
 	}
 
-	// State machine
+	// Here begins the state machine part
 
 	public GhostState getState() {
 		return state;
@@ -148,11 +148,11 @@ public class Ghost extends Creature implements AnimatedEntity {
 		updateAnimation();
 	}
 
-	// LOCKED state
+	// --- LOCKED ---
 
 	public void enterStateLocked() {
 		state = LOCKED;
-		setAbsSpeed(id == RED_GHOST ? 0 : 0.5);
+		setAbsSpeed(0.0);
 		selectAndResetAnimation(AnimKeys.GHOST_COLOR);
 	}
 
@@ -163,8 +163,11 @@ public class Ghost extends Creature implements AnimatedEntity {
 	 * @param game the game
 	 */
 	private void updateStateLocked(GameModel game) {
-		bounce(game.homePosition[id].y(), World.HTS);
-		updateGhostInHouseAnimation(game);
+		if (game.world().ghostHouse().contains(tile())) {
+			setAbsSpeed(0.5);
+			bounce(game.homePosition[id].y(), World.HTS);
+			updateGhostInHouseAnimation(game);
+		}
 	}
 
 	private void updateGhostInHouseAnimation(GameModel game) {
@@ -178,7 +181,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 		}
 	}
 
-	// LEAVING_HOUSE state
+	// --- LEAVING_HOUSE ---
 
 	public void enterStateLeavingHouse(GameModel game) {
 		state = LEAVING_HOUSE;
@@ -208,14 +211,14 @@ public class Ghost extends Creature implements AnimatedEntity {
 			} else {
 				enterStateHuntingPac(game);
 			}
-			game.killedIndex[id] = -1; // TODO rethink this
+			game.killedIndex[id] = -1;
 			GameEvents.publish(new GameEvent(game, GameEventType.GHOST_COMPLETES_LEAVING_HOUSE, this, tile()));
 		} else {
 			updateGhostInHouseAnimation(game);
 		}
 	}
 
-	// HUNTING_PAC state
+	// --- HUNTING_PAC ---
 
 	/**
 	 * @param game the game model
@@ -259,7 +262,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 		}
 	}
 
-	// FRIGHTENED state
+	// --- FRIGHTENED ---
 
 	/**
 	 * @param game the game model
@@ -337,7 +340,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 		tryMoving(game);
 	}
 
-	// EATEN state
+	// --- EATEN ---
 
 	/**
 	 * After a ghost is eaten by Pac-Man he is displayed for a short time as the number of points earned for eating him.
@@ -355,7 +358,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 		// nothing to do
 	}
 
-	// RETURNING_HOUSE state
+	// --- RETURNING_HOUSE ---
 
 	public void enterStateReturningToHouse(GameModel game) {
 		state = RETURNING_TO_HOUSE;
@@ -388,9 +391,8 @@ public class Ghost extends Creature implements AnimatedEntity {
 	}
 
 	/**
-	 * When the eaten ghost has reached the ghost house, he starts entering it to reach his revival position. Because the
-	 * exact route from the ghost house entry to the revival tile is house-specific, this logic is put into the ghost
-	 * house implementation.
+	 * When an eaten ghost reaches the ghost house, he enters and moves to his revival position. Because the exact route
+	 * from the house entry to the revival tile is house-specific, this logic is in the house implementation.
 	 * 
 	 * @param game the game
 	 */
