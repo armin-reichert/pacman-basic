@@ -38,7 +38,6 @@ import de.amr.games.pacman.lib.FollowRoute;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
-import de.amr.games.pacman.model.common.world.ArcadeWorld;
 import de.amr.games.pacman.model.mspacman.MsPacManGame;
 import de.amr.games.pacman.model.pacman.PacManGame;
 
@@ -143,7 +142,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 			game(newVariant).setCredit(game(gameVariant).getCredit());
 			game(gameVariant).setCredit(0);
 			if (gameVariant == GameVariant.PACMAN) {
-				attractModeSteering.setRoute(ArcadeWorld.ATTRACT_ROUTE_PACMAN);
+				attractModeSteering.setRoute(PacManGame.ATTRACT_ROUTE_PACMAN);
 			}
 			restartInState(BOOT);
 		}

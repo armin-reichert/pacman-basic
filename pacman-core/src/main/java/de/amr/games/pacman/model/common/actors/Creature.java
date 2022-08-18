@@ -201,8 +201,8 @@ public class Creature extends Entity {
 	}
 
 	public void setMoveAndWishDir(Direction dir) {
-		setMoveDir(dir);
 		setWishDir(dir);
+		setMoveDir(dir);
 	}
 
 	public void forceTurningBack() {

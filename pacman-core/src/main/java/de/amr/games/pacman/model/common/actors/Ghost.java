@@ -35,6 +35,7 @@ import static de.amr.games.pacman.model.common.actors.GhostState.LOCKED;
 import static de.amr.games.pacman.model.common.actors.GhostState.RETURNING_TO_HOUSE;
 import static de.amr.games.pacman.model.common.world.World.tileAt;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -46,13 +47,15 @@ import de.amr.games.pacman.event.GameEvent;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.Direction;
+import de.amr.games.pacman.lib.NavigationPoint;
 import de.amr.games.pacman.lib.U;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.lib.animation.AnimatedEntity;
 import de.amr.games.pacman.lib.animation.EntityAnimationSet;
 import de.amr.games.pacman.model.common.GameModel;
-import de.amr.games.pacman.model.common.world.ArcadeWorld;
+import de.amr.games.pacman.model.common.GameVariant;
 import de.amr.games.pacman.model.common.world.World;
+import de.amr.games.pacman.model.pacman.PacManGame;
 
 /**
  * There are 4 ghosts with different "personalities".
@@ -84,7 +87,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 
 	private EntityAnimationSet animationSet;
 
-	private int attractModeNavIndex;
+	private int attractRouteIndex;
 
 	public Ghost(int id, String name) {
 		super(name);
@@ -264,7 +267,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 	public void enterStateFrightened(GameModel game) {
 		state = FRIGHTENED;
 		selectAndRunAnimation(AnimKeys.GHOST_BLUE);
-		attractModeNavIndex = 0;
+		attractRouteIndex = 0;
 	}
 
 	/**
@@ -292,22 +295,29 @@ public class Ghost extends Creature implements AnimatedEntity {
 		}
 	}
 
-	private void movePseudoRandomly(GameModel game) {
-		var navigationActions = switch (id) {
-		case RED_GHOST -> ArcadeWorld.ATTRACT_FRIGHTENED_RED;
-		case PINK_GHOST -> ArcadeWorld.ATTRACT_FRIGHTENED_PINK;
-		case CYAN_GHOST -> ArcadeWorld.ATTRACT_FRIGHTENED_CYAN;
-		case ORANGE_GHOST -> ArcadeWorld.ATTRACT_FRIGHTENED_ORANGE;
+	private List<NavigationPoint> getAttractRoute(GameVariant variant) {
+		return switch (variant) {
+		case PACMAN -> switch (id) {
+		case RED_GHOST -> PacManGame.ATTRACT_FRIGHTENED_RED_GHOST;
+		case PINK_GHOST -> PacManGame.ATTRACT_FRIGHTENED_PINK_GHOST;
+		case CYAN_GHOST -> PacManGame.ATTRACT_FRIGHTENED_CYAN_GHOST;
+		case ORANGE_GHOST -> PacManGame.ATTRACT_FRIGHTENED_ORANGE_GHOST;
 		default -> throw new IllegalArgumentException();
 		};
-		if (navigationActions.isEmpty()) {
+		case MS_PACMAN -> List.of();
+		};
+	}
+
+	private void movePseudoRandomly(GameModel game) {
+		var route = getAttractRoute(game.variant);
+		if (route.isEmpty()) {
 			moveRandomly(game);
-		} else if (tile().equals(navigationActions.get(attractModeNavIndex).tile())) {
-			var navPoint = navigationActions.get(attractModeNavIndex);
+		} else if (tile().equals(route.get(attractRouteIndex).tile())) {
+			var navPoint = route.get(attractRouteIndex);
 			if (atTurnPositionTo(navPoint.dir())) {
 				setWishDir(navPoint.dir());
 				LOGGER.trace("New wish dir %s at nav point %s for %s", navPoint.dir(), navPoint.tile(), this);
-				++attractModeNavIndex;
+				++attractRouteIndex;
 			}
 			tryMoving(game);
 		} else {
