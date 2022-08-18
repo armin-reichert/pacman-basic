@@ -330,7 +330,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			var world = (ArcadeWorld) game.world();
 			if (timer.atSecond(1)) {
 				world.flashingAnimation().ifPresent(mazeFlashing -> {
-					mazeFlashing.setRepetions(game.level.numFlashes);
+					mazeFlashing.setRepetitions(game.level.numFlashes);
 					mazeFlashing.restart();
 				});
 			}

@@ -79,7 +79,7 @@ public class FixedEntityAnimation<T> implements EntityAnimation {
 	}
 
 	@Override
-	public void setRepetions(int n) {
+	public void setRepetitions(int n) {
 		// nothing to repeat
 	}
 

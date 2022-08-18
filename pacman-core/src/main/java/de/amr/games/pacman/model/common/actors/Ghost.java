@@ -425,7 +425,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 					var numFlashes = game.level.numFlashes;
 					long frameTicks = GameModel.PAC_POWER_FADING_TICKS / (numFlashes * flashing.numFrames());
 					flashing.setFrameDuration(frameTicks);
-					flashing.setRepetions(numFlashes);
+					flashing.setRepetitions(numFlashes);
 					flashing.restart();
 				}
 			});

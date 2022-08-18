@@ -50,7 +50,7 @@ public interface EntityAnimation {
 
 	void reset();
 
-	void setRepetions(int n);
+	void setRepetitions(int n);
 
 	Object frame(int i);
 

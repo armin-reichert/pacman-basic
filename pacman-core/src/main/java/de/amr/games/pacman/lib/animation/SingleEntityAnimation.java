@@ -86,7 +86,7 @@ public class SingleEntityAnimation<T> implements EntityAnimation {
 	}
 
 	@Override
-	public void setRepetions(int n) {
+	public void setRepetitions(int n) {
 		repetitions = n;
 	}
 
