@@ -32,36 +32,36 @@ import java.util.stream.Stream;
 /**
  * @author Armin Reichert
  */
-public class EntityAnimationSet {
+public class EntityAnimationSet<K> {
 
-	private final Map<String, EntityAnimation> animationsByName;
-	protected String selected;
+	private final Map<K, EntityAnimation> animationsByKey;
+	protected K selected;
 
 	public EntityAnimationSet(int initialSize) {
-		animationsByName = new HashMap<>(initialSize);
+		animationsByKey = new HashMap<>(initialSize);
 	}
 
-	public final EntityAnimation byName(String name) {
-		return animationsByName.get(name);
+	public final EntityAnimation byName(K key) {
+		return animationsByKey.get(key);
 	}
 
 	public final Stream<EntityAnimation> all() {
-		return animationsByName.values().stream();
+		return animationsByKey.values().stream();
 	}
 
-	public void put(String name, EntityAnimation animation) {
-		animationsByName.put(name, animation);
+	public void put(K key, EntityAnimation animation) {
+		animationsByKey.put(key, animation);
 	}
 
-	public void select(String name) {
-		selected = Objects.requireNonNull(name);
+	public void select(K key) {
+		selected = Objects.requireNonNull(key);
 	}
 
-	public boolean isSelected(String name) {
-		return selected.equals(name);
+	public boolean isSelected(K key) {
+		return selected.equals(key);
 	}
 
-	public String selected() {
+	public K selected() {
 		return selected;
 	}
 

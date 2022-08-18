@@ -34,7 +34,7 @@ import de.amr.games.pacman.model.common.GameModel;
  * 
  * @author Armin Reichert
  */
-public class Pac extends Creature implements AnimatedEntity {
+public class Pac extends Creature implements AnimatedEntity<AnimKeys> {
 
 	/** If Pac has been killed. */
 	private boolean dead = false;
@@ -45,14 +45,14 @@ public class Pac extends Creature implements AnimatedEntity {
 	/** Number of clock ticks Pac has not eaten any pellet. */
 	private int starvingTicks = 0;
 
-	private EntityAnimationSet animationSet;
+	private EntityAnimationSet<AnimKeys> animationSet;
 
-	public void setAnimationSet(EntityAnimationSet animationSet) {
+	public void setAnimationSet(EntityAnimationSet<AnimKeys> animationSet) {
 		this.animationSet = animationSet;
 	}
 
 	@Override
-	public Optional<EntityAnimationSet> animationSet() {
+	public Optional<EntityAnimationSet<AnimKeys>> animationSet() {
 		return Optional.ofNullable(animationSet);
 	}
 

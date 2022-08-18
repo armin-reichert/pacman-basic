@@ -29,11 +29,11 @@ import java.util.Optional;
 /**
  * @author Armin Reichert
  */
-public interface AnimatedEntity {
+public interface AnimatedEntity<K> {
 
-	public Optional<EntityAnimationSet> animationSet();
+	public Optional<EntityAnimationSet<K>> animationSet();
 
-	default Optional<EntityAnimation> animation(String key) {
+	default Optional<EntityAnimation> animation(K key) {
 		return animationSet().map(anim -> anim.byName(key));
 	}
 
@@ -41,23 +41,23 @@ public interface AnimatedEntity {
 		return animationSet().map(EntityAnimationSet::selectedAnimation);
 	}
 
-	default Optional<EntityAnimation> selectAndRunAnimation(String name) {
+	default Optional<EntityAnimation> selectAndRunAnimation(K key) {
 		animationSet().ifPresent(animSet -> {
-			animSet.select(name);
+			animSet.select(key);
 			animSet.selectedAnimation().ensureRunning();
 		});
 		return animationSet().isPresent() ? animation() : Optional.empty();
 	}
 
-	default Optional<EntityAnimation> selectAndResetAnimation(String name) {
+	default Optional<EntityAnimation> selectAndResetAnimation(K key) {
 		animationSet().ifPresent(animSet -> {
-			animSet.select(name);
+			animSet.select(key);
 			animSet.selectedAnimation().reset();
 		});
 		return animationSet().isPresent() ? animation() : Optional.empty();
 	}
 
-	default boolean isAnimationSelected(String key) {
+	default boolean isAnimationSelected(K key) {
 		return animation().isPresent() && animation().equals(animation(key));
 	}
 

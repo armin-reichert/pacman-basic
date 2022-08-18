@@ -26,17 +26,11 @@ package de.amr.games.pacman.model.common.actors;
 /**
  * @author Armin Reichert
  */
-public class AnimKeys {
+public enum AnimKeys {
 
-	private AnimKeys() {
-	}
+	PAC_DYING, PAC_MUNCHING, PAC_BIG,
 
-	public static final String PAC_DYING = "dying";
-	public static final String PAC_MUNCHING = "munching";
+	BLINKY_DAMAGED, BLINKY_PATCHED, BLINKY_NAKED,
 
-	public static final String GHOST_BLUE = "blue";
-	public static final String GHOST_COLOR = "color";
-	public static final String GHOST_EYES = "eyes";
-	public static final String GHOST_FLASHING = "flashing";
-	public static final String GHOST_VALUE = "value";
+	GHOST_BLUE, GHOST_COLOR, GHOST_EYES, GHOST_FLASHING, GHOST_VALUE
 }

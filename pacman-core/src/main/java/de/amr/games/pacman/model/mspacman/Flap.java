@@ -34,19 +34,18 @@ import de.amr.games.pacman.model.common.actors.Entity;
  * 
  * @author Armin Reichert
  */
-public class Flap extends Entity implements AnimatedEntity {
+public class Flap extends Entity implements AnimatedEntity<String> {
 
-	private EntityAnimationSet animationSet;
+	public int number;
+	public String text;
+	private EntityAnimationSet<String> animationSet;
 
-	public void setAnimationSet(EntityAnimationSet animationSet) {
+	public void setAnimationSet(EntityAnimationSet<String> animationSet) {
 		this.animationSet = animationSet;
 	}
 
 	@Override
-	public Optional<EntityAnimationSet> animationSet() {
+	public Optional<EntityAnimationSet<String>> animationSet() {
 		return Optional.ofNullable(animationSet);
 	}
-
-	public int number;
-	public String text;
 }

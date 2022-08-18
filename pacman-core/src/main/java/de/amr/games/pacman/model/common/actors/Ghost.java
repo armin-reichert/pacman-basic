@@ -62,7 +62,7 @@ import de.amr.games.pacman.model.pacman.PacManGame;
  * 
  * @author Armin Reichert
  */
-public class Ghost extends Creature implements AnimatedEntity {
+public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 
 	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
@@ -85,7 +85,7 @@ public class Ghost extends Creature implements AnimatedEntity {
 	/** Function computing the chasing target of this ghost. */
 	private Supplier<V2i> fnChasingTarget = () -> null;
 
-	private EntityAnimationSet animationSet;
+	private EntityAnimationSet<AnimKeys> animationSet;
 
 	private int attractRouteIndex;
 
@@ -405,12 +405,12 @@ public class Ghost extends Creature implements AnimatedEntity {
 
 	// Animations
 
-	public void setAnimationSet(EntityAnimationSet animationSet) {
+	public void setAnimationSet(EntityAnimationSet<AnimKeys> animationSet) {
 		this.animationSet = animationSet;
 	}
 
 	@Override
-	public Optional<EntityAnimationSet> animationSet() {
+	public Optional<EntityAnimationSet<AnimKeys>> animationSet() {
 		return Optional.ofNullable(animationSet);
 	}
 
