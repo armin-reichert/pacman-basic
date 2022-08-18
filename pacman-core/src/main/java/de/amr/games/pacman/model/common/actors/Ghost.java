@@ -51,6 +51,7 @@ import de.amr.games.pacman.lib.NavigationPoint;
 import de.amr.games.pacman.lib.U;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.lib.animation.AnimatedEntity;
+import de.amr.games.pacman.lib.animation.EntityAnimation;
 import de.amr.games.pacman.lib.animation.EntityAnimationSet;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameVariant;
@@ -418,10 +419,10 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		if (game.powerTimer.isRunning() && game.powerTimer.remaining() <= GameModel.PAC_POWER_FADING_TICKS) {
 			animationSet().ifPresent(anims -> {
 				if (isAnimationSelected(AnimKeys.GHOST_FLASHING)) {
-					anims.selectedAnimation().ensureRunning();
+					anims.selectedAnimation().ifPresent(EntityAnimation::ensureRunning);
 				} else {
 					anims.select(AnimKeys.GHOST_FLASHING);
-					var flashing = anims.selectedAnimation();
+					var flashing = anims.selectedAnimation().get();
 					var numFlashes = game.level.numFlashes;
 					long frameTicks = GameModel.PAC_POWER_FADING_TICKS / (numFlashes * flashing.numFrames());
 					flashing.setFrameDuration(frameTicks);

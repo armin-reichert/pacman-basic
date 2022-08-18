@@ -138,7 +138,7 @@ public class IntroController extends Fsm<IntroController.State, IntroController.
 				ctx.game.pac.updateAnimation();
 				if (ctx.game.pac.getPosition().x() <= ctx.msPacManStopX) {
 					ctx.game.pac.setAbsSpeed(0);
-					ctx.game.pac.animationSet().ifPresent(anims -> anims.byName(AnimKeys.PAC_MUNCHING).reset());
+					ctx.game.pac.animationSet().ifPresent(animSet -> animSet.animation(AnimKeys.PAC_MUNCHING).get().reset());
 					controller.changeState(State.READY_TO_PLAY);
 				}
 			}

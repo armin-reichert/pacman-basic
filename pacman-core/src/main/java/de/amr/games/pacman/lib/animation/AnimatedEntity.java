@@ -34,17 +34,19 @@ public interface AnimatedEntity<K> {
 	public Optional<EntityAnimationSet<K>> animationSet();
 
 	default Optional<EntityAnimation> animation(K key) {
-		return animationSet().map(anim -> anim.byName(key));
+		var animSet = animationSet();
+		return animSet.isPresent() ? animSet.get().animation(key) : Optional.empty();
 	}
 
 	default Optional<EntityAnimation> animation() {
-		return animationSet().map(EntityAnimationSet::selectedAnimation);
+		var animSet = animationSet();
+		return animSet.isPresent() ? animSet.get().selectedAnimation() : Optional.empty();
 	}
 
 	default Optional<EntityAnimation> selectAndRunAnimation(K key) {
 		animationSet().ifPresent(animSet -> {
 			animSet.select(key);
-			animSet.selectedAnimation().ensureRunning();
+			animSet.selectedAnimation().ifPresent(EntityAnimation::ensureRunning);
 		});
 		return animationSet().isPresent() ? animation() : Optional.empty();
 	}
@@ -52,7 +54,7 @@ public interface AnimatedEntity<K> {
 	default Optional<EntityAnimation> selectAndResetAnimation(K key) {
 		animationSet().ifPresent(animSet -> {
 			animSet.select(key);
-			animSet.selectedAnimation().reset();
+			animSet.selectedAnimation().ifPresent(EntityAnimation::reset);
 		});
 		return animationSet().isPresent() ? animation() : Optional.empty();
 	}

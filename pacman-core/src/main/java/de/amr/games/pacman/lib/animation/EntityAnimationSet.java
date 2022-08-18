@@ -27,6 +27,7 @@ package de.amr.games.pacman.lib.animation;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 /**
@@ -35,38 +36,41 @@ import java.util.stream.Stream;
 public class EntityAnimationSet<K> {
 
 	private final Map<K, EntityAnimation> animationsByKey;
-	protected K selected;
+	protected K selectedKey;
 
 	public EntityAnimationSet(int initialSize) {
 		animationsByKey = new HashMap<>(initialSize);
 	}
 
-	public final EntityAnimation byName(K key) {
-		return animationsByKey.get(key);
+	public final Optional<EntityAnimation> animation(K key) {
+		return Optional.ofNullable(animationsByKey.get(key));
+	}
+
+	public void put(K key, EntityAnimation animation) {
+		animationsByKey.put(key, Objects.requireNonNull(animation));
+	}
+
+	public void select(K key) {
+		selectedKey = Objects.requireNonNull(key);
+	}
+
+	public boolean isSelected(K key) {
+		if (selectedKey == null) {
+			return false;
+		}
+		return selectedKey.equals(Objects.requireNonNull(key));
+	}
+
+	public K selectedKey() {
+		return selectedKey;
+	}
+
+	public Optional<EntityAnimation> selectedAnimation() {
+		return animation(selectedKey);
 	}
 
 	public final Stream<EntityAnimation> all() {
 		return animationsByKey.values().stream();
-	}
-
-	public void put(K key, EntityAnimation animation) {
-		animationsByKey.put(key, animation);
-	}
-
-	public void select(K key) {
-		selected = Objects.requireNonNull(key);
-	}
-
-	public boolean isSelected(K key) {
-		return selected.equals(key);
-	}
-
-	public K selected() {
-		return selected;
-	}
-
-	public EntityAnimation selectedAnimation() {
-		return byName(selected);
 	}
 
 	public void reset() {
