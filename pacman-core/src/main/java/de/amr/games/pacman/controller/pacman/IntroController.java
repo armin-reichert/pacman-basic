@@ -97,8 +97,8 @@ public class IntroController extends Fsm<State, Context> {
 		START {
 			@Override
 			public void onEnter(Context ctx) {
-				ctx.gameController.game().scores.gameScore.showContent = false;
-				ctx.gameController.game().scores.highScore.showContent = true;
+				ctx.gameController.game().gameScore.showContent = false;
+				ctx.gameController.game().highScore.showContent = true;
 				ctx.ghostIndex = 0;
 				Arrays.fill(ctx.pictureVisible, false);
 				Arrays.fill(ctx.nicknameVisible, false);
@@ -115,8 +115,8 @@ public class IntroController extends Fsm<State, Context> {
 			@Override
 			public void onUpdate(Context ctx) {
 				if (timer.tick() == 1) {
-					ctx.gameController.game().scores.gameScore.visible = true;
-					ctx.gameController.game().scores.highScore.visible = true;
+					ctx.gameController.game().gameScore.visible = true;
+					ctx.gameController.game().highScore.visible = true;
 				} else if (timer.tick() == 2) {
 					ctx.creditVisible = true;
 				} else if (timer.tick() == 3) {

@@ -134,7 +134,7 @@ public class MovingBonus extends Creature implements Bonus {
 				state = BonusState.EATEN;
 				timer = Bonus.EATEN_DURATION;
 				jumpAnimation.stop();
-				game.scores.addPoints(value);
+				game.scorePoints(value);
 				LOGGER.info("Bonus eaten: %s", this);
 				GameEvents.publish(GameEventType.BONUS_GETS_EATEN, tile());
 				return;

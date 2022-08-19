@@ -345,7 +345,7 @@ public class MsPacManGame extends GameModel {
 	public MsPacManGame() {
 		super(GameVariant.MS_PACMAN, "Ms. Pac-Man", "Blinky", "Pinky", "Inky", "Sue");
 		movingBonus = new MovingBonus();
-		scores.setHiscoreFile(new File(System.getProperty("user.home"), "highscore-ms_pacman.xml"));
+		setHiscoreFile(new File(System.getProperty("user.home"), "highscore-ms_pacman.xml"));
 		setLevel(1);
 	}
 
@@ -367,7 +367,7 @@ public class MsPacManGame extends GameModel {
 		level = createLevel(levelNumber);
 		initGhosts();
 		ghostsKilledByEnergizer = 0;
-		scores.gameScore.levelNumber = levelNumber;
+		gameScore.levelNumber = levelNumber;
 	}
 
 	@Override

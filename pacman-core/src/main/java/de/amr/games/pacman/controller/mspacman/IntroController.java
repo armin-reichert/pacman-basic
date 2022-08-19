@@ -75,8 +75,8 @@ public class IntroController extends Fsm<IntroController.State, IntroController.
 		START {
 			@Override
 			public void onEnter(Context ctx) {
-				ctx.gameController.game().scores.gameScore.showContent = false;
-				ctx.gameController.game().scores.highScore.showContent = true;
+				ctx.gameController.game().gameScore.showContent = false;
+				ctx.gameController.game().highScore.showContent = true;
 				ctx.lightsTimer.resetIndefinitely();
 				ctx.lightsTimer.start();
 				ctx.game.pac.setMoveDir(LEFT);
@@ -98,8 +98,8 @@ public class IntroController extends Fsm<IntroController.State, IntroController.
 			@Override
 			public void onUpdate(Context ctx) {
 				if (timer.tick() == 1) {
-					ctx.gameController.game().scores.gameScore.visible = true;
-					ctx.gameController.game().scores.highScore.visible = true;
+					ctx.gameController.game().gameScore.visible = true;
+					ctx.gameController.game().highScore.visible = true;
 				} else if (timer.tick() == 2) {
 					ctx.creditVisible = true;
 				} else if (timer.atSecond(1)) {

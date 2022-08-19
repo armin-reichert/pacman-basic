@@ -38,8 +38,14 @@ import static de.amr.games.pacman.model.common.actors.GhostState.LOCKED;
 import static de.amr.games.pacman.model.common.world.World.HTS;
 import static de.amr.games.pacman.model.common.world.World.TS;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.stream.Stream;
 
 import org.apache.logging.log4j.LogManager;
@@ -158,9 +164,6 @@ public abstract class GameModel {
 	/** Energizer animation. */
 	public final SingleEntityAnimation<Boolean> energizerPulse = SingleEntityAnimation.pulse(10);
 
-	/** Game score and high score. */
-	public final GameScores scores = new GameScores(this);
-
 	/** Counters used by ghost house logic. */
 	protected final int[] ghostDotCounter = new int[4];
 
@@ -172,6 +175,14 @@ public abstract class GameModel {
 
 	/** Number of current intermission scene in test mode. */
 	public int intermissionTestNumber;
+
+	public final Score gameScore;
+
+	public final Score highScore;
+
+	private File hiscoreFile;
+
+	private boolean scoresEnabled;
 
 	public final Memo memo = new Memo();
 
@@ -196,6 +207,77 @@ public abstract class GameModel {
 				() -> orangeGhost.tile().euclideanDistance(pac.tile()) < 8 ? scatterTile[ORANGE_GHOST] : pac.tile());
 
 		theGhosts = new Ghost[] { redGhost, pinkGhost, cyanGhost, orangeGhost };
+
+		gameScore = new Score("SCORE");
+		highScore = new Score("HIGH SCORE");
+	}
+
+	private void loadScoreFromFile(Score score, File file) {
+		try (var in = new FileInputStream(file)) {
+			var props = new Properties();
+			props.loadFromXML(in);
+			// parse
+			var points = Integer.parseInt(props.getProperty("points"));
+			var levelNumber = Integer.parseInt(props.getProperty("level"));
+			var date = LocalDate.parse(props.getProperty("date"), DateTimeFormatter.ISO_LOCAL_DATE);
+			// parsing ok
+			score.points = points;
+			score.levelNumber = levelNumber;
+			score.date = date;
+			LOGGER.info("Score loaded. File: '%s' Points: %d Level: %d", file.getAbsolutePath(), score.points,
+					score.levelNumber);
+		} catch (Exception x) {
+			LOGGER.info("Score could not be loaded. File '%s' Reason: %s", file, x.getMessage());
+		}
+	}
+
+	public void setHiscoreFile(File hiscoreFile) {
+		this.hiscoreFile = hiscoreFile;
+		loadScoreFromFile(highScore, hiscoreFile);
+	}
+
+	public void enableScores(boolean enabled) {
+		this.scoresEnabled = enabled;
+	}
+
+	public void reloadScores() {
+		loadScoreFromFile(highScore, hiscoreFile);
+	}
+
+	public void scorePoints(int points) {
+		if (!scoresEnabled) {
+			return;
+		}
+		int scoreBeforeAddingPoints = gameScore.points;
+		gameScore.points += points;
+		if (gameScore.points > highScore.points) {
+			highScore.points = gameScore.points;
+			highScore.levelNumber = level.number;
+			highScore.date = LocalDate.now();
+		}
+		if (scoreBeforeAddingPoints < GameModel.EXTRA_LIFE && gameScore.points >= GameModel.EXTRA_LIFE) {
+			lives++;
+			GameEvents.publish(new GameEvent(this, GameEventType.PLAYER_GETS_EXTRA_LIFE, null, pac.tile()));
+		}
+	}
+
+	public void saveHiscore() {
+		Score latestHiscore = new Score("");
+		loadScoreFromFile(latestHiscore, hiscoreFile);
+		if (highScore.points <= latestHiscore.points) {
+			return;
+		}
+		var props = new Properties();
+		props.setProperty("points", String.valueOf(highScore.points));
+		props.setProperty("level", String.valueOf(highScore.levelNumber));
+		props.setProperty("date", highScore.date.format(DateTimeFormatter.ISO_LOCAL_DATE));
+		try (var out = new FileOutputStream(hiscoreFile)) {
+			props.storeToXML(out, "");
+			LOGGER.info("New hiscore saved. File: '%s' Points: %d Level: %d", hiscoreFile.getAbsolutePath(), highScore.points,
+					highScore.levelNumber);
+		} catch (Exception x) {
+			LOGGER.info("Highscore could not be saved. File '%s' Reason: %s", hiscoreFile, x.getMessage());
+		}
 	}
 
 	// simulates the overflow bug from the original Arcade version
@@ -243,8 +325,8 @@ public abstract class GameModel {
 		lives = INITIAL_LIFES;
 		livesOneLessShown = false;
 		intermissionTestNumber = 1;
-		scores.reload();
-		scores.gameScore.reset();
+		reloadScores();
+		gameScore.reset();
 	}
 
 	protected void initGhosts() {
@@ -507,7 +589,7 @@ public abstract class GameModel {
 		if (level.numGhostsKilled == 16) {
 			LOGGER.info("All ghosts killed at level %d, Pac-Man wins additional %d points", level.number,
 					ALL_GHOSTS_KILLED_POINTS);
-			scores.addPoints(ALL_GHOSTS_KILLED_POINTS);
+			scorePoints(ALL_GHOSTS_KILLED_POINTS);
 		}
 	}
 
@@ -516,7 +598,7 @@ public abstract class GameModel {
 		ghostsKilledByEnergizer++;
 		ghost.enterStateEaten(this);
 		int value = ghostValue(killedIndex[ghost.id]);
-		scores.addPoints(value);
+		scorePoints(value);
 		LOGGER.info("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name, ghost.tile(), value);
 	}
 
@@ -573,7 +655,7 @@ public abstract class GameModel {
 		level.world.removeFood(pac.tile());
 		checkIfRedGhostBecomesCruiseElroy();
 		updateGhostDotCounters();
-		scores.addPoints(value);
+		scorePoints(value);
 		GameEvents.publish(GameEventType.PAC_FINDS_FOOD, pac.tile());
 	}
 

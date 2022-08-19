@@ -113,8 +113,8 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 	CREDIT {
 		@Override
 		public void onEnter(GameModel game) {
-			game.scores.gameScore.showContent = false;
-			game.scores.highScore.showContent = true;
+			game.gameScore.showContent = false;
+			game.highScore.showContent = true;
 		}
 
 		@Override
@@ -142,7 +142,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			gc.sounds().stopAll();
 			if (game.hasCredit()) {
 				if (!game.playing) {
-					game.scores.enable(true);
+					game.enableScores(true);
 					startNewGame(game);
 				} else {
 					resumeGame(game);
@@ -158,7 +158,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			game.setLevel(1);
 			game.levelCounter.clear();
 			game.levelCounter.addSymbol(game.level.bonusSymbol);
-			game.scores.gameScore.showContent = true;
+			game.gameScore.showContent = true;
 			game.resetGuys();
 			game.guys().forEach(Creature::hide);
 		}
@@ -171,8 +171,8 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		private void startAttractMode(GameModel game) {
 			game.resetGuys();
 			game.guys().forEach(Creature::show);
-			game.scores.enable(false);
-			game.scores.gameScore.showContent = false;
+			game.enableScores(false);
+			game.gameScore.showContent = false;
 			gc.attractModeSteering.init();
 //			game.isPacImmune = true;
 		}
@@ -431,7 +431,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			timer.start();
 			gc.sounds().stopAll();
 			game.consumeCredit();
-			game.scores.saveHiscore();
+			game.saveHiscore();
 		}
 
 		@Override
