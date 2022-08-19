@@ -40,7 +40,7 @@ import de.amr.games.pacman.model.common.actors.AnimKeys;
 import de.amr.games.pacman.model.common.actors.Entity;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.Pac;
-import de.amr.games.pacman.model.mspacman.Flap;
+import de.amr.games.pacman.model.mspacman.Clapperboard;
 
 /**
  * Intermission scene 1: "They meet".
@@ -62,7 +62,7 @@ public class Intermission1Controller extends Fsm<State, Context> {
 		public final float pacSpeedRising = 0.75f;
 		public final float ghostSpeedAfterColliding = 0.3f;
 		public final float ghostSpeedChasing = 1.25f;
-		public Flap flap;
+		public Clapperboard clapperboard;
 		public Pac pacMan;
 		public Pac msPac;
 		public Ghost pinky;
@@ -81,11 +81,11 @@ public class Intermission1Controller extends Fsm<State, Context> {
 			public void onEnter(Context ctx) {
 				timer.resetSeconds(2);
 				timer.start();
-				ctx.flap = new Flap();
-				ctx.flap.number = 1;
-				ctx.flap.text = "THEY MEET";
-				ctx.flap.setPosition(t(3), t(10));
-				ctx.flap.show();
+				ctx.clapperboard = new Clapperboard();
+				ctx.clapperboard.sceneNumber = 1;
+				ctx.clapperboard.sceneTitle = "THEY MEET";
+				ctx.clapperboard.setPosition(t(3), t(10));
+				ctx.clapperboard.show();
 
 				ctx.pacMan = new Pac("Pac-Man");
 				ctx.pacMan.setMoveDir(Direction.RIGHT);
@@ -120,7 +120,7 @@ public class Intermission1Controller extends Fsm<State, Context> {
 			public void onUpdate(Context ctx) {
 				if (timer.atSecond(1)) {
 					ctx.gameController.sounds().play(GameSound.INTERMISSION_1);
-					ctx.flap.animation().ifPresent(EntityAnimation::restart);
+					ctx.clapperboard.animation().ifPresent(EntityAnimation::restart);
 				}
 				if (timer.hasExpired()) {
 					controller.changeState(State.CHASED_BY_GHOSTS);
@@ -131,7 +131,7 @@ public class Intermission1Controller extends Fsm<State, Context> {
 		CHASED_BY_GHOSTS {
 			@Override
 			public void onEnter(Context ctx) {
-				ctx.flap.hide();
+				ctx.clapperboard.hide();
 				ctx.pacMan.setAbsSpeed(ctx.pacSpeedChased);
 				ctx.msPac.setAbsSpeed(ctx.pacSpeedChased);
 				ctx.inky.setAbsSpeed(ctx.ghostSpeedChasing);

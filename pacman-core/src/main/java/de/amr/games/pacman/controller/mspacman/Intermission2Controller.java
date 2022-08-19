@@ -37,7 +37,7 @@ import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameSound;
 import de.amr.games.pacman.model.common.actors.AnimKeys;
 import de.amr.games.pacman.model.common.actors.Pac;
-import de.amr.games.pacman.model.mspacman.Flap;
+import de.amr.games.pacman.model.mspacman.Clapperboard;
 
 /**
  * Intermission scene 2: "The chase".
@@ -55,7 +55,7 @@ public class Intermission2Controller extends Fsm<State, Context> {
 		public final int upperY = t(12);
 		public final int middleY = t(18);
 		public final int lowerY = t(24);
-		public Flap flap;
+		public Clapperboard flap;
 		public Pac pacMan;
 		public Pac msPacMan;
 
@@ -72,9 +72,9 @@ public class Intermission2Controller extends Fsm<State, Context> {
 			public void onEnter(Context ctx) {
 				timer.resetIndefinitely();
 				timer.start();
-				ctx.flap = new Flap();
-				ctx.flap.number = 2;
-				ctx.flap.text = "THE CHASE";
+				ctx.flap = new Clapperboard();
+				ctx.flap.sceneNumber = 2;
+				ctx.flap.sceneTitle = "THE CHASE";
 				ctx.flap.setPosition(t(3), t(10));
 				ctx.flap.show();
 				ctx.pacMan = new Pac("Pac-Man");

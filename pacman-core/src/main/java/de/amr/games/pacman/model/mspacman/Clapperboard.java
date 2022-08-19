@@ -30,22 +30,26 @@ import de.amr.games.pacman.lib.animation.EntityAnimationSet;
 import de.amr.games.pacman.model.common.actors.Entity;
 
 /**
- * The flap used in the intermission scenes.
+ * The clapperboard used in the intermission scenes.
  * 
  * @author Armin Reichert
  */
-public class Flap extends Entity implements AnimatedEntity<String> {
+public class Clapperboard extends Entity implements AnimatedEntity<Integer> {
 
-	public int number;
-	public String text;
-	private EntityAnimationSet<String> animationSet;
+	public static final int ACTION = 0;
 
-	public void setAnimationSet(EntityAnimationSet<String> animationSet) {
+	public int sceneNumber;
+
+	public String sceneTitle;
+
+	private EntityAnimationSet<Integer> animationSet;
+
+	public void setAnimationSet(EntityAnimationSet<Integer> animationSet) {
 		this.animationSet = animationSet;
 	}
 
 	@Override
-	public Optional<EntityAnimationSet<String>> animationSet() {
+	public Optional<EntityAnimationSet<Integer>> animationSet() {
 		return Optional.ofNullable(animationSet);
 	}
 }

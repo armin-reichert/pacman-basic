@@ -39,7 +39,7 @@ import de.amr.games.pacman.model.common.GameSound;
 import de.amr.games.pacman.model.common.actors.AnimKeys;
 import de.amr.games.pacman.model.common.actors.Entity;
 import de.amr.games.pacman.model.common.actors.Pac;
-import de.amr.games.pacman.model.mspacman.Flap;
+import de.amr.games.pacman.model.mspacman.Clapperboard;
 
 /**
  * Intermission scene 3: "Junior".
@@ -57,7 +57,7 @@ public class Intermission3Controller extends Fsm<State, Context> {
 		public final GameController gameController;
 		public final GameModel game;
 		public final int groundY = t(24);
-		public Flap flap;
+		public Clapperboard flap;
 		public Pac pacMan;
 		public Pac msPacMan;
 		public Entity stork;
@@ -78,9 +78,9 @@ public class Intermission3Controller extends Fsm<State, Context> {
 			public void onEnter(Context ctx) {
 				timer.resetIndefinitely();
 				timer.start();
-				ctx.flap = new Flap();
-				ctx.flap.number = 3;
-				ctx.flap.text = "JUNIOR";
+				ctx.flap = new Clapperboard();
+				ctx.flap.sceneNumber = 3;
+				ctx.flap.sceneTitle = "JUNIOR";
 				ctx.flap.setPosition(t(3), t(10));
 				ctx.flap.show();
 				ctx.pacMan = new Pac("Pac-Man");
