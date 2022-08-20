@@ -66,7 +66,6 @@ public interface World {
 	 */
 	public static V2i tileAt(double x, double y) {
 		return new V2i((int) x / TS, (int) y / TS);
-
 	}
 
 	/**
