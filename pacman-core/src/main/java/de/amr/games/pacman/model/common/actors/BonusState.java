@@ -26,7 +26,6 @@ package de.amr.games.pacman.model.common.actors;
 
 /**
  * @author Armin Reichert
- *
  */
 public enum BonusState {
 	INACTIVE, EDIBLE, EATEN;

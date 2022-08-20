@@ -241,7 +241,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	 * target of Blinky and Pinky would have been affected. Who knows?
 	 */
 	private void updateStateHuntingPac(GameModel game) {
-		if (insideTunnel(game)) {
+		if (game.world().isTunnel(tile())) {
 			setRelSpeed(game.level.ghostSpeedTunnel);
 		} else if (id == RED_GHOST && game.cruiseElroyState == 1) {
 			setRelSpeed(game.level.elroy1Speed);
@@ -286,7 +286,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	 * @param game the game
 	 */
 	private void updateStateFrightened(GameModel game) {
-		setRelSpeed(insideTunnel(game) ? game.level.ghostSpeedTunnel : game.level.ghostSpeedFrightened);
+		setRelSpeed(game.world().isTunnel(tile()) ? game.level.ghostSpeedTunnel : game.level.ghostSpeedFrightened);
 		roam(game);
 		ensureFlashingWhenPowerCeases(game);
 	}

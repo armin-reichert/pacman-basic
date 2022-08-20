@@ -138,14 +138,6 @@ public class Creature extends Entity {
 		return tile().equals(other.tile());
 	}
 
-	public boolean insideTunnel(GameModel game) {
-		return game.world().isTunnel(tile());
-	}
-
-	public boolean insidePortal(GameModel game) {
-		return game.world().belongsToPortal(tile());
-	}
-
 	public void placeAtTile(int tx, int ty, double ox, double oy) {
 		var prevTile = tile();
 		setPosition(tx * TS + ox, ty * TS + oy);
@@ -263,7 +255,7 @@ public class Creature extends Entity {
 	 * @param game the game model
 	 */
 	public void navigateTowardsTarget(GameModel game) {
-		if ((newTileEntered || stuck) && targetTile != null && !insidePortal(game)) {
+		if ((newTileEntered || stuck) && targetTile != null && !game.world().belongsToPortal(tile())) {
 			bestDirection(game).ifPresent(this::setWishDir);
 		}
 	}
