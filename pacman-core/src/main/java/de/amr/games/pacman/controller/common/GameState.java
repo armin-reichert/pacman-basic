@@ -140,35 +140,33 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		@Override
 		public void onEnter(GameModel game) {
 			gc.sounds().stopAll();
-			if (game.hasCredit()) {
-				if (!game.playing) {
-					game.enableScores(true);
-					startNewGame(game);
-				} else {
-					resumeGame(game);
-				}
+			if (game.hasCredit() && !game.playing) {
+				getReadyForNewGame(game);
+			} else if (game.hasCredit() && game.playing) {
+				continueGame(game);
 			} else {
-				startAttractMode(game);
+				enterAttractMode(game);
 			}
 		}
 
-		private void startNewGame(GameModel game) {
+		private void getReadyForNewGame(GameModel game) {
 			gc.sounds().play(GameSound.GAME_READY);
 			game.reset();
 			game.setLevel(1);
 			game.levelCounter.clear();
 			game.levelCounter.addSymbol(game.level.bonusSymbol);
+			game.enableScores(true);
 			game.gameScore.showContent = true;
 			game.resetGuys();
 			game.guys().forEach(Creature::hide);
 		}
 
-		private void resumeGame(GameModel game) {
+		private void continueGame(GameModel game) {
 			game.resetGuys();
 			game.guys().forEach(Creature::show);
 		}
 
-		private void startAttractMode(GameModel game) {
+		private void enterAttractMode(GameModel game) {
 			game.resetGuys();
 			game.guys().forEach(Creature::show);
 			game.enableScores(false);
@@ -180,17 +178,19 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		@Override
 		public void onUpdate(GameModel game) {
 			if (game.hasCredit() && !game.playing) {
-				if (timer.atSecond(0.5)) {
+				// about to start game
+				if (timer.tick() == 130) {
 					game.guys().forEach(Entity::show);
 					game.livesOneLessShown = true;
-				} else if (timer.atSecond(4.5)) {
+				} else if (timer.tick() == 250) {
+					// start game
 					game.playing = true;
 					game.startHuntingPhase(0);
 					gc.changeState(GameState.HUNTING);
 				}
 			} else {
 				// game continuing or attract mode
-				if (timer.atSecond(1.5)) {
+				if (timer.tick() == 92) {
 					game.startHuntingPhase(0);
 					gc.changeState(GameState.HUNTING);
 				}
