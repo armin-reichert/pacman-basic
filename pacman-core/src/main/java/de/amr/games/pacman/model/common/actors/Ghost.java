@@ -101,8 +101,9 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 
 	@Override
 	public boolean canAccessTile(V2i tile, GameModel game) {
-		if (tile.equals(tile().plus(UP.vec)) && !game.isGhostAllowedMoving(this, UP)) {
-			LOGGER.trace("%s cannot access tile %s", this, tile);
+		var currentTile = tile();
+		if (tile.equals(currentTile.plus(UP.vec)) && !game.isGhostAllowedMoving(this, UP)) {
+			LOGGER.trace("%s cannot access tile %s because he cannot move UP at %s", name, tile, currentTile);
 			return false;
 		}
 		if (game.world().ghostHouse().isDoorTile(tile)) {
