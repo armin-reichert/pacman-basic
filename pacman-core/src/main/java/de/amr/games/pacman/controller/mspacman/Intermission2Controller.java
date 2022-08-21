@@ -72,9 +72,7 @@ public class Intermission2Controller extends Fsm<State, Context> {
 			public void onEnter(Context ctx) {
 				timer.resetIndefinitely();
 				timer.start();
-				ctx.flap = new Clapperboard();
-				ctx.flap.sceneNumber = 2;
-				ctx.flap.sceneTitle = "THE CHASE";
+				ctx.flap = new Clapperboard(2, "THE CHASE");
 				ctx.flap.setPosition(t(3), t(10));
 				ctx.flap.show();
 				ctx.pacMan = new Pac("Pac-Man");

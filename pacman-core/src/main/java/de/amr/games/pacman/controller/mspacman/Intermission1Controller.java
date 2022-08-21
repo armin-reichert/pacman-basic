@@ -81,9 +81,7 @@ public class Intermission1Controller extends Fsm<State, Context> {
 			public void onEnter(Context ctx) {
 				timer.resetSeconds(2);
 				timer.start();
-				ctx.clapperboard = new Clapperboard();
-				ctx.clapperboard.sceneNumber = 1;
-				ctx.clapperboard.sceneTitle = "THEY MEET";
+				ctx.clapperboard = new Clapperboard(1, "THEY MEET");
 				ctx.clapperboard.setPosition(t(3), t(10));
 				ctx.clapperboard.show();
 

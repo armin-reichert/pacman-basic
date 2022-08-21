@@ -78,9 +78,7 @@ public class Intermission3Controller extends Fsm<State, Context> {
 			public void onEnter(Context ctx) {
 				timer.resetIndefinitely();
 				timer.start();
-				ctx.flap = new Clapperboard();
-				ctx.flap.sceneNumber = 3;
-				ctx.flap.sceneTitle = "JUNIOR";
+				ctx.flap = new Clapperboard(3, "JUNIOR");
 				ctx.flap.setPosition(t(3), t(10));
 				ctx.flap.show();
 				ctx.pacMan = new Pac("Pac-Man");

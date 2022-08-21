@@ -38,11 +38,14 @@ public class Clapperboard extends Entity implements AnimatedEntity<Integer> {
 
 	public static final int ACTION = 0;
 
-	public int sceneNumber;
-
-	public String sceneTitle;
-
+	public final int sceneNumber;
+	public final String sceneTitle;
 	private EntityAnimationSet<Integer> animationSet;
+
+	public Clapperboard(int sceneNumber, String sceneTitle) {
+		this.sceneNumber = sceneNumber;
+		this.sceneTitle = sceneTitle;
+	}
 
 	public void setAnimationSet(EntityAnimationSet<Integer> animationSet) {
 		this.animationSet = animationSet;
