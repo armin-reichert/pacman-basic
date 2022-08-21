@@ -58,7 +58,7 @@ public class MsPacManGame extends GameModel {
 
 	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
-	private static final Object[][] LEVELS = {
+	private static final byte[][] LEVELS = {
 	/*@formatter:off*/
 	/* 1*/ {0, /* CHERRIES */    80, 75, 40,  20,  80, 10,  85,  90, 50, 6, 5},
 	/* 2*/ {1, /* STRAWBERRY */  90, 85, 45,  30,  90, 15,  95,  95, 55, 5, 5},
