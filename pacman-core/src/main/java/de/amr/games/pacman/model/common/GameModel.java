@@ -704,27 +704,27 @@ public abstract class GameModel {
 
 	// Ghost house rules, see Pac-Man dossier
 
-	private void checkGhostCanBeUnlocked(Memo result) {
+	private void checkGhostCanBeUnlocked(Memo memo) {
 		ghosts(LOCKED).findFirst().ifPresent(ghost -> {
 			if (ghost.id == RED_GHOST) {
-				result.unlockedGhost = Optional.of(theGhosts[RED_GHOST]);
-				result.unlockReason = "Blinky is always unlocked immediately";
+				memo.unlockedGhost = Optional.of(ghost);
+				memo.unlockReason = "Blinky is unlocked immediately";
 				return;
 			}
 			// first check private dot counter
 			if (!globalDotCounterEnabled && ghostDotCounter[ghost.id] >= privateDotLimits[ghost.id]) {
-				result.unlockedGhost = Optional.of(ghost);
-				result.unlockReason = "Private dot counter at limit (%d)".formatted(privateDotLimits[ghost.id]);
+				memo.unlockedGhost = Optional.of(ghost);
+				memo.unlockReason = "Private dot counter at limit (%d)".formatted(privateDotLimits[ghost.id]);
 				return;
 			}
 			// check global dot counter
 			var globalDotLimit = globalDotLimits[ghost.id] == -1 ? Integer.MAX_VALUE : globalDotLimits[ghost.id];
 			if (globalDotCounter >= globalDotLimit) {
-				result.unlockedGhost = Optional.of(ghost);
-				result.unlockReason = "Global dot counter at limit (%d)".formatted(globalDotLimit);
+				memo.unlockedGhost = Optional.of(ghost);
+				memo.unlockReason = "Global dot counter at limit (%d)".formatted(globalDotLimit);
 			} else if (pac.starvingTime() >= pacStarvingTimeLimit) {
-				result.unlockedGhost = Optional.of(ghost);
-				result.unlockReason = "%s at starving limit (%d ticks)".formatted(pac.name, pacStarvingTimeLimit);
+				memo.unlockedGhost = Optional.of(ghost);
+				memo.unlockReason = "%s at starving limit (%d ticks)".formatted(pac.name, pacStarvingTimeLimit);
 				pac.endStarving();
 			}
 		});
