@@ -35,7 +35,7 @@ public record GameLevel(
 	/** Number of this level, starts with 1. */
 	int number,
 	
-	/** Maze number of this level. */
+	/** Maze number of this level, starts with 1. */
 	int mazeNumber,
 
 	/** World used in this level. */
@@ -95,5 +95,4 @@ public record GameLevel(
 				percent(data[1]), percent(data[2]), percent(data[3]), (int) data[4], percent(data[5]), (int) data[6],
 				percent(data[7]), percent(data[8]), percent(data[9]), (int) data[10], (int) data[11]);
 	}
-
 }
