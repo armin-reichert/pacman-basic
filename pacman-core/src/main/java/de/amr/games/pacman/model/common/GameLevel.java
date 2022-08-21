@@ -80,7 +80,7 @@ public record GameLevel(
 ) {
 
 	private static float percent(byte bytePercentValue) {
-		return 0.01f * bytePercentValue;
+		return bytePercentValue / 100.0f;
 	}
 
 	/**
