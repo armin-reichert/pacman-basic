@@ -58,53 +58,41 @@ public class MsPacManGame extends GameModel {
 
 	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
-	public static final int CHERRIES = 0;
-	public static final int STRAWBERRY = 1;
-	public static final int PEACH = 2;
-	public static final int PRETZEL = 3;
-	public static final int APPLE = 4;
-	public static final int PEAR = 5;
-	public static final int BANANA = 6;
+	private static final Object[][] LEVELS = {
+	/*@formatter:off*/
+	/* 1*/ {0, /* CHERRIES */    80, 75, 40,  20,  80, 10,  85,  90, 50, 6, 5},
+	/* 2*/ {1, /* STRAWBERRY */  90, 85, 45,  30,  90, 15,  95,  95, 55, 5, 5},
+	/* Intermission scene 1: "They Meet" */
+	/* 3*/ {2 /* PEACH */,       90, 85, 45,  40,  90, 20,  95,  95, 55, 4, 5},
+	/* 4*/ {3 /* PRETZEL */,     90, 85, 45,  40,  90, 20,  95,  95, 55, 3, 5},
+	/* 5*/ {4 /* APPLE */,      100, 95, 50,  40, 100, 20, 105, 100, 60, 2, 5},
+	/* Intermission scene 2: "The Chase" */
+	/* 6*/ {5 /* PEAR */,       100, 95, 50,  50, 100, 25, 105, 100, 60, 5, 5},
+	/* 7*/ {6 /* BANANA */,     100, 95, 50,  50, 100, 25, 105, 100, 60, 2, 5},
+	/* 8*/ {6 /* BANANA */,     100, 95, 50,  50, 100, 25, 105, 100, 60, 2, 5},
+	/* 9*/ {6 /* BANANA */,     100, 95, 50,  60, 100, 30, 105, 100, 60, 1, 3},
+	/* Intermission scene 3: "Junior" */
+	/*10*/ {6 /* BANANA */,     100, 95, 50,  60, 100, 30, 105, 100, 60, 4, 5},
+	/*11*/ {6 /* BANANA */,     100, 95, 50,  60, 100, 30, 105, 100, 60, 2, 5},
+	/*12*/ {6 /* BANANA */,     100, 95, 50,  80, 100, 40, 105, 100, 60, 1, 3},
+	/*13*/ {6 /* BANANA */,     100, 95, 50,  80, 100, 40, 105, 100, 60, 1, 3},
+	/* Intermission scene 3: "Junior" */
+	/*14*/ {6 /* BANANA */,     100, 95, 50,  80, 100, 40, 105, 100, 60, 3, 5},
+	/*15*/ {6 /* BANANA */,     100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3},
+	/*16*/ {6 /* BANANA */,     100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3},
+	/*17*/ {6 /* BANANA */,     100, 95, 50, 100, 100, 50, 105,   0,  0, 0, 0},
+	/* Intermission scene 3: "Junior" */
+	/*18*/ {6 /* BANANA */,     100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3},
+	/*19*/ {6 /* BANANA */,     100, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
+	/*20*/ {6 /* BANANA */,     100, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
+	/*21*/ {6 /* BANANA */,      90, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
+	/*@formatter:on*/
+	};
 
 	private static final String[] BONUS_NAMES = { "CHERRIES", "STRAWBERRY", "PEACH", "PRETZEL", "APPLE", "PEAR",
 			"BANANA" };
 
-	public static String bonusName(int symbol) {
-		return BONUS_NAMES[symbol];
-	}
-
-	protected static final int[] BONUS_VALUES = { 100, 200, 500, 700, 1000, 2000, 5000 };
-
-	private static final Object[][] LEVEL_DATA = {
-	/*@formatter:off*/
-	/* 1*/ {CHERRIES,    80, 75, 40,  20,  80, 10,  85,  90, 50, 6, 5},
-	/* 2*/ {STRAWBERRY,  90, 85, 45,  30,  90, 15,  95,  95, 55, 5, 5},
-	/* Intermission scene 1: "They Meet" */
-	/* 3*/ {PEACH,       90, 85, 45,  40,  90, 20,  95,  95, 55, 4, 5},
-	/* 4*/ {PRETZEL,     90, 85, 45,  40,  90, 20,  95,  95, 55, 3, 5},
-	/* 5*/ {APPLE,      100, 95, 50,  40, 100, 20, 105, 100, 60, 2, 5},
-	/* Intermission scene 2: "The Chase" */
-	/* 6*/ {PEAR,       100, 95, 50,  50, 100, 25, 105, 100, 60, 5, 5},
-	/* 7*/ {BANANA,     100, 95, 50,  50, 100, 25, 105, 100, 60, 2, 5},
-	/* 8*/ {BANANA,     100, 95, 50,  50, 100, 25, 105, 100, 60, 2, 5},
-	/* 9*/ {BANANA,     100, 95, 50,  60, 100, 30, 105, 100, 60, 1, 3},
-	/* Intermission scene 3: "Junior" */
-	/*10*/ {BANANA,     100, 95, 50,  60, 100, 30, 105, 100, 60, 4, 5},
-	/*11*/ {BANANA,     100, 95, 50,  60, 100, 30, 105, 100, 60, 2, 5},
-	/*12*/ {BANANA,     100, 95, 50,  80, 100, 40, 105, 100, 60, 1, 3},
-	/*13*/ {BANANA,     100, 95, 50,  80, 100, 40, 105, 100, 60, 1, 3},
-	/* Intermission scene 3: "Junior" */
-	/*14*/ {BANANA,     100, 95, 50,  80, 100, 40, 105, 100, 60, 3, 5},
-	/*15*/ {BANANA,     100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3},
-	/*16*/ {BANANA,     100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3},
-	/*17*/ {BANANA,     100, 95, 50, 100, 100, 50, 105,   0,  0, 0, 0},
-	/* Intermission scene 3: "Junior" */
-	/*18*/ {BANANA,     100, 95, 50, 100, 100, 50, 105, 100, 60, 1, 3},
-	/*19*/ {BANANA,     100, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
-	/*20*/ {BANANA,     100, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
-	/*21*/ {BANANA,      90, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
-	/*@formatter:on*/
-	};
+	private static final int[] BONUS_VALUES = { 100, 200, 500, 700, 1000, 2000, 5000 };
 
 	private static final byte[][] MAP1 = {
 			//@formatter:off
@@ -291,8 +279,8 @@ public class MsPacManGame extends GameModel {
 	}
 
 	private static GameLevel createLevel(int number) {
-		int numLevels = LEVEL_DATA.length;
-		var level = new GameLevel(number, number <= numLevels ? LEVEL_DATA[number - 1] : LEVEL_DATA[numLevels - 1]);
+		int numLevels = LEVELS.length;
+		var level = new GameLevel(number, number <= numLevels ? LEVELS[number - 1] : LEVELS[numLevels - 1]);
 		int mapNumber = switch (level.number) {
 		case 1, 2 -> 1;
 		case 3, 4, 5 -> 2;
@@ -352,6 +340,11 @@ public class MsPacManGame extends GameModel {
 	@Override
 	public ArcadeWorld world() {
 		return (ArcadeWorld) level.world;
+	}
+
+	@Override
+	public String bonusName(int symbol) {
+		return BONUS_NAMES[symbol];
 	}
 
 	@Override
