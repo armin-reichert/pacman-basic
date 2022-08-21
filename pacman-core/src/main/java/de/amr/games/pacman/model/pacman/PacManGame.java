@@ -172,20 +172,6 @@ public class PacManGame extends GameModel {
 		return new ArcadeWorld(MAP);
 	}
 
-	private static GameLevel createLevel(int number) {
-		int numLevels = LEVELS.length;
-		var level = new GameLevel(number, number <= numLevels ? LEVELS[number - 1] : LEVELS[numLevels - 1]);
-		level.world = createWorld();
-		level.pacStarvingTimeLimit = (int) secToTicks(level.number < 5 ? 4 : 3);
-		level.globalDotLimits = new int[] { Integer.MAX_VALUE, 7, 17, Integer.MAX_VALUE };
-		level.privateDotLimits = switch (level.number) {
-		case 1 -> new int[] { 0, 0, 30, 60 };
-		case 2 -> new int[] { 0, 0, 0, 50 };
-		default -> new int[] { 0, 0, 0, 0 };
-		};
-		return level;
-	}
-
 	// Tiles where chasing ghosts cannot move upwards
 	public static final List<V2i> RED_ZONE = List.of(v(12, 14), v(15, 14), v(12, 26), v(15, 26));
 
@@ -196,6 +182,19 @@ public class PacManGame extends GameModel {
 		bonus = new StaticBonus(new V2d(v(13, 20).scaled(TS)).plus(HTS, 0));
 		setHiscoreFile(new File(System.getProperty("user.home"), "highscore-pacman.xml"));
 		setLevel(1);
+	}
+
+	private void createLevel(int levelNumber) {
+		int numLevels = LEVELS.length;
+		level = new GameLevel(levelNumber, 1, createWorld(),
+				levelNumber <= numLevels ? LEVELS[levelNumber - 1] : LEVELS[numLevels - 1]);
+		pacStarvingTimeLimit = (int) secToTicks(level.number < 5 ? 4 : 3);
+		globalDotLimits = new int[] { Integer.MAX_VALUE, 7, 17, Integer.MAX_VALUE };
+		privateDotLimits = switch (level.number) {
+		case 1 -> new int[] { 0, 0, 30, 60 };
+		case 2 -> new int[] { 0, 0, 0, 50 };
+		default -> new int[] { 0, 0, 0, 0 };
+		};
 	}
 
 	@Override
@@ -218,7 +217,7 @@ public class PacManGame extends GameModel {
 
 	@Override
 	public void setLevel(int levelNumber) {
-		level = createLevel(levelNumber);
+		createLevel(levelNumber);
 		initGhosts();
 		bonus.setInactive();
 		ghostsKilledByEnergizer = 0;

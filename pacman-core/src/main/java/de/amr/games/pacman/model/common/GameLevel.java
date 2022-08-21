@@ -28,12 +28,11 @@ import de.amr.games.pacman.model.common.world.World;
 
 /**
  * @author Armin Reichert
- *
  */
 public class GameLevel {
 
 	/** World of this level. */
-	public World world;
+	public final World world;
 
 	/** Number of ghosts killed at the current level. */
 	public int numGhostsKilled;
@@ -78,20 +77,15 @@ public class GameLevel {
 	public final int number;
 
 	/** Maze number of this level. */
-	public int mazeNumber = 1;
+	public final int mazeNumber;
 
-	/** Max number of clock ticks Pac can be starving until ghost gets unlocked. */
-	public int pacStarvingTimeLimit;
-
-	public int[] globalDotLimits;
-
-	public int[] privateDotLimits;
-
-	public GameLevel(int number, Object[] data) {
-		if (number < 1) {
-			throw new IllegalArgumentException("Level number must be at least 1, but is: " + number);
+	public GameLevel(int levelNumber, int mazeNumber, World world, Object[] data) {
+		if (levelNumber < 1) {
+			throw new IllegalArgumentException("Level number must be at least 1, but is: " + levelNumber);
 		}
-		this.number = number;
+		this.number = levelNumber;
+		this.mazeNumber = mazeNumber;
+		this.world = world;
 		bonusSymbol = (int) data[0];
 		playerSpeed = percentage(data[1]);
 		ghostSpeed = percentage(data[2]);

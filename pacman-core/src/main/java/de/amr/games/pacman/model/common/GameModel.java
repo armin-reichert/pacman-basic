@@ -173,6 +173,13 @@ public abstract class GameModel {
 	/** Enabled state of the counter used by ghost house logic. */
 	protected boolean globalDotCounterEnabled;
 
+	/** Max number of clock ticks Pac can be starving until ghost gets unlocked. */
+	protected int pacStarvingTimeLimit;
+
+	protected int[] globalDotLimits;
+
+	protected int[] privateDotLimits;
+
 	/** Number of current intermission scene in test mode. */
 	public int intermissionTestNumber;
 
@@ -704,18 +711,18 @@ public abstract class GameModel {
 				return;
 			}
 			// first check private dot counter
-			if (!globalDotCounterEnabled && ghostDotCounter[ghost.id] >= level.privateDotLimits[ghost.id]) {
+			if (!globalDotCounterEnabled && ghostDotCounter[ghost.id] >= privateDotLimits[ghost.id]) {
 				result.unlockedGhost = Optional.of(ghost);
-				result.unlockReason = "Private dot counter at limit (%d)".formatted(level.privateDotLimits[ghost.id]);
+				result.unlockReason = "Private dot counter at limit (%d)".formatted(privateDotLimits[ghost.id]);
 				return;
 			}
 			// check global dot counter
-			if (globalDotCounter >= level.globalDotLimits[ghost.id]) {
+			if (globalDotCounter >= globalDotLimits[ghost.id]) {
 				result.unlockedGhost = Optional.of(ghost);
-				result.unlockReason = "Global dot counter at limit (%d)".formatted(level.globalDotLimits[ghost.id]);
-			} else if (pac.starvingTime() >= level.pacStarvingTimeLimit) {
+				result.unlockReason = "Global dot counter at limit (%d)".formatted(globalDotLimits[ghost.id]);
+			} else if (pac.starvingTime() >= pacStarvingTimeLimit) {
 				result.unlockedGhost = Optional.of(ghost);
-				result.unlockReason = "%s at starving limit (%d ticks)".formatted(pac.name, level.pacStarvingTimeLimit);
+				result.unlockReason = "%s at starving limit (%d ticks)".formatted(pac.name, pacStarvingTimeLimit);
 				pac.endStarving();
 			}
 		});

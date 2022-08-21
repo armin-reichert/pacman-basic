@@ -278,31 +278,6 @@ public class MsPacManGame extends GameModel {
 		};
 	}
 
-	private static GameLevel createLevel(int number) {
-		int numLevels = LEVELS.length;
-		var level = new GameLevel(number, number <= numLevels ? LEVELS[number - 1] : LEVELS[numLevels - 1]);
-		int mapNumber = switch (level.number) {
-		case 1, 2 -> 1;
-		case 3, 4, 5 -> 2;
-		case 6, 7, 8, 9 -> 3;
-		case 10, 11, 12, 13 -> 4;
-		default -> (level.number - 14) % 8 < 4 ? 3 : 4;
-		};
-		level.world = createWorld(mapNumber);
-		if (level.number >= 8) {
-			level.bonusSymbol = rnd.nextInt(7);
-		}
-		level.mazeNumber = mazeNumber(number);
-		level.pacStarvingTimeLimit = (int) secToTicks(level.number < 5 ? 4 : 3);
-		level.globalDotLimits = new int[] { Integer.MAX_VALUE, 7, 17, Integer.MAX_VALUE };
-		level.privateDotLimits = switch (level.number) {
-		case 1 -> new int[] { 0, 0, 30, 60 };
-		case 2 -> new int[] { 0, 0, 0, 50 };
-		default -> new int[] { 0, 0, 0, 0 };
-		};
-		return level;
-	}
-
 	private static final Random rnd = new Random();
 
 	private final MovingBonus movingBonus;
@@ -337,6 +312,29 @@ public class MsPacManGame extends GameModel {
 		setLevel(1);
 	}
 
+	private void createLevel(int levelNumber) {
+		int mapNumber = switch (levelNumber) {
+		case 1, 2 -> 1;
+		case 3, 4, 5 -> 2;
+		case 6, 7, 8, 9 -> 3;
+		case 10, 11, 12, 13 -> 4;
+		default -> (levelNumber - 14) % 8 < 4 ? 3 : 4;
+		};
+		int numLevels = LEVELS.length;
+		level = new GameLevel(levelNumber, mazeNumber(levelNumber), createWorld(mapNumber),
+				levelNumber <= numLevels ? LEVELS[levelNumber - 1] : LEVELS[numLevels - 1]);
+		if (levelNumber >= 8) {
+			level.bonusSymbol = rnd.nextInt(7);
+		}
+		pacStarvingTimeLimit = (int) secToTicks(levelNumber < 5 ? 4 : 3);
+		globalDotLimits = new int[] { Integer.MAX_VALUE, 7, 17, Integer.MAX_VALUE };
+		privateDotLimits = switch (levelNumber) {
+		case 1 -> new int[] { 0, 0, 30, 60 };
+		case 2 -> new int[] { 0, 0, 0, 50 };
+		default -> new int[] { 0, 0, 0, 0 };
+		};
+	}
+
 	@Override
 	public ArcadeWorld world() {
 		return (ArcadeWorld) level.world;
@@ -357,7 +355,7 @@ public class MsPacManGame extends GameModel {
 		if (levelNumber < 1) {
 			throw new IllegalArgumentException("Level number must be at least 1, but is: " + levelNumber);
 		}
-		level = createLevel(levelNumber);
+		createLevel(levelNumber);
 		initGhosts();
 		ghostsKilledByEnergizer = 0;
 		gameScore.levelNumber = levelNumber;
