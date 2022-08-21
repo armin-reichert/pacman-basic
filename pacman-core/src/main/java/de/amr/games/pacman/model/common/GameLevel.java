@@ -29,52 +29,56 @@ import de.amr.games.pacman.model.common.world.World;
 /**
  * @author Armin Reichert
  */
-public class GameLevel {
-
-	/** World of this level. */
-	public final World world;
-
-	/** Bonus symbol of current level. */
-	public final int bonusSymbol;
-
-	/** Relative player speed at current level. */
-	public final float playerSpeed;
-
-	/** Relative ghost speed at current level. */
-	public final float ghostSpeed;
-
-	/** Relative ghost speed when inside tunnel at current level. */
-	public final float ghostSpeedTunnel;
-
-	/** Number of pellets left before player becomes "Cruise Elroy" at severity 1. */
-	public final int elroy1DotsLeft;
-
-	/** Relative speed of player being "Cruise Elroy" at severity 1. */
-	public final float elroy1Speed;
-
-	/** Number of pellets left before player becomes "Cruise Elroy" at severity 2. */
-	public final int elroy2DotsLeft;
-
-	/** Relative speed of player being "Cruise Elroy" at severity 2. */
-	public final float elroy2Speed;
-
-	/** Relative speed of player in power mode. */
-	public final float playerSpeedPowered;
-
-	/** Relative speed of frightened ghost. */
-	public final float ghostSpeedFrightened;
-
-	/** Number of seconds ghost are frightened at current level. */
-	public final int ghostFrightenedSeconds;
-
-	/** Number of maze flashes at end of current level. */
-	public final int numFlashes;
+public record GameLevel(
+//@formatter:off
 
 	/** Starts with 1. */
-	public final int number;
-
+	int number,
+	
 	/** Maze number of this level. */
-	public final int mazeNumber;
+	int mazeNumber,
+
+	/** World used in this level */
+	World world,
+
+	/** Bonus symbol of current level. */
+	int bonusSymbol,
+
+	/** Relative player speed at current level. */
+	float playerSpeed,
+
+	/** Relative ghost speed at current level. */
+	float ghostSpeed,
+
+	/** Relative ghost speed when inside tunnel at current level. */
+	float ghostSpeedTunnel,
+
+	/** Number of pellets left before player becomes "Cruise Elroy" at severity 1. */
+	int elroy1DotsLeft,
+
+	/** Relative speed of player being "Cruise Elroy" at severity 1. */
+	float elroy1Speed,
+
+	/** Number of pellets left before player becomes "Cruise Elroy" at severity 2. */
+	int elroy2DotsLeft,
+
+	/** Relative speed of player being "Cruise Elroy" at severity 2. */
+	float elroy2Speed,
+
+	/** Relative speed of player in power mode. */
+	float playerSpeedPowered,
+
+	/** Relative speed of frightened ghost. */
+	float ghostSpeedFrightened,
+
+	/** Number of seconds ghost are frightened at current level. */
+	int ghostFrightenedSeconds,
+
+	/** Number of maze flashes at end of current level. */
+	int numFlashes
+)
+//@formatter:on
+{
 
 	/**
 	 * @param levelNumber         level number (1, 2, ...)
@@ -83,28 +87,14 @@ public class GameLevel {
 	 * @param bonusSymbolOverride if <code>-1</code>, the value from the data array is used, otherwise the specified value
 	 * @param data                array with level data
 	 */
-	public GameLevel(int levelNumber, int mazeNumber, World world, int bonusSymbolOverride, Object[] data) {
-		if (levelNumber < 1) {
-			throw new IllegalArgumentException("Level number must be at least 1, but is: " + levelNumber);
-		}
-		this.number = levelNumber;
-		this.mazeNumber = mazeNumber;
-		this.world = world;
-		bonusSymbol = bonusSymbolOverride == -1 ? (int) data[0] : bonusSymbolOverride;
-		playerSpeed = percentage(data[1]);
-		ghostSpeed = percentage(data[2]);
-		ghostSpeedTunnel = percentage(data[3]);
-		elroy1DotsLeft = (int) data[4];
-		elroy1Speed = percentage(data[5]);
-		elroy2DotsLeft = (int) data[6];
-		elroy2Speed = percentage(data[7]);
-		playerSpeedPowered = percentage(data[8]);
-		ghostSpeedFrightened = percentage(data[9]);
-		ghostFrightenedSeconds = (int) data[10];
-		numFlashes = (int) data[11];
+	public static GameLevel build(int levelNumber, int mazeNumber, World world, int bonusSymbolOverride, Object[] data) {
+		return new GameLevel(levelNumber, mazeNumber, world,
+				bonusSymbolOverride == -1 ? (int) data[0] : bonusSymbolOverride, percentage(data[1]), percentage(data[2]),
+				percentage(data[3]), (int) data[4], percentage(data[5]), (int) data[6], percentage(data[7]),
+				percentage(data[8]), percentage(data[9]), (int) data[10], (int) data[11]);
 	}
 
-	private float percentage(Object value) {
+	private static float percentage(Object value) {
 		return (int) value / 100f;
 	}
 }

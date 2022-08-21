@@ -186,11 +186,11 @@ public class PacManGame extends GameModel {
 
 	private void createLevel(int levelNumber) {
 		int numLevels = LEVELS.length;
-		level = new GameLevel(levelNumber, 1, createWorld(), -1,
+		level = GameLevel.build(levelNumber, 1, createWorld(), -1,
 				levelNumber <= numLevels ? LEVELS[levelNumber - 1] : LEVELS[numLevels - 1]);
-		pacStarvingTimeLimit = (int) secToTicks(level.number < 5 ? 4 : 3);
+		pacStarvingTimeLimit = (int) secToTicks(level.number() < 5 ? 4 : 3);
 		globalDotLimits = new int[] { Integer.MAX_VALUE, 7, 17, Integer.MAX_VALUE };
-		privateDotLimits = switch (level.number) {
+		privateDotLimits = switch (level.number()) {
 		case 1 -> new int[] { 0, 0, 30, 60 };
 		case 2 -> new int[] { 0, 0, 0, 50 };
 		default -> new int[] { 0, 0, 0, 0 };
@@ -205,7 +205,7 @@ public class PacManGame extends GameModel {
 
 	@Override
 	public ArcadeWorld world() {
-		return (ArcadeWorld) level.world;
+		return (ArcadeWorld) level.world();
 	}
 
 	@Override
@@ -232,7 +232,7 @@ public class PacManGame extends GameModel {
 
 	@Override
 	protected void onBonusReached() {
-		bonus.setEdible(level.bonusSymbol, BONUS_VALUES[level.bonusSymbol], secToTicks(9.0 + rnd.nextDouble()));
+		bonus.setEdible(level.bonusSymbol(), BONUS_VALUES[level.bonusSymbol()], secToTicks(9.0 + rnd.nextDouble()));
 		GameEvents.publish(GameEventType.BONUS_GETS_ACTIVE, World.tileAt(bonus.getPosition()));
 	}
 }

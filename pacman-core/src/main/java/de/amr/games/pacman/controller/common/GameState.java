@@ -154,7 +154,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			game.reset();
 			game.setLevel(1);
 			game.levelCounter.clear();
-			game.levelCounter.addSymbol(game.level.bonusSymbol);
+			game.levelCounter.addSymbol(game.level.bonusSymbol());
 			game.enableScores(true);
 			game.gameScore.showContent = true;
 			game.resetGuys();
@@ -277,7 +277,8 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		@Override
 		public void cheatEatAllPellets(GameModel game) {
 			if (game.playing) {
-				game.level.world.tiles().filter(not(game.level.world::isEnergizerTile)).forEach(game.level.world::removeFood);
+				game.level.world().tiles().filter(not(game.level.world()::isEnergizerTile))
+						.forEach(game.level.world()::removeFood);
 				GameEvents.publish(GameEventType.PAC_FINDS_FOOD, null);
 			}
 		}
@@ -293,7 +294,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		@Override
 		public void cheatEnterNextLevel(GameModel game) {
 			if (game.playing) {
-				game.level.world.tiles().forEach(game.level.world::removeFood);
+				game.level.world().tiles().forEach(game.level.world()::removeFood);
 				gc.changeState(GameState.LEVEL_COMPLETE);
 			}
 		}
@@ -320,7 +321,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			if (timer.hasExpired()) {
 				if (!game.hasCredit()) {
 					gc.changeState(INTRO);
-				} else if (game.intermissionNumber(game.level.number) != 0) {
+				} else if (game.intermissionNumber(game.level.number()) != 0) {
 					gc.changeState(INTERMISSION);
 				} else {
 					gc.changeState(LEVEL_STARTING);
@@ -330,7 +331,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			var world = (ArcadeWorld) game.world();
 			if (timer.atSecond(1)) {
 				world.flashingAnimation().ifPresent(mazeFlashing -> {
-					mazeFlashing.setRepetitions(game.level.numFlashes);
+					mazeFlashing.setRepetitions(game.level.numFlashes());
 					mazeFlashing.restart();
 				});
 			}
@@ -343,8 +344,8 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		public void onEnter(GameModel game) {
 			timer.resetSeconds(1);
 			timer.start();
-			game.setLevel(game.level.number + 1);
-			game.levelCounter.addSymbol(game.level.bonusSymbol);
+			game.setLevel(game.level.number() + 1);
+			game.levelCounter.addSymbol(game.level.bonusSymbol());
 			game.resetGuys();
 			game.guys().forEach(Entity::hide);
 		}

@@ -95,7 +95,7 @@ public class Pac extends Creature implements AnimatedEntity<AnimKeys> {
 		} else if (restingTicks > 0) {
 			--restingTicks;
 		} else {
-			setRelSpeed(game.powerTimer.isRunning() ? game.level.playerSpeedPowered : game.level.playerSpeed);
+			setRelSpeed(game.powerTimer.isRunning() ? game.level.playerSpeedPowered() : game.level.playerSpeed());
 			tryMoving(game);
 			updateMouthAnimation();
 		}

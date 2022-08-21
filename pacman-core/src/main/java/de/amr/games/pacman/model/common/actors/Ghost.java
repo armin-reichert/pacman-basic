@@ -243,13 +243,13 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	 */
 	private void updateStateHuntingPac(GameModel game) {
 		if (game.world().isTunnel(tile())) {
-			setRelSpeed(game.level.ghostSpeedTunnel);
+			setRelSpeed(game.level.ghostSpeedTunnel());
 		} else if (id == RED_GHOST && game.cruiseElroyState == 1) {
-			setRelSpeed(game.level.elroy1Speed);
+			setRelSpeed(game.level.elroy1Speed());
 		} else if (id == RED_GHOST && game.cruiseElroyState == 2) {
-			setRelSpeed(game.level.elroy2Speed);
+			setRelSpeed(game.level.elroy2Speed());
 		} else {
-			setRelSpeed(game.level.ghostSpeed);
+			setRelSpeed(game.level.ghostSpeed());
 		}
 		if (game.variant == MS_PACMAN && game.huntingTimer.scatterPhase() == 0 && (id == RED_GHOST || id == PINK_GHOST)) {
 			roam(game);
@@ -287,7 +287,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	 * @param game the game
 	 */
 	private void updateStateFrightened(GameModel game) {
-		setRelSpeed(game.world().isTunnel(tile()) ? game.level.ghostSpeedTunnel : game.level.ghostSpeedFrightened);
+		setRelSpeed(game.world().isTunnel(tile()) ? game.level.ghostSpeedTunnel() : game.level.ghostSpeedFrightened());
 		roam(game);
 		ensureFlashingWhenPowerCeases(game);
 	}
@@ -378,7 +378,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		if (game.world().ghostHouse().atHouseEntry(this)) {
 			enterStateEnteringHouse(game);
 		} else {
-			setRelSpeed(2 * game.level.ghostSpeed); // not sure
+			setRelSpeed(2 * game.level.ghostSpeed()); // not sure
 			navigateTowardsTarget(game);
 			tryMoving(game);
 		}
@@ -424,7 +424,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 				} else {
 					anims.select(AnimKeys.GHOST_FLASHING);
 					var flashing = anims.selectedAnimation().get();
-					var numFlashes = game.level.numFlashes;
+					var numFlashes = game.level.numFlashes();
 					long frameTicks = GameModel.PAC_POWER_FADING_TICKS / (numFlashes * flashing.numFrames());
 					flashing.setFrameDuration(frameTicks);
 					flashing.setRepetitions(numFlashes);

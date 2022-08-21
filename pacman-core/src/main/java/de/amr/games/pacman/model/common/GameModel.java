@@ -264,7 +264,7 @@ public abstract class GameModel {
 		gameScore.points += points;
 		if (gameScore.points > highScore.points) {
 			highScore.points = gameScore.points;
-			highScore.levelNumber = level.number;
+			highScore.levelNumber = level.number();
 			highScore.date = LocalDate.now();
 		}
 		if (scoreBeforeAddingPoints < GameModel.EXTRA_LIFE && gameScore.points >= GameModel.EXTRA_LIFE) {
@@ -327,7 +327,7 @@ public abstract class GameModel {
 	}
 
 	public World world() {
-		return level.world;
+		return level.world();
 	}
 
 	public void reset() {
@@ -456,7 +456,7 @@ public abstract class GameModel {
 		if (phase < 0 || phase > 7) {
 			throw new IllegalArgumentException("Hunting phase must be 0..7, but is " + phase);
 		}
-		return switch (level.number) {
+		return switch (level.number()) {
 		case 1 -> HUNTING_TIMES[0][phase];
 		case 2, 3, 4 -> HUNTING_TIMES[1][phase];
 		default -> HUNTING_TIMES[2][phase];
@@ -599,7 +599,7 @@ public abstract class GameModel {
 		Stream.of(prey).forEach(this::killGhost);
 		numGhostsKilledInLevel += prey.length;
 		if (numGhostsKilledInLevel == 16) {
-			LOGGER.info("All ghosts killed at level %d, Pac-Man wins additional %d points", level.number,
+			LOGGER.info("All ghosts killed at level %d, Pac-Man wins additional %d points", level.number(),
 					ALL_GHOSTS_KILLED_POINTS);
 			scorePoints(ALL_GHOSTS_KILLED_POINTS);
 		}
@@ -639,16 +639,16 @@ public abstract class GameModel {
 	}
 
 	private void checkFoodFound() {
-		if (level.world.containsFood(pac.tile())) {
+		if (level.world().containsFood(pac.tile())) {
 			memo.foodFound = true;
-			memo.allFoodEaten = level.world.foodRemaining() == 1;
-			if (level.world.isEnergizerTile(pac.tile())) {
+			memo.allFoodEaten = level.world().foodRemaining() == 1;
+			if (level.world().isEnergizerTile(pac.tile())) {
 				memo.energizerFound = true;
-				if (level.ghostFrightenedSeconds > 0) {
+				if (level.ghostFrightenedSeconds() > 0) {
 					memo.pacGotPower = true;
 				}
 			}
-			memo.bonusReached = level.world.eatenFoodCount() == 70 || level.world.eatenFoodCount() == 170;
+			memo.bonusReached = level.world().eatenFoodCount() == 70 || level.world().eatenFoodCount() == 170;
 		}
 	}
 
@@ -664,7 +664,7 @@ public abstract class GameModel {
 	private void eatFood(int value, int restingTicks) {
 		pac.endStarving();
 		pac.rest(restingTicks);
-		level.world.removeFood(pac.tile());
+		level.world().removeFood(pac.tile());
 		checkIfRedGhostBecomesCruiseElroy();
 		updateGhostDotCounters();
 		scorePoints(value);
@@ -674,10 +674,10 @@ public abstract class GameModel {
 	private void checkIfRedGhostBecomesCruiseElroy() {
 		var redGhost = theGhosts[RED_GHOST];
 		var foodRemaining = world().foodRemaining();
-		if (foodRemaining == level.elroy1DotsLeft) {
+		if (foodRemaining == level.elroy1DotsLeft()) {
 			cruiseElroyState = 1;
 			LOGGER.info("%s becomes Cruise Elroy 1", redGhost.name);
-		} else if (foodRemaining == level.elroy2DotsLeft) {
+		} else if (foodRemaining == level.elroy2DotsLeft()) {
 			cruiseElroyState = 2;
 			LOGGER.info("%s becomes Cruise Elroy 2", redGhost.name);
 		}
@@ -685,7 +685,7 @@ public abstract class GameModel {
 
 	private void onPacGetsPower() {
 		huntingTimer.stop();
-		startPowerTimer(level.ghostFrightenedSeconds);
+		startPowerTimer(level.ghostFrightenedSeconds());
 		ghosts(HUNTING_PAC).forEach(ghost -> {
 			ghost.enterStateFrightened(this);
 			ghost.forceTurningBack();
