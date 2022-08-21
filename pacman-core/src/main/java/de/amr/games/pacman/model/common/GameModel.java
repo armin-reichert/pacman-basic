@@ -152,6 +152,9 @@ public abstract class GameModel {
 	/** If lives or one less is displayed in lives counter. */
 	public boolean livesOneLessShown;
 
+	/** Number of ghosts killed at the current level. */
+	public int numGhostsKilledInLevel;
+
 	/** Ghosts killed using the same energizer are indexed in order <code>0..4</code>. */
 	public final int[] killedIndex = new int[4];
 
@@ -594,8 +597,8 @@ public abstract class GameModel {
 
 	private void killGhosts(Ghost[] prey) {
 		Stream.of(prey).forEach(this::killGhost);
-		level.numGhostsKilled += prey.length;
-		if (level.numGhostsKilled == 16) {
+		numGhostsKilledInLevel += prey.length;
+		if (numGhostsKilledInLevel == 16) {
 			LOGGER.info("All ghosts killed at level %d, Pac-Man wins additional %d points", level.number,
 					ALL_GHOSTS_KILLED_POINTS);
 			scorePoints(ALL_GHOSTS_KILLED_POINTS);

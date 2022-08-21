@@ -34,11 +34,8 @@ public class GameLevel {
 	/** World of this level. */
 	public final World world;
 
-	/** Number of ghosts killed at the current level. */
-	public int numGhostsKilled;
-
 	/** Bonus symbol of current level. */
-	public int bonusSymbol;
+	public final int bonusSymbol;
 
 	/** Relative player speed at current level. */
 	public final float playerSpeed;
@@ -79,14 +76,21 @@ public class GameLevel {
 	/** Maze number of this level. */
 	public final int mazeNumber;
 
-	public GameLevel(int levelNumber, int mazeNumber, World world, Object[] data) {
+	/**
+	 * @param levelNumber         level number (1, 2, ...)
+	 * @param mazeNumber          maze number (1, 2, ...)
+	 * @param world               world used in this level
+	 * @param bonusSymbolOverride if <code>-1</code>, the value from the data array is used, otherwise the specified value
+	 * @param data                array with level data
+	 */
+	public GameLevel(int levelNumber, int mazeNumber, World world, int bonusSymbolOverride, Object[] data) {
 		if (levelNumber < 1) {
 			throw new IllegalArgumentException("Level number must be at least 1, but is: " + levelNumber);
 		}
 		this.number = levelNumber;
 		this.mazeNumber = mazeNumber;
 		this.world = world;
-		bonusSymbol = (int) data[0];
+		bonusSymbol = bonusSymbolOverride == -1 ? (int) data[0] : bonusSymbolOverride;
 		playerSpeed = percentage(data[1]);
 		ghostSpeed = percentage(data[2]);
 		ghostSpeedTunnel = percentage(data[3]);

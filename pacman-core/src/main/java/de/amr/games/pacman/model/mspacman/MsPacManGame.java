@@ -321,11 +321,9 @@ public class MsPacManGame extends GameModel {
 		default -> (levelNumber - 14) % 8 < 4 ? 3 : 4;
 		};
 		int numLevels = LEVELS.length;
-		level = new GameLevel(levelNumber, mazeNumber(levelNumber), createWorld(mapNumber),
+		int bonusSymbol = levelNumber >= 8 ? rnd.nextInt(7) : -1; // -1 means: use value from level data
+		level = new GameLevel(levelNumber, mazeNumber(levelNumber), createWorld(mapNumber), bonusSymbol,
 				levelNumber <= numLevels ? LEVELS[levelNumber - 1] : LEVELS[numLevels - 1]);
-		if (levelNumber >= 8) {
-			level.bonusSymbol = rnd.nextInt(7);
-		}
 		pacStarvingTimeLimit = (int) secToTicks(levelNumber < 5 ? 4 : 3);
 		globalDotLimits = new int[] { Integer.MAX_VALUE, 7, 17, Integer.MAX_VALUE };
 		privateDotLimits = switch (levelNumber) {
@@ -333,6 +331,7 @@ public class MsPacManGame extends GameModel {
 		case 2 -> new int[] { 0, 0, 0, 50 };
 		default -> new int[] { 0, 0, 0, 0 };
 		};
+		numGhostsKilledInLevel = 0;
 	}
 
 	@Override
