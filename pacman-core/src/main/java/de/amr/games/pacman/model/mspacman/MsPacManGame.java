@@ -324,9 +324,9 @@ public class MsPacManGame extends GameModel {
 		pacStarvingTimeLimit = (int) secToTicks(levelNumber < 5 ? 4 : 3);
 		globalDotLimits = new int[] { Integer.MAX_VALUE, 7, 17, Integer.MAX_VALUE };
 		privateDotLimits = switch (levelNumber) {
-		case 1 -> new int[] { 0, 0, 30, 60 };
-		case 2 -> new int[] { 0, 0, 0, 50 };
-		default -> new int[] { 0, 0, 0, 0 };
+		case 1 -> new byte[] { 0, 0, 30, 60 };
+		case 2 -> new byte[] { 0, 0, 0, 50 };
+		default -> new byte[] { 0, 0, 0, 0 };
 		};
 		numGhostsKilledInLevel = 0;
 	}

@@ -181,7 +181,7 @@ public abstract class GameModel {
 
 	protected int[] globalDotLimits;
 
-	protected int[] privateDotLimits;
+	protected byte[] privateDotLimits;
 
 	/** Number of current intermission scene in test mode. */
 	public int intermissionTestNumber;
