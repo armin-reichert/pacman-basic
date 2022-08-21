@@ -179,7 +179,7 @@ public abstract class GameModel {
 	/** Max number of clock ticks Pac can be starving until ghost gets unlocked. */
 	protected int pacStarvingTimeLimit;
 
-	protected int[] globalDotLimits;
+	protected byte[] globalDotLimits;
 
 	protected byte[] privateDotLimits;
 
@@ -718,9 +718,10 @@ public abstract class GameModel {
 				return;
 			}
 			// check global dot counter
-			if (globalDotCounter >= globalDotLimits[ghost.id]) {
+			var globalDotLimit = globalDotLimits[ghost.id] == -1 ? Integer.MAX_VALUE : globalDotLimits[ghost.id];
+			if (globalDotCounter >= globalDotLimit) {
 				result.unlockedGhost = Optional.of(ghost);
-				result.unlockReason = "Global dot counter at limit (%d)".formatted(globalDotLimits[ghost.id]);
+				result.unlockReason = "Global dot counter at limit (%d)".formatted(globalDotLimit);
 			} else if (pac.starvingTime() >= pacStarvingTimeLimit) {
 				result.unlockedGhost = Optional.of(ghost);
 				result.unlockReason = "%s at starving limit (%d ticks)".formatted(pac.name, pacStarvingTimeLimit);
