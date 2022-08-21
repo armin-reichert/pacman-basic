@@ -32,13 +32,13 @@ import de.amr.games.pacman.model.common.world.World;
 public record GameLevel(
 //@formatter:off
 
-	/** Starts with 1. */
+	/** Number of this level, starts with 1. */
 	int number,
 	
 	/** Maze number of this level. */
 	int mazeNumber,
 
-	/** World used in this level */
+	/** World used in this level. */
 	World world,
 
 	/** Bonus symbol of current level. */
@@ -76,9 +76,12 @@ public record GameLevel(
 
 	/** Number of maze flashes at end of current level. */
 	int numFlashes
-)
 //@formatter:on
-{
+) {
+
+	private static float percent(Object integerPercentValue) {
+		return 0.01f * (int) integerPercentValue;
+	}
 
 	/**
 	 * @param levelNumber         level number (1, 2, ...)
@@ -93,7 +96,4 @@ public record GameLevel(
 				percent(data[7]), percent(data[8]), percent(data[9]), (int) data[10], (int) data[11]);
 	}
 
-	private static float percent(Object integerPercentValue) {
-		return 0.01f * (int) integerPercentValue;
-	}
 }
