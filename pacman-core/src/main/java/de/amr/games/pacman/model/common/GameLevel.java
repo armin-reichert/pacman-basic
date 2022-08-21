@@ -87,14 +87,13 @@ public record GameLevel(
 	 * @param bonusSymbolOverride if <code>-1</code>, the value from the data array is used, otherwise the specified value
 	 * @param data                array with level data
 	 */
-	public static GameLevel build(int levelNumber, int mazeNumber, World world, int bonusSymbolOverride, Object[] data) {
-		return new GameLevel(levelNumber, mazeNumber, world,
-				bonusSymbolOverride == -1 ? (int) data[0] : bonusSymbolOverride, percentage(data[1]), percentage(data[2]),
-				percentage(data[3]), (int) data[4], percentage(data[5]), (int) data[6], percentage(data[7]),
-				percentage(data[8]), percentage(data[9]), (int) data[10], (int) data[11]);
+	public GameLevel(int levelNumber, int mazeNumber, World world, int bonusSymbolOverride, Object[] data) {
+		this(levelNumber, mazeNumber, world, bonusSymbolOverride == -1 ? (int) data[0] : bonusSymbolOverride,
+				percent(data[1]), percent(data[2]), percent(data[3]), (int) data[4], percent(data[5]), (int) data[6],
+				percent(data[7]), percent(data[8]), percent(data[9]), (int) data[10], (int) data[11]);
 	}
 
-	private static float percentage(Object value) {
-		return (int) value / 100f;
+	private static float percent(Object integerPercentValue) {
+		return 0.01f * (int) integerPercentValue;
 	}
 }

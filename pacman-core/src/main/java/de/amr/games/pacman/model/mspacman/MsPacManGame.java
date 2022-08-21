@@ -322,7 +322,7 @@ public class MsPacManGame extends GameModel {
 		};
 		int numLevels = LEVELS.length;
 		int bonusSymbol = levelNumber >= 8 ? rnd.nextInt(7) : -1; // -1 means: use value from level data
-		level = GameLevel.build(levelNumber, mazeNumber(levelNumber), createWorld(mapNumber), bonusSymbol,
+		level = new GameLevel(levelNumber, mazeNumber(levelNumber), createWorld(mapNumber), bonusSymbol,
 				levelNumber <= numLevels ? LEVELS[levelNumber - 1] : LEVELS[numLevels - 1]);
 		pacStarvingTimeLimit = (int) secToTicks(levelNumber < 5 ? 4 : 3);
 		globalDotLimits = new int[] { Integer.MAX_VALUE, 7, 17, Integer.MAX_VALUE };
