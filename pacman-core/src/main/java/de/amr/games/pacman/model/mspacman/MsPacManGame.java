@@ -89,9 +89,6 @@ public class MsPacManGame extends GameModel {
 	/*@formatter:on*/
 	};
 
-	private static final String[] BONUS_NAMES = { "CHERRIES", "STRAWBERRY", "PEACH", "PRETZEL", "APPLE", "PEAR",
-			"BANANA" };
-
 	private static final int[] BONUS_VALUES = { 100, 200, 500, 700, 1000, 2000, 5000 };
 
 	private static final byte[][] MAP1 = {
@@ -337,11 +334,6 @@ public class MsPacManGame extends GameModel {
 	@Override
 	public ArcadeWorld world() {
 		return (ArcadeWorld) level.world();
-	}
-
-	@Override
-	public String bonusName(int symbol) {
-		return BONUS_NAMES[symbol];
 	}
 
 	@Override

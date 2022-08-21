@@ -222,8 +222,6 @@ public abstract class GameModel {
 		highScore = new Score("HIGH SCORE");
 	}
 
-	public abstract String bonusName(int symbol);
-
 	private void loadScoreFromFile(Score score, File file) {
 		try (var in = new FileInputStream(file)) {
 			var props = new Properties();

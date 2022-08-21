@@ -85,10 +85,7 @@ public class PacManGame extends GameModel {
 	};
 	/*@formatter:on*/
 
-	private static final String[] BONUS_NAMES = { "CHERRIES", "STRAWBERRY", "PEACH", "APPLE", "GRAPES", "GALAXIAN",
-			"BELL", "KEY" };
-
-	private static final int[] BONUS_VALUES = { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
+	private static final short[] BONUS_VALUES = { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
 
 	private static final byte[][] MAP = {
 	//@formatter:off
@@ -196,11 +193,6 @@ public class PacManGame extends GameModel {
 		default -> new int[] { 0, 0, 0, 0 };
 		};
 		numGhostsKilledInLevel = 0;
-	}
-
-	@Override
-	public String bonusName(int symbol) {
-		return BONUS_NAMES[symbol];
 	}
 
 	@Override
