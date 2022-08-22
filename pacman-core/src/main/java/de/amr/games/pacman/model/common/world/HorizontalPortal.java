@@ -52,15 +52,19 @@ public record HorizontalPortal(V2i leftTunnelEnd, V2i rightTunnelEnd) implements
 	}
 
 	@Override
-	public void teleport(Creature guy) {
+	public boolean teleport(Creature guy) {
+		boolean teleported = false;
 		var oldPos = guy.getPosition();
 		if (guy.getPosition().x() < (leftTunnelEnd.x() - DEPTH) * TS) {
 			guy.placeAtTile(rightTunnelEnd); // TODO fixme
 			LOGGER.info("Teleported %s from %s to %s", guy.name, oldPos, guy.getPosition());
+			teleported = true;
 		} else if (guy.tile().equals(rightTunnelEnd.plus(DEPTH, 0))) {
 			guy.placeAtTile(leftTunnelEnd.minus(DEPTH, 0), 0, 0);
 			LOGGER.info("Teleported %s from %s to %s", guy.name, oldPos, guy.getPosition());
+			teleported = true;
 		}
+		return teleported;
 	}
 
 	@Override

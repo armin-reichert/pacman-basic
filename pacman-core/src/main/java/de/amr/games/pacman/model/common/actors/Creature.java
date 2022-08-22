@@ -78,6 +78,7 @@ public class Creature extends Entity {
 	/** Tells if the creature got stuck. */
 	protected boolean stuck;
 
+	/** Tells if the creature can get teleported. */
 	protected boolean canTeleport;
 
 	protected Creature(String name) {
@@ -103,12 +104,12 @@ public class Creature extends Entity {
 				velocity, velocity.length(), moveDir(), wishDir());
 	}
 
-	// bounding box is square of one tile, position stores left upper corner
+	// position vector stores upper left corner of bounding box which is a square of one tile
 	public V2d center() {
 		return position.plus(HTS, HTS);
 	}
 
-	// tile position is the tile containing the center of the bounding box
+	// current tile is the tile containing the center of the bounding box
 	public V2i tile() {
 		return tileAt(center());
 	}
@@ -291,7 +292,11 @@ public class Creature extends Entity {
 	public void tryMoving(GameModel game) {
 		var tileBefore = tile();
 		if (canTeleport) {
-			game.world().portals().forEach(portal -> portal.teleport(this));
+			for (var portal : game.world().portals()) {
+				if (portal.teleport(this)) {
+					break;
+				}
+			}
 		}
 		if (reverse && newTileEntered) {
 			setWishDir(moveDir.opposite());
