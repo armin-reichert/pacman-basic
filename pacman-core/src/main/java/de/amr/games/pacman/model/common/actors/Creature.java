@@ -298,15 +298,23 @@ public class Creature extends Entity {
 			reverse = false;
 		}
 		var result = tryMoving(wishDir, game);
-		logger().trace("%-6s: moved=%s. %s. %s", name, result.moved(), result.message(), this);
+		logMoveResult(result);
 		if (result.moved()) {
 			setMoveDir(wishDir);
 		} else {
 			result = tryMoving(moveDir, game);
-			logger().trace("%-6s: moved=%s. %s. %s", name, result.moved(), result.message(), this);
+			logMoveResult(result);
 		}
 		stuck = !result.moved();
 		newTileEntered = !tileBefore.equals(tile());
+	}
+
+	private void logMoveResult(MoveResult result) {
+		if (result.moved()) {
+			logger().trace("%-6s: %s %s", name, result.message(), this);
+		} else {
+			logger().trace("%-6s: not moving", name);
+		}
 	}
 
 	/**
@@ -329,7 +337,7 @@ public class Creature extends Entity {
 		} else if (isTurn && !atTurnPositionTo(newDir)) {
 			result = new MoveResult(false, "Wants %s but not at turn position", newDir);
 		} else {
-			result = new MoveResult(true, "Moves %s", newDir);
+			result = new MoveResult(true, "Moves %5s", newDir);
 			velocity = newVelocity;
 			move();
 		}
