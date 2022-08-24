@@ -41,8 +41,8 @@ public record GameLevel(
 	/** World used in this level. */
 	World world,
 
-	/** Bonus symbol of current level. */
-	int bonusSymbol,
+	/** Bonus (index) for current level. */
+	int bonusIndex,
 
 	/** Relative player speed at current level. */
 	float playerSpeed,

@@ -154,7 +154,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			game.reset();
 			game.setLevel(1);
 			game.levelCounter.clear();
-			game.levelCounter.addSymbol(game.level.bonusSymbol());
+			game.levelCounter.addSymbol(game.level.bonusIndex());
 			game.enableScores(true);
 			game.gameScore.showContent = true;
 			game.resetGuys();
@@ -345,7 +345,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			timer.resetSeconds(1);
 			timer.start();
 			game.setLevel(game.level.number() + 1);
-			game.levelCounter.addSymbol(game.level.bonusSymbol());
+			game.levelCounter.addSymbol(game.level.bonusIndex());
 			game.resetGuys();
 			game.guys().forEach(Entity::hide);
 		}

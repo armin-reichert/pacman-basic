@@ -45,7 +45,7 @@ public class StaticBonus extends Entity implements Bonus {
 	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
 	private BonusState state;
-	private int symbol;
+	private int bonusIndex;
 	private int value;
 	private long timer;
 
@@ -62,7 +62,7 @@ public class StaticBonus extends Entity implements Bonus {
 
 	@Override
 	public String toString() {
-		return "[StaticBonus symbol=%d value=%d state=%s position=%s timer=%d]".formatted(symbol, value, state, position,
+		return "[StaticBonus symbol=%d value=%d state=%s position=%s timer=%d]".formatted(bonusIndex, value, state, position,
 				timer);
 	}
 
@@ -72,8 +72,8 @@ public class StaticBonus extends Entity implements Bonus {
 	}
 
 	@Override
-	public int symbol() {
-		return symbol;
+	public int index() {
+		return bonusIndex;
 	}
 
 	@Override
@@ -87,10 +87,10 @@ public class StaticBonus extends Entity implements Bonus {
 	}
 
 	@Override
-	public void setEdible(int symbol, int value, long ticks) {
+	public void setEdible(int bonusIndex, int value, long ticks) {
 		state = BonusState.EDIBLE;
 		timer = ticks;
-		this.symbol = symbol;
+		this.bonusIndex = bonusIndex;
 		this.value = value;
 		LOGGER.info("%s activated", this);
 	}

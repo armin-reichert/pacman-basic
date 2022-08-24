@@ -88,7 +88,7 @@ public class MovingBonus extends Creature implements Bonus {
 	}
 
 	@Override
-	public int symbol() {
+	public int index() {
 		return symbol;
 	}
 

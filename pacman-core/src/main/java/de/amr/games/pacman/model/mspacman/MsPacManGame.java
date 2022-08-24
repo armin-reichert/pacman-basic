@@ -371,7 +371,7 @@ public class MsPacManGame extends GameModel {
 			movingBonus.setRoute(route);
 			movingBonus.placeAtTile(start.tile(), 0, 0);
 			movingBonus.setMoveAndWishDir(orientation);
-			movingBonus.setEdible(level.bonusSymbol(), BONUS_VALUES[level.bonusSymbol()], TickTimer.INDEFINITE);
+			movingBonus.setEdible(level.bonusIndex(), BONUS_VALUES[level.bonusIndex()], TickTimer.INDEFINITE);
 			GameEvents.publish(GameEventType.BONUS_GETS_ACTIVE, movingBonus.tile());
 		}
 	}

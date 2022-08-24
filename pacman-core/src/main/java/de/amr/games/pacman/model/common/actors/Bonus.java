@@ -33,19 +33,46 @@ import de.amr.games.pacman.model.common.GameModel;
  */
 public interface Bonus {
 
-	static final long EATEN_DURATION = secToTicks(2);
+	public static final long EATEN_DURATION = secToTicks(2);
 
-	int symbol();
+	/**
+	 * @return Entity representing this bonus in the world.
+	 */
+	Entity entity();
 
+	/**
+	 * @return the index representing this bonus
+	 */
+	int index();
+
+	/**
+	 * @return points earned when eating this bonus
+	 */
 	int value();
 
+	/**
+	 * @return state of the bonus
+	 */
 	BonusState state();
 
+	/**
+	 * Updates the bonus state.
+	 * 
+	 * @param game the game model
+	 */
 	void update(GameModel game);
 
+	/**
+	 * Changes the bonus state to inactive.
+	 */
 	void setInactive();
 
-	void setEdible(int symbol, int value, long ticks);
-
-	Entity entity();
+	/**
+	 * Changes the bonus state to edible.
+	 * 
+	 * @param index  number representing this bonus
+	 * @param points earned when eating this bonus
+	 * @param ticks  time how long the bonus is edible
+	 */
+	void setEdible(int index, int value, long ticks);
 }
