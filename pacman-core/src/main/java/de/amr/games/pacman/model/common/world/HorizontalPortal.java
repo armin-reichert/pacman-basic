@@ -55,7 +55,7 @@ public record HorizontalPortal(V2i leftTunnelEnd, V2i rightTunnelEnd) implements
 	public boolean teleport(Creature guy) {
 		boolean teleported = false;
 		var oldPos = guy.getPosition();
-		if (guy.getPosition().x() < (leftTunnelEnd.x() - DEPTH) * TS) {
+		if (guy.tile().y() == leftTunnelEnd.y() && guy.getPosition().x() < (leftTunnelEnd.x() - DEPTH) * TS) {
 			guy.placeAtTile(rightTunnelEnd); // TODO fixme
 			LOGGER.info("Teleported %s from %s to %s", guy.name, oldPos, guy.getPosition());
 			teleported = true;
