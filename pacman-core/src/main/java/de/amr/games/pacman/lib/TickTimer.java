@@ -176,6 +176,7 @@ public class TickTimer {
 		case EXPIRED -> {
 			LOGGER.trace("%s not stopped, has expired", this);
 		}
+		default -> throw new IllegalArgumentException("Unexpected value: " + state);
 		}
 	}
 

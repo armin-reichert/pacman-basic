@@ -146,6 +146,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		case EATEN -> updateStateEaten();
 		case RETURNING_TO_HOUSE -> updateStateReturningToHouse(game);
 		case ENTERING_HOUSE -> updateStateEnteringHouse(game);
+		default -> throw new IllegalArgumentException("Unexpected value: " + state);
 		}
 		updateAnimation();
 	}

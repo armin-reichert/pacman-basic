@@ -62,8 +62,8 @@ public class StaticBonus extends Entity implements Bonus {
 
 	@Override
 	public String toString() {
-		return "[StaticBonus symbol=%d value=%d state=%s position=%s timer=%d]".formatted(bonusIndex, value, state, position,
-				timer);
+		return "[StaticBonus symbol=%d value=%d state=%s position=%s timer=%d]".formatted(bonusIndex, value, state,
+				position, timer);
 	}
 
 	@Override
@@ -124,6 +124,7 @@ public class StaticBonus extends Entity implements Bonus {
 				GameEvents.publish(GameEventType.BONUS_EXPIRES, tile);
 			}
 		}
+		default -> throw new IllegalArgumentException("Unexpected value: " + state);
 		}
 	}
 }
