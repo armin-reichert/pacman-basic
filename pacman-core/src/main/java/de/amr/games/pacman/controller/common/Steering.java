@@ -33,5 +33,7 @@ public interface Steering {
 
 	void steer(GameModel game, Creature guy);
 
-	void init();
+	default void init() {
+		// implement if needed
+	}
 }
