@@ -30,7 +30,6 @@ import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.event.GameStateChangeEvent;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.animation.EntityAnimation;
-import de.amr.games.pacman.lib.animation.EntityAnimationSet;
 import de.amr.games.pacman.lib.fsm.FsmState;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameSound;
@@ -306,13 +305,8 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		public void onEnter(GameModel game) {
 			timer.resetSeconds(4);
 			timer.start();
-			game.huntingTimer.stop();
-			game.bonus().setInactive();
-			game.pac.setAbsSpeed(0);
-			game.pac.animationSet().ifPresent(EntityAnimationSet::reset);
-			game.ghosts().forEach(Ghost::hide);
-			game.energizerPulse.reset();
 			gc.sounds().stopAll();
+			game.endLevel();
 			// force UI update to ensure maze flashing animation is up to date
 			GameEvents.publish(GameEventType.UI_FORCE_UPDATE, null);
 		}

@@ -59,6 +59,7 @@ import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.lib.animation.EntityAnimation;
+import de.amr.games.pacman.lib.animation.EntityAnimationSet;
 import de.amr.games.pacman.lib.animation.SingleEntityAnimation;
 import de.amr.games.pacman.model.common.actors.AnimKeys;
 import de.amr.games.pacman.model.common.actors.Bonus;
@@ -337,6 +338,15 @@ public abstract class GameModel {
 		intermissionTestNumber = 1;
 		reloadScores();
 		gameScore.reset();
+	}
+
+	public void endLevel() {
+		huntingTimer.stop();
+		bonus().setInactive();
+		pac.setAbsSpeed(0);
+		pac.animationSet().ifPresent(EntityAnimationSet::reset);
+		ghosts().forEach(Ghost::hide);
+		energizerPulse.reset();
 	}
 
 	protected void initGhosts() {
