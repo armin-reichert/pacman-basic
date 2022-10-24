@@ -64,6 +64,7 @@ import de.amr.games.pacman.lib.animation.SingleEntityAnimation;
 import de.amr.games.pacman.model.common.actors.AnimKeys;
 import de.amr.games.pacman.model.common.actors.Bonus;
 import de.amr.games.pacman.model.common.actors.Creature;
+import de.amr.games.pacman.model.common.actors.Entity;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.GhostState;
 import de.amr.games.pacman.model.common.actors.Pac;
@@ -338,6 +339,13 @@ public abstract class GameModel {
 		intermissionTestNumber = 1;
 		reloadScores();
 		gameScore.reset();
+	}
+
+	public void startLevel() {
+		setLevel(level.number() + 1);
+		levelCounter.addSymbol(level.bonusIndex());
+		resetGuys();
+		guys().forEach(Entity::hide);
 	}
 
 	public void endLevel() {
