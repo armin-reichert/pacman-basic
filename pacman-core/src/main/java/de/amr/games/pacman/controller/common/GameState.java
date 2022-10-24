@@ -277,8 +277,8 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		@Override
 		public void cheatEatAllPellets(GameModel game) {
 			if (game.playing) {
-				game.level.world().tiles().filter(not(game.level.world()::isEnergizerTile))
-						.forEach(game.level.world()::removeFood);
+				var world = game.level.world();
+				world.tiles().filter(not(world::isEnergizerTile)).forEach(world::removeFood);
 				GameEvents.publish(GameEventType.PAC_FINDS_FOOD, null);
 			}
 		}
