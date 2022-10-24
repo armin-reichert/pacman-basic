@@ -294,7 +294,8 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		@Override
 		public void cheatEnterNextLevel(GameModel game) {
 			if (game.playing) {
-				game.level.world().tiles().forEach(game.level.world()::removeFood);
+				var world = game.level.world();
+				world.tiles().forEach(world::removeFood);
 				gc.changeState(GameState.LEVEL_COMPLETE);
 			}
 		}
