@@ -342,7 +342,6 @@ public abstract class GameModel {
 	}
 
 	public void startLevel() {
-		setLevel(level.number() + 1);
 		levelCounter.addSymbol(level.bonusIndex());
 		resetGuys();
 		guys().forEach(Entity::hide);

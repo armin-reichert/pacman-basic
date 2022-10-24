@@ -339,6 +339,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		public void onEnter(GameModel game) {
 			timer.resetSeconds(1);
 			timer.start();
+			game.setLevel(game.level.number() + 1);
 			game.startLevel();
 		}
 
