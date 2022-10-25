@@ -232,6 +232,10 @@ public class TickTimer {
 		return tick == secToTicks(seconds);
 	}
 
+	public boolean betweenSeconds(double begin, double end) {
+		return secToTicks(begin) <= tick && tick < secToTicks(end);
+	}
+
 	public long remaining() {
 		return duration == INDEFINITE ? INDEFINITE : duration - tick;
 	}
