@@ -111,6 +111,11 @@ public class IntroController extends Fsm<IntroController.State, IntroController.
 
 		GHOSTS {
 			@Override
+			public void onEnter(Context ctx) {
+				ctx.game.ghosts().forEach(ghost -> ghost.animationSet().ifPresent(EntityAnimationSet::ensureRunning));
+			}
+
+			@Override
 			public void onUpdate(Context ctx) {
 				ctx.lightsTimer.advance();
 				Ghost ghost = ctx.game.theGhosts[ctx.ghostIndex];
@@ -131,6 +136,11 @@ public class IntroController extends Fsm<IntroController.State, IntroController.
 		},
 
 		MSPACMAN {
+			@Override
+			public void onEnter(Context ctx) {
+				ctx.game.pac.animationSet().ifPresent(EntityAnimationSet::ensureRunning);
+			}
+
 			@Override
 			public void onUpdate(Context ctx) {
 				ctx.lightsTimer.advance();
