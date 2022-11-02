@@ -75,8 +75,8 @@ public class IntroController extends Fsm<IntroController.State, IntroController.
 		START {
 			@Override
 			public void onEnter(Context ctx) {
-				ctx.gameController.game().gameScore.showContent = false;
-				ctx.gameController.game().highScore.showContent = true;
+				ctx.game.gameScore.showContent = false;
+				ctx.game.highScore.showContent = true;
 				ctx.lightsTimer.resetIndefinitely();
 				ctx.lightsTimer.start();
 				ctx.game.pac.setMoveDir(LEFT);
@@ -85,7 +85,7 @@ public class IntroController extends Fsm<IntroController.State, IntroController.
 				ctx.game.pac.selectAndRunAnimation(AnimKeys.PAC_MUNCHING);
 				ctx.game.pac.show();
 				for (Ghost ghost : ctx.game.theGhosts) {
-					ghost.enterStateHuntingPac(ctx.gameController.game());
+					ghost.enterStateHuntingPac(ctx.game);
 					ghost.setMoveDir(LEFT);
 					ghost.setWishDir(LEFT);
 					ghost.setPosition(t(34), ctx.turningPoint.y());
@@ -98,8 +98,8 @@ public class IntroController extends Fsm<IntroController.State, IntroController.
 			@Override
 			public void onUpdate(Context ctx) {
 				if (timer.tick() == 1) {
-					ctx.gameController.game().gameScore.visible = true;
-					ctx.gameController.game().highScore.visible = true;
+					ctx.game.gameScore.visible = true;
+					ctx.game.highScore.visible = true;
 				} else if (timer.tick() == 2) {
 					ctx.creditVisible = true;
 				} else if (timer.atSecond(1)) {
