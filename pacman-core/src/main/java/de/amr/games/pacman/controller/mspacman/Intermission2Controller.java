@@ -55,7 +55,7 @@ public class Intermission2Controller extends Fsm<State, Context> {
 		public final int upperY = t(12);
 		public final int middleY = t(18);
 		public final int lowerY = t(24);
-		public Clapperboard flap;
+		public Clapperboard clapperboard;
 		public Pac pacMan;
 		public Pac msPacMan;
 
@@ -72,9 +72,9 @@ public class Intermission2Controller extends Fsm<State, Context> {
 			public void onEnter(Context ctx) {
 				timer.resetIndefinitely();
 				timer.start();
-				ctx.flap = new Clapperboard(2, "THE CHASE");
-				ctx.flap.setPosition(t(3), t(10));
-				ctx.flap.show();
+				ctx.clapperboard = new Clapperboard(2, "THE CHASE");
+				ctx.clapperboard.setPosition(t(3), t(10));
+				ctx.clapperboard.show();
 				ctx.pacMan = new Pac("Pac-Man");
 				ctx.pacMan.setMoveDir(Direction.RIGHT);
 				ctx.pacMan.selectAndRunAnimation(AnimKeys.PAC_MUNCHING);
@@ -87,9 +87,9 @@ public class Intermission2Controller extends Fsm<State, Context> {
 			public void onUpdate(Context ctx) {
 				if (timer.atSecond(1)) {
 					ctx.gameController.sounds().play(GameSound.INTERMISSION_2);
-					ctx.flap.animation().ifPresent(EntityAnimation::restart);
+					ctx.clapperboard.animation().ifPresent(EntityAnimation::restart);
 				} else if (timer.atSecond(2)) {
-					ctx.flap.hide();
+					ctx.clapperboard.hide();
 				} else if (timer.atSecond(3)) {
 					controller.changeState(State.CHASING);
 				}

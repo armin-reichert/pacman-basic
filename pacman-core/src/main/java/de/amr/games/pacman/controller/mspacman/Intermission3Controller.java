@@ -57,7 +57,7 @@ public class Intermission3Controller extends Fsm<State, Context> {
 		public final GameController gameController;
 		public final GameModel game;
 		public final int groundY = t(24);
-		public Clapperboard flap;
+		public Clapperboard clapperboard;
 		public Pac pacMan;
 		public Pac msPacMan;
 		public Entity stork;
@@ -78,9 +78,9 @@ public class Intermission3Controller extends Fsm<State, Context> {
 			public void onEnter(Context ctx) {
 				timer.resetIndefinitely();
 				timer.start();
-				ctx.flap = new Clapperboard(3, "JUNIOR");
-				ctx.flap.setPosition(t(3), t(10));
-				ctx.flap.show();
+				ctx.clapperboard = new Clapperboard(3, "JUNIOR");
+				ctx.clapperboard.setPosition(t(3), t(10));
+				ctx.clapperboard.show();
 				ctx.pacMan = new Pac("Pac-Man");
 				ctx.msPacMan = new Pac("Ms. Pac-Man");
 				ctx.stork = new Entity();
@@ -92,9 +92,9 @@ public class Intermission3Controller extends Fsm<State, Context> {
 			public void onUpdate(Context ctx) {
 				if (timer.atSecond(1)) {
 					ctx.gameController.sounds().play(GameSound.INTERMISSION_3);
-					ctx.flap.animation().ifPresent(EntityAnimation::restart);
+					ctx.clapperboard.animation().ifPresent(EntityAnimation::restart);
 				} else if (timer.atSecond(2)) {
-					ctx.flap.hide();
+					ctx.clapperboard.hide();
 				} else if (timer.atSecond(3)) {
 					controller.changeState(State.ACTION);
 				}
