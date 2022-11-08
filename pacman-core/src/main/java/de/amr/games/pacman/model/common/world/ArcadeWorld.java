@@ -49,7 +49,7 @@ public class ArcadeWorld extends MapBasedWorld {
 
 	private final ArcadeGhostHouse house = new ArcadeGhostHouse();
 
-	private EntityAnimation flashingAnimation;
+	private EntityAnimation levelCompleteAnimation;
 
 	public ArcadeWorld(byte[][] mapData) {
 		super(mapData, TILES_X, TILES_Y);
@@ -61,11 +61,11 @@ public class ArcadeWorld extends MapBasedWorld {
 		return house;
 	}
 
-	public Optional<EntityAnimation> flashingAnimation() {
-		return Optional.ofNullable(flashingAnimation);
+	public Optional<EntityAnimation> levelCompleteAnimation() {
+		return Optional.ofNullable(levelCompleteAnimation);
 	}
 
-	public void setFlashingAnimation(EntityAnimation mazeFlashingAnimation) {
-		this.flashingAnimation = mazeFlashingAnimation;
+	public void setLevelCompleteAnimation(EntityAnimation animation) {
+		this.levelCompleteAnimation = animation;
 	}
 }
