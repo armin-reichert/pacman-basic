@@ -74,4 +74,8 @@ public record V2i(int x, int y) {
 	public String toString() {
 		return String.format("(%2d,%2d)", x, y);
 	}
+
+	public V2d toDoubleVec() {
+		return new V2d(this);
+	}
 }
