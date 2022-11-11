@@ -106,7 +106,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 			LOGGER.trace("%s cannot access tile %s because he cannot move UP at %s", name, tile, currentTile);
 			return false;
 		}
-		if (game.world().ghostHouse().isDoorTile(tile)) {
+		if (game.level.world().ghostHouse().isDoorTile(tile)) {
 			return is(ENTERING_HOUSE, LEAVING_HOUSE);
 		}
 		return super.canAccessTile(tile, game);
@@ -166,7 +166,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	 * @param game the game
 	 */
 	private void updateStateLocked(GameModel game) {
-		if (game.world().ghostHouse().contains(tile())) {
+		if (game.level.world().ghostHouse().contains(tile())) {
 			setAbsSpeed(0.5);
 			bounce(game.homePosition[id].y(), World.HTS);
 			updateGhostInHouseAnimation(game);
@@ -205,7 +205,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	 * @param game the game
 	 */
 	private void updateStateLeavingHouse(GameModel game) {
-		var outOfHouse = game.world().ghostHouse().leadGuyOutOfHouse(this);
+		var outOfHouse = game.level.world().ghostHouse().leadGuyOutOfHouse(this);
 		if (outOfHouse) {
 			newTileEntered = false;
 			setMoveAndWishDir(LEFT);
@@ -243,7 +243,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	 * target of Blinky and Pinky would have been affected. Who knows?
 	 */
 	private void updateStateHuntingPac(GameModel game) {
-		if (game.world().isTunnel(tile())) {
+		if (game.level.world().isTunnel(tile())) {
 			setRelSpeed(game.level.ghostSpeedTunnel());
 		} else if (id == RED_GHOST && game.cruiseElroyState == 1) {
 			setRelSpeed(game.level.elroy1Speed());
@@ -288,7 +288,8 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	 * @param game the game
 	 */
 	private void updateStateFrightened(GameModel game) {
-		setRelSpeed(game.world().isTunnel(tile()) ? game.level.ghostSpeedTunnel() : game.level.ghostSpeedFrightened());
+		setRelSpeed(
+				game.level.world().isTunnel(tile()) ? game.level.ghostSpeedTunnel() : game.level.ghostSpeedFrightened());
 		roam(game);
 		ensureFlashingWhenPowerCeases(game);
 	}
@@ -365,7 +366,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 
 	public void enterStateReturningToHouse(GameModel game) {
 		state = RETURNING_TO_HOUSE;
-		setTargetTile(game.world().ghostHouse().entryTile());
+		setTargetTile(game.level.world().ghostHouse().entryTile());
 		selectAndRunAnimation(AnimKeys.GHOST_EYES);
 	}
 
@@ -376,7 +377,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	 * @param game the game
 	 */
 	private void updateStateReturningToHouse(GameModel game) {
-		if (game.world().ghostHouse().atHouseEntry(this)) {
+		if (game.level.world().ghostHouse().atHouseEntry(this)) {
 			enterStateEnteringHouse(game);
 		} else {
 			setRelSpeed(1.5 * game.level.ghostSpeed()); // not sure
@@ -400,7 +401,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	 * @param game the game
 	 */
 	private void updateStateEnteringHouse(GameModel game) {
-		boolean atRevivalTile = game.world().ghostHouse().leadGuyInside(this, game.revivalPosition[id]);
+		boolean atRevivalTile = game.level.world().ghostHouse().leadGuyInside(this, game.revivalPosition[id]);
 		if (atRevivalTile) {
 			enterStateLeavingHouse(game);
 		}

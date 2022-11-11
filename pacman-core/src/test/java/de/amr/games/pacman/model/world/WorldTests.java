@@ -41,7 +41,7 @@ public class WorldTests {
 
 	@Test
 	public void testPacManWorld() {
-		ArcadeWorld world = new PacManGame().world();
+		ArcadeWorld world = (ArcadeWorld) new PacManGame().level.world();
 		assertEquals(ArcadeWorld.TILES_Y, world.numRows());
 		assertEquals(ArcadeWorld.TILES_X, world.numCols());
 		assertEquals(4, world.energizerTiles().count());

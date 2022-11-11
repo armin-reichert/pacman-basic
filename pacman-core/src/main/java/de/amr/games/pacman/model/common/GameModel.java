@@ -70,7 +70,6 @@ import de.amr.games.pacman.model.common.actors.GhostState;
 import de.amr.games.pacman.model.common.actors.Pac;
 import de.amr.games.pacman.model.common.world.ArcadeGhostHouse;
 import de.amr.games.pacman.model.common.world.ArcadeWorld;
-import de.amr.games.pacman.model.common.world.World;
 
 /**
  * Common part of the Pac-Man and Ms. Pac-Man game models.
@@ -326,10 +325,6 @@ public abstract class GameModel {
 		return credit > 0;
 	}
 
-	public World world() {
-		return level.world();
-	}
-
 	public void reset() {
 		globalDotCounter = 0;
 		globalDotCounterEnabled = false;
@@ -361,7 +356,7 @@ public abstract class GameModel {
 			ghostDotCounter[ghost.id] = 0;
 		}
 		cruiseElroyState = 0;
-		if (world() instanceof ArcadeWorld) {
+		if (level.world() instanceof ArcadeWorld) {
 			homePosition[RED_GHOST] = seatPosition(ArcadeGhostHouse.ENTRY_TILE);
 			revivalPosition[RED_GHOST] = seatPosition(ArcadeGhostHouse.SEAT_TILE_CENTER);
 			scatterTile[RED_GHOST] = ArcadeWorld.RIGHT_UPPER_CORNER;
@@ -688,7 +683,7 @@ public abstract class GameModel {
 
 	private void checkIfRedGhostBecomesCruiseElroy() {
 		var redGhost = theGhosts[RED_GHOST];
-		var foodRemaining = world().foodRemaining();
+		var foodRemaining = level.world().foodRemaining();
 		if (foodRemaining == level.elroy1DotsLeft()) {
 			cruiseElroyState = 1;
 			LOGGER.info("%s becomes Cruise Elroy 1", redGhost.name);

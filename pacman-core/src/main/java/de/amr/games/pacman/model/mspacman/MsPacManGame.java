@@ -332,11 +332,6 @@ public class MsPacManGame extends GameModel {
 	}
 
 	@Override
-	public ArcadeWorld world() {
-		return (ArcadeWorld) level.world();
-	}
-
-	@Override
 	public MovingBonus bonus() {
 		return movingBonus;
 	}
@@ -354,12 +349,12 @@ public class MsPacManGame extends GameModel {
 
 	@Override
 	protected void onBonusReached() {
-		var houseEntry = world().ghostHouse().entryTile();
-		int houseHeight = world().ghostHouse().size().y();
-		int numPortals = world().portals().size();
+		var houseEntry = level.world().ghostHouse().entryTile();
+		int houseHeight = level.world().ghostHouse().size().y();
+		int numPortals = level.world().portals().size();
 		if (numPortals > 0) {
-			var entryPortal = (HorizontalPortal) world().portals().get(rnd.nextInt(numPortals));
-			var exitPortal = (HorizontalPortal) world().portals().get(rnd.nextInt(numPortals));
+			var entryPortal = (HorizontalPortal) level.world().portals().get(rnd.nextInt(numPortals));
+			var exitPortal = (HorizontalPortal) level.world().portals().get(rnd.nextInt(numPortals));
 			var orientation = rnd.nextBoolean() ? Direction.LEFT : Direction.RIGHT;
 			var start = orientation == Direction.RIGHT ? np(entryPortal.leftTunnelEnd()) : np(entryPortal.rightTunnelEnd());
 			List<NavigationPoint> route = new ArrayList<>();

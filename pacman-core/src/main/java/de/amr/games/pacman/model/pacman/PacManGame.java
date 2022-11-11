@@ -196,11 +196,6 @@ public class PacManGame extends GameModel {
 	}
 
 	@Override
-	public ArcadeWorld world() {
-		return (ArcadeWorld) level.world();
-	}
-
-	@Override
 	public boolean isGhostAllowedMoving(Ghost ghost, Direction dir) {
 		if (dir == Direction.UP && ghost.is(GhostState.HUNTING_PAC) && RED_ZONE.contains(ghost.tile())) {
 			return false;

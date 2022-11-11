@@ -158,7 +158,7 @@ public class Creature extends Entity {
 	 * @return if this creature can access the given tile
 	 */
 	public boolean canAccessTile(V2i tile, GameModel game) {
-		var world = game.world();
+		var world = game.level.world();
 		if (world.insideMap(tile)) {
 			return !world.isWall(tile) && !world.ghostHouse().isDoorTile(tile);
 		}
@@ -256,7 +256,7 @@ public class Creature extends Entity {
 	 * @param game the game model
 	 */
 	public void navigateTowardsTarget(GameModel game) {
-		if ((newTileEntered || stuck) && targetTile != null && !game.world().belongsToPortal(tile())) {
+		if ((newTileEntered || stuck) && targetTile != null && !game.level.world().belongsToPortal(tile())) {
 			bestDirection(game).ifPresent(this::setWishDir);
 		}
 	}
@@ -292,7 +292,7 @@ public class Creature extends Entity {
 	public void tryMoving(GameModel game) {
 		var tileBefore = tile();
 		if (canTeleport) {
-			for (var portal : game.world().portals()) {
+			for (var portal : game.level.world().portals()) {
 				if (portal.teleport(this)) {
 					break;
 				}
