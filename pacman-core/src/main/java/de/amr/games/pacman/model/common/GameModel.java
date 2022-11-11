@@ -403,6 +403,9 @@ public abstract class GameModel {
 		});
 	}
 
+	/**
+	 * @return Pac-Man and the ghosts in order RED, PINK, CYAN, ORANGE
+	 */
 	public Stream<Creature> guys() {
 		return Stream.of(pac, theGhosts[RED_GHOST], theGhosts[PINK_GHOST], theGhosts[CYAN_GHOST], theGhosts[ORANGE_GHOST]);
 	}
