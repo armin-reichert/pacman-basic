@@ -37,7 +37,6 @@ import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.NavigationPoint;
-import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
@@ -163,7 +162,7 @@ public class PacManGame extends GameModel {
 	public static final List<NavigationPoint> ATTRACT_FRIGHTENED_ORANGE_GHOST = List.of();
 	//@formatter:on
 
-	private static final Random rnd = new Random();
+	private static final Random RND = new Random();
 
 	public static ArcadeWorld createWorld() {
 		return new ArcadeWorld(MAP);
@@ -176,7 +175,8 @@ public class PacManGame extends GameModel {
 
 	public PacManGame() {
 		super(GameVariant.PACMAN, "Pac-Man", "Blinky", "Pinky", "Inky", "Clyde");
-		bonus = new StaticBonus(new V2d(v(13, 20).scaled(TS)).plus(HTS, 0));
+		var bonusLocation = v(13, 20).toDoubleVec().scaled(TS).plus(HTS, 0); // between tiles (13,20) and (13,21)
+		bonus = new StaticBonus(bonusLocation);
 		setHiscoreFile(new File(System.getProperty("user.home"), "highscore-pacman.xml"));
 		setLevel(1);
 	}
@@ -224,7 +224,7 @@ public class PacManGame extends GameModel {
 
 	@Override
 	protected void onBonusReached() {
-		bonus.setEdible(level.bonusIndex(), BONUS_VALUES[level.bonusIndex()], secToTicks(9.0 + rnd.nextDouble()));
+		bonus.setEdible(level.bonusIndex(), BONUS_VALUES[level.bonusIndex()], secToTicks(9.0 + RND.nextDouble()));
 		GameEvents.publish(GameEventType.BONUS_GETS_ACTIVE, World.tileAt(bonus.getPosition()));
 	}
 }
