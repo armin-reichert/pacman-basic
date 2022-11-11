@@ -128,6 +128,11 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		return state;
 	}
 
+	/**
+	 * @param alternatives ghost states to be checked
+	 * @return <code>true</code> if this ghost is in any of the given states. If no alternatives are given, returns
+	 *         <code>false</code>
+	 */
 	public boolean is(GhostState... alternatives) {
 		return U.oneOf(state, alternatives);
 	}

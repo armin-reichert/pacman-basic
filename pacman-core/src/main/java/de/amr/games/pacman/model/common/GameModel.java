@@ -195,6 +195,7 @@ public abstract class GameModel {
 
 	private boolean scoresEnabled;
 
+	/** Stores what happened during the last tick. */
 	public final Memo memo = new Memo();
 
 	protected GameModel(String pacName, String redGhostName, String pinkGhostName, String cyanGhostName,
@@ -297,12 +298,12 @@ public abstract class GameModel {
 		return guy.moveDir() == UP ? ahead.minus(n, 0) : ahead;
 	}
 
-	public int getCredit() {
+	public int credit() {
 		return credit;
 	}
 
 	public void setCredit(int credit) {
-		if (credit <= MAX_CREDIT) {
+		if (0 <= credit && credit <= MAX_CREDIT) {
 			this.credit = credit;
 		}
 	}
@@ -406,11 +407,16 @@ public abstract class GameModel {
 		return Stream.of(pac, theGhosts[RED_GHOST], theGhosts[PINK_GHOST], theGhosts[CYAN_GHOST], theGhosts[ORANGE_GHOST]);
 	}
 
+	/**
+	 * @param states states specifying which ghosts are returned
+	 * @return all ghosts which are in any of the given states or all ghosts, if no states are specified
+	 */
 	public Stream<Ghost> ghosts(GhostState... states) {
-		if (states.length == 0) {
-			return Stream.of(theGhosts); // because is() would return an empty stream
+		// when no state is given, return all ghosts (Ghost.is() would return no ghosts!)
+		if (states.length > 0) {
+			return Stream.of(theGhosts).filter(ghost -> ghost.is(states));
 		}
-		return ghosts().filter(ghost -> ghost.is(states));
+		return Stream.of(theGhosts);
 	}
 
 	/**

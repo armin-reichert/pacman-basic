@@ -139,7 +139,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 		if (gameVariant != newVariant) {
 			gameVariant = newVariant;
 			// transfer credit
-			game(newVariant).setCredit(game(gameVariant).getCredit());
+			game(newVariant).setCredit(game(gameVariant).credit());
 			game(gameVariant).setCredit(0);
 			if (gameVariant == GameVariant.PACMAN) {
 				attractModeSteering.setRoute(PacManGame.ATTRACT_ROUTE_PACMAN);
