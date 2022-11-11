@@ -83,11 +83,14 @@ public abstract class GameModel {
 	/** Speed in pixels/tick at 100%. */
 	public static final double BASE_SPEED = 1.25;
 
+	/** Game loop speed in ticks/sec. */
+	public static final int FPS = 60;
+
 	protected static final long[][] HUNTING_TIMES = {
 	//@formatter:off
-		{ 7*60, 20*60, 7*60, 20*60, 5*60,   20*60, 5*60, TickTimer.INDEFINITE },
-		{ 7*60, 20*60, 7*60, 20*60, 5*60, 1033*60,    1, TickTimer.INDEFINITE },
-		{ 5*60, 20*60, 5*60, 20*60, 5*60, 1037*60,    1, TickTimer.INDEFINITE }
+		{ 7*FPS, 20*FPS, 7*FPS, 20*FPS, 5*FPS,   20*FPS, 5*FPS, TickTimer.INDEFINITE },
+		{ 7*FPS, 20*FPS, 7*FPS, 20*FPS, 5*FPS, 1033*FPS,    1, TickTimer.INDEFINITE },
+		{ 5*FPS, 20*FPS, 5*FPS, 20*FPS, 5*FPS, 1037*FPS,    1, TickTimer.INDEFINITE }
 	//@formatter:on
 	};
 
