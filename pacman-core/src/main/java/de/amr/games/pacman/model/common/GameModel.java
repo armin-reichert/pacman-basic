@@ -105,9 +105,6 @@ public abstract class GameModel {
 
 	protected static final int[] GHOST_VALUES = { 200, 400, 800, 1600 };
 
-	/** The game variant respresented by this model. */
-	public final GameVariant variant;
-
 	/** Credit for playing. */
 	protected int credit;
 
@@ -197,10 +194,8 @@ public abstract class GameModel {
 
 	public final Memo memo = new Memo();
 
-	protected GameModel(GameVariant variant, String pacName, String redGhostName, String pinkGhostName,
-			String cyanGhostName, String orangeGhostName) {
-
-		this.variant = variant;
+	protected GameModel(String pacName, String redGhostName, String pinkGhostName, String cyanGhostName,
+			String orangeGhostName) {
 
 		pac = new Pac(pacName);
 
@@ -222,6 +217,8 @@ public abstract class GameModel {
 		gameScore = new Score("SCORE");
 		highScore = new Score("HIGH SCORE");
 	}
+
+	public abstract GameVariant variant();
 
 	private void loadScoreFromFile(Score score, File file) {
 		try (var in = new FileInputStream(file)) {

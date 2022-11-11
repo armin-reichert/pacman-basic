@@ -303,10 +303,15 @@ public class MsPacManGame extends GameModel {
 	 * </ul>
 	 */
 	public MsPacManGame() {
-		super(GameVariant.MS_PACMAN, "Ms. Pac-Man", "Blinky", "Pinky", "Inky", "Sue");
+		super("Ms. Pac-Man", "Blinky", "Pinky", "Inky", "Sue");
 		movingBonus = new MovingBonus();
 		setHiscoreFile(new File(System.getProperty("user.home"), "highscore-ms_pacman.xml"));
 		setLevel(1);
+	}
+
+	@Override
+	public GameVariant variant() {
+		return GameVariant.MS_PACMAN;
 	}
 
 	private void createLevel(int levelNumber) {

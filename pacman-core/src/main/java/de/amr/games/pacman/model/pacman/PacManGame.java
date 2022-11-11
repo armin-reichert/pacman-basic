@@ -174,11 +174,16 @@ public class PacManGame extends GameModel {
 	private final StaticBonus bonus;
 
 	public PacManGame() {
-		super(GameVariant.PACMAN, "Pac-Man", "Blinky", "Pinky", "Inky", "Clyde");
+		super("Pac-Man", "Blinky", "Pinky", "Inky", "Clyde");
 		var bonusLocation = v(13, 20).toDoubleVec().scaled(TS).plus(HTS, 0); // between tiles (13,20) and (13,21)
 		bonus = new StaticBonus(bonusLocation);
 		setHiscoreFile(new File(System.getProperty("user.home"), "highscore-pacman.xml"));
 		setLevel(1);
+	}
+
+	@Override
+	public GameVariant variant() {
+		return GameVariant.PACMAN;
 	}
 
 	private void createLevel(int levelNumber) {

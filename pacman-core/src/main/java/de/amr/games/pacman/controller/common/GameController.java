@@ -111,7 +111,7 @@ public class GameController extends Fsm<GameState, GameModel> {
 
 	public Steering getSteering() {
 		if (!game().hasCredit()) {
-			if (game().variant == GameVariant.PACMAN) {
+			if (game().variant() == GameVariant.PACMAN) {
 				return attractModeSteering;
 			}
 			return autopilot;

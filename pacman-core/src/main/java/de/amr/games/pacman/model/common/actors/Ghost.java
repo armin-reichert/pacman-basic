@@ -252,7 +252,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		} else {
 			setRelSpeed(game.level.ghostSpeed());
 		}
-		if (game.variant == MS_PACMAN && game.huntingTimer.scatterPhase() == 0 && (id == RED_GHOST || id == PINK_GHOST)) {
+		if (game.variant() == MS_PACMAN && game.huntingTimer.scatterPhase() == 0 && (id == RED_GHOST || id == PINK_GHOST)) {
 			roam(game);
 		} else if (game.huntingTimer.inChasingPhase() || id == RED_GHOST && game.cruiseElroyState > 0) {
 			setTargetTile(fnChasingTarget.get());
@@ -316,7 +316,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	}
 
 	private void movePseudoRandomly(GameModel game) {
-		var route = getAttractRoute(game.variant);
+		var route = getAttractRoute(game.variant());
 		if (route.isEmpty()) {
 			moveRandomly(game);
 		} else if (tile().equals(route.get(attractRouteIndex).tile())) {
