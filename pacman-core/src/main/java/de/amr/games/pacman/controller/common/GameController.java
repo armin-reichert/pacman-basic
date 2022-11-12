@@ -135,15 +135,19 @@ public class GameController extends Fsm<GameState, GameModel> {
 	}
 
 	public void selectGame(GameVariant newVariant) {
-		Objects.requireNonNull(newVariant);
-		if (gameVariant != newVariant) {
-			gameVariant = newVariant;
+		Objects.requireNonNull(newVariant, "Game variant must not be null");
+		if (newVariant != gameVariant) {
+			var newGame = game(newVariant);
 			// transfer credit
-			game(newVariant).setCredit(game(gameVariant).credit());
-			game(gameVariant).setCredit(0);
+			if (gameVariant != null) { // initially it is null
+				var oldGame = game(gameVariant);
+				newGame.setCredit(oldGame.credit());
+				oldGame.setCredit(0);
+			}
 			if (gameVariant == GameVariant.PACMAN) {
 				attractModeSteering.setRoute(PacManGame.ATTRACT_ROUTE_PACMAN);
 			}
+			gameVariant = newVariant;
 			restartInState(BOOT);
 		}
 	}
