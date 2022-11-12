@@ -88,9 +88,9 @@ public abstract class GameModel {
 
 	protected static final long[][] HUNTING_TIMES = {
 	//@formatter:off
-		{ 7*FPS, 20*FPS, 7*FPS, 20*FPS, 5*FPS,   20*FPS, 5*FPS, TickTimer.INDEFINITE },
-		{ 7*FPS, 20*FPS, 7*FPS, 20*FPS, 5*FPS, 1033*FPS,    1, TickTimer.INDEFINITE },
-		{ 5*FPS, 20*FPS, 5*FPS, 20*FPS, 5*FPS, 1037*FPS,    1, TickTimer.INDEFINITE }
+	{ 7*FPS, 20*FPS, 7*FPS, 20*FPS, 5*FPS,   20*FPS, 5*FPS, TickTimer.INDEFINITE },
+	{ 7*FPS, 20*FPS, 7*FPS, 20*FPS, 5*FPS, 1033*FPS,     1, TickTimer.INDEFINITE },
+	{ 5*FPS, 20*FPS, 5*FPS, 20*FPS, 5*FPS, 1037*FPS,     1, TickTimer.INDEFINITE }
 	//@formatter:on
 	};
 
