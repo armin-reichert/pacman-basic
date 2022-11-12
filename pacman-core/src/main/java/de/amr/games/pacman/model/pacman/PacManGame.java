@@ -24,7 +24,6 @@ SOFTWARE.
 package de.amr.games.pacman.model.pacman;
 
 import static de.amr.games.pacman.lib.NavigationPoint.np;
-import static de.amr.games.pacman.lib.TickTimer.secToTicks;
 import static de.amr.games.pacman.lib.V2i.v;
 import static de.amr.games.pacman.model.common.world.World.HTS;
 import static de.amr.games.pacman.model.common.world.World.TS;
@@ -32,6 +31,9 @@ import static de.amr.games.pacman.model.common.world.World.TS;
 import java.io.File;
 import java.util.List;
 import java.util.Random;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
@@ -52,6 +54,8 @@ import de.amr.games.pacman.model.common.world.World;
  * @author Armin Reichert
  */
 public class PacManGame extends GameModel {
+
+	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
 	//@formatter:off
 	private static final byte[][] LEVELS = {
@@ -190,7 +194,7 @@ public class PacManGame extends GameModel {
 		int numLevels = LEVELS.length;
 		level = new GameLevel(levelNumber, 1, createWorld(), -1,
 				levelNumber <= numLevels ? LEVELS[levelNumber - 1] : LEVELS[numLevels - 1]);
-		pacStarvingTimeLimit = (int) secToTicks(level.number() < 5 ? 4 : 3);
+		pacStarvingTimeLimit = (level.number() < 5 ? 4 : 3) * FPS;
 		globalDotLimits = new byte[] { -1, 7, 17, -1 };
 		privateDotLimits = switch (level.number()) {
 		case 1 -> new byte[] { 0, 0, 30, 60 };
@@ -224,7 +228,9 @@ public class PacManGame extends GameModel {
 
 	@Override
 	protected void onBonusReached() {
-		bonus.setEdible(level.bonusIndex(), BONUS_VALUES[level.bonusIndex()], secToTicks(9.0 + RND.nextDouble()));
+		int ticks = 9 * FPS + RND.nextInt(FPS); // between 9 and 10 seconds
+		LOGGER.info("Bonus activated for %d ticks", ticks);
+		bonus.setEdible(level.bonusIndex(), BONUS_VALUES[level.bonusIndex()], ticks);
 		GameEvents.publish(GameEventType.BONUS_GETS_ACTIVE, World.tileAt(bonus.getPosition()));
 	}
 }

@@ -24,7 +24,6 @@ SOFTWARE.
 package de.amr.games.pacman.model.mspacman;
 
 import static de.amr.games.pacman.lib.NavigationPoint.np;
-import static de.amr.games.pacman.lib.TickTimer.secToTicks;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -326,7 +325,7 @@ public class MsPacManGame extends GameModel {
 		int bonusSymbol = levelNumber >= 8 ? rnd.nextInt(7) : -1; // -1 means: use value from level data
 		level = new GameLevel(levelNumber, mazeNumber(levelNumber), createWorld(mapNumber), bonusSymbol,
 				levelNumber <= numLevels ? LEVELS[levelNumber - 1] : LEVELS[numLevels - 1]);
-		pacStarvingTimeLimit = (int) secToTicks(levelNumber < 5 ? 4 : 3);
+		pacStarvingTimeLimit = (levelNumber < 5 ? 4 : 3) * FPS;
 		globalDotLimits = new byte[] { -1, 7, 17, -1 };
 		privateDotLimits = switch (levelNumber) {
 		case 1 -> new byte[] { 0, 0, 30, 60 };

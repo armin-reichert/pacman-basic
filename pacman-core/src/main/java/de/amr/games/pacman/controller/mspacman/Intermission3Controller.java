@@ -174,7 +174,7 @@ public class Intermission3Controller extends Fsm<State, Context> {
 		};
 
 		protected Intermission3Controller controller;
-		protected final TickTimer timer = new TickTimer("Timer-" + name());
+		protected final TickTimer timer = new TickTimer("Timer-" + name(), GameModel.FPS);
 
 		@Override
 		public TickTimer timer() {

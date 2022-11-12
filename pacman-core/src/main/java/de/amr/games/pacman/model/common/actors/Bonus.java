@@ -24,8 +24,6 @@ SOFTWARE.
 
 package de.amr.games.pacman.model.common.actors;
 
-import static de.amr.games.pacman.lib.TickTimer.secToTicks;
-
 import de.amr.games.pacman.model.common.GameModel;
 
 /**
@@ -33,7 +31,7 @@ import de.amr.games.pacman.model.common.GameModel;
  */
 public interface Bonus {
 
-	public static final long EATEN_DURATION = secToTicks(2);
+	public static final long EATEN_DURATION = 2 * GameModel.FPS;
 
 	/**
 	 * @return Entity representing this bonus in the world.

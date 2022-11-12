@@ -25,7 +25,6 @@ package de.amr.games.pacman.model.common;
 
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.UP;
-import static de.amr.games.pacman.lib.TickTimer.secToTicks;
 import static de.amr.games.pacman.lib.V2i.v;
 import static de.amr.games.pacman.model.common.actors.Ghost.CYAN_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ORANGE_GHOST;
@@ -104,7 +103,7 @@ public abstract class GameModel {
 	public static final int EXTRA_LIFE = 10_000;
 
 	// not sure exactly how long Pac-Man is losing power
-	public static final long PAC_POWER_FADING_TICKS = secToTicks(2);
+	public static final long PAC_POWER_FADING_TICKS = 2 * FPS;
 
 	protected static final int[] GHOST_VALUES = { 200, 400, 800, 1600 };
 
@@ -118,7 +117,7 @@ public abstract class GameModel {
 	public final Pac pac;
 
 	/** Controls the time Pac has power. */
-	public final TickTimer powerTimer = new TickTimer("Pac-power-timer");
+	public final TickTimer powerTimer = new TickTimer("Pac-power-timer", FPS);
 
 	/** Tells if Pac-Man can be killed by ghosts. */
 	public boolean isPacImmune;

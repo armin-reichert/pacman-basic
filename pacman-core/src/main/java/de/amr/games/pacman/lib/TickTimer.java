@@ -51,29 +51,33 @@ public class TickTimer {
 	}
 
 	public static final long INDEFINITE = Long.MAX_VALUE;
-	private static final int TICKS_PER_SEC = 60;
 
 	/**
 	 * @param sec seconds
-	 * @return number of ticks representing given seconds at 60Hz
 	 */
-	public static final long secToTicks(double sec) {
-		return Math.round(sec * TICKS_PER_SEC);
+	public long secToTicks(double sec) {
+		return Math.round(sec * fps);
 	}
 
-	public static String ticksToString(long ticks) {
+	public String ticksToString(long ticks) {
 		return ticks == INDEFINITE ? "indefinite" : "%d".formatted(ticks);
 	}
 
 	private final String name;
 	private State state;
+	private int fps = 60;
 	private long duration;
 	private long tick; // 0..(duration - 1)
 	private List<Consumer<TickTimerEvent>> subscribers;
 
-	public TickTimer(String name) {
+	public TickTimer(String name, int fps) {
 		this.name = name;
+		this.fps = fps;
 		resetIndefinitely();
+	}
+
+	public void setFps(int fps) {
+		this.fps = fps;
 	}
 
 	public void addEventListener(Consumer<TickTimerEvent> subscriber) {

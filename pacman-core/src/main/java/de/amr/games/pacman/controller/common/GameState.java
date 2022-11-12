@@ -482,7 +482,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 	};
 
 	GameController gc;
-	final TickTimer timer = new TickTimer("Timer-" + name());
+	final TickTimer timer = new TickTimer("Timer-" + name(), GameModel.FPS);
 
 	@Override
 	public TickTimer timer() {

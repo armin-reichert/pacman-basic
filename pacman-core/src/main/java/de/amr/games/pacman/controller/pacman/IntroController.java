@@ -38,6 +38,7 @@ import de.amr.games.pacman.lib.animation.EntityAnimation;
 import de.amr.games.pacman.lib.animation.SingleEntityAnimation;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.lib.fsm.FsmState;
+import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.actors.AnimKeys;
 import de.amr.games.pacman.model.common.actors.Ghost;
 import de.amr.games.pacman.model.common.actors.GhostState;
@@ -250,7 +251,7 @@ public class IntroController extends Fsm<State, Context> {
 				});
 
 				// After ??? sec, Pac-Man and the surviving ghosts get visible again and move on
-				if (timer.tick() - ctx.ghostKilledTime == TickTimer.secToTicks(0.9)) {
+				if (timer.tick() - ctx.ghostKilledTime == timer.secToTicks(0.9)) {
 					ctx.pacMan.show();
 					ctx.pacMan.setAbsSpeed(CHASING_SPEED);
 					for (Ghost ghost : ctx.ghosts) {
@@ -290,7 +291,7 @@ public class IntroController extends Fsm<State, Context> {
 		};
 
 		protected IntroController controller;
-		protected final TickTimer timer = new TickTimer("Timer-" + name());
+		protected final TickTimer timer = new TickTimer("Timer-" + name(), GameModel.FPS);
 
 		@Override
 		public TickTimer timer() {

@@ -35,6 +35,7 @@ import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.animation.EntityAnimation;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.lib.fsm.FsmState;
+import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameSound;
 import de.amr.games.pacman.model.common.actors.AnimKeys;
 import de.amr.games.pacman.model.common.actors.Entity;
@@ -249,7 +250,7 @@ public class Intermission1Controller extends Fsm<State, Context> {
 		};
 
 		protected Intermission1Controller controller;
-		protected final TickTimer timer = new TickTimer("Timer-" + name());
+		protected final TickTimer timer = new TickTimer("Timer-" + name(), GameModel.FPS);
 
 		@Override
 		public TickTimer timer() {

@@ -61,7 +61,7 @@ public class IntroController extends Fsm<IntroController.State, IntroController.
 		public final V2i turningPoint = v(t(6), t(20)).plus(0, HTS);
 		public final int msPacManStopX = t(15);
 		public final EntityAnimation blinking = SingleEntityAnimation.pulse(30);
-		public final TickTimer lightsTimer = new TickTimer("lights-timer");
+		public final TickTimer lightsTimer = new TickTimer("lights-timer", GameModel.FPS);
 		public int ghostIndex;
 
 		public Context(GameController gameController) {
@@ -171,7 +171,7 @@ public class IntroController extends Fsm<IntroController.State, IntroController.
 		};
 
 		protected IntroController controller;
-		protected final TickTimer timer = new TickTimer("Timer-" + name());
+		protected final TickTimer timer = new TickTimer("Timer-" + name(), GameModel.FPS);
 
 		@Override
 		public TickTimer timer() {
