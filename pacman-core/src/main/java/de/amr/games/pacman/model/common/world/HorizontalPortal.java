@@ -54,14 +54,14 @@ public record HorizontalPortal(V2i leftTunnelEnd, V2i rightTunnelEnd) implements
 	@Override
 	public boolean teleport(Creature guy) {
 		boolean teleported = false;
-		var oldPos = guy.getPosition();
-		if (guy.tile().y() == leftTunnelEnd.y() && guy.getPosition().x() < (leftTunnelEnd.x() - DEPTH) * TS) {
+		var oldPos = guy.position();
+		if (guy.tile().y() == leftTunnelEnd.y() && guy.position().x() < (leftTunnelEnd.x() - DEPTH) * TS) {
 			guy.placeAtTile(rightTunnelEnd); // TODO fixme
-			LOGGER.info("Teleported %s from %s to %s", guy.name, oldPos, guy.getPosition());
+			LOGGER.info("Teleported %s from %s to %s", guy.name, oldPos, guy.position());
 			teleported = true;
 		} else if (guy.tile().equals(rightTunnelEnd.plus(DEPTH, 0))) {
 			guy.placeAtTile(leftTunnelEnd.minus(DEPTH, 0), 0, 0);
-			LOGGER.info("Teleported %s from %s to %s", guy.name, oldPos, guy.getPosition());
+			LOGGER.info("Teleported %s from %s to %s", guy.name, oldPos, guy.position());
 			teleported = true;
 		}
 		return teleported;
@@ -84,7 +84,7 @@ public record HorizontalPortal(V2i leftTunnelEnd, V2i rightTunnelEnd) implements
 	public double distance(Creature guy) {
 		var leftEndPosition = new V2d(leftTunnelEnd.minus(DEPTH, 0)).scaled(World.TS);
 		var rightEndPosition = new V2d(rightTunnelEnd.plus(DEPTH, 0)).scaled(World.TS);
-		var guyPos = guy.getPosition();
+		var guyPos = guy.position();
 		return Math.abs(Math.min(guyPos.euclideanDistance(leftEndPosition), guyPos.euclideanDistance(rightEndPosition)));
 	}
 }

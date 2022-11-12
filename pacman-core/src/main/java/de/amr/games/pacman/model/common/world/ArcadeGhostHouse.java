@@ -87,23 +87,23 @@ public class ArcadeGhostHouse implements GhostHouse {
 	@Override
 	public boolean atHouseEntry(Creature guy) {
 		var entryX = ENTRY_TILE.x() * TS + HTS;
-		return guy.tile().y() == ENTRY_TILE.y() && U.insideRange(guy.getPosition().x(), entryX, 1);
+		return guy.tile().y() == ENTRY_TILE.y() && U.insideRange(guy.position().x(), entryX, 1);
 	}
 
 	@Override
 	public boolean leadGuyOutOfHouse(Creature guy) {
 		var entryPos = new V2d(ENTRY_TILE.scaled(TS).plus(HTS, 0));
-		if (guy.getPosition().x() == entryPos.x() && guy.getPosition().y() <= entryPos.y()) {
+		if (guy.position().x() == entryPos.x() && guy.position().y() <= entryPos.y()) {
 			guy.setPosition(entryPos);
 			return true;
 		}
 		var center = middleSeatCenterPosition();
-		if (U.insideRange(guy.getPosition().x(), center.x(), 1)) {
+		if (U.insideRange(guy.position().x(), center.x(), 1)) {
 			// center horizontally before rising
-			guy.setPosition(center.x(), guy.getPosition().y());
+			guy.setPosition(center.x(), guy.position().y());
 			guy.setMoveAndWishDir(UP);
 		} else {
-			guy.setMoveAndWishDir(guy.getPosition().x() < center.x() ? RIGHT : LEFT);
+			guy.setMoveAndWishDir(guy.position().x() < center.x() ? RIGHT : LEFT);
 		}
 		guy.move();
 		return false;
@@ -115,7 +115,7 @@ public class ArcadeGhostHouse implements GhostHouse {
 			guy.setMoveAndWishDir(Direction.DOWN);
 		}
 		var middlePosition = new V2d(SEAT_TILE_CENTER).scaled(TS).plus(HTS, 0);
-		if (guy.getPosition().y() >= middlePosition.y()) {
+		if (guy.position().y() >= middlePosition.y()) {
 			if (targetPosition.x() < middlePosition.x()) {
 				guy.setMoveAndWishDir(LEFT);
 			} else if (targetPosition.x() > middlePosition.x()) {
@@ -123,6 +123,6 @@ public class ArcadeGhostHouse implements GhostHouse {
 			}
 		}
 		guy.move();
-		return U.insideRange(guy.getPosition().x(), targetPosition.x(), 1) && guy.getPosition().y() >= targetPosition.y();
+		return U.insideRange(guy.position().x(), targetPosition.x(), 1) && guy.position().y() >= targetPosition.y();
 	}
 }

@@ -40,10 +40,6 @@ public class Entity {
 	protected V2d acceleration;
 
 	public Entity() {
-		reset();
-	}
-
-	public void reset() {
 		visible = false;
 		position = V2d.NULL;
 		velocity = V2d.NULL;
@@ -66,7 +62,7 @@ public class Entity {
 		visible = false;
 	}
 
-	public V2d getPosition() {
+	public V2d position() {
 		return position;
 	}
 
@@ -78,7 +74,7 @@ public class Entity {
 		this.position = Objects.requireNonNull(position);
 	}
 
-	public V2d getVelocity() {
+	public V2d velocity() {
 		return velocity;
 	}
 
@@ -88,6 +84,10 @@ public class Entity {
 
 	public void setVelocity(double vx, double vy) {
 		velocity = new V2d(vx, vy);
+	}
+
+	public V2d acceleration() {
+		return acceleration;
 	}
 
 	public void setAcceleration(V2d acceleration) {

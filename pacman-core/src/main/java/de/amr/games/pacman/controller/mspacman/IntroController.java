@@ -121,11 +121,11 @@ public class IntroController extends Fsm<IntroController.State, IntroController.
 				Ghost ghost = ctx.game.theGhosts[ctx.ghostIndex];
 				ghost.move();
 				ghost.updateAnimation();
-				if (ghost.moveDir() != UP && ghost.getPosition().x() <= ctx.turningPoint.x()) {
+				if (ghost.moveDir() != UP && ghost.position().x() <= ctx.turningPoint.x()) {
 					ghost.setMoveDir(UP);
 					ghost.setWishDir(UP);
 				}
-				if (ghost.getPosition().y() <= ctx.lightsTopLeft.y() + ghost.id * 18) {
+				if (ghost.position().y() <= ctx.lightsTopLeft.y() + ghost.id * 18) {
 					ghost.setAbsSpeed(0);
 					ghost.animationSet().ifPresent(EntityAnimationSet::stop);
 					if (++ctx.ghostIndex == ctx.game.theGhosts.length) {
@@ -146,7 +146,7 @@ public class IntroController extends Fsm<IntroController.State, IntroController.
 				ctx.lightsTimer.advance();
 				ctx.game.pac.move();
 				ctx.game.pac.updateAnimation();
-				if (ctx.game.pac.getPosition().x() <= ctx.msPacManStopX) {
+				if (ctx.game.pac.position().x() <= ctx.msPacManStopX) {
 					ctx.game.pac.setAbsSpeed(0);
 					ctx.game.pac.animationSet().ifPresent(animSet -> animSet.animation(AnimKeys.PAC_MUNCHING).get().reset());
 					controller.changeState(State.READY_TO_PLAY);

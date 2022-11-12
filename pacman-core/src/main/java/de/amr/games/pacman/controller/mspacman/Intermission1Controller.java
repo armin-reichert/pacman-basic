@@ -95,7 +95,7 @@ public class Intermission1Controller extends Fsm<State, Context> {
 				ctx.inky = new Ghost(Ghost.CYAN_GHOST, "Inky");
 				ctx.inky.setMoveDir(Direction.RIGHT);
 				ctx.inky.setWishDir(Direction.RIGHT);
-				ctx.inky.setPosition(ctx.pacMan.getPosition().minus(t(6), 0));
+				ctx.inky.setPosition(ctx.pacMan.position().minus(t(6), 0));
 				ctx.inky.selectAndRunAnimation(AnimKeys.GHOST_COLOR);
 				ctx.inky.show();
 
@@ -108,7 +108,7 @@ public class Intermission1Controller extends Fsm<State, Context> {
 				ctx.pinky = new Ghost(PINK_GHOST, "Pinky");
 				ctx.pinky.setMoveDir(Direction.LEFT);
 				ctx.pinky.setWishDir(Direction.LEFT);
-				ctx.pinky.setPosition(ctx.msPac.getPosition().plus(t(6), 0));
+				ctx.pinky.setPosition(ctx.msPac.position().plus(t(6), 0));
 				ctx.pinky.selectAndRunAnimation(AnimKeys.GHOST_COLOR);
 				ctx.pinky.show();
 
@@ -139,7 +139,7 @@ public class Intermission1Controller extends Fsm<State, Context> {
 
 			@Override
 			public void onUpdate(Context ctx) {
-				if (ctx.inky.getPosition().x() > t(30)) {
+				if (ctx.inky.position().x() > t(30)) {
 					controller.changeState(State.COMING_TOGETHER);
 					return;
 				}
@@ -160,14 +160,14 @@ public class Intermission1Controller extends Fsm<State, Context> {
 				ctx.msPac.setPosition(t(-3), ctx.middleY);
 				ctx.msPac.setMoveDir(Direction.RIGHT);
 
-				ctx.pinky.setPosition(ctx.msPac.getPosition().minus(t(5), 0));
+				ctx.pinky.setPosition(ctx.msPac.position().minus(t(5), 0));
 				ctx.pinky.setMoveDir(Direction.RIGHT);
 				ctx.pinky.setWishDir(Direction.RIGHT);
 
 				ctx.pacMan.setPosition(t(31), ctx.middleY);
 				ctx.pacMan.setMoveDir(Direction.LEFT);
 
-				ctx.inky.setPosition(ctx.pacMan.getPosition().plus(t(5), 0));
+				ctx.inky.setPosition(ctx.pacMan.position().plus(t(5), 0));
 				ctx.inky.setMoveDir(Direction.LEFT);
 				ctx.inky.setWishDir(Direction.LEFT);
 			}
@@ -175,12 +175,12 @@ public class Intermission1Controller extends Fsm<State, Context> {
 			@Override
 			public void onUpdate(Context ctx) {
 				// Pac-Man and Ms. Pac-Man reach end position?
-				if (ctx.pacMan.moveDir() == Direction.UP && ctx.pacMan.getPosition().y() < ctx.upperY) {
+				if (ctx.pacMan.moveDir() == Direction.UP && ctx.pacMan.position().y() < ctx.upperY) {
 					controller.changeState(State.IN_HEAVEN);
 				}
 				// Pac-Man and Ms. Pac-Man meet?
 				else if (ctx.pacMan.moveDir() == Direction.LEFT
-						&& ctx.pacMan.getPosition().x() - ctx.msPac.getPosition().x() < t(2)) {
+						&& ctx.pacMan.position().x() - ctx.msPac.position().x() < t(2)) {
 					ctx.pacMan.setMoveDir(Direction.UP);
 					ctx.pacMan.setAbsSpeed(ctx.pacSpeedRising);
 					ctx.msPac.setMoveDir(Direction.UP);
@@ -188,17 +188,17 @@ public class Intermission1Controller extends Fsm<State, Context> {
 				}
 				// Inky and Pinky collide?
 				else if (ctx.inky.moveDir() == Direction.LEFT
-						&& ctx.inky.getPosition().x() - ctx.pinky.getPosition().x() < t(2)) {
+						&& ctx.inky.position().x() - ctx.pinky.position().x() < t(2)) {
 					ctx.inky.setMoveDir(Direction.RIGHT);
 					ctx.inky.setWishDir(Direction.RIGHT);
 					ctx.inky.setAbsSpeed(ctx.ghostSpeedAfterColliding);
-					ctx.inky.setVelocity(ctx.inky.getVelocity().minus(0, 2.0));
+					ctx.inky.setVelocity(ctx.inky.velocity().minus(0, 2.0));
 					ctx.inky.setAcceleration(0, 0.4);
 
 					ctx.pinky.setMoveDir(Direction.LEFT);
 					ctx.pinky.setWishDir(Direction.LEFT);
 					ctx.pinky.setAbsSpeed(ctx.ghostSpeedAfterColliding);
-					ctx.pinky.setVelocity(ctx.pinky.getVelocity().minus(0, 2.0));
+					ctx.pinky.setVelocity(ctx.pinky.velocity().minus(0, 2.0));
 					ctx.pinky.setAcceleration(0, 0.4);
 				} else {
 					ctx.pacMan.move();
@@ -207,14 +207,14 @@ public class Intermission1Controller extends Fsm<State, Context> {
 					ctx.msPac.updateAnimation();
 					ctx.inky.move();
 					ctx.inky.updateAnimation();
-					if (ctx.inky.getPosition().y() > ctx.middleY) {
-						ctx.inky.setPosition(ctx.inky.getPosition().x(), ctx.middleY);
+					if (ctx.inky.position().y() > ctx.middleY) {
+						ctx.inky.setPosition(ctx.inky.position().x(), ctx.middleY);
 						ctx.inky.setAcceleration(V2d.NULL);
 					}
 					ctx.pinky.move();
 					ctx.pinky.updateAnimation();
-					if (ctx.pinky.getPosition().y() > ctx.middleY) {
-						ctx.pinky.setPosition(ctx.pinky.getPosition().x(), ctx.middleY);
+					if (ctx.pinky.position().y() > ctx.middleY) {
+						ctx.pinky.setPosition(ctx.pinky.position().x(), ctx.middleY);
 						ctx.pinky.setAcceleration(V2d.NULL);
 					}
 				}
@@ -236,8 +236,8 @@ public class Intermission1Controller extends Fsm<State, Context> {
 				ctx.inky.hide();
 				ctx.pinky.setAbsSpeed(0);
 				ctx.pinky.hide();
-				ctx.heart.setPosition((ctx.pacMan.getPosition().x() + ctx.msPac.getPosition().x()) / 2,
-						ctx.pacMan.getPosition().y() - t(2));
+				ctx.heart.setPosition((ctx.pacMan.position().x() + ctx.msPac.position().x()) / 2,
+						ctx.pacMan.position().y() - t(2));
 				ctx.heart.show();
 			}
 

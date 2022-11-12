@@ -86,9 +86,11 @@ public class Creature extends Entity {
 		reset();
 	}
 
-	@Override
 	public void reset() {
-		super.reset();
+		visible = false;
+		position = V2d.NULL;
+		velocity = V2d.NULL;
+		acceleration = V2d.NULL;
 		moveDir = RIGHT;
 		wishDir = RIGHT;
 		targetTile = null;

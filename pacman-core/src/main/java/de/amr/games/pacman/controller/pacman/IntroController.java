@@ -173,7 +173,7 @@ public class IntroController extends Fsm<State, Context> {
 				ctx.pacMan.selectAndRunAnimation(AnimKeys.PAC_MUNCHING);
 				for (Ghost ghost : ctx.ghosts) {
 					ghost.enterStateHuntingPac(ctx.gameController.game());
-					ghost.setPosition(ctx.pacMan.getPosition().plus(16 * (ghost.id + 1), 0));
+					ghost.setPosition(ctx.pacMan.position().plus(16 * (ghost.id + 1), 0));
 					ghost.setMoveAndWishDir(Direction.LEFT);
 					ghost.setAbsSpeed(CHASING_SPEED);
 					ghost.show();
@@ -184,11 +184,11 @@ public class IntroController extends Fsm<State, Context> {
 			@Override
 			public void onUpdate(Context ctx) {
 				// Pac-Man reaches the energizer
-				if (ctx.pacMan.getPosition().x() <= t(ctx.left)) {
+				if (ctx.pacMan.position().x() <= t(ctx.left)) {
 					controller.changeState(State.CHASING_GHOSTS);
 				}
 				// ghosts already reverse direction before Pac-man eats the energizer and turns right!
-				else if (ctx.pacMan.getPosition().x() <= t(ctx.left) + 4) {
+				else if (ctx.pacMan.position().x() <= t(ctx.left) + 4) {
 					for (Ghost ghost : ctx.ghosts) {
 						ghost.enterStateFrightened(ctx.gameController.game());
 						ghost.selectAndRunAnimation(AnimKeys.GHOST_BLUE);
