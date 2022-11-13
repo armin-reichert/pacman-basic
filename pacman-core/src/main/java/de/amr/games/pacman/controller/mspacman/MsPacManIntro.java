@@ -50,7 +50,7 @@ import de.amr.games.pacman.model.common.actors.Ghost;
  * 
  * @author Armin Reichert
  */
-public class IntroController extends Fsm<IntroController.State, IntroController.Context> {
+public class MsPacManIntro extends Fsm<MsPacManIntro.State, MsPacManIntro.Context> {
 
 	public static class Context extends SceneControllerContext {
 		public boolean creditVisible = false;
@@ -68,7 +68,7 @@ public class IntroController extends Fsm<IntroController.State, IntroController.
 		}
 	}
 
-	public enum State implements FsmState<IntroController.Context> {
+	public enum State implements FsmState<MsPacManIntro.Context> {
 
 		START {
 			@Override
@@ -168,7 +168,7 @@ public class IntroController extends Fsm<IntroController.State, IntroController.
 			}
 		};
 
-		protected IntroController controller;
+		protected MsPacManIntro controller;
 		protected final TickTimer timer = new TickTimer("Timer-" + name(), GameModel.FPS);
 
 		@Override
@@ -177,9 +177,9 @@ public class IntroController extends Fsm<IntroController.State, IntroController.
 		}
 	}
 
-	public final Context ctx;
+	final Context ctx;
 
-	public IntroController(GameController gameController) {
+	public MsPacManIntro(GameController gameController) {
 		states = State.values();
 		for (var state : states) {
 			state.controller = this;

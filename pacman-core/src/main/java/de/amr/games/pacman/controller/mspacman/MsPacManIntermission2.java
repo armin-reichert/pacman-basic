@@ -27,42 +27,36 @@ import static de.amr.games.pacman.model.common.world.World.t;
 
 import de.amr.games.pacman.controller.common.GameController;
 import de.amr.games.pacman.controller.common.SceneControllerContext;
-import de.amr.games.pacman.controller.mspacman.Intermission3Controller.Context;
-import de.amr.games.pacman.controller.mspacman.Intermission3Controller.State;
+import de.amr.games.pacman.controller.mspacman.MsPacManIntermission2.Context;
+import de.amr.games.pacman.controller.mspacman.MsPacManIntermission2.State;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
-import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.animation.EntityAnimation;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.lib.fsm.FsmState;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameSound;
 import de.amr.games.pacman.model.common.actors.AnimKeys;
-import de.amr.games.pacman.model.common.actors.Entity;
 import de.amr.games.pacman.model.common.actors.Pac;
 import de.amr.games.pacman.model.mspacman.Clapperboard;
 
 /**
- * Intermission scene 3: "Junior".
- * 
+ * Intermission scene 2: "The chase".
  * <p>
- * Pac-Man and Ms. Pac-Man gradually wait for a stork, who flies overhead with a little blue bundle. The stork drops the
- * bundle, which falls to the ground in front of Pac-Man and Ms. Pac-Man, and finally opens up to reveal a tiny Pac-Man.
- * (Played after rounds 9, 13, and 17)
+ * Pac-Man and Ms. Pac-Man chase each other across the screen over and over. After three turns, they both rapidly run
+ * from left to right and right to left. (Played after round 5)
  * 
  * @author Armin Reichert
  */
-public class Intermission3Controller extends Fsm<State, Context> {
+public class MsPacManIntermission2 extends Fsm<State, Context> {
 
 	public static class Context extends SceneControllerContext {
-		public final int groundY = t(24);
+		public final int upperY = t(12);
+		public final int middleY = t(18);
+		public final int lowerY = t(24);
 		public Clapperboard clapperboard;
 		public Pac pacMan;
 		public Pac msPacMan;
-		public Entity stork;
-		public Entity bag;
-		public boolean bagOpen;
-		public int numBagBounces;
 
 		public Context(GameController gameController) {
 			super(gameController);
@@ -76,102 +70,88 @@ public class Intermission3Controller extends Fsm<State, Context> {
 			public void onEnter(Context ctx) {
 				timer.resetIndefinitely();
 				timer.start();
-				ctx.clapperboard = new Clapperboard(3, "JUNIOR");
+				ctx.clapperboard = new Clapperboard(2, "THE CHASE");
 				ctx.clapperboard.setPosition(t(3), t(10));
 				ctx.clapperboard.show();
 				ctx.pacMan = new Pac("Pac-Man");
+				ctx.pacMan.setMoveDir(Direction.RIGHT);
+				ctx.pacMan.selectAndRunAnimation(AnimKeys.PAC_MUNCHING);
 				ctx.msPacMan = new Pac("Ms. Pac-Man");
-				ctx.stork = new Entity();
-				ctx.bag = new Entity();
-				ctx.bagOpen = false;
+				ctx.msPacMan.setMoveDir(Direction.RIGHT);
+				ctx.msPacMan.selectAndRunAnimation(AnimKeys.GHOST_COLOR);
 			}
 
 			@Override
 			public void onUpdate(Context ctx) {
 				if (timer.atSecond(1)) {
-					ctx.gameController().sounds().play(GameSound.INTERMISSION_3);
+					ctx.gameController().sounds().play(GameSound.INTERMISSION_2);
 					ctx.clapperboard.animation().ifPresent(EntityAnimation::restart);
 				} else if (timer.atSecond(2)) {
 					ctx.clapperboard.hide();
 				} else if (timer.atSecond(3)) {
-					controller.changeState(State.ACTION);
+					controller.changeState(State.CHASING);
 				}
 			}
 		},
 
-		ACTION {
+		CHASING {
 			@Override
 			public void onEnter(Context ctx) {
 				timer.resetIndefinitely();
 				timer.start();
-
-				ctx.pacMan.setMoveDir(Direction.RIGHT);
-				ctx.pacMan.setPosition(t(3), ctx.groundY - 4);
-				ctx.pacMan.selectAndRunAnimation(AnimKeys.PAC_MUNCHING);
-				ctx.pacMan.show();
-				ctx.pacMan.animation(AnimKeys.PAC_MUNCHING).ifPresent(EntityAnimation::reset);
-
-				ctx.msPacMan.setMoveDir(Direction.RIGHT);
-				ctx.msPacMan.setPosition(t(5), ctx.groundY - 4);
-				ctx.msPacMan.selectAndRunAnimation(AnimKeys.PAC_MUNCHING);
-				ctx.msPacMan.show();
-				ctx.msPacMan.animation(AnimKeys.PAC_MUNCHING).ifPresent(EntityAnimation::reset);
-
-				ctx.stork.setPosition(t(30), t(12));
-				ctx.stork.setVelocity(-0.8, 0);
-				ctx.stork.show();
-
-				ctx.bag.setPosition(ctx.stork.position().plus(-14, 3));
-				ctx.bag.setVelocity(ctx.stork.velocity());
-				ctx.bag.setAcceleration(V2d.NULL);
-				ctx.bag.show();
-				ctx.bagOpen = false;
-				ctx.numBagBounces = 0;
 			}
 
 			@Override
 			public void onUpdate(Context ctx) {
-				ctx.stork.move();
-				ctx.bag.move();
-
-				// release bag from storks beak?
-				if ((int) ctx.stork.position().x() == t(20)) {
-					ctx.bag.setAcceleration(0, 0.04);
-					ctx.stork.setVelocity(-1, 0);
-				}
-
-				// (closed) bag reaches ground for first time?
-				if (!ctx.bagOpen && ctx.bag.position().y() > ctx.groundY) {
-					++ctx.numBagBounces;
-					if (ctx.numBagBounces < 3) {
-						ctx.bag.setVelocity(-0.2f, -1f / ctx.numBagBounces);
-						ctx.bag.setPosition(ctx.bag.position().x(), ctx.groundY);
-					} else {
-						ctx.bagOpen = true;
-						ctx.bag.setVelocity(V2d.NULL);
-						controller.changeState(State.DONE);
-					}
-				}
-			}
-		},
-
-		DONE {
-			@Override
-			public void onEnter(Context ctx) {
-				timer.resetSeconds(3);
-				timer.start();
-			}
-
-			@Override
-			public void onUpdate(Context ctx) {
-				ctx.stork.move();
-				if (timer.hasExpired()) {
+				if (timer.atSecond(2.5)) {
+					ctx.pacMan.setPosition(-t(2), ctx.upperY);
+					ctx.pacMan.setMoveDir(Direction.RIGHT);
+					ctx.pacMan.setAbsSpeed(2.0);
+					ctx.pacMan.show();
+					ctx.msPacMan.setPosition(-t(8), ctx.upperY);
+					ctx.msPacMan.setMoveDir(Direction.RIGHT);
+					ctx.msPacMan.setAbsSpeed(2.0);
+					ctx.msPacMan.show();
+				} else if (timer.atSecond(7)) {
+					ctx.pacMan.setPosition(t(36), ctx.lowerY);
+					ctx.pacMan.setMoveDir(Direction.LEFT);
+					ctx.pacMan.setAbsSpeed(2.0);
+					ctx.msPacMan.setPosition(t(30), ctx.lowerY);
+					ctx.msPacMan.setMoveDir(Direction.LEFT);
+					ctx.msPacMan.setAbsSpeed(2.0);
+				} else if (timer.atSecond(11.5)) {
+					ctx.pacMan.setMoveDir(Direction.RIGHT);
+					ctx.pacMan.setAbsSpeed(2.0);
+					ctx.msPacMan.setPosition(t(-8), ctx.middleY);
+					ctx.msPacMan.setMoveDir(Direction.RIGHT);
+					ctx.msPacMan.setAbsSpeed(2.0);
+					ctx.pacMan.setPosition(t(-2), ctx.middleY);
+				} else if (timer.atSecond(15.5)) {
+					ctx.pacMan.setPosition(t(42), ctx.upperY);
+					ctx.pacMan.setMoveDir(Direction.LEFT);
+					ctx.pacMan.setAbsSpeed(4.0);
+					ctx.msPacMan.setPosition(t(30), ctx.upperY);
+					ctx.msPacMan.setMoveDir(Direction.LEFT);
+					ctx.msPacMan.setAbsSpeed(4.0);
+				} else if (timer.atSecond(16.5)) {
+					ctx.pacMan.setPosition(t(-2), ctx.lowerY);
+					ctx.pacMan.setMoveDir(Direction.RIGHT);
+					ctx.pacMan.setAbsSpeed(4.0);
+					ctx.msPacMan.setPosition(t(-14), ctx.lowerY);
+					ctx.msPacMan.setMoveDir(Direction.RIGHT);
+					ctx.msPacMan.setAbsSpeed(4.0);
+				} else if (timer.atSecond(21)) {
 					ctx.gameController().terminateCurrentState();
+					return;
 				}
+				ctx.pacMan.move();
+				ctx.pacMan.updateAnimation();
+				ctx.msPacMan.move();
+				ctx.msPacMan.updateAnimation();
 			}
 		};
 
-		protected Intermission3Controller controller;
+		protected MsPacManIntermission2 controller;
 		protected final TickTimer timer = new TickTimer("Timer-" + name(), GameModel.FPS);
 
 		@Override
@@ -182,9 +162,9 @@ public class Intermission3Controller extends Fsm<State, Context> {
 
 	public final Context ctx;
 
-	public Intermission3Controller(GameController gameController) {
+	public MsPacManIntermission2(GameController gameController) {
 		states = State.values();
-		for (var state : states) {
+		for (var state : State.values()) {
 			state.controller = this;
 		}
 		this.ctx = new Context(gameController);

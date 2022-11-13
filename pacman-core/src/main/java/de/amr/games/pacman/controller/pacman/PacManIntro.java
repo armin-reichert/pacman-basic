@@ -30,8 +30,8 @@ import java.util.stream.Stream;
 
 import de.amr.games.pacman.controller.common.GameController;
 import de.amr.games.pacman.controller.common.GameState;
-import de.amr.games.pacman.controller.pacman.IntroController.Context;
-import de.amr.games.pacman.controller.pacman.IntroController.State;
+import de.amr.games.pacman.controller.pacman.PacManIntro.Context;
+import de.amr.games.pacman.controller.pacman.PacManIntro.State;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.animation.EntityAnimation;
@@ -52,13 +52,13 @@ import de.amr.games.pacman.model.common.actors.Pac;
  * 
  * @author Armin Reichert
  */
-public class IntroController extends Fsm<State, Context> {
+public class PacManIntro extends Fsm<State, Context> {
 
 	private static final double CHASING_SPEED = 1.1;
 
 	public final Context ctx;
 
-	public IntroController(GameController gameController) {
+	public PacManIntro(GameController gameController) {
 		states = State.values();
 		for (var state : states) {
 			state.controller = this;
@@ -290,7 +290,7 @@ public class IntroController extends Fsm<State, Context> {
 			}
 		};
 
-		protected IntroController controller;
+		protected PacManIntro controller;
 		protected final TickTimer timer = new TickTimer("Timer-" + name(), GameModel.FPS);
 
 		@Override

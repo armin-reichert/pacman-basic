@@ -28,8 +28,8 @@ import static de.amr.games.pacman.model.common.world.World.t;
 
 import de.amr.games.pacman.controller.common.GameController;
 import de.amr.games.pacman.controller.common.SceneControllerContext;
-import de.amr.games.pacman.controller.mspacman.Intermission1Controller.Context;
-import de.amr.games.pacman.controller.mspacman.Intermission1Controller.State;
+import de.amr.games.pacman.controller.mspacman.MsPacManIntermission1.Context;
+import de.amr.games.pacman.controller.mspacman.MsPacManIntermission1.State;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.V2d;
@@ -53,7 +53,7 @@ import de.amr.games.pacman.model.mspacman.Clapperboard;
  * 
  * @author Armin Reichert
  */
-public class Intermission1Controller extends Fsm<State, Context> {
+public class MsPacManIntermission1 extends Fsm<State, Context> {
 
 	public static class Context extends SceneControllerContext {
 		public final int upperY = t(12);
@@ -248,7 +248,7 @@ public class Intermission1Controller extends Fsm<State, Context> {
 			}
 		};
 
-		protected Intermission1Controller controller;
+		protected MsPacManIntermission1 controller;
 		protected final TickTimer timer = new TickTimer("Timer-" + name(), GameModel.FPS);
 
 		@Override
@@ -259,7 +259,7 @@ public class Intermission1Controller extends Fsm<State, Context> {
 
 	public final Context ctx;
 
-	public Intermission1Controller(GameController gameController) {
+	public MsPacManIntermission1(GameController gameController) {
 		states = State.values();
 		for (var state : states) {
 			state.controller = this;
