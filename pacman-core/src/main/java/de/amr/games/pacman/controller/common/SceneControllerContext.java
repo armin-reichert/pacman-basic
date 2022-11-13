@@ -24,7 +24,12 @@ SOFTWARE.
 
 package de.amr.games.pacman.controller.common;
 
+import java.util.Objects;
+
+import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
+import de.amr.games.pacman.model.common.GameVariant;
+import de.amr.games.pacman.model.common.world.World;
 
 /**
  * @author Armin Reichert
@@ -34,7 +39,7 @@ public class SceneControllerContext {
 	protected final GameController gameController;
 
 	public SceneControllerContext(GameController gameController) {
-		this.gameController = gameController;
+		this.gameController = Objects.requireNonNull(gameController, "Game controller must not be NULL");
 	}
 
 	public GameController gameController() {
@@ -43,5 +48,29 @@ public class SceneControllerContext {
 
 	public GameModel game() {
 		return gameController.game();
+	}
+
+	public GameVariant gameVariant() {
+		return game().variant();
+	}
+
+	public GameLevel level() {
+		return game().level;
+	}
+
+	public GameState state() {
+		return gameController.state();
+	}
+
+	public GameSoundController sounds() {
+		return gameController.sounds();
+	}
+
+	public World world() {
+		return game().level.world();
+	}
+
+	public boolean hasCredit() {
+		return game().hasCredit();
 	}
 }
