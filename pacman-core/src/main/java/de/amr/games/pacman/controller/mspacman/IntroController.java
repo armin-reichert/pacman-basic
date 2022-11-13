@@ -31,6 +31,7 @@ import static de.amr.games.pacman.model.common.world.World.t;
 
 import de.amr.games.pacman.controller.common.GameController;
 import de.amr.games.pacman.controller.common.GameState;
+import de.amr.games.pacman.controller.common.SceneControllerContext;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.lib.animation.EntityAnimation;
@@ -51,9 +52,7 @@ import de.amr.games.pacman.model.common.actors.Ghost;
  */
 public class IntroController extends Fsm<IntroController.State, IntroController.Context> {
 
-	public static class Context {
-		public final GameController gameController;
-		public final GameModel game;
+	public static class Context extends SceneControllerContext {
 		public boolean creditVisible = false;
 		public double actorSpeed = 1.1f;
 		public final V2i lightsTopLeft = v(t(8), t(11));
@@ -65,8 +64,7 @@ public class IntroController extends Fsm<IntroController.State, IntroController.
 		public int ghostIndex;
 
 		public Context(GameController gameController) {
-			this.gameController = gameController;
-			game = gameController.game();
+			super(gameController);
 		}
 	}
 
@@ -75,17 +73,17 @@ public class IntroController extends Fsm<IntroController.State, IntroController.
 		START {
 			@Override
 			public void onEnter(Context ctx) {
-				ctx.game.gameScore.showContent = false;
-				ctx.game.highScore.showContent = true;
+				ctx.game().gameScore.showContent = false;
+				ctx.game().highScore.showContent = true;
 				ctx.lightsTimer.resetIndefinitely();
 				ctx.lightsTimer.start();
-				ctx.game.pac.setMoveDir(LEFT);
-				ctx.game.pac.setPosition(t(34), ctx.turningPoint.y());
-				ctx.game.pac.setAbsSpeed(ctx.actorSpeed);
-				ctx.game.pac.selectAndRunAnimation(AnimKeys.PAC_MUNCHING);
-				ctx.game.pac.show();
-				for (Ghost ghost : ctx.game.theGhosts) {
-					ghost.enterStateHuntingPac(ctx.game);
+				ctx.game().pac.setMoveDir(LEFT);
+				ctx.game().pac.setPosition(t(34), ctx.turningPoint.y());
+				ctx.game().pac.setAbsSpeed(ctx.actorSpeed);
+				ctx.game().pac.selectAndRunAnimation(AnimKeys.PAC_MUNCHING);
+				ctx.game().pac.show();
+				for (Ghost ghost : ctx.game().theGhosts) {
+					ghost.enterStateHuntingPac(ctx.game());
 					ghost.setMoveDir(LEFT);
 					ghost.setWishDir(LEFT);
 					ghost.setPosition(t(34), ctx.turningPoint.y());
@@ -98,8 +96,8 @@ public class IntroController extends Fsm<IntroController.State, IntroController.
 			@Override
 			public void onUpdate(Context ctx) {
 				if (timer.tick() == 1) {
-					ctx.game.gameScore.visible = true;
-					ctx.game.highScore.visible = true;
+					ctx.game().gameScore.visible = true;
+					ctx.game().highScore.visible = true;
 				} else if (timer.tick() == 2) {
 					ctx.creditVisible = true;
 				} else if (timer.atSecond(1)) {
@@ -112,13 +110,13 @@ public class IntroController extends Fsm<IntroController.State, IntroController.
 		GHOSTS {
 			@Override
 			public void onEnter(Context ctx) {
-				ctx.game.ghosts().forEach(ghost -> ghost.animationSet().ifPresent(EntityAnimationSet::ensureRunning));
+				ctx.game().ghosts().forEach(ghost -> ghost.animationSet().ifPresent(EntityAnimationSet::ensureRunning));
 			}
 
 			@Override
 			public void onUpdate(Context ctx) {
 				ctx.lightsTimer.advance();
-				Ghost ghost = ctx.game.theGhosts[ctx.ghostIndex];
+				Ghost ghost = ctx.game().theGhosts[ctx.ghostIndex];
 				ghost.move();
 				ghost.updateAnimation();
 				if (ghost.moveDir() != UP && ghost.position().x() <= ctx.turningPoint.x()) {
@@ -128,7 +126,7 @@ public class IntroController extends Fsm<IntroController.State, IntroController.
 				if (ghost.position().y() <= ctx.lightsTopLeft.y() + ghost.id * 18) {
 					ghost.setAbsSpeed(0);
 					ghost.animationSet().ifPresent(EntityAnimationSet::stop);
-					if (++ctx.ghostIndex == ctx.game.theGhosts.length) {
+					if (++ctx.ghostIndex == ctx.game().theGhosts.length) {
 						controller.changeState(State.MSPACMAN);
 					}
 				}
@@ -138,17 +136,17 @@ public class IntroController extends Fsm<IntroController.State, IntroController.
 		MSPACMAN {
 			@Override
 			public void onEnter(Context ctx) {
-				ctx.game.pac.animationSet().ifPresent(EntityAnimationSet::ensureRunning);
+				ctx.game().pac.animationSet().ifPresent(EntityAnimationSet::ensureRunning);
 			}
 
 			@Override
 			public void onUpdate(Context ctx) {
 				ctx.lightsTimer.advance();
-				ctx.game.pac.move();
-				ctx.game.pac.updateAnimation();
-				if (ctx.game.pac.position().x() <= ctx.msPacManStopX) {
-					ctx.game.pac.setAbsSpeed(0);
-					ctx.game.pac.animationSet().ifPresent(animSet -> animSet.animation(AnimKeys.PAC_MUNCHING).get().reset());
+				ctx.game().pac.move();
+				ctx.game().pac.updateAnimation();
+				if (ctx.game().pac.position().x() <= ctx.msPacManStopX) {
+					ctx.game().pac.setAbsSpeed(0);
+					ctx.game().pac.animationSet().ifPresent(animSet -> animSet.animation(AnimKeys.PAC_MUNCHING).get().reset());
 					controller.changeState(State.READY_TO_PLAY);
 				}
 			}
@@ -157,12 +155,12 @@ public class IntroController extends Fsm<IntroController.State, IntroController.
 		READY_TO_PLAY {
 			@Override
 			public void onUpdate(Context ctx) {
-				if (timer.atSecond(1.5) && !ctx.gameController.game().hasCredit()) {
-					ctx.gameController.changeState(GameState.READY);
+				if (timer.atSecond(1.5) && !ctx.game().hasCredit()) {
+					ctx.gameController().changeState(GameState.READY);
 					return;
 				}
 				if (timer.atSecond(5)) {
-					ctx.gameController.restartIntro();
+					ctx.gameController().restartIntro();
 					return;
 				}
 				ctx.lightsTimer.advance();

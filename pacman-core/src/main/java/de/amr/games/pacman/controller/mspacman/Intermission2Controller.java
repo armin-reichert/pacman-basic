@@ -26,6 +26,7 @@ package de.amr.games.pacman.controller.mspacman;
 import static de.amr.games.pacman.model.common.world.World.t;
 
 import de.amr.games.pacman.controller.common.GameController;
+import de.amr.games.pacman.controller.common.SceneControllerContext;
 import de.amr.games.pacman.controller.mspacman.Intermission2Controller.Context;
 import de.amr.games.pacman.controller.mspacman.Intermission2Controller.State;
 import de.amr.games.pacman.lib.Direction;
@@ -49,9 +50,7 @@ import de.amr.games.pacman.model.mspacman.Clapperboard;
  */
 public class Intermission2Controller extends Fsm<State, Context> {
 
-	public static class Context {
-		public final GameController gameController;
-		public final GameModel game;
+	public static class Context extends SceneControllerContext {
 		public final int upperY = t(12);
 		public final int middleY = t(18);
 		public final int lowerY = t(24);
@@ -60,8 +59,7 @@ public class Intermission2Controller extends Fsm<State, Context> {
 		public Pac msPacMan;
 
 		public Context(GameController gameController) {
-			this.gameController = gameController;
-			this.game = gameController.game();
+			super(gameController);
 		}
 	}
 
@@ -86,7 +84,7 @@ public class Intermission2Controller extends Fsm<State, Context> {
 			@Override
 			public void onUpdate(Context ctx) {
 				if (timer.atSecond(1)) {
-					ctx.gameController.sounds().play(GameSound.INTERMISSION_2);
+					ctx.gameController().sounds().play(GameSound.INTERMISSION_2);
 					ctx.clapperboard.animation().ifPresent(EntityAnimation::restart);
 				} else if (timer.atSecond(2)) {
 					ctx.clapperboard.hide();
@@ -143,7 +141,7 @@ public class Intermission2Controller extends Fsm<State, Context> {
 					ctx.msPacMan.setMoveDir(Direction.RIGHT);
 					ctx.msPacMan.setAbsSpeed(4.0);
 				} else if (timer.atSecond(21)) {
-					ctx.gameController.terminateCurrentState();
+					ctx.gameController().terminateCurrentState();
 					return;
 				}
 				ctx.pacMan.move();

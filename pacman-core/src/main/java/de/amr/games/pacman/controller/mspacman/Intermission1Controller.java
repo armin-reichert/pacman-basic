@@ -27,6 +27,7 @@ import static de.amr.games.pacman.model.common.actors.Ghost.PINK_GHOST;
 import static de.amr.games.pacman.model.common.world.World.t;
 
 import de.amr.games.pacman.controller.common.GameController;
+import de.amr.games.pacman.controller.common.SceneControllerContext;
 import de.amr.games.pacman.controller.mspacman.Intermission1Controller.Context;
 import de.amr.games.pacman.controller.mspacman.Intermission1Controller.State;
 import de.amr.games.pacman.lib.Direction;
@@ -54,8 +55,7 @@ import de.amr.games.pacman.model.mspacman.Clapperboard;
  */
 public class Intermission1Controller extends Fsm<State, Context> {
 
-	public static class Context {
-		public final GameController gameController;
+	public static class Context extends SceneControllerContext {
 		public final int upperY = t(12);
 		public final int middleY = t(18);
 		public final int lowerY = t(24);
@@ -71,7 +71,7 @@ public class Intermission1Controller extends Fsm<State, Context> {
 		public Entity heart;
 
 		public Context(GameController gameController) {
-			this.gameController = gameController;
+			super(gameController);
 		}
 	}
 
@@ -118,7 +118,7 @@ public class Intermission1Controller extends Fsm<State, Context> {
 			@Override
 			public void onUpdate(Context ctx) {
 				if (timer.atSecond(1)) {
-					ctx.gameController.sounds().play(GameSound.INTERMISSION_1);
+					ctx.gameController().sounds().play(GameSound.INTERMISSION_1);
 					ctx.clapperboard.animation().ifPresent(EntityAnimation::restart);
 				}
 				if (timer.hasExpired()) {
@@ -187,8 +187,7 @@ public class Intermission1Controller extends Fsm<State, Context> {
 					ctx.msPac.setAbsSpeed(ctx.pacSpeedRising);
 				}
 				// Inky and Pinky collide?
-				else if (ctx.inky.moveDir() == Direction.LEFT
-						&& ctx.inky.position().x() - ctx.pinky.position().x() < t(2)) {
+				else if (ctx.inky.moveDir() == Direction.LEFT && ctx.inky.position().x() - ctx.pinky.position().x() < t(2)) {
 					ctx.inky.setMoveDir(Direction.RIGHT);
 					ctx.inky.setWishDir(Direction.RIGHT);
 					ctx.inky.setAbsSpeed(ctx.ghostSpeedAfterColliding);
@@ -244,7 +243,7 @@ public class Intermission1Controller extends Fsm<State, Context> {
 			@Override
 			public void onUpdate(Context ctx) {
 				if (timer.hasExpired()) {
-					ctx.gameController.state().timer().expire();
+					ctx.gameController().state().timer().expire();
 				}
 			}
 		};

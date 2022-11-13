@@ -26,6 +26,7 @@ package de.amr.games.pacman.controller.mspacman;
 import static de.amr.games.pacman.model.common.world.World.t;
 
 import de.amr.games.pacman.controller.common.GameController;
+import de.amr.games.pacman.controller.common.SceneControllerContext;
 import de.amr.games.pacman.controller.mspacman.Intermission3Controller.Context;
 import de.amr.games.pacman.controller.mspacman.Intermission3Controller.State;
 import de.amr.games.pacman.lib.Direction;
@@ -53,9 +54,7 @@ import de.amr.games.pacman.model.mspacman.Clapperboard;
  */
 public class Intermission3Controller extends Fsm<State, Context> {
 
-	public static class Context {
-		public final GameController gameController;
-		public final GameModel game;
+	public static class Context extends SceneControllerContext {
 		public final int groundY = t(24);
 		public Clapperboard clapperboard;
 		public Pac pacMan;
@@ -66,8 +65,7 @@ public class Intermission3Controller extends Fsm<State, Context> {
 		public int numBagBounces;
 
 		public Context(GameController gameController) {
-			this.gameController = gameController;
-			this.game = gameController.game();
+			super(gameController);
 		}
 	}
 
@@ -91,7 +89,7 @@ public class Intermission3Controller extends Fsm<State, Context> {
 			@Override
 			public void onUpdate(Context ctx) {
 				if (timer.atSecond(1)) {
-					ctx.gameController.sounds().play(GameSound.INTERMISSION_3);
+					ctx.gameController().sounds().play(GameSound.INTERMISSION_3);
 					ctx.clapperboard.animation().ifPresent(EntityAnimation::restart);
 				} else if (timer.atSecond(2)) {
 					ctx.clapperboard.hide();
@@ -168,7 +166,7 @@ public class Intermission3Controller extends Fsm<State, Context> {
 			public void onUpdate(Context ctx) {
 				ctx.stork.move();
 				if (timer.hasExpired()) {
-					ctx.gameController.terminateCurrentState();
+					ctx.gameController().terminateCurrentState();
 				}
 			}
 		};
