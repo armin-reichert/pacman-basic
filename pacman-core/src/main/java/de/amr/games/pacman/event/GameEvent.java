@@ -46,8 +46,8 @@ public class GameEvent {
 	public GameEvent(GameModel game, GameEventType type, Ghost ghost, V2i tile) {
 		this.game = Objects.requireNonNull(game);
 		this.type = Objects.requireNonNull(type);
-		this.tile = Optional.ofNullable(tile);
 		this.ghost = Optional.ofNullable(ghost);
+		this.tile = Optional.ofNullable(tile);
 	}
 
 	@Override

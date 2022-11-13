@@ -25,9 +25,9 @@ package de.amr.games.pacman.controller.common;
 
 import static java.util.function.Predicate.not;
 
+import de.amr.games.pacman.event.GameEvent;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
-import de.amr.games.pacman.event.GameStateChangeEvent;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.animation.EntityAnimation;
 import de.amr.games.pacman.lib.fsm.FsmState;
@@ -472,8 +472,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 					++game.intermissionTestNumber;
 					timer.resetIndefinitely();
 					timer.start();
-					// This is a hack to trigger the UI to update its current scene
-					GameEvents.publish(new GameStateChangeEvent(game, this, this));
+					GameEvents.publish(new GameEvent(game, GameEventType.UI_FORCE_UPDATE, null, null));
 				} else {
 					gc.changeState(INTRO);
 				}
