@@ -180,18 +180,18 @@ public class MsPacManIntermission3 extends Fsm<IntermissionState, IntermissionDa
 		}
 	}
 
-	private final IntermissionData ctx;
+	private final IntermissionData intermissionData;
 
 	public MsPacManIntermission3(GameController gameController) {
 		states = IntermissionState.values();
 		for (var state : states) {
 			state.intermission = this;
 		}
-		this.ctx = new IntermissionData(gameController);
+		this.intermissionData = new IntermissionData(gameController);
 	}
 
 	@Override
 	public IntermissionData context() {
-		return ctx;
+		return intermissionData;
 	}
 }

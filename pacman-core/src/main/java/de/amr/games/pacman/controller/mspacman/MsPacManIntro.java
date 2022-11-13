@@ -53,15 +53,15 @@ import de.amr.games.pacman.model.common.actors.Ghost;
 public class MsPacManIntro extends Fsm<MsPacManIntro.IntroState, MsPacManIntro.IntroData> {
 
 	public static class IntroData extends SceneControllerContext {
-		public boolean creditVisible = false;
-		public double actorSpeed = 1.1f;
 		public final V2i lightsTopLeft = v(t(8), t(11));
 		public final V2i titlePosition = v(t(10), t(8));
 		public final V2i turningPoint = v(t(6), t(20)).plus(0, HTS);
 		public final int msPacManStopX = t(15);
 		public final EntityAnimation blinking = SingleEntityAnimation.pulse(30);
 		public final TickTimer lightsTimer = new TickTimer("lights-timer", GameModel.FPS);
+		public final double actorSpeed = 1.1f;
 		public int ghostIndex;
+		public boolean creditVisible = false;
 
 		public IntroData(GameController gameController) {
 			super(gameController);
@@ -168,8 +168,8 @@ public class MsPacManIntro extends Fsm<MsPacManIntro.IntroState, MsPacManIntro.I
 			}
 		};
 
-		protected MsPacManIntro controller;
-		protected final TickTimer timer = new TickTimer("Timer-" + name(), GameModel.FPS);
+		MsPacManIntro controller;
+		final TickTimer timer = new TickTimer("Timer-" + name(), GameModel.FPS);
 
 		@Override
 		public TickTimer timer() {
@@ -177,18 +177,18 @@ public class MsPacManIntro extends Fsm<MsPacManIntro.IntroState, MsPacManIntro.I
 		}
 	}
 
-	private final IntroData ctx;
+	private final IntroData introData;
 
 	public MsPacManIntro(GameController gameController) {
 		states = IntroState.values();
 		for (var state : states) {
 			state.controller = this;
 		}
-		ctx = new IntroData(gameController);
+		introData = new IntroData(gameController);
 	}
 
 	@Override
 	public IntroData context() {
-		return ctx;
+		return introData;
 	}
 }
