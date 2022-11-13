@@ -53,14 +53,14 @@ import de.amr.games.pacman.model.common.actors.Ghost;
 public class MsPacManIntro extends Fsm<MsPacManIntro.IntroState, MsPacManIntro.IntroData> {
 
 	public static class IntroData extends SceneControllerContext {
-		public final V2i lightsTopLeft = v2i(t(8), t(11));
-		public final V2i titlePosition = v2i(t(10), t(8));
+		public final V2i redGhostEndPosition = v2i(t(8), t(11));
 		public final V2i turningPoint = v2i(t(6), t(20)).plus(0, HTS);
 		public final int msPacManStopX = t(15);
+		public final V2i titlePosition = v2i(t(10), t(8));
 		public final EntityAnimation blinking = SingleEntityAnimation.pulse(30);
 		public final TickTimer lightsTimer = new TickTimer("lights-timer", GameModel.FPS);
 		public final double actorSpeed = 1.1f;
-		public int ghostIndex;
+		public int ghostIndex = 0;
 		public boolean creditVisible = false;
 
 		public IntroData(GameController gameController) {
@@ -123,7 +123,7 @@ public class MsPacManIntro extends Fsm<MsPacManIntro.IntroState, MsPacManIntro.I
 					ghost.setMoveDir(UP);
 					ghost.setWishDir(UP);
 				}
-				if (ghost.position().y() <= ctx.lightsTopLeft.y() + ghost.id * 18) {
+				if (ghost.position().y() <= ctx.redGhostEndPosition.y() + ghost.id * 18) {
 					ghost.setAbsSpeed(0);
 					ghost.animationSet().ifPresent(EntityAnimationSet::stop);
 					if (++ctx.ghostIndex == ctx.game().theGhosts.length) {
