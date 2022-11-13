@@ -27,7 +27,7 @@ import static de.amr.games.pacman.model.common.world.World.t;
 
 import de.amr.games.pacman.controller.common.GameController;
 import de.amr.games.pacman.controller.common.SceneControllerContext;
-import de.amr.games.pacman.controller.mspacman.MsPacManIntermission3.Context;
+import de.amr.games.pacman.controller.mspacman.MsPacManIntermission3.IntermissionData;
 import de.amr.games.pacman.controller.mspacman.MsPacManIntermission3.State;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
@@ -52,9 +52,9 @@ import de.amr.games.pacman.model.mspacman.Clapperboard;
  * 
  * @author Armin Reichert
  */
-public class MsPacManIntermission3 extends Fsm<State, Context> {
+public class MsPacManIntermission3 extends Fsm<State, IntermissionData> {
 
-	public static class Context extends SceneControllerContext {
+	public static class IntermissionData extends SceneControllerContext {
 		public final int groundY = t(24);
 		public Clapperboard clapperboard;
 		public Pac pacMan;
@@ -64,16 +64,16 @@ public class MsPacManIntermission3 extends Fsm<State, Context> {
 		public boolean bagOpen;
 		public int numBagBounces;
 
-		public Context(GameController gameController) {
+		public IntermissionData(GameController gameController) {
 			super(gameController);
 		}
 	}
 
-	public enum State implements FsmState<Context> {
+	public enum State implements FsmState<IntermissionData> {
 
 		FLAP {
 			@Override
-			public void onEnter(Context ctx) {
+			public void onEnter(IntermissionData ctx) {
 				timer.resetIndefinitely();
 				timer.start();
 				ctx.clapperboard = new Clapperboard(3, "JUNIOR");
@@ -87,21 +87,21 @@ public class MsPacManIntermission3 extends Fsm<State, Context> {
 			}
 
 			@Override
-			public void onUpdate(Context ctx) {
+			public void onUpdate(IntermissionData ctx) {
 				if (timer.atSecond(1)) {
 					ctx.gameController().sounds().play(GameSound.INTERMISSION_3);
 					ctx.clapperboard.animation().ifPresent(EntityAnimation::restart);
 				} else if (timer.atSecond(2)) {
 					ctx.clapperboard.hide();
 				} else if (timer.atSecond(3)) {
-					controller.changeState(State.ACTION);
+					intermission.changeState(State.ACTION);
 				}
 			}
 		},
 
 		ACTION {
 			@Override
-			public void onEnter(Context ctx) {
+			public void onEnter(IntermissionData ctx) {
 				timer.resetIndefinitely();
 				timer.start();
 
@@ -130,7 +130,7 @@ public class MsPacManIntermission3 extends Fsm<State, Context> {
 			}
 
 			@Override
-			public void onUpdate(Context ctx) {
+			public void onUpdate(IntermissionData ctx) {
 				ctx.stork.move();
 				ctx.bag.move();
 
@@ -149,7 +149,7 @@ public class MsPacManIntermission3 extends Fsm<State, Context> {
 					} else {
 						ctx.bagOpen = true;
 						ctx.bag.setVelocity(V2d.NULL);
-						controller.changeState(State.DONE);
+						intermission.changeState(State.DONE);
 					}
 				}
 			}
@@ -157,13 +157,13 @@ public class MsPacManIntermission3 extends Fsm<State, Context> {
 
 		DONE {
 			@Override
-			public void onEnter(Context ctx) {
+			public void onEnter(IntermissionData ctx) {
 				timer.resetSeconds(3);
 				timer.start();
 			}
 
 			@Override
-			public void onUpdate(Context ctx) {
+			public void onUpdate(IntermissionData ctx) {
 				ctx.stork.move();
 				if (timer.hasExpired()) {
 					ctx.gameController().terminateCurrentState();
@@ -171,7 +171,7 @@ public class MsPacManIntermission3 extends Fsm<State, Context> {
 			}
 		};
 
-		protected MsPacManIntermission3 controller;
+		protected MsPacManIntermission3 intermission;
 		protected final TickTimer timer = new TickTimer("Timer-" + name(), GameModel.FPS);
 
 		@Override
@@ -180,18 +180,18 @@ public class MsPacManIntermission3 extends Fsm<State, Context> {
 		}
 	}
 
-	public final Context ctx;
+	private final IntermissionData ctx;
 
 	public MsPacManIntermission3(GameController gameController) {
 		states = State.values();
 		for (var state : states) {
-			state.controller = this;
+			state.intermission = this;
 		}
-		this.ctx = new Context(gameController);
+		this.ctx = new IntermissionData(gameController);
 	}
 
 	@Override
-	public Context context() {
+	public IntermissionData context() {
 		return ctx;
 	}
 }

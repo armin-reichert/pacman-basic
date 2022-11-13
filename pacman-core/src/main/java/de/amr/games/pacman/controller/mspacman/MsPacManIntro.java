@@ -50,9 +50,9 @@ import de.amr.games.pacman.model.common.actors.Ghost;
  * 
  * @author Armin Reichert
  */
-public class MsPacManIntro extends Fsm<MsPacManIntro.State, MsPacManIntro.Context> {
+public class MsPacManIntro extends Fsm<MsPacManIntro.IntroState, MsPacManIntro.IntroData> {
 
-	public static class Context extends SceneControllerContext {
+	public static class IntroData extends SceneControllerContext {
 		public boolean creditVisible = false;
 		public double actorSpeed = 1.1f;
 		public final V2i lightsTopLeft = v(t(8), t(11));
@@ -63,16 +63,16 @@ public class MsPacManIntro extends Fsm<MsPacManIntro.State, MsPacManIntro.Contex
 		public final TickTimer lightsTimer = new TickTimer("lights-timer", GameModel.FPS);
 		public int ghostIndex;
 
-		public Context(GameController gameController) {
+		public IntroData(GameController gameController) {
 			super(gameController);
 		}
 	}
 
-	public enum State implements FsmState<MsPacManIntro.Context> {
+	public enum IntroState implements FsmState<MsPacManIntro.IntroData> {
 
 		START {
 			@Override
-			public void onEnter(Context ctx) {
+			public void onEnter(IntroData ctx) {
 				ctx.game().gameScore.showContent = false;
 				ctx.game().highScore.showContent = true;
 				ctx.lightsTimer.resetIndefinitely();
@@ -94,14 +94,14 @@ public class MsPacManIntro extends Fsm<MsPacManIntro.State, MsPacManIntro.Contex
 			}
 
 			@Override
-			public void onUpdate(Context ctx) {
+			public void onUpdate(IntroData ctx) {
 				if (timer.tick() == 1) {
 					ctx.game().gameScore.visible = true;
 					ctx.game().highScore.visible = true;
 				} else if (timer.tick() == 2) {
 					ctx.creditVisible = true;
 				} else if (timer.atSecond(1)) {
-					controller.changeState(State.GHOSTS);
+					controller.changeState(IntroState.GHOSTS);
 				}
 				ctx.lightsTimer.advance();
 			}
@@ -109,12 +109,12 @@ public class MsPacManIntro extends Fsm<MsPacManIntro.State, MsPacManIntro.Contex
 
 		GHOSTS {
 			@Override
-			public void onEnter(Context ctx) {
+			public void onEnter(IntroData ctx) {
 				ctx.game().ghosts().forEach(ghost -> ghost.animationSet().ifPresent(EntityAnimationSet::ensureRunning));
 			}
 
 			@Override
-			public void onUpdate(Context ctx) {
+			public void onUpdate(IntroData ctx) {
 				ctx.lightsTimer.advance();
 				Ghost ghost = ctx.game().theGhosts[ctx.ghostIndex];
 				ghost.move();
@@ -127,7 +127,7 @@ public class MsPacManIntro extends Fsm<MsPacManIntro.State, MsPacManIntro.Contex
 					ghost.setAbsSpeed(0);
 					ghost.animationSet().ifPresent(EntityAnimationSet::stop);
 					if (++ctx.ghostIndex == ctx.game().theGhosts.length) {
-						controller.changeState(State.MSPACMAN);
+						controller.changeState(IntroState.MSPACMAN);
 					}
 				}
 			}
@@ -135,26 +135,26 @@ public class MsPacManIntro extends Fsm<MsPacManIntro.State, MsPacManIntro.Contex
 
 		MSPACMAN {
 			@Override
-			public void onEnter(Context ctx) {
+			public void onEnter(IntroData ctx) {
 				ctx.game().pac.animationSet().ifPresent(EntityAnimationSet::ensureRunning);
 			}
 
 			@Override
-			public void onUpdate(Context ctx) {
+			public void onUpdate(IntroData ctx) {
 				ctx.lightsTimer.advance();
 				ctx.game().pac.move();
 				ctx.game().pac.updateAnimation();
 				if (ctx.game().pac.position().x() <= ctx.msPacManStopX) {
 					ctx.game().pac.setAbsSpeed(0);
 					ctx.game().pac.animationSet().ifPresent(animSet -> animSet.animation(AnimKeys.PAC_MUNCHING).get().reset());
-					controller.changeState(State.READY_TO_PLAY);
+					controller.changeState(IntroState.READY_TO_PLAY);
 				}
 			}
 		},
 
 		READY_TO_PLAY {
 			@Override
-			public void onUpdate(Context ctx) {
+			public void onUpdate(IntroData ctx) {
 				if (timer.atSecond(1.5) && !ctx.game().hasCredit()) {
 					ctx.gameController().changeState(GameState.READY);
 					return;
@@ -177,18 +177,18 @@ public class MsPacManIntro extends Fsm<MsPacManIntro.State, MsPacManIntro.Contex
 		}
 	}
 
-	final Context ctx;
+	private final IntroData ctx;
 
 	public MsPacManIntro(GameController gameController) {
-		states = State.values();
+		states = IntroState.values();
 		for (var state : states) {
 			state.controller = this;
 		}
-		ctx = new Context(gameController);
+		ctx = new IntroData(gameController);
 	}
 
 	@Override
-	public Context context() {
+	public IntroData context() {
 		return ctx;
 	}
 }

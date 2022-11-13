@@ -27,7 +27,7 @@ import static de.amr.games.pacman.model.common.world.World.t;
 
 import de.amr.games.pacman.controller.common.GameController;
 import de.amr.games.pacman.controller.common.SceneControllerContext;
-import de.amr.games.pacman.controller.mspacman.MsPacManIntermission2.Context;
+import de.amr.games.pacman.controller.mspacman.MsPacManIntermission2.IntermissionData;
 import de.amr.games.pacman.controller.mspacman.MsPacManIntermission2.State;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
@@ -48,9 +48,9 @@ import de.amr.games.pacman.model.mspacman.Clapperboard;
  * 
  * @author Armin Reichert
  */
-public class MsPacManIntermission2 extends Fsm<State, Context> {
+public class MsPacManIntermission2 extends Fsm<State, IntermissionData> {
 
-	public static class Context extends SceneControllerContext {
+	public static class IntermissionData extends SceneControllerContext {
 		public final int upperY = t(12);
 		public final int middleY = t(18);
 		public final int lowerY = t(24);
@@ -58,16 +58,16 @@ public class MsPacManIntermission2 extends Fsm<State, Context> {
 		public Pac pacMan;
 		public Pac msPacMan;
 
-		public Context(GameController gameController) {
+		public IntermissionData(GameController gameController) {
 			super(gameController);
 		}
 	}
 
-	public enum State implements FsmState<Context> {
+	public enum State implements FsmState<IntermissionData> {
 
 		FLAP {
 			@Override
-			public void onEnter(Context ctx) {
+			public void onEnter(IntermissionData ctx) {
 				timer.resetIndefinitely();
 				timer.start();
 				ctx.clapperboard = new Clapperboard(2, "THE CHASE");
@@ -82,27 +82,27 @@ public class MsPacManIntermission2 extends Fsm<State, Context> {
 			}
 
 			@Override
-			public void onUpdate(Context ctx) {
+			public void onUpdate(IntermissionData ctx) {
 				if (timer.atSecond(1)) {
 					ctx.gameController().sounds().play(GameSound.INTERMISSION_2);
 					ctx.clapperboard.animation().ifPresent(EntityAnimation::restart);
 				} else if (timer.atSecond(2)) {
 					ctx.clapperboard.hide();
 				} else if (timer.atSecond(3)) {
-					controller.changeState(State.CHASING);
+					intermission.changeState(State.CHASING);
 				}
 			}
 		},
 
 		CHASING {
 			@Override
-			public void onEnter(Context ctx) {
+			public void onEnter(IntermissionData ctx) {
 				timer.resetIndefinitely();
 				timer.start();
 			}
 
 			@Override
-			public void onUpdate(Context ctx) {
+			public void onUpdate(IntermissionData ctx) {
 				if (timer.atSecond(2.5)) {
 					ctx.pacMan.setPosition(-t(2), ctx.upperY);
 					ctx.pacMan.setMoveDir(Direction.RIGHT);
@@ -151,8 +151,8 @@ public class MsPacManIntermission2 extends Fsm<State, Context> {
 			}
 		};
 
-		protected MsPacManIntermission2 controller;
-		protected final TickTimer timer = new TickTimer("Timer-" + name(), GameModel.FPS);
+		MsPacManIntermission2 intermission;
+		final TickTimer timer = new TickTimer("Timer-" + name(), GameModel.FPS);
 
 		@Override
 		public TickTimer timer() {
@@ -160,18 +160,18 @@ public class MsPacManIntermission2 extends Fsm<State, Context> {
 		}
 	}
 
-	public final Context ctx;
+	private final IntermissionData ctx;
 
 	public MsPacManIntermission2(GameController gameController) {
 		states = State.values();
 		for (var state : State.values()) {
-			state.controller = this;
+			state.intermission = this;
 		}
-		this.ctx = new Context(gameController);
+		this.ctx = new IntermissionData(gameController);
 	}
 
 	@Override
-	public Context context() {
+	public IntermissionData context() {
 		return ctx;
 	}
 }

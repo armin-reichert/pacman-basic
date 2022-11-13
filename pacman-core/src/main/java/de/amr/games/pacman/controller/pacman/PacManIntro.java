@@ -30,8 +30,8 @@ import java.util.stream.Stream;
 
 import de.amr.games.pacman.controller.common.GameController;
 import de.amr.games.pacman.controller.common.GameState;
-import de.amr.games.pacman.controller.pacman.PacManIntro.Context;
-import de.amr.games.pacman.controller.pacman.PacManIntro.State;
+import de.amr.games.pacman.controller.pacman.PacManIntro.IntroData;
+import de.amr.games.pacman.controller.pacman.PacManIntro.IntroState;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.animation.EntityAnimation;
@@ -52,26 +52,10 @@ import de.amr.games.pacman.model.common.actors.Pac;
  * 
  * @author Armin Reichert
  */
-public class PacManIntro extends Fsm<State, Context> {
+public class PacManIntro extends Fsm<IntroState, IntroData> {
 
-	private static final double CHASING_SPEED = 1.1;
-
-	public final Context ctx;
-
-	public PacManIntro(GameController gameController) {
-		states = State.values();
-		for (var state : states) {
-			state.controller = this;
-		}
-		ctx = new Context(gameController);
-	}
-
-	@Override
-	public Context context() {
-		return ctx;
-	}
-
-	public static class Context {
+	public static class IntroData {
+		public static final double CHASING_SPEED = 1.1;
 		public int left = 4;
 		public SingleEntityAnimation<Boolean> blinking = SingleEntityAnimation.pulse(10);
 		public String[] nicknames = { "Blinky", "Pinky", "Inky", "Clyde" };
@@ -88,16 +72,16 @@ public class PacManIntro extends Fsm<State, Context> {
 
 		public final GameController gameController;
 
-		public Context(GameController gameController) {
+		public IntroData(GameController gameController) {
 			this.gameController = gameController;
 		}
 	}
 
-	public enum State implements FsmState<Context> {
+	public enum IntroState implements FsmState<IntroData> {
 
 		START {
 			@Override
-			public void onEnter(Context ctx) {
+			public void onEnter(IntroData ctx) {
 				ctx.gameController.game().gameScore.showContent = false;
 				ctx.gameController.game().highScore.showContent = true;
 				ctx.ghostIndex = 0;
@@ -114,7 +98,7 @@ public class PacManIntro extends Fsm<State, Context> {
 			}
 
 			@Override
-			public void onUpdate(Context ctx) {
+			public void onUpdate(IntroData ctx) {
 				if (timer.tick() == 1) {
 					ctx.gameController.game().gameScore.visible = true;
 					ctx.gameController.game().highScore.visible = true;
@@ -123,14 +107,14 @@ public class PacManIntro extends Fsm<State, Context> {
 				} else if (timer.tick() == 3) {
 					ctx.titleVisible = true;
 				} else if (timer.atSecond(1)) {
-					controller.changeState(State.PRESENTING_GHOSTS);
+					controller.changeState(IntroState.PRESENTING_GHOSTS);
 				}
 			}
 		},
 
 		PRESENTING_GHOSTS {
 			@Override
-			public void onUpdate(Context ctx) {
+			public void onUpdate(IntroData ctx) {
 				if (timer.atSecond(0)) {
 					ctx.pictureVisible[ctx.ghostIndex] = true;
 				} else if (timer.atSecond(1.0)) {
@@ -142,50 +126,50 @@ public class PacManIntro extends Fsm<State, Context> {
 						timer.resetIndefinitely();
 					}
 				} else if (timer.atSecond(2.5)) {
-					controller.changeState(State.SHOWING_POINTS);
+					controller.changeState(IntroState.SHOWING_POINTS);
 				}
 			}
 		},
 
 		SHOWING_POINTS {
 			@Override
-			public void onEnter(Context ctx) {
+			public void onEnter(IntroData ctx) {
 				ctx.blinking.stop();
 			}
 
 			@Override
-			public void onUpdate(Context ctx) {
+			public void onUpdate(IntroData ctx) {
 				if (timer.atSecond(1)) {
-					controller.changeState(State.CHASING_PAC);
+					controller.changeState(IntroState.CHASING_PAC);
 				}
 			}
 		},
 
 		CHASING_PAC {
 			@Override
-			public void onEnter(Context ctx) {
+			public void onEnter(IntroData ctx) {
 				timer.resetIndefinitely();
 				timer.start();
 				ctx.pacMan.setPosition(t(36), t(20));
 				ctx.pacMan.setMoveDir(Direction.LEFT);
-				ctx.pacMan.setAbsSpeed(CHASING_SPEED);
+				ctx.pacMan.setAbsSpeed(IntroData.CHASING_SPEED);
 				ctx.pacMan.show();
 				ctx.pacMan.selectAndRunAnimation(AnimKeys.PAC_MUNCHING);
 				for (Ghost ghost : ctx.ghosts) {
 					ghost.enterStateHuntingPac(ctx.gameController.game());
 					ghost.setPosition(ctx.pacMan.position().plus(16 * (ghost.id + 1), 0));
 					ghost.setMoveAndWishDir(Direction.LEFT);
-					ghost.setAbsSpeed(CHASING_SPEED);
+					ghost.setAbsSpeed(IntroData.CHASING_SPEED);
 					ghost.show();
 					ghost.selectAndRunAnimation(AnimKeys.GHOST_COLOR);
 				}
 			}
 
 			@Override
-			public void onUpdate(Context ctx) {
+			public void onUpdate(IntroData ctx) {
 				// Pac-Man reaches the energizer
 				if (ctx.pacMan.position().x() <= t(ctx.left)) {
-					controller.changeState(State.CHASING_GHOSTS);
+					controller.changeState(IntroState.CHASING_GHOSTS);
 				}
 				// ghosts already reverse direction before Pac-man eats the energizer and turns right!
 				else if (ctx.pacMan.position().x() <= t(ctx.left) + 4) {
@@ -219,16 +203,16 @@ public class PacManIntro extends Fsm<State, Context> {
 
 		CHASING_GHOSTS {
 			@Override
-			public void onEnter(Context ctx) {
+			public void onEnter(IntroData ctx) {
 				timer.resetIndefinitely();
 				timer.start();
 				ctx.ghostKilledTime = timer.tick();
 				ctx.pacMan.setMoveDir(Direction.RIGHT);
-				ctx.pacMan.setAbsSpeed(CHASING_SPEED);
+				ctx.pacMan.setAbsSpeed(IntroData.CHASING_SPEED);
 			}
 
 			@Override
-			public void onUpdate(Context ctx) {
+			public void onUpdate(IntroData ctx) {
 				if (Stream.of(ctx.ghosts).allMatch(ghost -> ghost.is(GhostState.EATEN))) {
 					ctx.pacMan.hide();
 					controller.changeState(READY_TO_PLAY);
@@ -253,7 +237,7 @@ public class PacManIntro extends Fsm<State, Context> {
 				// After ??? sec, Pac-Man and the surviving ghosts get visible again and move on
 				if (timer.tick() - ctx.ghostKilledTime == timer.secToTicks(0.9)) {
 					ctx.pacMan.show();
-					ctx.pacMan.setAbsSpeed(CHASING_SPEED);
+					ctx.pacMan.setAbsSpeed(IntroData.CHASING_SPEED);
 					for (Ghost ghost : ctx.ghosts) {
 						if (!ghost.is(GhostState.EATEN)) {
 							ghost.show();
@@ -276,7 +260,7 @@ public class PacManIntro extends Fsm<State, Context> {
 
 		READY_TO_PLAY {
 			@Override
-			public void onUpdate(Context ctx) {
+			public void onUpdate(IntroData ctx) {
 				if (timer.atSecond(1)) {
 					ctx.ghosts[3].hide();
 					if (!ctx.gameController.game().hasCredit()) {
@@ -290,12 +274,27 @@ public class PacManIntro extends Fsm<State, Context> {
 			}
 		};
 
-		protected PacManIntro controller;
-		protected final TickTimer timer = new TickTimer("Timer-" + name(), GameModel.FPS);
+		PacManIntro controller;
+		final TickTimer timer = new TickTimer("Timer-" + name(), GameModel.FPS);
 
 		@Override
 		public TickTimer timer() {
 			return timer;
 		}
+	}
+
+	private final IntroData ctx;
+
+	public PacManIntro(GameController gameController) {
+		states = IntroState.values();
+		for (var state : states) {
+			state.controller = this;
+		}
+		ctx = new IntroData(gameController);
+	}
+
+	@Override
+	public IntroData context() {
+		return ctx;
 	}
 }
