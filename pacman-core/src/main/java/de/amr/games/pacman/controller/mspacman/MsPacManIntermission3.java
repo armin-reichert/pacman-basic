@@ -28,7 +28,7 @@ import static de.amr.games.pacman.model.common.world.World.t;
 import de.amr.games.pacman.controller.common.GameController;
 import de.amr.games.pacman.controller.common.SceneControllerContext;
 import de.amr.games.pacman.controller.mspacman.MsPacManIntermission3.IntermissionData;
-import de.amr.games.pacman.controller.mspacman.MsPacManIntermission3.State;
+import de.amr.games.pacman.controller.mspacman.MsPacManIntermission3.IntermissionState;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.V2d;
@@ -52,7 +52,7 @@ import de.amr.games.pacman.model.mspacman.Clapperboard;
  * 
  * @author Armin Reichert
  */
-public class MsPacManIntermission3 extends Fsm<State, IntermissionData> {
+public class MsPacManIntermission3 extends Fsm<IntermissionState, IntermissionData> {
 
 	public static class IntermissionData extends SceneControllerContext {
 		public final int groundY = t(24);
@@ -69,7 +69,7 @@ public class MsPacManIntermission3 extends Fsm<State, IntermissionData> {
 		}
 	}
 
-	public enum State implements FsmState<IntermissionData> {
+	public enum IntermissionState implements FsmState<IntermissionData> {
 
 		FLAP {
 			@Override
@@ -94,7 +94,7 @@ public class MsPacManIntermission3 extends Fsm<State, IntermissionData> {
 				} else if (timer.atSecond(2)) {
 					ctx.clapperboard.hide();
 				} else if (timer.atSecond(3)) {
-					intermission.changeState(State.ACTION);
+					intermission.changeState(IntermissionState.ACTION);
 				}
 			}
 		},
@@ -149,7 +149,7 @@ public class MsPacManIntermission3 extends Fsm<State, IntermissionData> {
 					} else {
 						ctx.bagOpen = true;
 						ctx.bag.setVelocity(V2d.NULL);
-						intermission.changeState(State.DONE);
+						intermission.changeState(IntermissionState.DONE);
 					}
 				}
 			}
@@ -183,7 +183,7 @@ public class MsPacManIntermission3 extends Fsm<State, IntermissionData> {
 	private final IntermissionData ctx;
 
 	public MsPacManIntermission3(GameController gameController) {
-		states = State.values();
+		states = IntermissionState.values();
 		for (var state : states) {
 			state.intermission = this;
 		}

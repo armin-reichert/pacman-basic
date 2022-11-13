@@ -29,7 +29,7 @@ import static de.amr.games.pacman.model.common.world.World.t;
 import de.amr.games.pacman.controller.common.GameController;
 import de.amr.games.pacman.controller.common.SceneControllerContext;
 import de.amr.games.pacman.controller.mspacman.MsPacManIntermission1.IntermissionData;
-import de.amr.games.pacman.controller.mspacman.MsPacManIntermission1.State;
+import de.amr.games.pacman.controller.mspacman.MsPacManIntermission1.IntermissionState;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.V2d;
@@ -53,7 +53,7 @@ import de.amr.games.pacman.model.mspacman.Clapperboard;
  * 
  * @author Armin Reichert
  */
-public class MsPacManIntermission1 extends Fsm<State, IntermissionData> {
+public class MsPacManIntermission1 extends Fsm<IntermissionState, IntermissionData> {
 
 	public static class IntermissionData extends SceneControllerContext {
 		public final int upperY = t(12);
@@ -75,7 +75,7 @@ public class MsPacManIntermission1 extends Fsm<State, IntermissionData> {
 		}
 	}
 
-	public enum State implements FsmState<IntermissionData> {
+	public enum IntermissionState implements FsmState<IntermissionData> {
 
 		FLAP {
 			@Override
@@ -122,7 +122,7 @@ public class MsPacManIntermission1 extends Fsm<State, IntermissionData> {
 					ctx.clapperboard.animation().ifPresent(EntityAnimation::restart);
 				}
 				if (timer.hasExpired()) {
-					intermission.changeState(State.CHASED_BY_GHOSTS);
+					intermission.changeState(IntermissionState.CHASED_BY_GHOSTS);
 				}
 			}
 		},
@@ -140,7 +140,7 @@ public class MsPacManIntermission1 extends Fsm<State, IntermissionData> {
 			@Override
 			public void onUpdate(IntermissionData ctx) {
 				if (ctx.inky.position().x() > t(30)) {
-					intermission.changeState(State.COMING_TOGETHER);
+					intermission.changeState(IntermissionState.COMING_TOGETHER);
 					return;
 				}
 				ctx.inky.move();
@@ -176,7 +176,7 @@ public class MsPacManIntermission1 extends Fsm<State, IntermissionData> {
 			public void onUpdate(IntermissionData ctx) {
 				// Pac-Man and Ms. Pac-Man reach end position?
 				if (ctx.pacMan.moveDir() == Direction.UP && ctx.pacMan.position().y() < ctx.upperY) {
-					intermission.changeState(State.IN_HEAVEN);
+					intermission.changeState(IntermissionState.IN_HEAVEN);
 				}
 				// Pac-Man and Ms. Pac-Man meet?
 				else if (ctx.pacMan.moveDir() == Direction.LEFT
@@ -260,7 +260,7 @@ public class MsPacManIntermission1 extends Fsm<State, IntermissionData> {
 	private final IntermissionData ctx;
 
 	public MsPacManIntermission1(GameController gameController) {
-		states = State.values();
+		states = IntermissionState.values();
 		for (var state : states) {
 			state.intermission = this;
 		}

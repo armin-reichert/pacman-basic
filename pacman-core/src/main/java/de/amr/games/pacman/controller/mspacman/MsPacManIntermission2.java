@@ -28,7 +28,7 @@ import static de.amr.games.pacman.model.common.world.World.t;
 import de.amr.games.pacman.controller.common.GameController;
 import de.amr.games.pacman.controller.common.SceneControllerContext;
 import de.amr.games.pacman.controller.mspacman.MsPacManIntermission2.IntermissionData;
-import de.amr.games.pacman.controller.mspacman.MsPacManIntermission2.State;
+import de.amr.games.pacman.controller.mspacman.MsPacManIntermission2.IntermissionState;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.animation.EntityAnimation;
@@ -48,7 +48,7 @@ import de.amr.games.pacman.model.mspacman.Clapperboard;
  * 
  * @author Armin Reichert
  */
-public class MsPacManIntermission2 extends Fsm<State, IntermissionData> {
+public class MsPacManIntermission2 extends Fsm<IntermissionState, IntermissionData> {
 
 	public static class IntermissionData extends SceneControllerContext {
 		public final int upperY = t(12);
@@ -63,7 +63,7 @@ public class MsPacManIntermission2 extends Fsm<State, IntermissionData> {
 		}
 	}
 
-	public enum State implements FsmState<IntermissionData> {
+	public enum IntermissionState implements FsmState<IntermissionData> {
 
 		FLAP {
 			@Override
@@ -89,7 +89,7 @@ public class MsPacManIntermission2 extends Fsm<State, IntermissionData> {
 				} else if (timer.atSecond(2)) {
 					ctx.clapperboard.hide();
 				} else if (timer.atSecond(3)) {
-					intermission.changeState(State.CHASING);
+					intermission.changeState(IntermissionState.CHASING);
 				}
 			}
 		},
@@ -163,8 +163,8 @@ public class MsPacManIntermission2 extends Fsm<State, IntermissionData> {
 	private final IntermissionData ctx;
 
 	public MsPacManIntermission2(GameController gameController) {
-		states = State.values();
-		for (var state : State.values()) {
+		states = IntermissionState.values();
+		for (var state : IntermissionState.values()) {
 			state.intermission = this;
 		}
 		this.ctx = new IntermissionData(gameController);
