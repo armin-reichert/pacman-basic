@@ -24,7 +24,7 @@ SOFTWARE.
 
 package de.amr.games.pacman.model.common.world;
 
-import static de.amr.games.pacman.lib.V2i.v;
+import static de.amr.games.pacman.lib.V2i.v2i;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -61,7 +61,7 @@ public abstract class MapBasedWorld implements World {
 
 	protected MapBasedWorld(byte[][] mapData, int sizeX, int sizeY) {
 		map = copyArray2D(mapData);
-		size = v(sizeX, sizeY);
+		size = v2i(sizeX, sizeY);
 		energizerTiles = tiles().filter(this::isEnergizerTile).toList();
 		totalFoodCount = (int) tiles().filter(this::isFoodTile).count();
 		foodRemaining = totalFoodCount;
@@ -72,7 +72,7 @@ public abstract class MapBasedWorld implements World {
 		var portalList = new ArrayList<Portal>();
 		for (int row = 0; row < size.y(); ++row) {
 			if (map[row][0] == TUNNEL && map[row][size.x() - 1] == TUNNEL) {
-				portalList.add(new HorizontalPortal(v(0, row), v(size.x() - 1, row)));
+				portalList.add(new HorizontalPortal(v2i(0, row), v2i(size.x() - 1, row)));
 			}
 		}
 		portalList.trimToSize();

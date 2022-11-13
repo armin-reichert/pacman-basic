@@ -25,7 +25,7 @@ package de.amr.games.pacman.model.common;
 
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.UP;
-import static de.amr.games.pacman.lib.V2i.v;
+import static de.amr.games.pacman.lib.V2i.v2i;
 import static de.amr.games.pacman.model.common.actors.Ghost.CYAN_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.ORANGE_GHOST;
 import static de.amr.games.pacman.model.common.actors.Ghost.PINK_GHOST;
@@ -384,7 +384,7 @@ public abstract class GameModel {
 		powerTimer.reset(0);
 		energizerPulse.reset();
 		pac.reset();
-		pac.placeAtTile(v(13, 26), HTS, 0);
+		pac.placeAtTile(v2i(13, 26), HTS, 0);
 		pac.setMoveAndWishDir(Direction.LEFT);
 		pac.show();
 		pac.selectAndRunAnimation(AnimKeys.PAC_MUNCHING).ifPresent(EntityAnimation::reset);

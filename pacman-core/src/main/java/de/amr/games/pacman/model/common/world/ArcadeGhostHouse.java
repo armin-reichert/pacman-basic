@@ -26,7 +26,7 @@ package de.amr.games.pacman.model.common.world;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.RIGHT;
 import static de.amr.games.pacman.lib.Direction.UP;
-import static de.amr.games.pacman.lib.V2i.v;
+import static de.amr.games.pacman.lib.V2i.v2i;
 import static de.amr.games.pacman.model.common.world.World.HTS;
 import static de.amr.games.pacman.model.common.world.World.TS;
 
@@ -45,15 +45,15 @@ import de.amr.games.pacman.model.common.actors.Creature;
  */
 public class ArcadeGhostHouse implements GhostHouse {
 
-	public static final V2i SIZE_TILES = v(7, 4);
-	public static final V2i TOP_LEFT_TILE = v(10, 15);
-	public static final V2i DOOR_TILE_LEFT = v(13, 15);
-	public static final V2i DOOR_TILE_RIGHT = v(14, 15);
+	public static final V2i SIZE_TILES = v2i(7, 4);
+	public static final V2i TOP_LEFT_TILE = v2i(10, 15);
+	public static final V2i DOOR_TILE_LEFT = v2i(13, 15);
+	public static final V2i DOOR_TILE_RIGHT = v2i(14, 15);
 	public static final V2d DOOR_CENTER = new V2d(DOOR_TILE_LEFT.scaled(TS)).plus(TS, HTS);
-	public static final V2i ENTRY_TILE = v(13, 14);
-	public static final V2i SEAT_TILE_LEFT = v(11, 17);
-	public static final V2i SEAT_TILE_CENTER = v(13, 17);
-	public static final V2i SEAT_TILE_RIGHT = v(15, 17);
+	public static final V2i ENTRY_TILE = v2i(13, 14);
+	public static final V2i SEAT_TILE_LEFT = v2i(11, 17);
+	public static final V2i SEAT_TILE_CENTER = v2i(13, 17);
+	public static final V2i SEAT_TILE_RIGHT = v2i(15, 17);
 
 	@Override
 	public V2i size() {

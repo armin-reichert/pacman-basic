@@ -24,7 +24,7 @@ SOFTWARE.
 package de.amr.games.pacman.model.pacman;
 
 import static de.amr.games.pacman.lib.NavigationPoint.np;
-import static de.amr.games.pacman.lib.V2i.v;
+import static de.amr.games.pacman.lib.V2i.v2i;
 import static de.amr.games.pacman.model.common.world.World.HTS;
 import static de.amr.games.pacman.model.common.world.World.TS;
 
@@ -173,13 +173,13 @@ public class PacManGame extends GameModel {
 	}
 
 	// Tiles where chasing ghosts cannot move upwards
-	public static final List<V2i> RED_ZONE = List.of(v(12, 14), v(15, 14), v(12, 26), v(15, 26));
+	public static final List<V2i> RED_ZONE = List.of(v2i(12, 14), v2i(15, 14), v2i(12, 26), v2i(15, 26));
 
 	private final StaticBonus bonus;
 
 	public PacManGame() {
 		super("Pac-Man", "Blinky", "Pinky", "Inky", "Clyde");
-		var bonusLocation = v(13, 20).toDoubleVec().scaled(TS).plus(HTS, 0); // between tiles (13,20) and (13,21)
+		var bonusLocation = v2i(13, 20).toDoubleVec().scaled(TS).plus(HTS, 0); // between tiles (13,20) and (13,21)
 		bonus = new StaticBonus(bonusLocation);
 		setHiscoreFile(new File(System.getProperty("user.home"), "highscore-pacman.xml"));
 		setLevel(1);
