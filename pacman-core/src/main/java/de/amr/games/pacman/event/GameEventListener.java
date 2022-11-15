@@ -35,5 +35,66 @@ public interface GameEventListener {
 	 * 
 	 * @param event a game event
 	 */
-	void onGameEvent(GameEvent event);
+	default void onGameEvent(GameEvent event) {
+		switch (event.type) {
+		case GAME_STATE_CHANGED -> onGameStateChange((GameStateChangeEvent) event);
+		case BONUS_GETS_ACTIVE -> onBonusGetsActive(event);
+		case BONUS_GETS_EATEN -> onBonusGetsEaten(event);
+		case BONUS_EXPIRES -> onBonusExpires(event);
+		case GHOST_ENTERS_HOUSE -> onGhostEntersHouse(event);
+		case GHOST_STARTS_LEAVING_HOUSE -> onGhostStartsLeavingHouse(event);
+		case GHOST_COMPLETES_LEAVING_HOUSE -> onGhostCompletesLeavingHouse(event);
+		case GHOST_STARTS_RETURNING_HOME -> onGhostStartsReturningHome(event);
+		case PAC_FINDS_FOOD -> onPlayerFindsFood(event);
+		case PLAYER_GETS_EXTRA_LIFE -> onPlayerGetsExtraLife(event);
+		case PAC_GETS_POWER -> onPlayerGetsPower(event);
+		case PAC_STARTS_LOSING_POWER -> onPlayerStartsLosingPower(event);
+		case PAC_LOSES_POWER -> onPlayerLosesPower(event);
+		case UI_FORCE_UPDATE -> onUIForceUpdate(event);
+		default -> throw new IllegalArgumentException("Unknown event type: " + event.type);
+		}
+	}
+
+	default void onGameStateChange(GameStateChangeEvent e) {
+	}
+
+	default void onBonusGetsActive(GameEvent e) {
+	}
+
+	default void onBonusGetsEaten(GameEvent e) {
+	}
+
+	default void onBonusExpires(GameEvent e) {
+	}
+
+	default void onPlayerGetsExtraLife(GameEvent e) {
+	}
+
+	default void onGhostEntersHouse(GameEvent e) {
+	}
+
+	default void onGhostStartsReturningHome(GameEvent e) {
+	}
+
+	default void onGhostStartsLeavingHouse(GameEvent e) {
+	}
+
+	default void onGhostCompletesLeavingHouse(GameEvent e) {
+	}
+
+	default void onPlayerFindsFood(GameEvent e) {
+	}
+
+	default void onPlayerStartsLosingPower(GameEvent e) {
+	}
+
+	default void onPlayerLosesPower(GameEvent e) {
+	}
+
+	default void onPlayerGetsPower(GameEvent e) {
+	}
+
+	default void onUIForceUpdate(GameEvent e) {
+	}
+
 }
