@@ -395,7 +395,13 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	private void updateStateEnteringHouse(GameModel game) {
 		boolean atRevivalTile = game.level.world().ghostHouse().leadGuyInside(this, game.revivalPosition[id]);
 		if (atRevivalTile) {
-			enterStateLeavingHouse(game);
+			if (id == ID_RED_GHOST) {
+				enterStateLeavingHouse(game);
+			} else {
+				setPosition(game.revivalPosition[id]);
+				setMoveAndWishDir(UP);
+				enterStateLocked();
+			}
 		}
 	}
 
