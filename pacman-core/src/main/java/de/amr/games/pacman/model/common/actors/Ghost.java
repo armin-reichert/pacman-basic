@@ -99,6 +99,10 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		reset();
 	}
 
+	public void setChasingTarget(Supplier<V2i> fnTargetTile) {
+		this.fnChasingTarget = Objects.requireNonNull(fnTargetTile);
+	}
+
 	@Override
 	public boolean canAccessTile(V2i tile, GameModel game) {
 		var currentTile = tile();
@@ -110,10 +114,6 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 			return is(ENTERING_HOUSE, LEAVING_HOUSE);
 		}
 		return super.canAccessTile(tile, game);
-	}
-
-	public void setChasingTarget(Supplier<V2i> targetTileSupplier) {
-		this.fnChasingTarget = Objects.requireNonNull(targetTileSupplier);
 	}
 
 	@Override
