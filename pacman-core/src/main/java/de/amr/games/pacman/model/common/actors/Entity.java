@@ -28,7 +28,7 @@ import java.util.Objects;
 import de.amr.games.pacman.lib.V2d;
 
 /**
- * Base class for all entities. Entities can have sprite animations.
+ * Base class for all "entities" that are part of the game.
  * 
  * @author Armin Reichert
  */
@@ -71,7 +71,7 @@ public class Entity {
 	}
 
 	public void setPosition(V2d position) {
-		this.position = Objects.requireNonNull(position);
+		this.position = Objects.requireNonNull(position, "Position of entity must not be null");
 	}
 
 	public V2d velocity() {
@@ -79,7 +79,7 @@ public class Entity {
 	}
 
 	public void setVelocity(V2d velocity) {
-		this.velocity = Objects.requireNonNull(velocity);
+		this.velocity = Objects.requireNonNull(velocity, "Velocity of entity must not be null");
 	}
 
 	public void setVelocity(double vx, double vy) {
@@ -91,7 +91,7 @@ public class Entity {
 	}
 
 	public void setAcceleration(V2d acceleration) {
-		this.acceleration = Objects.requireNonNull(acceleration);
+		this.acceleration = Objects.requireNonNull(acceleration, "Acceleration of entity must not be null");
 	}
 
 	public void setAcceleration(double ax, double ay) {
