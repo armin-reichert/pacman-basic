@@ -223,36 +223,13 @@ public abstract class GameModel {
 
 	public abstract GameVariant variant();
 
-	private void loadScoreFromFile(Score score, File file) {
-		try (var in = new FileInputStream(file)) {
-			var props = new Properties();
-			props.loadFromXML(in);
-			// parse
-			var points = Integer.parseInt(props.getProperty("points"));
-			var levelNumber = Integer.parseInt(props.getProperty("level"));
-			var date = LocalDate.parse(props.getProperty("date"), DateTimeFormatter.ISO_LOCAL_DATE);
-			// parsing ok
-			score.points = points;
-			score.levelNumber = levelNumber;
-			score.date = date;
-			LOGGER.info("Score loaded. File: '%s' Points: %d Level: %d", file.getAbsolutePath(), score.points,
-					score.levelNumber);
-		} catch (Exception x) {
-			LOGGER.info("Score could not be loaded. File '%s' Reason: %s", file, x.getMessage());
-		}
-	}
-
 	public void setHiscoreFile(File hiscoreFile) {
 		this.hiscoreFile = hiscoreFile;
-		loadScoreFromFile(highScore, hiscoreFile);
+		loadScore(highScore, hiscoreFile);
 	}
 
 	public void enableScores(boolean enabled) {
 		this.scoresEnabled = enabled;
-	}
-
-	public void reloadScores() {
-		loadScoreFromFile(highScore, hiscoreFile);
 	}
 
 	public void scorePoints(int points) {
@@ -273,9 +250,9 @@ public abstract class GameModel {
 	}
 
 	public void saveHiscore() {
-		Score latestHiscore = new Score("");
-		loadScoreFromFile(latestHiscore, hiscoreFile);
-		if (highScore.points <= latestHiscore.points) {
+		Score existingHiscore = new Score("");
+		loadScore(existingHiscore, hiscoreFile);
+		if (highScore.points <= existingHiscore.points) {
 			return;
 		}
 		var props = new Properties();
@@ -283,11 +260,30 @@ public abstract class GameModel {
 		props.setProperty("level", String.valueOf(highScore.levelNumber));
 		props.setProperty("date", highScore.date.format(DateTimeFormatter.ISO_LOCAL_DATE));
 		try (var out = new FileOutputStream(hiscoreFile)) {
-			props.storeToXML(out, "");
+			props.storeToXML(out, "%s Hiscore".formatted(variant()));
 			LOGGER.info("New hiscore saved. File: '%s' Points: %d Level: %d", hiscoreFile.getAbsolutePath(), highScore.points,
 					highScore.levelNumber);
 		} catch (Exception x) {
 			LOGGER.info("Highscore could not be saved. File '%s' Reason: %s", hiscoreFile, x.getMessage());
+		}
+	}
+
+	private void loadScore(Score score, File file) {
+		try (var in = new FileInputStream(file)) {
+			var props = new Properties();
+			props.loadFromXML(in);
+			// parse
+			var points = Integer.parseInt(props.getProperty("points"));
+			var levelNumber = Integer.parseInt(props.getProperty("level"));
+			var date = LocalDate.parse(props.getProperty("date"), DateTimeFormatter.ISO_LOCAL_DATE);
+			// parsing ok
+			score.points = points;
+			score.levelNumber = levelNumber;
+			score.date = date;
+			LOGGER.info("Score loaded. File: '%s' Points: %d Level: %d", file.getAbsolutePath(), score.points,
+					score.levelNumber);
+		} catch (Exception x) {
+			LOGGER.info("Score could not be loaded. File '%s' Reason: %s", file, x.getMessage());
 		}
 	}
 
@@ -332,8 +328,8 @@ public abstract class GameModel {
 		lives = INITIAL_LIFES;
 		livesOneLessShown = false;
 		intermissionTestNumber = 1;
-		reloadScores();
 		gameScore.reset();
+		loadScore(highScore, hiscoreFile);
 	}
 
 	public void startLevel() {
@@ -406,7 +402,8 @@ public abstract class GameModel {
 	 * @return Pac-Man and the ghosts in order RED, PINK, CYAN, ORANGE
 	 */
 	public Stream<Creature> guys() {
-		return Stream.of(pac, theGhosts[ID_RED_GHOST], theGhosts[ID_PINK_GHOST], theGhosts[ID_CYAN_GHOST], theGhosts[ID_ORANGE_GHOST]);
+		return Stream.of(pac, theGhosts[ID_RED_GHOST], theGhosts[ID_PINK_GHOST], theGhosts[ID_CYAN_GHOST],
+				theGhosts[ID_ORANGE_GHOST]);
 	}
 
 	/**
@@ -775,7 +772,8 @@ public abstract class GameModel {
 				globalDotCounter++;
 			}
 		} else {
-			ghosts(LOCKED).filter(ghost -> ghost.id != ID_RED_GHOST).findFirst().ifPresent(ghost -> ++ghostDotCounter[ghost.id]);
+			ghosts(LOCKED).filter(ghost -> ghost.id != ID_RED_GHOST).findFirst()
+					.ifPresent(ghost -> ++ghostDotCounter[ghost.id]);
 		}
 	}
 }
