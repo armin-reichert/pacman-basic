@@ -186,9 +186,9 @@ public abstract class GameModel {
 	/** Number of current intermission scene in test mode. */
 	public int intermissionTestNumber;
 
-	public final Score gameScore;
+	public final Score gameScore = new Score("SCORE");
 
-	public final Score highScore;
+	public final Score highScore = new Score("HIGH SCORE");
 
 	private File hiscoreFile;
 
@@ -203,22 +203,17 @@ public abstract class GameModel {
 		pac = new Pac(pacName);
 
 		var redGhost = new Ghost(ID_RED_GHOST, redGhostName);
-		redGhost.setChasingTarget(pac::tile);
-
 		var pinkGhost = new Ghost(ID_PINK_GHOST, pinkGhostName);
-		pinkGhost.setChasingTarget(() -> tilesAhead(pac, 4));
-
 		var cyanGhost = new Ghost(ID_CYAN_GHOST, cyanGhostName);
-		cyanGhost.setChasingTarget(() -> tilesAhead(pac, 2).scaled(2).minus(redGhost.tile()));
-
 		var orangeGhost = new Ghost(ID_ORANGE_GHOST, orangeGhostName);
-		orangeGhost.setChasingTarget(
-				() -> orangeGhost.tile().euclideanDistance(pac.tile()) < 8 ? scatterTile[ID_ORANGE_GHOST] : pac.tile());
-
 		theGhosts = new Ghost[] { redGhost, pinkGhost, cyanGhost, orangeGhost };
 
-		gameScore = new Score("SCORE");
-		highScore = new Score("HIGH SCORE");
+		// The "AI" which defines the different ghost characters
+		redGhost.setChasingTarget(pac::tile);
+		pinkGhost.setChasingTarget(() -> tilesAhead(pac, 4));
+		cyanGhost.setChasingTarget(() -> tilesAhead(pac, 2).scaled(2).minus(redGhost.tile()));
+		orangeGhost.setChasingTarget(
+				() -> orangeGhost.tile().euclideanDistance(pac.tile()) < 8 ? scatterTile[ID_ORANGE_GHOST] : pac.tile());
 	}
 
 	public abstract GameVariant variant();
