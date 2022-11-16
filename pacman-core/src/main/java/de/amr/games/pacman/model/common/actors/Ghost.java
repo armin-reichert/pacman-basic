@@ -153,7 +153,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		case ENTERING_HOUSE -> updateStateEnteringHouse(game);
 		default -> throw new IllegalArgumentException("Unexpected value: " + state);
 		}
-		updateAnimation();
+		updateAnimation(game);
 	}
 
 	// --- LOCKED ---
@@ -174,18 +174,6 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		if (game.level.world().ghostHouse().contains(tile())) {
 			setAbsSpeed(0.5);
 			bounce(game.homePosition[id].y(), World.HTS);
-			updateGhostInHouseAnimation(game);
-		}
-	}
-
-	private void updateGhostInHouseAnimation(GameModel game) {
-		if (game.powerTimer.isRunning()) {
-			if (!isAnimationSelected(AnimKeys.GHOST_FLASHING)) {
-				selectAndRunAnimation(AnimKeys.GHOST_BLUE);
-			}
-			ensureFlashingWhenPowerCeases(game);
-		} else {
-			selectAndRunAnimation(AnimKeys.GHOST_COLOR);
 		}
 	}
 
@@ -221,8 +209,6 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 			}
 			game.killedIndex[id] = -1;
 			GameEvents.publish(new GameEvent(game, GameEventType.GHOST_COMPLETES_LEAVING_HOUSE, this, tile()));
-		} else {
-			updateGhostInHouseAnimation(game);
 		}
 	}
 
@@ -257,7 +243,8 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		} else {
 			setRelSpeed(game.level.ghostSpeed());
 		}
-		if (game.variant() == MS_PACMAN && game.huntingTimer.scatterPhase() == 0 && (id == ID_RED_GHOST || id == ID_PINK_GHOST)) {
+		if (game.variant() == MS_PACMAN && game.huntingTimer.scatterPhase() == 0
+				&& (id == ID_RED_GHOST || id == ID_PINK_GHOST)) {
 			roam(game);
 		} else if (game.huntingTimer.inChasingPhase() || id == ID_RED_GHOST && game.cruiseElroyState > 0) {
 			setTargetTile(fnChasingTarget.get());
@@ -279,6 +266,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		state = FRIGHTENED;
 		selectAndRunAnimation(AnimKeys.GHOST_BLUE);
 		attractRouteIndex = 0;
+		logger().info("%s enters state FRIGHTEND, animation is %s", name, animationSet().get().selectedKey());
 	}
 
 	/**
@@ -296,7 +284,6 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		setRelSpeed(
 				game.level.world().isTunnel(tile()) ? game.level.ghostSpeedTunnel() : game.level.ghostSpeedFrightened());
 		roam(game);
-		ensureFlashingWhenPowerCeases(game);
 	}
 
 	private void roam(GameModel game) {
@@ -423,22 +410,41 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		return Optional.ofNullable(animationSet);
 	}
 
-	private void ensureFlashingWhenPowerCeases(GameModel game) {
-		if (game.powerTimer.isRunning() && game.powerTimer.remaining() <= GameModel.PAC_POWER_FADING_TICKS) {
-			animationSet().ifPresent(anims -> {
-				if (isAnimationSelected(AnimKeys.GHOST_FLASHING)) {
-					anims.selectedAnimation().ifPresent(EntityAnimation::ensureRunning);
-				} else {
-					anims.select(AnimKeys.GHOST_FLASHING);
-					var flashing = anims.selectedAnimation().get();
-					var numFlashes = game.level.numFlashes();
-					long frameTicks = GameModel.PAC_POWER_FADING_TICKS / (numFlashes * flashing.numFrames());
-					flashing.setFrameDuration(frameTicks);
-					flashing.setRepetitions(numFlashes);
-					flashing.restart();
-				}
+	private void updateAnimation(GameModel game) {
+		animationSet().ifPresent(anims -> {
+			switch (state) {
+			case HUNTING_PAC -> anims.select(AnimKeys.GHOST_COLOR);
+			case EATEN, RETURNING_TO_HOUSE, ENTERING_HOUSE -> anims.select(AnimKeys.GHOST_EYES);
+			case FRIGHTENED, LEAVING_HOUSE, LOCKED -> updateBlueOrFlashingAnimation(anims, game);
+			default -> throw new IllegalStateException();
+			}
+			anims.selectedAnimation().ifPresent(anim -> {
+				anim.ensureRunning();
+				anim.advance();
 			});
+		});
+	}
+
+	private void updateBlueOrFlashingAnimation(EntityAnimationSet<AnimKeys> anims, GameModel game) {
+		if (!game.powerTimer.isRunning()) {
+			anims.select(AnimKeys.GHOST_COLOR);
+			return;
 		}
+		if (game.powerTimer.remaining() > GameModel.PAC_POWER_FADING_TICKS) {
+			anims.select(AnimKeys.GHOST_BLUE);
+		} else {
+			if (!anims.isSelected(AnimKeys.GHOST_FLASHING)) {
+				anims.select(AnimKeys.GHOST_FLASHING);
+				anims.selectedAnimation().ifPresent(flashing -> flashTimes(flashing, game.level.numFlashes()));
+			}
+		}
+	}
+
+	private void flashTimes(EntityAnimation flashing, int numFlashes) {
+		long frameTicks = GameModel.PAC_POWER_FADING_TICKS / (numFlashes * flashing.numFrames());
+		flashing.setFrameDuration(frameTicks);
+		flashing.setRepetitions(numFlashes);
+		flashing.restart();
 	}
 
 	public void pauseFlashing(boolean paused) {
