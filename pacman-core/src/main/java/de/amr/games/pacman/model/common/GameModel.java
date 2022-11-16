@@ -26,10 +26,10 @@ package de.amr.games.pacman.model.common;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.lib.V2i.v2i;
-import static de.amr.games.pacman.model.common.actors.Ghost.CYAN_GHOST;
-import static de.amr.games.pacman.model.common.actors.Ghost.ORANGE_GHOST;
-import static de.amr.games.pacman.model.common.actors.Ghost.PINK_GHOST;
-import static de.amr.games.pacman.model.common.actors.Ghost.RED_GHOST;
+import static de.amr.games.pacman.model.common.actors.Ghost.ID_CYAN_GHOST;
+import static de.amr.games.pacman.model.common.actors.Ghost.ID_ORANGE_GHOST;
+import static de.amr.games.pacman.model.common.actors.Ghost.ID_PINK_GHOST;
+import static de.amr.games.pacman.model.common.actors.Ghost.ID_RED_GHOST;
 import static de.amr.games.pacman.model.common.actors.GhostState.FRIGHTENED;
 import static de.amr.games.pacman.model.common.actors.GhostState.HUNTING_PAC;
 import static de.amr.games.pacman.model.common.actors.GhostState.LEAVING_HOUSE;
@@ -202,18 +202,18 @@ public abstract class GameModel {
 
 		pac = new Pac(pacName);
 
-		var redGhost = new Ghost(RED_GHOST, redGhostName);
+		var redGhost = new Ghost(ID_RED_GHOST, redGhostName);
 		redGhost.setChasingTarget(pac::tile);
 
-		var pinkGhost = new Ghost(PINK_GHOST, pinkGhostName);
+		var pinkGhost = new Ghost(ID_PINK_GHOST, pinkGhostName);
 		pinkGhost.setChasingTarget(() -> tilesAhead(pac, 4));
 
-		var cyanGhost = new Ghost(CYAN_GHOST, cyanGhostName);
+		var cyanGhost = new Ghost(ID_CYAN_GHOST, cyanGhostName);
 		cyanGhost.setChasingTarget(() -> tilesAhead(pac, 2).scaled(2).minus(redGhost.tile()));
 
-		var orangeGhost = new Ghost(ORANGE_GHOST, orangeGhostName);
+		var orangeGhost = new Ghost(ID_ORANGE_GHOST, orangeGhostName);
 		orangeGhost.setChasingTarget(
-				() -> orangeGhost.tile().euclideanDistance(pac.tile()) < 8 ? scatterTile[ORANGE_GHOST] : pac.tile());
+				() -> orangeGhost.tile().euclideanDistance(pac.tile()) < 8 ? scatterTile[ID_ORANGE_GHOST] : pac.tile());
 
 		theGhosts = new Ghost[] { redGhost, pinkGhost, cyanGhost, orangeGhost };
 
@@ -357,21 +357,21 @@ public abstract class GameModel {
 		}
 		cruiseElroyState = 0;
 		if (level.world() instanceof ArcadeWorld) {
-			homePosition[RED_GHOST] = seatPosition(ArcadeGhostHouse.ENTRY_TILE);
-			revivalPosition[RED_GHOST] = seatPosition(ArcadeGhostHouse.SEAT_TILE_CENTER);
-			scatterTile[RED_GHOST] = ArcadeWorld.RIGHT_UPPER_CORNER;
+			homePosition[ID_RED_GHOST] = seatPosition(ArcadeGhostHouse.ENTRY_TILE);
+			revivalPosition[ID_RED_GHOST] = seatPosition(ArcadeGhostHouse.SEAT_TILE_CENTER);
+			scatterTile[ID_RED_GHOST] = ArcadeWorld.RIGHT_UPPER_CORNER;
 
-			homePosition[PINK_GHOST] = seatPosition(ArcadeGhostHouse.SEAT_TILE_CENTER);
-			revivalPosition[PINK_GHOST] = seatPosition(ArcadeGhostHouse.SEAT_TILE_CENTER);
-			scatterTile[PINK_GHOST] = ArcadeWorld.LEFT_UPPER_CORNER;
+			homePosition[ID_PINK_GHOST] = seatPosition(ArcadeGhostHouse.SEAT_TILE_CENTER);
+			revivalPosition[ID_PINK_GHOST] = seatPosition(ArcadeGhostHouse.SEAT_TILE_CENTER);
+			scatterTile[ID_PINK_GHOST] = ArcadeWorld.LEFT_UPPER_CORNER;
 
-			homePosition[CYAN_GHOST] = seatPosition(ArcadeGhostHouse.SEAT_TILE_LEFT);
-			revivalPosition[CYAN_GHOST] = seatPosition(ArcadeGhostHouse.SEAT_TILE_LEFT);
-			scatterTile[CYAN_GHOST] = ArcadeWorld.RIGHT_LOWER_CORNER;
+			homePosition[ID_CYAN_GHOST] = seatPosition(ArcadeGhostHouse.SEAT_TILE_LEFT);
+			revivalPosition[ID_CYAN_GHOST] = seatPosition(ArcadeGhostHouse.SEAT_TILE_LEFT);
+			scatterTile[ID_CYAN_GHOST] = ArcadeWorld.RIGHT_LOWER_CORNER;
 
-			homePosition[ORANGE_GHOST] = seatPosition(ArcadeGhostHouse.SEAT_TILE_RIGHT);
-			revivalPosition[ORANGE_GHOST] = seatPosition(ArcadeGhostHouse.SEAT_TILE_RIGHT);
-			scatterTile[ORANGE_GHOST] = ArcadeWorld.LEFT_LOWER_CORNER;
+			homePosition[ID_ORANGE_GHOST] = seatPosition(ArcadeGhostHouse.SEAT_TILE_RIGHT);
+			revivalPosition[ID_ORANGE_GHOST] = seatPosition(ArcadeGhostHouse.SEAT_TILE_RIGHT);
+			scatterTile[ID_ORANGE_GHOST] = ArcadeWorld.LEFT_LOWER_CORNER;
 		}
 	}
 
@@ -391,9 +391,9 @@ public abstract class GameModel {
 		ghosts().forEach(ghost -> {
 			ghost.reset();
 			ghost.setMoveAndWishDir(switch (ghost.id) {
-			case Ghost.RED_GHOST -> Direction.LEFT;
-			case Ghost.PINK_GHOST -> Direction.DOWN;
-			case Ghost.CYAN_GHOST, Ghost.ORANGE_GHOST -> Direction.UP;
+			case Ghost.ID_RED_GHOST -> Direction.LEFT;
+			case Ghost.ID_PINK_GHOST -> Direction.DOWN;
+			case Ghost.ID_CYAN_GHOST, Ghost.ID_ORANGE_GHOST -> Direction.UP;
 			default -> throw new IllegalArgumentException("Ghost ID: " + ghost.id);
 			});
 			ghost.setPosition(homePosition[ghost.id]);
@@ -406,7 +406,7 @@ public abstract class GameModel {
 	 * @return Pac-Man and the ghosts in order RED, PINK, CYAN, ORANGE
 	 */
 	public Stream<Creature> guys() {
-		return Stream.of(pac, theGhosts[RED_GHOST], theGhosts[PINK_GHOST], theGhosts[CYAN_GHOST], theGhosts[ORANGE_GHOST]);
+		return Stream.of(pac, theGhosts[ID_RED_GHOST], theGhosts[ID_PINK_GHOST], theGhosts[ID_CYAN_GHOST], theGhosts[ID_ORANGE_GHOST]);
 	}
 
 	/**
@@ -590,7 +590,7 @@ public abstract class GameModel {
 
 	private void onPacMetKiller() {
 		pac.die();
-		var redGhost = theGhosts[RED_GHOST];
+		var redGhost = theGhosts[ID_RED_GHOST];
 		if (cruiseElroyState > 0) {
 			LOGGER.info("Cruise Elroy mode %d for %s disabled", cruiseElroyState, redGhost.name);
 			cruiseElroyState = (byte) -cruiseElroyState; // negative value means "disabled"
@@ -690,7 +690,7 @@ public abstract class GameModel {
 	}
 
 	private void checkIfRedGhostBecomesCruiseElroy() {
-		var redGhost = theGhosts[RED_GHOST];
+		var redGhost = theGhosts[ID_RED_GHOST];
 		var foodRemaining = level.world().foodRemaining();
 		if (foodRemaining == level.elroy1DotsLeft()) {
 			cruiseElroyState = 1;
@@ -726,7 +726,7 @@ public abstract class GameModel {
 
 	private void checkGhostCanBeUnlocked(Memo memo) {
 		ghosts(LOCKED).findFirst().ifPresent(ghost -> {
-			if (ghost.id == RED_GHOST) {
+			if (ghost.id == ID_RED_GHOST) {
 				memo.unlockedGhost = Optional.of(ghost);
 				memo.unlockReason = "Blinky is unlocked immediately";
 				return;
@@ -752,8 +752,8 @@ public abstract class GameModel {
 
 	private void unlockGhost(Ghost unlockedGhost, String reason) {
 		LOGGER.info("Unlock ghost %s (%s)", unlockedGhost.name, reason);
-		var redGhost = theGhosts[RED_GHOST];
-		if (unlockedGhost.id == ORANGE_GHOST && cruiseElroyState < 0) {
+		var redGhost = theGhosts[ID_RED_GHOST];
+		if (unlockedGhost.id == ID_ORANGE_GHOST && cruiseElroyState < 0) {
 			cruiseElroyState = (byte) -cruiseElroyState; // resume Elroy mode
 			LOGGER.info("%s Elroy mode %d resumed", redGhost.name, cruiseElroyState);
 		}
@@ -767,7 +767,7 @@ public abstract class GameModel {
 
 	private void updateGhostDotCounters() {
 		if (globalDotCounterEnabled) {
-			if (theGhosts[ORANGE_GHOST].is(LOCKED) && globalDotCounter == 32) {
+			if (theGhosts[ID_ORANGE_GHOST].is(LOCKED) && globalDotCounter == 32) {
 				globalDotCounterEnabled = false;
 				globalDotCounter = 0;
 				LOGGER.info("Global dot counter disabled and reset, Clyde was in house when counter reached 32");
@@ -775,7 +775,7 @@ public abstract class GameModel {
 				globalDotCounter++;
 			}
 		} else {
-			ghosts(LOCKED).filter(ghost -> ghost.id != RED_GHOST).findFirst().ifPresent(ghost -> ++ghostDotCounter[ghost.id]);
+			ghosts(LOCKED).filter(ghost -> ghost.id != ID_RED_GHOST).findFirst().ifPresent(ghost -> ++ghostDotCounter[ghost.id]);
 		}
 	}
 }

@@ -90,10 +90,10 @@ public class PacManIntro extends Fsm<IntroState, IntroData> {
 				Arrays.fill(ctx.characterVisible, false);
 				ctx.pacMan = new Pac("Pac-Man");
 				ctx.ghosts = new Ghost[] { //
-						new Ghost(Ghost.RED_GHOST, "Blinky"), //
-						new Ghost(Ghost.PINK_GHOST, "Pinky"), //
-						new Ghost(Ghost.CYAN_GHOST, "Inky"), //
-						new Ghost(Ghost.ORANGE_GHOST, "Clyde"), //
+						new Ghost(Ghost.ID_RED_GHOST, "Blinky"), //
+						new Ghost(Ghost.ID_PINK_GHOST, "Pinky"), //
+						new Ghost(Ghost.ID_CYAN_GHOST, "Inky"), //
+						new Ghost(Ghost.ID_ORANGE_GHOST, "Clyde"), //
 				};
 			}
 

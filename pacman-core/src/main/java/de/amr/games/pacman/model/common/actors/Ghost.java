@@ -72,12 +72,12 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		return LOGGER;
 	}
 
-	public static final int RED_GHOST = 0;
-	public static final int PINK_GHOST = 1;
-	public static final int CYAN_GHOST = 2;
-	public static final int ORANGE_GHOST = 3;
+	public static final int ID_RED_GHOST = 0;
+	public static final int ID_PINK_GHOST = 1;
+	public static final int ID_CYAN_GHOST = 2;
+	public static final int ID_ORANGE_GHOST = 3;
 
-	/** The ID of the ghost, see {@link #RED_GHOST} etc. */
+	/** The ID of the ghost, see {@link #ID_RED_GHOST} etc. */
 	public final int id;
 
 	/** The current state of this ghost. */
@@ -250,16 +250,16 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	private void updateStateHuntingPac(GameModel game) {
 		if (game.level.world().isTunnel(tile())) {
 			setRelSpeed(game.level.ghostSpeedTunnel());
-		} else if (id == RED_GHOST && game.cruiseElroyState == 1) {
+		} else if (id == ID_RED_GHOST && game.cruiseElroyState == 1) {
 			setRelSpeed(game.level.elroy1Speed());
-		} else if (id == RED_GHOST && game.cruiseElroyState == 2) {
+		} else if (id == ID_RED_GHOST && game.cruiseElroyState == 2) {
 			setRelSpeed(game.level.elroy2Speed());
 		} else {
 			setRelSpeed(game.level.ghostSpeed());
 		}
-		if (game.variant() == MS_PACMAN && game.huntingTimer.scatterPhase() == 0 && (id == RED_GHOST || id == PINK_GHOST)) {
+		if (game.variant() == MS_PACMAN && game.huntingTimer.scatterPhase() == 0 && (id == ID_RED_GHOST || id == ID_PINK_GHOST)) {
 			roam(game);
-		} else if (game.huntingTimer.inChasingPhase() || id == RED_GHOST && game.cruiseElroyState > 0) {
+		} else if (game.huntingTimer.inChasingPhase() || id == ID_RED_GHOST && game.cruiseElroyState > 0) {
 			setTargetTile(fnChasingTarget.get());
 			navigateTowardsTarget(game);
 			tryMoving(game);
@@ -310,10 +310,10 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	private List<NavigationPoint> getAttractRoute(GameVariant variant) {
 		return switch (variant) {
 		case PACMAN -> switch (id) {
-		case RED_GHOST -> PacManGame.ATTRACT_FRIGHTENED_RED_GHOST;
-		case PINK_GHOST -> PacManGame.ATTRACT_FRIGHTENED_PINK_GHOST;
-		case CYAN_GHOST -> PacManGame.ATTRACT_FRIGHTENED_CYAN_GHOST;
-		case ORANGE_GHOST -> PacManGame.ATTRACT_FRIGHTENED_ORANGE_GHOST;
+		case ID_RED_GHOST -> PacManGame.ATTRACT_FRIGHTENED_RED_GHOST;
+		case ID_PINK_GHOST -> PacManGame.ATTRACT_FRIGHTENED_PINK_GHOST;
+		case ID_CYAN_GHOST -> PacManGame.ATTRACT_FRIGHTENED_CYAN_GHOST;
+		case ID_ORANGE_GHOST -> PacManGame.ATTRACT_FRIGHTENED_ORANGE_GHOST;
 		default -> throw new IllegalArgumentException();
 		};
 		case MS_PACMAN -> List.of();

@@ -23,7 +23,7 @@ SOFTWARE.
  */
 package de.amr.games.pacman.controller.mspacman;
 
-import static de.amr.games.pacman.model.common.actors.Ghost.PINK_GHOST;
+import static de.amr.games.pacman.model.common.actors.Ghost.ID_PINK_GHOST;
 import static de.amr.games.pacman.model.common.world.World.t;
 
 import de.amr.games.pacman.controller.common.GameController;
@@ -92,7 +92,7 @@ public class MsPacManIntermission1 extends Fsm<IntermissionState, IntermissionDa
 				ctx.pacMan.selectAndRunAnimation(AnimKeys.PAC_MUNCHING);
 				ctx.pacMan.show();
 
-				ctx.inky = new Ghost(Ghost.CYAN_GHOST, "Inky");
+				ctx.inky = new Ghost(Ghost.ID_CYAN_GHOST, "Inky");
 				ctx.inky.setMoveDir(Direction.RIGHT);
 				ctx.inky.setWishDir(Direction.RIGHT);
 				ctx.inky.setPosition(ctx.pacMan.position().minus(t(6), 0));
@@ -105,7 +105,7 @@ public class MsPacManIntermission1 extends Fsm<IntermissionState, IntermissionDa
 				ctx.msPac.selectAndRunAnimation(AnimKeys.PAC_MUNCHING);
 				ctx.msPac.show();
 
-				ctx.pinky = new Ghost(PINK_GHOST, "Pinky");
+				ctx.pinky = new Ghost(ID_PINK_GHOST, "Pinky");
 				ctx.pinky.setMoveDir(Direction.LEFT);
 				ctx.pinky.setWishDir(Direction.LEFT);
 				ctx.pinky.setPosition(ctx.msPac.position().plus(t(6), 0));

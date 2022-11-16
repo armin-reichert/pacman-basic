@@ -28,7 +28,7 @@ public class WorldTests {
 		pos = new V2d(0.0, 8.0);
 		assertEquals(new V2i(0, 1), World.tileAt(pos));
 
-		var guy = new Ghost(Ghost.RED_GHOST, "Guy");
+		var guy = new Ghost(Ghost.ID_RED_GHOST, "Guy");
 
 		guy.setPosition(3.99, 0);
 		assertEquals(new V2i(0, 0), guy.tile());
