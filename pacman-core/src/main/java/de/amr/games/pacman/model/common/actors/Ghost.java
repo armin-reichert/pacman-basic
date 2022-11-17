@@ -153,7 +153,13 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		case ENTERING_HOUSE -> updateStateEnteringHouse(game);
 		default -> throw new IllegalArgumentException("Unexpected value: " + state);
 		}
-		updateAnimation(game);
+		if (animationSet != null) {
+			updateAnimation(game, animationSet);
+			animation().ifPresent(anim -> {
+				anim.ensureRunning();
+				anim.advance();
+			});
+		}
 	}
 
 	// --- LOCKED ---
@@ -407,21 +413,15 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		return Optional.ofNullable(animationSet);
 	}
 
-	private void updateAnimation(GameModel game) {
-		animationSet().ifPresent(anims -> {
-			switch (state) {
-			case HUNTING_PAC -> anims.select(AnimKeys.GHOST_COLOR);
-			case EATEN -> selectAndRunAnimation(AnimKeys.GHOST_VALUE)
-					.ifPresent(anim -> anim.setFrameIndex(game.killedIndex[id]));
-			case RETURNING_TO_HOUSE, ENTERING_HOUSE -> anims.select(AnimKeys.GHOST_EYES);
-			case FRIGHTENED, LEAVING_HOUSE, LOCKED -> updateBlueOrFlashingAnimation(anims, game);
-			default -> throw new IllegalStateException();
-			}
-			anims.selectedAnimation().ifPresent(anim -> {
-				anim.ensureRunning();
-				anim.advance();
-			});
-		});
+	private void updateAnimation(GameModel game, EntityAnimationSet<AnimKeys> animationSet) {
+		switch (state) {
+		case HUNTING_PAC -> animationSet.select(AnimKeys.GHOST_COLOR);
+		case EATEN -> selectAndRunAnimation(AnimKeys.GHOST_VALUE)
+				.ifPresent(anim -> anim.setFrameIndex(game.killedIndex[id]));
+		case RETURNING_TO_HOUSE, ENTERING_HOUSE -> animationSet.select(AnimKeys.GHOST_EYES);
+		case FRIGHTENED, LEAVING_HOUSE, LOCKED -> updateBlueOrFlashingAnimation(animationSet, game);
+		default -> throw new IllegalStateException();
+		}
 	}
 
 	private void updateBlueOrFlashingAnimation(EntityAnimationSet<AnimKeys> anims, GameModel game) {
