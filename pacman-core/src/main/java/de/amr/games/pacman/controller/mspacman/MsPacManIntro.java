@@ -118,7 +118,7 @@ public class MsPacManIntro extends Fsm<MsPacManIntro.IntroState, MsPacManIntro.I
 				ctx.lightsTimer.advance();
 				Ghost ghost = ctx.game().theGhosts[ctx.ghostIndex];
 				ghost.move();
-				ghost.updateAnimation();
+				ghost.advanceAnimation();
 				if (ghost.moveDir() != UP && ghost.position().x() <= ctx.turningPoint.x()) {
 					ghost.setMoveDir(UP);
 					ghost.setWishDir(UP);
@@ -143,7 +143,7 @@ public class MsPacManIntro extends Fsm<MsPacManIntro.IntroState, MsPacManIntro.I
 			public void onUpdate(IntroData ctx) {
 				ctx.lightsTimer.advance();
 				ctx.game().pac.move();
-				ctx.game().pac.updateAnimation();
+				ctx.game().pac.advanceAnimation();
 				if (ctx.game().pac.position().x() <= ctx.msPacManStopX) {
 					ctx.game().pac.setAbsSpeed(0);
 					ctx.game().pac.animationSet().ifPresent(animSet -> animSet.animation(AnimKeys.PAC_MUNCHING).get().reset());

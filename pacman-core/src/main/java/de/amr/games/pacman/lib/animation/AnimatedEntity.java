@@ -63,7 +63,7 @@ public interface AnimatedEntity<K> {
 		return animation().isPresent() && animation().equals(animation(key));
 	}
 
-	default void updateAnimation() {
+	default void advanceAnimation() {
 		animation().ifPresent(EntityAnimation::advance);
 	}
 }

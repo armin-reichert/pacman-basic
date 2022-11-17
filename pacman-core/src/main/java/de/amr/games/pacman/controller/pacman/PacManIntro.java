@@ -179,10 +179,10 @@ public class PacManIntro extends Fsm<IntroState, IntroData> {
 						ghost.setMoveAndWishDir(Direction.RIGHT);
 						ghost.setAbsSpeed(0.6);
 						ghost.move();
-						ghost.updateAnimation();
+						ghost.advanceAnimation();
 					}
 					ctx.pacMan.move();
-					ctx.pacMan.updateAnimation();
+					ctx.pacMan.advanceAnimation();
 				}
 				// keep moving
 				else {
@@ -192,10 +192,10 @@ public class PacManIntro extends Fsm<IntroState, IntroData> {
 					}
 					ctx.blinking.advance();
 					ctx.pacMan.move();
-					ctx.pacMan.updateAnimation();
+					ctx.pacMan.advanceAnimation();
 					for (Ghost ghost : ctx.ghosts) {
 						ghost.move();
-						ghost.updateAnimation();
+						ghost.advanceAnimation();
 					}
 				}
 			}
@@ -249,10 +249,10 @@ public class PacManIntro extends Fsm<IntroState, IntroData> {
 					}
 				}
 				ctx.pacMan.move();
-				ctx.pacMan.updateAnimation();
+				ctx.pacMan.advanceAnimation();
 				for (Ghost ghost : ctx.ghosts) {
 					ghost.move();
-					ghost.updateAnimation();
+					ghost.advanceAnimation();
 				}
 				ctx.blinking.advance();
 			}

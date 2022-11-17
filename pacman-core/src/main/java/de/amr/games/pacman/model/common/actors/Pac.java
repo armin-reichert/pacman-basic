@@ -91,7 +91,7 @@ public class Pac extends Creature implements AnimatedEntity<AnimKeys> {
 
 	public void update(GameModel game) {
 		if (dead) {
-			updateAnimation();
+			advanceAnimation();
 		} else if (restingTicks > 0) {
 			--restingTicks;
 		} else {
