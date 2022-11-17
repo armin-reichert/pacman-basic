@@ -363,7 +363,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		if (game.level.world().ghostHouse().atHouseEntry(this)) {
 			enterStateEnteringHouse(game);
 		} else {
-			setRelSpeed(1.5 * game.level.ghostSpeed()); // not sure
+			setAbsSpeed(1.5); // not sure. Attention: If too fast, ghost misses turns!
 			navigateTowardsTarget(game);
 			tryMoving(game);
 		}
