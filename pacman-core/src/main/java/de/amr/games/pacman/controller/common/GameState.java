@@ -367,7 +367,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 				gc.resumePreviousState();
 			} else {
 				gc.getSteering().steer(game, game.pac);
-				game.ghosts(GhostState.RETURNING_TO_HOUSE).forEach(ghost -> ghost.update(game));
+				game.ghosts(GhostState.EATEN, GhostState.RETURNING_TO_HOUSE).forEach(ghost -> ghost.update(game));
 				game.energizerPulse.advance();
 			}
 		}

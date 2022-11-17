@@ -161,7 +161,6 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	public void enterStateLocked() {
 		state = LOCKED;
 		setAbsSpeed(0.0);
-		selectAndResetAnimation(AnimKeys.GHOST_COLOR);
 	}
 
 	/**
@@ -182,8 +181,6 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	public void enterStateLeavingHouse(GameModel game) {
 		state = LEAVING_HOUSE;
 		setAbsSpeed(0.5);
-		selectAndRunAnimation(
-				game.powerTimer.isRunning() && game.killedIndex[id] == -1 ? AnimKeys.GHOST_BLUE : AnimKeys.GHOST_COLOR);
 		GameEvents.publish(new GameEvent(game, GameEventType.GHOST_STARTS_LEAVING_HOUSE, this, tile()));
 	}
 
@@ -219,7 +216,6 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	 */
 	public void enterStateHuntingPac(GameModel game) {
 		state = HUNTING_PAC;
-		selectAndRunAnimation(AnimKeys.GHOST_COLOR);
 	}
 
 	/**
@@ -264,9 +260,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	 */
 	public void enterStateFrightened(GameModel game) {
 		state = FRIGHTENED;
-		selectAndRunAnimation(AnimKeys.GHOST_BLUE);
 		attractRouteIndex = 0;
-		logger().info("%s enters state FRIGHTEND, animation is %s", name, animationSet().get().selectedKey());
 	}
 
 	/**
@@ -346,8 +340,6 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	 */
 	public void enterStateEaten(GameModel game) {
 		state = EATEN;
-		// display ghost value (200, 400, 800, 1600)
-		selectAndRunAnimation(AnimKeys.GHOST_VALUE).ifPresent(anim -> anim.setFrameIndex(game.killedIndex[id]));
 	}
 
 	private void updateStateEaten() {
@@ -359,7 +351,6 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	public void enterStateReturningToHouse(GameModel game) {
 		state = RETURNING_TO_HOUSE;
 		setTargetTile(game.level.world().ghostHouse().entryTile());
-		selectAndRunAnimation(AnimKeys.GHOST_EYES);
 	}
 
 	/**
@@ -420,7 +411,9 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		animationSet().ifPresent(anims -> {
 			switch (state) {
 			case HUNTING_PAC -> anims.select(AnimKeys.GHOST_COLOR);
-			case EATEN, RETURNING_TO_HOUSE, ENTERING_HOUSE -> anims.select(AnimKeys.GHOST_EYES);
+			case EATEN -> selectAndRunAnimation(AnimKeys.GHOST_VALUE)
+					.ifPresent(anim -> anim.setFrameIndex(game.killedIndex[id]));
+			case RETURNING_TO_HOUSE, ENTERING_HOUSE -> anims.select(AnimKeys.GHOST_EYES);
 			case FRIGHTENED, LEAVING_HOUSE, LOCKED -> updateBlueOrFlashingAnimation(anims, game);
 			default -> throw new IllegalStateException();
 			}
