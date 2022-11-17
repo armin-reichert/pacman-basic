@@ -154,7 +154,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		default -> throw new IllegalArgumentException("Unexpected value: " + state);
 		}
 		if (animationSet != null) {
-			updateAnimation(game, animationSet);
+//			updateAnimation(game, animationSet);
 			animation().ifPresent(anim -> {
 				anim.ensureRunning();
 				anim.advance();
@@ -180,6 +180,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 			setAbsSpeed(0.5);
 			bounce(game.homePosition[id].y(), World.HTS);
 		}
+		updateBlueOrFlashingAnimation(animationSet, game);
 	}
 
 	// --- LEAVING_HOUSE ---
@@ -201,6 +202,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	 * @param game the game
 	 */
 	private void updateStateLeavingHouse(GameModel game) {
+		updateBlueOrFlashingAnimation(animationSet, game);
 		var outOfHouse = game.level.world().ghostHouse().leadGuyOutOfHouse(this);
 		if (outOfHouse) {
 			newTileEntered = false;
@@ -257,6 +259,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 			navigateTowardsTarget(game);
 			tryMoving(game);
 		}
+		animationSet.select(AnimKeys.GHOST_COLOR);
 	}
 
 	// --- FRIGHTENED ---
@@ -284,6 +287,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		setRelSpeed(
 				game.level.world().isTunnel(tile()) ? game.level.ghostSpeedTunnel() : game.level.ghostSpeedFrightened());
 		roam(game);
+		updateBlueOrFlashingAnimation(animationSet, game);
 	}
 
 	private void roam(GameModel game) {
@@ -346,6 +350,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	 */
 	public void enterStateEaten(GameModel game) {
 		state = EATEN;
+		selectAndRunAnimation(AnimKeys.GHOST_VALUE).ifPresent(anim -> anim.setFrameIndex(game.killedIndex[id]));
 	}
 
 	private void updateStateEaten() {
@@ -357,6 +362,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	public void enterStateReturningToHouse(GameModel game) {
 		state = RETURNING_TO_HOUSE;
 		setTargetTile(game.level.world().ghostHouse().entryTile());
+		animationSet.select(AnimKeys.GHOST_EYES);
 	}
 
 	/**
@@ -380,6 +386,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	public void enterStateEnteringHouse(GameModel game) {
 		state = ENTERING_HOUSE;
 		setTargetTile(tileAt(game.revivalPosition[id]));
+		animationSet.select(AnimKeys.GHOST_EYES);
 		GameEvents.publish(new GameEvent(game, GameEventType.GHOST_ENTERS_HOUSE, this, tile()));
 	}
 
