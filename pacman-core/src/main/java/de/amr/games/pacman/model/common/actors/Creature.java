@@ -237,21 +237,6 @@ public class Creature extends Entity {
 	}
 
 	/**
-	 * Bounces up and down at the given y-position.
-	 * 
-	 * @param zeroY  zero level y position
-	 * @param extent max deviation from zero level
-	 */
-	protected void bounce(double zeroY, double extent) {
-		if (position.y() <= zeroY - extent) {
-			setMoveAndWishDir(DOWN);
-		} else if (position.y() >= zeroY + extent) {
-			setMoveAndWishDir(UP);
-		}
-		move();
-	}
-
-	/**
 	 * Sets a new direction for reaching the current target. Navigation is only triggered when a new tile is entered, the
 	 * creature got stuck and a target tile is set. Inside portal tiles no navigation happens.
 	 * 

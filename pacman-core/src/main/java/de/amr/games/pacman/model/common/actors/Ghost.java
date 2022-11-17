@@ -23,6 +23,7 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.common.actors;
 
+import static de.amr.games.pacman.lib.Direction.DOWN;
 import static de.amr.games.pacman.lib.Direction.LEFT;
 import static de.amr.games.pacman.lib.Direction.UP;
 import static de.amr.games.pacman.model.common.GameVariant.MS_PACMAN;
@@ -174,8 +175,13 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	 */
 	private void updateStateLocked(GameModel game) {
 		if (game.level.world().ghostHouse().contains(tile())) {
+			if (position.y() <= game.homePosition[id].y() - World.HTS) {
+				setMoveAndWishDir(DOWN);
+			} else if (position.y() >= game.homePosition[id].y() + World.HTS) {
+				setMoveAndWishDir(UP);
+			}
 			setAbsSpeed(0.5);
-			bounce(game.homePosition[id].y(), World.HTS);
+			move();
 		}
 		updateColorOrBlueOrFlashingAnimation(game);
 	}
