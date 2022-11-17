@@ -90,7 +90,7 @@ public class MsPacManIntermission3 extends Fsm<IntermissionState, IntermissionDa
 			public void onUpdate(IntermissionData ctx) {
 				if (timer.atSecond(1)) {
 					ctx.gameController().sounds().play(GameSound.INTERMISSION_3);
-					ctx.clapperboard.animation().ifPresent(EntityAnimation::restart);
+					ctx.clapperboard.selectedAnimation().ifPresent(EntityAnimation::restart);
 				} else if (timer.atSecond(2)) {
 					ctx.clapperboard.hide();
 				} else if (timer.atSecond(3)) {
@@ -107,13 +107,13 @@ public class MsPacManIntermission3 extends Fsm<IntermissionState, IntermissionDa
 
 				ctx.pacMan.setMoveDir(Direction.RIGHT);
 				ctx.pacMan.setPosition(t(3), ctx.groundY - 4);
-				ctx.pacMan.selectAndRunAnimation(AnimKeys.PAC_MUNCHING);
+				ctx.pacMan.selectAndEnsureRunningAnimation(AnimKeys.PAC_MUNCHING);
 				ctx.pacMan.show();
 				ctx.pacMan.animation(AnimKeys.PAC_MUNCHING).ifPresent(EntityAnimation::reset);
 
 				ctx.msPacMan.setMoveDir(Direction.RIGHT);
 				ctx.msPacMan.setPosition(t(5), ctx.groundY - 4);
-				ctx.msPacMan.selectAndRunAnimation(AnimKeys.PAC_MUNCHING);
+				ctx.msPacMan.selectAndEnsureRunningAnimation(AnimKeys.PAC_MUNCHING);
 				ctx.msPacMan.show();
 				ctx.msPacMan.animation(AnimKeys.PAC_MUNCHING).ifPresent(EntityAnimation::reset);
 

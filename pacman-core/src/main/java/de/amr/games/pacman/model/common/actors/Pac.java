@@ -102,7 +102,7 @@ public class Pac extends Creature implements AnimatedEntity<AnimKeys> {
 	}
 
 	public void updateMouthAnimation() {
-		animation().ifPresent(animation -> {
+		selectedAnimation().ifPresent(animation -> {
 			if (stuck) {
 				animation.stop();
 			} else {

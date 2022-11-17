@@ -27,43 +27,64 @@ package de.amr.games.pacman.lib.animation;
 import java.util.Optional;
 
 /**
+ * Mix-in with useful methods for an animated entity.
+ * 
+ * @param <K> key type of animation set, most probably an enumeration type
  * @author Armin Reichert
  */
 public interface AnimatedEntity<K> {
 
 	public Optional<EntityAnimationSet<K>> animationSet();
 
+	/**
+	 * @param key key identifying animation in set
+	 * @return (optional) animation specified by given key
+	 */
 	default Optional<EntityAnimation> animation(K key) {
 		var animSet = animationSet();
 		return animSet.isPresent() ? animSet.get().animation(key) : Optional.empty();
 	}
 
-	default Optional<EntityAnimation> animation() {
+	/**
+	 * @return (optional) selected animation
+	 */
+	default Optional<EntityAnimation> selectedAnimation() {
 		var animSet = animationSet();
 		return animSet.isPresent() ? animSet.get().selectedAnimation() : Optional.empty();
 	}
 
-	default Optional<EntityAnimation> selectAndRunAnimation(K key) {
+	/**
+	 * Selects animation by given key and ensures it is running.
+	 * 
+	 * @param key key identifying animation in set
+	 * @return (optional) selected animation
+	 */
+	default Optional<EntityAnimation> selectAndEnsureRunningAnimation(K key) {
 		animationSet().ifPresent(animSet -> {
 			animSet.select(key);
 			animSet.selectedAnimation().ifPresent(EntityAnimation::ensureRunning);
 		});
-		return animationSet().isPresent() ? animation() : Optional.empty();
+		return selectedAnimation();
 	}
 
+	/**
+	 * Selects animation by given key and resets it without starting it.
+	 * 
+	 * @param key key identifying animation in set
+	 * @return (optional) selected animation
+	 */
 	default Optional<EntityAnimation> selectAndResetAnimation(K key) {
 		animationSet().ifPresent(animSet -> {
 			animSet.select(key);
 			animSet.selectedAnimation().ifPresent(EntityAnimation::reset);
 		});
-		return animationSet().isPresent() ? animation() : Optional.empty();
+		return selectedAnimation();
 	}
 
-	default boolean isAnimationSelected(K key) {
-		return animation().isPresent() && animation().equals(animation(key));
-	}
-
+	/**
+	 * Advances the currently selected animation by a single frame.
+	 */
 	default void advanceAnimation() {
-		animation().ifPresent(EntityAnimation::advance);
+		selectedAnimation().ifPresent(EntityAnimation::advance);
 	}
 }

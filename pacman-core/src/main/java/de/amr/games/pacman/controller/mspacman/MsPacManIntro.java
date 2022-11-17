@@ -80,7 +80,7 @@ public class MsPacManIntro extends Fsm<MsPacManIntro.IntroState, MsPacManIntro.I
 				ctx.game().pac.setMoveDir(LEFT);
 				ctx.game().pac.setPosition(t(34), ctx.turningPoint.y());
 				ctx.game().pac.setAbsSpeed(ctx.actorSpeed);
-				ctx.game().pac.selectAndRunAnimation(AnimKeys.PAC_MUNCHING);
+				ctx.game().pac.selectAndEnsureRunningAnimation(AnimKeys.PAC_MUNCHING);
 				ctx.game().pac.show();
 				for (Ghost ghost : ctx.game().theGhosts) {
 					ghost.enterStateHuntingPac(ctx.game());

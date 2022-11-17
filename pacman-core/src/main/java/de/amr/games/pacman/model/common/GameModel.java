@@ -378,7 +378,7 @@ public abstract class GameModel {
 		pac.placeAtTile(v2i(13, 26), HTS, 0);
 		pac.setMoveAndWishDir(Direction.LEFT);
 		pac.show();
-		pac.selectAndRunAnimation(AnimKeys.PAC_MUNCHING).ifPresent(EntityAnimation::reset);
+		pac.selectAndEnsureRunningAnimation(AnimKeys.PAC_MUNCHING).ifPresent(EntityAnimation::reset);
 		ghosts().forEach(ghost -> {
 			ghost.reset();
 			ghost.setMoveAndWishDir(switch (ghost.id) {

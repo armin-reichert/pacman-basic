@@ -75,17 +75,17 @@ public class MsPacManIntermission2 extends Fsm<IntermissionState, IntermissionDa
 				ctx.clapperboard.show();
 				ctx.pacMan = new Pac("Pac-Man");
 				ctx.pacMan.setMoveDir(Direction.RIGHT);
-				ctx.pacMan.selectAndRunAnimation(AnimKeys.PAC_MUNCHING);
+				ctx.pacMan.selectAndEnsureRunningAnimation(AnimKeys.PAC_MUNCHING);
 				ctx.msPacMan = new Pac("Ms. Pac-Man");
 				ctx.msPacMan.setMoveDir(Direction.RIGHT);
-				ctx.msPacMan.selectAndRunAnimation(AnimKeys.GHOST_COLOR);
+				ctx.msPacMan.selectAndEnsureRunningAnimation(AnimKeys.GHOST_COLOR);
 			}
 
 			@Override
 			public void onUpdate(IntermissionData ctx) {
 				if (timer.atSecond(1)) {
 					ctx.gameController().sounds().play(GameSound.INTERMISSION_2);
-					ctx.clapperboard.animation().ifPresent(EntityAnimation::restart);
+					ctx.clapperboard.selectedAnimation().ifPresent(EntityAnimation::restart);
 				} else if (timer.atSecond(2)) {
 					ctx.clapperboard.hide();
 				} else if (timer.atSecond(3)) {
