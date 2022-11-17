@@ -177,7 +177,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 			setAbsSpeed(0.5);
 			bounce(game.homePosition[id].y(), World.HTS);
 		}
-		updateBlueOrFlashingAnimation(animationSet, game);
+		updateColorOrBlueOrFlashingAnimation(game);
 	}
 
 	// --- LEAVING_HOUSE ---
@@ -199,7 +199,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	 * @param game the game
 	 */
 	private void updateStateLeavingHouse(GameModel game) {
-		updateBlueOrFlashingAnimation(animationSet, game);
+		updateColorOrBlueOrFlashingAnimation(game);
 		var outOfHouse = game.level.world().ghostHouse().leadGuyOutOfHouse(this);
 		if (outOfHouse) {
 			newTileEntered = false;
@@ -287,7 +287,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 				game.level.world().isTunnel(tile()) ? game.level.ghostSpeedTunnel() : game.level.ghostSpeedFrightened());
 		roam(game);
 		if (animationSet != null) {
-			updateBlueOrFlashingAnimation(animationSet, game);
+			updateColorOrBlueOrFlashingAnimation(game);
 		}
 	}
 
@@ -425,17 +425,20 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		return Optional.ofNullable(animationSet);
 	}
 
-	private void updateBlueOrFlashingAnimation(EntityAnimationSet<AnimKeys> anims, GameModel game) {
+	private void updateColorOrBlueOrFlashingAnimation(GameModel game) {
+		if (animationSet == null) {
+			return;
+		}
 		if (!game.powerTimer.isRunning()) {
-			anims.select(AnimKeys.GHOST_COLOR);
+			animationSet.select(AnimKeys.GHOST_COLOR);
 			return;
 		}
 		if (game.powerTimer.remaining() > GameModel.PAC_POWER_FADING_TICKS) {
-			anims.select(AnimKeys.GHOST_BLUE);
+			animationSet.select(AnimKeys.GHOST_BLUE);
 		} else {
-			if (!anims.isSelected(AnimKeys.GHOST_FLASHING)) {
-				anims.select(AnimKeys.GHOST_FLASHING);
-				anims.selectedAnimation().ifPresent(flashing -> startFlashing(flashing, game.level.numFlashes()));
+			if (!animationSet.isSelected(AnimKeys.GHOST_FLASHING)) {
+				animationSet.select(AnimKeys.GHOST_FLASHING);
+				animationSet.selectedAnimation().ifPresent(flashing -> startFlashing(flashing, game.level.numFlashes()));
 			}
 		}
 	}
