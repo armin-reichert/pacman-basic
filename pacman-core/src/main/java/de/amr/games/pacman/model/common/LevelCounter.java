@@ -33,14 +33,22 @@ import java.util.stream.IntStream;
  */
 public class LevelCounter {
 
-	public boolean visible;
-	private final int maxSize;
+	private final int maxSymbolCount;
 	public final List<Integer> symbols;
+	private boolean visible;
 
-	public LevelCounter(int maxSize) {
-		this.maxSize = maxSize;
-		symbols = new ArrayList<>(maxSize);
+	public LevelCounter(int maxSymbolCount) {
+		this.maxSymbolCount = maxSymbolCount;
+		symbols = new ArrayList<>(maxSymbolCount);
 		visible = true;
+	}
+
+	public void setVisible(boolean visible) {
+		this.visible = visible;
+	}
+
+	public boolean isVisible() {
+		return visible;
 	}
 
 	public void clear() {
@@ -48,7 +56,7 @@ public class LevelCounter {
 	}
 
 	public void addSymbol(int symbol) {
-		if (symbols.size() == maxSize) {
+		if (symbols.size() == maxSymbolCount) {
 			symbols.remove(0);
 		}
 		symbols.add(symbol);
