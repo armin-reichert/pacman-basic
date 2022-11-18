@@ -50,6 +50,21 @@ import de.amr.games.pacman.model.mspacman.Clapperboard;
  */
 public class MsPacManIntermission2 extends Fsm<IntermissionState, IntermissionData> {
 
+	private final IntermissionData intermissionData;
+
+	public MsPacManIntermission2(GameController gameController) {
+		states = IntermissionState.values();
+		for (var state : IntermissionState.values()) {
+			state.intermission = this;
+		}
+		this.intermissionData = new IntermissionData(gameController);
+	}
+
+	@Override
+	public IntermissionData context() {
+		return intermissionData;
+	}
+
 	public static class IntermissionData extends SceneControllerContext {
 		public final int upperY = t(12);
 		public final int middleY = t(18);
@@ -158,20 +173,5 @@ public class MsPacManIntermission2 extends Fsm<IntermissionState, IntermissionDa
 		public TickTimer timer() {
 			return timer;
 		}
-	}
-
-	private final IntermissionData intermissionData;
-
-	public MsPacManIntermission2(GameController gameController) {
-		states = IntermissionState.values();
-		for (var state : IntermissionState.values()) {
-			state.intermission = this;
-		}
-		this.intermissionData = new IntermissionData(gameController);
-	}
-
-	@Override
-	public IntermissionData context() {
-		return intermissionData;
 	}
 }

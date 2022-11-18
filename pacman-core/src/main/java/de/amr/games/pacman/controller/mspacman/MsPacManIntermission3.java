@@ -54,6 +54,21 @@ import de.amr.games.pacman.model.mspacman.Clapperboard;
  */
 public class MsPacManIntermission3 extends Fsm<IntermissionState, IntermissionData> {
 
+	private final IntermissionData intermissionData;
+
+	public MsPacManIntermission3(GameController gameController) {
+		states = IntermissionState.values();
+		for (var state : states) {
+			state.intermission = this;
+		}
+		this.intermissionData = new IntermissionData(gameController);
+	}
+
+	@Override
+	public IntermissionData context() {
+		return intermissionData;
+	}
+
 	public static class IntermissionData extends SceneControllerContext {
 		public final int groundY = t(24);
 		public Clapperboard clapperboard;
@@ -107,15 +122,13 @@ public class MsPacManIntermission3 extends Fsm<IntermissionState, IntermissionDa
 
 				ctx.pacMan.setMoveDir(Direction.RIGHT);
 				ctx.pacMan.setPosition(t(3), ctx.groundY - 4);
-				ctx.pacMan.selectAndEnsureRunningAnimation(AnimKeys.PAC_MUNCHING);
+				ctx.pacMan.selectAndResetAnimation(AnimKeys.PAC_MUNCHING);
 				ctx.pacMan.show();
-				ctx.pacMan.animation(AnimKeys.PAC_MUNCHING).ifPresent(EntityAnimation::reset);
 
 				ctx.msPacMan.setMoveDir(Direction.RIGHT);
 				ctx.msPacMan.setPosition(t(5), ctx.groundY - 4);
-				ctx.msPacMan.selectAndEnsureRunningAnimation(AnimKeys.PAC_MUNCHING);
+				ctx.msPacMan.selectAndResetAnimation(AnimKeys.PAC_MUNCHING);
 				ctx.msPacMan.show();
-				ctx.msPacMan.animation(AnimKeys.PAC_MUNCHING).ifPresent(EntityAnimation::reset);
 
 				ctx.stork.setPosition(t(30), t(12));
 				ctx.stork.setVelocity(-0.8, 0);
@@ -178,20 +191,5 @@ public class MsPacManIntermission3 extends Fsm<IntermissionState, IntermissionDa
 		public TickTimer timer() {
 			return timer;
 		}
-	}
-
-	private final IntermissionData intermissionData;
-
-	public MsPacManIntermission3(GameController gameController) {
-		states = IntermissionState.values();
-		for (var state : states) {
-			state.intermission = this;
-		}
-		this.intermissionData = new IntermissionData(gameController);
-	}
-
-	@Override
-	public IntermissionData context() {
-		return intermissionData;
 	}
 }
