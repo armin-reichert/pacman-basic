@@ -32,6 +32,7 @@ import static de.amr.games.pacman.model.common.world.World.TS;
 import static de.amr.games.pacman.model.common.world.World.originOfTile;
 import static de.amr.games.pacman.model.common.world.World.tileAt;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
@@ -148,10 +149,12 @@ public class Creature extends Entity {
 	}
 
 	public void placeAtTile(V2i tile, double ox, double oy) {
+		Objects.requireNonNull(tile, "Tile must not be null");
 		placeAtTile(tile.x(), tile.y(), ox, oy);
 	}
 
 	public void placeAtTile(V2i tile) {
+		Objects.requireNonNull(tile, "Tile must not be null");
 		placeAtTile(tile.x(), tile.y(), 0, 0);
 	}
 
@@ -160,6 +163,7 @@ public class Creature extends Entity {
 	 * @return if this creature can access the given tile
 	 */
 	public boolean canAccessTile(V2i tile, GameModel game) {
+		Objects.requireNonNull(tile, "Tile must not be null");
 		var world = game.level.world();
 		if (world.insideMap(tile)) {
 			return !world.isWall(tile) && !world.ghostHouse().isDoorTile(tile);
@@ -173,6 +177,7 @@ public class Creature extends Entity {
 	 * @param dir the new move direction
 	 */
 	public void setMoveDir(Direction dir) {
+		Objects.requireNonNull(dir, "Move direction must not be null");
 		if (moveDir != dir) {
 			moveDir = dir;
 			logger().trace("%-6s: New moveDir: %s. %s", name, moveDir, this);
@@ -185,6 +190,7 @@ public class Creature extends Entity {
 	}
 
 	public void setWishDir(Direction dir) {
+		Objects.requireNonNull(dir, "Wish direction must not be null");
 		if (wishDir != dir) {
 			wishDir = dir;
 			logger().trace("%-6s: New wishDir: %s. %s", name, wishDir, this);
@@ -196,6 +202,7 @@ public class Creature extends Entity {
 	}
 
 	public void setMoveAndWishDir(Direction dir) {
+		Objects.requireNonNull(dir, "Move/Wish direction must not be null");
 		setWishDir(dir);
 		setMoveDir(dir);
 	}
