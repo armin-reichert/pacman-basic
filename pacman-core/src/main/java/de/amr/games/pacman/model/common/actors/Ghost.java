@@ -106,6 +106,8 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 
 	@Override
 	public boolean canAccessTile(V2i tile, GameModel game) {
+		Objects.requireNonNull(tile, "Tile must not be null");
+		Objects.requireNonNull(game, "Game must not be null");
 		var currentTile = tile();
 		if (tile.equals(currentTile.plus(UP.vec)) && !game.isGhostAllowedMoving(this, UP)) {
 			LOGGER.trace("%s cannot access tile %s because he cannot move UP at %s", name, tile, currentTile);
@@ -144,6 +146,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	 * @param game the game
 	 */
 	public void update(GameModel game) {
+		Objects.requireNonNull(game, "Game must not be null");
 		switch (state) {
 		case LOCKED -> updateStateLocked(game);
 		case LEAVING_HOUSE -> updateStateLeavingHouse(game);
@@ -189,6 +192,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	// --- LEAVING_HOUSE ---
 
 	public void enterStateLeavingHouse(GameModel game) {
+		Objects.requireNonNull(game, "Game must not be null");
 		state = LEAVING_HOUSE;
 		setAbsSpeed(0.5);
 		GameEvents.publish(new GameEvent(game, GameEventType.GHOST_STARTS_LEAVING_HOUSE, this, tile()));
@@ -226,6 +230,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	 * @param game the game model
 	 */
 	public void enterStateHuntingPac(GameModel game) {
+		Objects.requireNonNull(game, "Game must not be null");
 		state = HUNTING_PAC;
 	}
 
@@ -273,6 +278,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	 * @param game the game model
 	 */
 	public void enterStateFrightened(GameModel game) {
+		Objects.requireNonNull(game, "Game must not be null");
 		state = FRIGHTENED;
 		attractRouteIndex = 0;
 	}
@@ -356,6 +362,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	 * @param game the game
 	 */
 	public void enterStateEaten(GameModel game) {
+		Objects.requireNonNull(game, "Game must not be null");
 		state = EATEN;
 		selectAndEnsureRunningAnimation(AnimKeys.GHOST_VALUE).ifPresent(anim -> anim.setFrameIndex(game.killedIndex[id]));
 	}
@@ -367,6 +374,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	// --- RETURNING_HOUSE ---
 
 	public void enterStateReturningToHouse(GameModel game) {
+		Objects.requireNonNull(game, "Game must not be null");
 		state = RETURNING_TO_HOUSE;
 		setTargetTile(game.level.world().ghostHouse().entryTile());
 		if (animationSet != null) {
@@ -393,6 +401,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	// ENTERING_HOUSE state
 
 	public void enterStateEnteringHouse(GameModel game) {
+		Objects.requireNonNull(game, "Game must not be null");
 		state = ENTERING_HOUSE;
 		setTargetTile(tileAt(game.revivalPosition[id]));
 		if (animationSet != null) {
