@@ -139,6 +139,7 @@ public class Creature extends Entity {
 	}
 
 	public boolean sameTile(Creature other) {
+		Objects.requireNonNull(other, "Creature must not be null");
 		return tile().equals(other.tile());
 	}
 
@@ -250,6 +251,7 @@ public class Creature extends Entity {
 	 * @param game the game model
 	 */
 	public void navigateTowardsTarget(GameModel game) {
+		Objects.requireNonNull(game, "Game must not be null");
 		if ((newTileEntered || stuck) && targetTile != null && !game.level.world().belongsToPortal(tile())) {
 			bestDirection(game).ifPresent(this::setWishDir);
 		}
@@ -262,6 +264,7 @@ public class Creature extends Entity {
 	 *         not allowed.
 	 */
 	private Optional<Direction> bestDirection(GameModel game) {
+		Objects.requireNonNull(game, "Game must not be null");
 		Direction bestDir = null;
 		double minDist = Double.MAX_VALUE;
 		for (var dir : TURN_PRIORITY) {
@@ -284,6 +287,7 @@ public class Creature extends Entity {
 	 * possible, it keeps moving to its current move direction.
 	 */
 	public void tryMoving(GameModel game) {
+		Objects.requireNonNull(game, "Game must not be null");
 		var tileBefore = tile();
 		if (canTeleport) {
 			for (var portal : game.level.world().portals()) {
@@ -344,6 +348,7 @@ public class Creature extends Entity {
 	}
 
 	protected boolean atTurnPositionTo(Direction dir) {
+		Objects.requireNonNull(dir, "Direction must not be null");
 		var offset = dir.isHorizontal() ? offset().y() : offset().x();
 		return Math.abs(offset) <= 0.5;
 	}
