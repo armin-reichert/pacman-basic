@@ -191,9 +191,8 @@ public class PacManGame extends GameModel {
 	}
 
 	private void createLevel(int levelNumber) {
-		int numLevels = LEVELS.length;
-		level = new GameLevel(levelNumber, 1, createWorld(), -1,
-				levelNumber <= numLevels ? LEVELS[levelNumber - 1] : LEVELS[numLevels - 1]);
+		int index = levelNumber <= LEVELS.length ? levelNumber - 1 : LEVELS.length - 1;
+		level = new GameLevel(levelNumber, 1, createWorld(), -1, LEVELS[index]);
 		pacStarvingTimeLimit = (level.number() < 5 ? 4 : 3) * FPS;
 		globalDotLimits = new byte[] { -1, 7, 17, -1 };
 		privateDotLimits = switch (level.number()) {
