@@ -40,12 +40,7 @@ public class ArcadeWorld extends MapBasedWorld {
 
 	public static final int TILES_X = 28;
 	public static final int TILES_Y = 36;
-	public static final V2i WORLD_SIZE = v2i(TILES_X * TS, TILES_Y * TS);
-
-	public static final V2i LEFT_LOWER_CORNER = v2i(0, 34);
-	public static final V2i RIGHT_LOWER_CORNER = v2i(27, 34);
-	public static final V2i LEFT_UPPER_CORNER = v2i(2, 0);
-	public static final V2i RIGHT_UPPER_CORNER = v2i(25, 0);
+	public static final V2i WORLD_SIZE_PX = v2i(TILES_X * TS, TILES_Y * TS);
 
 	private final ArcadeGhostHouse house = new ArcadeGhostHouse();
 

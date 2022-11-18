@@ -350,19 +350,19 @@ public abstract class GameModel {
 		if (level.world() instanceof ArcadeWorld) {
 			homePosition[ID_RED_GHOST] = seatPosition(ArcadeGhostHouse.ENTRY_TILE);
 			revivalPosition[ID_RED_GHOST] = seatPosition(ArcadeGhostHouse.SEAT_TILE_CENTER);
-			scatterTile[ID_RED_GHOST] = ArcadeWorld.RIGHT_UPPER_CORNER;
+			scatterTile[ID_RED_GHOST] = v2i(25, 0);
 
 			homePosition[ID_PINK_GHOST] = seatPosition(ArcadeGhostHouse.SEAT_TILE_CENTER);
 			revivalPosition[ID_PINK_GHOST] = seatPosition(ArcadeGhostHouse.SEAT_TILE_CENTER);
-			scatterTile[ID_PINK_GHOST] = ArcadeWorld.LEFT_UPPER_CORNER;
+			scatterTile[ID_PINK_GHOST] = v2i(2, 0);
 
 			homePosition[ID_CYAN_GHOST] = seatPosition(ArcadeGhostHouse.SEAT_TILE_LEFT);
 			revivalPosition[ID_CYAN_GHOST] = seatPosition(ArcadeGhostHouse.SEAT_TILE_LEFT);
-			scatterTile[ID_CYAN_GHOST] = ArcadeWorld.RIGHT_LOWER_CORNER;
+			scatterTile[ID_CYAN_GHOST] = v2i(27, 34);
 
 			homePosition[ID_ORANGE_GHOST] = seatPosition(ArcadeGhostHouse.SEAT_TILE_RIGHT);
 			revivalPosition[ID_ORANGE_GHOST] = seatPosition(ArcadeGhostHouse.SEAT_TILE_RIGHT);
-			scatterTile[ID_ORANGE_GHOST] = ArcadeWorld.LEFT_LOWER_CORNER;
+			scatterTile[ID_ORANGE_GHOST] = v2i(0, 34);
 		}
 	}
 
