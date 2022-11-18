@@ -23,6 +23,7 @@ SOFTWARE.
  */
 package de.amr.games.pacman.model.common.actors;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import de.amr.games.pacman.lib.animation.AnimatedEntity;
@@ -90,6 +91,7 @@ public class Pac extends Creature implements AnimatedEntity<AnimKeys> {
 	}
 
 	public void update(GameModel game) {
+		Objects.requireNonNull(game, "Game must not be null");
 		if (dead) {
 			advanceAnimation();
 		} else if (restingTicks > 0) {
@@ -101,7 +103,7 @@ public class Pac extends Creature implements AnimatedEntity<AnimKeys> {
 		}
 	}
 
-	public void updateMouthAnimation() {
+	private void updateMouthAnimation() {
 		selectedAnimation().ifPresent(animation -> {
 			if (stuck) {
 				animation.stop();
