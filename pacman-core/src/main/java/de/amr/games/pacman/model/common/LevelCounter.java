@@ -24,13 +24,9 @@ SOFTWARE.
 
 package de.amr.games.pacman.model.common;
 
-import static de.amr.games.pacman.model.common.world.World.t;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
-
-import de.amr.games.pacman.lib.V2d;
 
 /**
  * @author Armin Reichert
@@ -38,14 +34,12 @@ import de.amr.games.pacman.lib.V2d;
 public class LevelCounter {
 
 	public boolean visible;
-	public V2d rightBorderPosition;
 	private final int maxSize;
 	public final List<Integer> symbols;
 
 	public LevelCounter(int maxSize) {
 		this.maxSize = maxSize;
 		symbols = new ArrayList<>(maxSize);
-		rightBorderPosition = new V2d(t(24), t(34));
 		visible = true;
 	}
 
