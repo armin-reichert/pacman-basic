@@ -32,10 +32,11 @@ import static de.amr.games.pacman.model.common.world.World.t;
 import de.amr.games.pacman.controller.common.GameController;
 import de.amr.games.pacman.controller.common.GameState;
 import de.amr.games.pacman.controller.common.SceneControllerContext;
+import de.amr.games.pacman.controller.mspacman.MsPacManIntro.IntroData;
+import de.amr.games.pacman.controller.mspacman.MsPacManIntro.IntroState;
 import de.amr.games.pacman.lib.TickTimer;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.lib.animation.EntityAnimation;
-import de.amr.games.pacman.lib.animation.EntityAnimationSet;
 import de.amr.games.pacman.lib.animation.SingleEntityAnimation;
 import de.amr.games.pacman.lib.fsm.Fsm;
 import de.amr.games.pacman.lib.fsm.FsmState;
@@ -50,7 +51,22 @@ import de.amr.games.pacman.model.common.actors.Ghost;
  * 
  * @author Armin Reichert
  */
-public class MsPacManIntro extends Fsm<MsPacManIntro.IntroState, MsPacManIntro.IntroData> {
+public class MsPacManIntro extends Fsm<IntroState, IntroData> {
+
+	private final IntroData introData;
+
+	public MsPacManIntro(GameController gameController) {
+		states = IntroState.values();
+		for (var state : states) {
+			state.controller = this;
+		}
+		introData = new IntroData(gameController);
+	}
+
+	@Override
+	public IntroData context() {
+		return introData;
+	}
 
 	public static class IntroData extends SceneControllerContext {
 		public final V2i redGhostEndPosition = v2i(t(8), t(11));
@@ -77,15 +93,11 @@ public class MsPacManIntro extends Fsm<MsPacManIntro.IntroState, MsPacManIntro.I
 				ctx.game().highScore.showContent = true;
 				ctx.lightsTimer.resetIndefinitely();
 				ctx.lightsTimer.start();
-				ctx.game().pac.setMoveDir(LEFT);
 				ctx.game().pac.setPosition(t(34), ctx.turningPoint.y());
-				ctx.game().pac.setAbsSpeed(ctx.actorSpeed);
-				ctx.game().pac.selectAndEnsureRunningAnimation(AnimKeys.PAC_MUNCHING);
-				ctx.game().pac.show();
+				ctx.game().pac.setAbsSpeed(0);
 				for (Ghost ghost : ctx.game().theGhosts) {
 					ghost.enterStateHuntingPac(ctx.game());
-					ghost.setMoveDir(LEFT);
-					ghost.setWishDir(LEFT);
+					ghost.setMoveAndWishDir(LEFT);
 					ghost.setPosition(t(34), ctx.turningPoint.y());
 					ghost.setAbsSpeed(ctx.actorSpeed);
 					ghost.show();
@@ -110,7 +122,7 @@ public class MsPacManIntro extends Fsm<MsPacManIntro.IntroState, MsPacManIntro.I
 		GHOSTS {
 			@Override
 			public void onEnter(IntroData ctx) {
-				ctx.game().ghosts().forEach(ghost -> ghost.animationSet().ifPresent(EntityAnimationSet::ensureRunning));
+				ctx.game().ghosts().forEach(ghost -> ghost.selectAndEnsureRunningAnimation(AnimKeys.GHOST_COLOR));
 			}
 
 			@Override
@@ -119,13 +131,12 @@ public class MsPacManIntro extends Fsm<MsPacManIntro.IntroState, MsPacManIntro.I
 				Ghost ghost = ctx.game().theGhosts[ctx.ghostIndex];
 				ghost.move();
 				ghost.advanceAnimation();
-				if (ghost.moveDir() != UP && ghost.position().x() <= ctx.turningPoint.x()) {
-					ghost.setMoveDir(UP);
-					ghost.setWishDir(UP);
+				if (ghost.position().x() <= ctx.turningPoint.x()) {
+					ghost.setMoveAndWishDir(UP);
 				}
 				if (ghost.position().y() <= ctx.redGhostEndPosition.y() + ghost.id * 18) {
 					ghost.setAbsSpeed(0);
-					ghost.animationSet().ifPresent(EntityAnimationSet::stop);
+					ghost.selectedAnimation().ifPresent(EntityAnimation::stop);
 					if (++ctx.ghostIndex == ctx.game().theGhosts.length) {
 						controller.changeState(IntroState.MSPACMAN);
 					}
@@ -136,7 +147,10 @@ public class MsPacManIntro extends Fsm<MsPacManIntro.IntroState, MsPacManIntro.I
 		MSPACMAN {
 			@Override
 			public void onEnter(IntroData ctx) {
-				ctx.game().pac.animationSet().ifPresent(EntityAnimationSet::ensureRunning);
+				ctx.game().pac.setMoveDir(LEFT);
+				ctx.game().pac.setAbsSpeed(ctx.actorSpeed);
+				ctx.game().pac.selectAndEnsureRunningAnimation(AnimKeys.PAC_MUNCHING);
+				ctx.game().pac.show();
 			}
 
 			@Override
@@ -146,7 +160,7 @@ public class MsPacManIntro extends Fsm<MsPacManIntro.IntroState, MsPacManIntro.I
 				ctx.game().pac.advanceAnimation();
 				if (ctx.game().pac.position().x() <= ctx.msPacManStopX) {
 					ctx.game().pac.setAbsSpeed(0);
-					ctx.game().pac.animationSet().ifPresent(animSet -> animSet.animation(AnimKeys.PAC_MUNCHING).get().reset());
+					ctx.game().pac.selectedAnimation().ifPresent(EntityAnimation::reset);
 					controller.changeState(IntroState.READY_TO_PLAY);
 				}
 			}
@@ -157,10 +171,12 @@ public class MsPacManIntro extends Fsm<MsPacManIntro.IntroState, MsPacManIntro.I
 			public void onUpdate(IntroData ctx) {
 				if (timer.atSecond(1.5) && !ctx.game().hasCredit()) {
 					ctx.gameController().changeState(GameState.READY);
+					// show play scene in attract mode
 					return;
 				}
 				if (timer.atSecond(5)) {
 					ctx.gameController().restartIntro();
+					// repeat intro, key press starts game
 					return;
 				}
 				ctx.lightsTimer.advance();
@@ -175,20 +191,5 @@ public class MsPacManIntro extends Fsm<MsPacManIntro.IntroState, MsPacManIntro.I
 		public TickTimer timer() {
 			return timer;
 		}
-	}
-
-	private final IntroData introData;
-
-	public MsPacManIntro(GameController gameController) {
-		states = IntroState.values();
-		for (var state : states) {
-			state.controller = this;
-		}
-		introData = new IntroData(gameController);
-	}
-
-	@Override
-	public IntroData context() {
-		return introData;
 	}
 }
