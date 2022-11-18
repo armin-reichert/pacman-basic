@@ -55,6 +55,21 @@ import de.amr.games.pacman.model.mspacman.Clapperboard;
  */
 public class MsPacManIntermission1 extends Fsm<IntermissionState, IntermissionData> {
 
+	private final IntermissionData intermissionData;
+
+	public MsPacManIntermission1(GameController gameController) {
+		states = IntermissionState.values();
+		for (var state : states) {
+			state.intermission = this;
+		}
+		intermissionData = new IntermissionData(gameController);
+	}
+
+	@Override
+	public IntermissionData context() {
+		return intermissionData;
+	}
+
 	public static class IntermissionData extends SceneControllerContext {
 		public final int upperY = t(12);
 		public final int middleY = t(18);
@@ -93,8 +108,7 @@ public class MsPacManIntermission1 extends Fsm<IntermissionState, IntermissionDa
 				ctx.pacMan.show();
 
 				ctx.inky = new Ghost(Ghost.ID_CYAN_GHOST, "Inky");
-				ctx.inky.setMoveDir(Direction.RIGHT);
-				ctx.inky.setWishDir(Direction.RIGHT);
+				ctx.inky.setMoveAndWishDir(Direction.RIGHT);
 				ctx.inky.setPosition(ctx.pacMan.position().minus(t(6), 0));
 				ctx.inky.selectAndEnsureRunningAnimation(AnimKeys.GHOST_COLOR);
 				ctx.inky.show();
@@ -106,8 +120,7 @@ public class MsPacManIntermission1 extends Fsm<IntermissionState, IntermissionDa
 				ctx.msPac.show();
 
 				ctx.pinky = new Ghost(ID_PINK_GHOST, "Pinky");
-				ctx.pinky.setMoveDir(Direction.LEFT);
-				ctx.pinky.setWishDir(Direction.LEFT);
+				ctx.pinky.setMoveAndWishDir(Direction.LEFT);
 				ctx.pinky.setPosition(ctx.msPac.position().plus(t(6), 0));
 				ctx.pinky.selectAndEnsureRunningAnimation(AnimKeys.GHOST_COLOR);
 				ctx.pinky.show();
@@ -122,6 +135,7 @@ public class MsPacManIntermission1 extends Fsm<IntermissionState, IntermissionDa
 					ctx.clapperboard.selectedAnimation().ifPresent(EntityAnimation::restart);
 				}
 				if (timer.hasExpired()) {
+					ctx.clapperboard.hide();
 					intermission.changeState(IntermissionState.CHASED_BY_GHOSTS);
 				}
 			}
@@ -130,7 +144,6 @@ public class MsPacManIntermission1 extends Fsm<IntermissionState, IntermissionDa
 		CHASED_BY_GHOSTS {
 			@Override
 			public void onEnter(IntermissionData ctx) {
-				ctx.clapperboard.hide();
 				ctx.pacMan.setAbsSpeed(ctx.pacSpeedChased);
 				ctx.msPac.setAbsSpeed(ctx.pacSpeedChased);
 				ctx.inky.setAbsSpeed(ctx.ghostSpeedChasing);
@@ -161,15 +174,13 @@ public class MsPacManIntermission1 extends Fsm<IntermissionState, IntermissionDa
 				ctx.msPac.setMoveDir(Direction.RIGHT);
 
 				ctx.pinky.setPosition(ctx.msPac.position().minus(t(5), 0));
-				ctx.pinky.setMoveDir(Direction.RIGHT);
-				ctx.pinky.setWishDir(Direction.RIGHT);
+				ctx.pinky.setMoveAndWishDir(Direction.RIGHT);
 
 				ctx.pacMan.setPosition(t(31), ctx.middleY);
 				ctx.pacMan.setMoveDir(Direction.LEFT);
 
 				ctx.inky.setPosition(ctx.pacMan.position().plus(t(5), 0));
-				ctx.inky.setMoveDir(Direction.LEFT);
-				ctx.inky.setWishDir(Direction.LEFT);
+				ctx.inky.setMoveAndWishDir(Direction.LEFT);
 			}
 
 			@Override
@@ -188,14 +199,12 @@ public class MsPacManIntermission1 extends Fsm<IntermissionState, IntermissionDa
 				}
 				// Inky and Pinky collide?
 				else if (ctx.inky.moveDir() == Direction.LEFT && ctx.inky.position().x() - ctx.pinky.position().x() < t(2)) {
-					ctx.inky.setMoveDir(Direction.RIGHT);
-					ctx.inky.setWishDir(Direction.RIGHT);
+					ctx.inky.setMoveAndWishDir(Direction.RIGHT);
 					ctx.inky.setAbsSpeed(ctx.ghostSpeedAfterColliding);
 					ctx.inky.setVelocity(ctx.inky.velocity().minus(0, 2.0));
 					ctx.inky.setAcceleration(0, 0.4);
 
-					ctx.pinky.setMoveDir(Direction.LEFT);
-					ctx.pinky.setWishDir(Direction.LEFT);
+					ctx.pinky.setMoveAndWishDir(Direction.LEFT);
 					ctx.pinky.setAbsSpeed(ctx.ghostSpeedAfterColliding);
 					ctx.pinky.setVelocity(ctx.pinky.velocity().minus(0, 2.0));
 					ctx.pinky.setAcceleration(0, 0.4);
@@ -206,12 +215,12 @@ public class MsPacManIntermission1 extends Fsm<IntermissionState, IntermissionDa
 					ctx.msPac.advanceAnimation();
 					ctx.inky.move();
 					ctx.inky.advanceAnimation();
+					ctx.pinky.move();
+					ctx.pinky.advanceAnimation();
 					if (ctx.inky.position().y() > ctx.middleY) {
 						ctx.inky.setPosition(ctx.inky.position().x(), ctx.middleY);
 						ctx.inky.setAcceleration(V2d.NULL);
 					}
-					ctx.pinky.move();
-					ctx.pinky.advanceAnimation();
 					if (ctx.pinky.position().y() > ctx.middleY) {
 						ctx.pinky.setPosition(ctx.pinky.position().x(), ctx.middleY);
 						ctx.pinky.setAcceleration(V2d.NULL);
@@ -243,32 +252,18 @@ public class MsPacManIntermission1 extends Fsm<IntermissionState, IntermissionDa
 			@Override
 			public void onUpdate(IntermissionData ctx) {
 				if (timer.hasExpired()) {
-					ctx.gameController().state().timer().expire();
+					ctx.gameController().terminateCurrentState();
 				}
 			}
 		};
 
+		// common fields of each state
 		MsPacManIntermission1 intermission;
-		final TickTimer timer = new TickTimer("Timer-" + name(), GameModel.FPS);
+		TickTimer timer = new TickTimer("Timer-" + name(), GameModel.FPS);
 
 		@Override
 		public TickTimer timer() {
 			return timer;
 		}
-	}
-
-	private final IntermissionData intermissionData;
-
-	public MsPacManIntermission1(GameController gameController) {
-		states = IntermissionState.values();
-		for (var state : states) {
-			state.intermission = this;
-		}
-		intermissionData = new IntermissionData(gameController);
-	}
-
-	@Override
-	public IntermissionData context() {
-		return intermissionData;
 	}
 }
