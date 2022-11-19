@@ -314,7 +314,7 @@ public class Creature extends Entity {
 
 	private void logMoveResult(MoveResult result) {
 		if (result.moved()) {
-			logger().trace("%-6s: %s %s", name, result.message(), this);
+			logger().trace(() -> "%-6s: %s %s".formatted(name, result.message(), this));
 		} else {
 			logger().trace("%-6s: not moving", name);
 		}
