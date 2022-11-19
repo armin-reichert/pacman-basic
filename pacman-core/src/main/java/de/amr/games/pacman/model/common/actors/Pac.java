@@ -37,16 +37,19 @@ import de.amr.games.pacman.model.common.GameModel;
  */
 public class Pac extends Creature implements AnimatedEntity<AnimKeys> {
 
-	/** If Pac has been killed. */
-	private boolean dead = false;
-
 	/** Number of clock ticks Pac has to rest and can not move. */
 	private int restingTicks = 0;
 
 	/** Number of clock ticks Pac has not eaten any pellet. */
 	private int starvingTicks = 0;
 
+	private boolean dead = false;
+
 	private EntityAnimationSet<AnimKeys> animationSet;
+
+	public Pac(String name) {
+		super(name);
+	}
 
 	public void setAnimationSet(EntityAnimationSet<AnimKeys> animationSet) {
 		this.animationSet = animationSet;
@@ -55,10 +58,6 @@ public class Pac extends Creature implements AnimatedEntity<AnimKeys> {
 	@Override
 	public Optional<EntityAnimationSet<AnimKeys>> animationSet() {
 		return Optional.ofNullable(animationSet);
-	}
-
-	public Pac(String name) {
-		super(name);
 	}
 
 	@Override
@@ -99,18 +98,14 @@ public class Pac extends Creature implements AnimatedEntity<AnimKeys> {
 		} else {
 			setRelSpeed(game.powerTimer.isRunning() ? game.level.playerSpeedPowered() : game.level.playerSpeed());
 			tryMoving(game);
-			updateMouthAnimation();
+			selectedAnimation().ifPresent(animation -> {
+				if (stuck) {
+					animation.stop();
+				} else {
+					animation.run();
+				}
+				animation.advance();
+			});
 		}
-	}
-
-	private void updateMouthAnimation() {
-		selectedAnimation().ifPresent(animation -> {
-			if (stuck) {
-				animation.stop();
-			} else {
-				animation.run();
-			}
-			animation.advance();
-		});
 	}
 }
