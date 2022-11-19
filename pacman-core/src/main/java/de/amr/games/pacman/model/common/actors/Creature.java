@@ -53,8 +53,8 @@ public class Creature extends Entity {
 	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
 	// make lint happy
-	private static final String MSG_GAME_NULL = "Game must not be null";
-	private static final String MSG_TILE_NULL = "Tile must not be null";
+	protected static final String MSG_GAME_NULL = "Game must not be null";
+	protected static final String MSG_TILE_NULL = "Tile must not be null";
 
 	protected Logger logger() {
 		return LOGGER;
