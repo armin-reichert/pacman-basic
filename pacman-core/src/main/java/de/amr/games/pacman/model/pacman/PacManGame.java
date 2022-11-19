@@ -39,6 +39,7 @@ import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
 import de.amr.games.pacman.lib.Direction;
 import de.amr.games.pacman.lib.NavigationPoint;
+import de.amr.games.pacman.lib.V2d;
 import de.amr.games.pacman.lib.V2i;
 import de.amr.games.pacman.model.common.GameLevel;
 import de.amr.games.pacman.model.common.GameModel;
@@ -56,6 +57,8 @@ import de.amr.games.pacman.model.common.world.World;
 public class PacManGame extends GameModel {
 
 	private static final Logger LOGGER = LogManager.getFormatterLogger();
+
+	private static final Random RND = new Random();
 
 	//@formatter:off
 	private static final byte[][] LEVELS = {
@@ -87,6 +90,9 @@ public class PacManGame extends GameModel {
 	/*21*/ {7,                   90, 95, 50, 120, 100, 60, 105,   0,  0, 0, 0},
 	};
 	/*@formatter:on*/
+
+	// Bonus appears between tiles (13,20) and (14,20)
+	private static final V2d BONUS_POSITION = new V2d(13 * TS + HTS, 20 * TS);
 
 	private static final short[] BONUS_VALUES = { 100, 300, 500, 700, 1000, 2000, 3000, 5000 };
 
@@ -166,21 +172,17 @@ public class PacManGame extends GameModel {
 	public static final List<NavigationPoint> ATTRACT_FRIGHTENED_ORANGE_GHOST = List.of();
 	//@formatter:on
 
-	private static final Random RND = new Random();
+	// Tiles where chasing ghosts cannot move upwards
+	public static final List<V2i> RED_ZONE = List.of(v2i(12, 14), v2i(15, 14), v2i(12, 26), v2i(15, 26));
 
 	public static ArcadeWorld createWorld() {
 		return new ArcadeWorld(MAP);
 	}
 
-	// Tiles where chasing ghosts cannot move upwards
-	public static final List<V2i> RED_ZONE = List.of(v2i(12, 14), v2i(15, 14), v2i(12, 26), v2i(15, 26));
-
-	private final StaticBonus bonus;
+	private final StaticBonus bonus = new StaticBonus(BONUS_POSITION);
 
 	public PacManGame() {
 		super("Pac-Man", "Blinky", "Pinky", "Inky", "Clyde");
-		var bonusLocation = v2i(13, 20).toDoubleVec().scaled(TS).plus(HTS, 0); // between tiles (13,20) and (13,21)
-		bonus = new StaticBonus(bonusLocation);
 		setHiscoreFile(new File(System.getProperty("user.home"), "highscore-pacman.xml"));
 		setLevel(1);
 	}
@@ -188,19 +190,6 @@ public class PacManGame extends GameModel {
 	@Override
 	public GameVariant variant() {
 		return GameVariant.PACMAN;
-	}
-
-	private void createLevel(int levelNumber) {
-		int index = levelNumber <= LEVELS.length ? levelNumber - 1 : LEVELS.length - 1;
-		level = new GameLevel(levelNumber, 1, createWorld(), -1, LEVELS[index]);
-		pacStarvingTimeLimit = (level.number() < 5 ? 4 : 3) * FPS;
-		globalDotLimits = new byte[] { -1, 7, 17, -1 };
-		privateDotLimits = switch (level.number()) {
-		case 1 -> new byte[] { 0, 0, 30, 60 };
-		case 2 -> new byte[] { 0, 0, 0, 50 };
-		default -> new byte[] { 0, 0, 0, 0 };
-		};
-		numGhostsKilledInLevel = 0;
 	}
 
 	@Override
@@ -213,11 +202,20 @@ public class PacManGame extends GameModel {
 
 	@Override
 	public void setLevel(int levelNumber) {
-		createLevel(levelNumber);
-		initGhosts();
-		bonus.setInactive();
+		int index = levelNumber <= LEVELS.length ? levelNumber - 1 : LEVELS.length - 1;
+		level = new GameLevel(levelNumber, 1, createWorld(), -1, LEVELS[index]);
+		pacStarvingTimeLimit = (levelNumber < 5 ? 4 : 3) * FPS;
+		globalDotLimits = new byte[] { -1, 7, 17, -1 };
+		privateDotLimits = switch (levelNumber) {
+		case 1 -> new byte[] { 0, 0, 30, 60 };
+		case 2 -> new byte[] { 0, 0, 0, 50 };
+		default -> new byte[] { 0, 0, 0, 0 };
+		};
+		numGhostsKilledInLevel = 0;
 		ghostsKilledByEnergizer = 0;
 		gameScore.levelNumber = levelNumber;
+		initGhosts();
+		bonus.setInactive();
 	}
 
 	@Override
@@ -228,8 +226,8 @@ public class PacManGame extends GameModel {
 	@Override
 	protected void onBonusReached() {
 		int ticks = 10 * FPS - RND.nextInt(FPS); // between 9 and 10 seconds
-		LOGGER.info("Bonus activated for %d ticks (%.2f seconds)", ticks, (double) ticks / FPS);
 		bonus.setEdible(level.bonusIndex(), BONUS_VALUES[level.bonusIndex()], ticks);
+		LOGGER.info("Bonus activated for %d ticks (%.2f seconds). %s", ticks, (double) ticks / FPS, bonus);
 		GameEvents.publish(GameEventType.BONUS_GETS_ACTIVE, World.tileAt(bonus.position()));
 	}
 }
