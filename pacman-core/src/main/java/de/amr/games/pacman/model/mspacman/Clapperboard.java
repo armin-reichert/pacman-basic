@@ -36,8 +36,6 @@ import de.amr.games.pacman.model.common.actors.Entity;
  */
 public class Clapperboard extends Entity implements AnimatedEntity<Integer> {
 
-	public static final int ACTION = 0;
-
 	public final int sceneNumber;
 	public final String sceneTitle;
 	private EntityAnimationSet<Integer> animationSet;
