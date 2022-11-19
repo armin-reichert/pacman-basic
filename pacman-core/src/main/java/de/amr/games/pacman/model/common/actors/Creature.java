@@ -52,6 +52,10 @@ public class Creature extends Entity {
 
 	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
+	// make lint happy
+	private static final String MSG_GAME_NULL = "Game must not be null";
+	private static final String MSG_TILE_NULL = "Tile must not be null";
+
 	protected Logger logger() {
 		return LOGGER;
 	}
@@ -150,12 +154,12 @@ public class Creature extends Entity {
 	}
 
 	public void placeAtTile(V2i tile, double ox, double oy) {
-		Objects.requireNonNull(tile, "Tile must not be null");
+		Objects.requireNonNull(tile, MSG_TILE_NULL);
 		placeAtTile(tile.x(), tile.y(), ox, oy);
 	}
 
 	public void placeAtTile(V2i tile) {
-		Objects.requireNonNull(tile, "Tile must not be null");
+		Objects.requireNonNull(tile, MSG_TILE_NULL);
 		placeAtTile(tile.x(), tile.y(), 0, 0);
 	}
 
@@ -164,7 +168,7 @@ public class Creature extends Entity {
 	 * @return if this creature can access the given tile
 	 */
 	public boolean canAccessTile(V2i tile, GameModel game) {
-		Objects.requireNonNull(tile, "Tile must not be null");
+		Objects.requireNonNull(tile, MSG_TILE_NULL);
 		var world = game.level.world();
 		if (world.insideMap(tile)) {
 			return !world.isWall(tile) && !world.ghostHouse().isDoorTile(tile);
@@ -251,7 +255,7 @@ public class Creature extends Entity {
 	 * @param game the game model
 	 */
 	public void navigateTowardsTarget(GameModel game) {
-		Objects.requireNonNull(game, "Game must not be null");
+		Objects.requireNonNull(game, MSG_GAME_NULL);
 		if ((newTileEntered || stuck) && targetTile != null && !game.level.world().belongsToPortal(tile())) {
 			bestDirection(game).ifPresent(this::setWishDir);
 		}
@@ -264,7 +268,7 @@ public class Creature extends Entity {
 	 *         not allowed.
 	 */
 	private Optional<Direction> bestDirection(GameModel game) {
-		Objects.requireNonNull(game, "Game must not be null");
+		Objects.requireNonNull(game, MSG_GAME_NULL);
 		Direction bestDir = null;
 		double minDist = Double.MAX_VALUE;
 		for (var dir : TURN_PRIORITY) {
@@ -287,7 +291,7 @@ public class Creature extends Entity {
 	 * possible, it keeps moving to its current move direction.
 	 */
 	public void tryMoving(GameModel game) {
-		Objects.requireNonNull(game, "Game must not be null");
+		Objects.requireNonNull(game, MSG_GAME_NULL);
 		var tileBefore = tile();
 		if (canTeleport) {
 			for (var portal : game.level.world().portals()) {
