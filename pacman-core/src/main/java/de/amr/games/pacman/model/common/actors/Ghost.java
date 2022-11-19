@@ -183,7 +183,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 			} else if (position.y() >= game.homePosition[id].y() + World.HTS) {
 				setMoveAndWishDir(UP);
 			}
-			setAbsSpeed(0.5);
+			setAbsSpeed(GameModel.GHOST_SPEED_HOUSE);
 			move();
 		}
 		updateColorOrBlueOrFlashingAnimation(game);
@@ -194,7 +194,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	public void enterStateLeavingHouse(GameModel game) {
 		Objects.requireNonNull(game, "Game must not be null");
 		state = LEAVING_HOUSE;
-		setAbsSpeed(0.5);
+		setAbsSpeed(GameModel.GHOST_SPEED_HOUSE);
 		GameEvents.publish(new GameEvent(game, GameEventType.GHOST_STARTS_LEAVING_HOUSE, this, tile()));
 	}
 
@@ -392,7 +392,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		if (game.level.world().ghostHouse().atHouseEntry(this)) {
 			enterStateEnteringHouse(game);
 		} else {
-			setAbsSpeed(1.5); // not sure. Attention: If too fast, ghost misses turns!
+			setAbsSpeed(GameModel.GHOST_SPEED_RETURNING);
 			navigateTowardsTarget(game);
 			tryMoving(game);
 		}

@@ -105,6 +105,9 @@ public abstract class GameModel {
 	// not sure exactly how long Pac-Man is losing power
 	public static final long PAC_POWER_FADING_TICKS = 2 * FPS;
 
+	public static final double GHOST_SPEED_HOUSE = 0.5; // unsure
+	public static final double GHOST_SPEED_RETURNING = 1.75; // unsure
+
 	protected static final int[] GHOST_VALUES = { 200, 400, 800, 1600 };
 
 	/** Credit for playing. */

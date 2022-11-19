@@ -350,6 +350,6 @@ public class Creature extends Entity {
 	protected boolean atTurnPositionTo(Direction dir) {
 		Objects.requireNonNull(dir, "Direction must not be null");
 		var offset = dir.isHorizontal() ? offset().y() : offset().x();
-		return Math.abs(offset) <= 0.5;
+		return Math.abs(offset) <= 0.75;
 	}
 }
