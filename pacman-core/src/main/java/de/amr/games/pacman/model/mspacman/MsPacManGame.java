@@ -57,6 +57,8 @@ public class MsPacManGame extends GameModel {
 
 	private static final Logger LOGGER = LogManager.getFormatterLogger();
 
+	private static final Random RND = new Random();
+
 	private static final byte[][] LEVELS = {
 	/*@formatter:off*/
 	/* 1*/ {0, /* CHERRIES */    80, 75, 40,  20,  80, 10,  85,  90, 50, 6, 5},
@@ -274,8 +276,6 @@ public class MsPacManGame extends GameModel {
 		};
 	}
 
-	private static final Random rnd = new Random();
-
 	private final MovingBonus movingBonus;
 
 	/**
@@ -322,7 +322,7 @@ public class MsPacManGame extends GameModel {
 		default -> (levelNumber - 14) % 8 < 4 ? 3 : 4;
 		};
 		int numLevels = LEVELS.length;
-		int bonusSymbol = levelNumber >= 8 ? rnd.nextInt(7) : -1; // -1 means: use value from level data
+		int bonusSymbol = levelNumber >= 8 ? RND.nextInt(7) : -1; // -1 means: use value from level data
 		level = new GameLevel(levelNumber, mazeNumber(levelNumber), createWorld(mapNumber), bonusSymbol,
 				levelNumber <= numLevels ? LEVELS[levelNumber - 1] : LEVELS[numLevels - 1]);
 		pacStarvingTimeLimit = (levelNumber < 5 ? 4 : 3) * FPS;
@@ -357,16 +357,16 @@ public class MsPacManGame extends GameModel {
 		int houseHeight = level.world().ghostHouse().size().y();
 		int numPortals = level.world().portals().size();
 		if (numPortals > 0) {
-			var entryPortal = (HorizontalPortal) level.world().portals().get(rnd.nextInt(numPortals));
-			var exitPortal = (HorizontalPortal) level.world().portals().get(rnd.nextInt(numPortals));
-			var orientation = rnd.nextBoolean() ? Direction.LEFT : Direction.RIGHT;
+			var entryPortal = (HorizontalPortal) level.world().portals().get(RND.nextInt(numPortals));
+			var exitPortal = (HorizontalPortal) level.world().portals().get(RND.nextInt(numPortals));
+			var orientation = RND.nextBoolean() ? Direction.LEFT : Direction.RIGHT;
 			var start = orientation == Direction.RIGHT ? np(entryPortal.leftTunnelEnd()) : np(entryPortal.rightTunnelEnd());
 			List<NavigationPoint> route = new ArrayList<>();
 			route.add(np(houseEntry));
 			route.add(np(houseEntry.plus(0, houseHeight + 2)));
 			route.add(np(houseEntry));
 			route.add(orientation == Direction.RIGHT ? np(exitPortal.rightTunnelEnd()) : np(exitPortal.leftTunnelEnd()));
-			LOGGER.info("Bonus route: %s, orientation: %s", route, orientation);
+			LOGGER.trace("Bonus route: %s, orientation: %s", route, orientation);
 			movingBonus.setRoute(route);
 			movingBonus.placeAtTile(start.tile(), 0, 0);
 			movingBonus.setMoveAndWishDir(orientation);
