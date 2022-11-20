@@ -50,15 +50,12 @@ import de.amr.games.pacman.model.common.GameModel;
  */
 public class Creature extends Entity {
 
-	private static final Logger LOGGER = LogManager.getFormatterLogger();
+	// common logger for creature and subclasses
+	protected static final Logger LOGGER = LogManager.getFormatterLogger();
 
 	// make lint happy
 	protected static final String MSG_GAME_NULL = "Game must not be null";
 	protected static final String MSG_TILE_NULL = "Tile must not be null";
-
-	protected Logger logger() {
-		return LOGGER;
-	}
 
 	protected static final Direction[] TURN_PRIORITY = { UP, LEFT, DOWN, RIGHT };
 
@@ -185,7 +182,7 @@ public class Creature extends Entity {
 		Objects.requireNonNull(dir, "Move direction must not be null");
 		if (moveDir != dir) {
 			moveDir = dir;
-			logger().trace("%-6s: New moveDir: %s. %s", name, moveDir, this);
+			LOGGER.trace("%-6s: New moveDir: %s. %s", name, moveDir, this);
 			velocity = new V2d(moveDir.vec).scaled(velocity.length());
 		}
 	}
@@ -198,7 +195,7 @@ public class Creature extends Entity {
 		Objects.requireNonNull(dir, "Wish direction must not be null");
 		if (wishDir != dir) {
 			wishDir = dir;
-			logger().trace("%-6s: New wishDir: %s. %s", name, wishDir, this);
+			LOGGER.trace("%-6s: New wishDir: %s. %s", name, wishDir, this);
 		}
 	}
 
@@ -214,7 +211,7 @@ public class Creature extends Entity {
 
 	public void forceTurningBack() {
 		reverse = true;
-		logger().trace("%s (moveDir=%s, wishDir=%s) got signal to reverse direction", name, moveDir, wishDir);
+		LOGGER.trace("%s (moveDir=%s, wishDir=%s) got signal to reverse direction", name, moveDir, wishDir);
 	}
 
 	/**
@@ -318,9 +315,9 @@ public class Creature extends Entity {
 
 	private void logMoveResult(MoveResult result) {
 		if (result.moved()) {
-			logger().trace(() -> "%-6s: %s %s".formatted(name, result.message(), this));
+			LOGGER.trace(() -> "%-6s: %s %s".formatted(name, result.message(), this));
 		} else {
-			logger().trace("%-6s: not moving", name);
+			LOGGER.trace("%-6s: not moving", name);
 		}
 	}
 

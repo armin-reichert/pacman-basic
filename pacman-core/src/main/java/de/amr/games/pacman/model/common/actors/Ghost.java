@@ -41,9 +41,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import de.amr.games.pacman.event.GameEvent;
 import de.amr.games.pacman.event.GameEventType;
 import de.amr.games.pacman.event.GameEvents;
@@ -65,13 +62,6 @@ import de.amr.games.pacman.model.pacman.PacManGame;
  * @author Armin Reichert
  */
 public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
-
-	private static final Logger LOGGER = LogManager.getFormatterLogger();
-
-	@Override
-	protected Logger logger() {
-		return LOGGER;
-	}
 
 	public static final int ID_RED_GHOST = 0;
 	public static final int ID_PINK_GHOST = 1;
