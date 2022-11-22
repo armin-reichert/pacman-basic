@@ -321,21 +321,21 @@ public class Creature extends Entity {
 		}
 	}
 
-	private MoveResult tryMoving(Direction direction, GameModel game) {
-		var directionVector = direction.vec.toDoubleVec();
+	private MoveResult tryMoving(Direction dir, GameModel game) {
 		double speed = velocity.length();
+		V2d dirVector = dir.vec.toDoubleVec();
 		if (speed > 1.0) {
-			var step = tryMovingLittle(direction, game, directionVector, 0.5 * speed);
-			if (step.moved()) {
-				return tryMovingLittle(direction, game, directionVector, 0.5 * speed);
+			var result = takeSmallStep(dir, game, dirVector, 0.5 * speed);
+			if (result.moved()) {
+				return takeSmallStep(dir, game, dirVector, 0.5 * speed);
 			}
-			return step;
+			return result;
 		}
-		return tryMovingLittle(direction, game, directionVector, speed);
+		return takeSmallStep(dir, game, dirVector, speed);
 	}
 
-	private MoveResult tryMovingLittle(Direction direction, GameModel game, V2d dirVector, double speed) {
-		var turn = !direction.sameOrientation(moveDir);
+	private MoveResult takeSmallStep(Direction dir, GameModel game, V2d dirVector, double speed) {
+		var turn = !dir.sameOrientation(moveDir);
 		var newVelocity = dirVector.scaled(speed);
 		var touchPosition = center().plus(dirVector.scaled(HTS)).plus(newVelocity);
 
@@ -346,18 +346,18 @@ public class Creature extends Entity {
 			return new MoveResult(false, "Not moved: Cannot access tile %s", tileAt(touchPosition));
 		}
 
-		if (turn && !atTurnPositionTo(direction)) {
-			return new MoveResult(false, "Wants to move %s but not at turn position", direction);
+		if (turn && !atTurnPositionTo(dir)) {
+			return new MoveResult(false, "Wants to move %s but not at turn position", dir);
 		}
 
 		setVelocity(newVelocity);
 		move();
-		return new MoveResult(true, "Moved %5s", direction);
+		return new MoveResult(true, "Moved %5s", dir);
 	}
 
 	protected boolean atTurnPositionTo(Direction dir) {
 		Objects.requireNonNull(dir, "Direction must not be null");
 		var offset = dir.isHorizontal() ? offset().y() : offset().x();
-		return Math.abs(offset) <= 0.75;
+		return Math.abs(offset) <= 0.5;
 	}
 }
