@@ -106,7 +106,7 @@ public abstract class GameModel {
 	public static final long PAC_POWER_FADING_TICKS = 2 * FPS;
 
 	public static final double GHOST_SPEED_HOUSE = 0.5; // unsure
-	public static final double GHOST_SPEED_RETURNING = 1.75; // unsure
+	public static final double GHOST_SPEED_RETURNING = 1.5; // unsure
 
 	protected static final int[] GHOST_VALUES = { 200, 400, 800, 1600 };
 
