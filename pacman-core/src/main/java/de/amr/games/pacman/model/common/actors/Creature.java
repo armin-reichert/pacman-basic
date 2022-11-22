@@ -321,31 +321,27 @@ public class Creature extends Entity {
 		}
 	}
 
-	/**
-	 * @param newDir some direction
-	 * @return if creature could move
-	 */
-	private MoveResult tryMoving(Direction newDir, GameModel game) {
-		var newDirVec = new V2d(newDir.vec);
-		var newVelocity = newDirVec.scaled(velocity.length());
-		var touchPosition = center().plus(newDirVec.scaled(HTS)).plus(newVelocity);
-		var canAccessTouchedTile = canAccessTile(tileAt(touchPosition), game);
-		var isTurn = !newDir.sameOrientation(moveDir);
+	private MoveResult tryMoving(Direction direction, GameModel game) {
+		var turn = !direction.sameOrientation(moveDir);
+		var speed = velocity.length();
+		var dirVector = direction.vec.toDoubleVec();
+		var newVelocity = dirVector.scaled(speed);
+		var touchPosition = center().plus(dirVector.scaled(HTS)).plus(newVelocity);
 
-		MoveResult result = null;
-		if (!canAccessTouchedTile) {
-			if (!isTurn) {
-				placeAtTile(tile());
+		if (!canAccessTile(tileAt(touchPosition), game)) {
+			if (!turn) {
+				placeAtTile(tile()); // adjust exactly over tile if blocked
 			}
-			result = new MoveResult(false, "Cannot access tile %s", tileAt(touchPosition));
-		} else if (isTurn && !atTurnPositionTo(newDir)) {
-			result = new MoveResult(false, "Wants %s but not at turn position", newDir);
-		} else {
-			result = new MoveResult(true, "Moves %5s", newDir);
-			velocity = newVelocity;
-			move();
+			return new MoveResult(false, "Not moved: Cannot access tile %s", tileAt(touchPosition));
 		}
-		return result;
+
+		if (turn && !atTurnPositionTo(direction)) {
+			return new MoveResult(false, "Wants to move %s but not at turn position", direction);
+		}
+
+		setVelocity(newVelocity);
+		move();
+		return new MoveResult(true, "Moved %5s", direction);
 	}
 
 	protected boolean atTurnPositionTo(Direction dir) {
