@@ -56,6 +56,7 @@ public class Creature extends Entity {
 	// make lint happy
 	protected static final String MSG_GAME_NULL = "Game must not be null";
 	protected static final String MSG_TILE_NULL = "Tile must not be null";
+	protected static final String MSG_DIR_NULL = "Direction must not be null";
 
 	protected static final Direction[] TURN_PRIORITY = { UP, LEFT, DOWN, RIGHT };
 
@@ -179,7 +180,7 @@ public class Creature extends Entity {
 	 * @param dir the new move direction
 	 */
 	public void setMoveDir(Direction dir) {
-		Objects.requireNonNull(dir, "Move direction must not be null");
+		Objects.requireNonNull(dir, MSG_DIR_NULL);
 		if (moveDir != dir) {
 			moveDir = dir;
 			LOGGER.trace("%-6s: New moveDir: %s. %s", name, moveDir, this);
@@ -192,7 +193,7 @@ public class Creature extends Entity {
 	}
 
 	public void setWishDir(Direction dir) {
-		Objects.requireNonNull(dir, "Wish direction must not be null");
+		Objects.requireNonNull(dir, MSG_DIR_NULL);
 		if (wishDir != dir) {
 			wishDir = dir;
 			LOGGER.trace("%-6s: New wishDir: %s. %s", name, wishDir, this);
@@ -204,7 +205,7 @@ public class Creature extends Entity {
 	}
 
 	public void setMoveAndWishDir(Direction dir) {
-		Objects.requireNonNull(dir, "Move/Wish direction must not be null");
+		Objects.requireNonNull(dir, MSG_DIR_NULL);
 		setWishDir(dir);
 		setMoveDir(dir);
 	}
@@ -322,7 +323,7 @@ public class Creature extends Entity {
 	}
 
 	private MoveResult tryMoving(Direction dir, GameModel game) {
-		Objects.requireNonNull(dir, "Direction must not be null");
+		Objects.requireNonNull(dir, MSG_DIR_NULL);
 		double speed = velocity.length();
 		V2d dirVector = dir.vec.toDoubleVec();
 		if (speed > 1.0) {
