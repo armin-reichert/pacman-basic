@@ -322,9 +322,20 @@ public class Creature extends Entity {
 	}
 
 	private MoveResult tryMoving(Direction direction, GameModel game) {
+		var directionVector = direction.vec.toDoubleVec();
+		double speed = velocity.length();
+		if (speed > 1.0) {
+			var step = tryMovingLittle(direction, game, directionVector, 0.5 * speed);
+			if (step.moved()) {
+				return tryMovingLittle(direction, game, directionVector, 0.5 * speed);
+			}
+			return step;
+		}
+		return tryMovingLittle(direction, game, directionVector, speed);
+	}
+
+	private MoveResult tryMovingLittle(Direction direction, GameModel game, V2d dirVector, double speed) {
 		var turn = !direction.sameOrientation(moveDir);
-		var speed = velocity.length();
-		var dirVector = direction.vec.toDoubleVec();
 		var newVelocity = dirVector.scaled(speed);
 		var touchPosition = center().plus(dirVector.scaled(HTS)).plus(newVelocity);
 
