@@ -322,6 +322,7 @@ public class Creature extends Entity {
 	}
 
 	private MoveResult tryMoving(Direction dir, GameModel game) {
+		Objects.requireNonNull(dir, "Direction must not be null");
 		double speed = velocity.length();
 		V2d dirVector = dir.vec.toDoubleVec();
 		if (speed > 1.0) {
@@ -356,7 +357,6 @@ public class Creature extends Entity {
 	}
 
 	protected boolean atTurnPositionTo(Direction dir) {
-		Objects.requireNonNull(dir, "Direction must not be null");
 		var offset = dir.isHorizontal() ? offset().y() : offset().x();
 		return Math.abs(offset) <= 0.5;
 	}
