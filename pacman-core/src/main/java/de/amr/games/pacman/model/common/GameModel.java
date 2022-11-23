@@ -42,7 +42,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.stream.Stream;
@@ -518,6 +520,7 @@ public abstract class GameModel {
 		public boolean pacPowerFading;
 		public boolean ghostsKilled;
 		public Ghost[] edibleGhosts;
+		public final List<Ghost> killedGhosts = new ArrayList<>(4);
 		public Optional<Ghost> unlockedGhost;
 		public String unlockReason;
 
@@ -536,6 +539,7 @@ public abstract class GameModel {
 			pacPowerFading = false;
 			ghostsKilled = false;
 			edibleGhosts = new Ghost[0];
+			killedGhosts.clear();
 			unlockedGhost = Optional.empty();
 			unlockReason = null;
 		}
@@ -619,6 +623,7 @@ public abstract class GameModel {
 	}
 
 	private void killGhost(Ghost ghost) {
+		memo.killedGhosts.add(ghost);
 		killedIndex[ghost.id] = ghostsKilledByEnergizer;
 		ghostsKilledByEnergizer++;
 		ghost.enterStateEaten(this);
