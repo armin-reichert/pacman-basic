@@ -38,9 +38,14 @@ import de.amr.games.pacman.lib.animation.EntityAnimation;
  */
 public class ArcadeWorld extends MapBasedWorld {
 
+	/** Number of tiles in x-direction (horizontally. */
 	public static final int TILES_X = 28;
+
+	/** Number of tiles in y-direction (vertically. */
 	public static final int TILES_Y = 36;
-	public static final V2i WORLD_SIZE_PX = v2i(TILES_X * TS, TILES_Y * TS);
+
+	/** Size of Arcade game world in pixels (28x8=224, 36x8=288). */
+	public static final V2i SIZE_PX = v2i(TILES_X * TS, TILES_Y * TS);
 
 	private final ArcadeGhostHouse house = new ArcadeGhostHouse();
 
@@ -56,10 +61,16 @@ public class ArcadeWorld extends MapBasedWorld {
 		return house;
 	}
 
+	/**
+	 * @return (optional) animation played when level has been completed
+	 */
 	public Optional<EntityAnimation> levelCompleteAnimation() {
 		return Optional.ofNullable(levelCompleteAnimation);
 	}
 
+	/**
+	 * @param animation animation played when level has been completed
+	 */
 	public void setLevelCompleteAnimation(EntityAnimation animation) {
 		this.levelCompleteAnimation = animation;
 	}
