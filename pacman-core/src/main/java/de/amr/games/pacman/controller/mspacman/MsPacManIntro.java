@@ -169,7 +169,7 @@ public class MsPacManIntro extends Fsm<IntroState, IntroData> {
 		READY_TO_PLAY {
 			@Override
 			public void onUpdate(IntroData ctx) {
-				if (timer.atSecond(1.5) && !ctx.game().hasCredit()) {
+				if (timer.atSecond(2.0) && !ctx.game().hasCredit()) {
 					ctx.gameController().changeState(GameState.READY);
 					// show play scene in attract mode
 					return;
