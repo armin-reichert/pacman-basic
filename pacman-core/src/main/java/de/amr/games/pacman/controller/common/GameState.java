@@ -394,6 +394,9 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		public void onUpdate(GameModel game) {
 			game.energizerPulse.advance();
 			game.pac.update(game);
+			if (timer.betweenSeconds(0, 1)) {
+				game.ghosts().forEach(ghost -> ghost.selectedAnimation().ifPresent(EntityAnimation::advance));
+			}
 			if (timer.atSecond(0.25)) {
 				game.pac.selectAndResetAnimation(AnimKeys.PAC_DYING);
 			} else if (timer.atSecond(1)) {
