@@ -116,7 +116,7 @@ public abstract class GameModel {
 	protected int credit;
 
 	/** Tells if the game play is active. */
-	public boolean playing;
+	protected boolean playing;
 
 	/** Pac-Man or Ms. Pac-Man. */
 	protected final Pac pac;
@@ -222,6 +222,14 @@ public abstract class GameModel {
 	}
 
 	public abstract GameVariant variant();
+
+	public boolean isPlaying() {
+		return playing;
+	}
+
+	public void setPlaying(boolean playing) {
+		this.playing = playing;
+	}
 
 	public Score gameScore() {
 		return gameScore;

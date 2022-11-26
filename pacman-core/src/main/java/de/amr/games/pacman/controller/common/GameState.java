@@ -139,9 +139,9 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		@Override
 		public void onEnter(GameModel game) {
 			gc.sounds().stopAll();
-			if (game.hasCredit() && !game.playing) {
+			if (game.hasCredit() && !game.isPlaying()) {
 				getReadyForNewGame(game);
-			} else if (game.hasCredit() && game.playing) {
+			} else if (game.hasCredit() && game.isPlaying()) {
 				continueGame(game);
 			} else {
 				enterAttractMode(game);
@@ -176,14 +176,14 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 
 		@Override
 		public void onUpdate(GameModel game) {
-			if (game.hasCredit() && !game.playing) {
+			if (game.hasCredit() && !game.isPlaying()) {
 				// about to start game
 				if (timer.tick() == 130) {
 					game.guys().forEach(Entity::show);
 					game.livesOneLessShown = true;
 				} else if (timer.tick() == 250) {
 					// start game
-					game.playing = true;
+					game.setPlaying(true);
 					game.startHuntingPhase(0);
 					gc.changeState(GameState.HUNTING);
 				}
@@ -264,7 +264,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 
 		@Override
 		public void addCredit(GameModel game) {
-			if (!game.playing) {
+			if (!game.isPlaying()) {
 				boolean added = game.addCredit();
 				if (added) {
 					gc.sounds().play(GameSound.CREDIT);
@@ -275,7 +275,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 
 		@Override
 		public void cheatEatAllPellets(GameModel game) {
-			if (game.playing) {
+			if (game.isPlaying()) {
 				var world = game.level().world();
 				world.tiles().filter(not(world::isEnergizerTile)).forEach(world::removeFood);
 				GameEvents.publish(GameEventType.PAC_FINDS_FOOD, null);
@@ -284,7 +284,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 
 		@Override
 		public void cheatKillAllEatableGhosts(GameModel game) {
-			if (game.playing) {
+			if (game.isPlaying()) {
 				game.killAllPossibleGhosts();
 				gc.changeState(GameState.GHOST_DYING);
 			}
@@ -292,7 +292,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 
 		@Override
 		public void cheatEnterNextLevel(GameModel game) {
-			if (game.playing) {
+			if (game.isPlaying()) {
 				var world = game.level().world();
 				world.tiles().forEach(world::removeFood);
 				gc.changeState(GameState.LEVEL_COMPLETE);
@@ -434,7 +434,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		@Override
 		public void onUpdate(GameModel game) {
 			if (timer.hasExpired()) {
-				game.playing = false;
+				game.setPlaying(false);
 				gc.changeState(game.hasCredit() ? CREDIT : INTRO);
 			}
 		}
@@ -456,7 +456,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		@Override
 		public void onUpdate(GameModel game) {
 			if (timer.hasExpired()) {
-				gc.changeState(!game.hasCredit() || !game.playing ? INTRO : LEVEL_STARTING);
+				gc.changeState(!game.hasCredit() || !game.isPlaying() ? INTRO : LEVEL_STARTING);
 			}
 		}
 	},
