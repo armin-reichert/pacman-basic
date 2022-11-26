@@ -134,7 +134,7 @@ public abstract class GameModel {
 	private final Ghost[] theGhosts;
 
 	/** "Cruise Elroy" state. Values: <code>0, 1, 2, -1, -2 (0= "off", negative value = "disabled")</code>. */
-	public byte cruiseElroyState;
+	private byte cruiseElroyState;
 
 	/** The position of the ghosts when the game starts. */
 	public final V2d[] homePosition = new V2d[4];
@@ -447,6 +447,14 @@ public abstract class GameModel {
 
 	protected int ghostValue(int ghostKillIndex) {
 		return GHOST_VALUES[ghostKillIndex];
+	}
+
+	/**
+	 * @return Blinky's current "cruise elroy" state. Values are 0 (no cruise elroy), 1, 2, -1, -2, wherer negative values
+	 *         mean "disabled".
+	 */
+	public int blinkyCruiseElroyState() {
+		return cruiseElroyState;
 	}
 
 	/**

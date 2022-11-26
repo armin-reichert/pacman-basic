@@ -238,9 +238,9 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	private void updateStateHuntingPac(GameModel game) {
 		if (game.level.world().isTunnel(tile())) {
 			setRelSpeed(game.level.ghostSpeedTunnel());
-		} else if (id == ID_RED_GHOST && game.cruiseElroyState == 1) {
+		} else if (id == ID_RED_GHOST && game.blinkyCruiseElroyState() == 1) {
 			setRelSpeed(game.level.elroy1Speed());
-		} else if (id == ID_RED_GHOST && game.cruiseElroyState == 2) {
+		} else if (id == ID_RED_GHOST && game.blinkyCruiseElroyState() == 2) {
 			setRelSpeed(game.level.elroy2Speed());
 		} else {
 			setRelSpeed(game.level.ghostSpeed());
@@ -248,7 +248,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		if (game.variant() == MS_PACMAN && game.huntingTimer.scatterPhase() == 0
 				&& (id == ID_RED_GHOST || id == ID_PINK_GHOST)) {
 			roam(game);
-		} else if (game.huntingTimer.inChasingPhase() || id == ID_RED_GHOST && game.cruiseElroyState > 0) {
+		} else if (game.huntingTimer.inChasingPhase() || id == ID_RED_GHOST && game.blinkyCruiseElroyState() > 0) {
 			setTargetTile(fnChasingTarget.get());
 			navigateTowardsTarget(game);
 			tryMoving(game);
