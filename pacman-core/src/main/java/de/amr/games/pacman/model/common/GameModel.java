@@ -146,7 +146,7 @@ public abstract class GameModel {
 	public final V2i[] scatterTile = new V2i[4];
 
 	/** Timer used to control hunting phases. */
-	public final HuntingTimer huntingTimer = new HuntingTimer();
+	private final HuntingTimer huntingTimer = new HuntingTimer();
 
 	/** Current level. */
 	protected GameLevel level;
@@ -490,6 +490,10 @@ public abstract class GameModel {
 	public abstract void setLevel(int levelNumber);
 
 	// Hunting
+
+	public HuntingTimer huntingTimer() {
+		return huntingTimer;
+	}
 
 	/**
 	 * Hunting happens in different phases. Phases 0, 2, 4, 6 are scattering phases where the ghosts target for their

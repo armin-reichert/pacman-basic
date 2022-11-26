@@ -202,7 +202,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		public void onEnter(GameModel game) {
 			game.pac().selectAndEnsureRunningAnimation(AnimKeys.PAC_MUNCHING);
 			game.energizerPulse.restart();
-			gc.sounds().ensureSirenStarted(game.huntingTimer.phase() / 2);
+			gc.sounds().ensureSirenStarted(game.huntingTimer().phase() / 2);
 		}
 
 		@Override
@@ -236,8 +236,8 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 
 		private void renderSound(GameModel game) {
 			var snd = gc.sounds();
-			if (game.huntingTimer.tick() == 0) {
-				snd.ensureSirenStarted(game.huntingTimer.phase() / 2);
+			if (game.huntingTimer().tick() == 0) {
+				snd.ensureSirenStarted(game.huntingTimer().phase() / 2);
 			}
 			if (game.memo.pacGotPower) {
 				snd.stopSirens();
@@ -245,7 +245,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			}
 			if (game.memo.pacPowerLost) {
 				snd.stop(GameSound.PACMAN_POWER);
-				snd.ensureSirenStarted(game.huntingTimer.phase() / 2);
+				snd.ensureSirenStarted(game.huntingTimer().phase() / 2);
 			}
 			if (game.memo.foodFound) {
 				snd.ensureLoop(GameSound.PACMAN_MUNCH, GameSoundController.LOOP_FOREVER);
