@@ -122,7 +122,7 @@ public abstract class GameModel {
 	protected final Pac pac;
 
 	/** Controls the time Pac has power. */
-	public final TickTimer powerTimer = new TickTimer("Pac-power-timer", FPS);
+	protected final TickTimer powerTimer = new TickTimer("Pac-power-timer", FPS);
 
 	/** Tells if Pac-Man can be killed by ghosts. */
 	public boolean isPacImmune;
@@ -146,7 +146,7 @@ public abstract class GameModel {
 	public final V2i[] scatterTile = new V2i[4];
 
 	/** Timer used to control hunting phases. */
-	private final HuntingTimer huntingTimer = new HuntingTimer();
+	protected final HuntingTimer huntingTimer = new HuntingTimer();
 
 	/** Current level. */
 	protected GameLevel level;
@@ -545,6 +545,10 @@ public abstract class GameModel {
 		case 9, 13, 17 -> 3;
 		default -> 0;
 		};
+	}
+
+	public TickTimer powerTimer() {
+		return powerTimer;
 	}
 
 	// Bonus stuff

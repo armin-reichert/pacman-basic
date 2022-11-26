@@ -146,7 +146,7 @@ public class Autopilot implements Steering {
 		if (!game.pac().isStuck() && !game.level().world().isIntersection(game.pac().tile()))
 			return;
 
-		if (!data.frightenedGhosts.isEmpty() && game.powerTimer.remaining() >= 1 * 60) {
+		if (!data.frightenedGhosts.isEmpty() && game.powerTimer().remaining() >= 1 * 60) {
 			Ghost prey = data.frightenedGhosts.get(0);
 			LOGGER.trace("Detected frightened ghost %s %.0g tiles away", prey.name(),
 					prey.tile().manhattanDistance(game.pac().tile()));
@@ -237,7 +237,7 @@ public class Autopilot implements Steering {
 				if (!game.level().world().isFoodTile(tile) || game.level().world().containsEatenFood(tile)) {
 					continue;
 				}
-				if (game.level().world().isEnergizerTile(tile) && game.powerTimer.remaining() > 2 * 60
+				if (game.level().world().isEnergizerTile(tile) && game.powerTimer().remaining() > 2 * 60
 						&& game.level().world().foodRemaining() > 1) {
 					continue;
 				}
