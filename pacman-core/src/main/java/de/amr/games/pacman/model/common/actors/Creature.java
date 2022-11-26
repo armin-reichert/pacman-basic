@@ -323,22 +323,20 @@ public class Creature extends Entity {
 	}
 
 	private MoveResult tryMoving(Direction dir, GameModel game) {
-		Objects.requireNonNull(dir, MSG_DIR_NULL);
 		double speed = velocity.length();
 		V2d dirVector = dir.vec.toDoubleVec();
-		// divide "large" move in 2 smaller moves such that turns are never missed
-		if (speed > 1.0) {
-			var result = makeSmallMove(dir, game, dirVector, 0.5 * speed);
-			if (result.moved()) {
-				return makeSmallMove(dir, game, dirVector, 0.5 * speed);
-			}
-			return result;
-		} else {
-			return makeSmallMove(dir, game, dirVector, speed);
+		if (speed <= 1.0) {
+			return trySmallMove(dir, game, dirVector, speed);
 		}
+		// split "large" move such that turns are not missed
+		var result = trySmallMove(dir, game, dirVector, 0.5 * speed);
+		if (!result.moved()) {
+			return result;
+		}
+		return trySmallMove(dir, game, dirVector, 0.5 * speed);
 	}
 
-	private MoveResult makeSmallMove(Direction dir, GameModel game, V2d dirVector, double speed) {
+	private MoveResult trySmallMove(Direction dir, GameModel game, V2d dirVector, double speed) {
 		var turn = !dir.sameOrientation(moveDir);
 		var newVelocity = dirVector.scaled(speed);
 		var touchPosition = center().plus(dirVector.scaled(HTS)).plus(newVelocity);
