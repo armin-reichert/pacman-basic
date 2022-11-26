@@ -140,10 +140,10 @@ public abstract class GameModel {
 	protected final V2d[] ghostHomePosition = new V2d[4];
 
 	/** The tiles inside the house where the ghosts get revived. Amen. */
-	public final V2d[] revivalPosition = new V2d[4];
+	protected final V2d[] revivalPosition = new V2d[4];
 
 	/** The (unreachable) tiles in the corners targeted during the scatter phase. */
-	public final V2i[] scatterTile = new V2i[4];
+	protected final V2i[] ghostScatterTile = new V2i[4];
 
 	/** Timer used to control hunting phases. */
 	protected final HuntingTimer huntingTimer = new HuntingTimer();
@@ -218,7 +218,7 @@ public abstract class GameModel {
 		pinkGhost.setChasingTarget(() -> tilesAhead(pac, 4));
 		cyanGhost.setChasingTarget(() -> tilesAhead(pac, 2).scaled(2).minus(redGhost.tile()));
 		orangeGhost.setChasingTarget(
-				() -> orangeGhost.tile().euclideanDistance(pac.tile()) < 8 ? scatterTile[ID_ORANGE_GHOST] : pac.tile());
+				() -> orangeGhost.tile().euclideanDistance(pac.tile()) < 8 ? ghostScatterTile[ID_ORANGE_GHOST] : pac.tile());
 	}
 
 	public abstract GameVariant variant();
@@ -375,19 +375,19 @@ public abstract class GameModel {
 		if (level.world() instanceof ArcadeWorld) {
 			ghostHomePosition[ID_RED_GHOST] = halfTileRightOf(ArcadeGhostHouse.ENTRY_TILE);
 			revivalPosition[ID_RED_GHOST] = halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_CENTER);
-			scatterTile[ID_RED_GHOST] = v2i(25, 0);
+			ghostScatterTile[ID_RED_GHOST] = v2i(25, 0);
 
 			ghostHomePosition[ID_PINK_GHOST] = halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_CENTER);
 			revivalPosition[ID_PINK_GHOST] = halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_CENTER);
-			scatterTile[ID_PINK_GHOST] = v2i(2, 0);
+			ghostScatterTile[ID_PINK_GHOST] = v2i(2, 0);
 
 			ghostHomePosition[ID_CYAN_GHOST] = halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_LEFT);
 			revivalPosition[ID_CYAN_GHOST] = halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_LEFT);
-			scatterTile[ID_CYAN_GHOST] = v2i(27, 34);
+			ghostScatterTile[ID_CYAN_GHOST] = v2i(27, 34);
 
 			ghostHomePosition[ID_ORANGE_GHOST] = halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_RIGHT);
 			revivalPosition[ID_ORANGE_GHOST] = halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_RIGHT);
-			scatterTile[ID_ORANGE_GHOST] = v2i(0, 34);
+			ghostScatterTile[ID_ORANGE_GHOST] = v2i(0, 34);
 		}
 	}
 
@@ -467,6 +467,24 @@ public abstract class GameModel {
 	public V2d ghostHomePosition(int id) {
 		checkGhostID(id);
 		return ghostHomePosition[id];
+	}
+
+	/**
+	 * @param id ghost ID (0, 1, 2, 3)
+	 * @return revival position of ghost
+	 */
+	public V2d ghostRevivalPosition(int id) {
+		checkGhostID(id);
+		return revivalPosition[id];
+	}
+
+	/**
+	 * @param id ghost ID (0, 1, 2, 3)
+	 * @return scatter tile of ghost
+	 */
+	public V2i ghostScatterTile(int id) {
+		checkGhostID(id);
+		return ghostScatterTile[id];
 	}
 
 	/**

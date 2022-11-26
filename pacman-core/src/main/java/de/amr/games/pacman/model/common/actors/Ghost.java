@@ -253,7 +253,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 			navigateTowardsTarget(game);
 			tryMoving(game);
 		} else {
-			setTargetTile(game.scatterTile[id]);
+			setTargetTile(game.ghostScatterTile(id));
 			navigateTowardsTarget(game);
 			tryMoving(game);
 		}
@@ -393,7 +393,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	public void enterStateEnteringHouse(GameModel game) {
 		Objects.requireNonNull(game, MSG_GAME_NULL);
 		state = ENTERING_HOUSE;
-		setTargetTile(tileAt(game.revivalPosition[id]));
+		setTargetTile(tileAt(game.ghostRevivalPosition(id)));
 		if (animationSet != null) {
 			animationSet.select(AnimKeys.GHOST_EYES);
 		}
@@ -407,12 +407,12 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	 * @param game the game
 	 */
 	private void updateStateEnteringHouse(GameModel game) {
-		boolean atRevivalTile = game.level().world().ghostHouse().leadGuyInside(this, game.revivalPosition[id]);
+		boolean atRevivalTile = game.level().world().ghostHouse().leadGuyInside(this, game.ghostRevivalPosition(id));
 		if (atRevivalTile) {
 			if (id == ID_RED_GHOST) {
 				enterStateLeavingHouse(game);
 			} else {
-				setPosition(game.revivalPosition[id]);
+				setPosition(game.ghostRevivalPosition(id));
 				setMoveAndWishDir(UP);
 				enterStateLocked();
 			}
