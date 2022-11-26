@@ -61,7 +61,7 @@ public class Creature extends Entity {
 	protected static final Direction[] DIRECTION_PRIORITY = { UP, LEFT, DOWN, RIGHT };
 
 	/** Readable name, for display and logging purposes. */
-	public final String name;
+	protected final String name;
 
 	/** The current move direction. */
 	private Direction moveDir;
@@ -85,8 +85,12 @@ public class Creature extends Entity {
 	protected boolean canTeleport;
 
 	protected Creature(String name) {
-		this.name = name;
+		this.name = name != null ? name : "Creature@%d".formatted(hashCode());
 		reset();
+	}
+
+	public String name() {
+		return name;
 	}
 
 	public void reset() {

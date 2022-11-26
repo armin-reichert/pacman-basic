@@ -67,18 +67,18 @@ public class Autopilot implements Steering {
 		public String toString() {
 			StringBuilder s = new StringBuilder("-- Begin autopilot info%n");
 			if (hunterAhead != null) {
-				s.append("Hunter ahead:  %s, distance: %.2g%n".formatted(hunterAhead.name, hunterAheadDistance));
+				s.append("Hunter ahead:  %s, distance: %.2g%n".formatted(hunterAhead.name(), hunterAheadDistance));
 			} else {
 				s.append("No hunter ahead%n");
 			}
 			if (hunterBehind != null) {
-				s.append("Hunter behind: %s, distance: %.2g%n".formatted(hunterBehind.name, hunterBehindDistance));
+				s.append("Hunter behind: %s, distance: %.2g%n".formatted(hunterBehind.name(), hunterBehindDistance));
 			} else {
 				s.append("No hunter behind%n");
 			}
 			for (int i = 0; i < frightenedGhosts.size(); ++i) {
 				Ghost ghost = frightenedGhosts.get(i);
-				s.append("Prey: %s, distance: %.2g%n".formatted(ghost.name, frightenedGhostsDistance.get(i)));
+				s.append("Prey: %s, distance: %.2g%n".formatted(ghost.name(), frightenedGhostsDistance.get(i)));
 			}
 			if (frightenedGhosts.isEmpty()) {
 				s.append("No prey%n");
@@ -130,10 +130,10 @@ public class Autopilot implements Steering {
 			Direction escapeDir = null;
 			if (data.hunterBehind != null) {
 				escapeDir = findEscapeDirectionExcluding(game, EnumSet.of(game.pac.moveDir(), game.pac.moveDir().opposite()));
-				LOGGER.trace("Detected ghost %s behind, escape direction is %s", data.hunterAhead.name, escapeDir);
+				LOGGER.trace("Detected ghost %s behind, escape direction is %s", data.hunterAhead.name(), escapeDir);
 			} else {
 				escapeDir = findEscapeDirectionExcluding(game, EnumSet.of(game.pac.moveDir()));
-				LOGGER.trace("Detected ghost %s ahead, escape direction is %s", data.hunterAhead.name, escapeDir);
+				LOGGER.trace("Detected ghost %s ahead, escape direction is %s", data.hunterAhead.name(), escapeDir);
 			}
 			if (escapeDir != null) {
 				game.pac.setWishDir(escapeDir);
@@ -147,7 +147,7 @@ public class Autopilot implements Steering {
 
 		if (!data.frightenedGhosts.isEmpty() && game.powerTimer.remaining() >= 1 * 60) {
 			Ghost prey = data.frightenedGhosts.get(0);
-			LOGGER.trace("Detected frightened ghost %s %.0g tiles away", prey.name,
+			LOGGER.trace("Detected frightened ghost %s %.0g tiles away", prey.name(),
 					prey.tile().manhattanDistance(game.pac.tile()));
 			game.pac.setTargetTile(prey.tile());
 		} else if (game.bonus() != null && game.bonus().state() == BonusState.EDIBLE

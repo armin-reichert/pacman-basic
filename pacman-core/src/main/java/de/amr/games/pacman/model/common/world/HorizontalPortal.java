@@ -57,11 +57,11 @@ public record HorizontalPortal(V2i leftTunnelEnd, V2i rightTunnelEnd) implements
 		var oldPos = guy.position();
 		if (guy.tile().y() == leftTunnelEnd.y() && guy.position().x() < (leftTunnelEnd.x() - DEPTH) * TS) {
 			guy.placeAtTile(rightTunnelEnd); // TODO fixme
-			LOGGER.info("Teleported %s from %s to %s", guy.name, oldPos, guy.position());
+			LOGGER.info("Teleported %s from %s to %s", guy.name(), oldPos, guy.position());
 			teleported = true;
 		} else if (guy.tile().equals(rightTunnelEnd.plus(DEPTH, 0))) {
 			guy.placeAtTile(leftTunnelEnd.minus(DEPTH, 0), 0, 0);
-			LOGGER.info("Teleported %s from %s to %s", guy.name, oldPos, guy.position());
+			LOGGER.info("Teleported %s from %s to %s", guy.name(), oldPos, guy.position());
 			teleported = true;
 		}
 		return teleported;

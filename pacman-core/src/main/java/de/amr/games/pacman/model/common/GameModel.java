@@ -591,12 +591,12 @@ public abstract class GameModel {
 		pac.die();
 		var redGhost = theGhosts[ID_RED_GHOST];
 		if (cruiseElroyState > 0) {
-			LOGGER.info("Cruise Elroy mode %d for %s disabled", cruiseElroyState, redGhost.name);
+			LOGGER.info("Cruise Elroy mode %d for %s disabled", cruiseElroyState, redGhost.name());
 			cruiseElroyState = (byte) -cruiseElroyState; // negative value means "disabled"
 		}
 		globalDotCounter = 0;
 		globalDotCounterEnabled = true;
-		LOGGER.info("Global dot counter got reset and enabled because %s died", pac.name);
+		LOGGER.info("Global dot counter got reset and enabled because %s died", pac.name());
 	}
 
 	private void checkEdibleGhosts() {
@@ -629,7 +629,7 @@ public abstract class GameModel {
 		ghost.enterStateEaten(this);
 		int value = ghostValue(killedIndex[ghost.id]);
 		scorePoints(value);
-		LOGGER.info("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name, ghost.tile(), value);
+		LOGGER.info("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name(), ghost.tile(), value);
 	}
 
 	private void startPowerTimer(double seconds) {
@@ -648,7 +648,7 @@ public abstract class GameModel {
 	}
 
 	private void onPacPowerLost() {
-		LOGGER.info("%s lost power, timer=%s", pac.name, powerTimer);
+		LOGGER.info("%s lost power, timer=%s", pac.name(), powerTimer);
 		// leave state EXPIRED to avoid repetitions:
 		powerTimer.resetIndefinitely();
 		huntingTimer.start();
@@ -694,10 +694,10 @@ public abstract class GameModel {
 		var foodRemaining = level.world().foodRemaining();
 		if (foodRemaining == level.elroy1DotsLeft()) {
 			cruiseElroyState = 1;
-			LOGGER.info("%s becomes Cruise Elroy 1", redGhost.name);
+			LOGGER.info("%s becomes Cruise Elroy 1", redGhost.name());
 		} else if (foodRemaining == level.elroy2DotsLeft()) {
 			cruiseElroyState = 2;
-			LOGGER.info("%s becomes Cruise Elroy 2", redGhost.name);
+			LOGGER.info("%s becomes Cruise Elroy 2", redGhost.name());
 		}
 	}
 
@@ -744,18 +744,18 @@ public abstract class GameModel {
 				memo.unlockReason = "Global dot counter at limit (%d)".formatted(globalDotLimit);
 			} else if (pac.starvingTime() >= pacStarvingTimeLimit) {
 				memo.unlockedGhost = Optional.of(ghost);
-				memo.unlockReason = "%s at starving limit (%d ticks)".formatted(pac.name, pacStarvingTimeLimit);
+				memo.unlockReason = "%s at starving limit (%d ticks)".formatted(pac.name(), pacStarvingTimeLimit);
 				pac.endStarving();
 			}
 		});
 	}
 
 	private void unlockGhost(Ghost unlockedGhost, String reason) {
-		LOGGER.info("Unlock ghost %s (%s)", unlockedGhost.name, reason);
+		LOGGER.info("Unlock ghost %s (%s)", unlockedGhost.name(), reason);
 		var redGhost = theGhosts[ID_RED_GHOST];
 		if (unlockedGhost.id == ID_ORANGE_GHOST && cruiseElroyState < 0) {
 			cruiseElroyState = (byte) -cruiseElroyState; // resume Elroy mode
-			LOGGER.info("%s Elroy mode %d resumed", redGhost.name, cruiseElroyState);
+			LOGGER.info("%s Elroy mode %d resumed", redGhost.name(), cruiseElroyState);
 		}
 		if (unlockedGhost == redGhost) {
 			unlockedGhost.setMoveAndWishDir(LEFT);
