@@ -348,7 +348,7 @@ public class MsPacManGame extends GameModel {
 		createLevel(levelNumber);
 		initGhosts();
 		ghostsKilledByEnergizer = 0;
-		gameScore.levelNumber = levelNumber;
+		gameScore().levelNumber = levelNumber;
 	}
 
 	@Override

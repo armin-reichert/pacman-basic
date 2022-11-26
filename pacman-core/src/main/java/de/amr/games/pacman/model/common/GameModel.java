@@ -191,9 +191,9 @@ public abstract class GameModel {
 	/** Number of current intermission scene in test mode. */
 	public int intermissionTestNumber;
 
-	public final Score gameScore = new Score("SCORE");
+	private final Score gameScore = new Score("SCORE");
 
-	public final Score highScore = new Score("HIGH SCORE");
+	private final Score highScore = new Score("HIGH SCORE");
 
 	private File hiscoreFile;
 
@@ -222,6 +222,14 @@ public abstract class GameModel {
 	}
 
 	public abstract GameVariant variant();
+
+	public Score gameScore() {
+		return gameScore;
+	}
+
+	public Score highScore() {
+		return highScore;
+	}
 
 	public void setHiscoreFile(File hiscoreFile) {
 		this.hiscoreFile = hiscoreFile;

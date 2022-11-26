@@ -89,8 +89,8 @@ public class MsPacManIntro extends Fsm<IntroState, IntroData> {
 		START {
 			@Override
 			public void onEnter(IntroData ctx) {
-				ctx.game().gameScore.showContent = false;
-				ctx.game().highScore.showContent = true;
+				ctx.game().gameScore().showContent = false;
+				ctx.game().highScore().showContent = true;
 				ctx.lightsTimer.resetIndefinitely();
 				ctx.lightsTimer.start();
 				ctx.game().pac().setPosition(t(34), ctx.turningPoint.y());
@@ -108,8 +108,8 @@ public class MsPacManIntro extends Fsm<IntroState, IntroData> {
 			@Override
 			public void onUpdate(IntroData ctx) {
 				if (timer.tick() == 1) {
-					ctx.game().gameScore.visible = true;
-					ctx.game().highScore.visible = true;
+					ctx.game().gameScore().visible = true;
+					ctx.game().highScore().visible = true;
 				} else if (timer.tick() == 2) {
 					ctx.creditVisible = true;
 				} else if (timer.atSecond(1)) {

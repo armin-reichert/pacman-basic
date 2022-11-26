@@ -213,7 +213,7 @@ public class PacManGame extends GameModel {
 		};
 		numGhostsKilledInLevel = 0;
 		ghostsKilledByEnergizer = 0;
-		gameScore.levelNumber = levelNumber;
+		gameScore().levelNumber = levelNumber;
 		initGhosts();
 		bonus.setInactive();
 	}

@@ -112,8 +112,8 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 	CREDIT {
 		@Override
 		public void onEnter(GameModel game) {
-			game.gameScore.showContent = false;
-			game.highScore.showContent = true;
+			game.gameScore().showContent = false;
+			game.highScore().showContent = true;
 		}
 
 		@Override
@@ -155,7 +155,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			game.levelCounter.clear();
 			game.levelCounter.addSymbol(game.level().bonusIndex());
 			game.enableScores(true);
-			game.gameScore.showContent = true;
+			game.gameScore().showContent = true;
 			game.resetGuys();
 			game.guys().forEach(Creature::hide);
 		}
@@ -169,7 +169,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			game.resetGuys();
 			game.guys().forEach(Creature::show);
 			game.enableScores(false);
-			game.gameScore.showContent = false;
+			game.gameScore().showContent = false;
 			gc.attractModeSteering.init();
 //			game.isPacImmune = true;
 		}
