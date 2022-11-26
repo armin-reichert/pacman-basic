@@ -131,7 +131,7 @@ public abstract class GameModel {
 	public boolean isPacAutoControlled;
 
 	/** The ghosts in order RED, PINK, CYAN, ORANGE. */
-	public final Ghost[] theGhosts;
+	private final Ghost[] theGhosts;
 
 	/** "Cruise Elroy" state. Values: <code>0, 1, 2, -1, -2 (0= "off", negative value = "disabled")</code>. */
 	public byte cruiseElroyState;
@@ -404,6 +404,17 @@ public abstract class GameModel {
 	public Stream<Creature> guys() {
 		return Stream.of(pac, theGhosts[ID_RED_GHOST], theGhosts[ID_PINK_GHOST], theGhosts[ID_CYAN_GHOST],
 				theGhosts[ID_ORANGE_GHOST]);
+	}
+
+	/**
+	 * @param id ghost ID (0, 1, 2, 3)
+	 * @return the ghost with the given ID
+	 */
+	public Ghost ghost(int id) {
+		if (id < 0 || id > 3) {
+			throw new IllegalArgumentException("Illegal ghost ID: %d".formatted(id));
+		}
+		return theGhosts[id];
 	}
 
 	/**

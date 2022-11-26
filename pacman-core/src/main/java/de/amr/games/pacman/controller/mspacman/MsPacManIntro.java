@@ -95,13 +95,13 @@ public class MsPacManIntro extends Fsm<IntroState, IntroData> {
 				ctx.lightsTimer.start();
 				ctx.game().pac.setPosition(t(34), ctx.turningPoint.y());
 				ctx.game().pac.setAbsSpeed(0);
-				for (Ghost ghost : ctx.game().theGhosts) {
+				ctx.game().ghosts().forEach(ghost -> {
 					ghost.enterStateHuntingPac(ctx.game());
 					ghost.setMoveAndWishDir(LEFT);
 					ghost.setPosition(t(34), ctx.turningPoint.y());
 					ghost.setAbsSpeed(ctx.actorSpeed);
 					ghost.show();
-				}
+				});
 				ctx.ghostIndex = 0;
 			}
 
@@ -128,7 +128,7 @@ public class MsPacManIntro extends Fsm<IntroState, IntroData> {
 			@Override
 			public void onUpdate(IntroData ctx) {
 				ctx.lightsTimer.advance();
-				Ghost ghost = ctx.game().theGhosts[ctx.ghostIndex];
+				Ghost ghost = ctx.game().ghost(ctx.ghostIndex);
 				ghost.move();
 				ghost.advanceAnimation();
 				if (ghost.position().x() <= ctx.turningPoint.x()) {
@@ -137,7 +137,7 @@ public class MsPacManIntro extends Fsm<IntroState, IntroData> {
 				if (ghost.position().y() <= ctx.redGhostEndPosition.y() + ghost.id * 18) {
 					ghost.setAbsSpeed(0);
 					ghost.selectedAnimation().ifPresent(EntityAnimation::stop);
-					if (++ctx.ghostIndex == ctx.game().theGhosts.length) {
+					if (++ctx.ghostIndex == 4) {
 						controller.changeState(IntroState.MSPACMAN);
 					}
 				}
