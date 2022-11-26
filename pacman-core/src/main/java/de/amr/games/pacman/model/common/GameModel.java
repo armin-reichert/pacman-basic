@@ -353,26 +353,26 @@ public abstract class GameModel {
 		}
 		cruiseElroyState = 0;
 		if (level.world() instanceof ArcadeWorld) {
-			homePosition[ID_RED_GHOST] = seatPosition(ArcadeGhostHouse.ENTRY_TILE);
-			revivalPosition[ID_RED_GHOST] = seatPosition(ArcadeGhostHouse.SEAT_TILE_CENTER);
+			homePosition[ID_RED_GHOST] = rightBorderOf(ArcadeGhostHouse.ENTRY_TILE);
+			revivalPosition[ID_RED_GHOST] = rightBorderOf(ArcadeGhostHouse.SEAT_TILE_CENTER);
 			scatterTile[ID_RED_GHOST] = v2i(25, 0);
 
-			homePosition[ID_PINK_GHOST] = seatPosition(ArcadeGhostHouse.SEAT_TILE_CENTER);
-			revivalPosition[ID_PINK_GHOST] = seatPosition(ArcadeGhostHouse.SEAT_TILE_CENTER);
+			homePosition[ID_PINK_GHOST] = rightBorderOf(ArcadeGhostHouse.SEAT_TILE_CENTER);
+			revivalPosition[ID_PINK_GHOST] = rightBorderOf(ArcadeGhostHouse.SEAT_TILE_CENTER);
 			scatterTile[ID_PINK_GHOST] = v2i(2, 0);
 
-			homePosition[ID_CYAN_GHOST] = seatPosition(ArcadeGhostHouse.SEAT_TILE_LEFT);
-			revivalPosition[ID_CYAN_GHOST] = seatPosition(ArcadeGhostHouse.SEAT_TILE_LEFT);
+			homePosition[ID_CYAN_GHOST] = rightBorderOf(ArcadeGhostHouse.SEAT_TILE_LEFT);
+			revivalPosition[ID_CYAN_GHOST] = rightBorderOf(ArcadeGhostHouse.SEAT_TILE_LEFT);
 			scatterTile[ID_CYAN_GHOST] = v2i(27, 34);
 
-			homePosition[ID_ORANGE_GHOST] = seatPosition(ArcadeGhostHouse.SEAT_TILE_RIGHT);
-			revivalPosition[ID_ORANGE_GHOST] = seatPosition(ArcadeGhostHouse.SEAT_TILE_RIGHT);
+			homePosition[ID_ORANGE_GHOST] = rightBorderOf(ArcadeGhostHouse.SEAT_TILE_RIGHT);
+			revivalPosition[ID_ORANGE_GHOST] = rightBorderOf(ArcadeGhostHouse.SEAT_TILE_RIGHT);
 			scatterTile[ID_ORANGE_GHOST] = v2i(0, 34);
 		}
 	}
 
-	private V2d seatPosition(V2i seatTile) {
-		return new V2d(seatTile).scaled(TS).plus(HTS, 0);
+	private V2d rightBorderOf(V2i tile) {
+		return tile.scaled(TS).toDoubleVec().plus(HTS, 0);
 	}
 
 	public void resetGuys() {
