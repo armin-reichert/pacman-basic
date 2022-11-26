@@ -119,7 +119,7 @@ public abstract class GameModel {
 	public boolean playing;
 
 	/** Pac-Man or Ms. Pac-Man. */
-	public final Pac pac;
+	protected final Pac pac;
 
 	/** Controls the time Pac has power. */
 	public final TickTimer powerTimer = new TickTimer("Pac-power-timer", FPS);
@@ -404,6 +404,13 @@ public abstract class GameModel {
 	public Stream<Creature> guys() {
 		return Stream.of(pac, theGhosts[ID_RED_GHOST], theGhosts[ID_PINK_GHOST], theGhosts[ID_CYAN_GHOST],
 				theGhosts[ID_ORANGE_GHOST]);
+	}
+
+	/**
+	 * @return Pac-Man or Ms. Pac-Man
+	 */
+	public Pac pac() {
+		return pac;
 	}
 
 	/**

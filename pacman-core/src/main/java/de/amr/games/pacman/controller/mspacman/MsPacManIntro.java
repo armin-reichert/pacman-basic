@@ -93,8 +93,8 @@ public class MsPacManIntro extends Fsm<IntroState, IntroData> {
 				ctx.game().highScore.showContent = true;
 				ctx.lightsTimer.resetIndefinitely();
 				ctx.lightsTimer.start();
-				ctx.game().pac.setPosition(t(34), ctx.turningPoint.y());
-				ctx.game().pac.setAbsSpeed(0);
+				ctx.game().pac().setPosition(t(34), ctx.turningPoint.y());
+				ctx.game().pac().setAbsSpeed(0);
 				ctx.game().ghosts().forEach(ghost -> {
 					ghost.enterStateHuntingPac(ctx.game());
 					ghost.setMoveAndWishDir(LEFT);
@@ -147,20 +147,20 @@ public class MsPacManIntro extends Fsm<IntroState, IntroData> {
 		MSPACMAN {
 			@Override
 			public void onEnter(IntroData ctx) {
-				ctx.game().pac.setMoveDir(LEFT);
-				ctx.game().pac.setAbsSpeed(ctx.actorSpeed);
-				ctx.game().pac.selectAndEnsureRunningAnimation(AnimKeys.PAC_MUNCHING);
-				ctx.game().pac.show();
+				ctx.game().pac().setMoveDir(LEFT);
+				ctx.game().pac().setAbsSpeed(ctx.actorSpeed);
+				ctx.game().pac().selectAndEnsureRunningAnimation(AnimKeys.PAC_MUNCHING);
+				ctx.game().pac().show();
 			}
 
 			@Override
 			public void onUpdate(IntroData ctx) {
 				ctx.lightsTimer.advance();
-				ctx.game().pac.move();
-				ctx.game().pac.advanceAnimation();
-				if (ctx.game().pac.position().x() <= ctx.msPacManStopX) {
-					ctx.game().pac.setAbsSpeed(0);
-					ctx.game().pac.selectedAnimation().ifPresent(EntityAnimation::reset);
+				ctx.game().pac().move();
+				ctx.game().pac().advanceAnimation();
+				if (ctx.game().pac().position().x() <= ctx.msPacManStopX) {
+					ctx.game().pac().setAbsSpeed(0);
+					ctx.game().pac().selectedAnimation().ifPresent(EntityAnimation::reset);
 					controller.changeState(IntroState.READY_TO_PLAY);
 				}
 			}

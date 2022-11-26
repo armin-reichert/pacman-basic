@@ -97,7 +97,7 @@ public class StaticBonus extends Entity implements Bonus {
 			// nothing to do
 		}
 		case EDIBLE -> {
-			if (game.pac.tile().equals(tile)) {
+			if (game.pac().tile().equals(tile)) {
 				game.scorePoints(value());
 				state = BonusState.EATEN;
 				timer = Bonus.EATEN_DURATION;

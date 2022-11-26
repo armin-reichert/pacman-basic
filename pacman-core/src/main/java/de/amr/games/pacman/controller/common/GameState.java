@@ -200,7 +200,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 	HUNTING {
 		@Override
 		public void onEnter(GameModel game) {
-			game.pac.selectAndEnsureRunningAnimation(AnimKeys.PAC_MUNCHING);
+			game.pac().selectAndEnsureRunningAnimation(AnimKeys.PAC_MUNCHING);
 			game.energizerPulse.restart();
 			gc.sounds().ensureSirenStarted(game.huntingTimer.phase() / 2);
 		}
@@ -229,7 +229,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 				return;
 			}
 
-			gc.getSteering().steer(game, game.pac);
+			gc.getSteering().steer(game, game.pac());
 			game.update();
 			renderSound(game);
 		}
@@ -250,7 +250,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			if (game.memo.foodFound) {
 				snd.ensureLoop(GameSound.PACMAN_MUNCH, GameSoundController.LOOP_FOREVER);
 			}
-			if (game.pac.starvingTime() >= 12) { // ???
+			if (game.pac().starvingTime() >= 12) { // ???
 				snd.stop(GameSound.PACMAN_MUNCH);
 			}
 			if (game.ghosts(GhostState.RETURNING_TO_HOUSE).count() > 0) {
@@ -356,7 +356,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		public void onEnter(GameModel game) {
 			timer.resetSeconds(1);
 			timer.start();
-			game.pac.hide();
+			game.pac().hide();
 			game.ghosts().forEach(ghost -> ghost.pauseFlashing(true));
 			gc.sounds().play(GameSound.GHOST_EATEN);
 		}
@@ -366,7 +366,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			if (timer.hasExpired()) {
 				gc.resumePreviousState();
 			} else {
-				gc.getSteering().steer(game, game.pac);
+				gc.getSteering().steer(game, game.pac());
 				game.ghosts(GhostState.EATEN, GhostState.RETURNING_TO_HOUSE).forEach(ghost -> ghost.update(game));
 				game.energizerPulse.advance();
 			}
@@ -374,7 +374,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 
 		@Override
 		public void onExit(GameModel game) {
-			game.pac.show();
+			game.pac().show();
 			game.ghosts(GhostState.EATEN).forEach(ghost -> ghost.enterStateReturningToHouse(game));
 			game.ghosts().forEach(ghost -> ghost.pauseFlashing(false));
 		}
@@ -385,7 +385,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		public void onEnter(GameModel game) {
 			timer.resetSeconds(4);
 			timer.start();
-			game.pac.selectedAnimation().ifPresent(EntityAnimation::stop);
+			game.pac().selectedAnimation().ifPresent(EntityAnimation::stop);
 			game.bonus().setInactive();
 			gc.sounds().stopAll();
 		}
@@ -393,16 +393,16 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 		@Override
 		public void onUpdate(GameModel game) {
 			game.energizerPulse.advance();
-			game.pac.update(game);
+			game.pac().update(game);
 			if (timer.betweenSeconds(0, 1)) {
 				game.ghosts().forEach(Ghost::advanceAnimation);
 			}
 			if (timer.atSecond(0.25)) {
-				game.pac.selectAndResetAnimation(AnimKeys.PAC_DYING);
+				game.pac().selectAndResetAnimation(AnimKeys.PAC_DYING);
 			} else if (timer.atSecond(1)) {
 				game.ghosts().forEach(Ghost::hide);
 			} else if (timer.atSecond(1.4)) {
-				game.pac.selectedAnimation().ifPresent(EntityAnimation::restart);
+				game.pac().selectedAnimation().ifPresent(EntityAnimation::restart);
 				gc.sounds().play(GameSound.PACMAN_DEATH);
 			} else if (timer.atSecond(3.0)) {
 				game.lives--;
@@ -410,7 +410,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 					game.energizerPulse.stop();
 					game.livesOneLessShown = false;
 				}
-				game.pac.hide();
+				game.pac().hide();
 			} else if (timer.hasExpired()) {
 				if (!game.hasCredit()) {
 					gc.changeState(INTRO);

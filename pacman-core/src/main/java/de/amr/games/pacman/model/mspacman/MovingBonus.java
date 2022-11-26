@@ -130,7 +130,7 @@ public class MovingBonus extends Creature implements Bonus {
 		case INACTIVE -> { // nothing to do
 		}
 		case EDIBLE -> {
-			if (sameTile(game.pac)) {
+			if (sameTile(game.pac())) {
 				state = BonusState.EATEN;
 				timer = Bonus.EATEN_DURATION;
 				jumpAnimation.stop();
