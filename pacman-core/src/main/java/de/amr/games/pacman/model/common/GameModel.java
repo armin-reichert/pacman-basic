@@ -131,13 +131,13 @@ public abstract class GameModel {
 	public boolean isPacAutoControlled;
 
 	/** The ghosts in order RED, PINK, CYAN, ORANGE. */
-	private final Ghost[] theGhosts;
+	protected final Ghost[] theGhosts;
 
 	/** "Cruise Elroy" state. Values: <code>0, 1, 2, -1, -2 (0= "off", negative value = "disabled")</code>. */
-	private byte cruiseElroyState;
+	protected byte cruiseElroyState;
 
 	/** The position of the ghosts when the game starts. */
-	public final V2d[] homePosition = new V2d[4];
+	protected final V2d[] ghostHomePosition = new V2d[4];
 
 	/** The tiles inside the house where the ghosts get revived. Amen. */
 	public final V2d[] revivalPosition = new V2d[4];
@@ -164,7 +164,7 @@ public abstract class GameModel {
 	public final int[] killedIndex = new int[4];
 
 	/** Number of ghosts killed by current energizer. */
-	public int ghostsKilledByEnergizer;
+	protected int ghostsKilledByEnergizer;
 
 	/** List of collected level symbols. */
 	public final LevelCounter levelCounter = new LevelCounter(7);
@@ -353,19 +353,19 @@ public abstract class GameModel {
 		}
 		cruiseElroyState = 0;
 		if (level.world() instanceof ArcadeWorld) {
-			homePosition[ID_RED_GHOST] = halfTileRightOf(ArcadeGhostHouse.ENTRY_TILE);
+			ghostHomePosition[ID_RED_GHOST] = halfTileRightOf(ArcadeGhostHouse.ENTRY_TILE);
 			revivalPosition[ID_RED_GHOST] = halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_CENTER);
 			scatterTile[ID_RED_GHOST] = v2i(25, 0);
 
-			homePosition[ID_PINK_GHOST] = halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_CENTER);
+			ghostHomePosition[ID_PINK_GHOST] = halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_CENTER);
 			revivalPosition[ID_PINK_GHOST] = halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_CENTER);
 			scatterTile[ID_PINK_GHOST] = v2i(2, 0);
 
-			homePosition[ID_CYAN_GHOST] = halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_LEFT);
+			ghostHomePosition[ID_CYAN_GHOST] = halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_LEFT);
 			revivalPosition[ID_CYAN_GHOST] = halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_LEFT);
 			scatterTile[ID_CYAN_GHOST] = v2i(27, 34);
 
-			homePosition[ID_ORANGE_GHOST] = halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_RIGHT);
+			ghostHomePosition[ID_ORANGE_GHOST] = halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_RIGHT);
 			revivalPosition[ID_ORANGE_GHOST] = halfTileRightOf(ArcadeGhostHouse.SEAT_TILE_RIGHT);
 			scatterTile[ID_ORANGE_GHOST] = v2i(0, 34);
 		}
@@ -392,7 +392,7 @@ public abstract class GameModel {
 			case Ghost.ID_CYAN_GHOST, Ghost.ID_ORANGE_GHOST -> Direction.UP;
 			default -> throw new IllegalArgumentException("Ghost ID: " + ghost.id);
 			});
-			ghost.setPosition(homePosition[ghost.id]);
+			ghost.setPosition(ghostHomePosition[ghost.id]);
 			ghost.show();
 			ghost.enterStateLocked();
 		});
@@ -418,10 +418,14 @@ public abstract class GameModel {
 	 * @return the ghost with the given ID
 	 */
 	public Ghost ghost(int id) {
+		checkGhostID(id);
+		return theGhosts[id];
+	}
+
+	private static void checkGhostID(int id) {
 		if (id < 0 || id > 3) {
 			throw new IllegalArgumentException("Illegal ghost ID: %d".formatted(id));
 		}
-		return theGhosts[id];
 	}
 
 	/**
@@ -434,6 +438,15 @@ public abstract class GameModel {
 			return Stream.of(theGhosts).filter(ghost -> ghost.is(states));
 		}
 		return Stream.of(theGhosts);
+	}
+
+	/**
+	 * @param id ghost ID (0, 1, 2, 3)
+	 * @return home position of ghost
+	 */
+	public V2d ghostHomePosition(int id) {
+		checkGhostID(id);
+		return ghostHomePosition[id];
 	}
 
 	/**

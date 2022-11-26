@@ -168,9 +168,9 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	 */
 	private void updateStateLocked(GameModel game) {
 		if (game.level.world().ghostHouse().contains(tile())) {
-			if (position.y() <= game.homePosition[id].y() - World.HTS) {
+			if (position.y() <= game.ghostHomePosition(id).y() - World.HTS) {
 				setMoveAndWishDir(DOWN);
-			} else if (position.y() >= game.homePosition[id].y() + World.HTS) {
+			} else if (position.y() >= game.ghostHomePosition(id).y() + World.HTS) {
 				setMoveAndWishDir(UP);
 			}
 			setAbsSpeed(GameModel.GHOST_SPEED_HOUSE);
