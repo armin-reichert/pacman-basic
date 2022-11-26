@@ -55,7 +55,7 @@ public class SceneControllerContext {
 	}
 
 	public GameLevel level() {
-		return game().level;
+		return game().level();
 	}
 
 	public GameState state() {
@@ -67,7 +67,7 @@ public class SceneControllerContext {
 	}
 
 	public World world() {
-		return game().level.world();
+		return game().level().world();
 	}
 
 	public boolean hasCredit() {

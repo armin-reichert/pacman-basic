@@ -149,7 +149,7 @@ public abstract class GameModel {
 	public final HuntingTimer huntingTimer = new HuntingTimer();
 
 	/** Current level. */
-	public GameLevel level;
+	protected GameLevel level;
 
 	/** Number of lives remaining. */
 	public int lives;
@@ -330,6 +330,10 @@ public abstract class GameModel {
 		intermissionTestNumber = 1;
 		gameScore.reset();
 		loadScore(highScore, hiscoreFile);
+	}
+
+	public GameLevel level() {
+		return level;
 	}
 
 	public void startLevel() {

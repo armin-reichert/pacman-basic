@@ -103,7 +103,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 			LOGGER.trace("%s cannot access tile %s because he cannot move UP at %s", name, tile, currentTile);
 			return false;
 		}
-		if (game.level.world().ghostHouse().isDoorTile(tile)) {
+		if (game.level().world().ghostHouse().isDoorTile(tile)) {
 			return is(ENTERING_HOUSE, LEAVING_HOUSE);
 		}
 		return super.canAccessTile(tile, game);
@@ -167,7 +167,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	 * @param game the game
 	 */
 	private void updateStateLocked(GameModel game) {
-		if (game.level.world().ghostHouse().contains(tile())) {
+		if (game.level().world().ghostHouse().contains(tile())) {
 			if (position.y() <= game.ghostHomePosition(id).y() - World.HTS) {
 				setMoveAndWishDir(DOWN);
 			} else if (position.y() >= game.ghostHomePosition(id).y() + World.HTS) {
@@ -200,7 +200,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	 */
 	private void updateStateLeavingHouse(GameModel game) {
 		updateColorOrBlueOrFlashingAnimation(game);
-		var outOfHouse = game.level.world().ghostHouse().leadGuyOutOfHouse(this);
+		var outOfHouse = game.level().world().ghostHouse().leadGuyOutOfHouse(this);
 		if (outOfHouse) {
 			newTileEntered = false;
 			setMoveAndWishDir(LEFT);
@@ -236,14 +236,14 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	 * target of Blinky and Pinky would have been affected. Who knows?
 	 */
 	private void updateStateHuntingPac(GameModel game) {
-		if (game.level.world().isTunnel(tile())) {
-			setRelSpeed(game.level.ghostSpeedTunnel());
+		if (game.level().world().isTunnel(tile())) {
+			setRelSpeed(game.level().ghostSpeedTunnel());
 		} else if (id == ID_RED_GHOST && game.blinkyCruiseElroyState() == 1) {
-			setRelSpeed(game.level.elroy1Speed());
+			setRelSpeed(game.level().elroy1Speed());
 		} else if (id == ID_RED_GHOST && game.blinkyCruiseElroyState() == 2) {
-			setRelSpeed(game.level.elroy2Speed());
+			setRelSpeed(game.level().elroy2Speed());
 		} else {
-			setRelSpeed(game.level.ghostSpeed());
+			setRelSpeed(game.level().ghostSpeed());
 		}
 		if (game.variant() == MS_PACMAN && game.huntingTimer.scatterPhase() == 0
 				&& (id == ID_RED_GHOST || id == ID_PINK_GHOST)) {
@@ -286,7 +286,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	 */
 	private void updateStateFrightened(GameModel game) {
 		setRelSpeed(
-				game.level.world().isTunnel(tile()) ? game.level.ghostSpeedTunnel() : game.level.ghostSpeedFrightened());
+				game.level().world().isTunnel(tile()) ? game.level().ghostSpeedTunnel() : game.level().ghostSpeedFrightened());
 		roam(game);
 		if (animationSet != null) {
 			updateColorOrBlueOrFlashingAnimation(game);
@@ -366,7 +366,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	public void enterStateReturningToHouse(GameModel game) {
 		Objects.requireNonNull(game, MSG_GAME_NULL);
 		state = RETURNING_TO_HOUSE;
-		setTargetTile(game.level.world().ghostHouse().entryTile());
+		setTargetTile(game.level().world().ghostHouse().entryTile());
 		if (animationSet != null) {
 			animationSet.select(AnimKeys.GHOST_EYES);
 		}
@@ -379,7 +379,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	 * @param game the game
 	 */
 	private void updateStateReturningToHouse(GameModel game) {
-		if (game.level.world().ghostHouse().atHouseEntry(this)) {
+		if (game.level().world().ghostHouse().atHouseEntry(this)) {
 			enterStateEnteringHouse(game);
 		} else {
 			setAbsSpeed(GameModel.GHOST_SPEED_RETURNING);
@@ -407,7 +407,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	 * @param game the game
 	 */
 	private void updateStateEnteringHouse(GameModel game) {
-		boolean atRevivalTile = game.level.world().ghostHouse().leadGuyInside(this, game.revivalPosition[id]);
+		boolean atRevivalTile = game.level().world().ghostHouse().leadGuyInside(this, game.revivalPosition[id]);
 		if (atRevivalTile) {
 			if (id == ID_RED_GHOST) {
 				enterStateLeavingHouse(game);
@@ -443,7 +443,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		} else {
 			if (!animationSet.isSelected(AnimKeys.GHOST_FLASHING)) {
 				animationSet.select(AnimKeys.GHOST_FLASHING);
-				animationSet.selectedAnimation().ifPresent(flashing -> startFlashing(flashing, game.level.numFlashes()));
+				animationSet.selectedAnimation().ifPresent(flashing -> startFlashing(flashing, game.level().numFlashes()));
 			}
 		}
 	}

@@ -171,7 +171,7 @@ public class Creature extends Entity {
 	 */
 	public boolean canAccessTile(V2i tile, GameModel game) {
 		Objects.requireNonNull(tile, MSG_TILE_NULL);
-		var world = game.level.world();
+		var world = game.level().world();
 		if (world.insideMap(tile)) {
 			return !world.isWall(tile) && !world.ghostHouse().isDoorTile(tile);
 		}
@@ -263,7 +263,7 @@ public class Creature extends Entity {
 		if (targetTile == null) {
 			return;
 		}
-		if (game.level.world().belongsToPortal(tile())) {
+		if (game.level().world().belongsToPortal(tile())) {
 			return; // inside portal, no navigation happens
 		}
 		// for each neighbor tile, compute distance to target tile, select direction with smallest distance
@@ -298,7 +298,7 @@ public class Creature extends Entity {
 		Objects.requireNonNull(game, MSG_GAME_NULL);
 		var tileBefore = tile();
 		if (canTeleport) {
-			for (var portal : game.level.world().portals()) {
+			for (var portal : game.level().world().portals()) {
 				if (portal.teleport(this)) {
 					break;
 				}
