@@ -58,7 +58,7 @@ public class Creature extends Entity {
 	protected static final String MSG_TILE_NULL = "Tile must not be null";
 	protected static final String MSG_DIR_NULL = "Direction must not be null";
 
-	protected static final Direction[] TURN_PRIORITY = { UP, LEFT, DOWN, RIGHT };
+	protected static final Direction[] DIRECTION_PRIORITY = { UP, LEFT, DOWN, RIGHT };
 
 	/** Readable name, for display and logging purposes. */
 	public final String name;
@@ -247,39 +247,41 @@ public class Creature extends Entity {
 	}
 
 	/**
-	 * Sets a new direction for reaching the current target. Navigation is only triggered when a new tile is entered, the
-	 * creature got stuck and a target tile is set. Inside portal tiles no navigation happens.
+	 * Sets the new wish direction for reaching the target tile.
 	 * 
 	 * @param game the game model
 	 */
 	public void navigateTowardsTarget(GameModel game) {
 		Objects.requireNonNull(game, MSG_GAME_NULL);
-		if ((newTileEntered || stuck) && targetTile != null && !game.level.world().belongsToPortal(tile())) {
-			bestDirection(game).ifPresent(this::setWishDir);
+		if (!newTileEntered && !stuck) {
+			return; // we don't need no navigation, dim dit diddit diddit dim dit diddit diddit...
 		}
-	}
-
-	/**
-	 * @param game game model
-	 * @return As described in the Pac-Man dossier: checks all accessible neighbor tiles in order UP, LEFT, DOWN, RIGHT
-	 *         and selects the one with smallest Euclidean distance to the target tile. Reversing the move direction is
-	 *         not allowed.
-	 */
-	private Optional<Direction> bestDirection(GameModel game) {
-		Objects.requireNonNull(game, MSG_GAME_NULL);
-		Direction bestDir = null;
-		double minDist = Double.MAX_VALUE;
-		for (var dir : TURN_PRIORITY) {
-			var neighborTile = tile().plus(dir.vec);
-			if (dir != moveDir.opposite() && canAccessTile(neighborTile, game)) {
-				double d = neighborTile.euclideanDistance(targetTile);
-				if (d < minDist) {
-					minDist = d;
-					bestDir = dir;
+		if (targetTile == null) {
+			return;
+		}
+		if (game.level.world().belongsToPortal(tile())) {
+			return; // inside portal, no navigation happens
+		}
+		// for each neighbor tile, compute distance to target tile, select direction with smallest distance
+		V2i currentTile = tile();
+		Direction targetDir = null;
+		double minDistance = Double.MAX_VALUE;
+		for (var dir : DIRECTION_PRIORITY) {
+			if (dir == moveDir.opposite()) {
+				continue; // reversing the move direction is not allowed
+			}
+			var neighborTile = currentTile.plus(dir.vec);
+			if (canAccessTile(neighborTile, game)) {
+				double distance = neighborTile.euclideanDistance(targetTile);
+				if (distance < minDistance) {
+					minDistance = distance;
+					targetDir = dir;
 				}
 			}
 		}
-		return Optional.ofNullable(bestDir);
+		if (targetDir != null) {
+			setWishDir(targetDir);
+		}
 	}
 
 	/**
