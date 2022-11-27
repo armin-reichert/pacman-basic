@@ -34,6 +34,7 @@ import de.amr.games.pacman.lib.fsm.FsmState;
 import de.amr.games.pacman.model.common.GameModel;
 import de.amr.games.pacman.model.common.GameSound;
 import de.amr.games.pacman.model.common.GameVariant;
+import de.amr.games.pacman.model.common.ScoreManager;
 import de.amr.games.pacman.model.common.actors.AnimKeys;
 import de.amr.games.pacman.model.common.actors.Creature;
 import de.amr.games.pacman.model.common.actors.Entity;
@@ -429,7 +430,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 			timer.start();
 			gc.sounds().stopAll();
 			game.consumeCredit();
-			game.saveHiscore();
+			ScoreManager.saveHiscore(game.highScore(), game.highScoreFile(), game.variant());
 		}
 
 		@Override

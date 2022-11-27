@@ -38,12 +38,8 @@ import static de.amr.games.pacman.model.common.world.World.HTS;
 import static de.amr.games.pacman.model.common.world.World.TS;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Optional;
-import java.util.Properties;
 import java.util.stream.Stream;
 
 import org.apache.logging.log4j.LogManager;
@@ -186,9 +182,9 @@ public abstract class GameModel {
 
 	private final Score highScore = new Score("HIGH SCORE");
 
-	private File hiscoreFile;
+	protected File highScoreFile;
 
-	private boolean scoresEnabled;
+	protected boolean scoresEnabled;
 
 	/** Stores what happened during the last tick. */
 	public final Memory memo = new Memory();
@@ -234,9 +230,13 @@ public abstract class GameModel {
 		return highScore;
 	}
 
-	public void setHiscoreFile(File hiscoreFile) {
-		this.hiscoreFile = hiscoreFile;
-		loadScore(highScore, hiscoreFile);
+	public File highScoreFile() {
+		return highScoreFile;
+	}
+
+	public void setHiscoreFile(File file) {
+		this.highScoreFile = file;
+		ScoreManager.loadScore(highScore, file);
 	}
 
 	public void enableScores(boolean enabled) {
@@ -257,44 +257,6 @@ public abstract class GameModel {
 		if (scoreBeforeAddingPoints < GameModel.EXTRA_LIFE && gameScore.points >= GameModel.EXTRA_LIFE) {
 			lives++;
 			GameEvents.publish(new GameEvent(this, GameEventType.PLAYER_GETS_EXTRA_LIFE, null, pac.tile()));
-		}
-	}
-
-	public void saveHiscore() {
-		Score existingHiscore = new Score("");
-		loadScore(existingHiscore, hiscoreFile);
-		if (highScore.points <= existingHiscore.points) {
-			return;
-		}
-		var props = new Properties();
-		props.setProperty("points", String.valueOf(highScore.points));
-		props.setProperty("level", String.valueOf(highScore.levelNumber));
-		props.setProperty("date", highScore.date.format(DateTimeFormatter.ISO_LOCAL_DATE));
-		try (var out = new FileOutputStream(hiscoreFile)) {
-			props.storeToXML(out, "%s Hiscore".formatted(variant()));
-			LOGGER.info("New hiscore saved. File: '%s' Points: %d Level: %d", hiscoreFile.getAbsolutePath(), highScore.points,
-					highScore.levelNumber);
-		} catch (Exception x) {
-			LOGGER.info("Highscore could not be saved. File '%s' Reason: %s", hiscoreFile, x.getMessage());
-		}
-	}
-
-	private void loadScore(Score score, File file) {
-		try (var in = new FileInputStream(file)) {
-			var props = new Properties();
-			props.loadFromXML(in);
-			// parse
-			var points = Integer.parseInt(props.getProperty("points"));
-			var levelNumber = Integer.parseInt(props.getProperty("level"));
-			var date = LocalDate.parse(props.getProperty("date"), DateTimeFormatter.ISO_LOCAL_DATE);
-			// parsing ok
-			score.points = points;
-			score.levelNumber = levelNumber;
-			score.date = date;
-			LOGGER.info("Score loaded. File: '%s' Points: %d Level: %d", file.getAbsolutePath(), score.points,
-					score.levelNumber);
-		} catch (Exception x) {
-			LOGGER.info("Score could not be loaded. File '%s' Reason: %s", file, x.getMessage());
 		}
 	}
 
@@ -339,7 +301,7 @@ public abstract class GameModel {
 		lives = INITIAL_LIFES;
 		livesOneLessShown = false;
 		gameScore.reset();
-		loadScore(highScore, hiscoreFile);
+		ScoreManager.loadScore(highScore, highScoreFile);
 	}
 
 	public GameLevel level() {
