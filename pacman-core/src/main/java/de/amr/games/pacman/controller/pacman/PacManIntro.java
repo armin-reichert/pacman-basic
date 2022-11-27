@@ -223,8 +223,8 @@ public class PacManIntro extends Fsm<IntroState, IntroData> {
 						.filter(ghost -> ghost.is(GhostState.FRIGHTENED))//
 						.findFirst();
 				nextVictim.ifPresent(victim -> {
+					victim.killedIndex = victim.id;
 					ctx.ghostKilledTime = timer.tick();
-					ctx.gameController.game().killedIndex[victim.id] = victim.id;
 					victim.enterStateEaten(ctx.gameController.game());
 					ctx.pacMan.hide();
 					ctx.pacMan.setAbsSpeed(0);

@@ -43,7 +43,6 @@ import java.io.FileOutputStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
@@ -159,9 +158,6 @@ public abstract class GameModel {
 
 	/** Number of ghosts killed at the current level. */
 	public int numGhostsKilledInLevel;
-
-	/** Ghosts killed using the same energizer are indexed in order <code>0..4</code>. */
-	public final int[] killedIndex = new int[4];
 
 	/** Number of ghosts killed by current energizer. */
 	protected int ghostsKilledByEnergizer;
@@ -396,7 +392,6 @@ public abstract class GameModel {
 	}
 
 	public void resetGuys() {
-		Arrays.fill(killedIndex, -1);
 		powerTimer.reset(0);
 		energizerPulse.reset();
 		pac.reset();
@@ -717,10 +712,10 @@ public abstract class GameModel {
 
 	private void killGhost(Ghost ghost) {
 		memo.killedGhosts.add(ghost);
-		killedIndex[ghost.id] = ghostsKilledByEnergizer;
+		ghost.killedIndex = ghostsKilledByEnergizer;
 		ghostsKilledByEnergizer++;
 		ghost.enterStateEaten(this);
-		int value = ghostValue(killedIndex[ghost.id]);
+		int value = ghostValue(ghost.killedIndex);
 		scorePoints(value);
 		LOGGER.info("Ghost %s killed at tile %s, Pac-Man wins %d points", ghost.name(), ghost.tile(), value);
 	}

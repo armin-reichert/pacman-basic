@@ -79,6 +79,8 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 
 	private EntityAnimationSet<AnimKeys> animationSet;
 
+	public int killedIndex;
+
 	private int attractRouteIndex;
 
 	public Ghost(int id, String name) {
@@ -88,6 +90,12 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		}
 		this.id = id;
 		reset();
+	}
+
+	@Override
+	public void reset() {
+		super.reset();
+		killedIndex = -1;
 	}
 
 	public void setChasingTarget(Supplier<V2i> fnTargetTile) {
@@ -204,10 +212,10 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 		if (outOfHouse) {
 			newTileEntered = false;
 			setMoveAndWishDir(LEFT);
-			if (game.powerTimer().isRunning() && game.killedIndex[id] == -1) {
+			if (game.powerTimer().isRunning() && killedIndex == -1) {
 				enterStateFrightened(game);
 			} else {
-				game.killedIndex[id] = -1;
+				killedIndex = -1;
 				enterStateHuntingPac(game);
 			}
 			GameEvents.publish(new GameEvent(game, GameEventType.GHOST_COMPLETES_LEAVING_HOUSE, this, tile()));
@@ -354,7 +362,7 @@ public class Ghost extends Creature implements AnimatedEntity<AnimKeys> {
 	public void enterStateEaten(GameModel game) {
 		Objects.requireNonNull(game, MSG_GAME_NULL);
 		state = EATEN;
-		selectAndEnsureRunningAnimation(AnimKeys.GHOST_VALUE).ifPresent(anim -> anim.setFrameIndex(game.killedIndex[id]));
+		selectAndEnsureRunningAnimation(AnimKeys.GHOST_VALUE).ifPresent(anim -> anim.setFrameIndex(killedIndex));
 	}
 
 	private void updateStateEaten() {
