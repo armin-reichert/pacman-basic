@@ -308,24 +308,23 @@ public class Creature extends Entity {
 			setWishDir(moveDir.opposite());
 			reverse = false;
 		}
-		var result = tryMoving(wishDir, game);
-		trace(result);
+		var result = trace(tryMoving(wishDir, game));
 		if (result.moved()) {
 			setMoveDir(wishDir);
 		} else {
-			result = tryMoving(moveDir, game);
-			trace(result);
+			result = trace(tryMoving(moveDir, game));
 		}
 		stuck = !result.moved();
 		newTileEntered = !tileBefore.equals(tile());
 	}
 
-	private void trace(MoveResult result) {
+	private MoveResult trace(MoveResult result) {
 		if (result.moved()) {
 			LOGGER.trace(() -> "%-6s: %s %s".formatted(name, result.message(), this));
 		} else {
 			LOGGER.trace("%-6s: not moving", name);
 		}
+		return result;
 	}
 
 	private MoveResult tryMoving(Direction dir, GameModel game) {
