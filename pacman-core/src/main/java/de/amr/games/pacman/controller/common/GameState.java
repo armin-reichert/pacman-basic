@@ -180,7 +180,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 				// about to start game
 				if (timer.tick() == 130) {
 					game.guys().forEach(Entity::show);
-					game.livesOneLessShown = true;
+					game.setLivesOneLessShown(true); // TODO this cannot be the last word
 				} else if (timer.tick() == 250) {
 					// start game
 					game.setPlaying(true);
@@ -408,7 +408,7 @@ public enum GameState implements FsmState<GameModel>, GameCommands {
 				game.setLives(game.lives() - 1);
 				if (game.lives() == 0) {
 					game.energizerPulse.stop();
-					game.livesOneLessShown = false;
+					game.setLivesOneLessShown(false);
 				}
 				game.pac().hide();
 			} else if (timer.hasExpired()) {

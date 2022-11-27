@@ -154,10 +154,10 @@ public abstract class GameModel {
 	protected int lives;
 
 	/** If lives or one less is displayed in lives counter. */
-	public boolean livesOneLessShown;
+	protected boolean livesOneLessShown;
 
 	/** Number of ghosts killed at the current level. */
-	public int numGhostsKilledInLevel;
+	protected int numGhostsKilledInLevel;
 
 	/** Number of ghosts killed by current energizer. */
 	protected int ghostsKilledByEnergizer;
@@ -434,6 +434,14 @@ public abstract class GameModel {
 
 	public void setLives(int lives) {
 		this.lives = lives;
+	}
+
+	public boolean isLivesOneLessShown() {
+		return livesOneLessShown;
+	}
+
+	public void setLivesOneLessShown(boolean livesOneLessShown) {
+		this.livesOneLessShown = livesOneLessShown;
 	}
 
 	/**
